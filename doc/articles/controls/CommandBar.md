@@ -45,11 +45,7 @@ In this mode, the `CommandBar` can't be fully customized like other templatable 
 
 ### Padding
 
-In this mode, you must set the `CommandBar` `Padding` to `StatusBarThickness` in order to fix two known issues :
-* On **iOS** the content will be underneath the `CommandBar`.
-* On **Android** the `CommandBar` will be underneath the `StatusBar`.
-
-(The `StatusBarThickness` resource is one which is programmatically added at runtime, with a value that changes depending on the platform/device.)
+You must use `VisibleBoundsPadding.PaddingMask="Top"` on `CommandBar` to properly support the notch or punch-holes on iOS and Android
 
 #### Back button
 
@@ -418,7 +414,6 @@ Gets or sets a value indicating whether the user can interact with the control.
   
 - Can't have multiple CommandBars in the same page (e.g., Master/Details, bottom CommandBar).
 - Can't change the title of the back button if the previous page doesn't have a CommandBar.
-- You must set the `CommandBar.Padding` to `StatusBarThickness` in Native mode for iOS and Android (Please refer to the Padding section).
 - You must define the title of the back button of the current page's CommandBar in the CommandBar of the previous page.
 - Can't have a smooth transition between pages with different CommandBar backgrounds.
 - Can't have a smooth transition between pages with and without a CommandBar.
@@ -437,15 +432,14 @@ Gets or sets a value indicating whether the user can interact with the control.
 
 # FAQ
 
-- > Why my content is underneath the CommandBar for iOS and the CommandBar underneath the StatusBar for Android ?
+- > Why my content is underneath the CommandBar for iOS and the CommandBar underneath the StatusBar/Notch for Android ?
 
-  You must set the `CommandBar` `Padding` to `StatusBarThickness` in order to fix those two known issues.
-  The `StatusBarThickness` resource is one which is programmatically added at runtime, with a value that changes depending on the platform/device.
+  You must use `VisibleBoundsPadding.PaddingMask="Top"` on `CommandBar` to properly support the notch or punch-holes on iOS and Android.
 
   ```xml
   <Style Target="CommandBar">
-      <Setter Property="Padding"
-              Value="{StaticResource StatusBarThickness}" />
+      <Setter Property="toolkit:VisibleBoundsPadding.PaddingMask"
+              Value="Top" />
   </Style>
   ```
 
