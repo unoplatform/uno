@@ -6,8 +6,10 @@ using Uno.Extensions;
 using UIKit;
 using System.Linq;
 using System.Drawing;
+using Windows.UI.Xaml.Input;
 using Uno.Disposables;
 using Windows.UI.Xaml.Media;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -32,11 +34,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnPopupPanelChanged(DependencyPropertyChangedEventArgs e)
+		partial void OnPopupPanelChangedPartial(PopupPanel previousPanel, PopupPanel newPanel)
 		{
-			var previousPanel = e.OldValue as PopupPanel;
-			var newPanel = e.NewValue as PopupPanel;
-
 			if (previousPanel?.Superview != null)
 			{
 				// Remove the current child, if any.
@@ -74,7 +73,6 @@ namespace Windows.UI.Xaml.Controls
 			if (PopupPanel == null)
 			{
 				PopupPanel = new PopupPanel(this);
-				UpdateDismissTriggers();
 			}
 
 			if (PopupPanel.Superview == null)
@@ -108,20 +106,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnIsLightDismissEnabledChanged(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
-		{
-			base.OnIsLightDismissEnabledChanged(oldIsLightDismissEnabled, newIsLightDismissEnabled);
-
-			UpdateDismissTriggers();
-		}
-
 		protected override void OnIsOpenChanged(bool oldIsOpen, bool newIsOpen)
 		{
 			base.OnIsOpenChanged(oldIsOpen, newIsOpen);
 
 			UpdateLightDismissLayer(newIsOpen);
-
-			UpdateDismissTriggers();
 
 			EnsureForward();
 		}
@@ -149,29 +138,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void UpdateDismissTriggers()
-		{
-			if (PopupPanel != null)
-			{
-				if (this.IsOpen)
-				{
-					if (this.IsLightDismissEnabled)
-					{
-						PopupPanel.Background = new SolidColorBrush(Colors.Transparent);
-						PopupPanel.PointerPressed += OnPointerPressed;
-					}
-					else
-					{
-						PopupPanel.Background = null;
-					}
-				}
-				else
-				{
-					PopupPanel.PointerPressed -= OnPointerPressed;
-				}
-			}
-		}
-
 		/// <summary>
 		/// Ensure that Popup panel is forward-most in the window. This ensures it isn't hidden behind the main content, which can happen when
 		/// the Popup is created during initial launch.
@@ -179,11 +145,6 @@ namespace Windows.UI.Xaml.Controls
 		private void EnsureForward()
 		{
 			PopupPanel.Superview?.BringSubviewToFront(PopupPanel);
-		}
-
-		private void OnPointerPressed(object sender, EventArgs args)
-		{
-			IsOpen = false;
 		}
 	}
 }
