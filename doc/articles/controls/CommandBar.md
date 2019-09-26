@@ -437,6 +437,8 @@ Gets or sets a value indicating whether the user can interact with the control.
   You must use `VisibleBoundsPadding.PaddingMask="Top"` on `CommandBar` to properly support the notch or punch-holes on iOS and Android.
 
   ```xml
+  xmlns:toolkit="using:Uno.UI.Toolkit"
+  ...
   <Style Target="CommandBar">
       <Setter Property="toolkit:VisibleBoundsPadding.PaddingMask"
               Value="Top" />
@@ -446,6 +448,8 @@ Gets or sets a value indicating whether the user can interact with the control.
 - > How can I remove the back button title from all pages on iOS?
   
   ```xml
+  xmlns:toolkit="using:Uno.UI.Toolkit"
+  ...
   <Style Target="CommandBar">
       <Setter Property="toolkit:CommandBarExtensions.BackButtonTitle"
               Value="" />
@@ -455,6 +459,8 @@ Gets or sets a value indicating whether the user can interact with the control.
 - > How can I change the back button icon/arrow/chevron in my app?
   
   ```xml
+  xmlns:toolkit="using:Uno.UI.Toolkit"
+  ...
   <Style Target="CommandBar">
       <Setter Property="toolkit:CommandBarExtensions.BackButtonIcon">
           <Setter.Value>
@@ -467,6 +473,8 @@ Gets or sets a value indicating whether the user can interact with the control.
 - > How can I change the color of the back button?
 
   ```xml
+  xmlns:toolkit="using:Uno.UI.Toolkit"
+  ...
   <CommandBar toolkit:CommandBarExtensions.BackButtonForeground="Red" />
   ```
 
