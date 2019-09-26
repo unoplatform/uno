@@ -2352,6 +2352,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var formatted = formatLine($"{member.Member.Name} = {propertyValue}");
 
+					this.Log().Warn($"==***==  {formatted}");
+
 					writer.AppendLine(formatted);
 				}
 			}
