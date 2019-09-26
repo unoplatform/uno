@@ -130,7 +130,7 @@
 * [Android] Fix invalid ImageBrush stack overflow with delayed image reuse
 * CommandBar fixes (AppBarToggleButton, AppBarButton)
 * Fix Symbols rendering in sample app
-* 
+* Fix multiple invocations of OnLoaded when hosting a control in ItemsControl
 
 ## Release 1.45.0
 ### Features
