@@ -7,8 +7,8 @@ xcrun simctl list devices --json
 
 cd $BUILD_SOURCESDIRECTORY
 
-msbuild /r /p:Configuration=$BUILDCONFIGURATION "/p:Platform=iPhoneSimulator" $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.iOS/SamplesApp.iOS.csproj
-msbuild /r /p:Configuration=$BUILDCONFIGURATION $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
+msbuild /r /p:Configuration=Release "/p:Platform=iPhoneSimulator" $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.iOS/SamplesApp.iOS.csproj
+msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
 
 cd $BUILD_SOURCESDIRECTORY/build
 
