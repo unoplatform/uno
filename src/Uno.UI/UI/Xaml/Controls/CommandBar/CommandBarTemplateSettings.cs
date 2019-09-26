@@ -11,7 +11,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_commandBar = commandBar;
 		}
 
-		// TODO: Implement
 		public double ContentHeight { get; internal set; }
 		public double NegativeOverflowContentHeight { get; internal set; }
 		public Rect OverflowContentClipRect { get; internal set; }

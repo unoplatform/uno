@@ -31,7 +31,7 @@ namespace Windows.Foundation.Collections
 		public bool IsReadOnly => ((ICollection<T>)_list).IsReadOnly;
 
 		public event VectorChangedEventHandler<T> VectorChanged;
-		public event VectorChangedEventHandler GenericVectorChanged;
+		public event VectorChangedEventHandler UntypedVectorChanged;
 
 		public void Add(T item)
 		{
@@ -92,7 +92,7 @@ namespace Windows.Foundation.Collections
 		private void RaiseVectorChanged(CollectionChange change, int index)
 		{
 			VectorChanged?.Invoke(this, new VectorChangedEventArgs(change, (uint)index));
-			GenericVectorChanged?.Invoke(this, new VectorChangedEventArgs(change, (uint)index));
+			UntypedVectorChanged?.Invoke(this, new VectorChangedEventArgs(change, (uint)index));
 		}
 	}
 }

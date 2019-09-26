@@ -690,9 +690,9 @@ namespace Windows.UI.Xaml.Controls
 			{
 				VectorChangedEventHandler handler = OnItemsSourceVectorChanged;
 				_notifyCollectionChanged.Disposable = Disposable.Create(() =>
-					genericObservableVector.GenericVectorChanged -= handler
+					genericObservableVector.UntypedVectorChanged -= handler
 				);
-				genericObservableVector.GenericVectorChanged += handler;
+				genericObservableVector.UntypedVectorChanged += handler;
 			}
 			else
 			{

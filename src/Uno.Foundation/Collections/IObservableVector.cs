@@ -5,6 +5,6 @@
 		/// <summary>
         /// Occurs when the vector changes.
         /// </summary>
-        event VectorChangedEventHandler GenericVectorChanged;
+        event VectorChangedEventHandler UntypedVectorChanged;
     }
 }
