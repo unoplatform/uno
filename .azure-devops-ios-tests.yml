@@ -19,7 +19,7 @@ jobs:
       chmod +x $(build.sourcesdirectory)/build/ios-uitest-run.sh
       $(build.sourcesdirectory)/build/ios-uitest-run.sh
 
-    displayName: Run Android Tests
+    displayName: Build and Run iOS Tests
 
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
