@@ -241,6 +241,15 @@ namespace Windows.UI.Xaml
 			private static readonly ConditionalWeakTable<UIView, ScrollViewTouchesManager> _scrollViews = new ConditionalWeakTable<UIView, ScrollViewTouchesManager>();
 
 			/// <summary>
+			/// Gets the current <see cref="TouchesManager"/> for the given view, or create one if possible,
+			/// or throw an exception if this type of view does not support touches manager.
+			/// </summary>
+			public static TouchesManager GetOrCreate(UIView view)
+				=> TryGet(view, out var result)
+					? result
+					: throw new NotSupportedException($"View {view} does not supports enhanced touches management (this is supported only by scrollable content).");
+
+			/// <summary>
 			/// Tries to get the current <see cref="TouchesManager"/> for the given view
 			/// </summary>
 			public static bool TryGet(UIView view, out TouchesManager manager)
@@ -253,6 +262,10 @@ namespace Windows.UI.Xaml
 
 					case UIScrollView scrollView:
 						manager = _scrollViews.GetValue(scrollView, sv => new ScrollViewTouchesManager((UIScrollView)sv));
+						return true;
+
+					case ListViewBase listView:
+						manager = listView.NativePanel.TouchesManager;
 						return true;
 
 					case UIWebView uiWebView:
@@ -274,12 +287,36 @@ namespace Windows.UI.Xaml
 			/// </summary>
 			public static IEnumerable<TouchesManager> GetAllParents(UIElement element)
 			{
-				foreach (var parent in element.GetParents())
+				foreach (var parent in GetAllParentViews(element))
 				{
-					if (parent is UIView view && TryGet(view, out var manager))
+					if (TryGet(parent, out var manager))
 					{
 						yield return manager;
 					}
+				}
+			}
+
+			private static IEnumerable<UIView> GetAllParentViews(UIView current)
+			{
+				while (current != null)
+				{
+					// Navigate upward using the managed shadowed visual tree
+					using (var parents = current.GetParents().GetEnumerator())
+					{
+						while (parents.MoveNext())
+						{
+							if (parents.Current is UIView view)
+							{
+								yield return current = view;
+							}
+						}
+					}
+
+					// When reaching a UIView, fallback to the native visual tree until the next DependencyObject
+					do
+					{
+						yield return current = current.Superview;
+					} while (current != null && !(current is DependencyObject));
 				}
 			}
 

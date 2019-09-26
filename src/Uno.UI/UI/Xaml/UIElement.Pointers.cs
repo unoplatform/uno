@@ -418,11 +418,6 @@ namespace Windows.UI.Xaml
 			var wasPressed = IsPointerPressed;
 			IsPointerPressed = isPressed;
 
-			if (wasPressed != isPressed)
-			{
-				Console.WriteLine($"{this} IS PRESSED CHANGED, now {isPressed}");
-			}
-
 			if (muteEvent
 				|| wasPressed == isPressed) // nothing changed
 			{
