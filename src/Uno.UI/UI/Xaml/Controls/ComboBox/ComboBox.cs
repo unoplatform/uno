@@ -61,6 +61,7 @@ namespace Windows.UI.Xaml.Controls
 				Uno.UI.GlobalStaticResources.ComboBoxLightDismissOverlayBackground as Brush;
 
 			IsItemClickEnabled = true;
+			DefaultStyleKey = typeof(ComboBox);
 		}
 
 		public global::Windows.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings TemplateSettings { get; } = new Primitives.ComboBoxTemplateSettings();

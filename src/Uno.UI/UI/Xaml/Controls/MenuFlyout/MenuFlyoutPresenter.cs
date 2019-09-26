@@ -69,6 +69,8 @@ namespace Windows.UI.Xaml.Controls
 			// m_animationInProgress = false;
 			m_isSubPresenter = false;
 			m_mostRecentPlacement = FlyoutBase.MajorPlacementMode.Bottom;
+
+			DefaultStyleKey = typeof(MenuFlyoutPresenter);
 		}
 
 		internal bool IsSubPresenter { get => m_isSubPresenter; set => m_isSubPresenter = value; }

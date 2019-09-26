@@ -8,6 +8,10 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class AppBarButton : Button, ICommandBarElement, ICommandBarElement2, ICommandBarElement3
 	{
+		public AppBarButton()
+		{
+			DefaultStyleKey = typeof(AppBarButton);
+		}
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();

@@ -35,6 +35,8 @@ namespace Windows.UI.Xaml.Controls
 
 			BackStack = backStack;
 			ForwardStack = forwardStack;
+
+			DefaultStyleKey = typeof(Frame);
 		}
 
 		internal PageStackEntry CurrentEntry { get; set; }

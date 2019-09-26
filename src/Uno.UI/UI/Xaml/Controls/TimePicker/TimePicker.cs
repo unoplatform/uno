@@ -37,6 +37,8 @@ namespace Windows.UI.Xaml.Controls
 				// This is normally a no-op - the above line should retrieve the framework-level resource. This is purely to fail the build when
 				// Resources/Styles are overhauled (and the above will no longer be valid)
 				Uno.UI.GlobalStaticResources.TimePickerLightDismissOverlayBackground as Brush;
+
+			DefaultStyleKey = typeof(TimePicker);
 		}
 
 		#region Time DependencyProperty

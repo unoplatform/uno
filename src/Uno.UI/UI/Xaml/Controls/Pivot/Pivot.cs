@@ -29,6 +29,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public Pivot()
 		{
+			DefaultStyleKey = typeof(Pivot);
 			Loaded += (s, e) => RegisterHeaderEvents();
 			Unloaded += (s, e) => UnregisterHeaderEvents();
 			Items.VectorChanged += OnItemsVectorChanged;

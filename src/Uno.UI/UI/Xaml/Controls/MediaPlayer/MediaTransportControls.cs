@@ -112,8 +112,10 @@ namespace Windows.UI.Xaml.Controls
 			};
 
 			_controlsVisibilityTimer.Elapsed += ControlsVisibilityTimerElapsed;
+
+			DefaultStyleKey = typeof(MediaTransportControls);
 		}
-		
+
 		internal void SetMediaPlayerElement(MediaPlayerElement mediaPlayerElement)
 		{
 			_mpe = mediaPlayerElement;
