@@ -7,6 +7,7 @@ jobs:
 - template: .azure-devops-wasm-uitests.yml
 - template: .azure-devops-macos.yml
 - template: .azure-devops-android-tests.yml
+- template: .azure-devops-ios-tests.yml
 
 - job: VS_Latest
 
