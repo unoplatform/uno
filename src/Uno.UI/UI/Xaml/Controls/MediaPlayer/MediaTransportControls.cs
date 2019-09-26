@@ -1,4 +1,4 @@
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __IOS__ || NET461
 using System;
 using System.Timers;
 using Uno.UI.Converters;
