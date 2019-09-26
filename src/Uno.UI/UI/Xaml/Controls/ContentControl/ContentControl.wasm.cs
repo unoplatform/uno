@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls
 	// Android partial
     public partial class ContentControl
     {
-		public ContentControl()
+		partial void InitializePartial()
 		{
 			IFrameworkElementHelper.Initialize(this);
 		}
