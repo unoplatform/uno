@@ -288,10 +288,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private Style ResolveImplicitStyle()
-		{
-			throw new NotImplementedException();
-		}
+		private Style ResolveImplicitStyle() => (this as IDependencyObjectStoreProvider).Store.GetImplicitStyle();
 
 		/// <summary>
 		/// Replace previous style with new style, at nominated precedence. This method is called separately for the user-determined
@@ -315,6 +312,9 @@ namespace Windows.UI.Xaml
 			newStyle?.ApplyTo(this);
 		}
 
+		/// <summary>
+		/// Apply the default style for this element, if one is defined.
+		/// </summary>
 		private void ApplyDefaultStyle()
 		{
 			if (_defaultStyleApplied)
@@ -322,8 +322,16 @@ namespace Windows.UI.Xaml
 				return;
 			}
 			_defaultStyleApplied = true;
-			throw new NotImplementedException();
+
+			var style = Style.GetDefaultStyleForType(GetDefaultStyleKey());
+
+			OnStyleChanged(null, style, DependencyPropertyValuePrecedences.DefaultStyle);
 		}
+
+		/// <summary>
+		/// This returns <see cref="Control.DefaultStyleKey"/> for Control subclasses, and null for all other types.
+		/// </summary>
+		private protected virtual Type GetDefaultStyleKey() => null;
 
 		protected virtual void OnApplyTemplate()
 		{

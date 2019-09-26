@@ -1042,7 +1042,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			var dictionariesInScope = GetResourceDictionaries().ToArray();
+			var dictionariesInScope = GetResourceDictionaries(includeAppResources: false).ToArray();
 
 			var bindings = _resourceBindings.ToArray(); //The original dictionary may be mutated during DP assignations
 
@@ -1069,7 +1069,7 @@ namespace Windows.UI.Xaml
 		/// Returns all ResourceDictionaries in scope using the visual tree, from nearest to furthest.
 		/// </summary>
 		/// <returns></returns>
-		private IEnumerable<ResourceDictionary> GetResourceDictionaries()
+		private IEnumerable<ResourceDictionary> GetResourceDictionaries(bool includeAppResources)
 		{
 			var candidate = ActualInstance;
 			while (candidate != null)
@@ -1082,7 +1082,27 @@ namespace Windows.UI.Xaml
 				candidate = candidate.GetParent() as DependencyObject;
 			}
 
-			// Note: for now we skip Application.Resources because we assume these were already checked at initialize-time.
+			if (includeAppResources && Application.Current != null)
+			{
+				// In the case of StaticResource resolution we skip Application.Resources because we assume these were already checked at initialize-time.
+				yield return Application.Current.Resources;
+			}
+		}
+
+		/// <summary>
+		/// Retrieve the implicit Style for <see cref="ActualInstance"/> by walking the visual tree.
+		/// </summary>
+		internal Style GetImplicitStyle()
+		{
+			foreach (var dict in GetResourceDictionaries(includeAppResources: true))
+			{
+				if (dict.TryGetValue(_originalObjectType, out var style))
+				{
+					return style as Style;
+				}
+			}
+
+			return null;
 		}
 
 		/// <summary>
