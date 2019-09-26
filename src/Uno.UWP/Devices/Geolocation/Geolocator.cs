@@ -20,6 +20,7 @@ namespace Windows.Devices.Geolocation
 
 		private PositionAccuracy _desiredAccuracy = PositionAccuracy.Default;
 		private uint? _desiredAccuracyInMeters = DefaultAccuracyInMeters;
+		private uint _actualDesiredAccuracyInMeters = DefaultAccuracyInMeters;
 
 		public event TypedEventHandler<Geolocator, PositionChangedEventArgs> PositionChanged
 		{
@@ -96,12 +97,34 @@ namespace Windows.Devices.Geolocation
 				else
 				{
 					//force set DesiredAccuracy so that its ActualDesiredAccuracyInMeters rule is applied
-					DesiredAccuracy = DesiredAccuracy; 
+					DesiredAccuracy = DesiredAccuracy;
 				}
 			}
 		}
 
-		internal uint ActualDesiredAccuracyInMeters { get; private set; } = DefaultAccuracyInMeters;
+		internal uint ActualDesiredAccuracyInMeters
+		{
+			get => _actualDesiredAccuracyInMeters;
+			private set
+			{
+				lock (_syncLock)
+				{
+					_actualDesiredAccuracyInMeters = value;
+					OnActualDesiredAccuracyInMetersChanged();
+				}
+			}
+		}
+
+		partial void OnActualDesiredAccuracyInMetersChanged();
+
+		/// <summary>
+		/// Invokes PositionChanged event
+		/// </summary>
+		/// <param name="geoposition">Geoposition</param>
+		private void OnPositionChanged(Geoposition geoposition)
+		{
+			_positionChanged?.Invoke(this, new PositionChangedEventArgs(geoposition));
+		}
 	}
 }
 #endif

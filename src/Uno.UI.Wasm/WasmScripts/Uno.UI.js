@@ -2251,14 +2251,11 @@ var Windows;
                 }
                 static getGeoposition(desiredAccuracyInMeters, maximumAge, timeout, requestId) {
                     Geolocator.initialize();
-                    console.log("geoposition request starting " + desiredAccuracyInMeters + " " + maximumAge + " " + timeout + " " + requestId);
                     if (navigator.geolocation) {
-                        if (desiredAccuracyInMeters < 300) {
-                            console.log("accurate geoposition required");
+                        if (desiredAccuracyInMeters < 500) { //user requested a higher than default accuracy
                             this.getAccurateCurrentPosition((position) => Geolocator.handleGeoposition(position, requestId), (error) => Geolocator.handleError(error, requestId), desiredAccuracyInMeters, { enableHighAccuracy: true, maximumAge: maximumAge, timeout: timeout });
                         }
                         else {
-                            console.log("classic geoposition required");
                             navigator.geolocation.getCurrentPosition((position) => Geolocator.handleGeoposition(position, requestId), (error) => Geolocator.handleError(error, requestId), { enableHighAccuracy: false, maximumAge: maximumAge, timeout: timeout });
                         }
                     }
@@ -2275,7 +2272,6 @@ var Windows;
                         position.coords.heading + ":" +
                         position.coords.speed + ":" +
                         position.timestamp;
-                    console.log("serialized geoposition " + serializedGeoposition);
                     Geolocator.dispatchGeoposition(serializedGeoposition, requestId);
                 }
                 static handleError(error, requestId) {

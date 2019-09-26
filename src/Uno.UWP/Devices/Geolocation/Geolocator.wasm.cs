@@ -19,6 +19,8 @@ namespace Windows.Devices.Geolocation
 
 		private static ConcurrentDictionary<string, Geolocator> _positionChangedSubscriptions = new ConcurrentDictionary<string, Geolocator>();
 
+		private string _positionChangedRequestId;
+
 		public Geolocator()
 		{
 
@@ -26,14 +28,27 @@ namespace Windows.Devices.Geolocation
 
 		//public event TypedEventHandler<Geolocator, StatusChangedEventArgs> StatusChanged;
 
+		partial void OnActualDesiredAccuracyInMetersChanged()
+		{
+			if (_positionChanged != null)
+			{
+				//reset position changed watch to apply accuracy
+				StopPositionChanged();
+				StartPositionChanged();
+			}
+		}
+
 		partial void StartPositionChanged()
 		{
-
+			_positionChangedRequestId = Guid.NewGuid().ToString();
+			_positionChangedSubscriptions.TryAdd(_positionChangedRequestId, this);
+			var command = $"{JsType}.startPositionWatch({ActualDesiredAccuracyInMeters},{_positionChangedRequestId})";
 		}
 
 		partial void StopPositionChanged()
 		{
-
+			_positionChangedSubscriptions.TryRemove(_positionChangedRequestId, out var _);
+			var command = $"{JsType}.startPositionWatch({_positionChangedRequestId})";
 		}
 
 		public static async Task<GeolocationAccessStatus> RequestAccessAsync()
@@ -68,11 +83,8 @@ namespace Windows.Devices.Geolocation
 		public async Task<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
 		{
 			var completionRequest = new TaskCompletionSource<Geoposition>();
-			string requestId;
-			do
-			{
-				requestId = Guid.NewGuid().ToString();
-			} while (!_pendingGeopositionRequests.TryAdd(requestId, completionRequest));
+			var requestId = Guid.NewGuid().ToString();
+			_pendingGeopositionRequests.TryAdd(requestId, completionRequest);
 			var command = FormattableString.Invariant($"{JsType}.getGeoposition({ActualDesiredAccuracyInMeters},{maximumAge.TotalMilliseconds},{timeout.TotalMilliseconds},\"{requestId}\")");
 			InvokeJS(command);
 			return await completionRequest.Task;
@@ -89,6 +101,20 @@ namespace Windows.Devices.Geolocation
 			var geocoordinate = ParseGeocoordinate(serializedGeoposition);
 
 			requestTask.SetResult(new Geoposition(geocoordinate));
+
+			return 0;
+		}
+		
+		[Preserve]
+		public static int DispatchPositionChanged(string serializedGeoposition, string requestId)
+		{
+			if (!_positionChangedSubscriptions.TryGetValue(requestId, out var geolocator))
+			{
+				throw new InvalidOperationException($"PositionChanged request {requestId} does not exist");
+			}
+
+			var geocoordinate = ParseGeocoordinate(serializedGeoposition);
+			geolocator.OnPositionChanged(new Geoposition(geocoordinate));
 
 			return 0;
 		}

@@ -12,6 +12,8 @@
         private static dispatchGeoposition: (geopositionRequestResult: string, requestId: string) => number;
         private static dispatchError: (geopositionRequestResult: string, requestId: string) => number;
 
+        private static positionWatches: any;
+
         public static initialize() {
             if (!this.dispatchAccessRequest) {
                 this.dispatchAccessRequest = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchAccessRequest");
@@ -69,8 +71,25 @@
                 }
             }
             else {
+				//TODO: FIX
                 Geolocator.dispatchError("NotAvailable", requestId);
             }
+        }
+
+        public static startPositionWatch(desiredAccuracyInMeters: number, requestId: string) {
+            Geolocator.initialize();
+            if (navigator.geolocation) {
+                Geolocator.positionWatches[requestId] = navigator.geolocation.watchPosition(
+                    (position) => Geolocator.handleGeoposition(position, requestId),
+                    (error) => Geolocator.handleError(error, requestId));
+            } else {
+				//TODO: FIX
+                Geolocator.dispatchError("NotAvailable", requestId);
+            }
+        }
+
+        public static stopPositionWatch(desiredAccuracyInMeters: number, requestId: string) {
+            navigator.geolocation.clearWatch(Geolocator.positionWatches[requestId]);
         }
 
         private static handleGeoposition(position: Position, requestId: string) {
