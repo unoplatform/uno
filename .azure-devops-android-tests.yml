@@ -25,7 +25,10 @@ jobs:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
 
-
+  - bash: cp -r $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/obj/Release/g/XamlCodeGenerator/ $(build.artifactstagingdirectory)
+    condition: failed()
+    displayName: "Copy generated XAML code"
+ 
   - task: PublishTestResults@2
     condition: always()
     inputs:

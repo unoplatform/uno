@@ -8,11 +8,9 @@ namespace Windows.UI.Xaml.Markup
 {
 	public partial class MarkupExtension : IMarkupExtensionOverrides
 	{
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		object IMarkupExtensionOverrides.ProvideValue()
 		{
 			return ProvideValue();
 		}
-#endif
 	}
 }
