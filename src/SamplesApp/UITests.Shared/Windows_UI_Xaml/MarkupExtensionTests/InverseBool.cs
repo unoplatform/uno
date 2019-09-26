@@ -14,12 +14,12 @@ namespace UITests.Shared.Windows_UI_Xaml.MarkupExtension
 
 		public object Convert(object value, Type targetType, object parameter, string language)
 		{
-			return !(bool)value;
+			return !(bool)(value ?? false);
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, string language)
 		{
-			return !(bool)value;
+			return !(bool)(value ?? false);
 		}
 	}
 }

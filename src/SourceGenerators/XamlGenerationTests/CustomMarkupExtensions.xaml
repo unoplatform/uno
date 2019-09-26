@@ -46,6 +46,12 @@
 
 			<ContentPresenter Content="{ext:ComplexMarkup String='MyString', Number=100}"
 							  ContentTemplate="{StaticResource TestDataTemplate}" />
+
+			<!-- Make sure markup extension works in an attached property -->
+			<TextBlock ext:MarkupExtensionTestBehavior.CustomText="{ext:TestMarkup String1='Just a test string...'}" />
+
+			<!-- Make sure markup extension works in an attached property using a binding and converter -->
+			<TextBlock ext:MarkupExtensionTestBehavior.CustomText="{Binding IsRightTapEnabled, ElementName=RootGrid, Converter={ext:InverseBoolMarkup}}" />
 		</StackPanel>
 	</Grid>
 </UserControl>

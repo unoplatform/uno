@@ -64,7 +64,7 @@ namespace XamlGenerationTests.Shared.MarkupExtensions
 
 		protected override object ProvideValue()
 		{
-			return $"{String1} AND {String2} THEN #{Number}";
+			return $"{String1 ?? string.Empty} AND {String2 ?? string.Empty} THEN #{Number}";
 		}
 	}
 
@@ -100,6 +100,28 @@ namespace XamlGenerationTests.Shared.MarkupExtensions
 				StringProp = String,
 				IntProp = Number
 			};
+		}
+	}
+
+	public static class MarkupExtensionTestBehavior
+	{
+		public static string GetCustomText(TextBlock obj) => (string)obj.GetValue(CustomTextProperty);
+
+		public static void SetCustomText(TextBlock obj, string value) => obj.SetValue(CustomTextProperty, value);
+
+		public static readonly DependencyProperty CustomTextProperty =
+			DependencyProperty.RegisterAttached(
+				"CustomText",
+				typeof(string),
+				typeof(MarkupExtensionTestBehavior),
+				new PropertyMetadata(string.Empty, OnCustomTextChanged));
+
+		private static void OnCustomTextChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			if (dependencyObject is TextBlock tb)
+			{
+				tb.Text = GetCustomText(tb);
+			}
 		}
 	}
 }

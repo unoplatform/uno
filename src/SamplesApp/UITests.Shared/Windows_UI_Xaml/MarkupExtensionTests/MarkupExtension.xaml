@@ -4,6 +4,7 @@
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ex="using:UITests.Shared.Windows_UI_Xaml.MarkupExtension"
+			 xmlns:beh="using:UITests.Shared.Windows_UI_Xaml.MarkupExtensionTests.Behaviors"
 			 mc:Ignorable="d"
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
@@ -15,24 +16,25 @@
 		<DataTemplate x:Key="MarkupDataTemplate"
 					  x:DataType="ex:EntityObject">
 			<StackPanel>
-				<TextBlock Text="{x:Bind StringProperty, Mode=OneWay}" />
-				<TextBlock Text="{x:Bind IntProperty, Mode=OneWay}" />
+				<TextBlock Text="{x:Bind StringProperty, Mode=OneWay}" FontSize="16" />
+				<TextBlock Text="{x:Bind IntProperty, Mode=OneWay}" FontSize="16" />
 
 				<!-- Make a markup extension inside a DataTemplate generates correctly -->
-				<TextBlock Text="{ex:Simple TextValue={StaticResource ResourceString2}}" />
+				<TextBlock Text="{ex:Simple TextValue={StaticResource ResourceString2}}" FontSize="16" />
 			</StackPanel>
 		</DataTemplate>
 	</UserControl.Resources>
 
 	<Grid>
 		<StackPanel Margin="8,0">
-			<TextBlock Text="Here's a simple use of a custom Markup Extension"
+			<TextBlock Text="Simple use of a custom Markup Extension"
 					   Foreground="Green" />
+			
 			<TextBlock Text="{ex:Simple TextValue='Just a simple ...'}"
 					   FontSize="16"
 					   Margin="0,0,0,40" />
 
-			<TextBlock Text="Here's a custom Markup Extension that sets a DataContext on the StackPanel"
+			<TextBlock Text="Custom Markup Extension that sets a DataContext on the StackPanel"
 					   TextWrapping="Wrap"
 					   Foreground="Green" />
 
@@ -44,7 +46,7 @@
 						   FontSize="16" />
 			</StackPanel>
 
-			<TextBlock Text="Here's a custom Markup Extension that is also used as a Converter"
+			<TextBlock Text="Custom Markup Extension that is also used as a Converter"
 					   Foreground="Green" />
 
 			<StackPanel x:Name="StackContainer"
@@ -57,11 +59,24 @@
 						   FontSize="16" />
 			</StackPanel>
 
-			<TextBlock Text="Here's a custom Markup Extension using a StaticResource:"
+			<TextBlock Text="Custom Markup Extension using a StaticResource"
 					   Foreground="Green" />
 
 			<ContentControl Content="{ex:Entity TextValue={StaticResource ResourceString1}, IntValue=123}"
-							ContentTemplate="{StaticResource MarkupDataTemplate}" />
+							ContentTemplate="{StaticResource MarkupDataTemplate}"
+							Margin="0,0,0,40"/>
+
+			<TextBlock Text="Attached Property using a custom Markup Extension"
+					   Foreground="Green" />
+
+			<TextBlock beh:MarkupExtensionBehaviors.CustomText="{ex:Simple TextValue='I am an Attached Property using a ...'}"
+					   FontSize="16" />
+
+			<TextBlock Text="Attached Property using a custom Markup Extension (with converter)"
+					   Foreground="Green" />
+
+			<TextBlock beh:MarkupExtensionBehaviors.CustomText="{Binding IsTapEnabled, ElementName=StackContainer, Converter={ex:InverseBool}}"
+					   FontSize="16" />
 		</StackPanel>
 	</Grid>
 </UserControl>

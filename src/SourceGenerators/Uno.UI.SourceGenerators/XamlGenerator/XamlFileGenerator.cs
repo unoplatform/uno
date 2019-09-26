@@ -2044,7 +2044,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 						else if (HasCustomMarkupExtension(member))
 						{
-							BuildCustomMarkupExtensionPropertyValue(writer, member, closureName + ".");
+							if (IsAttachedProperty(member) && FindPropertyType(member.Member) != null)
+							{
+								BuildSetAttachedProperty(writer, closureName, member, objectUid, isCustomMarkupExtension: true);
+							}
+							else
+							{
+								BuildCustomMarkupExtensionPropertyValue(writer, member, closureName + ".");
+							}
 						}
 						else if (member.Objects.Any())
 						{
@@ -2253,7 +2260,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									if (FindPropertyType(member.Member) != null)
 									{
-										BuildSetAttachedProperty(writer, closureName, member, objectUid);
+										BuildSetAttachedProperty(writer, closureName, member, objectUid, isCustomMarkupExtension: false);
 									}
 									else if (eventSymbol != null)
 									{
@@ -2444,13 +2451,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				name.Equals("AlignVerticalCenterWith");
 		}
 
-		private void BuildSetAttachedProperty(IIndentedStringBuilder writer, string closureName, XamlMemberDefinition member, string objectUid)
+		private void BuildSetAttachedProperty(IIndentedStringBuilder writer, string closureName, XamlMemberDefinition member, string objectUid, bool isCustomMarkupExtension)
 		{
+			var literalValue = isCustomMarkupExtension
+					? GetCustomMarkupExtensionValue(member)
+					: BuildLiteralValue(member, owner: member, objectUid: objectUid);
+
 			writer.AppendLineInvariant(
 				"{0}.Set{1}({3}, {2});",
 				GetGlobalizedTypeName(FindType(member.Member.DeclaringType).SelectOrDefault(t => t.ToDisplayString(), member.Member.DeclaringType.Name)),
 				member.Member.Name,
-				BuildLiteralValue(member, owner: member, objectUid: objectUid),
+				literalValue,
 				closureName
 			);
 		}
