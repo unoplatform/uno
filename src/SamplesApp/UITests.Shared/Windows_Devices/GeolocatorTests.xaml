@@ -16,6 +16,6 @@
 			<Run Text="{Binding GeolocationAccessStatus}" />
 		</TextBlock>
 		<Button Command="{Binding GetGeopositionCommand}">Get geoposition</Button>
-		
+	  <GeopositionDisplayControl Geoposition="{x:Bind Geoposition, Mode=OneWay}" />
 	</StackPanel>
 </UserControl>

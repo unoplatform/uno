@@ -55,7 +55,7 @@
             requestId: string) {
             Geolocator.initialize();
             if (navigator.geolocation) {
-                if (desiredAccuracyInMeters < 300) {
+                if (desiredAccuracyInMeters < 500) { //user requested a higher than default accuracy
                     this.getAccurateCurrentPosition(
                         (position) => Geolocator.handleGeoposition(position, requestId),
                         (error) => Geolocator.handleError(error, requestId),
@@ -74,19 +74,19 @@
         }
 
         private static handleGeoposition(position: Position, requestId: string) {
-            Geolocator.dispatchGeoposition(
-                position.coords.latitude + ":" +
+            var serializedGeoposition = position.coords.latitude + ":" +
                 position.coords.longitude + ":" +
                 position.coords.altitude + ":" +
                 position.coords.altitudeAccuracy + ":" +
                 position.coords.accuracy + ":" +
                 position.coords.heading + ":" +
                 position.coords.speed + ":" +
-                position.timestamp,
-                requestId);
+                position.timestamp;
+            Geolocator.dispatchGeoposition(serializedGeoposition, requestId);
         }
 
         private static handleError(error: PositionError, requestId: string) {
+            console.log("error " + error.code);
             Geolocator.dispatchError("Boom!", requestId);
         }
 

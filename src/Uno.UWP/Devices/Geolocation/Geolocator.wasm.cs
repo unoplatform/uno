@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Uno;
 using Windows.Foundation;
@@ -59,7 +60,7 @@ namespace Windows.Devices.Geolocation
 			do
 			{
 				requestId = Guid.NewGuid().ToString();
-			} while (_pendingGeopositionRequests.TryAdd(requestId, completionRequest));
+			} while (!_pendingGeopositionRequests.TryAdd(requestId, completionRequest));
 			var command = FormattableString.Invariant($"{JsType}.getGeoposition({ActualDesiredAccuracyInMeters},{maximumAge.TotalMilliseconds},{timeout.TotalMilliseconds},\"{requestId}\")");
 			InvokeJS(command);
 			return await completionRequest.Task;
@@ -81,17 +82,16 @@ namespace Windows.Devices.Geolocation
 		}
 
 		[Preserve]
-		public static int DispatchError(string currentPositionRequestResult)
+		public static int DispatchError(string currentPositionRequestResult, string requestId)
 		{
-			if (currentPositionRequestResult.StartsWith("erros", StringComparison.InvariantCultureIgnoreCase))
+			Debug.WriteLine("Got error " + currentPositionRequestResult);
+			if (!_pendingGeopositionRequests.TryGetValue(requestId, out var requestTask))
 			{
-
+				throw new InvalidOperationException($"Geoposition request {requestId} does not exist");
 			}
-			else
-			{
-				//set appropriate exception on all waiting requests
 
-			}
+			requestTask.SetException(new Exception(currentPositionRequestResult));
+
 			return 0;
 		}
 

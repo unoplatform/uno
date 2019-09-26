@@ -24,9 +24,20 @@ namespace UITests.Shared.Windows_Devices
 	public class GeolocatorTestsViewModel : ViewModelBase
 	{
 		private GeolocationAccessStatus _geolocationAccessStatus;
+		private Geoposition _geoposition;
 
 		public GeolocatorTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
+		}
+
+		public Geoposition Geoposition
+		{
+			get => _geoposition;
+			set
+			{
+				_geoposition = value;
+				RaisePropertyChanged();
+			}
 		}
 
 		public ICommand RequestAccessCommand =>
@@ -51,8 +62,7 @@ namespace UITests.Shared.Windows_Devices
 		private async void GetGeoposition()
 		{
 			var geolocator = new Geolocator();
-			var geoposition = await geolocator.GetGeopositionAsync();
-			System.Diagnostics.Debug.WriteLine(geoposition.Coordinate.Longitude);
+			Geoposition = await geolocator.GetGeopositionAsync();
 		}
 	}
 }

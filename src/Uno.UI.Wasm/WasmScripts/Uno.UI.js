@@ -2251,11 +2251,14 @@ var Windows;
                 }
                 static getGeoposition(desiredAccuracyInMeters, maximumAge, timeout, requestId) {
                     Geolocator.initialize();
+                    console.log("geoposition request starting " + desiredAccuracyInMeters + " " + maximumAge + " " + timeout + " " + requestId);
                     if (navigator.geolocation) {
                         if (desiredAccuracyInMeters < 300) {
+                            console.log("accurate geoposition required");
                             this.getAccurateCurrentPosition((position) => Geolocator.handleGeoposition(position, requestId), (error) => Geolocator.handleError(error, requestId), desiredAccuracyInMeters, { enableHighAccuracy: true, maximumAge: maximumAge, timeout: timeout });
                         }
                         else {
+                            console.log("classic geoposition required");
                             navigator.geolocation.getCurrentPosition((position) => Geolocator.handleGeoposition(position, requestId), (error) => Geolocator.handleError(error, requestId), { enableHighAccuracy: false, maximumAge: maximumAge, timeout: timeout });
                         }
                     }
@@ -2264,16 +2267,19 @@ var Windows;
                     }
                 }
                 static handleGeoposition(position, requestId) {
-                    Geolocator.dispatchGeoposition(position.coords.latitude + ":" +
+                    var serializedGeoposition = position.coords.latitude + ":" +
                         position.coords.longitude + ":" +
                         position.coords.altitude + ":" +
                         position.coords.altitudeAccuracy + ":" +
                         position.coords.accuracy + ":" +
                         position.coords.heading + ":" +
                         position.coords.speed + ":" +
-                        position.timestamp, requestId);
+                        position.timestamp;
+                    console.log("serialized geoposition " + serializedGeoposition);
+                    Geolocator.dispatchGeoposition(serializedGeoposition, requestId);
                 }
                 static handleError(error, requestId) {
+                    console.log("error " + error.code);
                     Geolocator.dispatchError("Boom!", requestId);
                 }
                 //this attempts to squeeze out the requested accuracy from the GPS by utilizing the set timeout
