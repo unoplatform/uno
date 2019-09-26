@@ -131,6 +131,7 @@
 * CommandBar fixes (AppBarToggleButton, AppBarButton)
 * Fix Symbols rendering in sample app
 * Fix multiple invocations of OnLoaded when hosting a control in ItemsControl
+* [Android] Fix glitchy animations inside ListView with transformed ancestor.
 
 ## Release 1.45.0
 ### Features
