@@ -61,6 +61,15 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal bool IsGeneratedContainer { get; set; }
 
+		public ContentControl()
+		{
+			DefaultStyleKey = typeof(ContentControl);
+
+			InitializePartial();
+		}
+
+		partial void InitializePartial();
+
 		#region Content DependencyProperty
 
 		public virtual object Content
