@@ -12,11 +12,35 @@
   <StackPanel>
 	<TextBlock>
 	  <Run FontWeight="Bold">Latitude: </Run>
-	  <Run Text="{x:Bind Geoposition.Latitude, Mode=OneWay}" />
+	  <Run x:Name="LatitudeRun" />
 	</TextBlock>
 	<TextBlock>
 	  <Run FontWeight="Bold">Longitude: </Run>
-	  <Run Text="{Binding Geoposition.Longitude, Mode=OneWay}" />
+	  <Run x:Name="LongitudeRun" />
+	</TextBlock>
+	<TextBlock>
+	  <Run FontWeight="Bold">Altitude: </Run>
+	  <Run x:Name="AltitudeRun" />
+	</TextBlock>
+	<TextBlock>
+	  <Run FontWeight="Bold">Accuracy: </Run>
+	  <Run x:Name="AccuracyRun" />
+	</TextBlock>
+	<TextBlock>
+	  <Run FontWeight="Bold">AltitudeAccuracy: </Run>
+	  <Run x:Name="AltitudeAccuracyRun" />
+	</TextBlock>
+	<TextBlock>
+	  <Run FontWeight="Bold">Heading: </Run>
+	  <Run x:Name="HeadingRun" />
+	</TextBlock>
+	<TextBlock>
+	  <Run FontWeight="Bold">Speed: </Run>
+	  <Run x:Name="SpeedRun" />
+	</TextBlock>
+	<TextBlock>
+	  <Run FontWeight="Bold">Timestamp: </Run>
+	  <Run x:Name="TimestampRun" />
 	</TextBlock>
   </StackPanel>
 </UserControl>

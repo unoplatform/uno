@@ -14,11 +14,43 @@ namespace Windows.Devices.Geolocation
 		private const uint DefaultAccuracyInMeters = 500;
 		private const uint HighAccuracyInMeters = 10;
 
+		private static readonly object _syncLock = new object();
+
+		private TypedEventHandler<Geolocator, PositionChangedEventArgs> _positionChanged;
+
 		private PositionAccuracy _desiredAccuracy = PositionAccuracy.Default;
-		private uint _desiredAccuracyInMeters = DefaultAccuracyInMeters;
+		private uint? _desiredAccuracyInMeters = DefaultAccuracyInMeters;
 
-		public event TypedEventHandler<Geolocator, PositionChangedEventArgs> PositionChanged;
+		public event TypedEventHandler<Geolocator, PositionChangedEventArgs> PositionChanged
+		{
+			add
+			{
+				lock (_syncLock)
+				{
+					bool isFirstSubscriber = _positionChanged == null;
+					_positionChanged += value;
+					if (isFirstSubscriber)
+					{
+						StartPositionChanged();
+					}
+				}
+			}
+			remove
+			{
+				lock (_syncLock)
+				{
+					_positionChanged -= value;
+					if (_positionChanged == null)
+					{
+						StopPositionChanged();
+					}
+				}
+			}
+		}
 
+		partial void StartPositionChanged();
+
+		partial void StopPositionChanged();
 
 		/// <summary>
 		/// By default null, can be set by the user when no better option exists
@@ -51,13 +83,21 @@ namespace Windows.Devices.Geolocation
 		/// Setting overwrites <see cref="_actualDesiredAccuracyInMeters"/> but does not overwrite <see cref="DesiredAccuracy"/> directly.
 		/// Matches UWP behavior <see href="https://docs.microsoft.com/en-us/uwp/api/windows.devices.geolocation.geolocator.desiredaccuracy#remarks">Docs</see> 
 		/// </summary>
-		public uint DesiredAccuracyInMeters
+		public uint? DesiredAccuracyInMeters
 		{
 			get => _desiredAccuracyInMeters;
 			set
 			{
 				_desiredAccuracyInMeters = value;
-				ActualDesiredAccuracyInMeters = value;
+				if (value != null)
+				{
+					ActualDesiredAccuracyInMeters = value.Value;
+				}
+				else
+				{
+					//force set DesiredAccuracy so that its ActualDesiredAccuracyInMeters rule is applied
+					DesiredAccuracy = DesiredAccuracy; 
+				}
 			}
 		}
 

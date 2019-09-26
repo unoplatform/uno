@@ -1,9 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Windows.Input;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.Devices.Geolocation;
 using Windows.UI.Core;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 
@@ -17,14 +19,26 @@ namespace UITests.Shared.Windows_Devices
 		public GeolocatorTests()
 		{
 			this.InitializeComponent();
+			this.DataContextChanged += GeolocatorTests_DataContextChanged;
+		}
+
+		public GeolocatorTestsViewModel ViewModel { get; private set; }
+
+		private void GeolocatorTests_DataContextChanged(DependencyObject sender, Windows.UI.Xaml.DataContextChangedEventArgs args)
+		{
+			ViewModel = args.NewValue as GeolocatorTestsViewModel;
 		}
 	}
 
 	[Bindable]
 	public class GeolocatorTestsViewModel : ViewModelBase
 	{
+		private Geolocator _geolocator = new Geolocator();
+
 		private GeolocationAccessStatus _geolocationAccessStatus;
 		private Geoposition _geoposition;
+		private Geoposition _trackedGeoposition;
+		private bool _positionChangedAttached;
 
 		public GeolocatorTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
@@ -38,6 +52,32 @@ namespace UITests.Shared.Windows_Devices
 				_geoposition = value;
 				RaisePropertyChanged();
 			}
+		}
+
+		public Geoposition TrackedGeoposition
+		{
+			get => _trackedGeoposition;
+			set
+			{
+				_trackedGeoposition = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public bool PositionChangedAttached
+		{
+			get => _positionChangedAttached;
+			private set
+			{
+				_positionChangedAttached = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public uint? DesiredAccuracyInMeters
+		{
+			get => _geolocator.DesiredAccuracyInMeters;
+			set => _geolocator.DesiredAccuracyInMeters = value;
 		}
 
 		public ICommand RequestAccessCommand =>
@@ -60,9 +100,29 @@ namespace UITests.Shared.Windows_Devices
 			GeolocationAccessStatus = await Geolocator.RequestAccessAsync();
 
 		private async void GetGeoposition()
+		{			
+			Geoposition = await _geolocator.GetGeopositionAsync();
+			Debug.WriteLine(Geoposition.Coordinate.Longitude);
+		}
+
+		public Command AttachPositionChangedCommand => new Command((p) =>
 		{
-			var geolocator = new Geolocator();
-			Geoposition = await geolocator.GetGeopositionAsync();
+			_geolocator.PositionChanged += Geolocator_PositionChanged;
+			PositionChangedAttached = true;
+		});
+
+		public Command DetachPositionChangedCommand => new Command((p) =>
+		{
+			_geolocator.PositionChanged -= Geolocator_PositionChanged;
+			PositionChangedAttached = false;
+		});
+		
+		private async void Geolocator_PositionChanged(Geolocator sender, PositionChangedEventArgs args)
+		{
+			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				TrackedGeoposition = args.Position;
+			});
 		}
 	}
 }

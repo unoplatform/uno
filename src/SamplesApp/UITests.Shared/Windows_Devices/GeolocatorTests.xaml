@@ -5,17 +5,30 @@
     xmlns:local="using:UITests.Shared.Windows_Devices"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:valueconverters="using:UITests.Shared.ValueConverters"
     mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-	<StackPanel>
-		<Button Command="{Binding RequestAccessCommand}">Request access</Button>
-		<TextBlock>
-			<Run FontWeight="Bold">Request: </Run>
-			<Run Text="{Binding GeolocationAccessStatus}" />
-		</TextBlock>
-		<Button Command="{Binding GetGeopositionCommand}">Get geoposition</Button>
-	  <GeopositionDisplayControl Geoposition="{x:Bind Geoposition, Mode=OneWay}" />
-	</StackPanel>
+  <UserControl.Resources>
+	<valueconverters:BoolNegationValueConverter x:Key="BoolNegation" />
+  </UserControl.Resources>
+
+  <StackPanel>
+	<Button Command="{Binding RequestAccessCommand}">Request access</Button>
+	<TextBlock>
+	  <Run FontWeight="Bold">Geolocation access status: </Run>
+	  <Run Text="{Binding GeolocationAccessStatus}" />
+	</TextBlock>
+
+	<TextBox Header="Desired accuracy in meters" Text="{Binding DesiredAccuracyInMeters, Mode=TwoWay}" />
+
+	<Button Command="{Binding GetGeopositionCommand}">Get geoposition</Button>
+	<local:GeopositionDisplayControl Geoposition="{x:Bind ViewModel.Geoposition, Mode=OneWay}" />
+
+	<Button Command="{Binding AttachPositionChangedCommand}" IsEnabled="{Binding PositionChangedAttached, Converter={StaticResource BoolNegation}}">Attach PositionChanged</Button>
+	<Button Command="{Binding DetachPositionChangedCommand}" IsEnabled="{Binding PositionChangedAttached}">Detach PositionChanged</Button>
+
+	<local:GeopositionDisplayControl Geoposition="{x:Bind ViewModel.TrackedGeoposition, Mode=OneWay}" />
+  </StackPanel>
 </UserControl>

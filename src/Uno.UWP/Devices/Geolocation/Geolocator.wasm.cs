@@ -17,12 +17,24 @@ namespace Windows.Devices.Geolocation
 		private static List<TaskCompletionSource<GeolocationAccessStatus>> _pendingAccessRequests = new List<TaskCompletionSource<GeolocationAccessStatus>>();
 		private static ConcurrentDictionary<string, TaskCompletionSource<Geoposition>> _pendingGeopositionRequests = new ConcurrentDictionary<string, TaskCompletionSource<Geoposition>>();
 
+		private static ConcurrentDictionary<string, Geolocator> _positionChangedSubscriptions = new ConcurrentDictionary<string, Geolocator>();
+
 		public Geolocator()
 		{
 
 		}
 
 		//public event TypedEventHandler<Geolocator, StatusChangedEventArgs> StatusChanged;
+
+		partial void StartPositionChanged()
+		{
+
+		}
+
+		partial void StopPositionChanged()
+		{
+
+		}
 
 		public static async Task<GeolocationAccessStatus> RequestAccessAsync()
 		{
