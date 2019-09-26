@@ -53,8 +53,6 @@
 				<TextBlock Text="This StackPanel has IsTapEnabled='False', let's inverse it below:"
 						   FontSize="16"
 						   TextWrapping="Wrap" />
-				<TextBlock Text="{Binding IsTapEnabled, ElementName=StackContainer, Converter={ex:InverseBool}}"
-						   FontSize="16" />
 			</StackPanel>
 
 			<TextBlock Text="Here's a custom Markup Extension using a StaticResource:"
