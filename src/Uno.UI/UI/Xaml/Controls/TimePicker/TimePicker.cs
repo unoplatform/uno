@@ -1,4 +1,4 @@
-﻿#if !NET461 && !__WASM__
+﻿#if !__WASM__
 using System;
 using System.Collections.Generic;
 using System.Globalization;

@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class TimePicker : global::Windows.UI.Xaml.Controls.Control
 	{
-		#if false || false || NET461 || __WASM__ || false
+		#if false || false || false || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan Time
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || false
+		#if false || false || false || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public  int MinuteIncrement
 		{
@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 		#endif
-		#if false || false || NET461 || __WASM__ || false
+		#if false || false || false || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MinuteIncrementProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -117,7 +117,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
-		#if false || false || NET461 || __WASM__ || false
+		#if false || false || false || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TimeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
