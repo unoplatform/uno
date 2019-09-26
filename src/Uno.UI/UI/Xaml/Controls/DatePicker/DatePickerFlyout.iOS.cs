@@ -27,9 +27,7 @@ namespace Windows.UI.Xaml.Controls
 			_popup.PopupPanel = new PickerFlyoutPopupPanel(this)
 			{
 				Visibility = Visibility.Collapsed,
-				Background = SolidColorBrushHelper.Transparent,
-				AutoresizingMask = UIViewAutoresizing.All,
-				Frame = new CGRect(CGPoint.Empty, ViewHelper.GetScreenSize())
+				Background = SolidColorBrushHelper.Transparent
 			};
 		}
 
