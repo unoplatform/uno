@@ -308,7 +308,7 @@
 			</Properties>
 		</IgnoreSet>
 
-        <IgnoreSet baseVersion="2.0.234">
+        <IgnoreSet baseVersion="2.0.236">
             <Types>
                 <Member fullName="Windows.UI.Xaml.Controls.UnoUIWebView"
                         reason="UIWebView has been deprecrated"/>
