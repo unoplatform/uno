@@ -41,6 +41,15 @@ namespace Windows.UI.Xaml
 
 	partial class UIElement
 	{
+		static UIElement()
+		{
+			var uiElement = typeof(UIElement);
+			VisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
+#if __WASM__
+			HitTestVisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
+#endif
+		}
+
 		#region ManipulationMode (DP)
 		public static DependencyProperty ManipulationModeProperty { get; } = DependencyProperty.Register(
 			"ManipulationMode",
@@ -89,21 +98,34 @@ namespace Windows.UI.Xaml
 			// MotionEventSplittingEnabled = true;
 
 			_gestures = new Lazy<GestureRecognizer>(CreateGestureRecognizer);
-
+			
 			InitializePointersPartial();
 			if (this is FrameworkElement fwElt)
 			{
-				fwElt.Unloaded += OnPointersUnloaded;
+				fwElt.Unloaded += ClearPointersStateOnUnload;
 			}
 		}
 
 		partial void InitializePointersPartial();
 
-		private static readonly RoutedEventHandler OnPointersUnloaded = (object sender, RoutedEventArgs args) =>
+		private static readonly PropertyChangedCallback ClearPointersStateIfNeeded = (DependencyObject sender, DependencyPropertyChangedEventArgs dp) =>
+		{
+			if (sender is UIElement elt
+				&& (elt.Visibility != Visibility.Visible || !elt.IsHitTestVisible))
+			{
+				elt.ReleasePointerCaptures();
+				elt.SetPressed(null, false, muteEvent: true);
+				elt.SetOver(null, false, muteEvent: true);
+			}
+		};
+
+		private static readonly RoutedEventHandler ClearPointersStateOnUnload = (object sender, RoutedEventArgs args) =>
 		{
 			if (sender is UIElement elt)
 			{
 				elt.ReleasePointerCaptures();
+				elt.SetPressed(null, false, muteEvent: true);
+				elt.SetOver(null, false, muteEvent: true);
 			}
 		};
 
