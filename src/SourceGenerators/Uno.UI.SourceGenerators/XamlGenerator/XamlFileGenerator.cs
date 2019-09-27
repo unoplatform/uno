@@ -1991,8 +1991,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var extendedProperties = GetExtendedProperties(objectDefinition);
 			bool hasChildrenWithPhase = HasChildrenWithPhase(objectDefinition);
+			var isFrameworkElement = IsFrameworkElement(objectDefinition.Type);
 
-			if (extendedProperties.Any() || hasChildrenWithPhase)
+			if (extendedProperties.Any() || hasChildrenWithPhase || isFrameworkElement)
 			{
 				string closureName;
 
@@ -2332,6 +2333,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 
 						BuildUiAutomationId(writer, closureName, uiAutomationId, objectDefinition);
+					}
+
+					if (isFrameworkElement)
+					{
+						// This should always be the last thing called when an element is parsed.
+						writer.AppendLineInvariant("{0}.CreationComplete();", closureName);
 					}
 				}
 			}
@@ -3652,6 +3659,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						using (writer.BlockInvariant("new {0}{1}", GetGlobalizedTypeName(fullTypeName), GenerateConstructorParameters(xamlObjectDefinition.Type)))
 						{
+							TrySetParsing(writer, xamlObjectDefinition);
 							RegisterAndBuildResources(writer, xamlObjectDefinition, isInInitializer: true);
 							BuildLiteralProperties(writer, xamlObjectDefinition);
 							BuildProperties(writer, xamlObjectDefinition);
@@ -3661,6 +3669,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						BuildExtendedProperties(writer, xamlObjectDefinition);
 					}
 				}
+			}
+		}
+
+		/// <summary>
+		/// Set the 'IsParsing' flag. This should be the first property set when an element is parsed.
+		/// </summary>
+		private void TrySetParsing(IIndentedStringBuilder writer, XamlObjectDefinition objectDefinition)
+		{
+			if (IsFrameworkElement(objectDefinition.Type))
+			{
+				writer.AppendLineInvariant("IsParsing = true,");
 			}
 		}
 

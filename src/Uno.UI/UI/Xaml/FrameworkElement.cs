@@ -13,6 +13,7 @@ using Uno.Extensions;
 using Uno.Logging;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation;
+using System.ComponentModel;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
@@ -106,6 +107,13 @@ namespace Windows.UI.Xaml
 		new
 #endif
 		DependencyObject Parent => ((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
+
+		/// <summary>
+		/// True if the element is in the process of being parsed from Xaml.
+		/// </summary>
+		/// <remarks>This property shouldn't be set from user code. It's public to allow being set from generated code.</remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public bool IsParsing { get; set; }
 
 		/// <summary>
 		/// Provides the behavior for the "Measure" pass of the layout cycle. Classes can override this method to define their own "Measure" pass behavior.
@@ -236,6 +244,18 @@ namespace Windows.UI.Xaml
 			ApplyDefaultStyle();
 		}
 
+		/// <summary>
+		/// Called when the element has completed being parsed from Xaml.
+		/// </summary>
+		/// <remarks>This method shouldn't be called from user code. It's public to allow being called from generated code.</remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public void CreationComplete()
+		{
+			ApplyStyle();
+			ApplyDefaultStyle();
+			IsParsing = false;
+		}
+
 		#region Style DependencyProperty
 
 		public Style Style
@@ -259,8 +279,10 @@ namespace Windows.UI.Xaml
 
 		private void OnStyleChanged(Style oldStyle, Style newStyle)
 		{
-			//TODO: delay if we're currently initializing from XAML
-			ApplyStyle();
+			if (!IsParsing) // Style will be applied once element has completed parsing
+			{
+				ApplyStyle();
+			}
 		}
 
 		/// <summary>
