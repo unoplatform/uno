@@ -38,6 +38,21 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
 	</ItemGroup>
+	
+	<ItemGroup>
+	  <None Remove="Generated\3.0.0.0\Windows.Data.Pdf\PdfDocument.Android.cs" />
+	  <None Remove="Generated\3.0.0.0\Windows.Data.Pdf\PdfPage.Android.cs" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Generated\3.0.0.0\Windows.Data.Pdf\PdfDocument.Android.cs" />
+	  <UpToDateCheckInput Remove="Generated\3.0.0.0\Windows.Data.Pdf\PdfPage.Android.cs" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <Compile Include="Generated\3.0.0.0\Windows.Data.Pdf\PdfDocument.Android.cs" />
+	  <Compile Include="Generated\3.0.0.0\Windows.Data.Pdf\PdfPage.Android.cs" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
