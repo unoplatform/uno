@@ -33,6 +33,14 @@ namespace Uno.UI.Tests.App.Xaml
 		public ResourceTestControl InlineTemplateControl => inlineTemplateControl;
 		public ResourceTestControl TemplateFromResourceControl => templateFromResourceControl;
 		public RadioButton TestRadioButton => testRadioButton;
+		public RadioButton TestRadioButtonExplicit => testRadioButtonExplicit;
+		public StylesTestControl StylesTestControl => stylesTestControl;
+		public StylesTestControl StylesTestControlExplicit => stylesTestControlExplicit;
+		public StylesTestButton StylesTestButton => stylesTestButton;
+		public StylesTestButton StylesTestButtonExplicit => stylesTestButtonExplicit;
+		public StylesTestButtonCustomKey StylesTestButtonCustomKey => stylesTestButtonCustomKey;
+		public StylesTestButtonCustomKey StylesTestButtonCustomKeyExplicit => stylesTestButtonCustomKeyExplicit;
+		public StylesTestRadioButton StylesTestRadioButton => stylesTestRadioButton;
 
 		public Test_Control()
         {

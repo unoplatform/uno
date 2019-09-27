@@ -128,6 +128,18 @@
 									   DObjDP="{StaticResource MutatedDO}"
 									   PlainDO="{StaticResource MutatedDO}" />
 			<RadioButton x:Name="testRadioButton" />
+			<RadioButton x:Name="testRadioButtonExplicit"
+						 Style="{StaticResource ExplicitRadioButtonStyle1}" />
 		</Grid>
+		<views:StylesTestControl x:Name="stylesTestControl" />
+		<views:StylesTestControl x:Name="stylesTestControlExplicit"
+								 Style="{StaticResource StylesTestControlExplicitStyle1}" />
+		<views:StylesTestButton x:Name="stylesTestButton" />
+		<views:StylesTestButton x:Name="stylesTestButtonExplicit"
+								Style="{StaticResource StylesTestButtonExplicitStyle1}" />
+		<views:StylesTestButtonCustomKey x:Name="stylesTestButtonCustomKey" />
+		<views:StylesTestButtonCustomKey x:Name="stylesTestButtonCustomKeyExplicit"
+										 Style="{StaticResource StylesTestButtonCustomKeyExplicitStyle1}" />
+		<views:StylesTestRadioButton x:Name="stylesTestRadioButton" />
 	</Grid>
 </UserControl>

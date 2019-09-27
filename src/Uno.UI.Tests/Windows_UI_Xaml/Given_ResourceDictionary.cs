@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
+using Uno.UI.Tests.Helpers;
 using Windows.UI;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
@@ -339,8 +341,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
 
-			AssertContainsColorBrushResource(app.Resources, "SuperiorColorBrush", Colors.MediumSpringGreen);
-			AssertContainsColorBrushResource(app.Resources, "StrangeColorBrush", Colors.Gainsboro);
+			AssertEx.AssertContainsColorBrushResource(app.Resources, "SuperiorColorBrush", Colors.MediumSpringGreen);
+			AssertEx.AssertContainsColorBrushResource(app.Resources, "StrangeColorBrush", Colors.Gainsboro);
 		}
 
 		[TestMethod]
@@ -350,7 +352,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var control = new Test_Control();
 
-			AssertContainsColorBrushResource(control.TestGrid.Resources, "AbominableColorBrush", Colors.Teal);
+			AssertEx.AssertContainsColorBrushResource(control.TestGrid.Resources, "AbominableColorBrush", Colors.Teal);
 		}
 
 		[TestMethod]
@@ -368,8 +370,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
 
-			AssertContainsColorBrushResource(app.Resources, "JustHangingOutInMergedDictColorBrush", Colors.Maroon);
-			AssertContainsColorBrushResource(app.Resources, "HangingOutInRecursiveMergedColorBrush", Colors.DarkMagenta);
+			AssertEx.AssertContainsColorBrushResource(app.Resources, "JustHangingOutInMergedDictColorBrush", Colors.Maroon);
+			AssertEx.AssertContainsColorBrushResource(app.Resources, "HangingOutInRecursiveMergedColorBrush", Colors.DarkMagenta);
 		}
 
 		[TestMethod]
@@ -377,8 +379,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
 
-			AssertContainsColorBrushResource(app.Resources, "PlayfulColorBrush", Colors.RosyBrown);
-			AssertContainsColorBrushResource(app.Resources, "LucrativeColorBrush", Colors.Azure);
+			AssertEx.AssertContainsColorBrushResource(app.Resources, "PlayfulColorBrush", Colors.RosyBrown);
+			AssertEx.AssertContainsColorBrushResource(app.Resources, "LucrativeColorBrush", Colors.Azure);
 		}
 
 		[TestMethod]
@@ -388,7 +390,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var dark = app.Resources.MergedDictionaries.First().ThemeDictionaries["Dark"] as ResourceDictionary;
 
-			AssertContainsColorBrushResource(dark, "MoodyColorBrush", Colors.DarkKhaki);
+			AssertEx.AssertContainsColorBrushResource(dark, "MoodyColorBrush", Colors.DarkKhaki);
 		}
 
 		[TestMethod]
@@ -413,7 +415,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
 
-			AssertContainsColorBrushResource(app.Resources, "AliceTheColorBrush", Colors.AliceBlue);
+			AssertEx.AssertContainsColorBrushResource(app.Resources, "AliceTheColorBrush", Colors.AliceBlue);
 		}
 
 		[TestMethod]
@@ -421,7 +423,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
 
-			AssertContainsColorBrushResource(app.Resources, "CadetColorBrush", Colors.CadetBlue);
+			AssertEx.AssertContainsColorBrushResource(app.Resources, "CadetColorBrush", Colors.CadetBlue);
 		}
 
 		[TestMethod]
@@ -431,17 +433,45 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(ApplicationTheme.Light, app.RequestedTheme);
 
-			AssertContainsColorBrushResource(app.Resources, "ReferenceInSameDictionaryColorBrush", Colors.Sienna);
-			AssertContainsColorBrushResource(app.Resources, "LexicallyBackwardColorBrush", Colors.Coral);
+			AssertEx.AssertContainsColorBrushResource(app.Resources, "ReferenceInSameDictionaryColorBrush", Colors.Sienna);
+			AssertEx.AssertContainsColorBrushResource(app.Resources, "LexicallyBackwardColorBrush", Colors.Coral);
 		}
 
-		private void AssertContainsColorBrushResource(ResourceDictionary resources, string key, Color expected)
+		[TestMethod]
+		public void When_Enumerated()
 		{
-			Assert.IsNotNull(resources);
+			var rd = new ResourceDictionary();
+			rd["foot"] = "Boot";
+			var inner = new ResourceDictionary();
+			inner["hand"] = "Glove";
+			rd.MergedDictionaries.Add(inner);
+			var def = new ResourceDictionary();
+			def["eyes"] = "Sunglasses";
+			rd.ThemeDictionaries["Default"] = def;
 
-			var brush = resources[key] as SolidColorBrush;
-			Assert.IsNotNull(brush);
-			Assert.AreEqual(expected, brush.Color);
+			var keys = new List<object>();
+			foreach (var kvp in rd)
+			{
+				keys.Add(kvp.Key);
+			}
+
+			Assert.IsTrue(keys.Contains("foot"));
+
+			Assert.IsFalse(keys.Contains("hand"));
+			Assert.IsTrue(rd.ContainsKey("hand"));
+
+			Assert.IsFalse(keys.Contains("eyes"));
+			Assert.IsTrue(rd.ContainsKey("eyes"));
+		}
+
+		[TestMethod]
+		public void When_Implicit_Style_From_Code()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var control = new Test_Control();
+			Assert.IsTrue(control.Resources.ContainsKey(typeof(RadioButton)));
+			Assert.IsNotNull(control.Resources[typeof(RadioButton)] as Style);
 		}
 	}
 }

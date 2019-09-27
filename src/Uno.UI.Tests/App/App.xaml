@@ -6,6 +6,7 @@
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="Xaml/Test_Dictionary.xaml" />
+				<ResourceDictionary Source="Xaml/Test_Styles.xaml" />
 				<ResourceDictionary>
 					<ResourceDictionary.MergedDictionaries>
 						<ResourceDictionary>
@@ -17,6 +18,7 @@
 									 Color="Maroon" />
 					<SolidColorBrush x:Key="HangingOutTooColorBrush"
 									 Color="Magenta" />
+					<SolidColorBrush x:Name="CadetColorBrush" Color="CadetBlue" />
 				</ResourceDictionary>
 			</ResourceDictionary.MergedDictionaries>
 			<ResourceDictionary.ThemeDictionaries>
