@@ -427,7 +427,7 @@ Yes, make sure to use the following project definition:
 ## Does Uno offer a TreeView control?
 
 It's in the UWP API, but [not implemented yet](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/tree-view)
-We have an open Github (issue.)[https://github.com/nventive/Uno/issues/3]
+We have an open Github [issue.](https://github.com/nventive/Uno/issues/3)
 
 ## Is there a table of all UWP controls and their features compared to what's offered under Uno?
 
@@ -435,7 +435,7 @@ https://github.com/nventive/Uno/blob/master/doc/articles/supported-features.md
 
 ##  Is there an Uno template that is based on portable class library?
 
-No, but use the (Cross-Platform library template)[https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin] instead to achieve a similar goal.
+No, but use the [Cross-Platform library template](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) instead to achieve a similar goal.
 
 ## Is there a Visual Studio template for Uno that incorporates the Prism library?
 
@@ -486,7 +486,7 @@ Please see this [Developer Community thread.](https://developercommunity.visuals
 
 ## Is there a database that works on all platforms?
 
-Yes, and you can use this (WebAssembly SQLite provider)[https://github.com/nventive/Uno.SQLitePCLRaw.Wasm]
+Yes, and you can use this [WebAssembly SQLite provider](https://github.com/nventive/Uno.SQLitePCLRaw.Wasm)
 
 ## Are Popups/RichEditbox implemented in Uno?
 
@@ -506,4 +506,4 @@ You can use ChangeView instead
 
 ## I am having issues running a Wasm project head
 
-Follow the instructions on how to run the WASM head (here)[https://github.com/nventive/Uno.QuickStart#create-an-application-from-the-solution-template]
+Follow the instructions on how to run the WASM head [here](https://github.com/nventive/Uno.QuickStart#create-an-application-from-the-solution-template)
