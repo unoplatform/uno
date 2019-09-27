@@ -128,7 +128,7 @@
 		</IgnoreSet>
 
 		<IgnoreSet baseVersion="1.44.1">
-			<Types>
+		  	<Types>
 				<Member fullName="Windows.UI.Xaml.UIElementExtensions"
 						reason="Moved to Uno.Extensions"/>
 			</Types>
@@ -308,5 +308,17 @@
 			</Properties>
 		</IgnoreSet>
 
-	</IgnoreSets>
+        <IgnoreSet baseVersion="2.0.234">
+            <Types>
+                <Member fullName="Windows.UI.Xaml.Controls.UnoUIWebView"
+                        reason="UIWebView has been deprecrated"/>
+            </Types>
+
+            <Methods>
+                <Member fullName="System.Boolean Windows.UI.Xaml.Controls.WebView.MustUseWebKitWebView()"
+                        reason="Removed because no longer required and UIWebView has been formally deprecrated" />
+            </Methods>
+        </IgnoreSet>
+  
+        </IgnoreSets>
 </DiffIgnore>
