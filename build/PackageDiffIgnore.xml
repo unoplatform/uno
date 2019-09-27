@@ -212,6 +212,11 @@
 		</IgnoreSet>
 
 		<IgnoreSet baseVersion="1.45.0">
+            <Types>
+                <Member fullName="Windows.UI.Xaml.Controls.UnoUIWebView"
+                        reason="UIWebView has been deprecrated"/>
+            </Types>
+          
 			<Methods>
 				<Member fullName="System.Void Windows.Phone.Devices.Notification.VibrationDevice..ctor()"
 						reason="Parameter-less ctor does not exist in UWP"/>
@@ -292,6 +297,8 @@
 						reason="Removed API not available in WinUI" />
 				<Member fullName="System.Void Windows.UI.Xaml.Media.Imaging.BitmapSource.set_PixelWidth(System.Int32 value)"
 						reason="Removed API not available in WinUI" />
+                <Member fullName="System.Boolean Windows.UI.Xaml.Controls.WebView.MustUseWebKitWebView()"
+                        reason="Removed because no longer required and UIWebView has been formally deprecrated" />
 			</Methods>
 
 			<Properties>
@@ -308,17 +315,5 @@
 			</Properties>
 		</IgnoreSet>
 
-        <IgnoreSet baseVersion="2.0.236">
-            <Types>
-                <Member fullName="Windows.UI.Xaml.Controls.UnoUIWebView"
-                        reason="UIWebView has been deprecrated"/>
-            </Types>
-
-            <Methods>
-                <Member fullName="System.Boolean Windows.UI.Xaml.Controls.WebView.MustUseWebKitWebView()"
-                        reason="Removed because no longer required and UIWebView has been formally deprecrated" />
-            </Methods>
-        </IgnoreSet>
-  
         </IgnoreSets>
 </DiffIgnore>
