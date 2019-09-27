@@ -25,6 +25,7 @@ namespace Windows.UI.Xaml.Controls
 
 			// When a Radio button is checked, clicking it again won't uncheck it.
 			CanRevertState = false;
+			DefaultStyleKey = typeof(RadioButton);
 		}
 
 		protected override void OnIsCheckedChanged(bool? oldValue, bool? newValue)
