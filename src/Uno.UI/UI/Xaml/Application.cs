@@ -1,5 +1,6 @@
-﻿using System;
+using System;
 using Uno;
+using Uno.UI;
 using Uno.Diagnostics.Eventing;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -12,6 +13,25 @@ using Windows.ApplicationModel;
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 #else
 using LaunchActivatedEventArgs = Windows.ApplicationModel.Activation.LaunchActivatedEventArgs;
+#endif
+
+#if XAMARIN_ANDROID
+using View = Android.Views.View;	
+using ViewGroup = Android.Views.ViewGroup;	
+using Font = Android.Graphics.Typeface;	
+using Android.Graphics;	
+using DependencyObject = System.Object;	
+#elif XAMARIN_IOS
+using View = UIKit.UIView;	
+using ViewGroup = UIKit.UIView;	
+using UIKit;	
+#elif __MACOS__
+using View = AppKit.NSView;	
+using ViewGroup = AppKit.NSView;	
+using AppKit;	
+#else
+using View = Windows.UI.Xaml.UIElement;
+using ViewGroup = Windows.UI.Xaml.UIElement;
 #endif
 
 namespace Windows.UI.Xaml
@@ -127,6 +147,49 @@ namespace Windows.UI.Xaml
 		internal void RaiseWindowCreated(Window window)
 		{
 			OnWindowCreated(new WindowCreatedEventArgs(window));
+		}
+
+		internal void SetRequestedTheme(ApplicationTheme requestedTheme)
+		{
+			if (requestedTheme != RequestedTheme)
+			{
+				RequestedTheme = requestedTheme;
+
+				OnRequestedThemeChanged();
+			}
+		}
+
+		private void OnRequestedThemeChanged()
+		{
+			if (Windows.UI.Xaml.Window.Current.Content is FrameworkElement root)
+			{
+				PropagateThemeChanged(root);
+			}
+
+			void PropagateThemeChanged(object instance)
+			{
+				// Update ThemeResource references that have changed
+				if (instance is FrameworkElement fe)
+				{
+					fe.UpdateThemeBindings();
+				}
+
+				//Try Panel.Children before ViewGroup.GetChildren - this results in fewer allocations
+				if (instance is Controls.Panel p)
+				{
+					foreach (object o in p.Children)
+					{
+						PropagateThemeChanged(o);
+					}
+				}
+				else if (instance is ViewGroup g)
+				{
+					foreach (object o in g.GetChildren())
+					{
+						PropagateThemeChanged(o);
+					}
+				}
+			}
 		}
 	}
 }
