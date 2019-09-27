@@ -55,7 +55,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			Assert.AreEqual("Item 2", second.GetDependencyPropertyValue<string>("Text"));
 
 			// Close the combo box to not pollute other tests ...
-			_app.FindWithin("_tb1", presenter).Tap();
+			_app.TapCoordinates(10, 10);
 
 			Configuration.AttemptToFindTargetBeforeScrolling = scrollingInitial;
 		}
