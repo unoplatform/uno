@@ -30,11 +30,8 @@ namespace Windows.UI.Xaml
 		{
 			InitItemsControl();
 			InitFlipView();
-			InitPage();
 			InitWebView();
 			InitDatePicker();
-			InitFlipViewItem();
-			InitToggleSwitch();
 			InitFlyoutPresenter();
 
 #if !IS_UNO
@@ -75,69 +72,6 @@ namespace Windows.UI.Xaml
 			Style.RegisterDefaultStyleForType(typeof(StructuredContentPresenter), style);
 		}
 #endif
-		
-		private static void InitFlipViewItem()
-		{
-			var style = new Style(typeof(FlipViewItem))
-			{
-				Setters = {
-					new Setter<FlipViewItem>("Template", t =>
-						t.Template = Funcs.Create(() =>
-							new ContentPresenter { }
-								.Binding("Content", new TemplateBinding("Content"))
-								.Binding("ContentTemplate", new TemplateBinding("ContentTemplate"))
-								.Binding("ContentTemplateSelector", new TemplateBinding("ContentTemplateSelector"))
-						)
-					),
-				}
-			};
-
-			Style.RegisterDefaultStyleForType(typeof(FlipViewItem), style);
-		}
-
-		private static View CommandTemplate()
-		{
-			var button = new Button
-			{
-				HorizontalAlignment = HorizontalAlignment.Stretch,
-				ContentTemplate = new DataTemplate(() => new TextBlock
-				{
-					HorizontalAlignment = HorizontalAlignment.Center,
-					VerticalAlignment = Xaml.VerticalAlignment.Center,
-					MaxLines = 0,
-					Text = "Default",
-					Foreground = SolidColorBrushHelper.FromARGB(255, 13, 121, 252),
-#if XAMARIN_IOS
-						TextAlignment = UITextAlignment.Center,
-						LineBreakMode = MonoTouch.UIKit.UILineBreakMode.TailTruncation,
-						//Font = UIFont.FromName("HelveticaNeue-Bold", (float)(25 / _scaleRatio)
-#elif XAMARIN_ANDROID
-					FontSize = 25,
-#endif
-				}
-					.Binding("Text", new Data.Binding("")))
-			}
-			.Binding("Content", "Text")
-			.Binding("Command", "Command");
-
-			// The button separator (hidden by default)
-			var right = new ContentControl
-			{
-				Width = 1,
-				Background = SolidColorBrushHelper.FromARGB(255, 104, 104, 104),
-				VerticalAlignment = VerticalAlignment.Stretch,
-				HorizontalAlignment = HorizontalAlignment.Right,
-				Visibility = Visibility.Collapsed
-			};
-
-			var border = new Grid
-			{
-				button,
-				right
-			};
-
-			return border;
-		}
 
 #if !IS_UNO
 		private static void InitExpander()
@@ -187,7 +121,7 @@ namespace Windows.UI.Xaml
 				}
 			};
 
-			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.DatePicker), style);
+			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.DatePicker), () => style);
 		}
 
 
@@ -204,16 +138,7 @@ namespace Windows.UI.Xaml
 				}
 			};
 
-			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.WebView), style);
-		}
-
-		private static void InitPage()
-		{
-			var style = new Style(typeof(Windows.UI.Xaml.Controls.NativePage))
-			{
-			};
-
-			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.NativePage), style);
+			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.WebView), () => style);
 		}
 
 		private static void InitItemsControl()
@@ -229,9 +154,9 @@ namespace Windows.UI.Xaml
 				}
 			};
 
-			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.ItemsControl), style);
+			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.ItemsControl), () => style);
 		}
-		
+
 		private static void InitFlipView()
 		{
 			var style = new Style(typeof(Windows.UI.Xaml.Controls.FlipView))
@@ -247,59 +172,11 @@ namespace Windows.UI.Xaml
 						t.Template = new ControlTemplate(() =>
 							new ItemsPresenter()
 						)
-					)					
-				}
-			};
-
-			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.FlipView), style);
-		}
-		
-		private static void InitToggleSwitch()
-		{
-			var style = new Style(typeof(Windows.UI.Xaml.Controls.ToggleSwitch))
-			{
-				Setters = {
-					new Setter<ToggleSwitch>("Template", t =>
-						t.Template = Funcs.Create(() =>
-							{
-								var nativeToggleButton =
-									new BindableSwitchCompat()
-									.Binding("Checked", new TemplateBinding("IsOn") { Mode = BindingMode.TwoWay })
-									.Binding("Enabled", new Data.TemplateBinding("IsEnabled"))
-									.Binding("Text", new Data.TemplateBinding("Header"))
-									;
-							
-								return nativeToggleButton;
-							}
-						)
 					)
 				}
 			};
 
-			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.ToggleSwitch), style);
-		}
-
-		private static void InitContentControl()
-		{
-			var style = new Style(typeof(ContentControl))
-			{
-				Setters = {
-					new Setter<ContentControl>("Template", t =>
-						t.Template = Funcs.Create(() =>
-							new ContentPresenter()
-								.Binding("Content", new TemplateBinding("Content"))
-								.Binding("ContentTemplate", new TemplateBinding("ContentTemplate"))
-								.Binding("Margin", new TemplateBinding("Padding"))
-								.Binding("HorizontalAlignment", new TemplateBinding("HorizontalContentAlignment"))
-								.Binding("VerticalAlignment", new TemplateBinding("VerticalContentAlignment"))
-						)
-					),
-					new Setter<ContentControl>("HorizontalContentAlignment", t => t.HorizontalContentAlignment = HorizontalAlignment.Left),
-					new Setter<ContentControl>("VerticalContentAlignment", t => t.VerticalContentAlignment = VerticalAlignment.Top)
-				}
-			};
-
-			Style.RegisterDefaultStyleForType(typeof(ContentControl), style);
+			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.FlipView), () => style);
 		}
 
 		private static void InitFlyoutPresenter()
@@ -328,7 +205,7 @@ namespace Windows.UI.Xaml
 				}
 			};
 
-			Style.RegisterDefaultStyleForType(typeof(FlyoutPresenter), style);
+			Style.RegisterDefaultStyleForType(typeof(FlyoutPresenter), () => style);
 		}
 	}
 }
