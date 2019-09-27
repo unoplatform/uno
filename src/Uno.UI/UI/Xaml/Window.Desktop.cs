@@ -41,10 +41,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private UIElement InternalGetContent()
-		{
-			throw new NotImplementedException();
-		}
+		private UIElement InternalGetContent() => _content;
 
 		private static Window InternalGetCurrentWindow()
 		{

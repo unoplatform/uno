@@ -538,6 +538,15 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
+		/// <summary>
+		/// Update ThemeResource references. 
+		/// </summary>
+		internal void UpdateThemeBindings()
+		{
+			//TODO: should update bindings on non-UI DO children
+			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings();
+		}
+
 		#region AutomationPeer
 #if !__IOS__ && !__ANDROID__ && !__MACOS__ // This code is generated in FrameworkElementMixins
 		private AutomationPeer _automationPeer;
