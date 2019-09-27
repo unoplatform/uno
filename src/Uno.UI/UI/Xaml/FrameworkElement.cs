@@ -324,14 +324,9 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			if (newStyle != null && newStyle.Precedence != precedence)
-			{
-				// TODO: Debug message? Warning? Is there any way this can happen expectedly?
-			}
+			oldStyle?.ClearInvalidProperties(this, newStyle, precedence);
 
-			oldStyle?.ClearInvalidProperties(this, newStyle);
-
-			newStyle?.ApplyTo(this);
+			newStyle?.ApplyTo(this, precedence);
 		}
 
 		/// <summary>

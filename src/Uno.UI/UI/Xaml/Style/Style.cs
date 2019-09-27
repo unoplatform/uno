@@ -18,14 +18,6 @@ namespace Windows.UI.Xaml
 		private readonly static Dictionary<Type, StyleProviderHandler> _nativeLookup = new Dictionary<Type, StyleProviderHandler>(Uno.Core.Comparison.FastTypeComparer.Default);
 		private readonly static Dictionary<Type, Style> _nativeDefaultStyleCache = new Dictionary<Type, Style>(Uno.Core.Comparison.FastTypeComparer.Default);
 
-		/// <summary>
-		/// The precedence associated with this style.
-		/// </summary>
-		/// <remarks>Although <see cref="DependencyPropertyValuePrecedences.ImplicitStyle"/> exists, the only possible style precedences are
-		/// ExplicitStyle and DefaultStyle. In UWP, implicit and explicit Styles are mutually exclusive, and only one is active at a time. Compare
-		/// the default (or 'built in') style which is additive with the implicit/explicit style.</remarks>
-		internal DependencyPropertyValuePrecedences Precedence { get; } = DependencyPropertyValuePrecedences.ExplicitStyle;
-
 		public Style() { }
 
 		public Style(Type targetType)
@@ -38,18 +30,13 @@ namespace Windows.UI.Xaml
 			TargetType = targetType;
 		}
 
-		public Style(Type targetType, Style basedOn)
-			: this(targetType, basedOn, defaultStyle: false)
-		{
-		}
-
 		/// <summary>
 		/// 
 		/// </summary>
 		/// <param name="targetType"></param>
 		/// <param name="basedOn"></param>
 		/// <param name="defaultStyle"></param>
-		internal Style(Type targetType, Style basedOn, bool defaultStyle)
+		internal Style(Type targetType, Style basedOn)
 		{
 			if (targetType == null)
 			{
@@ -63,8 +50,6 @@ namespace Windows.UI.Xaml
 
 			TargetType = targetType;
 			BasedOn = basedOn;
-
-			Precedence = defaultStyle ? DependencyPropertyValuePrecedences.DefaultStyle : DependencyPropertyValuePrecedences.ExplicitStyle;
 		}
 
 		public Type TargetType { get; set; }
@@ -73,7 +58,7 @@ namespace Windows.UI.Xaml
 
 		public SetterBaseCollection Setters { get; } = new SetterBaseCollection();
 
-		public void ApplyTo(DependencyObject o)
+		internal void ApplyTo(DependencyObject o, DependencyPropertyValuePrecedences precedence)
 		{
 			if (o == null)
 			{
@@ -81,7 +66,7 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			using (DependencyObjectExtensions.OverrideLocalPrecedence(o, Precedence))
+			using (DependencyObjectExtensions.OverrideLocalPrecedence(o, precedence))
 			{
 				var flattenedSetters = CreateSetterMap();
 
@@ -96,7 +81,7 @@ namespace Windows.UI.Xaml
 		/// Clear properties from the current Style that are not set by the incoming Style. (The remaining properties will be overwritten
 		/// when the incoming Style is applied.)
 		/// </summary>
-		internal void ClearInvalidProperties(DependencyObject dependencyObject, Style incomingStyle)
+		internal void ClearInvalidProperties(DependencyObject dependencyObject, Style incomingStyle, DependencyPropertyValuePrecedences precedence)
 		{
 			var oldSetters = CreateSetterMap();
 			var newSetters = incomingStyle?.CreateSetterMap();
@@ -106,7 +91,7 @@ namespace Windows.UI.Xaml
 				{
 					if (newSetters == null || !newSetters.ContainsKey(dp))
 					{
-						DependencyObjectExtensions.ClearValue(dependencyObject, dp, Precedence);
+						DependencyObjectExtensions.ClearValue(dependencyObject, dp, precedence);
 					}
 				}
 			}
@@ -193,6 +178,5 @@ namespace Windows.UI.Xaml
 
 			return style;
 		}
-
 	}
 }
