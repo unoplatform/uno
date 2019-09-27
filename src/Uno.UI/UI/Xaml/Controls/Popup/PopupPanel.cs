@@ -31,6 +31,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			Popup = popup ?? throw new ArgumentNullException(nameof(popup));
 			Visibility = Visibility.Collapsed;
+
+			// Required for the dismiss handling
+			// This should however be customized depending of the Popup.DismissMode
+			Background = new SolidColorBrush(Colors.Transparent);
 		}
 
 		protected Size _lastMeasuredSize;
