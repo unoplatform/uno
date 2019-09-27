@@ -44,7 +44,7 @@
 						   FontSize="16" />
 			</StackPanel>
 
-			<TextBlock Text="Here's a custom Markup Extension that is also used as a Converter"
+			<!--<TextBlock Text="Here's a custom Markup Extension that is also used as a Converter"
 					   Foreground="Green" />
 
 			<StackPanel x:Name="StackContainer"
@@ -55,7 +55,7 @@
 						   TextWrapping="Wrap" />
 				<TextBlock Text="{Binding IsTapEnabled, ElementName=StackContainer, Converter={ex:InverseBool}}"
 						   FontSize="16" />
-			</StackPanel>
+			</StackPanel>-->
 
 			<TextBlock Text="Here's a custom Markup Extension using a StaticResource:"
 					   Foreground="Green" />
