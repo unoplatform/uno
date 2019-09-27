@@ -20,20 +20,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ContentControl
 	{
-
-		public override void MovedToSuperview()
-		{
-			base.MovedToSuperview();
-
-			if (FeatureConfiguration.FrameworkElement.UseLegacyApplyStylePhase)
-			{
-				if (Superview != null)
-				{
-					SetUpdateTemplate();
-				}
-			}
-		}
-
 		partial void RegisterContentTemplateRoot()
 		{
 			if (Subviews.Length != 0)

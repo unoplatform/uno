@@ -34,9 +34,6 @@ namespace Windows.UI.Xaml
 			InitItemsControl();
 			InitFlipView();
 			InitWebView();
-			InitListViewItem();
-			InitGridViewItem();
-			InitFlipViewItem();
 			InitFlyoutPresenter();
 			InitDatePicker();
 			InitDatePickerSelector();
@@ -61,19 +58,17 @@ namespace Windows.UI.Xaml
 		}
 
 		private static void InitDatePicker()
-        {
-#if !__MACOS__
+		{
 			var style = new Style(typeof(Windows.UI.Xaml.Controls.DatePicker))
-            {
-                Setters =  {
-                    new Setter<DatePicker>("Template", t =>
-                        t.Template = new ControlTemplate(()=>new UIDatePicker())                        
-                    )
-                }
-            };
+			{
+				Setters =  {
+					new Setter<DatePicker>("Template", t =>
+						t.Template = new ControlTemplate(()=>new UIDatePicker())
+					)
+				}
+			};
 
-			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.DatePicker), style);
-#endif
+			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.DatePicker), () => style);
 		}
 
 		private static void InitDatePickerSelector()
@@ -97,8 +92,7 @@ namespace Windows.UI.Xaml
 				}
 			};
 
-			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.DatePickerSelector), style);
-#endif
+			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.DatePickerSelector), () => style);
 		}
 
 #if !IS_UNO
@@ -122,89 +116,6 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-		private static void InitListViewItem()
-		{
-			var listViewItemStyle = new Style(typeof(ListViewItem))
-			{
-				Setters =  {
-					new Setter<ListViewItem>("Template", t =>
-						t.Template = Funcs.Create(() =>
-							new Grid()
-							{
-								Children = {
-									new ContentPresenter {
-									}
-									.Binding("Content", new TemplateBinding("Content"))
-									.Binding("ContentTemplate", new TemplateBinding("ContentTemplate"))
-									.Binding("ContentTemplateSelector", new TemplateBinding("ContentTemplateSelector")),
-									new Border {
-										BorderBrush = SolidColorBrushHelper.Blue,
-										BorderThickness = new Thickness(2),
-									}
-									.Binding("Visibility", new TemplateBinding("IsSelected", converter: new UnoNativeDefaultProgressBarReverseBoolConverter())),
-								}
-							}
-						)
-					),
-				}
-			};
-
-			Style.RegisterDefaultStyleForType(typeof(ListViewItem), listViewItemStyle);
-		}
-		private static void InitGridViewItem()
-		{
-			var gridViewItemStyle = new Style(typeof(GridViewItem))
-			{
-				Setters =  {
-					new Setter<GridViewItem>("Template", t =>
-						t.Template = Funcs.Create(() =>
-							new Grid()
-							{
-								Children = {
-									new ContentPresenter {
-									}
-									.Binding("Content", new TemplateBinding("Content"))
-									.Binding("ContentTemplate", new TemplateBinding("ContentTemplate"))
-									.Binding("ContentTemplateSelector", new TemplateBinding("ContentTemplateSelector")),
-									new Border {
-										BorderBrush = SolidColorBrushHelper.Blue,
-										BorderThickness = new Thickness(2),
-									}
-									.Binding("Visibility", new TemplateBinding("IsSelected", converter: new UnoNativeDefaultProgressBarReverseBoolConverter())),
-								}
-							}
-						)
-					),
-				}
-			};
-
-			Style.RegisterDefaultStyleForType(typeof(GridViewItem), gridViewItemStyle);
-		}
-		private static void InitFlipViewItem()
-		{
-			var flipViewItemStyle = new Style(typeof(FlipViewItem))
-			{
-				Setters =  {
-					new Setter<FlipViewItem>("Template", t =>
-						t.Template = Funcs.Create(() =>
-							new Grid()
-							{
-								Children = {
-									new ContentPresenter {
-									}
-									.Binding("Content", new TemplateBinding("Content"))
-									.Binding("ContentTemplate", new TemplateBinding("ContentTemplate"))
-									.Binding("ContentTemplateSelector", new TemplateBinding("ContentTemplateSelector")),
-								}
-							}
-						)
-					),
-				}
-			};
-
-			Style.RegisterDefaultStyleForType(typeof(FlipViewItem), flipViewItemStyle);
-		}
-
 		private static void InitWebView()
 		{
 			var style = new Style(typeof(Windows.UI.Xaml.Controls.WebView))
@@ -217,7 +128,7 @@ namespace Windows.UI.Xaml
 				}
 			};
 
-			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.WebView), style);
+			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.WebView), () => style);
 		}
 
 		private static void InitItemsControl()
@@ -234,7 +145,7 @@ namespace Windows.UI.Xaml
 				}
 			};
 
-			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.ItemsControl), style);
+			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.ItemsControl), () => style);
 		}
 
 		private static void InitFlipView()
@@ -258,8 +169,7 @@ namespace Windows.UI.Xaml
 				}
 			};
 
-			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.FlipView), style);
-#endif
+			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.FlipView), () => style);
 		}
 
 #if !IS_UNO
@@ -295,29 +205,6 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-		private static void InitContentControl()
-		{
-			var style = new Style(typeof(ContentControl))
-			{
-				Setters =  {
-					new Setter<ContentControl>("Template", t =>
-						t.Template = Funcs.Create(() =>
-							new ContentPresenter()
-								.Binding("Content", new TemplateBinding("Content"))
-								.Binding("ContentTemplate", new TemplateBinding("ContentTemplate"))
-								.Binding("Margin", new TemplateBinding("Padding"))
-								.Binding("HorizontalAlignment", new TemplateBinding("HorizontalContentAlignment"))
-								.Binding("VerticalAlignment", new TemplateBinding("VerticalContentAlignment"))
-						)
-					),
-					new Setter<ContentControl>("HorizontalContentAlignment", t => t.HorizontalContentAlignment = HorizontalAlignment.Left),
-					new Setter<ContentControl>("VerticalContentAlignment", t => t.VerticalContentAlignment = VerticalAlignment.Top)
-				}
-			};
-
-			Style.RegisterDefaultStyleForType(typeof(ContentControl), style);
-		}
-
 		private static void InitFlyoutPresenter()
 		{
 			var style = new Style(typeof(FlyoutPresenter))
@@ -344,7 +231,7 @@ namespace Windows.UI.Xaml
 				}
 			};
 
-			Style.RegisterDefaultStyleForType(typeof(FlyoutPresenter), style);
+			Style.RegisterDefaultStyleForType(typeof(FlyoutPresenter), () => style);
 		}
 	}
 }
