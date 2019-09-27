@@ -62,6 +62,8 @@
     href: features\windows-devices-sensors.md
   - name: Windows.Phone.Devices.Notification
     href: features\windows-phone-devices-notification-vibrationdevice.md
+  - name: Windows.UI.StartScreen
+    href: features\windows-ui-startscreen.md
   - name: CommandBar
     href: controls\commandbar.md
   - name: ListView and GridView
@@ -74,6 +76,8 @@
     href: controls\Pivot.md
   - name: ToggleSwitch
     href: controls\ToggleSwitch.md
+  - name: VisibleBoundsPadding behavior
+    href: features\VisibleBoundsPadding.md
 - name: Using Uno - implemented views
   href: implemented/toc.yml
   topicHref: implemented-views.md

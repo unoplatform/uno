@@ -41,7 +41,7 @@ namespace Windows.Devices.Sensors
 
 		private static Accelerometer TryCreateInstance()
 		{
-			var sensorManager = GetSensorManager();
+			var sensorManager = SensorHelpers.GetSensorManager();
 			var accelerometer = sensorManager?.GetDefaultSensor(Android.Hardware.SensorType.Accelerometer);
 			if (accelerometer != null)
 			{
@@ -50,13 +50,10 @@ namespace Windows.Devices.Sensors
 			return null;
 		}
 
-		private static SensorManager GetSensorManager() =>
-			Application.Context.GetSystemService(Context.SensorService) as SensorManager;
-
 		private void StartReadingChanged()
 		{
 			_readingChangedListener = new ReadingChangedListener(this);
-			GetSensorManager().RegisterListener(
+			SensorHelpers.GetSensorManager().RegisterListener(
 				_readingChangedListener,
 				_accelerometer,
 				(SensorDelay)(_reportInterval * 1000));
@@ -66,7 +63,7 @@ namespace Windows.Devices.Sensors
 		{
 			if (_readingChangedListener != null)
 			{
-				GetSensorManager().UnregisterListener(_readingChangedListener, _accelerometer);
+				SensorHelpers.GetSensorManager().UnregisterListener(_readingChangedListener, _accelerometer);
 				_readingChangedListener.Dispose();
 				_readingChangedListener = null;
 			}
@@ -75,14 +72,14 @@ namespace Windows.Devices.Sensors
 		private void StartShaken()
 		{
 			_shakeListener = new ShakeListener(this);
-			GetSensorManager().RegisterListener(_shakeListener, _accelerometer, (SensorDelay)100000);
+			SensorHelpers.GetSensorManager().RegisterListener(_shakeListener, _accelerometer, (SensorDelay)100000);
 		}
 
 		private void StopShaken()
 		{
 			if (_shakeListener != null)
 			{
-				GetSensorManager().UnregisterListener(_shakeListener, _accelerometer);
+				SensorHelpers.GetSensorManager().UnregisterListener(_shakeListener, _accelerometer);
 				_shakeListener.Dispose();
 				_shakeListener = null;
 			}

@@ -30,19 +30,28 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				// Here we are bypassing the infinite width provided by the ScrollViewer of the Pivot's template
 				// and instead we are constraining the items to have the same width of the parent pivot so can be panned properly.
 
-				availableSize = new Size(Math.Min(availableSize.Width, scroll.ViewportMeasureSize.Width), availableSize.Height);
+				availableSize = new Size(
+					Math.Min(availableSize.Width, scroll.ViewportMeasureSize.Width),
+					availableSize.Height);
 			}
 
 			// Note: Here we should X-stack the items to allow the ScrollViewer to do its job
 			//		 however currently the Pivot is only changing the Visibility of the items,
 			//		 so we only have to Z-stack items and return the 'availableSize' (which actually disable the 'scroll' ScrollViewer)
 
-			foreach (var child in Children)
+			var maxHeight = 0d;
+			foreach (UIElement child in Children)
 			{
 				MeasureElement(child, availableSize);
+				if(child.DesiredSize.Height > maxHeight)
+				{
+					maxHeight = child.DesiredSize.Height;
+				}
 			}
-			
-			return availableSize;
+
+			return availableSize.Height > maxHeight
+				? new Size(availableSize.Width, maxHeight)
+				: availableSize;
 		}
 
 		/// <inheritdoc />

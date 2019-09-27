@@ -13,33 +13,38 @@
 	<UserControl.Resources>
 		<valueconverters:BoolNegationValueConverter x:Key="BoolNegation" />
 	</UserControl.Resources>
-
-    <StackPanel>
-		<Button Command="{Binding AttachReadingChangedCommand}" Content="Attach ReadingChanged" IsEnabled="{Binding ReadingChangedAttached, Converter={StaticResource BoolNegation}}" />
-		<Button Command="{Binding DetachReadingChangedCommand}" Content="Detach ReadingChanged" IsEnabled="{Binding ReadingChangedAttached}" />
-		<TextBlock Text="Last reading" Style="{ThemeResource SubtitleTextBlockStyle}" />
-		<TextBlock>
-			<Run FontWeight="Bold">AccelerationX: </Run>
-			<Run Text="{Binding LastReading.AccelerationX}" />
-		</TextBlock>
-		<TextBlock>
-			<Run FontWeight="Bold">AccelerationY: </Run>
-			<Run Text="{Binding LastReading.AccelerationY}" />
-		</TextBlock>
-		<TextBlock>
-			<Run FontWeight="Bold">AccelerationZ: </Run>
-			<Run Text="{Binding LastReading.AccelerationZ}" />
-		</TextBlock>
-		<TextBlock>
-			<Run FontWeight="Bold">Timestamp: </Run>
-			<Run Text="{Binding LastReading.Timestamp}" />
-		</TextBlock>
-		<Button Command="{Binding AttachShakenCommand}" Content="Attach Shaken" IsEnabled="{Binding ShakenAttached, Converter={StaticResource BoolNegation}}" Margin="0,20,0,0" />
-		<Button Command="{Binding DetachShakenCommand}" Content="Detach Shaken" IsEnabled="{Binding ShakenAttached}"/>
-		<TextBlock Text="Last shaken" Style="{ThemeResource SubtitleTextBlockStyle}"  />
-		<TextBlock>
-			<Run FontWeight="Bold">Timestamp: </Run>
-			<Run Text="{Binding LastShake}" />
-		</TextBlock>
-	</StackPanel>
+	
+	<ContentControl IsEnabled="{Binding AccelerometerAvailable}">
+		<StackPanel>
+			<TextBlock Text="{Binding SensorStatus}" />
+			
+			<Button Command="{Binding AttachReadingChangedCommand}" Content="Attach ReadingChanged" IsEnabled="{Binding ReadingChangedAttached, Converter={StaticResource BoolNegation}}" />
+			<Button Command="{Binding DetachReadingChangedCommand}" Content="Detach ReadingChanged" IsEnabled="{Binding ReadingChangedAttached}" />
+			
+			<TextBlock Text="Last reading" Style="{ThemeResource SubtitleTextBlockStyle}" />
+			<TextBlock>
+				<Run FontWeight="Bold">AccelerationX: </Run>
+				<Run Text="{Binding AccelerationX}" />
+			</TextBlock>
+			<TextBlock>
+				<Run FontWeight="Bold">AccelerationY: </Run>
+				<Run Text="{Binding AccelerationY}" />
+			</TextBlock>
+			<TextBlock>
+				<Run FontWeight="Bold">AccelerationZ: </Run>
+				<Run Text="{Binding AccelerationZ}" />
+			</TextBlock>
+			<TextBlock>
+				<Run FontWeight="Bold">Timestamp: </Run>
+				<Run Text="{Binding ReadingTimestamp}" />
+			</TextBlock>
+			<Button Command="{Binding AttachShakenCommand}" Content="Attach Shaken" IsEnabled="{Binding ShakenAttached, Converter={StaticResource BoolNegation}}" Margin="0,20,0,0" />
+			<Button Command="{Binding DetachShakenCommand}" Content="Detach Shaken" IsEnabled="{Binding ShakenAttached}"/>
+			<TextBlock Text="Last shaken" Style="{ThemeResource SubtitleTextBlockStyle}"  />
+			<TextBlock>
+				<Run FontWeight="Bold">Timestamp: </Run>
+				<Run Text="{Binding ShakenTimestamp}" />
+			</TextBlock>
+		</StackPanel>
+	</ContentControl>
 </UserControl>

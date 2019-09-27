@@ -172,7 +172,9 @@ jobs:
     env:
       GIT_TARGETBRANCH: "$(System.PullRequest.TargetBranch)"
       GIT_SOURCEBRANCH: "$(Build.SourceBranch)"
+
     displayName: 'Compare UI Tests screenshots'
+    condition: eq(variables['Build.Repository.Provider'], 'GitHub')
 
 
   - task: PublishTestResults@2

@@ -5,13 +5,31 @@
     xmlns:local="using:UITests.Shared.Windows_Devices"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d"
+	xmlns:valueconverters="using:UITests.Shared.ValueConverters"
+	mc:Ignorable="d"
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <StackPanel>
-		<Button x:Name="StartReadingButton" Click="StartReadingClick">Start reading</Button>
-		<Button x:Name="EndReadingButton" Click="EndReadingClick">End reading</Button>
-		<TextBlock x:Name="ResultsTextBlock" TextWrapping="WrapWholeWords" />
-	</StackPanel>
+	<UserControl.Resources>
+		<valueconverters:BoolNegationValueConverter x:Key="BoolNegation" />
+	</UserControl.Resources>
+
+	<ContentControl IsEnabled="{Binding BarometerAvailable}">
+		<StackPanel>
+			<TextBlock Text="{Binding SensorStatus}" />
+
+			<Button Command="{Binding AttachReadingChangedCommand}" Content="Attach ReadingChanged" IsEnabled="{Binding ReadingChangedAttached, Converter={StaticResource BoolNegation}}" />
+			<Button Command="{Binding DetachReadingChangedCommand}" Content="Detach ReadingChanged" IsEnabled="{Binding ReadingChangedAttached}" />
+
+			<TextBlock Text="Last reading" Style="{ThemeResource SubtitleTextBlockStyle}" />
+			<TextBlock>
+				<Run FontWeight="Bold">StationPressureInHectopascals:</Run>
+				<Run Text="{Binding StationPressureInHectopascals}" />
+			</TextBlock>
+			<TextBlock>
+				<Run FontWeight="Bold">Timestamp: </Run>
+				<Run Text="{Binding Timestamp}" />
+			</TextBlock>
+		</StackPanel>
+	</ContentControl>
 </UserControl>

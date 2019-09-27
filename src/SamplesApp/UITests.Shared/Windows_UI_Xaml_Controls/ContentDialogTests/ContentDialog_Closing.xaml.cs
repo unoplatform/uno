@@ -1,0 +1,115 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
+using Uno.UI.Samples.Controls;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
+using _Button = Windows.UI.Xaml.Controls.Button;
+
+// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
+
+namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
+{
+	[SampleControlInfo("ContentDialog", "ContentDialog_Closing", description: "Tests for ContentDialog.Closing event")]
+    public sealed partial class ContentDialog_Closing : UserControl
+    {
+        public ContentDialog_Closing()
+        {
+            this.InitializeComponent();
+		}
+
+		private async void Button_Click(object sender, RoutedEventArgs args)
+		{
+			DidCloseTextBlock.Text = "Not closed";
+			var dialog = new ContentDialog { CloseButtonText = "Close" };
+
+			dialog.Closing += (o, e) =>
+			{
+				ResultTextBlock.Text = "Closing event was raised!";
+			};
+
+			dialog.Closed += (o, e) =>
+			{
+				DidCloseTextBlock.Text = "Closed";
+			};
+
+			var dummy = dialog.ShowAsync();
+
+			await Task.Delay(50);
+			dialog.Hide();
+		}
+
+		private void DeferredDialog_Click(object sender, RoutedEventArgs args)
+		{
+			DidCloseTextBlock.Text = "Not closed";
+			var dialog = new ContentDialog { CloseButtonText = "Close" };
+			ContentDialogClosingDeferral deferral1 = null;
+			ContentDialogClosingDeferral deferral2 = null;
+			var defer1Button = new _Button { Name = "Complete1Button", Content = "Complete 1" };
+			defer1Button.Click += (o, e) =>
+			{
+				deferral1.Complete();
+				ResultTextBlock.Text = "First complete called";
+			};
+			var defer2Button = new _Button { Name = "Complete2Button", Content = "Complete 2" };
+			defer2Button.Click += (o, e) =>
+			{
+				deferral2.Complete();
+				ResultTextBlock.Text = "Second complete called";
+			};
+			var panel = new StackPanel
+			{
+				Orientation = Orientation.Horizontal,
+				Children = {
+					defer1Button,
+					defer2Button
+				}
+			};
+			dialog.Content = panel;
+
+			dialog.Closing += (o, e) =>
+			{
+				deferral1 = e.GetDeferral();
+			};
+			dialog.Closing += (o, e) =>
+			{
+				deferral2 = e.GetDeferral();
+			};
+
+			dialog.Closed += (o, e) =>
+			{
+				DidCloseTextBlock.Text = "Closed";
+			};
+
+			var dummy = dialog.ShowAsync();
+		}
+
+		private void PrimaryDialog_Click(object sender, RoutedEventArgs args)
+		{
+			DidCloseTextBlock.Text = "Not closed";
+			var dialog = new ContentDialog { CloseButtonText = "Close", PrimaryButtonText = "Primo" };
+			dialog.Closing += (o, e) =>
+			  {
+				  ResultTextBlock.Text = e.Result.ToString();
+			  };
+
+			dialog.Closed += (o, e) =>
+			{
+				DidCloseTextBlock.Text = "Closed";
+			};
+
+			var dummy = dialog.ShowAsync();
+		}
+
+	}
+}

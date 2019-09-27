@@ -22,7 +22,7 @@
 		<PackageReference Include="Microsoft.TypeScript.Compiler" Version="3.4.5" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.4.5" />
 		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0-dev.4" />
-		<PackageReference Include="Uno.SourceGenerationTasks" Version="1.31.0-dev.285" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="1.32.0-dev.288" />
 	</ItemGroup>
 
 	<Import Project="..\..\Common.targets" />
@@ -41,7 +41,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'xamarinios10'">
-		<PackageReference Include="Com.Airbnb.iOS.Lottie" Version="2.5.8" PrivateAssets="none" />
+		<PackageReference Include="Com.Airbnb.iOS.Lottie" Version="2.5.9" PrivateAssets="none" />
 	</ItemGroup>
 
 	<PropertyGroup>

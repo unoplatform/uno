@@ -11,22 +11,28 @@ namespace Windows.UI.Xaml.Controls
 		public PopupRoot()
 		{
 			Background = new SolidColorBrush(Colors.Transparent);
-			UpdateIsHitTestVisible();
+			UpdateLightDismissArea();
 		}
 
 		protected override void OnChildrenChanged()
 		{
 			base.OnChildrenChanged();
-			UpdateIsHitTestVisible();
+			UpdateLightDismissArea();
 		}
 
 		private bool _pointerHandlerRegistered = false;
 
-		private void UpdateIsHitTestVisible()
+		internal void UpdateLightDismissArea()
 		{
-			var anyChildren = Children.Any();
-			IsHitTestVisible = anyChildren;
-			if (anyChildren)
+			var anyDismissableChild = Children
+				.OfType<PopupPanel>()
+				.Any(pp => pp.Popup.IsLightDismissEnabled);
+
+			Background = anyDismissableChild
+				? new SolidColorBrush(Colors.Transparent)
+				: null;
+
+			if (anyDismissableChild)
 			{
 				if (!_pointerHandlerRegistered)
 				{
@@ -52,10 +58,25 @@ namespace Windows.UI.Xaml.Controls
 				.OfType<PopupPanel>()
 				.LastOrDefault(p => p.Popup.IsLightDismissEnabled);
 
-			if(lastDismissablePopupPanel != null)
+			if (lastDismissablePopupPanel != null)
 			{
 				lastDismissablePopupPanel.Popup.IsOpen = false;
 			}
+		}
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			Size size = default;
+			foreach (var child in Children)
+			{
+				if (!(child is PopupPanel))
+				{
+					continue;
+				}
+				// Note that we should always be arranged with the full size of the window, so we don't care too much about the return value here.
+				size = MeasureElement(child, availableSize);
+			}
+			return size;
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)

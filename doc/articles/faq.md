@@ -402,7 +402,9 @@ Many of the application developed during the private phase of the Uno.UI Platfor
 
 ## Is Skia supported ?
 
-Yes, as in any other native view integration for iOS and Android. It is not yet supported for WebAssembly.
+Yes, as in any other native view integration for iOS and Android.
+
+For WebAssembly the Uno Platform has initial support for Skia via the Uno.SkiaSharp.Views package. [See details here](https://github.com/unoplatform/uno/blob/master/doc/blog/201907-SkiaSharp-for-wasm-support.md)
 
 ## Warning `Package Uno.UI.SourceGenerationTasks was restored using `.NETFramework,Version=4.6.1`
 
@@ -457,7 +459,7 @@ Using a shared project improves the build performance when debugging a single pl
 
 ## Are there any Visual Studio project creation templates for Uno yet?
 
-Yes. Here are the [templates].(https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin)
+Yes. Here are the [templates](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin).
 
 ## How do I add the NuGet package if there's no Packages node for Shared Projects?
 

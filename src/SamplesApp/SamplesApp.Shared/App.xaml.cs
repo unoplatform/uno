@@ -14,6 +14,7 @@ using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Core;
+using Windows.UI.Popups;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -35,9 +36,7 @@ namespace SamplesApp
 		/// </summary>
 		public App()
 		{
-#if DEBUG
 			ConfigureFilters(LogExtensionPoint.AmbientLoggerFactory);
-#endif
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
@@ -57,7 +56,7 @@ namespace SamplesApp
 #if DEBUG
 			if (System.Diagnostics.Debugger.IsAttached)
 			{
-			   // this.DebugSettings.EnableFrameRateCounter = true;
+				// this.DebugSettings.EnableFrameRateCounter = true;
 			}
 #endif
 			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
@@ -91,6 +90,17 @@ namespace SamplesApp
 				}
 				// Ensure the current window is active
 				Windows.UI.Xaml.Window.Current.Activate();
+			}
+
+			DisplayLaunchArguments(e);
+		}
+
+		private async void DisplayLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)
+		{
+			if (!string.IsNullOrEmpty(launchActivatedEventArgs.Arguments))
+			{
+				var dlg = new MessageDialog(launchActivatedEventArgs.Arguments, "Launch arguments");
+				await dlg.ShowAsync();
 			}
 		}
 
@@ -150,7 +160,11 @@ namespace SamplesApp
 						// { "ReferenceHolder", LogLevel.Debug },
 					}
 				)
+#if DEBUG
 				.AddConsole(LogLevel.Debug);
+#else
+				.AddConsole(LogLevel.Warning);
+#endif
 		}
 
 
@@ -186,12 +200,12 @@ namespace SamplesApp
 							}
 #endif
 
-							var t =  SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, metadataName);
+							var t = SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, metadataName);
 							var timeout = Task.Delay(30000);
 
 							await Task.WhenAny(t, timeout);
 
-							if(!(t.IsCompleted && !t.IsFaulted))
+							if (!(t.IsCompleted && !t.IsFaulted))
 							{
 								throw new TimeoutException();
 							}

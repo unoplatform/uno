@@ -88,6 +88,35 @@ namespace Windows.UI.ViewManagement
 		}
 
 		private enum StatusBarForegroundType { Light, Dark }
+
+		[global::Uno.NotImplemented]
+		public double BackgroundOpacity
+		{
+			get
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.StatusBar", "double StatusBar.BackgroundOpacity");
+				return 0;
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.StatusBar", "double StatusBar.BackgroundOpacity");
+			}
+		}
+
+		[global::Uno.NotImplemented]
+		public global::Windows.UI.Color? BackgroundColor
+		{
+			get
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.StatusBar", "Color? StatusBar.BackgroundColor");
+				return null;
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.StatusBar", "Color? StatusBar.BackgroundColor");
+			}
+
+		}
 	}
 }
 #endif

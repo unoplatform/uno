@@ -18,7 +18,9 @@ namespace Windows.ApplicationModel.Activation
 			Kind = kind;
 		}
 
+#if !__ANDROID__ && !__IOS__
 		[NotImplemented]
+#endif
 		public ActivationKind Kind
 		{
 			get;

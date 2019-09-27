@@ -583,7 +583,17 @@ namespace Windows.UI.Xaml
 		{
 			if (_validatePropertyOwner)
 			{
-				if (!_originalObjectType.Is(property.OwnerType) && !property.IsAttached)
+				var isFrameworkElement = _originalObjectType.Is(typeof(FrameworkElement));
+				var isMixinFrameworkElement = _originalObjectRef.Target is IFrameworkElement && !isFrameworkElement;
+
+				if (
+					!_originalObjectType.Is(property.OwnerType)
+					&& !property.IsAttached
+
+					// Don't fail validation for properties that are located on non-FrameworkElement types
+					// e.g. ScrollContentPresenter, for which using the Name property should not fail.
+					&& !isMixinFrameworkElement
+				)
 				{
 					throw new InvalidOperationException(
 						$"The Dependency Property [{property.Name}] is owned by [{property.OwnerType}] and cannot be used on [{_originalObjectType}]"
@@ -1319,7 +1329,7 @@ namespace Windows.UI.Xaml
 			var propertyMetadata = propertyDetails.Metadata;
 
 			// We can reuse the weak reference, otherwise capture the weak reference to this instance.
-			var instanceRef = _originalObjectRef != null ? _originalObjectRef : _thisWeakRef;
+			var instanceRef = _originalObjectRef ?? _thisWeakRef;
 
 			if (propertyMetadata is FrameworkPropertyMetadata frameworkPropertyMetadata)
 			{

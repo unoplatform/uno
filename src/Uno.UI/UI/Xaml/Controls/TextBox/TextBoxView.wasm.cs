@@ -6,6 +6,7 @@ using Uno.Extensions;
 using Windows.UI.Xaml.Media;
 using Uno.Logging;
 using Windows.Foundation;
+using System.Globalization;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -88,13 +89,13 @@ namespace Windows.UI.Xaml.Controls
 
 		public int SelectionStart
 		{
-			get => int.Parse(GetProperty("selectionStart"));
+			get => int.TryParse(GetProperty("selectionStart"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : 0;
 			set => SetProperty("selectionStart", value.ToString());
 		}
 
 		public int SelectionEnd
 		{
-			get => int.Parse(GetProperty("selectionEnd"));
+			get => int.TryParse(GetProperty("selectionEnd"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : 0;
 			set => SetProperty("selectionEnd", value.ToString());
 		}
 

@@ -15,6 +15,9 @@
 	d:DesignWidth="400">
 
 	<StackPanel>
+		<TextBlock>
+			TemplatedParent:<Run Text="{Binding TemplatedParent, RelativeSource={RelativeSource Self}}" />
+		</TextBlock>
 		<Button Content="Toggle ContentTemplate"
 				x:Name="ToggleTemplateButton"
 				Click="Button_Click_1" />

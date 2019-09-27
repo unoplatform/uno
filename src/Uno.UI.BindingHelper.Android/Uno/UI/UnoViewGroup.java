@@ -1,6 +1,5 @@
 package Uno.UI;
 
-import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.view.*;
 import android.view.animation.Transformation;
@@ -42,8 +41,6 @@ public abstract class UnoViewGroup
 	private Map<View, Matrix> _childrenTransformations = new HashMap<View, Matrix>();
 	private float _transformedTouchX;
 	private float _transformedTouchY;
-
-	private boolean _isAnimating;
 
 	private static Method _setFrameMethod;
 
@@ -110,6 +107,13 @@ public abstract class UnoViewGroup
 				}
 			}
 		);
+
+		setClipChildren(false); // This is required for animations not to be cut off by transformed ancestor views. (#1333)
+	}
+
+	public final void enableAndroidClipping()
+	{
+		setClipChildren(true); // called by controls requiring it (ScrollViewer)
 	}
 
 	private boolean _unoLayoutOverride;
@@ -244,10 +248,6 @@ public abstract class UnoViewGroup
 		if(_textBlockLayout != null) {
 			canvas.translate(_leftTextBlockPadding, _topTextBlockPadding);
 			_textBlockLayout.draw(canvas);
-		}
-
-		if (getIsAnimationInProgress()) {
-			invalidateTransformedHierarchy();
 		}
 	}
 
@@ -936,49 +936,6 @@ public abstract class UnoViewGroup
 		return false;
 	}
 
-	public boolean getHasNonIdentityStaticTransformation() {
-		if (!(getParent() instanceof UnoViewGroup)) {
-			return false;
-		}
-
-		Matrix renderTransform = ((UnoViewGroup)getParent())._childrenTransformations.get(this);
-		return  renderTransform != null && !renderTransform.isIdentity();
-	}
-
-	/**
-	 * Invalidates all ancestor views that have a RenderTransform applied. This is necessary when animating because the hardware-accelerated
-	 * 'damage' calculation for redrawing during an animation doesn't seem to take getChildStaticTransformation() into account, causing the
-	 * transformed position not to be updated.
-	 */
-	public boolean invalidateTransformedHierarchy() {
-		View view = this;
-
-		boolean didFindTransform = false;
-
-		while (view != null) {
-			boolean hasTransform = view instanceof UnoViewGroup && ((UnoViewGroup)view).getHasNonIdentityStaticTransformation();
-
-			ViewParent parent = view.getParent();
-			if (parent instanceof View) {
-				view = (View)parent;
-
-				if (hasTransform) {
-					// Invalidate parent of transformed view to ensure that transformed view's current location will be damaged. (Due to
-					// clipping limitations it won't be outside the parent.)
-					view.invalidate();
-					// Invalidate animating view to ensure onDraw() is called again
-					this.invalidate();
-					didFindTransform = true;
-				}
-			}
-			else {
-				view = null;
-			}
-		}
-
-		return didFindTransform;
-	}
-
 	/**
 	 * Get touch coordinate transformed to a view's local space. If view is a UnoViewGroup, use already-calculated value;
 	 * interpolate offsets for any non-UnoViewGroups in the visual hierarchy, and use the raw absolute position at the
@@ -994,14 +951,19 @@ public abstract class UnoViewGroup
 			return point;
 		}
 
-		// Non-UIElement view, walk the tree up to the next UIElement
-		// (and adjust coordinate for each layer to include its location, i.e. Top, Left, etc.)
-		final ViewParent parent = view.getParent();
-		if (parent instanceof View) {
-			// Not at root, walk upward
-			float[] coords = getTransformedTouchCoordinate(parent, e);
-			calculateTransformedPoint((View) view, coords);
-			return coords;
+		if(view != null) {
+			// The parent view may be null if the touched item is being removed
+			// from the tree while being touched.
+
+			// Non-UIElement view, walk the tree up to the next UIElement
+			// (and adjust coordinate for each layer to include its location, i.e. Top, Left, etc.)
+			final ViewParent parent = view.getParent();
+			if (parent instanceof View) {
+				// Not at root, walk upward
+				float[] coords = getTransformedTouchCoordinate(parent, e);
+				calculateTransformedPoint((View) view, coords);
+				return coords;
+			}
 		}
 
 		// We reached the top of the tree
@@ -1026,14 +988,6 @@ public abstract class UnoViewGroup
 
 	boolean getIsPointInView() {
 		return _isPointInView;
-	}
-
-	public boolean getIsAnimationInProgress() {
-		return _isAnimating;
-	}
-
-	public void setIsAnimationInProgress(boolean isAnimating) {
-		_isAnimating = isAnimating;
 	}
 
 	/**

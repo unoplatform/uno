@@ -1,4 +1,3 @@
-﻿using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using System;
 using System.Collections.Generic;
@@ -6,6 +5,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using NUnit.Framework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -51,6 +51,24 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 
 			//Assert
 			Assert.IsNotNull(datePickerFlyout.GetDependencyPropertyValue("Content"));
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void DatePicker_Flyout()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePickerFlyout_Automated");
+
+			//DatePicker is broken: https://github.com/unoplatform/uno/issues/188
+			//Using a Button with DatePickerFlyout to simulate a DatePicker
+			var button = _app.Marked("TestDatePickerFlyoutButton");
+
+			_app.WaitForElement(button);
+
+			button.Tap();
+
+			_app.Screenshot("DatePicker - Flyout");
 		}
 	}
 }

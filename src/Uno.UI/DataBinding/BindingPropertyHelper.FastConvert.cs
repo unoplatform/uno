@@ -33,7 +33,7 @@ namespace Uno.UI.DataBinding
 		/// <param name="output">The input value converted to the <paramref name="outputType"/>.</param>
 		/// <returns>True if the conversion suceeded, otherwise false.</returns>
 		/// <remarks>
-		/// This is a fast path conversion that avoids going through the TypeConverter 
+		/// This is a fast path conversion that avoids going through the TypeConverter
 		/// infrastructure for known system types.
 		/// </remarks>
 		private static bool FastConvert(Type outputType, object input, ref object output)
@@ -239,6 +239,11 @@ namespace Uno.UI.DataBinding
 				return true;
 			}
 
+			if (FastStringToToolTip(outputType, input, ref output))
+			{
+				return true;
+			}
+
 			if (FastStringToIconElement(outputType, input, ref output))
 			{
 				return true;
@@ -294,6 +299,17 @@ namespace Uno.UI.DataBinding
 
 					return true;
 				}
+			}
+
+			return false;
+		}
+
+		private static bool FastStringToToolTip(Type outputType, string input, ref object output)
+		{
+			if (outputType == typeof(Windows.UI.Xaml.Controls.ToolTip))
+			{
+				output = new Windows.UI.Xaml.Controls.ToolTip {Content = input};
+				return true;
 			}
 
 			return false;

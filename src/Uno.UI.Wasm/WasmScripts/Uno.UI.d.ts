@@ -773,6 +773,23 @@ declare namespace Windows.Devices.Sensors {
         private static readingChangedHandler;
     }
 }
+declare class Magnetometer {
+    constructor(config: any);
+    addEventListener(type: "reading" | "activate", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
+}
+interface Window {
+    Magnetometer: Magnetometer;
+}
+declare namespace Windows.Devices.Sensors {
+    class Magnetometer {
+        private static dispatchReading;
+        private static magnetometer;
+        static initialize(): boolean;
+        static startReading(): void;
+        static stopReading(): void;
+        private static readingChangedHandler;
+    }
+}
 interface Navigator {
     webkitVibrate(pattern: number | number[]): boolean;
     mozVibrate(pattern: number | number[]): boolean;

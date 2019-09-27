@@ -1130,8 +1130,9 @@ var Uno;
                 const originalStyleCssText = elementStyle.cssText;
                 let parentElement = null;
                 let parentElementWidthHeight = null;
+                let isDisconnected = !element.isConnected;
                 try {
-                    if (!element.isConnected) {
+                    if (isDisconnected) {
                         // If the element is not connected to the DOM, we need it
                         // to be connected for the measure to provide a meaningful value.
                         let unconnectedRoot = element;
@@ -1199,6 +1200,9 @@ var Uno;
                     if (parentElement && parentElementWidthHeight) {
                         parentElement.style.width = parentElementWidthHeight.width;
                         parentElement.style.height = parentElementWidthHeight.height;
+                    }
+                    if (isDisconnected) {
+                        this.containerElement.removeChild(element);
                     }
                 }
             }
@@ -2156,7 +2160,7 @@ var Windows;
                         }
                         else if (evt.state === 1) {
                             // The manager is disabled, but the user requested to navigate forward to our dummy entry,
-                            // but we prefer to keep this dummy entry in teh forward stack (is more prompt to be cleared by the browser,
+                            // but we prefer to keep this dummy entry in the forward stack (is more prompt to be cleared by the browser,
                             // and as it's less commonly used it should be less annoying for the user)
                             window.history.back();
                         }
@@ -2169,6 +2173,9 @@ var Windows;
                     return this._current;
                 }
                 enable() {
+                    if (this._isEnabled) {
+                        return;
+                    }
                     // Clear the back stack, so the only items will be ours (and we won't have any remaining forward item)
                     this.clearStack();
                     window.history.pushState(1, document.title, null);
@@ -2176,6 +2183,9 @@ var Windows;
                     this._isEnabled = true;
                 }
                 disable() {
+                    if (!this._isEnabled) {
+                        return;
+                    }
                     // Disable the handler, then clear the history
                     // Note: As a side effect, the forward button will be enabled :(
                     this._isEnabled = false;
@@ -2219,6 +2229,44 @@ var Windows;
                 }
             }
             Sensors.Accelerometer = Accelerometer;
+        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Sensors;
+        (function (Sensors) {
+            class Magnetometer {
+                static initialize() {
+                    try {
+                        if (typeof window.Magnetometer === "function") {
+                            this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Magnetometer:DispatchReading");
+                            let magnetometerClass = window.Magnetometer;
+                            this.magnetometer = new magnetometerClass({ referenceFrame: 'device' });
+                            return true;
+                        }
+                    }
+                    catch (error) {
+                        //sensor not available
+                        console.log('Magnetometer could not be initialized.');
+                    }
+                    return false;
+                }
+                static startReading() {
+                    this.magnetometer.addEventLi1stener('reading', Magnetometer.readingChangedHandler);
+                    this.magnetometer.start();
+                }
+                static stopReading() {
+                    this.magnetometer.removeEventListener('reading', Magnetometer.readingChangedHandler);
+                    this.magnetometer.stop();
+                }
+                static readingChangedHandler(event) {
+                    Magnetometer.dispatchReading(this.magnetometer.x, this.magnetometer.y, this.magnetometer.z);
+                }
+            }
+            Sensors.Magnetometer = Magnetometer;
         })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
     })(Devices = Windows.Devices || (Windows.Devices = {}));
 })(Windows || (Windows = {}));
