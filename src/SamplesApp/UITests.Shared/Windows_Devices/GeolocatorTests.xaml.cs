@@ -36,12 +36,16 @@ namespace UITests.Shared.Windows_Devices
 		private Geolocator _geolocator = new Geolocator();
 
 		private GeolocationAccessStatus _geolocationAccessStatus;
+		private PositionStatus _positionStatus;
 		private Geoposition _geoposition;
 		private Geoposition _trackedGeoposition;
 		private bool _positionChangedAttached;
+		private bool _statusChangedAttached;
+		private string _error = "";
 
 		public GeolocatorTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
+			PositionStatus = _geolocator.LocationStatus;
 		}
 
 		public Geoposition Geoposition
@@ -74,10 +78,40 @@ namespace UITests.Shared.Windows_Devices
 			}
 		}
 
+		public bool StatusChangedAttached
+		{
+			get => _statusChangedAttached;
+			private set
+			{
+				_statusChangedAttached = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public uint? DesiredAccuracyInMeters
 		{
 			get => _geolocator.DesiredAccuracyInMeters;
 			set => _geolocator.DesiredAccuracyInMeters = value;
+		}
+
+		public PositionStatus PositionStatus
+		{
+			get => _positionStatus;
+			set
+			{
+				_positionStatus = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public string Error
+		{
+			get => _error;
+			set
+			{
+				_error = value;
+				RaisePropertyChanged();
+			}
 		}
 
 		public ICommand RequestAccessCommand =>
@@ -85,6 +119,32 @@ namespace UITests.Shared.Windows_Devices
 
 		public ICommand GetGeopositionCommand =>
 			GetOrCreateCommand(GetGeoposition);
+
+
+		public Command AttachPositionChangedCommand => new Command((p) =>
+		{
+			_geolocator.PositionChanged += Geolocator_PositionChanged;
+			PositionChangedAttached = true;
+		});
+
+		public Command DetachPositionChangedCommand => new Command((p) =>
+		{
+			_geolocator.PositionChanged -= Geolocator_PositionChanged;
+			PositionChangedAttached = false;
+		});
+
+
+		public Command AttachStatusChangedCommand => new Command((p) =>
+		{
+			_geolocator.StatusChanged += Geolocator_StatusChanged;
+			StatusChangedAttached = true;
+		});
+
+		public Command DetachStatusChangedCommand => new Command((p) =>
+		{
+			_geolocator.StatusChanged -= Geolocator_StatusChanged;
+			StatusChangedAttached = false;
+		});
 
 		public GeolocationAccessStatus GeolocationAccessStatus
 		{
@@ -100,23 +160,25 @@ namespace UITests.Shared.Windows_Devices
 			GeolocationAccessStatus = await Geolocator.RequestAccessAsync();
 
 		private async void GetGeoposition()
-		{			
-			Geoposition = await _geolocator.GetGeopositionAsync();
-			Debug.WriteLine(Geoposition.Coordinate.Longitude);
+		{
+			try
+			{
+				Geoposition = await _geolocator.GetGeopositionAsync();
+			}
+			catch (Exception ex)
+			{
+				Error = ex.Message;
+			}
 		}
 
-		public Command AttachPositionChangedCommand => new Command((p) =>
+		private async void Geolocator_StatusChanged(Geolocator sender, StatusChangedEventArgs args)
 		{
-			_geolocator.PositionChanged += Geolocator_PositionChanged;
-			PositionChangedAttached = true;
-		});
+			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				PositionStatus = args.Status;
+			});
+		}
 
-		public Command DetachPositionChangedCommand => new Command((p) =>
-		{
-			_geolocator.PositionChanged -= Geolocator_PositionChanged;
-			PositionChangedAttached = false;
-		});
-		
 		private async void Geolocator_PositionChanged(Geolocator sender, PositionChangedEventArgs args)
 		{
 			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>

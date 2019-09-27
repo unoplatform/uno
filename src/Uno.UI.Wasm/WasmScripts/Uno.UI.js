@@ -2260,8 +2260,22 @@ var Windows;
                         }
                     }
                     else {
+                        //TODO: FIX
                         Geolocator.dispatchError("NotAvailable", requestId);
                     }
+                }
+                static startPositionWatch(desiredAccuracyInMeters, requestId) {
+                    Geolocator.initialize();
+                    if (navigator.geolocation) {
+                        Geolocator.positionWatches[requestId] = navigator.geolocation.watchPosition((position) => Geolocator.handleGeoposition(position, requestId), (error) => Geolocator.handleError(error, requestId));
+                    }
+                    else {
+                        //TODO: FIX
+                        Geolocator.dispatchError("NotAvailable", requestId);
+                    }
+                }
+                static stopPositionWatch(desiredAccuracyInMeters, requestId) {
+                    navigator.geolocation.clearWatch(Geolocator.positionWatches[requestId]);
                 }
                 static handleGeoposition(position, requestId) {
                     var serializedGeoposition = position.coords.latitude + ":" +

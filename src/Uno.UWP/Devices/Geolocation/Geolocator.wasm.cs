@@ -14,19 +14,53 @@ namespace Windows.Devices.Geolocation
 	{
 		private const string JsType = "Windows.Devices.Geolocation.Geolocator";
 
+		//Default position status for next instances
+		//based on https://docs.microsoft.com/en-us/uwp/api/windows.devices.geolocation.geolocator.locationstatus#remarks
+		private static PositionStatus _defaultPositionStatus = PositionStatus.NotInitialized;
+
 		private static List<TaskCompletionSource<GeolocationAccessStatus>> _pendingAccessRequests = new List<TaskCompletionSource<GeolocationAccessStatus>>();
 		private static ConcurrentDictionary<string, TaskCompletionSource<Geoposition>> _pendingGeopositionRequests = new ConcurrentDictionary<string, TaskCompletionSource<Geoposition>>();
-
 		private static ConcurrentDictionary<string, Geolocator> _positionChangedSubscriptions = new ConcurrentDictionary<string, Geolocator>();
+		//using ConcurrentDictionary as concurrent HashSet (https://stackoverflow.com/questions/18922985/concurrent-hashsett-in-net-framework), byte is throwaway
+		private static ConcurrentDictionary<Geolocator, byte> _statusChangedSubscriptions = new ConcurrentDictionary<Geolocator, byte>();
+
+		private TypedEventHandler<Geolocator, StatusChangedEventArgs> _statusChanged;
 
 		private string _positionChangedRequestId;
 
 		public Geolocator()
 		{
-
+			LocationStatus = _defaultPositionStatus;
 		}
 
-		//public event TypedEventHandler<Geolocator, StatusChangedEventArgs> StatusChanged;
+		public PositionStatus LocationStatus { get; private set; } = PositionStatus.NotInitialized;
+
+		public event TypedEventHandler<Geolocator, StatusChangedEventArgs> StatusChanged
+		{
+			add
+			{
+				lock (_syncLock)
+				{
+					bool isFirstSubscriber = _statusChanged == null;
+					_statusChanged += value;
+					if (isFirstSubscriber)
+					{
+						StartStatusChanged();
+					}
+				}
+			}
+			remove
+			{
+				lock (_syncLock)
+				{
+					_statusChanged -= value;
+					if (_statusChanged == null)
+					{
+						StopStatusChanged();
+					}
+				}
+			}
+		}
 
 		partial void OnActualDesiredAccuracyInMetersChanged()
 		{
@@ -38,17 +72,29 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 
+		private void StartStatusChanged()
+		{
+			_statusChangedSubscriptions.TryAdd(this, 0);
+		}
+
+		private void StopStatusChanged()
+		{
+			_statusChangedSubscriptions.TryRemove(this, out var _);
+		}
+
 		partial void StartPositionChanged()
 		{
 			_positionChangedRequestId = Guid.NewGuid().ToString();
 			_positionChangedSubscriptions.TryAdd(_positionChangedRequestId, this);
-			var command = $"{JsType}.startPositionWatch({ActualDesiredAccuracyInMeters},{_positionChangedRequestId})";
+			var command = $"{JsType}.startPositionWatch({ActualDesiredAccuracyInMeters},\"{_positionChangedRequestId}\")";
+			InvokeJS(command);
 		}
 
 		partial void StopPositionChanged()
 		{
 			_positionChangedSubscriptions.TryRemove(_positionChangedRequestId, out var _);
-			var command = $"{JsType}.startPositionWatch({_positionChangedRequestId})";
+			var command = $"{JsType}.startPositionWatch(\"{_positionChangedRequestId}\")";
+			InvokeJS(command);
 		}
 
 		public static async Task<GeolocationAccessStatus> RequestAccessAsync()
@@ -69,17 +115,24 @@ namespace Windows.Devices.Geolocation
 			{
 				IsDefaultGeopositionRecommended = true;
 			}
+
 			return result;
 		}
 
 		/// <summary>
 		/// Uses 60 second timeout to match the UWP default.
-		/// The maximum age is not specified in documentation, so we use 10 s for now.
+		/// The maximum age is not specified in documentation, so we use 10 seconds for now.
 		/// </summary>
 		/// <returns>Geoposition</returns>
 		public Task<Geoposition> GetGeopositionAsync() =>
-			GetGeopositionAsync(TimeSpan.FromMilliseconds(10), TimeSpan.FromSeconds(60));
+			GetGeopositionAsync(TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(60));
 
+		/// <summary>
+		/// Retrieves geoposition with specific maximum age and timeout
+		/// </summary>
+		/// <param name="maximumAge">Maximum age of the geoposition</param>
+		/// <param name="timeout">Timeout for geoposition retrieval</param>
+		/// <returns></returns>
 		public async Task<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
 		{
 			var completionRequest = new TaskCompletionSource<Geoposition>();
@@ -93,28 +146,15 @@ namespace Windows.Devices.Geolocation
 		[Preserve]
 		public static int DispatchGeoposition(string serializedGeoposition, string requestId)
 		{
-			if (!_pendingGeopositionRequests.TryGetValue(requestId, out var requestTask))
-			{
-				throw new InvalidOperationException($"Geoposition request {requestId} does not exist");
-			}
-
 			var geocoordinate = ParseGeocoordinate(serializedGeoposition);
-
-			requestTask.SetResult(new Geoposition(geocoordinate));
-
-			return 0;
-		}
-		
-		[Preserve]
-		public static int DispatchPositionChanged(string serializedGeoposition, string requestId)
-		{
-			if (!_positionChangedSubscriptions.TryGetValue(requestId, out var geolocator))
+			if (_pendingGeopositionRequests.TryRemove(requestId, out var geopositionCompletionSource))
 			{
-				throw new InvalidOperationException($"PositionChanged request {requestId} does not exist");
+				geopositionCompletionSource.SetResult(new Geoposition(geocoordinate));
 			}
-
-			var geocoordinate = ParseGeocoordinate(serializedGeoposition);
-			geolocator.OnPositionChanged(new Geoposition(geocoordinate));
+			else if (_positionChangedSubscriptions.TryGetValue(requestId, out var geolocator))
+			{
+				geolocator.OnPositionChanged(new Geoposition(geocoordinate));
+			}
 
 			return 0;
 		}
@@ -122,13 +162,22 @@ namespace Windows.Devices.Geolocation
 		[Preserve]
 		public static int DispatchError(string currentPositionRequestResult, string requestId)
 		{
-			Debug.WriteLine("Got error " + currentPositionRequestResult);
-			if (!_pendingGeopositionRequests.TryGetValue(requestId, out var requestTask))
+			if (_pendingGeopositionRequests.TryRemove(requestId, out var geopositionCompletionSource))
 			{
-				throw new InvalidOperationException($"Geoposition request {requestId} does not exist");
+				geopositionCompletionSource.SetException(new UnauthorizedAccessException("Access is denied"));
 			}
 
-			requestTask.SetException(new Exception(currentPositionRequestResult));
+			return 0;
+		}
+
+		[Preserve]
+		public static int DispatchStatusChanged(string serializedPositionStatus)
+		{
+			var positionStatus = (PositionStatus)Enum.Parse(typeof(PositionStatus), serializedPositionStatus, true);
+			foreach (var key in _statusChangedSubscriptions.Keys)
+			{
+				key.OnStatusChanged(positionStatus);
+			}
 
 			return 0;
 		}
@@ -222,6 +271,21 @@ namespace Windows.Devices.Geolocation
 				heading: heading,
 				speed: speed);
 			return geocoordinate;
+		}
+
+		private void OnStatusChanged(PositionStatus status)
+		{
+			//report only when not changed
+			//report initializing only when not initialized
+			if (status == LocationStatus ||
+				(status == PositionStatus.Initializing &&
+				LocationStatus != PositionStatus.NotInitialized))
+			{
+				return;
+			}
+
+			LocationStatus = status;
+			_statusChanged?.Invoke(this, new StatusChangedEventArgs(status));
 		}
 	}
 }

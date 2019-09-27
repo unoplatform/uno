@@ -6,16 +6,30 @@
         Unspecified = "Unspecified"
     }
 
+    enum PositionStatus {
+        Ready = "Ready",
+        Initializing = "Initializing",
+        NoData = "NoData",
+        Disabled = "Disabled",
+        NotInitialized = "NotInitialized",
+		NotAvailable = "NotAvailable"
+    }
+
     export class Geolocator {
 
         private static dispatchAccessRequest: (serializedAccessStatus: string) => number;
         private static dispatchGeoposition: (geopositionRequestResult: string, requestId: string) => number;
         private static dispatchError: (geopositionRequestResult: string, requestId: string) => number;
+        private static dispatchStatus: (serializedPositionStatus: string) => number;
 
-        private static positionWatches: any;
+        private static positionWatches: any;		
 
         public static initialize() {
-            if (!this.dispatchAccessRequest) {
+            if (!this.dispatchStatus) {
+                this.dispatchStatus = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchStatus");
+            }
+            this.dispatchStatus(PositionStatus.Initializing);
+            if (!this.dispatchAccessRequest ) {
                 this.dispatchAccessRequest = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchAccessRequest");
             }
             if (!this.dispatchError) {
@@ -24,6 +38,7 @@
             if (!this.dispatchGeoposition) {
                 this.dispatchGeoposition = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchGeoposition");
             }
+            this.dispatchStatus(PositionStatus.Ready);
         }
 
         public static requestAccess() {
@@ -105,8 +120,10 @@
         }
 
         private static handleError(error: PositionError, requestId: string) {
-            console.log("error " + error.code);
-            Geolocator.dispatchError("Boom!", requestId);
+            if (error.code == error.TIMEOUT) {
+                Geolocator.dispatchStatus(PositionStatus.NoData);
+                Geolocator.dispatchError(PositionStatus.NoData, requestId);
+            }
         }
 
         //this attempts to squeeze out the requested accuracy from the GPS by utilizing the set timeout
