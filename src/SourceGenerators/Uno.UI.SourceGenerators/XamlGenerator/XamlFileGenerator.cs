@@ -1437,9 +1437,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			try
 			{
 				BuildSourceLineInfo(writer, topLevelControl);
-				
+
 				if (topLevelControl.Members.Any())
-				{					
+				{
 					var setterPrefix = string.IsNullOrWhiteSpace(closureName) ? string.Empty : closureName + ".";
 
 					var implicitContentChild = FindImplicitContentMember(topLevelControl);

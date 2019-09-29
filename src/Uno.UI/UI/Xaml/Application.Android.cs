@@ -13,9 +13,9 @@ namespace Windows.UI.Xaml
 	public partial class Application
 	{
 		public Application()
-		{			
+		{
 			Windows.UI.Xaml.GenericStyles.Initialize();
-			Window.Current.ToString();			
+			Window.Current.ToString();
 			Current = this;
 			PermissionsHelper.Initialize();
 		}
