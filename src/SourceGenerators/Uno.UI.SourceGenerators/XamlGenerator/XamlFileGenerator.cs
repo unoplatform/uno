@@ -387,12 +387,35 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
 			writer.AppendLineInvariant($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
 
+
 			writer.AppendLineInvariant($"#if __ANDROID__");
 			writer.AppendLineInvariant($"global::Uno.Helpers.DrawableHelper.Drawables = typeof(global::{_defaultNamespace}.Resource.Drawable);");
 			writer.AppendLineInvariant($"#endif");
 
 			RegisterResources(topLevelControl);
 			BuildProperties(writer, topLevelControl, isInline: false, returnsContent: false);
+
+			writer.AppendLineInvariant("");
+			writer.AppendLineInvariant("this");
+
+			string closure;
+
+			using (var blockWriter = CreateApplyBlock(writer, null, out closure))
+			{
+				blockWriter.AppendLineInvariant(
+					"// Source {0} (Line {1}:{2})",
+					_fileDefinition.FilePath,
+					topLevelControl.LineNumber,
+					topLevelControl.LinePosition
+				);
+				BuildLiteralProperties(blockWriter, topLevelControl, closure);
+			}
+
+			if (IsFrameworkElement(topLevelControl.Type))
+			{
+				BuildExtendedProperties(writer, topLevelControl, false, useGenericApply: true);
+			}
+
 			writer.AppendLineInvariant(";");
 			if (_isUiAutomationMappingEnabled)
 			{
@@ -1414,9 +1437,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			try
 			{
 				BuildSourceLineInfo(writer, topLevelControl);
-
+				
 				if (topLevelControl.Members.Any())
-				{
+				{					
 					var setterPrefix = string.IsNullOrWhiteSpace(closureName) ? string.Empty : closureName + ".";
 
 					var implicitContentChild = FindImplicitContentMember(topLevelControl);
