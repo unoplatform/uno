@@ -25,6 +25,7 @@
       <method name="DispatchAccessRequest" />
       <method name="DispatchGeoposition" />
       <method name="DispatchError" />
+      <method name="DispatchStatusChanged" />
     </type>    
   </assembly>
   
