@@ -988,7 +988,7 @@
 			<Color x:Key="SystemColorWindowColor">#FF000000</Color>
 			<Color x:Key="SystemColorWindowTextColor">#FF000000</Color>
 
-			<!-- Light theme resources -->
+			<!-- High contrast theme resources -->
 
 			<!--
     ******************************************************************
@@ -1474,7 +1474,7 @@
 			<SolidColorBrush x:Key="FlipViewButtonPressedBorderThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
 			<SolidColorBrush x:Key="FlipViewButtonPressedForegroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
 			<SolidColorBrush x:Key="FlyoutBackgroundThemeBrush" Color="{ThemeResource SystemColorWindowColor}" />
-			<StaticResource x:Key="FlyoutBorderThemeBrush" ResourceKey="SystemControlTransientBorderBrush" />
+			<SolidColorBrush x:Key="FlyoutBorderThemeBrush" Color="White" />
 			<SolidColorBrush x:Key="FocusVisualBlackStrokeThemeBrush" Color="Black" />
 			<SolidColorBrush x:Key="FocusVisualWhiteStrokeThemeBrush" Color="White" />
 			<SolidColorBrush x:Key="HyperlinkButtonBackgroundThemeBrush" Color="{ThemeResource SystemColorWindowColor}" />
@@ -1500,10 +1500,10 @@
 			<SolidColorBrush x:Key="IMECandidateListPagingButtonPointerOverForegroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
 			<SolidColorBrush x:Key="IMECandidateListPagingButtonPressedBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
 			<SolidColorBrush x:Key="IMECandidateListPagingButtonPressedForegroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
-			<StaticResource x:Key="JumpListDefaultEnabledBackground" ResourceKey="SystemControlBackgroundAccentBrush" />
-			<StaticResource x:Key="JumpListDefaultEnabledForeground" ResourceKey="SystemControlForegroundChromeWhiteBrush" />
-			<StaticResource x:Key="JumpListDefaultDisabledBackground" ResourceKey="SystemControlBackgroundBaseLowBrush" />
-			<StaticResource x:Key="JumpListDefaultDisabledForeground" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+			<SolidColorBrush x:Key="JumpListDefaultEnabledForeground" Color="{ThemeResource SystemColorButtonTextColor}" />
+			<SolidColorBrush x:Key="JumpListDefaultEnabledBackground" Color="{ThemeResource SystemColorWindowColor}" />
+			<SolidColorBrush x:Key="JumpListDefaultDisabledForeground" Color="{ThemeResource SystemColorGrayTextColor}" />
+			<SolidColorBrush x:Key="JumpListDefaultDisabledBackground" Color="{StaticResource SystemBaseLowColor}" />
 			<SolidColorBrush x:Key="ListBoxBackgroundThemeBrush" Color="{ThemeResource SystemColorWindowColor}" />
 			<SolidColorBrush x:Key="ListBoxBorderThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
 			<SolidColorBrush x:Key="ListBoxDisabledForegroundThemeBrush" Color="{ThemeResource SystemColorGrayTextColor}" />
@@ -1564,13 +1564,13 @@
 			<SolidColorBrush x:Key="MenuFlyoutSeparatorThemeBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
 
 			<!-- Resources for AutoSuggestBox -->
-			<StaticResource x:Key="AutoSuggestBoxSuggestionsListBackground" ResourceKey="SystemControlBackgroundChromeMediumLowBrush" />
-			<StaticResource x:Key="AutoSuggestBoxSuggestionsListBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
+			<SolidColorBrush x:Key="AutoSuggestBoxSuggestionsListBackground" Color="{StaticResource SystemChromeMediumLowColor}" />
+			<SolidColorBrush x:Key="AutoSuggestBoxSuggestionsListBorderBrush" Color="{StaticResource SystemChromeHighColor}" />
 
 			<!-- Resources for Windows.UI.Xaml.Controls.Pivot -->
-			<StaticResource x:Key="PivotBackground" ResourceKey="SystemControlTransparentBrush" />
-			<StaticResource x:Key="PivotHeaderBackground" ResourceKey="SystemControlTransparentBrush" />
-			<StaticResource x:Key="PivotNextButtonBackground" ResourceKey="SystemControlBackgroundBaseMediumLowBrush" />
+            <SolidColorBrush x:Key="PivotBackground" Color="Transparent" />
+            <SolidColorBrush x:Key="PivotHeaderBackground" Color="Transparent" />
+            <SolidColorBrush x:Key="PivotNextButtonBackground" Color="{StaticResource SystemBaseMediumLowColor}" />
 			<StaticResource x:Key="PivotNextButtonBackgroundPointerOver" ResourceKey="SystemControlHighlightBaseMediumBrush" />
 			<StaticResource x:Key="PivotNextButtonBackgroundPressed" ResourceKey="SystemControlHighlightBaseMediumHighBrush" />
 			<StaticResource x:Key="PivotNextButtonBorderBrush" ResourceKey="SystemControlForegroundTransparentBrush" />
