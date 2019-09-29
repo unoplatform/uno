@@ -68,6 +68,8 @@ namespace Windows.UI.Xaml
 				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, arguments));
 			}
 		}
+
+		private ApplicationTheme GetDefaultSystemTheme() => ApplicationTheme.Dark;
 	}
 }
 #endif

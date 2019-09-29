@@ -11,13 +11,14 @@ namespace Windows.UI.Xaml
 	public partial class Application
 	{
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
+		private ApplicationTheme? _requestedTheme;
 
 		[Preserve]
 		public static class TraceProvider
 		{
 			public readonly static Guid Id = new Guid(
 				// {DEE07725-1CBF-4BF6-AC8A-960360CB3512}
-				unchecked ((int)0xdee07725), 0x1cbf, 0x4bf6, new byte[] { 0xac, 0x8a, 0x96, 0x3, 0x60, 0xcb, 0x35, 0x12 }
+				unchecked((int)0xdee07725), 0x1cbf, 0x4bf6, new byte[] { 0xac, 0x8a, 0x96, 0x3, 0x60, 0xcb, 0x35, 0x12 }
 			);
 
 			public const int LauchedStart = 1;
@@ -29,7 +30,11 @@ namespace Windows.UI.Xaml
 
 		public DebugSettings DebugSettings { get; } = new DebugSettings();
 
-		public ApplicationTheme RequestedTheme { get; set; }
+		public ApplicationTheme RequestedTheme
+		{
+			get => _requestedTheme ?? (_requestedTheme = GetDefaultSystemTheme()).Value;
+			set => _requestedTheme = value;
+		}
 
 		public ResourceDictionary Resources { get; } = new ResourceDictionary();
 
