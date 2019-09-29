@@ -17,8 +17,7 @@ jobs:
 
   - bash: |
       source /emsdk/emsdk_env.sh
-      msbuild /r /p:Configuration=Release /t:restore src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj
-      msbuild /p:Configuration=Release /p:TargetFramework=netstandard2.0 src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false
+      msbuild /r /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false
       msbuild /r /p:Configuration=Release src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
 
     displayName: 'Build sample app'
