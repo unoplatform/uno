@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml
 
 		private ApplicationTheme GetDefaultSystemTheme()
 		{		
-			if (Build.VERSION.SdkInt >= BuildVersionCodes.P)
+			if ((int)Build.VERSION.SdkInt >= 28)
 			{
 				var uiModeFlags = Android.App.Application.Context.Resources.Configuration.UiMode & UiMode.NightMask;
 				if (uiModeFlags == UiMode.NightNo)
