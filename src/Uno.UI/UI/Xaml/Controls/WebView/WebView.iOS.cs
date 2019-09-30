@@ -287,6 +287,10 @@ namespace Windows.UI.Xaml.Controls
 			NavigationFailed?.Invoke(this, args);
 		}
 
+
+		[Obsolete("https://github.com/unoplatform/uno/pull/1591")]
+		public static bool MustUseWebKitWebView() => true;
+
 		partial void OnScrollEnabledChangedPartial(bool isScrollingEnabled)
 		{
 			_nativeWebView.SetScrollingEnabled(isScrollingEnabled);

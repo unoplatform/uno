@@ -214,7 +214,7 @@
 		<IgnoreSet baseVersion="1.45.0">
             <Types>
                 <Member fullName="Windows.UI.Xaml.Controls.UnoUIWebView"
-                        reason="UIWebView has been deprecrated"/>
+                        reason="UIWebView support has been removed by Apple"/>
             </Types>
           
 			<Methods>
@@ -297,8 +297,6 @@
 						reason="Removed API not available in WinUI" />
 				<Member fullName="System.Void Windows.UI.Xaml.Media.Imaging.BitmapSource.set_PixelWidth(System.Int32 value)"
 						reason="Removed API not available in WinUI" />
-                <Member fullName="System.Boolean Windows.UI.Xaml.Controls.WebView.MustUseWebKitWebView()"
-                        reason="Removed because no longer required and UIWebView has been formally deprecrated" />
 			</Methods>
 
 			<Properties>
