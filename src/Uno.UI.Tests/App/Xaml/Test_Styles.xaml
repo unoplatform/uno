@@ -29,4 +29,68 @@
 		<Setter Property="Foreground"
 				Value="YellowGreen" />
 	</Style>
+	<Style x:Key="ButtonStyleWithTemplates1"
+		   TargetType="Button">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<Grid x:Name="Root">
+						<Grid.Resources>
+							<ControlTemplate x:Key="RadioButtonTemplate"
+											 TargetType="RadioButton">
+								<TextBlock x:Name="TextBlockInRadioButton"
+										   Text="RadioButtonText1" />
+							</ControlTemplate>
+						</Grid.Resources>
+						<Grid x:Name="InnerGrid">
+							<RadioButton Template="{StaticResource RadioButtonTemplate}" />
+						</Grid>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Style x:Key="ButtonStyleWithTemplates2"
+		   TargetType="Button">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<Grid x:Name="Root">
+						<Grid.Resources>
+							<ControlTemplate x:Key="RadioButtonTemplate"
+											 TargetType="RadioButton">
+								<TextBlock x:Name="TextBlockInRadioButton"
+										   Text="RadioButtonText2" />
+							</ControlTemplate>
+						</Grid.Resources>
+						<Grid x:Name="InnerGrid">
+							<RadioButton Template="{StaticResource RadioButtonTemplate}" />
+						</Grid>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+	<Style x:Key="ButtonStyleWithTemplates3"
+		   TargetType="Button">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<Grid x:Name="Root">
+						<Grid.Resources>
+							<ControlTemplate x:Key="RadioButtonTemplate"
+											 TargetType="RadioButton">
+								<TextBlock x:Name="TextBlockInRadioButton"
+										   Text="RadioButtonText3" />
+							</ControlTemplate>
+						</Grid.Resources>
+						<Grid x:Name="InnerGrid">
+							<RadioButton Template="{StaticResource RadioButtonTemplate}" />
+						</Grid>
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
 </ResourceDictionary>
