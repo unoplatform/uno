@@ -756,7 +756,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// Search first using the default namespace
 				foreach (var clrNamespace in _clrNamespaces)
 				{
-					var type = _medataHelper.FindTypeByFullName(clrNamespace + "." + name) as INamedTypeSymbol;
+					var type = _metadataHelper.FindTypeByFullName(clrNamespace + "." + name) as INamedTypeSymbol;
 
 					if (type != null)
 					{
@@ -768,16 +768,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var resolvers = new Func<INamedTypeSymbol>[] {
 
 				// The sanitized name
-				() => _medataHelper.FindTypeByName(name) as INamedTypeSymbol,
+				() => _metadataHelper.FindTypeByName(name) as INamedTypeSymbol,
 
 				// As a full name
-				() => _medataHelper.FindTypeByFullName(name) as INamedTypeSymbol,
+				() => _metadataHelper.FindTypeByFullName(name) as INamedTypeSymbol,
 
 				// As a partial name using the original type
-				() => _medataHelper.FindTypeByName(originalName) as INamedTypeSymbol,
+				() => _metadataHelper.FindTypeByName(originalName) as INamedTypeSymbol,
 
 				// As a partial name using the non-qualified name
-				() => _medataHelper.FindTypeByName(originalName.Split(':').ElementAtOrDefault(1)) as INamedTypeSymbol,
+				() => _metadataHelper.FindTypeByName(originalName.Split(':').ElementAtOrDefault(1)) as INamedTypeSymbol,
 			};
 
 			return resolvers
