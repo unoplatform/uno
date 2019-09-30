@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private ApplicationTheme GetDefaultSystemTheme() => ApplicationTheme.Dark;
+		private ApplicationTheme GetDefaultSystemTheme() => ApplicationTheme.Light;
 	}
 }
 #endif

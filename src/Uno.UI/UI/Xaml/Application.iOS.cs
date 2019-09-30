@@ -89,12 +89,12 @@ namespace Windows.UI.Xaml
 			//Ensure the current device is running 12.0 or higher, because `TraitCollection.UserInterfaceStyle` was introduced in iOS 12.0
 			if (UIDevice.CurrentDevice.CheckSystemVersion(12, 0))
 			{
-				if (UIScreen.MainScreen.TraitCollection.UserInterfaceStyle == UIUserInterfaceStyle.Light)
+				if (UIScreen.MainScreen.TraitCollection.UserInterfaceStyle == UIUserInterfaceStyle.Dark)
 				{
-					return ApplicationTheme.Light;
+					return ApplicationTheme.Dark;
 				}
 			}
-			return ApplicationTheme.Dark;
+			return ApplicationTheme.Light;
 		}
 	}
 }

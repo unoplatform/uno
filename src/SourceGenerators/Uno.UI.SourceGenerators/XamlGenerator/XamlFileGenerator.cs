@@ -411,11 +411,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				BuildLiteralProperties(blockWriter, topLevelControl, closure);
 			}
 
-			if (IsFrameworkElement(topLevelControl.Type))
-			{
-				BuildExtendedProperties(writer, topLevelControl, false, useGenericApply: true);
-			}
-
 			writer.AppendLineInvariant(";");
 			if (_isUiAutomationMappingEnabled)
 			{

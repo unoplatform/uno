@@ -40,12 +40,12 @@ namespace Windows.UI.Xaml
 			if ((int)Build.VERSION.SdkInt >= 28)
 			{
 				var uiModeFlags = Android.App.Application.Context.Resources.Configuration.UiMode & UiMode.NightMask;
-				if (uiModeFlags == UiMode.NightNo)
+				if (uiModeFlags == UiMode.NightYes)
 				{
-					return ApplicationTheme.Light;
+					return ApplicationTheme.Dark;
 				}				
 			}
-			return ApplicationTheme.Dark;
+			return ApplicationTheme.Light;
 		}
 	}
 }

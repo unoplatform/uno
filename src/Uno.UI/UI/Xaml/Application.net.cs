@@ -11,6 +11,6 @@ namespace Windows.UI.Xaml
 			Current = this;
 		}
 
-		private ApplicationTheme GetDefaultSystemTheme() => ApplicationTheme.Dark;
+		private ApplicationTheme GetDefaultSystemTheme() => ApplicationTheme.Light;
 	}
 }
