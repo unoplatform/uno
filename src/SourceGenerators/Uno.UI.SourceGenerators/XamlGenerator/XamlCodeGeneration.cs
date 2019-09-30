@@ -24,7 +24,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private bool _isWasm;
 		private string _defaultNamespace;
 		private string[] _assemblySearchPaths;
-		private RoslynMetadataHelper _medataHelper;
+		private RoslynMetadataHelper _metadataHelper;
 		private string[] _excludeXamlNamespaces;
 		private string[] _includeXamlNamespaces;
 		private string[] _analyzerSuppressions;
@@ -79,7 +79,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.ToList()
 				.ToDictionary(fullyQualifiedName => fullyQualifiedName.Split('.').Last());
 
-			_medataHelper = new RoslynMetadataHelper("Debug", sourceCompilation, msbProject, roslynProject, null, _legacyTypes);
+			_metadataHelper = new RoslynMetadataHelper("Debug", sourceCompilation, msbProject, roslynProject, null, _legacyTypes);
 			_assemblySearchPaths = new string[0];
 			_projectInstance = msbProject;
 
@@ -220,7 +220,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							file: file,
 							targetPath: _targetPath,
 							defaultNamespace: _defaultNamespace,
-							medataHelper: _medataHelper,
+							metadataHelper: _metadataHelper,
 							fileUniqueId: file.UniqueID,
 							lastReferenceUpdateTime: lastBinaryUpdateTime,
 							analyzerSuppressions: _analyzerSuppressions,
@@ -274,8 +274,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Lookup for GlobalStaticResources classes in external assembly
 			// references only, and in Uno.UI itself for generic.xaml-like resources.
 
-			var query = from ext in _medataHelper.Compilation.ExternalReferences
-						let sym = _medataHelper.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
+			var query = from ext in _metadataHelper.Compilation.ExternalReferences
+						let sym = _metadataHelper.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
 						where sym != null
 						from module in sym.Modules
 						from reference in module.ReferencedAssemblies

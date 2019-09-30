@@ -51,7 +51,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly XamlFileDefinition _fileDefinition;
 		private readonly string _targetPath;
 		private readonly string _defaultNamespace;
-		private readonly RoslynMetadataHelper _medataHelper;
+		private readonly RoslynMetadataHelper _metadataHelper;
 		private readonly string _fileUniqueId;
 		private readonly DateTime _lastReferenceUpdateTime;
 		private readonly string[] _analyzerSuppressions;
@@ -106,7 +106,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			XamlFileDefinition file,
 			string targetPath,
 			string defaultNamespace,
-			RoslynMetadataHelper medataHelper,
+			RoslynMetadataHelper metadataHelper,
 			string fileUniqueId,
 			DateTime lastReferenceUpdateTime,
 			string[] analyzerSuppressions,
@@ -124,7 +124,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_fileDefinition = file;
 			_targetPath = targetPath;
 			_defaultNamespace = defaultNamespace;
-			_medataHelper = medataHelper;
+			_metadataHelper = metadataHelper;
 			_fileUniqueId = fileUniqueId;
 			_lastReferenceUpdateTime = lastReferenceUpdateTime;
 			_analyzerSuppressions = analyzerSuppressions;
@@ -401,7 +401,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			writer.AppendLineInvariant($"global::Windows.ApplicationModel.Resources.ResourceLoader.AddLookupAssembly(GetType().Assembly);");
 
-			foreach (var reference in _medataHelper.Compilation.ExternalReferences)
+			foreach (var reference in _metadataHelper.Compilation.ExternalReferences)
 			{
 				if (!File.Exists(reference.Display))
 				{
@@ -767,7 +767,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					var targetType = GetType(targetTypeName);
 					var implicitKey = GetImplicitDictionaryResourceKey(style);
-					if (targetType.ContainingAssembly == _medataHelper.Compilation.Assembly)
+					if (targetType.ContainingAssembly == _metadataHelper.Compilation.Assembly)
 					{
 						writer.AppendLineInvariant("global::Windows.UI.Xaml.Style.RegisterDefaultStyleForType({0}, () => {1});",
 										implicitKey,
@@ -3068,7 +3068,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string BuildFontWeight(string memberValue)
 		{
-			var fontWeights = (INamedTypeSymbol)_medataHelper.GetTypeByFullName(XamlConstants.Types.FontWeights);
+			var fontWeights = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.FontWeights);
 
 			if (fontWeights.GetFields().Any(m => m.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase)))
 			{
@@ -3082,7 +3082,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string BuildBrush(string memberValue)
 		{
-			var colorHelper = (INamedTypeSymbol)_medataHelper.GetTypeByFullName(XamlConstants.Types.SolidColorBrushHelper);
+			var colorHelper = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.SolidColorBrushHelper);
 
 			// This ensures that a memberValue "DarkGoldenRod" gets converted to colorName "DarkGoldenrod" (notice the lowercase 'r')
 			var colorName = colorHelper.GetProperties().FirstOrDefault(m => m.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase))?.Name;
@@ -3124,7 +3124,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string BuildColor(string memberValue)
 		{
-			var colorHelper = (INamedTypeSymbol)_medataHelper.GetTypeByFullName(XamlConstants.Types.Colors);
+			var colorHelper = (INamedTypeSymbol)_metadataHelper.GetTypeByFullName(XamlConstants.Types.Colors);
 
 			if (colorHelper.GetFields().Any(m => m.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase)))
 			{
