@@ -22,7 +22,7 @@ To migrate a control from Silverlight, there are a few things to do:
 
 ### Cross targeted project creation
 
-To be able to build the control is a reuseable way, in a NuGet package, we need to create a **Cross-platform library** using the **Uno Platform VS Addin**, which does all the configuration to target Windows (uap10.0), iOS, Android and WebAssembly.
+To be able to build the control is a reusable way, in a NuGet package, we need to create a **Cross-platform library** using the **Uno Platform VS Addin**, which does all the configuration to target Windows (uap10.0), iOS, Android and WebAssembly.
 
 This project will contain all the XAML files and C# source files required for the `TreeView` to function properly. It uses the excellent [MSBuild.Sdk.Extras](https://github.com/onovotny/MSBuildSdkExtras) msbuild extensions to cross targeted library with minimal efforts, using the new and improved _sdk-style_ project format, and simplifies the creation of NuGet packages.
 
