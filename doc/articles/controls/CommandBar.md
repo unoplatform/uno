@@ -300,7 +300,7 @@ To ensure everything works properly, you must follow a few rules:
 
 ## Extensibility
 
-The `CommandBar` it automatically managed by the `Frame` control, however you can still use the "native" mode of the `CommandBar` with your own navigation mechanisim.
+The `CommandBar` it automatically managed by the `Frame` control, however you can still use the "native" mode of the `CommandBar` with your own navigation mechanism.
 
 On **iOS** a `CommandBarHelper` is available for this purpose, you only have to invoke each of the provided method in your own `UIViewController` implementation.
 
