@@ -44,4 +44,6 @@ Then privately share the binlog. Please note that binlogs can contain sensitive 
 
 ## on azure devops
 
-Logs and artifacts from a build can be accessed via `https://uno-platform.visualstudio.com/Uno%20Platform/_build/results?buildId=<buildid>`
+Logs and artifacts for a specific build can be accessed via `https://uno-platform.visualstudio.com/Uno%20Platform/_build/results?buildId=<buildid>`
+
+NuGet build artifacts can be consumed via `https://pkgs.dev.azure.com/uno-platform/Uno Platform/_packaging/Features/nuget/v3/index.json`
