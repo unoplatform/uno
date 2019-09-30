@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
+using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -100,6 +101,42 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var b2 = control.StylesTestButtonCustomKeyExplicit.Background;
 
 			var f2 = control.StylesTestButtonCustomKeyExplicit.Foreground;
+		}
+
+		[TestMethod]
+		public void When_Multiple_Styles_With_Nested_Templates()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var button1 = new Button { Style = app.Resources["ButtonStyleWithTemplates1"] as Style };
+
+			app.HostView.Children.Add(button1);
+
+			button1.Measure(new Size(1000, 1000));
+
+			var text1 = button1.FindFirstChild<TextBlock>();
+			Assert.IsNotNull(text1);
+			Assert.AreEqual("RadioButtonText1", text1.Text);
+
+			var button2 = new Button { Style = app.Resources["ButtonStyleWithTemplates2"] as Style };
+
+			app.HostView.Children.Add(button2);
+
+			button2.Measure(new Size(1000, 1000));
+
+			var text2 = button2.FindFirstChild<TextBlock>();
+			Assert.IsNotNull(text2);
+			Assert.AreEqual("RadioButtonText2", text2.Text);
+
+			var button3 = new Button { Style = app.Resources["ButtonStyleWithTemplates3"] as Style };
+
+			app.HostView.Children.Add(button3);
+
+			button3.Measure(new Size(1000, 1000));
+
+			var text3 = button3.FindFirstChild<TextBlock>();
+			Assert.IsNotNull(text3);
+			Assert.AreEqual("RadioButtonText3", text3.Text);
 		}
 	}
 }
