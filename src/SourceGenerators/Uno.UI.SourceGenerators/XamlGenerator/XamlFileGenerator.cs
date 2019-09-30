@@ -2015,6 +2015,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var extendedProperties = GetExtendedProperties(objectDefinition);
 			bool hasChildrenWithPhase = HasChildrenWithPhase(objectDefinition);
 
+			outerwriter.AppendLineInvariant("// *** EXTENDED PROPERTIES ***");
+			outerwriter.AppendLineInvariant($"// TYPE: {objectDefinition.Type}  VALUE: {objectDefinition.Value}");
+
+			foreach (var xx in extendedProperties)
+			{
+				outerwriter.AppendLineInvariant($"// {xx.Member.Name}");
+			}
+
+			outerwriter.AppendLineInvariant("// **************************");
+
 			if (extendedProperties.Any() || hasChildrenWithPhase)
 			{
 				string closureName;
@@ -2512,16 +2522,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void BuildComplexPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string prefix, string closureName = null)
 		{
 			Func<string, string> formatLine = format => prefix + format + (prefix.HasValue() ? ";\r\n" : "");
-
-			var xamlType = member.Objects.FirstOrDefault()?.Type;
-
-			if (xamlType != null)
-			{
-				// Determine if the type is a custom markup extension
-				var res = _markupExtensionTypes.Any(ns => ns.Name.Equals(xamlType.Name, StringComparison.InvariantCulture));
-
-				writer.AppendLine($"// #####  {xamlType.Name} is a MX??? =  " + res);
-			}
 
 			var bindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Binding");
 			var bindNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Bind");
