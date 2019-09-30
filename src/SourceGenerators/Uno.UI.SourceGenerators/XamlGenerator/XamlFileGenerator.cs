@@ -2527,7 +2527,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					return (bindingNode ?? bindNode)
 						.Members
-						.Select(BuildMemberPropertyValue)
+						.Select(m => BuildMemberPropertyValue(m, writer))
 						.Concat(bindNode != null && !isInsideDataTemplate ? new[] { "CompiledSource = this" } : Enumerable.Empty<string>())
 						.JoinBy(", ");
 
@@ -2536,7 +2536,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					return templateBindingNode
 						.Members
-						.Select(BuildMemberPropertyValue)
+						.Select(m => BuildMemberPropertyValue(m, writer))
 						.Concat("RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent)")
 						.JoinBy(", ");
 				}
@@ -2594,8 +2594,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private string BuildMemberPropertyValue(XamlMemberDefinition m)
+		private string BuildMemberPropertyValue(XamlMemberDefinition m, IIndentedStringBuilder writer)
 		{
+			var xamlType = m.Objects.FirstOrDefault()?.Type;
+
+			if (xamlType == null)
+			{
+				return "{0} = {1}".InvariantCultureFormat(m.Member.Name == "_PositionalParameters" ? "Path" : m.Member.Name, BuildBindingOption(m, FindPropertyType(m.Member), prependCastToType: true));
+			}
+
+			// Determine if the type is a custom markup extension
+			var res = _markupExtensionTypes.Any(ns => ns.Name.Equals(xamlType.Name, StringComparison.InvariantCulture));
+
+			writer.AppendLine($"// #####  {xamlType.Name} is a MX??? =  " + res);
+
 			if (IsCustomMarkupExtensionType(m.Objects.FirstOrDefault()?.Type))
 			{
 				// If the member contains a custom markup extension, build the inner part first
