@@ -13,7 +13,7 @@ another longer-lived reference, and the target is kept alive by the
 return disposable.
 
 If the returned disposable is collected, the handler will also be
-collected. Conversly, if the provided list is collected
+collected. Conversely, if the provided list is collected
 raising the event will produce nothing.
 
 Here's a usage example:
