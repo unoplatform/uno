@@ -3546,6 +3546,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildChild(IIndentedStringBuilder writer, XamlMemberDefinition owner, XamlObjectDefinition xamlObjectDefinition)
 		{
+			var extendedProperties = GetExtendedProperties(xamlObjectDefinition);
+
+			writer.AppendLineInvariant("// *** EXTENDED PROPERTIES ***");
+			writer.AppendLineInvariant($"// TYPE: {xamlObjectDefinition.Type}  VALUE: {xamlObjectDefinition.Value}");
+
+			foreach (var xx in extendedProperties)
+			{
+				writer.AppendLineInvariant($"// {xx.Member.Name}");
+			}
+
+			writer.AppendLineInvariant("// **************************");
+
 			var typeName = xamlObjectDefinition.Type.Name;
 			var fullTypeName = xamlObjectDefinition.Type.Name;
 
@@ -3612,18 +3624,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				&& IsDirectUserControlSubType(xamlObjectDefinition)
 				&& HasNoUserControlProperties(xamlObjectDefinition))
 			{
-				var extendedProperties = GetExtendedProperties(xamlObjectDefinition);
-
-				writer.AppendLineInvariant("// *** EXTENDED PROPERTIES ***");
-				writer.AppendLineInvariant($"// TYPE: {xamlObjectDefinition.Type}  VALUE: {xamlObjectDefinition.Value}");
-
-				foreach (var xx in extendedProperties)
-				{
-					writer.AppendLineInvariant($"// {xx.Member.Name}");
-				}
-
-				writer.AppendLineInvariant("// **************************");
-
 				writer.AppendLineInvariant("new {0}(skipsInitializeComponents: true).GetContent()", GetGlobalizedTypeName(fullTypeName));
 
 				using (var innerWriter = CreateApplyBlock(writer, null, out var closureName))
