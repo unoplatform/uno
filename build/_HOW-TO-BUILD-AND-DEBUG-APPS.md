@@ -64,7 +64,7 @@ The easiest way to debug it is :
 1. Open a new Visual studio an open only the project src\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj
 1. In the _Debug_ tab of the project settings configure those:
    * **Start external program:** `C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\MSBuild.exe`
-   * **Command line argmuents:** `[PATH_TO_YOUR_PROJECT/SOLUTION_FILE] /p:Configuration=Debug`
+   * **Command line arguments:** `[PATH_TO_YOUR_PROJECT/SOLUTION_FILE] /p:Configuration=Debug`
 
 _[PATH_TO_YOUR_PROJECT/SOLUTION_FILE] can be relative to the output folder of the Uno.UI.Tasks project, so `..\..\..\..\SamplesApp\SamplesApp.Droid\SamplesApp.Droid.csproj`
 will build the Android SampleApp_
