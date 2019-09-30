@@ -103,6 +103,7 @@
 		<Page Include="..\SamplesApp\UITests.Shared\Windows_UI_Xaml\Resources\Test_Dictionary_Linked.xaml" Link="App/Linked/Test_Dictionary_Linked.xaml" />
 		<Page Include="App\Xaml\Test_Control.xaml" />
 		<Page Include="App\Xaml\Test_MarkupExtension.xaml" />
+		<Page Include="App\Xaml\Test_Styles.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Include="..\Uno.UI.RuntimeTests\Helpers\SizeAssertion.cs" Link="Extensions\SizeAssertion.cs" />
