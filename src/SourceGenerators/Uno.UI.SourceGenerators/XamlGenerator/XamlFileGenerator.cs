@@ -383,6 +383,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+		/// <summary>
+		/// Processes the 'App.xaml' file.
+		/// </summary>
 		private void BuildApplicationInitializerBody(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
 		{
 			InitializeRemoteControlClient(writer);
@@ -482,6 +485,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+		/// <summary>
+		/// Processes a top-level control definition.
+		/// </summary>
+		/// <param name="writer">String builder</param>
+		/// <param name="topLevelControl">The top-level xaml object</param>
+		/// <param name="isDirectUserControlChild">True if the defined control directly inherits from UserControl.</param>
 		private void BuildGenericControlInitializerBody(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool isDirectUserControlChild)
 		{
 			// OnInitializeCompleted() seems to be used by some older code as a substitute for the constructor for UserControls, which are optimized out of the visual tree.
