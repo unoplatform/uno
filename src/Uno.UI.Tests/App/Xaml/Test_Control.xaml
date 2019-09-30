@@ -42,6 +42,7 @@
 			<Setter Property="Tag"
 					Value="OuterTreeImplicit" />
 		</Style>
+		<x:Double x:Key="OuterTreeDoubleValue">105.5</x:Double>
 	</UserControl.Resources>
 
 	<Grid x:Name="topGrid"
@@ -49,12 +50,14 @@
 		  BorderBrush="{StaticResource ButtonBackgroundThemeBrush}">
 		<TextBlock x:Name="testTextBlock"
 				   Text="Test control"
-				   Foreground="{ThemeResource ApplicationForegroundThemeBrush}" />
+				   Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
+				   views:MyBehavior.Bulbousness="{StaticResource DoubleOrNothing}"/>
 		<CheckBox x:Name="testCheckBox" />
 		<Border x:Name="testBorder"
 				Background="{StaticResource MediocreColorBrush}"
 				BorderBrush="{StaticResource PlayfulColorBrush}"
-				Width="{StaticResource DoubleOrNothing}" />
+				Width="{StaticResource DoubleOrNothing}"
+				views:MyBehavior.Bulbousness="{StaticResource OuterTreeDoubleValue}"/>
 		<Grid x:Name="testGrid">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="{StaticResource GridLength256}" />

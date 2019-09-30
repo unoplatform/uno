@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.UI.Tests.App.Views;
 using Uno.UI.Tests.App.Xaml;
 using Windows.Foundation;
 using Windows.UI;
@@ -247,6 +248,30 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var control = new Test_Control();
 
 			Assert.AreEqual(Color.FromArgb(0xB3, 0xB6, 0xB6, 0xB6), (control.TopGrid.BorderBrush as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
+		public void When_Attached_Property_And_App_Resource()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var control = new Test_Control();
+
+			var bulbousness = MyBehavior.GetBulbousness(control.TestTextBlock);
+			Assert.AreEqual(256, bulbousness);
+		}
+
+		[TestMethod]
+		public void When_Attached_Property_And_Local_Resource()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var control = new Test_Control();
+
+			app.HostView.Children.Add(control); // This is only necessary for Uno, which currently doesn't resolve local resources until load-time.
+
+			var bulbousness = MyBehavior.GetBulbousness(control.TestBorder);
+			Assert.AreEqual(105.5, bulbousness);
 		}
 	}
 }
