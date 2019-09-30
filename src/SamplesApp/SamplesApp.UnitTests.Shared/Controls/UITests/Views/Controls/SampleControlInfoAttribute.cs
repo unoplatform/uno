@@ -14,7 +14,7 @@ namespace Uno.UI.Samples.Controls
 		readonly bool _ignoreInAutomatedTests;
 		readonly string _description;
 
-		public SampleControlInfoAttribute(string category, string controlName, Type viewModelType = null, bool ignoreInAutomatedTests = false, string description = null)
+		public SampleControlInfoAttribute(string category, string controlName = null, Type viewModelType = null, bool ignoreInAutomatedTests = false, string description = null)
 		{
 			this._controlName = controlName;
 			this._category = category;
