@@ -787,3 +787,13 @@ Gets or sets a value indicating whether the user can interact with the control.
   ```xml
   <CommandBar Visibility="Collapsed" />
   ```
+  
+- > How can I switch between CommandBar modes?
+  
+  The modes can be switched between by changing the control templates.
+  
+  ```xml
+  <Style TargetType="CommandBar" BasedOn="XamlDefaultCommandBar" />
+
+  <Style TargetType="CommandBar" BasedOn="NativeDefaultCommandBar" />
+  ```
