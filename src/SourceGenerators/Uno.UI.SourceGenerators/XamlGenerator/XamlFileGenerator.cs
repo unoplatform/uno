@@ -1130,39 +1130,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		private bool IsSingleTimeInitializable(XamlType type)
-		{
-			var resourceType = GetType(type);
-
-			return resourceType.IsValueType
-				|| resourceType.SpecialType != SpecialType.None
-				|| type.Name == "Double"
-				|| type.Name == "Single"
-				|| type.Name == "Integer"
-				|| type.Name == "String"
-				|| type.Name == "Boolean"
-			;
-		}
-
-		private string GenerateTypeName(XamlObjectDefinition definition)
-		{
-			var typeName = definition.Type.Name;
-
-			if (definition.Type.PreferredXamlNamespace.StartsWith("using:"))
-			{
-				typeName = definition.Type.PreferredXamlNamespace.TrimStart("using:") + "." + typeName;
-			}
-
-			// Color is an alias the base color type for the target platform.
-			if (typeName == "Color" || typeName == "ListViewBaseLayoutTemplate")
-			{
-
-				return GetType(typeName).ToDisplayString();
-			}
-
-			return typeName;
-		}
-
 		private void BuildInlineStyle(IIndentedStringBuilder writer, XamlObjectDefinition style)
 		{
 			var targetTypeNode = GetMember(style, "TargetType");
