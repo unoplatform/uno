@@ -36,9 +36,7 @@ namespace SamplesApp
 		/// </summary>
 		public App()
 		{
-#if DEBUG
 			ConfigureFilters(LogExtensionPoint.AmbientLoggerFactory);
-#endif
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
@@ -162,7 +160,11 @@ namespace SamplesApp
 						// { "ReferenceHolder", LogLevel.Debug },
 					}
 				)
+#if DEBUG
 				.AddConsole(LogLevel.Debug);
+#else
+				.AddConsole(LogLevel.Warning);
+#endif
 		}
 
 

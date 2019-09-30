@@ -4836,7 +4836,7 @@
 								</VisualState>
 							</VisualStateGroup>
 							<VisualStateGroup x:Name="DisplayModeStates">
-								<win:VisualStateGroup.Transitions>
+								<VisualStateGroup.Transitions>
 									<VisualTransition From="CompactClosed"
 													  To="CompactOpenUp"
 													  GeneratedDuration="0:0:0.467">
@@ -4878,6 +4878,8 @@
 												<win:SplineDoubleKeyFrame KeyTime="0:0:0.467"
 																		  KeySpline="0.1,0.9 0.2,1.0"
 																		  Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CompactVerticalDelta}" />
+												<xamarin:DiscreteDoubleKeyFrame KeyTime="0:0:0.467"
+																		Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CompactVerticalDelta}" />
 											</DoubleAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="OverflowContentTransform"
 																		   Storyboard.TargetProperty="Y">
@@ -4930,6 +4932,8 @@
 												<win:SplineDoubleKeyFrame KeyTime="0:0:0.167"
 																		  KeySpline="0.2,0 0,1"
 																		  Value="0" />
+												<xamarin:DiscreteDoubleKeyFrame KeyTime="0:0:0.167"
+																		Value="0" />
 											</DoubleAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="OverflowContentTransform"
 																		   Storyboard.TargetProperty="Y">
@@ -4977,6 +4981,8 @@
 												<win:SplineDoubleKeyFrame KeyTime="0:0:0.467"
 																		  KeySpline="0.1,0.9 0.2,1.0"
 																		  Value="0" />
+												<DiscreteDoubleKeyFrame KeyTime="0:0:0"
+																		Value="0" />
 											</DoubleAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="OverflowContentRootTransform"
 																		   Storyboard.TargetProperty="Y">
@@ -5032,6 +5038,8 @@
 												<win:SplineDoubleKeyFrame KeyTime="0:0:0.167"
 																		  KeySpline="0.2,0 0,1"
 																		  Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CompactVerticalDelta}" />
+												<xamarin:DiscreteDoubleKeyFrame KeyTime="0:0:0.167"
+																		Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.CompactVerticalDelta}" />
 											</DoubleAnimationUsingKeyFrames>
 											<DoubleAnimationUsingKeyFrames Storyboard.TargetName="OverflowContentRootTransform"
 																		   Storyboard.TargetProperty="Y">
@@ -5603,7 +5611,7 @@
 											</DoubleAnimationUsingKeyFrames>
 										</Storyboard>
 									</VisualTransition>
-								</win:VisualStateGroup.Transitions>
+								</VisualStateGroup.Transitions>
 								<VisualState x:Name="CompactClosed" />
 								<VisualState x:Name="CompactOpenUp">
 									<Storyboard>

@@ -47,6 +47,8 @@ namespace Windows.UI.Xaml.Media
 			//TODO: should also check if Stretch has changed
 			if (_imageSourceChanged || !drawRect.Equals(_lastDrawRect))
 			{
+				_imageSourceChanged = false;
+
 				if (ImageSource != null)
 				{
 					RefreshImageAsync(drawRect);
@@ -55,7 +57,6 @@ namespace Windows.UI.Xaml.Media
 				{
 					_refreshPaint.Disposable = null;
 				}
-				_imageSourceChanged = false;
 				_lastDrawRect = drawRect;
 			}
 		}

@@ -62,7 +62,10 @@
 * `ToolTip` & `ToolTipService` are now implemented.
 * [#1352](https://github.com/unoplatform/uno/issues/1352) Add support for `ThemeResource`s with different types (eg: mixing `SolidColorBrush` and `LinearGradientBrush`)
 * Add support for BitmapSource.PixelWidth and Height
-* Preliminary support for `ColumnDefinition.ActualWidth` and `RowDefinition.ActualHeight`. 
+* Preliminary support for `ColumnDefinition.ActualWidth` and `RowDefinition.ActualHeight`.
+* Updated VisualTree of an app with Visibility for each items.
+* Add support for `CompositionTarget.Rendering` event.
+* Add support for `IObservableVector<T>` in `ItemsControl`
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
@@ -71,6 +74,7 @@
 * `TextBox.Text = null` will now throw an exception, as on UWP. Pushing `null` via a binding is still valid.
 * Projects targeting Android 8 must now use Xamarin.GooglePlayServices.* 60.1142.1 (60.1142.0 has been unlisted)
 * Projects targeting Android 9 must now use Xamarin.GooglePlayServices.* 71.1600.0
+* [iOS] UIWebView is deprecated and replaced with WKWebView (ITMS-90809: Deprecated API Usage - Apple will stop accepting submissions of apps that use UIWebView APIs . See https://developer.apple.com/documentation/uikit/uiwebview for more information.)
 
 ### Bug fixes
 * [#1531](https://github.com/unoplatform/uno/pull/1531)Fix an issue with VirtualizePanelAdaptater by adding a cache where the ItemSources lenght change and created a OutOfRangeException
@@ -124,6 +128,14 @@
 * `Popup` & `ComboBox` (and other controls using `Popup`) were not behaving properly when `IsLightDismissable` were set to `true`.
 * [Wasm] Fix unloaded UIElements are made visible if measured and arranged
 * [Android] Fix java NRE handing touch events on detached view
+* [Pivot] Add support for non PivotItem items
+* #1557 Fix local DataContext on ContentDialog is overwritten
+* [WASM] Fix display for multiple popups (eg ComboBox inside of ContentDialog)
+* [Android] Fix invalid ImageBrush stack overflow with delayed image reuse
+* CommandBar fixes (AppBarToggleButton, AppBarButton)
+* Fix Symbols rendering in sample app
+* Fix multiple invocations of OnLoaded when hosting a control in ItemsControl
+* [Android] Fix glitchy animations inside ListView with transformed ancestor.
 
 ## Release 1.45.0
 ### Features

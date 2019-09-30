@@ -11,15 +11,14 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_commandBar = commandBar;
 		}
 
-		// TODO: Implement
-		public double ContentHeight => 0;
-        public double NegativeOverflowContentHeight => 0;
-		public Rect OverflowContentClipRect => Rect.Empty;
-        public double OverflowContentHeight => 0;
-		public double OverflowContentHorizontalOffset => 0;
-		public double OverflowContentMaxHeight => 0;
-        public double OverflowContentMinWidth => 0;
-        public double OverflowContentMaxWidth => 0;
-		public Visibility EffectiveOverflowButtonVisibility => Visibility.Collapsed;
-    }
+		public double ContentHeight { get; internal set; }
+		public double NegativeOverflowContentHeight { get; internal set; }
+		public Rect OverflowContentClipRect { get; internal set; }
+		public double OverflowContentHeight { get; internal set; }
+		public double OverflowContentHorizontalOffset { get; internal set; }
+		public double OverflowContentMaxHeight { get; internal set; }
+		public double OverflowContentMinWidth { get; internal set; }
+		public double OverflowContentMaxWidth { get; internal set; }
+		public Visibility EffectiveOverflowButtonVisibility { get; internal set; }
+	}
 }
