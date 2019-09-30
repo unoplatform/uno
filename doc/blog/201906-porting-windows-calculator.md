@@ -34,7 +34,7 @@ The Uno platform being developed in C#, to be able to support the Calculator on 
 
 In the following part we will dissect the challenges we needed to solve in order to port this code to Web, via WebAssembly support of Uno Platform, as well as native iOS and Android apps. 
 
-### Challenge #1: Adjusing the C++ of the Calculation Engine
+### Challenge #1: Adjusting the C++ of the Calculation Engine
 
 The main reason for keeping C++ code as-is is the use of pointers and low-level memory techniques that do not map easily to C#, but also the fact that the Calculation Engine does not use any UI directly. The code is encapsulated using the `CalculatorManager` class, an `IResourceProvider`  callback interface and `ICalcDisplay` UI updates callbacks interface.
 
