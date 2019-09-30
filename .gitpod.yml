@@ -1,0 +1,6 @@
+# The Docker image to run your workspace in. Defaults to gitpod/workspace-full
+image: nventive/wasm-build:1.5
+# Ports to expose on workspace startup (optional)
+ports:
+  - port: 8000
+    onOpen: open-preview
