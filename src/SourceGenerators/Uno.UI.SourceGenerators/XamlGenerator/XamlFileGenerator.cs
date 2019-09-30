@@ -221,9 +221,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			foreach (var xx in _markupExtensionTypes)
 			{
-				writer.AppendLineInvariant("Full Name:  " + xx.GetFullName());
-				writer.AppendLineInvariant("Name:  " + xx.Name);
-				writer.AppendLineInvariant("");
+				writer.AppendLineInvariant("// Full Name:  " + xx.GetFullName());
+				writer.AppendLineInvariant("// Name:  " + xx.Name);
+				writer.AppendLineInvariant("// --------------");
 			}
 
 			writer.AppendLineInvariant("// **********************************");
