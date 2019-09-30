@@ -224,7 +224,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var retrieved1 = rd["Blu"];
 			Assert.AreEqual(ApplicationTheme.Light, Application.Current.RequestedTheme);
-			Assert.AreEqual(Colors.DarkBlue, ((SolidColorBrush)retrieved1).Color);
+			Assert.AreEqual(Colors.LightBlue, ((SolidColorBrush)retrieved1).Color);
 
 #if !NETFX_CORE //Not legal on UWP to change theme after app has launched
 			try
