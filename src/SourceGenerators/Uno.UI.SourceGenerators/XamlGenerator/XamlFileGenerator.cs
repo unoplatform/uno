@@ -2515,17 +2515,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var xamlType = member.Objects.FirstOrDefault()?.Type;
 
-			if (xamlType == null)
+			if (xamlType != null)
 			{
-				writer.AppendLine($"// ##### xamlType is null - Member Name:  {member.Member.Name}");
+				// Determine if the type is a custom markup extension
+				var res = _markupExtensionTypes.Any(ns => ns.Name.Equals(xamlType.Name, StringComparison.InvariantCulture));
 
-				return;
+				writer.AppendLine($"// #####  {xamlType.Name} is a MX??? =  " + res);
 			}
-
-			// Determine if the type is a custom markup extension
-			var res = _markupExtensionTypes.Any(ns => ns.Name.Equals(xamlType.Name, StringComparison.InvariantCulture));
-
-			writer.AppendLine($"// #####  {xamlType.Name} is a MX??? =  " + res);
 
 			var bindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Binding");
 			var bindNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Bind");
