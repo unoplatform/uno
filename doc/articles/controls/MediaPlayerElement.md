@@ -76,7 +76,7 @@ __Note:__ Don't just copy/paste, but properly setup `NSAppTransportSecurity` as 
 
 ### Android
 
-Add the folowwing to your AndroidManifest.xml
+Add the following to your AndroidManifest.xml
 
 ```xml
 <!-- Required to play remote media -->
