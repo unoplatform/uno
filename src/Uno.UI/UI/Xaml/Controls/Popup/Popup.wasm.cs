@@ -3,6 +3,7 @@ using Uno.Disposables;
 using Uno.Logging;
 using Windows.UI.Xaml.Controls.Primitives;
 using System;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -27,7 +28,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnIsLightDismissEnabledChanged(oldIsLightDismissEnabled, newIsLightDismissEnabled);
 
-			(PopupPanel.Parent as PopupRoot)?.UpdateLightDismissArea();
+			if (PopupPanel != null)
+			{
+				PopupPanel.Background = newIsLightDismissEnabled
+					? new SolidColorBrush(Colors.Transparent)
+					: null;
+			}
 		}
 
 		protected override void OnIsOpenChanged(bool oldIsOpen, bool newIsOpen)
@@ -55,12 +61,15 @@ namespace Windows.UI.Xaml.Controls
 		{
 			previousPanel?.Children.Clear();
 
-			if (PopupPanel != null)
+			if (newPanel != null)
 			{
 				if (Child != null)
 				{
-					PopupPanel.Children.Add(Child);
+					newPanel.Children.Add(Child);
 				}
+				newPanel.Background = IsLightDismissEnabled
+					? new SolidColorBrush(Colors.Transparent)
+					: null;
 			}
 		}
 

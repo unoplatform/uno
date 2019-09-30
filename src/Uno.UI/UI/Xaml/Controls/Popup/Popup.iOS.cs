@@ -44,18 +44,22 @@ namespace Windows.UI.Xaml.Controls
 				previousPanel.RemoveFromSuperview();
 			}
 
-			if (PopupPanel != null)
+			if (newPanel != null)
 			{
 				if (Child != null)
 				{
 					// Make sure that the child does not find itself without a TemplatedParent
-					if (PopupPanel.TemplatedParent == null)
+					if (newPanel.TemplatedParent == null)
 					{
-						PopupPanel.TemplatedParent = TemplatedParent;
+						newPanel.TemplatedParent = TemplatedParent;
 					}
 
-					PopupPanel.AddSubview(Child);
+					newPanel.AddSubview(Child);
 				}
+
+				newPanel.Background = IsLightDismissEnabled
+					? new SolidColorBrush(Colors.Transparent)
+					: null;
 
 				RegisterPopupPanel();
 			}
@@ -113,6 +117,18 @@ namespace Windows.UI.Xaml.Controls
 			UpdateLightDismissLayer(newIsOpen);
 
 			EnsureForward();
+		}
+
+		protected override void OnIsLightDismissEnabledChanged(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
+		{
+			base.OnIsLightDismissEnabledChanged(oldIsLightDismissEnabled, newIsLightDismissEnabled);
+
+			if (PopupPanel != null)
+			{
+				PopupPanel.Background = newIsLightDismissEnabled
+					? new SolidColorBrush(Colors.Transparent)
+					: null;
+			}
 		}
 
 		private void UpdateLightDismissLayer(bool newIsOpen)

@@ -10,26 +10,13 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public PopupRoot()
 		{
-			Background = new SolidColorBrush(Colors.Transparent);
-			UpdateLightDismissArea();
 		}
 
 		protected override void OnChildrenChanged()
 		{
 			base.OnChildrenChanged();
-			UpdateLightDismissArea();
 		}
 
-		internal void UpdateLightDismissArea()
-		{
-			var anyDismissableChild = Children
-				.OfType<PopupPanel>()
-				.Any(pp => pp.Popup.IsLightDismissEnabled);
-
-			Background = anyDismissableChild
-				? new SolidColorBrush(Colors.Transparent)
-				: null;
-		}
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
