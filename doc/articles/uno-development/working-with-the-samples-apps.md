@@ -5,7 +5,7 @@ well as provide a way to write UI Tests.
 
 Those applications are structured in a way that samples can created out of normal `UserControl` instances, marked with the `SampleControlInfoAttribute` so the sample application can discover them.
 
-Those applications are located in the `SamplesApp` folder of the solution, and a live devevelopment out of the master branch version for the WebAssembly application can be found here: https://unoui-sampleapp-unoui-sampleapp-staging.azurewebsites.net
+Those applications are located in the `SamplesApp` folder of the solution, and a live development out of the master branch version for the WebAssembly application can be found here: https://unoui-sampleapp-unoui-sampleapp-staging.azurewebsites.net
 
 ## Creating UI Tests
 
