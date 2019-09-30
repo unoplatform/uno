@@ -1,7 +1,7 @@
 ﻿# How to build & debug apps
 Sometimes you need to debug an app with a _Debug_ version of Uno.
 This is useful if you need to understand a certain behavior from Uno
-and pin-point de source using the debugger and eventually test some changes
+and pin-point the source using the debugger and eventually test some changes
 on a real application.
 
 To do this, you need to recompile your app using a _debug_ version of Uno­
