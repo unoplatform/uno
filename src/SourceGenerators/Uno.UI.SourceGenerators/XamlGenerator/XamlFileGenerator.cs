@@ -2015,16 +2015,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var extendedProperties = GetExtendedProperties(objectDefinition);
 			bool hasChildrenWithPhase = HasChildrenWithPhase(objectDefinition);
 
-			outerwriter.AppendLineInvariant("// *** EXTENDED PROPERTIES ***");
-			outerwriter.AppendLineInvariant($"// TYPE: {objectDefinition.Type}  VALUE: {objectDefinition.Value}");
-
-			foreach (var xx in extendedProperties)
-			{
-				outerwriter.AppendLineInvariant($"// {xx.Member.Name}");
-			}
-
-			outerwriter.AppendLineInvariant("// **************************");
-
 			if (extendedProperties.Any() || hasChildrenWithPhase)
 			{
 				string closureName;
@@ -3622,6 +3612,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				&& IsDirectUserControlSubType(xamlObjectDefinition)
 				&& HasNoUserControlProperties(xamlObjectDefinition))
 			{
+				var extendedProperties = GetExtendedProperties(xamlObjectDefinition);
+
+				writer.AppendLineInvariant("// *** EXTENDED PROPERTIES ***");
+				writer.AppendLineInvariant($"// TYPE: {xamlObjectDefinition.Type}  VALUE: {xamlObjectDefinition.Value}");
+
+				foreach (var xx in extendedProperties)
+				{
+					writer.AppendLineInvariant($"// {xx.Member.Name}");
+				}
+
+				writer.AppendLineInvariant("// **************************");
+
 				writer.AppendLineInvariant("new {0}(skipsInitializeComponents: true).GetContent()", GetGlobalizedTypeName(fullTypeName));
 
 				using (var innerWriter = CreateApplyBlock(writer, null, out var closureName))
