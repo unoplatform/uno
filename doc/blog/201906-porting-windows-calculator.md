@@ -94,7 +94,7 @@ This part is the heart of the porting effort that makes use of [P/Invoke](https:
 
 To be able to invoke WebAssembly code directly from C# using P/Invoke, [Mono had to be updated](https://github.com/mono/mono/pull/14259) to support it. Two modes are available, one for interpreter-based builds and another for AOT-based builds.
 
-The interpreter-based mode uses [emscripten's dynamic linking feature](https://github.com/emscripten-core/emscripten/wiki/Linking#overview-of-dynamic-linking), and is required to be ble to build a Wasm application under windows without having to rely on emscripten's tooling. This ensures that the development loop is as efficient as possible, though at the expense of runtime performance.
+The interpreter-based mode uses [emscripten's dynamic linking feature](https://github.com/emscripten-core/emscripten/wiki/Linking#overview-of-dynamic-linking), and is required to be able to build a Wasm application under windows without having to rely on emscripten's tooling. This ensures that the development loop is as efficient as possible, though at the expense of runtime performance.
 
 The AOT-based mode uses emscripten's and [Mono's static linking feature](https://github.com/mono/mono/pull/14253), where Mono generates a set of "known p/invoke" methods into LLRM bitcode modules. This mode is the most efficient, but also the slowest to generate. It's generally best to use it in release CI builds.
 
