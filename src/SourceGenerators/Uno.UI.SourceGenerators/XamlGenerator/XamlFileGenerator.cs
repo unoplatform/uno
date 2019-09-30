@@ -2600,6 +2600,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (xamlType == null)
 			{
+				writer.AppendLine($"// ##### xamlType is null - Member Name:  {m.Member.Name}");
+
 				return "{0} = {1}".InvariantCultureFormat(m.Member.Name == "_PositionalParameters" ? "Path" : m.Member.Name, BuildBindingOption(m, FindPropertyType(m.Member), prependCastToType: true));
 			}
 
