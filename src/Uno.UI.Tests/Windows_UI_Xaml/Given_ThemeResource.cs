@@ -17,6 +17,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		public void When_System_ThemeResource()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
+			app.RequestedTheme = Windows.UI.Xaml.ApplicationTheme.Light;
 
 			var control = new Test_Control();
 			app.HostView.Children.Add(control);

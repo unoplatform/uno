@@ -223,8 +223,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.IsTrue(rd.ContainsKey("Blu"));
 
 			var retrieved1 = rd["Blu"];
-			Assert.AreEqual(ApplicationTheme.Light, Application.Current.RequestedTheme);
-			Assert.AreEqual(Colors.LightBlue, ((SolidColorBrush)retrieved1).Color);
+			Assert.AreEqual(ApplicationTheme.Dark, Application.Current.RequestedTheme);
+			Assert.AreEqual(Colors.DarkBlue, ((SolidColorBrush)retrieved1).Color);
 
 #if !NETFX_CORE //Not legal on UWP to change theme after app has launched
 			try
@@ -248,12 +248,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 #endif
 
 			var rd = new ResourceDictionary();
-			var dark = new ResourceDictionary();
-			dark["Blu"] = new SolidColorBrush(Colors.DarkBlue);
+			var light = new ResourceDictionary();
+			light["Blu"] = new SolidColorBrush(Colors.DarkBlue);
 
-			rd.ThemeDictionaries["Dark"] = dark;
+			rd.ThemeDictionaries["Light"] = light;
 
-			Assert.AreEqual(ApplicationTheme.Light, Application.Current.RequestedTheme);
+			Assert.AreEqual(ApplicationTheme.Dark, Application.Current.RequestedTheme);
 			Assert.IsFalse(rd.ContainsKey("Blu"));
 			;
 		}

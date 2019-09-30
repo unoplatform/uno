@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Controls
 			//override the default value from dependency property based on application theme
 			//in the future, this will need to respond to the inherited RequestedTheme and its changes
 			this.SetValue(ForegroundProperty,
-				Application.Current.RequestedTheme == ApplicationTheme.Light
+				Application.Current == null || Application.Current.RequestedTheme == ApplicationTheme.Light
 					? SolidColorBrushHelper.Black
 					: SolidColorBrushHelper.White, DependencyPropertyValuePrecedences.DefaultValue);
 		}
