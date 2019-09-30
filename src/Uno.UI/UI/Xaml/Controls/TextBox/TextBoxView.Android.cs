@@ -42,6 +42,11 @@ namespace Windows.UI.Xaml.Controls
 			//Remove default native padding.
 			this.SetPadding(0, 0, 0, 0);
 
+            if (FeatureConfiguration.TextBox.HideCaret)
+            {
+                SetCursorVisible(false);
+            }
+
 			_isInitialized = true;
 
 			// This ensures the TextBoxView gets resized as Text changes

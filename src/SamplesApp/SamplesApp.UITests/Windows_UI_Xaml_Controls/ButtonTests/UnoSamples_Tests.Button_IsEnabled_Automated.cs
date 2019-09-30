@@ -203,7 +203,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Queries.Platform.iOS, Queries.Platform.Browser)] // Android is disabled https://github.com/unoplatform/uno/issues/1632
+		[ActivePlatforms(Uno.UITest.Helpers.Queries.Platform.iOS, Uno.UITest.Helpers.Queries.Platform.Browser)] // Android is disabled https://github.com/unoplatform/uno/issues/1632
 
 		public void CheckBox_DoubleTapValidation()
 		{
