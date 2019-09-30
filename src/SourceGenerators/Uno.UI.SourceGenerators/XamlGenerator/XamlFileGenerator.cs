@@ -2513,6 +2513,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			Func<string, string> formatLine = format => prefix + format + (prefix.HasValue() ? ";\r\n" : "");
 
+			var xamlType = member.Objects.FirstOrDefault()?.Type;
+
+			if (xamlType == null)
+			{
+				writer.AppendLine($"// ##### xamlType is null - Member Name:  {member.Member.Name}");
+
+				return;
+			}
+
+			// Determine if the type is a custom markup extension
+			var res = _markupExtensionTypes.Any(ns => ns.Name.Equals(xamlType.Name, StringComparison.InvariantCulture));
+
+			writer.AppendLine($"// #####  {xamlType.Name} is a MX??? =  " + res);
+
 			var bindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Binding");
 			var bindNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Bind");
 			var templateBindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "TemplateBinding");
@@ -2596,20 +2610,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string BuildMemberPropertyValue(XamlMemberDefinition m, IIndentedStringBuilder writer)
 		{
-			var xamlType = m.Objects.FirstOrDefault()?.Type;
-
-			if (xamlType == null)
-			{
-				writer.AppendLine($"// ##### xamlType is null - Member Name:  {m.Member.Name}");
-
-				return "{0} = {1}".InvariantCultureFormat(m.Member.Name == "_PositionalParameters" ? "Path" : m.Member.Name, BuildBindingOption(m, FindPropertyType(m.Member), prependCastToType: true));
-			}
-
-			// Determine if the type is a custom markup extension
-			var res = _markupExtensionTypes.Any(ns => ns.Name.Equals(xamlType.Name, StringComparison.InvariantCulture));
-
-			writer.AppendLine($"// #####  {xamlType.Name} is a MX??? =  " + res);
-
 			if (IsCustomMarkupExtensionType(m.Objects.FirstOrDefault()?.Type))
 			{
 				// If the member contains a custom markup extension, build the inner part first
