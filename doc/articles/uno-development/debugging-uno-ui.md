@@ -108,7 +108,7 @@ The Source Generation tooling diagnostics can be enabled as follows:
 Uno provides a set of classes aimed at diagnosing memory issues related to leaking controls, whether it be from
 an Uno.UI issue or from an invalid pattern in user code.
 
-### Enable Memory intances counter
+### Enable Memory instances counter
 In your application, as early as possible in the initialization (generally in the App.xaml.cs
 constructor), add and call the following method:
 
