@@ -22,7 +22,7 @@ namespace Foundation
 		/// </summary>
 		/// <param name="view">The view to be disposed.</param>
 		/// <param name="disposing">True if called from View.Dispose, False if called from the finalizer.</param>
-		/// <returns>True if the dispose method can continue excuting, otherwise, false.</returns>
+		/// <returns>True if the dispose method can continue executing, otherwise, false.</returns>
 		/// <remarks>This method will requeue the call to Dispose on the UIThread if called from the finalizer.</remarks>
 		public static bool ValidateDispose(this NSObject view, bool disposing)
 		{

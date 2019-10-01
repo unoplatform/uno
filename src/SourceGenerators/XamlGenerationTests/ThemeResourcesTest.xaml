@@ -28,7 +28,7 @@
 			</ResourceDictionary.ThemeDictionaries>
 
 			<SolidColorBrush x:Key="LocalColor" Color="Brown" />
-			<!-- While this isnt a correct usage, ThemeResource doesnt fail at compile-time on uwp, nor does it crash the app. -->
+			<!-- While this isn't a correct usage, ThemeResource doesn't fail at compile-time on uwp, nor does it crash the app. -->
 			<SolidColorBrush x:Key="BrushThatUsesAnotherBrushAsColor" Color="{ThemeResource LocalColor}" />
 		</ResourceDictionary>
 	</Page.Resources>

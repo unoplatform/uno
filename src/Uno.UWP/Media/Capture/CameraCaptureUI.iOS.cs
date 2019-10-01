@@ -152,7 +152,7 @@ namespace Windows.Media.Capture
 		}
 
 		/// <summary>
-		/// Fixes orientaion issues caused by taking an image straight from the camera
+		/// Fixes orientation issues caused by taking an image straight from the camera
 		/// </summary>
 		/// <param name="ct">Cancellation token</param>
 		/// <param name="image">UI Image</param>

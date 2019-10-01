@@ -152,12 +152,12 @@
 						reason="Removed to use ArrangeOverride for macOS compatibility"/>
 
 				<Member fullName="System.Void Windows.UI.Xaml.StateTriggerBase.SetActive(System.Boolean isActive)"
-						reason="Aligned visiblity with UWP"/>
+						reason="Aligned visibility with UWP"/>
 				<Member fullName="System.Void Windows.UI.Xaml.UIElement.set_RenderSize(Windows.Foundation.Size value)"
-						reason="Aligned visiblity with UWP"/>
+						reason="Aligned visibility with UWP"/>
 
 				<Member fullName="System.Void Uno.UI.UnoViewGroup.set_IsPointerCaptured(System.Boolean value)"
-						reason="Aligned visiblity with UWP"/>
+						reason="Aligned visibility with UWP"/>
 
 				<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnLayoutUpdated()"
 						reason="Invalid method visibility"/>

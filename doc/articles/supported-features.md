@@ -53,7 +53,7 @@
 - [Path & Shapes support](features/shapes-and-brushes.md)
 - Updateable Shapes support
 - Image Brush support in shapes
-- `FontIcon` suport
+- `FontIcon` support
 - Merged Dictionary support
 
 ### Responsive design

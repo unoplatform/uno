@@ -129,7 +129,7 @@ namespace Uno.UI.Controls
 
 		#region IsAutoLostFocusEnabled
 		/// <summary>
-		/// Gets or sets a boolean which indicates if the serach box should lost focus when query is submitted
+		/// Gets or sets a boolean which indicates if the search box should lost focus when query is submitted
 		/// </summary>
 		[DefaultValue(_defaultIsAutoLostFocusEnabled)]
 		public bool IsAutoLostFocusEnabled

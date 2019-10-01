@@ -48,4 +48,4 @@ The framework template pool manages the pooling of ControlTemplate and DataTempl
 - `ReuseTemplate` is raised when a pooled template is provided to a control asking for a specific data template.
 - `ReleaseTemplate` is raised when a pooled template instance has not been used for a while.
 
-If the `ReuseTemplate` occurences is low, this usually means that there is a memory leak to investigate.
+If the `ReuseTemplate` occurrences is low, this usually means that there is a memory leak to investigate.

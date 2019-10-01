@@ -49,7 +49,7 @@ namespace Uno.UI.Controls
 
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{
-			// Force using the Exactly measure spec mode because the SearchView doesn't take tha full width when using AtMost
+			// Force using the Exactly measure spec mode because the SearchView doesn't take the full width when using AtMost
 			var exactlyWidthMeasureSpec = ViewHelper.MakeMeasureSpec(ViewHelper.MeasureSpecGetSize(widthMeasureSpec), MeasureSpecMode.Exactly);
 			base.OnMeasure(exactlyWidthMeasureSpec, heightMeasureSpec);
 		}

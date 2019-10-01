@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Data
 		/// <param name="converterParameter"></param>
 		internal Binding(PropertyPath path = default(PropertyPath), IValueConverter converter = null, object converterParameter = null)
 		{
-			// This method should not be made public, for API compatibilty with Jupiter.
+			// This method should not be made public, for API compatibility with Jupiter.
 
 			Path = path ?? new PropertyPath(String.Empty);
 			Converter = converter;

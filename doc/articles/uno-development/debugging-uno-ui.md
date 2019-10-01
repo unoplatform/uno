@@ -54,7 +54,7 @@ To debug Uno.UI inside of an existing project, the simplest way (until Microsoft
 * Change the version number to the package you installed at the first step
 * Build your solution.
 
-> Note: This overrides your local nuget cache, making the cache inconstant with the binaries you just built. 
+> Note: This overrides your local nuget cache, making the cache inconsistent with the binaries you just built. 
 To ensure that the file you have in your cache a correct, either clear the cache, or observe the properties of the `Uno.UI.dll` file, where the
 product version should contain a git CommitID.
 

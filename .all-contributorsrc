@@ -372,6 +372,15 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "hugovk",
+      "name": "Hugo van Kemenade",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1324225?v=4",
+      "profile": "https://github.com/hugovk",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 5,
