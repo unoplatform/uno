@@ -163,6 +163,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="http://www.deveshsingh.ml"><img src="https://avatars3.githubusercontent.com/u/31030254?v=4" width="100px;" alt="Devesh Singh"/><br /><sub><b>Devesh Singh</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=D3v3sh5ingh" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/RanadeepPolavarapu"><img src="https://avatars1.githubusercontent.com/u/7084995?v=4" width="100px;" alt="RanadeepPolavarapu"/><br /><sub><b>RanadeepPolavarapu</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=RanadeepPolavarapu" title="Documentation">📖</a></td>
   </tr>
 </table>
 
