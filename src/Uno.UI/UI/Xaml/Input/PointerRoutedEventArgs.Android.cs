@@ -131,6 +131,8 @@ namespace Windows.UI.Xaml.Input
 					props.IsEraser = true;
 					break;
 				case MotionEventToolType.Unknown: // used by Xamarin.UITest
+					props.IsLeftButtonPressed = true;
+					break;
 				default:
 					break;
 			}
