@@ -307,7 +307,7 @@ To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5**
              PlaceholderText="Enter Text Here" />
     ```
 
-1. Finally we will add the last section to our layout to handle planning. Here will will show the estimated Effort it will take to resolve the issue, what the current status is, and when the Issue was Started and Completed.
+1. Finally, we will add the last section to our layout to handle the planning. Here we will show the estimated Effort it will take to resolve the issue, what the current status is, and when the Issue was Started and Completed.
 
     ```xml
     <TextBlock Text="Planning" FontWeight="Bold" FontSize="16" Grid.Row="3" Margin="10,0" />
