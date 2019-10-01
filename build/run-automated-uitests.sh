@@ -1,5 +1,6 @@
 ﻿#!/bin/bash
-set -e
+set -euo pipefail
+IFS=$'\n\t'
 
 cd $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries
 
