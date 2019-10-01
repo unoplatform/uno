@@ -39,3 +39,8 @@ The native layout system for inner elements is then overridden with a XAML-compa
 On Windows platforms, Uno.UI is not present and the XAML-layout files are left untouched. On Xamarin-compatible platforms, the XAML files are processed at compile time to generate non-conditional code that will be executed as-is at runtime on the device. This means that there is no runtime parsing of XAML, which makes the UI-tree creation particularly efficient.
 
 Uno.UI also provides ways to have platform-specific markup in XAML files, which allows for a simple file tree while adjusting the UI for each platform.
+
+## Want more information about Uno?
+
+Check out the Uno website for more information and support documents here:
+https://platform.uno/support/
