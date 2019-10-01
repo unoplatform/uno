@@ -159,6 +159,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://tomercohen.com"><img src="https://avatars0.githubusercontent.com/u/50206?v=4" width="100px;" alt="Tomer Cohen"/><br /><sub><b>Tomer Cohen</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=tomer" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/SantosAntero"><img src="https://avatars1.githubusercontent.com/u/36671793?v=4" width="100px;" alt="Antero Santos"/><br /><sub><b>Antero Santos</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=SantosAntero" title="Documentation">📖</a></td>
     <td align="center"><a href="https://zzyzy.github.io/"><img src="https://avatars2.githubusercontent.com/u/6206954?v=4" width="100px;" alt="Zhen Zhi Lee"/><br /><sub><b>Zhen Zhi Lee</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=zzyzy" title="Code">💻</a></td>
+    <td align="center"><a href="https://backendtea.com"><img src="https://avatars1.githubusercontent.com/u/14289961?v=4" width="100px;" alt="Gert de Pagter"/><br /><sub><b>Gert de Pagter</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=BackEndTea" title="Documentation">📖</a></td>
   </tr>
 </table>
 
