@@ -1,26 +1,15 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
+using Windows.UI;
 using Uno.UI.Sample.Views.Helper;
 using Uno.UI.Samples.Controls;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
-
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
+using Windows.UI.Xaml.Shapes;
 
 namespace UITests.Shared.Windows_UI_Xaml.Clip
 {
-
-	[SampleControlInfo("Clip", nameof(DoubleAnimationClipping), description: "[Android]When going to `Ready` state the WebView expand to full screen and cover other control when it shouldn't be.")]
+	[SampleControlInfo(category: "Clip", description: "[Android]When going to `Ready` state the WebView expand to full screen and cover other control when it shouldn't be.")]
 	public sealed partial class DoubleAnimationClipping : UserControl
 	{
 		private static readonly Random random = new Random();
@@ -32,17 +21,13 @@ namespace UITests.Shared.Windows_UI_Xaml.Clip
 
 		private void GotoReadyState(object sender, RoutedEventArgs e)
 		{
-			//var rootGrid = MainContent.FindFirstChild<Grid>(x => x.Name == "RootGrid");
-			var webView = MainContent.FindFirstChild<WebView>(x => x.Name == "WebView");
+			var sut = MainContent.FindFirstChild<Rectangle>(x => x.Name == "SUT");
 
-			var colors = "Blue,Pink,Yellow,Lime".Split(',');
+			var colors = new [] {Colors.Blue, Colors.Pink, Colors.Yellow, Colors.Lime};
 			var color = colors[random.Next(colors.Length)];
 
-			webView.NavigateToString($@"
-				<html>
-					<body style='background: {color};' />
-				</html>
-			");
+			sut.Fill = new SolidColorBrush(color);
+
 			VisualStateManager.GoToState(MainContent, "Ready", true);
 		}
 

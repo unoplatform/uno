@@ -1,7 +1,6 @@
 ﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml.Clip.DoubleAnimationClipping"
 			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml.Clip"
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 mc:Ignorable="d"
@@ -22,7 +21,7 @@
 						<VisualStateGroup x:Name="ReadyStates">
 							<VisualState x:Name="Ready">
 								<Storyboard>
-									<DoubleAnimation Storyboard.TargetName="WebView"
+									<DoubleAnimation Storyboard.TargetName="SUT"
 													 Storyboard.TargetProperty="Opacity"
 													 Duration="0:0:0.5"
 													 To="1" />
@@ -30,7 +29,7 @@
 							</VisualState>
 							<VisualState x:Name="NotReady">
 								<Storyboard>
-									<DoubleAnimation Storyboard.TargetName="WebView"
+									<DoubleAnimation Storyboard.TargetName="SUT"
 													 Storyboard.TargetProperty="Opacity"
 													 Duration="0:0:0.5"
 													 To="0" />
@@ -46,7 +45,7 @@
 							Margin="16"
 							Padding="8,12"
 							Background="Gray">
-						<WebView x:Name="WebView" />
+						<Rectangle Fill="Red" x:Name="SUT" />
 					</Border>
 					<StackPanel Grid.Row="2">
 						<Button Content="GOTO Ready"
