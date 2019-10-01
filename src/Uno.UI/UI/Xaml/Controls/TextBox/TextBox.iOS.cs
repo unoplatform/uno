@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private ITextBoxView _textBoxView;
 
-		//Only implemented in TextBox in IOS. Key events are not passed to UIViews that dont implement UIKeyInput protocol
+		//Only implemented in TextBox in IOS. Key events are not passed to UIViews that don't implement UIKeyInput protocol
 		//http://stackoverflow.com/questions/24106882/how-do-i-get-keyboard-events-without-a-textbox
 
 		partial void InitializePropertiesPartial()

@@ -234,7 +234,7 @@ namespace Windows.UI.Xaml.Controls
 					break;
 
 				default:
-					throw new NotSupportedException("Strech mode {0} is not supported".InvariantCultureFormat(stretch));
+					throw new NotSupportedException("Stretch mode {0} is not supported".InvariantCultureFormat(stretch));
 			}
 		}
 

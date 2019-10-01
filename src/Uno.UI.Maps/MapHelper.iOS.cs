@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 
 		internal static MKCoordinateRegion CreateRegion(Geopoint centerCoordinate, double zoomLevel, CGSize size)
 		{
-			// convert center coordiate to pixel space 
+			// convert center coordinate to pixel space 
 			double centerPixelX = LongitudeToPixelSpaceX(centerCoordinate.Position.Longitude);
 			double centerPixelY = LatitudeToPixelSpaceY(centerCoordinate.Position.Latitude);
 

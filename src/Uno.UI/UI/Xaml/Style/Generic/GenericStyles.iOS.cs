@@ -199,11 +199,8 @@ namespace Windows.UI.Xaml
 			var style = new Style(typeof(Windows.UI.Xaml.Controls.WebView))
 			{
 				Setters =  {
-					//WKWebView should be used where available (8.0+) to avoid memory leaks, UIWebView is used on older versions
 					new Setter<WebView>("Template", t =>
-						t.Template = Funcs.Create<UIView>(() => WebView.MustUseWebKitWebView() ?
-							(UIView)new UnoWKWebView() :
-							(UIView)new UnoUIWebView()
+						t.Template = Funcs.Create<UIView>(() => (UIView)new UnoWKWebView() 
 						)
 					)
 				}

@@ -22,7 +22,7 @@ namespace Uno.UI.DataBinding
 		/// <summary>
 		/// Builds a new BindableType.
 		/// </summary>
-		/// <param name="estimatedPropertySize">Provide an estimated number of properties, so the dictionary does not need to grow unnecesarily.</param>
+		/// <param name="estimatedPropertySize">Provide an estimated number of properties, so the dictionary does not need to grow unnecessarily.</param>
 		/// <param name="sourceType">The actual .NET type that corresponds to this instance.</param>
 		public BindableType(int estimatedPropertySize, Type sourceType)
 		{

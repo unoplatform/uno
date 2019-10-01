@@ -459,7 +459,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public override bool OnRequestChildFocus(RecyclerView parent, RecyclerView.State state, View child, View focused)
 		{
-			// Returning true here prevents the list scrolling a focussed control into view. We disable this behaviour to prevent a tricky 
+			// Returning true here prevents the list scrolling a focused control into view. We disable this behaviour to prevent a tricky 
 			// bug where, when there is a ScrapLayout while scrolling the list, a SelectorItem that has focus is detached and reattached 
 			// and the list tries to bring it into view, causing funky 'pinning' behaviour.
 			return true;

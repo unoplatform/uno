@@ -364,7 +364,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
-		/// <param name="precedence">The value precendence to assign</param>
+		/// <param name="precedence">The value precedence to assign</param>
 		public void ClearValue(DependencyProperty property)
 		{
 			SetValue(property, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Local);
@@ -375,7 +375,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
-		/// <param name="precedence">The value precendence to assign</param>
+		/// <param name="precedence">The value precedence to assign</param>
 		internal void ClearValue(DependencyProperty property, DependencyPropertyValuePrecedences precedence)
 		{
 			SetValue(property, DependencyProperty.UnsetValue, precedence);
@@ -777,7 +777,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Registers to parent changes.
 		/// </summary>
-		/// <param name="key">A key to be passed to the callack parameter.</param>
+		/// <param name="key">A key to be passed to the callback parameter.</param>
 		/// <param name="callback">A callback to be called</param>
 		internal IDisposable RegisterParentChangedCallback(object key, ParentChangedCallback callback)
 		{
@@ -907,7 +907,7 @@ namespace Windows.UI.Xaml
 		internal IDisposable RegisterInheritedProperties(IDependencyObjectStoreProvider parentProvider)
 		{
 
-			// Initialze at two as there is at most two disposables added below, and
+			// Initialize at two as there is at most two disposables added below, and
 			// there is no need to allocate for more internally.
 			var disposable = new CompositeDisposable(2);
 
@@ -1417,7 +1417,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="value">The value to set</param>
-		/// <param name="precedence">The value precendence to assign</param>
+		/// <param name="precedence">The value precedence to assign</param>
 		private void SetValueInternal(
 			object value,
 			DependencyPropertyValuePrecedences precedence,

@@ -24,7 +24,7 @@ platform support is bundled in one single nuget package, requiring the extractio
 ## Building support for the Windows Community Toolkit for Uno
 
 To add initial support for the Windows Community Toolkit, some new features had to be added to the Uno Platform code
-base, such as suppport for `x:Bind`, support for code-behind events in `DataTemplate`, and other small updates to have
+base, such as support for `x:Bind`, support for code-behind events in `DataTemplate`, and other small updates to have
 a first list of available controls.
 
 WCT being a showcase for all Windows features, the initial list of controls available in the sample application [only contains

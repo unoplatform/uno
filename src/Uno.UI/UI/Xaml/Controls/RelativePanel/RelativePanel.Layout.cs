@@ -156,7 +156,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Order the child in a list so that the sibling it depends on are layed out before itself
+		/// Order the child in a list so that the sibling it depends on are laid out before itself
 		/// </summary>
 		private void OrderChildBasedOnDependencies(IFrameworkElement child, IFrameworkElement[] dependencies, List<IFrameworkElement> orderedChildren)
 		{

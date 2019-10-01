@@ -9,7 +9,7 @@ The platform requirements for the Uno Platform are as follows:
 
 ## iOS
 
-The minimumn supported version by the Uno Platform is iOS 8 from 2014.
+The minimum supported version by the Uno Platform is iOS 8 from 2014.
 
 ## Universal Windows Platform (UWP)
 

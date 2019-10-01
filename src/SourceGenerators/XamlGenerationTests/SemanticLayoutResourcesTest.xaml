@@ -136,13 +136,13 @@
 
 	<x:Double x:Key="AppFontSizeSmall">9</x:Double>
 	<x:Double x:Key="AppFontSizeMedium">15</x:Double>
-	<!-- ControlContentThemeFontSize is a System resource, but can't be setted to {StaticResource AppFontSizeMedium}, so it must be sync manually here...-->
+	<!-- ControlContentThemeFontSize is a System resource, but can't be set to {StaticResource AppFontSizeMedium}, so it must be sync manually here...-->
 	<x:Double x:Key="ControlContentThemeFontSize">15</x:Double>
 	<x:Double x:Key="AppFontSizeLarge">26</x:Double>
-	<!-- SettingsFlyoutHeaderThemeFontSize is a System resource, but can't be setted to {StaticResource AppFontSizeLarge}, so it must be sync manually here...-->
+	<!-- SettingsFlyoutHeaderThemeFontSize is a System resource, but can't be set to {StaticResource AppFontSizeLarge}, so it must be sync manually here...-->
 	<x:Double x:Key="SettingsFlyoutHeaderThemeFontSize">26</x:Double>
 	<x:Double x:Key="AppFontSizeXLarge">54</x:Double>
-	<!-- HubHeaderThemeFontSize and HubSectionHeaderThemeFontSize are System resources, but can't be setted to {StaticResource AppFontSizeLarge}, so it must be sync manually here...-->
+	<!-- HubHeaderThemeFontSize and HubSectionHeaderThemeFontSize are System resources, but can't be set to {StaticResource AppFontSizeLarge}, so it must be sync manually here...-->
 	<x:Double x:Key="HubHeaderThemeFontSize">54</x:Double>
 	<x:Double x:Key="HubSectionHeaderThemeFontSize">26.667</x:Double>
 

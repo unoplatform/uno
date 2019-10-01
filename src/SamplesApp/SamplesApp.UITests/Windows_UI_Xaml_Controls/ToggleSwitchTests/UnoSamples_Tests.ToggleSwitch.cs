@@ -24,7 +24,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToggleSwitchTests
 			var unloadButton = _app.Marked("unload");
 			var reloadButton = _app.Marked("reload");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("False", toggleSwitchGroup.GetDependencyPropertyValue("IsOn")?.ToString());
 			Assert.AreEqual("True", separatedToggleSwitch.GetDependencyPropertyValue("IsOn")?.ToString());
 

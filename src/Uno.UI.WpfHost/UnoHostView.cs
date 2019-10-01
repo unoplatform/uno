@@ -103,12 +103,12 @@ namespace Uno.UI.WpfHost
 		{
 			public void OnBeforeDownload(IWebBrowser chromiumWebBrowser, IBrowser browser, DownloadItem downloadItem, IBeforeDownloadCallback callback)
 			{
-				Debug.WriteLine("Downlading: " + downloadItem.FullPath);
+				Debug.WriteLine("Downloading: " + downloadItem.FullPath);
 			}
 
 			public void OnDownloadUpdated(IWebBrowser chromiumWebBrowser, IBrowser browser, DownloadItem downloadItem, IDownloadItemCallback callback)
 			{
-				Debug.WriteLine("Downladed: " + downloadItem);
+				Debug.WriteLine("Downloaded: " + downloadItem);
 			}
 		}
 

@@ -161,7 +161,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
-		/// <param name="precedence">The value precendence to assign</param>
+		/// <param name="precedence">The value precedence to assign</param>
 		internal static void ClearValue(this DependencyObject instance, DependencyProperty property, DependencyPropertyValuePrecedences precedence)
 		{
 			SetValue(instance, property, DependencyProperty.UnsetValue, precedence);
@@ -184,7 +184,7 @@ namespace Windows.UI.Xaml
 		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
 		/// <param name="value">The value to set</param>
-		/// <param name="precedence">The value precendence to assign</param>
+		/// <param name="precedence">The value precedence to assign</param>
 		public static void SetValue(this DependencyObject instance, DependencyProperty property, object value, DependencyPropertyValuePrecedences? precedence)
 		{
 			GetStore(instance).SetValue(property, value, precedence ?? DependencyPropertyValuePrecedences.Local);
@@ -196,7 +196,7 @@ namespace Windows.UI.Xaml
 		/// <param name="instance">The instance on which the property is attached</param>
 		/// <param name="property">The dependency property to get</param>
 		/// <param name="value">The value to set</param>
-		/// <param name="precedence">The value precendence to assign</param>
+		/// <param name="precedence">The value precedence to assign</param>
 		public static void SetValue(this object instance, DependencyProperty property, object value, DependencyPropertyValuePrecedences? precedence)
 		{
 			GetStore(instance).SetValue(property, value, precedence ?? DependencyPropertyValuePrecedences.Local);
@@ -217,7 +217,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Register for changes dependency property changes notifications.
 		/// </summary>
-		/// <param name="instance">The instance that owns the proeprty</param>
+		/// <param name="instance">The instance that owns the property</param>
 		/// <param name="property">The property to observe</param>
 		/// <param name="callback">The callback</param>
 		/// <returns>A disposable that will unregister the callback when disposed.</returns>

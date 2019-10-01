@@ -107,7 +107,7 @@ namespace Windows.UI.Xaml.Shapes
 					StrokeDashArray.Add(StrokeDashArray[0]);
 				}
 
-				// Make sure the dash array has a postive number of items, Android cannot have an odd number
+				// Make sure the dash array has a positive number of items, Android cannot have an odd number
 				// of items in the array (in such a case we skip the dash effect and log the error)
 				//		https://developer.android.com/reference/android/graphics/DashPathEffect.html
 				//		**  The intervals array must contain an even number of entries (>=2), with

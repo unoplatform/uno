@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_nativeWebView == null)
 			{
-				this.Log().Error($"No view of type {nameof(UnoWKWebView)} or {nameof(UnoUIWebView)} found in children, are you missing one of these types in a template ? ");
+				this.Log().Error($"No view of type {nameof(UnoWKWebView)} found in children, are you missing one of these types in a template ? ");
 			}
 
 			_nativeWebView?.RegisterNavigationEvents(this);
@@ -287,10 +287,9 @@ namespace Windows.UI.Xaml.Controls
 			NavigationFailed?.Invoke(this, args);
 		}
 
-		public static bool MustUseWebKitWebView()
-		{
-			return UIDevice.CurrentDevice.CheckSystemVersion(8, 0);
-		}
+
+		[Obsolete("https://github.com/unoplatform/uno/pull/1591")]
+		public static bool MustUseWebKitWebView() => true;
 
 		partial void OnScrollEnabledChangedPartial(bool isScrollingEnabled)
 		{
