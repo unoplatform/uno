@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml
 
 		private void OnActivityStarted(Activity activity)
 		{
-			InitializationCompleted();
+			_app.InitializationCompleted();
 			if (_lastHandledIntent != activity.Intent &&
 			    activity.Intent?.Extras?.ContainsKey(JumpListItem.ArgumentsExtraKey) == true)
 			{
