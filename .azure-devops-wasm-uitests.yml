@@ -138,7 +138,10 @@ jobs:
       ArtifactType: Container
 
 - job: Wasm_UITests_Compare
-  dependsOn: Wasm_UITests_Snap
+  dependsOn:
+    - Wasm_UITests_Snap
+    - Android_Tests
+    - Wasm_UITests_Automated
 
   pool:
     vmImage: 'vs2017-win2016'

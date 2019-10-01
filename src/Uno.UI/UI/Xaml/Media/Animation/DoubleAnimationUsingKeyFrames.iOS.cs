@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		partial void HoldValue()
 		{
 			// If we have a GPU based animation, it means that the animated values were correctly set
-			// but never used to update the underlying property.  We hence need to set it explicitely
+			// but never used to update the underlying property.  We hence need to set it explicitly
 			// at this point so that it can be held
 			if (this.GetIsHardwareAnimated())
 			{

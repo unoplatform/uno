@@ -17,7 +17,11 @@ namespace Windows.UI.Xaml.Controls
 			UpdateApplicationViewState();
 
 			SetupContentUpdate();
+
 		}
+
+		public AppBarToggleButtonTemplateSettings TemplateSettings { get; } = new AppBarToggleButtonTemplateSettings();
+
 
 		#region Label
 

@@ -159,7 +159,7 @@ namespace Windows.UI.Xaml.Controls
 			/// Render the content of the popup at its final location
 			/// </summary>
 			/// <param name="finalSize">The final size available to render the view. This is expected to be the screen size.</param>
-			/// <param name="visibleBounds">The frame of the visible bounds of the window. This is expected to ba AtMost the finalSize.</param>
+			/// <param name="visibleBounds">The frame of the visible bounds of the window. This is expected to be AtMost the finalSize.</param>
 			/// <param name="desiredSize">The size at which the content expect to be rendered. This is the result of the last <see cref="Measure"/>.</param>
 			void Arrange(Size finalSize, Rect visibleBounds, Size desiredSize);
 		}

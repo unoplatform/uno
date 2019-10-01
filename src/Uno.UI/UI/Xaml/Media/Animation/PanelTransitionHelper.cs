@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			//This collection is created to ensure we do not add LayoutUpdatedTransitions to the newly added elements
 			_previouslyAddedElements.Add(element);
 
-			//Hide the view before animation starts otherwise it will be seen as soon as its layed out
+			//Hide the view before animation starts otherwise it will be seen as soon as its laid out
 #if XAMARIN_IOS
 			((UIKit.UIView)element).Hidden = true;
 #elif XAMARIN_ANDROID

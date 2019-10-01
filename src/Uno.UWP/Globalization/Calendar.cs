@@ -121,7 +121,7 @@ namespace Windows.Globalization
 		[NotImplemented]
 		public Calendar(IEnumerable<string> languages, string calendar, string clock, string timeZoneId)
 		{
-			// timeZoneId are expected to follow the Olson code which is not easily accesible
+			// timeZoneId are expected to follow the Olson code which is not easily accessible
 
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Globalization.Calendar", "Calendar.Calendar(IEnumerable<string> languages, string calendar, string clock, string timeZoneId)");
 
@@ -353,7 +353,7 @@ namespace Windows.Globalization
 		public int LastSecondInThisMinute => 59;
 		#endregion
 
-		#region String formating (***AsString()) !! not implemenated !!
+		#region String formatting (***AsString()) !! not implemenated !!
 		[NotImplemented]
 		public string EraAsString()
 		{

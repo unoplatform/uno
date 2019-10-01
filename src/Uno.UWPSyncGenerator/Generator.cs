@@ -1460,7 +1460,7 @@ namespace Uno.UWPSyncGenerator
 
 				// Additionally, it may happen that projects are loaded using the callee's Configuration/Platform, which
 				// may not exist in all projects. This can happen if the project does not have a proper
-				// fallback mecanism in place.
+				// fallback mechanism in place.
 
 				SourceGeneration.Host.ProjectLoader.LoadProjectDetails(projectFile, "Debug");
 

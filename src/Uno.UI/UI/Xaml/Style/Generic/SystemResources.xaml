@@ -57,22 +57,12 @@
 	-->
 	<not_android:FontFamily x:Key="SymbolThemeFontFamily">Symbols</not_android:FontFamily>
 	<android:FontFamily x:Key="SymbolThemeFontFamily">ms-appx:///Assets/Fonts/winjs-symbols.ttf#Symbols</android:FontFamily>	
-	<x:Double x:Key="AppBarExpandButtonThemeHeight">24</x:Double>
-	<x:Double x:Key="AppBarExpandButtonThemeWidth">48</x:Double>
-	<x:Double x:Key="AppBarThemeMinHeight">60</x:Double>
-	<x:Double x:Key="AppBarThemeMinimalHeight">24</x:Double>
-	<x:Double x:Key="AppBarThemeCompactHeight">48</x:Double>
-	<x:Double x:Key="AppBarExpandButtonCircleDiameter">3</x:Double>
 	<x:Double x:Key="CheckBoxBorderThemeThickness">2</x:Double>
 	<x:Double x:Key="CheckBoxCheckedStrokeThickness">0</x:Double>
 	<x:Double x:Key="ComboBoxArrowThemeFontSize">21</x:Double>
 	<x:Double x:Key="ComboBoxThemeMinWidth">64</x:Double>
 	<x:Double x:Key="ComboBoxPopupThemeMinWidth">80</x:Double>
 	<x:Double x:Key="ComboBoxPopupThemeTouchMinWidth">240</x:Double>
-	<x:Double x:Key="CommandBarOverflowMinWidth">160</x:Double>
-	<x:Double x:Key="CommandBarOverflowTouchMinWidth">240</x:Double>
-	<x:Double x:Key="CommandBarOverflowMaxWidth">480</x:Double>
-	<x:Double x:Key="CommandBarOverflowMaxHeight">198</x:Double>
 	<x:Double x:Key="ControlContentThemeFontSize">15</x:Double>
 	<x:Double x:Key="ContentControlFontSize">15</x:Double>
 	<x:Double x:Key="ContentDialogMinWidth">320</x:Double>
@@ -158,11 +148,6 @@
 	<x:Double x:Key="GridViewItemMinWidth">44</x:Double>
 	<x:Double x:Key="GridViewItemMinHeight">44</x:Double>
 	<x:Int32 x:Key="PivotHeaderItemCharacterSpacing">-25</x:Int32>
-	<Thickness x:Key="AppBarBottomBorderThemeThickness">0,0,0,0</Thickness>
-	<Thickness x:Key="AppBarBottomThemePadding">0,0,0,0</Thickness>
-	<Thickness x:Key="AppBarTopBorderThemeThickness">0,0,0,0</Thickness>
-	<Thickness x:Key="AppBarTopThemePadding">0,0,0,0</Thickness>
-	<Thickness x:Key="AppBarExpandButtonCircleInnerPadding">3,0,3,0</Thickness>
 	<Thickness x:Key="AutoSuggestListBorderThemeThickness">1</Thickness>
 	<Thickness x:Key="AutoSuggestListMargin">0,2,0,2</Thickness>
 	<Thickness x:Key="AutoSuggestListPadding">-1,0,-1,0</Thickness>
@@ -243,7 +228,6 @@
 	<FontWeight x:Key="SliderHeaderThemeFontWeight">Normal</FontWeight>
 	<FontWeight x:Key="HubHeaderThemeFontWeight">Light</FontWeight>
 	<FontWeight x:Key="HubSectionHeaderThemeFontWeight">Normal</FontWeight>
-	<GridLength x:Key="AppBarExpandButtonThemeWidthGridLength">48</GridLength>
 	<x:Boolean x:Key="IsApplicationFocusVisualKindReveal">False</x:Boolean>
 
     <!-- Resources for Windows.UI.Xaml.Controls.Slider -->
@@ -394,27 +378,6 @@
 
 
 	<!-- Legacy brushes -->
-    <SolidColorBrush x:Key="AppBarBackgroundThemeBrush" Color="#FFF0F0F0" />
-    <SolidColorBrush x:Key="AppBarBorderThemeBrush" Color="#FFF0F0F0" />
-    <SolidColorBrush x:Key="AppBarItemBackgroundThemeBrush" Color="Transparent" />
-    <SolidColorBrush x:Key="AppBarItemDisabledForegroundThemeBrush" Color="#66000000" />
-    <SolidColorBrush x:Key="AppBarItemForegroundThemeBrush" Color="#FF000000" />
-    <SolidColorBrush x:Key="AppBarItemPointerOverBackgroundThemeBrush" Color="#3D000000" />
-    <SolidColorBrush x:Key="AppBarItemPointerOverForegroundThemeBrush" Color="#FF000000" />
-    <SolidColorBrush x:Key="AppBarItemPressedForegroundThemeBrush" Color="#FFFFFFFF" />
-    <SolidColorBrush x:Key="AppBarSeparatorForegroundThemeBrush" Color="#FF7B7B7B" />
-    <SolidColorBrush x:Key="AppBarToggleButtonCheckedBackgroundThemeBrush" Color="#FF000000" />
-    <SolidColorBrush x:Key="AppBarToggleButtonCheckedBorderThemeBrush" Color="#FF000000" />
-    <SolidColorBrush x:Key="AppBarToggleButtonCheckedDisabledBackgroundThemeBrush" Color="#66000000" />
-    <SolidColorBrush x:Key="AppBarToggleButtonCheckedDisabledBorderThemeBrush" Color="Transparent" />
-    <SolidColorBrush x:Key="AppBarToggleButtonCheckedDisabledForegroundThemeBrush" Color="#FFFFFFFF" />
-    <SolidColorBrush x:Key="AppBarToggleButtonCheckedPointerOverBackgroundThemeBrush" Color="#99000000" />
-    <SolidColorBrush x:Key="AppBarToggleButtonCheckedPointerOverBorderThemeBrush" Color="#99000000" />
-    <SolidColorBrush x:Key="AppBarToggleButtonCheckedPressedBackgroundThemeBrush" Color="Transparent" />
-    <SolidColorBrush x:Key="AppBarToggleButtonCheckedPressedBorderThemeBrush" Color="#FF000000" />
-    <SolidColorBrush x:Key="AppBarToggleButtonCheckedPressedForegroundThemeBrush" Color="#FF000000" />
-    <SolidColorBrush x:Key="AppBarToggleButtonCheckedForegroundThemeBrush" Color="#FFFFFFFF" />
-    <SolidColorBrush x:Key="AppBarToggleButtonPointerOverBackgroundThemeBrush" Color="#3D000000" />
     <SolidColorBrush x:Key="AutoSuggestBackgroundThemeBrush" Color="#FFFFFFFF" />
     <SolidColorBrush x:Key="ApplicationForegroundThemeBrush" Color="#DE000000" />
     <SolidColorBrush x:Key="ApplicationHeaderForegroundThemeBrush" Color="#FF000000" />

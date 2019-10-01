@@ -30,7 +30,7 @@ namespace SamplesApp.UITests
 			var multilineTextBox = _app.Marked("MultilineTextBox");
 			var numberTextBox = _app.Marked("NumberTextBox");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual(string.Empty, normalTextBox.GetDependencyPropertyValue("Text")?.ToString());
 			Assert.AreEqual("Text", filledTextBox.GetDependencyPropertyValue("Text")?.ToString());
 			Assert.AreEqual(string.Empty, placeholderTextTextBox.GetDependencyPropertyValue("Text")?.ToString());
@@ -126,7 +126,7 @@ namespace SamplesApp.UITests
 			var multilineTextBox = _app.Marked("MultilineTextBox");
 			var numberTextBox = _app.Marked("NumberTextBox");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual(string.Empty, normalTextBox.GetDependencyPropertyValue("Text")?.ToString());
 			Assert.AreEqual("Text", filledTextBox.GetDependencyPropertyValue("Text")?.ToString());
 			Assert.AreEqual(string.Empty, placeholderTextTextBox.GetDependencyPropertyValue("Text")?.ToString());
@@ -218,7 +218,7 @@ namespace SamplesApp.UITests
 			var normalTextBox = _app.Marked("NormalTextBox");
 			var disabledTextBox = _app.Marked("DisabledTextBox");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual(string.Empty, normalTextBox.GetDependencyPropertyValue("Text")?.ToString());
 			Assert.AreEqual(string.Empty, disabledTextBox.GetDependencyPropertyValue("Text")?.ToString());
 
@@ -227,7 +227,7 @@ namespace SamplesApp.UITests
 				_app.Tap(normalTextBox);
 				_app.Wait(1);
 
-				// Writting in normalTextBox 
+				// Writing in normalTextBox 
 				_app.EnterText("Test 1");
 				Assert.AreEqual("Test 1", normalTextBox.GetDependencyPropertyValue("Text")?.ToString());
 
@@ -241,7 +241,7 @@ namespace SamplesApp.UITests
 				_app.Tap(disabledTextBox);
 				_app.Wait(1);
 
-				// Writting in disabledTextBox 
+				// Writing in disabledTextBox 
 				_app.EnterText("Test 2");
 				Assert.AreEqual(string.Empty, disabledTextBox.GetDependencyPropertyValue("Text")?.ToString());
 
@@ -388,6 +388,7 @@ namespace SamplesApp.UITests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Browser)] // Android is disabled https://github.com/unoplatform/uno/issues/1630
 		public void TextBox_Disable()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_Disabled");

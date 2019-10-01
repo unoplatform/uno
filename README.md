@@ -1,5 +1,5 @@
 # Uno Platform - Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today.
-[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=unoplatform/uno)](https://dependabot.com) [![All Contributors](https://img.shields.io/badge/all_contributors-34-orange.svg?style=flat-square)](#contributors-)
+[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=unoplatform/uno)](https://dependabot.com) [![All Contributors](https://img.shields.io/badge/all_contributors-34-orange.svg?style=flat-square)](#contributors)
 
 # What is the Uno Platform
 
@@ -153,6 +153,17 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/rfrappier"><img src="https://avatars2.githubusercontent.com/u/30271212?v=4" width="100px;" alt="rfrappier"/><br /><sub><b>rfrappier</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=rfrappier" title="Documentation">📖</a></td>
     <td align="center"><a href="http://furkankambay.com/"><img src="https://avatars1.githubusercontent.com/u/8467416?v=4" width="100px;" alt="Furkan Kambay"/><br /><sub><b>Furkan Kambay</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=FurkanKambay" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/pkar70"><img src="https://avatars2.githubusercontent.com/u/23451507?v=4" width="100px;" alt="pkar70"/><br /><sub><b>pkar70</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=pkar70" title="Code">💻</a> <a href="https://github.com/unoplatform/uno/commits?author=pkar70" title="Tests">⚠️</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/hugovk"><img src="https://avatars2.githubusercontent.com/u/1324225?v=4" width="100px;" alt="Hugo van Kemenade"/><br /><sub><b>Hugo van Kemenade</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=hugovk" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://tomercohen.com"><img src="https://avatars0.githubusercontent.com/u/50206?v=4" width="100px;" alt="Tomer Cohen"/><br /><sub><b>Tomer Cohen</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=tomer" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/SantosAntero"><img src="https://avatars1.githubusercontent.com/u/36671793?v=4" width="100px;" alt="Antero Santos"/><br /><sub><b>Antero Santos</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=SantosAntero" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://zzyzy.github.io/"><img src="https://avatars2.githubusercontent.com/u/6206954?v=4" width="100px;" alt="Zhen Zhi Lee"/><br /><sub><b>Zhen Zhi Lee</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=zzyzy" title="Code">💻</a></td>
+    <td align="center"><a href="https://backendtea.com"><img src="https://avatars1.githubusercontent.com/u/14289961?v=4" width="100px;" alt="Gert de Pagter"/><br /><sub><b>Gert de Pagter</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=BackEndTea" title="Documentation">📖</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="http://www.deveshsingh.ml"><img src="https://avatars3.githubusercontent.com/u/31030254?v=4" width="100px;" alt="Devesh Singh"/><br /><sub><b>Devesh Singh</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=D3v3sh5ingh" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/RanadeepPolavarapu"><img src="https://avatars1.githubusercontent.com/u/7084995?v=4" width="100px;" alt="RanadeepPolavarapu"/><br /><sub><b>RanadeepPolavarapu</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=RanadeepPolavarapu" title="Documentation">📖</a></td>
   </tr>
 </table>
 

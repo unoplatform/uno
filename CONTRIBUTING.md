@@ -53,7 +53,7 @@ If you are an outside contributor, please fork the Uno Platform repository you w
 
 **Submitting a pull request**
 
-If you don't know what a pull request is read this article: https://help.github.com/articles/using-pull-requests, make sure the repository can build and all tests pass, as well as follow the current coding guidelines.
+If you don't know what a pull request is read this article: https://help.github.com/articles/using-pull-requests. Make sure the repository can build and all tests pass, as well as follow the current coding guidelines.
 
 Pull requests should all be made to the **master** branch. 
 
