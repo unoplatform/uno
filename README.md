@@ -161,6 +161,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://zzyzy.github.io/"><img src="https://avatars2.githubusercontent.com/u/6206954?v=4" width="100px;" alt="Zhen Zhi Lee"/><br /><sub><b>Zhen Zhi Lee</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=zzyzy" title="Code">💻</a></td>
     <td align="center"><a href="https://backendtea.com"><img src="https://avatars1.githubusercontent.com/u/14289961?v=4" width="100px;" alt="Gert de Pagter"/><br /><sub><b>Gert de Pagter</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=BackEndTea" title="Documentation">📖</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="http://www.deveshsingh.ml"><img src="https://avatars3.githubusercontent.com/u/31030254?v=4" width="100px;" alt="Devesh Singh"/><br /><sub><b>Devesh Singh</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=D3v3sh5ingh" title="Documentation">📖</a></td>
+  </tr>
 </table>
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
