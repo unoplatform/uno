@@ -8,7 +8,7 @@
 * Add support for `Windows.Devices.Sensors.Magnetometer` APIs on iOS, Android and WASM
    * `ReadingChanged`
    * `ReportInterval`
-* Added support for `Windows.UI.StartScreen.JumpList` APIs on Android and iOS
+* Add support for `Windows.UI.StartScreen.JumpList` APIs on Android and iOS
    * Includes `Logo`, `DisplayName` and `Arguments`
    * The activation proceeds through the `OnLaunched` method same as on UWP
 * Refactored `DrawableHelper` to the `Uno` project
