@@ -2,13 +2,13 @@ About Uno platform
 
 ## What is the Uno Platform?
 The Uno Platform is a Universal Windows Platform Bridge to allow UWP based code to run on iOS, Android, and WebAssembly. It provides the full API definitions of the UWP Windows 10 October 2018 Update (17763), and the implementation of parts of the UWP API, such as Windows.UI.Xaml, to enable applications to run on these platforms.
-This allows the use the UWP tooling from Windows in Visual Studio, such as XAML Edit and Continue and C# Edit and Continue, to build an application as much as possible on Windows, then validate that the application runs on iOS, Android and WebAssembly.
+This allows the use of the UWP tooling from Windows in Visual Studio, such as XAML Edit and Continue and C# Edit and Continue, to build an application as much as possible on Windows, then validate that the application runs on iOS, Android and WebAssembly.
 The XAML User Interface (UI) provides the ability to display the same XAML files on Windows, iOS, Android and WebAssembly platforms. Uno also provides support for the MVVM pattern on all platforms, with binding, styling, control and data-templating features.
 As the Uno Platform provides all of the APIs of the complete UWP platform, any UWP library can be compiled on top of Uno (e.g. XamlBehaviors), with the ability to determine which APIs are implemented or not via the IDE using C# Analyzers.
 
 ## What does Uno Platform do?
 
-**For users**, it can provide can provide a consistent experience across platforms, particularly between mobile and desktop browsers.
+**For users**, it can provide a consistent experience across platforms, particularly between mobile and desktop browsers.
 
 **For developers**, it can provide a consistent development experience across all platforms, using Microsoft's tooling as a base for a more efficient development loop.
 
@@ -19,11 +19,11 @@ Developing for Windows (phone, desktop, tablet, XBox), iOS (tablet and phone), A
 Yet, being able to master all these frameworks at once is a particularly difficult task, because of the amount of platform-specific knowledge required to master each platform. Most of the time it boils down to different teams developing the same application multiple times, with each requiring a full development cycle.
 With Xamarin, C# comes to all these platforms; however, it only provides transparent translations of the UI frameworks available for iOS and Android. Most non-UI code can be shared, but when it comes to the UI, almost nothing can be shared.
 To avoid having to learn the UI-layout techniques and approaches for each platform, Uno.UI mimics the Windows XAML approach of defining UI and layouts. This translates into the ability to share styles, layouts, and data-bindings while retaining the ability to mix XAML-style and native layouts. For instance, a StackPanel can easily contain a RelativeLayout on Android, or a MKMapView on iOS.
-Uno.UI provides the ability for developers to reuse known layout and coding techniques on all platforms, resulting in a gain of overall productivity when creating UI-rich applications.
+Uno.UI provides the ability for developers to reuse known layouts and coding techniques on all platforms, resulting in a gain of overall productivity when creating UI-rich applications.
 
 
 ## Who makes Uno Platform?
-Uno Platform was created by Team nventive over the past 4 years.
+Uno Platform was developed by Team nventive over the past 4 years.
 
 ## What makes Uno Platform unique?
 The Uno Platform is the only implementation of the UWP API that runs across iOS, Android and WebAssembly. 
@@ -212,7 +212,7 @@ For live update on UWP you need to edit the xaml while the project is debugging,
 
 1. Install **Uno.UI Solution Template Visual Studio Extension** https://github.com/nventive/Uno/releases
 2. Look for Uno.UI App Solution under Visual C#
-3. if you still haven't found it, try and use the Search box
+3. if you still havent found it, try and use the Search box
 
 
 ## How to port an existing UWP app to Uno.UI?
@@ -379,7 +379,7 @@ It's partially implemented but there are parts that are closed source from Micro
 
 ## Does intellisense work in XAML editor?
 Yes, if you do not see it:
-- Make sure you are targeting the latest windows SDK version.
+- Make sure you are targetting the latest windows SDK version.
 - Choose "XAML Designer" as the default for opening your XAML files (right-click on your XAML file and then "Open With").
 - Relaunch your Visual Studio solution.
 - Select UWP on the top-left corner of your XAML file.
@@ -500,7 +500,7 @@ We've implemented parts of the supported animations, there are others that are s
 
 The target API does not affect the min API. You just need to have the API day installed in your android sdk manager. The min sdk is specified in the androidmanifest file.
 
-## Is there a workaround for ScrollViewer.ScrollToVerticalOffset method, since it isn't implemented in Uno?
+## Is there a workaround for ScrollViewer.ScrollToVerticalOffset method, since it isnt implemented in Uno?
 
 You can use ChangeView instead
 
