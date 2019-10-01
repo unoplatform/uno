@@ -19,6 +19,12 @@ This mode replicates **UWP**'s `CommandBar`. It is templatable and supports a te
 
 ![](Assets/CommandBar/windows/example.png)
 
+#### Usage Example
+
+```cs
+<Style TargetType="CommandBar" BasedOn="XamlDefaultCommandBar" />
+```
+
 #### Remarks
 
 * This mode hasn't been extensively tested. 
@@ -38,6 +44,12 @@ This mode is the preferred one and is enabled by default. It uses platform-speci
 | iOS      | `UINavigationBar` | Transitions when navigating  between pages.   |
 
 The rest of this document will exclusively cover this mode.
+
+#### Usage Example
+
+```cs
+<Style TargetType="CommandBar" BasedOn="NativeDefaultCommandBar" />
+```
 
 #### Remarks
 
