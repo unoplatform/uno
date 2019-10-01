@@ -203,7 +203,7 @@ namespace Windows.UI.Xaml.Controls
 			return XamlParent?.GetNextItemIndex(currentMaterializedItem, fillDirection == GeneratorDirection.Forward ? 1 : -1);
 		}
 
-		// Note that Item1 is used intead of Item to work around an issue
+		// Note that Item1 is used instead of Item to work around an issue
 		// in VS15.2 and its associated Roslyn issue: 
 		// Uno\Uno.UI.Shared.Xamarin\UI\Xaml\Controls\ListViewBase\VirtualizingPanelLayout.cs(122,31): Error CS0570: 'EnumerableExtensions.MinBy<TSource, TComparable>(IEnumerable<TSource>, Func<TSource, TComparable>)' is not supported by the language
 		//

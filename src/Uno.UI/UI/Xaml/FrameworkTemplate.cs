@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Creates a new instace of the current template.
+		/// Creates a new instance of the current template.
 		/// </summary>
 		/// <returns>A new instance of the template</returns>
 		public View LoadContent()

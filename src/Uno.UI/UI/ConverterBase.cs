@@ -7,7 +7,7 @@ using GenericCulture = System.String;
 namespace Uno.UI.Converters
 {
     // We removed TargetType validation because of implicit conversion verification.  Since in some platforms
-    // (not all), we can implicitely convert from one type to another either by using the implicit operators on
+    // (not all), we can implicitly convert from one type to another either by using the implicit operators on
     // the type definitions, or by creating a TypeConverter, we had a lot of trouble validating the TargetType
     // in all scenarios in a lean and fast manner.  E.G. Verifying that a "Visible" string value can indeed
     // be valid when TargetType is Visibility.

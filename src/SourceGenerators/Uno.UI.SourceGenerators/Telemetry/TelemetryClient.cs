@@ -128,7 +128,7 @@ namespace Uno.UI.SourceGenerators.Telemetry
 			catch (Exception e)
 			{
 				_client = null;
-				// we dont want to fail the tool if telemetry fails.
+				// we don't want to fail the tool if telemetry fails.
 				Debug.Fail(e.ToString());
 			}
 		}

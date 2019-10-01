@@ -372,6 +372,87 @@
         "code",
         "test"
       ]
+    },
+    {
+      "login": "hugovk",
+      "name": "Hugo van Kemenade",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1324225?v=4",
+      "profile": "https://github.com/hugovk",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "tomer",
+      "name": "Tomer Cohen",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/50206?v=4",
+      "profile": "https://tomercohen.com",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "SantosAntero",
+      "name": "Antero Santos",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/36671793?v=4",
+      "profile": "https://github.com/SantosAntero",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "zzyzy",
+      "name": "Zhen Zhi Lee",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/6206954?v=4",
+      "profile": "https://zzyzy.github.io/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "BackEndTea",
+      "name": "Gert de Pagter",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/14289961?v=4",
+      "profile": "https://backendtea.com",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "D3v3sh5ingh",
+      "name": "Devesh Singh",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/31030254?v=4",
+      "profile": "http://www.deveshsingh.ml",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "RanadeepPolavarapu",
+      "name": "RanadeepPolavarapu",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/7084995?v=4",
+      "profile": "https://github.com/RanadeepPolavarapu",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "ujjwalll",
+      "name": "Ujjwal ",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/39565250?v=4",
+      "profile": "http://ujjwalll.github.io",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "cbaumler",
+      "name": "Chris Baumler",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/9060078?v=4",
+      "profile": "https://github.com/cbaumler",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 5,

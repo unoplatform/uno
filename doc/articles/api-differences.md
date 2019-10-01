@@ -1,6 +1,6 @@
 # Uno.UI and UWP API or Behavior differences
 
-For legacy, platform support or performance reasons, Uno has some noteable API differences.
+For legacy, platform support or performance reasons, Uno has some notable API differences.
 
 ### DependencyObject is an interface.
 `DependencyObject` is an interface to allow for XAML controls to inherit directly from their native counterpart. The implementation of the methods is done through the `DependencyObjectGenerator` source generator, automatically.

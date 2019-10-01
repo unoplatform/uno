@@ -42,6 +42,11 @@ namespace Windows.UI.Xaml.Controls
 			//Remove default native padding.
 			this.SetPadding(0, 0, 0, 0);
 
+            if (FeatureConfiguration.TextBox.HideCaret)
+            {
+                SetCursorVisible(false);
+            }
+
 			_isInitialized = true;
 
 			// This ensures the TextBoxView gets resized as Text changes
@@ -66,7 +71,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (!_isRunningTextChanged && _isInitialized)
 			{
-				// The Text property cannot be overriden, so we can't prevent this method from being called even if
+				// The Text property cannot be overridden, so we can't prevent this method from being called even if
 				// the content really has not changed...
 
 				try
@@ -197,7 +202,7 @@ namespace Windows.UI.Xaml.Controls
 			// On some devices (LG G3), the cursor doesn't appear if the Text is empty.
 			// This is due to the TextBoxView's content having a width of 0 if the Text is empty.
 			// This code ensures that the TextBoxView's content always has a minimum width, allowing the cursor to be visible.
-			var minContentWidth = ViewHelper.LogicalToPhysicalPixels(10d); // arbitrary number, large enough to accomodate cursor
+			var minContentWidth = ViewHelper.LogicalToPhysicalPixels(10d); // arbitrary number, large enough to accommodate cursor
 			var minWidth = PaddingLeft + minContentWidth + PaddingRight;
 			var newMeasuredWidth = Math.Max(MeasuredWidth, minWidth);
 			SetMeasuredDimension(newMeasuredWidth, MeasuredHeight);

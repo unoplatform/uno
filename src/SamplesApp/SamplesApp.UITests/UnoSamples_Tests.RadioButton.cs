@@ -27,7 +27,7 @@ namespace SamplesApp.UITests
 			var currentRadioButton = _app.Marked("CurrentRadioButton");
 			var myRadioButtonDisabler = _app.Marked("MyRadioButtonDisabler");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("None", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
 
 			myRadioButton_1.Tap();
@@ -62,7 +62,7 @@ namespace SamplesApp.UITests
 			var currentRadioButton = _app.Marked("CurrentRadioButton");
 			var myRadioButtonDisabler = _app.Marked("MyRadioButtonDisabler");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("None", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
 
 			myRadioButton_1.Tap();
@@ -98,7 +98,7 @@ namespace SamplesApp.UITests
 			var currentRadioButton = _app.Marked("CurrentRadioButton");
 			var myRadioButtonDisabler = _app.Marked("MyRadioButtonDisabler");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("None", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
 
 			myRadioButton_1.Tap();

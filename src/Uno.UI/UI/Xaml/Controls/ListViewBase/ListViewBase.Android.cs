@@ -308,7 +308,7 @@ namespace Windows.UI.Xaml.Controls
 		public void ScrollIntoView(object item, ScrollIntoViewAlignment alignment)
 		{
 			// Dispatching ScrollIntoView on Android prevents issues where layout/render changes
-			// occuring during scrolling are not always properly picked up by the layouting/rendering engine.
+			// occurring during scrolling are not always properly picked up by the layouting/rendering engine.
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				var index = IndexFromItem(item);

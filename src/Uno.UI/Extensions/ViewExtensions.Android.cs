@@ -281,7 +281,7 @@ namespace Uno.UI
 		/// </summary>
 		/// <typeparam name="T">Expected type of the searched child</typeparam>
 		/// <param name="view"></param>
-		/// <param name="selector">Aditional selector for the child</param>
+		/// <param name="selector">Additional selector for the child</param>
 		/// <param name="childLevelLimit">Defines the max depth, null if not limit (Should never be used)</param>
 		/// <param name="includeCurrent">Indicates if the current view should also be tested or not.</param>
 		/// <returns></returns>

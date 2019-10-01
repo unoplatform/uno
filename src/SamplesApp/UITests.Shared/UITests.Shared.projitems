@@ -4551,6 +4551,8 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\check.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\colors300.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\icon.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\menu.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\search.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\menu.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\search.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Slices.png" />

@@ -687,7 +687,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							else
 							{
-								throw new InvalidOperationException("The implicit resource must have a TargetType atttribute");
+								throw new InvalidOperationException("The implicit resource must have a TargetType attribute");
 							}
 						}
 						else if (resource.Type.Name == "ResourceDictionary")
@@ -2098,7 +2098,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							}
 							else
 							{
-								// GenerateWarning(writer, $"Unknwon type {objectDefinition.Type} for property {member.Member.DeclaringType}");
+								// GenerateWarning(writer, $"Unknown type {objectDefinition.Type} for property {member.Member.DeclaringType}");
 							}
 						}
 						else
@@ -2288,7 +2288,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (_isUiAutomationMappingEnabled)
 					{
-						// Prefer using the Uid or the Name if their value has been explicitely assigned
+						// Prefer using the Uid or the Name if their value has been explicitly assigned
 						var assignedUid = uidMember?.Value?.ToString();
 						var assignedName = nameMember?.Value?.ToString();
 
@@ -3449,7 +3449,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				if (contentOwner != null)
 				{
 					// This case is to support the layout switching for the ListViewBaseLayout, which is not
-					// a FrameworkTemplate. Thsi will need to be removed when this custom list view is removed.
+					// a FrameworkTemplate. This will need to be removed when this custom list view is removed.
 					var returnType = typeName == "ListViewBaseLayoutTemplate" ? "Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
 
 					BuildChildThroughSubclass(writer, contentOwner, returnType);

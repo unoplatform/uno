@@ -26,12 +26,12 @@ namespace Uno.UI.DataBinding
 	internal static partial class BindingPropertyHelper
 	{
 		/// <summary>
-		/// Converts the input to the outputType using a fast convertion, for known system types.
+		/// Converts the input to the outputType using a fast conversion, for known system types.
 		/// </summary>
 		/// <param name="outputType">The target type</param>
 		/// <param name="input">The input value to use</param>
 		/// <param name="output">The input value converted to the <paramref name="outputType"/>.</param>
-		/// <returns>True if the conversion suceeded, otherwise false.</returns>
+		/// <returns>True if the conversion succeeded, otherwise false.</returns>
 		/// <remarks>
 		/// This is a fast path conversion that avoids going through the TypeConverter
 		/// infrastructure for known system types.

@@ -40,7 +40,7 @@ namespace Windows.UI.Core
 		/// return disposable.
 		/// 
 		/// If the returned disposable is collected, the handler will also be
-		/// collected. Conversly, if the <paramref name="list"/> is collected
+		/// collected. Conversely, if the <paramref name="list"/> is collected
 		/// raising the event will produce nothing.
 		/// </remarks>
 		internal static IDisposable RegisterEvent(IList<GenericEventHandler> list, Delegate handler, EventRaiseHandler raise)

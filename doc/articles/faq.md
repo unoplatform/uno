@@ -211,8 +211,8 @@ For live update on UWP you need to edit the XAML while the project is debugging,
 ## I don't see any "Uno.UI App Solution" from File->Project->New ?
 
 1. Install **Uno.UI Solution Template Visual Studio Extension** https://github.com/nventive/Uno/releases
-2. Look for Uno.UI App Solution under Visual C#
-3. If you still haven't found it, try the Search box
+1. Look for Uno.UI App Solution under Visual C#
+1. If you still haven't found it, try the Search box
 
 
 ## How to port an existing UWP app to Uno.UI?
@@ -221,10 +221,10 @@ First create a shared project and move all .cs and .xaml files into it and refer
 project.  Ensure everything is still working and add other projects for other platforms referencing the same shared project.
 
 1. Create a project with Uno.UI template.
-2. Copying as much code as possible from the existing UWP app to the "My Project.Shared"
-3. Add platform specific code using suffixing files in the shared project (ex: ".iOS.cs")
-4. iOS/Android specific heads should be relatively empty, only used os specific implementation (push notification handling/deeplinking/permissions)
-5. Test, debug and publish.
+1. Copying as much code as possible from the existing UWP app to the "My Project.Shared"
+1. Add platform specific code using suffixing files in the shared project (ex: ".iOS.cs")
+1. iOS/Android specific heads should be relatively empty, only used os specific implementation (push notification handling/deeplinking/permissions)
+1. Test, debug and publish.
 
 ## How to port an existing UWP library to Uno.UI ? 
 
@@ -379,7 +379,7 @@ It's partially implemented but there are parts that are closed source from Micro
 
 ## Does intellisense work in XAML editor?
 Yes, if you do not see it:
-- Make sure you are targetting the latest windows SDK version.
+- Make sure you are targeting the latest windows SDK version.
 - Choose "XAML Designer" as the default for opening your XAML files (right-click on your XAML file and then "Open With").
 - Relaunch your Visual Studio solution.
 - Select UWP on the top-left corner of your XAML file.
