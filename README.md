@@ -13,11 +13,11 @@ Visit [our documentation](doc/articles/intro.md) for more details.
 
 ## Prerequisites
 * [**Visual Studio 2017 15.5 or later**](https://visualstudio.microsoft.com/), with:
-    * **Universal Windows Platform component** installed
+    * **Universal Windows Platform component** installed.
 
-	* **Xamarin component** installed (for Android and iOS development)
+	* **Xamarin component** installed (for Android and iOS development).
 
-    * **ASP.NET/web component** installed, along with .NET Core 2.2 (for WASM development)
+    * **ASP.NET/web component** installed, along with .NET Core 2.2 (for WASM development).
 
 To easily create a multi-platform application:
 * Install the [Uno Solution Template Visual Studio Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin)
@@ -26,26 +26,26 @@ To easily create a multi-platform application:
 See the complete [Getting Started guide](https://platform.uno/docs/articles/get-started.html) for more information.
 
 For a larger example and features demo:
-* Visit the [Uno Gallery and Playground](https://github.com/nventive/Uno.Playground) repository
-* Try the [WebAssembly Uno Playground](https://playground.platform.uno) live in your browser
+* Visit the [Uno Gallery and Playground](https://github.com/nventive/Uno.Playground) repository.
+* Try the [WebAssembly Uno Playground](https://playground.platform.uno) live in your browser.
 
 # Uno Features
 * Supported platforms:
-    * Windows (via the standard UWP Toolkit)
-    * iOS and Android (via [Xamarin](https://www.visualstudio.com/xamarin/))
-    * WebAssembly through the [Mono Wasm SDK](https://github.com/mono/mono/blob/master/sdks/wasm/README.md)
+    * Windows (via the standard UWP Toolkit).
+    * iOS and Android (via [Xamarin](https://www.visualstudio.com/xamarin/)).
+    * WebAssembly through the [Mono Wasm SDK](https://github.com/mono/mono/blob/master/sdks/wasm/README.md).
 * Dev loop
-    * Develop on Windows first using Visual Studio
-    * [XAML Edit and Continue](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) for live XAML edition on each key stroke
-    * [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp)
-    * Validate on other platforms as late as possible
-    * Experimental XAML Hot Reload for WebAssembly, iOS and Android
+    * Develop on Windows first using Visual Studio.
+    * [XAML Edit and Continue](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) for live XAML edition on each key stroke.
+    * [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp).
+    * Validate on other platforms as late as possible.
+    * Experimental XAML Hot Reload for WebAssembly, iOS and Android.
     * [Uno.UITest](https://github.com/unoplatform/Uno.UITest), a library to create Cross-Platform UI Tests for WebAssembly, iOS and Android.
 * Cross Platform Controls
-    * [Control Templating](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/control-templates)
-    * [Data Templating](https://code.msdn.microsoft.com/Data-Binding-in-UWP-b5c98114)
-    * [Styling](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/xaml-styles)
-    * [Rich Animations](https://docs.microsoft.com/en-us/windows/uwp/design/motion/xaml-animation)
+    * [Control Templating](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/control-templates).
+    * [Data Templating](https://code.msdn.microsoft.com/Data-Binding-in-UWP-b5c98114).
+    * [Styling](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/xaml-styles).
+    * [Rich Animations](https://docs.microsoft.com/en-us/windows/uwp/design/motion/xaml-animation).
 * UWP Code Support
     * [Windows Community Toolkit](https://github.com/nventive/Uno.WindowsCommunityToolkit)
     * [MVVM Light Toolkit](https://github.com/nventive/uno.mvvmlight)
