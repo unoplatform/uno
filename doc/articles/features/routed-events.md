@@ -172,7 +172,7 @@ These _routed events_ are not implemented yet in Uno:
 In the current implementation the `OriginalSource` property on the _RoutedEventArgs_ will often be null
 or referencing the element where the event crossed the _native-to-managed_ boundary.
 
-### Reseting `Handled` to false won't behave like in UWP
+### Resetting `Handled` to false won't behave like in UWP
 
 There's a strange behavior in UWP where you can switch back the `event.Handle` to `false` when
 intercepted by a handler with `handledEventsToo: true`. In UWP the event will continue to bubble normally.

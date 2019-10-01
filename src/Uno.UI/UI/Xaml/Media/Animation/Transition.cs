@@ -27,10 +27,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
         /// <summary>
-        /// Called from the Transistions Property of IFrameworkElement
+        /// Called from the Transitions Property of IFrameworkElement
         /// Attaches to the Loaded event
         /// </summary>
-        /// <param name="element">Framework element to apply the transision to</param>
+        /// <param name="element">Framework element to apply the transition to</param>
         internal void AttachToElement(IFrameworkElement element)
         {
             element.Loaded += OnElementLoaded;
@@ -39,14 +39,14 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <summary>
 		/// Called from the Transitions Property of IFrameworkElement
 		/// </summary>
-		/// <param name="element">Framework element to stop applying the transision to</param>
+		/// <param name="element">Framework element to stop applying the transition to</param>
 		internal void DetachFromElement(IFrameworkElement element)
 		{
 			element.Loaded -= OnElementLoaded;
 		}
 
         /// <summary>
-        /// When the Element is loaded - Start the Transision
+        /// When the Element is loaded - Start the Transition
         /// </summary>        
         private void OnElementLoaded(object sender, RoutedEventArgs e)
         {            
@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// Called from the ChildTransistions Property of a Panel
 		/// Attaches to the Completed event - Keeps the starting RenderTansform on the FrameworkElement and restores it;
 		/// </summary>
-		/// <param name="storyboard">The Panel may run several Transisions on the same Storyboard</param>
+		/// <param name="storyboard">The Panel may run several Transitions on the same Storyboard</param>
 		/// <param name="element">FrameworkElement to Animate</param>
 		/// <param name="beginTime">Used for Staggering (default Timespan.Zero)</param>
 		/// <param name="xOffset">Used to determine the x axis renderTransform translation. The previous position of the IFrameworkElement in a List (Only used in reposition)</param>

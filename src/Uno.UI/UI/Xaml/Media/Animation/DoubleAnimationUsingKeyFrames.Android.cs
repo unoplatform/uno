@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 
-		// For perfomance consideration, do not repport each frame if we are GPU bound
+		// For performance consideration, do not report each frame if we are GPU bound
 		// Frame will be repported on Pause or End (cf. InitializeAnimator)
 		private bool ReportEachFrame() => this.GetIsDependantAnimation() || this.GetIsDurationZero();
 	}

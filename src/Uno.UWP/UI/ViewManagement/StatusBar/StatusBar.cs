@@ -45,7 +45,7 @@ namespace Windows.UI.ViewManagement
 		/// </summary>
 		/// <remarks>
 		/// <para>iOS and Android (API 23+) only allow their status bar foreground to be set to either Light or Dark. 
-		/// The provided color will automatically be converted to the nearest supported color to preserve constrast.</para>
+		/// The provided color will automatically be converted to the nearest supported color to preserve contrast.</para>
 		/// <para>In general, you should set this property to either White or Black to avoid confusion.</para>
 		/// <para>This property is only supported on Android starting from Marshmallow (API 23).</para>
 		/// </remarks>

@@ -569,7 +569,7 @@ namespace Windows.UI.Xaml.Controls
 			//TODO: this should take an available breadth
 			CGSize size;
 
-			// Cache the sizes to avoid creating new templates everytime.
+			// Cache the sizes to avoid creating new templates every time.
 			if (!_templateCache.TryGetValue(dataTemplate ?? _nullDataTemplateKey, out size))
 			{
 				var container = CreateContainerForElementKind(elementKind);
@@ -699,7 +699,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				// We need to excplicitly remove the content before being disposed
+				// We need to explicitly remove the content before being disposed
 				// otherwise, the children will try to reference ContentView which 
 				// will have been disposed.
 

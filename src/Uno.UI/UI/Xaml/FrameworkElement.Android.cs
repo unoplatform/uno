@@ -60,7 +60,7 @@ namespace Windows.UI.Xaml
 					if (child is FrameworkElement e)
 					{
 						// Mark this instance as managed loaded through managed children
-						// traversal, to avoid paying the cost of overriden method interop
+						// traversal, to avoid paying the cost of overridden method interop
 						e.IsManagedLoaded = true;
 
 						// Calling this method is acceptable as it is an abstract method that
@@ -100,7 +100,7 @@ namespace Windows.UI.Xaml
 						if (view is FrameworkElement e)
 						{
 							// Mark this instance as managed loaded through managed children
-							// traversal, to avoid paying the cost of overriden method interop
+							// traversal, to avoid paying the cost of overridden method interop
 							e.IsManagedLoaded = false;
 
 							// Calling this method is acceptable as it is an abstract method that
@@ -174,7 +174,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <remarks>
 		/// The <see cref="DependencyPropertyValuePrecedences.DefaultValue"/> is updated at each <see cref="OnLoadedPartial"/> call, but may
-		/// be overriden by an external called as <see cref="DependencyPropertyValuePrecedences.Local"/>.
+		/// be overridden by an external called as <see cref="DependencyPropertyValuePrecedences.Local"/>.
 		/// </remarks>
 		public bool StretchAffectsMeasure
 		{

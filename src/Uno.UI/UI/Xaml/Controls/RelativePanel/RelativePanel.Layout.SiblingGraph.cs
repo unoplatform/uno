@@ -142,7 +142,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			/// <summary>
-			/// Reverses which dependencies are infered or not in a certain orientation
+			/// Reverses which dependencies are inferred or not in a certain orientation
 			/// </summary>
 			private void ReverseDependencies(Sibling sibling, bool isHorizontal)
 			{
@@ -184,7 +184,7 @@ namespace Windows.UI.Xaml.Controls
 
 			/// <summary>
 			/// Prioritizes elements for layouting.  First treat the entrypoints, starting from top-left then around.
-			/// Then select the ones with dependencies that are already layed out.
+			/// Then select the ones with dependencies that are already laid out.
 			/// </summary>
 			/// <param name="cluster"></param>
 			/// <returns></returns>
@@ -280,7 +280,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				bool needsCorrections = false;
 
-				// Get the available area for the children, based on the currently layed out siblings and on the available size in the panel
+				// Get the available area for the children, based on the currently laid out siblings and on the available size in the panel
 				var areaForChild = GetAvailableAreaForChild(child, availableSize, siblingLayoutInfos, padding);
 
 				var horizontalMargin = child.Margin.Left + child.Margin.Right;
@@ -347,7 +347,7 @@ namespace Windows.UI.Xaml.Controls
 			/// <param name="availableSize">The panel's available size</param>
 			/// <param name="padding">The panel's padding</param>
 			/// <param name="measureChild">The method to call when we need to measure a child</param>
-			/// <param name="siblingLayoutInfos">The set of sibling layout information of the currently layed out siblings</param>
+			/// <param name="siblingLayoutInfos">The set of sibling layout information of the currently laid out siblings</param>
 			/// <param name="updateCallerStack">The stack of all IFrameworkElements that caused the chain of updates</param>
 			private void UpdateSiblingsBasedOnSize(
 				IFrameworkElement child,
@@ -362,7 +362,7 @@ namespace Windows.UI.Xaml.Controls
 
 				foreach (var dependency in sibling.Dependencies.Select(d => d.Sibling.Element).Distinct())
 				{
-					// If element has already been layed out
+					// If element has already been laid out
 					if (siblingLayoutInfos.ContainsKey(dependency) && !updateCallerStack.Contains(dependency))
 					{
 						// Re-measure the child based on the new info
@@ -403,7 +403,7 @@ namespace Windows.UI.Xaml.Controls
 
 			private void PrepareChildForArrange(IFrameworkElement child, Size finalSize, Thickness padding, Func<View, Size> getDesiredChildSize, Dictionary<IFrameworkElement, SiblingLayoutInfo> siblingLayoutInfos)
 			{
-				// Get the available area for the children, based on the currently layed out siblings and on the available size in the panel
+				// Get the available area for the children, based on the currently laid out siblings and on the available size in the panel
 				var areaForChild = GetAvailableAreaForChild(child, finalSize, siblingLayoutInfos, padding);
 				var desiredSize = getDesiredChildSize(child as View);
 				var childArea = areaForChild;
@@ -442,11 +442,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			/// <summary>
-			/// Gets the available area for the children, based on the currently layed out siblings and on the available size in the panel
+			/// Gets the available area for the children, based on the currently laid out siblings and on the available size in the panel
 			/// </summary>
 			/// <param name="child">The child for which we want to find out the available area</param>
 			/// <param name="availableSize">The panel's available size</param>
-			/// <param name="siblingLayoutInfos">The information about the currently layed out siblings</param>
+			/// <param name="siblingLayoutInfos">The information about the currently laid out siblings</param>
 			/// <returns></returns>
 			private Rect GetAvailableAreaForChild(IFrameworkElement child, Size availableSize, Dictionary<IFrameworkElement, SiblingLayoutInfo> siblingLayoutInfos, Thickness graphPadding)
 			{
@@ -714,7 +714,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			/// <summary>
-			/// Gets already layed out FrameworkElements that have a given dependecy type in relation to this sibling and where indeference is appropriate
+			/// Gets already laid out FrameworkElements that have a given dependency type in relation to this sibling and where indeference is appropriate
 			/// </summary>
 			private SiblingDependency[] GetAvailableDependencies(Sibling element, DependencyType dependencyType, bool useInferred, IDictionary<IFrameworkElement, SiblingLayoutInfo> availableSiblings)
 			{
@@ -728,7 +728,7 @@ namespace Windows.UI.Xaml.Controls
 			/// </summary>
 			/// <param name="availableArea">The child's available area</param>
 			/// <param name="childSize">The measured child size</param>
-			/// <param name="siblingLayoutInfo">The information about the previously layed out children</param>
+			/// <param name="siblingLayoutInfo">The information about the previously laid out children</param>
 			private Rect ComputeChildArea(Rect availableArea, Size childSize, SiblingLayoutInfo siblingLayoutInfo)
 			{
 				var location = availableArea.Location;
@@ -781,7 +781,7 @@ namespace Windows.UI.Xaml.Controls
 
 				foreach (var dependency in sibling.Dependencies.Select(d => d.Sibling.Element).Distinct())
 				{
-					// If element has already been layed out
+					// If element has already been laid out
 					if (siblingLayoutInfos.ContainsKey(dependency))
 					{
 						// Re-prepare the child based on the new information

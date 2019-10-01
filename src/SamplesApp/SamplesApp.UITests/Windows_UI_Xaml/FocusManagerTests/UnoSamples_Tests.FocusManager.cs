@@ -28,9 +28,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - GetFocusedElement - Border - 1 - Inital State");
+			_app.Screenshot("FocusManager - GetFocusedElement - Border - 1 - Initial State");
 
 			frameworkElement.Tap();
 
@@ -52,9 +52,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - GetFocusedElement - Button - 1 - Inital State");
+			_app.Screenshot("FocusManager - GetFocusedElement - Button - 1 - Initial State");
 
 			frameworkElement.Tap();
 			_app.Wait(2);
@@ -77,9 +77,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - LostFocus - Button - 1 - Inital State");
+			_app.Screenshot("FocusManager - LostFocus - Button - 1 - Initial State");
 
 			frameworkElement.Tap();
 			_app.Wait(1);
@@ -104,9 +104,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - GetFocusedElement - CheckBox - 1 - Inital State");
+			_app.Screenshot("FocusManager - GetFocusedElement - CheckBox - 1 - Initial State");
 
 			frameworkElement.Tap();
 			_app.Wait(2);
@@ -129,9 +129,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");;
-			_app.Screenshot("FocusManager - LostFocus - CheckBox - 1 - Inital State");
+			_app.Screenshot("FocusManager - LostFocus - CheckBox - 1 - Initial State");
 
 			frameworkElement.Tap();
 			_app.Wait(1);
@@ -156,9 +156,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - GetFocusedElement - Grid - 1 - Inital State");
+			_app.Screenshot("FocusManager - GetFocusedElement - Grid - 1 - Initial State");
 
 			frameworkElement.Tap();
 
@@ -180,9 +180,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - GetFocusedElement - HyperlinkButton - 1 - Inital State");
+			_app.Screenshot("FocusManager - GetFocusedElement - HyperlinkButton - 1 - Initial State");
 
 			frameworkElement.Tap();
 			_app.Wait(2);
@@ -207,9 +207,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - LostFocus - HyperlinkButton - 1 - Inital State");
+			_app.Screenshot("FocusManager - LostFocus - HyperlinkButton - 1 - Initial State");
 
 			frameworkElement.Tap();
 			_app.Wait(2);
@@ -234,9 +234,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - GetFocusedElement - Image - 1 - Inital State");
+			_app.Screenshot("FocusManager - GetFocusedElement - Image - 1 - Initial State");
 
 			frameworkElement.Tap();
 
@@ -258,9 +258,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - GetFocusedElement - Rectangle - 1 - Inital State");
+			_app.Screenshot("FocusManager - GetFocusedElement - Rectangle - 1 - Initial State");
 
 			frameworkElement.Tap();
 
@@ -282,9 +282,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - GetFocusedElement - TextBlock - 1 - Inital State");
+			_app.Screenshot("FocusManager - GetFocusedElement - TextBlock - 1 - Initial State");
 
 			frameworkElement.Tap();
 
@@ -306,9 +306,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - GetFocusedElement - TextBoxMultiLine - 1 - Inital State");
+			_app.Screenshot("FocusManager - GetFocusedElement - TextBoxMultiLine - 1 - Initial State");
 
 			frameworkElement.Tap();
 			_app.Wait(2);
@@ -331,9 +331,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - LostFocus - TextBoxMultiLine - 1 - Inital State");
+			_app.Screenshot("FocusManager - LostFocus - TextBoxMultiLine - 1 - Initial State");
 
 			frameworkElement.Tap();
 			_app.Wait(1);
@@ -358,9 +358,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - GetFocusedElement - TextBoxSingleLine - 1 - Inital State");
+			_app.Screenshot("FocusManager - GetFocusedElement - TextBoxSingleLine - 1 - Initial State");
 
 			frameworkElement.Tap();
 
@@ -382,9 +382,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - LostFocus - TextBoxSingleLine - 1 - Inital State");
+			_app.Screenshot("FocusManager - LostFocus - TextBoxSingleLine - 1 - Initial State");
 
 			frameworkElement.Tap();
 			_app.Wait(2);
@@ -410,9 +410,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - GetFocusedElement - ToggleButton - 1 - Inital State");
+			_app.Screenshot("FocusManager - GetFocusedElement - ToggleButton - 1 - Initial State");
 
 			frameworkElement.Tap();
 
@@ -434,9 +434,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - LostFocus - ToggleButton - 1 - Inital State");
+			_app.Screenshot("FocusManager - LostFocus - ToggleButton - 1 - Initial State");
 
 			frameworkElement.Tap();
 			_app.Wait(1);
@@ -461,9 +461,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - GetFocusedElement - ComboBox - 1 - Inital State");
+			_app.Screenshot("FocusManager - GetFocusedElement - ComboBox - 1 - Initial State");
 
 			frameworkElement.Tap();
 			_app.Wait(2);
@@ -486,9 +486,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - LostFocus - ComboBox - 1 - Inital State");
+			_app.Screenshot("FocusManager - LostFocus - ComboBox - 1 - Initial State");
 
 			frameworkElement.Tap();
 			_app.Wait(1);
@@ -514,9 +514,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - GetFocusedElement - ComboBoxItem - 1 - Inital State");
+			_app.Screenshot("FocusManager - GetFocusedElement - ComboBoxItem - 1 - Initial State");
 
 			comboBox.Tap();
 			_app.Wait(2);
@@ -542,9 +542,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - LostFocus - ComboBoxItem - 1 - Inital State");
+			_app.Screenshot("FocusManager - LostFocus - ComboBoxItem - 1 - Initial State");
 
 			comboBox.Tap();
 			_app.Wait(1);
@@ -573,9 +573,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - GetFocusedElement - ScrollViewer - 1 - Inital State");
+			_app.Screenshot("FocusManager - GetFocusedElement - ScrollViewer - 1 - Initial State");
 
 			frameworkElement.Tap();
 
@@ -598,9 +598,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - GetFocusedElement - ListViewItem - 1 - Inital State");
+			_app.Screenshot("FocusManager - GetFocusedElement - ListViewItem - 1 - Initial State");
 
 			frameworkElement.Tap();
 
@@ -623,9 +623,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			_app.Tap(txtCurrentFocused);
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "");
-			_app.Screenshot("FocusManager - LostFocus - ListViewItem - 1 - Inital State");
+			_app.Screenshot("FocusManager - LostFocus - ListViewItem - 1 - Initial State");
 
 			frameworkElement.Tap();
 			_app.Wait(2);

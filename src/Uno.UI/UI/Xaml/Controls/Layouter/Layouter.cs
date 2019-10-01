@@ -356,7 +356,7 @@ namespace Windows.UI.Xaml.Controls
 		private Rect ApplyMarginAndAlignments(View view, Rect frame)
 		{
 			// In this implementation, since we do not have the ability to intercept proprely the measure and arrange
-			// because of the type of hierarchy (inherting from native views), we must apply the margins and alignements
+			// because of the type of hierarchy (inheriting from native views), we must apply the margins and alignements
 			// from within the panel to its children. This makes the authoring of custom panels that do not inherit from 
 			// Panel that do not use this helper a bit more complex, but for all other panels that use this
 			// layouter, the logic is implied.

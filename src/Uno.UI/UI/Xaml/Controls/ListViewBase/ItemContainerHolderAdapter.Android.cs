@@ -41,7 +41,7 @@ namespace Uno.UI.Controls
 
 				SecondaryPool?.SetActiveView(position, wrapper);
 
-				//We set the wrapper LayoutParameters because AbsListView needs its childs LayoutParams to be of type AbsListView.LayoutParams.
+				//We set the wrapper LayoutParameters because AbsListView needs its child's LayoutParams to be of type AbsListView.LayoutParams.
 				//If LayoutParams are not set to the specific type they cannot be casted to AbsListView.LayoutParams.
 				//This is required for Android 4.4 specifically and Spinner.
 				if (parent is Spinner)

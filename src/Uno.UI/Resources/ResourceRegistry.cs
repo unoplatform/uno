@@ -12,7 +12,7 @@ namespace Uno.Presentation.Resources
 		/// Defines a resource selector handler
 		/// </summary>
 		/// <param name="resourceName">A resource name to be resolved</param>
-		/// <returns>A resource instace, otherwise null</returns>
+		/// <returns>A resource instance, otherwise null</returns>
 		public delegate object ResourceLookupHandler(string resourceName);
 
 		private object _gate = new object();

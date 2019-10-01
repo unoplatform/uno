@@ -212,7 +212,7 @@ namespace Uno.UI.DataBinding
 		}
 
 		/// <summary>
-		/// Clears the value of the current precendence.
+		/// Clears the value of the current precedence.
 		/// </summary>
 		/// <remarks>After this call, the value returned
 		/// by <see cref="Value"/> will be of the next available
