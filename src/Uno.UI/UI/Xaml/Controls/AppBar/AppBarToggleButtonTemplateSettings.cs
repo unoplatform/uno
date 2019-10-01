@@ -1,7 +1,11 @@
+using Uno;
+
 namespace Windows.UI.Xaml.Controls.Primitives
 {
+	[NotImplemented]
 	public partial class AppBarToggleButtonTemplateSettings : global::Windows.UI.Xaml.DependencyObject
 	{
+		[NotImplemented]
 		public double KeyboardAcceleratorTextMinWidth
 		{
 			get
