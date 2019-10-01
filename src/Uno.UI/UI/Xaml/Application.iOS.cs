@@ -37,6 +37,7 @@ namespace Windows.UI.Xaml
 
 		public override void FinishedLaunching(UIApplication application)
 		{
+			InitializationCompleted();
 			OnLaunched(new LaunchActivatedEventArgs());
 		}
 

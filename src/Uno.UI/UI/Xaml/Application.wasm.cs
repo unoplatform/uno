@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml
 				{
 					this.Log().Debug("Launch arguments: " + arguments);
 				}
-
+				InitializationCompleted();
 				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, arguments));
 			}
 		}

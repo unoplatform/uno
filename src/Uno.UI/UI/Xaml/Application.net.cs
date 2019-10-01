@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml
 		public Application()
 		{
 			Current = this;
-		}
+        }
 
 		private ApplicationTheme GetDefaultSystemTheme() => ApplicationTheme.Light;
 	}

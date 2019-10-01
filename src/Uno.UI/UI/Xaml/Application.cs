@@ -10,6 +10,7 @@ namespace Windows.UI.Xaml
 {
 	public partial class Application
 	{
+		private bool _initializationComplete = false;
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private ApplicationTheme? _requestedTheme;
 
@@ -24,8 +25,7 @@ namespace Windows.UI.Xaml
 			public const int LauchedStart = 1;
 			public const int LauchedStop = 2;
 		}
-
-
+		
 		public static Application Current { get; private set; }
 
 		public DebugSettings DebugSettings { get; } = new DebugSettings();
@@ -33,7 +33,14 @@ namespace Windows.UI.Xaml
 		public ApplicationTheme RequestedTheme
 		{
 			get => _requestedTheme ?? (_requestedTheme = GetDefaultSystemTheme()).Value;
-			set => _requestedTheme = value;
+			set
+			{
+				if (_initializationComplete)
+				{
+					throw new NotSupportedException("Operation not supported");
+				}
+				_requestedTheme = value;
+			}
 		}
 
 		public ResourceDictionary Resources { get; } = new ResourceDictionary();
@@ -64,6 +71,8 @@ namespace Windows.UI.Xaml
 		protected internal virtual void OnActivated(IActivatedEventArgs args) { }
 
 		protected internal virtual void OnLaunched(LaunchActivatedEventArgs args) { }
+
+		internal void InitializationCompleted() => _initializationComplete = true;
 
 		internal void RaiseRecoverableUnhandledException(Exception e) => UnhandledException?.Invoke(this, new UnhandledExceptionEventArgs(e, false));
 

@@ -33,7 +33,8 @@ namespace Windows.UI.Xaml
 
 		public override void DidFinishLaunching(NSNotification notification)
 		{
-			OnLaunched(new LaunchActivatedEventArgs());
+            InitializationCompleted();
+            OnLaunched(new LaunchActivatedEventArgs());
 		}
 
 		/// <summary>
