@@ -212,7 +212,7 @@ For live update on UWP you need to edit the xaml while the project is debugging,
 
 1. Install **Uno.UI Solution Template Visual Studio Extension** https://github.com/nventive/Uno/releases
 2. Look for Uno.UI App Solution under Visual C#
-3. if you still havent found it, try and use the Search box
+3. if you still haven't found it, try and use the Search box
 
 
 ## How to port an existing UWP app to Uno.UI?
@@ -379,7 +379,7 @@ It's partially implemented but there are parts that are closed source from Micro
 
 ## Does intellisense work in XAML editor?
 Yes, if you do not see it:
-- Make sure you are targetting the latest windows SDK version.
+- Make sure you are targeting the latest windows SDK version.
 - Choose "XAML Designer" as the default for opening your XAML files (right-click on your XAML file and then "Open With").
 - Relaunch your Visual Studio solution.
 - Select UWP on the top-left corner of your XAML file.
@@ -500,7 +500,7 @@ We've implemented parts of the supported animations, there are others that are s
 
 The target API does not affect the min API. You just need to have the API day installed in your android sdk manager. The min sdk is specified in the androidmanifest file.
 
-## Is there a workaround for ScrollViewer.ScrollToVerticalOffset method, since it isnt implemented in Uno?
+## Is there a workaround for ScrollViewer.ScrollToVerticalOffset method, since it isn't implemented in Uno?
 
 You can use ChangeView instead
 
