@@ -196,7 +196,7 @@
 			</Methods>
 
 			<Fields>
-				<Member 
+				<Member
 					fullName="Windows.UI.Xaml.TextWrapping Windows.UI.Xaml.TextWrapping::WordEllipsis"
 					reason="Invalid enum value"/>
 			</Fields>
@@ -214,13 +214,13 @@
 
 		<IgnoreSet baseVersion="1.45.0">
 			<Types>
-				<Member 
+			  <Member
 					fullName="Uno.UI.IUnoViewParent"
 					reason="Removed internal stuff."/>
-				<Member 
+				<Member
 					fullName="Uno.UI.UnoGestureDetector"
 					reason="Removed internal stuff."/>
-				<Member 
+				<Member
 					fullName="Windows.UI.Xaml.Controls.UnoUIWebView"
 					reason="UIWebView support has been removed by Apple"/>
 			</Types>
