@@ -53,11 +53,17 @@ namespace UnitTestsApp
 		/// Ensure that application exists, for unit tests. 
 		/// </summary>
 		/// <returns>The 'running' application.</returns>
-		public static App EnsureApplication()
+		public static App EnsureApplication(ApplicationTheme? requestTheme = null)
 		{
 			if (Current == null)
 			{
-				(new App()).OnLaunched(null);
+				var application = new App();
+				if ( requestTheme != null)
+				{
+					application.RequestedTheme = requestTheme.Value;
+				}
+				application.InitializationCompleted();
+				application.OnLaunched(null);
 			}
 
 			var app = Current as App;

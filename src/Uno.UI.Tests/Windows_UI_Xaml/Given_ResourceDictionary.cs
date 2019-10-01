@@ -205,10 +205,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		public void When_Has_Multiple_Themes()
+		public void When_Has_Multiple_Themes_Light()
 		{
 #if !NETFX_CORE
-			UnitTestsApp.App.EnsureApplication();
+			UnitTestsApp.App.EnsureApplication(ApplicationTheme.Light);
 #endif
 
 			var rd = new ResourceDictionary();
@@ -225,19 +225,29 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var retrieved1 = rd["Blu"];
 			Assert.AreEqual(ApplicationTheme.Light, Application.Current.RequestedTheme);
 			Assert.AreEqual(Colors.LightBlue, ((SolidColorBrush)retrieved1).Color);
+		}
 
-#if !NETFX_CORE //Not legal on UWP to change theme after app has launched
-			try
-			{
-				Application.Current.RequestedTheme = ApplicationTheme.Dark;
-				var retrieved2 = rd["Blu"];
-				Assert.AreEqual(Colors.DarkBlue, ((SolidColorBrush)retrieved2).Color);
-			}
-			finally
-			{
-				Application.Current.RequestedTheme = ApplicationTheme.Light;
-			}
+		[TestMethod]
+		public void When_Has_Multiple_Themes_Dark()
+		{
+#if !NETFX_CORE
+			UnitTestsApp.App.EnsureApplication(ApplicationTheme.Dark);
 #endif
+
+			var rd = new ResourceDictionary();
+			var light = new ResourceDictionary();
+			light["Blu"] = new SolidColorBrush(Colors.LightBlue);
+			var dark = new ResourceDictionary();
+			dark["Blu"] = new SolidColorBrush(Colors.DarkBlue);
+
+			rd.ThemeDictionaries["Light"] = light;
+			rd.ThemeDictionaries["Dark"] = dark;
+
+			Assert.IsTrue(rd.ContainsKey("Blu"));
+			
+			Application.Current.RequestedTheme = ApplicationTheme.Dark;
+			var retrieved2 = rd["Blu"];
+			Assert.AreEqual(Colors.DarkBlue, ((SolidColorBrush)retrieved2).Color);
 		}
 
 		[TestMethod]
