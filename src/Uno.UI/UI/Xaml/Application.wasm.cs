@@ -69,7 +69,18 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private ApplicationTheme GetDefaultSystemTheme() => ApplicationTheme.Light;
+		private ApplicationTheme GetDefaultSystemTheme()
+		{
+			var serializedTheme = WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.getDefaultSystemTheme()");
+			if ( Enum.TryParse(serializedTheme, out ApplicationTheme theme))
+			{
+				return theme;
+			}
+			else
+			{
+				throw new InvalidOperationException($"{serializedTheme} theme is not a supported OS theme");
+			}
+		}
 	}
 }
 #endif

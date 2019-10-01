@@ -1130,12 +1130,12 @@ var Uno;
                 const originalStyleCssText = elementStyle.cssText;
                 let parentElement = null;
                 let parentElementWidthHeight = null;
-                let isDisconnected = !element.isConnected;
+                let unconnectedRoot = null;
                 try {
-                    if (isDisconnected) {
+                    if (!element.isConnected) {
                         // If the element is not connected to the DOM, we need it
                         // to be connected for the measure to provide a meaningful value.
-                        let unconnectedRoot = element;
+                        unconnectedRoot = element;
                         while (unconnectedRoot.parentElement) {
                             // Need to find the top most "unconnected" parent
                             // of this element
@@ -1201,8 +1201,8 @@ var Uno;
                         parentElement.style.width = parentElementWidthHeight.width;
                         parentElement.style.height = parentElementWidthHeight.height;
                     }
-                    if (isDisconnected) {
-                        this.containerElement.removeChild(element);
+                    if (unconnectedRoot !== null) {
+                        this.containerElement.removeChild(unconnectedRoot);
                     }
                 }
             }
@@ -2140,6 +2140,72 @@ var Windows;
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Sensors;
+        (function (Sensors) {
+            class Accelerometer {
+                static initialize() {
+                    if (window.DeviceMotionEvent) {
+                        this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Accelerometer:DispatchReading");
+                        return true;
+                    }
+                    return false;
+                }
+                static startReading() {
+                    window.addEventListener('devicemotion', Accelerometer.readingChangedHandler);
+                }
+                static stopReading() {
+                    window.removeEventListener('devicemotion', Accelerometer.readingChangedHandler);
+                }
+                static readingChangedHandler(event) {
+                    Accelerometer.dispatchReading(event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
+                }
+            }
+            Sensors.Accelerometer = Accelerometer;
+        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Sensors;
+        (function (Sensors) {
+            class Magnetometer {
+                static initialize() {
+                    try {
+                        if (typeof window.Magnetometer === "function") {
+                            this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Magnetometer:DispatchReading");
+                            let magnetometerClass = window.Magnetometer;
+                            this.magnetometer = new magnetometerClass({ referenceFrame: 'device' });
+                            return true;
+                        }
+                    }
+                    catch (error) {
+                        //sensor not available
+                        console.log('Magnetometer could not be initialized.');
+                    }
+                    return false;
+                }
+                static startReading() {
+                    this.magnetometer.addEventLi1stener('reading', Magnetometer.readingChangedHandler);
+                    this.magnetometer.start();
+                }
+                static stopReading() {
+                    this.magnetometer.removeEventListener('reading', Magnetometer.readingChangedHandler);
+                    this.magnetometer.stop();
+                }
+                static readingChangedHandler(event) {
+                    Magnetometer.dispatchReading(this.magnetometer.x, this.magnetometer.y, this.magnetometer.z);
+                }
+            }
+            Sensors.Magnetometer = Magnetometer;
+        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
     var UI;
     (function (UI) {
         var Core;
@@ -2206,69 +2272,39 @@ var Windows;
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
-    var Devices;
-    (function (Devices) {
-        var Sensors;
-        (function (Sensors) {
-            class Accelerometer {
-                static initialize() {
-                    if (window.DeviceMotionEvent) {
-                        this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Accelerometer:DispatchReading");
-                        return true;
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            class Application {
+                static getDefaultSystemTheme() {
+                    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                        return Xaml.ApplicationTheme.Dark;
                     }
-                    return false;
-                }
-                static startReading() {
-                    window.addEventListener('devicemotion', Accelerometer.readingChangedHandler);
-                }
-                static stopReading() {
-                    window.removeEventListener('devicemotion', Accelerometer.readingChangedHandler);
-                }
-                static readingChangedHandler(event) {
-                    Accelerometer.dispatchReading(event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
+                    if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+                        return Xaml.ApplicationTheme.Light;
+                    }
+                    //if none matches or not supported
+                    return Xaml.ApplicationTheme.Light;
                 }
             }
-            Sensors.Accelerometer = Accelerometer;
-        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
-    })(Devices = Windows.Devices || (Windows.Devices = {}));
+            Xaml.Application = Application;
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
-    var Devices;
-    (function (Devices) {
-        var Sensors;
-        (function (Sensors) {
-            class Magnetometer {
-                static initialize() {
-                    try {
-                        if (typeof window.Magnetometer === "function") {
-                            this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Magnetometer:DispatchReading");
-                            let magnetometerClass = window.Magnetometer;
-                            this.magnetometer = new magnetometerClass({ referenceFrame: 'device' });
-                            return true;
-                        }
-                    }
-                    catch (error) {
-                        //sensor not available
-                        console.log('Magnetometer could not be initialized.');
-                    }
-                    return false;
-                }
-                static startReading() {
-                    this.magnetometer.addEventLi1stener('reading', Magnetometer.readingChangedHandler);
-                    this.magnetometer.start();
-                }
-                static stopReading() {
-                    this.magnetometer.removeEventListener('reading', Magnetometer.readingChangedHandler);
-                    this.magnetometer.stop();
-                }
-                static readingChangedHandler(event) {
-                    Magnetometer.dispatchReading(this.magnetometer.x, this.magnetometer.y, this.magnetometer.z);
-                }
-            }
-            Sensors.Magnetometer = Magnetometer;
-        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
-    })(Devices = Windows.Devices || (Windows.Devices = {}));
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            let ApplicationTheme;
+            (function (ApplicationTheme) {
+                ApplicationTheme["Light"] = "Light";
+                ApplicationTheme["Dark"] = "Dark";
+            })(ApplicationTheme = Xaml.ApplicationTheme || (Xaml.ApplicationTheme = {}));
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
