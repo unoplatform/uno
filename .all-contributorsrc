@@ -381,6 +381,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "tomer",
+      "name": "Tomer Cohen",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/50206?v=4",
+      "profile": "https://tomercohen.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 5,
