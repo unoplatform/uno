@@ -43,6 +43,8 @@
 					Value="OuterTreeImplicit" />
 		</Style>
 		<x:Double x:Key="OuterTreeDoubleValue">105.5</x:Double>
+		<Color x:Key="LocalColor1">MintCream</Color>
+		<GridLength x:Key="LocalGridLength333">333</GridLength>
 	</UserControl.Resources>
 
 	<Grid x:Name="topGrid"
@@ -61,6 +63,7 @@
 		<Grid x:Name="testGrid">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="{StaticResource GridLength256}" />
+				<RowDefinition Height="{StaticResource LocalGridLength333}" />
 			</Grid.RowDefinitions>
 			<Grid.Resources>
 				<ResourceDictionary>
@@ -129,7 +132,11 @@
 									   Background="{StaticResource MutatedColorBrush}"
 									   Poco="{StaticResource MutatedPoco}"
 									   DObjDP="{StaticResource MutatedDO}"
-									   PlainDO="{StaticResource MutatedDO}" />
+									   PlainDO="{StaticResource MutatedDO}">
+				<Control.Foreground>
+					<SolidColorBrush Color="{StaticResource LocalColor1}" />
+				</Control.Foreground>
+			</views:ResourceTestControl>
 			<RadioButton x:Name="testRadioButton" />
 			<RadioButton x:Name="testRadioButtonExplicit"
 						 Style="{StaticResource ExplicitRadioButtonStyle1}" />

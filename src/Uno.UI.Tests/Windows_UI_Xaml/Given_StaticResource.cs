@@ -273,5 +273,28 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var bulbousness = MyBehavior.GetBulbousness(control.TestBorder);
 			Assert.AreEqual(105.5, bulbousness);
 		}
+
+		[TestMethod]
+		[Ignore("Uno's load-time resource resolution fails here because SolidColorBrush doesn't have its Parent set. (This is probably because the same Brush is typically used multiple times, requiring support for multi-Parent scenarios.)")]
+		public void When_Non_View_And_Local_Brush()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var control = new Test_Control();
+
+			Assert.AreEqual(Colors.MintCream, (control.TemplateFromResourceControl.Foreground as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
+		public void When_Non_View_And_Local_Resource()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var control = new Test_Control();
+			app.HostView.Children.Add(control);
+
+			var rowDef = control.TestGrid.RowDefinitions[1];
+			Assert.AreEqual(333, rowDef.Height.Value);
+		}
 	}
 }
