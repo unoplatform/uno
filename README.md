@@ -156,6 +156,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://github.com/hugovk"><img src="https://avatars2.githubusercontent.com/u/1324225?v=4" width="100px;" alt="Hugo van Kemenade"/><br /><sub><b>Hugo van Kemenade</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=hugovk" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://tomercohen.com"><img src="https://avatars0.githubusercontent.com/u/50206?v=4" width="100px;" alt="Tomer Cohen"/><br /><sub><b>Tomer Cohen</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=tomer" title="Documentation">📖</a></td>
   </tr>
 </table>
 
