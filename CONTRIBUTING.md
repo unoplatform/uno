@@ -49,11 +49,11 @@ If you are submitting a feature or substantial code contribution, please discuss
 
 **Obtaining the source code**
 
-If you are an outside contributer, please fork the Uno Platform repository you would like to contribute to your account. See the GitHub documentation for [forking a repo](https://help.github.com/articles/fork-a-repo/) if you have any questions about this. 
+If you are an outside contributor, please fork the Uno Platform repository you would like to contribute to your account. See the GitHub documentation for [forking a repo](https://help.github.com/articles/fork-a-repo/) if you have any questions about this. 
 
 **Submitting a pull request**
 
-If you don't know what a pull request is read this article: https://help.github.com/articles/using-pull-requests. Make sure the respository can build and all tests pass, as well as follow the current coding guidelines.
+If you don't know what a pull request is read this article: https://help.github.com/articles/using-pull-requests. Make sure the repository can build and all tests pass, as well as follow the current coding guidelines.
 
 Pull requests should all be done to the **master** branch. 
 

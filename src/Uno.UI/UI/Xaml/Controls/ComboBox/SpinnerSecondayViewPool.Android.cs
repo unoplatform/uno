@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public void RegisterForRecycled(View container, Action action)
-			=> throw new NotSupportedException("SpinnerViewPool does not support recyled notification");
+			=> throw new NotSupportedException("SpinnerViewPool does not support recycled notification");
 
 		private void InitializeScrap()
 		{

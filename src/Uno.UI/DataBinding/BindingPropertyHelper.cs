@@ -320,7 +320,7 @@ namespace Uno.UI.DataBinding
 		/// <returns>A <see cref="PropertyInfo"/> instance.</returns>
 		/// <remarks>
 		/// This method is required when searching in types that
-		/// include "new" non-virtual overriden members. In Mono 4.0 and
+		/// include "new" non-virtual overridden members. In Mono 4.0 and
 		/// earlier, the highest match would be returned, but the .NET core 
 		/// implementation found in Mono 4.2+ throws an ambiguous match exception.
 		/// This requires a recursive search using the <see cref="BindingFlags.DeclaredOnly"/> flag.

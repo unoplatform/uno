@@ -36,6 +36,6 @@ For instance, `Windows.UI.Xaml.Controls.StackPanel` directly inherits from a `Vi
 
 The native layout system for inner elements is then overridden with a XAML-compatible layout system, using the standard XAML Measure and Arrange passes. This means that a StackPanel will use the exact same layout strategies on all platforms, and will therefore look the same on screen.
 
-On Windows platforms, Uno.UI is not present and the XAML-layout files are left untouched. On Xamarin-compatible plaforms, the XAML files are processed at compile time to generate non-conditional code that will be executed as-is at runtime on the device. This means that there is no runtime parsing of XAML, which makes the UI-tree creation particularly efficient.
+On Windows platforms, Uno.UI is not present and the XAML-layout files are left untouched. On Xamarin-compatible platforms, the XAML files are processed at compile time to generate non-conditional code that will be executed as-is at runtime on the device. This means that there is no runtime parsing of XAML, which makes the UI-tree creation particularly efficient.
 
 Uno.UI also provides ways to have platform-specific markup in XAML files, which allows for a simple file tree while adjusting the UI for each platform.

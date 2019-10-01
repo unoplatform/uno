@@ -30,7 +30,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			//_app.WaitForElement(_app.Marked("BottomFlyout"));
 			//var flyoutRect = _app.Marked("BottomFlyout").FirstResult().Rect;
 
-			//// Assert inital state 
+			//// Assert initial state 
 			//Assert.AreEqual("0", flyoutRect.X.ToString());
 		}
 	}

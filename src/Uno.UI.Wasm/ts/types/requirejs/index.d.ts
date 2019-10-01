@@ -69,7 +69,7 @@ interface RequireShim {
 	exports?: string;
 
 	/**
-	* Initialize function with all dependcies passed in,
+	* Initialize function with all dependencies passed in,
 	* if the function returns a value then that value is used
 	* as the module export value instead of the object
 	* found via the 'exports' string.
@@ -101,7 +101,7 @@ interface RequireConfig {
 
 	/**
 	* For the given module prefix, instead of loading the
-	* module with the given ID, substitude a different
+	* module with the given ID, substitute a different
 	* module ID.
 	*
 	* @example

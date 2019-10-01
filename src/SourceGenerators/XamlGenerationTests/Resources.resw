@@ -151,7 +151,7 @@
     <value>Navigation Failed</value>
   </data>
   <data name="NestedText.Text" xml:space="preserve">
-    <value>Overridding nested text from resource</value>
+    <value>Overriding nested text from resource</value>
   </data>
   <data name="ProjectVersion" xml:space="preserve">
     <value>1.0</value>
