@@ -72,7 +72,8 @@ jobs:
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - bash: |
-      set -e
+      set -euo pipefail
+      IFS=$'\n\t'
       cd $(build.sourcesdirectory)/build/wasm-uitest-binaries/site
       python server.py &
       cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm.UITests
