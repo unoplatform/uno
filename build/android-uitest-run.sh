@@ -1,4 +1,6 @@
 #!/usr/bin/env bash
+set -e
+
 export BUILDCONFIGURATION=Release
 
 cd $BUILD_SOURCESDIRECTORY/build

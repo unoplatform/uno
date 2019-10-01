@@ -1,4 +1,5 @@
 ﻿#!/bin/bash
+set -e
 
 cd $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries
 
