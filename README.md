@@ -1,5 +1,5 @@
 # Uno Platform - Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today.
-[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=unoplatform/uno)](https://dependabot.com) [![All Contributors](https://img.shields.io/badge/all_contributors-43-orange.svg?style=flat-square)](#contributors)
+[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=unoplatform/uno)](https://dependabot.com) [![All Contributors](https://img.shields.io/badge/all_contributors-44-orange.svg?style=flat-square)](#contributors)
 
 # What is the Uno Platform
 
@@ -165,6 +165,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://www.deveshsingh.ml"><img src="https://avatars3.githubusercontent.com/u/31030254?v=4" width="100px;" alt="Devesh Singh"/><br /><sub><b>Devesh Singh</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=D3v3sh5ingh" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/RanadeepPolavarapu"><img src="https://avatars1.githubusercontent.com/u/7084995?v=4" width="100px;" alt="RanadeepPolavarapu"/><br /><sub><b>RanadeepPolavarapu</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=RanadeepPolavarapu" title="Documentation">📖</a></td>
     <td align="center"><a href="http://ujjwalll.github.io"><img src="https://avatars1.githubusercontent.com/u/39565250?v=4" width="100px;" alt="Ujjwal "/><br /><sub><b>Ujjwal </b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=ujjwalll" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/cbaumler"><img src="https://avatars1.githubusercontent.com/u/9060078?v=4" width="100px;" alt="Chris Baumler"/><br /><sub><b>Chris Baumler</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=cbaumler" title="Documentation">📖</a></td>
   </tr>
 </table>
 

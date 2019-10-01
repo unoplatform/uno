@@ -444,6 +444,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "cbaumler",
+      "name": "Chris Baumler",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/9060078?v=4",
+      "profile": "https://github.com/cbaumler",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 5,
