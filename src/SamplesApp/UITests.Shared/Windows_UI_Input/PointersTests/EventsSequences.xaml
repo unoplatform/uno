@@ -1,0 +1,34 @@
+﻿<Page
+	x:Class="UITests.Shared.Windows_UI_Input.PointersTests.EventsSequences"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="using:UITests.Shared.Windows_UI_Input.PointersTests"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="Auto" />
+			<ColumnDefinition Width="*" />
+		</Grid.ColumnDefinitions>
+
+		<StackPanel Grid.Column="0">
+			<TextBlock Text=""></TextBlock>
+
+			<StackPanel Orientation="Horizontal">
+				<Border x:Name="TestTapTarget" Background="Orange" Width="100" Height="100">
+					<TextBlock Text="[TAP] with a finger we should get:\r\nEnter\r\nPressed\r\nMove*\r\nReleased\r\nExited" TextWrapping="Wrap" />
+				</Border>
+				<StackPanel>
+					<Button x:Name="TestTapClear" Content="Reset" Click="ClearTapTest" />
+					<Button x:Name="TestTapValidate" Content="Validate" Click="ValidateTapTest" />
+					<TextBlock x:Name="TestTapResult" Text="** no result **" />
+				</StackPanel>
+			</StackPanel>
+		</StackPanel>
+
+		<TextBlock Grid.Column="1" x:Name="Output" TextWrapping="Wrap" FontSize="8" />
+	</Grid>
+</Page>

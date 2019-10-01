@@ -93,8 +93,8 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 				+ $"| rawPosition={point.RawPosition} "
 				+ $"| inContact={point.IsInContact} "
 				+ $"| inRange={point.Properties.IsInRange} "
-				+ $"| intermediates={e.GetIntermediatePoints(this)?.Count.ToString() ?? "null"}"
-				+ $"| primary={point.Properties.IsPrimary}";
+				+ $"| primary={point.Properties.IsPrimary}"
+				+ $"| intermediates={e.GetIntermediatePoints(this)?.Count.ToString() ?? "null"}";
 
 			Log(message);
 		}

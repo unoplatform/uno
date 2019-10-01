@@ -93,6 +93,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Input\PointersTests\EventsSequences.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Input\VisualStatesTests\Buttons.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4518,6 +4522,11 @@
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ScrollViewerTests\ScrollViewer_UpdatesMode.xaml.cs">
       <DependentUpon>ScrollViewer_UpdatesMode.xaml</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\PointersTests\EventsSequences.xaml.cs">
+      <DependentUpon>EventsSequences.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
 </Project>
