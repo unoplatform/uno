@@ -32,7 +32,7 @@ jobs:
       testRunTitle: 'Android Test Run'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult.xml'
-      failTaskOnFailedTests: false # see https://github.com/unoplatform/uno/issues/1259 for details
+      failTaskOnFailedTests: true
 
   - task: PublishBuildArtifacts@1
     condition: always()
