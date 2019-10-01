@@ -24,16 +24,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.Primitives.AppBarToggleButtonTemplateSettings TemplateSettings
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AppBarToggleButtonTemplateSettings AppBarToggleButton.TemplateSettings is not implemented in Uno.");
-			}
-		}
-		#endif
 		// Skipping already declared property IsCompact
 		// Skipping already declared property DynamicOverflowOrder
 		// Skipping already declared property IsInOverflow

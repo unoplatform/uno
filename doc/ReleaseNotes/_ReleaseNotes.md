@@ -133,6 +133,9 @@
 * Fix Symbols rendering in sample app
 * Fix multiple invocations of OnLoaded when hosting a control in ItemsControl
 * [Android] Fix glitchy animations inside ListView with transformed ancestor.
+* Adjust `AppBar` and `CommandBar` styles.
+* Adjust the Stretch mode of `BitmapIcon` content
+* Fix invalid Image size constraint
 
 ## Release 1.45.0
 ### Features
