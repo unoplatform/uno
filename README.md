@@ -154,6 +154,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="http://furkankambay.com/"><img src="https://avatars1.githubusercontent.com/u/8467416?v=4" width="100px;" alt="Furkan Kambay"/><br /><sub><b>Furkan Kambay</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=FurkanKambay" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/pkar70"><img src="https://avatars2.githubusercontent.com/u/23451507?v=4" width="100px;" alt="pkar70"/><br /><sub><b>pkar70</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=pkar70" title="Code">💻</a> <a href="https://github.com/unoplatform/uno/commits?author=pkar70" title="Tests">⚠️</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://github.com/hugovk"><img src="https://avatars2.githubusercontent.com/u/1324225?v=4" width="100px;" alt="Hugo van Kemenade"/><br /><sub><b>Hugo van Kemenade</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=hugovk" title="Documentation">📖</a></td>
+  </tr>
 </table>
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
