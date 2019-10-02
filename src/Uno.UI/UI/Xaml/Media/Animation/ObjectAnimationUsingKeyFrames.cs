@@ -269,7 +269,7 @@ namespace Windows.UI.Xaml.Media.Animation
             {
                 Fill();
             }
-            else// Stop - Put back the inital state
+            else// Stop - Put back the initial state
             {
                 Reset();
 				ClearValue();

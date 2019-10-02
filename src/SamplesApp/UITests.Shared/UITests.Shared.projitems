@@ -189,6 +189,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\TransformToVisual_Transform.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\VisualStateTests\VisualState_AdaptiveTrigger_Storyboard.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2597,6 +2601,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Resources\XamlGlobalResources.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\Arrange_Performance01.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\TransformToVisual_Simple.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\TransformToVisual_Transform.xaml.cs">
+      <DependentUpon>TransformToVisual_Transform.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\VisualStateTests\VisualState_AdaptiveTrigger_Storyboard.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\VisualStateTests\VisualState_AdaptiveTrigger_UsingOneStateOnly.xaml.cs">
       <DependentUpon>VisualState_AdaptiveTrigger_UsingOneStateOnly.xaml</DependentUpon>
@@ -4563,6 +4570,8 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\check.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\colors300.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\icon.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\menu.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\search.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\menu.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\search.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Slices.png" />

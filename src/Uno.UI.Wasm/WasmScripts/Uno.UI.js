@@ -2113,7 +2113,7 @@ var Windows;
                 const that = this;
                 FS.syncfs(true, err => {
                     if (err) {
-                        console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
+                        console.error(`Error synchronizing filesystem from IndexDB: ${err}`);
                     }
                 });
                 // Ensure to sync pseudo file system on unload (and periodically for safety)
@@ -2129,7 +2129,7 @@ var Windows;
             static synchronizeFileSystem() {
                 FS.syncfs(err => {
                     if (err) {
-                        console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
+                        console.error(`Error synchronizing filesystem from IndexDB: ${err}`);
                     }
                 });
             }

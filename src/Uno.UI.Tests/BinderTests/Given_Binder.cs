@@ -117,7 +117,7 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(1, converter.ConversionCount);
 			Assert.AreEqual(1000, converter.LastValue);
 
-			// It breaks here, when a broken binding would replace a fully functionnal one.
+			// It breaks here, when a broken binding would replace a fully functional one.
 			SUT.DataContext = new SourceLevel0();
 			Assert.AreEqual(10, child.TargetValue);
 			Assert.AreEqual(2, converter.ConversionCount);
@@ -177,7 +177,7 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual(1, converter.ConversionCount);
 			Assert.AreEqual(true, converter.LastValue);
 
-			// It breaks here, when a broken binding would replace a fully functionnal one.
+			// It breaks here, when a broken binding would replace a fully functional one.
 			SUT.DataContext = new SourceLevel0();
 			Assert.AreEqual(10, child.TargetValue);
 			Assert.AreEqual(2, converter.ConversionCount);

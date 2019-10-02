@@ -18,9 +18,13 @@ jobs:
   - bash: |
       source /emsdk/emsdk_env.sh
       msbuild /r /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false
-      msbuild /r /p:Configuration=Release src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
 
     displayName: 'Build sample app'
+
+  - bash: |
+      msbuild /r /p:Configuration=Release src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
+
+    displayName: 'Build Tests'
 
   - task: CopyFiles@2
     displayName: 'Publish Wasm Site'
@@ -68,6 +72,8 @@ jobs:
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - bash: |
+      set -euo pipefail
+      IFS=$'\n\t'
       cd $(build.sourcesdirectory)/build/wasm-uitest-binaries/site
       python server.py &
       cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm.UITests
@@ -138,7 +144,10 @@ jobs:
       ArtifactType: Container
 
 - job: Wasm_UITests_Compare
-  dependsOn: Wasm_UITests_Snap
+  dependsOn:
+    - Wasm_UITests_Snap
+    - Android_Tests
+    - Wasm_UITests_Automated
 
   pool:
     vmImage: 'vs2017-win2016'

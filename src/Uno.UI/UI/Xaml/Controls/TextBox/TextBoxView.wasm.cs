@@ -24,6 +24,14 @@ namespace Windows.UI.Xaml.Controls
 				("overflow-x", "visible"),
 				("overflow-y", "visible")
 			);
+
+			if (FeatureConfiguration.TextBox.HideCaret)
+			{
+				SetStyle(
+					("caret-color", "transparent !important")
+				);
+			}
+
 			SetAttribute("tabindex", "0");
 		}
 

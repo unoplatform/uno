@@ -21,7 +21,7 @@ namespace Uno.UI.DataBinding
 		private readonly static object _gate = new object();
 
 		/// <summary>
-		/// The maximum number of recyled <see cref="WeakReference"/> that can been pooled
+		/// The maximum number of recycled <see cref="WeakReference"/> that can been pooled
 		/// </summary>
 		public static int MaxReferences { get; set; } = 500;
 

@@ -152,12 +152,12 @@
 						reason="Removed to use ArrangeOverride for macOS compatibility"/>
 
 				<Member fullName="System.Void Windows.UI.Xaml.StateTriggerBase.SetActive(System.Boolean isActive)"
-						reason="Aligned visiblity with UWP"/>
+						reason="Aligned visibility with UWP"/>
 				<Member fullName="System.Void Windows.UI.Xaml.UIElement.set_RenderSize(Windows.Foundation.Size value)"
-						reason="Aligned visiblity with UWP"/>
+						reason="Aligned visibility with UWP"/>
 
 				<Member fullName="System.Void Uno.UI.UnoViewGroup.set_IsPointerCaptured(System.Boolean value)"
-						reason="Aligned visiblity with UWP"/>
+						reason="Aligned visibility with UWP"/>
 
 				<Member fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnLayoutUpdated()"
 						reason="Invalid method visibility"/>
@@ -305,7 +305,15 @@
 						reason="Parameter-less ctor does not exist in UWP"/>
 				<Member fullName="System.Void Windows.UI.Xaml.Media.RenderingEventArgs..ctor()"
 						reason="Constructor is internal on UWP" />
-			</Methods>
+
+              <Member fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources.get_EllipsisButton()"
+                      reason="Invalid global style renamed to align with CommandBar" />
+              <Member fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources.get___ImplicitStyle_Windows_UI_Xaml_Controls_AppBarToggleButton()"
+                      reason="Implicit style moved to GenericStyles.cs" />
+              <Member fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources.get___ImplicitStyle_Windows_UI_Xaml_Controls_AppBarSeparator()"
+                      reason="Implicit style moved to GenericStyles.cs" />
+
+            </Methods>
 
 			<Properties>
 				<Member fullName="Android.Views.View Windows.UI.Xaml.Controls.Popup::Anchor()"
@@ -318,7 +326,14 @@
 						reason="Removed unneeded pseudo-internal property" />
 				<Member fullName="Windows.UI.Xaml.ResourceDictionary[] Windows.UI.Xaml.ResourceDictionary::MergedDictionaries()"
 						reason="Property type fixed to match UWP" />
-			</Properties>
+
+              <Member fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources::EllipsisButton()"
+                      reason="Invalid global style renamed to align with CommandBar" />
+              <Member fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources::__ImplicitStyle_Windows_UI_Xaml_Controls_AppBarToggleButton()"
+                      reason="Implicit style moved to GenericStyles.cs" />
+              <Member fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources::__ImplicitStyle_Windows_UI_Xaml_Controls_AppBarSeparator()"
+                      reason="Implicit style moved to GenericStyles.cs" />
+            </Properties>
 		</IgnoreSet>
 
         </IgnoreSets>

@@ -16,7 +16,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 	{
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		[ActivePlatforms(Platform.iOS)] // Android is disabled https://github.com/unoplatform/uno/issues/1634
 		public void DatePickerFlyout_HasDataContextTest()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent");

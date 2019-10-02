@@ -132,7 +132,7 @@ Our ultimate goal is to allow for the UWP api to run on all platforms, using Mic
 
 Our definition of a bridge is the ability to reuse UWP-compatible source code unmodified, and allow it to compile on a different platform, yet behave at runtime the same way.
 
-This definition comes from what microsoft used to call when working on [Islandwood](https://developer.microsoft.com/en-us/windows/bridges/ios) and Astoria bridges to make iOS and Android code or binaries run on Windows.
+This definition comes from what Microsoft used to call when working on [Islandwood](https://developer.microsoft.com/en-us/windows/bridges/ios) and Astoria bridges to make iOS and Android code or binaries run on Windows.
 
 ## Why .NET?
 
@@ -154,11 +154,11 @@ Not at the moment. iOS and Android platform support relies on the underlying API
 ## Does Uno.UI support having controls in a class library?
 Yes, here's a project sample.  https://github.com/nventive/Uno.Samples/tree/master/UI/ControlLibrary. It is also possible to create a new Cross-Platform class library using the [Uno Platform Visual Studio extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin).
 
-## How do I update the to latest Uno.UI nuget package, I don't see any update ?
+## How do I update the to latest Uno.UI NuGet package, I don't see any update ?
 
 You may want to try our latest dev builds, and here's how to do it:
 
-- On your solution node, select **Manage Nuget packages for Solution**
+- On your solution node, select **Manage NuGet packages for Solution**
 - Next to the Search text box, check the **Include prerelease** box
 - You should now see the latest Uno.UI package in the **Updates** tab.
 
@@ -205,14 +205,14 @@ Keep the version 1.1.1 of Microsoft.Extensions.Logging; latest version of Loggin
 
 ## Live updates doesn’t work on UWP project. 
 
-For live update on UWP you need to edit the xaml while the project is debugging, no need for save, it updates on every keystroke (more or less) you need to update to the latest UWP sdk in your project configuration, change target version to latest
+For live update on UWP you need to edit the XAML while the project is debugging, no need for save, it updates on every keystroke (more or less) you need to update to the latest UWP sdk in your project configuration, change target version to latest
 
 
 ## I don't see any "Uno.UI App Solution" from File->Project->New ?
 
 1. Install **Uno.UI Solution Template Visual Studio Extension** https://github.com/nventive/Uno/releases
-2. Look for Uno.UI App Solution under Visual C#
-3. if you still havent found it, try and use the Search box
+1. Look for Uno.UI App Solution under Visual C#
+1. If you still haven't found it, try the Search box
 
 
 ## How to port an existing UWP app to Uno.UI?
@@ -221,10 +221,10 @@ First create a shared project and move all .cs and .xaml files into it and refer
 project.  Ensure everything is still working and add other projects for other platforms referencing the same shared project.
 
 1. Create a project with Uno.UI template.
-2. Copying as much code as possible from the existing UWP app to the "My Project.Shared"
-3. Add platform specific code using suffixing files in the shared project (ex: ".iOS.cs")
-4. ios/android specific heads should be relatively empty, only used os specific implementation (push notification handling/deeplinking/permissions)
-5. Test, debug and publish.
+1. Copying as much code as possible from the existing UWP app to the "My Project.Shared"
+1. Add platform specific code using suffixing files in the shared project (ex: ".iOS.cs")
+1. iOS/Android specific heads should be relatively empty, only used os specific implementation (push notification handling/deeplinking/permissions)
+1. Test, debug and publish.
 
 ## How to port an existing UWP library to Uno.UI ? 
 
@@ -303,7 +303,7 @@ Cannot resolve Assembly or Windows Metadata file 'Type universe cannot resolve a
 System.IO.FileLoadException: Could not load file or assembly 'System.Runtime, Version=4.2.1.0, Culture=neutral, PublicKeyToken=[...]'. The located assembly's manifest definition does not match the assembly reference.
 ```
 
-Make sure to upgrade your SDK version and nuget packages. You have to target Fall Creators update or later and reference the netcore package to 6.0+.
+Make sure to upgrade your SDK version and NuGet packages. You have to target Fall Creators update or later and reference the netcore package to 6.0+.
 
 ## when I navigate this ways `_frame.Navigate(typeof(MainPage));` I never call MainPage ctor. How to inject MainPage datacontext then?
 
@@ -313,9 +313,9 @@ The `DataContext` can be passed as a navigation parameter, then set as `DataCont
 
 It's an existing issue, caused by Roslyn. You must add all your TargetFrameworks to your netstd2.0 project, and use Oren's MSBuid.Extras for that [source generation issue](https://github.com/nventive/Uno.SourceGeneration/issues/2)
 
-# Can Uno.UI convert a UWP control to native android/ios and also has the option to use android native controls within xaml?
+# Can Uno.UI convert a UWP control to native Android/iOS and also has the option to use Android native controls within XAML?
 
-That's exactly right, see [this](https://github.com/nventive/Uno/blob/a69879a3154f61b2d493be433aa08bc3b8aa1b06/src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml#L2843) for the XAML-UWP button, and [this](https://github.com/nventive/Uno/blob/a69879a3154f61b2d493be433aa08bc3b8aa1b06/src/Uno.UI/UI/Xaml/Style/Generic/Generic.Native.xaml#L20) for the iOS native button When complete XAML is used for rendering, it's not so much a conversion but more of  a vector rendering. For instance, Uno.UI.iOS uses CGLayer for rendering content it's different because Uno.UI integrates within the layouting system of the platform, which allows for mixed rendering. Uno.UI supports webviews, whereas Flutter does not. Flutter also has to render everything, including what the platform provides by default, such as the Magnifier in the TextBox for accessibility (this is not yet supported either).
+That's exactly right. See [this](https://github.com/nventive/Uno/blob/a69879a3154f61b2d493be433aa08bc3b8aa1b06/src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml#L2843) for the XAML-UWP button and [this](https://github.com/nventive/Uno/blob/a69879a3154f61b2d493be433aa08bc3b8aa1b06/src/Uno.UI/UI/Xaml/Style/Generic/Generic.Native.xaml#L20) for the iOS native button. When complete XAML is used for rendering, it's not so much a conversion but more of  a vector rendering. For instance, Uno.UI.iOS uses CGLayer for rendering content. It's different because Uno.UI integrates within the layouting system of the platform, which allows for mixed rendering. Uno.UI supports webviews, whereas Flutter does not. Flutter also has to render everything, including what the platform provides by default, such as the Magnifier in the TextBox for accessibility (this is not yet supported either).
 
 ## Can I have a screen, use a Map and put markers, using Uno, for Android, and Windows 10?
 > And can I access the camera, take a picture and Post to a REST WebAPI? can I access Photos / files in phone?
@@ -339,7 +339,7 @@ attached property for notch'ed devices.
 
 ## How can I un-grey the properties view In Edit & Continue?  
 
-You can add them using the add button. Only properties explicitly defined in the xaml will show up at first
+You can add them using the add button. Only properties explicitly defined in the XAML will show up at first
 
 ## Unknown member 'Clicked' on element 'Button'
 
@@ -379,7 +379,7 @@ It's partially implemented but there are parts that are closed source from Micro
 
 ## Does intellisense work in XAML editor?
 Yes, if you do not see it:
-- Make sure you are targetting the latest windows SDK version.
+- Make sure you are targeting the latest windows SDK version.
 - Choose "XAML Designer" as the default for opening your XAML files (right-click on your XAML file and then "Open With").
 - Relaunch your Visual Studio solution.
 - Select UWP on the top-left corner of your XAML file.
@@ -475,7 +475,7 @@ Not yet.
 
 you can specify a custom HTML template like [this](https://github.com/nventive/Uno.Wasm.Bootstrap#indexhtml-content-override)
 
-## Debugging a published nuget package breaks the Xamarin iOS and Android debugger
+## Debugging a published NuGet package breaks the Xamarin iOS and Android debugger
 
 This has been fixed starting from Visual Studio 15.9 Preview 3
 Please see this [Developer Community thread.](https://developercommunity.visualstudio.com/content/problem/306764/debugging-a-published-nuget-package-break-the-xama.html)
@@ -490,7 +490,7 @@ Yes, and you can use this [WebAssembly SQLite provider](https://github.com/nvent
 
 ## Are Popups/RichEditbox implemented in Uno?
 
-No. You can use Conditional Xaml to work around it: https://github.com/nventive/Uno/blob/master/doc/articles/using-uno-ui.md#supporting-multiple-platforms-in-xaml-files
+No. You can use Conditional XAML to work around it: https://github.com/nventive/Uno/blob/master/doc/articles/using-uno-ui.md#supporting-multiple-platforms-in-xaml-files
 
 ## Does Uno support all UWP animations?
 
@@ -498,9 +498,9 @@ We've implemented parts of the supported animations, there are others that are s
 
 ## Visual Studio is requiring Android API v26 but I want to test on an older device.
 
-The target API does not affect the min API. You just need to have the API day installed in your android sdk manager. The min sdk is specified in the androidmanifest file.
+The target API does not affect the min API. You just need to have the API day installed in your Android SDK manager. The min SDK is specified in the `AndroidManifest.xml` file.
 
-## Is there a workaround for ScrollViewer.ScrollToVerticalOffset method, since it isnt implemented in Uno?
+## Is there a workaround for ScrollViewer.ScrollToVerticalOffset method, since it isn't implemented in Uno?
 
 You can use ChangeView instead
 

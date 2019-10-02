@@ -166,14 +166,14 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		/// <summary>
-		/// Creates a new animatior and animates the view
+		/// Creates a new animator and animates the view
 		/// </summary>
 		private void Play()
 		{
 			InitializeAnimators();//Create the animator
 
 			if (!EnableDependentAnimation && this.GetIsDependantAnimation())
-			{ // Don't start the animator its a dependant animation
+			{ // Don't start the animator its a dependent animation
 				return;
 			}
 
@@ -311,7 +311,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				HoldValue();
 				State = TimelineState.Filling;
 			}
-			else// HoldEnd -Put back the inital state
+			else// HoldEnd -Put back the initial state
 			{
 				State = TimelineState.Stopped;
 				ClearValue();

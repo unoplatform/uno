@@ -64,14 +64,14 @@ namespace Uno.UI
 		public static CGSize PhysicalToLogicalPixels(this CGSize size)
 		{
 			return size;
-			// UISize are automatically scaled to the device's DPI, we don't need to ajust.
+			// UISize are automatically scaled to the device's DPI, we don't need to adjust.
 			// return new SizeF(size.Width / MainScreenScale, size.Height / MainScreenScale);
 		}
 
 		public static Windows.Foundation.Size PhysicalToLogicalPixels(this Windows.Foundation.Size size)
 		{
 			return size;
-			// UISize are automatically scaled to the device's DPI, we don't need to ajust.
+			// UISize are automatically scaled to the device's DPI, we don't need to adjust.
 			// return new SizeF(size.Width / MainScreenScale, size.Height / MainScreenScale);
 		}
 
@@ -79,21 +79,21 @@ namespace Uno.UI
 		{
 			var ret = new CGSize((nfloat)size.Width, (nfloat)size.Height);
 			return ret;
-			// UISize are automatically scaled to the device's DPI, we don't need to ajust.
+			// UISize are automatically scaled to the device's DPI, we don't need to adjust.
 			// return new SizeF(size.Width * MainScreenScale, size.Height * MainScreenScale);
 		}
 
 		public static CGSize LogicalToPhysicalPixels(this CGSize size)
 		{
 			return size;
-			// UISize are automatically scaled to the device's DPI, we don't need to ajust.
+			// UISize are automatically scaled to the device's DPI, we don't need to adjust.
 			// return new SizeF(size.Width * MainScreenScale, size.Height * MainScreenScale);
 		}
 
 		public static CGRect PhysicalToLogicalPixels(this CGRect size)
 		{
 			return size;
-			// UISize are automatically scaled to the device's DPI, we don't need to ajust.
+			// UISize are automatically scaled to the device's DPI, we don't need to adjust.
 			//return new RectangleF(
 			//	size.X / MainScreenScale,
 			//	size.Y / MainScreenScale,
