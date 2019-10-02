@@ -35,7 +35,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 			var tr1 = Border1.TransformToVisual(null) as MatrixTransform;
 			var tr2 = Border2.TransformToVisual(null) as MatrixTransform;
 
-			var windowBounds = Window.Current.Bounds;
+			var windowBounds = Windows.UI.Xaml.Window.Current.Bounds;
 			WindowWidth.Text = windowBounds.Width.ToString();
 			WindowHeight.Text = windowBounds.Height.ToString();
 			Border1TransformNullX.Text = tr1.Matrix.OffsetX.ToString();
