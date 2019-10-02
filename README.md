@@ -34,19 +34,19 @@ For a larger example and features demo:
     * Windows (via the standard UWP Toolkit).
     * iOS and Android (via [Xamarin](https://www.visualstudio.com/xamarin/)).
     * WebAssembly through the [Mono Wasm SDK](https://github.com/mono/mono/blob/master/sdks/wasm/README.md).
-* Dev loop
+* Dev loop:
     * Develop on Windows first using Visual Studio.
     * [XAML Edit and Continue](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) for live XAML edition on each key stroke.
     * [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp).
     * Validate on other platforms as late as possible.
     * Experimental XAML Hot Reload for WebAssembly, iOS and Android.
     * [Uno.UITest](https://github.com/unoplatform/Uno.UITest), a library to create Cross-Platform UI Tests for WebAssembly, iOS and Android.
-* Cross Platform Controls
+* Cross Platform Controls:
     * [Control Templating](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/control-templates).
     * [Data Templating](https://code.msdn.microsoft.com/Data-Binding-in-UWP-b5c98114).
     * [Styling](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/xaml-styles).
     * [Rich Animations](https://docs.microsoft.com/en-us/windows/uwp/design/motion/xaml-animation).
-* UWP Code Support
+* UWP Code Support:
     * [Windows Community Toolkit](https://github.com/nventive/Uno.WindowsCommunityToolkit).
     * [MVVM Light Toolkit](https://github.com/nventive/uno.mvvmlight).
     * [Microsoft XAML Behaviors](https://github.com/nventive/Uno.XamlBehaviors).
@@ -60,14 +60,14 @@ For a larger example and features demo:
     * [Rx.NET](https://github.com/reactiveui/Reactive.Wasm).
     * [ColorCode-Universal](https://github.com/nventive/Uno.ColorCode-Universal).
     * Any UWP project.
-* Responsive Design
+* Responsive Design:
     * [Visual State Manager](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.VisualStateManager).
     * [State Triggers](https://blogs.msdn.microsoft.com/mvpawardprogram/2017/02/07/state-triggers-uwp-apps/).
     * [Adaptive Triggers](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.AdaptiveTrigger).
-* Platform Specific 
+* Platform Specific:
     * Native controls and properties via [conditional XAML](doc/articles/using-uno-ui.md#supporting-multiple-platforms-in-xaml-files).
     * Any of the existing Xamarin iOS/Android libraries available.
-* Xamarin.Forms Renderers
+* Xamarin.Forms Renderers:
     * [Uno Platform WebAssembly Renderers for Xamarin.Forms](https://github.com/unoplatform/Uno.Xamarin.Forms.Platform).
 
 # Live WebAssembly Apps
