@@ -115,7 +115,7 @@ For a good introduction to the use of XAML and MVVM patterns see [Microsoft's La
 ## What are the different flavors of XAML?
 Over the years, Microsoft has been working on different implementations that use XAML for defining User Interfaces, and currently, three main flavors co-exist: WPF, UWP, Xamarin.Forms and the legacy Silverlight.
 
-All these implementations use the same base XAML definition language, with minor differences in terns of the interpretation of the XML namespaces (`clr-namespace` vs. `using:`), and major differences in terms of the APIs used by the XAML parser.
+All these implementations use the same base XAML definition language, with minor differences in terms of the interpretation of the XML namespaces (`clr-namespace` vs. `using:`), and major differences in terms of the APIs used by the XAML parser.
 
 For instance, WPF has [`System.Windows.Controls.StackPanel`](https://docs.microsoft.com/en-us/dotnet/api/system.windows.controls.stackpanel?redirectedfrom=MSDN&view=netframework-4.7.2), UWP
 has [`Windows.UI.Xaml.Controls.StackPanel`](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.Controls.StackPanel) and Xamarin.Forms
