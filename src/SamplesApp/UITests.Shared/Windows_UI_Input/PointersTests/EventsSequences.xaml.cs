@@ -32,6 +32,9 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 			var args = new EventSequenceValidator(_tapResult);
 			var result =
 				args.One(PointerEnteredEvent)
+#if __WASM__ // MOUSE: We have the hover states
+				&& args.Some(PointerMovedEvent)
+#endif
 				&& args.One(PointerPressedEvent)
 				&& args.MaybeSome(PointerMovedEvent)
 				&& args.One(PointerReleasedEvent)
