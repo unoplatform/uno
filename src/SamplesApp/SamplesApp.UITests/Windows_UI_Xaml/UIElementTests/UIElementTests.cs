@@ -68,6 +68,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml
 
 			Assert.AreEqual(windowWidth - borderWidth - translateX, transformX);
 			Assert.AreEqual(windowHeight - borderHeight - translateY, transformY);
+
+			_app.Screenshot(nameof(When_TransformToVisual_Transform));
 		}
 	}
 }
