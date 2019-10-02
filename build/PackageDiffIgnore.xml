@@ -418,23 +418,8 @@
 					fullName="System.Int32 Windows.UI.Xaml.Input.ManipulationModes::value__"
 					reason="Enum was a int instead of uint like UWP"/>
 			</Fields>
-
+			
 			<Properties>
-				<Member 
-					fullName="System.Boolean Uno.UI.UnoViewGroup::HasNonIdentityStaticTransformation()"
-					reason="Removed internal stuff."/>
-				<Member 
-					fullName="System.Boolean Uno.UI.UnoViewGroup::IsPointerCaptured()"
-					reason="Removed internal stuff."/>
-				<Member 
-					fullName="System.Single Uno.UI.UnoViewGroup::TransformedTouchX()"
-					reason="Removed internal stuff."/>
-				<Member 
-					fullName="System.Single Uno.UI.UnoViewGroup::TransformedTouchY()"
-					reason="Removed internal stuff."/>
-				<Member
-					fullName="System.Boolean Windows.UI.Xaml.UIElement::IsPointerCaptured()"
-					reason="Not part of the UWP API."/>
 				<Member 
 					fullName="Android.Views.View Windows.UI.Xaml.Controls.Popup::Anchor()"
 					reason="Invalid property visibility"/>
@@ -447,9 +432,30 @@
 				<Member 
 					fullName="System.Boolean Uno.UI.UnoViewGroup::IsAnimationInProgress()"
 					reason="Removed unneeded pseudo-internal property" />
-				<Member 
+				<Member
 					fullName="Windows.UI.Xaml.ResourceDictionary[] Windows.UI.Xaml.ResourceDictionary::MergedDictionaries()"
 					reason="Property type fixed to match UWP" />
+				<Member 
+					fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources::EllipsisButton()"
+					reason="Invalid global style renamed to align with CommandBar" />
+				<Member 
+					fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources::__ImplicitStyle_Windows_UI_Xaml_Controls_AppBarToggleButton()"
+					reason="Implicit style moved to GenericStyles.cs" />
+				<Member 
+					fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources::__ImplicitStyle_Windows_UI_Xaml_Controls_AppBarSeparator()"
+					reason="Implicit style moved to GenericStyles.cs" />
+				<Member 
+					fullName="System.Boolean Uno.UI.UnoViewGroup::IsPointerCaptured()"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="System.Single Uno.UI.UnoViewGroup::TransformedTouchX()"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="System.Single Uno.UI.UnoViewGroup::TransformedTouchY()"
+					reason="Removed internal stuff."/>
+				<Member
+					fullName="System.Boolean Windows.UI.Xaml.UIElement::IsPointerCaptured()"
+					reason="Not part of the UWP API."/>
 				<Member
 					fullName="System.String Windows.UI.Xaml.RoutedEvent::Name()"
 					reason="Not part of the UWP API."/>
