@@ -388,6 +388,15 @@
 					fullName="System.Void Uno.UI.UnoViewGroup.SetChildIsUnoViewGroup(System.Boolean childIsUnoViewGroup)"
 					reason="Removed internal stuff."/>
 				<Member 
+					fullName="System.Void Uno.UI.UnoRecyclerView.SetChildBlockedTouchEvent(System.Boolean childBlockedTouchEvent)"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="System.Void Uno.UI.UnoRecyclerView.SetChildHandledTouchEvent(System.Boolean childHandledTouchEvent)"
+					reason="Removed internal stuff."/>
+				<Member 
+					fullName="System.Void Uno.UI.UnoRecyclerView.SetChildIsUnoViewGroup(System.Boolean childIsUnoViewGroup)"
+					reason="Removed internal stuff."/>
+				<Member 
 					fullName="System.Void Uno.UI.UnoViewGroup.SetNativeHitTestVisible(System.Boolean hitTestVisible)"
 					reason="Removed internal stuff."/>
 				<Member 
@@ -404,6 +413,9 @@
 					reason="Invalid visibility."/>
 				<Member 
 					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.SelectorItem.UpdateCommonStates()"
+					reason="Not part of the UWP API."/>
+				<Member 
+					fullName="System.String Windows.UI.Xaml.RoutedEvent.get_Name()"
 					reason="Not part of the UWP API."/>
 			</Methods>
 			
