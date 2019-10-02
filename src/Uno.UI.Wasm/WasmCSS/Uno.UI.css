@@ -143,3 +143,7 @@ body {
 textarea {
   resize: none;
 }
+
+::-ms-clear {
+  display: none;
+}
