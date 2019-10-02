@@ -175,35 +175,6 @@ namespace Windows.UI.Xaml.Documents
 
 		#endregion
 
-		#region Style Dependency Property
-
-		public Style Style
-		{
-			get { return (Style)this.GetValue(StyleProperty); }
-			set { this.SetValue(StyleProperty, value); }
-		}
-
-		public static readonly DependencyProperty StyleProperty =
-			DependencyProperty.Register(
-				"Style",
-				typeof(Style),
-				typeof(TextElement),
-				new PropertyMetadata(
-					defaultValue: null,
-					propertyChangedCallback: (s, e) => ((TextElement)s).OnStyleChanged()
-				)
-			);
-
-		private void OnStyleChanged()
-		{
-
-			OnStyleChangedPartial();
-		}
-
-		partial void OnStyleChangedPartial();
-
-		#endregion
-
 		#region FontWeight Dependency Property
 
 		public FontWeight FontWeight
