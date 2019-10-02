@@ -4,7 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
+using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_Devices
 {
@@ -12,6 +14,7 @@ namespace SamplesApp.UITests.Windows_Devices
 	public class GyrometerTests : SampleControlUITestBase
 	{
 		[Test]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void When_Gyrometer_Is_Retrived_With_GetDefault()
 		{
 			Run("UITests.Shared.Windows_Devices.GyrometerTests");
@@ -20,6 +23,7 @@ namespace SamplesApp.UITests.Windows_Devices
 		}
 
 		[Test]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void When_Reading_Is_Attached()
 		{
 			Run("UITests.Shared.Windows_Devices.GyrometerTests");
@@ -47,6 +51,7 @@ namespace SamplesApp.UITests.Windows_Devices
 		}
 
 		[Test]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void When_Reading_Is_Attached_And_Waits()
 		{
 			Run("UITests.Shared.Windows_Devices.GyrometerTests");
@@ -73,6 +78,7 @@ namespace SamplesApp.UITests.Windows_Devices
 		}
 
 		[Test]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void When_Reading_Is_Attached_And_Detaches()
 		{
 			Run("UITests.Shared.Windows_Devices.GyrometerTests");

@@ -1,4 +1,6 @@
 #if __IOS__ || __ANDROID__ || __WASM__
+using Uno.Extensions;
+using Uno.Logging;
 using Windows.Foundation;
 
 namespace Windows.Devices.Sensors
@@ -39,6 +41,10 @@ namespace Windows.Devices.Sensors
 					_readingChanged += value;
 					if (isFirstSubscriber)
 					{
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						{
+							this.Log().DebugFormat("Starting Gyrometer reading.");
+						}
 						StartReading();
 					}
 				}
@@ -50,6 +56,10 @@ namespace Windows.Devices.Sensors
 					_readingChanged -= value;
 					if (_readingChanged == null)
 					{
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+						{
+							this.Log().DebugFormat("Stopping Gyrometer reading.");
+						}
 						StopReading();
 					}
 				}
@@ -58,6 +68,11 @@ namespace Windows.Devices.Sensors
 
 		private void OnReadingChanged(GyrometerReading reading)
 		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().DebugFormat($"Gyrometer reading received " +
+					$"X:{reading.AngularVelocityX}, Y:{reading.AngularVelocityY}, Z:{reading.AngularVelocityZ}");
+			}
 			_readingChanged?.Invoke(this, new GyrometerReadingChangedEventArgs(reading));
 		}
 	}
