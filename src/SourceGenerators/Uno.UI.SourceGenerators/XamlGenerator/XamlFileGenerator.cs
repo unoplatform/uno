@@ -897,9 +897,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var implicitKey = GetImplicitDictionaryResourceKey(style);
 					if (targetType.ContainingAssembly == _metadataHelper.Compilation.Assembly)
 					{
-						writer.AppendLineInvariant("global::Windows.UI.Xaml.Style.RegisterDefaultStyleForType({0}, () => {1});",
+						var isNativeStyle = style.Members.FirstOrDefault(m => m.Member.Name == "IsNativeStyle")?.Value as string == "True";
+						writer.AppendLineInvariant("global::Windows.UI.Xaml.Style.RegisterDefaultStyleForType({0}, () => {1}, /*isNativeStyle:*/{2});",
 										implicitKey,
-										GetResourceDictionaryPropertyName(implicitKey)
+										GetResourceDictionaryPropertyName(implicitKey),
+										isNativeStyle.ToString().ToLowerInvariant()
 									);
 					}
 					else

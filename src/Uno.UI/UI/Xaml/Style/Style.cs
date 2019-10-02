@@ -144,7 +144,7 @@ namespace Windows.UI.Xaml
 		/// <param name="type">The type to which the style applies</param>
 		/// <param name="styleProvider">Function which generates the style. This will be called once when first used, then cached.</param>
 		/// <param name="isNative">True if is is the native default style, false if it is the UWP default style.</param>
-		internal static void RegisterDefaultStyleForType(Type type, StyleProviderHandler styleProvider, bool isNative)
+		public static void RegisterDefaultStyleForType(Type type, StyleProviderHandler styleProvider, bool isNative)
 		{
 			if (isNative)
 			{
@@ -166,13 +166,19 @@ namespace Windows.UI.Xaml
 				return null;
 			}
 
-			if (!_defaultStyleCache.TryGetValue(type, out var style))
+			var useUWPDefaultStyles = Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles;
+			var styleCache = useUWPDefaultStyles ? _defaultStyleCache
+				: _nativeDefaultStyleCache;
+			var lookup = useUWPDefaultStyles ? _lookup
+				: _nativeLookup;
+
+			if (!styleCache.TryGetValue(type, out var style))
 			{
-				if (_lookup.TryGetValue(type, out var styleProvider))
+				if (lookup.TryGetValue(type, out var styleProvider))
 				{
 					style = styleProvider();
 
-					_defaultStyleCache[type] = style;
+					styleCache[type] = style;
 				}
 			}
 
