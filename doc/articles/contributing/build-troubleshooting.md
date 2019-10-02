@@ -13,9 +13,9 @@ Head to Tools -> Options -> MS Build Verbosity
 Quit visual studio and ensure that all processes have been terminated.
 
 ```bash
-taskkill /fi "imagename eq devenv.exe" /f /t
-taskkill /fi "imagename eq msbuild.exe" /f /t
-taskkill /fi "imagename eq Uno.SourceGeneration.Host.exe" /f /t
+taskkill /im "devenv*" /f /t
+taskkill /im "msbuild*" /f /t
+taskkill /im "uno*" /f /t
 ```
 
 Reset the source generation cache and all local changes to your git repository. Be careful, as this will wipe out code you haven't yet commited.
