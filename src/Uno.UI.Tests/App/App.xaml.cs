@@ -34,7 +34,7 @@ namespace UnitTestsApp
 			internal
 #endif
 			override void OnLaunched(LaunchActivatedEventArgs args)
-		{			
+		{
 			if (HostView == null)
 			{
 				HostView = new Grid() { Name = "HostView" };
@@ -53,20 +53,16 @@ namespace UnitTestsApp
 		/// Ensure that application exists, for unit tests. 
 		/// </summary>
 		/// <returns>The 'running' application.</returns>
-		public static App EnsureApplication(ApplicationTheme? requestTheme = null)
+		public static App EnsureApplication()
 		{
 			if (Current == null)
 			{
 				var application = new App();
-				if ( requestTheme != null)
-				{
-					application.RequestedTheme = requestTheme.Value;
-				}
 				application.InitializationCompleted();
 				application.OnLaunched(null);
 			}
 
-			var app = Current as App;
+			var app = Current as App;			
 			app.HostView.Children.Clear();
 
 			return app;

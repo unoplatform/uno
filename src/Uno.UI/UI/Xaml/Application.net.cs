@@ -12,5 +12,7 @@ namespace Windows.UI.Xaml
         }
 
 		private ApplicationTheme GetDefaultSystemTheme() => ApplicationTheme.Light;
+
+		internal void ForceSetRequestedTheme(ApplicationTheme theme) => _requestedTheme = theme;
 	}
 }

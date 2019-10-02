@@ -16,7 +16,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_System_ThemeResource_Light()
 		{
-			var app = UnitTestsApp.App.EnsureApplication(Windows.UI.Xaml.ApplicationTheme.Light);			
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.ForceSetRequestedTheme(Windows.UI.Xaml.ApplicationTheme.Light);
 
 			var control = new Test_Control();
 			app.HostView.Children.Add(control);
@@ -27,7 +28,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_System_ThemeResource_Dark()
 		{
-			var app = UnitTestsApp.App.EnsureApplication(Windows.UI.Xaml.ApplicationTheme.Dark);
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.ForceSetRequestedTheme(Windows.UI.Xaml.ApplicationTheme.Dark);
 
 			var control = new Test_Control();
 			app.HostView.Children.Add(control);
