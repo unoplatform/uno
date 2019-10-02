@@ -15,10 +15,10 @@
 	</UserControl.Resources>
 	<ContentControl IsEnabled="{Binding GyrometerAvailable}">
 		<StackPanel>
-			<TextBlock Text="{Binding SensorStatus}" />
+			<TextBlock x:Name="SensorStatus" Text="{Binding SensorStatus}" />
 
-			<Button Command="{Binding AttachReadingChangedCommand}" Content="Attach ReadingChanged" IsEnabled="{Binding ReadingChangedAttached, Converter={StaticResource BoolNegation}}" />
-			<Button Command="{Binding DetachReadingChangedCommand}" Content="Detach ReadingChanged" IsEnabled="{Binding ReadingChangedAttached}" />
+			<Button x:Name="AttachReadingButton" Command="{Binding AttachReadingChangedCommand}" Content="Attach ReadingChanged" IsEnabled="{Binding ReadingChangedAttached, Converter={StaticResource BoolNegation}}" />
+			<Button x:Name="DetachReadingButton" Command="{Binding DetachReadingChangedCommand}" Content="Detach ReadingChanged" IsEnabled="{Binding ReadingChangedAttached}" />
 
 			<TextBlock Text="Last reading" Style="{ThemeResource SubtitleTextBlockStyle}" />
 			<TextBlock>
@@ -33,7 +33,7 @@
 				<Run FontWeight="Bold">AngularVelocityZ: </Run>
 				<Run Text="{Binding AngularVelocityZ}" />
 			</TextBlock>
-			<TextBlock>
+			<TextBlock x:Name="TimestampRun">
 				<Run FontWeight="Bold">Timestamp: </Run>
 				<Run Text="{Binding Timestamp}" />
 			</TextBlock>
