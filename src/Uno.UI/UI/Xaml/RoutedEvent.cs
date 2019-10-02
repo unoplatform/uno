@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml
 	[DebuggerDisplay("{" + nameof(Name) + "}")]
 	public partial class RoutedEvent
 	{
-		public string Name { get; }
+		internal string Name { get; }
 
 		internal RoutedEventFlag Flag { get; }
 

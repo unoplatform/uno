@@ -48,11 +48,11 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 
 			target.PointerEntered += (snd, e) =>
 			{
-				OnPointerEvent(PointerEnteredEvent, e);
+				OnPointerEvent(PointerEnteredEvent, "Entered", e);
 			};
 			target.PointerPressed += (snd, e) =>
 			{
-				OnPointerEvent(PointerPressedEvent, e);
+				OnPointerEvent(PointerPressedEvent, "Pressed", e);
 				if (captureOnPress)
 				{
 					var captured = target.CapturePointer(e.Pointer);
@@ -61,47 +61,47 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 			};
 			target.PointerMoved += (snd, e) =>
 			{
-				OnPointerEvent(PointerMovedEvent, e);
+				OnPointerEvent(PointerMovedEvent, "Moved", e);
 			};
 			target.PointerReleased += (snd, e) =>
 			{
-				OnPointerEvent(PointerReleasedEvent, e);
+				OnPointerEvent(PointerReleasedEvent, "Released", e);
 			};
 			target.PointerCanceled += (snd, e) =>
 			{
-				OnPointerEvent(PointerCanceledEvent, e);
+				OnPointerEvent(PointerCanceledEvent, "Canceled", e);
 			};
 			target.PointerExited += (snd, e) =>
 			{
-				OnPointerEvent(PointerExitedEvent, e);
+				OnPointerEvent(PointerExitedEvent, "Exited", e);
 			};
 			target.PointerCaptureLost += (snd, e) =>
 			{
-				OnPointerEvent(PointerCaptureLostEvent, e);
+				OnPointerEvent(PointerCaptureLostEvent, "CaptureLost", e);
 			};
 
 			// Those events are built using the GestureRecognizer
 			target.Tapped += (snd, e) =>
 			{
-				OnEvent(TappedEvent, e);
+				OnEvent(TappedEvent, "Tapped", e);
 			};
 			target.DoubleTapped += (snd, e) =>
 			{
-				OnEvent(DoubleTappedEvent, e);
+				OnEvent(DoubleTappedEvent, "DoubleTapped", e);
 			};
 
-			void OnEvent(RoutedEvent evt, RoutedEventArgs e)
+			void OnEvent(RoutedEvent evt, string evtName, RoutedEventArgs e)
 			{
 				events.Add((evt, e));
-				Log($"[{name}] {evt.Name}");
+				Log($"[{name}] {evtName}");
 			}
 
-			void OnPointerEvent(RoutedEvent evt, PointerRoutedEventArgs e)
+			void OnPointerEvent(RoutedEvent evt, string evtName, PointerRoutedEventArgs e)
 			{
 				events.Add((evt, e));
 
 				var point = e.GetCurrentPoint(this);
-				Log($"[{name}] {evt.Name}: id={e.Pointer.PointerId} "
+				Log($"[{name}] {evtName}: id={e.Pointer.PointerId} "
 					+ $"| frame={point.FrameId}"
 					+ $"| type={e.Pointer.PointerDeviceType} "
 					+ $"| position={point.Position} "
