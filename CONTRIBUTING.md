@@ -14,7 +14,7 @@ We want to hear about your experience, scenarios, and requirements.
 
 ### Report a bug
 
-If you think you've found a bug, please log a new issue in the [Uno Platform GitHub issue tracker](https://github.com/nventive/Uno/issues). When filing issues, please use our [bug filing template](.github/ISSUE_TEMPLATE.md).
+If you think you've found a bug, please log a new issue in the [Uno Platform GitHub issue tracker](https://github.com/nventive/Uno/issues). When filing issues, please use our [bug filing template](https://github.com/unoplatform/uno/blob/master/.github/ISSUE_TEMPLATE/bug-report.md).
 The best way to get your bug fixed is to be as detailed as you can be about the problem.
 Providing a minimal project with steps to reproduce the problem is ideal.
 Here are questions you can answer before you file a bug to make sure you're not missing any important information.
