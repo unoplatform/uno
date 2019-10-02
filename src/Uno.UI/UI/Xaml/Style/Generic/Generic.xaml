@@ -18,10 +18,10 @@
 					mc:Ignorable="d xamarin ios android not_wasm wasm">
 
 	<!-- TODO: How does UWP override the default FontFamily value of 11 with 15? -->
-	<wasm:Style TargetType="TextBlock">
+	<Style TargetType="TextBlock">
 		<Setter Property="FontSize"
 				Value="15" />
-	</wasm:Style>
+	</Style>
 
 	<!-- TODO: Also use for iOS and Android? -->
 	<!-- TODO: Same as UWP's default template? -->
@@ -57,7 +57,7 @@
 	</Style>
 
 	<!-- FRAMEWORK STYLES -->
-	<xamarin:Style x:Key="BaseTextBlockStyle"
+	<Style x:Key="BaseTextBlockStyle"
 				   TargetType="TextBlock">
 		<Setter Property="FontFamily"
 				Value="XamlAutoFontFamily" />
@@ -73,7 +73,7 @@
 				Value="MaxHeight" />
 		<Setter Property="TextLineBounds"
 				Value="Full" />
-	</xamarin:Style>
+	</Style>
 	<xamarin:Style x:Key="HeaderTextBlockStyle"
 				   TargetType="TextBlock"
 				   BasedOn="{StaticResource BaseTextBlockStyle}">
@@ -204,7 +204,7 @@
 	</xamarin:Style>
 
 	<!--Default style for Windows.UI.Xaml.Controls.TextBox-->
-	<xamarin:Style x:Key="XamlDefaultTextBox"
+	<Style x:Key="XamlDefaultTextBox"
 				   TargetType="TextBox">
 		<Setter Property="MinWidth"
 				Value="{ThemeResource TextControlThemeMinWidth}" />
@@ -411,7 +411,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</Style>
 
 	<!--Style for the textbox's delete button-->
 	<xamarin:Style x:Key="DeleteButtonStyle"
@@ -3115,7 +3115,7 @@
 				   BasedOn="{StaticResource DefaultSplitViewStyle}" />
 
 	<!-- Default style for Windows.UI.Xaml.Controls.Button -->
-	<xamarin:Style x:Key="XamlDefaultButton"
+	<Style x:Key="XamlDefaultButton"
 				   TargetType="Button">
 		<Setter Property="Background"
 				Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
@@ -3222,10 +3222,13 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</Style>
+
+	<Style TargetType="Button"
+		   BasedOn="{StaticResource XamlDefaultButton}" />
 
 	<!-- Default style for Windows.UI.Xaml.Controls.Primitives.ToggleButton -->
-	<xamarin:Style x:Key="XamlDefaultToggleButton"
+	<Style x:Key="XamlDefaultToggleButton"
 				   TargetType="ToggleButton">
 		<Setter Property="Background"
 				Value="{ThemeResource SystemControlBackgroundBaseLowBrush}" />
@@ -3476,17 +3479,17 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</Style>
 
-	<wasm:Style TargetType="ToggleButton"
+	<Style TargetType="ToggleButton"
 				BasedOn="{StaticResource XamlDefaultToggleButton}" />
 
-	<wasm:Style TargetType="RadioButton"
+	<Style TargetType="RadioButton"
 				BasedOn="{StaticResource XamlDefaultRadioButton}" />
 
-	<wasm:Style TargetType="TextBox"
+	<Style TargetType="TextBox"
 				BasedOn="{StaticResource XamlDefaultTextBox}" />
-	<wasm:Style TargetType="PasswordBox"
+	<Style TargetType="PasswordBox"
 				BasedOn="{StaticResource XamlDefaultPasswordBox}" />
 
 	<!-- Default style for Windows.UI.Xaml.Controls.CheckBox -->
@@ -3892,9 +3895,11 @@
 		</Setter>
 	</Style>
 
+	<Style TargetType="CheckBox"
+		   BasedOn="{StaticResource XamlDefaultCheckbox}" />
 
 	<!-- Default style for Windows.UI.Xaml.Controls.RadioButton -->
-	<xamarin:Style x:Key="XamlDefaultRadioButton"
+	<Style x:Key="XamlDefaultRadioButton"
 				   TargetType="RadioButton">
 		<Setter Property="Background"
 				Value="Transparent" />
@@ -4068,7 +4073,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</Style>
 
 <!-- Default style for Windows.UI.Xaml.Controls.Slider -->
 	<xamarin:Style TargetType="Thumb"
@@ -4091,7 +4096,7 @@
 		</Setter>	
 	</xamarin:Style>
 
-	<xamarin:Style x:Key="XamlDefaultSlider"
+	<Style x:Key="XamlDefaultSlider"
 				   TargetType="Slider">
 		<Setter Property="Background"
 				Value="{ThemeResource SystemControlForegroundBaseMediumLowBrush}" />
@@ -4342,7 +4347,10 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</Style>
+
+	<Style TargetType="Slider"
+		   BasedOn="{StaticResource XamlDefaultSlider}" />
 
 	<!--This is a Uno-only Style which removes the ScrollContentPresenter, in order for ListViewBase to use the default Windows style (nearly)
 	while delegating to a native implementation for performance.-->
@@ -4718,7 +4726,7 @@
 				   BasedOn="{StaticResource DefaultScrollViewerStyle}" />
 
 	<!-- Default style for Windows.UI.Xaml.Controls.PasswordBox -->
-	<xamarin:Style x:Key="XamlDefaultPasswordBox"
+	<Style x:Key="XamlDefaultPasswordBox"
 				   TargetType="PasswordBox">
 		<Setter Property="MinWidth"
 				Value="{ThemeResource TextControlThemeMinWidth}" />
@@ -4979,7 +4987,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</Style>
 
 	<!--This is used by PasswordBox but must be declared outside of the control because of a limitation in the way the Uno xaml code generation handles styles.-->
 	<xamarin:Style x:Key="RevealButtonStyle"
@@ -5044,7 +5052,7 @@
 	</xamarin:Style>
 
 	<!-- Default UWP style for Windows.UI.Xaml.Controls.Frame -->
-	<xamarin:Style x:Key="XamlDefaultFrame"
+	<Style x:Key="XamlDefaultFrame"
 				   TargetType="Frame">
 		<Setter Property="HorizontalContentAlignment"
 				Value="Stretch" />
@@ -5068,10 +5076,13 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</Style>
+
+	<Style TargetType="Frame"
+		   BasedOn="{StaticResource XamlDefaultFrame}" />
 
 	<!-- Default style for Windows.UI.Xaml.Controls.ProgressBar -->
-	<xamarin:Style x:Key="XamlDefaultProgressBar"
+	<Style x:Key="XamlDefaultProgressBar"
 				   TargetType="ProgressBar">
 		<Setter Property="Foreground"
 				Value="{ThemeResource SystemControlHighlightAccentBrush}" />
@@ -5104,7 +5115,10 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</xamarin:Style>
+	</Style>
+
+	<Style TargetType="ProgressBar"
+		   BasedOn="{StaticResource XamlDefaultProgressBar}" />
 
 	<!-- Default style for Windows.UI.Xaml.Controls.ListViewHeaderItem -->
 	<Style TargetType="ListViewHeaderItem">
@@ -5605,6 +5619,8 @@
 		</Setter>
 	</Style>
 
+	<Style TargetType="ToggleSwitch"
+		   BasedOn="{StaticResource XamlDefaultToggleSwitch}" />
 
 	<!-- Default style for Windows.UI.Xaml.Pivot  -->
 	<Style x:Key="BaseContentControlStyle"
@@ -6018,6 +6034,9 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+
+	<Style TargetType="Pivot"
+		   BasedOn="{StaticResource XamlDefaultPivot}" />
 
 	<!-- Default style for Windows.UI.Xaml.Controls.PivotItem -->
 	<Style TargetType="PivotItem">
@@ -6680,7 +6699,7 @@
 
 	<Style x:Key="MTC_CommandBarStyle"
 		   TargetType="CommandBar"
-		   BasedOn="{StaticResource XamlCommandBar}">
+		   BasedOn="{StaticResource XamlDefaultCommandBar}">
 		<Setter Property="Height"
 				Value="{ThemeResource MTCMediaButtonHeight}" />
 	</Style>
