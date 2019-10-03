@@ -43,7 +43,7 @@ From the code-behind, it's possible to use a ContentView control to host the Uno
 </ContentPage>
 ```
 
-and the corresponding C# code:
+... and the corresponding C# code:
 
 ```csharp
 using Windows.UI.Xaml.Controls;

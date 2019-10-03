@@ -23,7 +23,7 @@ Uno.UI provides the ability for developers to reuse known layout and coding tech
 
 
 ## Who makes Uno Platform?
-Uno Platform was created by Team nventive over the past 4 years.
+Uno Platform was created by [Team nventive](https://nventive.com/) over the past 4 years.
 
 ## What makes Uno Platform unique?
 The Uno Platform is the only implementation of the UWP API that runs across iOS, Android and WebAssembly. 
@@ -124,7 +124,7 @@ has [`Xamarin.Forms.StackLayout`](https://docs.microsoft.com/en-us/dotnet/api/Xa
 ## Why Mono?
 [Mono](https://github.com/mono/mono) is currently the best (and only) mobile-friendly implementation of .NET that targets iOS, Android and WebAssembly. It shares a lot -- and increasing -- of code from the BCL implementation with [.NET core](https://github.com/dotnet/core), making the runtime behavior very similar and in most cases, identical across platforms.
 
-## What do you mean by #UWPeverywhere?
+## What do you mean by [#UWPeverywhere]()?
 
 Our ultimate goal is to allow for the UWP api to run on all platforms, using Microsoft's own UWP implementation as a reference.
 
@@ -145,6 +145,12 @@ Microsoft describes it best in its [What is .NET](https://www.microsoft.com/net/
 ## Will the Uno platform make my app look and run the same way on iOS and Android?
 
 ## What are the advantages of using Uno platform over Flutter/React Native/Xamarin Forms?
+
+React Native is iOS and Android only. React Native for Windows could be a possibility, but it's not part of the core.
+
+Flutter is iOS and Android only too! There are plans for desktop and web support, but still as work in progress.
+
+With UnoPlatform you have a shared code and more targets to deploy your applications.
 
 # Uno.UI Platforms Frequently Asked Questions
 

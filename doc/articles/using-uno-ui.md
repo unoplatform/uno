@@ -221,6 +221,8 @@ Note that the default language can be defined using the `DefaultLanguage` msbuil
 
 ## Supported Uno.UI Controls
 
+To see this controls in action, visit [UnoPlatform Playground](https://playground.platform.uno/)
+
 ### Grid
 
 The Grid control is implemented as a best effort in terms of compatibility with UWP.
@@ -343,6 +345,8 @@ The Uno.UI TextBlock supports the Text property as well as the
  using [Runs](https://msdn.microsoft.com/en-us/library/windows/apps/xaml/windows.ui.xaml.documents.run.aspx).
 
 For more information, see the [TextBlock](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.textblock.aspx) class.
+
+---
 
 ### Custom Fonts
 

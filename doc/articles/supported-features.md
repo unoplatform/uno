@@ -2,7 +2,7 @@
 
 ## Development flow
 
-- Uno's UWP Xaml
+- Uno's UWP XAML
     - **Windows-first development**
     - **Faster compilation** for most of the development cycle, including UI code. iOS and Android can be tested for platform-specific features.
     - Ability to develop responsive layout in Windowed mode using Windows 10.
@@ -59,12 +59,12 @@
 ### Responsive design
 
 - Layout constraints [Min/Max][Width/Height]
-- Binding SourceTriggers (TextBox immediate vs. focus lost interactions)
-- DependencyProperty Inheritance (Color, text style propagation)
+- Binding SourceTriggers (`TextBox` immediate vs. focus lost interactions)
+- `DependencyProperty` Inheritance (Color, text style propagation)
 
 ### Runtime Performance
 
-- CoreDispatcher Priority support (Large UIs performance)
+- `CoreDispatcher` Priority support (Large UIs performance)
 - `x:DeferLoadStrategy="Lazy"` and `x:Load="false"` support (responsive design performance)
 - Image explicit size support (performance)
 - Event tracing (sub-millisecond [ETL performance profiling](Assets/diagnostics.PNG))
@@ -72,8 +72,8 @@
 - Reflection-less bindings (complex UI performance)
 - Binding suspension and restoration
 - Expando Binding
-- DynamicObject Binding
-- DataTemplate and ControlTemplate reuse, pooling and prefetching
+- `DynamicObject` Binding
+- `DataTemplate` and `ControlTemplate` reuse, pooling and prefetching
 
 ### ListView
 
@@ -109,7 +109,7 @@
 - Advanced WebView support (scripting, scrolling, string, custom agent)
 - Automatic asset generation from UWP assets
 - Native element embedding
-- Panels (Grid, StackPanel with `Spacing`, RelativePanel, Canvas)
+- Panels (`Grid`, `StackPanel` with `Spacing`, `RelativePanel`, `Canvas`)
 - Custom Panels
 - Popups/Dialogs
 - Work with the usual Windows tooling

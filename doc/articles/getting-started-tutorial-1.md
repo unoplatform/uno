@@ -170,7 +170,9 @@ To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5**
     }
     ```
 
-1. Next, we will add some base properties to bind to in our XAML. In the **Solution Explorer**, double-click **MainPage.xaml.cs** to open, then add the following code.
+We will use this converter to show an issue's date.
+
+1. Next, we will add some base properties to bind to in our XAML. In the **Solution Explorer**, in the Shared project, double-click **MainPage.xaml.cs** to open, then add the following code.
 
     ```cs
     public sealed partial class MainPage : Page
@@ -236,7 +238,7 @@ To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5**
     }
     ```
 
-1. Now that we have some basic data to bind to, in the **Solution Explorer**, double-click **MainPage.xaml** to open, then add the following code. We will start by adding a XML Namespace for the Converters and Controls from the Microsoft Community Toolkit as shown below:
+1. Now that we have some basic data to bind to, in the **Solution Explorer**, in the Shared project, double-click **MainPage.xaml** to open, then add the following code. We will start by adding a XML Namespace for the Converters and Controls from the Microsoft Community Toolkit as shown below:
 
     ```xml
     <Page x:Class="BugTracker.MainPage"
@@ -342,7 +344,7 @@ To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5**
     > [!IMPORTANT]
     > Take note that we have added a reference to an event handler on the ComboBox. We will add this in the next step in the code behind.
 
-1. Now that our Page is complete we can go back and add the event handlers in our code behind. This will allow us to handle changes and make necessary updates. In the **Solution Explorer**, double-click **MainPage.xaml.cs** to open, then add the following code.
+1. Now that our Page is complete we can go back and add the event handlers in our code behind. This will allow us to handle changes and make necessary updates. In the **Solution Explorer**, in the Shared project, double-click **MainPage.xaml.cs** to open, then add the following code.
 
     ```cs
     // Sets the time when we Complete or Start an issue.
