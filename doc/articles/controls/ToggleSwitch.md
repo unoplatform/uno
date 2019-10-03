@@ -11,7 +11,7 @@ If you need to have a custom design, you can just update the ToggleSwitch UWP de
 ## ToggleSwitch Native Default Style
 
 With the 'NativeDefaultToggleSwitch' style on Android and iOS, however, the ToggleSwitch uses the native toggle control of each platform.
-Of course you can still bind to its properties in XAML as you normally would. 
+Of course you can still bind to its properties in XAML as you normally would.
 This is another powerful option to have: for some apps it makes sense to look as 'native' as possible, for others its desirable to have a rich, customised UI.
 You may even want to mix and match different approaches for different screens in your app.
 
@@ -36,12 +36,12 @@ This ensures the same behavior on all system versions.
 | SwitchMinWidth	                         |                      |
 | SwitchPadding	                             |                      |
 | SwitchTextAppearance	                     |                      |
-| Thumb	                                     |                      | 
+| Thumb	                                     |                      |
 | ThumbTextPadding	                         |                      |
 | ThumbTint	                                 |          X           |
-| ThumbTintMode	                             |                      | 
+| ThumbTintMode	                             |                      |
 | Track	                                     |                      |
-| TrackTint	                                 |          X           |   
+| TrackTint	                                 |          X           |
 | TrackTintMode                              |                      |
 
 #### Native Android ToggleSwitch Style

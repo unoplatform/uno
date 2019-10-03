@@ -71,7 +71,7 @@ Those tests use the MSTests format, and can be run as part of the running applic
 
 To create a Non-UI Test:
 - Create or reuse a folder named from the namespace of the class your want to test, replacing "`.`" by "`_`"
-- Name your class `Given_Your_Class_Name` 
+- Name your class `Given_Your_Class_Name`
 - Create your test methods using `When_Your_Scenario`
 - An optional ViewModel type may be provided as an attribute so the browser automatically sets an instance as the DataContext of the sample
 
