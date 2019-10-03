@@ -9,6 +9,8 @@ branches:
     regex: master
     tag: dev
     increment: patch
+    prevent-increment-of-merged-branch-version: true
+    track-merge-target: false
   beta:
     regex: release/beta/
     tag: beta
@@ -24,6 +26,8 @@ branches:
     tag: dev.{BranchName}
     increment: none
     source-branches: ['master']
+    prevent-increment-of-merged-branch-version: false
+    track-merge-target: true
   projects:
     regex: projects/(.*?)
     tag: proj.{BranchName}
