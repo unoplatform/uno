@@ -64,5 +64,18 @@ namespace Uno.UI
 			return Application.Current.Resources.TryGetValue(resourceKey, out value) ||
 				MasterDictionary.TryGetValue(resourceKey, out value);
 		}
+
+		/// <summary>
+		/// Get a system-level resource with the given key.
+		/// </summary>
+		internal static T GetSystemResource<T>(object key)
+		{
+			if (MasterDictionary.TryGetValue(key, out var value) && value is T t)
+			{
+				return t;
+			}
+
+			return default(T);
+		}
 	}
 }
