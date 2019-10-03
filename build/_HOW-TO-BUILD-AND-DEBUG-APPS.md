@@ -7,8 +7,8 @@ on a real application.
 To do this, you need to recompile your app using a _debug_ version of Uno­
 (or a _Release_ version if you prefer).
 
-> Instead of tweaking your app solution to reference the your custom Uno
-> output (because there's many steps to follow and you will have to avoid committing this
+> Instead of tweaking your app solution to reference your custom Uno
+> output (because there're many steps to follow and you will have to avoid committing this
 > to source control), we found a simpler way: override the nuget output folder.
 
 ## HOW-TO (Steps)
@@ -17,7 +17,7 @@ To do this, you need to recompile your app using a _debug_ version of Uno­
 1. In your application project (the one referencing Uno):
    1. Make sure to build at least once (to ensure the nuget packages are downloaded)
    1. Check in the `project.json` file to get the version of the `Uno.UI` package.
-      The file should look-like this:
+      The file should look like this:
       ``` json
       ...
       "dependencies": {
@@ -32,8 +32,8 @@ To do this, you need to recompile your app using a _debug_ version of Uno­
 1. Create a file named `nuget_version_override.txt` and in the solution folder
   (where `Uno.UI.sln` is) and put the version number in it - **on the first line and nothing
   else is the file**.
-1. Build the project for the platform you need (or build all the solution to get all of them).
-   See below for list of project to compile for each platform...
+1. Build the project for the platform you need (or build all the solutions to get all of them).
+   See below for the list of projects to compile for each platform.
 1. Never commit the `nuget_version_override.txt` into source control.  It should be ignored
    by default anyway.
 
