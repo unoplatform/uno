@@ -173,6 +173,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Bharat123rox"><img src="https://avatars3.githubusercontent.com/u/13381361?v=4" width="100px;" alt="Bharat Raghunathan"/><br /><sub><b>Bharat Raghunathan</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=Bharat123rox" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/aayushbisen"><img src="https://avatars2.githubusercontent.com/u/41341387?v=4" width="100px;" alt="Aayush Bisen"/><br /><sub><b>Aayush Bisen</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=aayushbisen" title="Documentation">📖</a></td>
     <td align="center"><a href="https://lex111.ru/"><img src="https://avatars2.githubusercontent.com/u/4408379?v=4" width="100px;" alt="Alexey Pyltsyn"/><br /><sub><b>Alexey Pyltsyn</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=lex111" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://imagentleman.github.io"><img src="https://avatars2.githubusercontent.com/u/2272928?v=4" width="100px;" alt="José Antonio Chio"/><br /><sub><b>José Antonio Chio</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=imagentleman" title="Documentation">📖</a></td>
   </tr>
 </table>
 
