@@ -110,7 +110,11 @@ If ever the need arises to view the generated source code of a *failing* CI buil
      - .azure-devops-macos.yml
      - .azure-devops-wasm-uitests.yml
     
-2. At the bottom of the yaml files, you'll find *Publish...* tasks, right above these tasks, copy/paste the following code to create a task which will copy all generated source files and put them in an artifact for you to download
+2. At the bottom of the yaml files, you'll find *Publish...* tasks, right above these tasks, copy/paste the following code to create a task which will copy all generated source files and put them in an artifact for you to download:
+
+       - bash: cp -r $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/obj/Release/g/XamlCodeGenerator/ $(build.artifactstagingdirectory)
+            condition: failed()
+            displayName: "Copy generated XAML code"
 
 3. Once the build fails and completes, you can download the corresponding build artifact from the Artifacts menu to view your generated source files.
 
