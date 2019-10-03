@@ -1,5 +1,5 @@
 # Uno Platform - Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today.
-[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=unoplatform/uno)](https://dependabot.com) [![All Contributors](https://img.shields.io/badge/all_contributors-48-orange.svg?style=flat-square)](#contributors)
+[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=unoplatform/uno)](https://dependabot.com) [![All Contributors](https://img.shields.io/badge/all_contributors-49-orange.svg?style=flat-square)](#contributors)
 
 # What is the Uno Platform
 
@@ -172,6 +172,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/Pedrocssg"><img src="https://avatars3.githubusercontent.com/u/24390966?v=4" width="100px;" alt="Pedro Gonçalves"/><br /><sub><b>Pedro Gonçalves</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=Pedrocssg" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/Bharat123rox"><img src="https://avatars3.githubusercontent.com/u/13381361?v=4" width="100px;" alt="Bharat Raghunathan"/><br /><sub><b>Bharat Raghunathan</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=Bharat123rox" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/aayushbisen"><img src="https://avatars2.githubusercontent.com/u/41341387?v=4" width="100px;" alt="Aayush Bisen"/><br /><sub><b>Aayush Bisen</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=aayushbisen" title="Documentation">📖</a></td>
+    <td align="center"><a href="http://imagentleman.github.io"><img src="https://avatars2.githubusercontent.com/u/2272928?v=4" width="100px;" alt="José Antonio Chio"/><br /><sub><b>José Antonio Chio</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=imagentleman" title="Documentation">📖</a></td>
   </tr>
 </table>
 
