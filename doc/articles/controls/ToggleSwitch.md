@@ -19,7 +19,7 @@ You may even want to mix and match different approaches for different screens in
 
 The Native Style for ToggleSwitch on Android is based on SwitchCompat, a Material Design version of the Switch widget supported by API 7 and above.
 It does not make any attempt to use the platform provided widget on those devices which it is available normally.
-This unsures the same behavior on all system versions.
+This ensures the same behavior on all system versions.
 
 #### Platform support
 
