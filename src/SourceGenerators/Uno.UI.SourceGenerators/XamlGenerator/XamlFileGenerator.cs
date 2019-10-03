@@ -1040,28 +1040,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						// Skip and add it to the global resolver
 						break;
 					default:
+					{
+						if (IsSingleTimeInitializable(resource.Type))
 						{
-							if (IsSingleTimeInitializable(resource.Type))
-							{
-								writer.AppendLineInvariant(
-									$"public static {GetGlobalizedTypeName(resourceTypeName)} {SanitizeResourceName(resourcePropertyName)} {{{{ get; }}}} = ");
-								BuildChild(writer, null, resource);
-								writer.AppendLine(";");
-								writer.AppendLine();
-							}
-							else
-							{
-								BuildSingleTimeInitializer(
-									writer,
-									GenerateTypeName(resource),
-									resourceKey,
-									() =>
-									{
-										BuildChild(writer, null, resource);
-										writer.AppendLineInvariant(0, ";", resource.Type);
-									}
-								);
-							}
+							writer.AppendLineInvariant(
+								$"public static {GetGlobalizedTypeName(resourceTypeName)} {SanitizeResourceName(resourcePropertyName)} {{{{ get; }}}} = ");
+							BuildChild(writer, null, resource);
+							writer.AppendLine(";");
+							writer.AppendLine();
+						}
+						else
+						{
+							BuildSingleTimeInitializer(
+								writer,
+								GenerateTypeName(resource),
+								resourceKey,
+								() =>
+								{
+									BuildChild(writer, null, resource);
+									writer.AppendLineInvariant(0, ";", resource.Type);
+								}
+							);
+						}
 
 							break;
 						}
@@ -1084,75 +1084,75 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						// Skip and add it to the global resolver
 						break;
 					default:
-						{
-							var appThemes = resources.Where(x => x.Key.Equals("Light") || x.Key.Equals("Dark") || x.Key.Equals("Default")).ToList();
-							var customThemes = resources.Except(appThemes).ToArray();
-							var defaultThemes = appThemes.Where(x => x.Key.Equals("Default")).ToArray();
+					{
+						var appThemes = resources.Where(x => x.Key.Equals("Light") || x.Key.Equals("Dark") || x.Key.Equals("Default")).ToList();
+						var customThemes = resources.Except(appThemes).ToArray();
+						var defaultThemes = appThemes.Where(x => x.Key.Equals("Default")).ToArray();
 
+						if (defaultThemes.Any())
+						{
+							appThemes.Remove(defaultThemes.First());
+						}
+
+						var globalizedTypeName = GetGlobalizedTypeName(resourceTypeName);
+						var sanitizeResourceName = SanitizeResourceName(resourcePropertyName);
+						using (writer.BlockInvariant($"public static {globalizedTypeName} {sanitizeResourceName}"))
+						using (writer.BlockInvariant("get"))
+						{
+							if (customThemes.Any())
+							{
+								writer.AppendLineInvariant("// Custom themes defined for this resource: checking custom theme.");
+								writer.AppendLineInvariant("var currentCustomTheme = global::Uno.UI.ApplicationHelper.RequestedCustomTheme;");
+								using (writer.BlockInvariant($"switch(currentCustomTheme)"))
+								{
+									foreach (var theme in customThemes)
+									{
+										writer.AppendLineInvariant($"case \"{theme.Key}\": return {sanitizeResourceName}___{theme.Key};");
+									}
+								}
+								writer.AppendLine();
+							}
+
+							writer.AppendLineInvariant("// Element's RequestedTheme not supported yet. Fallback on Application's RequestedTheme.");
+							writer.AppendLine();
+
+							writer.AppendLineInvariant("var currentTheme = global::Windows.UI.Xaml.Application.Current.RequestedTheme;");
+							if (appThemes.Any())
+							{
+								using (writer.BlockInvariant($"switch(currentTheme)"))
+								{
+									foreach (var theme in appThemes)
+									{
+										if (theme.Key.Equals("Light"))
+										{
+											writer.AppendLineInvariant($"case global::Windows.UI.Xaml.ApplicationTheme.Light: return {sanitizeResourceName}___{theme.Key};");
+										}
+										else if (theme.Key.Equals("Dark"))
+										{
+											writer.AppendLineInvariant($"case global::Windows.UI.Xaml.ApplicationTheme.Dark: return {sanitizeResourceName}___{theme.Key};");
+										}
+
+										// Default is not generated here
+									}
+								}
+							}
+
+							writer.AppendLine();
 							if (defaultThemes.Any())
 							{
-								appThemes.Remove(defaultThemes.First());
-							}
-
-							var globalizedTypeName = GetGlobalizedTypeName(resourceTypeName);
-							var sanitizeResourceName = SanitizeResourceName(resourcePropertyName);
-							using (writer.BlockInvariant($"public static {globalizedTypeName} {sanitizeResourceName}"))
-							using (writer.BlockInvariant("get"))
-							{
-								if (customThemes.Any())
-								{
-									writer.AppendLineInvariant("// Custom themes defined for this resource: checking custom theme.");
-									writer.AppendLineInvariant("var currentCustomTheme = global::Uno.UI.ApplicationHelper.RequestedCustomTheme;");
-									using (writer.BlockInvariant($"switch(currentCustomTheme)"))
-									{
-										foreach (var theme in customThemes)
-										{
-											writer.AppendLineInvariant($"case \"{theme.Key}\": return {sanitizeResourceName}___{theme.Key};");
-										}
-									}
-									writer.AppendLine();
-								}
-
-								writer.AppendLineInvariant("// Element's RequestedTheme not supported yet. Fallback on Application's RequestedTheme.");
-								writer.AppendLine();
-
-								writer.AppendLineInvariant("var currentTheme = global::Windows.UI.Xaml.Application.Current.RequestedTheme;");
-								if (appThemes.Any())
-								{
-									using (writer.BlockInvariant($"switch(currentTheme)"))
-									{
-										foreach (var theme in appThemes)
-										{
-											if (theme.Key.Equals("Light"))
-											{
-												writer.AppendLineInvariant($"case global::Windows.UI.Xaml.ApplicationTheme.Light: return {sanitizeResourceName}___{theme.Key};");
-											}
-											else if (theme.Key.Equals("Dark"))
-											{
-												writer.AppendLineInvariant($"case global::Windows.UI.Xaml.ApplicationTheme.Dark: return {sanitizeResourceName}___{theme.Key};");
-											}
-
-											// Default is not generated here
-										}
-									}
-								}
-
-								writer.AppendLine();
-								if (defaultThemes.Any())
-								{
 									writer.AppendLineInvariant("// This resource is defined in a Default theme as a fallback.");
 									writer.AppendLineInvariant($"return {sanitizeResourceName}___Default;");
-								}
-								else
-								{
-									var msg = customThemes.Any()
-										? $"$\"The themed resource {resourcePropertyName} cannot be found for custom theme \\\"{{{{currentCustomTheme}}}}\\\", theme={{{{currentTheme}}}}.\""
-										: $"$\"The themed resource {resourcePropertyName} cannot be found for theme {{{{currentTheme}}}}.\"";
-									writer.AppendLineInvariant($"throw new InvalidOperationException({msg});");
-								}
 							}
-							break;
+							else
+							{
+								var msg = customThemes.Any()
+									? $"$\"The themed resource {resourcePropertyName} cannot be found for custom theme \\\"{{{{currentCustomTheme}}}}\\\", theme={{{{currentTheme}}}}.\""
+									: $"$\"The themed resource {resourcePropertyName} cannot be found for theme {{{{currentTheme}}}}.\"";
+								writer.AppendLineInvariant($"throw new InvalidOperationException({msg});");
+							}
 						}
+						break;
+					}
 				}
 			}
 
