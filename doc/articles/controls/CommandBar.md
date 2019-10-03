@@ -626,7 +626,7 @@ Gets or sets a value indicating whether the user can interact with the control.
           ...
   </CommandBar>
   ```
-  And in the .resw file, the name would `MyCommandBar.[using:Uno.UI.Toolkit]CommandBarExtensions.BackButtonTitle`
+  And in the `.resw` file, the name would be: `MyCommandBar.[using:Uno.UI.Toolkit]CommandBarExtensions.BackButtonTitle`
   
 - > How can I put a ComboBox in my CommandBar?
   
