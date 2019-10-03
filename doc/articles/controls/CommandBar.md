@@ -616,7 +616,17 @@ Gets or sets a value indicating whether the user can interact with the control.
   
 - > How can I localize CommandBarExtensions.BackButtonTitle?
   
-  You can't currently localize attached properties in **Uno**. 
+  _For attached properties, you need a special syntax in the Name column of a .resw file._ Ref: [Microsoft documentation](https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest#refer-to-a-string-resource-identifier-from-xaml).
+  
+  More specifically :
+  ```xml
+
+  <CommandBar x:Uid="MyCommandBar"
+              toolkit:CommandBarExtensions.BackButtonTitle="My Page Title">
+          ...
+  </CommandBar>
+  ```
+  And in the .resw file, the name would `MyCommandBar.[using:Uno.UI.Toolkit]CommandBarExtensions.BackButtonTitle`
   
 - > How can I put a ComboBox in my CommandBar?
   
