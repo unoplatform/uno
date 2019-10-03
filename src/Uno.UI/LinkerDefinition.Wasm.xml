@@ -21,6 +21,9 @@
     <type fullname="Windows.Devices.Sensors.Magnetometer">
       <method name="DispatchReading" />
     </type>
+    <type fullname="Windows.Devices.Sensors.Gyrometer">
+      <method name="DispatchReading" />
+    </type>
   </assembly>
   
   <assembly fullname="Uno.Foundation">

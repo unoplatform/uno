@@ -861,7 +861,7 @@ public abstract class UnoViewGroup
 		Matrix inverse = new Matrix();
 		if (viewParent instanceof UnoViewGroup) {
 			Matrix parentMatrix = ((UnoViewGroup) viewParent).getChildStaticMatrix(view);
-			if (!parentMatrix.isIdentity()) {
+			if (parentMatrix != null && !parentMatrix.isIdentity()) {
 				parentMatrix.invert(inverse);
 				inverse.mapPoints(point);
 			}
@@ -876,12 +876,7 @@ public abstract class UnoViewGroup
 	}
 
 	private Matrix getChildStaticMatrix(View view) {
-		Matrix transform = _childrenTransformations.get(view);
-		if (transform == null) {
-			transform = new Matrix();
-		}
-
-		return transform;
+		return _childrenTransformations.get(view);
 	}
 
 	/**
@@ -978,6 +973,40 @@ public abstract class UnoViewGroup
 			point[1] -= screenLocation[1];
 		}
 		return point;
+	}
+
+	@Override
+	public void getLocationInWindow(int[] outLocation) {
+		super.getLocationInWindow(outLocation);
+		ViewParent currentParent = getParent();
+		View currentChild = this;
+
+		float[] points = null;
+		while (currentParent instanceof View) {
+			if (currentParent instanceof UnoViewGroup) {
+				final UnoViewGroup currentUVGParent = (UnoViewGroup)currentParent;
+				Matrix parentMatrix =currentUVGParent.getChildStaticMatrix(currentChild);
+				if (parentMatrix != null && !parentMatrix.isIdentity()) {
+					if (points == null) {
+						points = new float[2];
+					}
+
+					// Apply the offset from the ancestor's RenderTransform, because the base Android method doesn't take
+					// StaticTransformation into account.
+					Matrix inverse = new Matrix();
+					parentMatrix.invert(inverse);
+					inverse.mapPoints(points);
+				}
+			}
+
+			currentChild = (View)currentParent;
+			currentParent = currentParent.getParent();
+		}
+
+		if (points != null) {
+			outLocation[0]-=(int)points[0];
+			outLocation[1]-=(int)points[1];
+		}
 	}
 
 	// Allows UI automation operations to look for a single 'Text' property for both ViewGroup and TextView elements.
