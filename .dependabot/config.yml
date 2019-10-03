@@ -7,3 +7,5 @@ update_configs:
     default_labels:
       - "kind/dependency"
       - "do-not-merge/work-in-progress"
+    
+    theme: "jekyll-theme-minimal"
