@@ -13,8 +13,8 @@
     <xamarin:StackPanel x:Name="_root">
 		<ScrollViewer
 			x:Name="_scroll"
-			Width="400"
-			Height="400"
+			Width="300"
+			Height="300"
 			VerticalScrollBarVisibility="Auto"
 			VerticalScrollMode="Auto"
 			HorizontalScrollBarVisibility="Auto"
@@ -40,8 +40,17 @@
 			<Button x:Name="_setAsync" Content="Async" Tapped="SetAsync" />
 		</StackPanel>
 
+		<TextBlock Text="Result:" />
+		<StackPanel Orientation="Horizontal">
+			<Button x:Name="_reset" Content="Reset" Tapped="Reset" />
+			<Button x:Name="_validate" Content="Validate" Tapped="Validate" />
+			<TextBlock x:Name="_result" Text="** no result**" />
+		</StackPanel>
+
 		<TextBlock Text="Output" />
-		<TextBlock x:Name="_output" />
+		<ScrollViewer>
+			<TextBlock x:Name="_output" />
+		</ScrollViewer>
     </xamarin:StackPanel>
 
 	<not_xamarin:TextBlock Text="Updates mode is specific to Uno" />

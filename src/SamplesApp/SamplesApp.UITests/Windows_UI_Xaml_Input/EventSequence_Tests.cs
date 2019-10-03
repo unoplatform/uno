@@ -23,8 +23,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 			_app.WaitForElement(target);
 			target.Tap();
-
 			validate.Tap();
+
+			TakeScreenshot("Result");
+
 			_app.WaitForDependencyPropertyValue(result, "Text", "SUCCESS");
 		}
 	}

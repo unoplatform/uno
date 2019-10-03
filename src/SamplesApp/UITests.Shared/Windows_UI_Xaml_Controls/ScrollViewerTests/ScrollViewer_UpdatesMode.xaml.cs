@@ -5,7 +5,6 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Uno.UI.Samples.Controls;
-
 #if !NETFX_CORE
 using _UpdatesMode = Uno.UI.Xaml.Controls.ScrollViewerUpdatesMode;
 #endif
@@ -40,7 +39,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests
 		{
 			Uno.UI.Xaml.Controls.ScrollViewer.SetUpdatesMode(_scroll, mode);
 			_modes.SelectedItem = mode.ToString();
-			_output.Text = "";
+			Reset(null, null);
 		}
 
 		private void OnModesOnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -54,6 +53,43 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests
 		private void SetSync(object sender, TappedRoutedEventArgs e) => SetMode(_UpdatesMode.Synchronous);
 
 		private void SetAsync(object sender, TappedRoutedEventArgs e) => SetMode(_UpdatesMode.AsynchronousIdle);
+
+		private void Reset(object sender, TappedRoutedEventArgs e)
+		{
+			_result.Text = "** no result **";
+			_output.Text = "";
+			ViewChangesOutput.Clear();
+		}
+
+		private void Validate(object sender, TappedRoutedEventArgs e)
+		{
+			if (ViewChangesOutput.Count == 0)
+			{
+				_result.Text = "FAILED";
+			}
+
+			var intermediatePriority = Uno.UI.Xaml.Controls.ScrollViewer.GetUpdatesMode(_scroll) == _UpdatesMode.AsynchronousIdle
+				? CoreDispatcherPriority.Idle
+				: CoreDispatcherPriority.Normal;
+			for (var i = 0; i < ViewChangesOutput.Count - 1; i++)
+			{
+				var intermediate = ViewChangesOutput[i];
+				if (!intermediate.isIntermediate || intermediate.priority != intermediatePriority)
+				{
+					_result.Text = "FAILED";
+					return;
+				}
+			}
+
+			var final = ViewChangesOutput.Last();
+			if (final.isIntermediate || final.priority != CoreDispatcherPriority.Normal)
+			{
+				_result.Text = "FAILED";
+				return;
+			}
+
+			_result.Text = "SUCCESS";
+		}
 #endif
 	}
 }

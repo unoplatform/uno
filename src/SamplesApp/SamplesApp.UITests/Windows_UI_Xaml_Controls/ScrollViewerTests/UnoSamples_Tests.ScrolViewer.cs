@@ -24,19 +24,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 
 			var sut = _app.WaitForElement(_app.Marked("_scroll")).Single();
 			var selectMode = _app.Marked("_setSync");
-			var output = _app.Marked("_output");
+			var validate = _app.Marked("_validate");
+			var result = _app.Marked("_result");
 
 			selectMode.Tap();
 
 			//Drag upward
 			_app.DragCoordinates(sut.Rect.X + 10, sut.Rect.Y + 110, sut.Rect.X + 10, sut.Rect.Y + 10);
 
-			var result = output.GetDependencyPropertyValue<string>("Text");
-			
-			Assert.IsTrue(Regex.IsMatch(
-				result, 
-				"(intermediate: True | priority: Normal\r\n)*"
-				+ "intermediate: False | priority: Normal\r\n"));
+			validate.Tap();
+			TakeScreenshot("Result");
+			_app.WaitForDependencyPropertyValue(result, "Text", "SUCCESS");
 		}
 
 		[Test]
@@ -48,19 +46,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 
 			var sut = _app.WaitForElement(_app.Marked("_scroll")).Single();
 			var selectMode = _app.Marked("_setAsync");
-			var output = _app.Marked("_output");
+			var validate = _app.Marked("_validate");
+			var result = _app.Marked("_result");
 
 			selectMode.Tap();
 
 			//Drag upward
 			_app.DragCoordinates(sut.Rect.X + 10, sut.Rect.Y + 110, sut.Rect.X + 10, sut.Rect.Y + 10);
 
-			var result = output.GetDependencyPropertyValue<string>("Text");
-
-			Assert.IsTrue(Regex.IsMatch(
-				result,
-				"(intermediate: True | priority: Idle\r\n)*"
-				+ "intermediate: False | priority: Normal\r\n"));
+			validate.Tap();
+			TakeScreenshot("Result");
+			_app.WaitForDependencyPropertyValue(result, "Text", "SUCCESS");
 		}
 	}
 }
