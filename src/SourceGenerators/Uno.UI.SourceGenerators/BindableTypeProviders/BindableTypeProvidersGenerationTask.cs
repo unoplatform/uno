@@ -222,7 +222,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 							using (writer.BlockInvariant(@"if(!_knownMissingTypes.Contains(type))"))
 							{
 								writer.AppendLineInvariant(@"_knownMissingTypes.Add(type);");
-								writer.AppendLineInvariant(@"Debug.WriteLine($""The type [{{type.FullName}}] is not known by the MetadataProvider, either add the Bindable attribute or add it to the TypeMetadataConfig.xml"");");
+								writer.AppendLineInvariant(@"Debug.WriteLine($""The Bindable attribute is missing and the type [{{type.FullName}}] is not known by the MetadataProvider. Reflection was triggered instead of the binding engine. Either add the Bindable attribute or add it to the TypeMetadataConfig.xml to prevent this message and performance issues."");");
 							}
 						}
 					}
