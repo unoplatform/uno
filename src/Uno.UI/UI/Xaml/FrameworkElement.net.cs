@@ -55,11 +55,6 @@ namespace Windows.UI.Xaml
 			return _children.FirstOrDefault();
 		}
 
-		public T FindFirstChild<T>()  where T : View
-		{
-			return _children.OfType<T>().FirstOrDefault<T>();
-		}
-
 		public virtual IEnumerable<View> GetChildren()
 		{
 			return _children;
