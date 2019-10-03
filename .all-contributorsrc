@@ -489,6 +489,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "imagentleman",
+      "name": "José Antonio Chio",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/2272928?v=4",
+      "profile": "http://imagentleman.github.io",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 5,
