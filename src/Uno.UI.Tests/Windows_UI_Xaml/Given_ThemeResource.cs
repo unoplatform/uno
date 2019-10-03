@@ -29,12 +29,20 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		public void When_System_ThemeResource_Dark()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
-			app.ForceSetRequestedTheme(Windows.UI.Xaml.ApplicationTheme.Dark);
+			try
+			{
+				app.ForceSetRequestedTheme(Windows.UI.Xaml.ApplicationTheme.Dark);
 
-			var control = new Test_Control();
-			app.HostView.Children.Add(control);
+				var control = new Test_Control();
+				app.HostView.Children.Add(control);
 
-			Assert.AreEqual(Color.FromArgb(0xDE, 0xFF, 0xFF, 0xFF), (control.TestTextBlock.Foreground as SolidColorBrush).Color);
+				Assert.AreEqual(Color.FromArgb(0xDE, 0xFF, 0xFF, 0xFF), (control.TestTextBlock.Foreground as SolidColorBrush).Color);
+			}
+			finally
+			{
+				//ensure the light theme is reset
+				app.ForceSetRequestedTheme(Windows.UI.Xaml.ApplicationTheme.Light);
+			}
 		}
 	}
 }
