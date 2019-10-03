@@ -112,9 +112,11 @@ If ever the need arises to view the generated source code of a *failing* CI buil
     
 2. At the bottom of the yaml files, you'll find *Publish...* tasks, right above these tasks, copy/paste the following code to create a task which will copy all generated source files and put them in an artifact for you to download:
 
-       - bash: cp -r $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Droid/obj/Release/g/XamlCodeGenerator/ $(build.artifactstagingdirectory)
+       - bash: cp -r $(build.sourcesdirectory)<YourProjectDirectory>/obj/Release/g/XamlCodeGenerator/ $(build.artifactstagingdirectory)
             condition: failed()
             displayName: "Copy generated XAML code"
+
+Therefore, in the case of Uno, an example of <YourProjectDirectory> would be */src/SamplesApp/SamplesApp.Droid*.
 
 3. Once the build fails and completes, you can download the corresponding build artifact from the Artifacts menu to view your generated source files.
 
