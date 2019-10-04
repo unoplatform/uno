@@ -1,7 +1,7 @@
 ﻿using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 
-namespace SamplesApp.Windows_UI_Xaml.ClipTransform
+namespace SamplesApp.Windows_UI_Xaml.Clipping
 {
     public sealed partial class LegacyClippingWarningControl : UserControl
     {

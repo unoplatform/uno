@@ -1,9 +1,9 @@
 ﻿using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
-namespace UITests.Shared.Windows_UI_Xaml.Clip
+namespace SamplesApp.Windows_UI_Xaml.Clipping
 {
-	[SampleControlInfo(category:"Clip")]
+	[SampleControlInfo(category: "Clipping")]
 	public sealed partial class PanelChildrenClipping : Page
 	{
 		public PanelChildrenClipping()

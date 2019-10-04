@@ -7,9 +7,9 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Shapes;
 
-namespace UITests.Shared.Windows_UI_Xaml.Clip
+namespace SamplesApp.Windows_UI_Xaml.Clipping
 {
-	[SampleControlInfo(category: "Clip", description: "[Android]When going to `Ready` state the WebView expand to full screen and cover other control when it shouldn't be.")]
+	[SampleControlInfo(category: "Clipping", description: "[Android]When going to `Ready` state the WebView expand to full screen and cover other control when it shouldn't be.")]
 	public sealed partial class DoubleAnimationClipping : UserControl
 	{
 		private static readonly Random random = new Random();

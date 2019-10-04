@@ -2,9 +2,9 @@ using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.Presentation.SamplePages;
 using Windows.UI.Xaml.Controls;
 
-namespace GenericApp.Views.Content.UITests.Clip
+namespace SamplesApp.Windows_UI_Xaml.Clipping
 {
-	[SampleControlInfo("Clip", viewModelType: typeof(ButtonTestsViewModel))]
+	[SampleControlInfo("Clipping", viewModelType: typeof(ButtonTestsViewModel))]
 	public sealed partial class ButtonClippingTestsControl : UserControl
 	{
 		public ButtonClippingTestsControl()
