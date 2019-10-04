@@ -140,6 +140,7 @@
 * Adjust the Stretch mode of `BitmapIcon` content
 * Fix invalid Image size constraint
 * [Android] MenuFlyout was misplaced if view was in a hierarchy with a RenderTransform
+* Fix color refresh of `BitmapIcon` monochrome Foreground
 * [IOS] DatePickerFlyout min and max year were resetting to FallbackNullValue
 
 ## Release 1.45.0
