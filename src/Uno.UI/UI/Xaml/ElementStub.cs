@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml
 			{
 				var visibilityProperty = GetVisibilityProperty(newContent);
 
-				// Set the visibility at the same precendence it was currently set with on the stub.
+				// Set the visibility at the same precedence it was currently set with on the stub.
 				var precedence = this.GetCurrentHighestValuePrecedence(visibilityProperty);
 
 				targetDependencyObject.SetValue(visibilityProperty, Visibility.Visible, precedence);

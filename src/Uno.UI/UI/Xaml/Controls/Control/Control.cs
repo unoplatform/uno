@@ -145,7 +145,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SubscribeToOverridenRoutedEvents()
 		{
-			// Overriden Events are registered from constructor to ensure they are
+			// Overridden Events are registered from constructor to ensure they are
 			// registered first in event handlers.
 			// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.control.onpointerpressed#remarks
 

@@ -19,13 +19,13 @@
 						Margin="0,0,0,5" />
 
 					<TextBlock Text="Loaded:" FontWeight="Black" />
-					<TextBlock
+					<TextBlock x:Name="loadedResult"
 						Text="[ERROR] loaded not received"
 						Loaded="OnLoadTextLoaded"
 						Margin="0,5" />
 
 					<TextBlock Text="Unloaded:" FontWeight="Black" />
-					<TextBlock
+					<TextBlock x:Name="unloadedResult"
 						Text="[ERROR] loaded not received"
 						Loaded="OnUnloadTextLoaded"
 						Unloaded="OnUnloadTextUnloaded"

@@ -169,6 +169,15 @@ namespace Uno.UI
 			public static bool IsMeasureCacheEnabled { get; set; } = true;
 		}
 
+		public static class TextBox
+		{
+			/// <summary>
+			/// Determines if the caret is visible or not.
+			/// </summary>
+			/// <remarks>This feature is used to avoid screenshot comparisons false positives</remarks>
+			public static bool HideCaret { get; set; } = false;
+		}
+
 		public static class AutomationPeer
 		{
 			/// <summary>
@@ -232,6 +241,18 @@ namespace Uno.UI
 			public static int ShowDelay { get; set; } = 1000;
 
 			public static int ShowDuration { get; set; } = 7000;
+		}
+
+		public static class CompositionTarget
+		{
+			/// <summary>
+			/// The delay between invocations of the <see cref="Windows.UI.Xaml.Media.CompositionTarget.Rendering"/> event, in milliseconds.
+			/// Lower values will increase the rate at which the event fires, at the expense of increased CPU usage.
+			///
+			/// This property is only used on WebAssembly.
+			/// </summary>
+			/// <remarks>The <see cref="Windows.UI.Xaml.Media.CompositionTarget.Rendering"/> event is used by Xamarin.Forms for WebAssembly for XF animations.</remarks>
+			public static int RenderEventThrottle { get; set; } = 30;
 		}
 	}
 }

@@ -20,7 +20,7 @@ to the documentation of the [Uno.PackageDiff tool](https://github.com/nventive/U
 
 ## example report
 
-Below is a comparsion report for Uno.UI **1.45.0** with Uno.UI **1.46.0-PullRequest1300.2330** as part of [this pull-request](https://github.com/unoplatform/uno/pull/1300).
+Below is a comparison report for Uno.UI **1.45.0** with Uno.UI **1.46.0-PullRequest1300.2330** as part of [this pull-request](https://github.com/unoplatform/uno/pull/1300).
 
 You can find the report within the `NuGetPackages.zip` archive on the build server and attached to the pull-request job. The report uses this convention: `ApiDiff.1.46.0-PullRequest1300.2330.md`
 

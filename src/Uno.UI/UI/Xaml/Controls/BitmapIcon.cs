@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Controls
 			Foreground = SolidColorBrushHelper.Black;
 
 			_image = new Image {
-				Stretch = Media.Stretch.UniformToFill,
+				Stretch = Media.Stretch.Uniform,
 #if !NET461
 				MonochromeColor = (Foreground as SolidColorBrush)?.Color
 #endif

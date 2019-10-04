@@ -2,13 +2,16 @@
 
 ## Next version
 ### Features
+* Support for `Gyrometer` on Android, iOS and WASM
+   * `ReadingChanged`
+   * `ReportInterval`
 * Support for `Launcher.QueryUriSupportAsync` method on Android and iOS
 * [#1493](https://github.com/unoplatform/uno/pull/1493) - Implemented the `Windows.Input.PointerUpdateKind` Enum.
 *  [#1428](https://github.com/unoplatform/uno/issues/1428) - Add support for horizontal progressbars to `BindableProgressBar` on Android.
 * Add support for `Windows.Devices.Sensors.Magnetometer` APIs on iOS, Android and WASM
    * `ReadingChanged`
    * `ReportInterval`
-* Added support for `Windows.UI.StartScreen.JumpList` APIs on Android and iOS
+* Add support for `Windows.UI.StartScreen.JumpList` APIs on Android and iOS
    * Includes `Logo`, `DisplayName` and `Arguments`
    * The activation proceeds through the `OnLaunched` method same as on UWP
 * Refactored `DrawableHelper` to the `Uno` project
@@ -61,6 +64,8 @@
 * Add support for BitmapSource.PixelWidth and Height
 * Preliminary support for `ColumnDefinition.ActualWidth` and `RowDefinition.ActualHeight`.
 * Updated VisualTree of an app with Visibility for each items.
+* Add support for `CompositionTarget.Rendering` event.
+* Add support for `IObservableVector<T>` in `ItemsControl`
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
@@ -69,9 +74,10 @@
 * `TextBox.Text = null` will now throw an exception, as on UWP. Pushing `null` via a binding is still valid.
 * Projects targeting Android 8 must now use Xamarin.GooglePlayServices.* 60.1142.1 (60.1142.0 has been unlisted)
 * Projects targeting Android 9 must now use Xamarin.GooglePlayServices.* 71.1600.0
+* [iOS] UIWebView is deprecated and replaced with WKWebView (ITMS-90809: Deprecated API Usage - Apple will stop accepting submissions of apps that use UIWebView APIs . See https://developer.apple.com/documentation/uikit/uiwebview for more information.)
 
 ### Bug fixes
-* [#1531](https://github.com/unoplatform/uno/pull/1531)Fix an issue with VirtualizePanelAdaptater by adding a cache where the ItemSources lenght change and created a OutOfRangeException
+* [#1531](https://github.com/unoplatform/uno/pull/1531)Fix an issue with VirtualizePanelAdaptater by adding a cache where the ItemSources length change and created a OutOfRangeException
 * [WASM] #1518 Fix Navigation Issue Where SystemNavigationManager.enable() is called twice and clear the stack history
 * [#1278](https://github.com/unoplatform/uno/pull/1278) the XAML sourcegenerator now always uses the fully qualified type name to prevent type conflicts.
 * [#1392](https://github.com/unoplatform/uno/pull/1392) Resolved exceptions while changing cursor color on Android P.
@@ -126,6 +132,14 @@
 * #1557 Fix local DataContext on ContentDialog is overwritten
 * [WASM] Fix display for multiple popups (eg ComboBox inside of ContentDialog)
 * [Android] Fix invalid ImageBrush stack overflow with delayed image reuse
+* CommandBar fixes (AppBarToggleButton, AppBarButton)
+* Fix Symbols rendering in sample app
+* Fix multiple invocations of OnLoaded when hosting a control in ItemsControl
+* [Android] Fix glitchy animations inside ListView with transformed ancestor.
+* Adjust `AppBar` and `CommandBar` styles.
+* Adjust the Stretch mode of `BitmapIcon` content
+* Fix invalid Image size constraint
+* [Android] MenuFlyout was misplaced if view was in a hierarchy with a RenderTransform
 
 ## Release 1.45.0
 ### Features
@@ -347,7 +361,7 @@
     - `MediaPlaybackList.Items` is back to an `IObservableVector`
 
 ### Bug fixes
- * Transforms are now fully functionnal
+ * Transforms are now fully functional
  * [Wasm] Fixed ListView infinite loop when using custom containers
  * [Wasm] Use Uno.UI Assembly for namespace type lookup in `XamlReader`
  * [Wasm] Fixed `System.UriConverter` is being linked out
@@ -550,7 +564,7 @@
  * 137979 [Android] Incorrect offset when applying RotateTransform to stretched view
  * Now supports internal object in desource dictionaries
  * 134573 CommandBar doesn't take the proper space on iOS phones in landscape
- * #26 The explicit property <Style.Setters> does not intialize style setters properly
+ * #26 The explicit property <Style.Setters> does not initialize style setters properly
  * 104057 [Android] ListView shows overscroll effect even when it doesn't need to scroll
  * #376 iOS project compilation fails: Can't resolve the reference 'System.Void Windows.UI.Xaml.Documents.BlockCollection::Add(Windows.UI.Xaml.Documents.Block)
  * 138099, 138463 [Android] fixed `ListView` scrolls up when tapping an item at the bottom of screen
@@ -588,7 +602,7 @@
  * 148229 [Android] Right time is picked and rounded to nearest time increment in clock mode
  * 148241 [Android] won't open if `MinuteIncrement` is not set
  * 148582 Time picker initial time when using time increment is using initial time seconds when rounding.. it should ignore seconds..
- * 148285 [iOS] TimePicker is clipped off screen when ios:FlyoutPlacement isnt set
+ * 148285 [iOS] TimePicker is clipped off screen when ios:FlyoutPlacement isn't set
 
 ## Release 1.40
 
@@ -689,7 +703,7 @@ Here's the full change log:
     - Add ThreadPoolTimer support
     - Fix for iOS popup not appearing
     - Fix for Wasm textbox not properly updating while not loaded
-- [WASM] Add suport for TextBlock.Padding property [#88](https://github.com/nventive/Uno/pull/88)
+- [WASM] Add support for TextBlock.Padding property [#88](https://github.com/nventive/Uno/pull/88)
 - [WASM] Fixed measuring support with Polyfill for Node.isConnected [#89](https://github.com/nventive/Uno/pull/88), [#91](https://github.com/nventive/Uno/pull/91)
 - Misc fixes [#93](https://github.com/nventive/Uno/pull/93)
     - Fixed iOS `SimpleOrientationSensor` default queue management
@@ -718,7 +732,7 @@ Here's the full change log:
     - Adjust MinWidth/MinHeight support in Grid
     - Adjust PasswordBox custom font for during password reveal
     - ListView, ContentControl memory improvements
-    - Style behavior adjustements
+    - Style behavior adjustments
 - Update for android animation reliability [#123](https://github.com/nventive/Uno/pull/123)
 - Add support for WriteableBitmap [#125](https://github.com/nventive/Uno/pull/125)
 - Updated vsix structure [#128](https://github.com/nventive/Uno/pull/128)

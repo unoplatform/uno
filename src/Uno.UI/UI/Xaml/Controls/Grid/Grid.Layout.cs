@@ -1005,7 +1005,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// Contains Star returns 1, Doesnt contain star 0
+		/// Contains Star returns 1, Doesn't contain star 0
 		/// </summary>
 		private static int StarSizeComparer(int index, int span, Span<GridSize> sizes)
 		{
@@ -1245,8 +1245,8 @@ namespace Windows.UI.Xaml.Controls
 			private readonly double _starSize;
 
 			public static GridSize Auto => new GridSize(pixelSize: double.NaN);
-			public static GridSize Star(double coeficient = 1f) => new GridSize(starSize: coeficient);
-			public static GridSize Pixel(double coeficient) => new GridSize(pixelSize: coeficient);
+			public static GridSize Star(double coefficient = 1f) => new GridSize(starSize: coefficient);
+			public static GridSize Pixel(double coefficient) => new GridSize(pixelSize: coefficient);
 
 			public static GridSize FromGridLength(GridLength gridLength)
 			{

@@ -2113,7 +2113,7 @@ var Windows;
                 const that = this;
                 FS.syncfs(true, err => {
                     if (err) {
-                        console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
+                        console.error(`Error synchronizing filesystem from IndexDB: ${err}`);
                     }
                 });
                 // Ensure to sync pseudo file system on unload (and periodically for safety)
@@ -2129,7 +2129,7 @@ var Windows;
             static synchronizeFileSystem() {
                 FS.syncfs(err => {
                     if (err) {
-                        console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
+                        console.error(`Error synchronizing filesystem from IndexDB: ${err}`);
                     }
                 });
             }
@@ -2348,10 +2348,10 @@ var Windows;
                     return false;
                 }
                 static startReading() {
-                    window.addEventListener('devicemotion', Accelerometer.readingChangedHandler);
+                    window.addEventListener("devicemotion", Accelerometer.readingChangedHandler);
                 }
                 static stopReading() {
-                    window.removeEventListener('devicemotion', Accelerometer.readingChangedHandler);
+                    window.removeEventListener("devicemotion", Accelerometer.readingChangedHandler);
                 }
                 static readingChangedHandler(event) {
                     Accelerometer.dispatchReading(event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
@@ -2367,32 +2367,70 @@ var Windows;
     (function (Devices) {
         var Sensors;
         (function (Sensors) {
-            class Magnetometer {
+            class Gyrometer {
                 static initialize() {
                     try {
-                        if (typeof window.Magnetometer === "function") {
-                            this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Magnetometer:DispatchReading");
-                            let magnetometerClass = window.Magnetometer;
-                            this.magnetometer = new magnetometerClass({ referenceFrame: 'device' });
+                        if (typeof window.Gyroscope === "function") {
+                            this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Gyrometer:DispatchReading");
+                            let GyroscopeClass = window.Gyroscope;
+                            this.gyroscope = new GyroscopeClass({ referenceFrame: "device" });
                             return true;
                         }
                     }
                     catch (error) {
                         //sensor not available
-                        console.log('Magnetometer could not be initialized.');
+                        console.log("Gyroscope could not be initialized.");
                     }
                     return false;
                 }
                 static startReading() {
-                    this.magnetometer.addEventLi1stener('reading', Magnetometer.readingChangedHandler);
+                    this.gyroscope.addEventListener("reading", Gyrometer.readingChangedHandler);
+                    this.gyroscope.start();
+                }
+                static stopReading() {
+                    this.gyroscope.removeEventListener("reading", Gyrometer.readingChangedHandler);
+                    this.gyroscope.stop();
+                }
+                static readingChangedHandler(event) {
+                    Gyrometer.dispatchReading(Gyrometer.gyroscope.x, Gyrometer.gyroscope.y, Gyrometer.gyroscope.z);
+                }
+            }
+            Sensors.Gyrometer = Gyrometer;
+        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Sensors;
+        (function (Sensors) {
+            class Magnetometer {
+                static initialize() {
+                    try {
+                        if (typeof window.Magnetometer === "function") {
+                            this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Magnetometer:DispatchReading");
+                            let MagnetometerClass = window.Magnetometer;
+                            this.magnetometer = new MagnetometerClass({ referenceFrame: 'device' });
+                            return true;
+                        }
+                    }
+                    catch (error) {
+                        //sensor not available
+                        console.log("Magnetometer could not be initialized.");
+                    }
+                    return false;
+                }
+                static startReading() {
+                    this.magnetometer.addEventListener("reading", Magnetometer.readingChangedHandler);
                     this.magnetometer.start();
                 }
                 static stopReading() {
-                    this.magnetometer.removeEventListener('reading', Magnetometer.readingChangedHandler);
+                    this.magnetometer.removeEventListener("reading", Magnetometer.readingChangedHandler);
                     this.magnetometer.stop();
                 }
                 static readingChangedHandler(event) {
-                    Magnetometer.dispatchReading(this.magnetometer.x, this.magnetometer.y, this.magnetometer.z);
+                    Magnetometer.dispatchReading(Magnetometer.magnetometer.x, Magnetometer.magnetometer.y, Magnetometer.magnetometer.z);
                 }
             }
             Sensors.Magnetometer = Magnetometer;

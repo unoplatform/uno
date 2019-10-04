@@ -21,7 +21,7 @@
 
 	<wasm:ResourceDictionary.MergedDictionaries>
 		<!--
-			On WASM we don't  necessarilly have native style, so we refrence the Windows styles as "native" so we are able
+			On WASM we don't  necessarily have native style, so we reference the Windows styles as "native" so we are able
 			to multi-target their usage in application without having to discover which native styles are available or not.
 		-->
 		<ResourceDictionary Source="Generic.xaml" />

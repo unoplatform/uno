@@ -13,7 +13,7 @@
 | _keyboard events_
 | `KeyDown`   | Hardware Only (3) | Yes (3) | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.keydown) |
 | `KeyUp`     | Hardware Only (3) | Yes (3) | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.keyup) |
-| _pointerd events_
+| _pointer events_
 | `PointerCanceled`     | Yes     | No      | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointercanceled) |
 | `PointerCaptureLost`  | Yes     | No      | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointercapturelost) |
 | `PointerEntered`      | Yes     | No      | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerentered) |
@@ -141,7 +141,7 @@ When using a managed bubbling for a routed event, you'll have a the following li
 
 ## Guidelines for performance
 
-1. When you can, prefer _managed_ bubbling over _native_ to redure crossing the interop boundary
+1. When you can, prefer _managed_ bubbling over _native_ to reduce crossing the interop boundary
    many times for the same event.
 2. Try to reduce the usage of `handledEventsToo: true` when possible.
 
@@ -172,7 +172,7 @@ These _routed events_ are not implemented yet in Uno:
 In the current implementation the `OriginalSource` property on the _RoutedEventArgs_ will often be null
 or referencing the element where the event crossed the _native-to-managed_ boundary.
 
-### Reseting `Handled` to false won't behave like in UWP
+### Resetting `Handled` to false won't behave like in UWP
 
 There's a strange behavior in UWP where you can switch back the `event.Handle` to `false` when
 intercepted by a handler with `handledEventsToo: true`. In UWP the event will continue to bubble normally.

@@ -6,7 +6,7 @@ using Windows.Foundation.Collections;
 
 namespace Windows.Foundation.Collections
 {
-	internal class ObservableVector<T> : IObservableVector<T>
+	internal class ObservableVector<T> : IObservableVector<T>, IObservableVector
 	{
 		private readonly List<T> _list = new List<T>();
 
@@ -31,6 +31,7 @@ namespace Windows.Foundation.Collections
 		public bool IsReadOnly => ((ICollection<T>)_list).IsReadOnly;
 
 		public event VectorChangedEventHandler<T> VectorChanged;
+		public event VectorChangedEventHandler UntypedVectorChanged;
 
 		public void Add(T item)
 		{
@@ -91,6 +92,7 @@ namespace Windows.Foundation.Collections
 		private void RaiseVectorChanged(CollectionChange change, int index)
 		{
 			VectorChanged?.Invoke(this, new VectorChangedEventArgs(change, (uint)index));
+			UntypedVectorChanged?.Invoke(this, new VectorChangedEventArgs(change, (uint)index));
 		}
 	}
 }

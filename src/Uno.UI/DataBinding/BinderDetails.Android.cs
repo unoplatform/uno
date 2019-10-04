@@ -69,7 +69,7 @@ namespace Uno.UI.DataBinding
 				}
 			}
 
-			// Due to the nature of the ExportField behavior, it is required to udpate the variable
+			// Due to the nature of the ExportField behavior, it is required to update the variable
 			// manually through reflection once the native class has been created.
 			_dependencyPropertiesNative.Set(this, properties.ToArray());
 		}

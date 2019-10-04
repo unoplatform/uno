@@ -26,7 +26,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 
 			var dialogResult = _app.Marked("dialogResult");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("Undefined", dialogResult.GetDependencyPropertyValue("Text")?.ToString());
 
 			_app.Tap(showDialog1);
@@ -53,7 +53,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 
 			var dialogResult = _app.Marked("dialogResult");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("Undefined", dialogResult.GetDependencyPropertyValue("Text")?.ToString());
 
 			_app.Tap(showDialog1);
@@ -89,7 +89,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 
 			var dialogResult = _app.Marked("dialogResult");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("Undefined", dialogResult.GetDependencyPropertyValue("Text")?.ToString());
 
 			_app.Tap(showDialog1);
@@ -117,7 +117,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			var dialogResult = _app.Marked("dialogResult");
 			var dialogCommand = _app.Marked("commandResult");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("Undefined", dialogResult.GetDependencyPropertyValue("Text")?.ToString());
 
 			_app.Tap(showDialog1);
@@ -145,7 +145,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 
 			var dialogResult = _app.Marked("dialogResult");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("Undefined", dialogResult.GetDependencyPropertyValue("Text")?.ToString());
 
 			_app.Tap(showDialog1);
@@ -172,7 +172,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 
 			var dialogResult = _app.Marked("dialogResult");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("Undefined", dialogResult.GetDependencyPropertyValue("Text")?.ToString());
 
 			_app.Tap(showDialog1);

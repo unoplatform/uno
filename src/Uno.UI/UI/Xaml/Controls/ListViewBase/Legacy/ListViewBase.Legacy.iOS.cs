@@ -637,7 +637,7 @@ namespace Uno.UI.Controls.Legacy
 		{
 			base.SetNeedsLayout();
 
-			// This method is present to ensure that it is not overriden by the mixins.
+			// This method is present to ensure that it is not overridden by the mixins.
 			// SetNeedsLayout is called very often during scrolling, and it must not
 			// call SetParentNeeds layout, otherwise the whole visual tree above the listviewbase
 			// will be refreshed.

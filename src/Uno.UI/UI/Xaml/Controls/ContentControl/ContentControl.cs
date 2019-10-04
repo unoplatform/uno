@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls
 		private bool _canCreateTemplateWithoutParent = false;
 
 		/// <summary>
-		/// Flag to determine if the current content has been overriden.
+		/// Flag to determine if the current content has been overridden.
 		/// This is only in use when <see cref="IsContentPresenterBypassEnabled"/> is true.
 		/// </summary>
 		private bool _localContentDataContextOverride;
@@ -408,7 +408,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// This property determines if the current instance is not providing a Control
 		/// Template, to allow for the ContentControl to avoid using a ContentPresenter. This extra layer
-		/// is a problem on Android, where the stack size is severly limited (32KB at most)
+		/// is a problem on Android, where the stack size is severely limited (32KB at most)
 		/// on version 4.4 and earlier.
 		/// Android 5.0 does not have this limitation, because ART requires greater stack sizes.
 		/// </summary>
