@@ -1,6 +1,5 @@
 ﻿#pragma warning disable CS0109
 
-#if !NET461
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -815,4 +814,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif
