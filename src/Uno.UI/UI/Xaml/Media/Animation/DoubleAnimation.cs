@@ -274,14 +274,14 @@ namespace Windows.UI.Xaml.Media.Animation
 		private void OnAnimatorUpdate(object sender, EventArgs e) => OnFrame();
 
 		/// <summary>
-		/// Creates a new animatior and animates the view
+		/// Creates a new animator and animates the view
 		/// </summary>
 		private void Play()
 		{
 			InitializeAnimator();//Create the animator
 
 			if (!EnableDependentAnimation && this.GetIsDependantAnimation())
-			{ // Don't start the animator its a dependant animation
+			{ // Don't start the animator its a dependent animation
 				return;
 			}
 

@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Controls
 			// This method is present to work around the fact that the SetMeasuredMethod is protected, but
 			// the layouter is an external type that controls the size of its children.
 			//
-			// This is required because the margin mangement is performed by the layouter, and not
+			// This is required because the margin management is performed by the layouter, and not
 			// by its children themselves.
 			//
 			// We generate a method using IL Emit for performance reasons.

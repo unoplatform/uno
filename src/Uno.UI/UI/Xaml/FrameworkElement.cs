@@ -335,7 +335,7 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// This method is kept internal until https://github.com/unoplatform/uno/issues/119 is adressed.
+		/// This method is kept internal until https://github.com/unoplatform/uno/issues/119 is addressed.
 		/// </summary>
 		/// <returns></returns>
 		internal virtual Type GetDefaultStyleType() => GetType();

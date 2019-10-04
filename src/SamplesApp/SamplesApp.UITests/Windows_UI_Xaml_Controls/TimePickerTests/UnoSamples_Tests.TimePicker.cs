@@ -26,7 +26,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 			var txtSelectedTime = _app.Marked("txtSelectedTime");
 			var myTimePicker = _app.Marked("myTimePicker");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("14:50", txtSelectedTime.GetDependencyPropertyValue("Text")?.ToString());
 			Assert.AreEqual("14:50:00", myTimePicker.GetDependencyPropertyValue("Time")?.ToString());
 
@@ -65,7 +65,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 			var txtSelectedTime = _app.Marked("txtSelectedTime");
 			var myTimePicker = _app.Marked("myTimePicker");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("14:50", txtSelectedTime.GetDependencyPropertyValue("Text")?.ToString());
 			Assert.AreEqual("14:50:00", myTimePicker.GetDependencyPropertyValue("Time")?.ToString());
 

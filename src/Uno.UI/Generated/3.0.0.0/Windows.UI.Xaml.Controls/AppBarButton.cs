@@ -63,16 +63,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.Primitives.AppBarButtonTemplateSettings TemplateSettings
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AppBarButtonTemplateSettings AppBarButton.TemplateSettings is not implemented in Uno.");
-			}
-		}
-		#endif
 		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  bool IsCompact

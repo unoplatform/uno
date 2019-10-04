@@ -434,7 +434,7 @@ namespace Windows.UI.Xaml.Controls
 						//In Android, the focus can be transferred to some controls not requiring the keyboard
 						var needsKeyboard = activity?.CurrentFocus != null &&
 						activity?.CurrentFocus is TextBoxView &&
-							// Don't show keyboard if programmatically focussed and PreventKeyboardDisplayOnProgrammaticFocus is true
+							// Don't show keyboard if programmatically focused and PreventKeyboardDisplayOnProgrammaticFocus is true
 							!(FocusState == FocusState.Programmatic && PreventKeyboardDisplayOnProgrammaticFocus);
 
 						var inputManager = activity?.GetSystemService(Android.Content.Context.InputMethodService) as Android.Views.InputMethods.InputMethodManager;

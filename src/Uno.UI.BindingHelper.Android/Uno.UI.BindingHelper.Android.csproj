@@ -64,7 +64,7 @@
 					AfterTargets="Restore">
 		<!-- 
 		Create the EmbeddedJar itemgroup here so the Xamarin tooling picks it up, 
-		but in the obj folder so we dont have rebuild and git ignore issues.
+		but in the obj folder so we don't have rebuild and git ignore issues.
 		-->
 		<ItemGroup>
 			<EmbeddedJar Include="$(IntermediateOutputPath)\unojars\uno.ui-$(TargetFramework).jar" />

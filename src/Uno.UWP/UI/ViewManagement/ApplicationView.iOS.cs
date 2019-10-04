@@ -21,7 +21,7 @@ namespace Windows.UI.ViewManagement
 
 			// Not respecting its own documentation. https://developer.apple.com/documentation/uikit/uiview/2891103-safeareainsets?language=objc
 			// iOS returns all zeros for SafeAreaInsets on non-iPhones and iOS11. (ignoring nav bars or status bars)
-			// So we need to update the top inset depending of the status bar visibilty on other devices
+			// So we need to update the top inset depending of the status bar visibility on other devices
 			var statusBarHeight = UIApplication.SharedApplication.StatusBarHidden
 					? 0
 					: UIApplication.SharedApplication.StatusBarFrame.Size.Height;

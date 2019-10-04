@@ -393,8 +393,8 @@ namespace Windows.UI.Xaml.Controls
 			if (originalSource != null)
 			{
 				// It's used to support bluebar have difference appearance between focused and focused+selection. 
-				// For example, we can move the SelectionIndicator 3px up when focused and selected to make sure focus rectange doesn't override SelectionIndicator. 
-				// If it's a pointer or programatic, no focus rectangle, so no action
+				// For example, we can move the SelectionIndicator 3px up when focused and selected to make sure focus rectangle doesn't override SelectionIndicator. 
+				// If it's a pointer or programmatic, no focus rectangle, so no action
 				var focusState = originalSource.FocusState;
 				if (focusState == FocusState.Keyboard)
 				{

@@ -428,8 +428,8 @@ public abstract class UnoViewGroup
 			// Doing this we bypass a lot of logic done by the super ViewGroup, (https://android.googlesource.com/platform/frameworks/base/+/0e71b4f19ba602c8c646744e690ab01c69808b42/core/java/android/view/ViewGroup.java#2557)
 			// especially optimization of the TouchTarget resolving / tracking. (https://android.googlesource.com/platform/frameworks/base/+/0e71b4f19ba602c8c646744e690ab01c69808b42/core/java/android/view/ViewGroup.java#2654)
 			// We assume that events that are wronlgy dispatched to children are going to be filteerd by children themselves
-			// and thios support is sufficent enough for our current cases.
-			// Note: this is not fully complient with the UWP contract (cf. https://github.com/nventive/Uno/issues/649)
+			// and thios support is sufficient enough for our current cases.
+			// Note: this is not fully compliant with the UWP contract (cf. https://github.com/nventive/Uno/issues/649)
 
 			// Note: If this logic is called once, it has to be called for all MotionEvents in the same touch cycle, including Cancel, because if
 			// ViewGroup.dispatchTouchEvent() isn't called for Down then all subsequent events won't be handled correctly
@@ -557,7 +557,7 @@ public abstract class UnoViewGroup
 
 		switch (action) {
 			case MotionEvent.ACTION_CANCEL: {
-				// Unset currrent pointer
+				// Unset current pointer
 				_currentPointerId = -1;
 				return true;
 			}
@@ -861,7 +861,7 @@ public abstract class UnoViewGroup
 		Matrix inverse = new Matrix();
 		if (viewParent instanceof UnoViewGroup) {
 			Matrix parentMatrix = ((UnoViewGroup) viewParent).getChildStaticMatrix(view);
-			if (!parentMatrix.isIdentity()) {
+			if (parentMatrix != null && !parentMatrix.isIdentity()) {
 				parentMatrix.invert(inverse);
 				inverse.mapPoints(point);
 			}
@@ -876,12 +876,7 @@ public abstract class UnoViewGroup
 	}
 
 	private Matrix getChildStaticMatrix(View view) {
-		Matrix transform = _childrenTransformations.get(view);
-		if (transform == null) {
-			transform = new Matrix();
-		}
-
-		return transform;
+		return _childrenTransformations.get(view);
 	}
 
 	/**
@@ -978,6 +973,40 @@ public abstract class UnoViewGroup
 			point[1] -= screenLocation[1];
 		}
 		return point;
+	}
+
+	@Override
+	public void getLocationInWindow(int[] outLocation) {
+		super.getLocationInWindow(outLocation);
+		ViewParent currentParent = getParent();
+		View currentChild = this;
+
+		float[] points = null;
+		while (currentParent instanceof View) {
+			if (currentParent instanceof UnoViewGroup) {
+				final UnoViewGroup currentUVGParent = (UnoViewGroup)currentParent;
+				Matrix parentMatrix =currentUVGParent.getChildStaticMatrix(currentChild);
+				if (parentMatrix != null && !parentMatrix.isIdentity()) {
+					if (points == null) {
+						points = new float[2];
+					}
+
+					// Apply the offset from the ancestor's RenderTransform, because the base Android method doesn't take
+					// StaticTransformation into account.
+					Matrix inverse = new Matrix();
+					parentMatrix.invert(inverse);
+					inverse.mapPoints(points);
+				}
+			}
+
+			currentChild = (View)currentParent;
+			currentParent = currentParent.getParent();
+		}
+
+		if (points != null) {
+			outLocation[0]-=(int)points[0];
+			outLocation[1]-=(int)points[1];
+		}
 	}
 
 	// Allows UI automation operations to look for a single 'Text' property for both ViewGroup and TextView elements.

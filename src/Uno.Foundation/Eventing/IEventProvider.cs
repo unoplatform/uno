@@ -18,7 +18,7 @@ namespace Uno.Diagnostics.Eventing
 		/// Writes a string message to the provider
 		/// </summary>
 		/// <param name="eventMessage">The string to write</param>
-		/// <returns>True if the write suceeded, otherwise false.</returns>
+		/// <returns>True if the write succeeded, otherwise false.</returns>
 		bool WriteMessageEvent(string eventMessage);
 
 		/// <summary>
@@ -26,7 +26,7 @@ namespace Uno.Diagnostics.Eventing
 		/// </summary>
 		/// <param name="eventDescriptor">An event descriptor</param>
 		/// <param name="data">A string to add as payload</param>
-		/// <returns>True if the write suceeded, otherwise false.</returns>
+		/// <returns>True if the write succeeded, otherwise false.</returns>
 		bool WriteEvent(EventDescriptor eventDescriptor, string data);
 
 		/// <summary>
@@ -34,7 +34,7 @@ namespace Uno.Diagnostics.Eventing
 		/// </summary>
 		/// <param name="eventDescriptor">An event descriptor</param>
 		/// <param name="data">A string to add as payload</param>
-		/// <returns>True if the write suceeded, otherwise false.</returns>
+		/// <returns>True if the write succeeded, otherwise false.</returns>
 		/// <remarks>Data can be of Int32, Int64 or String.</remarks>
 		bool WriteEvent(EventDescriptor eventDescriptor, params object[] data);
 	}
