@@ -165,9 +165,9 @@ namespace Windows.UI.Xaml
 		private long _arrangeCount = 0;
 #endif
 
-		protected internal void ArrangeElementNative(Rect rect, Rect? clipRect)
+		protected internal void ArrangeElementNative(Rect rect, bool clipToBounds, Rect? clipRect)
 		{
-			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipRect);
+			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipToBounds, clipRect);
 
 #if DEBUG
 			var count = ++_arrangeCount;

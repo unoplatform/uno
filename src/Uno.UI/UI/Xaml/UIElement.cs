@@ -43,10 +43,7 @@ namespace Windows.UI.Xaml
 
 		partial void OnUidChangedPartial();
 
-		/// <summary>
-		/// Determines if an <see cref="UIElement"/> clips its children to its bounds.
-		/// </summary>
-		internal bool ClipChildrenToBounds { get; set; } = true;
+		private protected bool RequiresClipping { get; set; } = true;
 
 		#region Clip DependencyProperty
 

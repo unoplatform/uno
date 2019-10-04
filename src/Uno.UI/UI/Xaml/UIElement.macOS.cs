@@ -175,11 +175,18 @@ namespace Windows.UI.Xaml
 		/// <returns>A tuple of the clipping parent, and the view that let to this parent.</returns>
 		private static (NSView child, NSView clippingParent) GetClippingParent(NSView owner)
 		{
+			// TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT
+			// TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT
+			// TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT
+			// TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT
+			// TODO: REVIEW THIS BEFORE MERGING PR!
+
+
 			(NSView child, NSView clippingParent) GetClippingParent(NSView child, NSView parent)
 			{
 				if (parent is FrameworkElement pfe)
 				{
-					if (!pfe.ClipChildrenToBounds)
+					if (!pfe.RequiresClipping)
 					{
 						return GetClippingParent(pfe, pfe.Superview);
 					}
@@ -194,13 +201,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-
-			if (owner.Superview is FrameworkElement sfe && !sfe.ClipChildrenToBounds)
-			{
-				return GetClippingParent(owner, owner.Superview);
-			}
-
-			return (owner, owner.Superview);
+			return GetClippingParent(owner, owner.Superview);
 		}
 
 		/// <summary>

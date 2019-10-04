@@ -21,7 +21,7 @@ using UIKit;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class Image : DependencyObject
+	public partial class Image : DependencyObject, ICustomClippingElement
 	{
 		/// <summary>
 		/// Setting this flag instructs the image control not to dispose pending image fetches when it is removed from the visual tree. 
@@ -424,6 +424,8 @@ namespace Windows.UI.Xaml.Controls
 				return finalSize;
 			}
 		}
+
+		bool ICustomClippingElement.AllowClippingToBounds => false;
 	}
 }
 #endif

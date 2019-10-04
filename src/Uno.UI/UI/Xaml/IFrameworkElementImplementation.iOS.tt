@@ -30,7 +30,7 @@ using Windows.UI.Xaml.Automation;
 
 namespace <#= mixin.NamespaceName #>
 {
-    public partial class <#= mixin.ClassName #> : IFrameworkElement, IXUidProvider
+	public partial class <#= mixin.ClassName #> : IFrameworkElement, IXUidProvider
 	{		
 		string IXUidProvider.Uid { get; set; }
 
@@ -153,7 +153,7 @@ namespace <#= mixin.NamespaceName #>
 			}
 		}
 
-        public event TypedEventHandler<DependencyObject, object> Loading;
+		public event TypedEventHandler<DependencyObject, object> Loading;
 
 		public event RoutedEventHandler Loaded;
 
@@ -208,7 +208,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 
 		partial void AdjustArrangePartial(ref Size size);
-        public virtual Size AdjustArrange(Size size)		
+		public virtual Size AdjustArrange(Size size)		
 		{
 			AdjustArrangePartial(ref size);
 
@@ -686,15 +686,15 @@ namespace <#= mixin.NamespaceName #>
 		public static readonly DependencyProperty OpacityProperty =
 			DependencyProperty.Register("Opacity", typeof(double), typeof(<#= mixin.ClassName #>), new PropertyMetadata(1.0, (s, a) => ((<#= mixin.ClassName #>)s).OnOpacityChanged(a)));
 
-        private void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
-        {
+		private void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
+		{
 			// Don't update the internal value if the value is being animated.
 			// The value is being animated by the platform itself.
 			if (!(args.NewPrecedence == DependencyPropertyValuePrecedences.Animations && args.BypassesPropagation))
 			{
 				Alpha = IsRenderingSuspended ? 0 : (nfloat)Opacity;
 			}
-        }
+		}
 		#endregion
 		
 		#region Visibility Dependency Property
@@ -807,18 +807,18 @@ namespace <#= mixin.NamespaceName #>
 	
 		#region Transitions Dependency Property
 
-        public TransitionCollection Transitions
-        {
-            get { return (TransitionCollection)this.GetValue(TransitionsProperty); }
-            set { this.SetValue(TransitionsProperty, value); }
-        }
-
-        public static readonly DependencyProperty TransitionsProperty =
-            DependencyProperty.Register("Transitions", typeof(TransitionCollection), typeof(<#= mixin.ClassName #>), new PropertyMetadata(null, OnTransitionsChanged));
-			
-	    private static void OnTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		public TransitionCollection Transitions
 		{
-            var frameworkElement = dependencyObject as IFrameworkElement;
+			get { return (TransitionCollection)this.GetValue(TransitionsProperty); }
+			set { this.SetValue(TransitionsProperty, value); }
+		}
+
+		public static readonly DependencyProperty TransitionsProperty =
+			DependencyProperty.Register("Transitions", typeof(TransitionCollection), typeof(<#= mixin.ClassName #>), new PropertyMetadata(null, OnTransitionsChanged));
+			
+		private static void OnTransitionsChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			var frameworkElement = dependencyObject as IFrameworkElement;
 
 			if (frameworkElement != null)
 			{
@@ -826,7 +826,7 @@ namespace <#= mixin.NamespaceName #>
 
 				if (oldValue != null)				
 				{
-				    foreach (var item in oldValue)
+					foreach (var item in oldValue)
 					{
 						item.DetachFromElement(frameworkElement);
 					}					
@@ -836,7 +836,7 @@ namespace <#= mixin.NamespaceName #>
 
 				if (newValue != null)				
 				{
-				    foreach (var item in newValue)
+					foreach (var item in newValue)
 					{
 						item.AttachToElement(frameworkElement);
 					}					
@@ -1121,7 +1121,7 @@ namespace <#= mixin.NamespaceName #>
 #>
 
 <#+
-    public void AddClass(
+	public void AddClass(
 		string namespaceName, 
 		string className, 
 		bool defineSetNeedsLayout = true,
@@ -1133,7 +1133,7 @@ namespace <#= mixin.NamespaceName #>
 		bool hasAutomationPeer = false
 	)
 	{
-        _mixins.Add(
+		_mixins.Add(
 			new MixinParams { 
 				NamespaceName = namespaceName, 
 				ClassName = className,
@@ -1147,7 +1147,7 @@ namespace <#= mixin.NamespaceName #>
 				HasAutomationPeer = hasAutomationPeer ? "true" : "false",
 			}
 		);
-    }
+	}
 
 	private class MixinParams
 	{

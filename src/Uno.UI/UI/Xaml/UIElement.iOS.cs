@@ -168,11 +168,17 @@ namespace Windows.UI.Xaml
 		/// <returns>A tuple of the clipping parent, and the view that let to this parent.</returns>
 		private static (UIView child, UIView clippingParent) GetClippingParent(UIView owner)
 		{
+			// TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT
+			// TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT
+			// TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT
+			// TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT
+			// TODO: REVIEW THIS BEFORE MERGING PR!
+
 			(UIView child, UIView clippingParent) GetClippingParent(UIView child, UIView parent)
 			{
 				if (parent is FrameworkElement pfe)
 				{
-					if (!pfe.ClipChildrenToBounds)
+					if (!pfe.RequiresClipping)
 					{
 						return GetClippingParent(pfe, pfe.Superview);
 					}
@@ -187,13 +193,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-
-			if (owner.Superview is FrameworkElement sfe && !sfe.ClipChildrenToBounds)
-			{
-				return GetClippingParent(owner, owner.Superview);
-			}
-
-			return (owner, owner.Superview);
+			return GetClippingParent(owner, owner.Superview);
 		}
 
 		internal static FrameworkElement UpdateMask(UIView owner, UIView superView = null)
@@ -213,7 +213,7 @@ namespace Windows.UI.Xaml
 			{
 				var clippingParent = clippingParentResult.clippingParent;
 
-				if (clippingParentResult.child is FrameworkElement cfe && !cfe.ClipChildrenToBounds)
+				if (clippingParentResult.child is FrameworkElement cfe && !cfe.RequiresClipping)
 				{
 					// If the immediate child of the clipping parent is not clipping its children, then the
 					// clipping parent is its parent (Ellipse -> Canvas -> Grid -> StackPanel)
