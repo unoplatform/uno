@@ -90,6 +90,15 @@ Here's a list of live apps made with the Uno Platform for WebAssembly.
 
 Let us know if you've made your app publicly available, we'll list it here!
 
+# Builds
+
+Build process summaries :
+
+* Uno.UI - CI (Master)  
+[![Uno.UI - CI (Master) status](https://uno-platform.visualstudio.com/Uno%20Platform/_apis/build/status/Uno%20Platform/Uno.UI%20-%20CI?branchName=master)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5)
+* Uno.UI - CI (Stable)  
+[![Uno.UI - CI (Stable) status](https://uno-platform.visualstudio.com/Uno%20Platform/_apis/build/status/Uno%20Platform/Uno.UI%20-%20CI?branchName=release/stable/*)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5)
+
 # Have questions? Feature requests? Issues?
 
 Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform), [create an issue](https://github.com/nventive/Uno/issues) or [visit our gitter](https://gitter.im/uno-platform/Lobby).
