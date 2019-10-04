@@ -1,5 +1,5 @@
 # Uno Platform - Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today.
-[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=unoplatform/uno)](https://dependabot.com) [![All Contributors](https://img.shields.io/badge/all_contributors-49-orange.svg?style=flat-square)](#contributors) [![GitHub stars](https://img.shields.io/github/stars/unoplatform/uno.svg?style=social&label=Star&maxAge=2592000)](https://github.com/unoplatform/uno/stargazers/)
+[![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=unoplatform/uno)](https://dependabot.com) [![All Contributors](https://img.shields.io/badge/all_contributors-50-orange.svg?style=flat-square)](#contributors) [![GitHub stars](https://img.shields.io/github/stars/unoplatform/uno.svg?style=social&label=Star&maxAge=2592000)](https://github.com/unoplatform/uno/stargazers/)
 
 
 # What is the Uno Platform
