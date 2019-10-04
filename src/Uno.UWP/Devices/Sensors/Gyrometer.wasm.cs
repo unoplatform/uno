@@ -6,25 +6,25 @@ using Uno.Devices.Sensors.Helpers;
 
 namespace Windows.Devices.Sensors
 {
-	public partial class Magnetometer
+	public partial class Gyrometer
 	{
-		private const string JsType = "Windows.Devices.Sensors.Magnetometer";		
+		private const string JsType = "Windows.Devices.Sensors.Gyrometer";		
 
 		private DateTimeOffset _lastReading = DateTimeOffset.MinValue;
 
-		private Magnetometer()
+		private Gyrometer()
 		{
 		}
 
 		public uint ReportInterval { get; set; }
 
-		private static Magnetometer TryCreateInstance()
+		private static Gyrometer TryCreateInstance()
 		{
 			var command = $"{JsType}.initialize()";
 			var initialized = Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
 			if (bool.Parse(initialized) == true)
 			{
-				return new Magnetometer();
+				return new Gyrometer();
 			}
 			return null;
 		}
@@ -42,33 +42,32 @@ namespace Windows.Devices.Sensors
 		}
 
 		/// <summary>
-		/// Handles readings from Magnetometer.
+		/// Handles readings from Gyrometer.
 		/// Filters the readings if too frequent to match chosen ReportInterval.
 		/// Uses value ReportInterval * 0.8 to make sure that reporting is
 		/// still more frequent rather than less frequent than requested,
 		/// which is in line with documentation
 		/// </summary>
-		/// <param name="x">Magnetic field X</param>
-		/// <param name="y">Magnetic field Y</param>
-		/// <param name="z">Magnetic field Z</param>
+		/// <param name="x">AngularVelocity X in radians/s</param>
+		/// <param name="y">AngularVelocity Y in radians/s</param>
+		/// <param name="z">AngularVelocity Z in radians/s</param>
 		/// <returns>0 - needed to bind method from WASM</returns>
 		[Preserve]
 		public static int DispatchReading(float x, float y, float z)
 		{
 			if (_instance == null)
 			{
-				throw new InvalidOperationException("Magnetometer:DispatchReading can be called only after Magnetometer is initialized");
+				throw new InvalidOperationException("Gyrometer:DispatchReading can be called only after Gyrometer is initialized");
 			}
 			var now = DateTimeOffset.UtcNow;
 			if ((now - _instance._lastReading).TotalMilliseconds >= _instance.ReportInterval * 0.8)
 			{
 				_instance._lastReading = now;
 				_instance.OnReadingChanged(
-					new MagnetometerReading(
-						x,
-						y,
-						z,
-						MagnetometerAccuracy.Unknown,
+					new GyrometerReading(
+						x * SensorConstants.RadToDeg,
+						y * SensorConstants.RadToDeg,
+						z * SensorConstants.RadToDeg,
 						now));
 			}			
 			return 0;

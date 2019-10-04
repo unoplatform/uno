@@ -2,6 +2,9 @@
 
 ## Next version
 ### Features
+* Support for `Gyrometer` on Android, iOS and WASM
+   * `ReadingChanged`
+   * `ReportInterval`
 * Support for `Launcher.QueryUriSupportAsync` method on Android and iOS
 * [#1493](https://github.com/unoplatform/uno/pull/1493) - Implemented the `Windows.Input.PointerUpdateKind` Enum.
 *  [#1428](https://github.com/unoplatform/uno/issues/1428) - Add support for horizontal progressbars to `BindableProgressBar` on Android.
@@ -138,6 +141,7 @@
 * Fix invalid Image size constraint
 * [Android] MenuFlyout was misplaced if view was in a hierarchy with a RenderTransform
 * Fix color refresh of `BitmapIcon` monochrome Foreground
+* [IOS] DatePickerFlyout min and max year were resetting to FallbackNullValue
 
 ## Release 1.45.0
 ### Features

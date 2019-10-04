@@ -52,7 +52,12 @@ namespace Windows.UI.Xaml.Controls
 
 			_isInitialized = true;
 
-			Content = new DatePickerSelector();
+			Content = new DatePickerSelector()
+			{
+				MinYear = MinYear,
+				MaxYear = MaxYear
+			};
+
 			BindToContent("MinYear");
 			BindToContent("MaxYear");
 
