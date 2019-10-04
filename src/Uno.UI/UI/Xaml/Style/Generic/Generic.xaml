@@ -18,12 +18,6 @@
 					xmlns:uBehaviors="using:Uno.UI.Behaviors"
 					mc:Ignorable="d xamarin ios android not_wasm wasm macos">
 
-	<!-- TODO: How does UWP override the default FontFamily value of 11 with 15? -->
-	<Style TargetType="TextBlock">
-		<Setter Property="FontSize"
-				Value="15" />
-	</Style>
-
 	<!-- TODO: Also use for iOS and Android? -->
 	<!-- TODO: Same as UWP's default template? -->
 	<wasm:Style TargetType="ItemsControl">
