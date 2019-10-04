@@ -185,6 +185,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\PanelChildrenClipping.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DeferLoadStrategy\DeferLoadStrategyWithTemplateBinding.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2733,6 +2737,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\DoubleAnimationClipping.xaml.cs">
       <DependentUpon>DoubleAnimationClipping.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\PanelChildrenClipping.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\UIElementClipping.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DeferLoadStrategy\DeferLoadStrategyViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DeferLoadStrategy\DeferLoadStrategyWithTemplateBinding.xaml.cs">
@@ -4655,13 +4660,16 @@
     <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\ClipTransform\Transform_Ellipse_in_two_grids.xaml.cs">
       <DependentUpon>Transform_Ellipse_in_two_grids.xaml</DependentUpon>
     </Compile>
+    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\Clip\PanelChildrenClipping.xaml.cs">
+      <DependentUpon>PanelChildrenClipping.xaml</DependentUpon>
+    </Compile>
     <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\Clip\UIElementClipping.xaml.cs">
       <DependentUpon>UIElementClipping.xaml</DependentUpon>
     </Compile>
     <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\UIElementTests\UIElementClipping.xaml.cs">
       <DependentUpon>UIElementClipping.xaml</DependentUpon>
     </Compile>
-	<Compile Update="$(MSBuildThisFileDirectory)Windows_Devices\GyrometerTests.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_Devices\GyrometerTests.xaml.cs">
       <DependentUpon>GyrometerTests.xaml</DependentUpon>
     </Compile>
     <Compile Update="C:\P\uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\DatePicker\DatePickerFlyout_MinYear.xaml.cs">

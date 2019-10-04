@@ -7,7 +7,8 @@
 	mc:Ignorable="d"
 	d:DesignHeight="300"
 	d:DesignWidth="400"
-	Loaded="OnControlLoaded">
+	Loaded="OnControlLoaded"
+	IsHitTestVisible="false">
 
 	<Grid>
 		<TextBlock x:Name="clippingWarning" Foreground="Red" FontSize="40" TextWrapping="Wrap" />
