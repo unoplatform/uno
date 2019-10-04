@@ -32,7 +32,7 @@ To do this, you need to recompile your app using a _debug_ version of Uno­
 1. Create a file named `nuget_version_override.txt` and in the solution folder
   (where `Uno.UI.sln` is) and put the version number in it - **on the first line and nothing
   else is the file**.
-1. Build the project for the platform you need (or build all the solutions to get all of them).
+1. Build the project for the platform you need (or build all the solution to get all of them).
    See below for the list of projects to compile for each platform.
 1. Never commit the `nuget_version_override.txt` into source control.  It should be ignored
    by default anyway.
