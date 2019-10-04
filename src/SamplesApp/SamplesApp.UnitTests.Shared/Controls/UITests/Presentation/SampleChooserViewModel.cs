@@ -540,11 +540,11 @@ namespace SampleControl.Presentation
 
 			query = query.ToArray();
 
-			var categories = new List<SampleChooserCategory>();
+			var categories = new SortedSet<SampleChooserCategory>();
 
 			foreach (var control in query)
 			{
-				var sampleControl = new SampleChooserContent()
+				var sampleControl = new SampleChooserContent
 				{
 					ControlName = control.attribute.ControlName ?? control.type.Name,
 					ViewModelType = control.attribute.ViewModelType,
@@ -553,25 +553,17 @@ namespace SampleControl.Presentation
 					IgnoreInAutomatedTests = control.attribute.IgnoreInAutomatedTests
 				};
 
-				if (categories.TrueForAll(s => s.Category != control.attribute.Category))
+				var category = categories.SingleOrDefault(c=>c.Category == control.attribute.Category);
+				if(category == null)
 				{
-					categories.Add(new SampleChooserCategory() { Category = control.attribute.Category, SamplesContent = new List<SampleChooserContent>() { sampleControl } });
+					category = new SampleChooserCategory() { Category = control.attribute.Category };
+					categories.Add(category);
 				}
-				else
-				{
-					categories.Where(t => t.Category == control.attribute.Category).First().SamplesContent.Add(sampleControl);
-				}
+
+				category.SamplesContent.Add(sampleControl);
 			}
 
 			this.Log().Info($"Found {query.Count()} sample(s) in {categories.Count} categorie(s).");
-
-			//Order categories
-			categories.Sort((x, y) => string.Compare(x.Category, y.Category));
-			//Order sample tests in categories
-			foreach (var category in categories)
-			{
-				category.SamplesContent.Sort((x, y) => string.Compare(x.ControlName, y.ControlName));
-			}
 
 			return categories
 			.ToList();
