@@ -92,9 +92,9 @@ var UnoAppManifest = {
 ```
 
 The properties are :
-* **splashScreenImage**: defines the image that will be centered on the window during the application's loading time
-* **splashScreenColor**: defines the background color of the splash screen
-* **displayName**: defines the default name of the application in the browser's window title
+* **splashScreenImage**: defines the image that will be centered on the window during the application's loading time.
+* **splashScreenColor**: defines the background color of the splash screen.
+* **displayName**: defines the default name of the application in the browser's window title.
 
 ## Supporting multiple platforms in Xaml files
 
@@ -110,11 +110,9 @@ This behavior is is a direct consequence of the ability to mix native and Uno.UI
 
 ## Dependency Properties
 
-Uno.UI allows the sharing of [Dependency Property](https://msdn.microsoft.com/en-us/library/ms752914%28v=vs.110%29.aspx) declaration and 
-code between Windows and Xamarin based platforms.
+Uno.UI allows the sharing of [Dependency Property](https://msdn.microsoft.com/en-us/library/ms752914%28v=vs.110%29.aspx) declaration and code between Windows and Xamarin based platforms.
 
-Declaring a dependency property in Uno UI requires a class to implement the  
-interface `DependencyObject`, to gain access to the GetValue and SetValue methods.
+Declaring a dependency property in Uno UI requires a class to implement the interface `DependencyObject`, to gain access to the GetValue and SetValue methods.
 
 Here is an example of such a declaration:
 
@@ -203,8 +201,8 @@ Uno.UI also generates a nested class named StaticResources in all non-ResourceDi
 Uno.UI supports the [authoring of styles](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.style.aspx).
 
 For many controls in Uno, two prepackaged styles are provided:
-* NativeDefault[Control] which is customized to match the UI guidelines of the target platform
-* XamlDefault[Control] which is the default style of controls on Windows
+* NativeDefault[Control] which is customized to match the UI guidelines of the target platform.
+* XamlDefault[Control] which is the default style of controls on Windows.
 
 On WASM, the NativeDefault[Control] styles are currently only aliases to the XamlDefault[Control], for compatibility with other platforms.
 
@@ -277,7 +275,7 @@ For more information, see [GridView class](https://docs.microsoft.com/en-us/uwp/
 
 ### Image
 
-For more information, see [Image class](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.image.aspx).
+For more information, see [Image class](https://msdn.microsoft.com/en-us/library/window/apps/windows.ui.xaml.controls.image.aspx).
 
 
 ### ImageSource
@@ -287,8 +285,7 @@ Image handling works 'out of the box' on iOS and WebAssembly without further con
 On Android, to handle the loading of images from a remote url, the Image control has to be provided a 
 ImageSource.DefaultImageLoader such as the [Android Universal Image Loader](https://github.com/nostra13/Android-Universal-Image-Loader).
 
-This package is installed by default when using the [Uno Cross-Platform solution templates](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin). If not using the solution template, you can install the [nventive.UniversalImageLoader](https://www.nuget.org/packages/nventive.UniversalImageLoader/) NuGet package and call the following code
-from your application's App constructor:
+This package is installed by default when using the [Uno Cross-Platform solution templates](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin). If not using the solution template, you can install the [nventive.UniversalImageLoader](https://www.nuget.org/packages/nventive.UniversalImageLoader/) NuGet package and call the following code from your application's App constructor:
 
 ```csharp
 private void ConfigureUniversalImageLoader()
@@ -396,9 +393,7 @@ Adding a custom font is done through the use of WebFonts, using a data-URI:
 }
 ```
 
-This type of declaration is required to avoid measuring errors if the font requested
-by a `TextBlock` or a `FontIcon` needs to be downloaded first. Specifying it using a
-data-URI ensures the font is readily available.
+This type of declaration is required to avoid measuring errors if the font requested by a `TextBlock` or a `FontIcon` needs to be downloaded first. Specifying it using a data-URI ensures the font is readily available.
 
 #### Custom Fonts Notes
 Please note that some custom fonts need the FontFamily and FontWeight properties to be set at the same time in order to work properly on TextBlocks, Runs and for styles Setters.
