@@ -16,6 +16,7 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="DatePickerSelector">
 					<Border Background="White"
+							VerticalAlignment="Bottom"
 							Margin="5"
 							CornerRadius="10">
 						<native:UIDatePicker/>

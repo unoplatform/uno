@@ -141,6 +141,7 @@
 * Fix invalid Image size constraint
 * [Android] MenuFlyout was misplaced if view was in a hierarchy with a RenderTransform
 * [IOS] DatePickerFlyout min and max year were resetting to FallbackNullValue
+* DatePickerFlyoutPresenter not dismissing flyout on tap
 
 ## Release 1.45.0
 ### Features

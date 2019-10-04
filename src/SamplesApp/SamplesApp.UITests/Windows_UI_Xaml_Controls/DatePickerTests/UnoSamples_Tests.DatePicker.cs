@@ -108,5 +108,30 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			//Assert
 			Assert.AreEqual(datePickerFlyout.GetDependencyPropertyValue("MaxYear").ToString(), theDatePicker.GetDependencyPropertyValue("MaxYear").ToString());
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)] // Android is disabled https://github.com/unoplatform/uno/issues/1634
+		public void DatePicker_TappingPresenterDismissesFlyout()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent");
+
+			_app.WaitForElement(_app.Marked("theDatePicker"));
+
+			var theDatePicker = _app.Marked("theDatePicker");
+			var datePickerFlyout = theDatePicker.Child;
+
+			// Open flyout
+			theDatePicker.Tap();
+
+			//Assert
+			Assert.Equals("True", datePickerFlyout.GetDependencyPropertyValue("IsOpened").ToString());
+
+			// Open flyout
+			theDatePicker.Tap();
+
+			//Assert
+			Assert.Equals("False", datePickerFlyout.GetDependencyPropertyValue("IsOpened").ToString());
+		}
 	}
 }
