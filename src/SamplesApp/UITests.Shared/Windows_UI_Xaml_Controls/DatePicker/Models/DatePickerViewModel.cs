@@ -9,13 +9,13 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.Models
 	[Bindable]
 	public class DatePickerViewModel : ViewModelBase
 	{
-		private DateTime _date = DateTime.Now.Date;
+		private DateTimeOffset _date = DateTime.Now;
 
 		public DatePickerViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
 		}
 
-		public DateTime Date
+		public DateTimeOffset Date
 		{
 			get => _date;
 			set
@@ -25,6 +25,6 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.Models
 			}
 		}
 
-		public ICommand SetToCurrentDate => GetOrCreateCommand(() => Date = DateTime.Now.Date);
+		public ICommand SetToCurrentDate => GetOrCreateCommand(() => Date = DateTime.Now);
 	}
 }
