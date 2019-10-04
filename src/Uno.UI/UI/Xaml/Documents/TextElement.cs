@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Documents
 				typeof(double),
 				typeof(TextElement),
 				new FrameworkPropertyMetadata(
-					defaultValue: (double)11,
+					defaultValue: 15.0,
 					options: FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) => ((TextElement)s).OnFontSizeChanged()
 				)
