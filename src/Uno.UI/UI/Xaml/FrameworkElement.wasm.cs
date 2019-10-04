@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml
 			}
 			catch (Exception error)
 			{
-				this.Log().Error("ManagedOnLoading failed in FrameworkElement", error);
+				_log.Error("ManagedOnLoading failed in FrameworkElement", error);
 				Application.Current.RaiseRecoverableUnhandledException(error);
 			}
 
@@ -82,7 +82,7 @@ namespace Windows.UI.Xaml
 				}
 				catch (Exception error)
 				{
-					this.Log().Error("ManagedOnLoaded failed in FrameworkElement", error);
+					_log.Error("ManagedOnLoaded failed in FrameworkElement", error);
 					Application.Current.RaiseRecoverableUnhandledException(error);
 				}
 			}
@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml
 			}
 			catch (Exception error)
 			{
-				this.Log().Error("NativeOnLoaded failed in FrameworkElement", error);
+				_log.Error("NativeOnLoaded failed in FrameworkElement", error);
 				Application.Current.RaiseRecoverableUnhandledException(error);
 			}
 		}
@@ -122,7 +122,7 @@ namespace Windows.UI.Xaml
 			}
 			catch (Exception error)
 			{
-				this.Log().Error("ManagedOnUnloaded failed in FrameworkElement", error);
+				_log.Error("ManagedOnUnloaded failed in FrameworkElement", error);
 				Application.Current.RaiseRecoverableUnhandledException(error);
 			}
 		}
@@ -142,7 +142,7 @@ namespace Windows.UI.Xaml
 			}
 			catch (Exception error)
 			{
-				this.Log().Error("NativeOnUnloaded failed in FrameworkElement", error);
+				_log.Error("NativeOnUnloaded failed in FrameworkElement", error);
 				Application.Current.RaiseRecoverableUnhandledException(error);
 			}
 		}

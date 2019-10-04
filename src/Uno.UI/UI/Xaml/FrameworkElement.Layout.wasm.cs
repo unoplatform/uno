@@ -57,10 +57,7 @@ namespace Windows.UI.Xaml
 
 			var desiredSize = MeasureOverride(frameworkAvailableSize);
 
-			if (_log.IsEnabled(LogLevel.Trace))
-			{
-				_log.LogTrace($"{this}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize}");
-			}
+			_logDebug?.LogTrace($"{this}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize}");
 
 			if (
 				double.IsNaN(desiredSize.Width)
@@ -84,12 +81,7 @@ namespace Windows.UI.Xaml
 
 			var retSize = clippedDesiredSize.AtLeast(new Size(0, 0));
 
-			if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			{
-				_log.DebugFormat(
-					$"[{this}] Measure({Name}/{availableSize}/{Margin}) = {retSize}"
-				);
-			}
+			_logDebug?.Debug($"[{this}] Measure({Name}/{availableSize}/{Margin}) = {retSize}");
 
 			return retSize;
 		}
@@ -162,12 +154,8 @@ namespace Windows.UI.Xaml
 
 			ArrangeNative(offset, oldRenderSize);
 
-			if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			{
-				_log.Debug(
-					$"[{this}] ArrangeChild(offset={offset}, margin={Margin}) [oldRenderSize={oldRenderSize}]"
-				);
-			}
+			_logDebug?.Debug(
+					$"[{this}] ArrangeChild(offset={offset}, margin={Margin}) [oldRenderSize={oldRenderSize}] [RequiresClipping={needsClipping}]");
 		}
 
 		internal Thickness GetThicknessAdjust()
