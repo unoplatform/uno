@@ -24,11 +24,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_image = new Image
 				{
-					Stretch = Media.Stretch.Uniform,
-#if !NET461
-					MonochromeColor = (Foreground as SolidColorBrush)?.Color
-#endif
+					Stretch = Media.Stretch.Uniform
 				};
+
+				UpdateImageMonochromeColor();
 
 				_image.SetBinding(
 					dependencyProperty: Image.SourceProperty,
@@ -68,10 +67,7 @@ namespace Windows.UI.Xaml.Controls
 		private void RefreshImage()
 		{
 #if !NET461
-			if (_image != null)
-			{
-				_image.MonochromeColor = ShowAsMonochrome ? (Foreground as SolidColorBrush)?.Color : null;
-			}
+			UpdateImageMonochromeColor();
 
 			if (UriSource != null)
 			{
@@ -79,6 +75,16 @@ namespace Windows.UI.Xaml.Controls
 				var tmp = UriSource;
 				UriSource = null;
 				UriSource = tmp;
+			}
+#endif
+		}
+
+		private void UpdateImageMonochromeColor()
+		{
+#if !NET461
+			if (_image != null)
+			{
+				_image.MonochromeColor = ShowAsMonochrome ? (Foreground as SolidColorBrush)?.Color : null;
 			}
 #endif
 		}
