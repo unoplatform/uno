@@ -12,7 +12,7 @@
         NoData = "NoData",
         Disabled = "Disabled",
         NotInitialized = "NotInitialized",
-		NotAvailable = "NotAvailable"
+        NotAvailable = "NotAvailable"
     }
 
     export class Geolocator {
@@ -22,14 +22,14 @@
         private static dispatchError: (geopositionRequestResult: string, requestId: string) => number;
         private static dispatchStatus: (serializedPositionStatus: string) => number;
 
-        private static positionWatches: any;		
+        private static positionWatches: any;
 
         public static initialize() {
             if (!this.dispatchStatus) {
                 this.dispatchStatus = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchStatus");
             }
             this.dispatchStatus(PositionStatus.Initializing);
-            if (!this.dispatchAccessRequest ) {
+            if (!this.dispatchAccessRequest) {
                 this.dispatchAccessRequest = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchAccessRequest");
             }
             if (!this.dispatchError) {
@@ -41,6 +41,7 @@
             this.dispatchStatus(PositionStatus.Ready);
         }
 
+        //checks for permission to the geolocation services
         public static requestAccess() {
             Geolocator.initialize();
             if (navigator.geolocation) {
@@ -65,6 +66,7 @@
             }
         }
 
+        //retrieves a single geoposition
         public static getGeoposition(
             desiredAccuracyInMeters: number,
             maximumAge: number,
@@ -72,21 +74,18 @@
             requestId: string) {
             Geolocator.initialize();
             if (navigator.geolocation) {
-                if (desiredAccuracyInMeters < 500) { //user requested a higher than default accuracy
-                    this.getAccurateCurrentPosition(
-                        (position) => Geolocator.handleGeoposition(position, requestId),
-                        (error) => Geolocator.handleError(error, requestId),
-                        desiredAccuracyInMeters,
-                        { enableHighAccuracy: true, maximumAge: maximumAge, timeout: timeout });
-                } else {
-                    navigator.geolocation.getCurrentPosition(
-                        (position) => Geolocator.handleGeoposition(position, requestId),
-                        (error) => Geolocator.handleError(error, requestId),
-                        { enableHighAccuracy: false, maximumAge: maximumAge, timeout: timeout });
-                }
+                this.getAccurateCurrentPosition(
+                    (position) => Geolocator.handleGeoposition(position, requestId),
+                    (error) => Geolocator.handleError(error, requestId),
+                    desiredAccuracyInMeters,
+                    {
+                        enableHighAccuracy: desiredAccuracyInMeters < 50, //if desired accuracy is over less than 50 meters, more accurate GPS source will be needed
+                        maximumAge: maximumAge,
+                        timeout: timeout
+                    });
             }
             else {
-				//TODO: FIX
+                //TODO: FIX
                 Geolocator.dispatchError("NotAvailable", requestId);
             }
         }
@@ -98,7 +97,7 @@
                     (position) => Geolocator.handleGeoposition(position, requestId),
                     (error) => Geolocator.handleError(error, requestId));
             } else {
-				//TODO: FIX
+                //TODO: FIX
                 Geolocator.dispatchError("NotAvailable", requestId);
             }
         }
