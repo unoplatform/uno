@@ -2322,8 +2322,7 @@ var Windows;
                     if (window.matchMedia("(prefers-color-scheme: light)").matches) {
                         return Xaml.ApplicationTheme.Light;
                     }
-                    //if none matches or not supported
-                    return Xaml.ApplicationTheme.Light;
+                    return null;
                 }
             }
             Xaml.Application = Application;
