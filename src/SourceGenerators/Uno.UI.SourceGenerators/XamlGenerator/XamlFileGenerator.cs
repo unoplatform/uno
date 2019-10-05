@@ -398,9 +398,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariant("");
 			writer.AppendLineInvariant("this");
 
-			string closure;
-
-			using (var blockWriter = CreateApplyBlock(writer, null, out closure))
+			using (var blockWriter = CreateApplyBlock(writer, null, out var closure))
 			{
 				blockWriter.AppendLineInvariant(
 					"// Source {0} (Line {1}:{2})",
