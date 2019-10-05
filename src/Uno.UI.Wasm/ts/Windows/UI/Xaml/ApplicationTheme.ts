@@ -2,6 +2,6 @@
 
     export enum ApplicationTheme {
         Light = "Light",
-		Dark = "Dark"
+	Dark = "Dark"
     }
 }
