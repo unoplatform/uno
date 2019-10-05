@@ -1,6 +1,6 @@
 # How to contribute
 
-There are lots of ways to contribute to the Uno Platform, and we appreciate the help from the community. You can provide feedback, report bugs, give suggestions, contribute code, and participate in the platform discussions.
+There are a lot of ways to contribute to the Uno Platform, and we appreciate help from the community. You can provide feedback, report bugs, give suggestions, contribute code, and participate in the platform discussions.
 
 ## Code of conduct
 
@@ -17,7 +17,7 @@ We want to hear about your experience, scenarios, and requirements.
 If you think you've found a bug, please log a new issue in the [Uno Platform GitHub issue tracker](https://github.com/nventive/Uno/issues). When filing issues, please use our [bug filing template](.github/ISSUE_TEMPLATE.md).
 The best way to get your bug fixed is to be as detailed as you can be about the problem.
 Providing a minimal project with steps to reproduce the problem is ideal.
-Here are questions you can answer before you file a bug to make sure you're not missing any important information.
+Here are the questions you can answer before you file a bug in order to make sure you're not missing any important information.
 
 1. Did you read the [documentation](https://github.com/nventive/Uno/tree/master/doc/index.md)?
 2. Did you include the snippet of the broken code in the issue?
@@ -29,11 +29,11 @@ GitHub supports [markdown](https://help.github.com/articles/github-flavored-mark
 
 ### Make a suggestion
 
-If you have an idea for a new feature or enhancement, let us know by filing an [issue](https://github.com/nventive/Uno/issues). To help us understand and prioritize your idea, please provide as much detail about your scenario and why the feature or enhancement would be useful.
+If you have an idea for a new feature or enhancement, let us know by filing an [issue](https://github.com/nventive/Uno/issues). To help us understand and prioritize your idea, please be as detailed as possible about your scenario and why the feature or enhancement would be useful.
 
 ### Ask questions
 
-If you have a question, be sure first to check out our [documentation](https://github.com/nventive/Uno/tree/master/doc/index.md). But if you are still stuck, you'll have a better chance of getting help on [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) and we'll do our best to answer it. Questions asked there should be tagged with `uno-platform.`
+If you have a question, be sure to first check our [documentation](https://github.com/nventive/Uno/tree/master/doc/index.md) out! But if you are still stuck, you'll have a better chance of getting help on [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform) and we'll do our best to answer it. Questions asked there should be tagged with `uno-platform.`
 
 For a more direct conversation, [our Gitter is also a good place to visit](https://gitter.im/uno-platform/Lobby).
 
@@ -45,15 +45,15 @@ The Uno Platform is an open-source project, and we welcome code and content cont
 
 If you would like to contribute to one of our repositories, first identify the scale of what you would like to contribute. If it is small (grammar/spelling or a bug fix) feel free to start working on a fix.
 
-If you are submitting a feature or substantial code contribution, please discuss it with the team. You might also read these two blog posts on contributing code: [Open Source Contribution Etiquette](http://tirania.org/blog/archive/2010/Dec-31.html) by Miguel de Icaza and [Don't "Push" Your Pull Requests](https://www.igvita.com/2011/12/19/dont-push-your-pull-requests/) by Ilya Grigorik. Note that all code submissions will be rigorously reviewed and tested by the Uno Platform team. Only those that meet an extremely high bar for both quality and design/roadmap appropriateness will be merged into the source.
+If you are submitting a feature or substantial code contribution, please discuss it with the team. You might also read these two blog posts on contributing code: [Open Source Contribution Etiquette](http://tirania.org/blog/archive/2010/Dec-31.html) by Miguel de Icaza and [Don't "Push" Your Pull Requests](https://www.igvita.com/2011/12/19/dont-push-your-pull-requests/) by Ilya Grigorik. Note that all code submissions will be rigorously reviewed and tested by the Uno Platform team. Only those that meet an extremely high bar for both quality and the design/roadmap appropriateness will be merged into the source.
 
 **Obtaining the source code**
 
-If you are an outside contributor, please fork the Uno Platform repository you would like to contribute to your account. See the GitHub documentation for [forking a repo](https://help.github.com/articles/fork-a-repo/) if you have any questions about this.
+If you are an outside contributor, please fork the Uno Platform repository where you would like to contribute to your account. See the GitHub documentation for [forking a repo](https://help.github.com/articles/fork-a-repo/) if you have any questions about this.
 
 **Submitting a pull request**
 
-If you don't know what a pull request is read this article: https://help.github.com/articles/using-pull-requests. Make sure the repository can build and all tests pass, as well as follow the current coding guidelines.
+If you don't know what a pull request is, read this article: https://help.github.com/articles/using-pull-requests. Make sure the repository can build and pass all tests, as well as follow the current coding guidelines.
 
 Pull requests should all be made to the **master** branch.
 
