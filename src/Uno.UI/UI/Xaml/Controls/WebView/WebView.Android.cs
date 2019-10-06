@@ -307,7 +307,7 @@ namespace Windows.UI.Xaml.Controls
 				};
 				if(!_webView._afterToString && !string.IsNullOrEmpty(url))
 				{
-					Uri = new Uri(url);
+					args.Uri = new Uri(url);
 				}
 
 				_webView.NavigationCompleted?.Invoke(_webView, args);
