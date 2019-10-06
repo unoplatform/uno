@@ -28,7 +28,6 @@ namespace Windows.UI.Xaml
 	{
 		static partial void InitStyles()
 		{
-			InitWebView();
 			InitDatePicker();
 			InitFlyoutPresenter();
 
@@ -120,23 +119,6 @@ namespace Windows.UI.Xaml
 			};
 
 			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.DatePicker), () => style);
-		}
-
-
-		private static void InitWebView()
-		{
-			var style = new Style(typeof(Windows.UI.Xaml.Controls.WebView))
-			{
-				Setters = {
-					new Setter<WebView>("Template", t =>
-						t.Template = Funcs.Create(() =>
-							new Android.Webkit.WebView(ContextHelper.Current)
-						)
-					)
-				}
-			};
-
-			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.WebView), () => style);
 		}
 
 		private static void InitFlyoutPresenter()
