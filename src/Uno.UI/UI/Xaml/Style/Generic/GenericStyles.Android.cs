@@ -28,7 +28,6 @@ namespace Windows.UI.Xaml
 	{
 		static partial void InitStyles()
 		{
-			InitItemsControl();
 			InitFlipView();
 			InitWebView();
 			InitDatePicker();
@@ -139,22 +138,6 @@ namespace Windows.UI.Xaml
 			};
 
 			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.WebView), () => style);
-		}
-
-		private static void InitItemsControl()
-		{
-			var style = new Style(typeof(Windows.UI.Xaml.Controls.ItemsControl))
-			{
-				Setters = {
-					new Setter<ItemsControl>("Template", t =>
-						t.Template = Funcs.Create(() => new ItemsPresenter()
-							.Binding(ItemsPresenter.PaddingProperty.Name, new TemplateBinding(ItemsControl.PaddingProperty.Name))
-						)
-					)
-				}
-			};
-
-			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.ItemsControl), () => style);
 		}
 
 		private static void InitFlipView()
