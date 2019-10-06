@@ -18,9 +18,8 @@
 					xmlns:uBehaviors="using:Uno.UI.Behaviors"
 					mc:Ignorable="d xamarin ios android not_wasm wasm macos">
 
-	<!-- TODO: Also use for iOS and Android? -->
-	<!-- TODO: Same as UWP's default template? -->
-	<wasm:Style TargetType="ItemsControl">
+	<!-- TODO: ItemsControl should inject ItemsPresenter directly if no template is found. (Change this once template is materialized on Measure) -->
+	<xamarin:Style TargetType="ItemsControl">
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ItemsControl">
@@ -28,16 +27,7 @@
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
-	</wasm:Style>
-	<macos:Style TargetType="ItemsControl">
-		<Setter Property="Template">
-			<Setter.Value>
-				<ControlTemplate TargetType="ItemsControl">
-					<ItemsPresenter Padding="{TemplateBinding Padding}" />
-				</ControlTemplate>
-			</Setter.Value>
-		</Setter>
-	</macos:Style>
+	</xamarin:Style>
 
 	<!-- Default style for Windows.UI.Xaml.Controls.ContentControl -->
 	<Style TargetType="ContentControl">
