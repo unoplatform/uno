@@ -658,11 +658,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					continue;
 				}
 
-				if (resource.Type.Name == "StaticResource")
-				{
-					continue; //TODO: try to handle this
-				}
-
 				index++;
 				var propertyName = GetPropertyNameForResourceKey(index);
 				_topLevelDictionaryProperties[(theme, key)] = propertyName;
@@ -680,11 +675,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					continue;
 				}
 
-				if (resource.Type.Name == "StaticResource")
-				{
-					continue; //TODO: try to handle this
-				}
-
 				_dictionaryPropertyIndex++;
 				var propertyName = GetPropertyNameForResourceKey(_dictionaryPropertyIndex);
 				if (_topLevelDictionaryProperties[(theme, key)] != propertyName)
@@ -692,9 +682,31 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					throw new InvalidOperationException("Property was not created correctly.");
 				}
 				writer.AppendLineInvariant("// Property for resource {0} {1}", key, theme != null ? "in theme {0}".InvariantCultureFormat(theme) : "");
-				BuildSingleTimeInitializer(writer, resource.Type.Name, propertyName, () => BuildChild(writer, resourcesRoot, resource));
+				var isStaticResourceAlias = resource.Type.Name == "StaticResource";
+				void BuildPropertyBody()
+				{
+					if (isStaticResourceAlias)
+					{
+						BuildStaticResourceResourceKeyReference(writer, resource);
+					}
+					else
+					{
+						BuildChild(writer, resourcesRoot, resource);
+					}
+				}
+				BuildSingleTimeInitializer(writer, isStaticResourceAlias ? "global::System.Object" : resource.Type.Name, propertyName, BuildPropertyBody);
 			}
 			_themeDictionaryCurrentlyBuilding = former;
+		}
+
+		/// <summary>
+		/// Build StaticResource alias inside a ResourceDictionary.
+		/// </summary>
+		private void BuildStaticResourceResourceKeyReference(IIndentedStringBuilder writer, XamlObjectDefinition resourceDefinition)
+		{
+			var targetKey = resourceDefinition.Members.FirstOrDefault(m => m.Member.Name == "ResourceKey")?.Value as string;
+
+			writer.AppendLineInvariant(GetSimpleStaticResourceRetrieval(null, targetKey));
 		}
 
 		/// <summary>
@@ -1737,12 +1749,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var key = GetDictionaryResourceKey(resource, out var name);
 
-				if (resource.Type.Name == "StaticResource")
-				{
-					writer.AppendLineInvariant("// StaticResource in ResourceDictionary not supported."); //TODO: revisit this when StaticResource resolution is in
-					continue;
-				}
-
 				if (key != null)
 				{
 					var wrappedKey = key;
@@ -2549,8 +2555,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (directProperty != null)
 				{
+					var type = FindPropertyType(member.Member);
 					// Prefer direct property reference (when we are in top-level ResourceDictionary and referencing resource in same dictionary)
-					writer.AppendLineInvariant(formatLine("{0} = {1}"), member.Member.Name, directProperty);
+					writer.AppendLineInvariant(formatLine("{0} = {1}{2}"), member.Member.Name, GetCastString(type, null), directProperty);
 
 				}
 				else if (IsDependencyProperty(member.Member))
@@ -2686,6 +2693,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			while (xamlObject != null && (maxDepth == null || ++depth <= maxDepth));
 
 			return false;
+		}
+
+		/// <summary>
+		/// Inserts explicit cast if a resource is being assigned to a property of a different type
+		/// </summary>
+		private string GetCastString(INamedTypeSymbol targetProperty, XamlObjectDefinition targettingValue)
+		{
+			if (targetProperty != null
+				&& targetProperty.Name != targettingValue?.Type.Name
+				)
+			{
+				return $"({targetProperty.ToDisplayString()})";
+			}
+			return "";
 		}
 
 		/// <summary>

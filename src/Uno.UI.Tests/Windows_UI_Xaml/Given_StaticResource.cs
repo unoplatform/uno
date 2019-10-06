@@ -9,6 +9,7 @@ using Uno.UI.Tests.App.Xaml;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
@@ -295,6 +296,36 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var rowDef = control.TestGrid.RowDefinitions[1];
 			Assert.AreEqual(333, rowDef.Height.Value);
+		}
+
+		[TestMethod]
+		public void When_ResourceKey_And_System()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var res = app.Resources["ImAStaticResourceInADictColorBrush"] as SolidColorBrush;
+			Assert.AreEqual(Colors.LightGray, res.Color);
+		}
+
+		[TestMethod]
+		public void When_ResourceKey_And_Local()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var res = app.Resources["ResourceKeyLocalReference"] as SolidColorBrush;
+			Assert.AreEqual(Colors.MediumSpringGreen, res.Color);
+		}
+
+		[TestMethod]
+		public void When_ResourceKey_And_Assigned()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var template = app.Resources["TemplateUsingStaticResourceAlias"] as ControlTemplate;
+			var button = new Button { Template = template };
+			button.Measure(new Size(1000, 1000));
+			var tb = button.FindFirstChild<TextBlock>();
+			Assert.AreEqual(Colors.MediumSpringGreen, (tb.Foreground as SolidColorBrush).Color);
 		}
 	}
 }
