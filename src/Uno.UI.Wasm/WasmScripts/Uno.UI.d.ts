@@ -766,6 +766,7 @@ declare namespace Windows.Devices.Geolocation {
         private static dispatchAccessRequest;
         private static dispatchGeoposition;
         private static dispatchError;
+        private static dispatchStatus;
         private static positionWatches;
         static initialize(): void;
         static requestAccess(): void;

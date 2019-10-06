@@ -120,12 +120,16 @@ namespace Windows.Devices.Geolocation
 		}
 
 		/// <summary>
-		/// Uses 60 second timeout to match the UWP default.
-		/// The maximum age is not specified in documentation, so we use 10 seconds for now.
+		/// UWP defaults to 60 seconds, but in practice the result is returned much sooner,
+		/// even if it does not satisfy the user's requested accuracy. Hence we are using 5 seconds here.
+		/// The maximum age is not specified in documentation, we use 30 seconds for low accuracy requests,
+		/// 5 seconds for high accuracy requests
 		/// </summary>
 		/// <returns>Geoposition</returns>
 		public Task<Geoposition> GetGeopositionAsync() =>
-			GetGeopositionAsync(TimeSpan.FromSeconds(10), TimeSpan.FromSeconds(60));
+			GetGeopositionAsync(
+				ActualDesiredAccuracyInMeters < 50 ? TimeSpan.FromSeconds(3) : TimeSpan.FromSeconds(30),
+				TimeSpan.FromSeconds(5));
 
 		/// <summary>
 		/// Retrieves geoposition with specific maximum age and timeout
@@ -164,14 +168,17 @@ namespace Windows.Devices.Geolocation
 		{
 			if (_pendingGeopositionRequests.TryRemove(requestId, out var geopositionCompletionSource))
 			{
-				geopositionCompletionSource.SetException(new UnauthorizedAccessException("Access is denied"));
+				if (currentPositionRequestResult == PositionStatus.NoData.ToString())
+				{
+					geopositionCompletionSource.SetException(new Exception("This operation returned because the timeout period expired."));
+				}
 			}
 
 			return 0;
 		}
 
 		[Preserve]
-		public static int DispatchStatusChanged(string serializedPositionStatus)
+		public static int DispatchStatus(string serializedPositionStatus)
 		{
 			var positionStatus = (PositionStatus)Enum.Parse(typeof(PositionStatus), serializedPositionStatus, true);
 			foreach (var key in _statusChangedSubscriptions.Keys)

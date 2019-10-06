@@ -2216,8 +2216,22 @@ var Windows;
                 GeolocationAccessStatus["Denied"] = "Denied";
                 GeolocationAccessStatus["Unspecified"] = "Unspecified";
             })(GeolocationAccessStatus || (GeolocationAccessStatus = {}));
+            let PositionStatus;
+            (function (PositionStatus) {
+                PositionStatus["Ready"] = "Ready";
+                PositionStatus["Initializing"] = "Initializing";
+                PositionStatus["NoData"] = "NoData";
+                PositionStatus["Disabled"] = "Disabled";
+                PositionStatus["NotInitialized"] = "NotInitialized";
+                PositionStatus["NotAvailable"] = "NotAvailable";
+            })(PositionStatus || (PositionStatus = {}));
             class Geolocator {
                 static initialize() {
+                    this.positionWatches = {};
+                    if (!this.dispatchStatus) {
+                        this.dispatchStatus = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchStatus");
+                    }
+                    this.dispatchStatus(PositionStatus.Initializing);
                     if (!this.dispatchAccessRequest) {
                         this.dispatchAccessRequest = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchAccessRequest");
                     }
@@ -2227,7 +2241,9 @@ var Windows;
                     if (!this.dispatchGeoposition) {
                         this.dispatchGeoposition = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchGeoposition");
                     }
+                    this.dispatchStatus(PositionStatus.Ready);
                 }
+                //checks for permission to the geolocation services
                 static requestAccess() {
                     Geolocator.initialize();
                     if (navigator.geolocation) {
@@ -2249,15 +2265,15 @@ var Windows;
                         Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Unspecified);
                     }
                 }
+                //retrieves a single geoposition
                 static getGeoposition(desiredAccuracyInMeters, maximumAge, timeout, requestId) {
                     Geolocator.initialize();
                     if (navigator.geolocation) {
-                        if (desiredAccuracyInMeters < 500) { //user requested a higher than default accuracy
-                            this.getAccurateCurrentPosition((position) => Geolocator.handleGeoposition(position, requestId), (error) => Geolocator.handleError(error, requestId), desiredAccuracyInMeters, { enableHighAccuracy: true, maximumAge: maximumAge, timeout: timeout });
-                        }
-                        else {
-                            navigator.geolocation.getCurrentPosition((position) => Geolocator.handleGeoposition(position, requestId), (error) => Geolocator.handleError(error, requestId), { enableHighAccuracy: false, maximumAge: maximumAge, timeout: timeout });
-                        }
+                        this.getAccurateCurrentPosition((position) => Geolocator.handleGeoposition(position, requestId), (error) => Geolocator.handleError(error, requestId), desiredAccuracyInMeters, {
+                            enableHighAccuracy: desiredAccuracyInMeters < 50,
+                            maximumAge: maximumAge,
+                            timeout: timeout
+                        });
                     }
                     else {
                         //TODO: FIX
@@ -2276,6 +2292,7 @@ var Windows;
                 }
                 static stopPositionWatch(desiredAccuracyInMeters, requestId) {
                     navigator.geolocation.clearWatch(Geolocator.positionWatches[requestId]);
+                    delete Geolocator.positionWatches[requestId];
                 }
                 static handleGeoposition(position, requestId) {
                     var serializedGeoposition = position.coords.latitude + ":" +
@@ -2289,8 +2306,10 @@ var Windows;
                     Geolocator.dispatchGeoposition(serializedGeoposition, requestId);
                 }
                 static handleError(error, requestId) {
-                    console.log("error " + error.code);
-                    Geolocator.dispatchError("Boom!", requestId);
+                    if (error.code == error.TIMEOUT) {
+                        Geolocator.dispatchStatus(PositionStatus.NoData);
+                        Geolocator.dispatchError(PositionStatus.NoData, requestId);
+                    }
                 }
                 //this attempts to squeeze out the requested accuracy from the GPS by utilizing the set timeout
                 //adapted from https://github.com/gregsramblings/getAccurateCurrentPosition/blob/master/geo.js		
@@ -2302,9 +2321,8 @@ var Windows;
                     var checkLocation = function (position) {
                         lastCheckedPosition = position;
                         locationEventCount = locationEventCount + 1;
-                        // We ignore the first event unless it's the only one received because some devices seem to send a cached
-                        // location even when maxaimumAge is set to zero
-                        if ((position.coords.accuracy <= desiredAccuracy) && (locationEventCount > 1)) {
+                        //is the accuracy enough?
+                        if (position.coords.accuracy <= desiredAccuracy) {
                             clearTimeout(timerId);
                             navigator.geolocation.clearWatch(watchId);
                             foundPosition(position);
@@ -2322,8 +2340,6 @@ var Windows;
                     var foundPosition = function (position) {
                         geolocationSuccess(position);
                     };
-                    options.maximumAge = 0; // Force current locations only
-                    options.enableHighAccuracy = true;
                     watchId = navigator.geolocation.watchPosition(checkLocation, onError, options);
                     timerId = setTimeout(stopTrying, options.timeout);
                 }

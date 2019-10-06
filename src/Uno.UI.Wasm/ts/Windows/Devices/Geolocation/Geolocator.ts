@@ -25,6 +25,7 @@
         private static positionWatches: any;
 
         public static initialize() {
+            this.positionWatches = {};
             if (!this.dispatchStatus) {
                 this.dispatchStatus = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchStatus");
             }
@@ -85,8 +86,7 @@
                     });
             }
             else {
-                //TODO: FIX
-                Geolocator.dispatchError("NotAvailable", requestId);
+                Geolocator.dispatchError(PositionStatus.NotAvailable, requestId);
             }
         }
 
@@ -97,13 +97,13 @@
                     (position) => Geolocator.handleGeoposition(position, requestId),
                     (error) => Geolocator.handleError(error, requestId));
             } else {
-                //TODO: FIX
-                Geolocator.dispatchError("NotAvailable", requestId);
+                Geolocator.dispatchError(PositionStatus.NotAvailable, requestId);
             }
         }
 
         public static stopPositionWatch(desiredAccuracyInMeters: number, requestId: string) {
             navigator.geolocation.clearWatch(Geolocator.positionWatches[requestId]);
+            delete Geolocator.positionWatches[requestId];
         }
 
         private static handleGeoposition(position: Position, requestId: string) {
@@ -122,6 +122,11 @@
             if (error.code == error.TIMEOUT) {
                 Geolocator.dispatchStatus(PositionStatus.NoData);
                 Geolocator.dispatchError(PositionStatus.NoData, requestId);
+            } else if (error.code == error.PERMISSION_DENIED) {
+                Geolocator.dispatchStatus(PositionStatus.Disabled);
+                Geolocator.dispatchError(PositionStatus.Disabled, requestId);
+            } else if (error.code == error.POSITION_UNAVAILABLE) {                
+                Geolocator.dispatchError(PositionStatus.NoData, requestId);
             }
         }
 
@@ -137,36 +142,32 @@
             var watchId: number;
             var timerId: number;
 
-            var checkLocation = function(position: Position) {
+            var checkLocation = function (position: Position) {
                 lastCheckedPosition = position;
                 locationEventCount = locationEventCount + 1;
-                // We ignore the first event unless it's the only one received because some devices seem to send a cached
-                // location even when maxaimumAge is set to zero
-                if ((position.coords.accuracy <= desiredAccuracy) && (locationEventCount > 1)) {
+
+                //is the accuracy enough?
+                if (position.coords.accuracy <= desiredAccuracy) {
                     clearTimeout(timerId);
                     navigator.geolocation.clearWatch(watchId);
                     foundPosition(position);
                 }
             };
 
-            var stopTrying = function() {
+            var stopTrying = function () {
                 navigator.geolocation.clearWatch(watchId);
                 foundPosition(lastCheckedPosition);
             };
 
-            var onError = function(error: PositionError) {
+            var onError = function (error: PositionError) {
                 clearTimeout(timerId);
                 navigator.geolocation.clearWatch(watchId);
                 geolocationError(error);
             };
 
-            var foundPosition = function(position: Position) {
+            var foundPosition = function (position: Position) {
                 geolocationSuccess(position);
             };
-
-
-            options.maximumAge = 0; // Force current locations only
-            options.enableHighAccuracy = true;
 
             watchId = navigator.geolocation.watchPosition(checkLocation, onError, options);
             timerId = setTimeout(stopTrying, options.timeout);
