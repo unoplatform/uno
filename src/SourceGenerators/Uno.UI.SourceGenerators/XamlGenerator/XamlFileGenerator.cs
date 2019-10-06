@@ -1389,8 +1389,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return false;
 			}
 
+			// Adjustment for Uno.Xaml parser which returns the namespace in the name
+			var xamlTypeName = xamlType.Name.Contains(':') ? xamlType.Name.Split(':').LastOrDefault() : xamlType.Name;
+
 			// Determine if the type is a custom markup extension
-			return _markupExtensionTypes.Any(ns => ns.Name.Equals(xamlType.Name, StringComparison.InvariantCulture));
+			return _markupExtensionTypes.Any(ns => ns.Name.Equals(xamlTypeName, StringComparison.InvariantCulture));
 		}
 
 		private XamlMemberDefinition FindMember(XamlObjectDefinition xamlObjectDefinition, string memberName)

@@ -26,7 +26,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 			Assert.AreEqual("100", control.TestText3.Text);
 			Assert.AreEqual("True", control.TestText4.Text);
 			Assert.AreEqual("From a Resource String markup extension", control.TestText5.Text);
-			Assert.AreEqual("String from attached property", control.TestText6.Text);
+			Assert.AreEqual("String from attached property markup extension", control.TestText6.Text);
 			Assert.AreEqual("True", control.TestText7.Text);
 		}
 	}
