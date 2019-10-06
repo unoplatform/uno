@@ -46,5 +46,13 @@
 	<views:MyPoco x:Key="PocoLinda"
 				  Bogosity="{StaticResource GoodSize}" />
 	<StaticResource x:Key="ImAStaticResourceInADictColorBrush"
-					ResourceKey="SystemAccentColorBrush" />
+					ResourceKey="ContentDialogBackgroundThemeBrush" />
+	<StaticResource x:Key="ResourceKeyLocalReference"
+					ResourceKey="SuperiorColorBrush" />
+	<ControlTemplate x:Key="TemplateUsingStaticResourceAlias"
+					 TargetType="Button">
+		<Grid>
+			<TextBlock Foreground="{ThemeResource ResourceKeyLocalReference}" />
+		</Grid>
+	</ControlTemplate>
 </ResourceDictionary>
