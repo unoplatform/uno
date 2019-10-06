@@ -29,8 +29,7 @@ namespace Windows.UI.Xaml
 {
 	public static partial class GenericStyles
 	{
-		static partial void InitStyl
-			InitFlipView();
+		static partial void InitStyles() {
 			InitWebView();
 			InitFlyoutPresenter();
 			InitDatePicker();
@@ -127,30 +126,6 @@ namespace Windows.UI.Xaml
 			};
 
 			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.WebView), () => style);
-		}
-
-		private static void InitFlipView()
-		{
-#if !__MACOS__
-			var style = new Style(typeof(Windows.UI.Xaml.Controls.FlipView))
-			{
-				Setters =  {
-
-					// The order is important for this template, see FlipView.UpdateItems for the
-					// PagedCollectionView type dependency.
-					new Setter<FlipView>("ItemsPanel", t =>
-						t.ItemsPanel = new ItemsPanelTemplate(() =>
-							new PagedCollectionView() {ShowsHorizontalScrollIndicator=false })
-					),
-					new Setter<FlipView>("Template", t =>
-						t.Template = new ControlTemplate(() =>
-							new ItemsPresenter()
-						)
-					)
-				}
-			};
-
-			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.FlipView), () => style);
 		}
 
 #if !IS_UNO

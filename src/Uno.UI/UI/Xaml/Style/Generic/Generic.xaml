@@ -8426,6 +8426,23 @@
 
 	<Style TargetType="ScrollBar" BasedOn="{StaticResource XamlDefaultScrollBar}" />
 
+	<not_wasm:Style TargetType="FlipView">
+		<Setter Property="ItemsPanel">
+			<Setter.Value>
+				<ItemsPanelTemplate>
+					<NativeFlipView />
+				</ItemsPanelTemplate>
+			</Setter.Value>
+		</Setter>
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate>
+					<ItemsPresenter />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</not_wasm:Style>
+
 	<win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
 	<xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
 	<StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="SystemControlChromeMediumLowAcrylicElementMediumBrush" />
