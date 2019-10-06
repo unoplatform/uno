@@ -30,7 +30,6 @@ namespace Windows.UI.Xaml
 	public static partial class GenericStyles
 	{
 		static partial void InitStyles() {
-			InitWebView();
 			InitFlyoutPresenter();
 			InitDatePicker();
 			InitDatePickerSelector();
