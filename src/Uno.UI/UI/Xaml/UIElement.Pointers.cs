@@ -130,6 +130,8 @@ namespace Windows.UI.Xaml
 		};
 
 		#region Gestures recognition
+		private bool _isGestureCompleted;
+
 		private GestureRecognizer CreateGestureRecognizer()
 		{
 			var recognizer = new GestureRecognizer();
@@ -184,6 +186,20 @@ namespace Windows.UI.Xaml
 				_gestures.Value.GestureSettings |= GestureSettings.DoubleTap;
 			}
 		}
+
+		/// <summary>
+		/// Prevents the gesture recognizer to generate a manipulation. It's designed to be invoked in Pointers events handlers.
+		/// </summary>
+		private protected void CompleteGesture()
+		{
+			// This flags allow us to complete the gesture on pressed (i.e. even before the gesture started)
+			_isGestureCompleted = true;
+
+			if (_gestures.IsValueCreated)
+			{
+				_gestures.Value.CompleteGesture();
+			}
+		}
 		#endregion
 
 		#region Partial API to raise pointer events and gesture recognition (OnNative***)
@@ -198,6 +214,8 @@ namespace Windows.UI.Xaml
 
 		private bool OnNativePointerDown(PointerRoutedEventArgs args)
 		{
+			_isGestureCompleted = false;
+
 			// "forceRelease: true": as we are in pointer pressed, if the pointer is already captured,
 			// it due to an invalid state. So here we make sure to not stay in an invalid state that would
 			// prevent any interaction with the application.
@@ -209,7 +227,7 @@ namespace Windows.UI.Xaml
 				return handledInManaged; // always false, as the event was mute
 			}
 
-			if (_gestures.IsValueCreated)
+			if (!_isGestureCompleted && _gestures.IsValueCreated)
 			{
 				// We need to process only events that are bubbling natively to this control,
 				// if they are bubbling in managed it means that they were handled by a child control,
