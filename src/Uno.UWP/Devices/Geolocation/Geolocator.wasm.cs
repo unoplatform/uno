@@ -75,7 +75,7 @@ namespace Windows.Devices.Geolocation
 
 		/// <summary>
 		/// UWP defaults to 60 seconds, but in practice the result is returned much sooner,
-		/// even if it does not satisfy the user's requested accuracy. Hence we are using 5 seconds here.
+		/// even if it does not satisfy the user's requested accuracy. Hence we are using 10 seconds here.
 		/// The maximum age is not specified in documentation, we use 30 seconds for low accuracy requests,
 		/// 5 seconds for high accuracy requests
 		/// </summary>
@@ -83,7 +83,7 @@ namespace Windows.Devices.Geolocation
 		public Task<Geoposition> GetGeopositionAsync() =>
 			GetGeopositionAsync(
 				ActualDesiredAccuracyInMeters < 50 ? TimeSpan.FromSeconds(3) : TimeSpan.FromSeconds(30),
-				TimeSpan.FromSeconds(5));
+				TimeSpan.FromSeconds(10));
 
 		/// <summary>
 		/// Retrieves geoposition with specific maximum age and timeout
