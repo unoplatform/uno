@@ -83,7 +83,7 @@ Notes:
 
  1. **An event is fired**: when an event is intercepted from the platform.
  2. **Event dispatcher**: the source element in visual tree receive the event through its event handler.
- 3. **Local handlers?**: check if there is any local handlders for the event.
+ 3. **Local handlers?**: check if there is any local handlers for the event.
  4. **Invoke handlers**: they are invoked one after the other, taking care of the "IsHandled" status.
  5. **Handled?**: check if any of the local handlers marked the event as _handled_.
  6. **Originating from platform?**: check if the source of the event is from native code.
