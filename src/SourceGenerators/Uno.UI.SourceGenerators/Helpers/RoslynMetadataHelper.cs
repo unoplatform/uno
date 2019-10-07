@@ -22,6 +22,7 @@ namespace Uno.Roslyn
 		private readonly Dictionary<string, INamedTypeSymbol> _legacyTypes;
 		private readonly Func<string, ITypeSymbol[]> _findTypesByName;
 		private readonly Func<string, ITypeSymbol> _findTypeByFullName;
+		private readonly Func<INamedTypeSymbol, IEnumerable<INamedTypeSymbol>> _getAllDerivingTypes;
 		private readonly Dictionary<string, INamedTypeSymbol> _additionalTypesMap;
 
 		public Compilation Compilation { get; }
@@ -36,7 +37,8 @@ namespace Uno.Roslyn
 			_findTypeByFullName = Funcs.Create<string, ITypeSymbol>(SourceFindTypeByFullName).AsLockedMemoized();
 			_additionalTypes = additionalTypes ?? new string[0];
 			_legacyTypes = BuildLegacyTypes(legacyTypes);
-			_project = roslynProject;
+			_getAllDerivingTypes = Funcs.Create<INamedTypeSymbol, IEnumerable<INamedTypeSymbol>>(GetAllDerivingTypes).AsLockedMemoized();
+			 _project = roslynProject;
 			_nullableSymbol = Compilation.GetTypeByMetadataName("System.Nullable`1");
 		}
 
@@ -239,5 +241,36 @@ namespace Uno.Roslyn
 		public INamedTypeSymbol GetGenericType(string name = "T") =>  Compilation.CreateErrorTypeSymbol(null, name, 0);
 
 		public IArrayTypeSymbol GetArray(ITypeSymbol type) => Compilation.CreateArrayTypeSymbol(type);
+
+		public IEnumerable<INamedTypeSymbol> GetAllTypesDerivingFrom(INamedTypeSymbol baseType)
+		{
+			return _getAllDerivingTypes(baseType);
+		}
+
+		private IEnumerable<INamedTypeSymbol> GetAllDerivingTypes(INamedTypeSymbol baseType)
+		{
+			return GetTypesDerivingFrom(Compilation.GlobalNamespace);
+
+			IEnumerable<INamedTypeSymbol> GetTypesDerivingFrom(INamespaceSymbol ns)
+			{
+				foreach (var member in ns.GetMembers())
+				{
+					if (member is INamespaceSymbol nsInner)
+					{
+						foreach (var t in GetTypesDerivingFrom(nsInner))
+						{
+							yield return t;
+						}
+					}
+					else if (member is INamedTypeSymbol type)
+					{
+						if (((INamedTypeSymbol)member).Is(baseType))
+						{
+							yield return type;
+						}
+					}
+				}
+			}
+		}
 	}
 }

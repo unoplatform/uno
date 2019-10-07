@@ -4,37 +4,79 @@
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:ex="using:UITests.Shared.Windows_UI_Xaml.MarkupExtension"
-			 xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 xmlns:ios="http://uno.ui/ios"
-			 xmlns:android="http://uno.ui/android"
-			 xmlns:wasm="http://uno.ui/wasm"
-			 mc:Ignorable="d ios android wasm"
+			 xmlns:beh="using:UITests.Shared.Windows_UI_Xaml.MarkupExtensionTests.Behaviors"
+			 mc:Ignorable="d"
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
-	
+
 	<UserControl.Resources>
-		<Style x:Key="UnsupportedTextStyle"
-			   TargetType="TextBlock">
-			<Setter Property="Foreground"
-					Value="Red" />
-			<Setter Property="FontSize"
-					Value="16" />
-			<Setter Property="FontWeight"
-					Value="Bold" />
-			<Setter Property="Text"
-					Value="Feature not yet supported" />
-		</Style>
+		<x:String x:Key="ResourceString1">I'm a StaticResource, look for 123 below me...</x:String>
+		<x:String x:Key="ResourceString2">...and from within a DataTemplate I'm a custom ...</x:String>
+		
+		<DataTemplate x:Key="MarkupDataTemplate"
+					  x:DataType="ex:EntityObject">
+			<StackPanel>
+				<TextBlock Text="{x:Bind StringProperty, Mode=OneWay}" FontSize="16" />
+				<TextBlock Text="{x:Bind IntProperty, Mode=OneWay}" FontSize="16" />
+
+				<!-- Make a markup extension inside a DataTemplate generates correctly -->
+				<TextBlock Text="{ex:Simple TextValue={StaticResource ResourceString2}}" FontSize="16" />
+			</StackPanel>
+		</DataTemplate>
 	</UserControl.Resources>
-	
+
 	<Grid>
-		<StackPanel>
-			<TextBlock Text="Here's a simple use of a custom Markup Extension"
+		<StackPanel Margin="8,0">
+			<TextBlock Text="Simple use of a custom Markup Extension"
 					   Foreground="Green" />
-			<win:TextBlock Text="{ex:Simple TextValue='Just a simple ...'}"
-						   FontSize="20" />
-			<ios:TextBlock Style="{StaticResource UnsupportedTextStyle}" />
-			<android:TextBlock Style="{StaticResource UnsupportedTextStyle}" />
-			<wasm:TextBlock Style="{StaticResource UnsupportedTextStyle}" />
+			
+			<TextBlock Text="{ex:Simple TextValue='Just a simple ...'}"
+					   FontSize="16"
+					   Margin="0,0,0,40" />
+
+			<TextBlock Text="Custom Markup Extension that sets a DataContext on the StackPanel"
+					   TextWrapping="Wrap"
+					   Foreground="Green" />
+
+			<StackPanel DataContext="{ex:Entity TextValue='We should see the number 100 below:', IntValue=100}"
+						Margin="0,0,0,40">
+				<TextBlock Text="{Binding StringProperty}"
+						   FontSize="16" />
+				<TextBlock Text="{Binding IntProperty}"
+						   FontSize="16" />
+			</StackPanel>
+
+			<TextBlock Text="Custom Markup Extension that is also used as a Converter"
+					   Foreground="Green" />
+
+			<StackPanel x:Name="StackContainer"
+						IsTapEnabled="False"
+						Margin="0,0,0,40">
+				<TextBlock Text="This StackPanel has IsTapEnabled='False', let's inverse it below:"
+						   FontSize="16"
+						   TextWrapping="Wrap" />
+				<TextBlock Text="{Binding IsTapEnabled, ElementName=StackContainer, Converter={ex:InverseBool}}"
+						   FontSize="16" />
+			</StackPanel>
+
+			<TextBlock Text="Custom Markup Extension using a StaticResource"
+					   Foreground="Green" />
+
+			<ContentControl Content="{ex:Entity TextValue={StaticResource ResourceString1}, IntValue=123}"
+							ContentTemplate="{StaticResource MarkupDataTemplate}"
+							Margin="0,0,0,40"/>
+
+			<TextBlock Text="Attached Property using a custom Markup Extension"
+					   Foreground="Green" />
+
+			<TextBlock beh:MarkupExtensionBehaviors.CustomText="{ex:Simple TextValue='I am an Attached Property using a ...'}"
+					   FontSize="16" />
+
+			<TextBlock Text="Attached Property using a custom Markup Extension (with converter)"
+					   Foreground="Green" />
+
+			<TextBlock beh:MarkupExtensionBehaviors.CustomText="{Binding IsTapEnabled, ElementName=StackContainer, Converter={ex:InverseBool}}"
+					   FontSize="16" />
 		</StackPanel>
 	</Grid>
 </UserControl>

@@ -29,7 +29,7 @@ Uno Platform was created by Team nventive over the past 4 years.
 The Uno Platform is the only implementation of the UWP API that runs across iOS, Android and WebAssembly. 
 
 ## Is Uno Platform open source?
-Yes, the Uno Platform is open source, under the [Apache 2.0 license](https://github.com/nventive/Uno/blob/master/License.md).
+Yes, the Uno Platform is open source, under the [Apache 2.0 license](https://github.com/unoplatform/uno/blob/master/License.md).
 
 # Getting started
 ## How can I try Uno platform?
@@ -47,8 +47,8 @@ Support is available through our [gitter](https://gitter.im/uno-platform/Lobby),
 There are lots of ways to contribute to the Uno Platform and we appreciate the help from the community. You can provide feedback, report bugs, give suggestions, contribute code, and participate in the platform discussions.
 
 ## How can I report a bug?
-- If you think you've found a bug, please [log a new issue](https://github.com/nventive/Uno/issues) in the Uno Platform GitHub issue tracker. When filing issues, please use our bug filing template. The best way to get your bug fixed is to be as detailed as you can be about the problem. Providing a minimal project with steps to reproduce the problem is ideal. Here are questions you can answer before you file a bug to make sure you're not missing any important information.
-- Did you read the [documentation](https://github.com/nventive/Uno/tree/master/doc/)?
+- If you think you've found a bug, please [log a new issue](https://github.com/unoplatform/Uno/issues) in the Uno Platform GitHub issue tracker. When filing issues, please use our bug filing template. The best way to get your bug fixed is to be as detailed as you can be about the problem. Providing a minimal project with steps to reproduce the problem is ideal. Here are questions you can answer before you file a bug to make sure you're not missing any important information.
+- Did you read the [documentation](https://github.com/unoplatform/Uno/tree/master/doc/)?
 - Did you include the snippet of broken code in the issue?
 - What are the EXACT steps to reproduce this problem?
 - What specific version or build are you using?
@@ -210,7 +210,7 @@ For live update on UWP you need to edit the XAML while the project is debugging,
 
 ## I don't see any "Uno.UI App Solution" from File->Project->New ?
 
-1. Install **Uno.UI Solution Template Visual Studio Extension** https://github.com/nventive/Uno/releases
+1. Install **Uno.UI Solution Template Visual Studio Extension** https://github.com/unoplatform/Uno/releases
 1. Look for Uno.UI App Solution under Visual C#
 1. If you still haven't found it, try the Search box
 
@@ -427,7 +427,7 @@ Yes, make sure to use the following project definition:
 ## Does Uno offer a TreeView control?
 
 It's in the UWP API, but [not implemented yet](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/tree-view)
-We have an open Github [issue.](https://github.com/nventive/Uno/issues/3)
+We have an open Github [issue.](https://github.com/unoplatform/Uno/issues/3)
 
 ## Is there a table of all UWP controls and their features compared to what's offered under Uno?
 
@@ -448,7 +448,7 @@ This file is referenced in the .csproj like [that](https://github.com/nventive/U
 
 ## Is NavigationView supported in Uno?
 
-It is indeed not implemented at the time, see [nventive/Uno#4](https://github.com/nventive/Uno/issues/4) for now
+Yes, Uno now supports NavigationView , see [nventive/Uno#4](https://github.com/unoplatform/Uno/issues/4) for more
 
 ## Is there any particular reason that Uno uses a shared project? and is it possible to use a netstandard project instead?
 
