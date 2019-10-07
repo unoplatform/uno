@@ -106,7 +106,7 @@ The layout behavior is the notion of applying margins, paddings and alignments f
 
 The Uno.UI layout engine on Android and iOS is applied by a parent to its children. This means that if a control has an alignment or a margin set, if it is not child of a FrameworkElement (ie it's the child of a non-Uno view), those properties will be ignored, and the control will stretch within its parent's available space.
 
-This behavior is is a direct consequence of the ability to mix native and Uno.UI controls.
+This behavior is a direct consequence of the ability to mix native and Uno.UI controls.
 
 ## Dependency Properties
 
@@ -251,7 +251,7 @@ For more information, see the [HyperLinkButton](https://msdn.microsoft.com/en-us
 
 The RadioButton control is implemented by default using a ControlTemplate that contains a bindable native CheckBox, that binds the Content property as a string, IsChecked as a boolean, and propagates the CanExecute of a databound command.
 
-For more information, see the [RadioButton clas](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.radiobutton.aspx).
+For more information, see the [RadioButton class](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.radiobutton.aspx).
 
 ### ComboBox
 
