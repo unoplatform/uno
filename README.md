@@ -2,7 +2,7 @@
   <img width="160" heigth="160" src="https://raw.githubusercontent.com/unoplatform/styleguide/master/logo/uno-platform-logo-with-text.png">
 </a>
 
-## Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today.
+## Build Mobile, Desktop and WebAssembly apps with C# and XAML Today
 
 [![GitHub stars](https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/master?label=master)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5) 
 [![GitHub stars](https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/master?label=release/beta/Batman)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5) 
