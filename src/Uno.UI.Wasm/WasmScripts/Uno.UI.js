@@ -2242,7 +2242,9 @@ var Windows;
                 static requestAccess() {
                     Geolocator.initialize();
                     if (navigator.geolocation) {
-                        navigator.geolocation.getCurrentPosition((_) => { Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Allowed); }, (error) => {
+                        navigator.geolocation.getCurrentPosition((_) => {
+                            Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Allowed);
+                        }, (error) => {
                             if (error.code == error.PERMISSION_DENIED) {
                                 Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Denied);
                             }
@@ -2271,7 +2273,7 @@ var Windows;
                         });
                     }
                     else {
-                        Geolocator.dispatchError(GeolocationAccessStatus.Denied, requestId);
+                        Geolocator.dispatchError(PositionStatus.NotAvailable, requestId);
                     }
                 }
                 static startPositionWatch(desiredAccuracyInMeters, requestId) {

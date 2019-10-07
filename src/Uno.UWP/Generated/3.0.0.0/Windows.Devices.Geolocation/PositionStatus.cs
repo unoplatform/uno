@@ -15,5 +15,5 @@ namespace Windows.Devices.Geolocation
 		// Skipping already declared field Windows.Devices.Geolocation.PositionStatus.NotInitialized
 		// Skipping already declared field Windows.Devices.Geolocation.PositionStatus.NotAvailable
 	}
-#endif
+	#endif
 }

@@ -11,55 +11,18 @@ using static Uno.Foundation.WebAssemblyRuntime;
 namespace Windows.Devices.Geolocation
 {
 	public sealed partial class Geolocator
-	{
+	{		
 		private const string JsType = "Windows.Devices.Geolocation.Geolocator";
-
-		//Default position status for next instances
-		//based on https://docs.microsoft.com/en-us/uwp/api/windows.devices.geolocation.geolocator.locationstatus#remarks
-		private static PositionStatus _defaultPositionStatus = PositionStatus.NotInitialized;
+		private const uint Wgs84SpatialReferenceId = 4326;
 
 		private static List<TaskCompletionSource<GeolocationAccessStatus>> _pendingAccessRequests = new List<TaskCompletionSource<GeolocationAccessStatus>>();
 		private static ConcurrentDictionary<string, TaskCompletionSource<Geoposition>> _pendingGeopositionRequests = new ConcurrentDictionary<string, TaskCompletionSource<Geoposition>>();
-		private static ConcurrentDictionary<string, Geolocator> _positionChangedSubscriptions = new ConcurrentDictionary<string, Geolocator>();
-		//using ConcurrentDictionary as concurrent HashSet (https://stackoverflow.com/questions/18922985/concurrent-hashsett-in-net-framework), byte is throwaway
-		private static ConcurrentDictionary<Geolocator, byte> _statusChangedSubscriptions = new ConcurrentDictionary<Geolocator, byte>();
-
-		private TypedEventHandler<Geolocator, StatusChangedEventArgs> _statusChanged;
+		private static ConcurrentDictionary<string, Geolocator> _positionChangedSubscriptions = new ConcurrentDictionary<string, Geolocator>();		
 
 		private string _positionChangedRequestId;
 
 		public Geolocator()
 		{
-			LocationStatus = _defaultPositionStatus;
-		}
-
-		public PositionStatus LocationStatus { get; private set; } = PositionStatus.NotInitialized;
-
-		public event TypedEventHandler<Geolocator, StatusChangedEventArgs> StatusChanged
-		{
-			add
-			{
-				lock (_syncLock)
-				{
-					bool isFirstSubscriber = _statusChanged == null;
-					_statusChanged += value;
-					if (isFirstSubscriber)
-					{
-						StartStatusChanged();
-					}
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_statusChanged -= value;
-					if (_statusChanged == null)
-					{
-						StopStatusChanged();
-					}
-				}
-			}
 		}
 
 		partial void OnActualDesiredAccuracyInMetersChanged()
@@ -70,16 +33,6 @@ namespace Windows.Devices.Geolocation
 				StopPositionChanged();
 				StartPositionChanged();
 			}
-		}
-
-		private void StartStatusChanged()
-		{
-			_statusChangedSubscriptions.TryAdd(this, 0);
-		}
-
-		private void StopStatusChanged()
-		{
-			_statusChangedSubscriptions.TryRemove(this, out var _);
 		}
 
 		partial void StartPositionChanged()
@@ -112,7 +65,7 @@ namespace Windows.Devices.Geolocation
 			var result = await accessRequest.Task;
 
 			//if geolocation is not well accessible, default geoposition should be recommended
-			if (result == GeolocationAccessStatus.Unspecified)
+			if (result != GeolocationAccessStatus.Allowed)
 			{
 				IsDefaultGeopositionRecommended = true;
 			}
@@ -203,18 +156,6 @@ namespace Windows.Devices.Geolocation
 		}
 
 		/// <summary>
-		/// Broadcasts status change to all subscribed Geolocator instances
-		/// </summary>
-		/// <param name="positionStatus"></param>
-		private static void BroadcastStatus(PositionStatus positionStatus)
-		{
-			foreach (var key in _statusChangedSubscriptions.Keys)
-			{
-				key.OnStatusChanged(positionStatus);
-			}
-		}
-
-		/// <summary>
 		/// Handles result of Geolocation access request (initiated by <see cref="RequestAccessAsync"/>.
 		/// </summary>
 		/// <param name="serializedAccessStatus">Serialized string value from the <see cref="GeolocationAccessStatus"/> enum</param>
@@ -297,7 +238,7 @@ namespace Windows.Devices.Geolocation
 				point: new Geopoint(
 					new BasicGeoposition { Longitude = longitude, Latitude = latitude, Altitude = altitude ?? 0 },
 					AltitudeReferenceSystem.Ellipsoid, //based on https://www.w3.org/TR/geolocation-API/
-					4326u), //based on https://en.wikipedia.org/wiki/Spatial_reference_system
+					Wgs84SpatialReferenceId), //based on https://en.wikipedia.org/wiki/Spatial_reference_system
 				altitude: altitude,
 				altitudeAccuracy: altitudeAccuracy,
 				heading: heading,
@@ -305,20 +246,6 @@ namespace Windows.Devices.Geolocation
 			return geocoordinate;
 		}
 
-		private void OnStatusChanged(PositionStatus status)
-		{
-			//report only when not changed
-			//report initializing only when not initialized
-			if (status == LocationStatus ||
-				(status == PositionStatus.Initializing &&
-				LocationStatus != PositionStatus.NotInitialized))
-			{
-				return;
-			}
-
-			LocationStatus = status;
-			_statusChanged?.Invoke(this, new StatusChangedEventArgs(status));
-		}
 	}
 }
 #endif

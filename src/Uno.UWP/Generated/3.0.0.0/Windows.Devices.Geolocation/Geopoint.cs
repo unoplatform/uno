@@ -18,16 +18,7 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 		#endif
-		#if false 
-		[global::Uno.NotImplemented]
-		public  global::Windows.Devices.Geolocation.GeoshapeType GeoshapeType
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member GeoshapeType Geopoint.GeoshapeType is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property GeoshapeType
 		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint SpatialReferenceId
