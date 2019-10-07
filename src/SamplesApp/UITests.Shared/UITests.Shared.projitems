@@ -2528,7 +2528,7 @@
       <DependentUpon>BarometerTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\GyrometerTests.xaml.cs">
-	    <DependentUpon>GyrometerTests.xaml</DependentUpon>
+      <DependentUpon>GyrometerTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\MagnetometerTests.xaml.cs">
       <DependentUpon>MagnetometerTests.xaml</DependentUpon>
@@ -2596,6 +2596,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Localization\Localization_Implicit.xaml.cs">
       <DependentUpon>Localization_Implicit.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\MarkupExtensionTests\Entity.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\MarkupExtensionTests\InverseBool.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\MarkupExtensionTests\MarkupExtensionBehaviors.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Properties\DataContextProperty.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\StyleTests\Style_Inline.xaml.cs">
       <DependentUpon>Style_Inline.xaml</DependentUpon>
@@ -4573,7 +4576,7 @@
     <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ComboBox\ComboBox_ItemDataContext.xaml.cs">
       <DependentUpon>ComboBox_ItemDataContext.xaml</DependentUpon>
     </Compile>
-	<Compile Update="$(MSBuildThisFileDirectory)Windows_Devices\GyrometerTests.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_Devices\GyrometerTests.xaml.cs">
       <DependentUpon>GyrometerTests.xaml</DependentUpon>
     </Compile>
     <Compile Update="C:\P\uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\DatePicker\DatePickerFlyout_MinYear.xaml.cs">

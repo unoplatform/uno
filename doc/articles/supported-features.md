@@ -120,6 +120,7 @@
 - XAML Behaviors
 - AttachedProperty Binding
 - AttachedProperty Styling
+- Custom `MarkupExtension` support
 - Brightness Control
 - Native and Custom dialogs
 - Support for StateTriggers
