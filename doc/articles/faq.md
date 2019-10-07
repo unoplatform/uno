@@ -29,7 +29,7 @@ Uno Platform was created by Team nventive over the past 4 years.
 The Uno Platform is the only implementation of the UWP API that runs across iOS, Android and WebAssembly. 
 
 ## Is Uno Platform open source?
-Yes, the Uno Platform is open source, under the [Apache 2.0 license](https://github.com/nventive/Uno/blob/master/License.md).
+Yes, the Uno Platform is open source, under the [Apache 2.0 license](https://github.com/unoplatform/uno/blob/master/License.md).
 
 # Getting started
 ## How can I try Uno platform?
