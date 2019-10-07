@@ -2,7 +2,7 @@
 
 ## Pre-requisites
 
-* Visual Studio 2017 15.5 or later, with :
+* [**Visual Studio 2017 15.5 or later**](https://visualstudio.microsoft.com/), with :
 	* Xamarin component, with the iOS Remote Simulator installed
 	* A working Mac with Visual Studio for Mac, XCode 8.2 or later installed
 	* The google Android x86 emulators
@@ -73,7 +73,7 @@ located in the **MyApp.[iOS|Android]\Obj\[Platform]** folder.
 You may see those files in Visual Studio by selecting this project in the Solution Explorer, then click
 the **Show all Files** icon at the top.
 
-If you notice an issue, or an error in the commented code of the generated file, you may need to alter your Xaml.
+If you notice an issue, or an error in the commented code of the generated file, you may need to alter your Xaml file.
 
 ## Configure the manifest for the WebAssembly head
 In your WASM head, create a folder named `WasmScripts`, with a file containing the Javascript code below
