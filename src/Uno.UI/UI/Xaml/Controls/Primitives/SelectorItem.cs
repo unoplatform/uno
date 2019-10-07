@@ -149,7 +149,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				&& _currentState != CommonStates.Pressed)
 			{
 				// When clicked (i.e. pointer released), but not yet in pressed state, we force to go immediately in pressed state
-				// Then we let the standard go to state process to reach the final expected state.
+				// Then we let the standard go to state process (i.e. with delay handling) reach the final expected state.
 
 				var pressedState = GetState(IsSelected, IsPointerOver, isPressed: true);
 				_currentState = pressedState;
@@ -162,7 +162,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 			else if (manipulationUpdate == ManipulationUpdateKind.Begin)
 			{
-				// We delay the beginning of a manipulation to avoid flickers, but not for "exact" devices
+				// We delay the beginning of a manipulation to avoid flickers, but not for "exact" devices which has hover states
+				// (i.e. mouse and pen when not on iOS)
 
 				delay = MinTimeBetweenPressStates;
 				pause = true;

@@ -277,6 +277,31 @@ namespace Windows.UI.Xaml
 			remove => RemoveHandler(KeyUpEvent, value);
 		}
 
+		/// <summary>
+		/// Inserts an event handler as the first event handler.
+		/// This is for internal use only and allow controls to lazily subscribe to event only when required while remaining the first invoked handler,
+		/// which is ** really ** important when marking an event as handled.
+		/// </summary>
+		private protected void InsertHandler(RoutedEvent routedEvent, object handler, bool handledEventsToo = false)
+		{
+			var handlers = _eventHandlerStore.FindOrCreate(routedEvent, () => new List<RoutedEventHandlerInfo>());
+			if (handlers.Count > 0)
+			{
+				handlers.Insert(0, new RoutedEventHandlerInfo(handler, handledEventsToo));
+			}
+			else
+			{
+				handlers.Add(new RoutedEventHandlerInfo(handler, handledEventsToo));
+			}
+
+			AddHandler(routedEvent, handlers.Count, handler, handledEventsToo);
+
+			if (handledEventsToo)
+			{
+				UpdateSubscribedToHandledEventsToo();
+			}
+		}
+
 		public void AddHandler(RoutedEvent routedEvent, object handler, bool handledEventsToo)
 		{
 			var handlers = _eventHandlerStore.FindOrCreate(routedEvent, () => new List<RoutedEventHandlerInfo>());

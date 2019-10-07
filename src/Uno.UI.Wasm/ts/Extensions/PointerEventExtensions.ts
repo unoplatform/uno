@@ -6,10 +6,10 @@
 PointerEvent.prototype.isOver = function(element: HTMLElement | SVGElement): boolean {
 	const bounds = element.getBoundingClientRect();
 
-	return this.pageX >= bounds.left &&
-		this.pageX < bounds.right &&
-		this.pageY >= bounds.top &&
-		this.pageY < bounds.bottom;
+	return this.pageX >= bounds.left
+		&& this.pageX < bounds.right
+		&& this.pageY >= bounds.top
+		&& this.pageY < bounds.bottom;
 }
 
 PointerEvent.prototype.isOverDeep = function(element: HTMLElement | SVGElement): boolean {

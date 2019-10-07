@@ -43,15 +43,15 @@ namespace Uno.UI.Xaml
 			| RoutedEventFlag.PointerCaptureLost;
 
 		private const RoutedEventFlag _isGesture = // 0b0000_0001_1000_0000
-			RoutedEventFlag.Tapped
+			  RoutedEventFlag.Tapped
 			| RoutedEventFlag.DoubleTapped;
 
 		private const RoutedEventFlag _isKey = // 0b0000_0110_0000_0000
-			RoutedEventFlag.KeyDown
+			  RoutedEventFlag.KeyDown
 			| RoutedEventFlag.KeyUp;
 
 		private const RoutedEventFlag _isFocus = // 0b0001_1000_0000_0000
-			RoutedEventFlag.GotFocus
+			  RoutedEventFlag.GotFocus
 			| RoutedEventFlag.LostFocus;
 
 		[Pure]
