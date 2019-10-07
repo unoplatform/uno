@@ -2,6 +2,7 @@
 
 ## Next version
 ### Features
+* Support for `Geolocator` on WASM, improvements for support on Android, iOS
 * Support for `Gyrometer` on Android, iOS and WASM
    * `ReadingChanged`
    * `ReportInterval`
