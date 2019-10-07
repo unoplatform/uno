@@ -28,6 +28,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 			Assert.AreEqual("From a Resource String markup extension", control.TestText5.Text);
 			Assert.AreEqual("String from attached property markup extension", control.TestText6.Text);
 			Assert.AreEqual("True", control.TestText7.Text);
+			Assert.AreEqual("I am Value 1", control.TestText8.Text);
+			Assert.AreEqual("444", control.TestText9.Text);
+			Assert.AreEqual("333", control.TestText9.Tag);
 		}
 	}
 
@@ -66,13 +69,43 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 
 		public object Convert(object value, Type targetType, object parameter, string language)
 		{
-			return !(bool)value;
+			return !(bool)(value ?? false);
 		}
 
 		public object ConvertBack(object value, Type targetType, object parameter, string language)
 		{
-			return !(bool)value;
+			return !(bool)(value ?? false);
 		}
+	}
+
+	public class NoReturnTypeMarkupExt : Windows.UI.Xaml.Markup.MarkupExtension
+	{
+		public Values UseValue { get; set; }
+
+		public object Value1 { get; set; }
+
+		public object Value2 { get; set; }
+
+		protected override object ProvideValue()
+		{
+			switch (UseValue)
+			{
+				case Values.UseValue1:
+					return Value1;
+
+				case Values.UseValue2:
+					return Value2;
+
+				default:
+					return Value1;
+			}
+		}
+	}
+
+	public enum Values
+	{
+		UseValue1,
+		UseValue2
 	}
 
 	public class TestEntityObject

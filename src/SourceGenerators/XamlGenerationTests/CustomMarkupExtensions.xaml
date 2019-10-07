@@ -52,6 +52,10 @@
 
 			<!-- Make sure markup extension works in an attached property using a binding and converter -->
 			<TextBlock ext:MarkupExtensionTestBehavior.CustomText="{Binding IsRightTapEnabled, ElementName=RootGrid, Converter={ext:InverseBoolMarkup}}" />
+
+			<!-- Make sure a markup extension can return different types -->
+			<TextBlock Text="{ext:NoReturnTypeMarkupExt UseValue=UseValue1, Value1='I am Value 1', Value2=444}"
+					   Tag="{ext:NoReturnTypeMarkupExt UseValue=UseValue2, Value1='I am Value 1', Value2=333}" />
 		</StackPanel>
 	</Grid>
 </UserControl>

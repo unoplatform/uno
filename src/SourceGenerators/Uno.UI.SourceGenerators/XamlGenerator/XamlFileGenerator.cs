@@ -2656,22 +2656,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			// Get the attribute from the custom markup extension class then get the return type specifed with MarkupExtensionReturnTypeAttribute
 			var attributeData = markupType.FindAttribute(XamlConstants.Types.MarkupExtensionReturnTypeAttribute);
+			var returnType = attributeData?.NamedArguments.FirstOrDefault(kvp => kvp.Key == "ReturnType").Value.Value;
+			var cast = string.Empty;
 
-			if (attributeData == null)
-			{
-				this.Log().Error($"The custom markup extension {markupTypeDef.Type.Name} must specify the return type using {nameof(XamlConstants.Types.MarkupExtensionReturnTypeAttribute)}.");
-				return string.Empty;
-			}
-
-			var returnType = attributeData.NamedArguments.FirstOrDefault(kvp => kvp.Key == "ReturnType").Value.Value;
-
+			// If we cannot determine the return type to cast with for the markup extension,
+			// we then try to get the type of the target property
 			if (returnType == null)
 			{
-				this.Log().Error($"The custom markup extension contains a ReturnType that cannot be found.");
+				var propertyType = FindPropertyType(member.Member);
+				cast = GetCastString(propertyType, null);
+			}
+			else
+			{
+				cast = $"({returnType})";
+			}
+
+			if (string.IsNullOrEmpty(cast))
+			{
+				this.Log().Error($"Unable to determine the return type needed for the markup extension.");
 				return string.Empty;
 			}
 
-			return $"({returnType})(({xamlMarkupFullName})(new {markupTypeFullName} {{ {properties} }})).ProvideValue()";
+			return $"{cast}(({xamlMarkupFullName})(new {markupTypeFullName} {{ {properties} }})).ProvideValue()";
 		}
 
 		private bool IsMemberInsideDataTemplate(XamlObjectDefinition xamlObject)

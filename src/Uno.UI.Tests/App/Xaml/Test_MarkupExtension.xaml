@@ -36,6 +36,13 @@
 
 		<TextBlock x:Name="Text7"
 				   beh:AttachedPropertiesBehavior.CustomText="{Binding IsTapEnabled, ElementName=StackContainer, Converter={ex:InverseBoolMarkupExt}}" />
+
+		<TextBlock x:Name="Text8"
+				   Text="{ex:NoReturnTypeMarkupExt UseValue=UseValue1, Value1='I am Value 1', Value2=222}" />
+
+		<TextBlock x:Name="Text9"
+				   Tag="{ex:NoReturnTypeMarkupExt UseValue=UseValue2, Value1='I am Value 1', Value2=333}"
+				   Text="{ex:NoReturnTypeMarkupExt UseValue=UseValue2, Value1='I am Value 1', Value2=444}" />
 	</StackPanel>
 
 </UserControl>
