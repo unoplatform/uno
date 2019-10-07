@@ -15,16 +15,51 @@
 		</Grid.ColumnDefinitions>
 
 		<StackPanel Grid.Column="0">
-			<TextBlock Text=""></TextBlock>
+			<ComboBox x:Name="_pointerType" />
 
 			<StackPanel Orientation="Horizontal">
-				<Border x:Name="TestTapTarget" Background="Orange" Width="100" Height="100">
-					<TextBlock Text="[TAP] with a finger we should get:\r\nEnter\r\nPressed\r\nMove*\r\nReleased\r\nExited" TextWrapping="Wrap" />
+				<Border x:Name="TestTapTarget" Background="#FF0018" Width="100" Height="100">
+					<TextBlock Text="UIElement.Tapped" />
 				</Border>
 				<StackPanel>
-					<Button x:Name="TestTapClear" Content="Reset" Click="ClearTapTest" />
+					<Button x:Name="TestTapReset" Content="Reset" Click="ResetTapTest" />
 					<Button x:Name="TestTapValidate" Content="Validate" Click="ValidateTapTest" />
 					<TextBlock x:Name="TestTapResult" Text="** no result **" />
+				</StackPanel>
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal">
+				<Button x:Name="TestClickTarget" Background="#FFA52C" Width="100" Height="100">
+					<TextBlock Text="Button.Click" />
+				</Button>
+				<StackPanel>
+					<Button x:Name="TestClickReset" Content="Reset" Click="ResetClickTest" />
+					<Button x:Name="TestClickValidate" Content="Validate" Click="ValidateClickTest" />
+					<TextBlock x:Name="TestClickResult" Text="** no result **" />
+				</StackPanel>
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal">
+				<Border Background="#FFFF41" Width="100" Height="100">
+					<TextBlock x:Name="TestHyperlinkTarget" TextWrapping="Wrap">
+						<Hyperlink x:Name="TestHyperlinkInner"><Run Text="Hyperlink.Click" /></Hyperlink><Run Text=" event" />.
+					</TextBlock>
+				</Border>
+				<StackPanel>
+					<Button x:Name="TestHyperlinkReset" Content="Reset" Click="ResetHyperlinkTest" />
+					<Button x:Name="TestHyperlinkValidate" Content="Validate" Click="ValidateHyperlinkTest" />
+					<TextBlock x:Name="TestHyperlinkResult" Text="** no result **" />
+				</StackPanel>
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal">
+				<Border Background="#008018" Width="100" Height="100">
+					<ListView x:Name="TestListViewTarget" ItemsSource="0123456789" IsItemClickEnabled="True" />
+				</Border>
+				<StackPanel>
+					<Button x:Name="TestListViewReset" Content="Reset" Click="ResetListViewTest" />
+					<Button x:Name="TestListViewValidate" Content="Validate" Click="ValidateListViewTest" />
+					<TextBlock x:Name="TestListViewResult" Text="** no result **" />
 				</StackPanel>
 			</StackPanel>
 		</StackPanel>
