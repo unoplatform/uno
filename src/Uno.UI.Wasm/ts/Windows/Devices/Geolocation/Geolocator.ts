@@ -20,16 +20,11 @@
         private static dispatchAccessRequest: (serializedAccessStatus: string) => number;
         private static dispatchGeoposition: (geopositionRequestResult: string, requestId: string) => number;
         private static dispatchError: (geopositionRequestResult: string, requestId: string) => number;
-        private static dispatchStatus: (serializedPositionStatus: string) => number;
 
         private static positionWatches: any;
 
         public static initialize() {
             this.positionWatches = {};
-            if (!this.dispatchStatus) {
-                this.dispatchStatus = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchStatus");
-            }
-            this.dispatchStatus(PositionStatus.Initializing);
             if (!this.dispatchAccessRequest) {
                 this.dispatchAccessRequest = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchAccessRequest");
             }
@@ -39,7 +34,6 @@
             if (!this.dispatchGeoposition) {
                 this.dispatchGeoposition = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchGeoposition");
             }
-            this.dispatchStatus(PositionStatus.Ready);
         }
 
         //checks for permission to the geolocation services
@@ -47,7 +41,9 @@
             Geolocator.initialize();
             if (navigator.geolocation) {
                 navigator.geolocation.getCurrentPosition(
-                    (_) => { Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Allowed); },
+                    (_) => {
+                        Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Allowed);
+                    },
                     (error) => {
                         if (error.code == error.PERMISSION_DENIED) {
                             Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Denied);
@@ -63,7 +59,7 @@
                     },
                     { enableHighAccuracy: false, maximumAge: 86400000, timeout: 100 });
             } else {
-                Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Unspecified);
+                Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Denied);
             }
         }
 
@@ -90,14 +86,15 @@
             }
         }
 
-        public static startPositionWatch(desiredAccuracyInMeters: number, requestId: string) {
+        public static startPositionWatch(desiredAccuracyInMeters: number, requestId: string): boolean {
             Geolocator.initialize();
             if (navigator.geolocation) {
                 Geolocator.positionWatches[requestId] = navigator.geolocation.watchPosition(
                     (position) => Geolocator.handleGeoposition(position, requestId),
                     (error) => Geolocator.handleError(error, requestId));
+                return true;
             } else {
-                Geolocator.dispatchError(PositionStatus.NotAvailable, requestId);
+                return false;
             }
         }
 
@@ -120,13 +117,11 @@
 
         private static handleError(error: PositionError, requestId: string) {
             if (error.code == error.TIMEOUT) {
-                Geolocator.dispatchStatus(PositionStatus.NoData);
                 Geolocator.dispatchError(PositionStatus.NoData, requestId);
             } else if (error.code == error.PERMISSION_DENIED) {
-                Geolocator.dispatchStatus(PositionStatus.Disabled);
                 Geolocator.dispatchError(PositionStatus.Disabled, requestId);
-            } else if (error.code == error.POSITION_UNAVAILABLE) {                
-                Geolocator.dispatchError(PositionStatus.NoData, requestId);
+            } else if (error.code == error.POSITION_UNAVAILABLE) {
+                Geolocator.dispatchError(PositionStatus.NotAvailable, requestId);
             }
         }
 

@@ -27,8 +27,7 @@
     <type fullname="Windows.Devices.Geolocation.Geolocator">
       <method name="DispatchAccessRequest" />
       <method name="DispatchGeoposition" />
-      <method name="DispatchError" />
-      <method name="DispatchStatus" />
+      <method name="DispatchError" />      
     </type>    
   </assembly>
   

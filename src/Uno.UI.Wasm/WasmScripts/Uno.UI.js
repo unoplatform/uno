@@ -2228,10 +2228,6 @@ var Windows;
             class Geolocator {
                 static initialize() {
                     this.positionWatches = {};
-                    if (!this.dispatchStatus) {
-                        this.dispatchStatus = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchStatus");
-                    }
-                    this.dispatchStatus(PositionStatus.Initializing);
                     if (!this.dispatchAccessRequest) {
                         this.dispatchAccessRequest = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchAccessRequest");
                     }
@@ -2241,7 +2237,6 @@ var Windows;
                     if (!this.dispatchGeoposition) {
                         this.dispatchGeoposition = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchGeoposition");
                     }
-                    this.dispatchStatus(PositionStatus.Ready);
                 }
                 //checks for permission to the geolocation services
                 static requestAccess() {
@@ -2262,7 +2257,7 @@ var Windows;
                         }, { enableHighAccuracy: false, maximumAge: 86400000, timeout: 100 });
                     }
                     else {
-                        Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Unspecified);
+                        Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Denied);
                     }
                 }
                 //retrieves a single geoposition
@@ -2276,18 +2271,17 @@ var Windows;
                         });
                     }
                     else {
-                        //TODO: FIX
-                        Geolocator.dispatchError("NotAvailable", requestId);
+                        Geolocator.dispatchError(GeolocationAccessStatus.Denied, requestId);
                     }
                 }
                 static startPositionWatch(desiredAccuracyInMeters, requestId) {
                     Geolocator.initialize();
                     if (navigator.geolocation) {
                         Geolocator.positionWatches[requestId] = navigator.geolocation.watchPosition((position) => Geolocator.handleGeoposition(position, requestId), (error) => Geolocator.handleError(error, requestId));
+                        return true;
                     }
                     else {
-                        //TODO: FIX
-                        Geolocator.dispatchError("NotAvailable", requestId);
+                        return false;
                     }
                 }
                 static stopPositionWatch(desiredAccuracyInMeters, requestId) {
@@ -2307,8 +2301,13 @@ var Windows;
                 }
                 static handleError(error, requestId) {
                     if (error.code == error.TIMEOUT) {
-                        Geolocator.dispatchStatus(PositionStatus.NoData);
                         Geolocator.dispatchError(PositionStatus.NoData, requestId);
+                    }
+                    else if (error.code == error.PERMISSION_DENIED) {
+                        Geolocator.dispatchError(PositionStatus.Disabled, requestId);
+                    }
+                    else if (error.code == error.POSITION_UNAVAILABLE) {
+                        Geolocator.dispatchError(PositionStatus.NotAvailable, requestId);
                     }
                 }
                 //this attempts to squeeze out the requested accuracy from the GPS by utilizing the set timeout

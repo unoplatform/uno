@@ -84,6 +84,7 @@ namespace Windows.Devices.Geolocation
 
 		partial void StartPositionChanged()
 		{
+			BroadcastStatus(PositionStatus.Initializing); //GPS is initializing
 			_positionChangedRequestId = Guid.NewGuid().ToString();
 			_positionChangedSubscriptions.TryAdd(_positionChangedRequestId, this);
 			var command = $"{JsType}.startPositionWatch({ActualDesiredAccuracyInMeters},\"{_positionChangedRequestId}\")";
@@ -139,6 +140,7 @@ namespace Windows.Devices.Geolocation
 		/// <returns></returns>
 		public async Task<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
 		{
+			BroadcastStatus(PositionStatus.Initializing); //GPS is initializing
 			var completionRequest = new TaskCompletionSource<Geoposition>();
 			var requestId = Guid.NewGuid().ToString();
 			_pendingGeopositionRequests.TryAdd(requestId, completionRequest);
@@ -150,6 +152,7 @@ namespace Windows.Devices.Geolocation
 		[Preserve]
 		public static int DispatchGeoposition(string serializedGeoposition, string requestId)
 		{
+			BroadcastStatus(PositionStatus.Ready); //whenever a location is successfully retrieved, GPS has state of Ready
 			var geocoordinate = ParseGeocoordinate(serializedGeoposition);
 			if (_pendingGeopositionRequests.TryRemove(requestId, out var geopositionCompletionSource))
 			{
@@ -168,25 +171,47 @@ namespace Windows.Devices.Geolocation
 		{
 			if (_pendingGeopositionRequests.TryRemove(requestId, out var geopositionCompletionSource))
 			{
-				if (currentPositionRequestResult == PositionStatus.NoData.ToString())
+				if (!Enum.TryParse<PositionStatus>(currentPositionRequestResult, out var positionStatus))
 				{
-					geopositionCompletionSource.SetException(new Exception("This operation returned because the timeout period expired."));
+					throw new ArgumentOutOfRangeException(
+						nameof(currentPositionRequestResult),
+						"DispatchError argument must be a serialzied PositionStatus");
+				}
+				BroadcastStatus(positionStatus);
+				switch (positionStatus)
+				{
+					case PositionStatus.NoData:						
+						geopositionCompletionSource.SetException(
+							new Exception("This operation returned because the timeout period expired."));
+						break;
+					case PositionStatus.Disabled:
+						geopositionCompletionSource.SetException(
+							new UnauthorizedAccessException(
+								"Access is denied. Your App does not have permission to access location data. " +
+								"The user blocked access, or the device location services are currently turned off."));
+						break;
+					case PositionStatus.NotAvailable:
+						geopositionCompletionSource.SetException(
+							new InvalidOperationException("Location services API is not available."));
+						break;
+					default:
+						throw new ArgumentOutOfRangeException(
+							nameof(currentPositionRequestResult), "DispatchError position status must be an error status");
 				}
 			}
-
 			return 0;
 		}
 
-		[Preserve]
-		public static int DispatchStatus(string serializedPositionStatus)
+		/// <summary>
+		/// Broadcasts status change to all subscribed Geolocator instances
+		/// </summary>
+		/// <param name="positionStatus"></param>
+		private static void BroadcastStatus(PositionStatus positionStatus)
 		{
-			var positionStatus = (PositionStatus)Enum.Parse(typeof(PositionStatus), serializedPositionStatus, true);
 			foreach (var key in _statusChangedSubscriptions.Keys)
 			{
 				key.OnStatusChanged(positionStatus);
 			}
-
-			return 0;
 		}
 
 		/// <summary>
