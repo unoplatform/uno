@@ -2657,27 +2657,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Get the attribute from the custom markup extension class then get the return type specifed with MarkupExtensionReturnTypeAttribute
 			var attributeData = markupType.FindAttribute(XamlConstants.Types.MarkupExtensionReturnTypeAttribute);
 			var returnType = attributeData?.NamedArguments.FirstOrDefault(kvp => kvp.Key == "ReturnType").Value.Value;
-			var cast = string.Empty;
 
-			// If we cannot determine the return type to cast with for the markup extension,
-			// we then try to get the type of the target property
-			if (returnType == null)
-			{
-				var propertyType = FindPropertyType(member.Member);
-				cast = GetCastString(propertyType, null);
-			}
-			else
-			{
-				cast = $"({returnType})";
-			}
+			var provideValue = $"(({xamlMarkupFullName})(new {markupTypeFullName} {{ {properties} }})).ProvideValue()";
 
-			if (string.IsNullOrEmpty(cast))
+			// If we cannot determine the return type needed to cast against the markup extension,
+			// we must then try to get the type of the target property, and use Convert.ChangeType()
+			if (returnType == null && FindPropertyType(member.Member) is INamedTypeSymbol propertyType)
 			{
-				this.Log().Error($"Unable to determine the return type needed for the markup extension.");
-				return string.Empty;
+				var targetTypeDisplay = propertyType.ToDisplayString();
+				var targetType = $"typeof({targetTypeDisplay})";
+
+				// It's important to cast to string before performing the conversion
+				return $"({targetTypeDisplay})(Convert.ChangeType(({provideValue}).ToString(), {targetType}))";
+			}
+			else if (returnType != null)
+			{
+				return $"({returnType}){provideValue}";
 			}
 
-			return $"{cast}(({xamlMarkupFullName})(new {markupTypeFullName} {{ {properties} }})).ProvideValue()";
+			this.Log().Error($"Unable to determine the return type needed for the markup extension (a MarkupExtensionReturnType attribute is not available, and {member.Member} cannot be found).");
+			return string.Empty;
 		}
 
 		private bool IsMemberInsideDataTemplate(XamlObjectDefinition xamlObject)

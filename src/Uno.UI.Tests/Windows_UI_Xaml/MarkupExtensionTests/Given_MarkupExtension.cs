@@ -29,8 +29,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 			Assert.AreEqual("String from attached property markup extension", control.TestText6.Text);
 			Assert.AreEqual("True", control.TestText7.Text);
 			Assert.AreEqual("I am Value 1", control.TestText8.Text);
-			Assert.AreEqual("444", control.TestText9.Text);
-			Assert.AreEqual("333", control.TestText9.Tag);
+			Assert.AreEqual(22.0, control.TestText9.FontSize);
+			Assert.AreEqual(3, control.TestText9.MaxLines);
 		}
 	}
 
