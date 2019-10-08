@@ -535,6 +535,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "pushkyn",
+      "name": "Alex",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/3326427?v=4",
+      "profile": "https://github.com/pushkyn",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 5,
