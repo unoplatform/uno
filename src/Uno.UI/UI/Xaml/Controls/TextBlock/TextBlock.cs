@@ -657,18 +657,31 @@ namespace Windows.UI.Xaml.Controls
 #else
 		private static readonly PointerEventHandler OnPointerPressed = (object sender, PointerRoutedEventArgs e) =>
 		{
-			PointerPoint point;
-			Hyperlink hyperlink;
-			if (sender is TextBlock that
-				&& that.HasHyperlink
-				&& (point = e.GetCurrentPoint(that)).Properties.IsLeftButtonPressed
-				&& (hyperlink = that.FindHyperlinkAt(point)) != null
-				&& that.CapturePointer(e.Pointer))
+			if (!(sender is TextBlock that) || !that.HasHyperlink)
 			{
-				hyperlink.SetPointerPressed(e.Pointer);
-				e.Handled = true;
-				that.CompleteGesture(); // Make sure to mute Tapped
+				return;
 			}
+
+			var point = e.GetCurrentPoint(that);
+			if (!point.Properties.IsLeftButtonPressed)
+			{
+				return;
+			}
+
+			var hyperlink = that.FindHyperlinkAt(point.Position);
+			if (hyperlink is null)
+			{
+				return;
+			}
+
+			if (!that.CapturePointer(e.Pointer))
+			{
+				return;
+			}
+
+			hyperlink.SetPointerPressed(e.Pointer);
+			e.Handled = true;
+			that.CompleteGesture(); // Make sure to mute Tapped
 		};
 
 		private static readonly PointerEventHandler OnPointerReleased = (object sender, PointerRoutedEventArgs e) =>
