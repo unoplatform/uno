@@ -1,49 +1,49 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 
 namespace Uno.Xaml
 {
 	public static class AttachablePropertyServices
 	{
-		class Table : Dictionary<AttachableMemberIdentifier,object>
+		private class Table : Dictionary<AttachableMemberIdentifier,object>
 		{
 		}
 
-		static Dictionary<object,Table> props = new Dictionary<object,Table> ();
+		private static readonly Dictionary<object,Table> Props = new Dictionary<object,Table> ();
 
 		public static void CopyPropertiesTo (object instance, KeyValuePair<AttachableMemberIdentifier,object> [] array, int index)
 		{
-			Table t;
-			if (instance == null || !props.TryGetValue (instance, out t))
+			if (instance == null || !Props.TryGetValue (instance, out var t))
+			{
 				return;
-			((ICollection<KeyValuePair<AttachableMemberIdentifier,object>>) t).CopyTo (array, index);
+			} ((ICollection<KeyValuePair<AttachableMemberIdentifier,object>>) t).CopyTo (array, index);
 		}
 
 		public static int GetAttachedPropertyCount (object instance)
 		{
-			Table t;
-			return instance != null && props.TryGetValue (instance, out t) ? t.Count : 0;
+			return instance != null && Props.TryGetValue (instance, out var t) ? t.Count : 0;
 		}
 
 		public static bool RemoveProperty (object instance, AttachableMemberIdentifier name)
 		{
 			if (name == null)
-				throw new ArgumentNullException ("name");
+			{
+				throw new ArgumentNullException (nameof(name));
+			}
 
-			Table t;
-			return instance != null && props.TryGetValue (instance, out t) ? t.Remove (name) : false;
+			return instance != null && Props.TryGetValue (instance, out var t) && t.Remove (name);
 		}
 
 		public static void SetProperty (object instance, AttachableMemberIdentifier name, object value)
 		{
 			if (name == null)
-				throw new ArgumentNullException ("name");
+			{
+				throw new ArgumentNullException (nameof(name));
+			}
 
-			Table t;
-			if (!props.TryGetValue (instance, out t)) {
+			if (!Props.TryGetValue (instance, out var t)) {
 				t = new Table ();
-				props [instance] = t;
+				Props [instance] = t;
 			}
 			t [name] = value;
 		}
@@ -51,18 +51,18 @@ namespace Uno.Xaml
 		public static bool TryGetProperty (object instance, AttachableMemberIdentifier name, out object value)
 		{
 			if (name == null)
-				throw new ArgumentNullException ("name");
+			{
+				throw new ArgumentNullException (nameof(name));
+			}
 
-			Table t;
 			value = null;
-			return instance != null && props.TryGetValue (instance, out t) ? t.TryGetValue (name, out value) : false;
+			return instance != null && Props.TryGetValue (instance, out var t) && t.TryGetValue (name, out value);
 		}
 
 		public static bool TryGetProperty<T> (object instance, AttachableMemberIdentifier name, out T value)
 		{
-			object ret;
-			if (!TryGetProperty (instance, name, out ret)) {
-				value = default (T);
+			if (!TryGetProperty (instance, name, out var ret)) {
+				value = default;
 				return false;
 			}
 			value = (T) ret;

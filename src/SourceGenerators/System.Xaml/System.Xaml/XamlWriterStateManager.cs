@@ -15,16 +15,12 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Xml;
 
 /*
 
@@ -69,9 +65,9 @@ MemberDone + StartMember -> MemberStarted : push(xm)
 
 namespace Uno.Xaml
 {
-	internal class XamlWriterStateManager<TError,TNSError> : XamlWriterStateManager
+	internal class XamlWriterStateManager<TError,TNsError> : XamlWriterStateManager
 		where TError : Exception
-		where TNSError : Exception
+		where TNsError : Exception
 	{
 		public XamlWriterStateManager (bool isXmlWriter)
 			: base (isXmlWriter)
@@ -85,7 +81,7 @@ namespace Uno.Xaml
 
 		public override Exception CreateNamespaceError (string msg)
 		{
-			return (Exception) Activator.CreateInstance (typeof (TNSError), new object [] {msg});
+			return (Exception) Activator.CreateInstance (typeof (TNsError), new object [] {msg});
 		}
 	}
 
@@ -104,95 +100,105 @@ namespace Uno.Xaml
 	{
 		public XamlWriterStateManager (bool isXmlWriter)
 		{
-			allow_ns_at_value = isXmlWriter;
-			allow_object_after_value = isXmlWriter;
-			allow_parallel_values = !isXmlWriter;
-			allow_empty_member = !isXmlWriter;
-			allow_multiple_results = !isXmlWriter;
+			_allowNsAtValue = isXmlWriter;
+			_allowObjectAfterValue = isXmlWriter;
+			_allowParallelValues = !isXmlWriter;
+			_allowEmptyMember = !isXmlWriter;
+			_allowMultipleResults = !isXmlWriter;
 		}
 
 		// configuration
-		bool allow_ns_at_value, allow_object_after_value, allow_parallel_values, allow_empty_member, allow_multiple_results;
+		private readonly bool _allowNsAtValue;
+		private readonly bool _allowObjectAfterValue;
+		private readonly bool _allowParallelValues;
+		private readonly bool _allowEmptyMember;
+		private readonly bool _allowMultipleResults;
 
 		// state
-		XamlWriteState state = XamlWriteState.Initial;
-		bool ns_pushed;
-		bool accept_multiple_values; // It is PositionalParameters-specific state.
+		private bool _nsPushed;
 
-		public XamlWriteState State {
-			get { return state; }
-		}
-		
+		public XamlWriteState State
+		{
+			get;
+			private set;
+		} = XamlWriteState.Initial;
+
 		// FIXME: actually this property is a hack. It should preserve stacked flag values for each nested member in current tree state.
-		public bool AcceptMultipleValues {
-			get { return accept_multiple_values; }
-			set { accept_multiple_values = value; }
+		public bool AcceptMultipleValues
+		{
+			get;
+			set;
 		}
 
 		public void OnClosingItem ()
 		{
 			// somewhat hacky state change to not reject StartMember->EndMember.
-			if (state == XamlWriteState.MemberStarted)
-				state = XamlWriteState.ValueWritten;
+			if (State == XamlWriteState.MemberStarted)
+			{
+				State = XamlWriteState.ValueWritten;
+			}
 		}
 
 		public void EndMember ()
 		{
 			RejectNamespaces (XamlNodeType.EndMember);
 			CheckState (XamlNodeType.EndMember);
-			state = XamlWriteState.MemberDone;
+			State = XamlWriteState.MemberDone;
 		}
 
 		public void EndObject (bool hasMoreNodes)
 		{
 			RejectNamespaces (XamlNodeType.EndObject);
 			CheckState (XamlNodeType.EndObject);
-			state = hasMoreNodes ? XamlWriteState.ObjectWritten : allow_multiple_results ? XamlWriteState.Initial : XamlWriteState.End;
+			State = hasMoreNodes ? XamlWriteState.ObjectWritten : _allowMultipleResults ? XamlWriteState.Initial : XamlWriteState.End;
 		}
 
 		public void GetObject ()
 		{
 			CheckState (XamlNodeType.GetObject);
 			RejectNamespaces (XamlNodeType.GetObject);
-			state = XamlWriteState.MemberDone;
+			State = XamlWriteState.MemberDone;
 		}
 
 		public void StartMember ()
 		{
 			CheckState (XamlNodeType.StartMember);
-			state = XamlWriteState.MemberStarted;
-			ns_pushed = false;
+			State = XamlWriteState.MemberStarted;
+			_nsPushed = false;
 		}
 
 		public void StartObject ()
 		{
 			CheckState (XamlNodeType.StartObject);
-			state = XamlWriteState.ObjectStarted;
-			ns_pushed = false;
+			State = XamlWriteState.ObjectStarted;
+			_nsPushed = false;
 		}
 
 		public void Value ()
 		{
 			CheckState (XamlNodeType.Value);
 			RejectNamespaces (XamlNodeType.Value);
-			state = XamlWriteState.ValueWritten;
+			State = XamlWriteState.ValueWritten;
 		}
 
 		public void Namespace ()
 		{
-			if (!allow_ns_at_value && (state == XamlWriteState.ValueWritten || state == XamlWriteState.ObjectStarted))
-				throw CreateError (String.Format ("Namespace declarations cannot be written at {0} state", state));
-			ns_pushed = true;
+			if (!_allowNsAtValue && (State == XamlWriteState.ValueWritten || State == XamlWriteState.ObjectStarted))
+			{
+				throw CreateError (string.Format ("Namespace declarations cannot be written at {0} state", State));
+			}
+
+			_nsPushed = true;
 		}
 
 		public void NamespaceCleanedUp ()
 		{
-			ns_pushed = false;
+			_nsPushed = false;
 		}
 
-		void CheckState (XamlNodeType next)
+		private void CheckState (XamlNodeType next)
 		{
-			switch (state) {
+			switch (State) {
 			case XamlWriteState.Initial:
 				switch (next) {
 				case XamlNodeType.StartObject:
@@ -213,9 +219,12 @@ namespace Uno.Xaml
 				case XamlNodeType.GetObject:
 					return;
 				case XamlNodeType.EndMember:
-					if (allow_empty_member)
-						return;
-					break;
+					if (_allowEmptyMember)
+							{
+								return;
+							}
+
+							break;
 				}
 				break;
 			case XamlWriteState.ObjectWritten:
@@ -229,13 +238,19 @@ namespace Uno.Xaml
 			case XamlWriteState.ValueWritten:
 				switch (next) {
 				case XamlNodeType.Value:
-					if (allow_parallel_values | accept_multiple_values)
-						return;
-					break;
+					if (_allowParallelValues | AcceptMultipleValues)
+							{
+								return;
+							}
+
+							break;
 				case XamlNodeType.StartObject:
-					if (allow_object_after_value)
-						return;
-					break;
+					if (_allowObjectAfterValue)
+							{
+								return;
+							}
+
+							break;
 				case XamlNodeType.EndMember:
 					return;
 				}
@@ -248,18 +263,22 @@ namespace Uno.Xaml
 				}
 				break;
 			}
-			throw CreateError (String.Format ("{0} is not allowed at current state {1}", next, state));
+			throw CreateError (string.Format ("{0} is not allowed at current state {1}", next, State));
 		}
-		
-		void RejectNamespaces (XamlNodeType next)
+
+		private void RejectNamespaces (XamlNodeType next)
 		{
-			if (ns_pushed) {
+			if (_nsPushed) {
 				// strange, but on WriteEndMember it throws XamlXmlWriterException, while for other nodes it throws IOE.
-				string msg = String.Format ("Namespace declarations cannot be written before {0}", next);
+				string msg = string.Format ("Namespace declarations cannot be written before {0}", next);
 				if (next == XamlNodeType.EndMember)
+				{
 					throw CreateError (msg);
+				}
 				else
+				{
 					throw CreateNamespaceError (msg);
+				}
 			}
 		}
 

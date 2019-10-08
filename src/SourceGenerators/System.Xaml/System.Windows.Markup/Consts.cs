@@ -15,7 +15,7 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -25,19 +25,19 @@ namespace System.Windows.Markup
 	internal class Consts
 	{
 		public const string AssemblyWindowsBase = "";
-		public const string AssemblyPresentationFramework_3_5 = "";
-		public const string AssemblyPresentationCore_3_5 = "";
+		public const string AssemblyPresentationFramework35 = "";
+		public const string AssemblyPresentationCore35 = "";
 	}
 
-	[System.AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
-	sealed class MonoTODOAttribute : Attribute
+	[AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
+	internal sealed class MonoTodoAttribute : Attribute
 	{
-		public MonoTODOAttribute()
+		public MonoTodoAttribute()
 		{
 
 		}
 
-		public MonoTODOAttribute(string desc)
+		public MonoTodoAttribute(string desc)
 		{
 
 		}

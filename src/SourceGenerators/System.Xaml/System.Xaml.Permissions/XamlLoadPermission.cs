@@ -15,21 +15,16 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-using System;
-using System.Collections.Generic;
-using System.Security;
-using System.Security.Permissions;
-using Uno.Xaml;
 
 namespace Uno.Xaml.Permissions
 {
 #if NET461
-    [Serializable]
+	[Serializable]
 	public sealed class XamlLoadPermission : CodeAccessPermission, IUnrestrictedPermission
 	{
 		public XamlLoadPermission (IEnumerable<XamlAccessLevel> allowedAccess)
@@ -41,7 +36,7 @@ namespace Uno.Xaml.Permissions
 			throw new NotImplementedException ();
 		}
 		public XamlLoadPermission (XamlAccessLevel allowedAccess)
-			: this (new XamlAccessLevel [] {allowedAccess})
+			: this (new[] {allowedAccess})
 		{
 		}
 

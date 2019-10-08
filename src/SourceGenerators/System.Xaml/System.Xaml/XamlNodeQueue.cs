@@ -15,71 +15,66 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Reflection;
-using System.Windows.Markup;
 
 namespace Uno.Xaml
 {
 	public class XamlNodeQueue
 	{
-		Queue<XamlNodeLineInfo> queue = new Queue<XamlNodeLineInfo> ();
-		XamlSchemaContext ctx;
-		XamlReader reader;
-		XamlWriter writer;
+		private readonly Queue<XamlNodeLineInfo> _queue = new Queue<XamlNodeLineInfo> ();
 
 		public XamlNodeQueue (XamlSchemaContext schemaContext)
 		{
-			if (schemaContext == null)
-				throw new ArgumentNullException ("schemaContext");
-			this.ctx = schemaContext;
-			reader = new XamlNodeQueueReader (this);
-			writer = new XamlNodeQueueWriter (this);
+			SchemaContext = schemaContext ?? throw new ArgumentNullException (nameof(schemaContext));
+			Reader = new XamlNodeQueueReader (this);
+			Writer = new XamlNodeQueueWriter (this);
 		}
 		
 		internal IXamlLineInfo LineInfoProvider { get; set; }
 
-		internal XamlSchemaContext SchemaContext {
-			get { return ctx; }
+		internal XamlSchemaContext SchemaContext
+		{
+			get;
 		}
 
 		public int Count {
-			get { return queue.Count; }
+			get { return _queue.Count; }
 		}
 
 		public bool IsEmpty {
-			get { return queue.Count == 0; }
+			get { return _queue.Count == 0; }
 		}
 
-		public XamlReader Reader {
-			get { return reader; }
+		public XamlReader Reader
+		{
+			get;
 		}
 
-		public XamlWriter Writer {
-			get { return writer; }
+		public XamlWriter Writer
+		{
+			get;
 		}
 
 		internal XamlNodeLineInfo Dequeue ()
 		{
-			lock (queue)
+			lock (_queue)
 			{
-				return queue.Dequeue();
+				return _queue.Dequeue();
 			}
 		}
 
 		internal void Enqueue (XamlNodeInfo info)
 		{
-			lock (queue)
+			lock (_queue)
 			{
 				var nli = (LineInfoProvider != null && LineInfoProvider.HasLineInfo) ? new XamlNodeLineInfo(info, LineInfoProvider.LineNumber, LineInfoProvider.LinePosition) : new XamlNodeLineInfo(info, 0, 0);
-				queue.Enqueue(nli);
+				_queue.Enqueue(nli);
 			}
 		}
 	}

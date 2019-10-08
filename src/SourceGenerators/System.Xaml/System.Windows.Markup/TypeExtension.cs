@@ -15,16 +15,13 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
-using System.Reflection;
-using Uno.Xaml.Schema;
 
 namespace System.Windows.Markup
 {
@@ -39,19 +36,14 @@ namespace System.Windows.Markup
 
 		public TypeExtension (string typeName)
 		{
-			if (typeName == null)
-			{
-				throw new ArgumentNullException ("typeName");
-			}
-
-			TypeName = typeName;
+			TypeName = typeName ?? throw new ArgumentNullException (nameof(typeName));
 		}
 
 		public TypeExtension (Type type)
 		{
 			if (type == null)
 			{
-				throw new ArgumentNullException ("type");
+				throw new ArgumentNullException (nameof(type));
 			}
 
 			Type = type;
@@ -77,11 +69,10 @@ namespace System.Windows.Markup
 
 			if (serviceProvider == null) // it can be null when Type is supplied.
 			{
-				throw new ArgumentNullException ("serviceProvider");
+				throw new ArgumentNullException (nameof(serviceProvider));
 			}
 
-			var p = serviceProvider.GetService (typeof (IXamlTypeResolver)) as IXamlTypeResolver;
-			if (p == null)
+			if (!(serviceProvider.GetService (typeof (IXamlTypeResolver)) is IXamlTypeResolver p))
 			{
 				throw new InvalidOperationException ("serviceProvider does not provide IXamlTypeResolver service.");
 			}
@@ -89,7 +80,7 @@ namespace System.Windows.Markup
 			var ret = p.Resolve (TypeName);
 			if (ret == null)
 			{
-				throw new InvalidOperationException (String.Format ("Type '{0}' is not resolved as a valid type by the type resolver '{1}'.", TypeName, p.GetType ()));
+				throw new InvalidOperationException (string.Format ("Type '{0}' is not resolved as a valid type by the type resolver '{1}'.", TypeName, p.GetType ()));
 			}
 
 			return ret;

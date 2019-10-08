@@ -15,13 +15,12 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-using System;
-using System.Collections;
+
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
@@ -50,7 +49,7 @@ namespace System.Windows.Markup
 		{
 			if (descriptor == null)
 			{
-				throw new ArgumentNullException ("descriptor");
+				throw new ArgumentNullException (nameof(descriptor));
 			}
 
 			if (context != null)
@@ -71,7 +70,7 @@ namespace System.Windows.Markup
 		{
 			if (type == null)
 			{
-				throw new ArgumentNullException ("type");
+				throw new ArgumentNullException (nameof(type));
 			}
 
 			if (context != null)
@@ -154,12 +153,12 @@ namespace System.Windows.Markup
 
 		protected Exception GetConvertFromException (object value)
 		{
-			return new NotSupportedException (String.Format ("Conversion from string '{0}' is not supported", value));
+			return new NotSupportedException (string.Format ("Conversion from string '{0}' is not supported", value));
 		}
 
 		protected Exception GetConvertToException (object value, Type destinationType)
 		{
-			return new NotSupportedException (String.Format ("Conversion from '{0}' to {1} is not supported", value != null ? value.GetType ().Name : "(null)", destinationType));
+			return new NotSupportedException (string.Format ("Conversion from '{0}' to {1} is not supported", value != null ? value.GetType ().Name : "(null)", destinationType));
 		}
 
 		public virtual IEnumerable<Type> TypeReferences (object value, IValueSerializerContext context)
@@ -200,7 +199,7 @@ namespace System.Windows.Markup
 
 	internal class TypeValueSerializer : ValueSerializer
 	{
-		TypeExtensionConverter txc = new TypeExtensionConverter ();
+		private readonly TypeExtensionConverter _txc = new TypeExtensionConverter ();
 
 		public override bool CanConvertFromString (string value, IValueSerializerContext context)
 		{
@@ -226,7 +225,7 @@ namespace System.Windows.Markup
 
 		public override string ConvertToString (object value,     IValueSerializerContext context)
 		{
-			return (string) txc.ConvertTo (context, CultureInfo.InvariantCulture, value, typeof (string));
+			return (string) _txc.ConvertTo (context, CultureInfo.InvariantCulture, value, typeof (string));
 		}
 
 		public override IEnumerable<Type> TypeReferences (object value, IValueSerializerContext context)
@@ -239,29 +238,29 @@ namespace System.Windows.Markup
 	{
 		public TypeConverterValueSerializer (TypeConverter typeConverter)
 		{
-			c = typeConverter;
+			_c = typeConverter;
 		}
 
-		TypeConverter c;
+		private readonly TypeConverter _c;
 
 		public override bool CanConvertFromString (string value, IValueSerializerContext context)
 		{
-			return c.CanConvertFrom (context, typeof (string));
+			return _c.CanConvertFrom (context, typeof (string));
 		}
 
 		public override bool CanConvertToString (object value, IValueSerializerContext context)
 		{
-			return c.CanConvertTo (context, typeof (string));
+			return _c.CanConvertTo (context, typeof (string));
 		}
 
 		public override object ConvertFromString (string value, IValueSerializerContext context)
 		{
-			return c.ConvertFrom (context, CultureInfo.InvariantCulture, value);
+			return _c.ConvertFrom (context, CultureInfo.InvariantCulture, value);
 		}
 
 		public override string ConvertToString (object value,     IValueSerializerContext context)
 		{
-			return value == null ? String.Empty : (string) c.ConvertTo (context, CultureInfo.InvariantCulture, value, typeof (string));
+			return value == null ? string.Empty : (string) _c.ConvertTo (context, CultureInfo.InvariantCulture, value, typeof (string));
 		}
 
 		public override IEnumerable<Type> TypeReferences (object value, IValueSerializerContext context)

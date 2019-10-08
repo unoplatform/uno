@@ -15,23 +15,22 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 using System;
-using System.Collections.Generic;
 using System.Reflection;
 
 namespace Uno.Xaml.Schema
 {
 	public class XamlMemberInvoker
 	{
-		static readonly XamlMemberInvoker unknown = new XamlMemberInvoker ();
-		public static XamlMemberInvoker UnknownInvoker {
-			get { return unknown; }
-		}
+		public static XamlMemberInvoker UnknownInvoker
+		{
+			get;
+		} = new XamlMemberInvoker ();
 
 		protected XamlMemberInvoker ()
 		{
@@ -40,50 +39,77 @@ namespace Uno.Xaml.Schema
 		public XamlMemberInvoker (XamlMember member)
 		{
 			if (member == null)
-				throw new ArgumentNullException ("member");
-			this.member = member;
+			{
+				throw new ArgumentNullException (nameof(member));
+			}
+
+			_member = member;
 		}
 
-		XamlMember member;
+		private readonly XamlMember _member;
 
 		public MethodInfo UnderlyingGetter {
-			get { return member != null ? member.UnderlyingGetter : null; }
+			get { return _member != null ? _member.UnderlyingGetter : null; }
 		}
 
 		public MethodInfo UnderlyingSetter {
-			get { return member != null ? member.UnderlyingSetter : null; }
+			get { return _member != null ? _member.UnderlyingSetter : null; }
 		}
 
-		void ThrowIfUnknown ()
+		private void ThrowIfUnknown ()
 		{
-			if (member == null)
+			if (_member == null)
+			{
 				throw new NotSupportedException ("Current operation is invalid for unknown member.");
+			}
 		}
 
 		public virtual object GetValue (object instance)
 		{
 			ThrowIfUnknown ();
 			if (instance == null)
-				throw new ArgumentNullException ("instance");
-			if (member is XamlDirective)
-				throw new NotSupportedException (String.Format ("not supported operation on directive member {0}", member));
+			{
+				throw new ArgumentNullException (nameof(instance));
+			}
+
+			if (_member is XamlDirective)
+			{
+				throw new NotSupportedException (string.Format ("not supported operation on directive member {0}", _member));
+			}
+
 			if (UnderlyingGetter == null)
-				throw new NotSupportedException (String.Format ("Attempt to get value from write-only property or event {0}", member));
+			{
+				throw new NotSupportedException (string.Format ("Attempt to get value from write-only property or event {0}", _member));
+			}
+
 			return UnderlyingGetter.Invoke (instance, new object [0]);
 		}
 		public virtual void SetValue (object instance, object value)
 		{
 			ThrowIfUnknown ();
 			if (instance == null)
-				throw new ArgumentNullException ("instance");
-			if (member is XamlDirective)
-				throw new NotSupportedException (String.Format ("not supported operation on directive member {0}", member));
+			{
+				throw new ArgumentNullException (nameof(instance));
+			}
+
+			if (_member is XamlDirective)
+			{
+				throw new NotSupportedException (string.Format ("not supported operation on directive member {0}", _member));
+			}
+
 			if (UnderlyingSetter == null)
-				throw new NotSupportedException (String.Format ("Attempt to set value from read-only property {0}", member));
-			if (member.IsAttachable)
-				UnderlyingSetter.Invoke (null, new object [] {instance, value});
+			{
+				throw new NotSupportedException (string.Format ("Attempt to set value from read-only property {0}", _member));
+			}
+
+			if (_member.IsAttachable)
+			{
+				UnderlyingSetter.Invoke (null, new[] {instance, value});
+			}
 			else
-				UnderlyingSetter.Invoke (instance, new object [] {value});
+			{
+				UnderlyingSetter.Invoke (instance, new[] {value});
+			}
 		}
 
 		public virtual ShouldSerializeResult ShouldSerializeValue (object instance)

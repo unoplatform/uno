@@ -15,17 +15,15 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text.RegularExpressions;
-using System.Xml;
 using Uno.Xaml.Schema;
 
 namespace Uno.Xaml
@@ -41,13 +39,12 @@ namespace Uno.Xaml
 		/// - TargetNullValue='B'
 		/// - FallbackValue='C,D,E,F'
 		/// </summary>
-		private static Regex BindingMembersRegex = new Regex("[^'\",]+'[^']+'|[^'\",]+\"[^\"]+\"|[^,]+");
+		private static readonly Regex BindingMembersRegex = new Regex("[^'\",]+'[^']+'|[^'\",]+\"[^\"]+\"|[^,]+");
 
-		Dictionary<XamlMember, object> args = new Dictionary<XamlMember, object>();
 		public Dictionary<XamlMember, object> Arguments
 		{
-			get { return args; }
-		}
+			get;
+		} = new Dictionary<XamlMember, object>();
 
 		public XamlType Type { get; set; }
 
@@ -64,7 +61,7 @@ namespace Uno.Xaml
 			}
 
 			var ret = new ParsedMarkupExtensionInfo();
-			int idx = raw.LastIndexOf('}');
+			var idx = raw.LastIndexOf('}');
 
 			if (idx < 0)
 			{
@@ -73,10 +70,9 @@ namespace Uno.Xaml
 				
 			raw = raw.Substring(1, idx - 1);
 			idx = raw.IndexOf(' ');
-			string name = idx < 0 ? raw : raw.Substring(0, idx);
+			var name = idx < 0 ? raw : raw.Substring(0, idx);
 
-			XamlTypeName xtn;
-			if (!XamlTypeName.TryParse(name, nsResolver, out xtn))
+			if (!XamlTypeName.TryParse(name, nsResolver, out var xtn))
 			{
 				throw Error("Failed to parse type name '{0}'", name);
 			}
@@ -85,12 +81,13 @@ namespace Uno.Xaml
 			ret.Type = xt;
 
 			if (idx < 0)
+			{
 				return ret;
+			}
 
 			var valueWithoutBinding = raw.Substring(idx + 1, raw.Length - idx - 1);
 
 			var vpairs = BindingMembersRegex.Matches(valueWithoutBinding)
-				.Cast<Match>()
 				.Select(m => m.Value.Trim())
 				.ToList();
 
@@ -136,7 +133,7 @@ namespace Uno.Xaml
 
 		private static string RemoveWrappingStringQuotes(string stringValue)
 		{
-			if (stringValue != null && stringValue != string.Empty)
+			if (!string.IsNullOrEmpty(stringValue))
 			{
 				// Remove wrapping single quotes.
 				if (stringValue.StartsWith("'") && stringValue.EndsWith("'"))
@@ -144,7 +141,8 @@ namespace Uno.Xaml
 					return stringValue.Trim(new[] { '\'' });
 				}
 				// Remove wrapping double quotes.
-				else if (stringValue.StartsWith("\"") && stringValue.EndsWith("\""))
+
+				if (stringValue.StartsWith("\"") && stringValue.EndsWith("\""))
 				{
 					return stringValue.Trim(new[] { '\"' });
 				}
@@ -155,7 +153,7 @@ namespace Uno.Xaml
 
 		private static bool IsValidMarkupExtension(string valueString) => valueString.StartsWith("{") && !valueString.StartsWith("{}");
 
-		static string UnescapeValue(string s)
+		private static string UnescapeValue(string s)
 		{
 			if (s.StartsWith("{}"))
 			{
@@ -170,19 +168,12 @@ namespace Uno.Xaml
 			}
 
 			// change XamlXmlWriter too if we change here.
-			if (s == "\"\"") // FIXME: there could be some escape syntax.
-			{
-				return String.Empty;
-			}
-			else
-			{
-				return s;
-			}
+			return s == "\"\"" ? string.Empty : s;
 		}
 
-		static Exception Error(string format, params object[] args)
+		private static Exception Error(string format, params object[] args)
 		{
-			return new XamlParseException(String.Format(format, args));
+			return new XamlParseException(string.Format(format, args));
 		}
 	}
 }

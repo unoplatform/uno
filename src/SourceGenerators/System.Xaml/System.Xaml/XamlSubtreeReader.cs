@@ -15,13 +15,11 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-using System;
-using System.Collections.Generic;
 
 namespace Uno.Xaml
 {
@@ -29,71 +27,80 @@ namespace Uno.Xaml
 	{
 		internal XamlSubtreeReader (XamlReader source)
 		{
-			this.source = source;
+			_source = source;
 		}
-		
-		XamlReader source;
+
+		private readonly XamlReader _source;
 
 		public override bool IsEof {
-			get { return started && (nest == 0 || source.IsEof); }
+			get { return _started && (_nest == 0 || _source.IsEof); }
 		}
 		public override XamlMember Member {
-			get { return started ? source.Member : null; }
+			get { return _started ? _source.Member : null; }
 		}
 		
 		public override NamespaceDeclaration Namespace {
-			get { return started ? source.Namespace : null; }
+			get { return _started ? _source.Namespace : null; }
 		}
 		
 		public override XamlNodeType NodeType {
-			get { return started ? source.NodeType : XamlNodeType.None; }
+			get { return _started ? _source.NodeType : XamlNodeType.None; }
 		}
 		
 		public override XamlSchemaContext SchemaContext {
-			get { return source.SchemaContext; }
+			get { return _source.SchemaContext; }
 		}
 		
 		public override XamlType Type {
-			get { return started ? source.Type : null; }
+			get { return _started ? _source.Type : null; }
 		}
 		
 		public override object Value {
-			get { return started ? source.Value : null; }
+			get { return _started ? _source.Value : null; }
 		}
 		
 		protected override void Dispose (bool disposing)
 		{
-			while (nest > 0)
+			while (_nest > 0)
+			{
 				if (!Read ())
+				{
 					break;
+				}
+			}
+
 			base.Dispose (disposing);
 		}
-		
-		bool started;
-		int nest;
+
+		private bool _started;
+		private int _nest;
 		
 		public override bool Read ()
 		{
-			if (started) {
-				if (nest == 0) {
-					source.Read ();
+			if (_started) {
+				if (_nest == 0) {
+					_source.Read ();
 					return false; // already consumed
 				}
-				if (!source.Read ())
+				if (!_source.Read ())
+				{
 					return false;
+				}
 			}
 			else
-				started = true;
+			{
+				_started = true;
+			}
 
-			switch (source.NodeType) {
+			switch (_source.NodeType) {
 			case XamlNodeType.StartObject:
 			case XamlNodeType.GetObject:
 			case XamlNodeType.StartMember:
-				nest++;
+				_nest++;
 				break;
 			case XamlNodeType.EndObject:
 			case XamlNodeType.EndMember:
-				nest--;
+				_nest--;
 				break;
 			}
 			return true;

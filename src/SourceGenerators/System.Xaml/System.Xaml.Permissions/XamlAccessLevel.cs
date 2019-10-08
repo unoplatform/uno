@@ -15,27 +15,24 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Reflection;
-using Uno.Xaml;
 
 namespace Uno.Xaml.Permissions
 {
-	[SerializableAttribute]
+	[Serializable]
 	public class XamlAccessLevel
 	{
 		public static XamlAccessLevel AssemblyAccessTo (Assembly assembly)
 		{
 			if (assembly == null)
 			{
-				throw new ArgumentNullException ("assembly");
+				throw new ArgumentNullException (nameof(assembly));
 			}
 
 			return new XamlAccessLevel (assembly.GetName ());
@@ -44,7 +41,7 @@ namespace Uno.Xaml.Permissions
 		{
 			if (assemblyName == null)
 			{
-				throw new ArgumentNullException ("assemblyName");
+				throw new ArgumentNullException (nameof(assemblyName));
 			}
 
 			return new XamlAccessLevel (assemblyName);
@@ -54,7 +51,7 @@ namespace Uno.Xaml.Permissions
 		{
 			if (assemblyQualifiedTypeName == null)
 			{
-				throw new ArgumentNullException ("assemblyQualifiedTypeName");
+				throw new ArgumentNullException (nameof(assemblyQualifiedTypeName));
 			}
 
 			return new XamlAccessLevel (assemblyQualifiedTypeName);
@@ -64,7 +61,7 @@ namespace Uno.Xaml.Permissions
 		{
 			if (type == null)
 			{
-				throw new ArgumentNullException ("type");
+				throw new ArgumentNullException (nameof(type));
 			}
 
 			return new XamlAccessLevel (type.AssemblyQualifiedName);
@@ -80,7 +77,7 @@ namespace Uno.Xaml.Permissions
 			PrivateAccessToTypeName = privateAccessToTypeName;
 		}
 
-		public AssemblyName AssemblyAccessToAssemblyName { get; private set; }
-		public string PrivateAccessToTypeName { get; private set; }
+		public AssemblyName AssemblyAccessToAssemblyName { get; }
+		public string PrivateAccessToTypeName { get; }
 	}
 }

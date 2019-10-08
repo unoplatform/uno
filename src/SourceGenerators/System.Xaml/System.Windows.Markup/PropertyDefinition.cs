@@ -15,13 +15,12 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-using System;
-using System.Collections;
+
 using System.Collections.Generic;
 using System.ComponentModel;
 using Uno.Xaml;
@@ -33,21 +32,19 @@ namespace System.Windows.Markup
 	{
 		public PropertyDefinition ()
 		{
-			attributes = new List<Attribute> ();
+			_attributes = new List<Attribute> ();
 		}
 
-		List<Attribute> attributes;
-		public IList<Attribute> Attributes {
-			get { return attributes; }
-		}
+		private readonly List<Attribute> _attributes;
+		public IList<Attribute> Attributes => _attributes;
 
 		[DefaultValue ("public")]
 		public string Modifier { get; set; }
 
-		string name;
-		public override string Name { 
-			get { return name; }
-			set { name = value; }
+		public override string Name
+		{
+			get;
+			set;
 		}
 
 		[TypeConverter (typeof (XamlTypeTypeConverter))]

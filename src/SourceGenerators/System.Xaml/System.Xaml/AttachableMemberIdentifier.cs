@@ -15,13 +15,12 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 using System;
-using System.Collections.Generic;
 
 namespace Uno.Xaml
 {
@@ -33,27 +32,27 @@ namespace Uno.Xaml
 			MemberName = memberName;
 		}
 		
-		public Type DeclaringType { get; private set; }
-		public string MemberName { get; private set; }
+		public Type DeclaringType { get; }
+		public string MemberName { get; }
 		
 		public static bool operator == (AttachableMemberIdentifier left, AttachableMemberIdentifier right)
 		{
-			return IsNull (left) ? IsNull (right) : left.Equals (right);
+			return left != null && (IsNull (left) ? IsNull (right) : left.Equals (right));
 		}
 
-		static bool IsNull (AttachableMemberIdentifier a)
+		private static bool IsNull (AttachableMemberIdentifier a)
 		{
-			return Object.ReferenceEquals (a, null);
+			return ReferenceEquals (a, null);
 		}
 
 		public static bool operator != (AttachableMemberIdentifier left, AttachableMemberIdentifier right)
 		{
-			return IsNull (left) ? !IsNull (right) : IsNull (right) || left.DeclaringType != right.DeclaringType || left.MemberName != right.MemberName;
+			return left != null && (IsNull (left) ? !IsNull (right) : IsNull (right) || left.DeclaringType != right.DeclaringType || left.MemberName != right.MemberName);
 		}
 		
 		public bool Equals (AttachableMemberIdentifier other)
 		{
-			return !IsNull (other) && DeclaringType == other.DeclaringType && MemberName == other.MemberName;
+			return other != null && (!IsNull (other) && DeclaringType == other.DeclaringType && MemberName == other.MemberName);
 		}
 
 		public override bool Equals (object obj)
@@ -69,7 +68,7 @@ namespace Uno.Xaml
 
 		public override string ToString ()
 		{
-			return DeclaringType != null ? String.Concat (DeclaringType.FullName, ".", MemberName) : MemberName;
+			return DeclaringType != null ? string.Concat (DeclaringType.FullName, ".", MemberName) : MemberName;
 		}
 	}
 }

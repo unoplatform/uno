@@ -15,18 +15,15 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
 using System.Globalization;
-using System.Reflection;
 using Uno.Xaml;
-using Uno.Xaml.Schema;
 
 namespace System.Windows.Markup
 {
@@ -40,9 +37,9 @@ namespace System.Windows.Markup
 			TypeConverter = typeConverter;
 		}
 		
-		public CultureInfo CultureInfo { get; private set; }
-		public ITypeDescriptorContext ServiceProvider { get; private set; }
-		public TypeConverter TypeConverter { get; private set; }
+		public CultureInfo CultureInfo { get; }
+		public ITypeDescriptorContext ServiceProvider { get; }
+		public TypeConverter TypeConverter { get; }
 
 		public override void CallBase ()
 		{

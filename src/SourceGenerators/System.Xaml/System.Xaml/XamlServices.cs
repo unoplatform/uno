@@ -15,13 +15,12 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Xml;
 
@@ -29,37 +28,42 @@ namespace Uno.Xaml
 {
 	public static class XamlServices
 	{
-		public static Object Load (string fileName)
+		public static object Load (string fileName)
 		{
 			using (var xr = XmlReader.Create (fileName))
+			{
 				return Load (xr);
+			}
 		}
 
-		public static Object Load (Stream stream)
+		public static object Load (Stream stream)
 		{
 			return Load (new XamlXmlReader (stream));
 		}
 
-		public static Object Load (TextReader textReader)
+		public static object Load (TextReader textReader)
 		{
 			return Load (new XamlXmlReader (textReader));
 		}
 
-		public static Object Load (XmlReader xmlReader)
+		public static object Load (XmlReader xmlReader)
 		{
 			return Load (new XamlXmlReader (xmlReader));
 		}
 
-		public static Object Load (XamlReader xamlReader)
+		public static object Load (XamlReader xamlReader)
 		{
 			if (xamlReader == null)
-				throw new ArgumentNullException ("xamlReader");
+			{
+				throw new ArgumentNullException (nameof(xamlReader));
+			}
+
 			var w = new XamlObjectWriter (xamlReader.SchemaContext);
 			Transform (xamlReader, w);
 			return w.Result;
 		}
 
-		public static Object Parse (string xaml)
+		public static object Parse (string xaml)
 		{
 			return Load (new StringReader (xaml));
 		}
@@ -74,19 +78,25 @@ namespace Uno.Xaml
 		public static void Save (string fileName, object instance)
 		{
 			using (var xw = XmlWriter.Create (fileName, new XmlWriterSettings () { OmitXmlDeclaration = true, Indent = true }))
+			{
 				Save (xw, instance);
+			}
 		}
 
 		public static void Save (Stream stream, object instance)
 		{
 			using (var xw = XmlWriter.Create (stream, new XmlWriterSettings () { OmitXmlDeclaration = true, Indent = true }))
+			{
 				Save (xw, instance);
+			}
 		}
 
 		public static void Save (TextWriter writer, object instance)
 		{
 			using (var xw = XmlWriter.Create (writer, new XmlWriterSettings () { OmitXmlDeclaration = true, Indent = true }))
+			{
 				Save (xw, instance);
+			}
 		}
 
 		public static void Save (XmlWriter writer, object instance)
@@ -97,7 +107,10 @@ namespace Uno.Xaml
 		public static void Save (XamlWriter writer, object instance)
 		{
 			if (writer == null)
-				throw new ArgumentNullException ("writer");
+			{
+				throw new ArgumentNullException (nameof(writer));
+			}
+
 			var r = new XamlObjectReader (instance, writer.SchemaContext);
 			Transform (r, writer);
 		}
@@ -110,19 +123,28 @@ namespace Uno.Xaml
 		public static void Transform (XamlReader xamlReader, XamlWriter xamlWriter, bool closeWriter)
 		{
 			if (xamlReader == null)
-				throw new ArgumentNullException ("xamlReader");
+			{
+				throw new ArgumentNullException (nameof(xamlReader));
+			}
+
 			if (xamlWriter == null)
-				throw new ArgumentNullException ("xamlWriter");
+			{
+				throw new ArgumentNullException (nameof(xamlWriter));
+			}
 
 			if (xamlReader.NodeType == XamlNodeType.None)
+			{
 				xamlReader.Read ();
+			}
 
 			while (!xamlReader.IsEof) {
 				xamlWriter.WriteNode (xamlReader);
 				xamlReader.Read ();
 			}
 			if (closeWriter)
+			{
 				xamlWriter.Close ();
+			}
 		}
 	}
 }

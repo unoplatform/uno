@@ -1,10 +1,4 @@
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Reflection;
 using Uno.Xaml;
-using Uno.Xaml.Schema;
 
 namespace System.Windows.Markup
 {
@@ -27,7 +21,7 @@ namespace System.Windows.Markup
 		{
 			if (serviceProvider == null)
 			{
-				throw new ArgumentNullException ("serviceProvider");
+				throw new ArgumentNullException (nameof(serviceProvider));
 			}
 
 			if (Path == null)
@@ -35,17 +29,12 @@ namespace System.Windows.Markup
 				throw new InvalidOperationException ("Name property is not set");
 			}
 
-			var r = serviceProvider.GetService (typeof (IXamlNameResolver)) as IXamlNameResolver;
-			if (r == null)
+			if (!(serviceProvider.GetService (typeof (IXamlNameResolver)) is IXamlNameResolver r))
 			{
 				throw new InvalidOperationException ("serviceProvider does not implement IXamlNameResolver");
 			}
 
-			var ret = r.Resolve (Path);
-			if (ret == null)
-			{
-				ret = r.GetFixupToken (new string [] { Path }, true);
-			}
+			var ret = r.Resolve (Path) ?? r.GetFixupToken (new[] { Path }, true);
 
 			return ret;
 		}

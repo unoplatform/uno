@@ -15,20 +15,15 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-using System;
-using System.Collections;
+
 using System.Collections.Generic;
-using System.Globalization;
 using System.Linq;
-using System.Reflection;
 using System.Windows.Markup;
-using Uno.Xaml.Schema;
-using System.Xml;
 
 namespace Uno.Xaml
 {
@@ -36,47 +31,48 @@ namespace Uno.Xaml
 	{
 		public XamlNodeInfo (XamlNodeType nodeType, XamlObject value)
 		{
-			node_type = nodeType;
-			this.value = value;
-			member = default (XamlNodeMember);
+			NodeType = nodeType;
+			Value = value;
+			Member = default (XamlNodeMember);
 		}
 		
 		public XamlNodeInfo (XamlNodeType nodeType, XamlNodeMember member)
 		{
-			node_type = nodeType;
-			this.value = default (XamlObject);
-			this.member = member;
+			NodeType = nodeType;
+			Value = default (XamlObject);
+			Member = member;
 		}
 		
 		public XamlNodeInfo (object value)
 		{
-			node_type = XamlNodeType.Value;
-			this.value = value;
-			member = default (XamlNodeMember);
+			NodeType = XamlNodeType.Value;
+			Value = value;
+			Member = default (XamlNodeMember);
 		}
 		
 		public XamlNodeInfo (NamespaceDeclaration ns)
 		{
-			node_type = XamlNodeType.NamespaceDeclaration;
-			this.value = ns;
-			member = default (XamlNodeMember);
+			NodeType = XamlNodeType.NamespaceDeclaration;
+			Value = ns;
+			Member = default (XamlNodeMember);
 		}
 
-		XamlNodeType node_type;
-		object value;
-		XamlNodeMember member;
-		
-		public XamlNodeType NodeType {
-			get { return node_type; }
+		public XamlNodeType NodeType
+		{
+			get;
 		}
+
 		public XamlObject Object {
-			get { return (XamlObject) value; }
+			get { return (XamlObject) Value; }
 		}
-		public XamlNodeMember Member {
-			get { return member; }
+		public XamlNodeMember Member
+		{
+			get;
 		}
-		public object Value {
-			get { return value; }
+
+		public object Value
+		{
+			get;
 		}
 	}
 
@@ -101,29 +97,28 @@ namespace Uno.Xaml
 
 		public XamlObject (XamlType type, InstanceContext context)
 		{
-			this.type = type;
-			this.context = context;
+			Type = type;
+			Context = context;
 		}
-		
-		readonly XamlType type;
-		readonly InstanceContext context;
-		
-		public XamlType Type {
-			get { return type; }
-		}
-		
-		public InstanceContext Context {
-			get { return context; }
-		}
-		
-		XamlType GetType (object obj)
+
+		public XamlType Type
 		{
-			return type.SchemaContext.GetXamlType (obj.GetType ());
+			get;
+		}
+
+		public InstanceContext Context
+		{
+			get;
+		}
+
+		private XamlType GetType (object obj)
+		{
+			return Type.SchemaContext.GetXamlType (obj.GetType ());
 		}
 		
 		public object GetRawValue ()
 		{
-			return context.GetRawValue ();
+			return Context.GetRawValue ();
 		}
 	}
 	
@@ -131,19 +126,20 @@ namespace Uno.Xaml
 	{
 		public XamlNodeMember (XamlObject owner, XamlMember member)
 		{
-			this.owner = owner;
-			this.member = member;
+			_owner = owner;
+			Member = member;
 		}
-		
-		readonly XamlObject owner;
-		readonly XamlMember member;
-		
+
+		private readonly XamlObject _owner;
+
 		public XamlObject Owner {
-			get { return owner; }
+			get { return _owner; }
 		}
-		public XamlMember Member {
-			get { return member; }
+		public XamlMember Member
+		{
+			get;
 		}
+
 		public XamlObject Value {
 			get {
 				var mv = Owner.GetMemberValue (Member);
@@ -151,9 +147,9 @@ namespace Uno.Xaml
 			}
 		}
 
-		XamlType GetType (object obj)
+		private XamlType GetType (object obj)
 		{
-			return obj == null ? XamlLanguage.Null : owner.Type.SchemaContext.GetXamlType (new InstanceContext (obj).GetRawValue ().GetType ());
+			return obj == null ? XamlLanguage.Null : _owner.Type.SchemaContext.GetXamlType (new InstanceContext (obj).GetRawValue ().GetType ());
 		}
 	}
 	
@@ -162,14 +158,14 @@ namespace Uno.Xaml
 	{
 		public InstanceContext (object value)
 		{
-			this.value = value;
+			_value = value;
 		}
-		
-		object value;
+
+		private readonly object _value;
 		
 		public object GetRawValue ()
 		{
-			return value; // so far.
+			return _value; // so far.
 		}
 	}
 
@@ -184,9 +180,11 @@ namespace Uno.Xaml
 			}
 
 			// Note that if the XamlType has the default constructor, we don't need "Arguments".
-			IEnumerable<XamlMember> args = type.ConstructionRequiresArguments ? type.GetSortedConstructorArguments () : null;
+			var args = type.ConstructionRequiresArguments ? type.GetSortedConstructorArguments () : null;
 			if (args != null && args.Any ())
+			{
 				yield return XamlLanguage.Arguments;
+			}
 
 			if (type.IsContentValue (vsctx)) {
 				yield return XamlLanguage.Initialization;
@@ -201,22 +199,31 @@ namespace Uno.Xaml
 			foreach (var m in type.GetAllMembers ()) {
 				// do not read constructor arguments twice (they are written inside Arguments).
 				if (args != null && args.Contains (m))
+				{
 					continue;
+				}
 				// do not return non-public members (of non-collection/xdata). Not sure why .NET filters out them though.
 				if (!m.IsReadPublic)
+				{
 					continue;
+				}
+
 				if (!m.IsWritePublic &&
 				    !m.Type.IsXData &&
 				    !m.Type.IsArray &&
 				    !m.Type.IsCollection &&
 				    !m.Type.IsDictionary)
+				{
 					continue;
+				}
 
 				yield return m;
 			}
 			
 			if (type.IsCollection)
+			{
 				yield return XamlLanguage.Items;
+			}
 		}
 	}
 	
@@ -225,21 +232,37 @@ namespace Uno.Xaml
 		internal static object GetMemberValue (this XamlObject xobj, XamlMember xm)
 		{
 			if (xm.IsUnknown)
+			{
 				return null;
+			}
 
 			if (xm.IsAttachable)
+			{
 				return xobj.GetRawValue (); // attachable property value
+			}
 
 			// FIXME: this looks like an ugly hack. Is this really true? What if there's MarkupExtension that uses another MarkupExtension type as a member type.
 			var obj = xobj.Context.GetRawValue ();
 			if (xm == XamlLanguage.Initialization)
+			{
 				return obj;
+			}
+
 			if (xm == XamlLanguage.Items) // collection itself.
+			{
 				return obj;
+			}
+
 			if (xm == XamlLanguage.Arguments) // object itself
+			{
 				return obj;
+			}
+
 			if (xm == XamlLanguage.PositionalParameters)
+			{
 				return xobj.GetRawValue (); // dummy value
+			}
+
 			return xm.Invoker.GetValue (xobj.GetRawValue ());
 		}
 	}

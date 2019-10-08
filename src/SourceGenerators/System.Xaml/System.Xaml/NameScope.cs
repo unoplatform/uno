@@ -15,49 +15,47 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-using System;
-using System.Collections;
+
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Reflection;
 using System.Windows.Markup;
-using Uno.Xaml.Schema;
 
 namespace Uno.Xaml
 {
-	class NameScope : INameScope
+	internal class NameScope : INameScope
 	{
-		Dictionary<string,object> table = new Dictionary<string,object> ();
+		private readonly Dictionary<string,object> _table = new Dictionary<string,object> ();
 		// It is an external read-only namescope.
-		INameScope external;
+		private readonly INameScope _external;
 
 		public NameScope (INameScope external)
 		{
-			this.external = external;
+			_external = external;
 		}
 
 		public object FindName (string name)
 		{
-			object obj = external != null ? external.FindName (name) : null;
+			var obj = _external?.FindName (name);
 			if (obj != null)
+			{
 				return obj;
-			return table.TryGetValue (name, out obj) ? obj : null;
+			}
+
+			return _table.TryGetValue (name, out obj) ? obj : null;
 		}
 
 		public void RegisterName (string name, object scopedElement)
 		{
-			table.Add (name, scopedElement);
+			_table.Add (name, scopedElement);
 		}
 
 		public void UnregisterName (string name)
 		{
-			table.Remove (name);
+			_table.Remove (name);
 		}
 	}
 }

@@ -15,16 +15,15 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-using System;
 
 namespace System.Windows.Markup
 {
-	[AttributeUsage (AttributeTargets.Class, AllowMultiple = false, Inherited = true)]
+	[AttributeUsage (AttributeTargets.Class)]
 	public sealed class MarkupExtensionReturnTypeAttribute : Attribute
 	{
 		public MarkupExtensionReturnTypeAttribute ()
@@ -43,9 +42,9 @@ namespace System.Windows.Markup
 			ExpressionType = expressionType;
 		}
 
-		public Type ReturnType { get; private set; }
+		public Type ReturnType { get; }
 
-		[ObsoleteAttribute ("Unused. Use XamlSetMarkupExtensionAttribute functionality instead.")]
-		public Type ExpressionType { get; private set; }
+		[Obsolete("Unused. Use XamlSetMarkupExtensionAttribute functionality instead.")]
+		public Type ExpressionType { get; }
 	}
 }

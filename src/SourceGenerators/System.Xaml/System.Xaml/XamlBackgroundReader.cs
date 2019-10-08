@@ -15,13 +15,12 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 using System;
-using System.Collections.Generic;
 using System.Threading;
 
 namespace Uno.Xaml
@@ -30,69 +29,70 @@ namespace Uno.Xaml
 	{
 		public XamlBackgroundReader (XamlReader wrappedReader)
 		{
-			if (wrappedReader == null)
-				throw new ArgumentNullException ("wrappedReader");
-			r = wrappedReader;
-			q = new XamlNodeQueue (r.SchemaContext) { LineInfoProvider = r as IXamlLineInfo };
+			_r = wrappedReader ?? throw new ArgumentNullException (nameof(wrappedReader));
+			_q = new XamlNodeQueue (_r.SchemaContext) { LineInfoProvider = _r as IXamlLineInfo };
 		}
-		
-		Thread thread;
-		XamlReader r;
-		XamlNodeQueue q;
-		bool read_all_done, do_work = true;
-		ManualResetEvent wait = new ManualResetEvent (true);
+
+		private Thread _thread;
+		private readonly XamlReader _r;
+		private readonly XamlNodeQueue _q;
+		private bool _readAllDone, _doWork = true;
+		private readonly ManualResetEvent _wait = new ManualResetEvent (true);
 
 		public bool HasLineInfo {
-			get { return ((IXamlLineInfo) q.Reader).HasLineInfo; }
+			get { return ((IXamlLineInfo) _q.Reader).HasLineInfo; }
 		}
 		
 		public override bool IsEof {
-			get { return read_all_done && q.IsEmpty; }
+			get { return _readAllDone && _q.IsEmpty; }
 		}
 		
 		public int LineNumber {
-			get { return ((IXamlLineInfo) q.Reader).LineNumber; }
+			get { return ((IXamlLineInfo) _q.Reader).LineNumber; }
 		}
 		
 		// [MonoTODO ("always returns 0")]
 		public int LinePosition {
-			get { return ((IXamlLineInfo) q.Reader).LinePosition; }
+			get { return ((IXamlLineInfo) _q.Reader).LinePosition; }
 		}
 		
 		public override XamlMember Member {
-			get { return q.Reader.Member; }
+			get { return _q.Reader.Member; }
 		}
 		
 		public override NamespaceDeclaration Namespace {
-			get { return q.Reader.Namespace; }
+			get { return _q.Reader.Namespace; }
 		}
 		
 		public override XamlNodeType NodeType {
-			get { return q.Reader.NodeType; }
+			get { return _q.Reader.NodeType; }
 		}
 		
 		public override XamlSchemaContext SchemaContext {
-			get { return q.Reader.SchemaContext; }
+			get { return _q.Reader.SchemaContext; }
 		}
 		
 		public override XamlType Type {
-			get { return q.Reader.Type; }
+			get { return _q.Reader.Type; }
 		}
 		
 		public override object Value {
-			get { return q.Reader.Value; }
+			get { return _q.Reader.Value; }
 		}
 
 		protected override void Dispose (bool disposing)
 		{
-			do_work = false;
+			_doWork = false;
 		}
 		
 		public override bool Read ()
 		{
-			if (q.IsEmpty)
-				wait.WaitOne ();
-			return q.Reader.Read ();
+			if (_q.IsEmpty)
+			{
+				_wait.WaitOne ();
+			}
+
+			return _q.Reader.Read ();
 		}
 		
 		public void StartThread ()
@@ -102,16 +102,19 @@ namespace Uno.Xaml
 		
 		public void StartThread (string threadName)
 		{
-			if (thread != null)
+			if (_thread != null)
+			{
 				throw new InvalidOperationException ("Thread has already started");
-			thread = new Thread (new ParameterizedThreadStart (delegate {
-				while (do_work && r.Read ()) {
-					q.Writer.WriteNode (r);
-					wait.Set ();
+			}
+
+			_thread = new Thread (new ParameterizedThreadStart (delegate {
+				while (_doWork && _r.Read ()) {
+					_q.Writer.WriteNode (_r);
+					_wait.Set ();
 				}
-				read_all_done = true;
+				_readAllDone = true;
 			})) { Name = threadName };
-			thread.Start ();
+			_thread.Start ();
 		}
 	}
 }

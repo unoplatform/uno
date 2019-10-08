@@ -16,7 +16,7 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -24,16 +24,9 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Windows.Markup;
-using Uno.Xaml;
 using Uno.Xaml.Schema;
-using System.Xml;
 
 #if DOTNET
 namespace Mono.Xaml
@@ -45,25 +38,25 @@ namespace Uno.Xaml
 	{
 		public XamlWriterInternalBase (XamlSchemaContext schemaContext, XamlWriterStateManager manager)
 		{
-			this.sctx = schemaContext;
-			this.manager = manager;
-			var p = new PrefixLookup (sctx) { IsCollectingNamespaces = true }; // it does not raise unknown namespace error.
-			service_provider = new ValueSerializerContext (p, schemaContext, AmbientProvider);
+			_sctx = schemaContext;
+			_manager = manager;
+			var p = new PrefixLookup (_sctx) { IsCollectingNamespaces = true }; // it does not raise unknown namespace error.
+			ServiceProvider = new ValueSerializerContext (p, schemaContext, AmbientProvider);
 		}
 
-		XamlSchemaContext sctx;
-		XamlWriterStateManager manager;
+		private readonly XamlSchemaContext _sctx;
+		private readonly XamlWriterStateManager _manager;
 
-		internal IValueSerializerContext service_provider;
+		internal IValueSerializerContext ServiceProvider;
 
-		internal ObjectState root_state;
-		internal Stack<ObjectState> object_states = new Stack<ObjectState> ();
-		internal PrefixLookup prefix_lookup {
-			get { return (PrefixLookup) service_provider.GetService (typeof (INamespacePrefixLookup)); }
+		internal ObjectState RootState;
+		internal Stack<ObjectState> ObjectStates = new Stack<ObjectState> ();
+		internal PrefixLookup PrefixLookup {
+			get { return (PrefixLookup) ServiceProvider.GetService (typeof (INamespacePrefixLookup)); }
 		}
 
-		List<NamespaceDeclaration> namespaces {
-			get { return prefix_lookup.Namespaces; }
+		private List<NamespaceDeclaration> Namespaces {
+			get { return PrefixLookup.Namespaces; }
 		}
 
 		internal virtual IAmbientProvider AmbientProvider {
@@ -98,8 +91,8 @@ namespace Uno.Xaml
 
 		public void CloseAll ()
 		{
-			while (object_states.Count > 0) {
-				switch (manager.State) {
+			while (ObjectStates.Count > 0) {
+				switch (_manager.State) {
 				case XamlWriteState.MemberDone:
 				case XamlWriteState.ObjectStarted: // StartObject without member
 					WriteEndObject ();
@@ -107,43 +100,48 @@ namespace Uno.Xaml
 				case XamlWriteState.ValueWritten:
 				case XamlWriteState.ObjectWritten:
 				case XamlWriteState.MemberStarted: // StartMember without content
-					manager.OnClosingItem ();
+					_manager.OnClosingItem ();
 					WriteEndMember ();
 					break;
 				default:
-					throw new NotImplementedException (manager.State.ToString ()); // there shouldn't be anything though
+					throw new NotImplementedException (_manager.State.ToString ()); // there shouldn't be anything though
 				}
 			}
 		}
 
 		internal string GetPrefix (string ns)
 		{
-			foreach (var nd in namespaces)
+			foreach (var nd in Namespaces)
+			{
 				if (nd.Namespace == ns)
+				{
 					return nd.Prefix;
+				}
+			}
+
 			return null;
 		}
 
 		protected MemberAndValue CurrentMemberState {
-			get { return object_states.Count > 0 ? object_states.Peek ().WrittenProperties.LastOrDefault () : null; }
+			get { return ObjectStates.Count > 0 ? ObjectStates.Peek ().WrittenProperties.LastOrDefault () : null; }
 		}
 
 		protected XamlMember CurrentMember {
 			get {
 				var mv = CurrentMemberState;
-				return mv != null ? mv.Member : null;
+				return mv?.Member;
 			}
 		}
 
 		public void WriteGetObject ()
 		{
-			manager.GetObject ();
+			_manager.GetObject ();
 
 			var xm = CurrentMember;
 
 			var state = new ObjectState () {Type = xm.Type, IsGetObject = true};
 
-			object_states.Push (state);
+			ObjectStates.Push (state);
 
 			OnWriteGetObject ();
 		}
@@ -151,30 +149,34 @@ namespace Uno.Xaml
 		public void WriteNamespace (NamespaceDeclaration namespaceDeclaration)
 		{
 			if (namespaceDeclaration == null)
-				throw new ArgumentNullException ("namespaceDeclaration");
+			{
+				throw new ArgumentNullException (nameof(namespaceDeclaration));
+			}
 
-			manager.Namespace ();
+			_manager.Namespace ();
 
-			namespaces.Add (namespaceDeclaration);
+			Namespaces.Add (namespaceDeclaration);
 			OnWriteNamespace (namespaceDeclaration);
 		}
 
 		public void WriteStartObject (XamlType xamlType)
 		{
 			if (xamlType == null)
-				throw new ArgumentNullException ("xamlType");
+			{
+				throw new ArgumentNullException (nameof(xamlType));
+			}
 
-			manager.StartObject ();
+			_manager.StartObject ();
 
 			var cstate = new ObjectState () {Type = xamlType};
-			object_states.Push (cstate);
+			ObjectStates.Push (cstate);
 
 			OnWriteStartObject ();
 		}
 		
 		public void WriteValue (object value)
 		{
-			manager.Value ();
+			_manager.Value ();
 
 			OnWriteValue (value);
 		}
@@ -182,42 +184,51 @@ namespace Uno.Xaml
 		public void WriteStartMember (XamlMember property)
 		{
 			if (property == null)
-				throw new ArgumentNullException ("property");
+			{
+				throw new ArgumentNullException (nameof(property));
+			}
 
-			manager.StartMember ();
+			_manager.StartMember ();
 			if (property == XamlLanguage.PositionalParameters)
+			{
 				// this is an exception that indicates the state manager to accept more than values within this member.
-				manager.AcceptMultipleValues = true;
+				_manager.AcceptMultipleValues = true;
+			}
 
-			var state = object_states.Peek ();
+			var state = ObjectStates.Peek ();
 			var wpl = state.WrittenProperties;
 			if (wpl.Any (wp => wp.Member == property))
-				throw new XamlDuplicateMemberException (String.Format ("Property '{0}' is already set to this '{1}' object", property, object_states.Peek ().Type));
+			{
+				throw new XamlDuplicateMemberException (string.Format ("Property '{0}' is already set to this '{1}' object", property, ObjectStates.Peek ().Type));
+			}
+
 			wpl.Add (new MemberAndValue (property));
 			if (property == XamlLanguage.PositionalParameters)
+			{
 				state.PositionalParameterIndex = 0;
+			}
 
 			OnWriteStartMember (property);
 		}
 		
 		public void WriteEndObject ()
 		{
-			manager.EndObject (object_states.Count > 1);
+			_manager.EndObject (ObjectStates.Count > 1);
 
 			OnWriteEndObject ();
 
-			object_states.Pop ();
+			ObjectStates.Pop ();
 		}
 
 		public void WriteEndMember ()
 		{
-			manager.EndMember ();
+			_manager.EndMember ();
 
 			OnWriteEndMember ();
 			
-			var state = object_states.Peek ();
+			var state = ObjectStates.Peek ();
 			if (CurrentMember == XamlLanguage.PositionalParameters) {
-				manager.AcceptMultipleValues = false;
+				_manager.AcceptMultipleValues = false;
 				state.PositionalParameterIndex = -1;
 			}
 		}
@@ -239,17 +250,26 @@ namespace Uno.Xaml
 		protected string GetValueString (XamlMember xm, object value)
 		{
 			// change XamlXmlReader too if we change here.
-			if ((value as string) == String.Empty) // FIXME: there could be some escape syntax.
+			if ((value as string) == string.Empty) // FIXME: there could be some escape syntax.
+			{
 				return "\"\"";
-			if (value is string)
-				return (string) value;
+			}
 
-			var xt = value == null ? XamlLanguage.Null : sctx.GetXamlType (value.GetType ());
+			if (value is string)
+			{
+				return (string) value;
+			}
+
+			var xt = value == null ? XamlLanguage.Null : _sctx.GetXamlType (value.GetType ());
 			var vs = xm.ValueSerializer ?? xt.ValueSerializer;
 			if (vs != null)
-				return vs.ConverterInstance.ConvertToString (value, service_provider);
+			{
+				return vs.ConverterInstance.ConvertToString (value, ServiceProvider);
+			}
 			else
-				throw new XamlXmlWriterException (String.Format ("Value type is '{0}' but it must be either string or any type that is convertible to string indicated by TypeConverterAttribute.", value != null ? value.GetType () : null));
+			{
+				throw new XamlXmlWriterException (string.Format ("Value type is '{0}' but it must be either string or any type that is convertible to string indicated by TypeConverterAttribute.", value?.GetType ()));
+			}
 		}
 	}
 }

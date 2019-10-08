@@ -15,22 +15,15 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Reflection;
-using System.Windows.Markup;
-using Uno.Xaml.Schema;
 
 namespace System.Windows.Markup
 {
-	[AttributeUsageAttribute(AttributeTargets.Class|AttributeTargets.Property, AllowMultiple = false, Inherited = true)]
+	[AttributeUsage(AttributeTargets.Class|AttributeTargets.Property)]
 	public sealed class XamlDeferLoadAttribute : Attribute
 	{
 		public XamlDeferLoadAttribute (string loaderType, string contentType)
@@ -45,10 +38,10 @@ namespace System.Windows.Markup
 			ContentType = contentType;
 		}
 		
-		public Type ContentType { get; private set; }
-		public string ContentTypeName { get; private set; }
-		public Type LoaderType { get; private set; }
-		public string LoaderTypeName { get; private set; }
+		public Type ContentType { get; }
+		public string ContentTypeName { get; }
+		public Type LoaderType { get; }
+		public string LoaderTypeName { get; }
 
 	}
 }

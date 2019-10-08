@@ -15,7 +15,7 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -24,60 +24,77 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Windows.Markup;
-using Uno.Xaml;
 using Uno.Xaml.Schema;
-using System.Xml;
 
 namespace Uno.Xaml
 {
 	internal class ValueSerializerContext : IValueSerializerContext, IXamlSchemaContextProvider
 	{
-		XamlNameResolver name_resolver = new XamlNameResolver ();
-		XamlTypeResolver type_resolver;
-		NamespaceResolver namespace_resolver;
-		PrefixLookup prefix_lookup;
-		XamlSchemaContext sctx;
-		IAmbientProvider ambient_provider;
+		private readonly XamlNameResolver _nameResolver = new XamlNameResolver ();
+		private readonly XamlTypeResolver _typeResolver;
+		private readonly NamespaceResolver _namespaceResolver;
+		private readonly PrefixLookup _prefixLookup;
+		private readonly XamlSchemaContext _sctx;
+		private readonly IAmbientProvider _ambientProvider;
 
 		public ValueSerializerContext (PrefixLookup prefixLookup, XamlSchemaContext schemaContext, IAmbientProvider ambientProvider)
 		{
-			if (prefixLookup == null)
-				throw new ArgumentNullException ("prefixLookup");
 			if (schemaContext == null)
-				throw new ArgumentNullException ("schemaContext");
-			prefix_lookup = prefixLookup;
-			namespace_resolver = new NamespaceResolver (prefix_lookup.Namespaces);
-			type_resolver = new XamlTypeResolver (namespace_resolver, schemaContext);
-			sctx = schemaContext;
-			ambient_provider = ambientProvider;
+			{
+				throw new ArgumentNullException (nameof(schemaContext));
+			}
+
+			_prefixLookup = prefixLookup ?? throw new ArgumentNullException (nameof(prefixLookup));
+			_namespaceResolver = new NamespaceResolver (_prefixLookup.Namespaces);
+			_typeResolver = new XamlTypeResolver (_namespaceResolver, schemaContext);
+			_sctx = schemaContext;
+			_ambientProvider = ambientProvider;
 		}
 
 		public object GetService (Type serviceType)
 		{
 			if (serviceType == typeof (INamespacePrefixLookup))
-				return prefix_lookup;
+			{
+				return _prefixLookup;
+			}
+
 			if (serviceType == typeof (IXamlNamespaceResolver))
-				return namespace_resolver;
+			{
+				return _namespaceResolver;
+			}
+
 			if (serviceType == typeof (IXamlNameResolver))
-				return name_resolver;
+			{
+				return _nameResolver;
+			}
+
 			if (serviceType == typeof (IXamlNameProvider))
-				return name_resolver;
+			{
+				return _nameResolver;
+			}
+
 			if (serviceType == typeof (IXamlTypeResolver))
-				return type_resolver;
+			{
+				return _typeResolver;
+			}
+
 			if (serviceType == typeof (IAmbientProvider))
-				return ambient_provider;
+			{
+				return _ambientProvider;
+			}
+
 			if (serviceType == typeof (IXamlSchemaContextProvider))
+			{
 				return this;
+			}
+
 			return null;
 		}
 		
 		XamlSchemaContext IXamlSchemaContextProvider.SchemaContext {
-			get { return sctx; }
+			get { return _sctx; }
 		}
 		
 		public IContainer Container {
@@ -109,19 +126,19 @@ namespace Uno.Xaml
 
 	internal class XamlTypeResolver : IXamlTypeResolver
 	{
-		NamespaceResolver ns_resolver;
-		XamlSchemaContext schema_context;
+		private readonly NamespaceResolver _nsResolver;
+		private readonly XamlSchemaContext _schemaContext;
 
 		public XamlTypeResolver (NamespaceResolver namespaceResolver, XamlSchemaContext schemaContext)
 		{
-			ns_resolver = namespaceResolver;
-			schema_context = schemaContext;
+			_nsResolver = namespaceResolver;
+			_schemaContext = schemaContext;
 		}
 
 		public Type Resolve (string typeName)
 		{
-			var tn = XamlTypeName.Parse (typeName, ns_resolver);
-			var xt = schema_context.GetXamlType (tn);
+			var tn = XamlTypeName.Parse (typeName, _nsResolver);
+			var xt = _schemaContext.GetXamlType (tn);
 			return xt != null ? xt.UnderlyingType : null;
 		}
 	}
@@ -130,39 +147,44 @@ namespace Uno.Xaml
 	{
 		public NamespaceResolver (IList<NamespaceDeclaration> source)
 		{
-			this.source = source;
+			_source = source;
 		}
-	
-		IList<NamespaceDeclaration> source;
+
+		private readonly IList<NamespaceDeclaration> _source;
 	
 		public string GetNamespace (string prefix)
 		{
-			foreach (var nsd in source)
+			foreach (var nsd in _source)
+			{
 				if (nsd.Prefix == prefix)
+				{
 					return nsd.Namespace;
+				}
+			}
+
 			return null;
 		}
 	
 		public IEnumerable<NamespaceDeclaration> GetNamespacePrefixes ()
 		{
-			return source;
+			return _source;
 		}
 	}
 
 	internal class AmbientProvider : IAmbientProvider
 	{
-		List<AmbientPropertyValue> values = new List<AmbientPropertyValue> ();
-		Stack<AmbientPropertyValue> live_stack = new Stack<AmbientPropertyValue> ();
+		private readonly List<AmbientPropertyValue> _values = new List<AmbientPropertyValue> ();
+		private readonly Stack<AmbientPropertyValue> _liveStack = new Stack<AmbientPropertyValue> ();
 
 		public void Push (AmbientPropertyValue v)
 		{
-			live_stack.Push (v);
-			values.Add (v);
+			_liveStack.Push (v);
+			_values.Add (v);
 		}
 
 		public void Pop ()
 		{
-			live_stack.Pop ();
+			_liveStack.Pop ();
 		}
 
 		public IEnumerable<object> GetAllAmbientValues (params XamlType [] types)
@@ -179,50 +201,72 @@ namespace Uno.Xaml
 		{
 			return DoGetAllAmbientValues (ceilingTypes, searchLiveStackOnly, types, properties).ToList ();
 		}
-		
-		IEnumerable<AmbientPropertyValue> DoGetAllAmbientValues (IEnumerable<XamlType> ceilingTypes, bool searchLiveStackOnly, IEnumerable<XamlType> types, params XamlMember [] properties)
+
+		private IEnumerable<AmbientPropertyValue> DoGetAllAmbientValues (IEnumerable<XamlType> ceilingTypes, bool searchLiveStackOnly, IEnumerable<XamlType> types, params XamlMember [] properties)
 		{
 			if (searchLiveStackOnly) {
-				if (live_stack.Count > 0) {
+				if (_liveStack.Count > 0) {
 					// pop, call recursively, then push back.
-					var p = live_stack.Pop ();
+					var p = _liveStack.Pop ();
 					if (p.RetrievedProperty != null && ceilingTypes != null && ceilingTypes.Contains (p.RetrievedProperty.Type))
+					{
 						yield break;
+					}
+
 					if (DoesAmbientPropertyApply (p, types, properties))
+					{
 						yield return p;
+					}
 
 					foreach (var i in GetAllAmbientValues (ceilingTypes, searchLiveStackOnly, types, properties))
+					{
 						yield return i;
+					}
 
-					live_stack.Push (p);
+					_liveStack.Push (p);
 				}
 			} else {
 				// FIXME: does ceilingTypes matter?
-				foreach (var p in values)
+				foreach (var p in _values)
+				{
 					if (DoesAmbientPropertyApply (p, types, properties))
+					{
 						yield return p;
+					}
+				}
 			}
 		}
-		
-		bool DoesAmbientPropertyApply (AmbientPropertyValue p, IEnumerable<XamlType> types, params XamlMember [] properties)
+
+		private bool DoesAmbientPropertyApply (AmbientPropertyValue p, IEnumerable<XamlType> types, params XamlMember [] properties)
 		{
 			if (types == null || !types.Any () || types.Any (xt => xt.UnderlyingType != null && xt.UnderlyingType.IsInstanceOfType (p.Value)))
+			{
 				if (properties == null || !properties.Any () || properties.Contains (p.RetrievedProperty))
+				{
 					return true;
+				}
+			}
+
 			return false;
 		}
 		
 		public object GetFirstAmbientValue (params XamlType [] types)
 		{
 			foreach (var obj in GetAllAmbientValues (types))
+			{
 				return obj;
+			}
+
 			return null;
 		}
 		
 		public AmbientPropertyValue GetFirstAmbientValue (IEnumerable<XamlType> ceilingTypes, params XamlMember [] properties)
 		{
 			foreach (var obj in GetAllAmbientValues (ceilingTypes, properties))
+			{
 				return obj;
+			}
+
 			return null;
 		}
 	}

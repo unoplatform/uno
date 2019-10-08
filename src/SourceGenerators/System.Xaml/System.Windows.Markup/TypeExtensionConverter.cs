@@ -15,16 +15,14 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-using System;
-using System.Collections.Generic;
+
 using System.ComponentModel;
 using System.Globalization;
-using System.Reflection;
 using Uno.Xaml;
 using Uno.Xaml.Schema;
 
@@ -61,7 +59,7 @@ namespace System.Windows.Markup
 			}
 
 			var vctx = (IValueSerializerContext) context;
-			var lookup = vctx != null ? (INamespacePrefixLookup) vctx.GetService (typeof (INamespacePrefixLookup)) : null;
+			var lookup = (INamespacePrefixLookup) vctx?.GetService (typeof (INamespacePrefixLookup));
 			return tx.TypeName ?? new XamlTypeName ((XamlType) tx.ProvideValue (vctx)).ToString (lookup);
 		}
 	}

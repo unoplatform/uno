@@ -15,7 +15,7 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -46,72 +46,80 @@ namespace Uno.Xaml
 		public XamlType (Type underlyingType, XamlSchemaContext schemaContext, XamlTypeInvoker invoker)
 			: this (schemaContext, invoker)
 		{
-			if (underlyingType == null)
-				throw new ArgumentNullException ("underlyingType");
-			type = underlyingType;
-			underlying_type = type;
+			_type = underlyingType ?? throw new ArgumentNullException (nameof(underlyingType));
+			_underlyingType = _type;
 
 			XamlType xt;
 			if (XamlLanguage.InitializingTypes) {
 				// These are special. Only XamlLanguage members are with shorthand name.
-				if (type == typeof (PropertyDefinition))
+				if (_type == typeof (PropertyDefinition))
+				{
 					Name = "Property";
-				else if (type == typeof (MemberDefinition))
+				}
+				else if (_type == typeof (MemberDefinition))
+				{
 					Name = "Member";
+				}
 				else
-					Name = GetXamlName (type);
+				{
+					Name = GetXamlName (_type);
+				}
+
 				PreferredXamlNamespace = XamlLanguage.Xaml2006Namespace;
-			} else if ((xt = XamlLanguage.AllTypes.FirstOrDefault (t => t.UnderlyingType == type)) != null) {
+			} else if ((xt = XamlLanguage.AllTypes.FirstOrDefault (t => t.UnderlyingType == _type)) != null) {
 				Name = xt.Name;
 				PreferredXamlNamespace = XamlLanguage.Xaml2006Namespace;
 			} else {
-				Name = GetXamlName (type);
-				PreferredXamlNamespace = schemaContext.GetXamlNamespace (type.Namespace) ?? String.Format ("clr-namespace:{0};assembly={1}", type.Namespace, type.Assembly.GetName ().Name);
+				Name = GetXamlName (_type);
+				PreferredXamlNamespace = schemaContext.GetXamlNamespace (_type.Namespace) ?? string.Format ("clr-namespace:{0};assembly={1}", _type.Namespace, _type.Assembly.GetName ().Name);
 			}
-			if (type.IsGenericType) {
-				TypeArguments = new List<XamlType> ();
-				foreach (var gta in type.GetGenericArguments ())
-					TypeArguments.Add (schemaContext.GetXamlType (gta));
+
+			if (!_type.IsGenericType)
+			{
+				return;
+			}
+
+			TypeArguments = new List<XamlType> ();
+			foreach (var gta in _type.GetGenericArguments ())
+			{
+				TypeArguments.Add (schemaContext.GetXamlType (gta));
 			}
 		}
 
 		public XamlType (string unknownTypeNamespace, string unknownTypeName, IList<XamlType> typeArguments, XamlSchemaContext schemaContext)
 			: this (schemaContext, null)
 		{
-			if (unknownTypeNamespace == null)
-				throw new ArgumentNullException ("unknownTypeNamespace");
-			if (unknownTypeName == null)
-				throw new ArgumentNullException ("unknownTypeName");
 			if (schemaContext == null)
-				throw new ArgumentNullException ("schemaContext");
+			{
+				throw new ArgumentNullException (nameof(schemaContext));
+			}
 
-			type = typeof (object);
-			Name = unknownTypeName;
-			PreferredXamlNamespace = unknownTypeNamespace;
+			_type = typeof (object);
+			Name = unknownTypeName ?? throw new ArgumentNullException (nameof(unknownTypeName));
+			PreferredXamlNamespace = unknownTypeNamespace ?? throw new ArgumentNullException (nameof(unknownTypeNamespace));
 			TypeArguments = typeArguments != null && typeArguments.Count == 0 ? null : typeArguments;
 //			explicit_ns = unknownTypeNamespace;
 		}
 
 		protected XamlType (string typeName, IList<XamlType> typeArguments, XamlSchemaContext schemaContext)
-			: this (String.Empty, typeName, typeArguments, schemaContext)
+			: this (string.Empty, typeName, typeArguments, schemaContext)
 		{
 		}
 
-		XamlType (XamlSchemaContext schemaContext, XamlTypeInvoker invoker)
+		private XamlType (XamlSchemaContext schemaContext, XamlTypeInvoker invoker)
 		{
-			if (schemaContext == null)
-				throw new ArgumentNullException ("schemaContext");
-			SchemaContext = schemaContext;
-			this.invoker = invoker ?? new XamlTypeInvoker (this);
+			SchemaContext = schemaContext ?? throw new ArgumentNullException (nameof(schemaContext));
+			_invoker = invoker ?? new XamlTypeInvoker (this);
 		}
 
-		Type type, underlying_type;
+		private readonly Type _type;
+		private readonly Type _underlyingType;
 
 //		string explicit_ns;
 
 		// populated properties
-		XamlType base_type;
-		XamlTypeInvoker invoker;
+		private XamlType _baseType;
+		private readonly XamlTypeInvoker _invoker;
 
 		internal EventHandler<XamlSetMarkupExtensionEventArgs> SetMarkupExtensionHandler {
 			get { return LookupSetMarkupExtensionHandler (); }
@@ -171,7 +179,7 @@ namespace Uno.Xaml
 		}
 
 		public bool IsGeneric {
-			get { return type.IsGenericType; }
+			get { return _type.IsGenericType; }
 		}
 
 		public bool IsMarkupExtension {
@@ -220,17 +228,17 @@ namespace Uno.Xaml
 			get { return LookupMarkupExtensionReturnType (); }
 		}
 
-		public string Name { get; private set; }
+		public string Name { get; }
 
-		public string PreferredXamlNamespace { get; private set; }
+		public string PreferredXamlNamespace { get; }
 
-		public XamlSchemaContext SchemaContext { get; private set; }
+		public XamlSchemaContext SchemaContext { get; }
 
 		public bool TrimSurroundingWhitespace {
 			get { return LookupTrimSurroundingWhitespace (); }
 		}
 
-		public IList<XamlType> TypeArguments { get; private set; }
+		public IList<XamlType> TypeArguments { get; }
 
 		public XamlValueConverter<TypeConverter> TypeConverter {
 			get { return LookupTypeConverter (); }
@@ -247,7 +255,10 @@ namespace Uno.Xaml
 		internal string GetInternalXmlName ()
 		{
 			if (IsMarkupExtension && Name.EndsWith ("Extension", StringComparison.Ordinal))
+			{
 				return Name.Substring (0, Name.Length - 9);
+			}
+
 			var stn = XamlLanguage.SpecialNames.FirstOrDefault (s => s.Type == this);
 			return stn != null ? stn.Name : Name;
 		}
@@ -257,9 +268,9 @@ namespace Uno.Xaml
 			return IsNull (xamlType1) ? IsNull (xamlType2) : xamlType1.Equals (xamlType2);
 		}
 
-		static bool IsNull (XamlType a)
+		private static bool IsNull (XamlType a)
 		{
-			return Object.ReferenceEquals (a, null);
+			return ReferenceEquals (a, null);
 		}
 
 		public static bool operator != (XamlType xamlType1, XamlType xamlType2)
@@ -285,11 +296,19 @@ namespace Uno.Xaml
 		public override int GetHashCode ()
 		{
 			if (UnderlyingType != null)
+			{
 				return UnderlyingType.GetHashCode ();
+			}
+
 			int x = Name.GetHashCode () << 7 + PreferredXamlNamespace.GetHashCode ();
 			if (TypeArguments != null)
+			{
 				foreach (var t in TypeArguments)
+				{
 					x = t.GetHashCode () + x << 5;
+				}
+			}
+
 			return x;
 		}
 
@@ -301,8 +320,11 @@ namespace Uno.Xaml
 
 		public virtual bool CanAssignTo (XamlType xamlType)
 		{
-			if (this.UnderlyingType == null)
+			if (UnderlyingType == null)
+			{
 				return xamlType == XamlLanguage.Object;
+			}
+
 			var ut = xamlType.UnderlyingType ?? typeof (object);
 			return ut.IsAssignableFrom (UnderlyingType);
 		}
@@ -376,15 +398,18 @@ namespace Uno.Xaml
 		protected virtual IEnumerable<XamlMember> LookupAllAttachableMembers ()
 		{
 			if (UnderlyingType == null)
-				return BaseType != null ? BaseType.GetAllAttachableMembers () : empty_array;
-			if (all_attachable_members_cache == null) {
-				all_attachable_members_cache = new List<XamlMember> (DoLookupAllAttachableMembers ());
-				all_attachable_members_cache.Sort (TypeExtensionMethods.CompareMembers);
+			{
+				return BaseType != null ? BaseType.GetAllAttachableMembers () : EmptyArray;
 			}
-			return all_attachable_members_cache;
+
+			if (_allAttachableMembersCache == null) {
+				_allAttachableMembersCache = new List<XamlMember> (DoLookupAllAttachableMembers ());
+				_allAttachableMembersCache.Sort (TypeExtensionMethods.CompareMembers);
+			}
+			return _allAttachableMembersCache;
 		}
 
-		IEnumerable<XamlMember> DoLookupAllAttachableMembers ()
+		private IEnumerable<XamlMember> DoLookupAllAttachableMembers ()
 		{
 			// based on http://msdn.microsoft.com/en-us/library/ff184560.aspx
 			var bf = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
@@ -398,10 +423,16 @@ namespace Uno.Xaml
 				string name = null;
 				if (mi.Name.StartsWith ("Get", StringComparison.Ordinal)) {
 					if (mi.ReturnType == typeof (void))
+					{
 						continue;
+					}
+
 					var args = mi.GetParameters ();
 					if (args.Length != 1)
+					{
 						continue;
+					}
+
 					name = mi.Name.Substring (3);
 					gl.Add (name, mi);
 				} else if (mi.Name.StartsWith ("Set", StringComparison.Ordinal)) {
@@ -410,13 +441,19 @@ namespace Uno.Xaml
 					//	continue;
 					var args = mi.GetParameters ();
 					if (args.Length != 2)
+					{
 						continue;
+					}
+
 					name = mi.Name.Substring (3);
 					sl.Add (name, mi);
 				} else if (mi.Name.EndsWith ("Handler", StringComparison.Ordinal)) {
 					var args = mi.GetParameters ();
 					if (args.Length != 2)
+					{
 						continue;
+					}
+
 					if (mi.Name.StartsWith ("Add", StringComparison.Ordinal)) {
 						name = mi.Name.Substring (3, mi.Name.Length - 3 - 7);
 						al.Add (name, mi);
@@ -426,65 +463,86 @@ namespace Uno.Xaml
 					}*/
 				}
 				if (name != null && !nl.Contains (name))
+				{
 					nl.Add (name);
+				}
 			}
 
 			foreach (var name in nl) {
-				MethodInfo m;
-				var g = gl.TryGetValue (name, out m) ? m : null;
+				var g = gl.TryGetValue (name, out var m) ? m : null;
 				var s = sl.TryGetValue (name, out m) ? m : null;
 				if (g != null || s != null)
+				{
 					yield return new XamlMember (name, g, s, SchemaContext);
+				}
+
 				var a = al.TryGetValue (name, out m) ? m : null;
 				//var r = rl.TryGetValue (name, out m) ? m : null;
 				if (a != null)
+				{
 					yield return new XamlMember (name, a, SchemaContext);
+				}
 			}
 		}
 
-		static readonly XamlMember [] empty_array = new XamlMember [0];
+		private static readonly XamlMember [] EmptyArray = new XamlMember [0];
 
 		protected virtual IEnumerable<XamlMember> LookupAllMembers ()
 		{
 			if (UnderlyingType == null)
-				return BaseType != null ? BaseType.GetAllMembers () : empty_array;
-			if (all_members_cache == null) {
-				all_members_cache = new List<XamlMember> (DoLookupAllMembers ());
-				all_members_cache.Sort (TypeExtensionMethods.CompareMembers);
+			{
+				return BaseType != null ? BaseType.GetAllMembers () : EmptyArray;
 			}
-			return all_members_cache;
-		}
-		
-		List<XamlMember> all_members_cache;
-		List<XamlMember> all_attachable_members_cache;
 
-		IEnumerable<XamlMember> DoLookupAllMembers ()
+			if (_allMembersCache == null) {
+				_allMembersCache = new List<XamlMember> (DoLookupAllMembers ());
+				_allMembersCache.Sort (TypeExtensionMethods.CompareMembers);
+			}
+			return _allMembersCache;
+		}
+
+		private List<XamlMember> _allMembersCache;
+		private List<XamlMember> _allAttachableMembersCache;
+
+		private IEnumerable<XamlMember> DoLookupAllMembers ()
 		{
 			// This is a hack that is likely required due to internal implementation difference in System.Uri. Our Uri has two readonly collection properties
 			if (this == XamlLanguage.Uri)
+			{
 				yield break;
+			}
 
 			var bf = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
 			foreach (var pi in UnderlyingType.GetProperties (bf)) {
 				if (pi.Name.Contains (".")) // exclude explicit interface implementations.
+				{
 					continue;
+				}
+
 				if (pi.CanRead && (pi.CanWrite || IsCollectionType (pi.PropertyType) || typeof (IXmlSerializable).IsAssignableFrom (pi.PropertyType)) && pi.GetIndexParameters ().Length == 0)
+				{
 					yield return new XamlMember (pi, SchemaContext);
+				}
 			}
 			foreach (var ei in UnderlyingType.GetEvents (bf))
+			{
 				yield return new XamlMember (ei, SchemaContext);
+			}
 		}
-		
-		static bool IsPublicAccessor (MethodInfo mi)
+
+		private static bool IsPublicAccessor (MethodInfo mi)
 		{
 			return mi != null && mi.IsPublic;
 		}
 
-		bool IsCollectionType (Type type)
+		private bool IsCollectionType (Type type)
 		{
 			if (type == null)
+			{
 				return false;
+			}
+
 			var xt = SchemaContext.GetXamlType (type);
 			return xt.LookupCollectionKind () != XamlCollectionKind.None;
 		}
@@ -513,28 +571,41 @@ namespace Uno.Xaml
 
 		protected virtual XamlType LookupBaseType ()
 		{
-			if (base_type == null) {
+			if (_baseType == null) {
 				if (UnderlyingType == null)
-					base_type = SchemaContext.GetXamlType (typeof (object));
+				{
+					_baseType = SchemaContext.GetXamlType (typeof (object));
+				}
 				else
-					base_type = type.BaseType == null || type.BaseType == typeof (object) ? null : SchemaContext.GetXamlType (type.BaseType);
+				{
+					_baseType = _type.BaseType == null || _type.BaseType == typeof (object) ? null : SchemaContext.GetXamlType (_type.BaseType);
+				}
 			}
-			return base_type;
+			return _baseType;
 		}
 
 		// This implementation is not verified. (No place to use.)
 		protected internal virtual XamlCollectionKind LookupCollectionKind ()
 		{
 			if (UnderlyingType == null)
+			{
 				return BaseType != null ? BaseType.LookupCollectionKind () : XamlCollectionKind.None;
-			if (type.IsArray)
+			}
+
+			if (_type.IsArray)
+			{
 				return XamlCollectionKind.Array;
+			}
 
-			if (type.ImplementsAnyInterfacesOf (typeof (IDictionary), typeof (IDictionary<,>)))
+			if (_type.ImplementsAnyInterfacesOf (typeof (IDictionary), typeof (IDictionary<,>)))
+			{
 				return XamlCollectionKind.Dictionary;
+			}
 
-			if (type.ImplementsAnyInterfacesOf (typeof (IList), typeof (ICollection<>)))
+			if (_type.ImplementsAnyInterfacesOf (typeof (IList), typeof (ICollection<>)))
+			{
 				return XamlCollectionKind.Collection;
+			}
 
 			return XamlCollectionKind.None;
 		}
@@ -542,11 +613,15 @@ namespace Uno.Xaml
 		protected virtual bool LookupConstructionRequiresArguments ()
 		{
 			if (UnderlyingType == null)
+			{
 				return false;
+			}
 
 			// not sure if it is required, but MemberDefinition return true while they are abstract and it makes no sense.
 			if (UnderlyingType.IsAbstract)
+			{
 				return true;
+			}
 
 			// FIXME: probably some primitive types are treated as special.
 			switch (Type.GetTypeCode (UnderlyingType)) {
@@ -554,8 +629,11 @@ namespace Uno.Xaml
 				return true;
 			case TypeCode.Object:
 				if (UnderlyingType == typeof (TimeSpan))
-					return false;
-				break;
+					{
+						return false;
+					}
+
+					break;
 			default:
 				return false;
 			}
@@ -572,14 +650,22 @@ namespace Uno.Xaml
 		protected virtual IList<XamlType> LookupContentWrappers ()
 		{
 			if (GetCustomAttributeProvider () == null)
+			{
 				return null;
+			}
 
 			var arr = GetCustomAttributeProvider ().GetCustomAttributes (typeof (ContentWrapperAttribute), false);
 			if (arr == null || arr.Length == 0)
+			{
 				return null;
+			}
+
 			var l = new XamlType [arr.Length];
-			for (int i = 0; i < l.Length; i++) 
+			for (int i = 0; i < l.Length; i++)
+			{
 				l [i] = SchemaContext.GetXamlType (((ContentWrapperAttribute) arr [i]).ContentWrapper);
+			}
+
 			return l;
 		}
 
@@ -600,7 +686,7 @@ namespace Uno.Xaml
 
 		protected virtual XamlTypeInvoker LookupInvoker ()
 		{
-			return invoker;
+			return _invoker;
 		}
 
 		protected virtual bool LookupIsAmbient ()
@@ -614,13 +700,25 @@ namespace Uno.Xaml
 		protected virtual bool LookupIsConstructible ()
 		{
 			if (UnderlyingType == null)
+			{
 				return true;
+			}
+
 			if (IsMarkupExtension)
+			{
 				return true;
+			}
+
 			if (UnderlyingType.IsAbstract)
+			{
 				return false;
+			}
+
 			if (!IsNameValid)
+			{
 				return false;
+			}
+
 			return true;
 		}
 
@@ -636,12 +734,12 @@ namespace Uno.Xaml
 
 		protected virtual bool LookupIsNullable ()
 		{
-			return !type.IsValueType || type.IsGenericType && type.GetGenericTypeDefinition () == typeof (Nullable<>);
+			return !_type.IsValueType || _type.IsGenericType && _type.GetGenericTypeDefinition () == typeof (Nullable<>);
 		}
 
 		protected virtual bool LookupIsPublic ()
 		{
-			return underlying_type == null || underlying_type.IsPublic || underlying_type.IsNestedPublic;
+			return _underlyingType == null || _underlyingType.IsPublic || _underlyingType.IsNestedPublic;
 		}
 
 		protected virtual bool LookupIsUnknown ()
@@ -663,26 +761,44 @@ namespace Uno.Xaml
 		protected virtual XamlType LookupItemType ()
 		{
 			if (IsArray)
-				return new XamlType (type.GetElementType (), SchemaContext);
+			{
+				return new XamlType (_type.GetElementType (), SchemaContext);
+			}
+
 			if (IsDictionary) {
 				if (!IsGeneric)
+				{
 					return new XamlType (typeof (object), SchemaContext);
-				return new XamlType (type.GetGenericArguments () [1], SchemaContext);
+				}
+
+				return new XamlType (_type.GetGenericArguments () [1], SchemaContext);
 			}
 			if (!IsCollection)
+			{
 				return null;
+			}
+
 			if (!IsGeneric)
+			{
 				return new XamlType (typeof (object), SchemaContext);
-			return new XamlType (type.GetGenericArguments () [0], SchemaContext);
+			}
+
+			return new XamlType (_type.GetGenericArguments () [0], SchemaContext);
 		}
 
 		protected virtual XamlType LookupKeyType ()
 		{
 			if (!IsDictionary)
+			{
 				return null;
+			}
+
 			if (!IsGeneric)
+			{
 				return new XamlType (typeof (object), SchemaContext);
-			return new XamlType (type.GetGenericArguments () [0], SchemaContext);
+			}
+
+			return new XamlType (_type.GetGenericArguments () [0], SchemaContext);
 		}
 
 		protected virtual XamlType LookupMarkupExtensionReturnType ()
@@ -700,7 +816,9 @@ namespace Uno.Xaml
 		protected virtual IList<XamlType> LookupPositionalParameters (int parameterCount)
 		{
 			if (UnderlyingType == null/* || !IsMarkupExtension*/) // see nunit tests...
+			{
 				return null;
+			}
 
 			// check if there is applicable ConstructorArgumentAttribute.
 			// If there is, then return its type.
@@ -708,29 +826,42 @@ namespace Uno.Xaml
 				foreach (var xm in GetAllMembers ()) {
 					var ca = xm.GetCustomAttributeProvider ().GetCustomAttribute<ConstructorArgumentAttribute> (false);
 					if (ca != null)
-						return new XamlType [] {xm.Type};
+					{
+						return new[] {xm.Type};
+					}
 				}
 			}
 
 			var methods = (from m in UnderlyingType.GetConstructors (BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance) where m.GetParameters ().Length == parameterCount select m).ToArray ();
 			if (methods.Length == 1)
+			{
 				return (from p in methods [0].GetParameters () select SchemaContext.GetXamlType (p.ParameterType)).ToArray ();
+			}
 
 			if (SchemaContext.SupportMarkupExtensionsWithDuplicateArity)
+			{
 				throw new NotSupportedException ("The default LookupPositionalParameters implementation does not allow duplicate arity of markup extensions");
+			}
+
 			return null;
 		}
 
-		BindingFlags flags_get_static = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
+		private readonly BindingFlags _flagsGetStatic = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
 
 		protected virtual EventHandler<XamlSetMarkupExtensionEventArgs> LookupSetMarkupExtensionHandler ()
 		{
 			var a = this.GetCustomAttribute<XamlSetMarkupExtensionAttribute> ();
 			if (a == null)
+			{
 				return null;
-			var mi = type.GetMethod (a.XamlSetMarkupExtensionHandler, flags_get_static);
+			}
+
+			var mi = _type.GetMethod (a.XamlSetMarkupExtensionHandler, _flagsGetStatic);
 			if (mi == null)
+			{
 				throw new ArgumentException ("Binding to XamlSetMarkupExtensionHandler failed");
+			}
+
 			return (EventHandler<XamlSetMarkupExtensionEventArgs>) Delegate.CreateDelegate (typeof (EventHandler<XamlSetMarkupExtensionEventArgs>), mi);
 		}
 
@@ -738,10 +869,16 @@ namespace Uno.Xaml
 		{
 			var a = this.GetCustomAttribute<XamlSetTypeConverterAttribute> ();
 			if (a == null)
+			{
 				return null;
-			var mi = type.GetMethod (a.XamlSetTypeConverterHandler, flags_get_static);
+			}
+
+			var mi = _type.GetMethod (a.XamlSetTypeConverterHandler, _flagsGetStatic);
 			if (mi == null)
+			{
 				throw new ArgumentException ("Binding to XamlSetTypeConverterHandler failed");
+			}
+
 			return (EventHandler<XamlSetTypeConverterEventArgs>) Delegate.CreateDelegate (typeof (EventHandler<XamlSetTypeConverterEventArgs>), mi);
 		}
 
@@ -754,31 +891,42 @@ namespace Uno.Xaml
 		{
 			var t = UnderlyingType;
 			if (t == null)
+			{
 				return null;
+			}
 
 			// equivalent to TypeExtension.
 			// FIXME: not sure if it should be specially handled here.
 			if (t == typeof (Type))
+			{
 				t = typeof (TypeExtension);
+			}
 
 			var a = GetCustomAttributeProvider ();
-			var ca = a != null ? a.GetCustomAttribute<TypeConverterAttribute> (false) : null;
+			var ca = a?.GetCustomAttribute<TypeConverterAttribute> (false);
 			if (ca != null)
+			{
 				return SchemaContext.GetValueConverter<TypeConverter> (Type.GetType (ca.ConverterTypeName), this);
+			}
 
 			if (t == typeof (object)) // This is a special case. ConverterType is null.
+			{
 				return SchemaContext.GetValueConverter<TypeConverter> (null, this);
+			}
 
 			// It's still not decent to check CollectionConverter.
 			var tct = t.GetTypeConverter ().GetType ();
 			if (tct != typeof (TypeConverter) && tct != typeof (CollectionConverter) && tct != typeof (ReferenceConverter))
+			{
 				return SchemaContext.GetValueConverter<TypeConverter> (tct, this);
+			}
+
 			return null;
 		}
 
 		protected virtual Type LookupUnderlyingType ()
 		{
-			return underlying_type;
+			return _underlyingType;
 		}
 
 		protected virtual bool LookupUsableDuringInitialization ()
@@ -788,7 +936,7 @@ namespace Uno.Xaml
 		}
 
 #if NET461
-		static XamlValueConverter<ValueSerializer> string_value_serializer;
+		private static XamlValueConverter<ValueSerializer> string_value_serializer;
 #endif
 
 		protected virtual XamlValueConverter<ValueSerializer> LookupValueSerializer ()
@@ -799,10 +947,12 @@ namespace Uno.Xaml
 		internal static XamlValueConverter<ValueSerializer> LookupValueSerializer (XamlType targetType, ICustomAttributeProvider provider)
 		{
 			if (provider == null)
+			{
 				return null;
+			}
 
 #if NET461
-            var a = provider.GetCustomAttribute<ValueSerializerAttribute> (true);
+			var a = provider.GetCustomAttribute<ValueSerializerAttribute> (true);
 			if (a != null)
 				return new XamlValueConverter<ValueSerializer> (a.ValueSerializerType ?? Type.GetType (a.ValueSerializerTypeName), targetType);
 
@@ -822,17 +972,26 @@ namespace Uno.Xaml
 			return null;
 		}
 
-		static string GetXamlName (Type type)
+		private static string GetXamlName (Type type)
 		{
 			string n;
 			if (!type.IsNestedPublic && !type.IsNestedAssembly && !type.IsNestedPrivate)
+			{
 				n = type.Name;
+			}
 			else
+			{
 				n = GetXamlName (type.DeclaringType) + "+" + type.Name;
+			}
+
 			if (type.IsGenericType && !type.ContainsGenericParameters) // the latter condition is to filter out "nested non-generic type within generic type".
+			{
 				return n.Substring (0, n.IndexOf ('`'));
+			}
 			else
+			{
 				return n;
+			}
 		}
 	}
 }

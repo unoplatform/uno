@@ -15,20 +15,15 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
-using System.Reflection;
-using System.Windows.Markup;
-using Uno.Xaml.Schema;
-using System.Xml;
 
 namespace Uno.Xaml
 {
@@ -36,23 +31,27 @@ namespace Uno.Xaml
 	{
 		public PrefixLookup (XamlSchemaContext schemaContext)
 		{
-			sctx = schemaContext;
+			_sctx = schemaContext;
 			Namespaces = new List<NamespaceDeclaration> ();
 		}
-		
-		XamlSchemaContext sctx;
+
+		private readonly XamlSchemaContext _sctx;
 		
 		public bool IsCollectingNamespaces { get; set; }
 		
-		public List<NamespaceDeclaration> Namespaces { get; private set; }
+		public List<NamespaceDeclaration> Namespaces { get; }
 
 		public string LookupPrefix (string ns)
 		{
 			var nd = Namespaces.FirstOrDefault (n => n.Namespace == ns);
 			if (nd == null && IsCollectingNamespaces)
+			{
 				return AddNamespace (ns);
+			}
 			else
-				return nd != null ? nd.Prefix : null;
+			{
+				return nd?.Prefix;
+			}
 		}
 		
 		public string AddNamespace (string ns)
@@ -60,30 +59,50 @@ namespace Uno.Xaml
 			var l = Namespaces;
 			string prefix, s;
 			if (ns == XamlLanguage.Xaml2006Namespace)
+			{
 				prefix = "x";
-			else if (!l.Any (i => i.Prefix == String.Empty))
-				prefix = String.Empty;
+			}
+			else if (!l.Any (i => i.Prefix == string.Empty))
+			{
+				prefix = string.Empty;
+			}
 			else if ((s = GetAcronym (ns)) != null && !l.Any (i => i.Prefix == s))
+			{
 				prefix = s;
+			}
 			else
-				prefix = sctx.GetPreferredPrefix (ns);
+			{
+				prefix = _sctx.GetPreferredPrefix (ns);
+			}
+
 			l.Add (new NamespaceDeclaration (ns, prefix));
 			return prefix;
 		}
-		
-		string GetAcronym (string ns)
+
+		private string GetAcronym (string ns)
 		{
 			int idx = ns.IndexOf (';');
 			if (idx < 0)
+			{
 				return null;
+			}
+
 			string pre = "clr-namespace:";
 			if (!ns.StartsWith (pre, StringComparison.Ordinal))
+			{
 				return null;
+			}
+
 			ns = ns.Substring (pre.Length, idx - pre.Length);
 			string ac = "";
-			foreach (string nsp in ns.Split (new char[] { '.' }))
+			foreach (string nsp in ns.Split (new[] { '.' }))
+			{
 				if (nsp.Length > 0)
+				{
 					ac += nsp [0];
+				}
+			}
+
 			return ac.Length > 0 ? ac.ToLower (CultureInfo.InvariantCulture) : null;
 		}
 	}

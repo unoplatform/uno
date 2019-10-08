@@ -15,13 +15,12 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Uno.Xaml.Schema
@@ -37,23 +36,20 @@ namespace Uno.Xaml.Schema
 		public XamlValueConverter (Type converterType, XamlType targetType, string name)
 		{
 			if (converterType == null && targetType == null && name == null)
+			{
 				throw new ArgumentException ("Either of converterType, targetType or name must be non-null");
+			}
+
 			ConverterType = converterType;
 			TargetType = targetType;
 			Name = name;
 		}
 
-		TConverterBase converter_instance;
-		public TConverterBase ConverterInstance {
-			get {
-				if (converter_instance == null)
-					converter_instance = CreateInstance ();
-				return converter_instance;
-			}
-		}
-		public Type ConverterType { get; private set; }
-		public string Name { get; private set; }
-		public XamlType TargetType { get; private set; }
+		private TConverterBase _converterInstance;
+		public TConverterBase ConverterInstance => _converterInstance ?? (_converterInstance = CreateInstance());
+		public Type ConverterType { get; }
+		public string Name { get; }
+		public XamlType TargetType { get; }
 
 		
 		public static bool operator == (XamlValueConverter<TConverterBase> converter1, XamlValueConverter<TConverterBase> converter2)
@@ -61,10 +57,7 @@ namespace Uno.Xaml.Schema
 			return IsNull (converter1) ? IsNull (converter2) : converter1.Equals (converter2);
 		}
 
-		static bool IsNull (XamlValueConverter<TConverterBase> a)
-		{
-			return Object.ReferenceEquals (a, null);
-		}
+		private static bool IsNull (XamlValueConverter<TConverterBase> a) => a is null;
 
 		public static bool operator != (XamlValueConverter<TConverterBase> converter1, XamlValueConverter<TConverterBase> converter2)
 		{
@@ -85,22 +78,33 @@ namespace Uno.Xaml.Schema
 		protected virtual TConverterBase CreateInstance ()
 		{
 			if (ConverterType == null)
+			{
 				return null;
+			}
 
 			if (!typeof (TConverterBase).IsAssignableFrom (ConverterType))
-				throw new XamlSchemaException (String.Format ("ConverterType '{0}' is not derived from '{1}' type", ConverterType, typeof (TConverterBase)));
+			{
+				throw new XamlSchemaException (string.Format ("ConverterType '{0}' is not derived from '{1}' type", ConverterType, typeof (TConverterBase)));
+			}
 
 			if (TargetType != null && TargetType.UnderlyingType != null) {
 				// special case: Enum
 				if (TargetType.UnderlyingType.IsEnum)
+				{
 					return (TConverterBase) (object) new EnumConverter (TargetType.UnderlyingType);
+				}
+
 				// special case: Nullable<T>
 				if (TargetType.IsNullable && TargetType.UnderlyingType.IsValueType)
+				{
 					return (TConverterBase) (object) new NullableConverter (TargetType.UnderlyingType);
+				}
 			}
 
 			if (ConverterType.GetConstructor (Type.EmptyTypes) == null)
+			{
 				return null;
+			}
 
 			return (TConverterBase) Activator.CreateInstance (ConverterType, true);
 		}
@@ -110,23 +114,37 @@ namespace Uno.Xaml.Schema
 			var ret = ConverterType != null ? ConverterType.GetHashCode () : 0;
 			ret <<= 5;
 			if (TargetType != null)
+			{
 				ret += TargetType.GetHashCode ();
+			}
+
 			ret <<= 5;
 			if (Name != null)
-				ret += Name.GetHashCode ();
+			{
+				ret += Name.GetHashCode();
+			}
+
 			return ret;
 		}
 
-		public override string ToString ()
+		public override string ToString()
 		{
 			if (Name != null)
+			{
 				return Name;
+			}
+
 			if (ConverterType != null && TargetType != null)
-				return String.Concat (ConverterType.Name, "(", TargetType.Name, ")");
-			else if (ConverterType != null)
+			{
+				return string.Concat (ConverterType.Name, "(", TargetType.Name, ")");
+			}
+
+			if (ConverterType != null)
+			{
 				return ConverterType.Name;
-			else
-				return TargetType.Name;
+			}
+
+			return TargetType.Name;
 		}
 	}
 }

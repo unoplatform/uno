@@ -15,18 +15,14 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-using System;
+
 using System.Collections;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Reflection;
-using System.Windows.Markup;
-using Uno.Xaml.Schema;
 
 namespace System.Windows.Markup
 {
@@ -37,41 +33,41 @@ namespace System.Windows.Markup
 	{
 		public ArrayExtension ()
 		{		
-			items = new ArrayList ();
+			Items = new ArrayList ();
 		}
 
 		public ArrayExtension (Array elements)
 		{
 			if (elements == null)
 			{
-				throw new ArgumentNullException ("elements");
+				throw new ArgumentNullException (nameof(elements));
 			}
 
 			Type = elements.GetType ().GetElementType ();
-			items = new ArrayList (elements);
+			Items = new ArrayList (elements);
 		}
 
 		public ArrayExtension (Type arrayType)
 		{
 			if (arrayType == null)
 			{
-				throw new ArgumentNullException ("arrayType");
+				throw new ArgumentNullException (nameof(arrayType));
 			}
 
 			Type = arrayType;
-			items = new ArrayList ();
+			Items = new ArrayList ();
 		}
 
 		[ConstructorArgument ("arrayType")]
 		public Type Type { get; set; }
 
-		IList items;
 		[DesignerSerializationVisibility (DesignerSerializationVisibility.Content)]
-		public IList Items {
-			get { return items; }
+		public IList Items
+		{
+			get;
 		}
 
-		public void AddChild (Object value)
+		public void AddChild (object value)
 		{
 			// null is allowed.
 			Items.Add (value);
@@ -90,7 +86,7 @@ namespace System.Windows.Markup
 				throw new InvalidOperationException ("Type property must be set before calling ProvideValue method");
 			}
 
-			bool invalid = false;
+			var invalid = false;
 			foreach (var item in Items) {
 				if (item == null) {
 					if (Type.IsValueType)
@@ -98,17 +94,17 @@ namespace System.Windows.Markup
 						invalid = true;
 					}
 				}
-				else if (!Type.IsAssignableFrom (item.GetType ()))
+				else if (!Type.IsInstanceOfType (item))
 				{
 					invalid = true;
 				}
 
 				if (invalid)
 				{
-					throw new InvalidOperationException (String.Format ("Item in the array must be an instance of '{0}'", Type));
+					throw new InvalidOperationException (string.Format ("Item in the array must be an instance of '{0}'", Type));
 				}
 			}
-			Array a = Array.CreateInstance (Type, Items.Count);
+			var a = Array.CreateInstance (Type, Items.Count);
 			Items.CopyTo (a, 0);
 			return a;
 		}

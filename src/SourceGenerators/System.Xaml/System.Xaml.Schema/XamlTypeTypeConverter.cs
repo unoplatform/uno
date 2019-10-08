@@ -15,17 +15,15 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.Windows.Markup;
-using Uno.Xaml;
 
 namespace Uno.Xaml.Schema
 {
@@ -41,27 +39,34 @@ namespace Uno.Xaml.Schema
 			return destinationType == typeof (string);
 		}
 
-		public override Object ConvertFrom (ITypeDescriptorContext context, CultureInfo culture, Object value)
+		public override object ConvertFrom (ITypeDescriptorContext context, CultureInfo culture, object value)
 		{
-			throw new NotSupportedException (String.Format ("Conversion from type {0} is not supported", value != null ? value.GetType () : null));
+			throw new NotSupportedException (string.Format ("Conversion from type {0} is not supported", value?.GetType ()));
 		}
 
 		public override object ConvertTo (ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
 		{
 			if (!CanConvertTo (context, destinationType))
-				throw new NotSupportedException (String.Format ("Conversion to type {0} is not supported", destinationType));
+			{
+				throw new NotSupportedException (string.Format ("Conversion to type {0} is not supported", destinationType));
+			}
 
 			var vctx = (IValueSerializerContext) context;
-			var lookup = vctx != null ? (INamespacePrefixLookup) vctx.GetService (typeof (INamespacePrefixLookup)) : null;
+			var lookup = (INamespacePrefixLookup) vctx?.GetService (typeof (INamespacePrefixLookup));
 			var xt = value as XamlType;
-			if (xt != null && destinationType == typeof (string)) {
+			if (xt != null && destinationType == typeof (string))
+			{
 				if (lookup != null)
+				{
 					return new XamlTypeName (xt).ToString (lookup);
-				else
-					return xt.UnderlyingType != null ? xt.UnderlyingType.ToString () : xt.ToString ();
+				}
+
+				return xt.UnderlyingType != null ? xt.UnderlyingType.ToString () : xt.ToString ();
 			}
 			else
+			{
 				return base.ConvertTo (context, culture, value, destinationType); // it seems it still handles not-supported types (such as int).
+			}
 		}
 	}
 }

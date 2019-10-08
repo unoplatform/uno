@@ -15,20 +15,16 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Reflection;
 using System.Windows.Markup;
 #if !__MOBILE__
 using Uno.Xaml.Permissions;
 #endif
-using Uno.Xaml.Schema;
 
 namespace Uno.Xaml
 {
@@ -66,22 +62,22 @@ namespace Uno.Xaml
 		public EventHandler<XamlSetValueEventArgs> XamlSetValueHandler { get; set; }
 
 #if !__MOBILE__
-		[MonoTODO ("Ignored")]
+		[MonoTodo ("Ignored")]
 		public XamlAccessLevel AccessLevel { get; set; }
 #endif
 
 		public INameScope ExternalNameScope { get; set; }
-		[MonoTODO ("Ignored")]
+		[MonoTodo ("Ignored")]
 		public bool IgnoreCanConvert { get; set; }
-		[MonoTODO ("Ignored")]
+		[MonoTodo ("Ignored")]
 		public bool PreferUnconvertedDictionaryKeys { get; set; }
 
 		public bool RegisterNamesOnExternalNamescope { get; set; }
 
 		public object RootObjectInstance { get; set; }
-		[MonoTODO ("Ignored")]
+		[MonoTodo ("Ignored")]
 		public bool SkipDuplicatePropertyCheck { get; set; }
-		[MonoTODO ("Ignored")]
+		[MonoTodo ("Ignored")]
 		public bool SkipProvideValueOnRoot { get; set; }
 	}
 }

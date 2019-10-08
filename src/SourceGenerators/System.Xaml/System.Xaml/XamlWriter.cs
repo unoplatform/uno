@@ -15,13 +15,12 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 using System;
-using System.Collections.Generic;
 
 namespace Uno.Xaml
 {
@@ -56,7 +55,9 @@ namespace Uno.Xaml
 		public void WriteNode (XamlReader reader)
 		{
 			if (reader == null)
-				throw new ArgumentNullException ("reader");
+			{
+				throw new ArgumentNullException (nameof(reader));
+			}
 
 			switch (reader.NodeType) {
 			case XamlNodeType.StartObject:
@@ -85,7 +86,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		Exception NotImplemented ()
+		private Exception NotImplemented ()
 		{
 			return new NotImplementedException ();
 		}

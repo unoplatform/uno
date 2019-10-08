@@ -15,14 +15,12 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Runtime.Serialization;
 
 namespace Uno.Xaml
@@ -45,13 +43,19 @@ namespace Uno.Xaml
 		{
 		}
 
-		static string FormatLine (string message, int lineNumber, int linePosition)
+		private static string FormatLine (string message, int lineNumber, int linePosition)
 		{
 			if (lineNumber <= 0)
+			{
 				return message;
+			}
+
 			if (linePosition <= 0)
-				return String.Format ("{0} at line {1}", message, lineNumber);
-			return String.Format ("{0} at line {1}, position {2}", message, lineNumber, linePosition);
+			{
+				return string.Format ("{0} at line {1}", message, lineNumber);
+			}
+
+			return string.Format ("{0} at line {1}, position {2}", message, lineNumber, linePosition);
 		}
 
 		public XamlException (string message, Exception innerException, int lineNumber, int linePosition)

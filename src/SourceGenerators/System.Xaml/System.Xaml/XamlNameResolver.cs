@@ -15,14 +15,13 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Windows.Markup;
 
@@ -49,10 +48,10 @@ namespace Uno.Xaml
 			public bool FullyInitialized { get; set; }
 		}
 
-		Dictionary<string,NamedObject> objects = new Dictionary<string,NamedObject> ();
-		List<object> referenced = new List<object> ();
+		private readonly Dictionary<string,NamedObject> _objects = new Dictionary<string,NamedObject> ();
+		private readonly List<object> _referenced = new List<object> ();
 
-		[MonoTODO]
+		[MonoTodo]
 		public bool IsFixupTokenAvailable {
 			get { throw new NotImplementedException (); }
 		}
@@ -61,58 +60,75 @@ namespace Uno.Xaml
 
 		internal void NameScopeInitializationCompleted (object sender)
 		{
-			if (OnNameScopeInitializationComplete != null)
-				OnNameScopeInitializationComplete (sender, EventArgs.Empty);
-			objects.Clear ();
+			OnNameScopeInitializationComplete?.Invoke (sender, EventArgs.Empty);
+
+			_objects.Clear ();
 		}
-		
-		int saved_count, saved_referenced_count;
+
+		private int _savedCount, _savedReferencedCount;
 		public void Save ()
 		{
-			if (saved_count != 0)
+			if (_savedCount != 0)
+			{
 				throw new Exception ();
-			saved_count = objects.Count;
-			saved_referenced_count = referenced.Count;
+			}
+
+			_savedCount = _objects.Count;
+			_savedReferencedCount = _referenced.Count;
 		}
 		public void Restore ()
 		{
-			while (saved_count < objects.Count)
-				objects.Remove (objects.Last ().Key);
-				referenced.Remove (objects.Last ().Key);
-			saved_count = 0;
-			referenced.RemoveRange (saved_referenced_count, referenced.Count - saved_referenced_count);
-			saved_referenced_count = 0;
+			while (_savedCount < _objects.Count)
+			{
+				_objects.Remove (_objects.Last ().Key);
+			}
+
+			_referenced.Remove (_objects.Last ().Key);
+			_savedCount = 0;
+			_referenced.RemoveRange (_savedReferencedCount, _referenced.Count - _savedReferencedCount);
+			_savedReferencedCount = 0;
 		}
 
 		internal void SetNamedObject (string name, object value, bool fullyInitialized)
 		{
 			if (value == null)
-				throw new ArgumentNullException ("value");
-			objects [name] = new NamedObject (name, value, fullyInitialized);
+			{
+				throw new ArgumentNullException (nameof(value));
+			}
+
+			_objects [name] = new NamedObject (name, value, fullyInitialized);
 		}
 		
 		internal bool Contains (string name)
 		{
-			return objects.ContainsKey (name);
+			return _objects.ContainsKey (name);
 		}
 		
 		public string GetName (object value)
 		{
-			foreach (var no in objects.Values)
-				if (object.ReferenceEquals (no.Value, value))
+			foreach (var no in _objects.Values)
+			{
+				if (ReferenceEquals (no.Value, value))
+				{
 					return no.Name;
+				}
+			}
+
 			return null;
 		}
 
 		internal void SaveAsReferenced (object val)
 		{
-			referenced.Add (val);
+			_referenced.Add (val);
 		}
 		
 		internal string GetReferencedName (object val)
 		{
-			if (!referenced.Contains (val))
+			if (!_referenced.Contains (val))
+			{
 				return null;
+			}
+
 			return GetName (val);
 		}
 		
@@ -128,20 +144,20 @@ namespace Uno.Xaml
 
 		public IEnumerable<KeyValuePair<string, object>> GetAllNamesAndValuesInScope ()
 		{
-			foreach (var pair in objects)
+			foreach (var pair in _objects)
+			{
 				yield return new KeyValuePair<string,object> (pair.Key, pair.Value.Value);
+			}
 		}
 
 		public object Resolve (string name)
 		{
-			NamedObject ret;
-			return objects.TryGetValue (name, out ret) ? ret.Value : null;
+			return _objects.TryGetValue (name, out var ret) ? ret.Value : null;
 		}
 
 		public object Resolve (string name, out bool isFullyInitialized)
 		{
-			NamedObject ret;
-			if (objects.TryGetValue (name, out ret)) {
+			if (_objects.TryGetValue (name, out var ret)) {
 				isFullyInitialized = ret.FullyInitialized;
 				return ret.Value;
 			} else {

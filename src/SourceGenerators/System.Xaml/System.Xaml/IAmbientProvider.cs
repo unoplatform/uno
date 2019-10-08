@@ -15,23 +15,22 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-using System;
-using System.Collections;
+
 using System.Collections.Generic;
 
 namespace Uno.Xaml
 {
 	public interface IAmbientProvider
 	{
-		IEnumerable<Object> GetAllAmbientValues (params XamlType[] types);
+		IEnumerable<object> GetAllAmbientValues (params XamlType[] types);
 		IEnumerable<AmbientPropertyValue> GetAllAmbientValues (IEnumerable<XamlType> ceilingTypes, params XamlMember [] properties);
 		IEnumerable<AmbientPropertyValue> GetAllAmbientValues (IEnumerable<XamlType> ceilingTypes, bool searchLiveStackOnly, IEnumerable<XamlType> types, params XamlMember[] properties);
-		Object GetFirstAmbientValue (params XamlType [] types);
+		object GetFirstAmbientValue (params XamlType [] types);
 		AmbientPropertyValue GetFirstAmbientValue (IEnumerable<XamlType> ceilingTypes, params XamlMember [] properties);
 	}
 }

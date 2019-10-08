@@ -15,15 +15,12 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 //
-using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
+
 using System.Globalization;
 
 namespace System.Windows.Markup
@@ -31,7 +28,7 @@ namespace System.Windows.Markup
 	// [System.Runtime.CompilerServices.TypeForwardedFrom (Consts.AssemblyWindowsBase)]
 	public class DateTimeValueSerializer : ValueSerializer
 	{
-		const DateTimeStyles styles = DateTimeStyles.RoundtripKind | DateTimeStyles.NoCurrentDateDefault | DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite;
+		private const DateTimeStyles Styles = DateTimeStyles.RoundtripKind | DateTimeStyles.NoCurrentDateDefault | DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite;
 
 		public override bool CanConvertFromString (string value, IValueSerializerContext context)
 		{
@@ -55,17 +52,17 @@ namespace System.Windows.Markup
 				return DateTime.MinValue;
 			}
 
-			return DateTime.Parse (value, CultureInfo.InvariantCulture, styles);
+			return DateTime.Parse (value, CultureInfo.InvariantCulture, Styles);
 		}
 
-		public override string ConvertToString (object value,     IValueSerializerContext context)
+		public override string ConvertToString (object value,IValueSerializerContext context)
 		{
 			if (!(value is DateTime))
 			{
 				throw new NotSupportedException ();
 			}
 
-			DateTime dt = (DateTime) value;
+			var dt = (DateTime) value;
 			if (dt.Millisecond != 0)
 			{
 				return dt.ToString ("yyyy-MM-dd'T'HH:mm:ss.F");
@@ -76,14 +73,7 @@ namespace System.Windows.Markup
 				return dt.ToString ("yyyy-MM-dd'T'HH:mm:ss");
 			}
 
-			if (dt.Minute != 0)
-			{
-				return dt.ToString ("yyyy-MM-dd'T'HH:mm");
-			}
-			else
-			{
-				return dt.ToString ("yyyy-MM-dd");
-			}
+			return dt.ToString(dt.Minute != 0 ? "yyyy-MM-dd'T'HH:mm" : "yyyy-MM-dd");
 		}
 	}
 }

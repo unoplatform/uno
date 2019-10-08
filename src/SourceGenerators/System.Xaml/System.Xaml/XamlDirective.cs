@@ -15,7 +15,7 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -31,7 +31,7 @@ namespace Uno.Xaml
 {
 	public class XamlDirective : XamlMember
 	{
-		class DirectiveMemberInvoker : XamlMemberInvoker
+		private class DirectiveMemberInvoker : XamlMemberInvoker
 		{
 			public DirectiveMemberInvoker (XamlDirective directive)
 				: base (directive)
@@ -40,39 +40,47 @@ namespace Uno.Xaml
 		}
 
 		public XamlDirective (string xamlNamespace, string name)
-			: this (new string [] {xamlNamespace}, name, new XamlType (typeof (object), new XamlSchemaContext (new XamlSchemaContextSettings ())), null, AllowedMemberLocations.Any)
+			: this (new[] {xamlNamespace}, name, new XamlType (typeof (object), new XamlSchemaContext (new XamlSchemaContextSettings ())), null, AllowedMemberLocations.Any)
 		{
 			if (xamlNamespace == null)
-				throw new ArgumentNullException ("xamlNamespace");
-			is_unknown = true;
+			{
+				throw new ArgumentNullException (nameof(xamlNamespace));
+			}
+
+			_isUnknown = true;
 		}
 
 		public XamlDirective (IEnumerable<string> xamlNamespaces, string name, XamlType xamlType, XamlValueConverter<TypeConverter> typeConverter, AllowedMemberLocations allowedLocation)
-			: base (true, xamlNamespaces != null ? xamlNamespaces.FirstOrDefault () : null, name)
+			: base (true, xamlNamespaces?.FirstOrDefault (), name)
 		{
 			if (xamlNamespaces == null)
-				throw new ArgumentNullException ("xamlNamespaces");
-			if (xamlType == null)
-				throw new ArgumentNullException ("xamlType");
+			{
+				throw new ArgumentNullException (nameof(xamlNamespaces));
+			}
 
-			type = xamlType;
-			xaml_namespaces = new List<string> (xamlNamespaces);
+			if (xamlType == null)
+			{
+				throw new ArgumentNullException (nameof(xamlType));
+			}
+
+			_type = xamlType;
+			_xamlNamespaces = new List<string> (xamlNamespaces);
 			AllowedLocation = allowedLocation;
-			type_converter = typeConverter;
+			_typeConverter = typeConverter;
 			
-			invoker = new DirectiveMemberInvoker (this);
+			_invoker = new DirectiveMemberInvoker (this);
 		}
 
-		public AllowedMemberLocations AllowedLocation { get; private set; }
-		XamlValueConverter<TypeConverter> type_converter;
-		XamlType type;
-		XamlMemberInvoker invoker;
-		bool is_unknown;
-		IList<string> xaml_namespaces;
+		public AllowedMemberLocations AllowedLocation { get; }
+		private XamlValueConverter<TypeConverter> _typeConverter;
+		private readonly XamlType _type;
+		private readonly XamlMemberInvoker _invoker;
+		private bool _isUnknown;
+		private readonly IList<string> _xamlNamespaces;
 
 		// this is for XamlLanguage.UnknownContent
 		internal bool InternalIsUnknown {
-			set { is_unknown = value; }
+			set { _isUnknown = value; }
 		}
 
 		public override int GetHashCode ()
@@ -82,7 +90,7 @@ namespace Uno.Xaml
 
 		public override IList<string> GetXamlNamespaces ()
 		{
-			return xaml_namespaces;
+			return _xamlNamespaces;
 		}
 
 		protected override sealed ICustomAttributeProvider LookupCustomAttributeProvider ()
@@ -102,7 +110,7 @@ namespace Uno.Xaml
 
 		protected override sealed XamlMemberInvoker LookupInvoker ()
 		{
-			return invoker;
+			return _invoker;
 		}
 
 		protected override sealed bool LookupIsAmbient ()
@@ -127,7 +135,7 @@ namespace Uno.Xaml
 
 		protected override sealed bool LookupIsUnknown ()
 		{
-			return is_unknown;
+			return _isUnknown;
 		}
 
 		protected override sealed bool LookupIsWriteOnly ()
@@ -147,14 +155,17 @@ namespace Uno.Xaml
 
 		protected override sealed XamlType LookupType ()
 		{
-			return type;
+			return _type;
 		}
 
 		protected override sealed XamlValueConverter<TypeConverter> LookupTypeConverter ()
 		{
-			if (type_converter == null)
-				type_converter = base.LookupTypeConverter ();
-			return type_converter;
+			if (_typeConverter == null)
+			{
+				_typeConverter = base.LookupTypeConverter ();
+			}
+
+			return _typeConverter;
 		}
 
 		protected override sealed MethodInfo LookupUnderlyingGetter ()
@@ -174,7 +185,7 @@ namespace Uno.Xaml
 
 		public override string ToString ()
 		{
-			return String.IsNullOrEmpty (PreferredXamlNamespace) ? Name : String.Concat ("{", PreferredXamlNamespace, "}", Name);
+			return string.IsNullOrEmpty (PreferredXamlNamespace) ? Name : string.Concat ("{", PreferredXamlNamespace, "}", Name);
 		}
 	}
 }

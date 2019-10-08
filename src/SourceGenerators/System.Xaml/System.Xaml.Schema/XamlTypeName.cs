@@ -15,7 +15,7 @@
 // THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
 // EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
 // MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
-// NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+// NON-INFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
 // LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
 // OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
 // WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
@@ -30,36 +30,51 @@ namespace Uno.Xaml.Schema
 	{
 		public static XamlTypeName Parse (string typeName, IXamlNamespaceResolver namespaceResolver)
 		{
-			XamlTypeName n;
-			if (!TryParse (typeName, namespaceResolver, out n))
-				throw new FormatException (String.Format ("Invalid typeName: '{0}'", typeName));
+			if (!TryParse (typeName, namespaceResolver, out var n))
+			{
+				throw new FormatException (string.Format ("Invalid typeName: '{0}'", typeName));
+			}
+
 			return n;
 		}
 
 		public static bool TryParse (string typeName, IXamlNamespaceResolver namespaceResolver, out XamlTypeName result)
 		{
 			if (typeName == null)
-				throw new ArgumentNullException ("typeName");
+			{
+				throw new ArgumentNullException (nameof(typeName));
+			}
+
 			if (namespaceResolver == null)
-				throw new ArgumentNullException ("namespaceResolver");
+			{
+				throw new ArgumentNullException (nameof(namespaceResolver));
+			}
 
 			result = null;
 			IList<XamlTypeName> args = null;
-			int nArray = 0;
 			int idx;
 
 			if (typeName.Length > 2 && typeName [typeName.Length - 1] == ']') {
 				idx = typeName.LastIndexOf ('[');
 				if (idx < 0)
+				{
 					return false; // mismatch brace
-				nArray = 1;
-				for (int i = idx + 1; i < typeName.Length - 1; i++) {
+				}
+
+				var nArray = 1;
+				for (var i = idx + 1; i < typeName.Length - 1; i++) {
 					if (typeName [i] != ',')
+					{
 						return false; // only ',' is expected
+					}
+
 					nArray++;
 				}
 				if (!TryParse (typeName.Substring (0, idx), namespaceResolver, out result))
+				{
 					return false;
+				}
+
 				// Weird result, but Name ends with '[]'
 				result = new XamlTypeName (result.Namespace, result.Name + '[' + new string (',', nArray - 1) + ']', result.TypeArguments);
 				return true;
@@ -68,28 +83,41 @@ namespace Uno.Xaml.Schema
 			idx = typeName.IndexOf ('(');
 			if (idx >= 0) {
 				if (typeName [typeName.Length - 1] != ')')
+				{
 					return false;
+				}
+
 				if (!TryParseList (typeName.Substring (idx + 1, typeName.Length - idx - 2), namespaceResolver, out args))
+				{
 					return false;
+				}
+
 				typeName = typeName.Substring (0, idx);
 			}
 
 			idx = typeName.IndexOf (':');
 			string prefix, local;
 			if (idx < 0) {
-				prefix = String.Empty;
+				prefix = string.Empty;
 				local = typeName;
 			} else {
 				prefix = typeName.Substring (0, idx);
 				local = typeName.Substring (idx + 1);
 				if (!XamlLanguage.IsValidXamlName (prefix))
+				{
 					return false;
+				}
 			}
 			if (!XamlLanguage.IsValidXamlName (local))
+			{
 				return false;
-			string ns = namespaceResolver.GetNamespace (prefix);
+			}
+
+			var ns = namespaceResolver.GetNamespace (prefix);
 			if (ns == null)
+			{
 				return false;
+			}
 
 			result = new XamlTypeName (ns, local, args);
 			return true;
@@ -97,39 +125,49 @@ namespace Uno.Xaml.Schema
 
 		public static IList<XamlTypeName> ParseList (string typeNameList, IXamlNamespaceResolver namespaceResolver)
 		{
-			IList<XamlTypeName> list;
-			if (!TryParseList (typeNameList, namespaceResolver, out list))
-				throw new FormatException (String.Format ("Invalid type name list: '{0}'", typeNameList));
+			if (!TryParseList (typeNameList, namespaceResolver, out var list))
+			{
+				throw new FormatException (string.Format ("Invalid type name list: '{0}'", typeNameList));
+			}
+
 			return list;
 		}
 
-		static readonly char [] comma_or_parens = new char [] {',', '(', ')'};
+		private static readonly char [] CommaOrParens = {',', '(', ')'};
 
 		public static bool TryParseList (string typeNameList, IXamlNamespaceResolver namespaceResolver, out IList<XamlTypeName> result)
 		{
 			if (typeNameList == null)
-				throw new ArgumentNullException ("typeNameList");
+			{
+				throw new ArgumentNullException (nameof(typeNameList));
+			}
+
 			if (namespaceResolver == null)
-				throw new ArgumentNullException ("namespaceResolver");
+			{
+				throw new ArgumentNullException (nameof(namespaceResolver));
+			}
 
 			result = null;
-			int idx = 0;
-			int parens = 0;
-			XamlTypeName tn;
+			var idx = 0;
+			var parens = 0;
 
-			List<string> l = new List<string> ();
-			int lastToken = 0;
+			var l = new List<string> ();
+			var lastToken = 0;
 			while (true) {
-				int i = typeNameList.IndexOfAny (comma_or_parens, idx);
+				var i = typeNameList.IndexOfAny (CommaOrParens, idx);
 				if (i < 0) {
 					l.Add (typeNameList.Substring (lastToken));
 					break;
 				}
-				
-				switch (typeNameList [i]) {
+
+				switch (typeNameList[i])
+				{
 				case ',':
 					if (parens != 0)
+					{
 						break;
+					}
+
 					l.Add (typeNameList.Substring (idx, i - idx));
 					break;
 				case '(':
@@ -141,15 +179,23 @@ namespace Uno.Xaml.Schema
 				}
 				idx = i + 1;
 				while (idx < typeNameList.Length && typeNameList [idx] == ' ')
+				{
 					idx++;
+				}
+
 				if (parens == 0 && typeNameList [i] == ',')
+				{
 					lastToken = idx;
+				}
 			}
 
 			var ret = new List<XamlTypeName> ();
 		 	foreach (var s in l) {
-				if (!TryParse (s, namespaceResolver, out tn))
+			    if (!TryParse (s, namespaceResolver, out var tn))
+				{
 					return false;
+				}
+
 				ret.Add (tn);
 			}
 
@@ -160,22 +206,32 @@ namespace Uno.Xaml.Schema
 		public static string ToString (IList<XamlTypeName> typeNameList, INamespacePrefixLookup prefixLookup)
 		{
 			if (typeNameList == null)
-				throw new ArgumentNullException ("typeNameList");
+			{
+				throw new ArgumentNullException (nameof(typeNameList));
+			}
+
 			if (prefixLookup == null)
-				throw new ArgumentNullException ("prefixLookup");
+			{
+				throw new ArgumentNullException (nameof(prefixLookup));
+			}
 
 			return DoToString (typeNameList, prefixLookup);
 		}
 
-		static string DoToString (IList<XamlTypeName> typeNameList, INamespacePrefixLookup prefixLookup)
+		private static string DoToString (IEnumerable<XamlTypeName> typeNameList, INamespacePrefixLookup prefixLookup)
 		{
-			bool comma = false;
-			string ret = "";
+			var comma = false;
+			var ret = "";
 			foreach (var ta in typeNameList) {
 				if (comma)
+				{
 					ret += ", ";
+				}
 				else
+				{
 					comma = true;
+				}
+
 				ret += ta.ToString (prefixLookup);
 			}
 			return ret;
@@ -185,16 +241,19 @@ namespace Uno.Xaml.Schema
 
 		public XamlTypeName ()
 		{
-			TypeArguments = empty_type_args;
+			TypeArguments = EmptyTypeArgs;
 		}
 
-		static readonly XamlTypeName [] empty_type_args = new XamlTypeName [0];
+		private static readonly XamlTypeName [] EmptyTypeArgs = new XamlTypeName [0];
 
 		public XamlTypeName (XamlType xamlType)
 			: this ()
 		{
 			if (xamlType == null)
-				throw new ArgumentNullException ("xamlType");
+			{
+				throw new ArgumentNullException (nameof(xamlType));
+			}
+
 			Namespace = xamlType.PreferredXamlNamespace;
 			Name = xamlType.Name;
 			if (xamlType.TypeArguments != null && xamlType.TypeArguments.Count > 0) {
@@ -216,7 +275,10 @@ namespace Uno.Xaml.Schema
 			Name = name;
 			if (typeArguments != null) {
 				if (typeArguments.Any (t => t == null))
-					throw new ArgumentNullException ("typeArguments", "typeArguments array contains one or more null XamlTypeName");
+				{
+					throw new ArgumentNullException (nameof(typeArguments), "typeArguments array contains one or more null XamlTypeName");
+				}
+
 				var l = new List<XamlTypeName> ();
 				l.AddRange (typeArguments);
 				TypeArguments = l;
@@ -225,38 +287,47 @@ namespace Uno.Xaml.Schema
 
 		public string Name { get; set; }
 		public string Namespace { get; set; }
-		public IList<XamlTypeName> TypeArguments { get; private set; }
+		public IList<XamlTypeName> TypeArguments { get; }
 
-		public override string ToString ()
-		{
-			return ToString (null);
-		}
+		public override string ToString () => ToString (null);
 
 		public string ToString (INamespacePrefixLookup prefixLookup)
 		{
 			if (Namespace == null)
+			{
 				throw new InvalidOperationException ("Namespace must be set before calling ToString method.");
+			}
+
 			if (Name == null)
+			{
 				throw new InvalidOperationException ("Name must be set before calling ToString method.");
+			}
 
 			string ret;
 			if (prefixLookup == null)
-				ret = String.Concat ("{", Namespace, "}", Name);
+			{
+				ret = string.Concat ("{", Namespace, "}", Name);
+			}
 			else {
-				string p = prefixLookup.LookupPrefix (Namespace);
+				var p = prefixLookup.LookupPrefix (Namespace);
 				if (p == null)
-					throw new InvalidOperationException (String.Format ("Could not lookup prefix for namespace '{0}'", Namespace));
+				{
+					throw new InvalidOperationException (string.Format ("Could not lookup prefix for namespace '{0}'", Namespace));
+				}
+
 				ret = p.Length == 0 ? Name : p + ":" + Name;
 			}
 			string arr = null;
 			if (ret [ret.Length - 1] == ']') {
-				int idx = ret.LastIndexOf ('[');
+				var idx = ret.LastIndexOf ('[');
 				arr = ret.Substring (idx);
 				ret = ret.Substring (0, idx);
 			}
 
 			if (TypeArguments.Count > 0)
-				ret += String.Concat ("(", DoToString (TypeArguments, prefixLookup), ")");
+			{
+				ret += string.Concat ("(", DoToString (TypeArguments, prefixLookup), ")");
+			}
 
 			return ret + arr;
 		}
