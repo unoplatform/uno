@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class DatePicker
 	{
-		public DatePicker()
+		partial void InitializePartial()
 		{
 			InitializeVisualStates();
 		}

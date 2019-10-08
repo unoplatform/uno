@@ -28,7 +28,6 @@ namespace Windows.UI.Xaml
 	{
 		static partial void InitStyles()
 		{
-			InitDatePicker();
 			InitFlyoutPresenter();
 
 #if !IS_UNO
@@ -102,24 +101,6 @@ namespace Windows.UI.Xaml
 			Style.RegisterDefaultStyleForType(typeof(Uno.UI.Controls.Expander), style);
 		}
 #endif
-
-		private static void InitDatePicker()
-		{
-			var style = new Style(typeof(Windows.UI.Xaml.Controls.DatePicker))
-			{
-				Setters = {
-					new Setter<DatePicker>("Template", t =>
-						t.Template = Funcs.Create(() =>
-						{
-
-							return new BindableDatePicker(ContextHelper.Current);
-						})
-					)
-				}
-			};
-
-			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.DatePicker), () => style);
-		}
 
 		private static void InitFlyoutPresenter()
 		{

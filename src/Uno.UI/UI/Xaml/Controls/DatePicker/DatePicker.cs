@@ -14,6 +14,13 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public event EventHandler<DatePickerValueChangedEventArgs> DateChanged;
 
+		public DatePicker()
+		{
+			DefaultStyleKey = typeof(DatePicker);
+		}
+
+		partial void InitializePartial();
+
 		#region DateProperty
 
 		public DateTimeOffset Date
