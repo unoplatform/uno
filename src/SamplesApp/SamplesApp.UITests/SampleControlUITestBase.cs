@@ -6,6 +6,7 @@ using SamplesApp.UITests.TestFramework;
 using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests
 {
@@ -19,6 +20,17 @@ namespace SamplesApp.UITests
 
 		static SampleControlUITestBase()
 		{
+			AppInitializer.TestEnvironment.AndroidAppName = Constants.AndroidAppName;
+			AppInitializer.TestEnvironment.WebAssemblyDefaultUri = Constants.WebAssemblyDefaultUri;
+			AppInitializer.TestEnvironment.iOSAppName = Constants.iOSAppName;
+			AppInitializer.TestEnvironment.AndroidAppName = Constants.AndroidAppName;
+			AppInitializer.TestEnvironment.iOSDeviceNameOrId = Constants.iOSDeviceNameOrId;
+			AppInitializer.TestEnvironment.CurrentPlatform = Constants.CurrentPlatform;
+
+#if DEBUG
+			AppInitializer.TestEnvironment.WebAssemblyHeadless = false;
+#endif
+
 			// Start the app only once, so the tests runs don't restart it
 			// and gain some time for the tests.
 			AppInitializer.ColdStartApp();
@@ -92,6 +104,12 @@ namespace SamplesApp.UITests
 				}
 
 				File.Move(fileInfo.FullName, destFileName);
+
+				TestContext.AddTestAttachment(destFileName, stepName);
+			}
+			else
+			{
+				TestContext.AddTestAttachment(fileInfo.FullName, stepName);
 			}
 		}
 
@@ -107,20 +125,20 @@ namespace SamplesApp.UITests
 
 		private Platform[] GetActivePlatforms()
 		{
-			if(TestContext.CurrentContext.Test.Properties["ActivePlatforms"].FirstOrDefault() is Platform[] platforms)
+			if (TestContext.CurrentContext.Test.Properties["ActivePlatforms"].FirstOrDefault() is Platform[] platforms)
 			{
-				if(platforms.Length != 0)
+				if (platforms.Length != 0)
 				{
 					return platforms;
 				}
 			}
 			else
 			{
-				if(Type.GetType(TestContext.CurrentContext.Test.ClassName) is Type classType)
+				if (Type.GetType(TestContext.CurrentContext.Test.ClassName) is Type classType)
 				{
-					if(classType.GetCustomAttributes(typeof(ActivePlatformsAttribute), false) is ActivePlatformsAttribute[] attributes)
+					if (classType.GetCustomAttributes(typeof(ActivePlatformsAttribute), false) is ActivePlatformsAttribute[] attributes)
 					{
-						if(
+						if (
 							attributes.Length != 0
 							&& attributes[0]
 								.Properties["ActivePlatforms"]

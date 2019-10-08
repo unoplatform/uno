@@ -9,7 +9,7 @@ Prerequisites:
     - `ASP.NET and Web Development`
     - `.NET Core cross-platform development`
     - `UWP Development`, install all recent UWP SDKs, starting from 10.0.14393 (or above or equal to `TargetPlatformVersion` line [in this file](/src/Uno.CrossTargetting.props))
-- Install all Android SDKs starting from 7.1 (or the Android versions [`TargetFrameworks` list used here](/src/Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.csproj))
+- Install (**Tools** / **Android** / **Android SDK manager**) all Android SDKs starting from 7.1 (or the Android versions `TargetFrameworks` [list used here](/src/Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.csproj))
 
 ### Building Uno.UI for all available targets
 * Open the [Uno.UI.sln](/src/Uno.UI.sln)
@@ -24,7 +24,7 @@ To enable faster development, it's possible to use the [Visual Studio Solution F
 For instance, if you want to debug an iOS feature:
 - Make sure the `Uno.UI.sln` solution is not opened in Visual Studio.
 - Make a copy of the [src/crosstargeting_override.props.sample](src/crosstargeting_override.props.sample) file to `src/crosstargeting_override.props`
-- Uncomment the `UnoTargetFrameworkOverride` line and set its value to `xamarinios10`
+- In this new file, uncomment the `UnoTargetFrameworkOverride` line and set its value to `xamarinios10`
 - Open the `Uno.UI-iOS-only.slnf` solution filter (either via the VS folder view, or the Windows explorer)
 - Build
 
@@ -102,6 +102,25 @@ The Source Generation tooling diagnostics can be enabled as follows:
 - The best way to provide those file for troubleshooting is to make a zip archive of the whole solution folder without cleaning it, so it contains the proper diagnostics `.binlog` files.
 
 **Make sure to remove the `UnoSourceGeneratorUnsecureBinLogEnabled` property once done.**
+
+If ever the need arises to view the generated source code of a *failing* CI build, you can perform the following steps:
+
+1. In your local branch, locate the one of build yaml files (located in the root Uno folder):
+     - .azure-devops-android-tests.yml
+     - .azure-devops-macos.yml
+     - .azure-devops-wasm-uitests.yml
+    
+2. At the bottom of the yaml files, you'll find *Publish...* tasks, right above these tasks, copy/paste the following code to create a task which will copy all generated source files and put them in an artifact for you to download:
+
+       - bash: cp -r $(build.sourcesdirectory)<YourProjectDirectory>/obj/Release/g/XamlCodeGenerator/ $(build.artifactstagingdirectory)
+            condition: failed()
+            displayName: "Copy generated XAML code"
+
+Therefore, in the case of Uno, an example of <YourProjectDirectory> would be */src/SamplesApp/SamplesApp.Droid*.
+
+3. Once the build fails and completes, you can download the corresponding build artifact from the Artifacts menu to view your generated source files.
+
+**Remember that you should never submit this change, this is temporary and only for viewing generated code.**
 
 ## Troubleshooting Memory Issues 
 

@@ -773,6 +773,23 @@ declare namespace Windows.Devices.Sensors {
         private static readingChangedHandler;
     }
 }
+declare class Gyroscope {
+    constructor(config: any);
+    addEventListener(type: "reading" | "activate", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
+}
+interface Window {
+    Gyroscope: Gyroscope;
+}
+declare namespace Windows.Devices.Sensors {
+    class Gyrometer {
+        private static dispatchReading;
+        private static gyroscope;
+        static initialize(): boolean;
+        static startReading(): void;
+        static stopReading(): void;
+        private static readingChangedHandler;
+    }
+}
 declare class Magnetometer {
     constructor(config: any);
     addEventListener(type: "reading" | "activate", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;

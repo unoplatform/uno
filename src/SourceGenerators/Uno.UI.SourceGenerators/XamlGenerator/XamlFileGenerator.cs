@@ -84,6 +84,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly INamedTypeSymbol _objectSymbol;
 		private readonly INamedTypeSymbol _iFrameworkElementSymbol;
 		private readonly INamedTypeSymbol _dependencyObjectSymbol;
+		private readonly INamedTypeSymbol _markupExtensionSymbol;
 
 		private readonly INamedTypeSymbol _iCollectionSymbol;
 		private readonly INamedTypeSymbol _iCollectionOfTSymbol;
@@ -92,6 +93,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly INamedTypeSymbol _iDictionaryOfTKeySymbol;
 		private readonly INamedTypeSymbol _dataBindingSymbol;
 		private readonly INamedTypeSymbol _styleSymbol;
+
+		private readonly List<INamedTypeSymbol> _markupExtensionTypes;
 
 		private readonly bool _isWasm;
 
@@ -147,6 +150,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_contentPresenterSymbol = GetType(XamlConstants.Types.ContentPresenter);
 			_iFrameworkElementSymbol = GetType(XamlConstants.Types.IFrameworkElement);
 			_dependencyObjectSymbol = GetType(XamlConstants.Types.DependencyObject);
+			_markupExtensionSymbol = GetType(XamlConstants.Types.MarkupExtension);
 			_iCollectionSymbol = GetType("System.Collections.ICollection");
 			_iCollectionOfTSymbol = GetType("System.Collections.Generic.ICollection`1");
 			_iListSymbol = GetType("System.Collections.IList");
@@ -154,6 +158,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_iDictionaryOfTKeySymbol = GetType("System.Collections.Generic.IDictionary`2");
 			_dataBindingSymbol = GetType("Windows.UI.Xaml.Data.Binding");
 			_styleSymbol = GetType(XamlConstants.Types.Style);
+
+			_markupExtensionTypes = _medataHelper.GetAllTypesDerivingFrom(_markupExtensionSymbol).ToList();
 
 			_isWasm = isWasm;
 		}
@@ -1340,6 +1346,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool HasMarkupExtension(XamlMemberDefinition valueNode)
 		{
+			// Return false if the Owner is a custom markup extension
+			if (IsCustomMarkupExtensionType(valueNode.Owner?.Type))
+			{
+				return false;
+			}
+
 			return valueNode
 				.Objects
 				.Any(o =>
@@ -1351,6 +1363,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				);
 		}
 
+		private bool HasCustomMarkupExtension(XamlMemberDefinition valueNode)
+		{
+			// Verify if a custom markup extension exists
+			return valueNode
+				.Objects
+				.Any(o => IsCustomMarkupExtensionType(o.Type));
+		}
+
 		private bool HasBindingMarkupExtension(XamlMemberDefinition valueNode)
 		{
 			return valueNode
@@ -1360,6 +1380,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					|| o.Type.Name == "Bind"
 					|| o.Type.Name == "TemplateBinding"
 				);
+		}
+
+		private bool IsCustomMarkupExtensionType(XamlType xamlType)
+		{
+			if (xamlType == null)
+			{
+				return false;
+			}
+
+			// Adjustment for Uno.Xaml parser which returns the namespace in the name
+			var xamlTypeName = xamlType.Name.Contains(':') ? xamlType.Name.Split(':').LastOrDefault() : xamlType.Name;
+
+			// Determine if the type is a custom markup extension
+			return _markupExtensionTypes.Any(ns => ns.Name.Equals(xamlTypeName, StringComparison.InvariantCulture));
 		}
 
 		private XamlMemberDefinition FindMember(XamlObjectDefinition xamlObjectDefinition, string memberName)
@@ -2011,6 +2045,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 							BuildComplexPropertyValue(writer, member, closureName + ".", closureName);
 						}
+						else if (HasCustomMarkupExtension(member))
+						{
+							if (IsAttachedProperty(member) && FindPropertyType(member.Member) != null)
+							{
+								BuildSetAttachedProperty(writer, closureName, member, objectUid, isCustomMarkupExtension: true);
+							}
+							else
+							{
+								BuildCustomMarkupExtensionPropertyValue(writer, member, closureName + ".");
+							}
+						}
 						else if (member.Objects.Any())
 						{
 							if (member.Member.Name == "_UnknownContent") // So : FindType(member.Owner.Type) is INamedTypeSymbol type && IsCollectionOrListType(type)
@@ -2218,7 +2263,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								{
 									if (FindPropertyType(member.Member) != null)
 									{
-										BuildSetAttachedProperty(writer, closureName, member, objectUid);
+										BuildSetAttachedProperty(writer, closureName, member, objectUid, isCustomMarkupExtension: false);
 									}
 									else if (eventSymbol != null)
 									{
@@ -2303,6 +2348,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						BuildUiAutomationId(writer, closureName, uiAutomationId, objectDefinition);
 					}
+				}
+			}
+
+			// Local function used to build a property/value for any custom MarkupExtensions
+			void BuildCustomMarkupExtensionPropertyValue(IIndentedStringBuilder writer, XamlMemberDefinition member, string prefix)
+			{
+				Func<string, string> formatLine = format => prefix + format + (prefix.HasValue() ? ";\r\n" : "");
+
+				var propertyValue = GetCustomMarkupExtensionValue(member);
+
+				if (propertyValue.HasValue())
+				{
+					var formatted = formatLine($"{member.Member.Name} = {propertyValue}");
+
+					writer.AppendLine(formatted);
 				}
 			}
 		}
@@ -2394,13 +2454,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				name.Equals("AlignVerticalCenterWith");
 		}
 
-		private void BuildSetAttachedProperty(IIndentedStringBuilder writer, string closureName, XamlMemberDefinition member, string objectUid)
+		private void BuildSetAttachedProperty(IIndentedStringBuilder writer, string closureName, XamlMemberDefinition member, string objectUid, bool isCustomMarkupExtension)
 		{
+			var literalValue = isCustomMarkupExtension
+					? GetCustomMarkupExtensionValue(member)
+					: BuildLiteralValue(member, owner: member, objectUid: objectUid);
+
 			writer.AppendLineInvariant(
 				"{0}.Set{1}({3}, {2});",
 				GetGlobalizedTypeName(FindType(member.Member.DeclaringType).SelectOrDefault(t => t.ToDisplayString(), member.Member.DeclaringType.Name)),
 				member.Member.Name,
-				BuildLiteralValue(member, owner: member, objectUid: objectUid),
+				literalValue,
 				closureName
 			);
 		}
@@ -2466,7 +2530,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					return (bindingNode ?? bindNode)
 						.Members
-						.Select(m => "{0} = {1}".InvariantCultureFormat(m.Member.Name == "_PositionalParameters" ? "Path" : m.Member.Name, BuildBindingOption(m, FindPropertyType(m.Member), prependCastToType: true)))
+						.Select(BuildMemberPropertyValue)
 						.Concat(bindNode != null && !isInsideDataTemplate ? new[] { "CompiledSource = this" } : Enumerable.Empty<string>())
 						.JoinBy(", ");
 
@@ -2475,13 +2539,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					return templateBindingNode
 						.Members
-						.Select(m => "{0} = {1}".InvariantCultureFormat(m.Member.Name == "_PositionalParameters" ? "Path" : m.Member.Name, BuildBindingOption(m, FindPropertyType(m.Member), prependCastToType: true)))
+						.Select(BuildMemberPropertyValue)
 						.Concat("RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent)")
 						.JoinBy(", ");
 				}
 
 				return null;
-			};
+			}
 
 			var bindingOptions = GetBindingOptions();
 
@@ -2531,6 +2595,67 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					);
 				}
 			}
+		}
+
+		private string BuildMemberPropertyValue(XamlMemberDefinition m)
+		{
+			if (IsCustomMarkupExtensionType(m.Objects.FirstOrDefault()?.Type))
+			{
+				// If the member contains a custom markup extension, build the inner part first
+				var propertyValue = GetCustomMarkupExtensionValue(m);
+				return "{0} = {1}".InvariantCultureFormat(m.Member.Name, propertyValue);
+			}
+			else
+			{
+				return "{0} = {1}".InvariantCultureFormat(m.Member.Name == "_PositionalParameters" ? "Path" : m.Member.Name, BuildBindingOption(m, FindPropertyType(m.Member), prependCastToType: true));
+			}
+		}
+
+		private string GetCustomMarkupExtensionValue(XamlMemberDefinition member)
+		{
+			// Get the type of the custom markup extension
+			var markupTypeDef = member
+				.Objects
+				.FirstOrDefault(o => IsCustomMarkupExtensionType(o.Type));
+
+			// Build a string of all its properties
+			var properties = markupTypeDef
+				.Members
+				.Select(m =>
+				{
+					var resourceName = GetStaticResourceName(m);
+
+					var value = resourceName != null
+						? resourceName
+						: BuildLiteralValue(m, owner: member);
+
+					return "{0} = {1}".InvariantCultureFormat(m.Member.Name, value);
+				})
+				.JoinBy(", ");
+
+			// Get the full globalized namespaces for the custom markup extension and also for IMarkupExtensionOverrides
+			var markupType = GetType(markupTypeDef.Type);
+			var markupTypeFullName = GetGlobalizedTypeName(markupType.GetFullName());
+			var xamlMarkupFullName = GetGlobalizedTypeName(XamlConstants.Types.IMarkupExtensionOverrides);
+
+			// Get the attribute from the custom markup extension class then get the return type specifed with MarkupExtensionReturnTypeAttribute
+			var attributeData = markupType.FindAttribute(XamlConstants.Types.MarkupExtensionReturnTypeAttribute);
+
+			if (attributeData == null)
+			{
+				this.Log().Error($"The custom markup extension {markupTypeDef.Type.Name} must specify the return type using {nameof(XamlConstants.Types.MarkupExtensionReturnTypeAttribute)}.");
+				return string.Empty;
+			}
+
+			var returnType = attributeData.NamedArguments.FirstOrDefault(kvp => kvp.Key == "ReturnType").Value.Value;
+
+			if (returnType == null)
+			{
+				this.Log().Error($"The custom markup extension contains a ReturnType that cannot be found.");
+				return string.Empty;
+			}
+
+			return $"({returnType})(({xamlMarkupFullName})(new {markupTypeFullName} {{ {properties} }})).ProvideValue()";
 		}
 
 		private bool IsMemberInsideDataTemplate(XamlObjectDefinition xamlObject)
@@ -3054,7 +3179,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					return $"new RelativeSource(RelativeSourceMode.{resourceName})";
 				}
 
-				return "Unsupported";
+				// If type specified in the binding was not found, log and return an error message
+				if (!string.IsNullOrEmpty(bindingType?.Type?.Name ?? string.Empty))
+				{
+					var message = $"#Error // {bindingType.Type.Name} could not be found.";
+					this.Log().Error(message);
+
+					return message;
+				}
+
+				return "#Error";
 			}
 			else
 			{
@@ -3233,6 +3367,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									&& m.Type.Name != "StaticResource"
 									&& m.Type.Name != "ThemeResource"
 									&& m.Type.Name != "TemplateBinding"
+									&& !IsCustomMarkupExtensionType(m.Type)
 								);
 
 							if (nonBindingObjects.Any())
