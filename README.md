@@ -36,7 +36,7 @@ To easily create a multi-platform application:
 See the complete [Getting Started guide](https://platform.uno/docs/articles/get-started.html) for more information.
 
 For a larger example and features demo:
-* Visit the [Uno Gallery and Playground](https://github.com/nventive/Uno.Playground) repository.
+* Visit the [Uno Gallery and Playground](https://github.com/unoplatform/uno.Playground) repository.
 * Try the [WebAssembly Uno Playground](https://playground.platform.uno) live in your browser.
 
 # Uno Features
@@ -57,18 +57,18 @@ For a larger example and features demo:
     * [Styling](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/xaml-styles)
     * [Rich Animations](https://docs.microsoft.com/en-us/windows/uwp/design/motion/xaml-animation)
 * UWP Code Support:
-    * [Windows Community Toolkit](https://github.com/nventive/Uno.WindowsCommunityToolkit)
-    * [MVVM Light Toolkit](https://github.com/nventive/uno.mvvmlight)
-    * [Microsoft XAML Behaviors](https://github.com/nventive/Uno.XamlBehaviors)
-    * [Prism](https://github.com/nventive/Uno.Prism)
+    * [Windows Community Toolkit](https://github.com/unoplatform/uno.WindowsCommunityToolkit)
+    * [MVVM Light Toolkit](https://github.com/unoplatform/uno.mvvmlight)
+    * [Microsoft XAML Behaviors](https://github.com/unoplatform/uno.XamlBehaviors)
+    * [Prism](https://github.com/unoplatform/uno.Prism)
     * [SkiaSharp](https://github.com/unoplatform/Uno.SkiaSharp)
     * [SkiaSharp.Extended](https://github.com/unoplatform/Uno.SkiaSharp.Extended)
     * [MVVMCross](https://www.mvvmcross.com/) (soon)
     * [ReactiveUI Official](https://github.com/reactiveui/ReactiveUI/pull/2067)
-    * [WindowsStateTriggers](https://github.com/nventive/Uno.WindowsStateTriggers)
-    * [Xamarin.Forms for UWP](https://github.com/nventive/Uno.Xamarin.Forms), [NuGet](https://www.nuget.org/packages/ReactiveUI.Uno)
+    * [WindowsStateTriggers](https://github.com/unoplatform/uno.WindowsStateTriggers)
+    * [Xamarin.Forms for UWP](https://github.com/unoplatform/uno.Xamarin.Forms), [NuGet](https://www.nuget.org/packages/ReactiveUI.Uno)
     * [Rx.NET](https://github.com/reactiveui/Reactive.Wasm)
-    * [ColorCode-Universal](https://github.com/nventive/Uno.ColorCode-Universal)
+    * [ColorCode-Universal](https://github.com/unoplatform/uno.ColorCode-Universal)
     * Any UWP project
 * Responsive Design:
     * [Visual State Manager](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.VisualStateManager)
@@ -84,24 +84,24 @@ For a larger example and features demo:
 
 Here's a list of live apps made with the Uno Platform for WebAssembly.
 
-* The [Uno Platform Playground](https://playground.platform.uno) ([Source](https://github.com/nventive/Uno.Playground)).
+* The [Uno Platform Playground](https://playground.platform.uno) ([Source](https://github.com/unoplatform/uno.Playground)).
 * The [Uno Calculator](https://calculator.platform.uno), a simple yet powerful iOS/Android/WebAssembly C# port of the calculator that ships with Windows ([Source](https://github.com/unoplatform/calculator)). Also try the [pink theme](https://calculator.platform.uno/?theme=pink), the [iOS version](https://apps.apple.com/app/id1464736591) or the [Android version](https://play.google.com/store/apps/details?id=uno.platform.calculator).
-* The [Xaml Controls Gallery](https://xamlcontrolsgallery.platform.uno/) ([Source](https://github.com/nventive/Uno.Xaml-Controls-Gallery)).
+* The [Xaml Controls Gallery](https://xamlcontrolsgallery.platform.uno/) ([Source](https://github.com/unoplatform/uno.Xaml-Controls-Gallery)).
 * [SkiaSharp fork for the Uno Platform](https://skiasharp-wasm.platform.uno/), Skia is a cross-platform 2D graphics API for .NET platforms based on Google's Skia Graphics Library ([Source](https://github.com/unoplatform/Uno.SkiaSharp)).
-* The [Uno.WindowsCommunityToolkit](https://windowstoolkit-wasm.platform.uno/), ([Source](https://github.com/nventive/Uno.WindowsCommunityToolkit))
-* The [Uno.Lottie](https://lottie.platform.uno/), a sample that uses the [AnimatedVisualPlayer](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer) ([Source](https://github.com/nventive/Uno.LottieSample))
-* The [Uno.RoslynQuoter](https://roslynquoter-wasm.platform.uno/), a [Roslyn](https://github.com/dotnet/roslyn) based C# analysis tool ([Source](https://github.com/nventive/Uno.RoslynQuoter))
-* The [Uno.BikeSharing360 App](http://bikerider-wasm.platform.uno/), a Xamarin.Forms app running on top of Uno for WebAssembly ([Source](https://github.com/nventive/Uno.BikeSharing360_MobileApps))
-* The [Uno.WindowsStateTriggers App](http://winstatetriggers-wasm.platform.uno/), a demo of the [Morten's WindowsStateTriggers](https://github.com/dotMorten/WindowsStateTriggers) ([Source](https://github.com/nventive/Uno.WindowsStateTriggers))
-* The [SQLite + Entity Framework Core App](https://sqliteefcore-wasm.platform.uno), a demo of the combination of [Roslyn](https://github.com/dotnet/roslyn), [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/), [SQLite](https://github.com/nventive/Uno.SQLitePCLRaw.Wasm) and the Uno Platform to manipulate an in-browser database.
-* The [Uno.WebSockets App](https://websockets-wasm.platform.uno), a demo of System.Net.WebSocket running from WebAssembly ([Source](https://github.com/nventive/Uno.Wasm.WebSockets))
+* The [Uno.WindowsCommunityToolkit](https://windowstoolkit-wasm.platform.uno/), ([Source](https://github.com/unoplatform/uno.WindowsCommunityToolkit))
+* The [Uno.Lottie](https://lottie.platform.uno/), a sample that uses the [AnimatedVisualPlayer](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.animatedvisualplayer) ([Source](https://github.com/unoplatform/uno.LottieSample))
+* The [Uno.RoslynQuoter](https://roslynquoter-wasm.platform.uno/), a [Roslyn](https://github.com/dotnet/roslyn) based C# analysis tool ([Source](https://github.com/unoplatform/uno.RoslynQuoter))
+* The [Uno.BikeSharing360 App](http://bikerider-wasm.platform.uno/), a Xamarin.Forms app running on top of Uno for WebAssembly ([Source](https://github.com/unoplatform/uno.BikeSharing360_MobileApps))
+* The [Uno.WindowsStateTriggers App](http://winstatetriggers-wasm.platform.uno/), a demo of the [Morten's WindowsStateTriggers](https://github.com/dotMorten/WindowsStateTriggers) ([Source](https://github.com/unoplatform/uno.WindowsStateTriggers))
+* The [SQLite + Entity Framework Core App](https://sqliteefcore-wasm.platform.uno), a demo of the combination of [Roslyn](https://github.com/dotnet/roslyn), [Entity Framework Core](https://docs.microsoft.com/en-us/ef/core/), [SQLite](https://github.com/unoplatform/uno.SQLitePCLRaw.Wasm) and the Uno Platform to manipulate an in-browser database.
+* The [Uno.WebSockets App](https://websockets-wasm.platform.uno), a demo of System.Net.WebSocket running from WebAssembly ([Source](https://github.com/unoplatform/uno.Wasm.WebSockets))
 * A [mono-wasm AOT RayTracer](https://raytracer-mono-aot.platform.uno/)
 
 Let us know if you've made your app publicly available, we'll list it here!
 
 # Have questions? Feature requests? Issues?
 
-Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform), [create an issue](https://github.com/nventive/Uno/issues) or [visit our gitter](https://gitter.im/uno-platform/Lobby).
+Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform), [create an issue](https://github.com/unoplatform/uno/issues) or [visit our gitter](https://gitter.im/uno-platform/Lobby).
 
 # Contributing
 

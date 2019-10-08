@@ -80,7 +80,7 @@
 		<Delete Files="@(_JavaFilesToDelete)" />
 	</Target>
 
-	<!-- Workaround for https://github.com/nventive/Uno/issues/986 -->
+	<!-- Workaround for https://github.com/unoplatform/uno/issues/986 -->
 	<Target Name="Issue986Workaround" BeforeTargets="ExportJarToXml">
 
 		<!--

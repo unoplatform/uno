@@ -350,7 +350,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				//		 original "Local" value, so will be able to rollback the animation when
 				//		 going to another VisualState (if the storyboard ran in that context).
 				//		 In that case we should also do "ClearValue();" to remove the "Animations" value, even if using "HoldEnd"
-				//		 cf. https://github.com/nventive/Uno/issues/631
+				//		 cf. https://github.com/unoplatform/uno/issues/631
 				PropertyInfo.Value = ComputeToValue();
 #endif
 

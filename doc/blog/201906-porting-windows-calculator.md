@@ -123,7 +123,7 @@ String marshalling is a tricky piece. Windows systems use UTF16 encoding, while 
 
 In the course of porting the Calculator, we had to add support for many of the XAML and WinRT features that the calculator is relying on.
 
-Features such as Grid's [RowDefinitions.MaxWith/MaxHeight support](https://github.com/nventive/Uno/pull/1048), [Attached Property localization using resources](https://github.com/nventive/Uno/pull/966), fixes such as [text measuring](https://github.com/nventive/Uno/pull/1034) and [caching](https://github.com/nventive/Uno/pull/931) for WebAssembly, performance improvements with [VisualState Triggers](https://github.com/nventive/Uno/pull/1008), [Javascript marshaling](https://github.com/nventive/Uno/pull/970), and support for the new [`x:Load` attribute](https://github.com/nventive/Uno/pull/870) are some of the improvements we made to Uno.
+Features such as Grid's [RowDefinitions.MaxWith/MaxHeight support](https://github.com/unoplatform/uno/pull/1048), [Attached Property localization using resources](https://github.com/unoplatform/uno/pull/966), fixes such as [text measuring](https://github.com/unoplatform/uno/pull/1034) and [caching](https://github.com/unoplatform/uno/pull/931) for WebAssembly, performance improvements with [VisualState Triggers](https://github.com/unoplatform/uno/pull/1008), [Javascript marshaling](https://github.com/unoplatform/uno/pull/970), and support for the new [`x:Load` attribute](https://github.com/unoplatform/uno/pull/870) are some of the improvements we made to Uno.
 
 There are other adjustments that have been made to the original source code of the calculator to adjust for Uno, and we're going to be adding support for those in the future as we progressively add new features to the Uno Platform.
 

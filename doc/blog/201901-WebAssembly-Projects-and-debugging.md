@@ -4,7 +4,7 @@ The progress on the Uno Platform support for WebAssembly has been steady, along 
 
 We've added support for a better Visual Studio project integration as well as an experimental debugging experience.
 
-The next release of the [Uno Visual Studio add-in](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) will contain the new project format and the debugger, but you can try it today using the [latest experimental release](https://github.com/nventive/Uno/releases) of the Uno Platform.
+The next release of the [Uno Visual Studio add-in](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) will contain the new project format and the debugger, but you can try it today using the [latest experimental release](https://github.com/unoplatform/uno/releases) of the Uno Platform.
 
 ## WebAssembly Project Support for Visual Studio
 Originally, the support for WebAssembly was done with Uno through the creation of a .NET Standard 2.0 project, relying on the use of mono-provided python server. The sole purpose of this server is to serve files with the `application/wasm` mime type, which can be done through a normal WebApp project.
