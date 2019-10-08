@@ -9,6 +9,10 @@ namespace Windows.UI.Xaml
 		public Application()
 		{
 			Current = this;
-		}
+        }
+
+		private ApplicationTheme GetDefaultSystemTheme() => ApplicationTheme.Light;
+
+		internal void ForceSetRequestedTheme(ApplicationTheme theme) => _requestedTheme = theme;
 	}
 }

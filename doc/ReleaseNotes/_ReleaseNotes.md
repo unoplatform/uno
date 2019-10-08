@@ -2,6 +2,7 @@
 
 ## Next version
 ### Features
+* Added Dark and HighContrast theme resources, reacts to Dark/Light theme on iOS, Android and WASM automatically during the startup of the app if `RequestedTheme` is not set in `App.xaml`
 * Support for `Gyrometer` on Android, iOS and WASM
    * `ReadingChanged`
    * `ReportInterval`
