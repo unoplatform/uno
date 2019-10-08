@@ -120,6 +120,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 				case PointerDeviceType.Pen:
 				case PointerDeviceType.Touch:
 					result = args.One(PointerEnteredEvent)
+						&& args.MaybeSome(PointerMovedEvent)
 						&& args.One(ClickEvent)
 						&& args.One(PointerCaptureLostEvent)
 						&& args.One(TappedEvent)
@@ -147,10 +148,15 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 					result =
 						args.One(PointerEnteredEvent)
 						&& args.Some(PointerMovedEvent) // Could be "Maybe" but WASM UI test generates it and we want to validate it
-#if !__WASM__ // KNOW ISSUE: We don't get a released if not pressed ... which are muted by the Hyperlink which is UIElement on wasm
+#if NETFX_CORE
+						&& args.One(PointerReleasedEvent)
+						&& args.One(ClickEvent)
+#elif __WASM__ // KNOW ISSUE: We don't get a released if not previously pressed, but pressed are muted by the Hyperlink which is UIElement on wasm
+						&& args.One(ClickEvent)
+#else
+						&& args.One(ClickEvent)
 						&& args.One(PointerReleasedEvent)
 #endif
-						&& args.One(ClickEvent)
 						&& args.MaybeSome(PointerMovedEvent)
 						&& args.One(PointerExitedEvent)
 						&& args.End();
@@ -169,10 +175,16 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 #else
 					result =
 						args.One(PointerEnteredEvent)
-#if !__WASM__ // KNOW ISSUE: We don't get a released if not pressed ... which are muted by the Hyperlink which is UIElement on wasm
+						&& args.MaybeSome(PointerMovedEvent)
+#if NETFX_CORE
+						&& args.One(PointerReleasedEvent)
+						&& args.One(ClickEvent)
+#elif __WASM__ // KNOW ISSUE: We don't get a released if not previously pressed, but pressed are muted by the Hyperlink which is UIElement on wasm
+						&& args.One(ClickEvent)
+#else
+						&& args.One(ClickEvent)
 						&& args.One(PointerReleasedEvent)
 #endif
-						&& args.One(ClickEvent)
 						&& args.One(PointerExitedEvent)
 						&& args.End();
 #endif
@@ -208,10 +220,10 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 
 				case PointerDeviceType.Pen:
 				case PointerDeviceType.Touch:
-#if __IOS__ || __WASM__
+#if __IOS__ || __ANDROID__
 					// KNOWN ISSUE:
-					//	On iOS as the Entered/Exited are generated on Pressed/Released, which are Handled by the ListViewItem,
-					//	we do not receive the expected Entered/Exited on parent control.
+					//	On iOS and Android as the Entered/Exited are generated on Pressed/Released, which are Handled by the ListViewItem,
+					//	so we do not receive the expected Entered/Exited on parent control.
 					//	As a side effect we will also not receive the Tap as it is an interpretation of those missing Pointer events.
 					result =
 						args.One(ClickEvent)
@@ -232,7 +244,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 			TestListViewResult.Text = result ? "SUCCESS" : "FAILED";
 		}
 
-		#region Common helpers
+#region Common helpers
 		private void Clear(IList events, TextBlock result)
 		{
 			events.Clear();
@@ -359,6 +371,6 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 			public bool End()
 				=> _index >= _args.Count;
 		}
-		#endregion
+#endregion
 	}
 }

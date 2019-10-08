@@ -689,6 +689,12 @@ namespace Windows.UI.Xaml.Controls
 			if (sender is TextBlock that
 				&& that.IsCaptured(e.Pointer))
 			{
+				// On UWP we don't get any CaptureLost, so make sure to manually release the capture silently
+				that.ReleasePointerCapture(e.Pointer, muteEvent: true);
+
+				// KNOWN ISSUE:
+				// On UWP the 'click' event is raised **after** the PointerReleased ... but deferring the event on the Dispatcher
+				// would move it after the PointerExited. So prefer to raise it before (actually like a Button).
 				that.FindHyperlinkAt(e.GetCurrentPoint(that).Position)?.ReleasePointerPressed(e.Pointer);
 			}
 

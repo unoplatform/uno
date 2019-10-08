@@ -542,13 +542,25 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public void ReleasePointerCapture(Pointer value)
+		public void ReleasePointerCapture(Pointer value) => ReleasePointerCapture(value, muteEvent: false);
+
+		/// <summary>
+		/// Release a pointer capture with the ability to not raise the <see cref="PointerCaptureLost"/> event (cf. Remarks)
+		/// </summary>
+		/// <remarks>
+		/// On some controls we use the Capture to track the pressed state properly, to detect click.  But in few cases (i.e. Hyperlink)
+		/// UWP does not raise a PointerCaptureLost. This method give the ability to easily follow this behavior without requiring
+		/// the control to track and handle the event.
+		/// </remarks>
+		/// <param name="value">The pointer to release.</param>
+		/// <param name="muteEvent">Determines if the event should be raised or not.</param>
+		private protected void ReleasePointerCapture(Pointer value, bool muteEvent)
 		{
 			var pointer = value ?? throw new ArgumentNullException(nameof(value));
 
 			if (IsCaptured(pointer, out var capture))
 			{
-				Release(capture);
+				Release(capture, muteEvent: muteEvent);
 			}
 			else if (this.Log().IsEnabled(LogLevel.Information))
 			{
@@ -664,6 +676,7 @@ namespace Windows.UI.Xaml
 			}
 			else if (forceCaptureLostEvent)
 			{
+				args.Handled = false;
 				return RaiseEvent(PointerCaptureLostEvent, args);
 			}
 			else
@@ -672,7 +685,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private bool Release(PointerCapture capture, PointerRoutedEventArgs args = null)
+		private bool Release(PointerCapture capture, PointerRoutedEventArgs args = null, bool muteEvent = false)
 		{
 			global::System.Diagnostics.Debug.Assert(capture.Owner == this, "Can release only capture made by the element itself.");
 
@@ -687,6 +700,11 @@ namespace Windows.UI.Xaml
 			_localCaptures.Remove(pointer);
 
 			ReleasePointerCaptureNative(pointer);
+
+			if (muteEvent)
+			{
+				return false;
+			}
 
 			args = args ?? capture.LastDispatchedEventArgs;
 			if (args == null)

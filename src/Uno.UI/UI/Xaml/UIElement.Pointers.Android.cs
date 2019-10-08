@@ -99,7 +99,7 @@ namespace Windows.UI.Xaml
 				case MotionEventActions.HoverMove:
 					// As the HoverExit is raised when pointer is pressed (and we are filtering them out),
 					// if the user moves the pointer out (still while pressing the button), we won't receive the OverExit.
-					// However if the pointer was captured, we have to raise the PointerExit, so make sure update the Over state before raising the move.
+					// But on UWP we have to to Raise the PointerExit when the pointer moves out even if pressed, so make sure to update the over state on each move.
 					return OnNativePointerMoveWithOverCheck(args, isInView);
 
 				case MotionEventActions.Cancel:
@@ -121,8 +121,6 @@ namespace Windows.UI.Xaml
 		// No needs to explicitly capture pointers on Android, they are implicitly captured
 		// partial void CapturePointerNative(Pointer pointer);
 		// partial void ReleasePointerCaptureNative(Pointer pointer);
-
-		// TODO: For the capture RequestDisallowInterceptTouchEvent
 		#endregion
 
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
