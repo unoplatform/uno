@@ -31,7 +31,6 @@ namespace Windows.UI.Xaml
 	{
 		static partial void InitStyles() {
 			InitFlyoutPresenter();
-			InitDatePicker();
 			InitDatePickerSelector();
 
 #if !IS_UNO
@@ -51,20 +50,6 @@ namespace Windows.UI.Xaml
 			//          This line is intentionally left here to remind of the reason why
 			//          there is no ContentControl template, please do not remove.
 			// InitContentControl();
-		}
-
-		private static void InitDatePicker()
-		{
-			var style = new Style(typeof(Windows.UI.Xaml.Controls.DatePicker))
-			{
-				Setters =  {
-					new Setter<DatePicker>("Template", t =>
-						t.Template = new ControlTemplate(()=>new UIDatePicker())
-					)
-				}
-			};
-
-			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.DatePicker), () => style);
 		}
 
 		private static void InitDatePickerSelector()
@@ -164,7 +149,7 @@ namespace Windows.UI.Xaml
 		{
 			var style = new Style(typeof(FlyoutPresenter))
 			{
-				Setters =  {
+				Setters = {
 					new Setter<FlyoutPresenter>("Template", t =>
 						t.Template = Funcs.Create(() =>
 							new Border()

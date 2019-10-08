@@ -19,6 +19,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private static readonly DateTimeOffset UnsetDateValue = DateTimeOffset.MinValue;
 
+		public DatePicker()
+		{
+			DefaultStyleKey = typeof(DatePicker);
+		}
+
+		partial void InitializePartial();
+
 		#region DateProperty
 
 		public DateTimeOffset Date
