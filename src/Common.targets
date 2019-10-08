@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8" ?>
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 
-  <!-- 
-  This target needs to be defined in all projects 
-  until we can override the Publish to not fail for cross-target 
+  <!--
+  This target needs to be defined in all projects
+  until we can override the Publish to not fail for cross-target
   projects that don't publish anything.
   -->
   <Target Name="CreateAppPackage" />
@@ -13,10 +13,10 @@
 		<ShouldWriteErrorOnInvalidXaml>True</ShouldWriteErrorOnInvalidXaml>
 	</PropertyGroup>
 
-	<Target Name="_UnoFeatureDefines" BeforeTargets="BeforeCompile" DependsOnTargets="_FillMsBuildVersion">
+	<Target Name="_UnoFeatureDefines" BeforeTargets="BeforeCompile">
 
 		<PropertyGroup>
-			<UnoDefineConstants Condition="'$(MicrosoftBuildVersion)' &gt;= '15.4'">$(UnoDefineConstants);__IOS_11__</UnoDefineConstants>
+			<UnoDefineConstants Condition="'$(MSBuildVersion)' &gt;= '15.4'">$(UnoDefineConstants);__IOS_11__</UnoDefineConstants>
 		</PropertyGroup>
 
 		<!-- Merge the UnoDefineConstants with the existing constants -->

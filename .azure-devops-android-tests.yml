@@ -24,8 +24,7 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
-
-
+ 
   - task: PublishTestResults@2
     condition: always()
     inputs:

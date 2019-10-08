@@ -6,7 +6,7 @@ Those methods are built to have no effect on platform that does not support the 
 
 ## MenuFlyoutItem - Destructive style
 
-iOS can display `MenuFlyoutItem` to warn user the action will be "destructive". In that case, the button text is display in red.
+iOS can display `MenuFlyoutItem` to warn user the action will be "destructive". In that case, the button text is displayed in red.
 
 To set a `MenuFlyoutItem` as destructive, add the toolkit namespace to your XAML
 

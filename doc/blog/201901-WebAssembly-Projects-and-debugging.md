@@ -2,7 +2,7 @@
 
 The progress on the Uno Platform support for WebAssembly has been steady, along with the mono runtime making large improvements in the support for a debugging experience.
 
-We've added support for a better Visual Studio project integration as well as a experimental debugging experience.
+We've added support for a better Visual Studio project integration as well as an experimental debugging experience.
 
 The next release of the [Uno Visual Studio add-in](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) will contain the new project format and the debugger, but you can try it today using the [latest experimental release](https://github.com/nventive/Uno/releases) of the Uno Platform.
 
@@ -37,7 +37,7 @@ The Mono team has been working for a while on the debugging experience, and rece
 
 There is only one important constraint: the debugging only works with Chrome. It is using the [Chrome DevTools Protocol](https://chromedevtools.github.io/devtools-protocol/).
 
-The debugger provides access to all local sources, as well as [Source Link enabled assemblies](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink) when available, provide single stepping, breakpoints, stack trace walking, local variables and watches. Currently local variables watching is limited to primitives and strings.
+The debugger provides access to all local sources, as well as [Source Link enabled assemblies](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/sourcelink) when available, provide single stepping, breakpoints, stack trace walking, local variables and watches. Currently, watching local variables is limited to primitives and strings.
 
 To give you an example of the debugging experience, this is a step-into the `DateTime.Now` property in the mono source tree, from a normal user program:
  ![](Assets/201901-debugger-step-04.png)
