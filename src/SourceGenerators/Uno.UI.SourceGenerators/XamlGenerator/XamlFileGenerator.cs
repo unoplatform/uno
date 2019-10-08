@@ -390,8 +390,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			InitializeRemoteControlClient(writer);
 			GenerateApiExtensionRegistrations(writer);
-
-			writer.AppendLineInvariant($"global::Windows.UI.Xaml.GenericStyles.Initialize();");
+			
 			GenerateResourceLoader(writer);
 			writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
 			writer.AppendLineInvariant($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
