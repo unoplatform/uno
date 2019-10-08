@@ -9,7 +9,7 @@
 [![GitHub stars](https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/master?label=release/stable/Batman)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5) 
  [![Dependabot Status](https://api.dependabot.com/badges/status?host=github&repo=unoplatform/uno)](https://dependabot.com)
 [![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) 
- [![Twitter Followers](https://img.shields.io/twitter/follow/unoplatform?label=follow%20%40unoplatform&style=flat)](https://twitter.com/unoplatform) [![GitHub Stars](https://img.shields.io/github/stars/unoplatform/uno?label=github%20stars)](https://github.com/unoplatform/uno/stargazers/)  [![NuGet Downloads](https://img.shields.io/nuget/dt/uno.ui.svg)](https://www.nuget.org/packages/uno.ui)  [![All Contributors](https://img.shields.io/badge/all_contributors-49-orange.svg?style=flat-square)](#contributors) 
+ [![Twitter Followers](https://img.shields.io/twitter/follow/unoplatform?label=follow%20%40unoplatform&style=flat)](https://twitter.com/unoplatform) [![GitHub Stars](https://img.shields.io/github/stars/unoplatform/uno?label=github%20stars)](https://github.com/unoplatform/uno/stargazers/)  [![NuGet Downloads](https://img.shields.io/nuget/dt/uno.ui.svg)](https://www.nuget.org/packages/uno.ui)  [![All Contributors](https://img.shields.io/badge/all_contributors-51-orange.svg?style=flat-square)](#contributors) 
 
 # What is the Uno Platform
 
@@ -184,6 +184,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/aayushbisen"><img src="https://avatars2.githubusercontent.com/u/41341387?v=4" width="100px;" alt="Aayush Bisen"/><br /><sub><b>Aayush Bisen</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=aayushbisen" title="Documentation">📖</a></td>
     <td align="center"><a href="https://lex111.ru/"><img src="https://avatars2.githubusercontent.com/u/4408379?v=4" width="100px;" alt="Alexey Pyltsyn"/><br /><sub><b>Alexey Pyltsyn</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=lex111" title="Documentation">📖</a></td>
     <td align="center"><a href="http://imagentleman.github.io"><img src="https://avatars2.githubusercontent.com/u/2272928?v=4" width="100px;" alt="José Antonio Chio"/><br /><sub><b>José Antonio Chio</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=imagentleman" title="Documentation">📖</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://mrassili.com"><img src="https://avatars0.githubusercontent.com/u/25288435?v=4" width="100px;" alt="Marouane R"/><br /><sub><b>Marouane R</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=mrassili" title="Documentation">📖</a></td>
   </tr>
 </table>
 
