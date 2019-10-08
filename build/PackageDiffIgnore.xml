@@ -417,6 +417,9 @@
 				<Member 
 					fullName="System.String Windows.UI.Xaml.RoutedEvent.get_Name()"
 					reason="Not part of the UWP API."/>
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.Documents.Hyperlink.OnNavigateUriChanged()"
+					reason="Not part of the UWP API."/>
 			</Methods>
 			
 			<Fields>
