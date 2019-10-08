@@ -2,10 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 using Windows.Graphics.Display;
-using UIKit;
 using Windows.UI.Xaml.Media;
 using Uno.Extensions;
 using Windows.Devices.Sensors;
+using CoreGraphics;
+
+#if XAMARIN_IOS_UNIFIED
+using Foundation;
+using UIKit;
+#elif XAMARIN_IOS
+using MonoTouch.Foundation;
+using MonoTouch.UIKit;
+#endif
 
 namespace Uno.UI.Controls
 {
@@ -14,6 +22,35 @@ namespace Uno.UI.Controls
 		internal event Action VisibleBoundsChanged;
 
 		public RootViewController()
+		{
+			Initialize();
+		}
+
+		public RootViewController(UIViewController rootViewController)
+			: base(rootViewController)
+		{
+			Initialize();
+		}
+
+		public RootViewController(NSObjectFlag t)
+			: base(t)
+		{
+			Initialize();
+		}
+
+		public RootViewController(NSCoder coder)
+			: base(coder)
+		{
+			Initialize();
+		}
+
+		public RootViewController(IntPtr handle)
+			: base(handle)
+		{
+			Initialize();
+		}
+
+		private void Initialize()
 		{
 			// Dismiss on device rotation: this reproduces the windows behavior
 			UIApplication.Notifications
