@@ -393,12 +393,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
 			writer.AppendLineInvariant($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
 
+
 			writer.AppendLineInvariant($"#if __ANDROID__");
 			writer.AppendLineInvariant($"global::Uno.Helpers.DrawableHelper.Drawables = typeof(global::{_defaultNamespace}.Resource.Drawable);");
 			writer.AppendLineInvariant($"#endif");
 
 			RegisterResources(topLevelControl);
 			BuildProperties(writer, topLevelControl, isInline: false, returnsContent: false);
+
+			writer.AppendLineInvariant("");
+			writer.AppendLineInvariant("this");
+
+			using (var blockWriter = CreateApplyBlock(writer, null, out var closure))
+			{
+				blockWriter.AppendLineInvariant(
+					"// Source {0} (Line {1}:{2})",
+					_fileDefinition.FilePath,
+					topLevelControl.LineNumber,
+					topLevelControl.LinePosition
+				);
+				BuildLiteralProperties(blockWriter, topLevelControl, closure);
+			}
+
 			writer.AppendLineInvariant(";");
 			if (_isUiAutomationMappingEnabled)
 			{
