@@ -9,6 +9,8 @@
 	<UserControl.Resources>
 		<ext:InverseBoolMarkup x:Key="Inverse" />
 
+		<ext:TestObject x:Name="TestObject" />
+
 		<x:String x:Key="ResourceTest">Resource String</x:String>
 
 		<!-- Make sure x:DataType generates correctly -->
@@ -56,6 +58,9 @@
 			<!-- Make sure a markup extension can return different types -->
 			<TextBlock Text="{ext:NoReturnTypeMarkupExt UseValue=UseValue1, Value1='I am Value 1', Value2=444}"
 					   Tag="{ext:NoReturnTypeMarkupExt UseValue=UseValue2, Value1='I am Value 1', Value2=333}" />
+
+			<!-- Make sure custom objects can be returned from a markup extension without a return type specified -->
+			<TextBlock DataContext="{ext:NoReturnTypeMarkupExt UseValue=UseValue1, Value1={StaticResource TestObject}}" />
 		</StackPanel>
 	</Grid>
 </UserControl>
