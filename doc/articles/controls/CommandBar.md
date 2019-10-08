@@ -45,7 +45,7 @@ In this mode, the `CommandBar` can't be fully customized like other templatable 
 
 ### Padding
 
-You must use `VisibleBoundsPadding.PaddingMask="Top"` on `CommandBar` to properly support the notch or punch-holes on iOS and Android
+You must use `VisibleBoundsPadding.PaddingMask="Top"` on `CommandBar` to properly support the notch or punch-holes on iOS and Android.
 
 #### Back button
 
