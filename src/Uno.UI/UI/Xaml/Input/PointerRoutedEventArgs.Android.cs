@@ -37,9 +37,7 @@ namespace Windows.UI.Xaml.Input
 
 			var pointerId = (uint)nativeEvent.DeviceId; // The nativeEvent.GetPointerId(**) almost always returns 0
 			var type = nativeEvent.GetToolType(nativeEvent.ActionIndex).ToPointerDeviceType();
-			var isInContact = nativeEvent.Action.HasFlag(MotionEventActions.Down)
-				|| nativeEvent.Action.HasFlag(MotionEventActions.PointerDown)
-				|| nativeEvent.Action.HasFlag(MotionEventActions.Move);
+			var isInContact = IsInContact(type, nativeEvent);
 			var keys = nativeEvent.MetaState.ToVirtualKeyModifiers();
 
 			FrameId = (uint)_nativeEvent.EventTime;
@@ -125,7 +123,7 @@ namespace Windows.UI.Xaml.Input
 					break;
 				case MotionEventToolType.Stylus:
 					props.IsBarrelButtonPressed = _nativeEvent.IsButtonPressed(MotionEventButtonState.StylusPrimary);
-					props.IsLeftButtonPressed = !props.IsBarrelButtonPressed;
+					props.IsLeftButtonPressed = Pointer.IsInContact && !props.IsBarrelButtonPressed;
 					break;
 				case MotionEventToolType.Eraser:
 					props.IsEraser = true;
@@ -186,6 +184,24 @@ namespace Windows.UI.Xaml.Input
 				var timestamp = TimeSpan.TicksPerMillisecond * (_unixEpochMs + realUptime);
 
 				return timestamp;
+			}
+		}
+
+		private static bool IsInContact(PointerDeviceType type, MotionEvent nativeEvent)
+		{
+			switch (type)
+			{
+				case PointerDeviceType.Mouse:
+					return nativeEvent.ButtonState != 0;
+
+				case PointerDeviceType.Pen:
+					return nativeEvent.GetAxisValue(Axis.Distance, nativeEvent.ActionIndex) == 0;
+
+				default:
+				case PointerDeviceType.Touch:
+					return nativeEvent.Action.HasFlag(MotionEventActions.Down)
+						|| nativeEvent.Action.HasFlag(MotionEventActions.PointerDown)
+						|| nativeEvent.Action.HasFlag(MotionEventActions.Move);
 			}
 		}
 		#endregion

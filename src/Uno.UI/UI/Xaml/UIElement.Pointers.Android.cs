@@ -75,9 +75,11 @@ namespace Windows.UI.Xaml
 			{
 				case MotionEventActions.HoverEnter:
 					return OnNativePointerEnter(args);
-				case MotionEventActions.HoverExit when nativeEvent.ButtonState == 0:
-					// When a mouse button is pressed, we receive an HoverExit before the Down. As on UWP Exit is raised only when pointer moves
-					// out of bounds of the control, we ignore the HoverExit when a button is pressed, and then update the Over state on each Move.
+				case MotionEventActions.HoverExit when !args.Pointer.IsInContact:
+					// When a mouse button is pressed or pen touches the screen (a.k.a. becomes in contact), we receive an HoverExit before the Down.
+					// We validate here if pointer 'isInContact' (which is the case for HoverExit when mouse button pressed / pen touch  the screen)
+					// and we ignore them (as on UWP Exit is raised only when pointer moves out of bounds of the control, no matter the pressed state).
+					// As a side effect we will have to update the hover state on each Move in order to handle the case of press -> move out -> release.
 					return OnNativePointerExited(args);
 				case MotionEventActions.HoverExit:
 					return false; // avoid useless logging
@@ -97,9 +99,8 @@ namespace Windows.UI.Xaml
 
 				case MotionEventActions.Move:
 				case MotionEventActions.HoverMove:
-					// As the HoverExit is raised when pointer is pressed (and we are filtering them out),
-					// if the user moves the pointer out (still while pressing the button), we won't receive the OverExit.
-					// But on UWP we have to to Raise the PointerExit when the pointer moves out even if pressed, so make sure to update the over state on each move.
+					// Note: We use the OnNativePointerMove**WithOverCheck** in order to update the over state in case of press -> move out -> release
+					//		 where Android won't raise the HoverExit (as it has raised it on press, but we have ignored it cf. HoverExit case.)
 					return OnNativePointerMoveWithOverCheck(args, isInView);
 
 				case MotionEventActions.Cancel:

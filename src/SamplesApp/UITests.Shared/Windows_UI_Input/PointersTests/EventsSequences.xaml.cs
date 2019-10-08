@@ -151,7 +151,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 #if NETFX_CORE
 						&& args.One(PointerReleasedEvent)
 						&& args.One(ClickEvent)
-#elif __WASM__ // KNOW ISSUE: We don't get a released if not previously pressed, but pressed are muted by the Hyperlink which is UIElement on wasm
+#elif __WASM__ // KNOWN ISSUE: We don't get a released if not previously pressed, but pressed are muted by the Hyperlink which is a UIElement on wasm
 						&& args.One(ClickEvent)
 #else
 						&& args.One(ClickEvent)
@@ -179,7 +179,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 #if NETFX_CORE
 						&& args.One(PointerReleasedEvent)
 						&& args.One(ClickEvent)
-#elif __WASM__ // KNOW ISSUE: We don't get a released if not previously pressed, but pressed are muted by the Hyperlink which is UIElement on wasm
+#elif __WASM__ // KNOWN ISSUE: We don't get a released if not previously pressed, but pressed are muted by the Hyperlink which is a UIElement on wasm
 						&& args.One(ClickEvent)
 #else
 						&& args.One(ClickEvent)
