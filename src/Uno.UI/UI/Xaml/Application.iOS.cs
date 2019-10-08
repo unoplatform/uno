@@ -22,7 +22,6 @@ namespace Windows.UI.Xaml
 		public Application()
 		{
 			Current = this;
-			Windows.UI.Xaml.GenericStyles.Initialize();
 			ResourceHelper.ResourcesService = new ResourcesService(new[] { NSBundle.MainBundle });
 		}
 

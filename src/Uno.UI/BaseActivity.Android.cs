@@ -45,11 +45,6 @@ namespace Uno.UI
 		public const string ActiveBindableActivityCounter = "BindableActivity.ActiveCount";
 		public const string DisposedTotalBindableActivityCounter = "BindableActivity.DisposedCount";
 
-		static BaseActivity()
-		{
-			Windows.UI.Xaml.GenericStyles.Initialize();
-		}
-
 		/// <summary>
 		/// Occurs when an instance of BaseActivity is created or destroyed
 		/// </summary>

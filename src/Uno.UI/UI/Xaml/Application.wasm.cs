@@ -56,8 +56,6 @@ namespace Windows.UI.Xaml
 				// Force init
 				Window.Current.ToString();
 
-				Windows.UI.Xaml.GenericStyles.Initialize();
-
 				var arguments = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.findLaunchArguments()");
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
