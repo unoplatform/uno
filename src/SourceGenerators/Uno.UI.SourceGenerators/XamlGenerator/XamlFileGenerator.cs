@@ -2239,7 +2239,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									this.RewriteAttachedPropertyPath(member.Value.ToString()),
 									closureName);
 
-								writer.AppendLineInvariant("{0}.SetTarget({2}, this._{1}Subject);",
+								writer.AppendLineInvariant("{0}.SetTarget({2}, _{1}Subject);",
 												GetGlobalizedTypeName(FindType(member.Member.DeclaringType).SelectOrDefault(t => t.ToDisplayString(), member.Member.DeclaringType.Name)),
 												member.Value,
 												closureName);
