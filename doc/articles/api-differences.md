@@ -53,7 +53,7 @@ known is the `HighContrast` theme.
 You can do something similar - and even create totally custom themes - by using the following helper:
 
 ``` csharp
-  // Set current theme to Hich contrast
+  // Set current theme to High contrast
   Uno.UI.RequestedCustomTheme = "HighContrast";
 ```
 

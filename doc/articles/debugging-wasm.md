@@ -19,7 +19,7 @@ Debugging WebAssembly via Google Chrome is experimentally supported by the Uno P
    - Select **IIS Express** as the debugging target
    - Select **Chrome** as the Web Browser
    - Make sure script debugging is disabled<br/>
-   ![iis express settings](Assets/quick-start/wasm-debugging-iis-express.png)
+   ![IIS express settings](Assets/quick-start/wasm-debugging-iis-express.png)
 
 - Start the debugging session using `Ctrl+F5` (`F5` will work, but the debugging experience won't be in Visual Studio)
 - Once your application has started, press `Alt+Shift+D` (in Chrome, on your application's tab)
