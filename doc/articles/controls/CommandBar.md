@@ -432,7 +432,7 @@ Gets or sets a value indicating whether the user can interact with the control.
 
 # FAQ
 
-- > Why my content is underneath the CommandBar for iOS and the CommandBar underneath the StatusBar/Notch for Android ?
+- > Why is my content underneath the `CommandBar` for iOS and the `CommandBar` underneath the StatusBar/Notch for Android ?
 
   You must use `VisibleBoundsPadding.PaddingMask="Top"` on `CommandBar` to properly support the notch or punch-holes on iOS and Android.
 
