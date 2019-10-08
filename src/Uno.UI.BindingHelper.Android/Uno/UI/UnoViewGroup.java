@@ -429,7 +429,7 @@ public abstract class UnoViewGroup
 			// especially optimization of the TouchTarget resolving / tracking. (https://android.googlesource.com/platform/frameworks/base/+/0e71b4f19ba602c8c646744e690ab01c69808b42/core/java/android/view/ViewGroup.java#2654)
 			// We assume that events that are wronlgy dispatched to children are going to be filteerd by children themselves
 			// and thios support is sufficient enough for our current cases.
-			// Note: this is not fully compliant with the UWP contract (cf. https://github.com/nventive/Uno/issues/649)
+			// Note: this is not fully compliant with the UWP contract (cf. https://github.com/unoplatform/uno/issues/649)
 
 			// Note: If this logic is called once, it has to be called for all MotionEvents in the same touch cycle, including Cancel, because if
 			// ViewGroup.dispatchTouchEvent() isn't called for Down then all subsequent events won't be handled correctly
