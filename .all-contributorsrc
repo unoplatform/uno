@@ -544,6 +544,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "m1guelpf",
+      "name": "Miguel Piedrafita",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/23558090?v=4",
+      "profile": "https://miguelpiedrafita.com",
+      "contributions": [
+        "doc"
+      ]
     }
   ],
   "contributorsPerLine": 5,
