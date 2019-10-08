@@ -50,7 +50,7 @@ must be set at launch time. Documentation: [`Application.RequestedTheme`](https:
 On Windows, there are some _themes_ that can target, but there is no way to trigger them. The most
 known is the `HighContrast` theme.
 
-You can do something similar - an even create totally custom themes - by using the following helper:
+You can do something similar - and even create totally custom themes - by using the following helper:
 
 ``` csharp
   // Set current theme to Hich contrast
