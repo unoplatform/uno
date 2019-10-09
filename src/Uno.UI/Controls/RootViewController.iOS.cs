@@ -2,18 +2,12 @@
 using System.Collections.Generic;
 using System.Text;
 using Windows.Graphics.Display;
+using Foundation;
+using UIKit;
 using Windows.UI.Xaml.Media;
 using Uno.Extensions;
 using Windows.Devices.Sensors;
 using CoreGraphics;
-
-#if XAMARIN_IOS_UNIFIED
-using Foundation;
-using UIKit;
-#elif XAMARIN_IOS
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-#endif
 
 namespace Uno.UI.Controls
 {

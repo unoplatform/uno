@@ -3,14 +3,8 @@ using System.Collections.Generic;
 using System.Text;
 using CoreGraphics;
 using Windows.UI.Xaml;
-
-#if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
-#elif XAMARIN_IOS
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-#endif
 
 namespace Uno.UI.Controls
 {

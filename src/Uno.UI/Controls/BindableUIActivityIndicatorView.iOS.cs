@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml;
-using CoreGraphics;
-
-#if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
-#elif XAMARIN_IOS
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-#endif
+using Windows.UI.Xaml;
+using CoreGraphics;
 
 namespace Uno.UI.Views.Controls
 {
