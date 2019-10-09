@@ -10,6 +10,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal class XamlGlobalStaticResourcesMap
 	{
+		private const string AppXIdentifier = "ms-appx:///";
 		private readonly Dictionary<string, List<StaticResourceDefinition>> _map = new Dictionary<string, List<StaticResourceDefinition>>();
 		private readonly Dictionary<string, XamlFileDefinition> _rdMap = new Dictionary<string, XamlFileDefinition>();
 
@@ -83,6 +84,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private string ResolveAbsoluteSource(string origin, string relativeTargetPath)
 		{
+			if (relativeTargetPath.StartsWith(AppXIdentifier))
+			{
+				// The path is already absolute. (Currently we assume it's in the local assembly.)
+				var trimmedPath = relativeTargetPath.TrimStart(AppXIdentifier);
+				var i = trimmedPath.IndexOf('/');
+				return trimmedPath.Substring(i + 1);
+			}
+
 			var originDirectory = Path.GetDirectoryName(origin);
 			if (originDirectory.IsNullOrWhiteSpace())
 			{
