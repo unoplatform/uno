@@ -44,7 +44,10 @@ namespace {0}
 	partial class {1}
 	{{
 #if {2}
-		public {3}() {{ }}
+		public {3}()
+		{{
+			OnInitialized();
+		}}
 #endif
 
 #if __ANDROID__
@@ -55,7 +58,10 @@ namespace {0}
 		/// Used by the Xamarin Runtime to materialize native 
 		/// objects that may have been collected in the managed world.
 		/// </remarks>
-		public {3}(IntPtr javaReference, global::Android.Runtime.JniHandleOwnership transfer) : base (javaReference, transfer) {{ }}
+		public {3}(IntPtr javaReference, global::Android.Runtime.JniHandleOwnership transfer) : base (javaReference, transfer)
+	    {{
+			OnInitialized();
+		}}
 #endif
 #if __IOS__
 		/// <summary>
@@ -65,9 +71,14 @@ namespace {0}
 		/// Used by the Xamarin Runtime to materialize native 
 		/// objects that may have been collected in the managed world.
 		/// </remarks>
-		public {3}(IntPtr handle) : base (handle) {{ }}
+		public {3}(IntPtr handle) : base (handle)
+		{{
+			OnInitialized();
+		}}
 #endif
 	}}
+
+	partial void OnInitialized();
 }}
 ";
 
