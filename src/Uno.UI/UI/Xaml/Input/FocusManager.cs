@@ -1,4 +1,6 @@
-﻿#if XAMARIN || __WASM__
+﻿
+using Windows.UI.Core;
+#if XAMARIN || __WASM__
 using Windows.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
@@ -56,6 +58,17 @@ namespace Windows.UI.Xaml.Input
 				if (control == _focusedElement)
 				{
 					_focusedElement = null;
+
+					if (LostFocus != null)
+					{
+						void OnLostFocus()
+						{
+							// we replay all "lost focus" events
+							LostFocus?.Invoke(null, new FocusManagerLostFocusEventArgs {OldFocusedElement = control});
+						}
+
+						control.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, OnLostFocus); // event is rescheduled, as on UWP
+					}
 				}
 			}
 			else // Focused
@@ -64,6 +77,20 @@ namespace Windows.UI.Xaml.Input
 				{
 					(_focusedElement as Control)?.Unfocus();
 					_focusedElement = control;
+
+					if (GotFocus != null)
+					{
+						void OnGotFocus()
+						{
+							if (_focusedElement == control) // still focused
+							{
+								// we play the gotfocus event only on last/winning control
+								GotFocus?.Invoke(null, new FocusManagerGotFocusEventArgs {NewFocusedElement = control});
+							}
+						}
+
+						control.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, OnGotFocus); // event is rescheduled, as on UWP
+					}
 				}
 				
 				_fallbackFocusedElement = control;
@@ -79,6 +106,10 @@ namespace Windows.UI.Xaml.Input
 		}
 
 		internal static object GetFocusedElement(bool useFallback) => GetFocusedElement() ?? _fallbackFocusedElement;
+
+		public static event EventHandler<FocusManagerGotFocusEventArgs> GotFocus;
+		public static event EventHandler<FocusManagerLostFocusEventArgs> LostFocus;
+
 	}
 }
 #endif
