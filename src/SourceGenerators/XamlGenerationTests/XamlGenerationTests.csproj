@@ -51,8 +51,17 @@
 
 	<ItemGroup>
 	  <None Remove="NonDPAssignableTest.xaml" />
+	  <None Remove="StoryboardTargetTest.xaml" />
 	  <None Remove="ThemeResourcesTest.xaml" />
 	  <None Remove="xNameResources.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <Page Remove="StoryboardTargetTest.xaml" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <EmbeddedResource Include="StoryboardTargetTest.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>
