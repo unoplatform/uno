@@ -13,6 +13,7 @@ using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Uno.UI.Tests.ViewLibrary;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
@@ -150,6 +151,31 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.AreEqual("InnerTreeImplicit", testControl.TestRadioButton.Tag);
 			Assert.AreEqual(typeof(RadioButton), testControl.StylesTestRadioButton.ExposedKey);
 			Assert.IsNull(testControl.StylesTestRadioButton.Tag); //Inherited type doesn't use implicit style for base type
+		}
+
+		[TestMethod]
+		public void When_From_External_Library_And_CodeBehind()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var extControl = new MyExtControl();
+
+			app.HostView.Children.Add(extControl);
+
+			Assert.AreEqual("FromDefaultStyle", extControl.MyTag);
+		}
+
+		[TestMethod]
+		public void When_From_External_Library_And_Xaml()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var testPage = new Test_Page();
+
+			app.HostView.Children.Add(testPage);
+
+			Assert.AreEqual("FromDefaultStyle", testPage.MyExtControl.MyTag);
+			Assert.AreEqual("FromLocalImplicit", testPage.MyExtControl.MyTag2);
 		}
 
 		[TestMethod]

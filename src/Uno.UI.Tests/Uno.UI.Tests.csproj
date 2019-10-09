@@ -104,6 +104,7 @@
 		<Page Include="App\Xaml\Test_Control.xaml" />
 		<Page Include="App\Xaml\Test_MarkupExtension.xaml" />
 		<Page Include="App\Xaml\Test_Styles.xaml" />
+		<Page Include="App\Xaml\Test_Page.xaml" />
 	</ItemGroup>
 	<ItemGroup>
 	  <Compile Include="..\Uno.UI.RuntimeTests\Helpers\SizeAssertion.cs" Link="Extensions\SizeAssertion.cs" />
@@ -111,6 +112,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
+		<ProjectReference Include="..\Uno.UI.Tests.ViewLibrary\Uno.UI.Tests.ViewLibrary.csproj" />
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
 	</ItemGroup>
 
