@@ -8,6 +8,13 @@
 		<NoWarn>NU1701</NoWarn>
 	</PropertyGroup>
 
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
+		<DefineConstants>TRACE;DEBUG</DefineConstants>
+		<DebugType>portable</DebugType>
+		<DebugSymbols>true</DebugSymbols>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<Content Include="..\$ext_safeprojectname$.UWP\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />
 	</ItemGroup>
