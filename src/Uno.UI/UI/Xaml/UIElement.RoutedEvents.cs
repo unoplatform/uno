@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Windows.UI.Xaml.Input;
+using Microsoft.Extensions.Logging;
 using Uno;
 using Uno.Extensions;
+using Uno.Logging;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
@@ -407,6 +409,24 @@ namespace Windows.UI.Xaml
 
 			SubscribedToHandledEventsToo = subscribedToHandledEventsToo;
 		}
+
+		internal bool SafeRaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args)
+		{
+			try
+			{
+				return RaiseEvent(routedEvent, args);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Failed to raise '{routedEvent.Name}': {e}");
+				}
+
+				return false;
+			}
+		}
+
 
 		/// <summary>
 		/// Raise a routed event

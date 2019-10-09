@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml
 	 *		partial void AddGestureHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
 	 * 		partial void RemoveGestureHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
 	 *	and is using:
-	 *		internal bool RaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args);
+	 *		internal bool SafeRaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args);
 	 */
 
 	partial class UIElement
@@ -147,11 +147,11 @@ namespace Windows.UI.Xaml
 			{
 				if (args.TapCount == 1)
 				{
-					RaiseEvent(TappedEvent, new TappedRoutedEventArgs(args.PointerDeviceType, args.Position));
+					SafeRaiseEvent(TappedEvent, new TappedRoutedEventArgs(args.PointerDeviceType, args.Position));
 				}
 				else // i.e. args.TapCount == 2
 				{
-					RaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(args.PointerDeviceType, args.Position));
+					SafeRaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(args.PointerDeviceType, args.Position));
 				}
 			}
 		}
@@ -252,7 +252,7 @@ namespace Windows.UI.Xaml
 			}
 
 			args.Handled = false;
-			handledInManaged |= RaiseEvent(PointerMovedEvent, args);
+			handledInManaged |= SafeRaiseEvent(PointerMovedEvent, args);
 
 			if (_gestures.IsValueCreated)
 			{
@@ -275,7 +275,7 @@ namespace Windows.UI.Xaml
 			}
 
 			args.Handled = false;
-			var handledInManaged = RaiseEvent(PointerMovedEvent, args);
+			var handledInManaged = SafeRaiseEvent(PointerMovedEvent, args);
 
 			if (_gestures.IsValueCreated)
 			{
@@ -369,7 +369,7 @@ namespace Windows.UI.Xaml
 			else
 			{
 				args.Handled = false;
-				handledInManaged |= RaiseEvent(PointerCanceledEvent, args);
+				handledInManaged |= SafeRaiseEvent(PointerCanceledEvent, args);
 				handledInManaged |= ReleaseCapture(args);
 			}
 
@@ -416,12 +416,12 @@ namespace Windows.UI.Xaml
 			if (isOver) // Entered
 			{
 				args.Handled = false;
-				return RaiseEvent(PointerEnteredEvent, args);
+				return SafeRaiseEvent(PointerEnteredEvent, args);
 			}
 			else // Exited
 			{
 				args.Handled = false;
-				return RaiseEvent(PointerExitedEvent, args);
+				return SafeRaiseEvent(PointerExitedEvent, args);
 			}
 		}
 		#endregion
@@ -467,12 +467,12 @@ namespace Windows.UI.Xaml
 			if (isPressed) // Pressed
 			{
 				args.Handled = false;
-				return RaiseEvent(PointerPressedEvent, args);
+				return SafeRaiseEvent(PointerPressedEvent, args);
 			}
 			else // Released
 			{
 				args.Handled = false;
-				return RaiseEvent(PointerReleasedEvent, args);
+				return SafeRaiseEvent(PointerReleasedEvent, args);
 			}
 		}
 		#endregion
@@ -677,7 +677,7 @@ namespace Windows.UI.Xaml
 			else if (forceCaptureLostEvent)
 			{
 				args.Handled = false;
-				return RaiseEvent(PointerCaptureLostEvent, args);
+				return SafeRaiseEvent(PointerCaptureLostEvent, args);
 			}
 			else
 			{
@@ -712,7 +712,7 @@ namespace Windows.UI.Xaml
 				return false; // TODO: We should create a new instance of event args with dummy location
 			}
 			args.Handled = false;
-			return RaiseEvent(PointerCaptureLostEvent, args);
+			return SafeRaiseEvent(PointerCaptureLostEvent, args);
 		}
 
 		private class PointerCapture
