@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Controls
 		internal void InvokeClick()
 		{
 			Click?.Invoke(this, RoutedEventArgs.Empty);
-			Command.ExecuteIfPossible();
+			Command.ExecuteIfPossible(this.CommandParameter);
 		}
 	}
 }
