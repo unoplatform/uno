@@ -43,7 +43,7 @@ namespace Uno.UWPSyncGenerator
 
 				_sb.AppendParagraph("This page lists controls that are currently implemented in Uno. Navigate to individual control entries to see which properties, methods, and events are implemented for a given control.");
 
-				_sb.AppendParagraph($"If you notice incorrect or incomplete information here, please open an {Hyperlink("issue", "https://github.com/nventive/Uno/issues")}.");
+				_sb.AppendParagraph($"If you notice incorrect or incomplete information here, please open an {Hyperlink("issue", "https://github.com/unoplatform/uno/issues")}.");
 
 				using (_sb.Section("Implemented - all platforms (iOS, Android, WebAssembly, MacOS)"))
 				{
@@ -68,7 +68,7 @@ namespace Uno.UWPSyncGenerator
 				}
 				using (_sb.Section("Not yet implemented"))
 				{
-					_sb.AppendParagraph($"If there's a specific control you'd like to see implemented, {Hyperlink("create an issue!", "https://github.com/nventive/Uno/issues")}");
+					_sb.AppendParagraph($"If there's a specific control you'd like to see implemented, {Hyperlink("create an issue!", "https://github.com/unoplatform/uno/issues")}");
 
 					AppendTypes(ps => ps.ImplementedForMain == ImplementedFor.None, false);
 				}

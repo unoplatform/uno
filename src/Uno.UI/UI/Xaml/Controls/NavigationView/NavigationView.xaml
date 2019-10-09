@@ -237,7 +237,7 @@
 										<Button.Flyout>
 											<Flyout Placement="Bottom">
 												<Flyout.FlyoutPresenterStyle>
-													<!-- Based on is required until https://github.com/nventive/Uno/issues/119 is fixed -->
+													<!-- Based on is required until https://github.com/unoplatform/uno/issues/119 is fixed -->
 													<Style TargetType="FlyoutPresenter" BasedOn="{StaticResource DefaultFlyoutPresenter}">
 														<Setter Property="Padding" Value="0,8" />
 														<!-- Set negative top margin to make the flyout align exactly with the button -->
@@ -421,7 +421,7 @@
 							- InternalVisibleBoundsPadding is added to this control to make this template compatible
 							  with notched devices by default. This behavior is not present in Microsoft's default UWP default.
 
-							- Canvas.ZIndex is not supported in Uno Grid yet, see https://github.com/nventive/Uno/issues/325
+							- Canvas.ZIndex is not supported in Uno Grid yet, see https://github.com/unoplatform/uno/issues/325
 						-->
 						<Grid x:Name="PaneToggleButtonGrid"
 							  Margin="0,0,0,8"
