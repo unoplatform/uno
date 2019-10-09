@@ -375,7 +375,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="createLayoutInfo">Should we create <see cref="UICollectionViewLayoutAttributes"/>?</param>
 		/// <param name="size">The available size</param>
 		/// <returns>The total collection size</returns>
-		/// <remarks>This is called by overidden methods which need to know the total dimensions of the panel content. If a full relayout is required,
+		/// <remarks>This is called by overridden methods which need to know the total dimensions of the panel content. If a full relayout is required,
 		/// it calls <see cref="PrepareLayoutInternal(bool, bool, CGSize)"/>; otherwise it returns a cached value.</remarks>
 		private CGSize PrepareLayout(bool createLayoutInfo, CGSize? size = null)
 		{

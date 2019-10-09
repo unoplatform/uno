@@ -24,7 +24,7 @@ Uno.UI provides the ability for developers to reuse known layout and coding tech
 
 Uno is not meant to be a complete replacement of all the native UI frameworks. This would be the lowest-denominator approach and would result in end-users noticing the non-native appearance or behavior of an application on their device. Having an iOS application that behaves like an Android application may bother users.
 
-Uno provides a common set of layout and controls, designed to provide the ability to share an important part of an application's code and markup; however, it leaves developers with the ability to retain the native look and feel. At the same time it provides a way to have a *pixel-perfect* UI and UX being identical on all platforms. Commonly, this look and feel will be found in the navigation, transitions and animations, main pages, and edges of the screen.
+Uno provides a common set of layout and controls, designed to provide the ability to share an important part of an application's code and markup; however, it leaves developers with the ability to retain the native look and feel. At the same time, it provides a way to have a *pixel-perfect* UI and UX being identical on all platforms. Commonly, this look and feel will be found in the navigation, transitions and animations, main pages, and edges of the screen.
 
 While the Uno Platform provides all the UWP APIs, a lot of those APIs are not implemented. It currently provides a small set of basic non-UI parts of the UWP, such as the `Windows.UI.Xaml.Application` class, which provides the ability to have a common application bootstrapping code. 
 
@@ -34,8 +34,13 @@ Uno provides a set of APIs that use class and property names compatible with Win
 
 For instance, `Windows.UI.Xaml.Controls.StackPanel` directly inherits from a `ViewGroup` on Android and from `UIView` on iOS. 
 
-The native layout system for inner elements is then overridden with a XAML-compatible layout system, using the standard XAML Measure and Arrange passes. This means that a StackPanel will use the exact same layout strategies on all platforms, and will therefore look the same on screen.
+The native layout system for inner elements is then overridden with a XAML-compatible layout system, using the standard XAML Measure and Arrange passes. This means that a StackPanel will use the exact same layout strategies on all platforms, and will, therefore, look the same on screen.
 
-On Windows platforms, Uno.UI is not present and the XAML-layout files are left untouched. On Xamarin-compatible plaforms, the XAML files are processed at compile time to generate non-conditional code that will be executed as-is at runtime on the device. This means that there is no runtime parsing of XAML, which makes the UI-tree creation particularly efficient.
+On Windows platforms, Uno.UI is not present and the XAML-layout files are left untouched. On Xamarin-compatible platforms, the XAML files are processed at compile time to generate non-conditional code that will be executed as-is at runtime on the device. This means that there is no runtime parsing of XAML, which makes the UI-tree creation particularly efficient.
 
 Uno.UI also provides ways to have platform-specific markup in XAML files, which allows for a simple file tree while adjusting the UI for each platform.
+
+## Want more information about Uno?
+
+Check out the Uno website for more information and support documents here:
+https://platform.uno/support/

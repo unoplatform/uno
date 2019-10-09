@@ -38,7 +38,7 @@ namespace Uno.UI.DataBinding
 		ActivatorDelegate CreateInstance();
 
 		/// <summary>
-		/// Gets a bindable propery for the current type.
+		/// Gets a bindable property for the current type.
 		/// </summary>
 		/// <param name="name"></param>
 		/// <returns>A bindable property instance, otherwise null.</returns>

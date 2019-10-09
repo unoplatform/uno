@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Media
 
 		/// <summary>
 		/// Open bundle is using either the name of the bundle (for 
-		/// android compatibility), or the path to te bundle for Windows compatibility.
+		/// android compatibility), or the path to the bundle for Windows compatibility.
 		/// </summary>
 		internal UIImage OpenBundle()
 		{

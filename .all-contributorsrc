@@ -370,7 +370,224 @@
       "profile": "https://github.com/pkar70",
       "contributions": [
         "code",
-        "test"
+        "test",
+        "doc"
+      ]
+    },
+    {
+      "login": "hugovk",
+      "name": "Hugo van Kemenade",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/1324225?v=4",
+      "profile": "https://github.com/hugovk",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "tomer",
+      "name": "Tomer Cohen",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/50206?v=4",
+      "profile": "https://tomercohen.com",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "SantosAntero",
+      "name": "Antero Santos",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/36671793?v=4",
+      "profile": "https://github.com/SantosAntero",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "zzyzy",
+      "name": "Zhen Zhi Lee",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/6206954?v=4",
+      "profile": "https://zzyzy.github.io/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "BackEndTea",
+      "name": "Gert de Pagter",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/14289961?v=4",
+      "profile": "https://backendtea.com",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "D3v3sh5ingh",
+      "name": "Devesh Singh",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/31030254?v=4",
+      "profile": "http://www.deveshsingh.ml",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "RanadeepPolavarapu",
+      "name": "RanadeepPolavarapu",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/7084995?v=4",
+      "profile": "https://github.com/RanadeepPolavarapu",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "ujjwalll",
+      "name": "Ujjwal ",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/39565250?v=4",
+      "profile": "http://ujjwalll.github.io",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "cbaumler",
+      "name": "Chris Baumler",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/9060078?v=4",
+      "profile": "https://github.com/cbaumler",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "SnicklePickles",
+      "name": "SnicklePickles",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/56023363?v=4",
+      "profile": "https://github.com/SnicklePickles",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "Pedrocssg",
+      "name": "Pedro Gonçalves",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/24390966?v=4",
+      "profile": "https://github.com/Pedrocssg",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "Bharat123rox",
+      "name": "Bharat Raghunathan",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/13381361?v=4",
+      "profile": "https://github.com/Bharat123rox",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "aayushbisen",
+      "name": "Aayush Bisen",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/41341387?v=4",
+      "profile": "https://github.com/aayushbisen",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "lex111",
+      "name": "Alexey Pyltsyn",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/4408379?v=4",
+      "profile": "https://lex111.ru/",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "imagentleman",
+      "name": "José Antonio Chio",
+      "avatar_url": "https://avatars2.githubusercontent.com/u/2272928?v=4",
+      "profile": "http://imagentleman.github.io",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "mrassili",
+      "name": "Marouane R",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/25288435?v=4",
+      "profile": "https://mrassili.com",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "avinasjha",
+      "name": "Avinash Jha",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/56090532?v=4",
+      "profile": "https://github.com/avinasjha",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "khyativalera",
+      "name": "Khyati Valera",
+      "avatar_url": "https://avatars3.githubusercontent.com/u/47522632?v=4",
+      "profile": "https://github.com/khyativalera",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "pushkyn",
+      "name": "Alex",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/3326427?v=4",
+      "profile": "https://github.com/pushkyn",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "m1guelpf",
+      "name": "Miguel Piedrafita",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/23558090?v=4",
+      "profile": "https://miguelpiedrafita.com",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "gagandeepp",
+      "name": "Gagan Deep",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/34858937?v=4",
+      "profile": "http://www.linkedin.com/in/gagandeepp",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "RobJenks",
+      "name": "RobJenks",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/3159730?v=4",
+      "profile": "https://github.com/RobJenks",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "cTxplorer",
+      "name": "Pratik Gadhiya",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/28287478?v=4",
+      "profile": "https://github.com/cTxplorer",
+      "contributions": [
+        "doc"
+      ]
+    },
+    {
+      "login": "mkwhalen",
+      "name": "MacKenzie Whalen",
+      "avatar_url": "https://avatars0.githubusercontent.com/u/17869199?v=4",
+      "profile": "https://github.com/mkwhalen",
+      "contributions": [
+        "doc"
       ]
     }
   ],

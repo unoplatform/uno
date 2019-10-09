@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+set -euo pipefail
+IFS=$'\n\t'
+
 export BUILDCONFIGURATION=Release
 
 cd $BUILD_SOURCESDIRECTORY/build

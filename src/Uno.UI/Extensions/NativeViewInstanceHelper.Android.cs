@@ -84,7 +84,7 @@ namespace Uno.UI
 		}
 
 		/// <summary>
-		/// Creates a native view using a fast instanciation path, by caching references to the native class and constructor.
+		/// Creates a native view using a fast instantiation path, by caching references to the native class and constructor.
 		/// </summary>
 		/// <param name="type">The .NET class top-level type</param>
 		/// <param name="target">The .NET class instance being created</param>

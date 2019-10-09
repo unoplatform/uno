@@ -2,7 +2,7 @@
 
 ## overview
 
-Uno uses a [Package Diff tool](https://github.com/nventive/Uno.PackageDiff) to ensure that [binary breaking changes](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/breaking-changes#binary-breaking-change) do not
+Uno uses a [Package Diff tool](https://github.com/unoplatform/uno.PackageDiff) to ensure that [binary breaking changes](https://docs.microsoft.com/en-us/dotnet/standard/library-guidance/breaking-changes#binary-breaking-change) do not
 go unnoticed. As [part of our continuous integration process](https://github.com/unoplatform/uno/blob/1a786a652394f5a3d674fadfdd7b459f8f476a1b/build/Uno.UI.Build.csproj#L201) the PackageDiffTool consumes the last published non-experimental package available on nuget.org, and compares it with the current PR.
 
 This process only diffs against previous versions of Uno, not against the UWP assemblies, so it doesn't pick up all forms of mismatches. There are [some inconsistencies](https://github.com/unoplatform/uno/pull/1300) dating from before SyncGenerator was added. At some point it might be a good idea to extend SyncGenerator tool to try to report them all (or even automatically fix them)
@@ -16,11 +16,11 @@ This process only diffs against previous versions of Uno, not against the UWP as
 ## blessing breaking changes
 
 In most cases, breaking changes are not acceptable, but in cases where there is no easy work around the [build/PackageDiffIgnore.xml](https://github.com/unoplatform/uno/blob/master/build/PackageDiffIgnore.xml) file can be adjusted to bless the changes. Please refer
-to the documentation of the [Uno.PackageDiff tool](https://github.com/nventive/Uno.PackageDiff) for more information.
+to the documentation of the [Uno.PackageDiff tool](https://github.com/unoplatform/uno.PackageDiff) for more information.
 
 ## example report
 
-Below is a comparsion report for Uno.UI **1.45.0** with Uno.UI **1.46.0-PullRequest1300.2330** as part of [this pull-request](https://github.com/unoplatform/uno/pull/1300).
+Below is a comparison report for Uno.UI **1.45.0** with Uno.UI **1.46.0-PullRequest1300.2330** as part of [this pull-request](https://github.com/unoplatform/uno/pull/1300).
 
 You can find the report within the `NuGetPackages.zip` archive on the build server and attached to the pull-request job. The report uses this convention: `ApiDiff.1.46.0-PullRequest1300.2330.md`
 

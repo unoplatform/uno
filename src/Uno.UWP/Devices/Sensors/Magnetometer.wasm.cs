@@ -42,15 +42,15 @@ namespace Windows.Devices.Sensors
 		}
 
 		/// <summary>
-		/// Handles readings from Accelerometer.
+		/// Handles readings from Magnetometer.
 		/// Filters the readings if too frequent to match chosen ReportInterval.
 		/// Uses value ReportInterval * 0.8 to make sure that reporting is
 		/// still more frequent rather than less frequent than requested,
 		/// which is in line with documentation
 		/// </summary>
-		/// <param name="x">Accelerometer X</param>
-		/// <param name="y">Accelerometer Y</param>
-		/// <param name="z">Accelerometer Z</param>
+		/// <param name="x">Magnetic field X</param>
+		/// <param name="y">Magnetic field Y</param>
+		/// <param name="z">Magnetic field Z</param>
 		/// <returns>0 - needed to bind method from WASM</returns>
 		[Preserve]
 		public static int DispatchReading(float x, float y, float z)

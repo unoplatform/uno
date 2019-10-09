@@ -11,7 +11,7 @@ namespace Uno.UI.Controls
 	{
 		/// <summary>
 		/// Gets or sets the bool value indicating whether the view controller's contents should auto-rotate.
-		/// <remarks>This property should be returned from your view controller's <c><see cref="M:UIKit.UIViewController.ShouldAutorotate()"/></c> overidden method</remarks>
+		/// <remarks>This property should be returned from your view controller's <c><see cref="M:UIKit.UIViewController.ShouldAutorotate()"/></c> overridden method</remarks>
 		/// </summary>
 		bool CanAutorotate { get; set; }
 	}

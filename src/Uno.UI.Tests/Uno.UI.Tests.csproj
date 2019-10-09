@@ -23,10 +23,10 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.CSharp" Version="4.5.0" />
+		<PackageReference Include="Microsoft.CSharp" Version="4.6.0" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.2.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.0" />
 		<PackageReference Include="MSTest.TestAdapter">
       <Version>1.4.0</Version>
     </PackageReference>
@@ -102,6 +102,7 @@
 		<Page Include="App\App.xaml" />
 		<Page Include="App\Xaml\Test_Dictionary.xaml" />
 		<Page Include="App\Xaml\Test_Control.xaml" />
+		<Page Include="App\Xaml\Test_MarkupExtension.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>

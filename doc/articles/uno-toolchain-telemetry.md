@@ -1,6 +1,6 @@
 ## Uno Platform Build tools telemetry
 
-The [Uno Platform SDK](https://github.com/nventive/Uno) includes a [telemetry feature](SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.Telemetry.cs)
+The [Uno Platform SDK](https://github.com/unoplatform/uno) includes a [telemetry feature](SourceGenerators/Uno.UI.SourceGenerators/XamlGenerator/XamlCodeGeneration.Telemetry.cs)
 that collects usage information. It is important that the Uno Platform Team understands how the build tools are used so they can be improved.
 
 The collected data is anonymous.
@@ -41,5 +41,5 @@ Application Insights technology, held under restricted access, and published und
 
 The Uno Platform team wants to know how the build tools are used and if they're working well, not what you're
 building with the Uno Platform. If you suspect that the telemetry is collecting sensitive data or that the
-data is being insecurely or inappropriately handled, file an issue in the [nventive/uno](https://github.com/nventive/Uno/issues)
+data is being insecurely or inappropriately handled, file an issue in the [unoplatform/uno](https://github.com/unoplatform/uno/issues)
 repository for investigation.

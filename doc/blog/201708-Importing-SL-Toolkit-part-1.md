@@ -1,9 +1,9 @@
 # Migrating the Silverlight Toolkit TreeView control to UWP and the Uno Platform
 
-_You can find [the code of the `TreeView`](https://github.com/nventive/Uno.UI.Toolkit.SL/tree/master/Uno.UI.Toolkit.SL/Controls/TreeView) for this article in the [Uno.UI.Toolkit.SL](https://github.com/nventive/Uno.UI.Toolkit.SL) repository, in which we will add new controls and accept contributions for controls as they are made available._
+_You can find [the code of the `TreeView`](https://github.com/unoplatform/uno.UI.Toolkit.SL/tree/master/Uno.UI.Toolkit.SL/Controls/TreeView) for this article in the [Uno.UI.Toolkit.SL](https://github.com/unoplatform/uno.UI.Toolkit.SL) repository, in which we will add new controls and accept contributions for controls as they are made available._
 
 In this blog post series, we're going to cover the migration of the code for the
-[Silverlight Toolkit TreeView control](https://github.com/MicrosoftArchive/SilverlightToolkit) [TreeView control](https://github.com/MicrosoftArchive/SilverlightToolkit/tree/master/Release/Silverlight4/Source/Controls/TreeView) to UWP and the [Uno Platform](https://github.com/nventive/Uno), a control widely used in many line of business applications still in use today.
+[Silverlight Toolkit TreeView control](https://github.com/MicrosoftArchive/SilverlightToolkit) [TreeView control](https://github.com/MicrosoftArchive/SilverlightToolkit/tree/master/Release/Silverlight4/Source/Controls/TreeView) to UWP and the [Uno Platform](https://github.com/unoplatform/uno), a control widely used in many line of business applications still in use today.
 
 ![header](Assets/sl-treeview-part1-header.png)
 
@@ -22,7 +22,7 @@ To migrate a control from Silverlight, there are a few things to do:
 
 ### Cross targeted project creation
 
-To be able to build the control is a reuseable way, in a NuGet package, we need to create a **Cross-platform library** using the **Uno Platform VS Addin**, which does all the configuration to target Windows (uap10.0), iOS, Android and WebAssembly.
+To be able to build the control is a reusable way, in a NuGet package, we need to create a **Cross-platform library** using the **Uno Platform VS Addin**, which does all the configuration to target Windows (uap10.0), iOS, Android and WebAssembly.
 
 This project will contain all the XAML files and C# source files required for the `TreeView` to function properly. It uses the excellent [MSBuild.Sdk.Extras](https://github.com/onovotny/MSBuildSdkExtras) msbuild extensions to cross targeted library with minimal efforts, using the new and improved _sdk-style_ project format, and simplifies the creation of NuGet packages.
 
@@ -30,7 +30,7 @@ It will then possible to create an installable NuGet package using the context m
 
 ### Importing the source
 
-The process of importing the source is somewhat straightforward. Microsoft, in all its XAML variants, kept many of the APIs signature-compatible. This means that in a large majority of cases, [simply changing the namespaces](https://github.com/nventive/Uno.UI.Toolkit.SL/commit/d4da7a8ff33da6c9d45bebafa8c8ca65f6182612#diff-b35234eeeb3bdb81d82b850985bf37b3L9) from `System.Windows` to `Windows.UI` is making the code compatible with UWP.
+The process of importing the source is somewhat straightforward. Microsoft, in all its XAML variants, kept many of the APIs signature-compatible. This means that in a large majority of cases, [simply changing the namespaces](https://github.com/unoplatform/uno.UI.Toolkit.SL/commit/d4da7a8ff33da6c9d45bebafa8c8ca65f6182612#diff-b35234eeeb3bdb81d82b850985bf37b3L9) from `System.Windows` to `Windows.UI` is making the code compatible with UWP.
 
 Here are some examples:
 - `System.Windows.Controls` -> `Windows.UI.Xaml.Controls`

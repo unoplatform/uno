@@ -32,7 +32,7 @@ namespace SamplesApp.UnitTests.Controls.UITests.Views.Extensions
 		}
 
 		/// <summary>
-		/// Property for IsPanIntoView, wich only triggers the first time the FrameworkElement is displayed 
+		/// Property for IsPanIntoView, which only triggers the first time the FrameworkElement is displayed 
 		/// </summary>
 		public static readonly DependencyProperty IsPanIntoViewProperty =
 			DependencyProperty.RegisterAttached("IsPanIntoView", typeof(bool), typeof(InputPanelExtensions), new PropertyMetadata(false, IsPanIntoViewChanged));
@@ -64,7 +64,7 @@ namespace SamplesApp.UnitTests.Controls.UITests.Views.Extensions
 		}
 
 		/// <summary>
-		/// Event raised when the keyboard is hidding
+		/// Event raised when the keyboard is hidden
 		/// </summary>
 		/// <param name="sender">InputPane</param>
 		/// <param name="args">InputPane Event Arguments</param>

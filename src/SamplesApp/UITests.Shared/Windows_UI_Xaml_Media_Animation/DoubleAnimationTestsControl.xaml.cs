@@ -91,7 +91,7 @@ namespace Uno.UI.Samples.Content.UITests
 				new SourceItem
 				{
 					Name = "Test 06: Duration Forever",
-					Description = "Expected: 0 height doesnt animate",
+					Description = "Expected: 0 height doesn't animate",
 					Command = new Common.DelegateCommand(Test06)
 				},
 				new SourceItem

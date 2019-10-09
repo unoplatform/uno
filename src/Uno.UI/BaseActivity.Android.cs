@@ -70,7 +70,7 @@ namespace Uno.UI
 		public int Id { get; } = Interlocked.Increment(ref _instanceCount);
 
 		/// <summary>
-		/// Gets a list of all activities which are currenlty alive.
+		/// Gets a list of all activities which are currently alive.
 		/// </summary>
 		public static IImmutableDictionary<int, BaseActivity> Instances => _instances;
 

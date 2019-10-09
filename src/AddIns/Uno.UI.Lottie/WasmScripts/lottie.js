@@ -3595,7 +3595,7 @@
             }
         } else if (this._mdf) {
             for (i = 0; i < len; i += 1) {
-                //Releasign Trim Cached paths data when no trim applied in case shapes are modified inbetween.
+                //Releasign Trim Cached paths data when no trim applied in case shapes are modified in between.
                 //Don't remove this even if it's losing cached info.
                 this.shapes[i].pathsData.length = 0;
                 this.shapes[i].shape._mdf = true;

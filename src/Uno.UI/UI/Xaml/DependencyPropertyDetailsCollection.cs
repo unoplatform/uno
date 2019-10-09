@@ -42,7 +42,7 @@ namespace Windows.UI.Xaml
 			// Entries are pre-sorted by the DependencyProperty.GetPropertiesForType method
 			AssignEntries(entries, sort: false);
 
-			// Prefecth known properties for faster access
+			// Prefetch known properties for faster access
 			DataContextPropertyDetails = GetPropertyDetails(dataContextProperty);
 			TemplatedParentPropertyDetails = GetPropertyDetails(templatedParentProperty);
 		}

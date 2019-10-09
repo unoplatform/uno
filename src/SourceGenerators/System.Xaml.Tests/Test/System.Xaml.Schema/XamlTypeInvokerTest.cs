@@ -302,7 +302,7 @@ namespace MonoTests.Uno.Xaml.Schema
 			Assert.Throws(typeof(NotSupportedException), () =>
 			{
 				var i = new XamlTypeInvoker(new XamlType("urn:foo", "FooType", null, sctx));
-				i.CreateInstance(new object[0]); // unkown type is not supported
+				i.CreateInstance(new object[0]); // unknown type is not supported
 			});
 		}
 

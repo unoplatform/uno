@@ -17,7 +17,7 @@ namespace SamplesApp.UITests.Toolkit
 	{
 
 		[Test]
-		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		[ActivePlatforms(Platform.iOS)] // Android is disabled https://github.com/unoplatform/uno/issues/1635
 		public void Elevation_Validation()
 		{
 			Run("UITests.Shared.Toolkit.Elevation");

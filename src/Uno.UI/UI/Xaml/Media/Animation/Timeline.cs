@@ -309,10 +309,10 @@ namespace Windows.UI.Xaml.Media.Animation
 				&& State != TimelineState.Stopped;
 		}
 		/// <summary>
-		/// Checks if Target Property is Dependant, If the target property is dependant it should not run the animation unless EnableDependentAnimation is explicitly set.
+		/// Checks if Target Property is Dependent, If the target property is dependent it should not run the animation unless EnableDependentAnimation is explicitly set.
 		///  https://msdn.microsoft.com/en-uS/office/office365/jj819807.aspx#dependent
 		/// </summary>
-		/// <returns><c>true</c>, property is dependant, <c>false</c> otherwise.</returns>
+		/// <returns><c>true</c>, property is dependent, <c>false</c> otherwise.</returns>
 		internal bool IsTargetPropertyDependant()
 		{
 			if (PropertyInfo != null)
@@ -329,7 +329,7 @@ namespace Windows.UI.Xaml.Media.Animation
 						|| (boundProperty.DataContext is Transform)
 					)
 					{
-						//is not dependant if the target is opacity, the color property of a brush, or a Transform property
+						//is not dependent if the target is opacity, the color property of a brush, or a Transform property
 						return false;
 					}
 				}

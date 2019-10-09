@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.Models;
+using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -13,18 +15,14 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
-
-namespace $rootnamespace$
+namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker
 {
-    /// <summary>
-    /// An empty page that can be used on its own or navigated to within a Frame.
-    /// </summary>
-    public sealed partial class $safeitemname$ : Page
-    {
-        public $safeitemname$()
-        {
-            this.InitializeComponent();
-        }
-    }
+	[SampleControlInfo("Date Picker", nameof(DatePickerFlyout_MinYear), typeof(DatePickerViewModel))]
+	public sealed partial class DatePickerFlyout_MinYear : UserControl
+	{
+		public DatePickerFlyout_MinYear()
+		{
+			this.InitializeComponent();
+		}
+	}
 }

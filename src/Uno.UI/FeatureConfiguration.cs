@@ -169,6 +169,15 @@ namespace Uno.UI
 			public static bool IsMeasureCacheEnabled { get; set; } = true;
 		}
 
+		public static class TextBox
+		{
+			/// <summary>
+			/// Determines if the caret is visible or not.
+			/// </summary>
+			/// <remarks>This feature is used to avoid screenshot comparisons false positives</remarks>
+			public static bool HideCaret { get; set; } = false;
+		}
+
 		public static class AutomationPeer
 		{
 			/// <summary>

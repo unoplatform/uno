@@ -1206,7 +1206,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (prevItem != null && nextItem == null && !IsSettingsItem(prevItem)) // try to unselect an item but it's not allowed
 				{
-					// Aways keep one item is selected except Settings
+					// Always keep one item is selected except Settings
 
 					// So you're wondering - wait if the menu was previously selected, how can
 					// the removed item not be a NavigationViewItem? Well, if you say clear a

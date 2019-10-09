@@ -10,8 +10,8 @@ namespace Windows.Storage
 	{
 		internal static void Init()
 		{
-			// Nothing to do here, this is only a way to explicitely poke the 'ApplicationData' so the
-			// 'Current' is instanciated and the 'PartialCtor' is invoked.
+			// Nothing to do here, this is only a way to explicitly poke the 'ApplicationData' so the
+			// 'Current' is instantiated and the 'PartialCtor' is invoked.
 		}
 
 		partial void PartialCtor()

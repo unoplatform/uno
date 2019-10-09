@@ -1,14 +1,14 @@
 ﻿# How to build & debug apps
 Sometimes you need to debug an app with a _Debug_ version of Uno.
 This is useful if you need to understand a certain behavior from Uno
-and pin-point de source using the debugger and eventually test some changes
+and pin-point the source using the debugger and eventually test some changes
 on a real application.
 
 To do this, you need to recompile your app using a _debug_ version of Uno­
 (or a _Release_ version if you prefer).
 
-> Instead of tweaking your app solution to reference the your custom Uno
-> output (because there's many steps to follow and you will have to avoid commiting this
+> Instead of tweaking your app solution to reference your custom Uno
+> output (because there are many steps to follow and you will have to avoid committing this
 > to source control), we found a simpler way: override the nuget output folder.
 
 ## HOW-TO (Steps)
@@ -17,7 +17,7 @@ To do this, you need to recompile your app using a _debug_ version of Uno­
 1. In your application project (the one referencing Uno):
    1. Make sure to build at least once (to ensure the nuget packages are downloaded)
    1. Check in the `project.json` file to get the version of the `Uno.UI` package.
-      The file should look-like this:
+      The file should look like this:
       ``` json
       ...
       "dependencies": {
@@ -33,7 +33,7 @@ To do this, you need to recompile your app using a _debug_ version of Uno­
   (where `Uno.UI.sln` is) and put the version number in it - **on the first line and nothing
   else is the file**.
 1. Build the project for the platform you need (or build all the solution to get all of them).
-   See below for list of project to compile for each platform...
+   See below for the list of projects to compile for each platform.
 1. Never commit the `nuget_version_override.txt` into source control.  It should be ignored
    by default anyway.
 
@@ -64,7 +64,7 @@ The easiest way to debug it is :
 1. Open a new Visual studio an open only the project src\SourceGenerators\Uno.UI.Tasks\Uno.UI.Tasks.csproj
 1. In the _Debug_ tab of the project settings configure those:
    * **Start external program:** `C:\Program Files (x86)\Microsoft Visual Studio\2017\Professional\MSBuild\15.0\Bin\MSBuild.exe`
-   * **Command line argmuents:** `[PATH_TO_YOUR_PROJECT/SOLUTION_FILE] /p:Configuration=Debug`
+   * **Command line arguments:** `[PATH_TO_YOUR_PROJECT/SOLUTION_FILE] /p:Configuration=Debug`
 
 _[PATH_TO_YOUR_PROJECT/SOLUTION_FILE] can be relative to the output folder of the Uno.UI.Tasks project, so `..\..\..\..\SamplesApp\SamplesApp.Droid\SamplesApp.Droid.csproj`
 will build the Android SampleApp_
