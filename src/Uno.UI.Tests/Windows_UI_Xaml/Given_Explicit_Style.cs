@@ -143,5 +143,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.IsNotNull(text3);
 			Assert.AreEqual("RadioButtonText3", text3.Text);
 		}
+
+		[TestMethod]
+		public void When_Inline_Style()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var page = new Test_Page();
+
+			var tb = page.TestTextBlock;
+			Assert.AreEqual(38.0, tb.FontSize);
+		}
 	}
 }

@@ -16,5 +16,14 @@
 
 	<Grid>
 		<ext:MyExtControl x:Name="myExtControl" />
+		<TextBlock Text="Inline style"
+				   x:Name="testTextBlock">
+			<TextBlock.Style>
+				<Style TargetType="TextBlock">
+					<Setter Property="FontSize"
+							Value="38" />
+				</Style>
+			</TextBlock.Style>
+		</TextBlock>
 	</Grid>
 </Page>

@@ -24,6 +24,7 @@ namespace Uno.UI.Tests.App.Xaml
 	public sealed partial class Test_Page : Page
 	{
 		public MyExtControl MyExtControl => myExtControl;
+		public TextBlock TestTextBlock => testTextBlock;
 
 		public Test_Page()
 		{
