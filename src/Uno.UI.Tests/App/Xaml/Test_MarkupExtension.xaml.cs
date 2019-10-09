@@ -29,6 +29,9 @@ namespace Uno.UI.Tests.App.Xaml
 		public TextBlock TestText5 => Text5;
 		public TextBlock TestText6 => Text6;
 		public TextBlock TestText7 => Text7;
+		public TextBlock TestText8 => Text8;
+		public TextBlock TestText9 => Text9;
+		public TextBlock TestText10 => Text10;
 
 		public Test_MarkupExtension()
         {
