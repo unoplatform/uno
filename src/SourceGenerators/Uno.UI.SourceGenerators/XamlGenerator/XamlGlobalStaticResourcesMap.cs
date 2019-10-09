@@ -12,7 +12,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		private const string AppXIdentifier = "ms-appx:///";
 		private readonly Dictionary<string, List<StaticResourceDefinition>> _map = new Dictionary<string, List<StaticResourceDefinition>>();
-		private readonly Dictionary<string, XamlFileDefinition> _rdMap = new Dictionary<string, XamlFileDefinition>();
+		private readonly Dictionary<string, XamlFileDefinition> _rdMap = new Dictionary<string, XamlFileDefinition>(StringComparer.CurrentCultureIgnoreCase);
 
 		public XamlGlobalStaticResourcesMap()
 		{
