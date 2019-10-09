@@ -1,7 +1,9 @@
 ﻿# Release notes
 
 ## Next version
+
 ### Features
+
 * Added Dark and HighContrast theme resources, reacts to Dark/Light theme on iOS, Android and WASM automatically during the startup of the app if `RequestedTheme` is not set in `App.xaml`
 * Support for `Gyrometer` on Android, iOS and WASM
    * `ReadingChanged`
@@ -69,6 +71,7 @@
 * Add support for `IObservableVector<T>` in `ItemsControl`
 
 ### Breaking changes
+
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
 * `TextBox.TextChanged` is now called asynchronously after the UI is updated, in line with UWP. For most uses `TextChanging` should be preferred.
 * [Android] `TextBox.IsSpellCheckEnabled = false` is now enforced in a way that may cause issues in certain use cases (see https://stackoverflow.com/a/5188119/1902058). The old behavior can be restored by setting `ShouldForceDisableSpellCheck = false`, per `TextBox`.
@@ -78,7 +81,9 @@
 * [iOS] UIWebView is deprecated and replaced with WKWebView (ITMS-90809: Deprecated API Usage - Apple will stop accepting submissions of apps that use UIWebView APIs . See https://developer.apple.com/documentation/uikit/uiwebview for more information.)
 
 ### Bug fixes
-* [#1531](https://github.com/unoplatform/uno/pull/1531)Fix an issue with VirtualizePanelAdaptater by adding a cache where the ItemSources length change and created a OutOfRangeException
+
+* [#1771](https://github.com/unoplatform/uno/pull/1771) Fix ".Uno" in project names resulted in build errors.
+* [#1531](https://github.com/unoplatform/uno/pull/1531) Fix an issue with VirtualizePanelAdaptater by adding a cache where the ItemSources length change and created a OutOfRangeException
 * [WASM] #1518 Fix Navigation Issue Where SystemNavigationManager.enable() is called twice and clear the stack history
 * [#1278](https://github.com/unoplatform/uno/pull/1278) the XAML sourcegenerator now always uses the fully qualified type name to prevent type conflicts.
 * [#1392](https://github.com/unoplatform/uno/pull/1392) Resolved exceptions while changing cursor color on Android P.
@@ -124,7 +129,7 @@
 * Fix layout bug in Image control.
 * [#1387] `ComboBox`: Fix DataContext was propagated to `<ContentPresenter>` when there was no selected item, causing strange display behavior.
 * #1354 fixed Recycler.State desync issue
-* #1533 [Wasm] Fix measure caching for zero sized measure 
+* #1533 [Wasm] Fix measure caching for zero sized measure
 * [iOS(iPad)] `ComboBox` : the combobox wasn't fully expanding vertically on first opening.
 * `Popup` & `ComboBox` (and other controls using `Popup`) were not behaving properly when `IsLightDismissable` were set to `true`.
 * [Wasm] Fix unloaded UIElements are made visible if measured and arranged
