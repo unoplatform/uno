@@ -1,0 +1,12 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+					xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+					xmlns:ext="using:Uno.UI.Tests.ViewLibrary">
+	<Style x:Key="DefaultMyExtControlStyle"
+		   TargetType="ext:MyExtControl">
+		<Setter Property="MyTag"
+				Value="FromDefaultStyle" />
+	</Style>
+	<Style TargetType="ext:MyExtControl"
+		   BasedOn="{StaticResource DefaultMyExtControlStyle}" />
+</ResourceDictionary>
