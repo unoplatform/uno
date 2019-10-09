@@ -6,7 +6,7 @@
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="Xaml/Test_Dictionary.xaml" />
-				<ResourceDictionary Source="Xaml/Test_Styles.xaml" />
+				<ResourceDictionary Source="Xaml/Test_styles.xaml" />
 				<ResourceDictionary>
 					<ResourceDictionary.MergedDictionaries>
 						<ResourceDictionary>
