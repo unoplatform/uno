@@ -29,10 +29,12 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void RegisterContentTemplateRoot()
 		{
+			AddChild(ContentTemplateRoot);
 		}
 
 		partial void UnregisterContentTemplateRoot()
 		{
+			RemoveChild(ContentTemplateRoot);
 		}
 
 		private void UpdateBorder()

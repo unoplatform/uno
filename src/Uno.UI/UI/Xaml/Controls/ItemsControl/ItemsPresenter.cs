@@ -128,7 +128,7 @@ namespace Windows.UI.Xaml.Controls
 				this.AddSubview(_itemsPanel);
 #elif XAMARIN_ANDROID
 			this.AddView(_itemsPanel);
-#elif __WASM__
+#elif __WASM__ || NET461
 			AddChild(_itemsPanel);
 #endif
 
