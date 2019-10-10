@@ -319,19 +319,19 @@ namespace Windows.UI.Xaml
 
 		private void AddHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
-			if (routedEvent.Flag.IsPointerEvent())
+			if (routedEvent.IsPointerEvent)
 			{
 				AddPointerHandler(routedEvent, handlersCount, handler, handledEventsToo);
 			}
-			else if (routedEvent.Flag.IsGestureEvent())
+			else if (routedEvent.IsGestureEvent)
 			{
 				AddGestureHandler(routedEvent, handlersCount, handler, handledEventsToo);
 			}
-			else if (routedEvent.Flag.IsKeyEvent())
+			else if (routedEvent.IsKeyEvent)
 			{
 				AddKeyHandler(routedEvent, handlersCount, handler, handledEventsToo);
 			}
-			else if (routedEvent.Flag.IsFocusEvent())
+			else if (routedEvent.IsFocusEvent)
 			{
 				AddFocusHandler(routedEvent, handlersCount, handler, handledEventsToo);
 			}
@@ -368,19 +368,19 @@ namespace Windows.UI.Xaml
 
 		private void RemoveHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler)
 		{
-			if (routedEvent.Flag.IsPointerEvent())
+			if (routedEvent.IsPointerEvent)
 			{
 				RemovePointerHandler(routedEvent, remainingHandlersCount, handler);
 			}
-			else if (routedEvent.Flag.IsGestureEvent())
+			else if (routedEvent.IsGestureEvent)
 			{
 				RemoveGestureHandler(routedEvent, remainingHandlersCount, handler);
 			}
-			else if (routedEvent.Flag.IsKeyEvent())
+			else if (routedEvent.IsKeyEvent)
 			{
 				RemoveKeyHandler(routedEvent, remainingHandlersCount, handler);
 			}
-			else if (routedEvent.Flag.IsFocusEvent())
+			else if (routedEvent.IsFocusEvent)
 			{
 				RemoveFocusHandler(routedEvent, remainingHandlersCount, handler);
 			}
