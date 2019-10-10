@@ -420,6 +420,30 @@
 				<Member 
 					fullName="System.Void Windows.UI.Xaml.Documents.Hyperlink.OnNavigateUriChanged()"
 					reason="Not part of the UWP API."/>
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.ExceptionRoutedEventArgs..ctor(System.String errorMessage)"
+					reason="Not part of the UWP API."/>
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.MediaFailedRoutedEventArgs..ctor()"
+					reason="Not part of the UWP API."/>
+				<Member 
+					fullName="Windows.UI.Xaml.RoutedEventArgs Windows.UI.Xaml.RoutedEventArgs.get_Empty()"
+					reason="Not part of the UWP API."/>
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.RoutedEventArgs..ctor(System.Object originalSource)"
+					reason="Not part of the UWP API."/>
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.SizeChangedEventArgs..ctor(Windows.Foundation.Size previousSize, Windows.Foundation.Size newSize)"
+					reason="Not part of the UWP API."/>
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.Input.KeyRoutedEventArgs..ctor()"
+					reason="Not part of the UWP API."/>
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.Controls.SelectionChangedEventArgs..ctor(System.Collections.Generic.IList`1<System.Object> removedItems, System.Collections.Generic.IList`1<System.Object> addedItems)"
+					reason="Not part of the UWP API."/>
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs..ctor()"
+					reason="Not part of the UWP API."/>
 			</Methods>
 			
 			<Fields>
@@ -473,6 +497,9 @@
 					reason="Not part of the UWP API."/>
 				<Member
 					fullName="System.String Windows.UI.Xaml.RoutedEvent::Name()"
+					reason="Not part of the UWP API."/>
+				<Member
+					fullName="Windows.UI.Xaml.RoutedEventArgs Windows.UI.Xaml.RoutedEventArgs::Empty()"
 					reason="Not part of the UWP API."/>
 			</Properties>
 		</IgnoreSet>
