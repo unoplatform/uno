@@ -145,6 +145,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Enability\BasicEnability.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Localization\Localization_Implicit.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2576,6 +2580,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\DeferLoadStrategy\SimpleDeferLoadStrategy.xaml.cs">
       <DependentUpon>SimpleDeferLoadStrategy.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Enability\BasicEnability.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FocusManager\FocusManagerTest.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FocusManager\FocusManager_FocusDirection.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\FocusManager\FocusManager_GetFocus_Automated.xaml.cs" />
@@ -4581,6 +4586,15 @@
     </Compile>
     <Compile Update="C:\P\uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\DatePicker\DatePickerFlyout_MinYear.xaml.cs">
       <DependentUpon>DatePickerFlyout_MinYear.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\Enability\BasicEnability.xaml.cs">
+      <DependentUpon>BasicEnability.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\FocusManager\FocusManager_GetFocus_Automated.xaml.cs">
+      <DependentUpon>FocusManager_GetFocus_Automated.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\IsEnabled\BasicEnability.xaml.cs">
+      <DependentUpon>BasicEnability.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
