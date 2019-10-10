@@ -36,7 +36,7 @@ namespace Windows.Data.Pdf
 		}
 
 		[NotImplemented]
-		public Pdf.PdfPageRotation Rotation
+		public PdfPageRotation Rotation
 		{
 			get
 			{

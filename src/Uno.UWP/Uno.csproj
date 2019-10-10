@@ -38,6 +38,13 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
 	</ItemGroup>
+	
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Data\Pdf\PdfDocument.Droid.cs" />
+	  <UpToDateCheckInput Remove="Data\Pdf\PdfPage.Droid.cs" />
+	  <UpToDateCheckInput Remove="Data\Pdf\PdfPageDimensions.Droid.cs" />
+	  <UpToDateCheckInput Remove="Data\Pdf\PdfPageRenderOptions.Droid.cs" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />

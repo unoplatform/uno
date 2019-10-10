@@ -13,6 +13,7 @@ namespace Windows.Data.Pdf
 			this.pdfRenderer = pdfRenderer ?? throw new ArgumentNullException(nameof(pdfRenderer));
 		}
 
+		[NotImplemented]
 		public bool IsPasswordProtected => false;
 
 		public uint PageCount => (uint)pdfRenderer.PageCount;
