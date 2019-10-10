@@ -44,6 +44,8 @@
 	  <UpToDateCheckInput Remove="Data\Pdf\PdfPage.Droid.cs" />
 	  <UpToDateCheckInput Remove="Data\Pdf\PdfPageDimensions.Droid.cs" />
 	  <UpToDateCheckInput Remove="Data\Pdf\PdfPageRenderOptions.Droid.cs" />
+	  <UpToDateCheckInput Remove="Generated\3.0.0.0\Windows.Data.Pdf\PdfPageDimensions.cs" />
+	  <UpToDateCheckInput Remove="Generated\3.0.0.0\Windows.Data.Pdf\PdfPageRenderOptions.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
