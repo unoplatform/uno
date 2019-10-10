@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Windows.Devices.Input;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 using Microsoft.Extensions.Logging;
@@ -45,7 +46,7 @@ namespace Windows.UI.Xaml
 		{
 			var uiElement = typeof(UIElement);
 			VisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
-			FrameworkElement.IsEnabledProperty.GetMetadata(typeof(FrameworkElement)).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
+			Windows.UI.Xaml.Controls.Control.IsEnabledProperty.GetMetadata(typeof(Windows.UI.Xaml.Controls.Control)).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
 #if __WASM__
 			HitTestVisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
 #endif
@@ -130,14 +131,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			if (!(sender is UIElement elt))
-			{
-				return;
-			}
-
-			if (elt.Visibility != Visibility.Visible
-				|| !elt.IsHitTestVisible
-				|| (elt is FrameworkElement fwElt && !fwElt.IsEnabled))
+			if (sender is UIElement elt && !elt.IsHitTestVisibleCoalesced)
 			{
 				elt.ReleasePointerCaptures();
 				elt.SetPressed(null, false, muteEvent: true);
@@ -154,6 +148,32 @@ namespace Windows.UI.Xaml
 				elt.SetOver(null, false, muteEvent: true);
 			}
 		};
+
+		// This is a coalesced HitTestVisible and should be unified with it
+		// We should follow the WASM way an unify it on all platforms!
+		private bool IsHitTestVisibleCoalesced
+		{
+			get
+			{
+				if (Visibility != Visibility.Visible || !IsHitTestVisible)
+				{
+					return false;
+				}
+
+				if (this is Windows.UI.Xaml.Controls.Control ctrl)
+				{
+					return ctrl.IsLoaded && ctrl.IsEnabled;
+				}
+				else if (this is Windows.UI.Xaml.Controls.Control fwElt)
+				{
+					return fwElt.IsLoaded;
+				}
+				else
+				{
+					return true;
+				}
+			}
+		}
 
 		#region Gestures recognition
 		private bool _isGestureCompleted;
@@ -336,8 +356,10 @@ namespace Windows.UI.Xaml
 				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this));
 			}
 
-			// We release the captures on up but only when pointer is not over the control (i.e. mouse that moved away)
-			if (!isOver) // so isCaptured == true as isIrrelevant was false
+			// We release the captures on up but only after the released event and processed the gesture
+			// Note: For a "Tap" with a finger the sequence is Up / Exited / Lost, so we let the Exit raise the capture lost
+			// Note: If '!isOver', that means that 'IsCaptured == true' otherwise 'IsIrrelevant' would have been true.
+			if (!isOver || args.Pointer.PointerDeviceType != PointerDeviceType.Touch)
 			{
 				handledInManaged |= ReleaseCapture(args);
 			}
@@ -352,7 +374,7 @@ namespace Windows.UI.Xaml
 
 			handledInManaged |= SetOver(args, false, muteEvent: isIrrelevant);
 
-			// We release the captures on exit when pointer is not pressed the control
+			// We release the captures on exit when pointer if not pressed
 			// Note: for a "Tap" with a finger the sequence is Up / Exited / Lost, so the lost cannot be raised on Up
 			if (!IsPressed(args.Pointer))
 			{
@@ -371,7 +393,7 @@ namespace Windows.UI.Xaml
 		/// <param name="isSwallowedBySystem">Indicates that the pointer was muted by the system which will handle it internally.</param>
 		private bool OnNativePointerCancel(PointerRoutedEventArgs args, bool isSwallowedBySystem)
 		{
-			var isIrrelevant = ValidateAndUpdateCapture(args, out _); // Check this *before* updating the sate!
+			var isIrrelevant = ValidateAndUpdateCapture(args); // Check this *before* updating the pressed / over states!
 
 			// When a pointer is cancelled / swallowed by the system, we don't even receive "Released" nor "Exited"
 			SetPressed(args, false, muteEvent: true);
@@ -668,7 +690,6 @@ namespace Windows.UI.Xaml
 
 		private bool ValidateAndUpdateCapture(PointerRoutedEventArgs args, out bool isOver)
 			=> ValidateAndUpdateCapture(args, isOver = IsOver(args.Pointer));
-
 		// Used by all OnNativeXXX to validate and update the common over/pressed/capture states
 		private bool ValidateAndUpdateCapture(PointerRoutedEventArgs args, bool isOver, bool forceRelease = false)
 		{
@@ -687,7 +708,7 @@ namespace Windows.UI.Xaml
 			}
 
 			if ((forceRelease && capture.LastDispatchedEventFrameId < args.FrameId)
-				|| (capture.Owner is FrameworkElement fwElt && !fwElt.IsLoaded))
+				|| !capture.Owner.IsHitTestVisibleCoalesced)
 			{
 				// If 'forceRelease' we want to release any previous capture that was not release properly no matter the reason.
 				// BUT we don't want to release a capture that was made by a child control (so LastDispatchedEventFrameId should already be equals to current FrameId).
@@ -713,7 +734,7 @@ namespace Windows.UI.Xaml
 				//			instead of bubbling a single event before raising the next one, so we are safe.
 				//			The only limitation would be when mixing native vs. managed bubbling, but this check only prevents
 				//			the leaf of the tree to raise the event, so we cannot mix bubbling mode in that case.
-				return capture.LastDispatchedEventFrameId <= args.FrameId;
+				return capture.LastDispatchedEventFrameId < args.FrameId;
 			}
 		}
 

@@ -14,56 +14,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 	{
 		[Test]
 		public void TestTap()
-		{
-			RunSequence("Tap");
-			//Run("UITests.Shared.Windows_UI_Input.PointersTests.EventsSequences");
-
-			//var target = _app.Marked("TestTapTarget");
-			//var reset = _app.Marked("TestTapReset");
-			//var validate = _app.Marked("TestTapValidate");
-			//var result = _app.Marked("TestTapResult");
-
-			//_app.WaitForElement(target);
-			//target.Tap();
-			//validate.Tap();
-
-			//TakeScreenshot("Result");
-
-			//_app.WaitForDependencyPropertyValue(result, "Text", "SUCCESS");
-		}
+			=> RunSequence("Tap");
 
 		[Test]
 		public void TestClick()
-		{
-			RunSequence("Click");
-
-			//Run("UITests.Shared.Windows_UI_Input.PointersTests.EventsSequences");
-
-			//var target = _app.Marked("TestTapTarget");
-			//var reset = _app.Marked("TestTapReset");
-			//var validate = _app.Marked("TestTapValidate");
-			//var result = _app.Marked("TestTapResult");
-
-			//_app.WaitForElement(target);
-			//target.Tap();
-			//validate.Tap();
-
-			//TakeScreenshot("Result");
-
-			//_app.WaitForDependencyPropertyValue(result, "Text", "SUCCESS");
-		}
+			=> RunSequence("Click");
 
 		[Test]
 		public void TestHyperlink()
-		{
-			RunSequence("Hyperlink", TapSomewhereInElement);
-		}
+			=> RunSequence("Hyperlink", TapSomewhereInElement);
 
 		[Test]
 		public void TestListView()
-		{
-			RunSequence("ListView", TapSomewhereInElement);
-		}
+			=> RunSequence("ListView", TapSomewhereInElement);
 
 		private readonly Action<QueryEx> TapElement = element => element.Tap();
 		private void TapSomewhereInElement(QueryEx element)
