@@ -30,7 +30,7 @@ To do this, you need to recompile your app using a _debug_ version of Uno­
       ```
       -> In this example, the version is `1.3.15142-dev`.
 1. Create a file named `nuget_version_override.txt` and in the solution folder
-  (where `Uno.UI.sln` is) and put the version number in it - **on the first line and nothing
+  (where `Uno.UI.sln` is already there) and put the version number in it - **on the first line and nothing
   else is the file**.
 1. Build the project for the platform you need (or build all the solution to get all of them).
    See below for the list of projects to compile for each platform.
