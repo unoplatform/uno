@@ -256,7 +256,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private void OnClick(PointerRoutedEventArgs args = null)
 		{
-			Click?.Invoke(this, RoutedEventArgs.Empty);
+			Click?.Invoke(this, new RoutedEventArgs(args?.OriginalSource ?? this));
+
 			try
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))

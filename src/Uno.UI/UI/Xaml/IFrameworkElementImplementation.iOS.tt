@@ -455,7 +455,7 @@ namespace <#= mixin.NamespaceName #>
 				
 				if (previousSize != _actualSize)
 				{
-					SizeChanged?.Invoke(this, new SizeChangedEventArgs(previousSize, _actualSize));
+					SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, _actualSize));
 
 					if (_renderTransform != null)
 					{

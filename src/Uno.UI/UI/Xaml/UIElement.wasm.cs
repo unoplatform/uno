@@ -866,11 +866,7 @@ namespace Windows.UI.Xaml
 
 		private static KeyRoutedEventArgs PayloadToKeyArgs(object src, string payload)
 		{
-			return new KeyRoutedEventArgs
-			{
-				OriginalSource = src,
-				Key = System.VirtualKeyHelper.FromKey(payload),
-			};
+			return new KeyRoutedEventArgs(src, System.VirtualKeyHelper.FromKey(payload));
 		}
 
 		private static RoutedEventArgs PayloadToFocusArgs(object src, string payload)
@@ -879,17 +875,11 @@ namespace Windows.UI.Xaml
 			{
 				if(GetElementFromHandle(xamlHandle) is UIElement element)
 				{
-					return new RoutedEventArgs
-					{
-						OriginalSource = element,
-					};
+					return new RoutedEventArgs(element);
 				}
 			}
 
-			return new KeyRoutedEventArgs
-			{
-				OriginalSource = src,
-			};
+			return new RoutedEventArgs(src);
 		}
 	}
 }

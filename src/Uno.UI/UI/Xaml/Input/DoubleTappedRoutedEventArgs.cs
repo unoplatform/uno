@@ -12,16 +12,12 @@ namespace Windows.UI.Xaml.Input
 		private readonly Point _position;
 
 		public DoubleTappedRoutedEventArgs() 
-			: this(new Point())
+			: this(null, PointerDeviceType.Mouse, new Point())
 		{
 		}
 
-		internal DoubleTappedRoutedEventArgs(Point position)
-		{
-			_position = position;
-		}
-
-		internal DoubleTappedRoutedEventArgs(PointerDeviceType pointerType, Point position)
+		internal DoubleTappedRoutedEventArgs(object originalSource, PointerDeviceType pointerType, Point position)
+			: base(originalSource)
 		{
 			PointerDeviceType = pointerType;
 			_position = position;

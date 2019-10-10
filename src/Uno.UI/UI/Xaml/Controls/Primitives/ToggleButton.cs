@@ -52,11 +52,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			if (newValue.HasValue && newValue.Value)
 			{
-				Checked?.Invoke(this, new RoutedEventArgs());
+				Checked?.Invoke(this, new RoutedEventArgs(this));
 			}
 			else
 			{
-				Unchecked?.Invoke(this, new RoutedEventArgs());
+				Unchecked?.Invoke(this, new RoutedEventArgs(this));
 			}
 		}
 
