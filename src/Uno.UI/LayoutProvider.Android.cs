@@ -2,39 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Android.App;
-using Android.Graphics;
-using Android.Graphics.Drawables;
-using Android.Util;
-using Android.Views;
-using Android.Widget;
-using Windows.Devices.Sensors;
-using Windows.Foundation;
-using Windows.Graphics.Display;
-using Windows.UI.ViewManagement;
-using Windows.UI.Xaml;
-using Rect = Android.Graphics.Rect;
-
-namespace Uno.UI
-{
-	internal class LayoutProvider
-	{
-		public delegate void LayoutChangedListener(Rect statusBar, Rect keyboard, Rect navigationBar);
-		public delegate void InsetsChangedListener(Thickness insets);
-
-		public event LayoutChangedListener LayoutChanged;
-		public event InsetsChangedListener InsetsChanged;
-
-		public Thickness Insets { get; internal set; } = new Thickness(0, 0, 0, 0);
-		public Rect StatusBarRect { get; private set; } = new Rect(0, 0, 0, 0);
-		public Rect KeyboardRect { get; private set; } = new Rect(0, 0, 0, 0);
-		public Rect NavigationBarRect { get; private set; } = new Rect(0, 0, 0, 0);
-
-		private readonly Activity _activity;
-		private readonly GlobalLayoutProvider _adjustNothingLayoutProvider, _adjustResizeLayoutProvider;
-
-		public LayoutProvider(Activity activity)
-		{
-			this._activity = activity;
+using Andro
 
 			_adjustNothingLayoutProvider = new GlobalLayoutProvider(activity, null, null)
 			{
