@@ -173,11 +173,11 @@ namespace Windows.UI.Xaml
 			{
 				if (args.TapCount == 1)
 				{
-					SafeRaiseEvent(TappedEvent, new TappedRoutedEventArgs(args.PointerDeviceType, args.Position));
+					SafeRaiseEvent(TappedEvent, new TappedRoutedEventArgs(this, args.PointerDeviceType, args.Position));
 				}
 				else // i.e. args.TapCount == 2
 				{
-					SafeRaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(args.PointerDeviceType, args.Position));
+					SafeRaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(this, args.PointerDeviceType, args.Position));
 				}
 			}
 		}
@@ -278,7 +278,7 @@ namespace Windows.UI.Xaml
 			}
 
 			args.Handled = false;
-			handledInManaged |= SafeRaiseEvent(PointerMovedEvent, args);
+			handledInManaged |= RaisePointerEvent(PointerMovedEvent, args);
 
 			if (_gestures.IsValueCreated)
 			{
@@ -301,7 +301,7 @@ namespace Windows.UI.Xaml
 			}
 
 			args.Handled = false;
-			var handledInManaged = SafeRaiseEvent(PointerMovedEvent, args);
+			var handledInManaged = RaisePointerEvent(PointerMovedEvent, args);
 
 			if (_gestures.IsValueCreated)
 			{
@@ -395,11 +395,34 @@ namespace Windows.UI.Xaml
 			else
 			{
 				args.Handled = false;
-				handledInManaged |= SafeRaiseEvent(PointerCanceledEvent, args);
+				handledInManaged |= RaisePointerEvent(PointerCanceledEvent, args);
 				handledInManaged |= ReleaseCapture(args);
 			}
 
 			return handledInManaged;
+		}
+
+		private static (UIElement sender, RoutedEvent @event, PointerRoutedEventArgs args) _pendingRaisedEvent;
+		private bool RaisePointerEvent(RoutedEvent evt, PointerRoutedEventArgs args)
+		{
+			try
+			{
+				_pendingRaisedEvent = (this, evt, args);
+				return RaiseEvent(evt, args);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Failed to raise '{evt.Name}': {e}");
+				}
+
+				return false;
+			}
+			finally
+			{
+				_pendingRaisedEvent = (null, null, null);
+			}
 		}
 		#endregion
 
@@ -442,12 +465,12 @@ namespace Windows.UI.Xaml
 			if (isOver) // Entered
 			{
 				args.Handled = false;
-				return SafeRaiseEvent(PointerEnteredEvent, args);
+				return RaisePointerEvent(PointerEnteredEvent, args);
 			}
 			else // Exited
 			{
 				args.Handled = false;
-				return SafeRaiseEvent(PointerExitedEvent, args);
+				return RaisePointerEvent(PointerExitedEvent, args);
 			}
 		}
 		#endregion
@@ -493,12 +516,12 @@ namespace Windows.UI.Xaml
 			if (isPressed) // Pressed
 			{
 				args.Handled = false;
-				return SafeRaiseEvent(PointerPressedEvent, args);
+				return RaisePointerEvent(PointerPressedEvent, args);
 			}
 			else // Released
 			{
 				args.Handled = false;
-				return SafeRaiseEvent(PointerReleasedEvent, args);
+				return RaisePointerEvent(PointerReleasedEvent, args);
 			}
 		}
 		#endregion
@@ -667,7 +690,7 @@ namespace Windows.UI.Xaml
 				|| (capture.Owner is FrameworkElement fwElt && !fwElt.IsLoaded))
 			{
 				// If 'forceRelease' we want to release any previous capture that was not release properly no matter the reason.
-				// BUT we don't want to release a capture that was made by a child control.
+				// BUT we don't want to release a capture that was made by a child control (so LastDispatchedEventFrameId should already be equals to current FrameId).
 				// We also do not allow a control that is not loaded to keep a capture (they should all have been release on unload).
 				// ** This is an IMPORTANT safety catch to prevent the application to become unresponsive **
 				capture.Owner.Release(capture);
@@ -703,7 +726,7 @@ namespace Windows.UI.Xaml
 			else if (forceCaptureLostEvent)
 			{
 				args.Handled = false;
-				return SafeRaiseEvent(PointerCaptureLostEvent, args);
+				return RaisePointerEvent(PointerCaptureLostEvent, args);
 			}
 			else
 			{
@@ -738,7 +761,7 @@ namespace Windows.UI.Xaml
 				return false; // TODO: We should create a new instance of event args with dummy location
 			}
 			args.Handled = false;
-			return SafeRaiseEvent(PointerCaptureLostEvent, args);
+			return RaisePointerEvent(PointerCaptureLostEvent, args);
 		}
 
 		private class PointerCapture
@@ -747,6 +770,15 @@ namespace Windows.UI.Xaml
 			{
 				Owner = owner;
 				Pointer = pointer;
+
+				// If the capture is made while raising an event (usually captures are made in PointerPressed handlers)
+				// we re-use the current event args (if they match) to init the Last** properties.
+				// Note:  we don't check the sender as we may capture on another element bu the frame ID is still correct.
+				if (_pendingRaisedEvent.args?.Pointer == pointer)
+				{
+					LastDispatchedEventArgs = _pendingRaisedEvent.args;
+					LastDispatchedEventFrameId = _pendingRaisedEvent.args.FrameId;
+				}
 			}
 
 			/// <summary>
