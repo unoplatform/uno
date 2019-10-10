@@ -676,7 +676,7 @@ namespace Windows.UI.Xaml.Controls
 				&& !IsReadOnly
 				&& !AcceptsReturn
 				&& TextWrapping == TextWrapping.NoWrap
-			// TODO (https://github.com/nventive/Uno/issues/683): && ActualWidth >= TDB / Note: We also have to invoke this method on SizeChanged
+			// TODO (https://github.com/unoplatform/uno/issues/683): && ActualWidth >= TDB / Note: We also have to invoke this method on SizeChanged
 			)
 			{
 				VisualStateManager.GoToState(this, ButtonVisibleStateName, true);

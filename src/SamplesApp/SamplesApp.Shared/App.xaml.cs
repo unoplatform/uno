@@ -200,6 +200,11 @@ namespace SamplesApp
 							}
 #endif
 
+#if HAS_UNO
+                            // Disable the TextBox caret for new instances
+                            Uno.UI.FeatureConfiguration.TextBox.HideCaret = true;
+#endif
+
 							var t = SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, metadataName);
 							var timeout = Task.Delay(30000);
 
@@ -215,6 +220,13 @@ namespace SamplesApp
 						catch (Exception e)
 						{
 							Console.WriteLine($"Failed to run test {metadataName}, {e}");
+						}
+						finally
+						{
+#if HAS_UNO
+							// Restore the caret for new instances
+							Uno.UI.FeatureConfiguration.TextBox.HideCaret = false;
+#endif
 						}
 					}
 				);

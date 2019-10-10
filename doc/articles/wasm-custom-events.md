@@ -42,12 +42,12 @@ using the following code:
     private void OnStringEvent(object sender, HtmlCustomEventArgs e)
     {
         // You can react on "stringEvent" here
-        // The payload is availabe on e.Detail
+        // The payload is available on e.Detail
     }
 
     private void OnComplexEvent(object sender, HtmlCustomEventArgs e)
     {
         // You can react on "complexEvent" here
-        // The payload is availabe on e.Detail as a JSON string
+        // The payload is available on e.Detail as a JSON string
     }
 ```

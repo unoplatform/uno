@@ -89,7 +89,7 @@ Using `ObservableCollection` (or another `INotifyCollectionChanged` implementati
  consider a list of items that can be filtered by a search term. Modifying the search term by one character (ie, when the user types in a 
  `TextBox`) might remove or add hundreds of items from the filtered source. Particularly on iOS, and to a lesser extent on Android, the 
  list tries to do preprocessing on each change to determine what animations it needs, etc. The result is a noticeable lag, where changing 
- the `ItemsSource` completely would have been nearly instaneous.
+ the `ItemsSource` completely would have been nearly instantaneous.
 
  So consider using a non-observable collection, or use the Uno-only `RefreshOnCollectionChanged` flag (which causes the native list to 
  refresh without animations when any `CollectionChanged` event is raised), if your scenario matches the following:

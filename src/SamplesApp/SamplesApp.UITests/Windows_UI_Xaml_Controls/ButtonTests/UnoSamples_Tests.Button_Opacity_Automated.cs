@@ -25,7 +25,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			var valueOfOpacity = _app.Marked("ValueOfOpacity");
 			var applyOpacityButton = _app.Marked("ApplyOpacityButton");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("0", totalClicks.GetDependencyPropertyValue("Text")?.ToString());
 			Assert.AreEqual("1", valueOfOpacity.GetDependencyPropertyValue("Text")?.ToString());
 

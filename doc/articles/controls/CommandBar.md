@@ -19,6 +19,12 @@ This mode replicates **UWP**'s `CommandBar`. It is templatable and supports a te
 
 ![](Assets/CommandBar/windows/example.png)
 
+#### Usage Example
+
+```cs
+<Style TargetType="CommandBar" BasedOn="XamlDefaultCommandBar" />
+```
+
 #### Remarks
 
 * This mode hasn't been extensively tested. 
@@ -39,17 +45,19 @@ This mode is the preferred one and is enabled by default. It uses platform-speci
 
 The rest of this document will exclusively cover this mode.
 
+#### Usage Example
+
+```cs
+<Style TargetType="CommandBar" BasedOn="NativeDefaultCommandBar" />
+```
+
 #### Remarks
 
 In this mode, the `CommandBar` can't be fully customized like other templatable controls would. Additionally, you can't customize the visual states of either the `CommandBar` or its `AppBarButton`s.
 
 ### Padding
 
-In this mode, you must set the `CommandBar` `Padding` to `StatusBarThickness` in order to fix two known issues :
-* On **iOS** the content will be underneath the `CommandBar`.
-* On **Android** the `CommandBar` will be underneath the `StatusBar`.
-
-(The `StatusBarThickness` resource is one which is programmatically added at runtime, with a value that changes depending on the platform/device.)
+You must use `VisibleBoundsPadding.PaddingMask="Top"` on `CommandBar` to properly support the notch or punch-holes on iOS and Android.
 
 #### Back button
 
@@ -300,7 +308,7 @@ To ensure everything works properly, you must follow a few rules:
 
 ## Extensibility
 
-The `CommandBar` it automatically managed by the `Frame` control, however you can still use the "native" mode of the `CommandBar` with your own navigation mechanisim.
+The `CommandBar` it automatically managed by the `Frame` control, however you can still use the "native" mode of the `CommandBar` with your own navigation mechanism.
 
 On **iOS** a `CommandBarHelper` is available for this purpose, you only have to invoke each of the provided method in your own `UIViewController` implementation.
 
@@ -418,7 +426,6 @@ Gets or sets a value indicating whether the user can interact with the control.
   
 - Can't have multiple CommandBars in the same page (e.g., Master/Details, bottom CommandBar).
 - Can't change the title of the back button if the previous page doesn't have a CommandBar.
-- You must set the `CommandBar.Padding` to `StatusBarThickness` in Native mode for iOS and Android (Please refer to the Padding section).
 - You must define the title of the back button of the current page's CommandBar in the CommandBar of the previous page.
 - Can't have a smooth transition between pages with different CommandBar backgrounds.
 - Can't have a smooth transition between pages with and without a CommandBar.
@@ -437,21 +444,24 @@ Gets or sets a value indicating whether the user can interact with the control.
 
 # FAQ
 
-- > Why my content is underneath the CommandBar for iOS and the CommandBar underneath the StatusBar for Android ?
+- > Why is my content underneath the `CommandBar` for iOS and the `CommandBar` underneath the StatusBar/Notch for Android ?
 
-  You must set the `CommandBar` `Padding` to `StatusBarThickness` in order to fix those two known issues.
-  The `StatusBarThickness` resource is one which is programmatically added at runtime, with a value that changes depending on the platform/device.
+  You must use `VisibleBoundsPadding.PaddingMask="Top"` on `CommandBar` to properly support the notch or punch-holes on iOS and Android.
 
   ```xml
+  xmlns:toolkit="using:Uno.UI.Toolkit"
+  ...
   <Style Target="CommandBar">
-      <Setter Property="Padding"
-              Value="{StaticResource StatusBarThickness}" />
+      <Setter Property="toolkit:VisibleBoundsPadding.PaddingMask"
+              Value="Top" />
   </Style>
   ```
 
 - > How can I remove the back button title from all pages on iOS?
   
   ```xml
+  xmlns:toolkit="using:Uno.UI.Toolkit"
+  ...
   <Style Target="CommandBar">
       <Setter Property="toolkit:CommandBarExtensions.BackButtonTitle"
               Value="" />
@@ -461,6 +471,8 @@ Gets or sets a value indicating whether the user can interact with the control.
 - > How can I change the back button icon/arrow/chevron in my app?
   
   ```xml
+  xmlns:toolkit="using:Uno.UI.Toolkit"
+  ...
   <Style Target="CommandBar">
       <Setter Property="toolkit:CommandBarExtensions.BackButtonIcon">
           <Setter.Value>
@@ -473,6 +485,8 @@ Gets or sets a value indicating whether the user can interact with the control.
 - > How can I change the color of the back button?
 
   ```xml
+  xmlns:toolkit="using:Uno.UI.Toolkit"
+  ...
   <CommandBar toolkit:CommandBarExtensions.BackButtonForeground="Red" />
   ```
 
@@ -604,7 +618,17 @@ Gets or sets a value indicating whether the user can interact with the control.
   
 - > How can I localize CommandBarExtensions.BackButtonTitle?
   
-  You can't currently localize attached properties in **Uno**. 
+  _For attached properties, you need a special syntax in the Name column of a .resw file._ Ref: [Microsoft documentation](https://docs.microsoft.com/en-us/windows/uwp/app-resources/localize-strings-ui-manifest#refer-to-a-string-resource-identifier-from-xaml).
+  
+  More specifically :
+  ```xml
+
+  <CommandBar x:Uid="MyCommandBar"
+              toolkit:CommandBarExtensions.BackButtonTitle="My Page Title">
+          ...
+  </CommandBar>
+  ```
+  And in the `.resw` file, the name would be: `MyCommandBar.[using:Uno.UI.Toolkit]CommandBarExtensions.BackButtonTitle`
   
 - > How can I put a ComboBox in my CommandBar?
   

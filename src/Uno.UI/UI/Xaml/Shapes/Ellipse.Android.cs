@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected override Android.Graphics.Path GetPath()
 		{
-			//If no height is explicitely set we need to force the shape to be drawn.
+			//If no height is explicitly set we need to force the shape to be drawn.
 			var ovalHeight = double.IsNaN(Height) ? 100 : Height;
 			var ovalWidth = double.IsNaN(Width) ? 100 : Width;
 			return MakeOval(new Windows.Foundation.Rect(0, 0, ovalWidth, ovalHeight));

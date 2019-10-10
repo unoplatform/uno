@@ -1,6 +1,6 @@
 # Uno.UI and UWP API or Behavior differences
 
-For legacy, platform support or performance reasons, Uno has some noteable API differences.
+For legacy, platform support or performance reasons, Uno has some notable API differences.
 
 ### DependencyObject is an interface.
 `DependencyObject` is an interface to allow for XAML controls to inherit directly from their native counterpart. The implementation of the methods is done through the `DependencyObjectGenerator` source generator, automatically.
@@ -50,10 +50,10 @@ must be set at launch time. Documentation: [`Application.RequestedTheme`](https:
 On Windows, there are some _themes_ that can target, but there is no way to trigger them. The most
 known is the `HighContrast` theme.
 
-You can do something similar - an even create totally custom themes - by using the following helper:
+You can do something similar - and even create totally custom themes - by using the following helper:
 
 ``` csharp
-  // Set current theme to Hich contrast
+  // Set current theme to High contrast
   Uno.UI.RequestedCustomTheme = "HighContrast";
 ```
 

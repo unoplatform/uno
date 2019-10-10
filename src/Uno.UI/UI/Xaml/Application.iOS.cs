@@ -37,6 +37,7 @@ namespace Windows.UI.Xaml
 
 		public override void FinishedLaunching(UIApplication application)
 		{
+			InitializationCompleted();
 			OnLaunched(new LaunchActivatedEventArgs());
 		}
 
@@ -83,6 +84,19 @@ namespace Windows.UI.Xaml
 		[Export("getApplicationDataPath")]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public NSString GetWorkingFolder() => new NSString(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+
+		private ApplicationTheme GetDefaultSystemTheme()
+		{
+			//Ensure the current device is running 12.0 or higher, because `TraitCollection.UserInterfaceStyle` was introduced in iOS 12.0
+			if (UIDevice.CurrentDevice.CheckSystemVersion(12, 0))
+			{
+				if (UIScreen.MainScreen.TraitCollection.UserInterfaceStyle == UIUserInterfaceStyle.Dark)
+				{
+					return ApplicationTheme.Dark;
+				}
+			}
+			return ApplicationTheme.Light;
+		}
 	}
 }
 #endif

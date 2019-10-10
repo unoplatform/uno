@@ -34,7 +34,7 @@ namespace UnitTestsApp
 			internal
 #endif
 			override void OnLaunched(LaunchActivatedEventArgs args)
-		{			
+		{
 			if (HostView == null)
 			{
 				HostView = new Grid() { Name = "HostView" };
@@ -57,10 +57,12 @@ namespace UnitTestsApp
 		{
 			if (Current == null)
 			{
-				(new App()).OnLaunched(null);
+				var application = new App();
+				application.InitializationCompleted();
+				application.OnLaunched(null);
 			}
 
-			var app = Current as App;
+			var app = Current as App;			
 			app.HostView.Children.Clear();
 
 			return app;

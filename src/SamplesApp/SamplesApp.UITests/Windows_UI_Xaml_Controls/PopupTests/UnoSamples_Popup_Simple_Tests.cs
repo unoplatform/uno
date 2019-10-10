@@ -63,6 +63,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 
 		[Test]
 		[AutoRetry()]
+		[ActivePlatforms(Platform.iOS, Platform.Browser)] // Android is disabled https://github.com/unoplatform/uno/issues/1631
+
 		public void NonDismissiblePopup()
 		{
 			Run("Uno.UI.Samples.Content.UITests.Popup.Popup_Simple");

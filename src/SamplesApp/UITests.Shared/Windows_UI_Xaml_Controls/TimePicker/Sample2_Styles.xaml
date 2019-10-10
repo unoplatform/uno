@@ -149,7 +149,7 @@
 										   Width="2"
 										   Grid.Column="3" />
 
-								<!-- SEPERATOR -->
+								<!-- SEPARATOR -->
 								<Rectangle Width="1"
 										   Fill="Black"
 										   Margin="3,0,3,0"

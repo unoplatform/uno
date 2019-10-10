@@ -22,7 +22,7 @@ namespace Windows.Storage
 		public StorageStreamTransaction(StorageFile file)
 		{
 			_file = file;
-			_gate = _file.Path; // Set the gate to the file path in order to prevent concurrent acess (only for this process unfortunately)
+			_gate = _file.Path; // Set the gate to the file path in order to prevent concurrent access (only for this process unfortunately)
 
 			OpenFiles();
 		}

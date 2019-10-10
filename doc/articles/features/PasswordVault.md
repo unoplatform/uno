@@ -1,13 +1,13 @@
 # PasswordVault
 
-The `PasswordVault` is a credentials manager that is persisted using a secured storage. 
+The `PasswordVault` is a credentials manager that is persisted using a secured storage.
 More info about its usage can be found here https://docs.microsoft.com/en-us/uwp/api/windows.security.credentials.passwordvault
 
 ## Supported platforms
 
 |                      | Android | iOS     | MacOS   | Wasm    |
 | -------------------- | ------- | ------- | ------- | ------- |
-| `PaswwordVault`      | Yes     | Yes     | No      | No      |
+| `PasswordVault`      | Yes     | Yes     | No      | No      |
 | `PasswordCredential` | Partial | Partial | Partial | Partial |
 
 ## Security
@@ -33,13 +33,13 @@ More info: https://developer.apple.com/documentation/security/certificate_key_an
 This platform was not evaluated.
 
 ### Wasm
-There is no way to persist a secured data in a Web browser. Even if we generate a key to encrypt it, 
+There is no way to persist a secured data in a Web browser. Even if we generate a key to encrypt it,
 there is no safe place to store this key except by relying on server components, which broke the offline support (and Progressive Web App).
 So currently we preferred to **not** implement the `PasswordVault`. It will throw a `NotSupportedException` when you try to create a new instance.
 
 ## PasswordCredential
 This class is implemented, however it never hides the password like the UWP does.
-This means that the[`RetrievePassword`](https://docs.microsoft.com/en-us/uwp/api/windows.security.credentials.passwordcredential.retrievepassword#Windows_Security_Credentials_PasswordCredential_RetrievePassword) does nothing, 
+This means that the[`RetrievePassword`](https://docs.microsoft.com/en-us/uwp/api/windows.security.credentials.passwordcredential.retrievepassword#Windows_Security_Credentials_PasswordCredential_RetrievePassword) does nothing,
 but we recommend to still use it in order to ensure cross-platform compatibility.
 
 The [`Properties`](https://docs.microsoft.com/en-us/uwp/api/windows.security.credentials.passwordcredential.properties#Windows_Security_Credentials_PasswordCredential_Properties) is not implemented.

@@ -1,8 +1,8 @@
-<Project Sdk="MSBuild.Sdk.Extras/1.6.68">
+<Project Sdk="MSBuild.Sdk.Extras/2.0.54">
 
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;xamarinios10;monoandroid80;monoandroid90;uap10.0.16299</TargetFrameworks>
-		
+
 		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
 		<GenerateLibraryLayout>true</GenerateLibraryLayout>
 	</PropertyGroup>
@@ -10,20 +10,20 @@
 	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
 	</PropertyGroup>
-	
+
 	<ItemGroup Condition="'$(TargetFramework)'=='xamarinios10' or '$(TargetFramework)'=='monoandroid80' or '$(TargetFramework)'=='monoandroid90' or '$(TargetFramework)'=='netstandard2.0'">
 		<PackageReference Include="Uno.UI" Version="1.46.196-dev.2440" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 	  <Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 		<Compile Update="**\*.xaml.cs">
 			<DependentUpon>%(Filename)</DependentUpon>
 		</Compile>
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
 	</ItemGroup>
-	
+
 </Project>

@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		/// <summary>
-		/// Request to implementors to configure its interval beetween frame for animations
+		/// Request to implementors to configure its interval between frame for animations
 		/// </summary>
 		protected virtual void SetAnimationFramesInterval()
 		{

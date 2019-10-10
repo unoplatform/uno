@@ -7,7 +7,8 @@
 	<authors>nventive</authors>
 	<owners>nventive</owners>
 	<requireLicenseAcceptance>false</requireLicenseAcceptance>
-	<projectUrl>https://github.com/nventive/Uno</projectUrl>
+	<projectUrl>https://platform.uno/</projectUrl>
+	<license type="expression">Apache-2.0</license>
 	<iconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</iconUrl>
 	<description>
 	  Support for Lottie on Uno.UI.
@@ -17,7 +18,7 @@
 	  Original documentation: https://docs.microsoft.com/fr-ca/windows/communitytoolkit/animations/lottie
 	</description>
 	<copyright>Copyright (C) 2015-2019 nventive inc. - all rights reserved</copyright>
-	<repository type="git" url="https://github.com/nventive/Uno.git" />
+	<repository type="git" url="https://github.com/unoplatform/uno.git" />
 
 	<dependencies>
 

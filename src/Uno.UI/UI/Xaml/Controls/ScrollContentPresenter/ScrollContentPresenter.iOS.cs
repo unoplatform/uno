@@ -342,7 +342,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var childDesiredWidth = GetDesiredValue(child.MinWidth, child.Width, child.MaxWidth);
-			childDesiredWidth = double.IsNaN(childDesiredWidth) ? double.MaxValue : childDesiredWidth;  //Bacause Math.Min with a NaN will return NaN.
+			childDesiredWidth = double.IsNaN(childDesiredWidth) ? double.MaxValue : childDesiredWidth;  //Because Math.Min with a NaN will return NaN.
 			adjustedWidth = (nfloat)Math.Min(adjustedWidth, childDesiredWidth); //Take the smallest between the child desired Width and the measured width
 
 			return adjustedWidth;
@@ -421,7 +421,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var childDesiredHeight = GetDesiredValue(child.MinHeight, child.Height, child.MaxHeight);
-			childDesiredHeight = double.IsNaN(childDesiredHeight) ? double.MaxValue : childDesiredHeight;  //Bacause Math.Min with a NaN will return NaN.
+			childDesiredHeight = double.IsNaN(childDesiredHeight) ? double.MaxValue : childDesiredHeight;  //Because Math.Min with a NaN will return NaN.
 
 			adjustedHeight = (nfloat)Math.Min(adjustedHeight, childDesiredHeight);
 

@@ -6,10 +6,10 @@
 
 		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
-		
+
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
-		
+
 		<IsBindingProject Condition="'$(TargetFramework)' == 'MonoAndroid80' or '$(TargetFramework)' == 'MonoAndroid90'">true</IsBindingProject>
 		<_isWindows>$([MSBuild]::IsOsPlatform(Windows))</_isWindows>
 	</PropertyGroup>
@@ -22,7 +22,7 @@
 	<PropertyGroup>
 		<AndroidSdkBuildToolsVersion Condition="'$(AndroidSdkBuildToolsVersion)' == ''">28.0.3</AndroidSdkBuildToolsVersion>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<PackageReference Include="Xamarin.Build.Download" Version="0.4.11" />
 	</ItemGroup>
@@ -56,15 +56,15 @@
 		<TransformFile Include="Transforms\EnumFields.xml" />
 		<TransformFile Include="Transforms\EnumMethods.xml" />
 	</ItemGroup>
-	
+
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<Target Name="_CompileUnoJavaCreateOutputs"
 					BeforeTargets="Build"
 					AfterTargets="Restore">
-		<!-- 
-		Create the EmbeddedJar itemgroup here so the Xamarin tooling picks it up, 
-		but in the obj folder so we dont have rebuild and git ignore issues.
+		<!--
+		Create the EmbeddedJar itemgroup here so the Xamarin tooling picks it up,
+		but in the obj folder so we don't have rebuild and git ignore issues.
 		-->
 		<ItemGroup>
 			<EmbeddedJar Include="$(IntermediateOutputPath)\unojars\uno.ui-$(TargetFramework).jar" />
@@ -80,7 +80,7 @@
 		<Delete Files="@(_JavaFilesToDelete)" />
 	</Target>
 
-	<!-- Workaround for https://github.com/nventive/Uno/issues/986 -->
+	<!-- Workaround for https://github.com/unoplatform/uno/issues/986 -->
 	<Target Name="Issue986Workaround" BeforeTargets="ExportJarToXml">
 
 		<!--
@@ -89,10 +89,10 @@
 		GenerateBindings target is not given proper api mappings, ending in the generation
 		of an empty assembly.
 		-->
-		
+
 		<Delete Files="$(IntermediateOutputPath)\api.xml" />
 	</Target>
-	
+
 	<ItemGroup>
 		<_CompileUnoJavaBeforeTargets Include="ExportJarToXml"/>
 		<_CompileUnoJavaBeforeTargets Include="GenerateBindings"/>
@@ -108,8 +108,8 @@
 					AfterTargets="@(_CompileUnoJavaAfterTargets)"
 					Inputs="@(_JavaFile)"
 					Outputs="@(EmbeddedJar)"
-					DependsOnTargets="_CompileUnoJavaCreateOutputs;@(XamarinBuildRestoreResources);_FillMsBuildVersion">
-	
+					DependsOnTargets="_CompileUnoJavaCreateOutputs;@(XamarinBuildRestoreResources)">
+
 		<ItemGroup>
 			<_AndroidJar Include="%ProgramFiles(x86)%\Reference Assemblies\Microsoft\Framework\MonoAndroid\$(TargetFrameworkVersion)\mono.android.jar" />
 			<_AndroidJar Include="$(IntermediateOutputPath)\__library_projects__\Xamarin.Android.Support.Annotations\library_project_imports\support-annotations.jar" />
@@ -119,11 +119,11 @@
 		<PropertyGroup>
 			<_JavaVersion>1.8</_JavaVersion>
 
-			<_JavaVersion Condition="'$(MicrosoftBuildVersion)' &lt; '15.4'">1.7</_JavaVersion>
+			<_JavaVersion Condition="'$(MSBuildVersion)' &lt; '15.4'">1.7</_JavaVersion>
 
 			<_JavaCBinPath>javac</_JavaCBinPath>
 			<_JavaCBinPath Condition="Exists('$(_JavaSdkDirectory)bin\javac.exe')">$(_JavaSdkDirectory)bin\javac.exe</_JavaCBinPath>
-			
+
 			<_JarBinPath>$(_JavaSdkDirectory)bin\jar</_JarBinPath>
 			<_JarBinPath Condition="Exists('$(_JavaSdkDirectory)bin\jar.exe')">$(_JavaSdkDirectory)bin\jar.exe</_JarBinPath>
 
@@ -132,17 +132,17 @@
 
 			<_CompileCommand>&quot;$(_JavaCBinPath)&quot; -g -source $(_javaVersion) -d .\$(IntermediateOutputPath)\unoclasses -target $(_javaVersion) -J-Dfile.encoding=UTF8 -classpath "$(_flattenAndroidJar)" -bootclasspath "$(_AndroidSdkDirectory)platforms\android-$(_AndroidApiLevel)\android.jar" -encoding UTF-8 .\Uno\UI\*.java</_CompileCommand>
 		</PropertyGroup>
-		
+
 		<Error Text="The Android SDK for API level $(_AndroidApiLevel) is not installed. Install it through the Android SDK manager." Condition="!Exists('$(_AndroidSdkDirectory)platforms\android-$(_AndroidApiLevel)\android.jar')" />
-		
+
 		<Message Text="Compiling java ($(_CurrentSupportV4) for $(TargetFramework)): $(_CompileCommand)" Importance="high" />
 
 		<MakeDir Directories="$(IntermediateOutputPath)\unoclasses" />
 		<Exec Command="$(_CompileCommand)" />
-		
+
 		<MakeDir Directories="$(IntermediateOutputPath)\unojars" />
 		<Exec Command="&quot;$(_JarBinPath)&quot; cvf @(EmbeddedJar) -C $(IntermediateOutputPath)unoclasses ." />
-	
+
 	</Target>
 
 	<Target Name="_WorkaroundRegisterMdbFilesWithFileWrites" BeforeTargets="IncrementalClean">
@@ -154,7 +154,7 @@
 		</CreateItem>
 	</Target>
 
-	
+
 
 	<!-- This is to be removed when VS15.3 will be released. This is caused by conditional ProjectReference from Uno.UI -->
 	<ItemGroup Condition="$(IsMonoAndroid)">
