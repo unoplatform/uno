@@ -3,7 +3,7 @@ using Windows.Foundation;
 
 namespace Windows.Data.Pdf
 {
-    public class PdfPageDimensions
+    public partial class PdfPageDimensions
     {
         public PdfPageDimensions()
         {

@@ -5,7 +5,7 @@ using Windows.UI;
 namespace Windows.Data.Pdf
 {
     
-    public class PdfPageRenderOptions
+    public partial class PdfPageRenderOptions
     {
         
         public PdfPageRenderOptions()
