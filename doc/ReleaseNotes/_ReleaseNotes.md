@@ -70,6 +70,7 @@
 * Updated VisualTree of an app with Visibility for each items.
 * Add support for `CompositionTarget.Rendering` event.
 * Add support for `IObservableVector<T>` in `ItemsControl`
+* [#1559] [#1167] Wasm: make the IsEnabled property inheritable.
 
 ### Breaking changes
 

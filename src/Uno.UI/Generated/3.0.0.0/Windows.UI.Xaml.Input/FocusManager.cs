@@ -117,22 +117,6 @@ namespace Windows.UI.Xaml.Input
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static event global::System.EventHandler<global::Windows.UI.Xaml.Input.FocusManagerGotFocusEventArgs> GotFocus
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.FocusManager", "event EventHandler<FocusManagerGotFocusEventArgs> FocusManager.GotFocus");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.FocusManager", "event EventHandler<FocusManagerGotFocusEventArgs> FocusManager.GotFocus");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<global::Windows.UI.Xaml.Input.LosingFocusEventArgs> LosingFocus
 		{
 			[global::Uno.NotImplemented]
@@ -144,22 +128,6 @@ namespace Windows.UI.Xaml.Input
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.FocusManager", "event EventHandler<LosingFocusEventArgs> FocusManager.LosingFocus");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static event global::System.EventHandler<global::Windows.UI.Xaml.Input.FocusManagerLostFocusEventArgs> LostFocus
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.FocusManager", "event EventHandler<FocusManagerLostFocusEventArgs> FocusManager.LostFocus");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Input.FocusManager", "event EventHandler<FocusManagerLostFocusEventArgs> FocusManager.LostFocus");
 			}
 		}
 		#endif
