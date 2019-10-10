@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __ANDROID__
+using System;
 using Windows.Foundation;
 using Windows.UI;
 
@@ -27,3 +28,4 @@ namespace Windows.Data.Pdf
         public Color BackgroundColor { get; set; }
     }
 }
+#endif
