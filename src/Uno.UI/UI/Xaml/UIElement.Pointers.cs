@@ -45,6 +45,7 @@ namespace Windows.UI.Xaml
 		{
 			var uiElement = typeof(UIElement);
 			VisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
+			FrameworkElement.IsEnabledProperty.GetMetadata(typeof(FrameworkElement)).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
 #if __WASM__
 			HitTestVisibilityProperty.GetMetadata(uiElement).MergePropertyChangedCallback(ClearPointersStateIfNeeded);
 #endif
@@ -110,8 +111,33 @@ namespace Windows.UI.Xaml
 
 		private static readonly PropertyChangedCallback ClearPointersStateIfNeeded = (DependencyObject sender, DependencyPropertyChangedEventArgs dp) =>
 		{
-			if (sender is UIElement elt
-				&& (elt.Visibility != Visibility.Visible || !elt.IsHitTestVisible))
+			// As the Visibility DP is not inherited, when a control becomes invisible we validate that if any
+			// of its children is capturing a pointer, and we release those captures.
+			// As the number of capture is usually really small, we assume that its more performant to walk the tree
+			// when the visibility changes instead of creating another coalesced DP.
+			if (dp.NewValue is Visibility visibility
+				&& visibility != Visibility.Visible
+				&& (_allCaptures?.Count ?? 0) != 0)
+			{
+				var capturesFromChildren = _allCaptures
+					.Values
+					.Where(capture => capture.Owner.GetParents().Contains(sender))
+					.ToList();
+
+				foreach (var capture in capturesFromChildren)
+				{
+					capture.Owner.Release(capture);
+				}
+			}
+
+			if (!(sender is UIElement elt))
+			{
+				return;
+			}
+
+			if (elt.Visibility != Visibility.Visible
+				|| !elt.IsHitTestVisible
+				|| (elt is FrameworkElement fwElt && !fwElt.IsEnabled))
 			{
 				elt.ReleasePointerCaptures();
 				elt.SetPressed(null, false, muteEvent: true);
@@ -492,7 +518,7 @@ namespace Windows.UI.Xaml
 		private static IDictionary<Pointer, PointerCapture> _allCaptures;
 		private List<Pointer> _localCaptures;
 
-		#region Capture public API
+		#region Capture public (and internal) API
 		public static DependencyProperty PointerCapturesProperty { get; } = DependencyProperty.Register(
 			"PointerCaptures",
 			typeof(IReadOnlyList<Pointer>),
