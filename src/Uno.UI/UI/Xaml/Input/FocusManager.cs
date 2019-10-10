@@ -1,12 +1,11 @@
-﻿
-using Windows.UI.Core;
-#if XAMARIN || __WASM__
+﻿#if XAMARIN || __WASM__
 using Windows.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.UI.Xaml.Controls;
 using Uno.Extensions;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 
 namespace Windows.UI.Xaml.Input
