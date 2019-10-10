@@ -622,7 +622,7 @@ namespace <#= mixin.NamespaceName #>
 			SetNeedsLayout();
 			OnLoadedPartial();
 
-			Loaded?.Invoke(this, RoutedEventArgs.Empty);
+			Loaded?.Invoke(this, new RoutedEventArgs(this));
 		}
 
 		partial void OnLoadedPartial();
@@ -635,7 +635,7 @@ namespace <#= mixin.NamespaceName #>
 
 			if (Unloaded != null)
 			{
-				Unloaded(this, RoutedEventArgs.Empty);
+				Unloaded(this, new RoutedEventArgs(this));
 			}
 		}
 
