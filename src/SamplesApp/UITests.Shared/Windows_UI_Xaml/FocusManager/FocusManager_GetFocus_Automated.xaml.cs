@@ -12,19 +12,12 @@ namespace Uno.UI.Samples.Content.UITests.FocusManager
 		{
 			this.InitializeComponent();
 
-			var myTimer = new DispatcherTimer();
-			myTimer.Interval = TimeSpan.FromSeconds(1);
-			myTimer.Tick += UpdateFocusedElement;
-			myTimer.Start();
+			Windows.UI.Xaml.Input.FocusManager.GotFocus += FocusManager_GotFocus;
 		}
 
-		private void UpdateFocusedElement(object sender, object e)
+		private void FocusManager_GotFocus(object sender, Windows.UI.Xaml.Input.FocusManagerGotFocusEventArgs e)
 		{
-			var myElement = Windows.UI.Xaml.Input.FocusManager.GetFocusedElement();
-			var myFrameworkElement = myElement as FrameworkElement;
-			var elementName = myFrameworkElement?.Name ?? "";
-
-			this.TxtCurrentFocused.Text = elementName;
+			this.TxtCurrentFocused.Text = (e.NewFocusedElement as FrameworkElement)?.Name ?? "<none>";
 		}
 	}
 }
