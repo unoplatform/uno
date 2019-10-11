@@ -1,6 +1,6 @@
 # Inspecting the runtime visual tree of an Uno app
 
-Often the first step in debugging a UI bug is to scrutinize the application's visual tree. The visual tree is derived from the app's layout defined in Xaml, but there's not a straightforward 1-to-1 mapping from Xaml to runtime visual tree, due to templating, view manipulation in code, etc. Also, almost by definition if you're getting a UI bug then there's a discrepancy between what you expect based on the Xaml and code and the behavior you're actually observing. Don't live in suspense – check the visual tree! 
+Often the first step in debugging a UI bug is to scrutinize the application's visual tree. The visual tree is derived from the app's layout defined in XAML, but there's not a straightforward 1-to-1 mapping from XAML to runtime visual tree, due to templating, view manipulation in code, etc. Also, by definition if you're getting a UI bug then there's a discrepancy between what you expect based on the XAML and code and the behavior you're actually observing. Don't live in suspense – check the visual tree! 
 
 Tools for inspecting the visual tree differ by platform. 
 
