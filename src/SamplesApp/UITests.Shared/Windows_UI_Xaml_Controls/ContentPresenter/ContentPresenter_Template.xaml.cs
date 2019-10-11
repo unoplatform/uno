@@ -18,12 +18,14 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.ContentPresenter
 {
-	[SampleControlInfoAttribute("ContentPresenter", "ContentPresenter_Template")]
+	[SampleControlInfo("ContentPresenter", "ContentPresenter_Template")]
 	public sealed partial class ContentPresenter_Template : UserControl
     {
         public ContentPresenter_Template()
         {
             this.InitializeComponent();
+
+            DataContext = nameof(DataContext);
         }
 
 		private void Button_Click(object sender, RoutedEventArgs e)

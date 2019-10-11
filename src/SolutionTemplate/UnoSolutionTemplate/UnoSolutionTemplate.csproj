@@ -104,7 +104,7 @@
     <None Include="Shared\App.xaml.cs" />
     <None Include="Shared\MainPage.xaml.cs" />
     <None Include="UWP\Properties\AssemblyInfo.cs" />
-    <None Include="Wasm\web.config" />
+    <None Include="Wasm\wwwroot\web.config" />
   </ItemGroup>
   <ItemGroup>
     <VSTemplate Include="UnoApp.vstemplate">

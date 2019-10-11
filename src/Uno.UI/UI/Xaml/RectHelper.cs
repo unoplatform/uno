@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml
 		/// Returns the areas of two specified Rect values that intersect, as a new Rect.
 		/// </summary>
 		/// <remarks>
-		/// Contrary to Rect.Intersect(), original target won't be modifed.
+		/// Contrary to Rect.Intersect(), original target won't be modified.
 		/// </remarks>
 		public static Rect Intersect(Rect target, Rect rect)
 		{
@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml
 		/// Creates a rectangle that is exactly large enough to contain the a specified rectangle and a specified point.
 		/// </summary>
 		/// <remarks>
-		/// Contrary to Rect.Union(), original target won't be modifed.
+		/// Contrary to Rect.Union(), original target won't be modified.
 		/// </remarks>
 		public static Rect Union(Rect target, Point point)
 		{
@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml
 		/// Creates a rectangle that is exactly large enough to contain the two specified rectangles.
 		/// </summary>
 		/// <remarks>
-		/// Contrary to Rect.Union(), original target won't be modifed.
+		/// Contrary to Rect.Union(), original target won't be modified.
 		/// </remarks>
 		public static Rect Union(Rect target, Rect rect)
 		{

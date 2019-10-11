@@ -1,6 +1,9 @@
 ﻿#if XAMARIN_IOS
 
+using CoreGraphics;
+using UIKit;
 using Uno.Disposables;
+using Uno.UI;
 using Uno.UI.Common;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -20,11 +23,22 @@ namespace Windows.UI.Xaml.Controls
 		{
 		}
 
+		protected override void InitializePopupPanel()
+		{
+			_popup.PopupPanel = new PickerFlyoutPopupPanel(this)
+			{
+				Visibility = Visibility.Collapsed,
+				Background = SolidColorBrushHelper.Transparent,
+				AutoresizingMask = UIViewAutoresizing.All,
+				Frame = new CGRect(CGPoint.Empty, ViewHelper.GetScreenSize())
+			};
+		}
+
 		/// <summary>
 		/// This method sets the Content property of the Flyout.
 		/// </summary>
 		/// <remarks>
-		/// Note that for performance reasons, we don't call it in the contructor. Instead, we wait for the popup to be opening.
+		/// Note that for performance reasons, we don't call it in the constructor. Instead, we wait for the popup to be opening.
 		/// The native UIDatePicker contained in the TimePickerSelector is known for being slow in general (https://bugzilla.xamarin.com/show_bug.cgi?id=49469).
 		/// Using this strategy means that a page containing a TimePicker will no longer be slowed down by this initialization during the page creation.
 		/// Instead, you'll see the delay when opening the TimePickerFlyout for the first time.

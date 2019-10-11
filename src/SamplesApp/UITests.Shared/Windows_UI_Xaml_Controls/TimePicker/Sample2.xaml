@@ -1,4 +1,4 @@
-﻿<Page x:Class="SamplesApp.Samples.TimePicker.Sample2"
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Sample2"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:local="using:ControlTests"
@@ -6,13 +6,13 @@
       xmlns:ios="http://nventive.com/ios"
       xmlns:controls="using:Uno.UI.Samples.Controls"
       mc:Ignorable="ios">
-	<Page.Resources>
+	<UserControl.Resources>
 		<ResourceDictionary>
 			<ResourceDictionary.MergedDictionaries>
 				<ResourceDictionary Source="Sample2_styles.xaml" />
 			</ResourceDictionary.MergedDictionaries>
 		</ResourceDictionary>
-	</Page.Resources>
+	</UserControl.Resources>
 
 	<controls:SampleControl SampleDescription="style:minimal flyout button - clock:12h - increment:5 - time:binding">
 		<controls:SampleControl.SampleContent>
@@ -30,6 +30,7 @@
                             Style="{StaticResource FlatButtonStyle}" />
 
 					<TimePicker Grid.Row="1"
+								x:Name="theTimePicker"
                                 Margin="15,10"
                                 Style="{StaticResource FlatTimePickerStyle}"
                                 ios:FlyoutPlacement="Full"
@@ -43,4 +44,4 @@
 			</DataTemplate>
 		</controls:SampleControl.SampleContent>
 	</controls:SampleControl>
-</Page>
+</UserControl>

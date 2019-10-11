@@ -15,6 +15,15 @@
   <assembly fullname="Uno">
     <type fullname="Windows.UI.Core.CoreDispatcher" />
     <type fullname="Windows.UI.Core.SystemNavigationManager" />
+    <type fullname="Windows.Devices.Sensors.Accelerometer">
+      <method name="DispatchReading" />
+    </type>
+    <type fullname="Windows.Devices.Sensors.Magnetometer">
+      <method name="DispatchReading" />
+    </type>
+    <type fullname="Windows.Devices.Sensors.Gyrometer">
+      <method name="DispatchReading" />
+    </type>
   </assembly>
   
   <assembly fullname="Uno.Foundation">

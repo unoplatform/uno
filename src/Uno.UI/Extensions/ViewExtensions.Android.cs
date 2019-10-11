@@ -45,16 +45,25 @@ namespace Uno.UI
 			return view.Parent != null;
 		}
 
+
 		/// <summary>
 		/// Return First parent of the view of specified T type.
 		/// </summary>
 		/// <typeparam name="T"></typeparam>
 		/// <param name="view"></param>
 		/// <returns>First parent of the view of specified T type.</returns>
-		public static T FindFirstParent<T>(this IViewParent view)
+		public static T FindFirstParent<T>(this IViewParent view) where T : class => FindFirstParentOfView<T>(view as View);
+
+		/// <summary>
+		/// Return First parent of the view of specified T type.
+		/// </summary>
+		/// <typeparam name="T"></typeparam>
+		/// <param name="view"></param>
+		/// <returns>First parent of the view of specified T type.</returns>
+		public static T FindFirstParentOfView<T>(this View childView)
 			where T : class
 		{
-			view = view?.Parent;
+			var view = childView?.Parent;
 
 			while (view != null)
 			{
@@ -272,7 +281,7 @@ namespace Uno.UI
 		/// </summary>
 		/// <typeparam name="T">Expected type of the searched child</typeparam>
 		/// <param name="view"></param>
-		/// <param name="selector">Aditional selector for the child</param>
+		/// <param name="selector">Additional selector for the child</param>
 		/// <param name="childLevelLimit">Defines the max depth, null if not limit (Should never be used)</param>
 		/// <param name="includeCurrent">Indicates if the current view should also be tested or not.</param>
 		/// <returns></returns>
@@ -305,6 +314,24 @@ namespace Uno.UI
 
 			return (T)view.EnumerateAllChildren(childSelector, maxDepth).FirstOrDefault();
 		}
+
+		/// <summary>
+		/// Add view to parent.
+		/// </summary>
+		/// <param name="parent">Parent view</param>
+		/// <param name="child">Child view to add</param>
+		public static void AddChild(this ViewGroup parent, View child)
+		{
+			// Remove from existing parent (for compatibility with other platforms).
+			(child.Parent as ViewGroup)?.RemoveView(child);
+
+			parent.AddView(child);
+		}
+
+		/// <summary>
+		/// Get the parent view in the visual tree. This may differ from the logical <see cref="FrameworkElement.Parent"/>.
+		/// </summary>
+		public static ViewGroup GetVisualTreeParent(this View child) => child?.Parent as ViewGroup;
 
 		/// <summary>
 		/// Removes a child view from the specified view, and disposes it if the specified view is the owner.
@@ -526,11 +553,18 @@ namespace Uno.UI
 
 			return sb.ToString();
 
-			void AppendView(View view)
+			StringBuilder AppendView(View innerView)
 			{
-				var name = (view as IFrameworkElement)?.Name;
-				var namePart = !name.IsNullOrEmpty() ? $"-'{name}'" : "";
-				sb.AppendLine($"{spacing}{(view == viewOfInterest ? "*" : "")}>{view.ToString()}{namePart}-({ViewHelper.PhysicalToLogicalPixels(view.Width)}x{ViewHelper.PhysicalToLogicalPixels(view.Height)})");
+				var name = (innerView as IFrameworkElement)?.Name;
+				var namePart = string.IsNullOrEmpty(name) ? "" : $"-'{name}'";
+
+				return sb
+						.Append(spacing)
+						.Append(innerView == viewOfInterest ? "*>" : ">")
+						.Append(innerView.ToString() + namePart)
+						.Append($"-({ViewHelper.PhysicalToLogicalPixels(innerView.Width)}x{ViewHelper.PhysicalToLogicalPixels(innerView.Height)})")
+						.Append($"  {innerView.Visibility}")
+						.AppendLine();
 			}
 		}
 

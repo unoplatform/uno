@@ -5,7 +5,7 @@ using Uno.UI.Samples.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.Animations
 {
-	[SampleControlInfoAttribute("Animations", "EasingDoubleKeyFrame_CompositeTransform")]
+	[SampleControlInfo("Animations", "EasingDoubleKeyFrame_CompositeTransform", ignoreInAutomatedTests: true)]
 	public sealed partial class EasingDoubleKeyFrame_CompositeTransform : UserControl
 	{
 		public EasingDoubleKeyFrame_CompositeTransform()

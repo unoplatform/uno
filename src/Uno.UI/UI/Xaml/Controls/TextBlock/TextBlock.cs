@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnLoaded()
 		{
-			base.OnLoaded();			
+			base.OnLoaded();
 			PointerPressed += OnPointerPressed;
 			PointerReleased += OnPointerReleased;
 			PointerCanceled += OnPointerCanceled;
@@ -612,7 +612,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			if (this.ReadLocalValue(TextProperty) == DependencyProperty.UnsetValue)
+			if (this.ReadLocalValue(TextProperty) is UnsetValue)
 			{
 				Inlines.Clear();
 				ClearTextPartial();
@@ -671,7 +671,7 @@ namespace Windows.UI.Xaml.Controls
 			var characterIndex = GetCharacterIndexAtPoint(point);
 			return GetHyperlinkAtCharacterIndex(characterIndex);
 		}
-		
+
 		private Hyperlink GetHyperlinkAtCharacterIndex(int characterIndex)
 		{
 			return _hyperlinks.FirstOrDefault(h => h.start <= characterIndex && h.end > characterIndex).hyperlink;

@@ -16,12 +16,21 @@ using Windows.Foundation;
 using Uno.UI;
 using System.Linq;
 using Windows.UI.ViewManagement;
+using Windows.UI.Xaml.Data;
 using Microsoft.Extensions.Logging;
 
-#if __IOS__
+using Uno.UI.DataBinding;
+#if __ANDROID__
+using Android.Views;
+using _View = Android.Views.View;
+#elif __IOS__
 using UIKit;
+using _View = UIKit.UIView;
 #elif __MACOS__
 using AppKit;
+using _View = AppKit.NSView;
+#else
+using _View = Windows.UI.Xaml.FrameworkElement;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -36,6 +45,11 @@ namespace Windows.UI.Xaml.Controls
 		private Border _popupBorder;
 		private ContentPresenter _contentPresenter;
 		private ContentPresenter _headerContentPresenter;
+
+		/// <summary>
+		/// The 'inline' parent view of the selected item within the dropdown list. This is only set if SelectedItem is a view type.
+		/// </summary>
+		private ManagedWeakReference _selectionParentInDropdown;
 
 		public ComboBox()
 		{
@@ -68,6 +82,40 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateHeaderVisibility();
 			UpdateContentPresenter();
+
+			if (_contentPresenter != null)
+			{
+				_contentPresenter.SetBinding(
+					ContentPresenter.ContentTemplateProperty,
+					new Binding(new PropertyPath("ItemTemplate"), null)
+					{
+						RelativeSource = RelativeSource.TemplatedParent
+					});
+				_contentPresenter.SetBinding(
+					ContentPresenter.ContentTemplateSelectorProperty,
+					new Binding(new PropertyPath("ItemTemplateSelector"), null)
+					{
+						RelativeSource = RelativeSource.TemplatedParent
+					});
+
+				_contentPresenter.DataContextChanged += (snd, evt) =>
+				{
+					// The ContentPresenter will automatically clear its local DataContext
+					// on first load.
+					//
+					// When there's no selection, this will cause this ContentPresenter to
+					// received the same DataContext as the ComboBox itself, which could
+					// lead to strange result or errors.
+					//
+					// See comments in ContentPresenter.ResetDataContextOnFirstLoad() method.
+					// Fixed in this PR: https://github.com/unoplatform/uno/pull/1465
+
+					if (evt.NewValue != null && SelectedItem == null)
+					{
+						_contentPresenter.DataContext = null; // Remove problematic inherited DataContext
+					}
+				};
+			}
 		}
 
 #if __ANDROID__
@@ -148,13 +196,13 @@ namespace Windows.UI.Xaml.Controls
 				{
 					// On Windows, all interactions involving the HeaderContentPresenter don't seem to affect the ComboBox.
 					// For example, hovering/pressing doesn't trigger the PointOver/Pressed visual states. Tapping on it doesn't open the drop down.
-					// This is true even if the Background of the root of ComboBox's template (which contains the HeaderContentPresenter) is set. 
+					// This is true even if the Background of the root of ComboBox's template (which contains the HeaderContentPresenter) is set.
 					// Interaction with any other part of the control (including the root) triggers the corresponding visual states and actions.
 					// It doesn't seem like the HeaderContentPresenter consumes (Handled = true) events because they are properly routed to the ComboBox.
 
 					// My guess is that ComboBox checks whether the OriginalSource of Pointer events is a child of HeaderContentPresenter.
 
-					// Because routed events are not implemented yet, the easy workaround is to prevent HeaderContentPresenter from being hit. 
+					// Because routed events are not implemented yet, the easy workaround is to prevent HeaderContentPresenter from being hit.
 					// This only works if the background of the root of ComboBox's template is null (which is the case by default).
 					_headerContentPresenter.IsHitTestVisible = false;
 				}
@@ -168,6 +216,11 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override void OnSelectedItemChanged(object oldSelectedItem, object selectedItem)
 		{
+			if (oldSelectedItem is _View view)
+			{
+				// Ensure previous SelectedItem is put back in the dropdown list if it's a view
+				RestoreSelectedItem(view);
+			}
 			base.OnSelectedItemChanged(oldSelectedItem, selectedItem);
 			UpdateContentPresenter();
 		}
@@ -182,8 +235,68 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_contentPresenter != null)
 			{
-				var item = SelectedItem is ComboBoxItem cbi ? cbi.Content : SelectedItem;
+				var item = GetSelectionContent();
+
+				var itemView = item as _View;
+
+				if (itemView != null)
+				{
+#if __ANDROID__
+					var comboBoxItem = itemView.FindFirstParentOfView<ComboBoxItem>();
+#else
+					var comboBoxItem = itemView.FindFirstParent<ComboBoxItem>();
+#endif
+					if (comboBoxItem != null)
+					{
+						// Keep track of the former parent, so we can put the item back when the dropdown is shown
+						_selectionParentInDropdown = (itemView.GetVisualTreeParent() as IWeakReferenceProvider)?.WeakReference;
+					}
+				}
+				else
+				{
+					_selectionParentInDropdown = null;
+				}
+
 				_contentPresenter.Content = item;
+
+				if (itemView != null && itemView.GetVisualTreeParent() != _contentPresenter)
+				{
+					// Item may have been put back in list, reattach it to _contentPresenter
+					_contentPresenter.AddChild(itemView);
+				}
+			}
+		}
+
+		private object GetSelectionContent()
+		{
+			return SelectedItem is ComboBoxItem cbi ? cbi.Content : SelectedItem;
+		}
+
+		private void RestoreSelectedItem()
+		{
+			var selection = GetSelectionContent();
+			if (selection is _View selectionView)
+			{
+				RestoreSelectedItem(selectionView);
+			}
+		}
+
+		/// <summary>
+		/// Restore SelectedItem (or former SelectedItem) view to its position in the dropdown list.
+		/// </summary>
+		private void RestoreSelectedItem(_View selectionView)
+		{
+			var dropdownParent = _selectionParentInDropdown?.Target as FrameworkElement;
+#if __ANDROID__
+			var comboBoxItem = dropdownParent?.FindFirstParentOfView<ComboBoxItem>();
+#else
+			var comboBoxItem = dropdownParent?.FindFirstParent<ComboBoxItem>();
+#endif
+
+			// Sanity check, ensure parent is still valid (ComboBoxItem may have been recycled)
+			if (comboBoxItem?.Content == selectionView && selectionView.GetVisualTreeParent() != dropdownParent)
+			{
+				dropdownParent.AddChild(selectionView);
 			}
 		}
 
@@ -200,6 +313,13 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsDropDownOpenChangedPartial(bool oldIsDropDownOpen, bool newIsDropDownOpen)
 		{
+			// This method will load the itempresenter children
+#if __ANDROID__
+			SetItemsPresenter((_popup.Child as ViewGroup).FindFirstChild<ItemsPresenter>());
+#elif __IOS__
+			SetItemsPresenter(_popup.Child.FindFirstChild<ItemsPresenter>());
+#endif
+
 			if (_popup != null)
 			{
 				_popup.IsOpen = newIsDropDownOpen;
@@ -208,10 +328,18 @@ namespace Windows.UI.Xaml.Controls
 			if (newIsDropDownOpen)
 			{
 				DropDownOpened?.Invoke(this, newIsDropDownOpen);
+
+				RestoreSelectedItem();
+
+				if (SelectedItem != null)
+				{
+					ScrollIntoView(SelectedItem);
+				}
 			}
 			else
 			{
 				DropDownClosed?.Invoke(this, newIsDropDownOpen);
+				UpdateContentPresenter();
 			}
 
 			UpdateDropDownState();
@@ -222,7 +350,7 @@ namespace Windows.UI.Xaml.Controls
 			IsDropDownOpen = true;
 		}
 
-		// This is required by some apps trying to emulate the native iPhone look for ComboBox. 
+		// This is required by some apps trying to emulate the native iPhone look for ComboBox.
 		// The standard popup layouter works like on Windows, and doesn't stretch to take the full size of the screen.
 		public bool IsPopupFullscreen { get; set; } = false;
 
@@ -372,7 +500,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					// On UWP, the popup always let 1 px free at the bottom
 					// Note: frame.Height is already at most visibleBounds.Height
-					frame.Y = visibleBounds.Height - frame.Height - 1; 
+					frame.Y = visibleBounds.Height - frame.Height - 1;
 				}
 
 				if (this.Log().IsEnabled(LogLevel.Debug))

@@ -6,6 +6,7 @@ using Uno.Extensions;
 using Windows.UI.Xaml.Media;
 using Uno.Logging;
 using Windows.Foundation;
+using System.Globalization;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -17,12 +18,20 @@ namespace Windows.UI.Xaml.Controls
 		{
 			IsMultiline = isMultiline;
 			_textBox = textBox;
-			SynchronizeTextBoxText();
+			SetTextNative(_textBox.Text);
 
 			SetStyle(
 				("overflow-x", "visible"),
 				("overflow-y", "visible")
 			);
+
+			if (FeatureConfiguration.TextBox.HideCaret)
+			{
+				SetStyle(
+					("caret-color", "transparent !important")
+				);
+			}
+
 			SetAttribute("tabindex", "0");
 		}
 
@@ -37,32 +46,34 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();
-
-			_textBox.TextChanged += OnTextChanged;
+			
 			HtmlInput += OnInput;
 
-			SynchronizeTextBoxText();
+			SetTextNative(_textBox.Text);
 		}
 
 		protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
-
-			_textBox.TextChanged -= OnTextChanged;
+			
 			HtmlInput -= OnInput;
 		}
 
-		private void SynchronizeTextBoxText()
-			=> OnTextChanged(_textBox, new TextChangedEventArgs());
-
 		private void OnInput(object sender, EventArgs eventArgs)
 		{
-			_textBox.Text = GetProperty("value");
+			var text = GetProperty("value");
+
+			var updatedText = _textBox.ProcessTextInput(text);
+
+			if (updatedText != text)
+			{
+				SetTextNative(updatedText);
+			}
 		}
 
-		private void OnTextChanged(object sender, TextChangedEventArgs e)
+		internal void SetTextNative(string text)
 		{
-			SetProperty("value", _textBox.Text);
+			SetProperty("value", text);
 		}
 
 		internal void SetIsPassword(bool isPassword)
@@ -79,22 +90,20 @@ namespace Windows.UI.Xaml.Controls
 			return MeasureView(availableSize);
 		}
 
-		protected override void OnIsEnabledChanged(bool oldValue, bool newValue)
+		internal void SetEnabled(bool newValue)
 		{
-			base.OnIsEnabledChanged(oldValue, newValue);
-
-			SetProperty("disabled", newValue ? "true" : "false");
+			SetProperty("disabled", newValue ? "false" : "true");
 		}
 
 		public int SelectionStart
 		{
-			get => int.Parse(GetProperty("selectionStart"));
+			get => int.TryParse(GetProperty("selectionStart"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : 0;
 			set => SetProperty("selectionStart", value.ToString());
 		}
 
 		public int SelectionEnd
 		{
-			get => int.Parse(GetProperty("selectionEnd"));
+			get => int.TryParse(GetProperty("selectionEnd"), NumberStyles.Integer, CultureInfo.InvariantCulture, out var result) ? result : 0;
 			set => SetProperty("selectionEnd", value.ToString());
 		}
 

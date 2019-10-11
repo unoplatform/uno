@@ -43,10 +43,8 @@ namespace Windows.UI.Xaml.Controls
 			// NativePanel may not exist if we're using a non-virtualizing ItemsPanel.
 			if (NativePanel != null)
 			{
-				NativePanel.XamlParent = this;
 				// Propagate the DataContext manually, since ItemsPanelRoot isn't really part of the visual tree
 				ItemsPanelRoot.SetValue(DataContextProperty, DataContext, DependencyPropertyValuePrecedences.Inheritance);
-				InitializeNativePanel();
 
 				if (ScrollViewer?.Style?.Precedence == DependencyPropertyValuePrecedences.ImplicitStyle)
 				{
@@ -75,12 +73,16 @@ namespace Windows.UI.Xaml.Controls
 			var virtualizingPanel = itemsPanel as IVirtualizingPanel;
 			if (virtualizingPanel != null)
 			{
-				var internalPanel = new NativeListViewBase();
 				var layouter = virtualizingPanel.GetLayouter();
 				PrepareNativeLayout(layouter);
-				internalPanel.NativeLayout = layouter;
-				internalPanel.BindToEquivalentProperty(virtualizingPanel, "Background");
-				return internalPanel;
+
+				var panel = new NativeListViewBase();
+				panel.XamlParent = this;
+				panel.NativeLayout = layouter;
+				panel.BindToEquivalentProperty(virtualizingPanel, "Background");
+				InitializeNativePanel(panel);
+
+				return panel;
 			}
 			else
 			{
@@ -89,7 +91,17 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		protected internal override void CleanUpInternalItemsPanel(_View panel)
+		{
+			if (panel is NativeListViewBase nativePanel)
+			{
+				CleanUpNativePanel(nativePanel);
+			}
+		}
+
 		private void TryLoadMoreItems() => TryLoadMoreItems(NativePanel.NativeLayout.LastVisibleIndex);
+
+		partial void CleanUpNativePanel(NativeListViewBase panel);
 	}
 }
 #endif

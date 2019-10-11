@@ -1,4 +1,4 @@
-﻿<Page x:Class="SamplesApp.Samples.DatePicker.DatePickerSample"
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePickerSample"
       xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
       xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
       xmlns:local="using:ControlTests"
@@ -14,14 +14,22 @@
 	<controls:SampleControl SampleDescription="Sample for Date Picker">
 		<controls:SampleControl.SampleContent>
 			<DataTemplate>
-				<Grid Background="White">
+				<StackPanel>
 					<DatePicker Grid.Row="1"
 								Margin="15,10"
 								HorizontalAlignment="Center"
 								VerticalAlignment="Top">
 					</DatePicker>
-				</Grid>
+
+					<!-- DatePicker is broken: https://github.com/unoplatform/uno/issues/188 -->
+					<!-- Using a Button with DatePickerFlyout to simulate a DatePicker -->
+					<Button Content="Open DatePickerFlyout">
+						<Button.Flyout>
+							<DatePickerFlyout />
+						</Button.Flyout>
+					</Button>
+				</StackPanel>
 			</DataTemplate>
 		</controls:SampleControl.SampleContent>
 	</controls:SampleControl>
-</Page>
+</UserControl>

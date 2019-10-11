@@ -17,11 +17,14 @@ jobs:
 
   - bash: |
       source /emsdk/emsdk_env.sh
-      msbuild /r /p:Configuration=Release /t:restore src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj
-      msbuild /p:Configuration=Release /p:TargetFramework=netstandard2.0 src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false
-      msbuild /r /p:Configuration=Release src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
+      msbuild /r /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false
 
     displayName: 'Build sample app'
+
+  - bash: |
+      msbuild /r /p:Configuration=Release src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
+
+    displayName: 'Build Tests'
 
   - task: CopyFiles@2
     displayName: 'Publish Wasm Site'
@@ -69,6 +72,8 @@ jobs:
         downloadPath: '$(build.sourcesdirectory)/build'
 
   - bash: |
+      set -euo pipefail
+      IFS=$'\n\t'
       cd $(build.sourcesdirectory)/build/wasm-uitest-binaries/site
       python server.py &
       cd $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm.UITests
@@ -82,7 +87,7 @@ jobs:
     inputs:
       SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm.UITests/out
       Contents: '**/*.*'
-      TargetFolder: $(build.artifactstagingdirectory)/screenshots
+      TargetFolder: $(build.artifactstagingdirectory)/screenshots/wasm
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
@@ -90,7 +95,7 @@ jobs:
   - task: PublishBuildArtifacts@1
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: wasm-uitests
+      ArtifactName: uitests-results
       ArtifactType: Container
 
 
@@ -126,19 +131,23 @@ jobs:
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/wasm-uitest-binaries/TestResult.xml'
+      testRunTitle: 'WebAssembly Test Run'
+      testResultsFormat: 'NUnit'
+      failTaskOnFailedTests: true
 
   - task: PublishBuildArtifacts@1
     condition: always()
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: wasm-uitests
+      ArtifactName: uitests-results
       ArtifactType: Container
 
-
 - job: Wasm_UITests_Compare
-  dependsOn: Wasm_UITests_Snap
+  dependsOn:
+    - Wasm_UITests_Snap
+    - Android_Tests
+    - Wasm_UITests_Automated
 
   pool:
     vmImage: 'vs2017-win2016'
@@ -166,12 +175,23 @@ jobs:
       createLogFile: false
 
   - script: |
-      src\Uno.UI.TestComparer\bin\Release\net461\Uno.UI.TestComparer.exe "azdo" "$(UITestsCompare_PAT)" "$(build.artifactstagingdirectory)" "%GIT_SOURCEBRANCH%" "%GIT_TARGETBRANCH%" "wasm-uitests" "$(Build.DefinitionName)" "$(System.TeamProject)" "$(System.TeamFoundationCollectionUri)" "$(Build.BuildId)" "3"
+      src\Uno.UI.TestComparer\bin\Release\net461\Uno.UI.TestComparer.exe "azdo" --pat="$(UITestsCompare_PAT)" --base-path="$(build.artifactstagingdirectory)" --source-branch="%GIT_SOURCEBRANCH%" --target-branch="%GIT_TARGETBRANCH%" --artifact-name="uitests-results" --artifact-inner-path="uitests-results\screenshots" --definition-name="$(Build.DefinitionName)" --project-name="$(System.TeamProject)" --server-uri="$(System.TeamFoundationCollectionUri)" --current-build="$(Build.BuildId)" --run-limit="3"
       
     env:
       GIT_TARGETBRANCH: "$(System.PullRequest.TargetBranch)"
       GIT_SOURCEBRANCH: "$(Build.SourceBranch)"
+
     displayName: 'Compare UI Tests screenshots'
+    condition: eq(variables['Build.Repository.Provider'], 'GitHub')
+
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testResultsFiles: '$(build.artifactstagingdirectory)\*.xml'
+      testRunTitle: 'Screenshots Compare Test Run'
+      testResultsFormat: 'NUnit'
+      failTaskOnFailedTests: false
 
   - task: PublishBuildArtifacts@1
     inputs:

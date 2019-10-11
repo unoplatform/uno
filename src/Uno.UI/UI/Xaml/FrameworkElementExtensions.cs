@@ -43,7 +43,6 @@ namespace Windows.UI.Xaml
 			return element;
 		}
 
-#if !NET461
 		public static T Binding<T>(this T element, string property, string propertyPath, object source, BindingMode mode) where T : DependencyObject
 		{
 			return element.Binding(property,
@@ -55,7 +54,6 @@ namespace Windows.UI.Xaml
 				}
 			);
 		}
-#endif
 
 		public static T Binding<T>(this T element, string property, BindingBase binding) where T : DependencyObject
 		{

@@ -9,7 +9,7 @@ Prerequisites:
     - `ASP.NET and Web Development`
     - `.NET Core cross-platform development`
     - `UWP Development`, install all recent UWP SDKs, starting from 10.0.14393 (or above or equal to `TargetPlatformVersion` line [in this file](/src/Uno.CrossTargetting.props))
-- Install all Android SDKs starting from 7.1 (or the Android versions [`TargetFrameworks` list used here](/src/Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.csproj))
+- Install (**Tools** / **Android** / **Android SDK manager**) all Android SDKs starting from 7.1 (or the Android versions `TargetFrameworks` [list used here](/src/Uno.UI.BindingHelper.Android/Uno.UI.BindingHelper.Android.csproj))
 
 ### Building Uno.UI for all available targets
 * Open the [Uno.UI.sln](/src/Uno.UI.sln)
@@ -24,7 +24,7 @@ To enable faster development, it's possible to use the [Visual Studio Solution F
 For instance, if you want to debug an iOS feature:
 - Make sure the `Uno.UI.sln` solution is not opened in Visual Studio.
 - Make a copy of the [src/crosstargeting_override.props.sample](src/crosstargeting_override.props.sample) file to `src/crosstargeting_override.props`
-- Uncomment the `UnoTargetFrameworkOverride` line and set its value to `xamarinios10`
+- In this new file, uncomment the `UnoTargetFrameworkOverride` line and set its value to `xamarinios10`
 - Open the `Uno.UI-iOS-only.slnf` solution filter (either via the VS folder view, or the Windows explorer)
 - Build
 
@@ -54,7 +54,7 @@ To debug Uno.UI inside of an existing project, the simplest way (until Microsoft
 * Change the version number to the package you installed at the first step
 * Build your solution.
 
-> Note: This overrides your local nuget cache, making the cache inconstent with the binaries you just built. 
+> Note: This overrides your local nuget cache, making the cache inconsistent with the binaries you just built. 
 To ensure that the file you have in your cache a correct, either clear the cache, or observe the properties of the `Uno.UI.dll` file, where the
 product version should contain a git CommitID.
 
@@ -69,16 +69,7 @@ well as provide a way to write UI Tests. See [this document](working-with-the-sa
 
 ## Using the Package Diff tool
 
-Uno uses a [Package Diff tool](https://github.com/nventive/Uno.PackageDiff) to ensure that binary breaking changes do not
-go unnoticed. Binary breaking changes are making packages depending on Uno.UI unuseable, as the IL Linker is crawling all
-the code of all assemblies.
-
-The package diff tool is run on every Pull Request, and generates a markdown document that can be found in the build artifacts. The
-CI will use the last published non-experimental package available on nuget.org, and compare it with the output of the current PR.
-
-In most cases, breaking changes are not acceptable, but in cases where there is no easy work around, the
-[build/PackageDiffIgnore.xml](build/PackageDiffIgnore.xml) can be used to make diff exclusions. Please refer
-to the documentation of the [Uno.PackageDiff tool](https://github.com/nventive/Uno.PackageDiff) for more information.
+Refer to the [guidelines for breaking changes](../contributing/guidelines/breaking-changes.md) document.
 
 ## Building Uno.UI for macOS using Visual Studio for Mac
 
@@ -112,12 +103,31 @@ The Source Generation tooling diagnostics can be enabled as follows:
 
 **Make sure to remove the `UnoSourceGeneratorUnsecureBinLogEnabled` property once done.**
 
+If ever the need arises to view the generated source code of a *failing* CI build, you can perform the following steps:
+
+1. In your local branch, locate the one of build yaml files (located in the root Uno folder):
+     - .azure-devops-android-tests.yml
+     - .azure-devops-macos.yml
+     - .azure-devops-wasm-uitests.yml
+    
+2. At the bottom of the yaml files, you'll find *Publish...* tasks, right above these tasks, copy/paste the following code to create a task which will copy all generated source files and put them in an artifact for you to download:
+
+       - bash: cp -r $(build.sourcesdirectory)<YourProjectDirectory>/obj/Release/g/XamlCodeGenerator/ $(build.artifactstagingdirectory)
+            condition: failed()
+            displayName: "Copy generated XAML code"
+
+Therefore, in the case of Uno, an example of <YourProjectDirectory> would be */src/SamplesApp/SamplesApp.Droid*.
+
+3. Once the build fails and completes, you can download the corresponding build artifact from the Artifacts menu to view your generated source files.
+
+**Remember that you should never submit this change, this is temporary and only for viewing generated code.**
+
 ## Troubleshooting Memory Issues 
 
-Uno provides a set of classes aimed at diagnosing memory issues related to leaking controls, wether it be from
+Uno provides a set of classes aimed at diagnosing memory issues related to leaking controls, whether it be from
 an Uno.UI issue or from an invalid pattern in user code.
 
-### Enable Memory intances counter
+### Enable Memory instances counter
 In your application, as early as possible in the initialization (generally in the App.xaml.cs
 constructor), add and call the following method:
 

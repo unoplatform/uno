@@ -6,12 +6,15 @@ using Android.App;
 using Java.Interop;
 using Uno.UI.Services;
 using Windows.ApplicationModel.Activation;
+using Windows.UI.StartScreen;
+using Android.Content;
 
 namespace Windows.UI.Xaml
 {
-    public class NativeApplication : Android.App.Application
+	public class NativeApplication : Android.App.Application
 	{
 		private readonly Application _app;
+		private Intent _lastHandledIntent;
 
 		public NativeApplication(Windows.UI.Xaml.Application app, IntPtr javaReference, Android.Runtime.JniHandleOwnership transfer)
 			: base(javaReference, transfer)
@@ -27,7 +30,17 @@ namespace Windows.UI.Xaml
 
 		private void OnActivityStarted(Activity activity)
 		{
-			_app.OnLaunched(new LaunchActivatedEventArgs());
+			_app.InitializationCompleted();
+			if (_lastHandledIntent != activity.Intent &&
+			    activity.Intent?.Extras?.ContainsKey(JumpListItem.ArgumentsExtraKey) == true)
+			{
+				_lastHandledIntent = activity.Intent;
+				_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, activity.Intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
+			}
+			else
+			{
+				_app.OnLaunched(new LaunchActivatedEventArgs());
+			}
 		}
 
 		/// <summary>
@@ -67,7 +80,6 @@ namespace Windows.UI.Xaml
 
 			public void OnActivityResumed(Android.App.Activity activity)
 			{
-
 			}
 
 			public void OnActivitySaveInstanceState(Android.App.Activity activity, Android.OS.Bundle outState)

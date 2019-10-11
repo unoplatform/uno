@@ -11,13 +11,94 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_appBar = appBar;
 		}
 
-		// TODO: Implement
-		public Rect ClipRect => new Rect(0, 0, double.PositiveInfinity, double.PositiveInfinity); // No clipping
-		public Thickness CompactRootMargin => new Thickness(0);
-		public double CompactVerticalDelta => -16; // Imported from UWP runtime value
-		public Thickness HiddenRootMargin => new Thickness(0);
-		public double HiddenVerticalDelta => -56; // Imported from UWP runtime value
-        public Thickness MinimalRootMargin => new Thickness(0);
-		public double MinimalVerticalDelta => -32; // Imported from UWP runtime value
-    }
+		public Rect ClipRect
+		{
+			get => (Rect)GetValue(ClipRectProperty);
+			internal set => SetValue(ClipRectProperty, value);
+		}
+
+		internal static readonly DependencyProperty ClipRectProperty =
+			DependencyProperty.Register(nameof(ClipRect), typeof(Rect), typeof(AppBarTemplateSettings), new PropertyMetadata(new Rect()));
+
+		public Thickness CompactRootMargin
+		{
+			get => (Thickness)GetValue(CompactRootMarginProperty);
+			internal set => SetValue(CompactRootMarginProperty, value);
+		}
+
+		internal static readonly DependencyProperty CompactRootMarginProperty =
+			DependencyProperty.Register(nameof(CompactRootMargin), typeof(Thickness), typeof(AppBarTemplateSettings), new PropertyMetadata(new Thickness(0)));
+
+		public double CompactVerticalDelta
+		{
+			get => (double)GetValue(CompactVerticalDeltaProperty);
+			internal set => SetValue(CompactVerticalDeltaProperty, value);
+		}
+
+		internal static readonly DependencyProperty CompactVerticalDeltaProperty =
+			DependencyProperty.Register("CompactVerticalDelta", typeof(double), typeof(AppBarTemplateSettings), new PropertyMetadata(0.0));
+
+		public Thickness HiddenRootMargin
+		{
+			get => (Thickness)GetValue(HiddenRootMarginProperty);
+			internal set => SetValue(HiddenRootMarginProperty, value);
+		}
+
+		public static readonly DependencyProperty HiddenRootMarginProperty =
+			DependencyProperty.Register("HiddenRootMargin", typeof(Thickness), typeof(AppBarTemplateSettings), new PropertyMetadata(new Thickness(0)));
+
+		public double HiddenVerticalDelta
+		{
+			get => (double)GetValue(HiddenVerticalDeltaProperty);
+			internal set => SetValue(HiddenVerticalDeltaProperty, value);
+		}
+
+		internal static readonly DependencyProperty HiddenVerticalDeltaProperty =
+			DependencyProperty.Register("HiddenVerticalDelta", typeof(double), typeof(AppBarTemplateSettings), new PropertyMetadata(0.0));
+
+		public Thickness MinimalRootMargin
+		{
+			get => (Thickness)GetValue(MinimalRootMarginProperty);
+			internal set => SetValue(MinimalRootMarginProperty, value);
+		}
+
+		internal static readonly DependencyProperty MinimalRootMarginProperty =
+			DependencyProperty.Register("MinimalRootMargin", typeof(Thickness), typeof(AppBarTemplateSettings), new PropertyMetadata(new Thickness(0)));
+
+		public double MinimalVerticalDelta
+		{
+			get => (double)GetValue(MinimalVerticalDeltaProperty);
+			internal set => SetValue(MinimalVerticalDeltaProperty, value);
+		}
+
+		internal static readonly DependencyProperty MinimalVerticalDeltaProperty =
+			DependencyProperty.Register("MinimalVerticalDelta", typeof(double), typeof(AppBarTemplateSettings), new PropertyMetadata(0.0));
+
+		public double NegativeCompactVerticalDelta
+		{
+			get => (double)GetValue(NegativeCompactVerticalDeltaProperty);
+			internal set => SetValue(NegativeCompactVerticalDeltaProperty, value);
+		}
+
+		internal static readonly DependencyProperty NegativeCompactVerticalDeltaProperty =
+			DependencyProperty.Register("NegativeCompactVerticalDelta", typeof(double), typeof(AppBarTemplateSettings), new PropertyMetadata(0.0));
+
+		public double NegativeMinimalVerticalDelta
+		{
+			get => (double)GetValue(NegativeMinimalVerticalDeltaProperty);
+			internal set => SetValue(NegativeMinimalVerticalDeltaProperty, value);
+		}
+
+		internal static readonly DependencyProperty NegativeMinimalVerticalDeltaProperty =
+			DependencyProperty.Register("NegativeMinimalVerticalDelta", typeof(double), typeof(AppBarTemplateSettings), new PropertyMetadata(0.0));
+
+		public double NegativeHiddenVerticalDelta
+		{
+			get => (double)GetValue(NegativeHiddenVerticalDeltaProperty);
+			internal set => SetValue(NegativeHiddenVerticalDeltaProperty, value);
+		}
+
+		internal static readonly DependencyProperty NegativeHiddenVerticalDeltaProperty =
+			DependencyProperty.Register("NegativeHiddenVerticalDelta", typeof(double), typeof(AppBarTemplateSettings), new PropertyMetadata(0.0));
+	}
 }

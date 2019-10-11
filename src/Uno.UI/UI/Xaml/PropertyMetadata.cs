@@ -30,6 +30,11 @@ namespace Windows.UI.Xaml
 		private bool _isCoerceValueCallbackSet;
 		private CoerceValueCallback _coerceValueCallback;
 
+		/// <summary>
+		/// Should <see cref="CoerceValueCallback"/> be raised even if value has not changed?
+		/// </summary>
+		internal bool CoerceWhenUnchanged { get; set; } = true;
+
 		internal PropertyMetadata() { }
 
 		public PropertyMetadata(

@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 {
-	[SampleControlInfoAttribute("DefaultCategory", "Grid_DataBound_ColumnRow_Definitions")]
+	[SampleControlInfo("DefaultCategory", "Grid_DataBound_ColumnRow_Definitions")]
 	public sealed partial class Grid_DataBound_ColumnRow_Definitions : UserControl
 	{
 		private Grid_DataBound_ColumnRow_Definitions_Context _context;

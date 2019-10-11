@@ -37,8 +37,14 @@ namespace Windows.UI.Xaml
 
 		public override void FinishedLaunching(UIApplication application)
 		{
+			InitializationCompleted();
 			OnLaunched(new LaunchActivatedEventArgs());
 		}
+
+		public override void PerformActionForShortcutItem(UIApplication application,
+			UIApplicationShortcutItem shortcutItem,
+			UIOperationHandler completionHandler) =>
+			OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, shortcutItem.Type));
 
 		public override void DidEnterBackground(UIApplication application)
 			=> OnSuspending();
@@ -65,19 +71,32 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-        public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations(UIApplication application, [Transient] UIWindow forWindow)
-        {
-            return DisplayInformation.AutoRotationPreferences.ToUIInterfaceOrientationMask();
-        }
+		public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations(UIApplication application, [Transient] UIWindow forWindow)
+		{
+			return DisplayInformation.AutoRotationPreferences.ToUIInterfaceOrientationMask();
+		}
 
-        /// <summary>
-        /// This method enables UI Tests to get the output path
-        /// of the current application, in the context of the simulator.
-        /// </summary>
-        /// <returns>The host path to get the container</returns>
-        [Export("getApplicationDataPath")]
+		/// <summary>
+		/// This method enables UI Tests to get the output path
+		/// of the current application, in the context of the simulator.
+		/// </summary>
+		/// <returns>The host path to get the container</returns>
+		[Export("getApplicationDataPath")]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public NSString GetWorkingFolder() => new NSString(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+
+		private ApplicationTheme GetDefaultSystemTheme()
+		{
+			//Ensure the current device is running 12.0 or higher, because `TraitCollection.UserInterfaceStyle` was introduced in iOS 12.0
+			if (UIDevice.CurrentDevice.CheckSystemVersion(12, 0))
+			{
+				if (UIScreen.MainScreen.TraitCollection.UserInterfaceStyle == UIUserInterfaceStyle.Dark)
+				{
+					return ApplicationTheme.Dark;
+				}
+			}
+			return ApplicationTheme.Light;
+		}
 	}
 }
 #endif

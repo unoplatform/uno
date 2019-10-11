@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml
 		/// management. Once default/implicit styles are implemented properly,
 		/// this should be removed.
 		///
-		/// See https://github.com/nventive/Uno/issues/119 for details.
+		/// See https://github.com/unoplatform/uno/issues/119 for details.
 		/// </remarks>
 		private bool _styleChanging = false;
 		private bool _defaultStyleApplied = false;
@@ -68,14 +68,14 @@ namespace Windows.UI.Xaml
 		internal bool RequiresMeasure { get; private set; }
 
 		/// <summary>
-		/// Sets whether constraint-based optimizations are used to limit redrawing of the entire visual tree on Android. This can be 
+		/// Sets whether constraint-based optimizations are used to limit redrawing of the entire visual tree on Android. This can be
 		/// globally set to false if it is causing visual errors (eg views not updating properly). Note: this can still be overridden by
 		/// the <see cref="AreDimensionsConstrained"/> flag set on individual elements.
 		/// </summary>
 		public static bool UseConstraintOptimizations { get; set; } = false;
 
 		/// <summary>
-		/// If manually set, this flag overrides the constraint-based reasoning for optimizing layout calls. This may be useful for 
+		/// If manually set, this flag overrides the constraint-based reasoning for optimizing layout calls. This may be useful for
 		/// example if there are custom views in the visual hierarchy that do not implement <see cref="ILayoutConstraints"/>.
 		/// </summary>
 		public bool? AreDimensionsConstrained { get; set; }
@@ -126,7 +126,7 @@ namespace Windows.UI.Xaml
 			return child != null ? MeasureElement(child, availableSize) : new Size(0, 0);
 		}
 
-		/// <summary> 
+		/// <summary>
 		/// Provides the behavior for the "Arrange" pass of layout. Classes can override this method to define their own "Arrange" pass behavior.
 		/// </summary>
 		/// <param name="finalSize">The final area within the parent that this object should use to arrange itself and its children. </param>
@@ -152,12 +152,12 @@ namespace Windows.UI.Xaml
 
 #if !__WASM__
 		/// <summary>
-		/// Updates the DesiredSize of a UIElement. Typically, objects that implement custom layout for their 
-		/// layout children call this method from their own MeasureOverride implementations to form a recursive layout update. 
+		/// Updates the DesiredSize of a UIElement. Typically, objects that implement custom layout for their
+		/// layout children call this method from their own MeasureOverride implementations to form a recursive layout update.
 		/// </summary>
 		/// <param name="availableSize">
-		/// The available space that a parent can allocate to a child object. A child object can request a larger 
-		/// space than what is available; the provided size might be accommodated if scrolling or other resize behavior is 
+		/// The available space that a parent can allocate to a child object. A child object can request a larger
+		/// space than what is available; the provided size might be accommodated if scrolling or other resize behavior is
 		/// possible in that particular container.
 		/// </param>
 		/// <returns>The measured size.</returns>
@@ -172,8 +172,8 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Positions child objects and determines a size for a UIElement. Parent objects that implement custom layout 
-		/// for their child elements should call this method from their layout override implementations to form a recursive layout update. 
+		/// Positions child objects and determines a size for a UIElement. Parent objects that implement custom layout
+		/// for their child elements should call this method from their layout override implementations to form a recursive layout update.
 		/// </summary>
 		/// <param name="finalRect">The final size that the parent computes for the child in layout, provided as a <see cref="Windows.Foundation.Rect"/> value.</param>
 		public override void Arrange(Rect finalRect)
@@ -190,8 +190,8 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="view">The view to be measured.</param>
 		/// <param name="availableSize">
-		/// The available space that a parent can allocate to a child object. A child object can request a larger 
-		/// space than what is available; the provided size might be accommodated if scrolling or other resize behavior is 
+		/// The available space that a parent can allocate to a child object. A child object can request a larger
+		/// space than what is available; the provided size might be accommodated if scrolling or other resize behavior is
 		/// possible in that particular container.
 		/// </param>
 		/// <returns>The measured size.</returns>
@@ -206,8 +206,8 @@ namespace Windows.UI.Xaml
 		}
 
 		/// <summary>
-		/// Positions an object inside the current element and determines a size for a UIElement. Parent objects that implement custom layout 
-		/// for their child elements should call this method from their layout override implementations to form a recursive layout update. 
+		/// Positions an object inside the current element and determines a size for a UIElement. Parent objects that implement custom layout
+		/// for their child elements should call this method from their layout override implementations to form a recursive layout update.
 		/// </summary>
 		/// <param name="finalRect">The final size that the parent computes for the child in layout, provided as a <see cref="Windows.Foundation.Rect"/> value.</param>
 		protected void ArrangeElement(View view, Rect finalRect)
@@ -317,8 +317,8 @@ namespace Windows.UI.Xaml
 		{
 			if (
 				!_defaultStyleApplied
-				&& Style.DefaultStyleForType(GetType()) is Style defaultStyle
-				&& this.GetPrecedenceSpecificValue(StyleProperty, Style.DefaultStylePrecedence) == DependencyProperty.UnsetValue
+				&& Style.DefaultStyleForType(GetDefaultStyleType()) is Style defaultStyle
+				&& this.GetPrecedenceSpecificValue(StyleProperty, Style.DefaultStylePrecedence) is UnsetValue
 			)
 			{
 				_defaultStyleApplied = true;
@@ -334,6 +334,12 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		/// <summary>
+		/// This method is kept internal until https://github.com/unoplatform/uno/issues/119 is addressed.
+		/// </summary>
+		/// <returns></returns>
+		internal virtual Type GetDefaultStyleType() => GetType();
+
 		protected virtual void OnApplyTemplate()
 		{
 		}
@@ -345,7 +351,7 @@ namespace Windows.UI.Xaml
 
 
 		/// <summary>
-		/// Determines whether a measure/arrange invalidation on this element requires elements higher in the tree to be invalidated, 
+		/// Determines whether a measure/arrange invalidation on this element requires elements higher in the tree to be invalidated,
 		/// by determining recursively whether this element's dimensions are already constrained.
 		/// </summary>
 		/// <returns>True if a request should be elevated, false if only this view needs to be rearranged.</returns>
@@ -512,7 +518,7 @@ namespace Windows.UI.Xaml
 							// If the view is recycled, don't process the other phases.
 							action?.Cancel();
 
-							// Reset to the original so the next datacontext assignment only 
+							// Reset to the original so the next datacontext assignment only
 							// impacts the least of the tree.
 							presenterRoot.ApplyBindingPhase(0);
 						}

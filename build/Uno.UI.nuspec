@@ -7,11 +7,12 @@
     <authors>nventive</authors>
     <owners>nventive</owners>
     <requireLicenseAcceptance>false</requireLicenseAcceptance>
-    <projectUrl>https://github.com/nventive/Uno</projectUrl>
+    <projectUrl>https://platform.uno/</projectUrl>
+    <license type="expression">Apache-2.0</license>
     <iconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</iconUrl>
-    <description>The iOS, Android and WebAssembly UWP bridge</description>
+    <description>Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today. Open source and professionally supported.</description>
     <copyright>Copyright (C) 2015-2019 nventive inc. - all rights reserved</copyright>
-    <repository type="git" url="https://github.com/nventive/Uno.git" />
+    <repository type="git" url="https://github.com/unoplatform/uno.git" />
 
     <dependencies>
 
@@ -20,9 +21,9 @@
         <dependency id="Xamarin.Android.Support.v4" version="26.1.0.1" />
         <dependency id="Xamarin.Android.Support.v7.AppCompat" version="26.1.0.1" />
         <dependency id="Xamarin.Android.Support.v7.RecyclerView" version="26.1.0.1" />
-        <dependency id="Uno.SourceGenerationTasks" version="1.31.0-dev.285" />
-        <dependency id="Uno.Core" version="1.28.0-dev.86" />
-        <dependency id="Uno.Core.Build" version="1.28.0-dev.86" />
+        <dependency id="Uno.SourceGenerationTasks" version="1.32.0-dev.297" />
+        <dependency id="Uno.Core" version="1.29.0-dev.93" />
+        <dependency id="Uno.Core.Build" version="1.29.0-dev.93" />
       </group>
 
       <!-- Android 9.0 -->
@@ -30,30 +31,30 @@
         <dependency id="Xamarin.Android.Support.v4" version="28.0.0.1" />
         <dependency id="Xamarin.Android.Support.v7.AppCompat" version="28.0.0.1" />
         <dependency id="Xamarin.Android.Support.v7.RecyclerView" version="28.0.0.1" />
-        <dependency id="Uno.SourceGenerationTasks" version="1.31.0-dev.285" />
-        <dependency id="Uno.Core" version="1.28.0-dev.86" />
-        <dependency id="Uno.Core.Build" version="1.28.0-dev.86" />
+        <dependency id="Uno.SourceGenerationTasks" version="1.32.0-dev.297" />
+        <dependency id="Uno.Core" version="1.29.0-dev.93" />
+        <dependency id="Uno.Core.Build" version="1.29.0-dev.93" />
       </group>
 
       <!-- iOS -->
       <group targetFramework="xamarinios10">
-        <dependency id="Uno.SourceGenerationTasks" version="1.31.0-dev.285" />
-        <dependency id="Uno.Core" version="1.28.0-dev.86" />
-        <dependency id="Uno.Core.Build" version="1.28.0-dev.86" />
+        <dependency id="Uno.SourceGenerationTasks" version="1.32.0-dev.297" />
+        <dependency id="Uno.Core" version="1.29.0-dev.93" />
+        <dependency id="Uno.Core.Build" version="1.29.0-dev.93" />
       </group>
 
       <!-- iOS -->
       <group targetFramework="xamarinmac20">
-        <dependency id="Uno.SourceGenerationTasks" version="1.31.0-dev.285" />
-        <dependency id="Uno.Core" version="1.28.0-dev.86" />
-        <dependency id="Uno.Core.Build" version="1.28.0-dev.86" />
+        <dependency id="Uno.SourceGenerationTasks" version="1.32.0-dev.297" />
+        <dependency id="Uno.Core" version="1.29.0-dev.93" />
+        <dependency id="Uno.Core.Build" version="1.29.0-dev.93" />
       </group>
 
       <!-- .NET Standard 2.0 -->
       <group targetFramework="netstandard2.0">
-        <dependency id="Uno.SourceGenerationTasks" version="1.31.0-dev.285" />
-        <dependency id="Uno.Core" version="1.28.0-dev.86" />
-        <dependency id="Uno.Core.Build" version="1.28.0-dev.86" />
+        <dependency id="Uno.SourceGenerationTasks" version="1.32.0-dev.297" />
+        <dependency id="Uno.Core" version="1.29.0-dev.93" />
+        <dependency id="Uno.Core.Build" version="1.29.0-dev.93" />
         <dependency id="System.Numerics.Vectors" version="4.5.0-preview1-26216-02" />
         <dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.3.0" />
         <dependency id="System.Memory" version="4.5.2" />
@@ -64,11 +65,11 @@
       <frameworkAssembly assemblyName="System.Numerics" targetFramework="MonoAndroid" />
       <frameworkAssembly assemblyName="System.Numerics.Vectors" targetFramework="MonoAndroid" />
       <frameworkAssembly assemblyName="System.Memory" targetFramework="MonoAndroid" />
-      
+
       <frameworkAssembly assemblyName="System.Numerics" targetFramework="xamarinios10" />
       <frameworkAssembly assemblyName="System.Numerics.Vectors" targetFramework="xamarinios10" />
       <frameworkAssembly assemblyName="System.Memory" targetFramework="xamarinios10" />
-      
+
       <frameworkAssembly assemblyName="System.Numerics" targetFramework="xamarinmac20" />
       <frameworkAssembly assemblyName="System.Numerics.Vectors" targetFramework="xamarinmac20" />
       <frameworkAssembly assemblyName="System.Memory" targetFramework="xamarinmac20" />

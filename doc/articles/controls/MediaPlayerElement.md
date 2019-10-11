@@ -45,7 +45,7 @@ See [MediaPlayerElement](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xam
 |						| MediaTransportControls compact mode					| X     | X  		|												|
 |						| Show/Hide MediaTransportControls commands  			| X     | X  		|												|
 |						| Enable/Disable MediaTransportControls commands  		| X     | X  		|												|
-|						| Skip forwoard											| X     | X  		|												|
+|						| Skip forward											| X     | X  		|												|
 |						| Skip backward											| X     | X  		|												|
 |						| Show buffering progress						  		| X     | X  		|												|
 |						| Zoom mode												| X     | X  		| 												|
@@ -76,7 +76,7 @@ __Note:__ Don't just copy/paste, but properly setup `NSAppTransportSecurity` as 
 
 ### Android
 
-Add the folowwing to your AndroidManifest.xml
+Add the following to your AndroidManifest.xml
 
 ```xml
 <!-- Required to play remote media -->

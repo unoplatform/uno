@@ -372,7 +372,16 @@
 
 			for (const name in properties) {
 				if (properties.hasOwnProperty(name)) {
-					(element as any)[name] = properties[name];
+					var setVal = properties[name];
+					if (setVal === "true") {
+						(element as any)[name] = true;
+					}
+					else if (setVal === "false") {
+						(element as any)[name] = false;
+					}
+					else {
+						(element as any)[name] = setVal;
+					}
 				}
 			}
 
@@ -388,7 +397,16 @@
 			const element = this.getView(params.HtmlId);
 
 			for (let i = 0; i < params.Pairs_Length; i += 2) {
-				(element as any)[params.Pairs[i]] = params.Pairs[i + 1];
+				var setVal = params.Pairs[i + 1];
+				if (setVal === "true") {
+					(element as any)[params.Pairs[i]] = true;
+				}
+				else if (setVal === "false") {
+					(element as any)[params.Pairs[i]] = false;
+				}
+				else {
+					(element as any)[params.Pairs[i]] = setVal;
+				}
 			}
 
 			return true;
@@ -1068,13 +1086,14 @@
 			const originalStyleCssText = elementStyle.cssText;
 			let parentElement: HTMLElement = null;
 			let parentElementWidthHeight: { width: string, height: string } = null;
+			let unconnectedRoot = null;
 
 			try {
 				if (!element.isConnected) {
 					// If the element is not connected to the DOM, we need it
 					// to be connected for the measure to provide a meaningful value.
 
-					let unconnectedRoot = element;
+					unconnectedRoot = element;
 					while (unconnectedRoot.parentElement) {
 						// Need to find the top most "unconnected" parent
 						// of this element
@@ -1153,6 +1172,10 @@
 				if (parentElement && parentElementWidthHeight) {
 					parentElement.style.width = parentElementWidthHeight.width;
 					parentElement.style.height = parentElementWidthHeight.height;
+				}
+
+				if (unconnectedRoot !== null) {
+					this.containerElement.removeChild(unconnectedRoot);
 				}
 			}
 		}

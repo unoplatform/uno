@@ -8,12 +8,23 @@
 	d:DesignHeight="300"
 	d:DesignWidth="400">
 
-  <StackPanel>
+	<StackPanel>
 
-	<TextBlock Text="You should see First, Second, Third, ..." />
-	<ComboBox ItemsSource="{Binding}"
-			  DisplayMemberPath="Name" />
+		<TextBlock Text="You should see First, Second, Third, ..." />
+		<ComboBox x:Name="comboBox"
+				  ItemsSource="{Binding}"
+				  DisplayMemberPath="Name" />
 
-  </StackPanel>
+		<TextBlock Text="Pick which field you want to see as DisplayMemberPath..." />
+		<StackPanel Orientation="Horizontal">
+			<ComboBox x:Name="selectMemberPath">
+				<ComboBoxItem>Id</ComboBoxItem>
+				<ComboBoxItem IsSelected="True">Name</ComboBoxItem>
+			</ComboBox>
+			<ComboBox x:Name="comboBox2"
+			          ItemsSource="{Binding}"
+			          DisplayMemberPath="{Binding SelectedValue.Content, ElementName=selectMemberPath}" />
+		</StackPanel>
+	</StackPanel>
 
 </UserControl>

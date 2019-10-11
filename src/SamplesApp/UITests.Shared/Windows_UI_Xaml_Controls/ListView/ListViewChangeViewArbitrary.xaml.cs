@@ -8,7 +8,7 @@ using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfoAttribute("ListView", "ListViewChangeViewArbitrary", typeof(ListViewViewModel), description: "ListView sample allowing ChangeView to be called with any value and animations enabled or disabled")]
+	[SampleControlInfo("ListView", "ListViewChangeViewArbitrary", typeof(ListViewViewModel), description: "ListView sample allowing ChangeView to be called with any value and animations enabled or disabled")]
 	public sealed partial class ListViewChangeViewArbitrary : UserControl
 	{
 		private readonly Queue<ScrollState> _scrollStates = new Queue<ScrollState>();

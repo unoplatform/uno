@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
 using Windows.Foundation;
+using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
@@ -61,6 +62,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 
 			Assert.AreEqual(1, SUT.OnItemsChangedCallCount);
 			Assert.AreEqual(1, onVectorChanged);
+			Assert.IsNotNull(SUT.ItemsChangedArgs as IVectorChangedEventArgs);
 
 			SUT.Items.RemoveAt(0);
 
@@ -144,22 +146,55 @@ namespace Uno.UI.Tests.ItemsControlTests
 				}),
 				ItemsSource = cvs
 			};
-			
+
 			Assert.AreEqual(0, count);
 
-			cvs.Source = new [] { 42 };
+			cvs.Source = new[] { 42 };
 
 			Assert.AreEqual(1, count);
+		}
+
+		[TestMethod]
+		public void When_ObservableVectorChanged()
+		{
+			var count = 0;
+			var panel = new StackPanel();
+
+			var source = new ObservableVector<int>() { 1, 2, 3 };
+
+			var SUT = new ItemsControl()
+			{
+				ItemsPanelRoot = panel,
+				InternalItemsPanelRoot = panel,
+				ItemTemplate = new DataTemplate(() =>
+				{
+					count++;
+					return new Border();
+				})
+			};
+
+			Assert.AreEqual(0, count);
+
+			SUT.ItemsSource = source;
+			Assert.AreEqual(3, count);
+
+			source.Add(4);
+			Assert.AreEqual(7, count);
+
+			source.Remove(1);
+			Assert.AreEqual(13, count);
 		}
 	}
 
 	public class MyItemsControl : ItemsControl
 	{
 		public int OnItemsChangedCallCount { get; private set; }
+		public object ItemsChangedArgs { get; private set; }
 
 		protected override void OnItemsChanged(object e)
 		{
 			OnItemsChangedCallCount++;
+			ItemsChangedArgs = e;
 			base.OnItemsChanged(e);
 		}
 	}

@@ -1,5 +1,6 @@
 ﻿using NUnit.Framework;
 using SamplesApp.UITests;
+using SamplesApp.UITests.TestFramework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -14,6 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 	public partial class Button_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		public void Button_IsOpacity_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.ButtonTestsControl.Button_Opacity_Automated");
@@ -23,7 +25,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			var valueOfOpacity = _app.Marked("ValueOfOpacity");
 			var applyOpacityButton = _app.Marked("ApplyOpacityButton");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("0", totalClicks.GetDependencyPropertyValue("Text")?.ToString());
 			Assert.AreEqual("1", valueOfOpacity.GetDependencyPropertyValue("Text")?.ToString());
 

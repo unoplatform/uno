@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml
 		/*
 		 * Note: When we change the Interval on a timer while it's running, the new delay is applied immediately.
 		 * This means that :
-		 *  - if the new Interval is lower that delay since the last Tick, a Tick will occurs immediatly
+		 *  - if the new Interval is lower that delay since the last Tick, a Tick will occurs immediately
 		 *  - if the new Interval is greater, next Tick will occur after the end of the new Interval.
 		 */
 		private void Restart(TimeSpan interval)

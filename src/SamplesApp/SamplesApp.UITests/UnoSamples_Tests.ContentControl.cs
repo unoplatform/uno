@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -13,15 +14,16 @@ namespace SamplesApp.UITests
 	public partial class UnoSamples_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		public void ContentPresenter_Template()
 		{
 			Run("Uno.UI.Samples.Content.UITests.ContentPresenter.ContentPresenter_Template");
 
 
 			var tb1 = _app.Marked("innerText");
-			Assert.AreEqual("ContentPresenter:  SampleControl.Presentation.SampleChooserViewModel", tb1.GetDependencyPropertyValue("Text").ToString());
+			Assert.AreEqual("ContentPresenter:  DataContext", tb1.GetDependencyPropertyValue("Text").ToString());
 			var tb2 = _app.Marked("innerText2");
-			Assert.AreEqual("ContentControl:  SampleControl.Presentation.SampleChooserViewModel", tb2.GetDependencyPropertyValue("Text").ToString());
+			Assert.AreEqual("ContentControl:  DataContext", tb2.GetDependencyPropertyValue("Text").ToString());
 
 			_app.Tap(c => c.Text("Click me"));
 
@@ -37,6 +39,7 @@ namespace SamplesApp.UITests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void ContentPresenter_Changing_ContentTemplate()
 		{
 			Run("Uno.UI.Samples.Content.UITests.ContentPresenter.ContentPresenter_Changing_ContentTemplate");
@@ -50,6 +53,7 @@ namespace SamplesApp.UITests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void ContentControl_Changing_ContentTemplate()
 		{
 			Run("Uno.UI.Samples.Content.UITests.ContentControlTestsControl.ContentControl_Changing_ContentTemplate");

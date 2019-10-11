@@ -40,6 +40,6 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.WebView
 			}
 		}
 
-		public ICommand GoToNextWebSource => CreateCommand(GoNextLink);
+		public ICommand GoToNextWebSource => GetOrCreateCommand(GoNextLink);
 	}
 }

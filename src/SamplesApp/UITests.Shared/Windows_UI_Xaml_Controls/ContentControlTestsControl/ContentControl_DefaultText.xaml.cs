@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 {
-	[SampleControlInfoAttribute("ContentControlTestsControl", "ContentControl_DefaultText")]
+	[SampleControlInfo("ContentControlTestsControl", "ContentControl_DefaultText")]
 	public sealed partial class ContentControl_DefaultText : UserControl
     {
         public ContentControl_DefaultText()

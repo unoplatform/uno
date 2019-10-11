@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override ContentControl GetGroupHeaderContainer(object groupHeader)
 		{
-			return new GridViewHeaderItem();
+			return new GridViewHeaderItem() { IsGeneratedContainer = true };
 		}
 	}
 }

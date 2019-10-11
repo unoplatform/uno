@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 
 			About the PatchInvalidFinalState:
 				On iOS for some strange reasons, the burger menu may not complete its open/close animation,
-				but instead either does not appear at all (when opened), either stays partialy visible (when closed).
+				but instead either does not appear at all (when opened), either stays partially visible (when closed).
 				This seems to be related to the fact that  animations of SplitView are altering the Grid.Column and the Visibility 
 				of some controls.
 				Usually it will become fully visible/hidden when a rendering cycle occurs, but this causes

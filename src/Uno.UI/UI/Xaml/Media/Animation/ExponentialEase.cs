@@ -4,24 +4,18 @@ using System;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-	public  partial class ExponentialEase
+	public partial class ExponentialEase : EasingFunctionBase
 	{
-		public  double Exponent
+		public double Exponent
 		{
-			get
-			{
-				return (double)this.GetValue(ExponentProperty);
-			}
-			set
-			{
-				this.SetValue(ExponentProperty, value);
-			}
+			get => (double)this.GetValue(ExponentProperty);
+			set => this.SetValue(ExponentProperty, value);
 		}
 
-		public static global::Windows.UI.Xaml.DependencyProperty ExponentProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Exponent", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Media.Animation.ExponentialEase), 
+		public static DependencyProperty ExponentProperty { get; } =
+			DependencyProperty.Register(
+			"Exponent", typeof(double),
+			typeof(global::Windows.UI.Xaml.Media.Animation.ExponentialEase),
 			new FrameworkPropertyMetadata(
 				defaultValue: 1.0,
 				propertyChangedCallback: (s, e) => (s as ExponentialEase)?.OnExponentChanged((double)e.OldValue, (double)e.NewValue)
@@ -35,7 +29,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		partial void OnExponentChangedPartial(double oldValue, double newValue);
 
-		public ExponentialEase() 
+		public ExponentialEase()
 		{
 		}
 

@@ -2,7 +2,7 @@
 
 ## Pre-requisites
 
-* Visual Studio 2017 15.5 or later, with :
+* [**Visual Studio 2017 15.5 or later**](https://visualstudio.microsoft.com/), with :
 	* Xamarin component, with the iOS Remote Simulator installed
 	* A working Mac with Visual Studio for Mac, XCode 8.2 or later installed
 	* The google Android x86 emulators
@@ -11,7 +11,7 @@ Visual Studio for Mac is supported, but the editing capabilities are currently l
 
 ## Create a new project
 
-Follow the instructions in the [Getting Started guide](get-started.md) to use the Uno app template to create a new app in Visual Studio. See the [Uno.Quickstart](https://github.com/nventive/Uno.QuickStart) repository for a simple example of a 'Hello World' application.
+Follow the instructions in the [Getting Started guide](get-started.md) to use the Uno app template to create a new app in Visual Studio. See the [Uno.Quickstart](https://github.com/unoplatform/uno.QuickStart) repository for a simple example of a 'Hello World' application.
 
 ## General guidelines for developing with Uno.UI
 
@@ -26,11 +26,11 @@ abstracting the implementation using a common interface.
 * A platform-specific code file **should have an appropriate suffix** (.android.cs, .ios.cs, .uwp.cs, .xamarin.cs, ...)
 * Uno.UI is not a perfect implementation of UWP's XAML, which means that there will be compatibility issues. When you 
 encounter one, a few approaches can be taken:
- 1. **Always [report the issue](https://github.com/nventive/Uno/issues) to the Uno.UI maintainers**. This may be a known issue, for which there may be known 
+ 1. **Always [report the issue](https://github.com/unoplatform/uno/issues) to the Uno.UI maintainers**. This may be a known issue, for which there may be known 
     workarounds or guidance on how to handle the issue.
  1. **Try to find a UWP-compatible workaround**, possibly non-breaking, meaning that the added Xaml produces the
     same behavior for all platforms, even if it does not conform to the expected UWP behavior.
- 1. **Make the Xaml code conditional to Uno.UI**, using xml namespaces. Note that using 
+ 1. **Make the Xaml code conditional to Uno.UI**, using [xml namespaces](platform-specific-xaml.md). Note that using 
     this technique exposes the app's code to breaking changes.
 
 ## Bootstrapping Uno.UI
@@ -73,7 +73,7 @@ located in the **MyApp.[iOS|Android]\Obj\[Platform]** folder.
 You may see those files in Visual Studio by selecting this project in the Solution Explorer, then click
 the **Show all Files** icon at the top.
 
-If you notice an issue, or an error in the commented code of the generated file, you may need to alter your Xaml.
+If you notice an issue, or an error in the commented code of the generated file, you may need to alter your Xaml file.
 
 ## Configure the manifest for the WebAssembly head
 In your WASM head, create a folder named `WasmScripts`, with a file containing the Javascript code below
@@ -92,84 +92,13 @@ var UnoAppManifest = {
 ```
 
 The properties are :
-* **splashScreenImage**: defines the image that will be centered on the window during the application's loading time
-* **splashScreenColor**: defines the background color of the splash screen
-* **displayName**: defines the default name of the application in the browser's window title
+* **splashScreenImage**: defines the image that will be centered on the window during the application's loading time.
+* **splashScreenColor**: defines the background color of the splash screen.
+* **displayName**: defines the default name of the application in the browser's window title.
 
 ## Supporting multiple platforms in Xaml files
 
-The Uno.UI Xaml parser has the ability to manage specific namespaces, giving the ability to ignore or enable specific Xaml nodes and attributes.
-
-By default, these namespaces are supported :
-
-*   xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-*   xmlns:ios="http://uno.ui/ios"
-*   xmlns:android="http://uno.ui/android"
-*   xmlns:xamarin="http://uno.ui/xamarin"
-*   xmlns:wasm="http://uno.ui/wasm"
-
-These namespaces are to be declared on top of each Xaml file that will be included in the final binary.
-
-Also, the following ignorables must be declared :
-
-```xml
-    mc:Ignorable="d ios android xamarin"
-```
-
-This list is mandatory for the Windows Xaml parser to ignore non-Windows markup.
-
-On non-Windows platforms, the Uno Platform will selectively remove or add the appropriate namespaces so that only the relevant markup is processed.
-
-For instance, on Xamarin.iOS, the Ignorable attribute will automatically be set to:
-
-```xml
-    mc:Ignorable="d win android"
-```
-
-which will make the `win` and `android` namespaces ignored by the Uno.UI parser.
-
-Similarly, on Xamarin.Android, the Ignorable attribute will automatically be set to : 
-
-```xml
-    mc:Ignorable="d win ios"
-```
-
-which will make the win and ios namespaces ignored by the Uno.UI parser.
-
-In the Xaml file, it is then possible to write the following :
-
-```xml
-    <ItemsPanelTemplate>  
-          <xamarin:WrapPanel ItemWidth="100" Name="WrapPanelElement_SimpleHorizontal" />  
-          <win:WrapGrid ItemWidth="100" Name="WrapGridElement" />  
-    </ItemsPanelTemplate>
-```
-
-Where depending on the platform, a different panel will be selected at compile time.
-
-Here's a complete file sample :
-
-```xml
-    <UserControl
-        x:Class="GenericApp.Views.Content.UITests.MyControl"
-        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:ios="http://nventive.com/ios"
-        xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-        xmlns:android="http://nventive.com/android"
-        mc:Ignorable="d ios android"
-        d:DesignHeight="300"
-        d:DesignWidth="400">
-    
-       <ItemsPanelTemplate>  
-          <xamarin:WrapPanel ItemWidth="100" Name="WrapPanelElement_SimpleHorizontal" />  
-          <win:WrapGrid ItemWidth="100" Name="WrapGridElement" />  
-       </ItemsPanelTemplate>  
-    
-    </UserControl>
-```
+See [here for a detailed guide to authoring platform-specific XAML code](platform-specific-xaml.md).
 
 ## Uno.UI Layout Behavior
 
@@ -177,15 +106,13 @@ The layout behavior is the notion of applying margins, paddings and alignments f
 
 The Uno.UI layout engine on Android and iOS is applied by a parent to its children. This means that if a control has an alignment or a margin set, if it is not child of a FrameworkElement (ie it's the child of a non-Uno view), those properties will be ignored, and the control will stretch within its parent's available space.
 
-This behavior is is a direct consequence of the ability to mix native and Uno.UI controls.
+This behavior is a direct consequence of the ability to mix native and Uno.UI controls.
 
 ## Dependency Properties
 
-Uno.UI allows the sharing of [Dependency Property](https://msdn.microsoft.com/en-us/library/ms752914%28v=vs.110%29.aspx) declaration and 
-code between Windows and Xamarin based platforms.
+Uno.UI allows the sharing of [Dependency Property](https://msdn.microsoft.com/en-us/library/ms752914%28v=vs.110%29.aspx) declaration and code between Windows and Xamarin based platforms.
 
-Declaring a dependency property in Uno UI requires a class to implement the  
-interface `DependencyProperty`, to gain access to the GetValue and SetValue methods.
+Declaring a dependency property in Uno UI requires a class to implement the interface `DependencyObject`, to gain access to the GetValue and SetValue methods.
 
 Here is an example of such a declaration:
 
@@ -274,8 +201,8 @@ Uno.UI also generates a nested class named StaticResources in all non-ResourceDi
 Uno.UI supports the [authoring of styles](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.style.aspx).
 
 For many controls in Uno, two prepackaged styles are provided:
-* NativeDefault[Control] which is customized to match the UI guidelines of the target platform
-* XamlDefault[Control] which is the default style of controls on Windows
+* NativeDefault[Control] which is customized to match the UI guidelines of the target platform.
+* XamlDefault[Control] which is the default style of controls on Windows.
 
 On WASM, the NativeDefault[Control] styles are currently only aliases to the XamlDefault[Control], for compatibility with other platforms.
 
@@ -322,7 +249,7 @@ For more information, see the [HyperLinkButton](https://msdn.microsoft.com/en-us
 
 The RadioButton control is implemented by default using a ControlTemplate that contains a bindable native CheckBox, that binds the Content property as a string, IsChecked as a boolean, and propagates the CanExecute of a databound command.
 
-For more information, see the [RadioButton clas](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.radiobutton.aspx).
+For more information, see the [RadioButton class](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.radiobutton.aspx).
 
 ### ComboBox
 
@@ -348,7 +275,7 @@ For more information, see [GridView class](https://docs.microsoft.com/en-us/uwp/
 
 ### Image
 
-For more information, see [Image class](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.image.aspx).
+For more information, see [Image class](https://msdn.microsoft.com/en-us/library/window/apps/windows.ui.xaml.controls.image.aspx).
 
 
 ### ImageSource
@@ -358,8 +285,7 @@ Image handling works 'out of the box' on iOS and WebAssembly without further con
 On Android, to handle the loading of images from a remote url, the Image control has to be provided a 
 ImageSource.DefaultImageLoader such as the [Android Universal Image Loader](https://github.com/nostra13/Android-Universal-Image-Loader).
 
-This package is installed by default when using the [Uno Cross-Platform solution templates](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin). If not using the solution template, you can install the [nventive.UniversalImageLoader](https://www.nuget.org/packages/nventive.UniversalImageLoader/) NuGet package and call the following code
-from your application's App constructor:
+This package is installed by default when using the [Uno Cross-Platform solution templates](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin). If not using the solution template, you can install the [nventive.UniversalImageLoader](https://www.nuget.org/packages/nventive.UniversalImageLoader/) NuGet package and call the following code from your application's App constructor:
 
 ```csharp
 private void ConfigureUniversalImageLoader()
@@ -467,9 +393,7 @@ Adding a custom font is done through the use of WebFonts, using a data-URI:
 }
 ```
 
-This type of declaration is required to avoid measuring errors if the font requested
-by a `TextBlock` or a `FontIcon` needs to be downloaded first. Specifying it using a
-data-URI ensures the font is readily available.
+This type of declaration is required to avoid measuring errors if the font requested by a `TextBlock` or a `FontIcon` needs to be downloaded first. Specifying it using a data-URI ensures the font is readily available.
 
 #### Custom Fonts Notes
 Please note that some custom fonts need the FontFamily and FontWeight properties to be set at the same time in order to work properly on TextBlocks, Runs and for styles Setters.

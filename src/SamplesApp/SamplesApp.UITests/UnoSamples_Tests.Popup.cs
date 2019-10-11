@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests;
+using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -16,6 +17,7 @@ namespace SamplesApp.UITests
 	{
 
 		[Test]
+		[AutoRetry]
 		[Ignore("TODO Popups are not removed properly")]
 		public void Popup_Dismissable_Validation()
 		{
@@ -28,7 +30,7 @@ namespace SamplesApp.UITests
 			var DismissablePopup = _app.Marked("DismissablePopup");
 			var PopupText = _app.Marked("DismissablePopupText");
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.Screenshot("Popup - Dismissable - 1 - InitialState");
 			Assert.AreEqual(null, PopupText.GetDependencyPropertyValue("Text")?.ToString());
 
@@ -48,6 +50,7 @@ namespace SamplesApp.UITests
 		}
 
 		[Test]
+		[AutoRetry]
 		[Ignore("TODO Popups are not removed properly")]
 		public void Popup_NonDismissable_Validation()
 		{
@@ -60,7 +63,7 @@ namespace SamplesApp.UITests
 			var NonDismissablePopup = _app.Marked("NonDismissablePopup");
 			var PopupText = _app.Marked("NonDismissablePopupText");
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.Screenshot("Popup - Non Dismissable - 1 - InitialState");
 			Assert.AreEqual(null, PopupText.GetDependencyPropertyValue("Text")?.ToString());
 
@@ -81,6 +84,7 @@ namespace SamplesApp.UITests
 		}
 
 		[Test]
+		[AutoRetry]
 		[Ignore("TODO Popups are not removed properly")]
 		public void Popup_NoFixedHeight_Validation()
 		{
@@ -93,7 +97,7 @@ namespace SamplesApp.UITests
 			var NoFixedHeightPopup = _app.Marked("NoFixedHeightPopup");
 			var PopupText = _app.Marked("NoFixedHeightPopupText");
 
-			// Assert inital state 
+			// Assert initial state 
 			_app.Screenshot("Popup - No Fixed Height - 1 - InitialState");
 			Assert.AreEqual(null, PopupText.GetDependencyPropertyValue("Text")?.ToString());
 

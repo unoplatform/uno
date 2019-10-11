@@ -43,6 +43,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void InitializeControl()
 		{
+			SetDefaultForeground();
 			SubscribeToOverridenRoutedEvents();
 			OnIsFocusableChanged();
 		}
@@ -53,6 +54,17 @@ namespace Windows.UI.Xaml.Controls
 		protected object DefaultStyleKey { get; set; }
 
 		protected override bool IsSimpleLayout => true;
+
+
+		private void SetDefaultForeground()
+		{
+			//override the default value from dependency property based on application theme
+			//in the future, this will need to respond to the inherited RequestedTheme and its changes
+			this.SetValue(ForegroundProperty,
+				Application.Current == null || Application.Current.RequestedTheme == ApplicationTheme.Light
+					? SolidColorBrushHelper.Black
+					: SolidColorBrushHelper.White, DependencyPropertyValuePrecedences.DefaultValue);
+		}
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -145,7 +157,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SubscribeToOverridenRoutedEvents()
 		{
-			// Overriden Events are registered from constructor to ensure they are
+			// Overridden Events are registered from constructor to ensure they are
 			// registered first in event handlers.
 			// https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.control.onpointerpressed#remarks
 

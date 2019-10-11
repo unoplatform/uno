@@ -5,11 +5,12 @@ using Windows.Graphics.Display;
 using UIKit;
 using Windows.UI.Xaml.Media;
 using Uno.Extensions;
+using Windows.Devices.Sensors;
 
 namespace Uno.UI.Controls
 {
-    public class RootViewController : UINavigationController, IRotationAwareViewController
-    {
+	public class RootViewController : UINavigationController, IRotationAwareViewController
+	{
 		internal event Action VisibleBoundsChanged;
 
 		public RootViewController()
@@ -33,6 +34,15 @@ namespace Uno.UI.Controls
 		public override UIInterfaceOrientationMask GetSupportedInterfaceOrientations()
 		{
 			return DisplayInformation.AutoRotationPreferences.ToUIInterfaceOrientationMask();
+		}
+
+		public override void MotionEnded(UIEventSubtype motion, UIEvent evt)
+		{
+			if (motion == UIEventSubtype.MotionShake)
+			{
+				Accelerometer.HandleShake();
+			}
+			base.MotionEnded(motion, evt);
 		}
 
 		public bool CanAutorotate { get; set; } = true;

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using CoreMotion;
 using Foundation;
+using Uno.Devices.Sensors.Helpers;
 
 namespace Windows.Devices.Sensors
 {
@@ -39,8 +40,7 @@ namespace Windows.Devices.Sensors
 		{
 			var barometerReading = new BarometerReading(
 				KPaToHPa(data.Pressure.DoubleValue),
-				DateTimeOffset.Now
-				);
+				SensorHelpers.TimestampToDateTimeOffset(data.Timestamp));
 			_readingChanged?.Invoke(
 				this,
 				new BarometerReadingChangedEventArgs(barometerReading));

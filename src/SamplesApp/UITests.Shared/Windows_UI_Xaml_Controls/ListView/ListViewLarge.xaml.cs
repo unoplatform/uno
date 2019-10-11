@@ -4,7 +4,7 @@ using SamplesApp.Windows_UI_Xaml_Controls.Models;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfoAttribute("ListView", "ListViewLarge", typeof(ListViewViewModel))]
+	[SampleControlInfo("ListView", "ListViewLarge", typeof(ListViewViewModel))]
 	public sealed partial class ListViewLarge : UserControl
 	{
 		public ListViewLarge()

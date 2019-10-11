@@ -157,7 +157,12 @@ namespace Windows.UI.Xaml.Controls
 				{
 					if (this.IsLightDismissEnabled)
 					{
+						PopupPanel.Background = new SolidColorBrush(Colors.Transparent);
 						PopupPanel.PointerPressed += OnPointerPressed;
+					}
+					else
+					{
+						PopupPanel.Background = null;
 					}
 				}
 				else

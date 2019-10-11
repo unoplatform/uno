@@ -19,7 +19,7 @@
 		</Grid.ColumnDefinitions>
 
 		<Grid.RowDefinitions>
-			<RowDefinition Height="*" MinHeight="100"/>
+			<RowDefinition Height="*" MinHeight="325"/>
 			<RowDefinition Height="Auto" MinHeight="120" />
 			<RowDefinition Height="Auto"/>
 		</Grid.RowDefinitions>
@@ -72,12 +72,12 @@
 				VerticalAlignment="Stretch">layer3 (top most)</Button>
 
 		<uno:StarStackPanel Grid.ColumnSpan="5" Height="70" Sizes="*,*">
-			<Border Background="DarkSalmon" Opacity=".5" IsHitTestVisible="False">
+			<Border Background="DarkSalmon" Opacity=".5" IsHitTestVisible="False" x:Name="hitInvisible">
 				<Viewbox Stretch="Fill">
 					<TextBlock>--- IsHitTestVisible="False" ---</TextBlock>
 				</Viewbox>
 			</Border>
-			<Border Background="LightGoldenrodYellow" Opacity=".5" IsHitTestVisible="True">
+			<Border Background="LightGoldenrodYellow" Opacity=".5" IsHitTestVisible="True" x:Name="hitVisible">
 				<Viewbox Stretch="Fill">
 					<TextBlock>--- IsHitTestVisible="True" ---</TextBlock>
 				</Viewbox>
@@ -90,13 +90,27 @@
 				Padding="4"
 				Grid.Row="1"
 				Grid.ColumnSpan="5">
-			<TextBlock x:Name="msgs" />
+			<TextBlock x:Name="msgs" FontSize="8" />
 		</Border>
-		<Button Tapped="ClearMsgs"
-				Grid.Row="2"
-				Grid.ColumnSpan="5"
-				HorizontalAlignment="Stretch"
-				VerticalAlignment="Stretch">CLEAR</Button>
+
+		<Button Tapped="ClearMsgs" Grid.Row="2" Grid.ColumnSpan="5">CLEAR</Button>
+
+		<uno:StarStackPanel
+			Sizes="Auto"
+			Orientation="Horizontal"
+			Grid.Row="0"
+			Grid.ColumnSpan="5"
+			IsHitTestVisible="False"
+			VerticalAlignment="Bottom">
+			<TextBlock>layer1 clicks:</TextBlock>
+			<TextBlock x:Name="l1Clicks" FontWeight="Bold"/>
+			<TextBlock>, layer1_inner clicks:</TextBlock>
+			<TextBlock x:Name="l1innerClicks" FontWeight="Bold"/>
+			<TextBlock>, layer2 clicks:</TextBlock>
+			<TextBlock x:Name="l2Clicks" FontWeight="Bold"/>
+			<TextBlock>, layer3 clicks:</TextBlock>
+			<TextBlock x:Name="l3Clicks" FontWeight="Bold"/>
+		</uno:StarStackPanel>
 
 	</Grid>
 </Page>

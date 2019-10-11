@@ -22,11 +22,20 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable _collectionChangedSubscription = new SerialDisposable();
 		private readonly SerialDisposable _headerFooterSubscription = new SerialDisposable();
 
-		private void InitializeNativePanel()
+		private void InitializeNativePanel(NativeListViewBase panel)
 		{
-			var adapter = new NativeListViewBaseAdapter();
-			adapter.Owner = NativePanel;
-			NativePanel.CurrentAdapter = adapter;
+			panel.CurrentAdapter = new NativeListViewBaseAdapter { Owner = panel };
+		}
+
+		partial void CleanUpNativePanel(NativeListViewBase panel)
+		{
+			_headerFooterSubscription.Disposable = null;
+			panel.NativeLayout?.RemoveAllViews();
+			panel.ViewCache?.OnUnloaded();
+
+			panel.NativeLayout = null;
+			panel.SetViewCacheExtension(null);
+			panel.CurrentAdapter = null;
 		}
 
 		private void AddItems(int firstItem, int count, int section)
@@ -299,7 +308,7 @@ namespace Windows.UI.Xaml.Controls
 		public void ScrollIntoView(object item, ScrollIntoViewAlignment alignment)
 		{
 			// Dispatching ScrollIntoView on Android prevents issues where layout/render changes
-			// occuring during scrolling are not always properly picked up by the layouting/rendering engine.
+			// occurring during scrolling are not always properly picked up by the layouting/rendering engine.
 			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				var index = IndexFromItem(item);

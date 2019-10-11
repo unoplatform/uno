@@ -8,16 +8,6 @@ namespace Windows.UI.Xaml.Controls
 	public  partial class RowDefinition : global::Windows.UI.Xaml.DependencyObject
 	{
 		// Skipping already declared property Height
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double ActualHeight
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double RowDefinition.ActualHeight is not implemented in Uno.");
-			}
-		}
-		#endif
 		// Skipping already declared property HeightProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.RowDefinition.RowDefinition()
 		// Forced skipping of method Windows.UI.Xaml.Controls.RowDefinition.RowDefinition()

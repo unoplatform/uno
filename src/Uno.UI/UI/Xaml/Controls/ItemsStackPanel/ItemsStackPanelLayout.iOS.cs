@@ -76,54 +76,68 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void UpdateLayoutAttributesForItem(UICollectionViewLayoutAttributes updatingItem)
+		private protected override void UpdateLayoutAttributesForItem(UICollectionViewLayoutAttributes updatingItem, bool shouldRecurse)
 		{
-			//Update extent of either subsequent item in group, subsequent group header, or footer
-			var currentIndex = updatingItem.IndexPath;
-			var nextIndexInGroup = GetNSIndexPathFromRowSection(currentIndex.Row + 1, currentIndex.Section);
-
-			// Get next item in current group
-			var elementToAdjust = LayoutAttributesForItem(nextIndexInGroup);
-
-			if (elementToAdjust == null)
+			while (updatingItem != null)
 			{
-				// No more items in current group, get group header of next group
-				elementToAdjust = LayoutAttributesForSupplementaryView(
-					NativeListViewBase.ListViewSectionHeaderElementKindNS,
-					GetNSIndexPathFromRowSection(0, currentIndex.Section + 1));
+				//Update extent of either subsequent item in group, subsequent group header, or footer
+				var currentIndex = updatingItem.IndexPath;
+				var nextIndexInGroup = GetNSIndexPathFromRowSection(currentIndex.Row + 1, currentIndex.Section);
 
-				//This is the last item in section, update information used by sticky headers.
-				_sectionEnd[currentIndex.Section] = GetExtentEnd(updatingItem.Frame);
-			}
+				// Get next item in current group
+				var elementToAdjust = LayoutAttributesForItem(nextIndexInGroup);
 
-			if (elementToAdjust == null)
-			{
-				// No more groups in source, get footer
-				elementToAdjust = LayoutAttributesForSupplementaryView(
-					NativeListViewBase.ListViewFooterElementKindNS,
-					GetNSIndexPathFromRowSection(0, 0));
-			}
-
-			if (elementToAdjust == null)
-			{
-				return;
-			}
-
-			if (elementToAdjust.RepresentedElementKind != NativeListViewBase.ListViewSectionHeaderElementKind)
-			{
-				//Update position of subsequent item based on position of this item, which may have changed
-				var frame = elementToAdjust.Frame;
-				SetExtentStart(ref frame, GetExtentEnd(updatingItem.Frame));
-				elementToAdjust.Frame = frame;
-			}
-			else
-			{
-				//Update group header
-				var inlineFrame = GetInlineHeaderFrame(elementToAdjust.IndexPath.Section);
-				var extentDifference = GetExtentEnd(updatingItem.Frame) - GetExtentStart(inlineFrame);
-				if (extentDifference != 0)
+				if (elementToAdjust == null)
 				{
-					UpdateLayoutAttributesForGroupHeader(elementToAdjust, extentDifference, true);
+					// No more items in current group, get group header of next group
+					elementToAdjust = LayoutAttributesForSupplementaryView(
+						NativeListViewBase.ListViewSectionHeaderElementKindNS,
+						GetNSIndexPathFromRowSection(0, currentIndex.Section + 1));
+
+					//This is the last item in section, update information used by sticky headers.
+					_sectionEnd[currentIndex.Section] = GetExtentEnd(updatingItem.Frame);
+				}
+
+				if (elementToAdjust == null)
+				{
+					// No more groups in source, get footer
+					elementToAdjust = LayoutAttributesForSupplementaryView(
+						NativeListViewBase.ListViewFooterElementKindNS,
+						GetNSIndexPathFromRowSection(0, 0));
+				}
+
+				if (elementToAdjust == null)
+				{
+					break;
+				}
+
+				if (elementToAdjust.RepresentedElementKind != NativeListViewBase.ListViewSectionHeaderElementKind)
+				{
+					//Update position of subsequent item based on position of this item, which may have changed
+					var frame = elementToAdjust.Frame;
+					SetExtentStart(ref frame, GetExtentEnd(updatingItem.Frame));
+					elementToAdjust.Frame = frame;
+
+					if (shouldRecurse && elementToAdjust.RepresentedElementKind == null)
+					{
+						updatingItem = elementToAdjust;
+					}
+					else
+					{
+						updatingItem = null;
+					}
+				}
+				else
+				{
+					//Update group header
+					var inlineFrame = GetInlineHeaderFrame(elementToAdjust.IndexPath.Section);
+					var extentDifference = GetExtentEnd(updatingItem.Frame) - GetExtentStart(inlineFrame);
+					if (extentDifference != 0)
+					{
+						UpdateLayoutAttributesForGroupHeader(elementToAdjust, extentDifference, true);
+					}
+
+					updatingItem = null;
 				}
 			}
 		}

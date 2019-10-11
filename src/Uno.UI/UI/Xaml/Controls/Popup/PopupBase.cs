@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Windows.Foundation;
+using Windows.UI.Xaml.Input;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Media;
@@ -25,6 +26,7 @@ namespace Windows.UI.Xaml.Controls
 	public partial class PopupBase : FrameworkElement, IPopup
 	{
 		private IDisposable _openPopupRegistration;
+		private bool _childHasOwnDataContext;
 
 		public event EventHandler<object> Closed;
 		public event EventHandler<object> Opened;
@@ -33,6 +35,12 @@ namespace Windows.UI.Xaml.Controls
 		/// Defines a custom layouter which overrides the default placement logic of the <see cref="PopupPanel"/>
 		/// </summary>
 		internal IDynamicPopupLayouter CustomLayouter { get; set; }
+
+		protected override void OnUnloaded()
+		{
+			IsOpen = false;
+			base.OnUnloaded();
+		}
 
 		/// <inheritdoc />
 		protected override Size MeasureOverride(Size availableSize)
@@ -68,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnChildChangedPartial(View oldChild, View newChild)
 		{
-			if (oldChild is IDependencyObjectStoreProvider provider)
+			if (oldChild is IDependencyObjectStoreProvider provider && !_childHasOwnDataContext)
 			{
 				provider.Store.ClearValue(provider.Store.DataContextProperty, DependencyPropertyValuePrecedences.Local);
 				provider.Store.ClearValue(provider.Store.TemplatedParentProperty, DependencyPropertyValuePrecedences.Local);
@@ -76,6 +84,23 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateDataContext();
 			UpdateTemplatedParent();
+
+			if (oldChild is FrameworkElement ocfe)
+			{
+				ocfe.PointerPressed -= HandlePointerEvent;
+				ocfe.PointerReleased -= HandlePointerEvent;
+			}
+
+			if (newChild is FrameworkElement ncfe)
+			{
+				ncfe.PointerPressed += HandlePointerEvent;
+				ncfe.PointerReleased += HandlePointerEvent;
+			}
+		}
+
+		private void HandlePointerEvent(object sender, PointerRoutedEventArgs e)
+		{
+			e.Handled = true;
 		}
 
 		protected internal override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
@@ -94,9 +119,18 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateDataContext()
 		{
+			_childHasOwnDataContext = false;
 			if (Child is IDependencyObjectStoreProvider provider)
 			{
-				provider.Store.SetValue(provider.Store.DataContextProperty, this.DataContext, DependencyPropertyValuePrecedences.Local);
+				if (provider.Store.ReadLocalValue(provider.Store.DataContextProperty) != DependencyProperty.UnsetValue)
+				{
+					// Child already has locally set DataContext, we shouldn't overwrite it.
+					_childHasOwnDataContext = true;
+				}
+				else
+				{
+					provider.Store.SetValue(provider.Store.DataContextProperty, this.DataContext, DependencyPropertyValuePrecedences.Local);
+				}
 			}
 		}
 
@@ -109,7 +143,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// A layouter responsible to layout the content of a poup at the right place
+		/// A layouter responsible to layout the content of a popup at the right place
 		/// </summary>
 		internal interface IDynamicPopupLayouter
 		{
@@ -125,9 +159,13 @@ namespace Windows.UI.Xaml.Controls
 			/// Render the content of the popup at its final location
 			/// </summary>
 			/// <param name="finalSize">The final size available to render the view. This is expected to be the screen size.</param>
-			/// <param name="visibleBounds">The frame of the visible bounds of the window. This is expected to ba AtMost the finalSize.</param>
+			/// <param name="visibleBounds">The frame of the visible bounds of the window. This is expected to be AtMost the finalSize.</param>
 			/// <param name="desiredSize">The size at which the content expect to be rendered. This is the result of the last <see cref="Measure"/>.</param>
 			void Arrange(Size finalSize, Rect visibleBounds, Size desiredSize);
+		}
+
+		partial void OnIsLightDismissEnabledChangedPartial(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
+		{
 		}
 	}
 }

@@ -569,7 +569,7 @@ namespace Windows.UI.Xaml.Controls
 			//TODO: this should take an available breadth
 			CGSize size;
 
-			// Cache the sizes to avoid creating new templates everytime.
+			// Cache the sizes to avoid creating new templates every time.
 			if (!_templateCache.TryGetValue(dataTemplate ?? _nullDataTemplateKey, out size))
 			{
 				var container = CreateContainerForElementKind(elementKind);
@@ -599,7 +599,8 @@ namespace Windows.UI.Xaml.Controls
 					// applied until view is loaded.
 					Owner.XamlParent.AddSubview(BlockLayout);
 					BlockLayout.AddSubview(container);
-					size = Owner.NativeLayout.Layouter.MeasureChild(container, new Size(double.MaxValue, double.MaxValue));
+					// Measure with PositiveInfinity rather than MaxValue, since some views handle this better.
+					size = Owner.NativeLayout.Layouter.MeasureChild(container, new Size(double.PositiveInfinity, double.PositiveInfinity));
 
 					if ((size.Height > nfloat.MaxValue / 2 || size.Width > nfloat.MaxValue / 2) &&
 						this.Log().IsEnabled(LogLevel.Warning)
@@ -698,7 +699,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				// We need to excplicitly remove the content before being disposed
+				// We need to explicitly remove the content before being disposed
 				// otherwise, the children will try to reference ContentView which 
 				// will have been disposed.
 
@@ -937,11 +938,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (ScrollOrientation == Orientation.Vertical)
 			{
-				availableSize.Height = float.MaxValue;
+				availableSize.Height = double.PositiveInfinity;
 			}
 			else
 			{
-				availableSize.Width = float.MaxValue;
+				availableSize.Width = double.PositiveInfinity;
 			}
 			return availableSize;
 		}

@@ -750,6 +750,52 @@ declare namespace Windows.Storage {
         private static synchronizeFileSystem;
     }
 }
+interface Window {
+    DeviceMotionEvent(): void;
+}
+declare namespace Windows.Devices.Sensors {
+    class Accelerometer {
+        private static dispatchReading;
+        static initialize(): boolean;
+        static startReading(): void;
+        static stopReading(): void;
+        private static readingChangedHandler;
+    }
+}
+declare class Gyroscope {
+    constructor(config: any);
+    addEventListener(type: "reading" | "activate", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
+}
+interface Window {
+    Gyroscope: Gyroscope;
+}
+declare namespace Windows.Devices.Sensors {
+    class Gyrometer {
+        private static dispatchReading;
+        private static gyroscope;
+        static initialize(): boolean;
+        static startReading(): void;
+        static stopReading(): void;
+        private static readingChangedHandler;
+    }
+}
+declare class Magnetometer {
+    constructor(config: any);
+    addEventListener(type: "reading" | "activate", listener: (this: this, ev: Event) => any, useCapture?: boolean): void;
+}
+interface Window {
+    Magnetometer: Magnetometer;
+}
+declare namespace Windows.Devices.Sensors {
+    class Magnetometer {
+        private static dispatchReading;
+        private static magnetometer;
+        static initialize(): boolean;
+        static startReading(): void;
+        static stopReading(): void;
+        private static readingChangedHandler;
+    }
+}
 declare namespace Windows.UI.Core {
     class SystemNavigationManager {
         private static _current;
@@ -759,6 +805,17 @@ declare namespace Windows.UI.Core {
         enable(): void;
         disable(): void;
         private clearStack;
+    }
+}
+declare namespace Windows.UI.Xaml {
+    class Application {
+        static getDefaultSystemTheme(): string;
+    }
+}
+declare namespace Windows.UI.Xaml {
+    enum ApplicationTheme {
+        Light = "Light",
+        Dark = "Dark"
     }
 }
 interface Navigator {

@@ -1157,7 +1157,16 @@ namespace Uno.UWPSyncGenerator
 
 								b.AppendLineInvariant($"Windows.UI.Xaml.DependencyProperty.Register{attachedModifier}(");
 
-								b.AppendLineInvariant($"\tnameof({propertyName})\", typeof({propertyDisplayType}), ");
+								if (getAttached == null)
+								{
+									b.AppendLineInvariant($"\tnameof({propertyName}), typeof({propertyDisplayType}), ");
+								}
+								else
+								{
+									//attached properties do not have a corresponding property
+									b.AppendLineInvariant($"\t\"{propertyName}\", typeof({propertyDisplayType}), ");
+								}
+
 								b.AppendLineInvariant($"\ttypeof({property.ContainingType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}), ");
 								b.AppendLineInvariant($"\tnew FrameworkPropertyMetadata(default({propertyDisplayType})));");
 							}
@@ -1451,7 +1460,7 @@ namespace Uno.UWPSyncGenerator
 
 				// Additionally, it may happen that projects are loaded using the callee's Configuration/Platform, which
 				// may not exist in all projects. This can happen if the project does not have a proper
-				// fallback mecanism in place.
+				// fallback mechanism in place.
 
 				SourceGeneration.Host.ProjectLoader.LoadProjectDetails(projectFile, "Debug");
 

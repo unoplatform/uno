@@ -15,8 +15,11 @@ namespace Windows.UI.Xaml.Controls
 		private const int CacheLimit = 10;
 		private const int NoTemplateItemId = -1;
 		private readonly VirtualizingPanelLayout _owner;
-
 		private readonly Dictionary<int, Stack<FrameworkElement>> _itemContainerCache = new Dictionary<int, Stack<FrameworkElement>>();
+		/// <summary>
+		/// Caching the id is more efficient, and also important in the case of the ItemsSource changing, when the (former) item may no longer be in the new collection.
+		/// </summary>
+		private Dictionary<int, int> _idCache = new Dictionary<int, int>();
 
 		/// <summary>
 		/// Items that have been temporarily scrapped and can be reused without being rebound.
@@ -170,14 +173,25 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private int GetItemId(int index)
-		{
+		{	
+			if(_idCache.TryGetValue(index, out var value))
+			{
+				return value;
+			}
 			var item = ItemsControl?.GetItemFromIndex(index);
 			var template = ItemsControl?.ResolveItemTemplate(item);
 			var id = template?.GetHashCode() ?? NoTemplateItemId;
+			_idCache.Add(index, id);
+
 			return id;
 		}
 
 		private string GetMethodTag([CallerMemberName] string caller = null)
 			=> $"{nameof(VirtualizingPanelGenerator)}.{caller}()";
+
+		internal void ClearIdCache()
+		{
+			_idCache.Clear();
+		}
 	}
 }

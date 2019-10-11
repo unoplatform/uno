@@ -7,9 +7,14 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class AppBar : ContentControl
 	{
+		private double _compactHeight;
+		private double _minimalHeight;
+
 		public AppBar()
 		{
 			TemplateSettings = new AppBarTemplateSettings(this);
+
+			SizeChanged += (s, e) => UpdateTemplateSettings();
 		}
 
 		#region IsSticky
@@ -61,7 +66,7 @@ namespace Windows.UI.Xaml.Controls
 				"ClosedDisplayMode",
 				typeof(AppBarClosedDisplayMode),
 				typeof(AppBar),
-				new FrameworkPropertyMetadata(default(AppBarClosedDisplayMode))
+				new FrameworkPropertyMetadata(AppBarClosedDisplayMode.Compact)
 			);
 
 		#endregion
@@ -109,6 +114,41 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual void OnOpening(object e)
 		{
 			Opening?.Invoke(this, e);
+		}
+
+		protected override void OnApplyTemplate()
+		{
+			base.OnApplyTemplate();
+
+			if (Resources["AppBarThemeCompactHeight"] is double compactHeight)
+			{
+				_compactHeight = compactHeight;
+			}
+
+			if (Resources["AppBarThemeMinimalHeight"] is double minimalHeight)
+			{
+				_minimalHeight = minimalHeight;
+			}
+
+			UpdateTemplateSettings();
+
+		}
+
+		private void UpdateTemplateSettings()
+		{
+			var contentHeight = (ContentTemplateRoot as FrameworkElement)?.ActualHeight ?? ActualHeight;
+			TemplateSettings.ClipRect = new Foundation.Rect(0, 0, ActualWidth, contentHeight);
+
+			var compactVerticalDelta = _compactHeight - contentHeight;
+			TemplateSettings.CompactVerticalDelta = compactVerticalDelta;
+			TemplateSettings.NegativeCompactVerticalDelta = -compactVerticalDelta;
+
+			var minimalVerticalDelta = _minimalHeight - contentHeight;
+			TemplateSettings.MinimalVerticalDelta = minimalVerticalDelta;
+			TemplateSettings.NegativeMinimalVerticalDelta = -minimalVerticalDelta;
+
+			TemplateSettings.HiddenVerticalDelta = -contentHeight;
+			TemplateSettings.NegativeHiddenVerticalDelta = contentHeight;
 		}
 	}
 }

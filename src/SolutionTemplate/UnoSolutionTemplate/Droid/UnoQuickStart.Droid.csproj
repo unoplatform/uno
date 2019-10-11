@@ -14,6 +14,8 @@
 		<FileAlignment>512</FileAlignment>
 		<AndroidApplication>true</AndroidApplication>
 		<AndroidResgenFile>Resources\Resource.Designer.cs</AndroidResgenFile>
+		<!-- AndroidUseAapt2 is disabled until https://github.com/unoplatform/uno/issues/1382 is resolved -->
+		<AndroidUseAapt2>false</AndroidUseAapt2>
 		<GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
 		<AndroidUseLatestPlatformSdk>False</AndroidUseLatestPlatformSdk>
 		<TargetFrameworkVersion>v9.0</TargetFrameworkVersion>
@@ -59,7 +61,7 @@
 		<Reference Include="System.Xml" />
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Uno.UI" Version="1.45.0-dev.1112" />
+		<PackageReference Include="Uno.UI" Version="1.46.196-dev.2440" />
 		<PackageReference Include="Uno.UniversalImageLoader" Version="1.9.32" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />

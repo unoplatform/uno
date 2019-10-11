@@ -12,8 +12,9 @@ Here's what to look for:
 - Collapsed elements are not considered when measuring and arranging the visual tree, which makes them almost cost-less.
 - When binding or animating (via visual state setters) the visibility property, make sure to use enable lazy loading:
 	`x:DeferLoadStrategy="Lazy"` or `xamarin:DeferLoadStrategy="Lazy"` if visibility is set via bindings (UWP does not support it)
-- Lists virtualization
+- ListView and GridView
 	- Don't use template selectors inside the ItemTemplate, prefer using the ItemTemplateSelector on ListView/GridView
+	- The default [ListViewItem and GridViewItem styles](https://github.com/unoplatform/uno/blob/74b7d5d0e953fcdd94223f32f51665af7ce15c60/src/Uno.UI/UI/Xaml/Style/Generic/Generic.xaml#L951) are very feature rich, yet that makes them quite slow. For instance, if you know that you're not likely to use selection features for a specific ListView, create a simpler ListViewItem style that some visual states, or the elements that are only used for selection.
 - Animations
 	- Prefer `Opacity` animations to `Visibility` animations (this avoids some measuring performance issue)
 		- Unless the visual tree of the element is very big, where in this case `Visibility` is better suited.
@@ -47,4 +48,4 @@ The framework template pool manages the pooling of ControlTemplate and DataTempl
 - `ReuseTemplate` is raised when a pooled template is provided to a control asking for a specific data template.
 - `ReleaseTemplate` is raised when a pooled template instance has not been used for a while.
 
-If the `ReuseTemplate` occurences is low, this usually means that there is a memory leak to investigate.
+If the `ReuseTemplate` occurrences is low, this usually means that there is a memory leak to investigate.

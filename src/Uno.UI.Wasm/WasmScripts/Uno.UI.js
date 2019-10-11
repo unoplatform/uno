@@ -576,7 +576,16 @@ var Uno;
                 const element = this.getView(elementId);
                 for (const name in properties) {
                     if (properties.hasOwnProperty(name)) {
-                        element[name] = properties[name];
+                        var setVal = properties[name];
+                        if (setVal === "true") {
+                            element[name] = true;
+                        }
+                        else if (setVal === "false") {
+                            element[name] = false;
+                        }
+                        else {
+                            element[name] = setVal;
+                        }
                     }
                 }
                 return "ok";
@@ -588,7 +597,16 @@ var Uno;
                 const params = WindowManagerSetPropertyParams.unmarshal(pParams);
                 const element = this.getView(params.HtmlId);
                 for (let i = 0; i < params.Pairs_Length; i += 2) {
-                    element[params.Pairs[i]] = params.Pairs[i + 1];
+                    var setVal = params.Pairs[i + 1];
+                    if (setVal === "true") {
+                        element[params.Pairs[i]] = true;
+                    }
+                    else if (setVal === "false") {
+                        element[params.Pairs[i]] = false;
+                    }
+                    else {
+                        element[params.Pairs[i]] = setVal;
+                    }
                 }
                 return true;
             }
@@ -1112,11 +1130,12 @@ var Uno;
                 const originalStyleCssText = elementStyle.cssText;
                 let parentElement = null;
                 let parentElementWidthHeight = null;
+                let unconnectedRoot = null;
                 try {
                     if (!element.isConnected) {
                         // If the element is not connected to the DOM, we need it
                         // to be connected for the measure to provide a meaningful value.
-                        let unconnectedRoot = element;
+                        unconnectedRoot = element;
                         while (unconnectedRoot.parentElement) {
                             // Need to find the top most "unconnected" parent
                             // of this element
@@ -1181,6 +1200,9 @@ var Uno;
                     if (parentElement && parentElementWidthHeight) {
                         parentElement.style.width = parentElementWidthHeight.width;
                         parentElement.style.height = parentElementWidthHeight.height;
+                    }
+                    if (unconnectedRoot !== null) {
+                        this.containerElement.removeChild(unconnectedRoot);
                     }
                 }
             }
@@ -2091,7 +2113,7 @@ var Windows;
                 const that = this;
                 FS.syncfs(true, err => {
                     if (err) {
-                        console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
+                        console.error(`Error synchronizing filesystem from IndexDB: ${err}`);
                     }
                 });
                 // Ensure to sync pseudo file system on unload (and periodically for safety)
@@ -2107,7 +2129,7 @@ var Windows;
             static synchronizeFileSystem() {
                 FS.syncfs(err => {
                     if (err) {
-                        console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
+                        console.error(`Error synchronizing filesystem from IndexDB: ${err}`);
                     }
                 });
             }
@@ -2115,6 +2137,110 @@ var Windows;
         StorageFolder._isInit = false;
         Storage.StorageFolder = StorageFolder;
     })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Sensors;
+        (function (Sensors) {
+            class Accelerometer {
+                static initialize() {
+                    if (window.DeviceMotionEvent) {
+                        this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Accelerometer:DispatchReading");
+                        return true;
+                    }
+                    return false;
+                }
+                static startReading() {
+                    window.addEventListener("devicemotion", Accelerometer.readingChangedHandler);
+                }
+                static stopReading() {
+                    window.removeEventListener("devicemotion", Accelerometer.readingChangedHandler);
+                }
+                static readingChangedHandler(event) {
+                    Accelerometer.dispatchReading(event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
+                }
+            }
+            Sensors.Accelerometer = Accelerometer;
+        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Sensors;
+        (function (Sensors) {
+            class Gyrometer {
+                static initialize() {
+                    try {
+                        if (typeof window.Gyroscope === "function") {
+                            this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Gyrometer:DispatchReading");
+                            let GyroscopeClass = window.Gyroscope;
+                            this.gyroscope = new GyroscopeClass({ referenceFrame: "device" });
+                            return true;
+                        }
+                    }
+                    catch (error) {
+                        //sensor not available
+                        console.log("Gyroscope could not be initialized.");
+                    }
+                    return false;
+                }
+                static startReading() {
+                    this.gyroscope.addEventListener("reading", Gyrometer.readingChangedHandler);
+                    this.gyroscope.start();
+                }
+                static stopReading() {
+                    this.gyroscope.removeEventListener("reading", Gyrometer.readingChangedHandler);
+                    this.gyroscope.stop();
+                }
+                static readingChangedHandler(event) {
+                    Gyrometer.dispatchReading(Gyrometer.gyroscope.x, Gyrometer.gyroscope.y, Gyrometer.gyroscope.z);
+                }
+            }
+            Sensors.Gyrometer = Gyrometer;
+        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Sensors;
+        (function (Sensors) {
+            class Magnetometer {
+                static initialize() {
+                    try {
+                        if (typeof window.Magnetometer === "function") {
+                            this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Magnetometer:DispatchReading");
+                            let MagnetometerClass = window.Magnetometer;
+                            this.magnetometer = new MagnetometerClass({ referenceFrame: 'device' });
+                            return true;
+                        }
+                    }
+                    catch (error) {
+                        //sensor not available
+                        console.log("Magnetometer could not be initialized.");
+                    }
+                    return false;
+                }
+                static startReading() {
+                    this.magnetometer.addEventListener("reading", Magnetometer.readingChangedHandler);
+                    this.magnetometer.start();
+                }
+                static stopReading() {
+                    this.magnetometer.removeEventListener("reading", Magnetometer.readingChangedHandler);
+                    this.magnetometer.stop();
+                }
+                static readingChangedHandler(event) {
+                    Magnetometer.dispatchReading(Magnetometer.magnetometer.x, Magnetometer.magnetometer.y, Magnetometer.magnetometer.z);
+                }
+            }
+            Sensors.Magnetometer = Magnetometer;
+        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
@@ -2138,7 +2264,7 @@ var Windows;
                         }
                         else if (evt.state === 1) {
                             // The manager is disabled, but the user requested to navigate forward to our dummy entry,
-                            // but we prefer to keep this dummy entry in teh forward stack (is more prompt to be cleared by the browser,
+                            // but we prefer to keep this dummy entry in the forward stack (is more prompt to be cleared by the browser,
                             // and as it's less commonly used it should be less annoying for the user)
                             window.history.back();
                         }
@@ -2151,6 +2277,9 @@ var Windows;
                     return this._current;
                 }
                 enable() {
+                    if (this._isEnabled) {
+                        return;
+                    }
                     // Clear the back stack, so the only items will be ours (and we won't have any remaining forward item)
                     this.clearStack();
                     window.history.pushState(1, document.title, null);
@@ -2158,6 +2287,9 @@ var Windows;
                     this._isEnabled = true;
                 }
                 disable() {
+                    if (!this._isEnabled) {
+                        return;
+                    }
                     // Disable the handler, then clear the history
                     // Note: As a side effect, the forward button will be enabled :(
                     this._isEnabled = false;
@@ -2174,6 +2306,41 @@ var Windows;
             }
             Core.SystemNavigationManager = SystemNavigationManager;
         })(Core = UI.Core || (UI.Core = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            class Application {
+                static getDefaultSystemTheme() {
+                    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                        return Xaml.ApplicationTheme.Dark;
+                    }
+                    if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+                        return Xaml.ApplicationTheme.Light;
+                    }
+                    return null;
+                }
+            }
+            Xaml.Application = Application;
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            let ApplicationTheme;
+            (function (ApplicationTheme) {
+                ApplicationTheme["Light"] = "Light";
+                ApplicationTheme["Dark"] = "Dark";
+            })(ApplicationTheme = Xaml.ApplicationTheme || (Xaml.ApplicationTheme = {}));
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
     })(UI = Windows.UI || (Windows.UI = {}));
 })(Windows || (Windows = {}));
 var Windows;

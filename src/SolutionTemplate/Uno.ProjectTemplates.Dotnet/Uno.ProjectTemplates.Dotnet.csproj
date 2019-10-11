@@ -1,0 +1,49 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<TargetFramework>netstandard2.0</TargetFramework>
+		<IsTool>true</IsTool>
+		<IncludeBuildOutput>false</IncludeBuildOutput>
+		<PackageType>Template</PackageType>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<PackageTags>dotnet-new;templates;uno-platform</PackageTags>
+		<Authors>nventive</Authors>
+		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
+		<PackageIconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</PackageIconUrl>
+		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
+		<Description></Description>
+		<Copyright>Copyright (C) 2015-2019 nventive inc. - all rights reserved</Copyright>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+	</PropertyGroup>
+	
+	<ItemGroup>
+		<UpToDateCheckInput Include="content\**" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<Compile Remove="content/**/*.cs" />
+		<Content Include="content/xamarinforms-wasm/nuget.config">
+			<Pack>true</Pack>
+			<PackagePath>content/xamarinforms-wasm</PackagePath>
+		</Content>
+		<Content Include="content/xamarinforms-wasm/UnoQuickStart.Wasm/**/*.*">
+			<Pack>true</Pack>
+			<PackagePath>content/xamarinforms-wasm/UnoQuickStart.Wasm</PackagePath>
+		</Content>
+		<Content Include="content/xamarinforms-wasm/.template.config/*.*">
+			<Pack>true</Pack>
+			<PackagePath>content/xamarinforms-wasm/.template.config</PackagePath>
+		</Content>
+		<Content Include="content/xamarinforms-wasm/UnoQuickStart.UWP/*.*">
+			<Pack>true</Pack>
+			<PackagePath>content/xamarinforms-wasm/UnoQuickStart.UWP</PackagePath>
+		</Content>
+	</ItemGroup>
+
+	<ItemGroup>
+		<Folder Include="content\xamarinforms-wasm\UnoQuickStart.Wasm\" />
+	</ItemGroup>
+
+</Project>

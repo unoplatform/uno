@@ -34,6 +34,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_htmlImage = new HtmlImage();
 
+			_htmlImage.SetAttribute("draggable", "false");
+
 			ImageOpened += OnImageOpened;
 			ImageFailed += OnImageFailed;
 
@@ -92,7 +94,6 @@ namespace Windows.UI.Xaml.Controls
 		public static readonly DependencyProperty SourceProperty =
 			DependencyProperty.Register("Source", typeof(ImageSource), typeof(Image), new PropertyMetadata(null, (s, e) => ((Image)s)?.OnSourceChanged(e)));
 
-
 		private void OnSourceChanged(DependencyPropertyChangedEventArgs e)
 		{
 			UpdateHitTest();
@@ -103,24 +104,36 @@ namespace Windows.UI.Xaml.Controls
 
 			if (source is WriteableBitmap wb)
 			{
-				if (wb.PixelBuffer is InMemoryBuffer mb)
+				void setImageContent()
 				{
-					var gch = GCHandle.Alloc(mb.Data, GCHandleType.Pinned);
-					var pinnedData = gch.AddrOfPinnedObject();
-
-					try
+					if (wb.PixelBuffer is InMemoryBuffer mb)
 					{
-						WebAssemblyRuntime.InvokeJS(
-							"Uno.UI.WindowManager.current.setImageRawData(" + _htmlImage.HtmlId + ", " + pinnedData + ", " + wb.PixelWidth + ", " + wb.PixelHeight + ");"
-						);
+						var gch = GCHandle.Alloc(mb.Data, GCHandleType.Pinned);
+						var pinnedData = gch.AddrOfPinnedObject();
 
-						InvalidateMeasure();
-					}
-					finally
-					{
-						gch.Free();
+						try
+						{
+							WebAssemblyRuntime.InvokeJS(
+								"Uno.UI.WindowManager.current.setImageRawData(" + _htmlImage.HtmlId + ", " + pinnedData + ", " + wb.PixelWidth + ", " + wb.PixelHeight + ");"
+							);
+
+							InvalidateMeasure();
+						}
+						finally
+						{
+							gch.Free();
+						}
 					}
 				}
+
+				void OnInvalidated(object sdn, EventArgs args)
+				{
+					setImageContent();
+				}
+
+				wb.Invalidated += OnInvalidated;
+				_sourceDisposable.Disposable = Disposable.Create(() => wb.Invalidated -= OnInvalidated);
+				setImageContent();
 			}
 			else
 			{
@@ -203,6 +216,12 @@ namespace Windows.UI.Xaml.Controls
 			_lastMeasuredSize = _htmlImage.MeasureView(new Size(double.PositiveInfinity, double.PositiveInfinity));
 			Size ret;
 
+			if (Source is BitmapSource bitmapSource)
+			{
+				bitmapSource.PixelWidth = (int)_lastMeasuredSize.Width;
+				bitmapSource.PixelHeight = (int)_lastMeasuredSize.Height;
+			}
+
 			if (
 				double.IsInfinity(availableSize.Width)
 				&& double.IsInfinity(availableSize.Height)
@@ -218,10 +237,13 @@ namespace Windows.UI.Xaml.Controls
 			// Always making sure the ret size isn't bigger than the available size for an image with a fixed width or height
 			ret = new Size(
 				!Double.IsNaN(Width) && (ret.Width > availableSize.Width) ? availableSize.Width : ret.Width,
-				!Double.IsNaN(Width) &&  (ret.Height > availableSize.Height) ? availableSize.Height : ret.Height
+				!Double.IsNaN(Height) && (ret.Height > availableSize.Height) ? availableSize.Height : ret.Height
 			);
 
-			this.Log().LogTrace($"Measure {this} availableSize:{availableSize} measuredSize:{_lastMeasuredSize} ret:{ret}");
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Measure {this} availableSize:{availableSize} measuredSize:{_lastMeasuredSize} ret:{ret} Stretch: {Stretch} Width:{Width} Height:{Height}");
+			}
 
 			return ret;
 		}
@@ -277,7 +299,7 @@ namespace Windows.UI.Xaml.Controls
 							// |             |
 							// \-------------/
 							//
-							
+
 							return (sourceRect.X, sourceRect.Y, null, finalSize.Height);
 						}
 						else

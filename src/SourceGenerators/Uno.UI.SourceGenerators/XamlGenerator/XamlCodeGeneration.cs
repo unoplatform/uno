@@ -39,12 +39,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isUiAutomationMappingEnabled;
 		private Dictionary<string, string> _legacyTypes;
 
+		// Determines if the source generator will skip the inclusion of UseControls in the
+		// visual tree. See https://github.com/unoplatform/uno/issues/61
+		private bool _skipUserControlsInVisualTree = true;
+
 #pragma warning disable 649 // Unused member
 		private readonly bool _forceGeneration;
 #pragma warning restore 649 // Unused member
 
 		public XamlCodeGeneration(Compilation sourceCompilation, ProjectInstance msbProject, Project roslynProject)
 		{
+			// To easily debug XAML code generation:
+			// 1. Uncomment the line below
+			// 2. Build Uno.UI.SourceGenerators and override local files (following instructions here: doc/articles/uno-development/debugging-uno-ui.md#debugging-unoui)
+			// 3. Build project containing your XAML. When prompted to attach a Visual Studio instance:
+			//		- if it's in an external solution, attach the VS instance running Uno.UI
+			//		- if you're debugging XAML generation inside the Uno solution, opt to create a new VS instance
+			//
+			//Debugger.Launch();
+
 			InitTelemetry(msbProject);
 
 			_legacyTypes = msbProject
@@ -93,6 +106,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (bool.TryParse(msbProject.GetProperty("UseUnoXamlParser")?.EvaluatedValue, out var useUnoXamlParser) && useUnoXamlParser)
 			{
 				XamlRedirection.XamlConfig.IsUnoXaml = useUnoXamlParser || XamlRedirection.XamlConfig.IsMono;
+			}
+
+			if (bool.TryParse(msbProject.GetProperty("UnoSkipUserControlsInVisualTree")?.EvaluatedValue, out var skipUserControlsInVisualTree))
+			{
+				_skipUserControlsInVisualTree = skipUserControlsInVisualTree;
 			}
 
 			if (bool.TryParse(msbProject.GetProperty("ShouldWriteErrorOnInvalidXaml")?.EvaluatedValue, out var shouldWriteErrorOnInvalidXaml))
@@ -179,7 +197,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							uiAutomationMappings: _uiAutomationMappings,
 							defaultLanguage: _defaultLanguage,
 							isWasm: _isWasm,
-							isDebug: _isDebug
+							isDebug: _isDebug,
+							skipUserControlsInVisualTree: _skipUserControlsInVisualTree
 						)
 						.GenerateFile()
 					)
@@ -221,14 +240,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// references only, and in Uno.UI itself for generic.xaml-like resources.
 
 			var query = from ext in _medataHelper.Compilation.ExternalReferences
-					let sym = _medataHelper.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
-					where sym != null
-					from module in sym.Modules
-					from reference in module.ReferencedAssemblies
-					where reference.Name == "Uno.UI" || sym.Name == "Uno.UI"
-					from typeName in sym.GlobalNamespace.GetNamespaceTypes()
-					where typeName.Name.EndsWith("GlobalStaticResources")
-					select typeName;
+						let sym = _medataHelper.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
+						where sym != null
+						from module in sym.Modules
+						from reference in module.ReferencedAssemblies
+						where reference.Name == "Uno.UI" || sym.Name == "Uno.UI"
+						from typeName in sym.GlobalNamespace.GetNamespaceTypes()
+						where typeName.Name.EndsWith("GlobalStaticResources")
+						select typeName;
 
 			_ambientGlobalResources = query.Distinct().ToArray();
 

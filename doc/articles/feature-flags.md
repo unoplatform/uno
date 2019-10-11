@@ -8,13 +8,13 @@ Historically, Uno has been relying on the default platform's behavior for clippi
 By default, this mode is enabled for the time being, as it is quite disrupting.
 
 Use `Uno.UI.FeatureConfiguration.UIElement.UseLegacyClipping` to control this mode.
-Aditionally, `Uno.UI.FeatureConfiguration.UIElement.ShowClippingBounds` can be used to show the clipping boudaries to determine if the behavior of the clipping is appropriate.
+Additionally, `Uno.UI.FeatureConfiguration.UIElement.ShowClippingBounds` can be used to show the clipping boundaries to determine if the behavior of the clipping is appropriate.
 
 # UWP Styles default
 
 By default, Uno favors the default UWP XAML styles over the native styles for Button, Slider, ComboBox, etc...
 
-This can be changed using `Uno.UI.FeatureConfiguration.UIElement.UseUWPDefaultStyles`.
+This can be changed using `Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles`.
 
 ## Disabling accessibility text scaling
 

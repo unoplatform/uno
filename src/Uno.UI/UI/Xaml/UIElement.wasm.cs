@@ -19,6 +19,7 @@ using Windows.System;
 using Uno.Collections;
 using Uno.UI;
 using System.Numerics;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
@@ -291,6 +292,7 @@ namespace Windows.UI.Xaml
 
 			private readonly UIElement _owner;
 			private readonly string _eventName;
+			private RoutedEvent _routedEvent;
 			private readonly bool _canBubbleNatively;
 			private readonly Func<string, EventArgs> _payloadConverter;
 			private readonly Func<EventArgs, bool> _eventFilterManaged;
@@ -304,6 +306,7 @@ namespace Windows.UI.Xaml
 			public EventRegistration(
 				UIElement owner,
 				string eventName,
+				RoutedEvent routedEvent,
 				bool onCapturePhase = false,
 				bool canBubbleNatively = false,
 				HtmlEventFilter? eventFilter = null,
@@ -313,6 +316,7 @@ namespace Windows.UI.Xaml
 			{
 				_owner = owner;
 				_eventName = eventName;
+				_routedEvent = routedEvent;
 				_canBubbleNatively = canBubbleNatively;
 				_payloadConverter = payloadConverter;
 				_eventFilterManaged = eventFilterManaged ?? _emptyFilter;
@@ -388,6 +392,11 @@ namespace Windows.UI.Xaml
 					if (args is RoutedEventArgs routedArgs)
 					{
 						routedArgs.CanBubbleNatively = _canBubbleNatively;
+
+						if (_routedEvent?.Flag == RoutedEventFlag.Tapped)
+						{
+							_owner.PreRaiseTapped?.Invoke(_owner, null);
+						}
 					}
 
 					if (_eventFilterManaged(args))
@@ -433,18 +442,19 @@ namespace Windows.UI.Xaml
 		internal void RegisterEventHandler(
 			string eventName,
 			Delegate handler,
+			RoutedEvent routedEvent = null,
 			bool onCapturePhase = false,
 			bool canBubbleNatively = false,
 			HtmlEventFilter? eventFilter = null,
 			HtmlEventExtractor? eventExtractor = null,
-			Func<string, EventArgs> payloadConverter = null,
-			Func<EventArgs, bool> eventFilterManaged = null)
+			Func<string, EventArgs> payloadConverter = null)
 		{
 			if (!_eventHandlers.TryGetValue(eventName, out var registration))
 			{
 				_eventHandlers[eventName] = registration = new EventRegistration(
 					this,
 					eventName,
+					routedEvent,
 					onCapturePhase,
 					canBubbleNatively,
 					eventFilter,
@@ -567,9 +577,7 @@ namespace Windows.UI.Xaml
 		public Func<Size, Size> DesiredSizeSelector { get; set; }
 
 		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
-		{
-			throw new NotSupportedException();
-		}
+			=> TransformToVisual(relativeTo).TransformPoint(position);
 
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newVisibility)
 		{
@@ -922,6 +930,7 @@ namespace Windows.UI.Xaml
 
 					RegisterEventHandler(
 						eventDescription.domEventName,
+						routedEvent: routedEvent,
 						handler: new RoutedEventHandlerWithHandled(RoutedEventHandler),
 						onCapturePhase: false,
 						canBubbleNatively: true,

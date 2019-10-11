@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 using Xamarin.UITest;
@@ -14,6 +15,7 @@ namespace SamplesApp.UITests
 	partial class UnoSamples_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		public void RadioButton_IsEnabled_Validation()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.RadioButtonTests.RadioButton_IsEnabled_Automated");
@@ -25,7 +27,7 @@ namespace SamplesApp.UITests
 			var currentRadioButton = _app.Marked("CurrentRadioButton");
 			var myRadioButtonDisabler = _app.Marked("MyRadioButtonDisabler");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("None", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
 
 			myRadioButton_1.Tap();
@@ -48,6 +50,7 @@ namespace SamplesApp.UITests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void RadioButton_DoubleTap_Validation()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.RadioButtonTests.RadioButton_IsEnabled_Automated");
@@ -59,7 +62,7 @@ namespace SamplesApp.UITests
 			var currentRadioButton = _app.Marked("CurrentRadioButton");
 			var myRadioButtonDisabler = _app.Marked("MyRadioButtonDisabler");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("None", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
 
 			myRadioButton_1.Tap();
@@ -83,6 +86,7 @@ namespace SamplesApp.UITests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void RadioButton_StatePreservation()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.RadioButtonTests.RadioButton_IsEnabled_Automated");
@@ -94,7 +98,7 @@ namespace SamplesApp.UITests
 			var currentRadioButton = _app.Marked("CurrentRadioButton");
 			var myRadioButtonDisabler = _app.Marked("MyRadioButtonDisabler");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("None", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
 
 			myRadioButton_1.Tap();

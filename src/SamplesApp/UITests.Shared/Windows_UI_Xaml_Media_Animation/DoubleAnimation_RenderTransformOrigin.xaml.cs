@@ -8,7 +8,7 @@ using Uno.UI.Samples.Controls;
 
 namespace GenericApp.Views.Content.UITests.Animations
 {
-	[SampleControlInfoAttribute("Animations", "DoubleAnimation_RenderTransformOrigin")]
+	[SampleControlInfo("Animations", "DoubleAnimation_RenderTransformOrigin")]
 	public sealed partial class DoubleAnimation_RenderTransformOrigin : UserControl
 	{
 		public DoubleAnimation_RenderTransformOrigin()
@@ -33,7 +33,7 @@ namespace GenericApp.Views.Content.UITests.Animations
 
 
 			var anim = new  DoubleAnimation
-			{ 
+			{
 				RepeatBehavior = RepeatBehavior.Forever,
 				From = 0,
 				To = 360,

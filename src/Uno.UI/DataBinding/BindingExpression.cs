@@ -115,14 +115,17 @@ namespace Windows.UI.Xaml.Data
 				_isElementNameSource = true;
 			}
 
+			if (!(GetWeakDataContext()?.IsAlive ?? false))
+			{
+				ApplyFallbackValue();
+			}
 
-			ApplyFallbackValue();
 			ApplyExplicitSource();
 			ApplyElementName();
 		}
 
 		private ManagedWeakReference GetWeakDataContext()
-			=> _isElementNameSource || _explicitSourceStore.IsAlive ? _explicitSourceStore : _dataContext;
+			=> _isElementNameSource || (_explicitSourceStore?.IsAlive ?? false) ? _explicitSourceStore : _dataContext;
 
 		/// <summary>
 		/// Sends the current binding target value to the binding source property in TwoWay bindings.
@@ -405,7 +408,7 @@ namespace Windows.UI.Xaml.Data
 			var weakDataContext = GetWeakDataContext();
 			if (weakDataContext?.IsAlive ?? false)
 			{
-				// Dispose the subscription first, otherwise the previous 
+				// Dispose the subscription first, otherwise the previous
 				// registration may receive the new datacontext value.
 				_subscription.Disposable = null;
 
@@ -462,7 +465,7 @@ namespace Windows.UI.Xaml.Data
 
 			try
 			{
-				if (v == DependencyProperty.UnsetValue)
+				if (v is UnsetValue)
 				{
 					ApplyFallbackValue();
 				}

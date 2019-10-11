@@ -2,6 +2,8 @@
   items:
     - name: What is the Uno Platform?
       href: intro.md
+    - name: Philosophy of Uno
+      href: concepts/overview/philosophy-of-uno.md
     - name: API differences
       href: api-differences.md
     - name: Features list
@@ -18,10 +20,16 @@
       href: getting-started-tutorial-1.md
     - name: Developing with Uno.UI
       href: using-uno-ui.md
+    - name: Platform-specific C# code in Uno
+      href: platform-specific-csharp.md
+    - name: Platform-specific XAML markup in Uno
+      href: platform-specific-xaml.md
     - name: Feature flags
       href: feature-flags.md
     - name: Uno.UI.Toolkit
       href: Uno.UI.Toolkit.md
+    - name: Uno app solution structure
+      href: uno-app-solution-structure.md
     - name: Performance tips
       href: Uno-UI-Performance.md
     - name: Debugging C# on WASM
@@ -38,6 +46,8 @@
     href: features/working-with-assets.md
   - name: Animations
     href: features/working-with-animations.md
+  - name: Themes
+    href: features/working-with-themes.md
   - name: Routed Events
     href: features/routed-events.md
   - name: Shapes & Brushes
@@ -46,8 +56,18 @@
     href: features/SpeechRecognition.md
   - name: PowerManager
     href: features/windows-system-power.md
+  - name: PasswordVault
+    href: features\PasswordVault.md
+  - name: Windows.ApplicationModel.Calls
+    href: features\windows-applicationmodel-calls.md
+  - name: Windows.Devices.Sensors
+    href: features\windows-devices-sensors.md
+  - name: Windows.Phone.Devices.Notification
+    href: features\windows-phone-devices-notification-vibrationdevice.md
+  - name: Windows.UI.StartScreen
+    href: features\windows-ui-startscreen.md
   - name: CommandBar
-    href: controls\working-with-commandbar.md
+    href: controls\commandbar.md
   - name: ListView and GridView
     href: controls\ListViewBase.md
   - name: MapControl
@@ -58,6 +78,8 @@
     href: controls\Pivot.md
   - name: ToggleSwitch
     href: controls\ToggleSwitch.md
+  - name: VisibleBoundsPadding behavior
+    href: features\VisibleBoundsPadding.md
 - name: Using Uno - implemented views
   href: implemented/toc.yml
   topicHref: implemented-views.md
@@ -69,6 +91,8 @@
       href: howto-use-uno-in-xamarin-forms.md
 - name: Contributing to Uno
   items:
+    - name: Guidelines for breaking changes
+      href: contributing\guidelines\breaking-changes.md
     - name: Guidelines for issue triage
       href: contributing\guidelines\issue-triage.md
     - name: Guidelines for pull-requests

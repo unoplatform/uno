@@ -37,8 +37,10 @@ namespace Windows.Graphics.Display
 
 		private void UpdateLogicalProperties()
 		{
-			LogicalDpi = (float)(UIScreen.MainScreen.Scale * 100);
-			ResolutionScale = (ResolutionScale)(int)LogicalDpi;
+			// Scale of 1 is considered @1x, which is the equivalent of 96.0 or 100% for UWP.
+			// https://developer.apple.com/documentation/uikit/uiscreen/1617836-scale
+			LogicalDpi = (float)(UIScreen.MainScreen.Scale * 96.0f);
+			ResolutionScale = (ResolutionScale)(int)(UIScreen.MainScreen.Scale * 100.0);
 		}
 
 		/// <summary>
@@ -125,7 +127,7 @@ namespace Windows.Graphics.Display
 			if (!toOrientationMask.HasFlag(currentOrientationMask))
 			{
 				//Rotate to the most preferred orientation that is requested
-				//e.g. if our mask is Portrait | PortraitUpsideDown, we prefer to intially rotate to Portrait rather than PortraitUpsideDown
+				//e.g. if our mask is Portrait | PortraitUpsideDown, we prefer to initially rotate to Portrait rather than PortraitUpsideDown
 				var toOrientation = PreferredOrientations.FirstOrDefault(ori => toOrientationMask.HasFlag(ori)).ToUIInterfaceOrientation();
 
 				UIDevice.CurrentDevice

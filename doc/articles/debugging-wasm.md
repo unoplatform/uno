@@ -1,25 +1,33 @@
 # Using the WebAssembly C# Debugger
 
-Currently debugging in WASM is experimentally supported, using Chrome only.
+Debugging WebAssembly via Google Chrome is experimentally supported by the Uno Platform. We HIGHLY recommend that you use [Google Chrome Canary](https://www.google.com/chrome/canary/).  Step-through debugging (in, out, over), breakpoints, inspection of run-time locals and viewing .NET source code from the developer tools works. Additional capabilities and browser support will become available as Microsoft adds [support for them to mono](https://github.com/mono/mono/tree/master/sdks/wasm).
 
-1. Make your project the startup project (right-click **set as startup** in Solution Explorer)
-1. Make sure you have the following line in your project file:
-   ```xml
-   <MonoRuntimeDebuggerEnabled Condition="'$(Configuration)'=='Debug'">true</MonoRuntimeDebuggerEnabled>
-   ```
-   This will ensure that the debugging symbols are generated and loaded by mono
-1. In the debugging toolbar:
-* Select **IIS Express** as the debugging target
-* Select **Chrome** as the Web Browser
-* Make sure script debugging is disabled<br/>
-  ![iis express settings](Assets/quick-start/wasm-debugging-iis-express.png)
-1. Start the debugging session using `Ctrl+F5` (`F5` will work, but the debugging experience won't be in Visual Studio)
-1. Once your application has started, press `Alt+Shift+D` (in Chrome, on your application's tab)
-1. A new tab will open with the debugger or instructions to activate it
+-  Make your project the startup project (right-click **set as startup** in Solution Explorer)
+- Make sure you have the following lines defined in your project file which enable the Mono runtime debugger. Please ensure that `DEBUG` constant is defined and debug symbols are emitted and are of the type `portable`:
+
+```xml
+<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+   <MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
+   <DebugType>portable</DebugType>
+   <DebugSymbols>true</DebugSymbols>
+   <DefineConstants>TRACE;DEBUG</DefineConstants>
+</PropertyGroup>
+```
+
+- In the debugging toolbar:
+
+   - Select **IIS Express** as the debugging target
+   - Select **Chrome** as the Web Browser
+   - Make sure script debugging is disabled<br/>
+   ![IIS express settings](Assets/quick-start/wasm-debugging-iis-express.png)
+
+- Start the debugging session using `Ctrl+F5` (`F5` will work, but the debugging experience won't be in Visual Studio)
+- Once your application has started, press `Alt+Shift+D` (in Chrome, on your application's tab)
+- A new tab will open with the debugger or instructions to activate it
 ![](Assets/quick-start/wasm-debugger-step-01.png)
-1. You will now get the Chrome DevTools to open listing all the .NET loaded assemblies on the Sources tab:<br/>
+- You will now get the Chrome DevTools to open listing all the .NET loaded assemblies on the Sources tab:<br/>
 ![](Assets/quick-start/wasm-debugger-step-02.png)
-1. You may need to refresh the original tab if you want to debug the entry point (Main) of your application.<br/>
+- You may need to refresh the original tab if you want to debug the entry point (Main) of your application.<br/>
 ![](Assets/quick-start/wasm-debugger-step-03.png)
 
 > ### Tips for debugging in Chrome

@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.FocusManager
 {
-	[SampleControlInfoAttribute("FocusManager", "FocusManager_FocusDirection")]
+	[SampleControlInfo("FocusManager", "FocusManager_FocusDirection")]
 	public sealed partial class FocusManager_FocusDirection : UserControl
 	{
 		public FocusManager_FocusDirection()

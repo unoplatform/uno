@@ -227,6 +227,21 @@ namespace AppKit
 			}
 		}
 
+		/// <summary>
+		/// Add view to parent.
+		/// </summary>
+		/// <param name="parent">Parent view</param>
+		/// <param name="child">Child view to add</param>
+		public static void AddChild(this _View parent, _View child)
+		{
+			parent.AddSubview(child);
+		}
+
+		/// <summary>
+		/// Get the parent view in the visual tree. This may differ from the logical <see cref="FrameworkElement.Parent"/>.
+		/// </summary>
+		public static _View GetVisualTreeParent(this _View child) => child?.Superview;
+
 		public static IEnumerable<T> FindSubviewsOfType<T>(this _View view, int maxDepth = 20) where T : class
 		{
 			return FindSubviews(view, (v) => v as T != null, maxDepth)
@@ -561,10 +576,21 @@ namespace AppKit
 
 			return sb.ToString();
 
-			void AppendView(_View innerView)
+			StringBuilder AppendView(_View innerView)
 			{
-				var name = innerView is IFrameworkElement fe && !fe.Name.IsNullOrEmpty() ? $"\"{fe.Name}\"" : "";
-				sb.AppendLine($"{spacing}{(innerView == viewOfInterest ? "*" : "")}>{innerView.ToString()}{name}-({innerView.Frame.Width}x{innerView.Frame.Height})@({innerView.Frame.X},{innerView.Frame.Y})");
+				var name = (innerView as IFrameworkElement)?.Name;
+				var namePart = string.IsNullOrEmpty(name) ? "" : $"-'{name}'";
+
+				return sb
+						.Append(spacing)
+						.Append(innerView == viewOfInterest ? "*>" : ">")
+						.Append(innerView.ToString() + namePart)
+						.Append($"-({innerView.Frame.Width}x{innerView.Frame.Height})@({innerView.Frame.X},{innerView.Frame.Y})")
+
+#if __IOS__
+						.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
+#endif
+						.AppendLine();
 			}
 		}
 

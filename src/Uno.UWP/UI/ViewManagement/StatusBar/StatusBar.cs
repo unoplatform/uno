@@ -45,7 +45,7 @@ namespace Windows.UI.ViewManagement
 		/// </summary>
 		/// <remarks>
 		/// <para>iOS and Android (API 23+) only allow their status bar foreground to be set to either Light or Dark. 
-		/// The provided color will automatically be converted to the nearest supported color to preserve constrast.</para>
+		/// The provided color will automatically be converted to the nearest supported color to preserve contrast.</para>
 		/// <para>In general, you should set this property to either White or Black to avoid confusion.</para>
 		/// <para>This property is only supported on Android starting from Marshmallow (API 23).</para>
 		/// </remarks>
@@ -88,6 +88,35 @@ namespace Windows.UI.ViewManagement
 		}
 
 		private enum StatusBarForegroundType { Light, Dark }
+
+		[global::Uno.NotImplemented]
+		public double BackgroundOpacity
+		{
+			get
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.StatusBar", "double StatusBar.BackgroundOpacity");
+				return 0;
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.StatusBar", "double StatusBar.BackgroundOpacity");
+			}
+		}
+
+		[global::Uno.NotImplemented]
+		public global::Windows.UI.Color? BackgroundColor
+		{
+			get
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.StatusBar", "Color? StatusBar.BackgroundColor");
+				return null;
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.StatusBar", "Color? StatusBar.BackgroundColor");
+			}
+
+		}
 	}
 }
 #endif

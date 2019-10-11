@@ -5,7 +5,7 @@ well as provide a way to write UI Tests.
 
 Those applications are structured in a way that samples can created out of normal `UserControl` instances, marked with the `SampleControlInfoAttribute` so the sample application can discover them.
 
-Those applications are located in the `SamplesApp` folder of the solution, and a live devevelopment out of the master branch version for the WebAssembly application can be found here: https://unoui-sampleapp-unoui-sampleapp-staging.azurewebsites.net
+Those applications are located in the `SamplesApp` folder of the solution, and a live development out of the master branch version for the WebAssembly application can be found here: https://unoui-sampleapp-unoui-sampleapp-staging.azurewebsites.net
 
 ## Creating UI Tests
 
@@ -27,6 +27,19 @@ The Uno.UI process validates does two types of validations:
 
 At this time, only WebAssembly and Android are used to run UI Tests, iOS is coming soon.
 
+## Selectively ignore tests per platform
+
+It may be that some UI Tests are platform specific, or that some tests may not work on a particular platform.
+
+In order to do so, the `ActivePlatformsAttribute` allows to specify which platform are active for a given test.
+
+This attribute is used as follows:
+```
+[ActivePlatforms(Platform.iOS, Platform.Browser)]	// Run on iOS and Browser.
+```
+
+This attribute can be placed at the test or class level.
+
 ## Setup for Automated UI Tests on WebAssembly
 - Navigate to the `SamplesApp.Wasm.UITests` folder and run `npm i`. This will download Puppeteer and the Chrome driver.
 - Deploy and run the `SamplesApp.Wasm` application once.
@@ -38,6 +51,9 @@ At this time, only WebAssembly and Android are used to run UI Tests, iOS is comi
 ## Running UI Tests
 - Open the [`Constants.cs](src/SamplesApp/SamplesApp.UITests/Constants.cs) file and change the `CurrentPlatform` field to the platform you want to test.
 - Select a test in the `SamplesApp.UITests` project and run a specific test.
+
+## Troubleshooting tests running during the CI
+The build artifacts contain the tests output, as well as the device logs (in the case of Android).
 
 # Requirements for UI tests
 
@@ -55,7 +71,7 @@ Those tests use the MSTests format, and can be run as part of the running applic
 
 To create a Non-UI Test:
 - Create or reuse a folder named from the namespace of the class your want to test, replacing "`.`" by "`_`"
-- Name your class `Given_Your_Class_Name` 
+- Name your class `Given_Your_Class_Name`
 - Create your test methods using `When_Your_Scenario`
 - An optional ViewModel type may be provided as an attribute so the browser automatically sets an instance as the DataContext of the sample
 
@@ -69,7 +85,7 @@ To run the tests:
 - Press `F5`, node will start and run the tests sequentially
 - The screen shots are placed in a folder named `out`
 
-Note that the same operation is run during the CI, in a specific job running under Linux. The screen shots are located in an build artifact.
+Note that the same operation is run during the CI, in a specific job running under Linux. The screen shots are located in the Unit Tests section under `Screenshots Compare Test Run` as well as in the build artifact.
 
 ## Validating the WebAssembly UI Tests results
 
