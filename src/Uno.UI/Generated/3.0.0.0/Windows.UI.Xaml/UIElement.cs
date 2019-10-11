@@ -630,7 +630,7 @@ namespace Windows.UI.Xaml
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent ManipulationCompletedEvent
 		{
@@ -640,7 +640,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent ManipulationDeltaEvent
 		{
@@ -658,7 +658,7 @@ namespace Windows.UI.Xaml
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent ManipulationInertiaStartingEvent
 		{
@@ -676,7 +676,7 @@ namespace Windows.UI.Xaml
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.ManipulationModes)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent ManipulationStartedEvent
 		{
@@ -686,7 +686,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent ManipulationStartingEvent
 		{

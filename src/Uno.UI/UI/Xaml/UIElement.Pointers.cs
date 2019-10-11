@@ -182,12 +182,32 @@ namespace Windows.UI.Xaml
 		{
 			var recognizer = new GestureRecognizer();
 
+			recognizer.ManipulationStarted += OnManipulationStarted;
+			recognizer.ManipulationUpdated += OnManipulationUpdated;
+			recognizer.ManipulationInertiaStarting += OnManipulationInertiaStarting;
+			recognizer.ManipulationCompleted += OnManipulationCompleted;
 			recognizer.Tapped += OnTapRecognized;
 
 			// Allow partial parts to subscribe to pointer events (WASM)
 			OnGestureRecognizerInitialized(recognizer);
 
 			return recognizer;
+
+			void OnManipulationStarted(GestureRecognizer sender, ManipulationStartedEventArgs args)
+			{
+			}
+
+			void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs manipulationUpdatedEventArgs)
+			{
+			}
+
+			void OnManipulationInertiaStarting(GestureRecognizer sender, ManipulationInertiaStartingEventArgs manipulationInertiaStartingEventArgs)
+			{
+			}
+
+			void OnManipulationCompleted(GestureRecognizer sender, ManipulationCompletedEventArgs manipulationCompletedEventArgs)
+			{
+			}
 
 			void OnTapRecognized(GestureRecognizer sender, TappedEventArgs args)
 			{
@@ -204,6 +224,102 @@ namespace Windows.UI.Xaml
 
 		partial void OnGestureRecognizerInitialized(GestureRecognizer recognizer);
 
+		#region Manipulation events wire-up
+		partial void AddManipulationHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
+		{
+			if (handlersCount == 1)
+			{
+				UpdateManipulations(ManipulationMode, hasManipulationHandler: true);
+			}
+		}
+
+		partial void RemoveManipulationHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler)
+		{
+			if (remainingHandlersCount == 0 && !HasManipulationHandler)
+			{
+				UpdateManipulations(default(ManipulationModes), hasManipulationHandler: false);
+			}
+		}
+
+		// TODO: OnManipulationChanged
+
+		private bool HasManipulationHandler =>
+			   CountHandler(ManipulationStartingEvent) != 0
+			|| CountHandler(ManipulationStartedEvent) != 0
+			|| CountHandler(ManipulationDeltaEvent) != 0
+			|| CountHandler(ManipulationInertiaStartingEvent) != 0
+			|| CountHandler(ManipulationCompletedEvent) != 0;
+
+		private GestureSettings _manipulations =
+			  GestureSettings.ManipulationTranslateX
+			| GestureSettings.ManipulationTranslateY
+			| GestureSettings.ManipulationTranslateRailsX
+			| GestureSettings.ManipulationTranslateRailsY
+			| GestureSettings.ManipulationTranslateInertia
+			| GestureSettings.ManipulationRotate
+			| GestureSettings.ManipulationRotateInertia
+			| GestureSettings.ManipulationScale
+			| GestureSettings.ManipulationScaleInertia
+			| GestureSettings.ManipulationMultipleFingerPanning; // Not supported by ManipulationMode
+
+		private void UpdateManipulations(ManipulationModes mode, bool hasManipulationHandler)
+		{
+			if (!hasManipulationHandler || mode == ManipulationModes.None || mode == ManipulationModes.System)
+			{
+				if (!_gestures.IsValueCreated)
+				{
+					return;
+				}
+				else
+				{
+					_gestures.Value.GestureSettings &= ~_manipulations;
+					return;
+				}
+			}
+
+			var settings = _gestures.Value.GestureSettings & ~_manipulations;
+			if (mode.HasFlag(ManipulationModes.TranslateX))
+			{
+				settings |= GestureSettings.ManipulationTranslateX;
+			}
+			if (mode.HasFlag(ManipulationModes.TranslateY))
+			{
+				settings |= GestureSettings.ManipulationTranslateY;
+			}
+			if (mode.HasFlag(ManipulationModes.TranslateRailsX))
+			{
+				settings |= GestureSettings.ManipulationTranslateRailsX;
+			}
+			if (mode.HasFlag(ManipulationModes.TranslateRailsY))
+			{
+				settings |= GestureSettings.ManipulationTranslateRailsY;
+			}
+			if (mode.HasFlag(ManipulationModes.TranslateInertia))
+			{
+				settings |= GestureSettings.ManipulationTranslateInertia;
+			}
+			if (mode.HasFlag(ManipulationModes.Rotate))
+			{
+				settings |= GestureSettings.ManipulationRotate;
+			}
+			if (mode.HasFlag(ManipulationModes.RotateInertia))
+			{
+				settings |= GestureSettings.ManipulationRotateInertia;
+			}
+			if (mode.HasFlag(ManipulationModes.Scale))
+			{
+				settings |= GestureSettings.ManipulationScale;
+			}
+			if (mode.HasFlag(ManipulationModes.ScaleInertia))
+			{
+				settings |= GestureSettings.ManipulationScaleInertia;
+			}
+
+			_gestures.Value.GestureSettings = settings;
+		}
+		#endregion
+
+		#region Gesture events wire-up
 		partial void AddGestureHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
 			if (handlersCount == 1)
@@ -232,6 +348,7 @@ namespace Windows.UI.Xaml
 				_gestures.Value.GestureSettings |= GestureSettings.DoubleTap;
 			}
 		}
+		#endregion
 
 		/// <summary>
 		/// Prevents the gesture recognizer to generate a manipulation. It's designed to be invoked in Pointers events handlers.

@@ -211,37 +211,37 @@ namespace Windows.UI.Input
 			// Mouse
 			if (props.IsLeftButtonPressed)
 			{
-				identifier |= 1 << 32;
+				identifier |= 1L << 32;
 			}
 			if (props.IsMiddleButtonPressed)
 			{
-				identifier |= 1 << 33;
+				identifier |= 1L << 33;
 			}
 			if (props.IsRightButtonPressed)
 			{
-				identifier |= 1 << 34;
+				identifier |= 1L << 34;
 			}
 			if (props.IsHorizontalMouseWheel)
 			{
-				identifier |= 1 << 35;
+				identifier |= 1L << 35;
 			}
 			if (props.IsXButton1Pressed)
 			{
-				identifier |= 1 << 36;
+				identifier |= 1L << 36;
 			}
 			if (props.IsXButton2Pressed)
 			{
-				identifier |= 1 << 37;
+				identifier |= 1L << 37;
 			}
 
 			// Pen
 			if (props.IsBarrelButtonPressed)
 			{
-				identifier |= 1 << 38;
+				identifier |= 1L << 38;
 			}
 			if (props.IsEraser)
 			{
-				identifier |= 1 << 39;
+				identifier |= 1L << 39;
 			}
 
 			return identifier;
