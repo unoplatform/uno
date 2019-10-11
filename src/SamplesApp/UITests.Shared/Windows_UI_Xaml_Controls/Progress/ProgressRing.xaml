@@ -18,9 +18,9 @@
 					<StackPanel>
 						<StackPanel Orientation="Horizontal" Spacing="16">
 							<ProgressRing Foreground="Red" IsActive="True" />
-							<ProgressRing Foreground="Blue" IsActive="True" />
-							<ProgressRing Foreground="Green" IsActive="True" />
-							<ProgressRing Foreground="Orange" IsActive="True" />
+							<ProgressRing Foreground="Blue" IsActive="True" Height="33" Width="33"/>
+							<ProgressRing Foreground="Green" IsActive="True" Height="66" Width="66"/>
+							<ProgressRing Foreground="Orange" IsActive="True" Height="99" Width="99" />
 						</StackPanel>
 					</StackPanel>
 				</ScrollViewer>
