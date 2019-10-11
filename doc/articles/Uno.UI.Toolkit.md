@@ -23,7 +23,7 @@ And declare your `MenuFlyoutItem` as follow
 
 ## UICommand - Destructive style
 
-iOS can display `UICommand` to warn user the action will be "destructive". In that case, the button text is display in red.
+iOS can display `UICommand` to warn user the action will be "destructive". In that case, the button text is displayed in red.
 
 To set a `UICommand` as destructive, add the toolkit namespace to your code
 
