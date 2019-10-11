@@ -10,59 +10,13 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public PopupRoot()
 		{
-			Background = new SolidColorBrush(Colors.Transparent);
-			UpdateLightDismissArea();
 		}
 
 		protected override void OnChildrenChanged()
 		{
 			base.OnChildrenChanged();
-			UpdateLightDismissArea();
 		}
 
-		private bool _pointerHandlerRegistered = false;
-
-		internal void UpdateLightDismissArea()
-		{
-			var anyDismissableChild = Children
-				.OfType<PopupPanel>()
-				.Any(pp => pp.Popup.IsLightDismissEnabled);
-
-			Background = anyDismissableChild
-				? new SolidColorBrush(Colors.Transparent)
-				: null;
-
-			if (anyDismissableChild)
-			{
-				if (!_pointerHandlerRegistered)
-				{
-					PointerReleased += PopupRoot_PointerReleased;
-					_pointerHandlerRegistered = true;
-				}
-			}
-			else
-			{
-				if (_pointerHandlerRegistered)
-				{
-					PointerReleased -= PopupRoot_PointerReleased;
-					_pointerHandlerRegistered = false;
-				}
-			}
-		}
-
-		private void PopupRoot_PointerReleased(object sender, Input.PointerRoutedEventArgs e)
-		{
-			var x = Children.ToArray().FirstOrDefault();
-
-			var lastDismissablePopupPanel = Children
-				.OfType<PopupPanel>()
-				.LastOrDefault(p => p.Popup.IsLightDismissEnabled);
-
-			if (lastDismissablePopupPanel != null)
-			{
-				lastDismissablePopupPanel.Popup.IsOpen = false;
-			}
-		}
 
 		protected override Size MeasureOverride(Size availableSize)
 		{

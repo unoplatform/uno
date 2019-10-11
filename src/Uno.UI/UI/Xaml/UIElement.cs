@@ -28,14 +28,8 @@ namespace Windows.UI.Xaml
 	public partial class UIElement : DependencyObject, IXUidProvider
 	{
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
-		private readonly List<Pointer> _pointCaptures = new List<Pointer>();
 		private readonly List<KeyboardAccelerator> _keyboardAccelerators = new List<KeyboardAccelerator>();
 		private string _uid;
-
-		partial void InitializeCapture()
-		{
-			this.SetValue(PointerCapturesProperty, _pointCaptures);
-		}
 
 		string IXUidProvider.Uid
 		{
@@ -53,10 +47,6 @@ namespace Windows.UI.Xaml
 		/// Determines if an <see cref="UIElement"/> clips its children to its bounds.
 		/// </summary>
 		internal bool ClipChildrenToBounds { get; set; } = true;
-
-		internal bool IsPointerPressed { get; set; }
-
-		internal bool IsPointerOver { get; set; }
 
 		#region Clip DependencyProperty
 
@@ -296,63 +286,6 @@ namespace Windows.UI.Xaml
 			InvalidateMeasure();
 		}
 #endif
-
-		public bool CapturePointer(Pointer value)
-		{
-			if (_pointCaptures.Contains(value))
-			{
-				this.Log().Error($"{this}: Pointer {value} already captured.");
-			}
-			else
-			{
-				_pointCaptures.Add(value);
-#if __WASM__
-				CapturePointerNative(value);
-#endif
-			}
-			return true;
-		}
-
-		public void ReleasePointerCapture(Pointer value)
-		{
-			if (_pointCaptures.Contains(value))
-			{
-				_pointCaptures.Remove(value);
-#if __WASM__
-				ReleasePointerCaptureNative(value);
-#endif
-			}
-			else
-			{
-				this.Log().Error($"{this}: Cannot release pointer {value}: not captured by this control.");
-			}
-		}
-
-		public void ReleasePointerCaptures()
-		{
-			if (_pointCaptures.Count == 0)
-			{
-				this.Log().Warn($"{this}: no pointers to release.");
-				return;
-			}
-#if __WASM__
-			foreach (var pointer in _pointCaptures)
-			{
-				ReleasePointerCaptureNative(pointer);
-			}
-#endif
-			_pointCaptures.Clear();
-		}
-
-		public global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Xaml.Input.Pointer> PointerCaptures
-			=> (IReadOnlyList<global::Windows.UI.Xaml.Input.Pointer>)this.GetValue(PointerCapturesProperty);
-
-		public static DependencyProperty PointerCapturesProperty { get; } =
-		DependencyProperty.Register(
-			"PointerCaptures", typeof(global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Xaml.Input.Pointer>),
-			typeof(global::Windows.UI.Xaml.UIElement),
-			new FrameworkPropertyMetadata(defaultValue: null)
-		);
 
 		public void StartBringIntoView()
 		{

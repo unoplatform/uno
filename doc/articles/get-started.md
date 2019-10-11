@@ -51,7 +51,7 @@ See the [Creating an App tutorial](getting-started-tutorial-1.md) for a step-by-
 
 ## Next steps
 
-* For code samples, check out the [Uno Gallery and Playground](https://github.com/nventive/Uno.Playground) repository.
+* For code samples, check out the [Uno Gallery and Playground](https://github.com/unoplatform/uno.Playground) repository.
 
 * The Uno Platform promotes a 'UWP-first' development approach. Microsoft's [documentation](https://docs.microsoft.com/en-us/windows/uwp/develop/) on the UWP framework is an essential resource.
 
@@ -59,6 +59,6 @@ See the [Creating an App tutorial](getting-started-tutorial-1.md) for a step-by-
 
 * If you're not sure how to do something with Uno, and you think others could benefit from the knowledge, you can post the question on [StackOverflow](https://stackoverflow.com/questions/ask?tags=uno-platform) using the 'uno-platform' tag. Remember to check if the question [already exists](https://stackoverflow.com/questions/tagged/uno-platform) and follow StackOverflow's [question guidelines](https://stackoverflow.com/help/how-to-ask). You'll also need to sign up to StackOverflow if you're not already.
 
-* If you think you've encountered a bug (eg, something works on UWP but not on another platform), [create an issue on GitHub](https://github.com/nventive/Uno/issues) if there's no existing issue. We hate bugs, but we love bug reports!
+* If you think you've encountered a bug (eg, something works on UWP but not on another platform), [create an issue on GitHub](https://github.com/unoplatform/uno/issues) if there's no existing issue. We hate bugs, but we love bug reports!
 
 * If you have any questions for the Uno Platform team directly, visit our [Gitter channel](https://gitter.im/uno-platform/Lobby).

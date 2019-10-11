@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml
 		/// management. Once default/implicit styles are implemented properly,
 		/// this should be removed.
 		///
-		/// See https://github.com/nventive/Uno/issues/119 for details.
+		/// See https://github.com/unoplatform/uno/issues/119 for details.
 		/// </remarks>
 		private bool _styleChanging = false;
 		private bool _defaultStyleApplied = false;
@@ -434,7 +434,7 @@ namespace Windows.UI.Xaml
 
 		internal virtual void OnLayoutUpdated()
 		{
-			LayoutUpdated?.Invoke(this, RoutedEventArgs.Empty);
+			LayoutUpdated?.Invoke(this, new RoutedEventArgs(this));
 		}
 
 #if XAMARIN

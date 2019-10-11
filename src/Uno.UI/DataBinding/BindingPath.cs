@@ -225,24 +225,14 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
-		public Type ValueType
-		{
-			get
-			{
-				return _value.PropertyType;
-			}
-		}
+		public Type ValueType => _value.PropertyType;
+
+		internal object DataItem => _value.DataContext;
 
 		public object DataContext
 		{
-			get
-			{
-				return _dataContextWeakStorage?.Target;
-			}
-			set
-			{
-				SetWeakDataContext(Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, value));
-			}
+			get => _dataContextWeakStorage?.Target;
+			set => SetWeakDataContext(Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, value));
 		}
 
 		internal void SetWeakDataContext(ManagedWeakReference weakDataContext)

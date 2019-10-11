@@ -5,6 +5,8 @@ using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
 using Windows.UI.Xaml.Input;
+using Android.Runtime;
+using Java.Interop;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -29,8 +31,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			RegisterEvents();
 
 			OnCanExecuteChanged();
-
-			PreRaiseTapped += OnPreRaiseTapped;
 		}
 
 		protected override void OnUnloaded()
@@ -38,15 +38,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			base.OnUnloaded();
 			_isEnabledSubscription.Disposable = null;
 			_touchSubscription.Disposable = null;
-
-			PreRaiseTapped -= OnPreRaiseTapped;
-		}
-
-		private void OnPreRaiseTapped(object sender, EventArgs e)
-		{
-			// This even is raised only when the source is a Uno-managed control
-			// (when not using native styling)
-			OnClick();
 		}
 
 		partial void OnIsEnabledChangedPartial(bool oldValue, bool newValue)
@@ -74,7 +65,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 							this.Log().Debug("TouchUpInside, executing command");
 						}
 
-						OnPointerPressed(new PointerRoutedEventArgs { OriginalSource = this });
+						// TODO: Simulate the complete pointer sequence on "this", and remove the Tapped and Click
+						// uiControl.SetOnTouchListener()
+						OnPointerPressed(new PointerRoutedEventArgs(this));
 
 						OnClick();
 

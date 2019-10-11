@@ -78,6 +78,8 @@ namespace Windows.UI.Xaml.Data
 			}
 		}
 
+		public object DataItem => _bindingPath.DataItem;
+
 		internal BindingExpression(
 			ManagedWeakReference viewReference,
 			DependencyPropertyDetails targetPropertyDetails,

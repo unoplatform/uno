@@ -1,7 +1,7 @@
 # Uno Under the Hood: An Introduction
 
 
-By now you've heard about [Uno](https://github.com/nventive/Uno). In
+By now you've heard about [Uno](https://github.com/unoplatform/uno). In
 this post series I want to lay bare Uno's technical innards. We'll
 look at the critical code that powers the platform, and chart the ups
 and downs of building a UI platform. 

@@ -33,11 +33,8 @@ namespace Windows.UI.Xaml.Controls
 			PopupPanel = new PopupPanel(this);
 		}
 
-		partial void OnPopupPanelChanged(DependencyPropertyChangedEventArgs e)
+		partial void OnPopupPanelChangedPartial(PopupPanel previousPanel, PopupPanel newPanel)
 		{
-			var previousPanel = e.OldValue as PopupPanel;
-			var newPanel = e.NewValue as PopupPanel;
-
 			previousPanel?.Children.Clear();
 
 			if (PopupPanel != null)
@@ -48,14 +45,6 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			if (previousPanel != null)
-			{
-				previousPanel.PointerPressed -= Panel_PointerPressed;
-			}
-			if (newPanel != null)
-			{
-				newPanel.PointerPressed += Panel_PointerPressed;
-			}
 			_popupWindow.ContentView = newPanel;
 
 			UpdatePopupPanelDismissibleBackground(IsLightDismissEnabled);

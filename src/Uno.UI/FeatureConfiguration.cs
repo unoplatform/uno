@@ -5,6 +5,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
+using Uno.UI.Xaml.Controls;
 
 namespace Uno.UI
 {
@@ -142,6 +143,22 @@ namespace Uno.UI
 			public static double? DefaultCacheLength = 1.0;
 		}
 
+		public static class SelectorItem
+		{
+			/// <summary>
+			/// <para>
+			/// Determines if the visual states "PointerOver", "PointerOverSelected" and the "PointerOverPressed" (ListViewItem and GridViewItem only, cf. remarks)
+			/// are used or not. If disabled, those states will never be activated by the selector items.
+			/// </para>
+			/// <para>The default value is `true`.</para>
+			/// </summary>
+			/// <remarks>
+			/// For backward compatibility, only the ListViewBaseItem's "PointerOverPressed" is problematic
+			/// as it will be activated instead of the "Pressed" while using finger.
+			/// </remarks>
+			public static bool UseOverStates { get; set; } = true;
+		}
+
 #if __ANDROID__
 		public static class NativeListViewBase
 		{
@@ -231,6 +248,23 @@ namespace Uno.UI
 			public static bool ForceJavascriptInterop { get; set; } = false;
 		}
 #endif
+
+		public static class PointerRoutedEventArgs
+		{
+#if __ANDROID__
+			/// <summary>
+			/// Defines if the PointerPoint.Timestamp retrieved from PointerRoutedEventArgs.GetCurrentPoint(relativeTo)
+			/// or PointerRoutedEventArgs.GetIntermediatePoints(relativeTo) can be relative using the Android's
+			/// "SystemClock.uptimeMillis()" or if they must be converted into an absolute scale
+			/// (using the "elapsedRealtime()", cf. https://developer.android.com/reference/android/os/SystemClock).
+			/// Disabling it negatively impacts the performance it requires to compute the "sleep time"
+			/// (i.e. [real elapsed time] - [up time]) for each event (as the up time is paused when device is in deep sleep).
+			/// By default this is `true`.
+			/// </summary>
+			public static bool AllowRelativeTimeStamp { get; set; } = true;
+#endif
+		}
+
 		public static class ToolTip
 		{
 			public static bool UseToolTips { get; set; }
@@ -241,6 +275,22 @@ namespace Uno.UI
 			public static int ShowDelay { get; set; } = 1000;
 
 			public static int ShowDuration { get; set; } = 7000;
+		}
+
+		public static class ScrollViewer
+		{
+			/// <summary>
+			/// This defines the default value of the <see cref="Uno.UI.Xaml.Controls.ScrollViewer.UpdatesModeProperty"/>.
+			/// For backward compatibility, you should set it to Synchronous.
+			/// For better compatibility with Windows, you should keep the default value 'AsynchronousIdle'.
+			/// </summary>
+			/// <remarks>
+			/// As this boolean is read only once when initializing the dependency property,
+			/// make sure to define it in teh early stages of you application initialization,
+			/// before any UI related initialization (like generic styles init) and even before
+			/// referencing the ** type ** ScrollViewer in any way.
+			/// </remarks>
+			public static ScrollViewerUpdatesMode DefaultUpdatesMode { get; set; } = ScrollViewerUpdatesMode.AsynchronousIdle;
 		}
 
 		public static class CompositionTarget

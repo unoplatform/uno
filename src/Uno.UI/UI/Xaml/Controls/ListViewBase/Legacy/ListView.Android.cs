@@ -567,7 +567,7 @@ namespace Uno.UI.Controls.Legacy
 					removed.ForEach((object i) => ListViewAdapter.SetItemSelection(i, null, false));
 					added.ForEach((object i) => ListViewAdapter.SetItemSelection(i, null, true));
 
-					SelectionChanged?.Invoke(this, new SelectionChangedEventArgs(removed, added));
+					SelectionChanged?.Invoke(this, new SelectionChangedEventArgs(this, removed, added));
 				}
 			}
 		}
@@ -645,7 +645,7 @@ namespace Uno.UI.Controls.Legacy
 
 						if (selectedItem != newSelection)
 						{
-							SelectionChanged?.Invoke(this, new SelectionChangedEventArgs(new[] { selectedItem }, new[] { newSelection }));
+							SelectionChanged?.Invoke(this, new SelectionChangedEventArgs(this, new[] { selectedItem }, new[] { newSelection }));
 						}
 						break;
 

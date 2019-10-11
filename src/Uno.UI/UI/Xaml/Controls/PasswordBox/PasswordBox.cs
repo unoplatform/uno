@@ -101,7 +101,7 @@ namespace Windows.UI.Xaml.Controls
 			var handler = PasswordChanged;
 			if (handler != null)
 			{
-				handler(this, RoutedEventArgs.Empty);
+				handler(this, new RoutedEventArgs(this));
 			}
 
 			OnPasswordChangedPartial(e);

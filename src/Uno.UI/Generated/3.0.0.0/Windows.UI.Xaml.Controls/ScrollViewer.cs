@@ -177,7 +177,7 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		// Skipping already declared property ExtentHeight
 		// Skipping already declared property ExtentWidth
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  double HorizontalOffset
 		{
@@ -188,7 +188,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Skipping already declared property ScrollableWidth
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  double VerticalOffset
 		{
@@ -350,7 +350,7 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		// Skipping already declared property ExtentHeightProperty
 		// Skipping already declared property ExtentWidthProperty
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HorizontalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -430,7 +430,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property MinZoomFactorProperty
 		// Skipping already declared property ScrollableHeightProperty
 		// Skipping already declared property ScrollableWidthProperty
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty VerticalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -792,14 +792,14 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared method Windows.UI.Xaml.Controls.ScrollViewer.GetVerticalScrollMode(Windows.UI.Xaml.DependencyObject)
 		// Skipping already declared method Windows.UI.Xaml.Controls.ScrollViewer.SetVerticalScrollMode(Windows.UI.Xaml.DependencyObject, Windows.UI.Xaml.Controls.ScrollMode)
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.ZoomModeProperty.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.Controls.ZoomMode GetZoomMode( global::Windows.UI.Xaml.DependencyObject element)
 		{
 			return (global::Windows.UI.Xaml.Controls.ZoomMode)element.GetValue(ZoomModeProperty);
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public static void SetZoomMode( global::Windows.UI.Xaml.DependencyObject element,  global::Windows.UI.Xaml.Controls.ZoomMode zoomMode)
 		{
@@ -822,14 +822,14 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.BringIntoViewOnFocusChangeProperty.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public static bool GetBringIntoViewOnFocusChange( global::Windows.UI.Xaml.DependencyObject element)
 		{
 			return (bool)element.GetValue(BringIntoViewOnFocusChangeProperty);
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public static void SetBringIntoViewOnFocusChange( global::Windows.UI.Xaml.DependencyObject element,  bool bringIntoViewOnFocusChange)
 		{

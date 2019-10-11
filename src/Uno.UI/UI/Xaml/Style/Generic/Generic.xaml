@@ -4002,14 +4002,16 @@
 		</Setter>
 	</xamarin:Style>
 
-<!-- Default style for Windows.UI.Xaml.Controls.Slider -->	
-	<xamarin:Style TargetType="Thumb"	
-				   x:Key="SliderThumbStyle">	
-		<Setter Property="BorderThickness"	
-				Value="0" />	
-		<Setter Property="Background"	
-				Value="{ThemeResource SystemControlForegroundAccentBrush}" />	
-		<Setter Property="Template">	
+<!-- Default style for Windows.UI.Xaml.Controls.Slider -->
+	<xamarin:Style TargetType="Thumb"
+				   x:Key="SliderThumbStyle">
+		<Setter Property="ManipulationMode"
+				Value="None" />
+		<Setter Property="BorderThickness"
+				Value="0" />
+		<Setter Property="Background"
+				Value="{ThemeResource SystemControlForegroundAccentBrush}" />
+		<Setter Property="Template">
 			<Setter.Value>	
 				<ControlTemplate TargetType="Thumb">	
 					<Border Background="{TemplateBinding Background}"	
@@ -6633,6 +6635,8 @@
 
 	<Style TargetType="Thumb"
 		   x:Key="MTC_SliderThumbStyle">
+		<Setter Property="ManipulationMode"
+				Value="None"/>
 		<Setter Property="BorderThickness"
 				Value="0" />
 		<Setter Property="Background"

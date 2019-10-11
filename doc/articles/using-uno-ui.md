@@ -11,7 +11,7 @@ Visual Studio for Mac is supported, but the editing capabilities are currently l
 
 ## Create a new project
 
-Follow the instructions in the [Getting Started guide](get-started.md) to use the Uno app template to create a new app in Visual Studio. See the [Uno.Quickstart](https://github.com/nventive/Uno.QuickStart) repository for a simple example of a 'Hello World' application.
+Follow the instructions in the [Getting Started guide](get-started.md) to use the Uno app template to create a new app in Visual Studio. See the [Uno.Quickstart](https://github.com/unoplatform/uno.QuickStart) repository for a simple example of a 'Hello World' application.
 
 ## General guidelines for developing with Uno.UI
 
@@ -26,7 +26,7 @@ abstracting the implementation using a common interface.
 * A platform-specific code file **should have an appropriate suffix** (.android.cs, .ios.cs, .uwp.cs, .xamarin.cs, ...)
 * Uno.UI is not a perfect implementation of UWP's XAML, which means that there will be compatibility issues. When you 
 encounter one, a few approaches can be taken:
- 1. **Always [report the issue](https://github.com/nventive/Uno/issues) to the Uno.UI maintainers**. This may be a known issue, for which there may be known 
+ 1. **Always [report the issue](https://github.com/unoplatform/uno/issues) to the Uno.UI maintainers**. This may be a known issue, for which there may be known 
     workarounds or guidance on how to handle the issue.
  1. **Try to find a UWP-compatible workaround**, possibly non-breaking, meaning that the added Xaml produces the
     same behavior for all platforms, even if it does not conform to the expected UWP behavior.
@@ -472,4 +472,4 @@ As of iOS 9, the system does not allow iPad applications to dictate their orient
 If a view needs to keep the keyboard opened when tapping on it, use the `Uno.UI.Controls.Window.SetNeedsKeyboard` attached property.
 
 ## Creating/Using Android Activities
-At the root of every Android Uno app lies a `BaseActivity` class that extends from `Android.Support.V7.App.AppCompatActivity` which is part of the [Android v7 AppCompat Support Library](https://developer.android.com/topic/libraries/support-library/features.html#v7-appcompat). If you ever need to create a new Activity within your app or within Uno you must be sure to extend `BaseActivity` and, if you need to apply a Theme to the activity, ensure that the Theme you set is a `Theme.AppCompat` theme (or descendant).
+At the root of every Android Uno app, lies a `BaseActivity` class that extends from `Android.Support.V7.App.AppCompatActivity` which is part of the [Android v7 AppCompat Support Library](https://developer.android.com/topic/libraries/support-library/features.html#v7-appcompat). If you ever need to create a new Activity within your app or within Uno you must be sure to extend `BaseActivity` and, if you need to apply a Theme to the activity, ensure that the Theme you set is a `Theme.AppCompat` theme (or descendant).
