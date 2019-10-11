@@ -2,7 +2,7 @@
 
 Debugging WebAssembly via Google Chrome is experimentally supported by the Uno Platform. We HIGHLY recommend that you use [Google Chrome Canary](https://www.google.com/chrome/canary/).  Step-through debugging (in, out, over), breakpoints, inspection of run-time locals and viewing .NET source code from the developer tools works. Additional capabilities and browser support will become available as Microsoft adds [support for them to mono](https://github.com/mono/mono/tree/master/sdks/wasm).
 
--  Make your project the startup project (right-click **set as startup** in Solution Explorer)
+- Make your project the startup project (right-click **set as startup** in Solution Explorer)
 - Make sure you have the following lines defined in your project file which enable the Mono runtime debugger. Please ensure that `DEBUG` constant is defined and debug symbols are emitted and are of the type `portable`:
 
 ```xml
@@ -10,7 +10,7 @@ Debugging WebAssembly via Google Chrome is experimentally supported by the Uno P
    <MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
    <DebugType>portable</DebugType>
    <DebugSymbols>true</DebugSymbols>
-   <DefineConstants>TRACE;DEBUG</DefineConstants>
+   <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
 </PropertyGroup>
 ```
 
