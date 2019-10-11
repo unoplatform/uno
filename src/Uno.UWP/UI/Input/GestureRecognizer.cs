@@ -13,7 +13,6 @@ namespace Windows.UI.Input
 		private readonly ILogger _log;
 		private IDictionary<uint, List<PointerPoint>> _activePointers = new Dictionary<uint, List<PointerPoint>>();
 		private GestureSettings _gestureSettings;
-		private bool _isManipulationEnabled;
 
 		public GestureSettings GestureSettings
 		{
@@ -54,6 +53,8 @@ namespace Windows.UI.Input
 			}
 
 			_activePointers[value.PointerId] = new List<PointerPoint>(16) { value };
+
+			UpdateManipulationForPointerAdded(value);
 		}
 
 		public void ProcessMoveEvents(IList<PointerPoint> value)
@@ -70,6 +71,8 @@ namespace Windows.UI.Input
 					_log.Info("Received a 'Move' for a pointer which was not considered as down. Ignoring event.");
 				}
 			}
+
+			UpdateManipulationForPointersUpdated();
 		}
 		public void ProcessUpEvent(PointerPoint value)
 		{
@@ -86,6 +89,8 @@ namespace Windows.UI.Input
 				//		 even if we will fire some events now.
 
 				Recognize(points, pointerUp: value);
+
+				UpdateManipulationForPointerRemoved(value);
 			}
 			else if (_log.IsEnabled(LogLevel.Error))
 			{
@@ -112,6 +117,8 @@ namespace Windows.UI.Input
 			{
 				Recognize(points, pointerUp: null);
 			}
+
+			UpdateManipulationForCanceled();
 		}
 
 		private void Recognize(List<PointerPoint> points, PointerPoint pointerUp)
@@ -130,12 +137,152 @@ namespace Windows.UI.Input
 		}
 
 		#region Manipulations
+		internal const int MinManipulationDeltaTranslateX = 15;
+		internal const int MinManipulationDeltaTranslateY = 15;
+
 		internal event TypedEventHandler<GestureRecognizer, EventArgs> ManipulationStarting; // This is not on the public API!
 		public event TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> ManipulationCompleted;
+#pragma warning disable 67
 		public event TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> ManipulationInertiaStarting;
+#pragma warning restore 67
 		public event TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> ManipulationStarted;
 		public event TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> ManipulationUpdated;
 
+		private bool _isManipulationEnabled;
+
+		private ManipulationStates _manipulationState = ManipulationStates.None;
+		private PointerPoint _manipulationOrigin;
+		private PointerPoint _manipulationLast;
+
+		private enum ManipulationStates
+		{
+			None = 0,
+			Starting = 1,
+			Started = 2,
+			// Inertia = 3
+		}
+
+		private void UpdateManipulationForPointerAdded(PointerPoint point)
+		{
+			if (_isManipulationEnabled && _manipulationState == ManipulationStates.None)
+			{
+				_manipulationOrigin = _manipulationLast = point;
+				_manipulationState = ManipulationStates.Starting;
+
+				ManipulationStarting?.Invoke(this, EventArgs.Empty);
+			}
+		}
+
+		private void UpdateManipulationForPointersUpdated()
+		{
+			if (!_isManipulationEnabled
+				|| _manipulationOrigin == null // The manipulation was not enabled when pointer went down
+				|| !_activePointers.TryGetValue(_manipulationOrigin.PointerId, out var points))
+			{
+				return;
+			}
+
+			var current = points.Last();
+			var delta = GetManipulationDelta(_manipulationLast, current);
+
+			if (!IsSignificant(delta))
+			{
+				return;
+			}
+
+			// Make sure to update the _manipulationLast before raising the event, so if an exception is raised
+			// or if the manipulation is Completed, the Complete event args can use the updated _manipulationLast.
+			_manipulationLast = current;
+
+			switch (_manipulationState)
+			{
+				case ManipulationStates.Starting:
+					_manipulationState = ManipulationStates.Started;
+
+					ManipulationStarted?.Invoke(this, new ManipulationStartedEventArgs(
+						_manipulationOrigin.PointerDevice.PointerDeviceType,
+						current.Position,
+						delta));
+					break;
+
+				case ManipulationStates.Started:
+					ManipulationUpdated?.Invoke(this, new ManipulationUpdatedEventArgs(
+						_manipulationOrigin.PointerDevice.PointerDeviceType,
+						current.Position,
+						delta,
+						GetManipulationDelta(_manipulationOrigin, current),
+						isInertial: false));
+					break;
+			}
+		}
+
+		private void UpdateManipulationForPointerRemoved(PointerPoint removed)
+		{
+			if (!_isManipulationEnabled
+				|| _manipulationOrigin == null // The manipulation was not enabled when pointer went down
+				|| _manipulationOrigin != removed)
+			{
+				return;
+			}
+
+			CompleteManipulation(removed);
+		}
+
+		private void UpdateManipulationForCanceled()
+		{
+			CompleteManipulation(_manipulationLast);
+		}
+
+		private void CompleteManipulation(PointerPoint current)
+		{
+			// If the manipulation was not started, we just abort the manipulation without any event
+			if (_manipulationState == ManipulationStates.Started)
+			{
+				ManipulationCompleted?.Invoke(this, new ManipulationCompletedEventArgs(
+					_manipulationOrigin.PointerDevice.PointerDeviceType,
+					current.Position,
+					GetManipulationDelta(_manipulationOrigin, current),
+					isInertial: false));
+			}
+
+			_manipulationOrigin = null;
+			_manipulationLast = null;
+			_manipulationState = ManipulationStates.None;
+		}
+
+		private ManipulationDelta GetManipulationDelta(PointerPoint origin, PointerPoint current)
+		{
+			var originPosition = origin.Position;
+			var currentPosition = current.Position;
+
+			var deltaX = Math.Abs(currentPosition.X - originPosition.X);
+			var deltaY = Math.Abs(currentPosition.Y - originPosition.Y);
+
+			return new ManipulationDelta
+			{
+				Translation = new Point(deltaX, deltaY),
+				Scale = 1,
+				Rotation = 0,
+				Expansion = 0,
+			};
+		}
+
+		internal bool IsSignificant(ManipulationDelta delta)
+		{
+			if ((_gestureSettings & (GestureSettings.ManipulationTranslateX | GestureSettings.ManipulationTranslateRailsX)) != 0
+				&& delta.Translation.X >= MinManipulationDeltaTranslateX)
+			{
+				return true;
+			}
+
+			if ((_gestureSettings & (GestureSettings.ManipulationTranslateY | GestureSettings.ManipulationTranslateRailsY)) != 0
+				&& delta.Translation.Y >= MinManipulationDeltaTranslateY)
+			{
+				return true;
+			}
+
+			return false;
+		}
 		#endregion
 
 		#region Tap (includes DoubleTap)
