@@ -7,15 +7,22 @@ namespace Windows.UI.Input
 {
 	public partial class ManipulationCompletedEventArgs 
 	{
-		internal ManipulationCompletedEventArgs(PointerDeviceType pointerDeviceType, Point position, ManipulationDelta cumulative)
+		internal ManipulationCompletedEventArgs(
+			PointerDeviceType pointerDeviceType,
+			Point position,
+			ManipulationDelta cumulative,
+			bool isInertial)
 		{
 			PointerDeviceType = pointerDeviceType;
 			Position = position;
 			Cumulative = cumulative;
+			IsInertial = isInertial;
 		}
 
 		public PointerDeviceType PointerDeviceType { get; }
 		public Point Position { get; }
 		public ManipulationDelta Cumulative { get; }
+
+		internal bool IsInertial { get; }
 	}
 }

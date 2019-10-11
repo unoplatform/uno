@@ -27,9 +27,20 @@ namespace Windows.UI.Input
 
 		public bool IsActive => _activePointers.Count > 0;
 
+		/// <summary>
+		/// This is the owner provided in the ctor. It might be `null` if none provided.
+		/// It's purpose it to allow usage of static event handlers.
+		/// </summary>
+		internal object Owner { get; }
+
 		public GestureRecognizer()
 		{
 			_log = this.Log();
+		}
+
+		internal GestureRecognizer(object owner)
+		{
+			Owner = owner;
 		}
 
 		public void ProcessDownEvent(PointerPoint value)
@@ -119,11 +130,11 @@ namespace Windows.UI.Input
 		}
 
 		#region Manipulations
-		internal event EventHandler ManipulationStarting; // This is not on the public API!
-		public event TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> ManipulationCompleted
-		public event TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> ManipulationInertiaStarting
-		public event TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> ManipulationStarted
-		public event TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> ManipulationUpdated
+		internal event TypedEventHandler<GestureRecognizer, EventArgs> ManipulationStarting; // This is not on the public API!
+		public event TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> ManipulationCompleted;
+		public event TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> ManipulationInertiaStarting;
+		public event TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> ManipulationStarted;
+		public event TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> ManipulationUpdated;
 
 		#endregion
 

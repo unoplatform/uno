@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Windows.Devices.Input;
+using Windows.Foundation;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 using Microsoft.Extensions.Logging;
@@ -176,50 +177,72 @@ namespace Windows.UI.Xaml
 		}
 
 		#region Gestures recognition
+
+		#region Event to RoutedEvent handlers adapater
+		// Note: For the manipulation and gesture event args, the original source has to be the element that raise the event
+		//		 As those events are bubbling in managed only, the original source will be right one for all.
+
+		private static readonly TypedEventHandler<GestureRecognizer, EventArgs> OnRecognizerManipulationStarting = (sender, args) =>
+		{
+			var that = (UIElement)sender.Owner;
+			that.SafeRaiseEvent(ManipulationStartingEvent, new ManipulationStartingRoutedEventArgs(that));
+		};
+
+		private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> OnRecognizerManipulationStarted = (sender,  args) =>
+		{
+			var that = (UIElement)sender.Owner;
+			that.SafeRaiseEvent(ManipulationStartedEvent, new ManipulationStartedRoutedEventArgs(that, sender, args));
+		};
+
+		private static readonly TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> OnRecognizerManipulationUpdated = (sender, args) =>
+		{
+			var that = (UIElement)sender.Owner;
+			that.SafeRaiseEvent(ManipulationDeltaEvent, new ManipulationDeltaRoutedEventArgs(that, sender, args));
+		};
+
+		private static readonly TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> OnRecognizerManipulationInertiaStarting = (sender, args) =>
+		{
+			var that = (UIElement)sender.Owner;
+			that.SafeRaiseEvent(ManipulationInertiaStartingEvent, new ManipulationInertiaStartingRoutedEventArgs(that, args));
+		};
+
+		private static readonly TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> OnRecognizerManipulationCompleted = (sender, args) =>
+		{
+			var that = (UIElement)sender.Owner;
+			that.SafeRaiseEvent(ManipulationCompletedEvent, new ManipulationCompletedRoutedEventArgs(that, args));
+		};
+
+		private static readonly TypedEventHandler<GestureRecognizer, TappedEventArgs> OnRecognizerTapped = (sender, args) =>
+		{
+			var that = (UIElement)sender.Owner;
+			if (args.TapCount == 1)
+			{
+				that.SafeRaiseEvent(TappedEvent, new TappedRoutedEventArgs(that, args));
+			}
+			else // i.e. args.TapCount == 2
+			{
+				that.SafeRaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(that, args));
+			}
+		};
+		#endregion
+
 		private bool _isGestureCompleted;
 
 		private GestureRecognizer CreateGestureRecognizer()
 		{
-			var recognizer = new GestureRecognizer();
+			var recognizer = new GestureRecognizer(this);
 
-			recognizer.ManipulationStarted += OnManipulationStarted;
-			recognizer.ManipulationUpdated += OnManipulationUpdated;
-			recognizer.ManipulationInertiaStarting += OnManipulationInertiaStarting;
-			recognizer.ManipulationCompleted += OnManipulationCompleted;
-			recognizer.Tapped += OnTapRecognized;
+			recognizer.ManipulationStarting += OnRecognizerManipulationStarting;
+			recognizer.ManipulationStarted += OnRecognizerManipulationStarted;
+			recognizer.ManipulationUpdated += OnRecognizerManipulationUpdated;
+			recognizer.ManipulationInertiaStarting += OnRecognizerManipulationInertiaStarting;
+			recognizer.ManipulationCompleted += OnRecognizerManipulationCompleted;
+			recognizer.Tapped += OnRecognizerTapped;
 
 			// Allow partial parts to subscribe to pointer events (WASM)
 			OnGestureRecognizerInitialized(recognizer);
 
 			return recognizer;
-
-			void OnManipulationStarted(GestureRecognizer sender, ManipulationStartedEventArgs args)
-			{
-			}
-
-			void OnManipulationUpdated(GestureRecognizer sender, ManipulationUpdatedEventArgs manipulationUpdatedEventArgs)
-			{
-			}
-
-			void OnManipulationInertiaStarting(GestureRecognizer sender, ManipulationInertiaStartingEventArgs manipulationInertiaStartingEventArgs)
-			{
-			}
-
-			void OnManipulationCompleted(GestureRecognizer sender, ManipulationCompletedEventArgs manipulationCompletedEventArgs)
-			{
-			}
-
-			void OnTapRecognized(GestureRecognizer sender, TappedEventArgs args)
-			{
-				if (args.TapCount == 1)
-				{
-					SafeRaiseEvent(TappedEvent, new TappedRoutedEventArgs(this, args.PointerDeviceType, args.Position));
-				}
-				else // i.e. args.TapCount == 2
-				{
-					SafeRaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(this, args.PointerDeviceType, args.Position));
-				}
-			}
 		}
 
 		partial void OnGestureRecognizerInitialized(GestureRecognizer recognizer);

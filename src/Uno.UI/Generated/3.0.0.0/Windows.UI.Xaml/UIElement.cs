@@ -1524,7 +1524,7 @@ namespace Windows.UI.Xaml
 		}
 		#endif
 		// Skipping already declared event Windows.UI.Xaml.UIElement.LostFocus
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.Input.ManipulationCompletedEventHandler ManipulationCompleted
 		{
@@ -1540,7 +1540,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.Input.ManipulationDeltaEventHandler ManipulationDelta
 		{
@@ -1556,7 +1556,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.Input.ManipulationInertiaStartingEventHandler ManipulationInertiaStarting
 		{
@@ -1572,7 +1572,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.Input.ManipulationStartedEventHandler ManipulationStarted
 		{
@@ -1588,7 +1588,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.Input.ManipulationStartingEventHandler ManipulationStarting
 		{

@@ -7,24 +7,22 @@ namespace Windows.UI.Xaml.Input
 {
 	public partial class ManipulationDeltaRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
 	{
+		private readonly GestureRecognizer _recognizer;
+
 		public ManipulationDeltaRoutedEventArgs() { }
 
-		internal ManipulationDeltaRoutedEventArgs(
-			object originalSource,
-			UIElement container,
-			PointerDeviceType pointerDeviceType,
-			Point position,
-			ManipulationDelta delta,
-			ManipulationDelta cumulative,
-			bool isInertial)
-			: base(originalSource)
+		internal ManipulationDeltaRoutedEventArgs(UIElement container, GestureRecognizer recognizer, ManipulationUpdatedEventArgs args)
+			: base(container)
 		{
 			Container = container;
-			PointerDeviceType = pointerDeviceType;
-			Position = position;
-			Delta = delta;
-			Cumulative = cumulative;
-			IsInertial = isInertial;
+
+			_recognizer = recognizer;
+
+			PointerDeviceType = args.PointerDeviceType;
+			Position = args.Position;
+			Delta = args.Delta;
+			Cumulative = args.Cumulative;
+			IsInertial = args.IsInertial;
 		}
 
 		public bool Handled { get; set; }
@@ -37,7 +35,6 @@ namespace Windows.UI.Xaml.Input
 		public bool IsInertial { get; }
 
 		public void Complete()
-		{
-		}
+			=> _recognizer?.CompleteGesture();
 	}
 }

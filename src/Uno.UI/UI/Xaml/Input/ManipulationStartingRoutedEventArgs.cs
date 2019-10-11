@@ -1,3 +1,4 @@
+using Windows.UI.Input;
 using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Input
@@ -6,14 +7,11 @@ namespace Windows.UI.Xaml.Input
 	{
 		public ManipulationStartingRoutedEventArgs() { }
 
-		internal ManipulationStartingRoutedEventArgs(
-			object originalSource,
-			UIElement container,
-			ManipulationModes mode)
-			: base(originalSource)
+		internal ManipulationStartingRoutedEventArgs(UIElement container)
+			: base(container)
 		{
 			Container = container;
-			Mode = mode;
+			Mode = container.ManipulationMode;
 		}
 
 		public bool Handled { get; set; }

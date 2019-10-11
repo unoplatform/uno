@@ -213,13 +213,11 @@ namespace Windows.UI.Xaml
 			remove => RemoveHandler(GotFocusEvent, value);
 		}
 
-#pragma warning disable 67 // Unused member
 		public event PointerEventHandler PointerCanceled
 		{
 			add => AddHandler(PointerCanceledEvent, value, false);
 			remove => RemoveHandler(PointerCanceledEvent, value);
 		}
-#pragma warning restore 67 // Unused member
 
 		public event PointerEventHandler PointerCaptureLost
 		{
@@ -255,6 +253,36 @@ namespace Windows.UI.Xaml
 		{
 			add => AddHandler(PointerReleasedEvent, value, false);
 			remove => RemoveHandler(PointerReleasedEvent, value);
+		}
+
+		public event ManipulationStartingEventHandler ManipulationStarting
+		{
+			add => AddHandler(ManipulationStartingEvent, value, false);
+			remove => RemoveHandler(ManipulationStartingEvent, value);
+		}
+
+		public event ManipulationStartedEventHandler ManipulationStarted
+		{
+			add => AddHandler(ManipulationStartedEvent, value, false);
+			remove => RemoveHandler(ManipulationStartedEvent, value);
+		}
+
+		public event ManipulationDeltaEventHandler ManipulationDelta
+		{
+			add => AddHandler(ManipulationDeltaEvent, value, false);
+			remove => RemoveHandler(ManipulationDeltaEvent, value);
+		}
+
+		public event ManipulationInertiaStartingEventHandler ManipulationInertiaStarting
+		{
+			add => AddHandler(ManipulationInertiaStartingEvent, value, false);
+			remove => RemoveHandler(ManipulationInertiaStartingEvent, value);
+		}
+
+		public event ManipulationCompletedEventHandler ManipulationCompleted
+		{
+			add => AddHandler(ManipulationCompletedEvent, value, false);
+			remove => RemoveHandler(ManipulationCompletedEvent, value);
 		}
 
 		public event TappedEventHandler Tapped
@@ -583,6 +611,21 @@ namespace Windows.UI.Xaml
 					break;
 				case KeyEventHandler keyEventHandler:
 					keyEventHandler(this, (KeyRoutedEventArgs)args);
+					break;
+				case ManipulationStartingEventHandler manipStarting:
+					manipStarting(this, (ManipulationStartingRoutedEventArgs)args);
+					break;
+				case ManipulationStartedEventHandler manipStarted:
+					manipStarted(this, (ManipulationStartedRoutedEventArgs)args);
+					break;
+				case ManipulationDeltaEventHandler manipDelta:	
+					manipDelta(this, (ManipulationDeltaRoutedEventArgs)args);
+					break;
+				case ManipulationInertiaStartingEventHandler manipInertia:
+					manipInertia(this, (ManipulationInertiaStartingRoutedEventArgs)args);
+					break;
+				case ManipulationCompletedEventHandler manipCompleted:
+					manipCompleted(this, (ManipulationCompletedRoutedEventArgs)args);
 					break;
 			}
 		}
