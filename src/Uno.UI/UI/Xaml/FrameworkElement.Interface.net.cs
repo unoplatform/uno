@@ -41,12 +41,12 @@ namespace Windows.UI.Xaml
 
 		protected virtual void OnLoaded()
 		{
-			Loaded?.Invoke(this, RoutedEventArgs.Empty);
+			Loaded?.Invoke(this, new RoutedEventArgs(this));
 		}
 
 		protected virtual void OnUnloaded()
 		{
-			Unloaded?.Invoke(this, RoutedEventArgs.Empty);
+			Unloaded?.Invoke(this, new RoutedEventArgs(this));
 		}
 
 		public event RoutedEventHandler Loaded;

@@ -40,7 +40,7 @@ namespace Uno.Extensions
 				eventName,
 				handler,
 				eventExtractor: extractor,
-				payloadConverter: s => new HtmlCustomEventArgs(s));
+				payloadConverter: (_, s) => new HtmlCustomEventArgs(s));
 		}
 
 		/// <summary>

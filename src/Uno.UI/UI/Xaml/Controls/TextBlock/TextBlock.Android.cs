@@ -116,7 +116,7 @@ namespace Windows.UI.Xaml.Controls
 			SetWillNotDraw(false);
 		}
 
-		protected sealed override string UIAutomationText => Text;
+		protected sealed override string UIAutomationText => FrameworkElementHelper.IsUiAutomationMappingEnabled ? Name : Text;
 
 		#region Invalidate
 

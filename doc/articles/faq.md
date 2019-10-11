@@ -15,7 +15,7 @@ As the Uno Platform provides all of the APIs of the complete UWP platform, any U
 **For designers**, XAML can provide a shared way to use pixel-perfect designs and use rich UI interactions.
 
 ## Why Uno?
-Developing for Windows (phone, desktop, tablet, XBox), iOS (tablet and phone), Android (tablet and phone) and the Web via WebAssembly at once can be a complex process, especially when it comes to the user interface. Each platform has its own ways of defining dynamic layouts, with some being more efficient, some more verbose, some more elegant, and some more performant than others.
+Developing for Windows (phone, desktop, tablet, Xbox), iOS (tablet and phone), Android (tablet and phone) and the Web via WebAssembly at once can be a complex process, especially when it comes to the user interface. Each platform has its own ways of defining dynamic layouts, with some being more efficient, some more verbose, some more elegant, and some more performant than others.
 Yet, being able to master all these frameworks at once is a particularly difficult task, because of the amount of platform-specific knowledge required to master each platform. Most of the time it boils down to different teams developing the same application multiple times, with each requiring a full development cycle.
 With Xamarin, C# comes to all these platforms; however, it only provides transparent translations of the UI frameworks available for iOS and Android. Most non-UI code can be shared, but when it comes to the UI, almost nothing can be shared.
 To avoid having to learn the UI-layout techniques and approaches for each platform, Uno.UI mimics the Windows XAML approach of defining UI and layouts. This translates into the ability to share styles, layouts, and data-bindings while retaining the ability to mix XAML-style and native layouts. For instance, a StackPanel can easily contain a RelativeLayout on Android, or a MKMapView on iOS.
@@ -77,7 +77,7 @@ The Uno Platform sits in the middle, using the power of XAML to provide the abil
 Uno Platform-based applications on iOS and Android are no different than any other Xamarin-based applications. See [the details here](https://docs.microsoft.com/en-us/xamarin/cross-platform/app-fundamentals/building-cross-platform-applications/understanding-the-xamarin-mobile-platform).
 
 ## How does my Uno platform code run on the web?
-On the Web, the application is built using the standard .NET tooling. The application is then transformed into a static website though the [Uno Web Boostrapper](https://github.com/unoplatform/uno.Wasm.Bootstrap), which uses [mono-wasm](https://github.com/mono/mono/tree/master/sdks/wasm) to run the C# code in the browser.
+On the Web, the application is built using the standard .NET tooling. The application is then transformed into a static website through the [Uno Web Boostrapper](https://github.com/unoplatform/uno.Wasm.Bootstrap), which uses [mono-wasm](https://github.com/mono/mono/tree/master/sdks/wasm) to run the C# code in the browser.
 
 ## Is WebAssembly supported in all browsers?
 WebAssembly is supported in 4 major browser engines, see the [WebAssembly official site](https://webassembly.org/roadmap/) for more details.
@@ -119,7 +119,7 @@ All these implementations use the same base XAML definition language, with minor
 
 For instance, WPF has [`System.Windows.Controls.StackPanel`](https://docs.microsoft.com/en-us/dotnet/api/system.windows.controls.stackpanel?redirectedfrom=MSDN&view=netframework-4.7.2), UWP
 has [`Windows.UI.Xaml.Controls.StackPanel`](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.Controls.StackPanel) and Xamarin.Forms
-has [`Xamarin.Forms.StackLayout`](https://docs.microsoft.com/en-us/dotnet/api/Xamarin.Forms.StackLayout?view=xamarin-forms). All three essentially behave in the same way, but have implementation differences and feature differences, though UWP, WPF and Silverlight have a very similar behavior.
+has [`Xamarin.Forms.StackLayout`](https://docs.microsoft.com/en-us/dotnet/api/Xamarin.Forms.StackLayout?view=xamarin-forms). All three essentially behave in the same way, but have implementation differences and feature differences, though UWP, WPF and Silverlight have very similar behavior.
 
 ## Why Mono?
 [Mono](https://github.com/mono/mono) is currently the best (and only) mobile-friendly implementation of .NET that targets iOS, Android and WebAssembly. It shares a lot -- and increasing -- of code from the BCL implementation with [.NET core](https://github.com/dotnet/core), making the runtime behavior very similar and in most cases, identical across platforms.
@@ -149,12 +149,12 @@ Microsoft describes it best in its [What is .NET](https://www.microsoft.com/net/
 # Uno.UI Platforms Frequently Asked Questions
 
 ## Does Uno.UI support a single .NET Standard 2.0 binary model?
-Not at the moment. iOS and Android platform support relies on the underlying APIs being visible through class hierarchy for performance reasons. Also, the .NET Standard model is based on binary sharing, which makes very difficult to use platform features without jumping through hoops such as Dependency Injection, Inversion of Control or reflection.
+Not at the moment. iOS and Android platform support relies on the underlying APIs being visible through class hierarchy for performance reasons. Also, the .NET Standard model is based on binary sharing, which makes it very difficult to use platform features without jumping through hoops such as Dependency Injection, Inversion of Control or reflection.
 
 ## Does Uno.UI support having controls in a class library?
 Yes, here's a project sample.  https://github.com/unoplatform/uno.Samples/tree/master/UI/ControlLibrary. It is also possible to create a new Cross-Platform class library using the [Uno Platform Visual Studio extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin).
 
-## How do I update the to latest Uno.UI NuGet package, I don't see any update ?
+## How do I update to the latest Uno.UI NuGet package, I don't see any update ?
 
 You may want to try our latest dev builds, and here's how to do it:
 

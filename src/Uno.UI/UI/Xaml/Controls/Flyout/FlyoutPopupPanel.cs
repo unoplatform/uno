@@ -17,6 +17,10 @@ namespace Windows.UI.Xaml.Controls
 		public FlyoutBasePopupPanel(FlyoutBase flyout) : base(flyout._popup)
 		{
 			_flyout = flyout;
+
+			// Required for the dismiss handling
+			// This should however be customized depending of the Popup.DismissMode
+			Background = new SolidColorBrush(Colors.Transparent);
 		}
 
 		protected override FlyoutPlacementMode PopupPlacement => _flyout.Placement;

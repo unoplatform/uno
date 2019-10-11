@@ -303,7 +303,7 @@ namespace Uno.UI.Controls.Legacy
 			{
 				if (value)
 				{
-					selectorItem.IsPressed = true;
+					selectorItem.LegacySetPressed(true);
 				}
 				else
 				{
@@ -313,7 +313,7 @@ namespace Uno.UI.Controls.Legacy
 							async () =>
 							{
 								await Task.Delay(MinTimeBetweenPressStates);
-								selectorItem.IsPressed = false;
+								selectorItem.LegacySetPressed(false);
 							}
 						);
 				}

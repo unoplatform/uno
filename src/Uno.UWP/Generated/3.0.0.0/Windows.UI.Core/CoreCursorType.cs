@@ -1,3 +1,4 @@
+#if false
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Core
@@ -6,7 +7,7 @@ namespace Windows.UI.Core
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
-	public   enum CoreCursorType 
+	public enum CoreCursorType 
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		Arrow,
@@ -59,3 +60,4 @@ namespace Windows.UI.Core
 	}
 	#endif
 }
+#endif
