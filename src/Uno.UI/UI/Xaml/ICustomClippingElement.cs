@@ -7,8 +7,16 @@
 		/// when the size is constrained.
 		/// </summary>
 		/// <remarks>
-		/// This is called during the Arrange phase.
+		/// This is called during the Arrange phase, can be dynamic.
 		/// </remarks>
 		bool AllowClippingToBounds { get; }
+
+		/// <summary>
+		/// Define if the control is forcing a clipping to its bounds.
+		/// </summary>
+		/// <remarks>
+		/// This is called during the Arrange phase, can be dynamic.
+		/// </remarks>
+		bool ForcedClippingToBounds { get; }
 	}
 }

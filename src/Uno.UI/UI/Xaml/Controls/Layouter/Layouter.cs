@@ -1,4 +1,7 @@
 ﻿// #define LOG_LAYOUT
+
+using Microsoft.Extensions.Logging;
+using Uno.UI;
 #if !__WASM__
 using System;
 using System.Collections.Generic;
@@ -10,6 +13,7 @@ using Uno.Logging;
 using Uno.Collections;
 using static System.Double;
 using static System.Math;
+using static Uno.UI.LayoutHelper;
 using Uno.Diagnostics.Eventing;
 using Windows.Foundation;
 
@@ -40,14 +44,22 @@ namespace Windows.UI.Xaml.Controls
 	public abstract partial class Layouter : ILayouter
 	{
 		private static readonly IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
+		private Size _unclippedDesiredSize;
+		private ILogger _logDebug;
 
-		private readonly IFrameworkElement _element;
+		private const double SIZE_EPSILON = 0.1;
 
-		public IFrameworkElement Panel { get { return _element; } }
+		public IFrameworkElement Panel { get; }
 
 		protected Layouter(IFrameworkElement element)
 		{
-			_element = element;
+			Panel = element;
+
+			var log = this.Log();
+			if (log.IsEnabled(LogLevel.Debug))
+			{
+				_logDebug = log;
+			}
 		}
 
 		/// <summary>
@@ -69,16 +81,26 @@ namespace Windows.UI.Xaml.Controls
 
 			using (traceActivity)
 			{
+				var (minSize, maxSize) = Panel.GetMinMax();
+
 				//Constrain the size of the slot to the child's own constraints (it will not do it by itself)
-				var constrainedSize = GetConstrainedSize(availableSize);
+//				var frameworkAvailableSize = GetConstrainedSize(availableSize);
 
-				var measuredSize = MeasureOverride(constrainedSize);
+				var marginSize = Panel.GetMarginSize();
 
-				//Constrain the output of the child's measure, as will not have applied its own
-				//MaxWidth/MaxHeight/MinWidth/MinHeight/Width/Height
-				var size = GetConstrainedSize(measuredSize);
+				var frameworkAvailableSize = availableSize
+					.Subtract(marginSize)
+					.AtLeast(new Size(0, 0))
+					.AtMost(maxSize)
+					.AtLeast(minSize);
 
-				var desiredSize = size;
+				var desiredSize = MeasureOverride(frameworkAvailableSize);
+
+				desiredSize = desiredSize.AtLeast(minSize);
+
+				_unclippedDesiredSize = desiredSize;
+
+				desiredSize = desiredSize.AtMost(maxSize);
 
 				if (this.Panel is FrameworkElement frameworkElement && frameworkElement.Visibility == Visibility.Visible)
 				{
@@ -99,7 +121,13 @@ namespace Windows.UI.Xaml.Controls
 
 				SetDesiredChildSize(this.Panel as View, desiredSize);
 
-				return size;
+				var clippedDesiredSize = desiredSize
+					.Add(marginSize)
+					.AtMost(availableSize);
+
+				var retSize = clippedDesiredSize.AtLeast(new Size(0, 0));
+
+				return retSize;
 			}
 		}
 
@@ -108,7 +136,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		public void Arrange(Rect finalRect)
 		{
-			if (_element is UIElement ui)
+			if (Panel is UIElement ui)
 			{
 				ui.LayoutSlot = finalRect;
 			}
@@ -129,9 +157,58 @@ namespace Windows.UI.Xaml.Controls
 					this.Log().DebugFormat("[{0}/{1}] Arrange({2}/{3}/{4}/{5})", LoggingOwnerTypeName, Name, GetType(), Panel.Name, finalRect, Panel.Margin);
 				}
 
-				ArrangeOverride(finalRect.Size);
+				var arrangeSize = finalRect.Size;
 
-				if (_element is FrameworkElement fe)
+				var (minSize, maxSize) = this.Panel.GetMinMax();
+
+				arrangeSize = arrangeSize
+					.AtLeast(minSize)
+					.AtLeast(new Size(0, 0));
+
+				var customClippingElement = (this as ICustomClippingElement);
+				var allowClip = customClippingElement?.AllowClippingToBounds ?? true; // Some controls may control itself how clipping is applied
+				var needsClipping = customClippingElement?.ForcedClippingToBounds ?? false;
+
+				_logDebug?.Debug($"{this}: InnerArrangeCore({finalRect}) - allowClip={allowClip}, arrangeSize={arrangeSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipping}");
+
+				if (allowClip && !needsClipping)
+				{
+					if (arrangeSize.Width < _unclippedDesiredSize.Width - SIZE_EPSILON)
+					{
+						_logDebug?.Debug($"{this}: (arrangeSize.Width) {arrangeSize.Width} < {_unclippedDesiredSize.Width}: NEEDS CLIPPING.");
+						needsClipping = true;
+					}
+
+					if (arrangeSize.Height < _unclippedDesiredSize.Height - SIZE_EPSILON)
+					{
+						_logDebug?.Debug($"{this}: (arrangeSize.Height) {arrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
+						needsClipping = true;
+					}
+				}
+
+				var effectiveMaxSize = Max(_unclippedDesiredSize, maxSize);
+				arrangeSize = arrangeSize.AtMost(effectiveMaxSize);
+
+				if (allowClip && !needsClipping)
+				{
+					if (effectiveMaxSize.Width < arrangeSize.Width - SIZE_EPSILON)
+					{
+						_logDebug?.Debug($"{this}: (effectiveMaxSize.Width) {effectiveMaxSize.Width} < {arrangeSize.Width}: NEEDS CLIPPING.");
+						needsClipping = true;
+					}
+
+					if (effectiveMaxSize.Height < arrangeSize.Height - SIZE_EPSILON)
+					{
+						_logDebug?.Debug($"{this}: (effectiveMaxSize.Height) {effectiveMaxSize.Height} < {arrangeSize.Height}: NEEDS CLIPPING.");
+						needsClipping = true;
+					}
+				}
+
+				ArrangeOverride(arrangeSize);
+
+				SetClippingToBounds(needsClipping);
+
+				if (Panel is FrameworkElement fe)
 				{
 					fe.OnLayoutUpdated();
 				}
@@ -631,7 +708,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private Size GetConstrainedSize(Size availableSize)
 		{
-			var constrainedSize = IFrameworkElementHelper.SizeThatFits(_element as IFrameworkElement, availableSize);
+			var constrainedSize = IFrameworkElementHelper.SizeThatFits(Panel as IFrameworkElement, availableSize);
 
 #if XAMARIN_IOS
 			return constrainedSize.ToFoundationSize();

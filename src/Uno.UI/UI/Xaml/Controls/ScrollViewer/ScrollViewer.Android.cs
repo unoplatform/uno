@@ -17,13 +17,8 @@ using static Uno.Extensions.MathEx;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ScrollViewer : ContentControl
+	public partial class ScrollViewer : ContentControl, ICustomClippingElement
 	{
-		partial void InitializePartial()
-		{
-			base.EnableAndroidClipping();
-		}
-
 		internal static int GetMeasureValue(int value, ScrollBarVisibility scrollBarVisibility)
 		{
 			switch (scrollBarVisibility)
@@ -156,5 +151,8 @@ namespace Windows.UI.Xaml.Controls
 				_sv.BringIntoViewOnFocusChange = newValue;
 			}
 		}
+
+		bool ICustomClippingElement.AllowClippingToBounds => true;
+		bool ICustomClippingElement.ForcedClippingToBounds => true; // force scrollviewer to always clip
 	}
 }

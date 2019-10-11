@@ -94,6 +94,11 @@ namespace Windows.UI.Xaml.Controls
 				(int)physicalFrame.Bottom
 			);
 		}
+
+		private void SetClippingToBounds(bool needsClipping)
+		{
+			(Panel as UnoViewGroup)?.SetClipChildren(needsClipping);
+		}
 	}
 
 	public static partial class LayouterExtensions

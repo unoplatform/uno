@@ -115,7 +115,6 @@ namespace Windows.UI.Xaml
 		{
 			_logDebug?.Debug($"{this}: InnerArrangeCore({finalRect})");
 			var arrangeSize = finalRect.Size;
-			var needsClipping = false;
 
 			var (minSize, maxSize) = this.GetMinMax();
 			var marginSize = this.GetMarginSize();
@@ -124,20 +123,23 @@ namespace Windows.UI.Xaml
 				.Subtract(marginSize)
 				.AtLeast(new Size(0, 0));
 
-			var allowClip = (this as ICustomClippingElement)?.AllowClippingToBounds ?? true; // Some controls may allow clipping
-			_logDebug?.Debug($"{this}: InnerArrangeCore({finalRect}) - allowClip={allowClip}, arrangeSize={arrangeSize}, _unclippedDesiredSize={_unclippedDesiredSize}");
+			var customClippingElement = (this as ICustomClippingElement);
+			var allowClip = customClippingElement?.AllowClippingToBounds ?? true; // Some controls may control itself how clipping is applied
+			var needsClipping = customClippingElement?.ForcedClippingToBounds ?? false;
 
-			if (allowClip)
+			_logDebug?.Debug($"{this}: InnerArrangeCore({finalRect}) - allowClip={allowClip}, arrangeSize={arrangeSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipping}");
+
+			if (allowClip && !needsClipping)
 			{
 				if (arrangeSize.Width < _unclippedDesiredSize.Width - SIZE_EPSILON)
 				{
-					_logDebug?.Debug($">1>{this}: (Width) {arrangeSize.Width} < {_unclippedDesiredSize.Width}: NEEDS CLIPPING 1");
+					_logDebug?.Debug($"{this}: (arrangeSize.Width) {arrangeSize.Width} < {_unclippedDesiredSize.Width}: NEEDS CLIPPING.");
 					needsClipping = true;
 				}
 
 				if (arrangeSize.Height < _unclippedDesiredSize.Height - SIZE_EPSILON)
 				{
-					_logDebug?.Debug($">2>{this}: (Height) {arrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING 2");
+					_logDebug?.Debug($"{this}: (arrangeSize.Height) {arrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
 					needsClipping = true;
 				}
 			}
@@ -155,17 +157,17 @@ namespace Windows.UI.Xaml
 			var effectiveMaxSize = Max(_unclippedDesiredSize, maxSize);
 			arrangeSize = arrangeSize.AtMost(effectiveMaxSize);
 
-			if (allowClip)
+			if (allowClip && !needsClipping)
 			{
 				if (effectiveMaxSize.Width < arrangeSize.Width - SIZE_EPSILON)
 				{
-					_logDebug?.Debug($">3>{this}: (Width) {effectiveMaxSize.Width} < {arrangeSize.Width}: NEEDS CLIPPING 3");
+					_logDebug?.Debug($"{this}: (effectiveMaxSize.Width) {effectiveMaxSize.Width} < {arrangeSize.Width}: NEEDS CLIPPING.");
 					needsClipping = true;
 				}
 
 				if (effectiveMaxSize.Height < arrangeSize.Height - SIZE_EPSILON)
 				{
-					_logDebug?.Debug($">4>{this}: (Height) {effectiveMaxSize.Height} < {arrangeSize.Height}: NEEDS CLIPPING 4");
+					_logDebug?.Debug($"{this}: (effectiveMaxSize.Height) {effectiveMaxSize.Height} < {arrangeSize.Height}: NEEDS CLIPPING.");
 					needsClipping = true;
 				}
 			}

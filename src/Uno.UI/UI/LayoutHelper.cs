@@ -10,7 +10,7 @@ namespace Uno.UI
 {
 	internal static class LayoutHelper
 	{
-		internal static (Size min, Size max) GetMinMax(this FrameworkElement e)
+		internal static (Size min, Size max) GetMinMax(this IFrameworkElement e)
 		{
 			var size = new Size(e.Width, e.Height);
 			var minSize = new Size(e.MinWidth, e.MinHeight);
@@ -29,7 +29,7 @@ namespace Uno.UI
 			return (minSize, maxSize);
 		}
 
-		internal static Size GetMarginSize(this FrameworkElement frameworkElement)
+		internal static Size GetMarginSize(this IFrameworkElement frameworkElement)
 		{
 			var margin = frameworkElement.Margin;
 			var marginWidth = margin.Left + margin.Right;
@@ -37,7 +37,7 @@ namespace Uno.UI
 			return new Size(marginWidth, marginHeight);
 		}
 
-		internal static Point GetAlignmentOffset(this FrameworkElement e, Size clientSize, Size renderSize)
+		internal static Point GetAlignmentOffset(this IFrameworkElement e, Size clientSize, Size renderSize)
 		{
 			// Start with Bottom-Right alignment, multiply by 0/0.5/1 for Top-Left/Center/Bottom-Right alignment
 			var offset = new Point(

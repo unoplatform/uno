@@ -66,18 +66,23 @@
 				<RowDefinition Height="Auto" />
 			</Grid.RowDefinitions>
 
-			<StackPanel Orientation="Horizontal">
-				<Button Click="Open">OPEN Y</Button>
-				<Button Click="Close">CLOSE Y</Button>
-				<Button Click="Rotate">ROTATE</Button>
-				<Button Click="FixHeight">FIX HEIGHT (50)</Button>
-				<Button Click="FixHeight300">FIX HEIGHT (300)</Button>
-				<Button Click="ReleaseHeight">RELEASE HEIGHT</Button>
-				<Button Click="FixWidth">FIX WIDTH (50)</Button>
-				<Button Click="FixWidth300">FIX WIDTH (300)</Button>
-				<Button Click="ReleaseWidth">RELEASE WIDTH</Button>
+			<StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<Button Click="Open">OPEN Y</Button>
+					<Button Click="Close">CLOSE Y</Button>
+					<Button Click="Rotate">ROTATE</Button>
+				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<Button Click="FixHeight">FIX HEIGHT (50)</Button>
+					<Button Click="FixHeight300">FIX HEIGHT (300)</Button>
+					<Button Click="ReleaseHeight">RELEASE HEIGHT</Button>
+				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<Button Click="FixWidth">FIX WIDTH (50)</Button>
+					<Button Click="FixWidth300">FIX WIDTH (300)</Button>
+					<Button Click="ReleaseWidth">RELEASE WIDTH</Button>
+				</StackPanel>
 			</StackPanel>
-
 
 			<Border x:Name="ExpanderPresenter"
 					Grid.Row="1"
@@ -90,11 +95,11 @@
 						<StackPanel.RenderTransform>
 							<TranslateTransform X="15" Y="15" />
 						</StackPanel.RenderTransform>
-						<Rectangle Fill="Red" Height="200" Width="200">
-							<Rectangle.RenderTransform>
+						<Border Background="Red" Height="200" Width="200">
+							<Border.RenderTransform>
 								<RotateTransform x:Name="RotateTransform" />
-							</Rectangle.RenderTransform>
-						</Rectangle>
+							</Border.RenderTransform>
+						</Border>
 					</StackPanel>
 				</StackPanel>
 			</Border>

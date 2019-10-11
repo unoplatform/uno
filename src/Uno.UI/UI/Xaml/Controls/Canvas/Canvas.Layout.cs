@@ -67,5 +67,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		bool ICustomClippingElement.AllowClippingToBounds => false;
+		bool ICustomClippingElement.ForcedClippingToBounds => false;
 	}
 }

@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Shapes
 		/// Refreshes the current shape, considering its drawinf parameters.
 		/// </summary>
 		/// <param name="forceRefresh">Forces a refresh by ignoring the shape parameters.</param>
-		protected internal override void RefreshShape(bool forceRefresh = false)
+		protected override void RefreshShape(bool forceRefresh = false)
 		{
 			if (IsLoaded)
 			{

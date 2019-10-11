@@ -273,9 +273,11 @@ namespace Windows.UI.Xaml
 			{
 				_lastLayoutSize = newSize;
 
+				var finalRect = new Rect(0, 0, newSize.Width, newSize.Height);
+
 				OnBeforeArrange();
 
-				_layouter.Arrange(new Rect(0, 0, newSize.Width, newSize.Height));
+				_layouter.Arrange(finalRect);
 
 				OnAfterArrange();
 			}

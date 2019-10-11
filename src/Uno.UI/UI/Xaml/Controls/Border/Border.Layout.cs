@@ -68,5 +68,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		bool ICustomClippingElement.AllowClippingToBounds => !(Child is UIElement ue) || ue.RenderTransform == null;
+		bool ICustomClippingElement.ForcedClippingToBounds => false;
 	}
 }
