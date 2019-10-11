@@ -3,6 +3,7 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.Threading.Tasks;
 using Uno;
 using Windows.Foundation;
@@ -58,9 +59,15 @@ namespace Windows.Devices.Geolocation
 			{
 				//enqueue request
 				_pendingAccessRequests.Add(accessRequest);
+
+				if (_pendingAccessRequests.Count == 1)
+				{
+					//there are no access requests currently waiting for resolution, we need to invoke the check in JS
+					var command = $"{JsType}.requestAccess()";
+					InvokeJS(command);
+				}
 			}
-			var command = $"{JsType}.requestAccess()";
-			InvokeJS(command);
+
 			//await access status asynchronously, will come back through DispatchAccessRequest call
 			var result = await accessRequest.Task;
 
@@ -124,7 +131,7 @@ namespace Windows.Devices.Geolocation
 		{
 			if (_pendingGeopositionRequests.TryRemove(requestId, out var geopositionCompletionSource))
 			{
-				if (!Enum.TryParse<PositionStatus>(currentPositionRequestResult, out var positionStatus))
+				if (!Enum.TryParse<PositionStatus>(currentPositionRequestResult, true, out var positionStatus))
 				{
 					throw new ArgumentOutOfRangeException(
 						nameof(currentPositionRequestResult),
@@ -167,7 +174,7 @@ namespace Windows.Devices.Geolocation
 			{
 				throw new ArgumentNullException(nameof(serializedAccessStatus));
 			}
-			if (!Enum.TryParse<GeolocationAccessStatus>(serializedAccessStatus, out var geolocationAccessStatus))
+			if (!Enum.TryParse<GeolocationAccessStatus>(serializedAccessStatus, true, out var geolocationAccessStatus))
 			{
 				throw new ArgumentOutOfRangeException(
 					nameof(serializedAccessStatus),
@@ -195,37 +202,37 @@ namespace Windows.Devices.Geolocation
 		{
 			var dataSplit = serializedPosition.Split(':');
 
-			var latitude = double.Parse(dataSplit[0]);
-			var longitude = double.Parse(dataSplit[1]);
+			var latitude = double.Parse(dataSplit[0], CultureInfo.InvariantCulture);
+			var longitude = double.Parse(dataSplit[1], CultureInfo.InvariantCulture);
 
 			double? altitude = null;
-			if (double.TryParse(dataSplit[2], out double parsedAltitude))
+			if (double.TryParse(dataSplit[2], NumberStyles.Float, CultureInfo.InvariantCulture, out double parsedAltitude))
 			{
 				altitude = parsedAltitude;
 			}
 
 			double? altitudeAccuracy = null;
-			if (double.TryParse(dataSplit[3], out double parsedAltitudeAccuracy))
+			if (double.TryParse(dataSplit[3], NumberStyles.Float, CultureInfo.InvariantCulture, out double parsedAltitudeAccuracy))
 			{
 				altitudeAccuracy = parsedAltitudeAccuracy;
 			}
 
-			var accuracy = double.Parse(dataSplit[4]);
+			var accuracy = double.Parse(dataSplit[4], CultureInfo.InvariantCulture);
 
 			double? heading = null;
-			if (double.TryParse(dataSplit[5], out var parsedHeading))
+			if (double.TryParse(dataSplit[5], NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedHeading))
 			{
 				heading = parsedHeading;
 			}
 
 			double? speed = null;
-			if (double.TryParse(dataSplit[6], out var parsedSpeed))
+			if (double.TryParse(dataSplit[6], NumberStyles.Float, CultureInfo.InvariantCulture, out var parsedSpeed))
 			{
 				speed = parsedSpeed;
 			}
 
 			var timestamp = DateTimeOffset.UtcNow;
-			if (long.TryParse(dataSplit[7], out var parsedTimestamp))
+			if (long.TryParse(dataSplit[7], NumberStyles.Integer, CultureInfo.InvariantCulture, out var parsedTimestamp))
 			{
 				timestamp = DateTimeOffset.FromUnixTimeMilliseconds(parsedTimestamp);
 			}

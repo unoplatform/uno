@@ -29,10 +29,6 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="ts\Windows\Devices\Geolocation\Geolocator.ts" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <EmbeddedResource Include="LinkerDefinition.xml">
 		<LogicalName>$(AssemblyName).xml</LogicalName>
 	  </EmbeddedResource>
