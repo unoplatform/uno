@@ -7,10 +7,6 @@ namespace Windows.UI.Xaml
 	[DebuggerDisplay("{" + nameof(Name) + "}")]
 	public partial class RoutedEvent
 	{
-		public string Name { get; }
-
-		internal RoutedEventFlag Flag { get; }
-
 		public RoutedEvent([CallerMemberName] string name = null)
 			: this(RoutedEventFlag.None, name)
 		{
@@ -22,6 +18,20 @@ namespace Windows.UI.Xaml
 		{
 			Flag = flag;
 			Name = name;
+
+			IsPointerEvent = flag.IsPointerEvent();
+			IsGestureEvent = flag.IsGestureEvent();
+			IsKeyEvent = flag.IsKeyEvent();
+			IsFocusEvent = flag.IsFocusEvent();
 		}
+
+		internal string Name { get; }
+
+		internal RoutedEventFlag Flag { get; }
+
+		internal bool IsPointerEvent { get; }
+		internal bool IsGestureEvent { get; }
+		internal bool IsKeyEvent { get; }
+		internal bool IsFocusEvent { get; }
 	}
 }

@@ -15,6 +15,7 @@
 
 	<ScrollViewer>
 		<StackPanel>
+			<Border Height="300" />
 			<TextBlock Text="Styled slider" />
 			<Slider x:Name="styledSlider"
 							xamarin:Style="{StaticResource XamlDefaultSlider}"/>
@@ -29,7 +30,7 @@
 			
 			<TextBlock TextWrapping="Wrap"
 								 Text="You should be able to scrub the sliders left and right while moving your finger up and down the screen without interference by the ScrollViewer. Below is empty padding to simulate a realistic scrollable view." />
-			<Border Height="600" />
+			<Border Height="6000" />
 		</StackPanel>
 	</ScrollViewer>
 </UserControl>

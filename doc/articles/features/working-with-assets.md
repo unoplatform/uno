@@ -46,7 +46,7 @@ Not all scales are supported on all platforms:
 
 We recommend including assets for each of these scales: `100`, `150`, `200`, `300` and `400`. Only compatible scales will be included to each platform.
 
-*Note: In the Android head project (via the csproj), you can define the `UseHighDPIResources` property to `False` in debug. In those cases, only assets with scale `100` (mdpi) and scale `150` (hdpi) will be included. This reduces deployment time when debugging as fewer assets are processed and transferred to the device or simulator.*
+*Note: In the Android head project (via the csproj), you can set the `UseHighDPIResources` property to `False` in debug. In those cases, only assets with scale `100` (mdpi) and scale `150` (hdpi) will be included. This reduces deployment time when debugging as fewer assets are processed and transferred to the device or simulator.*
 
 #### Examples
 

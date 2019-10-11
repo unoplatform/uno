@@ -142,7 +142,7 @@ namespace Windows.UI.Xaml
 					{
 						frameworkElement.ActualHeight = _size.Height;
 						frameworkElement.ActualWidth = _size.Width;
-						frameworkElement.RaiseSizeChanged(new SizeChangedEventArgs(previousSize, _size));
+						frameworkElement.RaiseSizeChanged(new SizeChangedEventArgs(this, previousSize, _size));
 					}
 				}
 			}

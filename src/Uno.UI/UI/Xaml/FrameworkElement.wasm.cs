@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml
 			try
 			{
 				// Raise event before invoking base in order to raise them top to bottom
-				_loading?.Invoke(this, RoutedEventArgs.Empty);
+				_loading?.Invoke(this, new RoutedEventArgs(this));
 			}
 			catch (Exception error)
 			{
@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml
 				{
 					// Raise event before invoking base in order to raise them top to bottom
 					OnLoaded();
-					_loaded?.Invoke(this, RoutedEventArgs.Empty);
+					_loaded?.Invoke(this, new RoutedEventArgs(this));
 				}
 				catch (Exception error)
 				{
@@ -118,7 +118,7 @@ namespace Windows.UI.Xaml
 			{
 				// Raise event after invoking base in order to raise them bottom to top
 				OnUnloaded();
-				_unloaded?.Invoke(this, RoutedEventArgs.Empty);
+				_unloaded?.Invoke(this, new RoutedEventArgs(this));
 			}
 			catch (Exception error)
 			{

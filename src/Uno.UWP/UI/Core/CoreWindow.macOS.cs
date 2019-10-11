@@ -12,7 +12,7 @@ namespace Windows.UI.Core
 	{
         private readonly NSWindow _window;
 
-        public CoreWindow(NSWindow window)
+        public CoreWindow(NSWindow window) : this()
         {
             _window = window;
         }

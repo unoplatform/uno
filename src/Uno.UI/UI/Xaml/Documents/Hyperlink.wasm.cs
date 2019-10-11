@@ -1,4 +1,7 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Documents
 {
@@ -6,10 +9,15 @@ namespace Windows.UI.Xaml.Documents
 	{
 		public Hyperlink() : base("a")
 		{
-			SetAttribute("target", "_blank");
+			UpdateNavigationProperties(null, _defaultNavigationTarget);
+
+			PointerPressed += TextBlock.OnPointerPressed;
+			PointerReleased += TextBlock.OnPointerReleased;
+			PointerCaptureLost += TextBlock.OnPointerCaptureLost;
 		}
 
 		#region NavigationTarget DependencyProperty
+		private const NavigationTarget _defaultNavigationTarget = NavigationTarget.NewDocument;
 
 		public NavigationTarget NavigationTarget
 		{
@@ -17,33 +25,48 @@ namespace Windows.UI.Xaml.Documents
 			set => SetValue(NavigationTargetProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for NavigationTarget.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty NavigationTargetProperty =
-			DependencyProperty.Register("NavigationTarget", typeof(NavigationTarget), typeof(Hyperlink), new PropertyMetadata(NavigationTarget.NewDocument, (s, e) => ((Hyperlink)s)?.OnNavigationTargetChanged(e)));
-
+		public static readonly DependencyProperty NavigationTargetProperty = DependencyProperty.Register(
+			"NavigationTarget",
+			typeof(NavigationTarget),
+			typeof(Hyperlink),
+			new PropertyMetadata(_defaultNavigationTarget, (s, e) => ((Hyperlink)s).OnNavigationTargetChanged(e)));
 
 		private void OnNavigationTargetChanged(DependencyPropertyChangedEventArgs e)
+			=> UpdateNavigationProperties(NavigateUri, (NavigationTarget)e.NewValue);
+		#endregion
+
+		partial void OnNavigateUriChangedPartial(Uri newNavigateUri)
+			=> UpdateNavigationProperties(newNavigateUri, NavigationTarget);
+
+		private void UpdateNavigationProperties(Uri navigateUri, NavigationTarget target)
 		{
-			var newTarget = (NavigationTarget) e.NewValue;
-			if (newTarget == NavigationTarget.NewDocument)
+			var uri = navigateUri?.OriginalString;
+			if (string.IsNullOrWhiteSpace(uri))
 			{
-				SetAttribute("target", "_blank");
+				SetAttribute(
+					("target", ""),
+					("href", "#") // Required to get the native hover visual state
+				);
+			}
+			else if (target == NavigationTarget.NewDocument)
+			{
+				SetAttribute(
+					("target", "_blank"),
+					("href", uri)
+				);
 			}
 			else
 			{
-				SetAttribute("target", "");
+				SetAttribute(
+					("target", ""),
+					("href", uri)
+				);
 			}
-		}
-
-		#endregion
-
-		partial void OnNavigateUriChangedPartial()
-		{
-			SetAttribute("href", NavigateUri?.OriginalString ?? "");
 			UpdateHitTest();
 		}
 
-		internal override bool IsViewHit() => NavigateUri != null || base.IsViewHit();
+		internal override bool IsViewHit()
+			=> NavigateUri != null || base.IsViewHit();
 	}
 
 	public enum NavigationTarget

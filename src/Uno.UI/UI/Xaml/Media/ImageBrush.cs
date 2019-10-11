@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml.Media
 				this.Log().Debug(ToString() + " Image opened successfully");
 			}
 
-			ImageOpened?.Invoke(this, RoutedEventArgs.Empty);
+			ImageOpened?.Invoke(this, new RoutedEventArgs(this));
 		}
 
 		private void OnImageFailed()
@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml.Media
 				this.Log().Debug(ToString() + " Image failed to open");
 			}
 
-			ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs("Image failed to open"));
+			ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, "Image failed to open"));
 		}
 	}
 }

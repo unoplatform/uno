@@ -705,19 +705,13 @@ namespace Windows.UI.Xaml.Controls
 			FocusManager.OnFocusChanged(this, newValue);
 #endif
 
-			var eventArgs = new RoutedEventArgs
-			{
-				OriginalSource = this,
-				CanBubbleNatively = false
-			};
-
 			if (newValue == FocusState.Unfocused)
 			{
-				RaiseEvent(LostFocusEvent, eventArgs);
+				RaiseEvent(LostFocusEvent, new RoutedEventArgs(this));
 			}
 			else
 			{
-				RaiseEvent(GotFocusEvent, eventArgs);
+				RaiseEvent(GotFocusEvent, new RoutedEventArgs(this));
 			}
 		}
 

@@ -105,7 +105,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Input.GestureSettings GestureSettings
 		{
@@ -217,7 +217,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  bool IsActive
 		{
@@ -247,7 +247,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public GestureRecognizer() 
 		{
@@ -288,28 +288,28 @@ namespace Windows.UI.Input
 		// Forced skipping of method Windows.UI.Input.GestureRecognizer.AutoProcessInertia.get
 		// Forced skipping of method Windows.UI.Input.GestureRecognizer.AutoProcessInertia.set
 		// Forced skipping of method Windows.UI.Input.GestureRecognizer.MouseWheelParameters.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  bool CanBeDoubleTap( global::Windows.UI.Input.PointerPoint value)
 		{
 			throw new global::System.NotImplementedException("The member bool GestureRecognizer.CanBeDoubleTap(PointerPoint value) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  void ProcessDownEvent( global::Windows.UI.Input.PointerPoint value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "void GestureRecognizer.ProcessDownEvent(PointerPoint value)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  void ProcessMoveEvents( global::System.Collections.Generic.IList<global::Windows.UI.Input.PointerPoint> value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "void GestureRecognizer.ProcessMoveEvents(IList<PointerPoint> value)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  void ProcessUpEvent( global::Windows.UI.Input.PointerPoint value)
 		{
@@ -330,7 +330,7 @@ namespace Windows.UI.Input
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "void GestureRecognizer.ProcessInertia()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  void CompleteGesture()
 		{
@@ -483,7 +483,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.GestureRecognizer, global::Windows.UI.Input.TappedEventArgs> Tapped
 		{
