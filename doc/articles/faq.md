@@ -16,7 +16,7 @@ As the Uno Platform provides all of the APIs of the complete UWP platform, any U
 
 ## Why Uno?
 Developing for Windows (phone, desktop, tablet, Xbox), iOS (tablet and phone), Android (tablet and phone) and the Web via WebAssembly at once can be a complex process, especially when it comes to the user interface. Each platform has its own ways of defining dynamic layouts, with some being more efficient, some more verbose, some more elegant, and some more performant than others.
-Yet, being able to master all these frameworks at once is a particularly difficult task, because of the amount of platform-specific knowledge required to master each platform. Most of the time it boils down to different teams developing the same application multiple times, with each requiring a full development cycle.
+Yet, being able to master all these frameworks at once is a particularly difficult task because of the amount of platform-specific knowledge required to master each platform. Most of the time it boils down to different teams developing the same application multiple times, with each requiring a full development cycle.
 With Xamarin, C# comes to all these platforms; however, it only provides transparent translations of the UI frameworks available for iOS and Android. Most non-UI code can be shared, but when it comes to the UI, almost nothing can be shared.
 To avoid having to learn the UI-layout techniques and approaches for each platform, Uno.UI mimics the Windows XAML approach of defining UI and layouts. This translates into the ability to share styles, layouts, and data-bindings while retaining the ability to mix XAML-style and native layouts. For instance, a StackPanel can easily contain a RelativeLayout on Android, or a MKMapView on iOS.
 Uno.UI provides the ability for developers to reuse known layouts and coding techniques on all platforms, resulting in a gain of overall productivity when creating UI-rich applications.
@@ -95,7 +95,7 @@ No, not at the moment. Our assumption for now is that the WebAssembly part of Un
 
 ## Does Uno.UI support what WPF is calling CustomControls ? 
 
-Yes, those are called Templated Controls in the UWP dialect, because they inherit from Control Uno.UI currently handles styles a bit differently from what WPF/UWP is doing and Uno.UI parser does not handle `<Style.Setters>` properly. These should not be impacting as long as you have a resource dictionary file containing your style. See here: https://github.com/unoplatform/uno/blob/master/doc/articles/api-differences.md#styles
+Yes, those are called Templated Controls in the UWP dialect because they inherit from Control Uno.UI currently handles styles a bit differently from what WPF/UWP is doing and Uno.UI parser does not handle `<Style.Setters>` properly. These should not be impacting as long as you have a resource dictionary file containing your style. See here: https://github.com/unoplatform/uno/blob/master/doc/articles/api-differences.md#styles
 
 ## Is the iPhone X supported by Uno.UI ?
 

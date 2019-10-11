@@ -18,7 +18,7 @@ The Uno platform uses pre-defined prefixes to include or exclude parts of XAML m
 
 Conditional prefixes you wish to use in XAML file must be defined at the top of the file, like other XAML prefixes. They can be then applied to any object or property within the body of the file.
 
-For prefixes which will be excluded on Windows (eg `android`, `ios`), the actual namespace is arbitrary, since the Uno parser ignores it. The prefix should be put in the `mc:Ignorable` list. For prefixes which will be included on Windows (eg `win`, `not_android`) the namespace should be `http://schemas.microsoft.com/winfx/2006/xaml/presentation` and the prefix should not be put in the `mc:Ignorable` list.
+For prefixes which will be excluded on Windows (e.g. `android`, `ios`), the actual namespace is arbitrary, since the Uno parser ignores it. The prefix should be put in the `mc:Ignorable` list. For prefixes which will be included on Windows (e.g. `win`, `not_android`) the namespace should be `http://schemas.microsoft.com/winfx/2006/xaml/presentation` and the prefix should not be put in the `mc:Ignorable` list.
 
 ### Example
 

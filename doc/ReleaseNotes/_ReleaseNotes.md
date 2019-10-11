@@ -28,9 +28,9 @@
 * Add support for `Windows.ApplicationModel.Calls.PhoneCallManager`
 * Add support for `Windows.Phone.Devices.Notification.VibrationDevice` API on iOS, Android and WASM
 * Basic support for `Windows.Devices.Sensors.Barometer`
-* Support setting `Style` inline (eg `<TextBlock><TextBlock.Style><Style TargetType="TextBlock"><Setter>...`)
+* Support setting `Style` inline (e.g. `<TextBlock><TextBlock.Style><Style TargetType="TextBlock"><Setter>...`)
 * [Wasm] Add support for `DisplayInformation` properties `LogicalDpi`, `ResolutionScale`, `ScreenWidthInRawPixels`, `RawPixelsPerViewPixel` , and `ScreenHeightInRawPixels`¸
-* Permit `DependencyProperty` to be set reentrantly. Eg this permits `TextBox.TextChanged` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
+* Permit `DependencyProperty` to be set reentrantly. E.g. this permits `TextBox.TextChanged` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
 * Add support for filtered solutions development for Uno.UI contributions.
 * 132984 [Android] Notch support on Android
 * Add support for Android UI Tests in PRs for improved regression testing
@@ -46,7 +46,7 @@
   - Should be set when the application is starting (before first request to a static resource).
 * Prevent possible crash with `MediaPlayerElement` (tentative)
 * Add support for `ContentDialog`, including `Closing` and `Closed` events
-* Permit `DependencyProperty` to be set reentrantly. Eg this permits `TextBox.TextChanging` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
+* Permit `DependencyProperty` to be set reentrantly. E.g. this permits `TextBox.TextChanging` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
 * Implement `TextBox.TextChanging` and `TextBox.BeforeTextChanging`. As on UWP, this allows the text to be intercepted and modified before the UI is updated. Previously on Android using the `TextChanged` event would lead to laggy response and dropped characters when typing rapidly; this is no longer the case with `TextChanging`.
 * [WASM] `ComboBox`'s dropdown list (`CarouselPanel`) is now virtualized (#1012)
 * Improve Screenshot comparer tool, CI test results now contain Screenshots compare data
@@ -64,7 +64,7 @@
 * Add non-failing StatusBar BackgroundOpacity and BackgroundColor getters
 * Relax DependencyProperty owner validation for non-FrameworkElement
 * `ToolTip` & `ToolTipService` are now implemented.
-* [#1352](https://github.com/unoplatform/uno/issues/1352) Add support for `ThemeResource`s with different types (eg: mixing `SolidColorBrush` and `LinearGradientBrush`)
+* [#1352](https://github.com/unoplatform/uno/issues/1352) Add support for `ThemeResource`s with different types (e.g.: mixing `SolidColorBrush` and `LinearGradientBrush`)
 * Add support for BitmapSource.PixelWidth and Height
 * Preliminary support for `ColumnDefinition.ActualWidth` and `RowDefinition.ActualHeight`.
 * Updated VisualTree of an app with Visibility for each items.
@@ -141,7 +141,7 @@
 * [Android] Fix java NRE handing touch events on detached view
 * [Pivot] Add support for non PivotItem items
 * #1557 Fix local DataContext on ContentDialog is overwritten
-* [WASM] Fix display for multiple popups (eg ComboBox inside of ContentDialog)
+* [WASM] Fix display for multiple popups (e.g. ComboBox inside of ContentDialog)
 * [Android] Fix invalid ImageBrush stack overflow with delayed image reuse
 * CommandBar fixes (AppBarToggleButton, AppBarButton)
 * Fix Symbols rendering in sample app
@@ -244,7 +244,7 @@
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
 * `NavigationBarHelper` has been removed.
-* Localized Text, Content etc is now applied even if the Text (etc) property isn't set in Xaml. Nested implicit content (eg `<Button><Border>...`) will be overridden by localized values if available.
+* Localized Text, Content etc is now applied even if the Text (etc) property isn't set in Xaml. Nested implicit content (e.g. `<Button><Border>...`) will be overridden by localized values if available.
 * [Android] Unless nested under `SecondaryCommands`, the `AppBarButton.Label` property will no longer be used for the title of menu item, instead use the `AppBarButton.Content` property. For `SecondaryCommands`, keep using `AppBarButton.Label`.
 * The `WordEllipsis` was removed from the `TextWrapping` as it's not a valid value for UWP (And it was actually supported only on WASM) (The right way to get ellipsis is with the `TextTrimming.WordEllipsis`)
 * [Android] `Popup.Anchor` is no longer available

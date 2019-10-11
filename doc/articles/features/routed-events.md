@@ -96,7 +96,7 @@ Notes:
     or `handledEventsToo: true`).
  11. **Parent defined?**: if the element is connected to any parent element.
  12. **Processing finished**: no more handlers is interested by this event. Propagation is stopped.
-    Native bubbling is stopped too, because the event is fully handled.
+    Native bubbling is stopped too because the event is fully handled.
 
 ## Native bubbling vs Managed bubbling
 
