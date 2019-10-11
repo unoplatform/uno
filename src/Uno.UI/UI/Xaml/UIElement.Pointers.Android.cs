@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml
 		{
 			if (remainingHandlersCount == 0)
 			{
-				// TODO: Disable pointer events reporting
+				// TODO: Disable pointer events reporting (https://github.com/unoplatform/uno/issues/1806)
 			}
 		}
 

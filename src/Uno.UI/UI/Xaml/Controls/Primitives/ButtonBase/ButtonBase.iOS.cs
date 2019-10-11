@@ -1,18 +1,9 @@
 using System;
-using System.Drawing;
-using Uno.Extensions;
-using Uno.UI.Views;
-using Uno.UI.Views.Controls;
-using Windows.UI.Xaml;
-using Uno.Disposables;
-using System.Windows.Input;
-using Uno.Client;
 using System.Linq;
-using Foundation;
-using CoreGraphics;
-using Uno.UI.Extensions;
-using Windows.UI.Xaml.Input;
+using Uno.Extensions;
+using Uno.Disposables;
 using Uno.Logging;
+using Windows.UI.Xaml.Input;
 
 #if XAMARIN_IOS_UNIFIED
 using UIKit;

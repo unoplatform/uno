@@ -26,10 +26,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			=> RunTest("NestedVisibility");
 
 		[Test]
+		[Ignore("Inconsistent behavior between manual and unit test")]
 		public void TestIsEnabled()
 			=> RunTest("IsEnabled");
 
 		[Test]
+		[Ignore("Inconsistent behavior between manual and unit test")]
 		[ActivePlatforms(Platform.Browser)] // The IsEnabled property is not inherited on other platforms yet.
 		public void TestNestedIsEnabled()
 			=> RunTest("NestedIsEnabled");

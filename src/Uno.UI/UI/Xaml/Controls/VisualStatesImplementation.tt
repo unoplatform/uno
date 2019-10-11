@@ -181,10 +181,6 @@ namespace <#= mixin.NamespaceName #>
 #else
 			var state = GetCommonState();
 #endif
-//			var combinedState = GetCombinedStatePrefix() + GetCombinedStateSuffix();
-//			if (combinedState.IsNullOrEmpty()) {
-//				combinedState = __normalState;
-//			}
 			VisualStateManager.GoToState(this, state, useTransitions);
 
 #if <#= mixin.HasCheckedStates #> && !<#= mixin.HasCommonCheckedState #> && !<#= mixin.HasCombinedCheckedState #> // HasCheckedStates && !HasCommonCheckedState && !HasCombinedCheckedState
@@ -240,12 +236,6 @@ namespace <#= mixin.NamespaceName #>
 				return __focusedState;
 			}
 #endif
-
-// #if !<#= mixin.HasCombinedCheckedState #>
-// 			if (targetState == __normalState) {
-// 				return "";
-// 			}
-// #endif
 			else
 			{
 				return __normalState;

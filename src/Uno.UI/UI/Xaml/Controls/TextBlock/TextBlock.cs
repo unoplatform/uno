@@ -739,7 +739,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var didHasHyperlinks = HasHyperlink;
+			var previousHasHyperlinks = HasHyperlink;
 			var previousHyperLinks = _hyperlinks.Select(h => h.hyperlink).ToList();
 			_hyperlinks.Clear();
 
@@ -768,13 +768,13 @@ namespace Windows.UI.Xaml.Controls
 
 			// Update events subscriptions if needed
 			// Note: we subscribe to those events only if needed as they increase marshaling on Android and WASM
-			if (HasHyperlink && !didHasHyperlinks)
+			if (HasHyperlink && !previousHasHyperlinks)
 			{
 				InsertHandler(PointerPressedEvent, OnPointerPressed);
 				InsertHandler(PointerReleasedEvent, OnPointerReleased);
 				InsertHandler(PointerCaptureLostEvent, OnPointerCaptureLost);
 			}
-			else if (!HasHyperlink && didHasHyperlinks)
+			else if (!HasHyperlink && previousHasHyperlinks)
 			{
 				RemoveHandler(PointerPressedEvent, OnPointerPressed);
 				RemoveHandler(PointerReleasedEvent, OnPointerReleased);

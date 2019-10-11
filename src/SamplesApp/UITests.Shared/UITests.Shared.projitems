@@ -117,10 +117,6 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Input\VisualStatesTests\TextBoxPointerStates.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_StartScreen\JumpListTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4459,9 +4455,6 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\VisualStatesTests\ListViewItem.xaml.cs">
       <DependentUpon>ListViewItem.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\VisualStatesTests\TextBoxPointerStates.xaml.cs">
-      <DependentUpon>TextBoxPointerStates.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ToolTip\ShowPathToRootControl.xaml.cs">
       <DependentUpon>ShowPathToRootControl.xaml</DependentUpon>

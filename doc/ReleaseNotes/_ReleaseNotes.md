@@ -71,7 +71,7 @@
 * Add support for `CompositionTarget.Rendering` event.
 * Add support for `IObservableVector<T>` in `ItemsControl`
 * [#1559] [#1167] Wasm: make the IsEnabled property inheritable.
-* Full support of pointer events cf. [routed events docuemntation](../articles/features/routed-events.md)
+* Full support of pointer events cf. [routed events documentation](../articles/features/routed-events.md)
 
 ### Breaking changes
 
