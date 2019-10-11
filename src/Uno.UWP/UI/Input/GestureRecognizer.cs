@@ -12,8 +12,18 @@ namespace Windows.UI.Input
 	{
 		private readonly ILogger _log;
 		private IDictionary<uint, List<PointerPoint>> _activePointers = new Dictionary<uint, List<PointerPoint>>();
+		private GestureSettings _gestureSettings;
+		private bool _isManipulationEnabled;
 
-		public GestureSettings GestureSettings { get; set; }
+		public GestureSettings GestureSettings
+		{
+			get => _gestureSettings;
+			set
+			{
+				_gestureSettings = value;
+				_isManipulationEnabled = (value & GestureSettingsHelper.Manipulations) != 0;
+			}
+		}
 
 		public bool IsActive => _activePointers.Count > 0;
 
@@ -32,7 +42,7 @@ namespace Windows.UI.Input
 				return;
 			}
 
-			_activePointers[value.PointerId] = new List<PointerPoint>(16) { value }; ;
+			_activePointers[value.PointerId] = new List<PointerPoint>(16) { value };
 		}
 
 		public void ProcessMoveEvents(IList<PointerPoint> value)
@@ -108,6 +118,15 @@ namespace Windows.UI.Input
 			}
 		}
 
+		#region Manipulations
+		internal event EventHandler ManipulationStarting; // This is not on the public API!
+		public event TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> ManipulationCompleted
+		public event TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> ManipulationInertiaStarting
+		public event TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> ManipulationStarted
+		public event TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> ManipulationUpdated
+
+		#endregion
+
 		#region Tap (includes DoubleTap)
 		internal const ulong MultiTapMaxDelayTicks = TimeSpan.TicksPerMillisecond * 1000;
 		internal const int TapMaxXDelta = 15;
@@ -119,7 +138,7 @@ namespace Windows.UI.Input
 
 		public bool CanBeDoubleTap(PointerPoint value)
 		{
-			if (!GestureSettings.HasFlag(GestureSettings.DoubleTap))
+			if (!_gestureSettings.HasFlag(GestureSettings.DoubleTap))
 			{
 				return false;
 			}

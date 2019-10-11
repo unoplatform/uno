@@ -62,4 +62,38 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented] // The GestureRecognizer won't raise this event
 		[ContractVersion("Windows.Foundation.UniversalApiContract", 65536U)] ManipulationMultipleFingerPanning = 65536U,
 	}
+
+	internal static class GestureSettingsHelper
+	{
+		/// <summary>
+		/// A combination of all "manipulation" flags
+		/// </summary>
+		public const GestureSettings Manipulations =
+			  GestureSettings.ManipulationTranslateX
+			| GestureSettings.ManipulationTranslateY
+			| GestureSettings.ManipulationTranslateRailsX
+			| GestureSettings.ManipulationTranslateRailsY
+			| GestureSettings.ManipulationTranslateInertia
+			| GestureSettings.ManipulationRotate
+			| GestureSettings.ManipulationRotateInertia
+			| GestureSettings.ManipulationScale
+			| GestureSettings.ManipulationScaleInertia
+			| GestureSettings.ManipulationMultipleFingerPanning; // Not supported by ManipulationMode
+
+		/// <summary>
+		/// A combination of all "gesture" flags
+		/// </summary>
+		public const GestureSettings Gestures =
+			  GestureSettings.Tap
+			| GestureSettings.DoubleTap
+			| GestureSettings.Hold
+			| GestureSettings.HoldWithMouse
+			| GestureSettings.RightTap
+			| GestureSettings.CrossSlide;
+
+		/// <summary>
+		/// A combination of all "drag and drop" flags
+		/// </summary>
+		public const GestureSettings DragAndDrop = GestureSettings.Drag;
+	}
 }

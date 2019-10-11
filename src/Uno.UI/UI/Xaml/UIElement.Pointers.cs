@@ -250,18 +250,6 @@ namespace Windows.UI.Xaml
 			|| CountHandler(ManipulationInertiaStartingEvent) != 0
 			|| CountHandler(ManipulationCompletedEvent) != 0;
 
-		private GestureSettings _manipulations =
-			  GestureSettings.ManipulationTranslateX
-			| GestureSettings.ManipulationTranslateY
-			| GestureSettings.ManipulationTranslateRailsX
-			| GestureSettings.ManipulationTranslateRailsY
-			| GestureSettings.ManipulationTranslateInertia
-			| GestureSettings.ManipulationRotate
-			| GestureSettings.ManipulationRotateInertia
-			| GestureSettings.ManipulationScale
-			| GestureSettings.ManipulationScaleInertia
-			| GestureSettings.ManipulationMultipleFingerPanning; // Not supported by ManipulationMode
-
 		private void UpdateManipulations(ManipulationModes mode, bool hasManipulationHandler)
 		{
 			if (!hasManipulationHandler || mode == ManipulationModes.None || mode == ManipulationModes.System)
@@ -272,12 +260,12 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					_gestures.Value.GestureSettings &= ~_manipulations;
+					_gestures.Value.GestureSettings &= ~GestureSettingsHelper.Manipulations;
 					return;
 				}
 			}
 
-			var settings = _gestures.Value.GestureSettings & ~_manipulations;
+			var settings = _gestures.Value.GestureSettings & ~GestureSettingsHelper.Manipulations;
 			if (mode.HasFlag(ManipulationModes.TranslateX))
 			{
 				settings |= GestureSettings.ManipulationTranslateX;
