@@ -188,16 +188,16 @@ They are directly linked to the native events of each platform:
 
 ### Pointers events and the ScrollViewer
 
-Like on WinUI as soon as the system detects that you want to scroll, you get a `PointerCancelled` and you won't receive
-any other pointer event until the user release the pointer. You can prevent this behavior by setting the `ManipulationMode` 
+Like on WinUI as soon as the system detects that the user wants to scroll, a control gets a `PointerCancelled` and that control won't receive
+any other pointer event until the user release the pointer. That behavior can be prevented by setting the `ManipulationMode` 
 to something else than `System` on a control nested in the `ScrollViewer`. (cf. [Manipulation events](#Manipulation_Events))
 
 Be aware that on iOS this will set `DelaysContentTouches` to `false` so it means that it will slightly reduce the performance
-of the scrolling (cf. [docuemntation](https://developer.apple.com/documentation/uikit/uiscrollview/1619398-delayscontenttouches)).
+of the scrolling (cf. [documentation](https://developer.apple.com/documentation/uikit/uiscrollview/1619398-delayscontenttouches)).
 
-### Known limitation for pointer events
+### Known limitations for pointer events
 
-As those events are tightly coupled to the native events, we had to made some compromises:
+As those events are tightly coupled to the native events, Uno has to make some compromises:
 * On iOS, when tapping with a mouse or a pen on Android, or in few other specific cases (like `PointerCaptureLost`), 
   multiple managed events are raised from a single native event. These have multiple effects:
 	* On UWP if you have a control A and a nested control B, you will get:
@@ -222,15 +222,15 @@ As those events are tightly coupled to the native events, we had to made some co
 * On WASM, iOS and Android, the `RoutedPointerEventArgs.FrameId` will be resetted to 0 after 49 days of running time of the application.
 * Unlike on UWP, controls that are under a `Popup` won't receive the unhandled pointer events.
 * Unlike UWP, it's impossible to receive a `PointerReleased` without getting a `PointerPressed` before. (For instance if a child 
-  control handled the pressed but not the released).
+  control handled the pressed event but not the released event).
   > On WASM as `TextElement` are `UIElement`, it means that unlike UWP `TextBlock` won't raise the 
   > a `PointerReleased` when clicking on an `Hyperlink`.
 * Unlike UWP, on the `Hyperlink` the `Click` will be raised before the `PointerReleased`.
 
 ### Pointer capture
 
-Capture of pointer is handle in managed code only. On WebAssembly we hoewever still requested to the browser to capture the pointer,
-but we do not rely on native `[got|lost]pointercapture` events.
+The capture of pointer is handled in managed code only. On WebAssembly Uno however still requests the browser to capture the pointer,
+but Uno does not rely on native `[got|lost]pointercapture` events.
 
 ## Manipulation Events
 
@@ -241,5 +241,5 @@ so they will be bubbling in managed only.
 
 They are generated from the PointerXXX events (using the `Windows.UI.Input.GestureRecognizer`) and are bubbling in managed only.
 
-Currently only the `Tapped` and `DoubleTapped` gestures are supported. Note that those events are not linked in anyway to native equivalent, 
+Currently only the `Tapped` and `DoubleTapped` gestures are supported. Note that those events are not linked in any way to a native equivalent, 
 but are fully interpreted in managed code.

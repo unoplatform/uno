@@ -82,7 +82,7 @@
 * Projects targeting Android 8 must now use Xamarin.GooglePlayServices.* 60.1142.1 (60.1142.0 has been unlisted)
 * Projects targeting Android 9 must now use Xamarin.GooglePlayServices.* 71.1600.0
 * [iOS] UIWebView is deprecated and replaced with WKWebView (ITMS-90809: Deprecated API Usage - Apple will stop accepting submissions of apps that use UIWebView APIs . See https://developer.apple.com/documentation/uikit/uiwebview for more information.)
-* [iOS] If you set the `ManipulationMode` to something else than `System` or `All`, the [DelaysContentTouches](https://developer.apple.com/documentation/uikit/uiscrollview/1619398-delayscontenttouches) is goin to be disabled on all parent `ScrollViewer`
+* [iOS] If you set the `ManipulationMode` to something else than `System` or `All`, the [DelaysContentTouches](https://developer.apple.com/documentation/uikit/uiscrollview/1619398-delayscontenttouches) is going to be disabled on all parent `ScrollViewer`
 
 ### Bug fixes
 
