@@ -34,6 +34,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_htmlImage = new HtmlImage();
 
+			_htmlImage.SetAttribute("draggable", "false");
+
 			ImageOpened += OnImageOpened;
 			ImageFailed += OnImageFailed;
 
@@ -91,7 +93,6 @@ namespace Windows.UI.Xaml.Controls
 		// Using a DependencyProperty as the backing store for Source.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty SourceProperty =
 			DependencyProperty.Register("Source", typeof(ImageSource), typeof(Image), new PropertyMetadata(null, (s, e) => ((Image)s)?.OnSourceChanged(e)));
-
 
 		private void OnSourceChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -298,7 +299,7 @@ namespace Windows.UI.Xaml.Controls
 							// |             |
 							// \-------------/
 							//
-							
+
 							return (sourceRect.X, sourceRect.Y, null, finalSize.Height);
 						}
 						else

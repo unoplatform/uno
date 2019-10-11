@@ -107,6 +107,8 @@ namespace Windows.UI.Xaml.Controls
 		internal bool NeedsReloadData => _needsReloadData;
 
 		internal CGPoint UpperScrollLimit { get { return (CGPoint)(ContentSize - Frame.Size); } }
+
+		internal UIElement.TouchesManager TouchesManager { get; /* readonly in int */ private set; }
 		#endregion
 
 		public GroupStyle GroupStyle => XamlParent?.GroupStyle.FirstOrDefault();
@@ -177,7 +179,8 @@ namespace Windows.UI.Xaml.Controls
 			RegisterClassForSupplementaryView(internalContainerType, ListViewSectionHeaderElementKindNS, ListViewSectionHeaderReuseIdentifier);
 
 			DelaysContentTouches = true;
-
+			TouchesManager = UIElement.TouchesManager.GetOrCreate(this);
+			
 			ShowsHorizontalScrollIndicator = true;
 			ShowsVerticalScrollIndicator = true;
 

@@ -7,13 +7,11 @@ namespace Windows.UI.Xaml
 
 	public partial class RoutedEventArgs : EventArgs
 	{
-		public new static RoutedEventArgs Empty => new RoutedEventArgs();
-
-		public RoutedEventArgs ()
+		public RoutedEventArgs()
 		{
 		}
 
-		public RoutedEventArgs (object originalSource)
+		internal RoutedEventArgs(object originalSource)
 		{
 			OriginalSource = originalSource;
 		}

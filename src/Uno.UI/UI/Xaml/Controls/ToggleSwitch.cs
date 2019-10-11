@@ -99,7 +99,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected virtual void OnToggled()
 		{
-			Toggled?.Invoke(this, new RoutedEventArgs());
+			Toggled?.Invoke(this, new RoutedEventArgs(this));
 		}
 
 		public global::Windows.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings TemplateSettings { get; } = new ToggleSwitchTemplateSettings();

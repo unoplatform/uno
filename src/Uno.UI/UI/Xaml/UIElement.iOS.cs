@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using CoreAnimation;
 using CoreGraphics;
@@ -12,6 +13,7 @@ using Uno.UI.Controls;
 using Uno.UI.Extensions;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using UIViewExtensions = UIKit.UIViewExtensions;
@@ -20,10 +22,6 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : BindableUIView
 	{
-		private readonly Lazy<TappedGestureHandler> _tap;
-		private readonly Lazy<DoubleTappedGestureHandler> _doubleTap;
-
-		private bool _areGesturesAttached = false;
 
 #if DEBUG
 		/// <summary>
@@ -34,58 +32,9 @@ namespace Windows.UI.Xaml
 
 		private static Dictionary<UIView, CALayer> _debugLayers;
 
-		internal bool IsPointerCaptured => _pointCaptures.Any();
-
 		public UIElement()
 		{
-			_tap = new Lazy<TappedGestureHandler>(() => new TappedGestureHandler(this));
-			_doubleTap = new Lazy<DoubleTappedGestureHandler>(() => new DoubleTappedGestureHandler(this));
-
-			RegisterLoadActions(AttachGestureHandlers, DetachGestureHandlers);
-
-			InitializeCapture();
-		}
-
-		partial void InitializeCapture();
-
-		private void AttachGestureHandlers()
-		{
-			if (_tap.IsValueCreated)
-			{
-				_tap.Value.Attach();
-			}
-			if (_doubleTap.IsValueCreated)
-			{
-				_doubleTap.Value.Attach();
-			}
-
-			_areGesturesAttached = true;
-		}
-
-		private void DetachGestureHandlers()
-		{
-			if (_tap.IsValueCreated && _tap.Value.IsAttached)
-			{
-				_tap.Value.Detach();
-			}
-			if (_doubleTap.IsValueCreated && _doubleTap.Value.IsAttached)
-			{
-				_doubleTap.Value.Detach();
-			}
-
-			_areGesturesAttached = false;
-		}
-
-		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler, bool handledEventsToo)
-		{
-			if (routedEvent == TappedEvent)
-			{
-				var x = _tap.Value; // materialize it
-			}
-			else if (routedEvent == DoubleTappedEvent)
-			{
-				var x = _doubleTap.Value; // materialize it
-			}
+			InitializePointers();
 		}
 
 		partial void EnsureClip(Rect rect)
@@ -397,183 +346,6 @@ namespace Windows.UI.Xaml
 			return value;
 		}
 
-		#region DoubleTapped event
-		private void RegisterDoubleTapped(DoubleTappedEventHandler handler)
-		{
-			if (_areGesturesAttached)
-			{
-				_doubleTap.Value.Attach();
-			}
-		}
-
-		private void UnregisterDoubleTapped(DoubleTappedEventHandler handler)
-		{
-			if (_doubleTap.Value.IsAttached)
-			{
-				_doubleTap.Value.Detach();
-			}
-		}
-		#endregion
-
-		public override void TouchesBegan(NSSet touches, UIEvent evt)
-		{
-			try
-			{
-				var pointerEventIsHandledInManaged = false;
-
-				if (evt.IsTouchInView(this))
-				{
-					IsPointerPressed = true;
-					IsPointerOver = true;
-
-					var args = new PointerRoutedEventArgs(touches, evt)
-					{
-						CanBubbleNatively = true,
-						OriginalSource = this
-					};
-
-					pointerEventIsHandledInManaged = RaiseEvent(PointerEnteredEvent, args);
-
-					args.Handled = false; // reset for "pressed" event
-
-					pointerEventIsHandledInManaged = RaiseEvent(PointerPressedEvent, args) || pointerEventIsHandledInManaged;
-				}
-
-				if (!pointerEventIsHandledInManaged)
-				{
-					// Bubble up the event natively
-					base.TouchesBegan(touches, evt);
-				}
-			}
-			catch (Exception e)
-			{
-				Application.Current.RaiseRecoverableUnhandledException(e);
-			}
-		}
-
-		public override void TouchesCancelled(NSSet touches, UIEvent evt)
-		{
-			try
-			{
-				var args = new PointerRoutedEventArgs(touches, evt)
-				{
-					CanBubbleNatively = true,
-					OriginalSource = this
-				};
-				var isHandledInManaged = RaiseEvent(PointerCanceledEvent, args);
-
-				if (!isHandledInManaged)
-				{
-					// Bubble up the event natively
-					base.TouchesCancelled(touches, evt);
-				}
-
-				IsPointerPressed = false;
-				IsPointerOver = false;
-				_pointCaptures.Clear();
-			}
-			catch (Exception e)
-			{
-				Application.Current.RaiseRecoverableUnhandledException(e);
-			}
-		}
-
-		public override void TouchesEnded(NSSet touches, UIEvent evt)
-		{
-			try
-			{
-				var wasPointerOver = IsPointerOver;
-				IsPointerOver = evt.IsTouchInView(this);
-
-				// Call entered/exited one last time
-				var args = new PointerRoutedEventArgs(touches, evt)
-				{
-					CanBubbleNatively = true,
-					OriginalSource = this
-				};
-
-				var pointerEventIsHandledInManaged = false;
-
-				if (!wasPointerOver && IsPointerOver)
-				{
-					pointerEventIsHandledInManaged = RaiseEvent(PointerEnteredEvent, args);
-				}
-				else if (wasPointerOver && !IsPointerOver)
-				{
-					pointerEventIsHandledInManaged = RaiseEvent(PointerExitedEvent, args);
-				}
-
-				if (IsPointerCaptured || IsPointerOver)
-				{
-					args.Handled = false; // reset as unhandled
-					pointerEventIsHandledInManaged = RaiseEvent(PointerReleasedEvent, args) || pointerEventIsHandledInManaged;
-				}
-
-				if (IsPointerCaptured)
-				{
-					args.Handled = false; // reset as unhandled
-					pointerEventIsHandledInManaged = RaiseEvent(PointerCaptureLostEvent, args) || pointerEventIsHandledInManaged;
-				}
-
-				if (!pointerEventIsHandledInManaged)
-				{
-					// Bubble up the event natively
-					base.TouchesEnded(touches, evt);
-				}
-
-				IsPointerPressed = false;
-				IsPointerOver = false;
-				_pointCaptures.Clear();
-			}
-			catch (Exception e)
-			{
-				Application.Current.RaiseRecoverableUnhandledException(e);
-			}
-		}
-
-		public override void TouchesMoved(NSSet touches, UIEvent evt)
-		{
-			try
-			{
-				var wasPointerOver = IsPointerOver;
-				IsPointerOver = evt.IsTouchInView(this);
-
-				var pointerEventIsHandledInManaged = false;
-
-				var args = new PointerRoutedEventArgs(touches, evt)
-				{
-					CanBubbleNatively = true,
-					OriginalSource = this
-				};
-
-				if (IsPointerCaptured || IsPointerOver)
-				{
-					pointerEventIsHandledInManaged = RaiseEvent(PointerMovedEvent, args);
-				}
-
-				if (!wasPointerOver && IsPointerOver)
-				{
-					args.Handled = false; // reset as unhandled
-					pointerEventIsHandledInManaged = RaiseEvent(PointerEnteredEvent, args) || pointerEventIsHandledInManaged;
-				}
-				else if (wasPointerOver && !IsPointerOver)
-				{
-					args.Handled = false; // reset as unhandled
-					pointerEventIsHandledInManaged = RaiseEvent(PointerExitedEvent, args) || pointerEventIsHandledInManaged;
-				}
-
-				if (!pointerEventIsHandledInManaged)
-				{
-					// Bubble up the event natively
-					base.TouchesMoved(touches, evt);
-				}
-			}
-			catch (Exception e)
-			{
-				Application.Current.RaiseRecoverableUnhandledException(e);
-			}
-		}
-
 #if DEBUG
 		public static Predicate<UIView> ViewOfInterestSelector { get; set; } = v => (v as FrameworkElement)?.Name == "TargetView";
 
@@ -676,66 +448,5 @@ namespace Windows.UI.Xaml
 
 		public IList<VisualStateGroup> VisualStateGroups => VisualStateManager.GetVisualStateGroups((this as Controls.Control).GetTemplateRoot());
 #endif
-		private class TappedGestureHandler : GestureHandler
-		{
-			public TappedGestureHandler(UIElement owner)
-				: base(owner)
-			{
-			}
-
-			protected override UIGestureRecognizer CreateRecognizer(UIElement owner)
-			{
-				var recognizer = new UITapGestureRecognizer(OnGesture)
-				{
-					NumberOfTapsRequired = 1,
-				};
-
-				recognizer.ShouldReceiveTouch += (_, touch) => true;
-
-				return recognizer;
-
-				void OnGesture(UITapGestureRecognizer r)
-				{
-					var tappedArgs = new TappedRoutedEventArgs(r.LocationInView(owner))
-					{
-						OriginalSource = owner,
-						PointerDeviceType = PointerDeviceType.Touch
-					};
-					owner.PreRaiseTapped?.Invoke(this, null);
-					owner.RaiseEvent(TappedEvent, tappedArgs);
-				}
-			}
-		}
-
-		private class DoubleTappedGestureHandler : GestureHandler
-		{
-			public DoubleTappedGestureHandler(UIElement owner)
-				: base(owner)
-			{
-			}
-
-			protected override UIGestureRecognizer CreateRecognizer(UIElement owner)
-			{
-				var recognizer = new UITapGestureRecognizer(OnGesture)
-				{
-					NumberOfTapsRequired = 2,
-				};
-
-				recognizer.ShouldReceiveTouch += (_, touch) => (touch.View == owner);
-
-				return recognizer;
-
-				void OnGesture(UITapGestureRecognizer r)
-				{
-					var doubleTappedArgs = new DoubleTappedRoutedEventArgs(r.LocationInView(owner))
-					{
-						OriginalSource = owner,
-						PointerDeviceType = PointerDeviceType.Touch
-					};
-
-					owner.RaiseEvent(DoubleTappedEvent, doubleTappedArgs);
-				}
-			}
-		}
 	}
 }

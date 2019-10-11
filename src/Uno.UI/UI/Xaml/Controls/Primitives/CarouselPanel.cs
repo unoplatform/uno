@@ -7,7 +7,7 @@ using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	public partial class CarouselPanel : StackPanel //TODO: VirtualizingPanel https://github.com/nventive/Uno/issues/1133
+	public partial class CarouselPanel : StackPanel //TODO: VirtualizingPanel https://github.com/unoplatform/uno/issues/1133
 	{
 
 		public CarouselPanel()

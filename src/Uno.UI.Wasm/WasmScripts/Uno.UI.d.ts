@@ -321,6 +321,12 @@ declare namespace Uno.UI {
             * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
             */
         registerEventOnViewNative(pParams: number): boolean;
+        private processPendingLeaveEvent;
+        private _isPendingLeaveProcessingEnabled;
+        /**
+         * Ensure that any pending leave event are going to be processed (cf @see processPendingLeaveEvent )
+         */
+        private ensurePendingLeaveEventProcessing;
         /**
             * Add an event handler to a html element.
             *
@@ -662,6 +668,10 @@ declare class WindowManagerSetXUidParams {
     Uid: string;
     static unmarshal(pData: number): WindowManagerSetXUidParams;
 }
+interface PointerEvent {
+    isOver(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
+    isOverDeep(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
+}
 declare module Uno.UI {
     interface IAppManifest {
         splashScreenImage: URL;
@@ -750,17 +760,6 @@ declare namespace Windows.Storage {
         private static synchronizeFileSystem;
     }
 }
-declare namespace Windows.UI.Core {
-    class SystemNavigationManager {
-        private static _current;
-        static readonly current: SystemNavigationManager;
-        private _isEnabled;
-        constructor();
-        enable(): void;
-        disable(): void;
-        private clearStack;
-    }
-}
 declare namespace Windows.Devices.Geolocation {
     class Geolocator {
         private static dispatchAccessRequest;
@@ -821,6 +820,28 @@ declare namespace Windows.Devices.Sensors {
         static startReading(): void;
         static stopReading(): void;
         private static readingChangedHandler;
+    }
+}
+declare namespace Windows.UI.Core {
+    class SystemNavigationManager {
+        private static _current;
+        static readonly current: SystemNavigationManager;
+        private _isEnabled;
+        constructor();
+        enable(): void;
+        disable(): void;
+        private clearStack;
+    }
+}
+declare namespace Windows.UI.Xaml {
+    class Application {
+        static getDefaultSystemTheme(): string;
+    }
+}
+declare namespace Windows.UI.Xaml {
+    enum ApplicationTheme {
+        Light = "Light",
+        Dark = "Dark"
     }
 }
 interface Navigator {

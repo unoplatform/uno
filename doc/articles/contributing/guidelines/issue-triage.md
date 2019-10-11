@@ -24,7 +24,7 @@ These guidelines serves as a primary document for triaging incoming issues to Un
 
 ## Security
 
-Security related matters should be disclosed in private [as per the our policy on GitHub](https://github.com/unoplatform/uno/security/policy). If a security matter is raised as an issue, please capture the relevant information, [delete the GitHub issue](https://help.github.com/en/articles/deleting-an-issue) and follow up via email. This [tool can be used to find](https://emailaddress.github.io/) (almost) any GitHub user's email address.
+Security related matters should be disclosed in private [as per our policy on GitHub](https://github.com/unoplatform/uno/security/policy). If a security matter is raised as an issue, please capture the relevant information, [delete the GitHub issue](https://help.github.com/en/articles/deleting-an-issue) and follow up via email. This [tool can be used to find](https://emailaddress.github.io/) (almost) any GitHub user's email address.
 
 ## Support requests
 

@@ -17,16 +17,6 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.DependencyObject NewFocusedElement
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DependencyObject FocusManagerGotFocusEventArgs.NewFocusedElement is not implemented in Uno.");
-			}
-		}
-		#endif
 		// Forced skipping of method Windows.UI.Xaml.Input.FocusManagerGotFocusEventArgs.NewFocusedElement.get
 		// Forced skipping of method Windows.UI.Xaml.Input.FocusManagerGotFocusEventArgs.CorrelationId.get
 	}

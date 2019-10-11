@@ -1,3 +1,4 @@
+#if false
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System
@@ -26,3 +27,4 @@ namespace Windows.System
 	}
 	#endif
 }
+#endif

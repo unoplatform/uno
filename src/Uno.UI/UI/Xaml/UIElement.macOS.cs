@@ -45,10 +45,8 @@ namespace Windows.UI.Xaml
 
 		public UIElement()
 		{
-			InitializeCapture();
+			InitializePointers();
 		}
-
-		partial void InitializeCapture();
 
 		partial void EnsureClip(Rect rect)
 		{
@@ -394,7 +392,6 @@ namespace Windows.UI.Xaml
 
 				IsPointerPressed = false;
 				IsPointerOver = false;
-				_pointCaptures.Clear();
 			}
 			catch (Exception e)
 			{

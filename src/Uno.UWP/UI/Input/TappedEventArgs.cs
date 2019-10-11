@@ -9,7 +9,7 @@ namespace Windows.UI.Input
 		{
 			PointerDeviceType = type;
 			Position = position;
-			TapCount = TapCount;
+			TapCount = tapCount;
 		}
 
 		public PointerDeviceType PointerDeviceType { get; }

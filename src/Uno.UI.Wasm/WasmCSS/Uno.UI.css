@@ -36,7 +36,6 @@ body {
   -webkit-box-sizing: border-box !important;
   -moz-box-sizing: border-box !important;
   box-sizing: border-box !important;
-
   /*
     Force all element to have a transform, to allow correct measure of text and images.
     See WindowManager.ts on measureViewInternal() for more details.
@@ -72,6 +71,14 @@ body {
 
 .uno-textelement {
   position: relative;
+}
+
+.uno-htmlimage {  
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
 }
 
 .uno-scrollcontentpresenter {
