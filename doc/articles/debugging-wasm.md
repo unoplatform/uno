@@ -7,10 +7,10 @@ Debugging WebAssembly via Google Chrome is experimentally supported by the Uno P
 
 ```xml
 <PropertyGroup Condition="'$(Configuration)'=='Debug'">
-   <MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
-   <DebugType>portable</DebugType>
-   <DebugSymbols>true</DebugSymbols>
-   <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
+    <DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
+    <DebugType>portable</DebugType>
+    <DebugSymbols>true</DebugSymbols>
 </PropertyGroup>
 ```
 
