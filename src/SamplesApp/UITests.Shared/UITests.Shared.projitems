@@ -4481,9 +4481,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Enability\BasicEnability.xaml.cs">
       <DependentUpon>BasicEnability.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\IsEnabled\BasicEnability.xaml.cs">
-      <DependentUpon>BasicEnability.xaml</DependentUpon>
-    </Compile>
   </ItemGroup>
   <ItemGroup>
     <Content Include="$(MSBuildThisFileDirectory)Assets\cart.png" />
