@@ -79,7 +79,23 @@ namespace Windows.UI.Xaml.Controls
 
 		protected abstract void MeasureChild(View view, int widthSpec, int heightSpec);
 
+		private void SetArrangeLogicalSize(View view, Rect frame)
+		{
+			var uiElement = view as UIElement;
+			if (uiElement != null)
+			{
+				uiElement.ArrangeLogicalSize = frame;
+			}
+		}
 
+		private void ResetArrangeLogicalSize(View view)
+		{
+			var uiElement = view as UIElement;
+			if (uiElement != null)
+			{
+				uiElement.ArrangeLogicalSize = null;
+			}
+		}
 
 		protected void ArrangeChildOverride(View view, Rect frame)
 		{
@@ -87,12 +103,21 @@ namespace Windows.UI.Xaml.Controls
 
 			var physicalFrame = frame.LogicalToPhysicalPixels();
 
+			try
+			{
+				SetArrangeLogicalSize(view, frame);
+
 			view.Layout(
 				(int)physicalFrame.Left,
 				(int)physicalFrame.Top,
 				(int)physicalFrame.Right,
 				(int)physicalFrame.Bottom
 			);
+		}
+			finally
+			{
+				ResetArrangeLogicalSize(view);
+			}
 		}
 
 		private void SetClippingToBounds(bool needsClipping)

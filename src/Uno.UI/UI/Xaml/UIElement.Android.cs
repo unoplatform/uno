@@ -182,6 +182,8 @@ namespace Windows.UI.Xaml
 			return new Java.Lang.String(dpValue.ToString());
 		}
 
+		internal Rect? ArrangeLogicalSize { get; set; } // Used to keep "double" precision of arrange phase
+
 #if DEBUG
 		public static Predicate<View> ViewOfInterestSelector { get; set; } = v => (v as FrameworkElement)?.Name == "TargetView";
 

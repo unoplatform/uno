@@ -273,7 +273,15 @@ namespace Windows.UI.Xaml
 			{
 				_lastLayoutSize = newSize;
 
-				var finalRect = new Rect(0, 0, newSize.Width, newSize.Height);
+				Rect finalRect;
+				if (ArrangeLogicalSize is Rect als)
+				{
+					finalRect = new Rect(0, 0, als.Width, als.Height);
+				}
+				else
+				{
+					finalRect = new Rect(0, 0, newSize.Width, newSize.Height);
+				}
 
 				OnBeforeArrange();
 
