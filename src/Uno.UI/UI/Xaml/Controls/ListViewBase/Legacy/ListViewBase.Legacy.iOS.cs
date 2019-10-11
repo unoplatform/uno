@@ -509,7 +509,7 @@ namespace Uno.UI.Controls.Legacy
 
 		private void OnSelectedItemsChanged(IList<object> oldValue, IList<object> newValue)
 		{
-			OnSelectionChanged(new SelectionChangedEventArgs(oldValue, newValue));
+			OnSelectionChanged(new SelectionChangedEventArgs(this, oldValue, newValue));
 			var newSafe = newValue.Safe();
 			var oldSafe = oldValue.Safe();
 			var newAndChanged = newSafe.Except(oldSafe);

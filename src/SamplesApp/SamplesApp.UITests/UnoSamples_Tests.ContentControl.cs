@@ -25,14 +25,14 @@ namespace SamplesApp.UITests
 			var tb2 = _app.Marked("innerText2");
 			Assert.AreEqual("ContentControl:  DataContext", tb2.GetDependencyPropertyValue("Text").ToString());
 
-			_app.Tap(c => c.Text("Click me"));
+			_app.Marked("actionButton").Tap();
 
 			var tb3 = _app.Marked("innerText");
 			Assert.AreEqual("ContentPresenter:  42", tb3.GetDependencyPropertyValue("Text").ToString());
 			var tb4 = _app.Marked("innerText2");
 			Assert.AreEqual("ContentControl:  42", tb4.GetDependencyPropertyValue("Text").ToString());
 
-			_app.Tap(c => c.Text("Click me"));
+			_app.Marked("actionButton").Tap();
 
 			Assert.IsFalse(_app.Marked("innerText").HasResults());
 			Assert.IsFalse(_app.Marked("innerText2").HasResults());

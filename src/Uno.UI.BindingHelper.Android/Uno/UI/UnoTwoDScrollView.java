@@ -133,6 +133,9 @@ public class UnoTwoDScrollView extends FrameLayout {
 	private boolean mIsScrollingEnabled;
 	private boolean mIsBringIntoViewOnFocusChange;
 
+	private int mMaxScrollX;
+	private int mMaxScrollY;
+
 	public UnoTwoDScrollView(Context context) {
 		super(context);
 		initTwoDScrollView();
@@ -593,6 +596,9 @@ public class UnoTwoDScrollView extends FrameLayout {
 				int initialYVelocity = (int) velocityTracker.getYVelocity();
 				if ((Math.abs(initialXVelocity) + Math.abs(initialYVelocity) > mMinimumVelocity) && getChildCount() > 0) {
 					fling(-initialXVelocity, -initialYVelocity);
+				} else {
+					// If the fling does not kick in, make sur to raise a ViewChanged with intermediate == false
+					onScrollChanged(getScrollX(), getScrollY(), false);
 				}
 				mIsBeingZoomed = false;
 				endDrag();
@@ -1047,6 +1053,29 @@ public class UnoTwoDScrollView extends FrameLayout {
 		return scroll;
 	}
 
+	@Override
+	protected void onScrollChanged(int scrollX, int scrollY, int oldScrollX, int oldScrollY) {
+		// When reaching the edge, the OverScoller will overflow the configured maximums, so put them back in range
+		final int finalX = Math.max(0, Math.min(mMaxScrollX, mScroller.getFinalX()));
+		final int finalY = Math.max(0, Math.min(mMaxScrollY, mScroller.getFinalY()));
+		final boolean isIntermediate = mIsBeingDragged
+			|| (
+				!mScroller.isFinished()
+				&& (scrollX != finalX || scrollY != finalY)
+			);
+
+		// Log.i("SCROLL_PRESENTER",
+		// 	"dragged: " + mIsBeingDragged + " | scroller finished: "+ mScroller.isFinished()
+		// 	+ " | finalX: " + mScroller.getFinalX() + " | targetX: " + finalX + " | scrollX: " + scrollX + " | currX: " + mScroller.getCurrX() + " | oldScrollX: " + oldScrollX
+		// 	+ " | finalY: " + mScroller.getFinalY() + " | targetY: " + finalY + " | scrollY: " + scrollY + " | currY: " + mScroller.getCurrY() + " | oldScrollY: " + oldScrollY);
+
+		onScrollChanged(scrollX, scrollY, isIntermediate);
+		super.onScrollChanged(scrollX, scrollY, oldScrollX, oldScrollY);
+	}
+
+	protected void onScrollChanged(int scrollX, int scrollY, boolean isIntermediate) {
+	}
+
 	/**
 	 * Compute the amount to scroll in the Y direction in order to get
 	 * a rectangle completely on the screen (or, if taller than the screen,
@@ -1220,7 +1249,10 @@ public class UnoTwoDScrollView extends FrameLayout {
 			int width = getWidth() - getPaddingRight() - getPaddingLeft();
 			int right = getAdjustedChildWidth();
 
-			mScroller.fling(getScrollX(), getScrollY(), velocityX, velocityY, 0, right - width, 0, bottom - height, width/2, height/2);
+			mMaxScrollX = right - width;
+			mMaxScrollY = bottom - height;
+
+			mScroller.fling(getScrollX(), getScrollY(), velocityX, velocityY, 0, mMaxScrollX, 0, mMaxScrollY, width/2, height/2);
 
 			final boolean movingDown = velocityY > 0;
 			final boolean movingRight = velocityX > 0;

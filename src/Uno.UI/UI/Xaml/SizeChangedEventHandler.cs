@@ -15,7 +15,8 @@ namespace Windows.UI.Xaml
 
 	public partial class SizeChangedEventArgs : Windows.UI.Xaml.RoutedEventArgs
 	{
-		public SizeChangedEventArgs(_Size previousSize, _Size newSize)
+		internal SizeChangedEventArgs(object originalSource, _Size previousSize, _Size newSize)
+			: base(originalSource)
 		{
 			PreviousSize = previousSize;
 			NewSize = newSize;

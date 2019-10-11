@@ -9,12 +9,15 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : DependencyObject
 	{
+		public UIElement()
+		{
+			InitializePointers();
+		}
+
 		private Rect _arranged;
 
 		public string Name { get; set; }
 
-		partial void InitializeCapture();
-		
 		internal bool IsPointerCaptured { get; set; }
 
 		public int MeasureCallCount { get; protected set; }

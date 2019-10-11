@@ -6,9 +6,9 @@ namespace Windows.UI.Xaml.Controls
 {
 	public sealed partial class TextChangedEventArgs : RoutedEventArgs
 	{
-		internal TextChangedEventArgs()
+		internal TextChangedEventArgs(object originalSource)
+			: base(originalSource)
 		{
-
 		}
 	}
 }
