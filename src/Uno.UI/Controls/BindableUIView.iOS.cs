@@ -80,6 +80,18 @@ namespace Uno.UI.Controls
 			Initialize();
 		}
 
+		public BindableUIView(NSCoder coder)
+			: base(coder)
+		{
+			Initialize();
+		}
+
+		public BindableUIView(NSObjectFlag t)
+			: base(t)
+		{
+			Initialize();
+		}
+
 		private void Initialize()
 		{
 			InitializeBinder();
