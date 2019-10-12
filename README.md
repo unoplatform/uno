@@ -201,7 +201,7 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/RobJenks"><img src="https://avatars0.githubusercontent.com/u/3159730?v=4" width="100px;" alt="RobJenks"/><br /><sub><b>RobJenks</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=RobJenks" title="Documentation">📖</a></td>
   <td align="center"><a href="https://github.com/cTxplorer"><img src="https://avatars0.githubusercontent.com/u/28287478?v=4" width="100px;" alt="Pratik Gadhiya"/><br /><sub><b>Pratik Gadhiya</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=cTxplorer" title="Documentation">📖</a></td>
    <td align="center"><a href="https://github.com/mkwhalen"><img src="https://avatars0.githubusercontent.com/u/17869199?v=4" width="100px;" alt="MacKenzie Whalen"/><br /><sub><b>MacKenzie Whalen</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=mkwhalen" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/iamkunalpitale"><alt="Kunal Pitale"/><br /><sub><b>Kunal Pitale</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=iamkunalpitale" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/iamkunalpitale"><img src="https://pbs.twimg.com/profile_images/1064405358506991616/yq9gDgSi_400x400.jpg" width="100px;" alt="Kunal Pitale"/><br /><sub><b>Kunal Pitale</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=iamkunalpitale" title="Documentation">📖</a></td>
   </tr>
 </table>
 
