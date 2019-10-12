@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel
 			}
 		}
 
-#if !__ANDROID__
+#if !__ANDROID__ && !__IOS__
 		[global::Uno.NotImplemented]
 		public string FamilyName
 		{
@@ -46,6 +46,7 @@ namespace Windows.ApplicationModel
 		}
 #endif
 
+#if !__IOS__
 		[global::Uno.NotImplemented]
 		public global::Windows.ApplicationModel.PackageVersion Version
 		{
@@ -55,6 +56,7 @@ namespace Windows.ApplicationModel
 				return new PackageVersion();
 			}
 		}
+#endif
 
 		[global::Uno.NotImplemented]
 		public string Publisher

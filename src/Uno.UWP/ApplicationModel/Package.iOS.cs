@@ -11,6 +11,10 @@ namespace Windows.ApplicationModel
 {
 	public partial class Package
 	{
+		private const string BundleDisplayNameKey = "CFBundleDisplayName";
+		
+		public string DisplayName => NSBundle.MainBundle.InfoDictionary[BundleDisplayNameKey].ToString();
+
 		private bool GetInnerIsDevelopmentMode() => IsAdHoc;
 
 		private string GetInstalledLocation() 

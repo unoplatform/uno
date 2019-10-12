@@ -30,7 +30,7 @@ namespace Windows.ApplicationModel
 		[global::Uno.NotImplemented]
 		public string Description => "";
 
-#if !__ANDROID__
+#if !__ANDROID__ && !__IOS__
 		[global::Uno.NotImplemented]
 		public string DisplayName => "";
 #endif
