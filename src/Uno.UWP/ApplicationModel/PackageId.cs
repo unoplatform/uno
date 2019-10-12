@@ -14,6 +14,7 @@ namespace Windows.ApplicationModel
 			}
 		}
 
+#if !__ANDROID__
 		[global::Uno.NotImplemented]
 		public string FamilyName
 		{
@@ -41,6 +42,17 @@ namespace Windows.ApplicationModel
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "Name");
 				return "Unknown";
+			}
+		}
+#endif
+
+		[global::Uno.NotImplemented]
+		public global::Windows.ApplicationModel.PackageVersion Version
+		{
+			get
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "Version");
+				return new PackageVersion();
 			}
 		}
 
@@ -71,16 +83,6 @@ namespace Windows.ApplicationModel
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "ResourceId");
 				return "Unknown";
-			}
-		}
-
-		[global::Uno.NotImplemented]
-		public global::Windows.ApplicationModel.PackageVersion Version
-		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.PackageId", "Version");
-				return new PackageVersion();
 			}
 		}
 
