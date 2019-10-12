@@ -11,7 +11,7 @@
 [![Gitter](https://badges.gitter.im/uno-platform/Lobby.svg)](https://gitter.im/uno-platform/Lobby?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge) 
  [![Twitter Followers](https://img.shields.io/twitter/follow/unoplatform?label=follow%20%40unoplatform&style=flat)](https://twitter.com/unoplatform) [![GitHub Stars](https://img.shields.io/github/stars/unoplatform/uno?label=github%20stars)](https://github.com/unoplatform/uno/stargazers/)  [![NuGet Downloads](https://img.shields.io/nuget/dt/uno.ui.svg)](https://www.nuget.org/packages/uno.ui)  [![All Contributors](https://img.shields.io/badge/all_contributors-59-orange.svg?style=flat-square)](#contributors) 
 
-# What is the Uno Platform
+# What is the Uno Platform?
 
 The Uno Platform (Pronounced 'Oono' or 'Ouno') is a Universal Windows Platform Bridge that allows UWP-based code (C# and XAML) to run on iOS, Android, and WebAssembly. It provides the full definitions of the UWP Windows 10 October 2018 Update (17763), and the implementation of a growing number of parts of the UWP API, such as **Windows.UI.Xaml**, to enable UWP applications to run on these platforms.
 
@@ -82,7 +82,7 @@ For a larger example and features demo:
 
 # Live WebAssembly Apps
 
-Here's a list of live apps made with the Uno Platform for WebAssembly.
+Here's a list of some live apps made with the Uno Platform for WebAssembly.
 
 * The [Uno Platform Playground](https://playground.platform.uno) ([Source](https://github.com/unoplatform/uno.Playground)).
 * The [Uno Calculator](https://calculator.platform.uno), a simple yet powerful iOS/Android/WebAssembly C# port of the calculator that ships with Windows ([Source](https://github.com/unoplatform/calculator)). Also try the [pink theme](https://calculator.platform.uno/?theme=pink), the [iOS version](https://apps.apple.com/app/id1464736591) or the [Android version](https://play.google.com/store/apps/details?id=uno.platform.calculator).
@@ -187,16 +187,21 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
   <tr>
     <td align="center"><a href="https://mrassili.com"><img src="https://avatars0.githubusercontent.com/u/25288435?v=4" width="100px;" alt="Marouane R"/><br /><sub><b>Marouane R</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=mrassili" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/avinasjha"><img src="https://avatars1.githubusercontent.com/u/56090532?v=4" width="100px;" alt="Avinash Jha"/><br /><sub><b>Avinash Jha</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=avinasjha" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/khyativalera"><img src="https://avatars3.githubusercontent.com/u/47522632?v=4" width="100px;" alt="Khyati Valera"/><br /><sub><b>Khyati Valera</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=khyativalera" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/pushkyn"><img src="https://avatars0.githubusercontent.com/u/3326427?v=4" width="100px;" alt="Alex"/><br /><sub><b>Alex</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=pushkyn" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://miguelpiedrafita.com"><img src="https://avatars0.githubusercontent.com/u/23558090?v=4" width="100px;" alt="Miguel Piedrafita"/><br /><sub><b>Miguel Piedrafita</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=m1guelpf" title="Documentation">📖</a></td>
+  
+  <td align="center"><a href="https://github.com/avinasjha"><img src="https://avatars1.githubusercontent.com/u/56090532?v=4" width="100px;" alt="Avinash Jha"/><br /><sub><b>Avinash Jha</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=avinasjha" title="Documentation">📖</a></td>
+  
+  <td align="center"><a href="https://github.com/khyativalera"><img src="https://avatars3.githubusercontent.com/u/47522632?v=4" width="100px;" alt="Khyati Valera"/><br /><sub><b>Khyati Valera</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=khyativalera" title="Documentation">📖</a></td>
+  
+  <td align="center"><a href="https://github.com/pushkyn"><img src="https://avatars0.githubusercontent.com/u/3326427?v=4" width="100px;" alt="Alex"/><br /><sub><b>Alex</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=pushkyn" title="Documentation">📖</a></td>
+  
+  <td align="center"><a href="https://miguelpiedrafita.com"><img src="https://avatars0.githubusercontent.com/u/23558090?v=4" width="100px;" alt="Miguel Piedrafita"/><br /><sub><b>Miguel Piedrafita</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=m1guelpf" title="Documentation">📖</a></td>
   </tr>
   <tr>
-    <td align="center"><a href="http://www.linkedin.com/in/gagandeepp"><img src="https://avatars1.githubusercontent.com/u/34858937?v=4" width="100px;" alt="Gagan Deep"/><br /><sub><b>Gagan Deep</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=gagandeepp" title="Documentation">📖</a></td>
+   <td align="center"><a href="http://www.linkedin.com/in/gagandeepp"><img src="https://avatars1.githubusercontent.com/u/34858937?v=4" width="100px;" alt="Gagan Deep"/><br /><sub><b>Gagan Deep</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=gagandeepp" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/RobJenks"><img src="https://avatars0.githubusercontent.com/u/3159730?v=4" width="100px;" alt="RobJenks"/><br /><sub><b>RobJenks</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=RobJenks" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/cTxplorer"><img src="https://avatars0.githubusercontent.com/u/28287478?v=4" width="100px;" alt="Pratik Gadhiya"/><br /><sub><b>Pratik Gadhiya</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=cTxplorer" title="Documentation">📖</a></td>
-    <td align="center"><a href="https://github.com/mkwhalen"><img src="https://avatars0.githubusercontent.com/u/17869199?v=4" width="100px;" alt="MacKenzie Whalen"/><br /><sub><b>MacKenzie Whalen</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=mkwhalen" title="Documentation">📖</a></td>
+  <td align="center"><a href="https://github.com/cTxplorer"><img src="https://avatars0.githubusercontent.com/u/28287478?v=4" width="100px;" alt="Pratik Gadhiya"/><br /><sub><b>Pratik Gadhiya</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=cTxplorer" title="Documentation">📖</a></td>
+   <td align="center"><a href="https://github.com/mkwhalen"><img src="https://avatars0.githubusercontent.com/u/17869199?v=4" width="100px;" alt="MacKenzie Whalen"/><br /><sub><b>MacKenzie Whalen</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=mkwhalen" title="Documentation">📖</a></td>
+    <td align="center"><a href="https://github.com/iamkunalpitale"><alt="Kunal Pitale"/><br /><sub><b>Kunal Pitale</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=iamkunalpitale" title="Documentation">📖</a></td>
   </tr>
 </table>
 
