@@ -138,7 +138,9 @@ namespace Windows.Media.Playback
 
 				var uri = _playlistItems?.Count > 0
 					? _playlistItems[0]
-					: ((MediaSource)Source).Uri;
+					: Source is MediaPlaybackItem
+						? ((MediaPlaybackItem)Source).Source.Uri
+						: ((MediaSource)Source).Uri;
 
 				SetVideoSource(uri);
 
