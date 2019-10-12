@@ -21,6 +21,7 @@ area/build:
   - build/*
   - build/**/*
   - '**/*.yml'
+  - '*.yml'
   - src/Uno.UI.AssemblyComparer/*
   - src/Uno.UI.AssemblyComparer/**/*
   - src/Uno.UI.TestComparer/*
@@ -56,4 +57,3 @@ area/wasm:
   - '**/*.WASM.cs'
   - src/Uno.UI.Wasm/*
   - src/Uno.UI.Wasm/**/*
-  
