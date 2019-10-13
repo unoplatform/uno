@@ -17,9 +17,9 @@ namespace Windows.ApplicationModel
 				PackageInfoFlags.MetaData);
 		}
 
-		public string FamilyName => Application.Context.PackageName;
+		public string FamilyName => _packageInfo.PackageName;
 
-		public string FullName => $"{Application.Context.PackageName}_{PackageInfoCompat.GetLongVersionCode(_packageInfo)}";
+		public string FullName => $"{_packageInfo.PackageName}_{PackageInfoCompat.GetLongVersionCode(_packageInfo)}";
 
 		public string Name => _packageInfo.PackageName;
 

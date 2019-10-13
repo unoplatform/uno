@@ -26,7 +26,7 @@ namespace Windows.ApplicationModel
 				var shortVersion = NSBundle.MainBundle.InfoDictionary[BundleShortVersionKey].ToString();
 				var bundleVersion = NSBundle.MainBundle.InfoDictionary[BundleVersionKey].ToString();
 				// Short version is the user-displayed version, use if possible
-				if ( SystemVersion.TryParse(shortVersion, out var userVersoin))
+				if (SystemVersion.TryParse(shortVersion, out var userVersoin))
 				{
 					return new PackageVersion(userVersoin);
 				}

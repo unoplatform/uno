@@ -4,6 +4,7 @@
 
 ### Features
 
+* [#1207] Implemented some `PackageId` properties
 * [#1743](https://github.com/unoplatform/uno/pull/1743) - Added a change to make the `MarkupExtensionReturnType` optional
 * Added Dark and HighContrast theme resources, reacts to Dark/Light theme on iOS, Android and WASM automatically during the startup of the app if `RequestedTheme` is not set in `App.xaml`
 * Support for `Gyrometer` on Android, iOS and WASM
