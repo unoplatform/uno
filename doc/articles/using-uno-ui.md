@@ -104,7 +104,7 @@ See [here for a detailed guide to authoring platform-specific XAML code](platfor
 
 The layout behavior is the notion of applying margins, paddings and alignments for a control inside its parent. In UWP/WPF, the code responsible for this behavior is located in the FrameworkElement class. This means that any control can alter its own rendering position inside its parent, and place its content accordingly, regardless of the parent type.
 
-The Uno.UI layout engine on Android and iOS is applied by a parent to its children. This means that if a control has an alignment or a margin set, if it is not child of a FrameworkElement (ie it's the child of a non-Uno view), those properties will be ignored, and the control will stretch within its parent's available space.
+The Uno.UI layout engine on Android and iOS is applied by a parent to its children. This means that if a control has an alignment or a margin set, if it is not child of a FrameworkElement (i.e. it's the child of a non-Uno view), those properties will be ignored, and the control will stretch within its parent's available space.
 
 This behavior is a direct consequence of the ability to mix native and Uno.UI controls.
 
@@ -231,13 +231,13 @@ See the [Border control](https://msdn.microsoft.com/en-us/library/windows/apps/w
 
 ### Button
 
-The Button control is implemented by default using a ControlTemplate that contains a bindable native button, that binds that the Content property as a string, and propagates the CanExecute of a databound command.
+The Button control is implemented by default using a ControlTemplate that contains a bindable native button that binds that the Content property as a string, and propagates the CanExecute of a databound command.
 
 For more information, see the [Button class](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.button.aspx).
 
 ### CheckBox
 
-The CheckBox control is implemented by default using a ControlTemplate that contains a bindable native CheckBox, that binds the Content property as a string, IsChecked as a boolean, and propagates the CanExecute of a databound command.
+The CheckBox control is implemented by default using a ControlTemplate that contains a bindable native CheckBox that binds the Content property as a string, IsChecked as a boolean, and propagates the CanExecute of a databound command.
 
 For more information, see the [CheckBox class](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.checkbox.aspx).
 
@@ -247,13 +247,13 @@ For more information, see the [HyperLinkButton](https://msdn.microsoft.com/en-us
 
 ### RadioButton
 
-The RadioButton control is implemented by default using a ControlTemplate that contains a bindable native CheckBox, that binds the Content property as a string, IsChecked as a boolean, and propagates the CanExecute of a databound command.
+The RadioButton control is implemented by default using a ControlTemplate that contains a bindable native CheckBox that binds the Content property as a string, IsChecked as a boolean, and propagates the CanExecute of a databound command.
 
 For more information, see the [RadioButton class](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.radiobutton.aspx).
 
 ### ComboBox
 
-The ComboBox control is implemented by default using a ControlTemplate that contains a bindable native CheckBox, that binds that the Content property as a string, IsChecked as a boolean, and propagates the CanExecute of a databound command.
+The ComboBox control is implemented by default using a ControlTemplate that contains a bindable native CheckBox that binds that the Content property as a string, IsChecked as a boolean, and propagates the CanExecute of a databound command.
 
 For more information, see the [ComboBox class](https://msdn.microsoft.com/en-us/library/windows/apps/windows.ui.xaml.controls.combobox.aspx).
 
@@ -472,4 +472,4 @@ As of iOS 9, the system does not allow iPad applications to dictate their orient
 If a view needs to keep the keyboard opened when tapping on it, use the `Uno.UI.Controls.Window.SetNeedsKeyboard` attached property.
 
 ## Creating/Using Android Activities
-At the root of every Android Uno app lies a `BaseActivity` class that extends from `Android.Support.V7.App.AppCompatActivity` which is part of the [Android v7 AppCompat Support Library](https://developer.android.com/topic/libraries/support-library/features.html#v7-appcompat). If you ever need to create a new Activity within your app or within Uno you must be sure to extend `BaseActivity` and, if you need to apply a Theme to the activity, ensure that the Theme you set is a `Theme.AppCompat` theme (or descendant).
+At the root of every Android Uno app, lies a `BaseActivity` class that extends from `Android.Support.V7.App.AppCompatActivity` which is part of the [Android v7 AppCompat Support Library](https://developer.android.com/topic/libraries/support-library/features.html#v7-appcompat). If you ever need to create a new Activity within your app or within Uno you must be sure to extend `BaseActivity` and, if you need to apply a Theme to the activity, ensure that the Theme you set is a `Theme.AppCompat` theme (or descendant).

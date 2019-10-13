@@ -321,6 +321,12 @@ declare namespace Uno.UI {
             * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
             */
         registerEventOnViewNative(pParams: number): boolean;
+        private processPendingLeaveEvent;
+        private _isPendingLeaveProcessingEnabled;
+        /**
+         * Ensure that any pending leave event are going to be processed (cf @see processPendingLeaveEvent )
+         */
+        private ensurePendingLeaveEventProcessing;
         /**
             * Add an event handler to a html element.
             *
@@ -661,6 +667,10 @@ declare class WindowManagerSetXUidParams {
     HtmlId: number;
     Uid: string;
     static unmarshal(pData: number): WindowManagerSetXUidParams;
+}
+interface PointerEvent {
+    isOver(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
+    isOverDeep(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
 }
 declare module Uno.UI {
     interface IAppManifest {

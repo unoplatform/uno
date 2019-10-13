@@ -224,7 +224,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 				{
 					_isInvokingTextChanged = true;
-					TextChanged?.Invoke(this, new TextChangedEventArgs());
+					TextChanged?.Invoke(this, new TextChangedEventArgs(this));
 				}
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
 				finally
@@ -721,7 +721,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void OnSelectionChanged()
 		{
-			SelectionChanged?.Invoke(this, new RoutedEventArgs());
+			SelectionChanged?.Invoke(this, new RoutedEventArgs(this));
 		}
 
 		public void OnTemplateRecycled()

@@ -434,7 +434,7 @@ namespace Windows.UI.Xaml
 
 		internal virtual void OnLayoutUpdated()
 		{
-			LayoutUpdated?.Invoke(this, RoutedEventArgs.Empty);
+			LayoutUpdated?.Invoke(this, new RoutedEventArgs(this));
 		}
 
 #if XAMARIN

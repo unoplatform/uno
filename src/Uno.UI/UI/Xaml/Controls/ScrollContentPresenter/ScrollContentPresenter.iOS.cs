@@ -34,6 +34,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public ScrollContentPresenter()
 		{
+			TouchesManager = new ScrollContentPresenterManipulationManager(this);
 			InitializeBinder();
 			InitializeScrollContentPresenter();
 			Scrolled += OnScrolled;
@@ -232,9 +233,7 @@ namespace Windows.UI.Xaml.Controls
 					ContentSize = AdjustContentSize(_content.Frame.Size + new CGSize(horizontalMargin, verticalMargin));
 
 					// This prevents unnecessary touch delays (which affects the pressed visual states of buttons) when user can't scroll.
-					var canScrollVertically = VerticalScrollMode != ScrollMode.Disabled && ContentSize.Height > Frame.Height;
-					var canScrollHorizontally = HorizontalScrollMode != ScrollMode.Disabled && ContentSize.Width > Frame.Width;
-					DelaysContentTouches = canScrollHorizontally || canScrollVertically;
+					UpdateDelayedTouches();
 				}
 			}
 			catch (Exception e)
@@ -456,5 +455,56 @@ namespace Windows.UI.Xaml.Controls
 			ScrollViewExtensions.BringIntoView(this, visual, BringIntoViewMode.ClosestEdge);
 			return rectangle;
 		}
+
+		#region Touches
+
+		/*
+		 * By default the UIScrollView will delay the touches to the content until it detects
+		 * if the manipulation is a drag. And even there, if it detects that the manipulation
+		 * is a Drag, it will cancel the touches on content and handle them internally
+		 * (i.e. Touches<Began|Moved|Ended> will no longer be invoked on SubViews).
+		 * cf. https://developer.apple.com/documentation/uikit/uiscrollview
+		 *
+		 * The "TouchesManager" give the ability to any child UIElement to alter this behavior
+		 * if it needs to handle the gestures itself (e.g. the Thumb of a Slider / ToggleSwitch).
+		 *
+		 * On the UIElement this is defined by the ManipulationMode.
+		 */
+
+		internal UIElement.TouchesManager TouchesManager { get; }
+
+		private void UpdateDelayedTouches()
+		{
+			if (TouchesManager.Listeners == 0)
+			{
+				// This prevents unnecessary touch delays (which affects the pressed visual states of buttons) when user can't scroll.
+				var canScrollVertically = VerticalScrollMode != ScrollMode.Disabled && ContentSize.Height > Frame.Height;
+				var canScrollHorizontally = HorizontalScrollMode != ScrollMode.Disabled && ContentSize.Width > Frame.Width;
+				DelaysContentTouches = canScrollHorizontally || canScrollVertically;
+			}
+			else
+			{
+				DelaysContentTouches = false;
+			}
+		}
+
+		private class ScrollContentPresenterManipulationManager : UIElement.TouchesManager
+		{
+			private readonly ScrollContentPresenter _scrollPresenter;
+
+			public ScrollContentPresenterManipulationManager(ScrollContentPresenter scrollPresenter)
+			{
+				_scrollPresenter = scrollPresenter;
+			}
+
+			/// <inheritdoc />
+			protected override void SetCanDelay(bool canDelay)
+				=> _scrollPresenter.UpdateDelayedTouches();
+
+			/// <inheritdoc />
+			protected override void SetCanCancel(bool canCancel)
+				=> _scrollPresenter.CanCancelContentTouches = canCancel;
+		}
+	#endregion
 	}
 }

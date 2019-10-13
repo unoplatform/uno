@@ -1,6 +1,6 @@
 assembly-versioning-scheme: MajorMinorPatch
-mode: Mainline
-next-version: 2.0.0
+mode: ContinuousDeployment
+next-version: 2.0.512
 continuous-delivery-fallback-tag: ""
 tag-prefix: 'version-tags-are-disabled'
 
@@ -8,7 +8,7 @@ branches:
   master:
     regex: master
     tag: dev
-    increment: patch
+    increment: none
   beta:
     regex: release/beta/
     tag: beta
@@ -31,8 +31,8 @@ branches:
     source-branches: ['master']
   feature:
     regex: feature/(.*?)
-    tag: feature.{BranchName}    
-    increment: none
+    tag: feature.{BranchName}
+    increment: minor
     source-branches: ['master']
 
 ignore:
