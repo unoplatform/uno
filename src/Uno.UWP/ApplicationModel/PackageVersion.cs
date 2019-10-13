@@ -2,6 +2,14 @@ namespace Windows.ApplicationModel
 {
 	public partial struct PackageVersion
 	{
+		internal PackageVersion(ushort major)
+		{
+			Major = major;
+			Minor = 0;
+			Build = 0;
+			Revision = 0;
+		}
+
 		internal PackageVersion(global::System.Version version)
 		{
 			Major = (ushort)(version.Major >= 0 ? version.Major : 0);

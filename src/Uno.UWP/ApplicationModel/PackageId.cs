@@ -44,9 +44,7 @@ namespace Windows.ApplicationModel
 				return "Unknown";
 			}
 		}
-#endif
 
-#if !__IOS__
 		[global::Uno.NotImplemented]
 		public global::Windows.ApplicationModel.PackageVersion Version
 		{
