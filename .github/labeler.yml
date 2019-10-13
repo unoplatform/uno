@@ -13,14 +13,14 @@ area/automation:
 area/android:
   - src/Uno.UI.BindingHelper.Android/*
   - src/Uno.UI.BindingHelper.Android/**/*
-  - ./**/*.Android.cs
-  - ./**/*.android.cs
-  - ./**/*.droid.cs
+  - '**/*.Android.cs'
+  - '**/*.android.cs'
+  - '**/*.droid.cs'
 
 area/build:
   - build/*
   - build/**/*
-  - ./**/*.yml
+  - '**/*.yml'
   - src/Uno.UI.AssemblyComparer/*
   - src/Uno.UI.AssemblyComparer/**/*
   - src/Uno.UI.TestComparer/*
@@ -37,13 +37,13 @@ kind/documentation:
   - README.*
   - docs/*
   - docs/**/*
-  - ./**/*.md
-  - ./**/*.MD
-  - ./**/*.txt
+  - '**/*.md'
+  - '**/*.MD'
+  - '**/*.txt'
 
 area/ios:
-  - ./**/*.iOS.cs
-  - ./**/*.ios.cs
+  - '**/*.iOS.cs'
+  - '**/*.ios.cs'
 
 area/solution-templates:
   - src/SolutionTemplate/*
@@ -52,7 +52,8 @@ area/solution-templates:
   - src/UnoItemTemplate/**/*
 
 area/wasm:
-  - ./**/*.wasm.cs
-  - ./**/*.WASM.cs
+  - '**/*.wasm.cs'
+  - '**/*.WASM.cs'
   - src/Uno.UI.Wasm/*
   - src/Uno.UI.Wasm/**/*
+  
