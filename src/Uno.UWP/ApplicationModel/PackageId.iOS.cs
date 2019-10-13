@@ -1,26 +1,23 @@
 ﻿#if __IOS__
 using Foundation;
-using System.Reflection;
 using SystemVersion = global::System.Version;
 
 namespace Windows.ApplicationModel
 {
 	public partial class PackageId
 	{
-		private const string BundleDisplayNameKey = "CFBundleDisplayName";
 		private const string BundleIdentifierKey = "CFBundleIdentifier";
 		private const string BundleShortVersionKey = "CFBundleShortVersionString";
 		private const string BundleVersionKey = "CFBundleVersion";
 
 		public string FamilyName => NSBundle.MainBundle.InfoDictionary[BundleIdentifierKey].ToString();
 
-		public string FullName => $"{NSBundle.MainBundle.InfoDictionary[BundleIdentifierKey].ToString()}_{Version}";
+		public string FullName => $"{NSBundle.MainBundle.InfoDictionary[BundleIdentifierKey].ToString()}_{NSBundle.MainBundle.InfoDictionary[BundleVersionKey]}";
 
-		public string Name => NSBundle.MainBundle.InfoDictionary[BundleDisplayNameKey].ToString();
+		public string Name => NSBundle.MainBundle.InfoDictionary[BundleIdentifierKey].ToString();
 
 		/// <summary>
-		/// Implementation based on
-		/// <see cref="https://stackoverflow.com/questions/7281085/"/>
+		/// Implementation based on <see cref="https://developer.apple.com/documentation/bundleresources/information_property_list/cfbundleversion"/>.
 		/// </summary>
 		public PackageVersion Version
 		{
@@ -28,26 +25,18 @@ namespace Windows.ApplicationModel
 			{
 				var shortVersion = NSBundle.MainBundle.InfoDictionary[BundleShortVersionKey].ToString();
 				var bundleVersion = NSBundle.MainBundle.InfoDictionary[BundleVersionKey].ToString();
-
-				var rawVersion = "";
-				//short version is optional
-				if (string.IsNullOrEmpty(shortVersion))
+				// Short version is the user-displayed version, use if possible
+				if ( SystemVersion.TryParse(shortVersion, out var userVersoin))
 				{
-					//if not provided, use bundle version only
-					rawVersion = bundleVersion;
+					return new PackageVersion(userVersoin);
 				}
-				else
+				// If user-displayed version is not set, use the actual app version
+				if (SystemVersion.TryParse(bundleVersion, out var appVersion))
 				{
-					rawVersion = shortVersion;
-					//attach bundle version if a single number
-					if (ushort.TryParse(bundleVersion, out var buildNumber))
-					{
-						rawVersion += $".{buildNumber}";
-					}
+					return new PackageVersion(appVersion);
 				}
-
-				var version = SystemVersion.Parse(rawVersion);
-				return new PackageVersion(version);
+				// Fallback to default
+				return new PackageVersion();
 			}
 		}
 	}
