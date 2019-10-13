@@ -53,7 +53,7 @@ There are multiple subtleties for building and using native code:
 
 ### Challenge #3: Converting the C++/CX code to C#
 
-The rest of the application is using Microsoft's C++/CX to use WinRT APIs and particularly WinUI APIs. This makes for a very C#-like code, that can be converted to C# using a set of regular expressions that convert `::` to `.`, or `dynamic_cast<FrameworkElement>(fe)` to `((FrameworkElement)fe)`, and the rest of the WinRT API calls just match directly, as Uno provides the full APIs signatures of WinRT.
+The rest of the application is using Microsoft's C++/CX to use WinRT APIs and particularly WinUI APIs. This makes for a very C#-like code that can be converted to C# using a set of regular expressions that convert `::` to `.`, or `dynamic_cast<FrameworkElement>(fe)` to `((FrameworkElement)fe)`, and the rest of the WinRT API calls just match directly, as Uno provides the full APIs signatures of WinRT.
 
 That conversion converts roughly 80% of C++/CX code to C#-compatible code, with some manual adjustments to get fully functional C#. For instance, C++ iterators need to be converted to `foreach` loops, or string to numbers conversions using .NET built-in conversions.
 

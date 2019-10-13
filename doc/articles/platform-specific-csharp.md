@@ -23,7 +23,7 @@ The structure of an Uno app created with the default [Visual Studio template](ht
  Console.WriteLine("MY_SYMBOL is defined for this compilation");
  ```
  
- If the supplied condition is not met, eg if `MY_SYMBOL` is not defined, then the enclosed code will be ignored by the compiler.
+ If the supplied condition is not met, e.g. if `MY_SYMBOL` is not defined, then the enclosed code will be ignored by the compiler.
  
  The following conditional symbols are predefined for each platform:
  
@@ -35,7 +35,7 @@ The structure of an Uno app created with the default [Visual Studio template](ht
  | WebAssembly | `__WASM__`    |
  | MacOS       | `__MACOS__`   |
  
-Note that you can combine conditionals with boolean operators, eg `#if __ANDROID__ || __IOS__`. 
+Note that you can combine conditionals with boolean operators, e.g. `#if __ANDROID__ || __IOS__`. 
 
 You can define your own conditional compilation symbols per project in the 'Build' tab in the project's properties.
 
