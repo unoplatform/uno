@@ -58,6 +58,8 @@
     href: features/windows-system-power.md
   - name: PasswordVault
     href: features\PasswordVault.md
+  - name: Windows.ApplicationModel
+    href: features\windows-applicationmodel.md
   - name: Windows.ApplicationModel.Calls
     href: features\windows-applicationmodel-calls.md
   - name: Windows.Devices.Sensors
