@@ -1,6 +1,6 @@
 ---
 name: Samples Issue
-about: Report a issue with the Uno samples
+about: Report an issue with the Uno samples
 labels: kind/contributor-experience, kind/documentation, triage/untriaged
 ---
 
