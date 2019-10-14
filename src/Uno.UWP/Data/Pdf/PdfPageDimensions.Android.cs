@@ -5,11 +5,6 @@ namespace Windows.Data.Pdf
 {
 	public partial class PdfPageDimensions
 	{
-		public PdfPageDimensions()
-		{
-
-		}
-
 		public Rect ArtBox { get; }
 		public Rect BleedBox { get; }
 		public Rect CropBox { get; }

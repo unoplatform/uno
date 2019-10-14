@@ -8,6 +8,8 @@ namespace Windows.Data.Pdf
 {
 	public partial class PdfDocument : IDisposable
 	{
+		private readonly PdfRenderer pdfRenderer;
+
 		private PdfDocument(PdfRenderer pdfRenderer)
 		{
 			this.pdfRenderer = pdfRenderer ?? throw new ArgumentNullException(nameof(pdfRenderer));
@@ -73,8 +75,6 @@ namespace Windows.Data.Pdf
 		{
 			pdfRenderer.Dispose();
 		}
-
-		private readonly PdfRenderer pdfRenderer;
 	}
 }
 
