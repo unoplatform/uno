@@ -23,6 +23,7 @@ namespace Windows.System
 			("defaultapps", AndroidSettings.ActionManageDefaultAppsSettings),
 			("appsforwebsites", AndroidSettings.ActionManageDefaultAppsSettings),
 			("cortana", AndroidSettings.ActionVoiceInputSettings),
+			("bluetooth", AndroidSettings.ActionBluetoothSettings),
 			("printers", AndroidSettings.ActionPrintSettings),
 			("typing", AndroidSettings.ActionHardKeyboardSettings),
 			("easeofaccess", AndroidSettings.ActionAccessibilitySettings),
@@ -48,6 +49,10 @@ namespace Windows.System
 			("notifications", AndroidSettings.ActionAppNotificationSettings),
 			("storage", AndroidSettings.ActionInternalStorageSettings),
 			("sound", AndroidSettings.ActionSoundSettings),
+			("dateandtime", AndroidSettings.ActionDateSettings),
+			("keyboard", AndroidSettings.ActionInputMethodSettings),
+			("regionlanguage", AndroidSettings.ActionLocaleSettings),			
+			("developers", AndroidSettings.ActionApplicationDevelopmentSettings),
 		};
 
 		static Launcher()
@@ -99,7 +104,7 @@ namespace Windows.System
 
 		private static Task<bool> HandleSettingsUriAsync(Uri uri)
 		{
-			var settingsString = uri.AbsoluteUri.ToLowerInvariant();
+			var settingsString = uri.AbsolutePath.ToLowerInvariant();
 			//get exact match first
 			var bestMatch = _settingsHandlers
 				.Where(handler => handler.uriPrefix == settingsString)
