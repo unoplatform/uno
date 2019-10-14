@@ -67,8 +67,8 @@ public class LocalSettings_Tests : SampleControlUITestBase
 
         {
             _app.Tap(containsButton);
-            TakeScreenshot("Contains Button");
             _app.WaitForDependencyPropertyValue(output, "Text", "True");
+            TakeScreenshot("Contains Button");
         }
 
         {
