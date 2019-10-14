@@ -73,9 +73,13 @@ namespace Windows.Data.Pdf
 				throw new ArgumentNullException(nameof(options));
 			}
 			if (options.DestinationWidth > int.MaxValue)
+			{
 				throw new ArgumentOutOfRangeException(nameof(options), $"PdfPageRenderOptions.DestinationWidth = {options.DestinationWidth}. Must be less than or equal to int.MaxValue");
+			}
 			if (options.DestinationHeight > int.MaxValue)
+			{
 				throw new ArgumentOutOfRangeException(nameof(options), $"PdfPageRenderOptions.DestinationHeight = {options.DestinationHeight}. Must be less than or equal to int.MaxValue");
+			}
 			#endregion
 
 			return Task.Run(() =>
@@ -100,19 +104,19 @@ namespace Windows.Data.Pdf
 			else if (destination.Width == 0)
 			{
 				// destination width not set - calculate it based on height proportion
-				double scale = destination.Height / Size.Height;
+				var scale = destination.Height / Size.Height;
 				destination = new Size(Size.Width * scale, destination.Height);
 			}
 			else if (destination.Height == 0)
 			{
 				// destination height not set - calculate it based on width proportion
-				double scale = destination.Width / Size.Width;
+				var scale = destination.Width / Size.Width;
 				destination = new Size(destination.Width, Size.Height * scale);
 			}
 			#endregion
 
 			#region scale according to DPI
-			float dpi = Graphics.Display.DisplayInformation.GetForCurrentView().LogicalDpi / 96.0f;
+			var dpi = Graphics.Display.DisplayInformation.GetForCurrentView().LogicalDpi / 96.0f;
 			destination = new Size(destination.Width * dpi, destination.Height * dpi);
 			#endregion
 
