@@ -20,6 +20,7 @@ namespace Windows.System
 {
 	public static partial class Launcher
 	{
+#if !__ANDROID__
 		public static async Task<bool> LaunchUriAsync(Uri uri)
 		{
 			try
@@ -33,19 +34,6 @@ namespace Windows.System
 #if __IOS__
 				return UIKit.UIApplication.SharedApplication.OpenUrl(
 					new AppleUrl(uri.OriginalString));
-#elif __ANDROID__
-				var androidUri = Android.Net.Uri.Parse(uri.OriginalString);
-				var intent = new Intent(Intent.ActionView, androidUri);
-
-				if ( Uno.UI.ContextHelper.Current == null)
-				{
-					throw new InvalidOperationException(
-						"LaunchUriAsync was called too early in application lifetime. " +
-						"App context needs to be initialized");
-				}
-				((Android.App.Activity)Uno.UI.ContextHelper.Current).StartActivity(intent);
-
-				return true;
 #elif __WASM__
 				var command = $"Uno.UI.WindowManager.current.open(\"{uri.OriginalString}\");";
 				var result = Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
@@ -64,6 +52,7 @@ namespace Windows.System
 				return false;
 			}
 		}
+#endif
 
 #if __ANDROID__ || __IOS__
 		public static IAsyncOperation<LaunchQuerySupportStatus> QueryUriSupportAsync(

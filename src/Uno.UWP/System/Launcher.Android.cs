@@ -6,76 +6,122 @@ using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Windows.Foundation;
+using AndroidSettings = Android.Provider.Settings;
 
 namespace Windows.System
 {
 	public partial class Launcher
 	{
+		private const string MicrosoftUriPrefix = "ms-";
+		private const string MicrosoftSettingsUri = "ms-settings";
+
+		private static readonly (string uriPrefix, string intent)[] _settingsHandlers = new (string uriPrefix, string intent)[]
+		{
+			("sync", AndroidSettings.ActionSyncSettings),
+			("appsfeatures-app", AndroidSettings.ActionApplicationDetailsSettings),
+			("appsfeatures", AndroidSettings.ActionApplicationSettings),
+			("defaultapps", AndroidSettings.ActionManageDefaultAppsSettings),
+			("appsforwebsites", AndroidSettings.ActionManageDefaultAppsSettings),
+			("cortana", AndroidSettings.ActionVoiceInputSettings),
+			("printers", AndroidSettings.ActionPrintSettings),
+			("typing", AndroidSettings.ActionHardKeyboardSettings),
+			("easeofaccess", AndroidSettings.ActionAccessibilitySettings),
+			("network-airplanemode", AndroidSettings.ActionAirplaneModeSettings),
+			("network-celluar", AndroidSettings.ActionNetworkOperatorSettings),
+			("network-datausage", AndroidSettings.ActionDataUsageSettings),
+			("network-wifisettings", AndroidSettings.ActionWifiSettings),
+			("nfctransactions", AndroidSettings.ActionNfcSettings),
+			("network-vpn", AndroidSettings.ActionVpnSettings),
+			("network-wifi", AndroidSettings.ActionWifiSettings),
+			("network", AndroidSettings.ActionWirelessSettings),
+			("personalization", AndroidSettings.ActionDisplaySettings),
+			("privacy", AndroidSettings.ActionPrivacySettings),
+			("about", AndroidSettings.ActionDeviceInfoSettings),
+			("apps-volume", AndroidSettings.ActionSoundSettings),
+			("batterysaver", AndroidSettings.ActionBatterySaverSettings),
+			("display", AndroidSettings.ActionDisplaySettings),
+			("screenrotation", AndroidSettings.ActionDisplaySettings),
+			("quiethours", AndroidSettings.ActionZenModePrioritySettings),
+			("quietmomentshome", AndroidSettings.ActionZenModePrioritySettings),
+			("nightlight", AndroidSettings.ActionNightDisplaySettings),
+			("taskbar", AndroidSettings.ActionDisplaySettings),
+			("notifications", AndroidSettings.ActionAppNotificationSettings),
+			("storage", AndroidSettings.ActionInternalStorageSettings),
+			("sound", AndroidSettings.ActionSoundSettings),
+		};
+
+		static Launcher()
+		{
+
+		}
+
 		public static async Task<bool> LaunchUriAsync(Uri uri)
 		{
-			if ( uri == null)
+			if (uri == null)
 			{
 				throw new ArgumentNullException(nameof(uri));
 			}
-			if (uri.Scheme.StartsWith("ms-", StringComparison.InvariantCultureIgnoreCase))
-			{
-				return await HandleSpecialUriAsync(uri);
-			}
-		}
 
-		public static IAsyncOperation<LaunchQuerySupportStatus> QueryUriSupportAsync(
-		Uri uri,
-		LaunchQuerySupportType launchQuerySupportType)
-		{
-			var intent = new Intent(Intent.ActionView, Android.Net.Uri.Parse(uri.OriginalString));
-
-			if (Application.Context == null)
+			if (Uno.UI.ContextHelper.Current == null)
 			{
 				throw new InvalidOperationException(
-					"Launcher was used too early in the application lifetime. " +
-					"Android app context needs to be available.");
+					"LaunchUriAsync was called too early in application lifetime. " +
+					"App context needs to be initialized");
 			}
 
-			var manager = Application.Context.PackageManager;
-			var supportedResolvedInfos = manager.QueryIntentActivities(
-				intent,
-				PackageInfoFlags.MatchDefaultOnly);
-			if (supportedResolvedInfos.Any())
+			if (IsSpecialUri(uri) && await HandleSpecialUriAsync(uri))
 			{
-				return Task.FromResult(LaunchQuerySupportStatus.Available)
-					.AsAsyncOperation();
+				return true;
 			}
-			else
-			{
-				return Task.FromResult(LaunchQuerySupportStatus.NotSupported)
-					.AsAsyncOperation();
-			}
+
+			return await LaunchUriInternalAsync(uri);
 		}
+
+		private static Task<bool> LaunchUriInternalAsync(Uri uri)
+		{
+			var androidUri = Android.Net.Uri.Parse(uri.OriginalString);
+			var intent = new Intent(Intent.ActionView, androidUri);
+
+			StartActivity(intent);
+			return Task.FromResult(true);
+		}
+
+		private static bool IsSpecialUri(Uri uri) => uri.Scheme.StartsWith(MicrosoftUriPrefix, StringComparison.InvariantCultureIgnoreCase);
 
 		private static Task<bool> HandleSpecialUriAsync(Uri uri)
 		{
-			switch(uri.Scheme.ToLowerInvariant())
+			switch (uri.Scheme.ToLowerInvariant())
 			{
-				case "ms-settings": return HandleSettingsUriAsync(uri);
-				default: return LaunchUriInternalAsync();
+				case MicrosoftSettingsUri: return HandleSettingsUriAsync(uri);
+				default: return LaunchUriInternalAsync(uri);
 			}
 		}
 
 		private static Task<bool> HandleSettingsUriAsync(Uri uri)
 		{
-			string launchAction;
-			switch (uri.AbsolutePath.ToLowerInvariant())
+			var settingsString = uri.AbsoluteUri.ToLowerInvariant();
+			//get exact match first
+			var bestMatch = _settingsHandlers
+				.Where(handler => handler.uriPrefix == settingsString)
+				.Select(handler => handler.intent)
+				.FirstOrDefault();
+			var launchAction = bestMatch;
+			if (launchAction == null)
 			{
-				case "bluetooth":
-					launchAction = Android.Provider.Settings.ActionBluetoothSettings;
-					break;
-				default:
-					launchAction = Android.Provider.Settings.ActionSettings;
-					break;
+				var secondaryMatch = _settingsHandlers
+					.Where(handler =>
+						settingsString.StartsWith(handler.uriPrefix, StringComparison.InvariantCultureIgnoreCase))
+					.Select(handler => handler.intent)
+					.FirstOrDefault();
+				launchAction = secondaryMatch;
 			}
-			var intent = new Intent(launchAction);
-			((Android.App.Activity)Uno.UI.ContextHelper.Current).StartActivity(intent);
+
+			var intent = new Intent(launchAction ?? AndroidSettings.ActionSettings);
+			StartActivity(intent);
+			return Task.FromResult(true);
 		}
+
+		private static void StartActivity(Intent intent) => ((Activity)Uno.UI.ContextHelper.Current).StartActivity(intent);
 	}
 }
 #endif
