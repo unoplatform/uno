@@ -157,7 +157,7 @@ namespace Windows.UI.Xaml.Controls
 						var backgroundRect = new Rect(backgroundTransform.Matrix.OffsetX, backgroundTransform.Matrix.OffsetY + background.ActualHeight, background.ActualWidth, background.ActualHeight);
 
 						// Because Popup.Child is not part of the visual tree until Popup.IsOpen,
-						// some descendent Controls may never have loaded and materialized their templates.
+						// some descendant Controls may never have loaded and materialized their templates.
 						// We force the materialization of all templates to ensure that Measure works properly.
 						foreach (var control in popupChild.EnumerateAllChildren().OfType<Control>())
 						{
