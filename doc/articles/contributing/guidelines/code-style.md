@@ -55,14 +55,14 @@ public class LocalSettings_Tests : SampleControlUITestBase
 
         {
             _app.Tap(clearButton);
-            TakeScreenshot("Clear Button");
             _app.WaitForDependencyPropertyValue(output, "Text", 0);
+            TakeScreenshot("Clear Button");
         }
 
         {
             _app.Tap(addButton);
-            TakeScreenshot("Add Button");
            _app.WaitForDependencyPropertyValue(output, "Text", 1);
+            TakeScreenshot("Add Button");
         }
 
         {
@@ -73,8 +73,8 @@ public class LocalSettings_Tests : SampleControlUITestBase
 
         {
             _app.Tap(removeButton);
-            TakeScreenshot("Remove Button");
             _app.WaitForDependencyPropertyValue(output, "Text", 0);
+            TakeScreenshot("Remove Button");
         }
     }
 }
