@@ -45,15 +45,6 @@
 	  <None Remove="Data\Pdf\PdfPageDimensions.Android.cs" />
 	  <None Remove="Data\Pdf\PdfPageRenderOptions.Android.cs" />
 	</ItemGroup>
-	
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="Data\Pdf\PdfDocument.Android.cs" />
-	  <UpToDateCheckInput Remove="Data\Pdf\PdfPage.Android.cs" />
-	  <UpToDateCheckInput Remove="Data\Pdf\PdfPageDimensions.Android.cs" />
-	  <UpToDateCheckInput Remove="Data\Pdf\PdfPageRenderOptions.Android.cs" />
-	  <UpToDateCheckInput Remove="Generated\3.0.0.0\Windows.Data.Pdf\PdfPageDimensions.cs" />
-	  <UpToDateCheckInput Remove="Generated\3.0.0.0\Windows.Data.Pdf\PdfPageRenderOptions.cs" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
