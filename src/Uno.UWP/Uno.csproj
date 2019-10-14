@@ -38,13 +38,6 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
 	</ItemGroup>
-	
-	<ItemGroup>
-	  <None Remove="Data\Pdf\PdfDocument.Android.cs" />
-	  <None Remove="Data\Pdf\PdfPage.Android.cs" />
-	  <None Remove="Data\Pdf\PdfPageDimensions.Android.cs" />
-	  <None Remove="Data\Pdf\PdfPageRenderOptions.Android.cs" />
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
