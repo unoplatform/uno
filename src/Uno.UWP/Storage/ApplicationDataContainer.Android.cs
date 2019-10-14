@@ -26,7 +26,7 @@ namespace Windows.Storage
 
 			public SharedPreferencesPropertySet()
 			{
-				_preferences = PreferenceManager.GetDefaultSharedPreferences(ContextHelper.Current);
+				_preferences = PreferenceManager.GetDefaultSharedPreferences(Android.App.Application.Context);
 			}
 
 			public object this[string key]
