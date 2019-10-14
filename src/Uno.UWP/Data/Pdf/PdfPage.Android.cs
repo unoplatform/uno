@@ -8,8 +8,8 @@ using Uno;
 using Windows.Foundation;
 using Windows.Storage.Streams;
 using Windows.UI;
-using Rect = Windows.Foundation.Rect;
 using Color = Windows.UI.Color;
+using Rect = Windows.Foundation.Rect;
 
 namespace Windows.Data.Pdf
 {

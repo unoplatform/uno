@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Data.Pdf
 {
-    #if false ||__IOS__ || NET461 || __WASM__ || __MACOS__
+#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
-    #endif
+#endif
 	public partial class PdfPageRenderOptions
 	{
-        #if false ||__IOS__ || NET461 || __WASM__ || __MACOS__
+#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::Windows.Foundation.Rect SourceRect
 		{
@@ -20,8 +20,8 @@ namespace Windows.Data.Pdf
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "Rect PdfPageRenderOptions.SourceRect");
 			}
 		}
-        #endif
-        #if false ||__IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public bool IsIgnoringHighContrast
 		{
@@ -34,8 +34,8 @@ namespace Windows.Data.Pdf
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "bool PdfPageRenderOptions.IsIgnoringHighContrast");
 			}
 		}
-        #endif
-        #if false ||__IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public uint DestinationWidth
 		{
@@ -48,8 +48,8 @@ namespace Windows.Data.Pdf
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "uint PdfPageRenderOptions.DestinationWidth");
 			}
 		}
-        #endif
-        #if false ||__IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public uint DestinationHeight
 		{
@@ -62,8 +62,8 @@ namespace Windows.Data.Pdf
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "uint PdfPageRenderOptions.DestinationHeight");
 			}
 		}
-        #endif
-        #if false ||__IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::System.Guid BitmapEncoderId
 		{
@@ -76,8 +76,8 @@ namespace Windows.Data.Pdf
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "Guid PdfPageRenderOptions.BitmapEncoderId");
 			}
 		}
-        #endif
-        #if false ||__IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public global::Windows.UI.Color BackgroundColor
 		{
@@ -90,14 +90,14 @@ namespace Windows.Data.Pdf
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "Color PdfPageRenderOptions.BackgroundColor");
 			}
 		}
-        #endif
-        #if false ||__IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public PdfPageRenderOptions()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Pdf.PdfPageRenderOptions", "PdfPageRenderOptions.PdfPageRenderOptions()");
 		}
-        #endif
+#endif
 		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.PdfPageRenderOptions()
 		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.SourceRect.get
 		// Forced skipping of method Windows.Data.Pdf.PdfPageRenderOptions.SourceRect.set

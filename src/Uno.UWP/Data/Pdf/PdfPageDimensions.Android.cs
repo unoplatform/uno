@@ -3,18 +3,18 @@ using Windows.Foundation;
 
 namespace Windows.Data.Pdf
 {
-    public partial class PdfPageDimensions
-    {
-        public PdfPageDimensions()
-        {
+	public partial class PdfPageDimensions
+	{
+		public PdfPageDimensions()
+		{
 
-        }
+		}
 
-        public Rect ArtBox { get; }
-        public Rect BleedBox { get; }
-        public Rect CropBox { get; }
-        public Rect MediaBox { get; }
-        public Rect TrimBox { get; }
-    }
+		public Rect ArtBox { get; }
+		public Rect BleedBox { get; }
+		public Rect CropBox { get; }
+		public Rect MediaBox { get; }
+		public Rect TrimBox { get; }
+	}
 }
 #endif
