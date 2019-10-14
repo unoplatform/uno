@@ -32,6 +32,17 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_StartScreen
 
 			Assert.AreEqual(LaunchQuerySupportStatus.NotSupported, result);
 		}
+
+
+		[TestMethod]
+		public async Task When_Settings_Uri_Is_Queried()
+		{
+			var result = await Launcher.QueryUriSupportAsync(
+				new Uri("ms-settings:network-wifi"),
+				LaunchQuerySupportType.Uri);
+
+			Assert.AreEqual(LaunchQuerySupportStatus.Available, result);
+		}
 	}
 }
 #endif
