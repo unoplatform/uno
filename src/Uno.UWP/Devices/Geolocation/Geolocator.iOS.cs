@@ -31,7 +31,7 @@ namespace Windows.Devices.Geolocation
 		private void _locationManager_LocationsUpdated(object sender, CLLocationsUpdatedEventArgs e)
 		{
 			BroadcastStatus(PositionStatus.Ready);
-			this.PositionChanged?.Invoke(this, new PositionChangedEventArgs(ToGeoposition(e.Locations.Last())));
+			this._positionChanged?.Invoke(this, new PositionChangedEventArgs(ToGeoposition(e.Locations.Last())));
 		}
 
 		partial void StartPositionChanged()

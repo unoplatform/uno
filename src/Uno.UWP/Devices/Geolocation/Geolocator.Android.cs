@@ -69,7 +69,7 @@ namespace Windows.Devices.Geolocation
 		public void OnLocationChanged(Location location)
 		{
 			BroadcastStatus(PositionStatus.Ready);
-			this.PositionChanged?.Invoke(this, new PositionChangedEventArgs(location.ToGeoPosition()));
+			this._positionChanged?.Invoke(this, new PositionChangedEventArgs(location.ToGeoPosition()));
 		}
 
 		public void OnProviderDisabled(string provider)
