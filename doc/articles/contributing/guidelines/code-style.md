@@ -21,6 +21,21 @@ There are a mixture of patterns within the codebase of Uno and in the interest t
 
 Uno uses EditorConfig ([here's our configuration](https://github.com/unoplatform/uno/blob/master/.editorconfig)) to maintain consistent coding styles and settings in our codebase, such as indent style, tab width, end of line characters, encoding, and more. We typically observe the [Microsoft C# Coding Conventions](https://docs.microsoft.com/en-us/dotnet/csharp/programming-guide/inside-a-program/coding-conventions) with one notable exception - Uno uses Tabs. If you install this [Visual Studio plugin](https://marketplace.visualstudio.com/items?itemName=mynkow.FormatdocumentonSave) it will automatically format your contributions upon file save.
 
+## Conventions
+
+### Braces
+
+```csharp
+if (condition)
+{
+    // do something
+}
+else
+{
+    // use braces even for single line conditions
+}
+```            
+
 ## Integration Tests
 
 ```csharp
