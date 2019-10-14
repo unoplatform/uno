@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Windows.Foundation;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
 
@@ -8,29 +9,39 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class BitmapIcon : IconElement
 	{
-		private readonly Image _image;
-		private readonly Grid _grid;
+		private Image _image;
+		private Grid _grid;
 
 		public BitmapIcon()
 		{
-			Foreground = SolidColorBrushHelper.Black;
+			this.SetValue(ForegroundProperty, SolidColorBrushHelper.Black, DependencyPropertyValuePrecedences.Inheritance);
 
-			_image = new Image {
-				Stretch = Media.Stretch.UniformToFill,
-#if !NET461
-				MonochromeColor = (Foreground as SolidColorBrush)?.Color
-#endif
-			};
+		}
 
-			_image.SetBinding(
-				dependencyProperty: Image.SourceProperty,
-				binding: new Binding { Source = this, Path = nameof(UriSource) }
-			);
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			if (_image == null)
+			{
+				_image = new Image
+				{
+					Stretch = Media.Stretch.Uniform
+				};
 
-			_grid = new Grid();
-			_grid.Children.Add(_image);
+				UpdateImageMonochromeColor();
 
-			AddIconElementView(_grid);
+				_image.SetBinding(
+					dependencyProperty: Image.SourceProperty,
+					binding: new Binding { Source = this, Path = nameof(UriSource) }
+				);
+
+				_grid = new Grid();
+				_grid.Children.Add(_image);
+
+				AddIconElementView(_grid);
+			}
+
+
+			return base.MeasureOverride(availableSize);
 		}
 
 		public bool ShowAsMonochrome
@@ -45,18 +56,36 @@ namespace Windows.UI.Xaml.Controls
 				typeof(global::Windows.UI.Xaml.Controls.BitmapIcon),
 				new FrameworkPropertyMetadata(true, (s, e) => (s as BitmapIcon)?.OnShowAsMonochromeChanged((bool)e.NewValue)));
 
-		private void OnShowAsMonochromeChanged(bool value)
+		private void OnShowAsMonochromeChanged(bool value) => RefreshImage();
+
+		protected override void OnForegroundChanged(DependencyPropertyChangedEventArgs e)
+		{
+			base.OnForegroundChanged(e);
+			RefreshImage();
+		}
+
+		private void RefreshImage()
 		{
 #if !NET461
-				_image.MonochromeColor = value ? (Foreground as SolidColorBrush)?.Color : null;
+			UpdateImageMonochromeColor();
 
-				if (!value)
-				{
-					// Force a reload
-					var tmp = UriSource;
-					UriSource = null;
-					UriSource = tmp;
-				}
+			if (UriSource != null)
+			{
+				// Force a reload
+				var tmp = UriSource;
+				UriSource = null;
+				UriSource = tmp;
+			}
+#endif
+		}
+
+		private void UpdateImageMonochromeColor()
+		{
+#if !NET461
+			if (_image != null)
+			{
+				_image.MonochromeColor = ShowAsMonochrome ? (Foreground as SolidColorBrush)?.Color : null;
+			}
 #endif
 		}
 

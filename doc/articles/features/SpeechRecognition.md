@@ -1,6 +1,6 @@
 # Speech Recognition in Uno
 
-Uno's implementation currently support basic native speech recognition. 
+Uno's implementation currently supports basic native speech recognition. 
 
 ## Supported Features
 
@@ -34,7 +34,7 @@ Following features of `Windows.Media.SpeechRecognition.SpeechRecognizer` are cur
 ### iOS
 
 __Requires iOS10+__
-Following lines need to be added to you info.plist
+Following lines need to be added to your info.plist
 ```xml
 <key>NSSpeechRecognitionUsageDescription</key>  
 <string>[SpeechRecognition usage description]</string>  
@@ -44,7 +44,7 @@ Following lines need to be added to you info.plist
 
 ### Android
 
-Following lines need to be added to you AndroidManifest.xml
+Following lines need to be added to your AndroidManifest.xml
 ```xml
 <uses-permission android:name="android.permission.INTERNET" />
 <uses-permission android:name="android.permission.RECORD_AUDIO" />

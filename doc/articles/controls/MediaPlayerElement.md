@@ -22,7 +22,7 @@ See [MediaPlayerElement](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xam
 #### Notes
 
 * Uno's MediaPlayerElement relies on AVPlayer for iOS and AndroidMediaPlayer for Android. Please refer to those native players documentation for more information about supported audio and video formats
-* If you need to set source programmatically (ie, using `_mediaPlayerElement.Source = [source]`), please note that only sources created with `MediaSource.CreateFromUri()` are currently supported
+* If you need to set source programmatically (i.e., using `_mediaPlayerElement.Source = [source]`), please note that only sources created with `MediaSource.CreateFromUri()` are currently supported
 
 ## Features 
 
@@ -45,7 +45,7 @@ See [MediaPlayerElement](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xam
 |						| MediaTransportControls compact mode					| X     | X  		|												|
 |						| Show/Hide MediaTransportControls commands  			| X     | X  		|												|
 |						| Enable/Disable MediaTransportControls commands  		| X     | X  		|												|
-|						| Skip forwoard											| X     | X  		|												|
+|						| Skip forward											| X     | X  		|												|
 |						| Skip backward											| X     | X  		|												|
 |						| Show buffering progress						  		| X     | X  		|												|
 |						| Zoom mode												| X     | X  		| 												|
@@ -76,7 +76,7 @@ __Note:__ Don't just copy/paste, but properly setup `NSAppTransportSecurity` as 
 
 ### Android
 
-Add the folowwing to your AndroidManifest.xml
+Add the following to your AndroidManifest.xml
 
 ```xml
 <!-- Required to play remote media -->

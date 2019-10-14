@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
-namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
+namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 {
 	[TestFixture]
 	public partial class ContentDialog_Tests : SampleControlUITestBase
@@ -26,7 +26,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 
 			var dialogResult = _app.Marked("dialogResult");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("Undefined", dialogResult.GetDependencyPropertyValue("Text")?.ToString());
 
 			_app.Tap(showDialog1);
@@ -53,7 +53,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 
 			var dialogResult = _app.Marked("dialogResult");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("Undefined", dialogResult.GetDependencyPropertyValue("Text")?.ToString());
 
 			_app.Tap(showDialog1);
@@ -89,7 +89,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 
 			var dialogResult = _app.Marked("dialogResult");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("Undefined", dialogResult.GetDependencyPropertyValue("Text")?.ToString());
 
 			_app.Tap(showDialog1);
@@ -117,7 +117,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 			var dialogResult = _app.Marked("dialogResult");
 			var dialogCommand = _app.Marked("commandResult");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("Undefined", dialogResult.GetDependencyPropertyValue("Text")?.ToString());
 
 			_app.Tap(showDialog1);
@@ -145,7 +145,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 
 			var dialogResult = _app.Marked("dialogResult");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("Undefined", dialogResult.GetDependencyPropertyValue("Text")?.ToString());
 
 			_app.Tap(showDialog1);
@@ -172,7 +172,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 
 			var dialogResult = _app.Marked("dialogResult");
 
-			// Assert inital state 
+			// Assert initial state 
 			Assert.AreEqual("Undefined", dialogResult.GetDependencyPropertyValue("Text")?.ToString());
 
 			_app.Tap(showDialog1);
@@ -200,6 +200,112 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 			_app.Tap(primaryButton);
 
 			_app.WaitForDependencyPropertyValue(dialogResult, "Text", "Secondary");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ContentDialog_Auto_Closing()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Closing");
+
+			var showDialog = _app.Marked("AutoCloseDialog");
+
+			_app.WaitForElement(showDialog);
+
+			_app.Tap(showDialog);
+
+			var resultText = _app.Marked("ResultTextBlock");
+			var closedText = _app.Marked("DidCloseTextBlock");
+
+			_app.WaitForDependencyPropertyValue(resultText, "Text", "Closing event was raised!");
+
+			_app.WaitForDependencyPropertyValue(closedText, "Text", "Closed");
+		}
+
+
+
+		[Test]
+		[AutoRetry]
+		public void ContentDialog_Closing_Deferred()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Closing");
+
+			var showDialog = _app.Marked("DeferredDialog");
+
+			_app.WaitForElement(showDialog);
+
+			_app.Tap(showDialog);
+
+			var closeButton = _app.Marked("CloseButton");
+			_app.WaitForElement(closeButton);
+
+			_app.Tap(closeButton);
+
+			var resultText = _app.Marked("ResultTextBlock");
+			var closedText = _app.Marked("DidCloseTextBlock");
+
+			var defer1 = _app.Marked("Complete1Button");
+			_app.Tap(defer1);
+			_app.WaitForDependencyPropertyValue(resultText, "Text", "First complete called");
+
+			var defer2 = _app.Marked("Complete2Button");
+			_app.Tap(defer2);
+			_app.WaitForDependencyPropertyValue(resultText, "Text", "Second complete called");
+
+			_app.WaitForDependencyPropertyValue(closedText, "Text", "Closed");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ContentDialog_Closing_Result()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Closing");
+
+			var showDialog = _app.Marked("PrimaryDialog");
+
+			_app.WaitForElement(showDialog);
+
+			_app.Tap(showDialog);
+
+			var closeButton = _app.Marked("PrimaryButton");
+			_app.WaitForElement(closeButton);
+
+			_app.Tap(closeButton);
+
+			var resultText = _app.Marked("ResultTextBlock");
+			var closedText = _app.Marked("DidCloseTextBlock");
+
+			_app.WaitForDependencyPropertyValue(resultText, "Text", "Primary");
+			_app.WaitForDependencyPropertyValue(closedText, "Text", "Closed");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] //TODO: https://github.com/unoplatform/uno/issues/1583
+		public void ContentDialog_ComboBox()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_ComboBox");
+
+			var showDialog = _app.Marked("ShowComboBoxDialog");
+			_app.WaitForElement(showDialog);
+			_app.Tap(showDialog);
+
+			var comboBox = _app.Marked("InnerComboBox");
+			_app.WaitForElement(comboBox);
+			_app.Tap(comboBox);
+
+			var item = _app.Marked("ComboElement4");
+			_app.WaitForElement(item);
+			_app.Tap(item);
+
+			var resultsText = _app.Marked("ResultsTextBlock");
+			_app.WaitForDependencyPropertyValue(resultsText, "Text", "Item 4");
+
+			// Close the dialog, otherwise subsequent tests may fail
+			var closeButton = _app.Marked("CloseButton");
+			_app.WaitForElement(closeButton);
+
+			_app.Tap(closeButton);
 		}
 	}
 }

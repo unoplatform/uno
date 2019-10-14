@@ -10,6 +10,8 @@ namespace Windows.UI.Xaml.Controls
 		internal ToolTipPopupPanel(ToolTip toolTip) : base(toolTip.Popup)
 		{
 			_toolTip = toolTip;
+
+			Background = null; // No light dismiss for tooltip, dismiss is managed by the cursor location
 		}
 
 		protected override FlyoutPlacementMode PopupPlacement

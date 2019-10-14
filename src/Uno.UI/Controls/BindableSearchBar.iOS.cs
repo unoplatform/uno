@@ -9,6 +9,8 @@ using Uno.UI.DataBinding;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using Uno.Client;
+using CoreGraphics;
+
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
 using UIKit;
@@ -25,7 +27,7 @@ namespace Uno.UI.Controls
 		private static readonly TimeSpan _defaultTextChangedMinDelay = TimeSpan.FromMilliseconds(250);
 		private const bool _defaultIsAutoLostFocusEnabled = true;
 
-		private readonly SerialDisposable _textChangedSubscription;
+		private readonly SerialDisposable _textChangedSubscription = new SerialDisposable();
 
 		private ICommand _submitCommand;
 		private TimeSpan _textUpdateMinDelay = _defaultTextChangedMinDelay;
@@ -33,8 +35,37 @@ namespace Uno.UI.Controls
 
 		public BindableSearchBar()
 		{
+			Initialize();
+		}
+
+		public BindableSearchBar(CGRect frame)
+			: base(frame)
+		{
+			Initialize();
+		}
+
+		public BindableSearchBar(NSCoder coder)
+			: base(coder)
+		{
+			Initialize();
+		}
+
+		public BindableSearchBar(NSObjectFlag t)
+			: base(t)
+		{
+			Initialize();
+		}
+
+		public BindableSearchBar(IntPtr handle)
+			: base(handle)
+		{
+			Initialize();
+		}
+
+
+		private void Initialize()
+		{
 			InitializeBinder();
-			_textChangedSubscription = new SerialDisposable();
 
 			UpdateTextChangedSubscription();
 			SearchButtonClicked += SubmitQuery;
@@ -129,7 +160,7 @@ namespace Uno.UI.Controls
 
 		#region IsAutoLostFocusEnabled
 		/// <summary>
-		/// Gets or sets a boolean which indicates if the serach box should lost focus when query is submitted
+		/// Gets or sets a boolean which indicates if the search box should lost focus when query is submitted
 		/// </summary>
 		[DefaultValue(_defaultIsAutoLostFocusEnabled)]
 		public bool IsAutoLostFocusEnabled

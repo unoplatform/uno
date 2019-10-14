@@ -6,7 +6,7 @@
 			<!-- 
 			If, in the same solution, you are referencing a project that uses https://github.com/onovotny/MSBuildSdkExtras,
 			you need to make sure that the version provided here matches https://github.com/onovotny/MSBuildSdkExtras/blob/master/Source/MSBuild.Sdk.Extras/DefaultItems/ImplicitPackages.targets#L11.
-			This is not an issue when libraries are referenced through nuget packages. See https://github.com/nventive/Uno/issues/446 for more details.
+			This is not an issue when libraries are referenced through nuget packages. See https://github.com/unoplatform/uno/issues/446 for more details.
 			-->
 			<Version>6.2.2</Version>
 		</PackageReference>
@@ -24,8 +24,8 @@
 		<AssemblyName>$ext_safeprojectname$</AssemblyName>
 		<DefaultLanguage>en-US</DefaultLanguage>
 		<TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
-		<TargetPlatformVersion>10.0.16299.0</TargetPlatformVersion>
-		<TargetPlatformMinVersion>10.0.16299.0</TargetPlatformMinVersion>
+		<TargetPlatformVersion>10.0.17763.0</TargetPlatformVersion>
+		<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 		<MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
 		<FileAlignment>512</FileAlignment>
 		<ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>

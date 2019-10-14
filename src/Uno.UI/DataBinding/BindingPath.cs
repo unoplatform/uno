@@ -212,7 +212,7 @@ namespace Uno.UI.DataBinding
 		}
 
 		/// <summary>
-		/// Clears the value of the current precendence.
+		/// Clears the value of the current precedence.
 		/// </summary>
 		/// <remarks>After this call, the value returned
 		/// by <see cref="Value"/> will be of the next available
@@ -225,24 +225,14 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
-		public Type ValueType
-		{
-			get
-			{
-				return _value.PropertyType;
-			}
-		}
+		public Type ValueType => _value.PropertyType;
+
+		internal object DataItem => _value.DataContext;
 
 		public object DataContext
 		{
-			get
-			{
-				return _dataContextWeakStorage?.Target;
-			}
-			set
-			{
-				SetWeakDataContext(Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, value));
-			}
+			get => _dataContextWeakStorage?.Target;
+			set => SetWeakDataContext(Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, value));
 		}
 
 		internal void SetWeakDataContext(ManagedWeakReference weakDataContext)

@@ -53,7 +53,7 @@
 - [Path & Shapes support](features/shapes-and-brushes.md)
 - Updateable Shapes support
 - Image Brush support in shapes
-- `FontIcon` suport
+- `FontIcon` support
 - Merged Dictionary support
 
 ### Responsive design
@@ -120,11 +120,12 @@
 - XAML Behaviors
 - AttachedProperty Binding
 - AttachedProperty Styling
+- Custom `MarkupExtension` support
 - Brightness Control
 - Native and Custom dialogs
 - Support for StateTriggers
 - ProgressBar
-- Pointer Events
+- [Pointer Events](features/routed-events.md)
 - [Routed Events](features/routed-events.md)
 - GeneralTransform.TransformBounds
 - Window.Services.Store (Store ID and links)
@@ -135,7 +136,7 @@
 - ScrollViewer Snap Points, Extent, Viewport Properties
 - ScrollViewer MakeVisible, BringIntoView
 - InputPane (Occlusion, Visibility, Events, ...)
-- Pointer Capture
+- [Pointer Capture](features/routed-events.md)
 - Slider
 - FlipView
 - Customizable Date and Time Pickers

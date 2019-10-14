@@ -576,10 +576,21 @@ namespace AppKit
 
 			return sb.ToString();
 
-			void AppendView(_View innerView)
+			StringBuilder AppendView(_View innerView)
 			{
-				var name = innerView is IFrameworkElement fe && !fe.Name.IsNullOrEmpty() ? $"\"{fe.Name}\"" : "";
-				sb.AppendLine($"{spacing}{(innerView == viewOfInterest ? "*" : "")}>{innerView.ToString()}{name}-({innerView.Frame.Width}x{innerView.Frame.Height})@({innerView.Frame.X},{innerView.Frame.Y})");
+				var name = (innerView as IFrameworkElement)?.Name;
+				var namePart = string.IsNullOrEmpty(name) ? "" : $"-'{name}'";
+
+				return sb
+						.Append(spacing)
+						.Append(innerView == viewOfInterest ? "*>" : ">")
+						.Append(innerView.ToString() + namePart)
+						.Append($"-({innerView.Frame.Width}x{innerView.Frame.Height})@({innerView.Frame.X},{innerView.Frame.Y})")
+
+#if __IOS__
+						.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
+#endif
+						.AppendLine();
 			}
 		}
 

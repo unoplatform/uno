@@ -16,7 +16,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 	{
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		[ActivePlatforms(Platform.iOS)] // Android is disabled https://github.com/unoplatform/uno/issues/1634
 		public void DatePickerFlyout_HasDataContextTest()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent");
@@ -69,6 +69,44 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			button.Tap();
 
 			_app.Screenshot("DatePicker - Flyout");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)] // Android is disabled https://github.com/unoplatform/uno/issues/1634
+		public void DatePickerFlyout_MinYearProperlySets()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent");
+
+			_app.WaitForElement(_app.Marked("theDatePicker"));
+
+			var theDatePicker = _app.Marked("theDatePicker");
+			var datePickerFlyout = theDatePicker.Child;
+
+			// Open flyout
+			theDatePicker.Tap();
+
+			//Assert
+			Assert.AreEqual(datePickerFlyout.GetDependencyPropertyValue("MinYear").ToString(), theDatePicker.GetDependencyPropertyValue("MinYear").ToString());
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)] // Android is disabled https://github.com/unoplatform/uno/issues/1634
+		public void DatePickerFlyout_MaxYearProperlySets()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent");
+
+			_app.WaitForElement(_app.Marked("theDatePicker"));
+
+			var theDatePicker = _app.Marked("theDatePicker");
+			var datePickerFlyout = theDatePicker.Child;
+
+			// Open flyout
+			theDatePicker.Tap();
+
+			//Assert
+			Assert.AreEqual(datePickerFlyout.GetDependencyPropertyValue("MaxYear").ToString(), theDatePicker.GetDependencyPropertyValue("MaxYear").ToString());
 		}
 	}
 }

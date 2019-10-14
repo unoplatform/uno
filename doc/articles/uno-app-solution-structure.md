@@ -32,7 +32,7 @@ using Newtonsoft.Json;
 ...
 ```
 
-We run our app on Android and it works fine. But now the UWP head fails to compile, because we forgot to install the NuGet package there. The solution in this case is to install the NuGet package in all the heads we're targeting.
+We run our app on Android and it works fine. But now the UWP head fails to compile because we forgot to install the NuGet package there. The solution in this case is to install the NuGet package in all the heads we're targeting.
 
 ## Further information
 

@@ -127,7 +127,7 @@ namespace Windows.Graphics.Display
 			if (!toOrientationMask.HasFlag(currentOrientationMask))
 			{
 				//Rotate to the most preferred orientation that is requested
-				//e.g. if our mask is Portrait | PortraitUpsideDown, we prefer to intially rotate to Portrait rather than PortraitUpsideDown
+				//e.g. if our mask is Portrait | PortraitUpsideDown, we prefer to initially rotate to Portrait rather than PortraitUpsideDown
 				var toOrientation = PreferredOrientations.FirstOrDefault(ori => toOrientationMask.HasFlag(ori)).ToUIInterfaceOrientation();
 
 				UIDevice.CurrentDevice

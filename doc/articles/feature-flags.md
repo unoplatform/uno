@@ -8,7 +8,7 @@ Historically, Uno has been relying on the default platform's behavior for clippi
 By default, this mode is enabled for the time being, as it is quite disrupting.
 
 Use `Uno.UI.FeatureConfiguration.UIElement.UseLegacyClipping` to control this mode.
-Aditionally, `Uno.UI.FeatureConfiguration.UIElement.ShowClippingBounds` can be used to show the clipping boudaries to determine if the behavior of the clipping is appropriate.
+Additionally, `Uno.UI.FeatureConfiguration.UIElement.ShowClippingBounds` can be used to show the clipping boundaries to determine if the behavior of the clipping is appropriate.
 
 # UWP Styles default
 

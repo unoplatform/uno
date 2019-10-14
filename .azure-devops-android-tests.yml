@@ -24,15 +24,14 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
-
-
+ 
   - task: PublishTestResults@2
     condition: always()
     inputs:
       testRunTitle: 'Android Test Run'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult.xml'
-      failTaskOnFailedTests: false # see https://github.com/unoplatform/uno/issues/1259 for details
+      failTaskOnFailedTests: true
 
   - task: PublishBuildArtifacts@1
     condition: always()

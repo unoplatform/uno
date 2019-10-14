@@ -36,9 +36,7 @@ namespace SamplesApp
 		/// </summary>
 		public App()
 		{
-#if DEBUG
 			ConfigureFilters(LogExtensionPoint.AmbientLoggerFactory);
-#endif
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
@@ -162,7 +160,11 @@ namespace SamplesApp
 						// { "ReferenceHolder", LogLevel.Debug },
 					}
 				)
+#if DEBUG
 				.AddConsole(LogLevel.Debug);
+#else
+				.AddConsole(LogLevel.Warning);
+#endif
 		}
 
 
@@ -198,6 +200,11 @@ namespace SamplesApp
 							}
 #endif
 
+#if HAS_UNO
+                            // Disable the TextBox caret for new instances
+                            Uno.UI.FeatureConfiguration.TextBox.HideCaret = true;
+#endif
+
 							var t = SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, metadataName);
 							var timeout = Task.Delay(30000);
 
@@ -213,6 +220,13 @@ namespace SamplesApp
 						catch (Exception e)
 						{
 							Console.WriteLine($"Failed to run test {metadataName}, {e}");
+						}
+						finally
+						{
+#if HAS_UNO
+							// Restore the caret for new instances
+							Uno.UI.FeatureConfiguration.TextBox.HideCaret = false;
+#endif
 						}
 					}
 				);

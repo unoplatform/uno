@@ -134,7 +134,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 
 			if (delta < 0)
-			{   // Start Delay can cause this - wait till the start delay is spent before continueing
+			{   // Start Delay can cause this - wait till the start delay is spent before continuing
 				return;	
 			}
 

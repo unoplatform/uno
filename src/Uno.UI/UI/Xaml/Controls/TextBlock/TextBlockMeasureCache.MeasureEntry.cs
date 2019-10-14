@@ -27,6 +27,7 @@ namespace Windows.UI.Xaml.Controls
 				var currentAvailableWidth = availableSize.Width;
 				var currentAvailableHeight = availableSize.Height;
 
+				// Exact match
 				if(_sizes.TryGetValue(CachedTuple.Create(currentAvailableWidth, currentAvailableHeight), out var sizeEntry))
 				{
 					return sizeEntry.MeasuredSize;
@@ -67,11 +68,11 @@ namespace Windows.UI.Xaml.Controls
 						}
 						else
 						{
-							if (Math.Abs(measurementCachedWidth - measurementAvailableWidth) < 0.5d)
+							if (Math.Abs(measurementCachedWidth - measurementAvailableWidth) <= 0.5d)
 							{
 								// This measure was constrained, we can reuse only if the width is the same.
 
-								if (Math.Abs(measurementCachedWidth - currentAvailableWidth) < 0.5d)
+								if (Math.Abs(measurementCachedWidth - currentAvailableWidth) <= 0.5d)
 								{
 									// Yep, that's good
 								}
@@ -94,7 +95,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						// A max-height was specified in the cached measurement:
 						// We must check if we can reuse it.
-						if (Math.Abs(measurementCachedHeight - measurementAvailableHeight) < 0.5d)
+						if (Math.Abs(measurementCachedHeight - measurementAvailableHeight) <= 0.5d)
 						{
 							// This measure was constrained, we can reuse only if the available height
 							// is same or higher than current available height

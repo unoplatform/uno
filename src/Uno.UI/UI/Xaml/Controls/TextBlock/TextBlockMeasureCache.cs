@@ -34,7 +34,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (!FeatureConfiguration.TextBlock.IsMeasureCacheEnabled)
 			{
-				return null; // Mesure cache feature disabled
+				return null; // Measure cache feature disabled
 			}
 
 			var key = new MeasureKey(source); // Extract a key from TextBlock properties

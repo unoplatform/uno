@@ -94,11 +94,11 @@ namespace Windows.UI.Xaml.Controls
 				Span<DoubleRange> columns = stackalloc DoubleRange[] { new DoubleRange(availableSize.Width) };
 
 				double maxMeasuredWidth;
-				var measuredRows = CalculateRows(availableSize, positions.Views.Span, measureChild, columns, rows, definedRows, true, out maxMeasuredWidth);
+				_calculatedRows = CalculateRows(availableSize, positions.Views.Span, measureChild, columns, rows, definedRows, true, out maxMeasuredWidth);
 
 				size = new Size(
 					Math.Max(size.Width, maxMeasuredWidth),
-					measuredRows.Span.Sum(r => r.MinValue)
+					_calculatedRows.Span.Sum(r => r.MinValue)
 				);
 
 				//If MinWidth property is set on the Grid we need to take it into account in order to match UWP behavior
@@ -137,10 +137,10 @@ namespace Windows.UI.Xaml.Controls
 				var measureChild = GetDirectMeasureChild();
 
 				double maxHeightMeasured;
-				var measuredColumns = CalculateColumns(availableSize, positions.Views.Span, measureChild, columns, definedColumns, true, out maxHeightMeasured);
+				_calculatedColumns = CalculateColumns(availableSize, positions.Views.Span, measureChild, columns, definedColumns, true, out maxHeightMeasured);
 
 				size = new Size(
-					measuredColumns.Span.Sum(r => r.MinValue),
+					_calculatedColumns.Span.Sum(r => r.MinValue),
 					Math.Max(size.Height, maxHeightMeasured)
 				);
 
@@ -237,12 +237,12 @@ namespace Windows.UI.Xaml.Controls
 			Span<DoubleRange> columns = stackalloc DoubleRange[] { new DoubleRange(finalSize.Width) };
 
 			double maxWidthMeasured;
-			var calculatedRows = CalculateRows(finalSize, positions, measureChild, columns, rows, definedRows, false, out maxWidthMeasured);
+			_calculatedRows = CalculateRows(finalSize, positions, measureChild, columns, rows, definedRows, false, out maxWidthMeasured);
 
 			Span<DoubleRange> calculatedColumns
 				= stackalloc DoubleRange[] { column.Width.IsAuto ? new DoubleRange(maxWidthMeasured) : new DoubleRange(finalSize.Width) };
 
-			LayoutChildren(calculatedColumns, calculatedRows.Span, positions);
+			LayoutChildren(calculatedColumns, _calculatedRows.Span, positions);
 		}
 
 		/// <summary>
@@ -258,13 +258,13 @@ namespace Windows.UI.Xaml.Controls
 			var measureChild = GetDirectMeasureChild();
 
 			double maxHeightMeasured;
-			var calculatedColumns = CalculateColumns(finalSize, positions, measureChild, columns, definedColumns, false, out maxHeightMeasured);
+			_calculatedColumns = CalculateColumns(finalSize, positions, measureChild, columns, definedColumns, false, out maxHeightMeasured);
 
 			Span<DoubleRange> calculatedRows = stackalloc DoubleRange[] {
 				new DoubleRange(row.Height.IsAuto ? maxHeightMeasured : finalSize.Height)
 			};
 
-			LayoutChildren(calculatedColumns.Span, calculatedRows, positions);
+			LayoutChildren(_calculatedColumns.Span, calculatedRows, positions);
 		}
 
 		/// <summary>

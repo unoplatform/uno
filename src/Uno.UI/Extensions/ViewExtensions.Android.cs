@@ -281,7 +281,7 @@ namespace Uno.UI
 		/// </summary>
 		/// <typeparam name="T">Expected type of the searched child</typeparam>
 		/// <param name="view"></param>
-		/// <param name="selector">Aditional selector for the child</param>
+		/// <param name="selector">Additional selector for the child</param>
 		/// <param name="childLevelLimit">Defines the max depth, null if not limit (Should never be used)</param>
 		/// <param name="includeCurrent">Indicates if the current view should also be tested or not.</param>
 		/// <returns></returns>
@@ -553,11 +553,18 @@ namespace Uno.UI
 
 			return sb.ToString();
 
-			void AppendView(View view)
+			StringBuilder AppendView(View innerView)
 			{
-				var name = (view as IFrameworkElement)?.Name;
-				var namePart = !name.IsNullOrEmpty() ? $"-'{name}'" : "";
-				sb.AppendLine($"{spacing}{(view == viewOfInterest ? "*" : "")}>{view.ToString()}{namePart}-({ViewHelper.PhysicalToLogicalPixels(view.Width)}x{ViewHelper.PhysicalToLogicalPixels(view.Height)})");
+				var name = (innerView as IFrameworkElement)?.Name;
+				var namePart = string.IsNullOrEmpty(name) ? "" : $"-'{name}'";
+
+				return sb
+						.Append(spacing)
+						.Append(innerView == viewOfInterest ? "*>" : ">")
+						.Append(innerView.ToString() + namePart)
+						.Append($"-({ViewHelper.PhysicalToLogicalPixels(innerView.Width)}x{ViewHelper.PhysicalToLogicalPixels(innerView.Height)})")
+						.Append($"  {innerView.Visibility}")
+						.AppendLine();
 			}
 		}
 

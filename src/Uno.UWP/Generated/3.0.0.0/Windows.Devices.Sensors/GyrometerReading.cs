@@ -2,51 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Sensors
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class GyrometerReading 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double AngularVelocityX
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double GyrometerReading.AngularVelocityX is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double AngularVelocityY
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double GyrometerReading.AngularVelocityY is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double AngularVelocityZ
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member double GyrometerReading.AngularVelocityZ is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.DateTimeOffset Timestamp
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset GyrometerReading.Timestamp is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property AngularVelocityX
+		// Skipping already declared property AngularVelocityY
+		// Skipping already declared property AngularVelocityZ
+		// Skipping already declared property Timestamp
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan? PerformanceCount

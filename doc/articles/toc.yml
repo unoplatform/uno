@@ -46,6 +46,8 @@
     href: features/working-with-assets.md
   - name: Animations
     href: features/working-with-animations.md
+  - name: Themes
+    href: features/working-with-themes.md
   - name: Routed Events
     href: features/routed-events.md
   - name: Shapes & Brushes
@@ -76,6 +78,8 @@
     href: controls\Pivot.md
   - name: ToggleSwitch
     href: controls\ToggleSwitch.md
+  - name: VisibleBoundsPadding behavior
+    href: features\VisibleBoundsPadding.md
 - name: Using Uno - implemented views
   href: implemented/toc.yml
   topicHref: implemented-views.md
@@ -89,6 +93,8 @@
   items:
     - name: Guidelines for breaking changes
       href: contributing\guidelines\breaking-changes.md
+    - name: Guidelines for creating a new release
+      href: contributing\guidelines\creating-a-new-release.md
     - name: Guidelines for issue triage
       href: contributing\guidelines\issue-triage.md
     - name: Guidelines for pull-requests

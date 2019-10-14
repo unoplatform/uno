@@ -66,5 +66,15 @@ namespace Windows.UI.Xaml.Controls
 			typeof(RowDefinition),
 			new FrameworkPropertyMetadata(double.PositiveInfinity));
 
+
+		public double ActualHeight
+		{
+			get
+			{
+				var parent = this.GetParent();
+				var result = (parent as Grid)?.GetActualHeight(this) ?? 0d;
+				return result;
+			}
+		}
 	}
 }

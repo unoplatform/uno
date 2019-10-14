@@ -13,19 +13,11 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : BindableView
 	{
-		private readonly Lazy<GestureHandler> _gestures;
-
 		public UIElement()
-		: base(ContextHelper.Current)
+			: base(ContextHelper.Current)
 		{
-			_gestures = new Lazy<GestureHandler>(() => GestureHandler.Create(this));
-
-			InitializeCapture();
-
-			MotionEventSplittingEnabled = false;
+			InitializePointers();
 		}
-
-		partial void InitializeCapture();
 
 		partial void EnsureClip(Rect rect)
 		{
@@ -88,28 +80,6 @@ namespace Windows.UI.Xaml
 			};
 		}
 
-		protected override void ClearCaptures()
-		{
-			_pointCaptures.Clear();
-		}
-
-		protected override bool IsPointerCaptured => _pointCaptures.Any();
-
-		private bool HasHandler(RoutedEvent routedEvent)
-		{
-			return _eventHandlerStore.TryGetValue(routedEvent, out var handlers) && handlers.Any();
-		}
-
-		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler, bool handledEventsToo)
-		{
-			_gestures.Value.UpdateShouldHandle(routedEvent, HasHandler(routedEvent));
-		}
-
-		partial void RemoveHandlerPartial(RoutedEvent routedEvent, object handler)
-		{
-			_gestures.Value.UpdateShouldHandle(routedEvent, HasHandler(routedEvent));
-		}
-
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
 			var newNativeVisibility = newValue == Visibility.Visible ? Android.Views.ViewStates.Visible : Android.Views.ViewStates.Gone;
@@ -134,17 +104,6 @@ namespace Windows.UI.Xaml
 		{
 			Alpha = IsRenderingSuspended ? 0 : (float)Opacity;
 		}
-
-		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
-		{
-			base.SetNativeHitTestVisible(newValue);
-		}
-
-		// This section is using the UnoViewGroup overrides for performance reasons
-		// where most of the work is performed on the java side.
-
-		protected override bool NativeHitCheck() 
-			=> IsViewHit();
 
 		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
 		{

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Text;
 using Windows.UI.Xaml.Controls;
 using Uno.Extensions;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 
 namespace Windows.UI.Xaml.Input
@@ -56,6 +57,17 @@ namespace Windows.UI.Xaml.Input
 				if (control == _focusedElement)
 				{
 					_focusedElement = null;
+
+					if (LostFocus != null)
+					{
+						void OnLostFocus()
+						{
+							// we replay all "lost focus" events
+							LostFocus?.Invoke(null, new FocusManagerLostFocusEventArgs {OldFocusedElement = control});
+						}
+
+						control.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, OnLostFocus); // event is rescheduled, as on UWP
+					}
 				}
 			}
 			else // Focused
@@ -64,12 +76,26 @@ namespace Windows.UI.Xaml.Input
 				{
 					(_focusedElement as Control)?.Unfocus();
 					_focusedElement = control;
+
+					if (GotFocus != null)
+					{
+						void OnGotFocus()
+						{
+							if (_focusedElement == control) // still focused
+							{
+								// we play the gotfocus event only on last/winning control
+								GotFocus?.Invoke(null, new FocusManagerGotFocusEventArgs {NewFocusedElement = control});
+							}
+						}
+
+						control.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, OnGotFocus); // event is rescheduled, as on UWP
+					}
 				}
 				
 				_fallbackFocusedElement = control;
 
 #if __ANDROID__
-				// Forcefully try to bring the control into view when keyboard is open to accomodate adjust nothing mode
+				// Forcefully try to bring the control into view when keyboard is open to accommodate adjust nothing mode
 				if (InputPane.GetForCurrentView().Visible)
 				{
 					control.StartBringIntoView();
@@ -79,6 +105,10 @@ namespace Windows.UI.Xaml.Input
 		}
 
 		internal static object GetFocusedElement(bool useFallback) => GetFocusedElement() ?? _fallbackFocusedElement;
+
+		public static event EventHandler<FocusManagerGotFocusEventArgs> GotFocus;
+		public static event EventHandler<FocusManagerLostFocusEventArgs> LostFocus;
+
 	}
 }
 #endif

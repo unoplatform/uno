@@ -278,7 +278,7 @@ namespace Windows.UI.Xaml.Controls
 			public override void OnPageStarted(Android.Webkit.WebView view, string url, Bitmap favicon)
 			{
 				base.OnPageStarted(view, url, favicon);
-				//Reset Webview Sucess on page started so that if we have succesful navigation we dont send an webView error if a previous error happened.
+				//Reset Webview Success on page started so that if we have successful navigation we don't send an webView error if a previous error happened.
 				_webViewSuccess = true;
 			}
 

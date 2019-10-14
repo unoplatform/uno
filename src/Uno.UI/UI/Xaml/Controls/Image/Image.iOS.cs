@@ -23,10 +23,28 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Image : UIImageView, IImage
 	{
-		/// <summary>
-		/// The size of the native image data
-		/// </summary>
-		private Size SourceImageSize { get; set; }
+        private Size _sourceImageSize;
+
+        /// <summary>
+        /// The size of the native image data
+        /// </summary>
+        private Size SourceImageSize
+        {
+            get
+            {
+                return _sourceImageSize;
+            }
+            set
+            {
+                _sourceImageSize = value;
+
+                if (Source is BitmapSource bitmapSource)
+                {
+                    bitmapSource.PixelWidth = (int)_sourceImageSize.Width;
+                    bitmapSource.PixelHeight = (int)_sourceImageSize.Height;
+                }
+            }
+        }
 
 		public Image()
 		{
@@ -244,7 +262,7 @@ namespace Windows.UI.Xaml.Controls
 					break;
 
 				default:
-					throw new NotSupportedException("Strech mode {0} is not supported".InvariantCultureFormat(stretch));
+					throw new NotSupportedException("Stretch mode {0} is not supported".InvariantCultureFormat(stretch));
 			}
 		}
 

@@ -17,11 +17,11 @@ namespace Windows.Devices.Sensors {
 		}
 
 		public static startReading() {
-			window.addEventListener('devicemotion', Accelerometer.readingChangedHandler);
+			window.addEventListener("devicemotion", Accelerometer.readingChangedHandler);
 		}
 
 		public static stopReading() {
-			window.removeEventListener('devicemotion', Accelerometer.readingChangedHandler);
+			window.removeEventListener("devicemotion", Accelerometer.readingChangedHandler);
 		}
 
 		private static readingChangedHandler(event: any) {

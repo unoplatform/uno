@@ -500,7 +500,7 @@
 
 
     <!--
-	UNO TODO Overriden style
+	UNO TODO Overridden style
 	<Style TargetType="primitives:NavigationViewItemPresenter" x:Key="NavigationViewItemPresenterStyleWhenOnLeftPane">
         <Setter Property="Foreground" Value="{ThemeResource NavigationViewItemForeground}" />
         <Setter Property="Background" Value="{ThemeResource NavigationViewItemBackground}" />

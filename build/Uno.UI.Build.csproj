@@ -56,8 +56,8 @@
 
 		<Message Text="Building for $(Configuration) and $(Platform) BuildReason:$(BUILD_REASON) Version:$(GitVersion_FullSemVer)" />
 
-		<!-- 
-    Use NuGet 4.3.0 or later for the restore 
+		<!--
+    Use NuGet 4.3.0 or later for the restore
     CI_Build environment is required for the restore to pickup the TargetFrameworksCI property in projects.
     -->
 		<Exec Command="set NUGET_RESTORE_MSBUILD_ARGS=/p:CI_Build=true &amp; nuget\nuget.exe restore -Verbosity detailed ..\src\Uno.UI.sln"
@@ -125,7 +125,7 @@
 	<Target Name="BuildCI">
 		<Exec Command="npm i" WorkingDirectory="..\src\SamplesApp\SamplesApp.Wasm.UITests" />
 
-		<MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0;CopyDSYM=False;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true"
+		<MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0;CopyDSYM=False;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(GITVERSION_FullSemVer)"
              Projects="..\src\Uno.UI.sln"
              Targets="Build"
              RebaseOutputs="false"
@@ -164,7 +164,7 @@
           DestinationFiles="$(OutputDir)\UnoPlatform-$(GITVERSION_FullSemVer).vsix" />
 	</Target>
 
-	<Target Name="BuildNuGetPackage" DependsOnTargets="_FillMsBuildVersion">
+	<Target Name="BuildNuGetPackage">
 
 		<PropertyGroup>
 			<NugetNamespace>http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd</NugetNamespace>
@@ -201,7 +201,5 @@
 		<Exec Command="dotnet tool install --global Uno.PackageDiff --version 1.0.0-dev.14" IgnoreExitCode="true" />
 		<Exec Command="generatepkgdiff --base=Uno.UI --other=Uno.UI.$(GITVERSION_FullSemVer).nupkg --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.$(GITVERSION_FullSemVer).md" />
 	</Target>
-
-	<Import Project="GetMsBuildVersion.targets" />
 
 </Project>

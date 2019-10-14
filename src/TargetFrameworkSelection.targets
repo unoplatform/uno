@@ -21,7 +21,7 @@
     <!-- this target has been introduced in VS15.5 -->
     <_OverrideTargetFrameworksDependency Include="GetTargetFrameworks" />
 
-    <!--This items get excuted by the nuget Restore target-->
+    <!--This items get executed by the nuget Restore target-->
     <_OverrideTargetFrameworksDependency Include="_GenerateRestoreGraphProjectEntry" />
     <_OverrideTargetFrameworksDependency Include="_GenerateRestoreGraph" />
     <_OverrideTargetFrameworksDependency Include="_IsProjectRestoreSupported" />
@@ -30,11 +30,10 @@
 
   <Target Name="_ResolveTargetFrameworks"
     Condition="'$(TargetFrameworks)'!=''"
-    BeforeTargets="@(_OverrideTargetFrameworksDependency)"
-    DependsOnTargets="_FillMsBuildVersion">
+    BeforeTargets="@(_OverrideTargetFrameworksDependency)">
 
     <PropertyGroup>
-      <TargetFrameworksOverride Condition="'$(MicrosoftBuildVersion)' &gt;= '15.4'">$(TargetFrameworks)</TargetFrameworksOverride>
+      <TargetFrameworksOverride Condition="'$(MSBuildVersion)' &gt;= '15.4'">$(TargetFrameworks)</TargetFrameworksOverride>
       <TargetFrameworksOverride Condition="'$(CI_Build)'!='' and '$(TargetFrameworksCI)'!='' and '$(UITestsEnabled)'==''">$(TargetFrameworksCI)</TargetFrameworksOverride>
 
       <_CanOverrideFramework>false</_CanOverrideFramework>
@@ -49,7 +48,7 @@
     </CreateProperty>
 
     <Message Text="Target framework override to $(TargetFrameworks) because BuildTargetFramework is set ($(BuildTargetFramework))." Condition="$(_CanOverrideFramework) and '$(TargetFramework)'==''" Importance="high" />
-    <Message Text="MSBuild Version $(MicrosoftBuildVersion), TargetFrameworks $(TargetFrameworks)" />
+    <Message Text="MSBuild Version $(MSBuildVersion), TargetFrameworks $(TargetFrameworks)" />
   </Target>
 
   <PropertyGroup Condition="('$(ExcludeRestorePackageImports)'!='true' and '$(TargetFrameworks)'!='') or '$(CI_Build)'!=''">

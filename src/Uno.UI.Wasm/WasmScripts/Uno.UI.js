@@ -808,6 +808,21 @@ var Uno;
                 return true;
             }
             /**
+             * Ensure that any pending leave event are going to be processed (cf @see processPendingLeaveEvent )
+             */
+            ensurePendingLeaveEventProcessing() {
+                if (this._isPendingLeaveProcessingEnabled) {
+                    return;
+                }
+                // Register an event listener on move in order to process any pending event (leave).
+                document.addEventListener("pointermove", evt => {
+                    if (this.processPendingLeaveEvent) {
+                        this.processPendingLeaveEvent(evt);
+                    }
+                }, true); // in the capture phase to get it as soon as possible, and to make sure to respect the events ordering
+                this._isPendingLeaveProcessingEnabled = true;
+            }
+            /**
                 * Add an event handler to a html element.
                 *
                 * @param eventName The name of the event
@@ -815,12 +830,8 @@ var Uno;
                 */
             registerEventOnViewInternal(elementId, eventName, onCapturePhase = false, eventFilterName, eventExtractorName) {
                 const element = this.getView(elementId);
-                const eventFilter = this.getEventFilter(eventFilterName);
                 const eventExtractor = this.getEventExtractor(eventExtractorName);
                 const eventHandler = (event) => {
-                    if (eventFilter && !eventFilter(event)) {
-                        return;
-                    }
                     const eventPayload = eventExtractor
                         ? `${eventExtractor(event)}`
                         : "";
@@ -829,7 +840,85 @@ var Uno;
                         event.stopPropagation();
                     }
                 };
-                element.addEventListener(eventName, eventHandler, onCapturePhase);
+                if (eventName == "pointerenter") {
+                    const enterPointerHandler = (event) => {
+                        const e = event;
+                        if (e.explicitOriginalTarget) { // FF only
+                            // It happens on FF that when another control which is over the 'element' has been updated, like text or visibility changed,
+                            // we receive a pointer enter/leave of an element which is under an element that is capable to handle pointers,
+                            // which is unexpected as the "pointerenter" should not bubble.
+                            // So we have to validate that this event is effectively due to the pointer entering the control.
+                            // We achieve this by browsing up the elements under the pointer (** not the visual tree**) 
+                            const evt = event;
+                            for (let elt of document.elementsFromPoint(evt.pageX, evt.pageY)) {
+                                if (elt == element) {
+                                    // We found our target element, we can raise the event and stop the loop
+                                    eventHandler(event);
+                                    return;
+                                }
+                                let htmlElt = elt;
+                                if (htmlElt.style.pointerEvents != "none") {
+                                    // This 'htmlElt' is handling the pointers events, this mean that we can stop the loop.
+                                    // However, if this 'htmlElt' is one of our child it means that the event was legitimate
+                                    // and we have to raise it for the 'element'.
+                                    while (htmlElt.parentElement) {
+                                        htmlElt = htmlElt.parentElement;
+                                        if (htmlElt == element) {
+                                            eventHandler(event);
+                                            return;
+                                        }
+                                    }
+                                    // We found an element this is capable to handle the pointers but which is not one of our child
+                                    // (probably a sibling which is covering the element). It means that the pointerEnter/Leave should
+                                    // not have bubble to the element, and we can mute it.
+                                    return;
+                                }
+                            }
+                        }
+                        else {
+                            eventHandler(event);
+                        }
+                    };
+                    element.addEventListener(eventName, enterPointerHandler, onCapturePhase);
+                }
+                else if (eventName == "pointerleave") {
+                    const leavePointerHandler = (event) => {
+                        const e = event;
+                        if (e.explicitOriginalTarget // FF only
+                            && e.explicitOriginalTarget !== event.currentTarget
+                            && event.isOver(element)) {
+                            // If the event was re-targeted, it's suspicious as the leave event should not bubble
+                            // This happens on FF when another control which is over the 'element' has been updated, like text or visibility changed.
+                            // So we have to validate that this event is effectively due to the pointer leaving the element.
+                            // We achieve that by buffering it until the next few 'pointermove' on document for which we validate the new pointer location.
+                            // It's common to get a move right after the leave with the same pointer's location,
+                            // so we wait up to 3 pointer move before dropping the leave event.
+                            var attempt = 3;
+                            this.ensurePendingLeaveEventProcessing();
+                            this.processPendingLeaveEvent = (move) => {
+                                if (!move.isOverDeep(element)) {
+                                    console.log("Raising deferred pointerleave on element " + elementId);
+                                    eventHandler(event);
+                                    this.processPendingLeaveEvent = null;
+                                }
+                                else if (--attempt <= 0) {
+                                    console.log("Drop deferred pointerleave on element " + elementId);
+                                    this.processPendingLeaveEvent = null;
+                                }
+                                else {
+                                    console.log("Requeue deferred pointerleave on element " + elementId);
+                                }
+                            };
+                        }
+                        else {
+                            eventHandler(event);
+                        }
+                    };
+                    element.addEventListener(eventName, leavePointerHandler, onCapturePhase);
+                }
+                else {
+                    element.addEventListener(eventName, eventHandler, onCapturePhase);
+                }
             }
             /**
              * left pointer event filter to be used with registerEventOnView
@@ -867,9 +956,20 @@ var Uno;
              * @param evt
              */
             pointerEventExtractor(evt) {
-                return evt
-                    ? `${evt.pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.button};${evt.pointerType}`
-                    : "";
+                if (!evt) {
+                    return "";
+                }
+                let src = evt.target;
+                let srcHandle = "0";
+                while (src) {
+                    let handle = src.getAttribute("XamlHandle");
+                    if (handle) {
+                        srcHandle = handle;
+                        break;
+                    }
+                    src = src.parentElement;
+                }
+                return `${evt.pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.button};${evt.pointerType};${srcHandle};${evt.timeStamp}`;
             }
             /**
              * keyboard event extractor to be used with registerEventOnView
@@ -1130,11 +1230,12 @@ var Uno;
                 const originalStyleCssText = elementStyle.cssText;
                 let parentElement = null;
                 let parentElementWidthHeight = null;
+                let unconnectedRoot = null;
                 try {
                     if (!element.isConnected) {
                         // If the element is not connected to the DOM, we need it
                         // to be connected for the measure to provide a meaningful value.
-                        let unconnectedRoot = element;
+                        unconnectedRoot = element;
                         while (unconnectedRoot.parentElement) {
                             // Need to find the top most "unconnected" parent
                             // of this element
@@ -1199,6 +1300,9 @@ var Uno;
                     if (parentElement && parentElementWidthHeight) {
                         parentElement.style.width = parentElementWidthHeight.width;
                         parentElement.style.height = parentElementWidthHeight.height;
+                    }
+                    if (unconnectedRoot !== null) {
+                        this.containerElement.removeChild(unconnectedRoot);
                     }
                 }
             }
@@ -2013,6 +2117,28 @@ class WindowManagerSetXUidParams {
         return ret;
     }
 }
+PointerEvent.prototype.isOver = function (element) {
+    const bounds = element.getBoundingClientRect();
+    return this.pageX >= bounds.left
+        && this.pageX < bounds.right
+        && this.pageY >= bounds.top
+        && this.pageY < bounds.bottom;
+};
+PointerEvent.prototype.isOverDeep = function (element) {
+    if (!element) {
+        return false;
+    }
+    else if (element.style.pointerEvents != "none") {
+        return this.isOver(element);
+    }
+    else {
+        for (let elt of element.children) {
+            if (this.isOverDeep(elt)) {
+                return true;
+            }
+        }
+    }
+};
 var Uno;
 (function (Uno) {
     var Foundation;
@@ -2109,7 +2235,7 @@ var Windows;
                 const that = this;
                 FS.syncfs(true, err => {
                     if (err) {
-                        console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
+                        console.error(`Error synchronizing filesystem from IndexDB: ${err}`);
                     }
                 });
                 // Ensure to sync pseudo file system on unload (and periodically for safety)
@@ -2125,7 +2251,7 @@ var Windows;
             static synchronizeFileSystem() {
                 FS.syncfs(err => {
                     if (err) {
-                        console.error(`Error synchronizing filsystem from IndexDB: ${err}`);
+                        console.error(`Error synchronizing filesystem from IndexDB: ${err}`);
                     }
                 });
             }
@@ -2133,6 +2259,110 @@ var Windows;
         StorageFolder._isInit = false;
         Storage.StorageFolder = StorageFolder;
     })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Sensors;
+        (function (Sensors) {
+            class Accelerometer {
+                static initialize() {
+                    if (window.DeviceMotionEvent) {
+                        this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Accelerometer:DispatchReading");
+                        return true;
+                    }
+                    return false;
+                }
+                static startReading() {
+                    window.addEventListener("devicemotion", Accelerometer.readingChangedHandler);
+                }
+                static stopReading() {
+                    window.removeEventListener("devicemotion", Accelerometer.readingChangedHandler);
+                }
+                static readingChangedHandler(event) {
+                    Accelerometer.dispatchReading(event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
+                }
+            }
+            Sensors.Accelerometer = Accelerometer;
+        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Sensors;
+        (function (Sensors) {
+            class Gyrometer {
+                static initialize() {
+                    try {
+                        if (typeof window.Gyroscope === "function") {
+                            this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Gyrometer:DispatchReading");
+                            let GyroscopeClass = window.Gyroscope;
+                            this.gyroscope = new GyroscopeClass({ referenceFrame: "device" });
+                            return true;
+                        }
+                    }
+                    catch (error) {
+                        //sensor not available
+                        console.log("Gyroscope could not be initialized.");
+                    }
+                    return false;
+                }
+                static startReading() {
+                    this.gyroscope.addEventListener("reading", Gyrometer.readingChangedHandler);
+                    this.gyroscope.start();
+                }
+                static stopReading() {
+                    this.gyroscope.removeEventListener("reading", Gyrometer.readingChangedHandler);
+                    this.gyroscope.stop();
+                }
+                static readingChangedHandler(event) {
+                    Gyrometer.dispatchReading(Gyrometer.gyroscope.x, Gyrometer.gyroscope.y, Gyrometer.gyroscope.z);
+                }
+            }
+            Sensors.Gyrometer = Gyrometer;
+        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Sensors;
+        (function (Sensors) {
+            class Magnetometer {
+                static initialize() {
+                    try {
+                        if (typeof window.Magnetometer === "function") {
+                            this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Magnetometer:DispatchReading");
+                            let MagnetometerClass = window.Magnetometer;
+                            this.magnetometer = new MagnetometerClass({ referenceFrame: 'device' });
+                            return true;
+                        }
+                    }
+                    catch (error) {
+                        //sensor not available
+                        console.log("Magnetometer could not be initialized.");
+                    }
+                    return false;
+                }
+                static startReading() {
+                    this.magnetometer.addEventListener("reading", Magnetometer.readingChangedHandler);
+                    this.magnetometer.start();
+                }
+                static stopReading() {
+                    this.magnetometer.removeEventListener("reading", Magnetometer.readingChangedHandler);
+                    this.magnetometer.stop();
+                }
+                static readingChangedHandler(event) {
+                    Magnetometer.dispatchReading(Magnetometer.magnetometer.x, Magnetometer.magnetometer.y, Magnetometer.magnetometer.z);
+                }
+            }
+            Sensors.Magnetometer = Magnetometer;
+        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
@@ -2156,7 +2386,7 @@ var Windows;
                         }
                         else if (evt.state === 1) {
                             // The manager is disabled, but the user requested to navigate forward to our dummy entry,
-                            // but we prefer to keep this dummy entry in teh forward stack (is more prompt to be cleared by the browser,
+                            // but we prefer to keep this dummy entry in the forward stack (is more prompt to be cleared by the browser,
                             // and as it's less commonly used it should be less annoying for the user)
                             window.history.back();
                         }
@@ -2169,6 +2399,9 @@ var Windows;
                     return this._current;
                 }
                 enable() {
+                    if (this._isEnabled) {
+                        return;
+                    }
                     // Clear the back stack, so the only items will be ours (and we won't have any remaining forward item)
                     this.clearStack();
                     window.history.pushState(1, document.title, null);
@@ -2176,6 +2409,9 @@ var Windows;
                     this._isEnabled = true;
                 }
                 disable() {
+                    if (!this._isEnabled) {
+                        return;
+                    }
                     // Disable the handler, then clear the history
                     // Note: As a side effect, the forward button will be enabled :(
                     this._isEnabled = false;
@@ -2196,69 +2432,38 @@ var Windows;
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
-    var Devices;
-    (function (Devices) {
-        var Sensors;
-        (function (Sensors) {
-            class Accelerometer {
-                static initialize() {
-                    if (window.DeviceMotionEvent) {
-                        this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Accelerometer:DispatchReading");
-                        return true;
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            class Application {
+                static getDefaultSystemTheme() {
+                    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                        return Xaml.ApplicationTheme.Dark;
                     }
-                    return false;
-                }
-                static startReading() {
-                    window.addEventListener('devicemotion', Accelerometer.readingChangedHandler);
-                }
-                static stopReading() {
-                    window.removeEventListener('devicemotion', Accelerometer.readingChangedHandler);
-                }
-                static readingChangedHandler(event) {
-                    Accelerometer.dispatchReading(event.accelerationIncludingGravity.x, event.accelerationIncludingGravity.y, event.accelerationIncludingGravity.z);
+                    if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+                        return Xaml.ApplicationTheme.Light;
+                    }
+                    return null;
                 }
             }
-            Sensors.Accelerometer = Accelerometer;
-        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
-    })(Devices = Windows.Devices || (Windows.Devices = {}));
+            Xaml.Application = Application;
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
-    var Devices;
-    (function (Devices) {
-        var Sensors;
-        (function (Sensors) {
-            class Magnetometer {
-                static initialize() {
-                    try {
-                        if (typeof window.Magnetometer === "function") {
-                            this.dispatchReading = Module.mono_bind_static_method("[Uno] Windows.Devices.Sensors.Magnetometer:DispatchReading");
-                            let magnetometerClass = window.Magnetometer;
-                            this.magnetometer = new magnetometerClass({ referenceFrame: 'device' });
-                            return true;
-                        }
-                    }
-                    catch (error) {
-                        //sensor not available
-                        console.log('Magnetometer could not be initialized.');
-                    }
-                    return false;
-                }
-                static startReading() {
-                    this.magnetometer.addEventLi1stener('reading', Magnetometer.readingChangedHandler);
-                    this.magnetometer.start();
-                }
-                static stopReading() {
-                    this.magnetometer.removeEventListener('reading', Magnetometer.readingChangedHandler);
-                    this.magnetometer.stop();
-                }
-                static readingChangedHandler(event) {
-                    Magnetometer.dispatchReading(this.magnetometer.x, this.magnetometer.y, this.magnetometer.z);
-                }
-            }
-            Sensors.Magnetometer = Magnetometer;
-        })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
-    })(Devices = Windows.Devices || (Windows.Devices = {}));
+    var UI;
+    (function (UI) {
+        var Xaml;
+        (function (Xaml) {
+            let ApplicationTheme;
+            (function (ApplicationTheme) {
+                ApplicationTheme["Light"] = "Light";
+                ApplicationTheme["Dark"] = "Dark";
+            })(ApplicationTheme = Xaml.ApplicationTheme || (Xaml.ApplicationTheme = {}));
+        })(Xaml = UI.Xaml || (UI.Xaml = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {

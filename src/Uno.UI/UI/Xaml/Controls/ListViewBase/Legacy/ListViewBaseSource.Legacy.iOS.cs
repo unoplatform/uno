@@ -303,7 +303,7 @@ namespace Uno.UI.Controls.Legacy
 			{
 				if (value)
 				{
-					selectorItem.IsPressed = true;
+					selectorItem.LegacySetPressed(true);
 				}
 				else
 				{
@@ -313,7 +313,7 @@ namespace Uno.UI.Controls.Legacy
 							async () =>
 							{
 								await Task.Delay(MinTimeBetweenPressStates);
-								selectorItem.IsPressed = false;
+								selectorItem.LegacySetPressed(false);
 							}
 						);
 				}
@@ -556,7 +556,7 @@ namespace Uno.UI.Controls.Legacy
 		{
 			CGSize size;
 
-			// Cache the sizes to avoid creating new templates everytime.
+			// Cache the sizes to avoid creating new templates every time.
 			if (!_templateCache.TryGetValue(dataTemplate ?? _nullDataTemplateKey, out size))
 			{
 				var container = CreateContainerForElementKind(elementKind);
@@ -633,7 +633,7 @@ namespace Uno.UI.Controls.Legacy
 				}
 				else
 				{
-					// We need to excplicitly remove the content before being disposed
+					// We need to explicitly remove the content before being disposed
 					// otherwise, the children will try to reference ContentView which 
 					// will have been disposed.
 
@@ -668,7 +668,7 @@ namespace Uno.UI.Controls.Legacy
 
 			public override void ApplyLayoutAttributes(UICollectionViewLayoutAttributes layoutAttributes)
 			{
-				// We don't call base because it adds unneccessary interop. From the doc: "The default implementation of this method does nothing." https://developer.apple.com/library/ios/documentation/UIKit/Reference/UICollectionReusableView_class/#//apple_ref/occ/instm/UICollectionReusableView/applyLayoutAttributes:
+				// We don't call base because it adds unnecessary interop. From the doc: "The default implementation of this method does nothing." https://developer.apple.com/library/ios/documentation/UIKit/Reference/UICollectionReusableView_class/#//apple_ref/occ/instm/UICollectionReusableView/applyLayoutAttributes:
 				//base.ApplyLayoutAttributes(layoutAttributes);
 
 				var size = layoutAttributes.Frame.Size;

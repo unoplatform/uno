@@ -107,6 +107,8 @@ namespace Windows.UI.Xaml.Controls
 		internal bool NeedsReloadData => _needsReloadData;
 
 		internal CGPoint UpperScrollLimit { get { return (CGPoint)(ContentSize - Frame.Size); } }
+
+		internal UIElement.TouchesManager TouchesManager { get; /* readonly in int */ private set; }
 		#endregion
 
 		public GroupStyle GroupStyle => XamlParent?.GroupStyle.FirstOrDefault();
@@ -177,7 +179,8 @@ namespace Windows.UI.Xaml.Controls
 			RegisterClassForSupplementaryView(internalContainerType, ListViewSectionHeaderElementKindNS, ListViewSectionHeaderReuseIdentifier);
 
 			DelaysContentTouches = true;
-
+			TouchesManager = UIElement.TouchesManager.GetOrCreate(this);
+			
 			ShowsHorizontalScrollIndicator = true;
 			ShowsVerticalScrollIndicator = true;
 
@@ -430,7 +433,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.SetNeedsLayout();
 
-			// This method is present to ensure that it is not overriden by the mixins.
+			// This method is present to ensure that it is not overridden by the mixins.
 			// SetNeedsLayout is called very often during scrolling, and it must not
 			// call SetParentNeeds layout, otherwise the whole visual tree above the listviewbase
 			// will be refreshed.

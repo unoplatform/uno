@@ -41,7 +41,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'xamarinios10'">
-		<PackageReference Include="Com.Airbnb.iOS.Lottie" Version="2.5.8" PrivateAssets="none" />
+		<PackageReference Include="Com.Airbnb.iOS.Lottie" Version="2.5.9" PrivateAssets="none" />
 	</ItemGroup>
 
 	<PropertyGroup>

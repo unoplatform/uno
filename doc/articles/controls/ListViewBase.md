@@ -74,7 +74,7 @@ Using `ObservableCollection` (or another `INotifyCollectionChanged` implementati
 
  1. When only modifying one or two items.
  2. When modifying items out of view.
- 3. When fetching 'new' data that hasn't actually changed (eg auto refresh).
+ 3. When fetching 'new' data that hasn't actually changed (e.g. auto refresh).
 
  It also has UX benefits in certain situations:
 
@@ -86,10 +86,10 @@ Using `ObservableCollection` (or another `INotifyCollectionChanged` implementati
  A good use case might be, for instance, a list of reminders that the user can remove by swiping them out of view. 
 
  Note that using an observable collection adds complexity and there are some cases when it can even be anti-performant. For example, 
- consider a list of items that can be filtered by a search term. Modifying the search term by one character (ie, when the user types in a 
+ consider a list of items that can be filtered by a search term. Modifying the search term by one character (i.e., when the user types in a 
  `TextBox`) might remove or add hundreds of items from the filtered source. Particularly on iOS, and to a lesser extent on Android, the 
  list tries to do preprocessing on each change to determine what animations it needs, etc. The result is a noticeable lag, where changing 
- the `ItemsSource` completely would have been nearly instaneous.
+ the `ItemsSource` completely would have been nearly instantaneous.
 
  So consider using a non-observable collection, or use the Uno-only `RefreshOnCollectionChanged` flag (which causes the native list to 
  refresh without animations when any `CollectionChanged` event is raised), if your scenario matches the following:

@@ -10,58 +10,27 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public PopupRoot()
 		{
-			Background = new SolidColorBrush(Colors.Transparent);
-			UpdateLightDismissArea();
 		}
 
 		protected override void OnChildrenChanged()
 		{
 			base.OnChildrenChanged();
-			UpdateLightDismissArea();
 		}
 
-		private bool _pointerHandlerRegistered = false;
 
-		internal void UpdateLightDismissArea()
+		protected override Size MeasureOverride(Size availableSize)
 		{
-			var anyDismissableChild = Children
-				.OfType<PopupPanel>()
-				.Any(pp => pp.Popup.IsLightDismissEnabled);
-
-			Background = anyDismissableChild
-				? new SolidColorBrush(Colors.Transparent)
-				: null;
-
-			if (anyDismissableChild)
+			Size size = default;
+			foreach (var child in Children)
 			{
-				if (!_pointerHandlerRegistered)
+				if (!(child is PopupPanel))
 				{
-					PointerReleased += PopupRoot_PointerReleased;
-					_pointerHandlerRegistered = true;
+					continue;
 				}
+				// Note that we should always be arranged with the full size of the window, so we don't care too much about the return value here.
+				size = MeasureElement(child, availableSize);
 			}
-			else
-			{
-				if (_pointerHandlerRegistered)
-				{
-					PointerReleased -= PopupRoot_PointerReleased;
-					_pointerHandlerRegistered = false;
-				}
-			}
-		}
-
-		private void PopupRoot_PointerReleased(object sender, Input.PointerRoutedEventArgs e)
-		{
-			var x = Children.ToArray().FirstOrDefault();
-
-			var lastDismissablePopupPanel = Children
-				.OfType<PopupPanel>()
-				.LastOrDefault(p => p.Popup.IsLightDismissEnabled);
-
-			if(lastDismissablePopupPanel != null)
-			{
-				lastDismissablePopupPanel.Popup.IsOpen = false;
-			}
+			return size;
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)

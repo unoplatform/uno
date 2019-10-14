@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 			switch (e.Key)
 			{
 				case System.VirtualKey.Enter:
-					switch(DefaultButton)
+					switch (DefaultButton)
 					{
 						case ContentDialogButton.Close:
 							ProcessCloseButton();
@@ -63,9 +63,30 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public void Hide()
+		public void Hide() => Hide(ContentDialogResult.None);
+		private void Hide(ContentDialogResult result)
 		{
-			_popup.IsOpen = false;
+			void Complete(ContentDialogClosingEventArgs args)
+			{
+				if (!args.Cancel)
+				{
+					_popup.IsOpen = false;
+
+					Closed?.Invoke(this, new ContentDialogClosedEventArgs(result));
+				}
+			}
+			var closingArgs = new ContentDialogClosingEventArgs(Complete, result);
+
+			Closing?.Invoke(this, closingArgs);
+
+			if (!closingArgs.IsDeferred)
+			{
+				Complete(closingArgs);
+			}
+			else
+			{
+				closingArgs.EventRaiseCompleted();
+			}
 		}
 
 		protected override void OnApplyTemplate()
@@ -184,7 +205,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				primaryButton.Click += OnPrimaryButtonClicked;
 
-				d.Add(() => {
+				d.Add(() =>
+				{
 					primaryButton.Click -= OnPrimaryButtonClicked;
 				});
 			}
@@ -227,9 +249,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (!a.Cancel)
 				{
-					_tcs.SetResult(ContentDialogResult.None);
+					const ContentDialogResult result = ContentDialogResult.None;
+					_tcs.SetResult(result);
 					CloseButtonCommand.ExecuteIfPossible(CloseButtonCommandParameter);
-					Hide();
+					Hide(result);
 				}
 			}
 
@@ -248,9 +271,10 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (!a.Cancel)
 				{
-					_tcs.SetResult(ContentDialogResult.Secondary);
+					const ContentDialogResult result = ContentDialogResult.Secondary;
+					_tcs.SetResult(result);
 					SecondaryButtonCommand.ExecuteIfPossible(SecondaryButtonCommandParameter);
-					Hide();
+					Hide(result);
 				}
 			}
 
@@ -270,10 +294,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (!a.Cancel)
 				{
-					_tcs.SetResult(ContentDialogResult.Primary);
+					const ContentDialogResult result = ContentDialogResult.Primary;
+					_tcs.SetResult(result);
 					PrimaryButtonCommand.ExecuteIfPossible(PrimaryButtonCommandParameter);
 
-					Hide();
+					Hide(result);
 				}
 			}
 
@@ -287,7 +312,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Override the default style resolution, as ContentDialog
-		// is almost always overriden when defined in XAML.
+		// is almost always overridden when defined in XAML.
 		internal override Type GetDefaultStyleType()
 			=> typeof(ContentDialog);
 

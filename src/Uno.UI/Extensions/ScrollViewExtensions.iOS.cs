@@ -43,7 +43,7 @@ namespace Uno.UI.Extensions
 		/// Add an extra margin to the view from the edge of the view port when mode is 
 		/// <seealso cref="BringIntoViewMode.TopLeftOfViewPort"/> or <seealso cref="BringIntoViewMode.BottomRightOfViewPort"/>.
 		/// </param>
-		/// <param name="animationMode">Sepcifies animation mode to use to animate the scrolling (or not).</param>
+		/// <param name="animationMode">Specifies animation mode to use to animate the scrolling (or not).</param>
 		public static void BringIntoView(
 			this UIScrollView scrollView,
 			UIView view,
@@ -118,7 +118,7 @@ namespace Uno.UI.Extensions
 		/// Reset the scrolling state to a valid location, i.e. ensure that the offset is not upper than the ContentSize.
 		/// </summary>
 		/// <param name="scrollView"></param>
-		/// <param name="animationMode">Sepcifies animation mode to use to animate the scrolling (or not).</param>
+		/// <param name="animationMode">Specifies animation mode to use to animate the scrolling (or not).</param>
 		public static void ClearCustomScrollOffset(this UIScrollView scrollView, ScrollingMode animationMode = ScrollingMode.Forced)
 		{
 			var viewPort = scrollView.Bounds;

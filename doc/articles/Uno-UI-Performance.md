@@ -44,8 +44,8 @@ Here's what to look for:
 The framework template pool manages the pooling of ControlTemplate and DataTemplates, and in most cases, the recycling of controls should be high.
 
 - `CreateTemplate` is raised when a new instance of a template is created. This is an expensive operations should happen the least often as possible.
-- `RecycleTemplate` is raised when a active instance of a template is placed into the pool. This should happen often.
+- `RecycleTemplate` is raised when an active instance of a template is placed into the pool. This should happen often.
 - `ReuseTemplate` is raised when a pooled template is provided to a control asking for a specific data template.
 - `ReleaseTemplate` is raised when a pooled template instance has not been used for a while.
 
-If the `ReuseTemplate` occurences is low, this usually means that there is a memory leak to investigate.
+If the `ReuseTemplate` occurrences is low, this usually means that there is a memory leak to investigate.
