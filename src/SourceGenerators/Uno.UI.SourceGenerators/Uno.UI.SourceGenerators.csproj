@@ -24,7 +24,7 @@
 		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.10.0" />
 		<PackageReference Include="Microsoft.Build" Version="15.4.8" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Engine" Version="15.4.8" ExcludeAssets="runtime" />
-		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.4.8" ExcludeAssets="runtime" />
+		<PackageReference Include="Microsoft.Build.Tasks.Core" Version="16.3.0" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.CodeAnalysis">
 			<Version>2.3.1</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
