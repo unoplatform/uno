@@ -97,10 +97,10 @@
       href: contributing\guidelines\issue-triage.md
     - name: Guidelines for pull-requests
       href: contributing\guidelines\pull-requests.md
+    - name: Guidelines for testing
+      href: contributing\guidelines\testing.md
     - name: Building and debugging Uno.UI
       href: uno-development\debugging-uno-ui.md
-    - name: Working with the samples applications
-      href: uno-development\working-with-the-samples-apps.md
     - name: Inspecting the visual tree
       href: uno-development\debugging-inspect-visual-tree.md
     - name: The WeakEventHelper class

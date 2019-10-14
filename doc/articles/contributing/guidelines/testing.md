@@ -1,4 +1,4 @@
-# Working with the Samples Applications
+# Guidelines for testing
 
 The Uno solution provides a set of sample applications that provide a way to test features, as
 well as provide a way to write UI Tests.
