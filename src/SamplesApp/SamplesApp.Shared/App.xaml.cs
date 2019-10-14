@@ -137,7 +137,7 @@ namespace SamplesApp
 						{ "Windows", LogLevel.Warning },
 						// { "Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug },
 						// { "Windows.UI.Xaml.Controls.PopupPanel", LogLevel.Debug },
-						
+
 						// Generic Xaml events
 						//{ "Windows.UI.Xaml", LogLevel.Debug },
 						// { "Windows.UI.Xaml.Shapes", LogLevel.Debug },
@@ -145,17 +145,17 @@ namespace SamplesApp
 						//{ "Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug },
 						// { "Windows.UI.Xaml.UIElement", LogLevel.Debug },
 						// { "Windows.UI.Xaml.Controls.TextBlock", LogLevel.Debug },
-						   
+
 						// Layouter specific messages
 						// { "Windows.UI.Xaml.Controls", LogLevel.Debug },
 						//{ "Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug },
 						//{ "Windows.UI.Xaml.Controls.Panel", LogLevel.Debug },
 						// { "Windows.Storage", LogLevel.Debug },
-						   
+
 						// Binding related messages
 						// { "Windows.UI.Xaml.Data", LogLevel.Debug },
 						// { "Windows.UI.Xaml.Data", LogLevel.Debug },
-						   
+
 						//  Binder memory references tracking
 						// { "ReferenceHolder", LogLevel.Debug },
 					}
@@ -201,8 +201,8 @@ namespace SamplesApp
 #endif
 
 #if HAS_UNO
-                            // Disable the TextBox caret for new instances
-                            Uno.UI.FeatureConfiguration.TextBox.HideCaret = true;
+							// Disable the TextBox caret for new instances
+							Uno.UI.FeatureConfiguration.TextBox.HideCaret = true;
 #endif
 
 							var t = SampleControl.Presentation.SampleChooserViewModel.Instance.SetSelectedSample(CancellationToken.None, metadataName);
