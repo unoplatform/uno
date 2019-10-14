@@ -40,10 +40,17 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="Data\Pdf\PdfDocument.Droid.cs" />
-	  <UpToDateCheckInput Remove="Data\Pdf\PdfPage.Droid.cs" />
-	  <UpToDateCheckInput Remove="Data\Pdf\PdfPageDimensions.Droid.cs" />
-	  <UpToDateCheckInput Remove="Data\Pdf\PdfPageRenderOptions.Droid.cs" />
+	  <None Remove="Data\Pdf\PdfDocument.Android.cs" />
+	  <None Remove="Data\Pdf\PdfPage.Android.cs" />
+	  <None Remove="Data\Pdf\PdfPageDimensions.Android.cs" />
+	  <None Remove="Data\Pdf\PdfPageRenderOptions.Android.cs" />
+	</ItemGroup>
+	
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Data\Pdf\PdfDocument.Android.cs" />
+	  <UpToDateCheckInput Remove="Data\Pdf\PdfPage.Android.cs" />
+	  <UpToDateCheckInput Remove="Data\Pdf\PdfPageDimensions.Android.cs" />
+	  <UpToDateCheckInput Remove="Data\Pdf\PdfPageRenderOptions.Android.cs" />
 	  <UpToDateCheckInput Remove="Generated\3.0.0.0\Windows.Data.Pdf\PdfPageDimensions.cs" />
 	  <UpToDateCheckInput Remove="Generated\3.0.0.0\Windows.Data.Pdf\PdfPageRenderOptions.cs" />
 	</ItemGroup>
