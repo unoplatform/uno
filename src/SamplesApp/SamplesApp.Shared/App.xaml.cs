@@ -22,6 +22,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace SamplesApp
 {
@@ -38,8 +39,31 @@ namespace SamplesApp
 		{
 			ConfigureFilters(LogExtensionPoint.AmbientLoggerFactory);
 
+			AssertIssue1790();
+
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
+
+		}
+
+		/// <summary>
+		/// Assert that ApplicationData.Current.[LocalFolder|RoamingFolder] is usable in the constructor of App.xaml.cs on all platforms.
+		/// </summary>
+		/// <seealso cref="https://github.com/unoplatform/uno/issues/1741"/>
+		public void AssertIssue1790()
+		{
+			void AssertIsUsable(Windows.Storage.ApplicationDataContainer container)
+			{
+				const string issue1790 = nameof(issue1790);
+
+				container.Values.Remove(issue1790);
+				container.Values.Add(issue1790, "ApplicationData.Current.[LocalFolder|RoamingFolder] is usable in the constructor of App.xaml.cs on this platform.");
+
+				Assert.IsTrue(container.Values.ContainsKey(issue1790));
+			}
+
+			AssertIsUsable(Windows.Storage.ApplicationData.Current.LocalSettings);
+			AssertIsUsable(Windows.Storage.ApplicationData.Current.RoamingSettings);
 		}
 
 		/// <summary>
