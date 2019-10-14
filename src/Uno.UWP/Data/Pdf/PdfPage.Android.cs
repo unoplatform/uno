@@ -142,7 +142,7 @@ namespace Windows.Data.Pdf
 			if (sourceRect.Width > 0 && sourceRect.Height > 0)
 			{
 				matrix = new Matrix();
-				matrix.SetRectToRect(AsAndroidRectF(sourceRect), AsAndroidRectF(destinationRect), Matrix.ScaleToFit.Start);
+				matrix.SetRectToRect((RectF)sourceRect, (RectF)destinationRect, Matrix.ScaleToFit.Start);
 			}
 			#endregion
 
@@ -161,12 +161,6 @@ namespace Windows.Data.Pdf
 			pdfPage.Close();
 			pdfPage.Dispose();
 		}
-
-		private static RectF AsAndroidRectF(Rect rect) => new RectF(
-			(float)rect.Left,
-			(float)rect.Top,
-			(float)rect.Right,
-			(float)rect.Bottom);
 	}
 }
 
