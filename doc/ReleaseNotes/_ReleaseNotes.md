@@ -73,6 +73,8 @@
 * [#1559] [#1167] Wasm: make the IsEnabled property inheritable.
 * Full support of pointer events cf. [routed events documentation](../articles/features/routed-events.md)
 * Adds the support for `AutomationProperties.AutomationId`
+* Add support for `Windows.UI.Xaml.Controls.Primitives.LayoutInformation.GetAvailableSize`
+* Add support for Runtime Tests that require UI integration
 
 ### Breaking changes
 

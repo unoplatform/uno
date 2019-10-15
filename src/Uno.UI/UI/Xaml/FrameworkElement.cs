@@ -122,6 +122,10 @@ namespace Windows.UI.Xaml
 		/// <returns>The size that this object determines it needs during layout, based on its calculations of the allocated sizes for child objects or based on other considerations such as a fixed container size.</returns>
 		protected virtual Size MeasureOverride(Size availableSize)
 		{
+#if !__WASM__
+			LastAvailableSize = availableSize;
+#endif
+
 			var child = this.FindFirstChild();
 			return child != null ? MeasureElement(child, availableSize) : new Size(0, 0);
 		}
@@ -254,7 +258,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		#region Style DependencyProperty
+#region Style DependencyProperty
 
 		public Style Style
 		{
@@ -273,7 +277,7 @@ namespace Windows.UI.Xaml
 				)
 			);
 
-		#endregion
+#endregion
 
 		protected virtual void OnStyleChanged(Style oldStyle, Style newStyle)
 		{
@@ -528,7 +532,7 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-		#region AutomationPeer
+#region AutomationPeer
 #if !__IOS__ && !__ANDROID__ && !__MACOS__ // This code is generated in FrameworkElementMixins
 		private AutomationPeer _automationPeer;
 
@@ -579,7 +583,7 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-		#endregion
+#endregion
 
 #if !__WASM__
 		private class FrameworkElementLayouter : Layouter
