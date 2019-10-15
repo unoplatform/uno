@@ -1,6 +1,6 @@
 
 <h1 align=center>
- <img align=center width="30%" src="https://raw.githubusercontent.com/unoplatform/styleguide/master/logo/uno-platform-logo-with-text.png" />
+ <img align=center width="25%" src="https://raw.githubusercontent.com/unoplatform/styleguide/master/logo/uno-platform-logo-with-text.png" />
 </h1>
 
 
