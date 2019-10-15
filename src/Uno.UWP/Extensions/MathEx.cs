@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
+using System.Linq;
 
-namespace Uno.UI
+namespace Uno.Extensions
 {
 	internal static class MathEx
 	{
