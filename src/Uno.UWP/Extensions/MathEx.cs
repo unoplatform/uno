@@ -43,13 +43,21 @@ namespace Uno.Extensions
 		/// Converts an angle in degree into radians
 		/// </summary>
 		public static double ToRadians(double angleDegree) 
-			=> (Math.PI / 180.0) * angleDegree;
+			=> angleDegree * Math.PI / 180.0;
 
 		/// <summary>
 		/// Converts an angle in radians into degrees
 		/// </summary>
 		public static double ToDegree(double angleRadian)
-			=> angleRadian / (Math.PI / 180.0);
+			=> angleRadian * 180.0 / Math.PI;
+
+		/// <summary>
+		/// Converts an angle in radians into degrees normalized in the [0, 360[ range.
+		/// </summary>
+		public static double ToDegreeNormalized(double angleRadian)
+			=> angleRadian >= 0
+				? ToDegree(angleRadian) % 360
+				: 360 + ToDegree(angleRadian) % 360;
 
 		/// <summary>
 		/// Tests if two values are equal to within the specified error.
