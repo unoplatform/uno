@@ -31,7 +31,10 @@ namespace System.IO
 			{
 				return wrapper.GetSourceStream();
 			}
-			else throw new ArgumentException($"stream must be a {nameof(RandomAccessStreamWrapper)}", nameof(stream));
+			else
+			{
+				throw new ArgumentException($"stream must be a {nameof(RandomAccessStreamWrapper)}", nameof(stream));
+			}
 		}
 
 		[Uno.NotImplemented]
