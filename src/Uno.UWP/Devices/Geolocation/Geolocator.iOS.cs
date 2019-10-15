@@ -108,7 +108,7 @@ namespace Windows.Devices.Geolocation
 				accessStatus = TranslateStatus(cLAuthorizationStatus);
 				
 				//if geolocation is not well accessible, default geoposition should be recommended
-				if ( accessStatus != GeolocationAccessStatus.Allowed)
+				if (accessStatus != GeolocationAccessStatus.Allowed)
 				{
 					IsDefaultGeopositionRecommended = true;
 				}
