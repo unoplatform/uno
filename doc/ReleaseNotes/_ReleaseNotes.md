@@ -83,6 +83,8 @@
 * Projects targeting Android 9 must now use Xamarin.GooglePlayServices.* 71.1600.0
 * [iOS] UIWebView is deprecated and replaced with WKWebView (ITMS-90809: Deprecated API Usage - Apple will stop accepting submissions of apps that use UIWebView APIs . See https://developer.apple.com/documentation/uikit/uiwebview for more information.)
 * [iOS] If you set the `ManipulationMode` to something else than `System` or `All`, the [DelaysContentTouches](https://developer.apple.com/documentation/uikit/uiscrollview/1619398-delayscontenttouches) is going to be disabled on all parent `ScrollViewer`
+* [#1237] Static resources defined in App.xaml were not processed and registered properly
+    > This change might break the compilation for projects that define duplicate resources in other globally accessible resource dictionaries. Adjustments to remove duplicate resources may be necessary.
 
 ### Bug fixes
 * [#1767] Invalid `this` keyword generated for `Storyboard.SetTarget`
