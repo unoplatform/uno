@@ -16,12 +16,12 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace SamplesApp.Windows_UI_Xaml_Shapes
+namespace SamplesApp.Shared.Windows_UI_Xaml_Media
 {
-	[SampleControlInfo("Shapes", "PolylinePage")]
-	public sealed partial class PolylinePage : Page
+	[SampleControlInfo("Geometry", "BezierSegmentPage")]
+	public sealed partial class BezierSegmentPage : Page
 	{
-		public PolylinePage()
+		public BezierSegmentPage()
 		{
 			this.InitializeComponent();
 		}

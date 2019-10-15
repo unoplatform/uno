@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes
 {
-	[SampleControlInfo("Shapes", "Ellipse")]
+	[SampleControlInfo("Shapes", "EllipsePage")]
 	public sealed partial class EllipsePage : Page
 	{
 		public EllipsePage()

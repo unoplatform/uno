@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes
 {
-	[SampleControlInfo("Shapes", "Lin")]
+	[SampleControlInfo("Shapes", "LinePage")]
 	public sealed partial class LinePage : Page
 	{
 		public LinePage()
