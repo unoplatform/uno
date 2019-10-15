@@ -92,5 +92,24 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+	<Style TargetType="views:SpiffyItemsControl">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="views:SpiffyItemsControl">
+					<Grid>
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+						<TextBlock Text="TODO: add spiffiness"
+								   Grid.Row="0" />
+						<ItemsControl Grid.Row="1"
+									  ItemsSource="{TemplateBinding ItemsSource}"
+									  ItemTemplate="{TemplateBinding ItemTemplate}" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
 
 </ResourceDictionary>

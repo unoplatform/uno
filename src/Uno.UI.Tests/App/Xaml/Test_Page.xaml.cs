@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Uno.UI.Tests.App.Views;
 using Uno.UI.Tests.ViewLibrary;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -25,6 +26,12 @@ namespace Uno.UI.Tests.App.Xaml
 	{
 		public MyExtControl MyExtControl => myExtControl;
 		public TextBlock TestTextBlock => testTextBlock;
+		public Border TestBorder => testBorder;
+		public ContentControl TestContentControl => testContentControl;
+		public SpiffyItemsControl SpiffyItemsControl => spiffyItemsControl;
+
+		private bool Boolean1 { get; } = true;
+		private bool Boolean2 { get; } = false;
 
 		public Test_Page()
 		{
