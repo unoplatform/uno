@@ -20,7 +20,7 @@ The Uno Platform (Pronounced 'Oono' or 'Ouno') is a Universal Windows Platform B
 
 Use the UWP tooling from Windows in [Visual Studio](https://www.visualstudio.com/), such as [XAML Edit and Continue](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) and [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp), build your application as much as possible on Windows, then validate that your application runs on iOS, Android and WebAssembly.
 
-Visit [our documentation](doc/articles/intro.md) for more details.
+Visit our [Documentation](doc/articles/intro.md) for more details.
 
 # Getting Started
 
@@ -28,7 +28,7 @@ Visit [our documentation](doc/articles/intro.md) for more details.
 * [**Visual Studio 2017 15.5 or later**](https://visualstudio.microsoft.com/) with:
     * **Universal Windows Platform component** installed.
 
-	* **Xamarin component** installed (for Android and iOS development).
+    * **Xamarin component** installed (for Android and iOS development).
 
     * **ASP.NET/web component** installed, along with .NET Core 2.2 (for WASM development).
 
@@ -36,7 +36,7 @@ To easily create a multi-platform application:
 * Install the [Uno Solution Template Visual Studio Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin).
 * Create a new C# solution using the **Cross-Platform App (Uno Platform)** template, from Visual Studio's **Start Page**.
 
-See the complete [Getting Started guide](https://platform.uno/docs/articles/get-started.html) for more information.
+See the complete [Getting Started](https://platform.uno/docs/articles/get-started.html) for more information.
 
 For a larger example and features demo:
 * Visit the [Uno Gallery and Playground](https://github.com/unoplatform/uno.Playground) repository.
@@ -204,4 +204,4 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
   </tr>
 </table>
 
-<!-- ALL-CONTRIBUTORS-LIST:END -->
+<!-- ALL-CONTRIBUTORS-LIST: END -->
