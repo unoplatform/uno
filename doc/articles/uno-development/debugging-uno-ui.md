@@ -77,7 +77,7 @@ Building Uno.UI for the macOS platform using vs4mac requires Visual Studio for m
 
 To build and run:
 - In a shell in the `src/Uno.UI` folder, run `msbuild /r Uno.UI-vs4mac.sln`. This will make the nuget restore work properly.
-- Once done, in VS4Mac, run the `SampleApp.macOS` project, which will build the dependencies and the app itself.
+- Once done, in VS4Mac, run the `SampleApp.macOS` the project, which will build the dependencies and the app itself.
 
 ## Troubleshooting Source Generation
 
@@ -93,7 +93,8 @@ There may be issues with the analysis of the project's source or configuration.
 The Source Generation tooling diagnostics can be enabled as follows:
 
 - In the project file that fails to build, in the first `PropertyGroup` node, add the following content:
-```xml
+```
+xml
 <UnoSourceGeneratorUnsecureBinLogEnabled>true</UnoSourceGeneratorUnsecureBinLogEnabled>
 ```
 - Make to update or add the `Uno.SourceGenerationTasks` to the latest version
@@ -105,10 +106,10 @@ The Source Generation tooling diagnostics can be enabled as follows:
 
 If ever the need arises to view the generated source code of a *failing* CI build, you can perform the following steps:
 
-1. In your local branch, locate the one of build yaml files (located in the root Uno folder):
-     - .azure-devops-android-tests.yml
-     - .azure-devops-macos.yml
-     - .azure-devops-wasm-uitests.yml
+1. In your local branch, locate one of build yaml files (located in the root Uno folder):
+     - .azure-DevOps-android-tests.yml
+     - .azure-DevOps-macos.yml
+     - .azure-DevOps-wasm-uitests.yml
     
 2. At the bottom of the yaml files, you'll find *Publish...* tasks, right above these tasks, copy/paste the following code to create a task which will copy all generated source files and put them in an artifact for you to download:
 
@@ -127,7 +128,7 @@ Therefore, in the case of Uno, an example of <YourProjectDirectory> would be */s
 Uno provides a set of classes aimed at diagnosing memory issues related to leaking controls, whether it be from
 an Uno.UI issue or from an invalid pattern in user code.
 
-### Enable Memory instances counter
+### Enable Memory instances to counter
 In your application, as early as possible in the initialization (generally in the App.xaml.cs
 constructor), add and call the following method:
 
@@ -137,48 +138,48 @@ using Uno.UI.DataBinding;
 // ....
 private void EnableViewsMemoryStatistics()
 {
-	//
-	// Call this method to enable Views memory tracking.
-	// Make sure that you've added the following :
-	//
-	//  { "Uno.UI.DataBinding", LogLevel.Information }
-	//
-	// in the logger settings, so that the statistics are showing up.
-	//
+    //
+    // Call this method to enable Views memory tracking.
+    // Make sure that you've added the following :
+    //
+    //  { "Uno.UI.DataBinding", LogLevel.Information }
+    //
+    // in the logger settings, so that the statistics are showing up.
+    //
 
 
-	var unused = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
-		CoreDispatcherPriority.Normal,
-		async () =>
-		{
-			BinderReferenceHolder.IsEnabled = true;
+    var unused = Windows.UI.Xaml.Window.Current.Dispatcher.RunAsync(
+        CoreDispatcherPriority.Normal,
+        async () =>
+        {
+            BinderReferenceHolder.IsEnabled = true;
 
-			while (true)
-			{
-				await Task.Delay(1500);
+            while (true)
+            {
+                await Task.Delay(1500);
 
-				try
-				{
-					BinderReferenceHolder.LogReport();
+                try
+                {
+                    BinderReferenceHolder.LogReport();
 
-					var inactiveInstances = BinderReferenceHolder.GetInactiveViewBinders();
+                    var inactiveInstances = BinderReferenceHolder.GetInactiveViewBinders();
 
-					// Force the variable to be kept by the linker so we can see it with the debugger.
-					// Put a breakpoint on this line to dig into the inactive views.
-					inactiveInstances.ToString();
-				}
-				catch (Exception ex)
-				{
-					this.Log().Error("Report generation failed", ex);
-				}
-			}
-		}
-	);
+                    // Force the variable to be kept by the linker so we can see it with the debugger.
+                    // Put a breakpoint on this line to dig into the inactive views.
+                    inactiveInstances.ToString();
+                }
+                catch (Exception ex)
+                {
+                    this.Log().Error("Report generation failed", ex);
+                }
+            }
+        }
+    );
 }
 ```
 You'll also need to add the following logger filter:
 ```
-	{ "Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Information },
+    { "Uno.UI.DataBinding.BinderReferenceHolder", LogLevel.Information },
 ```
 
 ### Interpreting the statistics output
@@ -188,11 +189,11 @@ The output provides two sets of DependencyObject in memory:
 - Inactive, for which the instances do not have a parent dependency object
 
 When doing back and forth navigation between pages, instances of the controls in the dismissed pages should
-generally be collected after a few seconds, once those have been cleared from the `Frame` control's forward
+generally, be collected after a few seconds, once those have been cleared from the `Frame` control's forward
 stack (done after every new page navigation).
 
 Searching for inactive objects first is generally best, as those instances are most likely kept alive by
-cross references.
+cross-references.
 
 This can happen when a Grid item has a strong field reference to its parent:
 
