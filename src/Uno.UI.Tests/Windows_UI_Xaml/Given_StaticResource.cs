@@ -115,7 +115,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		[Ignore("Uno's StaticResource resolution doesn't exactly match UWP. Here, we don't use the parse-time scope.")]
 		public void When_Inherited_In_Template_XAML_Scope()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
@@ -132,7 +131,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		[Ignore("Uno's StaticResource resolution doesn't exactly match UWP. Here, we don't use the parse-time scope.")]
 		public void When_Inherited_In_Template_Applied()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
