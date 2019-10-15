@@ -1,6 +1,7 @@
-<a href="https://github.com/unoplatform/uno">
-  <img width="160" heigth="160" src="https://raw.githubusercontent.com/unoplatform/styleguide/master/logo/uno-platform-logo-with-text.png">
-</a>
+<h1 align=center>
+ <img align=center width="25%" src="https://raw.githubusercontent.com/unoplatform/styleguide/master/logo/uno-platform-logo-with-text.png" />
+</h1>
+
 
 ## Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today.
 
