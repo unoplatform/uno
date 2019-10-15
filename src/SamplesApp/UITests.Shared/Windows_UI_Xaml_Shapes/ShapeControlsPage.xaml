@@ -12,27 +12,5 @@
 		<ToggleSwitch IsOn="True" />
 		<CheckBox>This is a checkbox</CheckBox>
 		<CheckBox IsChecked="True">This is a checkbox</CheckBox>
-
-		<StackPanel Orientation="Horizontal"  Spacing="5">
-			<StackPanel Spacing="5">
-				<TextBlock Text="This is a line" />
-				<Line Stroke="Black" X2="400" StrokeThickness="5"/>
-			</StackPanel>
-			<StackPanel Spacing="5">
-				<TextBlock Text="This is a Polyline" />
-				<Polyline Points="20,20 40,25 60,40 80,120 120,140 200,180" Stroke="black" StrokeThickness="5"/>
-			</StackPanel>
-			<StackPanel Spacing="5">
-				<TextBlock Text="This is a polygone" />
-				<Polygon Points="300,200 400,125 400,275" Stroke="black" StrokeThickness="5" />
-			</StackPanel>
-		</StackPanel>
-		<StackPanel Orientation="Horizontal"  Spacing="5">
-			<StackPanel Spacing="5">
-				<TextBlock Text="This is a ellipse" />
-				<Ellipse Stroke="Black" Height="200" Width="250" StrokeThickness="5"/>
-			</StackPanel>
-		</StackPanel>
-
 	</StackPanel>
 </Page>
