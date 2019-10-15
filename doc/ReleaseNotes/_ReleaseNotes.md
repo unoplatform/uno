@@ -85,7 +85,7 @@
 * [iOS] If you set the `ManipulationMode` to something else than `System` or `All`, the [DelaysContentTouches](https://developer.apple.com/documentation/uikit/uiscrollview/1619398-delayscontenttouches) is going to be disabled on all parent `ScrollViewer`
 
 ### Bug fixes
-
+* [#1767] Invalid `this` keyword generated for `Storyboard.SetTarget`
 * [#1781] WASM Images are no longer draggable and selectable by default to match UWP
 * [#1771](https://github.com/unoplatform/uno/pull/1771) Fix ".Uno" in project names resulted in build errors.
 * [#1531](https://github.com/unoplatform/uno/pull/1531) Fix an issue with VirtualizePanelAdaptater by adding a cache where the ItemSources length change and created a OutOfRangeException
