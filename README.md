@@ -44,15 +44,15 @@ For a larger example and features demo:
 
 # Uno Features
 * Supported platforms:
-    * Windows (via the standard UWP Toolkit)
-    * iOS and Android (via [Xamarin](https://www.visualstudio.com/xamarin/))
-    * WebAssembly through the [Mono Wasm SDK](https://github.com/mono/mono/blob/master/sdks/wasm/README.md)
+    * Windows (via the standard UWP Toolkit).
+    * iOS and Android (via [Xamarin](https://www.visualstudio.com/xamarin/)).
+    * WebAssembly through the [Mono Wasm SDK](https://github.com/mono/mono/blob/master/sdks/wasm/README.md).
 * Dev loop:
-    * Develop on Windows first using Visual Studio
-    * [XAML Edit and Continue](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) for live XAML edition on each key stroke
-    * [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp)
-    * Validate on other platforms as late as possible
-    * Experimental XAML Hot Reload for WebAssembly, iOS and Android
+    * Develop on Windows first using Visual Studio.
+    * [XAML Edit and Continue](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) for live XAML edition on each key stroke.
+    * [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp).
+    * Validate on other platforms as late as possible.
+    * Experimental XAML Hot Reload for WebAssembly, iOS and Android.
     * [Uno.UITest](https://github.com/unoplatform/Uno.UITest), a library to create Cross-Platform UI Tests for WebAssembly, iOS and Android.
 * Cross Platform Controls:
     * [Control Templating](https://docs.microsoft.com/en-us/windows/uwp/design/controls-and-patterns/control-templates)
@@ -203,5 +203,6 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/jotaro-sama"><img src="https://avatars1.githubusercontent.com/u/36264038?v=4" width="100px;" alt="Giovanni De Luca"/><br /><sub><b>Giovanni De Luca</b></sub></a><br /><a href="#infra-jotaro-sama" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
   </tr>
 </table>
+</body>
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
