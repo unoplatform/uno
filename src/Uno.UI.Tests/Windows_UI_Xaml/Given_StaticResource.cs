@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Views;
 using Uno.UI.Tests.App.Xaml;
+using Uno.UI.Tests.Helpers;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -124,9 +125,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			app.HostView.Children.Add(control);
 
 			control.Measure(new Size(1000, 1000));
-			
+
 			var text1ResourceTemplateAfter = control.TemplateFromResourceControl.TextBlock1.Text;
-			
+
 			Assert.AreEqual("OuterVisualTree", text1ResourceTemplateAfter);
 		}
 
@@ -200,7 +201,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		[Ignore("At the moment, Uno only applies application-level Resources to non-DPs, causing this test to fail.")]
 		public void When_Multiple_References_Poco()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
@@ -276,7 +276,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		[Ignore("Uno's load-time resource resolution fails here because SolidColorBrush doesn't have its Parent set. (This is probably because the same Brush is typically used multiple times, requiring support for multi-Parent scenarios.)")]
 		public void When_Non_View_And_Local_Brush()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
@@ -326,6 +325,59 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			button.Measure(new Size(1000, 1000));
 			var tb = button.FindFirstChild<TextBlock>();
 			Assert.AreEqual(Colors.MediumSpringGreen, (tb.Foreground as SolidColorBrush).Color);
+		}
+
+		[TestMethod]
+		public void When_Converter()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var page = new Test_Page();
+
+			page.DataContext = new
+			{
+				Boolean1 = true,
+				Boolean2 = false
+			};
+
+			AssertEx.AssertHasColor(page.TestBorder.Background, Colors.Plum);
+		}
+
+		[TestMethod]
+		public void When_Converter_In_Template()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var page = new Test_Page();
+			page.DataContext = new
+			{
+				Boolean1 = true,
+				Boolean2 = false
+			};
+
+			app.HostView.Children.Add(page);
+			page.Measure(new Size(1000, 1000));
+			
+			var tb = page.TestContentControl.FindFirstChild<TextBlock>();
+			Assert.AreEqual("Inner text", tb.Text);
+			AssertEx.AssertHasColor(tb.Foreground, Colors.Tomato);
+		}
+
+		[TestMethod]
+		public void When_Converter_In_Template_Separate_Xaml()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var page = new Test_Page();
+
+			page.SpiffyItemsControl.ItemsSource = Enumerable.Range(0, 3).Select(i => true).ToArray();
+
+			app.HostView.Children.Add(page);
+			page.Measure(new Size(1000, 1000));
+
+			var rb = page.SpiffyItemsControl.FindFirstChild<RadioButton>();
+			AssertEx.AssertHasColor(rb.Foreground, Colors.Plum);
+			;
 		}
 	}
 }

@@ -14,6 +14,7 @@ using Uno.Logging;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation;
 using System.ComponentModel;
+using Uno.UI.DataBinding;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
@@ -108,12 +109,29 @@ namespace Windows.UI.Xaml
 #endif
 		DependencyObject Parent => ((IDependencyObjectStoreProvider)this).Store.Parent as DependencyObject;
 
+		private bool _isParsing;
 		/// <summary>
 		/// True if the element is in the process of being parsed from Xaml.
 		/// </summary>
 		/// <remarks>This property shouldn't be set from user code. It's public to allow being set from generated code.</remarks>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public bool IsParsing { get; set; }
+		public bool IsParsing
+		{
+			get => _isParsing;
+			set
+			{
+				if (!value)
+				{
+					throw new InvalidOperationException($"{nameof(IsParsing)} should never be set from user code.");
+				}
+
+				_isParsing = value;
+				if (_isParsing)
+				{
+					ResourceResolver.PushSourceToScope((this as IWeakReferenceProvider).WeakReference);
+				}
+			}
+		}
 
 		/// <summary>
 		/// Provides the behavior for the "Measure" pass of the layout cycle. Classes can override this method to define their own "Measure" pass behavior.
@@ -251,9 +269,24 @@ namespace Windows.UI.Xaml
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void CreationComplete()
 		{
-			ApplyStyle();
-			ApplyDefaultStyle();
-			IsParsing = false;
+			if (!IsParsing)
+			{
+				throw new InvalidOperationException($"Called without matching {nameof(IsParsing)} call. This method should never be called from user code.");
+			}
+#if !HAS_EXPENSIVE_TRYFINALLY
+			try
+#endif
+			{
+				ApplyStyle();
+				ApplyDefaultStyle();
+			}
+#if !HAS_EXPENSIVE_TRYFINALLY
+			finally
+#endif
+			{
+				_isParsing = false;
+				ResourceResolver.PopSourceFromScope();
+			}
 		}
 
 		#region Style DependencyProperty

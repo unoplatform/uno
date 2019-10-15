@@ -16,9 +16,14 @@ namespace Uno.UI.Tests.Helpers
 		{
 			Assert.IsNotNull(resources);
 
-			var brush = resources[key] as SolidColorBrush;
-			Assert.IsNotNull(brush);
-			Assert.AreEqual(expected, brush.Color);
+			AssertHasColor(resources[key] as Brush, expected);
+		}
+
+		public static void AssertHasColor(Brush brush, Color expected)
+		{
+			var colorBrush = brush as SolidColorBrush;
+			Assert.IsNotNull(colorBrush);
+			Assert.AreEqual(expected, colorBrush.Color);
 		}
 	}
 }
