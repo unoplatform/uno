@@ -67,7 +67,6 @@ Summary of the changes (Less than 80 chars)
 
 Addresses #bugnumber (in this specific format)
 ```
-
 **Tests**
 
 -  Tests need to be provided for every bug/feature that is completed.
