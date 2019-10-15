@@ -62,6 +62,12 @@ namespace Uno.UI
 			if (TryStaticRetrieval(resourceKey, out var value))
 			{
 				owner.SetValue(property, value);
+
+				if (!isThemeResourceExtension)
+				{
+					// If it's {StaticResource Foo} and we managed to resolve it at parse-time, then we don't want to update it again (per UWP).
+					return;
+				}
 			}
 
 			(owner as IDependencyObjectStoreProvider).Store.SetBinding(property, new ResourceBinding(resourceKey, isThemeResourceExtension));
