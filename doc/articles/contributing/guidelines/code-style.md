@@ -23,6 +23,28 @@ Uno uses EditorConfig ([here's our configuration](https://github.com/unoplatform
 
 ## Conventions
 
+
+### Compilation Symbols
+
+- Use them to swap implementation on a per platform basis
+- They should not be used for whole files, as there is [a globbing pattern](https://github.com/unoplatform/uno/blob/master/src/PlatformItemGroups.props) in place to avoid having to place it everywhere. See here:
+
+
+### Filenames
+
+As defined over at https://github.com/unoplatform/uno/blob/master/src/PlatformItemGroups.props
+
+- Feature.wasm.cs
+- Feature.iOS.cs
+- Feature.macOS.cs
+- Feature.iOSmacOS.cs
+- Feature.Android.cs
+- Feature.Xamarin.cs
+- Feature.UWP.cs
+- Feature.net.cs
+- Feature.netstd.cs
+
+
 ### Braces
 
 ```csharp
