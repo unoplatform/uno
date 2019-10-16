@@ -38,6 +38,7 @@ namespace Windows.UI.Input
 		}
 
 		internal GestureRecognizer(object owner)
+			: this()
 		{
 			Owner = owner;
 		}
@@ -147,8 +148,8 @@ namespace Windows.UI.Input
 		}
 
 		#region Manipulations
-		internal const int MinManipulationDeltaTranslateX = 30;
-		internal const int MinManipulationDeltaTranslateY = 30;
+		internal const int MinManipulationDeltaTranslateX = 15;
+		internal const int MinManipulationDeltaTranslateY = 15;
 		internal const int MinManipulationDeltaRotate = 5; // Degrees
 		internal const double MinManipulationDeltaExpansion = 15;
 
