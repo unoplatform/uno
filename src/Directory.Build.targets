@@ -13,8 +13,8 @@
   </Target>
 
   <ItemGroup>
-    <PackageReference Update="Uno.SourceGenerationTasks" Version="1.32.0" />
-    <PackageReference Update="Uno.SourceGeneration" Version="1.32.0" />
+    <PackageReference Update="Uno.SourceGenerationTasks" Version="2.0.0-dev.304" />
+    <PackageReference Update="Uno.SourceGeneration" Version="2.0.0-dev.304" />
     <PackageReference Update="Uno.Core" Version="1.29.0" />
     <PackageReference Update="Uno.Core.Build" Version="1.29.0" />
     <PackageReference Update="Uno.Wasm.Bootstrap" Version="1.0.10" />
