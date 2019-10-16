@@ -216,7 +216,6 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Starting(),
 				v => v.Started()
 			);
 		}
@@ -399,7 +398,6 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Starting(),
 				v => v.Started().At(25, 25).WithCumulative(),
 				v => v.Delta().At(100, 100).WithDelta(tX: 75, tY: 75).WithCumulative(tX: 75, tY: 75)
 			);
@@ -417,7 +415,6 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessMoveEvent(50, 50, id: 2);
 
 			result.ShouldBe(
-				v => v.Starting(),
 				v => v.Starting(),
 				v => v.Started().At(100, 100).WithCumulative(),
 				v => v.Delta().At(25, 25).WithDelta(tX: -75, tY: -75).WithCumulative(tX: -75, tY: -75)
@@ -437,7 +434,6 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessMoveEvent(25, -50, id: 2); // Angle = -Pi/2
 
 			result.ShouldBe(
-				v => v.Starting(),
 				v => v.Starting(),
 				v => v.Started().WithCumulative(angle: 0),
 				v => v.Delta().WithDelta(angle: 315).WithCumulative(angle: 315),
@@ -459,7 +455,6 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Starting(),
 				v => v.Started().WithCumulative(angle: 0),
 				v => v.Delta().WithDelta(angle: 315).WithCumulative(angle: 315),
 				v => v.Delta().WithDelta(angle: 315).WithCumulative(angle: 270)
@@ -480,7 +475,6 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Starting(),
 				v => v.Started().WithCumulative(angle: 0),
 				v => v.Delta().WithDelta(angle: 315).WithCumulative(angle: 315),
 				v => v.Delta().WithDelta(angle: 315).WithCumulative(angle: 270)
@@ -500,7 +494,6 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessMoveEvent(50, 25, id: 2); // Angle = -Pi/2
 
 			result.ShouldBe(
-				v => v.Starting(),
 				v => v.Starting(),
 				v => v.Started().WithCumulative(angle: 0),
 				v => v.Delta().WithDelta(angle: 315).WithCumulative(angle: 315),
@@ -523,7 +516,6 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Starting(),
 				v => v.Started().WithCumulative(angle: 0),
 				v => v.Delta().WithDelta(angle: 45).WithCumulative(angle: 45),
 				v => v.Delta().WithDelta(angle: 45).WithCumulative(angle: 90)
@@ -543,7 +535,6 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessMoveEvent(-25, -50, id: 2); // Angle = -Pi/2
 
 			result.ShouldBe(
-				v => v.Starting(),
 				v => v.Starting(),
 				v => v.Started().WithCumulative(angle: 0),
 				v => v.Delta().WithDelta(angle: 45).WithCumulative(angle: 45),
@@ -565,7 +556,6 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Starting(),
 				v => v.Started().WithCumulative(angle: 0),
 				v => v.Delta().WithDelta(angle: 45).WithCumulative(angle: 45),
 				v => v.Delta().WithDelta(angle: 45).WithCumulative(angle: 90)
@@ -585,7 +575,6 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessMoveEvent(25, 50, id: 2); // Angle = -Pi/2
 
 			result.ShouldBe(
-				v => v.Starting(),
 				v => v.Starting(),
 				v => v.Started().WithCumulative(angle: 0),
 				v => v.Delta().WithDelta(angle: 45).WithCumulative(angle: 45),
@@ -607,7 +596,6 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Starting(),
 				v => v.Started().WithCumulative(scale: 1),
 				v => v.Delta().WithDelta(scale: 3, exp: 50).WithCumulative(scale: 3, exp: 50),
 				v => v.Delta().WithDelta(scale: 5F/3F, exp: 50).WithCumulative(scale: 5, exp: 100)
@@ -628,7 +616,6 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Starting(),
 				v => v.Started().WithCumulative(scale: 1),
 				v => v.Delta().WithDelta(scale: .6F, exp: -50).WithCumulative(scale: .6F, exp: -50),
 				v => v.Delta().WithDelta(scale: 2F/3F, exp: -25).WithCumulative(scale: .4F, exp: -75)
@@ -642,84 +629,83 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			var result = new ManipulationRecorder(sut);
 
 			sut.ProcessDownEvent(50, 50, id: 1); // 1.
-			sut.ProcessDownEvent(50, 200, id: 2); // 2. & 3.
+			sut.ProcessDownEvent(50, 200, id: 2); // 2.
 
-			sut.ProcessMoveEvent(200, 200, id: 2); // 4.
-			sut.ProcessMoveEvent(50, 200, id: 1); // 5.
+			sut.ProcessMoveEvent(200, 200, id: 2); // 3.
+			sut.ProcessMoveEvent(50, 200, id: 1); // 4.
 
-			sut.ProcessMoveEvent(200, 50, id: 2); // 6.
-			sut.ProcessMoveEvent(200, 200, id: 1); // 7.
+			sut.ProcessMoveEvent(200, 50, id: 2); // 5.
+			sut.ProcessMoveEvent(200, 200, id: 1); // 6.
 
-			sut.ProcessMoveEvent(50, 50, id: 2); // 8.
-			sut.ProcessMoveEvent(200, 50, id: 1); // 9.
+			sut.ProcessMoveEvent(50, 50, id: 2); // 7.
+			sut.ProcessMoveEvent(200, 50, id: 1); // 8.
 
-			sut.ProcessMoveEvent(50, 200, id: 2); // 10.
-			sut.ProcessMoveEvent(50, 50, id: 1); // 11.
+			sut.ProcessMoveEvent(50, 200, id: 2); // 9.
+			sut.ProcessMoveEvent(50, 50, id: 1); // 10.
 
 			// At same point (0 proof ?)
-			sut.ProcessMoveEvent(50, 50, id: 2); // 12.
+			sut.ProcessMoveEvent(50, 50, id: 2); // 11.
 
 			var s = (float)Math.Sqrt(2);
 			var e = (float)((Math.Sqrt(2) - 1) * 150);
 
 			result.ShouldBe(
 				v => v.Starting(), // 1.
-				v => v.Starting(), // 2.
 
-				// 3.
+				// 2.
 				v => v.Started()
 					.At(50, 125)
 					.WithCumulative(),
 
-				// 4.
+				// 3.
 				v => v.Delta()
 					.At(125, 125)
 					.WithDelta(tX: 75, tY: 0, angle: 315, scale: s, exp: e)
 					.WithCumulative(tX: 75, tY: 0, angle: 315, scale: s, exp: e),
 
-				// 5.
+				// 4.
 				v => v.Delta()
 					.At(125, 200)
 					.WithDelta(tX: 0, tY: 75, angle: 315, scale: 1/s, exp: -e)
 					.WithCumulative(tX: 75, tY: 75, angle: 270, scale: 1, exp: 0),
 
-				// 6.
+				// 5.
 				v => v.Delta()
 					.At(125, 125)
 					.WithDelta(tX: 0, tY: -75, angle: 315, scale: s, exp: e)
 					.WithCumulative(tX: 75, tY: 0, angle: 225, scale: s, exp: e),
 
-				// 7.
+				// 6.
 				v => v.Delta()
 					.At(200, 125)
 					.WithDelta(tX: 75, tY: 0, angle: 315, scale: 1 / s, exp: -e)
 					.WithCumulative(tX: 150, tY: 0, angle: 180, scale: 1, exp: 0),
 
-				// 8.
+				// 7.
 				v => v.Delta()
 					.At(125, 125)
 					.WithDelta(tX: -75, tY: 0, angle: 315, scale: s, exp: e)
 					.WithCumulative(tX: 75, tY: 0, angle: 135, scale: s, exp: e),
 
-				// 9.
+				// 8.
 				v => v.Delta()
 					.At(125, 50)
 					.WithDelta(tX: 0, tY: -75, angle: 315, scale: 1 / s, exp: -e)
 					.WithCumulative(tX: 75, tY: -75, angle: 90, scale: 1, exp: 0),
 
-				// 10.
+				// 9.
 				v => v.Delta()
 					.At(125, 125)
 					.WithDelta(tX: 0, tY: 75, angle: 315, scale: s, exp: e)
 					.WithCumulative(tX: 75, tY: 0, angle: 45, scale: s, exp: e),
 
-				// 11.
+				// 10.
 				v => v.Delta()
 					.At(50, 125)
 					.WithDelta(tX: -75, tY: 0, angle: 315, scale: 1 / s, exp: -e)
 					.WithCumulative(tX: 0, tY: 0, angle: 0, scale: 1, exp: 0),
 
-				// 12.
+				// 11.
 				v => v.Delta()
 					.At(50, 50)
 					.WithDelta(tX: 0, tY: -75, angle: 90 /* ??? */, scale: 0, exp: -150F)
@@ -867,9 +853,9 @@ namespace Uno.UI.Tests.Windows_UI_Input
 				=> throw new AssertionFailedException($"Expected of {identifier} is not configured");
 		}
 
-		public class StartingValidator : Validator<EventArgs>
+		public class StartingValidator : Validator<ManipulationStartingEventArgs>
 		{
-			protected override void Assert(EventArgs args)
+			protected override void Assert(ManipulationStartingEventArgs args)
 			{
 			}
 		}
