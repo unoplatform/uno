@@ -67,15 +67,9 @@ namespace Windows.UI.Xaml
 				var oldMode = (ManipulationModes)args.OldValue;
 				var newMode = (ManipulationModes)args.NewValue;
 
-				if (!newMode.IsSupported()
-					&& snd.Log().IsEnabled(LogLevel.Warning))
-				{
-					snd.Log().Warn(
-						$"The ManipulationMode '{newMode}' is not supported by Uno. "
-						+ "Only 'None', 'All' and 'System' are supported, setting any other mode will be handled as 'All'. "
-						+ "Note that with Uno the 'All' and 'System' are handled the same way.");
-				}
+				newMode.LogIfNotSupported(elt.Log());
 
+				elt.UpdateManipulations(newMode, elt.HasManipulationHandler);
 				elt.OnManipulationModeChanged(oldMode, newMode);
 			}
 		}
@@ -263,8 +257,6 @@ namespace Windows.UI.Xaml
 				UpdateManipulations(default(ManipulationModes), hasManipulationHandler: false);
 			}
 		}
-
-		// TODO: OnManipulationChanged
 
 		private bool HasManipulationHandler =>
 			   CountHandler(ManipulationStartingEvent) != 0

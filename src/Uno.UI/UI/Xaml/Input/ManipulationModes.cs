@@ -1,6 +1,8 @@
 using System;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Microsoft.Extensions.Logging;
+using Uno.Logging;
 
 namespace Windows.UI.Xaml.Input
 {
@@ -12,10 +14,8 @@ namespace Windows.UI.Xaml.Input
 		/// <summary>Do not present graphic interaction with manipulation events.</summary>
 		None = 0U,
 		/// <summary>Permit manipulation actions that translate the target on the X axis.</summary>
-		[global::Uno.NotImplemented]
 		TranslateX = 1U,
 		/// <summary>Permit manipulation actions that translate the target on the Y axis.</summary>
-		[global::Uno.NotImplemented]
 		TranslateY = 2U,
 		/// <summary>Permit manipulation actions that translate the target on the X axis but using a rails mode.</summary>
 		[global::Uno.NotImplemented]
@@ -24,10 +24,8 @@ namespace Windows.UI.Xaml.Input
 		[global::Uno.NotImplemented]
 		TranslateRailsY = 8U,
 		/// <summary>Permit manipulation actions that rotate the target.</summary>
-		[global::Uno.NotImplemented]
 		Rotate = 16U,
 		/// <summary>Permit manipulation actions that scale the target.</summary>
-		[global::Uno.NotImplemented]
 		Scale = 32U,
 		/// <summary>Apply inertia to translate actions.</summary>
 		[global::Uno.NotImplemented]
@@ -46,8 +44,27 @@ namespace Windows.UI.Xaml.Input
 
 	internal static class ManipulationModesExtensions
 	{
+		private const ManipulationModes _unsupported =
+			ManipulationModes.TranslateRailsX
+			| ManipulationModes.TranslateRailsY
+			| ManipulationModes.TranslateInertia
+			| ManipulationModes.RotateInertia
+			| ManipulationModes.ScaleInertia;
+
 		public static bool IsSupported(this ManipulationModes mode)
-			=> mode == ManipulationModes.None
-				|| mode >= ManipulationModes.All;
+			=> mode == ManipulationModes.All
+			|| (mode & _unsupported) == 0;
+
+		public static void LogIfNotSupported(this ManipulationModes mode, ILogger log)
+		{
+			if (!mode.IsSupported() && log.IsEnabled(LogLevel.Information))
+			{
+				log.Warn(
+					$"The ManipulationMode '{mode}' is not supported by Uno. "
+					+ "Only 'None', 'All', 'System', 'TranslateX', 'TranslateY', 'Rotate', and 'Scale' are supported. "
+					+ "Any other mode will not cause any issue, but the corresponding but no manipulation event will be generated form them. "
+					+ "Note that with Uno the 'All' and 'System' are handled the same way.");
+			}
+		}
 	}
 }
