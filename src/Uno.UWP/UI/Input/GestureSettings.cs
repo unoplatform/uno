@@ -29,10 +29,8 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented] // The GestureRecognizer won't raise this event
 		Drag = 32U,
 		/// <summary>Enable support for the slide gesture through pointer input, on the horizontal axis. The ManipulationStarted, ManipulationUpdated, and ManipulationCompleted events are all raised during the course of this interaction.This gesture can be used for rearranging objects.</summary>
-		[global::Uno.NotImplemented] // The GestureRecognizer won't raise this event
 		ManipulationTranslateX = 64U,
 		/// <summary>Enable support for the slide gesture through pointer input, on the vertical axis. The ManipulationStarted, ManipulationUpdated, and ManipulationCompleted events are all raised during the course of this interaction.This gesture can be used for rearranging objects.</summary>
-		[global::Uno.NotImplemented] // The GestureRecognizer won't raise this event
 		ManipulationTranslateY = 128U,
 		/// <summary>Enable support for the slide gesture through pointer input, on the horizontal axis using rails (guides). The ManipulationStarted, ManipulationUpdated, and ManipulationCompleted events are all raised during the course of this interaction.This gesture can be used for rearranging objects.</summary>
 		[global::Uno.NotImplemented] // The GestureRecognizer won't raise this event
@@ -41,10 +39,8 @@ namespace Windows.UI.Input
 		[global::Uno.NotImplemented] // The GestureRecognizer won't raise this event
 		ManipulationTranslateRailsY = 512U,
 		/// <summary>Enable support for the rotation gesture through pointer input. The ManipulationStarted, ManipulationUpdated, and ManipulationCompleted events are all raised during the course of this interaction.</summary>
-		[global::Uno.NotImplemented] // The GestureRecognizer won't raise this event
 		ManipulationRotate = 1024U,
 		/// <summary>Enable support for the pinch or stretch gesture through pointer input.These gestures can be used for optical or semantic zoom and resizing an object. The ManipulationStarted, ManipulationUpdated, and ManipulationCompleted events are all raised during the course of this interaction.</summary>
-		[global::Uno.NotImplemented] // The GestureRecognizer won't raise this event
 		ManipulationScale = 2048U,
 		/// <summary>Enable support for translation inertia after the slide gesture (through pointer input) is complete. The ManipulationInertiaStarting event is raised if inertia is enabled.</summary>
 		[global::Uno.NotImplemented] // The GestureRecognizer won't raise this event
