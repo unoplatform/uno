@@ -40,5 +40,5 @@ sourceSets {
 
 ![Debugging](Assets/Debugging-Android-Studio/Debugging.png)
 
-* One powerful feature of debugging Android code is the level of integration with framework code. You should be able to see not only the native stack trace, but even local variable values in framework methods (eg ViewGroup.dispatchTouchEvent().) 
+* One powerful feature of debugging Android code is the level of integration with framework code. You should be able to see not only the native stack trace, but even local variable values in framework methods (e.g. ViewGroup.dispatchTouchEvent().) 
     * Note that Android Studio may prompt you to download source code and debug symbols: this will fail unless you started Android Studio with Administrator privileges (right-click in Start menu + 'Run as Administrator'). 

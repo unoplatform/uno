@@ -26,7 +26,7 @@
 
 		<TextBlock Grid.Row="1" Grid.Column="1" Grid.RowSpan="1" Grid.ColumnSpan="1" />
 
-		<!-- Must not fail because the grid proprety is applied on a grid -->
+		<!-- Must not fail because the grid property is applied on a grid -->
 		<Grid Grid.Row="1" Grid.Column="1" Grid.RowSpan="1" Grid.ColumnSpan="1" />
 
 	</Grid>

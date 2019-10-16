@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Numerics;
 using System.Text;
 using Windows.Foundation;
+using Uno.Extensions;
 using Uno.UI;
 
 namespace Windows.UI.Xaml.Media

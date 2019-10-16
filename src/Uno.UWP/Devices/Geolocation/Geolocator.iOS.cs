@@ -30,12 +30,20 @@ namespace Windows.Devices.Geolocation
 
 		private void _locationManager_LocationsUpdated(object sender, CLLocationsUpdatedEventArgs e)
 		{
-			this.PositionChanged?.Invoke(this, new PositionChangedEventArgs(ToGeoposition(e.Locations.Last())));
+			BroadcastStatus(PositionStatus.Ready);
+			this._positionChanged?.Invoke(this, new PositionChangedEventArgs(ToGeoposition(e.Locations.Last())));
+		}
+
+		partial void StartPositionChanged()
+		{
+			BroadcastStatus(PositionStatus.Initializing);
 		}
 
 		public async Task<Geoposition> GetGeopositionAsync()
 		{
+			BroadcastStatus(PositionStatus.Initializing);
 			var location = _locationManager.Location;
+			BroadcastStatus(PositionStatus.Ready);
 			return ToGeoposition(location);
 		}
 
@@ -76,8 +84,8 @@ namespace Windows.Devices.Geolocation
 
 			try
 			{
-
-				TaskCompletionSource<CLAuthorizationStatus> cts = new TaskCompletionSource<CLAuthorizationStatus>();
+				GeolocationAccessStatus accessStatus;
+				var cts = new TaskCompletionSource<CLAuthorizationStatus>();
 
 				mgr.AuthorizationChanged += (s, e) =>
 				{
@@ -92,12 +100,20 @@ namespace Windows.Devices.Geolocation
 
 				if (CLLocationManager.Status != CLAuthorizationStatus.NotDetermined)
 				{
-					return TranslateStatus(CLLocationManager.Status);
+					accessStatus = TranslateStatus(CLLocationManager.Status);
 				}
 
 				var cLAuthorizationStatus = await cts.Task;
 
-				return TranslateStatus(cLAuthorizationStatus);
+				accessStatus = TranslateStatus(cLAuthorizationStatus);
+				
+				//if geolocation is not well accessible, default geoposition should be recommended
+				if (accessStatus != GeolocationAccessStatus.Allowed)
+				{
+					IsDefaultGeopositionRecommended = true;
+				}
+
+				return accessStatus;
 			}
 			finally
 			{

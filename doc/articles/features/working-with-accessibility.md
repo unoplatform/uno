@@ -12,6 +12,7 @@ Uno.UI implements a subset of UWP's UI Automation APIs, to make your application
 
 Read [this guide](https://docs.microsoft.com/en-us/windows/uwp/design/accessibility/basic-accessibility-information) to learn how to use the `AutomationProperties` supported by Uno.UI:
 
+- `AutomationProperties.AutomationId`
 - `AutomationProperties.Name`
 - `AutomationProperties.LabeledBy`
 - `AutomationProperties.AccessibilityView`
@@ -46,6 +47,19 @@ Here's how to disable it
 // App's constructor (App.xaml.cs) 
 Uno.UI.FeatureConfiguration.Font.IgnoreTextScaleFactor= true; 
 ```
+
+## AutomationId
+The `AutomationProperties.AutomationId` attached property can be used by UI Testing frameworks to find visual elements.
+
+To avoid performance issues, this property only has an effect when the `IsUiAutomationMappingEnabled` msbuild property is set, or `Uno.UI.FrameworkElementHelper.IsUiAutomationMappingEnabled` is set to true.
+
+Setting this property does the following:
+- On iOS, it sets the [`UIView.AccessibilityIdentifier`](https://developer.apple.com/documentation/uikit/uiaccessibilityidentification/1623132-accessibilityidentifier) property
+- On Android, it sets the [`View.ContentDescription`](https://developer.android.com/reference/android/view/View.html#setContentDescription(java.lang.CharSequence)) property
+- On Android, it sets the [`View.ContentDescription`](https://developer.android.com/reference/android/view/View.html#setContentDescription(java.lang.CharSequence)) property
+- On WebAssembly, it sets the `xamlautomationid` property on the HTML element.
+
+This property is generally used alongside [Uno.UITest](https://github.com/unoplatform/Uno.UITest) to create UI Tests, and is particularly useful to select items using databound identifiers.
 
 ## Known issues
 

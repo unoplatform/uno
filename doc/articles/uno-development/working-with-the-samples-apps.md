@@ -41,18 +41,22 @@ This attribute is used as follows:
 This attribute can be placed at the test or class level.
 
 ## Setup for Automated UI Tests on WebAssembly
+
 - Navigate to the `SamplesApp.Wasm.UITests` folder and run `npm i`. This will download Puppeteer and the Chrome driver.
 - Deploy and run the `SamplesApp.Wasm` application once.
 
 ## Setup for Automated UI Tests on Android
+
 - Setup an android simulator or device, start it
 - Deploy and run the `SamplesApp.Droid` application on that device
 
 ## Running UI Tests
-- Open the [`Constants.cs](src/SamplesApp/SamplesApp.UITests/Constants.cs) file and change the `CurrentPlatform` field to the platform you want to test.
+
+- Open the [`Constants.cs`](src/SamplesApp/SamplesApp.UITests/Constants.cs) file and change the `CurrentPlatform` field to the platform you want to test.
 - Select a test in the `SamplesApp.UITests` project and run a specific test.
 
 ## Troubleshooting tests running during the CI
+
 The build artifacts contain the tests output, as well as the device logs (in the case of Android).
 
 # Requirements for UI tests
@@ -65,7 +69,7 @@ using for bitmap comparison during regression testing, or used by the an automat
 
 # Creating Non-UI Tests
 
-In the context of non-UI tests, a special sample control is available in the samples app (Unit Tests Runner). This control looks for tests in the `Uno.UI.RuntimeTests` project.
+In the context of non-UI tests, a [special sample control](https://github.com/unoplatform/uno/blob/master/src/SamplesApp/SamplesApp.UnitTests.Shared/Controls/UnitTest/UnitTestsControl.cs) is available in the samples app (Unit Tests Runner). This control [looks for tests in the `Uno.UI.RuntimeTests` project](https://github.com/unoplatform/uno/blob/master/src/SamplesApp/SamplesApp.Shared/Samples/UnitTests/UnitTestsPage.xaml.cs).
 
 Those tests use the MSTests format, and can be run as part of the running application to test for features that depend on the current platform.
 

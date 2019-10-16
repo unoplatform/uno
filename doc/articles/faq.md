@@ -16,7 +16,7 @@ As the Uno Platform provides all of the APIs of the complete UWP platform, any U
 
 ## Why Uno?
 Developing for Windows (phone, desktop, tablet, Xbox), iOS (tablet and phone), Android (tablet and phone) and the Web via WebAssembly at once can be a complex process, especially when it comes to the user interface. Each platform has its own ways of defining dynamic layouts, with some being more efficient, some more verbose, some more elegant, and some more performant than others.
-Yet, being able to master all these frameworks at once is a particularly difficult task, because of the amount of platform-specific knowledge required to master each platform. Most of the time it boils down to different teams developing the same application multiple times, with each requiring a full development cycle.
+Yet, being able to master all these frameworks at once is a particularly difficult task because of the amount of platform-specific knowledge required to master each platform. Most of the time it boils down to different teams developing the same application multiple times, with each requiring a full development cycle.
 With Xamarin, C# comes to all these platforms; however, it only provides transparent translations of the UI frameworks available for iOS and Android. Most non-UI code can be shared, but when it comes to the UI, almost nothing can be shared.
 To avoid having to learn the UI-layout techniques and approaches for each platform, Uno.UI mimics the Windows XAML approach of defining UI and layouts. This translates into the ability to share styles, layouts, and data-bindings while retaining the ability to mix XAML-style and native layouts. For instance, a StackPanel can easily contain a RelativeLayout on Android, or a MKMapView on iOS.
 Uno.UI provides the ability for developers to reuse known layouts and coding techniques on all platforms, resulting in a gain of overall productivity when creating UI-rich applications.
@@ -38,7 +38,7 @@ You can try the Uno Platform using the [Uno Platform Playground](https://playgro
 ## How experienced do I need to be to use Uno Platform?
 
 ## What is the playground?
-The [Uno Platform Playground](https://playground.platform.uno) is a convenient way to experiment with the Uno platform, using the only a WebAssembly compatible web browser.
+The [Uno Platform Playground](https://playground.platform.uno) is a convenient way to experiment with the Uno platform, using only a WebAssembly compatible web browser.
 
 ## Where can I get support?
 Support is available through our [gitter](https://gitter.im/uno-platform/Lobby), [twitter account](https://twitter.com/unoplatform), and email [info@platform.uno](mailto:info@platform.uno).
@@ -95,7 +95,7 @@ No, not at the moment. Our assumption for now is that the WebAssembly part of Un
 
 ## Does Uno.UI support what WPF is calling CustomControls ? 
 
-Yes, those are called Templated Controls in the UWP dialect, because they inherit from Control Uno.UI currently handles styles a bit differently from what WPF/UWP is doing and Uno.UI parser does not handle `<Style.Setters>` properly. These should not be impacting as long as you have a resource dictionary file containing your style. See here: https://github.com/unoplatform/uno/blob/master/doc/articles/api-differences.md#styles
+Yes, those are called Templated Controls in the UWP dialect because they inherit from Control Uno.UI currently handles styles a bit differently from what WPF/UWP is doing and Uno.UI parser does not handle `<Style.Setters>` properly. These should not be impacting as long as you have a resource dictionary file containing your style. See here: https://github.com/unoplatform/uno/blob/master/doc/articles/api-differences.md#styles
 
 ## Is the iPhone X supported by Uno.UI ?
 
@@ -182,7 +182,7 @@ If you're still having issues, **restart Visual Studio** and/or **unload the iOS
 
 ## Is Uno.UI's Performance on WebAssembly going to improve
 Yes! The current performance is limited by the runtime interpreted mode of mono-wasm. The Mono team is working on implementing **AOT** compilation,
-which will improve significantly the performance. See [Miguel de Icaza's status update](https://gitter.im/aspnet/Blazor?at=5b1ab670dd54362753f8a168) for more details.
+which will significantly improve the performance. See [Miguel de Icaza's status update](https://gitter.im/aspnet/Blazor?at=5b1ab670dd54362753f8a168) for more details.
 
 You can subscribe to this [mono issue's updates for progress](https://github.com/mono/mono/issues/10222).
 
@@ -335,7 +335,7 @@ PointerPressed += (s, e) => { e.Handled = true; };
 
 Only Wasm, Android and iOS projects need a reference to Uno.UI. Adding a reference to the Uno.UI package provides access to the
 [`VisibleBoundsPadding`](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.Toolkit/VisibleBoundsPadding.md)
-attached property for notch'ed devices.
+attached property for notched devices.
 
 ## How can I un-grey the properties view In Edit & Continue?  
 
@@ -355,11 +355,11 @@ This is part of the [Uno.SourceGeneration package](https://github.com/unoplatfor
 
 ## How to persist data  with wasm? 
 
-For now, persistence is enable only for `ApplicationData.LocalFolder`, `ApplicationData.RoamingFolder` and `ApplicationData.SharedLocalFolder` folders. 
+For now, persistence is enabled only for `ApplicationData.LocalFolder`, `ApplicationData.RoamingFolder` and `ApplicationData.SharedLocalFolder` folders. 
 You can write files in those folders using both `StorageFile` and `File.IO`. 
 Files that are located in other directories are going to use the in-memory filesystem of emscripten and won't be persisted.
 
-As `ApplicationData.LocalSettings` and `ApplicationData.RoamingSettings` are persisted in their respective folder, they are also persisted.
+As `ApplicationData.LocalSettings` and `ApplicationData.RoamingSettings` are persisted in their respective folders, they are also persisted.
 
 ## Any pull to refresh on listview?
 
@@ -373,7 +373,7 @@ Yes, debugging works for iOS and Android, as in any Xamarin native application. 
 
 MVVMLight, Prism and ReactiveUI are supported, MvvmCross is coming.
 
-## Does Uno.UI have an XAML AutoComplete?
+## Does Uno.UI have a XAML AutoComplete?
 
 It's partially implemented but there are parts that are closed source from Microsoft. In the meantime, make sure your Windows head is using the latest Min SDK, at which point you'll be able to use the UWP designer.
 
@@ -433,7 +433,7 @@ We have an open Github [issue.](https://github.com/unoplatform/Uno/issues/3)
 
 https://github.com/unoplatform/uno/blob/master/doc/articles/supported-features.md
 
-##  Is there an Uno template that is based on portable class library?
+##  Is there an Uno template that is based on a portable class library?
 
 No, but use the [Cross-Platform library template](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) instead to achieve a similar goal.
 
