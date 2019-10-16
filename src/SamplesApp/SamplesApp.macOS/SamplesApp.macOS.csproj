@@ -98,7 +98,8 @@
       <Project>{58C0CBAB-2619-4F58-BC41-5C74DBE31261}</Project>
       <Name>Uno</Name>
     </ProjectReference>
-  </ItemGroup>
+		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj" />
+	</ItemGroup>
   <Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
   <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
   <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
