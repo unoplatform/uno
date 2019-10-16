@@ -73,6 +73,7 @@
 * [#1559] [#1167] Wasm: make the IsEnabled property inheritable.
 * Full support of pointer events cf. [routed events documentation](../articles/features/routed-events.md)
 * Update CheckBox style to 10.0.17763
+* Adds the support for `AutomationProperties.AutomationId`
 
 ### Breaking changes
 
@@ -156,6 +157,7 @@
 * [Android] MenuFlyout was misplaced if view was in a hierarchy with a RenderTransform
 * Fix color refresh of `BitmapIcon` monochrome Foreground
 * [IOS] DatePickerFlyout min and max year were resetting to FallbackNullValue
+* [Android] Fix bug in `ListView` when using an `ObservableCollection` as its source and using `Header` and `Footer`.
 
 ## Release 1.45.0
 ### Features
