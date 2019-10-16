@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
 using Uno.UI.Tests.Helpers;
+using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -484,6 +485,22 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var control = new Test_Control();
 			control.TestTextBlock2.DataContext = true;
 			AssertEx.AssertHasColor(control.TestTextBlock2.Foreground, Colors.Orange);
+		}
+
+		[TestMethod]
+		public void When_Merged_Dictionary_Style()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			Assert.IsFalse(app.Resources.ContainsKey("NotInAppResources")); // These dictionaries shouldn't end up in App.Resources, or this test won't test anything
+
+			var page = new Test_Page();
+
+			app.HostView.Children.Add(page);
+
+			page.Measure(new Size(1000, 1000));
+
+			AssertEx.AssertHasColor(page.TestProgressRing.Foreground, Colors.Fuchsia);
 		}
 
 		[TestMethod]

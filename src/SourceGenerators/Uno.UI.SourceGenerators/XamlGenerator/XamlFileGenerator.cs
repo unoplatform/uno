@@ -82,6 +82,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly INamedTypeSymbol _iFrameworkElementSymbol;
 		private readonly INamedTypeSymbol _dependencyObjectSymbol;
 		private readonly INamedTypeSymbol _markupExtensionSymbol;
+		private readonly INamedTypeSymbol _dependencyObjectParseSymbol;
 
 		private readonly INamedTypeSymbol _iCollectionSymbol;
 		private readonly INamedTypeSymbol _iCollectionOfTSymbol;
@@ -147,6 +148,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_iFrameworkElementSymbol = GetType(XamlConstants.Types.IFrameworkElement);
 			_dependencyObjectSymbol = GetType(XamlConstants.Types.DependencyObject);
 			_markupExtensionSymbol = GetType(XamlConstants.Types.MarkupExtension);
+			_dependencyObjectParseSymbol = GetType(XamlConstants.Types.IDependencyObjectParse);
 			_iCollectionSymbol = GetType("System.Collections.ICollection");
 			_iCollectionOfTSymbol = GetType("System.Collections.Generic.ICollection`1");
 			_iConvertibleSymbol = GetType("System.IConvertible");
@@ -622,11 +624,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								using (writer.BlockInvariant("if (_{0}_ResourceDictionary == null)", _fileUniqueId))
 								{
 									writer.AppendLineInvariant("_{0}_ResourceDictionary = ", _fileUniqueId);
-									InitializeAndBuildResourceDictionary(writer, topLevelControl);
+									InitializeAndBuildResourceDictionary(writer, topLevelControl, setIsParsing: true);
 									writer.AppendLineInvariant(";");
 									var url = _globalStaticResourcesMap.GetSourceLink(_fileDefinition);
 									writer.AppendLineInvariant("_{0}_ResourceDictionary.Source = new Uri(\"ms-resource:///Files/{1}\");", _fileUniqueId, url);
-
+									writer.AppendLineInvariant("_{0}_ResourceDictionary.CreationComplete();", _fileUniqueId);
 								}
 
 								writer.AppendLineInvariant("return _{0}_ResourceDictionary;", _fileUniqueId);
@@ -813,9 +815,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Initialize a new ResourceDictionary instance and populate its items and properties.
 		/// </summary>
-		private void InitializeAndBuildResourceDictionary(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
+		private void InitializeAndBuildResourceDictionary(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool setIsParsing)
 		{
 			writer.AppendLineInvariant("new ResourceDictionary {{");
+			if (setIsParsing)
+			{
+				TrySetParsing(writer, topLevelControl, isInitializer: true);
+			}
 			BuildMergedDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"), isInInitializer: true);
 			BuildResourceDictionary(writer, FindImplicitContentMember(topLevelControl), isInInitializer: true);
 			BuildThemeDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"), isInInitializer: true);
@@ -1868,7 +1874,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 				else
 				{
-					InitializeAndBuildResourceDictionary(writer, dictObject);
+					InitializeAndBuildResourceDictionary(writer, dictObject, setIsParsing: false);
 				}
 				if (isInInitializer)
 				{
@@ -2324,7 +2330,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						BuildUiAutomationId(writer, closureName, uiAutomationId, objectDefinition);
 					}
 
-					if (isFrameworkElement
+					if (HasIsParsing(objectDefinition.Type)
 							// If true then this apply block will be applied to the content of a UserControl, which will already have had CreationComplete() called in its own apply block.
 							&& !useChildTypeForNamedElement
 						)
@@ -3663,7 +3669,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private void TrySetParsing(IIndentedStringBuilder writer, XamlObjectDefinition objectDefinition, bool isInitializer)
 		{
-			if (IsFrameworkElement(objectDefinition.Type))
+			if (HasIsParsing(objectDefinition.Type))
 			{
 				writer.AppendLineInvariant("IsParsing = true");
 				writer.AppendLineInvariant(isInitializer ? "," : ";");
