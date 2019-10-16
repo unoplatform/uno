@@ -34,15 +34,15 @@ Uno uses EditorConfig ([here's our configuration](https://github.com/unoplatform
 
 As defined over at https://github.com/unoplatform/uno/blob/master/src/PlatformItemGroups.props
 
-- Feature.wasm.cs
-- Feature.iOS.cs
-- Feature.macOS.cs
-- Feature.iOSmacOS.cs
-- Feature.Android.cs
-- Feature.Xamarin.cs
-- Feature.UWP.cs
-- Feature.net.cs
-- Feature.netstd.cs
+- ClassName.wasm.cs
+- ClassName.iOS.cs
+- ClassName.macOS.cs
+- ClassName.iOSmacOS.cs
+- ClassName.Android.cs
+- ClassName.Xamarin.cs
+- ClassName.UWP.cs
+- ClassName.net.cs
+- ClassName.netstd.cs
 
 
 ### Braces
