@@ -56,7 +56,8 @@ namespace Windows.UI.Input
 		CrossSlide = 32768U,
 		/// <summary>Enable panning and disable zoom when two or more touch contacts are detected.Prevents unintentional zoom interactions when panning with multiple fingers.</summary>
 		[global::Uno.NotImplemented] // The GestureRecognizer won't raise this event
-		[ContractVersion("Windows.Foundation.UniversalApiContract", 65536U)] ManipulationMultipleFingerPanning = 65536U,
+		[ContractVersion("Windows.Foundation.UniversalApiContract", 65536U)]
+		ManipulationMultipleFingerPanning = 65536U,
 	}
 
 	internal static class GestureSettingsHelper

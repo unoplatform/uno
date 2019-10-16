@@ -176,10 +176,10 @@ namespace Windows.UI.Xaml
 		// Note: For the manipulation and gesture event args, the original source has to be the element that raise the event
 		//		 As those events are bubbling in managed only, the original source will be right one for all.
 
-		private static readonly TypedEventHandler<GestureRecognizer, EventArgs> OnRecognizerManipulationStarting = (sender, args) =>
+		private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartingEventArgs> OnRecognizerManipulationStarting = (sender, args) =>
 		{
 			var that = (UIElement)sender.Owner;
-			that.SafeRaiseEvent(ManipulationStartingEvent, new ManipulationStartingRoutedEventArgs(that));
+			that.SafeRaiseEvent(ManipulationStartingEvent, new ManipulationStartingRoutedEventArgs(that, args));
 		};
 
 		private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> OnRecognizerManipulationStarted = (sender,  args) =>
@@ -280,43 +280,9 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			var settings = _gestures.Value.GestureSettings & ~GestureSettingsHelper.Manipulations;
-			if (mode.HasFlag(ManipulationModes.TranslateX))
-			{
-				settings |= GestureSettings.ManipulationTranslateX;
-			}
-			if (mode.HasFlag(ManipulationModes.TranslateY))
-			{
-				settings |= GestureSettings.ManipulationTranslateY;
-			}
-			if (mode.HasFlag(ManipulationModes.TranslateRailsX))
-			{
-				settings |= GestureSettings.ManipulationTranslateRailsX;
-			}
-			if (mode.HasFlag(ManipulationModes.TranslateRailsY))
-			{
-				settings |= GestureSettings.ManipulationTranslateRailsY;
-			}
-			if (mode.HasFlag(ManipulationModes.TranslateInertia))
-			{
-				settings |= GestureSettings.ManipulationTranslateInertia;
-			}
-			if (mode.HasFlag(ManipulationModes.Rotate))
-			{
-				settings |= GestureSettings.ManipulationRotate;
-			}
-			if (mode.HasFlag(ManipulationModes.RotateInertia))
-			{
-				settings |= GestureSettings.ManipulationRotateInertia;
-			}
-			if (mode.HasFlag(ManipulationModes.Scale))
-			{
-				settings |= GestureSettings.ManipulationScale;
-			}
-			if (mode.HasFlag(ManipulationModes.ScaleInertia))
-			{
-				settings |= GestureSettings.ManipulationScaleInertia;
-			}
+			var settings = _gestures.Value.GestureSettings;
+			settings &= ~GestureSettingsHelper.Manipulations; // Remove all configured manipulation flags
+			settings |= mode.ToGestureSettings(); // Then set them back from the mode
 
 			_gestures.Value.GestureSettings = settings;
 		}

@@ -152,7 +152,7 @@ namespace Windows.UI.Input
 		internal const int MinManipulationDeltaRotate = 5; // Degrees
 		internal const double MinManipulationDeltaExpansion = 15;
 
-		internal event TypedEventHandler<GestureRecognizer, EventArgs> ManipulationStarting; // This is not on the public API!
+		internal event TypedEventHandler<GestureRecognizer, ManipulationStartingEventArgs> ManipulationStarting; // This is not on the public API!
 		public event TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> ManipulationCompleted;
 #pragma warning disable  // Event not raised: intertia is not supported yet
 		public event TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> ManipulationInertiaStarting;

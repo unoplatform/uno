@@ -1,6 +1,7 @@
 using System;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
+using Windows.UI.Input;
 using Microsoft.Extensions.Logging;
 using Uno.Logging;
 
@@ -65,6 +66,60 @@ namespace Windows.UI.Xaml.Input
 					+ "Any other mode will not cause any issue, but the corresponding but no manipulation event will be generated form them. "
 					+ "Note that with Uno the 'All' and 'System' are handled the same way.");
 			}
+		}
+
+		/// <summary>
+		/// Converts the given <see cref="ManipulationModes"/> to a <see cref="GestureSettings"/>. cf. remarks.
+		/// </summary>
+		/// <remarks>
+		/// The returned <see cref="GestureSettings"/> will contains only manipulation related flags
+		/// as defined in <see cref="GestureSettingsHelper.Manipulations"/>
+		/// </remarks>
+		/// <param name="mode">The manipulation mode to convert</param>
+		/// <returns>The gesture settings with the corresponding manipulation flags set.</returns>
+		public static GestureSettings ToGestureSettings(this ManipulationModes mode)
+		{
+			var settings = default(GestureSettings);
+			if (mode.HasFlag(ManipulationModes.TranslateX))
+			{
+				settings |= GestureSettings.ManipulationTranslateX;
+			}
+			if (mode.HasFlag(ManipulationModes.TranslateY))
+			{
+				settings |= GestureSettings.ManipulationTranslateY;
+			}
+			if (mode.HasFlag(ManipulationModes.TranslateRailsX))
+			{
+				settings |= GestureSettings.ManipulationTranslateRailsX;
+			}
+			if (mode.HasFlag(ManipulationModes.TranslateRailsY))
+			{
+				settings |= GestureSettings.ManipulationTranslateRailsY;
+			}
+			if (mode.HasFlag(ManipulationModes.TranslateInertia))
+			{
+				settings |= GestureSettings.ManipulationTranslateInertia;
+			}
+			if (mode.HasFlag(ManipulationModes.Rotate))
+			{
+				settings |= GestureSettings.ManipulationRotate;
+			}
+			if (mode.HasFlag(ManipulationModes.RotateInertia))
+			{
+				settings |= GestureSettings.ManipulationRotateInertia;
+			}
+			if (mode.HasFlag(ManipulationModes.Scale))
+			{
+				settings |= GestureSettings.ManipulationScale;
+			}
+			if (mode.HasFlag(ManipulationModes.ScaleInertia))
+			{
+				settings |= GestureSettings.ManipulationScaleInertia;
+			}
+
+			// Note: ManipulationMultipleFingerPanning is not supported by ManipulationModes enumeration
+
+			return settings;
 		}
 	}
 }

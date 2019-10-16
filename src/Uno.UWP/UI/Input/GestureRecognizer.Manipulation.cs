@@ -22,7 +22,10 @@ namespace Windows.UI.Input
 
 			private readonly GestureRecognizer _recognizer;
 			private readonly PointerDeviceType _deviceType;
-			private readonly GestureSettings _settings;
+			private readonly bool _isTranslateXEnabled;
+			private readonly bool _isTranslateYEnabled;
+			private readonly bool _isRotateEnabled;
+			private readonly bool _isScaleEnabled;
 
 			private ManipulationStates _state = ManipulationStates.Starting;
 			private Points _origins;
@@ -32,12 +35,18 @@ namespace Windows.UI.Input
 			public Manipulation(GestureRecognizer recognizer, PointerPoint pointer1)
 			{
 				_recognizer = recognizer;
-				_settings = recognizer._gestureSettings;
 				_deviceType = pointer1.PointerDevice.PointerDeviceType;
 
 				_origins = _lastPublished = _currents = pointer1;
 
-				_recognizer.ManipulationStarting?.Invoke(_recognizer, EventArgs.Empty);
+				var args = new ManipulationStartingEventArgs(_recognizer._gestureSettings);
+				_recognizer.ManipulationStarting?.Invoke(_recognizer, args);
+
+				var settings = args.Settings;
+				_isTranslateXEnabled = (settings & (GestureSettings.ManipulationTranslateX | GestureSettings.ManipulationTranslateRailsX)) != 0;
+				_isTranslateYEnabled = (settings & (GestureSettings.ManipulationTranslateY | GestureSettings.ManipulationTranslateRailsY)) != 0;
+				_isRotateEnabled = (settings & (GestureSettings.ManipulationRotate | GestureSettings.ManipulationRotateInertia)) != 0;
+				_isScaleEnabled = (settings & (GestureSettings.ManipulationScale | GestureSettings.ManipulationScaleInertia)) != 0;
 			}
 
 			public void Add(PointerPoint point)
@@ -52,9 +61,6 @@ namespace Windows.UI.Input
 				_origins.SetPointer2(point);
 				_lastPublished.SetPointer2(point);
 				_currents.SetPointer2(point);
-
-				// As weird it is, it's how UWP behaves: Starting is raised for each pointer
-				_recognizer.ManipulationStarting?.Invoke(_recognizer, EventArgs.Empty);
 
 				// We force to start the manipulation (or update it) a second pointer is pressed
 				NotifyUpdate(forceUpdate: true);
@@ -168,10 +174,8 @@ namespace Windows.UI.Input
 			private ManipulationDelta GetDelta() => GetDelta(_origins);
 			private ManipulationDelta GetDelta(Points from)
 			{
-				var isTranslateXEnabled = (_settings & (GestureSettings.ManipulationTranslateX | GestureSettings.ManipulationTranslateRailsX)) != 0;
-				var isTranslateYEnabled = (_settings & (GestureSettings.ManipulationTranslateY | GestureSettings.ManipulationTranslateRailsY)) != 0;
-				var translateX = isTranslateXEnabled ? _currents.Center.X - from.Center.X : 0;
-				var translateY = isTranslateYEnabled ? _currents.Center.Y - from.Center.Y : 0;
+				var translateX = _isTranslateXEnabled ? _currents.Center.X - from.Center.X : 0;
+				var translateY = _isTranslateYEnabled ? _currents.Center.Y - from.Center.Y : 0;
 
 				double rotate;
 				float scale, expansion;
@@ -183,12 +187,9 @@ namespace Windows.UI.Input
 				}
 				else
 				{
-					var isRotateEnabled = (_settings & (GestureSettings.ManipulationRotate | GestureSettings.ManipulationRotateInertia)) != 0;
-					var isScaleEnabled = (_settings & (GestureSettings.ManipulationScale | GestureSettings.ManipulationScaleInertia)) != 0;
-
-					rotate = isRotateEnabled ? _currents.Angle - from.Angle : 0;
-					scale = isScaleEnabled ? _currents.Distance / from.Distance : 1;
-					expansion = isScaleEnabled ? _currents.Distance - from.Distance : 0;
+					rotate = _isRotateEnabled ? _currents.Angle - from.Angle : 0;
+					scale = _isScaleEnabled ? _currents.Distance / from.Distance : 1;
+					expansion = _isScaleEnabled ? _currents.Distance - from.Distance : 0;
 				}
 
 				return new ManipulationDelta
