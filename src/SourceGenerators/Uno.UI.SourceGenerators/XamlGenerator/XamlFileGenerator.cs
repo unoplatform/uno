@@ -667,7 +667,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 contentNode = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "Resources");
 
 				// Handle case where inner object is a ResourceDictionary
-				if(contentNode.Objects.Count == 1)
+				if(contentNode?.Objects.Count == 1)
 				{
 					var resourceDictionary = contentNode.Objects.First();
 
