@@ -2264,6 +2264,152 @@ var Windows;
 (function (Windows) {
     var Devices;
     (function (Devices) {
+        var Geolocation;
+        (function (Geolocation) {
+            let GeolocationAccessStatus;
+            (function (GeolocationAccessStatus) {
+                GeolocationAccessStatus["Allowed"] = "Allowed";
+                GeolocationAccessStatus["Denied"] = "Denied";
+                GeolocationAccessStatus["Unspecified"] = "Unspecified";
+            })(GeolocationAccessStatus || (GeolocationAccessStatus = {}));
+            let PositionStatus;
+            (function (PositionStatus) {
+                PositionStatus["Ready"] = "Ready";
+                PositionStatus["Initializing"] = "Initializing";
+                PositionStatus["NoData"] = "NoData";
+                PositionStatus["Disabled"] = "Disabled";
+                PositionStatus["NotInitialized"] = "NotInitialized";
+                PositionStatus["NotAvailable"] = "NotAvailable";
+            })(PositionStatus || (PositionStatus = {}));
+            class Geolocator {
+                static initialize() {
+                    this.positionWatches = {};
+                    if (!this.dispatchAccessRequest) {
+                        this.dispatchAccessRequest = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchAccessRequest");
+                    }
+                    if (!this.dispatchError) {
+                        this.dispatchError = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchError");
+                    }
+                    if (!this.dispatchGeoposition) {
+                        this.dispatchGeoposition = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchGeoposition");
+                    }
+                }
+                //checks for permission to the geolocation services
+                static requestAccess() {
+                    Geolocator.initialize();
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition((_) => {
+                            Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Allowed);
+                        }, (error) => {
+                            if (error.code == error.PERMISSION_DENIED) {
+                                Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Denied);
+                            }
+                            else if (error.code == error.POSITION_UNAVAILABLE ||
+                                error.code == error.TIMEOUT) {
+                                //position unavailable but we still have permission
+                                Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Allowed);
+                            }
+                            else {
+                                Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Unspecified);
+                            }
+                        }, { enableHighAccuracy: false, maximumAge: 86400000, timeout: 100 });
+                    }
+                    else {
+                        Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Denied);
+                    }
+                }
+                //retrieves a single geoposition
+                static getGeoposition(desiredAccuracyInMeters, maximumAge, timeout, requestId) {
+                    Geolocator.initialize();
+                    if (navigator.geolocation) {
+                        this.getAccurateCurrentPosition((position) => Geolocator.handleGeoposition(position, requestId), (error) => Geolocator.handleError(error, requestId), desiredAccuracyInMeters, {
+                            enableHighAccuracy: desiredAccuracyInMeters < 50,
+                            maximumAge: maximumAge,
+                            timeout: timeout
+                        });
+                    }
+                    else {
+                        Geolocator.dispatchError(PositionStatus.NotAvailable, requestId);
+                    }
+                }
+                static startPositionWatch(desiredAccuracyInMeters, requestId) {
+                    Geolocator.initialize();
+                    if (navigator.geolocation) {
+                        Geolocator.positionWatches[requestId] = navigator.geolocation.watchPosition((position) => Geolocator.handleGeoposition(position, requestId), (error) => Geolocator.handleError(error, requestId));
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                static stopPositionWatch(desiredAccuracyInMeters, requestId) {
+                    navigator.geolocation.clearWatch(Geolocator.positionWatches[requestId]);
+                    delete Geolocator.positionWatches[requestId];
+                }
+                static handleGeoposition(position, requestId) {
+                    var serializedGeoposition = position.coords.latitude + ":" +
+                        position.coords.longitude + ":" +
+                        position.coords.altitude + ":" +
+                        position.coords.altitudeAccuracy + ":" +
+                        position.coords.accuracy + ":" +
+                        position.coords.heading + ":" +
+                        position.coords.speed + ":" +
+                        position.timestamp;
+                    Geolocator.dispatchGeoposition(serializedGeoposition, requestId);
+                }
+                static handleError(error, requestId) {
+                    if (error.code == error.TIMEOUT) {
+                        Geolocator.dispatchError(PositionStatus.NoData, requestId);
+                    }
+                    else if (error.code == error.PERMISSION_DENIED) {
+                        Geolocator.dispatchError(PositionStatus.Disabled, requestId);
+                    }
+                    else if (error.code == error.POSITION_UNAVAILABLE) {
+                        Geolocator.dispatchError(PositionStatus.NotAvailable, requestId);
+                    }
+                }
+                //this attempts to squeeze out the requested accuracy from the GPS by utilizing the set timeout
+                //adapted from https://github.com/gregsramblings/getAccurateCurrentPosition/blob/master/geo.js		
+                static getAccurateCurrentPosition(geolocationSuccess, geolocationError, desiredAccuracy, options) {
+                    var lastCheckedPosition;
+                    var locationEventCount = 0;
+                    var watchId;
+                    var timerId;
+                    var checkLocation = function (position) {
+                        lastCheckedPosition = position;
+                        locationEventCount = locationEventCount + 1;
+                        //is the accuracy enough?
+                        if (position.coords.accuracy <= desiredAccuracy) {
+                            clearTimeout(timerId);
+                            navigator.geolocation.clearWatch(watchId);
+                            foundPosition(position);
+                        }
+                    };
+                    var stopTrying = function () {
+                        navigator.geolocation.clearWatch(watchId);
+                        foundPosition(lastCheckedPosition);
+                    };
+                    var onError = function (error) {
+                        clearTimeout(timerId);
+                        navigator.geolocation.clearWatch(watchId);
+                        geolocationError(error);
+                    };
+                    var foundPosition = function (position) {
+                        geolocationSuccess(position);
+                    };
+                    watchId = navigator.geolocation.watchPosition(checkLocation, onError, options);
+                    timerId = setTimeout(stopTrying, options.timeout);
+                }
+                ;
+            }
+            Geolocation.Geolocator = Geolocator;
+        })(Geolocation = Devices.Geolocation || (Devices.Geolocation = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
         var Sensors;
         (function (Sensors) {
             class Accelerometer {

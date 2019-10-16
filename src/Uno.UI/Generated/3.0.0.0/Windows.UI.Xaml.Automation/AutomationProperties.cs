@@ -25,14 +25,6 @@ namespace Windows.UI.Xaml.Automation
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty AutomationIdProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
-			"AutomationId", typeof(string), 
-			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HelpTextProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.RegisterAttached(
 			"HelpText", typeof(string), 
@@ -435,21 +427,6 @@ namespace Windows.UI.Xaml.Automation
 		public static void SetAccessKey( global::Windows.UI.Xaml.DependencyObject element,  string value)
 		{
 			element.SetValue(AccessKeyProperty, value);
-		}
-		#endif
-		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.AutomationIdProperty.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static string GetAutomationId( global::Windows.UI.Xaml.DependencyObject element)
-		{
-			return (string)element.GetValue(AutomationIdProperty);
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static void SetAutomationId( global::Windows.UI.Xaml.DependencyObject element,  string value)
-		{
-			element.SetValue(AutomationIdProperty, value);
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.HelpTextProperty.get

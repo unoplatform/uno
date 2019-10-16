@@ -1,6 +1,6 @@
 ---
 name: Documentation Issue
-about: Report a issue with the Uno documentation
+about: Report an issue with the Uno documentation
 labels: kind/consumer-experience, kind/documentation, triage/untriaged
 ---
 

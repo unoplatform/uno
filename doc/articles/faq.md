@@ -38,7 +38,7 @@ You can try the Uno Platform using the [Uno Platform Playground](https://playgro
 ## How experienced do I need to be to use Uno Platform?
 
 ## What is the playground?
-The [Uno Platform Playground](https://playground.platform.uno) is a convenient way to experiment with the Uno platform, using the only a WebAssembly compatible web browser.
+The [Uno Platform Playground](https://playground.platform.uno) is a convenient way to experiment with the Uno platform, using only a WebAssembly compatible web browser.
 
 ## Where can I get support?
 Support is available through our [gitter](https://gitter.im/uno-platform/Lobby), [twitter account](https://twitter.com/unoplatform), and email [info@platform.uno](mailto:info@platform.uno).
@@ -182,7 +182,7 @@ If you're still having issues, **restart Visual Studio** and/or **unload the iOS
 
 ## Is Uno.UI's Performance on WebAssembly going to improve
 Yes! The current performance is limited by the runtime interpreted mode of mono-wasm. The Mono team is working on implementing **AOT** compilation,
-which will improve significantly the performance. See [Miguel de Icaza's status update](https://gitter.im/aspnet/Blazor?at=5b1ab670dd54362753f8a168) for more details.
+which will significantly improve the performance. See [Miguel de Icaza's status update](https://gitter.im/aspnet/Blazor?at=5b1ab670dd54362753f8a168) for more details.
 
 You can subscribe to this [mono issue's updates for progress](https://github.com/mono/mono/issues/10222).
 
@@ -335,7 +335,7 @@ PointerPressed += (s, e) => { e.Handled = true; };
 
 Only Wasm, Android and iOS projects need a reference to Uno.UI. Adding a reference to the Uno.UI package provides access to the
 [`VisibleBoundsPadding`](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.Toolkit/VisibleBoundsPadding.md)
-attached property for notch'ed devices.
+attached property for notched devices.
 
 ## How can I un-grey the properties view In Edit & Continue?  
 
@@ -355,11 +355,11 @@ This is part of the [Uno.SourceGeneration package](https://github.com/unoplatfor
 
 ## How to persist data  with wasm? 
 
-For now, persistence is enable only for `ApplicationData.LocalFolder`, `ApplicationData.RoamingFolder` and `ApplicationData.SharedLocalFolder` folders. 
+For now, persistence is enabled only for `ApplicationData.LocalFolder`, `ApplicationData.RoamingFolder` and `ApplicationData.SharedLocalFolder` folders. 
 You can write files in those folders using both `StorageFile` and `File.IO`. 
 Files that are located in other directories are going to use the in-memory filesystem of emscripten and won't be persisted.
 
-As `ApplicationData.LocalSettings` and `ApplicationData.RoamingSettings` are persisted in their respective folder, they are also persisted.
+As `ApplicationData.LocalSettings` and `ApplicationData.RoamingSettings` are persisted in their respective folders, they are also persisted.
 
 ## Any pull to refresh on listview?
 
@@ -373,7 +373,7 @@ Yes, debugging works for iOS and Android, as in any Xamarin native application. 
 
 MVVMLight, Prism and ReactiveUI are supported, MvvmCross is coming.
 
-## Does Uno.UI have an XAML AutoComplete?
+## Does Uno.UI have a XAML AutoComplete?
 
 It's partially implemented but there are parts that are closed source from Microsoft. In the meantime, make sure your Windows head is using the latest Min SDK, at which point you'll be able to use the UWP designer.
 
@@ -433,7 +433,7 @@ We have an open Github [issue.](https://github.com/unoplatform/Uno/issues/3)
 
 https://github.com/unoplatform/uno/blob/master/doc/articles/supported-features.md
 
-##  Is there an Uno template that is based on portable class library?
+##  Is there an Uno template that is based on a portable class library?
 
 No, but use the [Cross-Platform library template](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) instead to achieve a similar goal.
 

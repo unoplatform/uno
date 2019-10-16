@@ -589,6 +589,15 @@
       "contributions": [
         "doc"
       ]
+    },
+    {
+      "login": "jotaro-sama",
+      "name": "Giovanni De Luca",
+      "avatar_url": "https://avatars1.githubusercontent.com/u/36264038?v=4",
+      "profile": "https://github.com/jotaro-sama",
+      "contributions": [
+        "infra"
+      ]
     }
   ],
   "contributorsPerLine": 5,

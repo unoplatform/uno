@@ -28,7 +28,7 @@ This difference is particularly visible for custom panel implementations.
 
 ### ListView implementations
 
-The implementations of the ListView for iOS and Android use the native controls for performance reasons, see the [ListViewBase implementation documentation][ListViewBase.md].
+The implementations of the ListView for iOS and Android use the native controls for performance reasons, see the [ListViewBase implementation documentation](controls/ListViewBase.md#internal-implementation).
 
 ## Styles & XAML Resources
 

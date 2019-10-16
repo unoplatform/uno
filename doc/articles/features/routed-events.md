@@ -216,7 +216,7 @@ As those events are tightly coupled to the native events, Uno has to make some c
 		```
 	* If you handle the `PointerEnter` on **B**, the parent control **A** won't get the `PointerEnter` (as expected) nor the  `PointerPressed`.
 * On Android with a mouse or a pen, the `PointerEnter` and `PointerExit` are going to be raised without taking clipping in consideration.
-  This means that you will get the enter earlier and the exit later than on orther platform.
+  This means that you will get the enter earlier and the exit later than on other platform.
 * On Android if you have an element with a `RenderTransform` which overlaps one of its sibling element, the element at the top will
   get the pointer events.
 * On WASM, iOS and Android, the `RoutedPointerEventArgs.FrameId` will be reset to 0 after 49 days of running time of the application.

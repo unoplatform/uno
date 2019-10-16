@@ -299,7 +299,7 @@ namespace Uno.UI.Controls
 		/// </summary>
 		/// <remarks>
 		/// This is required on Android because native <see cref="View"/> instances
-		/// can't be notificed if their parent changes. <see cref="UnoViewGroup"/> provides this behavior
+		/// can't be notified if their parent changes. <see cref="UnoViewGroup"/> provides this behavior
 		/// by intercepting add/remove children and calls <see cref="OnRemovedFromParent"/>.
 		/// <see cref="FrameworkTemplatePool"/> relies on knowing that the <see cref="DependencyObject.Parent"/> of a
 		/// pooled instances has been reset so for non <see cref="BindableView"/> instances we reset it manually.
