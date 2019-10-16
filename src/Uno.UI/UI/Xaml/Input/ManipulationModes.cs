@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Input
 				log.Warn(
 					$"The ManipulationMode '{mode}' is not supported by Uno. "
 					+ "Only 'None', 'All', 'System', 'TranslateX', 'TranslateY', 'Rotate', and 'Scale' are supported. "
-					+ "Any other mode will not cause any issue, but the corresponding but no manipulation event will be generated form them. "
+					+ "Using any other mode will not cause an error, but the corresponding manipulation event will not be generated. "
 					+ "Note that with Uno the 'All' and 'System' are handled the same way.");
 			}
 		}
