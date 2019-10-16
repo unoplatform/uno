@@ -25,10 +25,10 @@ namespace Uno.UI.Xaml
 		// PreviewKeyUp = 1 >> 14, => Reserved for future usage
 		KeyUp = 1UL << 15,
 		// CharacterReceived = 1UL << 16,
-		// ProcessKeyboardAccelerators = 1UL << 17, => Reserved for future usage (even if the is actually not a standard RoutedEvent)
-		// AccessKeyInvoked = 1UL << 18, => Reserved for future usage (even if the is actually not a standard RoutedEvent)
-		// AccessKeyDisplayRequested = 1UL << 19, => Reserved for future usage (even if the is actually not a standard RoutedEvent)
-		// AccessKeyDisplayDismissed = 1UL << 20, => Reserved for future usage (even if the is actually not a standard RoutedEvent)
+		// ProcessKeyboardAccelerators = 1UL << 17, => Reserved for future use (even if it is not an actual standard RoutedEvent)
+		// AccessKeyInvoked = 1UL << 18, => Reserved for future use (even if it is not an actual standard RoutedEvent)
+		// AccessKeyDisplayRequested = 1UL << 19, => Reserved for future use (even if it is not an actual standard RoutedEvent)
+		// AccessKeyDisplayDismissed = 1UL << 20, => Reserved for future use (even if it is not an actual standard RoutedEvent)
 
 		// Focus
 		// GettingFocus = 1UL << 24, => Reserved for future usage
@@ -43,7 +43,7 @@ namespace Uno.UI.Xaml
 		// DragLeave = 1UL << 33, => Reserved for future usage
 		// DragOver = 1UL << 34, => Reserved for future usage
 		// Drop = 1UL << 35, => Reserved for future usage 
-		// DropCompleted = 1UL << 36, => Reserved for future usage (even if the is actually not a standard RoutedEvent)
+		// DropCompleted = 1UL << 36, => Reserved for future use (even if it is not an actual standard RoutedEvent)
 
 		// Manipulations
 		ManipulationStarting = 1UL << 40,
@@ -60,7 +60,7 @@ namespace Uno.UI.Xaml
 
 		// Context menu
 		// ContextRequested = 1UL << 61, => Reserved for future usage 
-		// ContextCanceled  = 1UL << 62, => Reserved for future usage (even if the is actually not a standard RoutedEvent)
+		// ContextCanceled  = 1UL << 62, => Reserved for future use (even if it is not an actual standard RoutedEvent)
 	}
 
 	internal static class RoutedEventFlagExtensions
