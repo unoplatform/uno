@@ -17,7 +17,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 		}
 
 		/// <summary>
-		/// Returns true if the current assemly is running under Mono
+		/// Returns true if the current assembly is running under Mono
 		/// </summary>
 		public static bool IsMono => Type.GetType("Mono.Runtime") != null;
 

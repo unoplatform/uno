@@ -43,7 +43,7 @@ What if you have code like this in your app?
 ````
  
 
-We're inheriting from `DependencyObject` and defining a `DependencyProperty` using the standard syntax, which uses the `DependencyObject.GetValue` and `DependencyObject.SetValue` methods. On UWP these are defined in the base class, but if `DependencyObject` is an interface then there _is_ no base class. In fact if it's just an interface then the code won't compile, because the interface hasn't been implemented. 
+We're inheriting from `DependencyObject` and defining a `DependencyProperty` using the standard syntax, which uses the `DependencyObject.GetValue` and `DependencyObject.SetValue` methods. On UWP these are defined in the base class, but if `DependencyObject` is an interface then there _is_ no base class. In fact, if it's just an interface, then the code won't compile, because the interface hasn't been implemented. 
 
 Luckily `DependencyObject` isn't _just_ an interface in Uno, and the code above will compile as-is on Android and iOS, just as it does on UWP. Code generation makes it happen. Here's some programmer art to illustrate the point. The detailed explanation is below.
 
@@ -96,7 +96,7 @@ That's from the [template](https://github.com/unoplatform/uno/blob/be4f4e938a861
 The T4 approach is well-tested and works well in this scenario. It has a couple of limitations though: 
  
 1. It requires manual set-up: each class that wants to use the mixin has to be explicitly registered. 
-2. It requires manual flags to make sure that the generated code doesn't 'step on' the authored code, eg by generating a `Foo()` method when the authored code already defines `Foo()`.  
+2. It requires manual flags to make sure that the generated code doesn't 'step on' the authored code, e.g. by generating a `Foo()` method when the authored code already defines `Foo()`.  
 3. It doesn't support external code. You can't use the mixin above in your app (short of copy-pasting the templates into the app). 
  
 For that reason, in order to have a mixin to implement `DependencyObject`'s features, we went with something a little more complex and a little more magical. 
