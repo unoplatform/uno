@@ -16,7 +16,7 @@ namespace Windows.UI.Input
 			{
 				Starting = 1,
 				Started = 2,
-				// Inertia = 3
+				// Inertia = 3 // Not supported yet
 				Completed = 4,
 			}
 
@@ -113,7 +113,8 @@ namespace Windows.UI.Input
 						break;
 				}
 
-				// Self scavenge our self from the _recognizer ... yes it's a bit, but it's  the safer and easier way.
+				// Self scavenge our self from the _recognizer ... yes it's a bit strange,
+				// but it's the safest and easiest way to avoid invalid state.
 				if (_recognizer._manipulation == this)
 				{
 					_recognizer._manipulation = null;
