@@ -26,11 +26,8 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 
 		private void ChangeStyleButtonClick(object sender, RoutedEventArgs e)
 		{
-#if NETFX_CORE
 			MyListView.Style = Resources["MyStyle"] as Style;
-#else
-			MyListView.Style = StaticResources.FindResource("MyStyle") as Style;
-#endif
+
 			var scrollViewer = MyListView.FindFirstChild<ScrollViewer>();
 
 			MyListView.ItemsSource = CreateItems();
