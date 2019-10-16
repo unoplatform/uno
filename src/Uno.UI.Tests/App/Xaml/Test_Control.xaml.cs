@@ -26,6 +26,7 @@ namespace Uno.UI.Tests.App.Xaml
 		public Grid TopGrid => topGrid;
 		public CheckBox TestCheckBox => testCheckBox;
 		public TextBlock TestTextBlock => testTextBlock;
+		public TextBlock TestTextBlock2 => testTextBlock2;
 		public Border TestBorder => testBorder;
 		public Grid TestGrid => testGrid;
 		public Button StyledButton => styledButton;

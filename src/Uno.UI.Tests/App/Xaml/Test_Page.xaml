@@ -47,5 +47,15 @@
 				</DataTemplate>
 			</views:SpiffyItemsControl.ItemTemplate>
 		</views:SpiffyItemsControl>
+		<Grid>
+			<Grid.Resources>
+				<ResourceDictionary>
+					<ResourceDictionary.MergedDictionaries>
+						<ResourceDictionary Source="Test_Dictionary_Isolated.xaml" />
+					</ResourceDictionary.MergedDictionaries>
+				</ResourceDictionary>
+			</Grid.Resources>
+			<ProgressRing x:Name="testProgressRing" />
+		</Grid>
 	</Grid>
 </Page>

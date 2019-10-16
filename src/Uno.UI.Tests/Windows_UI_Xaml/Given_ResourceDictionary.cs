@@ -473,5 +473,27 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			Assert.IsTrue(control.Resources.ContainsKey(typeof(RadioButton)));
 			Assert.IsNotNull(control.Resources[typeof(RadioButton)] as Style);
 		}
+
+		[TestMethod]
+		public void When_Merged_Dictionary_Local()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			Assert.IsFalse(app.Resources.ContainsKey("NotInAppResources")); // These dictionaries shouldn't end up in App.Resources, or this test won't test anything
+
+			var control = new Test_Control();
+			control.TestTextBlock2.DataContext = true;
+			AssertEx.AssertHasColor(control.TestTextBlock2.Foreground, Colors.Orange);
+		}
+
+		[TestMethod]
+		public void When_Local_Dictionary_Intra_Reference()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var control = new Test_Control();
+			control.TestTextBlock2.DataContext = false;
+			AssertEx.AssertHasColor(control.TestTextBlock2.Foreground, Colors.LimeGreen);
+		}
 	}
 }
