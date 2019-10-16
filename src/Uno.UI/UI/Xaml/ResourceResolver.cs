@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
+using Uno.Diagnostics.Eventing;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
@@ -15,6 +16,16 @@ namespace Uno.UI
 		/// The master system resources dictionary.
 		/// </summary>
 		private static ResourceDictionary MasterDictionary => Uno.UI.GlobalStaticResources.MasterDictionary;
+
+		public static class TraceProvider
+		{
+			public readonly static Guid Id = Guid.Parse("{15E13473-560E-4601-86FF-C9E1EDB73701}");
+
+			public const int InitGenericXamlStart = 1;
+			public const int InitGenericXamlStop = 2;
+		}
+
+		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
 		private static readonly Stack<XamlScope> _scopeStack;
 
@@ -151,5 +162,10 @@ namespace Uno.UI
 				throw new InvalidOperationException("Base scope should never be popped.");
 			}
 		}
+
+		/// <summary>
+		/// If tracing is enabled, writes an event for the initialization of system-level resources (Generic.xaml etc)
+		/// </summary>
+		internal static IDisposable WriteInitiateGlobalStaticResourcesEventActivity() => _trace.WriteEventActivity(TraceProvider.InitGenericXamlStart, TraceProvider.InitGenericXamlStop);
 	}
 }

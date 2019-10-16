@@ -468,33 +468,36 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					using (writer.BlockInvariant("public static void Initialize()"))
 					{
-						using (writer.BlockInvariant("if(!_initialized)"))
+						using (writer.BlockInvariant("if (!_initialized)"))
 						{
-							writer.AppendLineInvariant("_initialized = true;");
-
-							foreach (var ambientResource in _ambientGlobalResources)
+							using (IsUnoAssembly ? writer.BlockInvariant("using (ResourceResolver.WriteInitiateGlobalStaticResourcesEventActivity())") : null)
 							{
-								if (ambientResource.GetMethods().Any(m => m.Name == "Initialize"))
+								writer.AppendLineInvariant("_initialized = true;");
+
+								foreach (var ambientResource in _ambientGlobalResources)
 								{
-									writer.AppendLineInvariant("global::{0}.Initialize();", ambientResource.GetFullName());
+									if (ambientResource.GetMethods().Any(m => m.Name == "Initialize"))
+									{
+										writer.AppendLineInvariant("global::{0}.Initialize();", ambientResource.GetFullName());
+									}
 								}
-							}
 
-							foreach (var ambientResource in _ambientGlobalResources)
-							{
-								// Note: we do *not* call RegisterDefaultStyles for the current assembly, because those styles are treated as implicit styles, not default styles
-								if (ambientResource.GetMethods().Any(m => m.Name == "RegisterDefaultStyles"))
+								foreach (var ambientResource in _ambientGlobalResources)
 								{
-									writer.AppendLineInvariant("global::{0}.RegisterDefaultStyles();", ambientResource.GetFullName());
+									// Note: we do *not* call RegisterDefaultStyles for the current assembly, because those styles are treated as implicit styles, not default styles
+									if (ambientResource.GetMethods().Any(m => m.Name == "RegisterDefaultStyles"))
+									{
+										writer.AppendLineInvariant("global::{0}.RegisterDefaultStyles();", ambientResource.GetFullName());
+									}
 								}
-							}
 
-							if (IsUnoAssembly)
-							{
-								// Build master dictionary
-								foreach (var dictProperty in map.GetAllDictionaryProperties(_baseResourceDependencies))
+								if (IsUnoAssembly)
 								{
-									writer.AppendLineInvariant("MasterDictionary.MergedDictionaries.Add({0});", dictProperty);
+									// Build master dictionary
+									foreach (var dictProperty in map.GetAllDictionaryProperties(_baseResourceDependencies))
+									{
+										writer.AppendLineInvariant("MasterDictionary.MergedDictionaries.Add({0});", dictProperty);
+									}
 								}
 							}
 						}
