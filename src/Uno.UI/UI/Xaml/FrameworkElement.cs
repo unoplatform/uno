@@ -258,7 +258,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#region Style DependencyProperty
+		#region Style DependencyProperty
 
 		public Style Style
 		{
@@ -277,7 +277,7 @@ namespace Windows.UI.Xaml
 				)
 			);
 
-#endregion
+		#endregion
 
 		protected virtual void OnStyleChanged(Style oldStyle, Style newStyle)
 		{
@@ -532,7 +532,7 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-#region AutomationPeer
+		#region AutomationPeer
 #if !__IOS__ && !__ANDROID__ && !__MACOS__ // This code is generated in FrameworkElementMixins
 		private AutomationPeer _automationPeer;
 
@@ -583,7 +583,7 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-#endregion
+		#endregion
 
 #if !__WASM__
 		private class FrameworkElementLayouter : Layouter
