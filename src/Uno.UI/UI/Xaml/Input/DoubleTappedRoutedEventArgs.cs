@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Windows.UI.Input;
 using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Input
@@ -11,16 +12,13 @@ namespace Windows.UI.Xaml.Input
 	{
 		private readonly Point _position;
 
-		public DoubleTappedRoutedEventArgs() 
-			: this(null, PointerDeviceType.Mouse, new Point())
-		{
-		}
+		public DoubleTappedRoutedEventArgs() { }
 
-		internal DoubleTappedRoutedEventArgs(object originalSource, PointerDeviceType pointerType, Point position)
+		internal DoubleTappedRoutedEventArgs(object originalSource, TappedEventArgs args)
 			: base(originalSource)
 		{
-			PointerDeviceType = pointerType;
-			_position = position;
+			PointerDeviceType = args.PointerDeviceType;
+			_position = args.Position;
 		}
 
 		public Point GetPosition()
@@ -30,7 +28,7 @@ namespace Windows.UI.Xaml.Input
 
 		public PointerDeviceType PointerDeviceType { get; internal set; }
 
-		public global::Windows.Foundation.Point GetPosition(global::Windows.UI.Xaml.UIElement relativeTo)
+		public Point GetPosition(UIElement relativeTo)
 		{
 			if (relativeTo == null)
 			{

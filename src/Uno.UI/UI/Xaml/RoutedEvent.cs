@@ -20,9 +20,10 @@ namespace Windows.UI.Xaml
 			Name = name;
 
 			IsPointerEvent = flag.IsPointerEvent();
-			IsGestureEvent = flag.IsGestureEvent();
 			IsKeyEvent = flag.IsKeyEvent();
 			IsFocusEvent = flag.IsFocusEvent();
+			IsManipulationEvent = flag.IsManipulationEvent();
+			IsGestureEvent = flag.IsGestureEvent();
 		}
 
 		internal string Name { get; }
@@ -30,8 +31,9 @@ namespace Windows.UI.Xaml
 		internal RoutedEventFlag Flag { get; }
 
 		internal bool IsPointerEvent { get; }
-		internal bool IsGestureEvent { get; }
 		internal bool IsKeyEvent { get; }
 		internal bool IsFocusEvent { get; }
+		internal bool IsManipulationEvent { get; }
+		internal bool IsGestureEvent { get; }
 	}
 }

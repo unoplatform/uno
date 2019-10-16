@@ -40,7 +40,29 @@
 			</StackPanel>
 
 			<StackPanel Orientation="Horizontal">
-				<Border Background="#FFFF41" Width="100" Height="100">
+				<Border x:Name="TestTranslatedTapTarget" Background="#FFFF41" Width="100" Height="100" ManipulationMode="All">
+					<TextBlock Text="UIElement.tr-Tapped" />
+				</Border>
+				<StackPanel>
+					<Button x:Name="TestTranslatedTapReset" Content="Reset" Click="ResetTranslatedTapTest" />
+					<Button x:Name="TestTranslatedTapValidate" Content="Validate" Click="ValidateTranslatedTapTest" />
+					<TextBlock x:Name="TestTranslatedTapResult" Text="** no result **" />
+				</StackPanel>
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal">
+				<Button x:Name="TestTranslatedClickTarget" Background="#008018" Width="100" Height="100" ManipulationMode="All">
+					<TextBlock Text="Button.tr-Click" />
+				</Button>
+				<StackPanel>
+					<Button x:Name="TestTranslatedClickReset" Content="Reset" Click="ResetTranslatedClickTest" />
+					<Button x:Name="TestTranslatedClickValidate" Content="Validate" Click="ValidateTranslatedClickTest" />
+					<TextBlock x:Name="TestTranslatedClickResult" Text="** no result **" />
+				</StackPanel>
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal">
+				<Border Background="#0000F9" Width="100" Height="100">
 					<TextBlock x:Name="TestHyperlinkTarget" TextWrapping="Wrap">
 						<Hyperlink x:Name="TestHyperlinkInner"><Run Text="Hyperlink.Click" /></Hyperlink><Run Text=" event" />.
 					</TextBlock>
@@ -53,7 +75,7 @@
 			</StackPanel>
 
 			<StackPanel Orientation="Horizontal">
-				<Border Background="#008018" Width="100" Height="100">
+				<Border Background="#86007D" Width="100" Height="100">
 					<ListView x:Name="TestListViewTarget" ItemsSource="0123456789" IsItemClickEnabled="True" />
 				</Border>
 				<StackPanel>
