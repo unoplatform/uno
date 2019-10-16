@@ -80,7 +80,8 @@ namespace Uno.UI
 		{
 			foreach (var source in CurrentScope.Sources)
 			{
-				var dictionary = (source.Target as FrameworkElement)?.Resources;
+				var dictionary = (source.Target as FrameworkElement)?.Resources
+					?? source.Target as ResourceDictionary;
 				if (dictionary != null && dictionary.TryGetValue(resourceKey, out value))
 				{
 					return true;
@@ -122,7 +123,10 @@ namespace Uno.UI
 		/// <summary>
 		/// Push a new Resources source to the current xaml scope.
 		/// </summary>
-		/// <param name="source"></param>
+		internal static void PushSourceToScope(DependencyObject source) => PushSourceToScope((source as IWeakReferenceProvider).WeakReference);
+		/// <summary>
+		/// Push a new Resources source to the current xaml scope.
+		/// </summary>
 		internal static void PushSourceToScope(ManagedWeakReference source)
 		{
 			var current = _scopeStack.Pop();

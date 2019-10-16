@@ -261,6 +261,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+		private bool HasIsParsing(XamlType xamlType)
+		{
+			return IsImplementingInterface(FindType(xamlType), _dependencyObjectParseSymbol);
+		}
+
 		private Accessibility FindObjectFieldAccessibility(XamlObjectDefinition objectDefinition)
 		{
 			if (

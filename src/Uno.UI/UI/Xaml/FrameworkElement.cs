@@ -32,7 +32,7 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml
 {
-	public partial class FrameworkElement : UIElement, IFrameworkElement, IFrameworkElementInternal, ILayoutConstraints
+	public partial class FrameworkElement : UIElement, IFrameworkElement, IFrameworkElementInternal, ILayoutConstraints, IDependencyObjectParse
 	{
 		public
 			static class TraceProvider
@@ -126,7 +126,7 @@ namespace Windows.UI.Xaml
 				_isParsing = value;
 				if (_isParsing)
 				{
-					ResourceResolver.PushSourceToScope((this as IWeakReferenceProvider).WeakReference);
+					ResourceResolver.PushSourceToScope(this);
 				}
 			}
 		}

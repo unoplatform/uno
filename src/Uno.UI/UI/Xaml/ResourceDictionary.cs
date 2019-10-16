@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Threading;
 using Uno.UI;
 using Uno.Extensions;
+using System.ComponentModel;
 
 namespace Windows.UI.Xaml
 {
-	public partial class ResourceDictionary : DependencyObject
+	public partial class ResourceDictionary : DependencyObject, IDependencyObjectParse
 	{
 		private readonly Dictionary<object, object> _values = new Dictionary<object, object>();
 
@@ -192,9 +193,44 @@ namespace Windows.UI.Xaml
 
 		public bool IsReadOnly => false;
 
+		private bool _isParsing;
+		/// <summary>
+		/// True if the element is in the process of being parsed from Xaml.
+		/// </summary>
+		/// <remarks>This property shouldn't be set from user code. It's public to allow being set from generated code.</remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public bool IsParsing
+		{
+			get => _isParsing;
+			set
+			{
+				if (!value)
+				{
+					throw new InvalidOperationException($"{nameof(IsParsing)} should never be set from user code.");
+				}
+
+				_isParsing = value;
+				if (_isParsing)
+				{
+					ResourceResolver.PushSourceToScope(this);
+				}
+			}
+		}
+
 		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<object, object>> GetEnumerator() => _values.GetEnumerator();
 
 		global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator() => _values.GetEnumerator();
+
+		public void CreationComplete()
+		{
+			if (!IsParsing)
+			{
+				throw new InvalidOperationException($"Called without matching {nameof(IsParsing)} call. This method should never be called from user code.");
+			}
+
+			_isParsing = false;
+			ResourceResolver.PopSourceFromScope();
+		}
 
 		private static class Themes
 		{

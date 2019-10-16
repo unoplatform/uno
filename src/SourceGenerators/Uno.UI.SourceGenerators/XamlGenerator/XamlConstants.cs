@@ -71,6 +71,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string ContentPresenter = Namespaces.Controls + ".ContentPresenter";
 			public const string Markup = BaseXamlNamespace + ".Markup";
 			public const string Metadata = RootFoundationNamespace + ".Metadata";
+			public const string IDependencyObjectParse = UnoXamlNamespace + ".IDependencyObjectParse";
 
 			// Attributes
 			public const string ContentPropertyAttribute = Markup + ".ContentPropertyAttribute";

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Uno.Extensions;
 using Uno.Logging;
+using Uno.UI;
 
 namespace Windows.UI.Xaml
 {
@@ -18,38 +19,24 @@ namespace Windows.UI.Xaml
 		private readonly static Dictionary<Type, StyleProviderHandler> _nativeLookup = new Dictionary<Type, StyleProviderHandler>(Uno.Core.Comparison.FastTypeComparer.Default);
 		private readonly static Dictionary<Type, Style> _nativeDefaultStyleCache = new Dictionary<Type, Style>(Uno.Core.Comparison.FastTypeComparer.Default);
 
-		public Style() { }
+		/// <summary>
+		/// The xaml scope in force at the time the Style was created.
+		/// </summary>
+		private readonly XamlScope _xamlScope;
 
-		public Style(Type targetType)
+		public Style()
 		{
-			if (targetType == null)
-			{
-				throw new ArgumentNullException(nameof(targetType));
-			}
-
-			TargetType = targetType;
+			_xamlScope = ResourceResolver.CurrentScope;
 		}
 
-		/// <summary>
-		/// 
-		/// </summary>
-		/// <param name="targetType"></param>
-		/// <param name="basedOn"></param>
-		/// <param name="defaultStyle"></param>
-		internal Style(Type targetType, Style basedOn)
+		public Style(Type targetType) : this()
 		{
 			if (targetType == null)
 			{
 				throw new ArgumentNullException(nameof(targetType));
 			}
 
-			if (basedOn == null)
-			{
-				throw new ArgumentNullException(nameof(basedOn));
-			}
-
 			TargetType = targetType;
-			BasedOn = basedOn;
 		}
 
 		public Type TargetType { get; set; }
@@ -69,10 +56,21 @@ namespace Windows.UI.Xaml
 			using (DependencyObjectExtensions.OverrideLocalPrecedence(o, precedence))
 			{
 				var flattenedSetters = CreateSetterMap();
-
-				foreach (var pair in flattenedSetters)
+#if !HAS_EXPENSIVE_TRYFINALLY
+				try
+#endif
 				{
-					pair.Value(o);
+					ResourceResolver.PushNewScope(_xamlScope);
+					foreach (var pair in flattenedSetters)
+					{
+						pair.Value(o);
+					}
+				}
+#if !HAS_EXPENSIVE_TRYFINALLY
+				finally
+#endif
+				{
+					ResourceResolver.PopScope();
 				}
 			}
 		}
