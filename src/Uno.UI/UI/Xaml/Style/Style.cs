@@ -157,14 +157,15 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Returns the default Style for given type. 
 		/// </summary>
-		internal static Style GetDefaultStyleForType(Type type)
+		internal static Style GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles);
+
+		private static Style GetDefaultStyleForType(Type type, bool useUWPDefaultStyles)
 		{
 			if (type == null)
 			{
 				return null;
 			}
 
-			var useUWPDefaultStyles = Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles;
 			var styleCache = useUWPDefaultStyles ? _defaultStyleCache
 				: _nativeDefaultStyleCache;
 			var lookup = useUWPDefaultStyles ? _lookup
@@ -178,6 +179,12 @@ namespace Windows.UI.Xaml
 
 					styleCache[type] = style;
 				}
+			}
+
+			if (style == null && !useUWPDefaultStyles)
+			{
+				// If no native style found, fall back on UWP style
+				return GetDefaultStyleForType(type, useUWPDefaultStyles: true);
 			}
 
 			return style;
