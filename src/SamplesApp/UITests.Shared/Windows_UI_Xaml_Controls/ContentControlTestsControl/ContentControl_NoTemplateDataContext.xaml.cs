@@ -20,16 +20,12 @@ namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 {
 	[SampleControlInfo("ContentControlTestsControl", "ContentControl_NoTemplateDataContext")]
 	public sealed partial class ContentControl_NoTemplateDataContext : UserControl
-    {
-        public ContentControl_NoTemplateDataContext()
-        {
-#if XAMARIN
-			Style.RegisterDefaultStyleForType(typeof(MySelectorItem), StaticResources.SelectorItemStyle);
-#endif
-
+	{
+		public ContentControl_NoTemplateDataContext()
+		{
 			this.InitializeComponent();
-        }
-    }
+		}
+	}
 
 	public partial class MySelectorItem : SelectorItem
 	{
