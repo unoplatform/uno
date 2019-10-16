@@ -21,7 +21,7 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - bash: /bin/bash -c "sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 5_18_1"
+  - bash: /bin/bash -c "sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 6_4_0"
     displayName: Select Xamarin Version
     
   - bash: /bin/bash -c "echo '##vso[task.setvariable variable=MD_APPLE_SDK_ROOT;]'${XCODE_ROOT};sudo xcode-select --switch ${XCODE_ROOT}/Contents/Developer"
