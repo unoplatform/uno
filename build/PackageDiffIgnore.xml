@@ -439,9 +439,6 @@
 					fullName="System.Void Windows.UI.Xaml.Input.KeyRoutedEventArgs..ctor()"
 					reason="Not part of the UWP API."/>
 				<Member 
-					fullName="System.Void Windows.UI.Xaml.Controls.SelectionChangedEventArgs..ctor(System.Collections.Generic.IList`1&lt;System.Object&gt; removedItems, System.Collections.Generic.IList`1&lt;System.Object&gt; addedItems)"
-					reason="Not part of the UWP API."/>
-				<Member 
 					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs..ctor()"
 					reason="Not part of the UWP API."/>
 				<Member 
