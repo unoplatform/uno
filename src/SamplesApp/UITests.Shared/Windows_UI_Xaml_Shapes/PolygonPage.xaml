@@ -9,7 +9,7 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<StackPanel Spacing="5">
-		<TextBlock Text="This is a polygone" />
+		<TextBlock Text="This is a polygon" />
 		<Polygon Points="300,200 400,125 400,275" Stroke="black" StrokeThickness="5" />
 	</StackPanel>
 </Page>
