@@ -7,10 +7,16 @@
 		<DefineConstants>$(DefineConstants);__WASM__;HAS_UNO</DefineConstants>
 		<NoWarn>NU1701,CS1998</NoWarn>
 		<LangVersion>7.3</LangVersion>
-		<MonoRuntimeDebuggerEnabled Condition="'$(Configuration)'=='Debug'">true</MonoRuntimeDebuggerEnabled>
-		
 		<!-- https://github.com/unoplatform/uno/issues/61 -->
 		<UnoSkipUserControlsInVisualTree>false</UnoSkipUserControlsInVisualTree>
+		
+		<IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
+		<DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
+		<DebugType>portable</DebugType>
+		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 	<PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
@@ -30,17 +36,17 @@
 		<LinkerDescriptor Include="LinkerConfig.xml" />
 	</ItemGroup>
 	<ItemGroup>
-		<!-- 
+		<!--
 		This item group is required by the project templace because of the
 		new SDK-Style project, otherwise some files are not aded automatically.
-		
+
 		You can safely this ItemGroup completely.
 		-->
 		<Compile Remove="Program.cs" />
 		<Compile Include="Program.cs" />
 		<Content Update="LinkerConfig.xml" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<PackageReference Include="Microsoft.TypeScript.Compiler" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
@@ -53,7 +59,7 @@
 		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.302" />
 		<DotNetCliToolReference Include="Uno.Wasm.Bootstrap.Cli" Version="1.0.0-dev.302" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
@@ -64,7 +70,7 @@
 		<ProjectReference Include="..\..\Uno.UWP\Uno.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Wasm\Uno.UI.Wasm.csproj" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<UpToDateCheckInput Include="WasmCSS\**\*" />
 	</ItemGroup>

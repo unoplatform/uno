@@ -93,6 +93,10 @@
   items:
     - name: Guidelines for breaking changes
       href: contributing\guidelines\breaking-changes.md
+    - name: Guidelines for code style
+      href: contributing\guidelines\code-style.md
+    - name: Guidelines for creating a new release
+      href: contributing\guidelines\creating-a-new-release.md
     - name: Guidelines for issue triage
       href: contributing\guidelines\issue-triage.md
     - name: Guidelines for pull-requests

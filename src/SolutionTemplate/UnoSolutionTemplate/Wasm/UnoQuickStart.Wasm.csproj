@@ -10,7 +10,7 @@
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
 		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
-		<DefineConstants>TRACE;DEBUG</DefineConstants>
+		<DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
 		<DebugType>portable</DebugType>
 		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
@@ -27,12 +27,12 @@
 	<ItemGroup>
 		<LinkerDescriptor Include="LinkerConfig.xml" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
-		<!-- 
+		<!--
     This item group is required by the project templace because of the
     new SDK-Style project, otherwise some files are not aded automatically.
-    
+
     You can safely remove this ItemGroup completely.
     -->
 		<Compile Remove="Program.cs" />

@@ -45,6 +45,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\GeolocatorTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\GeopositionDisplayControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\GyrometerTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -78,6 +86,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_System\Power\PowerManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI.Xaml_Automation\AutomationProperties_AutomationId.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -194,6 +206,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\StyleTests\Style_Inline.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ThemeResources\AppXamlDefinedResources.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -2567,6 +2583,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\GyrometerTests.xaml.cs">
       <DependentUpon>GyrometerTests.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\GeolocatorTests.xaml.cs">
+      <DependentUpon>GeolocatorTests.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\GeopositionDisplayControl.xaml.cs">
+      <DependentUpon>GeopositionDisplayControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\MagnetometerTests.xaml.cs">
       <DependentUpon>MagnetometerTests.xaml</DependentUpon>
     </Compile>
@@ -2587,6 +2609,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_System\Power\PowerManager.xaml.cs">
       <DependentUpon>PowerManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI.Xaml_Automation\AutomationProperties_AutomationId.xaml.cs">
+      <DependentUpon>AutomationProperties_AutomationId.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI.Xaml_Automation\AutomationProperties_Name.xaml.cs">
       <DependentUpon>AutomationProperties_Name.xaml</DependentUpon>
@@ -2647,6 +2672,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\MarkupExtensionTests\MarkupExtensionBehaviors.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\StyleTests\Style_Inline.xaml.cs">
       <DependentUpon>Style_Inline.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ThemeResources\AppXamlDefinedResources.xaml.cs">
+      <DependentUpon>AppXamlDefinedResources.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\TouchEventsTests\ControlWithTouchEvent.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\TouchEventsTests\TappedEventTest.xaml.cs">
@@ -4467,6 +4495,15 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ComboBox\ComboBox_ItemDataContext.xaml.cs">
       <DependentUpon>ComboBox_ItemDataContext.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_Devices\Geolocator.xaml.cs">
+      <DependentUpon>Geolocator.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_Devices\GeolocatorTests.xaml.cs">
+      <DependentUpon>GeolocatorTests.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_Devices\GyrometerTests.xaml.cs">
+      <DependentUpon>GyrometerTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\DatePickerFlyout_MinYear.xaml.cs">
       <DependentUpon>DatePickerFlyout_MinYear.xaml</DependentUpon>

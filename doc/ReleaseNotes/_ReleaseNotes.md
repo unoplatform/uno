@@ -3,7 +3,7 @@
 ## Next version
 
 ### Features
-
+* Support for `Geolocator` on WASM, improvements for support on Android, iOS
 * [#1743](https://github.com/unoplatform/uno/pull/1743) - Added a change to make the `MarkupExtensionReturnType` optional
 * Added Dark and HighContrast theme resources, reacts to Dark/Light theme on iOS, Android and WASM automatically during the startup of the app if `RequestedTheme` is not set in `App.xaml`
 * Support for `Gyrometer` on Android, iOS and WASM
@@ -28,9 +28,9 @@
 * Add support for `Windows.ApplicationModel.Calls.PhoneCallManager`
 * Add support for `Windows.Phone.Devices.Notification.VibrationDevice` API on iOS, Android and WASM
 * Basic support for `Windows.Devices.Sensors.Barometer`
-* Support setting `Style` inline (eg `<TextBlock><TextBlock.Style><Style TargetType="TextBlock"><Setter>...`)
+* Support setting `Style` inline (e.g. `<TextBlock><TextBlock.Style><Style TargetType="TextBlock"><Setter>...`)
 * [Wasm] Add support for `DisplayInformation` properties `LogicalDpi`, `ResolutionScale`, `ScreenWidthInRawPixels`, `RawPixelsPerViewPixel` , and `ScreenHeightInRawPixels`¸
-* Permit `DependencyProperty` to be set reentrantly. Eg this permits `TextBox.TextChanged` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
+* Permit `DependencyProperty` to be set reentrantly. E.g. this permits `TextBox.TextChanged` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
 * Add support for filtered solutions development for Uno.UI contributions.
 * 132984 [Android] Notch support on Android
 * Add support for Android UI Tests in PRs for improved regression testing
@@ -46,7 +46,7 @@
   - Should be set when the application is starting (before first request to a static resource).
 * Prevent possible crash with `MediaPlayerElement` (tentative)
 * Add support for `ContentDialog`, including `Closing` and `Closed` events
-* Permit `DependencyProperty` to be set reentrantly. Eg this permits `TextBox.TextChanging` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
+* Permit `DependencyProperty` to be set reentrantly. E.g. this permits `TextBox.TextChanging` to modify the `Text` property (previously this could only be achieved using `Dispatcher.RunAsync()`).
 * Implement `TextBox.TextChanging` and `TextBox.BeforeTextChanging`. As on UWP, this allows the text to be intercepted and modified before the UI is updated. Previously on Android using the `TextChanged` event would lead to laggy response and dropped characters when typing rapidly; this is no longer the case with `TextChanging`.
 * [WASM] `ComboBox`'s dropdown list (`CarouselPanel`) is now virtualized (#1012)
 * Improve Screenshot comparer tool, CI test results now contain Screenshots compare data
@@ -64,7 +64,7 @@
 * Add non-failing StatusBar BackgroundOpacity and BackgroundColor getters
 * Relax DependencyProperty owner validation for non-FrameworkElement
 * `ToolTip` & `ToolTipService` are now implemented.
-* [#1352](https://github.com/unoplatform/uno/issues/1352) Add support for `ThemeResource`s with different types (eg: mixing `SolidColorBrush` and `LinearGradientBrush`)
+* [#1352](https://github.com/unoplatform/uno/issues/1352) Add support for `ThemeResource`s with different types (e.g.: mixing `SolidColorBrush` and `LinearGradientBrush`)
 * Add support for BitmapSource.PixelWidth and Height
 * Preliminary support for `ColumnDefinition.ActualWidth` and `RowDefinition.ActualHeight`.
 * Updated VisualTree of an app with Visibility for each items.
@@ -72,6 +72,8 @@
 * Add support for `IObservableVector<T>` in `ItemsControl`
 * [#1559] [#1167] Wasm: make the IsEnabled property inheritable.
 * Full support of pointer events cf. [routed events documentation](../articles/features/routed-events.md)
+* Update CheckBox style to 10.0.17763
+* Adds the support for `AutomationProperties.AutomationId`
 * [#1328](https://github.com/unoplatform/uno/issues/1328) Basic ProgressRing implementation for WASM
 
 ### Breaking changes
@@ -84,16 +86,18 @@
 * Projects targeting Android 9 must now use Xamarin.GooglePlayServices.* 71.1600.0
 * [iOS] UIWebView is deprecated and replaced with WKWebView (ITMS-90809: Deprecated API Usage - Apple will stop accepting submissions of apps that use UIWebView APIs . See https://developer.apple.com/documentation/uikit/uiwebview for more information.)
 * [iOS] If you set the `ManipulationMode` to something else than `System` or `All`, the [DelaysContentTouches](https://developer.apple.com/documentation/uikit/uiscrollview/1619398-delayscontenttouches) is going to be disabled on all parent `ScrollViewer`
+* [#1237] Static resources defined in App.xaml were not processed and registered properly
+    > This change might break the compilation for projects that define duplicate resources in other globally accessible resource dictionaries. Adjustments to remove duplicate resources may be necessary.
 
 ### Bug fixes
-
+* [#1767] Invalid `this` keyword generated for `Storyboard.SetTarget`
 * [#1781] WASM Images are no longer draggable and selectable by default to match UWP
 * [#1771](https://github.com/unoplatform/uno/pull/1771) Fix ".Uno" in project names resulted in build errors.
 * [#1531](https://github.com/unoplatform/uno/pull/1531) Fix an issue with VirtualizePanelAdaptater by adding a cache where the ItemSources length change and created a OutOfRangeException
 * [WASM] #1518 Fix Navigation Issue Where SystemNavigationManager.enable() is called twice and clear the stack history
 * [#1278](https://github.com/unoplatform/uno/pull/1278) the XAML sourcegenerator now always uses the fully qualified type name to prevent type conflicts.
 * [#1392](https://github.com/unoplatform/uno/pull/1392) Resolved exceptions while changing cursor color on Android P.
-* [#1383](https://github.com/unoplatform/uno/pull/1383) resolve Android compilation errors related to Assets filenames: "Invali`d file name: It must contain only"
+* [#1383](https://github.com/unoplatform/uno/pull/1383) resolve Android compilation errors related to Assets filenames: "Invalid file name: It must contain only"
 * [#1380](https://github.com/unoplatform/uno/pull/1380) iOS head generated by Uno Solution Template now specifies MinimumOSVersion, in line with XF so first compile is successful.
 * #1276 retrieving non-existent setting via indexer should not throw and  `ApplicationDataContainer` allowed clearing value by calling `Add(null)` which was not consistent with UWP.
 * [iOS] Area of view outside Clip rect now allows touch to pass through, this fixes NavigationView not allowing touches to children (#1018)
@@ -142,7 +146,7 @@
 * [Android] Fix java NRE handing touch events on detached view
 * [Pivot] Add support for non PivotItem items
 * #1557 Fix local DataContext on ContentDialog is overwritten
-* [WASM] Fix display for multiple popups (eg ComboBox inside of ContentDialog)
+* [WASM] Fix display for multiple popups (e.g. ComboBox inside of ContentDialog)
 * [Android] Fix invalid ImageBrush stack overflow with delayed image reuse
 * CommandBar fixes (AppBarToggleButton, AppBarButton)
 * Fix Symbols rendering in sample app
@@ -154,6 +158,7 @@
 * [Android] MenuFlyout was misplaced if view was in a hierarchy with a RenderTransform
 * Fix color refresh of `BitmapIcon` monochrome Foreground
 * [IOS] DatePickerFlyout min and max year were resetting to FallbackNullValue
+* [Android] Fix bug in `ListView` when using an `ObservableCollection` as its source and using `Header` and `Footer`.
 
 ## Release 1.45.0
 ### Features
@@ -207,7 +212,7 @@
 * [Wasm] Add NativeXXX styles (which are aliases to the XamlXXX styles)
 * [Wasm] Enable persistence for all ApplicationData folders
 * [Wasm] Add Samples App UI Screenshots diffing tool with previous builds
-* Add `PasswordVault` on supported platfrosm
+* Add `PasswordVault` on supported platform
 * [Android] Updated support libraries to 28.0.0.1 for Android 9
 * Add support for `x:Load`
 * [Wasm] Restore support for `x:Load` and `x:DeferLoadStrategy`
@@ -245,7 +250,7 @@
 ### Breaking Changes
 * The `WebAssemblyRuntime.InvokeJSUnmarshalled` method with three parameters has been removed.
 * `NavigationBarHelper` has been removed.
-* Localized Text, Content etc is now applied even if the Text (etc) property isn't set in Xaml. Nested implicit content (eg `<Button><Border>...`) will be overridden by localized values if available.
+* Localized Text, Content etc is now applied even if the Text (etc) property isn't set in Xaml. Nested implicit content (e.g. `<Button><Border>...`) will be overridden by localized values if available.
 * [Android] Unless nested under `SecondaryCommands`, the `AppBarButton.Label` property will no longer be used for the title of menu item, instead use the `AppBarButton.Content` property. For `SecondaryCommands`, keep using `AppBarButton.Label`.
 * The `WordEllipsis` was removed from the `TextWrapping` as it's not a valid value for UWP (And it was actually supported only on WASM) (The right way to get ellipsis is with the `TextTrimming.WordEllipsis`)
 * [Android] `Popup.Anchor` is no longer available

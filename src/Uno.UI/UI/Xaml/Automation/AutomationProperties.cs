@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI;
 using Windows.UI.Xaml.Automation.Peers;
 
 namespace Windows.UI.Xaml.Automation
@@ -112,6 +113,50 @@ namespace Windows.UI.Xaml.Automation
 				new FrameworkPropertyMetadata(default(IList<DependencyObject>)) // TODO: Empty list?
 			);
 
+		#endregion
+
+		#region AutomationId
+
+		public static DependencyProperty AutomationIdProperty { get; } =
+		DependencyProperty.RegisterAttached(
+			name: "AutomationId",
+			propertyType: typeof(string),
+			ownerType: typeof(AutomationProperties),
+			typeMetadata: new FrameworkPropertyMetadata(
+				defaultValue: "",
+				propertyChangedCallback: OnAutomationIdChanged)
+		);
+
+		private static void OnAutomationIdChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+#if __IOS__
+			if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is UIKit.UIView view)
+			{
+				view.AccessibilityIdentifier = (string)args.NewValue;
+			}
+#elif __MACOS__
+			if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is AppKit.NSView view)
+			{
+				view.AccessibilityIdentifier = (string)args.NewValue;
+			}
+#elif __ANDROID__
+			if(FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is Android.Views.View view)
+			{
+				view.ContentDescription = (string)args.NewValue;
+			}
+#elif __WASM__
+			if (FrameworkElementHelper.IsUiAutomationMappingEnabled && dependencyObject is UIElement uiElement)
+			{
+				uiElement.SetAttribute("xamlautomationid", (string)args.NewValue);
+			}
+#endif
+		}
+
+		public static string GetAutomationId(DependencyObject element)
+			=> (string)element.GetValue(AutomationIdProperty);
+
+		public static void SetAutomationId(DependencyObject element, string value)
+			=> element.SetValue(AutomationIdProperty, value);
 		#endregion
 	}
 }
