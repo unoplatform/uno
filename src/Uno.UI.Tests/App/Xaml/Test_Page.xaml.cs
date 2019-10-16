@@ -29,6 +29,7 @@ namespace Uno.UI.Tests.App.Xaml
 		public Border TestBorder => testBorder;
 		public ContentControl TestContentControl => testContentControl;
 		public SpiffyItemsControl SpiffyItemsControl => spiffyItemsControl;
+		public ProgressRing TestProgressRing => testProgressRing;
 
 		private bool Boolean1 { get; } = true;
 		private bool Boolean2 { get; } = false;

@@ -53,13 +53,13 @@
 		<TextBlock x:Name="testTextBlock"
 				   Text="Test control"
 				   Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
-				   views:MyBehavior.Bulbousness="{StaticResource DoubleOrNothing}"/>
+				   views:MyBehavior.Bulbousness="{StaticResource DoubleOrNothing}" />
 		<CheckBox x:Name="testCheckBox" />
 		<Border x:Name="testBorder"
 				Background="{StaticResource MediocreColorBrush}"
 				BorderBrush="{StaticResource PlayfulColorBrush}"
 				Width="{StaticResource DoubleOrNothing}"
-				views:MyBehavior.Bulbousness="{StaticResource OuterTreeDoubleValue}"/>
+				views:MyBehavior.Bulbousness="{StaticResource OuterTreeDoubleValue}" />
 		<Grid x:Name="testGrid">
 			<Grid.RowDefinitions>
 				<RowDefinition Height="{StaticResource GridLength256}" />
@@ -69,11 +69,17 @@
 				<ResourceDictionary>
 					<ResourceDictionary.MergedDictionaries>
 						<ResourceDictionary Source="../Linked/Test_Dictionary_Linked.xaml" />
+						<ResourceDictionary Source="Test_Dictionary_Isolated_2.xaml" />
 					</ResourceDictionary.MergedDictionaries>
 					<SolidColorBrush x:Key="LocalToGridColorBrush"
 									 Color="LimeGreen" />
+					<views:BooleanToBrushConverter x:Key="BooleanConverter"
+												   TrueValue="{StaticResource MendaciousColorBrush}"
+												   FalseValue="{StaticResource LocalToGridColorBrush}" />
 				</ResourceDictionary>
 			</Grid.Resources>
+			<TextBlock x:Name="testTextBlock2"
+					   Foreground="{Binding Converter={StaticResource BooleanConverter}}" />
 		</Grid>
 		<Button x:Name="styledButton"
 				Style="{StaticResource ExplicitButtonStyle}" />
