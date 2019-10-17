@@ -171,8 +171,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_styleSymbol = GetType(XamlConstants.Types.Style);
 			_colorSymbol = GetType(XamlConstants.Types.Color);
 
-			_markupExtensionTypes = _medataHelper.GetAllTypesDerivingFrom(_markupExtensionSymbol).ToList();
-			_xamlConversionTypes = _medataHelper.GetAllTypesAttributedWith(XamlConstants.Types.CreateFromStringAttribute).ToList();
+			_markupExtensionTypes = _metadataHelper.GetAllTypesDerivingFrom(_markupExtensionSymbol).ToList();
+			_xamlConversionTypes = _metadataHelper.GetAllTypesAttributedWith(XamlConstants.Types.CreateFromStringAttribute).ToList();
 
 			_isWasm = isWasm;
 		}
@@ -3109,7 +3109,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Members
 				.Select(m =>
 				{
-					var resourceName = GetStaticResourceName(m);
+					var resourceName = GetSimpleStaticResourceRetrieval(m);
 
 					var value = resourceName != null
 						? resourceName
