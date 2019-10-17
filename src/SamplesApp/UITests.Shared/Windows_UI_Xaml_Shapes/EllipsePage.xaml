@@ -9,6 +9,6 @@
 
 	<StackPanel Spacing="5">
 		<TextBlock Text="This is a ellipse" />
-		<Ellipse Stroke="Black" Height="200" Width="250" StrokeThickness="5"/>
+		<Ellipse x:Name="DEllipsePage"  Stroke="Black" Height="200" Width="250" StrokeThickness="5"/>
 	</StackPanel>
 </Page>

@@ -27,5 +27,23 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			_app.WaitForElement("DPolygon");
 			_app.Screenshot($"PolygonPage");
 		}
+
+		[Test]
+		[AutoRetry]
+		public void Draw_ellipse()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Shapes.EllipsePage");
+			_app.WaitForElement("DEllipsePage");
+			_app.Screenshot($"EllipsePage");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Draw_line()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Shapes.LinePage");
+			_app.WaitForElement("DLinePage");
+			_app.Screenshot($"LinePage");
+		}
 	}
 }

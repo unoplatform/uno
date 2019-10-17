@@ -9,6 +9,6 @@
 
 	<StackPanel Spacing="5">
 		<TextBlock Text="This is a line" />
-		<Line Stroke="Black" X2="400" StrokeThickness="5"/>
+		<Line x:Name="DLinePage" Stroke="Black" X2="400" StrokeThickness="5"/>
 	</StackPanel>
 </Page>
