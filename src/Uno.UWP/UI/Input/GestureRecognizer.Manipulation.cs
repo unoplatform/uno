@@ -29,15 +29,21 @@ namespace Windows.UI.Input
 
 			private ManipulationStates _state = ManipulationStates.Starting;
 			private Points _origins;
-			private Points _lastPublished;
 			private Points _currents;
+			private ManipulationDelta _sumOfPublishedDelta = new ManipulationDelta
+			{
+				Translation = new Point(),
+				Rotation = 0,
+				Scale = 1,
+				Expansion = 0
+			};
 
 			public Manipulation(GestureRecognizer recognizer, PointerPoint pointer1)
 			{
 				_recognizer = recognizer;
 				_deviceType = pointer1.PointerDevice.PointerDeviceType;
 
-				_origins = _lastPublished = _currents = pointer1;
+				_origins = _currents = pointer1;
 
 				var args = new ManipulationStartingEventArgs(_recognizer._gestureSettings);
 				_recognizer.ManipulationStarting?.Invoke(_recognizer, args);
@@ -59,7 +65,6 @@ namespace Windows.UI.Input
 				}
 
 				_origins.SetPointer2(point);
-				_lastPublished.SetPointer2(point);
 				_currents.SetPointer2(point);
 
 				// We force to start the manipulation (or update it) a second pointer is pressed
@@ -105,7 +110,7 @@ namespace Windows.UI.Input
 
 						_recognizer.ManipulationCompleted?.Invoke(
 							_recognizer,
-							new ManipulationCompletedEventArgs(_deviceType, _currents.Center, GetDelta(), isInertial: false));
+							new ManipulationCompletedEventArgs(_deviceType, _currents.Center, GetCumulative(), isInertial: false));
 						break;
 
 					default:
@@ -136,47 +141,49 @@ namespace Windows.UI.Input
 				// Note: Make sure to update the _manipulationLast before raising the event, so if an exception is raised
 				//		 or if the manipulation is Completed, the Complete event args can use the updated _manipulationLast.
 
+				var cumulative = GetCumulative();
+
 				switch (_state)
 				{
-					case ManipulationStates.Starting:
-						var cumulative = GetDelta();
-						if (forceUpdate || IsSignificant(cumulative))
-						{
-							_state = ManipulationStates.Started;
-							_lastPublished = _currents;
+					case ManipulationStates.Starting when forceUpdate || IsSignificantStart(cumulative):
+						_state = ManipulationStates.Started;
+						_sumOfPublishedDelta = cumulative;
 
-							_recognizer.ManipulationStarted?.Invoke(
-								_recognizer,
-								new ManipulationStartedEventArgs(_deviceType, _currents.Center, cumulative));
-						}
+						_recognizer.ManipulationStarted?.Invoke(
+							_recognizer,
+							new ManipulationStartedEventArgs(_deviceType, _currents.Center, cumulative));
 
-						break;
-
-					case ManipulationStates.Started when _recognizer.ManipulationUpdated == null:
-						_lastPublished = _currents;
 						break;
 
 					case ManipulationStates.Started:
 						// Even if Scale and Angle are expected to be default when we add a pointer (i.e. forceUpdate == true),
 						// the 'delta' and 'cumulative' might still contains some TranslateX|Y compared to the previous Pointer1 location.
-						var delta = GetDelta(_lastPublished);
-						if (forceUpdate || IsSignificant(delta))
-						{
-							_lastPublished = _currents;
+						var delta = GetDelta(cumulative);
 
-							_recognizer.ManipulationUpdated.Invoke(
+						if (forceUpdate || IsSignificantDelta(delta))
+						{
+							_sumOfPublishedDelta = new ManipulationDelta
+							{
+								Translation = new Point(
+									_sumOfPublishedDelta.Translation.X + delta.Translation.X,
+									_sumOfPublishedDelta.Translation.Y + delta.Translation.Y),
+								Rotation = _sumOfPublishedDelta.Rotation + delta.Rotation,
+								Scale = _sumOfPublishedDelta.Scale * delta.Scale,
+								Expansion = _sumOfPublishedDelta.Expansion + delta.Expansion
+							};
+
+							_recognizer.ManipulationUpdated?.Invoke(
 								_recognizer,
-								new ManipulationUpdatedEventArgs(_deviceType, _currents.Center, delta, GetDelta(), isInertial: false));
+								new ManipulationUpdatedEventArgs(_deviceType, _currents.Center, delta, cumulative, isInertial: false));
 						}
 						break;
 				}
 			}
 
-			private ManipulationDelta GetDelta() => GetDelta(_origins);
-			private ManipulationDelta GetDelta(Points from)
+			private ManipulationDelta GetCumulative()
 			{
-				var translateX = _isTranslateXEnabled ? _currents.Center.X - from.Center.X : 0;
-				var translateY = _isTranslateYEnabled ? _currents.Center.Y - from.Center.Y : 0;
+				var translateX = _isTranslateXEnabled ? _currents.Center.X - _origins.Center.X : 0;
+				var translateY = _isTranslateYEnabled ? _currents.Center.Y - _origins.Center.Y : 0;
 
 				double rotate;
 				float scale, expansion;
@@ -188,9 +195,9 @@ namespace Windows.UI.Input
 				}
 				else
 				{
-					rotate = _isRotateEnabled ? _currents.Angle - from.Angle : 0;
-					scale = _isScaleEnabled ? _currents.Distance / from.Distance : 1;
-					expansion = _isScaleEnabled ? _currents.Distance - from.Distance : 0;
+					rotate = _isRotateEnabled ? _currents.Angle - _origins.Angle : 0;
+					scale = _isScaleEnabled ? _currents.Distance / _origins.Distance : 1;
+					expansion = _isScaleEnabled ? _currents.Distance - _origins.Distance : 0;
 				}
 
 				return new ManipulationDelta
@@ -202,23 +209,36 @@ namespace Windows.UI.Input
 				};
 			}
 
-			private bool IsSignificant(ManipulationDelta delta)
+			private ManipulationDelta GetDelta(ManipulationDelta cumulative)
 			{
-				if (_state == ManipulationStates.Starting)
+				var deltaSum = _sumOfPublishedDelta;
+
+				var translateX = _isTranslateXEnabled ? cumulative.Translation.X - deltaSum.Translation.X : 0;
+				var translateY = _isTranslateYEnabled ? cumulative.Translation.Y - deltaSum.Translation.Y : 0;
+				var rotate = _isRotateEnabled ? cumulative.Rotation - deltaSum.Rotation : 0;
+				var scale = _isScaleEnabled ? cumulative.Scale / deltaSum.Scale : 1;
+				var expansion = _isScaleEnabled ? cumulative.Expansion - deltaSum.Expansion : 0;
+
+				return new ManipulationDelta
 				{
-					return Math.Abs(delta.Translation.X) >= MinManipulationStartTranslateX
-						|| Math.Abs(delta.Translation.Y) >= MinManipulationStartTranslateY
-						|| delta.Rotation >= MinManipulationStartRotate // We used the ToDegreeNormalized, no need to check for negative angles
-						|| Math.Abs(delta.Expansion) >= MinManipulationStartExpansion;
-				}
-				else
-				{
-					return Math.Abs(delta.Translation.X) >= MinManipulationDeltaTranslateX
-						|| Math.Abs(delta.Translation.Y) >= MinManipulationDeltaTranslateY
-						|| delta.Rotation >= MinManipulationDeltaRotate // We used the ToDegreeNormalized, no need to check for negative angles
-						|| Math.Abs(delta.Expansion) >= MinManipulationDeltaExpansion;
-				}
+					Translation = new Point(translateX, translateY),
+					Rotation = (float)MathEx.NormalizeDegree(rotate),
+					Scale = scale,
+					Expansion = expansion
+				};
 			}
+
+			private bool IsSignificantStart(ManipulationDelta delta)
+				=> Math.Abs(delta.Translation.X) >= MinManipulationStartTranslateX
+				|| Math.Abs(delta.Translation.Y) >= MinManipulationStartTranslateY
+				|| delta.Rotation >= MinManipulationStartRotate // We used the ToDegreeNormalized, no need to check for negative angles
+				|| Math.Abs(delta.Expansion) >= MinManipulationStartExpansion;
+
+			private bool IsSignificantDelta(ManipulationDelta delta)
+				=> Math.Abs(delta.Translation.X) >= MinManipulationDeltaTranslateX
+				|| Math.Abs(delta.Translation.Y) >= MinManipulationDeltaTranslateY
+				|| delta.Rotation >= MinManipulationDeltaRotate // We used the ToDegreeNormalized, no need to check for negative angles
+				|| Math.Abs(delta.Expansion) >= MinManipulationDeltaExpansion;
 
 			// WARNING: This struct is ** MUTABLE **
 			private struct Points
