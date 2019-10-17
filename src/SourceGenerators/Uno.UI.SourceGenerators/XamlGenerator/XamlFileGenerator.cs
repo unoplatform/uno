@@ -270,16 +270,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_isGeneratingGlobalResource = true;
 				BuildEmptyBackingClass(writer, topLevelControl);
 
-				BuildResourceDictionary(writer, topLevelControl);
-			}
-			else
-			{
-				if (IsApplication(topLevelControl.Type))
-				{
-					_isGeneratingGlobalResource = true;
-					RegisterResources(topLevelControl);
-					BuildResourceDictionary(writer, topLevelControl);
-				}
+                BuildResourceDictionary(writer, topLevelControl);
+            }
+            else
+            {
+                if (IsApplication(topLevelControl.Type))
+                {
+                    _isGeneratingGlobalResource = true;
+                    BuildResourceDictionary(writer, topLevelControl);
+                }
 
 				_isGeneratingGlobalResource = false;
 				_className = GetClassName(topLevelControl);
@@ -421,6 +420,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariant($"global::Uno.Helpers.DrawableHelper.Drawables = typeof(global::{_defaultNamespace}.Resource.Drawable);");
 			writer.AppendLineInvariant($"#endif");
 
+			RegisterResources(topLevelControl);
 			BuildProperties(writer, topLevelControl, isInline: false, returnsContent: false);
 
 			writer.AppendLineInvariant("");
@@ -772,25 +772,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			XamlMemberDefinition contentNode;
 
-			if (IsApplication(topLevelControl.Type))
-			{
-				contentNode = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "Resources");
-
-				// Handle case where inner object is a ResourceDictionary
-				if (contentNode?.Objects.Count == 1)
-				{
-					var resourceDictionary = contentNode.Objects.First();
-
-					if (resourceDictionary.Type.Name == "ResourceDictionary")
-					{
-						contentNode = FindMember(resourceDictionary, "_UnknownContent");
-					}
-				}
-			}
-			else
-			{
-				contentNode = FindMember(topLevelControl, "_UnknownContent");
-			}
+            if (IsApplication(topLevelControl.Type))
+            {
+                contentNode = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "Resources");
+            }
+            else
+            {
+                contentNode = FindMember(topLevelControl, "_UnknownContent");
+            }
 
 			if (contentNode != null)
 			{
@@ -2010,14 +1999,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var resourcesMember = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "Resources");
 
-			if (resourcesMember != null)
-			{
-				// To be able to have MergedDictionaries, the first node of the Resource node
-				// must be an explicit resource dictionary.
-				var isExplicitResDictionary = resourcesMember.Objects.Any(o => o.Type.Name == "ResourceDictionary");
-				var resourcesRoot = isExplicitResDictionary
-					? FindImplicitContentMember(resourcesMember.Objects.First())
-					: resourcesMember;
+            if (resourcesMember != null)
+            {
+                // To be able to have MergedDictionaries, the first node of the Resource node
+                // must be an explicit resource dictionary.
+                var isExplicitResDictionary = resourcesMember.Objects.Any(o => o.Type.Name == "ResourceDictionary");
+                var resourcesRoot = isExplicitResDictionary
+                    ? FindImplicitContentMember(resourcesMember.Objects.First())
+                    : resourcesMember;
 
 				if (resourcesRoot != null)
 				{
@@ -3768,10 +3757,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return $"global::{resource.Namespace}.GlobalStaticResources.{SanitizeResourceName(resourceName)}";
 			}
 
-			if (!_isGeneratingGlobalResource && _staticResources.ContainsKey(resourceName))
-			{
-				return $"{GetCastString(targetType, _staticResources[resourceName])}StaticResources.{SanitizeResourceName(resourceName)}";
-			}
+            if (_staticResources.ContainsKey(resourceName))
+            {
+                return $"{GetCastString(targetType, _staticResources[resourceName])}StaticResources.{SanitizeResourceName(resourceName)}";
+            }
 
 			var valueString = $"(global::Windows.UI.Xaml.Application.Current.Resources[\"{resourceName}\"] ?? throw new InvalidOperationException(\"The resource {resourceName} cannot be found\"))";
 
