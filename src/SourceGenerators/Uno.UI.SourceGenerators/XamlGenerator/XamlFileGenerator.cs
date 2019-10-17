@@ -786,6 +786,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				index++;
 				var propertyName = GetPropertyNameForResourceKey(index);
+				if (_topLevelDictionaryProperties.ContainsKey((theme, key)))
+				{
+					throw new InvalidOperationException($"Dictionary Item {resource?.Type?.Name} has duplicate key `{key}` { (theme != null ? $" in theme {theme}" : "")}.");
+				}
 				_topLevelDictionaryProperties[(theme, key)] = propertyName;
 			}
 
@@ -805,7 +809,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var propertyName = GetPropertyNameForResourceKey(_dictionaryPropertyIndex);
 				if (_topLevelDictionaryProperties[(theme, key)] != propertyName)
 				{
-					throw new InvalidOperationException("Property was not created correctly.");
+					throw new InvalidOperationException($"Property was not created correctly for {key} (theme={theme}).");
 				}
 				writer.AppendLineInvariant("// Property for resource {0} {1}", key, theme != null ? "in theme {0}".InvariantCultureFormat(theme) : "");
 				var isStaticResourceAlias = resource.Type.Name == "StaticResource";
