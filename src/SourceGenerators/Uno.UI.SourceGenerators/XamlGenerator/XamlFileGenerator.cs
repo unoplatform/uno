@@ -158,7 +158,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_dataBindingSymbol = GetType("Windows.UI.Xaml.Data.Binding");
 			_styleSymbol = GetType(XamlConstants.Types.Style);
 
-			_markupExtensionTypes = _medataHelper.GetAllTypesDerivingFrom(_markupExtensionSymbol).ToList();
+			_markupExtensionTypes = _metadataHelper.GetAllTypesDerivingFrom(_markupExtensionSymbol).ToList();
 
 			_isWasm = isWasm;
 		}
@@ -2643,7 +2643,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Members
 				.Select(m =>
 				{
-					var resourceName = GetStaticResourceName(m);
+					var resourceName = GetSimpleStaticResourceRetrieval(m);
 
 					var value = resourceName != null
 						? resourceName
