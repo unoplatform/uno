@@ -18,10 +18,10 @@ using Windows.UI.Xaml.Navigation;
 
 namespace SamplesApp.Windows_UI_Xaml_Shapes
 {
-	[SampleControlInfo("Shapes", "PolygonePage")]
-	public sealed partial class PolygonePage : Page
+	[SampleControlInfo("Shapes", "PolygonPage")]
+	public sealed partial class PolygonPage : Page
 	{
-		public PolygonePage()
+		public PolygonPage()
 		{
 			this.InitializeComponent();
 		}

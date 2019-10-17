@@ -10,6 +10,6 @@
 
     <StackPanel Spacing="5">
 		<TextBlock Text="This is a Polyline" />
-		<Polyline Points="20,20 40,25 60,40 80,120 120,140 200,180" Stroke="black" StrokeThickness="5"/>
+		<Polyline x:Name="DPolyline" Points="20,20 40,25 60,40 80,120 120,140 200,180" Stroke="black" StrokeThickness="5"/>
 	</StackPanel>
 </Page>

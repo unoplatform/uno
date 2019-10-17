@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="SamplesApp.Windows_UI_Xaml_Shapes.PolygonePage"
+    x:Class="SamplesApp.Windows_UI_Xaml_Shapes.PolygonPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Shapes"
@@ -10,6 +10,6 @@
 
 	<StackPanel Spacing="5">
 		<TextBlock Text="This is a polygon" />
-		<Polygon Points="300,200 400,125 400,275" Stroke="black" StrokeThickness="5" />
+		<Polygon x:Name="DPolygon" Points="300,200 400,125 400,275" Stroke="black" StrokeThickness="5" />
 	</StackPanel>
 </Page>
