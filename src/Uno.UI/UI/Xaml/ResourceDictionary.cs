@@ -57,7 +57,17 @@ namespace Windows.UI.Xaml
 
 		public void Clear() => _values.Clear();
 
-		public void Add(object key, object value) => _values.Add(key, value);
+		public void Add(object key, object value)
+		{
+			if (value is ResourceInitializer resourceInitializer)
+			{
+				_values.Add(key, new LazyInitializer(ResourceResolver.CurrentScope, resourceInitializer));
+			}
+			else
+			{
+				_values.Add(key, value);
+			}
+		}
 
 		public bool ContainsKey(object key) => _values.ContainsKey(key) || ContainsKeyMerged(key) || ContainsKeyTheme(key);
 
@@ -65,6 +75,7 @@ namespace Windows.UI.Xaml
 		{
 			if (_values.TryGetValue(key, out value))
 			{
+				TryMaterializeLazy(key, ref value);
 				return true;
 			}
 
@@ -85,7 +96,33 @@ namespace Windows.UI.Xaml
 
 				return value;
 			}
-			set => _values[key] = value;
+			set => Add(key, value);
+		}
+
+		/// <summary>
+		/// If retrieved element is a <see cref="LazyInitializer"/> stub, materialize the actual object and replace the stub.
+		/// </summary>
+		private void TryMaterializeLazy(object key, ref object value)
+		{
+			if (value is LazyInitializer lazyInitializer)
+			{
+				object newValue = null;
+#if !HAS_EXPENSIVE_TRYFINALLY
+				try
+#endif
+				{
+					ResourceResolver.PushNewScope(lazyInitializer.CurrentScope);
+					newValue = lazyInitializer.Initializer();
+				}
+#if !HAS_EXPENSIVE_TRYFINALLY
+				finally
+#endif
+				{
+					value = newValue;
+					_values[key] = newValue; // If Initializer threw an exception this will push null, to avoid running buggy initialization again and again (and avoid surfacing initializer to consumer code)
+					ResourceResolver.PopScope();
+				}
+			}
 		}
 
 		private bool GetFromMerged(object key, out object value)
@@ -179,7 +216,7 @@ namespace Windows.UI.Xaml
 
 		public global::System.Collections.Generic.ICollection<object> Values => _values.Values;
 
-		public void Add(global::System.Collections.Generic.KeyValuePair<object, object> item) => _values.Add(item.Key, item.Value);
+		public void Add(global::System.Collections.Generic.KeyValuePair<object, object> item) => Add(item.Key, item.Value);
 
 		public bool Contains(global::System.Collections.Generic.KeyValuePair<object, object> item) => _values.ContainsKey(item.Key);
 
@@ -230,6 +267,23 @@ namespace Windows.UI.Xaml
 
 			_isParsing = false;
 			ResourceResolver.PopSourceFromScope();
+		}
+
+		public delegate object ResourceInitializer();
+
+		/// <summary>
+		/// Allows resources to be initialized on-demand using correct scope.
+		/// </summary>
+		private struct LazyInitializer
+		{
+			public XamlScope CurrentScope { get; }
+			public ResourceInitializer Initializer { get; }
+
+			public LazyInitializer(XamlScope currentScope, ResourceInitializer initializer)
+			{
+				CurrentScope = currentScope;
+				Initializer = initializer;
+			}
 		}
 
 		private static class Themes

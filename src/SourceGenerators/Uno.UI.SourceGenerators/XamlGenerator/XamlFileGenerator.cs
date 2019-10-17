@@ -1752,6 +1752,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
+		/// <summary>
+		/// Build resources declarations inside a resource dictionary.
+		/// </summary>
+		/// <param name="writer">The StringBuilder</param>
+		/// <param name="resourcesRoot">The xaml member within which resources are declared</param>
+		/// <param name="isInInitializer">Whether we're within an object initializer</param>
 		private void BuildResourceDictionary(IIndentedStringBuilder writer, XamlMemberDefinition resourcesRoot, bool isInInitializer)
 		{
 			var closingPunctuation = isInInitializer ? "," : ";";
@@ -1777,6 +1783,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						writer.AppendLineInvariant("Resources[{0}] = ", wrappedKey);
 					}
 					var directproperty = GetResourceDictionaryPropertyName(key);
+					var shouldBeLazy = ShouldLazyInitializeResource(resource);
+					if (shouldBeLazy)
+					{
+						writer.AppendLineInvariant("(global::Windows.UI.Xaml.ResourceDictionary.ResourceInitializer)(() => ");
+					}
 					if (directproperty != null)
 					{
 						writer.AppendLineInvariant(directproperty);
@@ -1784,6 +1795,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					else
 					{
 						BuildChild(writer, null, resource);
+					}
+					if (shouldBeLazy)
+					{
+						writer.AppendLineInvariant(")");
 					}
 					writer.AppendLineInvariant(closingPunctuation);
 				}
@@ -1793,6 +1808,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					_namedResources.Add(name, resource);
 				}
 			}
+		}
+
+		/// <summary>
+		/// Whether this resource should be lazily initialized. For now this is only done for Styles (since it may be a de-optimization for simple items).
+		/// </summary>
+		private bool ShouldLazyInitializeResource(XamlObjectDefinition resource)
+		{
+			var typeName = resource.Type.Name;
+			return typeName == "Style";
 		}
 
 		/// <summary>
