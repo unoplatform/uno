@@ -8,8 +8,11 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <StackPanel Spacing="5">
-		<TextBlock Text="This is a Polyline" />
-		<Polyline x:Name="DPolyline" Points="20,20 40,25 60,40 80,120 120,140 200,180" Stroke="black" StrokeThickness="5"/>
+	<StackPanel>
+		<StackPanel Spacing="5">
+			<TextBlock Text="This is a Polyline" />
+			<Polyline x:Name="DPolyline" Points="20,20 40,25 60,40 80,120 120,140 200,180" Stroke="black" StrokeThickness="5"/>
+		</StackPanel>
+		<Button x:Name="ChangeShape"  Content="Change Shape" Click="Change_Shape"/>
 	</StackPanel>
 </Page>

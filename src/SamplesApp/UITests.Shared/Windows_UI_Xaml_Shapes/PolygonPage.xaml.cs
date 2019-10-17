@@ -25,5 +25,15 @@ namespace SamplesApp.Windows_UI_Xaml_Shapes
 		{
 			this.InitializeComponent();
 		}
+
+		public void Change_Shape(object sender, RoutedEventArgs e)
+		{
+			var points = new PointCollection();
+			points.Add(new Point(10, 180));
+			points.Add(new Point(60, 140));
+			points.Add(new Point(130, 140));
+			points.Add(new Point(180, 220));
+			DPolygon.Points = points;
+		}
 	}
 }
