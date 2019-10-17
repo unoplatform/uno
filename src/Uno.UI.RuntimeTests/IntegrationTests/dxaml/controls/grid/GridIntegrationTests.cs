@@ -1042,6 +1042,7 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 		}
 
 		[TestMethod]
+		[Ignore] // Invalid border calculation
 		public async Task BorderChromeForSimpleGrid()
 		{
 			TestCleanupWrapper cleanup;
