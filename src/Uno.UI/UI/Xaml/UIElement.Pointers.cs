@@ -356,7 +356,12 @@ namespace Windows.UI.Xaml
 
 			if (isIrrelevant)
 			{
-				return handledInManaged; // always false, as the event was mute
+				// This case is for safety only, it should not happen as we should never get a Pointer down while not
+				// on this UIElement, and no capture should prevent the dispatch as no parent should hold a capture at this point.
+				// (Even if a Parent of this listen on pressed on a child of this and captured the pointer, the FrameId will be
+				// the same so we won't consider this event as irrelevant)
+
+				return handledInManaged; // always false, as the 'pressed' event was mute
 			}
 
 			if (!_isGestureCompleted && _gestures.IsValueCreated)
@@ -378,20 +383,21 @@ namespace Windows.UI.Xaml
 
 			handledInManaged |= SetOver(args, isOver);
 
-			if (isIrrelevant)
+			if (!isIrrelevant)
 			{
-				return handledInManaged; // always false, as the event was mute
-			}
+				// If this pointer was wrongly dispatched here (out of the bounds and not captured),
+				// we don't raise the 'move' event
 
-			args.Handled = false;
-			handledInManaged |= RaisePointerEvent(PointerMovedEvent, args);
+				args.Handled = false;
+				handledInManaged |= RaisePointerEvent(PointerMovedEvent, args);
+			}
 
 			if (_gestures.IsValueCreated)
 			{
 				// We need to process only events that are bubbling natively to this control,
 				// if they are bubbling in managed it means that they were handled by a child control,
 				// so we should not use them for gesture recognition.
-				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this));
+				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), isIrrelevant);
 			}
 
 			return handledInManaged;
@@ -400,21 +406,23 @@ namespace Windows.UI.Xaml
 		private bool OnNativePointerMove(PointerRoutedEventArgs args)
 		{
 			var isIrrelevant = ValidateAndUpdateCapture(args);
+			var handledInManaged = false;
 
-			if (isIrrelevant)
+			if (!isIrrelevant)
 			{
-				return false;
-			}
+				// If this pointer was wrongly dispatched here (out of the bounds and not captured),
+				// we don't raise the 'move' event
 
-			args.Handled = false;
-			var handledInManaged = RaisePointerEvent(PointerMovedEvent, args);
+				args.Handled = false;
+				handledInManaged |= RaisePointerEvent(PointerMovedEvent, args);
+			}
 
 			if (_gestures.IsValueCreated)
 			{
 				// We need to process only events that are bubbling natively to this control,
 				// if they are bubbling in managed it means that they were handled by a child control,
 				// so we should not use them for gesture recognition.
-				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this));
+				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), isIrrelevant);
 			}
 
 			return handledInManaged;
@@ -427,19 +435,15 @@ namespace Windows.UI.Xaml
 
 			handledInManaged |= SetPressed(args, false, muteEvent: isIrrelevant);
 
-			if (isIrrelevant)
-			{
-				return handledInManaged; // always false as SetPressed with isPointerCancelled==true always returns false;
-			}
-
+			
 			// Note: We process the UpEvent between Release and Exited as the gestures like "Tap"
 			//		 are fired between those events.
 			if (_gestures.IsValueCreated)
 			{
-				// We need to process only events that are bubbling natively to this control,
+				// We need to process only events that are bubbling natively to this control (i.e. isIrrelevant == false),
 				// if they are bubbling in managed it means that they where handled a child control,
 				// so we should not use them for gesture recognition.
-				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this));
+				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this), isIrrelevant);
 			}
 
 			// We release the captures on up but only after the released event and processed the gesture
