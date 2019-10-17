@@ -193,7 +193,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
 			var result = new ManipulationRecorder(sut);
-			var step = GestureRecognizer.MinManipulationDeltaTranslateX;
+			var step = GestureRecognizer.MinManipulationStartTranslateX;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 + 1, 25); // Ignored
@@ -239,7 +239,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
 			var result = new ManipulationRecorder(sut);
-			var step = GestureRecognizer.MinManipulationDeltaTranslateX + 1;
+			var step = GestureRecognizer.MinManipulationStartTranslateX + 1;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 + 1, 25);
@@ -259,7 +259,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
 			var result = new ManipulationRecorder(sut);
-			var step = GestureRecognizer.MinManipulationDeltaTranslateX + 1;
+			var step = GestureRecognizer.MinManipulationStartTranslateX + 1;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 + step, 25);
@@ -277,7 +277,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
 			var result = new ManipulationRecorder(sut);
-			var step = GestureRecognizer.MinManipulationDeltaTranslateX + 1;
+			var step = GestureRecognizer.MinManipulationStartTranslateX + 1;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 + step, 25);
@@ -298,8 +298,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationTranslateX };
 			var result = new ManipulationRecorder(sut);
-			var stepX = GestureRecognizer.MinManipulationDeltaTranslateX + 1;
-			var stepY = GestureRecognizer.MinManipulationDeltaTranslateY + 1;
+			var stepX = GestureRecognizer.MinManipulationStartTranslateX + 1;
+			var stepY = GestureRecognizer.MinManipulationStartTranslateY + 1;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25, 25 + stepY); // Invalid move that should NOT cause the started
@@ -321,8 +321,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationTranslateY };
 			var result = new ManipulationRecorder(sut);
-			var stepX = GestureRecognizer.MinManipulationDeltaTranslateX + 1;
-			var stepY = GestureRecognizer.MinManipulationDeltaTranslateY + 1;
+			var stepX = GestureRecognizer.MinManipulationStartTranslateX + 1;
+			var stepY = GestureRecognizer.MinManipulationStartTranslateY + 1;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 + stepX, 25); // Invalid move that should NOT cause the started
@@ -344,8 +344,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationTranslateX };
 			var result = new ManipulationRecorder(sut);
-			var stepX = GestureRecognizer.MinManipulationDeltaTranslateX + 1;
-			var stepY = GestureRecognizer.MinManipulationDeltaTranslateY + 1;
+			var stepX = GestureRecognizer.MinManipulationStartTranslateX + 1;
+			var stepY = GestureRecognizer.MinManipulationStartTranslateY + 1;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25, 25 + stepY); // Invalid move that should NOT cause the started
@@ -367,8 +367,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationTranslateY };
 			var result = new ManipulationRecorder(sut);
-			var stepX = GestureRecognizer.MinManipulationDeltaTranslateX + 1;
-			var stepY = GestureRecognizer.MinManipulationDeltaTranslateY + 1;
+			var stepX = GestureRecognizer.MinManipulationStartTranslateX + 1;
+			var stepY = GestureRecognizer.MinManipulationStartTranslateY + 1;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 - stepX, 25); // Invalid move that should NOT cause the started

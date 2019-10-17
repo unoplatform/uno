@@ -203,10 +203,22 @@ namespace Windows.UI.Input
 			}
 
 			private bool IsSignificant(ManipulationDelta delta)
-				=> Math.Abs(delta.Translation.X) >= MinManipulationDeltaTranslateX
-				|| Math.Abs(delta.Translation.Y) >= MinManipulationDeltaTranslateY
-				|| delta.Rotation >= MinManipulationDeltaRotate // We used the ToDegreeNormalized, no need to check for negative angles
-				|| Math.Abs(delta.Expansion) >= MinManipulationDeltaExpansion;
+			{
+				if (_state == ManipulationStates.Starting)
+				{
+					return Math.Abs(delta.Translation.X) >= MinManipulationStartTranslateX
+						|| Math.Abs(delta.Translation.Y) >= MinManipulationStartTranslateY
+						|| delta.Rotation >= MinManipulationStartRotate // We used the ToDegreeNormalized, no need to check for negative angles
+						|| Math.Abs(delta.Expansion) >= MinManipulationStartExpansion;
+				}
+				else
+				{
+					return Math.Abs(delta.Translation.X) >= MinManipulationDeltaTranslateX
+						|| Math.Abs(delta.Translation.Y) >= MinManipulationDeltaTranslateY
+						|| delta.Rotation >= MinManipulationDeltaRotate // We used the ToDegreeNormalized, no need to check for negative angles
+						|| Math.Abs(delta.Expansion) >= MinManipulationDeltaExpansion;
+				}
+			}
 
 			// WARNING: This struct is ** MUTABLE **
 			private struct Points
