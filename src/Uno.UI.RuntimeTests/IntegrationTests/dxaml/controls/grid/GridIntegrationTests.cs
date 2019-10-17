@@ -552,7 +552,9 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 			});
 		}
 
+#if !__ANDROID__
 		[TestMethod]
+#endif
 		public async Task CanZeroWeightedCellsShrinkToZeroSize()
 		{
 			TestCleanupWrapper cleanup;
@@ -591,7 +593,9 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 			});
 		}
 
+#if !__ANDROID__
 		[TestMethod]
+#endif
 		public async Task CanDivideAllocatedSpacingCorrectlyAccordingToStarWeightings()
 		{
 			TestCleanupWrapper cleanup;

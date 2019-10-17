@@ -39,7 +39,7 @@ namespace Uno.UI.Samples.Tests
 
 			Private.Infrastructure.TestServices.WindowHelper.RootControl = unitTestContentRoot;
 
-			DataContext = this;
+			DataContext = null;
 		}
 
 		private void OnRunTests(object sender, RoutedEventArgs e)

@@ -27,7 +27,20 @@ namespace Private.Infrastructure
 
 			public static ContentControl RootControl { get; set; }
 
-			internal static async Task WaitForIdle() { await Task.Yield(); }
+			internal static async Task WaitForIdle()
+			{
+#if __WASM__
+				await Task.Yield();
+#else
+				await Task.Yield();
+				var tcs = new TaskCompletionSource<bool>();
+				await RootControl.Dispatcher.RunIdleAsync(_ => tcs.SetResult(true));
+				tcs = new TaskCompletionSource<bool>();
+				await RootControl.Dispatcher.RunIdleAsync(_ => tcs.SetResult(true));
+
+				await tcs.Task;
+#endif
+			}
 
 			internal static void ShutdownXaml() { }
 			internal static void VerifyTestCleanup() { }
@@ -41,7 +54,14 @@ namespace Private.Infrastructure
 			internal static void VerifyMockDCompOutput(MockDComp.SurfaceComparison comparison) { }
 		}
 
-		internal static async Task RunOnUIThread(Action action) => action();
+		internal static async Task RunOnUIThread(Action action)
+		{
+#if __WASM__
+			action();
+#else
+			await WindowHelper.RootControl.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => action());
+#endif
+		}
 
 		internal static void EnsureInitialized() { }
 
