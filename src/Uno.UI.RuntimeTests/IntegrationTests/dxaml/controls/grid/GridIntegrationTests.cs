@@ -131,12 +131,12 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 			await TestServices.RunOnUIThread(() =>
 
 		{
-			Grid.SetRow((grid.Children[0]), 0);
-			Grid.SetColumn((grid.Children[0]), 0);
-			Grid.SetRow((grid.Children[1]), 1);
-			Grid.SetColumn((grid.Children[1]), 0);
-			Grid.SetRow((grid.Children[2]), 2);
-			Grid.SetColumn((grid.Children[2]), 0);
+			Grid.SetRow((FrameworkElement)(grid.Children[0]), 0);
+			Grid.SetColumn((FrameworkElement)(grid.Children[0]), 0);
+			Grid.SetRow((FrameworkElement)(grid.Children[1]), 1);
+			Grid.SetColumn((FrameworkElement)(grid.Children[1]), 0);
+			Grid.SetRow((FrameworkElement)(grid.Children[2]), 2);
+			Grid.SetColumn((FrameworkElement)(grid.Children[2]), 0);
 		});
 			await TestServices.WindowHelper.WaitForIdle();
 
@@ -148,8 +148,8 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 			await TestServices.RunOnUIThread(() =>
 
 		{
-			Grid.SetRowSpan((grid.Children[3]), 1);
-			Grid.SetColumnSpan((grid.Children[4]), 1);
+			Grid.SetRowSpan((FrameworkElement)(grid.Children[3]), 1);
+			Grid.SetColumnSpan((FrameworkElement)(grid.Children[4]), 1);
 		});
 			await TestServices.WindowHelper.WaitForIdle();
 
