@@ -83,6 +83,11 @@ namespace Windows.UI.Xaml.Controls
 
 		public static void SetRowSpan(View view, int rowSpan)
 		{
+			if (rowSpan <= 0)
+			{
+				throw new ArgumentException("The value must be above zero", nameof(rowSpan));
+			}
+
 			DependencyObjectExtensions.SetValue(view, RowSpanProperty, rowSpan);
 		}
 		#endregion
@@ -104,6 +109,11 @@ namespace Windows.UI.Xaml.Controls
 
 		public static void SetColumnSpan(View view, int columnSpan)
 		{
+			if(columnSpan <= 0)
+			{
+				throw new ArgumentException("The value must be above zero", nameof(columnSpan));
+			}
+
 			DependencyObjectExtensions.SetValue(view, ColumnSpanProperty, columnSpan);
 		}
 		#endregion
