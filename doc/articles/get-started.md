@@ -2,11 +2,11 @@
 
 ## Prerequisites
 * [**Visual Studio 2017 15.5 or later**](https://visualstudio.microsoft.com/), with:
-    * **Universal Windows Platform** workload installed
+    * **Universal Windows Platform** workload installed.
 
     ![visual-studio-installer-uwp](Assets/quick-start/vs-install-uwp.png)
 
-	* **Mobile development with .NET (Xamarin)** workload installed
+	* **Mobile development with .NET (Xamarin)** workload installed.
 
     ![visual-studio-installer-xamarin](Assets/quick-start/vs-install-xamarin.png)
 
@@ -26,7 +26,7 @@ To easily create a multi-platform application:
 * Create a new C# solution using the **Cross-Platform App (Uno Platform)** template, from Visual Studio's **Start Page**:
 
 ![new project](Assets/quick-start/vsix-new-project.png)
-* Update to the latest nuget package named `Uno.UI`, make sure to check the `pre-release` box.
+* Update to the latest nuget package named `Uno.UI`,check the `pre-release` box.
 * To debug the iOS head, select the `Debug|iPhoneSimulator` configuration
 * To debug the Android head, select the `Debug|AnyCPU` configuration
 * To debug the UWP head, select the `Debug|x86` configuration
@@ -45,7 +45,7 @@ If XAML Intellisense isn't working on a freshly-created project, try the followi
 
 ### Creating an app with Uno - tutorial
 
-See the [Creating an App tutorial](getting-started-tutorial-1.md) for a step-by-step guide to creating a working app with Uno.
+See the [Creating an App tutorial](getting-started-tutorial-1.md) for a step-by-step guide on creating your first working app with Uno.
 
 ![tutorial-screenshot](Assets/quick-start/tutorial-screenshot.png)
 
