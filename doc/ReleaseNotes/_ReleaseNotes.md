@@ -74,6 +74,7 @@
 * Full support of pointer events cf. [routed events documentation](../articles/features/routed-events.md)
 * Update CheckBox style to 10.0.17763
 * Adds the support for `AutomationProperties.AutomationId`
+* [#1328](https://github.com/unoplatform/uno/issues/1328) Basic ProgressRing implementation for WASM
 * Add support for `Windows.UI.Xaml.Controls.Primitives.LayoutInformation.GetAvailableSize`
 * Add support for Runtime Tests that require UI integration
 

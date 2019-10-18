@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ProgressRingTemplateSettings : global::Windows.UI.Xaml.DependencyObject
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double EllipseDiameter
 		{
@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Thickness EllipseOffset
 		{
@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double MaxSideLength
 		{
