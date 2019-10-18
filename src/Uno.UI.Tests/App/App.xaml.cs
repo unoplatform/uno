@@ -59,7 +59,9 @@ namespace UnitTestsApp
 			if (Current == null)
 			{
 				var application = new App();
+#if !NETFX_CORE
 				application.InitializationCompleted();
+#endif
 				application.OnLaunched(null);
 			}
 
