@@ -38,7 +38,7 @@ If your code is in VB, you can use some simple translators, e.g. https://codecon
 * right click on APPNAME_Uno.Shared, Add, New, C#, XAML, Blank Page - use same name as in APPNAME project,
 * open both .xaml and .cs file you just created,
 * copy contens of XAML page
-* convert .vb code to .cs code, and insert it to .cs page - but do not remove constructor, with `this.InitializeComponent();`. From App.xaml.vb, convert only code you added.
+* convert .vb code to .cs code, and insert it to .cs page - but do not remove constructor, with `this.InitializeComponent();`. From App.xaml.vb, convert only code you added. Take care of "namespace" - should be same as in .xaml (and as in manifest), without "\_Uno" and "Shared" sufixes.
 
 You have to copy also Package.appxmanifest - especially, app capabilities etc. - but new instance of this file would be in APPNAME_Uno.UWP, not in APPNAME_Uno.Shared. 
 
