@@ -26,19 +26,19 @@ namespace Windows.Storage
 
 			public SharedPreferencesPropertySet()
 			{
-				_preferences = PreferenceManager.GetDefaultSharedPreferences(ContextHelper.Current);
+				_preferences = PreferenceManager.GetDefaultSharedPreferences(ApplicationData.GetAndroidAppContext());
 			}
 
 			public object this[string key]
 			{
 				get
 				{
-					if(TryGetValue(key, out var value))
+					if (TryGetValue(key, out var value))
 					{
 						return value;
 					}
 
-					return null;					
+					return null;
 				}
 				set
 				{
@@ -86,7 +86,7 @@ namespace Windows.Storage
 					throw new ArgumentException("An item with the same key has already been added.");
 				}
 				if (value != null)
-				{					
+				{
 					_preferences
 						.Edit()
 						.PutString(key, DataTypeSerializer.Serialize(value))
@@ -105,7 +105,7 @@ namespace Windows.Storage
 					.Commit();
 			}
 
-			public bool Contains(KeyValuePair<string, object> item) 
+			public bool Contains(KeyValuePair<string, object> item)
 				=> throw new NotSupportedException();
 
 			public bool ContainsKey(string key)
@@ -131,7 +131,7 @@ namespace Windows.Storage
 
 			public bool TryGetValue(string key, out object value)
 			{
-				if(_preferences.All.TryGetValue(key, out var serializedValue))
+				if (_preferences.All.TryGetValue(key, out var serializedValue))
 				{
 					value = DataTypeSerializer.Deserialize(serializedValue?.ToString());
 					return true;
