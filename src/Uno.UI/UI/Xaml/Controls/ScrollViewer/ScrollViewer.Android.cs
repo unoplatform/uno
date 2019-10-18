@@ -152,7 +152,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		bool ICustomClippingElement.AllowClippingToBounds => true;
-		bool ICustomClippingElement.ForcedClippingToBounds => true; // force scrollviewer to always clip
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => true; // force scrollviewer to always clip
 	}
 }

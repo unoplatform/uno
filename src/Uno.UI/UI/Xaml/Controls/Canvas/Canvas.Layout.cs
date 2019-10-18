@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml.Controls
 			return finalSize;
 		}
 
-		bool ICustomClippingElement.AllowClippingToBounds => false;
-		bool ICustomClippingElement.ForcedClippingToBounds => false;
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 	}
 }

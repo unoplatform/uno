@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml
 			InitializePointers();
 		}
 
-		partial void EnsureClip(Rect rect)
+		partial void ApplyNativeClip(Rect rect)
 		{
 			if (rect.IsEmpty)
 			{

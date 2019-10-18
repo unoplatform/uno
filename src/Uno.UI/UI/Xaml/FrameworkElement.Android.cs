@@ -192,13 +192,13 @@ namespace Windows.UI.Xaml
 		{
 			var availableSize = ViewHelper.LogicalSizeFromSpec(widthMeasureSpec, heightMeasureSpec);
 
-			if (!double.IsNaN(Width) || !double.IsNaN(Height))
-			{
-				availableSize = new Size(
-					double.IsNaN(Width) ? availableSize.Width : Width,
-					double.IsNaN(Height) ? availableSize.Height : Height
-				);
-			}
+			//if (!double.IsNaN(Width) || !double.IsNaN(Height))
+			//{
+			//	availableSize = new Size(
+			//		double.IsNaN(Width) ? availableSize.Width : Width,
+			//		double.IsNaN(Height) ? availableSize.Height : Height
+			//	);
+			//}
 
 			var measuredSizelogical = _layouter.Measure(availableSize);
 
@@ -242,9 +242,22 @@ namespace Windows.UI.Xaml
 
 		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom)
 		{
-			var newSize = new Size(right - left, bottom - top).PhysicalToLogicalPixels();
-
 			base.OnLayoutCore(changed, left, top, right, bottom);
+
+			Size newSize;
+			if (ArrangeLogicalSize is Rect als)
+			{
+				// If the parent element is from managed code,
+				// we can recover the "Arrange" with double accuracy.
+				// We use that because the conversion to "int" is loosing too much precision.
+				newSize = new Size(als.Width, als.Height);
+			}
+			else
+			{
+				// Here the "arrange" is coming from a native element,
+				// so we convert those measurements to logical ones.
+				newSize = new Size(right - left, bottom - top).PhysicalToLogicalPixels();
+			}
 
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
@@ -260,7 +273,6 @@ namespace Windows.UI.Xaml
 
 			var previousSize = _actualSize;
 			_actualSize = newSize;
-			RenderSize = _actualSize;
 
 			if (
 				// If the layout has changed, but the final size has not, this is just a translation.
@@ -273,15 +285,7 @@ namespace Windows.UI.Xaml
 			{
 				_lastLayoutSize = newSize;
 
-				Rect finalRect;
-				if (ArrangeLogicalSize is Rect als)
-				{
-					finalRect = new Rect(0, 0, als.Width, als.Height);
-				}
-				else
-				{
-					finalRect = new Rect(0, 0, newSize.Width, newSize.Height);
-				}
+				var finalRect = new Rect(0, 0, newSize.Width, newSize.Height);
 
 				OnBeforeArrange();
 

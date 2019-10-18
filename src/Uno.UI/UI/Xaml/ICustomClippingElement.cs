@@ -9,7 +9,7 @@
 		/// <remarks>
 		/// This is called during the Arrange phase, can be dynamic.
 		/// </remarks>
-		bool AllowClippingToBounds { get; }
+		bool AllowClippingToLayoutSlot { get; }
 
 		/// <summary>
 		/// Define if the control is forcing a clipping to its bounds.
@@ -17,6 +17,6 @@
 		/// <remarks>
 		/// This is called during the Arrange phase, can be dynamic.
 		/// </remarks>
-		bool ForcedClippingToBounds { get; }
+		bool ForceClippingToLayoutSlot { get; }
 	}
 }

@@ -51,14 +51,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var uiElement = view as UIElement;
 
-			if (uiElement != null)
-			{
-				return uiElement.DesiredSize;
-			}
-			else
-			{
-				return LayouterHelper.LayoutProperties.GetValue(view, "desiredSize", () => default(Size));
-			}
+			return uiElement?.DesiredSize ?? LayouterHelper.LayoutProperties.GetValue(view, "desiredSize", () => default(Size));
 		}
 
 		protected Size MeasureChildOverride(View view, Size slotSize)
@@ -107,22 +100,17 @@ namespace Windows.UI.Xaml.Controls
 			{
 				SetArrangeLogicalSize(view, frame);
 
-			view.Layout(
-				(int)physicalFrame.Left,
-				(int)physicalFrame.Top,
-				(int)physicalFrame.Right,
-				(int)physicalFrame.Bottom
-			);
-		}
+				view.Layout(
+					(int)physicalFrame.Left,
+					(int)physicalFrame.Top,
+					(int)physicalFrame.Right,
+					(int)physicalFrame.Bottom
+				);
+			}
 			finally
 			{
 				ResetArrangeLogicalSize(view);
 			}
-		}
-
-		private void SetClippingToBounds(bool needsClipping)
-		{
-			(Panel as UnoViewGroup)?.SetClipChildren(needsClipping);
 		}
 	}
 

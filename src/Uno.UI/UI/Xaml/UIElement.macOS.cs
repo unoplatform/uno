@@ -22,13 +22,6 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : BindableNSView
 	{
-#if DEBUG
-		/// <summary>
-		/// Provides the ability to disable clipping for an object provided by the selector.
-		/// </summary>
-		public static Func<object, bool> CanClipSelector { get; set; }
-#endif
-
 		internal bool IsPointerCaptured { get; set; }
 
 		#region Logs

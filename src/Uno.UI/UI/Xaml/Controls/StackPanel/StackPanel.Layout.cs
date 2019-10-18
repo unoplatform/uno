@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml.Controls
 			var spacing = Spacing;
 			var count = Children.Count;
 
-			for (int i = 0; i < count; i++)
+			for (var i = 0; i < count; i++)
 			{
 				var view = Children[i];
 				var desiredChildSize = GetElementDesiredSize(view);

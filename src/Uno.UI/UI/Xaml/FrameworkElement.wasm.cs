@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal sealed override void ManagedOnLoaded()
+		internal sealed override void ManagedOnLoaded(int depth)
 		{
 			if (!base.IsLoaded)
 			{
@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml
 				}
 			}
 
-			base.ManagedOnLoaded();
+			base.ManagedOnLoaded(depth);
 		}
 
 		private void NativeOnLoaded(object sender, RoutedEventArgs args)

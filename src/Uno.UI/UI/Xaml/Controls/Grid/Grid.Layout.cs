@@ -164,7 +164,6 @@ namespace Windows.UI.Xaml.Controls
 				using (positions.Subscription)
 				{
 					// Columns
-					double maxMeasuredHeight; //ignored here
 					_calculatedColumns = CalculateColumns(
 						availableSize,
 						positions.Views.Span,
@@ -172,11 +171,10 @@ namespace Windows.UI.Xaml.Controls
 						columns,
 						definedColumns,
 						true,
-						out maxMeasuredHeight
+						out var maxMeasuredHeight
 					);
 
 					// Rows (we need to fully calculate the rows to allow text wrapping)
-					double maxMeasuredWidth; //ignored here
 					_calculatedRows = CalculateRows(
 						availableSize,
 						positions.Views.Span,
@@ -185,7 +183,7 @@ namespace Windows.UI.Xaml.Controls
 						rows,
 						definedRows,
 						true,
-						out maxMeasuredWidth
+						out var maxMeasuredWidth
 					);
 
 					size = new Size(_calculatedColumns.Span.Sum(cs => cs.MinValue), _calculatedRows.Span.Sum(cs => cs.MinValue));

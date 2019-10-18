@@ -76,8 +76,8 @@ namespace Windows.UI.Xaml.Controls
 
 			return finalSize;
 		}
-		bool ICustomClippingElement.AllowClippingToBounds => !(Content is UIElement ue) || ue.RenderTransform == null;
-		bool ICustomClippingElement.ForcedClippingToBounds => false;
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Content is UIElement ue) || ue.RenderTransform == null;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 	}
 }
 #endif

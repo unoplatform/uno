@@ -9,7 +9,7 @@ using Uno.Disposables;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 using Uno.Logging;
-
+using Uno.UI;
 #if __IOS__
 using UIKit;
 using _Color = UIKit.UIColor;
@@ -209,7 +209,7 @@ namespace Windows.UI.Xaml.Shapes
 			};
 
 			// The ImageBrush.Stretch will tell us the SIZE of the image we need for the layer
-			var aspectRatio = (double)(uiImage.Size.Width / uiImage.Size.Height);
+			var aspectRatio = uiImage.Size.AspectRatio();
 			CGSize imageSize;
 			switch (imageBrush.Stretch)
 			{

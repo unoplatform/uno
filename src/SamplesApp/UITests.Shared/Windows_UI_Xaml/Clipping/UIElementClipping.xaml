@@ -12,13 +12,23 @@
 			<DoubleAnimation
 				Storyboard.TargetName="RotateTransform"
 				Storyboard.TargetProperty="Angle"
-				From="0"
-				To="360"
+				From="5"
+				To="365"
 				Duration="0:0:1.25"
 				AutoReverse="False">
 				<DoubleAnimation.EasingFunction>
 					<BounceEase />
 				</DoubleAnimation.EasingFunction>
+			</DoubleAnimation>
+		</Storyboard>
+		<Storyboard x:Name="RotateClipStoryboard">
+			<DoubleAnimation
+				Storyboard.TargetName="ClipRotateTransform"
+				Storyboard.TargetProperty="Angle"
+				From="5"
+				To="365"
+				Duration="0:0:15"
+				AutoReverse="False">
 			</DoubleAnimation>
 		</Storyboard>
 	</Page.Resources>
@@ -32,7 +42,7 @@
 				<VisualStateGroup.Transitions>
 					<VisualTransition From="Opened" To="Closed">
 						<Storyboard>
-							<DoubleAnimation Storyboard.TargetName="ExpanderPresenter"
+							<DoubleAnimation Storyboard.TargetName="ContainingBorder"
 											 Storyboard.TargetProperty="Height"
 											 Duration="00:00:00.6"
 											 To="50"
@@ -45,7 +55,7 @@
 					</VisualTransition>
 					<VisualTransition From="Closed" To="Opened">
 						<Storyboard>
-							<DoubleAnimation Storyboard.TargetName="ExpanderPresenter"
+							<DoubleAnimation Storyboard.TargetName="ContainingBorder"
 											 Storyboard.TargetProperty="Height"
 											 Duration="00:00:00.6"
 											 To="150"
@@ -71,6 +81,7 @@
 					<Button Click="Open">OPEN Y</Button>
 					<Button Click="Close">CLOSE Y</Button>
 					<Button Click="Rotate">ROTATE</Button>
+					<Button Click="RotateClip">ROTATE CLIP</Button>
 				</StackPanel>
 				<StackPanel Orientation="Horizontal">
 					<Button Click="FixHeight">FIX HEIGHT (50)</Button>
@@ -84,20 +95,27 @@
 				</StackPanel>
 			</StackPanel>
 
-			<Border x:Name="ExpanderPresenter"
+			<Border x:Name="ContainingBorder"
 					Grid.Row="1"
 					HorizontalAlignment="Center"
 					VerticalAlignment="Top"
 					BorderBrush="BlueViolet"
-					BorderThickness="4.25">
-				<StackPanel Orientation="Horizontal">
-					<StackPanel>
-						<StackPanel.RenderTransform>
-							<TranslateTransform X="15" Y="15" />
-						</StackPanel.RenderTransform>
-						<Border Background="Red" Height="200" Width="200">
+					BorderThickness="5">
+				<Border.Clip>
+					<RectangleGeometry Rect="-50,-50,300,300">
+						<RectangleGeometry.Transform>
+							<RotateTransform CenterX="150" CenterY="200" x:Name="ClipRotateTransform" Angle="0" />
+						</RectangleGeometry.Transform>
+					</RectangleGeometry>
+				</Border.Clip>
+				<StackPanel Orientation="Horizontal" x:Name="sp1Horz">
+					<StackPanel.RenderTransform>
+						<TranslateTransform X="15" Y="15" />
+					</StackPanel.RenderTransform>
+					<StackPanel x:Name="sp2Vert">
+						<Border Background="Red" Height="200" Width="200" x:Name="rect">
 							<Border.RenderTransform>
-								<RotateTransform x:Name="RotateTransform" />
+								<RotateTransform x:Name="RotateTransform" Angle="5" />
 							</Border.RenderTransform>
 						</Border>
 					</StackPanel>

@@ -93,8 +93,15 @@ namespace Windows.UI.Xaml.Controls
 				// One simulated column
 				Span<DoubleRange> columns = stackalloc DoubleRange[] { new DoubleRange(availableSize.Width) };
 
-				double maxMeasuredWidth;
-				_calculatedRows = CalculateRows(availableSize, positions.Views.Span, measureChild, columns, rows, definedRows, true, out maxMeasuredWidth);
+				_calculatedRows = CalculateRows(
+					availableSize,
+					positions.Views.Span,
+					measureChild,
+					columns,
+					rows,
+					definedRows,
+					true,
+					out var maxMeasuredWidth);
 
 				size = new Size(
 					Math.Max(size.Width, maxMeasuredWidth),
@@ -136,8 +143,14 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var measureChild = GetDirectMeasureChild();
 
-				double maxHeightMeasured;
-				_calculatedColumns = CalculateColumns(availableSize, positions.Views.Span, measureChild, columns, definedColumns, true, out maxHeightMeasured);
+				_calculatedColumns = CalculateColumns(
+					availableSize,
+					positions.Views.Span,
+					measureChild,
+					columns,
+					definedColumns,
+					true,
+					out var maxHeightMeasured);
 
 				size = new Size(
 					_calculatedColumns.Span.Sum(r => r.MinValue),

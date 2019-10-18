@@ -8,7 +8,7 @@
 	mc:Ignorable="d"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<ScrollViewer HorizontalScrollMode="Enabled" VerticalScrollMode="Enabled">
+	<ScrollViewer HorizontalScrollMode="Enabled" VerticalScrollMode="Enabled" HorizontalScrollBarVisibility="Auto" x:Name="sv">
 		<Grid>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="200" />
@@ -36,7 +36,7 @@
 
 				<TextBlock TextWrapping="WrapWholeWords">r12) 100x100 rectangle in a border of 75px height</TextBlock>
 				<Grid Height="75">
-					<Rectangle Fill="Red" Width="100" Height="100" Stroke="Blue" StrokeThickness="5" RenderTransformOrigin=".5,.5" x:Name="r2">
+					<Rectangle Fill="Red" Width="100" Height="100" Stroke="Blue" StrokeThickness="5" RenderTransformOrigin=".5,.5" x:Name="r12">
 						<Rectangle.RenderTransform>
 							<RotateTransform Angle="10" />
 						</Rectangle.RenderTransform>
@@ -213,21 +213,21 @@
 				<TextBlock TextWrapping="WrapWholeWords">r31) 100x100 rectangle unconstrained in a border</TextBlock>
 				<Grid>
 					<Rectangle Fill="Red" Width="100" Height="100" Stroke="Blue" StrokeThickness="5" x:Name="r31" />
-					
+
 					<Rectangle Stroke="Green" StrokeThickness="1" StrokeDashArray="5,10" />
 				</Grid>
 
 				<TextBlock TextWrapping="WrapWholeWords">r32) 100x100 rectangle in a border of 75px height</TextBlock>
 				<Grid Height="75">
 					<Rectangle Fill="Red" Width="100" Height="100" Stroke="Blue" StrokeThickness="5" x:Name="r32" />
-					
+
 					<Rectangle Stroke="Green" StrokeThickness="1" StrokeDashArray="5,10" />
 				</Grid>
 
 				<TextBlock TextWrapping="WrapWholeWords">r33) 100x100 rectangle in a border of 75px width</TextBlock>
 				<Grid Width="75">
 					<Rectangle Fill="Red" Width="100" Height="100" Stroke="Blue" StrokeThickness="5" x:Name="r33" />
-					
+
 					<Rectangle Stroke="Green" StrokeThickness="1" StrokeDashArray="5,10" />
 				</Grid>
 
@@ -235,7 +235,7 @@
 				<Grid Height="75">
 					<StackPanel Background="Pink">
 						<Rectangle Fill="Red" Width="100" Height="100" Stroke="Blue" StrokeThickness="5" x:Name="r34" />
-						
+
 					</StackPanel>
 					<Rectangle Stroke="Green" StrokeThickness="1" StrokeDashArray="5,10" />
 				</Grid>
@@ -244,7 +244,7 @@
 				<Grid Height="75">
 					<StackPanel Orientation="Horizontal" Background="Pink">
 						<Rectangle Fill="Red" Width="100" Height="100" Stroke="Blue" StrokeThickness="5" x:Name="r35" />
-						
+
 					</StackPanel>
 					<Rectangle Stroke="Green" StrokeThickness="1" StrokeDashArray="5,10" />
 				</Grid>
@@ -253,7 +253,7 @@
 				<Grid Width="75">
 					<StackPanel Background="Pink">
 						<Rectangle Fill="Red" Width="100" Height="100" Stroke="Blue" StrokeThickness="5" x:Name="r36" />
-						
+
 					</StackPanel>
 					<Rectangle Stroke="Green" StrokeThickness="1" StrokeDashArray="5,10" />
 				</Grid>
@@ -262,7 +262,7 @@
 				<Grid Width="75">
 					<StackPanel Orientation="Horizontal" Background="Pink">
 						<Rectangle Fill="Red" Width="100" Height="100" Stroke="Blue" StrokeThickness="5" />
-						
+
 					</StackPanel>
 					<Rectangle Stroke="Green" StrokeThickness="1" StrokeDashArray="5,10" />
 				</Grid>

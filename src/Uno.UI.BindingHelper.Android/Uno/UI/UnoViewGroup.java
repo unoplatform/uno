@@ -93,6 +93,8 @@ public abstract class UnoViewGroup
 				}
 			}
 		);
+
+		setClipChildren(false); // The actual clipping will be calculated in managed code
 	}
 
 	private boolean _unoLayoutOverride;
