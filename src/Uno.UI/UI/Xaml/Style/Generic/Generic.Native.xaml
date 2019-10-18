@@ -638,7 +638,7 @@
 	</ios:Style>
 
 	<!-- DatePicker -->
-	<ios:Style TargetType="DatePickerFlyoutPresenter">
+	<ios:Style TargetType="NativeDatePickerFlyoutPresenter">
 		<Setter Property="Background"
 				Value="{ThemeResource TimePickerFlyoutPresenterBackground}" />
 		<Setter Property="VerticalAlignment"
@@ -653,7 +653,7 @@
 				Value="False" />
 		<Setter Property="Template">
 			<Setter.Value>
-				<ControlTemplate TargetType="DatePickerFlyoutPresenter">
+				<ControlTemplate TargetType="NativeDatePickerFlyoutPresenter">
 					<Grid x:Name="ContentPanel"
 						  Background="{TemplateBinding Background}"
 						  BorderBrush="{TemplateBinding BorderBrush}"

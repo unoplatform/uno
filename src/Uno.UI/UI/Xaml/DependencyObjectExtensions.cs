@@ -408,5 +408,10 @@ namespace Windows.UI.Xaml
 			var uielement = d as UIElement ?? d.GetParents().OfType<UIElement>().FirstOrDefault();
 			uielement?.InvalidateRender();
 		}
+
+		internal static void RegisterDefaultValueProvider(this DependencyObject dependencyObject, DependencyObjectStore.DefaultValueProvider provider)
+		{
+			GetStore(dependencyObject).RegisterDefaultValueProvider(provider);
+		}
 	}
 }

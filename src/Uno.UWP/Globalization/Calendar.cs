@@ -32,7 +32,7 @@ namespace Windows.Globalization
 				// case CalendarIdentifiers.TaiwanLunarValue: return new global::System.Globalization.TaiwanLunarCalendar();
 				// case CalendarIdentifiers.KoreanLunarValue: return new global::System.Globalization.KoreanLunarCalendar();
 				// case CalendarIdentifiers.JapaneseLunarValue: return new global::System.Globalization.JapaneseLunarCalendar();
-				_ => throw new ArgumentException(nameof(calendar)),
+				_ => throw new ArgumentException(nameof(calendar), $"Unknown calendar {calendar}."),
 			};
 		}
 
@@ -57,7 +57,7 @@ namespace Windows.Globalization
 				// case CalendarIdentifiers.TaiwanLunar: return new global::System.Globalization.TaiwanLunarCalendar();
 				// case CalendarIdentifiers.KoreanLunar: return new global::System.Globalization.KoreanLunarCalendar();
 				// case CalendarIdentifiers.JapaneseLunar: return new global::System.Globalization.JapaneseLunarCalendar();
-				_ => throw new ArgumentException(nameof(calendar)),
+				_ => throw new ArgumentException(nameof(calendar), $"Unknown calendar {calendar}."),
 			};
 		}
 
@@ -81,7 +81,7 @@ namespace Windows.Globalization
 		#endregion
 
 		private IReadOnlyList<string> _languages;
-		private CultureInfo _resolvedCulture;
+		private readonly CultureInfo _resolvedCulture;
 		private _Calendar _calendar;
 		private TimeZoneInfo _timeZone;
 		private string _clock;
@@ -286,10 +286,18 @@ namespace Windows.Globalization
 			=> _time = DateTime.Now;
 
 		public void SetToMin()
-			=> _time = DateTimeOffset.MinValue;
+		{
+			var calendarMinSupportedDateTime = _calendar.MinSupportedDateTime;
+			var dateTimeOffset = calendarMinSupportedDateTime.ToLocalTime();
+			_time = dateTimeOffset;
+		}
 
 		public void SetToMax()
-			=> _time = DateTimeOffset.MaxValue;
+		{
+			var calendarMaxSupportedDateTime = _calendar.MaxSupportedDateTime;
+			var dateTimeOffset = calendarMaxSupportedDateTime.ToLocalTime();
+			_time = dateTimeOffset;
+		}
 
 		public DateTimeOffset GetDateTime()
 			=> _time;

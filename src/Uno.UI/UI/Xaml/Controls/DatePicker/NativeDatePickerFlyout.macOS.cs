@@ -9,8 +9,8 @@ using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml.Controls
 {
-    public partial class DatePickerFlyout : PickerFlyoutBase
-    {
+	public partial class NativeDatePickerFlyout : DatePickerFlyout
+	{
 
-    }
+	}
 }

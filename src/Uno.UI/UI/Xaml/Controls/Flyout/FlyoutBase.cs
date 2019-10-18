@@ -20,7 +20,7 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	public partial class FlyoutBase : DependencyObject
+	public abstract partial class FlyoutBase : DependencyObject
 	{
 		public event EventHandler Opened;
 		public event EventHandler Closed;
@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private Point? _popupPositionInTarget;
 		private readonly SerialDisposable _sizeChangedDisposable = new SerialDisposable();
 
-		public FlyoutBase()
+		protected FlyoutBase()
 		{
 		}
 
@@ -46,9 +46,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "FlyoutLightDismissOverlayBackground", isThemeResourceExtension: true);
 
+				var child = CreatePresenter();
 				_popup = new Windows.UI.Xaml.Controls.Popup()
 				{
-					Child = CreatePresenter(),
+					Child = child,
 					IsLightDismissEnabled = _isLightDismissEnabled,
 				};
 
@@ -252,10 +253,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private protected virtual void OnOpened() { }
 
-		protected virtual Control CreatePresenter()
-		{
-			return null;
-		}
+		protected abstract Control CreatePresenter();
 
 		private void OnPopupClosed(object sender, object e)
 		{

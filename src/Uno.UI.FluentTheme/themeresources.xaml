@@ -13809,6 +13809,7 @@
       </Setter.Value>
     </Setter>
   </Style>
+  <Style TargetType="DatePickerFlyoutPresenter" BasedOn="{StaticResource DefaultDatePickerFlyoutPresenterStyle}" />
   <Style x:Key="DefaultDatePickerFlyoutPresenterStyle" TargetType="DatePickerFlyoutPresenter">
     <Setter Property="Width" Value="296" />
     <Setter Property="MinWidth" Value="296" />

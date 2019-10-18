@@ -1,0 +1,378 @@
+﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
+<ResourceDictionary
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:local="using:Microsoft.UI.Xaml.Controls"
+	xmlns:media="using:Microsoft.UI.Xaml.Media">
+	<ResourceDictionary.ThemeDictionaries>
+
+		<ResourceDictionary x:Key="Default">
+			<x:Double x:Key="DatePickerSelectorThemeMinWidth">80</x:Double>
+			<x:Double x:Key="DatePickerSpacingThemeWidth">20</x:Double>
+			<x:Double x:Key="DatePickerSpacingThemeHeight">20</x:Double>
+			
+			<Thickness x:Key="DatePickerHeaderThemeMargin">0,0,0,4</Thickness>
+			
+			<FontWeight x:Key="DatePickerHeaderThemeFontWeight">Normal</FontWeight>
+
+			<!-- Resources for Windows.UI.Xaml.Controls.DatePicker -->
+			<StaticResource x:Key="DatePickerSpacerFill" ResourceKey="SystemControlForegroundBaseLowBrush" />
+			<StaticResource x:Key="DatePickerSpacerFillDisabled" ResourceKey="SystemControlDisabledBaseLowBrush" />
+			<StaticResource x:Key="DatePickerHeaderForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+			<StaticResource x:Key="DatePickerHeaderForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBorderBrush" ResourceKey="SystemControlForegroundBaseMediumLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumBrush" />
+			<StaticResource x:Key="DatePickerButtonBorderBrushPressed" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBorderBrushDisabled" ResourceKey="SystemControlDisabledBaseLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBackground" ResourceKey="SystemControlBackgroundAltMediumLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBackgroundPointerOver" ResourceKey="SystemControlPageBackgroundAltMediumBrush" />
+			<StaticResource x:Key="DatePickerButtonBackgroundPressed" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBackgroundFocused" ResourceKey="SystemControlHighlightListAccentLowBrush" />
+			<StaticResource x:Key="DatePickerButtonForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+			<StaticResource x:Key="DatePickerButtonForegroundPointerOver" ResourceKey="SystemControlHighlightBaseHighBrush" />
+			<StaticResource x:Key="DatePickerButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseHighBrush" />
+			<StaticResource x:Key="DatePickerButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+			<StaticResource x:Key="DatePickerButtonForegroundFocused" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+
+			<!-- Resources for Windows.UI.Xaml.Controls.DatePickerFlyoutPresenter -->
+			<StaticResource x:Key="DatePickerFlyoutPresenterBackground" ResourceKey="SystemControlTransientBackgroundBrush" />
+			<StaticResource x:Key="DatePickerFlyoutPresenterBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
+			<StaticResource x:Key="DatePickerFlyoutPresenterSpacerFill" ResourceKey="SystemControlForegroundBaseLowBrush" />
+			<StaticResource x:Key="DatePickerFlyoutPresenterHighlightFill" ResourceKey="SystemControlHighlightListAccentLowBrush" />
+			
+			<StaticResource x:Key="DatePickerLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
+
+			<!-- Legacy brushes -->
+			<!--<SolidColorBrush x:Key="DatePickerHeaderForegroundThemeBrush" Color="#FFFFFFFF" />
+			<SolidColorBrush x:Key="DatePickerForegroundThemeBrush" Color="#FF000000" />
+			<SolidColorBrush x:Key="DatePickerHeaderForegroundThemeBrush" Color="#FFFFFFFF" />
+			<SolidColorBrush x:Key="DatePickerForegroundThemeBrush" Color="#FF000000" />-->
+
+		</ResourceDictionary>
+
+		<ResourceDictionary x:Key="HighContrast">
+
+			<!-- Resources for Windows.UI.Xaml.Controls.DatePicker -->
+			<StaticResource x:Key="DatePickerSpacerFill" ResourceKey="SystemControlForegroundBaseLowBrush" />
+			<StaticResource x:Key="DatePickerSpacerFillDisabled" ResourceKey="SystemControlDisabledBaseLowBrush" />
+			<StaticResource x:Key="DatePickerHeaderForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+			<StaticResource x:Key="DatePickerHeaderForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBorderBrush" ResourceKey="SystemControlForegroundBaseMediumLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumBrush" />
+			<StaticResource x:Key="DatePickerButtonBorderBrushPressed" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBorderBrushDisabled" ResourceKey="SystemControlDisabledBaseLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBackground" ResourceKey="SystemControlBackgroundAltMediumLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBackgroundPointerOver" ResourceKey="SystemControlPageBackgroundAltMediumBrush" />
+			<StaticResource x:Key="DatePickerButtonBackgroundPressed" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBackgroundFocused" ResourceKey="SystemControlHighlightListAccentLowBrush" />
+			<StaticResource x:Key="DatePickerButtonForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+			<StaticResource x:Key="DatePickerButtonForegroundPointerOver" ResourceKey="SystemControlHighlightBaseHighBrush" />
+			<StaticResource x:Key="DatePickerButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseHighBrush" />
+			<StaticResource x:Key="DatePickerButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+			<StaticResource x:Key="DatePickerButtonForegroundFocused" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+
+			<!-- Resources for Windows.UI.Xaml.Controls.DatePickerFlyoutPresenter -->
+			<StaticResource x:Key="DatePickerFlyoutPresenterBackground" ResourceKey="SystemControlBackgroundChromeMediumLowBrush" />
+			<StaticResource x:Key="DatePickerFlyoutPresenterBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
+			<StaticResource x:Key="DatePickerFlyoutPresenterSpacerFill" ResourceKey="SystemControlForegroundBaseLowBrush" />
+			<StaticResource x:Key="DatePickerFlyoutPresenterHighlightFill" ResourceKey="SystemControlHighlightListAccentLowBrush" />
+
+			<!-- Light Dismiss Overlay Resources -->
+			<StaticResource x:Key="DatePickerLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
+			
+			<x:Double x:Key="DatePickerSelectorThemeMinWidth">80</x:Double>
+			<x:Double x:Key="DatePickerSpacingThemeWidth">20</x:Double>
+			<x:Double x:Key="DatePickerSpacingThemeHeight">20</x:Double>
+			
+			<Thickness x:Key="DatePickerHeaderThemeMargin">0,0,0,4</Thickness>
+			
+			<FontWeight x:Key="DatePickerHeaderThemeFontWeight">Normal</FontWeight>
+
+			<!-- Legacy brushes -->
+			<SolidColorBrush x:Key="DatePickerHeaderForegroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+			<SolidColorBrush x:Key="DatePickerForegroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
+		</ResourceDictionary>
+		<ResourceDictionary x:Key="Light">
+			
+			<x:Double x:Key="DatePickerSelectorThemeMinWidth">80</x:Double>
+			<x:Double x:Key="DatePickerSpacingThemeWidth">20</x:Double>
+			<x:Double x:Key="DatePickerSpacingThemeHeight">20</x:Double>
+			
+			<Thickness x:Key="DatePickerHeaderThemeMargin">0,0,0,4</Thickness>
+			
+			<FontWeight x:Key="DatePickerHeaderThemeFontWeight">Normal</FontWeight>
+			
+			<!-- Resources for Windows.UI.Xaml.Controls.DatePicker -->
+			<StaticResource x:Key="DatePickerSpacerFill" ResourceKey="SystemControlForegroundBaseLowBrush" />
+			<StaticResource x:Key="DatePickerSpacerFillDisabled" ResourceKey="SystemControlDisabledBaseLowBrush" />
+			<StaticResource x:Key="DatePickerHeaderForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+			<StaticResource x:Key="DatePickerHeaderForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBorderBrush" ResourceKey="SystemControlForegroundBaseMediumLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumBrush" />
+			<StaticResource x:Key="DatePickerButtonBorderBrushPressed" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBorderBrushDisabled" ResourceKey="SystemControlDisabledBaseLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBackground" ResourceKey="SystemControlBackgroundAltMediumLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBackgroundPointerOver" ResourceKey="SystemControlPageBackgroundAltMediumBrush" />
+			<StaticResource x:Key="DatePickerButtonBackgroundPressed" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBackgroundDisabled" ResourceKey="SystemControlBackgroundBaseLowBrush" />
+			<StaticResource x:Key="DatePickerButtonBackgroundFocused" ResourceKey="SystemControlHighlightListAccentLowBrush" />
+			<StaticResource x:Key="DatePickerButtonForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+			<StaticResource x:Key="DatePickerButtonForegroundPointerOver" ResourceKey="SystemControlHighlightBaseHighBrush" />
+			<StaticResource x:Key="DatePickerButtonForegroundPressed" ResourceKey="SystemControlHighlightBaseHighBrush" />
+			<StaticResource x:Key="DatePickerButtonForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+			<StaticResource x:Key="DatePickerButtonForegroundFocused" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+
+			<!-- Resources for Windows.UI.Xaml.Controls.DatePickerFlyoutPresenter -->
+			<StaticResource x:Key="DatePickerFlyoutPresenterBackground" ResourceKey="SystemControlTransientBackgroundBrush" />
+			<StaticResource x:Key="DatePickerFlyoutPresenterBorderBrush" ResourceKey="SystemControlTransientBorderBrush" />
+			<StaticResource x:Key="DatePickerFlyoutPresenterSpacerFill" ResourceKey="SystemControlForegroundBaseLowBrush" />
+			<StaticResource x:Key="DatePickerFlyoutPresenterHighlightFill" ResourceKey="SystemControlHighlightListAccentLowBrush" />
+
+			<!-- Light Dismiss Overlay Resources -->
+			<StaticResource x:Key="DatePickerLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
+
+			<!-- Legacy brushes -->
+			<SolidColorBrush x:Key="DatePickerHeaderForegroundThemeBrush" Color="#FF000000" />
+			<SolidColorBrush x:Key="DatePickerForegroundThemeBrush" Color="#FF000000" />
+		</ResourceDictionary>
+
+	</ResourceDictionary.ThemeDictionaries>
+
+	<!-- Control resources that are customizable but do not vary based on theme -->
+	<Thickness x:Key="DatePickerTopHeaderMargin">0,0,0,4</Thickness>
+	<Thickness x:Key="DatePickerLeftHeaderMargin">0,5,32,0</Thickness>
+	<Thickness x:Key="DatePickerFlyoutPresenterItemPadding">0,3,0,6</Thickness>
+	<Thickness x:Key="DatePickerFlyoutPresenterMonthPadding">9,3,0,6</Thickness>
+	
+	<x:Double x:Key="DatePickerFlyoutPresenterHighlightHeight">40</x:Double>
+	<x:Double x:Key="DatePickerFlyoutPresenterAcceptDismissHostGridHeight">41</x:Double>
+	<x:Double x:Key="DatePickerFlyoutPresenterItemHeight">40</x:Double>
+	
+	<x:Double x:Key="DatePickerThemeMinWidth">296</x:Double>
+	<x:Double x:Key="DatePickerThemeMaxWidth">456</x:Double>
+	<x:Double x:Key="DatePickerLeftHeaderMaxWidth">296</x:Double>
+
+	<Style x:Key="Default_DatePickerFlyoutButtonStyle" TargetType="Button">
+		<Setter Property="UseSystemFocusVisuals" Value="False" />
+		<Setter Property="ElementSoundMode" Value="FocusOnly" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<Grid Background="{TemplateBinding Background}">
+
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<VisualState x:Name="Normal" />
+
+								<VisualState x:Name="PointerOver">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerButtonBorderBrushPointerOver}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerButtonBackgroundPointerOver}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerButtonForegroundPointerOver}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+
+								<VisualState x:Name="Pressed">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerButtonBackgroundPressed}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerButtonBorderBrushPressed}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerButtonForegroundPressed}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+
+								<VisualState x:Name="Disabled">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerButtonBackgroundDisabled}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerButtonBorderBrushDisabled}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerButtonForegroundDisabled}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+							</VisualStateGroup>
+							<VisualStateGroup x:Name="FocusStates">
+								<VisualState x:Name="Focused">
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerButtonBackgroundFocused}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerButtonForegroundFocused}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+								<VisualState x:Name="Unfocused" />
+								<VisualState x:Name="PointerFocused" />
+							</VisualStateGroup>
+						</VisualStateManager.VisualStateGroups>
+
+						<ContentPresenter x:Name="ContentPresenter"
+													BorderBrush="{ThemeResource DatePickerButtonBorderBrush}"
+													Background="{ThemeResource DatePickerButtonBackground}"
+													BorderThickness="2"
+													Content="{TemplateBinding Content}"
+													Foreground="{TemplateBinding Foreground}"
+													HorizontalContentAlignment="Stretch"
+													VerticalContentAlignment="Stretch"
+													AutomationProperties.AccessibilityView="Raw" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+
+	<!-- Default style for Windows.UI.Xaml.Controls.DatePicker -->
+	<Style TargetType="DatePicker">
+		<Setter Property="Orientation" Value="Horizontal" />
+		<Setter Property="IsTabStop" Value="False" />
+		<Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+		<Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+		<Setter Property="Foreground" Value="{ThemeResource DatePickerButtonForeground}" />
+		<Setter Property="HorizontalAlignment" Value="Left" />
+		<Setter Property="VerticalAlignment" Value="Center" />
+		<Setter Property="UseSystemFocusVisuals" Value="{ThemeResource IsApplicationFocusVisualKindReveal}" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="DatePicker">
+					<Grid x:Name="LayoutRoot" Margin="{TemplateBinding Padding}">
+
+						<Grid.Resources>
+						</Grid.Resources>
+
+						<VisualStateManager.VisualStateGroups>
+							<VisualStateGroup x:Name="CommonStates">
+								<VisualState x:Name="Normal" />
+
+								<VisualState x:Name="Disabled">
+
+									<Storyboard>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HeaderContentPresenter" Storyboard.TargetProperty="Foreground">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerHeaderForegroundDisabled}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="FirstPickerSpacing" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerSpacerFillDisabled}" />
+										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="SecondPickerSpacing" Storyboard.TargetProperty="Fill">
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource DatePickerSpacerFillDisabled}" />
+										</ObjectAnimationUsingKeyFrames>
+									</Storyboard>
+								</VisualState>
+
+							</VisualStateGroup>
+							<VisualStateGroup x:Name="HasDateStates">
+								<VisualState x:Name="HasDate" />
+								<VisualState x:Name="HasNoDate">
+									<VisualState.Setters>
+										<Setter Target="DayTextBlock.Foreground" Value="{ThemeResource TextControlPlaceholderForeground}" />
+										<Setter Target="MonthTextBlock.Foreground" Value="{ThemeResource TextControlPlaceholderForeground}" />
+										<Setter Target="YearTextBlock.Foreground" Value="{ThemeResource TextControlPlaceholderForeground}" />
+									</VisualState.Setters>
+								</VisualState>
+
+							</VisualStateGroup>
+
+						</VisualStateManager.VisualStateGroups>
+
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+
+						<ContentPresenter x:Name="HeaderContentPresenter"
+							Grid.Row="0"
+							Content="{TemplateBinding Header}"
+							ContentTemplate="{TemplateBinding HeaderTemplate}"
+							Foreground="{ThemeResource DatePickerHeaderForeground}"
+							Margin="{StaticResource DatePickerTopHeaderMargin}"
+							MaxWidth="{StaticResource DatePickerThemeMaxWidth}"
+							TextWrapping="Wrap"
+							HorizontalAlignment="Stretch"
+							VerticalAlignment="Top"
+							Visibility="Collapsed"
+							AutomationProperties.AccessibilityView="Raw" />
+						<Button x:Name="FlyoutButton"
+							Grid.Row="1"
+							Style="{StaticResource Default_DatePickerFlyoutButtonStyle}"
+							Foreground="{TemplateBinding Foreground}"
+							Background="{TemplateBinding Background}"
+							IsEnabled="{TemplateBinding IsEnabled}"
+							MinWidth="{StaticResource DatePickerThemeMinWidth}"
+							MaxWidth="{StaticResource DatePickerThemeMaxWidth}"
+							HorizontalAlignment="Stretch"
+							HorizontalContentAlignment="Stretch"
+							VerticalAlignment="Top"
+							UseSystemFocusVisuals="{TemplateBinding UseSystemFocusVisuals}">
+							<Grid x:Name="FlyoutButtonContentGrid">
+
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="78*" x:Name="DayColumn" />
+									<ColumnDefinition Width="Auto" x:Name="FirstSpacerColumn" />
+									<ColumnDefinition Width="132*" x:Name="MonthColumn" />
+									<ColumnDefinition Width="Auto" x:Name="SecondSpacerColumn" />
+									<ColumnDefinition Width="78*" x:Name="YearColumn" />
+								</Grid.ColumnDefinitions>
+								<TextBlock x:Name="DayTextBlock"
+									Text="Day"
+									TextAlignment="Center"
+									Padding="{StaticResource DatePickerFlyoutPresenterItemPadding}"
+									FontFamily="{TemplateBinding FontFamily}"
+									FontWeight="{TemplateBinding FontWeight}"
+									FontSize="{TemplateBinding FontSize}"
+								AutomationProperties.AccessibilityView="Raw" />
+								<TextBlock x:Name="MonthTextBlock"
+									Text="Month"
+									TextAlignment="Left"
+									Padding="{StaticResource DatePickerFlyoutPresenterMonthPadding}"
+									Margin="1,0,0,0"
+									FontFamily="{TemplateBinding FontFamily}"
+									FontWeight="{TemplateBinding FontWeight}"
+									FontSize="{TemplateBinding FontSize}"
+									AutomationProperties.AccessibilityView="Raw" />
+								<TextBlock x:Name="YearTextBlock"
+									Text="Year"
+									TextAlignment="Center"
+									Padding="{StaticResource DatePickerFlyoutPresenterItemPadding}"
+									FontFamily="{TemplateBinding FontFamily}"
+									FontWeight="{TemplateBinding FontWeight}"
+									FontSize="{TemplateBinding FontSize}"
+									AutomationProperties.AccessibilityView="Raw" />
+								<Rectangle x:Name="FirstPickerSpacing"
+									Fill="{ThemeResource DatePickerSpacerFill}"
+									HorizontalAlignment="Center"
+									Width="2"
+									Grid.Column="1" />
+								<Rectangle x:Name="SecondPickerSpacing"
+									Fill="{ThemeResource DatePickerSpacerFill}"
+									HorizontalAlignment="Center"
+									Width="2"
+									Grid.Column="3" />
+							</Grid>
+						</Button>
+
+					</Grid>
+
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</Style>
+
+</ResourceDictionary>

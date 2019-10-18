@@ -17,7 +17,7 @@ using Windows.UI.Core;
 namespace Windows.UI.Xaml.Controls
 {
 	//TODO#2780: support Day/Month/YearVisible
-	public partial class DatePickerFlyout : PickerFlyoutBase
+	public partial class NativeDatePickerFlyout : DatePickerFlyout
 	{
 		#region Template Parts
 		public const string AcceptButtonPartName = "AcceptButton";
@@ -26,16 +26,19 @@ namespace Windows.UI.Xaml.Controls
 
 		public event TypedEventHandler<DatePickerFlyout, DatePickedEventArgs> DatePicked;
 
+		private readonly SerialDisposable _presenterCommandsDisposable = new SerialDisposable();
 		private readonly SerialDisposable _presenterLoadedDisposable = new SerialDisposable();
 		private readonly SerialDisposable _presenterUnloadedDisposable = new SerialDisposable();
 		private bool _isInitialized;
-		private DatePickerFlyoutPresenter _presenter;
+		private NativeDatePickerFlyoutPresenter _presenter;
 		private DatePickerSelector _selector;
 
-		public DatePickerFlyout()
+		public NativeDatePickerFlyout()
 		{
 			Opening += DatePickerFlyout_Opening;
 			Closed += DatePickerFlyout_Closed;
+
+			RegisterPropertyChangedCallback(DateProperty, OnDateChanged);
 		}
 
 		protected override void InitializePopupPanel()
@@ -78,7 +81,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Control CreatePresenter()
 		{
-			_presenter = new DatePickerFlyoutPresenter() { Content = _selector };
+			_presenter = new NativeDatePickerFlyoutPresenter() { Content = _selector };
 
 			_presenterLoadedDisposable.Disposable = Disposable.Create(() => _presenter.Loaded -= OnPresenterLoaded);
 			_presenterUnloadedDisposable.Disposable = Disposable.Create(() => _presenter.Unloaded -= OnPresenterUnloaded);
@@ -100,12 +103,12 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				"Content",
 				typeof(IFrameworkElement),
-				typeof(DatePickerFlyout),
+				typeof(NativeDatePickerFlyout),
 				new FrameworkPropertyMetadata(default(IFrameworkElement), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.ValueInheritsDataContext, OnContentChanged));
 
 		private static void OnContentChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			var flyout = dependencyObject as DatePickerFlyout;
+			var flyout = dependencyObject as NativeDatePickerFlyout;
 
 			if (flyout._presenter != null)
 			{
@@ -145,9 +148,9 @@ namespace Windows.UI.Xaml.Controls
 			_presenterUnloadedDisposable.Disposable = null;
 		}
 
-		partial void OnDateChangedPartialNative(DateTimeOffset oldDate, DateTimeOffset newDate)
+		private void OnDateChanged(DependencyObject sender, DependencyProperty dp)
 		{
-			UpdateSelectorDate(newDate);
+			UpdateSelectorDate(Date);
 		}
 
 		private void Accept()
@@ -195,14 +198,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private IDisposable AttachFlyoutCommand(string targetButtonName, Action<DatePickerFlyout> action)
+		private IDisposable AttachFlyoutCommand(string targetButtonName, Action<NativeDatePickerFlyout> action)
 		{
 			if (_presenter.FindName(targetButtonName) is Button button)
 			{
 				if (button.Command == null)
 				{
 					var self = WeakReferencePool.RentSelfWeakReference(this);
-					button.Command = new DelegateCommand(() => (self.Target as DatePickerFlyout)?.Apply(action));
+					button.Command = new DelegateCommand(() => (self.Target as NativeDatePickerFlyout)?.Apply(action));
 
 					return Disposable.Create(() =>
 					{

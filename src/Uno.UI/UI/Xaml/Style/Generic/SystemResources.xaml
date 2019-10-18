@@ -81,9 +81,6 @@
 			<x:Double x:Key="ContentDialogButtonMaxWidth">202</x:Double>
 			<x:Double x:Key="ContentDialogButtonHeight">32</x:Double>
 			<x:Double x:Key="ContentDialogTitleMaxHeight">56</x:Double>
-			<x:Double x:Key="DatePickerSelectorThemeMinWidth">80</x:Double>
-			<x:Double x:Key="DatePickerSpacingThemeWidth">20</x:Double>
-			<x:Double x:Key="DatePickerSpacingThemeHeight">20</x:Double>
 			<x:Double x:Key="GridViewItemSelectedBorderThemeThickness">4</x:Double>
 			<x:Double x:Key="HubHeaderThemeFontSize">34</x:Double>
 			<x:Double x:Key="HubSectionHeaderThemeFontSize">20</x:Double>
@@ -179,7 +176,6 @@
 			<Thickness x:Key="ContentDialogContentMargin">24,0,24,0</Thickness>
 			<Thickness x:Key="ContentDialogContentScrollViewerMargin">0,0,0,24</Thickness>
 			<Thickness x:Key="ContentDialogTitleMargin">24,18,24,0</Thickness>
-			<Thickness x:Key="DatePickerHeaderThemeMargin">0,0,0,8</Thickness>
 			<Thickness x:Key="DateTimeFlyoutBorderThickness">1</Thickness>
 			<Thickness x:Key="DateTimeFlyoutButtonBorderThickness">0</Thickness>
 			<Thickness x:Key="DateTimeFlyoutContentPanelPortraitThemeMargin">0,37,0,0</Thickness>
@@ -231,7 +227,6 @@
 			<Thickness x:Key="ToolTipBorderThemeThickness">1</Thickness>
 			<FontWeight x:Key="ComboBoxHeaderThemeFontWeight">Normal</FontWeight>
 			<FontWeight x:Key="ComboBoxPlaceholderTextThemeFontWeight">SemiLight</FontWeight>
-			<FontWeight x:Key="DatePickerHeaderThemeFontWeight">Normal</FontWeight>
 			<FontWeight x:Key="PivotHeaderItemThemeFontWeight">SemiLight</FontWeight>
 			<FontWeight x:Key="PivotTitleThemeFontWeight">Bold</FontWeight>
 			<FontWeight x:Key="SearchBoxButtonThemeFontWeight">Normal</FontWeight>
@@ -614,8 +609,6 @@
 			<SolidColorBrush x:Key="ContentDialogBorderThemeBrush" Color="{ThemeResource SystemAccentColor}" />
 			<SolidColorBrush x:Key="ContentDialogContentForegroundBrush" Color="Black" />
 			<SolidColorBrush x:Key="ContentDialogDimmingThemeBrush" Color="#99FFFFFF" />
-			<SolidColorBrush x:Key="DatePickerHeaderForegroundThemeBrush" Color="#FFFFFFFF" />
-			<SolidColorBrush x:Key="DatePickerForegroundThemeBrush" Color="#FF000000" />
 			<SolidColorBrush x:Key="DefaultTextForegroundThemeBrush" Color="{StaticResource SystemBaseHighColor}" />
 			<SolidColorBrush x:Key="FlipViewButtonBackgroundThemeBrush" Color="#59D5D5D5" />
 			<SolidColorBrush x:Key="FlipViewButtonBorderThemeBrush" Color="#59D5D5D5" />
@@ -1383,9 +1376,6 @@
 			<x:Double x:Key="ContentDialogButtonMaxWidth">202</x:Double>
 			<x:Double x:Key="ContentDialogButtonHeight">32</x:Double>
 			<x:Double x:Key="ContentDialogTitleMaxHeight">56</x:Double>
-			<x:Double x:Key="DatePickerSelectorThemeMinWidth">80</x:Double>
-			<x:Double x:Key="DatePickerSpacingThemeWidth">20</x:Double>
-			<x:Double x:Key="DatePickerSpacingThemeHeight">20</x:Double>
 			<x:Double x:Key="GridViewItemSelectedBorderThemeThickness">4</x:Double>
 			<x:Double x:Key="HubHeaderThemeFontSize">34</x:Double>
 			<x:Double x:Key="HubSectionHeaderThemeFontSize">20</x:Double>
@@ -1481,7 +1471,6 @@
 			<Thickness x:Key="ContentDialogContentMargin">24,0,24,0</Thickness>
 			<Thickness x:Key="ContentDialogContentScrollViewerMargin">0,0,0,24</Thickness>
 			<Thickness x:Key="ContentDialogTitleMargin">24,18,24,0</Thickness>
-			<Thickness x:Key="DatePickerHeaderThemeMargin">0,0,0,8</Thickness>
 			<Thickness x:Key="DateTimeFlyoutBorderThickness">1</Thickness>
 			<Thickness x:Key="DateTimeFlyoutButtonBorderThickness">0</Thickness>
 			<Thickness x:Key="DateTimeFlyoutContentPanelPortraitThemeMargin">0,37,0,0</Thickness>
@@ -1533,7 +1522,6 @@
 			<Thickness x:Key="ToolTipBorderThemeThickness">1</Thickness>
 			<FontWeight x:Key="ComboBoxHeaderThemeFontWeight">Normal</FontWeight>
 			<FontWeight x:Key="ComboBoxPlaceholderTextThemeFontWeight">SemiLight</FontWeight>
-			<FontWeight x:Key="DatePickerHeaderThemeFontWeight">Normal</FontWeight>
 			<FontWeight x:Key="PivotHeaderItemThemeFontWeight">SemiLight</FontWeight>
 			<FontWeight x:Key="PivotTitleThemeFontWeight">Bold</FontWeight>
 			<FontWeight x:Key="SearchBoxButtonThemeFontWeight">Normal</FontWeight>
@@ -1914,8 +1902,6 @@
 			<SolidColorBrush x:Key="ContentDialogBorderThemeBrush" Color="{ThemeResource SystemAccentColor}" />
 			<SolidColorBrush x:Key="ContentDialogContentForegroundBrush" Color="Black" />
 			<SolidColorBrush x:Key="ContentDialogDimmingThemeBrush" Color="{ThemeResource SystemColorHighlightColor}" />
-			<SolidColorBrush x:Key="DatePickerHeaderForegroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
-			<SolidColorBrush x:Key="DatePickerForegroundThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
 			<SolidColorBrush x:Key="DefaultTextForegroundThemeBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
 			<SolidColorBrush x:Key="FlipViewButtonBackgroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
 			<SolidColorBrush x:Key="FlipViewButtonBorderThemeBrush" Color="{ThemeResource SystemColorButtonTextColor}" />
@@ -2673,9 +2659,6 @@
 			<x:Double x:Key="ContentDialogButtonMaxWidth">202</x:Double>
 			<x:Double x:Key="ContentDialogButtonHeight">32</x:Double>
 			<x:Double x:Key="ContentDialogTitleMaxHeight">56</x:Double>
-			<x:Double x:Key="DatePickerSelectorThemeMinWidth">80</x:Double>
-			<x:Double x:Key="DatePickerSpacingThemeWidth">20</x:Double>
-			<x:Double x:Key="DatePickerSpacingThemeHeight">20</x:Double>
 			<x:Double x:Key="GridViewItemSelectedBorderThemeThickness">4</x:Double>
 			<x:Double x:Key="HubHeaderThemeFontSize">34</x:Double>
 			<x:Double x:Key="HubSectionHeaderThemeFontSize">20</x:Double>
@@ -2771,7 +2754,6 @@
 			<Thickness x:Key="ContentDialogContentMargin">24,0,24,0</Thickness>
 			<Thickness x:Key="ContentDialogContentScrollViewerMargin">0,0,0,24</Thickness>
 			<Thickness x:Key="ContentDialogTitleMargin">24,18,24,0</Thickness>
-			<Thickness x:Key="DatePickerHeaderThemeMargin">0,0,0,8</Thickness>
 			<Thickness x:Key="DateTimeFlyoutBorderThickness">1</Thickness>
 			<Thickness x:Key="DateTimeFlyoutButtonBorderThickness">0</Thickness>
 			<Thickness x:Key="DateTimeFlyoutContentPanelPortraitThemeMargin">0,37,0,0</Thickness>
@@ -2823,7 +2805,6 @@
 			<Thickness x:Key="ToolTipBorderThemeThickness">1</Thickness>
 			<FontWeight x:Key="ComboBoxHeaderThemeFontWeight">Normal</FontWeight>
 			<FontWeight x:Key="ComboBoxPlaceholderTextThemeFontWeight">SemiLight</FontWeight>
-			<FontWeight x:Key="DatePickerHeaderThemeFontWeight">Normal</FontWeight>
 			<FontWeight x:Key="PivotHeaderItemThemeFontWeight">SemiLight</FontWeight>
 			<FontWeight x:Key="PivotTitleThemeFontWeight">Bold</FontWeight>
 			<FontWeight x:Key="SearchBoxButtonThemeFontWeight">Normal</FontWeight>
@@ -3203,8 +3184,6 @@
 			<SolidColorBrush x:Key="ContentDialogBorderThemeBrush" Color="{ThemeResource SystemAccentColor}" />
 			<SolidColorBrush x:Key="ContentDialogContentForegroundBrush" Color="Black" />
 			<SolidColorBrush x:Key="ContentDialogDimmingThemeBrush" Color="#99FFFFFF" />
-			<SolidColorBrush x:Key="DatePickerHeaderForegroundThemeBrush" Color="#FF000000" />
-			<SolidColorBrush x:Key="DatePickerForegroundThemeBrush" Color="#FF000000" />
 			<SolidColorBrush x:Key="DefaultTextForegroundThemeBrush" Color="Black" />
 			<SolidColorBrush x:Key="FlipViewButtonBackgroundThemeBrush" Color="#59D5D5D5" />
 			<SolidColorBrush x:Key="FlipViewButtonBorderThemeBrush" Color="#59D5D5D5" />

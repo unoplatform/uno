@@ -53,25 +53,44 @@
 				<ComboBoxItem Tag="2045">max 2045</ComboBoxItem>
 			</ComboBox>
 		</StackPanel>
-		<DatePicker
-			x:Name="picker"
-			MinYear="{x:Bind Dt(minYear.SelectedItem), Mode=OneWay}"
-			MaxYear="{x:Bind Dt(maxYear.SelectedItem), Mode=OneWay}"
-			CalendarIdentifier="{Binding SelectedItem.Content, ElementName=calendarIdentifier, FallbackValue=GregorianCalendar}"
-			DayVisible="{Binding IsChecked, ElementName=dayVisible}"
-			MonthVisible="{Binding IsChecked, ElementName=monthVisible}"
-			YearVisible="{Binding IsChecked, ElementName=yearVisible}" />
-		<Button>
-			<Button.Flyout>
-				<DatePickerFlyout
-					x:Name="flyout"
-					MinYear="{x:Bind Dt(minYear.SelectedItem), Mode=OneWay}"
-					MaxYear="{x:Bind Dt(maxYear.SelectedItem), Mode=OneWay}"
-					CalendarIdentifier="{Binding SelectedItem.Content, ElementName=calendarIdentifier, FallbackValue=GregorianCalendar}"
-					DayVisible="{Binding IsChecked, ElementName=dayVisible}"
-					MonthVisible="{Binding IsChecked, ElementName=monthVisible}"
-					YearVisible="{Binding IsChecked, ElementName=yearVisible}"/>
-			</Button.Flyout>
-			PICK DATE
-		</Button>
+		<TextBlock FontSize="16">DatePicker</TextBlock>
+		<StackPanel Orientation="Horizontal" Spacing="7">
+			<DatePicker
+				x:Name="picker"
+				MinYear="{x:Bind DtYear(minYear.SelectedItem), Mode=OneWay}"
+				MaxYear="{x:Bind DtYear(maxYear.SelectedItem), Mode=OneWay}"
+				CalendarIdentifier="{Binding SelectedItem.Content, ElementName=calendarIdentifier, FallbackValue=GregorianCalendar}"
+				DayVisible="{Binding IsChecked, ElementName=dayVisible}"
+				MonthVisible="{Binding IsChecked, ElementName=monthVisible}"
+				YearVisible="{Binding IsChecked, ElementName=yearVisible}" />
+			<TextBlock>
+				DatePicker.Date: <Run Text="{x:Bind DtString(picker.Date), Mode=OneWay}" />
+			</TextBlock>
+		</StackPanel>
+		<TextBlock FontSize="16">DatePickerFlyout as a &lt;Button.Flyout&gt;</TextBlock>
+		<StackPanel Orientation="Horizontal" Spacing="7">
+			<Button x:Name="btlWithFlyout">
+				<Button.Flyout>
+					<DatePickerFlyout
+						x:Name="btnFlyout"
+						MinYear="{x:Bind DtYear(minYear.SelectedItem), Mode=OneWay}"
+						MaxYear="{x:Bind DtYear(maxYear.SelectedItem), Mode=OneWay}"
+						CalendarIdentifier="{Binding SelectedItem.Content, ElementName=calendarIdentifier, FallbackValue=GregorianCalendar}"
+						DayVisible="{Binding IsChecked, ElementName=dayVisible}"
+						MonthVisible="{Binding IsChecked, ElementName=monthVisible}"
+						YearVisible="{Binding IsChecked, ElementName=yearVisible}"/>
+				</Button.Flyout>
+				PICK DATE
+			</Button>
+			<TextBlock>
+				DatePickerFlyout.Date: <Run Text="{x:Bind DtString(btnFlyout.Date), Mode=OneWay}" />
+			</TextBlock>
+		</StackPanel>
+		<TextBlock FontSize="16">DatePickerFlyout with OpenAsync</TextBlock>
+		<StackPanel Orientation="Horizontal" Spacing="7">
+			<Button x:Name="pickBtn" Click="PickClicked">PICK</Button>
+			<TextBlock x:Name="pickedDate" MinWidth="110" />
+			<Border Background="Pink">
+				<TextBlock x:Name="flyoutTarget">FLYOUT TARGET</TextBlock></Border>
+		</StackPanel>
 	</StackPanel></Page>

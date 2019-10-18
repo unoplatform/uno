@@ -1,4 +1,5 @@
 ﻿using System;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.Samples.Controls;
@@ -13,7 +14,7 @@ namespace UITests.Windows_UI_Xaml_Controls.DatePicker
 			this.InitializeComponent();
 		}
 
-		public DateTimeOffset Dt(object o)
+		public DateTimeOffset DtYear(object o)
 		{
 			if (o is SelectorItem item && item.Tag is string tag && !string.IsNullOrEmpty(tag))
 			{
@@ -22,5 +23,37 @@ namespace UITests.Windows_UI_Xaml_Controls.DatePicker
 			}
 			return DateTimeOffset.Now;
 		}
+
+		public string DtString(object o)
+		{
+			if (o is DateTimeOffset dto)
+			{
+				return dto.ToString("R");
+			}
+
+			if(o is DateTime dt)
+			{
+				return dt.ToString("R");
+			}
+
+			return "none";
+		}
+
+		private async void PickClicked(object sender, RoutedEventArgs e)
+		{
+			var flyout = new DatePickerFlyout()
+			{
+				MinYear = DtYear(minYear.SelectedItem),
+				MaxYear = DtYear(maxYear.SelectedItem),
+				CalendarIdentifier = (calendarIdentifier.SelectedItem as ComboBoxItem)?.Content as string,
+				DayVisible = dayVisible.IsChecked ?? false,
+				MonthVisible = monthVisible.IsChecked ?? false,
+				YearVisible = yearVisible.IsChecked ?? false,
+			};
+
+			var picked = await flyout.ShowAtAsync(flyoutTarget);
+			pickedDate.Text = DtString(picked);
+		}
+
 	}
 }
