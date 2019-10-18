@@ -149,6 +149,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\ClippingToControlBounds.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\DoubleAnimationClipping.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2723,6 +2727,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\ButtonWithClippingAndOffset.xaml.cs">
       <DependentUpon>ButtonWithClippingAndOffset.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\ClippingToControlBounds.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\DoubleAnimationClipping.xaml.cs">
       <DependentUpon>DoubleAnimationClipping.xaml</DependentUpon>
     </Compile>
@@ -4633,6 +4638,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ComboBox\ComboBox_ItemDataContext.xaml.cs">
       <DependentUpon>ComboBox_ItemDataContext.xaml</DependentUpon>
+    </Compile>
+    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\Clipping\ClippingToControlBounds.xaml.cs">
+      <DependentUpon>ClippingToControlBounds.xaml</DependentUpon>
     </Compile>
     <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\Clipping\LegacyClippingWarningControl.xaml.cs">
       <DependentUpon>LegacyClippingWarningControl.xaml</DependentUpon>
