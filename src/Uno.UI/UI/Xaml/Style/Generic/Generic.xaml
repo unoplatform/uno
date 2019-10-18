@@ -3739,7 +3739,7 @@
 	</Style>
 
 	<Style TargetType="CheckBox"
-		   BasedOn="{StaticResource XamlDefaultCheckbox}" />
+		   BasedOn="{StaticResource XamlDefaultCheckBox}" />
 
 	<!-- Default style for Windows.UI.Xaml.Controls.RadioButton -->
 	<Style x:Key="XamlDefaultRadioButton"
