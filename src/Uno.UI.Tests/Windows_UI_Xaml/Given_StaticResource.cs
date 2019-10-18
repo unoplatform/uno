@@ -12,6 +12,7 @@ using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Animation;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
@@ -376,6 +377,19 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var rb = page.SpiffyItemsControl.FindFirstChild<RadioButton>();
 			AssertEx.AssertHasColor(rb.Foreground, Colors.Plum);
 			;
+		}
+
+		[TestMethod]
+		public void When_Implicit_Conversion()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var page = new Test_Page();
+
+			var splineFrame = page.Resources["FineSpline"] as SplineDoubleKeyFrame;
+			var spline = splineFrame.KeySpline;
+			Assert.AreEqual(new Point(0.6, 0), spline.ControlPoint1);
+			Assert.AreEqual(new Point(0, 0.7), spline.ControlPoint2);
 		}
 	}
 }

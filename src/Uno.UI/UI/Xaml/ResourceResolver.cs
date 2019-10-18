@@ -77,7 +77,7 @@ namespace Uno.UI
 			// Set initial value based on statically-available top-level resources.
 			if (TryStaticRetrieval(resourceKey, out var value))
 			{
-				owner.SetValue(property, value);
+				owner.SetValue(property, BindingPropertyHelper.Convert(() => property.Type, value));
 
 				if (!isThemeResourceExtension)
 				{
@@ -105,7 +105,7 @@ namespace Uno.UI
 			}
 
 			var topLevel = TryTopLevelRetrieval(resourceKey, out value);
-			if (!topLevel && _log.IsEnabled(LogLevel.Warning))
+			if (!topLevel /*&& _log.IsEnabled(LogLevel.Warning)*/)
 			{
 				_log.LogWarning($"Couldn't statically resolve resource {resourceKey}");
 			}
@@ -176,6 +176,17 @@ namespace Uno.UI
 		/// <summary>
 		/// If tracing is enabled, writes an event for the initialization of system-level resources (Generic.xaml etc)
 		/// </summary>
-		internal static IDisposable WriteInitiateGlobalStaticResourcesEventActivity() => _trace.WriteEventActivity(TraceProvider.InitGenericXamlStart, TraceProvider.InitGenericXamlStop);
+		//internal static IDisposable WriteInitiateGlobalStaticResourcesEventActivity() => _trace.WriteEventActivity(TraceProvider.InitGenericXamlStart, TraceProvider.InitGenericXamlStop);
+		internal static IDisposable WriteInitiateGlobalStaticResourcesEventActivity()
+		{
+			var sw = Stopwatch.StartNew();
+			return new DisposableAction(() =>
+			{
+				ResourceLoadTime = sw.Elapsed;
+				;
+			});
+		}
+
+		public static TimeSpan ResourceLoadTime { get; private set; }
 	}
 }

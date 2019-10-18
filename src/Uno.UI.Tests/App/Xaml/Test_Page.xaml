@@ -16,6 +16,11 @@
 		<views:BooleanToBrushConverter x:Key="BooleanToBrushConverter1"
 									   TrueValue="Plum"
 									   FalseValue="Tomato" />
+		<x:String x:Key="SplineControlPoints">0.6, 0, 0, 0.7</x:String>
+		<SplineDoubleKeyFrame x:Key="FineSpline"
+							  Value="100"
+							  KeyTime="0:0:2"
+							  KeySpline="{StaticResource SplineControlPoints}" />
 	</Page.Resources>
 
 	<Grid>
