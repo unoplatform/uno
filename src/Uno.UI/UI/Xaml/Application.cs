@@ -153,7 +153,7 @@ namespace Windows.UI.Xaml
 		{
 			if (requestedTheme != RequestedTheme)
 			{
-				RequestedTheme = requestedTheme;
+				_requestedTheme = requestedTheme;
 
 				OnRequestedThemeChanged();
 			}

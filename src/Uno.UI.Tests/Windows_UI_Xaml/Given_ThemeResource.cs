@@ -28,12 +28,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		public void When_System_ThemeResource_Dark()
+		public async Task When_System_ThemeResource_Dark()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
 			try
 			{
-				app.ForceSetRequestedTheme(Windows.UI.Xaml.ApplicationTheme.Dark);
+				await SwapSystemTheme();
 
 				var control = new Test_Control();
 				app.HostView.Children.Add(control);
@@ -43,7 +43,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			finally
 			{
 				//ensure the light theme is reset
-				app.ForceSetRequestedTheme(Windows.UI.Xaml.ApplicationTheme.Light);
+				await SwapSystemTheme();
 			}
 		}
 
@@ -192,7 +192,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var dialog = new ContentDialog { Content = "Set default app mode as 'dark' in settings", CloseButtonText = "Done" };
 			await dialog.ShowAsync();
 #else
-			Application.Current.SetRequestedTheme(targetTheme);
+			Application.Current.SetRequestedTheme(targetTheme); 
 #endif
 			Assert.AreEqual(targetTheme, Application.Current.RequestedTheme);
 			return true;
