@@ -27,7 +27,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="docfx.console" Version="2.43.2" />
+		<PackageReference Include="docfx.console" Version="2.46.0" GeneratePathProperty="true" />
 		<PackageReference Include="Microsoft.VisualStudio.TextTemplating.15.0">
 			<Version>15.8.28010</Version>
 		</PackageReference>
@@ -156,7 +156,7 @@
 				Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj"
 				Targets="Restore;Build" />
 		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\net461\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
-		<Exec Command="$(NuGetPackageRoot)\docfx.console\2.43.2\tools\docfx.exe ..\doc\docfx.json -o $(OutputDir)\doc" />
+		<Exec Command="$(Pkgdocfx_console)\tools\docfx.exe ..\doc\docfx.json -o $(OutputDir)\doc" />
 	</Target>
 
 	<Target Name="PublishVisx">

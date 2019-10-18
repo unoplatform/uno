@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Windows.Devices.Input;
+using Windows.Foundation;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 using Microsoft.Extensions.Logging;
@@ -66,15 +67,9 @@ namespace Windows.UI.Xaml
 				var oldMode = (ManipulationModes)args.OldValue;
 				var newMode = (ManipulationModes)args.NewValue;
 
-				if (!newMode.IsSupported()
-					&& snd.Log().IsEnabled(LogLevel.Warning))
-				{
-					snd.Log().Warn(
-						$"The ManipulationMode '{newMode}' is not supported by Uno. "
-						+ "Only 'None', 'All' and 'System' are supported, setting any other mode will be handled as 'All'. "
-						+ "Note that with Uno the 'All' and 'System' are handled the same way.");
-				}
+				newMode.LogIfNotSupported(elt.Log());
 
+				elt.UpdateManipulations(newMode, elt.HasManipulationHandler);
 				elt.OnManipulationModeChanged(oldMode, newMode);
 			}
 		}
@@ -176,34 +171,124 @@ namespace Windows.UI.Xaml
 		}
 
 		#region Gestures recognition
+
+		#region Event to RoutedEvent handlers adapater
+		// Note: For the manipulation and gesture event args, the original source has to be the element that raise the event
+		//		 As those events are bubbling in managed only, the original source will be right one for all.
+
+		private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartingEventArgs> OnRecognizerManipulationStarting = (sender, args) =>
+		{
+			var that = (UIElement)sender.Owner;
+			that.SafeRaiseEvent(ManipulationStartingEvent, new ManipulationStartingRoutedEventArgs(that, args));
+		};
+
+		private static readonly TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> OnRecognizerManipulationStarted = (sender,  args) =>
+		{
+			var that = (UIElement)sender.Owner;
+			that.SafeRaiseEvent(ManipulationStartedEvent, new ManipulationStartedRoutedEventArgs(that, sender, args));
+		};
+
+		private static readonly TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> OnRecognizerManipulationUpdated = (sender, args) =>
+		{
+			var that = (UIElement)sender.Owner;
+			that.SafeRaiseEvent(ManipulationDeltaEvent, new ManipulationDeltaRoutedEventArgs(that, sender, args));
+		};
+
+		private static readonly TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> OnRecognizerManipulationInertiaStarting = (sender, args) =>
+		{
+			var that = (UIElement)sender.Owner;
+			that.SafeRaiseEvent(ManipulationInertiaStartingEvent, new ManipulationInertiaStartingRoutedEventArgs(that, args));
+		};
+
+		private static readonly TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> OnRecognizerManipulationCompleted = (sender, args) =>
+		{
+			var that = (UIElement)sender.Owner;
+			that.SafeRaiseEvent(ManipulationCompletedEvent, new ManipulationCompletedRoutedEventArgs(that, args));
+		};
+
+		private static readonly TypedEventHandler<GestureRecognizer, TappedEventArgs> OnRecognizerTapped = (sender, args) =>
+		{
+			var that = (UIElement)sender.Owner;
+			if (args.TapCount == 1)
+			{
+				that.SafeRaiseEvent(TappedEvent, new TappedRoutedEventArgs(that, args));
+			}
+			else // i.e. args.TapCount == 2
+			{
+				that.SafeRaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(that, args));
+			}
+		};
+		#endregion
+
 		private bool _isGestureCompleted;
 
 		private GestureRecognizer CreateGestureRecognizer()
 		{
-			var recognizer = new GestureRecognizer();
+			var recognizer = new GestureRecognizer(this);
 
-			recognizer.Tapped += OnTapRecognized;
+			recognizer.ManipulationStarting += OnRecognizerManipulationStarting;
+			recognizer.ManipulationStarted += OnRecognizerManipulationStarted;
+			recognizer.ManipulationUpdated += OnRecognizerManipulationUpdated;
+			recognizer.ManipulationInertiaStarting += OnRecognizerManipulationInertiaStarting;
+			recognizer.ManipulationCompleted += OnRecognizerManipulationCompleted;
+			recognizer.Tapped += OnRecognizerTapped;
 
 			// Allow partial parts to subscribe to pointer events (WASM)
 			OnGestureRecognizerInitialized(recognizer);
 
 			return recognizer;
-
-			void OnTapRecognized(GestureRecognizer sender, TappedEventArgs args)
-			{
-				if (args.TapCount == 1)
-				{
-					SafeRaiseEvent(TappedEvent, new TappedRoutedEventArgs(this, args.PointerDeviceType, args.Position));
-				}
-				else // i.e. args.TapCount == 2
-				{
-					SafeRaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(this, args.PointerDeviceType, args.Position));
-				}
-			}
 		}
 
 		partial void OnGestureRecognizerInitialized(GestureRecognizer recognizer);
 
+		#region Manipulation events wire-up
+		partial void AddManipulationHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
+		{
+			if (handlersCount == 1)
+			{
+				UpdateManipulations(ManipulationMode, hasManipulationHandler: true);
+			}
+		}
+
+		partial void RemoveManipulationHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler)
+		{
+			if (remainingHandlersCount == 0 && !HasManipulationHandler)
+			{
+				UpdateManipulations(default(ManipulationModes), hasManipulationHandler: false);
+			}
+		}
+
+		private bool HasManipulationHandler =>
+			   CountHandler(ManipulationStartingEvent) != 0
+			|| CountHandler(ManipulationStartedEvent) != 0
+			|| CountHandler(ManipulationDeltaEvent) != 0
+			|| CountHandler(ManipulationInertiaStartingEvent) != 0
+			|| CountHandler(ManipulationCompletedEvent) != 0;
+
+		private void UpdateManipulations(ManipulationModes mode, bool hasManipulationHandler)
+		{
+			if (!hasManipulationHandler || mode == ManipulationModes.None || mode == ManipulationModes.System)
+			{
+				if (!_gestures.IsValueCreated)
+				{
+					return;
+				}
+				else
+				{
+					_gestures.Value.GestureSettings &= ~GestureSettingsHelper.Manipulations;
+					return;
+				}
+			}
+
+			var settings = _gestures.Value.GestureSettings;
+			settings &= ~GestureSettingsHelper.Manipulations; // Remove all configured manipulation flags
+			settings |= mode.ToGestureSettings(); // Then set them back from the mode
+
+			_gestures.Value.GestureSettings = settings;
+		}
+		#endregion
+
+		#region Gesture events wire-up
 		partial void AddGestureHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{
 			if (handlersCount == 1)
@@ -232,6 +317,7 @@ namespace Windows.UI.Xaml
 				_gestures.Value.GestureSettings |= GestureSettings.DoubleTap;
 			}
 		}
+		#endregion
 
 		/// <summary>
 		/// Prevents the gesture recognizer to generate a manipulation. It's designed to be invoked in Pointers events handlers.
@@ -290,7 +376,7 @@ namespace Windows.UI.Xaml
 			var handledInManaged = false;
 			var isIrrelevant = ValidateAndUpdateCapture(args, isOver);
 
-			handledInManaged |= SetOver(args, true, muteEvent: isIrrelevant);
+			handledInManaged |= SetOver(args, isOver);
 
 			if (isIrrelevant)
 			{

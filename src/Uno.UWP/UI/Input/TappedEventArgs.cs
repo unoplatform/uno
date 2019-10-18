@@ -14,7 +14,7 @@ namespace Windows.UI.Input
 
 		public PointerDeviceType PointerDeviceType { get; }
 
-		public global::Windows.Foundation.Point Position { get; }
+		public Point Position { get; }
 
 		public uint TapCount { get; }
 	}
