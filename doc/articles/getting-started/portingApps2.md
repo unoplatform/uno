@@ -47,4 +47,7 @@ If not, use this: [new feature request](https://github.com/unoplatform/uno/issue
 This is best (or: preferable) option, if using newer Uno versions / checking existing PR doesn't solve your problem. Best, but also it requires much more time from your side.
 It will be covered in another article.
 
+## make strip-down version
+As last resort, you can make some app functions work only under Windows, and WASM/iOS/Android versions somehow limited.
+
 But for now, assume that you found some workaround, and now you are ready to build (or: try to build...) app for target other than UWP. This would be our next topic.
