@@ -88,14 +88,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		[Ignore("Uno's StaticResource resolution doesn't exactly match UWP. Here, we don't use the parse-time scope.")]
 		public void When_Inherited_In_Template_Applied_XAML_Scope()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
 
 			var control = new Test_Control();
-
-			app.HostView.Children.Add(control); //Note: this is not necessary for this test on UWP, only for Uno
 
 			control.InlineTemplateControl.ApplyTemplate();
 			control.TemplateFromResourceControl.ApplyTemplate();
@@ -148,7 +145,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
-		[Ignore("Uno's StaticResource resolution doesn't exactly match UWP. StaticResource and ThemeResource markup is currently treated identically.")]
 		public async Task When_Theme_Changed_Static()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();
