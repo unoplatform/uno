@@ -8,6 +8,7 @@
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
       "Uno.Foundation\\Uno.Foundation.csproj",
       "Uno.UI.Tests\\Uno.UI.Tests.csproj",
+      "Uno.UI.Tests.ViewLibrary\\Uno.UI.Tests.ViewLibrary.csproj",
       "Uno.UI\\Uno.UI.csproj",
       "Uno.UWP\\Uno.csproj"
     ]
