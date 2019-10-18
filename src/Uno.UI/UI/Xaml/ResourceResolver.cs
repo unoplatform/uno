@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Text;
+using Microsoft.Extensions.Logging;
 using Uno.Diagnostics.Eventing;
+using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
@@ -26,6 +29,8 @@ namespace Uno.UI
 		}
 
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
+
+		private static readonly ILogger _log = typeof(ResourceResolver).Log();
 
 		private static readonly Stack<XamlScope> _scopeStack;
 
@@ -99,7 +104,12 @@ namespace Uno.UI
 				}
 			}
 
-			return TryTopLevelRetrieval(resourceKey, out value);
+			var topLevel = TryTopLevelRetrieval(resourceKey, out value);
+			if (!topLevel && _log.IsEnabled(LogLevel.Warning))
+			{
+				_log.LogWarning($"Couldn't statically resolve resource {resourceKey}");
+			}
+			return topLevel;
 		}
 		/// <summary>
 		/// Tries to retrieve a resource from top-level resources (Application-level and system level).
