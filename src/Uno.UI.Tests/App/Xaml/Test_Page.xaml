@@ -21,6 +21,13 @@
 							  Value="100"
 							  KeyTime="0:0:2"
 							  KeySpline="{StaticResource SplineControlPoints}" />
+		<views:BooleanToBrushConverter x:Key="LocalForwardConverter"
+									   TrueValue="{StaticResource LocalLexicallyForwardBrush1}"
+									   FalseValue="{StaticResource LocalLexicallyForwardBrush2}" />
+		<SolidColorBrush x:Key="LocalLexicallyForwardBrush1"
+						 Color="MidnightBlue" />
+		<SolidColorBrush x:Key="LocalLexicallyForwardBrush2"
+						 Color="LawnGreen" />
 	</Page.Resources>
 
 	<Grid>
@@ -62,5 +69,7 @@
 			</Grid.Resources>
 			<ProgressRing x:Name="testProgressRing" />
 		</Grid>
+		<TextBlock x:Name="testTextBlock2"
+				   Foreground="{Binding Converter={StaticResource LocalForwardConverter}}" />
 	</Grid>
 </Page>

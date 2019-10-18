@@ -26,6 +26,7 @@ namespace Uno.UI.Tests.App.Xaml
 	{
 		public MyExtControl MyExtControl => myExtControl;
 		public TextBlock TestTextBlock => testTextBlock;
+		public TextBlock TestTextBlock2 => testTextBlock2;
 		public Border TestBorder => testBorder;
 		public ContentControl TestContentControl => testContentControl;
 		public SpiffyItemsControl SpiffyItemsControl => spiffyItemsControl;

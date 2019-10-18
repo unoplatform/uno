@@ -512,5 +512,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			control.TestTextBlock2.DataContext = false;
 			AssertEx.AssertHasColor(control.TestTextBlock2.Foreground, Colors.LimeGreen);
 		}
+
+		[TestMethod]
+		public void When_Local_Lexically_Forward()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var page = new Test_Page();
+			page.TestTextBlock2.DataContext = true;
+
+			AssertEx.AssertHasColor(page.TestTextBlock2.Foreground, Colors.MidnightBlue);
+		}
 	}
 }
