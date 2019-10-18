@@ -44,16 +44,17 @@ You have to copy also Package.appxmanifest - especially, app capabilities etc. -
 
 Now, you can Unload your (old) APPNAME project (right click in Solution Explorer), not only to make VStudio using less memory and start faster, but also to be sure you don't mistakenly change something in your old code.
 
+## check conversion to Uno (UWP)
+Try to build your app - not Solution, but only UWP project (choose Debug, and right click APPNAME.UWP, Build). If nothing unexpected happens (no errors), your first step of porting app is done.
+Build UWP project, check if it is working as expected.
+You can upload new version of your app Microsoft Store. 
+
 ## check if everything is implemented in Uno
-Now, give VStudio some time (in minutes). It will rebuild Intellisense database.
-Then try to build your app - not Solution, but only UWP project (choose Debug, and right click APPNAME.UWP, Build).
+Now, reload APPNAME_Uno.Droid project (right click on it in Solution Explorer). Give VStudio some time (in minutes). It will rebuild Intellisense database.
+
 Look into ErrorList window for warnings "is not implemented in Uno", e.g. "Warning Uno0001 Windows.UI.Xaml.Application.Exit() is not implemented in Uno".
 
- If you don't have such warnings, you are lucky - and converting app to Platform Uno is probably done.
-
- Of course, you should test it before uploading to Microsoft Store...
- Build UWP project, check if it is working as expected.
-
- Then build for another platform (e.g. Android), to check if compilation is ok. Uploading app to Google Store requires much more work, I would cover it in other article.
+ If you don't have such warnings, you are lucky - and your app is already 'multiplatformed'.
+You can build for another platform (e.g. Android), to check if compilation is ok. Uploading app to Google Store requires much more work, I would cover it in other article.
 
  But most probably, you would find some Uno0001 warnings. This would be our next topic.
