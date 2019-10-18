@@ -7,7 +7,24 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid>
-
-    </Grid>
+	<StackPanel>
+		<TextBlock Text="This a BezierSegment" />
+		<Path Stroke="Black" StrokeThickness="1">
+			<Path.Data>
+				<PathGeometry>
+					<PathGeometry.Figures>
+						<PathFigureCollection>
+							<PathFigure StartPoint="10,100">
+								<PathFigure.Segments>
+									<PathSegmentCollection>
+										<BezierSegment Point1="100,0" Point2="200,200" Point3="300,100"/>
+									</PathSegmentCollection>
+								</PathFigure.Segments>
+							</PathFigure>
+						</PathFigureCollection>
+					</PathGeometry.Figures>
+				</PathGeometry>
+			</Path.Data>
+		</Path>
+	</StackPanel>
 </Page>
