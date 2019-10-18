@@ -69,6 +69,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly string _defaultLanguage;
 		private readonly bool _isDebug;
 		private readonly string _relativePath;
+		/// <summary>
+		/// True if the file currently being parsed contains a top-level ResourceDictionary definition.
+		/// </summary>
+		private bool _isTopLevelDictionary;
 
 		/// <summary>
 		/// The current DefaultBindMode for x:Bind bindings, as set by app code for the current Xaml subtree.
@@ -713,6 +717,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private void BuildTopLevelResourceDictionary(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
 		{
+			_isTopLevelDictionary = true;
 			var globalResources = new Dictionary<string, XamlObjectDefinition>();
 
 			using (Scope(Path.GetFileNameWithoutExtension(_fileDefinition.FilePath).Replace(".", "_") + "RD"))
@@ -1989,12 +1994,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
-		/// Whether this resource should be lazily initialized. For now this is only done for Styles (since it may be a de-optimization for simple items).
+		/// Whether this resource should be lazily initialized. 
 		/// </summary>
 		private bool ShouldLazyInitializeResource(XamlObjectDefinition resource)
 		{
 			var typeName = resource.Type.Name;
-			return typeName == "Style";
+
+			return
+				// Styles are lazily initialized for perf considerations
+				typeName == "Style"
+				// All resources not in a top-level dictionary (ie FrameworkElement.Resources and Application.Resources declarations) are lazily
+				// initialized, this is to be able to handle lexically-forward references correctly. (In top-level dictionaries, this is already
+				// handled by creating lazy static properties for each resource.)
+				|| !_isTopLevelDictionary;
 		}
 
 		/// <summary>
