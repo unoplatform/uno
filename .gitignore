@@ -248,3 +248,7 @@ msbuild.binlog
 /src/SamplesApp/SamplesApp.Wasm.UITests/out
 .DS_Store
 /src/Uno.UI.TestComparer/Properties/launchSettings.json
+
+# Windows Junk File
+thumbs.db
+
