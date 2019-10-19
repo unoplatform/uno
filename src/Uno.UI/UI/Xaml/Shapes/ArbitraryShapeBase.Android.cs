@@ -242,11 +242,13 @@ namespace Windows.UI.Xaml.Shapes
 			_scaleY = (calculatedHeight - ActualStrokeThickness) / pathHeight;
 
 			//Make sure that we have a valid scale if both of them are not set
-			if (double.IsInfinity((double)_scaleX) &&
-			   double.IsInfinity((double)_scaleY))
+			if (double.IsInfinity((double)_scaleY))
+			{
+				_scaleY = 1;
+			}
+			if (double.IsInfinity((double)_scaleX))
 			{
 				_scaleX = 1;
-				_scaleY = 1;
 			}
 
 			// Here we will override some of the default values
@@ -260,14 +262,6 @@ namespace Windows.UI.Xaml.Shapes
 					calculatedHeight = (double)pathHeight;
 					break;
 				case Stretch.Fill:
-					if (double.IsInfinity((double)_scaleY))
-					{
-						_scaleY = 1;
-					}
-					if (double.IsInfinity((double)_scaleX))
-					{
-						_scaleX = 1;
-					}
 					calculatedWidth = (double)pathWidth * (double)_scaleX;
 					calculatedHeight = (double)pathHeight * (double)_scaleY;
 
