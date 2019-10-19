@@ -63,6 +63,16 @@ namespace Uno.UI
 			return default(T);
 		}
 
+		internal static T ResolveTopLevelResource<T>(object key)
+		{
+			if (TryTopLevelRetrieval(key, out var value) && value is T tValue)
+			{
+				return tValue;
+			}
+
+			return default(T);
+		}
+
 		/// <summary>
 		/// Apply a StaticResource or ThemeResource assignment to a DependencyProperty of a DependencyObject. The assignment will be provisionally
 		/// made immediately using Application.Resources if possible, and retried at load-time using the visual-tree scope.
