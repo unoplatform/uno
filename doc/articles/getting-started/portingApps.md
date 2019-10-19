@@ -29,7 +29,7 @@ First, open your app solution in VStudio. Then using Solution Explorer window:
 * for now, you can Unload your APPNAMEUno.Droid, .iOS and .WASM projects (right click in Solution Explorer). Why? To make VStudio using less memory and start faster.
 
 ## converting your code
-In simple words, you have to copy all your content from APPNAME to APPNAME_Uno.Shared; all your XAML pages, all code behind it (.cs), replace folders Strings and Assets (delete just generated Strings and Assets folders). Copy also all other files and folders you created in APPNAME.
+In simple words, you have to copy all your content from APPNAME to APPNAME_Uno.Shared; all your XAML pages, all code behind it (.cs), and replace folder Strings (delete just generated Strings folders). Copy also all other files and folders you created in APPNAME.
 Use Solution Explorer for this.
 
 If your code is in VB, you can use some simple translators, e.g. https://codeconverter.icsharpcode.net/ . It is not perfect translation, some issues you would have to correct manually, but it is a good start. So, in Solution Explorer, for each XAML page:
@@ -40,7 +40,7 @@ If your code is in VB, you can use some simple translators, e.g. https://codecon
 * copy contens of XAML page
 * convert .vb code to .cs code, and insert it to .cs page - but do not remove constructor, with `this.InitializeComponent();`. From App.xaml.vb, convert only code you added. Take care of "namespace" - should be same as in .xaml (and as in manifest), without "\_Uno" and "Shared" sufixes.
 
-You have to copy also Package.appxmanifest - especially, app capabilities etc. - but new instance of this file would be in APPNAME_Uno.UWP, not in APPNAME_Uno.Shared. 
+You have to copy also Package.appxmanifest (especially, app capabilities etc.) and Assets folder - but to APPNAME_Uno.UWP, not to APPNAME_Uno.Shared. 
 
 Now, you can Unload your (old) APPNAME project (right click in Solution Explorer), not only to make VStudio using less memory and start faster, but also to be sure you don't mistakenly change something in your old code.
 
