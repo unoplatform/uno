@@ -41,25 +41,6 @@ namespace Windows.UI.Xaml
 			InitializePointers();
 		}
 
-		partial void EnsureClip(Rect rect)
-		{
-			if (rect.IsEmpty
-				|| double.IsPositiveInfinity(rect.X)
-				|| double.IsPositiveInfinity(rect.Y)
-				|| double.IsPositiveInfinity(rect.Width)
-				|| double.IsPositiveInfinity(rect.Height)
-			)
-			{
-				this.Layer.Mask = null;
-				return;
-			}
-			this.WantsLayer = true;
-			this.Layer.Mask = new CAShapeLayer
-			{
-				Path = CGPath.FromRect(ToCGRect(rect))
-			};
-		}
-
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
 			// Don't update the internal value if the value is being animated.

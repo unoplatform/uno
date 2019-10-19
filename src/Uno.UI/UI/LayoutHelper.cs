@@ -151,6 +151,8 @@ namespace Uno.UI
 			);
 		}
 
+		internal static double AspectRatio(this Rect rect) => rect.Size.AspectRatio();
+
 		internal static double AspectRatio(this Size size)
 		{
 			var w = size.Width;
@@ -185,7 +187,7 @@ namespace Uno.UI
 			return w / h;
 		}
 
-#if __IOS__
+#if __IOS__ || __MACOS__
 		internal static double AspectRatio(this CoreGraphics.CGSize size)
 		{
 			var w = size.Width;

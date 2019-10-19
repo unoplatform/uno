@@ -5,6 +5,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Uno.Disposables;
 using System.Numerics;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Shapes
 {

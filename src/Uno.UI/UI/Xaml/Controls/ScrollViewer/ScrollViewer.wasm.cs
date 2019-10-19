@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 
 		// Disable clipping for Scrollviewer (edge seems to disable scrolling if 
 		// the clipping is enabled to the size of the scrollviewer, even if overflow-y is auto)
-		bool ICustomClippingElement.AllowClippingToBounds => false;
-		bool ICustomClippingElement.ForcedClippingToBounds => false;
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
     }
 }

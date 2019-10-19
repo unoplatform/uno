@@ -140,8 +140,8 @@ namespace Windows.UI.Xaml
 				.AtLeast(new Size(0, 0));
 
 			var customClippingElement = (this as ICustomClippingElement);
-			var allowClipToSlot = customClippingElement?.AllowClippingToBounds ?? true; // Some controls may control itself how clipping is applied
-			var needsClipToSlot = customClippingElement?.ForcedClippingToBounds ?? false;
+			var allowClipToSlot = customClippingElement?.AllowClippingToLayoutSlot ?? true; // Some controls may control itself how clipping is applied
+			var needsClipToSlot = customClippingElement?.ForceClippingToLayoutSlot ?? false;
 
 			_logDebug?.Debug($"{DepthIndentation}{this}: InnerArrangeCore({finalRect}) - allowClip={allowClipToSlot}, arrangeSize={arrangeSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipToSlot}");
 
