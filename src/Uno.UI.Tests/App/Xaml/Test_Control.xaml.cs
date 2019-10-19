@@ -42,6 +42,8 @@ namespace Uno.UI.Tests.App.Xaml
 		public StylesTestButtonCustomKey StylesTestButtonCustomKey => stylesTestButtonCustomKey;
 		public StylesTestButtonCustomKey StylesTestButtonCustomKeyExplicit => stylesTestButtonCustomKeyExplicit;
 		public StylesTestRadioButton StylesTestRadioButton => stylesTestRadioButton;
+		public CommandBar TestCommandBar => testCommandBar;
+		public CommandBar TestCommandBar2 => testCommandBar2;
 
 		public Test_Control()
         {

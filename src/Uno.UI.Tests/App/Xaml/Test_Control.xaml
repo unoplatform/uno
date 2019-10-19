@@ -76,11 +76,15 @@
 					<views:BooleanToBrushConverter x:Key="BooleanConverter"
 												   TrueValue="{StaticResource MendaciousColorBrush}"
 												   FalseValue="{StaticResource LocalToGridColorBrush}" />
+					<!--Local AppBarThemeCompactHeight is ignored-->
+					<x:Double x:Key="AppBarThemeCompactHeight">29</x:Double>
 				</ResourceDictionary>
 			</Grid.Resources>
 			<TextBlock x:Name="testTextBlock2"
 					   Foreground="{Binding Converter={StaticResource BooleanConverter}}" />
+			<CommandBar x:Name="testCommandBar" />
 		</Grid>
+		<CommandBar x:Name="testCommandBar2" />
 		<Button x:Name="styledButton"
 				Style="{StaticResource ExplicitButtonStyle}" />
 		<views:MyControl x:Name="testMyControl"

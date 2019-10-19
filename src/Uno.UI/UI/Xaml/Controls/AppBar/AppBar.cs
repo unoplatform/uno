@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.UI;
 using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
@@ -120,15 +121,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
-			if (Resources["AppBarThemeCompactHeight"] is double compactHeight)
-			{
-				_compactHeight = compactHeight;
-			}
-
-			if (Resources["AppBarThemeMinimalHeight"] is double minimalHeight)
-			{
-				_minimalHeight = minimalHeight;
-			}
+			_compactHeight = ResourceResolver.ResolveTopLevelResource<double>("AppBarThemeCompactHeight");
+			_minimalHeight = ResourceResolver.ResolveTopLevelResource<double>("AppBarThemeMinimalHeight");
 
 			UpdateTemplateSettings();
 

@@ -356,7 +356,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			app.HostView.Children.Add(page);
 			page.Measure(new Size(1000, 1000));
-			
+
 			var tb = page.TestContentControl.FindFirstChild<TextBlock>();
 			Assert.AreEqual("Inner text", tb.Text);
 			AssertEx.AssertHasColor(tb.Foreground, Colors.Tomato);
@@ -390,6 +390,52 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var spline = splineFrame.KeySpline;
 			Assert.AreEqual(new Point(0.6, 0), spline.ControlPoint1);
 			Assert.AreEqual(new Point(0, 0.7), spline.ControlPoint2);
+		}
+
+		[TestMethod]
+		public void When_System_Resource_From_Template()
+		{
+			const double System_AppBarThemeCompactHeight =
+#if NETFX_CORE
+				48 //This changed from RS4 to RS5
+#else
+				40
+#endif
+				;
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var control = new Test_Control();
+
+			app.HostView.Children.Add(control);
+
+			control.Measure(new Size(1000, 2000));
+
+			Assert.AreEqual(System_AppBarThemeCompactHeight, control.TestCommandBar.TemplateSettings.CompactVerticalDelta);
+			Assert.AreEqual(System_AppBarThemeCompactHeight, control.TestCommandBar2.TemplateSettings.CompactVerticalDelta);
+		}
+
+		[TestMethod]
+		public void When_System_Resource_From_Template_Overridden()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			try
+			{
+				app.Resources["AppBarThemeCompactHeight"] = 17d;
+
+				var control = new Test_Control();
+
+				app.HostView.Children.Add(control);
+
+				control.Measure(new Size(1000, 2000));
+
+				Assert.AreEqual(17, control.TestCommandBar.TemplateSettings.CompactVerticalDelta);
+				Assert.AreEqual(17, control.TestCommandBar2.TemplateSettings.CompactVerticalDelta);
+			}
+			finally
+			{
+				app.Resources.Remove("AppBarThemeCompactHeight");
+			}
 		}
 	}
 }
