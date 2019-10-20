@@ -164,6 +164,7 @@
 * Fix color refresh of `BitmapIcon` monochrome Foreground
 * [IOS] DatePickerFlyout min and max year were resetting to FallbackNullValue
 * [Android] Fix bug in `ListView` when using an `ObservableCollection` as its source and using `Header` and `Footer`.
+* [Android] Fix bug when using a resource with a name beginning with a digit failed silently.
 
 ## Release 1.45.0
 ### Features
