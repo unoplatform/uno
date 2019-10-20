@@ -349,7 +349,7 @@ namespace Windows.UI.Xaml.Media
 		/// <returns>Resource's id</returns>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static int? FindResourceId(string imageName) =>
-			Uno.Helpers.DrawableHelper.FindResourceId(imageName);
+			Uno.Helpers.DrawableHelper.FindResourceId(AndroidResourceNameEncoder.Encode(imageName));
 
 		#endregion
 
