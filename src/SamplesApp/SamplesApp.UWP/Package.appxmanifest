@@ -7,15 +7,15 @@
   IgnorableNamespaces="uap mp">
 
   <Identity
-    Name="6c25beb3-e332-48d3-b4de-20a0b71935cd"
+    Name="UnoSamples"
     Publisher="CN=uno"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="1897f84c-689e-44d3-a8b7-c521a62818ae" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
 
   <Properties>
-    <DisplayName>SamplesApp</DisplayName>
-    <PublisherDisplayName>SamplesApp</PublisherDisplayName>
+    <DisplayName>UnoSamples</DisplayName>
+    <PublisherDisplayName>Uno Platform</PublisherDisplayName>
     <Logo>Assets\StoreLogo.png</Logo>
   </Properties>
 
@@ -32,10 +32,10 @@
       Executable="SamplesApp.exe"
       EntryPoint="UnoQuickStart.App">
       <uap:VisualElements
-        DisplayName="SamplesApp"
+        DisplayName="Uno Samples"
         Square150x150Logo="Assets\Square150x150Logo.png"
         Square44x44Logo="Assets\Square44x44Logo.png"
-        Description="SamplesApp"
+        Description="Uno Samples"
         BackgroundColor="transparent">
         <uap:DefaultTile Wide310x150Logo="Assets\Wide310x150Logo.png"/>
         <uap:SplashScreen Image="Assets\SplashScreen.png" />

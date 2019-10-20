@@ -3,9 +3,9 @@
 <plist version="1.0">
 <dict>
 	<key>CFBundleName</key>
-	<string>SamplesApp.macOS</string>
+	<string>Uno Samples</string>
 	<key>CFBundleIdentifier</key>
-	<string>com.companyname.SamplesApp-macOS</string>
+	<string>uno.platform.unosamplesapp</string>
 	<key>CFBundleShortVersionString</key>
 	<string>1.0</string>
 	<key>CFBundleVersion</key>
