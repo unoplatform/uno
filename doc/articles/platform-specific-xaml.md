@@ -8,7 +8,7 @@ This guide covers multiple approaches to managing per-platform markup in XAML. S
 
 There are two ways to restrict code or XAML markup to be used only on a specific platform:
  * Use conditionals within a shared file
- * place the code in a file which is only included in the desired platform head.
+ * Place the code in a file which is only included in the desired platform head.
  
  The structure of an Uno app created with the default [Visual Studio template](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) is [explained in more detail here](uno-app-solution-structure.md). The key point to understand is that files in a shared project referenced from a platform head **are treated in exactly the same way** as files included directly under the head, and are compiled together into a single assembly.
 
