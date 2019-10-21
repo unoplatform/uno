@@ -4,10 +4,9 @@ The `MapControl` is a control which allows you to display maps in your app.
 
 ## Architecture
 
-To be able to support multiple map providers, the map control is rendering its content in a `MapPresenter` control in the `Uno.UI.Maps` Nuget package. This separation is also required to avoid
-pulling dependencies in an application that does not need Maps.
+To be able to support multiple map providers, the map control renders its content in a `MapPresenter` control in the `Uno.UI.Maps` NuGet package. This separation is also required to avoid pulling dependencies in an application that does not need Maps.
 
-The current implementation is using the native UIKit map for iOS, and the Google Play Services map control.
+The current implementation uses the native UIKit map for iOS and the Google Play Services map control for Android.
 
 ## Sample Xaml
 
@@ -60,7 +59,7 @@ See a more complete sample here:
 ### 1. Configure your application.
 
 - For **Android**,
-    1.  Add the following to AndroidManifest.xml
+    1.  Add the following to AndroidManifest.xml:
     ```xml
     <uses-library android:name="com.google.android.maps" />
     ```
@@ -72,7 +71,7 @@ See a more complete sample here:
 		5.  Go to the Dashboard section in the left-hand side menu
 		6.  Click on the relevant service - for instance, "Google Maps Android API" and click on Enable
 	
-    3.  Add the API key to `AssemblyInfo.cs`, this should vary depending on the platform and environment, therefore should be retrieved from ClientConstants:
+    3.  Add the API key to `AssemblyInfo.cs`. This should vary depending on the platform and environment; therefore, it should be retrieved from ClientConstants:
     ```csharp
 	[assembly: MetaData("com.google.android.maps.v2.API_KEY", Value = ClientConstants.Maps.GoogleMapApiKey)]
     ```
@@ -89,7 +88,7 @@ See a more complete sample here:
 
 # Get API key for map component
 
-In order to use the map component, you will need an API key for Windows and Android.  Here are the steps to retrieve it.
+In order to use the map component, you will need an API key for Windows and Android. Here are the steps to retrieve it.
 
 ## Windows
 
