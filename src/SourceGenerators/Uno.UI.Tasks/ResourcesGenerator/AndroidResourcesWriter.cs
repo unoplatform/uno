@@ -15,19 +15,12 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 
 			var document = new XDocument(
 				new XDeclaration("1.0", "utf-8", null),
-				new XElement("resources", resources.Select(resource =>
-				{
-					if (Char.IsDigit(resource.Key[0]))
-					{
-						throw new NotSupportedException($"Android resource names can't start with a digit: {resource.Key}");
-					}
-
-					return new XElement("string",
+				new XElement("resources", resources.Select(resource => new XElement("string",
 						new XAttribute("formatted", "false"), // allows special characters (%, $, etc.)
 						new XAttribute("name", AndroidResourceNameEncoder.Encode(resource.Key)),
 						Sanitize(resource.Value)
-					);
-				}))
+					)
+				))
 			);
 
 			comment.Maybe(c => document.AddFirst(new XComment(c)));
