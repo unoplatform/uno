@@ -37,14 +37,19 @@ namespace Windows.UI.Xaml.Shapes
 					break;
 			}
 		}
-
+		/// <summary>
+		/// Transform the figures collection into a SVG Path according to :
+		/// https://developer.mozilla.org/en-US/docs/Web/SVG/Attribute/d
+		/// </summary>
+		/// <param name="geometry"></param>
+		/// <returns></returns>
 		private string ToStreamGeometry(PathGeometry geometry)
 		{
 			StringBuilder sb = new StringBuilder();
 
 			foreach (PathFigure figure in geometry.Figures)
 			{
-				sb.Append("M " + figure.StartPoint.X + " " + figure.StartPoint.Y + " ");
+				sb.Append("M " + figure.StartPoint.X + "," + figure.StartPoint.Y + " ");
 
 				foreach (PathSegment segment in figure.Segments)
 				{
@@ -53,7 +58,7 @@ namespace Windows.UI.Xaml.Shapes
 					{
 						LineSegment _lineSegment = segment as LineSegment;
 
-						sb.Append("L " + figure.StartPoint.X + " " + figure.StartPoint.Y + " ");
+						sb.Append("L " + figure.StartPoint.X + "," + figure.StartPoint.Y + " ");
 					}
 					else if (segment.GetType() == typeof(BezierSegment))
 					{
@@ -61,9 +66,9 @@ namespace Windows.UI.Xaml.Shapes
 
 						sb.Append(
 							 "C " +
-							 _bezierSegment.Point1.X + " " + _bezierSegment.Point1.Y + " " +
-							 _bezierSegment.Point2.X + " " + _bezierSegment.Point2.Y + " " +
-							 _bezierSegment.Point3.X + " " + _bezierSegment.Point3.Y + " "
+							 _bezierSegment.Point1.X + "," + _bezierSegment.Point1.Y + " " +
+							 _bezierSegment.Point2.X + "," + _bezierSegment.Point2.Y + " " +
+							 _bezierSegment.Point3.X + "," + _bezierSegment.Point3.Y + " "
 							 );
 					}
 					else if (segment.GetType() == typeof(QuadraticBezierSegment))
@@ -72,8 +77,8 @@ namespace Windows.UI.Xaml.Shapes
 
 						sb.Append(
 							 "Q " +
-							 _quadraticBezierSegment.Point1.X + " " + _quadraticBezierSegment.Point1.Y + " " +
-							 _quadraticBezierSegment.Point2.X + " " + _quadraticBezierSegment.Point2.Y + " "
+							 _quadraticBezierSegment.Point1.X + "," + _quadraticBezierSegment.Point1.Y + " " +
+							 _quadraticBezierSegment.Point2.X + "," + _quadraticBezierSegment.Point2.Y + " "
 							 );
 					}
 					else if (segment.GetType() == typeof(ArcSegment))
@@ -86,7 +91,7 @@ namespace Windows.UI.Xaml.Shapes
 							 _arcSegment.RotationAngle + " " +
 							 (_arcSegment.IsLargeArc ? "1" : "0") + " " +
 							 (_arcSegment.SweepDirection == SweepDirection.Clockwise ? "1" : "0") + " " + 
-							 _arcSegment.Point.X + " " + _arcSegment.Point.Y + " "
+							 _arcSegment.Point.X + "," + _arcSegment.Point.Y + " "
 							 );
 					}
 				}
