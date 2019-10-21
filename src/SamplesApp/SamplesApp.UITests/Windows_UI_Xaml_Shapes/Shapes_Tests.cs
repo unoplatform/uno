@@ -18,14 +18,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Shapes.PolylinePage");
 			_app.WaitForElement("DPolyline");
-			_app.Screenshot($"PolylinePage");
+			TakeScreenshot($"PolylinePage");
 			TabWaitAndThenScreenshot("ChangeShape");
 
 			void TabWaitAndThenScreenshot(string buttonName)
 			{
 				_app.Marked(buttonName).Tap();
 				_app.Wait(TimeSpan.FromSeconds(2));
-				_app.Screenshot($"PolylinePage - {buttonName}");
+				TakeScreenshot($"PolylinePage - {buttonName}");
 			}
 		}
 
@@ -35,14 +35,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Shapes.PolygonPage");
 			_app.WaitForElement("DPolygon");
-			_app.Screenshot($"PolygonPage");
+			TakeScreenshot($"PolygonPage");
 			TabWaitAndThenScreenshot("ChangeShape");
 
 			void TabWaitAndThenScreenshot(string buttonName)
 			{
 				_app.Marked(buttonName).Tap();
 				_app.Wait(TimeSpan.FromSeconds(2));
-				_app.Screenshot($"PolygonPage - {buttonName}");
+				TakeScreenshot($"PolygonPage - {buttonName}");
 			}
 		}
 
@@ -52,7 +52,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Shapes.EllipsePage");
 			_app.WaitForElement("DEllipsePage");
-			_app.Screenshot($"EllipsePage");
+			TakeScreenshot($"EllipsePage");
 		}
 
 		[Test]
@@ -61,7 +61,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Shapes.LinePage");
 			_app.WaitForElement("DLinePage");
-			_app.Screenshot($"LinePage");
+			TakeScreenshot($"LinePage");
 		}
 	}
 }
