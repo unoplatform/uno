@@ -175,7 +175,7 @@ namespace Windows.UI.Xaml.Controls
 
 				var arrangeSize = finalRect.Size;
 
-				var customClippingElement = (this as ICustomClippingElement);
+				var customClippingElement = (Panel as ICustomClippingElement);
 				var allowClipToSlot = customClippingElement?.AllowClippingToLayoutSlot ?? true; // Some controls may control itself how clipping is applied
 				var needsClipToSlot = customClippingElement?.ForceClippingToLayoutSlot ?? false;
 
@@ -312,25 +312,25 @@ namespace Windows.UI.Xaml.Controls
 
 				// After the margin has been removed, ensure the remaining space slot does not go
 				// over the explicit or maximum size of the child.
-				//if (optionalMaxWidth != null || optionalWidth != null)
-				//{
-				//	var constrainedWidth = Min(
-				//		optionalMaxWidth ?? double.PositiveInfinity,
-				//		optionalWidth ?? double.PositiveInfinity
-				//	);
+				if (optionalMaxWidth != null || optionalWidth != null)
+				{
+					var constrainedWidth = Min(
+						optionalMaxWidth ?? double.PositiveInfinity,
+						optionalWidth ?? double.PositiveInfinity
+					);
 
-				//	slotSize.Width = Min(slotSize.Width, constrainedWidth);
-				//}
+					slotSize.Width = Min(slotSize.Width, constrainedWidth);
+				}
 
-				//if (optionalMaxHeight != null || optionalHeight != null)
-				//{
-				//	var constrainedHeight = Min(
-				//		optionalMaxHeight ?? double.PositiveInfinity,
-				//		optionalHeight ?? double.PositiveInfinity
-				//	);
+				if (optionalMaxHeight != null || optionalHeight != null)
+				{
+					var constrainedHeight = Min(
+						optionalMaxHeight ?? double.PositiveInfinity,
+						optionalHeight ?? double.PositiveInfinity
+					);
 
-				//	slotSize.Height = Min(slotSize.Height, constrainedHeight);
-				//}
+					slotSize.Height = Min(slotSize.Height, constrainedHeight);
+				}
 			}
 
 			ret = MeasureChildOverride(view, slotSize);
@@ -396,7 +396,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			//SetDesiredChildSize(view, ret);
+			SetDesiredChildSize(view, ret);
 
 			return ret;
 		}
