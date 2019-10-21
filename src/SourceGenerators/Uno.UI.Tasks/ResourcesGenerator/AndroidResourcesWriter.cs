@@ -15,7 +15,8 @@ namespace Uno.UI.Tasks.ResourcesGenerator
 
 			var document = new XDocument(
 				new XDeclaration("1.0", "utf-8", null),
-				new XElement("resources", resources.Select(resource => new XElement("string",
+				new XElement("resources", resources.Select(resource =>
+					new XElement("string",
 						new XAttribute("formatted", "false"), // allows special characters (%, $, etc.)
 						new XAttribute("name", AndroidResourceNameEncoder.Encode(resource.Key)),
 						Sanitize(resource.Value)
