@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Shapes
 					{
 						LineSegment _lineSegment = segment as LineSegment;
 
-						sb.Append("L " + figure.StartPoint.X + "," + figure.StartPoint.Y + " ");
+						sb.Append("L " + _lineSegment.Point.X + "," + _lineSegment.Point.Y + " ");
 					}
 					else if (segment.GetType() == typeof(BezierSegment))
 					{
