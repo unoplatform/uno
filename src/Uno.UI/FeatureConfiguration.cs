@@ -286,7 +286,7 @@ namespace Uno.UI
 			/// </summary>
 			/// <remarks>
 			/// As this boolean is read only once when initializing the dependency property,
-			/// make sure to define it in teh early stages of you application initialization,
+			/// make sure to define it in the early stages of you application initialization,
 			/// before any UI related initialization (like generic styles init) and even before
 			/// referencing the ** type ** ScrollViewer in any way.
 			/// </remarks>
