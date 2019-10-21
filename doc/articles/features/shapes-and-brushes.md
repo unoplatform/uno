@@ -63,5 +63,5 @@ Notes:
 
 Notes:
 
-1. `ImageBrush` on iOS can only be used as `Fill` brush, not supported for `Stroke` and the image needs to be a local asset.
+1. `ImageBrush` on iOS can only be used as a `Fill` brush; it is not supported for `Stroke` and the image needs to be a local asset.
 2. `LinearGradientBrush` on _Wasm_ is not implemented on _shapes_, but it works on other _FrameworkElement_, like a `Border` or a `Panel`...
