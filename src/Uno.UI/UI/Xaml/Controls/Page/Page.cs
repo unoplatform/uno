@@ -63,9 +63,23 @@ namespace Windows.UI.Xaml.Controls
 		#region Frame
 
 		public
+		
 #if __IOS__ || __MACOS__
-			new
+		
+		[global::Uno.NotImplemented]
+		public  object BottomAppBar
+		{
+			get
+			{
+				return (object)this.GetValue(BottomAppBarProperty);
+			}
+			set
+			{
+				this.SetValue(BottomAppBarProperty, value);
+			}
+		}
 #endif
+
 			Frame Frame
 		{
 			get => (Frame)this.GetValue(FrameProperty);
