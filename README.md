@@ -208,5 +208,4 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
 
-
- ✒️ Thanks to all Contributors.
+💖 Thank-you.
