@@ -42,7 +42,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis">
-      <Version>1.2.0</Version>
+      <Version>3.3.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.Common">
       <Version>1.2.0</Version>
