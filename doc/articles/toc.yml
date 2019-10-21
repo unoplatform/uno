@@ -101,6 +101,8 @@
       href: contributing\guidelines\issue-triage.md
     - name: Guidelines for pull-requests
       href: contributing\guidelines\pull-requests.md
+    - name: Build Artifacts
+      href: contributing\build-artifacts.md
     - name: Building and debugging Uno.UI
       href: uno-development\debugging-uno-ui.md
     - name: Working with the samples applications
