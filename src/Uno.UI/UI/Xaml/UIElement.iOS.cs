@@ -152,41 +152,6 @@ namespace Windows.UI.Xaml
 			};
 		}
 
-
-		/// <summary>
-		/// Gets the parent view for the <paramref name="owner"/> which clips its content.
-		/// </summary>
-		/// <returns>A tuple of the clipping parent, and the view that let to this parent.</returns>
-		private static (UIView child, UIView clippingParent) GetClippingParent(UIView owner)
-		{
-			// TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT
-			// TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT
-			// TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT
-			// TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT
-			// TODO: REVIEW THIS BEFORE MERGING PR!
-
-			(UIView child, UIView clippingParent) GetClippingParent(UIView child, UIView parent)
-			{
-				if (parent is FrameworkElement pfe)
-				{
-					if (!pfe.RequiresClipping)
-					{
-						return GetClippingParent(pfe, pfe.Superview);
-					}
-					else
-					{
-						return (child, parent);
-					}
-				}
-				else
-				{
-					return (child, parent);
-				}
-			}
-
-			return GetClippingParent(owner, owner.Superview);
-		}
-
 #if DEBUG
 		public static Predicate<UIView> ViewOfInterestSelector { get; set; } = v => (v as FrameworkElement)?.Name == "TargetView";
 
