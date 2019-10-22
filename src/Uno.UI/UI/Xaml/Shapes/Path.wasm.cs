@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using Windows.Foundation;
@@ -45,61 +46,50 @@ namespace Windows.UI.Xaml.Shapes
 		/// <returns></returns>
 		private string ToStreamGeometry(PathGeometry geometry)
 		{
-			StringBuilder sb = new StringBuilder();
+			CultureInfo ci = CultureInfo.InvariantCulture;
+			List<string> pathlist = new List<string>();
 
 			foreach (PathFigure figure in geometry.Figures)
 			{
-				sb.Append("M " + figure.StartPoint.X + "," + figure.StartPoint.Y + " ");
+				pathlist.Add(string.Format(ci, "M " + figure.StartPoint.X + "," + figure.StartPoint.Y));
 
 				foreach (PathSegment segment in figure.Segments)
 				{
-
-					if (segment.GetType() == typeof(LineSegment))
+					if (segment is LineSegment lineSegment)
 					{
-						LineSegment _lineSegment = segment as LineSegment;
-
-						sb.Append("L " + _lineSegment.Point.X + "," + _lineSegment.Point.Y + " ");
+						pathlist.Add(string.Format(ci, "L " + lineSegment.Point.X + "," + lineSegment.Point.Y));
 					}
-					else if (segment.GetType() == typeof(BezierSegment))
+					else if (segment is BezierSegment bezierSegment)
 					{
-						BezierSegment _bezierSegment = segment as BezierSegment;
-
-						sb.Append(
-							 "C " +
-							 _bezierSegment.Point1.X + "," + _bezierSegment.Point1.Y + " " +
-							 _bezierSegment.Point2.X + "," + _bezierSegment.Point2.Y + " " +
-							 _bezierSegment.Point3.X + "," + _bezierSegment.Point3.Y + " "
-							 );
+						pathlist.Add(string.Format(ci,
+							"C " +
+							 bezierSegment.Point1.X + "," + bezierSegment.Point1.Y + " " +
+							 bezierSegment.Point2.X + "," + bezierSegment.Point2.Y + " " +
+							 bezierSegment.Point3.X + "," + bezierSegment.Point3.Y));
 					}
-					else if (segment.GetType() == typeof(QuadraticBezierSegment))
+					else if (segment is QuadraticBezierSegment quadraticBezierSegment)
 					{
-						QuadraticBezierSegment _quadraticBezierSegment = segment as QuadraticBezierSegment;
-
-						sb.Append(
+						pathlist.Add(string.Format(ci,
 							 "Q " +
-							 _quadraticBezierSegment.Point1.X + "," + _quadraticBezierSegment.Point1.Y + " " +
-							 _quadraticBezierSegment.Point2.X + "," + _quadraticBezierSegment.Point2.Y + " "
-							 );
+							 quadraticBezierSegment.Point1.X + "," + quadraticBezierSegment.Point1.Y + " " +
+							 quadraticBezierSegment.Point2.X + "," + quadraticBezierSegment.Point2.Y));
 					}
-					else if (segment.GetType() == typeof(ArcSegment))
+					else if (segment is ArcSegment arcSegment)
 					{
-						ArcSegment _arcSegment = segment as ArcSegment;
-
-						sb.Append(
+						pathlist.Add(string.Format(ci,
 							 "A " +
-							 _arcSegment.Size.Width + " " + _arcSegment.Size.Height + " " +
-							 _arcSegment.RotationAngle + " " +
-							 (_arcSegment.IsLargeArc ? "1" : "0") + " " +
-							 (_arcSegment.SweepDirection == SweepDirection.Clockwise ? "1" : "0") + " " + 
-							 _arcSegment.Point.X + "," + _arcSegment.Point.Y + " "
-							 );
+							 arcSegment.Size.Width + " " + arcSegment.Size.Height + " " +
+							 arcSegment.RotationAngle + " " +
+							 (arcSegment.IsLargeArc ? "1" : "0") + " " +
+							 (arcSegment.SweepDirection == SweepDirection.Clockwise ? "1" : "0") + " " +
+							 arcSegment.Point.X + "," + arcSegment.Point.Y));
 					}
 				}
 
 				if (figure.IsClosed)
-					sb.Append("Z");
+					pathlist.Add("Z");
 			}
-			return sb.ToString();
+			return string.Join(" ", pathlist.ToArray());
 		}
 	}
 }
