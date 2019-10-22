@@ -71,5 +71,9 @@
 		</Grid>
 		<TextBlock x:Name="testTextBlock2"
 				   Foreground="{Binding Converter={StaticResource LocalForwardConverter}}" />
+		<HyperlinkButton x:Name="outerHyperlinkButton" />
+		<Button Foreground="Red">
+			<HyperlinkButton x:Name="innerHyperlinkButton" />
+		</Button>
 	</Grid>
 </Page>
