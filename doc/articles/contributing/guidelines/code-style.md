@@ -61,12 +61,12 @@ else
 ## Integration Tests
 
 ```csharp
-[ActivePlatforms(Platform.Android, Platform.Browser, Platform.iOS)]
 [TestFixture]
 public class LocalSettings_Tests : SampleControlUITestBase
 {
     [Test]
     [AutoRetry]
+    [ActivePlatforms(Platform.Android, Platform.Browser, Platform.iOS)]
     public void ClearAddContainsRemove()
     {
         // Navigate to this x:Class control name
