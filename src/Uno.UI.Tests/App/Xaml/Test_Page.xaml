@@ -75,5 +75,10 @@
 		<Button Foreground="Red">
 			<HyperlinkButton x:Name="innerHyperlinkButton" />
 		</Button>
+		<StackPanel x:Name="testStackPanel">
+			<StackPanel.Resources>
+				<ResourceDictionary Source="Test_Dictionary_Isolated.xaml" />
+			</StackPanel.Resources>
+		</StackPanel>
 	</Grid>
 </Page>

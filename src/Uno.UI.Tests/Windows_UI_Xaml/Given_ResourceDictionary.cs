@@ -523,5 +523,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			AssertEx.AssertHasColor(page.TestTextBlock2.Foreground, Colors.MidnightBlue);
 		}
+
+		[TestMethod]
+		public void When_Direct_Local_Assignation_From_Source()
+		{
+
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var page = new Test_Page();
+
+			AssertEx.AssertContainsColorBrushResource(page.TestStackPanel.Resources, "NotInAppResources", Colors.Cyan);
+		}
 	}
 }
