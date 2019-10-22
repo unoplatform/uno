@@ -12,7 +12,7 @@
 		bool AllowClippingToLayoutSlot { get; }
 
 		/// <summary>
-		/// Define if the control is forcing a clipping to its bounds.
+		/// Define if the control is forcing clipping to its bounds.
 		/// </summary>
 		/// <remarks>
 		/// This is called during the Arrange phase, can be dynamic.
