@@ -1371,7 +1371,7 @@
 	<!-- Backward compatibility naming -->
 	<Style x:Key="XamlAppBarButton"
 				   TargetType="AppBarButton"
-				   BasedOn="{StaticResource XamlDefaultAppBarToggleButton}" />
+				   BasedOn="{StaticResource XamlDefaultAppBarButton}" />
 	<Style x:Key="XamlAppBarToggleButton"
 				   TargetType="AppBarToggleButton"
 				   BasedOn="{StaticResource XamlDefaultAppBarToggleButton}" />
@@ -1380,7 +1380,7 @@
 				   BasedOn="{StaticResource XamlDefaultAppBarSeparator}" />
 
 	<Style TargetType="AppBarButton"
-		   BasedOn="{StaticResource XamlDefaultAppBarToggleButton}" />
+		   BasedOn="{StaticResource XamlDefaultAppBarButton}" />
 	<Style TargetType="AppBarToggleButton"
 		   BasedOn="{StaticResource XamlDefaultAppBarToggleButton}" />
 	<Style TargetType="AppBarSeparator"
