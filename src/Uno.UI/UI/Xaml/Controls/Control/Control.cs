@@ -299,6 +299,15 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
+		/// Applies default Style and implicit/explicit Style if not applied already, and materializes template.
+		/// </summary>
+		private protected void EnsureTemplate()
+		{
+			ApplyStyles();
+			ApplyTemplate();
+		}
+
+		/// <summary>
 		/// Finds a realized element in the control template
 		/// </summary>
 		/// <param name="e">The framework element instance</param>
@@ -985,5 +994,13 @@ namespace Windows.UI.Xaml.Controls
 				&& method.IsVirtual
 				&& method.DeclaringType != typeof(Control);
 		}
+
+#if DEBUG
+		public VisualStateGroup[] VisualStateGroups => VisualStateManager.GetVisualStateGroups(GetTemplateRoot()).ToArray();
+
+		public string[] VisualStateGroupNames => VisualStateGroups.Select(vsg => vsg.Name).ToArray();
+
+		public string[] CurrentVisualStates => VisualStateGroups.Select(vsg => vsg.CurrentState?.Name).ToArray();
+#endif
 	}
 }

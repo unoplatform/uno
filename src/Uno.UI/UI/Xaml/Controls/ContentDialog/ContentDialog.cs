@@ -121,6 +121,9 @@ namespace Windows.UI.Xaml.Controls
 					throw new InvalidOperationException("A ContentDialog is already opened.");
 				}
 
+				// Make sure default template is applied, so visual states etc can be set correctly
+				EnsureTemplate();
+
 				_popup.Child = this;
 
 				_popup.IsOpen = true;

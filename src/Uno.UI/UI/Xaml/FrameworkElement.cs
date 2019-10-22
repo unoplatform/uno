@@ -265,6 +265,11 @@ namespace Windows.UI.Xaml
 		partial void OnLoadingPartial()
 		{
 			// Apply active style and default style when we enter the visual tree, if they haven't been applied already.
+			ApplyStyles();
+		}
+
+		private protected void ApplyStyles()
+		{
 			ApplyStyle();
 			ApplyDefaultStyle();
 		}
@@ -284,8 +289,7 @@ namespace Windows.UI.Xaml
 			try
 #endif
 			{
-				ApplyStyle();
-				ApplyDefaultStyle();
+				ApplyStyles();
 			}
 #if !HAS_EXPENSIVE_TRYFINALLY
 			finally
