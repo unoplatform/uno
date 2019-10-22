@@ -31,6 +31,8 @@ namespace Uno.UI.Tests.App.Xaml
 		public ContentControl TestContentControl => testContentControl;
 		public SpiffyItemsControl SpiffyItemsControl => spiffyItemsControl;
 		public ProgressRing TestProgressRing => testProgressRing;
+		public HyperlinkButton OuterHyperlinkButton => outerHyperlinkButton;
+		public HyperlinkButton InnerHyperlinkButton => innerHyperlinkButton;
 
 		private bool Boolean1 { get; } = true;
 		private bool Boolean2 { get; } = false;

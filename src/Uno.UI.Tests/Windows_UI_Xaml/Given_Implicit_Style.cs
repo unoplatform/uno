@@ -14,6 +14,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Tests.ViewLibrary;
+using Uno.UI.Tests.Helpers;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml
 {
@@ -176,6 +177,22 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual("FromDefaultStyle", testPage.MyExtControl.MyTag);
 			Assert.AreEqual("FromLocalImplicit", testPage.MyExtControl.MyTag2);
+		}
+
+		[TestMethod]
+		public void When_Inherited_Property()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var testPage = new Test_Page();
+
+			app.HostView.Children.Add(testPage);
+
+			testPage.Measure(new Size(1000, 1000));
+
+			var accentColor = (Color)app.Resources["AccentColorAlias"];
+			AssertEx.AssertHasColor(testPage.OuterHyperlinkButton.Foreground, accentColor);
+			AssertEx.AssertHasColor(testPage.InnerHyperlinkButton.Foreground, accentColor);
 		}
 
 		[TestMethod]
