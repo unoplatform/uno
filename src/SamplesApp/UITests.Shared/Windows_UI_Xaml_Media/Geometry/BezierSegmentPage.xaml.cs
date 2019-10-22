@@ -14,12 +14,13 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-namespace SamplesApp.Windows_UI_Xaml_Media.Geometries
+
+namespace SamplesApp.Windows_UI_Xaml_Media.Geometry
 {
-	[SampleControlInfo("Geometries", "LineSegmentPage")]
-	public sealed partial class LineSegmentPage : Page
+	[SampleControlInfo("Geometry", "BezierSegmentPage")]
+	public sealed partial class BezierSegmentPage : Page
 	{
-		public LineSegmentPage()
+		public BezierSegmentPage()
 		{
 			this.InitializeComponent();
 		}

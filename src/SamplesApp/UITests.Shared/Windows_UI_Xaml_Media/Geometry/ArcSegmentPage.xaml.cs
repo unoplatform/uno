@@ -15,12 +15,12 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 
-namespace SamplesApp.Windows_UI_Xaml_Media.Geometries
+namespace SamplesApp.Windows_UI_Xaml_Media.Geometry
 {
-	[SampleControlInfo("Geometries", "BezierSegmentPage")]
-	public sealed partial class BezierSegmentPage : Page
+	[SampleControlInfo("Geometry", "ArcSegmentPage")]
+	public sealed partial class ArcSegmentPage : Page
 	{
-		public BezierSegmentPage()
+		public ArcSegmentPage()
 		{
 			this.InitializeComponent();
 		}

@@ -14,13 +14,12 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-
-namespace SamplesApp.Windows_UI_Xaml_Media.Geometries
+namespace SamplesApp.Windows_UI_Xaml_Media.Geometry
 {
-	[SampleControlInfo("Geometries", "ArcSegmentPage")]
-	public sealed partial class ArcSegmentPage : Page
+	[SampleControlInfo("Geometry", "LineSegmentPage")]
+	public sealed partial class LineSegmentPage : Page
 	{
-		public ArcSegmentPage()
+		public LineSegmentPage()
 		{
 			this.InitializeComponent();
 		}
