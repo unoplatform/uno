@@ -37,7 +37,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			base.OnUnloaded();
 			_isEnabledSubscription.Disposable = null;
-			_touchSubscription.Disposable = null;
 		}
 
 		partial void OnIsEnabledChangedPartial(bool oldValue, bool newValue)
@@ -48,34 +47,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		partial void RegisterEvents()
 		{
 			_touchSubscription.Disposable = null;
-			_isEnabledSubscription.Disposable = null;
 
 			View uiControl = GetUIControl();
 
 			var nativeButton = uiControl as Android.Widget.Button;
 			if (nativeButton is Android.Widget.Button)
 			{
-				this.Log().Debug("Template contains Android.Widget.Button, hooking up to Click and syncing IsEnabled state");
-
-				_touchSubscription.Disposable = uiControl
-					.RegisterClick((e, s) =>
-					{
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-						{
-							this.Log().Debug("TouchUpInside, executing command");
-						}
-
-						// TODO: Simulate the complete pointer sequence on "this", and remove the Tapped and Click
-						// uiControl.SetOnTouchListener()
-						OnPointerPressed(new PointerRoutedEventArgs(this));
-
-						OnClick();
-
-						var args = new TappedRoutedEventArgs { OriginalSource = this };
-
-						RaiseEvent(TappedEvent, args);
-					});
-
 				_isEnabledSubscription.Disposable =
 					DependencyObjectExtensions.RegisterDisposablePropertyChangedCallback(
 						this,

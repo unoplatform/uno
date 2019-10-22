@@ -54,16 +54,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				this.Log().Debug("ControlTemplateRoot is a UIControl, hooking on to AllTouchEvents and TouchUpInside");
 			}
 
-			void pressHandler(object e, EventArgs s)
-			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug("AllTouchEvents, trigger OnPointerPressed");
-				}
-
-				OnPointerPressed(new PointerRoutedEventArgs(this));
-			}
-
 			void clickHandler(object e, EventArgs s)
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
@@ -84,13 +74,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				uiControl.Enabled = IsEnabled;
 			}
 
-			uiControl.AllTouchEvents += pressHandler;
 			uiControl.TouchUpInside += clickHandler;
 			IsEnabledChanged += enabledHandler;
 
 			void unregister()
 			{
-				uiControl.AllTouchEvents -= pressHandler;
 				uiControl.TouchUpInside -= clickHandler;
 				IsEnabledChanged -= enabledHandler;
 			}
