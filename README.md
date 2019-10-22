@@ -38,7 +38,7 @@ To easily create a multi-platform application:
 * Install the [Uno Solution Template Visual Studio Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin).
 * Create a new C# solution using the **Cross-Platform App (Uno Platform)** template, from Visual Studio's **Start Page**.
 
-See the complete [Getting Started guide](https://platform.uno/docs/articles/get-started.html) for more information.
+See the complete [Getting Started](https://platform.uno/docs/articles/get-started.html) guide for more information.
 
 For a larger example and features demo:
 * Visit the [Uno Gallery and Playground](https://github.com/unoplatform/uno.Playground) repository.
@@ -110,8 +110,7 @@ Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stack
 
 # Contributing
 
-There are many ways that you can contribute to the Uno Platform, as the UWP API is
-pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements.
+There are many ways that you can contribute to the Uno Platform, as the UWP API is pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements.
 
 # Contributors
 
