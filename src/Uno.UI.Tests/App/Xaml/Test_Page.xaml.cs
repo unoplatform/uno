@@ -33,6 +33,7 @@ namespace Uno.UI.Tests.App.Xaml
 		public ProgressRing TestProgressRing => testProgressRing;
 		public HyperlinkButton OuterHyperlinkButton => outerHyperlinkButton;
 		public HyperlinkButton InnerHyperlinkButton => innerHyperlinkButton;
+		public StackPanel TestStackPanel => testStackPanel;
 
 		private bool Boolean1 { get; } = true;
 		private bool Boolean2 { get; } = false;
