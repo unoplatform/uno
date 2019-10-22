@@ -24,7 +24,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			void TabWaitAndThenScreenshot(string buttonName)
 			{
 				_app.Marked(buttonName).Tap();
-				_app.WaitForElement("DPolygon");
+				_app.WaitForElement("DPolyline");
 				TakeScreenshot($"PolylinePage - {buttonName}");
 			}
 		}
