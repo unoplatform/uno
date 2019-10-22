@@ -203,6 +203,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/cTxplorer"><img src="https://avatars0.githubusercontent.com/u/28287478?v=4" width="100px;" alt="Pratik Gadhiya"/><br /><sub><b>Pratik Gadhiya</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=cTxplorer" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/mkwhalen"><img src="https://avatars0.githubusercontent.com/u/17869199?v=4" width="100px;" alt="MacKenzie Whalen"/><br /><sub><b>MacKenzie Whalen</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=mkwhalen" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/jotaro-sama"><img src="https://avatars1.githubusercontent.com/u/36264038?v=4" width="100px;" alt="Giovanni De Luca"/><br /><sub><b>Giovanni De Luca</b></sub></a><br /><a href="#infra-jotaro-sama" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+          
+<td align="center"><a href="https://github.com/raghavdhingra"><img src="https://avatars1.githubusercontent.com/u/24492201?s=460&v=4" width="100px;" alt="Raghav Dhingra"/><br /><sub><b>Raghav Dhingra</b></sub></a><br /><a href="#raghavdhingra" title="Full Stack Web Developer">🚇</a></td>
+          
   </tr>
 </table>
 
