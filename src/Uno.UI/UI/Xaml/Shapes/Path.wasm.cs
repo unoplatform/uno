@@ -5,6 +5,7 @@ using System.Text;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Wasm;
+using static System.FormattableString;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -46,50 +47,49 @@ namespace Windows.UI.Xaml.Shapes
 		/// <returns></returns>
 		private string ToStreamGeometry(PathGeometry geometry)
 		{
-			CultureInfo ci = CultureInfo.InvariantCulture;
 			List<string> pathlist = new List<string>();
 
 			foreach (PathFigure figure in geometry.Figures)
 			{
-				pathlist.Add(string.Format(ci, "M " + figure.StartPoint.X + "," + figure.StartPoint.Y));
+				pathlist.Add("M " + figure.StartPoint.X + "," + figure.StartPoint.Y);
 
 				foreach (PathSegment segment in figure.Segments)
 				{
 					if (segment is LineSegment lineSegment)
 					{
-						pathlist.Add(string.Format(ci, "L " + lineSegment.Point.X + "," + lineSegment.Point.Y));
+						pathlist.Add("L " + lineSegment.Point.X + "," + lineSegment.Point.Y);
 					}
 					else if (segment is BezierSegment bezierSegment)
 					{
-						pathlist.Add(string.Format(ci,
+						pathlist.Add(
 							"C " +
 							 bezierSegment.Point1.X + "," + bezierSegment.Point1.Y + " " +
 							 bezierSegment.Point2.X + "," + bezierSegment.Point2.Y + " " +
-							 bezierSegment.Point3.X + "," + bezierSegment.Point3.Y));
+							 bezierSegment.Point3.X + "," + bezierSegment.Point3.Y);
 					}
 					else if (segment is QuadraticBezierSegment quadraticBezierSegment)
 					{
-						pathlist.Add(string.Format(ci,
+						pathlist.Add(
 							 "Q " +
 							 quadraticBezierSegment.Point1.X + "," + quadraticBezierSegment.Point1.Y + " " +
-							 quadraticBezierSegment.Point2.X + "," + quadraticBezierSegment.Point2.Y));
+							 quadraticBezierSegment.Point2.X + "," + quadraticBezierSegment.Point2.Y);
 					}
 					else if (segment is ArcSegment arcSegment)
 					{
-						pathlist.Add(string.Format(ci,
+						pathlist.Add(
 							 "A " +
 							 arcSegment.Size.Width + " " + arcSegment.Size.Height + " " +
 							 arcSegment.RotationAngle + " " +
 							 (arcSegment.IsLargeArc ? "1" : "0") + " " +
 							 (arcSegment.SweepDirection == SweepDirection.Clockwise ? "1" : "0") + " " +
-							 arcSegment.Point.X + "," + arcSegment.Point.Y));
+							 arcSegment.Point.X + "," + arcSegment.Point.Y);
 					}
 				}
 
 				if (figure.IsClosed)
 					pathlist.Add("Z");
 			}
-			return string.Join(" ", pathlist.ToArray());
+			return FormattableString.Invariant($"{string.Join(" ", pathlist.ToArray())}");
 		}
 	}
 }
