@@ -37,6 +37,7 @@ namespace SamplesApp
 		public App()
 		{
 			ConfigureFilters(LogExtensionPoint.AmbientLoggerFactory);
+			ConfigureFeatureFlags();
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
@@ -164,6 +165,13 @@ namespace SamplesApp
 				.AddConsole(LogLevel.Debug);
 #else
 				.AddConsole(LogLevel.Warning);
+#endif
+		}
+
+		static void ConfigureFeatureFlags()
+		{
+#if !NETFX_CORE
+			Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStylesOverride[typeof(CommandBar)] = false;
 #endif
 		}
 
