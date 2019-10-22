@@ -230,6 +230,16 @@ namespace Uno.UI
 			/// a native counterpart. (e.g. Button, Slider, ComboBox, ...)
 			/// </summary>
 			public static bool UseUWPDefaultStyles { get; set; } = true;
+
+			/// <summary>
+			/// Override the native styles usage per control type.
+			/// </summary>
+			/// <remarks>
+			/// Usage: 'UseUWPDefaultStylesOverride[typeof(Frame)] = false;' will result in the native style always being the default for Frame, irrespective
+			/// of the value of <see cref="UseUWPDefaultStyles"/>. This is useful when an app uses the UWP default look for most controls but the native
+			/// appearance/comportment for a few particular controls, or vice versa.
+			/// </remarks>
+			public static IDictionary<Type, bool> UseUWPDefaultStylesOverride { get; } = new Dictionary<Type, bool>();
 		}
 
 		public static class TextBlock
