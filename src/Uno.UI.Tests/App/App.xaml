@@ -51,6 +51,8 @@
 							 Color="AliceBlue" />
 			<Color x:Key="RedoubtableColor">OliveDrab</Color>
 			<SolidColorBrush x:Key="RedoubtableColorBrush" Color="{StaticResource RedoubtableColor}" />
+			<StaticResource x:Key="AccentColorAlias"
+							ResourceKey="SystemAccentColor" />
 		</ResourceDictionary>
 	</Application.Resources>
 

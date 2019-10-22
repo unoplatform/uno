@@ -1975,6 +1975,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						writer.AppendLineInvariant(directproperty);
 					}
+					else if (resource.Type.Name == "StaticResource")
+					{
+						BuildStaticResourceResourceKeyReference(writer, resource);
+					}
 					else
 					{
 						BuildChild(writer, null, resource);
