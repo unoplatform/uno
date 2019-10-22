@@ -157,7 +157,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Returns the default Style for given type. 
 		/// </summary>
-		internal static Style GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles);
+		internal static Style GetDefaultStyleForType(Type type) => GetDefaultStyleForType(type, ShouldUseUWPDefaultStyle(type));
 
 		private static Style GetDefaultStyleForType(Type type, bool useUWPDefaultStyles)
 		{
@@ -188,6 +188,16 @@ namespace Windows.UI.Xaml
 			}
 
 			return style;
+		}
+
+		private static bool ShouldUseUWPDefaultStyle(Type type)
+		{
+			if (type != null && FeatureConfiguration.Style.UseUWPDefaultStylesOverride.TryGetValue(type, out var value))
+			{
+				return value;
+			}
+
+			return FeatureConfiguration.Style.UseUWPDefaultStyles;
 		}
 	}
 }
