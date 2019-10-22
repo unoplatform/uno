@@ -108,6 +108,9 @@ Let us know if you've made your app publicly available, we'll list it here!
 
 Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform), [create an issue](https://github.com/unoplatform/uno/issues) or [visit our gitter](https://gitter.im/uno-platform/Lobby).
 
+# License
+Uno is licensed under the [Apache License 2.0](https://github.com/unoplatform/uno/blob/master/License.md). See the [LICENSE.md](./LICENSE.md) for more details.
+
 # Contributing
 
 There are many ways that you can contribute to the Uno Platform, as the UWP API is
