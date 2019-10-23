@@ -131,8 +131,20 @@ public class LocalSettings_Tests : SampleControlUITestBase
 
 - Create or reuse a folder named from the namespace of the control or class your want to test, replacing "`.`" by "`_`"
 - Create a new `UserControl` from the Visual Studio templates in the `UITests.Shared` project
-- Add `[Uno.UI.Samples.Controls.SampleControlInfo("Replace_with_control_or_class_name", "MyTestName", description: "MyDescription")]` on the code-behind class.
 
+### SampleControlInfo
+
+```csharp
+[Uno.UI.Samples.Controls.SampleControlInfo(category: "TBA", testname: "TBA", description: "TBA")]
+```
+
+#### Category Name
+
+- Use namespaces as a category for non-UI features.
+
+#### Test Name
+
+#### Description
 
 ## Runtime Tests
 
