@@ -39,7 +39,8 @@ if (condition)
 }
 else
 {
-    // use braces even for single line conditions
+    // use braces even for single line conditions to prevent "goto fail"
+    // https://www.imperialviolet.org/2014/02/22/applebug.html
 }
 ```            
 
