@@ -30,6 +30,8 @@ namespace Windows.UI.Xaml.Controls
 		public MenuBar() : base()
 		{
 			Items = new ObservableCollection<MenuBarItem>();
+
+			DefaultStyleKey = typeof(MenuBar);
 		}
 
 		protected override void OnApplyTemplate()
