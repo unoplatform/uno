@@ -4055,7 +4055,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 {
                     return true;
                 }
-               
+
                 switch (propertyType.ToDisplayString())
                 {
                     case "int":
