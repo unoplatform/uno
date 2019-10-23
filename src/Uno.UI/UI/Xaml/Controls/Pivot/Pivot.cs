@@ -160,6 +160,9 @@ namespace Windows.UI.Xaml.Controls
 						}
 					);
 
+					// Materialize template to ensure visual states are set correctly.
+					headerItem.EnsureTemplate();
+
 					_staticHeader.Children.Add(headerItem);
 				}
 

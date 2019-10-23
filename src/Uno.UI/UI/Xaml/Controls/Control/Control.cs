@@ -301,7 +301,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Applies default Style and implicit/explicit Style if not applied already, and materializes template.
 		/// </summary>
-		private protected void EnsureTemplate()
+		internal void EnsureTemplate()
 		{
 			ApplyStyles();
 			ApplyTemplate();
