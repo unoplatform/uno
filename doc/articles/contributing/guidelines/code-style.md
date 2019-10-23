@@ -44,7 +44,6 @@ As defined over at https://github.com/unoplatform/uno/blob/master/src/PlatformIt
 - ClassName.net.cs
 - ClassName.netstd.cs
 
-
 ### Braces
 
 ```csharp
@@ -57,6 +56,17 @@ else
     // use braces even for single line conditions
 }
 ```            
+
+### Strings
+
+- Always consider globalization thus usage of `InvariantCulture`
+- Never concatenate strings ie. `"string a" + " " + "string b"` without good cause.
+- Prefer [string interpolation](https://docs.microsoft.com/en-us/dotnet/csharp/language-reference/tokens/interpolated) over [stringbuilder](https://docs.microsoft.com/en-us/dotnet/api/system.text.stringbuilder)
+
+```csharp
+double speedOfLight = 299792.458;
+string messageInInvariantCulture = FormattableString.Invariant($"The speed of light is {speedOfLight:N3} km/s.");
+```
 
 ## Integration Tests
 
