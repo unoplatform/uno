@@ -6,6 +6,7 @@
       "SamplesApp\\SamplesApp.Droid\\SamplesApp.Droid.csproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.UITests\\SamplesApp.UITests.csproj",
+      "SamplesApp\\SamplesApp.UWP.Design\\SamplesApp.UWP.Design.csproj",
       "SamplesApp\\SamplesApp.UnitTests.Shared\\SamplesApp.UnitTests.Shared.shproj",
       "SamplesApp\\UITests.Shared\\UITests.Shared.shproj",
       "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
