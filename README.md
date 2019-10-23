@@ -13,7 +13,7 @@
 [![Twitter Followers](https://img.shields.io/twitter/follow/unoplatform?label=follow%20%40unoplatform&style=flat)](https://twitter.com/unoplatform)
 [![GitHub Stars](https://img.shields.io/github/stars/unoplatform/uno?label=github%20stars)](https://github.com/unoplatform/uno/stargazers/)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/uno.ui.svg)](https://www.nuget.org/packages/uno.ui)
-[![All Contributors](https://img.shields.io/badge/all_contributors-60-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-61-orange.svg?style=flat-square)](#contributors)
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/unoplatform/uno/blob/master/CONTRIBUTING.md)
 
 # What is the Uno Platform
@@ -203,6 +203,9 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/cTxplorer"><img src="https://avatars0.githubusercontent.com/u/28287478?v=4" width="100px;" alt="Pratik Gadhiya"/><br /><sub><b>Pratik Gadhiya</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=cTxplorer" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/mkwhalen"><img src="https://avatars0.githubusercontent.com/u/17869199?v=4" width="100px;" alt="MacKenzie Whalen"/><br /><sub><b>MacKenzie Whalen</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=mkwhalen" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/jotaro-sama"><img src="https://avatars1.githubusercontent.com/u/36264038?v=4" width="100px;" alt="Giovanni De Luca"/><br /><sub><b>Giovanni De Luca</b></sub></a><br /><a href="#infra-jotaro-sama" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
+  </tr>
+  <tr>
+    <td align="center"><a href="https://www.facebook.com/InternetHeroBINIT"><img src="https://avatars1.githubusercontent.com/u/20013689?v=4" width="100px;" alt="Binit Ghimire"/><br /><sub><b>Binit Ghimire</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=TheBinitGhimire" title="Documentation">📖</a></td>
   </tr>
 </table>
 
