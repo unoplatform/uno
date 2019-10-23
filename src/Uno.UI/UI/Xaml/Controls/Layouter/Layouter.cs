@@ -112,27 +112,12 @@ namespace Windows.UI.Xaml.Controls
 
 				desiredSize = desiredSize.AtMost(maxSize);
 
-				if (Panel is FrameworkElement frameworkElement && frameworkElement.Visibility == Visibility.Visible)
-				{
-					// DesiredSize must include margins
-					// However, we report the size to the parent without the margins
-					var margin = frameworkElement.Margin;
-
-					// This condition is required because of the measure caching that 
-					// some systems apply (Like android UI).
-					if (margin != Thickness.Empty)
-					{
-						desiredSize = new Size(
-							desiredSize.Width + margin.Left + margin.Right,
-							desiredSize.Height + margin.Top + margin.Bottom
-						);
-					}
-				}
-
-				SetDesiredChildSize(Panel as View, desiredSize);
+				// DesiredSize must include margins
+				// However, we return the size to the parent without the margins
+				SetDesiredChildSize(Panel as View, desiredSize.Add(marginSize));
 
 				var clippedDesiredSize = desiredSize
-					.Add(marginSize)
+					
 					.AtMost(availableSize)
 					.AtLeast(new Size(0, 0));
 
