@@ -1,10 +1,9 @@
-﻿
-using Windows.UI.Xaml;
+﻿using Windows.UI.Xaml;
 
 namespace XamlGenerationTests.Core
 {
-	public static class TestAttachedPropertyOwner
-	{
+    public static class TestAttachedPropertyOwner
+    {
 		public static Style GetCustomStyle(DependencyObject obj)
 		{
 			return (Style)obj.GetValue(CustomStyleProperty);
@@ -57,10 +56,8 @@ namespace XamlGenerationTests.Core
 		public static readonly DependencyProperty MoreContentProperty =
 			DependencyProperty.RegisterAttached("MoreContent", typeof(object), typeof(TestAttachedPropertyOwner), new PropertyMetadata(null));
 
-		public static int? GetNullableType(DependencyObject obj)
-		{
-			return (int?)obj.GetValue(NullableTypeProperty);
-		}
+		public static int? GetNullableType(DependencyObject obj) => (int?)obj.GetValue(NullableTypeProperty);
+		
 		public static void SetNullableType(DependencyObject obj, int? value)
 		{
 			obj.SetValue(NullableTypeProperty, value);
@@ -68,5 +65,15 @@ namespace XamlGenerationTests.Core
 
 		public static readonly DependencyProperty NullableTypeProperty =
 			DependencyProperty.RegisterAttached("NullableType", typeof(int?), typeof(TestAttachedPropertyOwner), new PropertyMetadata(0));
+
+		public static HorizontalAlignment? GetNullableEnum(DependencyObject obj) => (HorizontalAlignment?)obj.GetValue(NullableEnumProperty);
+		
+		public static void SetNullableEnum(DependencyObject obj, HorizontalAlignment? value)
+		{
+			obj.SetValue(NullableEnumProperty, value);
+		}
+
+		public static readonly DependencyProperty NullableEnumProperty =
+			DependencyProperty.RegisterAttached("NullableEnum", typeof(HorizontalAlignment?), typeof(TestAttachedPropertyOwner), new PropertyMetadata(null));
 	}
 }

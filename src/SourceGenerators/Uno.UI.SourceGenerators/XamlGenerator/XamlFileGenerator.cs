@@ -2818,7 +2818,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             return "";
         }
         
-        private INamedTypeSymbol GetUnderlyingType(INamedTypeSymbol propertyType)
+        private INamedTypeSymbol FindUnderlyingType(INamedTypeSymbol propertyType)
         {
             return (propertyType.IsNullable(out var underlyingType) && underlyingType is INamedTypeSymbol underlyingNamedType) ? underlyingNamedType : propertyType;
         }
@@ -2835,7 +2835,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 }
             }
             
-            propertyType = GetUnderlyingType(propertyType);
+            propertyType = FindUnderlyingType(propertyType);
             switch (propertyType.ToDisplayString())
             {
                 case "int":
@@ -4050,12 +4050,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
             if (propertyType != null)
             {
+                propertyType = FindUnderlyingType(propertyType);
                 if (propertyType.TypeKind == TypeKind.Enum)
                 {
                     return true;
                 }
-
-                propertyType = GetUnderlyingType(propertyType);
+               
                 switch (propertyType.ToDisplayString())
                 {
                     case "int":
