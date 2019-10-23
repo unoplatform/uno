@@ -169,6 +169,7 @@
 * Fix color refresh of `BitmapIcon` monochrome Foreground
 * [IOS] DatePickerFlyout min and max year were resetting to FallbackNullValue
 * [Android] Fix bug in `ListView` when using an `ObservableCollection` as its source and using `Header` and `Footer`.
+* [#1924](https://github.com/unoplatform/uno/issues/1924) Fix Android `ListView.HeaderTemplate` (and `.FooterTemplate`) binding bug when changing `Header` and `Footer`.
 
 ## Release 1.45.0
 ### Features
