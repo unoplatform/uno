@@ -48,6 +48,23 @@ namespace Windows.ApplicationModel.Resources
 
 		public string GetString(string resource)
 		{
+			
+			// "/[file]/[name]" format support
+			if(resource.ElementAt(0) == '/')
+			{
+				int iInd;
+				string sFile, sId;
+				sId = resource.Substring(1);
+				iInd = sId.IndexOf("/");
+				if(iInd > 0)
+				{
+					sFile = sId.Substring(0, iInd);
+					sId = sId.Substring(iInd + 1);
+					return GetForCurrentView(sFile).GetString(sId);
+				}
+			}
+
+			
 			// First make sure that resource cache matches the current culture
 			var cultures = EnsureLoadersCultures();
 
