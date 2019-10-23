@@ -3,6 +3,8 @@
 
 ## on your computer
 
+Start by deleting `mono-wasm-xxx` in `C:\Users\userid\AppData\Local\Temp\`.
+
 Increase the build log verbosity in [Visual Studio to diagnostics](https://docs.microsoft.com/en-us/visualstudio/msbuild/obtaining-build-logs-with-msbuild?view=vs-2019). 
 
 Head to Tools -> Options -> MS Build Verbosity
