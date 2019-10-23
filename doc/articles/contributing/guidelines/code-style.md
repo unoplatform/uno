@@ -129,8 +129,17 @@ public class LocalSettings_Tests : SampleControlUITestBase
 
 ## Samples App
 
-- Create or reuse a folder named from the namespace of the control or class your want to test, replacing "`.`" by "`_`"
-- Create a new `UserControl` from the Visual Studio templates in the `UITests.Shared` project
+If working with https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.combobox then the expectation is as follows:
+
+Create a `ComboBox` folder with a suffix of `Tests` or re-use the existing folder under the `Windows_UI_Xaml_Controls`
+
+eg.
+
+```
+SamplesApp.UITests/Windows_UI_Xaml_Controls/ComboxBoxTests/
+```
+
+The convention of `/ComboxBoxTests/` is prefered over `/ComboBox` is prefered because if the namespace is just ...`ComboBox`, then trying to create new `ComboBox()` in code-behind (in any sample) gives rise to compiler complaints.
 
 ### SampleControlInfo
 
