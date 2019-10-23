@@ -17,6 +17,7 @@ using System.Threading.Tasks;
 using System.Diagnostics;
 using Windows.UI.Core;
 using Uno.UI.DataBinding;
+using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -86,7 +87,10 @@ namespace Windows.UI.Xaml.Controls
 
 				container.DataContext = item;
 				container.ContentTemplate = dataTemplate;
-				container.Binding("Content", "");
+				if (container.GetBindingExpression(ContentControl.ContentProperty) == null)
+				{
+					container.SetBinding(ContentControl.ContentProperty, new Binding());
+				}
 			}
 			else if(viewType == IsOwnContainerType)
 			{

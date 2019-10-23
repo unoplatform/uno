@@ -81,5 +81,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			_app.Screenshot($"ListView_VirtualizePanelAdaptaterCache");
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void ListView_Header_DataContextChanged()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView_Header_DataContextChanging");
+
+			_app.WaitForText("MyTextBlock", "InitialText InitialDataContext");
+			_app.Marked("MyButton").Tap();
+			_app.WaitForText("MyTextBlock", "InitialText InitialDataContext UpdatedDataContext");
+		}
 	}
 }
