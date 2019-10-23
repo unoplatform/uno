@@ -30,6 +30,19 @@ Uno uses EditorConfig ([here's our configuration](https://github.com/unoplatform
 - They should not be used for whole files, as there is [a globbing pattern](https://github.com/unoplatform/uno/blob/master/src/PlatformItemGroups.props) in place to avoid having to place it everywhere. See here:
 
 
+### Braces
+
+```csharp
+if (condition)
+{
+    // do something
+}
+else
+{
+    // use braces even for single line conditions
+}
+```            
+
 ### Filenames
 
 As defined over at https://github.com/unoplatform/uno/blob/master/src/PlatformItemGroups.props
@@ -43,19 +56,6 @@ As defined over at https://github.com/unoplatform/uno/blob/master/src/PlatformIt
 - ClassName.UWP.cs
 - ClassName.net.cs
 - ClassName.netstd.cs
-
-### Braces
-
-```csharp
-if (condition)
-{
-    // do something
-}
-else
-{
-    // use braces even for single line conditions
-}
-```            
 
 ### Strings
 
