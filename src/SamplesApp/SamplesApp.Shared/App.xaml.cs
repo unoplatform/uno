@@ -73,6 +73,10 @@ namespace SamplesApp
 		/// <param name="e">Details about the launch request and process.</param>
 		protected override void OnLaunched(LaunchActivatedEventArgs e)
 		{
+#if __IOS__
+			// requires Xamarin Test Cloud Agent
+			Xamarin.Calabash.Start();
+#endif
 			var sw = Stopwatch.StartNew();
 			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
 				_ => Console.WriteLine("Done loading " + sw.Elapsed));
