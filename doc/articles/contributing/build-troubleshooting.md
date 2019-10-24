@@ -29,7 +29,7 @@ git checkout master
 git pull origin master
 ```
 
-Open the solution again and wait for background tasks (bottom left blue corner) to be {} aka None aka Ready.
+Open the solution again using the appropriate solution filter and wait for background tasks (bottom left blue corner) to be {} aka None aka Ready.
 
 Compile the `Uno UI -> Uno.UI` project.
 
