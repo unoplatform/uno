@@ -50,7 +50,7 @@ namespace Windows.ApplicationModel.Resources
 		{
 			
 			// "/[file]/[name]" format support
-			if(resource.ElementAt(0) == '/')
+			if(resource.ElementAtOrDefault(0) == '/')
 			{
 				int iInd;
 				string sFile, sId;
