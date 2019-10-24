@@ -36,10 +36,10 @@ Compile the `Uno UI -> Uno.UI` project.
 If that doesn't work, try the following.
 
 ```
+nuget locals all -clear
 cd src
 msbuild Uno.UI.sln /m /r /bl:restore.binlog /t:restore
 msbuild Uno.UI.sln /m /r /bl:build.binlog
-nuget locals all -clear
 ```
 
 Then privately share the binlog. Please note that binlogs can contain sensitive information such as environment variables, thus if `ARM_CLIENT_SECRET` or `AWS_IAM_SECRET` or `MY_SUPER_SECRET_GITHUB_TOKEN` are set then they will be inside the logs and anyone with the logs can view em. Be careful.
