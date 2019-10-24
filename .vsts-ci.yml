@@ -4,11 +4,11 @@ resources:
     image: nventive/wasm-build:1.1-bionic
 
 jobs:
-#- template: .azure-devops-windows.yml
-#- template: .azure-devops-docs.yml
-#- template: .azure-devops-wasm-uitests.yml
-#- template: .azure-devops-macos.yml
-#- template: .azure-devops-android-tests.yml
+- template: .azure-devops-windows.yml
+- template: .azure-devops-docs.yml
+- template: .azure-devops-wasm-uitests.yml
+- template: .azure-devops-macos.yml
+- template: .azure-devops-android-tests.yml
 - template: .azure-devops-ios-tests.yml
 
 

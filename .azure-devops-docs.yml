@@ -10,10 +10,17 @@ jobs:
   variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
+    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
 
   steps:
   - checkout: self
     clean: true
+
+  - task: CacheBeta@0
+    inputs:
+      key: nuget | $(Agent.OS) | $(Agent.JobName) | $(build.sourcesdirectory)/**/*.csproj | $(build.sourcesdirectory)/**/Directory.Build.targets | $(build.sourcesdirectory)/**/Directory.Build.props
+      path: $(NUGET_PACKAGES)
+    displayName: Cache NuGet packages
     
   - task: GitVersion@4
     inputs:

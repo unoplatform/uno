@@ -15,9 +15,6 @@
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
     <!-- https://github.com/unoplatform/uno/issues/61 -->
     <UnoSkipUserControlsInVisualTree>false</UnoSkipUserControlsInVisualTree>
-
-		<!-- Override the platform for CI builds, so the iPhoneSimulator does not flow through dependencies -->
-		<Platform Condition=" '$(CI_Build)' == 'true' ">AnyCPU</Platform>
   </PropertyGroup>
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
