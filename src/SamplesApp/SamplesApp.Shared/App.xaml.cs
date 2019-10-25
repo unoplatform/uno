@@ -268,6 +268,14 @@ namespace SamplesApp
 			}
 		}
 
+#if __IOS__
+		[Foundation.Export("runTest:")] // notice the colon at the end of the method name
+		public Foundation.NSString RunTestBackdoor(Foundation.NSString value) => new Foundation.NSString(RunTest(value));
+
+		[Foundation.Export("isTestDone:")] // notice the colon at the end of the method name
+		public Foundation.NSString IsTestDoneBackdoor(Foundation.NSString value) => new Foundation.NSString(IsTestDone(value).ToString());
+#endif
+
 		public static bool IsTestDone(string testId) => int.TryParse(testId, out var id) ? _doneTests.Contains(id) : false;
 	}
 }
