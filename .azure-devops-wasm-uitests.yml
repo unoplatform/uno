@@ -153,6 +153,7 @@ jobs:
   dependsOn:
     - Wasm_UITests_Snap
     - Android_Tests
+    - iOS_Tests
     - Wasm_UITests_Automated
 
   pool:

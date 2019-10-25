@@ -26,6 +26,6 @@ mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-conso
 	--inprocess \
 	--agents=1 \
 	--workers=1 \
+	--where "namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests'" \
 	$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/Release/net47/SamplesApp.UITests.dll \
-	> $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/ios/nunit-log.txt 2>&1 \
 	|| true
