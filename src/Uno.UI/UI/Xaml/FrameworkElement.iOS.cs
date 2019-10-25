@@ -29,6 +29,12 @@ namespace Windows.UI.Xaml
 
 		public override void LayoutSubviews()
 		{
+			if (Visibility == Visibility.Collapsed)
+			{
+				// //Don't layout collapsed views
+				return; 
+			}
+
 			try
 			{
 				try
