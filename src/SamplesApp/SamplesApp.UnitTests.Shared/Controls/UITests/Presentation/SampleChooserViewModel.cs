@@ -544,6 +544,9 @@ namespace SampleControl.Presentation
 
 			foreach (var control in query)
 			{
+				var categoryStr = control.attribute.Category ?? control.type.Namespace.Split('.').Last();
+
+
 				var sampleControl = new SampleChooserContent
 				{
 					ControlName = control.attribute.ControlName ?? control.type.Name,
@@ -553,10 +556,10 @@ namespace SampleControl.Presentation
 					IgnoreInAutomatedTests = control.attribute.IgnoreInAutomatedTests
 				};
 
-				var category = categories.SingleOrDefault(c=>c.Category == control.attribute.Category);
+				var category = categories.SingleOrDefault(c=>c.Category == categoryStr);
 				if(category == null)
 				{
-					category = new SampleChooserCategory() { Category = control.attribute.Category };
+					category = new SampleChooserCategory {Category = categoryStr};
 					categories.Add(category);
 				}
 
