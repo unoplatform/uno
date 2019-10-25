@@ -38,14 +38,15 @@
 				Grid.Row="2" Grid.ColumnSpan="3"
 				Background="SkyBlue"
 				Width="138" Height="40">
-			<TextBlock x:Name="SampleText"
-					   Text="XyXyXyXyXyXyXyXyXyXyXyXyXyXy"
-					   VerticalAlignment="Center"
-					   Background="Pink"
-					   FontSize="16"
-					   MaxLines="2"
-					   TextWrapping="Wrap"
-					   TextTrimming="CharacterEllipsis" />
+			<Border Background="Pink">
+				<TextBlock x:Name="SampleText"
+						   Text="XyXyXyXyXyXyXyXyXyXyXyXyXyXy"
+						   VerticalAlignment="Center"
+						   FontSize="16"
+						   MaxLines="2"
+						   TextWrapping="Wrap"
+						   TextTrimming="CharacterEllipsis" />
+				</Border>
 		</Border>
 	</Grid>
 </UserControl>

@@ -1,7 +1,15 @@
 ﻿using System;
+using System.Linq;
+using System.Reflection;
+using Uno.UI;
 using Uno.UI.Samples.Controls;
+using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+
+#if __ANDROID__
+using Android.Text;
+#endif
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
@@ -12,7 +20,60 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 		public TextBlock_TextWrapping_PR1954_EdgeCase()
 		{
 			this.InitializeComponent();
+
+#if __ANDROID__
+			if (TryCalculateTextLinePhysicalHeight() is int physicalHeight && physicalHeight > 0)
+			{
+				// set container height to a value, plenty for 1 line, but not enough for 2 lines
+				this.SampleContainer.Height =  ViewHelper.PhysicalToLogicalPixels(physicalHeight) * 1.85;
+			}
+#endif
 		}
+
+#if __ANDROID__
+		private int? TryCalculateTextLinePhysicalHeight()
+		{
+			try
+			{
+				TextBlock_UpdateLayout(this.SampleText, out var layoutBuilder, new Size(double.PositiveInfinity, double.PositiveInfinity), false);
+				var layout = LayoutBuilder_get_Layout(layoutBuilder);
+
+				return layout.GetLineTop(1);
+			}
+			catch (Exception)
+			{
+				return default;
+			}
+
+			Size TextBlock_UpdateLayout(TextBlock target, out object layoutBuilder, Size availableSize, bool exactWidth)
+			{
+				var parameterTypes = new[]
+				{
+					typeof(TextBlock).GetNestedType("LayoutBuilder", BindingFlags.NonPublic).MakeByRefType(),
+					typeof(Size),
+					typeof(bool),
+				};
+				var parameters = new object[]
+				{
+					default,
+					new Size(double.PositiveInfinity, double.PositiveInfinity),
+					false
+				};
+
+				var result = typeof(TextBlock)
+					.GetMethod("UpdateLayout", BindingFlags.NonPublic | BindingFlags.Instance, default, parameterTypes, default)
+					.Invoke(target, parameters);
+
+				layoutBuilder = parameters[0];
+				return (Size)result;
+			}
+			Layout LayoutBuilder_get_Layout(object builder) => (Layout)typeof(TextBlock).GetNestedType("LayoutBuilder", BindingFlags.NonPublic)
+				.GetProperty("Layout")
+				.GetValue(builder);
+		}
+#endif
+
+
 
 		private void AdjustTextLength(object sender, RoutedEventArgs e)
 		{
