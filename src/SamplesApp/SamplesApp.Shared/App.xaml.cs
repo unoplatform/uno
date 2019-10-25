@@ -73,6 +73,10 @@ namespace SamplesApp
 		/// <param name="e">Details about the launch request and process.</param>
 		protected override void OnLaunched(LaunchActivatedEventArgs e)
 		{
+#if __IOS__
+			// requires Xamarin Test Cloud Agent
+			Xamarin.Calabash.Start();
+#endif
 			var sw = Stopwatch.StartNew();
 			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
 				_ => Console.WriteLine("Done loading " + sw.Elapsed));
@@ -263,6 +267,14 @@ namespace SamplesApp
 				return "";
 			}
 		}
+
+#if __IOS__
+		[Foundation.Export("runTest:")] // notice the colon at the end of the method name
+		public Foundation.NSString RunTestBackdoor(Foundation.NSString value) => new Foundation.NSString(RunTest(value));
+
+		[Foundation.Export("isTestDone:")] // notice the colon at the end of the method name
+		public Foundation.NSString IsTestDoneBackdoor(Foundation.NSString value) => new Foundation.NSString(IsTestDone(value).ToString());
+#endif
 
 		public static bool IsTestDone(string testId) => int.TryParse(testId, out var id) ? _doneTests.Contains(id) : false;
 	}

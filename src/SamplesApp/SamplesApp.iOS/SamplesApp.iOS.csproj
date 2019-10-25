@@ -11,12 +11,12 @@
     <AssemblyName>SamplesApp</AssemblyName>
     <NuGetPackageImportStamp>
     </NuGetPackageImportStamp>
+    <IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
-		
-		<!-- https://github.com/unoplatform/uno/issues/61 -->
-		<UnoSkipUserControlsInVisualTree>false</UnoSkipUserControlsInVisualTree>
-	</PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
+    <!-- https://github.com/unoplatform/uno/issues/61 -->
+    <UnoSkipUserControlsInVisualTree>false</UnoSkipUserControlsInVisualTree>
+  </PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -31,18 +31,19 @@
     <MtouchExtraArgs>--xml=./LinkerExclusions.xml --linkskip=$(AssemblyName) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
     <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
-    <DebugType>none</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <MtouchLink>None</MtouchLink>
-    <MtouchArch>x86_64</MtouchArch>
-    <ConsolePause>false</ConsolePause>
-    <MtouchExtraArgs>--xml=./LinkerExclusions.xml --linkskip=$(AssemblyName) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
+		<DebugType>none</DebugType>
+		<Optimize>true</Optimize>
+		<OutputPath>bin\iPhoneSimulator\Release</OutputPath>
+    <DefineConstants>XAMARIN;HAS_UNO</DefineConstants>
+		<ErrorReport>prompt</ErrorReport>
+		<WarningLevel>4</WarningLevel>
+		<MtouchLink>None</MtouchLink>
+		<MtouchArch>x86_64</MtouchArch>
+		<ConsolePause>false</ConsolePause>
+		<MtouchExtraArgs>--xml=./LinkerExclusions.xml --linkskip=$(AssemblyName) --setenv=MONO_GC_PARAMS=soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep,concurrent-sweep</MtouchExtraArgs>
+	</PropertyGroup>
+	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -129,6 +130,9 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
     <PackageReference Include="MSTest.TestFramework" Version="2.0.0" />
+    <PackageReference Include="Xamarin.TestCloud.Agent">
+      <Version>0.21.8</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj">
