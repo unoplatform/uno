@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace Uno.UI.HotReload.HotReload.Messages
+namespace Uno.UI.RemoteControl.HotReload.Messages
 {
 	internal class FileReload : IMessage
 	{

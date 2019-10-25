@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
-using Uno.UI.HotReload.HotReload.Messages;
+using Uno.UI.RemoteControl.HotReload.Messages;
 
-namespace Uno.UI.HotReload
+namespace Uno.UI.RemoteControl
 {
 	internal interface IRemoteControlProcessor
 	{

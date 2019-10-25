@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Uno.UI.HotReload.HotReload.Messages
+namespace Uno.UI.RemoteControl.HotReload.Messages
 {
 	class ConfigureServer : IMessage
 	{

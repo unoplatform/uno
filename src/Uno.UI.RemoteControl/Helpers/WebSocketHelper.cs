@@ -5,9 +5,9 @@ using System.Net.WebSockets;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Uno.UI.HotReload.HotReload.Messages;
+using Uno.UI.RemoteControl.HotReload.Messages;
 
-namespace Uno.UI.HotReload.Helpers
+namespace Uno.UI.RemoteControl.Helpers
 {
 	public static class WebSocketHelper
 	{

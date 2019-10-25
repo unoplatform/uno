@@ -141,10 +141,13 @@
 
 		<XmlUpdate XmlFileName=".\Uno.UI.Lottie.nuspec" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.UI']/@version" Value="$(GITVERSION_FullSemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
 
+		<XmlUpdate XmlFileName=".\Uno.UI.RemoteControl.nuspec" XPath="/x:package/x:metadata/x:dependencies//x:dependency[@id='Uno.UI']/@version" Value="$(GITVERSION_FullSemVer)" Namespace="$(NugetNamespace)" Prefix="x" />
+
 		<!-- Create the packages -->
 		<Exec Command="$(NuGetBin) pack Uno.UI.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_FullSemVer)&quot;" />
 		<Exec Command="$(NuGetBin) pack Uno.UI.WpfHost.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_FullSemVer)&quot;" />
 		<Exec Command="$(NuGetBin) pack Uno.UI.Lottie.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_FullSemVer)&quot;" />
+		<Exec Command="$(NuGetBin) pack Uno.UI.RemoteControl.nuspec -Verbosity Detailed -Version &quot;$(GITVERSION_FullSemVer)&quot;" />
 	</Target>
 
 	<Target Name="ValidatePackage" AfterTargets="UnoBuild" Condition="'$(BuildingInsideVisualStudio)'==''">

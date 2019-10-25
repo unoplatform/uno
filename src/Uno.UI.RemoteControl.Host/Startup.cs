@@ -10,7 +10,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Options;
 
-namespace Uno.HotReload.Host
+namespace Uno.UI.RemoteControl.Host
 {
 	internal class Startup
 	{

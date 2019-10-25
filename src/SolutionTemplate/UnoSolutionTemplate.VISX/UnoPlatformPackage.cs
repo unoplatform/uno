@@ -190,7 +190,12 @@ namespace UnoSolutionTemplate
 									typeof(Action<Func<Task<Dictionary<string, string>>>>)
 								}) != null)
 							{
-								_remoteControl = Activator.CreateInstance(entryPointType, _dte, toolsPath, this, (Action<Func<Task<Dictionary<string, string>>>>)SetGlobalVariablesProvider) as IDisposable;
+								_remoteControl = Activator.CreateInstance(
+									entryPointType,
+									_dte,
+									toolsPath,
+									this,
+									(Action<Func<Task<Dictionary<string, string>>>>)SetGlobalVariablesProvider) as IDisposable;
 
 								_infoAction($"Loaded the Uno.UI Remote Control service ({unoNuGetPackage.VersionString}).");
 							}

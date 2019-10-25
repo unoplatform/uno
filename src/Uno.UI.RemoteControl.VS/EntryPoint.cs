@@ -20,7 +20,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Task = System.Threading.Tasks.Task;
 
-namespace Uno.UI.HotReload.VS
+namespace Uno.UI.RemoteControl.VS
 {
 	public class EntryPoint
 	{
@@ -49,6 +49,9 @@ namespace Uno.UI.HotReload.VS
 			globalPropertiesProvider(OnProvideGlobalPropertiesAsync);
 
 			SetupOutputWindow();
+
+			_dte.Events.BuildEvents.OnBuildDone +=
+				(s, a) => BuildEvents_OnBuildDoneAsync(s, a);
 
 			_dte.Events.BuildEvents.OnBuildProjConfigBegin += 
 				(string project, string projectConfig, string platform, string solutionConfig) => BuildEvents_OnBuildProjConfigBeginAsync(project, projectConfig, platform, solutionConfig);
@@ -114,6 +117,11 @@ namespace Uno.UI.HotReload.VS
 			}
 		}
 
+		private async Task BuildEvents_OnBuildDoneAsync(vsBuildScope Scope, vsBuildAction Action)
+		{
+			await StartServerAsync();
+		}
+
 		private async Task StartServerAsync()
 		{
 			if (_process?.HasExited ?? true)
@@ -122,7 +130,7 @@ namespace Uno.UI.HotReload.VS
 
 				var sb = new StringBuilder();
 
-				var hostBinPath = Path.Combine(_toolsPath, "host", "Uno.HotReload.Host.dll");
+				var hostBinPath = Path.Combine(_toolsPath, "host", "Uno.RemoteControl.Host.dll");
 				string arguments = $"{hostBinPath} --httpPort {RemoteControlServerPort}";
 				var pi = new ProcessStartInfo("dotnet", arguments)
 				{

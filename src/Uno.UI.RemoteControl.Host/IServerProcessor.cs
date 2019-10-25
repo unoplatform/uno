@@ -1,7 +1,7 @@
 ﻿using System.Threading.Tasks;
-using Uno.UI.HotReload.HotReload.Messages;
+using Uno.UI.RemoteControl.HotReload.Messages;
 
-namespace Uno.HotReload.Host
+namespace Uno.UI.RemoteControl.Host
 {
 	internal interface IServerProcessor
 	{

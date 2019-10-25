@@ -10,12 +10,12 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Uno.Extensions;
-using Uno.UI.HotReload.Helpers;
-using Uno.UI.HotReload.HotReload;
-using Uno.UI.HotReload.HotReload.Messages;
+using Uno.UI.RemoteControl.Helpers;
+using Uno.UI.RemoteControl.HotReload;
+using Uno.UI.RemoteControl.HotReload.Messages;
 using Uno.Wasm.WebSockets;
 
-namespace Uno.UI.HotReload
+namespace Uno.UI.RemoteControl
 {
 	public class RemoteControlClient : IRemoteControlClient
 	{

@@ -6,12 +6,12 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
 using Uno.Extensions;
-using Uno.UI.HotReload.HotReload.Messages;
+using Uno.UI.RemoteControl.HotReload.Messages;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Markup;
 
-namespace Uno.UI.HotReload.HotReload
+namespace Uno.UI.RemoteControl.HotReload
 {
 	public class ClientHotReloadProcessor : IRemoteControlProcessor
 	{
@@ -65,37 +65,42 @@ namespace Uno.UI.HotReload.HotReload
 
 		private async Task ReloadFile(FileReload fileReload)
 		{
-			try
-			{
-				if (this.Log().IsEnabled(LogLevel.Debug))
-				{
-					this.Log().LogDebug($"Reloading changed file {fileReload.FilePath}");
-				}
+			Windows.UI.Core.CoreDispatcher.Main.RunAsync(
+				Windows.UI.Core.CoreDispatcherPriority.Normal,
+				() =>
+            {
+                try
+                {
+                    if (this.Log().IsEnabled(LogLevel.Debug))
+                    {
+                        this.Log().LogDebug($"Reloading changed file {fileReload.FilePath}");
+                    }
 
-				var uri = new Uri("file:///" + fileReload.FilePath.Replace("\\", "/"));
+                    var uri = new Uri("file:///" + fileReload.FilePath.Replace("\\", "/"));
 
-				foreach (var instance in EnumerateInstances(Window.Current.Content, uri))
-				{
-					switch (instance)
-					{
+                    foreach (var instance in EnumerateInstances(Window.Current.Content, uri))
+                    {
+                        switch (instance)
+                        {
 #if __IOS__
 						case UserControl userControl:
 							userControl.Content = XamlReader.Load(fileReload.Content) as UIKit.UIView;
 							break;
 #endif
-						case ContentControl content:
-							content.Content = XamlReader.Load(fileReload.Content);
-							break;
-					}
-				}
-			}
-			catch(Exception e)
-			{
-				if (this.Log().IsEnabled(LogLevel.Error))
-				{
-					this.Log().LogError($"Failed reloading changed file {fileReload.FilePath}", e);
-				}
-			}
+                            case ContentControl content:
+                                content.Content = XamlReader.Load(fileReload.Content);
+                                break;
+                        }
+                    }
+                }
+                catch (Exception e)
+                {
+                    if (this.Log().IsEnabled(LogLevel.Error))
+                    {
+                        this.Log().LogError($"Failed reloading changed file {fileReload.FilePath}", e);
+                    }
+                }
+            });
 		}
 
 		private IEnumerable<UIElement> EnumerateInstances(object instance, Uri baseUri)

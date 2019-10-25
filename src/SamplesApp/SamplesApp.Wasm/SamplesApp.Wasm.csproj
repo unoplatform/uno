@@ -66,7 +66,7 @@
 	<ItemGroup>
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
-		<ProjectReference Include="..\..\Uno.HotReload\Uno.UI.HotReload.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Wasm.Tests\Uno.UI.Wasm.Tests.csproj" />

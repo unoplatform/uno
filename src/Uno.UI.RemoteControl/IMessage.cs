@@ -1,4 +1,4 @@
-﻿namespace Uno.UI.HotReload
+﻿namespace Uno.UI.RemoteControl
 {
 	public interface IMessage
 	{

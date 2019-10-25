@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Mono.Options;
 
-namespace Uno.HotReload.Host
+namespace Uno.UI.RemoteControl.Host
 {
 	class Program
 	{

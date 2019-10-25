@@ -7,12 +7,12 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Uno.HotReload.Host.HotReload;
-using Uno.UI.HotReload;
-using Uno.UI.HotReload.Helpers;
-using Uno.UI.HotReload.HotReload.Messages;
+using Uno.UI.RemoteControl.Host.HotReload;
+using Uno.UI.RemoteControl;
+using Uno.UI.RemoteControl.Helpers;
+using Uno.UI.RemoteControl.HotReload.Messages;
 
-namespace Uno.HotReload.Host
+namespace Uno.UI.RemoteControl.Host
 {
 	internal class RemoteControlServer : IRemoteControlServer
 	{

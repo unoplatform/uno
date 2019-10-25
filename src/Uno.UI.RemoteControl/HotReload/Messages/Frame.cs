@@ -4,7 +4,7 @@ using System.IO;
 using System.Text;
 using Newtonsoft.Json;
 
-namespace Uno.UI.HotReload.HotReload.Messages
+namespace Uno.UI.RemoteControl.HotReload.Messages
 {
 	public class Frame
 	{

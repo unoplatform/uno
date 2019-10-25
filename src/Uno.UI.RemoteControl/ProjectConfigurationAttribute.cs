@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Uno.UI.HotReload
+namespace Uno.UI.RemoteControl
 {
 	[System.AttributeUsage(AttributeTargets.Assembly, Inherited = false, AllowMultiple = false)]
 	public sealed class ProjectConfigurationAttribute : Attribute

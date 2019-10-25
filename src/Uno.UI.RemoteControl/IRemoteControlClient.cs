@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Threading.Tasks;
-using Uno.UI.HotReload.HotReload.Messages;
+using Uno.UI.RemoteControl.HotReload.Messages;
 
-namespace Uno.UI.HotReload
+namespace Uno.UI.RemoteControl
 {
 	public interface IRemoteControlClient
 	{

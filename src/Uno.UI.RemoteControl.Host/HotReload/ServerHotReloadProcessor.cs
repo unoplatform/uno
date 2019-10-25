@@ -6,9 +6,9 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
-using Uno.UI.HotReload.HotReload.Messages;
+using Uno.UI.RemoteControl.HotReload.Messages;
 
-namespace Uno.HotReload.Host.HotReload
+namespace Uno.UI.RemoteControl.Host.HotReload
 {
 	class ServerHotReloadProcessor : IServerProcessor
 	{
