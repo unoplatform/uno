@@ -1,4 +1,4 @@
-﻿using Uno.Extensions;
+using Uno.Extensions;
 using Uno.MsBuildTasks.Utils;
 using Uno.MsBuildTasks.Utils.XamlPathParser;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
@@ -2817,6 +2817,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             }
             return "";
         }
+        
+        private INamedTypeSymbol FindUnderlyingType(INamedTypeSymbol propertyType)
+        {
+            return (propertyType.IsNullable(out var underlyingType) && underlyingType is INamedTypeSymbol underlyingNamedType) ? underlyingNamedType : propertyType;
+        }
 
         private string BuildLiteralValue(INamedTypeSymbol propertyType, string memberValue, XamlMemberDefinition owner = null, string memberName = "", string objectUid = "")
         {
@@ -2829,7 +2834,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                     return resourceValue;
                 }
             }
-
+            
+            propertyType = FindUnderlyingType(propertyType);
             switch (propertyType.ToDisplayString())
             {
                 case "int":
@@ -4044,6 +4050,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
             if (propertyType != null)
             {
+                propertyType = FindUnderlyingType(propertyType);
                 if (propertyType.TypeKind == TypeKind.Enum)
                 {
                     return true;
