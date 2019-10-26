@@ -13,7 +13,7 @@ namespace Windows.ApplicationModel
 	{
 		private const string BundleDisplayNameKey = "CFBundleDisplayName";
 		
-		public string DisplayName => NSBundle.MainBundle.InfoDictionary[BundleDisplayNameKey].ToString();
+		public string DisplayName => NSBundle.MainBundle.InfoDictionary[BundleDisplayNameKey]?.ToString() ?? string.Empty;
 
 		private bool GetInnerIsDevelopmentMode() => IsAdHoc;
 

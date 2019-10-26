@@ -10,9 +10,13 @@ namespace Windows.ApplicationModel
 		private const string BundleShortVersionKey = "CFBundleShortVersionString";
 		private const string BundleVersionKey = "CFBundleVersion";
 
-		public string FamilyName => NSBundle.MainBundle.InfoDictionary[BundleIdentifierKey].ToString();
+		private const string DefaultVersionString = "0.0";
 
-		public string FullName => $"{NSBundle.MainBundle.InfoDictionary[BundleIdentifierKey].ToString()}_{NSBundle.MainBundle.InfoDictionary[BundleVersionKey]}";
+		public string FamilyName => NSBundle.MainBundle.InfoDictionary[BundleIdentifierKey]?.ToString() ?? string.Empty;
+
+		public string FullName =>
+			$"{NSBundle.MainBundle.InfoDictionary[BundleIdentifierKey]?.ToString() ?? string.Empty}_" +
+			$"{NSBundle.MainBundle.InfoDictionary[BundleVersionKey]?.ToString() ?? DefaultVersionString}";
 
 		public string Name => NSBundle.MainBundle.InfoDictionary[BundleIdentifierKey].ToString();
 
@@ -23,12 +27,12 @@ namespace Windows.ApplicationModel
 		{
 			get
 			{
-				var shortVersion = NSBundle.MainBundle.InfoDictionary[BundleShortVersionKey].ToString();
-				var bundleVersion = NSBundle.MainBundle.InfoDictionary[BundleVersionKey].ToString();
+				var shortVersion = NSBundle.MainBundle.InfoDictionary[BundleShortVersionKey]?.ToString() ?? DefaultVersionString;
+				var bundleVersion = NSBundle.MainBundle.InfoDictionary[BundleVersionKey]?.ToString() ?? DefaultVersionString;
 				// Short version is the user-displayed version, use if possible
-				if (SystemVersion.TryParse(shortVersion, out var userVersoin))
+				if (SystemVersion.TryParse(shortVersion, out var userVersion))
 				{
-					return new PackageVersion(userVersoin);
+					return new PackageVersion(userVersion);
 				}
 				// If user-displayed version is not set, use the actual app version
 				if (SystemVersion.TryParse(bundleVersion, out var appVersion))
