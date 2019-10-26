@@ -7,7 +7,7 @@ namespace Windows.Devices.Sensors
 	#endif
 	public  partial class Pedometer 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint ReportInterval
 		{
@@ -58,7 +58,7 @@ namespace Windows.Devices.Sensors
 		// Forced skipping of method Windows.Devices.Sensors.Pedometer.ReportInterval.get
 		// Forced skipping of method Windows.Devices.Sensors.Pedometer.ReadingChanged.add
 		// Forced skipping of method Windows.Devices.Sensors.Pedometer.ReadingChanged.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyDictionary<global::Windows.Devices.Sensors.PedometerStepKind, global::Windows.Devices.Sensors.PedometerReading> GetCurrentReadings()
 		{
@@ -79,7 +79,7 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Pedometer> Pedometer.FromIdAsync(string deviceId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Sensors.Pedometer> GetDefaultAsync()
 		{
@@ -107,7 +107,7 @@ namespace Windows.Devices.Sensors
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<PedometerReading>> Pedometer.GetSystemHistoryAsync(DateTimeOffset fromTime, TimeSpan duration) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.Sensors.Pedometer, global::Windows.Devices.Sensors.PedometerReadingChangedEventArgs> ReadingChanged
 		{

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Sensors
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class PedometerReading 
+	public partial class PedometerReading 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  int CumulativeSteps
 		{
@@ -16,8 +16,8 @@ namespace Windows.Devices.Sensors
 				throw new global::System.NotImplementedException("The member int PedometerReading.CumulativeSteps is not implemented in Uno.");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan CumulativeStepsDuration
 		{
@@ -26,8 +26,8 @@ namespace Windows.Devices.Sensors
 				throw new global::System.NotImplementedException("The member TimeSpan PedometerReading.CumulativeStepsDuration is not implemented in Uno.");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Sensors.PedometerStepKind StepKind
 		{
@@ -36,8 +36,8 @@ namespace Windows.Devices.Sensors
 				throw new global::System.NotImplementedException("The member PedometerStepKind PedometerReading.StepKind is not implemented in Uno.");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::System.DateTimeOffset Timestamp
 		{
@@ -46,7 +46,7 @@ namespace Windows.Devices.Sensors
 				throw new global::System.NotImplementedException("The member DateTimeOffset PedometerReading.Timestamp is not implemented in Uno.");
 			}
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.StepKind.get
 		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.CumulativeSteps.get
 		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.Timestamp.get
