@@ -37,7 +37,7 @@ namespace Windows.Storage
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		global::Windows.Foundation.IAsyncAction RenameAsync( string desiredName,  global::Windows.Storage.NameCollisionOption option);
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		global::Windows.Foundation.IAsyncAction DeleteAsync();
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
