@@ -181,6 +181,7 @@
 * 164480 [Android] fixed a text wrapping issue caused by layout height desync
 * [Wasm] Fix unable to reset `Image.Source` property
 * [#2014](https://github.com/unoplatform/uno/issues/2014) Fix iOS Picker for ComboBox not selecting the correct item.
+* [iOS] #977 Fix exception when setting MediaPlayerElement.Stretch in XAML.
 
 ## Release 1.45.0
 ### Features
