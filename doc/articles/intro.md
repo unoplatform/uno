@@ -10,7 +10,7 @@ As the Uno Platform provides all of the APIs of the complete UWP platform, any U
 
 ## Why Uno?
 
-Developing for Windows (phone, desktop, tablet, Xbox), iOS (tablet and phone),  Android (tablet and phone) and WebAssembly at once can be a complex process, especially when it comes to the user interface. Each platform has its ways of defining dynamic layouts, with some being more efficient, some more verbose, some more elegant, and some more performant than others.
+Developing for Windows (phone, desktop, tablet, Xbox), iOS (tablet and phone),  Android (tablet and phone) and WebAssembly at once can be a complex process, especially when it comes to the user interface. Each platform has its own ways of defining dynamic layouts, with some being more efficient, some more verbose, some more elegant, and some more performant than others.
 
 Yet, being able to master all these frameworks at once is a particularly difficult task because of the amount of platform-specific knowledge required to master each platform. Most of the time it boils down to different teams developing the same application multiple times, with each requiring a full development cycle.
 
