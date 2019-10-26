@@ -180,7 +180,7 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncAction StorageFile.RenameAsync(string desiredName, NameCollisionOption option) is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction DeleteAsync()
 		{
