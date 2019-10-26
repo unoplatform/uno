@@ -13,7 +13,7 @@ using System.Text;
 using System.Drawing;
 using Uno.UI;
 using Microsoft.Extensions.Logging;
-using static Uno.UI.MathEx;
+using static Uno.Extensions.MathEx;
 
 namespace Windows.UI.Xaml.Controls
 {

@@ -21,6 +21,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			=> RunSequence("Click");
 
 		[Test]
+		public void TestTranslatedTap()
+			=> RunSequence("TranslatedTap", TranslateOverElement);
+
+		[Test]
+		public void TestTranslatedClick()
+			=> RunSequence("TranslatedClick", TranslateOverElement);
+
+		[Test]
 		public void TestHyperlink()
 			=> RunSequence("Hyperlink", TapSomewhereInElement);
 
@@ -29,6 +37,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			=> RunSequence("ListView", TapSomewhereInElement);
 
 		private readonly Action<QueryEx> TapElement = element => element.Tap();
+		private void TranslateOverElement(QueryEx element)
+		{
+			var rect = _app.WaitForElement(element).Single().Rect;
+			_app.DragCoordinates(rect.X + 2, rect.Y + 2, rect.Right - 2, rect.Bottom - 2);
+		}
 		private void TapSomewhereInElement(QueryEx element)
 		{
 			var rect = _app.WaitForElement(element).Single().Rect;

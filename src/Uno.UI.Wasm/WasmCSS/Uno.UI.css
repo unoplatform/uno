@@ -26,10 +26,6 @@ body {
     Those are required for measure/arrange to behave well:
     margin & padding are calculated through Xaml elements.
   */
-  /*
-    Those are required for measure/arrange to behave well:
-    margin & padding are calculated through Xaml elements.
-  */
   margin: 0 !important;
   padding: 0 !important;
   line-height: normal !important;

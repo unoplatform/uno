@@ -13,6 +13,10 @@
 	  <RowDefinition Height="Auto" />
 	  <RowDefinition Height="*" />
 	</Grid.RowDefinitions>
+	<Grid.ColumnDefinitions>
+	  <ColumnDefinition Width="*"/>
+	  <ColumnDefinition Width="*"/>
+	</Grid.ColumnDefinitions>
 	<StackPanel Grid.Row="0">
 	  <Button x:Name="runButton"
 			  Content="Run"
@@ -24,6 +28,9 @@
 	<ScrollViewer Grid.Row="1">
 	  <StackPanel x:Name="testResults">
 	  </StackPanel>
+	</ScrollViewer>
+	<ScrollViewer  Grid.Column="1" Grid.RowSpan="2">
+	  <ContentControl x:Name="unitTestContentRoot" HorizontalContentAlignment="Center" VerticalAlignment="Center" />
 	</ScrollViewer>
   </Grid>
 </UserControl>

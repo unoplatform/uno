@@ -220,6 +220,9 @@
     <file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="build\xamarinios10" />
     <file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="build\xamarinmac20" />
     <file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="build\netstandard2.0" />
+    
+    <!-- Force UAP to ignore netstandard 2.0 -->
+    <file src="_._" target="build\uap10.0.16299" />
     <file src="_._" target="build\uap10.0.17763" />
 
     <file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" target="build" />

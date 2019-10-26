@@ -33,7 +33,15 @@ namespace Windows.UI.Xaml
 
         public GridLength(double value, GridUnitType gridUnitType)
 		{
-			Value = value;
+			if (double.IsNaN(value) || double.IsInfinity(value) || value < 0.0 ||
+				(gridUnitType != GridUnitType.Auto &&
+				 gridUnitType != GridUnitType.Pixel &&
+				 gridUnitType != GridUnitType.Star))
+			{
+				throw new ArgumentException(nameof(value));
+			}
+
+			Value = (gridUnitType == GridUnitType.Auto) ? 1.0 : value;
 			GridUnitType = gridUnitType;
 		}
 
@@ -95,7 +103,23 @@ namespace Windows.UI.Xaml
 			return result.ToArray();
 		}
 
-		public bool Equals(GridLength other) => 
-			other.Value == Value && other.GridUnitType == GridUnitType;
+		public bool Equals(GridLength other)
+		{
+			if (other.GridUnitType == GridUnitType)
+			{
+				if (GridUnitType == GridUnitType.Auto)
+				{
+					return true;
+				}
+				else
+				{
+					return other.Value == Value;
+				}
+			}
+			else
+			{
+				return false;
+			}
+		}
 	}
 }

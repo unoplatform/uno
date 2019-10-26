@@ -235,7 +235,7 @@ namespace <#= mixin.NamespaceName #>
 		private void OnNameChanged(string oldValue, string newValue) {
 			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
 			{
-				AccessibilityIdentifier = newValue;
+				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
 			}
 		}
 

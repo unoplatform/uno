@@ -1,4 +1,4 @@
-﻿using Uno.Extensions;
+using Uno.Extensions;
 using Uno.MsBuildTasks.Utils;
 using Uno.MsBuildTasks.Utils.XamlPathParser;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
@@ -270,7 +270,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 if (IsApplication(topLevelControl.Type))
                 {
                     _isGeneratingGlobalResource = true;
-                    BuildResourceDictionary(writer, topLevelControl);
+					RegisterResources(topLevelControl);
+					BuildResourceDictionary(writer, topLevelControl);
                 }
 
                 _isGeneratingGlobalResource = false;
@@ -400,7 +401,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			writer.AppendLineInvariant($"global::Uno.Helpers.DrawableHelper.Drawables = typeof(global::{_defaultNamespace}.Resource.Drawable);");
 			writer.AppendLineInvariant($"#endif");
 
-			RegisterResources(topLevelControl);
 			BuildProperties(writer, topLevelControl, isInline: false, returnsContent: false);
 
 			writer.AppendLineInvariant("");
@@ -665,7 +665,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             if (IsApplication(topLevelControl.Type))
             {
                 contentNode = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "Resources");
-            }
+
+				// Handle case where inner object is a ResourceDictionary
+				if(contentNode?.Objects.Count == 1)
+				{
+					var resourceDictionary = contentNode.Objects.First();
+
+					if (resourceDictionary.Type.Name == "ResourceDictionary")
+					{
+						contentNode = FindMember(resourceDictionary, "_UnknownContent");
+					}
+				}
+			}
             else
             {
                 contentNode = FindMember(topLevelControl, "_UnknownContent");
@@ -1857,7 +1868,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 var isExplicitResDictionary = resourcesMember.Objects.Any(o => o.Type.Name == "ResourceDictionary");
                 var resourcesRoot = isExplicitResDictionary
                     ? FindImplicitContentMember(resourcesMember.Objects.First())
-                    : resourcesMember;
+					: resourcesMember;
 
                 if (resourcesRoot != null)
                 {
@@ -2241,7 +2252,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                                     this.RewriteAttachedPropertyPath(member.Value.ToString()),
                                     closureName);
 
-                                writer.AppendLineInvariant("{0}.SetTarget({2}, this._{1}Subject);",
+                                writer.AppendLineInvariant("{0}.SetTarget({2}, _{1}Subject);",
                                                 GetGlobalizedTypeName(FindType(member.Member.DeclaringType).SelectOrDefault(t => t.ToDisplayString(), member.Member.DeclaringType.Name)),
                                                 member.Value,
                                                 closureName);
@@ -2806,6 +2817,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             }
             return "";
         }
+        
+        private INamedTypeSymbol FindUnderlyingType(INamedTypeSymbol propertyType)
+        {
+            return (propertyType.IsNullable(out var underlyingType) && underlyingType is INamedTypeSymbol underlyingNamedType) ? underlyingNamedType : propertyType;
+        }
 
         private string BuildLiteralValue(INamedTypeSymbol propertyType, string memberValue, XamlMemberDefinition owner = null, string memberName = "", string objectUid = "")
         {
@@ -2818,7 +2834,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                     return resourceValue;
                 }
             }
-
+            
+            propertyType = FindUnderlyingType(propertyType);
             switch (propertyType.ToDisplayString())
             {
                 case "int":
@@ -3270,7 +3287,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 return $"global::{resource.Namespace}.GlobalStaticResources.{SanitizeResourceName(resourceName)}";
             }
 
-            if (_staticResources.ContainsKey(resourceName))
+            if (!_isGeneratingGlobalResource && _staticResources.ContainsKey(resourceName))
             {
                 return $"{GetCastString(targetType, _staticResources[resourceName])}StaticResources.{SanitizeResourceName(resourceName)}";
             }
@@ -4033,6 +4050,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
             if (propertyType != null)
             {
+                propertyType = FindUnderlyingType(propertyType);
                 if (propertyType.TypeKind == TypeKind.Enum)
                 {
                     return true;

@@ -2,13 +2,17 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using Windows.Devices.Input;
+using Windows.Foundation;
+using Windows.UI.Input;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Uno.UI.Samples.Controls;
+using V = System.Collections.Generic.Dictionary<string, object>;
 
 namespace UITests.Shared.Windows_UI_Input.PointersTests
 {
@@ -17,6 +21,8 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 	{
 		private readonly List<(object evt, RoutedEventArgs args)> _tapResult = new List<(object, RoutedEventArgs)>();
 		private readonly List<(object evt, RoutedEventArgs args)> _clickResult = new List<(object, RoutedEventArgs)>();
+		private readonly List<(object evt, RoutedEventArgs args)> _translatedTapResult = new List<(object, RoutedEventArgs)>();
+		private readonly List<(object evt, RoutedEventArgs args)> _translatedClickResult = new List<(object, RoutedEventArgs)>();
 		private readonly List<(object evt, RoutedEventArgs args)> _hyperlinkResult = new List<(object, RoutedEventArgs)>();
 		private readonly List<(object evt, RoutedEventArgs args)> _listViewResult = new List<(object, RoutedEventArgs)>();
 
@@ -26,7 +32,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 		private enum EventsKind
 		{
 			Pointers = 1,
-			// Manipulation
+			Manipulation = 2,
 			Gestures = 4,
 			Click = 8
 		}
@@ -35,8 +41,10 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 		{
 			this.InitializeComponent();
 
-			SetupEvents(TestTapTarget, _tapResult, EventsKind.Pointers | EventsKind.Gestures);
-			SetupEvents(TestClickTarget, _clickResult, EventsKind.Pointers | EventsKind.Gestures | EventsKind.Click);
+			SetupEvents(TestTapTarget, _tapResult, EventsKind.Pointers | EventsKind.Manipulation | EventsKind.Gestures);
+			SetupEvents(TestClickTarget, _clickResult, EventsKind.Pointers | EventsKind.Manipulation | EventsKind.Gestures | EventsKind.Click);
+			SetupEvents(TestTranslatedTapTarget, _translatedTapResult, EventsKind.Pointers | EventsKind.Manipulation | EventsKind.Gestures);
+			SetupEvents(TestTranslatedClickTarget, _translatedClickResult, EventsKind.Pointers | EventsKind.Manipulation | EventsKind.Gestures | EventsKind.Click);
 			SetupEvents(TestHyperlinkTarget, _hyperlinkResult, EventsKind.Pointers | EventsKind.Gestures);
 			SetupEvents(TestHyperlinkInner, _hyperlinkResult, EventsKind.Click);
 			SetupEvents(TestListViewTarget, _listViewResult, EventsKind.Pointers | EventsKind.Gestures | EventsKind.Click);
@@ -109,7 +117,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 				case PointerDeviceType.Pen when PenSupportsHover:
 					result = args.One(PointerEnteredEvent)
 						&& args.Some(PointerMovedEvent) // Could be "Maybe" but WASM UI test generates it and we want to validate it
-						&& args.One(ClickEvent)
+						&& args.Click()
 						&& args.One(PointerCaptureLostEvent)
 						&& args.One(TappedEvent)
 						&& args.MaybeSome(PointerMovedEvent)
@@ -121,7 +129,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 				case PointerDeviceType.Touch:
 					result = args.One(PointerEnteredEvent)
 						&& args.MaybeSome(PointerMovedEvent)
-						&& args.One(ClickEvent)
+						&& args.Click()
 						&& args.One(PointerCaptureLostEvent)
 						&& args.One(TappedEvent)
 						&& args.One(PointerExitedEvent)
@@ -130,6 +138,94 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 			}
 
 			TestClickResult.Text = result ? "SUCCESS" : "FAILED";
+		}
+
+		private void ResetTranslatedTapTest(object sender, RoutedEventArgs e) => Clear(_translatedTapResult, TestTranslatedTapResult);
+		private void ValidateTranslatedTapTest(object sender, RoutedEventArgs e)
+		{
+			var args = new EventSequenceValidator(_translatedTapResult);
+			var result = false;
+			switch (PointerType)
+			{
+				case PointerDeviceType.Mouse:
+				case PointerDeviceType.Pen when PenSupportsHover:
+					result = args.One(PointerEnteredEvent)
+						&& args.MaybeSome(PointerMovedEvent)
+						&& args.One(PointerPressedEvent)
+						&& args.One(ManipulationStartingEvent)
+						&& args.Some(PointerMovedEvent)
+						&& args.One(ManipulationStartedEvent)
+						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
+						// && args.One(TappedEvent) // No tap as we moved too far
+						&& args.One(PointerReleasedEvent)
+						&& args.Some(ManipulationCompletedEvent)
+						&& args.MaybeSome(PointerMovedEvent)
+						&& args.One(PointerExitedEvent)
+						&& args.End();
+					break;
+
+				case PointerDeviceType.Pen:
+				case PointerDeviceType.Touch:
+					result = args.One(PointerEnteredEvent)
+						&& args.One(PointerPressedEvent)
+						&& args.One(ManipulationStartingEvent)
+						&& args.Some(PointerMovedEvent)
+						&& args.One(ManipulationStartedEvent)
+						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
+						// && args.One(TappedEvent) // No tap as we moved too far
+						&& args.One(PointerReleasedEvent)
+						&& args.Some(ManipulationCompletedEvent)
+						&& args.One(PointerExitedEvent)
+						&& args.End();
+					break;
+			}
+
+			TestTranslatedTapResult.Text = result ? "SUCCESS" : "FAILED";
+		}
+
+		private void ResetTranslatedClickTest(object sender, RoutedEventArgs e) => Clear(_translatedClickResult, TestTranslatedClickResult);
+		private void ValidateTranslatedClickTest(object sender, RoutedEventArgs e)
+		{
+			// Pointer pressed and released are handled by the ButtonBase
+
+			var args = new EventSequenceValidator(_translatedClickResult);
+			var result = false;
+			switch (PointerType)
+			{
+				case PointerDeviceType.Mouse:
+				case PointerDeviceType.Pen when PenSupportsHover:
+					result = args.One(PointerEnteredEvent)
+						&& args.MaybeSome(PointerMovedEvent)
+						&& args.One(ManipulationStartingEvent)
+						&& args.Some(PointerMovedEvent)
+						&& args.One(ManipulationStartedEvent)
+						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
+						&& args.Click()
+						&& args.One(PointerCaptureLostEvent)
+						// && args.One(TappedEvent) // No tap as we moved too far
+						&& args.Some(ManipulationCompletedEvent)
+						&& args.MaybeSome(PointerMovedEvent)
+						&& args.One(PointerExitedEvent)
+						&& args.End();
+					break;
+
+				case PointerDeviceType.Pen:
+				case PointerDeviceType.Touch:
+					result = args.One(PointerEnteredEvent)
+						&& args.One(ManipulationStartingEvent)
+						&& args.Some(PointerMovedEvent)
+						&& args.One(ManipulationStartedEvent)
+						&& args.Some(PointerMovedEvent, ManipulationDeltaEvent)
+						&& args.Click()
+						&& args.One(PointerCaptureLostEvent)
+						// && args.One(TappedEvent) // No tap as we moved too far
+						&& args.Some(ManipulationCompletedEvent)
+						&& args.One(PointerExitedEvent)
+						&& args.End();
+					break;
+			}
+
+			TestTranslatedClickResult.Text = result ? "SUCCESS" : "FAILED";
 		}
 
 		private void ResetHyperlinkTest(object sender, RoutedEventArgs e) => Clear(_hyperlinkResult, TestHyperlinkResult);
@@ -150,11 +246,11 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 						&& args.Some(PointerMovedEvent) // Could be "Maybe" but WASM UI test generates it and we want to validate it
 #if NETFX_CORE
 						&& args.One(PointerReleasedEvent)
-						&& args.One(ClickEvent)
+						&& args.Click()
 #elif __WASM__ // KNOWN ISSUE: We don't get a released if not previously pressed, but pressed are muted by the Hyperlink which is a UIElement on wasm
-						&& args.One(ClickEvent)
+						&& args.Click()
 #else
-						&& args.One(ClickEvent)
+						&& args.Click()
 						&& args.One(PointerReleasedEvent)
 #endif
 						&& args.MaybeSome(PointerMovedEvent)
@@ -170,7 +266,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 					//	we do not receive the expected Entered/Exited on parent control.
 					//	As a side effect we will also not receive the Tap as it is an interpretation of those missing Pointer events.
 					result =
-						args.One(ClickEvent)
+						args.Click()
 						&& args.End();
 #else
 					result =
@@ -178,11 +274,11 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 						&& args.MaybeSome(PointerMovedEvent)
 #if NETFX_CORE
 						&& args.One(PointerReleasedEvent)
-						&& args.One(ClickEvent)
+						&& args.Click()
 #elif __WASM__ // KNOWN ISSUE: We don't get a released if not previously pressed, but pressed are muted by the Hyperlink which is a UIElement on wasm
-						&& args.One(ClickEvent)
+						&& args.Click()
 #else
-						&& args.One(ClickEvent)
+						&& args.Click()
 						&& args.One(PointerReleasedEvent)
 #endif
 						&& args.One(PointerExitedEvent)
@@ -209,7 +305,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 					result =
 						args.One(PointerEnteredEvent)
 						&& args.Some(PointerMovedEvent) // Could be "Maybe" but WASM UI test generate it and we want to validate it
-						&& args.One(ClickEvent)
+						&& args.Click()
 #if NETFX_CORE // We should get a Tapped on all platforms but ListView is a weird/complex control ...
 						&& args.One(TappedEvent)
 #endif
@@ -226,12 +322,12 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 					//	so we do not receive the expected Entered/Exited on parent control.
 					//	As a side effect we will also not receive the Tap as it is an interpretation of those missing Pointer events.
 					result =
-						args.One(ClickEvent)
+						args.Click()
 						&& args.End();
 #else
 					result =
 						args.One(PointerEnteredEvent)
-						&& args.One(ClickEvent)
+						&& args.Click()
 #if NETFX_CORE // We should get a Tapped on all platforms but ListView is a weird/complex control ...
 						&& args.One(TappedEvent)
 #endif
@@ -244,7 +340,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 			TestListViewResult.Text = result ? "SUCCESS" : "FAILED";
 		}
 
-#region Common helpers
+		#region Common helpers
 		private void Clear(IList events, TextBlock result)
 		{
 			events.Clear();
@@ -274,6 +370,15 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 				pointerTarget.PointerCaptureLost += (snd, e) => OnPointerEvent(PointerCaptureLostEvent, "CaptureLost", e);
 			}
 
+			if (kind.HasFlag(EventsKind.Manipulation) && target is UIElement manipulationTarget)
+			{
+				manipulationTarget.ManipulationStarting += (snd, e) => OnEvt(ManipulationStartingEvent, "ManipStarting", e, () => e.Mode);
+				manipulationTarget.ManipulationStarted += (snd, e) => OnEvt(ManipulationStartedEvent, "ManipStarted", e, () => e.Position, () => e.PointerDeviceType, () => e.Cumulative);
+				manipulationTarget.ManipulationDelta += (snd, e) => OnEvt(ManipulationDeltaEvent, "ManipDelta", e, () => e.Position, () => e.PointerDeviceType, () => e.Delta, () => e.Cumulative);
+				manipulationTarget.ManipulationInertiaStarting += (snd, e) => OnEvt(ManipulationInertiaStartingEvent, "ManipInertia", e, () => e.PointerDeviceType, () => e.Delta, () => e.Cumulative, () => e.Velocities);
+				manipulationTarget.ManipulationCompleted += (snd, e) => OnEvt(ManipulationCompletedEvent, "ManipCompleted", e, () => e.Position, () => e.PointerDeviceType, () => e.Cumulative);
+			}
+
 			if (kind.HasFlag(EventsKind.Gestures) && target is UIElement gestureTarget)
 			{
 				// Those events are built using the GestureRecognizer
@@ -293,10 +398,10 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 					listView.ItemClick += (snd, e) => OnEvent(ClickEvent, "Click", e);
 			}
 
-			void OnEvent(object evt, string evtName, RoutedEventArgs e)
+			void OnEvent(object evt, string evtName, RoutedEventArgs e, string extra = null)
 			{
 				events.Add((evt, e));
-				Log($"[{name}] {evtName}");
+				Log($"[{name}] {evtName} {extra}");
 			}
 
 			void OnPointerEvent(RoutedEvent evt, string evtName, PointerRoutedEventArgs e)
@@ -313,6 +418,12 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 					+ $"| inRange={point.Properties.IsInRange} "
 					+ $"| primary={point.Properties.IsPrimary}"
 					+ $"| intermediates={e.GetIntermediatePoints(this)?.Count.ToString() ?? "null"} ");
+			}
+
+			void OnEvt(object evt, string evtName, RoutedEventArgs e, params Expression<Func<object>>[] values)
+			{
+				events.Add((evt, e));
+				Log($"[{name}] {evtName}: {string.Join("| ", values.Select(v => $"{(v.Body as MemberExpression)?.Member.Name ?? "??"}: {v.Compile()()}"))}");
 			}
 		}
 
@@ -335,13 +446,19 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 			/// <summary>
 			/// [1..1]
 			/// </summary>
-			public bool One(object evt)
-				=> _index < _args.Count && _args[_index++].evt == evt;
+			public bool Click()
+				=> _index < _args.Count && _args[_index++].evt == ClickEvent;
+
+			/// <summary>
+			/// [1..1]
+			/// </summary>
+			public bool One(params RoutedEvent[] evt)
+				=> _index < _args.Count && evt.Contains(_args[_index++].evt);
 
 			/// <summary>
 			/// [1..*]
 			/// </summary>
-			public bool Some(RoutedEvent evt)
+			public bool Some(params RoutedEvent[] evt)
 				=> One(evt) && MaybeSome(evt);
 
 			/// <summary>
@@ -359,9 +476,9 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 			/// <summary>
 			/// [0..*]
 			/// </summary>
-			public bool MaybeSome(RoutedEvent evt)
+			public bool MaybeSome(params RoutedEvent[] evt)
 			{
-				while (_index < _args.Count && _args[_index].evt == evt)
+				while (_index < _args.Count && evt.Contains(_args[_index].evt))
 				{
 					++_index;
 				}

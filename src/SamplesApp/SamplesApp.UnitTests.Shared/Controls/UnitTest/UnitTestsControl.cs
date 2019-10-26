@@ -25,11 +25,21 @@ namespace Uno.UI.Samples.Tests
 		private Task _runner;
 		private CancellationTokenSource _cts = new CancellationTokenSource();
 
+		private enum TestResult
+		{
+			Sucesss,
+			Failed,
+			Error,
+			Ignored,
+		}
+
 		public UnitTestsControl()
 		{
 			this.InitializeComponent();
 
-			DataContext = this;
+			Private.Infrastructure.TestServices.WindowHelper.RootControl = unitTestContentRoot;
+
+			DataContext = null;
 		}
 
 		private void OnRunTests(object sender, RoutedEventArgs e)
@@ -64,27 +74,46 @@ namespace Uno.UI.Samples.Tests
 			);
 		}
 
-		private void ReportTestResult(string testName, bool failed, string errorMessage = "")
+		private void ReportTestResult(string testName, TestResult testResult, string errorMessage = "")
 		{
 			var t = Dispatcher.RunAsync(
 				Windows.UI.Core.CoreDispatcherPriority.Normal,
 				() =>
 				{
-					var testResult = new TextBlock()
+					var testResultBlock = new TextBlock()
 					{
 						Text = testName,
 						FontFamily = new FontFamily("Courier New"),
-						Foreground = new SolidColorBrush(failed ? Colors.Red : Colors.Green)
+						Foreground = new SolidColorBrush(GetTestResultColor(testResult))
 					};
 
 					if (errorMessage.HasValue())
 					{
-						testResult.Text += ", " + errorMessage;
+						testResultBlock.Text += ", " + errorMessage;
 					}
 
-					testResults.Children.Insert(0, testResult);
+					testResults.Children.Insert(0, testResultBlock);
 				}
 			);
+		}
+
+		private Color GetTestResultColor(TestResult testResult)
+		{
+			switch (testResult)
+			{
+				default:
+				case TestResult.Error:
+					return Colors.DarkRed;
+
+				case TestResult.Failed:
+					return Colors.Red;
+
+				case TestResult.Ignored:
+					return Colors.DarkOrange;
+
+				case TestResult.Sucesss:
+					return Colors.Green;
+			}
 		}
 
 		private async Task RunTests(CancellationToken cts)
@@ -110,6 +139,12 @@ namespace Uno.UI.Samples.Tests
 					{
 						string testName = testMethod.Name;
 
+						if (IsIgnored(testMethod, out var ignoreMessage))
+						{
+							ReportTestResult(testName, TestResult.Ignored, errorMessage: ignoreMessage);
+							continue;
+						}
+
 						ReportMessage($"Running test {testName}");
 
 						try
@@ -124,7 +159,7 @@ namespace Uno.UI.Samples.Tests
 								await task;
 							}
 
-							ReportTestResult(testName, false);
+							ReportTestResult(testName, TestResult.Sucesss);
 						}
 						catch (Exception e)
 						{
@@ -139,7 +174,7 @@ namespace Uno.UI.Samples.Tests
 								e = tie.InnerException;
 							}
 
-							ReportTestResult(testName, true, e.Message);
+							ReportTestResult(testName, TestResult.Failed, e.Message);
 						}
 						try
 						{
@@ -147,7 +182,7 @@ namespace Uno.UI.Samples.Tests
 						}
 						catch (Exception e)
 						{
-							ReportTestResult(testName + " Cleanup", true, e.Message);
+							ReportTestResult(testName + " Cleanup", TestResult.Failed, e.Message);
 						}
 					}
 				}
@@ -160,6 +195,20 @@ namespace Uno.UI.Samples.Tests
 				ReportMessage($"Tests runner failed {e}");
 				ReportFailedTests(-1);
 			}
+		}
+
+		private bool IsIgnored(MethodInfo testMethod, out string ignoreMessage)
+		{
+			var ignoreAttribute = testMethod.GetCustomAttribute<Microsoft.VisualStudio.TestTools.UnitTesting.IgnoreAttribute>();
+
+			if(ignoreAttribute != null)
+			{
+				ignoreMessage = string.IsNullOrEmpty(ignoreAttribute.IgnoreMessage) ? "Test is marked as ignored" : ignoreAttribute.IgnoreMessage;
+				return true;
+			}
+
+			ignoreMessage = "";
+			return false;
 		}
 
 		private IEnumerable<(Type type, MethodInfo[] tests, MethodInfo init, MethodInfo cleanup)> InitializeTests()

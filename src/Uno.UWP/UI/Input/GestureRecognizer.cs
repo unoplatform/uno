@@ -12,14 +12,35 @@ namespace Windows.UI.Input
 	{
 		private readonly ILogger _log;
 		private IDictionary<uint, List<PointerPoint>> _activePointers = new Dictionary<uint, List<PointerPoint>>();
+		private GestureSettings _gestureSettings;
 
-		public GestureSettings GestureSettings { get; set; }
+		public GestureSettings GestureSettings
+		{
+			get => _gestureSettings;
+			set
+			{
+				_gestureSettings = value;
+				_isManipulationEnabled = (value & GestureSettingsHelper.Manipulations) != 0;
+			}
+		}
 
 		public bool IsActive => _activePointers.Count > 0;
+
+		/// <summary>
+		/// This is the owner provided in the ctor. It might be `null` if none provided.
+		/// It's purpose it to allow usage of static event handlers.
+		/// </summary>
+		internal object Owner { get; }
 
 		public GestureRecognizer()
 		{
 			_log = this.Log();
+		}
+
+		internal GestureRecognizer(object owner)
+			: this()
+		{
+			Owner = owner;
 		}
 
 		public void ProcessDownEvent(PointerPoint value)
@@ -32,7 +53,19 @@ namespace Windows.UI.Input
 				return;
 			}
 
-			_activePointers[value.PointerId] = new List<PointerPoint>(16) { value }; ;
+			_activePointers[value.PointerId] = new List<PointerPoint>(16) { value };
+
+			if (_isManipulationEnabled)
+			{
+				if (_manipulation == null)
+				{
+					_manipulation = new Manipulation(this, value);
+				}
+				else
+				{
+					_manipulation.Add(value);
+				}
+			}
 		}
 
 		public void ProcessMoveEvents(IList<PointerPoint> value)
@@ -49,6 +82,8 @@ namespace Windows.UI.Input
 					_log.Info("Received a 'Move' for a pointer which was not considered as down. Ignoring event.");
 				}
 			}
+
+			_manipulation?.Update(value);
 		}
 		public void ProcessUpEvent(PointerPoint value)
 		{
@@ -65,6 +100,8 @@ namespace Windows.UI.Input
 				//		 even if we will fire some events now.
 
 				Recognize(points, pointerUp: value);
+
+				_manipulation?.Remove(value);
 			}
 			else if (_log.IsEnabled(LogLevel.Error))
 			{
@@ -91,6 +128,8 @@ namespace Windows.UI.Input
 			{
 				Recognize(points, pointerUp: null);
 			}
+
+			_manipulation?.Complete();
 		}
 
 		private void Recognize(List<PointerPoint> points, PointerPoint pointerUp)
@@ -108,6 +147,24 @@ namespace Windows.UI.Input
 			}
 		}
 
+		#region Manipulations
+		internal const int MinManipulationDeltaTranslateX = 15;
+		internal const int MinManipulationDeltaTranslateY = 15;
+		internal const int MinManipulationDeltaRotate = 5; // Degrees
+		internal const double MinManipulationDeltaExpansion = 15;
+
+		internal event TypedEventHandler<GestureRecognizer, ManipulationStartingEventArgs> ManipulationStarting; // This is not on the public API!
+		public event TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> ManipulationCompleted;
+#pragma warning disable  // Event not raised: intertia is not supported yet
+		public event TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> ManipulationInertiaStarting;
+#pragma warning restore 67
+		public event TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> ManipulationStarted;
+		public event TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> ManipulationUpdated;
+
+		private bool _isManipulationEnabled;
+		private Manipulation _manipulation;
+		#endregion
+
 		#region Tap (includes DoubleTap)
 		internal const ulong MultiTapMaxDelayTicks = TimeSpan.TicksPerMillisecond * 1000;
 		internal const int TapMaxXDelta = 15;
@@ -119,7 +176,7 @@ namespace Windows.UI.Input
 
 		public bool CanBeDoubleTap(PointerPoint value)
 		{
-			if (!GestureSettings.HasFlag(GestureSettings.DoubleTap))
+			if (!_gestureSettings.HasFlag(GestureSettings.DoubleTap))
 			{
 				return false;
 			}
@@ -211,37 +268,37 @@ namespace Windows.UI.Input
 			// Mouse
 			if (props.IsLeftButtonPressed)
 			{
-				identifier |= 1 << 32;
+				identifier |= 1L << 32;
 			}
 			if (props.IsMiddleButtonPressed)
 			{
-				identifier |= 1 << 33;
+				identifier |= 1L << 33;
 			}
 			if (props.IsRightButtonPressed)
 			{
-				identifier |= 1 << 34;
+				identifier |= 1L << 34;
 			}
 			if (props.IsHorizontalMouseWheel)
 			{
-				identifier |= 1 << 35;
+				identifier |= 1L << 35;
 			}
 			if (props.IsXButton1Pressed)
 			{
-				identifier |= 1 << 36;
+				identifier |= 1L << 36;
 			}
 			if (props.IsXButton2Pressed)
 			{
-				identifier |= 1 << 37;
+				identifier |= 1L << 37;
 			}
 
 			// Pen
 			if (props.IsBarrelButtonPressed)
 			{
-				identifier |= 1 << 38;
+				identifier |= 1L << 38;
 			}
 			if (props.IsEraser)
 			{
-				identifier |= 1 << 39;
+				identifier |= 1L << 39;
 			}
 
 			return identifier;

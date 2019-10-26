@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.Devices.Input;
+using Windows.UI.Input;
 using Uno.UI.Xaml.Input;
 
 namespace Windows.UI.Xaml.Input
@@ -11,16 +12,13 @@ namespace Windows.UI.Xaml.Input
 	{
 		private readonly Point _position;
 
-		public TappedRoutedEventArgs() 
-			: this(null, PointerDeviceType.Mouse, new Point())
-		{
-		}
+		public TappedRoutedEventArgs() { }
 		
-		internal TappedRoutedEventArgs(object originalSource, PointerDeviceType pointerType, Point position)
+		internal TappedRoutedEventArgs(object originalSource, TappedEventArgs args)
 			: base(originalSource)
 		{
-			PointerDeviceType = pointerType;
-			_position = position;
+			_position = args.Position;
+			PointerDeviceType = args.PointerDeviceType;
 		}
 
 		public bool Handled { get; set; }
@@ -29,7 +27,7 @@ namespace Windows.UI.Xaml.Input
 
 		public PointerDeviceType PointerDeviceType { get; internal set; }
 
-		public global::Windows.Foundation.Point GetPosition(global::Windows.UI.Xaml.UIElement relativeTo)
+		public Point GetPosition(UIElement relativeTo)
 		{
 			if(relativeTo == null)
 			{

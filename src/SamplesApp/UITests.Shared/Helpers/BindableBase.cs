@@ -15,5 +15,10 @@ namespace UITests.Shared.Helpers
 		{
 			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
 		}
+
+		protected void RaiseAllPropertiesChanged()
+		{
+			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(string.Empty));
+		}
 	}
 }

@@ -6,7 +6,13 @@
 		<WasmHead>true</WasmHead>
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
 		<NoWarn>NU1701</NoWarn>
-		<MonoRuntimeDebuggerEnabled Condition="'$(Configuration)'=='Debug'">true</MonoRuntimeDebuggerEnabled>
+	</PropertyGroup>
+
+	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
+		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
+		<DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
+		<DebugType>portable</DebugType>
+		<DebugSymbols>true</DebugSymbols>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -22,7 +28,7 @@
 	<ItemGroup>
 		<LinkerDescriptor Include="LinkerConfig.xml" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\UnoQuickStart\UnoQuickStart.csproj" />
 	</ItemGroup>

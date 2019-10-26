@@ -427,7 +427,7 @@ var Uno;
                 }
             }
             /**
-                * Create a html DOM element representing a Xaml element.
+                * Create a HTML DOM element representing a Xaml element.
                 *
                 * You need to call addView to connect it to the DOM.
                 */
@@ -436,7 +436,7 @@ var Uno;
                 return "ok";
             }
             /**
-                * Create a html DOM element representing a Xaml element.
+                * Create a HTML DOM element representing a Xaml element.
                 *
                 * You need to call addView to connect it to the DOM.
                 */
@@ -477,7 +477,7 @@ var Uno;
                         element.classList.add(`uno-${className}`);
                     }
                 }
-                // Add the html element to list of elements
+                // Add the HTML element to list of elements
                 this.allActiveElementsById[contentDefinition.id] = element;
             }
             getView(elementHandle) {
@@ -618,10 +618,10 @@ var Uno;
                 return element[name] || "";
             }
             /**
-                * Set the CSS style of a html element.
+                * Set the CSS style of a HTML element.
                 *
                 * To remove a value, set it to empty string.
-                * @param styles A dictionary of styles to apply on html element.
+                * @param styles A dictionary of styles to apply on HTML element.
                 */
             setStyle(elementId, styles, setAsArranged = false) {
                 const element = this.getView(elementId);
@@ -636,10 +636,10 @@ var Uno;
                 return "ok";
             }
             /**
-            * Set the CSS style of a html element.
+            * Set the CSS style of a HTML element.
             *
-            * To remove a value, set it to empty string.
-            * @param styles A dictionary of styles to apply on html element.
+            * To remove a value, set it to an empty string.
+            * @param styles A dictionary of styles to apply on HTML element.
             */
             setStyleNative(pParams) {
                 const params = WindowManagerSetStylesParams.unmarshal(pParams);
@@ -657,7 +657,7 @@ var Uno;
                 return true;
             }
             /**
-            * Set a single CSS style of a html element
+            * Set a single CSS style of a HTML element
             *
             */
             setStyleDoubleNative(pParams) {
@@ -667,20 +667,20 @@ var Uno;
                 return true;
             }
             /**
-                * Set the CSS style of a html element.
+                * Set the CSS style of a HTML element.
                 *
-                * To remove a value, set it to empty string.
-                * @param styles A dictionary of styles to apply on html element.
+                * To remove a value, set it to an empty string.
+                * @param styles A dictionary of styles to apply on HTML element.
                 */
             resetStyle(elementId, names) {
                 this.resetStyleInternal(elementId, names);
                 return "ok";
             }
             /**
-                * Set the CSS style of a html element.
+                * Set the CSS style of a HTML element.
                 *
-                * To remove a value, set it to empty string.
-                * @param styles A dictionary of styles to apply on html element.
+                * To remove a value, set it to an empty string.
+                * @param styles A dictionary of styles to apply on HTML element.
                 */
             resetStyleNative(pParams) {
                 const params = WindowManagerResetStyleParams.unmarshal(pParams);
@@ -714,7 +714,7 @@ var Uno;
                 return true;
             }
             /**
-            * Arrange and clips a native elements
+            * Arrange and clips a native element
             *
             */
             arrangeElementNative(pParams) {
@@ -765,7 +765,7 @@ var Uno;
                     : "False";
             }
             /**
-                * Issue a browser alert to user
+                * Issue a browser alert to the user
                 * @param message message to display
                 */
             alert(message) {
@@ -787,7 +787,7 @@ var Uno;
                 return document.title || UnoAppManifest.displayName;
             }
             /**
-                * Add an event handler to a html element.
+                * Add an event handler to a HTML element.
                 *
                 * @param eventName The name of the event
                 * @param onCapturePhase true means "on trickle down" (going down to target), false means "on bubble up" (bubbling back to ancestors). Default is false.
@@ -797,7 +797,7 @@ var Uno;
                 return "ok";
             }
             /**
-                * Add an event handler to a html element.
+                * Add an event handler to a HTML element.
                 *
                 * @param eventName The name of the event
                 * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
@@ -823,7 +823,7 @@ var Uno;
                 this._isPendingLeaveProcessingEnabled = true;
             }
             /**
-                * Add an event handler to a html element.
+                * Add an event handler to a HTML element.
                 *
                 * @param eventName The name of the event
                 * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
@@ -928,7 +928,7 @@ var Uno;
                 return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 && (!evt.button || evt.button === 0) : false;
             }
             /**
-             * default event filter to be used with registerEventOnView to
+             * Default event filter to be used with registerEventOnView to
              * use for most routed events
              * @param evt
              */
@@ -1150,7 +1150,7 @@ var Uno;
                 }
             }
             /**
-                * Destroy a html element.
+                * Destroy a HTML element.
                 *
                 * The element won't be available anymore. Usually indicate the managed
                 * version has been scavenged by the GC.
@@ -1160,7 +1160,7 @@ var Uno;
                 return "ok";
             }
             /**
-                * Destroy a html element.
+                * Destroy a HTML element.
                 *
                 * The element won't be available anymore. Usually indicate the managed
                 * version has been scavenged by the GC.
@@ -1376,9 +1376,9 @@ var Uno;
                 return "ok";
             }
             /**
-                * Set the Html content for an element.
+                * Set the HTML content for an element.
                 *
-                * Those html elements won't be available as XamlElement in managed code.
+                * Those HTML elements won't be available as XamlElement in managed code.
                 * WARNING: you should avoid mixing this and `addView` for the same element.
                 */
             setHtmlContent(viewId, html) {
@@ -1388,7 +1388,7 @@ var Uno;
             /**
                 * Set the Html content for an element.
                 *
-                * Those html elements won't be available as XamlElement in managed code.
+                * Those HTML elements won't be available as XamlElement in managed code.
                 * WARNING: you should avoid mixing this and `addView` for the same element.
                 */
             setHtmlContentNative(pParams) {
@@ -2259,6 +2259,152 @@ var Windows;
         StorageFolder._isInit = false;
         Storage.StorageFolder = StorageFolder;
     })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Devices;
+    (function (Devices) {
+        var Geolocation;
+        (function (Geolocation) {
+            let GeolocationAccessStatus;
+            (function (GeolocationAccessStatus) {
+                GeolocationAccessStatus["Allowed"] = "Allowed";
+                GeolocationAccessStatus["Denied"] = "Denied";
+                GeolocationAccessStatus["Unspecified"] = "Unspecified";
+            })(GeolocationAccessStatus || (GeolocationAccessStatus = {}));
+            let PositionStatus;
+            (function (PositionStatus) {
+                PositionStatus["Ready"] = "Ready";
+                PositionStatus["Initializing"] = "Initializing";
+                PositionStatus["NoData"] = "NoData";
+                PositionStatus["Disabled"] = "Disabled";
+                PositionStatus["NotInitialized"] = "NotInitialized";
+                PositionStatus["NotAvailable"] = "NotAvailable";
+            })(PositionStatus || (PositionStatus = {}));
+            class Geolocator {
+                static initialize() {
+                    this.positionWatches = {};
+                    if (!this.dispatchAccessRequest) {
+                        this.dispatchAccessRequest = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchAccessRequest");
+                    }
+                    if (!this.dispatchError) {
+                        this.dispatchError = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchError");
+                    }
+                    if (!this.dispatchGeoposition) {
+                        this.dispatchGeoposition = Module.mono_bind_static_method("[Uno] Windows.Devices.Geolocation.Geolocator:DispatchGeoposition");
+                    }
+                }
+                //checks for permission to the geolocation services
+                static requestAccess() {
+                    Geolocator.initialize();
+                    if (navigator.geolocation) {
+                        navigator.geolocation.getCurrentPosition((_) => {
+                            Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Allowed);
+                        }, (error) => {
+                            if (error.code == error.PERMISSION_DENIED) {
+                                Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Denied);
+                            }
+                            else if (error.code == error.POSITION_UNAVAILABLE ||
+                                error.code == error.TIMEOUT) {
+                                //position unavailable but we still have permission
+                                Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Allowed);
+                            }
+                            else {
+                                Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Unspecified);
+                            }
+                        }, { enableHighAccuracy: false, maximumAge: 86400000, timeout: 100 });
+                    }
+                    else {
+                        Geolocator.dispatchAccessRequest(GeolocationAccessStatus.Denied);
+                    }
+                }
+                //retrieves a single geoposition
+                static getGeoposition(desiredAccuracyInMeters, maximumAge, timeout, requestId) {
+                    Geolocator.initialize();
+                    if (navigator.geolocation) {
+                        this.getAccurateCurrentPosition((position) => Geolocator.handleGeoposition(position, requestId), (error) => Geolocator.handleError(error, requestId), desiredAccuracyInMeters, {
+                            enableHighAccuracy: desiredAccuracyInMeters < 50,
+                            maximumAge: maximumAge,
+                            timeout: timeout
+                        });
+                    }
+                    else {
+                        Geolocator.dispatchError(PositionStatus.NotAvailable, requestId);
+                    }
+                }
+                static startPositionWatch(desiredAccuracyInMeters, requestId) {
+                    Geolocator.initialize();
+                    if (navigator.geolocation) {
+                        Geolocator.positionWatches[requestId] = navigator.geolocation.watchPosition((position) => Geolocator.handleGeoposition(position, requestId), (error) => Geolocator.handleError(error, requestId));
+                        return true;
+                    }
+                    else {
+                        return false;
+                    }
+                }
+                static stopPositionWatch(desiredAccuracyInMeters, requestId) {
+                    navigator.geolocation.clearWatch(Geolocator.positionWatches[requestId]);
+                    delete Geolocator.positionWatches[requestId];
+                }
+                static handleGeoposition(position, requestId) {
+                    var serializedGeoposition = position.coords.latitude + ":" +
+                        position.coords.longitude + ":" +
+                        position.coords.altitude + ":" +
+                        position.coords.altitudeAccuracy + ":" +
+                        position.coords.accuracy + ":" +
+                        position.coords.heading + ":" +
+                        position.coords.speed + ":" +
+                        position.timestamp;
+                    Geolocator.dispatchGeoposition(serializedGeoposition, requestId);
+                }
+                static handleError(error, requestId) {
+                    if (error.code == error.TIMEOUT) {
+                        Geolocator.dispatchError(PositionStatus.NoData, requestId);
+                    }
+                    else if (error.code == error.PERMISSION_DENIED) {
+                        Geolocator.dispatchError(PositionStatus.Disabled, requestId);
+                    }
+                    else if (error.code == error.POSITION_UNAVAILABLE) {
+                        Geolocator.dispatchError(PositionStatus.NotAvailable, requestId);
+                    }
+                }
+                //this attempts to squeeze out the requested accuracy from the GPS by utilizing the set timeout
+                //adapted from https://github.com/gregsramblings/getAccurateCurrentPosition/blob/master/geo.js		
+                static getAccurateCurrentPosition(geolocationSuccess, geolocationError, desiredAccuracy, options) {
+                    var lastCheckedPosition;
+                    var locationEventCount = 0;
+                    var watchId;
+                    var timerId;
+                    var checkLocation = function (position) {
+                        lastCheckedPosition = position;
+                        locationEventCount = locationEventCount + 1;
+                        //is the accuracy enough?
+                        if (position.coords.accuracy <= desiredAccuracy) {
+                            clearTimeout(timerId);
+                            navigator.geolocation.clearWatch(watchId);
+                            foundPosition(position);
+                        }
+                    };
+                    var stopTrying = function () {
+                        navigator.geolocation.clearWatch(watchId);
+                        foundPosition(lastCheckedPosition);
+                    };
+                    var onError = function (error) {
+                        clearTimeout(timerId);
+                        navigator.geolocation.clearWatch(watchId);
+                        geolocationError(error);
+                    };
+                    var foundPosition = function (position) {
+                        geolocationSuccess(position);
+                    };
+                    watchId = navigator.geolocation.watchPosition(checkLocation, onError, options);
+                    timerId = setTimeout(stopTrying, options.timeout);
+                }
+                ;
+            }
+            Geolocation.Geolocator = Geolocator;
+        })(Geolocation = Devices.Geolocation || (Devices.Geolocation = {}));
+    })(Devices = Windows.Devices || (Windows.Devices = {}));
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {

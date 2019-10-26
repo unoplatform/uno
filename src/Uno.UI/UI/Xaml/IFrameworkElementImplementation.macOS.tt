@@ -223,8 +223,17 @@ namespace <#= mixin.NamespaceName #>
 				"Name",
 				typeof(string),
 				typeof(<#= mixin.ClassName #>),
-				new PropertyMetadata("")
+				new PropertyMetadata("",
+					(s, e) => (s as <#= mixin.ClassName #>).OnNameChanged((string)e.OldValue, (string)e.NewValue)
+				)
 		);
+
+		private void OnNameChanged(string oldValue, string newValue) {
+			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
+			{
+				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
+			}
+		}
 
 		public virtual string Name
 		{

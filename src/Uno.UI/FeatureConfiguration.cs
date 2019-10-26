@@ -27,7 +27,7 @@ namespace Uno.UI
 
 #if __WASM__
 			/// <summary>
-			/// Enable the assignation of the "XamlName" and "xuid" attributes on DOM elements created
+			/// Enable the assignation of the "xamlname", "xuid" and "xamlautomationid" attributes on DOM elements created
 			/// from the XAML visual tree. This enables tools such as Puppeteer to select elements
 			/// in the DOM for automation purposes.
 			/// </summary>
@@ -286,7 +286,7 @@ namespace Uno.UI
 			/// </summary>
 			/// <remarks>
 			/// As this boolean is read only once when initializing the dependency property,
-			/// make sure to define it in teh early stages of you application initialization,
+			/// make sure to define it in the early stages of you application initialization,
 			/// before any UI related initialization (like generic styles init) and even before
 			/// referencing the ** type ** ScrollViewer in any way.
 			/// </remarks>

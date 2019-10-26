@@ -17,7 +17,7 @@ The `CommandBar` supports 2 different modes:
 
 This mode replicates **UWP**'s `CommandBar`. It is templatable and supports a template that's almost identical to **UWP**'s default `CommandBar`.
 
-![](Assets/CommandBar/windows/example.png)
+![](assets/commandbar/windows/example.png)
 
 #### Usage Example
 
@@ -34,9 +34,9 @@ This mode replicates **UWP**'s `CommandBar`. It is templatable and supports a te
 
 This mode is the preferred one and is enabled by default. It uses platform-specific controls to ensure a more native user experience. 
 
-![](Assets/CommandBar/android/example.png)
+![](assets/commandbar/android/example.png)
 
-![](Assets/CommandBar/ios/example.png)
+![](assets/commandbar/ios/example.png)
 
 | Platform | Native control      | Benefits                                              |
 |----------|---------------------|-------------------------------------------------------|
@@ -63,9 +63,9 @@ You must use `VisibleBoundsPadding.PaddingMask="Top"` on `CommandBar` to properl
 
 An important difference with this mode is the presence of a back button. Whenever the `CommandBar` is part of a `Page` whose `Frame` has a non-empty back stack, the back button will be displayed.
 
-![](Assets/CommandBar/android/back.png)
+![](assets/commandbar/android/back.png)
 
-![](Assets/CommandBar/ios/back.png)
+![](assets/commandbar/ios/back.png)
 
 On **Android**, tapping the back button triggers `SystemNavigationService.BackRequested`. It's the responsibility of the application's navigation controller to eventually call `Frame.GoBack()`.
 
@@ -94,9 +94,9 @@ On **iOS**, tapping the back button automatically triggers a back navigation on 
 
 Gets or sets a brush that describes the background of a control.
 
-![](Assets/CommandBar/android/background.png)
+![](assets/commandbar/android/background.png)
 
-![](Assets/CommandBar/ios/background.png)
+![](assets/commandbar/ios/background.png)
 
 #### Remarks
 
@@ -113,9 +113,9 @@ The `Content` is processed differently whether it's of type `string` or `Framewo
 
 When `Content` is a `string`, it's displayed using the platform's default font family, font size, font style and text alignment. Only the foreground color can be changed, using `Foreground`.
 
-![](Assets/CommandBar/android/content-string.png)
+![](assets/commandbar/android/content-string.png)
 
-![](Assets/CommandBar/ios/content-string.png)
+![](assets/commandbar/ios/content-string.png)
 
 | Platform | FontFamily    | FontSize | HorizontalAlignment |
 |----------|---------------|----------|---------------------|
@@ -124,9 +124,9 @@ When `Content` is a `string`, it's displayed using the platform's default font f
 
 When `Content` is a `FrameworkElement`, it's displayed within the available area:
 
-![](Assets/CommandBar/android/content-frameworkelement.png)
+![](assets/commandbar/android/content-frameworkelement.png)
 
-![](Assets/CommandBar/ios/content-frameworkelement.png)
+![](assets/commandbar/ios/content-frameworkelement.png)
 
 | Platform | Available height |
 |----------|:----------------:|
@@ -141,9 +141,9 @@ Please note that:
 
 Gets or sets a brush that describes the foreground color.
 
-![](Assets/CommandBar/android/foreground.png)
+![](assets/commandbar/android/foreground.png)
 
-![](Assets/CommandBar/ios/foreground.png)
+![](assets/commandbar/ios/foreground.png)
 
 #### Remarks
 
@@ -154,9 +154,9 @@ Gets or sets a brush that describes the foreground color.
 
 Gets the collection of primary command elements for the `CommandBar`.
 
-![](Assets/CommandBar/android/primarycommands.png)
+![](assets/commandbar/android/primarycommands.png)
 
-![](Assets/CommandBar/ios/primarycommands.png)
+![](assets/commandbar/ios/primarycommands.png)
 
 #### Remarks
 
@@ -167,9 +167,9 @@ Gets the collection of primary command elements for the `CommandBar`.
 
 Gets the collection of secondary command elements for the `CommandBar`.
 
-![](Assets/CommandBar/android/secondarycommands.png)
+![](assets/commandbar/android/secondarycommands.png)
 
-![](Assets/CommandBar/android/secondarycommands-popup.png)
+![](assets/commandbar/android/secondarycommands-popup.png)
 
 #### Remarks
 
@@ -212,9 +212,9 @@ Extensions to extend the functionality of `CommandBar` can be found in the `Comm
 
 Gets or sets the back button foreground for the `CommandBar`.
 
-![](Assets/CommandBar/android/backbuttonforeground.png)
+![](assets/commandbar/android/backbuttonforeground.png)
 
-![](Assets/CommandBar/ios/backbuttonforeground.png)
+![](assets/commandbar/ios/backbuttonforeground.png)
 
 #### Remarks
 
@@ -224,9 +224,9 @@ Gets or sets the back button foreground for the `CommandBar`.
 
 Gets or sets the back button icon for the `CommandBar`.
 
-![](Assets/CommandBar/android/backbuttonicon.png)
+![](assets/commandbar/android/backbuttonicon.png)
 
-![](Assets/CommandBar/ios/backbuttonicon.png)
+![](assets/commandbar/ios/backbuttonicon.png)
 
 #### Remarks
 
@@ -236,7 +236,7 @@ Gets or sets the back button icon for the `CommandBar`.
 
 Gets or sets the back button title for the `CommandBar`.
 
-![](Assets/CommandBar/ios/backbuttontitle.png)
+![](assets/commandbar/ios/backbuttontitle.png)
 
 #### Remarks
 
@@ -254,9 +254,9 @@ To remove the back button title from all pages (and only leave the back arrow), 
 
 Gets or sets the elevation of the `UIElement`.
 
-![](Assets/CommandBar/android/elevation.png)
+![](assets/commandbar/android/elevation.png)
 
-![](Assets/CommandBar/ios/elevation.png)
+![](assets/commandbar/ios/elevation.png)
 
 #### Remarks
 
@@ -267,9 +267,9 @@ Gets or sets the elevation of the `UIElement`.
 
 Gets or sets the navigation command for the `CommandBar`.
 
-![](Assets/CommandBar/android/navigationcommand.png)
+![](assets/commandbar/android/navigationcommand.png)
 
-![](Assets/CommandBar/ios/navigationcommand.png)
+![](assets/commandbar/ios/navigationcommand.png)
 
 #### Remarks
 
@@ -288,7 +288,7 @@ On **Android**, only icons are supported (`AppBarButton.Icon`). This is due to a
 
 Gets or sets the subtitle for the `CommandBar`.
 
-![](Assets/CommandBar/android/subtitle.png)
+![](assets/commandbar/android/subtitle.png)
 
 #### Remarks
 
@@ -343,9 +343,9 @@ When `AppBarButton` is used within a native `CommandBar`, its control template i
 
 Gets or sets a brush that describes the foreground color.
 
-![](Assets/CommandBar/android/appbarbutton-foreground.png)
+![](assets/commandbar/android/appbarbutton-foreground.png)
 
-![](Assets/CommandBar/ios/appbarbutton-foreground.png)
+![](assets/commandbar/ios/appbarbutton-foreground.png)
 
 #### Remarks
 
@@ -358,9 +358,9 @@ Gets or sets a brush that describes the foreground color.
 
 Gets or sets the content of a `ContentControl`.
 
-![](Assets/CommandBar/android/appbarbutton-content.png)
+![](assets/commandbar/android/appbarbutton-content.png)
 
-![](Assets/CommandBar/ios/appbarbutton-content.png)
+![](assets/commandbar/ios/appbarbutton-content.png)
 
 #### Remarks
 
@@ -374,9 +374,9 @@ Gets or sets the content of a `ContentControl`.
 
 Gets or sets the graphic content of the app bar button.
 
-![](Assets/CommandBar/android/appbarbutton-icon.png)
+![](assets/commandbar/android/appbarbutton-icon.png)
 
-![](Assets/CommandBar/ios/appbarbutton-icon.png)
+![](assets/commandbar/ios/appbarbutton-icon.png)
 
 #### Remarks
 
@@ -394,9 +394,9 @@ Gets or sets the graphic content of the app bar button.
 
 Gets or sets the text description displayed on the app bar button.
 
-![](Assets/CommandBar/android/appbarbutton-tooltip.png)
+![](assets/commandbar/android/appbarbutton-tooltip.png)
 
-![](Assets/CommandBar/android/secondarycommands-popup.png)
+![](assets/commandbar/android/secondarycommands-popup.png)
 
 #### Remarks
 
@@ -410,9 +410,9 @@ It is highly recommended to set and localize `Label` on all `AppBarButton`s, if 
 
 Gets or sets a value indicating whether the user can interact with the control.
 
-![](Assets/CommandBar/android/appbarbutton-disabled.png)
+![](assets/commandbar/android/appbarbutton-disabled.png)
 
-![](Assets/CommandBar/ios/appbarbutton-disabled.png)
+![](assets/commandbar/ios/appbarbutton-disabled.png)
 
 #### Remarks
 
@@ -784,7 +784,7 @@ Gets or sets a value indicating whether the user can interact with the control.
   </Grid>
   ```
   
-  ![](Assets/CommandBar/ios/transparent.png)
+  ![](assets/commandbar/ios/transparent.png)
   
 - > What size should my AppBarButton icons be?
   

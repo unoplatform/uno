@@ -1,0 +1,50 @@
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_Devices.GeolocatorTests"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:UITests.Shared.Windows_Devices"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:valueconverters="using:UITests.Shared.ValueConverters"
+    mc:Ignorable="d"
+    d:DesignHeight="300"
+    d:DesignWidth="400">
+
+	<UserControl.Resources>
+		<valueconverters:BoolNegationValueConverter x:Key="BoolNegation" />
+	</UserControl.Resources>
+
+	<ScrollViewer>
+		<StackPanel>
+			<Button Command="{Binding RequestAccessCommand}">Request access</Button>
+			<TextBlock>
+			  <Run FontWeight="Bold">Geolocation access status: </Run>
+			  <Run Text="{Binding GeolocationAccessStatus}" />
+			</TextBlock>
+
+			<TextBox Margin="0,12,0,0" Header="Desired accuracy in meters" Text="{Binding DesiredAccuracyInMeters, Mode=TwoWay}" />
+
+			<Button Margin="0,12,0,0" Command="{Binding GetGeopositionCommand}">Get geoposition</Button>
+			<local:GeopositionDisplayControl Geoposition="{x:Bind ViewModel.Geoposition, Mode=OneWay}" />
+
+			<Button Margin="0,12,0,0" Command="{Binding AttachStatusChangedCommand}" IsEnabled="{Binding StatusChangedAttached, Converter={StaticResource BoolNegation}}">Attach StatusChanged</Button>
+			<Button Command="{Binding DetachStatusChangedCommand}" IsEnabled="{Binding StatusChangedAttached}">Detach StatusChanged</Button>
+
+			<TextBlock>
+				<Run FontWeight="Bold">Position status: </Run>
+				<Run Text="{Binding PositionStatus}" />
+			</TextBlock>
+
+			<Button Margin="0,12,0,0" Command="{Binding AttachPositionChangedCommand}" IsEnabled="{Binding PositionChangedAttached, Converter={StaticResource BoolNegation}}">Attach PositionChanged
+			</Button>
+			<Button Command="{Binding DetachPositionChangedCommand}" IsEnabled="{Binding PositionChangedAttached}">Detach PositionChanged</Button>
+
+			<local:GeopositionDisplayControl Geoposition="{x:Bind ViewModel.TrackedGeoposition, Mode=OneWay}" />
+
+			<TextBlock Margin="0,12,0,0">
+			  <Run FontWeight="Bold">Last error message: </Run>
+			  <Run Foreground="Red" Text="{Binding Error}" />
+			</TextBlock>
+		</StackPanel>
+	</ScrollViewer>
+</UserControl>

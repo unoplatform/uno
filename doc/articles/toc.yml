@@ -58,6 +58,8 @@
     href: features/windows-system-power.md
   - name: PasswordVault
     href: features\PasswordVault.md
+  - name: Windows.ApplicationModel
+    href: features\windows-applicationmodel.md
   - name: Windows.ApplicationModel.Calls
     href: features\windows-applicationmodel-calls.md
   - name: Windows.Devices.Sensors
@@ -93,12 +95,16 @@
   items:
     - name: Guidelines for breaking changes
       href: contributing\guidelines\breaking-changes.md
+    - name: Guidelines for code style
+      href: contributing\guidelines\code-style.md
     - name: Guidelines for creating a new release
       href: contributing\guidelines\creating-a-new-release.md
     - name: Guidelines for issue triage
       href: contributing\guidelines\issue-triage.md
     - name: Guidelines for pull-requests
       href: contributing\guidelines\pull-requests.md
+    - name: Build Artifacts
+      href: contributing\build-artifacts.md
     - name: Building and debugging Uno.UI
       href: uno-development\debugging-uno-ui.md
     - name: Working with the samples applications

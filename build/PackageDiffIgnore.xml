@@ -439,11 +439,53 @@
 					fullName="System.Void Windows.UI.Xaml.Input.KeyRoutedEventArgs..ctor()"
 					reason="Not part of the UWP API."/>
 				<Member 
-					fullName="System.Void Windows.UI.Xaml.Controls.SelectionChangedEventArgs..ctor(System.Collections.Generic.IList`1&lt;System.Object&gt; removedItems, System.Collections.Generic.IList`1&lt;System.Object&gt; addedItems)"
-					reason="Not part of the UWP API."/>
-				<Member 
 					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs..ctor()"
 					reason="Not part of the UWP API."/>
+				<Member 
+					fullName="System.Void Windows.Devices.Geolocation.StatusChangedEventArgs..ctor()"
+					readson="Constructor is not public in UWP" />
+				<Member 
+					fullName="System.Void Windows.UI.Input.ManipulationStartedEventArgs..ctor()"
+					reason="Not part of the UWP API." />
+				<Member 
+					fullName="System.Void Windows.UI.Input.ManipulationUpdatedEventArgs..ctor()"
+					reason="Not part of the UWP API." />
+				<Member 
+					fullName="System.Void Windows.UI.Input.ManipulationInertiaStartingEventArgs..ctor()"
+					reason="Not part of the UWP API." />
+				<Member 
+					fullName="System.Void Windows.UI.Input.ManipulationCompletedEventArgs..ctor()"
+					reason="Not part of the UWP API." />
+				<Member 
+					fullName="System.Boolean Windows.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.get_Handled()"
+					reason="Get/set methods removed as not part of the UWP API but property still present" />
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.set_Handled(System.Boolean value)"
+					reason="Get/set methods removed as not part of the UWP API but property still present" />
+				<Member 
+					fullName="System.Boolean Windows.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.get_Handled()"
+					reason="Get/set methods removed as not part of the UWP API but property still present" />
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.set_Handled(System.Boolean value)"
+					reason="Get/set methods removed as not part of the UWP API but property still present" />
+				<Member 
+					fullName="System.Boolean Windows.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.get_Handled()"
+					reason="Get/set methods removed as not part of the UWP API but property still present" />
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.set_Handled(System.Boolean value)"
+					reason="Get/set methods removed as not part of the UWP API but property still present" />
+				<Member 
+					fullName="System.Boolean Windows.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.get_Handled()"
+					reason="Get/set methods removed as not part of the UWP API but property still present" />
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.set_Handled(System.Boolean value)"
+					reason="Get/set methods removed as not part of the UWP API but property still present" />
+				<Member 
+					fullName="System.Boolean Windows.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.get_Handled()"
+					reason="Get/set methods removed as not part of the UWP API but property still present" />
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.set_Handled(System.Boolean value)"
+					reason="Get/set methods removed as not part of the UWP API but property still present" />
 			</Methods>
 			
 			<Fields>
