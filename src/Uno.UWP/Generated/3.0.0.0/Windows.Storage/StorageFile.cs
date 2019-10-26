@@ -47,7 +47,7 @@ namespace Windows.Storage
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::System.DateTimeOffset DateCreated
 		{
