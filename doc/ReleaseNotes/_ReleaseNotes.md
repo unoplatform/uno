@@ -1,10 +1,12 @@
-# Release notes
+﻿# Release notes
 
 ## Next version
 
 ### Features
 * [#1207] Implemented some `PackageId` properties
+* [#1919](https://github.com/unoplatform/uno/pull/1919) Support for `PathGeometry` on WASM.
 * Support for `Geolocator` on WASM, improvements for support on Android, iOS
+* [#1813](https://github.com/unoplatform/uno/pull/1813) - Added polyline support for WASM and samples for all shapes
 * [#1743](https://github.com/unoplatform/uno/pull/1743) - Added a change to make the `MarkupExtensionReturnType` optional
 * Added Dark and HighContrast theme resources, reacts to Dark/Light theme on iOS, Android and WASM automatically during the startup of the app if `RequestedTheme` is not set in `App.xaml`
 * Support for `Gyrometer` on Android, iOS and WASM
@@ -75,6 +77,10 @@
 * Full support of pointer events cf. [routed events documentation](../articles/features/routed-events.md)
 * Update CheckBox style to 10.0.17763
 * Adds the support for `AutomationProperties.AutomationId`
+* [#1328](https://github.com/unoplatform/uno/issues/1328) Basic ProgressRing implementation for WASM
+* Add support for `Windows.UI.Xaml.Controls.Primitives.LayoutInformation.GetAvailableSize`
+* Add support for Runtime Tests that require UI integration
+* Enable iOS UI Tests
 
 ### Breaking changes
 
@@ -90,6 +96,10 @@
     > This change might break the compilation for projects that define duplicate resources in other globally accessible resource dictionaries. Adjustments to remove duplicate resources may be necessary.
 
 ### Bug fixes
+
+* [#1939](https://github.com/unoplatform/uno/pull/1939) Handles nullables types in XAML file generator
+* [#1741](https://github.com/unoplatform/uno/issues/1741) On Android, `ApplicationData.Current.[LocalFolder|RoamingFolder]` can now be used in the ctor of App.xaml.cs
+    > This change introduces a new constructor in `Windows.UI.Xaml.NativeApplication` that requests a delegate. In the Visual Studio Templates for Uno Platform, the `Main.cs` for the Android, the constructor now provides `() => new App()` instead of `new App()`, you can do the same in your existing application. See [this file](https://github.com/unoplatform/uno/blob/master/src/SolutionTemplate/UnoSolutionTemplate/Droid/Main.cs) for an example.
 * [#1767] Invalid `this` keyword generated for `Storyboard.SetTarget`
 * [#1781] WASM Images are no longer draggable and selectable by default to match UWP
 * [#1771](https://github.com/unoplatform/uno/pull/1771) Fix ".Uno" in project names resulted in build errors.
@@ -159,6 +169,7 @@
 * Fix color refresh of `BitmapIcon` monochrome Foreground
 * [IOS] DatePickerFlyout min and max year were resetting to FallbackNullValue
 * [Android] Fix bug in `ListView` when using an `ObservableCollection` as its source and using `Header` and `Footer`.
+* [#1924](https://github.com/unoplatform/uno/issues/1924) Fix Android `ListView.HeaderTemplate` (and `.FooterTemplate`) binding bug when changing `Header` and `Footer`.
 
 ## Release 1.45.0
 ### Features

@@ -13,7 +13,8 @@
 [![Twitter Followers](https://img.shields.io/twitter/follow/unoplatform?label=follow%20%40unoplatform&style=flat)](https://twitter.com/unoplatform)
 [![GitHub Stars](https://img.shields.io/github/stars/unoplatform/uno?label=github%20stars)](https://github.com/unoplatform/uno/stargazers/)
 [![NuGet Downloads](https://img.shields.io/nuget/dt/uno.ui.svg)](https://www.nuget.org/packages/uno.ui)
-[![All Contributors](https://img.shields.io/badge/all_contributors-60-orange.svg?style=flat-square)](#contributors)
+[![All Contributors](https://img.shields.io/badge/all_contributors-61-orange.svg?style=flat-square)](#contributors)
+[![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg?style=flat-square)](https://github.com/unoplatform/uno/blob/master/CONTRIBUTING.md)
 
 # What is the Uno Platform
 
@@ -37,7 +38,7 @@ To easily create a multi-platform application:
 * Install the [Uno Solution Template Visual Studio Extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin).
 * Create a new C# solution using the **Cross-Platform App (Uno Platform)** template, from Visual Studio's **Start Page**.
 
-See the complete [Getting Started guide](https://platform.uno/docs/articles/get-started.html) for more information.
+See the complete [Getting Started](https://platform.uno/docs/articles/get-started.html) guide for more information.
 
 For a larger example and features demo:
 * Visit the [Uno Gallery and Playground](https://github.com/unoplatform/uno.Playground) repository.
@@ -109,8 +110,7 @@ Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stack
 
 # Contributing
 
-There are many ways that you can contribute to the Uno Platform, as the UWP API is
-pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements.
+There are many ways that you can contribute to the Uno Platform, as the UWP API is pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements.
 
 # Contributors
 
@@ -203,6 +203,11 @@ Thanks goes to these wonderful people ([emoji key](https://allcontributors.org/d
     <td align="center"><a href="https://github.com/mkwhalen"><img src="https://avatars0.githubusercontent.com/u/17869199?v=4" width="100px;" alt="MacKenzie Whalen"/><br /><sub><b>MacKenzie Whalen</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=mkwhalen" title="Documentation">📖</a></td>
     <td align="center"><a href="https://github.com/jotaro-sama"><img src="https://avatars1.githubusercontent.com/u/36264038?v=4" width="100px;" alt="Giovanni De Luca"/><br /><sub><b>Giovanni De Luca</b></sub></a><br /><a href="#infra-jotaro-sama" title="Infrastructure (Hosting, Build-Tools, etc)">🚇</a></td>
   </tr>
+  <tr>
+    <td align="center"><a href="https://www.facebook.com/InternetHeroBINIT"><img src="https://avatars1.githubusercontent.com/u/20013689?v=4" width="100px;" alt="Binit Ghimire"/><br /><sub><b>Binit Ghimire</b></sub></a><br /><a href="https://github.com/unoplatform/uno/commits?author=TheBinitGhimire" title="Documentation">📖</a></td>
+  </tr>
 </table>
 
 <!-- ALL-CONTRIBUTORS-LIST:END -->
+
+💖 Thank-you.

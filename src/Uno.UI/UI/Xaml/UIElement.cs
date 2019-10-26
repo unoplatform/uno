@@ -243,6 +243,11 @@ namespace Windows.UI.Xaml
 
 #if !__WASM__
 		/// <summary>
+		/// Backing property for <see cref="Windows.UI.Xaml.Controls.Primitives.LayoutInformation.GetAvailableSize(UIElement)"/>
+		/// </summary>
+		internal Size LastAvailableSize { get; set; }
+
+		/// <summary>
 		/// Provides the size reported during the last call to Measure.
 		/// </summary>
 		public Size DesiredSize { get; internal set; }

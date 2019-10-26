@@ -15,6 +15,12 @@ jobs:
   - checkout: self
     clean: true
 
+  - task: CacheBeta@0
+    inputs:
+      key: nuget | $(Agent.OS) | $(Agent.JobName) | $(build.sourcesdirectory)/**/*.csproj | $(build.sourcesdirectory)/**/Directory.Build.targets | $(build.sourcesdirectory)/**/Directory.Build.props
+      path: $(NUGET_PACKAGES)
+    displayName: Cache NuGet packages
+
   - bash: |
       source /emsdk/emsdk_env.sh
       msbuild /r /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false
@@ -147,6 +153,7 @@ jobs:
   dependsOn:
     - Wasm_UITests_Snap
     - Android_Tests
+    - iOS_Tests
     - Wasm_UITests_Automated
 
   pool:

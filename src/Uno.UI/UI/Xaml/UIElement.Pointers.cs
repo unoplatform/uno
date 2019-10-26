@@ -376,7 +376,7 @@ namespace Windows.UI.Xaml
 			var handledInManaged = false;
 			var isIrrelevant = ValidateAndUpdateCapture(args, isOver);
 
-			handledInManaged |= SetOver(args, true, muteEvent: isIrrelevant);
+			handledInManaged |= SetOver(args, isOver);
 
 			if (isIrrelevant)
 			{

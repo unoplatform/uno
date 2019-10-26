@@ -301,6 +301,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Buttons_Native.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ComboBox\ComboBox_ItemDataContext.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -390,6 +394,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_ChangeView.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_Header_DataContextChanging.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -2085,6 +2093,18 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Geometry\ArcSegmentPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Geometry\BezierSegmentPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Geometry\LineSegmentPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\ImageBrushTests\BorderImageBrush.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2417,6 +2437,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\EllipsePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\LinePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathTestsControl\AutoSizedPathCentered.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2550,6 +2578,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathTestsControl\Test3.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PolygonPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PolylinePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -2730,6 +2766,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\xBindTests\PhaseBinding_StartOne.xaml.cs">
       <DependentUpon>PhaseBinding_StartOne.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Buttons_Native.xaml.cs">
+      <DependentUpon>Buttons_Native.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\CommandBar_Xaml_Automated.xaml.cs">
       <DependentUpon>CommandBar_Xaml_Automated.xaml</DependentUpon>
     </Compile>
@@ -2750,6 +2789,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_ChangeView.xaml.cs">
       <DependentUpon>ListView_ChangeView.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_Header_DataContextChanging.xaml.cs">
+      <DependentUpon>ListView_Header_DataContextChanging.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_ItemsPanel_HotSwap.xaml.cs">
       <DependentUpon>ListView_ItemsPanel_HotSwap.xaml</DependentUpon>
@@ -3520,6 +3562,15 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\CompositionTargetTests\CompositionTarget_Rendering.xaml.cs">
       <DependentUpon>CompositionTarget_Rendering.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Geometry\ArcSegmentPage.xaml.cs">
+      <DependentUpon>ArcSegmentPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Geometry\BezierSegmentPage.xaml.cs">
+      <DependentUpon>BezierSegmentPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Geometry\LineSegmentPage.xaml.cs">
+      <DependentUpon>LineSegmentPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\ImageBrushTests\BorderImageBrush.xaml.cs">
       <DependentUpon>BorderImageBrush.xaml</DependentUpon>
     </Compile>
@@ -3771,6 +3822,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\EasingDoubleKeyFrame_CompositeTransform_Container.xaml.cs">
       <DependentUpon>EasingDoubleKeyFrame_CompositeTransform_Container.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\EllipsePage.xaml.cs">
+      <DependentUpon>EllipsePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\LinePage.xaml.cs">
+      <DependentUpon>LinePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathTestsControl\AutoSizedPathCentered.xaml.cs">
       <DependentUpon>AutoSizedPathCentered.xaml</DependentUpon>
     </Compile>
@@ -3872,6 +3929,12 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathTestsControl\Test3.xaml.cs">
       <DependentUpon>Test3.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PolygonPage.xaml.cs">
+      <DependentUpon>PolygonPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PolylinePage.xaml.cs">
+      <DependentUpon>PolylinePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\ShapeControlsPage.xaml.cs">
       <DependentUpon>ShapeControlsPage.xaml</DependentUpon>
