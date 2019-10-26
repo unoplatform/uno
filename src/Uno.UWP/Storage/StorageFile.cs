@@ -34,6 +34,16 @@ namespace Windows.Storage
 			_fileUri = uri;
 		}
 
+		public global::System.DateTimeOffset DateCreated
+		{
+			get
+			{
+				var fileInfo = new FileInfo(Path);
+				return fileInfo.CreationTime;
+			}
+		}
+
+
 		public async Task DeleteAsync(CancellationToken ct)
 		{
 			if (Scheme != "FILE")
