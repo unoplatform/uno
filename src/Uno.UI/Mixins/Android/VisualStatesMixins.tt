@@ -1,4 +1,4 @@
-﻿<#@template language="C#"#>
+<#@template language="C#"#>
 <#@output extension="g.cs" #>
 #if XAMARIN_ANDROID
 <# 
@@ -9,6 +9,7 @@
 	AddClass("Windows.UI.Xaml.Controls", "RadioButton", hasCommonStates: true, hasCheckedStates: true, hasCommonPressedState: true);
 	AddClass("Windows.UI.Xaml.Controls", "HyperlinkButton", hasCommonStates: true, hasCommonPressedState: true);
 	AddClass("Windows.UI.Xaml.Controls", "DatePicker", hasCommonStates: true);
+	AddClass("Windows.UI.Xaml.Controls", "CalendarDatePicker", hasCommonStates: true);
 #>
 <#@include file="..\..\UI\Xaml\Controls\VisualStatesImplementation.tt"#>
 #endif
