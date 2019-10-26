@@ -1,37 +1,55 @@
 ﻿#if __IOS__
 using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Threading.Tasks;
-using Foundation;
 using UIKit;
+using Windows.Foundation;
+using AppleUrl = global::Foundation.NSUrl;
 
 namespace Windows.System
 {
-	public partial class Launcher
+	public static partial class Launcher
 	{
-		private async Task<bool> HandleSpecialUriAsync(Uri uri)
+		public static async Task<bool> LaunchUriAsync(Uri uri)
 		{
-			if (!uri.IsAbsoluteUri) return false;
-
-			switch (uri.Scheme.ToLowerInvariant())
+			if (uri == null)
 			{
-				case "ms-settings":
-					return await HandleSettingsUriAsync(uri);
+				throw new ArgumentNullException(nameof(uri));
 			}
+
+			if (IsSpecialUri(uri) && CanHandleSpecialUri(uri))
+			{
+				return await HandleSpecialUriAsync(uri);
+			}
+
+			return UIApplication.SharedApplication.OpenUrl(
+				new AppleUrl(uri.OriginalString));
 		}
 
-		private async Task<bool> HandleSettingsUriAsync(Uri uri)
-		{
-			//App perfs URIs found at https://gist.github.com/deanlyoung/368e274945a6929e0ea77c4eca345560
-			if (uri.Host == "")
-			{
-				UIApplication.SharedApplication.OpenUrl(new NSUrl(UIApplication.OpenSettingsUrlString));
-			}
-			else if (uri.Host.Equals("network-airplanemode", StringComparison.InvariantCultureIgnoreCase))
-			{
 
+		public static IAsyncOperation<LaunchQuerySupportStatus> QueryUriSupportAsync(
+			Uri uri,
+			LaunchQuerySupportType launchQuerySupportType)
+		{
+			if (uri == null)
+			{
+				throw new ArgumentNullException(nameof(uri));
 			}
+            
+			bool canOpenUri;
+			if (!IsSpecialUri(uri))
+			{
+				canOpenUri = UIApplication.SharedApplication.CanOpenUrl(
+					new AppleUrl(uri.OriginalString));
+			}
+			else
+			{
+				canOpenUri = CanHandleSpecialUri(uri);
+			}
+
+			var supportStatus = canOpenUri ?
+				LaunchQuerySupportStatus.Available : LaunchQuerySupportStatus.NotSupported;
+
+			return Task.FromResult(supportStatus).AsAsyncOperation();
 		}
 	}
 }
