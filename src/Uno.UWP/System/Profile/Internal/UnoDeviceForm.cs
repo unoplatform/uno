@@ -1,6 +1,6 @@
-﻿namespace Uno.System.Profile
+﻿namespace Windows.System.Profile
 {
-	internal enum DeviceForm
+	internal enum UnoDeviceForm
 	{
 		Unknown,
 		Mobile,

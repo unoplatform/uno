@@ -1,6 +1,5 @@
 ﻿using UIKit;
 using Uno.System.Profile;
-using UnoDeviceForm = Uno.System.Profile.DeviceForm;
 
 namespace Windows.System.Profile
 {

@@ -1,17 +1,15 @@
-﻿
+﻿#if __ANDROID__
+using System;
+using Windows.Graphics.Display;
+using Android.App;
+using Android.Content;
+using Android.OS;
 using System.Diagnostics;
 using Android.Content.Res;
 using Android.Telephony;
 using Android.Util;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
-#if __ANDROID__
-using System;
-using Windows.Graphics.Display;
-using Android.App;
-using Android.Content;
-using Android.OS;
-using UnoDeviceForm = Uno.System.Profile.DeviceForm;
 
 namespace Windows.System.Profile
 {
