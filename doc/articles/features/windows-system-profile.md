@@ -22,10 +22,8 @@ In case of `WebAssembly` this property currently always returns `Unknown` as the
 This string is in the form of `OSType.DeviceForm` where `OSType` is:
 
 - **Android** - `Android`
-- **iOS/iPadOS** - `Apple` 
-- **WASM** - browser name (suppored options are `Firefox`, `Edge`, `Chrome`, `Opera`, and a generic `Browser` option)
-
-In case of WASM, the browser type detection might not be completely reliable (for example Edge Chromium disguises itself as Chrome).
+- **iOS/iPadOS** - `iOS`
+- **WASM** - `Browser`
 
 ## `VersionInfo.DeviceFamilyVersion`
 

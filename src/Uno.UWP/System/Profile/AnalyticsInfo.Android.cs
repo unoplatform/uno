@@ -13,7 +13,7 @@ using Uno.Extensions;
 
 namespace Windows.System.Profile
 {
-	public partial class AnalyticsInfo
+	public static partial class AnalyticsInfo
 	{
 		private static UnoDeviceForm GetDeviceForm()
 		{

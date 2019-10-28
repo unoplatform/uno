@@ -1,7 +1,7 @@
 #if __ANDROID__ || __IOS__ || __WASM__
 namespace Windows.System.Profile
 {
-	public partial class AnalyticsInfo
+	public static partial class AnalyticsInfo
 	{
 		public static string DeviceForm => GetDeviceForm().ToString();
 
