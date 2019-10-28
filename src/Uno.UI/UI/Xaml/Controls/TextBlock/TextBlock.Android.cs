@@ -572,6 +572,9 @@ namespace Windows.UI.Xaml.Controls
 						desiredWidth,
 						maxLines: lineAtHeight
 					);
+
+					// re-measuring the height at the new line count
+					measuredHeight = Layout.GetLineTop(Layout.LineCount);
 				}
 
 				return new Size(PhysicalToLogicalPixels(Layout.Width), PhysicalToLogicalPixels(measuredHeight));
