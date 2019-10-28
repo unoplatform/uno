@@ -13,7 +13,7 @@ namespace Uno.UI.RemoteControl.Helpers
 	{
 		public static async Task<Frame> ReadFrame(WebSocket socket, CancellationToken token)
 		{
-			byte[] buff = new byte[4000];
+			byte[] buff = new byte[1 << 16];
 			var mem = new MemoryStream();
 
 			while (true)
@@ -26,7 +26,11 @@ namespace Uno.UI.RemoteControl.Helpers
 
 				if (result.EndOfMessage)
 				{
-					mem.Write(buff, 0, result.Count);
+					if (result.Count != 0)
+					{
+						mem.Write(buff, 0, result.Count);
+					}
+
 					mem.Position = 0;
 
 					return HotReload.Messages.Frame.Read(mem);
