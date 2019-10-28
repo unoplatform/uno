@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
@@ -9,9 +9,18 @@
 		<LangVersion>7.3</LangVersion>
 		<!-- https://github.com/unoplatform/uno/issues/61 -->
 		<UnoSkipUserControlsInVisualTree>false</UnoSkipUserControlsInVisualTree>
-		
+
 		<IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
+
+		<!-- fixed for self-testing inside the Uno Solution -->
+		<UnoRemoteControlPort>53487</UnoRemoteControlPort>
 	</PropertyGroup>
+
+	<ItemGroup>
+		<UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlPort" />
+		<UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlHost" />
+	</ItemGroup>
+
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
 		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
 		<DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
@@ -85,7 +94,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="WasmScripts\TestRunner.js" />
+		<UpToDateCheckInput Remove="WasmScripts\TestRunner.js" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />

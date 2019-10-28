@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -59,7 +59,15 @@ namespace Uno.UI.RemoteControl
 #else
 					var s = new ClientWebSocket();
 #endif
-					await s.ConnectAsync(new Uri($"ws://{endpoint}:{port}/rc"), ct);
+
+					if(port == 443)
+					{
+						await s.ConnectAsync(new Uri($"wss://{endpoint}/rc"), ct);
+					}
+					else
+					{
+						await s.ConnectAsync(new Uri($"ws://{endpoint}:{port}/rc"), ct);
+					}
 
 					return s;
 				}
@@ -77,7 +85,10 @@ namespace Uno.UI.RemoteControl
 					}
 					else
 					{
-						Console.WriteLine($"Connecting to {s}...");
+						if (this.Log().IsEnabled(LogLevel.Debug))
+						{
+							this.Log().LogDebug($"Connecting to {s}...");
+						}
 
 						var task = Connect(s.endpoint, s.port, cts.Token);
 						return (task, cts);
@@ -99,7 +110,7 @@ namespace Uno.UI.RemoteControl
 						});
 				}
 
-				Task.Delay(15000)
+				Task.Delay(30000)
 					.ContinueWith(a => allCts.SetException(new TimeoutException()));
 
 				var index = await allCts.Task;
@@ -120,7 +131,10 @@ namespace Uno.UI.RemoteControl
 
 				_webSocket = connections[index].task.Result;
 
-				Console.WriteLine($"Connected to {_serverAdresses[index]}");
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"Connected to {_serverAdresses[index]}");
+				}
 
 				await ProcessMessages();
 			}
@@ -144,9 +158,9 @@ namespace Uno.UI.RemoteControl
 			{
 				if (_processors.TryGetValue(frame.Scope, out var processor))
 				{
-					if (this.Log().IsEnabled(LogLevel.Error))
+					if (this.Log().IsEnabled(LogLevel.Trace))
 					{
-						this.Log().LogError($"Received frame [{frame.Scope}/{frame.Name}]");
+						this.Log().LogTrace($"Received frame [{frame.Scope}/{frame.Name}]");
 					}
 
 					await processor.ProcessFrame(frame);

@@ -7,7 +7,5 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d">
 
-	<StackPanel Background="Red" Margin="50">
-		<controls:SampleChooserControl x:Name="sampleControl" />
-	</StackPanel>
+	<controls:SampleChooserControl x:Name="sampleControl" />
 </Page>

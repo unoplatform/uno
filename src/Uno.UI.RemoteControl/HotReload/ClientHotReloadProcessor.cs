@@ -53,11 +53,17 @@ namespace Uno.UI.RemoteControl.HotReload
 				_projectPath = config.ProjectPath;
 				_xamlPaths = config.XamlPaths;
 
-				Console.WriteLine($"ProjectConfigurationAttribute={config.ProjectPath}, Paths={_xamlPaths.Length}");
+				if (this.Log().IsEnabled(LogLevel.Debug))
+				{
+					this.Log().LogDebug($"ProjectConfigurationAttribute={config.ProjectPath}, Paths={_xamlPaths.Length}");
+				}
 			}
 			else
 			{
-				Console.WriteLine("Unable to find ProjectConfigurationAttribute");
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().LogError("Unable to find ProjectConfigurationAttribute");
+				}
 			}
 
 			await _rcClient.SendMessage(new HotReload.Messages.ConfigureServer(_projectPath, _xamlPaths));
@@ -67,13 +73,13 @@ namespace Uno.UI.RemoteControl.HotReload
 		{
 			Windows.UI.Core.CoreDispatcher.Main.RunAsync(
 				Windows.UI.Core.CoreDispatcherPriority.Normal,
-				() =>
+				async () =>
             {
                 try
                 {
                     if (this.Log().IsEnabled(LogLevel.Debug))
                     {
-                        this.Log().LogDebug($"Reloading changed file {fileReload.FilePath}");
+                        this.Log().LogDebug($"Reloading changed file [{fileReload.FilePath}]");
                     }
 
                     var uri = new Uri("file:///" + fileReload.FilePath.Replace("\\", "/"));
@@ -97,10 +103,17 @@ namespace Uno.UI.RemoteControl.HotReload
                 {
                     if (this.Log().IsEnabled(LogLevel.Error))
                     {
-                        this.Log().LogError($"Failed reloading changed file {fileReload.FilePath}", e);
+                        this.Log().LogError($"Failed reloading changed file [{fileReload.FilePath}]", e);
                     }
-                }
-            });
+
+					await _rcClient.SendMessage(
+						new HotReload.Messages.XamlLoadError(
+							filePath: fileReload.FilePath,
+							exceptionType: e.GetType().ToString(),
+							message: e.Message,
+							stackTrace: e.StackTrace));
+				}
+			});
 		}
 
 		private IEnumerable<UIElement> EnumerateInstances(object instance, Uri baseUri)

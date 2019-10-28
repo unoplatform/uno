@@ -44,6 +44,7 @@
 	  <UpToDateCheckInput Remove="HotReload\Messages\FileReload.cs" />
 	  <UpToDateCheckInput Remove="HotReload\Messages\Frame.cs" />
 	  <UpToDateCheckInput Remove="HotReload\Messages\IMessage.cs" />
+	  <UpToDateCheckInput Remove="HotReload\Messages\XamlLoadError.cs" />
 	  <UpToDateCheckInput Remove="IRemoteControlProcessor.cs" />
 	  <UpToDateCheckInput Remove="ProjectConfigurationAttribute.cs" />
 	  <UpToDateCheckInput Remove="RemoteControlClient.cs" />

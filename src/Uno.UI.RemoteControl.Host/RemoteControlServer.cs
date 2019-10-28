@@ -11,16 +11,22 @@ using Uno.UI.RemoteControl.Host.HotReload;
 using Uno.UI.RemoteControl;
 using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.HotReload.Messages;
+using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.RemoteControl.Host
 {
-	internal class RemoteControlServer : IRemoteControlServer
+	internal class RemoteControlServer : IRemoteControlServer, IDisposable
 	{
 		private WebSocket _socket;
 		private readonly Dictionary<string, IServerProcessor> _processors = new Dictionary<string, IServerProcessor>();
 
-		public RemoteControlServer()
+		public RemoteControlServer(Microsoft.Extensions.Logging.ILogger logger)
 		{
+			if (logger.IsEnabled(LogLevel.Debug))
+			{
+				logger.LogDebug("Starting RemoteControlServer");
+			}
+
 			RegisterProcessor(new HotReload.ServerHotReloadProcessor(this));
 		}
 
@@ -58,6 +64,14 @@ namespace Uno.UI.RemoteControl.Host
 					message
 					),
 				CancellationToken.None);
+		}
+
+		public void Dispose()
+		{
+			foreach(var processor in _processors)
+			{
+				processor.Value.Dispose();
+			}
 		}
 	}
 }

@@ -4,6 +4,7 @@ using System.IO;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Mono.Options;
+using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -32,11 +33,16 @@ namespace Uno.UI.RemoteControl.Host
 			}
 
 			var host = new WebHostBuilder()
-				.UseSetting(nameof(WebHostBuilderIISExtensions.UseIISIntegration), false.ToString())
+				.UseSetting("UseIISIntegration", false.ToString())
 				.UseKestrel()
 				.UseUrls($"http://*:{httpPort}/")
 				.UseContentRoot(Directory.GetCurrentDirectory())
 				.UseStartup<Startup>()
+				.ConfigureLogging(logging =>
+					logging
+						.ClearProviders()
+						.AddConsole()
+						.SetMinimumLevel(LogLevel.Debug))
 				.ConfigureAppConfiguration((hostingContext, config) =>
 				{
 					config.AddCommandLine(args);

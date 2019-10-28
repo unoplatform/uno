@@ -8,7 +8,10 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
+using Microsoft.Practices.ServiceLocation;
+using Uno.Extensions;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -25,6 +28,9 @@ namespace Uno.UI.RemoteControl.Host
 
 		public void Configure(IApplicationBuilder app, IOptionsMonitor<ProxyOptions> optionsAccessor, IHostingEnvironment env)
 		{
+			var provider = new MyProvider(app.ApplicationServices);
+			ServiceLocator.SetLocatorProvider(() => provider);
+
 			var options = optionsAccessor.CurrentValue;
 			app
 				.UseDeveloperExceptionPage()
@@ -40,30 +46,9 @@ namespace Uno.UI.RemoteControl.Host
 
 	static class DebugExtensions
 	{
-		public static Dictionary<string, string> MapValues(Dictionary<string, string> response, HttpContext context, Uri debuggerHost)
-		{
-			var filtered = new Dictionary<string, string>();
-			var request = context.Request;
-
-			foreach (var key in response.Keys)
-			{
-				switch (key)
-				{
-					default:
-						filtered[key] = response[key];
-						break;
-				}
-			}
-			return filtered;
-		}
-
-		public static IApplicationBuilder UseRemoteControlServer(this IApplicationBuilder app, ProxyOptions options)
-			=> UseRemoteControlServer(app, options, MapValues);
-
 		public static IApplicationBuilder UseRemoteControlServer(
 			this IApplicationBuilder app,
-			ProxyOptions options,
-			Func<Dictionary<string, string>, HttpContext, Uri, Dictionary<string, string>> mapFunc)
+			ProxyOptions options)
 		{
 			app.UseRouter(router =>
 			{
@@ -75,10 +60,25 @@ namespace Uno.UI.RemoteControl.Host
 						return;
 					}
 
-					Console.WriteLine($"Accepted connection from {context.Connection.RemoteIpAddress}");
+					if (app.Log().IsEnabled(LogLevel.Information))
+					{
+						app.Log().LogInformation($"Accepted connection from {context.Connection.RemoteIpAddress}");
+					}
 
-					var server = new RemoteControlServer();
-					await server.Run(await context.WebSockets.AcceptWebSocketAsync(), CancellationToken.None);
+					try
+					{
+						using (var server = new RemoteControlServer(app.ApplicationServices.GetRequiredService<ILogger<RemoteControlServer>>()))
+						{
+							await server.Run(await context.WebSockets.AcceptWebSocketAsync(), CancellationToken.None);
+						}
+					}
+					finally
+					{
+						if (app.Log().IsEnabled(LogLevel.Information))
+						{
+							app.Log().LogInformation($"Disposing connection from {context.Connection.RemoteIpAddress}");
+						}
+					}
 				});
 			});
 
