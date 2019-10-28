@@ -1,5 +1,4 @@
 ﻿using UIKit;
-using Uno.System.Profile;
 
 namespace Windows.System.Profile
 {

@@ -11,7 +11,7 @@ namespace Windows.System.Profile
 		{
 		}
 
-		public string DeviceFamily => $"{OsName}.{AnalyticsInfo.DeviceForm}";
+		public string DeviceFamily => OsName + '.' + AnalyticsInfo.DeviceForm;
 
 		public string DeviceFamilyVersion => Build.VERSION.Release;
 	}

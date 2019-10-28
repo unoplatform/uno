@@ -1,3 +1,4 @@
+#if __ANDROID__ || __IOS__ || __WASM__
 namespace Windows.System.Profile
 {
 	public partial class AnalyticsInfo
@@ -7,3 +8,4 @@ namespace Windows.System.Profile
 		public static AnalyticsVersionInfo VersionInfo { get; } = new AnalyticsVersionInfo();
 	}
 }
+#endif
