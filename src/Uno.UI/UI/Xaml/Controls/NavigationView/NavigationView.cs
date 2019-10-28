@@ -2240,7 +2240,7 @@ namespace Windows.UI.Xaml.Controls
 
 					// In our test environment, m_measureOnInitStep2Count should <= 2 since we didn't hide anything from code
 					// so the assert count is different from s_measureOnInitStep2CountThreshold 
-					global::System.Diagnostics.Debug.Assert(m_measureOnInitStep2Count <= 2);
+					// global::System.Diagnostics.Debug.Assert(m_measureOnInitStep2Count <= 2); // This assert doesn't seem to be relevant on Uno
 
 					if (m_measureOnInitStep2Count >= s_measureOnInitStep2CountThreshold || !IsTopNavigationFirstMeasure())
 					{
