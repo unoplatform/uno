@@ -552,7 +552,7 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 			});
 		}
 
-#if !__ANDROID__
+#if !__ANDROID__ && !__IOS__
 		[TestMethod]
 #endif
 		public async Task CanZeroWeightedCellsShrinkToZeroSize()
@@ -593,7 +593,7 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 			});
 		}
 
-#if !__ANDROID__
+#if !__ANDROID__ && !__IOS__
 		[TestMethod]
 #endif
 		public async Task CanDivideAllocatedSpacingCorrectlyAccordingToStarWeightings()
@@ -690,7 +690,7 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 				TestServices.WindowHelper.WindowContent = grid;
 			});
 
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			await TestServices.RunOnUIThread(() =>
 			{
