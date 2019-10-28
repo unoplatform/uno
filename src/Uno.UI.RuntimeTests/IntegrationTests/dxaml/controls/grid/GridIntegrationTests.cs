@@ -690,7 +690,7 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 				TestServices.WindowHelper.WindowContent = grid;
 			});
 
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			await TestServices.RunOnUIThread(() =>
 			{

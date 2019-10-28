@@ -7,6 +7,8 @@ using Uno.Logging;
 using Windows.Foundation;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using Windows.UI.Core;
+
 #if __ANDROID__
 using Android.Content;
 using Android.Content.PM;
@@ -14,7 +16,6 @@ using Android.Content.PM;
 #if __IOS__
 using UIKit;
 using AppleUrl = global::Foundation.NSUrl;
-using Windows.UI.Core;
 #endif
 
 namespace Windows.System
