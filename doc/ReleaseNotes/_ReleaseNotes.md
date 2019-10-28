@@ -3,7 +3,7 @@
 ## Next version
 
 ### Features
-
+* [#1207] Implemented some `PackageId` properties
 * [#1919](https://github.com/unoplatform/uno/pull/1919) Support for `PathGeometry` on WASM.
 * Support for `Geolocator` on WASM, improvements for support on Android, iOS
 * [#1813](https://github.com/unoplatform/uno/pull/1813) - Added polyline support for WASM and samples for all shapes

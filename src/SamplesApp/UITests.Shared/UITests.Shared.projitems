@@ -33,6 +33,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\PackageTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel_Resources_ResourceLoader\ResourceLoader_Simple.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2610,6 +2614,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\Chat\ComposeSms.xaml.cs">
       <DependentUpon>ComposeSms.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\PackageTests.xaml.cs">
+      <DependentUpon>PackageTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel_Resources_ResourceLoader\ResourceLoader_Simple.xaml.cs">
       <DependentUpon>ResourceLoader_Simple.xaml</DependentUpon>
