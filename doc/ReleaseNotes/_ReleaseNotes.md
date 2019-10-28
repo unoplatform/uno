@@ -3,8 +3,8 @@
 ## Next version
 
 ### Features
-
 * [#1468](https://github.com/unoplatform/uno/issues/1468) Added support for `AnalyticsInfo` properties on iOS, Android and WASM
+* [#1207] Implemented some `PackageId` properties
 * [#1919](https://github.com/unoplatform/uno/pull/1919) Support for `PathGeometry` on WASM.
 * Support for `Geolocator` on WASM, improvements for support on Android, iOS
 * [#1813](https://github.com/unoplatform/uno/pull/1813) - Added polyline support for WASM and samples for all shapes
@@ -171,6 +171,7 @@
 * [IOS] DatePickerFlyout min and max year were resetting to FallbackNullValue
 * [Android] Fix bug in `ListView` when using an `ObservableCollection` as its source and using `Header` and `Footer`.
 * [#1924](https://github.com/unoplatform/uno/issues/1924) Fix Android `ListView.HeaderTemplate` (and `.FooterTemplate`) binding bug when changing `Header` and `Footer`.
+* 164480 [Android] fixed a text wrapping issue caused by layout height desync
 
 ## Release 1.45.0
 ### Features

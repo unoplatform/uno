@@ -28,7 +28,15 @@ namespace SamplesApp.UITests
 
 			_app.WaitFor(() => failedTests.GetDependencyPropertyValue("Text").ToString() != "Pending...");
 
-			Assert.AreEqual("0", failedTests.GetDependencyPropertyValue("Text").ToString());
+
+			var count = failedTests.GetDependencyPropertyValue("Text").ToString();
+
+			if (count != "0")
+			{
+				var details = _app.Marked("failedTestDetails").GetDependencyPropertyValue("Text");
+
+				Assert.Fail("A Unit test failed. Details:\n" + details);
+			}
 
 			_app.Screenshot("Runtime Tests Results");
 		}
