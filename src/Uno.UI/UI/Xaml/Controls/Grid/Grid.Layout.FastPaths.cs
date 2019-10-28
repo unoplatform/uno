@@ -113,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (MinWidth != 0 && MinWidth > size.Width)
 				{
-					minWidth = MinWidth - GetHorizontalOffset();
+					minWidth = MinWidth - BorderAndPaddingSize.Width;
 				}
 
 				size = new Size(
@@ -162,7 +162,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (MinHeight != 0 && MinHeight > size.Height)
 				{
-					minHeight = MinHeight - GetVerticalOffset();
+					minHeight = MinHeight - BorderAndPaddingSize.Height;
 				}
 
 				size = new Size(
@@ -318,9 +318,11 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private Size MeasureChildren(Size availableSize, bool isAutoWidth, bool isAutoHeight)
 		{
+			var borderAndPaddingSize = BorderAndPaddingSize;
+
 			var minSize = default(Size);
-			var minWidth = MinWidth - GetHorizontalOffset();
-			var minHeight = MinHeight - GetVerticalOffset();
+			var minWidth = MinWidth - borderAndPaddingSize.Width;
+			var minHeight = MinHeight - borderAndPaddingSize.Height;
 
 			//If MinWidth or MinHeight properties are set on the Grid we need to take them into account
 			if (MinWidth != 0 && MinHeight != 0)

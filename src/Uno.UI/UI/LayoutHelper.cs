@@ -102,11 +102,27 @@ namespace Uno.UI
 			);
 		}
 
+		internal static Size Add(this Size left, Thickness right)
+		{
+			return new Size(
+				left.Width + right.Left + right.Right,
+				left.Height + right.Top + right.Bottom
+			);
+		}
+
 		internal static Size Subtract(this Size left, Size right)
 		{
 			return new Size(
 				left.Width - right.Width,
 				left.Height - right.Height
+			);
+		}
+
+		internal static Size Subtract(this Size left, Thickness right)
+		{
+			return new Size(
+				left.Width - right.Left - right.Right,
+				left.Height - right.Top - right.Bottom
 			);
 		}
 
