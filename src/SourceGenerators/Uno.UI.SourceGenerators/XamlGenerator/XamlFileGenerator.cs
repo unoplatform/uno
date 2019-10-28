@@ -322,11 +322,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                                 using (writer.BlockInvariant("private void InitializeComponent()"))
                                 {
                                     writer.AppendLineInvariant("Content = (_View)GetContent();");
-                                }
 
-                                if (_isDebug)
-                                {
-                                    writer.AppendLineInvariant($"global::Uno.UI.FrameworkElementHelper.SetBaseUri(this, \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}\");");
+									if (_isDebug)
+									{
+										writer.AppendLineInvariant($"global::Uno.UI.FrameworkElementHelper.SetBaseUri(this, \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}\");");
+									}
                                 }
                             }
 
@@ -440,7 +440,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
         {
             if (_isDebug)
             {
-                writer.AppendLineInvariant($"global::Uno.UI.HotReload.RemoteControlClient.Initialize(GetType());");
+                writer.AppendLineInvariant($"global::Uno.UI.RemoteControl.RemoteControlClient.Initialize(GetType());");
             }
         }
 
@@ -501,7 +501,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             }
 
             writer.AppendLineInvariant(";");
-            
+
             writer.AppendLineInvariant("OnInitializeCompleted();");
             writer.AppendLineInvariant("InitializeXamlOwner();");
         }
@@ -2849,7 +2849,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             }
             return "";
         }
-        
+
         private INamedTypeSymbol FindUnderlyingType(INamedTypeSymbol propertyType)
         {
             return (propertyType.IsNullable(out var underlyingType) && underlyingType is INamedTypeSymbol underlyingNamedType) ? underlyingNamedType : propertyType;
@@ -2866,7 +2866,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                     return resourceValue;
                 }
             }
-            
+
             propertyType = FindUnderlyingType(propertyType);
             switch (propertyType.ToDisplayString())
             {
