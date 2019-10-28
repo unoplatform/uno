@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml
 			if (Visibility == Visibility.Collapsed)
 			{
 				// //Don't layout collapsed views
-				return; 
+				return;
 			}
 
 			try
@@ -70,7 +70,7 @@ namespace Windows.UI.Xaml
 					RequiresArrange = false;
 				}
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				this.Log().Error($"Layout failed in {GetType()}", e);
 			}
@@ -128,7 +128,7 @@ namespace Windows.UI.Xaml
 
 				var xamlMeasure = XamlMeasure(size);
 
-				if(xamlMeasure != null)
+				if (xamlMeasure != null)
 				{
 					return _lastMeasure = xamlMeasure.Value;
 				}
@@ -163,6 +163,38 @@ namespace Windows.UI.Xaml
 				}
 			}
 			return true;
+		}
+
+		public override void AddSubview(UIView view)
+		{
+			if (IsLoaded)
+			{
+				// Apply styles in the subtree being loaded (if not already applied). We do it in this way to force Styles application in a
+				// 'root-first' order, because on iOS the native loading callback is raised 'leaf first,' and waiting until this point to
+				// apply the style can cause Loading/Loaded to be raised twice for some views (because template of outer control changes).
+				//
+				// This override can be removed when Loading/Loaded timing is adjusted to fully match UWP.
+				if (view is IDependencyObjectStoreProvider provider)
+				{
+					// Set parent so implicit styles in the tree can be resolved
+					provider.Store.Parent = this;
+				}
+				ApplyStylesToChildren(view);
+			}
+			base.AddSubview(view);
+
+			void ApplyStylesToChildren(UIView viewInner)
+			{
+				if (viewInner is FrameworkElement fe)
+				{
+					fe.ApplyStyles();
+				}
+
+				foreach (var subview in viewInner.Subviews)
+				{
+					ApplyStylesToChildren(subview);
+				}
+			}
 		}
 	}
 }
