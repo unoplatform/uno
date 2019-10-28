@@ -1,10 +1,10 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras">
+<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
 		<TargetFramework>net461</TargetFramework>
     <AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<Reference Include="System" />
 		<Reference Include="System.Core" />
@@ -21,6 +21,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0-preview.2" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.11.0" />
 		<PackageReference Include="Microsoft.Build" Version="15.4.8" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Engine" Version="15.4.8" ExcludeAssets="runtime" />
@@ -54,7 +55,7 @@
 		<PackageReference Include="Uno.Core" />
 		<PackageReference Include="Uno.SourceGeneration" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<Compile Include="..\..\Uno.Foundation\Point.cs">
 			<Link>XamlGenerator\XamlPathParser\Point.cs</Link>
@@ -87,11 +88,11 @@
 			<Link>Helpers\GridUnitType.cs</Link>
 		</Compile>
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<None Include="Content\Uno.UI.SourceGenerators.props" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\System.Xaml\Uno.Xaml.csproj">
 			<Project>{1627740a-19d2-4d21-a0b2-66667038daf6}</Project>
@@ -99,7 +100,7 @@
 			<Aliases>__uno</Aliases>
 		</ProjectReference>
 	</ItemGroup>
-	
+
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
 			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\tools</_TargetNugetFolder>
