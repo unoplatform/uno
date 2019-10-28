@@ -1,4 +1,4 @@
-﻿using Microsoft.Build.Execution;
+using Microsoft.Build.Execution;
 using Microsoft.CodeAnalysis;
 using System;
 using System.Collections.Generic;
@@ -30,23 +30,32 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 					unoRemoteControlPort = "0";
 				}
 
-				var addresses = NetworkInterface.GetAllNetworkInterfaces()
-					  .SelectMany(x => x.GetIPProperties().UnicastAddresses)
-					  .Where(x => !IPAddress.IsLoopback(x.Address));
+				var unoRemoteControlHost = context.GetProjectInstance().GetPropertyValue("UnoRemoteControlHost");
 
 				var sb = new IndentedStringBuilder();
 
-				if(unoRemoteControlPort == "0")
+				if(unoRemoteControlHost == null)
 				{
-					// sb.AppendLineInvariant($"#warning The App Remote Control debugging support is disabled. The Visual Studio addin may not be installed or activated.");
+					var addresses = NetworkInterface.GetAllNetworkInterfaces()
+						.SelectMany(x => x.GetIPProperties().UnicastAddresses)
+						.Where(x => !IPAddress.IsLoopback(x.Address));
+
+					if(unoRemoteControlPort == "0")
+					{
+						// sb.AppendLineInvariant($"#warning The App Remote Control debugging support is disabled. The Visual Studio addin may not be installed or activated.");
+					}
+
+					foreach(var addressInfo in addresses)
+					{
+						sb.AppendLineInvariant($"[assembly: global::Uno.UI.RemoteControl.ServerEndpointAttribute(\"{addressInfo.Address}\", {unoRemoteControlPort})]");
+					}
+				}
+				else
+				{
+					sb.AppendLineInvariant($"[assembly: global::Uno.UI.RemoteControl.ServerEndpointAttribute(\"{unoRemoteControlHost}\", {unoRemoteControlPort})]");
 				}
 
-				foreach(var addressInfo in addresses)
-				{
-					sb.AppendLineInvariant($"[assembly: global::Uno.UI.HotReload.ServerEndpointAttribute(\"{addressInfo.Address}\", {unoRemoteControlPort})]");
-				}
-
-				sb.AppendLineInvariant($"[assembly: global::Uno.UI.HotReload.ProjectConfigurationAttribute(");
+				sb.AppendLineInvariant($"[assembly: global::Uno.UI.RemoteControl.ProjectConfigurationAttribute(");
 				sb.AppendLineInvariant($"@\"{context.GetProjectInstance().FullPath}\",\n");
 
 				var xamlPaths = from item in context.GetProjectInstance().GetItems("Page").Concat(context.GetProjectInstance().GetItems("ApplicationDefinition"))
