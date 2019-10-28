@@ -209,6 +209,7 @@ namespace SamplesApp.UITests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Disabled on iOS: https://github.com/unoplatform/uno/issues/1955
 		public void Keyboard_Textbox_IsEnabled_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Test_InsideScrollerViewer_Automated");
@@ -417,7 +418,7 @@ namespace SamplesApp.UITests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)]
+		[ActivePlatforms(Platform.Android)] // Disabled on iOS: https://github.com/unoplatform/uno/issues/1955
 		public void Keyboard_DismissTesting()
 		{
 			Run(("Uno.UI.Samples.Content.UITests.ButtonTestsControl.AppBar_KeyBoard"));
