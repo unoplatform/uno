@@ -34,7 +34,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 
 				var sb = new IndentedStringBuilder();
 
-				if(unoRemoteControlHost == null)
+				if(string.IsNullOrEmpty(unoRemoteControlHost))
 				{
 					var addresses = NetworkInterface.GetAllNetworkInterfaces()
 						.SelectMany(x => x.GetIPProperties().UnicastAddresses)
