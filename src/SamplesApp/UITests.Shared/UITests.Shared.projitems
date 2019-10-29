@@ -33,6 +33,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\PackageTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel_Resources_ResourceLoader\ResourceLoader_Simple.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -430,6 +434,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ScrollViewerTests\ScrollViewer_Simple.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_TextWrapping_PR1954_EdgeCase.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -2611,6 +2619,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\Chat\ComposeSms.xaml.cs">
       <DependentUpon>ComposeSms.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\PackageTests.xaml.cs">
+      <DependentUpon>PackageTests.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel_Resources_ResourceLoader\ResourceLoader_Simple.xaml.cs">
       <DependentUpon>ResourceLoader_Simple.xaml</DependentUpon>
     </Compile>
@@ -2805,6 +2816,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Pivot\Pivot_CustomContent_Automated.xaml.cs">
       <DependentUpon>Pivot_CustomContent_Automated.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_TextWrapping_PR1954_EdgeCase.xaml.cs">
+      <DependentUpon>TextBlock_TextWrapping_PR1954_EdgeCase.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Visibility_Arrange.xaml.cs">
       <DependentUpon>TextBlock_Visibility_Arrange.xaml</DependentUpon>
