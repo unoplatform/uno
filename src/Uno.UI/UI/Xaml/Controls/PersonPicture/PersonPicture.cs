@@ -576,7 +576,6 @@ namespace Windows.UI.Xaml.Controls
 
 		void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
-			Console.WriteLine($"PersonPicture: OnPropertyChanged({args.Property.Name}");
 			DependencyProperty property = args.Property;
 
 			if (property == BadgeNumberProperty ||
