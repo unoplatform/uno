@@ -822,6 +822,27 @@ declare namespace Windows.Devices.Sensors {
         private static readingChangedHandler;
     }
 }
+interface Window {
+    opr: any;
+    opera: any;
+    mozVibrate(pattern: number | number[]): boolean;
+    msVibrate(pattern: number | number[]): boolean;
+    InstallTrigger: any;
+    HTMLElement: any;
+    StyleMedia: any;
+    chrome: any;
+    CSS: any;
+    safari: any;
+}
+interface Document {
+    documentMode: any;
+}
+declare namespace Windows.System.Profile {
+    class AnalyticsVersionInfo {
+        static getUserAgent(): string;
+        static getBrowserName(): string;
+    }
+}
 declare namespace Windows.UI.Core {
     class SystemNavigationManager {
         private static _current;
