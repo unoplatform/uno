@@ -9,9 +9,13 @@ namespace MUXControlsTestApp.Utilities
     public static class VisualTreeUtils
     {
         public static T FindElementOfTypeInSubtree<T>(this DependencyObject element)
-            where T : class, DependencyObject
-        {
-            if (element == null)	
+#if !NETFX_CORE
+			where T : class, DependencyObject
+#else
+			where T : DependencyObject
+#endif
+		{
+			if (element == null)	
             {
                 return null;
             }
