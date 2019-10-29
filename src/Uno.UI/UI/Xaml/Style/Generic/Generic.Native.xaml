@@ -20,14 +20,6 @@
 					xmlns:not_wasm="http://uno.ui/not_wasm"
 					mc:Ignorable="d xamarin ios android wasm not_wasm net461">
 
-	<wasm:ResourceDictionary.MergedDictionaries>
-		<!--
-			On WASM we don't  necessarily have native style, so we reference the Windows styles as "native" so we are able
-			to multi-target their usage in application without having to discover which native styles are available or not.
-		-->
-		<ResourceDictionary Source="Generic.xaml" />
-	</wasm:ResourceDictionary.MergedDictionaries>
-
 	<!-- Default native Button styles -->
 	<android:Style x:Key="NativeDefaultButton"
 				   TargetType="Button">
