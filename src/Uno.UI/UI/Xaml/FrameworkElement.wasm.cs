@@ -34,6 +34,8 @@ namespace Windows.UI.Xaml
 
 		internal sealed override void ManagedOnLoading()
 		{
+			base.IsLoading = true;
+
 			OnLoadingPartial();
 			ApplyCompiledBindings();
 
@@ -74,6 +76,7 @@ namespace Windows.UI.Xaml
 			{
 				// Make sure to set the flag before raising the loaded event (duplicated with the base.ManagedOnLoaded)
 				base.IsLoaded = true;
+				base.IsLoading = false;
 
 				UpdateDOMProperties();
 
