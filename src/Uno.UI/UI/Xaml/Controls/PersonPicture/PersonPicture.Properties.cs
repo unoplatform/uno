@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"BadgeGlyph", typeof(string), 
 			typeof(Controls.PersonPicture), 
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(""));
 
 		public static DependencyProperty BadgeImageSourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -80,7 +80,7 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"BadgeNumber", typeof(int), 
 			typeof(Controls.PersonPicture), 
-			new FrameworkPropertyMetadata(default(int)));
+			new FrameworkPropertyMetadata(0));
 
 		public static DependencyProperty BadgeTextProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -98,13 +98,13 @@ namespace Windows.UI.Xaml.Controls
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"DisplayName", typeof(string), 
 			typeof(Controls.PersonPicture), 
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(""));
 
 		public static DependencyProperty InitialsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"Initials", typeof(string), 
 			typeof(Controls.PersonPicture), 
-			new FrameworkPropertyMetadata(default(string)));
+			new FrameworkPropertyMetadata(""));
 
 		public static DependencyProperty IsGroupProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
