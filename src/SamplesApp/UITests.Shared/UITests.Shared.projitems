@@ -257,6 +257,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\VisualStateTests\VisualState_ComplexSetters_Automated.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\VisualStateTests\VisualState_DoubleAnimationUsingKeyFrames_RotateTransform.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2745,6 +2749,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\VisualStateTests\VisualState_AdaptiveTrigger_UsingOneStateOnly.xaml.cs">
       <DependentUpon>VisualState_AdaptiveTrigger_UsingOneStateOnly.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\VisualStateTests\VisualState_ComplexSetters_Automated.xaml.cs">
+      <DependentUpon>VisualState_ComplexSetters_Automated.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\VisualStateTests\VisualState_DoubleAnimationUsingKeyFrames_RotateTransform.xaml.cs">
       <DependentUpon>VisualState_DoubleAnimationUsingKeyFrames_RotateTransform.xaml</DependentUpon>
     </Compile>
@@ -4662,42 +4669,6 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_250_250.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_300_200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_836_1252.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\LargeTile.scale-100.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\LargeTile.scale-125.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\LargeTile.scale-150.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\LargeTile.scale-200.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\SmallTile.scale-100.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\SmallTile.scale-125.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\SmallTile.scale-150.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\SmallTile.scale-200.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\SplashScreen.scale-100.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\SplashScreen.scale-125.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\SplashScreen.scale-150.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\SplashScreen.scale-200.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\Square150x150Logo.scale-100.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\Square150x150Logo.scale-125.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\Square150x150Logo.scale-150.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\Square150x150Logo.scale-200.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\Square44x44Logo.altform-unplated_targetsize-16.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\Square44x44Logo.altform-unplated_targetsize-24.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\Square44x44Logo.altform-unplated_targetsize-32.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\Square44x44Logo.altform-unplated_targetsize-48.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\Square44x44Logo.scale-100.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\Square44x44Logo.scale-125.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\Square44x44Logo.scale-150.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\Square44x44Logo.scale-200.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\Square44x44Logo.targetsize-16.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\Square44x44Logo.targetsize-24.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\Square44x44Logo.targetsize-32.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\Square44x44Logo.targetsize-48.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\StoreLogo.scale-100.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\StoreLogo.scale-125.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\StoreLogo.scale-150.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\StoreLogo.scale-200.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\WideTile.scale-100.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\WideTile.scale-125.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\WideTile.scale-150.png" />
-    <Content Include="$(MSBuildThisFileDirectory)Assets\Tile\WideTile.scale-200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\TimePicker.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ToolTip.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\TreeView.png" />
