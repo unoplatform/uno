@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
@@ -183,8 +184,26 @@ namespace Windows.UI.Xaml
 
 			if (style == null && !useUWPDefaultStyles)
 			{
+
+				if (typeof(Style).Log().IsEnabled(LogLevel.Debug))
+				{
+						typeof(Style).Log().LogDebug($"No native style found for type {type}, falling back on Xaml style");
+				}
+
 				// If no native style found, fall back on UWP style
-				return GetDefaultStyleForType(type, useUWPDefaultStyles: true);
+				style = GetDefaultStyleForType(type, useUWPDefaultStyles: true);
+			}
+
+			if (typeof(Style).Log().IsEnabled(LogLevel.Debug))
+			{
+				if (style != null)
+				{
+					typeof(Style).Log().LogDebug($"Returning {(useUWPDefaultStyles ? "UWP" : "native")} style {style} for type {type}");
+				}
+				else
+				{
+					typeof(Style).Log().LogDebug($"No {(useUWPDefaultStyles ? "UWP" : "native")} style found for type {type}");
+				}
 			}
 
 			return style;
