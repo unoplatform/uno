@@ -160,6 +160,10 @@ namespace Windows.UI.Xaml.Controls
 							SetImageUrl(url.OriginalString);
 						}
 					}
+					else
+					{
+						SetImageUrl("");
+					}
 				}
 
 				_sourceDisposable.Disposable = null;
