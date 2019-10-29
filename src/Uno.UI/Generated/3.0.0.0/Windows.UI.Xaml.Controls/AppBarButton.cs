@@ -157,7 +157,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.AppBarButton), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
-		#if false || false || false || __WASM__ || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public AppBarButton() : base()
 		{
