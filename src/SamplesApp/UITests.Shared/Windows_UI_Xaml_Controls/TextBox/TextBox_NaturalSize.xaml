@@ -13,7 +13,7 @@
 			So it should be the same width as the red rectangle and the same height than the blue rectangle.
 		</TextBlock>
 		<Rectangle Width="64" Height="9" Fill="Red" HorizontalAlignment="Left" Margin="9,0,0,0" x:Name="recth" />
-		<StackPanel Orientation="Horizontal" VerticalAlignment="Top">
+		<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
 			<Rectangle Width="9" Height="32" Fill="Blue" VerticalAlignment="Top" x:Name="rectv" />
 			<StackPanel>
 				<TextBox x:Name="textbox_sut" />
