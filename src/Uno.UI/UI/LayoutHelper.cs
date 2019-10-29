@@ -14,7 +14,7 @@ namespace Uno.UI
 		{
 			var size = new Size(e.Width, e.Height);
 			var minSize = new Size(e.MinWidth, e.MinHeight);
-			var maxSize = new Size(e.MaxWidth, e.MaxHeight);
+			var maxSize = e.Visibility == Visibility.Visible ? new Size(e.MaxWidth, e.MaxHeight) : default;
 
 			minSize = size
 				.NumberOrDefault(new Size(0, 0))
