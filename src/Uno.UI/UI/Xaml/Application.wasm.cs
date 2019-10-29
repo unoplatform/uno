@@ -26,6 +26,7 @@ namespace Windows.UI.Xaml
 			{
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Windows.UI.Xaml.Application.Start(_ => new App());");
 			}
+			Current = this;
 
 			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
 		}
@@ -51,8 +52,6 @@ namespace Windows.UI.Xaml
 		{
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
-				Current = this;
-
 				// Force init
 				Window.Current.ToString();
 
@@ -70,7 +69,7 @@ namespace Windows.UI.Xaml
 		private ApplicationTheme GetDefaultSystemTheme()
 		{
 			var serializedTheme = WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.getDefaultSystemTheme()");
-			
+
 			if (serializedTheme != null)
 			{
 				if (Enum.TryParse(serializedTheme, out ApplicationTheme theme))
