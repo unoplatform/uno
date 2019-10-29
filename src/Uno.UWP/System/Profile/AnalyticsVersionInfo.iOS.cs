@@ -5,7 +5,7 @@ namespace Windows.System.Profile
 {
 	public partial class AnalyticsVersionInfo
 	{
-		private const string OsName = "Apple";
+		private const string OsName = "iOS";
 
 		internal AnalyticsVersionInfo()
 		{
