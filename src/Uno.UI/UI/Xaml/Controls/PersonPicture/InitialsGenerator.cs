@@ -213,9 +213,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// Determine number of diacritics by adjusting for our initial offset.
-			int  strLength = index - start;
+			int strLength = index - start;
 
-			return str.Substring(start, strLength);
+			return str.Substring(start, Math.Min(strLength, str.Length));
 		}
 
 		static string[] Split(string source, char delim, int maxIterations)
@@ -258,7 +258,7 @@ namespace Windows.UI.Xaml.Controls
 			// by truncating to one or two.
 			CharacterType result = CharacterType.Other;
 
-			for (int i = 0; i < 3; i++)
+			for (int i = 0; i < Math.Min(str.Length, 3); i++)
 			{
 				// Break on null character. 0xFEFF is a terminating character which appears as null.
 				if ((str[i] == '\0') || (str[i] == 0xFEFF))
