@@ -348,6 +348,11 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <UpToDateCheckInput Remove="Generated\3.0.0.0\Windows.UI.Xaml.Controls\PersonPicture.Properties.cs" />
+	  <UpToDateCheckInput Remove="UI\Xaml\Controls\PersonPicture\PersonPicture.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Update="BaseActivity.Callbacks.Implementation.Android.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>
 	    <LastGenOutput>BaseActivity.Callbacks.Implementation.Android.cs</LastGenOutput>
