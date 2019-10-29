@@ -489,6 +489,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_LineHeight_MultipleControls.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_TextWrapping_PR1954_EdgeCase.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2892,6 +2896,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Pivot\Pivot_CustomContent_Automated.xaml.cs">
       <DependentUpon>Pivot_CustomContent_Automated.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_LineHeight_MultipleControls.xaml.cs">
+      <DependentUpon>TextBlock_LineHeight_MultipleControls.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_TextWrapping_PR1954_EdgeCase.xaml.cs">
       <DependentUpon>TextBlock_TextWrapping_PR1954_EdgeCase.xaml</DependentUpon>
     </Compile>
@@ -4658,70 +4665,70 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ComboBox\ComboBox_ItemDataContext.xaml.cs">
       <DependentUpon>ComboBox_ItemDataContext.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\Clipping\ClippingToControlBounds.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\ClippingToControlBounds.xaml.cs">
       <DependentUpon>ClippingToControlBounds.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\Clipping\LegacyClippingWarningControl.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\LegacyClippingWarningControl.xaml.cs">
       <DependentUpon>LegacyClippingWarningControl.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\Clipping\PanelChildrenClipping.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\PanelChildrenClipping.xaml.cs">
       <DependentUpon>PanelChildrenClipping.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\Clipping\Transform_Ellipse_In_Border.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\Transform_Ellipse_In_Border.xaml.cs">
       <DependentUpon>Transform_Ellipse_In_Border.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\Clipping\Transform_Ellipse_in_Canvas.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\Transform_Ellipse_in_Canvas.xaml.cs">
       <DependentUpon>Transform_Ellipse_in_Canvas.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\Clipping\Transform_Ellipse_in_Canvas_in_Grid.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\Transform_Ellipse_in_Canvas_in_Grid.xaml.cs">
       <DependentUpon>Transform_Ellipse_in_Canvas_in_Grid.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\Clipping\Transform_Ellipse_In_Canvas_in_Two_Grids.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\Transform_Ellipse_In_Canvas_in_Two_Grids.xaml.cs">
       <DependentUpon>Transform_Ellipse_In_Canvas_in_Two_Grids.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\Clipping\Transform_Ellipse_in_Two_Canvas_in_Grid.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\Transform_Ellipse_in_Two_Canvas_in_Grid.xaml.cs">
       <DependentUpon>Transform_Ellipse_in_Two_Canvas_in_Grid.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\Clipping\Transform_Ellipse_in_two_grids.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\Transform_Ellipse_in_two_grids.xaml.cs">
       <DependentUpon>Transform_Ellipse_in_two_grids.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\Clipping\UIElementClipping.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\UIElementClipping.xaml.cs">
       <DependentUpon>UIElementClipping.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\ClipTransform\LegacyClippingWarningControl.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ClipTransform\LegacyClippingWarningControl.xaml.cs">
       <DependentUpon>LegacyClippingWarningControl.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\ClipTransform\Transform_Ellipse_In_Border.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ClipTransform\Transform_Ellipse_In_Border.xaml.cs">
       <DependentUpon>Transform_Ellipse_In_Border.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\ClipTransform\Transform_Ellipse_in_Canvas.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ClipTransform\Transform_Ellipse_in_Canvas.xaml.cs">
       <DependentUpon>Transform_Ellipse_in_Canvas.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\ClipTransform\Transform_Ellipse_in_Canvas_in_Grid.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ClipTransform\Transform_Ellipse_in_Canvas_in_Grid.xaml.cs">
       <DependentUpon>Transform_Ellipse_in_Canvas_in_Grid.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\ClipTransform\Transform_Ellipse_In_Canvas_in_Two_Grids.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ClipTransform\Transform_Ellipse_In_Canvas_in_Two_Grids.xaml.cs">
       <DependentUpon>Transform_Ellipse_In_Canvas_in_Two_Grids.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\ClipTransform\Transform_Ellipse_in_Two_Canvas_in_Grid.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ClipTransform\Transform_Ellipse_in_Two_Canvas_in_Grid.xaml.cs">
       <DependentUpon>Transform_Ellipse_in_Two_Canvas_in_Grid.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\ClipTransform\Transform_Ellipse_in_two_grids.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ClipTransform\Transform_Ellipse_in_two_grids.xaml.cs">
       <DependentUpon>Transform_Ellipse_in_two_grids.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\Clip\PanelChildrenClipping.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\PanelChildrenClipping.xaml.cs">
       <DependentUpon>PanelChildrenClipping.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\Clip\UIElementClipping.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\UIElementClipping.xaml.cs">
       <DependentUpon>UIElementClipping.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\src\Uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml\UIElementTests\UIElementClipping.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\UIElementClipping.xaml.cs">
       <DependentUpon>UIElementClipping.xaml</DependentUpon>
     </Compile>
     <Compile Update="$(MSBuildThisFileDirectory)Windows_Devices\GyrometerTests.xaml.cs">
       <DependentUpon>GyrometerTests.xaml</DependentUpon>
     </Compile>
-    <Compile Update="C:\P\uno2\src\SamplesApp\UITests.Shared\Windows_UI_Xaml_Controls\DatePicker\DatePickerFlyout_MinYear.xaml.cs">
+    <Compile Update="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\DatePickerFlyout_MinYear.xaml.cs">
       <DependentUpon>DatePickerFlyout_MinYear.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Enability\BasicEnability.xaml.cs">
