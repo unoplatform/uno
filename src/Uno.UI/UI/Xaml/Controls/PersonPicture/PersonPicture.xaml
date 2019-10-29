@@ -22,11 +22,9 @@
                             <VisualStateGroup x:Name="CommonStates">
                                 <!-- Visual State when a Photo is available for display -->
                                 <VisualState x:Name="Photo">
-                                    <!--
-									<VisualState.Setters>
+                                    <VisualState.Setters>
                                         <Setter Target="PersonPictureEllipse.Fill" Value="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualImageBrush}"/>
                                     </VisualState.Setters>
-									-->
                                 </VisualState>
                                 <!-- Visual State when no Photo is available (but there are initials).-->
                                 <VisualState x:Name="Initials" />
@@ -56,12 +54,12 @@
                                 <VisualState x:Name="BadgeWithImageSource">
                                     <VisualState.Setters>
                                         <Setter Target="BadgeGrid.Visibility" Value="Visible" />
-                                        <!--<Setter Target="BadgingEllipse.Opacity" Value="{ThemeResource PersonPictureEllipseBadgeImageSourceStrokeOpacity}" />-->
-                                        <!--<Setter Target="BadgingEllipse.Fill">
+                                        <Setter Target="BadgingEllipse.Opacity" Value="{ThemeResource PersonPictureEllipseBadgeImageSourceStrokeOpacity}" />
+                                        <Setter Target="BadgingEllipse.Fill">
                                             <Setter.Value>
                                                 <ImageBrush x:Name="BadgeImageBrush" Stretch="UniformToFill" />
                                             </Setter.Value>
-                                        </Setter>-->
+                                        </Setter>
                                     </VisualState.Setters>
                                 </VisualState>
                             </VisualStateGroup>
@@ -92,8 +90,7 @@
                             x:DeferLoadStrategy="Lazy"
                             Width="{TemplateBinding Width}"
                             Height="{TemplateBinding Height}"
-                            FlowDirection="LeftToRight"
-							Fill="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.ActualImageBrush}">
+                            FlowDirection="LeftToRight">
                         </Ellipse>
 
                         <Grid
