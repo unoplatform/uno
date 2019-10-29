@@ -32,6 +32,15 @@ namespace Uno.UI
 			/// in the DOM for automation purposes.
 			/// </summary>
 			public static bool AssignDOMXamlName { get; set; } = false;
+
+			/// <summary>
+			/// Enables the assignation of properties from the XAML visual tree as DOM attributes: Height -> "xamlheight",
+			/// HorizontalAlignment -> "xamlhorizontalalignment" etc. 
+			/// </summary>
+			/// <remarks>
+			/// This should only be enabled for debug builds, but can greatly aid layout debugging.
+			/// </remarks>
+			public static bool AssignDOMXamlProperties { get; set; } = false;
 #endif
 		}
 
