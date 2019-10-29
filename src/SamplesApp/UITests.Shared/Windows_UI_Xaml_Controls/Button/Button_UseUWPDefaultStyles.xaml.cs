@@ -19,9 +19,13 @@ using Uno.UI;
 using _NativeType = Windows.UI.Xaml.Controls.BindableButtonEx;
 #elif __IOS__
 using UIKit;
+using Uno.UI;
 using _NativeType = Uno.UI.Views.Controls.BindableUIButton;
 #else
 using _NativeType = Windows.UI.Xaml.Controls.Grid; // We use a 'fake' native style on WASM
+#endif
+#if __WASM__
+using Uno.UI;
 #endif
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
