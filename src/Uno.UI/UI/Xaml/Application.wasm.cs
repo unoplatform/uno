@@ -38,6 +38,7 @@ namespace Windows.UI.Xaml
 			{
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Windows.UI.Xaml.Application.Start(_ => new App());");
 			}
+			Current = this;
 
 			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
 		}
@@ -63,8 +64,6 @@ namespace Windows.UI.Xaml
 		{
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
-				Current = this;
-
 				// Force init
 				Window.Current.ToString();
 
