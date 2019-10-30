@@ -275,15 +275,6 @@ namespace Windows.UI.Xaml.Controls
 					return ret;
 				}
 
-				if (margin != Thickness.Empty)
-				{
-					// Apply the margin for framework elements, as if it were padding to the child.
-					slotSize = new Size(
-						Max(0, slotSize.Width - margin.Left - margin.Right),
-						Max(0, slotSize.Height - margin.Top - margin.Bottom)
-					);
-				}
-
 				// Alias the Dependency Properties values to avoid double calls.
 				var childWidth = frameworkElement.Width;
 				var childMaxWidth = frameworkElement.MaxWidth;
