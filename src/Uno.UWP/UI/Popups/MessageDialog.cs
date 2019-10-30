@@ -5,6 +5,8 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.Foundation;
+using Windows.UI.Core;
 
 namespace Windows.UI.Popups
 {
@@ -14,7 +16,7 @@ namespace Windows.UI.Popups
 		/// Creates a new instance of the MessageDialog class, using the specified message content and no title.
 		/// </summary>
 		/// <param name="content"></param>
-		public MessageDialog(string content) 
+		public MessageDialog(string content)
 			: this(content, "")
 		{
 		}
@@ -45,6 +47,53 @@ namespace Windows.UI.Popups
 
 			Commands = collection;
 		}
+
+#if __ANDROID__ || __IOS__
+
+		public IAsyncOperation<IUICommand> ShowAsync()
+		{
+			var invokedCommand = new TaskCompletionSource<IUICommand>();
+
+			return new AsyncOperation<IUICommand>(async ct =>
+			{
+				if (CoreDispatcher.Main.HasThreadAccess)
+				{
+					try
+					{
+						ShowInner(ct, invokedCommand);
+					}
+					catch (Exception e)
+					{
+						invokedCommand.TrySetException(e);
+					}
+				}
+
+				else
+				{
+					Exception ex = null;
+					await CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, CallShow);
+
+					if (ex != null)
+					{
+						invokedCommand.TrySetException(ex);
+					}
+
+					void CallShow()
+					{
+						try
+						{
+							ShowInner(ct, invokedCommand);
+						}
+						catch (Exception e)
+						{
+							ex = e;
+						}
+					}
+				}
+				return await invokedCommand.Task;
+			});
+		}
+#endif
 
 		public uint CancelCommandIndex { get; set; } = uint.MaxValue;
 		public IList<IUICommand> Commands { get; }
