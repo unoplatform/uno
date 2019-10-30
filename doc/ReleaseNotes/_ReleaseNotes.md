@@ -77,6 +77,7 @@
 * [iOS] UIWebView is deprecated and replaced with WKWebView (ITMS-90809: Deprecated API Usage - Apple will stop accepting submissions of apps that use UIWebView APIs . See https://developer.apple.com/documentation/uikit/uiwebview for more information.)
 
 ### Bug fixes
+* Android WebViewer.NavigateToString doesn't throw exception even when string is very long.
 * [#1531](https://github.com/unoplatform/uno/pull/1531)Fix an issue with VirtualizePanelAdaptater by adding a cache where the ItemSources length change and created a OutOfRangeException
 * [WASM] #1518 Fix Navigation Issue Where SystemNavigationManager.enable() is called twice and clear the stack history
 * [#1278](https://github.com/unoplatform/uno/pull/1278) the XAML sourcegenerator now always uses the fully qualified type name to prevent type conflicts.
