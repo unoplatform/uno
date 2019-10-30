@@ -22,15 +22,17 @@ namespace Windows.UI.Xaml.Shapes
 			var width = double.IsNaN(Width) ? bounds.Width : Width;
 			var height = double.IsNaN(Height) ? bounds.Height : Height;
 
+			var strokeThickness = (nfloat)this.ActualStrokeThickness;
+
 			var area = new CGRect(
 				x: 0, 
 				y: 0,
 
 				//In ios we need to inflate the bounds because the stroke thickness is not taken into account when
 				//forming the ellipse from rect.
-				width: width - (nfloat)this.ActualStrokeThickness, 
-				height: height - (nfloat)this.ActualStrokeThickness
-			);
+				width: width - strokeThickness, 
+				height: height - strokeThickness
+            );
 
 			return CGPath.EllipseFromRect(area);
 		}

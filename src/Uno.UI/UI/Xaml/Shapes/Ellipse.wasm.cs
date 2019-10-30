@@ -28,11 +28,13 @@ namespace Windows.UI.Xaml.Shapes
 			var cx = width / 2;
 			var cy = height / 2;
 
+			var strokeThickness = ActualStrokeThickness;
+
 			_ellipse.SetAttribute(
 				("cx", cx.ToStringInvariant()),
 				("cy", cy.ToStringInvariant()),
-				("rx", (cx - ActualStrokeThickness).ToStringInvariant()),
-				("ry", (cy - ActualStrokeThickness).ToStringInvariant()));
+				("rx", (cx - strokeThickness).ToStringInvariant()),
+				("ry", (cy - strokeThickness).ToStringInvariant()));
 
 			return base.MeasureOverride(availableSize);
 		}

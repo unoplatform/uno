@@ -237,9 +237,10 @@ namespace Windows.UI.Xaml.Shapes
 			var calculatedWidth = LimitWithUserSize(controlWidth, userWidth, pathWidth);
 			var calculatedHeight = LimitWithUserSize(controlHeight, userHeight, pathHeight);
 
+			var strokeThickness = ActualStrokeThickness;
 
-			_scaleX = (calculatedWidth - ActualStrokeThickness) / pathWidth;
-			_scaleY = (calculatedHeight - ActualStrokeThickness) / pathHeight;
+			_scaleX = (calculatedWidth - strokeThickness) / pathWidth;
+			_scaleY = (calculatedHeight - strokeThickness) / pathHeight;
 
 			//Make sure that we have a valid scale if both of them are not set
 			if (double.IsInfinity((double)_scaleY))
@@ -279,8 +280,8 @@ namespace Windows.UI.Xaml.Shapes
 					break;
 			}
 
-			calculatedWidth += (double)this.ActualStrokeThickness;
-			calculatedHeight += (double)this.ActualStrokeThickness;
+			calculatedWidth += strokeThickness;
+			calculatedHeight += strokeThickness;
 
 			return new Size(calculatedWidth, calculatedHeight);
 		}
