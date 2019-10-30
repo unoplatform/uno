@@ -933,8 +933,6 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 			// WUCRenderingScopeGuard guard(DCompRendering.WUCCompleteSynchronousCompTree, false /*resizeWindow*/);
 
 			Grid grid = null;
-			ColumnDefinition col0 = null;
-			ColumnDefinition col1 = null;
 
 			await TestServices.RunOnUIThread(() =>
 			{

@@ -83,6 +83,8 @@
 * Add support for `Windows.UI.Xaml.Controls.Primitives.LayoutInformation.GetAvailableSize`
 * Add support for Runtime Tests that require UI integration
 * Enable iOS UI Tests
+* Add support for `PersonPicture`
+* Add support for `VisualState` `Setter` data binding, static resources and complex objects
 
 ### Breaking changes
 
@@ -174,6 +176,7 @@
 * [Android] Fix bug in `ListView` when using an `ObservableCollection` as its source and using `Header` and `Footer`.
 * [#1924](https://github.com/unoplatform/uno/issues/1924) Fix Android `ListView.HeaderTemplate` (and `.FooterTemplate`) binding bug when changing `Header` and `Footer`.
 * 164480 [Android] fixed a text wrapping issue caused by layout height desync
+* [Wasm] Fix unable to reset `Image.Source` property
 
 ## Release 1.45.0
 ### Features
