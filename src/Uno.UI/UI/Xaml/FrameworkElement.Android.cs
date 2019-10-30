@@ -192,14 +192,6 @@ namespace Windows.UI.Xaml
 		{
 			var availableSize = ViewHelper.LogicalSizeFromSpec(widthMeasureSpec, heightMeasureSpec);
 
-			//if (!double.IsNaN(Width) || !double.IsNaN(Height))
-			//{
-			//	availableSize = new Size(
-			//		double.IsNaN(Width) ? availableSize.Width : Width,
-			//		double.IsNaN(Height) ? availableSize.Height : Height
-			//	);
-			//}
-
 			var measuredSizelogical = _layouter.Measure(availableSize);
 
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
@@ -249,7 +241,7 @@ namespace Windows.UI.Xaml
 			{
 				// If the parent element is from managed code,
 				// we can recover the "Arrange" with double accuracy.
-				// We use that because the conversion to "int" is loosing too much precision.
+				// We use that because the conversion to android's "int" is loosing too much precision.
 				newSize = new Size(als.Width, als.Height);
 			}
 			else
