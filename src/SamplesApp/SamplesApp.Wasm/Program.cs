@@ -14,6 +14,9 @@ namespace SamplesApp.Wasm
 #if !DEBUG
 			Uno.UI.FeatureConfiguration.UIElement.RenderToStringWithId = false;
 #endif
+#if DEBUG
+			Uno.UI.FeatureConfiguration.UIElement.AssignDOMXamlProperties = true;
+#endif
 
 			Windows.UI.Xaml.Application.Start(_ => _app = new App());
 		}
