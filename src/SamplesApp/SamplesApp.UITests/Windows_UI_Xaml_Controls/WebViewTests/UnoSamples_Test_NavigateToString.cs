@@ -28,6 +28,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebView
 			TakeScreenshot("Initial");
 
 			_app.Tap(startButton);
+			for(int i=10; i<100; i+=10)
+			{
+				_app.WaitForDependencyPropertyValue(clickResult, "Text", i.ToString());
+			}
 			_app.WaitForDependencyPropertyValue(clickResult, "Text", "success");
 			TakeScreenshot("AfterSuccess");
 
