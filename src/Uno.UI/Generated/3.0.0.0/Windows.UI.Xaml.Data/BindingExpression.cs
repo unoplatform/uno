@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Data
 	#endif
 	public  partial class BindingExpression : global::Windows.UI.Xaml.Data.BindingExpressionBase
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  object DataItem
 		{

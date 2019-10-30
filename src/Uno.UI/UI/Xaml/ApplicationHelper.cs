@@ -19,14 +19,16 @@ namespace Uno.UI
 			set
 			{
 				_requestedCustomTheme = value;
-
-				if (_requestedCustomTheme.Equals("Dark"))
+				if (_requestedCustomTheme != null)
 				{
-					Application.Current.RequestedTheme = ApplicationTheme.Dark;
-				}
-				else if (_requestedCustomTheme.Equals("Light"))
-				{
-					Application.Current.RequestedTheme = ApplicationTheme.Light;
+					if (_requestedCustomTheme.Equals("Dark"))
+					{
+						Application.Current.RequestedTheme = ApplicationTheme.Dark;
+					}
+					else if (_requestedCustomTheme.Equals("Light"))
+					{
+						Application.Current.RequestedTheme = ApplicationTheme.Light;
+					}
 				}
 			}
 		}

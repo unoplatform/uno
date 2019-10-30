@@ -261,7 +261,7 @@ namespace Uno.UI.Controls.Legacy
                 }
             }
 
-            SelectionChanged?.Invoke(this, new SelectionChangedEventArgs(oldSelection, newSelection));
+            SelectionChanged?.Invoke(this, new SelectionChangedEventArgs(this, oldSelection, newSelection));
         }
 
         protected override void SetupItemClickListeners()

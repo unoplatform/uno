@@ -8,7 +8,7 @@ labels: kind/feedback, triage/untriaged
 
 If you are after inspiration, folks typically submit feedback on the following topics:
 
-- what version of uno and what platforms you are using it with?
+- what version of Uno and what platforms you are using it with?
 - what do you like?
 - what is lacking?
 - what do you long for going forward?

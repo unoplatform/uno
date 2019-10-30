@@ -1,10 +1,10 @@
-The Uno Platform uses third-party libraries or other resources that may be
-distributed under licenses different than the Uno Platform software.
+The Uno Platform uses third-party libraries and resources that may be
+distributed under licenses different from the Uno Platform software.
 
-In the event that we accidentally failed to list a required notice, please
+In the event of accidental failure to list a required notice, please
 bring it to our attention. Post an issue at :
 
-    https://github.com/nventive/Uno/issues
+    https://github.com/unoplatform/uno/issues
 
 The attached notices are provided for information only.
 

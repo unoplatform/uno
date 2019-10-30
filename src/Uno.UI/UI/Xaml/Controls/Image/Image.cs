@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Debug(this.ToString() + " Image failed to open");
 			}
 
-			ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs("Image failed to download"));
+			ImageFailed?.Invoke(this, new ExceptionRoutedEventArgs(this, "Image failed to download"));
 		}
 
 		protected virtual void OnImageOpened(ImageSource imageSource)
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Debug(this.ToString() + " Image opened successfully");
 			}
 
-			ImageOpened?.Invoke(this, RoutedEventArgs.Empty);
+			ImageOpened?.Invoke(this, new RoutedEventArgs(this));
 			_successfullyOpenedImage = imageSource;
 		}
 

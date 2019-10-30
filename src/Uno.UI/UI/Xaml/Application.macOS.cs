@@ -33,16 +33,50 @@ namespace Windows.UI.Xaml
 
 		public override void DidFinishLaunching(NSNotification notification)
 		{
-			OnLaunched(new LaunchActivatedEventArgs());
+            InitializationCompleted();
+            OnLaunched(new LaunchActivatedEventArgs());
 		}
 
-        /// <summary>
-        /// This method enables UI Tests to get the output path
-        /// of the current application, in the context of the simulator.
-        /// </summary>
-        /// <returns>The host path to get the container</returns>
-        [Export("getApplicationDataPath")]
+		/// <summary>
+		/// This method enables UI Tests to get the output path
+		/// of the current application, in the context of the simulator.
+		/// </summary>
+		/// <returns>The host path to get the container</returns>
+		[Export("getApplicationDataPath")]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public NSString GetWorkingFolder() => new NSString(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+
+		/// <summary>
+		/// Based on <see cref="https://forums.developer.apple.com/thread/118974" />
+		/// </summary>
+		/// <returns>System theme</returns>
+		private ApplicationTheme GetDefaultSystemTheme()
+		{
+			const string AutoSwitchKey = "AppleInterfaceStyleSwitchesAutomatically";			
+			var autoChange = NSUserDefaults.StandardUserDefaults[AutoSwitchKey];
+			if ( autoChange != null )
+			{
+				var autoChangeEnabled = NSUserDefaults.StandardUserDefaults.BoolForKey(AutoSwitchKey);
+				if (autoChangeEnabled)
+				{
+					if (NSUserDefaults.StandardUserDefaults["AppleInterfaceStyle"] == null)
+					{
+						return ApplicationTheme.Dark;
+					}
+					else
+					{
+						return ApplicationTheme.Light;
+					}
+				}
+			}
+			if (NSUserDefaults.StandardUserDefaults["AppleInterfaceStyle"] == null)
+			{
+				return ApplicationTheme.Light;
+			}
+			else
+			{
+				return ApplicationTheme.Dark;
+			}			
+		}
 	}
 }

@@ -25,13 +25,18 @@ namespace Windows.Devices.Geolocation
 			_locationManager.RequestLocationUpdates(_locationProvider, 0, 0, this);
 		}
 
-		public async Task<Geoposition> GetGeopositionAsync()
-			=> _locationManager.GetLastKnownLocation(_locationProvider).ToGeoPosition();
+		public Task<Geoposition> GetGeopositionAsync()
+		{
+			BroadcastStatus(PositionStatus.Initializing);
+			var location = _locationManager.GetLastKnownLocation(_locationProvider);
+			BroadcastStatus(PositionStatus.Ready);
+			return Task.FromResult(location.ToGeoPosition());
+		}
 
-		public async Task<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
-			=> _locationManager.GetLastKnownLocation(_locationProvider).ToGeoPosition();
+		public Task<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
+			=> GetGeopositionAsync();
 
-		public static async Task<GeolocationAccessStatus> RequestAccessAsync() { return GeolocationAccessStatus.Allowed; }
+		public static async Task<GeolocationAccessStatus> RequestAccessAsync() => GeolocationAccessStatus.Allowed;
 
 		private LocationManager InitializeLocationProvider(double desiredAccuracy)
 		{
@@ -56,9 +61,15 @@ namespace Windows.Devices.Geolocation
 			return locationManager;
 		}
 
+		partial void StartPositionChanged()
+		{
+			BroadcastStatus(PositionStatus.Initializing);
+		}
+
 		public void OnLocationChanged(Location location)
 		{
-			this.PositionChanged?.Invoke(this, new PositionChangedEventArgs(location.ToGeoPosition()));
+			BroadcastStatus(PositionStatus.Ready);
+			this._positionChanged?.Invoke(this, new PositionChangedEventArgs(location.ToGeoPosition()));
 		}
 
 		public void OnProviderDisabled(string provider)
@@ -71,11 +82,13 @@ namespace Windows.Devices.Geolocation
 
 		public void OnStatusChanged(string provider, [GeneratedEnum] Availability status, Bundle extras)
 		{
-		}
+		}		
 	}
 
 	static class Extensions
 	{
+		private const uint Wgs84SpatialReferenceId = 4326;
+
 		public static Geoposition ToGeoPosition(this Location location)
 			=> new Geoposition(
 				new Geocoordinate(
@@ -90,7 +103,9 @@ namespace Windows.Devices.Geolocation
 							Latitude = location.Latitude,
 							Longitude = location.Longitude,
 							Altitude = location.Altitude,
-						}
+						},
+						AltitudeReferenceSystem.Ellipsoid,
+						Wgs84SpatialReferenceId
 					),
 					accuracy: 0,
 					altitudeAccuracy: 0,

@@ -27,7 +27,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  bool IsBarrelButtonPressed
 		{
@@ -47,7 +47,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  bool IsEraser
 		{
@@ -57,7 +57,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  bool IsHorizontalMouseWheel
 		{
@@ -67,7 +67,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  bool IsInRange
 		{
@@ -87,7 +87,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  bool IsLeftButtonPressed
 		{
@@ -97,7 +97,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  bool IsMiddleButtonPressed
 		{
@@ -107,7 +107,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  bool IsPrimary
 		{
@@ -117,7 +117,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  bool IsRightButtonPressed
 		{
@@ -127,7 +127,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  bool IsXButton1Pressed
 		{
@@ -137,7 +137,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  bool IsXButton2Pressed
 		{
@@ -147,7 +147,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  int MouseWheelDelta
 		{
@@ -167,7 +167,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Input.PointerUpdateKind PointerUpdateKind
 		{

@@ -2,11 +2,11 @@
 
 ## Prerequisites
 * [**Visual Studio 2017 15.5 or later**](https://visualstudio.microsoft.com/), with:
-    * **Universal Windows Platform** workload installed
+    * **Universal Windows Platform** workload installed.
 
     ![visual-studio-installer-uwp](Assets/quick-start/vs-install-uwp.png)
 
-	* **Mobile development with .NET (Xamarin)** workload installed
+	* **Mobile development with .NET (Xamarin)** workload installed.
 
     ![visual-studio-installer-xamarin](Assets/quick-start/vs-install-xamarin.png)
 
@@ -26,7 +26,7 @@ To easily create a multi-platform application:
 * Create a new C# solution using the **Cross-Platform App (Uno Platform)** template, from Visual Studio's **Start Page**:
 
 ![new project](Assets/quick-start/vsix-new-project.png)
-* Update to the latest nuget package named `Uno.UI`, make sure to check the `pre-release` box.
+* Update to the latest nuget package named `Uno.UI`,check the `pre-release` box.
 * To debug the iOS head, select the `Debug|iPhoneSimulator` configuration
 * To debug the Android head, select the `Debug|AnyCPU` configuration
 * To debug the UWP head, select the `Debug|x86` configuration
@@ -45,13 +45,13 @@ If XAML Intellisense isn't working on a freshly-created project, try the followi
 
 ### Creating an app with Uno - tutorial
 
-See the [Creating an App tutorial](getting-started-tutorial-1.md) for a step-by-step guide to creating a working app with Uno.
+See the [Creating an App tutorial](getting-started-tutorial-1.md) for a step-by-step guide on creating your first working app with Uno.
 
 ![tutorial-screenshot](Assets/quick-start/tutorial-screenshot.png)
 
 ## Next steps
 
-* For code samples, check out the [Uno Gallery and Playground](https://github.com/nventive/Uno.Playground) repository.
+* For code samples, check out the [Uno Gallery and Playground](https://github.com/unoplatform/uno.Playground) repository.
 
 * The Uno Platform promotes a 'UWP-first' development approach. Microsoft's [documentation](https://docs.microsoft.com/en-us/windows/uwp/develop/) on the UWP framework is an essential resource.
 
@@ -59,6 +59,6 @@ See the [Creating an App tutorial](getting-started-tutorial-1.md) for a step-by-
 
 * If you're not sure how to do something with Uno, and you think others could benefit from the knowledge, you can post the question on [StackOverflow](https://stackoverflow.com/questions/ask?tags=uno-platform) using the 'uno-platform' tag. Remember to check if the question [already exists](https://stackoverflow.com/questions/tagged/uno-platform) and follow StackOverflow's [question guidelines](https://stackoverflow.com/help/how-to-ask). You'll also need to sign up to StackOverflow if you're not already.
 
-* If you think you've encountered a bug (eg, something works on UWP but not on another platform), [create an issue on GitHub](https://github.com/nventive/Uno/issues) if there's no existing issue. We hate bugs, but we love bug reports!
+* If you think you've encountered a bug (e.g., something works on UWP but not on another platform), [create an issue on GitHub](https://github.com/unoplatform/uno/issues) if there's no existing issue. We hate bugs, but we love bug reports!
 
 * If you have any questions for the Uno Platform team directly, visit our [Gitter channel](https://gitter.im/uno-platform/Lobby).

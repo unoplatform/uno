@@ -51,12 +51,12 @@ namespace Windows.UI.Xaml.Controls
 			{
 				AttachToPopup();
 
-				Opened?.Invoke(this, RoutedEventArgs.Empty);
+				Opened?.Invoke(this, new RoutedEventArgs(this));
 				GoToElementState("Opened", useTransitions: true);
 			}
 			else
 			{
-				Closed?.Invoke(this, RoutedEventArgs.Empty);
+				Closed?.Invoke(this, new RoutedEventArgs(this));
 				GoToElementState("Closed", useTransitions: true);
 			}
 		}

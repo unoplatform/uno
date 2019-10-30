@@ -17,7 +17,7 @@ uid: front-page
 <div class="col-md-6 col-xs-12 headerbox">
 <div class="headerbox-inner clearfix">
 <img src="images/uno.png" alt="uno logo" class="icon" />
-<h2>What is the Uno Platform</h2>
+<h2>What is the Uno Platform?</h2>
 <p>Uno is a free UWP Bridge for iOS, Android and WebAssembly.</p>
 <span class="button turquoise">
 

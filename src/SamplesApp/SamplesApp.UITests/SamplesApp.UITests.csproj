@@ -9,7 +9,7 @@
 		<PackageReference Include="FluentAssertions" Version="5.9.0" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.0" />
 		<PackageReference Include="NUnit" />
-		<PackageReference Include="NUnit3TestAdapter"/>
+		<PackageReference Include="NUnit3TestAdapter" />
 		<PackageReference Include="Uno.UITest" />
 		<PackageReference Include="Uno.UITest.Selenium" />
 		<PackageReference Include="Uno.UITest.Xamarin" />

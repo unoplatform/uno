@@ -8,7 +8,7 @@ namespace Windows.UI.Core
 	public  partial class CoreDispatcher : global::Windows.UI.Core.ICoreAcceleratorKeys
 	{
 		// Skipping already declared property HasThreadAccess
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Core.CoreDispatcherPriority CurrentPriority
 		{

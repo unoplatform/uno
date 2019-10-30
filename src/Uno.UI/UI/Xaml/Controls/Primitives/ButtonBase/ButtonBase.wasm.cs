@@ -33,7 +33,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			RegisterEvents();
 
 			KeyDown += OnKeyDown;
-			PreRaiseTapped += OnPreRaiseTapped;
 		}
 
 		protected override void OnUnloaded()
@@ -41,7 +40,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			base.OnUnloaded();
 
 			KeyDown -= OnKeyDown;
-			PreRaiseTapped -= OnPreRaiseTapped;
 		}
 
 		private void OnKeyDown(object sender, KeyRoutedEventArgs keyRoutedEventArgs)
@@ -54,11 +52,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					OnClick();
 					break;
 			}
-		}
-
-		private void OnPreRaiseTapped(object sender, EventArgs e)
-		{
-			OnClick();
 		}
 
 		/// <summary>

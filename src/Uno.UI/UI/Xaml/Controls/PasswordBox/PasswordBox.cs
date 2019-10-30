@@ -30,24 +30,24 @@ namespace Windows.UI.Xaml.Controls
 		private void RegisterSetPasswordScope()
 		{
 			_revealButton = this.GetTemplateChild(RevealButtonPartName) as Button;
-			_revealButton?.ApplyTemplate();
 
-			// Button doesn't raise the PointerPressed event, so we listen for it on the template visual root.
-			var revealTarget = (_revealButton?.TemplatedRoot ?? _revealButton?.ContentTemplateRoot) as UIElement;
-
-			if (revealTarget != null)
+			if (_revealButton != null)
 			{
-				revealTarget.PointerPressed += BeginReveal;
-				revealTarget.PointerReleased += EndReveal;
-				revealTarget.PointerExited += EndReveal;
-				revealTarget.PointerCanceled += EndReveal;
+				var beginReveal = new PointerEventHandler(BeginReveal);
+				var endReveal = new PointerEventHandler(EndReveal);
+
+				// Button will handle Pressed and Released, so we have subscribe to handled events too
+				_revealButton.AddHandler(PointerPressedEvent, beginReveal, handledEventsToo: true);
+				_revealButton.AddHandler(PointerReleasedEvent, endReveal, handledEventsToo: true);
+				_revealButton.AddHandler(PointerExitedEvent, endReveal, handledEventsToo: true);
+				_revealButton.AddHandler(PointerCanceledEvent, endReveal, handledEventsToo: true);
 
 				_revealButtonSubscription.Disposable = Disposable.Create(() =>
 				{
-					revealTarget.PointerPressed -= BeginReveal;
-					revealTarget.PointerReleased -= EndReveal;
-					revealTarget.PointerExited -= EndReveal;
-					revealTarget.PointerCanceled -= EndReveal;
+					_revealButton.RemoveHandler(PointerPressedEvent, beginReveal);
+					_revealButton.RemoveHandler(PointerReleasedEvent, endReveal);
+					_revealButton.RemoveHandler(PointerExitedEvent, endReveal);
+					_revealButton.RemoveHandler(PointerCanceledEvent, endReveal);
 				});
 			}
 
@@ -101,7 +101,7 @@ namespace Windows.UI.Xaml.Controls
 			var handler = PasswordChanged;
 			if (handler != null)
 			{
-				handler(this, RoutedEventArgs.Empty);
+				handler(this, new RoutedEventArgs(this));
 			}
 
 			OnPasswordChangedPartial(e);

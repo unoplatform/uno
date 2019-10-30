@@ -53,8 +53,7 @@ namespace Windows.UI.Xaml.Documents
 		}
 #endif
 
-#region FontFamily Dependency Property
-
+		#region FontFamily Dependency Property
 		public FontFamily FontFamily
 		{
 			get { return (FontFamily)this.GetValue(FontFamilyProperty); }
@@ -79,8 +78,7 @@ namespace Windows.UI.Xaml.Documents
 		}
 
 		partial void OnFontFamilyChangedPartial();
-
-#endregion
+		#endregion
 
 		#region FontStyle Dependency Property
 

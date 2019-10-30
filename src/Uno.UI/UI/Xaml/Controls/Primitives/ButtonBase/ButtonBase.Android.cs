@@ -5,6 +5,8 @@ using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
 using Windows.UI.Xaml.Input;
+using Android.Runtime;
+using Java.Interop;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -29,24 +31,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			RegisterEvents();
 
 			OnCanExecuteChanged();
-
-			PreRaiseTapped += OnPreRaiseTapped;
 		}
 
 		protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
 			_isEnabledSubscription.Disposable = null;
-			_touchSubscription.Disposable = null;
-
-			PreRaiseTapped -= OnPreRaiseTapped;
-		}
-
-		private void OnPreRaiseTapped(object sender, EventArgs e)
-		{
-			// This even is raised only when the source is a Uno-managed control
-			// (when not using native styling)
-			OnClick();
 		}
 
 		partial void OnIsEnabledChangedPartial(bool oldValue, bool newValue)
@@ -57,32 +47,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		partial void RegisterEvents()
 		{
 			_touchSubscription.Disposable = null;
-			_isEnabledSubscription.Disposable = null;
 
 			View uiControl = GetUIControl();
 
 			var nativeButton = uiControl as Android.Widget.Button;
 			if (nativeButton is Android.Widget.Button)
 			{
-				this.Log().Debug("Template contains Android.Widget.Button, hooking up to Click and syncing IsEnabled state");
-
-				_touchSubscription.Disposable = uiControl
-					.RegisterClick((e, s) =>
-					{
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-						{
-							this.Log().Debug("TouchUpInside, executing command");
-						}
-
-						OnPointerPressed(new PointerRoutedEventArgs { OriginalSource = this });
-
-						OnClick();
-
-						var args = new TappedRoutedEventArgs { OriginalSource = this };
-
-						RaiseEvent(TappedEvent, args);
-					});
-
 				_isEnabledSubscription.Disposable =
 					DependencyObjectExtensions.RegisterDisposablePropertyChangedCallback(
 						this,

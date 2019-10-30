@@ -293,7 +293,7 @@ namespace Windows.UI.Xaml
 
 			var view = ((View)element);
 			view.Measure(widthSpec, heightSpec);
-			
+
 			return Uno.UI.Controls.BindableView.GetNativeMeasuredDimensionsFast(view)
 				.PhysicalToLogicalPixels();
 #else
@@ -351,10 +351,10 @@ namespace Windows.UI.Xaml
 		/// Gets the min value being left or right.
 		/// </summary>
 		/// <remarks>
-		/// This method kept here for readbility 
+		/// This method kept here for readbility
 		/// of <see cref="SizeThatFits(IFrameworkElement, CGSize)"/> the keep its
 		/// fluent aspect.
-		/// It also does not use the generic extension that may create an very 
+		/// It also does not use the generic extension that may create an very
 		/// short lived <see cref="IConvertible"/> instance.
 		/// </remarks>
 		private static nfloat LocalMin(this nfloat left, nfloat right)
@@ -366,10 +366,10 @@ namespace Windows.UI.Xaml
 		/// Gets the max value being left or right.
 		/// </summary>
 		/// <remarks>
-		/// This method kept here for readbility 
+		/// This method kept here for readbility
 		/// of <see cref="SizeThatFits(IFrameworkElement, CGSize)"/> the keep its
 		/// fluent aspect.
-		/// It also does not use the generic extension that may create an very 
+		/// It also does not use the generic extension that may create an very
 		/// short lived <see cref="IConvertible"/> instance.
 		/// </remarks>
 		private static nfloat LocalMax(this nfloat left, nfloat right)

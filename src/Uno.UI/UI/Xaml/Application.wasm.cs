@@ -64,9 +64,36 @@ namespace Windows.UI.Xaml
 				{
 					this.Log().Debug("Launch arguments: " + arguments);
 				}
-
+				InitializationCompleted();
 				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, arguments));
 			}
+		}
+
+		private ApplicationTheme GetDefaultSystemTheme()
+		{
+			var serializedTheme = WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.getDefaultSystemTheme()");
+			
+			if (serializedTheme != null)
+			{
+				if (Enum.TryParse(serializedTheme, out ApplicationTheme theme))
+				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
+					{
+						this.Log().Info("Setting OS preferred theme: " + theme);
+					}
+					return theme;
+				}
+				else
+				{
+					throw new InvalidOperationException($"{serializedTheme} theme is not a supported OS theme");
+				}
+			}
+			//OS has no preference or API not implemented, use light as default
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Information))
+			{
+				this.Log().Info("No preferred theme, using Light instead");
+			}
+			return ApplicationTheme.Light;
 		}
 	}
 }

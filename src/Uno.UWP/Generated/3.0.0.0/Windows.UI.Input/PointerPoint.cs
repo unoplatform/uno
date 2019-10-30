@@ -7,7 +7,7 @@ namespace Windows.UI.Input
 	#endif
 	public  partial class PointerPoint 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  uint FrameId
 		{
@@ -17,7 +17,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  bool IsInContact
 		{
@@ -27,7 +27,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Input.PointerDevice PointerDevice
 		{
@@ -37,7 +37,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  uint PointerId
 		{
@@ -48,7 +48,7 @@ namespace Windows.UI.Input
 		}
 		#endif
 		// Skipping already declared property Position
-		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Input.PointerPointProperties Properties
 		{
@@ -58,7 +58,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Point RawPosition
 		{
@@ -68,7 +68,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  ulong Timestamp
 		{

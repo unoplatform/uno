@@ -5,8 +5,8 @@
 | Routed Event          | Android | iOS     | Wasm    |     |
 | --------------------- | ------- | ------- | ------- | --- |
 | _tapped events_
-| `Tapped`              | Yes     | Yes (1) | Yes (1) | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.tapped) |
-| `DoubleTapped`        | Yes     | Yes (1) | No (1)  | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.doubletapped) |
+| `Tapped`              | Yes (1) | Yes (1) | Yes (1) | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.tapped) |
+| `DoubleTapped`        | Yes (1) | Yes (1) | Yes (1) | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.doubletapped) |
 | _focus events_
 | `GotFocus`            | Yes     | Yes (2) | Yes (2) | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.gotfocus) |
 | `LostFocus`           | Yes     | Yes (2) | Yes (2) | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.lostfocus) |
@@ -14,19 +14,19 @@
 | `KeyDown`   | Hardware Only (3) | Yes (3) | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.keydown) |
 | `KeyUp`     | Hardware Only (3) | Yes (3) | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.keyup) |
 | _pointer events_
-| `PointerCanceled`     | Yes     | No      | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointercanceled) |
-| `PointerCaptureLost`  | Yes     | No      | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointercapturelost) |
-| `PointerEntered`      | Yes     | No      | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerentered) |
-| `PointerExited`       | Yes     | No      | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerexited) |
-| `PointerMoved`        | Yes     | No      | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointermoved) |
-| `PointerPressed`      | Yes     | No      | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerpressed) |
-| `PointerReleased`     | Yes     | No      | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerreleased) |
+| `PointerCanceled`     | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointercanceled) |
+| `PointerCaptureLost`  | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointercapturelost) |
+| `PointerEntered`      | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerentered) |
+| `PointerExited`       | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerexited) |
+| `PointerMoved`        | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointermoved) |
+| `PointerPressed`      | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerpressed) |
+| `PointerReleased`     | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerreleased) |
+| `PointerWheelChanged` | No      | No      | No      | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerwheelchanged) |
 
 Notes:
 
-1. **Tapped** & **DoubleTapped** events:
-   * **iOS**: Those events are the result of a _Gesture Recognizer_ on the platform, so they'll never bubble natively.
-   * **Wasm**: Those are connected to `click` and `dblclick` events in HTML. They will always be reported as coming from a mouse pointer.
+1. **Gesture** events:
+   * Those events are managed only, and will bubble in managed code only. 
 2. **Focus** events:
    * **iOS**: The concept of _focus_ is emulated because not supported by the platform, so this event is
      always bubbling in managed code.
@@ -37,7 +37,7 @@ Notes:
      on that. This is a limitation [in the Android platform](https://developer.android.com/training/keyboard-input/commands) (see note on this link content).
      > Because of those limitations, _Key Events_ are not being implemented as _routed events_ on Android, so `AddHandler` & `RemoveHandler`
      > won't work for keyboard events. **They won't bubble in managed code**.
-   * **iOS**: `KeyDown` & `KeyUp` routed events are generated from only a `TextBox`. Only characted-related keyboard events are generated.
+   * **iOS**: `KeyDown` & `KeyUp` routed events are generated from only a `TextBox`. Only character-related keyboard events are generated.
      They are implemented as _Routed Events_ and they are **always bubbling in managed code**.
 
 ## Event Bubbling Flow
@@ -83,7 +83,7 @@ Notes:
 
  1. **An event is fired**: when an event is intercepted from the platform.
  2. **Event dispatcher**: the source element in visual tree receive the event through its event handler.
- 3. **Local handlers?**: check if there is any local handlders for the event.
+ 3. **Local handlers?**: check if there is any local handlers for the event.
  4. **Invoke handlers**: they are invoked one after the other, taking care of the "IsHandled" status.
  5. **Handled?**: check if any of the local handlers marked the event as _handled_.
  6. **Originating from platform?**: check if the source of the event is from native code.
@@ -96,7 +96,7 @@ Notes:
     or `handledEventsToo: true`).
  11. **Parent defined?**: if the element is connected to any parent element.
  12. **Processing finished**: no more handlers is interested by this event. Propagation is stopped.
-    Native bubbling is stopped too, because the event is fully handled.
+    Native bubbling is stopped too because the event is fully handled.
 
 ## Native bubbling vs Managed bubbling
 
@@ -177,3 +177,69 @@ or referencing the element where the event crossed the _native-to-managed_ bound
 There's a strange behavior in UWP where you can switch back the `event.Handle` to `false` when
 intercepted by a handler with `handledEventsToo: true`. In UWP the event will continue to bubble normally.
 Trying to do this in Uno can lead to unreliable results.
+
+## Pointer Events
+
+Those events are the base for all others pointing device related events (i.e. Manipulation and Gesture events).
+They are directly linked to the native events of each platform:
+* `Touches[Began|Moved|Ended|Cancelled]` on iOS
+* `dispatchTouchEvent` and `dispatchGenericMotionEvent` on Android
+* `pointer[enter|leave|down|up|move|cancel]` on WebAssembly
+
+### Pointers events and the ScrollViewer
+
+Like on WinUI as soon as the system detects that the user wants to scroll, a control gets a `PointerCancelled` and that control won't receive
+any other pointer event until the user release the pointer. That behavior can be prevented by setting the `ManipulationMode` 
+to something else than `System` on a control nested in the `ScrollViewer`. (cf. [Manipulation events](#Manipulation_Events))
+
+Be aware that on iOS this will set `DelaysContentTouches` to `false` so it means that it will slightly reduce the performance
+of the scrolling (cf. [documentation](https://developer.apple.com/documentation/uikit/uiscrollview/1619398-delayscontenttouches)).
+
+### Known limitations for pointer events
+
+As those events are tightly coupled to the native events, Uno has to make some compromises:
+* On iOS, when tapping with a mouse or a pen on Android, or in few other specific cases (like `PointerCaptureLost`), 
+  multiple managed events are raised from a single native event. These have multiple effects:
+	* On UWP if you have a control A and a nested control B, you will get:
+		```
+		B.PointerEnter
+		A.PointerEnter
+		B.PointerPressed
+		A.PointerPressed
+		```
+	  but with UNO you will get:
+		```
+		B.PointerEnter
+		B.PointerPressed
+		A.PointerEnter
+		A.PointerPressed
+		```
+	* If you handle the `PointerEnter` on **B**, the parent control **A** won't get the `PointerEnter` (as expected) nor the  `PointerPressed`.
+* On Android with a mouse or a pen, the `PointerEnter` and `PointerExit` are going to be raised without taking clipping in consideration.
+  This means that you will get the enter earlier and the exit later than on other platform.
+* On Android if you have an element with a `RenderTransform` which overlaps one of its sibling element, the element at the top will
+  get the pointer events.
+* On WASM, iOS and Android, the `RoutedPointerEventArgs.FrameId` will be reset to 0 after 49 days of running time of the application.
+* Unlike on UWP, controls that are under a `Popup` won't receive the unhandled pointer events.
+* Unlike UWP, it's impossible to receive a `PointerReleased` without getting a `PointerPressed` before. (For instance if a child 
+  control handled the pressed event but not the released event).
+  > On WASM as `TextElement` are `UIElement`, it means that unlike UWP `TextBlock` won't raise the 
+  > a `PointerReleased` when clicking on an `Hyperlink`.
+* Unlike UWP, on the `Hyperlink` the `Click` will be raised before the `PointerReleased`.
+
+### Pointer capture
+
+The capture of pointer is handled in managed code only. On WebAssembly Uno however still requests the browser to capture the pointer,
+but Uno does not rely on native `[got|lost]pointercapture` events.
+
+## Manipulation Events
+
+Those events are not yet implemented, but they will be generated from the PointerXXX events (using the `Windows.UI.Input.GestureRecognizer`),
+so they will be bubbling in managed only.
+
+## Gesture Events
+
+They are generated from the PointerXXX events (using the `Windows.UI.Input.GestureRecognizer`) and are bubbling in managed only.
+
+Currently only the `Tapped` and `DoubleTapped` gestures are supported. Note that those events are not linked in any way to a native equivalent, 
+but are fully interpreted in managed code.

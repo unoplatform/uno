@@ -50,9 +50,15 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool IsOpen
 		{
-			get { return _isOpen; }
+			get => _isOpen;
 			set
 			{
+				if (_isOpen == value)
+				{
+					// Make sure to not raise invalid events
+					return;
+				}
+
 				_isOpen = value;
 				if (value)
 				{

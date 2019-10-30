@@ -235,7 +235,7 @@ namespace <#= mixin.NamespaceName #>
 		private void OnNameChanged(string oldValue, string newValue) {
 			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
 			{
-				AccessibilityIdentifier = newValue;
+				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
 			}
 		}
 
@@ -455,7 +455,7 @@ namespace <#= mixin.NamespaceName #>
 				
 				if (previousSize != _actualSize)
 				{
-					SizeChanged?.Invoke(this, new SizeChangedEventArgs(previousSize, _actualSize));
+					SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, _actualSize));
 
 					if (_renderTransform != null)
 					{
@@ -622,7 +622,7 @@ namespace <#= mixin.NamespaceName #>
 			SetNeedsLayout();
 			OnLoadedPartial();
 
-			Loaded?.Invoke(this, RoutedEventArgs.Empty);
+			Loaded?.Invoke(this, new RoutedEventArgs(this));
 		}
 
 		partial void OnLoadedPartial();
@@ -635,7 +635,7 @@ namespace <#= mixin.NamespaceName #>
 
 			if (Unloaded != null)
 			{
-				Unloaded(this, RoutedEventArgs.Empty);
+				Unloaded(this, new RoutedEventArgs(this));
 			}
 		}
 

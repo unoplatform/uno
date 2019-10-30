@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
@@ -23,6 +24,13 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			// We make sure to invoke native methods while not in the visual tree
+			// (For instance getBBox will fail on FF)
+			if (Parent == null)
+			{
+				return new Size();
+			}
+
 			var measurements = GetMeasurements(availableSize);
 			var desiredSize = measurements.desiredSize;
 
@@ -33,6 +41,13 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
+			// We make sure to invoke native methods while not in the visual tree
+			// (For instance getBBox will fail on FF)
+			if (Parent == null)
+			{
+				return new Size();
+			}
+
 			var measurements = GetMeasurements(finalSize);
 
 			var scale = Matrix3x2.CreateScale((float)measurements.scaleX, (float)measurements.scaleY);

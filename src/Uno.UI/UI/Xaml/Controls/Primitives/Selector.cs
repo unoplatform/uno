@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal void InvokeSelectionChanged(object[] removedItems, object[] addedItems)
 		{
-			SelectionChanged?.Invoke(this, new SelectionChangedEventArgs(removedItems, addedItems));
+			SelectionChanged?.Invoke(this, new SelectionChangedEventArgs(this, removedItems, addedItems));
 		}
 
 		public int SelectedIndex

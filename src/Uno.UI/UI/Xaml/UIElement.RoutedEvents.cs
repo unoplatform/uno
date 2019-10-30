@@ -3,8 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using Windows.UI.Xaml.Input;
+using Microsoft.Extensions.Logging;
 using Uno;
 using Uno.Extensions;
+using Uno.Logging;
 using Uno.UI;
 using Uno.UI.Xaml;
 using Uno.UI.Xaml.Input;
@@ -16,6 +18,24 @@ using UIKit;
 namespace Windows.UI.Xaml
 {
 	/*
+		This partial file handles the registration and bubbling of routed events of a UIElement
+		
+		The API exposed by this file to its native parts are:
+			partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
+			partial void AddGestureHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
+			partial void AddKeyHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
+			partial void AddFocusHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
+			partial void RemovePointerHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+			partial void RemoveGestureHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+			partial void RemoveKeyHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+			partial void RemoveFocusHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+			internal bool RaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args);
+
+		The native components are responsible to subscribe to the native events, interpret them,
+		and then raise the recognized events using the "RaiseEvent" API.
+
+		Here the state machine of the bubbling logic:
+
 	[1]---------------------+
 	| An event is fired     |
 	+--------+--------------+
@@ -71,6 +91,16 @@ namespace Windows.UI.Xaml
 
 		public static RoutedEvent PointerCaptureLostEvent { get; } = new RoutedEvent(RoutedEventFlag.PointerCaptureLost);
 
+		public static RoutedEvent ManipulationStartingEvent { get; } = new RoutedEvent(RoutedEventFlag.ManipulationStarting);
+
+		public static RoutedEvent ManipulationStartedEvent { get; } = new RoutedEvent(RoutedEventFlag.ManipulationStarted);
+
+		public static RoutedEvent ManipulationDeltaEvent { get; } = new RoutedEvent(RoutedEventFlag.ManipulationDelta);
+
+		public static RoutedEvent ManipulationInertiaStartingEvent { get; } = new RoutedEvent(RoutedEventFlag.ManipulationInertiaStarting);
+
+		public static RoutedEvent ManipulationCompletedEvent { get; } = new RoutedEvent(RoutedEventFlag.ManipulationCompleted);
+
 		public static RoutedEvent TappedEvent { get; } = new RoutedEvent(RoutedEventFlag.Tapped);
 
 		public static RoutedEvent DoubleTappedEvent { get; } = new RoutedEvent(RoutedEventFlag.DoubleTapped);
@@ -82,15 +112,6 @@ namespace Windows.UI.Xaml
 		internal static RoutedEvent GotFocusEvent { get; } = new RoutedEvent(RoutedEventFlag.GotFocus);
 
 		internal static RoutedEvent LostFocusEvent { get; } = new RoutedEvent(RoutedEventFlag.LostFocus);
-
-		/// <summary>
-		/// Allow access to "native" tapped before bubbling starts
-		/// </summary>
-		/// <remarks>
-		/// Mostly used for Button.Click which needs to be raised
-		/// before the "Tapped" routed event starts bubbling.
-		/// </remarks>
-		internal EventHandler PreRaiseTapped;
 
 		private struct RoutedEventHandlerInfo
 		{
@@ -192,19 +213,11 @@ namespace Windows.UI.Xaml
 			remove => RemoveHandler(GotFocusEvent, value);
 		}
 
-		public event DoubleTappedEventHandler DoubleTapped
-		{
-			add => AddHandler(DoubleTappedEvent, value, false);
-			remove => RemoveHandler(DoubleTappedEvent, value);
-		}
-
-#pragma warning disable 67 // Unused member
 		public event PointerEventHandler PointerCanceled
 		{
 			add => AddHandler(PointerCanceledEvent, value, false);
 			remove => RemoveHandler(PointerCanceledEvent, value);
 		}
-#pragma warning restore 67 // Unused member
 
 		public event PointerEventHandler PointerCaptureLost
 		{
@@ -242,10 +255,46 @@ namespace Windows.UI.Xaml
 			remove => RemoveHandler(PointerReleasedEvent, value);
 		}
 
+		public event ManipulationStartingEventHandler ManipulationStarting
+		{
+			add => AddHandler(ManipulationStartingEvent, value, false);
+			remove => RemoveHandler(ManipulationStartingEvent, value);
+		}
+
+		public event ManipulationStartedEventHandler ManipulationStarted
+		{
+			add => AddHandler(ManipulationStartedEvent, value, false);
+			remove => RemoveHandler(ManipulationStartedEvent, value);
+		}
+
+		public event ManipulationDeltaEventHandler ManipulationDelta
+		{
+			add => AddHandler(ManipulationDeltaEvent, value, false);
+			remove => RemoveHandler(ManipulationDeltaEvent, value);
+		}
+
+		public event ManipulationInertiaStartingEventHandler ManipulationInertiaStarting
+		{
+			add => AddHandler(ManipulationInertiaStartingEvent, value, false);
+			remove => RemoveHandler(ManipulationInertiaStartingEvent, value);
+		}
+
+		public event ManipulationCompletedEventHandler ManipulationCompleted
+		{
+			add => AddHandler(ManipulationCompletedEvent, value, false);
+			remove => RemoveHandler(ManipulationCompletedEvent, value);
+		}
+
 		public event TappedEventHandler Tapped
 		{
 			add => AddHandler(TappedEvent, value, false);
 			remove => RemoveHandler(TappedEvent, value);
+		}
+
+		public event DoubleTappedEventHandler DoubleTapped
+		{
+			add => AddHandler(DoubleTappedEvent, value, false);
+			remove => RemoveHandler(DoubleTappedEvent, value);
 		}
 
 #if __MACOS__
@@ -268,12 +317,24 @@ namespace Windows.UI.Xaml
 			remove => RemoveHandler(KeyUpEvent, value);
 		}
 
-		public void AddHandler(RoutedEvent routedEvent, object handler, bool handledEventsToo)
+		/// <summary>
+		/// Inserts an event handler as the first event handler.
+		/// This is for internal use only and allow controls to lazily subscribe to event only when required while remaining the first invoked handler,
+		/// which is ** really ** important when marking an event as handled.
+		/// </summary>
+		private protected void InsertHandler(RoutedEvent routedEvent, object handler, bool handledEventsToo = false)
 		{
 			var handlers = _eventHandlerStore.FindOrCreate(routedEvent, () => new List<RoutedEventHandlerInfo>());
-			handlers.Add(new RoutedEventHandlerInfo(handler, handledEventsToo));
+			if (handlers.Count > 0)
+			{
+				handlers.Insert(0, new RoutedEventHandlerInfo(handler, handledEventsToo));
+			}
+			else
+			{
+				handlers.Add(new RoutedEventHandlerInfo(handler, handledEventsToo));
+			}
 
-			AddHandlerPartial(routedEvent, handler, handledEventsToo);
+			AddHandler(routedEvent, handlers.Count, handler, handledEventsToo);
 
 			if (handledEventsToo)
 			{
@@ -281,34 +342,107 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial void AddHandlerPartial(RoutedEvent routedEvent, object handler, bool handledEventsToo);
+		public void AddHandler(RoutedEvent routedEvent, object handler, bool handledEventsToo)
+		{
+			var handlers = _eventHandlerStore.FindOrCreate(routedEvent, () => new List<RoutedEventHandlerInfo>());
+			handlers.Add(new RoutedEventHandlerInfo(handler, handledEventsToo));
+
+			AddHandler(routedEvent, handlers.Count, handler, handledEventsToo);
+
+			if (handledEventsToo)
+			{
+				UpdateSubscribedToHandledEventsToo();
+			}
+		}
+
+		private void AddHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
+		{
+			if (routedEvent.IsPointerEvent)
+			{
+				AddPointerHandler(routedEvent, handlersCount, handler, handledEventsToo);
+			}
+			else if (routedEvent.IsKeyEvent)
+			{
+				AddKeyHandler(routedEvent, handlersCount, handler, handledEventsToo);
+			}
+			else if (routedEvent.IsFocusEvent)
+			{
+				AddFocusHandler(routedEvent, handlersCount, handler, handledEventsToo);
+			}
+			else if (routedEvent.IsManipulationEvent)
+			{
+				AddManipulationHandler(routedEvent, handlersCount, handler, handledEventsToo);
+			}
+			else if (routedEvent.IsGestureEvent)
+			{
+				AddGestureHandler(routedEvent, handlersCount, handler, handledEventsToo);
+			}
+		}
+
+		partial void AddPointerHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
+		partial void AddKeyHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
+		partial void AddFocusHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
+		partial void AddManipulationHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
+		partial void AddGestureHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo);
 
 		public void RemoveHandler(RoutedEvent routedEvent, object handler)
 		{
 			if (_eventHandlerStore.TryGetValue(routedEvent, out var handlers))
 			{
-				var mustUpdateSubscribedToHandledEventsToo = false;
-
-				var matchingHandler = handlers
-					.FirstOrDefault(handlerInfo => (handlerInfo.Handler as Delegate).Equals(handler as Delegate));
-
-				mustUpdateSubscribedToHandledEventsToo = mustUpdateSubscribedToHandledEventsToo || matchingHandler.HandledEventsToo;
+				var matchingHandler = handlers.FirstOrDefault(handlerInfo => (handlerInfo.Handler as Delegate).Equals(handler as Delegate));
 
 				if (!matchingHandler.Equals(default(RoutedEventHandlerInfo)))
 				{
 					handlers.Remove(matchingHandler);
+
+					if (matchingHandler.HandledEventsToo)
+					{
+						UpdateSubscribedToHandledEventsToo();
+					}
 				}
 
-				if (mustUpdateSubscribedToHandledEventsToo)
-				{
-					UpdateSubscribedToHandledEventsToo();
-				}
+				RemoveHandler(routedEvent, handlers.Count, handler);
 			}
-
-			RemoveHandlerPartial(routedEvent, handler);
+			else
+			{
+				RemoveHandler(routedEvent, remainingHandlersCount: -1, handler);
+			}
 		}
 
-		partial void RemoveHandlerPartial(RoutedEvent routedEvent, object handler);
+		private void RemoveHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler)
+		{
+			if (routedEvent.IsPointerEvent)
+			{
+				RemovePointerHandler(routedEvent, remainingHandlersCount, handler);
+			}
+			else if (routedEvent.IsKeyEvent)
+			{
+				RemoveKeyHandler(routedEvent, remainingHandlersCount, handler);
+			}
+			else if (routedEvent.IsFocusEvent)
+			{
+				RemoveFocusHandler(routedEvent, remainingHandlersCount, handler);
+			}
+			else if (routedEvent.IsManipulationEvent)
+			{
+				RemoveManipulationHandler(routedEvent, remainingHandlersCount, handler);
+			}
+			else if (routedEvent.IsGestureEvent)
+			{
+				RemoveGestureHandler(routedEvent, remainingHandlersCount, handler);
+			}
+		}
+
+		partial void RemovePointerHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+		partial void RemoveKeyHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+		partial void RemoveFocusHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+		partial void RemoveManipulationHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+		partial void RemoveGestureHandler(RoutedEvent routedEvent, int remainingHandlersCount, object handler);
+
+		private int CountHandler(RoutedEvent routedEvent)
+			=> _eventHandlerStore.TryGetValue(routedEvent, out var handlers)
+				? handlers.Count
+				: 0;
 
 		private void UpdateSubscribedToHandledEventsToo()
 		{
@@ -328,6 +462,24 @@ namespace Windows.UI.Xaml
 
 			SubscribedToHandledEventsToo = subscribedToHandledEventsToo;
 		}
+
+		internal bool SafeRaiseEvent(RoutedEvent routedEvent, RoutedEventArgs args)
+		{
+			try
+			{
+				return RaiseEvent(routedEvent, args);
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"Failed to raise '{routedEvent.Name}': {e}");
+				}
+
+				return false;
+			}
+		}
+
 
 		/// <summary>
 		/// Raise a routed event
@@ -459,6 +611,21 @@ namespace Windows.UI.Xaml
 					break;
 				case KeyEventHandler keyEventHandler:
 					keyEventHandler(this, (KeyRoutedEventArgs)args);
+					break;
+				case ManipulationStartingEventHandler manipStarting:
+					manipStarting(this, (ManipulationStartingRoutedEventArgs)args);
+					break;
+				case ManipulationStartedEventHandler manipStarted:
+					manipStarted(this, (ManipulationStartedRoutedEventArgs)args);
+					break;
+				case ManipulationDeltaEventHandler manipDelta:	
+					manipDelta(this, (ManipulationDeltaRoutedEventArgs)args);
+					break;
+				case ManipulationInertiaStartingEventHandler manipInertia:
+					manipInertia(this, (ManipulationInertiaStartingRoutedEventArgs)args);
+					break;
+				case ManipulationCompletedEventHandler manipCompleted:
+					manipCompleted(this, (ManipulationCompletedRoutedEventArgs)args);
 					break;
 			}
 		}

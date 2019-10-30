@@ -99,7 +99,7 @@ namespace <#= mixin.NamespaceName #>
 		{
 			if (LayoutUpdated != null)
 			{
-				LayoutUpdated(this, RoutedEventArgs.Empty);
+				LayoutUpdated(this, new RoutedEventArgs(this));
 			}
 		}
 #endif
@@ -259,7 +259,7 @@ namespace <#= mixin.NamespaceName #>
 
 		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)
 		{
-#if <#= mixin.IsUnoViewGroup #>
+#if <#= mixin.IsUnoMotionTarget #>
 			base.SetNativeIsEnabled(newValue);
 #endif
 			Enabled = newValue;
@@ -295,14 +295,12 @@ namespace <#= mixin.NamespaceName #>
 				)
 			);
 
-#if <#= mixin.IsUnoViewGroup #>
-
-#else
 		protected virtual void OnIsHitTestVisibleChanged(bool oldValue, bool newValue)
 		{
 
 		}
 
+#if !<#= mixin.IsUnoMotionTarget #>
 		public override bool DispatchTouchEvent(MotionEvent e)
 		{
 			if (IsHitTestVisible && IsEnabled && HitCheck())
@@ -343,11 +341,7 @@ namespace <#= mixin.NamespaceName #>
 				return;
 			}
 
-			var keyRoutedEventArgs = new KeyRoutedEventArgs()
-			{
-				Key = e.Event.KeyCode.ToVirtualKey()
-			};
-
+			var keyRoutedEventArgs = new KeyRoutedEventArgs(this, e.Event.KeyCode.ToVirtualKey());
 			if (e.Event.Action == KeyEventActions.Up)
 			{
 				_keyUpHandlers?.Invoke(this, keyRoutedEventArgs);
@@ -486,7 +480,7 @@ namespace <#= mixin.NamespaceName #>
 		private void OnNameChanged(string oldValue, string newValue) {
 			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
 			{
-				ContentDescription = newValue;
+				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
 			}
 		}
 
@@ -830,7 +824,7 @@ namespace <#= mixin.NamespaceName #>
 
 			OnLoadedPartial();
 
-			Loaded?.Invoke(this, RoutedEventArgs.Empty);
+			Loaded?.Invoke(this, new RoutedEventArgs(this));
 
 			TryCreateKeyRegistration();
 		}
@@ -843,7 +837,7 @@ namespace <#= mixin.NamespaceName #>
 
 			OnUnloadedPartial();
 
-			Unloaded?.Invoke(this, RoutedEventArgs.Empty);
+			Unloaded?.Invoke(this, new RoutedEventArgs(this));
 
 			TryRemoveKeyRegistration(forceRemove: true);
 		}
@@ -877,7 +871,7 @@ namespace <#= mixin.NamespaceName #>
 
 			if (newSize != previousSize)
 			{
-				SizeChanged?.Invoke(this, new SizeChangedEventArgs(previousSize, newSize));
+				SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, newSize));
 				_renderTransform?.UpdateSize(newSize); // TODO: Move ** BEFORE ** base.OnLayout() ???
 			}
 		}
@@ -972,6 +966,7 @@ namespace <#= mixin.NamespaceName #>
 		bool hasNewMaxWidthHeight = false,
 		bool overridesAttachedToWindow = false,
 		bool isFocusable = false,
+		bool isUnoMotionTarget = false,
 		bool overridesOnLayout = true,
 		bool hasAutomationPeer = false
 	)
@@ -985,7 +980,7 @@ namespace <#= mixin.NamespaceName #>
 				HasNewMaxWidthHeight = hasNewMaxWidthHeight ? "new" : "",
 				OverridesAttachedToWindow = overridesAttachedToWindow ? "true" : "false",
 				IsFocusable = isFocusable ? "true" : "false",
-				IsUnoViewGroup = className == "FrameworkElement" ? "true" : "false",
+				IsUnoMotionTarget = isUnoMotionTarget ? "true" : "false",
 				OverridesOnLayout = overridesOnLayout ? "true" : "false",
 				IsFrameworkElement = className == "FrameworkElement" ? "true" : "false",
 				HasAutomationPeer = hasAutomationPeer ? "true" : "false",
@@ -1002,7 +997,7 @@ namespace <#= mixin.NamespaceName #>
 		public string HasNewMaxWidthHeight;
 		public string OverridesAttachedToWindow;
 		public string IsFocusable;
-		public string IsUnoViewGroup;
+		public string IsUnoMotionTarget;
 		public string OverridesOnLayout;
 		public string IsFrameworkElement;
 		public string HasAutomationPeer;

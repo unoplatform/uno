@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		protected virtual void OnValueChanged(double oldValue, double newValue)
 		{
-			ValueChanged?.Invoke(this, new RangeBaseValueChangedEventArgs { OldValue = oldValue, NewValue = newValue });
+			ValueChanged?.Invoke(this, new RangeBaseValueChangedEventArgs(this) { OldValue = oldValue, NewValue = newValue });
 
 			UpdateValues();
 		}

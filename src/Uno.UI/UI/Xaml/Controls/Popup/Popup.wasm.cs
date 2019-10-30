@@ -3,6 +3,7 @@ using Uno.Disposables;
 using Uno.Logging;
 using Windows.UI.Xaml.Controls.Primitives;
 using System;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -27,7 +28,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnIsLightDismissEnabledChanged(oldIsLightDismissEnabled, newIsLightDismissEnabled);
 
-			(PopupPanel.Parent as PopupRoot)?.UpdateLightDismissArea();
+			if (PopupPanel != null)
+			{
+				PopupPanel.Background = newIsLightDismissEnabled
+					? new SolidColorBrush(Colors.Transparent)
+					: null;
+			}
 		}
 
 		protected override void OnIsOpenChanged(bool oldIsOpen, bool newIsOpen)
@@ -51,51 +57,21 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnPopupPanelChanged(DependencyPropertyChangedEventArgs e)
+		partial void OnPopupPanelChangedPartial(PopupPanel previousPanel, PopupPanel newPanel)
 		{
-			var previousPanel = e.OldValue as PopupPanel;
-			var newPanel = e.NewValue as PopupPanel;
-
 			previousPanel?.Children.Clear();
 
-			if (PopupPanel != null)
+			if (newPanel != null)
 			{
 				if (Child != null)
 				{
-					PopupPanel.Children.Add(Child);
+					newPanel.Children.Add(Child);
 				}
-			}
-
-			if (previousPanel != null)
-			{
-				previousPanel.PointerPressed -= OnPanelPointerPressed;
-				previousPanel.PointerReleased -= OnPanelPointerReleased;
-			}
-			if (newPanel != null)
-			{
-				newPanel.PointerPressed += OnPanelPointerPressed;
-				newPanel.PointerReleased += OnPanelPointerReleased;
+				newPanel.Background = IsLightDismissEnabled
+					? new SolidColorBrush(Colors.Transparent)
+					: null;
 			}
 		}
 
-		private bool _pressed;
-
-		private void OnPanelPointerPressed(object sender, Input.PointerRoutedEventArgs args)
-		{
-			// Both pressed & released must reach
-			// the popup to close it.
-			// (and, obviously, the popup must be light dismiss!)
-			_pressed = IsLightDismissEnabled;
-		}
-
-		private void OnPanelPointerReleased(object sender, Input.PointerRoutedEventArgs args)
-		{
-			if (_pressed && IsLightDismissEnabled)
-			{
-				// Received the completed sequence
-				// pressed + released: we can close.
-				IsOpen = false;
-			}
-		}
 	}
 }

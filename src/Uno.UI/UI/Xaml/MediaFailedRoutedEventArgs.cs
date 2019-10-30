@@ -1,11 +1,14 @@
-#pragma warning disable 108 // new keyword hiding
 using System;
+using Uno;
 
 namespace Windows.UI.Xaml
 {
-	public  partial class MediaFailedRoutedEventArgs : global::Windows.UI.Xaml.ExceptionRoutedEventArgs
+	[NotImplemented]
+	public partial class MediaFailedRoutedEventArgs : global::Windows.UI.Xaml.ExceptionRoutedEventArgs
 	{
-		public MediaFailedRoutedEventArgs() : base("")
+		[NotImplemented]
+		internal MediaFailedRoutedEventArgs(object originalSource)
+			: base(originalSource, "")
 		{
 			throw new NotImplementedException();
 		}

@@ -132,7 +132,13 @@ namespace Windows.UI.Xaml
 			// Merge PropertyChangedCallback delegates
 			PropertyChangedCallback = baseMetadata.PropertyChangedCallback + PropertyChangedCallback;
 		}
-		
+
+		internal void MergePropertyChangedCallback(PropertyChangedCallback callback)
+		{
+			PropertyChangedCallback += callback;
+		}
+
+
 		internal void RaisePropertyChanged(DependencyObject source, DependencyPropertyChangedEventArgs e)
 		{
 			PropertyChangedCallback?.Invoke(source, e);

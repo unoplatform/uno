@@ -1,12 +1,12 @@
 # How to migrate existing UWP code to Uno
 
-There are two separate paths to use an existing UWP codebase on top of uno:
+There are two separate paths for using an existing UWP codebase on top of uno:
 - An existing UWP application
 - An existing UWP library
 
 ## Use an existing application
 
-To use an existing application, the easiest path is to create an Uno QuickStart application from [the solution template](get-started.md), then adjust to project structure for the source code to be shared.
+To use an existing application, the easiest path is to create an Uno QuickStart application from [the solution template](get-started.md), then adjust the project structure for the source code to be shared.
 
 1. In the existing application, **create a shared project**
 1. In this new shared project, move all the Assets and Xaml and C# Files
@@ -14,7 +14,7 @@ To use an existing application, the easiest path is to create an Uno QuickStart 
 1. On the side, create a new Uno Quick Start project using a name matching your project
 1. Copy the iOS, Android and WebAssembly projects over to your existing source tree
 1. Adjust the shared project references to use your existing shared project
-1. Building your project
+1. Build your project
 
 > Note: You may need to adjust your code considering the [current API differences](api-differences.md).
 
@@ -24,12 +24,12 @@ To migrate an existing library, the shortest path is to create a Cross-Platform 
 
 ### Steps
 Here's how to do it, from scratch. Let's start by creating a basic UWP library, so we can transform it to a cross-platform one:
-- In Visual Studio, create a **Class Library (Universal Windows)** project name `MyLibrary`
+- In Visual Studio, create a **Class Library (Universal Windows)** project named `MyLibrary`
 - Make sure it builds.
-- Using the Uno Visual Studio Extension, create a **Cross-Platform Library (Uno Platform)** project in the same solution, name it `TempUno`
+- Using the Uno Visual Studio Extension, create a **Cross-Platform Library (Uno Platform)** project in the same solution, and name it `TempUno`
 - Right click on `MyLibrary`, then **Unload Project**
 - Right click again on `MyLibrary`, then **Edit MyLibrary.csproj**
-- Right click on `TempUno`, then **Edit TempUno.csproj** _(There no need to unload this type of project)_
+- Right click on `TempUno`, then **Edit TempUno.csproj** _(There is no need to unload this type of project)_
 -  Copy the whole content of the `TempUno` csproj, and paste it in the `MyLibrary` project file.
 -  Right click on the `MyLibrary` project, then **Reload Project**
 -  Delete the `TempUno` project from your solution
@@ -42,4 +42,4 @@ If you have a set of existing nuget dependencies in your project:
 - If the dependency **is using .NET Standard 2.0**, there's no need to make any changes, the library will be used as-is. This type of dependency will generally work on other platforms, depending on the type of APIs used, and runtime platform features.
 - If the dependency **is not using .NET Standard 2.0**:
   - It may already support the iOS and Android targets, in which case it can be used directly
-  - If it does not, the Uno Platform team may already have created an Uno port of the library available on Nuget.
+  - If it does not, the Uno Platform team may have already created an Uno port of the library available on Nuget.

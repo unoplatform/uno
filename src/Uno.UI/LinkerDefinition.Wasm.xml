@@ -24,6 +24,11 @@
     <type fullname="Windows.Devices.Sensors.Gyrometer">
       <method name="DispatchReading" />
     </type>
+    <type fullname="Windows.Devices.Geolocation.Geolocator">
+      <method name="DispatchAccessRequest" />
+      <method name="DispatchGeoposition" />
+      <method name="DispatchError" />      
+    </type>    
   </assembly>
   
   <assembly fullname="Uno.Foundation">

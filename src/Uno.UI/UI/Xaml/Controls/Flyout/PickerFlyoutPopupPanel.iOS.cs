@@ -18,8 +18,10 @@ namespace Windows.UI.Xaml.Controls
 			// The width of a picker is either the width of the screen or its enclosing view, depending on the device and context.
 			// -- https://developer.apple.com/design/human-interface-guidelines/ios/controls/pickers/
 			return new Rect(
-				0, ActualHeight - desiredSize.Height,
-				ActualWidth, Math.Min(desiredSize.Height, ActualHeight)
+				0,
+				Math.Max(0, ActualHeight - desiredSize.Height),
+				ActualWidth,
+				Math.Min(desiredSize.Height, ActualHeight)
 			);
 		}
 	}

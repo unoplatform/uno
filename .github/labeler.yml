@@ -1,0 +1,59 @@
+# https://github.com/actions/labeler
+
+area/automation:
+  - src/SamplesApp/*
+  - src/SamplesApp/**/*
+  - src/Uno.UI.Tests/*
+  - src/Uno.UI.Tests/**/*
+  - src/Uno.UI.Tests.Performance/*
+  - src/Uno.UI.Tests.Performance/**/*
+  - src/Uno.UI.Wasm.Tests/*
+  - src/Uno.UI.Wasm.Tests/**/*
+
+area/android:
+  - src/Uno.UI.BindingHelper.Android/*
+  - src/Uno.UI.BindingHelper.Android/**/*
+  - '**/*.Android.cs'
+  - '**/*.android.cs'
+  - '**/*.droid.cs'
+
+area/build:
+  - build/*
+  - build/**/*
+  - '**/*.yml'
+  - src/Uno.UI.AssemblyComparer/*
+  - src/Uno.UI.AssemblyComparer/**/*
+  - src/Uno.UI.TestComparer/*
+  - src/Uno.UI.TestComparer/**/*
+
+area/code-generation:
+  - src/SourceGenerators/*
+  - src/SourceGenerators/**/*
+
+area/community:
+  - .all-contributorsrc
+
+kind/documentation:
+  - README.*
+  - docs/*
+  - docs/**/*
+  - '**/*.md'
+  - '**/*.MD'
+  - '**/*.txt'
+
+area/ios:
+  - '**/*.iOS.cs'
+  - '**/*.ios.cs'
+
+area/solution-templates:
+  - src/SolutionTemplate/*
+  - src/SolutionTemplate/**/*
+  - src/UnoItemTemplate/*
+  - src/UnoItemTemplate/**/*
+
+area/wasm:
+  - '**/*.wasm.cs'
+  - '**/*.WASM.cs'
+  - src/Uno.UI.Wasm/*
+  - src/Uno.UI.Wasm/**/*
+  

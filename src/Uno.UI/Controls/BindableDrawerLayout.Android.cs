@@ -517,11 +517,9 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		public override bool DispatchTouchEvent(MotionEvent e)
-		{
-			base.DispatchTouchEvent(e);
-			return true; // Ensure clicks don't go through panes
-		}
+		/// <inheritdoc />
+		protected override bool NativeHitCheck()
+			=> true; // Ensure clicks don't go through panes
 	}
 
 

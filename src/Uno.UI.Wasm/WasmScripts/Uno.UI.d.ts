@@ -321,6 +321,12 @@ declare namespace Uno.UI {
             * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
             */
         registerEventOnViewNative(pParams: number): boolean;
+        private processPendingLeaveEvent;
+        private _isPendingLeaveProcessingEnabled;
+        /**
+         * Ensure that any pending leave event are going to be processed (cf @see processPendingLeaveEvent )
+         */
+        private ensurePendingLeaveEventProcessing;
         /**
             * Add an event handler to a html element.
             *
@@ -662,6 +668,10 @@ declare class WindowManagerSetXUidParams {
     Uid: string;
     static unmarshal(pData: number): WindowManagerSetXUidParams;
 }
+interface PointerEvent {
+    isOver(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
+    isOverDeep(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
+}
 declare module Uno.UI {
     interface IAppManifest {
         splashScreenImage: URL;
@@ -750,15 +760,20 @@ declare namespace Windows.Storage {
         private static synchronizeFileSystem;
     }
 }
-declare namespace Windows.UI.Core {
-    class SystemNavigationManager {
-        private static _current;
-        static readonly current: SystemNavigationManager;
-        private _isEnabled;
-        constructor();
-        enable(): void;
-        disable(): void;
-        private clearStack;
+declare namespace Windows.Devices.Geolocation {
+    class Geolocator {
+        private static dispatchAccessRequest;
+        private static dispatchGeoposition;
+        private static dispatchError;
+        private static positionWatches;
+        static initialize(): void;
+        static requestAccess(): void;
+        static getGeoposition(desiredAccuracyInMeters: number, maximumAge: number, timeout: number, requestId: string): void;
+        static startPositionWatch(desiredAccuracyInMeters: number, requestId: string): boolean;
+        static stopPositionWatch(desiredAccuracyInMeters: number, requestId: string): void;
+        private static handleGeoposition;
+        private static handleError;
+        private static getAccurateCurrentPosition;
     }
 }
 interface Window {
@@ -805,6 +820,49 @@ declare namespace Windows.Devices.Sensors {
         static startReading(): void;
         static stopReading(): void;
         private static readingChangedHandler;
+    }
+}
+interface Window {
+    opr: any;
+    opera: any;
+    mozVibrate(pattern: number | number[]): boolean;
+    msVibrate(pattern: number | number[]): boolean;
+    InstallTrigger: any;
+    HTMLElement: any;
+    StyleMedia: any;
+    chrome: any;
+    CSS: any;
+    safari: any;
+}
+interface Document {
+    documentMode: any;
+}
+declare namespace Windows.System.Profile {
+    class AnalyticsVersionInfo {
+        static getUserAgent(): string;
+        static getBrowserName(): string;
+    }
+}
+declare namespace Windows.UI.Core {
+    class SystemNavigationManager {
+        private static _current;
+        static readonly current: SystemNavigationManager;
+        private _isEnabled;
+        constructor();
+        enable(): void;
+        disable(): void;
+        private clearStack;
+    }
+}
+declare namespace Windows.UI.Xaml {
+    class Application {
+        static getDefaultSystemTheme(): string;
+    }
+}
+declare namespace Windows.UI.Xaml {
+    enum ApplicationTheme {
+        Light = "Light",
+        Dark = "Dark"
     }
 }
 interface Navigator {

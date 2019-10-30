@@ -124,7 +124,7 @@ In WebAssembly, for now the inheritance hierarchy is a bit simpler and `UIElemen
 
 ## Style points
 
-The code above nets us a very plain, workaday button, but we could easily spice it up. We set the `Content` property to a text string, but `Content` can be anything, even another view. Our button could be an [image](https://github.com/nventive/Uno.Playground/blob/master/src/Uno.Playground.Shared/Samples/Image.xaml), a [shape](https://github.com/nventive/Uno.Playground/blob/master/src/Uno.Playground.Shared/Samples/Shapes.xaml), or a complex visual hierarchy. It could even have another button inside of it. 
+The code above nets us a very plain, workaday button, but we could easily spice it up. We set the `Content` property to a text string, but `Content` can be anything, even another view. Our button could be an [image](https://github.com/unoplatform/uno.Playground/blob/master/src/Uno.Playground.Shared/Samples/Image.xaml), a [shape](https://github.com/unoplatform/uno.Playground/blob/master/src/Uno.Playground.Shared/Samples/Shapes.xaml), or a complex visual hierarchy. It could even have another button inside of it. 
 
 What if we want to go in the opposite direction? What if we want to abdicate control over our button's appearance entirely? 
 
@@ -138,7 +138,7 @@ It's supported by setting a pre-defined [Style](https://docs.microsoft.com/en-us
       Style="{StaticResource NativeDefaultButton}" />
 ````
 
-Since Android's default button looks rather similar to UWP's, I'm going with a more visually obvious illustration using a different control, [ToggleSwitch](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.toggleswitch). I'll use the [sample](https://github.com/nventive/Uno.Playground/blob/master/src/Uno.Playground.Shared/Samples/ToggleSwitch.xaml) from the [Uno Gallery](https://github.com/nventive/Uno.Playground#uno-playground) app.
+Since Android's default button looks rather similar to UWP's, I'm going with a more visually obvious illustration using a different control, [ToggleSwitch](https://docs.microsoft.com/en-us/uwp/api/windows.ui.xaml.controls.toggleswitch). I'll use the [sample](https://github.com/unoplatform/uno.Playground/blob/master/src/Uno.Playground.Shared/Samples/ToggleSwitch.xaml) from the [Uno Gallery](https://github.com/unoplatform/uno.Playground#uno-playground) app.
 
 ![Toggleswitch Android](Assets/Button/toggleswitch-android.jpg) ![Toggleswitch Ios](Assets/Button/toggleswitch-ios.jpg)
 *Uno's ToggleSwitch control on Android and iOS, using default and native styles.*
@@ -151,4 +151,4 @@ In fact `UIElement` implements primitive interaction events like [PointerPressed
 
  
 
-There's plenty more to talk about, like the way that UWP's API is hooked into each platform's native input detection, or the way that layouting is done, but that's all for now. [Try out](https://github.com/nventive/Uno.QuickStart) Uno, and [hit us up](https://gitter.im/uno-platform/Lobby) if you have any questions. 
+There's plenty more to talk about, like the way that UWP's API is hooked into each platform's native input detection, or the way that layouting is done, but that's all for now. [Try out](https://github.com/unoplatform/uno.QuickStart) Uno, and [hit us up](https://gitter.im/uno-platform/Lobby) if you have any questions. 

@@ -8,5 +8,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			return element.LayoutSlot;
 		}
+
+		public static Size GetAvailableSize(UIElement element)
+			=> element.LastAvailableSize;
 	}
 }

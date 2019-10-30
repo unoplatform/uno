@@ -8,7 +8,7 @@ This guide covers multiple approaches to managing per-platform markup in XAML. S
 
 There are two ways to restrict code or XAML markup to be used only on a specific platform:
  * Use conditionals within a shared file
- * place the code in a file which is only included in the desired platform head.
+ * Place the code in a file which is only included in the desired platform head.
  
  The structure of an Uno app created with the default [Visual Studio template](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) is [explained in more detail here](uno-app-solution-structure.md). The key point to understand is that files in a shared project referenced from a platform head **are treated in exactly the same way** as files included directly under the head, and are compiled together into a single assembly.
 
@@ -18,7 +18,7 @@ The Uno platform uses pre-defined prefixes to include or exclude parts of XAML m
 
 Conditional prefixes you wish to use in XAML file must be defined at the top of the file, like other XAML prefixes. They can be then applied to any object or property within the body of the file.
 
-For prefixes which will be excluded on Windows (eg `android`, `ios`), the actual namespace is arbitrary, since the Uno parser ignores it. The prefix should be put in the `mc:Ignorable` list. For prefixes which will be included on Windows (eg `win`, `not_android`) the namespace should be `http://schemas.microsoft.com/winfx/2006/xaml/presentation` and the prefix should not be put in the `mc:Ignorable` list.
+For prefixes which will be excluded on Windows (e.g. `android`, `ios`), the actual namespace is arbitrary, since the Uno parser ignores it. The prefix should be put in the `mc:Ignorable` list. For prefixes which will be included on Windows (e.g. `win`, `not_android`) the namespace should be `http://schemas.microsoft.com/winfx/2006/xaml/presentation` and the prefix should not be put in the `mc:Ignorable` list.
 
 ### Example
 

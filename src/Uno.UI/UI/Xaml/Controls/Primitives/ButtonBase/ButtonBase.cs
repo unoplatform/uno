@@ -2,10 +2,13 @@
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Uno.Disposables;
 using System.Text;
 using System.Windows.Input;
+using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
+using Uno.Extensions.Specialized;
 using Uno.Logging;
 #if XAMARIN_IOS
 using View = UIKit.UIView;
@@ -73,6 +76,25 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private static void OnCommandChanged(object dependencyobject, DependencyPropertyChangedEventArgs args)
 		{
 			((ButtonBase)dependencyobject).OnCommandChanged(args.NewValue as ICommand);
+		}
+		#endregion
+
+		#region CommandParameter
+		public static global::Windows.UI.Xaml.DependencyProperty CommandParameterProperty { get; } =
+			Windows.UI.Xaml.DependencyProperty.Register(
+				"CommandParameter", typeof(object),
+				typeof(global::Windows.UI.Xaml.Controls.Primitives.ButtonBase),
+				new FrameworkPropertyMetadata(default(object), OnCommandParameterChanged));
+
+		public object CommandParameter
+		{
+			get => (object)GetValue(CommandParameterProperty);
+			set => SetValue(CommandParameterProperty, value);
+		}
+
+		private static void OnCommandParameterChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			((ButtonBase)dependencyObject)?.CoerceValue(IsEnabledProperty);
 		}
 		#endregion
 
@@ -145,31 +167,37 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			RegisterEvents();
 		}
 
-		private void OnClick(PointerRoutedEventArgs args = null)
+		/// <inheritdoc />
+		protected override void OnPointerEntered(PointerRoutedEventArgs args)
 		{
-			Click?.Invoke(this, RoutedEventArgs.Empty);
-
-			try
+			if (ClickMode == ClickMode.Hover)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug("Raising command");
-				}
+				RaiseClick(args);
+			}
 
-				Command.ExecuteIfPossible(CommandParameter);
-			}
-			catch (Exception e)
-			{
-				this.Log().Error("Failed to execute command", e);
-			}
+			base.OnPointerEntered(args);
 		}
 
+		/// <inheritdoc />
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
-			base.OnPointerPressed(args);
+			var mode = ClickMode;
+			if (mode != ClickMode.Hover)
+			{
+				// Note: even if ClickMode is Press, we capture the pointer and handle the Release args, but we do nothing if Hover
 
-			IsPointerOver = true;
-			IsPointerPressed = true;
+				// Capturing the Pointer ensures that we will be the first element to receive the pointer released event
+				// It will also ensure that if we scroll while pressing the button, as the capture will be lost, we won't raise Click.
+				var handle = args.GetCurrentPoint(this).Properties.IsLeftButtonPressed && CapturePointer(args.Pointer);
+				args.Handled = handle;
+
+				if (handle && mode == ClickMode.Press)
+				{
+					RaiseClick(args);
+				}
+			}
+
+			base.OnPointerPressed(args);
 
 #if !__WASM__
 			// TODO: Remove when Focus is implemented properly.
@@ -179,61 +207,34 @@ namespace Windows.UI.Xaml.Controls.Primitives
 #endif
 		}
 
+		/// <inheritdoc />
 		protected override void OnPointerReleased(PointerRoutedEventArgs args)
 		{
+			if (IsCaptured(args.Pointer))
+			{
+				// The click is raised as soon as the release occurs over the button,
+				// no matter the distance from the pressed location nor the delay since pressed.
+				var location = args.GetCurrentPoint(this).Position;
+				if (location.X >= 0 && location.Y >= 0
+					&& location.X <= ActualWidth && location.Y <= ActualHeight)
+				{
+					if (ClickMode == ClickMode.Release)
+					{
+						RaiseClick(args); // First raise the click
+					}
+				}
+
+				// This should be automatically done by the pointers due to release, but if for any reason
+				// the state is invalid, this makes sure to not keep invalid capture longer than needed.
+				// Note: This must be done ** after ** the click event (UWP raise CaptureLost event after)
+				ReleasePointerCapture(args.Pointer);
+
+				// On UWP the args are handled no matter if the Click was raised or not
+				args.Handled = true;
+			}
+
 			base.OnPointerReleased(args);
-
-			IsPointerOver = false;
-			IsPointerPressed = false;
 		}
-
-		protected override void OnPointerMoved(PointerRoutedEventArgs args)
-		{
-			base.OnPointerMoved(args);
-		}
-
-		protected override void OnPointerCanceled(PointerRoutedEventArgs args)
-		{
-			base.OnPointerCanceled(args);
-
-			IsPointerOver = false;
-			IsPointerPressed = false;
-		}
-
-		protected override void OnPointerEntered(PointerRoutedEventArgs args)
-		{
-			base.OnPointerEntered(args);
-
-			IsPointerOver = true;
-		}
-
-		protected override void OnPointerExited(PointerRoutedEventArgs args)
-		{
-			base.OnPointerExited(args);
-
-			IsPointerOver = false;
-		}
-
-		#region CommandParameter
-
-		public object CommandParameter
-		{
-			get { return (object)GetValue(CommandParameterProperty); }
-			set { SetValue(CommandParameterProperty, value); }
-		}
-
-		public static global::Windows.UI.Xaml.DependencyProperty CommandParameterProperty { get; } =
-			Windows.UI.Xaml.DependencyProperty.Register(
-				"CommandParameter", typeof(object),
-				typeof(global::Windows.UI.Xaml.Controls.Primitives.ButtonBase),
-				new FrameworkPropertyMetadata(default(object), OnCommandParameterChanged));
-
-		private static void OnCommandParameterChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			((ButtonBase)dependencyObject)?.CoerceValue(IsEnabledProperty);
-		}
-
-		#endregion
 
 		// Might be changed if the method does not conflict in UnoViewGroup.
 		internal override bool IsViewHit()
@@ -251,6 +252,25 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		internal void AutomationPeerClick()
 		{
 			OnClick();
+		}
+
+		private void OnClick(PointerRoutedEventArgs args = null)
+		{
+			Click?.Invoke(this, new RoutedEventArgs(args?.OriginalSource ?? this));
+
+			try
+			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug("Executing command");
+				}
+
+				Command.ExecuteIfPossible(CommandParameter);
+			}
+			catch (Exception e)
+			{
+				this.Log().Error("Failed to execute command", e);
+			}
 		}
 	}
 }

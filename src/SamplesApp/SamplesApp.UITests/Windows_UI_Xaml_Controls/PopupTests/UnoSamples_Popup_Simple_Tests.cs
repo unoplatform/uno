@@ -70,50 +70,35 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 			Run("Uno.UI.Samples.Content.UITests.Popup.Popup_Simple");
 
 			_app.WaitForElement(_app.Marked("sampleContent"));
-
-			_app.Wait(0.15f);
-
 			var toggleButton = _app.Marked("TogglePopup2");
+			var popupContent = _app.Marked("popupContent2");
 
 			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", false);
 
+			// 1. Open the popup
 			toggleButton.Tap();
-
+			_app.Wait(0.25f);
 			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", true);
-
-			var popupContent = _app.Marked("popupContent2");
-
 			_app.WaitForElement(popupContent);
+			_app.Screenshot("Popup_Simple - NonDismissiblePopup - Popup opened");
 
+			// 2. Tap on content should keep the popup opened
 			popupContent.Tap();
-
 			_app.Wait(0.25f);
+			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", true);
+			_app.Screenshot("Popup_Simple - NonDismissiblePopup - Popup stays open when tap on content");
 
-			_app.WaitForElement(popupContent); // should remain opened
-
+			// 2. Tap out of the popup should keep the pop opened
 			var screenRect = _app.Marked("sampleContent").FirstResult().Rect;
-
 			_app.TapCoordinates(10, screenRect.Bottom - 10); // click elsewhere on the page
-
 			_app.Wait(0.25f);
+			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", true);
+			_app.Screenshot("Popup_Simple - NonDismissiblePopup - Popup stays open when tap out of popup");
 
-			_app.WaitForElement(popupContent); // should remain opened
-
-			_app.Wait(0.25f);
-
+			// 3. Close the popup (to make sure to not pollute other tests)
 			toggleButton.Tap(); // should dismiss here
-
-			for (var i = 0; i < 5; i++)
-			{
-				if (_app.Marked("popupContent2").FirstResult() == null)
-				{
-					return; // dismissed!
-				}
-
-				_app.Wait(i * 0.15f);
-			}
-
-			Assert.Fail("Popup not dismissed."); // this feature is known to fail on Android
+			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", false);
+			_app.Screenshot("Popup_Simple - NonDismissiblePopup - Popup closed"); // We add a screen shot in order to make sure that the check of the bool IsChecked is valid!
 		}
 	}
 }

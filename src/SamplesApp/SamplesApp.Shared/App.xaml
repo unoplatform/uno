@@ -4,42 +4,64 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	RequestedTheme="Light">
 
-	<Application.Resources>
+  <Application.Resources>
+	<ResourceDictionary>
+	  <ResourceDictionary.ThemeDictionaries>
+		<ResourceDictionary x:Key="HighContrast">
+		  <SolidColorBrush x:Key="GlobalThemeResource_Test01"
+						   Color="Red" />
+		</ResourceDictionary>
+		<ResourceDictionary x:Key="Default">
+		  <SolidColorBrush x:Key="GlobalThemeResource_Test01"
+						   Color="Gray" />
+		</ResourceDictionary>
+		<ResourceDictionary x:Key="Dark">
+		  <SolidColorBrush x:Key="GlobalThemeResource_Test01"
+						   Color="Blue" />
+		</ResourceDictionary>
+		<ResourceDictionary x:Key="Light">
+		  <SolidColorBrush x:Key="GlobalThemeResource_Test01"
+						   Color="Yellow" />
+		</ResourceDictionary>
+	  </ResourceDictionary.ThemeDictionaries>
 
-		<!-- ReSharper disable once InconsistentNaming -->
-		<SolidColorBrush x:Key="Pink_From_App_Xaml_Resources" Color="#FF54BA" />
+	  <SolidColorBrush x:Key="GlobalStaticResource_Test01"
+						Color="Purple" />
 
-		<Style x:Key="Style_Bold_From_App_Xaml_Resources" TargetType="TextBlock">
-			<Setter Property="FontWeight" Value="ExtraBold" />
-		</Style>
+	  <!-- ReSharper disable once InconsistentNaming -->
+	  <SolidColorBrush x:Key="Pink_From_App_Xaml_Resources" Color="#FF54BA" />
 
-		<Style x:Key="Style_Pink_From_App_Xaml_Resources" TargetType="TextBlock" BasedOn="{StaticResource Style_Bold_From_App_Xaml_Resources}">
-			<Setter Property="Foreground" Value="{StaticResource Pink_From_App_Xaml_Resources}" />
-		</Style>
+	  <Style x:Key="Style_Bold_From_App_Xaml_Resources" TargetType="TextBlock">
+		<Setter Property="FontWeight" Value="ExtraBold" />
+	  </Style>
 
-		<Style x:Key="CustomTextBox" TargetType="TextBox" >
-			<Setter Property="Template">
-				<Setter.Value>
-					<ControlTemplate TargetType="TextBox">
-						<Grid>
-							<Grid.Resources>
-								<Style x:Key="TestStyle" TargetType="Button">
-									<Setter Property="Template">
-										<Setter.Value>
-											<ControlTemplate TargetType="Button">
-												<Grid>
-													<TextBlock Text="Sample" />
-												</Grid>
-											</ControlTemplate>
-										</Setter.Value>
-									</Setter>
-								</Style>
-							</Grid.Resources>
-						</Grid>
-					</ControlTemplate>
-				</Setter.Value>
-			</Setter>
-		</Style>
+	  <Style x:Key="Style_Pink_From_App_Xaml_Resources" TargetType="TextBlock" BasedOn="{StaticResource Style_Bold_From_App_Xaml_Resources}">
+		<Setter Property="Foreground" Value="{StaticResource Pink_From_App_Xaml_Resources}" />
+	  </Style>
 
-	</Application.Resources>
+	  <Style x:Key="CustomTextBox" TargetType="TextBox" >
+		<Setter Property="Template">
+		  <Setter.Value>
+			<ControlTemplate TargetType="TextBox">
+			  <Grid>
+				<Grid.Resources>
+				  <Style x:Key="TestStyle" TargetType="Button">
+					<Setter Property="Template">
+					  <Setter.Value>
+						<ControlTemplate TargetType="Button">
+						  <Grid>
+							<TextBlock Text="Sample" />
+						  </Grid>
+						</ControlTemplate>
+					  </Setter.Value>
+					</Setter>
+				  </Style>
+				</Grid.Resources>
+			  </Grid>
+			</ControlTemplate>
+		  </Setter.Value>
+		</Setter>
+	  </Style>
+	</ResourceDictionary>
+  </Application.Resources>
 </Application>

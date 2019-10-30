@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using Windows.Foundation;
 using System.Runtime.CompilerServices;
 using System.Text;
+using Windows.UI.Xaml.Input;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI;
@@ -173,16 +174,26 @@ namespace Windows.UI.Xaml
 		}
 
 		public static readonly DependencyProperty IsEnabledProperty =
-			DependencyProperty.Register("IsEnabled", typeof(bool), typeof(FrameworkElement), new PropertyMetadata(true, (s, e) =>
-			{
-				var elt = (FrameworkElement) s;
-				elt?.OnIsEnabledChanged((bool) e.OldValue, (bool) e.NewValue);
-				elt?.IsEnabledChanged?.Invoke(s, e);
-			}));
+			DependencyProperty.Register(
+				"IsEnabled",
+				typeof(bool),
+				typeof(FrameworkElement),
+				new FrameworkPropertyMetadata(
+					true,
+					FrameworkPropertyMetadataOptions.Inherits,
+					(s, e) =>
+					{
+						var elt = (FrameworkElement)s;
+						elt?.OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue);
+						elt?.IsEnabledChanged?.Invoke(s, e);
+					},
+					(element, inherited) => (bool)inherited && ((FrameworkElement)element).IsEnabled));
 
 		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)
 		{
 			UpdateHitTest();
+
+			// TODO: move focus elsewhere if control.FocusState != FocusState.Unfocused
 		}
 
 		#endregion

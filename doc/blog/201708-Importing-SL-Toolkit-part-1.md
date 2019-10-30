@@ -1,9 +1,9 @@
 # Migrating the Silverlight Toolkit TreeView control to UWP and the Uno Platform
 
-_You can find [the code of the `TreeView`](https://github.com/nventive/Uno.UI.Toolkit.SL/tree/master/Uno.UI.Toolkit.SL/Controls/TreeView) for this article in the [Uno.UI.Toolkit.SL](https://github.com/nventive/Uno.UI.Toolkit.SL) repository, in which we will add new controls and accept contributions for controls as they are made available._
+_You can find [the code of the `TreeView`](https://github.com/unoplatform/uno.UI.Toolkit.SL/tree/master/Uno.UI.Toolkit.SL/Controls/TreeView) for this article in the [Uno.UI.Toolkit.SL](https://github.com/unoplatform/uno.UI.Toolkit.SL) repository, in which we will add new controls and accept contributions for controls as they are made available._
 
 In this blog post series, we're going to cover the migration of the code for the
-[Silverlight Toolkit TreeView control](https://github.com/MicrosoftArchive/SilverlightToolkit) [TreeView control](https://github.com/MicrosoftArchive/SilverlightToolkit/tree/master/Release/Silverlight4/Source/Controls/TreeView) to UWP and the [Uno Platform](https://github.com/nventive/Uno), a control widely used in many line of business applications still in use today.
+[Silverlight Toolkit TreeView control](https://github.com/MicrosoftArchive/SilverlightToolkit) [TreeView control](https://github.com/MicrosoftArchive/SilverlightToolkit/tree/master/Release/Silverlight4/Source/Controls/TreeView) to UWP and the [Uno Platform](https://github.com/unoplatform/uno), a control widely used in many lines of business applications still in use today.
 
 ![header](Assets/sl-treeview-part1-header.png)
 
@@ -22,24 +22,24 @@ To migrate a control from Silverlight, there are a few things to do:
 
 ### Cross targeted project creation
 
-To be able to build the control is a reusable way, in a NuGet package, we need to create a **Cross-platform library** using the **Uno Platform VS Addin**, which does all the configuration to target Windows (uap10.0), iOS, Android and WebAssembly.
+To be able to build the control in a reusable way, in a NuGet package, we need to create a **Cross-platform library** using the **Uno Platform VS Addin**, which does all the configuration to target Windows (uap10.0), iOS, Android and WebAssembly.
 
 This project will contain all the XAML files and C# source files required for the `TreeView` to function properly. It uses the excellent [MSBuild.Sdk.Extras](https://github.com/onovotny/MSBuildSdkExtras) msbuild extensions to cross targeted library with minimal efforts, using the new and improved _sdk-style_ project format, and simplifies the creation of NuGet packages.
 
-It will then possible to create an installable NuGet package using the context menu [Pack option](https://docs.microsoft.com/en-us/nuget/quickstart/create-and-publish-a-package-using-visual-studio#run-the-pack-command) on the project.
+It will then be possible to create an installable NuGet package using the context menu [Pack option](https://docs.microsoft.com/en-us/nuget/quickstart/create-and-publish-a-package-using-visual-studio#run-the-pack-command) on the project.
 
 ### Importing the source
 
-The process of importing the source is somewhat straightforward. Microsoft, in all its XAML variants, kept many of the APIs signature-compatible. This means that in a large majority of cases, [simply changing the namespaces](https://github.com/nventive/Uno.UI.Toolkit.SL/commit/d4da7a8ff33da6c9d45bebafa8c8ca65f6182612#diff-b35234eeeb3bdb81d82b850985bf37b3L9) from `System.Windows` to `Windows.UI` is making the code compatible with UWP.
+The process of importing the source is somewhat straightforward. Microsoft, in all its XAML variants, kept many of the APIs signature-compatible. This means that in a large majority of cases, [simply changing the namespaces](https://github.com/unoplatform/uno.UI.Toolkit.SL/commit/d4da7a8ff33da6c9d45bebafa8c8ca65f6182612#diff-b35234eeeb3bdb81d82b850985bf37b3L9) from `System.Windows` to `Windows.UI` is making the code compatible with UWP.
 
 Here are some examples:
 - `System.Windows.Controls` -> `Windows.UI.Xaml.Controls`
 - `System.Windows.Input` -> `Windows.Devices.Input`
 - `System.Windows.Media` -> `Windows.UI.Xaml.Media`
 
-One tip here to simplify the migration is to temporarily remove all non-windows targets in the cross-targeted projects to keep only `uap10.0`. This helps in keeping the compilation errors limited to the UWP apis, and avoid some of the API differences that may happen including iOS/Android/Wasm targets. Once the Windows target builds, adding back the other targets will allow for special adjustments, if any.
+One tip here to simplify the migration is to temporarily remove all non-windows targets in the cross-targeted projects to keep only `uap10.0`. This helps in keeping the compilation errors limited to the UWP apis, and avoids some of the API differences that may happen, including iOS/Android/Wasm targets. Once the Windows target builds, adding back the other targets will allow for special adjustments, if any.
 
-Most of the exercise of the code import is about making an heavy use of the Intellisense by importing files one by one, starting by `TreeView.cs` and removing all the red squiggles. The `TreeView` controls uses `TreeViewItem`, which in turn uses `HeaderedItemsControl`, etc...
+Most of the exercise of the code import is about making a heavy use of the Intellisense by importing files one by one, starting by `TreeView.cs` and removing all the red squiggles. The `TreeView` controls uses `TreeViewItem`, which in turn uses `HeaderedItemsControl`, etc...
 
 After the first pass of changing namespaces, and importing dependent files, we end up with a self-contained set of C# source files, but not yet compiling.
 
@@ -49,16 +49,16 @@ When trying to resolve the API differences when moving from UWP, after adjusting
 
 Some examples:
 - `FrameworkElement.OnApplyTemplate` has been moved from `public` to `protected`
-- The `PropertyMetadata` does not have constructor that only contains a `PropertyChangedCallback` parameter
+- The `PropertyMetadata` does not have a constructor that only contains a `PropertyChangedCallback` parameter
 - `GeneralTransform.Transform` is called `GeneralTransform.TransformPoint`
 - `Binding` does not contain a constructor taking a string path as a parameter
 - `Control.Focus` now requires a `FocusState` parameter
 
-Those a pretty easy to adjust, and the UWP runtime behavior has a great change of being identical to the one Silverlight had.
+Those are pretty easy to adjust, and the UWP runtime behavior has a great chance of being identical to the one Silverlight had.
 
 ### The case of ItemsControl.OnItemsChanged
 
-There's one significant change with `ItemsControl.OnItemsChanged` where the method is not present anymore. This is a pretty important part of behavior of the control, used to create manipulate `TreeViewItem` instances and link them to the `TreeView` instance. Removing the code of this method would make the control unusable.
+There's one significant change with `ItemsControl.OnItemsChanged` where the method is not present anymore. This is a pretty important part of behavior of the control, used to create and manipulate `TreeViewItem` instances and link them to the `TreeView` instance. Removing the code of this method would make the control unusable.
 
 This method can be replaced by the `ItemsControl.Items.VectorChanged` event, but not completely. `ItemsControl` in Silverlight was based on `ObservableCollection` which provided the `NotifyCollectionChangedAction` property, whereas the `ItemsCollection` in UWP is based on `ObservableVector`. This new implementation notably does not provide the `Replace`
 action and it's raising `ItemRemoved` then `ItemInserted` instead.
@@ -77,7 +77,7 @@ UWP provides support for those features, not as virtual methods but rather as ev
 
 Another part of the migration to UWP is the adjustment of the XAML. The syntax is the same, but parts differ :
 
-- The custom namespace syntax is now using `using:` instead of `clr-namespace:`, and in many cases simply replacing one by the other is enough
+- The custom namespace syntax is now using `using:` instead of `clr-namespace:`, and in many cases simply replacing one with the other is enough
 - The `VisualStateManager` related classes are now in the default xml namespace, meaning that the `vsm:` namespace is not required anymore.
 - The `system` namespace is now part of the `x:` namespace
 
@@ -119,4 +119,4 @@ When running the sample, a few things stand out:
 - The glyph next to the nodes changes state once, but does not animate back
 - There are some exceptions regarding the `ItemContainerGenerator` which has been deprecated in UWP.
 
-We'll take a look at those the next parts of this series.
+We'll take a look at those in the next parts of this series.

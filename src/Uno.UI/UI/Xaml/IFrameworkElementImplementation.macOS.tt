@@ -223,8 +223,17 @@ namespace <#= mixin.NamespaceName #>
 				"Name",
 				typeof(string),
 				typeof(<#= mixin.ClassName #>),
-				new PropertyMetadata("")
+				new PropertyMetadata("",
+					(s, e) => (s as <#= mixin.ClassName #>).OnNameChanged((string)e.OldValue, (string)e.NewValue)
+				)
 		);
+
+		private void OnNameChanged(string oldValue, string newValue) {
+			if (FrameworkElementHelper.IsUiAutomationMappingEnabled)
+			{
+				Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(this, newValue);
+			}
+		}
 
 		public virtual string Name
 		{
@@ -443,7 +452,7 @@ namespace <#= mixin.NamespaceName #>
 				
 				if (previousSize != _actualSize)
 				{
-					SizeChanged?.Invoke(this, new SizeChangedEventArgs(previousSize, _actualSize));
+					SizeChanged?.Invoke(this, new SizeChangedEventArgs(this, previousSize, _actualSize));
 
 					if (_renderTransform != null)
 					{
@@ -581,7 +590,7 @@ namespace <#= mixin.NamespaceName #>
 		/// <summary>
 		/// Indicates if the view is currently loaded.
 		/// </summary>
-		protected bool IsLoaded { get; private set; }
+		public bool IsLoaded { get; private set; }
 
 		internal virtual void OnLoading()
 		{
@@ -599,7 +608,7 @@ namespace <#= mixin.NamespaceName #>
 			this.SetNeedsLayout();
 			OnLoadedPartial();
 
-			Loaded?.Invoke(this, RoutedEventArgs.Empty);
+			Loaded?.Invoke(this, new RoutedEventArgs(this));
 		}
 
 		partial void OnLoadedPartial();
@@ -612,7 +621,7 @@ namespace <#= mixin.NamespaceName #>
 
 			if (Unloaded != null)
 			{
-				Unloaded(this, RoutedEventArgs.Empty);
+				Unloaded(this, new RoutedEventArgs(this));
 			}
 		}
 

@@ -26,7 +26,14 @@ namespace Windows.UI.Xaml.Controls
 	//
 	public partial class SelectionChangedEventArgs : RoutedEventArgs
 	{
-		public SelectionChangedEventArgs (IList<object> removedItems, IList<object> addedItems)
+		public SelectionChangedEventArgs(IList<object> removedItems, IList<object> addedItems)
+		{
+			RemovedItems = removedItems;
+			AddedItems = addedItems;
+		}
+
+		internal SelectionChangedEventArgs(object originalSource, IList<object> removedItems, IList<object> addedItems)
+			: base(originalSource)
 		{
 			RemovedItems = removedItems;
 			AddedItems = addedItems;

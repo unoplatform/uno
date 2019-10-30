@@ -4,11 +4,9 @@ namespace Windows.Devices.Geolocation
 {
 	public  partial class PositionChangedEventArgs 
 	{
-		internal PositionChangedEventArgs(Geoposition position)
-		{
+		internal PositionChangedEventArgs(Geoposition position) =>
 			Position = position;
-		}
 
-		public global::Windows.Devices.Geolocation.Geoposition Position { get; }
+		public Geoposition Position { get; }
 	}
 }

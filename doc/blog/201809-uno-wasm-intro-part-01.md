@@ -42,7 +42,7 @@ Security-wise, WebAssembly is very different from previous attempts to run arbit
 
 ## WebAssembly and .NET
 
-Microsoft has been working on a WebAssembly [port of the Mono runtime for a while now](https://www.mono-project.com/news/2017/08/09/hello-webassembly/), and [progress has been steady](https://www.mono-project.com/news/2018/01/16/mono-static-webassembly-compilation/) since the beginning of 2018. The runtime is looking as stable as it is on iOS and Android using the [Uno Platform](https://github.com/nventive/Uno) as a point of reference, which is quite the achievement.
+Microsoft has been working on a WebAssembly [port of the Mono runtime for a while now](https://www.mono-project.com/news/2017/08/09/hello-webassembly/), and [progress has been steady](https://www.mono-project.com/news/2018/01/16/mono-static-webassembly-compilation/) since the beginning of 2018. The runtime is looking as stable as it is on iOS and Android using the [Uno Platform](https://github.com/unoplatform/uno) as a point of reference, which is quite the achievement.
 
 There's also the .NET Core Runtime (CoreRT) team who are working [on a WebAssembly port of the .NET Native engine](https://github.com/dotnet/corert/blob/master/Documentation/how-to-build-WebAssembly.md), and significant progress is being made there as well.
 
@@ -62,11 +62,11 @@ The interpreter mode will stay in Mono as a mixed execution mode. This will allo
 
 The current challenge when using the mono-wasm SDK is its barrier to entry. There are still lots of things to fiddle around with and it's not integrated in any way to Visual Studio or VS Code.
 
-Based on the work from [Frank A. Krueger on OOui](https://github.com/praeclarum/Ooui), we built [Uno.Wasm.Bootstrap](https://github.com/nventive/Uno.Wasm.Bootstrap), a simple NuGet package with no ties to any framework (not even the Uno Platform), other than mono-wasm. This allows the user to take a simple .NET Standard 2.0 library, and run it in the browser, using `Console.WriteLine` to write text to the browser's debugging console. Anything else more advanced that interacts with the browser needs to go through the Javascript evaluation API.
+Based on the work from [Frank A. Krueger on OOui](https://github.com/praeclarum/Ooui), we built [Uno.Wasm.Bootstrap](https://github.com/unoplatform/uno.Wasm.Bootstrap), a simple NuGet package with no ties to any framework (not even the Uno Platform), other than mono-wasm. This allows the user to take a simple .NET Standard 2.0 library, and run it in the browser, using `Console.WriteLine` to write text to the browser's debugging console. Anything else more advanced that interacts with the browser needs to go through the Javascript evaluation API.
 
 We expect this package to change significantly in the near future. This includes the addition of new Mono features (such as the AOT and debugger support), Nuget integration, VS integration, etc...
 
-Head over to the [Uno.Wasm.Bootstrap readme](https://github.com/nventive/Uno.Wasm.Bootstrap#how-to-use-the-package) to create your own app and experiment with C# in the browser in minutes. See those two [examples for additional scenarios](https://github.com/jeromelaban/Wasm.Samples) using Json.NET and Roslyn.
+Head over to the [Uno.Wasm.Bootstrap readme](https://github.com/unoplatform/uno.Wasm.Bootstrap#how-to-use-the-package) to create your own app and experiment with C# in the browser in minutes. See those two [examples for additional scenarios](https://github.com/jeromelaban/Wasm.Samples) using Json.NET and Roslyn.
 
 ## Up next...  
 

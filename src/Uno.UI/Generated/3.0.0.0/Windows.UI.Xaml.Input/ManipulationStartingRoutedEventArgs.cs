@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Input
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ManipulationStartingRoutedEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Input.ManipulationModes Mode
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  bool Handled
 		{
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.UIElement Container
 		{
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public ManipulationStartingRoutedEventArgs() : base()
 		{

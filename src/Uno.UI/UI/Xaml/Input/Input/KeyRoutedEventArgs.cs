@@ -10,12 +10,14 @@ namespace Windows.UI.Xaml.Input
 {
 	public partial class KeyRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
 	{
-		public KeyRoutedEventArgs()
+		internal KeyRoutedEventArgs(object originalSource, VirtualKey key)
+			: base(originalSource)
 		{
+			Key = key;
 		}
 
 		public bool Handled { get; set; }
-		public VirtualKey Key { get; internal set; }
+		public VirtualKey Key { get; }
 
 		//TODO
 		//public CorePhysicalKeyStatus KeyStatus { get; }

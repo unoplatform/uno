@@ -3,15 +3,17 @@ using System.Collections.Generic;
 using System.Text;
 using Windows.Foundation;
 using Windows.System;
+using Windows.UI.Input;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Documents
 {
-	public partial class Hyperlink : Span
+	public sealed partial class Hyperlink : Span
 	{
 		#region Static
-
 		private static Brush _defaultForeground;
 		private static Brush DefaultForeground
 		{
@@ -58,16 +60,10 @@ namespace Windows.UI.Xaml.Documents
 				new FrameworkPropertyMetadata(
 					defaultValue: default(Uri),
 					options: FrameworkPropertyMetadataOptions.Inherits,
-					propertyChangedCallback: (s, e) => ((Hyperlink)s).OnNavigateUriChanged()
+					propertyChangedCallback: (s, e) => ((Hyperlink)s).OnNavigateUriChangedPartial((Uri)e.NewValue)
 				)
 			);
-
-		protected virtual void OnNavigateUriChanged()
-		{
-			OnNavigateUriChangedPartial();
-		}
-
-		partial void OnNavigateUriChangedPartial();
+		partial void OnNavigateUriChangedPartial(Uri newNavigateUri);
 
 		#endregion
 
@@ -91,7 +87,7 @@ namespace Windows.UI.Xaml.Documents
 				)
 			);
 
-		internal protected virtual void OnUnderlineStyleChanged()
+		private void OnUnderlineStyleChanged()
 		{
 			TextDecorations = UnderlineStyle == UnderlineStyle.Single
 				? Text.TextDecorations.Underline
@@ -110,44 +106,51 @@ namespace Windows.UI.Xaml.Documents
 		}
 
 		#region Click
-
-		internal bool IsPressed { get; private set; }
-
-		internal void OnPointerPressed(PointerRoutedEventArgs e)
+		private Pointer _pressedPointer;
+		internal void SetPointerPressed(Pointer pointer)
 		{
-			if (!IsPressed)
-			{
-				this.SetValue(ForegroundProperty, GetPressedForeground(), DependencyPropertyValuePrecedences.Animations);
-				e.Handled = true;
-				IsPressed = true;
-			}
+			_pressedPointer = pointer;
+			this.SetValue(ForegroundProperty, GetPressedForeground(), DependencyPropertyValuePrecedences.Animations);
 		}
 
-		internal void OnPointerReleased(PointerRoutedEventArgs e)
+		internal bool ReleasePointerPressed(Pointer pointer)
 		{
-			if (IsPressed)
+			if (_pressedPointer?.Equals(pointer) ?? false)
 			{
-				this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
 				OnClick();
-				e.Handled = true;
-				IsPressed = false;
-			}
 
-		}
-
-		internal void OnPointerCanceled(PointerRoutedEventArgs e)
-		{
-			if (IsPressed)
-			{
+				_pressedPointer = null;
 				this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
-				e.Handled = true;
-				IsPressed = false;
+				return true;
+			}
+			else
+			{
+				return false;
 			}
 		}
 
-		private void OnClick()
+		internal bool AbortPointerPressed(Pointer pointer)
 		{
-			Click?.Invoke(this, new HyperlinkClickEventArgs() { OriginalSource = this });
+			if (_pressedPointer?.Equals(pointer) ?? false)
+			{
+				_pressedPointer = null;
+				this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		internal void AbortAllPointerPressed()
+		{
+			this.ClearValue(ForegroundProperty, DependencyPropertyValuePrecedences.Animations);
+		}
+
+		internal void OnClick()
+		{
+			Click?.Invoke(this, new HyperlinkClickEventArgs { OriginalSource = this });
 
 #if !__WASM__  // handled natively in WASM/Html
 			if (NavigateUri != null)
@@ -167,7 +170,6 @@ namespace Windows.UI.Xaml.Documents
 			return null;
 #endif
 		}
-
-#endregion
+		#endregion
 	}
 }

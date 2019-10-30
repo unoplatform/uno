@@ -2,46 +2,42 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using Uno;
 using Uno.UI.Xaml.Input;
 using Windows.System;
+using Windows.UI.Core;
+using Windows.UI.Input;
 
 namespace Windows.UI.Xaml.Input
 {
-	public sealed partial class PointerRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
+	public sealed partial class PointerRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs, CoreWindow.IPointerEventArgs
 	{
-		private readonly Point _point;
-
-		internal PointerRoutedEventArgs()
+		public PointerRoutedEventArgs()
 		{
-			InitializePartial();
+			// This is acceptable as all ctors of this class are internal
+			CoreWindow.GetForCurrentThread().SetLastPointerEvent(this);
 		}
 
-		internal PointerRoutedEventArgs(Point point) : this()
-		{
-			_point = point;
-		}
+		/// <inheritdoc />
+		Point CoreWindow.IPointerEventArgs.GetLocation()
+			=> GetCurrentPoint(null).Position;
 
-		public Point GetCurrentPoint() => _point;
+		public IList<PointerPoint> GetIntermediatePoints(UIElement relativeTo)
+			=> new List<PointerPoint>(1) {GetCurrentPoint(relativeTo)};
 
-		[NotImplemented]
-		public Point[] GetIntermediatePoints()
-		{
-			throw new NotImplementedException();
-		}
+		internal uint FrameId { get; }
 
 		public bool IsGenerated { get; } = false; // Generated events are not supported by UNO
 
 		public bool Handled { get; set; }
 
-		public VirtualKeyModifiers KeyModifiers { get; internal set; }
-		public Pointer Pointer { get; internal set; }
+		public VirtualKeyModifiers KeyModifiers { get; }
 
-		partial void InitializePartial();
+		public Pointer Pointer { get; }
 
+		/// <inheritdoc />
 		public override string ToString()
-		{
-			return $"PointerRoutedEventArgs({Pointer}@{_point})";
-		}
+			=> $"PointerRoutedEventArgs({Pointer}@{GetCurrentPoint(null).Position})";
 	}
 }

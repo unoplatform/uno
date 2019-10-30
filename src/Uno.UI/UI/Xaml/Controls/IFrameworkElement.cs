@@ -16,5 +16,5 @@ namespace Windows.UI.Xaml
 {
 	public partial interface IFrameworkElement : DependencyObject
 	{
-    }
+	}
 }

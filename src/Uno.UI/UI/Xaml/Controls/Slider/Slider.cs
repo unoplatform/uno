@@ -391,7 +391,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var container = sender as FrameworkElement;
 #if __WASM__
-			if (!container.IsPointerCaptured)
+			if (!container.IsCaptured(e.Pointer))
 			{
 				return;
 			}

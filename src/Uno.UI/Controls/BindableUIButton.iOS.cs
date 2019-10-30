@@ -40,6 +40,18 @@ namespace Uno.UI.Views.Controls
 			InitializeBinder();
 		}
 
+		public BindableUIButton(NSCoder coder)
+			: base(coder)
+		{
+			InitializeBinder();
+		}
+
+		public BindableUIButton(NSObjectFlag t)
+			: base(t)
+		{
+			InitializeBinder();
+		}
+
 		string _text;
 
 		public string Text

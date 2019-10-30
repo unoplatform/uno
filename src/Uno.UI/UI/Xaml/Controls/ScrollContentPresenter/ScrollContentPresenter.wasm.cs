@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"{HtmlId}: {offsetSize} / {clientSize} / {e.GetCurrentPoint()}");
+				this.Log().LogDebug($"{HtmlId}: {offsetSize} / {clientSize} / {e.GetCurrentPoint(this)}");
 			}
 
 			if (!hasVerticalScroll && !hasHorizontalScroll)
@@ -84,11 +84,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			// The events coming from the scrollbars are bubbled up
-			// to the the parents, as those are not (yey) XAML elements.
+			// to the parents, as those are not (yet) XAML elements.
 			// This can cause issues for popups with scrollable content and
 			// light dismiss patterns.
-			var isInVerticalScrollbar = hasVerticalScroll && e.GetCurrentPoint().X >= clientSize.Width;
-			var isInHorizontalScrollbar = hasHorizontalScroll && e.GetCurrentPoint().Y >= clientSize.Height;
+			var position = e.GetCurrentPoint(this).Position;
+			var isInVerticalScrollbar = hasVerticalScroll && position.X >= clientSize.Width;
+			var isInHorizontalScrollbar = hasHorizontalScroll && position.Y >= clientSize.Height;
 
 			if (isInVerticalScrollbar || isInHorizontalScrollbar)
 			{
@@ -221,10 +222,21 @@ namespace Windows.UI.Xaml.Controls
 				verticalOffset = 0;
 			}
 
+			// We don't have any information from the DOM 'scroll' event about the intermediate vs. final state.
+			// We could try to rely on the IsPointerPressed state to detect when the user is scrolling and use it.
+			// This would however not include scrolling due to the inertia which should also be flagged as intermediate.
+			// The main issue is that the IsPointerPressed be true ONLY when dragging the scrollbars with the mouse, 
+			// as for finger and pen we will get a PointerCancelled which will reset the pressed state to false.
+			// And it would also requires us to explicitly invoke OnScroll in PointerRelease in order to raise the
+			// final SV.ViewChanged event with a IsIntermediate == false.
+			// This is probably safer for now to always consider the scroll as final, even if it introduce a performance cost
+			// (the SV updates mode is always sync when isIntermediate is false).
+			var isIntermediate = false;
+
 			(TemplatedParent as ScrollViewer)?.OnScrollInternal(
 				horizontalOffset,
 				verticalOffset,
-				isIntermediate: false
+				isIntermediate
 			);
 		}
 
