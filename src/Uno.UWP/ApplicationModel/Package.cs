@@ -30,8 +30,10 @@ namespace Windows.ApplicationModel
 		[global::Uno.NotImplemented]
 		public string Description => "";
 
+#if !__ANDROID__ && !__IOS__
 		[global::Uno.NotImplemented]
 		public string DisplayName => "";
+#endif
 
 		[global::Uno.NotImplemented]
 		public bool IsBundle => false;
