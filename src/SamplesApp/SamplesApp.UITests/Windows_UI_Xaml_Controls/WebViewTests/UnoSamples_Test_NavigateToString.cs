@@ -23,7 +23,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebView
 			var startButton = _app.Marked("startButton");
 			var clickResult = _app.Marked("WebView_NavigateToStringResult");
 
-			_app.WaitForElement(clickResult);
+			_app.WaitForElement(_app.Marked("startButton"));
 
 			TakeScreenshot("Initial");
 
