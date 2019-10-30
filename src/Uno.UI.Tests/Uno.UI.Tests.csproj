@@ -103,6 +103,8 @@
 		<Page Include="App\Xaml\Test_Dictionary.xaml" />
 		<Page Include="App\Xaml\Test_Dictionary_Inner.xaml" />
 		<Page Include="App\Xaml\Test_Dictionary_Theme.xaml" />
+		<Page Include="App\Xaml\Test_Dictionary_Isolated.xaml" />
+		<Page Include="App\Xaml\Test_Dictionary_Isolated_2.xaml" />
 		<Page Include="..\SamplesApp\UITests.Shared\Windows_UI_Xaml\Resources\Test_Dictionary_Linked.xaml" Link="App/Linked/Test_Dictionary_Linked.xaml" />
 		<Page Include="App\Xaml\Test_Control.xaml" />
 		<Page Include="App\Xaml\Test_MarkupExtension.xaml" />
