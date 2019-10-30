@@ -556,7 +556,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void BuildBackingFields(IIndentedStringBuilder writer)
 		{
-			foreach (var backingFieldDefinition in CurrentScope.BackingFields)
+			foreach (var backingFieldDefinition in CurrentScope.BackingFields.Distinct())
 			{
 				var sanitizedFieldName = SanitizeResourceName(backingFieldDefinition.Name);
 
