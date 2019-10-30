@@ -129,7 +129,8 @@ namespace Uno.UI
 		/// <returns>True if the resource was found, false if not.</returns>
 		private static bool TryTopLevelRetrieval(object resourceKey, out object value)
 		{
-			return Application.Current.Resources.TryGetValue(resourceKey, out value) ||
+			value = null;
+			return (Application.Current?.Resources.TryGetValue(resourceKey, out value) ?? false) ||
 				MasterDictionary.TryGetValue(resourceKey, out value);
 		}
 

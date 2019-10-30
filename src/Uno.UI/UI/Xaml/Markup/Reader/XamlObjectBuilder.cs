@@ -6,6 +6,7 @@ using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using Uno.Extensions;
+using Uno.UI;
 using Uno.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
@@ -487,6 +488,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 						}
 						return null;
 					})
+					.Concat(ResourceResolver.ResolveTopLevelResource<object>(keyName))
 					.Trim()
 					.FirstOrDefault();
 

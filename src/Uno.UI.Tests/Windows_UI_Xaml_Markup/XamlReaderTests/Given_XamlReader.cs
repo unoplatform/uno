@@ -23,17 +23,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 	[TestClass]
 	public class Given_XamlReader : Context
 	{
-		[TestCleanup]
-		public void Cleanup()
-		{
-			ResourceDictionary.DefaultResolver = null;
-		}
-
 		[TestInitialize]
 		public void Initialize()
 		{
-			ResourceDictionary.DefaultResolver = null;
-
 			Uno.Extensions.LogExtensionPoint
 				.AmbientLoggerFactory
 				.AddConsole(LogLevel.Debug)
@@ -229,19 +221,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		[TestMethod]
 		public void When_StaticResource()
 		{
-			ResourceDictionary.DefaultResolver = resourceName => {
-				switch (resourceName)
-				{
-					case "StaticRow":
-						return 42;
-					case "StaticWidth":
-						return 42.0;
-					case "StaticHeight":
-						return 44.0;
-					default:
-						throw new NotSupportedException($"{resourceName} is unknown");
-				};
-			};
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.Resources["StaticRow"] = 42;
+			app.Resources["StaticWidth"] = 42.0;
+			app.Resources["StaticHeight"] = 44.0;
 
 			var s = GetContent(nameof(When_StaticResource));
 			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
@@ -254,6 +237,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.AreEqual(42, Grid.GetRow(panel));
 			Assert.AreEqual(42.0, panel.Width);
 			Assert.AreEqual(44.0, panel.Height);
+
+			app.Resources.Remove("StaticRow");
+			app.Resources.Remove("StaticWidth");
+			app.Resources.Remove("StaticHeight");
 		}
 
 		[TestMethod]
