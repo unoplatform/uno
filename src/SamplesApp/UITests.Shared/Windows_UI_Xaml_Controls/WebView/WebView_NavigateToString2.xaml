@@ -22,7 +22,7 @@
 
 		<StackPanel Background="Honeydew">
 			<TextBox Header="Size of (big) string, in thousands of lines" Text="1000" Name="WebView_NavigateToStringSize" InputScope="Number" />
-			<Button Content="generate long string" Click="generateLong_Click" />
+			<Button Content="generate long string" Click="generateLong_Click" Name="startButton" />
 			<TextBlock Text="waiting for NavigationCompleted" Name="WebView_NavigateToStringResult" />
 		</StackPanel>
 
