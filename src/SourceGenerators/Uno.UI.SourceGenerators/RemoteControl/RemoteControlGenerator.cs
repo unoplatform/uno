@@ -23,51 +23,75 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 				context.GetProjectInstance().GetPropertyValue("Configuration") == "Debug"
 				&& IsApplication(context.GetProjectInstance()))
 			{
-				var unoRemoteControlPort = context.GetProjectInstance().GetPropertyValue("UnoRemoteControlPort");
-
-				if (string.IsNullOrEmpty(unoRemoteControlPort))
-				{
-					unoRemoteControlPort = "0";
-				}
-
-				var unoRemoteControlHost = context.GetProjectInstance().GetPropertyValue("UnoRemoteControlHost");
-
 				var sb = new IndentedStringBuilder();
 
-				if(string.IsNullOrEmpty(unoRemoteControlHost))
-				{
-					var addresses = NetworkInterface.GetAllNetworkInterfaces()
-						.SelectMany(x => x.GetIPProperties().UnicastAddresses)
-						.Where(x => !IPAddress.IsLoopback(x.Address));
-
-					if(unoRemoteControlPort == "0")
-					{
-						// sb.AppendLineInvariant($"#warning The App Remote Control debugging support is disabled. The Visual Studio addin may not be installed or activated.");
-					}
-
-					foreach(var addressInfo in addresses)
-					{
-						sb.AppendLineInvariant($"[assembly: global::Uno.UI.RemoteControl.ServerEndpointAttribute(\"{addressInfo.Address}\", {unoRemoteControlPort})]");
-					}
-				}
-				else
-				{
-					sb.AppendLineInvariant($"[assembly: global::Uno.UI.RemoteControl.ServerEndpointAttribute(\"{unoRemoteControlHost}\", {unoRemoteControlPort})]");
-				}
-
-				sb.AppendLineInvariant($"[assembly: global::Uno.UI.RemoteControl.ProjectConfigurationAttribute(");
-				sb.AppendLineInvariant($"@\"{context.GetProjectInstance().FullPath}\",\n");
-
-				var xamlPaths = from item in context.GetProjectInstance().GetItems("Page").Concat(context.GetProjectInstance().GetItems("ApplicationDefinition"))
-								select Path.GetDirectoryName(item.EvaluatedInclude);
-
-				var distictPaths = string.Join(",\n", xamlPaths.Distinct().Select(p => $"@\"{p}\""));
-
-				sb.AppendLineInvariant("{0}", $"new[]{{{distictPaths}}}");
-
-				sb.AppendLineInvariant($")]");
+				BuildEndPointAttribute(context, sb);
+				BuildSearchPaths(context, sb);
 
 				context.AddCompilationUnit("HotReload", sb.ToString());
+			}
+		}
+
+		private static void BuildSearchPaths(SourceGeneratorContext context, IndentedStringBuilder sb)
+		{
+			var projectInstance = context.GetProjectInstance();
+
+			sb.AppendLineInvariant($"[assembly: global::Uno.UI.RemoteControl.ProjectConfigurationAttribute(");
+			sb.AppendLineInvariant($"@\"{projectInstance.FullPath}\",\n");
+
+			var sources = new[] {
+					"Page",
+					"ApplicationDefinition",
+					"ProjectReference",
+				};
+
+			IEnumerable<string> BuildSearchPath(string s)
+				=> projectInstance
+					.GetItems(s)
+					.Select(v => v.EvaluatedInclude)
+					.Select(v => Path.IsPathRooted(v) ? v : Path.Combine(projectInstance.Directory, v));
+
+			var xamlPaths = from item in sources.SelectMany(BuildSearchPath)
+							select Path.GetDirectoryName(item);
+
+			var distictPaths = string.Join(",\n", xamlPaths.Distinct().Select(p => $"@\"{p}\""));
+
+			sb.AppendLineInvariant("{0}", $"new[]{{{distictPaths}}}");
+
+			sb.AppendLineInvariant($")]");
+		}
+
+
+		private static void BuildEndPointAttribute(SourceGeneratorContext context, IndentedStringBuilder sb)
+		{
+			var unoRemoteControlPort = context.GetProjectInstance().GetPropertyValue("UnoRemoteControlPort");
+
+			if (string.IsNullOrEmpty(unoRemoteControlPort))
+			{
+				unoRemoteControlPort = "0";
+			}
+
+			var unoRemoteControlHost = context.GetProjectInstance().GetPropertyValue("UnoRemoteControlHost");
+
+			if (string.IsNullOrEmpty(unoRemoteControlHost))
+			{
+				var addresses = NetworkInterface.GetAllNetworkInterfaces()
+					.SelectMany(x => x.GetIPProperties().UnicastAddresses)
+					.Where(x => !IPAddress.IsLoopback(x.Address));
+
+				if (unoRemoteControlPort == "0")
+				{
+					// sb.AppendLineInvariant($"#warning The App Remote Control debugging support is disabled. The Visual Studio addin may not be installed or activated.");
+				}
+
+				foreach (var addressInfo in addresses)
+				{
+					sb.AppendLineInvariant($"[assembly: global::Uno.UI.RemoteControl.ServerEndpointAttribute(\"{addressInfo.Address}\", {unoRemoteControlPort})]");
+				}
+			}
+			else
+			{
+				sb.AppendLineInvariant($"[assembly: global::Uno.UI.RemoteControl.ServerEndpointAttribute(\"{unoRemoteControlHost}\", {unoRemoteControlPort})]");
 			}
 		}
 
