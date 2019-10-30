@@ -82,7 +82,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public PersonPicture()
 		{
-			// DefaultStyleKey = typeof(PersonPicture);
+			DefaultStyleKey = typeof(PersonPicture);
 
 			TemplateSettings = new PersonPictureTemplateSettings();
 
