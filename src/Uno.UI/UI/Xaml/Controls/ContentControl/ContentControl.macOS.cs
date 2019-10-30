@@ -15,14 +15,6 @@ namespace Windows.UI.Xaml.Controls
 		public override void ViewDidMoveToSuperview()
 		{
 			base.ViewDidMoveToSuperview();
-
-			if (FeatureConfiguration.FrameworkElement.UseLegacyApplyStylePhase)
-			{
-				if (Superview != null)
-				{
-					SetUpdateTemplate();
-				}
-			}
 		}
 
 		partial void RegisterContentTemplateRoot()
