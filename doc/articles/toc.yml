@@ -38,6 +38,8 @@
       href: uno-toolchain-telemetry.md
     - name: Migrate existing code
       href: howto-migrate-existing-code.md
+    - name: Guide for dummies
+      href: getting-started/portingApps.md
 - name: Using Uno - features and controls
   items:
   - name: Accessibility
