@@ -11,15 +11,7 @@
 		<UnoSkipUserControlsInVisualTree>false</UnoSkipUserControlsInVisualTree>
 
 		<IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
-
-		<!-- fixed for self-testing inside the Uno Solution -->
-		<UnoRemoteControlPort>53487</UnoRemoteControlPort>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlPort" />
-		<UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlHost" />
-	</ItemGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
 		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>

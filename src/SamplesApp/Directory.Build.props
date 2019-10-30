@@ -1,0 +1,13 @@
+<Project ToolsVersion="15.0">
+
+  <PropertyGroup>
+    <!-- fixed for self-testing inside the Uno Solution -->
+    <UnoRemoteControlPort>53487</UnoRemoteControlPort>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlPort" />
+    <UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlHost" />
+  </ItemGroup>
+
+</Project>
