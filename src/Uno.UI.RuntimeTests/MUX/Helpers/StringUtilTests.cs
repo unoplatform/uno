@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NETFX_CORE
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -21,3 +22,4 @@ namespace Uno.UI.RuntimeTests.MUX.Helpers
 			=> Assert.AreEqual(expected, StringUtil.FormatString(format, args));
 	}
 }
+#endif
