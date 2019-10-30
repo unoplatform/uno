@@ -15,6 +15,8 @@ namespace Uno.UI.Samples.Content.UITests.WebView
     
  		private async void generateLong_Click(object sender, object e)
 		{
+			WebView_NavigateToStringResult.Text = "waiting for NavigationCompleted";
+
 			int linesCount = 0;
 			if(!int.TryParse(WebView_NavigateToStringSize.Text, out linesCount))
 			{
@@ -30,8 +32,14 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 				longString = longString + "<p>" + line;
 			}
 			longString += "</body></html>";
+			webViewControl.NavigationCompleted += webViewControl_NavigationCompleted;
 			webViewControl.NavigateToString(longString);
 		}
+
+        private void webViewControl_NavigationCompleted(object sender, object args)
+        {
+            WebView_NavigateToStringResult.Text = "success";
+        }
 
 	}
 }
