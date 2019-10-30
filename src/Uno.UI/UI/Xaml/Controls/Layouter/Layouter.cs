@@ -246,68 +246,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var frameworkElement = view as IFrameworkElement;
 			var ret = default(Size);
-			if (frameworkElement != null)
-			{
-				var margin = frameworkElement.Margin;
-
-				if (frameworkElement.Visibility == Visibility.Collapsed)
-				{
-					// By default iOS views measure to normal size, even if they're hidden.
-					// We want the collapsed behavior, so we return a 0,0 size instead.
-					SetDesiredChildSize(view, ret);
-
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						var viewName = frameworkElement.SelectOrDefault(f => f.Name, "NativeView");
-
-						this.Log().DebugFormat(
-							"[{0}/{1}] MeasureChild(HIDDEN/{2}/{3}/{4}/{5}) = {6}",
-							LoggingOwnerTypeName,
-							Name,
-							view.GetType(),
-							viewName,
-							slotSize,
-							margin,
-							ret
-						);
-					}
-
-					return ret;
-				}
-
-				// Alias the Dependency Properties values to avoid double calls.
-				var childWidth = frameworkElement.Width;
-				var childMaxWidth = frameworkElement.MaxWidth;
-				var childHeight = frameworkElement.Height;
-				var childMaxHeight = frameworkElement.MaxHeight;
-
-				var optionalMaxWidth = !IsInfinity(childMaxWidth) && !IsNaN(childMaxWidth) ? childMaxWidth : (double?)null;
-				var optionalWidth = !IsNaN(childWidth) ? childWidth : (double?)null;
-				var optionalMaxHeight = !IsInfinity(childMaxHeight) && !IsNaN(childMaxHeight) ? childMaxHeight : (double?)null;
-				var optionalHeight = !IsNaN(childHeight) ? childHeight : (double?)null;
-
-				// After the margin has been removed, ensure the remaining space slot does not go
-				// over the explicit or maximum size of the child.
-				if (optionalMaxWidth != null || optionalWidth != null)
-				{
-					var constrainedWidth = Min(
-						optionalMaxWidth ?? double.PositiveInfinity,
-						optionalWidth ?? double.PositiveInfinity
-					);
-
-					slotSize.Width = Min(slotSize.Width, constrainedWidth);
-				}
-
-				if (optionalMaxHeight != null || optionalHeight != null)
-				{
-					var constrainedHeight = Min(
-						optionalMaxHeight ?? double.PositiveInfinity,
-						optionalHeight ?? double.PositiveInfinity
-					);
-
-					slotSize.Height = Min(slotSize.Height, constrainedHeight);
-				}
-			}
 
 			ret = MeasureChildOverride(view, slotSize);
 
