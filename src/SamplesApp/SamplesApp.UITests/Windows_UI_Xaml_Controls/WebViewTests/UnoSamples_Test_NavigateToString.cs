@@ -18,7 +18,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebView
 		[AutoRetry]
 		public void WebView_NavigateToLongString()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.WebView.WebView_NavigateToString2");
+			Run("Uno.UI.Samples.Content.UITests.WebView.WebView_NavigateToString2");
 
 			var startButton = _app.Marked("startButton");
 			var clickResult = _app.Marked("WebView_NavigateToStringResult");
