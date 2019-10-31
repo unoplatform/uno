@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
-namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebView
+namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 {
 	[TestFixture]
 	public partial class WebView_Tests : SampleControlUITestBase
@@ -18,21 +18,21 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebView
 		[AutoRetry]
 		public void WebView_NavigateToLongString()
 		{
-			Run("Uno.UI.Samples.Content.UITests.WebView.WebView_NavigateToString2");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.WebView.WebView_NavigateToString2");
 
 			var startButton = _app.Marked("startButton");
 			var clickResult = _app.Marked("WebView_NavigateToStringResult");
 
-			_app.WaitForElement(_app.Marked("startButton"));
+			_app.WaitForElement(startButton);
 
 			TakeScreenshot("Initial");
 
 			_app.Tap(startButton);
 			for(int i=10; i<100; i+=10)
 			{
-				_app.WaitForDependencyPropertyValue(clickResult, "Text", i.ToString());
+				_app.WaitForText(clickResult, i.ToString());
 			}
-			_app.WaitForDependencyPropertyValue(clickResult, "Text", "success");
+			_app.WaitForText(clickResult, "success");
 			TakeScreenshot("AfterSuccess");
 
 
