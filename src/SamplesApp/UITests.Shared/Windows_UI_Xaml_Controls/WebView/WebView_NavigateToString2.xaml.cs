@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.WebView
 {
-	[SampleControlInfo("WebView", "WebView_NavigateToString2", typeof(WebViewViewModel), description: "WebView testing NavigateToString method with long string")]
+	[Uno.UI.Samples.Controls.SampleControlInfo("WebView", "WebView_NavigateToString2", description: "Testing a NavigateToString with a very long string")]
 	public sealed partial class WebView_NavigateToString2 : UserControl
 	{
 		public WebView_NavigateToString2()
