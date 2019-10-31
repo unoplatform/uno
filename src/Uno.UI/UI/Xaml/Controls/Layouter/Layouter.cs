@@ -80,6 +80,12 @@ namespace Windows.UI.Xaml.Controls
 				);
 			}
 
+			if(Panel.Visibility == Visibility.Collapsed)
+			{
+				// A collapsed element should not be measure measured at all
+				return default;
+			}
+
 			using (traceActivity)
 			{
 				var (minSize, maxSize) = Panel.GetMinMax();
@@ -88,7 +94,7 @@ namespace Windows.UI.Xaml.Controls
 
 				var frameworkAvailableSize = availableSize
 					.Subtract(marginSize)
-					.AtLeast(new Size(0, 0))
+					.AtLeast(default) // 0.0,0.0
 					.AtMost(maxSize)
 					.AtLeast(minSize);
 
@@ -185,7 +191,7 @@ namespace Windows.UI.Xaml.Controls
 
 				arrangeSize = arrangeSize
 					.AtLeast(minSize)
-					.AtLeast(new Size(0, 0));
+					.AtLeast(default); // 0.0,0.0
 
 				var effectiveMaxSize = Max(_unclippedDesiredSize, maxSize);
 				arrangeSize = arrangeSize
