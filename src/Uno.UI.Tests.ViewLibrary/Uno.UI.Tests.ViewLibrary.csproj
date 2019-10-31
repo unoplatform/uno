@@ -80,6 +80,7 @@
   <ItemGroup Condition="'$(BuildingInsideUnoSourceGenerator)'!=''">
     <Page Include="Themes\Generic.xaml" />
     <Page Include="Themes\MyExtControl.xaml" />
+    <Page Include="Themes\More\Test_Dictionary_Abs.xaml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

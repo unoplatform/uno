@@ -20,6 +20,8 @@ namespace Uno.UI
 		/// </summary>
 		private static ResourceDictionary MasterDictionary => Uno.UI.GlobalStaticResources.MasterDictionary;
 
+		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionaries = new Dictionary<string, Func<ResourceDictionary>>();
+
 		public static class TraceProvider
 		{
 			public readonly static Guid Id = Guid.Parse("{15E13473-560E-4601-86FF-C9E1EDB73701}");
@@ -115,7 +117,7 @@ namespace Uno.UI
 			}
 
 			var topLevel = TryTopLevelRetrieval(resourceKey, out value);
-			if (!topLevel && _log.IsEnabled(LogLevel.Warning))
+			if (!topLevel /*&& _log.IsEnabled(LogLevel.Warning)*/)
 			{
 				_log.LogWarning($"Couldn't statically resolve resource {resourceKey}");
 			}
@@ -188,5 +190,28 @@ namespace Uno.UI
 		/// If tracing is enabled, writes an event for the initialization of system-level resources (Generic.xaml etc)
 		/// </summary>
 		internal static IDisposable WriteInitiateGlobalStaticResourcesEventActivity() => _trace.WriteEventActivity(TraceProvider.InitGenericXamlStart, TraceProvider.InitGenericXamlStop);
+
+		/// <summary>
+		/// Register a dictionary for a given source, this is used for retrieval when setting the Source property in code-behind or to an
+		/// external resource.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void RegisterResourceDictionaryBySource(string uri, Func<ResourceDictionary> dictionary)
+		{
+			_registeredDictionaries[uri] = dictionary;
+		}
+
+		/// <summary>
+		/// Retrieve the ResourceDictionary mapping to a given source, or null if none is found.
+		/// </summary>
+		internal static ResourceDictionary RetrieveDictionaryForSource(Uri source)
+		{
+			if (_registeredDictionaries.TryGetValue(source.AbsoluteUri, out var factory))
+			{
+				return factory();
+			}
+
+			return null;
+		}
 	}
 }

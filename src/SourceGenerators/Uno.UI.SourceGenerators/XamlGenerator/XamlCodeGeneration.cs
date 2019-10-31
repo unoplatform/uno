@@ -460,6 +460,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					writer.AppendLineInvariant("static bool _initialized;");
 					writer.AppendLineInvariant("private static bool _stylesRegistered;");
+					if (!IsUnoAssembly)
+					{
+						writer.AppendLineInvariant("private static bool _dictionariesRegistered;"); 
+					}
 
 					using (writer.BlockInvariant("static GlobalStaticResources()"))
 					{
@@ -491,6 +495,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									}
 								}
 
+								foreach (var ambientResource in _ambientGlobalResources)
+								{
+									if (ambientResource.GetMethods().Any(m => m.Name == "RegisterResourceDictionariesBySource"))
+									{
+										writer.AppendLineInvariant("global::{0}.RegisterResourceDictionariesBySource();", ambientResource.GetFullName());
+									}
+								}
+
 								if (IsUnoAssembly)
 								{
 									// Build master dictionary
@@ -515,6 +527,38 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 					}
 
+					if (!IsUnoAssembly)
+					{
+						writer.AppendLineInvariant("// Register ResourceDictionaries using ms-appx:/// syntax, this is called for external resources");
+						using (writer.BlockInvariant("public static void RegisterResourceDictionariesBySource()"))
+						{
+							using (writer.BlockInvariant("if(!_dictionariesRegistered)"))
+							{
+								writer.AppendLineInvariant("_dictionariesRegistered = true;");
+								foreach (var file in files.Where(IsResourceDictionary))
+								{
+									writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(\"ms-appx:///{0}/{1}\", () => {2}_ResourceDictionary);",
+										_metadataHelper.AssemblyName,
+										map.GetSourceLink(file),
+										file.UniqueID
+									);
+								}
+							}
+						}
+					}
+
+					writer.AppendLineInvariant("// Register ResourceDictionaries using ms-resource:/// syntax, this is called for local resources");
+					using (writer.BlockInvariant("internal static void RegisterResourceDictionariesBySourceLocal()"))
+					{
+						foreach (var file in files.Where(IsResourceDictionary))
+						{
+							writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(\"ms-resource:///Files/{0}\", () => {1}_ResourceDictionary);",
+								map.GetSourceLink(file),
+								file.UniqueID
+							);
+						}
+					}
+
 					if (IsUnoAssembly)
 					{
 						// Declare master dictionary
@@ -535,5 +579,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			return writer.ToString();
 		}
+
+		private bool IsResourceDictionary(XamlFileDefinition fileDefinition) => fileDefinition.Objects.FirstOrDefault()?.Type.Name == "ResourceDictionary";
 	}
 }
