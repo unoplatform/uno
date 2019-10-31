@@ -326,9 +326,9 @@ namespace Windows.UI.Xaml.Controls
 					null
 				);
 
+				Navigated?.Invoke(this, navigationEvent);
 				previousEntry?.Instance.OnNavigatedFrom(navigationEvent);
 				CurrentEntry.Instance.OnNavigatedTo(navigationEvent);
-				Navigated?.Invoke(this, navigationEvent);
 
 				VisualTreeHelper.CloseAllPopups();
 
