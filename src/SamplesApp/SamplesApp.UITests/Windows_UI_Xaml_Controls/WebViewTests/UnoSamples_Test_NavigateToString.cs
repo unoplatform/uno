@@ -20,14 +20,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.WebView.WebView_NavigateToString2");
 
-			var startButton = _app.Marked("startButton");
-			var clickResult = _app.Marked("WebView_NavigateToStringResult");
-
-			_app.WaitForElement(startButton);
+			_app.WaitForElement(_app.Marked("startButton"));
 
 			TakeScreenshot("Initial");
 
+			var startButton = _app.Marked("startButton");
+			var clickResult = _app.Marked("WebView_NavigateToStringResult");
+
 			_app.Tap(startButton);
+
 			for(int i=10; i<100; i+=10)
 			{
 				_app.WaitForText(clickResult, i.ToString());
