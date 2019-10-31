@@ -1745,6 +1745,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView_NavigateToString2.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView_NavigateToUri.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
