@@ -527,12 +527,35 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_Direct_Local_Assignation_From_Source()
 		{
-
 			var app = UnitTestsApp.App.EnsureApplication();
 
 			var page = new Test_Page();
 
 			AssertEx.AssertContainsColorBrushResource(page.TestStackPanel.Resources, "NotInAppResources", Colors.Cyan);
+		}
+
+		[TestMethod]
+		public void When_Created_From_Source_In_Codebehind()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var rd = new ResourceDictionary { Source = new Uri("ms-appx:///Uno.UI.Tests.ViewLibrary/Themes/More/Test_Dictionary_Abs.xaml") };
+			AssertEx.AssertContainsColorBrushResource(rd, "BituminousColorBrush", Colors.SlateGray);
+
+			var rd2 = new ResourceDictionary { Source = new Uri("ms-appx:///Uno.UI.Tests.ViewLibrary/Themes/More/Test_Dictionary_Abs.xaml") };
+
+			rd2.Remove("BituminousColorBrush");
+			Assert.IsFalse(rd2.ContainsKey("BituminousColorBrush"));
+			Assert.IsTrue(rd.ContainsKey("BituminousColorBrush"));
+		}
+
+		[TestMethod]
+		public void When_Created_From_Local_Source_In_Codebehind()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var rd = new ResourceDictionary { Source = new Uri("ms-resource:///Files/App/Xaml/Test_Dictionary.xaml") };
+			AssertEx.AssertContainsColorBrushResource(rd, "SuperiorColorBrush", Colors.MediumSpringGreen);
 		}
 	}
 }

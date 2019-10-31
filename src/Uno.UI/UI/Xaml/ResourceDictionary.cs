@@ -15,10 +15,25 @@ namespace Windows.UI.Xaml
 		{
 		}
 
+		private Uri _source;
 		public Uri Source
 		{
-			get;
-			set;
+			get => _source;
+			set
+			{
+				if (!IsParsing) // If we're parsing, the Source is being set as a 'FYI', don't try to resolve it
+				{
+					var sourceDictionary = ResourceResolver.RetrieveDictionaryForSource(value);
+					if (sourceDictionary == null)
+					{
+						throw new InvalidOperationException($"Cannot locate resource from '{value.AbsoluteUri}'");
+					}
+
+					CopyFrom(sourceDictionary);
+				}
+
+				_source = value;
+			}
 		}
 
 		public IList<ResourceDictionary> MergedDictionaries { get; } = new List<ResourceDictionary>();
@@ -210,6 +225,20 @@ namespace Windows.UI.Xaml
 			}
 
 			return false;
+		}
+
+		/// <summary>
+		/// Copy another dictionary's contents, this is used when setting the <see cref="Source"/> property
+		/// </summary>
+		private void CopyFrom(ResourceDictionary source)
+		{
+			_values.Clear();
+			MergedDictionaries.Clear();
+			ThemeDictionaries.Clear();
+
+			_values.AddRange(source);
+			MergedDictionaries.AddRange(source.MergedDictionaries);
+			ThemeDictionaries.AddRange(source.ThemeDictionaries);
 		}
 
 		public global::System.Collections.Generic.ICollection<object> Keys => _values.Keys;
