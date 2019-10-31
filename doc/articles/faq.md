@@ -23,7 +23,7 @@ Uno.UI provides the ability for developers to reuse known layouts and coding tec
 
 
 ## Who makes Uno Platform?
-Uno Platform was developed by Team nventive over the past 4 years.
+Uno Platform was developed by Team Inventive over the past 4 years.
 
 ## What makes Uno Platform unique?
 The Uno Platform is the only implementation of the UWP API that runs across iOS, Android and WebAssembly. 
@@ -90,14 +90,14 @@ For WebAssembly, it can be deployed using [GitHub Pages](https://pages.github.co
 ## Does Uno.UI support macOS?
 Not yet. We're still waiting for Apple's Marzipan cross macOS-iOS APIs to become available. We’ll see from there. 
 
-## Does Uno.UI support Linux ?
+## Does Uno.UI support Linux?
 No, not at the moment. Our assumption for now is that the WebAssembly part of Uno.UI will be efficient enough to be a viable alternative. If you find that native support still is a viable scenario, please open a GitHub issue.
 
-## Does Uno.UI support what WPF is calling CustomControls ? 
+## Does Uno.UI support what WPF is calling CustomControls? 
 
 Yes, those are called Templated Controls in the UWP dialect because they inherit from Control Uno.UI currently handles styles a bit differently from what WPF/UWP is doing and Uno.UI parser does not handle `<Style.Setters>` properly. These should not be impacting as long as you have a resource dictionary file containing your style. See here: https://github.com/unoplatform/uno/blob/master/doc/articles/api-differences.md#styles
 
-## Is the iPhone X supported by Uno.UI ?
+## Is the iPhone X supported by Uno.UI?
 
 Yes, use the [VisibleBoundsPadding](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.Toolkit/VisibleBoundsPadding.md)
 behavior to manage the _notch_ correctly.
@@ -154,7 +154,7 @@ Not at the moment. iOS and Android platform support relies on the underlying API
 ## Does Uno.UI support having controls in a class library?
 Yes, here's a project sample.  https://github.com/unoplatform/uno.Samples/tree/master/UI/ControlLibrary. It is also possible to create a new Cross-Platform class library using the [Uno Platform Visual Studio extension](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin).
 
-## How do I update to the latest Uno.UI NuGet package, I don't see any update ?
+## How do I update to the latest Uno.UI NuGet package, I don't see any update?
 
 You may want to try our latest dev builds, and here's how to do it:
 
@@ -186,7 +186,7 @@ which will significantly improve the performance. See [Miguel de Icaza's status 
 
 You can subscribe to this [mono issue's updates for progress](https://github.com/mono/mono/issues/10222).
 
-## Why is Chrome slower than Firefox or Microsoft Edge to execute mono-wasm based applications ?
+## Why is Chrome slower than Firefox or Microsoft Edge to execute mono-wasm based applications?
 
 This is a [known Chromium issue](https://bugs.chromium.org/p/v8/issues/detail?id=7838#c7), which should be improving with
 the release of [Chrome 69](https://www.chromium.org/developers/calendar).
@@ -208,7 +208,7 @@ Keep the version 1.1.1 of Microsoft.Extensions.Logging; latest version of Loggin
 For live update on UWP you need to edit the XAML while the project is debugging, no need for save, it updates on every keystroke (more or less) you need to update to the latest UWP sdk in your project configuration, change target version to latest
 
 
-## I don't see any "Uno.UI App Solution" from File->Project->New ?
+## I don't see any "Uno.UI App Solution" from File->Project->New?
 
 1. Install **Uno.UI Solution Template Visual Studio Extension** https://github.com/unoplatform/Uno/releases
 1. Look for Uno.UI App Solution under Visual C#
@@ -223,10 +223,10 @@ project.  Ensure everything is still working and add other projects for other pl
 1. Create a project with Uno.UI template.
 1. Copying as much code as possible from the existing UWP app to the "My Project.Shared"
 1. Add platform specific code using suffixing files in the shared project (ex: ".iOS.cs")
-1. iOS/Android specific heads should be relatively empty, only used os specific implementation (push notification handling/deeplinking/permissions)
+1. iOS/Android specific heads should be relatively empty, only used OS specific implementation (push notification handling/deeplinking/permissions)
 1. Test, debug and publish.
 
-## How to port an existing UWP library to Uno.UI ? 
+## How to port an existing UWP library to Uno.UI? 
 
 This is essentially the same process as porting an app(add steps anyways), but using cross-targeted projects. Use
 [this project](https://github.com/unoplatform/uno.Samples/blob/master/UI/ControlLibrary/XamlControlLibrary/XamlControlLibrary.csproj)
@@ -234,19 +234,19 @@ as a base for your cross-targeted library.
 
 # Is it possible to make http web requests using the WASM target?
 
-Yes it is possible, but you need to use the provided HttpHandler by Uno.UI like what we did in the Uno.UI Playground:
+Yes, it is possible, but you need to use the provided HttpHandler by Uno.UI like what we did in the Uno.UI Playground:
 
 ```csharp
 var handler = new Wasm.WasmHttpHandler();
 var httpClient = new HttpClient(handler);
 ```
 
-## How do you choose which APIs are being implemented ?
+## How do you choose which APIs are being implemented?
 
 - If the API is present in .NET Standard, it is generally suggested to use this one instead of the UWP one. (e.g System.IO or System.Net.HttpClient)Missing APIs will be implemented based on the popularity of suggestions in the [Uno.UI issues list](https://github.com/unoplatform/uno/issues). Make sure
 to open one for the APIs you need.
 
-## Can I know at runtime which APIs are implemented ?
+## Can I know at runtime which APIs are implemented?
 
 Yes, through the [`ApiInformation`](https://docs.microsoft.com/en-us/uwp/api/Windows.Foundation.Metadata.ApiInformation) class.
 
@@ -365,7 +365,7 @@ As `ApplicationData.LocalSettings` and `ApplicationData.RoamingSettings` are per
 
 Not yet. Any plans to?
 
-## Does debugging work for ios through uno? 
+## Does debugging work for iOS through Uno? 
 
 Yes, debugging works for iOS and Android, as in any Xamarin native application. Debugging for WebAssembly is not supported yet.
 
@@ -388,11 +388,11 @@ Yes, if you do not see it:
 
 This means that the shared project is not referenced by the UWP head, right click references on the UWP project, shared projects, then select it there.
 
-## Does Uno.UI support UWP's media APIs ?
+## Does Uno.UI support UWP's media APIs?
 
 Not yet, but using [XAML conditionals](https://github.com/unoplatform/uno/blob/master/doc/articles/using-uno-ui.md#supporting-multiple-platforms-in-xaml-files) and [XamarinMediaManager](https://t.co/6yQm0RVRMV), it's possible to have a similar experience.
 
-## What apps have been developed using Uno.UI ?
+## What apps have been developed using Uno.UI?
 
 Many of the application developed during the private phase of the Uno.UI Platform require credentials to be used, but here are some of the public ones:
 
@@ -400,7 +400,7 @@ Many of the application developed during the private phase of the Uno.UI Platfor
 * https://itunes.apple.com/ca/app/my-md-mobile/id1144752656
 * https://itunes.apple.com/us/app/vca-careclub/id1172429469
 
-## Is Skia supported ?
+## Is Skia supported?
 
 Yes, as in any other native view integration for iOS and Android.
 
