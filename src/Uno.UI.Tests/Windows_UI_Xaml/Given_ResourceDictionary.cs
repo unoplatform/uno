@@ -557,5 +557,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var rd = new ResourceDictionary { Source = new Uri("ms-resource:///Files/App/Xaml/Test_Dictionary.xaml") };
 			AssertEx.AssertContainsColorBrushResource(rd, "SuperiorColorBrush", Colors.MediumSpringGreen);
 		}
+
+		[TestMethod]
+		public void When_External_Source()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var page = new Test_Page();
+			var rp = page.TestRelativePanel;
+			var rd = rp.Resources;
+			AssertEx.AssertContainsColorBrushResource(rd, "BituminousColorBrush", Colors.SlateGray);
+		}
 	}
 }

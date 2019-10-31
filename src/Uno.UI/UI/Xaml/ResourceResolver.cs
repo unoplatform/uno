@@ -204,7 +204,8 @@ namespace Uno.UI
 		/// <summary>
 		/// Retrieve the ResourceDictionary mapping to a given source, or null if none is found.
 		/// </summary>
-		internal static ResourceDictionary RetrieveDictionaryForSource(Uri source)
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static ResourceDictionary RetrieveDictionaryForSource(Uri source)
 		{
 			if (_registeredDictionaries.TryGetValue(source.AbsoluteUri, out var factory))
 			{
