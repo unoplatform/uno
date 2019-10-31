@@ -159,7 +159,7 @@ Yes, here's a project sample.  https://github.com/unoplatform/uno.Samples/tree/m
 You may want to try our latest dev builds, and here's how to do it:
 
 - On your solution node, select **Manage NuGet packages for Solution**
-- Next to the Search text box, check the **Include prerelease** box
+- Next to the Search text box, check the **Include pre-release** box
 - You should now see the latest Uno.UI package in the **Updates** tab.
 
 ## C# Edit and Continue does not work
@@ -203,7 +203,7 @@ at System.Threading.Thread.StartInternal (System.Security.Principal.IPrincipal p
 
 Keep the version 1.1.1 of Microsoft.Extensions.Logging; latest version of Logging Extensions is starting a new thread and it's not supported in Wasm.
 
-## Live updates doesn’t work on UWP project. 
+## Live updates don’t work on UWP project. 
 
 For live update on UWP you need to edit the XAML while the project is debugging, no need for save, it updates on every keystroke (more or less) you need to update to the latest UWP sdk in your project configuration, change target version to latest
 
@@ -410,7 +410,7 @@ For WebAssembly the Uno Platform has initial support for Skia via the Uno.SkiaSh
 
 This is only a warning that has no effect. If you really want to remove it, [add this](https://github.com/unoplatform/uno/blob/3b1b144fd6d136136b1640ca41847e35e8495b36/src/Uno.UI.Wasm.Shell/Uno.UI.Wasm.Shell.csproj#L15).
 
-## How do I add logging to my application
+## How do I add logging to my application?
 
 You can add [logging using this](https://github.com/unoplatform/uno.Playground/blob/80322aec3d759d009f6a900bca4a07bc63ae6a62/Uno.UI.Demo.Shared/App.xaml.cs#L46)
 
