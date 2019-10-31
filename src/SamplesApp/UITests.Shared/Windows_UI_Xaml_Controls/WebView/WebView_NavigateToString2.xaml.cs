@@ -30,7 +30,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 				string line = "Linia " + i.ToString() + " ";
 				line = line.PadRight(1000, 'x');
 				longString = longString + "<p>" + line;
-				WebView_NavigateToStringResult.Text = (int) (i * 100 / linesCount);	// percentage, as generating string takes loooong
+				WebView_NavigateToStringResult.Text = ((int)(i * 100 / linesCount)).ToString();  // percentage, as generating string takes loooong
 			}
 			longString += "</body></html>";
 			webViewControl.NavigationCompleted += webViewControl_NavigationCompleted;
