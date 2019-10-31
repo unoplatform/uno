@@ -166,9 +166,25 @@ namespace Windows.UI.Xaml.Controls
 
 				var arrangeSize = finalRect.Size;
 
-				var customClippingElement = (Panel as ICustomClippingElement);
-				var allowClipToSlot = customClippingElement?.AllowClippingToLayoutSlot ?? true; // Some controls may control itself how clipping is applied
-				var needsClipToSlot = customClippingElement?.ForceClippingToLayoutSlot ?? false;
+				bool allowClipToSlot;
+				bool needsClipToSlot;
+
+				if (Panel.RenderTransform != null)
+				{
+					allowClipToSlot = false;
+					needsClipToSlot = false;
+				}
+				else if (Panel is ICustomClippingElement customClippingElement)
+				{
+					// Some controls may control itself how clipping is applied
+					allowClipToSlot = customClippingElement.AllowClippingToLayoutSlot;
+					needsClipToSlot = customClippingElement.ForceClippingToLayoutSlot;
+				}
+				else
+				{
+					allowClipToSlot = true;
+					needsClipToSlot = false;
+				}
 
 				_logDebug?.Debug($"{this}: InnerArrangeCore({finalRect}) - allowClip={allowClipToSlot}, arrangeSize={arrangeSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipToSlot}");
 
@@ -298,7 +314,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			if (frameworkElement != null)
+			if (frameworkElement != null && frameworkElement.Visibility != Visibility.Collapsed)
 			{
 				var margin = frameworkElement.Margin;
 
