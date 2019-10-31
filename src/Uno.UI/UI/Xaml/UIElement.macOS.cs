@@ -142,42 +142,6 @@ namespace Windows.UI.Xaml
 			return new TranslateTransform { X = transformed.X, Y = transformed.Y };
 		}
 
-
-		/// <summary>
-		/// Gets the parent view for the <paramref name="owner"/> which clips its content.
-		/// </summary>
-		/// <returns>A tuple of the clipping parent, and the view that let to this parent.</returns>
-		private static (NSView child, NSView clippingParent) GetClippingParent(NSView owner)
-		{
-			// TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT
-			// TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT
-			// TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT
-			// TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT - TODO ALERT
-			// TODO: REVIEW THIS BEFORE MERGING PR!
-
-
-			(NSView child, NSView clippingParent) GetClippingParent(NSView child, NSView parent)
-			{
-				if (parent is FrameworkElement pfe)
-				{
-					if (!pfe.RequiresClipping)
-					{
-						return GetClippingParent(pfe, pfe.Superview);
-					}
-					else
-					{
-						return (child, parent);
-					}
-				}
-				else
-				{
-					return (child, parent);
-				}
-			}
-
-			return GetClippingParent(owner, owner.Superview);
-		}
-
 		/// <summary>
 		/// Gets the origin point of the <paramref name="view"/> in the clippingParent's 
 		/// coordinate system.
