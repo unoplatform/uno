@@ -45,11 +45,11 @@ For a larger example and features demo:
 * Try the [WebAssembly Uno Playground](https://playground.platform.uno) live in your browser.
 
 # Uno Features
-* Supported platforms:
+* Supported Platforms:
     * Windows (via the standard UWP Toolkit)
     * iOS and Android (via [Xamarin](https://www.visualstudio.com/xamarin/))
     * WebAssembly through the [Mono Wasm SDK](https://github.com/mono/mono/blob/master/sdks/wasm/README.md)
-* Dev loop:
+* Dev Loop:
     * Develop on Windows first using Visual Studio
     * [XAML Edit and Continue](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) for live XAML edition on each key stroke
     * [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp)
@@ -87,7 +87,7 @@ For a larger example and features demo:
 
 # Live WebAssembly Apps
 
-Here's a list of live apps made with the Uno Platform for WebAssembly.
+Here's a list of live apps made with the Uno Platform for WebAssembly:
 
 * The [Uno Platform Playground](https://playground.platform.uno) ([Source](https://github.com/unoplatform/uno.Playground)).
 * The [Uno Calculator](https://calculator.platform.uno), a simple yet powerful iOS/Android/WebAssembly C# port of the calculator that ships with Windows ([Source](https://github.com/unoplatform/calculator)). Also try the [pink theme](https://calculator.platform.uno/?theme=pink), the [iOS version](https://apps.apple.com/app/id1464736591) or the [Android version](https://play.google.com/store/apps/details?id=uno.platform.calculator).
