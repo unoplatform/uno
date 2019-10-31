@@ -34,6 +34,7 @@ namespace Uno.UI.Tests.App.Xaml
 		public HyperlinkButton OuterHyperlinkButton => outerHyperlinkButton;
 		public HyperlinkButton InnerHyperlinkButton => innerHyperlinkButton;
 		public StackPanel TestStackPanel => testStackPanel;
+		public RelativePanel TestRelativePanel => testRelativePanel;
 
 		private bool Boolean1 { get; } = true;
 		private bool Boolean2 { get; } = false;

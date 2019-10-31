@@ -80,5 +80,11 @@
 				<ResourceDictionary Source="Test_Dictionary_Isolated.xaml" />
 			</StackPanel.Resources>
 		</StackPanel>
+
+		<RelativePanel x:Name="testRelativePanel">
+			<RelativePanel.Resources>
+				<ResourceDictionary Source="ms-appx:///Uno.UI.Tests.ViewLibrary/Themes/More/Test_Dictionary_Abs.xaml" />
+			</RelativePanel.Resources>
+		</RelativePanel>
 	</Grid>
 </Page>

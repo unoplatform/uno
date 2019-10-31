@@ -68,7 +68,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return ConvertIdToResourceDictionaryProperty(xamlFileDefinition.UniqueID);
 			}
 
-			throw new InvalidOperationException($"{source} not found for MergedDictionary in {targetSource}");
+			return null;
 		}
 
 		/// <summary>

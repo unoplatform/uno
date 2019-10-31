@@ -2140,7 +2140,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return;
 			}
 			var sourceProp = _globalStaticResourcesMap.FindTargetPropertyForMergedDictionarySource(_fileDefinition, source);
-			writer.AppendLineInvariant("global::{0}.GlobalStaticResources.{1}", _defaultNamespace, sourceProp);
+			if (sourceProp != null)
+			{
+				writer.AppendLineInvariant("global::{0}.GlobalStaticResources.{1}", _defaultNamespace, sourceProp); 
+			}
+			else
+			{
+				writer.AppendLineInvariant("// Source not resolved statically, falling back on external resource retrieval.");
+				writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RetrieveDictionaryForSource(new global::System.Uri(\"{0}\"))", source);
+			}
 		}
 
 		private bool IsTextBlock(XamlType xamlType)
