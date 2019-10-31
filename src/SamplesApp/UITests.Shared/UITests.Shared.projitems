@@ -4464,6 +4464,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView_NavigateToString.xaml.cs">
       <DependentUpon>WebView_NavigateToString.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView_NavigateToString2.xaml.cs">
+      <DependentUpon>WebView_NavigateToString2.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\WebView\WebView_NavigateToUri.xaml.cs">
       <DependentUpon>WebView_NavigateToUri.xaml</DependentUpon>
     </Compile>
