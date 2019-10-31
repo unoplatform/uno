@@ -8,16 +8,14 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<StackPanel HorizontalAlignment="Left">
-		<TextBlock>
-			An empty TextBox render width should be 64x32px.<LineBreak />
-			So it should be the same width as the red rectangle and the same height than the blue rectangle.
+		<TextBlock FontSize="22">
+			An empty TextBox render width should be 64px.
+			<LineBreak />So it should be the same width as the red rectangle.
+			<LineBreak />The yellow panel shouldn't be visible at all.
 		</TextBlock>
-		<Rectangle Width="64" Height="9" Fill="Red" HorizontalAlignment="Left" Margin="9,0,0,0" x:Name="recth" />
-		<StackPanel Orientation="Horizontal" HorizontalAlignment="Left">
-			<Rectangle Width="9" Height="32" Fill="Blue" VerticalAlignment="Top" x:Name="rectv" />
-			<StackPanel>
-				<TextBox x:Name="textbox_sut" />
-			</StackPanel>
+		<Rectangle Width="64" Height="9" Fill="Red" HorizontalAlignment="Left" Margin="0" x:Name="recth" />
+		<StackPanel Orientation="Horizontal" Background="Yellow" HorizontalAlignment="Left" x:Name="yellowpanel">
+			<TextBox x:Name="textbox_sut" Background="White" />
 		</StackPanel>
 	</StackPanel>
 </Page>
