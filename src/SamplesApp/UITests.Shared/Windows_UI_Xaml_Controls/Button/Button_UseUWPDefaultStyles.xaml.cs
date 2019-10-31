@@ -14,7 +14,9 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-#if __ANDROID__
+#if NETFX_CORE
+using Uno.UI.Sample.Views.Helper;
+#elif __ANDROID__
 using Uno.UI;
 using _NativeType = Windows.UI.Xaml.Controls.BindableButtonEx;
 #elif __IOS__
