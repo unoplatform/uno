@@ -22,11 +22,10 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			var width = double.IsNaN(Width) ? LimitWithUserSize(availableSize.Width, Width, 100.0d) : Width;
-			var height = double.IsNaN(Height) ? LimitWithUserSize(availableSize.Height, Height, 100.0d) : Height;
+			var bounds = GetBounds();
 
-			var cx = width / 2;
-			var cy = height / 2;
+			var cx = bounds.Width / 2;
+			var cy = bounds.Height / 2;
 
 			var strokeThickness = ActualStrokeThickness;
 

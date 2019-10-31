@@ -18,9 +18,10 @@ namespace Windows.UI.Xaml.Shapes
 		protected override CGPath GetPath()
 		{
 			var bounds = Bounds;
+			var calculatedBounds = GetBounds();
 
-			var width = double.IsNaN(Width) ? bounds.Width : Width;
-			var height = double.IsNaN(Height) ? bounds.Height : Height;
+			var width = double.IsNaN(Width) ? calculatedBounds.Width : Width;
+			var height = double.IsNaN(Height) ? calculatedBounds.Height : Height;
 
 			var strokeThickness = (nfloat)this.ActualStrokeThickness;
 
