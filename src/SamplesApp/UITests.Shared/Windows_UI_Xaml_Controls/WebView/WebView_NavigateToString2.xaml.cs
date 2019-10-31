@@ -8,7 +8,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 	[SampleControlInfo("WebView", "WebView_NavigateToString2", typeof(WebViewViewModel), description: "WebView testing NavigateToString method with long string")]
 	public sealed partial class WebView_NavigateToString2 : UserControl
 	{
-		public WebView_NavigateToString()
+		public WebView_NavigateToString2()
 		{
 			this.InitializeComponent();
 		}
