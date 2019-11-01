@@ -45,7 +45,9 @@
   </Target>
   
   <ItemGroup>
+    <!-- Properties that will be automatically forwarded to the source generators -->
     <UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlPort" />
+    <UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlHost" />
   </ItemGroup>
 
 </Project>
