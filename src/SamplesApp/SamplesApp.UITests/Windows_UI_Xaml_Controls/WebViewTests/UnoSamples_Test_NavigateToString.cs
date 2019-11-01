@@ -29,10 +29,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 
 			_app.Tap(startButton);
 
-			for(int i=10; i<100; i+=10)
-			{
-				_app.WaitForText(clickResult, i.ToString());
-			}
+			//for(int i=10; i<100; i+=10)
+			//{
+			//	_app.WaitForText(clickResult, i.ToString());
+			//}
+			_app.Wait(TimeSpan.FromSeconds(20));
 			_app.WaitForText(clickResult, "success");
 			TakeScreenshot("AfterSuccess");
 
