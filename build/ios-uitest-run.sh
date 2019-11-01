@@ -28,5 +28,6 @@ mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-conso
 	--workers=1 \
 	--where "namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests'" \
 	--where "namespace = 'SamplesApp.UITests'" \
+	--where "namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests'" \
 	$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/Release/net47/SamplesApp.UITests.dll \
 	|| true
