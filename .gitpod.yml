@@ -5,3 +5,13 @@ ports:
   - port: 8000
     onOpen: open-preview
   - port: 53487
+
+tasks:
+  - command: echo -e "Follow the guide here https://github.com/unoplatform/uno/tree/master/doc/articles/features/working-with-gitpod.md\nBuild Uno with: build/gitpod/build-wasm.sh"
+    name: Build
+  - openMode: split-right
+    name: XAML Hot Reload Server
+    command: echo "Once you've built the sources, run: build/gitpod/serve-remote-control.sh"
+  - openIn: left
+    name: SampleApp Static Files Server
+    command: echo "once you've built the sources, run: build/gitpod/serve-sampleapp-wasm.sh "
