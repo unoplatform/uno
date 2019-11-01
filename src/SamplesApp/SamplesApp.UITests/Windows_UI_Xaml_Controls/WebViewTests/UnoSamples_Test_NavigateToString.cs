@@ -27,17 +27,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 			var startButton = _app.Marked("startButton");
 			var clickResult = _app.Marked("WebView_NavigateToStringResult");
 
+			// step 1: generate long string
 			_app.Tap(startButton);
 
-			//for(int i=10; i<100; i+=10)
-			//{
-			//	_app.WaitForText(clickResult, i.ToString());
-			//}
-			_app.Wait(TimeSpan.FromSeconds(300)); // Android: 20 is sufficient
-			_app.WaitForText(clickResult, "string is generated");
-			_app.WaitForText(clickResult, "success");
-			TakeScreenshot("AfterSuccess");
+			// _app.Wait(TimeSpan.FromSeconds(300)); // Android: 20 is sufficient
+			_app.WaitForText(clickResult, "string ready");	// timeout here means: add wait
 
+			// step 2: NavigateTo
+			_app.Tap(startButton);
+			_app.WaitForText(clickResult, "success");	// timeout here means: bug reappear
+
+			TakeScreenshot("AfterSuccess");
 
 		}
 
