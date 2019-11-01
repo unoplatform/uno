@@ -33,6 +33,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.WebView
 				WebView_NavigateToStringResult.Text = ((int)(i * 100 / linesCount)).ToString();  // percentage, as generating string takes loooong
 			}
 			longString += "</body></html>";
+			WebView_NavigateToStringResult.Text = "string is generated";
 			webViewControl.NavigationCompleted += webViewControl_NavigationCompleted;
 			webViewControl.NavigateToString(longString);
 		}
