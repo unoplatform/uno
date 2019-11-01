@@ -28,7 +28,7 @@ namespace Uno.UI.RemoteControl.Host
 
 		public void Configure(IApplicationBuilder app, IOptionsMonitor<ProxyOptions> optionsAccessor, IHostingEnvironment env)
 		{
-			var provider = new MyProvider(app.ApplicationServices);
+			var provider = new ServiceLocatorAdapter(app.ApplicationServices);
 			ServiceLocator.SetLocatorProvider(() => provider);
 
 			var options = optionsAccessor.CurrentValue;

@@ -4,11 +4,11 @@ using Microsoft.Practices.ServiceLocation;
 
 namespace Uno.UI.RemoteControl.Host
 {
-	internal class MyProvider : IServiceLocator
+	internal class ServiceLocatorAdapter : IServiceLocator
 	{
 		private readonly IServiceProvider _provider;
 
-		public MyProvider(IServiceProvider provider)
+		public ServiceLocatorAdapter(IServiceProvider provider)
 		{
 			_provider = provider;
 		}
