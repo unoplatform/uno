@@ -87,7 +87,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			theDatePicker.Tap();
 
 			//Assert
-			Assert.AreEqual(datePickerFlyout.GetDependencyPropertyValue("MinYear").ToString(), theDatePicker.GetDependencyPropertyValue("MinYear").ToString());
+			Assert.AreEqual(datePickerFlyout.GetDependencyPropertyValue("MinYear")?.ToString(), theDatePicker.GetDependencyPropertyValue("MinYear")?.ToString());
 		}
 
 		[Test]
@@ -106,7 +106,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			theDatePicker.Tap();
 
 			//Assert
-			Assert.AreEqual(datePickerFlyout.GetDependencyPropertyValue("MaxYear").ToString(), theDatePicker.GetDependencyPropertyValue("MaxYear").ToString());
+			Assert.AreEqual(datePickerFlyout.GetDependencyPropertyValue("MaxYear")?.ToString(), theDatePicker.GetDependencyPropertyValue("MaxYear")?.ToString());
 		}
 	}
 }

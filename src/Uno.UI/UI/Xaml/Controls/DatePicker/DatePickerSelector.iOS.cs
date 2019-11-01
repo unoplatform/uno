@@ -37,6 +37,8 @@ namespace Windows.UI.Xaml.Controls
 
 				RegisterValueChanged();
 			}
+
+			UpdatMinMaxYears();
 		}
 
 		private void RegisterValueChanged()
@@ -67,53 +69,52 @@ namespace Windows.UI.Xaml.Controls
 			// Animate to cover up the small delay in setting the date when the flyout is opened
 			var animated = !UIDevice.CurrentDevice.CheckSystemVersion(10, 0);
 
-			if (newDate < MinYear || newDate > MaxYear)
+			if (newDate < MinYear )
 			{
-				Date = oldDate;
+				Date = MinYear;
 			}
-			else
+			else if(newDate > MaxYear)
 			{
-				_picker?.SetDate(
-					DateTime.SpecifyKind(newDate.DateTime, DateTimeKind.Local).ToNSDate(),
-					animated: animated
-				);
+				Date = MaxYear;
 			}
+
+			_picker?.SetDate(
+				DateTime.SpecifyKind(Date.DateTime, DateTimeKind.Local).ToNSDate(),
+				animated: animated
+			);
 		}
 
 		partial void OnMinYearChangedPartialNative(DateTimeOffset oldMinYear, DateTimeOffset newMinYear)
-		{
-			if (_picker == null)
-			{
-				return;
-			}
-
-			var calendar = new NSCalendar(NSCalendarType.Gregorian);
-			var minimumDateComponents = new NSDateComponents
-			{
-				Day = newMinYear.Day,
-				Month = newMinYear.Month,
-				Year = newMinYear.Year
-			};
-
-			_picker.MinimumDate = calendar.DateFromComponents(minimumDateComponents);
-		}
+			=> UpdatMinMaxYears();
 
 		partial void OnMaxYearChangedPartialNative(DateTimeOffset oldMaxYear, DateTimeOffset newMaxYear)
+			=> UpdatMinMaxYears();
+
+		private void UpdatMinMaxYears()
 		{
 			if (_picker == null)
 			{
 				return;
 			}
-			
+
 			var calendar = new NSCalendar(NSCalendarType.Gregorian);
 			var maximumDateComponents = new NSDateComponents
 			{
-				Day = newMaxYear.Day,
-				Month = newMaxYear.Month,
-				Year = newMaxYear.Year
+				Day = MaxYear.Day,
+				Month = MaxYear.Month,
+				Year = MaxYear.Year
 			};
 
 			_picker.MaximumDate = calendar.DateFromComponents(maximumDateComponents);
+
+			var minimumDateComponents = new NSDateComponents
+			{
+				Day = MinYear.Day,
+				Month = MinYear.Month,
+				Year = MinYear.Year
+			};
+
+			_picker.MinimumDate = calendar.DateFromComponents(minimumDateComponents);
 		}
 	}
 }
