@@ -13,31 +13,44 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.WebView
 			this.InitializeComponent();
 		}
     
- 		private async void generateLong_Click(object sender, object e)
-		{
-			WebView_NavigateToStringResult.Text = "waiting for NavigationCompleted";
+ 		string longString = "";
 
-			int linesCount = 0;
-			if(!int.TryParse(WebView_NavigateToStringSize.Text, out linesCount))
-			{
-				return;
-			}
+        private void generateLong_Click(object sender, object e)
+        {
 
-			string longString;
-			longString = "<html><body>";
-			for (int i = 0; i < linesCount; i++)
-			{
-				string line = "Linia " + i.ToString() + " ";
-				line = line.PadRight(1000, 'x');
-				longString = longString + "<p>" + line;
-				WebView_NavigateToStringResult.Text = ((int)(i * 100 / linesCount)).ToString();  // percentage, as generating string takes loooong
-			}
-			longString += "</body></html>";
-			WebView_NavigateToStringResult.Text = "string is generated";
-			webViewControl.NavigationCompleted += webViewControl_NavigationCompleted;
-			webViewControl.NavigateToString(longString);
-		}
+            if (longString.Length < 10)
+            {
+                // generate string
+                WebView_NavigateToStringResult.Text = "generating string";
 
+
+                int linesCount = 0;
+                if (!int.TryParse(WebView_NavigateToStringSize.Text, out linesCount))
+                {
+                    return;
+                }
+
+                longString = "<html><body>";
+                for (int i = 0; i < linesCount; i++)
+                {
+                    string line = "Linia " + i.ToString() + " ";
+                    line = line.PadRight(1000, 'x');
+                    longString = longString + "<p>" + line;
+                    WebView_NavigateToStringResult.Text = ((int)(i * 100 / linesCount)).ToString();  // percentage, as generating string takes loooong
+                }
+                longString += "</body></html>";
+
+                WebView_NavigateToStringResult.Text = "string ready";
+                startButton.Content = "NavigateTo";
+            }
+            else
+            {
+                // NavigateTo
+                WebView_NavigateToStringResult.Text = "waiting for NavigationCompleted";
+                webViewControl.NavigationCompleted += webViewControl_NavigationCompleted;
+                webViewControl.NavigateToString(longString);
+            }
+        }
         private void webViewControl_NavigationCompleted(object sender, object args)
         {
             WebView_NavigateToStringResult.Text = "success";
