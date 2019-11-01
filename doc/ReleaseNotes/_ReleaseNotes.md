@@ -177,6 +177,7 @@
 * [#1924](https://github.com/unoplatform/uno/issues/1924) Fix Android `ListView.HeaderTemplate` (and `.FooterTemplate`) binding bug when changing `Header` and `Footer`.
 * 164480 [Android] fixed a text wrapping issue caused by layout height desync
 * [Wasm] Fix unable to reset `Image.Source` property
+* [#2014](https://github.com/unoplatform/uno/issues/2014) Fix iOS Picker for ComboBox not selecting the correct item.
 
 ## Release 1.45.0
 ### Features
