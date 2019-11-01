@@ -24,14 +24,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			_app.WaitForElement(_app.Marked("theDatePicker"));
 
 			var theDatePicker = _app.Marked("theDatePicker");
-			var datePickerFlyout = theDatePicker.Child;
+			var datePickerFlyout = _app.CreateQuery(q => q.WithClass("Windows_UI_Xaml_Controls_DatePickerSelector"));
+
+			Console.WriteLine($"1: {theDatePicker.GetDependencyPropertyValue<string>("DataContext")}");
+
+			_app.WaitForDependencyPropertyValue(theDatePicker, "DataContext", "UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.Models.DatePickerViewModel");
 
 			// Open flyout
 			theDatePicker.Tap();
 
-			//Assert
-			Assert.IsNotNull(theDatePicker.GetDependencyPropertyValue("DataContext"));
-			Assert.IsNotNull(datePickerFlyout.GetDependencyPropertyValue("DataContext"));
+			_app.WaitForElement(datePickerFlyout);
+
+			_app.WaitForDependencyPropertyValue(datePickerFlyout, "DataContext", "UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.Models.DatePickerViewModel");
+
 		}
 
 		[Test]
@@ -44,13 +49,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			_app.WaitForElement(_app.Marked("theDatePicker"));
 
 			var theDatePicker = _app.Marked("theDatePicker");
-			var datePickerFlyout = theDatePicker.Child;
+			var datePickerFlyout = _app.CreateQuery(q => q.WithClass("Windows_UI_Xaml_Controls_DatePickerFlyoutPresenter"));
 
 			// Open flyout
 			theDatePicker.Tap();
 
-			//Assert
-			Assert.IsNotNull(datePickerFlyout.GetDependencyPropertyValue("Content"));
+			_app.WaitForDependencyPropertyValue(datePickerFlyout, "Content", "Windows.UI.Xaml.Controls.DatePickerSelector");
 		}
 
 		[Test]
@@ -81,13 +85,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			_app.WaitForElement(_app.Marked("theDatePicker"));
 
 			var theDatePicker = _app.Marked("theDatePicker");
-			var datePickerFlyout = theDatePicker.Child;
+			var datePickerFlyout = _app.CreateQuery(q => q.WithClass("Windows_UI_Xaml_Controls_DatePickerSelector"));
+
+			_app.WaitFor(() => theDatePicker.GetDependencyPropertyValue<string>("MinYear") != null);
+			var minYear = theDatePicker.GetDependencyPropertyValue<string>("MinYear");
 
 			// Open flyout
 			theDatePicker.Tap();
 
-			//Assert
-			Assert.AreEqual(datePickerFlyout.GetDependencyPropertyValue("MinYear").ToString(), theDatePicker.GetDependencyPropertyValue("MinYear").ToString());
+			_app.WaitFor(() => datePickerFlyout.GetDependencyPropertyValue<string>("MinYear") == minYear);
 		}
 
 		[Test]
@@ -100,13 +106,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			_app.WaitForElement(_app.Marked("theDatePicker"));
 
 			var theDatePicker = _app.Marked("theDatePicker");
-			var datePickerFlyout = theDatePicker.Child;
+			var datePickerFlyout = _app.CreateQuery(q => q.WithClass("Windows_UI_Xaml_Controls_DatePickerSelector"));
+
+			_app.WaitFor(() => theDatePicker.GetDependencyPropertyValue<string>("MaxYear") != null);
+			var maxYear = theDatePicker.GetDependencyPropertyValue<string>("MaxYear");
 
 			// Open flyout
 			theDatePicker.Tap();
 
 			//Assert
-			Assert.AreEqual(datePickerFlyout.GetDependencyPropertyValue("MaxYear").ToString(), theDatePicker.GetDependencyPropertyValue("MaxYear").ToString());
+			_app.WaitFor(() => datePickerFlyout.GetDependencyPropertyValue<string>("MaxYear") == maxYear);
 		}
 	}
 }
