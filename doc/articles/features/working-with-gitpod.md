@@ -5,7 +5,7 @@
 ## Contributing to Uno using GitPod
 
 To contribute to Uno usign GitPod:
-1. [Create a GitPod workspace](https://gitpod.io/#https://github.com/unoplatform/uno)
+1. [![Open Uno in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/unoplatform/uno)
 1. In the opened shell, type the following to build the Uno solution:
   ```
   build/gitpod/build-wasm.sh
