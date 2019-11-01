@@ -33,7 +33,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 			//{
 			//	_app.WaitForText(clickResult, i.ToString());
 			//}
-			_app.Wait(TimeSpan.FromSeconds(20));
+			_app.Wait(TimeSpan.FromSeconds(300)); // Android: 20 is sufficient
 			_app.WaitForText(clickResult, "success");
 			TakeScreenshot("AfterSuccess");
 
