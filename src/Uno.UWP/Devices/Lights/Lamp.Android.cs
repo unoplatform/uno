@@ -100,9 +100,9 @@ namespace Windows.Devices.Lights
 			return packageManager
 				.GetSystemAvailableFeatures()
 				.Any(feature =>
-					feature.Name.Equals(
+					feature.Name?.Equals(
 						PackageManager.FeatureCameraFlash,
-						StringComparison.OrdinalIgnoreCase));
+						StringComparison.OrdinalIgnoreCase) == true);
 		}
 
 		private void UpdateLampState()
