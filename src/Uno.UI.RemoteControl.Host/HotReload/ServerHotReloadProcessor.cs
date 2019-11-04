@@ -95,9 +95,12 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 
 		public void Dispose()
 		{
-			foreach(var watcher in _watchers)
+			if (_watchers != null)
 			{
-				watcher.Dispose();
+				foreach (var watcher in _watchers)
+				{
+					watcher.Dispose();
+				}
 			}
 		}
 	}
