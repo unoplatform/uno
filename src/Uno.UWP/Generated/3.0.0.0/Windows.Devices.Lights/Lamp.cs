@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Lights
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Lamp : global::System.IDisposable
@@ -79,7 +79,7 @@ namespace Windows.Devices.Lights
 		// Forced skipping of method Windows.Devices.Lights.Lamp.Color.set
 		// Forced skipping of method Windows.Devices.Lights.Lamp.AvailabilityChanged.add
 		// Forced skipping of method Windows.Devices.Lights.Lamp.AvailabilityChanged.remove
-		#if false || false || false || false || false
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
 		{
