@@ -437,5 +437,20 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 				app.Resources.Remove("AppBarThemeCompactHeight");
 			}
 		}
+
+		[TestMethod]
+		public void When_TimeSpan_Intra_Dictionary()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var radioButton = new RadioButton();
+
+			radioButton.Style = app.Resources["ExplicitRadioButtonStyle2"] as Style;
+			radioButton.ApplyTemplate();
+
+			var ctrl = radioButton.FindFirstChild<MyControl>();
+
+			Assert.AreEqual(TimeSpan.FromMilliseconds(400), ctrl.MyInterval);
+		}
 	}
 }
