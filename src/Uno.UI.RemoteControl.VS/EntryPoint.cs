@@ -130,7 +130,7 @@ namespace Uno.UI.RemoteControl.VS
 
 				var sb = new StringBuilder();
 
-				var hostBinPath = Path.Combine(_toolsPath, "host", "Uno.RemoteControl.Host.dll");
+				var hostBinPath = Path.Combine(_toolsPath, "host", "Uno.UI.RemoteControl.Host.dll");
 				string arguments = $"{hostBinPath} --httpPort {RemoteControlServerPort}";
 				var pi = new ProcessStartInfo("dotnet", arguments)
 				{

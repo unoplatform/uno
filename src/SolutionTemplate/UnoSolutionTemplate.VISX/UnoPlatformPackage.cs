@@ -164,7 +164,7 @@ namespace UnoSolutionTemplate
 					var installedPackages = installerServices.GetInstalledPackages();
 
 					var unoNuGetPackage = installedPackages
-						.Where(p => p.Id.Equals("Uno.UI", StringComparison.OrdinalIgnoreCase))
+						.Where(p => p.Id.Equals("Uno.UI.RemoteControl", StringComparison.OrdinalIgnoreCase))
 						.OrderByDescending(p => p.VersionString)
 						.LastOrDefault();
 
@@ -172,15 +172,15 @@ namespace UnoSolutionTemplate
 					{
 						if (string.IsNullOrWhiteSpace(unoNuGetPackage.InstallPath.Trim()))
 						{
-							_infoAction("The Uno.UI package has not been restored yet, retrying...");
+							_infoAction("The Uno.UI.RemoteControl package has not been restored yet, retrying...");
 						}
 						else
 						{
 							var toolsPath = System.IO.Path.Combine(unoNuGetPackage.InstallPath, "tools", "rc");
-							var asmPath = System.IO.Path.Combine(toolsPath, "Uno.UI.HotReload.VS.dll");
+							var asmPath = System.IO.Path.Combine(toolsPath, "Uno.UI.RemoteControl.VS.dll");
 							var asm = System.Reflection.Assembly.LoadFrom(asmPath);
 
-							var entryPointType = asm.GetType("Uno.UI.HotReload.VS.EntryPoint");
+							var entryPointType = asm.GetType("Uno.UI.RemoteControl.VS.EntryPoint");
 
 							if (entryPointType.GetConstructor(
 								new[] {

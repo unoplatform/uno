@@ -1,4 +1,4 @@
-<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 
   <PropertyGroup>
     <TargetFramework>net461</TargetFramework>
@@ -35,7 +35,7 @@
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\tools\rc</_TargetNugetFolder>
+			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI.RemoteControl\$(UnoNugetOverrideVersion)\tools\rc</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)*.*" />
