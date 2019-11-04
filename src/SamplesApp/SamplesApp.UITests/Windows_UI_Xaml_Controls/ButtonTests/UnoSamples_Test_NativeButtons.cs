@@ -11,7 +11,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 	public class UnoSamples_Test_NativeButtons : SampleControlUITestBase
 	{
 		[Test]
-		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		[ActivePlatforms(Platform.Android)] // Disabled on iOS: https://github.com/unoplatform/uno/issues/1955
 		[AutoRetry]
 		public void NativeButtonTests()
 		{

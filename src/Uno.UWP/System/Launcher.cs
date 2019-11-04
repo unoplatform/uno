@@ -7,6 +7,8 @@ using Uno.Logging;
 using Windows.Foundation;
 using Microsoft.Extensions.Logging;
 using System.Linq;
+using Windows.UI.Core;
+
 #if __ANDROID__
 using Android.Content;
 using Android.Content.PM;
@@ -22,41 +24,46 @@ namespace Windows.System
 	{
 		public static async Task<bool> LaunchUriAsync(Uri uri)
 		{
-			try
-			{
+			return await CoreDispatcher.Main.RunWithResultAsync(
+				CoreDispatcherPriority.Normal,
+				async () =>
+				{
+					try
+					{
 #if __IOS__
-				return UIKit.UIApplication.SharedApplication.OpenUrl(
-					new AppleUrl(uri.OriginalString));
+						return UIKit.UIApplication.SharedApplication.OpenUrl(
+							new AppleUrl(uri.OriginalString));
 #elif __ANDROID__
-				var androidUri = Android.Net.Uri.Parse(uri.OriginalString);
-				var intent = new Intent(Intent.ActionView, androidUri);
+						var androidUri = Android.Net.Uri.Parse(uri.OriginalString);
+						var intent = new Intent(Intent.ActionView, androidUri);
 
-				if ( Uno.UI.ContextHelper.Current == null)
-				{
-					throw new InvalidOperationException(
-						"LaunchUriAsync was called too early in application lifetime. " +
-						"App context needs to be initialized");
-				}
-				((Android.App.Activity)Uno.UI.ContextHelper.Current).StartActivity(intent);
+						if (Uno.UI.ContextHelper.Current == null)
+						{
+							throw new InvalidOperationException(
+								"LaunchUriAsync was called too early in application lifetime. " +
+								"App context needs to be initialized");
+						}
+						((Android.App.Activity)Uno.UI.ContextHelper.Current).StartActivity(intent);
 
-				return true;
+						return true;
 #elif __WASM__
-				var command = $"Uno.UI.WindowManager.current.open(\"{uri.OriginalString}\");";
-				var result = Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
-				return result == "True";
+						var command = $"Uno.UI.WindowManager.current.open(\"{uri.OriginalString}\");";
+						var result = Uno.Foundation.WebAssemblyRuntime.InvokeJS(command);
+						return result == "True";
 #else
-				throw new NotImplementedException();
+						throw new NotImplementedException();
 #endif
-			}
-			catch (Exception exception)
-			{
-				if (typeof(Launcher).Log().IsEnabled(LogLevel.Error))
-				{
-					typeof(Launcher).Log().Error($"Failed to {nameof(LaunchUriAsync)}.", exception);
-				}
+					}
+					catch (Exception exception)
+					{
+						if (typeof(Launcher).Log().IsEnabled(LogLevel.Error))
+						{
+							typeof(Launcher).Log().Error($"Failed to {nameof(LaunchUriAsync)}.", exception);
+						}
 
-				return false;
-			}
+						return false;
+					}
+				});
 		}
 
 #if __ANDROID__ || __IOS__
@@ -64,30 +71,35 @@ namespace Windows.System
 			Uri uri,
 			LaunchQuerySupportType launchQuerySupportType)
 		{
-#if __IOS__
-			var canOpenUri = UIApplication.SharedApplication.CanOpenUrl(
-				new AppleUrl(uri.OriginalString));
-#elif __ANDROID__
-			var androidUri = Android.Net.Uri.Parse(uri.OriginalString);
-			var intent = new Intent(Intent.ActionView, androidUri);
 
-			if (Uno.UI.ContextHelper.Current == null)
+			bool CanOpenUri()
 			{
-				throw new InvalidOperationException(
-					"LaunchUriAsync was called too early in application lifetime. " +
-					"App context needs to be initialized");
+#if __IOS__
+				return UIApplication.SharedApplication.CanOpenUrl(
+					new AppleUrl(uri.OriginalString));
+#elif __ANDROID__
+				var androidUri = Android.Net.Uri.Parse(uri.OriginalString);
+				var intent = new Intent(Intent.ActionView, androidUri);
+
+				if (Uno.UI.ContextHelper.Current == null)
+				{
+					throw new InvalidOperationException(
+						"LaunchUriAsync was called too early in application lifetime. " +
+						"App context needs to be initialized");
+				}
+
+				var manager = Uno.UI.ContextHelper.Current.PackageManager;
+				var supportedResolvedInfos = manager.QueryIntentActivities(
+					intent,
+					PackageInfoFlags.MatchDefaultOnly);
+				return supportedResolvedInfos.Any();
+#endif
 			}
 
-			var manager = Uno.UI.ContextHelper.Current.PackageManager;
-			var supportedResolvedInfos = manager.QueryIntentActivities(
-				intent,
-				PackageInfoFlags.MatchDefaultOnly);
-			var canOpenUri = supportedResolvedInfos.Any();
-#endif
-			var supportStatus = canOpenUri ?
-				LaunchQuerySupportStatus.Available : LaunchQuerySupportStatus.NotSupported;
-
-			return Task.FromResult(supportStatus).AsAsyncOperation();			
+			return CoreDispatcher.Main.RunWithResultAsync(
+				priority: CoreDispatcherPriority.Normal,
+				task: async () => CanOpenUri() ? LaunchQuerySupportStatus.Available : LaunchQuerySupportStatus.NotSupported
+			).AsAsyncOperation();	
 		}
 #endif
 	}

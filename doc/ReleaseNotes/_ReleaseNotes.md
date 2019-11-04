@@ -5,6 +5,8 @@
 ### Features
 
 * [#] Support for `Windows.Devices.Lights.Lamp` on iOS, Android.
+* [#1970](https://github.com/unoplatform/uno/pull/1970) Added support for `AnalyticsInfo` properties on iOS, Android and WASM
+* [#1207] Implemented some `PackageId` properties
 * [#1919](https://github.com/unoplatform/uno/pull/1919) Support for `PathGeometry` on WASM.
 * Support for `Geolocator` on WASM, improvements for support on Android, iOS
 * [#1813](https://github.com/unoplatform/uno/pull/1813) - Added polyline support for WASM and samples for all shapes
@@ -82,6 +84,8 @@
 * Add support for `Windows.UI.Xaml.Controls.Primitives.LayoutInformation.GetAvailableSize`
 * Add support for Runtime Tests that require UI integration
 * Enable iOS UI Tests
+* Add support for `PersonPicture`
+* Add support for `VisualState` `Setter` data binding, static resources and complex objects
 
 ### Breaking changes
 
@@ -98,6 +102,7 @@
 
 ### Bug fixes
 
+* [#1987](https://github.com/unoplatform/uno/pull/1987) Missing XML comment warnings are disabled on generated code
 * [#1939](https://github.com/unoplatform/uno/pull/1939) Handles nullables types in XAML file generator
 * [#1741](https://github.com/unoplatform/uno/issues/1741) On Android, `ApplicationData.Current.[LocalFolder|RoamingFolder]` can now be used in the ctor of App.xaml.cs
     > This change introduces a new constructor in `Windows.UI.Xaml.NativeApplication` that requests a delegate. In the Visual Studio Templates for Uno Platform, the `Main.cs` for the Android, the constructor now provides `() => new App()` instead of `new App()`, you can do the same in your existing application. See [this file](https://github.com/unoplatform/uno/blob/master/src/SolutionTemplate/UnoSolutionTemplate/Droid/Main.cs) for an example.
@@ -171,6 +176,9 @@
 * [IOS] DatePickerFlyout min and max year were resetting to FallbackNullValue
 * [Android] Fix bug in `ListView` when using an `ObservableCollection` as its source and using `Header` and `Footer`.
 * [#1924](https://github.com/unoplatform/uno/issues/1924) Fix Android `ListView.HeaderTemplate` (and `.FooterTemplate`) binding bug when changing `Header` and `Footer`.
+* 164480 [Android] fixed a text wrapping issue caused by layout height desync
+* [Wasm] Fix unable to reset `Image.Source` property
+* [#2014](https://github.com/unoplatform/uno/issues/2014) Fix iOS Picker for ComboBox not selecting the correct item.
 
 ## Release 1.45.0
 ### Features

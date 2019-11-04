@@ -33,6 +33,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\PackageTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel_Resources_ResourceLoader\ResourceLoader_Simple.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -90,6 +94,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_System\Power\PowerManager.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_System\Profile\AnalyticsInfoTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -254,6 +262,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\VisualStateTests\VisualState_AdaptiveTrigger_UsingOneStateOnly.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\VisualStateTests\VisualState_ComplexSetters_Automated.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -425,11 +437,19 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\PersonPictureTests\PersonPicturePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Pivot\Pivot_CustomContent_Automated.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ScrollViewerTests\ScrollViewer_Simple.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_TextWrapping_PR1954_EdgeCase.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -2611,6 +2631,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\Chat\ComposeSms.xaml.cs">
       <DependentUpon>ComposeSms.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel\PackageTests.xaml.cs">
+      <DependentUpon>PackageTests.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_ApplicationModel_Resources_ResourceLoader\ResourceLoader_Simple.xaml.cs">
       <DependentUpon>ResourceLoader_Simple.xaml</DependentUpon>
     </Compile>
@@ -2652,6 +2675,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_System\Power\PowerManager.xaml.cs">
       <DependentUpon>PowerManager.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_System\Profile\AnalyticsInfoTests.xaml.cs">
+      <DependentUpon>AnalyticsInfoTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI.Xaml_Automation\AutomationProperties_AutomationId.xaml.cs">
       <DependentUpon>AutomationProperties_AutomationId.xaml</DependentUpon>
@@ -2736,6 +2762,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\VisualStateTests\VisualState_AdaptiveTrigger_UsingOneStateOnly.xaml.cs">
       <DependentUpon>VisualState_AdaptiveTrigger_UsingOneStateOnly.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\VisualStateTests\VisualState_ComplexSetters_Automated.xaml.cs">
+      <DependentUpon>VisualState_ComplexSetters_Automated.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\VisualStateTests\VisualState_DoubleAnimationUsingKeyFrames_RotateTransform.xaml.cs">
       <DependentUpon>VisualState_DoubleAnimationUsingKeyFrames_RotateTransform.xaml</DependentUpon>
     </Compile>
@@ -2803,8 +2832,14 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Flyout\Flyout_LargeContent.xaml.cs">
       <DependentUpon>Flyout_LargeContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\PersonPictureTests\PersonPicturePage.xaml.cs">
+      <DependentUpon>PersonPicturePage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Pivot\Pivot_CustomContent_Automated.xaml.cs">
       <DependentUpon>Pivot_CustomContent_Automated.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_TextWrapping_PR1954_EdgeCase.xaml.cs">
+      <DependentUpon>TextBlock_TextWrapping_PR1954_EdgeCase.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Visibility_Arrange.xaml.cs">
       <DependentUpon>TextBlock_Visibility_Arrange.xaml</DependentUpon>
@@ -4574,22 +4609,82 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\AcrylicBrush.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Animations.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\AppIcon.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\AutoSave.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\AutoSuggestBox.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Button.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\CalendarDatePicker.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\CalendarView.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\cart.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\check.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\CheckBox.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\ColorPicker.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\colors300.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\ComboBox.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\CommandBarFlyout.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\CompactSizing.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\DatePicker.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\DefaultIcon.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\DropdownButton.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\FlipView.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\icon.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\menu.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\search.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\ingredient1.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\ingredient2.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\ingredient3.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\ingredient4.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\ingredient5.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\ingredient6.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\ingredient7.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\ingredient8.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\LargeWisteria.jpg" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\ListView.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\MakeButton.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\menu.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\MenuBar.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\MenuFlyout.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\NavigationView.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\ParallaxView.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\PersonPicture.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Pivot.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\PullToRefresh.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\RadioButton.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\RatingControl.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\rating_disabled.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\rating_disabled_hc.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\rating_mouseoverplaceholder.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\rating_mouseoverplaceholder_hc.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\rating_mouseoverset.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\rating_mouseoverset_hc.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\rating_placeholder _hc.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\rating_placeholder.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\rating_set.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\rating_set_hc.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\rating_unset.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\rating_unset_hc.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Reveal.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\ScrollViewer.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\search.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Slices.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Slider.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SMPTE_WallpaperHD.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SplitButton.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\SplitView.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\star_empty.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\star_full.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\Swipe.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\TeachingTip.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_1252_836.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_200_300.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_250_250.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_300_200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_836_1252.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\TimePicker.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\ToolTip.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\TreeView.png" />
     <Content Include="$(MSBuildThisFileDirectory)Lottie\4770-lady-and-dove.json" />
     <Content Include="$(MSBuildThisFileDirectory)Lottie\4930-checkbox-animation.json" />
     <Content Include="$(MSBuildThisFileDirectory)Lottie\lottie-logo.json" />

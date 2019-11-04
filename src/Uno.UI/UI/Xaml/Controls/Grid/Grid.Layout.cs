@@ -813,7 +813,7 @@ namespace Windows.UI.Xaml.Controls
 					remainingHeight = initialRemainingHeight;
 				}
 
-				if (i == maxTries)
+				if (i == maxTries && maxTries > 1)
 				{
 					if (this.Log().IsEnabled(LogLevel.Warning))
 					{

@@ -51,7 +51,7 @@ For a larger example and features demo:
     * WebAssembly through the [Mono Wasm SDK](https://github.com/mono/mono/blob/master/sdks/wasm/README.md)
 * Dev loop:
     * Develop on Windows first using Visual Studio
-    * [XAML Edit and Continue](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) for live XAML edition on each key stroke
+    * [XAML Edit and Continue](https://blogs.msdn.microsoft.com/visualstudio/2016/04/06/ui-development-made-easier-with-xaml-edit-continue/) for live XAML edition on each keystroke
     * [C# Edit and Continue](https://docs.microsoft.com/en-us/visualstudio/debugger/how-to-use-edit-and-continue-csharp)
     * Validate on other platforms as late as possible
     * Experimental XAML Hot Reload for WebAssembly, iOS and Android
@@ -74,6 +74,7 @@ For a larger example and features demo:
     * [Xamarin.Forms for UWP](https://github.com/unoplatform/uno.Xamarin.Forms), [NuGet](https://www.nuget.org/packages/ReactiveUI.Uno)
     * [Rx.NET](https://github.com/reactiveui/Reactive.Wasm)
     * [ColorCode-Universal](https://github.com/unoplatform/uno.ColorCode-Universal)
+    * [LibVLCSharp](https://github.com/videolan/libvlcsharp)
     * Any UWP project
 * Responsive Design:
     * [Visual State Manager](https://docs.microsoft.com/en-us/uwp/api/Windows.UI.Xaml.VisualStateManager)
@@ -106,7 +107,7 @@ Let us know if you've made your app publicly available, we'll list it here!
 
 # Have questions? Feature requests? Issues?
 
-Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform), [create an issue](https://github.com/unoplatform/uno/issues) or [visit our gitter](https://gitter.im/uno-platform/Lobby).
+Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform), [create an issue](https://github.com/unoplatform/uno/issues) or [visit our Gitter](https://gitter.im/uno-platform/Lobby).
 
 # Contributing
 
