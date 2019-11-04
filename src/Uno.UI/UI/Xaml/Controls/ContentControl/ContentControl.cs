@@ -67,9 +67,19 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				return this.IsDependencyPropertySet(ContentProperty)
-					? GetValue(ContentProperty)
-					: DataContext;
+				if(this.IsDependencyPropertySet(ContentProperty))
+				{
+					return GetValue(ContentProperty);
+				}
+				else if(ContentTemplate != null)
+				{										 
+				   return DataContext;
+				}
+				else
+				{
+					return null;
+				}
+
 			}
 			set { SetValue(ContentProperty, value); }
 		}
@@ -323,7 +333,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (Content != null
 					&& !(Content is View)
-					&& ContentTemplateRoot == null
+					&& ContentTemplateRoot == null && dataTemplate == null && ContentTemplate == null
 				)
 				{
 					SetContentTemplateRootToPlaceholder();
