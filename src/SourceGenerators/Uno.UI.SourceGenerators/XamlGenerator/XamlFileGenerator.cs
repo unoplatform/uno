@@ -2142,7 +2142,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var sourceProp = _globalStaticResourcesMap.FindTargetPropertyForMergedDictionarySource(_fileDefinition, source);
 			if (sourceProp != null)
 			{
-				writer.AppendLineInvariant("global::{0}.GlobalStaticResources.{1}", _defaultNamespace, sourceProp); 
+				writer.AppendLineInvariant("global::{0}.GlobalStaticResources.{1}", _defaultNamespace, sourceProp);
 			}
 			else
 			{
@@ -2886,9 +2886,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (directProperty != null)
 				{
-					var type = FindPropertyType(member.Member);
 					// Prefer direct property reference (when we are in top-level ResourceDictionary and referencing resource in same dictionary)
-					writer.AppendLineInvariant(formatLine("{0} = {1}{2}"), member.Member.Name, GetCastString(type, null), directProperty);
+					var type = FindPropertyType(member.Member);
+					string rightSide;
+					if (type?.Name == "TimeSpan")
+					{
+						// explicit support for TimeSpan because we can't override the parsing.
+						rightSide = "global::System.TimeSpan.Parse({0})".InvariantCultureFormat(directProperty);
+					}
+					else
+					{
+						rightSide = "{0}{1}".InvariantCultureFormat(GetCastString(type, null), directProperty);
+					}
+					writer.AppendLineInvariant(formatLine("{0} = {1}"), member.Member.Name, rightSide);
 
 				}
 				else if (IsDependencyProperty(member.Member))

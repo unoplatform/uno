@@ -31,5 +31,17 @@ namespace Uno.UI.Tests.App.Views
 		{
 			;
 		}
+
+		public TimeSpan MyInterval
+		{
+			get { return (TimeSpan)GetValue(MyIntervalProperty); }
+			set { SetValue(MyIntervalProperty, value); }
+		}
+
+		// Using a DependencyProperty as the backing store for MyInterval.  This enables animation, styling, binding, etc...
+		public static readonly DependencyProperty MyIntervalProperty =
+			DependencyProperty.Register("MyInterval", typeof(TimeSpan), typeof(MyControl), new PropertyMetadata(default(TimeSpan)));
+
+
 	}
 }
