@@ -50,6 +50,8 @@ namespace Uno.UI.RemoteControl.VS
 
 			SetupOutputWindow();
 
+			_dte.Events.SolutionEvents.BeforeClosing += () => SolutionEvents_BeforeClosingAsync();
+
 			_dte.Events.BuildEvents.OnBuildDone +=
 				(s, a) => BuildEvents_OnBuildDoneAsync(s, a);
 
@@ -120,6 +122,27 @@ namespace Uno.UI.RemoteControl.VS
 		private async Task BuildEvents_OnBuildDoneAsync(vsBuildScope Scope, vsBuildAction Action)
 		{
 			await StartServerAsync();
+		}
+
+		private async Task SolutionEvents_BeforeClosingAsync()
+		{
+			if (_process != null)
+			{
+				try
+				{
+					_debugAction($"Terminating Remote Control server (pid: {_process.Id})");
+					_process.Kill();
+					_debugAction($"Terminated Remote Control server (pid: {_process.Id})");
+				}
+				catch (Exception e)
+				{
+					_debugAction($"Failed to terminate Remote Control server (pid: {_process.Id}): {e}");
+				}
+				finally
+				{
+					_process = null;
+				}
+			}
 		}
 
 		private async Task StartServerAsync()
