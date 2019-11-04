@@ -41,8 +41,7 @@ namespace Windows.Devices.Lights
 		{
 			if (_captureDevice.HasTorch)
 			{
-				var maxNativeBrightness = AVCaptureDevice.MaxAvailableTorchLevel;
-				return _captureDevice.TorchLevel / maxNativeBrightness;
+				return _captureDevice.TorchLevel;
 			}
 
 			return _captureDevice.FlashMode == AVCaptureFlashMode.On ? 1 : 0;
@@ -50,7 +49,6 @@ namespace Windows.Devices.Lights
 
 		private void UpdateLampState()
 		{
-			var maxNativeBrightness = AVCaptureDevice.MaxAvailableTorchLevel;
 			_captureDevice.LockForConfiguration(out var error);
 
 			if (error == null)
@@ -60,7 +58,7 @@ namespace Windows.Devices.Lights
 					if (_captureDevice.HasTorch)
 					{
 						_captureDevice.SetTorchModeLevel(
-							_brightness * maxNativeBrightness,
+							_brightness,
 							out var torchErr);
 					}
 					else
