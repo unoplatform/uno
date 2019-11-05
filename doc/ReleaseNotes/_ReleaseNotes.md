@@ -85,6 +85,8 @@
 * Enable iOS UI Tests
 * Add support for `PersonPicture`
 * Add support for `VisualState` `Setter` data binding, static resources and complex objects
+* Clipping to bounds of control is now more similar to UWP
+* The _feature flag_ `FeatureConfiguration.UseLegacyClipping` is now deprecated and not used anymore
 
 ### Breaking changes
 
