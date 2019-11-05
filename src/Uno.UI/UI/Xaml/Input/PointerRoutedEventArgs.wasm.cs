@@ -47,12 +47,13 @@ namespace Windows.UI.Xaml.Input
 		{
 			var timestamp = ToTimeStamp(_timestamp);
 			var device = PointerDevice.For(Pointer.PointerDeviceType);
+			var rawPosition = _absolutePosition;
 			var position = relativeTo == null
-				? _absolutePosition
+				? rawPosition
 				: relativeTo.TransformToVisual(null).Inverse.TransformPoint(_absolutePosition);
 			var properties = GetProperties();
 
-			return new PointerPoint(FrameId, timestamp, device, Pointer.PointerId, position, position, Pointer.IsInContact, properties);
+			return new PointerPoint(FrameId, timestamp, device, Pointer.PointerId, rawPosition, position, Pointer.IsInContact, properties);
 		}
 
 		private PointerPointProperties GetProperties()

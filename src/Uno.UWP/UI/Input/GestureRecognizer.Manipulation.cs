@@ -30,13 +30,7 @@ namespace Windows.UI.Input
 			private ManipulationStates _state = ManipulationStates.Starting;
 			private Points _origins;
 			private Points _currents;
-			private ManipulationDelta _sumOfPublishedDelta = new ManipulationDelta
-			{
-				Translation = new Point(),
-				Rotation = 0,
-				Scale = 1,
-				Expansion = 0
-			};
+			private ManipulationDelta _sumOfPublishedDelta = ManipulationDelta.Empty;
 
 			public Manipulation(GestureRecognizer recognizer, PointerPoint pointer1)
 			{
@@ -67,7 +61,7 @@ namespace Windows.UI.Input
 				_origins.SetPointer2(point);
 				_currents.SetPointer2(point);
 
-				// We force to start the manipulation (or update it) a second pointer is pressed
+				// We force to start the manipulation (or update it) as soon as a second pointer is pressed
 				NotifyUpdate(forceUpdate: true);
 			}
 
@@ -95,7 +89,7 @@ namespace Windows.UI.Input
 				if (TryUpdate(removed))
 				{
 					// For now we complete the Manipulation as soon as a pointer was removed ...
-					// not checked the UWP behavior for that!
+					// did not checked the UWP behavior for that!
 					Complete();
 				}
 			}
@@ -162,15 +156,7 @@ namespace Windows.UI.Input
 
 						if (forceUpdate || IsSignificantDelta(delta))
 						{
-							_sumOfPublishedDelta = new ManipulationDelta
-							{
-								Translation = new Point(
-									_sumOfPublishedDelta.Translation.X + delta.Translation.X,
-									_sumOfPublishedDelta.Translation.Y + delta.Translation.Y),
-								Rotation = _sumOfPublishedDelta.Rotation + delta.Rotation,
-								Scale = _sumOfPublishedDelta.Scale * delta.Scale,
-								Expansion = _sumOfPublishedDelta.Expansion + delta.Expansion
-							};
+							_sumOfPublishedDelta = _sumOfPublishedDelta.Add(delta);
 
 							_recognizer.ManipulationUpdated?.Invoke(
 								_recognizer,
@@ -246,7 +232,7 @@ namespace Windows.UI.Input
 				private PointerPoint _pointer1;
 				private PointerPoint _pointer2;
 
-				public Point Center;
+				public Point Center; // This is the center in ** absolute ** coordinates spaces (i.e. relative to the screen)
 				public float Distance;
 				public double Angle;
 
@@ -257,7 +243,7 @@ namespace Windows.UI.Input
 					_pointer1 = point;
 					_pointer2 = default;
 
-					Center = point.Position;
+					Center = point.RawPosition; // RawPosition => cf. Note in UpdateComputedValues().
 					Distance = 0;
 					Angle = 0;
 				}
@@ -292,16 +278,20 @@ namespace Windows.UI.Input
 
 				private void UpdateComputedValues()
 				{
+					// Note: Here we use the RawPosition in order to work in the ** absolute ** screen coordinates system
+					//		 This is required to avoid to be impacted the any transform applied on the element,
+					//		 and it's sufficient as values of the manipulation events are only values relative to the original touch point.
+
 					if (_pointer2 == null)
 					{
-						Center = _pointer1.Position;
+						Center = _pointer1.RawPosition;
 						Distance = 0;
 						Angle = 0;
 					}
 					else
 					{
-						var p1 = _pointer1.Position;
-						var p2 = _pointer2.Position;
+						var p1 = _pointer1.RawPosition;
+						var p2 = _pointer2.RawPosition;
 
 						Center = new Point((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);
 						Distance = Vector2.Distance(p1.ToVector(), p2.ToVector());
