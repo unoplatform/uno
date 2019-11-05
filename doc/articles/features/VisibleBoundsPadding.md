@@ -42,6 +42,13 @@ Usage is as follows:
 </UserControl>
 ```
 
-**Note: 
+#### Note: 
 - This behavior applies the greater of the existing padding or the calculated padding set on the element it is attached to.
-**
+
+
+## See it in action
+
+![image](https://user-images.githubusercontent.com/36631443/68240880-ac96de80-ffdb-11e9-9714-bd635f637443.png)
+
+![image](https://user-images.githubusercontent.com/36631443/68239478-06e27000-ffd9-11e9-956a-c4d954341a5f.png)
+![image](https://user-images.githubusercontent.com/36631443/68239503-1366c880-ffd9-11e9-9d67-f95050b2e1a7.png)
