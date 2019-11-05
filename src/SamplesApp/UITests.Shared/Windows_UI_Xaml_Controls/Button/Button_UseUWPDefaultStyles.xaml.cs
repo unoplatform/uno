@@ -16,6 +16,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 #if NETFX_CORE
 using Uno.UI.Sample.Views.Helper;
+using _NativeType = Windows.UI.Xaml.Controls.Grid;
 #elif __ANDROID__
 using Uno.UI;
 using _NativeType = Windows.UI.Xaml.Controls.BindableButtonEx;
