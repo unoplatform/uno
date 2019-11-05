@@ -36,6 +36,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private string[] _clrNamespaces;
 		private readonly static Func<INamedTypeSymbol, IPropertySymbol> _findContentProperty;
 		private readonly static Func<INamedTypeSymbol, string, bool> _isAttachedProperty;
+		private readonly static Func<INamedTypeSymbol, string, INamedTypeSymbol> _getAttachedPropertyType;
 
 		private void InitCaches()
 		{
@@ -518,6 +519,37 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
+		/// Get the type of the attached property.
+		/// </summary>
+		private INamedTypeSymbol GetAttachedPropertyType(XamlMemberDefinition member)
+		{
+			var type = GetType(member.Member.DeclaringType);
+			return _getAttachedPropertyType(type, member.Member.Name);
+		}
+
+		private static INamedTypeSymbol SourceGetAttachedPropertyType(INamedTypeSymbol type, string name)
+		{
+			do
+			{
+				var property = type.GetAllProperties().FirstOrDefault(p => p.Name == name);
+				var setMethod = type.GetMethods().FirstOrDefault(p => p.Name == "Set" + name);
+
+				if (setMethod != null && setMethod.IsStatic && setMethod.Parameters.Length == 2)
+				{
+					return setMethod.Parameters[1].Type as INamedTypeSymbol;
+				}
+
+				type = type.BaseType;
+
+				if (type == null || type.Name == "Object")
+				{
+					throw new InvalidOperationException($"No valid setter found for attached property {name}");
+				}
+
+			} while (true);
+		}
+
+		/// <summary>
 		/// Determines if the provided member is an C# initializable list (where the collection already exists, and no set property is present)
 		/// </summary>
 		/// <param name="xamlMember"></param>
@@ -815,7 +847,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					p.DeclaredAccessibility == Accessibility.Public &&
 					IsLocalizablePropertyType(p.Type as INamedTypeSymbol)
 				)
-				.Select(p=>p.Name)
+				.Select(p => p.Name)
 				.ToArray();
 		}
 	}

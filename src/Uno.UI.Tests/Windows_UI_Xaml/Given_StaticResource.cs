@@ -275,6 +275,28 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_Attached_Property_And_Top_Level()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var page = new Test_Page();
+
+			var bulbousness = MyBehavior.GetBulbousness(page);
+			Assert.AreEqual(256, bulbousness);
+		}
+
+		[TestMethod]
+		public void When_Attached_Property_No_DP()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var control = new Test_Control();
+
+			var noDP = MyBehavior.GetNoDPProperty(control.TestTextBlock);
+			Assert.AreEqual(256, noDP);
+		}
+
+		[TestMethod]
 		public void When_Non_View_And_Local_Brush()
 		{
 			var app = UnitTestsApp.App.EnsureApplication();

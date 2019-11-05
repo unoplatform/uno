@@ -53,7 +53,8 @@
 		<TextBlock x:Name="testTextBlock"
 				   Text="Test control"
 				   Foreground="{ThemeResource ApplicationForegroundThemeBrush}"
-				   views:MyBehavior.Bulbousness="{StaticResource DoubleOrNothing}" />
+				   views:MyBehavior.Bulbousness="{StaticResource DoubleOrNothing}"
+				   views:MyBehavior.NoDPProperty="{StaticResource DoubleOrNothing}" />
 		<CheckBox x:Name="testCheckBox" />
 		<Border x:Name="testBorder"
 				Background="{StaticResource MediocreColorBrush}"
