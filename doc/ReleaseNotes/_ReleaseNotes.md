@@ -142,18 +142,7 @@
 * Enable iOS UI Tests
 * Add support for `PersonPicture`
 * Add support for `VisualState` `Setter` data binding, static resources and complex objects
-* Clipping to bounds of control is now more similar to UWP
-* The _feature flag_ `FeatureConfiguration.UseLegacyClipping` is now deprecated and not used anymore
-* XAML Hot Reload support for iOS, Android and Windows
-* Add support for GitPod Workspace and prebuilds
-* #880 Added added implicit conversion for double to Thickness
-* Add Android support for `CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar` to programatically draw under the status bar
-* [WASM] `ScrollViewer.ChangeView` is now supported
-* [Wasm] Add the ability to focus a TextBox by clicking its header
-* Add support for `ToggleButton.IsThreeState` and `ToggleButton.Indeterminate`
-* [Wasm] Add support for `TextBox.IsReadonly`
-* [iOS] [WASM] `Path` now supports `LinearGradientBrush` as `Fill`
-* A feature flag has been added to change the default preferred placement mode fo the drop down of the `ComboBox` (cf. ../articles/control/ComboBox.md)
+* Add support for Android 10.0 
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
@@ -167,6 +156,8 @@
 * [#1237] Static resources defined in App.xaml were not processed and registered properly
     > This change might break the compilation for projects that define duplicate resources in other globally accessible resource dictionaries. Adjustments to remove duplicate resources may be necessary.
  * [WASM] The tranform returned by `UIElement.TransformToVisual` is now including scale, rotation or any custom transformation that was declard on a parent element (transform was only including translate components)
+
+* You will not be able to build projects targeting Android 9.0 locally anymore. Change your Android target to Android 10.0 or replace MonoAndroid10.0 by MonoAndroid90 in the TargetFrameworks of your projects files.
 
 ### Bug fixes
 * [#2186](https://github.com/unoplatform/uno/pull/2186) Fix Canvas Measurement to behave like UWP

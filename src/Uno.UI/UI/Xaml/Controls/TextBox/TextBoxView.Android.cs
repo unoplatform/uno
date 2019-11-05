@@ -164,14 +164,14 @@ namespace Windows.UI.Xaml.Controls
 						var drawables = new Drawable[2];
 						drawables[0] = Android.Support.V4.Content.ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
 						drawables[1] = Android.Support.V4.Content.ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-						drawables[0].SetColorFilter(color, PorterDuff.Mode.SrcIn);
-						drawables[1].SetColorFilter(color, PorterDuff.Mode.SrcIn);
+						drawables[0].SetColorFilter(new BlendModeColorFilter(color, BlendMode.SrcIn));
+						drawables[1].SetColorFilter(new BlendModeColorFilter(color, BlendMode.SrcIn));
 						_cursorDrawableField.Set(editor, drawables);
 					}
 					else
 					{
 						var drawable = Android.Support.V4.Content.ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-						drawable.SetColorFilter(color, PorterDuff.Mode.SrcIn);
+						drawable.SetColorFilter(new BlendModeColorFilter(color, BlendMode.SrcIn));
 						_cursorDrawableField.Set(editor, drawable);
 					}
 				}

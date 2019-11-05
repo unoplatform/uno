@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (progressRing != null && foregroundColor != null)
 			{
-				progressRing.IndeterminateDrawable?.SetColorFilter(foregroundColor.Color, PorterDuff.Mode.SrcIn);
+				progressRing.IndeterminateDrawable?.SetColorFilter(new BlendModeColorFilter(foregroundColor.Color, BlendMode.SrcIn));
 			}
 		}
 
