@@ -10,6 +10,7 @@ using System.IO;
 using System.Reflection;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 using System.Text.RegularExpressions;
+using Windows.Foundation.Metadata;
 using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
@@ -87,6 +88,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var newIgnored = ignoredNs
 					.Except(_includeXamlNamespaces)
 					.Concat(_excludeXamlNamespaces.Where(n => document.DocumentElement.GetNamespaceOfPrefix(n).HasValue()))
+					.Concat(FindExcludedConditionals(document))
 					.ToArray();
 
 				ignorables.Value = newIgnored.JoinBy(" ");
@@ -164,6 +166,53 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return ignorables;
+		}
+
+		/// <summary>
+		/// Returns those XAML namespace definitions for which a conditional is set which returns false, which therefore should be ignored.
+		/// </summary>
+		private string[] FindExcludedConditionals(XmlDocument document) => document.DocumentElement
+			.Attributes
+			.Cast<XmlAttribute>()
+			.Where(ShouldExcludeConditional)
+			.Select(a => a.LocalName)
+			.ToArray();
+
+		private bool ShouldExcludeConditional(XmlAttribute attr) => !ShouldIncludeConditional(attr);
+		private bool ShouldIncludeConditional(XmlAttribute attr)
+		{
+			if (attr.Prefix != "xmlns")
+			{
+				// Not a namespace
+				return true;
+			}
+
+			var valueSplit = attr.Value.Split('?');
+			if (valueSplit.Length != 2)
+			{
+				// Not a (valid) conditional
+				return true;
+			}
+
+			var elements = valueSplit[1].Split('(', ',', ')');
+
+			switch (elements[0])
+			{
+				case nameof(ApiInformation.IsApiContractPresent):
+				case nameof(ApiInformation.IsApiContractNotPresent):
+					if (elements.Length < 4 || !ushort.TryParse(elements[2].Trim(), out var majorVersion))
+					{
+						throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {attr.Value}");
+					}
+
+					return elements[0] == nameof(ApiInformation.IsApiContractPresent) ?
+						ApiInformation.IsApiContractPresent(elements[1], majorVersion) :
+						ApiInformation.IsApiContractNotPresent(elements[1], majorVersion);
+				default:
+					break; // TODO: support IsTypePresent and IsPropertyPresent
+			}
+
+			return true;
 		}
 
 		private XamlFileDefinition Visit(XamlXmlReader reader, string file)
@@ -306,13 +355,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				&& xamlObject.Type.Name == "TextBlock"
 				&& (member.Member.Name == "_UnknownContent" || member.Member.Name == "Inlines");
 		}
-		
+
 		private XamlObjectDefinition ConvertLiteralInlineTextToRun(XamlXmlReader reader)
 		{
 			var runType = new XamlType(
 				XamlConstants.PresentationXamlXmlNamespace,
 				"Run",
-				new List<XamlType>(), 
+				new List<XamlType>(),
 				new XamlSchemaContext()
 			);
 

@@ -6,6 +6,8 @@
 	  xmlns:ext="using:Uno.UI.Tests.ViewLibrary"
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  xmlns:contract1Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 1)"
+	  xmlns:contract1NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,1)"
 	  mc:Ignorable="d"
 	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 	<Page.Resources>
@@ -86,5 +88,8 @@
 				<ResourceDictionary Source="ms-appx:///Uno.UI.Tests.ViewLibrary/Themes/More/Test_Dictionary_Abs.xaml" />
 			</RelativePanel.Resources>
 		</RelativePanel>
+		<TextBlock x:Name="testConditionalTextBlock"
+				   contract1Present:Text="Contract 1"
+				   contract1NotPresent:Text="Not Contract 1" />
 	</Grid>
 </Page>
