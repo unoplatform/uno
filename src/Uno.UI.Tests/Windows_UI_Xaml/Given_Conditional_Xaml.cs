@@ -19,5 +19,19 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var tb = page.TestConditionalTextBlock;
 			Assert.AreEqual("Contract 1", tb.Text);
 		}
+
+		[TestMethod]
+		public void When_Uno_Conditional_And_No_Ignorable()
+		{
+			var page = new Test_Page();
+
+			var rd = page.TestStackPanel.Resources;
+			var hasWinOnlyBrush = rd.ContainsKey("WinOnlyBrush");
+#if NETFX_CORE
+			Assert.IsTrue(hasWinOnlyBrush);
+#else
+			Assert.IsFalse(hasWinOnlyBrush);
+#endif
+		}
 	}
 }

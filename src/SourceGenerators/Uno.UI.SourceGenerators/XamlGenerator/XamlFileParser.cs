@@ -77,57 +77,98 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var document = new XmlDocument();
 			document.LoadXml(adjusted);
 
-			var ignorables = FindIgnorables(document);
+			var (ignorables, shouldCreateIgnorable) = FindIgnorables(document);
+			var excludedConditionals = FindExcludedConditionals(document);
 
+			shouldCreateIgnorable |= excludedConditionals.Length > 0;
+
+			if (ignorables == null && !shouldCreateIgnorable)
+			{
+				// No need to modify file
+				return XmlReader.Create(file);
+			}
+
+			var originalIgnorables = ignorables?.Value ?? "";
+
+			var ignoredNs = originalIgnorables.Split(' ');
+
+			var newIgnored = ignoredNs
+				.Except(_includeXamlNamespaces)
+				.Concat(_excludeXamlNamespaces.Where(n => document.DocumentElement.GetNamespaceOfPrefix(n).HasValue()))
+				.Concat(excludedConditionals)
+				.ToArray();
+			var newIgnoredFlat = newIgnored.JoinBy(" ");
+			
 			if (ignorables != null)
 			{
-				var originalIgnorables = ignorables.Value;
-
-				var ignoredNs = ignorables.Value.Split(' ');
-
-				var newIgnored = ignoredNs
-					.Except(_includeXamlNamespaces)
-					.Concat(_excludeXamlNamespaces.Where(n => document.DocumentElement.GetNamespaceOfPrefix(n).HasValue()))
-					.Concat(FindExcludedConditionals(document))
-					.ToArray();
-
-				ignorables.Value = newIgnored.JoinBy(" ");
+				ignorables.Value = newIgnoredFlat;
 
 				this.Log().InfoFormat("Ignorable XAML namespaces: {0} for {1}", ignorables.Value, file);
 
 				// change the namespaces using textreplace, to keep the formatting and have proper
 				// line/position reporting.
-				adjusted = adjusted.Replace(
-					"Ignorable=\"{0}\"".InvariantCultureFormat(originalIgnorables),
-					"Ignorable=\"{0}\"".InvariantCultureFormat(ignorables.Value)
-				)
-				.TrimEnd("\r\n");
+				adjusted = adjusted
+					.Replace(
+						"Ignorable=\"{0}\"".InvariantCultureFormat(originalIgnorables),
+						"Ignorable=\"{0}\"".InvariantCultureFormat(ignorables.Value)
+					)
+					.TrimEnd("\r\n");
+			}
+			else
+			{
+				// No existing Ignorable node, create one
+				var targetLine = File.ReadLines(file, Encoding.UTF8).First();
+				if (targetLine.EndsWith(">"))
+				{
+					targetLine.TrimEnd(">");
+				}
 
-				// Replace the ignored namespaces with unique urns so that same urn that are placed in Ignored attribute
-				// are ignored independently.
-				foreach (var n in newIgnored)
+				var mcName = document.DocumentElement
+					.Attributes
+					.Cast<XmlAttribute>()
+					.FirstOrDefault(a => a.Prefix == "xmlns" && a.Value == "http://schemas.openxmlformats.org/markup-compatibility/2006")
+					?.LocalName;
+
+				var mcString = "";
+				if (mcName == null)
+				{
+					mcName = "mc";
+					mcString = " xmlns:mc=\"http://schemas.openxmlformats.org/markup-compatibility/2006\"";
+				}
+
+				var replacement = "{0}{1} {2}:Ignorable=\"{3}\"".InvariantCultureFormat(targetLine, mcString, mcName, newIgnoredFlat);
+				adjusted = adjusted
+					.Replace(
+						targetLine,
+						replacement
+					)
+					.TrimEnd("\r\n");
+			}
+
+			// Replace the ignored namespaces with unique urns so that same urn that are placed in Ignored attribute
+			// are ignored independently.
+			foreach (var n in newIgnored)
+			{
+				adjusted = adjusted
+					.Replace(
+						"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, document.DocumentElement.GetNamespaceOfPrefix(n)),
+						"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, Guid.NewGuid())
+					);
+			}
+
+			// Put all the included namespaces in the same default namespace, so that the properties get their
+			// DeclaringType properly set.
+			foreach (var n in _includeXamlNamespaces)
+			{
+				var originalPrefix = document.DocumentElement.GetNamespaceOfPrefix(n);
+
+				if (!originalPrefix.StartsWith("using:"))
 				{
 					adjusted = adjusted
 						.Replace(
 							"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, document.DocumentElement.GetNamespaceOfPrefix(n)),
-							"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, Guid.NewGuid())
+							"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, document.DocumentElement.GetNamespaceOfPrefix(""))
 						);
-				}
-
-				// Put all the included namespaces in the same default namespace, so that the properties get their
-				// DeclaringType properly set.
-				foreach (var n in _includeXamlNamespaces)
-				{
-					var originalPrefix = document.DocumentElement.GetNamespaceOfPrefix(n);
-
-					if (!originalPrefix.StartsWith("using:"))
-					{
-						adjusted = adjusted
-							.Replace(
-								"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, document.DocumentElement.GetNamespaceOfPrefix(n)),
-								"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, document.DocumentElement.GetNamespaceOfPrefix(""))
-							);
-					}
 				}
 			}
 
@@ -143,13 +184,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return XmlReader.Create(new StringReader(adjusted));
 		}
 
-		private XmlNode FindIgnorables(XmlDocument document)
+		private (XmlNode Ignorables, bool ShouldCreateIgnorable) FindIgnorables(XmlDocument document)
 		{
 			var ignorables = document.DocumentElement.Attributes.GetNamedItem("Ignorable", "http://schemas.openxmlformats.org/markup-compatibility/2006") as XmlAttribute;
 
 			var excludeNamespaces = _excludeXamlNamespaces
 				.Select(n => new { Name = n, Namespace = document.DocumentElement.GetNamespaceOfPrefix(n) })
 				.Where(n => n.Namespace.HasValue());
+
+			var shouldCreateIgnorable = false;
 
 			foreach (var nspace in excludeNamespaces)
 			{
@@ -159,13 +202,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					.OfType<XmlNode>()
 					.Where(e => e.Prefix == nspace.Name);
 
-				if (excludeNodes.Any() && ignorables == null)
+				if (ignorables == null && excludeNodes.Any())
 				{
-					throw new Exception($"Declare \"mc:Ignorable=\"d\" in namespace of {document.BaseURI} to ignore xaml for " + excludeNamespaces.Select(n => n.Name).JoinBy(", "));
+					shouldCreateIgnorable = true;
 				}
 			}
 
-			return ignorables;
+			return (ignorables, shouldCreateIgnorable);
 		}
 
 		/// <summary>
