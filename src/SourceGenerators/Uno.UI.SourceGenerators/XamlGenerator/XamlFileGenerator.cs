@@ -111,6 +111,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			_findContentProperty = Funcs.Create<INamedTypeSymbol, IPropertySymbol>(SourceFindContentProperty).AsLockedMemoized();
 			_isAttachedProperty = Funcs.Create<INamedTypeSymbol, string, bool>(SourceIsAttachedProperty).AsLockedMemoized();
+			_getAttachedPropertyType = Funcs.Create<INamedTypeSymbol, string, INamedTypeSymbol>(SourceGetAttachedPropertyType).AsLockedMemoized();
 		}
 
 		public XamlFileGenerator(
@@ -2552,12 +2553,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				name.Equals("AlignVerticalCenterWith");
 		}
 
-		private void BuildSetAttachedProperty(IIndentedStringBuilder writer, string closureName, XamlMemberDefinition member, string objectUid, bool isCustomMarkupExtension)
+		private void BuildSetAttachedProperty(IIndentedStringBuilder writer, string closureName, XamlMemberDefinition member, string objectUid, bool isCustomMarkupExtension, INamedTypeSymbol propertyType = null)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			var literalValue = isCustomMarkupExtension
 					? GetCustomMarkupExtensionValue(member)
-					: BuildLiteralValue(member, owner: member, objectUid: objectUid);
+					: BuildLiteralValue(member, propertyType: propertyType, owner: member, objectUid: objectUid);
 
 			writer.AppendLineInvariant(
 				"{0}.Set{1}({3}, {2});",
@@ -2706,6 +2707,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// should it turn out to be necessary.)
 					var propertyOwner = GetType(member.Member.DeclaringType);
 					writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.ApplyResource({0}, {1}.{2}Property, \"{3}\", {4});", closureName, GetGlobalizedTypeName(propertyOwner.ToDisplayString()), member.Member.Name, resourceKey, isThemeResourceExtension ? "true" : "false");
+				}
+				else if (IsAttachedProperty(member))
+				{
+					BuildSetAttachedProperty(writer, closureName, member, objectUid: "", isCustomMarkupExtension: false, propertyType: GetAttachedPropertyType(member));
 				}
 				else
 				{
@@ -3188,7 +3193,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (expression.Type.Name == "StaticResource" || expression.Type.Name == "ThemeResource")
 				{
-					return GetSimpleStaticResourceRetrieval(null, expression.Members.First().Value?.ToString());
+					return GetSimpleStaticResourceRetrieval(propertyType, expression.Members.First().Value?.ToString());
 				}
 				else if (expression.Type.Name == "NullExtension")
 				{

@@ -9,7 +9,8 @@
 	  xmlns:contract1Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractPresent(Windows.Foundation.UniversalApiContract, 1)"
 	  xmlns:contract1NotPresent="http://schemas.microsoft.com/winfx/2006/xaml/presentation?IsApiContractNotPresent(Windows.Foundation.UniversalApiContract,1)"
 	  mc:Ignorable="d"
-	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+	  views:MyBehavior.Bulbousness="{StaticResource DoubleOrNothing}">
 	<Page.Resources>
 		<Style TargetType="ext:MyExtControl">
 			<Setter Property="MyTag2"
