@@ -171,7 +171,7 @@ namespace Windows.UI.Xaml.Controls
 						columns,
 						definedColumns,
 						true,
-						out var maxMeasuredHeight
+						out var _
 					);
 
 					// Rows (we need to fully calculate the rows to allow text wrapping)
