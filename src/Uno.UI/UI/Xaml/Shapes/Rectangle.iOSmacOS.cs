@@ -46,11 +46,6 @@ namespace Windows.UI.Xaml.Shapes
 			base.Layer.BackgroundColor = SolidColorBrushHelper.Transparent.Color;
 #endif
 
-			if (FeatureConfiguration.UIElement.UseLegacyClipping)
-			{
-				Layer.MasksToBounds = true;
-			}
-
 			Layer.AddSublayer(_rectangleLayer);
 
 			_rectangleLayer.FillColor = _Color.Clear.CGColor;

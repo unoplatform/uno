@@ -7,16 +7,6 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class ColumnDefinitionCollection : global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Controls.ColumnDefinition>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Controls.ColumnDefinition>
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint ColumnDefinitionCollection.Size is not implemented in Uno.");
-			}
-		}
-		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ColumnDefinitionCollection.GetAt(uint)
 		// Forced skipping of method Windows.UI.Xaml.Controls.ColumnDefinitionCollection.Size.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.ColumnDefinitionCollection.GetView()

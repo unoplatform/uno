@@ -12,12 +12,12 @@ namespace Windows.UI.Xaml.Shapes
 	{
 		private const double DefaultStrokeThicknessWhenNoStrokeDefined = 0.0;
 
-		private SerialDisposable _brushChanged = new SerialDisposable();
+		private readonly SerialDisposable _brushChanged = new SerialDisposable();
 
 		/// <summary>
 		/// Returns StrokeThickness or 0.0 if Stroke is <c>null</c>
 		/// </summary>
-		protected internal double ActualStrokeThickness
+		private protected double ActualStrokeThickness
 		{
 			get
 			{
@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml.Shapes
 		}
 		partial void OnStrokeDashArrayUpdatedPartial();
 
-		protected internal virtual void RefreshShape(bool forceRefresh = false) { }
+		protected virtual void RefreshShape(bool forceRefresh = false) { }
 
 		internal override bool IsViewHit()
 			=> Fill != null || base.IsViewHit();

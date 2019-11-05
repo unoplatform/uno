@@ -139,8 +139,8 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			availableSize.Width -= GetHorizontalOffset();
-			availableSize.Height -= GetVerticalOffset();
+			var borderAndPaddingSize = BorderAndPaddingSize;
+			availableSize = availableSize.Subtract(borderAndPaddingSize);
 
 			if (this.Children.Count == 0)
 			{
@@ -164,7 +164,6 @@ namespace Windows.UI.Xaml.Controls
 				using (positions.Subscription)
 				{
 					// Columns
-					double maxMeasuredHeight; //ignored here
 					_calculatedColumns = CalculateColumns(
 						availableSize,
 						positions.Views.Span,
@@ -172,11 +171,10 @@ namespace Windows.UI.Xaml.Controls
 						columns,
 						definedColumns,
 						true,
-						out maxMeasuredHeight
+						out var _
 					);
 
 					// Rows (we need to fully calculate the rows to allow text wrapping)
-					double maxMeasuredWidth; //ignored here
 					_calculatedRows = CalculateRows(
 						availableSize,
 						positions.Views.Span,
@@ -185,16 +183,13 @@ namespace Windows.UI.Xaml.Controls
 						rows,
 						definedRows,
 						true,
-						out maxMeasuredWidth
+						out var maxMeasuredWidth
 					);
 
 					size = new Size(_calculatedColumns.Span.Sum(cs => cs.MinValue), _calculatedRows.Span.Sum(cs => cs.MinValue));
 				}
 			}
-			size.Width += GetHorizontalOffset();
-			size.Height += GetVerticalOffset();
-
-			return size;
+			return size.Add(borderAndPaddingSize);
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
@@ -204,8 +199,8 @@ namespace Windows.UI.Xaml.Controls
 				return finalSize;
 			}
 
-			finalSize.Width -= GetHorizontalOffset();
-			finalSize.Height -= GetVerticalOffset();
+			var borderAndPaddingSize = BorderAndPaddingSize;
+			finalSize = finalSize.Subtract(borderAndPaddingSize);
 
 			var availableSize = finalSize;
 
@@ -254,10 +249,7 @@ namespace Windows.UI.Xaml.Controls
 					LayoutChildren(_calculatedColumns.Span, _calculatedRows.Span, positions.Views.Span);
 				}
 
-				finalSize.Width += GetHorizontalOffset();
-				finalSize.Height += GetVerticalOffset();
-
-				return finalSize;
+				return finalSize.Add(borderAndPaddingSize);
 			}
 		}
 
@@ -297,6 +289,8 @@ namespace Windows.UI.Xaml.Controls
 		)
 		{
 			// maxHeightMeasured variable is only used for the fast paths calculation
+			var borderAndPaddingSize = BorderAndPaddingSize;
+
 			if (isMeasuring)
 			{
 				//This is the measure phase. The value will be set when measuring children.
@@ -310,7 +304,7 @@ namespace Windows.UI.Xaml.Controls
 				//If MinHeight property is set on the Grid we need to take it into account in order to match UWP behavior
 				if (MinHeight > minHeight)
 				{
-					minHeight = MinHeight - GetVerticalOffset();
+					minHeight = MinHeight - borderAndPaddingSize.Height;
 				}
 
 				maxHeightMeasured = minHeight;
@@ -340,7 +334,7 @@ namespace Windows.UI.Xaml.Controls
 			//If MinWidth property is set on the Grid that is not stretching horizontally we need to take it into account in order to match UWP behavior
 			if (MinWidth != 0 && HorizontalAlignment != HorizontalAlignment.Stretch)
 			{
-				availaibleWidth = MinWidth - GetHorizontalOffset();
+				availaibleWidth = MinWidth - borderAndPaddingSize.Width;
 			}
 
 			double remainingSpace(int current, Span<double> pixelColumns) => availaibleWidth - pixelColumns
@@ -598,6 +592,8 @@ namespace Windows.UI.Xaml.Controls
 		)
 		{
 			// maxMeasuredWidth variable is only used for the fast paths calculation
+			var borderAndPaddingSize = BorderAndPaddingSize;
+
 			if (isMeasuring)
 			{
 				//This is the measure phase. The value will be set when measuring children.
@@ -611,7 +607,7 @@ namespace Windows.UI.Xaml.Controls
 				//If MinWidth property is set on the Grid we need to take it into account in order to match UWP behavior
 				if (MinWidth > minWidth)
 				{
-					minWidth = MinWidth - GetHorizontalOffset();
+					minWidth = MinWidth - borderAndPaddingSize.Width;
 				}
 
 				maxMeasuredWidth = minWidth;
@@ -640,7 +636,7 @@ namespace Windows.UI.Xaml.Controls
 			//If MinHeight property is set on the Grid that is not stretching vertically we need to take it into account in order to match UWP behavior
 			if (MinHeight != 0 && VerticalAlignment != VerticalAlignment.Stretch)
 			{
-				availaibleHeight = MinHeight - GetVerticalOffset();
+				availaibleHeight = MinHeight - borderAndPaddingSize.Height;
 			}
 
 			double remainingSpace(int current, Span<double> pixelRows) => availaibleHeight - pixelRows
@@ -1070,27 +1066,27 @@ namespace Windows.UI.Xaml.Controls
 
 		private Func<View, Size, Size> GetMemoizedMeasureChild()
 		{
-			var viewToPreviousMeasure = new Dictionary<View, Tuple<Size, Size>>();
+			var viewToPreviousMeasure = new Dictionary<View, (Size available, Size measured)>();
 
 			return Funcs.CreateMemoized<View, Size, Size>((view, availableSize) =>
 			{
-				Tuple<Size, Size> previousMeasure;
+				(Size available, Size measured) previousMeasure;
 				if (viewToPreviousMeasure.TryGetValue(view, out previousMeasure))
 				{
 					// if the previous available size is bigger  than the current available size and that
 					//    the previous measured  size is smaller that the current available size
-					if (previousMeasure.Item1.Width >= availableSize.Width &&
-						previousMeasure.Item1.Height >= availableSize.Height &&
-						previousMeasure.Item2.Width <= availableSize.Width &&
-						previousMeasure.Item2.Height <= availableSize.Height)
+					if (previousMeasure.available.Width >= availableSize.Width &&
+						previousMeasure.available.Height >= availableSize.Height &&
+						previousMeasure.measured.Width <= availableSize.Width &&
+						previousMeasure.measured.Height <= availableSize.Height)
 					{
-						return previousMeasure.Item2;
+						return previousMeasure.measured;
 					}
 				}
 
-				var measured = MeasureElement(view, availableSize);
-				viewToPreviousMeasure[view] = Tuple.Create(availableSize, measured);
-				return measured;
+				var m = MeasureElement(view, availableSize);
+				viewToPreviousMeasure[view] = (availableSize, m);
+				return m;
 			});
 		}
 
