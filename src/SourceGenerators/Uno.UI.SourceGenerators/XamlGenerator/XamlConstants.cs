@@ -63,6 +63,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string DependencyProperty = BaseXamlNamespace + ".DependencyProperty";
 			public const string IFrameworkElement = UnoXamlNamespace + ".IFrameworkElement";
 			public const string Style = BaseXamlNamespace + ".Style";
+			public const string ResourceDictionary = BaseXamlNamespace + ".ResourceDictionary";
 			public const string ElementStub = BaseXamlNamespace + ".ElementStub";
 			public const string ContentPresenter = Namespaces.Controls + ".ContentPresenter";
 			public const string Markup = BaseXamlNamespace + ".Markup";

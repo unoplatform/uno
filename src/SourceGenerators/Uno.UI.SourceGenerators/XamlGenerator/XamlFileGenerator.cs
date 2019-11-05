@@ -2052,8 +2052,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var extendedProperties = GetExtendedProperties(objectDefinition);
 			bool hasChildrenWithPhase = HasChildrenWithPhase(objectDefinition);
 			var isFrameworkElement = IsFrameworkElement(objectDefinition.Type);
+			var hasIsParsing = HasIsParsing(objectDefinition.Type);
 
-			if (extendedProperties.Any() || hasChildrenWithPhase || isFrameworkElement)
+			if (extendedProperties.Any() || hasChildrenWithPhase || isFrameworkElement || hasIsParsing)
 			{
 				string closureName;
 
@@ -2395,7 +2396,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						BuildUiAutomationId(writer, closureName, uiAutomationId, objectDefinition);
 					}
 
-					if (HasIsParsing(objectDefinition.Type)
+					if (hasIsParsing
 							// If true then this apply block will be applied to the content of a UserControl, which will already have had CreationComplete() called in its own apply block.
 							&& !useChildTypeForNamedElement
 						)
@@ -3710,6 +3711,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					writer.AppendLineInvariant($"new global::Windows.UI.Xaml.Setter(new global::Windows.UI.Xaml.TargetPropertyPath(this._{elementName}Subject, \"{propertyName}\"), {value.Replace("{", "{{").Replace("}", "}}")})");
 				}
+			}
+			else if (fullTypeName == XamlConstants.Types.ResourceDictionary)
+			{
+				InitializeAndBuildResourceDictionary(writer, xamlObjectDefinition, setIsParsing: true);
+				BuildExtendedProperties(writer, xamlObjectDefinition);
 			}
 			else
 			{
