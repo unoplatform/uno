@@ -36,7 +36,24 @@ namespace Windows.Devices.Geolocation
 		public Task<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
 			=> GetGeopositionAsync();
 
-		public static async Task<GeolocationAccessStatus> RequestAccessAsync() => GeolocationAccessStatus.Allowed;
+		public static async Task<GeolocationAccessStatus> RequestAccessAsync()
+		{
+			// below 6.0 (API 23), permission are granted
+			if (Android.OS.Build.VERSION.SdkInt < Android.OS.BuildVersionCodes.M)
+			{
+				return GeolocationAccessStatus.Allowed;
+			}
+
+			// check if permission is already granted
+			if (Android.Support.V4.Content.ContextCompat.CheckSelfPermission(Uno.UI.ContextHelper.Current, Android.Manifest.Permission.AccessFineLocation)
+					== Android.Content.PM.Permission.Granted)
+			{
+				return GeolocationAccessStatus.Allowed;
+			}
+
+			return GeolocationAccessStatus.Denied;
+
+		}
 
 		private LocationManager InitializeLocationProvider(double desiredAccuracy)
 		{
