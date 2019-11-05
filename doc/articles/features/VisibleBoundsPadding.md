@@ -48,7 +48,7 @@ Usage is as follows:
 
 ## See it in action
 
-![image](https://user-images.githubusercontent.com/36631443/68240880-ac96de80-ffdb-11e9-9714-bd635f637443.png)
+![image](https://user-images.githubusercontent.com/36631443/68244085-0d291a00-ffe2-11e9-89a9-dcd66141e4f8.png)
 
 ![image](https://user-images.githubusercontent.com/36631443/68239478-06e27000-ffd9-11e9-956a-c4d954341a5f.png)
 ![image](https://user-images.githubusercontent.com/36631443/68239503-1366c880-ffd9-11e9-9d67-f95050b2e1a7.png)
