@@ -1,10 +1,10 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
 		<TargetFramework>net461</TargetFramework>
-    <AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
+		<AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	</PropertyGroup>
-	
+
 	<ItemGroup>
 		<Reference Include="System" />
 		<Reference Include="System.Core" />
@@ -54,7 +54,7 @@
 		<PackageReference Include="Uno.Core" />
 		<PackageReference Include="Uno.SourceGeneration" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<Compile Include="..\..\Uno.Foundation\Point.cs">
 			<Link>XamlGenerator\XamlPathParser\Point.cs</Link>
@@ -77,6 +77,9 @@
 		<Compile Include="..\..\Uno.UI\UI\Xaml\Media\SweepDirection.cs">
 			<Link>XamlGenerator\XamlPathParser\SweepDirection.cs</Link>
 		</Compile>
+		<Compile Include="..\..\Uno.Foundation\Metadata\ApiInformation.shared.cs">
+			<Link>XamlGenerator\ApiInformation.shared.cs</Link>
+		</Compile>
 		<Compile Include="..\..\Uno.UI\UI\Xaml\GridLength.cs">
 			<Link>Helpers\GridLength.cs</Link>
 		</Compile>
@@ -87,11 +90,11 @@
 			<Link>Helpers\GridUnitType.cs</Link>
 		</Compile>
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<None Include="Content\Uno.UI.SourceGenerators.props" />
 	</ItemGroup>
-	
+
 	<ItemGroup>
 		<ProjectReference Include="..\System.Xaml\Uno.Xaml.csproj">
 			<Project>{1627740a-19d2-4d21-a0b2-66667038daf6}</Project>
@@ -99,7 +102,7 @@
 			<Aliases>__uno</Aliases>
 		</ProjectReference>
 	</ItemGroup>
-	
+
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
 			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\tools</_TargetNugetFolder>
