@@ -76,7 +76,7 @@ namespace Uno.UI.Controls
 		{
 			if (newValue is SolidColorBrush asColorBrush)
 			{
-				ThumbDrawable?.SetColorFilter(asColorBrush.Color, PorterDuff.Mode.SrcIn);
+				ThumbDrawable?.SetColorFilter(new BlendModeColorFilter(asColorBrush.Color, BlendMode.SrcIn));
 			}
 		}
 
@@ -100,7 +100,7 @@ namespace Uno.UI.Controls
 		{
 			if (newValue is SolidColorBrush asColorBrush)
 			{
-				TrackDrawable?.SetColorFilter(asColorBrush.Color, PorterDuff.Mode.SrcIn);
+				TrackDrawable?.SetColorFilter(new BlendModeColorFilter(asColorBrush.Color, BlendMode.SrcIn));
 			}
 		}
 

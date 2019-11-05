@@ -85,6 +85,7 @@
 * Enable iOS UI Tests
 * Add support for `PersonPicture`
 * Add support for `VisualState` `Setter` data binding, static resources and complex objects
+* Add support for Android 10.0 
 
 ### Breaking changes
 
@@ -98,6 +99,8 @@
 * [iOS] If you set the `ManipulationMode` to something else than `System` or `All`, the [DelaysContentTouches](https://developer.apple.com/documentation/uikit/uiscrollview/1619398-delayscontenttouches) is going to be disabled on all parent `ScrollViewer`
 * [#1237] Static resources defined in App.xaml were not processed and registered properly
     > This change might break the compilation for projects that define duplicate resources in other globally accessible resource dictionaries. Adjustments to remove duplicate resources may be necessary.
+
+* You will not be able to build projects targeting Android 9.0 locally anymore. Change your Android target to Android 10.0 or replace MonoAndroid10.0 by MonoAndroid90 in the TargetFrameworks of your projects files.
 
 ### Bug fixes
 
