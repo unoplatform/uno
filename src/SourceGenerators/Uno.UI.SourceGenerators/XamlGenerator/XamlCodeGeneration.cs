@@ -35,6 +35,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _isDebug;
 		private readonly bool _outputSourceComments = true;
 
+		/// <summary>
+		/// If set, code generated from XAML will be annotated with the source method and line # in this file, for easier debugging.
+		/// </summary>
+		private readonly bool _shouldAnnotateGeneratedXaml = false;
+
 		private static DateTime _buildTasksBuildDate = File.GetLastWriteTime(new Uri(typeof(XamlFileGenerator).Assembly.CodeBase).LocalPath);
 		private INamedTypeSymbol[] _ambientGlobalResources;
 		private readonly bool _isUiAutomationMappingEnabled;
@@ -137,6 +142,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				_isUiAutomationMappingEnabled = false;
 			}
 
+			if (bool.TryParse(msbProject.GetProperty("ShouldAnnotateGeneratedXaml")?.EvaluatedValue, out var shouldAnnotateGeneratedXaml))
+			{
+				_shouldAnnotateGeneratedXaml = shouldAnnotateGeneratedXaml;
+			}
+
 			_targetPath = Path.Combine(
 				Path.GetDirectoryName(msbProject.FullPath),
 				msbProject.GetProperty("IntermediateOutputPath").EvaluatedValue
@@ -232,7 +242,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							defaultLanguage: _defaultLanguage,
 							isWasm: _isWasm,
 							isDebug: _isDebug,
-							skipUserControlsInVisualTree: _skipUserControlsInVisualTree
+							skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
+							shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml
 						)
 						.GenerateFile()
 					)
@@ -462,7 +473,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineInvariant("private static bool _stylesRegistered;");
 					if (!IsUnoAssembly)
 					{
-						writer.AppendLineInvariant("private static bool _dictionariesRegistered;"); 
+						writer.AppendLineInvariant("private static bool _dictionariesRegistered;");
 					}
 
 					using (writer.BlockInvariant("static GlobalStaticResources()"))
