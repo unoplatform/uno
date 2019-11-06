@@ -5,7 +5,6 @@ using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
 using Android.Content.PM;
-using Windows.Foundation;
 using Uno.Extensions;
 using Uno.Logging;
 using Microsoft.Extensions.Logging;
