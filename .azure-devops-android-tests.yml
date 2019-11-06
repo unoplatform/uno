@@ -20,7 +20,7 @@ jobs:
       path: $(NUGET_PACKAGES)
     displayName: Cache NuGet packages
 
-  - bash: /bin/bash -c "sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 5_18_1"
+  - bash: sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 6_4_0
     displayName: Select Xamarin Version
 
   - bash: |
