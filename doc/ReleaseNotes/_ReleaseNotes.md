@@ -4,6 +4,7 @@
 
 ### Features
 
+* [#2040] Support for ms-settings:// special URIs on Android and iOS, Launcher API alignments to match UWP behavior
 * [#1970](https://github.com/unoplatform/uno/pull/1970) Added support for `AnalyticsInfo` properties on iOS, Android and WASM
 * [#1207] Implemented some `PackageId` properties
 * [#1919](https://github.com/unoplatform/uno/pull/1919) Support for `PathGeometry` on WASM.
