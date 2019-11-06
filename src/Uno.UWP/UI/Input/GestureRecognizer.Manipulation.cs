@@ -143,9 +143,17 @@ namespace Windows.UI.Input
 						_state = ManipulationStates.Started;
 						_sumOfPublishedDelta = cumulative;
 
+						// Note: We first start with an empty delta, then invoke Update.
+						//		 This is required to patch a common issue in applications that are using only the
+						//		 ManipulationUpdated.Delta property to track the pointer (like the WCT GridSplitter).
+						//		 UWP seems to do that only for Touch and Pen (i.e. the Delta is not empty on start with a mouse),
+						//		 but there is no side effect to use the same behavior for all pointer types.
 						_recognizer.ManipulationStarted?.Invoke(
 							_recognizer,
-							new ManipulationStartedEventArgs(_deviceType, _currents.Center, cumulative));
+							new ManipulationStartedEventArgs(_deviceType, _currents.Center, ManipulationDelta.Empty));
+						_recognizer.ManipulationUpdated?.Invoke(
+							_recognizer,
+							new ManipulationUpdatedEventArgs(_deviceType, _currents.Center, cumulative, cumulative, isInertial: false));
 
 						break;
 
