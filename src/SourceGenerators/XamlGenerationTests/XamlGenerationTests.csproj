@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>MonoAndroid10.0;xamarinios10;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid80;MonoAndroid90;MonoAndroid10.0;xamarinios10</TargetFrameworksCI>
+		<TargetFrameworksCI>MonoAndroid90;MonoAndroid10.0;xamarinios10</TargetFrameworksCI>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -21,18 +21,6 @@
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
 	</PropertyGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
-		<PackageReference Include="Xamarin.Android.Support.v4">
-			<Version>26.1.0.1</Version>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
-			<Version>26.1.0.1</Version>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
-			<Version>26.1.0.1</Version>
-		</PackageReference>
-	</ItemGroup>
-
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
 		<PackageReference Include="Xamarin.Android.Support.v4">
 			<Version>28.0.0.1</Version>
@@ -46,14 +34,14 @@
 	</ItemGroup>
 
 		<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid10.0'">
-		<PackageReference Include="Xamarin.Android.Support.v4">
-			<Version>28.0.0.3</Version>
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4">
+			<Version>1.0.0-preview02</Version>
 		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
-			<Version>28.0.0.3</Version>
+		<PackageReference Include="Xamarin.AndroidX.AppCompat">
+			<Version>1.0.2-preview02</Version>
 		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
-			<Version>28.0.0.3</Version>
+		<PackageReference Include="Xamarin.AndroidX.RecyclerView">
+			<Version>1.0.0-preview02</Version>
 		</PackageReference>
 	</ItemGroup>
 

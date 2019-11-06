@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Android.Support.V7.Widget;
+using AndroidX.AppCompat.Widget;
 
 namespace Windows.UI.Xaml.Controls
 {

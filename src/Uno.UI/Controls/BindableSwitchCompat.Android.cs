@@ -13,7 +13,7 @@ using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.Controls
 {
-	public partial class BindableSwitchCompat : Android.Support.V7.Widget.SwitchCompat, DependencyObject
+	public partial class BindableSwitchCompat : AndroidX.AppCompat.Widget.SwitchCompat, DependencyObject
 	{
 		public BindableSwitchCompat()
 			: base(ContextHelper.Current)
@@ -26,8 +26,8 @@ namespace Uno.UI.Controls
 			// TextOn and TextOff properties must be set to an empty string or the following error will happen because the properties are null.
 			// E / AndroidRuntime(6313): java.lang.NullPointerException: Attempt to invoke interface method 'int java.lang.CharSequence.length()' on a null object reference
 			// E / AndroidRuntime(6313): 	at android.text.StaticLayout.< init > (StaticLayout.java:49)
-			// E / AndroidRuntime(6313): 	at android.support.v7.widget.SwitchCompat.makeLayout(SwitchCompat.java:606)
-			// E / AndroidRuntime(6313): 	at android.support.v7.widget.SwitchCompat.onMeasure(SwitchCompat.java:526)
+			// E / AndroidRuntime(6313): 	at AndroidX.AppCompat.Widget.SwitchCompat.makeLayout(SwitchCompat.java:606)
+			// E / AndroidRuntime(6313): 	at AndroidX.AppCompat.Widget.SwitchCompat.onMeasure(SwitchCompat.java:526)
 			// E / AndroidRuntime(6313): 	at android.view.View.measure(View.java:17547)
 
 			TextOn = "";

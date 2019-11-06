@@ -1,5 +1,4 @@
-﻿using Android.Support.V4.View;
-using System;
+﻿using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,6 +8,7 @@ using Java.Lang;
 using Uno.Extensions;
 using Uno.UI.Controls;
 using Uno.Extensions.Specialized;
+using AndroidX.ViewPager.Widget;
 
 namespace Windows.UI.Xaml.Controls
 {

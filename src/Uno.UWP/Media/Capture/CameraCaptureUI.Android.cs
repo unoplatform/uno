@@ -9,6 +9,7 @@ using Android.Content.PM;
 using Android.Provider;
 using Android.Runtime;
 using Android.Support.V4.App;
+using AndroidX.Fragment.App;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI;

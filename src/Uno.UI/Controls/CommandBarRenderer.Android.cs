@@ -1,6 +1,5 @@
 ﻿#if __ANDROID__
 using Android.Graphics.Drawables;
-using Android.Support.V7.Widget;
 using Android.Views;
 using System;
 using System.Collections.Generic;
@@ -14,14 +13,13 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
-using Android.Support.V4.Graphics.Drawable;
-using Android.Support.V7.App;
 using Android.App;
 using Uno.Extensions;
 using Uno.Logging;
 using Microsoft.Extensions.Logging;
 using Android.Views.InputMethods;
 using Android.Content;
+using AndroidX.AppCompat.Widget;
 
 namespace Uno.UI.Controls
 {

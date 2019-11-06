@@ -9,7 +9,6 @@ using Android.OS;
 using Android.Runtime;
 using Android.Views;
 using Android.Widget;
-using Android.Support.V4.View;
 using Uno.Disposables;
 using System.Collections;
 using System.Collections.Specialized;
@@ -18,6 +17,7 @@ using System.Windows.Input;
 using Uno.Logging;
 using Object = Java.Lang.Object;
 using Uno.Extensions.Specialized;
+using AndroidX.ViewPager.Widget;
 
 namespace Uno.UI.Controls
 {

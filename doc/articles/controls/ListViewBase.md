@@ -159,7 +159,7 @@ ScrollViewer + ScrollContentPresenter.
 
 | Uno class | Android base class | iOS base class | Description |
 | --- | --- | --- | --- |
-| NativeListViewBase | Android.Support.V7.Widget.RecyclerView | UIKit.UICollectionView | Native list view, parent of item views. |
+| NativeListViewBase | AndroidX.AppCompat.Widget.RecyclerView | UIKit.UICollectionView | Native list view, parent of item views. |
 | ItemsStackPanelLayout(ItemsWrapGridLayout) | RecyclerView.LayoutManager | UIKit.UICollectionViewLayout | Tells NativeListViewBase how to lay out its items. Bridge for ItemsStackPanel(ItemsWrapGrid). |
 | NativeListViewBaseAdapter(Android), ListViewBaseSource(iOS) | RecyclerView.Adapter | UIKit.UICollectionViewSource | Handles creation and reuse of item views. No direct UWP equivalent. |
 | ScrollingViewCache | RecyclerView.ViewCacheExtension | - | Additional virtualization handling on Android which optimizes scroll performance. |

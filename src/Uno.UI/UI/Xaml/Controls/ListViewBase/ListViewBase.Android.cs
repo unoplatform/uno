@@ -10,7 +10,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Uno.Logging;
 using Microsoft.Extensions.Logging;
 using System;
-using Android.Support.V7.Widget;
+using AndroidX.AppCompat.Widget;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Core;
 using Android.Views;

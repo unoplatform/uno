@@ -4,7 +4,7 @@ using System.Diagnostics;
 using Windows.Foundation;
 using System.Linq;
 using System.Text;
-using Android.Support.V7.Widget;
+using AndroidX.AppCompat.Widget;
 using Android.Views;
 using Uno.Extensions;
 using Uno.UI;
@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Android.Graphics;
 using Uno.UI.Extensions;
 using Uno.UI.DataBinding;
+using AndroidX.RecyclerView.Widget;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -134,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// "Lay out all relevant child views from the given adapter." https://developer.android.com/reference/android/support/v7/widget/RecyclerView.LayoutManager.html#onLayoutChildren(android.support.v7.widget.RecyclerView.Recycler, android.support.v7.widget.RecyclerView.State)
+		/// "Lay out all relevant child views from the given adapter." https://developer.android.com/reference/AndroidX.AppCompat.Widget/RecyclerView.LayoutManager.html#onLayoutChildren(AndroidX.AppCompat.Widget.RecyclerView.Recycler, AndroidX.AppCompat.Widget.RecyclerView.State)
 		/// </summary>
 		public override void OnLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
@@ -408,7 +409,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// "Offset all child views attached to the parent RecyclerView by dx pixels along the horizontal axis." https://developer.android.com/reference/android/support/v7/widget/RecyclerView.LayoutManager.html#offsetChildrenHorizontal(int)
+		/// "Offset all child views attached to the parent RecyclerView by dx pixels along the horizontal axis." https://developer.android.com/reference/AndroidX.AppCompat.Widget/RecyclerView.LayoutManager.html#offsetChildrenHorizontal(int)
 		/// </summary>
 		public override void OffsetChildrenHorizontal(int dx)
 		{
@@ -418,7 +419,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// "Offset all child views attached to the parent RecyclerView by dy pixels along the vertical axis." https://developer.android.com/reference/android/support/v7/widget/RecyclerView.LayoutManager.html#offsetChildrenVertical(int)
+		/// "Offset all child views attached to the parent RecyclerView by dy pixels along the vertical axis." https://developer.android.com/reference/AndroidX.AppCompat.Widget/RecyclerView.LayoutManager.html#offsetChildrenVertical(int)
 		/// </summary>
 		public override void OffsetChildrenVertical(int dy)
 		{

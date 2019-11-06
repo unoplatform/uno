@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using Android.Support.V7.Widget;
+using AndroidX.AppCompat.Widget;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
