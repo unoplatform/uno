@@ -150,7 +150,7 @@ To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5**
     ```
 
     > [!IMPORTANT]
-    > Because we want to be able to respond to changes in our model we'll want to bring in the ObservableObject in the MvvmHelpers namespace, from the Refactored.MvvmHelpers NuGet package we installed earlier.
+    > Because we want to be able to respond to changes in our model we'll want to bring in the ObservableObject in the MvvmHelpers namespace, from the `Refractored.MvvmHelpers` NuGet package we installed earlier.
 
 ### Setting up our Page
 
