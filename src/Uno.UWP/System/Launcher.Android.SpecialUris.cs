@@ -25,7 +25,9 @@ namespace Windows.System
 			("easeofaccess", Settings.ActionAccessibilitySettings),
 			("network-airplanemode", Settings.ActionAirplaneModeSettings),
 			("network-celluar", Settings.ActionNetworkOperatorSettings),
+#if __ANDROID_9__
 			("network-datausage", Settings.ActionDataUsageSettings),
+#endif
 			("network-wifisettings", Settings.ActionWifiSettings),
 			("nfctransactions", Settings.ActionNfcSettings),
 			("network-vpn", Settings.ActionVpnSettings),
