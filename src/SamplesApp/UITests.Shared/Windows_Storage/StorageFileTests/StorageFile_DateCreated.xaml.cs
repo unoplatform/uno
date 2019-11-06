@@ -20,7 +20,7 @@ namespace UITests.Shared.Windows_Storage.StorageFileTests
 	[Uno.UI.Samples.Controls.SampleControlInfo("StorageFile", "StorageFile_DateCreated", description: "Testing attribute DateCreated of StorageFile")]
 	public sealed partial class StorageFile_DateCreated : UserControl
     {
-        public DateCreated()
+        public StorageFile_DateCreated()
         {
             this.InitializeComponent();
         }
