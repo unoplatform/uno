@@ -10,9 +10,17 @@ namespace Windows.UI.Input
 {
 	public partial class GestureRecognizer
 	{
-		private class Manipulation
+		internal class Manipulation
 		{
-			private enum ManipulationStates
+			internal static readonly Thresholds StartTouch = new Thresholds { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
+			internal static readonly Thresholds StartPen = new Thresholds { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
+			internal static readonly Thresholds StartMouse = new Thresholds { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
+
+			internal static readonly Thresholds DeltaTouch = new Thresholds { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
+			internal static readonly Thresholds DeltaPen = new Thresholds { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
+			internal static readonly Thresholds DeltaMouse = new Thresholds { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
+
+			private enum States
 			{
 				Starting = 1,
 				Started = 2,
@@ -27,7 +35,10 @@ namespace Windows.UI.Input
 			private readonly bool _isRotateEnabled;
 			private readonly bool _isScaleEnabled;
 
-			private ManipulationStates _state = ManipulationStates.Starting;
+			private readonly Thresholds _startThresholds;
+			private readonly Thresholds _deltaThresholds;
+
+			private States _state = States.Starting;
 			private Points _origins;
 			private Points _currents;
 			private ManipulationDelta _sumOfPublishedDelta = ManipulationDelta.Empty;
@@ -38,6 +49,25 @@ namespace Windows.UI.Input
 				_deviceType = pointer1.PointerDevice.PointerDeviceType;
 
 				_origins = _currents = pointer1;
+
+				switch (_deviceType)
+				{
+					case PointerDeviceType.Mouse:
+						_startThresholds = StartMouse;
+						_deltaThresholds = DeltaMouse;
+						break;
+
+					case PointerDeviceType.Pen:
+						_startThresholds = StartPen;
+						_deltaThresholds = DeltaPen;
+						break;
+
+					default:
+					case PointerDeviceType.Touch:
+						_startThresholds = StartTouch;
+						_deltaThresholds = DeltaTouch;
+						break;
+				}
 
 				var args = new ManipulationStartingEventArgs(_recognizer._gestureSettings);
 				_recognizer.ManipulationStarting?.Invoke(_recognizer, args);
@@ -51,7 +81,7 @@ namespace Windows.UI.Input
 
 			public void Add(PointerPoint point)
 			{
-				if (_state == ManipulationStates.Completed
+				if (_state == States.Completed
 					|| point.PointerDevice.PointerDeviceType != _deviceType
 					|| _currents.HasPointer2)
 				{
@@ -67,7 +97,7 @@ namespace Windows.UI.Input
 
 			public void Update(IList<PointerPoint> updated)
 			{
-				if (_state == ManipulationStates.Completed)
+				if (_state == States.Completed)
 				{
 					return;
 				}
@@ -99,8 +129,8 @@ namespace Windows.UI.Input
 				// If the manipulation was not started, we just abort the manipulation without any event
 				switch (_state)
 				{
-					case ManipulationStates.Started:
-						_state = ManipulationStates.Completed;
+					case States.Started:
+						_state = States.Completed;
 
 						_recognizer.ManipulationCompleted?.Invoke(
 							_recognizer,
@@ -108,7 +138,7 @@ namespace Windows.UI.Input
 						break;
 
 					default:
-						_state = ManipulationStates.Completed;
+						_state = States.Completed;
 						break;
 				}
 
@@ -132,15 +162,15 @@ namespace Windows.UI.Input
 
 			private void NotifyUpdate(bool forceUpdate = false)
 			{
-				// Note: Make sure to update the _manipulationLast before raising the event, so if an exception is raised
-				//		 or if the manipulation is Completed, the Complete event args can use the updated _manipulationLast.
+				// Note: Make sure to update the _sumOfPublishedDelta before raising the event, so if an exception is raised
+				//		 or if the manipulation is Completed, the Complete event args can use the updated _sumOfPublishedDelta.
 
 				var cumulative = GetCumulative();
 
 				switch (_state)
 				{
-					case ManipulationStates.Starting when forceUpdate || IsSignificantStart(cumulative):
-						_state = ManipulationStates.Started;
+					case States.Starting when forceUpdate || cumulative.IsSignificant(_startThresholds):
+						_state = States.Started;
 						_sumOfPublishedDelta = cumulative;
 
 						// Note: We first start with an empty delta, then invoke Update.
@@ -157,12 +187,12 @@ namespace Windows.UI.Input
 
 						break;
 
-					case ManipulationStates.Started:
+					case States.Started:
 						// Even if Scale and Angle are expected to be default when we add a pointer (i.e. forceUpdate == true),
 						// the 'delta' and 'cumulative' might still contains some TranslateX|Y compared to the previous Pointer1 location.
 						var delta = GetDelta(cumulative);
 
-						if (forceUpdate || IsSignificantDelta(delta))
+						if (forceUpdate || delta.IsSignificant(_deltaThresholds))
 						{
 							_sumOfPublishedDelta = _sumOfPublishedDelta.Add(delta);
 
@@ -222,17 +252,13 @@ namespace Windows.UI.Input
 				};
 			}
 
-			private bool IsSignificantStart(ManipulationDelta delta)
-				=> Math.Abs(delta.Translation.X) >= MinManipulationStartTranslateX
-				|| Math.Abs(delta.Translation.Y) >= MinManipulationStartTranslateY
-				|| delta.Rotation >= MinManipulationStartRotate // We used the ToDegreeNormalized, no need to check for negative angles
-				|| Math.Abs(delta.Expansion) >= MinManipulationStartExpansion;
-
-			private bool IsSignificantDelta(ManipulationDelta delta)
-				=> Math.Abs(delta.Translation.X) >= MinManipulationDeltaTranslateX
-				|| Math.Abs(delta.Translation.Y) >= MinManipulationDeltaTranslateY
-				|| delta.Rotation >= MinManipulationDeltaRotate // We used the ToDegreeNormalized, no need to check for negative angles
-				|| Math.Abs(delta.Expansion) >= MinManipulationDeltaExpansion;
+			internal struct Thresholds
+			{
+				public int TranslateX;
+				public int TranslateY;
+				public double Rotate; // Degrees
+				public double Expansion;
+			}
 
 			// WARNING: This struct is ** MUTABLE **
 			private struct Points

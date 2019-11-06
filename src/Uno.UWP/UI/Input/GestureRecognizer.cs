@@ -163,15 +163,6 @@ namespace Windows.UI.Input
 		}
 
 		#region Manipulations
-		internal const int MinManipulationStartTranslateX = 15;
-		internal const int MinManipulationStartTranslateY = 15;
-		internal const int MinManipulationStartRotate = 5; // Degrees
-		internal const double MinManipulationStartExpansion = 15;
-		internal const int MinManipulationDeltaTranslateX = 1;
-		internal const int MinManipulationDeltaTranslateY = 1;
-		internal const double MinManipulationDeltaRotate = .1; // Degrees
-		internal const double MinManipulationDeltaExpansion = 1;
-
 		internal event TypedEventHandler<GestureRecognizer, ManipulationStartingEventArgs> ManipulationStarting; // This is not on the public API!
 		public event TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> ManipulationCompleted;
 #pragma warning disable  // Event not raised: intertia is not supported yet

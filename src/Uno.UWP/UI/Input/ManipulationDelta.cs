@@ -1,4 +1,5 @@
-﻿using Windows.Foundation;
+﻿using System;
+using Windows.Foundation;
 
 namespace Windows.UI.Input
 {
@@ -36,5 +37,11 @@ namespace Windows.UI.Input
 				Scale = left.Scale * right.Scale,
 				Expansion = left.Expansion + right.Expansion
 			};
+
+		internal bool IsSignificant(GestureRecognizer.Manipulation.Thresholds thresholds)
+			=> Math.Abs(Translation.X) >= thresholds.TranslateX
+			|| Math.Abs(Translation.Y) >= thresholds.TranslateY
+			|| Rotation >= thresholds.Rotate // We used the ToDegreeNormalized, no need to check for negative angles
+			|| Math.Abs(Expansion) >= thresholds.Expansion;
 	}
 }
