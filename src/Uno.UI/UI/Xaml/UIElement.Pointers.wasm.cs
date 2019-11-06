@@ -224,6 +224,19 @@ namespace Windows.UI.Xaml
 				SetStyle("touch-action", "auto");
 			}
 		}
+
+		//private void TryImplicitCapture(Pointer pointer)
+		//{
+		//	if (_allCaptures.TryGetValue(pointer, out var capture))
+		//	{
+		//		capture.AdditionalTargets.Add(new PointerCapture.CaptureTarget(this, isExplicit: false) {IsInNativeBubblingTree = true});
+		//	}
+		//	else
+		//	{
+				
+		//	}
+		//}
+
 		#endregion
 
 		#region HitTestVisibility

@@ -68,11 +68,11 @@ namespace Windows.UI.Input
 			}
 		}
 
-		public void ProcessMoveEvents(IList<PointerPoint> value) => ProcessMoveEvents(value, false);
+		public void ProcessMoveEvents(IList<PointerPoint> value) => ProcessMoveEvents(value, true);
 
-		internal void ProcessMoveEvents(IList<PointerPoint> value, bool isIrrelevant)
+		internal void ProcessMoveEvents(IList<PointerPoint> value, bool isRelevant)
 		{
-			if (!isIrrelevant)
+			if (isRelevant)
 			{
 				foreach (var point in value)
 				{
@@ -91,9 +91,9 @@ namespace Windows.UI.Input
 			_manipulation?.Update(value);
 		}
 
-		public void ProcessUpEvent(PointerPoint value) => ProcessUpEvent(value, false);
+		public void ProcessUpEvent(PointerPoint value) => ProcessUpEvent(value, true);
 
-		internal void ProcessUpEvent(PointerPoint value, bool isIrrelevant)
+		internal void ProcessUpEvent(PointerPoint value, bool isRelevant)
 		{
 #if NET461 || __WASM__
 			if (_activePointers.TryGetValue(value.PointerId, out var points))
@@ -107,7 +107,7 @@ namespace Windows.UI.Input
 				// Note: At this point we MAY be IsActive == false, which is the expected behavior (same as UWP)
 				//		 even if we will fire some events now.
 
-				if (!isIrrelevant)
+				if (isRelevant)
 				{
 					// We need to process only events that are bubbling natively to this control (i.e. isIrrelevant == false),
 					// if they are bubbling in managed it means that they where handled a child control,
@@ -173,6 +173,8 @@ namespace Windows.UI.Input
 
 		private bool _isManipulationEnabled;
 		private Manipulation _manipulation;
+
+		internal Manipulation PendingManipulation => _manipulation;
 		#endregion
 
 		#region Tap (includes DoubleTap)

@@ -77,7 +77,17 @@ namespace Windows.UI.Input
 				_isTranslateYEnabled = (settings & (GestureSettings.ManipulationTranslateY | GestureSettings.ManipulationTranslateRailsY)) != 0;
 				_isRotateEnabled = (settings & (GestureSettings.ManipulationRotate | GestureSettings.ManipulationRotateInertia)) != 0;
 				_isScaleEnabled = (settings & (GestureSettings.ManipulationScale | GestureSettings.ManipulationScaleInertia)) != 0;
+
+				if ((settings & GestureSettingsHelper.Manipulations) == 0)
+				{
+					_state = States.Completed;
+				}
 			}
+
+			public bool IsActive(PointerDeviceType type, uint id)
+				=> _state != States.Completed
+					&& _deviceType == type
+					&& _origins.ContainsPointer(id);
 
 			public void Add(PointerPoint point)
 			{
@@ -281,6 +291,10 @@ namespace Windows.UI.Input
 					Distance = 0;
 					Angle = 0;
 				}
+
+				public bool ContainsPointer(uint pointerId)
+					=> _pointer1.PointerId == pointerId
+					|| (HasPointer2 && _pointer2.PointerId == pointerId);
 
 				public void SetPointer2(PointerPoint point)
 				{
