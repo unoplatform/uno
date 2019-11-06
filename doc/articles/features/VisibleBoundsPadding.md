@@ -50,8 +50,8 @@ Usage is as follows:
 
 ![image](https://user-images.githubusercontent.com/36631443/68304897-b6205500-0074-11ea-8ec9-b4f02dddd5e6.png)
  
-            Before
+### Before
 ![image](https://user-images.githubusercontent.com/36631443/68239478-06e27000-ffd9-11e9-956a-c4d954341a5f.png)
  
-            After
+### After
 ![image](https://user-images.githubusercontent.com/36631443/68239503-1366c880-ffd9-11e9-9d67-f95050b2e1a7.png)
