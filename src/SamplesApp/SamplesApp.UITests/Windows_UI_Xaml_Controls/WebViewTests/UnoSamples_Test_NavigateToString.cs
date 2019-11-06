@@ -16,6 +16,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 	{
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void WebView_NavigateToLongString()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.WebView.WebView_NavigateToString2");
@@ -30,7 +31,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 			// step 1: generate long string
 			_app.Tap(startButton);
 
-			// _app.Wait(TimeSpan.FromSeconds(300)); // Android: 20 is sufficient
 			_app.WaitForText(clickResult, "string ready");  // timeout here means: add wait
 
 			// step 2: NavigateTo
