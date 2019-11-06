@@ -10,31 +10,20 @@
     d:DesignWidth="400">
 
     <Grid>
-<!--		<StackPanel<Grid.RowDefinitions>
+		<Grid.RowDefinitions>
 			<RowDefinition/>
 			<RowDefinition/>
 		</Grid.RowDefinitions>
 		<TextBlock x:Name="mfiResult" Text="Starting..." />
 		<AppBar x:Name="mfiCmdBar" Grid.Row="1"> 
-			<AppBarButton Icon="Pin" Grid.Row="1" x:Name="mfiButton">
-				<AppBarButton.Flyout>
-					<MenuFlyout>
-						<MenuFlyoutItem x:Name="mfiItem" Text="Item1" Click="FlyoutItem_Click" />
-					</MenuFlyout>
-				</AppBarButton.Flyout>
-			</AppBarButton>
-			</AppBar>  -->
-		        <StackPanel>
-            <TextBlock x:Name="mfiResult" Text="Starting..." />
-            <AppBarButton Icon="Pin" Label="Start" x:Name="mfiButton" Margin="10,10,10,10">
+            <AppBarButton Icon="Pin" Label="Start" x:Name="mfiButton" >
                 <AppBarButton.Flyout>
                     <MenuFlyout>
-                        <MenuFlyoutItem x:Name="mfiItem" Text="Item1" Click="FlyoutItem_Click" />
+                        <MenuFlyoutItem x:Name="mfiItem" Name="mfiItem" Text="mfiItem" Click="FlyoutItem_Click" />
                         <MenuFlyoutItem Text="Item2"  />
                     </MenuFlyout>
                 </AppBarButton.Flyout>
             </AppBarButton>
-        </StackPanel>
-
+		</AppBar>
 	</Grid>
 </UserControl>
