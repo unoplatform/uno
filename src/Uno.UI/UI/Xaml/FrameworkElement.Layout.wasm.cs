@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Logging;
@@ -16,10 +17,27 @@ namespace Windows.UI.Xaml
 		private Size _unclippedDesiredSize;
 		private Point _visualOffset;
 
+		private const double SIZE_EPSILON = 0.05;
+
 		/// <summary>
 		/// The origin of the view's bounds relative to its parent.
 		/// </summary>
 		internal Point RelativePosition => _visualOffset;
+
+		private protected string DepthIndentation
+		{
+			get
+			{
+				if (Depth is int d)
+				{
+					return (Parent as FrameworkElement)?.DepthIndentation + $"-{d}>";
+				}
+				else
+				{
+					return "-?>";
+				}
+			}
+		}
 
 		internal sealed override Size MeasureCore(Size availableSize)
 		{
@@ -57,10 +75,7 @@ namespace Windows.UI.Xaml
 
 			var desiredSize = MeasureOverride(frameworkAvailableSize);
 
-			if (_log.IsEnabled(LogLevel.Trace))
-			{
-				_log.LogTrace($"{this}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize}");
-			}
+			_logDebug?.LogTrace($"{DepthIndentation}{this}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize}");
 
 			if (
 				double.IsNaN(desiredSize.Width)
@@ -69,7 +84,7 @@ namespace Windows.UI.Xaml
 				|| double.IsInfinity(desiredSize.Height)
 			)
 			{
-				throw new InvalidOperationException($"{this}: Invalid measured size {desiredSize}. NaN or Infinity are invalid desired size.");
+				throw new InvalidOperationException($"{DepthIndentation}{this}: Invalid measured size {desiredSize}. NaN or Infinity are invalid desired size.");
 			}
 
 			desiredSize = desiredSize.AtLeast(minSize);
@@ -84,12 +99,7 @@ namespace Windows.UI.Xaml
 
 			var retSize = clippedDesiredSize.AtLeast(new Size(0, 0));
 
-			if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			{
-				_log.DebugFormat(
-					$"[{this}] Measure({Name}/{availableSize}/{Margin}) = {retSize}"
-				);
-			}
+			_logDebug?.Debug($"{DepthIndentation}[{this}] Measure({Name}/{availableSize}/{Margin}) = {retSize}");
 
 			return retSize;
 		}
@@ -119,6 +129,7 @@ namespace Windows.UI.Xaml
 
 		private void InnerArrangeCore(Rect finalRect)
 		{
+			_logDebug?.Debug($"{DepthIndentation}{this}: InnerArrangeCore({finalRect})");
 			var arrangeSize = finalRect.Size;
 
 			var (minSize, maxSize) = this.GetMinMax();
@@ -128,7 +139,26 @@ namespace Windows.UI.Xaml
 				.Subtract(marginSize)
 				.AtLeast(new Size(0, 0));
 
-			arrangeSize = arrangeSize.AtLeast(_unclippedDesiredSize);
+			var customClippingElement = (this as ICustomClippingElement);
+			var allowClipToSlot = customClippingElement?.AllowClippingToLayoutSlot ?? true; // Some controls may control itself how clipping is applied
+			var needsClipToSlot = customClippingElement?.ForceClippingToLayoutSlot ?? false;
+
+			_logDebug?.Debug($"{DepthIndentation}{this}: InnerArrangeCore({finalRect}) - allowClip={allowClipToSlot}, arrangeSize={arrangeSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipToSlot}");
+
+			if (allowClipToSlot && !needsClipToSlot)
+			{
+				if (arrangeSize.Width < _unclippedDesiredSize.Width - SIZE_EPSILON)
+				{
+					_logDebug?.Debug($"{DepthIndentation}{this}: (arrangeSize.Width) {arrangeSize.Width} < {_unclippedDesiredSize.Width}: NEEDS CLIPPING.");
+					needsClipToSlot = true;
+				}
+
+				if (arrangeSize.Height < _unclippedDesiredSize.Height - SIZE_EPSILON)
+				{
+					_logDebug?.Debug($"{DepthIndentation}{this}: (arrangeSize.Height) {arrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
+					needsClipToSlot = true;
+				}
+			}
 
 			if (HorizontalAlignment != HorizontalAlignment.Stretch)
 			{
@@ -142,6 +172,21 @@ namespace Windows.UI.Xaml
 
 			var effectiveMaxSize = Max(_unclippedDesiredSize, maxSize);
 			arrangeSize = arrangeSize.AtMost(effectiveMaxSize);
+
+			if (allowClipToSlot && !needsClipToSlot)
+			{
+				if (effectiveMaxSize.Width < arrangeSize.Width - SIZE_EPSILON)
+				{
+					_logDebug?.Debug($"{DepthIndentation}{this}: (effectiveMaxSize.Width) {effectiveMaxSize.Width} < {arrangeSize.Width}: NEEDS CLIPPING.");
+					needsClipToSlot = true;
+				}
+
+				if (effectiveMaxSize.Height < arrangeSize.Height - SIZE_EPSILON)
+				{
+					_logDebug?.Debug($"{DepthIndentation}{this}: (effectiveMaxSize.Height) {effectiveMaxSize.Height} < {arrangeSize.Height}: NEEDS CLIPPING.");
+					needsClipToSlot = true;
+				}
+			}
 
 			var oldRenderSize = RenderSize;
 			var innerInkSize = ArrangeOverride(arrangeSize);
@@ -160,14 +205,12 @@ namespace Windows.UI.Xaml
 				offset.Y + finalRect.Y + Margin.Top
 			);
 
-			ArrangeNative(offset, oldRenderSize);
+			_logDebug?.Debug(
+				$"{DepthIndentation}[{this}] ArrangeChild(offset={offset}, margin={Margin}) [oldRenderSize={oldRenderSize}] [RequiresClipping={needsClipToSlot}]");
 
-			if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			{
-				_log.Debug(
-					$"[{this}] ArrangeChild(offset={offset}, margin={Margin}) [oldRenderSize={oldRenderSize}]"
-				);
-			}
+			RequiresClipping = needsClipToSlot;
+
+			ArrangeNative(offset, oldRenderSize);
 		}
 
 		internal Thickness GetThicknessAdjust()
@@ -209,21 +252,24 @@ namespace Windows.UI.Xaml
 
 			Rect? getClip()
 			{
-				// Disable clipping for Scrollviewer (edge seems to disable scrolling if 
-				// the clipping is enabled to the size of the scrollviewer, even if overflow-y is auto)
-				if (this is Controls.ScrollViewer)
-				{
-					return null;
-				}
-				else if (Clip != null)
+				if (Clip != null)
 				{
 					return Clip.Rect;
 				}
 
-				return new Rect(0, 0, newRect.Width, newRect.Height);
+				if (RequiresClipping)
+				{
+					return new Rect(0, 0, newRect.Width, newRect.Height);
+				}
+
+				return null;
 			}
 
-			ArrangeElementNative(newRect, getClip());
+			var clipRect = getClip();
+
+			_logDebug?.Trace($"{DepthIndentation}{this}.ArrangeElementNative({newRect}, clip={clipRect} (RequiresClipping={RequiresClipping})");
+
+			ArrangeElementNative(newRect, RequiresClipping, clipRect);
 		}
 	}
 }

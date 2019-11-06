@@ -152,6 +152,7 @@
 - BitmapIcon
 - MediaPlayer
 - ViewBox
+- PersonPicture
 
 ### Non-UI features
 

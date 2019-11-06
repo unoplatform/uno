@@ -53,6 +53,7 @@
 	  <None Remove="NonDPAssignableTest.xaml" />
 	  <None Remove="StoryboardTargetTest.xaml" />
 	  <None Remove="ThemeResourcesTest.xaml" />
+	  <None Remove="VSM.SetterComplexValue.xaml" />
 	  <None Remove="xNameResources.xaml" />
 	</ItemGroup>
 

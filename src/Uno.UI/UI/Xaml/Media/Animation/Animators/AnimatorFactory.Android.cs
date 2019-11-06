@@ -153,7 +153,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				view.PivotX = ViewHelper.LogicalToPhysicalPivotPixels(elt.ActualWidth * origin.X + centerX);
 				view.PivotY = ViewHelper.LogicalToPhysicalPivotPixels(elt.ActualHeight * origin.Y + centerY);
 			}
-			else
+			else if (view != null)
 			{
 				view.PivotX = ViewHelper.LogicalToPhysicalPivotPixels(centerX);
 				view.PivotY = ViewHelper.LogicalToPhysicalPivotPixels(centerY);

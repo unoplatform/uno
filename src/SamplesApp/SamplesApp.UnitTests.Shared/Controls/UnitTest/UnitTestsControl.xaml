@@ -8,29 +8,32 @@
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
 
-  <Grid>
-	<Grid.RowDefinitions>
-	  <RowDefinition Height="Auto" />
-	  <RowDefinition Height="*" />
-	</Grid.RowDefinitions>
-	<Grid.ColumnDefinitions>
-	  <ColumnDefinition Width="*"/>
-	  <ColumnDefinition Width="*"/>
-	</Grid.ColumnDefinitions>
-	<StackPanel Grid.Row="0">
-	  <Button x:Name="runButton"
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="*"/>
+			<ColumnDefinition Width="*"/>
+		</Grid.ColumnDefinitions>
+		<StackPanel Grid.Row="0">
+			<Button x:Name="runButton"
 			  Content="Run"
 			  Click="OnRunTests" />
-	  <TextBlock x:Name="runStatus"
+			<TextBlock x:Name="runStatus"
 				 Text="Not initialized" />
-	  <TextBlock x:Name="failedTests" Text="Pending..." />
-	</StackPanel>
-	<ScrollViewer Grid.Row="1">
-	  <StackPanel x:Name="testResults">
-	  </StackPanel>
-	</ScrollViewer>
-	<ScrollViewer  Grid.Column="1" Grid.RowSpan="2">
-	  <ContentControl x:Name="unitTestContentRoot" HorizontalContentAlignment="Center" VerticalAlignment="Center" />
-	</ScrollViewer>
-  </Grid>
+			<ScrollViewer Height="100">
+				<TextBlock x:Name="failedTestDetails" Opacity="0.1" />
+			</ScrollViewer>
+			<TextBlock x:Name="failedTests" Text="Pending..." />
+		</StackPanel>
+		<ScrollViewer Grid.Row="1">
+			<StackPanel x:Name="testResults">
+			</StackPanel>
+		</ScrollViewer>
+		<ScrollViewer  Grid.Column="1" Grid.RowSpan="2">
+			<ContentControl x:Name="unitTestContentRoot" HorizontalContentAlignment="Center" VerticalAlignment="Center" MinWidth="1600" MinHeight="1600" />
+		</ScrollViewer>
+	</Grid>
 </UserControl>

@@ -162,10 +162,7 @@ namespace Windows.UI.Xaml
 				e.Style = Xaml.Style.DefaultStyleForType(e.GetType());
 			}
 
-			if (
-				!FeatureConfiguration.UIElement.UseLegacyClipping
-				&& e is UIElement uiElement
-			)
+			if (e is UIElement uiElement)
 			{
 #if __IOS__
 				uiElement.ClipsToBounds = false;

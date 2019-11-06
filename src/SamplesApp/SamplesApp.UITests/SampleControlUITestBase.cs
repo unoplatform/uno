@@ -97,7 +97,7 @@ namespace SamplesApp.UITests
 			var fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileInfo.Name);
 			if (fileNameWithoutExt != title)
 			{
-				var destFileName = Path.Combine(Path.GetDirectoryName(fileInfo.FullName), fileNameWithoutExt + "." + Path.GetExtension(fileInfo.Name));
+				var destFileName = Path.Combine(Path.GetDirectoryName(fileInfo.FullName), title + Path.GetExtension(fileInfo.Name));
 				if (File.Exists(destFileName))
 				{
 					File.Delete(destFileName);
