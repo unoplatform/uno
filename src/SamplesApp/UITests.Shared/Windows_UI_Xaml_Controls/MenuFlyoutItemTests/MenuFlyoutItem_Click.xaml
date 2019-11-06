@@ -19,7 +19,7 @@
             <AppBarButton Icon="Pin" Label="Start" x:Name="mfiButton" >
                 <AppBarButton.Flyout>
                     <MenuFlyout>
-                        <MenuFlyoutItem x:Name="mfiItem" Name="mfiItem" Text="mfiItem" Click="FlyoutItem_Click" />
+                        <MenuFlyoutItem x:Name="mfiItem" Text="mfiItem" Click="FlyoutItem_Click" />
                         <MenuFlyoutItem Text="Item2"  />
                     </MenuFlyout>
                 </AppBarButton.Flyout>
