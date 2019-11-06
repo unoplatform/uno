@@ -7,7 +7,7 @@ using Android.Provider;
 
 namespace Windows.System
 {
-	public partial static class Launcher
+	public static partial class Launcher
 	{
 		private const string MicrosoftSettingsUri = "ms-settings";
 
@@ -65,7 +65,7 @@ namespace Windows.System
 			switch (uri.Scheme.ToLowerInvariant())
 			{
 				case MicrosoftSettingsUri: return HandleSettingsUriAsync(uri);
-				default: return LaunchUriInternalAsync(uri);
+				default: return LaunchUriActivityAsync(uri);
 			}
 		}
 

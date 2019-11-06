@@ -12,55 +12,63 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_System
 	public class Given_Launcher
 	{
 		[TestMethod]
+		public async Task When_Null_Uri_Is_Launched()
+		{
+			await Assert.ThrowsExceptionAsync<AccessViolationException>(() => Launcher.LaunchUriAsync(null).AsTask());
+		}
+
+		[TestMethod]
+		public async Task When_Null_Uri_Is_Queried()
+		{
+			await Assert.ThrowsExceptionAsync<Exception>(() => Launcher.QueryUriSupportAsync(null, LaunchQuerySupportType.Uri).AsTask());
+		}
+
+		[TestMethod]
+		public async Task When_LaunchUriAsync_From_Non_UI_Thread()
+		{
+			await Assert.ThrowsExceptionAsync<InvalidOperationException>(
+				() => Task.Run(
+					() => Launcher.LaunchUriAsync(new Uri("https://platform.uno"))));
+		}
+
+		[TestMethod]
 		public async Task When_Valid_Uri_Is_Queried()
 		{
-			await DispatchAsync(async () =>
-			{
-				var result = await Launcher.QueryUriSupportAsync(
-					new Uri("https://platform.uno"),
-					LaunchQuerySupportType.Uri);
+			var result = await Launcher.QueryUriSupportAsync(
+				new Uri("https://platform.uno"),
+				LaunchQuerySupportType.Uri);
 
-				Assert.AreEqual(LaunchQuerySupportStatus.Available, result);
-			});
+			Assert.AreEqual(LaunchQuerySupportStatus.Available, result);
 		}
 
 		[TestMethod]
 		public async Task When_Unsupported_Uri_Is_Queried()
 		{
-			await DispatchAsync(async () =>
-			{
-				var result = await Launcher.QueryUriSupportAsync(
-					new Uri("thisschemedefinitelydoesnotexist://helloworld"),
-					LaunchQuerySupportType.Uri);
+			var result = await Launcher.QueryUriSupportAsync(
+				new Uri("thisschemedefinitelydoesnotexist://helloworld"),
+				LaunchQuerySupportType.Uri);
 
-				Assert.AreEqual(LaunchQuerySupportStatus.NotSupported, result);
-			});
+			Assert.AreEqual(LaunchQuerySupportStatus.NotSupported, result);
 		}
 
 		[TestMethod]
 		public async Task When_Settings_Uri_Is_Queried()
 		{
-			await DispatchAsync(async () =>
-			{
-				var result = await Launcher.QueryUriSupportAsync(
-					new Uri("ms-settings:network-wifi"),
-					LaunchQuerySupportType.Uri);
+			var result = await Launcher.QueryUriSupportAsync(
+				new Uri("ms-settings:network-wifi"),
+				LaunchQuerySupportType.Uri);
 
-				Assert.AreEqual(LaunchQuerySupportStatus.Available, result);
-			});
+			Assert.AreEqual(LaunchQuerySupportStatus.Available, result);
 		}
 
 		[TestMethod]
 		public async Task When_Unsupported_Special_Uri_Is_Queried()
 		{
-			await DispatchAsync(async () =>
-			{
-				var result = await Launcher.QueryUriSupportAsync(
-					new Uri("ms-windows-store://home"),
-					LaunchQuerySupportType.Uri);
+			var result = await Launcher.QueryUriSupportAsync(
+				new Uri("ms-windows-store://home"),
+				LaunchQuerySupportType.Uri);
 
-				Assert.AreEqual(LaunchQuerySupportStatus.NotSupported, result);
-			});
+			Assert.AreEqual(LaunchQuerySupportStatus.NotSupported, result);
 		}
 
 		private async Task DispatchAsync(Func<Task> asyncAction)

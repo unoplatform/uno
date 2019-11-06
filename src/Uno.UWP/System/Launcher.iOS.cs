@@ -2,20 +2,14 @@
 using System;
 using System.Threading.Tasks;
 using UIKit;
-using Windows.Foundation;
 using AppleUrl = global::Foundation.NSUrl;
 
 namespace Windows.System
 {
 	public static partial class Launcher
 	{
-		public static async Task<bool> LaunchUriAsync(Uri uri)
+		public static async Task<bool> LaunchUriPlatformAsync(Uri uri)
 		{
-			if (uri == null)
-			{
-				throw new ArgumentNullException(nameof(uri));
-			}
-
 			if (IsSpecialUri(uri) && CanHandleSpecialUri(uri))
 			{
 				return await HandleSpecialUriAsync(uri);
@@ -26,15 +20,10 @@ namespace Windows.System
 		}
 
 
-		public static IAsyncOperation<LaunchQuerySupportStatus> QueryUriSupportAsync(
+		public static Task<LaunchQuerySupportStatus> QueryUriSupportPlatformAsync(
 			Uri uri,
 			LaunchQuerySupportType launchQuerySupportType)
-		{
-			if (uri == null)
-			{
-				throw new ArgumentNullException(nameof(uri));
-			}
-            
+		{            
 			bool canOpenUri;
 			if (!IsSpecialUri(uri))
 			{
@@ -49,7 +38,7 @@ namespace Windows.System
 			var supportStatus = canOpenUri ?
 				LaunchQuerySupportStatus.Available : LaunchQuerySupportStatus.NotSupported;
 
-			return Task.FromResult(supportStatus).AsAsyncOperation();
+			return Task.FromResult(supportStatus);
 		}
 	}
 }

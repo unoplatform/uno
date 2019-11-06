@@ -9,7 +9,7 @@ namespace Windows.System
 {
 	public class Launcher
 	{
-		public static async Task<bool> LaunchUriAsync(Uri uri)
+		public static async Task<bool> LaunchUriPlatformAsync(Uri uri)
 		{
 			var command = $"Uno.UI.WindowManager.current.open(\"{uri.OriginalString}\");";
 			var result = WebAssemblyRuntime.InvokeJS(command);

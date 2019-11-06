@@ -1,8 +1,4 @@
-﻿
-using Uno.Extensions;
-using Uno.Logging;
-using Microsoft.Extensions.Logging;
-#if __ANDROID__
+﻿#if __ANDROID__
 using System;
 using System.Linq;
 using System.Threading.Tasks;
@@ -10,20 +6,18 @@ using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Windows.Foundation;
+using Uno.Extensions;
+using Uno.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Windows.System
 {
 	public partial class Launcher
 	{
-		public static async Task<bool> LaunchUriAsync(Uri uri)
+		public static async Task<bool> LaunchUriPlatformAsync(Uri uri)
 		{
 			try
 			{
-				if (uri == null)
-				{
-					throw new ArgumentNullException(nameof(uri));
-				}
-
 				if (Uno.UI.ContextHelper.Current == null)
 				{
 					throw new InvalidOperationException(
@@ -31,12 +25,12 @@ namespace Windows.System
 						"App context needs to be initialized");
 				}
 
-				if (IsSpecialUri(uri) && CanHandleInternalUri(uri))
+				if (IsSpecialUri(uri) && CanHandleSpecialUri(uri))
 				{
 					return await HandleSpecialUriAsync(uri);
 				}
 
-				return await LaunchUriInternalAsync(uri);
+				return await LaunchUriActivityAsync(uri);
 			}
 			catch (Exception exception)
 			{
@@ -49,15 +43,10 @@ namespace Windows.System
 			}
 		}
 
-		public static IAsyncOperation<LaunchQuerySupportStatus> QueryUriSupportAsync(
+		public static Task<LaunchQuerySupportStatus> QueryUriSupportPlatformAsync(
 			Uri uri,
 			LaunchQuerySupportType launchQuerySupportType)
 		{
-			if (uri == null)
-			{
-				throw new ArgumentNullException(nameof(uri));
-			}
-
 			if (Uno.UI.ContextHelper.Current == null)
 			{
 				throw new InvalidOperationException(
@@ -85,10 +74,10 @@ namespace Windows.System
 			var supportStatus = canOpenUri ?
 				LaunchQuerySupportStatus.Available : LaunchQuerySupportStatus.NotSupported;
 
-			return Task.FromResult(supportStatus).AsAsyncOperation();
+			return Task.FromResult(supportStatus);
 		}
 
-		private static Task<bool> LaunchUriInternalAsync(Uri uri)
+		private static Task<bool> LaunchUriActivityAsync(Uri uri)
 		{
 			var androidUri = Android.Net.Uri.Parse(uri.OriginalString);
 			var intent = new Intent(Intent.ActionView, androidUri);
