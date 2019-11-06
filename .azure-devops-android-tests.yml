@@ -20,8 +20,13 @@ jobs:
       path: $(NUGET_PACKAGES)
     displayName: Cache NuGet packages
 
-  - bash: sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 6_4_0
-    displayName: Select Xamarin Version
+  - bash: |
+      SYMLINK="6_4_0"
+      # Set Xamarin.Android 10.0
+      sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh $SYMLINK
+      # Set Mono 6.4.0
+      echo "##vso[task.setvariable variable=PATH;]/Library/Frameworks/Mono.framework/Versions/$SYMLINK/bin:$PATH"
+    displayName: Select Xamarin and Mono Version
 
   - bash: |
       chmod +x $(build.sourcesdirectory)/build/android-uitest-run.sh
