@@ -38,7 +38,7 @@ namespace SamplesApp.UITests.Windows_Storage.StorageFileTests
 			TakeScreenshot("AfterFirstCheck");
 
 			// step 3: test date several seconds later
-			_app.Wait(TimeSpan.FromSeconds(30));
+			_app.Wait(TimeSpan.FromSeconds(10));
 			_app.Tap(_app.Marked("sfdButtonTest"));
 			_app.WaitForText(resultMessage, "success");   // timeout here means: DateCreated returns other date (maybe current date)
 
