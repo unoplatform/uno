@@ -94,12 +94,7 @@ public abstract class UnoViewGroup
 			}
 		);
 
-		setClipChildren(false); // This is required for animations not to be cut off by transformed ancestor views. (#1333)
-	}
-
-	public final void enableAndroidClipping()
-	{
-		setClipChildren(true); // called by controls requiring it (ScrollViewer)
+		setClipChildren(false); // The actual clipping will be calculated in managed code
 	}
 
 	private boolean _unoLayoutOverride;

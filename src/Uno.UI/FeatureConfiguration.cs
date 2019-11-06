@@ -14,15 +14,18 @@ namespace Uno.UI
 		public static class UIElement
 		{
 			/// <summary>
-			/// Enables the legacy clipping behavior which only applies binding to itself and
-			/// its children. Normal clipping only applies to a single UIElement considering its
-			/// clipping parent, based on <see cref="Windows.UI.Xaml.UIElement.ClipChildrenToBounds"/>.
+			/// [DEPRECATED]
+			/// Not used anymore, does nothing.
 			/// </summary>
+			[NotImplemented]
 			public static bool UseLegacyClipping { get; set; } = true;
 
 			/// <summary>
 			/// Enable the visualization of clipping bounds (intended for diagnostic purposes).
 			/// </summary>
+			/// <remarks>
+			/// This feature is only supported on iOS, for now.
+			/// </remarks>
 			public static bool ShowClippingBounds { get; set; } = false;
 
 #if __WASM__
@@ -286,7 +289,7 @@ namespace Uno.UI
 			/// </summary>
 			/// <remarks>
 			/// As this boolean is read only once when initializing the dependency property,
-			/// make sure to define it in teh early stages of you application initialization,
+			/// make sure to define it in the early stages of you application initialization,
 			/// before any UI related initialization (like generic styles init) and even before
 			/// referencing the ** type ** ScrollViewer in any way.
 			/// </remarks>

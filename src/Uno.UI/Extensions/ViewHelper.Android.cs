@@ -10,6 +10,9 @@ using System.Runtime.CompilerServices;
 using Android.Views;
 using System.Threading;
 using System.Numerics;
+using Android.Graphics;
+using Point = Windows.Foundation.Point;
+using Rect = Windows.Foundation.Rect;
 
 namespace Uno.UI
 {
@@ -288,6 +291,19 @@ namespace Uno.UI
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static RectF PhysicalToLogicalPixels(this RectF size)
+		{
+			var fScale = (float)Scale;
+
+			return new RectF(
+				size.Left / fScale,
+				size.Top / fScale,
+				size.Right / fScale,
+				size.Bottom / fScale
+			);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Rect LogicalToPhysicalPixels(this Rect size)
 		{
 			return new Rect(
@@ -295,6 +311,17 @@ namespace Uno.UI
 				LogicalToPhysicalPixels(size.Y),
 				LogicalToPhysicalPixels(size.Width),
 				LogicalToPhysicalPixels(size.Height)
+			);
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static RectF LogicalToPhysicalPixels(this RectF size)
+		{
+			return new RectF(
+				LogicalToPhysicalPixels(size.Left),
+				LogicalToPhysicalPixels(size.Top),
+				LogicalToPhysicalPixels(size.Right),
+				LogicalToPhysicalPixels(size.Bottom)
 			);
 		}
 

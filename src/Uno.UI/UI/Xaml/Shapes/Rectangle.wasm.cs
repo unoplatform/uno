@@ -26,19 +26,23 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			_rectangle.Width = Width - ActualStrokeThickness;
-			_rectangle.Height = Height - ActualStrokeThickness;
+			var strokeThickness = ActualStrokeThickness;
+
+			_rectangle.Width = Width - strokeThickness;
+			_rectangle.Height = Height - strokeThickness;
 
 			return base.MeasureOverride(availableSize);
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
+			var strokeThickness = ActualStrokeThickness;
+
 			var childRect = new Rect(
-				ActualStrokeThickness / 2,
-				ActualStrokeThickness / 2,
-				finalSize.Width - ActualStrokeThickness,
-				finalSize.Height - ActualStrokeThickness
+				strokeThickness / 2,
+				strokeThickness / 2,
+				finalSize.Width - strokeThickness,
+				finalSize.Height - strokeThickness
 			);
 
 			_rectangle.Arrange(childRect);

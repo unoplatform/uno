@@ -77,8 +77,6 @@ namespace <#= mixin.NamespaceName #>
 							((IDependencyObjectStoreProvider)this).Store.Parent = superView;
 						}
 
-						ApplyClipping(superView);
-
 						OnLoading();
 						OnLoaded();
 					}
@@ -99,14 +97,6 @@ namespace <#= mixin.NamespaceName #>
 
 				this.Log().Error($"Failed to process MoveToWindow for {GetType()}", e);
 			}
-		}
-
-		private void ApplyClipping(NSView superView)
-		{
-			// if (!FeatureConfiguration.UIElement.UseLegacyClipping)
-			// {
-			// 	UIElement.UpdateMask(this, superView);
-			// }
 		}
 #endif
 

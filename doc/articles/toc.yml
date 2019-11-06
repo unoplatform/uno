@@ -56,8 +56,12 @@
     href: features/SpeechRecognition.md
   - name: PowerManager
     href: features/windows-system-power.md
+  - name: Windows.System.Profile
+    href: features/windows-system-profile.md
   - name: PasswordVault
     href: features\PasswordVault.md
+  - name: Windows.ApplicationModel
+    href: features\windows-applicationmodel.md
   - name: Windows.ApplicationModel.Calls
     href: features\windows-applicationmodel-calls.md
   - name: Windows.Devices.Sensors
@@ -101,6 +105,8 @@
       href: contributing\guidelines\issue-triage.md
     - name: Guidelines for pull-requests
       href: contributing\guidelines\pull-requests.md
+    - name: Build Artifacts
+      href: contributing\build-artifacts.md
     - name: Building and debugging Uno.UI
       href: uno-development\debugging-uno-ui.md
     - name: Working with the samples applications

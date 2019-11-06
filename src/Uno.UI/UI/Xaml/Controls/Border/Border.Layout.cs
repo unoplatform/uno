@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls
 	/// <summary>
 	/// A border layouter, to apply Padding to the border.
 	/// </summary>
-	public partial class Border
+	public partial class Border : ICustomClippingElement
 	{
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -66,5 +66,8 @@ namespace Windows.UI.Xaml.Controls
 
 			return finalSize;
 		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Child is UIElement ue) || ue.RenderTransform == null;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 	}
 }

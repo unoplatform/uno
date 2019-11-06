@@ -1,9 +1,4 @@
 pull_request_rules:
-  - name: automatic deletion of pull-request branches after merge
-    conditions: []
-    actions:
-      # Takes no options, see <https://doc.mergify.io/examples.html#deleting-merged-branch>
-      delete_head_branch: {}
 
   - name: automatic strict merge when CI passes, has 2 reviews, no requests for change and is labeled 'ready-to-merge' unless labelled 'do-not-merge/breaking-change' or 'do-not-merge/work-in-progress'
     conditions:
@@ -36,3 +31,10 @@ pull_request_rules:
         # https://doc.mergify.io/strict-workflow.html
         # https://doc.mergify.io/actions.html#label
         strict: smart
+
+  - name: automatic merge for allcontributors pull requests
+    conditions:
+      - author=allcontributors[bot]
+    actions:
+      merge:
+        method: merge

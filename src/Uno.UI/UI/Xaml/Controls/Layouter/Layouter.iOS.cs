@@ -98,8 +98,6 @@ namespace Windows.UI.Xaml.Controls
 				using (SettingFrame(view))
 				{
 					view.Frame = nativeFrame;
-
-					UpdateClip(view);
 				}
 			}
 		}
@@ -109,19 +107,6 @@ namespace Windows.UI.Xaml.Controls
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
 				LogArrange(view, (Rect)frame);
-			}
-		}
-
-		private static void UpdateClip(View view)
-		{
-			if (!FeatureConfiguration.UIElement.UseLegacyClipping)
-			{
-				UIElement.UpdateMask(view, view.Superview);
-
-				foreach (var child in view.GetChildren())
-				{
-					UIElement.UpdateMask(child, view);
-				}
 			}
 		}
 

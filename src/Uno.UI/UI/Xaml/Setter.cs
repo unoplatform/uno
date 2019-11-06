@@ -101,7 +101,8 @@ namespace Windows.UI.Xaml
 
 			if (Target == null)
 			{
-				throw new InvalidOperationException($"Unable to apply setter value with null {nameof(Target)}");
+				// Ignore a null setter, act as a no-op.
+				return null;
 			}
 
 			if (Target.Target == null && Target.TargetName != null)

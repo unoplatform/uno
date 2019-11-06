@@ -1,5 +1,5 @@
 # VisibleBoundsPadding behavior
-The `Uno.UI.Toolkit.VisibleBoundsPadding` is a behavior that overrides the `Padding` property of the a control to ensure that its inner content is always inside the `ApplicationView.VisibleBounds` rectangle.
+The `Uno.UI.Toolkit.VisibleBoundsPadding` is a behavior that overrides the `Padding` property of a control to ensure that its inner content is always inside the `ApplicationView.VisibleBounds` rectangle.
 
 The `ApplicationView.VisibleBounds` is the rectangular area of the screen which is completely unobscured by any window decoration, such as the status bar, rounded screen corners or some screen notch (e.g. the iPhone X or Essential Phone top sensors notch).
 
@@ -22,7 +22,7 @@ This grid will automatically be assigned a padding, and will be refreshed every 
 
 ## Specifying a target
 
-The `Uno.UI.Toolkit.VisibleBoundsPadding` behavior defines a `PaddingMask` property that specifies if you want to set the padding to a specific bounds of the UI. The values are:
+The `Uno.UI.Toolkit.VisibleBoundsPadding` behavior defines a `PaddingMask` property that specifies if you want to set the padding to a specific bound of the UI. The values are:
 
 - `None` (*default value*)
 - `All`

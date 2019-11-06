@@ -1,0 +1,14 @@
+﻿<Page
+    x:Class="SamplesApp.Windows_UI_Xaml_Shapes.LinePage"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<StackPanel Spacing="5">
+		<TextBlock Text="This is a line" />
+		<Line x:Name="DLinePage" Stroke="Black" X2="400" StrokeThickness="5"/>
+	</StackPanel>
+</Page>

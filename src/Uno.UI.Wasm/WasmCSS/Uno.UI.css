@@ -17,15 +17,10 @@ body {
 }
 
 .uno-uielement {
-  overflow: hidden;
   position: absolute;
   display: inline;
   outline: none;
   pointer-events: auto;
-  /*
-    Those are required for measure/arrange to behave well:
-    margin & padding are calculated through Xaml elements.
-  */
   /*
     Those are required for measure/arrange to behave well:
     margin & padding are calculated through Xaml elements.
@@ -41,6 +36,15 @@ body {
     See WindowManager.ts on measureViewInternal() for more details.
   */
   transform: translate(0, 0);
+}
+
+.uno-frameworkelement.uno-clippedToBounds {
+  /*
+    This CSS class is applied when a control is a _clipping mode_:
+    it's happening during the "arrange" phase when the availableSize is less than desiredSize.
+    All FrameworkElements are following this behavior, except <Canvas>.
+  */
+  overflow: hidden;
 }
 
 .uno-frameworkelement.uno-unarranged {

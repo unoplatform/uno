@@ -37,7 +37,7 @@ Notes:
      on that. This is a limitation [in the Android platform](https://developer.android.com/training/keyboard-input/commands) (see note on this link content).
      > Because of those limitations, _Key Events_ are not being implemented as _routed events_ on Android, so `AddHandler` & `RemoveHandler`
      > won't work for keyboard events. **They won't bubble in managed code**.
-   * **iOS**: `KeyDown` & `KeyUp` routed events are generated from only a `TextBox`. Only characted-related keyboard events are generated.
+   * **iOS**: `KeyDown` & `KeyUp` routed events are generated from only a `TextBox`. Only character-related keyboard events are generated.
      They are implemented as _Routed Events_ and they are **always bubbling in managed code**.
 
 ## Event Bubbling Flow

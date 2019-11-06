@@ -623,7 +623,7 @@ var Uno;
                 * To remove a value, set it to empty string.
                 * @param styles A dictionary of styles to apply on html element.
                 */
-            setStyle(elementId, styles, setAsArranged = false) {
+            setStyle(elementId, styles, setAsArranged = false, clipToBounds) {
                 const element = this.getView(elementId);
                 for (const style in styles) {
                     if (styles.hasOwnProperty(style)) {
@@ -632,6 +632,9 @@ var Uno;
                 }
                 if (setAsArranged) {
                     this.setAsArranged(element);
+                }
+                if (typeof clipToBounds === "boolean") {
+                    this.setClipToBounds(element, clipToBounds);
                 }
                 return "ok";
             }
@@ -654,6 +657,7 @@ var Uno;
                 if (params.SetAsArranged) {
                     this.setAsArranged(element);
                 }
+                this.setClipToBounds(element, params.ClipToBounds);
                 return true;
             }
             /**
@@ -733,6 +737,7 @@ var Uno;
                     style.clip = "";
                 }
                 this.setAsArranged(element);
+                this.setClipToBounds(element, params.ClipToBounds);
                 return true;
             }
             setAsArranged(element) {
@@ -740,6 +745,14 @@ var Uno;
             }
             setAsUnarranged(element) {
                 element.classList.add(WindowManager.unoUnarrangedClassName);
+            }
+            setClipToBounds(element, clipToBounds) {
+                if (clipToBounds) {
+                    element.classList.add(WindowManager.unoClippedToBoundsClassName);
+                }
+                else {
+                    element.classList.remove(WindowManager.unoClippedToBoundsClassName);
+                }
             }
             /**
             * Sets the transform matrix of an element
@@ -1524,6 +1537,7 @@ var Uno;
         WindowManager._isLoadEventsEnabled = false;
         WindowManager.unoRootClassName = "uno-root-element";
         WindowManager.unoUnarrangedClassName = "uno-unarranged";
+        WindowManager.unoClippedToBoundsClassName = "uno-clippedToBounds";
         WindowManager._cctor = (() => {
             WindowManager.initMethods();
             UI.HtmlDom.initPolyfills();
@@ -1619,6 +1633,9 @@ class WindowManagerArrangeElementParams {
         }
         {
             ret.Clip = Boolean(Module.getValue(pData + 68, "i32"));
+        }
+        {
+            ret.ClipToBounds = Boolean(Module.getValue(pData + 72, "i32"));
         }
         return ret;
     }
@@ -2095,6 +2112,9 @@ class WindowManagerSetStylesParams {
                 ret.Pairs = null;
             }
         }
+        {
+            ret.ClipToBounds = Boolean(Module.getValue(pData + 16, "i32"));
+        }
         return ret;
     }
 }
@@ -2509,6 +2529,44 @@ var Windows;
             Sensors.Magnetometer = Magnetometer;
         })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
     })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var System;
+    (function (System) {
+        var Profile;
+        (function (Profile) {
+            class AnalyticsVersionInfo {
+                static getUserAgent() {
+                    return navigator.userAgent;
+                }
+                static getBrowserName() {
+                    // Opera 8.0+
+                    if ((!!window.opr && !!window.opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0) {
+                        return "Opera";
+                    }
+                    // Firefox 1.0+
+                    if (typeof window.InstallTrigger !== 'undefined') {
+                        return "Firefox";
+                    }
+                    // Safari 3.0+ "[object HTMLElementConstructor]" 
+                    if (/constructor/i.test(window.HTMLElement) ||
+                        ((p) => p.toString() === "[object SafariRemoteNotification]")(typeof window.safari !== 'undefined' && window.safari.pushNotification)) {
+                        return "Safari";
+                    }
+                    // Edge 20+
+                    if (!!window.StyleMedia) {
+                        return "Edge";
+                    }
+                    // Chrome 1 - 71
+                    if (!!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)) {
+                        return "Chrome";
+                    }
+                }
+            }
+            Profile.AnalyticsVersionInfo = AnalyticsVersionInfo;
+        })(Profile = System.Profile || (System.Profile = {}));
+    })(System = Windows.System || (Windows.System = {}));
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
