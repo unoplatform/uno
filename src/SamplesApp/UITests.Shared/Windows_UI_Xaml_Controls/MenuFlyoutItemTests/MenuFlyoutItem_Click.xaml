@@ -26,14 +26,14 @@
 			</AppBar>  -->
 		        <StackPanel>
             <TextBlock x:Name="mfiResult" Text="Starting..." />
-            <Button Content="start" x:Name="mfiButton" Margin="10,10,10,10">
-                <Button.Flyout>
+            <AppBarButton Icon="Pin" Label="Start" x:Name="mfiButton" Margin="10,10,10,10">
+                <AppBarButton.Flyout>
                     <MenuFlyout>
                         <MenuFlyoutItem x:Name="mfiItem" Text="Item1" Click="FlyoutItem_Click" />
                         <MenuFlyoutItem Text="Item2"  />
                     </MenuFlyout>
-                </Button.Flyout>
-            </Button>
+                </AppBarButton.Flyout>
+            </AppBarButton>
         </StackPanel>
 
 	</Grid>
