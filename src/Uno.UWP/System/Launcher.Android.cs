@@ -11,7 +11,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Windows.System
 {
-	public partial class Launcher
+	public static partial class Launcher
 	{
 		public static async Task<bool> LaunchUriPlatformAsync(Uri uri)
 		{
