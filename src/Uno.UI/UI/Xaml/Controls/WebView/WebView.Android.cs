@@ -25,7 +25,8 @@ namespace Windows.UI.Xaml.Controls
 	public partial class WebView : Control
 	{
 		private Android.Webkit.WebView _webView;
-        private bool _afterToString;
+        private bool _wasLoadedFromString;
+		
         protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
@@ -70,7 +71,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-            _afterToString = false;
+            _wasLoadedFromString = false;
             if (uri.Scheme.Equals("local", StringComparison.OrdinalIgnoreCase))
 			{
 				var path = $"file:///android_asset/{uri.PathAndQuery}";
@@ -120,7 +121,7 @@ namespace Windows.UI.Xaml.Controls
 					element => element.Value.JoinBy(", ")
 				);
 
-            _afterToString = false;
+            _wasLoadedFromString = false;
             _webView.LoadUrl(uri.AbsoluteUri, headers);
 		}
 
@@ -131,7 +132,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-            _afterToString = true;
+            _wasLoadedFromString = true;
             _webView.LoadData(text, "text/html; charset=utf-8", "utf-8");
 		}
 
@@ -304,7 +305,7 @@ namespace Windows.UI.Xaml.Controls
 					IsSuccess = _webViewSuccess,
 					WebErrorStatus = _webErrorStatus
 				};
-                if (!_webView._afterToString && !string.IsNullOrEmpty(url))
+                if (!_webView._wasLoadedFromString && !string.IsNullOrEmpty(url))
                 {
                     args.Uri = new Uri(url);
                 }
