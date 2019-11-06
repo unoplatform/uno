@@ -89,7 +89,6 @@
 * The _feature flag_ `FeatureConfiguration.UseLegacyClipping` is now deprecated and not used anymore
 
 ### Breaking changes
-
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
 * `TextBox.TextChanged` is now called asynchronously after the UI is updated, in line with UWP. For most uses `TextChanging` should be preferred.
 * [Android] `TextBox.IsSpellCheckEnabled = false` is now enforced in a way that may cause issues in certain use cases (see https://stackoverflow.com/a/5188119/1902058). The old behavior can be restored by setting `ShouldForceDisableSpellCheck = false`, per `TextBox`.
@@ -102,7 +101,7 @@
     > This change might break the compilation for projects that define duplicate resources in other globally accessible resource dictionaries. Adjustments to remove duplicate resources may be necessary.
 
 ### Bug fixes
-
+* [#2020](https://github.com/unoplatform/uno/pull/2020) `ContentControl` no longer display the datacontext type when ContentTemplate and content are empty
 * [#1987](https://github.com/unoplatform/uno/pull/1987) Missing XML comment warnings are disabled on generated code
 * [#1939](https://github.com/unoplatform/uno/pull/1939) Handles nullables types in XAML file generator
 * [#1741](https://github.com/unoplatform/uno/issues/1741) On Android, `ApplicationData.Current.[LocalFolder|RoamingFolder]` can now be used in the ctor of App.xaml.cs
