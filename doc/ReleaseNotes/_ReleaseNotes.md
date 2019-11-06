@@ -89,7 +89,6 @@
 * The _feature flag_ `FeatureConfiguration.UseLegacyClipping` is now deprecated and not used anymore
 
 ### Breaking changes
-
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
 * `TextBox.TextChanged` is now called asynchronously after the UI is updated, in line with UWP. For most uses `TextChanging` should be preferred.
 * [Android] `TextBox.IsSpellCheckEnabled = false` is now enforced in a way that may cause issues in certain use cases (see https://stackoverflow.com/a/5188119/1902058). The old behavior can be restored by setting `ShouldForceDisableSpellCheck = false`, per `TextBox`.

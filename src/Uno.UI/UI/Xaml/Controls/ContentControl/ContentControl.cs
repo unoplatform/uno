@@ -67,19 +67,19 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				if(this.IsDependencyPropertySet(ContentProperty))
+				if (this.IsDependencyPropertySet(ContentProperty))
 				{
 					return GetValue(ContentProperty);
 				}
-				else if(ContentTemplate != null)
-				{										 
-				   return DataContext;
+				else if (ContentTemplate != null)
+				{
+					return DataContext;
 				}
 				else
 				{
+					// Return null to be sure that the Content will be empty and prevent the type to be dispayed.
 					return null;
 				}
-
 			}
 			set { SetValue(ContentProperty, value); }
 		}
@@ -159,7 +159,7 @@ namespace Windows.UI.Xaml.Controls
 					ContentTemplateRoot = null;
 				}
 
-				if(newValue != null)
+				if (newValue != null)
 				{
 					SetUpdateTemplate();
 				}
@@ -333,7 +333,9 @@ namespace Windows.UI.Xaml.Controls
 
 				if (Content != null
 					&& !(Content is View)
-					&& ContentTemplateRoot == null && dataTemplate == null && ContentTemplate == null
+					&& ContentTemplateRoot == null
+					&& dataTemplate == null
+					&& ContentTemplate == null
 				)
 				{
 					SetContentTemplateRootToPlaceholder();
@@ -428,20 +430,20 @@ namespace Windows.UI.Xaml.Controls
 		/// Return false in this case, even if the Template is null.
 		/// </remarks>
 		internal bool IsContentPresenterBypassEnabled => Template == null && !HasDefaultTemplate(GetDefaultStyleType());
-		
+
 		/// <summary>
 		/// Gets whether the default style for the given type sets a non-null Template.
 		/// </summary>
-		private static Func<Type, bool> HasDefaultTemplate = 
+		private static Func<Type, bool> HasDefaultTemplate =
 			Funcs.CreateMemoized((Type type) =>
-				Style.DefaultStyleForType(type) is Style defaultStyle 
+				Style.DefaultStyleForType(type) is Style defaultStyle
 					&& defaultStyle
 						.Flatten(s => s.BasedOn)
 						.SelectMany(s => s.Setters)
 						.OfType<Setter>()
 						.Any(s => s.Property == TemplateProperty && s.Value != null)
 			);
-		
+
 		/// <summary>
 		/// Creates a ContentControl which can be measured without being added to the visual tree (eg as container in virtualized lists).
 		/// </summary>
