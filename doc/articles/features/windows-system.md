@@ -6,8 +6,11 @@
 
 This API is supported on iOS, Android and WASM.
 
-On iOS and Android, the `ms-settings:` special URI is supported. In case of iOS, any such API opens the main page of system settings. In case of Android, we support the following nested URIs.
+On iOS and Android, the `ms-settings:` special URI is supported. 
 
+In case of iOS, any such URI opens the main page of system settings (there is no settings deep-linking available on iOS).
+
+In case of Android, we support the following nested URIs.
 
 | Settings URI | Android Mapping |
 |--------------|----------|
