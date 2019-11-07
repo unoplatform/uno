@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Text;
-using AndroidX.AppCompat.Widget;
 using Android.Views;
 using Uno.Extensions;
 using Uno.UI;
@@ -12,6 +11,7 @@ using Uno.Logging;
 using Microsoft.Extensions.Logging;
 using Windows.Foundation;
 using Uno.UI.Extensions;
+using AndroidX.RecyclerView.Widget;
 
 namespace Windows.UI.Xaml.Controls
 {

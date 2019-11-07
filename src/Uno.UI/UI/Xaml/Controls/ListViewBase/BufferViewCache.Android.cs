@@ -4,13 +4,13 @@ using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using AndroidX.AppCompat.Widget;
 using Android.Views;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
+using AndroidX.RecyclerView.Widget;
 
 namespace Windows.UI.Xaml.Controls
 {

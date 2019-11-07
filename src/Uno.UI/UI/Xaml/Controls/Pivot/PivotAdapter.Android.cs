@@ -1,9 +1,9 @@
 ﻿using Android.App;
-using Android.Support.V4.App;
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using AndroidX.Fragment.App;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Controls
 		private readonly NativePivotPresenter _pivot;
 		private List<PivotItemFragment> _fragments;
 
-		public PivotAdapter(Android.Support.V4.App.FragmentManager fragmentManager, NativePivotPresenter pivot)
+		public PivotAdapter(AndroidX.Fragment.App.FragmentManager fragmentManager, NativePivotPresenter pivot)
 			: base(fragmentManager)
 		{
 			if (pivot == null)
@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 			_fragments = new List<PivotItemFragment>();
 		}
 
-		public PivotAdapter(Android.Support.V4.App.FragmentManager fm) : base(fm)
+		public PivotAdapter(AndroidX.Fragment.App.FragmentManager fm) : base(fm)
 		{
 		}
 
@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 			base.NotifyDataSetChanged();
 		}
 
-		public override Android.Support.V4.App.Fragment GetItem(int position)
+		public override AndroidX.Fragment.App.Fragment GetItem(int position)
 		{
 			return _fragments[position];
 		}

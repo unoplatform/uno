@@ -27,23 +27,29 @@
 		<PackageReference Include="Xamarin.Build.Download" Version="0.4.11" />
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
+	<ItemGroup Condition="$(IsMonoAndroid)">
 		<PackageReference Include="Xamarin.Android.Support.v4">
 			<Version>28.0.0.1</Version>
 		</PackageReference>
 		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
 			<Version>28.0.0.1</Version>
 		</PackageReference>
-	</ItemGroup>
-
-		<ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid10.0'">
-		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4">
+				<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4">
 			<Version>1.0.0-preview02</Version>
 		</PackageReference>
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView">
 			<Version>1.0.0-preview02</Version>
 		</PackageReference>
 	</ItemGroup>
+
+		<!-- <ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid10.0'">
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4">
+			<Version>1.0.0-preview02</Version>
+		</PackageReference>
+		<PackageReference Include="Xamarin.AndroidX.RecyclerView">
+			<Version>1.0.0-preview02</Version>
+		</PackageReference>
+	</ItemGroup> -->
 
 	<ItemGroup>
 		<_JavaFile Include="Uno\**\*.java" />

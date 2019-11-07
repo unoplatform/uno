@@ -1,7 +1,5 @@
 ﻿using Android.App;
 using Android.Graphics;
-using Android.Support.V4.App;
-using Android.Support.V4.View;
 using Android.Util;
 using Android.Views;
 using Uno.Extensions;
@@ -12,6 +10,8 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Windows.UI.Xaml.Media;
+using AndroidX.ViewPager.Widget;
+using AndroidX.Fragment.App;
 
 namespace Windows.UI.Xaml.Controls
 {

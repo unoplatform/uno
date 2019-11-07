@@ -14,6 +14,7 @@ using AndroidX.AppCompat.Widget;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Core;
 using Android.Views;
+using AndroidX.RecyclerView.Widget;
 
 namespace Windows.UI.Xaml.Controls
 {

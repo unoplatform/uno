@@ -2,10 +2,10 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using AndroidX.AppCompat.Widget;
 using Android.Views;
 using Uno.Extensions;
 using Uno.Logging;
+using AndroidX.RecyclerView.Widget;
 
 namespace Windows.UI.Xaml.Controls
 {

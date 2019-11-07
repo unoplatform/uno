@@ -38,7 +38,7 @@ namespace Uno.UI.Toolkit
 #if __ANDROID__
 			if (dependencyObject is Android.Views.View view && args.NewValue is double elevation)
 			{
-				Android.Support.V4.View.ViewCompat.SetElevation(view, (float)Uno.UI.ViewHelper.LogicalToPhysicalPixels(elevation));
+				AndroidX.Core.View.ViewCompat.SetElevation(view, (float)Uno.UI.ViewHelper.LogicalToPhysicalPixels(elevation));
 			}
 #elif __IOS__
 			if (dependencyObject is UIKit.UIView view && args.NewValue is double elevation)

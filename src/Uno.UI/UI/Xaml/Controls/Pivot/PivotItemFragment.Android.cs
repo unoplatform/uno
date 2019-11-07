@@ -1,10 +1,10 @@
 ﻿using Android.OS;
-using Android.Support.V4.App;
 using Android.Views;
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using AndroidX.Fragment.App;
 
 namespace Windows.UI.Xaml.Controls
 {

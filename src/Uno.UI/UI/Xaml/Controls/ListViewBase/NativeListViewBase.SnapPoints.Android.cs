@@ -1,13 +1,12 @@
-﻿// SnapHelper is only available in API 24+
-#if !MONOANDROID6_0 && !MONOANDROID7_0
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using AndroidX.AppCompat.Widget;
 using Android.Views;
+using AndroidX.RecyclerView.Widget;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
+using static AndroidX.RecyclerView.Widget.RecyclerView;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -101,5 +100,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-
-#endif

@@ -27,7 +27,7 @@ namespace Uno.UI
 			| Android.Content.PM.ConfigChanges.ScreenSize
 	)]
 #pragma warning disable 618
-	public partial class BaseActivity : Android.Support.V7.App.AppCompatActivity, DependencyObject
+	public partial class BaseActivity : AndroidX.AppCompat.App.AppCompatActivity, DependencyObject
 #pragma warning restore 618
 
 	{

@@ -11,7 +11,6 @@ using Android.App;
 using Android.Content;
 using Android.OS;
 using Android.Runtime;
-using Android.Support.V4.App;
 using Android.Views;
 using Android.Widget;
 using Android.Util;
@@ -22,6 +21,7 @@ using System.ComponentModel;
 using System.Windows.Input;
 using Windows.UI.Xaml;
 using Uno.Extensions.Specialized;
+using AndroidX.Fragment.App;
 
 namespace Uno.UI.Controls
 {

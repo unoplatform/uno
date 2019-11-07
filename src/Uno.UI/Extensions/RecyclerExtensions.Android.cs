@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using AndroidX.AppCompat.Widget;
 using Android.Views;
+using AndroidX.RecyclerView.Widget;
 
 namespace Uno.UI.Extensions
 {
