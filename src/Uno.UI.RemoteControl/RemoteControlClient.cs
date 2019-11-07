@@ -62,6 +62,18 @@ namespace Uno.UI.RemoteControl
 
 					if(port == 443)
 					{
+#if __WASM__
+						if (endpoint.EndsWith("gitpod.io"))
+						{
+							var originParts = endpoint.Split('-');
+
+							var currentHost = Foundation.WebAssemblyRuntime.InvokeJS("window.location.hostname");
+							var targetParts = currentHost.Split('-');
+
+							endpoint = originParts[0] + '-' + currentHost.Substring(targetParts[0].Length + 1);
+						}
+#endif
+
 						await s.ConnectAsync(new Uri($"wss://{endpoint}/rc"), ct);
 					}
 					else
