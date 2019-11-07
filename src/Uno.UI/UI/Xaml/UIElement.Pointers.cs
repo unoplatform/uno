@@ -374,7 +374,7 @@ namespace Windows.UI.Xaml
 
 				if (recognizer.PendingManipulation?.IsActive(point.PointerDevice.PointerDeviceType, point.PointerId) ?? false)
 				{
-					Capture(args.Pointer, PointerCaptureKind.Implicit);
+					Capture(args.Pointer, PointerCaptureKind.Implicit, args);
 				}
 			}
 
@@ -675,7 +675,7 @@ namespace Windows.UI.Xaml
 		{
 			var pointer = value ?? throw new ArgumentNullException(nameof(value));
 
-			return Capture(pointer, PointerCaptureKind.Explicit);
+			return Capture(pointer, PointerCaptureKind.Explicit, _pendingRaisedEvent.args);
 		}
 
 		public void ReleasePointerCapture(Pointer value) => ReleasePointerCapture(value, muteEvent: false);
@@ -779,7 +779,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private bool Capture(Pointer pointer, PointerCaptureKind kind)
+		private bool Capture(Pointer pointer, PointerCaptureKind kind, PointerRoutedEventArgs relatedArgs)
 		{
 			if (_localExplicitCaptures == null)
 			{
@@ -787,7 +787,7 @@ namespace Windows.UI.Xaml
 				this.SetValue(PointerCapturesProperty, _localExplicitCaptures); // Note: On UWP this is done only on first capture (like here)
 			}
 
-			return PointerCapture.GetOrCreate(pointer).TryAddTarget(this, kind);
+			return PointerCapture.GetOrCreate(pointer).TryAddTarget(this, kind, relatedArgs);
 		}
 
 		private void Release(PointerCaptureKind kinds, PointerRoutedEventArgs args = null, bool muteEvent = false)
@@ -864,7 +864,7 @@ namespace Windows.UI.Xaml
 				=> _targets.TryGetValue(element, out var target)
 					&& (target.Kind & kinds) != PointerCaptureKind.None;
 
-			public bool TryAddTarget(UIElement element, PointerCaptureKind kind)
+			public bool TryAddTarget(UIElement element, PointerCaptureKind kind, PointerRoutedEventArgs relatedArgs = null)
 			{
 				Console.WriteLine($"{element}: Capturing ({kind}) pointer {Pointer}");
 
@@ -893,9 +893,9 @@ namespace Windows.UI.Xaml
 					// If the capture is made while raising an event (usually captures are made in PointerPressed handlers)
 					// we re-use the current event args (if they match) to init the target.LastDispatched property.
 					// Note:  we don't check the sender as we may capture on another element but the frame ID is still correct.
-					if (_pendingRaisedEvent.args?.Pointer == Pointer)
+					if (relatedArgs?.Pointer == Pointer)
 					{
-						Update(target, _pendingRaisedEvent.args);
+						Update(target, relatedArgs);
 					}
 				}
 
@@ -1067,8 +1067,6 @@ namespace Windows.UI.Xaml
 						{
 							this.Log().Error($"Failed to capture natively pointer {Pointer}.", e);
 						}
-
-						_allCaptures.Remove(Pointer);
 					}
 				}
 				else
