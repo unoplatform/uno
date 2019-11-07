@@ -166,7 +166,7 @@ namespace Windows.UI.Xaml
 
 				if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded && !_window.IsLoaded)
 				{
-					_window.ManagedOnLoaded();
+					_window.ManagedOnLoaded(1);
 				}
 			}
 			else

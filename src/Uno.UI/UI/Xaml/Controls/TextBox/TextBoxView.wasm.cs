@@ -85,11 +85,6 @@ namespace Windows.UI.Xaml.Controls
 			SetAttribute("type", isPassword ? "password" : "text");
 		}
 
-		protected override Size MeasureOverride(Size availableSize)
-		{
-			return MeasureView(availableSize);
-		}
-
 		internal void SetEnabled(bool newValue)
 		{
 			SetProperty("disabled", newValue ? "false" : "true");

@@ -378,7 +378,7 @@
 											   Margin="{StaticResource NavIconMargin}" />
 								<TextBlock Style="{StaticResource Typo06}"
 										   VerticalAlignment="Bottom"
-										   Text="FAVORITES" />
+										   Text="FAVS" />
 							</Grid>
 						</RadioButton>
 
