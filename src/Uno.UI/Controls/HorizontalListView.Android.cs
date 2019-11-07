@@ -395,7 +395,8 @@ namespace Uno.UI.Controls
 
 			    if (_rightViewIndex == Adapter.Count - 1)
 			    {
-				    _maxX = CurrentX + (rightEdge - PaddingLeft) - (Width - PaddingLeft - PaddingRight);
+				    var paddingLeft = PaddingLeft;
+				    _maxX = CurrentX + (rightEdge - paddingLeft) - (Width - paddingLeft - PaddingRight);
 			    }
 
 			    if (_maxX < 0)

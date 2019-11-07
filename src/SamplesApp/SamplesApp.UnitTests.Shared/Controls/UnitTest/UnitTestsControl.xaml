@@ -33,7 +33,7 @@
 			</StackPanel>
 		</ScrollViewer>
 		<ScrollViewer  Grid.Column="1" Grid.RowSpan="2">
-			<ContentControl x:Name="unitTestContentRoot" HorizontalContentAlignment="Center" VerticalAlignment="Center" />
+			<ContentControl x:Name="unitTestContentRoot" HorizontalContentAlignment="Center" VerticalAlignment="Center" MinWidth="1600" MinHeight="1600" />
 		</ScrollViewer>
 	</Grid>
 </UserControl>

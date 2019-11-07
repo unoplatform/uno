@@ -25,6 +25,7 @@
 
 		private static readonly unoRootClassName = "uno-root-element";
 		private static readonly unoUnarrangedClassName = "uno-unarranged";
+		private static readonly unoClippedToBoundsClassName = "uno-clippedToBounds";
 
 		private static _cctor = (() => {
 			WindowManager.initMethods();
@@ -427,7 +428,7 @@
 			* To remove a value, set it to empty string.
 			* @param styles A dictionary of styles to apply on html element.
 			*/
-		public setStyle(elementId: number, styles: { [name: string]: string }, setAsArranged: boolean = false): string {
+		public setStyle(elementId: number, styles: { [name: string]: string }, setAsArranged: boolean = false, clipToBounds?: boolean): string {
 			const element = this.getView(elementId);
 
 			for (const style in styles) {
@@ -438,6 +439,9 @@
 
 			if (setAsArranged) {
 				this.setAsArranged(element);
+			}
+			if (typeof clipToBounds === "boolean") {
+				this.setClipToBounds(element, clipToBounds);
 			}
 
 			return "ok";
@@ -467,6 +471,8 @@
 			if (params.SetAsArranged) {
 				this.setAsArranged(element);
 			}
+
+			this.setClipToBounds(element, params.ClipToBounds);
 
 			return true;
 		}
@@ -562,6 +568,7 @@
 			}
 
 			this.setAsArranged(element);
+			this.setClipToBounds(element, params.ClipToBounds);
 
 			return true;
 		}
@@ -573,6 +580,14 @@
 
 		private setAsUnarranged(element: HTMLElement | SVGElement) {
 			element.classList.add(WindowManager.unoUnarrangedClassName);
+		}
+
+		private setClipToBounds(element: HTMLElement | SVGElement, clipToBounds: boolean) {
+			if (clipToBounds) {
+				element.classList.add(WindowManager.unoClippedToBoundsClassName);
+			} else {
+				element.classList.remove(WindowManager.unoClippedToBoundsClassName);
+			}
 		}
 
 		/**

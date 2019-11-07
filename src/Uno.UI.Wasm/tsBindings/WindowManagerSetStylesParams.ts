@@ -6,6 +6,7 @@ class WindowManagerSetStylesParams
 	SetAsArranged : boolean;
 	Pairs_Length : number;
 	Pairs : Array<string>;
+	ClipToBounds : boolean;
 	public static unmarshal(pData:number) : WindowManagerSetStylesParams
 	{
 		let ret = new WindowManagerSetStylesParams();
@@ -46,6 +47,10 @@ class WindowManagerSetStylesParams
 			{
 				ret.Pairs = null;
 			}
+		}
+		
+		{
+			ret.ClipToBounds = Boolean(Module.getValue(pData + 16, "i32"));
 		}
 		return ret;
 	}

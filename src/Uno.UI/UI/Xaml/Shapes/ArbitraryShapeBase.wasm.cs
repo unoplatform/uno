@@ -5,6 +5,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Uno.Disposables;
 using System.Numerics;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -73,7 +74,7 @@ namespace Windows.UI.Xaml.Shapes
 				return (new Size(contentBBox.Right, contentBBox.Bottom), 0, 0, 1, 1);
 			}
 
-			var contentAspectRatio = contentBBox.Width / contentBBox.Height;
+			var contentAspectRatio = contentBBox.AspectRatio();
 
 			//  Calculate the control size
 			var calculatedWidth = LimitWithUserSize(availableSize.Width, Width, contentBBox.Width);

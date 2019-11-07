@@ -18,9 +18,12 @@ namespace Windows.UI.Xaml.Shapes
 		protected override CGPath GetPath()
 		{
 			var bounds = Bounds;
+			var calculatedBounds = GetBounds();
 
-			var width = double.IsNaN(Width) ? bounds.Width : Width;
-			var height = double.IsNaN(Height) ? bounds.Height : Height;
+			var width = double.IsNaN(Width) ? calculatedBounds.Width : Width;
+			var height = double.IsNaN(Height) ? calculatedBounds.Height : Height;
+
+			var strokeThickness = (nfloat)this.ActualStrokeThickness;
 
 			var area = new CGRect(
 				x: 0, 
@@ -28,9 +31,9 @@ namespace Windows.UI.Xaml.Shapes
 
 				//In ios we need to inflate the bounds because the stroke thickness is not taken into account when
 				//forming the ellipse from rect.
-				width: width - (nfloat)this.ActualStrokeThickness, 
-				height: height - (nfloat)this.ActualStrokeThickness
-			);
+				width: width - strokeThickness, 
+				height: height - strokeThickness
+            );
 
 			return CGPath.EllipseFromRect(area);
 		}
