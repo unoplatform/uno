@@ -22,7 +22,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 			_thumb.ManipulationMode = ManipulationModes.TranslateX | ManipulationModes.TranslateY;
 			_thumb.ManipulationStarted += (snd, e) =>
 			{
-				_thumb.Background = new SolidColorBrush(Colors.DeepPink);
+				_thumb.Background = new SolidColorBrush(Colors.Blue);
 				Move(e.Cumulative, e.Cumulative);
 			};
 			_thumb.ManipulationDelta += (snd, e) =>
@@ -39,12 +39,12 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 		private void Move(ManipulationDelta delta, ManipulationDelta cumulative)
 		{
 			var deltaTransform = GetOrCreateTransform(_thumb);
-			deltaTransform.X += delta.Translation.X;
-			deltaTransform.Y += delta.Translation.Y;
+			deltaTransform.X -= delta.Translation.X;
+			deltaTransform.Y -= delta.Translation.Y;
 
 			var cumulativeTransform = GetOrCreateTransform(_thumbShadow);
-			cumulativeTransform.X = cumulative.Translation.X;
-			cumulativeTransform.Y = cumulative.Translation.Y;
+			cumulativeTransform.X = -cumulative.Translation.X;
+			cumulativeTransform.Y = -cumulative.Translation.Y;
 
 			System.Diagnostics.Debug.WriteLine(
 				$"X: {cumulative.Translation.X:' '000.00;'-'000.00} (Δ: {delta.Translation.X:' '00.00;'-'00.00} Σ: {deltaTransform.X:' '000.00;'-'000.00}) " +

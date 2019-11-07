@@ -14,7 +14,7 @@
 
 		<TextBlock
 			VerticalAlignment="Bottom"
-			Text="This test validates the implicit capture and the sum of delta of the manipulation events. You should be able to drag the small red square anywhere in the page."
+			Text="This test validates the implicit capture and the sum of delta of the manipulation events. Once clicked over, the small red square should move at the opposite of your pointer."
 			TextWrapping="Wrap" />
 
 		<Border
