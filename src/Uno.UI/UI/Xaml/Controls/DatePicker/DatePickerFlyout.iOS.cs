@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 				"Content",
 				typeof(IUIElement),
 				typeof(DatePickerFlyout),
-				new FrameworkPropertyMetadata(default(IUIElement), FrameworkPropertyMetadataOptions.AffectsMeasure, OnContentChanged));
+				new FrameworkPropertyMetadata(default(IUIElement), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.ValueInheritsDataContext, OnContentChanged));
 		private DatePickerFlyoutPresenter _datePickerPresenter;
 
 		private static void OnContentChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
@@ -88,6 +88,7 @@ namespace Windows.UI.Xaml.Controls
 				if (args.NewValue is IDependencyObjectStoreProvider binder)
 				{
 					binder.Store.SetValue(binder.Store.TemplatedParentProperty, flyout.TemplatedParent, DependencyPropertyValuePrecedences.Local);
+					binder.Store.SetValue(binder.Store.DataContextProperty, flyout.DataContext, DependencyPropertyValuePrecedences.Local);
 				}
 
 				flyout._datePickerPresenter.Content = args.NewValue;

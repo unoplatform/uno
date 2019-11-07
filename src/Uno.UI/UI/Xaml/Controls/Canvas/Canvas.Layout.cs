@@ -9,8 +9,8 @@ using Uno.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
-    public partial class Canvas
-    {
+	public partial class Canvas : ICustomClippingElement
+	{
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			double maxWidth = 0, maxHeight = 0;
@@ -34,21 +34,22 @@ namespace Windows.UI.Xaml.Controls
 			foreach (var child in Children.Where(c => c is DependencyObject))
 			{
 				var desiredSize = GetElementDesiredSize(child);
+				var childDO = (DependencyObject)child;
 
 				var childRect = new Rect
 				{
-					X = GetLeft(child as DependencyObject),
-					Y = GetTop(child as DependencyObject),
+					X = GetLeft(childDO),
+					Y = GetTop(childDO),
 					Width = desiredSize.Width,
 					Height = desiredSize.Height,
 				};
 
 #if __IOS__
-				child.Layer.ZPosition = (nfloat)GetZIndex(child as DependencyObject);
+				child.Layer.ZPosition = (nfloat)GetZIndex(childDO);
 #elif __ANDROID__
 				if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop)
 				{
-					child.SetZ((float)GetZIndex(child as DependencyObject));
+					child.SetZ((float)GetZIndex(childDO));
 				}
 				else
 				{
@@ -64,5 +65,8 @@ namespace Windows.UI.Xaml.Controls
 
 			return finalSize;
 		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 	}
 }

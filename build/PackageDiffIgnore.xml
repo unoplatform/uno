@@ -486,6 +486,15 @@
 				<Member 
 					fullName="System.Void Windows.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.set_Handled(System.Boolean value)"
 					reason="Get/set methods removed as not part of the UWP API but property still present" />
+				<Member 
+					fullName="System.Void Windows.System.Profile.AnalyticsInfo..ctor()"
+					reason="Not part of the UWP API." />
+				<Member 
+					fullName="System.Void Windows.System.Profile.AnalyticsVersionInfo..ctor()"
+					reason="Not part of the UWP API." />
+				<Member 
+					fullName="System.Void Windows.Devices.Lights.Lamp..ctor()"
+					reason="Parameter-less ctor does not exist in UWP" />
 			</Methods>
 			
 			<Fields>

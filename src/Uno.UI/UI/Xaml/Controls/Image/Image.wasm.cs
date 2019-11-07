@@ -160,6 +160,10 @@ namespace Windows.UI.Xaml.Controls
 							SetImageUrl(url.OriginalString);
 						}
 					}
+					else
+					{
+						SetImageUrl("");
+					}
 				}
 
 				_sourceDisposable.Disposable = null;
@@ -324,7 +328,7 @@ namespace Windows.UI.Xaml.Controls
 				position.height != null ? position.height.Value : double.NaN
 			);
 
-			_htmlImage.ArrangeElementNative(arrangeRect, clipRect);
+			_htmlImage.ArrangeElementNative(arrangeRect, false, clipRect);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
