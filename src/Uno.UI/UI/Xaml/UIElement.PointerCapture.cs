@@ -86,8 +86,6 @@ namespace Windows.UI.Xaml
 
 			public bool TryAddTarget(UIElement element, PointerCaptureKind kind, PointerRoutedEventArgs relatedArgs = null)
 			{
-				Console.WriteLine($"{element}: Capturing ({kind}) pointer {Pointer}");
-
 				global::System.Diagnostics.Debug.Assert(
 					kind == PointerCaptureKind.Explicit || kind == PointerCaptureKind.Implicit,
 					"The initial capture kind must be Explicit **OR** Implicit.");
@@ -171,8 +169,6 @@ namespace Windows.UI.Xaml
 
 			private void RemoveCore(PointerCaptureTarget target, PointerCaptureKind kinds)
 			{
-				Console.WriteLine($"{target.Element}: Releasing ({kinds}) capture of pointer {Pointer}");
-
 				global::System.Diagnostics.Debug.Assert(
 					kinds == PointerCaptureKind.None,
 					"The capture kind must be set to release pointer captures.");

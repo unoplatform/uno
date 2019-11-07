@@ -172,9 +172,9 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		#region Gestures recognition
+		#region Gestures recognition (includes manipulation)
 
-		#region Event to RoutedEvent handlers adapater
+		#region Event to RoutedEvent handler adapters
 		// Note: For the manipulation and gesture event args, the original source has to be the element that raise the event
 		//		 As those events are bubbling in managed only, the original source will be right one for all.
 
