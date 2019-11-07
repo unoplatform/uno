@@ -21,8 +21,8 @@ namespace Windows.System
 
 			if (uri == null)
 			{
-				// counterintuitively, UWP throws AccessViolationException when passed in Uri is null
-				throw new AccessViolationException("Attempted to read or write protected memory. This is often an indication that other memory is corrupt.");
+				// this exception might not be in line with UWP which seems to throw AccessViolationException... for some reason.
+				throw new ArgumentNullException(nameof(uri));
 			}
 
 			if (!CoreDispatcher.Main.HasThreadAccess)
@@ -50,7 +50,7 @@ namespace Windows.System
 			if (uri == null)
 			{
 				// counterintuitively, UWP throws plain Exception with HRESULT when passed in Uri is null
-				throw new Exception("The remote procedure call failed. (Exception from HRESULT: 0x800706BE)");
+				throw new ArgumentNullException(nameof(uri));
 			}
 
 			// this method may run on the background thread on UWP
