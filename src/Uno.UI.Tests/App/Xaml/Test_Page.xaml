@@ -45,7 +45,11 @@
 			</TextBlock.Style>
 		</TextBlock>
 		<Border x:Name="testBorder"
-				Background="{Binding Boolean1, Converter={StaticResource BooleanToBrushConverter1}}" />
+				Background="{Binding Boolean1, Converter={StaticResource BooleanToBrushConverter1}}">
+			<Border.Resources>
+				<ResourceDictionary Source="ms-appx:///App/Xaml/Test_Dictionary_Isolated.xaml" />
+			</Border.Resources>
+		</Border>
 		<ContentControl x:Name="testContentControl"
 						Content="{Binding}">
 			<ContentControl.Template>
