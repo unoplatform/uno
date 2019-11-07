@@ -8,7 +8,7 @@ The following APIs are implemented on Android and iOS:
 * `IsEnabled`
 * `BrightnessLevel`
 
-WASM does not offer a API to control the device flashlight, yet.
+WASM does not offer an API to control the device flashlight, yet.
 
 ### Implementation notes
 
