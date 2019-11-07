@@ -2,9 +2,11 @@
 
 ## Developing an Uno App using GitPod
 
+To be defined.
+
 ## Contributing to Uno using GitPod
 
-To contribute to Uno usign GitPod:
+To contribute to Uno using GitPod:
 1. [![Open Uno in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/unoplatform/uno)
 1. In the opened shell, type the following to build the Uno solution:
     ```

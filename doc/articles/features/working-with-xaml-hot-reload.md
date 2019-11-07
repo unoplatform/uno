@@ -5,7 +5,7 @@ The Uno Platform Hot Reload feature provides a way to modify the XAML displayed 
 ## Features
 - XAML Hot Reload for iOS, Android, and WebAssembly
 - Supports XAML files in the main project, in shared projects, and referenced projects
-- Partial hot reload is supported, where modifying a UserControl instanciated in multiple locations is reloaded without reloading its parents.
+- Partial hot reload is supported, whereby modifying a UserControl instantiated in multiple locations will reload it without reloading its parents.
 - XAML Bindings Hot Reload
 - Cross-platform Hot Reload is supported
 
@@ -14,7 +14,7 @@ The Uno Platform Hot Reload feature provides a way to modify the XAML displayed 
 - Build an Uno application head (iOS, Android or WebAssembly), start it (with or without the debugger)
 - Change a XAML file from VS and the app should update
 
-> Important note: If you're using this feature and an Uno stable release containing it has not been published, you will to get the Visual Studio Extension from the [master CI builds artifacts](https://dev.azure.com/uno-platform/Uno%20Platform/_build?definitionId=5&_a=summary). 
+> Important note: If you're using this feature and an Uno stable release containing it has not been published, you will need to get the Visual Studio Extension from the [master CI builds artifacts](https://dev.azure.com/uno-platform/Uno%20Platform/_build?definitionId=5&_a=summary). 
 
 If you're using the XAML Hot Reload feature in an existing application, you'll need to add the following lines to your project:
 ```xml
