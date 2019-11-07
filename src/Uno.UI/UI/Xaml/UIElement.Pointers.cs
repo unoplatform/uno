@@ -118,7 +118,7 @@ namespace Windows.UI.Xaml
 			{
 				foreach (var capture in captures)
 				{
-					foreach (var target in capture.Targets)
+					foreach (var target in capture.Targets.ToList())
 					{
 						if (target.Element.GetParents().Contains(sender))
 						{
