@@ -170,7 +170,7 @@ namespace Windows.UI.Xaml
 			private void RemoveCore(PointerCaptureTarget target, PointerCaptureKind kinds)
 			{
 				global::System.Diagnostics.Debug.Assert(
-					kinds == PointerCaptureKind.None,
+					kinds != PointerCaptureKind.None,
 					"The capture kind must be set to release pointer captures.");
 
 				if (this.Log().IsEnabled(LogLevel.Information))
