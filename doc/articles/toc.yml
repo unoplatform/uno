@@ -64,6 +64,8 @@
     href: features\windows-applicationmodel.md
   - name: Windows.ApplicationModel.Calls
     href: features\windows-applicationmodel-calls.md
+  - name: Windows.Devices.Lights
+    href: features\windows-devices-lights.md
   - name: Windows.Devices.Sensors
     href: features\windows-devices-sensors.md
   - name: Windows.Phone.Devices.Notification
