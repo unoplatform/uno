@@ -202,7 +202,7 @@ namespace Uno.UI
 		}
 
 		/// <summary>
-		/// Retrieve the ResourceDictionary mapping to a given source, or null if none is found.
+		/// Retrieve the ResourceDictionary mapping to a given source. Throws an exception if none is found.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static ResourceDictionary RetrieveDictionaryForSource(Uri source)
@@ -212,7 +212,7 @@ namespace Uno.UI
 				return factory();
 			}
 
-			return null;
+			throw new InvalidOperationException($"Cannot locate resource from '{source.AbsoluteUri}'");
 		}
 	}
 }

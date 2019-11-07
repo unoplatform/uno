@@ -24,10 +24,6 @@ namespace Windows.UI.Xaml
 				if (!IsParsing) // If we're parsing, the Source is being set as a 'FYI', don't try to resolve it
 				{
 					var sourceDictionary = ResourceResolver.RetrieveDictionaryForSource(value);
-					if (sourceDictionary == null)
-					{
-						throw new InvalidOperationException($"Cannot locate resource from '{value.AbsoluteUri}'");
-					}
 
 					CopyFrom(sourceDictionary);
 				}

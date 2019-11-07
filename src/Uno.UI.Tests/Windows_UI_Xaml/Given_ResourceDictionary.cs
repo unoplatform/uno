@@ -568,5 +568,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var rd = rp.Resources;
 			AssertEx.AssertContainsColorBrushResource(rd, "BituminousColorBrush", Colors.SlateGray);
 		}
+
+		[TestMethod]
+		public void When_Local_Source_Absolute()
+		{
+			var app = UnitTestsApp.App.EnsureApplication();
+
+			var page = new Test_Page();
+			var b = page.TestBorder;
+			var rd = b.Resources;
+			AssertEx.AssertContainsColorBrushResource(rd, "FerociousColorBrush", Colors.Fuchsia);
+		}
 	}
 }

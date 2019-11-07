@@ -88,8 +88,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				// The path is already absolute. (Currently we assume it's in the local assembly.)
 				var trimmedPath = relativeTargetPath.TrimStart(AppXIdentifier);
-				var i = trimmedPath.IndexOf('/');
-				return trimmedPath.Substring(i + 1);
+				return trimmedPath;
 			}
 
 			var originDirectory = Path.GetDirectoryName(origin);
