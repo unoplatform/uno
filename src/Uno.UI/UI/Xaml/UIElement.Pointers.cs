@@ -421,7 +421,7 @@ namespace Windows.UI.Xaml
 
 		private bool OnNativePointerMove(PointerRoutedEventArgs args)
 		{
-			var isRelevant = !ValidateAndUpdateCapture(args);
+			var isRelevant = ValidateAndUpdateCapture(args);
 			var handledInManaged = false;
 
 			if (isRelevant)
