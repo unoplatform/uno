@@ -16,7 +16,7 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 			StackTrace = stackTrace;
 		}
 
-		public string Scope => "hotreload";
+		public string Scope => HotReloadConstants.ScopeName;
 
 		string IMessage.Name => Name;
 

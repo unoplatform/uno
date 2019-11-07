@@ -152,7 +152,7 @@ namespace Uno.UI.RemoteControl
 			}
 			catch (Exception ex)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				if (this.Log().IsEnabled(LogLevel.Error))
 				{
 					this.Log().LogError($"Failed to connect to the server ({ex})", ex);
 				}

@@ -12,6 +12,7 @@ using Uno.UI.RemoteControl;
 using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.HotReload.Messages;
 using Microsoft.Extensions.Logging;
+using Uno.Extensions;
 
 namespace Uno.UI.RemoteControl.Host
 {
@@ -20,11 +21,11 @@ namespace Uno.UI.RemoteControl.Host
 		private WebSocket _socket;
 		private readonly Dictionary<string, IServerProcessor> _processors = new Dictionary<string, IServerProcessor>();
 
-		public RemoteControlServer(Microsoft.Extensions.Logging.ILogger logger)
+		public RemoteControlServer()
 		{
-			if (logger.IsEnabled(LogLevel.Debug))
+			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				logger.LogDebug("Starting RemoteControlServer");
+				this.Log().LogDebug("Starting RemoteControlServer");
 			}
 
 			RegisterProcessor(new HotReload.ServerHotReloadProcessor(this));
@@ -43,12 +44,19 @@ namespace Uno.UI.RemoteControl.Host
 			{
 				if(_processors.TryGetValue(frame.Scope, out var processor))
 				{
-					Console.WriteLine($"Received Frame [{frame.Scope} / {frame.Name}]");
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().LogTrace($"Received Frame [{frame.Scope} / {frame.Name}]");
+					}
+
 					await processor.ProcessFrame(frame);
 				}
 				else
 				{
-					Console.WriteLine($"Unknown Frame [{frame.Scope} / {frame.Name}]");
+					if (this.Log().IsEnabled(LogLevel.Trace))
+					{
+						this.Log().LogTrace($"Unknown Frame [{frame.Scope} / {frame.Name}]");
+					}
 				}
 			}
 		}

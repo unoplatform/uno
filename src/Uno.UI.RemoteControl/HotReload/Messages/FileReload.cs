@@ -16,7 +16,7 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 		public string Content { get; set; }
 
 		[JsonIgnore]
-		public string Scope => "hotreload";
+		public string Scope => HotReloadConstants.ScopeName;
 
 		[JsonIgnore]
 		string IMessage.Name => Name;

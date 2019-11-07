@@ -15,8 +15,6 @@ namespace Uno.UI.RemoteControl.HotReload
 {
 	public class ClientHotReloadProcessor : IRemoteControlProcessor
 	{
-		public const string Scope = "hotreload";
-
 		private string _projectPath;
 		private string[] _xamlPaths;
 
@@ -27,7 +25,7 @@ namespace Uno.UI.RemoteControl.HotReload
 			_rcClient = rcClient;
 		}
 
-		string IRemoteControlProcessor.Scope => Scope;
+		string IRemoteControlProcessor.Scope => HotReloadConstants.ScopeName;
 
 		public async Task Initialize()
 		{

@@ -39,6 +39,7 @@
 	<ItemGroup>
 	  <UpToDateCheckInput Remove="Helpers\WebSocketHelper.cs" />
 	  <UpToDateCheckInput Remove="HotReload\ClientHotReloadProcessor.cs" />
+	  <UpToDateCheckInput Remove="HotReload\HotReloadConstants.cs" />
 	  <UpToDateCheckInput Remove="HotReload\IRemoteControlClient.cs" />
 	  <UpToDateCheckInput Remove="HotReload\Messages\ConfigureServer.cs" />
 	  <UpToDateCheckInput Remove="HotReload\Messages\FileReload.cs" />

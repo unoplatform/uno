@@ -18,7 +18,7 @@ namespace Uno.UI.RemoteControl.HotReload.Messages
 
 		public string[] XamlPaths { get; set; }
 
-		public string Scope => "hotreload";
+		public string Scope => HotReloadConstants.ScopeName;
 
 		string IMessage.Name => Name;
 	}
