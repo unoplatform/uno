@@ -16,8 +16,8 @@ namespace Windows.UI.Input
 			internal static readonly Thresholds StartPen = new Thresholds { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
 			internal static readonly Thresholds StartMouse = new Thresholds { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
 
-			internal static readonly Thresholds DeltaTouch = new Thresholds { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
-			internal static readonly Thresholds DeltaPen = new Thresholds { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
+			internal static readonly Thresholds DeltaTouch = new Thresholds { TranslateX = 2, TranslateY = 2, Rotate = .1, Expansion = 1 };
+			internal static readonly Thresholds DeltaPen = new Thresholds { TranslateX = 2, TranslateY = 2, Rotate = .1, Expansion = 1 };
 			internal static readonly Thresholds DeltaMouse = new Thresholds { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
 
 			private enum States
@@ -102,7 +102,7 @@ namespace Windows.UI.Input
 				_currents.SetPointer2(point);
 
 				// We force to start the manipulation (or update it) as soon as a second pointer is pressed
-				NotifyUpdate(forceUpdate: true);
+				NotifyUpdate(pointerAdded: true);
 			}
 
 			public void Update(IList<PointerPoint> updated)
@@ -170,7 +170,7 @@ namespace Windows.UI.Input
 				return _currents.TryUpdate(point);
 			}
 
-			private void NotifyUpdate(bool forceUpdate = false)
+			private void NotifyUpdate(bool pointerAdded = false)
 			{
 				// Note: Make sure to update the _sumOfPublishedDelta before raising the event, so if an exception is raised
 				//		 or if the manipulation is Completed, the Complete event args can use the updated _sumOfPublishedDelta.
@@ -179,7 +179,19 @@ namespace Windows.UI.Input
 
 				switch (_state)
 				{
-					case States.Starting when forceUpdate || cumulative.IsSignificant(_startThresholds):
+					case States.Starting when pointerAdded:
+						_state = States.Started;
+						_sumOfPublishedDelta = cumulative;
+
+						_recognizer.ManipulationStarted?.Invoke(
+							_recognizer,
+							new ManipulationStartedEventArgs(_deviceType, _currents.Center, cumulative));
+
+						// No needs to publish an update when we start the manipulation due to an additional pointer as cumulative will be empty.
+
+						break;
+
+					case States.Starting when cumulative.IsSignificant(_startThresholds):
 						_state = States.Started;
 						_sumOfPublishedDelta = cumulative;
 
@@ -190,7 +202,7 @@ namespace Windows.UI.Input
 						//		 but there is no side effect to use the same behavior for all pointer types.
 						_recognizer.ManipulationStarted?.Invoke(
 							_recognizer,
-							new ManipulationStartedEventArgs(_deviceType, _currents.Center, ManipulationDelta.Empty));
+							new ManipulationStartedEventArgs(_deviceType, _origins.Center, ManipulationDelta.Empty));
 						_recognizer.ManipulationUpdated?.Invoke(
 							_recognizer,
 							new ManipulationUpdatedEventArgs(_deviceType, _currents.Center, cumulative, cumulative, isInertial: false));
@@ -202,7 +214,7 @@ namespace Windows.UI.Input
 						// the 'delta' and 'cumulative' might still contains some TranslateX|Y compared to the previous Pointer1 location.
 						var delta = GetDelta(cumulative);
 
-						if (forceUpdate || delta.IsSignificant(_deltaThresholds))
+						if (pointerAdded || delta.IsSignificant(_deltaThresholds))
 						{
 							_sumOfPublishedDelta = _sumOfPublishedDelta.Add(delta);
 

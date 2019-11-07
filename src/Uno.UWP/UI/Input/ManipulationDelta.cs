@@ -38,6 +38,7 @@ namespace Windows.UI.Input
 				Expansion = left.Expansion + right.Expansion
 			};
 
+		// Note: We should apply a velocity factor to thresholds to determine if isSignificant
 		internal bool IsSignificant(GestureRecognizer.Manipulation.Thresholds thresholds)
 			=> Math.Abs(Translation.X) >= thresholds.TranslateX
 			|| Math.Abs(Translation.Y) >= thresholds.TranslateY
