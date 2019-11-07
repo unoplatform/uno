@@ -35,6 +35,11 @@ namespace Uno.UI
 			/// in the DOM for automation purposes.
 			/// </summary>
 			public static bool AssignDOMXamlName { get; set; } = false;
+
+			/// <summary>
+			/// Enable UIElement.ToString() to return the element's unique ID
+			/// </summary>
+			public static bool RenderToStringWithId { get; set; } = true;
 #endif
 		}
 
