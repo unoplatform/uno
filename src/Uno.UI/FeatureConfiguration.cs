@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls;
+using System.ComponentModel;
 
 namespace Uno.UI
 {
@@ -103,6 +104,14 @@ namespace Uno.UI
 
 		public static class FrameworkElement
 		{
+			[Obsolete("This flag is no longer used.")]
+			[EditorBrowsable(EditorBrowsableState.Never)]
+			public static bool UseLegacyApplyStylePhase { get; set; }
+
+			[Obsolete("This flag is no longer used.")]
+			[EditorBrowsable(EditorBrowsableState.Never)]
+			public static bool ClearPreviousOnStyleChange { get; set; }
+
 #if __ANDROID__
 			/// <summary>
 			/// Controls the propagation of <see cref="Windows.UI.Xaml.FrameworkElement.Loaded"/> and
@@ -357,6 +366,8 @@ namespace Uno.UI
 			/// <remarks>
 			/// This is a mechanism to prevent hard-to-diagnose stack overflow when a resource name is not found.
 			/// </remarks>
+			[Obsolete("This flag is no longer used.")]
+			[EditorBrowsable(EditorBrowsableState.Never)]
 			public static int MaxRecursiveResolvingDepth { get; set; } = 12;
 		}
 
