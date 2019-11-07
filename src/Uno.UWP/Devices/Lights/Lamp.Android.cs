@@ -16,8 +16,8 @@ namespace Windows.Devices.Lights
 
 		private readonly string _defaultCameraId;
 		private CameraManager _cameraManager;
-
 #pragma warning disable CS0618
+		// using deprecated API for older Android versions
 		private Android.Hardware.Camera _camera = null;
 #pragma warning restore CS0618
 		private SurfaceTexture _surfaceTexture = null;
@@ -85,6 +85,7 @@ namespace Windows.Devices.Lights
 			else
 			{
 #pragma warning disable CS0618
+				// using deprecated API for older Android versions				
 				var surfaceTexture = new SurfaceTexture(0);
 				var camera = Android.Hardware.Camera.Open();
 				camera.SetPreviewTexture(surfaceTexture);
@@ -117,6 +118,7 @@ namespace Windows.Devices.Lights
 				else
 				{
 #pragma warning disable CS0618
+					// using deprecated API for older Android versions
 					var param = _camera.GetParameters();
 					param.FlashMode = _isEnabled ?
 						Android.Hardware.Camera.Parameters.FlashModeTorch :
@@ -139,13 +141,16 @@ namespace Windows.Devices.Lights
 
 		public void Dispose()
 		{
-			_camera?.Release();
-			_camera?.Dispose();
-			_camera = null;
-			_surfaceTexture?.Dispose();
-			_surfaceTexture = null;
-			_cameraManager?.Dispose();
-			_cameraManager = null;
+			lock (_lock)
+			{
+				_camera?.Release();
+				_camera?.Dispose();
+				_camera = null;
+				_surfaceTexture?.Dispose();
+				_surfaceTexture = null;
+				_cameraManager?.Dispose();
+				_cameraManager = null;
+			}
 		}
 	}
 }
