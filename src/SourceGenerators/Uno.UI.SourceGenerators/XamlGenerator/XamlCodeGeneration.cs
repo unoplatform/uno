@@ -36,7 +36,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private readonly bool _outputSourceComments = true;
 
 		/// <summary>
-		/// If set, code generated from XAML will be annotated with the source method and line # in this file, for easier debugging.
+		/// If set, code generated from XAML will be annotated with the source method and line # in XamlFileGenerator, for easier debugging.
 		/// </summary>
 		private readonly bool _shouldAnnotateGeneratedXaml = false;
 
@@ -583,6 +583,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						writer.AppendLineInvariant("static partial void RegisterDefaultStyles_{0}();", file.UniqueID);
 					}
+
+						writer.AppendLineInvariant("[global::System.Obsolete(\"This method is provided for binary backward compatibility. It will always return null.\")]");
+						writer.AppendLineInvariant("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+						writer.AppendLineInvariant("public static object FindResource(string name) => null;");
 
 					writer.AppendLineInvariant("");
 				}
