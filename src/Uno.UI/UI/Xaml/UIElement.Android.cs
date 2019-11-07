@@ -4,7 +4,7 @@ using Uno.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Android.Support.V4.View;
+using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Android.Graphics;
 using Android.Views;
@@ -13,6 +13,7 @@ using Point = Windows.Foundation.Point;
 using Rect = Windows.Foundation.Rect;
 using Java.Interop;
 using Windows.UI.Xaml.Markup;
+using AndroidX.Core.View;
 
 namespace Windows.UI.Xaml
 {

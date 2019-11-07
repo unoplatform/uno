@@ -18,6 +18,7 @@ using Android.OS;
 using Windows.UI.Xaml.Input;
 using Uno.UI.Extensions;
 using Uno.UI.DataBinding;
+using AndroidX.Core.Content;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -162,15 +163,15 @@ namespace Windows.UI.Xaml.Controls
 					if ((int)Build.VERSION.SdkInt < 28) // 28 means BuildVersionCodes.P
 					{
 						var drawables = new Drawable[2];
-						drawables[0] = Android.Support.V4.Content.ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
-						drawables[1] = Android.Support.V4.Content.ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+						drawables[0] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+						drawables[1] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
 						drawables[0].SetColorFilter(new BlendModeColorFilter(color, BlendMode.SrcIn));
 						drawables[1].SetColorFilter(new BlendModeColorFilter(color, BlendMode.SrcIn));
 						_cursorDrawableField.Set(editor, drawables);
 					}
 					else
 					{
-						var drawable = Android.Support.V4.Content.ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+						var drawable = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
 						drawable.SetColorFilter(new BlendModeColorFilter(color, BlendMode.SrcIn));
 						_cursorDrawableField.Set(editor, drawable);
 					}

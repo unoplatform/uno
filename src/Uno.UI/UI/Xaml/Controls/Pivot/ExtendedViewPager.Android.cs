@@ -1,13 +1,13 @@
 ﻿using Android.Content;
 using Android.Graphics;
 using Android.Runtime;
-using Android.Support.V4.View;
 using Android.Util;
 using Android.Views;
 using Uno.UI;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using AndroidX.ViewPager.Widget;
 
 namespace Windows.UI.Xaml.Controls
 {
