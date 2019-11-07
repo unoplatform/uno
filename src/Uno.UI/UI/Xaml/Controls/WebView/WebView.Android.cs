@@ -25,8 +25,9 @@ namespace Windows.UI.Xaml.Controls
 	public partial class WebView : Control
 	{
 		private Android.Webkit.WebView _webView;
-
-		protected override void OnApplyTemplate()
+        private bool _wasLoadedFromString;
+		
+        protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
 
@@ -70,7 +71,8 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			if (uri.Scheme.Equals("local", StringComparison.OrdinalIgnoreCase))
+            _wasLoadedFromString = false;
+            if (uri.Scheme.Equals("local", StringComparison.OrdinalIgnoreCase))
 			{
 				var path = $"file:///android_asset/{uri.PathAndQuery}";
 				_webView.LoadUrl(path);
@@ -119,7 +121,8 @@ namespace Windows.UI.Xaml.Controls
 					element => element.Value.JoinBy(", ")
 				);
 
-			_webView.LoadUrl(uri.AbsoluteUri, headers);
+            _wasLoadedFromString = false;
+            _webView.LoadUrl(uri.AbsoluteUri, headers);
 		}
 
 		partial void NavigateToStringPartial(string text)
@@ -129,7 +132,8 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			_webView.LoadData(text, "text/html; charset=utf-8", "utf-8");
+            _wasLoadedFromString = true;
+            _webView.LoadData(text, "text/html; charset=utf-8", "utf-8");
 		}
 
 		//This should be IAsyncOperation<string> instead of Task<string> but we use an extension method to enable the same signature in Win.
@@ -299,11 +303,14 @@ namespace Windows.UI.Xaml.Controls
 				var args = new WebViewNavigationCompletedEventArgs()
 				{
 					IsSuccess = _webViewSuccess,
-					Uri = new Uri(url),
 					WebErrorStatus = _webErrorStatus
 				};
+                if (!_webView._wasLoadedFromString && !string.IsNullOrEmpty(url))
+                {
+                    args.Uri = new Uri(url);
+                }
 
-				_webView.NavigationCompleted?.Invoke(_webView, args);
+                _webView.NavigationCompleted?.Invoke(_webView, args);
 				base.OnPageFinished(view, url);
 			}
 

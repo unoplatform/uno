@@ -3,7 +3,8 @@
 ## Next version
 
 ### Features
-* MenuFlyoutItem.Click support
+* [#2029](https://github.com/unoplatform/uno/pull/2029) Support for MenuFlyoutItem.Click
+* [#] Support for `Windows.Devices.Lights.Lamp` on iOS, Android.
 * [#1970](https://github.com/unoplatform/uno/pull/1970) Added support for `AnalyticsInfo` properties on iOS, Android and WASM
 * [#1207] Implemented some `PackageId` properties
 * [#1919](https://github.com/unoplatform/uno/pull/1919) Support for `PathGeometry` on WASM.
@@ -85,9 +86,10 @@
 * Enable iOS UI Tests
 * Add support for `PersonPicture`
 * Add support for `VisualState` `Setter` data binding, static resources and complex objects
+* Clipping to bounds of control is now more similar to UWP
+* The _feature flag_ `FeatureConfiguration.UseLegacyClipping` is now deprecated and not used anymore
 
 ### Breaking changes
-
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
 * `TextBox.TextChanged` is now called asynchronously after the UI is updated, in line with UWP. For most uses `TextChanging` should be preferred.
 * [Android] `TextBox.IsSpellCheckEnabled = false` is now enforced in a way that may cause issues in certain use cases (see https://stackoverflow.com/a/5188119/1902058). The old behavior can be restored by setting `ShouldForceDisableSpellCheck = false`, per `TextBox`.
@@ -100,7 +102,8 @@
     > This change might break the compilation for projects that define duplicate resources in other globally accessible resource dictionaries. Adjustments to remove duplicate resources may be necessary.
 
 ### Bug fixes
-
+* [#2023](https://github.com/unoplatform/uno/pull/2023) Android WebView.NavigateToString doesn't throw exception even when string is very long.
+* [#2020](https://github.com/unoplatform/uno/pull/2020) `ContentControl` no longer display the datacontext type when ContentTemplate and content are empty
 * [#1987](https://github.com/unoplatform/uno/pull/1987) Missing XML comment warnings are disabled on generated code
 * [#1939](https://github.com/unoplatform/uno/pull/1939) Handles nullables types in XAML file generator
 * [#1741](https://github.com/unoplatform/uno/issues/1741) On Android, `ApplicationData.Current.[LocalFolder|RoamingFolder]` can now be used in the ctor of App.xaml.cs

@@ -45,9 +45,11 @@ namespace Windows.UI.Xaml
 			}
 
 			_log = this.Log();
+			_logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
 		}
 
-		protected internal readonly ILogger _log;
+		private protected readonly ILogger _log;
+		private protected readonly ILogger _logDebug;
 
 		public global::System.Uri BaseUri
 		{

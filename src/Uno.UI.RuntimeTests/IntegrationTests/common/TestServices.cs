@@ -90,6 +90,12 @@ namespace Private.Infrastructure
 		{
 			Assert.AreEqual(expected: expected, actual: actual);
 		}
+
+		internal static void VERIFY_ARE_VERY_CLOSE(double actual, double expected, double tolerance = 0.1d)
+		{
+			var difference = Math.Abs(actual - expected);
+			Assert.IsTrue(difference <= tolerance, $"Expected <{expected}>, actual <{actual}> (tolerance = {tolerance})");
+		}
 	}
 
 	public class MockDComp

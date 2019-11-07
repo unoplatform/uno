@@ -10,17 +10,9 @@
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
 
-	<controls:SampleControl SampleDescription="ComboBox with Header">
-		<controls:SampleControl.SampleContent>
-			<DataTemplate>
-
 				<StackPanel>
-					<ComboBox Header="{Binding [Header]}" />
+		<ComboBox Header="{Binding [Header]}" x:Name="combobox" />
 					<Button Content="Toggle header"
 							Command="{Binding [ToggleHeader]}" />
 				</StackPanel>
-
-			</DataTemplate>
-		</controls:SampleControl.SampleContent>
-	</controls:SampleControl>
 </UserControl>

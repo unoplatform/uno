@@ -61,11 +61,7 @@ namespace Uno.UI.Controls
 		public BindableUIView()
 		{
 			Initialize();
-
-			if (FeatureConfiguration.UIElement.UseLegacyClipping)
-			{
-				ClipsToBounds = true;
-			}
+			ClipsToBounds = false;
 		}
 
 		public BindableUIView(IntPtr handle)

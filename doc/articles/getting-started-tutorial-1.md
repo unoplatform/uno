@@ -51,9 +51,10 @@ To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5**
 
 1. Right click on the Solution and select `Manage NuGet Packages for Solution` from the context menu.
 
-    - Click on the Updates tab, and update any of the packages that may need to update.
+    - Click on the Updates tab. Update the following packages to the latest stable version, if they're not up to date: `Uno.Core`, `Uno.UI`, and `Uno.Wasm.Bootstrap`.
+        - Note: **do not** update the `Microsoft.Extensions.Logging.Console`. Recent versions of the package use APIs that aren't supported by WebAssembly, and aren't compatible with Uno.
     - Click back on the Browse tab and install the following NuGet Packages to each of the projects in your solution:
-      - Refactored.MvvmHelpers
+        - `Refractored.MvvmHelpers`
 
 ### Setting Up Our Model
 
@@ -156,16 +157,19 @@ To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5**
 1. To start let's create a simple converter that will format a value to a string. Create a Converters folder, then create a new class `StringFormatConverter`
 
     ```cs
-    public class StringFormatConverter : IValueConverter
+    namespace BugTracker.Converters
     {
-        public object Convert(object value, Type targetType, object parameter, string language)
+        public class StringFormatConverter : IValueConverter
         {
-            return string.Format(parameter.ToString(), value);
-        }
+            public object Convert(object value, Type targetType, object parameter, string language)
+            {
+                return string.Format(parameter.ToString(), value);
+            }
 
-        public object ConvertBack(object value, Type targetType, object parameter, string language)
-        {
-            throw new NotImplementedException();
+            public object ConvertBack(object value, Type targetType, object parameter, string language)
+            {
+                throw new NotImplementedException();
+            }
         }
     }
     ```
@@ -250,7 +254,7 @@ To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5**
     ```
 
     > [!IMPORTANT]
-    > We can bring in Platform Specific namespaces like shown above to specifically set properties for a specific Platform.
+    > We can bring in [Platform-Specific namespaces]((platform-specific-xaml.md)) like shown above to specifically set properties for a specific platform.
 
 1. Now we will add the `StringFormatConverter` we created earlier to our Page Resources as shown below:
 
@@ -295,7 +299,7 @@ To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5**
     > [!IMPORTANT]
     > Take note that we have added a reference to an event handler on the ComboBox. We will add this later in the code behind.
 
-1. Now after the StackPanel we added in the last step, we will add an area that we can edit the multi-line description of the Issue.
+1. Now after the StackPanel we added in the last step, we will add an area where we can edit the multi-line description of the Issue.
 
     ```xml
     <TextBox Text="{x:Bind Item.Description,Mode=TwoWay}"
@@ -386,7 +390,9 @@ To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5**
     }
     ```
 
-1. Build and run the project on each platform.
+You may need to add missing namespace `usings`, eg the `Windows.UI` namespace for the `Colors` class. Don't worry if `IssueTypeBox` and `IssueTypeIndicator` are marked red - these properties will be created from the Xaml when the project builds. 
+
+1. Build and run the project on each platform. When launching the WASM head, use 'Start without debugging' (`Ctrl+F5`).
 
     You will notice as you make changes to the Issue type, you will see the indicator in the upper left hand corner changing colors as well.
 
@@ -396,6 +402,6 @@ In this tutorial, you have learned how to:
 
 - Add the Uno Project Templates to Visual Studio
 - Create a new Project with Uno
-- Learn basics on Model Binding
+- Use the basics of Model Binding
 
 Coming soon: see how we can create a list of pages, navigate between them passing parameters, and store our issues.
