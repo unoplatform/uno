@@ -114,12 +114,17 @@ namespace Windows.UI.Xaml
 			// when the visibility changes instead of creating another coalesced DP.
 			if (dp.NewValue is Visibility visibility
 				&& visibility != Visibility.Visible
-				&& _allCaptures.Any())
+				&& PointerCapture.Any(out var captures))
 			{
-				var captures = _allCaptures.Values.ToList();
 				foreach (var capture in captures)
 				{
-					capture.RemoveChildrenOf(sender, PointerCaptureKind.Any);
+					foreach (var target in capture.Targets)
+					{
+						if (target.Element.GetParents().Contains(sender))
+						{
+							target.Element.Release(capture, PointerCaptureKind.Any);
+						}
+					}
 				}
 			}
 
@@ -661,7 +666,6 @@ namespace Windows.UI.Xaml
 		 * - The PointersCapture property remains `null` until a pointer is captured
 		 */
 
-		private static readonly IDictionary<Pointer, PointerCapture> _allCaptures = new Dictionary<Pointer, PointerCapture>(EqualityComparer<Pointer>.Default);
 		private List<Pointer> _localExplicitCaptures;
 
 		#region Capture public (and internal) API ==> This manages only Explicit captures
@@ -674,7 +678,7 @@ namespace Windows.UI.Xaml
 		public IReadOnlyList<Pointer> PointerCaptures => (IReadOnlyList<Pointer>)this.GetValue(PointerCapturesProperty);
 
 		internal bool IsCaptured(Pointer pointer)
-			=> HasExplicitCapture && IsCaptured(pointer, PointerCaptureKind.Explicit, out _);
+			=> HasExplicitCapture && PointerCapture.IsTarget(pointer, this, PointerCaptureKind.Explicit);
 
 		public bool CapturePointer(Pointer value)
 		{
@@ -727,20 +731,6 @@ namespace Windows.UI.Xaml
 
 		private bool HasExplicitCapture => (_localExplicitCaptures?.Count ?? 0) != 0;
 
-		private bool IsCaptured(Pointer pointer, PointerCaptureKind captureKind, out PointerCapture capture)
-		{
-			if (_allCaptures.TryGetValue(pointer, out capture)
-				&& capture.IsTarget(this, captureKind))
-			{
-				return true;
-			}
-			else
-			{
-				capture = null;
-				return false;
-			}
-		}
-
 		private bool ValidateAndUpdateCapture(PointerRoutedEventArgs args)
 			=> ValidateAndUpdateCapture(args, IsOver(args.Pointer));
 
@@ -757,7 +747,7 @@ namespace Windows.UI.Xaml
 			//   WASM: On wasm, if this check mutes your event, it's because you didn't received the "pointerenter" (not bubbling natively).
 			//         This is usually because your control is covered by an element which is IsHitTestVisible == true / has transparent background.
 
-			if (_allCaptures.TryGetValue(args.Pointer, out var capture))
+			if (PointerCapture.TryGet(args.Pointer, out var capture))
 			{
 				return capture.ValidateAndUpdate(this, args, forceRelease);
 			}
@@ -795,27 +785,24 @@ namespace Windows.UI.Xaml
 			return PointerCapture.GetOrCreate(pointer).TryAddTarget(this, kind, relatedArgs);
 		}
 
-		private void Release(PointerCaptureKind kinds, PointerRoutedEventArgs args = null, bool muteEvent = false)
+		private void Release(PointerCaptureKind kinds, PointerRoutedEventArgs relatedARgs = null, bool muteEvent = false)
 		{
-			if (_allCaptures.None())
+			if (PointerCapture.Any(out var captures))
 			{
-				return;
-			}
-
-			var captures = _allCaptures.Values.ToList();
-			foreach (var capture in captures)
-			{
-				Release(capture, kinds, args, muteEvent);
+				foreach (var capture in captures)
+				{
+					Release(capture, kinds, relatedARgs, muteEvent);
+				}
 			}
 		}
 
-		private bool Release(Pointer pointer, PointerCaptureKind kinds, PointerRoutedEventArgs args = null, bool muteEvent = false)
+		private bool Release(Pointer pointer, PointerCaptureKind kinds, PointerRoutedEventArgs relatedARgs = null, bool muteEvent = false)
 		{
-			return _allCaptures.TryGetValue(pointer, out var capture)
-				&& Release(capture, kinds, args, muteEvent);
+			return PointerCapture.TryGet(pointer, out var capture)
+				&& Release(capture, kinds, relatedARgs, muteEvent);
 		}
 
-		private bool Release(PointerCapture capture, PointerCaptureKind kinds, PointerRoutedEventArgs args, bool muteEvent)
+		private bool Release(PointerCapture capture, PointerCaptureKind kinds, PointerRoutedEventArgs relatedARgs = null, bool muteEvent = false)
 		{
 			if (!capture.TryRemoveTarget(this, kinds, out var lastDispatched))
 			{
@@ -827,25 +814,48 @@ namespace Windows.UI.Xaml
 				return false;
 			}
 
-			args = args ?? lastDispatched;
-			if (args == null)
+			relatedARgs = relatedARgs ?? lastDispatched;
+			if (relatedARgs == null)
 			{
 				return false; // TODO: We should create a new instance of event args with dummy location
 			}
-			args.Handled = false;
-			return RaisePointerEvent(PointerCaptureLostEvent, args);
+			relatedARgs.Handled = false;
+			return RaisePointerEvent(PointerCaptureLostEvent, relatedARgs);
 		}
 
 		private class PointerCapture
 		{
+			private static readonly IDictionary<Pointer, PointerCapture> _actives = new Dictionary<Pointer, PointerCapture>(EqualityComparer<Pointer>.Default);
+
 			/// <summary>
 			/// Current currently active pointer capture for the given pointer, or creates a new one.
 			/// </summary>
 			/// <param name="pointer">The pointer to capture</param>
 			public static PointerCapture GetOrCreate(Pointer pointer)
-				=> _allCaptures.TryGetValue(pointer, out var capture)
+				=> _actives.TryGetValue(pointer, out var capture)
 					? capture
-					: new PointerCapture(pointer); // The capture will be added to the _allCaptures only when a target is added to it.
+					: new PointerCapture(pointer); // The capture will be added to the _actives only when a target is added to it.
+
+			public static bool TryGet(Pointer pointer, out PointerCapture capture)
+				=> _actives.TryGetValue(pointer, out capture);
+
+			public static bool Any(out IEnumerable<PointerCapture> cloneOfAllCaptures)
+			{
+				if (_actives.Any())
+				{
+					cloneOfAllCaptures = _actives.Values.ToList();
+					return true;
+				}
+				else
+				{
+					cloneOfAllCaptures = default;
+					return false;
+				}
+			}
+
+			public static bool IsTarget(Pointer pointer, UIElement element, PointerCaptureKind kinds)
+				=> _actives.TryGetValue(pointer, out var capture)
+					&& capture.IsTarget(element, kinds);
 
 			private UIElement _nativeCaptureElement;
 			private readonly Dictionary<UIElement, PointerCaptureTarget> _targets = new Dictionary<UIElement, PointerCaptureTarget>(2);
@@ -864,6 +874,8 @@ namespace Windows.UI.Xaml
 			/// Gets the <see cref="PointerRoutedEventArgs.FrameId"/> of the last args that has been handled by this capture
 			/// </summary>
 			public long MostRecentDispatchedEventFrameId { get; private set; }
+
+			public IEnumerable<PointerCaptureTarget> Targets => _targets.Values;
 
 			public bool IsTarget(UIElement element, PointerCaptureKind kinds)
 				=> _targets.TryGetValue(element, out var target)
@@ -940,17 +952,6 @@ namespace Windows.UI.Xaml
 
 				lastDispatched = target.LastDispatched;
 				return true;
-			}
-
-			public void RemoveChildrenOf(DependencyObject parent, PointerCaptureKind kinds)
-			{
-				foreach (var target in _targets.Values.ToList())
-				{
-					if (target.Element.GetParents().Contains(parent))
-					{
-						RemoveCore(target, kinds);
-					}
-				}
 			}
 
 			private void Clear()
@@ -1047,7 +1048,7 @@ namespace Windows.UI.Xaml
 				{
 					// We have some target, self enable us
 
-					if (_allCaptures.TryGetValue(Pointer, out var capture))
+					if (_actives.TryGetValue(Pointer, out var capture))
 					{
 						if (capture != this)
 						{
@@ -1057,7 +1058,7 @@ namespace Windows.UI.Xaml
 					else
 					{
 						// This is what makes this capture active
-						_allCaptures.Add(Pointer, this);
+						_actives.Add(Pointer, this);
 					}
 
 					if (_nativeCaptureElement == null)
@@ -1092,17 +1093,17 @@ namespace Windows.UI.Xaml
 						_nativeCaptureElement = null;
 					}
 
-					if (_allCaptures.TryGetValue(Pointer, out var capture) && capture == this)
+					if (_actives.TryGetValue(Pointer, out var capture) && capture == this)
 					{
 						// This is what makes this capture inactive
-						_allCaptures.Remove(Pointer);
+						_actives.Remove(Pointer);
 					}
 				}
 			}
 		}
 
 		[Flags]
-		private enum PointerCaptureKind : byte
+		internal enum PointerCaptureKind : byte
 		{
 			None = 0,
 
@@ -1112,7 +1113,7 @@ namespace Windows.UI.Xaml
 			Any = Explicit | Implicit,
 		}
 
-		private class PointerCaptureTarget
+		internal class PointerCaptureTarget
 		{
 			public PointerCaptureTarget(UIElement element)
 			{
