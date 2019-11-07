@@ -372,10 +372,15 @@ namespace Windows.UI.Xaml
 
 				recognizer.ProcessDownEvent(point);
 
+#if __WASM__
+				// On iOS and Android, pointers are implicitly captured, so we will receive the "irrelevant" pointer moves
+				// and we can use them for manipulation. But on WASM we have to explicitly request to get those events
+				// (expect on FF where they are also implicitly captured ... but we still capture them).
 				if (recognizer.PendingManipulation?.IsActive(point.PointerDevice.PointerDeviceType, point.PointerId) ?? false)
 				{
 					Capture(args.Pointer, PointerCaptureKind.Implicit, args);
 				}
+#endif
 			}
 
 			return handledInManaged;
