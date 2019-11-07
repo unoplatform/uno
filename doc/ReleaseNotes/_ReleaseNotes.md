@@ -4,6 +4,7 @@
 
 ### Features
 
+* [#] Support for `Windows.Devices.Lights.Lamp` on iOS, Android.
 * [#1970](https://github.com/unoplatform/uno/pull/1970) Added support for `AnalyticsInfo` properties on iOS, Android and WASM
 * [#1207] Implemented some `PackageId` properties
 * [#1919](https://github.com/unoplatform/uno/pull/1919) Support for `PathGeometry` on WASM.
@@ -101,7 +102,8 @@
     > This change might break the compilation for projects that define duplicate resources in other globally accessible resource dictionaries. Adjustments to remove duplicate resources may be necessary.
 
 ### Bug fixes
-* [droid] * [#2024](https://github.com/unoplatform/uno/pull/2024) Geolocator:RequestAccessAsync() returns real state of permission, not always Granted.
+* [droid] [#2024](https://github.com/unoplatform/uno/pull/2024) Geolocator:RequestAccessAsync() returns real state of permission, not always Granted.
+* [#2023](https://github.com/unoplatform/uno/pull/2023) Android WebView.NavigateToString doesn't throw exception even when string is very long.
 * [#2020](https://github.com/unoplatform/uno/pull/2020) `ContentControl` no longer display the datacontext type when ContentTemplate and content are empty
 * [#1987](https://github.com/unoplatform/uno/pull/1987) Missing XML comment warnings are disabled on generated code
 * [#1939](https://github.com/unoplatform/uno/pull/1939) Handles nullables types in XAML file generator
