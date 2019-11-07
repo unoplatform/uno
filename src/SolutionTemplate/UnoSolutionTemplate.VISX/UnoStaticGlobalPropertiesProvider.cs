@@ -12,16 +12,16 @@ namespace UnoSolutionTemplate
 	// https://github.com/microsoft/VSProjectSystem/blob/4ad5716f8fca76403699b818c3d907ce8a8b9a38/doc/extensibility/IProjectGlobalPropertiesProvider.md
 	[ExportBuildGlobalPropertiesProvider]
 	[AppliesTo("")]
-	public class SetGlobalGlobalPropertiesForUno : StaticGlobalPropertiesProviderBase
+	public class UnoStaticGlobalPropertiesProvider : StaticGlobalPropertiesProviderBase
 	{
-		static SetGlobalGlobalPropertiesForUno()
+		static UnoStaticGlobalPropertiesProvider()
 		{
 			// Note that the type ctor is invoked, but not the ctor, this generally means that the IProjectService
 			// version referenced by the package is not using the proper version (has to match vs16 or vs15)
 		}
 
 		[ImportingConstructor]
-		public SetGlobalGlobalPropertiesForUno(IProjectService projectService)
+		public UnoStaticGlobalPropertiesProvider(IProjectService projectService)
 			: base(projectService.Services)
 		{
 			Debug.WriteLine(string.Format(CultureInfo.CurrentCulture, "Entering constructor for: {0}", this.ToString()));
