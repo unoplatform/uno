@@ -52,8 +52,8 @@ jobs:
 
   strategy:
     matrix:
-      Android_5.0:
-        ANDROID_SIMULATOR_APILEVEL: 21
+      Android_5.1:
+        ANDROID_SIMULATOR_APILEVEL: 22
       Android_9.0:
         ANDROID_SIMULATOR_APILEVEL: 28
 
