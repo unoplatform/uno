@@ -768,7 +768,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					child.ManagedOnLoaded(Depth.GetValueOrDefault(int.MinValue) + 1);
+					child.ManagedOnLoaded((Depth ?? int.MinValue) + 1);
 				}
 			}
 		}
