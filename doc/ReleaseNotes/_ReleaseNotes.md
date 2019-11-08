@@ -78,6 +78,7 @@
 * Add support for `IObservableVector<T>` in `ItemsControl`
 * [#1559] [#1167] Wasm: make the IsEnabled property inheritable.
 * Full support of pointer events cf. [routed events documentation](../articles/features/routed-events.md)
+* Add support of manipulation events cf. [routed events documentation](../articles/features/routed-events.md)
 * Update CheckBox style to 10.0.17763
 * Adds the support for `AutomationProperties.AutomationId`
 * [#1328](https://github.com/unoplatform/uno/issues/1328) Basic ProgressRing implementation for WASM
@@ -183,6 +184,7 @@
 * 164480 [Android] fixed a text wrapping issue caused by layout height desync
 * [Wasm] Fix unable to reset `Image.Source` property
 * [#2014](https://github.com/unoplatform/uno/issues/2014) Fix iOS Picker for ComboBox not selecting the correct item.
+* [iOS] #977 Fix exception when setting MediaPlayerElement.Stretch in XAML.
 
 ## Release 1.45.0
 ### Features

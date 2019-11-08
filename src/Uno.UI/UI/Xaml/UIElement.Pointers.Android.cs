@@ -121,7 +121,7 @@ namespace Windows.UI.Xaml
 		#region Capture
 		// No needs to explicitly capture pointers on Android, they are implicitly captured
 		// partial void CapturePointerNative(Pointer pointer);
-		// partial void ReleasePointerCaptureNative(Pointer pointer);
+		// partial void ReleasePointerNative(Pointer pointer);
 		#endregion
 
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)

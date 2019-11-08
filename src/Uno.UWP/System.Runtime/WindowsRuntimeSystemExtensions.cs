@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Uno;
 using Windows.Foundation;
+using Windows.UI.Core;
 
 namespace System
 {
@@ -61,7 +62,21 @@ namespace System
 		[NotImplemented]
 		public static Task<TResult> AsTask<TResult, TProgress>(this IAsyncOperationWithProgress<TResult, TProgress> source, CancellationToken cancellationToken, IProgress<TProgress> progress) { throw new NotImplementedException(); }
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static TaskAwaiter GetAwaiter(this IAsyncAction source) => ((AsyncAction)source).Task.GetAwaiter();
+		public static TaskAwaiter GetAwaiter(this IAsyncAction source)
+		{
+			if (source is UIAsyncOperation uiAsyncOperation)
+			{
+				return uiAsyncOperation.GetAwaiter();
+			}
+			else if (source is AsyncAction asyncAction)
+			{
+				return asyncAction.Task.GetAwaiter();
+			}
+			else
+			{
+			  throw new NotSupportedException("Custom IAsyncOperation implementations are not supported.");
+			}
+		}
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static TaskAwaiter<TResult> GetAwaiter<TResult>(this IAsyncOperation<TResult> source) => ((AsyncOperation<TResult>)source).Task.GetAwaiter();
 		[EditorBrowsable(EditorBrowsableState.Never)]

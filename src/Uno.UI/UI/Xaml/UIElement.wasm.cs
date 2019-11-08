@@ -599,7 +599,12 @@ namespace Windows.UI.Xaml
 
 		public override string ToString()
 		{
-			return GetType().Name + "-" + HtmlId;
+			if (FeatureConfiguration.UIElement.RenderToStringWithId)
+			{
+				return GetType().Name + "-" + HtmlId;
+			}
+
+			return base.ToString();
 		}
 
 		public GeneralTransform TransformToVisual(UIElement visual)
@@ -763,7 +768,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					child.ManagedOnLoaded(Depth.Value + 1);
+					child.ManagedOnLoaded((Depth ?? int.MinValue) + 1);
 				}
 			}
 		}

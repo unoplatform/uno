@@ -28,6 +28,7 @@ namespace Windows.UI.Xaml
 			}
 
 			ViewCompat.SetClipBounds(this, rect.LogicalToPhysicalPixels());
+			SetClipChildren(NeedsClipToSlot);
 		}
 
 		private bool _renderTransformRegisteredParentChanged;
