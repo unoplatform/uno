@@ -7,7 +7,7 @@ using System.ComponentModel;
 
 namespace Windows.UI.Xaml
 {
-	public partial class ResourceDictionary : DependencyObject, IDependencyObjectParse
+	public partial class ResourceDictionary : DependencyObject, IDependencyObjectParse, IDictionary<object, object>
 	{
 		private readonly Dictionary<object, object> _values = new Dictionary<object, object>();
 
@@ -34,8 +34,8 @@ namespace Windows.UI.Xaml
 
 		public IList<ResourceDictionary> MergedDictionaries { get; } = new List<ResourceDictionary>();
 
-		public IDictionary<object, object> ThemeDictionaries { get; } = new Dictionary<object, object>();
-
+		private IDictionary<object, object> _themeDictionaries;
+		public IDictionary<object, object> ThemeDictionaries { get => _themeDictionaries = _themeDictionaries ?? new ResourceDictionary(); }
 		public object Lookup(object key)
 		{
 			object value;
@@ -169,7 +169,8 @@ namespace Windows.UI.Xaml
 
 		private ResourceDictionary GetThemeDictionary(string theme)
 		{
-			if (ThemeDictionaries.TryGetValue(theme, out var dict))
+			object dict = null;
+			if (_themeDictionaries?.TryGetValue(theme, out dict) ?? false)
 			{
 				return dict as ResourceDictionary;
 			}
@@ -230,11 +231,14 @@ namespace Windows.UI.Xaml
 		{
 			_values.Clear();
 			MergedDictionaries.Clear();
-			ThemeDictionaries.Clear();
+			_themeDictionaries?.Clear();
 
 			_values.AddRange(source);
 			MergedDictionaries.AddRange(source.MergedDictionaries);
-			ThemeDictionaries.AddRange(source.ThemeDictionaries);
+			if (source._themeDictionaries != null)
+			{
+				ThemeDictionaries.AddRange(source.ThemeDictionaries);
+			}
 		}
 
 		public global::System.Collections.Generic.ICollection<object> Keys => _values.Keys;
