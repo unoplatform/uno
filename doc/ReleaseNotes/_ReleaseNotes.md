@@ -78,6 +78,7 @@
 * Add support for `IObservableVector<T>` in `ItemsControl`
 * [#1559] [#1167] Wasm: make the IsEnabled property inheritable.
 * Full support of pointer events cf. [routed events documentation](../articles/features/routed-events.md)
+* Add support of manipulation events cf. [routed events documentation](../articles/features/routed-events.md)
 * Update CheckBox style to 10.0.17763
 * Adds the support for `AutomationProperties.AutomationId`
 * [#1328](https://github.com/unoplatform/uno/issues/1328) Basic ProgressRing implementation for WASM
