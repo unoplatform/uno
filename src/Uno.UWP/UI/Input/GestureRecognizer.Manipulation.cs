@@ -20,7 +20,7 @@ namespace Windows.UI.Input
 			internal static readonly Thresholds DeltaPen = new Thresholds { TranslateX = 2, TranslateY = 2, Rotate = .1, Expansion = 1 };
 			internal static readonly Thresholds DeltaMouse = new Thresholds { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
 
-			private enum States
+			private enum ManipulationState
 			{
 				Starting = 1,
 				Started = 2,
@@ -38,7 +38,7 @@ namespace Windows.UI.Input
 			private readonly Thresholds _startThresholds;
 			private readonly Thresholds _deltaThresholds;
 
-			private States _state = States.Starting;
+			private ManipulationState _state = ManipulationState.Starting;
 			private Points _origins;
 			private Points _currents;
 			private ManipulationDelta _sumOfPublishedDelta = ManipulationDelta.Empty;
@@ -80,18 +80,18 @@ namespace Windows.UI.Input
 
 				if ((settings & GestureSettingsHelper.Manipulations) == 0)
 				{
-					_state = States.Completed;
+					_state = ManipulationState.Completed;
 				}
 			}
 
 			public bool IsActive(PointerDeviceType type, uint id)
-				=> _state != States.Completed
+				=> _state != ManipulationState.Completed
 					&& _deviceType == type
 					&& _origins.ContainsPointer(id);
 
 			public void Add(PointerPoint point)
 			{
-				if (_state == States.Completed
+				if (_state == ManipulationState.Completed
 					|| point.PointerDevice.PointerDeviceType != _deviceType
 					|| _currents.HasPointer2)
 				{
@@ -107,7 +107,7 @@ namespace Windows.UI.Input
 
 			public void Update(IList<PointerPoint> updated)
 			{
-				if (_state == States.Completed)
+				if (_state == ManipulationState.Completed)
 				{
 					return;
 				}
@@ -129,7 +129,7 @@ namespace Windows.UI.Input
 				if (TryUpdate(removed))
 				{
 					// For now we complete the Manipulation as soon as a pointer was removed ...
-					// did not checked the UWP behavior for that!
+					// did not check the UWP behavior for that!
 					Complete();
 				}
 			}
@@ -139,8 +139,8 @@ namespace Windows.UI.Input
 				// If the manipulation was not started, we just abort the manipulation without any event
 				switch (_state)
 				{
-					case States.Started:
-						_state = States.Completed;
+					case ManipulationState.Started:
+						_state = ManipulationState.Completed;
 
 						_recognizer.ManipulationCompleted?.Invoke(
 							_recognizer,
@@ -148,7 +148,7 @@ namespace Windows.UI.Input
 						break;
 
 					default:
-						_state = States.Completed;
+						_state = ManipulationState.Completed;
 						break;
 				}
 
@@ -179,8 +179,8 @@ namespace Windows.UI.Input
 
 				switch (_state)
 				{
-					case States.Starting when pointerAdded:
-						_state = States.Started;
+					case ManipulationState.Starting when pointerAdded:
+						_state = ManipulationState.Started;
 						_sumOfPublishedDelta = cumulative;
 
 						_recognizer.ManipulationStarted?.Invoke(
@@ -191,8 +191,8 @@ namespace Windows.UI.Input
 
 						break;
 
-					case States.Starting when cumulative.IsSignificant(_startThresholds):
-						_state = States.Started;
+					case ManipulationState.Starting when cumulative.IsSignificant(_startThresholds):
+						_state = ManipulationState.Started;
 						_sumOfPublishedDelta = cumulative;
 
 						// Note: We first start with an empty delta, then invoke Update.
@@ -209,7 +209,7 @@ namespace Windows.UI.Input
 
 						break;
 
-					case States.Started:
+					case ManipulationState.Started:
 						// Even if Scale and Angle are expected to be default when we add a pointer (i.e. forceUpdate == true),
 						// the 'delta' and 'cumulative' might still contains some TranslateX|Y compared to the previous Pointer1 location.
 						var delta = GetDelta(cumulative);
