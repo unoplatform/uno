@@ -42,6 +42,8 @@
   items:
   - name: Accessibility
     href: features/working-with-accessibility.md
+  - name: XAML Hot Reload
+    href: features\working-with-xaml-hot-reload.md
   - name: Assets
     href: features/working-with-assets.md
   - name: Animations
