@@ -47,7 +47,10 @@ mono nuget/NuGet.exe install NUnit.ConsoleRunner -Version 3.10.0
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
 mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe \
-	--timeout=60000 \
+	--inprocess \
+	--agents=1 \
+	--workers=1 \
+	--timeout=30000 \
 	$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/$BUILDCONFIGURATION/net47/SamplesApp.UITests.dll
 
 $ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTORY/android-device-log.txt
