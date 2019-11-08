@@ -12,9 +12,10 @@ cd $BUILD_SOURCESDIRECTORY/build
 
 # Install AVD files
 echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install 'system-images;android-28;google_apis;x86'
+echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis;x86"
 
 # Create emulator
-echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n xamarin_android_emulator -k 'system-images;android-28;google_apis;x86' --sdcard 128M --force
+echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n xamarin_android_emulator -k "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis;x86" --sdcard 128M --force
 
 echo $ANDROID_HOME/emulator/emulator -list-avds
 
@@ -25,21 +26,19 @@ nohup $ANDROID_HOME/emulator/emulator -avd xamarin_android_emulator -skin 1280x8
 
 export IsUiAutomationMappingEnabled=true
 
-# build the sample and tests, while the emulator is starting
-msbuild /r /p:Configuration=$BUILDCONFIGURATION $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj
+# build the tests, while the emulator is starting
 msbuild /r /p:Configuration=$BUILDCONFIGURATION $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
 
 # Wait for the emulator to finish booting
-chmod +x $BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
 $BUILD_SOURCESDIRECTORY/build/android-uitest-wait-systemui.sh
 
 $ANDROID_HOME/platform-tools/adb devices
 
 echo "Emulator started"
 
-export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/android
+export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/android-$ANDROID_SIMULATOR_APILEVEL
 export UNO_UITEST_PLATFORM=Android
-export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Droid/bin/$BUILDCONFIGURATION/uno.platform.unosampleapp.apk
+export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/build/uitests-android-build/android/uno.platform.unosampleapp.apk
 
 cd $BUILD_SOURCESDIRECTORY/build
 
