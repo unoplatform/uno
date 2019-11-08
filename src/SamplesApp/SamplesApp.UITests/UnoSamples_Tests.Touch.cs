@@ -33,7 +33,7 @@ namespace SamplesApp.UITests
 
 				Assert.AreEqual("0 - button inside grid", touchLog.GetDependencyPropertyValue<string>("Text"));
 
-				_app.Screenshot("0 - button inside grid");
+				TakeScreenshot("0 - button inside grid");
 			}
 
 			{
@@ -49,7 +49,7 @@ namespace SamplesApp.UITests
 
 				Assert.AreEqual("1 - button under grid", touchLog.GetDependencyPropertyValue<string>("Text"));
 
-				_app.Screenshot("0 - button inside grid");
+				TakeScreenshot("0 - button inside grid");
 			}
 		}
 	}

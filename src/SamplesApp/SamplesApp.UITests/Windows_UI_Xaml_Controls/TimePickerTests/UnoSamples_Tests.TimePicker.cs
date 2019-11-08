@@ -161,7 +161,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 
 			picker.Tap();
 
-			_app.Screenshot("TimePicker - Flyout");
+			TakeScreenshot("TimePicker - Flyout");
 		}
 	}
 }

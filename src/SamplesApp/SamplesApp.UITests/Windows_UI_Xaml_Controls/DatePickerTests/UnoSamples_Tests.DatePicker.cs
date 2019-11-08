@@ -72,7 +72,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 
 			button.Tap();
 
-			_app.Screenshot("DatePicker - Flyout");
+			TakeScreenshot("DatePicker - Flyout");
 		}
 
 		[Test]

@@ -86,7 +86,7 @@ namespace SamplesApp.UITests
 			Helpers.App = _app;
 		}
 
-		public void TakeScreenshot(string stepName)
+		public FileInfo TakeScreenshot(string stepName)
 		{
 			var title = $"{TestContext.CurrentContext.Test.Name}_{stepName}"
 				.Replace(" ", "_")
@@ -98,6 +98,7 @@ namespace SamplesApp.UITests
 			if (fileNameWithoutExt != title)
 			{
 				var destFileName = Path.Combine(Path.GetDirectoryName(fileInfo.FullName), title + Path.GetExtension(fileInfo.Name));
+
 				if (File.Exists(destFileName))
 				{
 					File.Delete(destFileName);
@@ -106,11 +107,15 @@ namespace SamplesApp.UITests
 				File.Move(fileInfo.FullName, destFileName);
 
 				TestContext.AddTestAttachment(destFileName, stepName);
+
+				fileInfo = new FileInfo(destFileName);
 			}
 			else
 			{
 				TestContext.AddTestAttachment(fileInfo.FullName, stepName);
 			}
+
+			return fileInfo;
 		}
 
 		private static void ValidateAutoRetry()
