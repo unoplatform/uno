@@ -122,6 +122,7 @@ namespace Windows.UI.Xaml
 				try
 #endif
 				{
+					_values.Remove(key); // Temporarily remove the key to make this method safely reentrant, if it's a framework- or application-level theme dictionary
 					ResourceResolver.PushNewScope(lazyInitializer.CurrentScope);
 					newValue = lazyInitializer.Initializer();
 				}
