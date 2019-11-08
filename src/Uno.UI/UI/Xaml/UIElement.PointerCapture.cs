@@ -136,7 +136,7 @@ namespace Windows.UI.Xaml
 			/// Removes a UIElement from the targets of this capture.
 			/// DO NOT USE directly, use instead the Release method on the UIElement in order to properly raise the PointerCaptureLost event.
 			/// </summary>
-			public bool TryRemoveTarget(UIElement element, PointerCaptureKind kinds, out PointerRoutedEventArgs lastDispatched)
+			public PointerCaptureKind RemoveTarget(UIElement element, PointerCaptureKind kinds, out PointerRoutedEventArgs lastDispatched)
 			{
 				if (_targets.TryGetValue(element, out var target))
 				{
@@ -144,19 +144,21 @@ namespace Windows.UI.Xaml
 					if ((target.Kind & kinds) == 0)
 					{
 						lastDispatched = default;
-						return false;
+						return PointerCaptureKind.None;
 					}
 				}
 				else
 				{
 					lastDispatched = default;
-					return false;
+					return PointerCaptureKind.None;
 				}
+
+				var removed = target.Kind & kinds;
+				lastDispatched = target.LastDispatched;
 
 				RemoveCore(target, kinds);
 
-				lastDispatched = target.LastDispatched;
-				return true;
+				return removed;
 			}
 
 			private void Clear()

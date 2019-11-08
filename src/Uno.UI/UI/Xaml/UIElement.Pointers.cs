@@ -806,7 +806,7 @@ namespace Windows.UI.Xaml
 
 		private bool Release(PointerCapture capture, PointerCaptureKind kinds, PointerRoutedEventArgs relatedARgs = null, bool muteEvent = false)
 		{
-			if (!capture.TryRemoveTarget(this, kinds, out var lastDispatched))
+			if (!capture.RemoveTarget(this, kinds, out var lastDispatched).HasFlag(PointerCaptureKind.Explicit))
 			{
 				return false;
 			}
