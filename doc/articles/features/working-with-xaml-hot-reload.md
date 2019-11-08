@@ -27,13 +27,13 @@ Make sure that the version number is the same as the `Uno.UI` package.
 ## Troubleshooting
 - The application logs file reloads, so you should see diagnostics messages when a XAML file is reloaded.
 - The output window in VS has an output named "Uno Platform" in its drop down. Diagnostics messages from the VS integration appear there.
-- The file named `obj\Debug\XXX\g\RemoteControlGenerator\HotReload.g.cs` contains the connection informations, verify that the information makes sense, particularly the port number.
+- The file named `obj\Debug\XXX\g\RemoteControlGenerator\HotReload.g.cs` contains the connection information, verify that the information makes sense, particularly the port number.
 - When a file is reloaded, XAML parsing errors will appear in the application's logs, on device or in browser.
 
 ## Known issues
 
 - Events specified in the XAML are not yet supported for hot reload
-- If there are multiple versions of the Uno.UI Package present in the solution, the greatest will be used, regardless of the started application
+- If there are multiple versions of the Uno.UI Package present in the solution, the newest will be used, regardless of the started application
 - Changing the package version may confuse VS if a Hot Reload session has already been started
     - Resolution: Restart VS and rebuild the app
 - The reload server may start twice (The VS **Uno Platform** output window shows two "Starting server" messages)
@@ -57,10 +57,10 @@ This scenario is designed for contributors to the Uno platform, to test changes 
 1. Open the Visual Studio solution using one of the hot-reload solution filters, we'll use the `Uno.UI-Wasm-hotreload.slnf` for this example.
 1. Build the `SamplesApp.Wasm` project
 1. Set the `UnoSolutiontemplate.VSIX` project as startup
-1. Open the properties, for this project and :
+1. Open the properties for this project and:
     - Set the startup executable to be your Visual Studio `devenv.exe` binary path.
     - Set the command line arguments to `/rootsuffix Exp`
 1. Run the VSIX with or without the debugger
 1. Create a Uno Cross Platform app using the template
-1. Set the nuget package version for `Uno.UI` and `Uno.UI.RemoteControl` to the set previously in the `crosstargeting_override.props` file
+1. Set the nuget package version for `Uno.UI` and `Uno.UI.RemoteControl` to that set previously in the `crosstargeting_override.props` file
 1. Launch and debug the application you just created
