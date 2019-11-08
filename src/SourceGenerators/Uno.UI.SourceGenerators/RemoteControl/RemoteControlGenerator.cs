@@ -13,7 +13,7 @@ using Uno.Extensions;
 using Uno.SourceGeneration;
 using Uno.UI.SourceGenerators.Helpers;
 
-namespace Uno.UI.SourceGenerators.NativeCtor
+namespace Uno.UI.SourceGenerators.RemoteControl
 {
 	public class RemoteControlGenerator : SourceGenerator
 	{
@@ -28,7 +28,7 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 				BuildEndPointAttribute(context, sb);
 				BuildSearchPaths(context, sb);
 
-				context.AddCompilationUnit("HotReload", sb.ToString());
+				context.AddCompilationUnit("RemoteControl", sb.ToString());
 			}
 		}
 
@@ -78,11 +78,6 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 				var addresses = NetworkInterface.GetAllNetworkInterfaces()
 					.SelectMany(x => x.GetIPProperties().UnicastAddresses)
 					.Where(x => !IPAddress.IsLoopback(x.Address));
-
-				if (unoRemoteControlPort == "0")
-				{
-					// sb.AppendLineInvariant($"#warning The App Remote Control debugging support is disabled. The Visual Studio addin may not be installed or activated.");
-				}
 
 				foreach (var addressInfo in addresses)
 				{

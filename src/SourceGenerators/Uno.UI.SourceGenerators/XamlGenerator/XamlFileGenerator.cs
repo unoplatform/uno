@@ -440,8 +440,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
         {
             if (_isDebug)
             {
-                writer.AppendLineInvariant($"global::Uno.UI.RemoteControl.RemoteControlClient.Initialize(GetType());");
-            }
+				if(GetType("Uno.UI.RemoteControl.RemoteControlClient") != null)
+				{
+					writer.AppendLineInvariant($"global::Uno.UI.RemoteControl.RemoteControlClient.Initialize(GetType());");
+				}
+				else
+				{
+					writer.AppendLineInvariant($"// Remote control client is disabled (Type Uno.UI.RemoteControl.RemoteControlClient cannot be found)");
+				}
+			}
         }
 
         private void GenerateResourceLoader(IndentedStringBuilder writer)

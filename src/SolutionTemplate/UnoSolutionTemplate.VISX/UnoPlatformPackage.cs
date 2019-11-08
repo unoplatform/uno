@@ -59,7 +59,10 @@ namespace UnoSolutionTemplate
 		/// </summary>
 		public const string PackageGuidString = "e2245c5b-bbe5-40c8-96d6-94ea655a5ff7";
 
-        public static Func<Task<Dictionary<string, string>>> GlobalFunctionProvider { get; internal set; }
+		/// <summary>
+		/// A function provider to be called when the remote control plugin as setting global properties.
+		/// </summary>
+        internal static Func<Task<Dictionary<string, string>>> GlobalFunctionProvider { get; set; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="UnoPlatformPackage"/> class.
