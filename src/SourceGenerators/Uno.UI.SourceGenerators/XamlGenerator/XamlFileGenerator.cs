@@ -440,7 +440,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
         {
             if (_isDebug)
             {
-				if(GetType("Uno.UI.RemoteControl.RemoteControlClient") != null)
+				if(FindType("Uno.UI.RemoteControl.RemoteControlClient") != null)
 				{
 					writer.AppendLineInvariant($"global::Uno.UI.RemoteControl.RemoteControlClient.Initialize(GetType());");
 				}
