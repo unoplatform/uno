@@ -1,11 +1,10 @@
-﻿
-using Android.Hardware;
-using Android.Runtime;
-#if __ANDROID__
+﻿#if __ANDROID__
 using System;
 using System.Collections.Generic;
 using System.Threading;
 using Uno.Devices.Sensors.Helpers;
+using Android.Hardware;
+using Android.Runtime;
 
 namespace Windows.Devices.Sensors
 {
@@ -25,20 +24,18 @@ namespace Windows.Devices.Sensors
 			get => _reportInterval;
 			set
 			{
-				if (_reportInterval == value)
+				if (_reportInterval != value)
 				{
-					return;
-				}
-
-				lock (_syncLock)
-				{
-					_reportInterval = value;
-
-					if (_readingChanged != null)
+					lock (_syncLock)
 					{
-						//restart reading to apply interval
-						StartReading();
-						StopReading();
+						_reportInterval = value;
+
+						if (_readingChanged != null)
+						{
+							//restart reading to apply interval
+							StartReading();
+							StopReading();
+						}
 					}
 				}
 			}
@@ -77,13 +74,9 @@ namespace Windows.Devices.Sensors
 		private class StepCounterListener : Java.Lang.Object, ISensorEventListener, IDisposable
 		{
 			private readonly Pedometer _pedometer;
+			private DateTimeOffset _lastReading = DateTimeOffset.MinValue;
 
-			private DateTimeOffset _lastTime = SensorHelpers.SystemBootDateTimeOffset;
-            
-			public StepCounterListener(Pedometer pedometer)
-			{
-				_pedometer = pedometer;
-			}
+			public StepCounterListener(Pedometer pedometer) => _pedometer = pedometer;
 
 			void ISensorEventListener.OnAccuracyChanged(Sensor sensor, [GeneratedEnum]SensorStatus accuracy)
 			{
@@ -91,19 +84,20 @@ namespace Windows.Devices.Sensors
 
 			void ISensorEventListener.OnSensorChanged(SensorEvent e)
 			{
-				var currentTime = SensorHelpers.TimestampToDateTimeOffset(e.Timestamp);
-				var timeDifference = _lastTime - currentTime;
-	                
-				var pedometerReading = new PedometerReading(
-					Convert.ToInt32(e.Values[0]),
-					timeDifference,
-                    PedometerStepKind.Unknown,
-                    currentTime);
-				_pedometer._readingChanged?.Invoke(
-					_pedometer,
-					new PedometerReadingChangedEventArgs(pedometerReading));
+				if ((DateTimeOffset.UtcNow - _lastReading).TotalMilliseconds >= _pedometer.ReportInterval)
+				{
+					var lastStepTimestamp = SensorHelpers.TimestampToDateTimeOffset(e.Timestamp);
+					var timeDifference = lastStepTimestamp - SensorHelpers.SystemBootDateTimeOffset;
+					var currentSteps = Convert.ToInt32(e.Values[0]);
+					var pedometerReading = new PedometerReading(
+						currentSteps,
+						timeDifference,
+						PedometerStepKind.Unknown,
+						lastStepTimestamp);
 
-				_lastTime = currentTime;
+					_lastReading = DateTimeOffset.UtcNow;
+					_pedometer.OnReadingChanged(pedometerReading);					
+				}
 			}
 		}
 	}

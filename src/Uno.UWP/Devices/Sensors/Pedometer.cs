@@ -1,3 +1,4 @@
+#if __IOS__ || __ANDROID__
 using System;
 using System.Threading.Tasks;
 using Windows.Foundation;
@@ -63,3 +64,4 @@ namespace Windows.Devices.Sensors
 		}
 	}
 }
+#endif

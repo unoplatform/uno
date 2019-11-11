@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows.Input;
+using Uno.Disposables;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.Devices.Sensors;
@@ -39,6 +40,10 @@ namespace UITests.Shared.Windows_Devices
 	{
 		private Pedometer _pedometer = null;
 		private string _pedometerStatus;
+		private bool _readingChangedAttached;
+		private int _cumulativeSteps;
+		private double _cumulativeStepsDurationInSeconds;
+		private string _timestamp;
 
 		public PedometerTestsViewModel(CoreDispatcher dispatcher) :
 			base(dispatcher)
@@ -46,7 +51,7 @@ namespace UITests.Shared.Windows_Devices
 		}
 
 		public ICommand GetPedometerCommand => GetOrCreateCommand(GetPedometerAsync);
-		
+
 		public string PedometerStatus
 		{
 			get => _pedometerStatus;
@@ -62,7 +67,78 @@ namespace UITests.Shared.Windows_Devices
 		private async void GetPedometerAsync()
 		{
 			_pedometer = await Pedometer.GetDefaultAsync();
+			_pedometer.ReportInterval = 10000;
+			Disposables.Add(Disposable.Create(() =>
+			{
+				if (_pedometer != null)
+				{
+					_pedometer.ReadingChanged -= Pedometer_ReadingChanged;
+				}
+			}));
+
 			RaisePropertyChanged(nameof(IsAvailable));
+		}
+
+		public Command AttachReadingChangedCommand => new Command((p) =>
+		{
+			_pedometer.ReadingChanged += Pedometer_ReadingChanged;
+			ReadingChangedAttached = true;
+		});
+
+		public Command DetachReadingChangedCommand => new Command((p) =>
+		{
+			_pedometer.ReadingChanged -= Pedometer_ReadingChanged;
+			ReadingChangedAttached = false;
+		});
+
+		public bool ReadingChangedAttached
+		{
+			get => _readingChangedAttached;
+			set
+			{
+				_readingChangedAttached = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public int CumulativeSteps
+		{
+			get => _cumulativeSteps;
+			set
+			{				
+				_cumulativeSteps = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public double CumulativeStepsDurationInSeconds
+		{
+			get => _cumulativeStepsDurationInSeconds;
+			set
+			{
+				_cumulativeStepsDurationInSeconds = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public string Timestamp
+		{
+			get => _timestamp;
+			private set
+			{
+				_timestamp = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		private async void Pedometer_ReadingChanged(Pedometer sender, PedometerReadingChangedEventArgs args)
+		{
+			await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				CumulativeSteps = args.Reading.CumulativeSteps;
+				CumulativeStepsDurationInSeconds = args.Reading.CumulativeStepsDuration.TotalSeconds;
+				Timestamp = args.Reading.Timestamp.ToString("R");
+			});
 		}
 	}
 }

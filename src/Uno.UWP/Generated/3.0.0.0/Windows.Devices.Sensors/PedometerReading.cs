@@ -5,48 +5,12 @@ namespace Windows.Devices.Sensors
 	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public partial class PedometerReading 
+	public  partial class PedometerReading 
 	{
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  int CumulativeSteps
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member int PedometerReading.CumulativeSteps is not implemented in Uno.");
-			}
-		}
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::System.TimeSpan CumulativeStepsDuration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan PedometerReading.CumulativeStepsDuration is not implemented in Uno.");
-			}
-		}
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.Devices.Sensors.PedometerStepKind StepKind
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PedometerStepKind PedometerReading.StepKind is not implemented in Uno.");
-			}
-		}
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::System.DateTimeOffset Timestamp
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset PedometerReading.Timestamp is not implemented in Uno.");
-			}
-		}
-#endif
+		// Skipping already declared property CumulativeSteps
+		// Skipping already declared property CumulativeStepsDuration
+		// Skipping already declared property StepKind
+		// Skipping already declared property Timestamp
 		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.StepKind.get
 		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.CumulativeSteps.get
 		// Forced skipping of method Windows.Devices.Sensors.PedometerReading.Timestamp.get

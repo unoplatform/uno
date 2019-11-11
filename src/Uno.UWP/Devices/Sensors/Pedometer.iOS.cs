@@ -11,15 +11,9 @@ namespace Windows.Devices.Sensors
 	public partial class Pedometer
 	{
 		private readonly CMPedometer _pedometer;
-		private readonly EventWaitHandle _currentReadingWaiter =
-			new EventWaitHandle(false, EventResetMode.AutoReset);
+		private DateTimeOffset _lastReading = new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
-		private CMPedometerData _currentData = null;
-
-		private Pedometer(CMPedometer pedometer)
-		{
-			_pedometer = pedometer;
-		}
+		private Pedometer(CMPedometer pedometer) => _pedometer = pedometer;
 
 		public static Pedometer TryCreateInstance()
 		{
@@ -30,36 +24,13 @@ namespace Windows.Devices.Sensors
 			return null;
 		}
 
-		public IReadOnlyDictionary<PedometerStepKind, PedometerReading> GetCurrentReadings()
-		{
-			var readings = new Dictionary<PedometerStepKind, PedometerReading>();
-			_currentData = null;
-			_pedometer.QueryPedometerData(
-				NSDate.FromTimeIntervalSince1970(DateTimeOffset.Now.Subtract(DateTimeOffset.Now.TimeOfDay).ToUnixTimeSeconds()),
-				NSDate.FromTimeIntervalSince1970(DateTimeOffset.Now.ToUnixTimeSeconds()), HandlePedometerData);
-			_currentReadingWaiter.WaitOne();
-			var timeDifferenceInSeconds = TimeSpan.FromSeconds(
-				_currentData.EndDate.SecondsSinceReferenceDate -
-				_currentData.StartDate.SecondsSinceReferenceDate);
-			if (_currentData != null)
-			{
-				readings.Add(
-					PedometerStepKind.Unknown,
-					new PedometerReading(
-						_currentData.NumberOfSteps.Int32Value,
-						timeDifferenceInSeconds,
-						PedometerStepKind.Unknown,
-						SensorHelpers.NSDateToDateTimeOffset(_currentData.EndDate)));
-			}
-
-			return readings;
-		}
+		public uint ReportInterval { get; set; }
 
 		private void StartReading()
 		{
 			_pedometer.StartPedometerUpdates(
-				SensorHelpers.DateTimeOffsetToNSDate(DateTimeOffset.Now),
-				HandlePedometerData);
+				SensorHelpers.DateTimeOffsetToNSDate(DateTimeOffset.Now.Date),
+				PedometerUpdateReceived);
 		}
 
 		private void StopReading()
@@ -67,10 +38,14 @@ namespace Windows.Devices.Sensors
 			_pedometer.StopPedometerUpdates();
 		}
 
-		private void HandlePedometerData(CMPedometerData data, NSError err)
+		private void PedometerUpdateReceived(CMPedometerData data, NSError err)
 		{
-			_currentData = data;
-			_currentReadingWaiter.Set();
+			if ((DateTimeOffset.UtcNow - _lastReading).TotalMilliseconds >= ReportInterval)
+			{
+				var startDate = SensorHelpers.NSDateToDateTimeOffset(data.StartDate);
+				var endDate = SensorHelpers.NSDateToDateTimeOffset(data.EndDate);
+				OnReadingChanged(new PedometerReading(data.NumberOfSteps.Int32Value, endDate - startDate, PedometerStepKind.Unknown, endDate));
+			}
 		}
 	}
 }

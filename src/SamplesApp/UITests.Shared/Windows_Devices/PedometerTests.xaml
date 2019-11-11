@@ -20,10 +20,24 @@
 		<TextBlock Text="{Binding PedometerStatus}" />
 		<ContentControl IsEnabled="{Binding IsAvailable}">
 			<StackPanel Spacing="8">
-				<TextBox Header="Brightness level"
-						 Text="{Binding BrightnessLevel,Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-						 InputScope="Number" />
-				<ToggleSwitch Header="Is enabled?" IsOn="{Binding IsEnabled, Mode=TwoWay}" />
+
+				<Button Command="{Binding AttachReadingChangedCommand}" Content="Attach ReadingChanged" IsEnabled="{Binding ReadingChangedAttached, Converter={StaticResource BoolNegation}}" />
+				<Button Command="{Binding DetachReadingChangedCommand}" Content="Detach ReadingChanged" IsEnabled="{Binding ReadingChangedAttached}" />
+
+				<TextBlock Text="Last reading" Style="{ThemeResource SubtitleTextBlockStyle}" />
+				<TextBlock>
+					<Run FontWeight="Bold">Timestamp: </Run>
+					<Run Text="{Binding Timestamp}" />
+				</TextBlock>
+				<TextBlock>
+					<Run FontWeight="Bold">Cumulative steps: </Run>
+					<Run Text="{Binding CumulativeSteps}" />
+				</TextBlock>
+				<TextBlock>
+					<Run FontWeight="Bold">Cumulative steps duration: </Run>
+					<Run Text="{Binding CumulativeStepsDurationInSeconds}" />
+					<Run Text="s" />
+				</TextBlock>
 			</StackPanel>
 		</ContentControl>
 	</StackPanel>
