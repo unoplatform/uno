@@ -171,7 +171,7 @@
     <PackageReference Include="Microsoft.VisualStudio.ProjectSystem">
       <Version>16.0.374-pre</Version>
     </PackageReference>
-    <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes" version="15.0.16" />
+    <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes" version="15.0.27" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.15.0" version="15.9.28307" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Framework" version="15.9.28307" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop" version="7.10.6072" />
