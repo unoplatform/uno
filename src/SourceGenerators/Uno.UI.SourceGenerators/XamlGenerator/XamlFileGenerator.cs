@@ -737,7 +737,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			_isTopLevelDictionary = true;
-			var globalResources = new Dictionary<string, XamlObjectDefinition>();
 
 			using (Scope(Path.GetFileNameWithoutExtension(_fileDefinition.FilePath).Replace(".", "_") + "RD"))
 			{
@@ -746,8 +745,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					AnalyzerSuppressionsGenerator.Generate(writer, _analyzerSuppressions);
 					using (writer.BlockInvariant("public sealed partial class GlobalStaticResources"))
 					{
-						globalResources.Merge(ImportResourceDictionary(writer, topLevelControl));
-
 						BuildPartials(writer, isStatic: true);
 						BuildResourceDictionaryGlobalProperties(writer, topLevelControl);
 
@@ -999,89 +996,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 			}
-		}
-
-		private Dictionary<string, XamlObjectDefinition> ImportResourceDictionary(
-			IIndentedStringBuilder writer,
-			XamlObjectDefinition topLevelControl
-		)
-		{
-			TryAnnotateWithGeneratorSource(writer);
-			var resources = new Dictionary<string, XamlObjectDefinition>();
-
-			XamlMemberDefinition contentNode;
-
-			if (IsApplication(topLevelControl.Type))
-			{
-				contentNode = topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "Resources");
-			}
-			else
-			{
-				contentNode = FindMember(topLevelControl, "_UnknownContent");
-			}
-
-			if (contentNode != null)
-			{
-				foreach (var resource in contentNode.Objects)
-				{
-					var key = resource.Members.FirstOrDefault(m => m.Member.Name == "Key" || m.Member.Name == "Name");
-
-					if (key != null)
-					{
-						if (!resources.ContainsKey(key.Value.ToString()))
-						{
-							resources.Add(key.Value.ToString(), resource);
-						}
-						else
-						{
-							throw new InvalidOperationException($"Duplicate resource {key.Value.ToString()}");
-						}
-					}
-					else
-					{
-						if (resource.Type.Name == "Style")
-						{
-							var targetType = FindMember(resource, "TargetType")?.Value.ToString();
-
-							if (targetType != null)
-							{
-								var fullTargetType = FindType(targetType).SelectOrDefault(t => t.ToDisplayString(), targetType);
-
-								var keyName = (ImplicitStyleMarker + fullTargetType).Replace(".", "_");
-
-								if (resources.ContainsKey(keyName))
-								{
-									throw new InvalidOperationException($"Implicit resource for {keyName} already exists");
-								}
-								else
-								{
-									resources.Add(keyName, resource);
-								}
-							}
-							else
-							{
-								throw new InvalidOperationException("The implicit resource must have a TargetType attribute");
-							}
-						}
-						else if (resource.Type.Name == "ResourceDictionary")
-						{
-							// ResourceDictionaries and MergedDictionaries are handled elsewhere
-						}
-						else
-						{
-							GenerateError(
-								writer,
-								"Implicit resource other than Style in inline resources are not supported ({0}, Line {1}:{2})",
-								contentNode.Member.Type,
-								contentNode.LineNumber,
-								contentNode.LinePosition
-							);
-						}
-					}
-				}
-			}
-
-			return resources;
 		}
 
 		/// <summary>
