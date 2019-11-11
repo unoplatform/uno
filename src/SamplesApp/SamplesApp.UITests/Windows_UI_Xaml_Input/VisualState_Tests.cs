@@ -34,11 +34,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 			var rect = _app.WaitForElement(target).Single().Rect;
 
+			var initial = TakeScreenshot("Initial");
+
 			// Press over and move out to release
 			_app.DragCoordinates(rect.X + 2, rect.Y + 2, rect.X, rect.Y - 30);
 
-			// Validate the state was restored to default
-			TakeScreenshot("Result");
+			var final = TakeScreenshot("Final");
+
+			AssertScreenshotsAreEqual(initial, final);
 		}
 	}
 }
