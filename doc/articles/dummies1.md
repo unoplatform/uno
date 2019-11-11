@@ -11,7 +11,6 @@ For migrating a UWP library, see [this article](howto-migrate-existing-code.md).
 
 This guide assumes that you have some UWP app, and want to convert this app to be multiplatform.
 
- Maybe your programmers experience doesn't include Git, Android, iOS, etc. Maybe you know only UWP. And maybe even your apps are written in VB... But still, you can not only use Uno, but also contribute to it. Please, read this short guide, guide for beginners (or dummies...).
 
 
 In short:
@@ -28,7 +27,7 @@ In short:
 
 First, open your app solution in VStudio. Then using Solution Explorer window:
 * add new project (right click on Solution, Add, New Project, Visual C#, Uno Plaform, Cross-Plaform App (Uno Platform), using name as e.g. your previous project (APPNAME) with "\_Uno" suffix. In effect, APPNAME_Uno folder would be created, and inside it - folders as APPNAME_Uno.Shared, APPNAME_Uno.Droid, etc. - one project per one target platform.
-* for now, you can Unload your APPNAMEUno.Droid, .iOS and .WASM projects (right click in Solution Explorer). Why? To make VStudio using less memory and start faster.
+* for now, you can Unload your APPNAME_Uno.Droid, .iOS and .WASM projects (right click in Solution Explorer). Why? To make VStudio using less memory and start faster.
 
 ## converting your code
 In simple words, you have to copy all your content from APPNAME to APPNAME_Uno.Shared; all your XAML pages, all code behind it (.cs), and replace folder Strings (delete just generated Strings folders). Copy also all other files and folders you created in APPNAME.
