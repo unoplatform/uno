@@ -4,7 +4,7 @@ There are two separate paths for using an existing UWP codebase on top of Uno:
 - An existing UWP application
 - An existing UWP library
 
-For migrating UWP library, see [this article](howto-migrate-existing-code.md).
+For migrating a UWP library, see [this article](howto-migrate-existing-code.md).
 
 # How to migrate UWP app to Uno?
 # Step by step guide.
