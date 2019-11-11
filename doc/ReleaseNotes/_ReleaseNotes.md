@@ -91,6 +91,7 @@
 * The _feature flag_ `FeatureConfiguration.UseLegacyClipping` is now deprecated and not used anymore
 * XAML Hot Reload support for iOS, Android and Windows
 * Add support for GitPod Workspace and prebuilds
+* #880 Added added implicit conversion for double to Thickness
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
