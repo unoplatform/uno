@@ -9,8 +9,43 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <StackPanel Spacing="30">
-		<Border HorizontalAlignment="Center" Background="Red"  VerticalAlignment="Center" Width="100" Height="100" BorderBrush="#88000000" BorderThickness="10,20,30,40" />
-		<Border HorizontalAlignment="Center" Background="Red"  VerticalAlignment="Center" Width="100" Height="100" BorderBrush="#88000000" BorderThickness="10,0,0,40" />
+	<StackPanel>
+
+		<TextBlock FontSize="22">These squares:</TextBlock>
+	    <StackPanel Spacing="30" Orientation="Horizontal">
+			<Border HorizontalAlignment="Center" Background="Red"  VerticalAlignment="Center" Width="100" Height="100" BorderBrush="#88000000" BorderThickness="10,20,30,40" />
+			<Border HorizontalAlignment="Center" Background="Red"  VerticalAlignment="Center" Width="100" Height="100" BorderBrush="#88000000" BorderThickness="10,0,0,40" />
+			<Border HorizontalAlignment="Center" Background="Red"  VerticalAlignment="Center" Width="100" Height="100" BorderBrush="#88000000" BorderThickness="10,0,0,40" CornerRadius="0,12,0,0" />
+		</StackPanel>
+
+		<TextBlock FontSize="22">Should be identical to those: (red center, gray border)</TextBlock>
+		<StackPanel Spacing="30" Orientation="Horizontal">
+			<Border HorizontalAlignment="Center"
+					Background="#88000000"
+					VerticalAlignment="Center"
+					Width="100"
+					Height="100"
+					BorderBrush="#88000000"
+					Padding="10,20,30,40">
+				<Rectangle Fill="Red" />
+			</Border>
+			<Border HorizontalAlignment="Center"
+					Background="#88000000"
+					VerticalAlignment="Center"
+					Width="100"
+					Height="100"
+					Padding="10,0,0,40">
+				<Rectangle Fill="Red" />
+			</Border>
+			<Border HorizontalAlignment="Center"
+			        Background="#88000000"
+			        VerticalAlignment="Center"
+			        Width="100"
+			        Height="100"
+			        Padding="10,0,0,40"
+			        CornerRadius="0,12,0,0">
+				<Border Background="Red" CornerRadius="0,12,0,0" />
+			</Border>
+		</StackPanel>
 	</StackPanel>
 </UserControl>

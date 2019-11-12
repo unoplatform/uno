@@ -85,6 +85,13 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
+			if (routedEvent == PointerCaptureLostEvent)
+			{
+				// Captures are handled in managed code only
+				_registeredRoutedEvents |= routedEvent.Flag;
+				return;
+			}
+
 			if (!_pointerHandlers.TryGetValue(routedEvent, out var evt))
 			{
 				Application.Current.RaiseRecoverableUnhandledException(new NotImplementedException($"Pointer event {routedEvent.Name} is not supported on this platform"));
@@ -207,7 +214,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial void ReleasePointerCaptureNative(Pointer pointer)
+		partial void ReleasePointerNative(Pointer pointer)
 		{
 			var command = "Uno.UI.WindowManager.current.releasePointerCapture(" + HtmlId + ", " + pointer.PointerId + ");";
 			WebAssemblyRuntime.InvokeJS(command);

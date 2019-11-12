@@ -234,8 +234,10 @@ but Uno does not rely on native `[got|lost]pointercapture` events.
 
 ## Manipulation Events
 
-Those events are not yet implemented, but they will be generated from the PointerXXX events (using the `Windows.UI.Input.GestureRecognizer`),
-so they will be bubbling in managed only.
+They are generated from the PointerXXX events (using the `Windows.UI.Input.GestureRecognizer`) and are bubbling in managed only.
+
+Currently there is no intertia support, so the `IsInertial` will always be `false` and the `UIElement.ManipulationInertiaStarting` event 
+will never be fired. The `Velocities` properties of event args are not implemented neither.
 
 ## Gesture Events
 

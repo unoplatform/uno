@@ -106,5 +106,20 @@ namespace Windows.UI.Xaml.Shapes
 				svgElement.SetStyle("stroke-width", $"{StrokeThickness}px");
 			}
 		}
+
+		partial void OnStrokeDashArrayUpdatedPartial()
+		{
+			var svgElement = GetMainSvgElement();
+
+			if (Stroke == null)
+			{
+				svgElement.ResetStyle("stroke-dasharray");
+			}
+			else
+			{
+				var str = string.Join(",", StrokeDashArray.Select(d=>$"{d}px"));
+				svgElement.SetStyle("stroke-dasharray",str);
+			}
+		}
 	}
 }

@@ -10,6 +10,7 @@ using System.Linq;
 using Uno.Disposables;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using View = Windows.UI.Xaml.FrameworkElement;
 
 namespace Uno.UI.Tests.StackPanelTest
@@ -248,7 +249,8 @@ namespace Uno.UI.Tests.StackPanelTest
 					Name = "Child02",
 					DesiredSizeSelector = s =>
 					{
-						Assert.AreEqual(new Windows.Foundation.Size(20, 10), s);
+						s.Width.Should().Be(40.0d);
+						s.Height.Should().Be(double.PositiveInfinity);
 						return new Windows.Foundation.Size(10, 10);
 					},
 					Height = 10,
@@ -279,8 +281,10 @@ namespace Uno.UI.Tests.StackPanelTest
 				new View
 				{
 					Name = "Child02",
-					DesiredSizeSelector = s => {
-						Assert.AreEqual(new Windows.Foundation.Size(10, 10), s);
+					DesiredSizeSelector = s =>
+					{
+						s.Width.Should().Be(30.0d);
+						s.Height.Should().Be(double.PositiveInfinity);
 						return new Windows.Foundation.Size(10, 10);
 					},
 					Height = 10,
@@ -369,7 +373,7 @@ namespace Uno.UI.Tests.StackPanelTest
 			SUT.Measure(new Windows.Foundation.Size(25, 20));
 			var measuredSize = SUT.DesiredSize;
 			Assert.AreEqual(new Windows.Foundation.Size(10, 8), measuredSize, "measuredSize");
-			Assert.AreEqual(new Windows.Foundation.Size(20, float.PositiveInfinity), c1.AvailableMeasureSize, "AvailableMeasureSize");
+			Assert.AreEqual(new Windows.Foundation.Size(25, float.PositiveInfinity), c1.AvailableMeasureSize, "AvailableMeasureSize");
 
 			Assert.AreEqual(new Windows.Foundation.Size(10, 8), c1.DesiredSize);
 
@@ -416,8 +420,7 @@ namespace Uno.UI.Tests.StackPanelTest
 					Name = "Child01",
 					DesiredSizeSelector = s => {
 
-						// The measured size must be equal to the specified height.
-						Assert.AreEqual(10.0f, s.Height);
+						s.Height.Should().Be(20.0d);
 
 						return new Windows.Foundation.Size(8, 10); 
 					},

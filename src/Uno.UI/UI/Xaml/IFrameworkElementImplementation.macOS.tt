@@ -77,8 +77,6 @@ namespace <#= mixin.NamespaceName #>
 							((IDependencyObjectStoreProvider)this).Store.Parent = superView;
 						}
 
-						ApplyClipping(superView);
-
 						OnLoading();
 						OnLoaded();
 					}
@@ -99,14 +97,6 @@ namespace <#= mixin.NamespaceName #>
 
 				this.Log().Error($"Failed to process MoveToWindow for {GetType()}", e);
 			}
-		}
-
-		private void ApplyClipping(NSView superView)
-		{
-			// if (!FeatureConfiguration.UIElement.UseLegacyClipping)
-			// {
-			// 	UIElement.UpdateMask(this, superView);
-			// }
 		}
 #endif
 
@@ -1001,8 +991,8 @@ namespace <#= mixin.NamespaceName #>
 
 		static partial void OnGenericPropertyUpdatedPartial(object dependencyObject, DependencyPropertyChangedEventArgs args);
 		
-		public Uri BaseUri => new Uri("ms-appx:///");
-
+		private static readonly Uri _defaultUri = new Uri("ms-appx:///");
+		public Uri BaseUri { get; internal set; } = _defaultUri;
 		
 		/// <summary>
 		/// Provides a native value for the dependency property with the given name on the current instance. If the value is a primitive type, 

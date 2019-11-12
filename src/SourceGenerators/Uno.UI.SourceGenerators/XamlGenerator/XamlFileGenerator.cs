@@ -322,6 +322,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                                 using (writer.BlockInvariant("private void InitializeComponent()"))
                                 {
                                     writer.AppendLineInvariant("Content = (_View)GetContent();");
+
+									if (_isDebug)
+									{
+										writer.AppendLineInvariant($"global::Uno.UI.FrameworkElementHelper.SetBaseUri(this, \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}\");");
+									}
                                 }
                             }
 
@@ -395,6 +400,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
         private void BuildApplicationInitializerBody(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
         {
+            InitializeRemoteControlClient(writer);
+
             writer.AppendLineInvariant($"global::Windows.UI.Xaml.GenericStyles.Initialize();");
             writer.AppendLineInvariant($"global::Windows.UI.Xaml.ResourceDictionary.DefaultResolver = global::{_defaultNamespace}.GlobalStaticResources.FindResource;");
             GenerateResourceLoader(writer);
@@ -428,6 +435,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				writer.AppendLineInvariant("global::Uno.UI.FrameworkElementHelper.IsUiAutomationMappingEnabled = true;");
 			}
 		}
+
+        private void InitializeRemoteControlClient(IndentedStringBuilder writer)
+        {
+            if (_isDebug)
+            {
+				if(FindType("Uno.UI.RemoteControl.RemoteControlClient") != null)
+				{
+					writer.AppendLineInvariant($"global::Uno.UI.RemoteControl.RemoteControlClient.Initialize(GetType());");
+				}
+				else
+				{
+					writer.AppendLineInvariant($"// Remote control client is disabled (Type Uno.UI.RemoteControl.RemoteControlClient cannot be found)");
+				}
+			}
+        }
 
         private void GenerateResourceLoader(IndentedStringBuilder writer)
         {
@@ -486,7 +508,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             }
 
             writer.AppendLineInvariant(";");
-            
+
             writer.AppendLineInvariant("OnInitializeCompleted();");
             writer.AppendLineInvariant("InitializeXamlOwner();");
         }
@@ -2365,6 +2387,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                         }
                     }
 
+                    if (_isDebug && IsFrameworkElement(objectDefinition.Type))
+                    {
+                        writer.AppendLineInvariant($"global::Uno.UI.FrameworkElementHelper.SetBaseUri({closureName}, \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}\");");
+                    }
+
                     if (_isUiAutomationMappingEnabled)
                     {
                         // Prefer using the Uid or the Name if their value has been explicitly assigned
@@ -2829,7 +2856,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             }
             return "";
         }
-        
+
         private INamedTypeSymbol FindUnderlyingType(INamedTypeSymbol propertyType)
         {
             return (propertyType.IsNullable(out var underlyingType) && underlyingType is INamedTypeSymbol underlyingNamedType) ? underlyingNamedType : propertyType;
@@ -2846,7 +2873,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                     return resourceValue;
                 }
             }
-            
+
             propertyType = FindUnderlyingType(propertyType);
             switch (propertyType.ToDisplayString())
             {

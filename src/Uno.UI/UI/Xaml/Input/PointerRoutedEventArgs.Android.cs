@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			var timestamp = ToTimeStamp(_nativeEvent.EventTime);
 			var device = PointerDevice.For(Pointer.PointerDeviceType);
-			var rawPosition = new Point(_nativeEvent.RawX, _nativeEvent.RawY); // Relative to the screen
+			var rawPosition = new Point(_nativeEvent.RawX, _nativeEvent.RawY).PhysicalToLogicalPixels(); // Relative to the screen
 			var position = GetPosition(relativeTo);
 			var properties = GetProperties();
 
