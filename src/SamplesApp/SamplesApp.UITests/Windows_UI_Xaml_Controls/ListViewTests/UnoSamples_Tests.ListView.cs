@@ -67,7 +67,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			{
 				_app.Marked(buttonName).Tap();
 				_app.Wait(TimeSpan.FromSeconds(2));
-				_app.Screenshot($"ListView_ItemPanel_HotSwap - {buttonName}");
+				TakeScreenshot($"ListView_ItemPanel_HotSwap - {buttonName}");
 			}
 		}
 
@@ -79,7 +79,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			var result = _app.Query(e => e.Text("Success"));
 
-			_app.Screenshot($"ListView_VirtualizePanelAdaptaterCache");
+			TakeScreenshot($"ListView_VirtualizePanelAdaptaterCache");
 		}
 
 		[Test]
