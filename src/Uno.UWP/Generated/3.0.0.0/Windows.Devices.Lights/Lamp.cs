@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Lights
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Lamp : global::System.IDisposable
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsEnabled
 		{
@@ -35,7 +35,7 @@ namespace Windows.Devices.Lights
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  float BrightnessLevel
 		{
@@ -79,7 +79,7 @@ namespace Windows.Devices.Lights
 		// Forced skipping of method Windows.Devices.Lights.Lamp.Color.set
 		// Forced skipping of method Windows.Devices.Lights.Lamp.AvailabilityChanged.add
 		// Forced skipping of method Windows.Devices.Lights.Lamp.AvailabilityChanged.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
 		{
@@ -100,7 +100,7 @@ namespace Windows.Devices.Lights
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Lamp> Lamp.FromIdAsync(string deviceId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Lights.Lamp> GetDefaultAsync()
 		{

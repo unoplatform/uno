@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Collections.Specialized;
 using System.Linq;
+using Windows.Foundation;
 using Windows.UI.Xaml.Media.Animation;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
@@ -106,18 +107,20 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#endregion
+		#endregion
 
-#region Padding DependencyProperty
+		#region Padding DependencyProperty
 
-		internal double GetVerticalOffset()
+		internal Size BorderAndPaddingSize
 		{
-			return BorderThickness.Top + Padding.Top + BorderThickness.Bottom + Padding.Bottom;
-        }
-
-		internal double GetHorizontalOffset()
-		{
-			return BorderThickness.Left + Padding.Left + BorderThickness.Right + Padding.Right;
+			get
+			{
+				var border = BorderThickness;
+				var padding = Padding;
+				var width = border.Left + border.Right + padding.Left + padding.Right;
+				var height = border.Top + border.Bottom + padding.Top + padding.Bottom;
+				return new Size(width, height);
+			}
 		}
 
 		public Thickness Padding

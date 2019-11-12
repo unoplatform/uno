@@ -8,6 +8,7 @@ using Uno.Logging;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -65,8 +66,8 @@ namespace Windows.UI.Xaml.Media
 
 		private Size GetArrangedImageSize(Size sourceSize, Size targetSize)
 		{
-			var sourceAspectRatio = sourceSize.Width / sourceSize.Height;
-			var targetAspectRatio = targetSize.Width / targetSize.Height;
+			var sourceAspectRatio = sourceSize.AspectRatio();
+			var targetAspectRatio = targetSize.AspectRatio();
 
 			switch (Stretch)
 			{

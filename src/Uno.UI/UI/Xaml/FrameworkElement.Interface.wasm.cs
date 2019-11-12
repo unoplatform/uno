@@ -45,14 +45,18 @@ namespace Windows.UI.Xaml
 			}
 
 			_log = this.Log();
+			_logDebug = _log.IsEnabled(LogLevel.Debug) ? _log : null;
 		}
 
-		protected internal readonly ILogger _log;
+		private protected readonly ILogger _log;
+		private protected readonly ILogger _logDebug;
 
+		private static readonly Uri DefaultBaseUri = new Uri("ms-appx://local");
 		public global::System.Uri BaseUri
 		{
 			get;
-		} = new Uri("ms-appx://local");
+			internal set;
+		} = DefaultBaseUri;
 
 		protected virtual void OnLoaded()
 		{

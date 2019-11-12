@@ -208,7 +208,7 @@
     <file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\Mono.Cecil*.pdb" target="tools" />
     <file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\Microsoft.ApplicationInsights.dll" target="tools" />
     <file src="..\src\SourceGenerators\Uno.UI.SourceGenerators\Bin\Release\Microsoft.DotNet.PlatformAbstractions.dll" target="tools" />
-
+    
     <file src="..\src\SourceGenerators\Uno.UI.Tasks\Bin\Release\*.dll" target="build\Uno.UI.Tasks" />
     <file src="..\src\SourceGenerators\Uno.UI.Tasks\Bin\Release\*.pdb" target="build\Uno.UI.Tasks" />
 

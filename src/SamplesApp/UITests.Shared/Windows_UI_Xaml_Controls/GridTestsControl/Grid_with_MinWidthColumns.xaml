@@ -1,0 +1,34 @@
+﻿<Page
+	x:Class="UITests.Shared.Windows_UI_Xaml_Controls.GridTestsControl.Grid_with_MinWidthColumns"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Border Width="350" Height="350" BorderBrush="Red" BorderThickness="2">
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition MinWidth="150" />
+				<ColumnDefinition MinWidth="150" />
+				<ColumnDefinition MinWidth="150" />
+			</Grid.ColumnDefinitions>
+
+			<Rectangle Grid.Column="0" Fill="LightBlue" />
+			<Rectangle Grid.Column="1" Fill="LightGreen" />
+			<Rectangle Grid.Column="2" Fill="LightGray" />
+
+			<TextBlock Grid.ColumnSpan="2" FontWeight="Bold" FontSize="20" TextWrapping="WrapWholeWords" Padding="10">
+				3 columns of MinWidth=150 in a 350px wide border (red border)
+				- they should be aligned with central darker rectangles.
+			</TextBlock>
+
+			<StackPanel Height="40" Grid.ColumnSpan="3" VerticalAlignment="Center" Orientation="Horizontal">
+				<Rectangle Width="150" Fill="Blue" />
+				<Rectangle Width="150" Fill="Green" />
+				<Rectangle Width="150" Fill="Gray" />
+			</StackPanel>
+		</Grid>
+	</Border>
+</Page>

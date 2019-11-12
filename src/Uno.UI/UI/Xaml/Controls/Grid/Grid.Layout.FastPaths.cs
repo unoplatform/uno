@@ -93,8 +93,15 @@ namespace Windows.UI.Xaml.Controls
 				// One simulated column
 				Span<DoubleRange> columns = stackalloc DoubleRange[] { new DoubleRange(availableSize.Width) };
 
-				double maxMeasuredWidth;
-				_calculatedRows = CalculateRows(availableSize, positions.Views.Span, measureChild, columns, rows, definedRows, true, out maxMeasuredWidth);
+				_calculatedRows = CalculateRows(
+					availableSize,
+					positions.Views.Span,
+					measureChild,
+					columns,
+					rows,
+					definedRows,
+					true,
+					out var maxMeasuredWidth);
 
 				size = new Size(
 					Math.Max(size.Width, maxMeasuredWidth),
@@ -106,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (MinWidth != 0 && MinWidth > size.Width)
 				{
-					minWidth = MinWidth - GetHorizontalOffset();
+					minWidth = MinWidth - BorderAndPaddingSize.Width;
 				}
 
 				size = new Size(
@@ -136,8 +143,14 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var measureChild = GetDirectMeasureChild();
 
-				double maxHeightMeasured;
-				_calculatedColumns = CalculateColumns(availableSize, positions.Views.Span, measureChild, columns, definedColumns, true, out maxHeightMeasured);
+				_calculatedColumns = CalculateColumns(
+					availableSize,
+					positions.Views.Span,
+					measureChild,
+					columns,
+					definedColumns,
+					true,
+					out var maxHeightMeasured);
 
 				size = new Size(
 					_calculatedColumns.Span.Sum(r => r.MinValue),
@@ -149,7 +162,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (MinHeight != 0 && MinHeight > size.Height)
 				{
-					minHeight = MinHeight - GetVerticalOffset();
+					minHeight = MinHeight - BorderAndPaddingSize.Height;
 				}
 
 				size = new Size(
@@ -305,9 +318,11 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private Size MeasureChildren(Size availableSize, bool isAutoWidth, bool isAutoHeight)
 		{
+			var borderAndPaddingSize = BorderAndPaddingSize;
+
 			var minSize = default(Size);
-			var minWidth = MinWidth - GetHorizontalOffset();
-			var minHeight = MinHeight - GetVerticalOffset();
+			var minWidth = MinWidth - borderAndPaddingSize.Width;
+			var minHeight = MinHeight - borderAndPaddingSize.Height;
 
 			//If MinWidth or MinHeight properties are set on the Grid we need to take them into account
 			if (MinWidth != 0 && MinHeight != 0)

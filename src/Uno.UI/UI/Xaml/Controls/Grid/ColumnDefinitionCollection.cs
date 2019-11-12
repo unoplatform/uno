@@ -30,14 +30,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public ColumnDefinition this[int index]
 		{
-			get
-			{
-				return _inner[index];
-			}
-			set
-			{
-				_inner[index] = value;
-			}
+			get => _inner[index];
+			set => _inner[index] = value;
 		}
 
 		public void Add(ColumnDefinition item) => _inner.Add(item);
@@ -51,6 +45,8 @@ namespace Windows.UI.Xaml.Controls
 		public bool Remove(ColumnDefinition item) => _inner.Remove(item);
 
 		public int Count => _inner.Count;
+
+		public uint Size => (uint)_inner.Count;
 
 		public bool IsReadOnly => false;
 

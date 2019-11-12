@@ -43,10 +43,7 @@ namespace Windows.UI.Xaml
 
 		partial void OnUidChangedPartial();
 
-		/// <summary>
-		/// Determines if an <see cref="UIElement"/> clips its children to its bounds.
-		/// </summary>
-		internal bool ClipChildrenToBounds { get; set; } = true;
+		private protected bool RequiresClipping { get; set; } = true;
 
 		#region Clip DependencyProperty
 
@@ -218,20 +215,42 @@ namespace Windows.UI.Xaml
 
 		internal bool IsRenderingSuspended { get; set; }
 
-		private void ApplyClip()
+		internal void ApplyClip()
 		{
-			var rect = Clip?.Rect ?? Rect.Empty;
+			Rect rect;
 
-			if (Clip?.Transform is TranslateTransform translateTransform)
+			if (Clip == null)
 			{
-				rect.X += translateTransform.X;
-				rect.Y += translateTransform.Y;
+				rect = Rect.Empty;
+			}
+			else
+			{
+				rect = Clip?.Rect ?? Rect.Empty;
+
+				if (Clip?.Transform is TranslateTransform translateTransform)
+				{
+					rect.X += translateTransform.X;
+					rect.Y += translateTransform.Y;
+				}
 			}
 
-			EnsureClip(rect);
+			if (NeedsClipToSlot)
+			{
+				var boundsClipping = new Rect(0, 0, RenderSize.Width, RenderSize.Height);
+				if (rect.IsEmpty)
+				{
+					rect = boundsClipping;
+				}
+				else
+				{
+					rect.Intersect(boundsClipping);
+				}
+			}
+
+			ApplyNativeClip(rect);
 		}
 
-		partial void EnsureClip(Rect rect);
+		partial void ApplyNativeClip(Rect rect);
 
 		internal static object GetDependencyPropertyValueInternal(DependencyObject owner, string dependencyPropertyName)
 		{
@@ -240,6 +259,8 @@ namespace Windows.UI.Xaml
 		}
 
 		internal Rect LayoutSlot { get; set; } = default;
+
+		internal bool NeedsClipToSlot { get; set; }
 
 #if !__WASM__
 		/// <summary>
@@ -250,7 +271,11 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Provides the size reported during the last call to Measure.
 		/// </summary>
-		public Size DesiredSize { get; internal set; }
+		public Size DesiredSize
+		{
+			get;
+			internal set;
+		}
 
 		/// <summary>
 		/// Provides the size reported during the last call to Arrange (i.e. the ActualSize)

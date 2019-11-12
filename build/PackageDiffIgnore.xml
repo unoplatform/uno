@@ -492,6 +492,9 @@
 				<Member 
 					fullName="System.Void Windows.System.Profile.AnalyticsVersionInfo..ctor()"
 					reason="Not part of the UWP API." />
+				<Member 
+					fullName="System.Void Windows.Devices.Lights.Lamp..ctor()"
+					reason="Parameter-less ctor does not exist in UWP" />
 			</Methods>
 			
 			<Fields>
