@@ -106,7 +106,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 				.GetDependencyPropertyValue<string>("Text")
 				.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries)
 				.Where(line => line.StartsWith(target))
-				.Select(line => line.Substring(target.Length + 1))
+				.Select(line => line.Trim().Substring(target.Length + 1))
 				.ToArray();
 
 			if (expectedStates?.Any() ?? false)
