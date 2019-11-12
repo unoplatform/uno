@@ -39,7 +39,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			"CommonStates.Checked");
 
 		[Test]
-		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		[ActivePlatforms(Platform.iOS)]
 		public void TestUncheckedToggleButtonReleasedOut() => TestReleasedOutState(
 			"MyUncheckedToggleButton",
 			"CommonStates.UncheckedPointerOver",
@@ -82,9 +82,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void TestUncheckedCheckboxReleasedOut() => TestReleasedOutState(
 			"MyUncheckedCheckbox",
-			"CombinedStates.CheckedPointerOver",
-			"CombinedStates.CheckedPressed",
-			"CombinedStates.CheckedNormal");
+			"CombinedStates.UncheckedPointerOver",
+			"CombinedStates.UncheckedPressed",
+			"CombinedStates.UncheckedNormal");
 
 		[Test]
 		public void TestHyperlinkReleasedOut() => TestReleasedOutState(
