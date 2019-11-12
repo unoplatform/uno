@@ -98,8 +98,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
         private readonly INamedTypeSymbol _setterSymbol;
 
         private readonly List<INamedTypeSymbol> _markupExtensionTypes;
+		private readonly List<INamedTypeSymbol> _xamlConversionTypes;
 
-        private readonly bool _isWasm;
+		private readonly bool _isWasm;
 
         private bool _isGeneratingGlobalResource = false;
 
@@ -166,8 +167,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             _styleSymbol = GetType(XamlConstants.Types.Style);
 
             _markupExtensionTypes = _medataHelper.GetAllTypesDerivingFrom(_markupExtensionSymbol).ToList();
+			_xamlConversionTypes = _medataHelper.GetAllTypesAttributedWith(XamlConstants.Types.CreateFromStringAttribute).ToList();
 
-            _isWasm = isWasm;
+			_isWasm = isWasm;
         }
 
         /// <summary>
@@ -1452,7 +1454,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             return _markupExtensionTypes.Any(ns => ns.Name.Equals(xamlTypeName, StringComparison.InvariantCulture));
         }
 
-        private XamlMemberDefinition FindMember(XamlObjectDefinition xamlObjectDefinition, string memberName)
+		private bool IsXamlTypeConverter(INamedTypeSymbol symbol)
+		{
+			return _xamlConversionTypes.Any(ns => ns.Equals(symbol));
+		}
+
+		private string BuildXamlTypeConverterLiteralValue(INamedTypeSymbol symbol, string memberValue)
+		{
+			var attributeData = symbol.FindAttribute(XamlConstants.Types.CreateFromStringAttribute);
+			var returnType = attributeData?.NamedArguments.FirstOrDefault(kvp => kvp.Key == "MethodName").Value.Value;
+
+			// Return a string that contains the code which calls the "conversion" function with the member value
+			return "{0}".InvariantCultureFormat($"{returnType}(\"{memberValue}\")");
+		}
+
+		private XamlMemberDefinition FindMember(XamlObjectDefinition xamlObjectDefinition, string memberName)
         {
             return xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == memberName);
         }
@@ -2874,6 +2890,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 }
             }
 
+			// If the property Type is attributed with the CreateFromStringAttribute
+			if (IsXamlTypeConverter(propertyType))
+			{
+				// We must build the member value as a call to a "conversion" function
+				return BuildXamlTypeConverterLiteralValue(propertyType, memberValue);
+			}
+            
             propertyType = FindUnderlyingType(propertyType);
             switch (propertyType.ToDisplayString())
             {
