@@ -10,7 +10,7 @@ namespace Uno.UI
 {
 	internal static class LayoutHelper
 	{
-		internal static (Size min, Size max) GetMinMax(this FrameworkElement e)
+		internal static (Size min, Size max) GetMinMax(this IFrameworkElement e)
 		{
 			var size = new Size(e.Width, e.Height);
 			var minSize = new Size(e.MinWidth, e.MinHeight);
@@ -29,7 +29,7 @@ namespace Uno.UI
 			return (minSize, maxSize);
 		}
 
-		internal static Size GetMarginSize(this FrameworkElement frameworkElement)
+		internal static Size GetMarginSize(this IFrameworkElement frameworkElement)
 		{
 			var margin = frameworkElement.Margin;
 			var marginWidth = margin.Left + margin.Right;
@@ -37,7 +37,7 @@ namespace Uno.UI
 			return new Size(marginWidth, marginHeight);
 		}
 
-		internal static Point GetAlignmentOffset(this FrameworkElement e, Size clientSize, Size renderSize)
+		internal static Point GetAlignmentOffset(this IFrameworkElement e, Size clientSize, Size renderSize)
 		{
 			// Start with Bottom-Right alignment, multiply by 0/0.5/1 for Top-Left/Center/Bottom-Right alignment
 			var offset = new Point(
@@ -102,11 +102,27 @@ namespace Uno.UI
 			);
 		}
 
+		internal static Size Add(this Size left, Thickness right)
+		{
+			return new Size(
+				left.Width + right.Left + right.Right,
+				left.Height + right.Top + right.Bottom
+			);
+		}
+
 		internal static Size Subtract(this Size left, Size right)
 		{
 			return new Size(
 				left.Width - right.Width,
 				left.Height - right.Height
+			);
+		}
+
+		internal static Size Subtract(this Size left, Thickness right)
+		{
+			return new Size(
+				left.Width - right.Left - right.Right,
+				left.Height - right.Top - right.Bottom
 			);
 		}
 
@@ -150,6 +166,90 @@ namespace Uno.UI
 				value.Height.AtLeast(least.Height)
 			);
 		}
+
+		internal static double AspectRatio(this Rect rect) => rect.Size.AspectRatio();
+
+		internal static double AspectRatio(this Size size)
+		{
+			var w = size.Width;
+			var h = size.Height;
+
+			switch (w)
+			{
+				case NegativeInfinity:
+					return -1;
+				case PositiveInfinity:
+					return 1;
+				case NaN:
+					return 1;
+				case 0.0d:
+					return 1;
+			}
+
+			switch (h)
+			{
+				case NegativeInfinity:
+					return -1;
+				case PositiveInfinity:
+					return 1;
+				case NaN:
+					return 1;
+				case 0.0d:
+					return 1; // special case
+				case 1.0d:
+					return w;
+			}
+
+			return w / h;
+		}
+
+#if __IOS__ || __MACOS__
+		internal static double AspectRatio(this CoreGraphics.CGSize size)
+		{
+			var w = size.Width;
+			var h = size.Height;
+
+			if (w == nfloat.NegativeInfinity)
+			{
+				return -1;
+			}
+			else if (w == nfloat.PositiveInfinity)
+			{
+				return 1;
+			}
+			else if (w == nfloat.NaN)
+			{
+				return 1;
+			}
+			else if (w == 0.0d)
+			{
+				return 1;
+			}
+
+			if (h == nfloat.NegativeInfinity)
+			{
+				return -1;
+			}
+			else if (h == nfloat.PositiveInfinity)
+			{
+				return 1;
+			}
+			else if (h == nfloat.NaN)
+			{
+				return 1;
+			}
+			else if (h == 0.0d)
+			{
+				return 1; // special case
+			}
+			else if (h == 1.0d)
+			{
+				return w;
+			}
+
+			return w / h;
+		}
+#endif
 
 		internal static Rect GetBoundsRectRelativeTo(this UIElement element, UIElement relativeTo)
 		{

@@ -123,6 +123,7 @@ declare namespace Uno.UI {
         static readonly isLoadEventsEnabled: boolean;
         private static readonly unoRootClassName;
         private static readonly unoUnarrangedClassName;
+        private static readonly unoClippedToBoundsClassName;
         private static _cctor;
         /**
             * Initialize the WindowManager
@@ -242,7 +243,7 @@ declare namespace Uno.UI {
             */
         setStyle(elementId: number, styles: {
             [name: string]: string;
-        }, setAsArranged?: boolean): string;
+        }, setAsArranged?: boolean, clipToBounds?: boolean): string;
         /**
         * Set the CSS style of a html element.
         *
@@ -282,6 +283,7 @@ declare namespace Uno.UI {
         arrangeElementNative(pParams: number): boolean;
         private setAsArranged;
         private setAsUnarranged;
+        private setClipToBounds;
         /**
         * Sets the transform matrix of an element
         *
@@ -530,6 +532,7 @@ declare class WindowManagerArrangeElementParams {
     ClipRight: number;
     HtmlId: number;
     Clip: boolean;
+    ClipToBounds: boolean;
     static unmarshal(pData: number): WindowManagerArrangeElementParams;
 }
 declare class WindowManagerCreateContentParams {
@@ -661,6 +664,7 @@ declare class WindowManagerSetStylesParams {
     SetAsArranged: boolean;
     Pairs_Length: number;
     Pairs: Array<string>;
+    ClipToBounds: boolean;
     static unmarshal(pData: number): WindowManagerSetStylesParams;
 }
 declare class WindowManagerSetXUidParams {

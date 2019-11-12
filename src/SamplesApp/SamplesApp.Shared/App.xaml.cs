@@ -167,17 +167,18 @@ namespace SamplesApp
 						// { "Windows.UI.Xaml.Controls.PopupPanel", LogLevel.Debug },
 
 						// Generic Xaml events
-						//{ "Windows.UI.Xaml", LogLevel.Debug },
+						// { "Windows.UI.Xaml", LogLevel.Debug },
 						// { "Windows.UI.Xaml.Shapes", LogLevel.Debug },
-						//{ "Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug },
-						//{ "Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug },
+						// { "Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug },
+						// { "Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug },
 						// { "Windows.UI.Xaml.UIElement", LogLevel.Debug },
+						// { "Windows.UI.Xaml.FrameworkElement", LogLevel.Trace },
 						// { "Windows.UI.Xaml.Controls.TextBlock", LogLevel.Debug },
 
 						// Layouter specific messages
 						// { "Windows.UI.Xaml.Controls", LogLevel.Debug },
-						//{ "Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug },
-						//{ "Windows.UI.Xaml.Controls.Panel", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.Panel", LogLevel.Debug },
 						// { "Windows.Storage", LogLevel.Debug },
 
 						// Binding related messages
@@ -189,7 +190,9 @@ namespace SamplesApp
 					}
 				)
 #if DEBUG
+				//.AddConsole(LogLevel.Trace);
 				.AddConsole(LogLevel.Debug);
+
 #else
 				.AddConsole(LogLevel.Warning);
 #endif

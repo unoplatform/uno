@@ -33,6 +33,7 @@ namespace Windows.UI.Xaml
 		private readonly GCHandle _gcHandle;
 		private readonly bool _isFrameworkElement;
 
+		private protected int? Depth { get; private set; }
 
 		private static class ClassNames
 		{
@@ -165,9 +166,9 @@ namespace Windows.UI.Xaml
 		private long _arrangeCount = 0;
 #endif
 
-		protected internal void ArrangeElementNative(Rect rect, Rect? clipRect)
+		protected internal void ArrangeElementNative(Rect rect, bool clipToBounds, Rect? clipRect)
 		{
-			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipRect);
+			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipToBounds, clipRect);
 
 #if DEBUG
 			var count = ++_arrangeCount;
@@ -237,8 +238,9 @@ namespace Windows.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.SetContentHtml(HtmlId, html);
 		}
 
-		partial void EnsureClip(Rect rect)
+		partial void ApplyNativeClip(Rect rect)
 		{
+
 			if (rect.IsEmpty)
 			{
 				SetStyle("clip", "");
@@ -761,7 +763,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					child.ManagedOnLoaded();
+					child.ManagedOnLoaded(Depth.Value + 1);
 				}
 			}
 		}
@@ -791,19 +793,21 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal virtual void ManagedOnLoaded()
+		internal virtual void ManagedOnLoaded(int depth)
 		{
 			IsLoaded = true;
+			Depth = depth;
 
 			foreach (var child in _children)
 			{
-				child.ManagedOnLoaded();
+				child.ManagedOnLoaded(depth + 1);
 			}
 		}
 
 		internal virtual void ManagedOnUnloaded()
 		{
 			IsLoaded = false;
+			Depth = null;
 
 			foreach (var child in _children)
 			{

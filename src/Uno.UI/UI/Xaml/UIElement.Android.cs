@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml
 			InitializePointers();
 		}
 
-		partial void EnsureClip(Rect rect)
+		partial void ApplyNativeClip(Rect rect)
 		{
 			if (rect.IsEmpty)
 			{
@@ -181,6 +181,8 @@ namespace Windows.UI.Xaml
 			// If all else fails, just return the string representation of the DP's value
 			return new Java.Lang.String(dpValue.ToString());
 		}
+
+		internal Rect? ArrangeLogicalSize { get; set; } // Used to keep "double" precision of arrange phase
 
 #if DEBUG
 		public static Predicate<View> ViewOfInterestSelector { get; set; } = v => (v as FrameworkElement)?.Name == "TargetView";

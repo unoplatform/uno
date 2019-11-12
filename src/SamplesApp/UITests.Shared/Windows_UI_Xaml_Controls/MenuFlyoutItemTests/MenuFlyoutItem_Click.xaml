@@ -15,14 +15,15 @@
 			<RowDefinition/>
 		</Grid.RowDefinitions>
 		<TextBlock x:Name="mfiResult" Text="Starting..." />
-		<CommandBar x:Name="mfiCmdBar" Style="{StaticResource XamlCommandBar}">
-			<AppBarButton Icon="Pin" x:Name="mfiButton">
-				<AppBarButton.Flyout>
-					<MenuFlyout>
-						<MenuFlyoutItem x:Name="mfiItem" Text="Item1" Click="FlyoutItem_Click" />
-					</MenuFlyout>
-				</AppBarButton.Flyout>
-			</AppBarButton>
-			</CommandBar> 
+		<AppBar x:Name="mfiCmdBar" Grid.Row="1"> 
+            <AppBarButton Icon="Pin" Label="Start" x:Name="mfiButton" >
+                <AppBarButton.Flyout>
+                    <MenuFlyout>
+                        <MenuFlyoutItem x:Name="mfiItem" Text="mfiItem" Click="FlyoutItem_Click" />
+                        <MenuFlyoutItem Text="Item2"  />
+                    </MenuFlyout>
+                </AppBarButton.Flyout>
+            </AppBarButton>
+		</AppBar>
 	</Grid>
 </UserControl>

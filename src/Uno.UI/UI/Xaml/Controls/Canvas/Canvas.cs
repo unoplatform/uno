@@ -114,25 +114,6 @@ namespace Windows.UI.Xaml.Controls
 
 		public Canvas()
 		{
-			DisableClipping();
-		}
-
-		private void DisableClipping()
-		{
-#if XAMARIN_IOS
-			if (FeatureConfiguration.UIElement.UseLegacyClipping)
-			{
-				// UIView Clipping
-				ClipsToBounds = false;
-			}
-			else
-			{
-				// UWP-Style clipping
-				ClipChildrenToBounds = false;
-			}
-#elif XAMARIN_ANDROID
-			SetClipChildren(false);
-#endif
 		}
 
 		public static double GetLeft(global::Windows.UI.Xaml.UIElement element) => GetLeft((DependencyObject)element);
