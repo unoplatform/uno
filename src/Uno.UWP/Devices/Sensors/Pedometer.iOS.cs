@@ -1,7 +1,5 @@
 ﻿#if __IOS__
 using System;
-using System.Collections.Generic;
-using System.Threading;
 using CoreMotion;
 using Foundation;
 using Uno.Devices.Sensors.Helpers;
@@ -10,6 +8,7 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Pedometer
 	{
+		private const int SecondsPerDay = 24 * 60 * 60;
 		private readonly CMPedometer _pedometer;
 		private DateTimeOffset _lastReading = new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.Zero);
 
@@ -29,7 +28,7 @@ namespace Windows.Devices.Sensors
 		private void StartReading()
 		{
 			_pedometer.StartPedometerUpdates(
-				SensorHelpers.DateTimeOffsetToNSDate(DateTimeOffset.Now.Date),
+				NSDate.Now.AddSeconds(-SecondsPerDay),
 				PedometerUpdateReceived);
 		}
 
@@ -44,7 +43,8 @@ namespace Windows.Devices.Sensors
 			{
 				var startDate = SensorHelpers.NSDateToDateTimeOffset(data.StartDate);
 				var endDate = SensorHelpers.NSDateToDateTimeOffset(data.EndDate);
-				OnReadingChanged(new PedometerReading(data.NumberOfSteps.Int32Value, endDate - startDate, PedometerStepKind.Unknown, endDate));
+				_lastReading = DateTime.UtcNow;
+				OnReadingChanged(new PedometerReading(data.NumberOfSteps.Int32Value, endDate - startDate, PedometerStepKind.Unknown, endDate));				
 			}
 		}
 	}

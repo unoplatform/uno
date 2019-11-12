@@ -33,11 +33,11 @@ namespace Uno.Devices.Sensors.Helpers
 
 		public static NSDate DateTimeOffsetToNSDate(DateTimeOffset dateTimeOffset)
 		{
-			if (dateTimeOffset == DateTime.MinValue)
+			if (dateTimeOffset == DateTimeOffset.MinValue)
 			{
 				return NSDate.DistantPast;
 			}
-			else if (dateTimeOffset == DateTime.MaxValue)
+			else if (dateTimeOffset == DateTimeOffset.MaxValue)
 			{
 				return NSDate.DistantFuture;
 			}
