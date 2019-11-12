@@ -8,21 +8,25 @@
       href: api-differences.md
     - name: Features list
       href: supported-features.md
+    - name: Minimum platform versions
+      href: getting-started/requirements.md
     - name: FAQ
       href: faq.md
-- name: Using Uno
+- name: Using Uno - getting started
   items:
-    - name: Getting started
+    - name: Setting up the environment
       href: get-started.md
-    - name: Requirements
-      href: getting-started/requirements.md
     - name: Creating an app - Tutorial
       href: getting-started-tutorial-1.md
+    - name: Next steps
+      href: get-started-next-steps.md
+- name: Using Uno
+  items:
     - name: Developing with Uno.UI
       href: using-uno-ui.md
-    - name: Platform-specific C# code in Uno
+    - name: Platform-specific C# code
       href: platform-specific-csharp.md
-    - name: Platform-specific XAML markup in Uno
+    - name: Platform-specific XAML markup
       href: platform-specific-xaml.md
     - name: Feature flags
       href: feature-flags.md
@@ -86,7 +90,7 @@
     href: controls\Pivot.md
   - name: ToggleSwitch
     href: controls\ToggleSwitch.md
-  - name: VisibleBoundsPadding behavior
+  - name: VisibleBoundsPadding
     href: features\VisibleBoundsPadding.md
 - name: Using Uno - implemented views
   href: implemented/toc.yml
