@@ -119,24 +119,32 @@ namespace SamplesApp.UITests
 			}
 		}
 
-		public void AssertScreenshotsAreEqual(FileInfo expected, FileInfo actual)
+		public void AssertScreenshotsAreEqual(FileInfo expected, FileInfo actual, IAppRect rect)
+			=> AssertScreenshotsAreEqual(expected, actual, new Rectangle((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height));
+		public void AssertScreenshotsAreEqual(FileInfo expected, FileInfo actual, Rectangle? rect = null)
 		{
+			rect = rect ?? new Rectangle(0, 0, int.MaxValue, int.MinValue);
+
 			using (var expectedBitmap = new Bitmap(expected.FullName))
 			using (var actualBitmap = new Bitmap(actual.FullName))
 			{
 				Assert.AreEqual(expectedBitmap.Size.Width, actualBitmap.Size.Width, "Width");
 				Assert.AreEqual(expectedBitmap.Size.Height, actualBitmap.Size.Height, "Height");
 
-				for (var x = 0; x < expectedBitmap.Size.Width; x++)
-				for (var y = 0; y < expectedBitmap.Size.Height; y++)
+				for (var x = rect.Value.X; x < Math.Min(rect.Value.Width, expectedBitmap.Size.Width); x++)
+				for (var y = rect.Value.Y; y < Math.Min(rect.Value.Height, expectedBitmap.Size.Height); y++)
 				{
 					Assert.AreEqual(expectedBitmap.GetPixel(x, y), actualBitmap.GetPixel(x, y), $"Pixel {x},{y}");
 				}
 			}
 		}
 
-		public void AssertScreenshotsAreNotEqual(FileInfo expected, FileInfo actual)
+		public void AssertScreenshotsAreNotEqual(FileInfo expected, FileInfo actual, IAppRect rect)
+			=> AssertScreenshotsAreNotEqual(expected, actual, new Rectangle((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height));
+		public void AssertScreenshotsAreNotEqual(FileInfo expected, FileInfo actual, Rectangle? rect = null)
 		{
+			rect = rect ?? new Rectangle(0, 0, int.MaxValue, int.MinValue);
+
 			using (var expectedBitmap = new Bitmap(expected.FullName))
 			using (var actualBitmap = new Bitmap(actual.FullName))
 			{
@@ -146,8 +154,8 @@ namespace SamplesApp.UITests
 					return;
 				}
 
-				for (var x = 0; x < expectedBitmap.Size.Width; x++)
-				for (var y = 0; y < expectedBitmap.Size.Height; y++)
+				for (var x = rect.Value.X; x < Math.Min(rect.Value.Width, expectedBitmap.Size.Width); x++)
+				for (var y = rect.Value.Y; y < Math.Min(rect.Value.Height, expectedBitmap.Size.Height); y++)
 				{
 					if (expectedBitmap.GetPixel(x, y) != actualBitmap.GetPixel(x, y))
 					{
