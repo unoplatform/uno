@@ -9,7 +9,7 @@ using Uno.Disposables;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 using Uno.Logging;
-
+using Uno.UI;
 #if __IOS__
 using UIKit;
 using _Color = UIKit.UIColor;
@@ -209,7 +209,7 @@ namespace Windows.UI.Xaml.Shapes
 			};
 
 			// The ImageBrush.Stretch will tell us the SIZE of the image we need for the layer
-			var aspectRatio = (double)(uiImage.Size.Width / uiImage.Size.Height);
+			var aspectRatio = uiImage.Size.AspectRatio();
 			CGSize imageSize;
 			switch (imageBrush.Stretch)
 			{
@@ -308,9 +308,11 @@ namespace Windows.UI.Xaml.Shapes
 			var calculatedWidth = LimitWithUserSize(controlWidth, userWidth, pathWidth);
 			var calculatedHeight = LimitWithUserSize(controlHeight, userHeight, pathHeight);
 
+			var strokeThickness = this.ActualStrokeThickness;
+			var strokeThicknessF = (float)strokeThickness;
 
-			_scaleX = (nfloat)(calculatedWidth - (nfloat)this.ActualStrokeThickness) / pathWidth;
-			_scaleY = (nfloat)(calculatedHeight - (nfloat)this.ActualStrokeThickness) / pathHeight;
+            _scaleX = (nfloat)(calculatedWidth - strokeThicknessF) / pathWidth;
+			_scaleY = (nfloat)(calculatedHeight - strokeThicknessF) / pathHeight;
 
 			//Make sure that we have a valid scale if both of them are not set
 			if (double.IsInfinity((double)_scaleX) &&
@@ -356,8 +358,8 @@ namespace Windows.UI.Xaml.Shapes
 					break;
 			}
 
-			calculatedWidth += (double)this.ActualStrokeThickness;
-			calculatedHeight += (double)this.ActualStrokeThickness;
+			calculatedWidth += strokeThickness;
+			calculatedHeight += strokeThickness;
 
 			return new Size(calculatedWidth, calculatedHeight);
 		}

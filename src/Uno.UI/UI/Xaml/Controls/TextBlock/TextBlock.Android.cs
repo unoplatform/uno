@@ -277,13 +277,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				Update();
 
-				availableSize.Width -= Padding.Left + Padding.Right;
-				availableSize.Height -= Padding.Top + Padding.Bottom;
+				var padding = Padding;
+
+				availableSize = availableSize.Subtract(padding);
 
 				var measuredSize = UpdateLayout(ref _measureLayout, availableSize, false);
 
-				measuredSize.Width += Padding.Left + Padding.Right;
-				measuredSize.Height += Padding.Top + Padding.Bottom;
+				measuredSize = measuredSize.Add(padding);
 
 				return measuredSize;
 			}
@@ -304,8 +304,9 @@ namespace Windows.UI.Xaml.Controls
 
 			using (arrangeActivity)
 			{
-				finalSize.Width -= Padding.Left + Padding.Right;
-				finalSize.Height -= Padding.Top + Padding.Bottom;
+				var padding = Padding;
+
+				var arrangeSize = finalSize.Subtract(padding);
 
 				var originalArrangeLayout = _arrangeLayout;
 
@@ -313,23 +314,23 @@ namespace Windows.UI.Xaml.Controls
 				{
 					// This may happen in the unusual case that the TextBlock's Visibility changes during an arrange pass, such that
 					// ArrangeOverride is called without MeasureOverride having being called.
-					UpdateLayout(ref _measureLayout, finalSize, exactWidth: true);
+					UpdateLayout(ref _measureLayout, arrangeSize, exactWidth: true);
 				}
 
 				// If the width is not the same, the wrapping/trimming may be different.
-				var isSameWidth = _measureLayout.AvailableSize.Width == finalSize.Width;
+				var isSameWidth = _measureLayout.AvailableSize.Width == arrangeSize.Width;
 
 				// If the requested height is the same
-				var isSameHeight = _measureLayout.AvailableSize.Height == finalSize.Width;
+				var isSameHeight = _measureLayout.AvailableSize.Height == arrangeSize.Width;
 
 				// If the measured height is exactly the same
-				var isSameMeasuredHeight = _measureLayout.MeasuredSize.Height == finalSize.Height;
+				var isSameMeasuredHeight = _measureLayout.MeasuredSize.Height == arrangeSize.Height;
 
 				// If the unbound requested height is below the arrange height. In this case, 
 				// the rendered text height is below the arrange size, but since the text 
 				// does not need the whole height to render completely, we can reuse the measured
 				// layout as the arrangeLayout.
-				var isSameUnboundHeight = _measureLayout.MeasuredSize.Height <= finalSize.Height && MaxLines == 0;
+				var isSameUnboundHeight = _measureLayout.MeasuredSize.Height <= arrangeSize.Height && MaxLines == 0;
 
 				//If the measure height is the arrange height.
 				isSameHeight = isSameHeight || isSameMeasuredHeight || isSameUnboundHeight;
@@ -343,16 +344,13 @@ namespace Windows.UI.Xaml.Controls
 				else
 				{
 					// The layout is different and needs to be rebuilt.
-					UpdateLayout(ref _arrangeLayout, finalSize, exactWidth: true);
+					UpdateLayout(ref _arrangeLayout, arrangeSize, exactWidth: true);
 				}
 
 				if (originalArrangeLayout != _arrangeLayout)
 				{
 					UpdateNativeTextBlockLayout();
 				}
-
-				finalSize.Width += Padding.Left + Padding.Right;
-				finalSize.Height += Padding.Top + Padding.Bottom;
 
 				return finalSize;
 			}

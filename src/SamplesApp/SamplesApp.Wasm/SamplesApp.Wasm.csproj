@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="Microsoft.NET.Sdk.Web">
 	<PropertyGroup>
 		<OutputType>Exe</OutputType>
@@ -9,9 +9,10 @@
 		<LangVersion>7.3</LangVersion>
 		<!-- https://github.com/unoplatform/uno/issues/61 -->
 		<UnoSkipUserControlsInVisualTree>false</UnoSkipUserControlsInVisualTree>
-		
+
 		<IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
 	</PropertyGroup>
+
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
 		<MonoRuntimeDebuggerEnabled>true</MonoRuntimeDebuggerEnabled>
 		<DefineConstants>$(DefineConstants);TRACE;DEBUG</DefineConstants>
@@ -52,17 +53,21 @@
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
 		<PackageReference Include="MSTest.TestFramework" Version="2.0.0" />
 		<PackageReference Include="System.Management" Version="4.6.0" />
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+		<PackageReference Include="Uno.CodeGen" Version="1.32.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
-		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.302" />
-		<DotNetCliToolReference Include="Uno.Wasm.Bootstrap.Cli" Version="1.0.0-dev.302" />
+		<PackageReference Include="Uno.Wasm.WebSockets" />
+		<PackageReference Include="Uno.Wasm.Bootstrap"/>
+		<DotNetCliToolReference Include="Uno.Wasm.Bootstrap.Cli" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.Wasm.Tests\Uno.UI.Wasm.Tests.csproj" />
@@ -81,7 +86,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="WasmScripts\TestRunner.js" />
+		<UpToDateCheckInput Remove="WasmScripts\TestRunner.js" />
 	</ItemGroup>
 
 	<Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />

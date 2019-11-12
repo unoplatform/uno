@@ -50,10 +50,13 @@ namespace Windows.UI.Xaml.Input
 		{
 			var timestamp = ToTimeStamp(_nativeTouch.Timestamp);
 			var device = PointerDevice.For(Pointer.PointerDeviceType);
-			var position = (Point)_nativeTouch.LocationInView(relativeTo);
+			var rawPosition = (Point)_nativeTouch.GetPreciseLocation(null);
+			var position = relativeTo == null
+				? rawPosition
+				: (Point)_nativeTouch.GetPreciseLocation(relativeTo);
 			var properties = GetProperties();
 
-			return new PointerPoint(FrameId, timestamp, device, Pointer.PointerId, position, position, Pointer.IsInContact, properties);
+			return new PointerPoint(FrameId, timestamp, device, Pointer.PointerId, rawPosition, position, Pointer.IsInContact, properties);
 		}
 
 		private PointerPointProperties GetProperties()

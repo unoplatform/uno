@@ -254,13 +254,14 @@ namespace Uno.UI.Xaml
 
 		#region SetStyles
 
-		internal static void SetStyles(IntPtr htmlId, (string name, string value)[] styles, bool setAsArranged = false)
+		internal static void SetStyles(IntPtr htmlId, (string name, string value)[] styles, bool setAsArranged = false, bool clipToBounds = false)
 		{
 			if (UseJavascriptEval)
 			{
 				var setAsArrangeString = setAsArranged ? "true" : "false";
+				var clipToBoundsString = setAsArranged ? "true" : "false";
 				var stylesStr = string.Join(", ", styles.Select(s => "\"" + s.name + "\": \"" + WebAssemblyRuntime.EscapeJs(s.value) + "\""));
-				var command = "Uno.UI.WindowManager.current.setStyle(\"" + htmlId + "\", {" + stylesStr + "}," + setAsArrangeString + "); ";
+				var command = "Uno.UI.WindowManager.current.setStyle(\"" + htmlId + "\", {" + stylesStr + "}," + setAsArrangeString + "," + clipToBoundsString + "); ";
 
 				WebAssemblyRuntime.InvokeJS(command);
 			}
@@ -278,6 +279,7 @@ namespace Uno.UI.Xaml
 				{
 					HtmlId = htmlId,
 					SetAsArranged = setAsArranged,
+					ClipToBounds = clipToBounds,
 					Pairs_Length = pairs.Length,
 					Pairs = pairs,
 				};
@@ -298,6 +300,8 @@ namespace Uno.UI.Xaml
 
 			[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)]
 			public string[] Pairs;
+
+			public bool ClipToBounds;
 		}
 
 		#endregion
@@ -802,7 +806,7 @@ namespace Uno.UI.Xaml
 
 		#region ArrangeElement
 
-		internal static void ArrangeElement(IntPtr htmlId, Rect rect, Rect? clipRect)
+		internal static void ArrangeElement(IntPtr htmlId, Rect rect, bool clipToBounds, Rect? clipRect)
 		{
 			if (UseJavascriptEval)
 			{
@@ -826,8 +830,9 @@ namespace Uno.UI.Xaml
 						("width", rect.Width.ToString(CultureInfo.InvariantCulture) + "px"),
 						("height", rect.Height.ToString(CultureInfo.InvariantCulture) + "px"),
 						("clip", clipRect2)
-					}
-					, true
+					},
+					clipToBounds: clipToBounds,
+					setAsArranged: true
 				);
 			}
 			else
@@ -838,7 +843,8 @@ namespace Uno.UI.Xaml
 					Top = rect.Top,
 					Left = rect.Left,
 					Width = rect.Width,
-					Height = rect.Height
+					Height = rect.Height,
+					ClipToBounds = clipToBounds
 				};
 
 				if(clipRect != null)
@@ -870,6 +876,7 @@ namespace Uno.UI.Xaml
 
 			public IntPtr HtmlId;
 			public bool Clip;
+			public bool ClipToBounds;
 		}
 
 

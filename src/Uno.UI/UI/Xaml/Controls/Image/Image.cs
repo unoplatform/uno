@@ -21,7 +21,7 @@ using UIKit;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class Image : DependencyObject
+	public partial class Image : DependencyObject, ICustomClippingElement
 	{
 		/// <summary>
 		/// Setting this flag instructs the image control not to dispose pending image fetches when it is removed from the visual tree. 
@@ -298,7 +298,7 @@ namespace Windows.UI.Xaml.Controls
 				//			...and not	height = (SourceHeight=100) = 100
 				if (hasKnownWidth ^ hasKnownHeight)
 				{
-					var aspectRatio = sourceSize.Width / sourceSize.Height;
+					var aspectRatio = sourceSize.AspectRatio();
 					var desiredSize = new Size();
 					if (hasKnownWidth)
 					{
@@ -368,7 +368,7 @@ namespace Windows.UI.Xaml.Controls
 					{
 						case Stretch.Uniform:
 							var desiredSize = new Size();
-							var aspectRatio = sourceSize.Width / sourceSize.Height;
+							var aspectRatio = sourceSize.AspectRatio();
 							// Since apsect ratio can have a lot of decimal, iOS ceils Image size to 0.5 if it's not a precise size (like 111.111111111)
 							// so the desiredSize will never match the actual size causing an infinite measuring and can freeze the app
 							desiredSize.Width = Math.Min(knownWidth, Math.Ceiling(knownHeight * aspectRatio * 2) / 2);
@@ -424,6 +424,9 @@ namespace Windows.UI.Xaml.Controls
 				return finalSize;
 			}
 		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 	}
 }
 #endif

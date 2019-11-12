@@ -405,7 +405,7 @@ namespace Windows.UI.Xaml
 		#region Capture
 		// Pointer capture is not supported on iOS
 		// partial void CapturePointerNative(Pointer pointer);
-		// partial void ReleasePointerCaptureNative(Pointer pointer);
+		// partial void ReleasePointerNative(Pointer pointer);
 		#endregion
 	}
 }

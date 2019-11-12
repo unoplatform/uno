@@ -14,15 +14,18 @@ namespace Uno.UI
 		public static class UIElement
 		{
 			/// <summary>
-			/// Enables the legacy clipping behavior which only applies binding to itself and
-			/// its children. Normal clipping only applies to a single UIElement considering its
-			/// clipping parent, based on <see cref="Windows.UI.Xaml.UIElement.ClipChildrenToBounds"/>.
+			/// [DEPRECATED]
+			/// Not used anymore, does nothing.
 			/// </summary>
+			[NotImplemented]
 			public static bool UseLegacyClipping { get; set; } = true;
 
 			/// <summary>
 			/// Enable the visualization of clipping bounds (intended for diagnostic purposes).
 			/// </summary>
+			/// <remarks>
+			/// This feature is only supported on iOS, for now.
+			/// </remarks>
 			public static bool ShowClippingBounds { get; set; } = false;
 
 #if __WASM__
@@ -32,6 +35,11 @@ namespace Uno.UI
 			/// in the DOM for automation purposes.
 			/// </summary>
 			public static bool AssignDOMXamlName { get; set; } = false;
+
+			/// <summary>
+			/// Enable UIElement.ToString() to return the element's unique ID
+			/// </summary>
+			public static bool RenderToStringWithId { get; set; } = true;
 #endif
 		}
 
