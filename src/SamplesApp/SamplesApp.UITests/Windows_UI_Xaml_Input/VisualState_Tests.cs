@@ -91,7 +91,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			"MyHyperlink"); // There is no "VisualState" for Hyperlink, only a hardcoded opacity of .5 (kind-of like UWP)
 
 		[Test]
-		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void TestListViewReleasedOut()
 		{
 			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.ListViewItem");
