@@ -226,6 +226,7 @@ As those events are tightly coupled to the native events, Uno has to make some c
   > On WASM as `TextElement` are `UIElement`, it means that unlike UWP `TextBlock` won't raise the 
   > a `PointerReleased` when clicking on an `Hyperlink`.
 * Unlike UWP, on the `Hyperlink` the `Click` will be raised before the `PointerReleased`.
+* The property `PointerPointProperties.PointerUpdateKind` is not set on Android 5.x and lower (API level < 23)
 
 ### Pointer capture
 
