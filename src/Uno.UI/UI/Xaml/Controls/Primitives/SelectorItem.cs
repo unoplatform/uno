@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private void UpdateCommonStates(ManipulationUpdateKind manipulationUpdate = ManipulationUpdateKind.None)
 		{
-			var state = GetState(IsSelected, IsPointerOver, IsPointerPressed);
+			var state = GetState(IsSelected, IsPointerOver, HasPointerCapture);
 
 			// On Windows, the pressed state appears only after a few, and won't appear at all if you quickly start to scroll with the finger.
 			// So here we make sure to delay the beginning of a manipulation to match this behavior (and avoid flickering when scrolling)
