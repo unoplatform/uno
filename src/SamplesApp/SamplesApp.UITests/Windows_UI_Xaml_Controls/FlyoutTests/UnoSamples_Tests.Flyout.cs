@@ -33,5 +33,56 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			//// Assert initial state 
 			//Assert.AreEqual("0", flyoutRect.X.ToString());
 		}
+
+		[Test]
+		public void FlyoutTest_Target()
+		{
+			Run("Uno.UI.Samples.Content.UITests.Flyout.Flyout_Target");
+
+			var result = _app.Marked("result");
+			var innerContent = _app.Marked("innerContent");
+			var target1 = _app.Marked("target1");
+			var target2 = _app.Marked("target2");
+			var flyoutFull = _app.Marked("flyoutFull");
+
+			_app.WaitForElement(result);
+
+			{
+				_app.Tap(target1);
+
+				var target1Result = _app.WaitForElement(target1).First();
+				var innerContentResult = _app.WaitForElement(innerContent).First();
+
+				Assert.IsTrue(target1Result.Rect.X <= innerContentResult.Rect.X);
+				Assert.IsTrue(target1Result.Rect.Width > innerContentResult.Rect.Width);
+
+				_app.Tap(target1);
+			}
+
+			{
+				_app.Tap(target2);
+
+				var target2Result = _app.WaitForElement(target2).First();
+				var innerContentResult = _app.WaitForElement(innerContent).First();
+
+				Assert.IsTrue(target2Result.Rect.X <= innerContentResult.Rect.X);
+				Assert.IsTrue(target2Result.Rect.Width > innerContentResult.Rect.Width);
+
+				_app.Tap(target2);
+			}
+
+			{
+				_app.Tap(flyoutFull);
+
+				var innerContentResult = _app.WaitForElement(innerContent).First();
+
+				var rect = base.GetScreenDimensions();
+
+				Assert.AreEqual(innerContentResult.Rect.CenterX, rect.CenterX, 1);
+				Assert.AreEqual(innerContentResult.Rect.CenterY, rect.CenterY, 1);
+
+				_app.TapCoordinates(10, 100);
+			}
+		}
 	}
 }

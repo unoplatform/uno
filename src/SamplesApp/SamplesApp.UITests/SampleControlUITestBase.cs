@@ -87,6 +87,13 @@ namespace SamplesApp.UITests
 			Helpers.App = _app;
 		}
 
+		internal IAppRect GetScreenDimensions()
+		{
+			var sampleControl = _app.Marked("sampleControl");
+
+			return _app.WaitForElement(sampleControl).First().Rect;
+		}
+
 		public FileInfo TakeScreenshot(string stepName)
 		{
 			var title = $"{TestContext.CurrentContext.Test.Name}_{stepName}"

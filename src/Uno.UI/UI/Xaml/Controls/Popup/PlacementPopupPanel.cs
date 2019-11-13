@@ -60,7 +60,12 @@ namespace Windows.UI.Xaml.Controls
 
 		protected PlacementPopupPanel(Popup popup) : base(popup)
 		{
+			Loaded += (s, e) => Window.Current.SizeChanged += Current_SizeChanged;
+			Unloaded += (s, e) => Window.Current.SizeChanged -= Current_SizeChanged;
 		}
+
+		private void Current_SizeChanged(object sender, Core.WindowSizeChangedEventArgs e)
+			=> InvalidateMeasure();
 
 		protected abstract FlyoutPlacementMode PopupPlacement { get; }
 
@@ -95,8 +100,8 @@ namespace Windows.UI.Xaml.Controls
 			var anchorRect = anchor.GetBoundsRectRelativeTo(this);
 
 			// Make sure the desiredSize fits in the panel
-			desiredSize.Width = Math.Min(desiredSize.Width, ActualWidth);
-			desiredSize.Height = Math.Min(desiredSize.Height, ActualHeight);
+			desiredSize.Width = Math.Min(desiredSize.Width, visibleBounds.Width);
+			desiredSize.Height = Math.Min(desiredSize.Height, visibleBounds.Height);
 
 			// Try all placements...
 			var placementsToTry = PlacementsToTry.TryGetValue(PopupPlacement, out var p)
@@ -140,8 +145,8 @@ namespace Windows.UI.Xaml.Controls
 						break;
 					default: // Full + other unsupported placements
 						finalPosition = new Point(
-							x: (ActualWidth - desiredSize.Width) / 2.0,
-							y: (ActualHeight - desiredSize.Height) / 2.0);
+							x: (visibleBounds.Width - desiredSize.Width) / 2.0,
+							y: (visibleBounds.Height - desiredSize.Height) / 2.0);
 						break;
 				}
 
