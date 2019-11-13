@@ -1802,6 +1802,162 @@
 	<xamarin:Style TargetType="GridViewItem"
 				   BasedOn="{StaticResource GridViewItemExpanded}" />
 
+  <!--Default style for CalendarDatePicker -->
+  <!-- copied from DatePickerFlyout in Nov 2019 (when Uno.DatePicker looks like UWP.CalendarDatePicker -->
+
+  <Style TargetType="CalendarDatePicker">
+	<ios:Setter Property="FlyoutPlacement"
+				Value="Full" />
+	<Setter Property="Orientation"
+			Value="Horizontal" />
+	<Setter Property="IsTabStop"
+			Value="False" />
+	<Setter Property="FontSize"
+			Value="17" />
+	<!--	<Setter Property="Foreground"
+				Value="Red" /> -->
+	<Setter Property="Background"
+			Value="Transparent" />
+	<Setter Property="HorizontalAlignment"
+			Value="Center" />
+	<Setter Property="VerticalAlignment"
+			Value="Center" />
+	<Setter Property="Padding"
+			Value="0" />
+	<Setter Property="Template">
+	  <Setter.Value>
+		<ControlTemplate TargetType="CalendarDatePicker">
+		  <StackPanel x:Name="LayoutRoot">
+			<VisualStateManager.VisualStateGroups>
+			  <VisualStateGroup x:Name="CommonStates">
+				<VisualState x:Name="Normal" />
+				<VisualState x:Name="Disabled">
+				  <Storyboard>
+					<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HeaderContentPresenter"
+												   Storyboard.TargetProperty="Foreground">
+					  <DiscreteObjectKeyFrame KeyTime="0"
+											  Value="Black" />
+					</ObjectAnimationUsingKeyFrames>
+				  </Storyboard>
+				</VisualState>
+			  </VisualStateGroup>
+			</VisualStateManager.VisualStateGroups>
+			<ContentPresenter x:Name="HeaderContentPresenter"
+							  x:DeferLoadStrategy="Lazy"
+							  Visibility="Collapsed"
+							  Content="{TemplateBinding Header}"
+							  ContentTemplate="{TemplateBinding HeaderTemplate}"
+							  Margin="0,0,0,8"
+							  Background="{TemplateBinding Background}"
+							  Foreground="{StaticResource Color02Brush}"
+							  AutomationProperties.AccessibilityView="Raw" />
+			<Button x:Name="FlyoutButton"
+					Style="{StaticResource DatePickerFlyoutButtonStyle}"
+					Foreground="{TemplateBinding Foreground}"
+					Background="{TemplateBinding Background}"
+					BorderThickness="{TemplateBinding BorderThickness}"
+					BorderBrush="{TemplateBinding BorderBrush}"
+					IsEnabled="{TemplateBinding IsEnabled}"
+					MinHeight="{TemplateBinding MinHeight}"
+					Margin="0"
+					Padding="0"
+					HorizontalAlignment="Stretch"
+					HorizontalContentAlignment="Stretch"
+					VerticalAlignment="Stretch"
+					VerticalContentAlignment="Stretch">
+			  <StackPanel Orientation="Horizontal"
+						  HorizontalAlignment="Center">
+				<TextBlock Text="{Binding _dateString, RelativeSource={RelativeSource TemplatedParent}}" />
+				<SymbolIcon Symbol="Calendar" Margin="4,0,0,0"/>
+			  </StackPanel>
+			</Button>
+		  </StackPanel>
+		</ControlTemplate>
+	  </Setter.Value>
+	</Setter>
+  </Style>
+
+  <!--Default style for CalendarDatePickerFlyout buttons -->
+  <!-- copied from DatePickerFlyout in Nov 2019 (when Uno.DatePicker looks like UWP.CalendarDatePicker -->
+
+  <Style x:Key="CalendarDatePickerFlyoutButtonStyle"
+		 TargetType="Button">
+	<Setter Property="UseSystemFocusVisuals"
+			Value="False" />
+	<Setter Property="FontSize"
+			Value="16" />
+	<!-- <Setter Property="Foreground"
+				Value="Red" /> -->
+	<Setter Property="Template">
+	  <Setter.Value>
+		<ControlTemplate TargetType="Button">
+		  <Grid Background="{TemplateBinding Background}"
+				x:Name="Root">
+			<VisualStateManager.VisualStateGroups>
+			  <VisualStateGroup x:Name="CommonStates">
+				<VisualState x:Name="Normal" />
+				<VisualState x:Name="PointerOver">
+				  <Storyboard>
+					<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+												   Storyboard.TargetProperty="BorderBrush">
+					  <DiscreteObjectKeyFrame KeyTime="0"
+											  Value="White" />
+					</ObjectAnimationUsingKeyFrames>
+				  </Storyboard>
+				</VisualState>
+				<VisualState x:Name="Pressed">
+				  <Storyboard>
+					<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+												   Storyboard.TargetProperty="Opacity">
+					  <DiscreteObjectKeyFrame KeyTime="0"
+											  Value="0.7" />
+					</ObjectAnimationUsingKeyFrames>
+				  </Storyboard>
+				</VisualState>
+				<VisualState x:Name="Disabled">
+				  <Storyboard>
+					<DoubleAnimation Storyboard.TargetName="Root"
+									 Storyboard.TargetProperty="Opacity"
+									 Duration="0"
+									 To="0.3" />
+				  </Storyboard>
+				</VisualState>
+			  </VisualStateGroup>
+			  <VisualStateGroup x:Name="FocusStates">
+				<VisualState x:Name="Focused">
+
+				  <Storyboard>
+					<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter"
+												   Storyboard.TargetProperty="Background">
+					  <DiscreteObjectKeyFrame KeyTime="0"
+											  Value="Grey" />
+					</ObjectAnimationUsingKeyFrames>
+				  </Storyboard>
+				</VisualState>
+				<VisualState x:Name="Unfocused" />
+				<VisualState x:Name="PointerFocused" />
+			  </VisualStateGroup>
+			</VisualStateManager.VisualStateGroups>
+
+			<ContentPresenter x:Name="ContentPresenter"
+							  Background="{TemplateBinding Background}"
+							  Content="{TemplateBinding Content}"
+							  Foreground="{TemplateBinding Foreground}"
+							  BorderThickness="{TemplateBinding BorderThickness}"
+							  BorderBrush="{TemplateBinding BorderBrush}"
+							  HorizontalContentAlignment="Stretch"
+							  VerticalContentAlignment="Stretch"
+							  Margin="0"
+							  Padding="0"
+							  VerticalAlignment="Center"
+							  HorizontalAlignment="Stretch"
+							  AutomationProperties.AccessibilityView="Raw" />
+		  </Grid>
+		</ControlTemplate>
+	  </Setter.Value>
+	</Setter>
+  </Style>
+  
 	<!-- Default style for Windows.UI.Xaml.Controls.TimePicker -->
 	<!--https://msdn.microsoft.com/en-us/library/windows/apps/mt299156.aspx-->
 	<xamarin:Style TargetType="TimePicker">

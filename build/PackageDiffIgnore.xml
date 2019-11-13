@@ -3666,6 +3666,12 @@
 		<Member
 		  fullName="System.Void Windows.UI.Xaml.DependencyObjectStore.SetResourceBinding(Windows.UI.Xaml.DependencyProperty dependencyProperty, System.Object resourceKey, System.Boolean isTheme, System.Object context)"
 		  reason="No longer used method that shouldn't be called from user code" />
+        <Member
+          fullName="System.Void Windows.UI.Xaml.Controls.CalendarDatePicker.add_DateChanged(Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Xaml.Controls.CalendarDatePicker,Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs&gt; value)"
+          reason="removed some stuff"/>
+        <Member
+          fullName="System.Void Windows.UI.Xaml.Controls.CalendarDatePicker.remove_DateChanged(Windows.Foundation.TypedEventHandler`2&lt;Windows.UI.Xaml.Controls.CalendarDatePicker,Windows.UI.Xaml.Controls.CalendarDatePickerDateChangedEventArgs&gt; value)"
+                  reason="removed some stuff"/>
 	  </Methods>
 	  <Fields>
 	  </Fields>
