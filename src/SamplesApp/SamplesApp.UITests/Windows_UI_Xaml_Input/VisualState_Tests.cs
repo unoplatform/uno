@@ -16,7 +16,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 	{
 		[Test]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
-		public void TestButtonReleasedOut() => TestReleasedOutState(
+		public void TestButtonReleasedOut() => TestButtonReleasedOutState(
 			"MyButton",
 			"CommonStates.PointerOver",
 			"CommonStates.Pressed",
@@ -24,7 +24,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
-		public void TestIndeterminateToggleButtonReleasedOut() => TestReleasedOutState(
+		public void TestIndeterminateToggleButtonReleasedOut() => TestButtonReleasedOutState(
 			"MyIndeterminateToggleButton",
 			"CommonStates.IndeterminatePointerOver",
 			"CommonStates.IndeterminatePressed",
@@ -32,7 +32,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
-		public void TestCheckedToggleButtonReleasedOut() => TestReleasedOutState(
+		public void TestCheckedToggleButtonReleasedOut() => TestButtonReleasedOutState(
 			"MyCheckedToggleButton",
 			"CommonStates.CheckedPointerOver",
 			"CommonStates.CheckedPressed",
@@ -40,7 +40,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[Ignore("We get an invalid 'PointerOver' on release, a fix in pending in another PR")]
-		public void TestUncheckedToggleButtonReleasedOut() => TestReleasedOutState(
+		public void TestUncheckedToggleButtonReleasedOut() => TestButtonReleasedOutState(
 			"MyUncheckedToggleButton",
 			"CommonStates.UncheckedPointerOver",
 			"CommonStates.UncheckedPressed",
@@ -48,7 +48,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
-		public void TestRadioButtonReleasedOut() => TestReleasedOutState(
+		public void TestRadioButtonReleasedOut() => TestButtonReleasedOutState(
 			"MyRadioButton",
 			"CommonStates.PointerOver",
 			"CommonStates.Pressed",
@@ -56,7 +56,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
-		public void TestHyperlinkButtonReleasedOut() => TestReleasedOutState(
+		public void TestHyperlinkButtonReleasedOut() => TestButtonReleasedOutState(
 			"MyHyperlinkButton",
 			"CommonStates.PointerOver",
 			"CommonStates.Pressed",
@@ -64,7 +64,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
-		public void TestIndeterminateCheckboxReleasedOut() => TestReleasedOutState(
+		public void TestIndeterminateCheckboxReleasedOut() => TestButtonReleasedOutState(
 			"MyIndeterminateCheckbox",
 			"CombinedStates.IndeterminatePointerOver",
 			"CombinedStates.IndeterminatePressed",
@@ -72,7 +72,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
-		public void TestCheckedCheckboxReleasedOut() => TestReleasedOutState(
+		public void TestCheckedCheckboxReleasedOut() => TestButtonReleasedOutState(
 			"MyCheckedCheckbox",
 			"CombinedStates.CheckedPointerOver",
 			"CombinedStates.CheckedPressed",
@@ -80,17 +80,32 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
-		public void TestUncheckedCheckboxReleasedOut() => TestReleasedOutState(
+		public void TestUncheckedCheckboxReleasedOut() => TestButtonReleasedOutState(
 			"MyUncheckedCheckbox",
 			"CombinedStates.UncheckedPointerOver",
 			"CombinedStates.UncheckedPressed",
 			"CombinedStates.UncheckedNormal");
 
 		[Test]
-		public void TestHyperlinkReleasedOut() => TestReleasedOutState(
+		public void TestHyperlinkReleasedOut() => TestButtonReleasedOutState(
 			"MyHyperlink"); // There is no "VisualState" for Hyperlink, only a hardcoded opacity of .5 (kind-of like UWP)
 
-		private void TestReleasedOutState(string target, params string[] expectedStates)
+		[Test]
+		public void TestListViewReleasedOut()
+		{
+			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.ListViewItem");
+
+			var initial = TakeScreenshot("Initial");
+			var rect = _app.WaitForElement("MyListView").Single().Rect;
+
+			// Press over and move out to release
+			_app.DragCoordinates(rect.X + 10, rect.Y + 10, rect.X - 30, rect.Y);
+
+			var final = TakeScreenshot("Final");
+			AssertScreenshotsAreEqual(initial, final, rect);
+		}
+
+		private void TestButtonReleasedOutState(string target, params string[] expectedStates)
 		{
 			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.Buttons");
 

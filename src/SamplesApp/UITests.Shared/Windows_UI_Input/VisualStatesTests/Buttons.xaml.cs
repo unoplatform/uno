@@ -18,7 +18,7 @@ namespace UITests.Shared.Windows_UI_Input.VisualStatesTests
 			this.InitializeComponent();
 		}
 
-		private async void ListenVisualStates(object sender, RoutedEventArgs e)
+		private void ListenVisualStates(object sender, RoutedEventArgs e)
 		{
 			FrameworkElement target;
 			IEnumerable<VisualStateGroup> groups;

@@ -677,8 +677,17 @@ namespace Windows.UI.Xaml
 
 		public IReadOnlyList<Pointer> PointerCaptures => (IReadOnlyList<Pointer>)this.GetValue(PointerCapturesProperty);
 
+		/// <summary>
+		/// Indicates if this UIElement has any active ** EXPLICIT ** pointer capture.
+		/// </summary>
+#if __ANDROID__
+		internal new bool HasPointerCapture => (_localExplicitCaptures?.Count ?? 0) != 0;
+#else
+		internal bool HasPointerCapture => (_localExplicitCaptures?.Count ?? 0) != 0;
+#endif
+
 		internal bool IsCaptured(Pointer pointer)
-			=> HasExplicitCapture
+			=> HasPointerCapture
 				&& PointerCapture.TryGet(pointer, out var capture)
 				&& capture.IsTarget(this, PointerCaptureKind.Explicit);
 
@@ -714,7 +723,7 @@ namespace Windows.UI.Xaml
 
 		public void ReleasePointerCaptures()
 		{
-			if (!HasExplicitCapture)
+			if (!HasPointerCapture)
 			{
 				if (this.Log().IsEnabled(LogLevel.Information))
 				{
@@ -730,8 +739,6 @@ namespace Windows.UI.Xaml
 
 		partial void CapturePointerNative(Pointer pointer);
 		partial void ReleasePointerNative(Pointer pointer);
-
-		private bool HasExplicitCapture => (_localExplicitCaptures?.Count ?? 0) != 0;
 
 		private bool ValidateAndUpdateCapture(PointerRoutedEventArgs args)
 			=> ValidateAndUpdateCapture(args, IsOver(args.Pointer));
