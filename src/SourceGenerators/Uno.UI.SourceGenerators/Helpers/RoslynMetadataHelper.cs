@@ -39,7 +39,7 @@ namespace Uno.Roslyn
 			_additionalTypes = additionalTypes ?? new string[0];
 			_legacyTypes = BuildLegacyTypes(legacyTypes);
 			_getAllDerivingTypes = Funcs.Create<INamedTypeSymbol, IEnumerable<INamedTypeSymbol>>(GetAllDerivingTypes).AsLockedMemoized();
-			_getAllTypesAttributedWith = Funcs.Create<string, IEnumerable<INamedTypeSymbol>>(GetAllAttributedTypes).AsLockedMemoized();
+			_getAllTypesAttributedWith = Funcs.Create<string, IEnumerable<INamedTypeSymbol>>(SourceGetAllTypesAttributedWith).AsLockedMemoized();
 			_project = roslynProject;
 			_nullableSymbol = Compilation.GetTypeByMetadataName("System.Nullable`1");
 		}
@@ -280,7 +280,7 @@ namespace Uno.Roslyn
 			return _getAllTypesAttributedWith(attributeClassFullName);
 		}
 
-		private IEnumerable<INamedTypeSymbol> GetAllAttributedTypes(string attributeClassFullName)
+		private IEnumerable<INamedTypeSymbol> SourceGetAllTypesAttributedWith(string attributeClassFullName)
 		{
 			return GetTypesAttributedWith(Compilation.GlobalNamespace);
 

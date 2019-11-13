@@ -72,6 +72,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			// Attributes
 			public const string ContentPropertyAttribute = Markup + ".ContentPropertyAttribute";
+			public const string CreateFromStringAttribute = Metadata + ".CreateFromStringAttribute";
 
 			// Text
 			public const string FontWeight = Namespaces.Text + ".FontWeight";
@@ -116,7 +117,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string MarkupExtension = Markup + ".MarkupExtension";
 			public const string IMarkupExtensionOverrides = Markup + ".IMarkupExtensionOverrides";
 			public const string MarkupExtensionReturnTypeAttribute = Markup + ".MarkupExtensionReturnTypeAttribute";
-			public const string CreateFromStringAttribute = Metadata + ".CreateFromStringAttribute";
 		}
 	}
 }
