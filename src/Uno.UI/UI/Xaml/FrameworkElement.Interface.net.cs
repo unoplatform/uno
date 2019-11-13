@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		#region HorizontalAlignment Dependency Property
+		#region VerticalAlignment Dependency Property
 
 		public static readonly DependencyProperty VerticalAlignmentProperty =
 			DependencyProperty.Register(
