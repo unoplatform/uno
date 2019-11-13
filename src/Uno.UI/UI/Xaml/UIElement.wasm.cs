@@ -282,13 +282,11 @@ namespace Windows.UI.Xaml
 		private class EventRegistration
 		{
 			private static readonly string[] noRegistrationEventNames = { "loading", "loaded", "unloaded" };
-			private static readonly Func<EventArgs, bool> _emptyFilter = _ => true;
 
 			private readonly UIElement _owner;
 			private readonly string _eventName;
 			private readonly bool _canBubbleNatively;
 			private readonly EventArgsParser _payloadConverter;
-			private readonly Func<EventArgs, bool> _eventFilterManaged;
 			private readonly Action _subscribeCommand;
 
 			private List<Delegate> _invocationList = new List<Delegate>();
@@ -303,14 +301,12 @@ namespace Windows.UI.Xaml
 				bool canBubbleNatively = false,
 				HtmlEventFilter? eventFilter = null,
 				HtmlEventExtractor? eventExtractor = null,
-				EventArgsParser payloadConverter = null,
-				Func<EventArgs, bool> eventFilterManaged = null)
+				EventArgsParser payloadConverter = null)
 			{
 				_owner = owner;
 				_eventName = eventName;
 				_canBubbleNatively = canBubbleNatively;
 				_payloadConverter = payloadConverter;
-				_eventFilterManaged = eventFilterManaged ?? _emptyFilter;
 				if (noRegistrationEventNames.Contains(eventName))
 				{
 					_subscribeCommand = null;
@@ -384,16 +380,13 @@ namespace Windows.UI.Xaml
 						routedArgs.CanBubbleNatively = _canBubbleNatively;
 					}
 
-					if (_eventFilterManaged(args))
+					foreach (var handler in _invocationList)
 					{
-						foreach (var handler in _invocationList)
-						{
-							var result = handler.DynamicInvoke(_owner, args);
+						var result = handler.DynamicInvoke(_owner, args);
 
-							if (result is bool isHandedInManaged && isHandedInManaged)
-							{
-								return true; // will call ".preventDefault()" in JS to prevent native bubbling
-							}
+						if (result is bool isHandedInManaged && isHandedInManaged)
+						{
+							return true; // will call ".preventDefault()" in JS to prevent native bubbling
 						}
 					}
 
