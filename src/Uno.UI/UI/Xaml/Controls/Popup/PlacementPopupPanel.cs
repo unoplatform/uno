@@ -60,8 +60,8 @@ namespace Windows.UI.Xaml.Controls
 
 		protected PlacementPopupPanel(Popup popup) : base(popup)
 		{
-			Loaded += (s, e) => Window.Current.SizeChanged += Current_SizeChanged;
-			Unloaded += (s, e) => Window.Current.SizeChanged -= Current_SizeChanged;
+			Loaded += (s, e) => Windows.UI.Xaml.Window.Current.SizeChanged += Current_SizeChanged;
+			Unloaded += (s, e) => Windows.UI.Xaml.Window.Current.SizeChanged -= Current_SizeChanged;
 		}
 
 		private void Current_SizeChanged(object sender, Core.WindowSizeChangedEventArgs e)
