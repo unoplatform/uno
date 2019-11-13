@@ -9,17 +9,19 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-	<StackPanel>
-		<TextBlock x:Name="result" />
-		<Button x:Name="target1"
+	<Grid>
+		<StackPanel VerticalAlignment="Center">
+			<TextBlock x:Name="result" />
+			<Button x:Name="target1"
 				Click="OnClick"
 				Content="Flyout Target #1" />
-		<Button x:Name="target2"
+			<Button x:Name="target2"
 				Click="OnClick"
 				Content="Flyout Target #2" />
-		<Button x:Name="flyoutFull"
+			<Button x:Name="flyoutFull"
 				Click="OnClickFull"
 				Content="Flyout Full Placement NoTarget" />
-	</StackPanel>
+		</StackPanel>
+	</Grid>
 
 </UserControl>
