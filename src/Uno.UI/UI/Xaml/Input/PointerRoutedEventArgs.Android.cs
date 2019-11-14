@@ -8,6 +8,7 @@ using Windows.Foundation;
 using Windows.System;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Extensions;
+using Android.OS;
 using Uno.Extensions;
 
 namespace Windows.UI.Xaml.Input
@@ -135,7 +136,8 @@ namespace Windows.UI.Xaml.Input
 					break;
 			}
 
-			if (updates.TryGetValue(_nativeEvent.ActionButton, out var update))
+			if (Android.OS.Build.VERSION.SdkInt >= BuildVersionCodes.M // ActionButton was introduced with API 23 (https://developer.android.com/reference/android/view/MotionEvent.html#getActionButton())
+				&& updates.TryGetValue(_nativeEvent.ActionButton, out var update))
 			{
 				props.PointerUpdateKind = update;
 			}
