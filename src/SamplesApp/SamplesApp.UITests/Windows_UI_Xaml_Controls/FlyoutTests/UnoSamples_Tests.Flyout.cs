@@ -90,5 +90,22 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 				_app.TapCoordinates(10, 100);
 			}
 		}
+
+		[Test]
+		public void FlyoutTest_Unloaded()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_Unloaded");
+
+			var outerButton = _app.Marked("outerButton");
+			var innerButton = _app.Marked("innerButton");
+
+			_app.Tap(outerButton);
+			_app.WaitForElement(innerButton);
+
+			_app.Tap(innerButton);
+
+			_app.WaitForNoElement(outerButton);
+			_app.WaitForNoElement(innerButton);
+		}
 	}
 }
