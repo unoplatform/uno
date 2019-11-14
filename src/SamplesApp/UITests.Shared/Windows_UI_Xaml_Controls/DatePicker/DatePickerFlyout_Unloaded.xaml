@@ -10,7 +10,7 @@
     d:DesignWidth="400">
 
 	<Grid x:Name="root">
-		<StackPanel>
+		<StackPanel VerticalAlignment="Center">
 			<Button x:Name="TestDatePickerFlyoutButton"
 				Content="Open DatePickerFlyout">
 				<Button.Flyout>
