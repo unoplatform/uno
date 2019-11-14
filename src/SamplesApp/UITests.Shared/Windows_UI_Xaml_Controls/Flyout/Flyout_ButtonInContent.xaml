@@ -13,7 +13,8 @@
 			<Button
 				Width="48"
 				Height="48"
-				Margin="0,0,10,0">
+				Margin="0,0,10,0"
+				x:Name="FlyoutButton">
 
 				<TextBlock>Here</TextBlock>
 
@@ -33,6 +34,10 @@
 								Clicking here should
 								not close the flyout
 							</TextBlock>
+							<Button Command="{Binding ChangeTextCommand}"
+									Content="Click to change the text below"
+									x:Name="DataBoundButton" />
+							<TextBlock x:Name="DataBoundText" Text="{Binding DataBoundText}" />
 						</StackPanel>
 					</Flyout>
 				</Button.Flyout>
