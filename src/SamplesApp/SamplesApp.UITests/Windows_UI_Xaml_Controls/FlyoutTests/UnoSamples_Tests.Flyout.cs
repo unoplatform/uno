@@ -58,7 +58,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 				Assert.IsTrue(target1Result.Rect.X <= innerContentResult.Rect.X);
 				Assert.IsTrue(target1Result.Rect.Width > innerContentResult.Rect.Width);
 
-				_app.Tap(target1);
+				_app.TapCoordinates(50, 100);
 			}
 
 			{
@@ -71,7 +71,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 				Assert.IsTrue(target2Result.Rect.X <= innerContentResult.Rect.X);
 				Assert.IsTrue(target2Result.Rect.Width > innerContentResult.Rect.Width);
 
-				_app.Tap(target2);
+				_app.TapCoordinates(50, 100);
 			}
 
 			{
