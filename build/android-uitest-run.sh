@@ -52,5 +52,6 @@ mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-conso
 	--workers=1 \
 	$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/$BUILDCONFIGURATION/net47/SamplesApp.UITests.dll
 
-$ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTORY/android-device-log.txt
+$ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/android-$ANDROID_SIMULATOR_APILEVEL/android-device-log.txt
+
 cp $UNO_UITEST_ANDROIDAPK_PATH $BUILD_ARTIFACTSTAGINGDIRECTORY
