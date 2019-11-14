@@ -35,6 +35,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 		}
 
 		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void FlyoutTest_DataBoundButton_CommandExecutes()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_ButtonInContent");
