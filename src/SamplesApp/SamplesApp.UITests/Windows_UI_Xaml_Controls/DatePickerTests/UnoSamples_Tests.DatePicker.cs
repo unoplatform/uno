@@ -143,8 +143,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 
 			_app.WaitForElement(datePickerFlyout);
 
-			// Reload the sample to dismiss the popup
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePickerFlyout_Unloaded");
+			// Load another sample to dismiss the popup
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent");
+
+			_app.WaitForNoElement(datePickerFlyout);
 		}
 	}
 }
