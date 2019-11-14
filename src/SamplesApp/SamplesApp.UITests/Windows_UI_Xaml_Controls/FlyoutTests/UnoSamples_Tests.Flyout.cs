@@ -49,9 +49,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			_app.WaitForElement(result);
 
 			{
+				var target1Result = _app.WaitForElement(target1).First();
+
 				_app.Tap(target1);
 
-				var target1Result = _app.WaitForElement(target1).First();
 				var innerContentResult = _app.WaitForElement(innerContent).First();
 
 				Assert.IsTrue(target1Result.Rect.X <= innerContentResult.Rect.X);
@@ -61,9 +62,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			}
 
 			{
+				var target2Result = _app.WaitForElement(target2).First();
+
 				_app.Tap(target2);
 
-				var target2Result = _app.WaitForElement(target2).First();
 				var innerContentResult = _app.WaitForElement(innerContent).First();
 
 				Assert.IsTrue(target2Result.Rect.X <= innerContentResult.Rect.X);

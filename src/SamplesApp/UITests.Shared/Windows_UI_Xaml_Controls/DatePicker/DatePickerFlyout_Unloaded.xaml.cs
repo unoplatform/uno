@@ -26,12 +26,14 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker
         {
             this.InitializeComponent();
 
+#if DEBUG
 			Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => {
 				await Task.Delay(5000);
 				root.Children.Remove(TestDatePickerFlyoutButton);
 				root.Children.Remove(theDatePicker);
 			});
-        }
+#endif
+		}
 
 		public DateTimeOffset Date => new DateTimeOffset(2019, 05, 04, 0, 0, 0, TimeSpan.Zero);
 	}
