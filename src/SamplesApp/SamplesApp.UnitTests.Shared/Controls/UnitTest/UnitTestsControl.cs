@@ -25,6 +25,7 @@ namespace Uno.UI.Samples.Tests
 	{
 		private Task _runner;
 		private CancellationTokenSource _cts = new CancellationTokenSource();
+		private readonly TimeSpan DefaultUnitTestTimeout = TimeSpan.FromSeconds(60);
 
 		private enum TestResult
 		{
@@ -173,7 +174,14 @@ namespace Uno.UI.Samples.Tests
 							if (testMethod.ReturnType == typeof(Task))
 							{
 								var task = (Task)returnValue;
-								await task;
+								var timeoutTask = Task.Delay(DefaultUnitTestTimeout);
+
+								var resultingTask = await Task.WhenAny(task, timeoutTask);
+
+								if (resultingTask == timeoutTask)
+								{
+									throw new TimeoutException($"Test execution timed out after {DefaultUnitTestTimeout}");
+								}
 							}
 
 							ReportTestResult(testName, TestResult.Sucesss);

@@ -3,6 +3,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
+using NUnit.Framework.Interfaces;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest;
 using Uno.UITest.Helpers;
@@ -36,7 +37,6 @@ namespace SamplesApp.UITests
 			// and gain some time for the tests.
 			AppInitializer.ColdStartApp();
 		}
-
 
 		[SetUp]
 		[AutoRetry]
@@ -85,6 +85,19 @@ namespace SamplesApp.UITests
 			_app = app ?? _app;
 
 			Helpers.App = _app;
+		}
+
+		[TearDown]
+		public void AfterEachTest()
+		{
+			if (
+				TestContext.CurrentContext.Result.Outcome != ResultState.Success
+				&& TestContext.CurrentContext.Result.Outcome != ResultState.Skipped
+				&& TestContext.CurrentContext.Result.Outcome != ResultState.Ignored
+			)
+			{
+				TakeScreenshot($"{TestContext.CurrentContext.Test.Name} - Tear down on error");
+			}
 		}
 
 		internal IAppRect GetScreenDimensions()
