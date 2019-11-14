@@ -102,9 +102,16 @@ namespace SamplesApp.UITests
 
 		internal IAppRect GetScreenDimensions()
 		{
-			var sampleControl = _app.Marked("sampleControl");
+			if (AppInitializer.GetLocalPlatform() == Platform.Browser)
+			{
+				var sampleControl = _app.Marked("sampleControl");
 
-			return _app.WaitForElement(sampleControl).First().Rect;
+				return _app.WaitForElement(sampleControl).First().Rect;
+			}
+			else
+			{
+				return _app.GetScreenDimensions();
+			}
 		}
 
 		public FileInfo TakeScreenshot(string stepName)
