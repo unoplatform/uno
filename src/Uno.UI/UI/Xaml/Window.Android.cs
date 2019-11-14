@@ -4,6 +4,7 @@ using Android.App;
 using Android.Util;
 using Android.Views;
 using Uno.UI;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
@@ -24,6 +25,10 @@ namespace Windows.UI.Xaml
 		{
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = new CoreWindow();
+
+			CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged
+				+= RaiseNativeSizeChanged;
+
 			InitializeCommon();
 		}
 
