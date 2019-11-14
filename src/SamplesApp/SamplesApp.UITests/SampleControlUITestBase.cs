@@ -100,20 +100,6 @@ namespace SamplesApp.UITests
 			}
 		}
 
-		internal IAppRect GetScreenDimensions()
-		{
-			if (AppInitializer.GetLocalPlatform() == Platform.Browser)
-			{
-				var sampleControl = _app.Marked("sampleControl");
-
-				return _app.WaitForElement(sampleControl).First().Rect;
-			}
-			else
-			{
-				return _app.GetScreenDimensions();
-			}
-		}
-
 		public FileInfo TakeScreenshot(string stepName)
 		{
 			var title = $"{TestContext.CurrentContext.Test.Name}_{stepName}"
@@ -249,5 +235,20 @@ namespace SamplesApp.UITests
 
 			TakeScreenshot(metadataName.Replace(".", "_"));
 		}
+
+		internal IAppRect GetScreenDimensions()
+		{
+			if (AppInitializer.GetLocalPlatform() == Platform.Browser)
+			{
+				var sampleControl = _app.Marked("sampleControl");
+
+				return _app.WaitForElement(sampleControl).First().Rect;
+			}
+			else
+			{
+				return _app.GetScreenDimensions();
+			}
+		}
+
 	}
 }
