@@ -221,9 +221,12 @@ namespace SamplesApp.UITests
 			return Array.Empty<Platform>();
 		}
 
-		protected void Run(string metadataName)
+		protected void Run(string metadataName, bool waitForSampleControl = true)
 		{
-			_app.WaitForElement("sampleControl");
+			if (waitForSampleControl)
+			{
+				_app.WaitForElement("sampleControl");
+			}
 
 			var testRunId = _app.InvokeGeneric("browser:SampleRunner|RunTest", metadataName);
 
