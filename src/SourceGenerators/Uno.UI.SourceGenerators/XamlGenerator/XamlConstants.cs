@@ -11,6 +11,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		public const string XmlXmlNamespace = "http://www.w3.org/XML/1998/namespace";
 		public const string BundleResourcePrefix = "ms-appx:///";
 
+		public const string RootFoundationNamespace = "Windows.Foundation";
 		public const string RootUINamespace = "Windows.UI";
 		public const string BaseXamlNamespace = RootUINamespace + ".Xaml";
 		public const string UnoXamlNamespace = "Windows.UI.Xaml";
@@ -67,9 +68,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string ElementStub = BaseXamlNamespace + ".ElementStub";
 			public const string ContentPresenter = Namespaces.Controls + ".ContentPresenter";
 			public const string Markup = BaseXamlNamespace + ".Markup";
+			public const string Metadata = RootFoundationNamespace + ".Metadata";
 
 			// Attributes
 			public const string ContentPropertyAttribute = Markup + ".ContentPropertyAttribute";
+			public const string CreateFromStringAttribute = Metadata + ".CreateFromStringAttribute";
 
 			// Text
 			public const string FontWeight = Namespaces.Text + ".FontWeight";

@@ -163,6 +163,10 @@ namespace SamplesApp
 					{
 						{ "Uno", LogLevel.Warning },
 						{ "Windows", LogLevel.Warning },
+
+						// RemoteControl and HotReload related
+						{ "Uno.UI.RemoteControl", LogLevel.Information },
+
 						// { "Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug },
 						// { "Windows.UI.Xaml.Controls.PopupPanel", LogLevel.Debug },
 

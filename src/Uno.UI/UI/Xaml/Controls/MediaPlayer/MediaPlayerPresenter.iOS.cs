@@ -22,6 +22,11 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void ApplyStretch()
 		{
+			if (MediaPlayer == null)
+			{
+				return;
+			}
+
 			switch (Stretch)
 			{
 				case Stretch.Uniform:

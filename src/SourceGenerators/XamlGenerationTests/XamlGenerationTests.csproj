@@ -94,6 +94,9 @@
 	  <None Update="ColorCodesTest - Copy.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </None>
+	  <None Update="CreateFromString.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
 	  <None Update="FieldModifiers.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </None>

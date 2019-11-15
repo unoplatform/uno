@@ -122,7 +122,8 @@ namespace Windows.UI.Xaml.Controls
 			_childHasOwnDataContext = false;
 			if (Child is IDependencyObjectStoreProvider provider)
 			{
-				if (provider.Store.ReadLocalValue(provider.Store.DataContextProperty) != DependencyProperty.UnsetValue)
+				var dataContextProperty = provider.Store.ReadLocalValue(provider.Store.DataContextProperty);
+				if (dataContextProperty != null && dataContextProperty != DependencyProperty.UnsetValue)
 				{
 					// Child already has locally set DataContext, we shouldn't overwrite it.
 					_childHasOwnDataContext = true;

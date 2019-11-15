@@ -4,6 +4,7 @@
 
 ### Features
 * [#2029](https://github.com/unoplatform/uno/pull/2029) Support for MenuFlyoutItem.Click
+* [#2039] Added support for Xaml type conversions using CreateFromStringAttribute.
 * [#] Support for `Windows.Devices.Lights.Lamp` on iOS, Android.
 * [#1970](https://github.com/unoplatform/uno/pull/1970) Added support for `AnalyticsInfo` properties on iOS, Android and WASM
 * [#1207] Implemented some `PackageId` properties
@@ -78,6 +79,7 @@
 * Add support for `IObservableVector<T>` in `ItemsControl`
 * [#1559] [#1167] Wasm: make the IsEnabled property inheritable.
 * Full support of pointer events cf. [routed events documentation](../articles/features/routed-events.md)
+* Add support of manipulation events cf. [routed events documentation](../articles/features/routed-events.md)
 * Update CheckBox style to 10.0.17763
 * Adds the support for `AutomationProperties.AutomationId`
 * [#1328](https://github.com/unoplatform/uno/issues/1328) Basic ProgressRing implementation for WASM
@@ -88,6 +90,8 @@
 * Add support for `VisualState` `Setter` data binding, static resources and complex objects
 * Clipping to bounds of control is now more similar to UWP
 * The _feature flag_ `FeatureConfiguration.UseLegacyClipping` is now deprecated and not used anymore
+* XAML Hot Reload support for iOS, Android and Windows
+* Add support for GitPod Workspace and prebuilds
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
@@ -181,6 +185,7 @@
 * 164480 [Android] fixed a text wrapping issue caused by layout height desync
 * [Wasm] Fix unable to reset `Image.Source` property
 * [#2014](https://github.com/unoplatform/uno/issues/2014) Fix iOS Picker for ComboBox not selecting the correct item.
+* [iOS] #977 Fix exception when setting MediaPlayerElement.Stretch in XAML.
 
 ## Release 1.45.0
 ### Features

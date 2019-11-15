@@ -35,6 +35,11 @@ namespace Uno.UI
 			/// in the DOM for automation purposes.
 			/// </summary>
 			public static bool AssignDOMXamlName { get; set; } = false;
+
+			/// <summary>
+			/// Enable UIElement.ToString() to return the element's unique ID
+			/// </summary>
+			public static bool RenderToStringWithId { get; set; } = true;
 #endif
 		}
 
@@ -150,15 +155,11 @@ namespace Uno.UI
 		{
 			/// <summary>
 			/// <para>
-			/// Determines if the visual states "PointerOver", "PointerOverSelected" and the "PointerOverPressed" (ListViewItem and GridViewItem only, cf. remarks)
+			/// Determines if the visual states "PointerOver", "PointerOverSelected"
 			/// are used or not. If disabled, those states will never be activated by the selector items.
 			/// </para>
 			/// <para>The default value is `true`.</para>
 			/// </summary>
-			/// <remarks>
-			/// For backward compatibility, only the ListViewBaseItem's "PointerOverPressed" is problematic
-			/// as it will be activated instead of the "Pressed" while using finger.
-			/// </remarks>
 			public static bool UseOverStates { get; set; } = true;
 		}
 
