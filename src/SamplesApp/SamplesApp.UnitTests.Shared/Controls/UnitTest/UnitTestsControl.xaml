@@ -23,10 +23,11 @@
 			  Click="OnRunTests" />
 			<TextBlock x:Name="runStatus"
 				 Text="Not initialized" />
-			<ScrollViewer Height="100">
-				<TextBlock x:Name="failedTestDetails" Opacity="0.1" />
-			</ScrollViewer>
 			<TextBlock x:Name="failedTests" Text="Pending..." />
+			<TextBlock x:Name="runTestCount" Text="None" />
+			<ScrollViewer Height="100">
+				<TextBlock x:Name="failedTestDetails" Opacity="0.5" />
+			</ScrollViewer>
 		</StackPanel>
 		<ScrollViewer Grid.Row="1">
 			<StackPanel x:Name="testResults">

@@ -49,6 +49,13 @@ namespace Windows.UI.Xaml.Controls
 			);
 		#endregion
 
+		protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			Flyout?.Close();
+		}
+
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			return new ButtonAutomationPeer(this);
