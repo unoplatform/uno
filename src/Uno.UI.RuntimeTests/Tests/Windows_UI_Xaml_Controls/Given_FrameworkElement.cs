@@ -4,6 +4,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
@@ -64,6 +65,31 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 		}
 
+		[TestMethod]
+		public void MeasureWithNan()
+		{
+			var SUT = new MyControl01();
+
+			SUT.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+			Assert.AreEqual(new Size(double.PositiveInfinity, double.PositiveInfinity), SUT.MeasureOverrides.Last());
+			Assert.AreEqual(new Size(0, 0), SUT.DesiredSize);
+
+			Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, double.NaN)));
+			Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(42.0, double.NaN)));
+			Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, 42.0)));
+		}
+
+		[TestMethod]
+		public void MeasureOverrideWithNan()
+		{
+			var SUT = new MyControl01();
+
+			SUT.BaseAvailableSize = new Size(double.NaN, double.NaN);
+			SUT.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+			Assert.AreEqual(new Size(double.PositiveInfinity, double.PositiveInfinity), SUT.MeasureOverrides.Last());
+			Assert.AreEqual(new Size(0, 0), SUT.DesiredSize);
+		}
+
 #if __WASM__
 		// TODO Android does not handle measure invalidation properly
 		[TestMethod]
@@ -93,10 +119,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	{
 		public List<Size> MeasureOverrides { get; } = new List<Size>();
 
+		public Size? BaseAvailableSize;
+
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			MeasureOverrides.Add(availableSize);
-			return base.MeasureOverride(availableSize);
+			return base.MeasureOverride(BaseAvailableSize ?? availableSize);
 		}
 	}
 }

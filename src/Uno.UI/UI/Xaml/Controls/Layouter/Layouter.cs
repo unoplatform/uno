@@ -46,6 +46,8 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 		private readonly ILogger _logDebug;
 
+		private readonly Size MaxSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
+
 		private Size _unclippedDesiredSize;
 
 		private const double SIZE_EPSILON = 0.05d;
@@ -93,6 +95,7 @@ namespace Windows.UI.Xaml.Controls
 				var marginSize = Panel.GetMarginSize();
 
 				var frameworkAvailableSize = availableSize
+					.NumberOrDefault(MaxSize)
 					.Subtract(marginSize)
 					.AtLeast(default) // 0.0,0.0
 					.AtMost(maxSize)
