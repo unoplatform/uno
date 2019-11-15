@@ -1,6 +1,6 @@
 # Create a Single Page App with Uno
 
-[Download the complete sample](https://github.com/unoplatform/uno.GettingStartedTutorial)
+[Download the complete sample](https://github.com/nventive/uno.GettingStartedTutorial)
 
 In this tutorial you will learn how to:
 
@@ -8,29 +8,14 @@ In this tutorial you will learn how to:
 - Create a new Project with Uno
 - Learn basics on Model Binding
 
-The tutorial walks through creating a cross platform application with Uno, which enables you to see a single Issue entry.
+The tutorial walks you through creating a cross platform application with Uno, which enables you to see a single Issue entry.
 
-### Prerequisites
+<div class="NOTE alert alert-info">
+<h5>Before you start the tutorial</h5>
 
-- **Visual Studio 2019 (latest release)**, with the **Universal Windows Platform**, **Mobile development with .NET**, and **ASP**.**NET and web** workloads installed. **Visual Studio 2017 15.5 or later** is also supported, a few of the steps might be slightly different.
-- Knowledge of C#. 
-- (optional) A paired Mac to build the iOS project.
+[If you haven't prepared your dev environment for Uno app development yet, the Setting up the Environment page will guide you through installing all the prerequisites.](get-started.md)
 
-For more information about these prerequisites, see [Installing Xamarin](https://docs.microsoft.com/en-us/xamarin/get-started/installation/). For information about connecting Visual Studio to a Mac build host, see [Pair to Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
-
-##### On Windows
-
-To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5** or choose 'Start without debugging' from the menu. Note that **F5** will *not* work because Visual Studio debugging isn't supported. See [here](debugging-wasm.md) for debugging instructions through Chrome.
-
-## Installing the App Templates with Visual Studio
-
-1. Launch Visual Studio, then click `Continue without code`. Click `Extensions` -> `Manage Extensions` from the Menu Bar.
-
-    ![](Assets/tutorial01/manage-extensions.png)
-
-1. In the Extension Manager expand the Online node and search for `Uno`. Download the `Uno Platform Solution Templates` extension and restart Visual Studio.
-
-    ![](Assets/tutorial01/uno-extensions.PNG)
+</div>
 
 ## Getting Started
 
@@ -56,7 +41,7 @@ To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5**
     - Click back on the Browse tab and install the following NuGet Packages to each of the projects in your solution:
         - `Refractored.MvvmHelpers`
 
-### Setting Up Our Model
+## Setting up our Model
 
 1. Add a Models folder in the Shared Project.
 
@@ -150,9 +135,9 @@ To run the WebAssembly (Wasm) head, select **IIS Express** and press **Ctrl+F5**
     ```
 
     > [!IMPORTANT]
-    > Because we want to be able to respond to changes in our model we'll want to bring in the ObservableObject in the MvvmHelpers namespace, from the Refactored.MvvmHelpers NuGet package we installed earlier.
+    > Because we want to be able to respond to changes in our model we'll want to bring in the ObservableObject in the MvvmHelpers namespace, from the `Refractored.MvvmHelpers` NuGet package we installed earlier.
 
-### Setting up our Page
+## Setting up our Page
 
 1. To start let's create a simple converter that will format a value to a string. Create a Converters folder, then create a new class `StringFormatConverter`
 
@@ -396,7 +381,12 @@ You may need to add missing namespace `usings`, eg the `Windows.UI` namespace fo
 
     You will notice as you make changes to the Issue type, you will see the indicator in the upper left hand corner changing colors as well.
 
-## Next steps
+## The final result
+
+You should see something similar to the screenshot below. You can [download the completed tutorial code here](https://github.com/nventive/uno.GettingStartedTutorial).
+
+![tutorial-screenshot](Assets/quick-start/tutorial-screenshot.png)
+
 
 In this tutorial, you have learned how to:
 
@@ -404,4 +394,9 @@ In this tutorial, you have learned how to:
 - Create a new Project with Uno
 - Use the basics of Model Binding
 
-Coming soon: see how we can create a list of pages, navigate between them passing parameters, and store our issues.
+<div class="NOTE alert alert-info">
+<h5>Next:</h5>
+
+[Got questions? Want to learn more? Looking for production-ready examples? Check out the Next Steps page.](get-started-next-steps.md) 
+
+</div>

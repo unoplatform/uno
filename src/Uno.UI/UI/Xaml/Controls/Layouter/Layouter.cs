@@ -80,9 +80,9 @@ namespace Windows.UI.Xaml.Controls
 				);
 			}
 
-			if(Panel.Visibility == Visibility.Collapsed)
+			if (Panel.Visibility == Visibility.Collapsed)
 			{
-				// A collapsed element should not be measure measured at all
+				// A collapsed element should not be measured at all
 				return default;
 			}
 
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 				SetDesiredChildSize(Panel as View, desiredSize.Add(marginSize));
 
 				var clippedDesiredSize = desiredSize
-					
+
 					.AtMost(availableSize)
 					.AtLeast(new Size(0, 0));
 
@@ -198,7 +198,7 @@ namespace Windows.UI.Xaml.Controls
 
 					else if (IsLessThanAndNotCloseTo(arrangeSize.Height, _unclippedDesiredSize.Height))
 					{
-							_logDebug?.Debug($"{this}: (arrangeSize.Height) {arrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
+						_logDebug?.Debug($"{this}: (arrangeSize.Height) {arrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
 						needsClipToSlot = true;
 					}
 				}
@@ -268,6 +268,34 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var frameworkElement = view as IFrameworkElement;
 			var ret = default(Size);
+
+
+			if (frameworkElement?.Visibility == Visibility.Collapsed)
+			{
+				// By default iOS views measure to normal size, even if they're hidden.
+				// We want the collapsed behavior, so we return a 0,0 size instead.
+
+				// Note: Visibility is checked in both Measure and MeasureChild, since some IFrameworkElement children may not have their own Layouter
+				SetDesiredChildSize(view, ret);
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					var viewName = frameworkElement.SelectOrDefault(f => f.Name, "NativeView");
+
+					this.Log().DebugFormat(
+						"[{0}/{1}] MeasureChild(HIDDEN/{2}/{3}/{4}/{5}) = {6}",
+						LoggingOwnerTypeName,
+						Name,
+						view.GetType(),
+						viewName,
+						slotSize,
+						frameworkElement.Margin,
+						ret
+					);
+				}
+
+				return ret;
+			}
 
 			ret = MeasureChildOverride(view, slotSize);
 
