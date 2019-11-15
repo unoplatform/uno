@@ -33,6 +33,7 @@ namespace Windows.UI.Xaml
 		private readonly GCHandle _gcHandle;
 		private readonly bool _isFrameworkElement;
 
+		private protected int? Depth { get; private set; }
 
 		private static class ClassNames
 		{
@@ -165,9 +166,9 @@ namespace Windows.UI.Xaml
 		private long _arrangeCount = 0;
 #endif
 
-		protected internal void ArrangeElementNative(Rect rect, Rect? clipRect)
+		protected internal void ArrangeElementNative(Rect rect, bool clipToBounds, Rect? clipRect)
 		{
-			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipRect);
+			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipToBounds, clipRect);
 
 #if DEBUG
 			var count = ++_arrangeCount;
@@ -237,8 +238,9 @@ namespace Windows.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.SetContentHtml(HtmlId, html);
 		}
 
-		partial void EnsureClip(Rect rect)
+		partial void ApplyNativeClip(Rect rect)
 		{
+
 			if (rect.IsEmpty)
 			{
 				SetStyle("clip", "");
@@ -280,13 +282,11 @@ namespace Windows.UI.Xaml
 		private class EventRegistration
 		{
 			private static readonly string[] noRegistrationEventNames = { "loading", "loaded", "unloaded" };
-			private static readonly Func<EventArgs, bool> _emptyFilter = _ => true;
 
 			private readonly UIElement _owner;
 			private readonly string _eventName;
 			private readonly bool _canBubbleNatively;
 			private readonly EventArgsParser _payloadConverter;
-			private readonly Func<EventArgs, bool> _eventFilterManaged;
 			private readonly Action _subscribeCommand;
 
 			private List<Delegate> _invocationList = new List<Delegate>();
@@ -301,14 +301,12 @@ namespace Windows.UI.Xaml
 				bool canBubbleNatively = false,
 				HtmlEventFilter? eventFilter = null,
 				HtmlEventExtractor? eventExtractor = null,
-				EventArgsParser payloadConverter = null,
-				Func<EventArgs, bool> eventFilterManaged = null)
+				EventArgsParser payloadConverter = null)
 			{
 				_owner = owner;
 				_eventName = eventName;
 				_canBubbleNatively = canBubbleNatively;
 				_payloadConverter = payloadConverter;
-				_eventFilterManaged = eventFilterManaged ?? _emptyFilter;
 				if (noRegistrationEventNames.Contains(eventName))
 				{
 					_subscribeCommand = null;
@@ -382,16 +380,13 @@ namespace Windows.UI.Xaml
 						routedArgs.CanBubbleNatively = _canBubbleNatively;
 					}
 
-					if (_eventFilterManaged(args))
+					foreach (var handler in _invocationList)
 					{
-						foreach (var handler in _invocationList)
-						{
-							var result = handler.DynamicInvoke(_owner, args);
+						var result = handler.DynamicInvoke(_owner, args);
 
-							if (result is bool isHandedInManaged && isHandedInManaged)
-							{
-								return true; // will call ".preventDefault()" in JS to prevent native bubbling
-							}
+						if (result is bool isHandedInManaged && isHandedInManaged)
+						{
+							return true; // will call ".preventDefault()" in JS to prevent native bubbling
 						}
 					}
 
@@ -597,7 +592,12 @@ namespace Windows.UI.Xaml
 
 		public override string ToString()
 		{
-			return GetType().Name + "-" + HtmlId;
+			if (FeatureConfiguration.UIElement.RenderToStringWithId)
+			{
+				return GetType().Name + "-" + HtmlId;
+			}
+
+			return base.ToString();
 		}
 
 		public GeneralTransform TransformToVisual(UIElement visual)
@@ -761,7 +761,7 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					child.ManagedOnLoaded();
+					child.ManagedOnLoaded((Depth ?? int.MinValue) + 1);
 				}
 			}
 		}
@@ -791,19 +791,21 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal virtual void ManagedOnLoaded()
+		internal virtual void ManagedOnLoaded(int depth)
 		{
 			IsLoaded = true;
+			Depth = depth;
 
 			foreach (var child in _children)
 			{
-				child.ManagedOnLoaded();
+				child.ManagedOnLoaded(depth + 1);
 			}
 		}
 
 		internal virtual void ManagedOnUnloaded()
 		{
 			IsLoaded = false;
+			Depth = null;
 
 			foreach (var child in _children)
 			{

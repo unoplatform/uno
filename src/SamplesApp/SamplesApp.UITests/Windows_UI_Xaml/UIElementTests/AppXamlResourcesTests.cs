@@ -14,7 +14,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml
 	{
 		[Test]
 		[AutoRetry]
-		public void When_TransformToVisual()
+		public void When_Bound_To_GlobalThemedResources()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml.ThemeResources.AppXamlDefinedResources");
 

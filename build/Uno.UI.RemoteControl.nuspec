@@ -1,0 +1,99 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>Uno.UI.RemoteControl</id>
+    <version>0.1.0.0</version>
+    <title>Uno.UI.RemoteControl</title>
+    <authors>nventive</authors>
+    <owners>nventive</owners>
+    <requireLicenseAcceptance>false</requireLicenseAcceptance>
+    <projectUrl>https://platform.uno/</projectUrl>
+    <license type="expression">Apache-2.0</license>
+    <iconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</iconUrl>
+    <description>Remote Control module for Uno Platform projects, such as XAML Hot Reload.</description>
+    <copyright>Copyright (C) 2015-2019 nventive inc. - all rights reserved</copyright>
+    <repository type="git" url="https://github.com/unoplatform/uno.git" />
+
+    <dependencies>
+      <!-- Android 8.0 -->
+      <group targetFramework="MonoAndroid80">
+        <dependency id="Uno.UI" version="1.29.0-dev.93" />
+
+        <dependency id="Newtonsoft.Json" version="12.0.2" />
+      </group>
+
+      <!-- Android 9.0 -->
+      <group targetFramework="MonoAndroid90">
+        <dependency id="Uno.UI" version="1.29.0-dev.93" />
+
+        <dependency id="Newtonsoft.Json" version="12.0.2" />
+      </group>
+
+      <!-- iOS -->
+      <group targetFramework="xamarinios10">
+        <dependency id="Uno.UI" version="1.29.0-dev.93" />
+
+        <dependency id="Newtonsoft.Json" version="12.0.2" />
+      </group>
+
+      <!-- macOS -->
+      <group targetFramework="xamarinmac20">
+        <dependency id="Uno.UI" version="1.29.0-dev.93" />
+
+        <dependency id="Newtonsoft.Json" version="12.0.2" />
+      </group>
+
+      <!-- .NET Standard 2.0 -->
+      <group targetFramework="netstandard2.0">
+        <dependency id="Uno.UI" version="1.29.0-dev.93" />
+
+        <dependency id="Newtonsoft.Json" version="12.0.2" />
+        <dependency id="Uno.Wasm.WebSockets" version="1.0.0-dev.30" />
+      </group>
+    </dependencies>
+
+    <references>
+      <!-- .NET Standard 2.0 -->
+      <group targetFramework="netstandard2.0">
+        <reference file="Uno.UI.RemoteControl.dll" />
+      </group>
+
+      <!-- iOS -->
+      <group targetFramework="xamarinios10">
+        <reference file="Uno.UI.RemoteControl.dll" />
+      </group>
+
+      <!-- iOS -->
+      <group targetFramework="xamarinmac20">
+        <reference file="Uno.UI.RemoteControl.dll" />
+      </group>
+
+      <!-- Android -->
+      <group targetFramework="MonoAndroid">
+        <reference file="Uno.UI.RemoteControl.dll" />
+      </group>
+      
+    </references>
+  </metadata>
+  
+  <files>
+    <!-- Remote Control -->
+    <file src="..\src\Uno.UI.RemoteControl\bin\Release\netstandard2.0\Uno.UI.RemoteControl.dll" target="lib\netstandard2.0" />
+    <file src="..\src\Uno.UI.RemoteControl\bin\Release\netstandard2.0\Uno.UI.RemoteControl.pdb" target="lib\netstandard2.0" />
+    
+    <file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid80\Uno.UI.RemoteControl.dll" target="lib\MonoAndroid80" />
+    <file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid80\Uno.UI.RemoteControl.pdb" target="lib\MonoAndroid80" />
+    
+    <file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid90\Uno.UI.RemoteControl.dll" target="lib\MonoAndroid90" />
+    <file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid90\Uno.UI.RemoteControl.pdb" target="lib\MonoAndroid90" />
+    
+    <file src="..\src\Uno.UI.RemoteControl\bin\Release\xamarinios10\Uno.UI.RemoteControl.dll" target="lib\xamarinios10" />
+    <file src="..\src\Uno.UI.RemoteControl\bin\Release\xamarinios10\Uno.UI.RemoteControl.pdb" target="lib\xamarinios10" />
+
+    <!-- Remote Control host and integration -->
+    <file src="..\src\Uno.UI.RemoteControl.Host\bin\Release\netcoreapp2.2\*.*" target="tools\rc\host" />
+    <file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\*.dll" target="tools\rc" />
+    <file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\*.pdb" target="tools\rc" />
+    <file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\Newtonsoft.Json.dll" target="tools\rc" />
+  </files>
+</package>

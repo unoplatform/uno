@@ -15,7 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.VisualStateManagerTests
 	{
 		[Test]
 		[AutoRetry]
-		public void When_TransformToVisual()
+		public void When_Testing_ComplexSetters()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml.VisualStateTests.VisualState_ComplexSetters_Automated");
 

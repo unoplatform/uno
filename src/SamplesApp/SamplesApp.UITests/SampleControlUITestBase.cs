@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
@@ -86,7 +87,7 @@ namespace SamplesApp.UITests
 			Helpers.App = _app;
 		}
 
-		public void TakeScreenshot(string stepName)
+		public FileInfo TakeScreenshot(string stepName)
 		{
 			var title = $"{TestContext.CurrentContext.Test.Name}_{stepName}"
 				.Replace(" ", "_")
@@ -98,6 +99,7 @@ namespace SamplesApp.UITests
 			if (fileNameWithoutExt != title)
 			{
 				var destFileName = Path.Combine(Path.GetDirectoryName(fileInfo.FullName), title + Path.GetExtension(fileInfo.Name));
+
 				if (File.Exists(destFileName))
 				{
 					File.Delete(destFileName);
@@ -106,10 +108,62 @@ namespace SamplesApp.UITests
 				File.Move(fileInfo.FullName, destFileName);
 
 				TestContext.AddTestAttachment(destFileName, stepName);
+
+				return new FileInfo(destFileName);
 			}
 			else
 			{
 				TestContext.AddTestAttachment(fileInfo.FullName, stepName);
+
+				return fileInfo;
+			}
+		}
+
+		public void AssertScreenshotsAreEqual(FileInfo expected, FileInfo actual, IAppRect rect)
+			=> AssertScreenshotsAreEqual(expected, actual, new Rectangle((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height));
+		public void AssertScreenshotsAreEqual(FileInfo expected, FileInfo actual, Rectangle? rect = null)
+		{
+			rect = rect ?? new Rectangle(0, 0, int.MaxValue, int.MinValue);
+
+			using (var expectedBitmap = new Bitmap(expected.FullName))
+			using (var actualBitmap = new Bitmap(actual.FullName))
+			{
+				Assert.AreEqual(expectedBitmap.Size.Width, actualBitmap.Size.Width, "Width");
+				Assert.AreEqual(expectedBitmap.Size.Height, actualBitmap.Size.Height, "Height");
+
+				for (var x = rect.Value.X; x < Math.Min(rect.Value.Width, expectedBitmap.Size.Width); x++)
+				for (var y = rect.Value.Y; y < Math.Min(rect.Value.Height, expectedBitmap.Size.Height); y++)
+				{
+					Assert.AreEqual(expectedBitmap.GetPixel(x, y), actualBitmap.GetPixel(x, y), $"Pixel {x},{y}");
+				}
+			}
+		}
+
+		public void AssertScreenshotsAreNotEqual(FileInfo expected, FileInfo actual, IAppRect rect)
+			=> AssertScreenshotsAreNotEqual(expected, actual, new Rectangle((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height));
+		public void AssertScreenshotsAreNotEqual(FileInfo expected, FileInfo actual, Rectangle? rect = null)
+		{
+			rect = rect ?? new Rectangle(0, 0, int.MaxValue, int.MinValue);
+
+			using (var expectedBitmap = new Bitmap(expected.FullName))
+			using (var actualBitmap = new Bitmap(actual.FullName))
+			{
+				if (expectedBitmap.Size.Width != actualBitmap.Size.Width
+					|| expectedBitmap.Size.Height != actualBitmap.Size.Height)
+				{
+					return;
+				}
+
+				for (var x = rect.Value.X; x < Math.Min(rect.Value.Width, expectedBitmap.Size.Width); x++)
+				for (var y = rect.Value.Y; y < Math.Min(rect.Value.Height, expectedBitmap.Size.Height); y++)
+				{
+					if (expectedBitmap.GetPixel(x, y) != actualBitmap.GetPixel(x, y))
+					{
+						return;
+					}
+				}
+
+				Assert.Fail("Screenshots are equals.");
 			}
 		}
 

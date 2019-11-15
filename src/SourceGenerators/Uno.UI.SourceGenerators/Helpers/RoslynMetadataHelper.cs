@@ -23,6 +23,7 @@ namespace Uno.Roslyn
 		private readonly Func<string, ITypeSymbol[]> _findTypesByName;
 		private readonly Func<string, ITypeSymbol> _findTypeByFullName;
 		private readonly Func<INamedTypeSymbol, IEnumerable<INamedTypeSymbol>> _getAllDerivingTypes;
+		private readonly Func<string, IEnumerable<INamedTypeSymbol>> _getAllTypesAttributedWith;
 		private readonly Dictionary<string, INamedTypeSymbol> _additionalTypesMap;
 
 		public Compilation Compilation { get; }
@@ -38,7 +39,8 @@ namespace Uno.Roslyn
 			_additionalTypes = additionalTypes ?? new string[0];
 			_legacyTypes = BuildLegacyTypes(legacyTypes);
 			_getAllDerivingTypes = Funcs.Create<INamedTypeSymbol, IEnumerable<INamedTypeSymbol>>(GetAllDerivingTypes).AsLockedMemoized();
-			 _project = roslynProject;
+			_getAllTypesAttributedWith = Funcs.Create<string, IEnumerable<INamedTypeSymbol>>(SourceGetAllTypesAttributedWith).AsLockedMemoized();
+			_project = roslynProject;
 			_nullableSymbol = Compilation.GetTypeByMetadataName("System.Nullable`1");
 		}
 
@@ -265,6 +267,37 @@ namespace Uno.Roslyn
 					else if (member is INamedTypeSymbol type)
 					{
 						if (((INamedTypeSymbol)member).Is(baseType))
+						{
+							yield return type;
+						}
+					}
+				}
+			}
+		}
+
+		public IEnumerable<INamedTypeSymbol> GetAllTypesAttributedWith(string attributeClassFullName)
+		{
+			return _getAllTypesAttributedWith(attributeClassFullName);
+		}
+
+		private IEnumerable<INamedTypeSymbol> SourceGetAllTypesAttributedWith(string attributeClassFullName)
+		{
+			return GetTypesAttributedWith(Compilation.GlobalNamespace);
+
+			IEnumerable<INamedTypeSymbol> GetTypesAttributedWith(INamespaceSymbol ns)
+			{
+				foreach (var member in ns.GetMembers())
+				{
+					if (member is INamespaceSymbol nsInner)
+					{
+						foreach (var t in GetTypesAttributedWith(nsInner))
+						{
+							yield return t;
+						}
+					}
+					else if (member is INamedTypeSymbol type)
+					{
+						if (type.FindAttribute(attributeClassFullName) is AttributeData _)
 						{
 							yield return type;
 						}
