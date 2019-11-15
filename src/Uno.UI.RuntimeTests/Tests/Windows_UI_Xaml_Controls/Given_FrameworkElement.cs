@@ -66,28 +66,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		public void MeasureWithNan()
+		public async Task MeasureWithNan()
 		{
-			var SUT = new MyControl01();
+			await Dispatch(() =>
+			{
 
-			SUT.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-			Assert.AreEqual(new Size(double.PositiveInfinity, double.PositiveInfinity), SUT.MeasureOverrides.Last());
-			Assert.AreEqual(new Size(0, 0), SUT.DesiredSize);
+				var SUT = new MyControl01();
 
-			Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, double.NaN)));
-			Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(42.0, double.NaN)));
-			Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, 42.0)));
+				SUT.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+				Assert.AreEqual(new Size(double.PositiveInfinity, double.PositiveInfinity), SUT.MeasureOverrides.Last());
+				Assert.AreEqual(new Size(0, 0), SUT.DesiredSize);
+
+				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, double.NaN)));
+				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(42.0, double.NaN)));
+				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, 42.0)));
+			});
 		}
 
 		[TestMethod]
-		public void MeasureOverrideWithNan()
+		public async Task MeasureOverrideWithNan()
 		{
-			var SUT = new MyControl01();
+			await Dispatch(() =>
+			{
 
-			SUT.BaseAvailableSize = new Size(double.NaN, double.NaN);
-			SUT.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
-			Assert.AreEqual(new Size(double.PositiveInfinity, double.PositiveInfinity), SUT.MeasureOverrides.Last());
-			Assert.AreEqual(new Size(0, 0), SUT.DesiredSize);
+				var SUT = new MyControl01();
+
+				SUT.BaseAvailableSize = new Size(double.NaN, double.NaN);
+				SUT.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+				Assert.AreEqual(new Size(double.PositiveInfinity, double.PositiveInfinity), SUT.MeasureOverrides.Last());
+				Assert.AreEqual(new Size(0, 0), SUT.DesiredSize);
+			});
 		}
 
 #if __WASM__
