@@ -54,7 +54,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 			_app.Tap(dataBoundButton);
 			Assert.AreEqual("Button was clicked", dataBoundText.GetText());
-
+		}
 
 		[Test]
 		public void FlyoutTest_Target()
