@@ -55,6 +55,11 @@ namespace Uno.UI.Samples.Tests
 			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => runStatus.Text = message);
 		}
 
+		private void ReportRunTestCount(string message)
+		{
+			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => runTestCount.Text = message);
+		}
+
 		private void ReportFailedTests(int failedCount)
 		{
 			void Update()
@@ -139,6 +144,7 @@ namespace Uno.UI.Samples.Tests
 			try
 			{
 				var failedTests = 0;
+				var runTests = 0;
 
 				ReportMessage("Enumerating tests");
 
@@ -164,6 +170,7 @@ namespace Uno.UI.Samples.Tests
 						}
 
 						ReportMessage($"Running test {testName}");
+						ReportRunTestCount($"Run tests: {++runTests}");
 
 						try
 						{

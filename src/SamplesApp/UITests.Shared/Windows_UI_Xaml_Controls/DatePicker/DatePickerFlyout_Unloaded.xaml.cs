@@ -27,7 +27,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker
             this.InitializeComponent();
 
 #if DEBUG
-			Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => {
+			_ = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, async () => {
 				await Task.Delay(5000);
 				root.Children.Remove(TestDatePickerFlyoutButton);
 				root.Children.Remove(theDatePicker);
