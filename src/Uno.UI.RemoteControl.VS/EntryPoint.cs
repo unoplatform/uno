@@ -60,9 +60,18 @@ namespace Uno.UI.RemoteControl.VS
 		}
 
 		private async Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
-			=> new Dictionary<string, string> {
+		{
+			if (RemoteControlServerPort == 0)
+			{
+				_warningAction(
+					$"The Remote Control server is not yet started, providing [0] as the server port. " +
+					$"Rebuilding the application may fix the issue.");
+			}
+
+			return new Dictionary<string, string> {
 				{ RemoteControlServerPortProperty, RemoteControlServerPort.ToString(CultureInfo.InvariantCulture) }
 			};
+		}
 
 		private void SetupOutputWindow()
 		{
