@@ -25,6 +25,7 @@ namespace Uno.UI.Samples.Tests
 	{
 		private Task _runner;
 		private CancellationTokenSource _cts = new CancellationTokenSource();
+		private readonly TimeSpan DefaultUnitTestTimeout = TimeSpan.FromSeconds(60);
 
 		private enum TestResult
 		{
@@ -52,6 +53,11 @@ namespace Uno.UI.Samples.Tests
 		private void ReportMessage(string message)
 		{
 			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => runStatus.Text = message);
+		}
+
+		private void ReportRunTestCount(string message)
+		{
+			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => runTestCount.Text = message);
 		}
 
 		private void ReportFailedTests(int failedCount)
@@ -138,6 +144,7 @@ namespace Uno.UI.Samples.Tests
 			try
 			{
 				var failedTests = 0;
+				var runTests = 0;
 
 				ReportMessage("Enumerating tests");
 
@@ -163,6 +170,7 @@ namespace Uno.UI.Samples.Tests
 						}
 
 						ReportMessage($"Running test {testName}");
+						ReportRunTestCount($"Run tests: {++runTests}");
 
 						try
 						{
@@ -173,7 +181,14 @@ namespace Uno.UI.Samples.Tests
 							if (testMethod.ReturnType == typeof(Task))
 							{
 								var task = (Task)returnValue;
-								await task;
+								var timeoutTask = Task.Delay(DefaultUnitTestTimeout);
+
+								var resultingTask = await Task.WhenAny(task, timeoutTask);
+
+								if (resultingTask == timeoutTask)
+								{
+									throw new TimeoutException($"Test execution timed out after {DefaultUnitTestTimeout}");
+								}
 							}
 
 							ReportTestResult(testName, TestResult.Sucesss);

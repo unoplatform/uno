@@ -4,6 +4,7 @@
 
 ### Features
 
+* [#2039] Added support for Xaml type conversions using CreateFromStringAttribute.
 * [#] Support for `Windows.Devices.Lights.Lamp` on iOS, Android.
 * [#1970](https://github.com/unoplatform/uno/pull/1970) Added support for `AnalyticsInfo` properties on iOS, Android and WASM
 * [#1207] Implemented some `PackageId` properties
@@ -185,6 +186,7 @@
 * [Wasm] Fix unable to reset `Image.Source` property
 * [#2014](https://github.com/unoplatform/uno/issues/2014) Fix iOS Picker for ComboBox not selecting the correct item.
 * [iOS] #977 Fix exception when setting MediaPlayerElement.Stretch in XAML.
+* #1708 Fix initial Flyout placement and window resize placement
 
 ## Release 1.45.0
 ### Features

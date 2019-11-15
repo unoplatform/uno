@@ -21,8 +21,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			public const string Over = "PointerOver";
 			public const string Pressed = "Pressed";
 			public const string OverSelected = "PointerOverSelected"; // "SelectedPointerOver" for ListBoxItem, ComboBoxItem and PivotHeaderItem
-			public const string OverPressed = "PointerOverPressed"; // Only for ListViewItem and GridViewItem
 			public const string PressedSelected = "PressedSelected"; // "SelectedPressed" for ListBoxItem, ComboBoxItem and PivotHeaderItem
+
+			// On ListViewItem and GridViewItem we also have this state declared in default style,
+			// however it seems to never been activated
+			// public const string OverPressed = "PointerOverPressed";
 		}
 
 		private static class DisabledStates
@@ -57,11 +60,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// parent and displayed.
 		/// </remarks>
 		protected override bool CanCreateTemplateWithoutParent { get; } = true;
-
-		/// <summary>
-		/// Indicates if the SelectorItem has the "PointerOverPressed" visual state (GridViewItem and ListViewItem only)
-		/// </summary>
-		internal virtual bool HasPointerOverPressedState => false;
 
 		private string _currentState;
 		private uint _goToStateRequest;
@@ -134,7 +132,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private void UpdateCommonStates(ManipulationUpdateKind manipulationUpdate = ManipulationUpdateKind.None)
 		{
-			var state = GetState(IsSelected, IsPointerOver, IsPointerPressed);
+			var state = GetState(IsSelected, IsPointerOver, HasPointerCapture);
 
 			// On Windows, the pressed state appears only after a few, and won't appear at all if you quickly start to scroll with the finger.
 			// So here we make sure to delay the beginning of a manipulation to match this behavior (and avoid flickering when scrolling)
@@ -145,7 +143,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			bool pause; // should we force a pause after applying the 'state'
 			if (manipulationUpdate == ManipulationUpdateKind.Clicked
 				&& _currentState != CommonStates.PressedSelected
-				&& _currentState != CommonStates.OverPressed
 				&& _currentState != CommonStates.Pressed)
 			{
 				// When clicked (i.e. pointer released), but not yet in pressed state, we force to go immediately in pressed state
@@ -212,11 +209,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				&& isSelected && isOver)
 			{
 				state = CommonStates.OverSelected;
-			}
-			else if (FeatureConfiguration.SelectorItem.UseOverStates && HasPointerOverPressedState
-				&& isOver && isPressed)
-			{
-				state = CommonStates.OverPressed;
 			}
 			else if (isSelected)
 			{

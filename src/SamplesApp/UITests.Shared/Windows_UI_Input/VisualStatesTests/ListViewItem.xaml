@@ -71,7 +71,7 @@
 	</Page.Resources>
 
 	<Grid>
-		<ListView ItemContainerStyle="{StaticResource ItemStyle}">
+		<ListView ItemContainerStyle="{StaticResource ItemStyle}" Width="300" Background="Purple" x:Name="MyListView">
 			<ListView.Items>
 				<TextBlock Text="Item 1" />
 				<TextBlock Text="Item 2" />
