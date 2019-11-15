@@ -39,37 +39,39 @@ namespace SamplesApp.UITests.Windows_UI_Xaml
 			Assert.AreEqual(windowWidth - borderWidth, transformX);
 			Assert.AreEqual(windowHeight - borderHeight, transformY);
 		}
-		[Test]
-		[AutoRetry]
-		public void When_TransformToVisual_Transform()
-		{
-			Run("UITests.Shared.Windows_UI_Xaml.UIElementTests.TransformToVisual_Transform");
 
-			_app.WaitForText("IsLoadedText", "Loaded");
+		// Will be converted to RuntimeTests
+		//[Test]
+		//[AutoRetry]
+		//public void When_TransformToVisual_Transform()
+		//{
+		//	Run("UITests.Shared.Windows_UI_Xaml.UIElementTests.TransformToVisual_Transform");
 
-			var windowWidthText = _app.GetText("WindowWidth");
-			var windowHeightText = _app.GetText("WindowHeight");
+		//	_app.WaitForText("IsLoadedText", "Loaded");
 
-			var transform2XText = _app.GetText("Border2TransformNullX");
-			var transform2YText = _app.GetText("Border2TransformNullY");
+		//	var windowWidthText = _app.GetText("WindowWidth");
+		//	var windowHeightText = _app.GetText("WindowHeight");
 
-			const int borderWidth = 50;
-			const int borderHeight = 50;
-			const int translateX = 50;
-			const int translateY = 50;
+		//	var transform2XText = _app.GetText("Border2TransformNullX");
+		//	var transform2YText = _app.GetText("Border2TransformNullY");
 
-			var windowWidth = int.Parse(windowWidthText);
-			var windowHeight = int.Parse(windowHeightText);
-			var transformX = int.Parse(transform2XText);
-			var transformY = int.Parse(transform2YText);
+		//	const int borderWidth = 50;
+		//	const int borderHeight = 50;
+		//	const int translateX = 50;
+		//	const int translateY = 50;
 
-			Assert.Greater(windowWidth, 100);
-			Assert.Greater(windowHeight, 100);
+		//	var windowWidth = int.Parse(windowWidthText);
+		//	var windowHeight = int.Parse(windowHeightText);
+		//	var transformX = int.Parse(transform2XText);
+		//	var transformY = int.Parse(transform2YText);
 
-			Assert.AreEqual(windowWidth - borderWidth - translateX, transformX);
-			Assert.AreEqual(windowHeight - borderHeight - translateY, transformY);
+		//	Assert.Greater(windowWidth, 100);
+		//	Assert.Greater(windowHeight, 100);
 
-			TakeScreenshot(nameof(When_TransformToVisual_Transform));
-		}
+		//	Assert.AreEqual(windowWidth - borderWidth - translateX, transformX);
+		//	Assert.AreEqual(windowHeight - borderHeight - translateY, transformY);
+
+		//	TakeScreenshot(nameof(When_TransformToVisual_Transform));
+		//}
 	}
 }

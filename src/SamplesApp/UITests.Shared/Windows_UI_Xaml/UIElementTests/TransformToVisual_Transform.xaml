@@ -24,14 +24,8 @@
 			</ControlTemplate>
 		</controls:SampleControl.Template>
 		<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-			<StackPanel>
-				<TextBlock x:Name="WindowWidth" />
-				<TextBlock x:Name="WindowHeight" />
-				<TextBlock x:Name="Border1TransformNullX" />
-				<TextBlock x:Name="Border1TransformNullY" />
-				<TextBlock x:Name="Border2TransformNullX" />
-				<TextBlock x:Name="Border2TransformNullY" />
-				<TextBlock x:Name="IsLoadedText" />
+			<StackPanel x:Name="Outputs">
+				<TextBlock x:Name="TestsStatus" />
 			</StackPanel>
 			<Border x:Name="Border1"
 					HorizontalAlignment="Right"
@@ -39,6 +33,7 @@
 					Width="50"
 					Height="50"
 					Background="Red" />
+
 			<Border x:Name="Border2"
 					HorizontalAlignment="Right"
 					VerticalAlignment="Bottom"
@@ -46,9 +41,58 @@
 					Height="50"
 					Background="Orange">
 				<Border.RenderTransform>
-					<TranslateTransform X="-50"
-										Y="-50" />
+					<TranslateTransform
+						X="-50"
+						Y="-50" />
 				</Border.RenderTransform>
+				<Border
+					x:Name="Border2Child"
+					Width="20"
+					Height="20"
+					Margin="0, 30, 0, 0"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Top"
+					Background="#FFFF00">
+					<Border
+						x:Name="Border2SubChild"
+						Width="10"
+						Height="10"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Top"
+						Background="#008000" />
+				</Border>
+			</Border>
+
+			<Border
+				x:Name="Border3Parent"
+				HorizontalAlignment="Right"
+				VerticalAlignment="Bottom"
+				Width="50"
+				Height="50">
+				<Border
+					x:Name="Border3"
+					HorizontalAlignment="Left"
+					VerticalAlignment="Top"
+					Width="50"
+					Height="50"
+					Background="#0000FF">
+					<Border.RenderTransform>
+						<CompositeTransform
+							TranslateX="-100"
+							TranslateY="-100"
+							Rotation="45"
+							ScaleX="2"
+							ScaleY="2"/>
+					</Border.RenderTransform>
+					<Border
+						x:Name="Border3Child"
+						HorizontalAlignment="Left"
+						VerticalAlignment="Top"
+						Width="20"
+						Height="20"
+						Margin="0, 30, 0, 0"
+						Background="#A000C0"/>
+				</Border>
 			</Border>
 		</Grid>
 	</controls:SampleControl>
