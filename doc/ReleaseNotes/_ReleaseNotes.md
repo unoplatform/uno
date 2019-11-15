@@ -92,6 +92,7 @@
 * The _feature flag_ `FeatureConfiguration.UseLegacyClipping` is now deprecated and not used anymore
 * XAML Hot Reload support for iOS, Android and Windows
 * Add support for GitPod Workspace and prebuilds
+* Add Android support for `CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar` to programatically draw under the status bar
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
@@ -187,6 +188,7 @@
 * [#2014](https://github.com/unoplatform/uno/issues/2014) Fix iOS Picker for ComboBox not selecting the correct item.
 * [iOS] #977 Fix exception when setting MediaPlayerElement.Stretch in XAML.
 * #1708 Fix initial Flyout placement and window resize placement
+* [Android] #2007 ComboBox does not take Window.VisibleBounds to position its popup
 
 ## Release 1.45.0
 ### Features
