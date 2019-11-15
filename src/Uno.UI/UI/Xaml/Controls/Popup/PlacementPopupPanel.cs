@@ -14,10 +14,10 @@ namespace Windows.UI.Xaml.Controls
 	/// This class exists mostly to reuse the same logic between a Flyout and a ToolTip
 	/// </remarks>
 	internal abstract partial class PlacementPopupPanel : PopupPanel
-	 {
-		 private static readonly Dictionary<FlyoutPlacementMode, Memory<FlyoutPlacementMode>> PlacementsToTry =
-			 new Dictionary<FlyoutPlacementMode, Memory<FlyoutPlacementMode>>()
-			 {
+	{
+		private static readonly Dictionary<FlyoutPlacementMode, Memory<FlyoutPlacementMode>> PlacementsToTry =
+			new Dictionary<FlyoutPlacementMode, Memory<FlyoutPlacementMode>>()
+			{
 				 {FlyoutPlacementMode.Top, new []
 				 {
 					 FlyoutPlacementMode.Top,
@@ -50,9 +50,9 @@ namespace Windows.UI.Xaml.Controls
 					 FlyoutPlacementMode.Bottom,
 					 FlyoutPlacementMode.Full // last resort placement
 				 }},
-			 };
+			};
 
-		 /// <summary>
+		/// <summary>
 		/// This value is an arbitrary value for the placement of
 		/// a popup below its anchor.
 		/// </summary>
@@ -81,14 +81,15 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				var desiredSize = elem.DesiredSize;
-				var rect = CalculateFlyoutPlacement(desiredSize);
+				var maxSize = (elem as FrameworkElement).GetMaxSize(); // UWP takes FlyoutPresenter's MaxHeight and MaxWidth into consideration, but ignores Height and Width
+				var rect = CalculateFlyoutPlacement(desiredSize, maxSize);
 				elem.Arrange(rect);
 			}
 
 			return finalSize;
 		}
 
-		protected virtual Rect CalculateFlyoutPlacement(Size desiredSize)
+		protected virtual Rect CalculateFlyoutPlacement(Size desiredSize, Size maxSize)
 		{
 			var anchor = AnchorControl;
 			if (anchor == null)
@@ -143,7 +144,13 @@ namespace Windows.UI.Xaml.Controls
 							x: anchorRect.Right + PopupPlacementTargetMargin,
 							y: Math.Max(anchorRect.Top + halfAnchorHeight - halfChildHeight, 0d));
 						break;
-					default: // Full + other unsupported placements
+					case FlyoutPlacementMode.Full:
+						desiredSize = visibleBounds.Size.AtMost(maxSize);
+						finalPosition = new Point(
+							x: (visibleBounds.Width - desiredSize.Width) / 2.0,
+							y: (visibleBounds.Height - desiredSize.Height) / 2.0);
+						break;
+					default: // Other unsupported placements
 						finalPosition = new Point(
 							x: (visibleBounds.Width - desiredSize.Width) / 2.0,
 							y: (visibleBounds.Height - desiredSize.Height) / 2.0);
@@ -160,5 +167,5 @@ namespace Windows.UI.Xaml.Controls
 
 			return finalRect;
 		}
-	 }
+	}
 }

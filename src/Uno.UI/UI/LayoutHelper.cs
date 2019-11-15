@@ -10,11 +10,15 @@ namespace Uno.UI
 {
 	internal static class LayoutHelper
 	{
+		internal static Size GetMinSize(this IFrameworkElement e) => new Size(e.MinWidth, e.MinHeight).NumberOrDefault(new Size(0, 0));
+
+		internal static Size GetMaxSize(this IFrameworkElement e) => new Size(e.MaxWidth, e.MaxHeight).NumberOrDefault(new Size(PositiveInfinity, PositiveInfinity));
+
 		internal static (Size min, Size max) GetMinMax(this IFrameworkElement e)
 		{
 			var size = new Size(e.Width, e.Height);
-			var minSize = new Size(e.MinWidth, e.MinHeight);
-			var maxSize = new Size(e.MaxWidth, e.MaxHeight);
+			var minSize = e.GetMinSize();
+			var maxSize = e.GetMaxSize();
 
 			minSize = size
 				.NumberOrDefault(new Size(0, 0))
