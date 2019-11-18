@@ -30,7 +30,7 @@
 
 	<ItemGroup>
 		<!--
-    This item group is required by the project templace because of the
+    This item group is required by the project template because of the
     new SDK-Style project, otherwise some files are not aded automatically.
 
     You can safely remove this ItemGroup completely.
