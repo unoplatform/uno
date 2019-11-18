@@ -3,7 +3,7 @@
 ## Next version
 
 ### Features
-
+* support /[file]/[name] format in ResourceLoader.GetForCurrentView().GetString()
 * [#2039] Added support for Xaml type conversions using CreateFromStringAttribute.
 * [#] Support for `Windows.Devices.Lights.Lamp` on iOS, Android.
 * [#1970](https://github.com/unoplatform/uno/pull/1970) Added support for `AnalyticsInfo` properties on iOS, Android and WASM
