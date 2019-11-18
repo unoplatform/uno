@@ -12,4 +12,4 @@ export IsUiAutomationMappingEnabled=true
 msbuild /r /p:Configuration=$BUILDCONFIGURATION $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Droid/SamplesApp.Droid.csproj
 
 mkdir -p $BUILD_ARTIFACTSTAGINGDIRECTORY/android
-cp $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Droid/bin/$BUILDCONFIGURATION/uno.platform.unosampleapp.apk $BUILD_ARTIFACTSTAGINGDIRECTORY/android
+cp $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Droid/bin/$BUILDCONFIGURATION/uno.platform.unosampleapp-Signed.apk $BUILD_ARTIFACTSTAGINGDIRECTORY/android

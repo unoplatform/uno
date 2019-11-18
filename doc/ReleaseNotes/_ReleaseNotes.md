@@ -4,6 +4,7 @@
 
 ### Features
 * [#2029](https://github.com/unoplatform/uno/pull/2029) Support for MenuFlyoutItem.Click
+* support /[file]/[name] format in ResourceLoader.GetForCurrentView().GetString()
 * [#2039] Added support for Xaml type conversions using CreateFromStringAttribute.
 * [#] Support for `Windows.Devices.Lights.Lamp` on iOS, Android.
 * [#1970](https://github.com/unoplatform/uno/pull/1970) Added support for `AnalyticsInfo` properties on iOS, Android and WASM
@@ -92,6 +93,7 @@
 * The _feature flag_ `FeatureConfiguration.UseLegacyClipping` is now deprecated and not used anymore
 * XAML Hot Reload support for iOS, Android and Windows
 * Add support for GitPod Workspace and prebuilds
+* Add Android support for `CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar` to programatically draw under the status bar
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
@@ -106,6 +108,7 @@
     > This change might break the compilation for projects that define duplicate resources in other globally accessible resource dictionaries. Adjustments to remove duplicate resources may be necessary.
 
 ### Bug fixes
+* Font size, used for ComboBoxItems, are same as in ComboBox content (not smaller)
 * [#2023](https://github.com/unoplatform/uno/pull/2023) Android WebView.NavigateToString doesn't throw exception even when string is very long.
 * [#2020](https://github.com/unoplatform/uno/pull/2020) `ContentControl` no longer display the datacontext type when ContentTemplate and content are empty
 * [#1987](https://github.com/unoplatform/uno/pull/1987) Missing XML comment warnings are disabled on generated code
@@ -186,6 +189,8 @@
 * [Wasm] Fix unable to reset `Image.Source` property
 * [#2014](https://github.com/unoplatform/uno/issues/2014) Fix iOS Picker for ComboBox not selecting the correct item.
 * [iOS] #977 Fix exception when setting MediaPlayerElement.Stretch in XAML.
+* #1708 Fix initial Flyout placement and window resize placement
+* [Android] #2007 ComboBox does not take Window.VisibleBounds to position its popup
 
 ## Release 1.45.0
 ### Features

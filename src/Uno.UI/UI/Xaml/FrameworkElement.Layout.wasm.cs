@@ -18,6 +18,7 @@ namespace Windows.UI.Xaml
 		private Point _visualOffset;
 
 		private const double SIZE_EPSILON = 0.05;
+		private readonly Size MaxSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
 
 		/// <summary>
 		/// The origin of the view's bounds relative to its parent.
@@ -68,6 +69,7 @@ namespace Windows.UI.Xaml
 			var marginSize = this.GetMarginSize();
 
 			var frameworkAvailableSize = availableSize
+				.NumberOrDefault(MaxSize)
 				.Subtract(marginSize)
 				.AtLeast(new Size(0, 0))
 				.AtMost(maxSize)

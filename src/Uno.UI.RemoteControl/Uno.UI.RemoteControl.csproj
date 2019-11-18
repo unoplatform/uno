@@ -53,7 +53,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 		<PackageReference Include="Uno.MonoAnalyzers" />
 		<PackageReference Include="Uno.Wasm.WebSockets" Version="1.0.0-dev.28" />
 	</ItemGroup>
@@ -75,6 +75,9 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
+	</ItemGroup>
+	
+	<ItemGroup Condition="'$(DocsGeneration)'=='' and $([MSBuild]::IsOsPlatform('Windows'))">
 		<ProjectReference Include="..\Uno.UI.RemoteControl.VS\Uno.UI.RemoteControl.VS.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>

@@ -14,10 +14,10 @@ namespace Windows.UI.Xaml.Controls
 	/// This class exists mostly to reuse the same logic between a Flyout and a ToolTip
 	/// </remarks>
 	internal abstract partial class PlacementPopupPanel : PopupPanel
-	 {
-		 private static readonly Dictionary<FlyoutPlacementMode, Memory<FlyoutPlacementMode>> PlacementsToTry =
-			 new Dictionary<FlyoutPlacementMode, Memory<FlyoutPlacementMode>>()
-			 {
+	{
+		private static readonly Dictionary<FlyoutPlacementMode, Memory<FlyoutPlacementMode>> PlacementsToTry =
+			new Dictionary<FlyoutPlacementMode, Memory<FlyoutPlacementMode>>()
+			{
 				 {FlyoutPlacementMode.Top, new []
 				 {
 					 FlyoutPlacementMode.Top,
@@ -50,9 +50,9 @@ namespace Windows.UI.Xaml.Controls
 					 FlyoutPlacementMode.Bottom,
 					 FlyoutPlacementMode.Full // last resort placement
 				 }},
-			 };
+			};
 
-		 /// <summary>
+		/// <summary>
 		/// This value is an arbitrary value for the placement of
 		/// a popup below its anchor.
 		/// </summary>
@@ -60,7 +60,12 @@ namespace Windows.UI.Xaml.Controls
 
 		protected PlacementPopupPanel(Popup popup) : base(popup)
 		{
+			Loaded += (s, e) => Windows.UI.Xaml.Window.Current.SizeChanged += Current_SizeChanged;
+			Unloaded += (s, e) => Windows.UI.Xaml.Window.Current.SizeChanged -= Current_SizeChanged;
 		}
+
+		private void Current_SizeChanged(object sender, Core.WindowSizeChangedEventArgs e)
+			=> InvalidateMeasure();
 
 		protected abstract FlyoutPlacementMode PopupPlacement { get; }
 
@@ -76,14 +81,15 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				var desiredSize = elem.DesiredSize;
-				var rect = CalculateFlyoutPlacement(desiredSize);
+				var maxSize = (elem as FrameworkElement).GetMaxSize(); // UWP takes FlyoutPresenter's MaxHeight and MaxWidth into consideration, but ignores Height and Width
+				var rect = CalculateFlyoutPlacement(desiredSize, maxSize);
 				elem.Arrange(rect);
 			}
 
 			return finalSize;
 		}
 
-		protected virtual Rect CalculateFlyoutPlacement(Size desiredSize)
+		protected virtual Rect CalculateFlyoutPlacement(Size desiredSize, Size maxSize)
 		{
 			var anchor = AnchorControl;
 			if (anchor == null)
@@ -95,8 +101,8 @@ namespace Windows.UI.Xaml.Controls
 			var anchorRect = anchor.GetBoundsRectRelativeTo(this);
 
 			// Make sure the desiredSize fits in the panel
-			desiredSize.Width = Math.Min(desiredSize.Width, ActualWidth);
-			desiredSize.Height = Math.Min(desiredSize.Height, ActualHeight);
+			desiredSize.Width = Math.Min(desiredSize.Width, visibleBounds.Width);
+			desiredSize.Height = Math.Min(desiredSize.Height, visibleBounds.Height);
 
 			// Try all placements...
 			var placementsToTry = PlacementsToTry.TryGetValue(PopupPlacement, out var p)
@@ -138,10 +144,16 @@ namespace Windows.UI.Xaml.Controls
 							x: anchorRect.Right + PopupPlacementTargetMargin,
 							y: Math.Max(anchorRect.Top + halfAnchorHeight - halfChildHeight, 0d));
 						break;
-					default: // Full + other unsupported placements
+					case FlyoutPlacementMode.Full:
+						desiredSize = visibleBounds.Size.AtMost(maxSize);
 						finalPosition = new Point(
-							x: (ActualWidth - desiredSize.Width) / 2.0,
-							y: (ActualHeight - desiredSize.Height) / 2.0);
+							x: (visibleBounds.Width - desiredSize.Width) / 2.0,
+							y: (visibleBounds.Height - desiredSize.Height) / 2.0);
+						break;
+					default: // Other unsupported placements
+						finalPosition = new Point(
+							x: (visibleBounds.Width - desiredSize.Width) / 2.0,
+							y: (visibleBounds.Height - desiredSize.Height) / 2.0);
 						break;
 				}
 
@@ -155,5 +167,5 @@ namespace Windows.UI.Xaml.Controls
 
 			return finalRect;
 		}
-	 }
+	}
 }
