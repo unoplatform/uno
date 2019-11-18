@@ -106,6 +106,7 @@
 * [iOS] If you set the `ManipulationMode` to something else than `System` or `All`, the [DelaysContentTouches](https://developer.apple.com/documentation/uikit/uiscrollview/1619398-delayscontenttouches) is going to be disabled on all parent `ScrollViewer`
 * [#1237] Static resources defined in App.xaml were not processed and registered properly
     > This change might break the compilation for projects that define duplicate resources in other globally accessible resource dictionaries. Adjustments to remove duplicate resources may be necessary.
+ * [WASM] The tranform returned by `UIElement.TransformToVisual` is now including scale, rotation or any custom transformation that was declard on a parent element (transform was only including translate components)
 
 ### Bug fixes
 * Font size, used for ComboBoxItems, are same as in ComboBox content (not smaller)

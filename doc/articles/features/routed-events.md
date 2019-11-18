@@ -159,18 +159,16 @@ These _routed events_ are not implemented yet in Uno:
 * `DragOver`
 * `Drop`
 * `Holding`
-* `ManipulationCompleted`
-* `ManipulationDelta`
 * `ManipulationInertiaStarting`
-* `ManipulationStarted`
-* `ManipulationStarting`
 * `PointerWheelChanged`
 * `RightTapped`
 
-### Property `OriginalSource` not accurate on _RoutedEventArgs_
+### Property `OriginalSource` might not be accurate on _RoutedEventArgs_
 
-In the current implementation the `OriginalSource` property on the _RoutedEventArgs_ will often be null
+In some cases / events, it's possible that the `OriginalSource` property of the _RoutedEventArgs_ is `null` 
 or referencing the element where the event crossed the _native-to-managed_ boundary.
+
+This property is however always accruate for "Pointers", "Manipulation" and "Gesture" events.
 
 ### Resetting `Handled` to false won't behave like in UWP
 
