@@ -141,6 +141,8 @@ namespace Uno.UI.RuntimeTests.Tests
 			Assert.AreEqual(@"Shared text from Resources", SUT.GetString("pkResShared"));
 			Assert.AreEqual(@"Shared text from Test01", SUT.GetString("/Test01/pkResShared"));
 			Assert.AreEqual(@"Uniq text from Test01", SUT.GetString("/Test01/pkResUniqTest01"));
+			Assert.AreEqual(@"", SUT.GetString("/this-does-not-exist"));
+			Assert.AreEqual(@"", SUT.GetString("//this-does-not-exist"));
 		}
 
 	}
