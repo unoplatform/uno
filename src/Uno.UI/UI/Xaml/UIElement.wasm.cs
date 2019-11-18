@@ -20,6 +20,7 @@ using Uno.Collections;
 using Uno.UI;
 using System.Numerics;
 using Windows.UI.Input;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
@@ -633,6 +634,24 @@ namespace Windows.UI.Xaml
 
 					offsetX = elt._nativeLayoutSlot.X;
 					offsetY = elt._nativeLayoutSlot.Y;
+				}
+
+				if (elt is ScrollViewer sv)
+				{
+					var zoom = sv.ZoomFactor;
+					if (zoom != 1)
+					{
+						matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
+						matrix *= Matrix3x2.CreateScale(zoom);
+
+						offsetX = -sv.HorizontalOffset;
+						offsetY = -sv.VerticalOffset;
+					}
+					else
+					{
+						offsetX -= sv.HorizontalOffset;
+						offsetY -= sv.VerticalOffset;
+					}
 				}
 			} while ((elt = elt.GetParent() as UIElement) != null && elt != visual); // If possible we stop as soon as we reach 'visual'
 
