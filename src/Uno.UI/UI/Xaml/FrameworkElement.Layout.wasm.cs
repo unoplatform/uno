@@ -14,6 +14,9 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
+		/// <summary>
+		/// DesiredSize from MeasureOverride, after clamping to min size but before being clipped by max size (from GetMinMax())
+		/// </summary>
 		private Size _unclippedDesiredSize;
 		private Point _visualOffset;
 
@@ -208,11 +211,11 @@ namespace Windows.UI.Xaml
 			);
 
 			_logDebug?.Debug(
-				$"{DepthIndentation}[{this}] ArrangeChild(offset={offset}, margin={Margin}) [oldRenderSize={oldRenderSize}] [RequiresClipping={needsClipToSlot}]");
+				$"{DepthIndentation}[{this}] ArrangeChild(offset={offset}, margin={Margin}) [oldRenderSize={oldRenderSize}] [RenderSize={RenderSize}] [clippedInkSize={clippedInkSize}] [RequiresClipping={needsClipToSlot}]");
 
 			RequiresClipping = needsClipToSlot;
 
-			ArrangeNative(offset, oldRenderSize);
+			ArrangeNative(offset);
 		}
 
 		internal Thickness GetThicknessAdjust()
@@ -233,9 +236,12 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void ArrangeNative(Point offset, Size oldRenderSize)
+		/// <summary>
+		/// Calculates and applies native arrange properties.
+		/// </summary>
+		/// <param name="offset">Offset of the view from its parent</param>
+		private void ArrangeNative(Point offset)
 		{
-			var oldOffset = _visualOffset;
 			_visualOffset = offset;
 
 			var newRect = new Rect(offset, RenderSize);
