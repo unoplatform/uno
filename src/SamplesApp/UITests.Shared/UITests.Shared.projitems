@@ -4725,9 +4725,6 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\ClippingToControlBounds.xaml.cs">
       <DependentUpon>ClippingToControlBounds.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\LegacyClippingWarningControl.xaml.cs">
-      <DependentUpon>LegacyClippingWarningControl.xaml</DependentUpon>
-    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\PanelChildrenClipping.xaml.cs">
       <DependentUpon>PanelChildrenClipping.xaml</DependentUpon>
     </Compile>
@@ -4750,33 +4747,6 @@
       <DependentUpon>Transform_Ellipse_in_two_grids.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\UIElementClipping.xaml.cs">
-      <DependentUpon>UIElementClipping.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ClipTransform\LegacyClippingWarningControl.xaml.cs">
-      <DependentUpon>LegacyClippingWarningControl.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ClipTransform\Transform_Ellipse_In_Border.xaml.cs">
-      <DependentUpon>Transform_Ellipse_In_Border.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ClipTransform\Transform_Ellipse_in_Canvas.xaml.cs">
-      <DependentUpon>Transform_Ellipse_in_Canvas.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ClipTransform\Transform_Ellipse_in_Canvas_in_Grid.xaml.cs">
-      <DependentUpon>Transform_Ellipse_in_Canvas_in_Grid.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ClipTransform\Transform_Ellipse_In_Canvas_in_Two_Grids.xaml.cs">
-      <DependentUpon>Transform_Ellipse_In_Canvas_in_Two_Grids.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ClipTransform\Transform_Ellipse_in_Two_Canvas_in_Grid.xaml.cs">
-      <DependentUpon>Transform_Ellipse_in_Two_Canvas_in_Grid.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\ClipTransform\Transform_Ellipse_in_two_grids.xaml.cs">
-      <DependentUpon>Transform_Ellipse_in_two_grids.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\PanelChildrenClipping.xaml.cs">
-      <DependentUpon>PanelChildrenClipping.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clip\UIElementClipping.xaml.cs">
       <DependentUpon>UIElementClipping.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\UIElementClipping.xaml.cs">
