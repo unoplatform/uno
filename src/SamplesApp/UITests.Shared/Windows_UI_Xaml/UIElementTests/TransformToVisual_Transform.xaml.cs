@@ -18,6 +18,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Uno.Extensions;
+using TextBlock = Windows.UI.Xaml.Controls.TextBlock;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -26,13 +27,13 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 	[SampleControlInfo("UIElement", "TransformToVisual_Transform")]
 	public sealed partial class TransformToVisual_Transform : UserControl
 	{
-		private TestHelper _tests;
+		private readonly TestRunner _tests;
 
 		public TransformToVisual_Transform()
 		{
 			this.InitializeComponent();
 
-			_tests = new TestHelper(this, Outputs);
+			_tests = new TestRunner(this, Outputs);
 
 			Loaded += TransformToVisual_Transform_Loaded;
 		}
@@ -217,22 +218,29 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 		}
 	}
 
-	internal class TestHelper
+	internal class TestRunner
 	{
-		private readonly UserControl _testClass;
+		private readonly UserControl _target;
 		private readonly TextBlock _status;
+		private readonly Dictionary<string, Test> _tests;
 
-		public TestHelper(UserControl testClass, StackPanel testsOutput)
+		private bool _isRunning;
+
+		public TestRunner(UserControl target, StackPanel testsOutput)
 		{
+			_target = target;
+
 			_status = new TextBlock { Name = "TestsStatus" };
 			testsOutput.Children.Add(_status);
 
-			_testClass = testClass;
-			var tests = testClass
+			_tests = target
 				.GetType()
 				.GetMethods(BindingFlags.Instance | BindingFlags.Public)
-				.Where(method => method.Name.StartsWith("When_"));
-			foreach (var test in tests)
+				.Where(method => method.Name.StartsWith("When_"))
+				.Select(method => new Test(this, method))
+				.ToDictionary(t => t.Name);
+
+			foreach (var test in _tests.Values)
 			{
 				Button play;
 				testsOutput.Children.Add(new StackPanel
@@ -245,199 +253,134 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 						{
 							Content = "▶",
 						}),
-						new TextBlock
-						{
-							Name = test.Name + "_Result",
-							Text = "🟨 " + test.Name,
-							TextWrapping = TextWrapping.Wrap,
-							VerticalAlignment = VerticalAlignment.Center
-						}
+						test.Output
 					}
 				});
-				play.Click += async (snd, e) => await Run(test);
+				play.Click += async (snd, e) => await test.Run();
 			}
 		}
 
-		public void Run(params Expression<Action>[] tests)
+		public void Run(params Expression<Action>[] tests) => Run(tests.Select(GetTest).ToArray());
+		public async Task Run(params Expression<Func<Task>>[] tests) => Run(tests.Select(GetTest).ToArray());
+
+		private async void Run(params Test[] tests)
 		{
 			try
 			{
-				_status.Text = "RUNNING";
+				_isRunning = true;
+				UpdateStatus();
+
 				foreach (var test in tests)
 				{
-					RunCore(test);
+					await test.Run();
 				}
-				_status.Text = "SUCCESS";
 			}
-			catch (Exception e)
+			finally
 			{
-				_status.Text = $"FAILED {e.Message}";
+				_isRunning = false;
+				UpdateStatus();
 			}
 		}
 
-		public async Task Run(params Expression<Func<Task>>[] tests)
-		{
-			try
-			{
-				_status.Text = "RUNNING";
-				foreach (var test in tests)
-				{
-					await RunCore(test);
-				}
-				_status.Text = "SUCCESS";
-			}
-			catch (Exception e)
-			{
-				_status.Text = $"FAILED {e.Message}";
-			}
-		}
-
-		public void Run(Expression<Action> test)
-		{
-			try
-			{
-				_status.Text = "RUNNING";
-				RunCore(test);
-				_status.Text = "SUCCESS";
-			}
-			catch (Exception e)
-			{
-				_status.Text = $"FAILED {e.Message}";
-			}
-		}
-
-		public async Task Run(Expression<Func<Task>> test)
-		{
-			try
-			{
-				_status.Text = "RUNNING";
-				await RunCore(test);
-				_status.Text = "SUCCESS";
-			}
-			catch (Exception e)
-			{
-				_status.Text = $"FAILED {e.Message}";
-			}
-		}
-
-		public async Task Run(MethodInfo test)
-		{
-			try
-			{
-				_status.Text = "RUNNING";
-				await RunCore(test);
-				_status.Text = "SUCCESS";
-			}
-			catch (Exception e)
-			{
-				_status.Text = $"FAILED {e.Message}";
-			}
-		}
-
-		private void RunCore(Expression<Action> test)
+		private Test GetTest(LambdaExpression test)
 		{
 			var testMethod = (test.Body as MethodCallExpression)?.Method;
-			if (testMethod == null || testMethod.Name.IsNullOrWhiteSpace())
+			if (testMethod == null
+				|| testMethod.Name.IsNullOrWhiteSpace()
+				|| !_tests.TryGetValue(testMethod.Name, out var t))
 			{
 				throw new InvalidOperationException("Failed to get test");
 			}
 
-			if (testMethod.GetParameters().Any(p => !p.HasDefaultValue))
-			{
-				throw new InvalidOperationException("The test method must not have any required parameter");
-			}
+			return t;
+		}
 
-			if (!(_testClass.FindName(testMethod.Name + "_Result") is TextBlock output))
+		private void UpdateStatus()
+		{
+			if (_isRunning || _tests.Values.Any(t => t.LastResult == TestResult.Pending))
 			{
-				throw new InvalidOperationException("Failed to get test output");
+				_status.Text = "RUNNING";
 			}
-
-			try
+			else if (_tests.Values.Any(t => t.LastResult == TestResult.Failure))
 			{
-				test.Compile()();
-
-				output.Text = $"🟩 {testMethod.Name}: SUCCESS";
+				_status.Text = "FAILED";
 			}
-			catch (Exception e)
+			else
 			{
-				output.Text = $"🟥 {testMethod.Name}: FAILED ({e.Message})";
-				Console.WriteLine($"{testMethod.Name}: FAILED");
-				Console.WriteLine(e);
+				_status.Text = "SUCCESS";
 			}
 		}
 
-		private async Task RunCore(Expression<Func<Task>> test)
+		private class Test
 		{
-			var testMethod = (test.Body as MethodCallExpression)?.Method;
-			if (testMethod == null || testMethod.Name.IsNullOrWhiteSpace())
-			{
-				throw new InvalidOperationException("Failed to get test");
-			}
+			private readonly TestRunner _owner;
+			private readonly MethodInfo _testMethod;
 
-			if (testMethod.GetParameters().Any(p => !p.HasDefaultValue))
+			public Test(TestRunner owner, MethodInfo testMethod)
 			{
-				throw new InvalidOperationException("The test method must not have any required parameter");
-			}
+				_owner = owner;
+				_testMethod = testMethod;
 
-			if (!(_testClass.FindName(testMethod.Name + "_Result") is TextBlock output))
-			{
-				throw new InvalidOperationException("Failed to get test output");
-			}
-
-			try
-			{
-				await test.Compile()();
-
-				output.Text = $"🟩 {testMethod.Name}: SUCCESS";
-			}
-			catch (Exception e)
-			{
-				output.Text = $"🟥 {testMethod.Name}: FAILED ({e.Message})";
-				Console.WriteLine($"{testMethod.Name}: FAILED");
-				Console.WriteLine(e);
-			}
-		}
-
-		private async Task RunCore(MethodInfo testMethod)
-		{
-			if (testMethod == null || testMethod.Name.IsNullOrWhiteSpace())
-			{
-				throw new InvalidOperationException("Failed to get test");
-			}
-
-			if (testMethod.GetParameters().Any(p => !p.HasDefaultValue))
-			{
-				throw new InvalidOperationException("The test method must not have any required parameter");
-			}
-
-			if (!(_testClass.FindName(testMethod.Name + "_Result") is TextBlock output))
-			{
-				throw new InvalidOperationException("Failed to get test output");
-			}
-
-			try
-			{
-				var result = testMethod.Invoke(_testClass, null);
-
-				if (result is Task t)
+				Name = testMethod.Name;
+				Output = new TextBlock
 				{
-					await t;
-				}
+					Name = Name + "_Result",
+					Text = "🟨 " + Name,
+					TextWrapping = TextWrapping.Wrap,
+					VerticalAlignment = VerticalAlignment.Center
+				};
+			}
 
-				output.Text = $"🟩 {testMethod.Name}: SUCCESS";
-			}
-			catch (TargetInvocationException e)
+			public string Name { get; }
+
+			public TextBlock Output { get; }
+
+			public TestResult LastResult { get; private set; }
+
+			public async Task Run()
 			{
-				output.Text = $"🟥 {testMethod.Name}: FAILED ({e.InnerException?.Message ?? e.Message})";
-				Console.WriteLine($"{testMethod.Name}: FAILED");
-				Console.WriteLine(e.InnerException ?? e);
+				try
+				{
+					LastResult = TestResult.Pending;
+					_owner.UpdateStatus();
+
+					var result = _testMethod.Invoke(_owner._target, null);
+
+					if (result is Task t)
+					{
+						await t;
+					}
+
+					LastResult = TestResult.Success;
+					Output.Text = $"🟩 {_testMethod.Name}: SUCCESS";
+				}
+				catch (TargetInvocationException e)
+				{
+					LastResult = TestResult.Failure;
+					Output.Text = $"🟥 {_testMethod.Name}: FAILED ({e.InnerException?.Message ?? e.Message})";
+					Console.WriteLine($"{_testMethod.Name}: FAILED");
+					Console.WriteLine(e.InnerException ?? e);
+				}
+				catch (Exception e)
+				{
+					LastResult = TestResult.Failure;
+					Output.Text = $"🟥 {_testMethod.Name}: FAILED ({e.Message})";
+					Console.WriteLine($"{_testMethod.Name}: FAILED");
+					Console.WriteLine(e);
+				}
+				finally
+				{
+					_owner.UpdateStatus();
+				}
 			}
-			catch (Exception e)
-			{
-				output.Text = $"🟥 {testMethod.Name}: FAILED ({e.Message})";
-				Console.WriteLine($"{testMethod.Name}: FAILED");
-				Console.WriteLine(e);
-			}
+		}
+
+		private enum TestResult
+		{
+			None = 0,
+			Pending,
+			Success,
+			Failure,
 		}
 	}
 

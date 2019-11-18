@@ -12,13 +12,13 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 	[SampleControlInfo("UIElement")]
 	public sealed partial class TransformToVisual_ScrollViewer : Page
 	{
-		private TestHelper _tests;
+		private readonly TestRunner _tests;
 
 		public TransformToVisual_ScrollViewer()
 		{
 			this.InitializeComponent();
 
-			_tests = new TestHelper(this, TestsOutput);
+			_tests = new TestRunner(this, TestsOutput);
 
 			Loaded += RunTest;
 		}
