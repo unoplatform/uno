@@ -516,5 +516,15 @@ namespace Windows.UI.Xaml
 				}
 			}
 		}
+
+		public override string ToString()
+		{
+			if (FeatureConfiguration.UIElement.RenderToStringWithId && !Name.IsNullOrEmpty())
+			{
+				return $"{base.ToString()}\"{Name}\"";
+			}
+
+			return base.ToString();
+		}
 	}
 }
