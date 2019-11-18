@@ -52,6 +52,10 @@ namespace Windows.ApplicationModel.Resources
 			if (resource.ElementAtOrDefault(0) == '/')
 			{
 				var separatorIndex = resource.IndexOf("/", 1);
+				if (separatorIndex < 1)
+				{
+					return "";
+				}
 				var resourceFile = resource.Substring(1, separatorIndex-1);
 				var resourceName = resource.Substring(separatorIndex + 1);
 				return GetForCurrentView(resourceFile).GetString(resourceName);
