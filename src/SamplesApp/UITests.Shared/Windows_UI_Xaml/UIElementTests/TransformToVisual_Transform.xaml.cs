@@ -26,23 +26,13 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 	[SampleControlInfo("UIElement", "TransformToVisual_Transform")]
 	public sealed partial class TransformToVisual_Transform : UserControl
 	{
+		private TestHelper _tests;
+
 		public TransformToVisual_Transform()
 		{
 			this.InitializeComponent();
 
-			var tests = this
-				.GetType()
-				.GetMethods(BindingFlags.Instance | BindingFlags.Public)
-				.Where(method => method.Name.StartsWith("When_"))
-				.Select(testMethod => testMethod.Name);
-			foreach (var test in tests)
-			{
-				Outputs.Children.Add(new TextBlock
-				{
-					Name = test + "_Result",
-					Text = test
-				});
-			}
+			_tests = new TestHelper(this, Outputs);
 
 			Loaded += TransformToVisual_Transform_Loaded;
 		}
@@ -51,17 +41,15 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 		{
 			await Task.Yield();
 
-			Run(() => When_TransformToRoot());
-			Run(() => When_TransformToRoot_With_TranslateTransform());
-			Run(() => When_TransformToRoot_With_InheritedTranslateTransform_And_Margin());
-			Run(() => When_TransformToParent_With_Margin());
-			Run(() => When_TransformToParent_With_InheritedMargin());
-			Run(() => When_TransformToParent_With_CompositeTransform());
-			Run(() => When_TransformToParent_With_InheritedCompositeTransform_And_Margin());
-			Run(() => When_TransformToAnotherBranch_With_InheritedCompositeTransform_And_Margin());
-
-			// Mark tests as completed
-			TestsStatus.Text = "OK";
+			_tests.Run(
+				() => When_TransformToRoot(),
+				() => When_TransformToRoot_With_TranslateTransform(),
+				() => When_TransformToRoot_With_InheritedTranslateTransform_And_Margin(),
+				() => When_TransformToParent_With_Margin(),
+				() => When_TransformToParent_With_InheritedMargin(),
+				() => When_TransformToParent_With_CompositeTransform(),
+				() => When_TransformToParent_With_InheritedCompositeTransform_And_Margin(),
+				() => When_TransformToAnotherBranch_With_InheritedCompositeTransform_And_Margin());
 		}
 
 		public void When_TransformToRoot()
@@ -202,36 +190,6 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 			Assert.IsTrue(RectCloseComparer.UI.Equals(expected, result));
 		}
 
-		private void Run(Expression<Action> test)
-		{
-			var testMethod = (test.Body as MethodCallExpression)?.Method;
-			if (testMethod == null || testMethod.Name.IsNullOrWhiteSpace())
-			{
-				throw new InvalidOperationException("Failed to get test");
-			}
-
-			if (testMethod.GetParameters().Any(p => !p.HasDefaultValue))
-			{
-				throw new InvalidOperationException("The test method must not have any required parameter");
-			}
-
-			if (!(FindName(testMethod.Name + "_Result") is TextBlock output))
-			{
-				throw new InvalidOperationException("Failed to get test output");
-			}
-
-			try
-			{
-				test.Compile()();
-
-				output.Text = $"{testMethod.Name}: SUCCESS";
-			}
-			catch (Exception e)
-			{
-				output.Text = $"{testMethod.Name}: FAILED ({e.Message})";
-			}
-		}
-
 		private class RectCloseComparer : IEqualityComparer<Rect>
 		{
 			private readonly double _epsilon;
@@ -257,53 +215,277 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 				=> ((int)obj.Width)
 				^ ((int)obj.Height);
 		}
+	}
 
-		private static class Assert
+	internal class TestHelper
+	{
+		private readonly UserControl _testClass;
+		private readonly TextBlock _status;
+
+		public TestHelper(UserControl testClass, StackPanel testsOutput)
 		{
-			public static void IsTrue(bool actual)
-			{
-				if (!actual)
-				{
-					throw new AssertionFailedException(true, actual);
-				}
-			}
+			_status = new TextBlock { Name = "TestsStatus" };
+			testsOutput.Children.Add(_status);
 
-			public static void IsTrue(bool actual, string message)
+			_testClass = testClass;
+			var tests = testClass
+				.GetType()
+				.GetMethods(BindingFlags.Instance | BindingFlags.Public)
+				.Where(method => method.Name.StartsWith("When_"));
+			foreach (var test in tests)
 			{
-				if (!actual)
+				Button play;
+				testsOutput.Children.Add(new StackPanel
 				{
-					throw new AssertionFailedException(true, actual, message);
-				}
-			}
-
-			public static void AreEqual(object expected, object actual)
-			{
-				if (!EqualityComparer<object>.Default.Equals(expected, actual))
-				{
-					throw new AssertionFailedException(expected, actual);
-				}
-			}
-
-			public static void AreEqual(object expected, object actual, string message)
-			{
-				if (!EqualityComparer<object>.Default.Equals(expected, actual))
-				{
-					throw new AssertionFailedException(expected, actual, message);
-				}
+					HorizontalAlignment = HorizontalAlignment.Left,
+					Orientation = Orientation.Horizontal,
+					Children =
+					{
+						(play = new Button
+						{
+							Content = "▶",
+						}),
+						new TextBlock
+						{
+							Name = test.Name + "_Result",
+							Text = "🟨 " + test.Name,
+							TextWrapping = TextWrapping.Wrap,
+							VerticalAlignment = VerticalAlignment.Center
+						}
+					}
+				});
+				play.Click += async (snd, e) => await Run(test);
 			}
 		}
 
-		private class AssertionFailedException : Exception
+		public void Run(params Expression<Action>[] tests)
 		{
-			public AssertionFailedException(object expected, object actual)
-				: base($"Assertion failed\r\n\texpected: '{expected?.ToString() ?? "null"}'\r\n\tactual: '{actual?.ToString() ?? "null"}'")
+			try
 			{
+				_status.Text = "RUNNING";
+				foreach (var test in tests)
+				{
+					RunCore(test);
+				}
+				_status.Text = "SUCCESS";
+			}
+			catch (Exception e)
+			{
+				_status.Text = $"FAILED {e.Message}";
+			}
+		}
+
+		public async Task Run(params Expression<Func<Task>>[] tests)
+		{
+			try
+			{
+				_status.Text = "RUNNING";
+				foreach (var test in tests)
+				{
+					await RunCore(test);
+				}
+				_status.Text = "SUCCESS";
+			}
+			catch (Exception e)
+			{
+				_status.Text = $"FAILED {e.Message}";
+			}
+		}
+
+		public void Run(Expression<Action> test)
+		{
+			try
+			{
+				_status.Text = "RUNNING";
+				RunCore(test);
+				_status.Text = "SUCCESS";
+			}
+			catch (Exception e)
+			{
+				_status.Text = $"FAILED {e.Message}";
+			}
+		}
+
+		public async Task Run(Expression<Func<Task>> test)
+		{
+			try
+			{
+				_status.Text = "RUNNING";
+				await RunCore(test);
+				_status.Text = "SUCCESS";
+			}
+			catch (Exception e)
+			{
+				_status.Text = $"FAILED {e.Message}";
+			}
+		}
+
+		public async Task Run(MethodInfo test)
+		{
+			try
+			{
+				_status.Text = "RUNNING";
+				await RunCore(test);
+				_status.Text = "SUCCESS";
+			}
+			catch (Exception e)
+			{
+				_status.Text = $"FAILED {e.Message}";
+			}
+		}
+
+		private void RunCore(Expression<Action> test)
+		{
+			var testMethod = (test.Body as MethodCallExpression)?.Method;
+			if (testMethod == null || testMethod.Name.IsNullOrWhiteSpace())
+			{
+				throw new InvalidOperationException("Failed to get test");
 			}
 
-			public AssertionFailedException(object expected, object actual, string message)
-				: base($"Assertion failed {message}\r\n\texpected: '{expected?.ToString() ?? "null"}'\r\n\tactual: '{actual?.ToString() ?? "null"}'")
+			if (testMethod.GetParameters().Any(p => !p.HasDefaultValue))
 			{
+				throw new InvalidOperationException("The test method must not have any required parameter");
 			}
+
+			if (!(_testClass.FindName(testMethod.Name + "_Result") is TextBlock output))
+			{
+				throw new InvalidOperationException("Failed to get test output");
+			}
+
+			try
+			{
+				test.Compile()();
+
+				output.Text = $"🟩 {testMethod.Name}: SUCCESS";
+			}
+			catch (Exception e)
+			{
+				output.Text = $"🟥 {testMethod.Name}: FAILED ({e.Message})";
+				Console.WriteLine($"{testMethod.Name}: FAILED");
+				Console.WriteLine(e);
+			}
+		}
+
+		private async Task RunCore(Expression<Func<Task>> test)
+		{
+			var testMethod = (test.Body as MethodCallExpression)?.Method;
+			if (testMethod == null || testMethod.Name.IsNullOrWhiteSpace())
+			{
+				throw new InvalidOperationException("Failed to get test");
+			}
+
+			if (testMethod.GetParameters().Any(p => !p.HasDefaultValue))
+			{
+				throw new InvalidOperationException("The test method must not have any required parameter");
+			}
+
+			if (!(_testClass.FindName(testMethod.Name + "_Result") is TextBlock output))
+			{
+				throw new InvalidOperationException("Failed to get test output");
+			}
+
+			try
+			{
+				await test.Compile()();
+
+				output.Text = $"🟩 {testMethod.Name}: SUCCESS";
+			}
+			catch (Exception e)
+			{
+				output.Text = $"🟥 {testMethod.Name}: FAILED ({e.Message})";
+				Console.WriteLine($"{testMethod.Name}: FAILED");
+				Console.WriteLine(e);
+			}
+		}
+
+		private async Task RunCore(MethodInfo testMethod)
+		{
+			if (testMethod == null || testMethod.Name.IsNullOrWhiteSpace())
+			{
+				throw new InvalidOperationException("Failed to get test");
+			}
+
+			if (testMethod.GetParameters().Any(p => !p.HasDefaultValue))
+			{
+				throw new InvalidOperationException("The test method must not have any required parameter");
+			}
+
+			if (!(_testClass.FindName(testMethod.Name + "_Result") is TextBlock output))
+			{
+				throw new InvalidOperationException("Failed to get test output");
+			}
+
+			try
+			{
+				var result = testMethod.Invoke(_testClass, null);
+
+				if (result is Task t)
+				{
+					await t;
+				}
+
+				output.Text = $"🟩 {testMethod.Name}: SUCCESS";
+			}
+			catch (TargetInvocationException e)
+			{
+				output.Text = $"🟥 {testMethod.Name}: FAILED ({e.InnerException?.Message ?? e.Message})";
+				Console.WriteLine($"{testMethod.Name}: FAILED");
+				Console.WriteLine(e.InnerException ?? e);
+			}
+			catch (Exception e)
+			{
+				output.Text = $"🟥 {testMethod.Name}: FAILED ({e.Message})";
+				Console.WriteLine($"{testMethod.Name}: FAILED");
+				Console.WriteLine(e);
+			}
+		}
+	}
+
+	internal static class Assert
+	{
+		public static void IsTrue(bool actual)
+		{
+			if (!actual)
+			{
+				throw new AssertionFailedException(true, actual);
+			}
+		}
+
+		public static void IsTrue(bool actual, string message)
+		{
+			if (!actual)
+			{
+				throw new AssertionFailedException(true, actual, message);
+			}
+		}
+
+		public static void AreEqual(object expected, object actual)
+		{
+			if (!EqualityComparer<object>.Default.Equals(expected, actual))
+			{
+				throw new AssertionFailedException(expected, actual);
+			}
+		}
+
+		public static void AreEqual(object expected, object actual, string message)
+		{
+			if (!EqualityComparer<object>.Default.Equals(expected, actual))
+			{
+				throw new AssertionFailedException(expected, actual, message);
+			}
+		}
+	}
+
+	internal class AssertionFailedException : Exception
+	{
+		public AssertionFailedException(object expected, object actual)
+			: base($"Assertion failed\r\n\texpected: '{expected?.ToString() ?? "null"}'\r\n\tactual: '{actual?.ToString() ?? "null"}'")
+		{
+		}
+
+		public AssertionFailedException(object expected, object actual, string message)
+			: base($"Assertion failed {message}\r\n\texpected: '{expected?.ToString() ?? "null"}'\r\n\tactual: '{actual?.ToString() ?? "null"}'")
+		{
 		}
 	}
 }

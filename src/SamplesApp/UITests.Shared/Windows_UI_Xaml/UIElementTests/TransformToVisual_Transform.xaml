@@ -24,9 +24,8 @@
 			</ControlTemplate>
 		</controls:SampleControl.Template>
 		<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-			<StackPanel x:Name="Outputs">
-				<TextBlock x:Name="TestsStatus" />
-			</StackPanel>
+			<StackPanel x:Name="Outputs" />
+			
 			<Border x:Name="Border1"
 					HorizontalAlignment="Right"
 					VerticalAlignment="Bottom"
@@ -94,6 +93,7 @@
 						Background="#A000C0"/>
 				</Border>
 			</Border>
+
 		</Grid>
 	</controls:SampleControl>
 </UserControl>
