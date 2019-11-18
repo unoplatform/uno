@@ -69,11 +69,18 @@ namespace Windows.UI.Xaml.Controls
 			{
 				SetTextNative(updatedText);
 			}
+
+			InvalidateMeasure();
 		}
 
 		internal void SetTextNative(string text)
 		{
 			SetProperty("value", text);
+		}
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			return MeasureView(availableSize);
 		}
 
 		internal void SetIsPassword(bool isPassword)

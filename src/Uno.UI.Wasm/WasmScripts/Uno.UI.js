@@ -1237,6 +1237,14 @@ var Uno;
                 ret2.marshal(pReturn);
                 return true;
             }
+            measureElement(element) {
+                const offsetWidth = element.offsetWidth;
+                const offsetHeight = element.offsetHeight;
+                const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
+                const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
+                // +0.5 is added to take rounding into account
+                return [resultWidth + 0.5, resultHeight];
+            }
             measureViewInternal(viewId, maxWidth, maxHeight) {
                 const element = this.getView(viewId);
                 const elementStyle = element.style;
@@ -1244,6 +1252,11 @@ var Uno;
                 let parentElement = null;
                 let parentElementWidthHeight = null;
                 let unconnectedRoot = null;
+                let cleanupUnconnectedRoot = function (owner) {
+                    if (unconnectedRoot !== null) {
+                        owner.removeChild(unconnectedRoot);
+                    }
+                };
                 try {
                     if (!element.isConnected) {
                         // If the element is not connected to the DOM, we need it
@@ -1299,13 +1312,21 @@ var Uno;
                         const imgElement = element;
                         return [imgElement.naturalWidth, imgElement.naturalHeight];
                     }
+                    else if (element instanceof HTMLInputElement) {
+                        const inputElement = element;
+                        cleanupUnconnectedRoot(this.containerElement);
+                        // Create a temporary element that will contain the input's content
+                        var textOnlyElement = document.createElement("p");
+                        textOnlyElement.style.cssText = updatedStyleString;
+                        textOnlyElement.innerText = inputElement.value;
+                        unconnectedRoot = textOnlyElement;
+                        this.containerElement.appendChild(unconnectedRoot);
+                        var textSize = this.measureElement(textOnlyElement);
+                        var inputSize = this.measureElement(element);
+                        return [textSize[0], inputSize[1]];
+                    }
                     else {
-                        const offsetWidth = element.offsetWidth;
-                        const offsetHeight = element.offsetHeight;
-                        const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
-                        const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
-                        // +0.5 is added to take rounding into account
-                        return [resultWidth + 0.5, resultHeight];
+                        return this.measureElement(element);
                     }
                 }
                 finally {
@@ -1314,9 +1335,7 @@ var Uno;
                         parentElement.style.width = parentElementWidthHeight.width;
                         parentElement.style.height = parentElementWidthHeight.height;
                     }
-                    if (unconnectedRoot !== null) {
-                        this.containerElement.removeChild(unconnectedRoot);
-                    }
+                    cleanupUnconnectedRoot(this.containerElement);
                 }
             }
             setImageRawData(viewId, dataPtr, width, height) {
