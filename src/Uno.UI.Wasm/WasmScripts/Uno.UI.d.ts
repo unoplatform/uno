@@ -448,6 +448,7 @@ declare namespace Uno.UI {
         measureViewNative(pParams: number, pReturn: number): boolean;
         private static MAX_WIDTH;
         private static MAX_HEIGHT;
+        private measureElement;
         private measureViewInternal;
         setImageRawData(viewId: number, dataPtr: number, width: number, height: number): string;
         /**
