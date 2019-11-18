@@ -1048,7 +1048,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                     if (!containsDefaultCase)
                     {
                         var msg = customThemes.Any()
-                            ? $"$\"The themed resource {resourcePropertyName} cannot be found for custom theme \\\"{{{{currentCustomTheme}}}}\\\", theme={{{{currentTheme}}}}.\""
+                            ? $"$\"The themed resource {resourcePropertyName} cannot be found for custom theme \\\"{{{{currentCustomTheme}}}}\\\".\""
                             : $"$\"The themed resource {resourcePropertyName} cannot be found for theme {{{{currentTheme}}}}.\"";
                         writer.AppendLine();
                         writer.AppendLineInvariant($"throw new InvalidOperationException({msg});");
