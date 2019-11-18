@@ -80,7 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.2</Version>
+      <Version>12.0.3</Version>
     </PackageReference>
     <PackageReference Include="Uno.CodeGen">
       <Version>1.32.0</Version>
@@ -105,6 +105,10 @@
     <ProjectReference Include="..\..\Uno.UI.Maps\Uno.UI.Maps.csproj">
       <Project>{f25ccf70-5a21-4245-ae4e-342bc55f9e86}</Project>
       <Name>Uno.UI.Maps</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj">
+      <Project>{80798130-cb7e-4968-b4f6-554cc0fc8feb}</Project>
+      <Name>Uno.UI.RemoteControl</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj">
       <Project>{028f3ee0-d51b-469a-a72c-c272585dcd40}</Project>
