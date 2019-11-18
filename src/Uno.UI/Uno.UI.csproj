@@ -348,6 +348,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="UI\Xaml\Controls\ScrollContentPresenter\IScrollContentPresenter.wasm.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="UI\Xaml\Controls\ScrollContentPresenter\IScrollContentPresenter.wasm.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
 	  <None Update="BaseActivity.Callbacks.Implementation.Android.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>
 	    <LastGenOutput>BaseActivity.Callbacks.Implementation.Android.cs</LastGenOutput>
