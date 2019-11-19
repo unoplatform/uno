@@ -48,6 +48,44 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 
 		[Test]
 		[AutoRetry]
+		public void Affect_Measurement_polygon()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Shapes.PolygonPage");
+
+			_app.WaitForElement("DPolygon");
+			_app.Marked("ClearShape").Tap();
+			TakeScreenshot($"PolygonPage - ClearShape");
+
+			_app.Marked("ChangeShape").Tap();
+			var widthzize = _app.Query(_app.Marked("DPolygon")).First().Rect.Width;
+
+			if (widthzize == 0)
+				Assert.Fail("Shape not changed");
+
+			TakeScreenshot($"PolygonPage - ChangeShape-After clear");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Affect_Measurement_polyline()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Shapes.PolylinePage");
+
+			_app.WaitForElement("DPolyline");
+			_app.Marked("ClearShape").Tap();
+			TakeScreenshot($"PolylinePage - ClearShape");
+
+			_app.Marked("ChangeShape").Tap();
+			var widthzize = _app.Query(_app.Marked("DPolyline")).First().Rect.Width;
+
+			if(widthzize == 0)
+				Assert.Fail("Shape not changed");
+
+			TakeScreenshot($"PolylinePage - ChangeShape-After clear");
+		}
+
+		[Test]
+		[AutoRetry]
 		public void Draw_ellipse()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Shapes.EllipsePage");
