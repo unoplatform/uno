@@ -167,7 +167,13 @@ namespace Windows.UI.Xaml
 #if DEBUG
 		private long _arrangeCount = 0;
 #endif
-		
+
+		/// <summary>
+		/// Natively arranges and clips an element.
+		/// </summary>
+		/// <param name="rect">The dimensions to apply to the element</param>
+		/// <param name="clipToBounds">Whether the element should be clipped to its bounds</param>
+		/// <param name="clipRect">The Clip rect to set, if any</param>
 		protected internal void ArrangeElementNative(Rect rect, bool clipToBounds, Rect? clipRect)
 		{
 			_nativeLayoutSlot = rect;

@@ -40,6 +40,18 @@ namespace Uno.UI
 			/// Enable UIElement.ToString() to return the element's unique ID
 			/// </summary>
 			public static bool RenderToStringWithId { get; set; } = true;
+
+			/// <summary>
+			/// Enables the assignation of properties from the XAML visual tree as DOM attributes: Height -> "xamlheight",
+			/// HorizontalAlignment -> "xamlhorizontalalignment" etc. 
+			/// </summary>
+			/// <remarks>
+			/// This should only be enabled for debug builds, but can greatly aid layout debugging.
+			///
+			/// Note: for release builds of Uno, if the flag is set, attributes will be set on loading and *not* updated if
+			/// the values change subsequently. This restriction doesn't apply to debug Uno builds.
+			/// </remarks>
+			public static bool AssignDOMXamlProperties { get; set; } = false;
 #endif
 		}
 
