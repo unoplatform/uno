@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System.Linq;
+using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
@@ -31,6 +32,37 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			var recth = _app.Marked("recth").FirstResult().Rect;
 
 			sut.X.Should().Be(recth.X, "Invalid X position");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_RoundedCorners()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_RoundedCorners");
+
+			var textBox1 = _app.Marked("textBox1");
+			var textBox2 = _app.Marked("textBox2");
+
+			var textBox1Result_Before = _app.Query(textBox1).First();
+			var textBox2Result_Before = _app.Query(textBox2).First();
+
+			textBox1.Tap();
+			textBox1.EnterText("hello 01");
+
+			_app.WaitForText(textBox1, "hello 01");
+
+			textBox2.Tap();
+			textBox2.EnterText("hello 02");
+
+			_app.WaitForText(textBox2, "hello 02");
+
+			var textBox1Result_After = _app.Query(textBox1).First();
+			var textBox2Result_After = _app.Query(textBox2).First();
+
+			textBox1Result_After.Rect.Width.Should().Be(textBox1Result_Before.Rect.Width);
+			textBox1Result_After.Rect.Height.Should().Be(textBox1Result_Before.Rect.Height);
+			textBox1Result_After.Rect.X.Should().Be(textBox1Result_Before.Rect.X);
+			textBox1Result_After.Rect.Y.Should().Be(textBox1Result_Before.Rect.Y);
 		}
 	}
 }

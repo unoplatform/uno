@@ -172,12 +172,7 @@ namespace Windows.UI.Xaml.Controls
 				bool allowClipToSlot;
 				bool needsClipToSlot;
 
-				if (Panel.RenderTransform != null)
-				{
-					allowClipToSlot = false;
-					needsClipToSlot = false;
-				}
-				else if (Panel is ICustomClippingElement customClippingElement)
+				if (Panel is ICustomClippingElement customClippingElement)
 				{
 					// Some controls may control itself how clipping is applied
 					allowClipToSlot = customClippingElement.AllowClippingToLayoutSlot;
@@ -212,23 +207,25 @@ namespace Windows.UI.Xaml.Controls
 					.AtLeast(minSize)
 					.AtLeast(default); // 0.0,0.0
 
+				// We have to choose max between _unclippedDesiredSize and maxSize here, because
+				// otherwise setting of max property could cause arrange at less then _unclippedDesiredSize.
+				// Clipping by Max is needed to limit stretch here
 				var effectiveMaxSize = Max(_unclippedDesiredSize, maxSize);
-				arrangeSize = arrangeSize
-					.AtMost(finalRect.Size)
-					.AtMost(effectiveMaxSize);
 
-				if (allowClipToSlot && !needsClipToSlot)
+				if (allowClipToSlot)
 				{
 					if (IsLessThanAndNotCloseTo(effectiveMaxSize.Width, arrangeSize.Width))
 					{
 						_logDebug?.Debug($"{this}: (effectiveMaxSize.Width) {effectiveMaxSize.Width} < {arrangeSize.Width}: NEEDS CLIPPING.");
 						needsClipToSlot = true;
+						arrangeSize.Width = effectiveMaxSize.Width;
 					}
 
-					else if (IsLessThanAndNotCloseTo(effectiveMaxSize.Height, arrangeSize.Height))
+					if (IsLessThanAndNotCloseTo(effectiveMaxSize.Height, arrangeSize.Height))
 					{
 						_logDebug?.Debug($"{this}: (effectiveMaxSize.Height) {effectiveMaxSize.Height} < {arrangeSize.Height}: NEEDS CLIPPING.");
 						needsClipToSlot = true;
+						arrangeSize.Height = effectiveMaxSize.Height;
 					}
 				}
 

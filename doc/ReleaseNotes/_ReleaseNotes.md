@@ -3,7 +3,7 @@
 ## Next version
 
 ### Features
-
+* support /[file]/[name] format in ResourceLoader.GetForCurrentView().GetString()
 * [#2039] Added support for Xaml type conversions using CreateFromStringAttribute.
 * [#] Support for `Windows.Devices.Lights.Lamp` on iOS, Android.
 * [#1970](https://github.com/unoplatform/uno/pull/1970) Added support for `AnalyticsInfo` properties on iOS, Android and WASM
@@ -93,6 +93,8 @@
 * XAML Hot Reload support for iOS, Android and Windows
 * Add support for GitPod Workspace and prebuilds
 * Add Android support for `CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar` to programatically draw under the status bar
+* [WASM] `ScrollViewer.ChangeView` is now supported
+* [Wasm] Add the ability to focus a TextBox by clicking its header
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
@@ -105,6 +107,7 @@
 * [iOS] If you set the `ManipulationMode` to something else than `System` or `All`, the [DelaysContentTouches](https://developer.apple.com/documentation/uikit/uiscrollview/1619398-delayscontenttouches) is going to be disabled on all parent `ScrollViewer`
 * [#1237] Static resources defined in App.xaml were not processed and registered properly
     > This change might break the compilation for projects that define duplicate resources in other globally accessible resource dictionaries. Adjustments to remove duplicate resources may be necessary.
+ * [WASM] The tranform returned by `UIElement.TransformToVisual` is now including scale, rotation or any custom transformation that was declard on a parent element (transform was only including translate components)
 
 ### Bug fixes
 * Font size, used for ComboBoxItems, are same as in ComboBox content (not smaller)
@@ -190,6 +193,8 @@
 * [iOS] #977 Fix exception when setting MediaPlayerElement.Stretch in XAML.
 * #1708 Fix initial Flyout placement and window resize placement
 * [Android] #2007 ComboBox does not take Window.VisibleBounds to position its popup
+* [Wasm] Fixes the measure of a TextBoxView #2034 #2095
+* [Android] [Wasm] Recent clipping improvements were incompleted. Fixed a case where a control was allowed to draw itself to use more than available place in the _arrange_ phase.
 
 ## Release 1.45.0
 ### Features
