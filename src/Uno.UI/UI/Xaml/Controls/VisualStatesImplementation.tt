@@ -52,15 +52,6 @@ namespace <#= mixin.NamespaceName #>
 		private const string __uncheckedState = "Unchecked";
 #endif
 
-		private static readonly RoutedEventHandler _updateAllStatesOnEvent = (snd, e) => ((<#= mixin.ClassName #>)snd).UpdateAllStates();
-#if <#= mixin.HasCommonStates #>
-		private static readonly PointerEventHandler _updateCommonStatesOnPointerEvent = (snd, e) => ((<#= mixin.ClassName #>)snd).UpdateCommonStates(true);
-		private static readonly PropertyChangedCallback _updateCommonStatesOnPropertyChanged = (snd, e) => ((<#= mixin.ClassName #>)snd).UpdateCommonStates(true);
-#endif
-#if <#= mixin.HasCheckedStates #>
-		private static readonly PropertyChangedCallback _updateCheckedStatesOnPropertyChanged = (snd, e) => ((<#= mixin.ClassName #>)snd).UpdateCheckedStates(true);
-#endif
-
 #if <#= mixin.HasCommonStates #> || <#= mixin.HasCheckedStates #>
 #if <#= (mixin.ClassName != "Button").ToString().ToLowerInvariant() #>
 		static <#= mixin.ClassName #>()
@@ -76,14 +67,14 @@ namespace <#= mixin.NamespaceName #>
 		{
 			var type = typeof(<#= mixin.ClassName #>);
 
-			IsEnabledProperty.GetMetadata(type).MergePropertyChangedCallback(_updateCommonStatesOnPropertyChanged);
+			IsEnabledProperty.GetMetadata(type).MergePropertyChangedCallback(OnPropertyChangedUpdateCommonStates);
 #if <#= mixin.HasCommonFocusedState #>
-			FocusStateProperty.GetMetadata(type).MergePropertyChangedCallback(_updateCommonStatesOnPropertyChanged);
+			FocusStateProperty.GetMetadata(type).MergePropertyChangedCallback(OnPropertyChangedUpdateCommonStates);
 #endif
 #if <#= mixin.HasCommonCheckedState #> || <#= mixin.HasCombinedCheckedState #>
-			IsCheckedProperty.GetMetadata(type).MergePropertyChangedCallback(_updateCommonStatesOnPropertyChanged);
+			IsCheckedProperty.GetMetadata(type).MergePropertyChangedCallback(OnPropertyChangedUpdateCommonStates);
 #elif <#= mixin.HasCheckedStates #>
-			IsCheckedProperty.GetMetadata(type).MergePropertyChangedCallback(_updateCheckedStatesOnPropertyChanged);
+			IsCheckedProperty.GetMetadata(type).MergePropertyChangedCallback(OnPropertyChangedUpdateCheckedStates);
 #endif
 		}
 #endif
@@ -93,23 +84,56 @@ namespace <#= mixin.NamespaceName #>
 		/// </summary>
 		private void InitializeVisualStates()
 		{
-			Loaded += _updateAllStatesOnEvent;
+			Loaded += OnRoutedEventUpdateAllStates;
 
 #if <#= mixin.HasCommonOverState #>
-			PointerEntered += _updateCommonStatesOnPointerEvent;
-			PointerExited += _updateCommonStatesOnPointerEvent;
+			InsertHandler(PointerEnteredEvent, OnPointerEventUpdateCommonStates, handledEventsToo: false);
+			InsertHandler(PointerExitedEvent, OnPointerEventUpdateCommonStates, handledEventsToo: false);
 #endif
 #if <#= mixin.HasCommonPressedState #> 
-			PointerPressed += _updateCommonStatesOnPointerEvent;
-			PointerReleased += _updateCommonStatesOnPointerEvent;
+			InsertHandler(PointerPressedEvent, OnPointerEventUpdateCommonStates, handledEventsToo: false);
+			InsertHandler(PointerReleasedEvent, OnPointerEventUpdateCommonStates, handledEventsToo: false);
 #endif
 #if <#= mixin.HasCommonPressedState #> || <#= mixin.HasCommonOverState #>
-			PointerCanceled += _updateCommonStatesOnPointerEvent;
-			PointerCaptureLost += _updateCommonStatesOnPointerEvent;
+			InsertHandler(PointerCanceledEvent, OnPointerEventUpdateCommonStates, handledEventsToo: false);
+			InsertHandler(PointerCaptureLostEvent, OnPointerEventUpdateCommonStates, handledEventsToo: false);
 #endif
 
 			UpdateAllStates();
 		}
+
+		private static readonly RoutedEventHandler OnRoutedEventUpdateAllStates = (snd, e) =>
+		{
+			if (snd is <#= mixin.ClassName #> elt)
+			{
+				elt.UpdateAllStates();
+			}
+		};
+#if <#= mixin.HasCommonStates #>
+		private static readonly PointerEventHandler OnPointerEventUpdateCommonStates = (snd, e) =>
+		{
+			if (snd is <#= mixin.ClassName #> elt)
+			{
+				elt.UpdateCommonStates(true);
+			}
+		};
+		private static readonly PropertyChangedCallback OnPropertyChangedUpdateCommonStates = (snd, e) =>
+		{
+			if (snd is <#= mixin.ClassName #> elt)
+			{
+				elt.UpdateCommonStates(true);
+			}
+		};
+#endif
+#if <#= mixin.HasCheckedStates #>
+		private static readonly PropertyChangedCallback OnPropertyChangedUpdateCheckedStates = (snd, e) =>
+		{
+			if (snd is <#= mixin.ClassName #> elt)
+			{
+				elt.UpdateCheckedStates(true);
+			}
+		};
+#endif
 
 		private void UpdateAllStates()
 		{
