@@ -22,36 +22,42 @@ In short:
 * try to run converted app, and test it
 
 
+## create Uno project
+You have two options:
 
-## adding new project
-
+### adding new project to existing solution
 First, open your app solution in VStudio. Then using Solution Explorer window:
-* add new project (right click on Solution, Add, New Project, Visual C#, Uno Plaform, Cross-Plaform App (Uno Platform), using name as e.g. your previous project (APPNAME) with "\_Uno" suffix. In effect, APPNAME_Uno folder would be created, and inside it - folders as APPNAME_Uno.Shared, APPNAME_Uno.Droid, etc. - one project per one target platform.
+* add new project (right click on Solution, Add, New Project, Visual C#, Uno Plaform, Cross-Plaform App (Uno Platform), using name as e.g. your old (existing, previous) project (APPNAME) with "\_Uno" suffix. In effect, APPNAME_Uno folder would be created, and inside it - folders as APPNAME_Uno.Shared, APPNAME_Uno.Droid, etc. - one project per one target platform.
 * for now, you can Unload your APPNAME_Uno.Droid, .iOS and .WASM projects (right click in Solution Explorer). Why? To make VStudio using less memory and start faster.
+* while reading next parts of this guide, treat `APPNAME[_Uno].` as `APPNAME_Uno`.
+
+### creating new solution
+* create new solution with single Uno project within, using same name as your old (existing, previous) project (APPNAME). In effect, APPNAME folder would be created, and inside it - folders as APPNAME.Shared, APPNAME.Droid, etc. - one project per one target platform.
+* while reading next parts of this guide, treat `APPNAME[_Uno].` as `APPNAME`.
 
 ## converting your code
-In simple words, you have to copy all your content from APPNAME to APPNAME_Uno.Shared; all your XAML pages, all code behind it (.cs), and replace folder Strings (delete just generated Strings folders). Copy also all other files and folders you created in APPNAME.
-Use Solution Explorer for this.
+In simple words, you have to copy all your content from old project (APPNAME) to APPNAME\[\_Uno\].Shared; all your XAML pages, all code behind it (.cs), and replace folder Strings (delete just generated Strings folders). Copy also all other files and folders you created in previous project.
+If you created new project in existing Solution, use Solution Explorer for this.
 
 If your code is in VB, you can use some simple translators, e.g. https://codeconverter.icsharpcode.net/ . It is not perfect translation, some issues you would have to correct manually, but it is a good start. So, in Solution Explorer, for each XAML page:
-* open .xaml file from APPNAME,
-* open .vb file from APPNAME,
-* right click on APPNAME_Uno.Shared, Add, New, C#, XAML, Blank Page - use same name as in APPNAME project,
+* open .xaml file from old APPNAME,
+* open .vb file from old APPNAME,
+* right click on APPNAME\[\_Uno\].Shared, Add, New, C#, XAML, Blank Page - use same name as in APPNAME project,
 * open both .xaml and .cs file you just created,
 * copy contens of XAML page
 * convert .vb code to .cs code, and insert it to .cs page - but do not remove constructor, with `this.InitializeComponent();`. From App.xaml.vb, convert only code you added. Take care of "namespace" - should be same as in .xaml (and as in manifest), without "\_Uno" and "Shared" sufixes.
 
-You have to copy also Package.appxmanifest (especially, app capabilities etc.) and Assets folder - but to APPNAME_Uno.UWP, not to APPNAME_Uno.Shared. 
+You have to copy also Package.appxmanifest (especially, app capabilities etc.) and Assets folder - but to APPNAME\[\_Uno\].UWP, not to APPNAME\[\_Uno\].Shared. 
 
 Now, you can Unload your (old) APPNAME project (right click in Solution Explorer), not only to make VStudio using less memory and start faster, but also to be sure you don't mistakenly change something in your old code.
 
 ## check conversion to Uno (UWP)
-Try to build your app - not Solution, but only UWP project (choose Debug, and right click APPNAME.UWP, Build). If nothing unexpected happens (no errors), your first step of porting app is done.
+Try to build your app - not Solution, but only UWP project (choose Debug, and right click APPNAME\[\_Uno\].UWP, Build). If nothing unexpected happens (no errors), your first step of porting app is done.
 Build UWP project, check if it is working as expected.
 You can upload new version of your app Microsoft Store. 
 
 ## check if everything is implemented in Uno
-Now, reload APPNAME_Uno.Droid project (right click on it in Solution Explorer). Give VStudio some time (in minutes). It will rebuild Intellisense database.
+Now, reload APPNAME\[\_Uno\].Droid project (right click on it in Solution Explorer). Give VStudio some time (in minutes). It will rebuild Intellisense database.
 
 Look into ErrorList window for warnings "is not implemented in Uno", e.g.
 `"Warning Uno0001 Windows.UI.Xaml.Application.Exit() is not implemented in Uno".`
@@ -128,7 +134,7 @@ Before you build/run app as Android, you should open .Droid project properties (
 * version number - (integer) number of your build
 * version name - (string) set it to same value as in Manifest for UWP, in format 1.2.3.4
 * minimum API version
-* permissions - see [permission dictionary](https://developer.android.com/reference/android/Manifest.permission.html)
+* permissions - see [permission dictionary](https://developer.android.com/reference/android/Manifest.permission.html) and [features](https://developer.android.com/guide/topics/manifest/uses-feature-element) - it is not sufficient to add e.g. uses-permission for location, you have to add uses-feature location also.
 * you can also convert .UWP\Assets\SmallTile.scale-100.png to .Droid\Resources\drawable\Icon.png by resizing from 71x71 to 72x72
 
 ### compile and test
