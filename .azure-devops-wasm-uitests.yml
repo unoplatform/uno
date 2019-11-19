@@ -23,6 +23,11 @@ jobs:
     displayName: Cache NuGet packages
 
   - bash: |
+      sudo cert-sync /etc/ssl/certs/ca-certificates.crt
+
+    displayName: 'Update the SSL trusted certificates'
+    
+  - bash: |
       source /emsdk/emsdk_env.sh
       msbuild /r /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false
 
