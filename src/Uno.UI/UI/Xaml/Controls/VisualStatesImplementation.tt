@@ -204,16 +204,16 @@ namespace <#= mixin.NamespaceName #>
 				return __pressedState;
 			}
 #endif
-#if <#= mixin.HasCommonOverState #>
-			else if (IsPointerOver)
-			{
-				return __pointerOverState;
-			}
-#endif
 #if <#= mixin.HasCommonFocusedState #>
 			else if (FocusState != FocusState.Unfocused)
 			{
 				return __focusedState;
+			}
+#endif
+#if <#= mixin.HasCommonOverState #>
+			else if (IsPointerOver)
+			{
+				return __pointerOverState;
 			}
 #endif
 			else
