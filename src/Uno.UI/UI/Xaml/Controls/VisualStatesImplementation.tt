@@ -74,10 +74,6 @@ namespace <#= mixin.NamespaceName #>
 #if <#= mixin.HasCommonStates #>
 			this.IsEnabledChanged += On<#= mixin.ClassName #>IsEnabledChanged;
 
-#if <#= mixin.HasCommonFocusedState #>
-			this.FocusChange += On<#= mixin.ClassName #>FocusChange;
-#endif
-
 #if <#= mixin.HasCommonCheckedState #> || <#= mixin.HasCombinedCheckedState #>
 			RegisterToCheckedStateChanges();
 #endif
@@ -94,10 +90,6 @@ namespace <#= mixin.NamespaceName #>
 		{
 #if <#= mixin.HasCommonStates #>
 			this.IsEnabledChanged -= On<#= mixin.ClassName #>IsEnabledChanged;
-
-#if <#= mixin.HasCommonFocusedState #>
-			this.FocusChange -= On<#= mixin.ClassName #>FocusChange;
-#endif
 #endif
 		}
 
@@ -168,10 +160,14 @@ namespace <#= mixin.NamespaceName #>
 #endif
 
 #if <#= mixin.HasCommonFocusedState #>
-		private void On<#= mixin.ClassName #>FocusChange(object sender, FocusChangeEventArgs e)
+		protected override void OnFocusStateChanged(FocusState oldState, FocusState newState)
 		{
+			base.OnFocusStateChanged(oldState, newState);
+			OnFocusStateChangedPartial(oldState, newState);
+
 			this.UpdateCommonStates(true);
 		}
+		partial void OnFocusStateChangedPartial(FocusState oldValue, FocusState newValue);
 #endif
 
 		private void UpdateCommonStates(bool useTransitions)
@@ -214,7 +210,7 @@ namespace <#= mixin.NamespaceName #>
 		private string GetCommonState()
 		{
 			var targetState = __normalState;
-			if (!this.IsEnabled)
+			if (!IsEnabled)
 			{
 				return __disabledState;
 			}
@@ -231,7 +227,7 @@ namespace <#= mixin.NamespaceName #>
 			}
 #endif
 #if <#= mixin.HasCommonFocusedState #>
-			else if (this.IsFocused)
+			else if (FocusState != FocusState.Unfocused)
 			{
 				return __focusedState;
 			}
