@@ -47,6 +47,9 @@ namespace Uno.UI
 			/// </summary>
 			/// <remarks>
 			/// This should only be enabled for debug builds, but can greatly aid layout debugging.
+			///
+			/// Note: for release builds of Uno, if the flag is set, attributes will be set on loading and *not* updated if
+			/// the values change subsequently. This restriction doesn't apply to debug Uno builds.
 			/// </remarks>
 			public static bool AssignDOMXamlProperties { get; set; } = false;
 #endif

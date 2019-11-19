@@ -308,8 +308,11 @@ namespace Windows.UI.Xaml
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: Thickness.Empty,
-					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure,
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
 					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
 				)
 		);
 
@@ -329,8 +332,11 @@ namespace Windows.UI.Xaml
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: Xaml.HorizontalAlignment.Stretch,
-					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure,
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
 					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
 				)
 			);
 
@@ -350,8 +356,11 @@ namespace Windows.UI.Xaml
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: Xaml.VerticalAlignment.Stretch,
-					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure,
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
 					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
 				)
 			);
 
@@ -371,8 +380,11 @@ namespace Windows.UI.Xaml
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: double.NaN,
-					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure,
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
 					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
 				)
 			);
 
@@ -392,8 +404,11 @@ namespace Windows.UI.Xaml
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: double.NaN,
-					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure,
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
 					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
 				)
 			);
 
@@ -413,8 +428,11 @@ namespace Windows.UI.Xaml
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: 0.0d,
-					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure,
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
 					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
 				)
 			);
 
@@ -434,9 +452,12 @@ namespace Windows.UI.Xaml
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: 0.0d,
-					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure,
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
 					propertyChangedCallback: OnGenericPropertyUpdated
-				)
+#endif
+					)
 			);
 
 		public double MinHeight
@@ -455,9 +476,12 @@ namespace Windows.UI.Xaml
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: double.PositiveInfinity,
-					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure,
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
 					propertyChangedCallback: OnGenericPropertyUpdated
-				)
+#endif
+					)
 			);
 
 		public double MaxWidth
@@ -476,9 +500,12 @@ namespace Windows.UI.Xaml
 				typeof(FrameworkElement),
 				new FrameworkPropertyMetadata(
 					defaultValue: double.PositiveInfinity,
-					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure,
+					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
 					propertyChangedCallback: OnGenericPropertyUpdated
-				)
+#endif
+					)
 			);
 
 		public double MaxHeight
@@ -498,7 +525,7 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		private void UpdateDOMProperties()
 		{
-			if (IsLoaded && FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties && IsLoaded)
 			{
 				SetXamlProperty(nameof(Margin), Margin);
 				SetXamlProperty(nameof(HorizontalAlignment), HorizontalAlignment);
