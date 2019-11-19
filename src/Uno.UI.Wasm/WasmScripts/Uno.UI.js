@@ -1323,6 +1323,7 @@ var Uno;
                         this.containerElement.appendChild(unconnectedRoot);
                         var textSize = this.measureElement(textOnlyElement);
                         var inputSize = this.measureElement(element);
+                        // Take the width of the inner text, but keep the height of the input element.
                         return [textSize[0], inputSize[1]];
                     }
                     else {
