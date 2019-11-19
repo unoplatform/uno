@@ -12,7 +12,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml
 	[TestFixture]
 	public class UIElementTests : SampleControlUITestBase
 	{
-		// TODO: convert this to RuntimeTests
+		// TODO: convert this to RuntimeTests https://github.com/unoplatform/uno/issues/2114#issuecomment-555209397
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)]
@@ -23,7 +23,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml
 			_app.WaitForText("TestsStatus", "SUCCESS");
 		}
 
-		// TODO: convert this to RuntimeTests
+		// TODO: convert this to RuntimeTests https://github.com/unoplatform/uno/issues/2114#issuecomment-555209397
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)]
