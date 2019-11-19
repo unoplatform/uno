@@ -598,6 +598,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnFocusStateChanged(FocusState oldValue, FocusState newValue)
 		{
+			base.OnFocusStateChanged(oldValue, newValue);
 			OnFocusStateChangedPartial(newValue);
 
 			if (newValue == FocusState.Unfocused)
