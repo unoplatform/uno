@@ -596,7 +596,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
-		partial void OnFocusStateChangedPartial(FocusState oldValue, FocusState newValue)
+		protected override void OnFocusStateChanged(FocusState oldValue, FocusState newValue)
 		{
 			OnFocusStateChangedPartial(newValue);
 

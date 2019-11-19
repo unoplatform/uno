@@ -31,25 +31,61 @@ namespace <#= mixin.NamespaceName #>
 	public partial class <#= mixin.ClassName #>
 	{
 #if <#= mixin.HasCommonStates #>
-		private static readonly string __normalState = "Normal";
-		private static readonly string __disabledState = "Disabled";
+		private const string __normalState = "Normal";
+		private const string __disabledState = "Disabled";
 
 #if <#= mixin.HasCommonPressedState #>
-		private static readonly string __pressedState = "Pressed";
+		private const string __pressedState = "Pressed";
 #endif
 #if <#= mixin.HasCommonOverState #>
-		private static readonly string __pointerOverState = "PointerOver";
+		private const string __pointerOverState = "PointerOver";
 #endif
 
 #if <#= mixin.HasCommonFocusedState #>
-		private static readonly string __focusedState = "Focused";
+		private const string __focusedState = "Focused";
 #endif
 #endif
 
 #if <#= mixin.HasCheckedStates #> || <#= mixin.HasCombinedCheckedState #> || <#= mixin.HasCommonCheckedState #>
-		private static readonly string __indeterminateState = "Indeterminate";
-		private static readonly string __checkedState = "Checked";
-		private static readonly string __uncheckedState = "Unchecked";
+		private const string __indeterminateState = "Indeterminate";
+		private const string __checkedState = "Checked";
+		private const string __uncheckedState = "Unchecked";
+#endif
+
+		private static readonly RoutedEventHandler _updateAllStatesOnEvent = (snd, e) => ((<#= mixin.ClassName #>)snd).UpdateAllStates();
+#if <#= mixin.HasCommonStates #>
+		private static readonly PointerEventHandler _updateCommonStatesOnPointerEvent = (snd, e) => ((<#= mixin.ClassName #>)snd).UpdateCommonStates(true);
+		private static readonly PropertyChangedCallback _updateCommonStatesOnPropertyChanged = (snd, e) => ((<#= mixin.ClassName #>)snd).UpdateCommonStates(true);
+#endif
+#if <#= mixin.HasCheckedStates #>
+		private static readonly PropertyChangedCallback _updateCheckedStatesOnPropertyChanged = (snd, e) => ((<#= mixin.ClassName #>)snd).UpdateCheckedStates(true);
+#endif
+
+#if <#= mixin.HasCommonStates #> || <#= mixin.HasCheckedStates #>
+#if <#= (mixin.ClassName != "Button").ToString().ToLowerInvariant() #>
+		static <#= mixin.ClassName #>()
+		{
+			StaticInitializeVisualStates();
+		}
+#endif
+
+		/// <summary>
+		/// This method must be called from the static constructor in the non-generated part of the class in order to register visual state changes.
+		/// </summary>
+		private static void StaticInitializeVisualStates()
+		{
+			var type = typeof(<#= mixin.ClassName #>);
+
+			IsEnabledProperty.GetMetadata(type).MergePropertyChangedCallback(_updateCommonStatesOnPropertyChanged);
+#if <#= mixin.HasCommonFocusedState #>
+			FocusStateProperty.GetMetadata(type).MergePropertyChangedCallback(_updateCommonStatesOnPropertyChanged);
+#endif
+#if <#= mixin.HasCommonCheckedState #> || <#= mixin.HasCombinedCheckedState #>
+			IsCheckedProperty.GetMetadata(type).MergePropertyChangedCallback(_updateCommonStatesOnPropertyChanged);
+#elif <#= mixin.HasCheckedStates #>
+			IsCheckedProperty.GetMetadata(type).MergePropertyChangedCallback(_updateCheckedStatesOnPropertyChanged);
+#endif
+		}
 #endif
 
 		/// <summary>
@@ -57,119 +93,35 @@ namespace <#= mixin.NamespaceName #>
 		/// </summary>
 		private void InitializeVisualStates()
 		{
-			this.Loaded += On<#= mixin.ClassName #>Loaded;
-			this.Unloaded += On<#= mixin.ClassName #>Unloaded;
-
-#if <#= mixin.HasCommonStates #>
-			UpdateCommonStates(false);
-#endif
-
-#if <#= mixin.HasCheckedStates #>
-			UpdateCheckedStates(false);
-#endif
-		}
-
-		private void On<#= mixin.ClassName #>Loaded(object sender, RoutedEventArgs e)
-		{
-#if <#= mixin.HasCommonStates #>
-			this.IsEnabledChanged += On<#= mixin.ClassName #>IsEnabledChanged;
-
-#if <#= mixin.HasCommonCheckedState #> || <#= mixin.HasCombinedCheckedState #>
-			RegisterToCheckedStateChanges();
-#endif
-			UpdateCommonStates(false);
-#endif
-
-#if <#= mixin.HasCheckedStates #>
-			RegisterToCheckedStateChanges();
-			UpdateCheckedStates(false);
-#endif
-		}
-
-		private void On<#= mixin.ClassName #>Unloaded(object sender, RoutedEventArgs e)
-		{
-#if <#= mixin.HasCommonStates #>
-			this.IsEnabledChanged -= On<#= mixin.ClassName #>IsEnabledChanged;
-#endif
-		}
-
-#if <#= mixin.HasCommonStates #>
-		private void On<#= mixin.ClassName #>IsEnabledChanged(object sender, EventArgs e)
-		{
-			this.UpdateCommonStates(true);
-		}
+			Loaded += _updateAllStatesOnEvent;
 
 #if <#= mixin.HasCommonOverState #>
-		protected override void OnPointerEntered(PointerRoutedEventArgs args)
-		{
-			base.OnPointerEntered(args);
-			OnPointerEnteredPartial(args);
-			
-			this.UpdateCommonStates(true);
-		}
-		partial void OnPointerEnteredPartial(PointerRoutedEventArgs args);
-
-		protected override void OnPointerExited(PointerRoutedEventArgs args)
-		{
-			base.OnPointerExited(args);
-			OnPointerExitedPartial(args);
-			
-			this.UpdateCommonStates(true);
-		}
-		partial void OnPointerExitedPartial(PointerRoutedEventArgs args);
+			PointerEntered += _updateCommonStatesOnPointerEvent;
+			PointerExited += _updateCommonStatesOnPointerEvent;
 #endif
-
-#if <#= mixin.HasCommonPressedState #>
-		protected override void OnPointerPressed(PointerRoutedEventArgs args)
-		{
-			base.OnPointerPressed(args);
-			OnPointerPressedPartial(args);
-
-			this.UpdateCommonStates(true);
-		}
-		partial void OnPointerPressedPartial(PointerRoutedEventArgs args);
-
-		protected override void OnPointerReleased(PointerRoutedEventArgs args)
-		{
-			base.OnPointerReleased(args);
-			OnPointerReleasedPartial(args);
-
-			this.UpdateCommonStates(true);
-		}
-		partial void OnPointerReleasedPartial(PointerRoutedEventArgs args);
+#if <#= mixin.HasCommonPressedState #> 
+			PointerPressed += _updateCommonStatesOnPointerEvent;
+			PointerReleased += _updateCommonStatesOnPointerEvent;
 #endif
-
 #if <#= mixin.HasCommonPressedState #> || <#= mixin.HasCommonOverState #>
-		protected override void OnPointerCanceled(PointerRoutedEventArgs args)
-		{
-			base.OnPointerCanceled(args);
-			OnPointerCanceledPartial(args);
-
-			this.UpdateCommonStates(true);
-		}
-		partial void OnPointerCanceledPartial(PointerRoutedEventArgs args);
-
-		protected override void OnPointerCaptureLost(PointerRoutedEventArgs args)
-		{
-			base.OnPointerCaptureLost(args);
-			OnPointerCaptureLostPartial(args);
-
-			this.UpdateCommonStates(true);
-		}
-		partial void OnPointerCaptureLostPartial(PointerRoutedEventArgs args);
+			PointerCanceled += _updateCommonStatesOnPointerEvent;
+			PointerCaptureLost += _updateCommonStatesOnPointerEvent;
 #endif
 
-#if <#= mixin.HasCommonFocusedState #>
-		protected override void OnFocusStateChanged(FocusState oldState, FocusState newState)
-		{
-			base.OnFocusStateChanged(oldState, newState);
-			OnFocusStateChangedPartial(oldState, newState);
-
-			this.UpdateCommonStates(true);
+			UpdateAllStates();
 		}
-		partial void OnFocusStateChangedPartial(FocusState oldValue, FocusState newValue);
-#endif
 
+		private void UpdateAllStates()
+		{
+#if <#= mixin.HasCommonStates #>
+			UpdateCommonStates(false);
+#endif
+#if <#= mixin.HasCheckedStates #>
+			UpdateCheckedStates(false);
+#endif
+		}
+
+#if <#= mixin.HasCommonStates #>
 		private void UpdateCommonStates(bool useTransitions)
 		{
 #if <#= mixin.HasCommonCheckedState #> || <#= mixin.HasCombinedCheckedState #>
@@ -184,6 +136,15 @@ namespace <#= mixin.NamespaceName #>
 			// states are in different VisualStateGroups, and follows UWP in the non-standard case that they are in the same group (Checked/Unchecked is always reapplied last)
 			UpdateCheckedStates(useTransitions);
 #endif
+		}
+#endif
+
+#if <#= mixin.HasCheckedStates #>
+		private void UpdateCheckedStates(bool useTransitions)
+		{
+			var state = GetCheckedState();
+
+			VisualStateManager.GoToState(this, state, useTransitions);
 		}
 #endif
 
@@ -209,7 +170,6 @@ namespace <#= mixin.NamespaceName #>
 
 		private string GetCommonState()
 		{
-			var targetState = __normalState;
 			if (!IsEnabled)
 			{
 				return __disabledState;
@@ -253,42 +213,6 @@ namespace <#= mixin.NamespaceName #>
 			{
 				return __uncheckedState;
 			}
-		}
-#endif
-
-
-#if <#= mixin.HasCommonCheckedState #> || <#= mixin.HasCombinedCheckedState #>
-		private IDisposable _isCheckedChanged = null;
-
-		private void RegisterToCheckedStateChanges()
-		{
-			if (_isCheckedChanged == null)
-			{
-				_isCheckedChanged = this.RegisterDisposablePropertyChangedCallback(
-					<#= mixin.ClassName #>.IsCheckedProperty,
-					(s, a) => UpdateCommonStates(true)
-				);
-			}
-		}
-#endif
-
-#if <#= mixin.HasCheckedStates #>
-		private IDisposable _isCheckedChanged = null;
-
-		private void RegisterToCheckedStateChanges()
-		{
-			if (_isCheckedChanged == null)
-			{
-				_isCheckedChanged = this.RegisterDisposablePropertyChangedCallback(
-					<#= mixin.ClassName #>.IsCheckedProperty,
-					(s, a) => UpdateCheckedStates(true)
-				);
-			}
-		}
-
-		private void UpdateCheckedStates(bool useTransitions)
-		{
-			VisualStateManager.GoToState(this, GetCheckedState(), useTransitions);
 		}
 #endif
 	}
