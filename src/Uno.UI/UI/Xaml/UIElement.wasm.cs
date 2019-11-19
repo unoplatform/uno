@@ -659,7 +659,7 @@ namespace Windows.UI.Xaml
 
 			if (visual != null && elt != visual)
 			{
-				// Unfortunately we didn't found the 'visual' in our parent hierarchy,
+				// Unfortunately we didn't find the 'visual' in our parent hierarchy,
 				// so matrix == thisToRoot and we now have to compute the transform 'rootToVisual'.
 				var visualToRoot = visual.TransformToVisualCore(null);
 				Matrix3x2.Invert(visualToRoot, out var rootToVisual);
