@@ -95,6 +95,7 @@
 * Add Android support for `CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar` to programatically draw under the status bar
 * [WASM] `ScrollViewer.ChangeView` is now supported
 * [Wasm] Add the ability to focus a TextBox by clicking its header
+* Add support for `ToggleButton.IsThreeState` and `ToggleButton.Indeterminate`
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
