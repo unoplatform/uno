@@ -25,6 +25,14 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTextClearedPartial() => FocusTextView();
 		protected virtual bool FocusTextView() => FocusManager.Focus(_textBoxView);
 
+		partial void OnFocusStateChangedPartial(FocusState focusState)
+		{
+			if(focusState != FocusState.Unfocused)
+			{
+				FocusTextView();
+			}
+		}
+
 		partial void OnAcceptsReturnChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
 
