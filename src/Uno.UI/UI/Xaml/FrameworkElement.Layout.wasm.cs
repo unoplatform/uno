@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml
 		private Size _unclippedDesiredSize;
 		private Point _visualOffset;
 
-		private const double SIZE_EPSILON = 0.05;
+		private const double SIZE_EPSILON = 0.05d;
 		private readonly Size MaxSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
 
 		/// <summary>
@@ -129,6 +129,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		private static bool IsLessThanAndNotCloseTo(double a, double b) => a < (b - SIZE_EPSILON);
+
 		private void InnerArrangeCore(Rect finalRect)
 		{
 			_logDebug?.Debug($"{DepthIndentation}{this}: InnerArrangeCore({finalRect})");
@@ -149,13 +151,12 @@ namespace Windows.UI.Xaml
 
 			if (allowClipToSlot && !needsClipToSlot)
 			{
-				if (arrangeSize.Width < _unclippedDesiredSize.Width - SIZE_EPSILON)
+				if (IsLessThanAndNotCloseTo(arrangeSize.Width, _unclippedDesiredSize.Width))
 				{
 					_logDebug?.Debug($"{DepthIndentation}{this}: (arrangeSize.Width) {arrangeSize.Width} < {_unclippedDesiredSize.Width}: NEEDS CLIPPING.");
 					needsClipToSlot = true;
 				}
-
-				if (arrangeSize.Height < _unclippedDesiredSize.Height - SIZE_EPSILON)
+				else if (IsLessThanAndNotCloseTo(arrangeSize.Height, _unclippedDesiredSize.Height))
 				{
 					_logDebug?.Debug($"{DepthIndentation}{this}: (arrangeSize.Height) {arrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
 					needsClipToSlot = true;
@@ -172,21 +173,26 @@ namespace Windows.UI.Xaml
 				arrangeSize.Height = _unclippedDesiredSize.Height;
 			}
 
+			// We have to choose max between _unclippedDesiredSize and maxSize here, because
+			// otherwise setting of max property could cause arrange at less then _unclippedDesiredSize.
+			// Clipping by Max is needed to limit stretch here
 			var effectiveMaxSize = Max(_unclippedDesiredSize, maxSize);
-			arrangeSize = arrangeSize.AtMost(effectiveMaxSize);
 
-			if (allowClipToSlot && !needsClipToSlot)
+			_logDebug?.Debug($"{DepthIndentation}{this}: InnerArrangeCore({finalRect}) - effectiveMaxSize={effectiveMaxSize}, maxSize={maxSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipToSlot}");
+
+			if (allowClipToSlot)
 			{
-				if (effectiveMaxSize.Width < arrangeSize.Width - SIZE_EPSILON)
+				if (IsLessThanAndNotCloseTo(effectiveMaxSize.Width, arrangeSize.Width))
 				{
 					_logDebug?.Debug($"{DepthIndentation}{this}: (effectiveMaxSize.Width) {effectiveMaxSize.Width} < {arrangeSize.Width}: NEEDS CLIPPING.");
 					needsClipToSlot = true;
+					arrangeSize.Width = effectiveMaxSize.Width;
 				}
-
-				if (effectiveMaxSize.Height < arrangeSize.Height - SIZE_EPSILON)
+				if (IsLessThanAndNotCloseTo(effectiveMaxSize.Height, arrangeSize.Height))
 				{
 					_logDebug?.Debug($"{DepthIndentation}{this}: (effectiveMaxSize.Height) {effectiveMaxSize.Height} < {arrangeSize.Height}: NEEDS CLIPPING.");
 					needsClipToSlot = true;
+					arrangeSize.Height = effectiveMaxSize.Height;
 				}
 			}
 
@@ -196,6 +202,8 @@ namespace Windows.UI.Xaml
 			RenderSize = innerInkSize;
 
 			var clippedInkSize = innerInkSize.AtMost(maxSize);
+
+			_logDebug?.Debug($"{DepthIndentation}{this}: ArrangeResult={innerInkSize}, clipped={clippedInkSize} (max={maxSize}) needsClipToSlot={needsClipToSlot}");
 
 			var clientSize = finalRect.Size
 				.Subtract(marginSize)

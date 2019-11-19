@@ -192,6 +192,7 @@
 * #1708 Fix initial Flyout placement and window resize placement
 * [Android] #2007 ComboBox does not take Window.VisibleBounds to position its popup
 * [Wasm] Fixes the measure of a TextBoxView #2034 #2095
+* [Android] [Wasm] Recent clipping improvements were incompleted. Fixed a case where a control was allowed to draw itself to use more than available place in the _arrange_ phase.
 
 ## Release 1.45.0
 ### Features
