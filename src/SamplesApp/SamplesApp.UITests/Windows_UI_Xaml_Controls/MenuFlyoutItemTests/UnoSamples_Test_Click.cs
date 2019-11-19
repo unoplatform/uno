@@ -15,6 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutItemTests
 	{
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void MenuFlyoutItem_ClickTest()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuFlyoutItemTests.MenuFlyoutItem_Click");
