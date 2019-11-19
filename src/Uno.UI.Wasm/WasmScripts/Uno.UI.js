@@ -1338,6 +1338,17 @@ var Uno;
                     cleanupUnconnectedRoot(this.containerElement);
                 }
             }
+            scrollTo(pParams) {
+                const params = WindowManagerScrollToOptionsParams.unmarshal(pParams);
+                const elt = this.getView(params.HtmlId);
+                const opts = ({
+                    left: params.HasLeft ? params.Left : undefined,
+                    top: params.HasTop ? params.Top : undefined,
+                    behavior: (params.DisableAnimation ? "auto" : "smooth")
+                });
+                elt.scrollTo(opts);
+                return true;
+            }
             setImageRawData(viewId, dataPtr, width, height) {
                 const element = this.getView(viewId);
                 if (element.tagName.toUpperCase() === "IMG") {
@@ -1884,6 +1895,31 @@ class WindowManagerResetStyleParams {
             else {
                 ret.Styles = null;
             }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerScrollToOptionsParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerScrollToOptionsParams();
+        {
+            ret.Left = Number(Module.getValue(pData + 0, "double"));
+        }
+        {
+            ret.Top = Number(Module.getValue(pData + 8, "double"));
+        }
+        {
+            ret.HasLeft = Boolean(Module.getValue(pData + 16, "i32"));
+        }
+        {
+            ret.HasTop = Boolean(Module.getValue(pData + 20, "i32"));
+        }
+        {
+            ret.DisableAnimation = Boolean(Module.getValue(pData + 24, "i32"));
+        }
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 28, "*"));
         }
         return ret;
     }

@@ -450,6 +450,7 @@ declare namespace Uno.UI {
         private static MAX_HEIGHT;
         private measureElement;
         private measureViewInternal;
+        scrollTo(pParams: number): boolean;
         setImageRawData(viewId: number, dataPtr: number, width: number, height: number): string;
         /**
          * Sets the provided image with a mono-chrome version of the provided url.
@@ -608,6 +609,15 @@ declare class WindowManagerResetStyleParams {
     Styles_Length: number;
     Styles: Array<string>;
     static unmarshal(pData: number): WindowManagerResetStyleParams;
+}
+declare class WindowManagerScrollToOptionsParams {
+    Left: number;
+    Top: number;
+    HasLeft: boolean;
+    HasTop: boolean;
+    DisableAnimation: boolean;
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerScrollToOptionsParams;
 }
 declare class WindowManagerSetAttributeParams {
     HtmlId: number;

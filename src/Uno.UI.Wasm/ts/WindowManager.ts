@@ -1339,6 +1339,21 @@
 			}
 		}
 
+		public scrollTo(pParams: number): boolean {
+
+			const params = WindowManagerScrollToOptionsParams.unmarshal(pParams);
+			const elt = this.getView(params.HtmlId);
+			const opts = <ScrollToOptions>({
+				left: params.HasLeft ? params.Left : undefined,
+				top: params.HasTop ? params.Top : undefined,
+				behavior: <ScrollBehavior>(params.DisableAnimation ? "auto" : "smooth")
+			});
+
+			elt.scrollTo(opts);
+
+			return true;
+		}
+
 		public setImageRawData(viewId: number, dataPtr: number, width: number, height: number): string {
 			const element = this.getView(viewId);
 
