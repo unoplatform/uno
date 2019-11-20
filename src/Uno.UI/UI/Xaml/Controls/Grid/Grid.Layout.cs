@@ -494,7 +494,10 @@ namespace Windows.UI.Xaml.Controls
 						totalStarSizedWidth = initialTotalStarSizedWidth - minWidthColumnsStarWidth;
 					}
 
-					unitStarWidth = totalWidth / totalStarSizedWidth;
+					if (totalStarSizedWidth != 0)
+					{
+						unitStarWidth = totalWidth / totalStarSizedWidth;
+					}
 
 					previousRemainingWidth = remainingWidth;
 					remainingWidth = initialRemainingWidth;
@@ -803,7 +806,10 @@ namespace Windows.UI.Xaml.Controls
 						totalStarSizedHeight = initialTotalStarSizedHeight - minHeightRowsStarHeight;
 					}
 
-					unitStarHeight = totalHeight / totalStarSizedHeight;
+					if (totalStarSizedHeight != 0)
+					{
+						unitStarHeight = totalHeight / totalStarSizedHeight;
+					}
 
 					previousRemainingHeight = remainingHeight;
 					remainingHeight = initialRemainingHeight;
