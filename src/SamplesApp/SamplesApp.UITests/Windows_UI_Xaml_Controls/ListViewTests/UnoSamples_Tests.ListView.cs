@@ -100,7 +100,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void Check_ListView_Swallows_Measure()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView_With_ListViews_Count_Measure");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_With_ListViews_Count_Measure");
 
 			_app.WaitForText("StateTextBlock", "Measured");
 
@@ -109,9 +109,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			var measureTextBefore = _app.GetText("MeasureCountTextBlock");
 			var initialMeasureCount = int.Parse(measureTextBefore);
 
-			_app.ScrollDown("OuterListView", ScrollStrategy.Auto, swipeSpeed: 2000);
-			_app.ScrollDown("OuterListView", ScrollStrategy.Auto, swipeSpeed: 2000);
-			_app.ScrollDown("OuterListView", ScrollStrategy.Auto, swipeSpeed: 2000);
+			_app.ScrollDown("OuterListView", ScrollStrategy.Gesture); // On Android the Programmatic strategy seems to cause an exception, coming from Xamarin.UITest.Android.Scroll.RecyclerViewScrollInteraction
+			_app.ScrollDown("OuterListView", ScrollStrategy.Gesture);
 
 			TakeScreenshot($"{nameof(Check_ListView_Swallows_Measure)} after scroll");
 
