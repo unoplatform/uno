@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if ((_newDate != null) && _newDate != _initialTime)
 				{
-					var time = _newDate.ToTimeSpan(_picker.TimeZone.GetSecondsFromGMT);
+					var time = _newDate.ToTimeSpanOfDay(_picker.TimeZone.GetSecondsFromGMT);
 
 					if (Time.Hours != time.Hours || Time.Minutes != time.Minutes)
 					{

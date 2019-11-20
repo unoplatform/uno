@@ -198,6 +198,7 @@
 * [Android] #2007 ComboBox does not take Window.VisibleBounds to position its popup
 * [Wasm] Fixes the measure of a TextBoxView #2034 #2095
 * [Android] [Wasm] Recent clipping improvements were incompleted. Fixed a case where a control was allowed to draw itself to use more than available place in the _arrange_ phase.
+* [iOS] Fix negative result value of TimePicker. Now value range is limited from 0 to 1 day
 
 ## Release 1.45.0
 ### Features
