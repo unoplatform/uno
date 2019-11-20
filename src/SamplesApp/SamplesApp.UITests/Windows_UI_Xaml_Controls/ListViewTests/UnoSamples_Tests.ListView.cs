@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -92,6 +93,32 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.WaitForText("MyTextBlock", "InitialText InitialDataContext");
 			_app.Marked("MyButton").Tap();
 			_app.WaitForText("MyTextBlock", "InitialText InitialDataContext UpdatedDataContext");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void Check_ListView_Swallows_Measure()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView_With_ListViews_Count_Measure");
+
+			_app.WaitForText("StateTextBlock", "Measured");
+
+			TakeScreenshot($"{nameof(Check_ListView_Swallows_Measure)} before scroll");
+
+			var measureTextBefore = _app.GetText("MeasureCountTextBlock");
+			var initialMeasureCount = int.Parse(measureTextBefore);
+
+			_app.ScrollDown("OuterListView", ScrollStrategy.Auto, swipeSpeed: 2000);
+			_app.ScrollDown("OuterListView", ScrollStrategy.Auto, swipeSpeed: 2000);
+			_app.ScrollDown("OuterListView", ScrollStrategy.Auto, swipeSpeed: 2000);
+
+			TakeScreenshot($"{nameof(Check_ListView_Swallows_Measure)} after scroll");
+
+			var measureTextAfter = _app.GetText("MeasureCountTextBlock");
+			var finalMeasureCount = int.Parse(measureTextAfter);
+			Assert.AreEqual(initialMeasureCount, finalMeasureCount);
+			;
 		}
 	}
 }
