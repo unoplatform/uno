@@ -14,11 +14,15 @@ using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public class HtmlImage : UIElement
+	public class HtmlImage : UIElement, ICustomClippingElement
 	{
 		public HtmlImage() : base("img")
 		{
 		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => true;
 	}
 
 	partial class Image : FrameworkElement
@@ -199,21 +203,22 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+		public static readonly DependencyProperty StretchProperty =
+			DependencyProperty.Register(
+				"Stretch",
+				typeof(Stretch),
+				typeof(Image),
+				new PropertyMetadata(
+					Media.Stretch.UniformToFill,
+					(s, e) => ((Image)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
+
 		public Stretch Stretch
 		{
-			get { return (Stretch)this.GetValue(StretchProperty); }
-			set { this.SetValue(StretchProperty, value); }
+			get => (Stretch)GetValue(StretchProperty);
+			set => SetValue(StretchProperty, value);
 		}
 
-		// Using a DependencyProperty as the backing store for Stretch.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty StretchProperty =
-			DependencyProperty.Register("Stretch", typeof(Stretch), typeof(Image), new PropertyMetadata(Media.Stretch.Uniform, (s, e) =>
-				((Image)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
-
-		private void OnStretchChanged(Stretch newValue, Stretch oldValue)
-		{
-			InvalidateArrange();
-		}
+		private void OnStretchChanged(Stretch newValue, Stretch oldValue) => InvalidateArrange();
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
@@ -254,19 +259,18 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			(double x, double y, double? width, double? height) getHtmlImagePosition()
+			(double? width, double? height) getHtmlImagePosition()
 			{
 				var sourceRect = new Windows.Foundation.Rect(Windows.Foundation.Point.Zero, _lastMeasuredSize);
-				var imageRect = new Windows.Foundation.Rect(Windows.Foundation.Point.Zero, finalSize);
 
-				this.MeasureSource(imageRect, ref sourceRect);
-				this.ArrangeSource(imageRect, ref sourceRect);
+				this.MeasureSource(finalSize, ref sourceRect);
+				this.ArrangeSource(finalSize, ref sourceRect);
 
 				switch (Stretch)
 				{
 					case Stretch.Fill:
 					case Stretch.None:
-						return (sourceRect.X, sourceRect.Y, sourceRect.Width, sourceRect.Height);
+						return (sourceRect.Width, sourceRect.Height);
 
 					case Stretch.Uniform:
 						if (finalSize.Width >= _lastMeasuredSize.Width)
@@ -279,11 +283,11 @@ namespace Windows.UI.Xaml.Controls
 							// |   |     |   |
 							// \---\-----/---/
 
-							return (sourceRect.X, sourceRect.Y, null, sourceRect.Height);
+							return (null, sourceRect.Height);
 						}
 						else
 						{
-							return (sourceRect.X, sourceRect.Y, sourceRect.Width, null);
+							return (sourceRect.Width, null);
 						}
 
 					case Stretch.UniformToFill:
@@ -304,11 +308,11 @@ namespace Windows.UI.Xaml.Controls
 							// \-------------/
 							//
 
-							return (sourceRect.X, sourceRect.Y, null, finalSize.Height);
+							return (null, finalSize.Height);
 						}
 						else
 						{
-							return (sourceRect.X, sourceRect.Y, finalSize.Width, null);
+							return (finalSize.Width, null);
 						}
 
 					default:
@@ -319,14 +323,14 @@ namespace Windows.UI.Xaml.Controls
 			var position = getHtmlImagePosition();
 
 			// Clip the image to the parent's arrange size.
-			var clipRect = new Rect(0, 0, finalSize.Width, finalSize.Height);
+			var clipRect = new Rect(default, finalSize);
 
-			var arrangeRect = new Rect(
-				position.x,
-				position.y,
+			var positionSize = new Size(
 				position.width != null ? position.width.Value : double.NaN,
 				position.height != null ? position.height.Value : double.NaN
 			);
+
+			var arrangeRect = new Rect(default, positionSize);
 
 			_htmlImage.ArrangeElementNative(arrangeRect, false, clipRect);
 
@@ -339,9 +343,6 @@ namespace Windows.UI.Xaml.Controls
 			return finalSize;
 		}
 
-		internal override bool IsViewHit()
-		{
-			return Source != null || base.IsViewHit();
-		}
+		internal override bool IsViewHit() => Source != null || base.IsViewHit();
 	}
 }
