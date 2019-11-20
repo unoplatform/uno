@@ -12,6 +12,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		static Button()
 		{
+			StaticInitializeVisualStates();
+
 			HorizontalContentAlignmentProperty.OverrideMetadata(
 				typeof(Button),
 				new FrameworkPropertyMetadata(HorizontalAlignment.Center)

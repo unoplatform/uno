@@ -587,7 +587,7 @@ namespace SampleControl.Presentation
 		{
 			try
 			{
-				if (!type.Namespace.StartsWith("System.Windows"))
+				if (!(type.Namespace?.StartsWith("System.Windows") ?? true))
 				{
 					return type?.GetCustomAttributes()
 						.OfType<SampleControlInfoAttribute>()

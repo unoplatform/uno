@@ -83,7 +83,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnLoaded();
 			SetupTextBoxView();
-			UpdateCommonStates();
 		}
 
 		partial void InitializePropertiesPartial()
