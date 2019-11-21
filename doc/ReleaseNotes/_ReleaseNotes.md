@@ -93,6 +93,7 @@
 * The _feature flag_ `FeatureConfiguration.UseLegacyClipping` is now deprecated and not used anymore
 * XAML Hot Reload support for iOS, Android and Windows
 * Add support for GitPod Workspace and prebuilds
+* #880 Added added implicit conversion for double to Thickness
 * Add Android support for `CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar` to programatically draw under the status bar
 * [WASM] `ScrollViewer.ChangeView` is now supported
 * [Wasm] Add the ability to focus a TextBox by clicking its header

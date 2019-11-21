@@ -2843,6 +2843,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                     return value;
                 }
 
+				if ((sourceTypes.Length == 1 || sourceTypes.Select(x => x?.Type).Distinct().Count() == 1) &&
+					TryImplicitXamlConvert(value, sourceTypes[0]) is string conversion)
+				{
+					return conversion;
+				}
+
                 var type = targetPropertyType.ToDisplayString();
                 var closure = $"c{_applyIndex++}";
                 if (useSafeCast)
@@ -2853,8 +2859,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 {
                     return $"({type}){value}";
                 }
-            }
-        }
+			}
+
+			// this allows for the resource to be implicitly converted to another type, however
+			// its implementation may not be implicit
+			string TryImplicitXamlConvert(string value, XamlObjectDefinition sourceType)
+			{
+				// note: Source is a non-prefixed xaml name
+				switch ((Source: sourceType.Type.Name, Target: targetPropertyType.ToDisplayString()))
+				{
+					// double to Thickness
+					case var conversion when conversion.Source == "Double" && conversion.Target == XamlConstants.Types.Thickness:
+						return $"new {GlobalPrefix}{XamlConstants.Types.Thickness}({value})";
+					
+					default: return default;
+				}
+			}
+		}
 
         /// <summary>
         /// Inserts explicit cast if a resource is being assigned to a property of a different type
