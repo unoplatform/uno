@@ -17,6 +17,7 @@ using Windows.Foundation;
 using Uno.Logging;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.Storage.Streams;
+using Uno.UI;
 using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml.Controls
@@ -243,6 +244,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateContentMode(Stretch stretch)
 		{
+#if !NEW_IMAGE_POSITIONNING
 			switch (stretch)
 			{
 				case Stretch.Uniform:
@@ -264,6 +266,7 @@ namespace Windows.UI.Xaml.Controls
 				default:
 					throw new NotSupportedException("Stretch mode {0} is not supported".InvariantCultureFormat(stretch));
 			}
+#endif
 		}
 
 
@@ -278,7 +281,36 @@ namespace Windows.UI.Xaml.Controls
 
 			size = _layouter.Measure(size.ToFoundationSize());
 
+			UpdateLayerRect(size);
+
 			return size;
+		}
+
+		private void UpdateLayerRect(Size availableSize)
+		{
+#if NEW_IMAGE_POSITIONNING
+			if (SourceImageSize.Width == 0 || SourceImageSize.Height == 0 || availableSize.Width == 0 || availableSize.Height == 0)
+			{
+				return; // nothing to do
+			}
+
+            // The following code is not ready for production.
+
+			var imageSize = Image.Size.ToFoundationSize();
+			var sourceRect = new Rect(Point.Zero, imageSize);
+
+			this.MeasureSource(availableSize, ref sourceRect);
+			this.ArrangeSource(availableSize, ref sourceRect);
+
+			var relativeX = sourceRect.X / imageSize.Width;
+			var relativeY = sourceRect.Y / imageSize.Height;
+			var relativeWidth = sourceRect.Width / imageSize.Width;
+			var relativeHeight = sourceRect.Height / imageSize.Height;
+
+			var rect = new CGRect(relativeX, relativeY, relativeWidth, relativeHeight);
+
+			Layer.ContentsRect = rect;
+#endif
 		}
 	}
 }
