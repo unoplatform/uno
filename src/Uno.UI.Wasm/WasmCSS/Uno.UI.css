@@ -73,7 +73,7 @@ embed.uno-frameworkelement.uno-unarranged {
     so they won't be taken in consideration by scroll viewers (overflow) which are computing their extent in native.
 
     A common visual effect of this, is that a non virtualized GridView with items smaller than 150px height
-    is vertically scrollable why it should not! (There is a Rectagle in their template, which rendered using an SVG element).
+    is vertically scrollable when it should not! (There is a Rectangle in their template, which rendered using an SVG element).
 
     Note: this is required has have set a "transform: translate(0, 0);" on all ".uno-uielement",
           which has a side effect to establish a "containing block" (cf. WindowManager.ts on measureViewInternal()).
