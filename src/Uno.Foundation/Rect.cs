@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Windows.Foundation
 {
-	[DebuggerDisplay("[Rect {rect.X}-{rect.Y}-{rect.Width}-{rect.Height}]")]
+	[DebuggerDisplay("[Rect {X},{Y}-{Width}x{Height}]")]
 	public partial struct Rect
 	{
 		private const string _negativeErrorMessage = "Non-negative number required.";
