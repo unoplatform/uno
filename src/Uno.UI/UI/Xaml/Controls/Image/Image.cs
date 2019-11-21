@@ -421,6 +421,13 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
+#if __ANDROID__
+				var physicalSize = finalSize.LogicalToPhysicalPixels();
+
+				ImageControl.ClipBounds = new Android.Graphics.Rect(0, 0, (int)physicalSize.Width, (int)physicalSize.Height);
+#endif
+
+
 				return finalSize;
 			}
 		}

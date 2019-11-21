@@ -542,10 +542,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var sourceRect = new Windows.Foundation.Rect(Windows.Foundation.Point.Zero, SourceImageSize);
-			var imageRect = new Windows.Foundation.Rect(Windows.Foundation.Point.Zero, frameSize);
 
-			this.MeasureSource(imageRect, ref sourceRect);
-			this.ArrangeSource(imageRect, ref sourceRect);
+			this.MeasureSource(frameSize, ref sourceRect);
+			this.ArrangeSource(frameSize, ref sourceRect);
 
 			var scaleX = (sourceRect.Width / SourceImageSize.Width) * _sourceImageScale;
 			var scaleY = (sourceRect.Height / SourceImageSize.Height) * _sourceImageScale;
