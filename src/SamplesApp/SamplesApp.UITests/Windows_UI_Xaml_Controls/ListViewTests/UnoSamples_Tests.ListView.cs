@@ -85,7 +85,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		[ActivePlatforms(Platform.Android)] // Fails on iOS - https://github.com/unoplatform/uno/issues/1955
 		public void ListView_Header_DataContextChanged()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView_Header_DataContextChanging");
