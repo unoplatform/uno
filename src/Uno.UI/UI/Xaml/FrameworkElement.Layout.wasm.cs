@@ -80,7 +80,7 @@ namespace Windows.UI.Xaml
 
 			var desiredSize = MeasureOverride(frameworkAvailableSize);
 
-			_logDebug?.LogTrace($"{DepthIndentation}{this}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize}");
+			_logDebug?.LogTrace($"{DepthIndentation}{this}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize} minSize={minSize} maxSize={maxSize} marginSize={marginSize}");
 
 			if (
 				double.IsNaN(desiredSize.Width)
@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml
 				|| double.IsInfinity(desiredSize.Height)
 			)
 			{
-				throw new InvalidOperationException($"{DepthIndentation}{this}: Invalid measured size {desiredSize}. NaN or Infinity are invalid desired size.");
+				throw new InvalidOperationException($"{this}: Invalid measured size {desiredSize}. NaN or Infinity are invalid desired size.");
 			}
 
 			desiredSize = desiredSize.AtLeast(minSize);
@@ -202,11 +202,12 @@ namespace Windows.UI.Xaml
 			var oldRenderSize = RenderSize;
 			var innerInkSize = ArrangeOverride(arrangeSize);
 
-			RenderSize = innerInkSize;
-
 			var clippedInkSize = innerInkSize.AtMost(maxSize);
 
-			_logDebug?.Debug($"{DepthIndentation}{this}: ArrangeResult={innerInkSize}, clipped={clippedInkSize} (max={maxSize}) needsClipToSlot={needsClipToSlot}");
+			//RenderSize = needsClipToSlot ? clippedInkSize : innerInkSize;
+			RenderSize = innerInkSize;
+
+			_logDebug?.Debug($"{DepthIndentation}{this}: ArrangeOverride({arrangeSize})={innerInkSize}, clipped={clippedInkSize} (max={maxSize}) needsClipToSlot={needsClipToSlot}");
 
 			var clientSize = finalRect.Size
 				.Subtract(marginSize)
