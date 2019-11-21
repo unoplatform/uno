@@ -233,7 +233,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (uiElement != null)
 				{
-					uiElement.RenderSize = renderSize;
+					uiElement.RenderSize = renderSize.AtMost(maxSize);
 					uiElement.NeedsClipToSlot = needsClipToSlot;
 					uiElement.ApplyClip();
 
