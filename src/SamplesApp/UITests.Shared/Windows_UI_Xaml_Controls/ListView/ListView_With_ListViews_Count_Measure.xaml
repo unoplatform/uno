@@ -7,11 +7,15 @@
 			 mc:Ignorable="d"
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
+	<UserControl.Resources>
+		<local:StringToHeightConverter x:Key="StringToHeightConverter" />
+	</UserControl.Resources>
 
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 		</Grid.RowDefinitions>
 		<TextBlock Text="Header" />
@@ -44,7 +48,12 @@
 				</ListView.ItemTemplate>
 			</ListView>
 		</local:MeasureDetectorControl>
-		<TextBlock Grid.Row="2"
-				   Text="Footer" />
+		<TextBlock x:Name="ResultTextBlock"
+				   Grid.Row="2"
+				   Text="Not scrolled" />
+		<Button Grid.Row="3"
+				x:Name="ChangeViewButton"
+				Content="Scroll list"
+				Click="ChangeViewButton_Clicked" />
 	</Grid>
 </UserControl>

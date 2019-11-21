@@ -97,7 +97,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // Currently fails on WASM, layout requests aren't swallowed properly
 		public void Check_ListView_Swallows_Measure()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_With_ListViews_Count_Measure");
@@ -109,15 +109,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			var measureTextBefore = _app.GetText("MeasureCountTextBlock");
 			var initialMeasureCount = int.Parse(measureTextBefore);
 
-			_app.ScrollDown("OuterListView", ScrollStrategy.Gesture); // On Android the Programmatic strategy seems to cause an exception, coming from Xamarin.UITest.Android.Scroll.RecyclerViewScrollInteraction
-			_app.ScrollDown("OuterListView", ScrollStrategy.Gesture);
+			_app.Tap("ChangeViewButton");
+
+			_app.WaitForText("ResultTextBlock", "Scrolled");
 
 			TakeScreenshot($"{nameof(Check_ListView_Swallows_Measure)} after scroll");
 
 			var measureTextAfter = _app.GetText("MeasureCountTextBlock");
 			var finalMeasureCount = int.Parse(measureTextAfter);
 			Assert.AreEqual(initialMeasureCount, finalMeasureCount);
-			;
 		}
 	}
 }

@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Uno.UI.Sample.Views.Helper;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -25,5 +26,21 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 		{
 			this.InitializeComponent();
 		}
+		private void ChangeViewButton_Clicked(object sender, RoutedEventArgs args)
+		{
+			var sv = OuterListView.FindFirstChild<ScrollViewer>();
+
+			sv.ViewChanged += (o, e) =>
+			{
+				if (sv.VerticalOffset > 500)
+				{
+					ResultTextBlock.Text = "Scrolled";
+				}
+			};
+
+			sv.ChangeView(horizontalOffset: null, verticalOffset: 3000d, zoomFactor: null, disableAnimation: false);
+		}
+
 	}
+
 }
