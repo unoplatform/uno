@@ -41,53 +41,71 @@ namespace Windows.UI.Xaml.Controls
 		public static void ArrangeSource(this Image image, Size finalSize, ref Rect child)
 		{
 			var stretch = image.Stretch;
-			// In order to match UWP behaviors, in some specific cases the image must be left align
-			//var isForcedLeft = (stretch == None || stretch == UniformToFill) && finalSize.Width <= child.Width;
-			var isForcedLeft = false;
+			var horizontalAlignment = image.HorizontalAlignment;
 
-			double GetPositionForDimension(bool isForcedToZero, double imageDimension, double calculatedPosition)
+			if (stretch == None || stretch == UniformToFill)
 			{
-				if (isForcedToZero && !double.IsNaN(imageDimension))
+				// In order to match UWP behaviors, in some specific cases the image must be left align
+                // Only triggered when the "Width" is set as local value on the image
+				var localWidth = image.GetValue(FrameworkElement.WidthProperty, DependencyPropertyValuePrecedences.Local);
+				if (localWidth is double d && !double.IsNaN(d) && finalSize.Width <= child.Width)
 				{
-					return 0;
+					horizontalAlignment = HorizontalAlignment.Left;
 				}
-
-				return calculatedPosition;
 			}
 
-			switch (image.HorizontalAlignment)
+            if(horizontalAlignment == HorizontalAlignment.Stretch && child.Width < finalSize.Width)
+            {
+	            // In order to match UWP behaviors, image is centered when smaller than available size
+                // when the "Stretch" alignment is used.
+	            horizontalAlignment = HorizontalAlignment.Center;
+            }
+
+			switch (horizontalAlignment)
 			{
 				case HorizontalAlignment.Left:
+				case HorizontalAlignment.Stretch:
 					child.X = 0;
 					break;
 				case HorizontalAlignment.Right:
-					child.X = GetPositionForDimension(isForcedLeft, image.Width, finalSize.Width - child.Width);
+					child.X = finalSize.Width - child.Width;
 					break;
 				case HorizontalAlignment.Center:
-					child.X = GetPositionForDimension(isForcedLeft, image.Width, (finalSize.Width - child.Width) * 0.5f);
-					break;
-				case HorizontalAlignment.Stretch:
-					child.X = GetPositionForDimension(isForcedLeft, -1, (finalSize.Width - child.Width) * 0.5f);
+					child.X = (finalSize.Width - child.Width) * 0.5f;
 					break;
 			}
 
-			// In order to match UWP behaviors, in some specific cases the image must be top align
-			//var isForcedTop = (stretch == None || stretch == UniformToFill) && finalSize.Height <= child.Height;
-			var isForcedTop = false;
+			var verticalAlignment = image.VerticalAlignment;
 
-			switch (image.VerticalAlignment)
+			if (stretch == None || stretch == UniformToFill)
+			{
+				// In order to match UWP behaviors, in some specific cases the image must be top align
+				// Only triggered when the "Height" is set as local value on the image
+				var localHeight = image.GetValue(FrameworkElement.HeightProperty, DependencyPropertyValuePrecedences.Local);
+				if (localHeight is double d && !double.IsNaN(d) && finalSize.Height <= child.Height)
+				{
+					verticalAlignment = VerticalAlignment.Top;
+				}
+			}
+
+			if (verticalAlignment == VerticalAlignment.Stretch && child.Height < finalSize.Height)
+			{
+				// In order to match UWP behaviors, image is centered when smaller than available size
+				// when the "Stretch" alignment is used.
+				verticalAlignment = VerticalAlignment.Center;
+			}
+
+			switch (verticalAlignment)
 			{
 				case VerticalAlignment.Top:
+				case VerticalAlignment.Stretch:
 					child.Y = 0;
 					break;
 				case VerticalAlignment.Bottom:
-					child.Y = GetPositionForDimension(isForcedTop, image.Height, finalSize.Height - child.Height);
+					child.Y = finalSize.Height - child.Height;
 					break;
 				case VerticalAlignment.Center:
-					child.Y = GetPositionForDimension(isForcedTop, image.Height, (finalSize.Height - child.Height) * 0.5f);
-					break;
-				case VerticalAlignment.Stretch:
-					child.Y = GetPositionForDimension(isForcedTop, -1, (finalSize.Height - child.Height) * 0.5f);
+					child.Y = (finalSize.Height - child.Height) * 0.5f;
 					break;
 			}
 		}
@@ -133,8 +151,8 @@ namespace Windows.UI.Xaml.Controls
 						break;
 				}
 
-				var scaleX = double.IsNaN(scale.x) || double.IsInfinity(scale.x) ? 1.0d : scale.x;
-				var scaleY = double.IsNaN(scale.y) || double.IsInfinity(scale.y) ? 1.0d : scale.y;
+				var scaleX = double.IsNaN(scale.x) ? 1.0d : scale.x;
+				var scaleY = double.IsNaN(scale.y) ? 1.0d : scale.y;
 
 				return (scaleX, scaleY);
 			}
@@ -146,7 +164,9 @@ namespace Windows.UI.Xaml.Controls
 
 		public static Size AdjustSize(this Image image, Size availableSize, Size measuredSize)
 		{
-			return AdjustSize(image.Stretch, availableSize, measuredSize);
+			var adjustSize = AdjustSize(image.Stretch, availableSize, measuredSize);
+            Console.WriteLine($"{image}: AdjustSize(availableSize:{availableSize}, image.Stretch:{image.Stretch}, measuredSize:{measuredSize}) = {adjustSize}");
+			return adjustSize;
 		}
 
 		internal static Size AdjustSize(Stretch stretch, Size availableSize, Size measuredSize)

@@ -259,84 +259,90 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			(double? width, double? height) getHtmlImagePosition()
-			{
-				var sourceRect = new Windows.Foundation.Rect(Windows.Foundation.Point.Zero, _lastMeasuredSize);
+			var sourceRect = new Windows.Foundation.Rect(Windows.Foundation.Point.Zero, _lastMeasuredSize);
+			this.MeasureSource(finalSize, ref sourceRect);
+			this.ArrangeSource(finalSize, ref sourceRect);
 
-				this.MeasureSource(finalSize, ref sourceRect);
-				this.ArrangeSource(finalSize, ref sourceRect);
+			//(double? width, double? height) getHtmlImagePosition()
+			//{
+			//	var sourceRect = new Windows.Foundation.Rect(Windows.Foundation.Point.Zero, _lastMeasuredSize);
 
-				switch (Stretch)
-				{
-					case Stretch.Fill:
-					case Stretch.None:
-						return (sourceRect.Width, sourceRect.Height);
+			//	this.MeasureSource(finalSize, ref sourceRect);
+			//	this.ArrangeSource(finalSize, ref sourceRect);
 
-					case Stretch.Uniform:
-						if (finalSize.Width >= _lastMeasuredSize.Width)
-						{
-							// /---/-----\---\
-							// |   |     |   |
-							// |   |     |   |
-							// |   |     |   |
-							// |   |     |   |
-							// |   |     |   |
-							// \---\-----/---/
+			//	switch (Stretch)
+			//	{
+			//		case Stretch.Fill:
+			//		case Stretch.None:
+			//			return (sourceRect.Width, sourceRect.Height);
 
-							return (null, sourceRect.Height);
-						}
-						else
-						{
-							return (sourceRect.Width, null);
-						}
+			//		case Stretch.Uniform:
+			//			if (finalSize.Width >= _lastMeasuredSize.Width)
+			//			{
+			//				// /---/-----\---\
+			//				// |   |     |   |
+			//				// |   |     |   |
+			//				// |   |     |   |
+			//				// |   |     |   |
+			//				// |   |     |   |
+			//				// \---\-----/---/
 
-					case Stretch.UniformToFill:
-						var adjustedSize = this.AdjustSize(finalSize, _lastMeasuredSize);
+			//				return (null, sourceRect.Height);
+			//			}
+			//			else
+			//			{
+			//				return (sourceRect.Width, null);
+			//			}
 
-						if (adjustedSize.Height <= finalSize.Height)
-						{
-							//
-							// /-------------\
-							// |             |
-							// /-------------\
-							// |             |
-							// |             |
-							// |             |
-							// |             |
-							// \-------------/
-							// |             |
-							// \-------------/
-							//
+			//		case Stretch.UniformToFill:
+			//			var adjustedSize = this.AdjustSize(finalSize, _lastMeasuredSize);
 
-							return (null, finalSize.Height);
-						}
-						else
-						{
-							return (finalSize.Width, null);
-						}
+			//			if (adjustedSize.Height <= finalSize.Height)
+			//			{
+			//				//
+			//				// /-------------\
+			//				// |             |
+			//				// /-------------\
+			//				// |             |
+			//				// |             |
+			//				// |             |
+			//				// |             |
+			//				// \-------------/
+			//				// |             |
+			//				// \-------------/
+			//				//
 
-					default:
-						throw new NotSupportedException();
-				}
-			}
+			//				return (null, finalSize.Height);
+			//			}
+			//			else
+			//			{
+			//				return (finalSize.Width, null);
+			//			}
 
-			var position = getHtmlImagePosition();
+			//		default:
+			//			throw new NotSupportedException();
+			//	}
+			//}
+
+			//var position = getHtmlImagePosition();
+
+			//Console.WriteLine($"{this}: imagePosition={position}");
 
 			// Clip the image to the parent's arrange size.
-			var clipRect = new Rect(default, finalSize);
+			//var clipRect = new Rect(default, finalSize);
 
-			var positionSize = new Size(
-				position.width != null ? position.width.Value : double.NaN,
-				position.height != null ? position.height.Value : double.NaN
-			);
+			//var positionSize = new Size(
+			//	position.width != null ? position.width.Value : double.NaN,
+			//	position.height != null ? position.height.Value : double.NaN
+			//);
 
-			var arrangeRect = new Rect(default, positionSize);
+			//var arrangeRect = new Rect(default, positionSize);
 
-			_htmlImage.ArrangeElementNative(arrangeRect, false, clipRect);
+			_htmlImage.ArrangeElementNative(sourceRect, false, clipRect: null);
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"Arrange {this} _lastMeasuredSize:{_lastMeasuredSize} clip:{clipRect} position:{position} finalSize:{finalSize}");
+				this.Log().LogDebug($"Arrange {this} _lastMeasuredSize:{_lastMeasuredSize} position:{sourceRect} finalSize:{finalSize}");
 			}
 
 			// Image has no direct child that needs to be arranged explicitly
