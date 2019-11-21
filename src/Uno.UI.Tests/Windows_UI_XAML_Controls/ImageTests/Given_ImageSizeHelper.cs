@@ -13,7 +13,6 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.ImageTests
 	public class Given_ImageSizeHelper
 	{
 		private const double Inf = double.PositiveInfinity;
-		private const double Nan = double.NaN;
 
 		[TestMethod]
 		[DataRow(Stretch.None, 100, 100, 100, 100)]
@@ -82,6 +81,8 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.ImageTests
 		[DataRow(Stretch.Uniform, "lt", 1000, 500, 2000, 2000, 0, 0, 2000, 1000)]
 
 		[DataRow(Stretch.UniformToFill, "lt", 1000, 500, 100, 100, 0, 0, 200, 100)]
+		[DataRow(Stretch.UniformToFill, "lt", 200, 300, 250, 250, 0, 0, 250, 375)]
+		[DataRow(Stretch.UniformToFill, "lc", 200, 300, 250, 250, 0, -62.5, 250, 375)]
 		[DataRow(Stretch.UniformToFill, "cc", 1000, 500, 100, 100, -50, 0, 200, 100)]
 		[DataRow(Stretch.UniformToFill, "cc", 1000, 500, 2000, 1000, 0, 0, 2000, 1000)]
 		[DataRow(Stretch.UniformToFill, "cc", 1000, 500, 1000, 2000, -1500, 0, 4000, 2000)]
