@@ -64,5 +64,66 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			textBox1Result_After.Rect.X.Should().Be(textBox1Result_Before.Rect.X);
 			textBox1Result_After.Rect.Y.Should().Be(textBox1Result_Before.Rect.Y);
 		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_DeleteButton()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_DeleteButton_Automated");
+
+			var textBox1 = _app.Marked("textBox1");
+			var textBox2 = _app.Marked("textBox2");
+
+			textBox1.Tap();
+			textBox1.EnterText("hello 01");
+
+			_app.WaitForText(textBox1, "hello 01");
+
+			textBox2.Tap();
+			textBox2.EnterText("hello 02");
+
+			_app.WaitForText(textBox2, "hello 02");
+
+			var textBox1Result = _app.Query(textBox1).First();
+			var textBox2Result = _app.Query(textBox2).First();
+
+			// Focus the first textbox
+			textBox1.Tap();
+
+			var deleteButton1 = FindDeleteButton(textBox1Result);
+
+			_app.TapCoordinates(deleteButton1.Rect.CenterX, deleteButton1.Rect.CenterY);
+
+			// Second tap is required on Wasm https://github.com/unoplatform/uno/issues/2138
+			_app.TapCoordinates(deleteButton1.Rect.CenterX, deleteButton1.Rect.CenterY);
+
+			_app.WaitForText(textBox1, "");
+
+			// Focus the first textbox
+			textBox2.Tap();
+
+			var deleteButton2 = FindDeleteButton(textBox2Result);
+
+			_app.TapCoordinates(deleteButton2.Rect.CenterX, deleteButton2.Rect.CenterY);
+
+			// Second tap is required on Wasm https://github.com/unoplatform/uno/issues/2138
+			_app.TapCoordinates(deleteButton2.Rect.CenterX, deleteButton2.Rect.CenterY);
+
+			_app.WaitForText(textBox2, "");
+		}
+
+		private Uno.UITest.IAppResult FindDeleteButton(Uno.UITest.IAppResult source)
+		{
+			var deleteButtons = _app.Marked("DeleteButton");
+			var appResult = _app.Query(deleteButtons).ToArray();
+			var deleteButton = appResult
+				.First(r =>
+					r.Rect.CenterX > source.Rect.X
+					&& r.Rect.CenterX < source.Rect.Right
+					&& r.Rect.CenterY > source.Rect.Y
+					&& r.Rect.CenterY < source.Rect.Bottom
+				);
+			return deleteButton;
+		}
 	}
 }
