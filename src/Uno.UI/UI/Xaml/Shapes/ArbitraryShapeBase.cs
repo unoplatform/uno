@@ -96,7 +96,7 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				if (double.IsNaN(height))
 				{
-					return new Rect(0.0, 0.0, 100.0, 100.0);
+					return new Rect(0.0, 0.0, 0.0, 0.0);
 				}
 
 				return new Rect(0.0, 0.0, height, height);
