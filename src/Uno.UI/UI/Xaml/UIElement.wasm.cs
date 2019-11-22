@@ -207,6 +207,11 @@ namespace Windows.UI.Xaml
 			Uno.UI.Xaml.WindowManagerInterop.SetAttribute(HtmlId, name, value);
 		}
 
+		protected internal void RemoveAttribute(string name)
+		{
+			Uno.UI.Xaml.WindowManagerInterop.RemoveAttribute(HtmlId, name);
+		}
+
 		protected internal void SetAttribute(params (string name, string value)[] attributes)
 		{
 			if (attributes == null || attributes.Length == 0)

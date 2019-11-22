@@ -125,5 +125,28 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 				);
 			return deleteButton;
 		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_Readonly()
+		{
+			Run("Uno.UI.Samples.UITests.TextBoxControl.TextBox_IsReadOnly");
+
+			var button = _app.Marked("button");
+			var txt = _app.Marked("txt");
+
+			_app.EnterText(txt, "Hello !");
+
+			_app.WaitForText(txt, "This is the starting text...Hello !");
+
+			button.Tap();
+			_app.EnterText(txt, "Hello did not work!");
+
+			_app.WaitForText(txt, "This is the starting text...Hello !");
+
+			button.Tap();
+			_app.EnterText(txt, "Works again!");
+			_app.WaitForText(txt, "This is the starting text...Hello !Works again!");
+		}
 	}
 }
