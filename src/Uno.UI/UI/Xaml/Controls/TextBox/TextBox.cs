@@ -137,7 +137,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			UpdateTextBoxView();
-
 			InitializeProperties();
 		}
 

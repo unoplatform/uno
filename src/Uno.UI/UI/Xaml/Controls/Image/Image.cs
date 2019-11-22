@@ -21,7 +21,7 @@ using UIKit;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class Image : DependencyObject, ICustomClippingElement
+	public partial class Image : DependencyObject
 	{
 		/// <summary>
 		/// Setting this flag instructs the image control not to dispose pending image fetches when it is removed from the visual tree. 
@@ -421,12 +421,15 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
+#if __ANDROID__
+				// Images on UWP are always clipped to the control's boundaries.
+				var physicalSize = finalSize.LogicalToPhysicalPixels();
+				ImageControl.ClipBounds = new Android.Graphics.Rect(0, 0, (int)physicalSize.Width, (int)physicalSize.Height);
+#endif
+
 				return finalSize;
 			}
 		}
-
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 	}
 }
 #endif

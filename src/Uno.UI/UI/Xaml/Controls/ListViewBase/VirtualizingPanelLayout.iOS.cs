@@ -408,11 +408,6 @@ namespace Windows.UI.Xaml.Controls
 					}
 					_lastReportedSize = PrepareLayoutInternal(createLayoutInfo, _dirtyState == DirtyState.CollectionChanged, availableSize);
 
-					if (_dirtyState == DirtyState.NeedsRelayout && GetExtent(_lastReportedSize) < GetExtent(_lastAvailableSize))
-					{
-						SetHasUnusedSpace();
-					}
-
 					if (createLayoutInfo)
 					{
 						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
@@ -439,6 +434,11 @@ namespace Windows.UI.Xaml.Controls
 				{
 					UpdateHeaderPositions();
 					_dirtyState = DirtyState.None;
+				}
+
+				if (GetExtent(_lastReportedSize) < GetExtent(_lastAvailableSize))
+				{
+					SetHasUnusedSpace();
 				}
 
 				return _lastReportedSize;
@@ -686,7 +686,7 @@ namespace Windows.UI.Xaml.Controls
 					var kind = layout.RepresentedElementKind ?? NativeListViewBase.ListViewItemElementKind;
 					var indexPath = OffsetIndexForPendingChanges(layout.IndexPath, kind);
 					return GetExtentEnd(layout.Frame) > scrollOffset &&
-					// Exclude items that are being removed or replaced. (These items are set to row or section of int.MaxValue == 2, but 
+					// Exclude items that are being removed or replaced. (These items are set to row or section of int.MaxValue / 2, but 
 					// subsequent insertions/deletions mean they might no longer be exactly equal.)
 					indexPath.Row < int.MaxValue / 4 &&
 					indexPath.Section < int.MaxValue / 4;

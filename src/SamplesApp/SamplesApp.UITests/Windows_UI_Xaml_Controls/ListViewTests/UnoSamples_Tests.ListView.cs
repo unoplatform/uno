@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -84,7 +85,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		[ActivePlatforms(Platform.Android)] // Fails on iOS - https://github.com/unoplatform/uno/issues/1955
 		public void ListView_Header_DataContextChanged()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView_Header_DataContextChanging");
@@ -92,6 +93,31 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.WaitForText("MyTextBlock", "InitialText InitialDataContext");
 			_app.Marked("MyButton").Tap();
 			_app.WaitForText("MyTextBlock", "InitialText InitialDataContext UpdatedDataContext");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // Currently fails on WASM, layout requests aren't swallowed properly
+		public void Check_ListView_Swallows_Measure()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_With_ListViews_Count_Measure");
+
+			_app.WaitForText("StateTextBlock", "Measured");
+
+			TakeScreenshot($"{nameof(Check_ListView_Swallows_Measure)} before scroll");
+
+			var measureTextBefore = _app.GetText("MeasureCountTextBlock");
+			var initialMeasureCount = int.Parse(measureTextBefore);
+
+			_app.Tap("ChangeViewButton");
+
+			_app.WaitForText("ResultTextBlock", "Scrolled");
+
+			TakeScreenshot($"{nameof(Check_ListView_Swallows_Measure)} after scroll");
+
+			var measureTextAfter = _app.GetText("MeasureCountTextBlock");
+			var finalMeasureCount = int.Parse(measureTextAfter);
+			Assert.AreEqual(initialMeasureCount, finalMeasureCount);
 		}
 	}
 }
