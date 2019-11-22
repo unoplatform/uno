@@ -25,18 +25,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTextClearedPartial() => FocusTextView();
 		protected virtual bool FocusTextView() => FocusManager.Focus(_textBoxView);
 
-		partial void OnFocusStateChangedPartial(FocusState focusState)
-		{
-			if(focusState != FocusState.Unfocused)
-			{
-				FocusTextView();
-			}
-		}
 
-		partial void OnAcceptsReturnChangedPartial(DependencyPropertyChangedEventArgs e)
-		{
-
-		}
 
 
 		private void UpdateTextBoxView()
@@ -73,6 +62,16 @@ namespace Windows.UI.Xaml.Controls
 		partial void InitializePropertiesPartial()
 		{
 			ApplyEnabled();
+
+			if(_header != null)
+			{
+				AddHandler(PointerReleasedEvent, (PointerEventHandler)OnHeaderClick, true);
+			}
+		}
+
+		private void OnHeaderClick(object sender, object args)
+		{
+			FocusTextView();
 		}
 
 		protected void SetIsPassword(bool isPassword)
