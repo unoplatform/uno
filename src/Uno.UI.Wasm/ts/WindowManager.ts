@@ -358,6 +358,28 @@
 		}
 
 		/**
+			* Removes an attribute for an element.
+			*/
+		public removeAttribute(elementId: number, name: string): string {
+			const element = this.getView(elementId);
+			element.removeAttribute(name);
+
+			return "ok";
+		}
+
+		/**
+			* Removes an attribute for an element.
+			*/
+		public removeAttributeNative(pParams: number): boolean {
+
+			const params = WindowManagerRemoveAttributeParams.unmarshal(pParams);
+			const element = this.getView(params.HtmlId);
+			element.removeAttribute(params.Name);
+
+			return true;
+		}
+
+		/**
 			* Get an attribute for an element.
 			*/
 		public getAttribute(elementId: number, name: string): any {

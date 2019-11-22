@@ -82,6 +82,21 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e)
+		{
+			if(e.NewValue is bool isReadonly)
+			{
+				if (isReadonly)
+				{
+					_textBoxView?.SetAttribute("readonly", "readonly");
+				}
+				else
+				{
+					_textBoxView?.RemoveAttribute("readonly");
+				}
+			}
+		}
+
 		partial void OnForegroundColorChangedPartial(Brush newValue)
 		{
 			_textBoxView?.SetForeground(newValue);

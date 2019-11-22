@@ -470,6 +470,38 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
+		#region ClearAttribute
+		internal static void RemoveAttribute(IntPtr htmlId, string name)
+		{
+			if (UseJavascriptEval)
+			{
+				var command = "Uno.UI.WindowManager.current.removeAttribute(\"" + htmlId + "\", \"" + name + "\");";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerRemoveAttributeParams()
+				{
+					HtmlId = htmlId,
+					Name = name,
+				};
+
+				TSInteropMarshaller.InvokeJS<WindowManagerRemoveAttributeParams>("Uno:removeAttributeNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerRemoveAttributeParams
+		{
+			public IntPtr HtmlId;
+
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string Name;
+		}
+
+		#endregion
+
 		#region SetName
 
 		internal static void SetName(IntPtr htmlId, string name)
