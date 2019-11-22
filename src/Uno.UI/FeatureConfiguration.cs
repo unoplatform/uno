@@ -143,6 +143,15 @@ namespace Uno.UI
 #endif
 		}
 
+		public static class Image
+		{
+			/// <summary>
+			/// Use the old way to align iOS images, using the "ContentMode".
+			/// New way is using the Layer to better position the image according to alignments.
+			/// </summary>
+			public static bool LegacyIosAlignment { get; set; } = false;
+		}
+
 		public static class Interop
 		{
 #if __WASM__
