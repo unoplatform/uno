@@ -135,5 +135,28 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			Assert.AreEqual(224, height);
 		}
+
+		[Test]
+		[AutoRetry]
+		public void ListView_ObservableCollection_Unused_Space()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_ObservableCollection_Unused_Space");
+
+			_app.WaitForText("StatusTextBlock", "Ready");
+
+			var heightStrBefore = _app.GetText("HeightTextBlock");
+			var heightBefore = int.Parse(heightStrBefore);
+
+			_app.Tap("AddItemsButton");
+
+			_app.WaitForText("StatusTextBlock", "Finished");
+
+			var heightStrAfter = _app.GetText("HeightTextBlock");
+			var heightAfter = int.Parse(heightStrAfter);
+
+			Assert.Greater(heightBefore, 0);
+
+			Assert.AreEqual(3 * heightBefore, heightAfter);
+		}
 	}
 }

@@ -975,6 +975,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_invalidatingOnCollectionChanged = true;
 			_pendingCollectionChanges.Enqueue(change);
+
+			if (change.Action == NotifyCollectionChangedAction.Add && DidLeaveUnusedSpace())
+			{
+				// If we're adding an item and the previous layout didn't use all available space, we probably need more space.
+				PropagateUnusedSpaceRelayout();
+			}
 		}
 
 		/// <summary>
@@ -1130,15 +1136,23 @@ namespace Windows.UI.Xaml.Controls
 			var lastReported = GetExtent(_lastReportedSize);
 			if (DidLeaveUnusedSpace() && DynamicContentExtent > lastReported)
 			{
-				SetWillConsumeUnusedSpace();
-
 				SetExtent(ref _lastReportedSize, DynamicContentExtent);
 
-				var nativePanel = CollectionView as NativeListViewBase;
-				nativePanel.SetNeedsLayout();
-				// NativeListViewBase swallows layout requests by design
-				nativePanel.SetSuperviewNeedsLayout();
+				PropagateUnusedSpaceRelayout();
 			}
+		}
+
+		/// <summary>
+		/// We left space 'on the table' in a previous measure+arrange and now we need more, propagate a layout request.
+		/// </summary>
+		private void PropagateUnusedSpaceRelayout()
+		{
+			SetWillConsumeUnusedSpace();
+
+			var nativePanel = CollectionView as NativeListViewBase;
+			nativePanel.SetNeedsLayout();
+			// NativeListViewBase swallows layout requests by design
+			nativePanel.SetSuperviewNeedsLayout();
 		}
 
 		/// <summary>
