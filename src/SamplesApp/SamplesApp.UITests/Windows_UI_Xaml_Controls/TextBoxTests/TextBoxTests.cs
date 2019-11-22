@@ -36,6 +36,22 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 		[Test]
 		[AutoRetry]
+		public void TextBox_Foreground()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_Foreground");
+
+			var tb1 = _app.Marked("tb1");
+			var tb2 = _app.Marked("tb2");
+
+			tb1.Tap();
+			TakeScreenshot("tb1 focused");
+
+			tb2.Tap();
+			TakeScreenshot("tb2 focused");
+		}
+
+		[Test]
+		[AutoRetry]
 		public void TextBox_RoundedCorners()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_RoundedCorners");
