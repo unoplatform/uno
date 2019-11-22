@@ -205,7 +205,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(Stretch),
 				typeof(Image),
 				new PropertyMetadata(
-					Media.Stretch.UniformToFill,
+					Media.Stretch.Uniform,
 					(s, e) => ((Image)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
 
 		public Stretch Stretch
