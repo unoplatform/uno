@@ -297,6 +297,58 @@ namespace Windows.UI.Xaml.Controls
 				return ret;
 			}
 
+			if(frameworkElement != null && !(frameworkElement is FrameworkElement))
+			{
+				// For IFrameworkElement implementers that are not FrameworkElements, the constraint logic must
+				// be performed by the parent. Otherwise, the native element will take the size it needs without
+				// regards to explicit XAML size characteristics. The Android ProgressBar is a good example of
+				// that behavior.
+
+				var margin = frameworkElement.Margin;
+
+				if (margin != Thickness.Empty)
+				{
+					// Apply the margin for framework elements, as if it were padding to the child.
+					slotSize = new Size(
+						Max(0, slotSize.Width - margin.Left - margin.Right),
+						Max(0, slotSize.Height - margin.Top - margin.Bottom)
+					);
+				}
+
+				// Alias the Dependency Properties values to avoid double calls.
+				var childWidth = frameworkElement.Width;
+				var childMaxWidth = frameworkElement.MaxWidth;
+				var childHeight = frameworkElement.Height;
+				var childMaxHeight = frameworkElement.MaxHeight;
+
+				var optionalMaxWidth = !IsInfinity(childMaxWidth) && !IsNaN(childMaxWidth) ? childMaxWidth : (double?)null;
+				var optionalWidth = !IsNaN(childWidth) ? childWidth : (double?)null;
+				var optionalMaxHeight = !IsInfinity(childMaxHeight) && !IsNaN(childMaxHeight) ? childMaxHeight : (double?)null;
+				var optionalHeight = !IsNaN(childHeight) ? childHeight : (double?)null;
+
+				// After the margin has been removed, ensure the remaining space slot does not go
+				// over the explicit or maximum size of the child.
+				if (optionalMaxWidth != null || optionalWidth != null)
+				{
+					var constrainedWidth = Min(
+						optionalMaxWidth ?? double.PositiveInfinity,
+						optionalWidth ?? double.PositiveInfinity
+					);
+
+					slotSize.Width = Min(slotSize.Width, constrainedWidth);
+				}
+
+				if (optionalMaxHeight != null || optionalHeight != null)
+				{
+					var constrainedHeight = Min(
+						optionalMaxHeight ?? double.PositiveInfinity,
+						optionalHeight ?? double.PositiveInfinity
+					);
+
+					slotSize.Height = Min(slotSize.Height, constrainedHeight);
+				}
+			}
+
 			ret = MeasureChildOverride(view, slotSize);
 
 			if (
