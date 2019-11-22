@@ -6,19 +6,19 @@ using System.Text;
 using Foundation;
 using CoreAnimation;
 using CoreGraphics;
+using Size = Windows.Foundation.Size;
 
 namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Ellipse : ArbitraryShapeBase
     {
-		public Ellipse()
+	    public Ellipse()
 		{
 		}
 
 		protected override CGPath GetPath()
 		{
-			var bounds = Bounds;
-			var calculatedBounds = GetBounds();
+			var calculatedBounds = SizeFromUISize(Bounds.Size); ;
 
 			var width = double.IsNaN(Width) ? calculatedBounds.Width : Width;
 			var height = double.IsNaN(Height) ? calculatedBounds.Height : Height;
