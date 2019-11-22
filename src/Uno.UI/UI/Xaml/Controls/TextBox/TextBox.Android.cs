@@ -132,7 +132,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private static object CoerceImeOptions(DependencyObject dependencyObject, object baseValue)
 		{
-			return dependencyObject is TextBox textBox && textBox.InputScope.GetFirstInputScopeNameValue() == InputScopeNameValue.Search
+			return dependencyObject is TextBox textBox && textBox.InputScope?.GetFirstInputScopeNameValue() == InputScopeNameValue.Search
 				? ImeAction.Search
 				: baseValue;
 		}
