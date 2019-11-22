@@ -119,5 +119,21 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			var finalMeasureCount = int.Parse(measureTextAfter);
 			Assert.AreEqual(initialMeasureCount, finalMeasureCount);
 		}
+
+		[Test]
+		[AutoRetry]
+		public void ListView_Weird_Measure_During_Arrange()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_Weird_Measure");
+
+			_app.WaitForText("StatusTextBlock", "Finished");
+
+			TakeScreenshot($"{nameof(ListView_Weird_Measure_During_Arrange)} after layout");
+
+			var heightStr = _app.GetText("HeightTextBlock");
+			var height = int.Parse(heightStr);
+
+			Assert.AreEqual(224, height);
+		}
 	}
 }

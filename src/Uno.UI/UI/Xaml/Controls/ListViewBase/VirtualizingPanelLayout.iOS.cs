@@ -96,6 +96,10 @@ namespace Windows.UI.Xaml.Controls
 		/// The most recent available size given by measure.
 		/// </summary>
 		private CGSize _lastAvailableSize;
+		/// <summary>
+		/// The available size when layout was most recently recreated.
+		/// </summary>
+		private CGSize _lastArrangeSize;
 		private bool _invalidatingHeadersOnBoundsChange;
 		private bool _invalidatingOnCollectionChanged;
 		private UnusedSpaceState _unusedSpaceState;
@@ -419,6 +423,7 @@ namespace Windows.UI.Xaml.Controls
 						if (_dirtyState == DirtyState.NeedsRelayout)
 						{
 							_hasDynamicItemSizes = false;
+							_lastArrangeSize = availableSize;
 						}
 						_pendingCollectionChanges.Clear();
 						_dirtyState = DirtyState.None;
@@ -450,10 +455,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var oldBreadth = GetBreadth(oldAvailableSize);
 			var newBreadth = GetBreadth(newAvailableSize);
+			var oldArrangeBreadth = GetBreadth(_lastArrangeSize);
 
 			// Recalculate layout only when the breadth changes. Extent changes don't affect the desired extent reported by layouting (since 
 			// items always get measured with infinite extent).
 			return NMath.Abs(oldBreadth - newBreadth) > epsilon
+				// If the new measure size happens to have been used for the most recent arrange, we don't need to relayout
+				&& NMath.Abs(oldArrangeBreadth - newBreadth) > epsilon
 				// Skip recalculating layout for 0 size.
 				&& !newAvailableSize.IsEmpty;
 		}
@@ -590,7 +598,7 @@ namespace Windows.UI.Xaml.Controls
 				//Ensure container for group exists even if group contains no items, to simplify subsequent logic
 				if (createLayoutInfo)
 				{
-					_itemLayoutInfos[section] = new Dictionary<NSIndexPath, UICollectionViewLayoutAttributes>(); 
+					_itemLayoutInfos[section] = new Dictionary<NSIndexPath, UICollectionViewLayoutAttributes>();
 				}
 				//b. Layout items in group
 				var itemsBreadth = LayoutItemsInGroup(section, availableGroupBreadth, ref frame, createLayoutInfo, oldItemSizes);
