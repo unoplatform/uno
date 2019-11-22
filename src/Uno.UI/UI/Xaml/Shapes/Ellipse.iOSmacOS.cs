@@ -6,6 +6,7 @@ using System.Text;
 using Foundation;
 using CoreAnimation;
 using CoreGraphics;
+using Uno.UI;
 using Size = Windows.Foundation.Size;
 
 namespace Windows.UI.Xaml.Shapes
@@ -18,10 +19,10 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected override CGPath GetPath()
 		{
-			var calculatedBounds = SizeFromUISize(Bounds.Size); ;
-
-			var width = double.IsNaN(Width) ? calculatedBounds.Width : Width;
-			var height = double.IsNaN(Height) ? calculatedBounds.Height : Height;
+			var minMax = this.GetMinMax();
+			var calculatedBounds = SizeFromUISize(Bounds.Size)
+				.AtLeast(minMax.min)
+				.AtMost(minMax.max);
 
 			var strokeThickness = (nfloat)this.ActualStrokeThickness;
 
@@ -31,8 +32,8 @@ namespace Windows.UI.Xaml.Shapes
 
 				//In ios we need to inflate the bounds because the stroke thickness is not taken into account when
 				//forming the ellipse from rect.
-				width: width - strokeThickness, 
-				height: height - strokeThickness
+				width: calculatedBounds.Width - strokeThickness, 
+				height: calculatedBounds.Height - strokeThickness
             );
 
 			return CGPath.EllipseFromRect(area);
