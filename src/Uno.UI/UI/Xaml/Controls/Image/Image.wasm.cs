@@ -14,18 +14,14 @@ using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public class HtmlImage : UIElement, ICustomClippingElement
+	public class HtmlImage : UIElement
 	{
 		public HtmlImage() : base("img")
 		{
 		}
-
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => true;
 	}
 
-	partial class Image : FrameworkElement
+	partial class Image : FrameworkElement, ICustomClippingElement
 	{
 		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
 
@@ -276,5 +272,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		internal override bool IsViewHit() => Source != null || base.IsViewHit();
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => true;
 	}
 }
