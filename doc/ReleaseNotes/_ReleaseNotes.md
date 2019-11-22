@@ -201,6 +201,7 @@
 * [Wasm] Fixes the measure of a TextBoxView #2034 #2095
 * [Android] [Wasm] Recent clipping improvements were incompleted. Fixed a case where a control was allowed to draw itself to use more than available place in the _arrange_ phase.
 * #2129 WebAssembly Bootstrapper update to remove the implicit .NET 4.6.2 dependency, and support for long file paths on Windows.
+* #2147 Fix NRE in android-specific TextBox.ImeOptions
 
 ## Release 1.45.0
 ### Features
@@ -367,6 +368,7 @@
 * `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
 * [Android] A ListView inside another ListView no longer causes an app freeze/crash
 * `Click` on `ButtonBase` was not properly raised.
+
 
 ## Release 1.44.0
 
