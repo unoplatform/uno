@@ -2,6 +2,7 @@
 using Uno.UI;
 using System;
 using System.Drawing;
+using Size = Windows.Foundation.Size;
 using Rect = Windows.Foundation.Rect;
 
 namespace Windows.UI.Xaml.Shapes
@@ -16,8 +17,15 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected override Android.Graphics.Path GetPath()
 		{
+			var minMax = this.GetMinMax();
+
 			var viewGroup = this as UnoViewGroup;
-			var bounds = new RectF(0, 0, viewGroup.Width, viewGroup.Height);
+			var finalSize =
+				new Size(viewGroup.Width, viewGroup.Height)
+					.AtMost(minMax.max)
+					.AtLeast(minMax.min);
+
+			var bounds = new RectF(0, 0, (float)finalSize.Width, (float)finalSize.Height);
 
 			var output = new Android.Graphics.Path();
 			output.AddOval(bounds, Android.Graphics.Path.Direction.Cw);
