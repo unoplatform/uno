@@ -9,7 +9,7 @@
 
 	<StackPanel Spacing="5">
 		<TextBlock FontSize="22">This is an ellipse</TextBlock>
-		<Ellipse x:Name="DEllipsePage" Stroke="Black" Height="125" Width="150" StrokeThickness="5" HorizontalAlignment="Left"/>
+		<Ellipse x:Name="ellipse0" Stroke="Black" Height="125" Width="150" StrokeThickness="5" HorizontalAlignment="Left"/>
 
 		<TextBlock FontSize="22">Those 3 ellipses should be identical (you should not see 4 ellipses!)</TextBlock>
 		<Grid>
