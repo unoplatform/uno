@@ -164,5 +164,25 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			_app.EnterText(txt, "Works again!");
 			_app.WaitForText(txt, "This is the starting text...Hello !Works again!");
 		}
+
+		[Test]
+		[AutoRetry]
+		public void PasswordBox_RevealInScrollViewer()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.PasswordBox_Reveal_Scroll");
+
+			var passwordBox = _app.WaitForElement("MyPasswordBox").Single();
+			var initial = TakeScreenshot("initial");
+
+			// Focus the PasswordBox
+			_app.TapCoordinates(passwordBox.Rect.X + 10, passwordBox.Rect.Y);
+
+			// Press the reveal button, and move up (so the ScrollViewer will kick in and cancel the pointer), then release
+			_app.DragCoordinates(passwordBox.Rect.X + 10, passwordBox.Rect.Right - 10, passwordBox.Rect.X - 100, passwordBox.Rect.Right - 10);
+
+			var result = TakeScreenshot("result");
+
+			AssertScreenshotsAreEqual(initial, result, passwordBox.Rect);
+		}
 	}
 }
