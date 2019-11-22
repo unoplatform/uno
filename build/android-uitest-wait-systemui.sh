@@ -2,7 +2,6 @@
 
 $ANDROID_HOME/platform-tools/adb wait-for-device shell 'while [[ -z $(getprop sys.boot_completed | tr -d '\r') ]]; do sleep 1; done; input keyevent 82'
 
-
 # Wait for com.android.systemui to become available,
 # as the CPU of the build machine may be slow
 # See: https://stackoverflow.com/questions/52410440/error-system-ui-isnt-responding-while-running-aosp-build-on-emulator

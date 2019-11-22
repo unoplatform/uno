@@ -98,8 +98,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
         private readonly INamedTypeSymbol _setterSymbol;
 
         private readonly List<INamedTypeSymbol> _markupExtensionTypes;
+		private readonly List<INamedTypeSymbol> _xamlConversionTypes;
 
-        private readonly bool _isWasm;
+		private readonly bool _isWasm;
 
         private bool _isGeneratingGlobalResource = false;
 
@@ -166,8 +167,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             _styleSymbol = GetType(XamlConstants.Types.Style);
 
             _markupExtensionTypes = _medataHelper.GetAllTypesDerivingFrom(_markupExtensionSymbol).ToList();
+            _xamlConversionTypes = _medataHelper.GetAllTypesAttributedWith(XamlConstants.Types.CreateFromStringAttribute).ToList();
 
-            _isWasm = isWasm;
+			_isWasm = isWasm;
         }
 
         /// <summary>
@@ -440,7 +442,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
         {
             if (_isDebug)
             {
-				if(GetType("Uno.UI.RemoteControl.RemoteControlClient") != null)
+				if(FindType("Uno.UI.RemoteControl.RemoteControlClient") != null)
 				{
 					writer.AppendLineInvariant($"global::Uno.UI.RemoteControl.RemoteControlClient.Initialize(GetType());");
 				}
@@ -1046,7 +1048,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                     if (!containsDefaultCase)
                     {
                         var msg = customThemes.Any()
-                            ? $"$\"The themed resource {resourcePropertyName} cannot be found for custom theme \\\"{{{{currentCustomTheme}}}}\\\", theme={{{{currentTheme}}}}.\""
+                            ? $"$\"The themed resource {resourcePropertyName} cannot be found for custom theme \\\"{{{{currentCustomTheme}}}}\\\".\""
                             : $"$\"The themed resource {resourcePropertyName} cannot be found for theme {{{{currentTheme}}}}.\"";
                         writer.AppendLine();
                         writer.AppendLineInvariant($"throw new InvalidOperationException({msg});");
@@ -1452,7 +1454,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             return _markupExtensionTypes.Any(ns => ns.Name.Equals(xamlTypeName, StringComparison.InvariantCulture));
         }
 
-        private XamlMemberDefinition FindMember(XamlObjectDefinition xamlObjectDefinition, string memberName)
+		private bool IsXamlTypeConverter(INamedTypeSymbol symbol)
+		{
+			return _xamlConversionTypes.Any(ns => ns.Equals(symbol));
+		}
+
+		private string BuildXamlTypeConverterLiteralValue(INamedTypeSymbol symbol, string memberValue)
+		{
+			var attributeData = symbol.FindAttribute(XamlConstants.Types.CreateFromStringAttribute);
+			var returnType = attributeData?.NamedArguments.FirstOrDefault(kvp => kvp.Key == "MethodName").Value.Value;
+
+			// Return a string that contains the code which calls the "conversion" function with the member value
+			return "{0}(\"{1}\")".InvariantCultureFormat(returnType, memberValue);
+		}
+
+		private XamlMemberDefinition FindMember(XamlObjectDefinition xamlObjectDefinition, string memberName)
         {
             return xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == memberName);
         }
@@ -2827,6 +2843,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                     return value;
                 }
 
+				if ((sourceTypes.Length == 1 || sourceTypes.Select(x => x?.Type).Distinct().Count() == 1) &&
+					TryImplicitXamlConvert(value, sourceTypes[0]) is string conversion)
+				{
+					return conversion;
+				}
+
                 var type = targetPropertyType.ToDisplayString();
                 var closure = $"c{_applyIndex++}";
                 if (useSafeCast)
@@ -2837,8 +2859,23 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 {
                     return $"({type}){value}";
                 }
-            }
-        }
+			}
+
+			// this allows for the resource to be implicitly converted to another type, however
+			// its implementation may not be implicit
+			string TryImplicitXamlConvert(string value, XamlObjectDefinition sourceType)
+			{
+				// note: Source is a non-prefixed xaml name
+				switch ((Source: sourceType.Type.Name, Target: targetPropertyType.ToDisplayString()))
+				{
+					// double to Thickness
+					case var conversion when conversion.Source == "Double" && conversion.Target == XamlConstants.Types.Thickness:
+						return $"new {GlobalPrefix}{XamlConstants.Types.Thickness}({value})";
+					
+					default: return default;
+				}
+			}
+		}
 
         /// <summary>
         /// Inserts explicit cast if a resource is being assigned to a property of a different type
@@ -2872,6 +2909,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 {
                     return resourceValue;
                 }
+            }
+
+            // If the property Type is attributed with the CreateFromStringAttribute
+            if (IsXamlTypeConverter(propertyType))
+            {
+                // We must build the member value as a call to a "conversion" function
+                return BuildXamlTypeConverterLiteralValue(propertyType, memberValue);
             }
 
             propertyType = FindUnderlyingType(propertyType);

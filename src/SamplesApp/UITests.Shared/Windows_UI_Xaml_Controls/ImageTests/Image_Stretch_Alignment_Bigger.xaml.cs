@@ -1,26 +1,34 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Runtime.InteropServices.WindowsRuntime;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
+using System.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.Image
 {
-	[Controls.SampleControlInfo("Image", "Image_Stretch_Alignment_Bigger")]
+	[Controls.SampleControlInfo("Image")]
 	public sealed partial class Image_Stretch_Alignment_Bigger : UserControl
-    {
-        public Image_Stretch_Alignment_Bigger()
+	{
+		private ArrayList Items = new ArrayList();
+
+		public Image_Stretch_Alignment_Bigger()
         {
             this.InitializeComponent();
-        }
-    }
+
+            var index = 0;
+
+            foreach (var stretch in Enum.GetValues(typeof(Stretch)))
+            {
+	            foreach (var horizontalAlignment in Enum.GetValues(typeof(HorizontalAlignment)))
+	            {
+		            foreach (var verticalAlignment in Enum.GetValues(typeof(VerticalAlignment)))
+		            {
+			            index++;
+			            Items.Add(new {index, stretch, horizontalAlignment, verticalAlignment});
+		            }
+	            }
+            }
+
+		}
+	}
 }

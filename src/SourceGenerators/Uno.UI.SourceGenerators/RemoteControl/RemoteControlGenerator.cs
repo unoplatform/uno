@@ -19,8 +19,9 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 	{
 		public override void Execute(SourceGeneratorContext context)
 		{
-			if(
+			if (
 				context.GetProjectInstance().GetPropertyValue("Configuration") == "Debug"
+				&& IsRemoteControlClientInstalled(context)
 				&& IsApplication(context.GetProjectInstance()))
 			{
 				var sb = new IndentedStringBuilder();
@@ -31,6 +32,9 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 				context.AddCompilationUnit("RemoteControl", sb.ToString());
 			}
 		}
+
+		private static bool IsRemoteControlClientInstalled(SourceGeneratorContext context)
+			=> context.Compilation.GetTypeByMetadataName("Uno.UI.RemoteControl.RemoteControlClient") != null;
 
 		private static void BuildSearchPaths(SourceGeneratorContext context, IndentedStringBuilder sb)
 		{

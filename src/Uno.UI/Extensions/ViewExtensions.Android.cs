@@ -558,12 +558,18 @@ namespace Uno.UI
 				var name = (innerView as IFrameworkElement)?.Name;
 				var namePart = string.IsNullOrEmpty(name) ? "" : $"-'{name}'";
 
+				var fe = innerView as IFrameworkElement;
+
 				return sb
 						.Append(spacing)
 						.Append(innerView == viewOfInterest ? "*>" : ">")
 						.Append(innerView.ToString() + namePart)
-						.Append($"-({ViewHelper.PhysicalToLogicalPixels(innerView.Width)}x{ViewHelper.PhysicalToLogicalPixels(innerView.Height)})")
+						.Append($"-({ViewHelper.PhysicalToLogicalPixels(innerView.Width)}x{ViewHelper.PhysicalToLogicalPixels(innerView.Height)})@({ViewHelper.PhysicalToLogicalPixels(innerView.Left)},{ViewHelper.PhysicalToLogicalPixels(innerView.Top)})")
 						.Append($"  {innerView.Visibility}")
+						.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
+						.Append(fe != null && fe.Margin != default(Thickness) ? $" Margin={fe.Margin}" : "")
+						.Append(fe != null && fe.GetPadding() is Thickness p && p != default(Thickness) ? $" Padding={p}" : "")
+						.Append(innerView is UIElement u ? $" DesiredSize={u.DesiredSize}" : "")
 						.AppendLine();
 			}
 		}

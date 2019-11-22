@@ -33,5 +33,10 @@ namespace SamplesApp.Windows_UI_Xaml_Shapes
 			points.Add(new Point(180, 200));
 			DPolyline.Points = points;
 		}
+
+		public void Clear_Shape(object sender, RoutedEventArgs e)
+		{
+			DPolyline.Points.Clear();
+		}
 	}
 }

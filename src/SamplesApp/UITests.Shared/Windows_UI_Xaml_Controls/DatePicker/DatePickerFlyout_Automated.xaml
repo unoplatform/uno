@@ -9,13 +9,17 @@
 			 d:DesignWidth="400">
 
 	<Grid>
-		<!--  DatePicker is broken: https://github.com/unoplatform/uno/issues/188  -->
-		<!--  Using a Button with DatePickerFlyout to simulate a DatePicker  -->
-		<Button x:Name="TestDatePickerFlyoutButton"
+		<StackPanel VerticalAlignment="Center">
+			<TextBlock x:Name="selectedDate" Text="None" />
+			
+			<!--  DatePicker is broken: https://github.com/unoplatform/uno/issues/188  -->
+			<!--  Using a Button with DatePickerFlyout to simulate a DatePicker  -->
+			<Button x:Name="TestDatePickerFlyoutButton"
 				Content="Open DatePickerFlyout">
-			<Button.Flyout>
-				<DatePickerFlyout x:Name="TestDatePickerFlyout" />
-			</Button.Flyout>
-		</Button>
+				<Button.Flyout>
+					<DatePickerFlyout x:Name="TestDatePickerFlyout" />
+				</Button.Flyout>
+			</Button>
+		</StackPanel>
 	</Grid>
 </UserControl>

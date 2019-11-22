@@ -3,7 +3,9 @@
 ## Next version
 
 ### Features
-
+* [#2029](https://github.com/unoplatform/uno/pull/2029) Support for MenuFlyoutItem.Click
+* support /[file]/[name] format in ResourceLoader.GetForCurrentView().GetString()
+* [#2039] Added support for Xaml type conversions using CreateFromStringAttribute.
 * [#] Support for `Windows.Devices.Lights.Lamp` on iOS, Android.
 * [#1970](https://github.com/unoplatform/uno/pull/1970) Added support for `AnalyticsInfo` properties on iOS, Android and WASM
 * [#1207] Implemented some `PackageId` properties
@@ -91,6 +93,12 @@
 * The _feature flag_ `FeatureConfiguration.UseLegacyClipping` is now deprecated and not used anymore
 * XAML Hot Reload support for iOS, Android and Windows
 * Add support for GitPod Workspace and prebuilds
+* #880 Added added implicit conversion for double to Thickness
+* Add Android support for `CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar` to programatically draw under the status bar
+* [WASM] `ScrollViewer.ChangeView` is now supported
+* [Wasm] Add the ability to focus a TextBox by clicking its header
+* Add support for `ToggleButton.IsThreeState` and `ToggleButton.Indeterminate`
+* [Wasm] Add support for `TextBox.IsReadonly`
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
@@ -103,8 +111,11 @@
 * [iOS] If you set the `ManipulationMode` to something else than `System` or `All`, the [DelaysContentTouches](https://developer.apple.com/documentation/uikit/uiscrollview/1619398-delayscontenttouches) is going to be disabled on all parent `ScrollViewer`
 * [#1237] Static resources defined in App.xaml were not processed and registered properly
     > This change might break the compilation for projects that define duplicate resources in other globally accessible resource dictionaries. Adjustments to remove duplicate resources may be necessary.
+ * [WASM] The tranform returned by `UIElement.TransformToVisual` is now including scale, rotation or any custom transformation that was declard on a parent element (transform was only including translate components)
 
 ### Bug fixes
+* [#2093](https://github.com/unoplatform/uno/pull/2093) Fix missing measurement option for polyline and polygon
+* Font size, used for ComboBoxItems, are same as in ComboBox content (not smaller)
 * [#2023](https://github.com/unoplatform/uno/pull/2023) Android WebView.NavigateToString doesn't throw exception even when string is very long.
 * [#2020](https://github.com/unoplatform/uno/pull/2020) `ContentControl` no longer display the datacontext type when ContentTemplate and content are empty
 * [#1987](https://github.com/unoplatform/uno/pull/1987) Missing XML comment warnings are disabled on generated code
@@ -185,6 +196,12 @@
 * [Wasm] Fix unable to reset `Image.Source` property
 * [#2014](https://github.com/unoplatform/uno/issues/2014) Fix iOS Picker for ComboBox not selecting the correct item.
 * [iOS] #977 Fix exception when setting MediaPlayerElement.Stretch in XAML.
+* #1708 Fix initial Flyout placement and window resize placement
+* [Android] #2007 ComboBox does not take Window.VisibleBounds to position its popup
+* [Wasm] Fixes the measure of a TextBoxView #2034 #2095
+* [Android] [Wasm] Recent clipping improvements were incompleted. Fixed a case where a control was allowed to draw itself to use more than available place in the _arrange_ phase.
+* #2129 WebAssembly Bootstrapper update to remove the implicit .NET 4.6.2 dependency, and support for long file paths on Windows.
+* #2147 Fix NRE in android-specific TextBox.ImeOptions
 
 ## Release 1.45.0
 ### Features
@@ -351,6 +368,7 @@
 * `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
 * [Android] A ListView inside another ListView no longer causes an app freeze/crash
 * `Click` on `ButtonBase` was not properly raised.
+
 
 ## Release 1.44.0
 

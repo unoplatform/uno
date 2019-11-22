@@ -57,10 +57,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnForegroundColorChangedPartial(Brush newValue)
-		{
-		}
-
 		public override bool BecomeFirstResponder()
 		{
 			return (_textBoxView?.BecomeFirstResponder())

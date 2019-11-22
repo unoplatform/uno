@@ -243,13 +243,13 @@ namespace Windows.UI.Xaml.Shapes
 			_scaleY = (calculatedHeight - strokeThickness) / pathHeight;
 
 			//Make sure that we have a valid scale if both of them are not set
-			if (double.IsInfinity((double)_scaleY))
-			{
-				_scaleY = 1;
-			}
-			if (double.IsInfinity((double)_scaleX))
+			if (double.IsInfinity(_scaleX) || double.IsNaN(_scaleX))
 			{
 				_scaleX = 1;
+			}
+			if (double.IsInfinity(_scaleY) || double.IsNaN(_scaleY))
+			{
+				_scaleY = 1;
 			}
 
 			// Here we will override some of the default values
