@@ -16,8 +16,8 @@ using static System.Math;
 using static Uno.UI.LayoutHelper;
 using Uno.Diagnostics.Eventing;
 using Windows.Foundation;
-
 #if XAMARIN_ANDROID
+using Android.Views;
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 #elif XAMARIN_IOS_UNIFIED
@@ -233,7 +233,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (uiElement != null)
 				{
-					uiElement.RenderSize = renderSize;
+					uiElement.RenderSize = renderSize.AtMost(maxSize);
 					uiElement.NeedsClipToSlot = needsClipToSlot;
 					uiElement.ApplyClip();
 
