@@ -1,6 +1,7 @@
 ﻿using Windows.Foundation;
 using Windows.UI.Xaml.Wasm;
 using Uno.Extensions;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -22,8 +23,14 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			var cx = finalSize.Width / 2;
-			var cy = finalSize.Height / 2;
+			var minMax = this.GetMinMax();
+
+			var arrangeSize = finalSize
+				.AtLeast(minMax.min)
+				.AtMost(minMax.max);
+
+			var cx = arrangeSize.Width / 2;
+			var cy = arrangeSize.Height / 2;
 
 			var strokeThickness = ActualStrokeThickness;
 
