@@ -99,7 +99,7 @@ Yes, those are called Templated Controls in the UWP dialect because they inherit
 
 ## Is the iPhone X supported by Uno.UI ?
 
-Yes, use the [VisibleBoundsPadding](https://github.com/unoplatform/uno/blob/master/src/Uno.UI.Toolkit/VisibleBoundsPadding.md)
+Yes, use the [VisibleBoundsPadding](https://platform.uno/docs/articles/features/VisibleBoundsPadding.html)
 behavior to manage the _notch_ correctly.
 
 ## What features will Uno Platform support?
