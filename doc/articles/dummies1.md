@@ -27,13 +27,16 @@ You have two options:
 
 ### 1. Adding new projects to existing solution
 First, open your app solution in Visual Studio. Then, using the Solution Explorer window:
-* Add new projects (right click on Solution, Add, New Project, Visual C#, Uno Plaform, Cross-Plaform App (Uno Platform), using same name as your existing project (APPNAME) with "\_Uno" suffix. In effect, APPNAME_Uno folder will be created, and inside it, folders such as APPNAME_Uno.Shared, APPNAME_Uno.Droid, etc. - one project per target platform.
-* tip: you can unload your APPNAME_Uno.Droid, .iOS and .WASM projects (right click in Solution Explorer) to make Visual Studio use less memory and start faster.
-* while reading next parts of this guide, treat `APPNAME[_Uno].` as `APPNAME_Uno`.
+* Add new projects (right click on Solution, Add, New Project, Visual C#, Uno Plaform, Cross-Plaform App (Uno Platform), using same name as your existing project (APPNAME) with "\_Uno" suffix. In effect, APPNAME_Uno folder will be created, and inside it, APPNAME_Uno.Shared folder, and four 'heads', one for each target platform (as APPNAME_Uno.Droid, etc.).
+* while reading next parts of this guide, treat `APPNAME[_Uno]` as `APPNAME_Uno`.
 
 ### 2. Creating a new solution
-* Create a new solution with the Uno app template for Visual Studio, using the same name as your existing project (APPNAME). In effect, APPNAME folder would be created, and inside it - folders as APPNAME.Shared, APPNAME.Droid, etc. - one project per one target platform.
-* while reading next parts of this guide, treat `APPNAME[_Uno].` as `APPNAME`.
+* Create a new solution with the Uno app template for Visual Studio, using the same name as your existing project (APPNAME). In effect, APPNAME folder will be created, and inside it, APPNAME.Shared folder, and four 'heads', one for each target platform (as APPNAME.Droid, etc.).
+* while reading next parts of this guide, treat `APPNAME[_Uno]` as `APPNAME`.
+
+### tips for both options above
+* description of Uno app solution structure is [documented here](uno-app-solution-structure.html).
+* you can unload your .Droid, .iOS and .WASM projects (right click in Solution Explorer) to make Visual Studio use less memory and start faster.
 
 ## Converting your code
 In simple terms, you have to copy all your content from old project (APPNAME) to APPNAME\[\_Uno\].Shared: all your XAML pages, all code (.cs), and replace folder Strings (delete just generated Strings folders). Copy also all other files and folders you created in previous project.
