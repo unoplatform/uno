@@ -46,20 +46,18 @@ namespace Windows.UI.Xaml.Controls
 			if (stretch == None || stretch == UniformToFill)
 			{
 				// In order to match UWP behaviors, in some specific cases the image must be left align
-                // Only triggered when the "Width" is set as local value on the image
-				var localWidth = image.GetValue(FrameworkElement.WidthProperty, DependencyPropertyValuePrecedences.Local);
-				if (localWidth is double d && !double.IsNaN(d) && finalSize.Width <= child.Width)
+				if (!double.IsNaN(image.Width) && finalSize.Width <= child.Width)
 				{
 					horizontalAlignment = HorizontalAlignment.Left;
 				}
 			}
 
-            if(horizontalAlignment == HorizontalAlignment.Stretch && child.Width < finalSize.Width)
-            {
-	            // In order to match UWP behaviors, image is centered when smaller than available size
-                // when the "Stretch" alignment is used.
-	            horizontalAlignment = HorizontalAlignment.Center;
-            }
+			if(horizontalAlignment == HorizontalAlignment.Stretch && child.Width < finalSize.Width)
+			{
+				// In order to match UWP behaviors, image is centered when smaller than available size
+				// when the "Stretch" alignment is used.
+				horizontalAlignment = HorizontalAlignment.Center;
+			}
 
 			switch (horizontalAlignment)
 			{
@@ -80,9 +78,7 @@ namespace Windows.UI.Xaml.Controls
 			if (stretch == None || stretch == UniformToFill)
 			{
 				// In order to match UWP behaviors, in some specific cases the image must be top align
-				// Only triggered when the "Height" is set as local value on the image
-				var localHeight = image.GetValue(FrameworkElement.HeightProperty, DependencyPropertyValuePrecedences.Local);
-				if (localHeight is double d && !double.IsNaN(d) && finalSize.Height <= child.Height)
+				if (!double.IsNaN(image.Height) && finalSize.Height <= child.Height)
 				{
 					verticalAlignment = VerticalAlignment.Top;
 				}
@@ -164,9 +160,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public static Size AdjustSize(this Image image, Size availableSize, Size measuredSize)
 		{
-			var adjustSize = AdjustSize(image.Stretch, availableSize, measuredSize);
-            Console.WriteLine($"{image}: AdjustSize(availableSize:{availableSize}, image.Stretch:{image.Stretch}, measuredSize:{measuredSize}) = {adjustSize}");
-			return adjustSize;
+			return AdjustSize(image.Stretch, availableSize, measuredSize);
 		}
 
 		internal static Size AdjustSize(Stretch stretch, Size availableSize, Size measuredSize)
