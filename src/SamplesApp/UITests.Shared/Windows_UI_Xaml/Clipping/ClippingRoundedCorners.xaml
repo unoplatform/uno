@@ -1,0 +1,35 @@
+﻿<Page x:Class="UITests.Shared.Windows_UI_Xaml.Clipping.ClippingRoundedCorners"
+	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	  xmlns:local="using:UITests.Shared.Windows_UI_Xaml.Clipping"
+	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  mc:Ignorable="d"
+	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<StackPanel>
+		<TextBlock FontSize="25">
+			Following rounded-corner squares should be identical:
+		</TextBlock>
+
+		<StackPanel Orientation="Horizontal"
+					VerticalAlignment="Center"
+					Spacing="10">
+
+			<Border CornerRadius="30"
+					Background="Tomato">
+
+				<Rectangle Width="100"
+						   Height="100"
+						   Fill="Olive" />
+			</Border>
+
+			<Border CornerRadius="30"
+					Background="Olive"
+					Width="100"
+					Height="100" />
+
+		</StackPanel>
+
+	</StackPanel>
+</Page>

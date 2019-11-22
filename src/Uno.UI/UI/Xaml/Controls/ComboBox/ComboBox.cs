@@ -427,7 +427,7 @@ namespace Windows.UI.Xaml.Controls
 			private const int _itemsToShow = 9;
 
 			/// <inheritdoc />
-			public void Arrange(Size finalSize, Rect visibleBounds, Size desiredSize)
+			public void Arrange(Size finalSize, Rect visibleBounds, Size desiredSize, Point? upperLeftLocation)
 			{
 				if (!(_popup.Child is FrameworkElement child))
 				{
@@ -506,6 +506,14 @@ namespace Windows.UI.Xaml.Controls
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
 					this.Log().Debug($"Layout the combo's dropdown at {frame} (desired: {desiredSize} / available: {finalSize} / visible: {visibleBounds} / selected: {selectedIndex} of {itemsCount})");
+				}
+
+				if(upperLeftLocation is Point offset)
+				{
+					// Compensate for origin location is some popup providers (Android
+					// is one, particularly when the status bar is translucent)
+					frame.X -= offset.X;
+					frame.Y -= offset.Y;
 				}
 
 				child.Arrange(frame);

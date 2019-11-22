@@ -5,6 +5,7 @@ jobs:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
+    XCODE_ROOT: /Applications/Xcode_10.3.app
 
   pool:
     vmImage: 'macOS-10.14'
@@ -14,6 +15,7 @@ jobs:
     clean: true
 
   - task: CacheBeta@0
+    condition: eq(variables['enable_package_cache'], 'true')
     inputs:
       key: nuget | $(Agent.OS) | $(Agent.JobName) | $(build.sourcesdirectory)/**/*.csproj | $(build.sourcesdirectory)/**/Directory.Build.targets | $(build.sourcesdirectory)/**/Directory.Build.props
       path: $(NUGET_PACKAGES)
@@ -21,6 +23,9 @@ jobs:
 
   - bash: /bin/bash -c "sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 5_18_1"
     displayName: Select Xamarin Version
+
+  - bash: /bin/bash -c "echo '##vso[task.setvariable variable=MD_APPLE_SDK_ROOT;]'${XCODE_ROOT};sudo xcode-select --switch ${XCODE_ROOT}/Contents/Developer"
+    displayName: Select Xcode
 
   - bash: |
       chmod +x $(build.sourcesdirectory)/build/ios-uitest-run.sh
@@ -39,7 +44,7 @@ jobs:
       testRunTitle: 'iOS Test Run'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult.xml'
-      failTaskOnFailedTests: false # see https://github.com/unoplatform/uno/issues/1259 for details
+      failTaskOnFailedTests: true
 
   - task: PublishBuildArtifacts@1
     condition: always()

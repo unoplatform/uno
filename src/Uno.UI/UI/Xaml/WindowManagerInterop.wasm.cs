@@ -254,13 +254,14 @@ namespace Uno.UI.Xaml
 
 		#region SetStyles
 
-		internal static void SetStyles(IntPtr htmlId, (string name, string value)[] styles, bool setAsArranged = false)
+		internal static void SetStyles(IntPtr htmlId, (string name, string value)[] styles, bool setAsArranged = false, bool clipToBounds = false)
 		{
 			if (UseJavascriptEval)
 			{
 				var setAsArrangeString = setAsArranged ? "true" : "false";
+				var clipToBoundsString = setAsArranged ? "true" : "false";
 				var stylesStr = string.Join(", ", styles.Select(s => "\"" + s.name + "\": \"" + WebAssemblyRuntime.EscapeJs(s.value) + "\""));
-				var command = "Uno.UI.WindowManager.current.setStyle(\"" + htmlId + "\", {" + stylesStr + "}," + setAsArrangeString + "); ";
+				var command = "Uno.UI.WindowManager.current.setStyle(\"" + htmlId + "\", {" + stylesStr + "}," + setAsArrangeString + "," + clipToBoundsString + "); ";
 
 				WebAssemblyRuntime.InvokeJS(command);
 			}
@@ -278,6 +279,7 @@ namespace Uno.UI.Xaml
 				{
 					HtmlId = htmlId,
 					SetAsArranged = setAsArranged,
+					ClipToBounds = clipToBounds,
 					Pairs_Length = pairs.Length,
 					Pairs = pairs,
 				};
@@ -298,6 +300,8 @@ namespace Uno.UI.Xaml
 
 			[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)]
 			public string[] Pairs;
+
+			public bool ClipToBounds;
 		}
 
 		#endregion
@@ -426,8 +430,8 @@ namespace Uno.UI.Xaml
 		}
 
 		#endregion
-		#region SetAttributes
 
+		#region SetAttribute
 		internal static void SetAttribute(IntPtr htmlId, string name, string value)
 		{
 			if (UseJavascriptEval)
@@ -462,6 +466,38 @@ namespace Uno.UI.Xaml
 
 			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string Value;
+		}
+
+		#endregion
+
+		#region ClearAttribute
+		internal static void RemoveAttribute(IntPtr htmlId, string name)
+		{
+			if (UseJavascriptEval)
+			{
+				var command = "Uno.UI.WindowManager.current.removeAttribute(\"" + htmlId + "\", \"" + name + "\");";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerRemoveAttributeParams()
+				{
+					HtmlId = htmlId,
+					Name = name,
+				};
+
+				TSInteropMarshaller.InvokeJS<WindowManagerRemoveAttributeParams>("Uno:removeAttributeNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerRemoveAttributeParams
+		{
+			public IntPtr HtmlId;
+
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string Name;
 		}
 
 		#endregion
@@ -802,7 +838,7 @@ namespace Uno.UI.Xaml
 
 		#region ArrangeElement
 
-		internal static void ArrangeElement(IntPtr htmlId, Rect rect, Rect? clipRect)
+		internal static void ArrangeElement(IntPtr htmlId, Rect rect, bool clipToBounds, Rect? clipRect)
 		{
 			if (UseJavascriptEval)
 			{
@@ -826,8 +862,9 @@ namespace Uno.UI.Xaml
 						("width", rect.Width.ToString(CultureInfo.InvariantCulture) + "px"),
 						("height", rect.Height.ToString(CultureInfo.InvariantCulture) + "px"),
 						("clip", clipRect2)
-					}
-					, true
+					},
+					clipToBounds: clipToBounds,
+					setAsArranged: true
 				);
 			}
 			else
@@ -838,7 +875,8 @@ namespace Uno.UI.Xaml
 					Top = rect.Top,
 					Left = rect.Left,
 					Width = rect.Width,
-					Height = rect.Height
+					Height = rect.Height,
+					ClipToBounds = clipToBounds
 				};
 
 				if(clipRect != null)
@@ -870,6 +908,7 @@ namespace Uno.UI.Xaml
 
 			public IntPtr HtmlId;
 			public bool Clip;
+			public bool ClipToBounds;
 		}
 
 
@@ -925,5 +964,34 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
+		#region ScrollTo
+		internal static void ScrollTo(IntPtr htmlId, double? left, double? top, bool disableAnimation)
+		{
+			var parms = new WindowManagerScrollToOptionsParams
+			{
+				HtmlId = htmlId,
+				HasLeft = left.HasValue,
+				Left = left ?? 0,
+				HasTop = top.HasValue,
+				Top = top ?? 0,
+				DisableAnimation = disableAnimation
+			};
+
+			TSInteropMarshaller.InvokeJS<WindowManagerScrollToOptionsParams>("Uno:scrollTo", parms);
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerScrollToOptionsParams
+		{
+			public double Left;
+			public double Top;
+			public bool HasLeft;
+			public bool HasTop;
+			public bool DisableAnimation;
+
+			public IntPtr HtmlId;
+		}
+		#endregion
 	}
 }

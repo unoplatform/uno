@@ -257,25 +257,87 @@
 	</Page.Resources>
 
 	<ScrollViewer>
-		<StackPanel>
-			<TextBlock Text="Button (CommonStates: Normal | PointerOver | Pressed | Disabled)" TextWrapping="Wrap" />
-			<Button Content="Button" Template="{StaticResource ButtonTemplate}" />
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="250" />
+			</Grid.ColumnDefinitions>
 
-			<TextBlock Text="ToggleButton (CommonStates: Normal | UncheckedPointerOver | UncheckedPressed | UncheckedDisabled | Checked | CheckedPointerOver | CheckedPressed | CheckedDisabled | Indeterminate | IndeterminatePointerOver | IndeterminatePressed | IndeterminateDisabled)" TextWrapping="Wrap" />
-			<ToggleButton Content="Toggle button" IsThreeState="True" IsChecked="{x:Null}" Template="{StaticResource ToggleButtonTemplate}" />
-			<ToggleButton Content="Checked toggle button" IsChecked="True" Template="{StaticResource ToggleButtonTemplate}" />
-			<ToggleButton Content="Unchecked toggle button" IsChecked="False" Template="{StaticResource ToggleButtonTemplate}" />
+			<StackPanel>
+				<TextBlock Text="Button (CommonStates: Normal | PointerOver | Pressed | Disabled)" TextWrapping="Wrap" />
+				<Button
+					x:Name="MyButton"
+					Content="Button"
+					Template="{StaticResource ButtonTemplate}"
+					Loaded="ListenVisualStates" />
 
-			<TextBlock Text="RadioButton (CommonStates: Normal | PointerOver | Pressed | Disabled)" TextWrapping="Wrap" />
-			<RadioButton Content="Radio button" Template="{StaticResource RadioButtonTemplate}" />
+				<TextBlock Text="ToggleButton (CommonStates: Normal | UncheckedPointerOver | UncheckedPressed | UncheckedDisabled | Checked | CheckedPointerOver | CheckedPressed | CheckedDisabled | Indeterminate | IndeterminatePointerOver | IndeterminatePressed | IndeterminateDisabled)" TextWrapping="Wrap" />
+				<ToggleButton
+					x:Name="MyIndeterminateToggleButton"
+					Content="Indeterminate Toggle button"
+					IsThreeState="True"
+					IsChecked="{x:Null}"
+					Template="{StaticResource ToggleButtonTemplate}"
+					Loaded="ListenVisualStates" />
+				<ToggleButton
+					x:Name="MyCheckedToggleButton"
+					Content="Checked toggle button"
+					IsChecked="True"
+					Template="{StaticResource ToggleButtonTemplate}"
+					Loaded="ListenVisualStates" />
+				<ToggleButton
+					x:Name="MyUncheckedToggleButton"
+					Content="Unchecked toggle button"
+					IsChecked="False"
+					Template="{StaticResource ToggleButtonTemplate}"
+					Loaded="ListenVisualStates" />
 
-			<TextBlock Text="HyperlinkButton (CommonStates: Normal | PointerOver | Pressed | Disabled)" TextWrapping="Wrap" />
-			<HyperlinkButton Content="Hyperlink button" Template="{StaticResource HyperlinkButtonTemplate}" />
+				<TextBlock Text="RadioButton (CommonStates: Normal | PointerOver | Pressed | Disabled)" TextWrapping="Wrap" />
+				<RadioButton
+					x:Name="MyRadioButton"
+					Content="Radio button"
+					Template="{StaticResource RadioButtonTemplate}"
+					Loaded="ListenVisualStates" />
 
-			<TextBlock Text="CheckBox (**Combined**States: UncheckedNormal | UncheckedPointerOver | UncheckedPressed | UncheckedDisabled | CheckedNormal | CheckedPointerOver | CheckedPressed | CheckedDisabled | IndeterminateNormal | IndeterminatePointerOver | IndeterminatePressed | IndeterminateDisabled)" TextWrapping="Wrap" />
-			<CheckBox Content="Indeterminate checkbox" IsThreeState="True" IsChecked="{x:Null}" Template="{StaticResource CheckBoxTemplate}" />
-			<CheckBox Content="Checked checkbox" IsChecked="True" Template="{StaticResource CheckBoxTemplate}" />
-			<CheckBox Content="Unchecked checkbox" IsChecked="False" Template="{StaticResource CheckBoxTemplate}" />
-		</StackPanel>
+				<TextBlock Text="HyperlinkButton (CommonStates: Normal | PointerOver | Pressed | Disabled)" TextWrapping="Wrap" />
+				<HyperlinkButton
+					x:Name="MyHyperlinkButton"
+					Content="Hyperlink button"
+					Template="{StaticResource HyperlinkButtonTemplate}"
+					Loaded="ListenVisualStates" />
+
+				<TextBlock Text="CheckBox (**Combined**States: UncheckedNormal | UncheckedPointerOver | UncheckedPressed | UncheckedDisabled | CheckedNormal | CheckedPointerOver | CheckedPressed | CheckedDisabled | IndeterminateNormal | IndeterminatePointerOver | IndeterminatePressed | IndeterminateDisabled)" TextWrapping="Wrap" />
+				<CheckBox
+					x:Name="MyIndeterminateCheckbox"
+					Content="Indeterminate checkbox"
+					IsThreeState="True"
+					IsChecked="{x:Null}"
+					Template="{StaticResource CheckBoxTemplate}"
+					Loaded="ListenVisualStates" />
+				<CheckBox
+					x:Name="MyCheckedCheckbox"
+					Content="Checked checkbox"
+					IsChecked="True"
+					Template="{StaticResource CheckBoxTemplate}"
+					Loaded="ListenVisualStates" />
+				<CheckBox
+					x:Name="MyUncheckedCheckbox"
+					Content="Unchecked checkbox"
+					IsChecked="False"
+					Template="{StaticResource CheckBoxTemplate}"
+					Loaded="ListenVisualStates" />
+
+				<TextBlock Text="Hyperlink (Hardcoded Pressed state)" TextWrapping="Wrap" />
+				<TextBlock x:Name="MyHyperlink" Margin="10,5">
+					<Hyperlink>This is an hyperlink</Hyperlink>
+				</TextBlock>
+
+			</StackPanel>
+
+			<TextBlock
+				x:Name="VisualStatesLog"
+				TextWrapping="Wrap"
+				Grid.Column="1" />
+		</Grid>
 	</ScrollViewer>
 </Page>

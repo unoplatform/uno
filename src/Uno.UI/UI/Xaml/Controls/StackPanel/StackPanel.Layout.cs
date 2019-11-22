@@ -25,8 +25,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			availableSize.Width -= GetHorizontalOffset();
-			availableSize.Height -= GetVerticalOffset();
+			var borderAndPaddingSize = BorderAndPaddingSize;
+			availableSize = availableSize.Subtract(borderAndPaddingSize);
 
 			var desiredSize = default(Size);
 			var isHorizontal = Orientation == Windows.UI.Xaml.Controls.Orientation.Horizontal;
@@ -74,19 +74,15 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			desiredSize.Width += GetHorizontalOffset();
-			desiredSize.Height += GetVerticalOffset();
-
-			return desiredSize;
+			return desiredSize.Add(borderAndPaddingSize);
 		}
 
 		protected override Size ArrangeOverride(Size arrangeSize)
 		{
-			arrangeSize.Width -= GetHorizontalOffset();
-			arrangeSize.Height -= GetVerticalOffset();
+			var borderAndPaddingSize = BorderAndPaddingSize;
+			arrangeSize = arrangeSize.Subtract(borderAndPaddingSize);
 
 			var childRectangle = new Foundation.Rect(BorderThickness.Left + Padding.Left, BorderThickness.Top + Padding.Top, arrangeSize.Width, arrangeSize.Height);
-
 
 			var isHorizontal = Orientation == Windows.UI.Xaml.Controls.Orientation.Horizontal;
 			var previousChildSize = 0.0;
@@ -97,7 +93,7 @@ namespace Windows.UI.Xaml.Controls
 			var spacing = Spacing;
 			var count = Children.Count;
 
-			for (int i = 0; i < count; i++)
+			for (var i = 0; i < count; i++)
 			{
 				var view = Children[i];
 				var desiredChildSize = GetElementDesiredSize(view);
@@ -135,10 +131,9 @@ namespace Windows.UI.Xaml.Controls
 				ArrangeElement(view, adjustedRectangle);
 			}
 
-			arrangeSize.Width += GetHorizontalOffset();
-			arrangeSize.Height += GetVerticalOffset();
+			var finalSizeWithBorderAndPadding = arrangeSize.Add(borderAndPaddingSize);
 
-			return arrangeSize;
+			return finalSizeWithBorderAndPadding;
 		}
 	}
 }

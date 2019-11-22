@@ -15,7 +15,7 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected static double LimitWithUserSize(double availableSize, double userSize, double naNFallbackValue)
 		{
-			bool hasUserSize = userSize != 0 && !double.IsNaN(userSize) && !double.IsInfinity(userSize);
+			var hasUserSize = userSize != 0 && !double.IsNaN(userSize) && !double.IsInfinity(userSize);
 			var hasAvailableSize = !double.IsNaN(availableSize);
 
 #if __WASM__
@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Shapes
 		/// Refreshes the current shape, considering its drawinf parameters.
 		/// </summary>
 		/// <param name="forceRefresh">Forces a refresh by ignoring the shape parameters.</param>
-		protected internal override void RefreshShape(bool forceRefresh = false)
+		protected override void RefreshShape(bool forceRefresh = false)
 		{
 			if (IsLoaded)
 			{
@@ -69,6 +69,45 @@ namespace Windows.UI.Xaml.Shapes
 					_layer.Disposable = BuildDrawableLayer();
 				}
 			}
+		}
+		private protected Rect GetBounds()
+		{
+			var width = Width;
+			var height = Height;
+
+			if (double.IsNaN(width))
+			{
+				var minWidth = MinWidth;
+				if (minWidth > 0.0)
+				{
+					width = minWidth;
+				}
+			}
+			if (double.IsNaN(height))
+			{
+				var minHeight = MinHeight;
+				if (minHeight > 0.0)
+				{
+					height = minHeight;
+				}
+			}
+
+			if (double.IsNaN(width))
+			{
+				if (double.IsNaN(height))
+				{
+					return new Rect(0.0, 0.0, 0.0, 0.0);
+				}
+
+				return new Rect(0.0, 0.0, height, height);
+			}
+
+			if (double.IsNaN(height))
+			{
+				return new Rect(0.0, 0.0, width, width);
+			}
+
+			return new Rect(0.0, 0.0, width, height);
 		}
 
 		/// <summary>

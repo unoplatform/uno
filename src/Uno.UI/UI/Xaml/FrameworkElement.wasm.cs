@@ -14,6 +14,7 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
@@ -43,7 +44,7 @@ namespace Windows.UI.Xaml
 			}
 			catch (Exception error)
 			{
-				this.Log().Error("ManagedOnLoading failed in FrameworkElement", error);
+				_log.Error("ManagedOnLoading failed in FrameworkElement", error);
 				Application.Current.RaiseRecoverableUnhandledException(error);
 			}
 
@@ -67,12 +68,14 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal sealed override void ManagedOnLoaded()
+		internal sealed override void ManagedOnLoaded(int depth)
 		{
 			if (!base.IsLoaded)
 			{
 				// Make sure to set the flag before raising the loaded event (duplicated with the base.ManagedOnLoaded)
 				base.IsLoaded = true;
+
+				UpdateDOMProperties();
 
 				try
 				{
@@ -82,12 +85,12 @@ namespace Windows.UI.Xaml
 				}
 				catch (Exception error)
 				{
-					this.Log().Error("ManagedOnLoaded failed in FrameworkElement", error);
+					_log.Error("ManagedOnLoaded failed in FrameworkElement", error);
 					Application.Current.RaiseRecoverableUnhandledException(error);
 				}
 			}
 
-			base.ManagedOnLoaded();
+			base.ManagedOnLoaded(depth);
 		}
 
 		private void NativeOnLoaded(object sender, RoutedEventArgs args)
@@ -105,7 +108,7 @@ namespace Windows.UI.Xaml
 			}
 			catch (Exception error)
 			{
-				this.Log().Error("NativeOnLoaded failed in FrameworkElement", error);
+				_log.Error("NativeOnLoaded failed in FrameworkElement", error);
 				Application.Current.RaiseRecoverableUnhandledException(error);
 			}
 		}
@@ -122,7 +125,7 @@ namespace Windows.UI.Xaml
 			}
 			catch (Exception error)
 			{
-				this.Log().Error("ManagedOnUnloaded failed in FrameworkElement", error);
+				_log.Error("ManagedOnUnloaded failed in FrameworkElement", error);
 				Application.Current.RaiseRecoverableUnhandledException(error);
 			}
 		}
@@ -142,7 +145,7 @@ namespace Windows.UI.Xaml
 			}
 			catch (Exception error)
 			{
-				this.Log().Error("NativeOnUnloaded failed in FrameworkElement", error);
+				_log.Error("NativeOnUnloaded failed in FrameworkElement", error);
 				Application.Current.RaiseRecoverableUnhandledException(error);
 			}
 		}
@@ -151,7 +154,7 @@ namespace Windows.UI.Xaml
 		{
 			return Parent != null;
 		}
-		
+
 		public double ActualWidth { get; internal set; }
 		public double ActualHeight { get; internal set; }
 
@@ -306,6 +309,10 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(
 					defaultValue: Thickness.Empty,
 					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
+					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
 				)
 		);
 
@@ -326,6 +333,10 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(
 					defaultValue: Xaml.HorizontalAlignment.Stretch,
 					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
+					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
 				)
 			);
 
@@ -346,6 +357,10 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(
 					defaultValue: Xaml.VerticalAlignment.Stretch,
 					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
+					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
 				)
 			);
 
@@ -366,6 +381,10 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(
 					defaultValue: double.NaN,
 					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
+					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
 				)
 			);
 
@@ -386,6 +405,10 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(
 					defaultValue: double.NaN,
 					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
+					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
 				)
 			);
 
@@ -406,6 +429,10 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(
 					defaultValue: 0.0d,
 					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
+					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
 				)
 			);
 
@@ -426,7 +453,11 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(
 					defaultValue: 0.0d,
 					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
-				)
+#if DEBUG
+					,
+					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
+					)
 			);
 
 		public double MinHeight
@@ -446,7 +477,11 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(
 					defaultValue: double.PositiveInfinity,
 					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
-				)
+#if DEBUG
+					,
+					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
+					)
 			);
 
 		public double MaxWidth
@@ -466,7 +501,11 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(
 					defaultValue: double.PositiveInfinity,
 					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
-				)
+#if DEBUG
+					,
+					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
+					)
 			);
 
 		public double MaxHeight
@@ -475,5 +514,44 @@ namespace Windows.UI.Xaml
 			set { this.SetValue(MaxHeightProperty, value); }
 		}
 		#endregion
+
+		private static void OnGenericPropertyUpdated(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			((FrameworkElement)dependencyObject).UpdateDOMProperties();
+		}
+
+		/// <summary>
+		/// If corresponding feature flag is enabled, set layout properties as DOM attributes to aid in debugging.
+		/// </summary>
+		private void UpdateDOMProperties()
+		{
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties && IsLoaded)
+			{
+				SetXamlProperty(nameof(Margin), Margin);
+				SetXamlProperty(nameof(HorizontalAlignment), HorizontalAlignment);
+				SetXamlProperty(nameof(VerticalAlignment), VerticalAlignment);
+				SetXamlProperty(nameof(Width), Width);
+				SetXamlProperty(nameof(Height), Height);
+				SetXamlProperty(nameof(MinWidth), MinWidth);
+				SetXamlProperty(nameof(MinHeight), MinHeight);
+				SetXamlProperty(nameof(MaxWidth), MaxWidth);
+				SetXamlProperty(nameof(MaxHeight), MaxHeight);
+
+				void SetXamlProperty(string propertyName, object value)
+				{
+					WindowManagerInterop.SetAttribute(HtmlId, "xaml" + propertyName.ToLowerInvariant(), value?.ToString() ?? "[null]");
+				}
+			}
+		}
+
+		public override string ToString()
+		{
+			if (FeatureConfiguration.UIElement.RenderToStringWithId && !Name.IsNullOrEmpty())
+			{
+				return $"{base.ToString()}\"{Name}\"";
+			}
+
+			return base.ToString();
+		}
 	}
 }

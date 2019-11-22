@@ -14,8 +14,6 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
-
 namespace SamplesApp.Windows_UI_Xaml_Shapes
 {
 	[SampleControlInfo("Shapes", "PolylinePage")]
@@ -34,6 +32,11 @@ namespace SamplesApp.Windows_UI_Xaml_Shapes
 			points.Add(new Point(130, 140));
 			points.Add(new Point(180, 200));
 			DPolyline.Points = points;
+		}
+
+		public void Clear_Shape(object sender, RoutedEventArgs e)
+		{
+			DPolyline.Points.Clear();
 		}
 	}
 }

@@ -123,6 +123,7 @@ declare namespace Uno.UI {
         static readonly isLoadEventsEnabled: boolean;
         private static readonly unoRootClassName;
         private static readonly unoUnarrangedClassName;
+        private static readonly unoClippedToBoundsClassName;
         private static _cctor;
         /**
             * Initialize the WindowManager
@@ -217,6 +218,14 @@ declare namespace Uno.UI {
             */
         setAttributeNative(pParams: number): boolean;
         /**
+            * Removes an attribute for an element.
+            */
+        removeAttribute(elementId: number, name: string): string;
+        /**
+            * Removes an attribute for an element.
+            */
+        removeAttributeNative(pParams: number): boolean;
+        /**
             * Get an attribute for an element.
             */
         getAttribute(elementId: number, name: string): any;
@@ -242,7 +251,7 @@ declare namespace Uno.UI {
             */
         setStyle(elementId: number, styles: {
             [name: string]: string;
-        }, setAsArranged?: boolean): string;
+        }, setAsArranged?: boolean, clipToBounds?: boolean): string;
         /**
         * Set the CSS style of a html element.
         *
@@ -282,6 +291,7 @@ declare namespace Uno.UI {
         arrangeElementNative(pParams: number): boolean;
         private setAsArranged;
         private setAsUnarranged;
+        private setClipToBounds;
         /**
         * Sets the transform matrix of an element
         *
@@ -446,7 +456,9 @@ declare namespace Uno.UI {
         measureViewNative(pParams: number, pReturn: number): boolean;
         private static MAX_WIDTH;
         private static MAX_HEIGHT;
+        private measureElement;
         private measureViewInternal;
+        scrollTo(pParams: number): boolean;
         setImageRawData(viewId: number, dataPtr: number, width: number, height: number): string;
         /**
          * Sets the provided image with a mono-chrome version of the provided url.
@@ -530,6 +542,7 @@ declare class WindowManagerArrangeElementParams {
     ClipRight: number;
     HtmlId: number;
     Clip: boolean;
+    ClipToBounds: boolean;
     static unmarshal(pData: number): WindowManagerArrangeElementParams;
 }
 declare class WindowManagerCreateContentParams {
@@ -594,6 +607,11 @@ declare class WindowManagerRegisterEventOnViewParams {
     EventExtractorName: string;
     static unmarshal(pData: number): WindowManagerRegisterEventOnViewParams;
 }
+declare class WindowManagerRemoveAttributeParams {
+    HtmlId: number;
+    Name: string;
+    static unmarshal(pData: number): WindowManagerRemoveAttributeParams;
+}
 declare class WindowManagerRemoveViewParams {
     HtmlId: number;
     ChildView: number;
@@ -604,6 +622,15 @@ declare class WindowManagerResetStyleParams {
     Styles_Length: number;
     Styles: Array<string>;
     static unmarshal(pData: number): WindowManagerResetStyleParams;
+}
+declare class WindowManagerScrollToOptionsParams {
+    Left: number;
+    Top: number;
+    HasLeft: boolean;
+    HasTop: boolean;
+    DisableAnimation: boolean;
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerScrollToOptionsParams;
 }
 declare class WindowManagerSetAttributeParams {
     HtmlId: number;
@@ -661,6 +688,7 @@ declare class WindowManagerSetStylesParams {
     SetAsArranged: boolean;
     Pairs_Length: number;
     Pairs: Array<string>;
+    ClipToBounds: boolean;
     static unmarshal(pData: number): WindowManagerSetStylesParams;
 }
 declare class WindowManagerSetXUidParams {
@@ -820,6 +848,27 @@ declare namespace Windows.Devices.Sensors {
         static startReading(): void;
         static stopReading(): void;
         private static readingChangedHandler;
+    }
+}
+interface Window {
+    opr: any;
+    opera: any;
+    mozVibrate(pattern: number | number[]): boolean;
+    msVibrate(pattern: number | number[]): boolean;
+    InstallTrigger: any;
+    HTMLElement: any;
+    StyleMedia: any;
+    chrome: any;
+    CSS: any;
+    safari: any;
+}
+interface Document {
+    documentMode: any;
+}
+declare namespace Windows.System.Profile {
+    class AnalyticsVersionInfo {
+        static getUserAgent(): string;
+        static getBrowserName(): string;
     }
 }
 declare namespace Windows.UI.Core {

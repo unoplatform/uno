@@ -6,21 +6,25 @@ using System.Text;
 using Foundation;
 using CoreAnimation;
 using CoreGraphics;
+using Uno.UI;
+using Size = Windows.Foundation.Size;
 
 namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Ellipse : ArbitraryShapeBase
     {
-		public Ellipse()
+	    public Ellipse()
 		{
 		}
 
 		protected override CGPath GetPath()
 		{
-			var bounds = Bounds;
+			var minMax = this.GetMinMax();
+			var calculatedBounds = SizeFromUISize(Bounds.Size)
+				.AtLeast(minMax.min)
+				.AtMost(minMax.max);
 
-			var width = double.IsNaN(Width) ? bounds.Width : Width;
-			var height = double.IsNaN(Height) ? bounds.Height : Height;
+			var strokeThickness = (nfloat)this.ActualStrokeThickness;
 
 			var area = new CGRect(
 				x: 0, 
@@ -28,9 +32,9 @@ namespace Windows.UI.Xaml.Shapes
 
 				//In ios we need to inflate the bounds because the stroke thickness is not taken into account when
 				//forming the ellipse from rect.
-				width: width - (nfloat)this.ActualStrokeThickness, 
-				height: height - (nfloat)this.ActualStrokeThickness
-			);
+				width: calculatedBounds.Width - strokeThickness, 
+				height: calculatedBounds.Height - strokeThickness
+            );
 
 			return CGPath.EllipseFromRect(area);
 		}

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.Linq;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Logging;
@@ -13,13 +14,34 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
+		/// <summary>
+		/// DesiredSize from MeasureOverride, after clamping to min size but before being clipped by max size (from GetMinMax())
+		/// </summary>
 		private Size _unclippedDesiredSize;
 		private Point _visualOffset;
+
+		private const double SIZE_EPSILON = 0.05d;
+		private readonly Size MaxSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
 
 		/// <summary>
 		/// The origin of the view's bounds relative to its parent.
 		/// </summary>
 		internal Point RelativePosition => _visualOffset;
+
+		private protected string DepthIndentation
+		{
+			get
+			{
+				if (Depth is int d)
+				{
+					return (Parent as FrameworkElement)?.DepthIndentation + $"-{d}>";
+				}
+				else
+				{
+					return "-?>";
+				}
+			}
+		}
 
 		internal sealed override Size MeasureCore(Size availableSize)
 		{
@@ -50,6 +72,7 @@ namespace Windows.UI.Xaml
 			var marginSize = this.GetMarginSize();
 
 			var frameworkAvailableSize = availableSize
+				.NumberOrDefault(MaxSize)
 				.Subtract(marginSize)
 				.AtLeast(new Size(0, 0))
 				.AtMost(maxSize)
@@ -57,10 +80,7 @@ namespace Windows.UI.Xaml
 
 			var desiredSize = MeasureOverride(frameworkAvailableSize);
 
-			if (_log.IsEnabled(LogLevel.Trace))
-			{
-				_log.LogTrace($"{this}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize}");
-			}
+			_logDebug?.LogTrace($"{DepthIndentation}{this}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize} minSize={minSize} maxSize={maxSize} marginSize={marginSize}");
 
 			if (
 				double.IsNaN(desiredSize.Width)
@@ -84,12 +104,7 @@ namespace Windows.UI.Xaml
 
 			var retSize = clippedDesiredSize.AtLeast(new Size(0, 0));
 
-			if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			{
-				_log.DebugFormat(
-					$"[{this}] Measure({Name}/{availableSize}/{Margin}) = {retSize}"
-				);
-			}
+			_logDebug?.Debug($"{DepthIndentation}[{this}] Measure({Name}/{availableSize}/{Margin}) = {retSize}");
 
 			return retSize;
 		}
@@ -117,8 +132,11 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		private static bool IsLessThanAndNotCloseTo(double a, double b) => a < (b - SIZE_EPSILON);
+
 		private void InnerArrangeCore(Rect finalRect)
 		{
+			_logDebug?.Debug($"{DepthIndentation}{this}: InnerArrangeCore({finalRect})");
 			var arrangeSize = finalRect.Size;
 
 			var (minSize, maxSize) = this.GetMinMax();
@@ -128,7 +146,25 @@ namespace Windows.UI.Xaml
 				.Subtract(marginSize)
 				.AtLeast(new Size(0, 0));
 
-			arrangeSize = arrangeSize.AtLeast(_unclippedDesiredSize);
+			var customClippingElement = (this as ICustomClippingElement);
+			var allowClipToSlot = customClippingElement?.AllowClippingToLayoutSlot ?? true; // Some controls may control itself how clipping is applied
+			var needsClipToSlot = customClippingElement?.ForceClippingToLayoutSlot ?? false;
+
+			_logDebug?.Debug($"{DepthIndentation}{this}: InnerArrangeCore({finalRect}) - allowClip={allowClipToSlot}, arrangeSize={arrangeSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipToSlot}");
+
+			if (allowClipToSlot && !needsClipToSlot)
+			{
+				if (IsLessThanAndNotCloseTo(arrangeSize.Width, _unclippedDesiredSize.Width))
+				{
+					_logDebug?.Debug($"{DepthIndentation}{this}: (arrangeSize.Width) {arrangeSize.Width} < {_unclippedDesiredSize.Width}: NEEDS CLIPPING.");
+					needsClipToSlot = true;
+				}
+				else if (IsLessThanAndNotCloseTo(arrangeSize.Height, _unclippedDesiredSize.Height))
+				{
+					_logDebug?.Debug($"{DepthIndentation}{this}: (arrangeSize.Height) {arrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
+					needsClipToSlot = true;
+				}
+			}
 
 			if (HorizontalAlignment != HorizontalAlignment.Stretch)
 			{
@@ -140,15 +176,37 @@ namespace Windows.UI.Xaml
 				arrangeSize.Height = _unclippedDesiredSize.Height;
 			}
 
+			// We have to choose max between _unclippedDesiredSize and maxSize here, because
+			// otherwise setting of max property could cause arrange at less then _unclippedDesiredSize.
+			// Clipping by Max is needed to limit stretch here
 			var effectiveMaxSize = Max(_unclippedDesiredSize, maxSize);
-			arrangeSize = arrangeSize.AtMost(effectiveMaxSize);
+
+			_logDebug?.Debug($"{DepthIndentation}{this}: InnerArrangeCore({finalRect}) - effectiveMaxSize={effectiveMaxSize}, maxSize={maxSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipToSlot}");
+
+			if (allowClipToSlot)
+			{
+				if (IsLessThanAndNotCloseTo(effectiveMaxSize.Width, arrangeSize.Width))
+				{
+					_logDebug?.Debug($"{DepthIndentation}{this}: (effectiveMaxSize.Width) {effectiveMaxSize.Width} < {arrangeSize.Width}: NEEDS CLIPPING.");
+					needsClipToSlot = true;
+					arrangeSize.Width = effectiveMaxSize.Width;
+				}
+				if (IsLessThanAndNotCloseTo(effectiveMaxSize.Height, arrangeSize.Height))
+				{
+					_logDebug?.Debug($"{DepthIndentation}{this}: (effectiveMaxSize.Height) {effectiveMaxSize.Height} < {arrangeSize.Height}: NEEDS CLIPPING.");
+					needsClipToSlot = true;
+					arrangeSize.Height = effectiveMaxSize.Height;
+				}
+			}
 
 			var oldRenderSize = RenderSize;
 			var innerInkSize = ArrangeOverride(arrangeSize);
 
-			RenderSize = innerInkSize;
-
 			var clippedInkSize = innerInkSize.AtMost(maxSize);
+
+			RenderSize = needsClipToSlot ? clippedInkSize : innerInkSize;
+
+			_logDebug?.Debug($"{DepthIndentation}{this}: ArrangeOverride({arrangeSize})={innerInkSize}, clipped={clippedInkSize} (max={maxSize}) needsClipToSlot={needsClipToSlot}");
 
 			var clientSize = finalRect.Size
 				.Subtract(marginSize)
@@ -160,14 +218,12 @@ namespace Windows.UI.Xaml
 				offset.Y + finalRect.Y + Margin.Top
 			);
 
-			ArrangeNative(offset, oldRenderSize);
+			_logDebug?.Debug(
+				$"{DepthIndentation}[{this}] ArrangeChild(offset={offset}, margin={Margin}) [oldRenderSize={oldRenderSize}] [RenderSize={RenderSize}] [clippedInkSize={clippedInkSize}] [RequiresClipping={needsClipToSlot}]");
 
-			if (_log.IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			{
-				_log.Debug(
-					$"[{this}] ArrangeChild(offset={offset}, margin={Margin}) [oldRenderSize={oldRenderSize}]"
-				);
-			}
+			RequiresClipping = needsClipToSlot;
+
+			ArrangeNative(offset);
 		}
 
 		internal Thickness GetThicknessAdjust()
@@ -188,9 +244,12 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void ArrangeNative(Point offset, Size oldRenderSize)
+		/// <summary>
+		/// Calculates and applies native arrange properties.
+		/// </summary>
+		/// <param name="offset">Offset of the view from its parent</param>
+		private void ArrangeNative(Point offset)
 		{
-			var oldOffset = _visualOffset;
 			_visualOffset = offset;
 
 			var newRect = new Rect(offset, RenderSize);
@@ -209,21 +268,24 @@ namespace Windows.UI.Xaml
 
 			Rect? getClip()
 			{
-				// Disable clipping for Scrollviewer (edge seems to disable scrolling if 
-				// the clipping is enabled to the size of the scrollviewer, even if overflow-y is auto)
-				if (this is Controls.ScrollViewer)
-				{
-					return null;
-				}
-				else if (Clip != null)
+				if (Clip != null)
 				{
 					return Clip.Rect;
 				}
 
-				return new Rect(0, 0, newRect.Width, newRect.Height);
+				if (RequiresClipping)
+				{
+					return new Rect(0, 0, newRect.Width, newRect.Height);
+				}
+
+				return null;
 			}
 
-			ArrangeElementNative(newRect, getClip());
+			var clipRect = getClip();
+
+			_logDebug?.Trace($"{DepthIndentation}{this}.ArrangeElementNative({newRect}, clip={clipRect} (RequiresClipping={RequiresClipping})");
+
+			ArrangeElementNative(newRect, RequiresClipping, clipRect);
 		}
 	}
 }

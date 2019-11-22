@@ -100,6 +100,7 @@
 	<ItemGroup Condition="'$(BuildingInsideUnoSourceGenerator)'!=''">
 		<Page Include="Windows_UI_Xaml_Data\xBindTests\Given_StaticResource_Control.xaml" />
 		<Page Include="App\App.xaml" />
+		<Page Include="App\Xaml\Test_CreateFromString.xaml" />
 		<Page Include="App\Xaml\Test_Dictionary.xaml" />
 		<Page Include="App\Xaml\Test_Control.xaml" />
 		<Page Include="App\Xaml\Test_MarkupExtension.xaml" />

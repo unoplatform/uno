@@ -148,24 +148,12 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public static void Initialize(IFrameworkElement e)
 		{
-#if NET461
-			// These properties have moved to dependency properties
-			// on Uno.UI, tests still depend on it.
-			e.HorizontalAlignment = HorizontalAlignment.Stretch;
-			e.VerticalAlignment = VerticalAlignment.Stretch;
-			e.Width = e.Height = double.NaN;
-			e.MinWidth = e.MinHeight = 0;
-			e.MaxWidth = e.MaxHeight = double.PositiveInfinity;
-#endif
 			if (FeatureConfiguration.FrameworkElement.UseLegacyApplyStylePhase)
 			{
 				e.Style = Xaml.Style.DefaultStyleForType(e.GetType());
 			}
 
-			if (
-				!FeatureConfiguration.UIElement.UseLegacyClipping
-				&& e is UIElement uiElement
-			)
+			if (e is UIElement uiElement)
 			{
 #if __IOS__
 				uiElement.ClipsToBounds = false;

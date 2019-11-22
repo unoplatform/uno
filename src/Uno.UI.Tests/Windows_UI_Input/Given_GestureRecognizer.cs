@@ -193,7 +193,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
 			var result = new ManipulationRecorder(sut);
-			var step = GestureRecognizer.MinManipulationDeltaTranslateX;
+			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 + 1, 25); // Ignored
@@ -201,7 +201,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25 + step, 25).WithCumulative(step, 0)
+				v => v.Started().At(25, 25).WithEmptyCumulative(),
+				v => v.Delta().At(25 + step, 25).WithDelta(step, 0).WithCumulative(step, 0)
 			);
 		}
 
@@ -239,7 +240,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
 			var result = new ManipulationRecorder(sut);
-			var step = GestureRecognizer.MinManipulationDeltaTranslateX + 1;
+			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 + 1, 25);
@@ -249,7 +250,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25 + step, 25).WithCumulative(step, 0),
+				v => v.Started().At(25, 25).WithEmptyCumulative(),
+				v => v.Delta().At(25 + step, 25).WithDelta(step, 0).WithCumulative(step, 0),
 				v => v.Delta().At(25 + step * 2, 25).WithDelta(step, 0).WithCumulative(step * 2, 0)
 			);
 		}
@@ -259,7 +261,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
 			var result = new ManipulationRecorder(sut);
-			var step = GestureRecognizer.MinManipulationDeltaTranslateX + 1;
+			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 + step, 25);
@@ -267,7 +269,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25 + step, 25).WithCumulative(step, 0),
+				v => v.Started().At(25, 25).WithEmptyCumulative(),
+				v => v.Delta().At(25 + step, 25).WithDelta(step, 0).WithCumulative(step, 0),
 				v => v.End().At(25 + step + 1, 25).WithCumulative(step + 1, 0)
 			);
 		}
@@ -277,7 +280,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettingsHelper.Manipulations };
 			var result = new ManipulationRecorder(sut);
-			var step = GestureRecognizer.MinManipulationDeltaTranslateX + 1;
+			var step = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 + step, 25);
@@ -287,7 +290,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25 + step, 25).WithCumulative(step, 0),
+				v => v.Started().At(25, 25).WithEmptyCumulative(),
+				v => v.Delta().At(25 + step, 25).WithDelta(step, 0).WithCumulative(step, 0),
 				v => v.Delta().At(25 + step * 2, 25).WithDelta(step, 0).WithCumulative(step * 2, 0),
 				v => v.End().At(25 + step * 2 + 2, 25).WithCumulative(step * 2 + 2, 0)
 			);
@@ -298,8 +302,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationTranslateX };
 			var result = new ManipulationRecorder(sut);
-			var stepX = GestureRecognizer.MinManipulationDeltaTranslateX + 1;
-			var stepY = GestureRecognizer.MinManipulationDeltaTranslateY + 1;
+			var stepX = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
+			var stepY = GestureRecognizer.Manipulation.StartTouch.TranslateY + 1;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25, 25 + stepY); // Invalid move that should NOT cause the started
@@ -310,7 +314,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25 + stepX, 25 + stepY).WithCumulative(stepX, 0),
+				v => v.Started().At(25, 25).WithEmptyCumulative(),
+				v => v.Delta().At(25 + stepX, 25 + stepY).WithDelta(stepX, 0).WithCumulative(stepX, 0),
 				v => v.Delta().At(25 + stepX * 2, 25 + stepY * 2).WithDelta(stepX, 0).WithCumulative(stepX * 2, 0),
 				v => v.End().At(25 + stepX * 2 + 1, 25 + stepY * 2 + 1).WithCumulative(stepX * 2 + 1, 0)
 			);
@@ -321,8 +326,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationTranslateY };
 			var result = new ManipulationRecorder(sut);
-			var stepX = GestureRecognizer.MinManipulationDeltaTranslateX + 1;
-			var stepY = GestureRecognizer.MinManipulationDeltaTranslateY + 1;
+			var stepX = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
+			var stepY = GestureRecognizer.Manipulation.StartTouch.TranslateY + 1;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 + stepX, 25); // Invalid move that should NOT cause the started
@@ -333,7 +338,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25 + stepX, 25 + stepY).WithCumulative(0, stepY),
+				v => v.Started().At(25, 25).WithEmptyCumulative(),
+				v => v.Delta().At(25 + stepX, 25 + stepY).WithDelta(0, stepY).WithCumulative(0, stepY),
 				v => v.Delta().At(25 + stepX * 2, 25 + stepY * 2).WithDelta(0, stepY).WithCumulative(0, stepY * 2),
 				v => v.End().At(25 + stepX * 2 + 1, 25 + stepY * 2 + 1).WithCumulative(0, stepX * 2 + 1)
 			);
@@ -344,8 +350,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationTranslateX };
 			var result = new ManipulationRecorder(sut);
-			var stepX = GestureRecognizer.MinManipulationDeltaTranslateX + 1;
-			var stepY = GestureRecognizer.MinManipulationDeltaTranslateY + 1;
+			var stepX = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
+			var stepY = GestureRecognizer.Manipulation.StartTouch.TranslateY + 1;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25, 25 + stepY); // Invalid move that should NOT cause the started
@@ -356,7 +362,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25 - stepX, 25 - stepY).WithCumulative(-stepX, 0),
+				v => v.Started().At(25, 25).WithEmptyCumulative(),
+				v => v.Delta().At(25 - stepX, 25 - stepY).WithDelta(-stepX, 0).WithCumulative(-stepX, 0),
 				v => v.Delta().At(25 - stepX * 2, 25 - stepY * 2).WithDelta(-stepX, 0).WithCumulative(-stepX * 2, 0),
 				v => v.End().At(25 - stepX * 2 - 1, 25 - stepY * 2 - 1).WithCumulative(-stepX * 2 - 1, 0)
 			);
@@ -367,8 +374,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		{
 			var sut = new GestureRecognizer { GestureSettings = GestureSettings.ManipulationTranslateY };
 			var result = new ManipulationRecorder(sut);
-			var stepX = GestureRecognizer.MinManipulationDeltaTranslateX + 1;
-			var stepY = GestureRecognizer.MinManipulationDeltaTranslateY + 1;
+			var stepX = GestureRecognizer.Manipulation.StartTouch.TranslateX + 1;
+			var stepY = GestureRecognizer.Manipulation.StartTouch.TranslateY + 1;
 
 			sut.ProcessDownEvent(25, 25);
 			sut.ProcessMoveEvent(25 - stepX, 25); // Invalid move that should NOT cause the started
@@ -379,7 +386,8 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25 - stepX, 25 - stepY).WithCumulative(0, -stepY),
+				v => v.Started().At(25, 25).WithEmptyCumulative(),
+				v => v.Delta().At(25 - stepX, 25 - stepY).WithDelta(0, -stepY).WithCumulative(0, -stepY),
 				v => v.Delta().At(25 - stepX * 2, 25 - stepY * 2).WithDelta(0, -stepY).WithCumulative(0, -stepY * 2),
 				v => v.End().At(25 - stepX * 2 - 1, 25 - stepY * 2 - 1).WithCumulative(0, -stepX * 2 - 1)
 			);
@@ -398,7 +406,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(25, 25).WithCumulative(),
+				v => v.Started().At(25, 25).WithEmptyCumulative(),
 				v => v.Delta().At(100, 100).WithDelta(tX: 75, tY: 75).WithCumulative(tX: 75, tY: 75)
 			);
 		}
@@ -416,7 +424,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 
 			result.ShouldBe(
 				v => v.Starting(),
-				v => v.Started().At(100, 100).WithCumulative(),
+				v => v.Started().At(100, 100).WithEmptyCumulative(),
 				v => v.Delta().At(25, 25).WithDelta(tX: -75, tY: -75).WithCumulative(tX: -75, tY: -75)
 			);
 		}
@@ -827,13 +835,13 @@ namespace Uno.UI.Tests.Windows_UI_Input
 				if (e.Translation.Y != actual.Translation.Y)
 					_pendingAssertResult.Add((name + ".Translation.Y", expected.Value.Translation.Y, actual.Translation.Y));
 
-				if (e.Rotation != actual.Rotation)
+				if (Math.Abs(e.Rotation - actual.Rotation) > .00001)
 					_pendingAssertResult.Add((name + ".Rotation", expected.Value.Rotation, actual.Rotation));
 
-				if (e.Scale != actual.Scale)
+				if (Math.Abs(e.Scale - actual.Scale) > .00001)
 					_pendingAssertResult.Add((name + ".Scale", expected.Value.Scale, actual.Scale));
 
-				if (e.Expansion != actual.Expansion)
+				if (Math.Abs(e.Expansion - actual.Expansion) > .00001)
 					_pendingAssertResult.Add((name + ".Expansion", expected.Value.Expansion, actual.Expansion));
 			}
 
@@ -872,6 +880,12 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			public StartedValidator At(double x, double y)
 			{
 				_position = new Point(x, y);
+				return this;
+			}
+
+			public StartedValidator WithEmptyCumulative()
+			{
+				_cumulative = ManipulationDelta.Empty;
 				return this;
 			}
 
@@ -1003,7 +1017,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			var frameId = (uint)Interlocked.Increment(ref _frameId);
 			id = id ?? 1;
 			ts = ts ?? frameId;
-			var pointer = new PointerDevice(device ?? PointerDeviceType.Mouse);
+			var pointer = new PointerDevice(device ?? PointerDeviceType.Touch);
 			var location = new Windows.Foundation.Point(x, y);
 			properties = properties ?? new PointerPointProperties
 			{
@@ -1016,7 +1030,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 		}
 
 		public static TappedEventArgs Tap(double x, double y, uint tapCount = 1, PointerDeviceType? device = null)
-			=> new TappedEventArgs(device ?? PointerDeviceType.Mouse, new Point(x, y), tapCount);
+			=> new TappedEventArgs(device ?? PointerDeviceType.Touch, new Point(x, y), tapCount);
 
 		public static void ProcessDownEvent(
 			this GestureRecognizer sut,

@@ -1,0 +1,32 @@
+{
+  "solution": {
+    "path": "Uno.UI.sln",
+    "projects": [
+      "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.csproj",
+      "SamplesApp\\SamplesApp.Droid\\SamplesApp.Droid.csproj",
+      "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
+      "SamplesApp\\SamplesApp.UITests\\SamplesApp.UITests.csproj",
+      "SamplesApp\\SamplesApp.UnitTests.Shared\\SamplesApp.UnitTests.Shared.shproj",
+      "SamplesApp\\UITests.Shared\\UITests.Shared.shproj",
+      "SolutionTemplate\\UnoLibraryTemplate\\UnoLibraryTemplate.csproj",
+      "SolutionTemplate\\UnoSolutionTemplate.VISX\\UnoSolutionTemplate.VISX.csproj",
+      "SolutionTemplate\\UnoSolutionTemplate.Wizard\\UnoSolutionTemplate.Wizard.csproj",
+      "SolutionTemplate\\UnoSolutionTemplate\\UnoSolutionTemplate.csproj",
+      "SourceGenerators\\System.Xaml\\Uno.Xaml.csproj",
+      "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
+      "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
+      "T4Generator\\T4Generator.csproj",
+      "Uno.Foundation\\Uno.Foundation.csproj",
+      "Uno.UI.RemoteControl.Host\\Uno.UI.RemoteControl.Host.csproj",
+      "Uno.UI.RemoteControl.VS\\Uno.UI.RemoteControl.VS.csproj",
+      "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.csproj",
+      "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
+      "Uno.UI.Maps\\Uno.UI.Maps.csproj",
+      "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.csproj",
+      "Uno.UI.Toolkit\\Uno.UI.Toolkit.csproj",
+      "Uno.UI\\Uno.UI.csproj",
+      "Uno.UWP\\Uno.csproj",
+      "UnoItemTemplate\\UnoItemTemplate.csproj"
+    ]
+  }
+}

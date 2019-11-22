@@ -30,7 +30,7 @@
 
 	<ItemGroup>
 		<!--
-    This item group is required by the project templace because of the
+    This item group is required by the project template because of the
     new SDK-Style project, otherwise some files are not aded automatically.
 
     You can safely remove this ItemGroup completely.
@@ -38,7 +38,7 @@
 		<Compile Remove="Program.cs" />
 		<Compile Include="Program.cs" />
 		<Content Include="LinkerConfig.xml" />
-		<Content Include="wwwroot/web.config" />
+		<Content Include="wwwroot\web.config" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -46,8 +46,9 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 		<PackageReference Include="Uno.UI" Version="1.46.196-dev.2440" />
-		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.0-dev.302" />
-		<DotNetCliToolReference Include="Uno.Wasm.Bootstrap.Cli" Version="1.0.0-dev.302" />
+		<PackageReference Include="Uno.UI.RemoteControl" Version="1.46.196-dev.2440" Condition="'$(Configuration)'=='Debug'" />
+		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.3" />
+		<DotNetCliToolReference Include="Uno.Wasm.Bootstrap.Cli" Version="1.0.3" />
 	</ItemGroup>
 
 	<Import Project="..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems" Label="Shared" Condition="Exists('..\$ext_safeprojectname$.Shared\$ext_safeprojectname$.Shared.projitems')" />

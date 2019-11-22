@@ -160,8 +160,8 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 			await TestServices.RunOnUIThread(() =>
 
 		{
-			TestServices.VERIFY_ARE_EQUAL(grid.DesiredSize.Width, 150.0f);
-			TestServices.VERIFY_ARE_EQUAL(grid.DesiredSize.Height, 150.0f);
+			TestServices.VERIFY_ARE_VERY_CLOSE(grid.DesiredSize.Width, 150.0f);
+			TestServices.VERIFY_ARE_VERY_CLOSE(grid.DesiredSize.Height, 150.0f);
 		});
 		}
 
@@ -192,8 +192,8 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 
 			await TestServices.RunOnUIThread(() =>
 			{
-				TestServices.VERIFY_ARE_EQUAL(grid.DesiredSize.Width, 100.0f);
-				TestServices.VERIFY_ARE_EQUAL(grid.DesiredSize.Height, 100.0f);
+				TestServices.VERIFY_ARE_VERY_CLOSE(grid.DesiredSize.Width, 100.0f);
+				TestServices.VERIFY_ARE_VERY_CLOSE(grid.DesiredSize.Height, 100.0f);
 			});
 		}
 
@@ -223,8 +223,8 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 
 			await TestServices.RunOnUIThread(() =>
 			{
-				TestServices.VERIFY_ARE_EQUAL(grid.DesiredSize.Width, 50.0f);
-				TestServices.VERIFY_ARE_EQUAL(grid.DesiredSize.Height, 50.0f);
+				TestServices.VERIFY_ARE_VERY_CLOSE(grid.DesiredSize.Width, 50.0f);
+				TestServices.VERIFY_ARE_VERY_CLOSE(grid.DesiredSize.Height, 50.0f);
 			});
 		}
 
@@ -282,18 +282,18 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 			await TestServices.RunOnUIThread(() =>
 			{
 				// Verify rows.
-				TestServices.VERIFY_ARE_EQUAL(grid.RowDefinitions[0].ActualHeight, 25.0);
-				TestServices.VERIFY_ARE_EQUAL(grid.RowDefinitions[1].ActualHeight, 50.0);
-				TestServices.VERIFY_ARE_EQUAL(grid.RowDefinitions[2].ActualHeight, 75.0);
-				TestServices.VERIFY_ARE_EQUAL(grid.RowDefinitions[3].ActualHeight, 75.0);
-				TestServices.VERIFY_ARE_EQUAL(grid.RowDefinitions[4].ActualHeight, 25.0);
+				TestServices.VERIFY_ARE_VERY_CLOSE(grid.RowDefinitions[0].ActualHeight, 25.0);
+				TestServices.VERIFY_ARE_VERY_CLOSE(grid.RowDefinitions[1].ActualHeight, 50.0);
+				TestServices.VERIFY_ARE_VERY_CLOSE(grid.RowDefinitions[2].ActualHeight, 75.0);
+				TestServices.VERIFY_ARE_VERY_CLOSE(grid.RowDefinitions[3].ActualHeight, 75.0);
+				TestServices.VERIFY_ARE_VERY_CLOSE(grid.RowDefinitions[4].ActualHeight, 25.0);
 
 				// Verify columns.
-				TestServices.VERIFY_ARE_EQUAL(grid.ColumnDefinitions[0].ActualWidth, 25.0);
-				TestServices.VERIFY_ARE_EQUAL(grid.ColumnDefinitions[1].ActualWidth, 50.0);
-				TestServices.VERIFY_ARE_EQUAL(grid.ColumnDefinitions[2].ActualWidth, 75.0);
-				TestServices.VERIFY_ARE_EQUAL(grid.ColumnDefinitions[3].ActualWidth, 75.0);
-				TestServices.VERIFY_ARE_EQUAL(grid.ColumnDefinitions[4].ActualWidth, 25.0);
+				TestServices.VERIFY_ARE_VERY_CLOSE(grid.ColumnDefinitions[0].ActualWidth, 25.0);
+				TestServices.VERIFY_ARE_VERY_CLOSE(grid.ColumnDefinitions[1].ActualWidth, 50.0);
+				TestServices.VERIFY_ARE_VERY_CLOSE(grid.ColumnDefinitions[2].ActualWidth, 75.0);
+				TestServices.VERIFY_ARE_VERY_CLOSE(grid.ColumnDefinitions[3].ActualWidth, 75.0);
+				TestServices.VERIFY_ARE_VERY_CLOSE(grid.ColumnDefinitions[4].ActualWidth, 25.0);
 			});
 		}
 
@@ -329,8 +329,8 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 
 			await TestServices.RunOnUIThread(() =>
 			{
-				TestServices.VERIFY_ARE_EQUAL(child.ActualHeight, s_rectSize - 20);
-				TestServices.VERIFY_ARE_EQUAL(child.ActualWidth, s_rectSize - 20);
+				TestServices.VERIFY_ARE_VERY_CLOSE(child.ActualHeight, s_rectSize - 20);
+				TestServices.VERIFY_ARE_VERY_CLOSE(child.ActualWidth, s_rectSize - 20);
 			});
 		}
 
@@ -552,7 +552,7 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 			});
 		}
 
-#if !__ANDROID__
+#if !__ANDROID__ && !__IOS__
 		[TestMethod]
 #endif
 		public async Task CanZeroWeightedCellsShrinkToZeroSize()
@@ -593,7 +593,7 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 			});
 		}
 
-#if !__ANDROID__
+#if !__ANDROID__ && !__IOS__
 		[TestMethod]
 #endif
 		public async Task CanDivideAllocatedSpacingCorrectlyAccordingToStarWeightings()
@@ -690,7 +690,7 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 				TestServices.WindowHelper.WindowContent = grid;
 			});
 
-			TestServices.WindowHelper.WaitForIdle();
+			await TestServices.WindowHelper.WaitForIdle();
 
 			await TestServices.RunOnUIThread(() =>
 			{
@@ -933,8 +933,6 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 			// WUCRenderingScopeGuard guard(DCompRendering.WUCCompleteSynchronousCompTree, false /*resizeWindow*/);
 
 			Grid grid = null;
-			ColumnDefinition col0 = null;
-			ColumnDefinition col1 = null;
 
 			await TestServices.RunOnUIThread(() =>
 			{

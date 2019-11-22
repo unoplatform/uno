@@ -8,10 +8,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class ToggleButton : ButtonBase, IFrameworkTemplatePoolAware
 	{
-		//Renamed to have the same naming as Windows.
-		//https://msdn.microsoft.com/en-us/library/system.windows.controls.primitives.togglebutton.checked(v=vs.110).aspx
 		public event RoutedEventHandler Checked;
 		public event RoutedEventHandler Unchecked;
+		public event RoutedEventHandler Indeterminate;
 
 		public ToggleButton()
 		{
@@ -28,12 +27,25 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// </summary>
 		internal bool CanRevertState { get; set; } = true;
 
-		#region IsChecked DependencyProperty
+		public bool IsThreeState
+		{
+			get => (bool)this.GetValue(IsThreeStateProperty);
+			set => this.SetValue(IsThreeStateProperty, value);
+		}
+
+		public static DependencyProperty IsThreeStateProperty { get; } =
+			DependencyProperty.Register(
+				name: nameof(IsThreeState),
+				propertyType: typeof(bool),
+				ownerType: typeof(ToggleButton),
+				typeMetadata: new FrameworkPropertyMetadata(
+					defaultValue: false));
+
 
 		public bool? IsChecked
 		{
-			get { return (bool?)this.GetValue(IsCheckedProperty); }
-			set { this.SetValue(IsCheckedProperty, value); }
+			get => (bool?)this.GetValue(IsCheckedProperty);
+			set => this.SetValue(IsCheckedProperty, value);
 		}
 
 		public static readonly DependencyProperty IsCheckedProperty =
@@ -46,16 +58,22 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					propertyChangedCallback: (s, e) => ((ToggleButton)s).OnIsCheckedChanged(e.OldValue as bool?, e.NewValue as bool?)
 				)
 			);
-		#endregion
 
 		protected virtual void OnIsCheckedChanged(bool? oldValue, bool? newValue)
 		{
-			if (newValue.HasValue && newValue.Value)
+			if (IsChecked == null)
 			{
+				// Indeterminate
+				Indeterminate?.Invoke(this, new RoutedEventArgs(this));
+			}
+			else if (IsChecked.Value)
+			{
+				// Checked
 				Checked?.Invoke(this, new RoutedEventArgs(this));
 			}
 			else
 			{
+				// Unchecked
 				Unchecked?.Invoke(this, new RoutedEventArgs(this));
 			}
 		}
@@ -69,7 +87,32 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			if (CanRevertState)
 			{
-				IsChecked = IsChecked.HasValue ? !IsChecked.Value : true;
+				if (IsChecked == null)
+				{
+					// Indeterminate
+					// Set to Unchecked
+					IsChecked = false;
+				}
+				else if (IsChecked is bool isChecked && isChecked)
+				{
+					// Checked
+					if (IsThreeState)
+					{
+						// Set to Indeterminate
+						IsChecked = null;
+					}
+					else
+					{
+						// Set to Unchecked
+						IsChecked = false;
+					}
+				}
+				else
+				{
+					// Unchecked
+					// Set to Checked
+					IsChecked = true;
+				}
 			}
 			else
 			{

@@ -1,23 +1,17 @@
 using System;
-
-using Uno.Extensions;
-using Uno.UI.Views.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
-using Uno.UI.Services;
-using Foundation;
-using UIKit;
-using CoreGraphics;
-using Uno.Disposables;
-using Uno.Diagnostics.Eventing;
-using Windows.UI.Core;
-using System.Threading.Tasks;
 using System.Threading;
-using Windows.Foundation;
+using System.Threading.Tasks;
+using CoreGraphics;
+using UIKit;
+using Uno.Diagnostics.Eventing;
+using Uno.Extensions;
 using Uno.Logging;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.Storage.Streams;
 using Uno.UI.Extensions;
+using Windows.Foundation;
+using Windows.Storage.Streams;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -30,10 +24,7 @@ namespace Windows.UI.Xaml.Controls
         /// </summary>
         private Size SourceImageSize
         {
-            get
-            {
-                return _sourceImageSize;
-            }
+            get => _sourceImageSize;
             set
             {
                 _sourceImageSize = value;
@@ -243,26 +234,30 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateContentMode(Stretch stretch)
 		{
-			switch (stretch)
+			if (FeatureConfiguration.Image.LegacyIosAlignment)
 			{
-				case Stretch.Uniform:
-					ContentMode = UIViewContentMode.ScaleAspectFit;
-					break;
+				switch (stretch)
+				{
+					case Stretch.Uniform:
+						ContentMode = UIViewContentMode.ScaleAspectFit;
+						break;
 
-				case Stretch.None:
-					ContentMode = UIViewContentMode.Center;
-					break;
+					case Stretch.None:
+						ContentMode = UIViewContentMode.Center;
+						break;
 
-				case Stretch.UniformToFill:
-					ContentMode = UIViewContentMode.ScaleAspectFill;
-					break;
+					case Stretch.UniformToFill:
+						ContentMode = UIViewContentMode.ScaleAspectFill;
+						break;
 
-				case Stretch.Fill:
-					ContentMode = UIViewContentMode.ScaleToFill;
-					break;
+					case Stretch.Fill:
+						ContentMode = UIViewContentMode.ScaleToFill;
+						break;
 
-				default:
-					throw new NotSupportedException("Stretch mode {0} is not supported".InvariantCultureFormat(stretch));
+					default:
+						throw new NotSupportedException(
+							"Stretch mode {0} is not supported".InvariantCultureFormat(stretch));
+				}
 			}
 		}
 
@@ -278,7 +273,37 @@ namespace Windows.UI.Xaml.Controls
 
 			size = _layouter.Measure(size.ToFoundationSize());
 
+			UpdateLayerRect(size);
+
 			return size;
+		}
+
+		private void UpdateLayerRect(Size availableSize)
+		{
+			if (SourceImageSize.Width == 0 || SourceImageSize.Height == 0 || availableSize.Width == 0 || availableSize.Height == 0)
+			{
+				return; // nothing to do
+			}
+
+			if (FeatureConfiguration.Image.LegacyIosAlignment)
+			{
+				return;
+			}
+
+			var imageSize = Image.Size.ToFoundationSize();
+			var sourceRect = new Rect(Point.Zero, imageSize);
+
+			this.MeasureSource(availableSize, ref sourceRect);
+			this.ArrangeSource(availableSize, ref sourceRect);
+
+			var relativeX = sourceRect.X / imageSize.Width;
+			var relativeY = sourceRect.Y / imageSize.Height;
+			var relativeWidth = availableSize.Width / sourceRect.Width;
+			var relativeHeight = availableSize.Height / sourceRect.Height;
+
+			var rect = new CGRect(-relativeX, -relativeY, relativeWidth, relativeHeight);
+
+			Layer.ContentsRect = rect;
 		}
 	}
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
@@ -24,6 +25,7 @@ namespace Uno.UI.Samples.Tests
 	{
 		private Task _runner;
 		private CancellationTokenSource _cts = new CancellationTokenSource();
+		private readonly TimeSpan DefaultUnitTestTimeout = TimeSpan.FromSeconds(60);
 
 		private enum TestResult
 		{
@@ -53,9 +55,19 @@ namespace Uno.UI.Samples.Tests
 			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => runStatus.Text = message);
 		}
 
+		private void ReportRunTestCount(string message)
+		{
+			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => runTestCount.Text = message);
+		}
+
 		private void ReportFailedTests(int failedCount)
 		{
-			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => failedTests.Text = failedCount.ToString());
+			void Update()
+			{
+				failedTests.Text = failedCount.ToString();
+			}
+
+			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, Update);
 		}
 
 		private void ReportTestClass(TypeInfo testClass)
@@ -74,27 +86,38 @@ namespace Uno.UI.Samples.Tests
 			);
 		}
 
-		private void ReportTestResult(string testName, TestResult testResult, string errorMessage = "")
+		private void ReportTestResult(string testName, TestResult testResult, Exception error = null, string message = null)
 		{
+			void Update()
+			{
+				var testResultBlock = new TextBlock()
+				{
+					Text = testName,
+					FontFamily = new FontFamily("Courier New"),
+					Foreground = new SolidColorBrush(GetTestResultColor(testResult))
+				};
+
+				if (message != null)
+				{
+					testResultBlock.Text += ", " + message;
+				}
+
+				if (error != null)
+				{
+					testResultBlock.Text += ", " + error.Message;
+
+					if (testResult == TestResult.Failed || testResult == TestResult.Error)
+					{
+						failedTestDetails.Text += $"{testResult}: {testName} [{error.GetType()}] \n {error}\n\n";
+					}
+				}
+
+				testResults.Children.Insert(0, testResultBlock);
+			}
+
 			var t = Dispatcher.RunAsync(
 				Windows.UI.Core.CoreDispatcherPriority.Normal,
-				() =>
-				{
-					var testResultBlock = new TextBlock()
-					{
-						Text = testName,
-						FontFamily = new FontFamily("Courier New"),
-						Foreground = new SolidColorBrush(GetTestResultColor(testResult))
-					};
-
-					if (errorMessage.HasValue())
-					{
-						testResultBlock.Text += ", " + errorMessage;
-					}
-
-					testResults.Children.Insert(0, testResultBlock);
-				}
-			);
+				Update);
 		}
 
 		private Color GetTestResultColor(TestResult testResult)
@@ -120,7 +143,8 @@ namespace Uno.UI.Samples.Tests
 		{
 			try
 			{
-				int failedTests = 0;
+				var failedTests = 0;
+				var runTests = 0;
 
 				ReportMessage("Enumerating tests");
 
@@ -141,11 +165,12 @@ namespace Uno.UI.Samples.Tests
 
 						if (IsIgnored(testMethod, out var ignoreMessage))
 						{
-							ReportTestResult(testName, TestResult.Ignored, errorMessage: ignoreMessage);
+							ReportTestResult(testName, TestResult.Ignored, message: ignoreMessage);
 							continue;
 						}
 
 						ReportMessage($"Running test {testName}");
+						ReportRunTestCount($"Run tests: {++runTests}");
 
 						try
 						{
@@ -156,7 +181,14 @@ namespace Uno.UI.Samples.Tests
 							if (testMethod.ReturnType == typeof(Task))
 							{
 								var task = (Task)returnValue;
-								await task;
+								var timeoutTask = Task.Delay(DefaultUnitTestTimeout);
+
+								var resultingTask = await Task.WhenAny(task, timeoutTask);
+
+								if (resultingTask == timeoutTask)
+								{
+									throw new TimeoutException($"Test execution timed out after {DefaultUnitTestTimeout}");
+								}
 							}
 
 							ReportTestResult(testName, TestResult.Sucesss);
@@ -174,7 +206,7 @@ namespace Uno.UI.Samples.Tests
 								e = tie.InnerException;
 							}
 
-							ReportTestResult(testName, TestResult.Failed, e.Message);
+							ReportTestResult(testName, TestResult.Failed, e);
 						}
 						try
 						{
@@ -182,7 +214,7 @@ namespace Uno.UI.Samples.Tests
 						}
 						catch (Exception e)
 						{
-							ReportTestResult(testName + " Cleanup", TestResult.Failed, e.Message);
+							ReportTestResult(testName + " Cleanup", TestResult.Failed, e);
 						}
 					}
 				}

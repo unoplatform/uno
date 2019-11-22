@@ -20,16 +20,9 @@ namespace Windows.UI.Xaml.Shapes
 		private double _scaleX;
 		private double _scaleY;
 
-		// Drawing size
-		private double _calculatedWidth;
-		private double _calculatedHeight;
-
 		// Drawing container size
 		private double _controlWidth;
 		private double _controlHeight;
-
-		private double _pathWidth;
-		private double _pathHeight;
 
 		public ArbitraryShapeBase()
 		{
@@ -207,125 +200,90 @@ namespace Windows.UI.Xaml.Shapes
 			base.OnLayoutCore(changed, left, top, right, bottom);
 		}
 
-		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
+		protected override Size MeasureOverride(Size size)
 		{
-			RectF pathBounds = new RectF();
-			var path = this.GetPath();
+			var path = GetPath();
+			if (path == null)
+			{
+				return default(Size);
+			}
+			var physicalBounds = new RectF();
 			if (path != null)
 			{
-				path.ComputeBounds(pathBounds, false);
+				path.ComputeBounds(physicalBounds, false);
 			}
 
-			_pathWidth = pathBounds.Width();
-			_pathHeight = pathBounds.Height();
+			var bounds = ViewHelper.PhysicalToLogicalPixels(physicalBounds);
+
+			var pathWidth = bounds.Width();
+			var pathHeight = bounds.Height();
 
 			if (ShouldPreserveOrigin)
 			{
-				_pathWidth += pathBounds.Left;
-				_pathHeight += pathBounds.Top;
+				pathWidth += bounds.Left;
+				pathHeight += bounds.Top;
 			}
 
-			var aspectRatio = _pathWidth / _pathHeight;
+			var availableWidth = size.Width;
+			var availableHeight = size.Height;
 
-			var widthMode = ViewHelper.MeasureSpecGetMode(widthMeasureSpec);
-			var heightMode = ViewHelper.MeasureSpecGetMode(heightMeasureSpec);
+			var userWidth = this.Width;
+			var userHeight = this.Height;
 
-			var availableWidth = ViewHelper.MeasureSpecGetSize(widthMeasureSpec);
-			var availableHeight = ViewHelper.MeasureSpecGetSize(heightMeasureSpec);
-
-			var userWidth = ViewHelper.LogicalToPhysicalPixels(this.Width);
-			var userHeight = ViewHelper.LogicalToPhysicalPixels(this.Height);
-
-			switch (widthMode)
-			{
-				case Android.Views.MeasureSpecMode.AtMost:
-				case Android.Views.MeasureSpecMode.Exactly:
-					_controlWidth = availableWidth;
-					break;
-				default:
-				case Android.Views.MeasureSpecMode.Unspecified:
-					switch (Stretch)
-					{
-						case Stretch.Uniform:
-							if (heightMode != Android.Views.MeasureSpecMode.Unspecified)
-							{
-								_controlWidth = availableHeight * aspectRatio;
-							}
-							else
-							{
-								_controlWidth = _pathWidth;
-							}
-							break;
-						default:
-							_controlWidth = _pathWidth;
-							break;
-					}
-					break;
-			}
-
-			switch (heightMode)
-			{
-				case Android.Views.MeasureSpecMode.AtMost:
-				case Android.Views.MeasureSpecMode.Exactly:
-					_controlHeight = availableHeight;
-					break;
-				default:
-				case Android.Views.MeasureSpecMode.Unspecified:
-					switch (Stretch)
-					{
-						case Stretch.Uniform:
-							if (widthMode != Android.Views.MeasureSpecMode.Unspecified)
-							{
-								_controlHeight = availableWidth / aspectRatio;
-							}
-							else
-							{
-								_controlHeight = _pathHeight;
-							}
-							break;
-						default:
-							_controlHeight = _pathHeight;
-							break;
-					}
-					break;
-			}
+			var controlWidth = availableWidth <= 0 ? userWidth : availableWidth;
+			var controlHeight = availableHeight <= 0 ? userHeight : availableHeight;
 
 			// Default values
-			_calculatedWidth = LimitWithUserSize(_controlWidth, userWidth, _pathWidth);
-			_calculatedHeight = LimitWithUserSize(_controlHeight, userHeight, _pathHeight);
-			_scaleX = (_calculatedWidth - this.PhysicalStrokeThickness) / _pathWidth;
-			_scaleY = (_calculatedHeight - this.PhysicalStrokeThickness) / _pathHeight;
+			var calculatedWidth = LimitWithUserSize(controlWidth, userWidth, pathWidth);
+			var calculatedHeight = LimitWithUserSize(controlHeight, userHeight, pathHeight);
+
+			var strokeThickness = ActualStrokeThickness;
+
+			_scaleX = (calculatedWidth - strokeThickness) / pathWidth;
+			_scaleY = (calculatedHeight - strokeThickness) / pathHeight;
+
+			//Make sure that we have a valid scale if both of them are not set
+			if (double.IsInfinity(_scaleX) || double.IsNaN(_scaleX))
+			{
+				_scaleX = 1;
+			}
+			if (double.IsInfinity(_scaleY) || double.IsNaN(_scaleY))
+			{
+				_scaleY = 1;
+			}
 
 			// Here we will override some of the default values
 			switch (this.Stretch)
 			{
 				// If the Stretch is None, the drawing is not the same size as the control
-				case Media.Stretch.None:
+				case Stretch.None:
 					_scaleX = 1;
 					_scaleY = 1;
-					_calculatedWidth = (double)_pathWidth;
-					_calculatedHeight = (double)_pathHeight;
+					calculatedWidth = (double)pathWidth;
+					calculatedHeight = (double)pathHeight;
 					break;
-				case Media.Stretch.Fill:
+				case Stretch.Fill:
+					calculatedWidth = (double)pathWidth * (double)_scaleX;
+					calculatedHeight = (double)pathHeight * (double)_scaleY;
+
 					break;
 				// Override the _calculated dimensions if the stretch is Uniform or UniformToFill
-				case Media.Stretch.Uniform:
-					var scale = Math.Min(_scaleX, _scaleY);
-					_calculatedWidth = _pathWidth * scale;
-					_calculatedHeight = _pathHeight * scale;
+				case Stretch.Uniform:
+					double scale = (double)Math.Min(_scaleX, _scaleY);
+					calculatedWidth = (double)pathWidth * scale;
+					calculatedHeight = (double)pathHeight * scale;
 					break;
-				case Media.Stretch.UniformToFill:
-					scale = Math.Max(_scaleX, _scaleY);
-					_calculatedWidth = _pathWidth * scale;
-					_calculatedHeight = _pathHeight * scale;
+				case Stretch.UniformToFill:
+					scale = (double)Math.Max(_scaleX, _scaleY);
+					calculatedWidth = (double)pathWidth * scale;
+					calculatedHeight = (double)pathHeight * scale;
 					break;
 			}
 
-			_calculatedWidth += this.PhysicalStrokeThickness;
-			_calculatedHeight += this.PhysicalStrokeThickness;
+			calculatedWidth += strokeThickness;
+			calculatedHeight += strokeThickness;
 
-			SetMeasuredDimension((int)Math.Ceiling(_calculatedWidth), (int)Math.Ceiling(_calculatedHeight));
-			IFrameworkElementHelper.OnMeasureOverride(this);
+			return new Size(calculatedWidth, calculatedHeight);
 		}
 	}
 }

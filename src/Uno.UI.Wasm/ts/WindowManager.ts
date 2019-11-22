@@ -25,6 +25,7 @@
 
 		private static readonly unoRootClassName = "uno-root-element";
 		private static readonly unoUnarrangedClassName = "uno-unarranged";
+		private static readonly unoClippedToBoundsClassName = "uno-clippedToBounds";
 
 		private static _cctor = (() => {
 			WindowManager.initMethods();
@@ -357,6 +358,28 @@
 		}
 
 		/**
+			* Removes an attribute for an element.
+			*/
+		public removeAttribute(elementId: number, name: string): string {
+			const element = this.getView(elementId);
+			element.removeAttribute(name);
+
+			return "ok";
+		}
+
+		/**
+			* Removes an attribute for an element.
+			*/
+		public removeAttributeNative(pParams: number): boolean {
+
+			const params = WindowManagerRemoveAttributeParams.unmarshal(pParams);
+			const element = this.getView(params.HtmlId);
+			element.removeAttribute(params.Name);
+
+			return true;
+		}
+
+		/**
 			* Get an attribute for an element.
 			*/
 		public getAttribute(elementId: number, name: string): any {
@@ -427,7 +450,7 @@
 			* To remove a value, set it to empty string.
 			* @param styles A dictionary of styles to apply on html element.
 			*/
-		public setStyle(elementId: number, styles: { [name: string]: string }, setAsArranged: boolean = false): string {
+		public setStyle(elementId: number, styles: { [name: string]: string }, setAsArranged: boolean = false, clipToBounds?: boolean): string {
 			const element = this.getView(elementId);
 
 			for (const style in styles) {
@@ -438,6 +461,9 @@
 
 			if (setAsArranged) {
 				this.setAsArranged(element);
+			}
+			if (typeof clipToBounds === "boolean") {
+				this.setClipToBounds(element, clipToBounds);
 			}
 
 			return "ok";
@@ -467,6 +493,8 @@
 			if (params.SetAsArranged) {
 				this.setAsArranged(element);
 			}
+
+			this.setClipToBounds(element, params.ClipToBounds);
 
 			return true;
 		}
@@ -562,6 +590,7 @@
 			}
 
 			this.setAsArranged(element);
+			this.setClipToBounds(element, params.ClipToBounds);
 
 			return true;
 		}
@@ -573,6 +602,14 @@
 
 		private setAsUnarranged(element: HTMLElement | SVGElement) {
 			element.classList.add(WindowManager.unoUnarrangedClassName);
+		}
+
+		private setClipToBounds(element: HTMLElement | SVGElement, clipToBounds: boolean) {
+			if (clipToBounds) {
+				element.classList.add(WindowManager.unoClippedToBoundsClassName);
+			} else {
+				element.classList.remove(WindowManager.unoClippedToBoundsClassName);
+			}
 		}
 
 		/**
@@ -1195,6 +1232,18 @@
 		private static MAX_WIDTH = `${Number.MAX_SAFE_INTEGER}vw`;
 		private static MAX_HEIGHT = `${Number.MAX_SAFE_INTEGER}vh`;
 
+		private measureElement(element: HTMLElement): [number, number] {
+
+			const offsetWidth = element.offsetWidth;
+			const offsetHeight = element.offsetHeight;
+
+			const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
+			const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
+
+			// +0.5 is added to take rounding into account
+			return [resultWidth + 0.5, resultHeight];
+		}
+
 		private measureViewInternal(viewId: number, maxWidth: number, maxHeight: number): [number, number] {
 			const element = this.getView(viewId) as HTMLElement;
 
@@ -1202,7 +1251,13 @@
 			const originalStyleCssText = elementStyle.cssText;
 			let parentElement: HTMLElement = null;
 			let parentElementWidthHeight: { width: string, height: string } = null;
-			let unconnectedRoot = null;
+			let unconnectedRoot: HTMLElement = null;
+
+			let cleanupUnconnectedRoot = function (owner: HTMLDivElement) {
+				if (unconnectedRoot !== null) {
+					owner.removeChild(unconnectedRoot);
+				}
+			}
 
 			try {
 				if (!element.isConnected) {
@@ -1271,15 +1326,27 @@
 					const imgElement = element as HTMLImageElement;
 					return [imgElement.naturalWidth, imgElement.naturalHeight];
 				}
+				else if (element instanceof HTMLInputElement) {
+					const inputElement = element as HTMLInputElement;
+
+					cleanupUnconnectedRoot(this.containerElement);
+
+					// Create a temporary element that will contain the input's content
+					var textOnlyElement = document.createElement("p") as HTMLParagraphElement;
+					textOnlyElement.style.cssText = updatedStyleString;
+					textOnlyElement.innerText = inputElement.value;
+
+					unconnectedRoot = textOnlyElement;
+					this.containerElement.appendChild(unconnectedRoot);
+
+					var textSize = this.measureElement(textOnlyElement);
+					var inputSize = this.measureElement(element);
+
+					// Take the width of the inner text, but keep the height of the input element.
+					return [textSize[0], inputSize[1]];
+				}
 				else {
-					const offsetWidth = element.offsetWidth;
-					const offsetHeight = element.offsetHeight;
-
-					const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
-					const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
-
-					// +0.5 is added to take rounding into account
-					return [resultWidth + 0.5, resultHeight];
+					return this.measureElement(element);
 				}
 			}
 			finally {
@@ -1290,10 +1357,23 @@
 					parentElement.style.height = parentElementWidthHeight.height;
 				}
 
-				if (unconnectedRoot !== null) {
-					this.containerElement.removeChild(unconnectedRoot);
-				}
+				cleanupUnconnectedRoot(this.containerElement);
 			}
+		}
+
+		public scrollTo(pParams: number): boolean {
+
+			const params = WindowManagerScrollToOptionsParams.unmarshal(pParams);
+			const elt = this.getView(params.HtmlId);
+			const opts = <ScrollToOptions>({
+				left: params.HasLeft ? params.Left : undefined,
+				top: params.HasTop ? params.Top : undefined,
+				behavior: <ScrollBehavior>(params.DisableAnimation ? "auto" : "smooth")
+			});
+
+			elt.scrollTo(opts);
+
+			return true;
 		}
 
 		public setImageRawData(viewId: number, dataPtr: number, width: number, height: number): string {

@@ -97,7 +97,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 					builder.AppendLineInvariant("// ******************************************************************");
 					builder.AppendLineInvariant("// </auto-generated>");
 					builder.AppendLine();
-
+					builder.AppendLineInvariant("#pragma warning disable 1591 // Ignore missing XML comment warnings");
 					builder.AppendLineInvariant($"using System;");
 					builder.AppendLineInvariant($"using System.Linq;");
 					builder.AppendLineInvariant($"using System.Collections.Generic;");

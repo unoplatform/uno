@@ -427,7 +427,7 @@ var Uno;
                 }
             }
             /**
-                * Create a HTML DOM element representing a Xaml element.
+                * Create a html DOM element representing a Xaml element.
                 *
                 * You need to call addView to connect it to the DOM.
                 */
@@ -436,7 +436,7 @@ var Uno;
                 return "ok";
             }
             /**
-                * Create a HTML DOM element representing a Xaml element.
+                * Create a html DOM element representing a Xaml element.
                 *
                 * You need to call addView to connect it to the DOM.
                 */
@@ -477,7 +477,7 @@ var Uno;
                         element.classList.add(`uno-${className}`);
                     }
                 }
-                // Add the HTML element to list of elements
+                // Add the html element to list of elements
                 this.allActiveElementsById[contentDefinition.id] = element;
             }
             getView(elementHandle) {
@@ -564,6 +564,23 @@ var Uno;
                 return true;
             }
             /**
+                * Removes an attribute for an element.
+                */
+            removeAttribute(elementId, name) {
+                const element = this.getView(elementId);
+                element.removeAttribute(name);
+                return "ok";
+            }
+            /**
+                * Removes an attribute for an element.
+                */
+            removeAttributeNative(pParams) {
+                const params = WindowManagerRemoveAttributeParams.unmarshal(pParams);
+                const element = this.getView(params.HtmlId);
+                element.removeAttribute(params.Name);
+                return true;
+            }
+            /**
                 * Get an attribute for an element.
                 */
             getAttribute(elementId, name) {
@@ -618,12 +635,12 @@ var Uno;
                 return element[name] || "";
             }
             /**
-                * Set the CSS style of a HTML element.
+                * Set the CSS style of a html element.
                 *
                 * To remove a value, set it to empty string.
-                * @param styles A dictionary of styles to apply on HTML element.
+                * @param styles A dictionary of styles to apply on html element.
                 */
-            setStyle(elementId, styles, setAsArranged = false) {
+            setStyle(elementId, styles, setAsArranged = false, clipToBounds) {
                 const element = this.getView(elementId);
                 for (const style in styles) {
                     if (styles.hasOwnProperty(style)) {
@@ -633,13 +650,16 @@ var Uno;
                 if (setAsArranged) {
                     this.setAsArranged(element);
                 }
+                if (typeof clipToBounds === "boolean") {
+                    this.setClipToBounds(element, clipToBounds);
+                }
                 return "ok";
             }
             /**
-            * Set the CSS style of a HTML element.
+            * Set the CSS style of a html element.
             *
-            * To remove a value, set it to an empty string.
-            * @param styles A dictionary of styles to apply on HTML element.
+            * To remove a value, set it to empty string.
+            * @param styles A dictionary of styles to apply on html element.
             */
             setStyleNative(pParams) {
                 const params = WindowManagerSetStylesParams.unmarshal(pParams);
@@ -654,10 +674,11 @@ var Uno;
                 if (params.SetAsArranged) {
                     this.setAsArranged(element);
                 }
+                this.setClipToBounds(element, params.ClipToBounds);
                 return true;
             }
             /**
-            * Set a single CSS style of a HTML element
+            * Set a single CSS style of a html element
             *
             */
             setStyleDoubleNative(pParams) {
@@ -667,20 +688,20 @@ var Uno;
                 return true;
             }
             /**
-                * Set the CSS style of a HTML element.
+                * Set the CSS style of a html element.
                 *
-                * To remove a value, set it to an empty string.
-                * @param styles A dictionary of styles to apply on HTML element.
+                * To remove a value, set it to empty string.
+                * @param styles A dictionary of styles to apply on html element.
                 */
             resetStyle(elementId, names) {
                 this.resetStyleInternal(elementId, names);
                 return "ok";
             }
             /**
-                * Set the CSS style of a HTML element.
+                * Set the CSS style of a html element.
                 *
-                * To remove a value, set it to an empty string.
-                * @param styles A dictionary of styles to apply on HTML element.
+                * To remove a value, set it to empty string.
+                * @param styles A dictionary of styles to apply on html element.
                 */
             resetStyleNative(pParams) {
                 const params = WindowManagerResetStyleParams.unmarshal(pParams);
@@ -714,7 +735,7 @@ var Uno;
                 return true;
             }
             /**
-            * Arrange and clips a native element
+            * Arrange and clips a native elements
             *
             */
             arrangeElementNative(pParams) {
@@ -733,6 +754,7 @@ var Uno;
                     style.clip = "";
                 }
                 this.setAsArranged(element);
+                this.setClipToBounds(element, params.ClipToBounds);
                 return true;
             }
             setAsArranged(element) {
@@ -740,6 +762,14 @@ var Uno;
             }
             setAsUnarranged(element) {
                 element.classList.add(WindowManager.unoUnarrangedClassName);
+            }
+            setClipToBounds(element, clipToBounds) {
+                if (clipToBounds) {
+                    element.classList.add(WindowManager.unoClippedToBoundsClassName);
+                }
+                else {
+                    element.classList.remove(WindowManager.unoClippedToBoundsClassName);
+                }
             }
             /**
             * Sets the transform matrix of an element
@@ -765,7 +795,7 @@ var Uno;
                     : "False";
             }
             /**
-                * Issue a browser alert to the user
+                * Issue a browser alert to user
                 * @param message message to display
                 */
             alert(message) {
@@ -787,7 +817,7 @@ var Uno;
                 return document.title || UnoAppManifest.displayName;
             }
             /**
-                * Add an event handler to a HTML element.
+                * Add an event handler to a html element.
                 *
                 * @param eventName The name of the event
                 * @param onCapturePhase true means "on trickle down" (going down to target), false means "on bubble up" (bubbling back to ancestors). Default is false.
@@ -797,7 +827,7 @@ var Uno;
                 return "ok";
             }
             /**
-                * Add an event handler to a HTML element.
+                * Add an event handler to a html element.
                 *
                 * @param eventName The name of the event
                 * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
@@ -823,7 +853,7 @@ var Uno;
                 this._isPendingLeaveProcessingEnabled = true;
             }
             /**
-                * Add an event handler to a HTML element.
+                * Add an event handler to a html element.
                 *
                 * @param eventName The name of the event
                 * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
@@ -928,7 +958,7 @@ var Uno;
                 return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 && (!evt.button || evt.button === 0) : false;
             }
             /**
-             * Default event filter to be used with registerEventOnView to
+             * default event filter to be used with registerEventOnView to
              * use for most routed events
              * @param evt
              */
@@ -1150,7 +1180,7 @@ var Uno;
                 }
             }
             /**
-                * Destroy a HTML element.
+                * Destroy a html element.
                 *
                 * The element won't be available anymore. Usually indicate the managed
                 * version has been scavenged by the GC.
@@ -1160,7 +1190,7 @@ var Uno;
                 return "ok";
             }
             /**
-                * Destroy a HTML element.
+                * Destroy a html element.
                 *
                 * The element won't be available anymore. Usually indicate the managed
                 * version has been scavenged by the GC.
@@ -1224,6 +1254,14 @@ var Uno;
                 ret2.marshal(pReturn);
                 return true;
             }
+            measureElement(element) {
+                const offsetWidth = element.offsetWidth;
+                const offsetHeight = element.offsetHeight;
+                const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
+                const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
+                // +0.5 is added to take rounding into account
+                return [resultWidth + 0.5, resultHeight];
+            }
             measureViewInternal(viewId, maxWidth, maxHeight) {
                 const element = this.getView(viewId);
                 const elementStyle = element.style;
@@ -1231,6 +1269,11 @@ var Uno;
                 let parentElement = null;
                 let parentElementWidthHeight = null;
                 let unconnectedRoot = null;
+                let cleanupUnconnectedRoot = function (owner) {
+                    if (unconnectedRoot !== null) {
+                        owner.removeChild(unconnectedRoot);
+                    }
+                };
                 try {
                     if (!element.isConnected) {
                         // If the element is not connected to the DOM, we need it
@@ -1286,13 +1329,22 @@ var Uno;
                         const imgElement = element;
                         return [imgElement.naturalWidth, imgElement.naturalHeight];
                     }
+                    else if (element instanceof HTMLInputElement) {
+                        const inputElement = element;
+                        cleanupUnconnectedRoot(this.containerElement);
+                        // Create a temporary element that will contain the input's content
+                        var textOnlyElement = document.createElement("p");
+                        textOnlyElement.style.cssText = updatedStyleString;
+                        textOnlyElement.innerText = inputElement.value;
+                        unconnectedRoot = textOnlyElement;
+                        this.containerElement.appendChild(unconnectedRoot);
+                        var textSize = this.measureElement(textOnlyElement);
+                        var inputSize = this.measureElement(element);
+                        // Take the width of the inner text, but keep the height of the input element.
+                        return [textSize[0], inputSize[1]];
+                    }
                     else {
-                        const offsetWidth = element.offsetWidth;
-                        const offsetHeight = element.offsetHeight;
-                        const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
-                        const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
-                        // +0.5 is added to take rounding into account
-                        return [resultWidth + 0.5, resultHeight];
+                        return this.measureElement(element);
                     }
                 }
                 finally {
@@ -1301,10 +1353,19 @@ var Uno;
                         parentElement.style.width = parentElementWidthHeight.width;
                         parentElement.style.height = parentElementWidthHeight.height;
                     }
-                    if (unconnectedRoot !== null) {
-                        this.containerElement.removeChild(unconnectedRoot);
-                    }
+                    cleanupUnconnectedRoot(this.containerElement);
                 }
+            }
+            scrollTo(pParams) {
+                const params = WindowManagerScrollToOptionsParams.unmarshal(pParams);
+                const elt = this.getView(params.HtmlId);
+                const opts = ({
+                    left: params.HasLeft ? params.Left : undefined,
+                    top: params.HasTop ? params.Top : undefined,
+                    behavior: (params.DisableAnimation ? "auto" : "smooth")
+                });
+                elt.scrollTo(opts);
+                return true;
             }
             setImageRawData(viewId, dataPtr, width, height) {
                 const element = this.getView(viewId);
@@ -1376,9 +1437,9 @@ var Uno;
                 return "ok";
             }
             /**
-                * Set the HTML content for an element.
+                * Set the Html content for an element.
                 *
-                * Those HTML elements won't be available as XamlElement in managed code.
+                * Those html elements won't be available as XamlElement in managed code.
                 * WARNING: you should avoid mixing this and `addView` for the same element.
                 */
             setHtmlContent(viewId, html) {
@@ -1388,7 +1449,7 @@ var Uno;
             /**
                 * Set the Html content for an element.
                 *
-                * Those HTML elements won't be available as XamlElement in managed code.
+                * Those html elements won't be available as XamlElement in managed code.
                 * WARNING: you should avoid mixing this and `addView` for the same element.
                 */
             setHtmlContentNative(pParams) {
@@ -1524,6 +1585,7 @@ var Uno;
         WindowManager._isLoadEventsEnabled = false;
         WindowManager.unoRootClassName = "uno-root-element";
         WindowManager.unoUnarrangedClassName = "uno-unarranged";
+        WindowManager.unoClippedToBoundsClassName = "uno-clippedToBounds";
         WindowManager._cctor = (() => {
             WindowManager.initMethods();
             UI.HtmlDom.initPolyfills();
@@ -1619,6 +1681,9 @@ class WindowManagerArrangeElementParams {
         }
         {
             ret.Clip = Boolean(Module.getValue(pData + 68, "i32"));
+        }
+        {
+            ret.ClipToBounds = Boolean(Module.getValue(pData + 72, "i32"));
         }
         return ret;
     }
@@ -1809,6 +1874,25 @@ class WindowManagerRegisterEventOnViewParams {
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerRemoveAttributeParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerRemoveAttributeParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            var ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Name = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Name = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerRemoveViewParams {
     static unmarshal(pData) {
         let ret = new WindowManagerRemoveViewParams();
@@ -1848,6 +1932,31 @@ class WindowManagerResetStyleParams {
             else {
                 ret.Styles = null;
             }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerScrollToOptionsParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerScrollToOptionsParams();
+        {
+            ret.Left = Number(Module.getValue(pData + 0, "double"));
+        }
+        {
+            ret.Top = Number(Module.getValue(pData + 8, "double"));
+        }
+        {
+            ret.HasLeft = Boolean(Module.getValue(pData + 16, "i32"));
+        }
+        {
+            ret.HasTop = Boolean(Module.getValue(pData + 20, "i32"));
+        }
+        {
+            ret.DisableAnimation = Boolean(Module.getValue(pData + 24, "i32"));
+        }
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 28, "*"));
         }
         return ret;
     }
@@ -2094,6 +2203,9 @@ class WindowManagerSetStylesParams {
             else {
                 ret.Pairs = null;
             }
+        }
+        {
+            ret.ClipToBounds = Boolean(Module.getValue(pData + 16, "i32"));
         }
         return ret;
     }
@@ -2509,6 +2621,44 @@ var Windows;
             Sensors.Magnetometer = Magnetometer;
         })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
     })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var System;
+    (function (System) {
+        var Profile;
+        (function (Profile) {
+            class AnalyticsVersionInfo {
+                static getUserAgent() {
+                    return navigator.userAgent;
+                }
+                static getBrowserName() {
+                    // Opera 8.0+
+                    if ((!!window.opr && !!window.opr.addons) || !!window.opera || navigator.userAgent.indexOf(' OPR/') >= 0) {
+                        return "Opera";
+                    }
+                    // Firefox 1.0+
+                    if (typeof window.InstallTrigger !== 'undefined') {
+                        return "Firefox";
+                    }
+                    // Safari 3.0+ "[object HTMLElementConstructor]" 
+                    if (/constructor/i.test(window.HTMLElement) ||
+                        ((p) => p.toString() === "[object SafariRemoteNotification]")(typeof window.safari !== 'undefined' && window.safari.pushNotification)) {
+                        return "Safari";
+                    }
+                    // Edge 20+
+                    if (!!window.StyleMedia) {
+                        return "Edge";
+                    }
+                    // Chrome 1 - 71
+                    if (!!window.chrome && (!!window.chrome.webstore || !!window.chrome.runtime)) {
+                        return "Chrome";
+                    }
+                }
+            }
+            Profile.AnalyticsVersionInfo = AnalyticsVersionInfo;
+        })(Profile = System.Profile || (System.Profile = {}));
+    })(System = Windows.System || (Windows.System = {}));
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {

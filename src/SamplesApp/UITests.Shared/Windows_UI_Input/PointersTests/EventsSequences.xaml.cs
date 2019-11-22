@@ -423,7 +423,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 			void OnEvt(object evt, string evtName, RoutedEventArgs e, params Expression<Func<object>>[] values)
 			{
 				events.Add((evt, e));
-				Log($"[{name}] {evtName}: {string.Join("| ", values.Select(v => $"{(v.Body as MemberExpression)?.Member.Name ?? "??"}: {v.Compile()()}"))}");
+				Log($"[{name}] {evtName}: {string.Join("| ", values.Select(v => $"{((v.Body as UnaryExpression)?.Operand as MemberExpression)?.Member.Name ?? "??"}: {v.Compile()()}"))}");
 			}
 		}
 
