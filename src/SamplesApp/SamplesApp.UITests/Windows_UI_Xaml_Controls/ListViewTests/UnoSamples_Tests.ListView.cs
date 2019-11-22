@@ -104,7 +104,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			_app.WaitForText("StateTextBlock", "Measured");
 
-			TakeScreenshot($"{nameof(Check_ListView_Swallows_Measure)} before scroll");
+			TakeScreenshot("before scroll");
 
 			var measureTextBefore = _app.GetText("MeasureCountTextBlock");
 			var initialMeasureCount = int.Parse(measureTextBefore);
@@ -113,7 +113,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			_app.WaitForText("ResultTextBlock", "Scrolled");
 
-			TakeScreenshot($"{nameof(Check_ListView_Swallows_Measure)} after scroll");
+			TakeScreenshot("after scroll");
 
 			var measureTextAfter = _app.GetText("MeasureCountTextBlock");
 			var finalMeasureCount = int.Parse(measureTextAfter);
@@ -128,7 +128,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			_app.WaitForText("StatusTextBlock", "Finished");
 
-			TakeScreenshot($"{nameof(ListView_Weird_Measure_During_Arrange)} after layout");
+			TakeScreenshot("after layout");
 
 			var heightStr = _app.GetText("HeightTextBlock");
 			var height = int.Parse(heightStr);
@@ -144,12 +144,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			_app.WaitForText("StatusTextBlock", "Ready");
 
+			TakeScreenshot("1 item");
+
 			var heightStrBefore = _app.GetText("HeightTextBlock");
 			var heightBefore = int.Parse(heightStrBefore);
 
 			_app.Tap("AddItemsButton");
 
 			_app.WaitForText("StatusTextBlock", "Finished");
+
+			TakeScreenshot("3 items");
 
 			var heightStrAfter = _app.GetText("HeightTextBlock");
 			var heightAfter = int.Parse(heightStrAfter);
