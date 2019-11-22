@@ -24,7 +24,6 @@ namespace Windows.UI.Xaml.Shapes
 		// Drawing scale
 		private nfloat _scaleX;
 		private nfloat _scaleY;
-		internal Size _measuredSize;
 
 		public ArbitraryShapeBase()
 		{
@@ -362,8 +361,7 @@ namespace Windows.UI.Xaml.Shapes
 			calculatedWidth += strokeThickness;
 			calculatedHeight += strokeThickness;
 
-			_measuredSize = new Size(calculatedWidth, calculatedHeight);
-			return _measuredSize;
+			return new Size(calculatedWidth, calculatedHeight);
 		}
 	}
 }
