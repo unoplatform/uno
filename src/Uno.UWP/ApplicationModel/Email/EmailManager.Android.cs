@@ -16,7 +16,7 @@ namespace Windows.ApplicationModel.Email
 
 		private static async Task ShowComposeNewEmailInternalAsync(EmailMessage message)
 		{
-			if (message is null)
+			message = message ?? throw new ArgumentNullException(nameof(message));
 			{
 				throw new ArgumentNullException(nameof(message));
 			}
