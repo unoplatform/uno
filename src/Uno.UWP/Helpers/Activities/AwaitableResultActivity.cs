@@ -31,7 +31,7 @@ namespace Uno.Helpers.Activities
 		{
 			if (ContextHelper.Current == null)
 			{
-				throw new InvalidOperationException("ContextHelper.Current is null, API called too early in the applicaiton lifecycle.")
+				throw new InvalidOperationException("ContextHelper.Current is null, API called too early in the applicaiton lifecycle.");
 			}
 
 			var taskCompletionSource = new TaskCompletionSource<AwaitableResultActivity>();
