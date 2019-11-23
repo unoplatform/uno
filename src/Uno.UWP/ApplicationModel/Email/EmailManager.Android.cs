@@ -81,6 +81,7 @@ namespace Windows.ApplicationModel.Email
 			{
 				return null;
 			}
+
 			if (emailActivities.Count == 1)
 			{
 				return GetComponentName(emailActivities[0]);
