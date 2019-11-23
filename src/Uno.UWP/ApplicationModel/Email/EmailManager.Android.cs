@@ -17,9 +17,6 @@ namespace Windows.ApplicationModel.Email
 		private static async Task ShowComposeNewEmailInternalAsync(EmailMessage message)
 		{
 			message = message ?? throw new ArgumentNullException(nameof(message));
-			{
-				throw new ArgumentNullException(nameof(message));
-			}
 
 			var resolvedComponent = await ResolveEmailComponent();
 
@@ -80,11 +77,20 @@ namespace Windows.ApplicationModel.Email
 
 			var emailActivities = packageManager.QueryIntentActivities(emailDummyIntent, 0);
 
-			if (emailActivities == null) return null;
-			if (emailActivities.Count == 1) return GetComponentName(emailActivities[0]);
+			if (emailActivities == null)
+			{
+				return null;
+			}
+			if (emailActivities.Count == 1)
+			{
+				return GetComponentName(emailActivities[0]);
+			}
 
 			var defaultHandler = emailActivities.FirstOrDefault(e => e.IsDefault);
-			if (defaultHandler != null) return GetComponentName(defaultHandler);
+			if (defaultHandler != null)
+			{
+				return GetComponentName(defaultHandler);
+			}
 
 			var intentPick = new Intent();
 			intentPick.SetAction(Intent.ActionPickActivity);
