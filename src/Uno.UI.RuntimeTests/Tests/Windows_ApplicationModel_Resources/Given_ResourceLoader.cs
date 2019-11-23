@@ -131,5 +131,19 @@ namespace Uno.UI.RuntimeTests.Tests
 			CultureInfo.CurrentUICulture = new CultureInfo("de-DE");
 			Assert.AreEqual(@"Text in 'en-US'", SUT.GetString("Given_ResourceLoader/When_LocalizedResource"));
 		}
+
+		[TestMethod]
+		public void When_FileAndStringNameFormat()
+		{
+			var SUT = ResourceLoader.GetForViewIndependentUse();
+
+			Assert.AreEqual(@"Uniq text from Resources", SUT.GetString("pkResUniqResources"));
+			Assert.AreEqual(@"Shared text from Resources", SUT.GetString("pkResShared"));
+			Assert.AreEqual(@"Shared text from Test01", SUT.GetString("/Test01/pkResShared"));
+			Assert.AreEqual(@"Uniq text from Test01", SUT.GetString("/Test01/pkResUniqTest01"));
+			Assert.AreEqual(@"", SUT.GetString("/this-does-not-exist"));
+			Assert.AreEqual(@"", SUT.GetString("//this-does-not-exist"));
+		}
+
 	}
 }

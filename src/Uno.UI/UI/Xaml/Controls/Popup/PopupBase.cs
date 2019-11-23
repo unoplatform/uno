@@ -122,7 +122,8 @@ namespace Windows.UI.Xaml.Controls
 			_childHasOwnDataContext = false;
 			if (Child is IDependencyObjectStoreProvider provider)
 			{
-				if (provider.Store.ReadLocalValue(provider.Store.DataContextProperty) != DependencyProperty.UnsetValue)
+				var dataContextProperty = provider.Store.ReadLocalValue(provider.Store.DataContextProperty);
+				if (dataContextProperty != null && dataContextProperty != DependencyProperty.UnsetValue)
 				{
 					// Child already has locally set DataContext, we shouldn't overwrite it.
 					_childHasOwnDataContext = true;
@@ -161,7 +162,8 @@ namespace Windows.UI.Xaml.Controls
 			/// <param name="finalSize">The final size available to render the view. This is expected to be the screen size.</param>
 			/// <param name="visibleBounds">The frame of the visible bounds of the window. This is expected to be AtMost the finalSize.</param>
 			/// <param name="desiredSize">The size at which the content expect to be rendered. This is the result of the last <see cref="Measure"/>.</param>
-			void Arrange(Size finalSize, Rect visibleBounds, Size desiredSize);
+			/// <param name="upperLeftOffset">Coordinate system adjustment, applied to the resulting frame computed from the popup content</param>
+			void Arrange(Size finalSize, Rect visibleBounds, Size desiredSize, Point? upperLeftOffset = null);
 		}
 
 		partial void OnIsLightDismissEnabledChangedPartial(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)

@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 			var items = Items.OfType<MenuFlyoutItem>().Where(i => i.Visibility == Visibility.Visible).ToArray();
 			var item = items[e.Item.ItemId];
 
-			item.Command.ExecuteIfPossible(item.CommandParameter);
+			item.InvokeClick(); 
 		}
 
 		private View GetActualTarget()

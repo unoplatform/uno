@@ -16,8 +16,8 @@ using static System.Math;
 using static Uno.UI.LayoutHelper;
 using Uno.Diagnostics.Eventing;
 using Windows.Foundation;
-
 #if XAMARIN_ANDROID
+using Android.Views;
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 #elif XAMARIN_IOS_UNIFIED
@@ -45,6 +45,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private static readonly IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 		private readonly ILogger _logDebug;
+
+		private readonly Size MaxSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
 
 		private Size _unclippedDesiredSize;
 
@@ -80,9 +82,9 @@ namespace Windows.UI.Xaml.Controls
 				);
 			}
 
-			if(Panel.Visibility == Visibility.Collapsed)
+			if (Panel.Visibility == Visibility.Collapsed)
 			{
-				// A collapsed element should not be measure measured at all
+				// A collapsed element should not be measured at all
 				return default;
 			}
 
@@ -93,6 +95,7 @@ namespace Windows.UI.Xaml.Controls
 				var marginSize = Panel.GetMarginSize();
 
 				var frameworkAvailableSize = availableSize
+					.NumberOrDefault(MaxSize)
 					.Subtract(marginSize)
 					.AtLeast(default) // 0.0,0.0
 					.AtMost(maxSize)
@@ -123,7 +126,7 @@ namespace Windows.UI.Xaml.Controls
 				SetDesiredChildSize(Panel as View, desiredSize.Add(marginSize));
 
 				var clippedDesiredSize = desiredSize
-					
+
 					.AtMost(availableSize)
 					.AtLeast(new Size(0, 0));
 
@@ -169,12 +172,7 @@ namespace Windows.UI.Xaml.Controls
 				bool allowClipToSlot;
 				bool needsClipToSlot;
 
-				if (Panel.RenderTransform != null)
-				{
-					allowClipToSlot = false;
-					needsClipToSlot = false;
-				}
-				else if (Panel is ICustomClippingElement customClippingElement)
+				if (Panel is ICustomClippingElement customClippingElement)
 				{
 					// Some controls may control itself how clipping is applied
 					allowClipToSlot = customClippingElement.AllowClippingToLayoutSlot;
@@ -196,9 +194,9 @@ namespace Windows.UI.Xaml.Controls
 						needsClipToSlot = true;
 					}
 
-					if (IsLessThanAndNotCloseTo(arrangeSize.Height, _unclippedDesiredSize.Height))
+					else if (IsLessThanAndNotCloseTo(arrangeSize.Height, _unclippedDesiredSize.Height))
 					{
-							_logDebug?.Debug($"{this}: (arrangeSize.Height) {arrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
+						_logDebug?.Debug($"{this}: (arrangeSize.Height) {arrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
 						needsClipToSlot = true;
 					}
 				}
@@ -209,23 +207,25 @@ namespace Windows.UI.Xaml.Controls
 					.AtLeast(minSize)
 					.AtLeast(default); // 0.0,0.0
 
+				// We have to choose max between _unclippedDesiredSize and maxSize here, because
+				// otherwise setting of max property could cause arrange at less then _unclippedDesiredSize.
+				// Clipping by Max is needed to limit stretch here
 				var effectiveMaxSize = Max(_unclippedDesiredSize, maxSize);
-				arrangeSize = arrangeSize
-					.AtMost(finalRect.Size)
-					.AtMost(effectiveMaxSize);
 
-				if (allowClipToSlot && !needsClipToSlot)
+				if (allowClipToSlot)
 				{
 					if (IsLessThanAndNotCloseTo(effectiveMaxSize.Width, arrangeSize.Width))
 					{
 						_logDebug?.Debug($"{this}: (effectiveMaxSize.Width) {effectiveMaxSize.Width} < {arrangeSize.Width}: NEEDS CLIPPING.");
 						needsClipToSlot = true;
+						arrangeSize.Width = effectiveMaxSize.Width;
 					}
 
 					if (IsLessThanAndNotCloseTo(effectiveMaxSize.Height, arrangeSize.Height))
 					{
 						_logDebug?.Debug($"{this}: (effectiveMaxSize.Height) {effectiveMaxSize.Height} < {arrangeSize.Height}: NEEDS CLIPPING.");
 						needsClipToSlot = true;
+						arrangeSize.Height = effectiveMaxSize.Height;
 					}
 				}
 
@@ -233,7 +233,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (uiElement != null)
 				{
-					uiElement.RenderSize = renderSize;
+					uiElement.RenderSize = renderSize.AtMost(maxSize);
 					uiElement.NeedsClipToSlot = needsClipToSlot;
 					uiElement.ApplyClip();
 
@@ -268,6 +268,86 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var frameworkElement = view as IFrameworkElement;
 			var ret = default(Size);
+
+
+			if (frameworkElement?.Visibility == Visibility.Collapsed)
+			{
+				// By default iOS views measure to normal size, even if they're hidden.
+				// We want the collapsed behavior, so we return a 0,0 size instead.
+
+				// Note: Visibility is checked in both Measure and MeasureChild, since some IFrameworkElement children may not have their own Layouter
+				SetDesiredChildSize(view, ret);
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					var viewName = frameworkElement.SelectOrDefault(f => f.Name, "NativeView");
+
+					this.Log().DebugFormat(
+						"[{0}/{1}] MeasureChild(HIDDEN/{2}/{3}/{4}/{5}) = {6}",
+						LoggingOwnerTypeName,
+						Name,
+						view.GetType(),
+						viewName,
+						slotSize,
+						frameworkElement.Margin,
+						ret
+					);
+				}
+
+				return ret;
+			}
+
+			if(frameworkElement != null && !(frameworkElement is FrameworkElement))
+			{
+				// For IFrameworkElement implementers that are not FrameworkElements, the constraint logic must
+				// be performed by the parent. Otherwise, the native element will take the size it needs without
+				// regards to explicit XAML size characteristics. The Android ProgressBar is a good example of
+				// that behavior.
+
+				var margin = frameworkElement.Margin;
+
+				if (margin != Thickness.Empty)
+				{
+					// Apply the margin for framework elements, as if it were padding to the child.
+					slotSize = new Size(
+						Max(0, slotSize.Width - margin.Left - margin.Right),
+						Max(0, slotSize.Height - margin.Top - margin.Bottom)
+					);
+				}
+
+				// Alias the Dependency Properties values to avoid double calls.
+				var childWidth = frameworkElement.Width;
+				var childMaxWidth = frameworkElement.MaxWidth;
+				var childHeight = frameworkElement.Height;
+				var childMaxHeight = frameworkElement.MaxHeight;
+
+				var optionalMaxWidth = !IsInfinity(childMaxWidth) && !IsNaN(childMaxWidth) ? childMaxWidth : (double?)null;
+				var optionalWidth = !IsNaN(childWidth) ? childWidth : (double?)null;
+				var optionalMaxHeight = !IsInfinity(childMaxHeight) && !IsNaN(childMaxHeight) ? childMaxHeight : (double?)null;
+				var optionalHeight = !IsNaN(childHeight) ? childHeight : (double?)null;
+
+				// After the margin has been removed, ensure the remaining space slot does not go
+				// over the explicit or maximum size of the child.
+				if (optionalMaxWidth != null || optionalWidth != null)
+				{
+					var constrainedWidth = Min(
+						optionalMaxWidth ?? double.PositiveInfinity,
+						optionalWidth ?? double.PositiveInfinity
+					);
+
+					slotSize.Width = Min(slotSize.Width, constrainedWidth);
+				}
+
+				if (optionalMaxHeight != null || optionalHeight != null)
+				{
+					var constrainedHeight = Min(
+						optionalMaxHeight ?? double.PositiveInfinity,
+						optionalHeight ?? double.PositiveInfinity
+					);
+
+					slotSize.Height = Min(slotSize.Height, constrainedHeight);
+				}
+			}
 
 			ret = MeasureChildOverride(view, slotSize);
 
@@ -443,17 +523,18 @@ namespace Windows.UI.Xaml.Controls
 						|| hasChildMinHeight
 					)
 					{
-
-						var actualHeight = GetActualHeight(height,
-							childVerticalAlignment,
+						var actualHeight = GetActualSize(
+							height,
+							childVerticalAlignment == VerticalAlignment.Stretch,
 							childMaxHeight,
 							childMinHeight,
 							childHeight,
-							childMargin,
+							childMargin.Top + childMargin.Bottom,
 							hasChildHeight,
 							hasChildMaxHeight,
 							hasChildMinHeight,
-							desiredSize);
+							desiredSize.Height,
+							frame.Height);
 
 						switch (childVerticalAlignment)
 						{
@@ -482,16 +563,18 @@ namespace Windows.UI.Xaml.Controls
 						|| hasChildMinWidth
 					)
 					{
-						var actualWidth = GetActualWidth(width,
-							childHorizontalAlignment,
+						var actualWidth = GetActualSize(
+							width,
+							childHorizontalAlignment == HorizontalAlignment.Stretch,
 							childMaxWidth,
 							childMinWidth,
 							childWidth,
-							childMargin,
+							childMargin.Left + childMargin.Right,
 							hasChildWidth,
 							hasChildMaxWidth,
 							hasChildMinWidth,
-							desiredSize);
+							desiredSize.Width,
+							frame.Width);
 
 						switch (childHorizontalAlignment)
 						{
@@ -518,7 +601,7 @@ namespace Windows.UI.Xaml.Controls
 					y + childMargin.Top,
 					width - childMargin.Left - childMargin.Right,
 					height - childMargin.Top - childMargin.Bottom
-				);
+					);
 
 				frame.Size = frameworkElement.AdjustArrange(frame.Size);
 
@@ -532,108 +615,55 @@ namespace Windows.UI.Xaml.Controls
 			);
 		}
 
-		/// <summary>
-		/// Get actual width based on MinWidth, MaxWidth, Width and HorizontalAlignment
-		/// </summary>
-		private double GetActualWidth(double width,
-			HorizontalAlignment childHorizontalAlignment,
-			double childMaxWidth,
-			double childMinWidth,
-			double childWidth,
-			Thickness childMargin,
-			bool hasChildWidth,
-			bool hasChildMaxWidth,
-			bool hasChildMinWidth,
-			Size desiredSize)
-		{
-			//Default value
-			//childHorizontalAlignment != HorizontalAlignment.Stretch
-			var actualWidth = Min(width, desiredSize.Width);
-
-			if (hasChildWidth)
-			{
-				actualWidth = Min(childWidth + childMargin.Left + childMargin.Right, width);
-			}
-			else if (hasChildMaxWidth && hasChildMinWidth)
-			{
-				actualWidth = Min(childMaxWidth + childMargin.Left + childMargin.Right,
-						childHorizontalAlignment == HorizontalAlignment.Stretch
-						? width
-						: desiredSize.Width
-					);
-
-				actualWidth = Max(childMinWidth + childMargin.Left + childMargin.Right, actualWidth);
-			}
-			else if (hasChildMaxWidth)
-			{
-				actualWidth = Min(childMaxWidth + childMargin.Left + childMargin.Right,
-						childHorizontalAlignment == HorizontalAlignment.Stretch
-						? width
-						: desiredSize.Width
-					);
-			}
-			else if (hasChildMinWidth)
-			{
-				actualWidth = Max(childMinWidth + childMargin.Left + childMargin.Right,
-						childHorizontalAlignment == HorizontalAlignment.Stretch
-						? width
-						: desiredSize.Width
-					);
-			}
-
-			return actualWidth;
-		}
-
-		/// <summary>
-		/// Get actual height based on MinHeight, MaxHeight, Height and VerticalAlignment
-		/// </summary>
-		private double GetActualHeight(double height,
-			VerticalAlignment childVerticalAlignment,
+		private double GetActualSize(
+			double size,
+			bool isStretch,
 			double childMaxHeight,
 			double childMinHeight,
 			double childHeight,
-			Thickness childMargin,
+			double childMargins,
 			bool hasChildHeight,
 			bool hasChildMaxHeight,
 			bool hasChildMinHeight,
-			Size desiredSize)
+			double desiredSize,
+			double frameSize)
 		{
 			//Default value
 			//childVerticalAlignment != VerticalAlignment.Stretch
-			var actualHeight = Min(height, desiredSize.Height);
+			var actualHeight = Min(size, desiredSize);
 
 			if (hasChildHeight)
 			{
-				actualHeight = Min(childHeight + childMargin.Top + childMargin.Bottom, height);
+				actualHeight = Min(childHeight + childMargins, size);
 			}
 			else if (hasChildMaxHeight && hasChildMinHeight)
 			{
-				actualHeight = Min(childMaxHeight + childMargin.Top + childMargin.Bottom,
-						childVerticalAlignment == VerticalAlignment.Stretch
-						? height
-						: desiredSize.Height
-					);
+				actualHeight = Min(childMaxHeight + childMargins,
+					isStretch
+						? size
+						: desiredSize
+				);
 
-				actualHeight = Max(childMinHeight + childMargin.Top + childMargin.Bottom, actualHeight);
+				actualHeight = Max(childMinHeight + childMargins, actualHeight);
 			}
 			else if (hasChildMaxHeight)
 			{
-				actualHeight = Min(childMaxHeight + childMargin.Top + childMargin.Bottom,
-						childVerticalAlignment == VerticalAlignment.Stretch
-						? height
-						: desiredSize.Height
-					);
+				actualHeight = Min(childMaxHeight + childMargins,
+					isStretch
+						? size
+						: desiredSize
+				);
 			}
 			else if (hasChildMinHeight)
 			{
-				actualHeight = Max(childMinHeight + childMargin.Top + childMargin.Bottom,
-						childVerticalAlignment == VerticalAlignment.Stretch
-						? height
-						: desiredSize.Height
-					);
+				actualHeight = Max(childMinHeight + childMargins,
+					isStretch
+						? size
+						: desiredSize
+				);
 			}
 
-			return actualHeight;
+			return Min(actualHeight, frameSize);
 		}
 
 		/// <summary>

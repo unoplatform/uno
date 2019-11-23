@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Uno.UI.RemoteControl.Host": {
+      "commandName": "Project",
+      "commandLineArgs": "--httpPort 53487"
+    }
+  }
+}

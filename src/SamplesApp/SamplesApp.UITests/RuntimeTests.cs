@@ -13,21 +13,50 @@ namespace SamplesApp.UITests
 	[TestFixture]
 	public partial class RuntimeTests : SampleControlUITestBase
 	{
+		private const string PendingTestsText = "Pending...";
+		private readonly TimeSpan TestRunTimeout = TimeSpan.FromMinutes(2);
+
 		[Test]
 		[AutoRetry]
-		public void RunRuntimeTests()
+		public async Task RunRuntimeTests()
 		{
 			Run("SamplesApp.Samples.UnitTests.UnitTestsPage");
 
 			var runButton = _app.Marked("runButton");
 			var failedTests = _app.Marked("failedTests");
+			var runTestCount = _app.Marked("runTestCount");
+
+			bool IsTestExecutionDone()
+				=> failedTests.GetDependencyPropertyValue("Text").ToString() != PendingTestsText;
 
 			_app.WaitForElement(runButton);
 
 			_app.Tap(runButton);
 
-			_app.WaitFor(() => failedTests.GetDependencyPropertyValue("Text").ToString() != "Pending...");
+			var lastChange = DateTimeOffset.Now;
+			var lastValue = "";
 
+			while(DateTimeOffset.Now - lastChange < TestRunTimeout)
+			{
+				var newValue = runTestCount.GetDependencyPropertyValue<string>("Text");
+
+				if (lastValue != newValue)
+				{
+					lastChange = DateTimeOffset.Now;
+				}
+
+				await Task.Delay(TimeSpan.FromSeconds(.5));
+
+				if (IsTestExecutionDone())
+				{
+					break;
+				}
+			}
+
+			if (!IsTestExecutionDone())
+			{
+				Assert.Fail("A test run timed out");
+			}
 
 			var count = failedTests.GetDependencyPropertyValue("Text").ToString();
 
@@ -38,7 +67,8 @@ namespace SamplesApp.UITests
 				Assert.Fail("A Unit test failed. Details:\n" + details);
 			}
 
-			_app.Screenshot("Runtime Tests Results");
+			TakeScreenshot("Runtime Tests Results");
 		}
+
 	}
 }

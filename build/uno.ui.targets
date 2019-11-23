@@ -43,5 +43,37 @@
 	  <ResolvedAssemblies Include="@(ResolvedAssembliesFixed)" />
 	</ItemGroup>
   </Target>
+  
+  <ItemGroup>
+    <!-- Properties that will be automatically forwarded to the source generators -->
+    <UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlPort" />
+    <UnoSourceGeneratorAdditionalProperty Include="UnoRemoteControlHost" />
+  </ItemGroup>
+
+  <!--
+  Target used to warn the developer that overriden package binaries have been placed in the nuget cache.
+  -->
+  <Target Name="_UnoNotifyNugetOverride" BeforeTargets="PrepareProjectReferences">
+    <ItemGroup>
+      <!--
+      If System.* files are present, the package may have been overriden by an Uno.UI solution
+      version before the introduction of this check.
+      -->
+      <_OverrideFiles Include="$(MSBuildThisFileDirectory)../../tools/System*.dll"/>
+    </ItemGroup>
+    <PropertyGroup>
+      <_warnForUnoOverride>false</_warnForUnoOverride>
+      <_warnForUnoOverride Condition="'@(_OverrideFiles)'!='' or exists('$(MSBuildThisFileDirectory)../../.packageoverride')">true</_warnForUnoOverride>
+    </PropertyGroup>
+    <Warning Condition="$(_warnForUnoOverride)"
+             Text="======================================"
+             ContinueOnError="true" />
+    <Warning Condition="$(_warnForUnoOverride)"
+             Text="The Uno.UI nuget package has been overriden and may use modified files.&#x0d;&#x0a;Clear this package version folder in the nuget cache to return to a stable state."
+             ContinueOnError="true" />
+    <Warning Condition="$(_warnForUnoOverride)"
+             Text="======================================"
+             ContinueOnError="true" />
+  </Target>
 
 </Project>

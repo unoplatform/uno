@@ -218,6 +218,14 @@ declare namespace Uno.UI {
             */
         setAttributeNative(pParams: number): boolean;
         /**
+            * Removes an attribute for an element.
+            */
+        removeAttribute(elementId: number, name: string): string;
+        /**
+            * Removes an attribute for an element.
+            */
+        removeAttributeNative(pParams: number): boolean;
+        /**
             * Get an attribute for an element.
             */
         getAttribute(elementId: number, name: string): any;
@@ -448,7 +456,9 @@ declare namespace Uno.UI {
         measureViewNative(pParams: number, pReturn: number): boolean;
         private static MAX_WIDTH;
         private static MAX_HEIGHT;
+        private measureElement;
         private measureViewInternal;
+        scrollTo(pParams: number): boolean;
         setImageRawData(viewId: number, dataPtr: number, width: number, height: number): string;
         /**
          * Sets the provided image with a mono-chrome version of the provided url.
@@ -597,6 +607,11 @@ declare class WindowManagerRegisterEventOnViewParams {
     EventExtractorName: string;
     static unmarshal(pData: number): WindowManagerRegisterEventOnViewParams;
 }
+declare class WindowManagerRemoveAttributeParams {
+    HtmlId: number;
+    Name: string;
+    static unmarshal(pData: number): WindowManagerRemoveAttributeParams;
+}
 declare class WindowManagerRemoveViewParams {
     HtmlId: number;
     ChildView: number;
@@ -607,6 +622,15 @@ declare class WindowManagerResetStyleParams {
     Styles_Length: number;
     Styles: Array<string>;
     static unmarshal(pData: number): WindowManagerResetStyleParams;
+}
+declare class WindowManagerScrollToOptionsParams {
+    Left: number;
+    Top: number;
+    HasLeft: boolean;
+    HasTop: boolean;
+    DisableAnimation: boolean;
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerScrollToOptionsParams;
 }
 declare class WindowManagerSetAttributeParams {
     HtmlId: number;

@@ -1,20 +1,21 @@
 jobs:
 
-- job: Android_Tests
+- job: Android_Build_For_Tests
+
+  pool:
+    vmImage: 'macOS-10.14'
 
   variables:
     CI_Build: true
     SourceLinkEnabled: false
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
 
-  pool:
-    vmImage: 'macOS-10.14'
-
   steps:
   - checkout: self
     clean: true
 
   - task: CacheBeta@0
+    condition: eq(variables['enable_package_cache'], 'true')
     inputs:
       key: nuget | $(Agent.OS) | $(Agent.JobName) | $(build.sourcesdirectory)/**/*.csproj | $(build.sourcesdirectory)/**/Directory.Build.targets | $(build.sourcesdirectory)/**/Directory.Build.props
       path: $(NUGET_PACKAGES)
@@ -24,7 +25,53 @@ jobs:
     displayName: Select Xamarin Version
 
   - bash: |
-      chmod +x $(build.sourcesdirectory)/build/android-uitest-run.sh
+      $(build.sourcesdirectory)/build/android-uitest-build.sh
+
+    displayName: Build Android Test Package
+
+    env:
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-android-build
+      ArtifactType: Container
+
+- job: Android_Tests
+  dependsOn: Android_Build_For_Tests
+
+  variables:
+    CI_Build: true
+    SourceLinkEnabled: false
+    NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
+
+  pool:
+    vmImage: 'macOS-10.14'
+
+  strategy:
+    matrix:
+      # Disabled until failures source can be determined.
+      # Android_5.1:
+      #  ANDROID_SIMULATOR_APILEVEL: 22
+      Android_9.0:
+        ANDROID_SIMULATOR_APILEVEL: 28
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: uitests-android-build
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - bash: /bin/bash -c "sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 5_18_1"
+    displayName: Select Xamarin Version
+
+  - bash: |
       $(build.sourcesdirectory)/build/android-uitest-run.sh
 
     displayName: Run Android Tests
@@ -32,11 +79,12 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      ANDROID_SIMULATOR_APILEVEL: $(ANDROID_SIMULATOR_APILEVEL)
  
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Android Test Run'
+      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) Test Run'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult.xml'
       failTaskOnFailedTests: true

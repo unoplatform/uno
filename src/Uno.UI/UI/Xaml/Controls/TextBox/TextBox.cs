@@ -137,7 +137,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			UpdateTextBoxView();
-
 			InitializeProperties();
 		}
 
@@ -608,9 +607,10 @@ namespace Windows.UI.Xaml.Controls
 				bindingExpression?.UpdateSource(Text);
 			}
 
-			UpdateCommonStates();
 			UpdateButtonStates();
 		}
+		partial void OnFocusStateChangedPartial(FocusState focusState);
+
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
@@ -649,25 +649,6 @@ namespace Windows.UI.Xaml.Controls
 					break;
 			}
 		}
-
-		private void UpdateCommonStates()
-		{
-			var commonState = "Normal";
-
-			if (FocusState != FocusState.Unfocused)
-			{
-				commonState = "Focused";
-			}
-
-			if (!IsEnabled)
-			{
-				commonState = "Disabled";
-			}
-
-			VisualStateManager.GoToState(this, commonState, true);
-		}
-
-		partial void OnFocusStateChangedPartial(FocusState focusState);
 
 		private void UpdateButtonStates()
 		{

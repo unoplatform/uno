@@ -14,10 +14,14 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement
 	{
+		/// <summary>
+		/// DesiredSize from MeasureOverride, after clamping to min size but before being clipped by max size (from GetMinMax())
+		/// </summary>
 		private Size _unclippedDesiredSize;
 		private Point _visualOffset;
 
-		private const double SIZE_EPSILON = 0.05;
+		private const double SIZE_EPSILON = 0.05d;
+		private readonly Size MaxSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
 
 		/// <summary>
 		/// The origin of the view's bounds relative to its parent.
@@ -68,6 +72,7 @@ namespace Windows.UI.Xaml
 			var marginSize = this.GetMarginSize();
 
 			var frameworkAvailableSize = availableSize
+				.NumberOrDefault(MaxSize)
 				.Subtract(marginSize)
 				.AtLeast(new Size(0, 0))
 				.AtMost(maxSize)
@@ -75,7 +80,7 @@ namespace Windows.UI.Xaml
 
 			var desiredSize = MeasureOverride(frameworkAvailableSize);
 
-			_logDebug?.LogTrace($"{DepthIndentation}{this}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize}");
+			_logDebug?.LogTrace($"{DepthIndentation}{this}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize} minSize={minSize} maxSize={maxSize} marginSize={marginSize}");
 
 			if (
 				double.IsNaN(desiredSize.Width)
@@ -84,7 +89,7 @@ namespace Windows.UI.Xaml
 				|| double.IsInfinity(desiredSize.Height)
 			)
 			{
-				throw new InvalidOperationException($"{DepthIndentation}{this}: Invalid measured size {desiredSize}. NaN or Infinity are invalid desired size.");
+				throw new InvalidOperationException($"{this}: Invalid measured size {desiredSize}. NaN or Infinity are invalid desired size.");
 			}
 
 			desiredSize = desiredSize.AtLeast(minSize);
@@ -127,6 +132,8 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		private static bool IsLessThanAndNotCloseTo(double a, double b) => a < (b - SIZE_EPSILON);
+
 		private void InnerArrangeCore(Rect finalRect)
 		{
 			_logDebug?.Debug($"{DepthIndentation}{this}: InnerArrangeCore({finalRect})");
@@ -147,13 +154,12 @@ namespace Windows.UI.Xaml
 
 			if (allowClipToSlot && !needsClipToSlot)
 			{
-				if (arrangeSize.Width < _unclippedDesiredSize.Width - SIZE_EPSILON)
+				if (IsLessThanAndNotCloseTo(arrangeSize.Width, _unclippedDesiredSize.Width))
 				{
 					_logDebug?.Debug($"{DepthIndentation}{this}: (arrangeSize.Width) {arrangeSize.Width} < {_unclippedDesiredSize.Width}: NEEDS CLIPPING.");
 					needsClipToSlot = true;
 				}
-
-				if (arrangeSize.Height < _unclippedDesiredSize.Height - SIZE_EPSILON)
+				else if (IsLessThanAndNotCloseTo(arrangeSize.Height, _unclippedDesiredSize.Height))
 				{
 					_logDebug?.Debug($"{DepthIndentation}{this}: (arrangeSize.Height) {arrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
 					needsClipToSlot = true;
@@ -170,30 +176,37 @@ namespace Windows.UI.Xaml
 				arrangeSize.Height = _unclippedDesiredSize.Height;
 			}
 
+			// We have to choose max between _unclippedDesiredSize and maxSize here, because
+			// otherwise setting of max property could cause arrange at less then _unclippedDesiredSize.
+			// Clipping by Max is needed to limit stretch here
 			var effectiveMaxSize = Max(_unclippedDesiredSize, maxSize);
-			arrangeSize = arrangeSize.AtMost(effectiveMaxSize);
 
-			if (allowClipToSlot && !needsClipToSlot)
+			_logDebug?.Debug($"{DepthIndentation}{this}: InnerArrangeCore({finalRect}) - effectiveMaxSize={effectiveMaxSize}, maxSize={maxSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipToSlot}");
+
+			if (allowClipToSlot)
 			{
-				if (effectiveMaxSize.Width < arrangeSize.Width - SIZE_EPSILON)
+				if (IsLessThanAndNotCloseTo(effectiveMaxSize.Width, arrangeSize.Width))
 				{
 					_logDebug?.Debug($"{DepthIndentation}{this}: (effectiveMaxSize.Width) {effectiveMaxSize.Width} < {arrangeSize.Width}: NEEDS CLIPPING.");
 					needsClipToSlot = true;
+					arrangeSize.Width = effectiveMaxSize.Width;
 				}
-
-				if (effectiveMaxSize.Height < arrangeSize.Height - SIZE_EPSILON)
+				if (IsLessThanAndNotCloseTo(effectiveMaxSize.Height, arrangeSize.Height))
 				{
 					_logDebug?.Debug($"{DepthIndentation}{this}: (effectiveMaxSize.Height) {effectiveMaxSize.Height} < {arrangeSize.Height}: NEEDS CLIPPING.");
 					needsClipToSlot = true;
+					arrangeSize.Height = effectiveMaxSize.Height;
 				}
 			}
 
 			var oldRenderSize = RenderSize;
 			var innerInkSize = ArrangeOverride(arrangeSize);
 
-			RenderSize = innerInkSize;
-
 			var clippedInkSize = innerInkSize.AtMost(maxSize);
+
+			RenderSize = needsClipToSlot ? clippedInkSize : innerInkSize;
+
+			_logDebug?.Debug($"{DepthIndentation}{this}: ArrangeOverride({arrangeSize})={innerInkSize}, clipped={clippedInkSize} (max={maxSize}) needsClipToSlot={needsClipToSlot}");
 
 			var clientSize = finalRect.Size
 				.Subtract(marginSize)
@@ -206,11 +219,11 @@ namespace Windows.UI.Xaml
 			);
 
 			_logDebug?.Debug(
-				$"{DepthIndentation}[{this}] ArrangeChild(offset={offset}, margin={Margin}) [oldRenderSize={oldRenderSize}] [RequiresClipping={needsClipToSlot}]");
+				$"{DepthIndentation}[{this}] ArrangeChild(offset={offset}, margin={Margin}) [oldRenderSize={oldRenderSize}] [RenderSize={RenderSize}] [clippedInkSize={clippedInkSize}] [RequiresClipping={needsClipToSlot}]");
 
 			RequiresClipping = needsClipToSlot;
 
-			ArrangeNative(offset, oldRenderSize);
+			ArrangeNative(offset);
 		}
 
 		internal Thickness GetThicknessAdjust()
@@ -231,9 +244,12 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void ArrangeNative(Point offset, Size oldRenderSize)
+		/// <summary>
+		/// Calculates and applies native arrange properties.
+		/// </summary>
+		/// <param name="offset">Offset of the view from its parent</param>
+		private void ArrangeNative(Point offset)
 		{
-			var oldOffset = _visualOffset;
 			_visualOffset = offset;
 
 			var newRect = new Rect(offset, RenderSize);

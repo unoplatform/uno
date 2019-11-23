@@ -270,7 +270,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 		#endregion
 
-		#region HorizontalAlignment Dependency Property
+		#region VerticalAlignment Dependency Property
 
 		public static readonly DependencyProperty VerticalAlignmentProperty =
 			DependencyProperty.Register(
@@ -1011,7 +1011,8 @@ namespace <#= mixin.NamespaceName #>
 
 		static partial void OnGenericPropertyUpdatedPartial(object dependencyObject, DependencyPropertyChangedEventArgs args);
 		
-		public Uri BaseUri => new Uri("ms-appx:///");
+		private static readonly Uri _defaultUri = new Uri("ms-appx:///");
+		public Uri BaseUri { get; internal set; } = _defaultUri;
 
 		
 		/// <summary>

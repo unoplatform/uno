@@ -16,11 +16,17 @@ jobs:
     clean: true
 
   - task: CacheBeta@0
+    condition: eq(variables['enable_package_cache'], 'true')
     inputs:
       key: nuget | $(Agent.OS) | $(Agent.JobName) | $(build.sourcesdirectory)/**/*.csproj | $(build.sourcesdirectory)/**/Directory.Build.targets | $(build.sourcesdirectory)/**/Directory.Build.props
       path: $(NUGET_PACKAGES)
     displayName: Cache NuGet packages
 
+  - bash: |
+      sudo cert-sync /etc/ssl/certs/ca-certificates.crt
+
+    displayName: 'Update the SSL trusted certificates'
+    
   - bash: |
       source /emsdk/emsdk_env.sh
       msbuild /r /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false

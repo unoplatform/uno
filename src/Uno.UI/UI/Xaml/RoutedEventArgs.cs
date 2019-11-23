@@ -16,10 +16,7 @@ namespace Windows.UI.Xaml
 			OriginalSource = originalSource;
 		}
 
-		public object OriginalSource { 
-			get;
-			internal set;
-		}
+		public object OriginalSource { get; internal set; }
 
 		/// <summary>
 		/// If this event is currently coming from platform (native)
@@ -29,11 +26,6 @@ namespace Windows.UI.Xaml
 		/// See Uno documentation to understand the difference
 		/// between _native_ and _managed_ bubbling.
 		/// </remarks>
-		public bool CanBubbleNatively
-		{
-			get;
-			internal set;
-		}
+		public bool CanBubbleNatively { get; internal set; }
 	}
 }
-

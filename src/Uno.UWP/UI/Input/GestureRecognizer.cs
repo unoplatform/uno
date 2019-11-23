@@ -68,24 +68,32 @@ namespace Windows.UI.Input
 			}
 		}
 
-		public void ProcessMoveEvents(IList<PointerPoint> value)
+		public void ProcessMoveEvents(IList<PointerPoint> value) => ProcessMoveEvents(value, true);
+
+		internal void ProcessMoveEvents(IList<PointerPoint> value, bool isRelevant)
 		{
-			foreach (var point in value)
+			if (isRelevant)
 			{
-				if (_activePointers.TryGetValue(point.PointerId, out var points))
+				foreach (var point in value)
 				{
-					points.Add(point);
-				}
-				else if (_log.IsEnabled(LogLevel.Information))
-				{
-					// info: We might get some PointerMove for mouse even if not pressed!
-					_log.Info("Received a 'Move' for a pointer which was not considered as down. Ignoring event.");
+					if (_activePointers.TryGetValue(point.PointerId, out var points))
+					{
+						points.Add(point);
+					}
+					else if (_log.IsEnabled(LogLevel.Information))
+					{
+						// info: We might get some PointerMove for mouse even if not pressed!
+						_log.Info("Received a 'Move' for a pointer which was not considered as down. Ignoring event.");
+					}
 				}
 			}
 
 			_manipulation?.Update(value);
 		}
-		public void ProcessUpEvent(PointerPoint value)
+
+		public void ProcessUpEvent(PointerPoint value) => ProcessUpEvent(value, true);
+
+		internal void ProcessUpEvent(PointerPoint value, bool isRelevant)
 		{
 #if NET461 || __WASM__
 			if (_activePointers.TryGetValue(value.PointerId, out var points))
@@ -99,7 +107,14 @@ namespace Windows.UI.Input
 				// Note: At this point we MAY be IsActive == false, which is the expected behavior (same as UWP)
 				//		 even if we will fire some events now.
 
-				Recognize(points, pointerUp: value);
+				if (isRelevant)
+				{
+					// We need to process only events that are bubbling natively to this control (i.e. isIrrelevant == false),
+					// if they are bubbling in managed it means that they where handled a child control,
+					// so we should not use them for gesture recognition.
+
+					Recognize(points, pointerUp: value);
+				}
 
 				_manipulation?.Remove(value);
 			}
@@ -148,11 +163,6 @@ namespace Windows.UI.Input
 		}
 
 		#region Manipulations
-		internal const int MinManipulationDeltaTranslateX = 15;
-		internal const int MinManipulationDeltaTranslateY = 15;
-		internal const int MinManipulationDeltaRotate = 5; // Degrees
-		internal const double MinManipulationDeltaExpansion = 15;
-
 		internal event TypedEventHandler<GestureRecognizer, ManipulationStartingEventArgs> ManipulationStarting; // This is not on the public API!
 		public event TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> ManipulationCompleted;
 #pragma warning disable  // Event not raised: intertia is not supported yet
@@ -163,6 +173,8 @@ namespace Windows.UI.Input
 
 		private bool _isManipulationEnabled;
 		private Manipulation _manipulation;
+
+		internal Manipulation PendingManipulation => _manipulation;
 		#endregion
 
 		#region Tap (includes DoubleTap)

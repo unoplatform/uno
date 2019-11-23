@@ -12,6 +12,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		static Button()
 		{
+			StaticInitializeVisualStates();
+
 			HorizontalContentAlignmentProperty.OverrideMetadata(
 				typeof(Button),
 				new FrameworkPropertyMetadata(HorizontalAlignment.Center)
@@ -48,6 +50,13 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 		#endregion
+
+		protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			Flyout?.Close();
+		}
 
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{

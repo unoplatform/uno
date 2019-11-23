@@ -568,8 +568,7 @@ namespace SampleControl.Presentation
 
 			this.Log().Info($"Found {query.Count()} sample(s) in {categories.Count} categorie(s).");
 
-			return categories
-			.ToList();
+			return categories.ToList();
 		}
 
 		private static IEnumerable<TypeInfo> FindDefinedAssemblies(Assembly assembly)
@@ -588,7 +587,7 @@ namespace SampleControl.Presentation
 		{
 			try
 			{
-				if (!type.Namespace.StartsWith("System.Windows"))
+				if (!(type.Namespace?.StartsWith("System.Windows") ?? true))
 				{
 					return type?.GetCustomAttributes()
 						.OfType<SampleControlInfoAttribute>()

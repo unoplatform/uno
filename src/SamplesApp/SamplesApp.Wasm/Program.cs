@@ -11,6 +11,9 @@ namespace SamplesApp.Wasm
 		{
 			// Required to allow for Puppeteer to select XAML elements in the HTML DOM.
 			Uno.UI.FeatureConfiguration.UIElement.AssignDOMXamlName = true;
+#if !DEBUG
+			Uno.UI.FeatureConfiguration.UIElement.RenderToStringWithId = false;
+#endif
 
 			Windows.UI.Xaml.Application.Start(_ => _app = new App());
 		}
