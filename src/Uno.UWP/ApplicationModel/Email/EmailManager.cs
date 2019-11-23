@@ -1,9 +1,7 @@
 using System;
-using System.Linq;
 using System.Threading.Tasks;
 using Windows.Foundation;
-using Foundation;
-using MessageUI;
+using Windows.System;
 
 namespace Windows.ApplicationModel.Email
 {
@@ -11,59 +9,19 @@ namespace Windows.ApplicationModel.Email
 	{
 		public static IAsyncAction ShowComposeNewEmailAsync(EmailMessage message)
 		{
-			if (message == null)
-			{
-				throw new ArgumentNullException(nameof(message));
-			}
+#if __ANDROID__ || __IOS__
+			// Use platform-specific implementation where supported
+			return ShowComposeNewEmailInternalAsync(message).AsAsyncAction();
+#else
+			// Otherwise fall back to mailto:
+			return ComposeEmailWithMailtoUriAsync(message).AsAsyncAction();
+#endif
+		}
 
-			var controller = new MFMailComposeViewController();
-			if (!string.IsNullOrEmpty(message?.Body))
-			{
-				controller.SetMessageBody(message.Body, true);
-			}
-
-			if (!string.IsNullOrEmpty(message?.Subject))
-			{
-				controller.SetSubject(message.Subject);
-			}
-
-			if (message?.To?.Count > 0)
-			{
-				controller.SetToRecipients(
-					message.To.Select(r=>r.Address).ToArray());
-			}
-
-			if (message?.CC?.Count > 0)
-			{
-				controller.SetCcRecipients(
-					message.CC.Select(cc=>cc.Address).ToArray());
-			}
-
-			if (message?.Bcc?.Count > 0)
-			{
-				controller.SetBccRecipients(
-					message.Bcc.Select(bcc=>bcc.Address).ToArray());
-			}
-
-			if (message?.Attachments?.Count > 0)
-			{
-				foreach (var attachment in message.Attachments)
-				{
-					var data = NSData.FromFile(attachment.FullPath);
-					controller.AddAttachmentData(data, attachment.ContentType, attachment.AttachmentName);
-				}
-			}
-
-			// show the controller
-			var tcs = new TaskCompletionSource<bool>();
-			controller.Finished += (sender, e) =>
-			{
-				controller.DismissViewController(true, null);
-				tcs.SetResult(e.Result == MFMailComposeResult.Sent);
-			};
-			parentController.PresentViewController(controller, true, null);
-
-			return Task.CompletedTask.AsAsyncAction();
+		private static async Task ComposeEmailWithMailtoUriAsync(EmailMessage message)
+		{
+			var uri = message.ToMailtoUri();
+			await Launcher.LaunchUriAsync(uri);
 		}
 	}
 }
