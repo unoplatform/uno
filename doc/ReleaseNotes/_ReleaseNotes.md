@@ -3,6 +3,7 @@
 ## Next version
 
 ### Features
+* Support for `EmailManager.ShowComposeNewEmailAsync`
 * [#2029](https://github.com/unoplatform/uno/pull/2029) Support for MenuFlyoutItem.Click
 * support /[file]/[name] format in ResourceLoader.GetForCurrentView().GetString()
 * [#2039] Added support for Xaml type conversions using CreateFromStringAttribute.
