@@ -15,7 +15,7 @@ pr:
 resources:
   containers:
   - container: nv-bionic-wasm
-    image: nventive/wasm-build:1.5
+    image: unoplatform/wasm-build:2.0
 
 jobs:
 - template: build/ci/.azure-devops-windows.yml
