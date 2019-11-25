@@ -269,6 +269,8 @@ namespace Windows.UI.Xaml.Controls
 			var frameworkElement = view as IFrameworkElement;
 			var ret = default(Size);
 
+			// NaN values are accepted as input for MeasureOverride, but are treated as Infinity.
+			slotSize = slotSize.NumberOrDefault(MaxSize);
 
 			if (frameworkElement?.Visibility == Visibility.Collapsed)
 			{
