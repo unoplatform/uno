@@ -710,9 +710,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private string LoggingOwnerTypeName => ((object)Panel ?? this).GetType().Name;
 
-		private string LoggingOwnerName => Panel?.Name ?? Panel?.GetType().Name ?? LoggingOwnerTypeName;
-
-		public override string ToString() => $"[{LoggingOwnerName}.Layouter]";
+		public override string ToString() => $"[{LoggingOwnerTypeName}.Layouter]" + (string.IsNullOrEmpty(Panel?.Name) ? default : $"(name='{Panel.Name}')");
 	}
 }
 #endif
