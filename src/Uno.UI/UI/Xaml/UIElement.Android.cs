@@ -4,10 +4,13 @@ using Uno.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.Foundation;
 using Android.Support.V4.View;
 using Windows.UI.Xaml.Media;
+using Android.Graphics;
 using Android.Views;
+using Matrix = Windows.UI.Xaml.Media.Matrix;
+using Point = Windows.Foundation.Point;
+using Rect = Windows.Foundation.Rect;
 
 namespace Windows.UI.Xaml
 {
@@ -27,8 +30,28 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			ViewCompat.SetClipBounds(this, rect.LogicalToPhysicalPixels());
+			if (NeedsClipToSlot)
+			{
+				ViewCompat.SetClipBounds(this, rect.LogicalToPhysicalPixels());
+			}
+			else
+			{
+				ViewCompat.SetClipBounds(this, null);
+			}
+
 			SetClipChildren(NeedsClipToSlot);
+		}
+
+		protected override void OnDraw(Android.Graphics.Canvas canvas)
+		{
+			if (this is IRoundedCornersElement rce && rce.CornerRadius != CornerRadius.None)
+			{
+				var rect = new RectF(canvas.ClipBounds);
+				var clipPath = rce.CornerRadius.GetOutlinePath(rect);
+				canvas.ClipPath(clipPath);
+			}
+
+			base.OnDraw(canvas);
 		}
 
 		private bool _renderTransformRegisteredParentChanged;

@@ -184,6 +184,11 @@ namespace Windows.UI.Xaml.Controls
 					needsClipToSlot = false;
 				}
 
+				if (!needsClipToSlot && Panel is IRoundedCornersElement rce)
+				{
+					needsClipToSlot = rce.CornerRadius != CornerRadius.None;
+				}
+
 				_logDebug?.Debug($"{this}: InnerArrangeCore({finalRect}) - allowClip={allowClipToSlot}, arrangeSize={arrangeSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipToSlot}");
 
 				if (allowClipToSlot && !needsClipToSlot)
