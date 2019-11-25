@@ -21,7 +21,7 @@ using View = MonoTouch.UIKit.UIView;
 namespace Windows.UI.Xaml.Controls
 {
 	[Markup.ContentProperty(Name = "Children")]
-	public partial class Panel : FrameworkElement
+	public partial class Panel : FrameworkElement, IRoundedCornersElement
 	{
 #if NET461 || __WASM__
 		private new UIElementCollection _children;

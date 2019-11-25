@@ -150,6 +150,11 @@ namespace Windows.UI.Xaml
 			var allowClipToSlot = customClippingElement?.AllowClippingToLayoutSlot ?? true; // Some controls may control itself how clipping is applied
 			var needsClipToSlot = customClippingElement?.ForceClippingToLayoutSlot ?? false;
 
+			if (!needsClipToSlot && this is IRoundedCornersElement rce)
+			{
+				needsClipToSlot = rce.CornerRadius != CornerRadius.None;
+			}
+
 			_logDebug?.Debug($"{DepthIndentation}{this}: InnerArrangeCore({finalRect}) - allowClip={allowClipToSlot}, arrangeSize={arrangeSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipToSlot}");
 
 			if (allowClipToSlot && !needsClipToSlot)
