@@ -172,7 +172,7 @@
       <Version>16.0.374-pre</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK.EmbedInteropTypes" version="15.0.16" />
-    <PackageReference Include="Microsoft.VisualStudio.Shell.15.0" version="15.9.28307" />
+    <PackageReference Include="Microsoft.VisualStudio.Shell.15.0" version="16.3.29318.209" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Framework" version="15.9.28307" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop" version="7.10.6072" />
     <PackageReference Include="Microsoft.VisualStudio.Shell.Interop.10.0" version="10.0.30320" />
