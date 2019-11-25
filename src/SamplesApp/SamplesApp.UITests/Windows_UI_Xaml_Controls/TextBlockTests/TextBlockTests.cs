@@ -55,5 +55,30 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls
 				left.Y.Should().Be(right.Y, "Y position");
 			}
 		}
+
+		[Test]
+		[AutoRetry]
+		public void When_Foreground_Changed_With_Visibility()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_Foreground_While_Collapsed");
+
+			_app.WaitForText("FunnyTextBlock", "Look at me now");
+
+			var blueBefore = TakeScreenshot("Before - blue");
+
+			_app.Tap("ChangeTextBlockButton");
+
+			var blackBefore = TakeScreenshot("Before - black");
+
+			var textRect = _app.GetRect("FunnyTextBlock");
+
+			AssertScreenshotsAreNotEqual(blueBefore, blackBefore, textRect);
+
+			_app.Tap("ChangeTextBlockButton");
+
+			var blueAfter = TakeScreenshot("After - blue");
+
+			AssertScreenshotsAreEqual(blueBefore, blueAfter, textRect);
+		}
 	}
 }
