@@ -101,7 +101,7 @@ namespace Uno.UI.UI.Xaml.Documents
 			else
 			{
 				var value = (double)localValue;
-				element.SetStyle("font-size", $"{value.ToStringInvariant()}px");
+				element.SetStyle("font-size", value.ToStringInvariant() + "px");
 			}
 		}
 
@@ -159,7 +159,7 @@ namespace Uno.UI.UI.Xaml.Documents
 			else
 			{
 				var value = (int) localValue;
-				element.SetStyle("letter-spacing", $"{(value / 1000.0).ToStringInvariant()}em");
+				element.SetStyle("letter-spacing", (value / 1000.0).ToStringInvariant() + "em");
 			}
 		}
 
@@ -178,7 +178,7 @@ namespace Uno.UI.UI.Xaml.Documents
 				}
 				else
 				{
-					element.SetStyle("line-height", $"{value.ToStringInvariant()}px");
+					element.SetStyle("line-height", value.ToStringInvariant() + "px");
 				}
 			}
 		}
