@@ -142,5 +142,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return this.GetChildren().GetEnumerator();
 		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 	}
 }

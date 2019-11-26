@@ -272,8 +272,5 @@ namespace Windows.UI.Xaml.Controls
 			OnBorderBrushChangedPartial(oldValue, newValue);
 		}
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue);
-
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 	}
 }

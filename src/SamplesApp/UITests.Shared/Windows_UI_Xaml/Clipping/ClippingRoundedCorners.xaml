@@ -32,7 +32,7 @@
 				           Fill="Olive"
 				           RenderTransformOrigin=".5,.5">
 					<Rectangle.RenderTransform>
-						<RotateTransform Angle="45" />
+						<RotateTransform Angle="10" />
 					</Rectangle.RenderTransform>
 				</Rectangle>
 			</Border>
