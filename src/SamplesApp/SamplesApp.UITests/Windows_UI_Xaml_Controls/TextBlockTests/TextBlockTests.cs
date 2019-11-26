@@ -9,10 +9,10 @@ using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
-namespace SamplesApp.UITests.Windows_UI_Xaml_Controls
+namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 {
 	[TestFixture]
-	public class TextBlockTests : SampleControlUITestBase
+	public class TextBlockTests_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]
