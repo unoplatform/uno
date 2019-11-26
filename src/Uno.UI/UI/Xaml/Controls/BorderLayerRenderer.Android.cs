@@ -66,25 +66,19 @@ namespace Windows.UI.Xaml.Controls
 					_layerDisposable.Disposable = null; 
 				}
 
-				if (
-					background != null ||
-					(borderThickness != Thickness.Empty && borderBrush != null)
-				)
+				Action onImageSet = null;
+				var disposable = InnerCreateLayers(view, drawArea, background, borderThickness, borderBrush, cornerRadius, () => onImageSet?.Invoke());
+				
+				// Most of the time we immediately dispose the previous layer. In the case where we're using an ImageBrush,
+				// and the backing image hasn't changed, we dispose the previous layer at the moment the new background is applied,
+				// to prevent a visible flicker.
+				if (shouldDisposeEagerly)
 				{
-					Action onImageSet = null;
-					var disposable = InnerCreateLayers(view, drawArea, background, borderThickness, borderBrush, cornerRadius, () => onImageSet?.Invoke());
-					
-					// Most of the time we immediately dispose the previous layer. In the case where we're using an ImageBrush,
-					// and the backing image hasn't changed, we dispose the previous layer at the moment the new background is applied,
-					// to prevent a visible flicker.
-					if (shouldDisposeEagerly)
-					{
-						_layerDisposable.Disposable = disposable;
-					}
-					else
-					{
-						onImageSet = () => _layerDisposable.Disposable = disposable;
-					}
+					_layerDisposable.Disposable = disposable;
+				}
+				else
+				{
+					onImageSet = () => _layerDisposable.Disposable = disposable;
 				}
 
 				if (willUpdateMeasures)
