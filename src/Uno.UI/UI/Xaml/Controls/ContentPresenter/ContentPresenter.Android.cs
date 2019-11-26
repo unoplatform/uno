@@ -18,7 +18,7 @@ using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ContentPresenter : ICustomClippingElement
+	public partial class ContentPresenter
 	{
 		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
 
@@ -91,9 +91,5 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UpdateBorder(true);
 		}
-
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
-
-		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 	}
 }

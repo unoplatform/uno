@@ -39,7 +39,7 @@ using ViewGroup = Windows.UI.Xaml.UIElement;
 namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "Content")]
-	public partial class ContentPresenter : FrameworkElement
+	public partial class ContentPresenter : FrameworkElement,  ICustomClippingElement
 	{
 		private bool _firstLoadResetDone;
 		private View _contentTemplateRoot;
@@ -1019,5 +1019,9 @@ namespace Windows.UI.Xaml.Controls
 				measuredSize.Height + padding.Top + padding.Bottom + borderThickness.Top + borderThickness.Bottom
 			);
 		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 	}
 }
