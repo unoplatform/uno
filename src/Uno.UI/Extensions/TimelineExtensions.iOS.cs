@@ -18,11 +18,15 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			var animatedItem = timeline.PropertyInfo.GetPathItems().Last();
 
+			// Get the property name from the last part of the
+			// specified name (for dotted paths, if they exist)
+			var propertyName = animatedItem.PropertyName.Split(new[] { '.' }).Last().Replace("(", "").Replace(")", "");
+
 			var dc = animatedItem.DataContext;
 			using (dc != null ?
 				DependencyObjectStore.BypassPropagation(
 					(DependencyObject)dc,
-					DependencyProperty.GetProperty(dc.GetType(), animatedItem.PropertyName)
+					DependencyProperty.GetProperty(dc.GetType(), propertyName)
 				) :
 				// DC may have been collected since it's weakly held
 				null
