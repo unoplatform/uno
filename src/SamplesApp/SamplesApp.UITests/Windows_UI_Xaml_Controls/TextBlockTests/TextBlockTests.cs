@@ -76,6 +76,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls
 
 			_app.Tap("ChangeTextBlockButton");
 
+			_app.WaitForElement("FunnyTextBlock");
+
 			var blueAfter = TakeScreenshot("After - blue");
 
 			AssertScreenshotsAreEqual(blueBefore, blueAfter, textRect);
