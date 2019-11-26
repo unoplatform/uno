@@ -76,7 +76,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 			_app.Tap("ChangeTextBlockButton");
 
-			_app.WaitForNoElement("FunnyTextBlock");
+			//_app.WaitForNoElement("FunnyTextBlock"); // This times out on WASM because view is considered to be still there when collapsed - https://github.com/unoplatform/Uno.UITest/issues/25
 
 			_app.Tap("ChangeTextBlockButton");
 
