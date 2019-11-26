@@ -1,3 +1,17 @@
+trigger:
+  branches:
+    include:
+      - master
+      - release/beta/*
+      - release/stable/*
+
+pr: 
+  branches:
+    include:
+      - master
+      - release/beta/*
+      - release/stable/*
+      
 resources:
   containers:
   - container: nv-bionic-wasm
