@@ -66,13 +66,17 @@ namespace Windows.UI.Xaml.Controls
 			ConditionalUpdate(ref _fontFamilyChanged, () => this.SetFontFamily(FontFamily));
 			ConditionalUpdate(ref _fontSizeChanged, () => this.SetFontSize(FontSize));
 			ConditionalUpdate(ref _maxLinesChanged, () => this.SetMaxLines(MaxLines));
-			ConditionalUpdate(ref _textTrimmingChanged, () => this.SetTextTrimming(TextTrimming));
 			ConditionalUpdate(ref _textAlignmentChanged, () => this.SetTextAlignment(TextAlignment));
 			ConditionalUpdate(ref _lineHeightChanged, () => this.SetLineHeight(LineHeight));
 			ConditionalUpdate(ref _characterSpacingChanged, () => this.SetCharacterSpacing(CharacterSpacing));
 			ConditionalUpdate(ref _textDecorationsChanged, () => this.SetTextDecorations(TextDecorations));
-			ConditionalUpdate(ref _textWrappingChanged, () => this.SetTextWrapping(TextWrapping));
 			ConditionalUpdate(ref _paddingChangedChanged, () => this.SetTextPadding(Padding));
+
+			if(_textTrimmingChanged || _textWrappingChanged)
+			{
+				_textTrimmingChanged = _textWrappingChanged = false;
+				this.SetTextWrappingAndTrimming(textTrimming: TextTrimming, textWrapping: TextWrapping);
+			}
 
 			if (_textChanged)
 			{
