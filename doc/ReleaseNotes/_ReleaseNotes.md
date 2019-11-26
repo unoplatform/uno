@@ -200,6 +200,7 @@
 * [Android] #2007 ComboBox does not take Window.VisibleBounds to position its popup
 * [Wasm] Fixes the measure of a TextBoxView #2034 #2095
 * [Android] [Wasm] Recent clipping improvements were incompleted. Fixed a case where a control was allowed to draw itself to use more than available place in the _arrange_ phase.
+* [iOS] Fix negative result value of TimePicker. Now value range is limited from 0 to 1 day
 * #2129 WebAssembly Bootstrapper update to remove the implicit .NET 4.6.2 dependency, and support for long file paths on Windows.
 * #2147 Fix NRE in android-specific TextBox.ImeOptions
 * #2146 [iOS] ListView doesn't take extra space when items are added to collection
