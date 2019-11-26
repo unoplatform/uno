@@ -41,5 +41,13 @@ namespace SamplesApp.UITests
 			app.WaitForElement(element);
 			return element.GetText();
 		}
+
+		/// <summary>
+		/// Get bounds rect for an element.
+		/// </summary>
+		public static IAppRect GetRect(this IApp app, string elementName)
+		{
+			return app.WaitForElement(elementName).Single().Rect;
+		}
 	}
 }

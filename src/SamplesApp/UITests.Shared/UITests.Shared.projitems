@@ -549,6 +549,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Foreground_While_Collapsed.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_LineHeight_MultipleControls.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -3015,6 +3019,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Pivot\Pivot_CustomContent_Automated.xaml.cs">
       <DependentUpon>Pivot_CustomContent_Automated.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Foreground_While_Collapsed.xaml.cs">
+      <DependentUpon>TextBlock_Foreground_While_Collapsed.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_LineHeight_MultipleControls.xaml.cs">
       <DependentUpon>TextBlock_LineHeight_MultipleControls.xaml</DependentUpon>
