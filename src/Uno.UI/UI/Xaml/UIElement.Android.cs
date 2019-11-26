@@ -42,19 +42,21 @@ namespace Windows.UI.Xaml
 			SetClipChildren(NeedsClipToSlot);
 		}
 
-		protected override void OnDraw(Android.Graphics.Canvas canvas)
+		/// <summary>
+        /// This method is called from the OnDraw of elements supporting rounded corners:
+        /// Border, Rectangle, Panel...
+        /// </summary>
+		private protected void AdjustCornerRadius(Android.Graphics.Canvas canvas, CornerRadius cornerRadius)
 		{
-			if (this is IRoundedCornersElement rce && rce.CornerRadius != CornerRadius.None)
+			if (cornerRadius != CornerRadius.None)
 			{
 				var rect = new RectF(canvas.ClipBounds);
-				var clipPath = rce.CornerRadius.GetOutlinePath(rect);
+				var clipPath = cornerRadius.GetOutlinePath(rect);
 				canvas.ClipPath(clipPath);
 			}
-
-			base.OnDraw(canvas);
 		}
 
-		private bool _renderTransformRegisteredParentChanged;
+        private bool _renderTransformRegisteredParentChanged;
 		private static void RenderTransformOnParentChanged(object dependencyObject, object _, DependencyObjectParentChangedEventArgs args)
 			=> ((UIElement)dependencyObject)._renderTransform?.UpdateParent(args.PreviousParent, args.NewParent);
 		partial void OnRenderTransformSet()

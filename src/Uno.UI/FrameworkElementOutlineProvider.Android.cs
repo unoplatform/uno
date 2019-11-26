@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Shapes;
 
 namespace Uno.UI
 {
@@ -24,12 +25,17 @@ namespace Uno.UI
 
 		private static CornerRadius GetCornerRadius(View view)
 		{
-			if (view is IRoundedCornersElement rce)
+			switch (view)
 			{
-				return rce.CornerRadius;
+				case Border border:
+					return border.CornerRadius;
+				case Panel panel:
+					return panel.CornerRadius;
+				case Control ctl:
+					return ctl.CornerRadius;
+				default:
+					return CornerRadius.None;
 			}
-
-			return CornerRadius.None;
 		}
 	}
 }

@@ -71,6 +71,11 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder(changed);
 		}
 
+		protected override void OnDraw(Android.Graphics.Canvas canvas)
+		{
+			AdjustCornerRadius(canvas, CornerRadius);
+		}
+
 		protected virtual void OnChildrenChanged()
 		{
 			UpdateBorder();

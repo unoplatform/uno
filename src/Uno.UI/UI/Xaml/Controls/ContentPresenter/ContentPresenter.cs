@@ -39,7 +39,7 @@ using ViewGroup = Windows.UI.Xaml.UIElement;
 namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "Content")]
-	public partial class ContentPresenter : FrameworkElement, IRoundedCornersElement
+	public partial class ContentPresenter : FrameworkElement
 	{
 		private bool _firstLoadResetDone;
 		private View _contentTemplateRoot;

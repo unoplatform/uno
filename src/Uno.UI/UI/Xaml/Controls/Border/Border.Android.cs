@@ -54,6 +54,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		protected override void OnDraw(Android.Graphics.Canvas canvas)
+		{
+			AdjustCornerRadius(canvas, CornerRadius);
+		}
+
 		private void UpdateBorder()
 		{
 			UpdateBorder(false);
@@ -73,12 +78,6 @@ namespace Windows.UI.Xaml.Controls
 					willUpdateMeasures
 				);
 			}
-		}
-
-		protected override void OnLoaded()
-		{
-			base.OnLoaded();
-			UpdateBorder();
 		}
 
 		partial void OnBorderBrushChangedPartial()

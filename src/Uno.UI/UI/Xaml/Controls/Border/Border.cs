@@ -34,7 +34,7 @@ using View = Windows.UI.Xaml.UIElement;
 namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = nameof(Child))]
-	public partial class Border : FrameworkElement, IRoundedCornersElement
+	public partial class Border : FrameworkElement
 	{
 
 		/// <summary>        
