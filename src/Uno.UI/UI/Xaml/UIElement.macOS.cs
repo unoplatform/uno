@@ -41,7 +41,10 @@ namespace Windows.UI.Xaml
 			InitializePointers();
 		}
 
-		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
+
+		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
+
+        partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
 			// Don't update the internal value if the value is being animated.
 			// The value is being animated by the platform itself.

@@ -73,5 +73,9 @@ namespace Windows.UI.Xaml.Controls
 				);
 			}
 		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None;
+
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 	}
 }
