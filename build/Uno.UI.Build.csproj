@@ -42,12 +42,6 @@
 		</PackageReference>
 	</ItemGroup>
 
-	<ItemGroup Condition="$([MSBuild]::IsOsPlatform(Windows))">
-		<PackageReference Include="GitVersionTask">
-			<Version>5.1.2</Version>
-		</PackageReference>
-	</ItemGroup>
-
 	<Target Name="UnoVSBuild" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'!=''">
 		<Warning Text="Building this project under Visual Studio has no effect." />
 	</Target>
@@ -62,7 +56,7 @@
     -->
 		<Exec Command="set NUGET_RESTORE_MSBUILD_ARGS=/p:CI_Build=true &amp; nuget\nuget.exe restore -Verbosity detailed ..\src\Uno.UI.sln" Condition="'$(AppEnvironment)'=='' and $(_isWindows) " />
 
-		<CallTarget Targets="GetVersion;UpdateFileVersions;UpdateTasksSHA" Condition="$(_isWindows)" />
+		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA" Condition="$(_isWindows)" />
 
 		<CallTarget Targets="BuildCI" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
 		<CallTarget Targets="BuildCImacOS" Condition="'$(Configuration)'=='Release' and !$(_isWindows)" />
