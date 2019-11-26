@@ -93,10 +93,12 @@
 * The _feature flag_ `FeatureConfiguration.UseLegacyClipping` is now deprecated and not used anymore
 * XAML Hot Reload support for iOS, Android and Windows
 * Add support for GitPod Workspace and prebuilds
+* #880 Added added implicit conversion for double to Thickness
 * Add Android support for `CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar` to programatically draw under the status bar
 * [WASM] `ScrollViewer.ChangeView` is now supported
 * [Wasm] Add the ability to focus a TextBox by clicking its header
 * Add support for `ToggleButton.IsThreeState` and `ToggleButton.Indeterminate`
+* [Wasm] Add support for `TextBox.IsReadonly`
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
@@ -199,6 +201,9 @@
 * [Wasm] Fixes the measure of a TextBoxView #2034 #2095
 * [Android] [Wasm] Recent clipping improvements were incompleted. Fixed a case where a control was allowed to draw itself to use more than available place in the _arrange_ phase.
 * [iOS] Fix negative result value of TimePicker. Now value range is limited from 0 to 1 day
+* #2129 WebAssembly Bootstrapper update to remove the implicit .NET 4.6.2 dependency, and support for long file paths on Windows.
+* #2147 Fix NRE in android-specific TextBox.ImeOptions
+* #2146 [iOS] ListView doesn't take extra space when items are added to collection
 
 ## Release 1.45.0
 ### Features
@@ -365,6 +370,7 @@
 * `LinearGradientBrush.EndPoint` now defaults to (1,1) to match UWP
 * [Android] A ListView inside another ListView no longer causes an app freeze/crash
 * `Click` on `ButtonBase` was not properly raised.
+
 
 ## Release 1.44.0
 

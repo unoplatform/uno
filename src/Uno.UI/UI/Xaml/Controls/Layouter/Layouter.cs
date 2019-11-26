@@ -16,8 +16,8 @@ using static System.Math;
 using static Uno.UI.LayoutHelper;
 using Uno.Diagnostics.Eventing;
 using Windows.Foundation;
-
 #if XAMARIN_ANDROID
+using Android.Views;
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 #elif XAMARIN_IOS_UNIFIED
@@ -233,7 +233,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (uiElement != null)
 				{
-					uiElement.RenderSize = renderSize;
+					uiElement.RenderSize = renderSize.AtMost(maxSize);
 					uiElement.NeedsClipToSlot = needsClipToSlot;
 					uiElement.ApplyClip();
 
@@ -269,6 +269,8 @@ namespace Windows.UI.Xaml.Controls
 			var frameworkElement = view as IFrameworkElement;
 			var ret = default(Size);
 
+			// NaN values are accepted as input for MeasureOverride, but are treated as Infinity.
+			slotSize = slotSize.NumberOrDefault(MaxSize);
 
 			if (frameworkElement?.Visibility == Visibility.Collapsed)
 			{
@@ -295,6 +297,58 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				return ret;
+			}
+
+			if(frameworkElement != null && !(frameworkElement is FrameworkElement))
+			{
+				// For IFrameworkElement implementers that are not FrameworkElements, the constraint logic must
+				// be performed by the parent. Otherwise, the native element will take the size it needs without
+				// regards to explicit XAML size characteristics. The Android ProgressBar is a good example of
+				// that behavior.
+
+				var margin = frameworkElement.Margin;
+
+				if (margin != Thickness.Empty)
+				{
+					// Apply the margin for framework elements, as if it were padding to the child.
+					slotSize = new Size(
+						Max(0, slotSize.Width - margin.Left - margin.Right),
+						Max(0, slotSize.Height - margin.Top - margin.Bottom)
+					);
+				}
+
+				// Alias the Dependency Properties values to avoid double calls.
+				var childWidth = frameworkElement.Width;
+				var childMaxWidth = frameworkElement.MaxWidth;
+				var childHeight = frameworkElement.Height;
+				var childMaxHeight = frameworkElement.MaxHeight;
+
+				var optionalMaxWidth = !IsInfinity(childMaxWidth) && !IsNaN(childMaxWidth) ? childMaxWidth : (double?)null;
+				var optionalWidth = !IsNaN(childWidth) ? childWidth : (double?)null;
+				var optionalMaxHeight = !IsInfinity(childMaxHeight) && !IsNaN(childMaxHeight) ? childMaxHeight : (double?)null;
+				var optionalHeight = !IsNaN(childHeight) ? childHeight : (double?)null;
+
+				// After the margin has been removed, ensure the remaining space slot does not go
+				// over the explicit or maximum size of the child.
+				if (optionalMaxWidth != null || optionalWidth != null)
+				{
+					var constrainedWidth = Min(
+						optionalMaxWidth ?? double.PositiveInfinity,
+						optionalWidth ?? double.PositiveInfinity
+					);
+
+					slotSize.Width = Min(slotSize.Width, constrainedWidth);
+				}
+
+				if (optionalMaxHeight != null || optionalHeight != null)
+				{
+					var constrainedHeight = Min(
+						optionalMaxHeight ?? double.PositiveInfinity,
+						optionalHeight ?? double.PositiveInfinity
+					);
+
+					slotSize.Height = Min(slotSize.Height, constrainedHeight);
+				}
 			}
 
 			ret = MeasureChildOverride(view, slotSize);
@@ -656,9 +710,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private string LoggingOwnerTypeName => ((object)Panel ?? this).GetType().Name;
 
-		private string LoggingOwnerName => Panel?.Name ?? Panel?.GetType().Name ?? LoggingOwnerTypeName;
-
-		public override string ToString() => $"[{LoggingOwnerName}.Layouter]";
+		public override string ToString() => $"[{LoggingOwnerTypeName}.Layouter]" + (string.IsNullOrEmpty(Panel?.Name) ? default : $"(name='{Panel.Name}')");
 	}
 }
 #endif

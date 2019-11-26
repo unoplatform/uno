@@ -564,6 +564,23 @@ var Uno;
                 return true;
             }
             /**
+                * Removes an attribute for an element.
+                */
+            removeAttribute(elementId, name) {
+                const element = this.getView(elementId);
+                element.removeAttribute(name);
+                return "ok";
+            }
+            /**
+                * Removes an attribute for an element.
+                */
+            removeAttributeNative(pParams) {
+                const params = WindowManagerRemoveAttributeParams.unmarshal(pParams);
+                const element = this.getView(params.HtmlId);
+                element.removeAttribute(params.Name);
+                return true;
+            }
+            /**
                 * Get an attribute for an element.
                 */
             getAttribute(elementId, name) {
@@ -1242,8 +1259,8 @@ var Uno;
                 const offsetHeight = element.offsetHeight;
                 const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
                 const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
-                // +0.5 is added to take rounding into account
-                return [resultWidth + 0.5, resultHeight];
+                // +1 is added to take rounding/flooring into account
+                return [resultWidth + 1, resultHeight];
             }
             measureViewInternal(viewId, maxWidth, maxHeight) {
                 const element = this.getView(viewId);
@@ -1851,6 +1868,25 @@ class WindowManagerRegisterEventOnViewParams {
             }
             else {
                 ret.EventExtractorName = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerRemoveAttributeParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerRemoveAttributeParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            var ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Name = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Name = null;
             }
         }
         return ret;

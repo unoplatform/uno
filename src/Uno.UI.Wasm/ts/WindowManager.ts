@@ -358,6 +358,28 @@
 		}
 
 		/**
+			* Removes an attribute for an element.
+			*/
+		public removeAttribute(elementId: number, name: string): string {
+			const element = this.getView(elementId);
+			element.removeAttribute(name);
+
+			return "ok";
+		}
+
+		/**
+			* Removes an attribute for an element.
+			*/
+		public removeAttributeNative(pParams: number): boolean {
+
+			const params = WindowManagerRemoveAttributeParams.unmarshal(pParams);
+			const element = this.getView(params.HtmlId);
+			element.removeAttribute(params.Name);
+
+			return true;
+		}
+
+		/**
 			* Get an attribute for an element.
 			*/
 		public getAttribute(elementId: number, name: string): any {
@@ -1218,8 +1240,8 @@
 			const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
 			const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
 
-			// +0.5 is added to take rounding into account
-			return [resultWidth + 0.5, resultHeight];
+			// +1 is added to take rounding/flooring into account
+			return [resultWidth + 1, resultHeight];
 		}
 
 		private measureViewInternal(viewId: number, maxWidth: number, maxHeight: number): [number, number] {

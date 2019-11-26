@@ -218,6 +218,14 @@ declare namespace Uno.UI {
             */
         setAttributeNative(pParams: number): boolean;
         /**
+            * Removes an attribute for an element.
+            */
+        removeAttribute(elementId: number, name: string): string;
+        /**
+            * Removes an attribute for an element.
+            */
+        removeAttributeNative(pParams: number): boolean;
+        /**
             * Get an attribute for an element.
             */
         getAttribute(elementId: number, name: string): any;
@@ -598,6 +606,11 @@ declare class WindowManagerRegisterEventOnViewParams {
     EventFilterName: string;
     EventExtractorName: string;
     static unmarshal(pData: number): WindowManagerRegisterEventOnViewParams;
+}
+declare class WindowManagerRemoveAttributeParams {
+    HtmlId: number;
+    Name: string;
+    static unmarshal(pData: number): WindowManagerRemoveAttributeParams;
 }
 declare class WindowManagerRemoveViewParams {
     HtmlId: number;
