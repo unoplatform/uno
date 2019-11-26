@@ -1259,8 +1259,8 @@ var Uno;
                 const offsetHeight = element.offsetHeight;
                 const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
                 const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
-                // +0.5 is added to take rounding into account
-                return [resultWidth + 0.5, resultHeight];
+                // +1 is added to take rounding/flooring into account
+                return [resultWidth + 1, resultHeight];
             }
             measureViewInternal(viewId, maxWidth, maxHeight) {
                 const element = this.getView(viewId);
