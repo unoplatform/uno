@@ -114,6 +114,7 @@
  * [WASM] The tranform returned by `UIElement.TransformToVisual` is now including scale, rotation or any custom transformation that was declard on a parent element (transform was only including translate components)
 
 ### Bug fixes
+* [#2186](https://github.com/unoplatform/uno/pull/2186) Fix Canvas Measurement to behave like UWP
 * [#2093](https://github.com/unoplatform/uno/pull/2093) Fix missing measurement option for polyline and polygon
 * Font size, used for ComboBoxItems, are same as in ComboBox content (not smaller)
 * [#2023](https://github.com/unoplatform/uno/pull/2023) Android WebView.NavigateToString doesn't throw exception even when string is very long.
