@@ -76,6 +76,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 			_app.Tap("ChangeTextBlockButton");
 
+			_app.WaitForNoElement("FunnyTextBlock");
+
+			_app.Tap("ChangeTextBlockButton");
+
 			_app.WaitForElement("FunnyTextBlock");
 
 			var blueAfter = TakeScreenshot("After - blue");
