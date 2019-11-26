@@ -32,14 +32,14 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.CanvasTests
 			);
 
 			CAV.Measure(new Windows.Foundation.Size(60, 60));
-			Assert.AreEqual(new Windows.Foundation.Size(60, 60), SUT.DesiredSize, "measuredSize");
+			Assert.AreEqual(new Windows.Foundation.Size(60, 60), CAV.DesiredSize, "measuredSize");
 
 			c1.Measure(new Windows.Foundation.Size(50, 50));
 			Assert.AreEqual(new Windows.Foundation.Size(50, 50), c1.RequestedDesiredSize, "measuredSizeChild1");
 			c2.Measure(new Windows.Foundation.Size(20, 15));
 			Assert.AreEqual(new Windows.Foundation.Size(20, 15), c2.RequestedDesiredSize, "measuredSizeChild2");
 
-			Assert.AreEqual(2, SUT.GetChildren().Count());
+			Assert.AreEqual(2, CAV.GetChildren().Count());
 		}
 
 		[TestMethod]
@@ -60,7 +60,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.CanvasTests
 			c2.Measure(new Windows.Foundation.Size(20, 15));
 			Assert.AreEqual(new Windows.Foundation.Size(20, 15), c2.RequestedDesiredSize, "measuredSizeChild2");
 
-			Assert.AreEqual(2, SUT.GetChildren().Count());
+			Assert.AreEqual(2, CAV.GetChildren().Count());
 		}
 	}
 }
