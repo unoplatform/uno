@@ -435,6 +435,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (_isUiAutomationMappingEnabled)
 			{
 				writer.AppendLineInvariant("global::Uno.UI.FrameworkElementHelper.IsUiAutomationMappingEnabled = true;");
+
+				if (_isWasm)
+				{
+					// When automation mapping is enabled, remove the element ID from the ToString so test screenshots stay the same.
+					writer.AppendLineInvariant("global::Uno.UI.FeatureConfiguration.UIElement.RenderToStringWithId = false;");
+				}
 			}
 		}
 
