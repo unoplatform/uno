@@ -1,6 +1,15 @@
 ﻿# Release notes
 
-## Next version
+### Features
+-
+
+### Breaking changes
+-
+
+### Breaking changes
+- 
+
+## Release 2.0
 
 ### Features
 * [#2029](https://github.com/unoplatform/uno/pull/2029) Support for MenuFlyoutItem.Click
