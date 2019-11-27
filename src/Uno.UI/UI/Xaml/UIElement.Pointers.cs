@@ -323,20 +323,21 @@ namespace Windows.UI.Xaml
 
 		partial void PrepareBubblingManipulationEvent(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed)
 		{
+			// When we bubble a manipulation event from a child, we make sure to abort any pending gesture/manipulation on the current element
 			if (routedEvent != ManipulationStartingEvent && _gestures.IsValueCreated)
 			{
-				_gestures.Value.CompleteGesture(); // TODO: Abort ?
+				_gestures.Value.CompleteGesture();
 			}
-			// TODO: Alter location
+			// Note: We do not need to alter the location of the events, on UWP they are always relative to the OriginalSource.
 		}
 
 		partial void PrepareBubblingGestureEvent(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed)
 		{
+			// When we bubble a gesture event from a child, we make sure to abort any pending gesture/manipulation on the current element
 			if (_gestures.IsValueCreated)
 			{
-				_gestures.Value.CompleteGesture(); // TODO: Abort ?
+				_gestures.Value.CompleteGesture();
 			}
-			// TODO: Alter location
 		}
 
 		/// <summary>
