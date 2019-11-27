@@ -8,45 +8,46 @@ branches:
     regex: master
     tag: dev
     increment: Minor
+    is-source-branch-for: ['beta', 'stable']
 
   pull-request:
     regex: ^(pull|pull\-requests|pr)[/-]
     mode: ContinuousDeployment
     tag: PullRequest
-    increment: Inherit
-
-  stable:
-    regex: release/stable/.*
-    tag: ''
-    increment: Patch
-    source-branches: ['master']
-    is-mainline: true
+    increment: none
 
   beta:
     mode: ContinuousDeployment
-    regex: release/beta/.*
-    tag: 'beta'
-    increment: inherit
+    regex: ^release/beta/.*
+    tag: beta
+    increment: none
     source-branches: ['master']
+
+  stable:
+    regex: ^release/stable/.*
+    tag: ''
+    increment: Patch
+    source-branches: ['master','beta']
+    is-mainline: true
 
   dev:
     mode: ContinuousDeployment
-    regex: dev/.*?/(.*?)
+    regex: ^dev/.*?/(.*?)
     tag: dev.{BranchName}
     source-branches: ['master', 'release', 'projects', 'feature']
-    increment: inherit
+    increment: none
 
   projects:
-    tag: proj-{BranchName}
+    tag: ^proj-{BranchName}
     regex: projects/(.*?)
     source-branches: ['master']
-    increment: inherit
+    increment: none
 
   feature:
-    tag: feature.{BranchName}
+    tag: ^feature.{BranchName}
     regex: feature/(.*?)
     source-branches: ['master']
-    increment: inherit
+    increment: none
 
 ignore:
   sha: []
