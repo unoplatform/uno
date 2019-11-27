@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml
 			if (base.Hidden != newVisibility.IsHidden())
 			{
 				base.Hidden = newVisibility.IsHidden();
-				this.SetNeedsLayout();
+				InvalidateMeasure();
 
 				if (newVisibility == Visibility.Visible)
 				{
