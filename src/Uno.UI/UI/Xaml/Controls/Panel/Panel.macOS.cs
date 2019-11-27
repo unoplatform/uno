@@ -160,5 +160,8 @@ namespace Windows.UI.Xaml.Controls
 			// All touches that are on this view (and not its subviews) are ignored
 			return HitTestOutsideFrame ? this.HitTestOutsideFrame(point) : base.HitTest(point);
 		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 	}
 }

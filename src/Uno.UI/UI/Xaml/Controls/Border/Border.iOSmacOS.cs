@@ -23,8 +23,7 @@ namespace Windows.UI.Xaml.Controls
 {
     public partial class Border
 	{
-		private SerialDisposable _brushColorChanged = new SerialDisposable();
-		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		private readonly BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
 
 		public Border()
 		{
@@ -39,18 +38,6 @@ namespace Windows.UI.Xaml.Controls
 		protected override void OnAfterArrange()
 		{
 			base.OnAfterArrange();
-			UpdateBorderLayer();
-		}
-
-		protected override void OnUnloaded()
-		{
-			base.OnUnloaded();
-			_borderRenderer.Clear();
-        }
-
-		protected override void OnLoaded()
-		{
-			base.OnLoaded();
 			UpdateBorderLayer();
 		}
 
@@ -125,6 +112,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			UpdateBorderLayer();
 		}
+        bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None && (!(Child is UIElement ue) || ue.RenderTransform == null);
+        bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 	}
 }
 #endif

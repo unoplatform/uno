@@ -27,8 +27,11 @@ namespace Windows.UI.Xaml
 			InitializePointers();
 		}
 
+		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
+
 		partial void ApplyNativeClip(Rect rect)
 		{
+
 			if (rect.IsEmpty
 				|| double.IsPositiveInfinity(rect.X)
 				|| double.IsPositiveInfinity(rect.Y)
@@ -36,7 +39,10 @@ namespace Windows.UI.Xaml
 				|| double.IsPositiveInfinity(rect.Height)
 			)
 			{
-				this.Layer.Mask = null;
+				if (!ClippingIsSetByCornerRadius)
+				{
+					this.Layer.Mask = null;
+				}
 				return;
 			}
 
