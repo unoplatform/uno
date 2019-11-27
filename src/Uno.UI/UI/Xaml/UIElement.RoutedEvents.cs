@@ -560,7 +560,42 @@ namespace Windows.UI.Xaml
 		// This method is a workaround for https://github.com/mono/mono/issues/12981
 		// It can be inlined in RaiseEvent when fixed.
 		private static bool RaiseOnParent(RoutedEvent routedEvent, RoutedEventArgs args, UIElement parent)
-			=> parent.RaiseEvent(routedEvent, args);
+			=> parent.PrepareBubblingEvent(routedEvent, args, out args)
+				&& parent.RaiseEvent(routedEvent, args);
+
+		private bool PrepareBubblingEvent(RoutedEvent routedEvent, RoutedEventArgs args, out RoutedEventArgs alteredArgs)
+		{
+			var isBubblingAllowed = true;
+			alteredArgs = args;
+			if (routedEvent.IsPointerEvent)
+			{
+				PrepareBubblingPointerEvent(routedEvent, ref alteredArgs, ref isBubblingAllowed);
+			}
+			else if (routedEvent.IsKeyEvent)
+			{
+				PrepareBubblingKeyEvent(routedEvent, ref alteredArgs, ref isBubblingAllowed);
+			}
+			else if (routedEvent.IsFocusEvent)
+			{
+				PrepareBubblingFocusEvent(routedEvent, ref alteredArgs, ref isBubblingAllowed);
+			}
+			else if (routedEvent.IsManipulationEvent)
+			{
+				PrepareBubblingManipulationEvent(routedEvent, ref alteredArgs, ref isBubblingAllowed);
+			}
+			else if (routedEvent.IsGestureEvent)
+			{
+				PrepareBubblingGestureEvent(routedEvent, ref alteredArgs, ref isBubblingAllowed);
+			}
+
+			return isBubblingAllowed;
+		}
+
+		partial void PrepareBubblingPointerEvent(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed);
+		partial void PrepareBubblingKeyEvent(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed);
+		partial void PrepareBubblingFocusEvent(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed);
+		partial void PrepareBubblingManipulationEvent(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed);
+		partial void PrepareBubblingGestureEvent(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed);
 
 		private static bool IsHandled(RoutedEventArgs args)
 		{

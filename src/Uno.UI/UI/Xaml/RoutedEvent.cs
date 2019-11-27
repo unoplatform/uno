@@ -1,4 +1,5 @@
 ﻿using System.Diagnostics;
+using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
 using Uno.UI.Xaml;
 
@@ -30,10 +31,15 @@ namespace Windows.UI.Xaml
 
 		internal RoutedEventFlag Flag { get; }
 
+		[Pure]
 		internal bool IsPointerEvent { get; }
+		[Pure]
 		internal bool IsKeyEvent { get; }
+		[Pure]
 		internal bool IsFocusEvent { get; }
+		[Pure]
 		internal bool IsManipulationEvent { get; }
+		[Pure]
 		internal bool IsGestureEvent { get; }
 	}
 }

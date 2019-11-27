@@ -321,6 +321,24 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
+		partial void PrepareBubblingManipulationEvent(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed)
+		{
+			if (routedEvent != ManipulationStartingEvent && _gestures.IsValueCreated)
+			{
+				_gestures.Value.CompleteGesture(); // TODO: Abort ?
+			}
+			// TODO: Alter location
+		}
+
+		partial void PrepareBubblingGestureEvent(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed)
+		{
+			if (_gestures.IsValueCreated)
+			{
+				_gestures.Value.CompleteGesture(); // TODO: Abort ?
+			}
+			// TODO: Alter location
+		}
+
 		/// <summary>
 		/// Prevents the gesture recognizer to generate a manipulation. It's designed to be invoked in Pointers events handlers.
 		/// </summary>
