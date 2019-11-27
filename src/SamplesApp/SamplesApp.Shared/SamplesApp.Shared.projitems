@@ -65,7 +65,4 @@
       <DependentUpon>HttpUnitTests.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)Assets\Icons\" />
-  </ItemGroup>
 </Project>

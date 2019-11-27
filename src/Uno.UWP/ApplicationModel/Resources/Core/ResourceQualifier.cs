@@ -37,7 +37,7 @@ namespace Windows.ApplicationModel.Resources.Core
 					name = "language";
 				}
 
-				if (name == "scale" || name == "language" || name == "custom")
+				if (name == "scale" || name == "language" || name == "theme" || name == "custom" )
 				{
 					return new ResourceQualifier(name, value);
 				}
