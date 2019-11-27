@@ -20,10 +20,10 @@ namespace SamplesApp.UITests
 		/// <summary>
 		/// Wait for element to be available and to have the expected value for its Text property.
 		/// </summary>
-		public static void WaitForText(this IApp app, string elementName, string expectedText)
+		public static void WaitForText(this IApp app, string elementName, string expectedText, TimeSpan? timeout = null)
 		{
 			var element = app.Marked(elementName);
-			app.WaitForElement(element);
+			app.WaitForElement(element, timeout: timeout);
 			app.WaitForText(element, expectedText);
 		}
 
