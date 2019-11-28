@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Shapes
 	[Markup.ContentProperty(Name = "SvgChildren")]
 	partial class Shape
 	{
-		private readonly SerialDisposable _brushSubscription = new SerialDisposable();
+		private readonly SerialDisposable _fillBrushSubscription = new SerialDisposable();
 
 		protected Shape() : base("svg", isSvg: true)
 		{
@@ -71,23 +71,23 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				case SolidColorBrush scb:
 					svgElement.SetStyle("fill", scb.Color.ToCssString());
-					_brushSubscription.Disposable = null;
+					_fillBrushSubscription.Disposable = null;
 					break;
 				case ImageBrush ib:
-					_brushSubscription.Disposable = null;
+					_fillBrushSubscription.Disposable = null;
 					break;
 				case LinearGradientBrush lgb:
 					var linearGradient = lgb.ToSvgElement();
 					var gradientId = linearGradient.HtmlId;
 					SvgChildren.Add(linearGradient);
 					svgElement.SetStyle("fill", $"url(#{gradientId})");
-					_brushSubscription.Disposable = new DisposableAction(
+					_fillBrushSubscription.Disposable = new DisposableAction(
 						() => SvgChildren.Remove(linearGradient)
 					);
 					break;
 				default:
 					svgElement.ResetStyle("fill");
-					_brushSubscription.Disposable = null;
+					_fillBrushSubscription.Disposable = null;
 					break;
 			}
 		}
