@@ -62,12 +62,12 @@ namespace Windows.UI.Xaml.Controls
 			switch (horizontalAlignment)
 			{
 				case HorizontalAlignment.Left:
-				case HorizontalAlignment.Stretch:
 					child.X = 0;
 					break;
 				case HorizontalAlignment.Right:
 					child.X = finalSize.Width - child.Width;
 					break;
+				case HorizontalAlignment.Stretch:
 				case HorizontalAlignment.Center:
 					child.X = (finalSize.Width - child.Width) * 0.5f;
 					break;
@@ -94,12 +94,12 @@ namespace Windows.UI.Xaml.Controls
 			switch (verticalAlignment)
 			{
 				case VerticalAlignment.Top:
-				case VerticalAlignment.Stretch:
 					child.Y = 0;
 					break;
 				case VerticalAlignment.Bottom:
 					child.Y = finalSize.Height - child.Height;
 					break;
+				case VerticalAlignment.Stretch:
 				case VerticalAlignment.Center:
 					child.Y = (finalSize.Height - child.Height) * 0.5f;
 					break;

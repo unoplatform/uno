@@ -17,25 +17,25 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Image : UIImageView, IImage
 	{
-        private Size _sourceImageSize;
+		private Size _sourceImageSize;
 
-        /// <summary>
-        /// The size of the native image data
-        /// </summary>
-        private Size SourceImageSize
-        {
-            get => _sourceImageSize;
-            set
-            {
-                _sourceImageSize = value;
+		/// <summary>
+		/// The size of the native image data
+		/// </summary>
+		private Size SourceImageSize
+		{
+			get => _sourceImageSize;
+			set
+			{
+				_sourceImageSize = value;
 
-                if (Source is BitmapSource bitmapSource)
-                {
-                    bitmapSource.PixelWidth = (int)_sourceImageSize.Width;
-                    bitmapSource.PixelHeight = (int)_sourceImageSize.Height;
-                }
-            }
-        }
+				if (Source is BitmapSource bitmapSource)
+				{
+					bitmapSource.PixelWidth = (int)_sourceImageSize.Width;
+					bitmapSource.PixelHeight = (int)_sourceImageSize.Height;
+				}
+			}
+		}
 
 		public Image()
 		{
