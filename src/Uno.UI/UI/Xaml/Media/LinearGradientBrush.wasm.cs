@@ -33,10 +33,10 @@ namespace Windows.UI.Xaml.Media
 			var linearGradient = new SvgElement("linearGradient");
 
 			linearGradient.SetAttribute(
-				("x1", StartPoint.X.ToString()),
-				("y1", StartPoint.Y.ToString()),
-				("x2", EndPoint.X.ToString()),
-				("y2", EndPoint.Y.ToString())
+				("x1", StartPoint.X.ToStringInvariant()),
+				("y1", StartPoint.Y.ToStringInvariant()),
+				("x2", EndPoint.X.ToStringInvariant()),
+				("y2", EndPoint.Y.ToStringInvariant())
 			);
 
 			var stops = GradientStops.Select(stop => $"<stop offset=\"{stop.Offset.ToStringInvariant()}\" style=\"stop-color:{stop.Color.ToCssString()}\" />");
