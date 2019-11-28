@@ -223,14 +223,12 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// True if horizontally stretched within finite container, or defined by this.Width
 		/// </summary>
-		private bool HasKnownWidth(double availableWidth) => !double.IsNaN(Width) ||
-			(HorizontalAlignment == HorizontalAlignment.Stretch && !double.IsInfinity(availableWidth));
+		private bool HasKnownWidth(double availableWidth) => !double.IsNaN(Width);
 
 		/// <summary>
 		/// True if vertically stretched within finite container, or defined by this.Height
 		/// </summary>
-		private bool HasKnownHeight(double availableHeight) => !double.IsNaN(Height) ||
-			(VerticalAlignment == VerticalAlignment.Stretch && !double.IsInfinity(availableHeight));
+		private bool HasKnownHeight(double availableHeight) => !double.IsNaN(Height);
 
 		private double GetKnownWidth(double stretchedWidth, double fallbackIfInfinite)
 		{

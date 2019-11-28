@@ -488,6 +488,21 @@ namespace Windows.UI.Xaml.Controls
 				// capture the child's state to avoid getting DependencyProperties values multiple times.
 				var childVerticalAlignment = frameworkElement.VerticalAlignment;
 				var childHorizontalAlignment = frameworkElement.HorizontalAlignment;
+
+				// Image is a special control and is using the Vertical/Horizontal Alignment
+				// to calculate the final position of the image. On UWP, there's no difference
+				// between "Stretch" and "Center": they all behave like "Center", so we need
+				// to do the same here.
+				if (childVerticalAlignment == VerticalAlignment.Stretch && view is Image)
+				{
+					childVerticalAlignment = VerticalAlignment.Center;
+				}
+
+				if (childHorizontalAlignment == HorizontalAlignment.Stretch && view is Image)
+				{
+					childHorizontalAlignment = HorizontalAlignment.Center;
+				}
+
 				var childMaxHeight = frameworkElement.MaxHeight;
 				var childMaxWidth = frameworkElement.MaxWidth;
 				var childMinHeight = frameworkElement.MinHeight;
