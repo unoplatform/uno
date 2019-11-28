@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Uno.Disposables;
 using Windows.UI.Xaml.Automation.Peers;
@@ -43,10 +44,7 @@ namespace Windows.UI.Xaml.Controls
 			if (!IsNativeTemplate)
 			{
 				AddHandler(PointerPressedEvent, (PointerEventHandler)OnPointerPressed, true);
-				AddHandler(PointerExitedEvent, (PointerEventHandler)OnPointerExited, true);
 				AddHandler(PointerReleasedEvent, (PointerEventHandler)OnPointerReleased, true);
-				AddHandler(PointerCanceledEvent, (PointerEventHandler)OnPointerCanceled, true);
-				AddHandler(PointerEnteredEvent, (PointerEventHandler)OnPointerEntered, true);
 			}
 
 			OnLoadedPartial();
@@ -61,10 +59,7 @@ namespace Windows.UI.Xaml.Controls
 			if (!IsNativeTemplate)
 			{
 				RemoveHandler(PointerPressedEvent, (PointerEventHandler) OnPointerPressed);
-				RemoveHandler(PointerExitedEvent, (PointerEventHandler) OnPointerExited);
 				RemoveHandler(PointerReleasedEvent, (PointerEventHandler) OnPointerReleased);
-				RemoveHandler(PointerCanceledEvent, (PointerEventHandler) OnPointerCanceled);
-				RemoveHandler(PointerEnteredEvent, (PointerEventHandler) OnPointerEntered);
 			}
 		}
 
@@ -84,42 +79,16 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnPointerPressed(object sender, PointerRoutedEventArgs args)
 		{
-			IsPointerOver = true;
-			IsPointerPressed = true;
 			args.Handled = true;
 			Focus(FocusState.Pointer);
-			UpdateCommonState();
-		}
-
-		private void OnPointerExited(object sender, PointerRoutedEventArgs args)
-		{
-			IsPointerOver = false;
-			UpdateCommonState();
 		}
 
 		private void OnPointerReleased(object sender, PointerRoutedEventArgs args)
 		{
-			IsPointerOver = false;
-			IsPointerPressed = false;
-			UpdateCommonState();
-
 			if (_switchThumb == null)
 			{
 				IsOn = !IsOn;
 			}
-		}
-
-		private void OnPointerCanceled(object sender, PointerRoutedEventArgs args)
-		{
-			IsPointerOver = false;
-			IsPointerPressed = false;
-			UpdateCommonState();
-		}
-
-		private void OnPointerEntered(object sender, PointerRoutedEventArgs args)
-		{
-			IsPointerOver = true;
-			UpdateCommonState();
 		}
 
 		protected virtual void OnToggled()
@@ -203,7 +172,6 @@ namespace Windows.UI.Xaml.Controls
 
 			_eventSubscriptions.Disposable = RegisterHandlers();
 
-			UpdateCommonState(false);
 			UpdateToggleState(false);
 			UpdateContentState(false);
 		}
@@ -244,9 +212,6 @@ namespace Windows.UI.Xaml.Controls
 			_maxDragDistance = 0;
 			UpdateSwitchKnobPosition(e.HorizontalOffset);
 
-			IsPointerPressed = true;
-			IsPointerOver = true;
-			UpdateCommonState();
 			UpdateToggleState();
 		}
 
@@ -270,9 +235,6 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateSwitchKnobPosition(0);
 
-			IsPointerPressed = false;
-			IsPointerOver = false;
-			UpdateCommonState();
 			UpdateToggleState();
 		}
 
@@ -302,22 +264,6 @@ namespace Windows.UI.Xaml.Controls
 			if (_knobTranslateTransform != null)
 			{
 				_knobTranslateTransform.X = GetAbsoluteOffset(relativeOffset);
-			}
-		}
-
-		private void UpdateCommonState(bool useTransitions = true)
-		{
-			if (!IsEnabled)
-			{
-				VisualStateManager.GoToState(this, "Disabled", useTransitions);
-			}
-			else if (IsPointerPressed && IsPointerOver)
-			{
-				VisualStateManager.GoToState(this, "Pressed", useTransitions);
-			}
-			else
-			{
-				VisualStateManager.GoToState(this, "Normal", useTransitions);
 			}
 		}
 
