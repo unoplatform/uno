@@ -56,18 +56,18 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_startLocation = location;
 
 			IsDragging = true;
-			DragStarted?.Invoke(this, new DragStartedEventArgs(0, 0));
+			DragStarted?.Invoke(this, new DragStartedEventArgs(this, 0, 0));
 		}
 
 		internal void DeltaDrag(Point location)
 		{
-			DragDelta?.Invoke(this, new DragDeltaEventArgs(location.X - _startLocation.X, location.Y - _startLocation.Y));
+			DragDelta?.Invoke(this, new DragDeltaEventArgs(this, location.X - _startLocation.X, location.Y - _startLocation.Y));
 		}
 
 		internal void CompleteDrag(Point location)
 		{
 			IsDragging = false;
-			DragCompleted?.Invoke(this, new DragCompletedEventArgs(location.X - _startLocation.X, location.Y - _startLocation.Y, false));
+			DragCompleted?.Invoke(this, new DragCompletedEventArgs(this, location.X - _startLocation.X, location.Y - _startLocation.Y, false));
 		}
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
