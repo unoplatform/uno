@@ -144,6 +144,12 @@ namespace Windows.UI.Xaml.Shapes
 
 			foreach (FrameworkElement child in GetChildren())
 			{
+				if (child.HtmlTag == "linearGradient")
+				{
+					// Not really a view
+					continue;
+				}
+
 				var childRect = GetBBoxWithStrokeThickness(child);
 				if (bbox == Rect.Empty)
 				{

@@ -11,12 +11,16 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Wasm;
 using Uno.Extensions;
 using Uno.Foundation;
+using Uno.Disposables;
+using Uno;
 
 namespace Windows.UI.Xaml.Shapes
 {
 	[Markup.ContentProperty(Name = "SvgChildren")]
 	partial class Shape
 	{
+		private readonly SerialDisposable _brushSubscription = new SerialDisposable();
+
 		protected Shape() : base("svg", isSvg: true)
 		{
 			_svgChildren = new UIElementCollection(this);
@@ -24,7 +28,7 @@ namespace Windows.UI.Xaml.Shapes
 			OnStretchUpdatedPartial();
 		}
 
-		private void OnSvgChildrenChanged(object sender, NotifyCollectionChangedEventArgs e) 
+		private void OnSvgChildrenChanged(object sender, NotifyCollectionChangedEventArgs e)
 			=> OnChildrenChanged();
 
 		protected override void OnLoaded()
@@ -67,11 +71,23 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				case SolidColorBrush scb:
 					svgElement.SetStyle("fill", scb.Color.ToCssString());
+					_brushSubscription.Disposable = null;
 					break;
 				case ImageBrush ib:
+					_brushSubscription.Disposable = null;
+					break;
+				case LinearGradientBrush lgb:
+					var linearGradient = lgb.ToSvgElement();
+					var gradientId = linearGradient.HtmlId;
+					SvgChildren.Add(linearGradient);
+					svgElement.SetStyle("fill", $"url(#{gradientId})");
+					_brushSubscription.Disposable = new DisposableAction(
+						() => SvgChildren.Remove(linearGradient)
+					);
 					break;
 				default:
 					svgElement.ResetStyle("fill");
+					_brushSubscription.Disposable = null;
 					break;
 			}
 		}
@@ -117,8 +133,8 @@ namespace Windows.UI.Xaml.Shapes
 			}
 			else
 			{
-				var str = string.Join(",", StrokeDashArray.Select(d=>$"{d}px"));
-				svgElement.SetStyle("stroke-dasharray",str);
+				var str = string.Join(",", StrokeDashArray.Select(d => $"{d}px"));
+				svgElement.SetStyle("stroke-dasharray", str);
 			}
 		}
 	}
