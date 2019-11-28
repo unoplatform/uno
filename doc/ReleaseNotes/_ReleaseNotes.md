@@ -99,7 +99,7 @@
 * [Wasm] Add the ability to focus a TextBox by clicking its header
 * Add support for `ToggleButton.IsThreeState` and `ToggleButton.Indeterminate`
 * [Wasm] Add support for `TextBox.IsReadonly`
-* [iOS] `Path` now supports `LinearGradientBrush` as `Fill`
+* [iOS] [WASM] `Path` now supports `LinearGradientBrush` as `Fill`
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.

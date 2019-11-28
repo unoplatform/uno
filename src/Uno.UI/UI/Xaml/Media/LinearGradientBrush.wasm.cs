@@ -39,8 +39,6 @@ namespace Windows.UI.Xaml.Media
 				("y2", EndPoint.Y.ToString())
 			);
 
-			Console.WriteLine("Scooter");
-
 			var stops = GradientStops.Select(stop => $"<stop offset=\"{stop.Offset.ToStringInvariant()}\" style=\"stop-color:{stop.Color.ToCssString()}\" />");
 
 			linearGradient.SetHtmlContent(string.Join(Environment.NewLine, stops));
