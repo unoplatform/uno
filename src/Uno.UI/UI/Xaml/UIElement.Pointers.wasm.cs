@@ -153,6 +153,8 @@ namespace Windows.UI.Xaml
 				default:
 					type = PointerDeviceType.Mouse;
 					break;
+				// Note: As of 2019-11-28, once pen pressed events pressed/move/released are reported as TOUCH on Firefox
+				//		 https://bugzilla.mozilla.org/show_bug.cgi?id=1449660
 				case "PEN":
 					type = PointerDeviceType.Pen;
 					break;

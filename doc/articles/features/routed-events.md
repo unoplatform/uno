@@ -236,6 +236,9 @@ As those events are tightly coupled to the native events, Uno has to make some c
   > a `PointerReleased` when clicking on an `Hyperlink`.
 * Unlike UWP, on the `Hyperlink` the `Click` will be raised before the `PointerReleased`.
 * The property `PointerPointProperties.PointerUpdateKind` is not set on Android 5.x and lower (API level < 23)
+* On Firefox, pressed pointers are reported as finger. This means you will receive events with `PointerDeviceType == Pen` only for hoverring 
+  (i.e. `Pointer<Enter|Move|Exit>` - note that, as of 2019-11-28, once pressed `PointerMove` will be flagged as "touch") 
+  and you won't  be able to track the barrel button nor the eraser. (cf. https://bugzilla.mozilla.org/show_bug.cgi?id=1449660)
 
 ### Pointer capture
 
