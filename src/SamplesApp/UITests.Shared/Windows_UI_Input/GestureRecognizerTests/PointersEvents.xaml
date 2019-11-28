@@ -27,7 +27,7 @@
 						<StateTrigger IsActive="{Binding ElementName=_configButton, Path=IsChecked}" />
 					</VisualState.StateTriggers>
 					<VisualState.Setters>
-						<!--<Setter Target="_tabs.Visibility" Value="Visible" />-->
+						<Setter Target="_tabs.Visibility" Value="Visible" />
 						<Setter Target="_configColumn.Width" Value="*" />
 						<Setter Target="_benchColumn.Width" Value="0" />
 						<Setter Target="_outputColumn.Width" Value="0" />
@@ -160,7 +160,7 @@
 				<ToggleSwitch
 					x:Name="_handledEventsToo"
 					Header="Handled events too"
-					OnContent="All events are subscribed for handled events too"
+					OnContent="Handlers added w/ handledEventsToo"
 					OffContent="Unhandled events only"
 					Toggled="OnConfigChanged" />
 				<ToggleSwitch
@@ -188,24 +188,44 @@
 					OnContent="Subscribed to manip starting"
 					OffContent="Manip starting muted"
 					Toggled="OnConfigChanged" />
+				<CheckBox
+					x:Name="_manipStartingHandle" 
+					Content="Handle event"
+					Margin="20, 0"
+					Visibility="{Binding ElementName=_manipStarting, Path=IsOn}"/>
 				<ToggleSwitch
 					x:Name="_manipStarted" 
 					Header="Manipulation started"
 					OnContent="Subscribed to manip started"
 					OffContent="Manip started muted"
 					Toggled="OnConfigChanged" />
+				<CheckBox
+					x:Name="_manipStartedHandle" 
+					Content="Handle event"
+					Margin="20, 0"
+					Visibility="{Binding ElementName=_manipStarted, Path=IsOn}"/>
 				<ToggleSwitch
 					x:Name="_manipDelta"
 					Header="Manipulation delta"
 					OnContent="Subscribed to manip delta"
 					OffContent="Manip delta muted"
 					Toggled="OnConfigChanged" />
+				<CheckBox
+					x:Name="_manipDeltaHandle" 
+					Content="Handle event"
+					Margin="20, 0"
+					Visibility="{Binding ElementName=_manipDelta, Path=IsOn}"/>
 				<ToggleSwitch
 					x:Name="_manipCompleted" 
 					Header="Manipulation completed"
 					OnContent="Subscribed to manip completed"
 					OffContent="Manip completed muted"
 					Toggled="OnConfigChanged" />
+				<CheckBox
+					x:Name="_manipCompletedHandle" 
+					Content="Handle event"
+					Margin="20, 0"
+					Visibility="{Binding ElementName=_manipCompleted, Path=IsOn}"/>
 
 				<ToggleSwitch
 					x:Name="_gestureTapped" 
@@ -214,6 +234,11 @@
 					OffContent="Tap disabled"
 					Toggled="OnConfigChanged"
 					IsOn="True" />
+				<CheckBox
+					x:Name="_gestureTappedHandle" 
+					Content="Handle event"
+					Margin="20, 0"
+					Visibility="{Binding ElementName=_gestureTapped, Path=IsOn}"/>
 				<ToggleSwitch
 					x:Name="_gestureDoubleTapped" 
 					Header="Double tapped"
@@ -221,17 +246,22 @@
 					OffContent="Double tap disabled"
 					Toggled="OnConfigChanged"
 					IsOn="True" />
+				<CheckBox
+					x:Name="_gestureDoubleTappedHandle" 
+					Content="Handle event"
+					Margin="20, 0"
+					Visibility="{Binding ElementName=_gestureDoubleTapped, Path=IsOn}"/>
 			</StackPanel>
 		</ScrollViewer>
 
 		<ScrollViewer Grid.Column="1" Grid.Row="1" x:Name="_myScrollViewer">
 			<Grid
-				x:Name="_touchTargetParent"
+				x:Name="TouchTargetParent"
 				MinWidth="2048"
 				MinHeight="2048"
 				Background="DeepSkyBlue">
 				<Border
-					x:Name="_touchTarget"
+					x:Name="TouchTarget"
 					HorizontalAlignment="Left"
 					VerticalAlignment="Top"
 					Margin="50, 50, 0, 0"

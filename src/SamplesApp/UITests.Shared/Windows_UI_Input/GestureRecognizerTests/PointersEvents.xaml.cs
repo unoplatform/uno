@@ -16,6 +16,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Documents;
 using Uno.Extensions;
+using Uno.Extensions.ValueType;
 
 namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 {
@@ -48,64 +49,71 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 		private readonly ManipulationCompletedEventHandler _logManipulationCompleted;
 		private readonly TappedEventHandler _logTapped;
 		private readonly DoubleTappedEventHandler _logDoubleTapped;
-		
+
+		private bool _isReady;
+
 		public PointersEvents()
 		{
 			_logPointerPressed = new PointerEventHandler((snd, e) =>
 			{
-				Log(PointerPressedEvent, "Pressed")(snd, e);
+				CreateHandler(PointerPressedEvent, "Pressed")(snd, e);
 				if (_capture.IsOn)
 				{
 					((UIElement)snd).CapturePointer(e.Pointer);
 				}
 			});
 
-			_logPointerEntered = new PointerEventHandler(Log(PointerEnteredEvent, "Entered"));
-			_logPointerMoved = new PointerEventHandler(Log(PointerMovedEvent, "Moved"));
-			_logPointerReleased = new PointerEventHandler(Log(PointerReleasedEvent, "Released"));
-			_logPointerExited = new PointerEventHandler(Log(PointerExitedEvent, "Exited"));
-			_logPointerCanceled = new PointerEventHandler(Log(PointerCanceledEvent, "Canceled"));
-			_logPointerCaptureLost = new PointerEventHandler(Log(PointerCaptureLostEvent, "CaptureLost"));
-			_logManipulationStarting = new ManipulationStartingEventHandler(Log(ManipulationStartingEvent, "Manip starting"));
-			_logManipulationStarted = new ManipulationStartedEventHandler(Log(ManipulationStartedEvent, "Manip started"));
-			_logManipulationDelta = new ManipulationDeltaEventHandler(Log(ManipulationDeltaEvent, "Manip delta"));
-			_logManipulationCompleted = new ManipulationCompletedEventHandler(Log(ManipulationCompletedEvent, "Manip completed"));
-			_logTapped = new TappedEventHandler(Log(TappedEvent, "Tapped"));
-			_logDoubleTapped = new DoubleTappedEventHandler(Log(DoubleTappedEvent, "DoubleTapped"));
-
 			this.InitializeComponent();
+
+			_logPointerEntered = new PointerEventHandler(CreateHandler(PointerEnteredEvent, "Entered"));
+			_logPointerMoved = new PointerEventHandler(CreateHandler(PointerMovedEvent, "Moved"));
+			_logPointerReleased = new PointerEventHandler(CreateHandler(PointerReleasedEvent, "Released"));
+			_logPointerExited = new PointerEventHandler(CreateHandler(PointerExitedEvent, "Exited"));
+			_logPointerCanceled = new PointerEventHandler(CreateHandler(PointerCanceledEvent, "Canceled"));
+			_logPointerCaptureLost = new PointerEventHandler(CreateHandler(PointerCaptureLostEvent, "CaptureLost"));
+			_logManipulationStarting = new ManipulationStartingEventHandler(CreateHandler(ManipulationStartingEvent, "Manip starting", _manipStartingHandle));
+			_logManipulationStarted = new ManipulationStartedEventHandler(CreateHandler(ManipulationStartedEvent, "Manip started", _manipStartedHandle));
+			_logManipulationDelta = new ManipulationDeltaEventHandler(CreateHandler(ManipulationDeltaEvent, "Manip delta", _manipDeltaHandle));
+			_logManipulationCompleted = new ManipulationCompletedEventHandler(CreateHandler(ManipulationCompletedEvent, "Manip completed", _manipCompletedHandle));
+			_logTapped = new TappedEventHandler(CreateHandler(TappedEvent, "Tapped", _gestureTappedHandle));
+			_logDoubleTapped = new DoubleTappedEventHandler(CreateHandler(DoubleTappedEvent, "DoubleTapped", _gestureDoubleTappedHandle));
 
 			_log.ItemsSource = _eventLog;
 			_pointerType.ItemsSource = Enum.GetNames(typeof(PointerDeviceType));
 			_pointerType.SelectedValue = PointerDeviceType.Touch.ToString();
 			_manipMode.ItemsSource = _manipulationModes.Keys;
 			_manipMode.SelectedValue = _manipulationModes.First().Key;
+
+			_isReady = true;
+			OnConfigChanged(null, null);
 		}
 
-		private Action<object, RoutedEventArgs> Log(RoutedEvent evt, string eventName)
-			=> (object sender, RoutedEventArgs args) => _eventLog.Add(new RoutedEventLogEntry(evt, eventName, sender, args, Validate(sender, evt, args)));
+		private Action<object, RoutedEventArgs> CreateHandler(RoutedEvent evt, string eventName, CheckBox handleEvent = null)
+			=> (object sender, RoutedEventArgs args) =>
+			{
+				_eventLog.Add(new RoutedEventLogEntry(evt, eventName, sender, args, Validate(sender, evt, args)));
+				if (sender == TouchTarget && (handleEvent?.IsChecked ?? false))
+				{
+					args.GetType().GetProperty("Handled")?.SetValue(args, true);
+				}
+			};
 
 		private void ClearLog(object sender, RoutedEventArgs e)
 			=> _eventLog.Clear();
 
 		private void OnPointerTypeChanged(object sender, SelectionChangedEventArgs e)
-		{
-			if (!Enum.TryParse<PointerDeviceType>(_pointerType.SelectedValue?.ToString(), out var type))
-			{
-#pragma warning disable CS4014 // Because this call is not awaited, execution of the current method continues before the call is completed
-				Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => _pointerType.SelectedValue = PointerDeviceType.Mouse.ToString());
-#pragma warning restore CS4014
-				return;
-			}
-
-			OnConfigChanged(sender, e);
-		}
+			=> OnConfigChanged(sender, e);
 
 		private void OnManipModeChanged(object sender, SelectionChangedEventArgs e)
 			=> OnConfigChanged(sender, e);
 
 		private void OnConfigChanged(object sender, RoutedEventArgs e)
 		{
+			if (!_isReady)
+			{
+				return;
+			}
+
 			if (_horizontalScroll.IsOn)
 			{
 				_myScrollViewer.HorizontalScrollMode = ScrollMode.Enabled;
@@ -130,12 +138,13 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 			if (_manipMode.SelectedValue is string modeKey
 				&& _manipulationModes.TryGetValue(modeKey, out var mode))
 			{
-				_touchTarget.ManipulationMode = mode;
+				TouchTarget.ManipulationMode = mode;
+				TouchTargetParent.ManipulationMode = mode;
 			}
 
 			var handledToo = _handledEventsToo.IsOn;
-			SetupEvents(_touchTargetParent, handledToo);
-			SetupEvents(_touchTarget, handledToo);
+			SetupEvents(TouchTargetParent, handledToo);
+			SetupEvents(TouchTarget, handledToo);
 		}
 
 		private void SetupEvents(FrameworkElement target, bool handledToo)
@@ -177,71 +186,67 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 				target.AddHandler(DoubleTappedEvent, _logDoubleTapped, handledToo);
 		}
 
-		private EventValidity Validate(object snd, RoutedEvent evt, RoutedEventArgs args)
+		private (EventValidity, string error) Validate(object snd, RoutedEvent evt, RoutedEventArgs args)
 		{
+			var validity = EventValidity.Valid;
+			var error = "";
 			if (args is PointerRoutedEventArgs pointer)
 			{
 				var expectedPointerType = (PointerDeviceType)Enum.Parse(typeof(PointerDeviceType), _pointerType.SelectedValue as string);
 				if (expectedPointerType != pointer.Pointer.PointerDeviceType)
 				{
-					return EventValidity.Invalid;
+					error += "pt_type ";
+					validity = EventValidity.Invalid;
 				}
 
 				var expectedPointerId = _pointerId.Text;
 				if (expectedPointerId.HasValueTrimmed()
 					&& (!uint.TryParse(expectedPointerId, out var pointerId) || pointer.Pointer.PointerId != pointerId))
 				{
-					return EventValidity.Invalid;
+					error += "pt_id ";
+					validity = EventValidity.Invalid;
 				}
 
 				var properties = pointer.GetCurrentPoint(null).Properties;
-				if (!Check(_inRange, pointer.Pointer.IsInRange)
-					|| !Check(_inContact, pointer.Pointer.IsInContact))
-				{
-					return EventValidity.Invalid;
-				}
+				Check(_inRange, pointer.Pointer.IsInRange, "in_range");
+				Check(_inContact, pointer.Pointer.IsInContact, "in_contact");
 
-				var validity = EventValidity.Valid;
-				if (CheckButton(_leftButton, properties.IsLeftButtonPressed)
-					&& CheckButton(_middleButton, properties.IsMiddleButtonPressed)
-					&& CheckButton(_rightButton,properties.IsRightButtonPressed)
-					&& CheckButton(_barrelButton, properties.IsBarrelButtonPressed)
-					&& CheckButton(_eraserButton, properties.IsEraser)
-					&& CheckButton(_x1Button, properties.IsXButton1Pressed)
-					&& CheckButton(_x2Button, properties.IsXButton2Pressed))
-				{	
-					return validity;
+				CheckButton(_leftButton, properties.IsLeftButtonPressed, "left");
+				CheckButton(_middleButton, properties.IsMiddleButtonPressed, "middle");
+				CheckButton(_rightButton, properties.IsRightButtonPressed, "right");
+				CheckButton(_barrelButton, properties.IsBarrelButtonPressed, "barrel");
+				CheckButton(_eraserButton, properties.IsEraser, "eraser");
+				CheckButton(_x1Button, properties.IsXButton1Pressed, "x1");
+				CheckButton(_x2Button, properties.IsXButton2Pressed, "x2");
+			}
+
+			return (validity, error);
+
+			void Check(CheckBox expected, bool actual, string errorMessage)
+			{
+				if (expected.IsChecked.HasValue && expected.IsChecked.Value != actual)
+				{
+					error += errorMessage + " ";
+					validity = EventValidity.Invalid;
+				}
+			}
+
+			void CheckButton(CheckBox expected, bool actual, string errorMessage)
+			{
+				if (!expected.IsChecked.HasValue || expected.IsChecked.Value == actual)
+				{
+				}
+				else if (!actual && (evt == PointerReleasedEvent || !Any(PointerPressedEvent) || Any(PointerReleasedEvent)))
+				{
+					error += errorMessage + " ";
+					validity |= EventValidity.SequenceValid;
 				}
 				else
 				{
-					return EventValidity.Invalid;
-				}
-
-				bool CheckButton(CheckBox expected, bool actual)
-				{
-					if (!expected.IsChecked.HasValue || expected.IsChecked.Value == actual)
-					{
-						return true;
-					}
-					else if (!actual && (evt == PointerReleasedEvent || !Any(PointerPressedEvent) || Any(PointerReleasedEvent)))
-					{
-						validity = EventValidity.SequenceValid;
-						return true;
-					}
-					else
-					{
-						validity = EventValidity.Invalid;
-						return false;
-					}
+					error += errorMessage + " ";
+					validity = EventValidity.Invalid;
 				}
 			}
-			else
-			{
-				return EventValidity.Valid;
-			}
-
-			bool Check(CheckBox expected, bool actual)
-				=> !expected.IsChecked.HasValue || expected.IsChecked.Value == actual;
 
 			bool Any(RoutedEvent re)
 				=> _eventLog.Any(e => e.Sender == snd
@@ -253,13 +258,15 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 		[Windows.UI.Xaml.Data.Bindable]
 		public class RoutedEventLogEntry
 		{
-			public RoutedEventLogEntry(RoutedEvent evt, string eventName, object sender, RoutedEventArgs args, EventValidity validity)
+			public RoutedEventLogEntry(RoutedEvent evt, string eventName, object sender, RoutedEventArgs args, (EventValidity result, string errors) validity)
 			{
 				Event = evt;
 				Name = eventName;
 				Sender = sender;
 				Args = args;
-				Validity = validity;
+				Validity = validity.result;
+				Errors = validity.errors;
+				Details = Format();
 			}
 
 			public RoutedEvent Event { get; }
@@ -272,57 +279,66 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 
 			public EventValidity Validity { get; }
 
+			public string Errors { get; }
+
 			public string ValidityBullet
 				=> Validity == EventValidity.Valid ? "🟩 ok"
-					: Validity == EventValidity.SequenceValid ? "🟨 ~ok"
-					: "🟥 error";
+					: Validity == EventValidity.SequenceValid ? $"🟨 ~ok ({Errors})"
+					: $"🟥 error ({Errors})";
 
-			public string Details
-			{
-				get
-				{
-					switch (Args)
-					{
-						case PointerRoutedEventArgs ptArgs:
-							var point = ptArgs.GetCurrentPoint(Sender as UIElement);
-							return $"ptId={ptArgs.Pointer.PointerId} "
-								+ $"| frame={point.FrameId}"
-								+ $"| type={ptArgs.Pointer.PointerDeviceType} "
-								+ $"| position={point.Position} "
-								+ $"| rawPosition={point.RawPosition} "
-								+ $"| inContact={point.IsInContact} "
-								+ $"| props={ToString(point.Properties)} "
-								+ $"| intermediates={ptArgs.GetIntermediatePoints(Sender as UIElement)?.Count.ToString() ?? "null"} ";
-
-						case ManipulationStartingRoutedEventArgs startingArgs:
-							return $"mode={startingArgs.Mode}";
-						case ManipulationStartedRoutedEventArgs startArgs:
-							return $"position={startArgs.Position} | {ToString(startArgs.Cumulative, startArgs.Cumulative)}";
-						case ManipulationDeltaRoutedEventArgs deltaArgs:
-							return $"position={deltaArgs.Position} | {ToString(deltaArgs.Delta, deltaArgs.Cumulative)}";
-						case ManipulationCompletedRoutedEventArgs endArgs:
-							return $"position={endArgs.Position} | {ToString(new ManipulationDelta {Scale = 1}, endArgs.Cumulative)}";
-
-						case TappedRoutedEventArgs tapped:
-							return $"position={tapped.GetPosition(Sender as UIElement)}";
-						case DoubleTappedRoutedEventArgs doubleTapped:
-							return $"position={doubleTapped.GetPosition(Sender as UIElement)}";
-
-						default:
-							return string.Empty;
-					}
-				}
-			}
+			public string Details { get; }
 
 			/// <inheritdoc />
 			public override string ToString()
 				=> $"[{(Sender as FrameworkElement)?.Name ?? Sender?.ToString()}] {Name} ({Validity}) - {Details}";
 
-			private static string ToString(ManipulationDelta delta, ManipulationDelta cumulative)
+			private string Format()
+			{
+				switch (Args)
+				{
+					case PointerRoutedEventArgs ptArgs:
+						var point = ptArgs.GetCurrentPoint(Sender as UIElement);
+						return $"{Src(ptArgs)} "
+							+ $"| hd={ptArgs.Handled} "
+							+ $"| ptId={ptArgs.Pointer.PointerId} "
+							+ $"| frame={point.FrameId}"
+							+ $"| type={ptArgs.Pointer.PointerDeviceType} "
+							+ $"| position={F(point.Position)} "
+							+ $"| rawPosition={F(point.RawPosition)} "
+							+ $"| inContact={point.IsInContact} "
+							+ $"| props={F(point.Properties)} "
+							+ $"| intermediates={ptArgs.GetIntermediatePoints(Sender as UIElement)?.Count.ToString() ?? "null"} ";
+
+					case ManipulationStartingRoutedEventArgs startingArgs:
+						return $"{Src(startingArgs)} | hd={startingArgs.Handled} | mode={startingArgs.Mode}";
+					case ManipulationStartedRoutedEventArgs startArgs:
+						return $"{Src(startArgs)} | hd={startArgs.Handled} | position={F(startArgs.Position)} | {F(startArgs.Cumulative, startArgs.Cumulative)}";
+					case ManipulationDeltaRoutedEventArgs deltaArgs:
+						return $"{Src(deltaArgs)} | hd={deltaArgs.Handled} | position={F(deltaArgs.Position)} | {F(deltaArgs.Delta, deltaArgs.Cumulative)}";
+					case ManipulationCompletedRoutedEventArgs endArgs:
+						return $"{Src(endArgs)} | hd={endArgs.Handled} | position={F(endArgs.Position)} | {F(new ManipulationDelta { Scale = 1 }, endArgs.Cumulative)}";
+
+					case TappedRoutedEventArgs tapped:
+						return $"{Src(tapped)} | hd={tapped.Handled} | position={F(tapped.GetPosition(Sender as UIElement))}";
+					case DoubleTappedRoutedEventArgs doubleTapped:
+						return $"{Src(doubleTapped)} | hd={doubleTapped.Handled} | position={F(doubleTapped.GetPosition(Sender as UIElement))}";
+
+					default:
+						return string.Empty;
+				}
+			}
+
+			private static string Src(RoutedEventArgs args)
+				=> $"src={(args.OriginalSource as FrameworkElement)?.Name ?? args.OriginalSource.GetType().Name} ";
+
+			private static string F(ManipulationDelta delta, ManipulationDelta cumulative)
 				=>  $"X=(Σ:{cumulative.Translation.X:' '000.00;'-'000.00} / Δ:{delta.Translation.X:' '00.00;'-'00.00}) "
 				+ $"| Y=(Σ:{cumulative.Translation.Y:' '000.00;'-'000.00} / Δ:{delta.Translation.Y:' '00.00;'-'00.00}) ";
 
-			private static string ToString(PointerPointProperties props)
+			private static string F(global::Windows.Foundation.Point size)
+				=> $"[{size.X:F2}, {size.X:F2}]";
+
+			private static string F(PointerPointProperties props)
 			{
 				var builder = new StringBuilder();
 
@@ -354,9 +370,9 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 
 		public enum EventValidity
 		{
-			Valid,
-			SequenceValid,
-			Invalid,
+			Valid = 0,
+			SequenceValid = 1,
+			Invalid = 255,
 		}
 	}
 }
