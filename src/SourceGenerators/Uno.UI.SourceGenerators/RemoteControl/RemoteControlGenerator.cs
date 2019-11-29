@@ -72,7 +72,18 @@ namespace Uno.UI.SourceGenerators.RemoteControl
 
 			if (string.IsNullOrEmpty(unoRemoteControlPort))
 			{
-				unoRemoteControlPort = "0";
+				// This file is set through the RemoteControl VS addin, in case
+				// the global properties don't get set properly
+				var rcPath = Path.Combine(context.GetProjectInstance().Directory, "obj", "UnoRemoteControlPort.data");
+
+				if (File.Exists(rcPath))
+				{
+					unoRemoteControlPort = File.ReadAllLines(rcPath).FirstOrDefault() ?? "0";
+				}
+				else
+				{
+					unoRemoteControlPort = "0";
+				}
 			}
 
 			var unoRemoteControlHost = context.GetProjectInstance().GetPropertyValue("UnoRemoteControlHost");
