@@ -7,7 +7,7 @@ namespace Windows.Devices.Geolocation
 	#endif
 	public  partial class Geolocator 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  uint ReportInterval
 		{
@@ -21,7 +21,7 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  double MovementThreshold
 		{
