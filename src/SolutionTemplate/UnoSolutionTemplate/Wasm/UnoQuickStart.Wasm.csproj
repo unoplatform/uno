@@ -35,18 +35,17 @@
 
     You can safely remove this ItemGroup completely.
     -->
-		<Compile Remove="Program.cs" />
-		<Compile Include="Program.cs" />
-		<Content Include="LinkerConfig.xml" />
-		<Content Include="wwwroot\web.config" />
+		<None Include="Program.cs" />
+		<None Include="LinkerConfig.xml" />
+		<None Include="wwwroot\web.config" />
 	</ItemGroup>
 
 	<ItemGroup>
 		<!-- Note that for WebAssembly version 1.1.1 of the console logger required -->
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
-		<PackageReference Include="Uno.UI" Version="1.46.196-dev.2440" />
-		<PackageReference Include="Uno.UI.RemoteControl" Version="1.46.196-dev.2440" Condition="'$(Configuration)'=='Debug'" />
+		<PackageReference Include="Uno.UI" Version="2.0.512-dev.4178" />
+		<PackageReference Include="Uno.UI.RemoteControl" Version="2.0.512-dev.4178" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" Version="1.0.5" />
 		<DotNetCliToolReference Include="Uno.Wasm.Bootstrap.Cli" Version="1.0.5" />
 	</ItemGroup>
