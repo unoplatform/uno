@@ -57,6 +57,12 @@ namespace Uno.UI.RemoteControl.VS
 
 			_dte.Events.BuildEvents.OnBuildProjConfigBegin += 
 				(string project, string projectConfig, string platform, string solutionConfig) => BuildEvents_OnBuildProjConfigBeginAsync(project, projectConfig, platform, solutionConfig);
+
+			// Start the RC server early, as iOS and Android projects capture the globals early
+			// and don't recreate it unless out-of-process msbuild.exe instances are terminated.
+			//
+			// This will can possibly be removed when all projects are migrated to the sdk project system.
+			UpdateProjectsAsync();
 		}
 
 		private async Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
@@ -120,27 +126,27 @@ namespace Uno.UI.RemoteControl.VS
 
 		private async Task BuildEvents_OnBuildProjConfigBeginAsync(string project, string projectConfig, string platform, string solutionConfig)
 		{
-			try
-			{
-				await StartServerAsync();
-
-				await UpdateProjectsAsync();
-			}
-			catch (Exception e)
-			{
-				_debugAction($"BuildEvents_OnBuildProjConfigBeginAsync failed: {e}");
-			}
+			await UpdateProjectsAsync();
 		}
 
 		private async Task UpdateProjectsAsync()
 		{
-			foreach (var p in await GetProjectsAsync())
+			try
 			{
-				if (GetMsbuildProject(p.FileName) is Microsoft.Build.Evaluation.Project msbProject && IsApplication(msbProject))
+				await StartServerAsync();
+
+				foreach (var p in await GetProjectsAsync())
 				{
-					var portString = RemoteControlServerPort.ToString(CultureInfo.InvariantCulture);
-					SetGlobalProperty(p.FileName, RemoteControlServerPortProperty, portString);
+					if (GetMsbuildProject(p.FileName) is Microsoft.Build.Evaluation.Project msbProject && IsApplication(msbProject))
+					{
+						var portString = RemoteControlServerPort.ToString(CultureInfo.InvariantCulture);
+						SetGlobalProperty(p.FileName, RemoteControlServerPortProperty, portString);
+					}
 				}
+			}
+			catch (Exception e)
+			{
+				_debugAction($"UpdateProjectsAsync failed: {e}");
 			}
 		}
 
@@ -259,6 +265,7 @@ namespace Uno.UI.RemoteControl.VS
 				var subProjects = folder.ProjectItems
 					.OfType<EnvDTE.ProjectItem>()
 					.Select(p => p.Object)
+					.Where(p => p != null)
 					.Cast<EnvDTE.Project>();
 
 				foreach (var project in subProjects)
