@@ -4,6 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:imageTests="using:UITests.Shared.Windows_UI_Xaml_Controls.ImageTests"
 	mc:Ignorable="d"
 	d:DesignHeight="300"
 	d:DesignWidth="400">
@@ -13,25 +14,25 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
-		<TextBlock>[Index]) [Stretch] - [HorizontalAlignment] - [VerticalAlignment]</TextBlock>
+		<imageTests:Image_Stretch_Modes_Picker x:Name="modesPicker" />
 		<ScrollViewer Grid.Row="1">
-			<ItemsControl ItemsSource="{x:Bind Items}">
+			<ItemsControl ItemsSource="{Binding Items, ElementName=modesPicker}">
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
 						<StackPanel Width="300" Padding="20" Background="LightGreen" Margin="10">
 							<TextBlock FontSize="16" Margin="0,20,0,0">
-								<Run Text="{Binding index}" />) stretch=<Run Text="{Binding stretch}" FontWeight="Bold" />
-								<LineBreak />h=<Run Text="{Binding horizontalAlignment}" FontWeight="Bold" /> -
-								v=<Run Text="{Binding verticalAlignment}" FontWeight="Bold" />
+								<Run Text="{Binding Index}" />) stretch=<Run Text="{Binding Stretch}" FontWeight="Bold" />
+								<LineBreak />h=<Run Text="{Binding HorizontalAlignment}" FontWeight="Bold" /> -
+								v=<Run Text="{Binding VerticalAlignment}" FontWeight="Bold" />
 							</TextBlock>
 							<Border Width="250"
 							        Height="250"
 							        BorderThickness="1"
 							        BorderBrush="Black"
 							        Background="DeepPink">
-								<Image Stretch="{Binding stretch}"
-								       VerticalAlignment="{Binding verticalAlignment}"
-								       HorizontalAlignment="{Binding horizontalAlignment}"
+								<Image Stretch="{Binding Stretch}"
+								       VerticalAlignment="{Binding VerticalAlignment}"
+								       HorizontalAlignment="{Binding HorizontalAlignment}"
 								       Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg" />
 							</Border>
 						</StackPanel>
