@@ -145,10 +145,10 @@ namespace SamplesApp.UITests
 				Assert.AreEqual(expectedBitmap.Size.Height, actualBitmap.Size.Height, "Height");
 
 				for (var x = rect.Value.X; x < Math.Min(rect.Value.Width, expectedBitmap.Size.Width); x++)
-				for (var y = rect.Value.Y; y < Math.Min(rect.Value.Height, expectedBitmap.Size.Height); y++)
-				{
-					Assert.AreEqual(expectedBitmap.GetPixel(x, y), actualBitmap.GetPixel(x, y), $"Pixel {x},{y} (rel: {x-rect.Value.X},{y - rect.Value.Y})");
-				}
+					for (var y = rect.Value.Y; y < Math.Min(rect.Value.Height, expectedBitmap.Size.Height); y++)
+					{
+						Assert.AreEqual(expectedBitmap.GetPixel(x, y), actualBitmap.GetPixel(x, y), $"Pixel {x},{y} (rel: {x - rect.Value.X},{y - rect.Value.Y})");
+					}
 			}
 		}
 
@@ -168,15 +168,27 @@ namespace SamplesApp.UITests
 				}
 
 				for (var x = rect.Value.X; x < Math.Min(rect.Value.Width, expectedBitmap.Size.Width); x++)
-				for (var y = rect.Value.Y; y < Math.Min(rect.Value.Height, expectedBitmap.Size.Height); y++)
-				{
-					if (expectedBitmap.GetPixel(x, y) != actualBitmap.GetPixel(x, y))
+					for (var y = rect.Value.Y; y < Math.Min(rect.Value.Height, expectedBitmap.Size.Height); y++)
 					{
-						return;
+						if (expectedBitmap.GetPixel(x, y) != actualBitmap.GetPixel(x, y))
+						{
+							return;
+						}
 					}
-				}
 
 				Assert.Fail("Screenshots are equals.");
+			}
+		}
+
+		public void AssertHasColorAt(FileInfo screenshot, float x, float y, Color expectedColor)
+		{
+			using (var bitmap = new Bitmap(screenshot.FullName))
+			{
+				Assert.GreaterOrEqual(bitmap.Width, (int)x);
+				Assert.GreaterOrEqual(bitmap.Height, (int)y);
+				var pixel = bitmap.GetPixel((int)x, (int)y);
+
+				Assert.AreEqual(expectedColor.ToArgb(), pixel.ToArgb()); //Convert to ARGB value, because 'named colors' are not considered equal to their unnamed equivalents(!)
 			}
 		}
 
