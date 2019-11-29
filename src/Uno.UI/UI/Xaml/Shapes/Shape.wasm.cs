@@ -22,9 +22,13 @@ namespace Windows.UI.Xaml.Shapes
 		private readonly SerialDisposable _fillBrushSubscription = new SerialDisposable();
 		private readonly SerialDisposable _strokeBrushSubscription = new SerialDisposable();
 
+		private DefsSvgElement _defs;
+
+		public UIElementCollection SvgChildren { get; }
+
 		protected Shape() : base("svg", isSvg: true)
 		{
-			_svgChildren = new UIElementCollection(this);
+			SvgChildren = new UIElementCollection(this);
 
 			OnStretchUpdatedPartial();
 		}
@@ -35,13 +39,13 @@ namespace Windows.UI.Xaml.Shapes
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();
-			_svgChildren.CollectionChanged += OnSvgChildrenChanged;
+			SvgChildren.CollectionChanged += OnSvgChildrenChanged;
 		}
 
 		protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
-			_svgChildren.CollectionChanged -= OnSvgChildrenChanged;
+			SvgChildren.CollectionChanged -= OnSvgChildrenChanged;
 		}
 
 		protected void InitCommonShapeProperties() // Should be called from base class constructor
@@ -51,10 +55,6 @@ namespace Windows.UI.Xaml.Shapes
 			OnStrokeUpdatedPartial();
 			OnStrokeThicknessUpdatedPartial();
 		}
-
-		private readonly UIElementCollection _svgChildren;
-
-		public UIElementCollection SvgChildren => _svgChildren;
 
 		protected abstract SvgElement GetMainSvgElement();
 
@@ -80,10 +80,10 @@ namespace Windows.UI.Xaml.Shapes
 				case LinearGradientBrush lgb:
 					var linearGradient = lgb.ToSvgElement();
 					var gradientId = linearGradient.HtmlId;
-					SvgChildren.Add(linearGradient);
+					GetDefs().Add(linearGradient);
 					svgElement.SetStyle("fill", $"url(#{gradientId})");
 					_fillBrushSubscription.Disposable = new DisposableAction(
-						() => SvgChildren.Remove(linearGradient)
+						() => GetDefs().Remove(linearGradient)
 					);
 					break;
 				default:
@@ -106,10 +106,10 @@ namespace Windows.UI.Xaml.Shapes
 				case LinearGradientBrush lgb:
 					var linearGradient = lgb.ToSvgElement();
 					var gradientId = linearGradient.HtmlId;
-					SvgChildren.Add(linearGradient);
+					GetDefs().Add(linearGradient);
 					svgElement.SetStyle("stroke", $"url(#{gradientId})");
 					_strokeBrushSubscription.Disposable = new DisposableAction(
-						() => SvgChildren.Remove(linearGradient)
+						() => GetDefs().Remove(linearGradient)
 					);
 					break;
 				default:
@@ -148,6 +148,20 @@ namespace Windows.UI.Xaml.Shapes
 				var str = string.Join(",", StrokeDashArray.Select(d => $"{d}px"));
 				svgElement.SetStyle("stroke-dasharray", str);
 			}
+		}
+
+		/// <summary>
+		/// Gets host for non-visual elements
+		/// </summary>
+		private UIElementCollection GetDefs()
+		{
+			if (_defs == null)
+			{
+				_defs = new DefsSvgElement();
+				SvgChildren.Add(_defs);
+			}
+
+			return _defs.Defs;
 		}
 	}
 }
