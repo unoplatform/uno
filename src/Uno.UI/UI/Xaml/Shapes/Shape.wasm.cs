@@ -20,6 +20,7 @@ namespace Windows.UI.Xaml.Shapes
 	partial class Shape
 	{
 		private readonly SerialDisposable _fillBrushSubscription = new SerialDisposable();
+		private readonly SerialDisposable _strokeBrushSubscription = new SerialDisposable();
 
 		protected Shape() : base("svg", isSvg: true)
 		{
@@ -100,9 +101,20 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				case SolidColorBrush scb:
 					svgElement.SetStyle("stroke", scb.Color.ToCssString());
+					_strokeBrushSubscription.Disposable = null;
+					break;
+				case LinearGradientBrush lgb:
+					var linearGradient = lgb.ToSvgElement();
+					var gradientId = linearGradient.HtmlId;
+					SvgChildren.Add(linearGradient);
+					svgElement.SetStyle("stroke", $"url(#{gradientId})");
+					_strokeBrushSubscription.Disposable = new DisposableAction(
+						() => SvgChildren.Remove(linearGradient)
+					);
 					break;
 				default:
 					svgElement.ResetStyle("stroke");
+					_strokeBrushSubscription.Disposable = null;
 					break;
 			}
 
