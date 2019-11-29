@@ -140,7 +140,7 @@
 
 	<Target Name="PublishVisx">
 		<Copy SourceFiles="..\src\SolutionTemplate\UnoSolutionTemplate.VISX\bin\Release\UnoSolutionTemplate.VSIX.vsix"
-					DestinationFiles="$(OutputDir))\vslatest\UnoPlatform-$(GITVERSION_FullSemVer).vsix" />
+					DestinationFiles="$(OutputDir)\vslatest\UnoPlatform-$(GITVERSION_FullSemVer).vsix" />
 	</Target>
 
 	<Target Name="BuildNuGetPackage">
