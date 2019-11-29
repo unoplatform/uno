@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			if (ShouldCapturePointer)
 			{
-				args.Handled = true;
+				// Note: We don't handle event as UWP does not, and otherwise it will prevent parent control to update its visual state
 				CapturePointer(args.Pointer);
 				StartDrag(args.GetCurrentPoint(this).Position);
 			}
@@ -88,7 +88,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			if (ShouldCapturePointer)
 			{
-				args.Handled = true;
+				// Note: We don't handle event as UWP does not, and otherwise it will prevent parent control to update its visual state
 				ReleasePointerCapture(args.Pointer);
 				CompleteDrag(args.GetCurrentPoint(this).Position);
 			}
@@ -100,7 +100,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			if (ShouldCapturePointer)
 			{
-				args.Handled = true;
+				// Note: We don't handle event as UWP does not, and otherwise it will prevent parent control to update its visual state
 				ReleasePointerCapture(args.Pointer);
 				CompleteDrag(args.GetCurrentPoint(this).Position);
 			}
@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			if (ShouldCapturePointer && IsCaptured(args.Pointer))
 			{
-				args.Handled = true;
+				// Note: We don't handle event as UWP does not, and otherwise it will prevent parent control to update its visual state
 				DeltaDrag(args.GetCurrentPoint(this).Position);
 			}
 		}

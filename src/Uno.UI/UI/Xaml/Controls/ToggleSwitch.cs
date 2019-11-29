@@ -35,6 +35,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public ToggleSwitch()
 		{
+			InitializeVisualStates();
 		}
 
 		protected override void OnLoaded()
