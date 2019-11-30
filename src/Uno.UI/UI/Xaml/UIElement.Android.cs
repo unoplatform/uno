@@ -4,10 +4,13 @@ using Uno.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.Foundation;
 using Android.Support.V4.View;
 using Windows.UI.Xaml.Media;
+using Android.Graphics;
 using Android.Views;
+using Matrix = Windows.UI.Xaml.Media.Matrix;
+using Point = Windows.Foundation.Point;
+using Rect = Windows.Foundation.Rect;
 
 namespace Windows.UI.Xaml
 {
@@ -27,11 +30,33 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			ViewCompat.SetClipBounds(this, rect.LogicalToPhysicalPixels());
+			if (NeedsClipToSlot)
+			{
+				ViewCompat.SetClipBounds(this, rect.LogicalToPhysicalPixels());
+			}
+			else
+			{
+				ViewCompat.SetClipBounds(this, null);
+			}
+
 			SetClipChildren(NeedsClipToSlot);
 		}
 
-		private bool _renderTransformRegisteredParentChanged;
+		/// <summary>
+        /// This method is called from the OnDraw of elements supporting rounded corners:
+        /// Border, Rectangle, Panel...
+        /// </summary>
+		private protected void AdjustCornerRadius(Android.Graphics.Canvas canvas, CornerRadius cornerRadius)
+		{
+			if (cornerRadius != CornerRadius.None)
+			{
+				var rect = new RectF(canvas.ClipBounds);
+				var clipPath = cornerRadius.GetOutlinePath(rect);
+				canvas.ClipPath(clipPath);
+			}
+		}
+
+        private bool _renderTransformRegisteredParentChanged;
 		private static void RenderTransformOnParentChanged(object dependencyObject, object _, DependencyObjectParentChangedEventArgs args)
 			=> ((UIElement)dependencyObject)._renderTransform?.UpdateParent(args.PreviousParent, args.NewParent);
 		partial void OnRenderTransformSet()

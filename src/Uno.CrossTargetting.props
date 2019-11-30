@@ -105,6 +105,10 @@
 	</ItemGroup>
 	<MakeDir Directories="$(_TargetNugetFolder)" />
 
+    <!-- Add override file to notify a developer that the used package is modified -->
+    <WriteLinestoFile File="$(_TargetNugetFolder)\.packageoverride"
+             Lines="$([System.DateTime]::Now.ToString('yyyyMMddTHHmmss')) from $(MSBuildThisFileDirectory)"
+             Overwrite="True" />
 	<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder) and $(_TargetNugetRefFolder)" />
 
 	<Copy SourceFiles="@(_OutputFiles)"

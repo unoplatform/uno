@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Shapes
 			var pathBounds = path.PathBoundingBox;
 
 			if (
-				nfloat.IsInfinity(pathBounds.Left) 
+				nfloat.IsInfinity(pathBounds.Left)
 				|| nfloat.IsInfinity(pathBounds.Left)
 			)
 			{
@@ -144,13 +144,15 @@ namespace Windows.UI.Xaml.Shapes
 				throw new InvalidOperationException($"transform {transform} contains NaN values, transformation will fail.");
 			}
 
-			var colorFill = this.Fill as SolidColorBrush ?? SolidColorBrushHelper.Transparent;
-			var imageFill = this.Fill as ImageBrush;
+			var colorFill = Fill as SolidColorBrush ?? SolidColorBrushHelper.Transparent;
+			var imageFill = Fill as ImageBrush;
+			var gradientFill = Fill as LinearGradientBrush;
 			var stroke = this.Stroke as SolidColorBrush ?? SolidColorBrushHelper.Transparent;
 
+			var transformedPath = new CGPath(path, transform);
 			var layer = new CAShapeLayer()
 			{
-				Path = new CGPath(path, transform),
+				Path = transformedPath,
 				StrokeColor = stroke.ColorWithOpacity,
 				LineWidth = (nfloat)ActualStrokeThickness,
 			};
@@ -175,6 +177,22 @@ namespace Windows.UI.Xaml.Shapes
 					imageFill,
 					fillMask
 				);
+			}
+			else if (gradientFill != null)
+			{
+				var fillMask = new CAShapeLayer()
+				{
+					Path = transformedPath,
+					Frame = Bounds,
+					// We only use the fill color to create the mask area
+					FillColor = _Color.White.CGColor,
+				};
+
+				var gradientLayer = gradientFill.GetLayer(Frame.Size);
+				gradientLayer.Frame = Bounds;
+				gradientLayer.Mask = fillMask;
+				gradientLayer.MasksToBounds = true;
+				layer.AddSublayer(gradientLayer);
 			}
 
 			if (StrokeDashArray != null)
@@ -311,7 +329,7 @@ namespace Windows.UI.Xaml.Shapes
 			var strokeThickness = this.ActualStrokeThickness;
 			var strokeThicknessF = (float)strokeThickness;
 
-            _scaleX = (nfloat)(calculatedWidth - strokeThicknessF) / pathWidth;
+			_scaleX = (nfloat)(calculatedWidth - strokeThicknessF) / pathWidth;
 			_scaleY = (nfloat)(calculatedHeight - strokeThicknessF) / pathHeight;
 
 			//Make sure that we have a valid scale if both of them are not set

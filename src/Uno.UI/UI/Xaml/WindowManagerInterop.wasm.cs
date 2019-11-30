@@ -430,8 +430,8 @@ namespace Uno.UI.Xaml
 		}
 
 		#endregion
-		#region SetAttributes
 
+		#region SetAttribute
 		internal static void SetAttribute(IntPtr htmlId, string name, string value)
 		{
 			if (UseJavascriptEval)
@@ -466,6 +466,38 @@ namespace Uno.UI.Xaml
 
 			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string Value;
+		}
+
+		#endregion
+
+		#region ClearAttribute
+		internal static void RemoveAttribute(IntPtr htmlId, string name)
+		{
+			if (UseJavascriptEval)
+			{
+				var command = "Uno.UI.WindowManager.current.removeAttribute(\"" + htmlId + "\", \"" + name + "\");";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerRemoveAttributeParams()
+				{
+					HtmlId = htmlId,
+					Name = name,
+				};
+
+				TSInteropMarshaller.InvokeJS<WindowManagerRemoveAttributeParams>("Uno:removeAttributeNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerRemoveAttributeParams
+		{
+			public IntPtr HtmlId;
+
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string Name;
 		}
 
 		#endregion
@@ -932,5 +964,34 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
+		#region ScrollTo
+		internal static void ScrollTo(IntPtr htmlId, double? left, double? top, bool disableAnimation)
+		{
+			var parms = new WindowManagerScrollToOptionsParams
+			{
+				HtmlId = htmlId,
+				HasLeft = left.HasValue,
+				Left = left ?? 0,
+				HasTop = top.HasValue,
+				Top = top ?? 0,
+				DisableAnimation = disableAnimation
+			};
+
+			TSInteropMarshaller.InvokeJS<WindowManagerScrollToOptionsParams>("Uno:scrollTo", parms);
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerScrollToOptionsParams
+		{
+			public double Left;
+			public double Top;
+			public bool HasLeft;
+			public bool HasTop;
+			public bool DisableAnimation;
+
+			public IntPtr HtmlId;
+		}
+		#endregion
 	}
 }

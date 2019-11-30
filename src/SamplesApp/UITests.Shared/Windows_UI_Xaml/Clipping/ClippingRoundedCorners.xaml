@@ -9,27 +9,67 @@
 
 	<StackPanel>
 		<TextBlock FontSize="25">
-			Following rounded-corner squares should be identical:
+			Those 6 squares should be identical:
 		</TextBlock>
 
 		<StackPanel Orientation="Horizontal"
-					VerticalAlignment="Center"
-					Spacing="10">
+		            Height="75"
+		            Spacing="10" Margin="10">
 
-			<Border CornerRadius="30"
-					Background="Tomato">
+			<Border CornerRadius="20,10,20,10"
+			        Background="Tomato">
 
-				<Rectangle Width="100"
-						   Height="100"
-						   Fill="Olive" />
+				<Rectangle Width="75"
+				           Height="75"
+				           Fill="Olive" />
 			</Border>
 
-			<Border CornerRadius="30"
-					Background="Olive"
-					Width="100"
-					Height="100" />
+			<Border CornerRadius="20,10,20,10"
+			        Background="Olive">
+
+				<Rectangle Width="75"
+				           Height="75"
+				           Fill="Olive"
+				           RenderTransformOrigin=".5,.5">
+					<Rectangle.RenderTransform>
+						<RotateTransform Angle="10" />
+					</Rectangle.RenderTransform>
+				</Rectangle>
+			</Border>
+
+			<ContentPresenter CornerRadius="20,10,20,10"
+			                  Background="Olive">
+				<Rectangle Width="75"
+				           Height="75"
+				           Fill="Olive"
+				           RenderTransformOrigin=".5,.5">
+					<Rectangle.RenderTransform>
+						<RotateTransform Angle="45" />
+					</Rectangle.RenderTransform>
+				</Rectangle>
+			</ContentPresenter>
+
+			<Border CornerRadius="20,10,20,10"
+			        Background="Olive"
+			        Width="75"
+			        Height="75" />
+
+			<Grid CornerRadius="20,10,20,10">
+
+				<Rectangle Width="75"
+				           Height="75"
+				           Fill="Olive" />
+
+			</Grid>
+
+			<StackPanel CornerRadius="20,10,20,10"
+			            Background="Olive">
+				
+				<Rectangle Width="75"
+				           Height="75" />
+
+			</StackPanel>
 
 		</StackPanel>
-
 	</StackPanel>
 </Page>

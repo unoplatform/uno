@@ -32,10 +32,10 @@ namespace Uno.UI.Extensions
 			return DateTime.Today.Add(time).ToNSDate();
 		}
 
-		internal static TimeSpan ToTimeSpan(this NSDate date, nint offsetInSecondsFromGMT)
+		internal static TimeSpan ToTimeSpanOfDay(this NSDate date, nint offsetInSecondsFromGMT)
 		{
 			var offset = TimeSpan.FromSeconds(offsetInSecondsFromGMT);
-			return date.ToTimeSpan().Add(offset);
+			return date.ToTimeSpan().Add(offset).NormalizeToDay();
 		}
 
 #pragma warning disable CS0618 // Type or member is obsolete

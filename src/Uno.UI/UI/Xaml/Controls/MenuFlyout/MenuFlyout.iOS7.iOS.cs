@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 
 					if (item != null)
 					{
-						item.Command.ExecuteIfPossible(item.CommandParameter);
+						item.InvokeClick();
 						Hide();
 					}
 				};

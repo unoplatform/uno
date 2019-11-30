@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -105,23 +106,56 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			AssertScreenshotsAreEqual(initial, final, rect);
 		}
 
+		[Test]
+		public void TestTextBoxReleaseOut() => TestTextBoxReleasedOutState(
+			"MyTextBox",
+			"CommonStates.PointerOver",
+			"CommonStates.Focused");
+
+		[Test]
+		public void TestTextBoxTap() => TestTextBoxTappedState(
+			"MyTextBox",
+			"CommonStates.PointerOver",
+			"CommonStates.Focused");
+
 		private void TestButtonReleasedOutState(string target, params string[] expectedStates)
 		{
 			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.Buttons");
+			TestVisualTests(target, ReleaseOut, expectedStates);
+		}
 
+		private void TestTextBoxReleasedOutState(string target, params string[] expectedStates)
+		{
+			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.TextBox_VisualStates");
+			TestVisualTests(target, ReleaseOut, expectedStates);
+		}
+		private void TestTextBoxTappedState(string target, params string[] expectedStates)
+		{
+			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.TextBox_VisualStates");
+			TestVisualTests(target, Tap, expectedStates);
+		}
+
+		// Press over and move out to release
+		private void ReleaseOut(IAppRect target)
+			=> _app.DragCoordinates(target.X + 2, target.Y + 2, target.X, target.Y - 30);
+
+		private void Tap(IAppRect target)
+			=> _app.TapCoordinates(target.X + 2, target.Y + 2);
+
+		private void TestVisualTests(string targetName, Action<IAppRect> act, params string[] expectedStates)
+		{
 			var initial = TakeScreenshot("Initial");
-			var rect = _app.WaitForElement(target).Single().Rect;
+			var target = _app.WaitForElement(targetName).Single().Rect;
 
-			// Press over and move out to release
-			_app.DragCoordinates(rect.X + 2, rect.Y + 2, rect.X, rect.Y - 30);
+			act(target);
 
 			var final = TakeScreenshot("Final");
 			var actualStates = _app
 				.Marked("VisualStatesLog")
 				.GetDependencyPropertyValue<string>("Text")
 				.Split(new[] {Environment.NewLine}, StringSplitOptions.RemoveEmptyEntries)
-				.Where(line => line.StartsWith(target))
-				.Select(line => line.Trim().Substring(target.Length + 1))
+				.Where(line => line.StartsWith(targetName))
+				.Select(line => line.Trim().Substring(targetName.Length + 1))
 				.ToArray();
 
 			if (expectedStates?.Any() ?? false)
@@ -131,7 +165,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 			// For the comparison, we compare only the location of the control (i.e. we provide the rect).
 			// This is required to NOT include the visual output ot the states (on the right of the test control)
-			AssertScreenshotsAreEqual(initial, final, rect);
+			AssertScreenshotsAreEqual(initial, final, target);
 		}
 	}
 }

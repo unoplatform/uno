@@ -439,5 +439,25 @@ namespace Uno.UI.Tests.StackPanelTest
 
 			Assert.AreEqual(1, SUT.GetChildren().Count());
 		}
+
+		[TestMethod]
+		public void When_Vertical_And_Fixed_Height_Item_ArrangeOverride()
+		{
+			var SUT = new MyStackPanel();
+
+			SUT.AddChild(new Border { Height = 47, Width = 112 });
+
+			var size1 = new Windows.Foundation.Size(1000, 1000);
+			var arrange1 = SUT.ArrangeOverridePublic(size1);
+			Assert.AreEqual(size1, arrange1);
+			var size2 = new Windows.Foundation.Size(2000, 2000);
+			var arrange2 = SUT.ArrangeOverridePublic(size2);
+			Assert.AreEqual(size2, arrange2);
+		}
+
+		public partial class MyStackPanel : StackPanel
+		{
+			public Windows.Foundation.Size ArrangeOverridePublic(Windows.Foundation.Size finalSize) => ArrangeOverride(finalSize);
+		}
 	}
 }

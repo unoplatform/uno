@@ -20,6 +20,7 @@
 				 Text="This is the starting text..."
 				 x:Name="txt" />
 		<Button Grid.Row="1"
+				x:Name="button"
 				Click="OnClick"
 				Content="Toggle IsReadOnly" />
 	</Grid>
