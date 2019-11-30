@@ -54,7 +54,7 @@ In case of Android, we support the following nested URIs.
 
 #### Exceptions
 
-- When `uri` argument is `null`, `AccessViolationException` is thrown.
+- When `uri` argument is `null`, `NullReferenceException` is thrown. Note this differs from UWP where `AccessViolationException` is thrown.
 - When the method is called from non-UI thread `InvalidOperationException` is thrown.
 
 Exceptions are in line with UWP.
@@ -65,6 +65,6 @@ This API is supported on iOS and Android and the implementation does not respect
 
 #### Exceptions
 
-- When `uri` argument is `null`, plain `Exception` with HRESULT is thrown
+- When `uri` argument is `null`, `NullReferenceException` is thrown. Note this differs from UWP where a plain `Exception` with HRESULT is thrown.
 
 Exceptions are in line with UWP.
