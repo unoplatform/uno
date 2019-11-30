@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextWrappingChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
-			_textBoxView?.SetTextWrapping(TextWrapping);
+			_textBoxView?.SetTextWrappingAndTrimming(textWrapping: TextWrapping, textTrimming: null);
 		}
 
 		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e)

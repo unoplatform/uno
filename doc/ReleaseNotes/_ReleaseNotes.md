@@ -1,6 +1,15 @@
 ﻿# Release notes
 
-## Next version
+### Features
+-
+
+### Breaking changes
+-
+
+### Breaking changes
+- 
+
+## Release 2.0
 
 ### Features
 
@@ -101,6 +110,7 @@
 * [Wasm] Add the ability to focus a TextBox by clicking its header
 * Add support for `ToggleButton.IsThreeState` and `ToggleButton.Indeterminate`
 * [Wasm] Add support for `TextBox.IsReadonly`
+* [iOS] [WASM] `Path` now supports `LinearGradientBrush` as `Fill`
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
@@ -116,6 +126,7 @@
  * [WASM] The tranform returned by `UIElement.TransformToVisual` is now including scale, rotation or any custom transformation that was declard on a parent element (transform was only including translate components)
 
 ### Bug fixes
+* [#2186](https://github.com/unoplatform/uno/pull/2186) Fix Canvas Measurement to behave like UWP
 * [#2093](https://github.com/unoplatform/uno/pull/2093) Fix missing measurement option for polyline and polygon
 * Font size, used for ComboBoxItems, are same as in ComboBox content (not smaller)
 * [#2023](https://github.com/unoplatform/uno/pull/2023) Android WebView.NavigateToString doesn't throw exception even when string is very long.
@@ -202,8 +213,10 @@
 * [Android] #2007 ComboBox does not take Window.VisibleBounds to position its popup
 * [Wasm] Fixes the measure of a TextBoxView #2034 #2095
 * [Android] [Wasm] Recent clipping improvements were incompleted. Fixed a case where a control was allowed to draw itself to use more than available place in the _arrange_ phase.
+* [iOS] Fix negative result value of TimePicker. Now value range is limited from 0 to 1 day
 * #2129 WebAssembly Bootstrapper update to remove the implicit .NET 4.6.2 dependency, and support for long file paths on Windows.
 * #2147 Fix NRE in android-specific TextBox.ImeOptions
+* #2146 [iOS] ListView doesn't take extra space when items are added to collection
 
 ## Release 1.45.0
 ### Features

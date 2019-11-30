@@ -377,6 +377,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Canvas\Measure_Children_In_Canvas.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CheckBoxTests\CheckBox_Automated.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -501,7 +505,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_ObservableCollection_Unused_Space.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_VirtualizePanelAdaptaterIdCache.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_Weird_Measure.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -545,6 +557,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Foreground_While_Collapsed.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_LineHeight_MultipleControls.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -558,6 +574,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ScrollViewerTests\ScrollViewer_UpdatesMode.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\PasswordBox_Reveal_Scroll.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -2669,6 +2689,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathTestsControl\Path_LinearGradientBrush.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathTestsControl\Path_With_DashStrokeArray.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2936,6 +2960,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Buttons_Native.xaml.cs">
       <DependentUpon>Buttons_Native.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Canvas\Measure_Children_In_Canvas.xaml.cs">
+      <DependentUpon>Measure_Children_In_Canvas.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CheckBoxTests\CheckBox_Automated.xaml.cs">
       <DependentUpon>CheckBox_Automated.xaml</DependentUpon>
     </Compile>
@@ -2982,6 +3009,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_ItemsPanel_HotSwap.xaml.cs">
       <DependentUpon>ListView_ItemsPanel_HotSwap.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_ObservableCollection_Unused_Space.xaml.cs">
+      <DependentUpon>ListView_ObservableCollection_Unused_Space.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_Weird_Measure.xaml.cs">
+      <DependentUpon>ListView_Weird_Measure.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\ListView_With_ListViews_Count_Measure.xaml.cs">
       <DependentUpon>ListView_With_ListViews_Count_Measure.xaml</DependentUpon>
     </Compile>
@@ -2991,6 +3024,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\RotatedListView_WithRotatedItems.xaml.cs">
       <DependentUpon>RotatedListView_WithRotatedItems.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ListView\WeirdMeasureSequenceControl.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MenuFlyoutItemTests\MenuFlyoutItem_Click.xaml.cs">
       <DependentUpon>MenuFlyoutItem_Click.xaml</DependentUpon>
     </Compile>
@@ -3004,6 +3038,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Pivot\Pivot_CustomContent_Automated.xaml.cs">
       <DependentUpon>Pivot_CustomContent_Automated.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Foreground_While_Collapsed.xaml.cs">
+      <DependentUpon>TextBlock_Foreground_While_Collapsed.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_LineHeight_MultipleControls.xaml.cs">
       <DependentUpon>TextBlock_LineHeight_MultipleControls.xaml</DependentUpon>
     </Compile>
@@ -3012,6 +3049,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBlockControl\TextBlock_Visibility_Arrange.xaml.cs">
       <DependentUpon>TextBlock_Visibility_Arrange.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\PasswordBox_Reveal_Scroll.xaml.cs">
+      <DependentUpon>PasswordBox_Reveal_Scroll.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TextBox\TextBox_BeforeTextChanging.xaml.cs">
       <DependentUpon>TextBox_BeforeTextChanging.xaml</DependentUpon>
@@ -4110,6 +4150,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathTestsControl\Path_Geometry.xaml.cs">
       <DependentUpon>Path_Geometry.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathTestsControl\Path_LinearGradientBrush.xaml.cs">
+      <DependentUpon>Path_LinearGradientBrush.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathTestsControl\Path_With_DashStrokeArray.xaml.cs">
       <DependentUpon>Path_With_DashStrokeArray.xaml</DependentUpon>
     </Compile>
@@ -4908,6 +4951,7 @@
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ChatBox\" />
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\DatePicker\Models\" />
+    <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\PasswordBoxTests\" />
     <Folder Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\TimePicker\Model\" />
   </ItemGroup>
   <ItemGroup>

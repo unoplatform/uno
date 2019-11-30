@@ -4,8 +4,8 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Shapes
 {
-    public partial class Rectangle : Shape
-    {
+	public partial class Rectangle : Shape
+	{
 		public double RadiusY
 		{
 			get { return (double)this.GetValue(RadiusYProperty); }

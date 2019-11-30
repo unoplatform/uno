@@ -57,6 +57,12 @@ namespace Uno.UI.RemoteControl.VS
 
 			_dte.Events.BuildEvents.OnBuildProjConfigBegin += 
 				(string project, string projectConfig, string platform, string solutionConfig) => BuildEvents_OnBuildProjConfigBeginAsync(project, projectConfig, platform, solutionConfig);
+
+			// Start the RC server early, as iOS and Android projects capture the globals early
+			// and don't recreate it unless out-of-process msbuild.exe instances are terminated.
+			//
+			// This will can possibly be removed when all projects are migrated to the sdk project system.
+			UpdateProjectsAsync();
 		}
 
 		private async Task<Dictionary<string, string>> OnProvideGlobalPropertiesAsync()
@@ -120,11 +126,27 @@ namespace Uno.UI.RemoteControl.VS
 
 		private async Task BuildEvents_OnBuildProjConfigBeginAsync(string project, string projectConfig, string platform, string solutionConfig)
 		{
-			await StartServerAsync();
+			await UpdateProjectsAsync();
+		}
 
-			foreach(var p in await GetProjectsAsync())
+		private async Task UpdateProjectsAsync()
+		{
+			try
 			{
-				SetGlobalProperty(p.FileName, RemoteControlServerPortProperty, RemoteControlServerPort.ToString(CultureInfo.InvariantCulture));
+				await StartServerAsync();
+
+				foreach (var p in await GetProjectsAsync())
+				{
+					if (GetMsbuildProject(p.FileName) is Microsoft.Build.Evaluation.Project msbProject && IsApplication(msbProject))
+					{
+						var portString = RemoteControlServerPort.ToString(CultureInfo.InvariantCulture);
+						SetGlobalProperty(p.FileName, RemoteControlServerPortProperty, portString);
+					}
+				}
+			}
+			catch (Exception e)
+			{
+				_debugAction($"UpdateProjectsAsync failed: {e}");
 			}
 		}
 
@@ -236,11 +258,17 @@ namespace Uno.UI.RemoteControl.VS
 			}
 		}
 
-		private IEnumerable<EnvDTE.Project> EnumSubProjects(EnvDTE.Project solutionFolder)
+		private IEnumerable<EnvDTE.Project> EnumSubProjects(EnvDTE.Project folder)
 		{
-			if (solutionFolder.ProjectItems != null)
+			if (folder.ProjectItems != null)
 			{
-				foreach(var project in solutionFolder.ProjectItems.OfType<EnvDTE.Project>())
+				var subProjects = folder.ProjectItems
+					.OfType<EnvDTE.ProjectItem>()
+					.Select(p => p.Object)
+					.Where(p => p != null)
+					.Cast<EnvDTE.Project>();
+
+				foreach (var project in subProjects)
 				{
 					if(project.Kind == FolderKind)
 					{
@@ -259,7 +287,7 @@ namespace Uno.UI.RemoteControl.VS
 
 		public void SetGlobalProperty(string projectFullName, string propertyName, string propertyValue)
 		{
-			var msbuildProject = ProjectCollection.GlobalProjectCollection.GetLoadedProjects(projectFullName).FirstOrDefault();
+			var msbuildProject = GetMsbuildProject(projectFullName);
 			if (msbuildProject == null)
 			{
 				_debugAction($"Failed to find project {projectFullName}, cannot provide listen port to the app.");
@@ -269,6 +297,9 @@ namespace Uno.UI.RemoteControl.VS
 				SetGlobalProperty(msbuildProject, propertyName, propertyValue);
 			}
 		}
+
+		private static Microsoft.Build.Evaluation.Project GetMsbuildProject(string projectFullName)
+			=> ProjectCollection.GlobalProjectCollection.GetLoadedProjects(projectFullName).FirstOrDefault();
 
 		public void SetGlobalProperties(string projectFullName, IDictionary<string, string> properties)
 		{
@@ -289,6 +320,21 @@ namespace Uno.UI.RemoteControl.VS
 		private void SetGlobalProperty(Microsoft.Build.Evaluation.Project msbuildProject, string propertyName, string propertyValue)
 		{
 			msbuildProject.SetGlobalProperty(propertyName, propertyValue);
+
+		}
+
+		private bool IsApplication(Microsoft.Build.Evaluation.Project project)
+		{
+			var isAndroidApp = project.GetPropertyValue("AndroidApplication")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
+			var isiOSApp = project.GetPropertyValue("ProjectTypeGuids")?.Equals("{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", StringComparison.OrdinalIgnoreCase) ?? false;
+			var ismacOSApp = project.GetPropertyValue("ProjectTypeGuids")?.Equals("{A3F8F2AB-B479-4A4A-A458-A89E7DC349F1};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}", StringComparison.OrdinalIgnoreCase) ?? false;
+			var isExe = project.GetPropertyValue("OutputType")?.Equals("Exe", StringComparison.OrdinalIgnoreCase) ?? false;
+			var isWasm = project.GetPropertyValue("WasmHead")?.Equals("true", StringComparison.OrdinalIgnoreCase) ?? false;
+
+			return isAndroidApp
+				|| (isiOSApp && isExe)
+				|| (ismacOSApp && isExe)
+				|| isWasm;
 		}
 	}
 }

@@ -9,10 +9,10 @@ using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
-namespace SamplesApp.UITests.Windows_UI_Xaml_Controls
+namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 {
 	[TestFixture]
-	public class TextBlockTests : SampleControlUITestBase
+	public class TextBlockTests_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]
@@ -54,6 +54,37 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls
 				left.Height.Should().Be(right.Height, "Height");
 				left.Y.Should().Be(right.Y, "Y position");
 			}
+		}
+
+		[Test]
+		[AutoRetry]
+		public void When_Foreground_Changed_With_Visibility()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_Foreground_While_Collapsed");
+
+			_app.WaitForText("FunnyTextBlock", "Look at me now");
+
+			var blueBefore = TakeScreenshot("Before - blue");
+
+			_app.Tap("ChangeTextBlockButton");
+
+			var blackBefore = TakeScreenshot("Before - black");
+
+			var textRect = _app.GetRect("FunnyTextBlock");
+
+			AssertScreenshotsAreNotEqual(blueBefore, blackBefore, textRect);
+
+			_app.Tap("ChangeTextBlockButton");
+
+			//_app.WaitForNoElement("FunnyTextBlock"); // This times out on WASM because view is considered to be still there when collapsed - https://github.com/unoplatform/Uno.UITest/issues/25
+
+			_app.Tap("ChangeTextBlockButton");
+
+			_app.WaitForElement("FunnyTextBlock");
+
+			var blueAfter = TakeScreenshot("After - blue");
+
+			AssertScreenshotsAreEqual(blueBefore, blueAfter, textRect);
 		}
 	}
 }

@@ -71,6 +71,11 @@ namespace Windows.UI.Xaml.Controls
 			UpdateBorder(changed);
 		}
 
+		protected override void OnDraw(Android.Graphics.Canvas canvas)
+		{
+			AdjustCornerRadius(canvas, CornerRadius);
+		}
+
 		protected virtual void OnChildrenChanged()
 		{
 			UpdateBorder();
@@ -137,5 +142,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return this.GetChildren().GetEnumerator();
 		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 	}
 }

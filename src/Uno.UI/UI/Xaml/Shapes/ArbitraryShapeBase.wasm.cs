@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Media;
 using Uno.Disposables;
 using System.Numerics;
 using Uno.UI;
+using Windows.UI.Xaml.Wasm;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -57,6 +58,11 @@ namespace Windows.UI.Xaml.Shapes
 
 			foreach (FrameworkElement child in GetChildren())
 			{
+				if (child is DefsSvgElement)
+				{
+					// Defs hosts non-visual objects
+					continue;
+				}
 				child.SetNativeTransform(matrix);
 			}
 
@@ -144,6 +150,12 @@ namespace Windows.UI.Xaml.Shapes
 
 			foreach (FrameworkElement child in GetChildren())
 			{
+				if (child is DefsSvgElement)
+				{
+					// Defs hosts non-visual objects
+					continue;
+				}
+
 				var childRect = GetBBoxWithStrokeThickness(child);
 				if (bbox == Rect.Empty)
 				{

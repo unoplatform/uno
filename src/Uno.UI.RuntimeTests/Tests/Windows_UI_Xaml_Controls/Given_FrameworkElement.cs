@@ -98,6 +98,24 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 		}
 
+		[TestMethod]
+		public async Task MeasureOverride_With_Nan_In_Grid()
+		{
+			await Dispatch(() =>
+			{
+				var grid = new Grid();
+
+				var SUT = new MyControl02();
+				SUT.Content = new Grid();
+				grid.Children.Add(SUT);
+
+				SUT.BaseAvailableSize = new Size(double.NaN, double.NaN);
+				grid.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
+				Assert.AreEqual(new Size(double.PositiveInfinity, double.PositiveInfinity), SUT.MeasureOverrides.Last());
+				Assert.AreEqual(new Size(0, 0), SUT.DesiredSize);
+			});
+		}
+
 #if __WASM__
 		// TODO Android does not handle measure invalidation properly
 		[TestMethod]
@@ -124,6 +142,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	}
 
 	public partial class MyControl01 : FrameworkElement
+	{
+		public List<Size> MeasureOverrides { get; } = new List<Size>();
+
+		public Size? BaseAvailableSize;
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			MeasureOverrides.Add(availableSize);
+			return base.MeasureOverride(BaseAvailableSize ?? availableSize);
+		}
+	}
+
+	public partial class MyControl02 : ContentControl
 	{
 		public List<Size> MeasureOverrides { get; } = new List<Size>();
 

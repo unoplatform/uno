@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Panel
 	{
-		private BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
+		private readonly BorderLayerRenderer _borderRenderer = new BorderLayerRenderer();
 
 		public Panel()
 		{
@@ -36,16 +36,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				OnChildAdded(element);
 			}
-		}
-
-		partial void OnUnloadedPartial()
-		{
-			_borderRenderer.Clear();
-		}
-
-		partial void OnLoadedPartial()
-		{
-			UpdateBackground();
 		}
 
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue)
@@ -161,5 +151,8 @@ namespace Windows.UI.Xaml.Controls
 			// All touches that are on this view (and not its subviews) are ignored
 			return HitTestOutsideFrame ? this.HitTestOutsideFrame(point, uievent) : base.HitTest(point, uievent);
 		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 	}
 }

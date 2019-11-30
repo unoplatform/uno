@@ -25,10 +25,11 @@ jobs:
       path: $(NUGET_PACKAGES)
     displayName: Cache NuGet packages
     
-  - task: GitVersion@4
+  - task: GitVersion@5
     inputs:
+      useConfigFile: true
+      configFilePath: GitVersion.yml
       updateAssemblyInfo: false
-      gitVersionPath: '$(build.sourcesdirectory)\build\gitversion\GitVersion.exe'
 
   - task: NuGetToolInstaller@0
     inputs:

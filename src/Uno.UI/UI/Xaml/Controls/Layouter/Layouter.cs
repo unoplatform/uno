@@ -269,6 +269,8 @@ namespace Windows.UI.Xaml.Controls
 			var frameworkElement = view as IFrameworkElement;
 			var ret = default(Size);
 
+			// NaN values are accepted as input for MeasureOverride, but are treated as Infinity.
+			slotSize = slotSize.NumberOrDefault(MaxSize);
 
 			if (frameworkElement?.Visibility == Visibility.Collapsed)
 			{
@@ -708,9 +710,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private string LoggingOwnerTypeName => ((object)Panel ?? this).GetType().Name;
 
-		private string LoggingOwnerName => Panel?.Name ?? Panel?.GetType().Name ?? LoggingOwnerTypeName;
-
-		public override string ToString() => $"[{LoggingOwnerName}.Layouter]";
+		public override string ToString() => $"[{LoggingOwnerTypeName}.Layouter]" + (string.IsNullOrEmpty(Panel?.Name) ? default : $"(name='{Panel.Name}')");
 	}
 }
 #endif

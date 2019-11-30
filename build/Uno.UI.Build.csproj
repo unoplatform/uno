@@ -42,12 +42,6 @@
 		</PackageReference>
 	</ItemGroup>
 
-	<ItemGroup Condition="$([MSBuild]::IsOsPlatform(Windows))">
-		<PackageReference Include="GitVersionTask">
-			<Version>4.0.0</Version>
-		</PackageReference>
-	</ItemGroup>
-
 	<Target Name="UnoVSBuild" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'!=''">
 		<Warning Text="Building this project under Visual Studio has no effect." />
 	</Target>
@@ -62,7 +56,7 @@
     -->
 		<Exec Command="set NUGET_RESTORE_MSBUILD_ARGS=/p:CI_Build=true &amp; nuget\nuget.exe restore -Verbosity detailed ..\src\Uno.UI.sln" Condition="'$(AppEnvironment)'=='' and $(_isWindows) " />
 
-		<CallTarget Targets="GetVersion;UpdateFileVersions;UpdateTasksSHA" Condition="$(_isWindows)" />
+		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA" Condition="$(_isWindows)" />
 
 		<CallTarget Targets="BuildCI" Condition="'$(Configuration)'=='Release' and $(_isWindows)" />
 		<CallTarget Targets="BuildCImacOS" Condition="'$(Configuration)'=='Release' and !$(_isWindows)" />
@@ -73,15 +67,34 @@
 
 	<Target Name="UpdateFileVersions">
 
-		<XmlUpdate XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate.VISX\source.extension.vsixmanifest" XPath="/x:PackageManifest/x:Metadata/x:Identity/@Version" Value="$(GITVERSION_MajorMinorPatch).$(GITVERSION_CommitsSinceVersionSource)" Namespace="http://schemas.microsoft.com/developer/vsx-schema/2011" Prefix="x" />
+		<XmlUpdate XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate.VISX\source.extension.vsixmanifest"
+							 XPath="/x:PackageManifest/x:Metadata/x:Identity/@Version"
+							 Value="$(GITVERSION_MajorMinorPatch).$(GITVERSION_CommitsSinceVersionSource)"
+							 Namespace="http://schemas.microsoft.com/developer/vsx-schema/2011"
+							 Prefix="x" />
 
-		<XmlUpdate XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate\Droid\UnoQuickStart.Droid.csproj" XPath="//x:PackageReference[@Include='Uno.UI']/@Version" Value="$(GitVersion_FullSemVer)" Namespace="http://schemas.microsoft.com/developer/msbuild/2003" Prefix="x" />
+		<ItemGroup>
+			<_PackageToUpdate Include="Uno.UI" />
+			<_PackageToUpdate Include="Uno.UI.RemoteControl" />
+		</ItemGroup>
 
-		<XmlUpdate XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate\iOS\UnoQuickStart.iOS.csproj" XPath="//x:PackageReference[@Include='Uno.UI']/@Version" Value="$(GitVersion_FullSemVer)" Namespace="http://schemas.microsoft.com/developer/msbuild/2003" Prefix="x" />
+		<XmlUpdate XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate\Droid\UnoQuickStart.Droid.csproj"
+							 XPath="//x:PackageReference[@Include='%(_PackageToUpdate.Identity)']/@Version" Value="$(GitVersion_FullSemVer)"
+							 Namespace="http://schemas.microsoft.com/developer/msbuild/2003"
+							 Prefix="x" />
 
-		<XmlUpdate XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate\Wasm\UnoQuickStart.Wasm.csproj" XPath="//PackageReference[@Include='Uno.UI']/@Version" Value="$(GitVersion_FullSemVer)" />
+		<XmlUpdate XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate\iOS\UnoQuickStart.iOS.csproj"
+							 XPath="//x:PackageReference[@Include='%(_PackageToUpdate.Identity)']/@Version" Value="$(GitVersion_FullSemVer)"
+							 Namespace="http://schemas.microsoft.com/developer/msbuild/2003"
+							 Prefix="x" />
 
-		<XmlUpdate XmlFileName="..\src\SolutionTemplate\UnoLibraryTemplate\CrossTargetedLibrary.csproj" XPath="//PackageReference[@Include='Uno.UI']/@Version" Value="$(GitVersion_FullSemVer)" />
+		<XmlUpdate XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate\Wasm\UnoQuickStart.Wasm.csproj"
+							 XPath="//PackageReference[@Include='%(_PackageToUpdate.Identity)']/@Version"
+							 Value="$(GitVersion_FullSemVer)" />
+
+		<XmlUpdate XmlFileName="..\src\SolutionTemplate\UnoLibraryTemplate\CrossTargetedLibrary.csproj"
+							 XPath="//PackageReference[@Include='%(_PackageToUpdate.Identity)']/@Version"
+							 Value="$(GitVersion_FullSemVer)" />
 
 	</Target>
 
@@ -126,7 +139,8 @@
 	</Target>
 
 	<Target Name="PublishVisx">
-		<Copy SourceFiles="..\src\SolutionTemplate\UnoSolutionTemplate.VISX\bin\Release\UnoSolutionTemplate.VSIX.vsix" DestinationFiles="$(OutputDir)\UnoPlatform-$(GITVERSION_FullSemVer).vsix" />
+		<Copy SourceFiles="..\src\SolutionTemplate\UnoSolutionTemplate.VISX\bin\Release\UnoSolutionTemplate.VSIX.vsix"
+					DestinationFiles="$(OutputDir)\vslatest\UnoPlatform-$(GITVERSION_FullSemVer).vsix" />
 	</Target>
 
 	<Target Name="BuildNuGetPackage">
