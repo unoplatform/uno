@@ -6,8 +6,8 @@
 ### Breaking changes
 -
 
-### Breaking changes
-- 
+### Bug fixes
+- [#2230] `DisplayInformation` leaks memory
 
 ## Release 2.0
 
