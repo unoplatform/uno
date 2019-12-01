@@ -24,14 +24,16 @@ namespace Windows.Graphics.Display
 
 		private void UpdateProperties()
 		{
-			var realDisplayMetrics = new DisplayMetrics();
-			var windowManager = ContextHelper.Current.GetSystemService(Context.WindowService).JavaCast<IWindowManager>();
-			windowManager.DefaultDisplay.GetRealMetrics(realDisplayMetrics);
+			using (var realDisplayMetrics = new DisplayMetrics())
+			using (var windowManager = ContextHelper.Current.GetSystemService(Context.WindowService).JavaCast<IWindowManager>())
+			{
+				windowManager.DefaultDisplay.GetRealMetrics(realDisplayMetrics);
 
-			UpdateLogicalProperties(realDisplayMetrics);
-			UpdateRawProperties(realDisplayMetrics);
-			UpdateNativeOrientation(windowManager);
-			UpdateCurrentOrientation(windowManager);
+				UpdateLogicalProperties(realDisplayMetrics);
+				UpdateRawProperties(realDisplayMetrics);
+				UpdateNativeOrientation(windowManager);
+				UpdateCurrentOrientation(windowManager);
+			}
 		}
 
 		private void UpdateLogicalProperties(DisplayMetrics realDisplayMetrics)
@@ -99,68 +101,70 @@ namespace Windows.Graphics.Display
 		private void UpdateCurrentOrientation(IWindowManager windowManager)
 		{
 			var rotation = windowManager.DefaultDisplay.Rotation;
-			var displayMetrics = new DisplayMetrics();
-			windowManager.DefaultDisplay.GetMetrics(displayMetrics);
-
-			int width = displayMetrics.WidthPixels;
-			int height = displayMetrics.HeightPixels;
-
-			if (width == height)
+			using (var displayMetrics = new DisplayMetrics())
 			{
-				//square device, can't tell orientation
-				CurrentOrientation = DisplayOrientations.None;
-				return;
-			}
+				windowManager.DefaultDisplay.GetMetrics(displayMetrics);
 
-			if (NativeOrientation == DisplayOrientations.Portrait)
-			{
-				switch (rotation)
+				int width = displayMetrics.WidthPixels;
+				int height = displayMetrics.HeightPixels;
+
+				if (width == height)
 				{
-					case SurfaceOrientation.Rotation0:
-						CurrentOrientation = DisplayOrientations.Portrait;
-						break;
-					case SurfaceOrientation.Rotation90:
-						CurrentOrientation = DisplayOrientations.Landscape;
-						break;
-					case SurfaceOrientation.Rotation180:
-						CurrentOrientation = DisplayOrientations.PortraitFlipped;
-						break;
-					case SurfaceOrientation.Rotation270:
-						CurrentOrientation = DisplayOrientations.LandscapeFlipped;
-						break;
-					default:
-						//invalid rotation
-						CurrentOrientation = DisplayOrientations.None;
-						break;
+					//square device, can't tell orientation
+					CurrentOrientation = DisplayOrientations.None;
+					return;
 				}
-			}
-			else if (NativeOrientation == DisplayOrientations.Landscape)
-			{
-				//device is landscape or square
-				switch (rotation)
+
+				if (NativeOrientation == DisplayOrientations.Portrait)
 				{
-					case SurfaceOrientation.Rotation0:
-						CurrentOrientation = DisplayOrientations.Landscape;
-						break;
-					case SurfaceOrientation.Rotation90:
-						CurrentOrientation = DisplayOrientations.Portrait;
-						break;
-					case SurfaceOrientation.Rotation180:
-						CurrentOrientation = DisplayOrientations.LandscapeFlipped;
-						break;
-					case SurfaceOrientation.Rotation270:
-						CurrentOrientation = DisplayOrientations.PortraitFlipped;
-						break;
-					default:
-						//invalid rotation
-						CurrentOrientation = DisplayOrientations.None;
-						break;
+					switch (rotation)
+					{
+						case SurfaceOrientation.Rotation0:
+							CurrentOrientation = DisplayOrientations.Portrait;
+							break;
+						case SurfaceOrientation.Rotation90:
+							CurrentOrientation = DisplayOrientations.Landscape;
+							break;
+						case SurfaceOrientation.Rotation180:
+							CurrentOrientation = DisplayOrientations.PortraitFlipped;
+							break;
+						case SurfaceOrientation.Rotation270:
+							CurrentOrientation = DisplayOrientations.LandscapeFlipped;
+							break;
+						default:
+							//invalid rotation
+							CurrentOrientation = DisplayOrientations.None;
+							break;
+					}
 				}
-			}
-			else
-			{
-				//fallback
-				CurrentOrientation = DisplayOrientations.None;
+				else if (NativeOrientation == DisplayOrientations.Landscape)
+				{
+					//device is landscape or square
+					switch (rotation)
+					{
+						case SurfaceOrientation.Rotation0:
+							CurrentOrientation = DisplayOrientations.Landscape;
+							break;
+						case SurfaceOrientation.Rotation90:
+							CurrentOrientation = DisplayOrientations.Portrait;
+							break;
+						case SurfaceOrientation.Rotation180:
+							CurrentOrientation = DisplayOrientations.LandscapeFlipped;
+							break;
+						case SurfaceOrientation.Rotation270:
+							CurrentOrientation = DisplayOrientations.PortraitFlipped;
+							break;
+						default:
+							//invalid rotation
+							CurrentOrientation = DisplayOrientations.None;
+							break;
+					}
+				}
+				else
+				{
+					//fallback
+					CurrentOrientation = DisplayOrientations.None;
+				}
 			}
 		}
 
