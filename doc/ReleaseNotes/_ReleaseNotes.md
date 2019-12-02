@@ -7,6 +7,7 @@
 -
 
 ### Bug fixes
+- [#2230] `DisplayInformation` leaks memory
 - [WASM] Shapes now update when their Fill brush's Color changes
 
 ## Release 2.0
