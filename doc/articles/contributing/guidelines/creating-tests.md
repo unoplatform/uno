@@ -31,7 +31,7 @@ UI tests can mimic the actions of a user:
 
  They can verify assertions about the state of the app:
 
-  - Text labels
+  - text labels
   - any DependencyProperty value
   - onscreen bounds of a view element
   - comparing screenshots at different stages of the app, and asserting equality or inequality
@@ -48,7 +48,7 @@ These tests are ideal for testing platform-agnostic parts of the code, such as t
 
 Again these are 'classic' unit tests, but they are run 'in-process' on the actual target platform, using the 'real' Uno.UI assemblies. They can be run locally through the [Unit Tests Runner](https://github.com/unoplatform/uno/blob/master/src/SamplesApp/SamplesApp.Shared/Samples/UnitTests/UnitTestsPage.xaml) sample in the SamplesApp.
 
-These tests are useful for testing behavior which can run synchronously and where correctness can be asserted programmatically. Relative to the .NET Framework tests, they have the advantage that platform-dependent behavior can be tested, but the disadvantage of being restricted to the public API surface.
+These tests are useful for testing behavior which can run synchronously, or on the UI Thread and where correctness can be asserted programmatically. Relative to the .NET Framework tests, they have the advantage that platform-dependent behavior can be tested, but the disadvantage of being restricted to the public API surface.
 
 ### Xaml code generation tests (`XamlGenerationTests`)
 
@@ -58,7 +58,7 @@ If you want to actually test that generated Xaml produces correct behavior, whic
 
 ## Which type of test should I create?
 
-The UI tests are in some sense the most powerful means of testing behavior, since they can simulate real user input and verify the state of the running app. However they're also typically more time-consuming to author, and take longer to run several orders of magnitude, which affects both your own personal development loop and also the running time of the CI build. Sometimes a UI test is a sledgehammer where you only need... some... smaller hammer. 
+The UI tests are in some sense the most powerful means of testing behavior, since they can simulate real user input and verify the state of the running app. However they're also typically more time-consuming to author, and take several orders of magnitude longer to run , which affects both your own personal development loop and also very importantly the running time of the CI build. Sometimes a UI test is a sledgehammer where you only need... some... smaller hammer. 
 
 As a rule of thumb, if the behavior you're testing can be verified by a unit test (either in `Uno.UI.Tests` or `Uno.UI.RuntimeTests`), you should write a unit test. If you're fixing a bug that involves user interaction, multiple asynchronous UI operations, or can only be verified by examining the onscreen visual state, then create a UI test.
 
