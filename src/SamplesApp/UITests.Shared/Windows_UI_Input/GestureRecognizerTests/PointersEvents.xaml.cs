@@ -56,8 +56,8 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 		{
 			_logPointerPressed = new PointerEventHandler((snd, e) =>
 			{
-				CreateHandler(PointerPressedEvent, "Pressed")(snd, e);
-				if (_capture.IsOn)
+				CreateHandler(PointerPressedEvent, "Pressed", _ptPressedHandle)(snd, e);
+				if (_ptPressedCapture.IsChecked ?? false)
 				{
 					((UIElement)snd).CapturePointer(e.Pointer);
 				}
@@ -65,12 +65,12 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 
 			this.InitializeComponent();
 
-			_logPointerEntered = new PointerEventHandler(CreateHandler(PointerEnteredEvent, "Entered"));
-			_logPointerMoved = new PointerEventHandler(CreateHandler(PointerMovedEvent, "Moved"));
-			_logPointerReleased = new PointerEventHandler(CreateHandler(PointerReleasedEvent, "Released"));
-			_logPointerExited = new PointerEventHandler(CreateHandler(PointerExitedEvent, "Exited"));
-			_logPointerCanceled = new PointerEventHandler(CreateHandler(PointerCanceledEvent, "Canceled"));
-			_logPointerCaptureLost = new PointerEventHandler(CreateHandler(PointerCaptureLostEvent, "CaptureLost"));
+			_logPointerEntered = new PointerEventHandler(CreateHandler(PointerEnteredEvent, "Entered", _ptEnteredHandle));
+			_logPointerMoved = new PointerEventHandler(CreateHandler(PointerMovedEvent, "Moved", _ptMovedHandle));
+			_logPointerReleased = new PointerEventHandler(CreateHandler(PointerReleasedEvent, "Released", _ptReleasedHandle));
+			_logPointerExited = new PointerEventHandler(CreateHandler(PointerExitedEvent, "Exited", _ptExitedHandle));
+			_logPointerCanceled = new PointerEventHandler(CreateHandler(PointerCanceledEvent, "Canceled", _ptCanceledHandle));
+			_logPointerCaptureLost = new PointerEventHandler(CreateHandler(PointerCaptureLostEvent, "CaptureLost", _ptCaptureLostHandle));
 			_logManipulationStarting = new ManipulationStartingEventHandler(CreateHandler(ManipulationStartingEvent, "Manip starting", _manipStartingHandle));
 			_logManipulationStarted = new ManipulationStartedEventHandler(CreateHandler(ManipulationStartedEvent, "Manip started", _manipStartedHandle));
 			_logManipulationDelta = new ManipulationDeltaEventHandler(CreateHandler(ManipulationDeltaEvent, "Manip delta", _manipDeltaHandle));
@@ -143,11 +143,11 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 			}
 
 			var handledToo = _handledEventsToo.IsOn;
-			SetupEvents(TouchTargetParent, handledToo);
+			SetupEvents(TouchTargetParent, handledToo, _allEventsOnParent.IsOn);
 			SetupEvents(TouchTarget, handledToo);
 		}
 
-		private void SetupEvents(FrameworkElement target, bool handledToo)
+		private void SetupEvents(FrameworkElement target, bool handledToo, bool allEvents = false)
 		{
 			target.RemoveHandler(PointerEnteredEvent, _logPointerEntered);
 			target.RemoveHandler(PointerPressedEvent, _logPointerPressed);
@@ -163,26 +163,33 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 			target.RemoveHandler(TappedEvent, _logTapped);
 			target.RemoveHandler(DoubleTappedEvent, _logDoubleTapped);
 
-			target.AddHandler(PointerEnteredEvent, _logPointerEntered, handledToo);
-			target.AddHandler(PointerPressedEvent, _logPointerPressed, handledToo);
-			target.AddHandler(PointerMovedEvent, _logPointerMoved, handledToo);
-			target.AddHandler(PointerReleasedEvent, _logPointerReleased, handledToo);
-			target.AddHandler(PointerExitedEvent, _logPointerExited, handledToo);
-			target.AddHandler(PointerCanceledEvent, _logPointerCanceled, handledToo);
-			target.AddHandler(PointerCaptureLostEvent, _logPointerCaptureLost, handledToo);
+			if (allEvents || _ptEntered.IsOn)
+				target.AddHandler(PointerEnteredEvent, _logPointerEntered, handledToo);
+			if (allEvents || _ptPressed.IsOn)
+				target.AddHandler(PointerPressedEvent, _logPointerPressed, handledToo);
+			if (allEvents || _ptMoved.IsOn)
+				target.AddHandler(PointerMovedEvent, _logPointerMoved, handledToo);
+			if (allEvents || _ptReleased.IsOn)
+				target.AddHandler(PointerReleasedEvent, _logPointerReleased, handledToo);
+			if (allEvents || _ptExited.IsOn)
+				target.AddHandler(PointerExitedEvent, _logPointerExited, handledToo);
+			if (allEvents || _ptCanceled.IsOn)
+				target.AddHandler(PointerCanceledEvent, _logPointerCanceled, handledToo);
+			if (allEvents || _ptCaptureLost.IsOn)
+				target.AddHandler(PointerCaptureLostEvent, _logPointerCaptureLost, handledToo);
 
-			if (_manipStarting.IsOn)
+			if (allEvents || _manipStarting.IsOn)
 				target.AddHandler(ManipulationStartingEvent, _logManipulationStarting, handledToo);
-			if (_manipStarted.IsOn)
+			if (allEvents || _manipStarted.IsOn)
 				target.AddHandler(ManipulationStartedEvent, _logManipulationStarted, handledToo);
-			if (_manipDelta.IsOn)
+			if (allEvents || _manipDelta.IsOn)
 				target.AddHandler(ManipulationDeltaEvent, _logManipulationDelta, handledToo);
-			if (_manipCompleted.IsOn)
+			if (allEvents || _manipCompleted.IsOn)
 				target.AddHandler(ManipulationCompletedEvent, _logManipulationCompleted, handledToo);
 
-			if (_gestureTapped.IsOn)
+			if (allEvents || _gestureTapped.IsOn)
 				target.AddHandler(TappedEvent, _logTapped, handledToo);
-			if (_gestureDoubleTapped.IsOn)
+			if (allEvents || _gestureDoubleTapped.IsOn)
 				target.AddHandler(DoubleTappedEvent, _logDoubleTapped, handledToo);
 		}
 

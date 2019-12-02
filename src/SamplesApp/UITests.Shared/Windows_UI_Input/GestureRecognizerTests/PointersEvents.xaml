@@ -152,17 +152,18 @@
 
 				<TextBlock Text="Bench config:" />
 				<ToggleSwitch
-					x:Name="_capture"
-					Header="Capture"
-					OnContent="Capture the pointer on press"
-					OffContent="Pointer won't be captured"
-					Toggled="OnConfigChanged" />
-				<ToggleSwitch
 					x:Name="_handledEventsToo"
 					Header="Handled events too"
 					OnContent="Handlers added w/ handledEventsToo"
 					OffContent="Unhandled events only"
 					Toggled="OnConfigChanged" />
+				<ToggleSwitch
+					x:Name="_allEventsOnParent" 
+					Header="All events for parent"
+					OnContent="Parent subscribe to all events"
+					OffContent="Parent subscribe as config"
+					Toggled="OnConfigChanged"
+					IsOn="False" />
 				<ToggleSwitch
 					x:Name="_horizontalScroll" 
 					Header="Horizontal scroll"
@@ -177,6 +178,96 @@
 					OffContent="Vertical scroll disabled"
 					Toggled="OnConfigChanged"
 					IsOn="True" />
+
+				<ToggleSwitch
+					x:Name="_ptEntered" 
+					Header="Pointer entered"
+					OnContent="Subscribed to pointer entered"
+					OffContent="Pointer entered muted"
+					Toggled="OnConfigChanged"
+					IsOn="True" />
+				<CheckBox
+					x:Name="_ptEnteredHandle" 
+					Content="Handle event"
+					Margin="20, 0"
+					Visibility="{Binding ElementName=_ptEntered, Path=IsOn}"/>
+				<ToggleSwitch
+					x:Name="_ptPressed" 
+					Header="Pointer pressed"
+					OnContent="Subscribed to pointer pressed"
+					OffContent="Pointer pressed muted"
+					Toggled="OnConfigChanged"
+					IsOn="True" />
+				<CheckBox
+					x:Name="_ptPressedHandle" 
+					Content="Handle event"
+					Margin="20, 0"
+					Visibility="{Binding ElementName=_ptPressed, Path=IsOn}"/>
+				<CheckBox
+					x:Name="_ptPressedCapture"
+					Content="Capture pointer"
+					Margin="20, 0"
+					Visibility="{Binding ElementName=_ptPressed, Path=IsOn}"/>
+				<ToggleSwitch
+					x:Name="_ptMoved" 
+					Header="Pointer moved"
+					OnContent="Subscribed to pointer moved"
+					OffContent="Pointer moved muted"
+					Toggled="OnConfigChanged"
+					IsOn="True" />
+				<CheckBox
+					x:Name="_ptMovedHandle" 
+					Content="Handle event"
+					Margin="20, 0"
+					Visibility="{Binding ElementName=_ptMoved, Path=IsOn}"/>
+				<ToggleSwitch
+					x:Name="_ptReleased" 
+					Header="Pointer released"
+					OnContent="Subscribed to pointer released"
+					OffContent="Pointer released muted"
+					Toggled="OnConfigChanged"
+					IsOn="True" />
+				<CheckBox
+					x:Name="_ptReleasedHandle" 
+					Content="Handle event"
+					Margin="20, 0"
+					Visibility="{Binding ElementName=_ptReleased, Path=IsOn}"/>
+				<ToggleSwitch
+					x:Name="_ptExited" 
+					Header="Pointer exited"
+					OnContent="Subscribed to pointer exited"
+					OffContent="Pointer exited muted"
+					Toggled="OnConfigChanged"
+					IsOn="True" />
+				<CheckBox
+					x:Name="_ptExitedHandle" 
+					Content="Handle event"
+					Margin="20, 0"
+					Visibility="{Binding ElementName=_ptExited, Path=IsOn}"/>
+				<ToggleSwitch
+					x:Name="_ptCanceled" 
+					Header="Pointer canceled"
+					OnContent="Subscribed to pointer canceled"
+					OffContent="Pointer canceled muted"
+					Toggled="OnConfigChanged"
+					IsOn="True" />
+				<CheckBox
+					x:Name="_ptCanceledHandle" 
+					Content="Handle event"
+					Margin="20, 0"
+					Visibility="{Binding ElementName=_ptCanceled, Path=IsOn}"/>
+				<ToggleSwitch
+					x:Name="_ptCaptureLost" 
+					Header="Pointer capture lost"
+					OnContent="Subscribed to pointer capture lost"
+					OffContent="Pointer capture lost muted"
+					Toggled="OnConfigChanged"
+					IsOn="True" />
+				<CheckBox
+					x:Name="_ptCaptureLostHandle" 
+					Content="Handle event"
+					Margin="20, 0"
+					Visibility="{Binding ElementName=_ptCaptureLost, Path=IsOn}"/>
 
 				<ComboBox
 					x:Name="_manipMode" 
@@ -233,7 +324,7 @@
 					OnContent="Subscribed to tap"
 					OffContent="Tap disabled"
 					Toggled="OnConfigChanged"
-					IsOn="True" />
+					IsOn="False" />
 				<CheckBox
 					x:Name="_gestureTappedHandle" 
 					Content="Handle event"
@@ -245,7 +336,7 @@
 					OnContent="Subscribed to double tap"
 					OffContent="Double tap disabled"
 					Toggled="OnConfigChanged"
-					IsOn="True" />
+					IsOn="False" />
 				<CheckBox
 					x:Name="_gestureDoubleTappedHandle" 
 					Content="Handle event"
