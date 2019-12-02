@@ -7,6 +7,8 @@ Those applications are structured in a way that samples can created out of norma
 
 Those applications are located in the `SamplesApp` folder of the solution, and a live development out of the master branch version for the WebAssembly application can be found here: https://unoui-sampleapp-unoui-sampleapp-staging.azurewebsites.net
 
+This article contains instructions and guidelines for authoring UI tests for Uno. For guidance on other test strategies used in the Uno codebase, see [this guide](../contributing/guidelines/creating-tests.md).
+
 ## Creating UI Tests
 
 The goal of these UI Tests is to :

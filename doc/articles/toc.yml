@@ -103,6 +103,8 @@
       href: howto-use-uno-in-xamarin-forms.md
 - name: Contributing to Uno
   items:
+    - name: Guidelines for creating tests
+      href: contributing\guidelines\creating-tests.md
     - name: Guidelines for breaking changes
       href: contributing\guidelines\breaking-changes.md
     - name: Guidelines for code style
