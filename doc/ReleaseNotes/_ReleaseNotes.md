@@ -6,8 +6,8 @@
 ### Breaking changes
 -
 
-### Breaking changes
-- 
+### Bug fixes
+- [WASM] Shapes now update when their Fill brush's Color changes
 
 ## Release 2.0
 

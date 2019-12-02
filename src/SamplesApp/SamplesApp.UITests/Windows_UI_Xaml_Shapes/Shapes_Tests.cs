@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -113,6 +114,21 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			Run("SamplesApp.Windows_UI_Xaml_Shapes.LinePage");
 			_app.WaitForElement("DLinePage");
 			TakeScreenshot($"LinePage");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Check_Bound_Color()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Shapes.Rectangle_Color_Bound");
+
+			_app.WaitForText("StatusTextBlock", "Is bound");
+
+			var screenshot = TakeScreenshot("Complete");
+
+			var bounds = _app.GetRect("TargetRectangle");
+
+			AssertHasColorAt(screenshot, bounds.CenterX, bounds.CenterY, Color.Blue);
 		}
 	}
 }
