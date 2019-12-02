@@ -336,7 +336,8 @@ namespace Windows.UI.Xaml
 
 			AddHandler(routedEvent, handlers.Count, handler, handledEventsToo);
 
-			if (handledEventsToo)
+			if (handledEventsToo
+				&& !routedEvent.IsAlwaysBubbled) // This event is always bubbled, no needs to update the flag
 			{
 				UpdateSubscribedToHandledEventsToo();
 			}
@@ -349,7 +350,8 @@ namespace Windows.UI.Xaml
 
 			AddHandler(routedEvent, handlers.Count, handler, handledEventsToo);
 
-			if (handledEventsToo)
+			if (handledEventsToo
+				&& !routedEvent.IsAlwaysBubbled) // This event is always bubbled, no needs to update the flag
 			{
 				UpdateSubscribedToHandledEventsToo();
 			}
@@ -395,7 +397,8 @@ namespace Windows.UI.Xaml
 				{
 					handlers.Remove(matchingHandler);
 
-					if (matchingHandler.HandledEventsToo)
+					if (matchingHandler.HandledEventsToo
+						&& !routedEvent.IsAlwaysBubbled) // This event is always bubbled, no needs to update the flag
 					{
 						UpdateSubscribedToHandledEventsToo();
 					}
@@ -450,6 +453,12 @@ namespace Windows.UI.Xaml
 
 			foreach (var eventHandlers in _eventHandlerStore)
 			{
+				if (eventHandlers.Key.IsAlwaysBubbled)
+				{
+					// This event is always bubbled, no needs to include it in the SubscribedToHandledEventsToo
+					continue;
+				}
+
 				foreach (var handler in eventHandlers.Value)
 				{
 					if (handler.HandledEventsToo)
@@ -620,6 +629,14 @@ namespace Windows.UI.Xaml
 
 		private bool AnyParentInterested(RoutedEvent routedEvent)
 		{
+			// Pointer events must always be dispatched to all parents in order to update visual states,
+			// update manipulation, detect gestures, etc.
+			// (They are then interpreted by each parent in the PrepareBubblingPointerEvent)
+			if (routedEvent.IsAlwaysBubbled)
+			{
+				return true;
+			}
+
 			// [9] Any parent interested?
 			var subscribedToHandledEventsToo = SubscribedToHandledEventsToo;
 			var flag = routedEvent.Flag;
