@@ -8,11 +8,6 @@ namespace Windows.UI.Xaml
 	[DebuggerDisplay("{" + nameof(Name) + "}")]
 	public partial class RoutedEvent
 	{
-		internal RoutedEvent([CallerMemberName] string name = null)
-			: this(RoutedEventFlag.None, name)
-		{
-		}
-
 		internal RoutedEvent(
 			RoutedEventFlag flag,
 			[CallerMemberName] string name = null)
