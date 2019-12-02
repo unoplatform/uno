@@ -171,6 +171,11 @@ namespace Uno.UI
 			);
 		}
 
+		internal static Rect AtLeast(this Rect value, Size least)
+		{
+			return new Rect(value.Location, value.Size.AtLeast(least));
+		}
+
 		internal static double AspectRatio(this Rect rect) => rect.Size.AspectRatio();
 
 		internal static double AspectRatio(this Size size)

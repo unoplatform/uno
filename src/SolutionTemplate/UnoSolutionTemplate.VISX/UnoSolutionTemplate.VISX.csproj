@@ -189,7 +189,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Threading" version="15.8.209" />
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" version="15.8.209" />
     <PackageReference Include="Microsoft.VisualStudio.Utilities" version="15.9.28307" />
-    <PackageReference Include="Microsoft.VisualStudio.Validation" version="15.3.15" />
+    <PackageReference Include="Microsoft.VisualStudio.Validation" version="15.5.31" />
     <PackageReference Include="Newtonsoft.Json" version="12.0.3" />
     <PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
     <PackageReference Include="stdole" version="7.0.3303" />

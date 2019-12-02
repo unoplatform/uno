@@ -79,9 +79,9 @@ namespace Windows.UI.Xaml.Shapes
 
 		public static readonly DependencyProperty StrokeThicknessProperty =
 			DependencyProperty.Register(
-				nameof(StrokeThickness), 
-				typeof(double), 
-				typeof(Shape), 
+				nameof(StrokeThickness),
+				typeof(double),
+				typeof(Shape),
 				new FrameworkPropertyMetadata(
 					defaultValue: 1.0,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
@@ -123,7 +123,13 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected virtual void OnFillChanged(Brush newValue)
 		{
-			_brushChanged.Disposable = Brush.AssignAndObserveBrush(newValue, _ => RefreshShape(true));
+			_brushChanged.Disposable = Brush.AssignAndObserveBrush(newValue, _ =>
+#if __WASM__
+				OnFillUpdatedPartial()
+#else
+				RefreshShape(true)
+#endif
+			);
 
 			OnFillUpdated(newValue);
 		}
