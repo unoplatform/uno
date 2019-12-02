@@ -30,8 +30,6 @@ namespace Windows.Devices.Geolocation
 			AltitudeReferenceSystem = altitudeReferenceSystem;
 			SpatialReferenceId = spatialReferenceId;
 		}
-	}
-
 #endif
 		
 		public GeoshapeType GeoshapeType => GeoshapeType.Geopoint;
