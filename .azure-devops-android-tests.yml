@@ -82,7 +82,7 @@ jobs:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
       ANDROID_SIMULATOR_APILEVEL: $(ANDROID_SIMULATOR_APILEVEL)
-      UITEST_SNAPSHOTS_ONLY: $(UITEST_SNAPSHOTS_ONLY)
+      UITEST_SNAPSHOTS_ONLY: "$(UITEST_SNAPSHOTS_ONLY)"
  
   - task: PublishTestResults@2
     condition: always()

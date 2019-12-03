@@ -22,9 +22,11 @@ export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/io
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
-if [ "$UITEST_SNAPSHOTS_ONLY" == '' ];
+if [ "$UITEST_SNAPSHOTS_ONLY" == 'true' ];
 then
-export TEST_FILTERS="\
+export TEST_FILTERS="namespace == 'SamplesApp.UITests.Snap'"
+else
+export TEST_FILTERS=" \
 	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests' or \
 	namespace = 'SamplesApp.UITests' or \
 	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Input.VisualState_Tests' or \
@@ -35,8 +37,6 @@ export TEST_FILTERS="\
 	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ControlTests' or \
 	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests' \
 "
-else
-export TEST_FILTERS="namespace == 'SamplesApp.UITests.Snap'"
 fi
 
 
