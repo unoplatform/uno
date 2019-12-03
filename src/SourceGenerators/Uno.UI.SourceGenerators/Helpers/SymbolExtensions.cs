@@ -380,5 +380,10 @@ namespace Microsoft.CodeAnalysis
 
 			throw new ArgumentOutOfRangeException($"{symbol.DeclaredAccessibility} is not supported.");
 		}
+
+		public static IFieldSymbol FindField(this INamedTypeSymbol symbol, INamedTypeSymbol fieldType, string fieldName, StringComparison comparison = default)
+		{
+			return symbol.GetFields().FirstOrDefault(x => x.Type == fieldType && x.Name.Equals(fieldName, comparison));
+		}
 	}
 }

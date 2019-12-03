@@ -96,6 +96,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
         private readonly INamedTypeSymbol _dataBindingSymbol;
         private readonly INamedTypeSymbol _styleSymbol;
         private readonly INamedTypeSymbol _setterSymbol;
+		private readonly INamedTypeSymbol _colorSymbol;
 
         private readonly List<INamedTypeSymbol> _markupExtensionTypes;
 		private readonly List<INamedTypeSymbol> _xamlConversionTypes;
@@ -165,6 +166,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             _iDictionaryOfTKeySymbol = GetType("System.Collections.Generic.IDictionary`2");
             _dataBindingSymbol = GetType("Windows.UI.Xaml.Data.Binding");
             _styleSymbol = GetType(XamlConstants.Types.Style);
+			_colorSymbol = GetType(XamlConstants.Types.Color);
 
             _markupExtensionTypes = _medataHelper.GetAllTypesDerivingFrom(_markupExtensionSymbol).ToList();
             _xamlConversionTypes = _medataHelper.GetAllTypesAttributedWith(XamlConstants.Types.CreateFromStringAttribute).ToList();
@@ -1631,6 +1633,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                                 BuildChild(writer, implicitContentChild, implicitContentChild.Objects.First());
                             }
                         }
+						else if (IsType(topLevelControl.Type, XamlConstants.Types.SolidColorBrush))
+						{
+							if (implicitContentChild.Value is string content && !content.IsNullOrWhiteSpace())
+							{
+								writer.AppendLineInvariant($"{setterPrefix}Color = {BuildColor(content)}");
+							}
+						}
                         else if (IsLinearGradientBrush(topLevelControl.Type))
                         {
                             BuildCollection(writer, isInline, setterPrefix + "GradientStops", implicitContentChild);
@@ -3260,21 +3269,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                     .Aggregate((s1, s2) => "{0},{1}".InvariantCultureFormat(s1, s2));
         }
 
-        private string BuildColor(string memberValue)
-        {
-            var colorHelper = (INamedTypeSymbol)_medataHelper.GetTypeByFullName(XamlConstants.Types.Colors);
+		private string BuildColor(string memberValue)
+		{
+			var colorsSymbol = (INamedTypeSymbol)_medataHelper.GetTypeByFullName(XamlConstants.Types.Colors);
+			if (colorsSymbol.FindField(_colorSymbol, memberValue, StringComparison.OrdinalIgnoreCase) is IFieldSymbol field)
+			{
+				return $"{GlobalPrefix}{XamlConstants.Types.Colors}.{field.Name}";
+			}
+			else
+			{
+				memberValue = string.Join(", ", ColorCodeParser.ParseColorCode(memberValue));
 
-            if (colorHelper.GetFields().Any(m => m.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase)))
-            {
-                return $"{XamlConstants.Types.Colors}.{memberValue}";
-            }
-            else
-            {
-                memberValue = string.Join(", ", ColorCodeParser.ParseColorCode(memberValue));
-
-                return "Windows.UI.ColorHelper.FromARGB({0})".InvariantCultureFormat(memberValue);
-            }
-        }
+				return $"{GlobalPrefix}Windows.UI.ColorHelper.FromARGB({memberValue})";
+			}
+		}
 
         private string BuildBindingOption(XamlMemberDefinition m, INamedTypeSymbol propertyType, bool prependCastToType)
         {
