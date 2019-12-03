@@ -20,7 +20,7 @@ using Uno.Extensions.ValueType;
 
 namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 {
-	[SampleControlInfo("Gesture recognizer", "Pointer Events")]
+	[SampleControlInfo("Gesture recognizer", "Pointer Events test bench")]
 	public sealed partial class PointersEvents : Page
 	{
 		private static readonly IDictionary<string, ManipulationModes> _manipulationModes = new Dictionary<string, ManipulationModes>
