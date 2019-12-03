@@ -583,6 +583,8 @@ namespace Windows.UI.Xaml
 			{
 				SetStyle("visibility", "hidden");
 			}
+
+			UpdateDOMProperties();
 		}
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
@@ -602,6 +604,8 @@ namespace Windows.UI.Xaml
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
 		{
 			UpdateHitTest();
+
+			UpdateDOMProperties();
 		}
 
 		public override string ToString()
@@ -917,6 +921,28 @@ namespace Windows.UI.Xaml
 				eventExtractor: HtmlEventExtractor.KeyboardEventExtractor,
 				payloadConverter: PayloadToKeyArgs
 			);
+		}
+
+		/// <summary>
+		/// If corresponding feature flag is enabled, set layout properties as DOM attributes to aid in debugging.
+		/// </summary>
+		private protected virtual void UpdateDOMProperties()
+		{
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				UpdateDOMXamlProperty(nameof(Visibility), Visibility);
+				UpdateDOMXamlProperty(nameof(IsHitTestVisible), IsHitTestVisible);
+			}
+		}
+
+		/// <summary>
+		/// Sets a Xaml property as a DOM attribute for debugging.
+		/// </summary>
+		/// <param name="propertyName">The property's name</param>
+		/// <param name="value">The current property value</param>
+		private protected void UpdateDOMXamlProperty(string propertyName, object value)
+		{
+			WindowManagerInterop.SetAttribute(HtmlId, "xaml" + propertyName.ToLowerInvariant(), value?.ToString() ?? "[null]");
 		}
 
 		private static KeyRoutedEventArgs PayloadToKeyArgs(object src, string payload)

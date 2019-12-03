@@ -523,24 +523,22 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// If corresponding feature flag is enabled, set layout properties as DOM attributes to aid in debugging.
 		/// </summary>
-		private void UpdateDOMProperties()
+		private protected override void UpdateDOMProperties()
 		{
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties && IsLoaded)
 			{
-				SetXamlProperty(nameof(Margin), Margin);
-				SetXamlProperty(nameof(HorizontalAlignment), HorizontalAlignment);
-				SetXamlProperty(nameof(VerticalAlignment), VerticalAlignment);
-				SetXamlProperty(nameof(Width), Width);
-				SetXamlProperty(nameof(Height), Height);
-				SetXamlProperty(nameof(MinWidth), MinWidth);
-				SetXamlProperty(nameof(MinHeight), MinHeight);
-				SetXamlProperty(nameof(MaxWidth), MaxWidth);
-				SetXamlProperty(nameof(MaxHeight), MaxHeight);
+				UpdateDOMXamlProperty(nameof(Margin), Margin);
+				UpdateDOMXamlProperty(nameof(HorizontalAlignment), HorizontalAlignment);
+				UpdateDOMXamlProperty(nameof(VerticalAlignment), VerticalAlignment);
+				UpdateDOMXamlProperty(nameof(Width), Width);
+				UpdateDOMXamlProperty(nameof(Height), Height);
+				UpdateDOMXamlProperty(nameof(MinWidth), MinWidth);
+				UpdateDOMXamlProperty(nameof(MinHeight), MinHeight);
+				UpdateDOMXamlProperty(nameof(MaxWidth), MaxWidth);
+				UpdateDOMXamlProperty(nameof(MaxHeight), MaxHeight);
+				UpdateDOMXamlProperty(nameof(IsEnabled), IsEnabled);
 
-				void SetXamlProperty(string propertyName, object value)
-				{
-					WindowManagerInterop.SetAttribute(HtmlId, "xaml" + propertyName.ToLowerInvariant(), value?.ToString() ?? "[null]");
-				}
+				base.UpdateDOMProperties();
 			}
 		}
 
