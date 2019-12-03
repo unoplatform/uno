@@ -3,12 +3,15 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
+using SamplesApp.Windows_UI_Xaml_Controls.ListView;
 using Uno.Extensions.Specialized;
 
-namespace UITests.Shared.Windows_UI_Xaml_Controls.ImageTests
+namespace Uno.UI.Samples.UITests.Image
 {
 	public sealed partial class Image_Stretch_Modes_Picker : UserControl
 	{
@@ -16,9 +19,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ImageTests
 		public ComboBoxItem[] HorizontalAlignments { get; } = GetValues<HorizontalAlignment>().ToArray();
 		public ComboBoxItem[] VerticalAlignments { get; } = GetValues<VerticalAlignment>().ToArray();
 
-		public ObservableCollection<ModeItem> Items { get; } = new ObservableCollection<ModeItem>();
+		public ObservableCollection<StretchModeItem> Items { get; } = new ObservableCollection<StretchModeItem>();
 
-		private readonly ModeItem[] _allModes;
+		private readonly StretchModeItem[] _allModes;
+		private bool _suspend;
 
 		public Image_Stretch_Modes_Picker()
 		{
@@ -27,6 +31,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ImageTests
 			stretchModes.ItemsSource = StretchModes;
 			horizontalModes.ItemsSource = HorizontalAlignments;
 			verticalModes.ItemsSource = VerticalAlignments;
+
+			stretchModes.SelectedIndex = 0;
+			horizontalModes.SelectedIndex = 0;
+			verticalModes.SelectedIndex = 0;
 
 			stretchModes.SelectionChanged += OnSelectionChanged;
 			horizontalModes.SelectionChanged += OnSelectionChanged;
@@ -37,8 +45,15 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ImageTests
 			OnSelectionChanged(null, null);
 		}
 
-		private void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+		private async void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
+			if (_suspend)
+			{
+				return;
+			}
+
+			await Task.Yield();  // requeue on dispatcher
+
 			var selectedStretch = (stretchModes.SelectedValue as ComboBoxItem)?.Tag as Stretch?;
 			var selectedHorizontalModes = (horizontalModes.SelectedValue as ComboBoxItem)?.Tag as HorizontalAlignment?;
 			var selectedVerticalMode = (verticalModes.SelectedValue as ComboBoxItem)?.Tag as VerticalAlignment?;
@@ -65,10 +80,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ImageTests
 				Items.Add(mode);
 			}
 
-			currentIndex.Text = Items.First().Index.ToString("00");
+            currentMode.Content = Items.First().Index.ToString("00");
 		}
 
-		private IEnumerable<ModeItem> GetAllModes()
+		private IEnumerable<StretchModeItem> GetAllModes()
 		{
 			var index = 0;
 
@@ -78,7 +93,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ImageTests
 				{
 					foreach (var verticalAlignment in VerticalAlignments.Select(m => m.Tag).OfType<VerticalAlignment>())
 					{
-						yield return new ModeItem(index++, stretch, horizontalAlignment, verticalAlignment);
+						yield return new StretchModeItem(index++, stretch, horizontalAlignment, verticalAlignment);
 					}
 				}
 			}
@@ -86,7 +101,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ImageTests
 
 		private static IEnumerable<ComboBoxItem> GetValues<T>() where T : Enum
 		{
-			yield return new ComboBoxItem {Content = $"All {typeof(T).Name} Modes", Tag = null, IsSelected = true};
+			yield return new ComboBoxItem {Content = $"All {typeof(T).Name} Modes", Tag = null};
 
 			foreach (T t in Enum.GetValues(typeof(T)))
 			{
@@ -101,6 +116,11 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ImageTests
 			SelectMode(_allModes[nextIndex]);
 		}
 
+		private void OnCurrent(object sender, RoutedEventArgs e)
+		{
+			SelectMode(Items.First());
+		}
+
 		private void OnNext(object sender, RoutedEventArgs e)
 		{
 			var currentIndex = Items.First().Index;
@@ -108,27 +128,31 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ImageTests
 			SelectMode(_allModes[nextIndex]);
 		}
 
-		private void SelectMode(ModeItem mode)
+		private void SelectMode(StretchModeItem mode)
 		{
+			_suspend = true;
 			stretchModes.SelectedIndex = StretchModes.Select(m => m.Tag).IndexOf(mode.Stretch);
 			horizontalModes.SelectedIndex = HorizontalAlignments.Select(m => m.Tag).IndexOf(mode.HorizontalAlignment);
 			verticalModes.SelectedIndex = VerticalAlignments.Select(m => m.Tag).IndexOf(mode.VerticalAlignment);
+			_suspend = false;
+			OnSelectionChanged(null, null);
 		}
+	}
 
-		public class ModeItem
+	[Bindable]
+	public class StretchModeItem
+	{
+		public int Index { get; }
+		public Stretch Stretch { get; }
+		public HorizontalAlignment HorizontalAlignment { get; }
+		public VerticalAlignment VerticalAlignment { get; }
+
+		public StretchModeItem(int index, Stretch stretch, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)
 		{
-			public int Index { get; }
-			public Stretch Stretch { get; }
-			public HorizontalAlignment HorizontalAlignment { get; }
-			public VerticalAlignment VerticalAlignment { get; }
-
-			public ModeItem(int index, Stretch stretch, HorizontalAlignment horizontalAlignment, VerticalAlignment verticalAlignment)
-			{
-				Index = index;
-				Stretch = stretch;
-				HorizontalAlignment = horizontalAlignment;
-				VerticalAlignment = verticalAlignment;
-			}
+			Index = index;
+			Stretch = stretch;
+			HorizontalAlignment = horizontalAlignment;
+			VerticalAlignment = verticalAlignment;
 		}
 	}
 }
