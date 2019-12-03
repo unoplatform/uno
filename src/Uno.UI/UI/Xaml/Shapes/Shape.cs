@@ -171,7 +171,10 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected virtual void RefreshShape(bool forceRefresh = false) { }
 
-		internal override bool IsViewHit()
-			=> Fill != null || base.IsViewHit();
+#if __WASM__
+		internal override bool IsViewHit() => false;
+#else
+		internal override bool IsViewHit() => Fill != null || base.IsViewHit();
+#endif
 	}
 }

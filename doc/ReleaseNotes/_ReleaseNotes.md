@@ -12,6 +12,7 @@
 - [WASM] Fix bug where changing `IsEnabled` from false to true on `Control` inside another `Control` didn't work
 - [Wasm] Add arbitrary delay in Safari macOS to avoid StackOverflow issues
 - #2227 fixed Color & SolidColorBrush literal values generation
+- [WASM] fixed Shapes pointer events hit-box
 
 ## Release 2.0
 

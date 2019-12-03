@@ -7,5 +7,7 @@ namespace Windows.UI.Xaml.Wasm
 		public SvgElement(string svgTag) : base(svgTag, isSvg: true)
 		{
 		}
+
+		internal override bool IsViewHit() => true;
 	}
 }

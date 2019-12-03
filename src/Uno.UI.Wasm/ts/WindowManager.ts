@@ -890,10 +890,15 @@
 			let src = evt.target as HTMLElement | SVGElement;
 			let srcHandle = "0";
 			while (src) {
-				let handle = src.getAttribute("XamlHandle");
-				if (handle) {
-					srcHandle = handle;
-					break;
+				// "Svg dom elements" (js: SVGElement, c#: Windows.UI.Xaml.Wasm.SvgElement) are shadow elements that are not part of UWP.
+				// They don't really exist in the domain of UWP. In order to have the correct event source for the event,
+				// we need to return the first parent that is a `<svg>` (js: SVGSVGElement, c#: Windows.UI.Xaml.Shapes.Shape).
+				if (!(src instanceof SVGElement) || (src instanceof SVGSVGElement)) {
+					let handle = src.getAttribute("XamlHandle");
+					if (handle) {
+						srcHandle = handle;
+						break;
+					}
 				}
 
 				src = src.parentElement;
