@@ -22,7 +22,7 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(DocsGeneration)'==''">
-		<ProjectReference Include=".\SamplesApp.UITests.Generator\Uno.Samples.UITest.Generator.csproj">
+		<ProjectReference Include="..\SamplesApp.UITests.Generator\Uno.Samples.UITest.Generator.csproj">
 			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
