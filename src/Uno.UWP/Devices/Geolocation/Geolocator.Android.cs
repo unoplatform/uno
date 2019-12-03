@@ -31,7 +31,7 @@ namespace Windows.Devices.Geolocation
 		public uint ReportInterval
 		{ 
 			get => _reportInterval;
-			private set
+			set
 			{
 				_reportInterval = value;
 				_locationManager.RemoveUpdates(this);
@@ -42,7 +42,7 @@ namespace Windows.Devices.Geolocation
 		public double MovementThreshold
 		{ 
 			get => _movementThreshold;
-			private set
+			set
 			{
 				_movementThreshold = value;
 				_locationManager.RemoveUpdates(this);
