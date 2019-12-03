@@ -11,7 +11,7 @@
 	<StackPanel>
 		<Border
 			x:Name="LocationTestRoot"
-			Width="200"
+			Width="250"
 			BorderThickness="3"
 			BorderBrush="Red"
 			HorizontalAlignment="Left"
@@ -26,8 +26,14 @@
 					Background="Red">
 					<TextBlock Text="Touch target" />
 				</Border>
-				<TextBlock>Relative to test root: <Run Name="LocationTestRelativeToRootLocation" /></TextBlock>
-				<TextBlock>Relative to target: <Run Name="LocationTestRelativeToTargetLocation" /></TextBlock>
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Text="Relative to test root (physical px): " />
+					<TextBlock Name="LocationTestRelativeToRootLocation" />
+				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Text="Relative to target (physical px): " />
+					<TextBlock Name="LocationTestRelativeToTargetLocation" />
+				</StackPanel>
 			</StackPanel>
 		</Border>
 	</StackPanel>

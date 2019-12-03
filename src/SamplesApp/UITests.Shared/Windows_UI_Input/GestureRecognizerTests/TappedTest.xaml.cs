@@ -2,6 +2,7 @@
 using System.Linq;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
+using Uno.UI;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
@@ -16,8 +17,11 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 
 		private void OnLocationTestTargetTapped(object sender, TappedRoutedEventArgs e)
 		{
-			LocationTestRelativeToRootLocation.Text = e.GetPosition(LocationTestRoot).ToString();
-			LocationTestRelativeToTargetLocation.Text = e.GetPosition(LocationTestTarget).ToString();
+			var relativeToRoot = e.GetPosition(LocationTestRoot).LogicalToPhysicalPixels();
+			var relativeToTarget = e.GetPosition(LocationTestTarget).LogicalToPhysicalPixels();
+
+			LocationTestRelativeToRootLocation.Text = $"({(int)relativeToRoot.X:D},{(int)relativeToRoot.Y:D})";
+			LocationTestRelativeToTargetLocation.Text = $"({(int)relativeToTarget.X:D},{(int)relativeToTarget.Y:D})";
 		}
 	}
 }
