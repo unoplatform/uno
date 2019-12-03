@@ -7,10 +7,11 @@ namespace Windows.UI.Xaml.Shapes
 {
 	partial class Ellipse
 	{
-		private readonly SvgElement _ellipse = new SvgElement("ellipse");
+		private readonly SvgElement _ellipse;
 
 		public Ellipse()
 		{
+			_ellipse = new SvgElement("ellipse", this);
 			SvgChildren.Add(_ellipse);
 
 			InitCommonShapeProperties();

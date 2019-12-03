@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Wasm
 	{
 		public UIElementCollection Defs { get; }
 
-		public DefsSvgElement() : base("defs")
+		public DefsSvgElement() : base("defs", parent: null)
 		{
 			Defs = new UIElementCollection(this);
 		}

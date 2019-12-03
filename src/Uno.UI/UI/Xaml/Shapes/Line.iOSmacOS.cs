@@ -11,6 +11,13 @@ namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Line
 	{
+		public Line()
+		{
+#if __IOS__
+			ClipsToBounds = false;
+#endif
+		}
+
 		protected override CGPath GetPath()
 		{
 			if (Math.Abs(X1 - X2) > double.Epsilon || Math.Abs(Y1 - Y2) > double.Epsilon)
@@ -25,13 +32,6 @@ namespace Windows.UI.Xaml.Shapes
 			}
 
 			return null;
-		}
-
-		partial void InitializePartial()
-		{
-#if __IOS__
-			ClipsToBounds = false;
-#endif
 		}
 	}
 }

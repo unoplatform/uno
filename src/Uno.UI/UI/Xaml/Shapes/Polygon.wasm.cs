@@ -7,10 +7,11 @@ namespace Windows.UI.Xaml.Shapes
 {
 	partial class Polygon
 	{
-		private readonly SvgElement _polygon = new SvgElement("polygon");
+		private readonly SvgElement _polygon;
 
 		public Polygon()
 		{
+			_polygon = new SvgElement("polygon", this);
 			SvgChildren.Add(_polygon);
 
 			InitCommonShapeProperties();

@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		internal UIElement ToSvgElement()
 		{
-			var linearGradient = new SvgElement("linearGradient");
+			var linearGradient = new SvgElement("linearGradient", parent: null);
 
 			linearGradient.SetAttribute(
 				("x1", StartPoint.X.ToStringInvariant()),

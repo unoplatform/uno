@@ -11,10 +11,11 @@ namespace Windows.UI.Xaml.Shapes
 {
 	partial class Path
 	{
-		private readonly SvgElement _path = new SvgElement("path");
+		private readonly SvgElement _path;
 
 		public Path()
 		{
+			_path = new SvgElement("path", this);
 			SvgChildren.Add(_path);
 
 			InitCommonShapeProperties();

@@ -7,13 +7,6 @@ namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Line : ArbitraryShapeBase
 	{
-		public Line()
-		{
-			InitializePartial();
-		}
-
-		partial void InitializePartial();
-
 		public double X1
 		{
 			get => (double)GetValue(X1Property);

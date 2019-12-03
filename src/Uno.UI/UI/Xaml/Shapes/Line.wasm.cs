@@ -7,10 +7,11 @@ namespace Windows.UI.Xaml.Shapes
 {
 	partial class Line
 	{
-		private readonly SvgElement _line = new SvgElement("line");
+		private readonly SvgElement _line;
 
-		partial void InitializePartial()
+		public Line()
 		{
+			_line = new SvgElement("line", this);
 			SvgChildren.Add(_line);
 
 			InitCommonShapeProperties();

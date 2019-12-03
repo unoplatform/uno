@@ -9,10 +9,11 @@ namespace Windows.UI.Xaml.Shapes
 {
 	partial class Rectangle
 	{
-		private readonly SvgElement _rectangle = new SvgElement("rect");
+		private readonly SvgElement _rectangle;
 
 		public Rectangle()
 		{
+			_rectangle = new SvgElement("rect", this);
 			SvgChildren.Add(_rectangle);
 
 			InitCommonShapeProperties();

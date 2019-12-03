@@ -11,10 +11,11 @@ namespace Windows.UI.Xaml.Shapes
 {
 	partial class Polyline
 	{
-		private readonly SvgElement _polyline = new SvgElement("polyline");
+		private readonly SvgElement _polyline;
 
 		public Polyline()
 		{
+			_polyline = new SvgElement("polyline", this);
 			SvgChildren.Add(_polyline);
 
 			InitCommonShapeProperties();
