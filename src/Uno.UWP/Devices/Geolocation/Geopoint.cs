@@ -30,9 +30,9 @@ namespace Windows.Devices.Geolocation
 			AltitudeReferenceSystem = altitudeReferenceSystem;
 			SpatialReferenceId = spatialReferenceId;
 		}
-#endif
-		
+#else		
 		public GeoshapeType GeoshapeType => GeoshapeType.Geopoint;
+#endif
 
 #if __WASM__ 
 		public Geopoint(BasicGeoposition position, AltitudeReferenceSystem altitudeReferenceSystem) : this(position)
