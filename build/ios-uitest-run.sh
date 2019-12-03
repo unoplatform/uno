@@ -22,11 +22,9 @@ export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/io
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
-mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe \
-	--inprocess \
-	--agents=1 \
-	--workers=1 \
-	--where " \
+if [ "$UITEST_SNAPSHOTS_ONLY" -eq '' ];
+then
+export TEST_FILTERS="\
 	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests' or \
 	namespace = 'SamplesApp.UITests' or \
 	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Input.VisualState_Tests' or \
@@ -36,6 +34,16 @@ mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-conso
 	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Media.Animation_Tests' or \
 	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ControlTests' or \
 	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests' \
-	" \
+"
+else
+export TEST_FILTERS="namespace == 'SamplesApp.UITests.Snap'"
+fi
+
+
+mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe \
+	--inprocess \
+	--agents=1 \
+	--workers=1 \
+	--where "$TEST_FILTERS" \
 	$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/Release/net47/SamplesApp.UITests.dll \
 	|| true

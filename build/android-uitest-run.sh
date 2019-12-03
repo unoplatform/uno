@@ -46,10 +46,18 @@ mono nuget/NuGet.exe install NUnit.ConsoleRunner -Version 3.10.0
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
+if [ "$UITEST_SNAPSHOTS_ONLY" -eq '' ];
+then
+export TEST_FILTERS="namespace != 'SamplesApp.UITests.Snap'"
+else
+export TEST_FILTERS="namespace == 'SamplesApp.UITests.Snap'"
+fi
+
 mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe \
 	--inprocess \
 	--agents=1 \
 	--workers=1 \
+	--where "$TEST_FILTERS" \
 	$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/$BUILDCONFIGURATION/net47/SamplesApp.UITests.dll \
 	|| true
 

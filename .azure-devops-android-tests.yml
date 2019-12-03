@@ -57,6 +57,9 @@ jobs:
         ANDROID_SIMULATOR_APILEVEL: 21
       Android_9.0:
         ANDROID_SIMULATOR_APILEVEL: 28
+      Android_9.0_Snapshots:
+        ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_SNAPSHOTS_ONLY: true
 
   steps:
   - checkout: self
@@ -79,6 +82,7 @@ jobs:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
       ANDROID_SIMULATOR_APILEVEL: $(ANDROID_SIMULATOR_APILEVEL)
+      UITEST_SNAPSHOTS_ONLY: $(UITEST_SNAPSHOTS_ONLY)
  
   - task: PublishTestResults@2
     condition: always()
