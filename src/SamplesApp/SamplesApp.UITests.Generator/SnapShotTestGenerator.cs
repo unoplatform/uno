@@ -18,7 +18,9 @@ namespace Uno.Samples.UITest.Generator
 
 		public override void Execute(SourceGeneratorContext context)
 		{
-			Debugger.Launch();
+#if DEBUG
+			// Debugger.Launch();
+#endif
 
 			GenerateTests(context, "Uno.UI.Samples");
 		}
