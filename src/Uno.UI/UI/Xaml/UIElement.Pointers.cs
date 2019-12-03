@@ -322,7 +322,7 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
-		partial void PrepareBubblingPointerEvent(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed)
+		partial void PrepareManagedPointerEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed)
 		{
 			var ptArgs = (PointerRoutedEventArgs)args;
 			switch (routedEvent.Flag)
@@ -349,7 +349,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		partial void PrepareBubblingManipulationEvent(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed)
+		partial void PrepareManagedManipulationEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed)
 		{
 			// When we bubble a manipulation event from a child, we make sure to abort any pending gesture/manipulation on the current element
 			if (routedEvent != ManipulationStartingEvent && _gestures.IsValueCreated)
@@ -359,7 +359,7 @@ namespace Windows.UI.Xaml
 			// Note: We do not need to alter the location of the events, on UWP they are always relative to the OriginalSource.
 		}
 
-		partial void PrepareBubblingGestureEvent(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed)
+		partial void PrepareManagedGestureEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed)
 		{
 			// When we bubble a gesture event from a child, we make sure to abort any pending gesture/manipulation on the current element
 			if (_gestures.IsValueCreated)
@@ -384,10 +384,8 @@ namespace Windows.UI.Xaml
 		#endregion
 
 		#region Partial API to raise pointer events and gesture recognition (OnNative***)
-		private bool OnNativePointerEnter(PointerRoutedEventArgs args)
-			=> OnPointerEnter(args, isManagedBubblingEvent: false);
-		private void OnManagedPointerEnter(PointerRoutedEventArgs args)
-			=> OnPointerEnter(args, isManagedBubblingEvent: true);
+		private bool OnNativePointerEnter(PointerRoutedEventArgs args) => OnPointerEnter(args, isManagedBubblingEvent: false);
+		private void OnManagedPointerEnter(PointerRoutedEventArgs args) => OnPointerEnter(args, isManagedBubblingEvent: true);
 
 		private bool OnPointerEnter(PointerRoutedEventArgs args, bool isManagedBubblingEvent)
 		{
@@ -398,8 +396,8 @@ namespace Windows.UI.Xaml
 			return handledInManaged;
 		}
 
-		private bool OnNativePointerDown(PointerRoutedEventArgs args) => OnPointerDown(args, false);
-		private void OnManagedPointerDown(PointerRoutedEventArgs args) => OnPointerDown(args, true);
+		private bool OnNativePointerDown(PointerRoutedEventArgs args) => OnPointerDown(args, isManagedBubblingEvent: false);
+		private void OnManagedPointerDown(PointerRoutedEventArgs args) => OnPointerDown(args, isManagedBubblingEvent: true);
 
 		private bool OnPointerDown(PointerRoutedEventArgs args, bool isManagedBubblingEvent)
 		{
@@ -474,8 +472,8 @@ namespace Windows.UI.Xaml
 			return handledInManaged;
 		}
 
-		private bool OnNativePointerMove(PointerRoutedEventArgs args) => OnPointerMove(args, false);
-		private void OnManagePointerMove(PointerRoutedEventArgs args) => OnPointerMove(args, true);
+		private bool OnNativePointerMove(PointerRoutedEventArgs args) => OnPointerMove(args, isManagedBubblingEvent: false);
+		private void OnManagePointerMove(PointerRoutedEventArgs args) => OnPointerMove(args, isManagedBubblingEvent: true);
 
 		private bool OnPointerMove(PointerRoutedEventArgs args, bool isManagedBubblingEvent)
 		{
@@ -502,8 +500,8 @@ namespace Windows.UI.Xaml
 			return handledInManaged;
 		}
 
-		private bool OnNativePointerUp(PointerRoutedEventArgs args) => OnPointerUp(args, false);
-		private void OnManagedPointerUp(PointerRoutedEventArgs args) => OnPointerUp(args, true);
+		private bool OnNativePointerUp(PointerRoutedEventArgs args) => OnPointerUp(args, isManagedBubblingEvent: false);
+		private void OnManagedPointerUp(PointerRoutedEventArgs args) => OnPointerUp(args, isManagedBubblingEvent: true);
 
 		private bool OnPointerUp(PointerRoutedEventArgs args, bool isManagedBubblingEvent)
 		{
@@ -534,8 +532,8 @@ namespace Windows.UI.Xaml
 			return handledInManaged;
 		}
 
-		private bool OnNativePointerExited(PointerRoutedEventArgs args) => OnPointerExited(args, false);
-		private void OnManagedPointerExited(PointerRoutedEventArgs args) => OnPointerExited(args, true);
+		private bool OnNativePointerExited(PointerRoutedEventArgs args) => OnPointerExited(args, isManagedBubblingEvent: false);
+		private void OnManagedPointerExited(PointerRoutedEventArgs args) => OnPointerExited(args, isManagedBubblingEvent: true);
 
 		private bool OnPointerExited(PointerRoutedEventArgs args, bool isManagedBubblingEvent)
 		{
@@ -564,9 +562,9 @@ namespace Windows.UI.Xaml
 		private bool OnNativePointerCancel(PointerRoutedEventArgs args, bool isSwallowedBySystem)
 		{
 			args.CanceledByDirectManipulation = isSwallowedBySystem;
-			return OnPointerCancel(args, false);
+			return OnPointerCancel(args, isManagedBubblingEvent: false);
 		}
-		private void OnManagedPointerCancel(PointerRoutedEventArgs args) => OnNativePointerCancel(args, true);
+		private void OnManagedPointerCancel(PointerRoutedEventArgs args) => OnPointerCancel(args, isManagedBubblingEvent: true);
 
 		private bool OnPointerCancel(PointerRoutedEventArgs args, bool isManagedBubblingEvent)
 		{
