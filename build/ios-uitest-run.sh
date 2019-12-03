@@ -22,7 +22,7 @@ export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/io
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
-if [ "$UITEST_SNAPSHOTS_ONLY" -eq '' ];
+if [ "$UITEST_SNAPSHOTS_ONLY" == '' ];
 then
 export TEST_FILTERS="\
 	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests' or \
