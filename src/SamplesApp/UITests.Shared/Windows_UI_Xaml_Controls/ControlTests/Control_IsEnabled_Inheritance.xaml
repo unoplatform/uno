@@ -18,7 +18,8 @@
 								PointerPressed="IncrementCounter" />
 				<TextBlock x:Name="CounterTextBlock"
 						   Text="0" />
-				<TextBlock Text="{Binding ElementName=ButtonUnderTest, Path=IsEnabled}" />
+				<TextBlock x:Name="IsEnabledTextBlock"
+						   Text="{Binding ElementName=ButtonUnderTest, Path=IsEnabled}" />
 				<Button x:Name="ToggleEnabledButton"
 						Content="Toggle enabled"
 						Click="ToggleEnabled" />
