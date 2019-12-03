@@ -4,7 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	xmlns:imageTests="using:UITests.Shared.Windows_UI_Xaml_Controls.ImageTests"
+	xmlns:local="using:Uno.UI.Samples.UITests.Image"
 	mc:Ignorable="d"
 	d:DesignHeight="300"
 	d:DesignWidth="400">
@@ -14,7 +14,7 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
-		<imageTests:Image_Stretch_Modes_Picker x:Name="modesPicker" />
+		<local:Image_Stretch_Modes_Picker x:Name="modesPicker" />
 		<ScrollViewer Grid.Row="1">
 			<ItemsControl ItemsSource="{Binding Items, ElementName=modesPicker}">
 				<ItemsControl.ItemTemplate>
