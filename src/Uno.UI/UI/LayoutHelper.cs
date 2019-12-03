@@ -23,14 +23,22 @@ namespace Uno.UI
 			minSize = size
 				.NumberOrDefault(new Size(0, 0))
 				.AtMost(maxSize)
-				.AtLeast(minSize);
+				.AtLeast(minSize); // UWP is applying "min" after "max", so if "min" > "max", "min" wins
 
 			maxSize = size
 				.NumberOrDefault(new Size(PositiveInfinity, PositiveInfinity))
 				.AtMost(maxSize)
-				.AtLeast(minSize);
+				.AtLeast(minSize); // UWP is applying "min" after "max", so if "min" > "max", "min" wins
 
 			return (minSize, maxSize);
+		}
+
+		internal static Size ApplySizeConstrains(this IFrameworkElement e, Size forSize)
+		{
+			var (min, max) = e.GetMinMax();
+			return forSize
+				.AtMost(max)
+				.AtLeast(min); // UWP is applying "min" after "max", so if "min" > "max", "min" wins
 		}
 
 		internal static Size GetMarginSize(this IFrameworkElement frameworkElement)
