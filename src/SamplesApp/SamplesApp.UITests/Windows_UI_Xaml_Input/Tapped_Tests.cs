@@ -46,5 +46,22 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			var result = _app.Marked("WhenChildHandlesPointers_Result").GetDependencyPropertyValue<string>("Text");
 			result.Should().Be("Tapped");
 		}
+
+		[Test]
+		public void When_MultipleTappedRecognizer()
+		{
+			Run("UITests.Shared.Windows_UI_Input.GestureRecognizerTests.TappedTest");
+
+			var target = _app.WaitForElement("WhenMultipleTappedRecognizer_Target").Single();
+
+			const int tapX = 10, tapY = 10;
+			_app.TapCoordinates(target.Rect.X + tapX, target.Rect.Y + tapY);
+
+			var resultParent = _app.Marked("WhenMultipleTappedRecognizer_Result_Parent").GetDependencyPropertyValue<string>("Text");
+			var resultTarget = _app.Marked("WhenMultipleTappedRecognizer_Result_Target").GetDependencyPropertyValue<string>("Text");
+
+			resultParent.Should().Be("1");
+			resultTarget.Should().Be("1");
+		}
 	}
 }
