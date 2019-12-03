@@ -29,5 +29,15 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 
 		private void WhenChildHandlesPointers_OnParentTapped(object sender, TappedRoutedEventArgs e)
 			=> WhenChildHandlesPointers_Result.Text = "Tapped";
+
+		private void WhenMultipleTappedRecognizer_OnParentTapped(object sender, TappedRoutedEventArgs e)
+			=> WhenMultipleTappedRecognizer_Result_Parent.Text = int.TryParse(WhenMultipleTappedRecognizer_Result_Parent.Text, out var count)
+				? (count + 1).ToString()
+				: "1";
+
+		private void WhenMultipleTappedRecognizer_OnTargetTapped(object sender, TappedRoutedEventArgs e)
+			=> WhenMultipleTappedRecognizer_Result_Target.Text = int.TryParse(WhenMultipleTappedRecognizer_Result_Target.Text, out var count)
+				? (count + 1).ToString()
+				: "1";
 	}
 }

@@ -69,5 +69,38 @@
 				<TextBlock x:Name="WhenChildHandlesPointers_Result" />
 			</StackPanel>
 		</Border>
+
+		<Border
+			Width="250"
+			BorderThickness="3"
+			BorderBrush="#FFFF41"
+			HorizontalAlignment="Left"
+			VerticalAlignment="Top">
+			<StackPanel>
+				<TextBlock Text="Test duplicated tapped event" />
+				<Border
+					Width="100"
+					Height="100"
+					Background="#FFFF41"
+					Tapped="WhenMultipleTappedRecognizer_OnParentTapped">
+					<Border
+						x:Name="WhenMultipleTappedRecognizer_Target"
+						Width="70"
+						Height="70"
+						Background="#66FFFFFF"
+						Tapped="WhenMultipleTappedRecognizer_OnTargetTapped">
+						<TextBlock Text="Touch target"/>
+					</Border>
+				</Border>
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Text="Tapped on parent: " />
+					<TextBlock x:Name="WhenMultipleTappedRecognizer_Result_Parent" Text="0" />
+				</StackPanel>
+				<StackPanel Orientation="Horizontal">
+					<TextBlock Text="Tapped on target: " />
+					<TextBlock x:Name="WhenMultipleTappedRecognizer_Result_Target" Text="0" />
+				</StackPanel>
+			</StackPanel>
+		</Border>
 	</StackPanel>
 </Page>
