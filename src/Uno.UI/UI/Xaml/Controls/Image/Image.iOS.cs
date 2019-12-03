@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetImageFromWriteableBitmap(WriteableBitmap writeableBitmap)
 		{
-			if(writeableBitmap.PixelBuffer is InMemoryBuffer memoryBuffer)
+			if (writeableBitmap.PixelBuffer is InMemoryBuffer memoryBuffer)
 			{
 				// Convert RGB colorspace.
 				var bgraBuffer = memoryBuffer.Data;
@@ -261,6 +261,19 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		public override void LayoutSubviews()
+		{
+			try
+			{
+				_layouter.Arrange(Bounds);
+
+				UpdateLayerRect(Bounds.Size);
+			}
+			catch (Exception e)
+			{
+				this.Log().Error($"Layout failed in {GetType()}", e);
+			}
+		}
 
 		partial void OnStretchChanged(Stretch newValue, Stretch oldValue)
 		{
@@ -272,8 +285,6 @@ namespace Windows.UI.Xaml.Controls
 			size = IFrameworkElementHelper.SizeThatFits(this, size);
 
 			size = _layouter.Measure(size.ToFoundationSize());
-
-			UpdateLayerRect(size);
 
 			return size;
 		}
