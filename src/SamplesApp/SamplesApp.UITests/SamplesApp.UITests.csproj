@@ -21,4 +21,12 @@
 		<SourceGenerator Include="..\SamplesApp.UITests.Generator\Bin\$(Configuration)\net47\Uno.Samples.UITest.Generator.dll" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(DocsGeneration)'==''">
+		<ProjectReference Include=".\SamplesApp.UITests.Generator\Uno.Samples.UITest.Generator.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+	</ItemGroup>
+
 </Project>
