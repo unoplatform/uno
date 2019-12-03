@@ -10,30 +10,63 @@
 
 	<StackPanel>
 		<Border
-			x:Name="LocationTestRoot"
+			x:Name="WhenTappedThenArgsLocationIsValid_Root"
 			Width="250"
 			BorderThickness="3"
-			BorderBrush="Red"
+			BorderBrush="#FF0018"
 			HorizontalAlignment="Left"
 			VerticalAlignment="Top">
 			<StackPanel>
 				<TextBlock Text="Test event args location" />
 				<Border
-					x:Name="LocationTestTarget"
+					x:Name="WhenTappedThenArgsLocationIsValid_Target"
 					Width="100"
 					Height="100"
-					Tapped="OnLocationTestTargetTapped"
-					Background="Red">
+					Tapped="WhenTappedThenArgsLocationIsValid_OnTargetTapped"
+					Background="#FF0018">
 					<TextBlock Text="Touch target" />
 				</Border>
 				<StackPanel Orientation="Horizontal">
 					<TextBlock Text="Relative to test root (physical px): " />
-					<TextBlock Name="LocationTestRelativeToRootLocation" />
+					<TextBlock Name="WhenTappedThenArgsLocationIsValid_Result_RelativeToRoot" />
 				</StackPanel>
 				<StackPanel Orientation="Horizontal">
 					<TextBlock Text="Relative to target (physical px): " />
-					<TextBlock Name="LocationTestRelativeToTargetLocation" />
+					<TextBlock Name="WhenTappedThenArgsLocationIsValid_Result_RelativeToTarget" />
 				</StackPanel>
+			</StackPanel>
+		</Border>
+
+		<Border
+			Width="250"
+			BorderThickness="3"
+			BorderBrush="#FFA52C"
+			HorizontalAlignment="Left"
+			VerticalAlignment="Top">
+			<StackPanel>
+				<TextBlock Text="Test when child handles all pointer events" />
+				<Border
+					Width="100"
+					Height="100"
+					Background="#FFA52C"
+					Tapped="WhenChildHandlesPointers_OnParentTapped">
+					<Border
+						x:Name="WhenChildHandlesPointers_Target"
+						Width="70"
+						Height="70"
+						Background="#66FFFFFF"
+						PointerEntered="HandlePointerEvent"
+						PointerPressed="HandlePointerEvent"
+						PointerMoved="HandlePointerEvent"
+						PointerReleased="HandlePointerEvent"
+						PointerExited="HandlePointerEvent"
+						PointerCanceled="HandlePointerEvent"
+						PointerCaptureLost="HandlePointerEvent"
+						PointerWheelChanged="HandlePointerEvent">
+						<TextBlock Text="Touch target"/>
+					</Border>
+				</Border>
+				<TextBlock x:Name="WhenChildHandlesPointers_Result" />
 			</StackPanel>
 		</Border>
 	</StackPanel>

@@ -15,13 +15,19 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 			this.InitializeComponent();
 		}
 
-		private void OnLocationTestTargetTapped(object sender, TappedRoutedEventArgs e)
+		private void WhenTappedThenArgsLocationIsValid_OnTargetTapped(object sender, TappedRoutedEventArgs e)
 		{
-			var relativeToRoot = e.GetPosition(LocationTestRoot).LogicalToPhysicalPixels();
-			var relativeToTarget = e.GetPosition(LocationTestTarget).LogicalToPhysicalPixels();
+			var relativeToRoot = e.GetPosition(WhenTappedThenArgsLocationIsValid_Root).LogicalToPhysicalPixels();
+			var relativeToTarget = e.GetPosition(WhenTappedThenArgsLocationIsValid_Target).LogicalToPhysicalPixels();
 
-			LocationTestRelativeToRootLocation.Text = $"({(int)relativeToRoot.X:D},{(int)relativeToRoot.Y:D})";
-			LocationTestRelativeToTargetLocation.Text = $"({(int)relativeToTarget.X:D},{(int)relativeToTarget.Y:D})";
+			WhenTappedThenArgsLocationIsValid_Result_RelativeToRoot.Text = $"({(int)relativeToRoot.X:D},{(int)relativeToRoot.Y:D})";
+			WhenTappedThenArgsLocationIsValid_Result_RelativeToTarget.Text = $"({(int)relativeToTarget.X:D},{(int)relativeToTarget.Y:D})";
 		}
+
+		private void HandlePointerEvent(object sender, PointerRoutedEventArgs e)
+			=> e.Handled = true;
+
+		private void WhenChildHandlesPointers_OnParentTapped(object sender, TappedRoutedEventArgs e)
+			=> WhenChildHandlesPointers_Result.Text = "Tapped";
 	}
 }
