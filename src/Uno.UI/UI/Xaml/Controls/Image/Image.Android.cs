@@ -155,6 +155,16 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private int? _targetWidth;
+		private int? _targetHeight;
+
+		partial void SetTargetImageSize(Size targetSize)
+		{
+			var physicalSize = targetSize.LogicalToPhysicalPixels();
+			_targetWidth = physicalSize.Width.SelectOrDefault(w => w != 0 ? (int?)w : null);
+			_targetHeight = physicalSize.Height.SelectOrDefault(h => h != 0 ? (int?)h : null);
+		}
+
 		public override void SetImageDrawable(Drawable drawable)
 		{
 			if (drawable != null)
@@ -262,29 +272,32 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			// If the ImageSource has the UseTargetSize set, the image 
-			// must not be loaded until the first layout has been done.
-			if (Source != null && Source.UseTargetSize && !IsLoaded)
+			if (Source != null && Source.UseTargetSize)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				// If the ImageSource has the UseTargetSize set, the image 
+				// must not be loaded until the first layout has been done.
+				if (!IsLoaded)
 				{
-					this.Log().Debug(this.ToString() + " TryOpenImage - cancelling because view is not loaded");
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug(this.ToString() + " TryOpenImage - cancelling because view is not loaded");
+					}
+					return;
 				}
-				return;
-			}
 
-			// We can't open the image until we have the proper target size, which is 
-			// being computed after the layout has been completed.
-			// However, if we have already determined that the Image has nonfinite bounds (eg because it 
-			//has no set Width/Height and is inside control that permits infinite space), then we will never
-			//be able to set a targetSize and must load the image without one.
-			if (Source != null && Source.UseTargetSize && _targetWidth == null && _targetHeight == null && (_hasFiniteBounds ?? true) && !MustOpenImageToMeasure())
-			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				// We can't open the image until we have the proper target size, which is 
+				// being computed after the layout has been completed.
+				// However, if we have already determined that the Image has nonfinite bounds (eg because it 
+				//has no set Width/Height and is inside control that permits infinite space), then we will never
+				//be able to set a targetSize and must load the image without one.
+				if (_targetWidth == null && _targetHeight == null && !(_hasFiniteBounds ?? false) && Stretch == Stretch.Uniform)
 				{
-					this.Log().Debug(this.ToString() + " TryOpenImage - cancelling because view needs to be measured");
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug(this.ToString() + " TryOpenImage - cancelling because view needs to be measured");
+					}
+					return;
 				}
-				return;
 			}
 
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
