@@ -1,7 +1,5 @@
 ﻿# Release notes
 
-## Next version
-
 ### Features
 * [#2029](https://github.com/unoplatform/uno/pull/2029) Support for MenuFlyoutItem.Click
 * support /[file]/[name] format in ResourceLoader.GetForCurrentView().GetString()
@@ -205,6 +203,7 @@
 * #2129 WebAssembly Bootstrapper update to remove the implicit .NET 4.6.2 dependency, and support for long file paths on Windows.
 * #2147 Fix NRE in android-specific TextBox.ImeOptions
 * #2146 [iOS] ListView doesn't take extra space when items are added to collection
+- [Wasm] Add arbitrary delay in Safari macOS to avoid StackOverflow issues
 
 ## Release 1.45.0
 ### Features
