@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
@@ -13,28 +14,53 @@ namespace Windows.UI.Xaml.Controls
 			switch (image.Stretch)
 			{
 				case UniformToFill:
-					var uniformToFillScale = (child.Width * finalSize.Height >= child.Height * finalSize.Width)
-						? finalSize.Height / child.Height // child is flatter than parent
-						: finalSize.Width / child.Width; // child is taller than parent
-					child.Width *= uniformToFillScale;
-					child.Height *= uniformToFillScale;
-					break;
+					{
+						var childAspectRatio = child.AspectRatio();
+						var finalAspectRatio = finalSize.AspectRatio();
+						if (childAspectRatio <= finalAspectRatio)
+						{
+							// Child wider than parent, so we're using the width to fill
+							// It's also the default mode if aspect ratios are the same
+							child.Width = finalSize.Width;
+							child.Height = finalSize.Width / childAspectRatio;
+						}
+						else
+						{
+							// child is taller than parent, so where' using the height to fill
+							child.Width = finalSize.Height * childAspectRatio;
+							child.Height = finalSize.Height;
+						}
+
+						break;
+					}
 
 				case Uniform:
-					var uniformScale = (child.Width * finalSize.Height > child.Height * finalSize.Width)
-						? finalSize.Width / child.Width // child is taller than parent
-						: finalSize.Height / child.Height; // child is flatter than parent
-					child.Width *= uniformScale;
-					child.Height *= uniformScale;
-					break;
+					{
+						var childAspectRatio = child.AspectRatio();
+						var finalAspectRatio = finalSize.AspectRatio();
+						if (childAspectRatio <= finalAspectRatio)
+						{
+							// Child wider than parent, so we're using the height to fill
+							child.Width = finalSize.Height * childAspectRatio;
+							child.Height = finalSize.Height;
+						}
+						else
+						{
+							// child is taller than parent, so where' using the width to fill
+							child.Width = finalSize.Width;
+							child.Height = finalSize.Width / childAspectRatio;
+						}
+
+						break;
+					}
 
 				case Fill:
-					child.Width = finalSize.Width;
-					child.Height = finalSize.Height;
-					break;
+					{
+						child.Size = finalSize;
+						break;
+					}
 
-				case None:
-					break;
+					// In case of None, there's no adjustment to make to the size of the image
 			}
 		}
 
@@ -52,7 +78,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			if(horizontalAlignment == HorizontalAlignment.Stretch && child.Width < finalSize.Width)
+			if (horizontalAlignment == HorizontalAlignment.Stretch && child.Width < finalSize.Width)
 			{
 				// In order to match UWP behaviors, image is centered when smaller than available size
 				// when the "Stretch" alignment is used.
@@ -75,7 +101,7 @@ namespace Windows.UI.Xaml.Controls
 
 			var verticalAlignment = image.VerticalAlignment;
 
-			if (stretch == None || stretch == UniformToFill)
+			if (stretch != None || stretch == UniformToFill)
 			{
 				// In order to match UWP behaviors, in some specific cases the image must be top align
 				if (!double.IsNaN(image.Height) && finalSize.Height <= child.Height)
@@ -104,6 +130,8 @@ namespace Windows.UI.Xaml.Controls
 					child.Y = (finalSize.Height - child.Height) * 0.5f;
 					break;
 			}
+
+			Debug.WriteLine($"{image}: {horizontalAlignment} / finalSize={finalSize} ==> {child}");
 		}
 
 		public static (double x, double y) BuildScale(this Image image, Size destinationSize, Size sourceSize)

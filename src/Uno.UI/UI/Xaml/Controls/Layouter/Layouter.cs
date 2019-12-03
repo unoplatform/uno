@@ -1,5 +1,6 @@
 ﻿// #define LOG_LAYOUT
 
+using Windows.UI.Xaml.Media;
 using Microsoft.Extensions.Logging;
 using Uno.UI;
 #if !__WASM__
@@ -299,7 +300,7 @@ namespace Windows.UI.Xaml.Controls
 				return ret;
 			}
 
-			if(frameworkElement != null && !(frameworkElement is FrameworkElement))
+			if (frameworkElement != null && !(frameworkElement is FrameworkElement))
 			{
 				// For IFrameworkElement implementers that are not FrameworkElements, the constraint logic must
 				// be performed by the parent. Otherwise, the native element will take the size it needs without
@@ -491,19 +492,7 @@ namespace Windows.UI.Xaml.Controls
 				var childVerticalAlignment = frameworkElement.VerticalAlignment;
 				var childHorizontalAlignment = frameworkElement.HorizontalAlignment;
 
-				// Image is a special control and is using the Vertical/Horizontal Alignment
-				// to calculate the final position of the image. On UWP, there's no difference
-				// between "Stretch" and "Center": they all behave like "Center", so we need
-				// to do the same here.
-				if (childVerticalAlignment == VerticalAlignment.Stretch && view is Image)
-				{
-					childVerticalAlignment = VerticalAlignment.Center;
-				}
-
-				if (childHorizontalAlignment == HorizontalAlignment.Stretch && view is Image)
-				{
-					childHorizontalAlignment = HorizontalAlignment.Center;
-				}
+				AdjustAlignment(view, ref childHorizontalAlignment, ref childVerticalAlignment);
 
 				var childMaxHeight = frameworkElement.MaxHeight;
 				var childMaxWidth = frameworkElement.MaxWidth;
@@ -630,6 +619,27 @@ namespace Windows.UI.Xaml.Controls
 				width: Max(0, IsNaN(frame.Width) ? 0 : frame.Width),
 				height: Max(0, IsNaN(frame.Height) ? 0 : frame.Height)
 			);
+		}
+
+		protected virtual void AdjustAlignment(View view, ref HorizontalAlignment childHorizontalAlignment,
+			ref VerticalAlignment childVerticalAlignment)
+		{
+			if (view is Image img && (img.Stretch == Stretch.None || img.Stretch == Stretch.Uniform))
+			{
+				// Image is a special control and is using the Vertical/Horizontal Alignment
+				// to calculate the final position of the image. On UWP, there's no difference
+				// between "Stretch" and "Center": they all behave like "Center", so we need
+				// to do the same here.
+				if (childVerticalAlignment == VerticalAlignment.Stretch)
+				{
+					childVerticalAlignment = VerticalAlignment.Center;
+				}
+
+				if (childHorizontalAlignment == HorizontalAlignment.Stretch)
+				{
+					childHorizontalAlignment = HorizontalAlignment.Center;
+				}
+			}
 		}
 
 		private double GetActualSize(
