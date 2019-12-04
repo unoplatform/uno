@@ -8,7 +8,8 @@
 
 ### Bug fixes
 - [#2230] `DisplayInformation` leaks memory
-- [WASM] Shapes now update when their Fill brush's Color changes
+- [Wasm] Shapes now update when their Fill brush's Color changes
+- [Wasm] Add arbitrary delay in Safari macOS to avoid StackOverflow issues
 
 ## Release 2.0
 
