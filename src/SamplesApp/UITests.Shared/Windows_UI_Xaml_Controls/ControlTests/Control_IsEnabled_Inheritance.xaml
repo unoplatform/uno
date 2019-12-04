@@ -12,6 +12,7 @@
 		<ContentControl>
 			<StackPanel>
 				<ContentControl x:Name="ButtonUnderTest"
+								HorizontalAlignment="Left"
 								Margin="15"
 								Content="Pseudo-button under test"
 								IsEnabled="False"
