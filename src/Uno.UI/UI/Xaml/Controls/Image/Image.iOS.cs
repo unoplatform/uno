@@ -209,7 +209,8 @@ namespace Windows.UI.Xaml.Controls
 				SourceImageSize = image?.Size.ToFoundationSize() ?? default(Size);
 			}
 
-			SetNeedsLayoutOrDisplay();
+			SetNeedsLayout();
+
 			if (Image != null)
 			{
 				OnImageOpened(image);
@@ -259,6 +260,10 @@ namespace Windows.UI.Xaml.Controls
 							"Stretch mode {0} is not supported".InvariantCultureFormat(stretch));
 				}
 			}
+			else
+			{
+				SetNeedsLayout();
+			}
 		}
 
 		public override void LayoutSubviews()
@@ -280,18 +285,28 @@ namespace Windows.UI.Xaml.Controls
 			UpdateContentMode(newValue);
 		}
 
+		private CGSize _previousSize;
+
 		public override CGSize SizeThatFits(CGSize size)
 		{
 			size = IFrameworkElementHelper.SizeThatFits(this, size);
 
 			size = _layouter.Measure(size.ToFoundationSize());
 
-			return size;
+			if (size != _previousSize)
+			{
+				SetNeedsLayout();
+			}
+
+			return _previousSize = size;
 		}
+
+		private (Size, CGSize, HorizontalAlignment, VerticalAlignment, Stretch) _layerLastParameters;
+
 
 		private void UpdateLayerRect(Size availableSize)
 		{
-			if (SourceImageSize.Width == 0 || SourceImageSize.Height == 0 || availableSize.Width == 0 || availableSize.Height == 0)
+			if (SourceImageSize.Width == 0 || SourceImageSize.Height == 0 || availableSize.Width == 0 || availableSize.Height == 0 || Image == null)
 			{
 				return; // nothing to do
 			}
@@ -301,7 +316,16 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
+			var parameters = (availableSize, Image.Size, HorizontalAlignment, VerticalAlignment, Stretch);
+			if (parameters == _layerLastParameters)
+			{
+				return; // nothing to update
+			}
+
+			_layerLastParameters = parameters;
+
 			var imageSize = Image.Size.ToFoundationSize();
+
 			var sourceRect = new Rect(Point.Zero, imageSize);
 
 			this.MeasureSource(availableSize, ref sourceRect);

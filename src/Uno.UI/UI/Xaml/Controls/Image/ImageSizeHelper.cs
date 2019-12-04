@@ -101,7 +101,7 @@ namespace Windows.UI.Xaml.Controls
 
 			var verticalAlignment = image.VerticalAlignment;
 
-			if (stretch != None || stretch == UniformToFill)
+			if (stretch == None || stretch == UniformToFill)
 			{
 				// In order to match UWP behaviors, in some specific cases the image must be top align
 				if (!double.IsNaN(image.Height) && finalSize.Height <= child.Height)
