@@ -16,16 +16,12 @@ cd $BUILD_SOURCESDIRECTORY/build
 
 mono nuget/nuget.exe install NUnit.ConsoleRunner -Version 3.10.0
 
-export UNO_UITEST_PLATFORM=iOS
-export UNO_UITEST_IOSBUNDLE_PATH=$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.iOS/bin/iPhoneSimulator/Release/SamplesApp.app
-export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/ios
-
-mkdir -p $UNO_UITEST_SCREENSHOT_PATH
-
 if [ "$UITEST_SNAPSHOTS_ONLY" == 'true' ];
 then
+export SCREENSHOTS_FOLDERNAME=ios-Snap
 export TEST_FILTERS="namespace == 'SamplesApp.UITests.Snap'"
 else
+export SCREENSHOTS_FOLDERNAME=ios
 export TEST_FILTERS=" \
 	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests' or \
 	namespace = 'SamplesApp.UITests' or \
@@ -39,6 +35,11 @@ export TEST_FILTERS=" \
 "
 fi
 
+export UNO_UITEST_PLATFORM=iOS
+export UNO_UITEST_IOSBUNDLE_PATH=$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.iOS/bin/iPhoneSimulator/Release/SamplesApp.app
+export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME
+
+mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
 mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe \
 	--inprocess \

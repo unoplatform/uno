@@ -36,7 +36,16 @@ $ANDROID_HOME/platform-tools/adb devices
 
 echo "Emulator started"
 
-export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/android-$ANDROID_SIMULATOR_APILEVEL
+if [ "$UITEST_SNAPSHOTS_ONLY" == 'true' ];
+then
+	export TEST_FILTERS="namespace == 'SamplesApp.UITests.Snap'"
+	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL-Snap
+else
+	export TEST_FILTERS="namespace != 'SamplesApp.UITests.Snap'"
+	export SCREENSHOTS_FOLDERNAME=android-$ANDROID_SIMULATOR_APILEVEL
+fi
+
+export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME
 export UNO_UITEST_PLATFORM=Android
 export UNO_UITEST_ANDROIDAPK_PATH=$BUILD_SOURCESDIRECTORY/build/uitests-android-build/android/uno.platform.unosampleapp-Signed.apk
 
@@ -46,13 +55,6 @@ mono nuget/NuGet.exe install NUnit.ConsoleRunner -Version 3.10.0
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
-if [ "$UITEST_SNAPSHOTS_ONLY" == 'true' ];
-then
-	export TEST_FILTERS="namespace == 'SamplesApp.UITests.Snap'"
-else
-	export TEST_FILTERS="namespace != 'SamplesApp.UITests.Snap'"
-fi
-
 mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe \
 	--inprocess \
 	--agents=1 \
@@ -61,6 +63,6 @@ mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-conso
 	$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/$BUILDCONFIGURATION/net47/SamplesApp.UITests.dll \
 	|| true
 
-$ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/android-$ANDROID_SIMULATOR_APILEVEL/android-device-log.txt
+$ANDROID_HOME/platform-tools/adb shell logcat -d > $BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME/android-device-log.txt
 
 cp $UNO_UITEST_ANDROIDAPK_PATH $BUILD_ARTIFACTSTAGINGDIRECTORY
