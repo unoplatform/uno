@@ -34,6 +34,7 @@ mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-conso
 	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests' or \
 	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests' or \
 	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Media.Animation_Tests' or \
+	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ControlTests' or \
 	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests' \
 	" \
 	$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/Release/net47/SamplesApp.UITests.dll \

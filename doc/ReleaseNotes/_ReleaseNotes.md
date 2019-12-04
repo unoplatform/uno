@@ -8,7 +8,8 @@
 
 ### Bug fixes
 - [#2230] `DisplayInformation` leaks memory
-- [Wasm] Shapes now update when their Fill brush's Color changes
+- [WASM] Shapes now update when their Fill brush's Color changes
+- [WASM] Fix bug where changing `IsEnabled` from false to true on `Control` inside another `Control` didn't work
 - [Wasm] Add arbitrary delay in Safari macOS to avoid StackOverflow issues
 
 ## Release 2.0
