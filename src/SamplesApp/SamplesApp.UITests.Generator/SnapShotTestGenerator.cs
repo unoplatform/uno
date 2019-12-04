@@ -80,6 +80,7 @@ namespace Uno.Samples.UITest.Generator
 							var info = GetSampleInfo(test.symbol, test.symbol.FindAttributeFlattened(_sampleControlInfoSymbol));
 
 							builder.AppendLineInvariant("[NUnit.Framework.Test]");
+							builder.AppendLineInvariant("[SamplesApp.UITests.TestFramework.AutoRetry]");
 							using (builder.BlockInvariant($"public void {Sanitize(test.category)}_{Sanitize(info.name)}()"))
 							{
 								builder.AppendLineInvariant($"Run(\"{test.symbol}\");");
