@@ -22,7 +22,7 @@ namespace Uno.UI.TestComparer.Comparer
 
 		internal CompareResult Compare()
 		{
-			var testResult = new CompareResult();
+			var testResult = new CompareResult(_platform);
 
 			string path = _basePath;
 			var resultsId = $"{DateTime.Now:yyyyMMdd-hhmmss}";
