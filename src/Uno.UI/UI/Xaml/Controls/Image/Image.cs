@@ -267,6 +267,11 @@ namespace Windows.UI.Xaml.Controls
 				var img = ImageControl;
 				var sourceSize = img.SourceImageSize;
 
+				if (sourceSize == default)
+				{
+					return default;
+				}
+
 				if (img.Stretch == Stretch.None)
 				{
 					// On Stretch=None, we simply use the image size
