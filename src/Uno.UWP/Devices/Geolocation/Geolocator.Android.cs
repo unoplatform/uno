@@ -219,10 +219,11 @@ namespace Windows.Devices.Geolocation
 					);
 
 			double? locVertAccuracy=null;
-			if(location.HasVerticalAccuracy )
-			{
-				locVertAccuracy = location.VerticalAccuracyMeters;
-			}
+			// HasVerticalAccuracy and VerticalAccuracyMeters are marked as "to be added", but where? Mono? Android SDK?
+			// if(location.HasVerticalAccuracy )
+			// {
+			// 	locVertAccuracy = location.VerticalAccuracyMeters;
+			// }
 
 			Geoposition geopos = new Geoposition(
 				new Geocoordinate(
