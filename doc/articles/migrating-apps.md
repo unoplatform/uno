@@ -35,7 +35,7 @@ First, open your app solution in Visual Studio. Then, using the Solution Explore
 * while reading next parts of this guide, treat `APPNAME[_Uno]` as `APPNAME`.
 
 ### tips for both options above
-* description of Uno app solution structure is [documented here](uno-app-solution-structure.html).
+* description of Uno app solution structure is [documented here](uno-app-solution-structure.md).
 * you can unload your .Droid, .iOS and .WASM projects (right click in Solution Explorer) to make Visual Studio use less memory and start faster.
 
 ## Converting your code
