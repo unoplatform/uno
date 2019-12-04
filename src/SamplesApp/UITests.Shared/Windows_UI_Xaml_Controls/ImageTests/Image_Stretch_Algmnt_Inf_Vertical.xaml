@@ -1,12 +1,12 @@
 ﻿<Page
-    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.Image_Stretch_Algmnt_Inf_Vertical"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    xmlns:image="using:Uno.UI.Samples.UITests.Image"
-    mc:Ignorable="d"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+	x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.Image_Stretch_Algmnt_Inf_Vertical"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:image="using:Uno.UI.Samples.UITests.Image"
+	mc:Ignorable="d"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<Grid HorizontalAlignment="Center">
 		<Grid.RowDefinitions>
@@ -25,15 +25,15 @@
 								v=<Run Text="{Binding VerticalAlignment}" FontWeight="Bold" />
 							</TextBlock>
 							<StackPanel Width="250"
-							            Height="250"
-							            Orientation="Vertical"
-							            BorderThickness="1"
-							            BorderBrush="Black"
-							            Background="DeepPink">
+										Height="250"
+										Orientation="Vertical"
+										BorderThickness="1"
+										BorderBrush="Black"
+										Background="DeepPink">
 								<Image Stretch="{Binding Stretch}"
-								       VerticalAlignment="{Binding VerticalAlignment}"
-								       HorizontalAlignment="{Binding HorizontalAlignment}"
-								       Source="ms-appx:///Assets/test_image_300_200.png" />
+									   VerticalAlignment="{Binding VerticalAlignment}"
+									   HorizontalAlignment="{Binding HorizontalAlignment}"
+									   Source="ms-appx:///Assets/test_image_300_200.png" />
 							</StackPanel>
 						</StackPanel>
 					</DataTemplate>

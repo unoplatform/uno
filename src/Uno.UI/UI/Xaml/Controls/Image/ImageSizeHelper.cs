@@ -130,8 +130,6 @@ namespace Windows.UI.Xaml.Controls
 					child.Y = (finalSize.Height - child.Height) * 0.5f;
 					break;
 			}
-
-			Debug.WriteLine($"{image}: {horizontalAlignment} / finalSize={finalSize} ==> {child}");
 		}
 
 		public static (double x, double y) BuildScale(this Image image, Size destinationSize, Size sourceSize)
