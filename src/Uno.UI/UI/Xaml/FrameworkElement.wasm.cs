@@ -75,7 +75,10 @@ namespace Windows.UI.Xaml
 				// Make sure to set the flag before raising the loaded event (duplicated with the base.ManagedOnLoaded)
 				base.IsLoaded = true;
 
-				UpdateDOMProperties();
+				if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+				{
+					UpdateDOMProperties();
+				}
 
 				try
 				{
@@ -517,12 +520,19 @@ namespace Windows.UI.Xaml
 
 		private static void OnGenericPropertyUpdated(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			((FrameworkElement)dependencyObject).UpdateDOMProperties();
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				((FrameworkElement)dependencyObject).UpdateDOMProperties();
+			}
 		}
 
 		/// <summary>
 		/// If corresponding feature flag is enabled, set layout properties as DOM attributes to aid in debugging.
 		/// </summary>
+		/// <remarks>
+		/// Calls to this method should be wrapped in a check of the feature flag, to avoid the expense of a virtual method call
+		/// that will most of the time do nothing in hot code paths.
+		/// </remarks>
 		private protected override void UpdateDOMProperties()
 		{
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties && IsLoaded)
