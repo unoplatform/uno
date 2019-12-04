@@ -55,6 +55,10 @@ mono nuget/NuGet.exe install NUnit.ConsoleRunner -Version 3.10.0
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
+# Move to the screenshot directory so that the output path is the proper one, as
+# required by Xamarin.UITest
+cd $UNO_UITEST_SCREENSHOT_PATH
+
 mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe \
 	--inprocess \
 	--agents=1 \
