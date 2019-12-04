@@ -57,7 +57,7 @@
 			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI.Lottie\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
-			<_OutputFiles Include="$(TargetDir)*.*" />
+			<_OutputFiles Include="$(TargetDir)**" />
 		</ItemGroup>
 		<MakeDir Directories="$(_TargetNugetFolder)" />
 
