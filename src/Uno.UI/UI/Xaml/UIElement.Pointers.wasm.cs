@@ -121,7 +121,7 @@ namespace Windows.UI.Xaml
 			var buttons = int.Parse(parts[5], CultureInfo.InvariantCulture);
 			var buttonUpdate = int.Parse(parts[6], CultureInfo.InvariantCulture);
 			var typeStr = parts[7];
-			var srcHandle = int.Parse(parts[8]);
+			var srcHandle = int.Parse(parts[8], CultureInfo.InvariantCulture);
 			var timestamp = double.Parse(parts[9], CultureInfo.InvariantCulture);
 
 			var src = GetElementFromHandle(srcHandle) ?? (UIElement)snd;

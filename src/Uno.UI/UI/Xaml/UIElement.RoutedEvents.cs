@@ -398,7 +398,7 @@ namespace Windows.UI.Xaml
 					handlers.Remove(matchingHandler);
 
 					if (matchingHandler.HandledEventsToo
-						&& !routedEvent.IsAlwaysBubbled) // This event is always bubbled, no needs to update the flag
+						&& !routedEvent.IsAlwaysBubbled) // This event is always bubbled, no need to update the flag
 					{
 						UpdateSubscribedToHandledEventsToo();
 					}
@@ -455,7 +455,7 @@ namespace Windows.UI.Xaml
 			{
 				if (eventHandlers.Key.IsAlwaysBubbled)
 				{
-					// This event is always bubbled, no needs to include it in the SubscribedToHandledEventsToo
+					// This event is always bubbled, no need to include it in the SubscribedToHandledEventsToo
 					continue;
 				}
 
