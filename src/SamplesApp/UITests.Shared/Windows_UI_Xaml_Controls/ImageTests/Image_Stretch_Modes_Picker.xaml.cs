@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
@@ -19,7 +20,17 @@ namespace Uno.UI.Samples.UITests.Image
 		public ComboBoxItem[] HorizontalAlignments { get; } = GetValues<HorizontalAlignment>().ToArray();
 		public ComboBoxItem[] VerticalAlignments { get; } = GetValues<VerticalAlignment>().ToArray();
 
-		public ObservableCollection<StretchModeItem> Items { get; } = new ObservableCollection<StretchModeItem>();
+		public static readonly DependencyProperty ItemsProperty = DependencyProperty.Register(
+			"Items",
+			typeof(List<StretchModeItem>),
+			typeof(Image_Stretch_Modes_Picker),
+			new PropertyMetadata(default(List<StretchModeItem>)));
+
+		public List<StretchModeItem> Items
+		{
+			get { return (List<StretchModeItem>)GetValue(ItemsProperty); }
+			set { SetValue(ItemsProperty, value); }
+		}
 
 		private readonly StretchModeItem[] _allModes;
 		private bool _suspend;
@@ -58,7 +69,7 @@ namespace Uno.UI.Samples.UITests.Image
 			var selectedHorizontalModes = (horizontalModes.SelectedValue as ComboBoxItem)?.Tag as HorizontalAlignment?;
 			var selectedVerticalMode = (verticalModes.SelectedValue as ComboBoxItem)?.Tag as VerticalAlignment?;
 
-			Items.Clear();
+			var items = new List<StretchModeItem>();
 
 			foreach (var mode in _allModes)
 			{
@@ -77,10 +88,12 @@ namespace Uno.UI.Samples.UITests.Image
 					continue;
 				}
 
-				Items.Add(mode);
+				items.Add(mode);
 			}
 
-            currentMode.Content = Items.First().Index.ToString("00");
+			Items = items;
+
+			currentMode.Content = Items.First().Index.ToString("00");
 		}
 
 		private IEnumerable<StretchModeItem> GetAllModes()
