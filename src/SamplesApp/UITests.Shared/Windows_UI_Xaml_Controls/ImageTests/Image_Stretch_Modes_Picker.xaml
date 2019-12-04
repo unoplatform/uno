@@ -22,7 +22,7 @@
 		<ComboBox x:Name="verticalModes" Grid.Column="2" Header="Vertical Alignment:" HorizontalAlignment="Stretch" />
 		<StackPanel Grid.Column="3" Orientation="Horizontal" VerticalAlignment="Bottom" Spacing="5">
 			<Button Click="OnPrevious" x:Name="previousMode">&lt; Previous</Button>
-			<Button Click="OnCurrent"  x:Name="currentMode" />
+			<Button Click="OnCurrent"  x:Name="currentMode">XX</Button>
 			<Button Click="OnNext" x:Name="nextMode">Next &gt;</Button>
 		</StackPanel>
 	</Grid>

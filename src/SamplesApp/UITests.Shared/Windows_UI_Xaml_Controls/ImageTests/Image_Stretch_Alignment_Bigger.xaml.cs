@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Media;
 namespace Uno.UI.Samples.UITests.Image
 {
 	[Controls.SampleControlInfo("Image")]
-	public sealed partial class Image_Stretch_Alignment_Bigger : UserControl
+	public sealed partial class Image_Stretch_Alignment_Bigger : Page
 	{
 		private ArrayList Items = new ArrayList();
 
