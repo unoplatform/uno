@@ -823,6 +823,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return Text;
 		}
+
+		// This approximates UWP behavior
+		private protected override double GetActualWidth() => DesiredSize.Width;
+		private protected override double GetActualHeight() => DesiredSize.Height;
 	}
 }
 #endif
