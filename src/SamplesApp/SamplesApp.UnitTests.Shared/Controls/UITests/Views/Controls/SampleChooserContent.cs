@@ -17,7 +17,7 @@ namespace SampleControl.Entities
 		public Type ViewModelType { get; set; }
 		public Type ControlType { get; set; }
 		public string Description { get; set; }
-		public bool IgnoreInAutomatedTests { get; internal set; }
+		public bool IgnoreInSnapshotTests { get; internal set; }
 
 		bool _isFavorite;
 		public bool IsFavorite
