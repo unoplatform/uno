@@ -37,21 +37,37 @@ namespace Uno.Samples.UITest.Generator
 						where info != null && info.ConstructorArguments != null
 						let sampleInfo = GetSampleInfo(typeSymbol, info)
 						orderby sampleInfo.category
-						select (typeSymbol, sampleInfo.category, sampleInfo.name);
+						select (typeSymbol, sampleInfo.category, sampleInfo.name, sampleInfo.ignoreInSnapshotTests);
 
 			query = query.Distinct();
 
 			GenerateTests(assembly, context, query);
 		}
 
-		private (string category, string name) GetSampleInfo(INamedTypeSymbol symbol, AttributeData info) 
+		private (string category, string name, bool ignoreInSnapshotTests) GetSampleInfo(INamedTypeSymbol symbol, AttributeData info) 
 			=> (
-				category: info.ConstructorArguments.ElementAt(0).Value?.ToString() ?? "Default",
-				name: AlignName(info.ConstructorArguments.ElementAtOrDefault(1).Value?.ToString() ?? symbol.ToDisplayString())
+				category: GetConstructorParameterValue(info, "category")?.ToString() ?? "Default",
+				name: AlignName(GetConstructorParameterValue(info, "controlName")?.ToString()) ?? symbol.ToDisplayString(),
+				ignoreInSnapshotTests: GetConstructorParameterValue(info, "ignoreInSnapshotTests") is bool b ? b : false
 			);
-		private string AlignName(string v) => v.Replace("/", "_").Replace(" ", "_").Replace("-", "_");
 
-		private void GenerateTests(string assembly, SourceGeneratorContext context, IEnumerable<(INamedTypeSymbol symbol, string category, string name)> symbols)
+		private object GetConstructorParameterValue(AttributeData info, string name)
+			=> info.ConstructorArguments.ElementAt(GetParameterIndex(info, "category")).Value;
+
+		private int GetParameterIndex(AttributeData info, string name)
+			=> info
+				.AttributeConstructor
+				.Parameters.Select((p, i) => (p, i))
+				.Single(p => p.p.Name == name)
+				.i;
+	
+		private string AlignName(string v)
+			=> v.Replace("/", "_").Replace(" ", "_").Replace("-", "_");
+
+		private void GenerateTests(
+			string assembly,
+			SourceGeneratorContext context,
+			IEnumerable<(INamedTypeSymbol symbol, string category, string name, bool ignoreInSnapshotTests)> symbols)
 		{
 			var groups = 
 				from symbol in symbols.Select((v, i) => (index:i, value:v))
@@ -73,6 +89,7 @@ namespace Uno.Samples.UITest.Generator
 				using (builder.BlockInvariant($"namespace {context.GetProjectInstance().GetPropertyValue("RootNamespace")}.Snap"))
 				{
 					builder.AppendLineInvariant("[NUnit.Framework.TestFixture]");
+
 					using (builder.BlockInvariant($"public partial class {groupName} : SampleControlUITestBase"))
 					{
 						foreach (var test in group.Symbols) // .Where(s => s.symbol.ToString()).Contains("Border_Simple")))
@@ -80,6 +97,12 @@ namespace Uno.Samples.UITest.Generator
 							var info = GetSampleInfo(test.symbol, test.symbol.FindAttributeFlattened(_sampleControlInfoSymbol));
 
 							builder.AppendLineInvariant("[NUnit.Framework.Test]");
+
+							if (info.ignoreInSnapshotTests)
+							{
+								builder.AppendLineInvariant("[NUnit.Framework.Ignore]");
+							}
+
 							builder.AppendLineInvariant("[SamplesApp.UITests.TestFramework.AutoRetry]");
 							using (builder.BlockInvariant($"public void {Sanitize(test.category)}_{Sanitize(info.name)}()"))
 							{
