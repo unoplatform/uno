@@ -78,7 +78,31 @@ namespace Uno.UI.TestComparer
 
 
 						Console.WriteLine($"Extracting artifact for build {build.Id}");
-						ZipFile.ExtractToDirectory(tempFile, fullPath);
+
+						fullPath = fullPath.Replace("\\\\", "\\");
+
+						using (var archive = ZipFile.OpenRead(tempFile))
+						{
+							foreach (var entry in archive.Entries)
+							{
+								var outPath = Path.Combine(fullPath, entry.FullName.Replace("/", "\\"));
+
+								if (outPath.EndsWith("\\"))
+								{
+									Directory.CreateDirectory(@"\\?\" + outPath);
+								}
+								else
+								{
+									using (var stream = entry.Open())
+									{
+										using (var outStream = File.OpenWrite(@"\\?\" + outPath))
+										{
+											await stream.CopyToAsync(outStream);
+										}
+									}
+								}
+							}
+						}
 					}
 					else
 					{

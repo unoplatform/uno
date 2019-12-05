@@ -25,6 +25,7 @@ namespace Uno.UI.TestComparer
 			var wc = new System.Net.WebClient();
 			wc.Headers.Add("User-agent", "uno-nv-sync");
 			wc.Headers.Add("Authorization", $"token {githubPAT}");
+			wc.Encoding = UTF8Encoding.UTF8;
 
 			var result = await wc.UploadStringTaskAsync(contentUri, "POST", document);
 

@@ -153,15 +153,15 @@ namespace Uno.UI.TestComparer.Comparer
                                 WriteImage(diffFilePath, diff, currentImage.frame);
 
                                 compareResultFileRun.DiffResultImage = diffFilePath;
+
+								changedList.Add(testFile);
                             }
                         }
                     }
-
-                    changedList.Add(testFile);
                 }
             }
 
-			testResult.UnchangedTests = allFiles.Length - changedList.Count;
+			testResult.UnchangedTests = allFiles.Length - changedList.Distinct().Count();
 			testResult.TotalTests = allFiles.Length;
 
 			return testResult;
@@ -177,7 +177,7 @@ namespace Uno.UI.TestComparer.Comparer
 		{
 			using (var sha1 = SHA1.Create())
 			{
-				using (var file = File.OpenRead(sample))
+				using (var file = File.OpenRead(@"\\?\" + sample))
 				{
 					var data = sha1.ComputeHash(file);
 

@@ -88,9 +88,9 @@ namespace Umbrella.UI.TestComparer
 				var artifactsBasePath = Path.Combine(basePath, "artifacts");
 				var results = new List<CompareResult>();
 
-				foreach(var folder in Directory.GetDirectories(artifactsBasePath, "", SearchOption.TopDirectoryOnly))
+				foreach (var platform in GetValidPlatforms(artifactsBasePath))
 				{
-					var result = ProcessFiles(basePath, artifactsBasePath, artifactInnerBasePath, Path.GetDirectoryName(folder), currentBuild.ToString());
+					var result = ProcessFiles(basePath, artifactsBasePath, artifactInnerBasePath, platform, currentBuild.ToString());
 					results.Add(result);
 				}
 
@@ -142,6 +142,22 @@ namespace Umbrella.UI.TestComparer
 			}
 		}
 
+		private static IEnumerable<string> GetValidPlatforms(string artifactsBasePath)
+		{
+			IEnumerable<string> GetAllPlatforms()
+			{
+				foreach (var toplevel in Directory.GetDirectories(artifactsBasePath, "*", SearchOption.TopDirectoryOnly))
+				{
+					foreach(var platform in Directory.GetDirectories(Path.Combine(toplevel, "uitests-results\\screenshots")))
+					{
+						yield return Path.GetFileName(platform);
+					}
+				}
+			}
+
+			return GetAllPlatforms().Distinct();
+		}
+
 		private static async Task TryPublishPRComments(List<CompareResult> results, string githubPAT, string sourceRepository, string githubPRid, int currentBuild)
 		{
 			if (!string.IsNullOrEmpty(githubPAT))
@@ -155,17 +171,24 @@ namespace Umbrella.UI.TestComparer
 
 					foreach (var result in results)
 					{
-						comment.AppendLine($"* {result.Platform}: {result.TotalTests - result.UnchangedTests} changed over {result.TotalTests}\r\n");
+						comment.AppendLine($"* `{result.Platform}`: **{result.TotalTests - result.UnchangedTests}** changed over {result.TotalTests}\r\n");
 
-						comment.AppendLine("<details>");
-						comment.AppendLine("<summary>Details</summary>");
+						var changedTests = result.Tests.Where(t => t.HasChanged).Take(20).ToList();
 
-						foreach (var test in result.Tests.Take(20).Where(t => t.HasChanged))
+						if (changedTests.Any())
 						{
-							comment.AppendLine($"  - {test.TestName}");
-						}
+							comment.AppendLine("  <details>");
+							comment.AppendLine("  <summary>🚨🚨 Details 🚨🚨</summary>");
+							comment.AppendLine("");
 
-						comment.AppendLine("</details>");
+							foreach (var test in changedTests)
+							{
+								comment.AppendLine($"  - `{Path.GetFileNameWithoutExtension(test.TestName)}`");
+							}
+
+							comment.AppendLine("  </details>");
+							comment.AppendLine("");
+						}
 					}
 
 					await GitHubClient.PostPRCommentsAsync(githubPAT, sourceRepository, githubPRid, comment.ToString());
