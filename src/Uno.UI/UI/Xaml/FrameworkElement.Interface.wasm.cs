@@ -199,6 +199,10 @@ namespace Windows.UI.Xaml
 			UpdateHitTest();
 
 			// TODO: move focus elsewhere if control.FocusState != FocusState.Unfocused
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				UpdateDOMProperties();
+			}
 		}
 
 		#endregion
