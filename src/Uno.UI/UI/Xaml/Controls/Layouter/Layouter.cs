@@ -1,4 +1,4 @@
-﻿// #define LOG_LAYOUT
+// #define LOG_LAYOUT
 
 using Microsoft.Extensions.Logging;
 using Uno.UI;
@@ -98,8 +98,7 @@ namespace Windows.UI.Xaml.Controls
 					.NumberOrDefault(MaxSize)
 					.Subtract(marginSize)
 					.AtLeast(default) // 0.0,0.0
-					.AtMost(maxSize)
-					.AtLeast(minSize);
+					.AtMost(maxSize);
 
 				var desiredSize = MeasureOverride(frameworkAvailableSize);
 
@@ -204,7 +203,6 @@ namespace Windows.UI.Xaml.Controls
 				var (minSize, maxSize) = this.Panel.GetMinMax();
 
 				arrangeSize = arrangeSize
-					.AtLeast(minSize)
 					.AtLeast(default); // 0.0,0.0
 
 				// We have to choose max between _unclippedDesiredSize and maxSize here, because
@@ -405,7 +403,7 @@ namespace Windows.UI.Xaml.Controls
 					// Report the size to the parent without the margin, only if the
 					// size has changed or that the control required a measure
 					//
-					// This condition is required because of the measure caching that 
+					// This condition is required because of the measure caching that
 					// some systems apply (Like android UI).
 					ret = new Size(
 						ret.Width + margin.Left + margin.Right,
@@ -475,7 +473,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// In this implementation, since we do not have the ability to intercept proprely the measure and arrange
 			// because of the type of hierarchy (inheriting from native views), we must apply the margins and alignements
-			// from within the panel to its children. This makes the authoring of custom panels that do not inherit from 
+			// from within the panel to its children. This makes the authoring of custom panels that do not inherit from
 			// Panel that do not use this helper a bit more complex, but for all other panels that use this
 			// layouter, the logic is implied.
 
