@@ -50,6 +50,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+	  <None Remove="NamedColorsTest.xaml" />
 	  <None Remove="NonDPAssignableTest.xaml" />
 	  <None Remove="StoryboardTargetTest.xaml" />
 	  <None Remove="ThemeResourcesTest.xaml" />
