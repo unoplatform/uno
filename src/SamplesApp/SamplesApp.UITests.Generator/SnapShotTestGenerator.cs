@@ -47,17 +47,18 @@ namespace Uno.Samples.UITest.Generator
 		private (string category, string name, bool ignoreInSnapshotTests) GetSampleInfo(INamedTypeSymbol symbol, AttributeData info) 
 			=> (
 				category: GetConstructorParameterValue(info, "category")?.ToString() ?? "Default",
-				name: AlignName(GetConstructorParameterValue(info, "controlName")?.ToString()) ?? symbol.ToDisplayString(),
+				name: AlignName(GetConstructorParameterValue(info, "controlName")?.ToString() ?? symbol.ToDisplayString()),
 				ignoreInSnapshotTests: GetConstructorParameterValue(info, "ignoreInSnapshotTests") is bool b ? b : false
 			);
 
 		private object GetConstructorParameterValue(AttributeData info, string name)
-			=> info.ConstructorArguments.ElementAt(GetParameterIndex(info, "category")).Value;
+			=> info.ConstructorArguments.ElementAt(GetParameterIndex(info, name)).Value;
 
 		private int GetParameterIndex(AttributeData info, string name)
 			=> info
 				.AttributeConstructor
-				.Parameters.Select((p, i) => (p, i))
+				.Parameters
+				.Select((p, i) => (p, i))
 				.Single(p => p.p.Name == name)
 				.i;
 	
@@ -100,7 +101,7 @@ namespace Uno.Samples.UITest.Generator
 
 							if (info.ignoreInSnapshotTests)
 							{
-								builder.AppendLineInvariant("[NUnit.Framework.Ignore]");
+								builder.AppendLineInvariant("[NUnit.Framework.Ignore(\"ignoreInSnapshotTests is set for attribute\")]");
 							}
 
 							builder.AppendLineInvariant("[SamplesApp.UITests.TestFramework.AutoRetry]");
