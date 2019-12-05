@@ -17,21 +17,21 @@ namespace Windows.UI.Xaml.Controls
 	[ContentProperty(Name = "Child")]
 	public partial class Viewbox : global::Windows.UI.Xaml.FrameworkElement
 	{
-		private UIElement _child;
+		private readonly Border _container;
+
+		public Viewbox()
+		{
+			HorizontalAlignment = HorizontalAlignment.Center;
+			VerticalAlignment = VerticalAlignment.Center;
+
+			_container = new Border();
+			OnChildChangedPartial(null, _container);
+		}
 
 		public UIElement Child
 		{
-			get => _child;
-			set
-			{
-				if (_child != value)
-				{
-					var previous = _child;
-					_child = value;
-
-					OnChildChangedPartial(previous, _child);
-				}
-			}
+			get => _container.Child as UIElement;
+			set => _container.Child = value;
 		}
 
 		partial void OnChildChangedPartial(UIElement previousValue, UIElement newValue);
@@ -45,69 +45,62 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
+			var (scaleX, scaleY) = GetScale(availableSize, measuredSize);
+
 			return new Size(
-				Math.Min(availableSize.Width, measuredSize.Width),
-				Math.Min(availableSize.Height, measuredSize.Height)
+				Math.Min(availableSize.Width, measuredSize.Width * scaleX),
+				Math.Min(availableSize.Height, measuredSize.Height * scaleY)
 			);
 		}
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			if (this.FindFirstChild() is UIElement child)
+			var (scaleX, scaleY) = GetScale(finalSize, _container.DesiredSize);
+
+			_container.RenderTransform = new ScaleTransform()
 			{
-				var finalRect = new Rect(
-					0,
-					0,
-					finalSize.Width,
-					finalSize.Height
-				);
+				ScaleX = scaleX,
+				ScaleY = scaleY
+			};
 
-				(double scaleX, double scaleY) getScale()
-				{
-					switch (Stretch)
-					{
-						case Uniform:
-							var uniformToFillScale = (child.DesiredSize.Width * finalSize.Height < child.DesiredSize.Height * finalSize.Width)
-								? finalSize.Height / child.DesiredSize.Height // child is flatter than finalSize
-								: finalSize.Width / child.DesiredSize.Width; // child is taller than finalSize
-
-							uniformToFillScale = AdjustWithDirection(uniformToFillScale);
-
-							return (uniformToFillScale, uniformToFillScale);
-
-						case UniformToFill:
-							var uniformScale = (child.DesiredSize.Width * finalSize.Height < child.DesiredSize.Height * finalSize.Width)
-								? finalSize.Width / child.DesiredSize.Width // child is taller than finalSize
-								: finalSize.Height / child.DesiredSize.Height; // child is flatter than finalSize
-
-							uniformScale = AdjustWithDirection(uniformScale);
-
-							return (uniformScale, uniformScale);
-
-						case Fill:
-							return (
-								AdjustWithDirection(finalSize.Width / child.DesiredSize.Width),
-								AdjustWithDirection(finalSize.Height / child.DesiredSize.Height)
-							);
-
-						case None:
-						default:
-							return (1, 1);
-					}
-				}
-
-				var (scaleX, scaleY) = getScale();
-
-				child.RenderTransform = new ScaleTransform()
-				{
-					ScaleX = scaleX,
-					ScaleY = scaleY
-				};
-
-				base.ArrangeElement(child, new Rect(0, 0, child.DesiredSize.Width, child.DesiredSize.Height));
-			}
+			base.ArrangeElement(_container, new Rect(new Point(), _container.DesiredSize));
 
 			return finalSize;
+		}
+
+		// Internal for Unit Tests
+		internal (double scaleX, double scaleY) GetScale(Size constraint, Size desired)
+		{
+			switch (Stretch)
+			{
+				case Uniform:
+					var uniformToFillScale = (desired.Width * constraint.Height < desired.Height * constraint.Width)
+						? constraint.Height / desired.Height // child is flatter than constraint
+						: constraint.Width / desired.Width; // child is taller than constraint
+
+					uniformToFillScale = AdjustWithDirection(uniformToFillScale);
+
+					return (uniformToFillScale, uniformToFillScale);
+
+				case UniformToFill:
+					var uniformScale = (desired.Width * constraint.Height < desired.Height * constraint.Width)
+						? constraint.Width / desired.Width // child is taller than constraint
+						: constraint.Height / desired.Height; // child is flatter than constraint
+
+					uniformScale = AdjustWithDirection(uniformScale);
+
+					return (uniformScale, uniformScale);
+
+				case Fill:
+					return (
+						AdjustWithDirection(constraint.Width / desired.Width),
+						AdjustWithDirection(constraint.Height / desired.Height)
+					);
+
+				case None:
+				default:
+					return (1, 1);
+			}
 		}
 
 		private double AdjustWithDirection(double uniformToFillScale)
@@ -125,7 +118,6 @@ namespace Windows.UI.Xaml.Controls
 				default:
 				case StretchDirection.Both:
 					break;
-
 			}
 
 			return uniformToFillScale;
