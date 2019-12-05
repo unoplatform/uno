@@ -40,8 +40,10 @@
       href: debugging-wasm.md
     - name: Build telemetry
       href: uno-toolchain-telemetry.md
-    - name: Migrate existing code
+    - name: Migrating a class library to Uno
       href: howto-migrate-existing-code.md
+    - name: Migrating existing UWP app to Uno
+      href: getting-started/migrating-apps.md
 - name: Using Uno - features and controls
   items:
   - name: Accessibility
