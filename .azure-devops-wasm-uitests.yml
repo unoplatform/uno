@@ -2,35 +2,6 @@ parameters:
   pool: ''
 
 jobs:
-
-
-
-- job: TEST_CONTAINER_JOB
-  container: nv-bionic-wasm
-
-  pool:
-    vmImage: 'ubuntu-16.04'
-
-  variables:
-    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
-
-  steps:
-  - checkout: self
-    clean: true
-
-  - bash: |
-      echo build.sourcesdirectory: $(build.sourcesdirectory)
-      echo build.artifactstagingdirectory: $(build.artifactstagingdirectory)
-      echo build_sourcesdirectory: $BUILD_SOURCESDIRECTORY
-      echo build_artifactstagingdirectory: $BUILD_ARTIFACTSTAGINGDIRECTORY
-      echo SYSTEM_DEFAULTWORKINGDIRECTORY: $SYSTEM_DEFAULTWORKINGDIRECTORY
-
-    env:
-      BUILD_SOURCESDIRECTORY: $SYSTEM_DEFAULTWORKINGDIRECTORY
-      BUILD_ARTIFACTSTAGINGDIRECTORY: $SYSTEM_DEFAULTWORKINGDIRECTORY/../a
-      SYSTEM_DEFAULTWORKINGDIRECTORY: "$(SYSTEM_DEFAULTWORKINGDIRECTORY)"
-
-
 - job: Wasm_UITests_Build
   container: nv-bionic-wasm
 
@@ -122,11 +93,8 @@ jobs:
       node app
 
     env:
-      # Workaround for https://developercommunity.visualstudio.com/content/problem/844025/container-build-jobs-paths-are-incorrectly-mapped.html
-      # BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
-      # BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
-      BUILD_SOURCESDIRECTORY: $SYSTEM_DEFAULTWORKINGDIRECTORY
-      BUILD_ARTIFACTSTAGINGDIRECTORY: $SYSTEM_DEFAULTWORKINGDIRECTORY/../a
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
 
     displayName: 'Running UI Tests'
 
@@ -171,11 +139,8 @@ jobs:
       $BUILD_SOURCESDIRECTORY/build/run-automated-uitests.sh
 
     env:
-      # Workaround for https://developercommunity.visualstudio.com/content/problem/844025/container-build-jobs-paths-are-incorrectly-mapped.html
-      # BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
-      # BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
-      BUILD_SOURCESDIRECTORY: $SYSTEM_DEFAULTWORKINGDIRECTORY
-      BUILD_ARTIFACTSTAGINGDIRECTORY: $SYSTEM_DEFAULTWORKINGDIRECTORY/../a
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
 
     displayName: 'Running UI Tests'
 
