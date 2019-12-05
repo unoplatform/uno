@@ -18,21 +18,21 @@ mono nuget/nuget.exe install NUnit.ConsoleRunner -Version 3.10.0
 
 if [ "$UITEST_SNAPSHOTS_ONLY" == 'true' ];
 then
-export SCREENSHOTS_FOLDERNAME=ios-Snap
-export TEST_FILTERS="namespace == 'SamplesApp.UITests.Snap'"
+	export SCREENSHOTS_FOLDERNAME=ios-Snap
+	export TEST_FILTERS="namespace == 'SamplesApp.UITests.Snap'"
 else
-export SCREENSHOTS_FOLDERNAME=ios
-export TEST_FILTERS=" \
-	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests' or \
-	namespace = 'SamplesApp.UITests' or \
-	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Input.VisualState_Tests' or \
-	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests' or \
-	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests' or \
-	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests' or \
-	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Media.Animation_Tests' or \
-	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ControlTests' or \
-	namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests' \
-"
+	export SCREENSHOTS_FOLDERNAME=ios
+	export TEST_FILTERS=" \
+		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests' or \
+		namespace = 'SamplesApp.UITests' or \
+		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Input.VisualState_Tests' or \
+		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests' or \
+		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests' or \
+		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests' or \
+		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Media.Animation_Tests' or \
+		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ControlTests' or \
+		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests' \
+	"
 fi
 
 export UNO_UITEST_PLATFORM=iOS
@@ -49,6 +49,7 @@ mono $BUILD_SOURCESDIRECTORY/build/NUnit.ConsoleRunner.3.10.0/tools/nunit3-conso
 	--inprocess \
 	--agents=1 \
 	--workers=1 \
+	--result=$BUILD_SOURCESDIRECTORY/build/TestResult.xml \
 	--where "$TEST_FILTERS" \
 	$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/bin/Release/net47/SamplesApp.UITests.dll \
 	|| true

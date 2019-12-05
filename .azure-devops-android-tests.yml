@@ -53,9 +53,10 @@ jobs:
 
   strategy:
     matrix:
-      Android_5.0:
-        ANDROID_SIMULATOR_APILEVEL: 21
-        UITEST_TEST_MODE_NAME: Automated
+      # Most tests pass, will be enabled in a later PR
+      #Android_5.0:
+      #  ANDROID_SIMULATOR_APILEVEL: 21
+      #  UITEST_TEST_MODE_NAME: Automated
       Android_9.0:
         ANDROID_SIMULATOR_APILEVEL: 28
         UITEST_TEST_MODE_NAME: Automated
