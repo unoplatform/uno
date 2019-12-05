@@ -53,11 +53,17 @@ jobs:
 
   strategy:
     matrix:
-      # Disabled until failures source can be determined.
-      # Android_5.1:
-      #  ANDROID_SIMULATOR_APILEVEL: 22
+      # Most tests pass, will be enabled in a later PR
+      #Android_5.0:
+      #  ANDROID_SIMULATOR_APILEVEL: 21
+      #  UITEST_TEST_MODE_NAME: Automated
       Android_9.0:
         ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_TEST_MODE_NAME: Automated
+      Android_9.0_Snapshots:
+        ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_TEST_MODE_NAME: Snapshots
+        UITEST_SNAPSHOTS_ONLY: true
 
   steps:
   - checkout: self
@@ -80,11 +86,12 @@ jobs:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
       ANDROID_SIMULATOR_APILEVEL: $(ANDROID_SIMULATOR_APILEVEL)
+      UITEST_SNAPSHOTS_ONLY: "$(UITEST_SNAPSHOTS_ONLY)"
  
   - task: PublishTestResults@2
     condition: always()
     inputs:
-      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) Test Run'
+      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME) Test Run'
       testResultsFormat: 'NUnit'
       testResultsFiles: '$(build.sourcesdirectory)/build/TestResult.xml'
       failTaskOnFailedTests: true

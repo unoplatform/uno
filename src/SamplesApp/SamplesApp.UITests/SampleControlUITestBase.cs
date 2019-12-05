@@ -237,7 +237,7 @@ namespace SamplesApp.UITests
 		{
 			if (waitForSampleControl)
 			{
-				_app.WaitForElement("sampleControl");
+				_app.WaitForElement("sampleControl", timeout: TimeSpan.FromSeconds(5));
 			}
 
 			var testRunId = _app.InvokeGeneric("browser:SampleRunner|RunTest", metadataName);
@@ -246,7 +246,7 @@ namespace SamplesApp.UITests
 			{
 				var result = _app.InvokeGeneric("browser:SampleRunner|IsTestDone", testRunId).ToString();
 				return bool.TryParse(result, out var testDone) && testDone;
-			});
+			}, retryFrequency: TimeSpan.FromMilliseconds(250));
 
 			TakeScreenshot(metadataName.Replace(".", "_"));
 		}

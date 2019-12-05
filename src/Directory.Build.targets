@@ -31,6 +31,7 @@
     <PackageReference Update="Uno.UITest.Selenium" Version="1.0.0-dev.97" />
     <PackageReference Update="Uno.UITest.Xamarin" Version="1.0.0-dev.97" />
     <PackageReference Update="Uno.UITest.Helpers" Version="1.0.0-dev.97" />
+    <PackageReference Update="System.ValueTuple" Version="4.5.0" />
   </ItemGroup>
 
 </Project>

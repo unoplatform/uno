@@ -1,6 +1,16 @@
 jobs:
 
 - job: iOS_Tests
+
+  strategy:
+    matrix:
+      Automated:
+        UITEST_SNAPSHOTS_ONLY: false
+
+      # Tests are failing, to be enabled in later PR
+      #Snapshots:
+      #  UITEST_SNAPSHOTS_ONLY: true
+
   variables:
     CI_Build: true
     SourceLinkEnabled: false
@@ -36,6 +46,7 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      UITEST_SNAPSHOTS_ONLY: "$(UITEST_SNAPSHOTS_ONLY)"
 
 
   - task: PublishTestResults@2
