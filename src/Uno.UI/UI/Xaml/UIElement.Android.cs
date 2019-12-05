@@ -30,22 +30,15 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			if (NeedsClipToSlot)
-			{
-				ViewCompat.SetClipBounds(this, rect.LogicalToPhysicalPixels());
-			}
-			else
-			{
-				ViewCompat.SetClipBounds(this, null);
-			}
+			ViewCompat.SetClipBounds(this, rect.LogicalToPhysicalPixels());
 
 			SetClipChildren(NeedsClipToSlot);
 		}
 
 		/// <summary>
-        /// This method is called from the OnDraw of elements supporting rounded corners:
-        /// Border, Rectangle, Panel...
-        /// </summary>
+		/// This method is called from the OnDraw of elements supporting rounded corners:
+		/// Border, Rectangle, Panel...
+		/// </summary>
 		private protected void AdjustCornerRadius(Android.Graphics.Canvas canvas, CornerRadius cornerRadius)
 		{
 			if (cornerRadius != CornerRadius.None)
@@ -56,7 +49,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-        private bool _renderTransformRegisteredParentChanged;
+		private bool _renderTransformRegisteredParentChanged;
 		private static void RenderTransformOnParentChanged(object dependencyObject, object _, DependencyObjectParentChangedEventArgs args)
 			=> ((UIElement)dependencyObject)._renderTransform?.UpdateParent(args.PreviousParent, args.NewParent);
 		partial void OnRenderTransformSet()
