@@ -11,6 +11,7 @@ using Uno.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -174,9 +175,21 @@ namespace Uno.UI.Samples.Tests
 
 						try
 						{
+							var runsOnUIThread = testMethod.GetCustomAttribute(typeof(Uno.UI.RuntimeTests.RunsOnUIThreadAttribute)) != null;
 							type.init?.Invoke(instance, new object[0]);
 
-							var returnValue = testMethod.Invoke(instance, new object[0]);
+							object returnValue = null;
+							if (runsOnUIThread)
+							{
+								await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+								{
+									returnValue = testMethod.Invoke(instance, new object[0]);
+								});
+							}
+							else
+							{
+								returnValue = testMethod.Invoke(instance, new object[0]);
+							}
 
 							if (testMethod.ReturnType == typeof(Task))
 							{
@@ -222,7 +235,7 @@ namespace Uno.UI.Samples.Tests
 				ReportMessage("Tests finished running.");
 				ReportFailedTests(failedTests);
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				ReportMessage($"Tests runner failed {e}");
 				ReportFailedTests(-1);
@@ -233,7 +246,7 @@ namespace Uno.UI.Samples.Tests
 		{
 			var ignoreAttribute = testMethod.GetCustomAttribute<Microsoft.VisualStudio.TestTools.UnitTesting.IgnoreAttribute>();
 
-			if(ignoreAttribute != null)
+			if (ignoreAttribute != null)
 			{
 				ignoreMessage = string.IsNullOrEmpty(ignoreAttribute.IgnoreMessage) ? "Test is marked as ignored" : ignoreAttribute.IgnoreMessage;
 				return true;
