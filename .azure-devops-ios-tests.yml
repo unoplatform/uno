@@ -2,6 +2,8 @@ jobs:
 
 - job: iOS_Tests
 
+  timeoutInMinutes: 120
+
   strategy:
     matrix:
       Automated:
