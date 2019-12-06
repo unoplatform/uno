@@ -18,6 +18,8 @@ using Uno;
 using Uno.UI.Controls;
 using Uno.UI.Media;
 using System;
+using Windows.UI.Xaml.Markup;
+using Microsoft.Extensions.Logging;
 
 #if __IOS__
 using UIKit;
@@ -256,6 +258,29 @@ namespace Windows.UI.Xaml
 		{
 			var dp = DependencyProperty.GetProperty(owner.GetType(), dependencyPropertyName);
 			return dp == null ? null : owner.GetValue(dp);
+		}
+
+		internal static string SetDependencyPropertyValueInternal(DependencyObject owner, string dependencyPropertyName, string value)
+		{
+			if (DependencyProperty.GetProperty(owner.GetType(), dependencyPropertyName) is DependencyProperty dp)
+			{
+				if (owner.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					owner.Log().LogDebug($"SetDependencyPropertyValue({dependencyPropertyName}) = {value}");
+				}
+
+				owner.SetValue(dp, XamlBindingHelper.ConvertValue(dp.Type, value));
+
+				return owner.GetValue(dp)?.ToString();
+			}
+			else
+			{
+				if (owner.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					owner.Log().LogDebug($"Failed to find property [{dependencyPropertyName}] on [{owner}]");
+				}
+				return "";
+			}
 		}
 
 		internal Rect LayoutSlot { get; set; } = default;

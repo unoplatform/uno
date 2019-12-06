@@ -1,6 +1,7 @@
 ﻿# Release notes
 
 ### Features
+* Add support for Automation SetDependencyPropertyValue in Uno.UITest
 * [#2029](https://github.com/unoplatform/uno/pull/2029) Support for MenuFlyoutItem.Click
 * support /[file]/[name] format in ResourceLoader.GetForCurrentView().GetString()
 * [#2039] Added support for Xaml type conversions using CreateFromStringAttribute.
