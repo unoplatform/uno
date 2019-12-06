@@ -160,48 +160,53 @@ namespace Umbrella.UI.TestComparer
 
 		private static async Task TryPublishPRComments(List<CompareResult> results, string githubPAT, string sourceRepository, string githubPRid, int currentBuild)
 		{
-			if (!string.IsNullOrEmpty(githubPAT))
+			if (!int.TryParse(githubPRid, out _))
 			{
-				var hasErrors = results.Any(r => r.TotalTests - r.UnchangedTests != 0);
+				Console.WriteLine($"No valid GitHub PR Id found, no PR comment will be posted.");
+				return;
+			}
 
-				if (hasErrors)
+			if (string.IsNullOrEmpty(githubPAT.Trim()))
+			{
+				Console.WriteLine($"No GitHub PAT, no PR comment will be posted.");
+				return;
+			}
+
+			var hasErrors = results.Any(r => r.TotalTests - r.UnchangedTests != 0);
+
+			if (hasErrors)
+			{
+				var comment = new StringBuilder();
+				comment.AppendLine($"The build {currentBuild} found UI Test snapshots differences.\r\n");
+
+				foreach (var result in results)
 				{
-					var comment = new StringBuilder();
-					comment.AppendLine($"The build {currentBuild} found UI Test snapshots differences.\r\n");
+					comment.AppendLine($"* `{result.Platform}`: **{result.TotalTests - result.UnchangedTests}** changed over {result.TotalTests}\r\n");
 
-					foreach (var result in results)
+					var changedTests = result.Tests.Where(t => t.HasChanged).Take(20).ToList();
+
+					if (changedTests.Any())
 					{
-						comment.AppendLine($"* `{result.Platform}`: **{result.TotalTests - result.UnchangedTests}** changed over {result.TotalTests}\r\n");
+						comment.AppendLine("  <details>");
+						comment.AppendLine("  <summary>🚨🚨 Comparison Details 🚨🚨</summary>");
+						comment.AppendLine("");
 
-						var changedTests = result.Tests.Where(t => t.HasChanged).Take(20).ToList();
-
-						if (changedTests.Any())
+						foreach (var test in changedTests)
 						{
-							comment.AppendLine("  <details>");
-							comment.AppendLine("  <summary>🚨🚨 Details 🚨🚨</summary>");
-							comment.AppendLine("");
-
-							foreach (var test in changedTests)
-							{
-								comment.AppendLine($"  - `{Path.GetFileNameWithoutExtension(test.TestName)}`");
-							}
-
-							comment.AppendLine("  </details>");
-							comment.AppendLine("");
+							comment.AppendLine($"  - `{Path.GetFileNameWithoutExtension(test.TestName)}`");
 						}
-					}
 
-					await GitHubClient.PostPRCommentsAsync(githubPAT, sourceRepository, githubPRid, comment.ToString());
+						comment.AppendLine("  </details>");
+						comment.AppendLine("");
+					}
 				}
-				else
-				{
-					var comment = $"The build {currentBuild} did not find any UI Test snapshots differences.";
-					await GitHubClient.PostPRCommentsAsync(githubPAT, sourceRepository, githubPRid, comment);
-				}
+
+				await GitHubClient.PostPRCommentsAsync(githubPAT, sourceRepository, githubPRid, comment.ToString());
 			}
 			else
 			{
-				Console.WriteLine($"Not GitHub PAT, no PR comment will be posted.");
+				var comment = $"The build {currentBuild} did not find any UI Test snapshots differences.";
+				await GitHubClient.PostPRCommentsAsync(githubPAT, sourceRepository, githubPRid, comment);
 			}
 		}
 

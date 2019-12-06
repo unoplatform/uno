@@ -55,7 +55,11 @@ namespace Uno.UI.TestComparer
 
 			var currentBuild = await client.GetBuildAsync(project, buildId);
 
-			foreach (var build in builds.Concat(new[] { currentBuild }).Distinct(new BuildComparer()))
+			var suceededBuilds = builds
+				.Concat(new[] { currentBuild })
+				.Where(f => f.Result == BuildResult.Succeeded).Distinct(new BuildComparer());
+
+			foreach (var build in suceededBuilds)
 			{
 				var fullPath = Path.Combine(basePath, $@"artifacts\\{build.LastChangedDate:yyyyMMdd-hhmmss}-{build.Id}");
 
