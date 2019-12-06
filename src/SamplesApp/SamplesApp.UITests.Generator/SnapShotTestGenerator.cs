@@ -98,6 +98,7 @@ namespace Uno.Samples.UITest.Generator
 							var info = GetSampleInfo(test.symbol, test.symbol.FindAttributeFlattened(_sampleControlInfoSymbol));
 
 							builder.AppendLineInvariant("[NUnit.Framework.Test]");
+							builder.AppendLineInvariant($"[NUnit.Framework.Description(\"automated:{test.symbol.ToDisplayString()}\")]");
 
 							if (info.ignoreInSnapshotTests)
 							{

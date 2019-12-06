@@ -19,7 +19,12 @@ mono nuget/nuget.exe install NUnit.ConsoleRunner -Version 3.10.0
 if [ "$UITEST_SNAPSHOTS_ONLY" == 'true' ];
 then
 	export SCREENSHOTS_FOLDERNAME=ios-Snap
-	export TEST_FILTERS="namespace == 'SamplesApp.UITests.Snap'"
+
+	# CommandBar disabled: https://github.com/unoplatform/uno/issues/1955
+	export TEST_FILTERS=" \
+		namespace == 'SamplesApp.UITests.Snap' \
+		and description !~ 'automated:Uno\.UI\.Samples\.Content\.UITests\.CommandBar.*' \
+	"
 else
 	export SCREENSHOTS_FOLDERNAME=ios
 	export TEST_FILTERS=" \

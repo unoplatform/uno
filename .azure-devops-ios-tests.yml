@@ -7,9 +7,8 @@ jobs:
       Automated:
         UITEST_SNAPSHOTS_ONLY: false
 
-      # Tests are failing, to be enabled in later PR
-      #Snapshots:
-      #  UITEST_SNAPSHOTS_ONLY: true
+      Snapshots:
+        UITEST_SNAPSHOTS_ONLY: true
 
   variables:
     CI_Build: true
