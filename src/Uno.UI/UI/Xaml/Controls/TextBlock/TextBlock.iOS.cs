@@ -312,7 +312,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				return _attributedString.GetBoundingRect(size, NSStringDrawingOptions.UsesLineFragmentOrigin, null).Size;
+				return _attributedString?.GetBoundingRect(size, NSStringDrawingOptions.UsesLineFragmentOrigin, null).Size ?? new CGSize(0,0);
 			}
 		}
 
