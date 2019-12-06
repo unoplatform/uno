@@ -10,6 +10,7 @@ declare namespace Windows.UI.Core {
     class CoreDispatcher {
         static _coreDispatcherCallback: any;
         static _isIOS: boolean;
+        static _isSafari: boolean;
         static _isFirstCall: boolean;
         static _isReady: Promise<boolean>;
         static _isWaitingReady: boolean;
@@ -152,6 +153,7 @@ declare namespace Uno.UI {
         private static resizeMethod;
         private static dispatchEventMethod;
         private static getDependencyPropertyValueMethod;
+        private static setDependencyPropertyValueMethod;
         private constructor();
         /**
             * Creates the UWP-compatible splash screen
@@ -505,6 +507,12 @@ declare namespace Uno.UI {
          * Note that the casing of this method is intentionally Pascal for platform alignment.
          */
         GetDependencyPropertyValue(elementId: number, propertyName: string): string;
+        /**
+         * Sets a dependency property value.
+         *
+         * Note that the casing of this method is intentionally Pascal for platform alignment.
+         */
+        SetDependencyPropertyValue(elementId: number, propertyName: string, propertyValue: string): string;
         /**
             * Remove the loading indicator.
             *

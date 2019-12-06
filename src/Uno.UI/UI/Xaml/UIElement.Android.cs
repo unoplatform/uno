@@ -11,6 +11,8 @@ using Android.Views;
 using Matrix = Windows.UI.Xaml.Media.Matrix;
 using Point = Windows.Foundation.Point;
 using Rect = Windows.Foundation.Rect;
+using Java.Interop;
+using Windows.UI.Xaml.Markup;
 
 namespace Windows.UI.Xaml
 {
@@ -144,6 +146,10 @@ namespace Windows.UI.Xaml
 				currentViewLocation[1] - relativeToLocation[1]
 			);
 		}
+
+		[Java.Interop.Export(nameof(SetDependencyPropertyValue))]
+		public string SetDependencyPropertyValue(string dependencyPropertyName, string value)
+			=> SetDependencyPropertyValueInternal(this, dependencyPropertyName, value);
 
 		/// <summary>
 		/// Provides a native value for the dependency property with the given name on the current instance. If the value is a primitive type, 
