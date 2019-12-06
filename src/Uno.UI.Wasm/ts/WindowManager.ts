@@ -133,6 +133,7 @@
 		private static resizeMethod: any;
 		private static dispatchEventMethod: any;
 		private static getDependencyPropertyValueMethod: any;
+		private static setDependencyPropertyValueMethod: any;
 
 		private constructor(private containerElementId: string, private loadingElementId: string) {
 			this.initDom();
@@ -1548,6 +1549,22 @@
 			const htmlId = Number(element.getAttribute("XamlHandle"));
 
 			return WindowManager.getDependencyPropertyValueMethod(htmlId, propertyName);
+		}
+
+		/**
+		 * Sets a dependency property value.
+		 *
+		 * Note that the casing of this method is intentionally Pascal for platform alignment.
+		 */
+		public SetDependencyPropertyValue(elementId: number, propertyName: string, propertyValue: string) : string {
+			if (!WindowManager.setDependencyPropertyValueMethod) {
+				WindowManager.setDependencyPropertyValueMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:SetDependencyPropertyValue");
+			}
+
+			const element = this.getView(elementId) as HTMLElement;
+			const htmlId = Number(element.getAttribute("XamlHandle"));
+
+			return WindowManager.setDependencyPropertyValueMethod(htmlId, propertyName, propertyValue);
 		}
 
 		/**

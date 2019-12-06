@@ -993,7 +993,20 @@ namespace <#= mixin.NamespaceName #>
 		
 		private static readonly Uri _defaultUri = new Uri("ms-appx:///");
 		public Uri BaseUri { get; internal set; } = _defaultUri;
-		
+
+						
+		/// <summary>
+		/// Provides a native value for the dependency property with the given name on the current instance. If the value is a primitive type, 
+		/// its native representation is returned. Otherwise, the <see cref="object.ToString"/> implementation is used/returned instead.
+		/// </summary>
+		/// <param name="dependencyPropertyName">The name of the target dependency property</param>
+		/// <returns>The content of the target dependency property (its actual value if it is a primitive type ot its <see cref="object.ToString"/> representation otherwise</returns>
+		[global::Foundation.Export("setDependencyPropertyValue::")]
+		public global::Foundation.NSString SetDependencyPropertyValue(global::Foundation.NSString dependencyPropertyName, global::Foundation.NSString value)
+		{
+			return new global::Foundation.NSString(UIElement.SetDependencyPropertyValueInternal(this, dependencyPropertyName, value));
+		}
+
 		/// <summary>
 		/// Provides a native value for the dependency property with the given name on the current instance. If the value is a primitive type, 
 		/// its native representation is returned. Otherwise, the <see cref="object.ToString"/> implementation is used/returned instead.

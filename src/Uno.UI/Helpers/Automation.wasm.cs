@@ -28,5 +28,20 @@ namespace Uno.UI.Helpers
 				return "";
 			}
 		}
+
+		[Preserve]
+		public static string SetDependencyPropertyValue(int handle, string dependencyPropertyName, string value)
+		{
+			// Dispatch to right object, if we can find it
+			if (UIElement.GetElementFromHandle(handle) is UIElement element)
+			{
+				return UIElement.SetDependencyPropertyValueInternal(element, dependencyPropertyName, value);
+			}
+            else
+            {
+				Console.Error.WriteLine($"No UIElement found for htmlId \"{handle}\"");
+				return "";
+			}
+		}
 	}
 }

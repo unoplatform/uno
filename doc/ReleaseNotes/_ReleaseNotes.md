@@ -1,7 +1,7 @@
 ﻿# Release notes
 
 ### Features
--
+- Add support for Automation SetDependencyPropertyValue in Uno.UITest
 
 ### Breaking changes
 -
