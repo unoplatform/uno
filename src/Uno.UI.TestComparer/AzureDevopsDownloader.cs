@@ -51,13 +51,20 @@ namespace Uno.UI.TestComparer
 			var definitions = await client.GetDefinitionsAsync(project, name: definitionName);
 
 			Console.WriteLine("Getting builds");
-			var builds = await client.GetBuildsAsync(project, definitions: new[] { definitions.First().Id }, branchName: targetBranchName, top: runLimit, queryOrder: BuildQueryOrder.FinishTimeDescending, statusFilter: BuildStatus.Completed);
+			var builds = await client.GetBuildsAsync(
+				project,
+				definitions: new[] { definitions.First().Id },
+				branchName: targetBranchName,
+				top: runLimit,
+				queryOrder: BuildQueryOrder.FinishTimeDescending,
+				statusFilter: BuildStatus.Completed,
+				resultFilter: BuildResult.Succeeded);
 
 			var currentBuild = await client.GetBuildAsync(project, buildId);
 
 			var suceededBuilds = builds
 				.Concat(new[] { currentBuild })
-				.Where(f => f.Result == BuildResult.Succeeded).Distinct(new BuildComparer());
+				.Distinct(new BuildComparer());
 
 			foreach (var build in suceededBuilds)
 			{
