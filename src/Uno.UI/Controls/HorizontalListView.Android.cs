@@ -36,6 +36,7 @@ using Android.Widget;
 using Android.Content;
 using Uno.Extensions;
 using Uno.Logging;
+using Uno.UI;
 
 namespace Uno.UI.Controls
 {
@@ -317,6 +318,10 @@ namespace Uno.UI.Controls
                 top = top + (_height - childHeight) / 2;
             }
 
+			if (child is Windows.UI.Xaml.UIElement elt)
+			{
+				elt.LayoutSlotWithMarginsAndAlignments = new Windows.Foundation.Rect(left, top, right, top + childHeight).PhysicalToLogicalPixels();
+			}
             child.Layout(left, top, right, top + childHeight);
         }
 
@@ -465,7 +470,11 @@ namespace Uno.UI.Controls
 	            var right = left + child.MeasuredWidth;
 	            var bottom = top + child.MeasuredHeight;
 
-                child.Layout(left, top, right, bottom);
+				if (child is Windows.UI.Xaml.UIElement elt)
+				{
+					elt.LayoutSlotWithMarginsAndAlignments = new Windows.Foundation.Rect(left, top, right, bottom).PhysicalToLogicalPixels();
+				}
+				child.Layout(left, top, right, bottom);
                 leftOffset += child.MeasuredWidth + child.PaddingRight;
             }
         }

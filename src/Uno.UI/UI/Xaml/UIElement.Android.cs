@@ -64,11 +64,10 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public GeneralTransform TransformToVisual(UIElement visual)
-		{
-			return TransformToVisual(this, visual);
-		}
-
+		/// <summary>
+		/// WARNING: This is provides an approximation for Android.View only.
+		/// Prefer to use the GetTransform between 2 UIElement when possible.
+		/// </summary>
 		internal static GeneralTransform TransformToVisual(View element, View visual)
 		{
 			var thisRect = new int[2];

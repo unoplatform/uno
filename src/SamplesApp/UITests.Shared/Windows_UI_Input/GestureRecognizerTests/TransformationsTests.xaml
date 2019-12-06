@@ -16,11 +16,11 @@
 
 		<Border
 			x:Name="Parent"
-			BorderThickness="3"
+			BorderThickness="10"
 			BorderBrush="DeepSkyBlue"
 			Background="Red"
-			Width="406"
-			Height="406"
+			Width="420"
+			Height="420"
 			PointerMoved="OnParentPointerMoved">
 			<Viewbox
 				Stretch="Uniform"
@@ -29,8 +29,9 @@
 				HorizontalAlignment="Left">
 				<Border
 					x:Name="Target"
-					Width="100"
-					Height="100"
+					Margin="10"
+					Width="80"
+					Height="80"
 					Background="DeepPink"
 					PointerMoved="OnTargetPointerMoved">
 					<TextBlock Text="Stretched * 4" />

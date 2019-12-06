@@ -18,6 +18,7 @@ using Uno;
 using Uno.UI.Controls;
 using Uno.UI.Media;
 using System;
+using System.Numerics;
 using Windows.UI.Xaml.Markup;
 using Microsoft.Extensions.Logging;
 
@@ -145,6 +146,76 @@ namespace Windows.UI.Xaml
 			view._renderTransform?.UpdateOrigin(point);
 		}
 		#endregion
+
+#if __ANDROID__ || __WASM__ // Temp onl, this will be shared on all pltaforms soon
+		public GeneralTransform TransformToVisual(UIElement visual)
+			=> new MatrixTransform { Matrix = new Matrix(GetTransform(from: this, to: visual)) };
+
+		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
+		{
+			if (from == to)
+			{
+				return Matrix3x2.Identity;
+			}
+
+			var matrix = Matrix3x2.Identity;
+			double offsetX = 0.0, offsetY = 0.0;
+			var elt = from;
+			do
+			{
+				var layoutSlot = elt.LayoutSlotWithMarginsAndAlignments;
+				var transform = elt.RenderTransform;
+				if (transform == null)
+				{
+					// As this is the common case, avoid Matrix computation when a basic addition is sufficient
+					offsetX += layoutSlot.X;
+					offsetY += layoutSlot.Y;
+				}
+				else
+				{
+					// First apply any pending arrange offset that would have been impacted by this RenderTransform (eg. scaled)
+					// Friendly reminder: Matrix multiplication is usually not commutative ;)
+					matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
+					matrix *= transform.MatrixCore;
+
+					offsetX = layoutSlot.X;
+					offsetY = layoutSlot.Y;
+				}
+
+				if (elt is ScrollViewer sv)
+				{
+					var zoom = sv.ZoomFactor;
+					if (zoom != 1)
+					{
+						matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
+						matrix *= Matrix3x2.CreateScale(zoom);
+
+						offsetX = -sv.HorizontalOffset;
+						offsetY = -sv.VerticalOffset;
+					}
+					else
+					{
+						offsetX -= sv.HorizontalOffset;
+						offsetY -= sv.VerticalOffset;
+					}
+				}
+			} while ((elt = elt.GetParent() as UIElement) != null && elt != to); // If possible we stop as soon as we reach 'to'
+
+			matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
+
+			if (to != null && elt != to)
+			{
+				// Unfortunately we didn't find the 'to' in the parent hierarchy,
+				// so matrix == fromToRoot and we now have to compute the transform 'toToVisual'.
+				var toToRoot = GetTransform(to, null);
+				Matrix3x2.Invert(toToRoot, out var rootToVisual);
+
+				matrix *= rootToVisual;
+			}
+
+			return matrix;
+		}
+#endif
 
 		#region IsHitTestVisible Dependency Property
 
@@ -307,6 +378,8 @@ namespace Windows.UI.Xaml
 		}
 
 		internal Rect LayoutSlot { get; set; } = default;
+
+		internal Rect LayoutSlotWithMarginsAndAlignments { get; set; } = default;
 
 		internal bool NeedsClipToSlot { get; set; }
 
