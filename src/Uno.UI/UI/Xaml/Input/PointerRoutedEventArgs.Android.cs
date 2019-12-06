@@ -48,40 +48,30 @@ namespace Windows.UI.Xaml.Input
 
 		private Point GetPosition(UIElement relativeTo)
 		{
-			float x, y, xOrigin, yOrigin;
+			var phyX = _nativeEvent.GetX(_nativeEvent.ActionIndex);
+			var phyY = _nativeEvent.GetY(_nativeEvent.ActionIndex);
+
 			if (relativeTo == null) // Relative to the window
 			{
 				var viewCoords = new int[2];
 				_receiver.GetLocationInWindow(viewCoords);
 
-				x = _nativeEvent.GetX(_nativeEvent.ActionIndex) + viewCoords[0];
-				y = _nativeEvent.GetY(_nativeEvent.ActionIndex) + viewCoords[1];
-				xOrigin = 0;
-				yOrigin = 0;
+				phyX += viewCoords[0];
+				phyY += viewCoords[1];
+
+				return new Point(phyX, phyY).PhysicalToLogicalPixels();
 			}
 			else if (relativeTo == _receiver) // Fast path
 			{
-				x = _nativeEvent.GetX(_nativeEvent.ActionIndex);
-				y = _nativeEvent.GetY(_nativeEvent.ActionIndex);
-				xOrigin = 0;
-				yOrigin = 0;
+				return new Point(phyX, phyY).PhysicalToLogicalPixels();
 			}
 			else
 			{
-				var viewCoords = new int[2];
-				relativeTo.GetLocationOnScreen(viewCoords);
+				var posRelToReceiver = new Point(phyX, phyX).PhysicalToLogicalPixels();
+				var posRelToTarget = UIElement.GetTransform(from: _receiver, to: relativeTo).Transform(posRelToReceiver);
 
-				// Note: _nativeEvent.RawX/Y are relative to the screen, not the window
-				x = _nativeEvent.RawX;
-				y = _nativeEvent.RawY;
-				xOrigin = viewCoords[0];
-				yOrigin = viewCoords[1];
+				return posRelToTarget;
 			}
-
-			var physicalPoint = new Point(x - xOrigin, y - yOrigin);
-			var logicalPoint = physicalPoint.PhysicalToLogicalPixels();
-
-			return logicalPoint;
 		}
 
 		private PointerPointProperties GetProperties()
