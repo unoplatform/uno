@@ -23,7 +23,7 @@ then
 	# CommandBar disabled: https://github.com/unoplatform/uno/issues/1955
 	export TEST_FILTERS=" \
 		namespace == 'SamplesApp.UITests.Snap' \
-		and description !~ 'automated:Uno\.UI\.Samples\.Content\.UITests\.CommandBar.*' \
+		and Description !~ 'automated:Uno.UI.Samples.Content.UITests.CommandBar.*' \
 	"
 else
 	export SCREENSHOTS_FOLDERNAME=ios
