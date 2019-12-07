@@ -89,23 +89,26 @@ namespace Uno.Samples.UITest.Generator
 
 				using (builder.BlockInvariant($"namespace {context.GetProjectInstance().GetPropertyValue("RootNamespace")}.Snap"))
 				{
-					builder.AppendLineInvariant("[NUnit.Framework.TestFixture]");
+					builder.AppendLineInvariant("[global::NUnit.Framework.TestFixture]");
+
+					// Required for https://github.com/unoplatform/uno/issues/1955
+					builder.AppendLineInvariant("[global::SamplesApp.UITests.TestFramework.TestAppModeAttribute(cleanEnvironment: true, platform: Uno.UITest.Helpers.Queries.Platform.iOS)]");
 
 					using (builder.BlockInvariant($"public partial class {groupName} : SampleControlUITestBase"))
 					{
-						foreach (var test in group.Symbols) // .Where(s => s.symbol.ToString()).Contains("Border_Simple")))
+						foreach (var test in group.Symbols)
 						{
 							var info = GetSampleInfo(test.symbol, test.symbol.FindAttributeFlattened(_sampleControlInfoSymbol));
 
-							builder.AppendLineInvariant("[NUnit.Framework.Test]");
-							builder.AppendLineInvariant($"[NUnit.Framework.Description(\"automated:{test.symbol.ToDisplayString()}\")]");
+							builder.AppendLineInvariant("[global::NUnit.Framework.Test]");
+							builder.AppendLineInvariant($"[global::NUnit.Framework.Description(\"automated:{test.symbol.ToDisplayString()}\")]");
 
 							if (info.ignoreInSnapshotTests)
 							{
-								builder.AppendLineInvariant("[NUnit.Framework.Ignore(\"ignoreInSnapshotTests is set for attribute\")]");
+								builder.AppendLineInvariant("[global::NUnit.Framework.Ignore(\"ignoreInSnapshotTests is set for attribute\")]");
 							}
 
-							builder.AppendLineInvariant("[SamplesApp.UITests.TestFramework.AutoRetry]");
+							builder.AppendLineInvariant("[global::SamplesApp.UITests.TestFramework.AutoRetry]");
 							using (builder.BlockInvariant($"public void {Sanitize(test.category)}_{Sanitize(info.name)}()"))
 							{
 								builder.AppendLineInvariant($"Run(\"{test.symbol}\", waitForSampleControl: false);");
