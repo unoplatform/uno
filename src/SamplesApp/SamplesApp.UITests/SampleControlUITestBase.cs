@@ -246,7 +246,7 @@ namespace SamplesApp.UITests
 			{
 				var result = _app.InvokeGeneric("browser:SampleRunner|IsTestDone", testRunId).ToString();
 				return bool.TryParse(result, out var testDone) && testDone;
-			}, retryFrequency: TimeSpan.FromMilliseconds(250));
+			}, retryFrequency: TimeSpan.FromMilliseconds(50));
 
 			TakeScreenshot(metadataName.Replace(".", "_"));
 		}
