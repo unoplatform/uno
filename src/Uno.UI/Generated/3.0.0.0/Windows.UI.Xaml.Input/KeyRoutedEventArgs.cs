@@ -43,16 +43,6 @@ namespace Windows.UI.Xaml.Input
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.System.VirtualKey OriginalKey
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VirtualKey KeyRoutedEventArgs.OriginalKey is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  string DeviceId
 		{
 			get
