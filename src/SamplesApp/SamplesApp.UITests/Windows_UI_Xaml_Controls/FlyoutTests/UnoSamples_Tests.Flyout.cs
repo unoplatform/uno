@@ -16,6 +16,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 	public partial class Flyout_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		[Ignore("Not available yet")]
 		public void FlyoutTest_BottomPlacement_WithSmallerAnchor_DoesntDefaultToFull()
 		{
@@ -36,6 +37,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void FlyoutTest_Target()
 		{
 			Run("Uno.UI.Samples.Content.UITests.Flyout.Flyout_Target");
@@ -94,6 +96,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void FlyoutTest_Unloaded()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_Unloaded");
