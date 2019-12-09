@@ -29,54 +29,54 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			TakeScreenshot("WriteableBitmap_Invalidate - Result");
 		}
 
-		[Test]
-		[ActivePlatforms(Platform.iOS, Platform.Android, Platform.Browser)]
-		public void Screenshots_Image_Stretch_Algmnt_Inf_Horizontal()
-		{
-			RunScreenShots_Image_Alignment_page("UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.Image_Stretch_Algmnt_Inf_Horizontal");
-		}
+		//[Test]
+		//[ActivePlatforms(Platform.iOS, Platform.Browser)]
+		//public void Screenshots_Image_Stretch_Algmnt_Inf_Horizontal()
+		//{
+		//	RunScreenShots_Image_Alignment_page("UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.Image_Stretch_Algmnt_Inf_Horizontal");
+		//}
 
-		[Test]
-		[ActivePlatforms(Platform.iOS, Platform.Android, Platform.Browser)]
-		public void Screenshots_Image_Stretch_Algmnt_Inf_Vertical()
-		{
-			RunScreenShots_Image_Alignment_page("UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.Image_Stretch_Algmnt_Inf_Vertical");
-		}
+		//[Test]
+		//[ActivePlatforms(Platform.iOS, Platform.Browser)]
+		//public void Screenshots_Image_Stretch_Algmnt_Inf_Vertical()
+		//{
+		//	RunScreenShots_Image_Alignment_page("UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.Image_Stretch_Algmnt_Inf_Vertical");
+		//}
 
-		[Test]
-		[ActivePlatforms(Platform.iOS, Platform.Android, Platform.Browser)]
-		public void Screenshots_Image_Stretch_Alignment_Bigger()
-		{
-			RunScreenShots_Image_Alignment_page("Uno.UI.Samples.UITests.Image.Image_Stretch_Alignment_Bigger");
-		}
+		//[Test]
+		//[ActivePlatforms(Platform.iOS, Platform.Android, Platform.Browser)]
+		//public void Screenshots_Image_Stretch_Alignment_Bigger()
+		//{
+		//	RunScreenShots_Image_Alignment_page("Uno.UI.Samples.UITests.Image.Image_Stretch_Alignment_Bigger");
+		//}
 
-		[Test]
-		[ActivePlatforms(Platform.iOS, Platform.Android, Platform.Browser)]
-		public void Screenshots_Image_Stretch_Alignment_Equal()
-		{
-			RunScreenShots_Image_Alignment_page("Uno.UI.Samples.UITests.Image.Image_Stretch_Alignment_Equal");
-		}
+		//[Test]
+		//[ActivePlatforms(Platform.iOS, Platform.Android, Platform.Browser)]
+		//public void Screenshots_Image_Stretch_Alignment_Equal()
+		//{
+		//	RunScreenShots_Image_Alignment_page("Uno.UI.Samples.UITests.Image.Image_Stretch_Alignment_Equal");
+		//}
 
-		[Test]
-		[ActivePlatforms(Platform.iOS, Platform.Android, Platform.Browser)]
-		public void Screenshots_Image_Stretch_Alignment_Smaller()
-		{
-			RunScreenShots_Image_Alignment_page("Uno.UI.Samples.UITests.Image.Image_Stretch_Alignment_Smaller");
-		}
+		//[Test]
+		//[ActivePlatforms(Platform.iOS, Platform.Android, Platform.Browser)]
+		//public void Screenshots_Image_Stretch_Alignment_Smaller()
+		//{
+		//	RunScreenShots_Image_Alignment_page("Uno.UI.Samples.UITests.Image.Image_Stretch_Alignment_Smaller");
+		//}
 
-		[Test]
-		[ActivePlatforms(Platform.iOS, Platform.Android, Platform.Browser)]
-		public void Screenshots_Image_Stretch_Alignment_Taller()
-		{
-			RunScreenShots_Image_Alignment_page("Uno.UI.Samples.UITests.Image.Image_Stretch_Alignment_Taller");
-		}
+		//[Test]
+		//[ActivePlatforms(Platform.iOS, Platform.Android, Platform.Browser)]
+		//public void Screenshots_Image_Stretch_Alignment_Taller()
+		//{
+		//	RunScreenShots_Image_Alignment_page("Uno.UI.Samples.UITests.Image.Image_Stretch_Alignment_Taller");
+		//}
 
-		[Test]
-		[ActivePlatforms(Platform.iOS, Platform.Android, Platform.Browser)]
-		public void Screenshots_Image_Stretch_Alignment_Wider()
-		{
-			RunScreenShots_Image_Alignment_page("Uno.UI.Samples.UITests.Image.Image_Stretch_Alignment_Wider");
-		}
+		//[Test]
+		//[ActivePlatforms(Platform.iOS, Platform.Android, Platform.Browser)]
+		//public void Screenshots_Image_Stretch_Alignment_Wider()
+		//{
+		//	RunScreenShots_Image_Alignment_page("Uno.UI.Samples.UITests.Image.Image_Stretch_Alignment_Wider");
+		//}
 
 		private void RunScreenShots_Image_Alignment_page(string testName)
 		{
