@@ -150,6 +150,24 @@ namespace Uno.UI.Samples.UITests.Image
 			_suspend = false;
 			OnSelectionChanged(null, null);
 		}
+
+		private void OnNextStretch(object sender, RoutedEventArgs e)
+		{
+			var nextIndex = (stretchModes.SelectedIndex + 1) % stretchModes.Items.Count;
+			stretchModes.SelectedIndex = nextIndex;
+		}
+
+		private void OnNextHorizontal(object sender, RoutedEventArgs e)
+		{
+			var nextIndex = (horizontalModes.SelectedIndex + 1) % horizontalModes.Items.Count;
+			horizontalModes.SelectedIndex = nextIndex;
+		}
+
+		private void OnNextVertical(object sender, RoutedEventArgs e)
+		{
+			var nextIndex = (verticalModes.SelectedIndex + 1) % verticalModes.Items.Count;
+			verticalModes.SelectedIndex = nextIndex;
+		}
 	}
 
 	[Bindable]
