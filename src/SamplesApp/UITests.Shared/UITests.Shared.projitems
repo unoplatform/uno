@@ -4985,7 +4985,11 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\star_full.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Swipe.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\TeachingTip.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_100_100.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_100_150.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_1252_836.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_125_125.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_150_100.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_200_300.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_250_250.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\test_image_300_200.png" />
