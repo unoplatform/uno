@@ -950,9 +950,9 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		/// <param name="propertyName">The property's name</param>
 		/// <param name="value">The current property value</param>
-		private protected void UpdateDOMXamlProperty(string propertyName, object value)
+		internal void UpdateDOMXamlProperty(string propertyName, object value)
 		{
-			WindowManagerInterop.SetAttribute(HtmlId, "xaml" + propertyName.ToLowerInvariant(), value?.ToString() ?? "[null]");
+			WindowManagerInterop.SetAttribute(HtmlId, "xaml" + propertyName.ToLowerInvariant().Replace('.', '_'), value?.ToString() ?? "[null]");
 		}
 
 		private static KeyRoutedEventArgs PayloadToKeyArgs(object src, string payload)

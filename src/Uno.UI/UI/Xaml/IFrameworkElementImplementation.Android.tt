@@ -74,15 +74,11 @@ namespace <#= mixin.NamespaceName #>
 			return size;
 		}
 
-		public double ActualWidth
-		{
-			get { return _actualSize.Width; }
-		}
+		public double ActualWidth => GetActualWidth();
+		public double ActualHeight => GetActualHeight();
 
-		public double ActualHeight
-		{
-			get { return _actualSize.Height; }
-		}
+		private protected virtual double GetActualWidth() => _actualSize.Width;
+		private protected virtual double GetActualHeight() => _actualSize.Height;
 
 #if !<#= mixin.IsFrameworkElement #>
 		/// <summary>
