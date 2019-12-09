@@ -3,9 +3,6 @@ using System.Linq;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
-using Android.Hardware.Input;
-using Android.OS;
-using Android.Views;
 using Uno.UI;
 using Uno.UI.Samples.Controls;
 
