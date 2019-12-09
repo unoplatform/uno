@@ -31,8 +31,8 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 				() => When_VerticalScrollViewer_Scrolled_Top(),
 				() => When_VerticalScrollViewer_Scrolled_Bottom(),
 				() => When_HorizontalScrollViewer_NotScrolled_Left(),
-				//() => When_HorizontalScrollViewer_NotScrolled_Right(), ==> IGNORED as horizontal scrolling is currenlty broken on WASM
-				//() => When_HorizontalScrollViewer_Scrolled_Left(),  ==> IGNORED as horizontal scrolling is currenlty broken on WASM
+				() => When_HorizontalScrollViewer_NotScrolled_Right(),
+				() => When_HorizontalScrollViewer_Scrolled_Left(),
 				() => When_HorizontalScrollViewer_Scrolled_Right()
 			);
 		}
@@ -50,7 +50,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 			var result = sut.TransformBounds(new Rect(0, 0, 50, 50));
 
-			Assert.AreEqual(new Rect(0, 0, 50, 50), result);
+			Assert.IsTrue(RectCloseComparer.UI.Equals(new Rect(0, 0, 50, 50), result));
 		}
 
 		public async Task When_VerticalScrollViewer_NotScrolled_Bottom()
@@ -62,7 +62,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 			var result = sut.TransformBounds(new Rect(0, ScrollBottom.ActualHeight, 50, 50));
 
-			Assert.AreEqual(new Rect(0, _svExtent, 50, 50), result);
+			Assert.IsTrue(RectCloseComparer.UI.Equals(new Rect(0, _svExtent, 50, 50), result));
 		}
 
 		public async Task When_VerticalScrollViewer_Scrolled_Top()
@@ -75,7 +75,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 			var result = sut.TransformBounds(new Rect(0, 0, 50, 50));
 
-			Assert.AreEqual(new Rect(0, -offset, 50, 50), result);
+			Assert.IsTrue(RectCloseComparer.UI.Equals(new Rect(0, -offset, 50, 50), result));
 		}
 
 		public async Task When_VerticalScrollViewer_Scrolled_Bottom()
@@ -88,7 +88,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 			var result = sut.TransformBounds(new Rect(0, ScrollBottom.ActualHeight, 50, 50));
 
-			Assert.AreEqual(new Rect(0, _svHeight, 50, 50), result);
+			Assert.IsTrue(RectCloseComparer.UI.Equals(new Rect(0, _svHeight, 50, 50), result));
 		}
 
 		public async Task When_HorizontalScrollViewer_NotScrolled_Left()
@@ -100,7 +100,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 			var result = sut.TransformBounds(new Rect(0, 0, 50, 50));
 
-			Assert.AreEqual(new Rect(0, 0, 50, 50), result);
+			Assert.IsTrue(RectCloseComparer.UI.Equals(new Rect(0, 0, 50, 50), result));
 		}
 
 		public async Task When_HorizontalScrollViewer_NotScrolled_Right()
@@ -112,7 +112,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 			var result = sut.TransformBounds(new Rect(ScrollRight.ActualWidth, 0, 50, 50));
 
-			Assert.AreEqual(new Rect(_svExtent, 0, 50, 50), result);
+			Assert.IsTrue(RectCloseComparer.UI.Equals(new Rect(_svExtent, 0, 50, 50), result));
 		}
 
 		public async Task When_HorizontalScrollViewer_Scrolled_Left()
@@ -125,7 +125,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 			var result = sut.TransformBounds(new Rect(0, 0, 50, 50));
 
-			Assert.AreEqual(new Rect(-offset, 0, 50, 50), result);
+			Assert.IsTrue(RectCloseComparer.UI.Equals(new Rect(-offset, 0, 50, 50), result));
 		}
 
 		public async Task When_HorizontalScrollViewer_Scrolled_Right()
@@ -138,7 +138,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 			var result = sut.TransformBounds(new Rect(ScrollRight.ActualWidth, 0, 50, 50));
 
-			Assert.AreEqual(new Rect(_svWidth, 0, 50, 50), result);
+			Assert.IsTrue(RectCloseComparer.UI.Equals(new Rect(_svWidth, 0, 50, 50), result));
 		}
 	}
 }
