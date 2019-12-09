@@ -267,18 +267,20 @@ namespace Uno.UI.TestComparer.Comparer
 
 		private (BitmapFrame frame, byte[] pixels, int stride) DecodeImage(string path1)
 		{
-			Stream imageStreamSource = new FileStream(@"\\?\" + path1, FileMode.Open, FileAccess.Read, FileShare.Read);
-			var decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
+			using (Stream imageStreamSource = new FileStream(@"\\?\" + path1, FileMode.Open, FileAccess.Read, FileShare.Read))
+			{
+				var decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
 
-			var f = decoder.Frames[0];
-			var sourceBytesPerPixels = f.Format.BitsPerPixel / 8;
-			var sourceStride = f.PixelWidth * sourceBytesPerPixels;
-			sourceStride += (4 - sourceStride % 4);
+				var f = decoder.Frames[0];
+				var sourceBytesPerPixels = f.Format.BitsPerPixel / 8;
+				var sourceStride = f.PixelWidth * sourceBytesPerPixels;
+				sourceStride += (4 - sourceStride % 4);
 
-			var image = new byte[sourceStride * (f.PixelHeight * sourceBytesPerPixels)];
-			decoder.Frames[0].CopyPixels(image, (int)sourceStride, 0);
+				var image = new byte[sourceStride * (f.PixelHeight * sourceBytesPerPixels)];
+				decoder.Frames[0].CopyPixels(image, (int)sourceStride, 0);
 
-			return (decoder.Frames[0], image, sourceStride);
+				return (decoder.Frames[0], image, sourceStride);
+			}
 		}
 
 		private static IEnumerable<T> LogForeach<T>(IEnumerable<T> q, Action<T> action)
