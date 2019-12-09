@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,6 +32,23 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CanvasTests
 				Assert.Fail("Border in canvas measurement failed");
 
 			TakeScreenshot($"Measure_Children_In_Canvas - Measure Border");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Verify_Canvas_With_Outer_Clip()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.Canvas.Canvas_With_Outer_Clip");
+
+			var screenshot = TakeScreenshot("Rendered");
+
+			var clippedLocation = _app.GetRect("LocatorBorder1");
+
+			AssertHasColorAt(screenshot, clippedLocation.CenterX, clippedLocation.CenterY, Color.Red);
+
+			var unclippedLocation = _app.GetRect("LocatorBorder2");
+
+			AssertHasColorAt(screenshot, unclippedLocation.CenterX, unclippedLocation.CenterY, Color.Blue);
 		}
 	}
 }
