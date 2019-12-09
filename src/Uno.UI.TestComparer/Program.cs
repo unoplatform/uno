@@ -166,7 +166,7 @@ namespace Umbrella.UI.TestComparer
 				return;
 			}
 
-			if (string.IsNullOrEmpty(githubPAT.Trim()))
+			if (string.IsNullOrEmpty(githubPAT.Trim()) || githubPAT.StartsWith("$("))
 			{
 				Console.WriteLine($"No GitHub PAT, no PR comment will be posted.");
 				return;

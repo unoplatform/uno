@@ -15,9 +15,16 @@ namespace SamplesApp.UITests
 	public class SampleControlUITestBase
 	{
 		protected IApp _app;
+		private static int _totalTestFixtureCount;
 
 		public SampleControlUITestBase()
 		{
+		}
+
+		[OneTimeSetUp]
+		public void SingleSetup()
+		{
+			ValidateAppMode();
 		}
 
 		static SampleControlUITestBase()
@@ -36,6 +43,25 @@ namespace SamplesApp.UITests
 			// Start the app only once, so the tests runs don't restart it
 			// and gain some time for the tests.
 			AppInitializer.ColdStartApp();
+		}
+
+		public void ValidateAppMode()
+		{
+			if(GetCurrentFixtureAttributes<TestAppModeAttribute>().FirstOrDefault() is TestAppModeAttribute testAppMode)
+			{
+				if(
+					_totalTestFixtureCount != 0
+					&& testAppMode.CleanEnvironment
+					&& testAppMode.Platform == AppInitializer.GetLocalPlatform()
+				)
+				{
+					// If this is not the first run, and the fixture requested a clean environment, request a cold start.
+					// If this is the first run, as the app is cold-started during the type constructor, we can skip this.
+					_app = AppInitializer.ColdStartApp();
+				}
+			}
+
+			_totalTestFixtureCount++;
 		}
 
 		[SetUp]
@@ -194,12 +220,23 @@ namespace SamplesApp.UITests
 
 		private static void ValidateAutoRetry()
 		{
-			var testType = Type.GetType(TestContext.CurrentContext.Test.ClassName);
-			var methodInfo = testType?.GetMethod(TestContext.CurrentContext.Test.MethodName);
-			if (methodInfo?.GetCustomAttributes(typeof(AutoRetryAttribute), true).Length == 0 && false)
+			if (GetCurrentTestAttributes<AutoRetryAttribute>().Length == 0)
 			{
 				Assert.Fail($"The AutoRetryAttribute is not defined for this test");
 			}
+		}
+
+		private static T[] GetCurrentFixtureAttributes<T>() where T : Attribute
+		{
+			var testType = Type.GetType(TestContext.CurrentContext.Test.ClassName);
+			return testType?.GetCustomAttributes(typeof(T), true) is T[] array ? array : new T[0];
+		}
+
+		private static T[] GetCurrentTestAttributes<T>() where T : Attribute
+		{
+			var testType = Type.GetType(TestContext.CurrentContext.Test.ClassName);
+			var methodInfo = testType?.GetMethod(TestContext.CurrentContext.Test.MethodName);
+			return methodInfo?.GetCustomAttributes(typeof(T), true) is T[] array ? array : new T[0];
 		}
 
 		private Platform[] GetActivePlatforms()
@@ -246,7 +283,7 @@ namespace SamplesApp.UITests
 			{
 				var result = _app.InvokeGeneric("browser:SampleRunner|IsTestDone", testRunId).ToString();
 				return bool.TryParse(result, out var testDone) && testDone;
-			}, retryFrequency: TimeSpan.FromMilliseconds(250));
+			}, retryFrequency: TimeSpan.FromMilliseconds(50));
 
 			TakeScreenshot(metadataName.Replace(".", "_"));
 		}

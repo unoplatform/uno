@@ -19,7 +19,14 @@ mono nuget/nuget.exe install NUnit.ConsoleRunner -Version 3.10.0
 if [ "$UITEST_SNAPSHOTS_ONLY" == 'true' ];
 then
 	export SCREENSHOTS_FOLDERNAME=ios-Snap
-	export TEST_FILTERS="namespace == 'SamplesApp.UITests.Snap'"
+
+	# CommandBar disabled: https://github.com/unoplatform/uno/issues/1955
+	# runGroup is used to parallelize the snapshots tests on multiple agents
+	export TEST_FILTERS=" \
+		namespace == 'SamplesApp.UITests.Snap' \
+		and Description !~ 'automated:Uno.UI.Samples.Content.UITests.CommandBar.*' \
+		and Description =~ 'runGroup:$UITEST_SNAPSHOTS_GROUP' \
+	"
 else
 	export SCREENSHOTS_FOLDERNAME=ios
 	export TEST_FILTERS=" \

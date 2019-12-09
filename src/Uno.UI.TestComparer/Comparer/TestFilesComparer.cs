@@ -147,10 +147,10 @@ namespace Uno.UI.TestComparer.Comparer
                                 var currentImage = DecodeImage(folderInfo.Path);
                                 var previousImage = DecodeImage(previousFolderInfo.Path);
 
-                                var diff = DiffImages(currentImage.pixels, previousImage.pixels);
+                                var diff = DiffImages(currentImage.pixels, previousImage.pixels, currentImage.frame.Format.BitsPerPixel / 8);
 
                                 var diffFilePath = Path.Combine(diffPath, $"{folderInfo.Id}-{folderInfo.CompareeId}.png");
-                                WriteImage(diffFilePath, diff, currentImage.frame);
+                                WriteImage(diffFilePath, diff, currentImage.frame, currentImage.stride);
 
                                 compareResultFileRun.DiffResultImage = diffFilePath;
 
@@ -220,7 +220,7 @@ namespace Uno.UI.TestComparer.Comparer
 			}
 		}
 
-		private void WriteImage(string diffPath, byte[] diff, BitmapFrame frameInfo)
+		private void WriteImage(string diffPath, byte[] diff, BitmapFrame frameInfo, int stride)
 		{
 			using (var stream = new FileStream(diffPath, FileMode.Create))
 			{
@@ -229,14 +229,14 @@ namespace Uno.UI.TestComparer.Comparer
 				encoder.Interlace = PngInterlaceOption.On;
 
 				var frame = BitmapSource.Create(
-					pixelWidth: (int)frameInfo.Width,
-					pixelHeight: (int)frameInfo.Height,
+					pixelWidth: (int)frameInfo.PixelWidth,
+					pixelHeight: (int)frameInfo.PixelHeight,
 					dpiX: frameInfo.DpiX,
 					dpiY: frameInfo.DpiY,
 					pixelFormat: frameInfo.Format,
 					palette: frameInfo.Palette,
 					pixels: diff,
-					stride: (int)(frameInfo.Width * 4)
+					stride: stride
 				);
 
 				encoder.Frames.Add(BitmapFrame.Create(frame));
@@ -244,7 +244,7 @@ namespace Uno.UI.TestComparer.Comparer
 			}
 		}
 
-		private byte[] DiffImages(byte[] currentImage, byte[] previousImage)
+		private byte[] DiffImages(byte[] currentImage, byte[] previousImage, int pixelSize)
 		{
 			var result = new byte[currentImage.Length];
 
@@ -253,37 +253,34 @@ namespace Uno.UI.TestComparer.Comparer
 				result[i] = (byte)(currentImage[i] ^ previousImage[i]);
 			}
 
-			// Force result to be opaque
-			for (int i = 0; i < result.Length; i += 4)
+			if (pixelSize == 4)
 			{
-				result[i+3] = 0xFF;
+				// Force result to be opaque
+				for (int i = 0; i < result.Length; i += 4)
+				{
+					result[i + 3] = 0xFF;
+				}
 			}
 
 			return result;
 		}
 
-		private (BitmapFrame frame, byte[] pixels) DecodeImage(string path1)
+		private (BitmapFrame frame, byte[] pixels, int stride) DecodeImage(string path1)
 		{
-			Stream imageStreamSource = new FileStream(@"\\?\" + path1, FileMode.Open, FileAccess.Read, FileShare.Read);
-			var decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.None, BitmapCacheOption.Default);
-
-			var f = decoder.Frames[0];
-			var sourceStride = f.PixelWidth * (f.Format.BitsPerPixel / 8);
-			sourceStride += (4 - sourceStride % 4);
-
-			var image = new byte[sourceStride * (f.PixelHeight * 4)];
-			decoder.Frames[0].CopyPixels(image, (int)sourceStride, 0);
-
-			// Remove the stride
-			var targetImage = new byte[f.PixelWidth * f.PixelHeight * 4];
-			var targetStride = f.PixelWidth * 4;
-
-			for (int i = 0; i < f.PixelHeight; i++)
+			using (Stream imageStreamSource = new FileStream(@"\\?\" + path1, FileMode.Open, FileAccess.Read, FileShare.Read))
 			{
-				Buffer.BlockCopy(image, i * sourceStride, targetImage, i * targetStride, targetStride);
-			}
+				var decoder = new PngBitmapDecoder(imageStreamSource, BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.Default);
 
-			return (decoder.Frames[0], targetImage);
+				var f = decoder.Frames[0];
+				var sourceBytesPerPixels = f.Format.BitsPerPixel / 8;
+				var sourceStride = f.PixelWidth * sourceBytesPerPixels;
+				sourceStride += (4 - sourceStride % 4);
+
+				var image = new byte[sourceStride * (f.PixelHeight * sourceBytesPerPixels)];
+				decoder.Frames[0].CopyPixels(image, (int)sourceStride, 0);
+
+				return (decoder.Frames[0], image, sourceStride);
+			}
 		}
 
 		private static IEnumerable<T> LogForeach<T>(IEnumerable<T> q, Action<T> action)

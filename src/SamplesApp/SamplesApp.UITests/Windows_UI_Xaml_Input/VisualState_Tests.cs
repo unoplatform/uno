@@ -16,6 +16,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 	public class VisualState_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void TestButtonReleasedOut() => TestButtonReleasedOutState(
 			"MyButton",
@@ -24,6 +25,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			"CommonStates.Normal");
 
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void TestIndeterminateToggleButtonReleasedOut() => TestButtonReleasedOutState(
 			"MyIndeterminateToggleButton",
@@ -32,6 +34,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			"CommonStates.Indeterminate");
 
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void TestCheckedToggleButtonReleasedOut() => TestButtonReleasedOutState(
 			"MyCheckedToggleButton",
@@ -40,6 +43,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			"CommonStates.Checked");
 
 		[Test]
+		[AutoRetry]
 		[Ignore("We get an invalid 'PointerOver' on release, a fix in pending in another PR")]
 		public void TestUncheckedToggleButtonReleasedOut() => TestButtonReleasedOutState(
 			"MyUncheckedToggleButton",
@@ -48,6 +52,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			"CommonStates.Unchecked");
 
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void TestRadioButtonReleasedOut() => TestButtonReleasedOutState(
 			"MyRadioButton",
@@ -56,6 +61,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			"CommonStates.Normal");
 
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void TestHyperlinkButtonReleasedOut() => TestButtonReleasedOutState(
 			"MyHyperlinkButton",
@@ -64,6 +70,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			"CommonStates.Normal");
 
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void TestIndeterminateCheckboxReleasedOut() => TestButtonReleasedOutState(
 			"MyIndeterminateCheckbox",
@@ -72,6 +79,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			"CombinedStates.IndeterminateNormal");
 
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void TestCheckedCheckboxReleasedOut() => TestButtonReleasedOutState(
 			"MyCheckedCheckbox",
@@ -80,6 +88,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			"CombinedStates.CheckedNormal");
 
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void TestUncheckedCheckboxReleasedOut() => TestButtonReleasedOutState(
 			"MyUncheckedCheckbox",
@@ -88,10 +97,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			"CombinedStates.UncheckedNormal");
 
 		[Test]
+		[AutoRetry]
 		public void TestHyperlinkReleasedOut() => TestButtonReleasedOutState(
 			"MyHyperlink"); // There is no "VisualState" for Hyperlink, only a hardcoded opacity of .5 (kind-of like UWP)
 
 		[Test]
+		[AutoRetry]
 		public void TestListViewReleasedOut()
 		{
 			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.ListViewItem");
@@ -107,12 +118,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		}
 
 		[Test]
+		[AutoRetry]
 		public void TestTextBoxReleaseOut() => TestTextBoxReleasedOutState(
 			"MyTextBox",
 			"CommonStates.PointerOver",
 			"CommonStates.Focused");
 
 		[Test]
+		[AutoRetry]
 		public void TestTextBoxTap() => TestTextBoxTappedState(
 			"MyTextBox",
 			"CommonStates.PointerOver",

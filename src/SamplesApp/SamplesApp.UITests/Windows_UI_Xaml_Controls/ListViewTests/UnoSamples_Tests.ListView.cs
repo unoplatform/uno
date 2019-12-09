@@ -53,6 +53,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 		}
 
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.Android)]
 		public void ListView_ItemPanel_HotSwapTest()
 		{
