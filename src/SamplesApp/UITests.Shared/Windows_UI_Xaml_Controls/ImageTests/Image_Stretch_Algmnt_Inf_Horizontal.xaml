@@ -16,6 +16,11 @@
 		<image:Image_Stretch_Modes_Picker x:Name="modesPicker" />
 		<ScrollViewer Grid.Row="1">
 			<ItemsControl ItemsSource="{Binding Items, ElementName=modesPicker}">
+				<ItemsControl.ItemsPanel>
+					<ItemsPanelTemplate>
+						<VariableSizedWrapGrid Orientation="Horizontal" />
+					</ItemsPanelTemplate>
+				</ItemsControl.ItemsPanel>
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
 						<StackPanel Width="300" Padding="20" Background="DodgerBlue" Margin="10">
