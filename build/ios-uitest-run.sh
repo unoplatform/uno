@@ -21,9 +21,11 @@ then
 	export SCREENSHOTS_FOLDERNAME=ios-Snap
 
 	# CommandBar disabled: https://github.com/unoplatform/uno/issues/1955
+	# runGroup is used to parallelize the snapshots tests on multiple agents
 	export TEST_FILTERS=" \
 		namespace == 'SamplesApp.UITests.Snap' \
 		and Description !~ 'automated:Uno.UI.Samples.Content.UITests.CommandBar.*' \
+		and Description =~ 'runGroup:$UITEST_SNAPSHOTS_GROUP' \
 	"
 else
 	export SCREENSHOTS_FOLDERNAME=ios

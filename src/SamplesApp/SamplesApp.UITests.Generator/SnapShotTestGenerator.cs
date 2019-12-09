@@ -101,7 +101,7 @@ namespace Uno.Samples.UITest.Generator
 							var info = GetSampleInfo(test.symbol, test.symbol.FindAttributeFlattened(_sampleControlInfoSymbol));
 
 							builder.AppendLineInvariant("[global::NUnit.Framework.Test]");
-							builder.AppendLineInvariant($"[global::NUnit.Framework.Description(\"automated:{test.symbol.ToDisplayString()}\")]");
+							builder.AppendLineInvariant($"[global::NUnit.Framework.Description(\"runGroup:{group.Index % 2:00}, automated:{test.symbol.ToDisplayString()}\")]");
 
 							if (info.ignoreInSnapshotTests)
 							{
