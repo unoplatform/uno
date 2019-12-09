@@ -153,19 +153,19 @@ namespace Uno.UI.Samples.UITests.Image
 
 		private void OnNextStretch(object sender, RoutedEventArgs e)
 		{
-			var nextIndex = (stretchModes.SelectedIndex + 1) % stretchModes.Items.Count;
+			var nextIndex = (stretchModes.SelectedIndex + 1) % StretchModes.Length;
 			stretchModes.SelectedIndex = nextIndex;
 		}
 
 		private void OnNextHorizontal(object sender, RoutedEventArgs e)
 		{
-			var nextIndex = (horizontalModes.SelectedIndex + 1) % horizontalModes.Items.Count;
+			var nextIndex = (horizontalModes.SelectedIndex + 1) % HorizontalAlignments.Length;
 			horizontalModes.SelectedIndex = nextIndex;
 		}
 
 		private void OnNextVertical(object sender, RoutedEventArgs e)
 		{
-			var nextIndex = (verticalModes.SelectedIndex + 1) % verticalModes.Items.Count;
+			var nextIndex = (verticalModes.SelectedIndex + 1) % VerticalAlignments.Length;
 			verticalModes.SelectedIndex = nextIndex;
 		}
 	}
