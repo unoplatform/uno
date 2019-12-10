@@ -312,24 +312,13 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 
 				case PointerDeviceType.Pen:
 				case PointerDeviceType.Touch:
-#if __IOS__ || __ANDROID__
-					// KNOWN ISSUE:
-					//	On iOS and Android as the Entered/Exited are generated on Pressed/Released, which are Handled by the ListViewItem,
-					//	so we do not receive the expected Entered/Exited on parent control.
-					//	As a side effect we will also not receive the Tap as it is an interpretation of those missing Pointer events.
-					result =
-						args.Click()
-						&& args.End();
-#else
 					result =
 						args.One(PointerEnteredEvent)
+						&& args.MaybeSome(PointerMovedEvent)
 						&& args.Click()
-#if NETFX_CORE // We should get a Tapped on all platforms but ListView is a weird/complex control ...
 						&& args.One(TappedEvent)
-#endif
 						&& args.One(PointerExitedEvent)
 						&& args.End();
-#endif
 					break;
 			}
 
