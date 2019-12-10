@@ -261,6 +261,53 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		/// <summary>
+		/// Convenience method to find all views with the given name.
+		/// </summary>
+		public FrameworkElement[] FindViewsByName(string name) => FindViewsByName(name, searchDescendantsOnly: false);
+
+
+		/// <summary>
+		/// Convenience method to find all views with the given name.
+		/// </summary>
+		/// <param name="searchDescendantsOnly">If true, only look in descendants of the current view; otherwise search the entire visual tree.</param>
+		public FrameworkElement[] FindViewsByName(string name, bool searchDescendantsOnly)
+		{
+
+			View topLevel = this;
+
+			if (!searchDescendantsOnly)
+			{
+				while (topLevel.Parent is View newTopLevel)
+				{
+					topLevel = newTopLevel;
+				}
+			}
+
+			return GetMatchesInChildren(topLevel).ToArray();
+
+			IEnumerable<FrameworkElement> GetMatchesInChildren(View parentView)
+			{
+				if (!(parentView is ViewGroup parent))
+				{
+					yield break;
+				}
+
+				foreach (var child in parent.GetChildren())
+				{
+					if (child is FrameworkElement fe && fe.Name == name)
+					{
+						yield return fe;
+					}
+
+					foreach (var match in GetMatchesInChildren(child))
+					{
+						yield return match;
+					}
+				}
+			}
+		}
+
 		// Typed properties for easier inspection
 
 		public Controls.ContentControl ContentControlOfInterest => ViewOfInterest as Controls.ContentControl;
