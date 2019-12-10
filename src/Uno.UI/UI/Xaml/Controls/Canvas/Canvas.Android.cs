@@ -9,9 +9,9 @@ namespace Windows.UI.Xaml.Controls
 	public partial class Canvas
 	{
 		/// <summary>
-		/// Order of children determined by Canvas.ZIndex, keyed by position in Children
+		/// Draw order of children as determined by Canvas.ZIndex
 		/// </summary>
-		private Dictionary<int, int> _zSortedChildren;
+		private int[] _drawOrders;
 
 		partial void InitializePartial()
 		{
@@ -21,16 +21,26 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void MeasureOverridePartial()
 		{
-			_zSortedChildren = Children
+			if (_drawOrders?.Length != Children.Count)
+			{
+				_drawOrders = new int[Children.Count];
+			}
+
+			var sorted = Children
 				.Select((view, childrenIndex) => (view, childrenIndex))
-				.OrderBy(tpl => tpl.view is DependencyObject obj ? Canvas.GetZIndex(obj) : 0)
-				.Select((tpl, orderedIndex) => (tpl.childrenIndex, orderedIndex))
-				.ToDictionary(keySelector: tpl => tpl.childrenIndex, elementSelector: tpl => tpl.orderedIndex);
+				.OrderBy(tpl => tpl.view is DependencyObject obj ? Canvas.GetZIndex(obj) : 0); // Note: this has to be a stable sort
+
+			var drawOrder = 0;
+			foreach (var tpl in sorted)
+			{
+				_drawOrders[tpl.childrenIndex] = drawOrder;
+				drawOrder++;
+			}
 		}
 
 		protected override int GetChildDrawingOrder(int childCount, int i)
 		{
-			return _zSortedChildren?[i] ?? i;
+			return _drawOrders?.Length == childCount ? _drawOrders[i] : i;
 		}
 	}
 }
