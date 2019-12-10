@@ -26,7 +26,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 
 			var final = TakeScreenshot("final");
 
-			AssertScreenshotsAreEqual(initial, final, sut.Rect);
+			ImageAssert.AssertScreenshotsAreEqual(initial, final, sut.Rect);
 		}
 	}
 }

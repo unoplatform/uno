@@ -182,7 +182,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			var result = TakeScreenshot("result");
 
-			AssertScreenshotsAreEqual(initial, result, passwordBox.Rect);
+			ImageAssert.AssertScreenshotsAreEqual(initial, result, passwordBox.Rect);
 		}
 	}
 }

@@ -44,11 +44,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CanvasTests
 
 			var clippedLocation = _app.GetRect("LocatorBorder1");
 
-			AssertHasColorAt(screenshot, clippedLocation.CenterX, clippedLocation.CenterY, Color.Red);
+			ImageAssert.AssertHasColorAt(screenshot, clippedLocation.CenterX, clippedLocation.CenterY, Color.Red);
 
 			var unclippedLocation = _app.GetRect("LocatorBorder2");
 
-			AssertHasColorAt(screenshot, unclippedLocation.CenterX, unclippedLocation.CenterY, Color.Blue);
+			ImageAssert.AssertHasColorAt(screenshot, unclippedLocation.CenterX, unclippedLocation.CenterY, Color.Blue);
 		}
 	}
 }
