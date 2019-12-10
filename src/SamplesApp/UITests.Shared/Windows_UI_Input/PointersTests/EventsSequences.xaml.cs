@@ -304,9 +304,7 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 						args.One(PointerEnteredEvent)
 						&& args.Some(PointerMovedEvent) // Could be "Maybe" but WASM UI test generate it and we want to validate it
 						&& args.Click()
-#if NETFX_CORE // We should get a Tapped on all platforms but ListView is a weird/complex control ...
 						&& args.One(TappedEvent)
-#endif
 						&& args.MaybeSome(PointerMovedEvent)
 						&& args.One(PointerExitedEvent)
 						&& args.End();
