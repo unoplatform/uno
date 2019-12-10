@@ -53,6 +53,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CanvasTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // Canvas.ZIndex isn't implemented for WASM yet
 		public void Verify_Canvas_ZIndex()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.Canvas.Canvas_ZIndex");
