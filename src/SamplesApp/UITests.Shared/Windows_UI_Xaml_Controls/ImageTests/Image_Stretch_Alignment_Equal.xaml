@@ -28,8 +28,8 @@
 				<ItemsControl.ItemTemplate>
 					<DataTemplate>
 						<StackPanel Width="150" Background="Salmon" Margin="5" Padding="5">
-							<TextBlock FontSize="16">
-								<Run Text="{Binding Index}" />) stretch=<Run Text="{Binding Stretch}" FontWeight="Bold" />
+							<TextBlock FontSize="12">
+								<Run Text="{Binding Index}" />) s=<Run Text="{Binding Stretch}" FontWeight="Bold" />
 								<LineBreak />h=<Run Text="{Binding HorizontalAlignment}" FontWeight="Bold" />
 								<LineBreak />v=<Run Text="{Binding VerticalAlignment}" FontWeight="Bold" />
 							</TextBlock>
