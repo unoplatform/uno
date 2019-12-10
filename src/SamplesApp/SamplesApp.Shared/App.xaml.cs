@@ -236,7 +236,7 @@ namespace SamplesApp
 #endif
 
 #if __ANDROID__
-							CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = false;
+							Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = false;
 #endif
 
 #if HAS_UNO
