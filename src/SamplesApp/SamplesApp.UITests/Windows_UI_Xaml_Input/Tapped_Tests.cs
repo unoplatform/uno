@@ -14,6 +14,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 	public class Tapped_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.Android)] // Fixed in another commit coming soon
 		public void When_Tapped_Then_ArgsLocationIsValid()
 		{
@@ -35,6 +36,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		}
 
 		[Test]
+		[AutoRetry]
 		public void When_ChildHandlesPointers()
 		{
 			Run("UITests.Shared.Windows_UI_Input.GestureRecognizerTests.TappedTest");
@@ -49,6 +51,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		}
 
 		[Test]
+		[AutoRetry]
 		public void When_MultipleTappedRecognizer()
 		{
 			Run("UITests.Shared.Windows_UI_Input.GestureRecognizerTests.TappedTest");
