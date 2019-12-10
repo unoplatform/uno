@@ -148,12 +148,15 @@ namespace Uno.UI.TestComparer.Comparer
 								var currentImage = DecodeImage(folderInfo.Path);
 								var previousImage = DecodeImage(previousFolderInfo.Path);
 
-								var diff = DiffImages(currentImage.pixels, previousImage.pixels, currentImage.frame.Format.BitsPerPixel / 8);
+								if (currentImage.pixels.Length == previousImage.pixels.Length)
+								{
+									var diff = DiffImages(currentImage.pixels, previousImage.pixels, currentImage.frame.Format.BitsPerPixel / 8);
 
-								var diffFilePath = Path.Combine(diffPath, $"{folderInfo.Id}-{folderInfo.CompareeId}.png");
-								WriteImage(diffFilePath, diff, currentImage.frame, currentImage.stride);
+									var diffFilePath = Path.Combine(diffPath, $"{folderInfo.Id}-{folderInfo.CompareeId}.png");
+									WriteImage(diffFilePath, diff, currentImage.frame, currentImage.stride);
 
-								compareResultFileRun.DiffResultImage = diffFilePath;
+									compareResultFileRun.DiffResultImage = diffFilePath;
+								}
 
 								changedList.Add(testFile);
                             }
