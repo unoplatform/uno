@@ -107,6 +107,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 			{
 				Assert.AreEqual("12:00:00", theTimePicker.GetDependencyPropertyValue("Time")?.ToString());
 			}
+
+			// Dismiss the flyout
+			_app.TapCoordinates(10, 10);
 		}
 
 		[Test]
@@ -127,6 +130,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 			//Assert
 			Assert.IsNotNull(theTimePicker.GetDependencyPropertyValue("DataContext"));
 			Assert.IsNotNull(timePickerFlyout.GetDependencyPropertyValue("DataContext"));
+
+			// Dismiss the flyout
+			_app.TapCoordinates(10, 10);
 		}
 
 		[Test]
@@ -146,6 +152,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 
 			//Assert
 			Assert.IsNotNull(timePickerFlyout.GetDependencyPropertyValue("Content"));
+
+			// Dismiss the flyout
+			_app.TapCoordinates(10, 10);
 		}
 
 		[Test]
@@ -161,7 +170,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 
 			picker.Tap();
 
-			TakeScreenshot("TimePicker - Flyout");
+			TakeScreenshot("TimePicker - Flyout", ignoreInSnapshotCompare: true);
+
+			// Dismiss the flyout
+			_app.TapCoordinates(10, 10);
 		}
 	}
 }

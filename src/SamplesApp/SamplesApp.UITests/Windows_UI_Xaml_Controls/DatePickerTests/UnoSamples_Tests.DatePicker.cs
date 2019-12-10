@@ -19,7 +19,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 		[ActivePlatforms(Platform.iOS)] // Android is disabled https://github.com/unoplatform/uno/issues/1634
 		public void DatePickerFlyout_HasDataContextTest()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent", skipInitialScreenshot: true);
 
 			_app.WaitForElement(_app.Marked("theDatePicker"));
 
@@ -45,7 +45,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 		[ActivePlatforms(Platform.iOS)]
 		public void DatePickerFlyout_HasContentTest()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent", skipInitialScreenshot: true);
 
 			_app.WaitForElement(_app.Marked("theDatePicker"));
 
@@ -65,7 +65,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void DatePicker_Flyout()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePickerFlyout_Automated");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePickerFlyout_Automated", skipInitialScreenshot: true);
 
 			//DatePicker is broken: https://github.com/unoplatform/uno/issues/188
 			//Using a Button with DatePickerFlyout to simulate a DatePicker
@@ -85,7 +85,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 		[ActivePlatforms(Platform.iOS)] // Android is disabled https://github.com/unoplatform/uno/issues/1634
 		public void DatePickerFlyout_MinYearProperlySets()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent", skipInitialScreenshot: true);
 
 			_app.WaitForElement(_app.Marked("theDatePicker"));
 
@@ -108,7 +108,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 		[ActivePlatforms(Platform.iOS)] // Android is disabled https://github.com/unoplatform/uno/issues/1634
 		public void DatePickerFlyout_MaxYearProperlySets()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePicker_SampleContent", skipInitialScreenshot: true);
 
 			_app.WaitForElement(_app.Marked("theDatePicker"));
 
@@ -132,7 +132,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 		[ActivePlatforms(Platform.iOS)] // Android is disabled https://github.com/unoplatform/uno/issues/1634
 		public void DatePickerFlyout_Unloaded()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePickerFlyout_Unloaded");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.DatePickerFlyout_Unloaded", skipInitialScreenshot: true);
 
 			var TestDatePickerFlyoutButton = _app.Marked("TestDatePickerFlyoutButton");
 			var datePickerFlyout = _app.CreateQuery(q => q.WithClass("Windows_UI_Xaml_Controls_DatePickerSelector"));
