@@ -13,6 +13,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		protected override Size MeasureOverride(Size availableSize)
 		{
+			MeasureOverridePartial();
 			// A canvas does not have dimensions and will always return zero even with a chidren collection.
 			foreach (var child in Children.Where(c => c is DependencyObject))
 			{
@@ -20,6 +21,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 			return new Size(0, 0);
 		}
+
+		partial void MeasureOverridePartial();
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
@@ -38,18 +41,6 @@ namespace Windows.UI.Xaml.Controls
 
 #if __IOS__
 				child.Layer.ZPosition = (nfloat)GetZIndex(childDO);
-#elif __ANDROID__
-				if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Lollipop)
-				{
-					child.SetZ((float)GetZIndex(childDO));
-				}
-				else
-				{
-					if (this.Log().IsEnabled(LogLevel.Warning))
-					{
-						this.Log().Warn("Canvas.ZIndex is not support on Android 4.4 and less. Canvas will arrange its Children in the order they were added.");
-					}
-				}
 #endif
 
 				ArrangeElement(child, childRect);

@@ -50,5 +50,22 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CanvasTests
 
 			AssertHasColorAt(screenshot, unclippedLocation.CenterX, unclippedLocation.CenterY, Color.Blue);
 		}
+
+		[Test]
+		[AutoRetry]
+		public void Verify_Canvas_ZIndex()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.Canvas.Canvas_ZIndex");
+
+			var screenshot = TakeScreenshot("Rendered");
+
+			var redBorderRect = _app.GetRect("CanvasBorderRed");
+
+			AssertHasColorAt(screenshot, redBorderRect.CenterX, redBorderRect.CenterY, Color.Green /*psych*/);
+
+			var greenBorderRect = _app.GetRect("CanvasBorderGreen");
+
+			AssertHasColorAt(screenshot, greenBorderRect.CenterX, greenBorderRect.CenterY, Color.Blue);
+		}
 	}
 }
