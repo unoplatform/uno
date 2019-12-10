@@ -235,6 +235,10 @@ namespace SamplesApp
 							}
 #endif
 
+#if __ANDROID__
+							CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = false;
+#endif
+
 #if HAS_UNO
 							// Disable the TextBox caret for new instances
 							Uno.UI.FeatureConfiguration.TextBox.HideCaret = true;
