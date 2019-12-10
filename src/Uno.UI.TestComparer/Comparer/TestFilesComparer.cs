@@ -144,18 +144,21 @@ namespace Uno.UI.TestComparer.Comparer
                             var previousFolderInfo = changeResult.FirstOrDefault(inc => inc.FolderIndex == folderIndex - 1);
                             if (hasChangedFromPrevious && previousFolderInfo != null)
                             {
-                                var currentImage = DecodeImage(folderInfo.Path);
-                                var previousImage = DecodeImage(previousFolderInfo.Path);
+								var currentImage = DecodeImage(folderInfo.Path);
+								var previousImage = DecodeImage(previousFolderInfo.Path);
 
-                                var diff = DiffImages(currentImage.pixels, previousImage.pixels, currentImage.frame.Format.BitsPerPixel / 8);
+								var diff = DiffImages(currentImage.pixels, previousImage.pixels, currentImage.frame.Format.BitsPerPixel / 8);
 
-                                var diffFilePath = Path.Combine(diffPath, $"{folderInfo.Id}-{folderInfo.CompareeId}.png");
-                                WriteImage(diffFilePath, diff, currentImage.frame, currentImage.stride);
+								var diffFilePath = Path.Combine(diffPath, $"{folderInfo.Id}-{folderInfo.CompareeId}.png");
+								WriteImage(diffFilePath, diff, currentImage.frame, currentImage.stride);
 
-                                compareResultFileRun.DiffResultImage = diffFilePath;
+								compareResultFileRun.DiffResultImage = diffFilePath;
 
 								changedList.Add(testFile);
                             }
+
+							GC.Collect(2, GCCollectionMode.Forced);
+							GC.WaitForPendingFinalizers();
                         }
                     }
                 }
@@ -246,23 +249,21 @@ namespace Uno.UI.TestComparer.Comparer
 
 		private byte[] DiffImages(byte[] currentImage, byte[] previousImage, int pixelSize)
 		{
-			var result = new byte[currentImage.Length];
-
-			for (int i = 0; i < result.Length; i++)
+			for (int i = 0; i < currentImage.Length; i++)
 			{
-				result[i] = (byte)(currentImage[i] ^ previousImage[i]);
+				currentImage[i] = (byte)(currentImage[i] ^ previousImage[i]);
 			}
 
 			if (pixelSize == 4)
 			{
 				// Force result to be opaque
-				for (int i = 0; i < result.Length; i += 4)
+				for (int i = 0; i < currentImage.Length; i += 4)
 				{
-					result[i + 3] = 0xFF;
+					currentImage[i + 3] = 0xFF;
 				}
 			}
 
-			return result;
+			return currentImage;
 		}
 
 		private (BitmapFrame frame, byte[] pixels, int stride) DecodeImage(string path1)
