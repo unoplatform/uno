@@ -294,7 +294,7 @@ namespace Windows.UI.Xaml.Controls
 				if (isWidthDefined && isHeightDefined)
 				{
 					// If both available width & available height are known here
-					if (img.Stretch != Stretch.Uniform)
+					if (img.Stretch != Stretch.Uniform) // Fill or UniformToFill
 					{
 						// Fill & UniformToFill will both take all the available size
 						return constrainedAvailableSize;
@@ -304,19 +304,21 @@ namespace Windows.UI.Xaml.Controls
 
 					// Since apsect ratio can have a lot of decimal, iOS ceils Image size to 0.5 if it's not a precise size (like 111.111111111)
 					// so the desiredSize will never match the actual size causing an infinite measuring and can freeze the app
-					var desiredSize = new Size
-					{
-						Width = Math.Min(constrainedAvailableSize.Width, Math.Ceiling(constrainedAvailableSize.Height * aspectRatio * 2) / 2),
-						Height = Math.Min(constrainedAvailableSize.Height, Math.Ceiling(constrainedAvailableSize.Width / aspectRatio * 2) / 2)
-					};
+					//var desiredSize = new Size
+					//{
+					//	Width = Math.Min(constrainedAvailableSize.Width, Math.Ceiling(constrainedAvailableSize.Height * aspectRatio * 2) / 2),
+					//	Height = Math.Min(constrainedAvailableSize.Height, Math.Ceiling(constrainedAvailableSize.Width / aspectRatio * 2) / 2)
+					//};
+					var rect = new Rect(default, sourceSize);
+					img.MeasureSource(availableSize, ref rect);
 
 					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
-						this.Log().Debug(Panel.ToString() + $" measuring with Stretch.Uniform with availableSize={constrainedAvailableSize}, returning desiredSize={desiredSize}");
+						this.Log().Debug(Panel.ToString() + $" measuring with Stretch.Uniform with availableSize={constrainedAvailableSize}, returning desiredSize={rect.Size}");
 					}
 
 					ImageControl._hasFiniteBounds = true;
-					return desiredSize;
+					return rect.Size;
 				}
 
 				ImageControl._hasFiniteBounds = false;

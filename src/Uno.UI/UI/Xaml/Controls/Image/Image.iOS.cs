@@ -209,6 +209,7 @@ namespace Windows.UI.Xaml.Controls
 				SourceImageSize = image?.Size.ToFoundationSize() ?? default(Size);
 			}
 
+			this.InvalidateMeasure();
 			SetNeedsLayout();
 
 			if (Image != null)
@@ -333,8 +334,14 @@ namespace Windows.UI.Xaml.Controls
 
 			var relativeX = sourceRect.X / imageSize.Width;
 			var relativeY = sourceRect.Y / imageSize.Height;
-			var relativeWidth = availableSize.Width / sourceRect.Width;
-			var relativeHeight = availableSize.Height / sourceRect.Height;
+			var relativeWidth =
+				imageSize.Width > availableSize.Width
+					? availableSize.Width / sourceRect.Width
+					: 1.0d + relativeX;
+			var relativeHeight =
+				imageSize.Height > availableSize.Height
+					? availableSize.Height / sourceRect.Height
+					: 1.0d + relativeY;
 
 			var rect = new CGRect(-relativeX, -relativeY, relativeWidth, relativeHeight);
 
