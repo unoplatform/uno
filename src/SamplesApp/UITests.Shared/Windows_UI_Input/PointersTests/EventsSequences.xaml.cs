@@ -247,8 +247,6 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 #if NETFX_CORE
 						&& args.One(PointerReleasedEvent)
 						&& args.Click()
-#elif __WASM__ // KNOWN ISSUE: We don't get a released if not previously pressed, but pressed are muted by the Hyperlink which is a UIElement on wasm
-						&& args.Click()
 #else
 						&& args.Click()
 						&& args.One(PointerReleasedEvent)
