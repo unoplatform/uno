@@ -72,7 +72,7 @@ namespace Windows.UI.Xaml.Controls
 			if (stretch == None || stretch == UniformToFill)
 			{
 				// In order to match UWP behaviors, in some specific cases the image must be left align
-				if (!double.IsNaN(image.Width) && finalSize.Width <= child.Width)
+				if (finalSize.Width <= child.Width && horizontalAlignment == HorizontalAlignment.Stretch)
 				{
 					horizontalAlignment = HorizontalAlignment.Left;
 				}
@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml.Controls
 			if (stretch == None || stretch == UniformToFill)
 			{
 				// In order to match UWP behaviors, in some specific cases the image must be top align
-				if (!double.IsNaN(image.Height) && finalSize.Height <= child.Height)
+				if (finalSize.Height <= child.Height && verticalAlignment == VerticalAlignment.Stretch)
 				{
 					verticalAlignment = VerticalAlignment.Top;
 				}
