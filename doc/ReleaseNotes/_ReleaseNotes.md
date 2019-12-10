@@ -12,6 +12,7 @@
 - [WASM] Fix bug where changing `IsEnabled` from false to true on `Control` inside another `Control` didn't work
 - [Wasm] Add arbitrary delay in Safari macOS to avoid StackOverflow issues
 - #2227 fixed Color & SolidColorBrush literal values generation
+- [Android] Fix bug where setting Canvas.ZIndex would apply shadow effect in some cases
 
 ## Release 2.0
 
