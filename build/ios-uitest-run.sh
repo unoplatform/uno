@@ -38,7 +38,8 @@ else
 		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests' or \
 		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Media.Animation_Tests' or \
 		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ControlTests' or \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests' \
+		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests' or \
+		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests'
 	"
 fi
 
