@@ -111,9 +111,6 @@ namespace SamplesApp.UITests
 			_app = app ?? _app;
 
 			Helpers.App = _app;
-
-			// Default to portrait
-			_app.SetOrientationPortrait();
 		}
 
 		[TearDown]
