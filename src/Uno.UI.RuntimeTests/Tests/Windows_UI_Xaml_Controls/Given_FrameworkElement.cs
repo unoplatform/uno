@@ -12,6 +12,8 @@ using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Private.Infrastructure;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -139,6 +141,52 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 		}
 #endif
+
+		[TestMethod]
+		public async Task When_MinWidth_SmallerThan_AvailableSize()
+		{
+			Border content = null;
+			ContentControl contentCtl = null;
+			Grid grid = null;
+
+			await Dispatch(() =>
+			{
+				content = new Border { Width = 100, Height = 15 };
+
+				contentCtl = new ContentControl { MinWidth = 110, Content = content };
+
+				grid = new Grid() { MinWidth = 120 };
+
+				grid.Children.Add(contentCtl);
+
+				grid.Measure(new Size(50, 50));
+#if NETFX_CORE || __WASM__ // TODO: align all platforms with Windows here
+				Assert.AreEqual(new Size(50, 15), grid.DesiredSize);
+				Assert.AreEqual(new Size(110, 15), contentCtl.DesiredSize);
+				Assert.AreEqual(new Size(100, 15), content.DesiredSize);
+#endif
+
+				grid.Arrange(new Rect(default, new Size(50, 50)));
+
+				TestServices.WindowHelper.WindowContent = new Border { Child = grid, Width = 50, Height = 50 };
+			});
+
+			await TestServices.WindowHelper.WaitForIdle();
+			await Dispatch(() => { });
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await Dispatch(() =>
+			{
+				var ls1 = LayoutInformation.GetLayoutSlot(grid);
+				Assert.AreEqual(new Rect(0, 0, 50, 50), ls1);
+#if NETFX_CORE || __WASM__ // TODO: align all platforms with Windows here
+				var ls2 = LayoutInformation.GetLayoutSlot(contentCtl);
+				Assert.AreEqual(new Rect(0, 0, 120, 50), ls2);
+				var ls3 = LayoutInformation.GetLayoutSlot(content);
+				Assert.AreEqual(new Rect(0, 0, 100, 15), ls3);
+#endif
+			});
+		}
 
 		[TestMethod]
 		[RunsOnUIThread]
