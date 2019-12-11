@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[SampleControlInfo("Button", "Radio_Button", typeof(ButtonTestsViewModel))]
+	[SampleControlInfo("Button", "Radio_Button", typeof(ButtonTestsViewModel), ignoreInSnapshotTests: true)]
 
 	public sealed partial class Radio_Button : UserControl
 	{

@@ -157,12 +157,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		private void TestVisualTests(string targetName, Action<IAppRect> act, params string[] expectedStates)
 		{
-			var initial = TakeScreenshot("Initial");
+			var initial = TakeScreenshot("Initial", ignoreInSnapshotCompare: true);
 			var target = _app.WaitForElement(targetName).Single().Rect;
 
 			act(target);
 
-			var final = TakeScreenshot("Final");
+			var final = TakeScreenshot("Final", ignoreInSnapshotCompare: true);
 			var actualStates = _app
 				.Marked("VisualStatesLog")
 				.GetDependencyPropertyValue<string>("Text")

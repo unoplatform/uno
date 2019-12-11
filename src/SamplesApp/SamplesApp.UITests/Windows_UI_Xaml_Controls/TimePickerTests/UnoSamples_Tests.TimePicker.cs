@@ -22,7 +22,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 			try
 			{
 
-				Run("Uno.UI.Samples.Content.UITests.TimePicker.TimePicker_Automated");
+				Run("Uno.UI.Samples.Content.UITests.TimePicker.TimePicker_Automated", skipInitialScreenshot: true);
 
 				_app.WaitForElement(_app.Marked("btnApplyNewTime"));
 
@@ -68,7 +68,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		{
 			try
 			{
-				Run("Uno.UI.Samples.Content.UITests.TimePicker.TimePicker_Automated");
+				Run("Uno.UI.Samples.Content.UITests.TimePicker.TimePicker_Automated", skipInitialScreenshot: true);
 
 				_app.WaitForElement(_app.Marked("btnApplyNewTime"));
 
@@ -112,7 +112,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		[AutoRetry]
 		public void TimePickerFlyout_DoesntApplyDefaultTime()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Sample1");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Sample1", skipInitialScreenshot: true);
 
 			_app.WaitForElement(_app.Marked("theTimePicker"));
 			var theTimePicker = _app.Marked("theTimePicker");
@@ -132,7 +132,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void TimePickerFlyout_HasDataContextTest()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Sample2");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Sample2", skipInitialScreenshot: true);
 
 			_app.WaitForElement(_app.Marked("theTimePicker"));
 
@@ -155,7 +155,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		[ActivePlatforms(Platform.iOS)]
 		public void TimePickerFlyout_HasContentTest()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Sample2");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Sample2", skipInitialScreenshot: true);
 
 			_app.WaitForElement(_app.Marked("theTimePicker"));
 
@@ -177,7 +177,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void TimePicker_Flyout()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.TimePicker_Flyout_Automated");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.TimePicker_Flyout_Automated", skipInitialScreenshot: true);
 
 			var picker = _app.Marked("TestTimePicker");
 
