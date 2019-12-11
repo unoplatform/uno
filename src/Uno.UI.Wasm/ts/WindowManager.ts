@@ -1556,7 +1556,7 @@
 		 *
 		 * Note that the casing of this method is intentionally Pascal for platform alignment.
 		 */
-		public SetDependencyPropertyValue(elementId: number, propertyName: string, propertyValue: string) : string {
+		public SetDependencyPropertyValue(elementId: number, propertyNameAndValue: string) : string {
 			if (!WindowManager.setDependencyPropertyValueMethod) {
 				WindowManager.setDependencyPropertyValueMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:SetDependencyPropertyValue");
 			}
@@ -1564,7 +1564,7 @@
 			const element = this.getView(elementId) as HTMLElement;
 			const htmlId = Number(element.getAttribute("XamlHandle"));
 
-			return WindowManager.setDependencyPropertyValueMethod(htmlId, propertyName, propertyValue);
+			return WindowManager.setDependencyPropertyValueMethod(htmlId, propertyNameAndValue);
 		}
 
 		/**
