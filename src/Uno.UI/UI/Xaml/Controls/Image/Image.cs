@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml.Controls
 			_successfullyOpenedImage = imageSource;
 		}
 
-		#region Stretch
+#region Stretch
 		public Stretch Stretch
 		{
 			get { return (Stretch)this.GetValue(StretchProperty); }
@@ -107,9 +107,9 @@ namespace Windows.UI.Xaml.Controls
 			((Image)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
 
 		partial void OnStretchChanged(Stretch newValue, Stretch oldValue);
-		#endregion
+#endregion
 
-		#region Source
+#region Source
 		public ImageSource Source
 		{
 			get { return (ImageSource)this.GetValue(SourceProperty); }
@@ -158,7 +158,7 @@ namespace Windows.UI.Xaml.Controls
 			TryOpenImage();
 		}
 
-		#endregion
+#endregion
 
 		partial void OnLoadedPartial()
 		{
@@ -277,13 +277,13 @@ namespace Windows.UI.Xaml.Controls
 					// On Stretch=None, we simply use the image size
 					// without considering the availableSize.
 
-					var size = img._layoutSize = img.ApplySizeConstrains(sourceSize);
+					var size = img._layoutSize = img.ApplySizeConstraints(sourceSize);
 					ImageControl._hasFiniteBounds = double.IsFinite(size.Width) && double.IsFinite(size.Height);
 					return size;
 				}
 
 				// Get real available size after applying local constrains
-				var constrainedAvailableSize = img.ApplySizeConstrains(availableSize);
+				var constrainedAvailableSize = img.ApplySizeConstraints(availableSize);
 				img._layoutSize = constrainedAvailableSize;
 
 				var isWidthDefined = double.IsFinite(constrainedAvailableSize.Width);
@@ -327,7 +327,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					// If both width & height are unspecified, we simply apply the constrains on image
 					// size and use that as measurement for the layout.
-					return img.ApplySizeConstrains(sourceSize);
+					return img.ApplySizeConstraints(sourceSize);
 				}
 
 				// If one dimension is known and the other isn't, we need to consider uniformity based on the dimension we know.
