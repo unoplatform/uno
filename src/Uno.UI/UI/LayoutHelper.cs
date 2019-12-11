@@ -33,7 +33,7 @@ namespace Uno.UI
 			return (minSize, maxSize);
 		}
 
-		internal static Size ApplySizeConstrains(this IFrameworkElement e, Size forSize)
+		internal static Size ApplySizeConstraints(this IFrameworkElement e, Size forSize)
 		{
 			var (min, max) = e.GetMinMax();
 			return forSize
