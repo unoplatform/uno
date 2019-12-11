@@ -23,6 +23,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.CreateFromStringTests
 
 			Assert.AreEqual(45.0392, pt.Latitude);
 			Assert.AreEqual(25.29232, pt.Longitude);
+
+			var pt2 = control.TestLocationPoint2.LocationPoint;
+
+			Assert.AreEqual(33.33, pt2.Latitude);
+			Assert.AreEqual(22, pt2.Longitude);
 		}
 	}
 
