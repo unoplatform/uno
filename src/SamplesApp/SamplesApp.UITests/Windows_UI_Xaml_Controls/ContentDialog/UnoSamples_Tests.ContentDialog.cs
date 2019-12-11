@@ -16,6 +16,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 	public partial class ContentDialog_Tests : SampleControlUITestBase
 	{
 		private void CurrentTestTakeScreenShot(string name) =>
+			// Screenshot taking for this fixture is disabled on Android because of the
+			// presence of the status bar when native popups are opened, adding the clock
+			// (that is always changing :)).
 			TakeScreenshot(name, ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() != Platform.Android);
 
 		[Test]
