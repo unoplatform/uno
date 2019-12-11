@@ -140,9 +140,15 @@ namespace Windows.UI.Xaml
 			);
 		}
 
+
+		/// <summary>
+        /// Sets the specified dependency property value using the format "name|value"
+        /// </summary>
+        /// <param name="dependencyPropertyNameAndvalue">The name and value of the property</param>
+        /// <returns>The currenty set value at the Local precedence</returns>
 		[Java.Interop.Export(nameof(SetDependencyPropertyValue))]
-		public string SetDependencyPropertyValue(string dependencyPropertyName, string value)
-			=> SetDependencyPropertyValueInternal(this, dependencyPropertyName, value);
+		public string SetDependencyPropertyValue(string dependencyPropertyNameAndValue)
+			=> SetDependencyPropertyValueInternal(this, dependencyPropertyNameAndValue);
 
 		/// <summary>
 		/// Provides a native value for the dependency property with the given name on the current instance. If the value is a primitive type, 
