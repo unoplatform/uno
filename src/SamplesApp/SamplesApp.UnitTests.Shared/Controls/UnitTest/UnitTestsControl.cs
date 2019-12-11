@@ -202,6 +202,11 @@ namespace Uno.UI.Samples.Tests
 								{
 									throw new TimeoutException($"Test execution timed out after {DefaultUnitTestTimeout}");
 								}
+
+								if (resultingTask.Exception != null)
+								{
+									throw resultingTask.Exception;
+								}
 							}
 
 							ReportTestResult(testName, TestResult.Sucesss);
