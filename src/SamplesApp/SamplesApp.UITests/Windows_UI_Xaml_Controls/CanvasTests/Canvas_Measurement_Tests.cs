@@ -62,11 +62,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CanvasTests
 
 			var redBorderRect = _app.GetRect("CanvasBorderRed");
 
-			AssertHasColorAt(screenshot, redBorderRect.CenterX, redBorderRect.CenterY, Color.Green /*psych*/);
+			ImageAssert.AssertHasColorAt(screenshot, redBorderRect.CenterX, redBorderRect.CenterY, Color.Green /*psych*/);
 
 			var greenBorderRect = _app.GetRect("CanvasBorderGreen");
 
-			AssertHasColorAt(screenshot, greenBorderRect.CenterX, greenBorderRect.CenterY, Color.Blue);
+			ImageAssert.AssertHasColorAt(screenshot, greenBorderRect.CenterX, greenBorderRect.CenterY, Color.Blue);
 		}
 	}
 }
