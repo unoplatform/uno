@@ -270,7 +270,6 @@ namespace Windows.UI.Xaml
 		/// parameters passing on iOS, where the number of parameters follows a unconventional set of rules. Using
 		/// a single parameter with a simple delimitation format fits all platforms with little overhead.
 		/// </remarks>
-		[global::Foundation.Export("setDependencyPropertyValue:")]
 		internal static string SetDependencyPropertyValueInternal(DependencyObject owner, string dependencyPropertyNameAndValue)
 		{
 			var s = dependencyPropertyNameAndValue;
