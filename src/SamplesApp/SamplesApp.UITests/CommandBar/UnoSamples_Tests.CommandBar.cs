@@ -41,7 +41,7 @@ namespace SamplesApp.UITests.CommandBar
 			}
 			finally
 			{
-				_app.SetOrientationPortrait();
+				_app.SetOrientationLandscape();
 			}
 		}
 	}
