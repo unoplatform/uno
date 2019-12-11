@@ -45,6 +45,7 @@ namespace Uno.UI.TestComparer.Comparer
 
 			var q = from directory in orderedDirectories.Select((v, i) => new { Index = i, Path = v })
 					let files = from sample in EnumerateFiles(Path.Combine(directory.Path, _artifactsInnerBasePath, _platform), "*.png").AsParallel()
+								where CanBeUsedForCompare(sample)
 								select new { File = sample, Id = BuildSha1(sample) }
 					select new
 					{
@@ -147,12 +148,15 @@ namespace Uno.UI.TestComparer.Comparer
 								var currentImage = DecodeImage(folderInfo.Path);
 								var previousImage = DecodeImage(previousFolderInfo.Path);
 
-								var diff = DiffImages(currentImage.pixels, previousImage.pixels, currentImage.frame.Format.BitsPerPixel / 8);
+								if (currentImage.pixels.Length == previousImage.pixels.Length)
+								{
+									var diff = DiffImages(currentImage.pixels, previousImage.pixels, currentImage.frame.Format.BitsPerPixel / 8);
 
-								var diffFilePath = Path.Combine(diffPath, $"{folderInfo.Id}-{folderInfo.CompareeId}.png");
-								WriteImage(diffFilePath, diff, currentImage.frame, currentImage.stride);
+									var diffFilePath = Path.Combine(diffPath, $"{folderInfo.Id}-{folderInfo.CompareeId}.png");
+									WriteImage(diffFilePath, diff, currentImage.frame, currentImage.stride);
 
-								compareResultFileRun.DiffResultImage = diffFilePath;
+									compareResultFileRun.DiffResultImage = diffFilePath;
+								}
 
 								changedList.Add(testFile);
                             }
@@ -168,6 +172,33 @@ namespace Uno.UI.TestComparer.Comparer
 			testResult.TotalTests = allFiles.Length;
 
 			return testResult;
+		}
+
+		private bool CanBeUsedForCompare(string sample)
+		{
+			if(ReadScreenshotMetadata(sample) is IDictionary<string, string> options)
+			{
+				if(options.TryGetValue("IgnoreInSnapshotCompare", out var ignore) && ignore.ToLower() == "true")
+				{
+					return false;
+				}
+			}
+
+			return true;
+		}
+
+		private static IDictionary<string, string> ReadScreenshotMetadata(string sample)
+		{
+			var metadataFile = Path.Combine(Path.GetDirectoryName(sample), Path.GetFileNameWithoutExtension(sample) + ".metadata");
+
+			if (File.Exists(metadataFile))
+			{
+				var lines = File.ReadAllLines(metadataFile);
+
+				return lines.Select(l => l.Split('=')).ToDictionary(p => p[0], p => p[1]);
+			}
+
+			return null;
 		}
 
 		private Dictionary<string, int> _fileHashesTable = new Dictionary<string, int>();

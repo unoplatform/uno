@@ -44,10 +44,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			var tb2 = _app.Marked("tb2");
 
 			tb1.Tap();
-			TakeScreenshot("tb1 focused");
+			TakeScreenshot("tb1 focused", ignoreInSnapshotCompare: true);
 
 			tb2.Tap();
-			TakeScreenshot("tb2 focused");
+			TakeScreenshot("tb2 focused", ignoreInSnapshotCompare: true);
 		}
 
 		[Test]
@@ -182,7 +182,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			var result = TakeScreenshot("result");
 
-			AssertScreenshotsAreEqual(initial, result, passwordBox.Rect);
+			ImageAssert.AssertScreenshotsAreEqual(initial, result, passwordBox.Rect);
 		}
 	}
 }

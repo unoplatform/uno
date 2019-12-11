@@ -58,7 +58,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		{
 			tap = tap ?? TapElement;
 
-			Run("UITests.Shared.Windows_UI_Input.PointersTests.EventsSequences");
+			Run("UITests.Shared.Windows_UI_Input.PointersTests.EventsSequences", skipInitialScreenshot: true);
 
 			var target = _app.Marked($"Test{testName}Target");
 			var reset = _app.Marked($"Test{testName}Reset");
@@ -70,7 +70,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			tap(target);
 			validate.Tap();
 
-			TakeScreenshot("Result");
+			TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 
 			_app.WaitForDependencyPropertyValue(result, "Text", "SUCCESS");
 		}

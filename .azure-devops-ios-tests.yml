@@ -43,30 +43,30 @@ jobs:
   - bash: /bin/bash -c "echo '##vso[task.setvariable variable=MD_APPLE_SDK_ROOT;]'${XCODE_ROOT};sudo xcode-select --switch ${XCODE_ROOT}/Contents/Developer"
     displayName: Select Xcode
 
-#  - bash: |
-#      chmod +x $(build.sourcesdirectory)/build/ios-uitest-run.sh
-#      $(build.sourcesdirectory)/build/ios-uitest-run.sh
-#
-#    displayName: Build and Run iOS Tests
-#
-#    env:
-#      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
-#      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
-#      UITEST_SNAPSHOTS_ONLY: "$(UITEST_SNAPSHOTS_ONLY)"
-#      UITEST_SNAPSHOTS_GROUP: "$(UITEST_SNAPSHOTS_GROUP)"
-#
-#
-#  - task: PublishTestResults@2
-#    condition: always()
-#    inputs:
-#      testRunTitle: 'iOS Test Run ($(Agent.JobName	))'
-#      testResultsFormat: 'NUnit'
-#      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult.xml'
-#      failTaskOnFailedTests: true
-#
-#  - task: PublishBuildArtifacts@1
-#    condition: always()
-#    inputs:
-#      PathtoPublish: $(build.artifactstagingdirectory)
-#      ArtifactName: uitests-results
-#      ArtifactType: Container
+  - bash: |
+      chmod +x $(build.sourcesdirectory)/build/ios-uitest-run.sh
+      $(build.sourcesdirectory)/build/ios-uitest-run.sh
+
+    displayName: Build and Run iOS Tests
+
+    env:
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      UITEST_SNAPSHOTS_ONLY: "$(UITEST_SNAPSHOTS_ONLY)"
+      UITEST_SNAPSHOTS_GROUP: "$(UITEST_SNAPSHOTS_GROUP)"
+
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'iOS Test Run ($(Agent.JobName	))'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult.xml'
+      failTaskOnFailedTests: true
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-results
+      ArtifactType: Container

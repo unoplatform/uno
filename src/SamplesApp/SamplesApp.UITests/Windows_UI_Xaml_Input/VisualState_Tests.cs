@@ -114,7 +114,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			_app.DragCoordinates(rect.X + 10, rect.Y + 10, rect.X - 30, rect.Y);
 
 			var final = TakeScreenshot("Final");
-			AssertScreenshotsAreEqual(initial, final, rect);
+			ImageAssert.AssertScreenshotsAreEqual(initial, final, rect);
 		}
 
 		[Test]
@@ -157,12 +157,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		private void TestVisualTests(string targetName, Action<IAppRect> act, params string[] expectedStates)
 		{
-			var initial = TakeScreenshot("Initial");
+			var initial = TakeScreenshot("Initial", ignoreInSnapshotCompare: true);
 			var target = _app.WaitForElement(targetName).Single().Rect;
 
 			act(target);
 
-			var final = TakeScreenshot("Final");
+			var final = TakeScreenshot("Final", ignoreInSnapshotCompare: true);
 			var actualStates = _app
 				.Marked("VisualStatesLog")
 				.GetDependencyPropertyValue<string>("Text")
@@ -178,7 +178,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 			// For the comparison, we compare only the location of the control (i.e. we provide the rect).
 			// This is required to NOT include the visual output ot the states (on the right of the test control)
-			AssertScreenshotsAreEqual(initial, final, target);
+			ImageAssert.AssertScreenshotsAreEqual(initial, final, target);
 		}
 	}
 }
