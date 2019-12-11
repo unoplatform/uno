@@ -294,11 +294,6 @@ namespace Windows.UI.Xaml.Controls
 
 			size = _layouter.Measure(size.ToFoundationSize());
 
-			if (size != _previousSize)
-			{
-				SetNeedsLayout();
-			}
-
 			return _previousSize = size;
 		}
 

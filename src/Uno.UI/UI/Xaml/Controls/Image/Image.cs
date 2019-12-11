@@ -302,13 +302,6 @@ namespace Windows.UI.Xaml.Controls
 
 					// Apply the Stretch=Uniform logic...
 
-					// Since apsect ratio can have a lot of decimal, iOS ceils Image size to 0.5 if it's not a precise size (like 111.111111111)
-					// so the desiredSize will never match the actual size causing an infinite measuring and can freeze the app
-					//var desiredSize = new Size
-					//{
-					//	Width = Math.Min(constrainedAvailableSize.Width, Math.Ceiling(constrainedAvailableSize.Height * aspectRatio * 2) / 2),
-					//	Height = Math.Min(constrainedAvailableSize.Height, Math.Ceiling(constrainedAvailableSize.Width / aspectRatio * 2) / 2)
-					//};
 					var rect = new Rect(default, sourceSize);
 					img.MeasureSource(availableSize, ref rect);
 
