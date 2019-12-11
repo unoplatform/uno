@@ -189,17 +189,19 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
-		[RunsOnUIThread]
-		public void Check_ActualWidth_After_Measure()
+		public async Task Check_ActualWidth_After_Measure()
 		{
-			var SUT = new Border { Width = 75, Height = 32 };
-			var size = new Size(1000, 1000);
-			SUT.Measure(size);
-			Assert.AreEqual(75, SUT.DesiredSize.Width);
-			Assert.AreEqual(32, SUT.DesiredSize.Height);
+			await Dispatch(() =>
+			{
+				var SUT = new Border { Width = 75, Height = 32 };
+				var size = new Size(1000, 1000);
+				SUT.Measure(size);
+				Assert.AreEqual(75, SUT.DesiredSize.Width);
+				Assert.AreEqual(32, SUT.DesiredSize.Height);
 
-			Assert.AreEqual(0, SUT.ActualWidth);
-			Assert.AreEqual(0, SUT.ActualHeight);
+				Assert.AreEqual(0, SUT.ActualWidth);
+				Assert.AreEqual(0, SUT.ActualHeight);
+			});
 		}
 	}
 
