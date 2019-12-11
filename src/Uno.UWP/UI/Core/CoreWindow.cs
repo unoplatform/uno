@@ -31,8 +31,10 @@ namespace Windows.UI.Core
 			set => _pointerPosition = value;
 		}
 
+#if !__WASM__
 		[Uno.NotImplemented]
 		public CoreCursor PointerCursor { get; set; } = new CoreCursor(CoreCursorType.Arrow, 0);
+#endif
 
 		[Uno.NotImplemented]
 		public CoreVirtualKeyStates GetAsyncKeyState(System.VirtualKey virtualKey)

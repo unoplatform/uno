@@ -128,6 +128,8 @@
 		private containerElement: HTMLDivElement;
 		private rootContent: HTMLElement;
 
+		private cursorStyleElement: HTMLElement;
+
 		private allActiveElementsById: { [id: number]: HTMLElement | SVGElement } = {};
 
 		private static resizeMethod: any;
@@ -1665,6 +1667,32 @@
 				return false;
 			}
 			return rootElement === element || rootElement.contains(element);
+		}
+
+		public setCursor(cssCursor: string): string {
+			const unoBody = document.getElementById(this.containerElementId);
+
+			if (unoBody) {
+
+				//always cleanup
+				if (this.cursorStyleElement != undefined) {
+					this.cursorStyleElement.remove();
+					this.cursorStyleElement= undefined
+				}
+
+				//only add custom overriding style if not auto 
+				if (cssCursor != "auto") {
+
+					// this part is only to override default css:  .uno-buttonbase {cursor: pointer;}
+
+					this.cursorStyleElement = document.createElement("style");
+					this.cursorStyleElement.innerHTML = ".uno-buttonbase { cursor: " + cssCursor + "; }";
+					document.body.appendChild(this.cursorStyleElement);
+				}
+
+				unoBody.style.cursor = cssCursor;
+			}
+			return "ok";
 		}
 	}
 
