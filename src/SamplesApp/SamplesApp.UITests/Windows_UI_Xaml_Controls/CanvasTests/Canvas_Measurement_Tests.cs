@@ -10,7 +10,8 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CanvasTests
 {
-	public class Canvas_Measurement_Tests : SampleControlUITestBase
+	public class 
+		Canvas_Measurement_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]
@@ -31,41 +32,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CanvasTests
 				Assert.Fail("Border in canvas measurement failed");
 
 			TakeScreenshot($"Measure_Children_In_Canvas - Measure Border");
-		}
-
-		[Test]
-		[AutoRetry]
-		public void Verify_Canvas_With_Outer_Clip()
-		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.Canvas.Canvas_With_Outer_Clip");
-
-			var screenshot = TakeScreenshot("Rendered");
-
-			var clippedLocation = _app.GetRect("LocatorBorder1");
-
-			ImageAssert.AssertHasColorAt(screenshot, clippedLocation.CenterX, clippedLocation.CenterY, Color.Red);
-
-			var unclippedLocation = _app.GetRect("LocatorBorder2");
-
-			AssertHasColorAt(screenshot, unclippedLocation.CenterX, unclippedLocation.CenterY, Color.Blue);
-		}
-
-		[Test]
-		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)] // Canvas.ZIndex isn't implemented for WASM yet
-		public void Verify_Canvas_ZIndex()
-		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.Canvas.Canvas_ZIndex");
-
-			var screenshot = TakeScreenshot("Rendered");
-
-			var redBorderRect = _app.GetRect("CanvasBorderRed");
-
-			ImageAssert.AssertHasColorAt(screenshot, redBorderRect.CenterX, redBorderRect.CenterY, Color.Green /*psych*/);
-
-			var greenBorderRect = _app.GetRect("CanvasBorderGreen");
-
-			AssertHasColorAt(screenshot, greenBorderRect.CenterX, greenBorderRect.CenterY, Color.Blue);
 		}
 	}
 }
