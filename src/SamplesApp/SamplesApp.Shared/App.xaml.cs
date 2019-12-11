@@ -237,6 +237,7 @@ namespace SamplesApp
 
 #if __ANDROID__
 							Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = false;
+							Uno.UI.FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay = TimeSpan.Zero;
 #endif
 
 #if HAS_UNO

@@ -97,6 +97,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				InitializeScrollbars(null);
 			}
+
+			if (FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay != null)
+			{
+				ScrollBarDefaultDelayBeforeFade = (int)FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay.Value.TotalMilliseconds;
+			}
 		}
 
 		List<View> IShadowChildrenProvider.ChildrenShadow => Content != null ? new List<View>(1) { Content } : _emptyList;
