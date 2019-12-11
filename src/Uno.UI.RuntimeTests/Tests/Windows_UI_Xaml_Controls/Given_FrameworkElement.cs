@@ -14,27 +14,18 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Private.Infrastructure;
+using MUXControlsTestApp.Utilities;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
 	public class Given_FrameworkElement
 	{
-		private async Task Dispatch(DispatchedHandler p)
-		{
-#if !NETFX_CORE
-			await CoreApplication.GetCurrentView().Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, p);
-#else
-			await CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, p);
-#endif
-		}
-
 #if __WASM__
 		// TODO Android does not handle measure invalidation properly
 		[TestMethod]
-		public async Task When_Measure_Once()
-		{
-			await Dispatch(() =>
+		public Task When_Measure_Once() =>
+			RunOnUIThread.Execute(() =>
 			{
 				var SUT = new MyControl01();
 
@@ -45,13 +36,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				SUT.Measure(new Size(10, 10));
 				Assert.AreEqual(1, SUT.MeasureOverrides.Count);
 			});
-		}
 #endif
 
 		[TestMethod]
-		public async Task When_Measure_And_Invalidate()
-		{
-			await Dispatch(() =>
+		public Task When_Measure_And_Invalidate() =>
+			RunOnUIThread.Execute(() =>
 			{
 				var SUT = new MyControl01();
 
@@ -65,12 +54,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(2, SUT.MeasureOverrides.Count);
 				Assert.AreEqual(new Size(10, 10), SUT.MeasureOverrides[1]);
 			});
-		}
 
 		[TestMethod]
-		public async Task MeasureWithNan()
-		{
-			await Dispatch(() =>
+		public Task MeasureWithNan() =>
+			RunOnUIThread.Execute(() =>
 			{
 
 				var SUT = new MyControl01();
@@ -83,12 +70,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(42.0, double.NaN)));
 				Assert.ThrowsException<InvalidOperationException>(() => SUT.Measure(new Size(double.NaN, 42.0)));
 			});
-		}
 
 		[TestMethod]
-		public async Task MeasureOverrideWithNan()
-		{
-			await Dispatch(() =>
+		public Task MeasureOverrideWithNan() =>
+			RunOnUIThread.Execute(() =>
 			{
 
 				var SUT = new MyControl01();
@@ -98,12 +83,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(new Size(double.PositiveInfinity, double.PositiveInfinity), SUT.MeasureOverrides.Last());
 				Assert.AreEqual(new Size(0, 0), SUT.DesiredSize);
 			});
-		}
 
 		[TestMethod]
-		public async Task MeasureOverride_With_Nan_In_Grid()
-		{
-			await Dispatch(() =>
+		public Task MeasureOverride_With_Nan_In_Grid() =>
+			RunOnUIThread.Execute(() =>
 			{
 				var grid = new Grid();
 
@@ -116,14 +99,12 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				Assert.AreEqual(new Size(double.PositiveInfinity, double.PositiveInfinity), SUT.MeasureOverrides.Last());
 				Assert.AreEqual(new Size(0, 0), SUT.DesiredSize);
 			});
-		}
 
 #if __WASM__
 		// TODO Android does not handle measure invalidation properly
 		[TestMethod]
-		public async Task When_Grid_Measure_And_Invalidate()
-		{
-			await Dispatch(() =>
+		public Task When_Grid_Measure_And_Invalidate() =>
+			RunOnUIThread.Execute(() =>
 			{
 				var grid = new Grid();
 				var SUT = new MyControl01();
@@ -139,7 +120,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				grid.Measure(new Size(10, 10));
 				Assert.AreEqual(1, SUT.MeasureOverrides.Count);
 			});
-		}
 #endif
 
 		[TestMethod]
@@ -149,7 +129,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ContentControl contentCtl = null;
 			Grid grid = null;
 
-			await Dispatch(() =>
+			await RunOnUIThread.Execute(() =>
 			{
 				content = new Border { Width = 100, Height = 15 };
 
@@ -172,10 +152,10 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 
 			await TestServices.WindowHelper.WaitForIdle();
-			await Dispatch(() => { });
+			await RunOnUIThread.Execute(() => { });
 			await TestServices.WindowHelper.WaitForIdle();
 
-			await Dispatch(() =>
+			await RunOnUIThread.Execute(() =>
 			{
 				var ls1 = LayoutInformation.GetLayoutSlot(grid);
 				Assert.AreEqual(new Rect(0, 0, 50, 50), ls1);
