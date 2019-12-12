@@ -209,7 +209,6 @@ namespace Windows.UI.Xaml.Controls
 				SourceImageSize = image?.Size.ToFoundationSize() ?? default(Size);
 			}
 
-			this.InvalidateMeasure();
 			SetNeedsLayout();
 
 			if (Image != null)
