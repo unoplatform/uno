@@ -270,7 +270,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			try
 			{
-				_layouter.Arrange(Bounds);
+				_layoutRequested = false;
+				base.LayoutSubviews();
 
 				UpdateLayerRect(Bounds.Size);
 			}
