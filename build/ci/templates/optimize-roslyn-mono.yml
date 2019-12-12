@@ -1,6 +1,10 @@
 steps:
 
   - bash: |
-      sudo msbuild /r /t:OptimizeRoslyn $(build.sourcesdirectory)/build/optimize-csc.targets
+      cd $(build.sourcesdirectory)/build
+      echo "<configuration/>" > empty.nuget.config
+      sudo msbuild /r /p:RestoreConfigFile="empty.nuget.config" /t:OptimizeRoslyn $(build.sourcesdirectory)/build/optimize-csc.targets
+      # clear local files that may have been created by nuget with invalid permissions
+      sudo mono $(build.sourcesdirectory)/build/nuget/NuGet.exe locals all -clear
 
-    displayName: Optimizing Roslyn Binaries
+    displayName: Optimize Roslyn Binaries

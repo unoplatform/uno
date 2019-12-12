@@ -10,6 +10,7 @@
         <_RoslynAot Include="$(RoslynTargetsPath)/*.dll" />
       </ItemGroup>
 
+      <Exec Command="bash -c 'sudo chmod -R 777 $(RoslynTargetsPath)'" />
       <Exec Command="mono --aot &quot;%(_RoslynAot.Identity)&quot;" ContinueOnError="true" />
     </Target>
 

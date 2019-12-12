@@ -22,6 +22,8 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
+  - template: templates/optimize-roslyn-mono.yml
+
   - template: templates/ios-build-select-version.yml
     parameters:
       xCodeRoot: ${{ parameters.xCodeRoot }}
