@@ -305,6 +305,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private Size LayoutTypography(Size size)
 		{
+			if (_textContainer == null || _attributedString == null)
+			{
+				return default(Size);
+			}
+			
 			if (UseLayoutManager)
 			{
 				_textContainer.Size = size;
@@ -312,7 +317,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				return _attributedString?.GetBoundingRect(size, NSStringDrawingOptions.UsesLineFragmentOrigin, null).Size ?? new CGSize(0,0);
+				return _attributedString.GetBoundingRect(size, NSStringDrawingOptions.UsesLineFragmentOrigin, null).Size;
 			}
 		}
 
