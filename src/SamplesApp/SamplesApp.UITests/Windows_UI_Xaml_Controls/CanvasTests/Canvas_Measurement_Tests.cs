@@ -10,7 +10,8 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CanvasTests
 {
-	public class Canvas_Measurement_Tests : SampleControlUITestBase
+	public class 
+		Canvas_Measurement_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]
