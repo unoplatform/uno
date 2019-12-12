@@ -120,6 +120,26 @@ namespace Windows.Devices.Geolocation
 				return GeolocationAccessStatus.Allowed;
 			}
 
+            // do we have declared this permission in Manifest?
+            Android.Content.Context context = Android.App.Application.Context;
+            Android.Content.PM.PackageInfo packageInfo = 
+                context.PackageManager.GetPackageInfo(context.PackageName, PackageInfoFlags.Permissions);
+            var requestedPermissions = packageInfo?.RequestedPermissions;
+            if(requestedPermissions is null)
+                return Windows.Devices.Geolocation.GeolocationAccessStatus.Denied;
+            
+            bool bInManifest = false;
+            foreach (string oPerm in requestedPermissions)
+            {
+                if (oPerm.Equals(Android.Manifest.Permission.AccessFineLocation, StringComparison.OrdinalIgnoreCase))
+                    bInManifest = true;
+            }
+
+            if(!bInManifest)
+				// return Denied, but maybe we should throw exception?
+                return Windows.Devices.Geolocation.GeolocationAccessStatus.Denied;
+
+
 			// check if permission is granted
 			if (Android.Support.V4.Content.ContextCompat.CheckSelfPermission(Uno.UI.ContextHelper.Current, Android.Manifest.Permission.AccessFineLocation)
 					== Android.Content.PM.Permission.Granted)
