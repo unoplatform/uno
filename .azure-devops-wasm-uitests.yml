@@ -169,6 +169,9 @@ jobs:
   pool:
     vmImage: 'vs2017-win2016'
 
+  variables:
+    COMPARE_WORKDIR: $(Build.SourcesDirectory)\snapshot-compare
+
   steps:
   - checkout: self
     clean: true
@@ -192,7 +195,7 @@ jobs:
       createLogFile: false
 
   - script: |
-      src\Uno.UI.TestComparer\bin\Release\Uno.UI.TestComparer.exe "azdo" --pat="$(UITestsCompare_PAT)" --base-path="$(build.artifactstagingdirectory)" --source-branch="%GIT_SOURCEBRANCH%" --target-branch="%GIT_TARGETBRANCH%" --artifact-name="uitests-results" --artifact-inner-path="uitests-results\screenshots" --definition-name="$(Build.DefinitionName)" --project-name="$(System.TeamProject)" --server-uri="$(System.TeamFoundationCollectionUri)" --current-build="$(Build.BuildId)" --run-limit="3" --github-pat="$(CommentsGitHubPAT)" --source-repository="$(system.pullRequest.sourceRepositoryUri)" --github-pr-id="$(system.pullRequest.pullRequestNumber)"
+      src\Uno.UI.TestComparer\bin\Release\Uno.UI.TestComparer.exe "azdo" --pat="$(UITestsCompare_PAT)" --base-path="$(COMPARE_WORKDIR)" --source-branch="%GIT_SOURCEBRANCH%" --target-branch="%GIT_TARGETBRANCH%" --artifact-name="uitests-results" --artifact-inner-path="uitests-results\screenshots" --definition-name="$(Build.DefinitionName)" --project-name="$(System.TeamProject)" --server-uri="$(System.TeamFoundationCollectionUri)" --current-build="$(Build.BuildId)" --run-limit="3" --github-pat="$(CommentsGitHubPAT)" --source-repository="$(system.pullRequest.sourceRepositoryUri)" --github-pr-id="$(system.pullRequest.pullRequestNumber)"
       
     env:
       GIT_TARGETBRANCH: "$(System.PullRequest.TargetBranch)"
@@ -201,7 +204,6 @@ jobs:
     displayName: 'Compare UI Tests screenshots'
     condition: eq(variables['Build.Repository.Provider'], 'GitHub')
 
-
   - task: PublishTestResults@2
     condition: always()
     inputs:
@@ -209,6 +211,13 @@ jobs:
       testRunTitle: 'Screenshots Compare Test Run'
       testResultsFormat: 'NUnit'
       failTaskOnFailedTests: false
+
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: '$(COMPARE_WORKDIR)' 
+      includeRootFolder: true 
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/snapshot-compare-results-$(Build.BuildId).zip' 
 
   - task: PublishBuildArtifacts@1
     inputs:
