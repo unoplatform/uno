@@ -15,9 +15,11 @@ jobs:
   - checkout: self
     clean: true
 
+  - template: templates/optimize-roslyn-mono.yml
+
   - template: templates/nuget-cache.yml
     parameters:
-      - nugetPackages: $(NUGET_PACKAGES)
+      nugetPackages: $(NUGET_PACKAGES)
 
   - bash: /bin/bash -c "sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 5_18_1"
     displayName: Select Xamarin Version

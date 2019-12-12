@@ -1,0 +1,6 @@
+steps:
+
+  - bash: |
+      sudo msbuild /r /t:OptimizeRoslyn $(build.sourcesdirectory)/build/optimize-csc.targets
+
+    displayName: Optimizing Roslyn Binaries

@@ -20,12 +20,12 @@ jobs:
 
   - template: templates/nuget-cache.yml
     parameters:
-      - nugetPackages: $(NUGET_PACKAGES)
+      nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/build-prepare.yml
+  - template: templates/ios-build-select-version.yml
     parameters:
-      - xCodeRoot: ${{ parameters.xCodeRoot }}
-      - XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
+      xCodeRoot: ${{ parameters.xCodeRoot }}
+      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
   - bash: |
       $(build.sourcesdirectory)/build/ios-uitest-build.sh
@@ -35,15 +35,26 @@ jobs:
     env:
       BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
       BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.iOS/bin/iPhoneSimulator/Release/SamplesApp.app
+      Contents: '**'
+      TargetFolder: $(build.artifactstagingdirectory)/SamplesApp.app
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
 
   - task: PublishBuildArtifacts@1
     condition: always()
     inputs:
-      PathtoPublish: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.iOS/bin/iPhoneSimulator/Release/SamplesApp.app
+      PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: ios-uitest-build
       ArtifactType: Container
 
 - job: iOS_Tests
+
+  dependsOn: iOS_Build
 
   pool:
     vmImage: ${{ parameters.vmImage }}
@@ -75,14 +86,16 @@ jobs:
         artifactName: ios-uitest-build
         downloadPath: '$(build.sourcesdirectory)/build'
 
+  - template: templates/optimize-roslyn-mono.yml
+
   - template: templates/nuget-cache.yml
     parameters:
-      - nugetPackages: $(NUGET_PACKAGES)
+      nugetPackages: $(NUGET_PACKAGES)
 
-  - template: templates/build-prepare.yml
+  - template: templates/ios-build-select-version.yml
     parameters:
-      - xCodeRoot: ${{ parameters.xCodeRoot }}
-      - XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
+      xCodeRoot: ${{ parameters.xCodeRoot }}
+      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
   - bash: |
       $(build.sourcesdirectory)/build/ios-uitest-run.sh

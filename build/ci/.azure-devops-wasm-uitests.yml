@@ -21,6 +21,8 @@ jobs:
       key: nuget | $(Agent.OS) | $(Agent.JobName) | $(build.sourcesdirectory)/**/*.csproj | $(build.sourcesdirectory)/**/Directory.Build.targets | $(build.sourcesdirectory)/**/Directory.Build.props
       path: $(NUGET_PACKAGES)
     displayName: Cache NuGet packages
+    
+  - template: templates/optimize-roslyn-mono.yml
 
   - bash: |
       sudo cert-sync /etc/ssl/certs/ca-certificates.crt
@@ -83,6 +85,8 @@ jobs:
         artifactName: wasm-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
+  - template: templates/optimize-roslyn-mono.yml
+
   - bash: |
       set -euo pipefail
       IFS=$'\n\t'
@@ -129,9 +133,11 @@ jobs:
   - checkout: self
     clean: true
 
+  - template: templates/optimize-roslyn-mono.yml
+
   - template: templates/nuget-cache.yml
     parameters:
-      - nugetPackages: $(NUGET_PACKAGES)
+      nugetPackages: $(NUGET_PACKAGES)
 
   - task: DownloadBuildArtifacts@0
     inputs:

@@ -47,6 +47,9 @@ export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$S
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 
+# Imported app bundle from artifacts is not executable
+chmod -R +x $UNO_UITEST_IOSBUNDLE_PATH
+
 # Move to the screenshot directory so that the output path is the proper one, as
 # required by Xamarin.UITest
 cd $UNO_UITEST_SCREENSHOT_PATH

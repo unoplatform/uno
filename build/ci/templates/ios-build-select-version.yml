@@ -1,6 +1,6 @@
 parameters:
   xCodeRoot: ''
-  XamarinSDKVersion: '''
+  XamarinSDKVersion: ''
 
 steps:
   - bash: >
@@ -8,7 +8,9 @@ steps:
 
     displayName: Select Xamarin Version
 
-  - bash: >
-      /bin/bash -c "echo '##vso[task.setvariable variable=MD_APPLE_SDK_ROOT;]'${{parameters.xCodeRoot}};sudo xcode-select --switch ${{parameters.xCodeRoot}}/Contents/Developer"
+  - bash: |
+      echo 'xCode Root to ${{parameters.xCodeRoot}}'
+      echo '##vso[task.setvariable variable=MD_APPLE_SDK_ROOT;]'${{parameters.xCodeRoot}}
+      sudo xcode-select --switch ${{parameters.xCodeRoot}}/Contents/Developer
 
     displayName: Select Xcode

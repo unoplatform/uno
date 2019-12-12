@@ -20,7 +20,7 @@ jobs:
 
   - template: templates/nuget-cache.yml
     parameters:
-      - nugetPackages: $(NUGET_PACKAGES)
+      nugetPackages: $(NUGET_PACKAGES)
     
   - task: GitVersion@5
     inputs:

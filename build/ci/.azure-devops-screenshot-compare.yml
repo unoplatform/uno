@@ -1,10 +1,11 @@
-parameters:
-  dependsOn: []
-
 jobs:
 
-- job: Wasm_UITests_Compare
-  dependsOn: ${{dependsOn}}
+- job: UITests_Screenshots_Compare
+  dependsOn:
+    - Wasm_UITests_Snap
+    - Wasm_UITests_Automated
+    - Android_Tests
+    - iOS_Tests
 
   pool:
     vmImage: 'vs2017-win2016'
