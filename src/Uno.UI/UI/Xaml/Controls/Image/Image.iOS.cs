@@ -324,8 +324,8 @@ namespace Windows.UI.Xaml.Controls
 			var containerRect = new Rect(default, availableSize);
 			containerRect.Intersect(contentRect);
 
-			var relativeX = (contentRect.X - containerRect.X) / imageSize.Width;
-			var relativeY = (contentRect.Y - containerRect.Y) / imageSize.Height;
+			var relativeX = (contentRect.X - containerRect.X) / contentRect.Width;
+			var relativeY = (contentRect.Y - containerRect.Y) / contentRect.Height;
 			var relativeWidth =
 				containerRect.Width < contentRect.Width
 					? containerRect.Width / contentRect.Width
@@ -334,9 +334,6 @@ namespace Windows.UI.Xaml.Controls
 				containerRect.Height < contentRect.Height
 					? containerRect.Height / contentRect.Height
 					: 1.0d + relativeY;
-
-			//var relativeWidth = availableSize.Width / contentRect.Width;
-			//var relativeHeight = availableSize.Height / contentRect.Height;
 
 			var contentRelativeRect = new CGRect(-relativeX, -relativeY, relativeWidth, relativeHeight);
 
