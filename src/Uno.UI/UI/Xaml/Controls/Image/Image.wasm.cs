@@ -255,8 +255,6 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			var finalPosition = new Windows.Foundation.Rect(Windows.Foundation.Point.Zero, _lastMeasuredSize);
-
 			// Calculate the resulting space required on screen for the image
 			var containerSize = this.MeasureSource(finalSize, _lastMeasuredSize);
 
