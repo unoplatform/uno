@@ -262,6 +262,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
+				ContentMode = UIViewContentMode.ScaleToFill;
 				SetNeedsLayout();
 			}
 		}
@@ -273,7 +274,7 @@ namespace Windows.UI.Xaml.Controls
 				_layoutRequested = false;
 				base.LayoutSubviews();
 
-				UpdateLayerRect(Bounds.Size);
+				UpdateLayerRect();
 			}
 			catch (Exception e)
 			{
@@ -297,11 +298,10 @@ namespace Windows.UI.Xaml.Controls
 			return _previousSize = size;
 		}
 
-		private (Size, CGSize, HorizontalAlignment, VerticalAlignment, Stretch) _layerLastParameters;
-
-
-		private void UpdateLayerRect(Size availableSize)
+		private void UpdateLayerRect()
 		{
+			var availableSize = Frame.Size;
+
 			if (SourceImageSize.Width == 0 || SourceImageSize.Height == 0 || availableSize.Width == 0 || availableSize.Height == 0 || Image == null)
 			{
 				return; // nothing to do
@@ -312,35 +312,42 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var parameters = (availableSize, Image.Size, HorizontalAlignment, VerticalAlignment, Stretch);
-			if (parameters == _layerLastParameters)
-			{
-				return; // nothing to update
-			}
-
-			_layerLastParameters = parameters;
-
 			var imageSize = Image.Size.ToFoundationSize();
 
-			var sourceRect = new Rect(Point.Zero, imageSize);
+			// Calculate the resulting space required on screen for the image
+			var containerSize = this.MeasureSource(availableSize, imageSize);
 
-			this.MeasureSource(availableSize, ref sourceRect);
-			this.ArrangeSource(availableSize, ref sourceRect);
+			// Calculate the position of the image to follow stretch and alignment requirements
+			var contentRect = this.ArrangeSource(availableSize, containerSize);
 
-			var relativeX = sourceRect.X / imageSize.Width;
-			var relativeY = sourceRect.Y / imageSize.Height;
+			// Calculate the required container to position the image in the AvailableSize
+			var containerRect = new Rect(default, availableSize);
+			containerRect.Intersect(contentRect);
+
+			var relativeX = (contentRect.X - containerRect.X) / imageSize.Width;
+			var relativeY = (contentRect.Y - containerRect.Y) / imageSize.Height;
 			var relativeWidth =
-				imageSize.Width > availableSize.Width
-					? availableSize.Width / sourceRect.Width
+				containerRect.Width < contentRect.Width
+					? containerRect.Width / contentRect.Width
 					: 1.0d + relativeX;
 			var relativeHeight =
-				imageSize.Height > availableSize.Height
-					? availableSize.Height / sourceRect.Height
+				containerRect.Height < contentRect.Height
+					? containerRect.Height / contentRect.Height
 					: 1.0d + relativeY;
 
-			var rect = new CGRect(-relativeX, -relativeY, relativeWidth, relativeHeight);
+			//var relativeWidth = availableSize.Width / contentRect.Width;
+			//var relativeHeight = availableSize.Height / contentRect.Height;
 
-			Layer.ContentsRect = rect;
+			var contentRelativeRect = new CGRect(-relativeX, -relativeY, relativeWidth, relativeHeight);
+
+			Layer.ContentsRect = contentRelativeRect;
+
+			containerRect = containerRect.AtMost(availableSize);
+			containerRect.X += Frame.X;
+			containerRect.Y += Frame.Y;
+
+			Frame = containerRect;
+			ClipsToBounds = true;
 		}
 	}
 }

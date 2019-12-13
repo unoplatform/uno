@@ -560,10 +560,11 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var sourceRect = new Windows.Foundation.Rect(Windows.Foundation.Point.Zero, SourceImageSize);
+			// Calculate the resulting space required on screen for the image
+			var containerSize = this.MeasureSource(frameSize, SourceImageSize);
 
-			this.MeasureSource(frameSize, ref sourceRect);
-			this.ArrangeSource(frameSize, ref sourceRect);
+			// Calculate the position of the image to follow stretch and alignment requirements
+			var sourceRect = this.ArrangeSource(frameSize, containerSize);
 
 			var scaleX = (sourceRect.Width / SourceImageSize.Width) * _sourceImageScale;
 			var scaleY = (sourceRect.Height / SourceImageSize.Height) * _sourceImageScale;

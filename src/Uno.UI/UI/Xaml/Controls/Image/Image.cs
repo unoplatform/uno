@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 		private bool? _hasFiniteBounds;
 		private Size _layoutSize;
 
-		private ILayouter _layouter;
+		private ImageLayouter _layouter;
 
 		public static class TraceProvider
 		{
@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml.Controls
 			_successfullyOpenedImage = imageSource;
 		}
 
-#region Stretch
+		#region Stretch
 		public Stretch Stretch
 		{
 			get { return (Stretch)this.GetValue(StretchProperty); }
@@ -107,9 +107,9 @@ namespace Windows.UI.Xaml.Controls
 			((Image)s).OnStretchChanged((Stretch)e.NewValue, (Stretch)e.OldValue)));
 
 		partial void OnStretchChanged(Stretch newValue, Stretch oldValue);
-#endregion
+		#endregion
 
-#region Source
+		#region Source
 		public ImageSource Source
 		{
 			get { return (ImageSource)this.GetValue(SourceProperty); }
@@ -158,7 +158,7 @@ namespace Windows.UI.Xaml.Controls
 			TryOpenImage();
 		}
 
-#endregion
+		#endregion
 
 		partial void OnLoadedPartial()
 		{
@@ -302,16 +302,15 @@ namespace Windows.UI.Xaml.Controls
 
 					// Apply the Stretch=Uniform logic...
 
-					var rect = new Rect(default, sourceSize);
-					img.MeasureSource(availableSize, ref rect);
+					var containerSize = img.MeasureSource(availableSize, sourceSize);
 
 					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
-						this.Log().Debug(Panel.ToString() + $" measuring with Stretch.Uniform with availableSize={constrainedAvailableSize}, returning desiredSize={rect.Size}");
+						this.Log().Debug(Panel.ToString() + $" measuring with Stretch.Uniform with availableSize={constrainedAvailableSize}, returning desiredSize={containerSize}");
 					}
 
 					ImageControl._hasFiniteBounds = true;
-					return rect.Size;
+					return containerSize;
 				}
 
 				ImageControl._hasFiniteBounds = false;
