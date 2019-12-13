@@ -94,6 +94,7 @@ namespace Uno.UI.Samples.Tests
 				var testResultBlock = new TextBlock()
 				{
 					Text = testName,
+					TextWrapping = TextWrapping.Wrap,
 					FontFamily = new FontFamily("Courier New"),
 					Foreground = new SolidColorBrush(GetTestResultColor(testResult))
 				};
