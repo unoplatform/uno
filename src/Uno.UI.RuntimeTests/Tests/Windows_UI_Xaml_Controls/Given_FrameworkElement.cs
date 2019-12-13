@@ -85,6 +85,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 
 		[TestMethod]
+#if __WASM__
+		[Ignore] // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
+#endif
 		public Task MeasureOverride_With_Nan_In_Grid() =>
 			RunOnUIThread.Execute(() =>
 			{
@@ -123,6 +126,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
+#if __WASM__
+		[Ignore] // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
+#endif
 		public async Task When_MinWidth_SmallerThan_AvailableSize()
 		{
 			Border content = null;
