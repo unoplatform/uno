@@ -593,9 +593,8 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 			});
 		}
 
-#if !__ANDROID__ && !__IOS__
 		[TestMethod]
-#endif
+		[Ignore]
 		public async Task CanDivideAllocatedSpacingCorrectlyAccordingToStarWeightings()
 		{
 			TestCleanupWrapper cleanup;
