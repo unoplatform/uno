@@ -305,6 +305,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private Size LayoutTypography(Size size)
 		{
+			if (_textContainer == null || _attributedString == null)
+			{
+				return default(Size);
+			}
+			
 			if (UseLayoutManager)
 			{
 				_textContainer.Size = size;
