@@ -59,6 +59,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 		[Test]
 		[AutoRetry]
+		public void Screenshots_Image_Stretch_Alignment_SizeOnControl()
+		{
+			RunScreenShots_Image_Alignment_page("UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.Image_Stretch_Alignment_SizeOnControl");
+		}
+
+		[Test]
+		[AutoRetry]
 		public void Screenshots_Image_Stretch_Alignment_Smaller()
 		{
 			RunScreenShots_Image_Alignment_page("Uno.UI.Samples.UITests.Image.Image_Stretch_Alignment_Smaller");
