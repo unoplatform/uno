@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
-	[SampleControlInfo("Image", "ImageSourceFile")]
+	[SampleControlInfo("Image", "ImageSourceFile", ignoreInSnapshotTests: true /*Local file path shown, including app folder, which is different for each run*/)]
 	public sealed partial class ImageSourceFile : UserControl
 	{
 		public ImageSourceFile()
