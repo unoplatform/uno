@@ -225,11 +225,11 @@ namespace SamplesApp.UITests
 			return Array.Empty<Platform>();
 		}
 
-		protected void Run(string metadataName, bool waitForSampleControl = true, bool skipInitialScreenshot = false)
+		protected void Run(string metadataName, bool waitForSampleControl = true, bool skipInitialScreenshot = false, int sampleLoadTimeout = 5)
 		{
 			if (waitForSampleControl)
 			{
-				_app.WaitForElement("sampleControl", timeout: TimeSpan.FromSeconds(5));
+				_app.WaitForElement("sampleControl", timeout: TimeSpan.FromSeconds(sampleLoadTimeout));
 			}
 
 			var testRunId = _app.InvokeGeneric("browser:SampleRunner|RunTest", metadataName);

@@ -87,7 +87,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 		private void RunScreenShots_Image_Alignment_page(string testName)
 		{
-			Run(testName);
+			Run(testName, skipInitialScreenshot: true);
 
 			var picker = _app.Marked("modesPicker");
 
