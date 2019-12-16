@@ -21,7 +21,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0-preview.2" PrivateAssets="All" />
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 		<PackageReference Include="Microsoft.ApplicationInsights" Version="2.11.0" />
 		<PackageReference Include="Microsoft.Build" Version="15.4.8" ExcludeAssets="runtime" />
 		<PackageReference Include="Microsoft.Build.Engine" Version="15.4.8" ExcludeAssets="runtime" />
