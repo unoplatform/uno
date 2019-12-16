@@ -4,6 +4,7 @@
 - Add support for Automation SetDependencyPropertyValue in Uno.UITest
 - Added support for using a `string` value in a `StaticResource` when using `CreateFromStringAttribute'
 - [Android] Adds support for `FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay`
+- Add support for `Grid.ColumnSpacing` and `Grid.RowSpacing`
 
 ### Breaking changes
 -
