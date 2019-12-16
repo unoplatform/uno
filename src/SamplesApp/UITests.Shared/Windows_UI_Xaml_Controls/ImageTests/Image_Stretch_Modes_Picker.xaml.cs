@@ -20,11 +20,41 @@ namespace Uno.UI.Samples.UITests.Image
 		public ComboBoxItem[] HorizontalAlignments { get; } = GetValues<HorizontalAlignment>().ToArray();
 		public ComboBoxItem[] VerticalAlignments { get; } = GetValues<VerticalAlignment>().ToArray();
 
+		public static readonly DependencyProperty ModeProperty = DependencyProperty.Register(
+			"Mode", typeof(string), typeof(Image_Stretch_Modes_Picker), new PropertyMetadata(default(string), ModeChanged));
+
+		public string Mode
+		{
+			get { return (string)GetValue(ModeProperty); }
+			set { SetValue(ModeProperty, value); }
+		}
+
 		public static readonly DependencyProperty ItemsProperty = DependencyProperty.Register(
 			"Items",
 			typeof(List<StretchModeItem>),
 			typeof(Image_Stretch_Modes_Picker),
 			new PropertyMetadata(default(List<StretchModeItem>)));
+
+		private static void ModeChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)
+		{
+			var picker = d as Image_Stretch_Modes_Picker;
+			var modeStr = e.NewValue as string ?? "";
+			if (modeStr.Length >= 1)
+			{
+				switch (modeStr[0])
+				{
+					case 'S':
+						picker.OnNextStretch(null, null);
+						break;
+					case 'H':
+						picker.OnNextHorizontal(null, null);
+						break;
+					case 'V':
+						picker.OnNextVertical(null, null);
+						break;
+				}
+			}
+		}
 
 		public List<StretchModeItem> Items
 		{
