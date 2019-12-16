@@ -2844,7 +2844,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// If the property Type is attributed with the CreateFromStringAttribute
 				if (IsXamlTypeConverter(targetPropertyType))
 				{
-					var memberValue = $"StaticResources.{SanitizeResourceName(resourcePath)}";
+					string memberValue;
+
+					// Build the member string based on wether it's a local
+					// StaticResource or a global StaticResource
+					if (_staticResources.TryGetValue(resourcePath, out var _))
+					{
+						memberValue = $"StaticResources.{SanitizeResourceName(resourcePath)}";
+					}
+					else
+					{
+						memberValue = $"{GetGlobalStaticResource(resourcePath)}.ToString()";
+					}
 
 					// We must build the member value as a call to a "conversion" function
 					return BuildXamlTypeConverterLiteralValue(targetPropertyType, memberValue, includeQuotations: false);
