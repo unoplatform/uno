@@ -19,6 +19,7 @@ namespace Uno.UI.Tests.App.Xaml
 	public sealed partial class Test_CreateFromString : UserControl
 	{
 		public MyLocationPointControl TestLocationPoint => TestLocationControl;
+		public MyLocationPointControl TestLocationPoint2 => TestLocationControl2;
 
 		public Test_CreateFromString()
 		{

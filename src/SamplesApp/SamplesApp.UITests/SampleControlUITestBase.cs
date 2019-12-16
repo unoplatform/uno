@@ -15,9 +15,16 @@ namespace SamplesApp.UITests
 	public class SampleControlUITestBase
 	{
 		protected IApp _app;
+		private static int _totalTestFixtureCount;
 
 		public SampleControlUITestBase()
 		{
+		}
+
+		[OneTimeSetUp]
+		public void SingleSetup()
+		{
+			ValidateAppMode();
 		}
 
 		static SampleControlUITestBase()
@@ -36,6 +43,25 @@ namespace SamplesApp.UITests
 			// Start the app only once, so the tests runs don't restart it
 			// and gain some time for the tests.
 			AppInitializer.ColdStartApp();
+		}
+
+		public void ValidateAppMode()
+		{
+			if(GetCurrentFixtureAttributes<TestAppModeAttribute>().FirstOrDefault() is TestAppModeAttribute testAppMode)
+			{
+				if(
+					_totalTestFixtureCount != 0
+					&& testAppMode.CleanEnvironment
+					&& testAppMode.Platform == AppInitializer.GetLocalPlatform()
+				)
+				{
+					// If this is not the first run, and the fixture requested a clean environment, request a cold start.
+					// If this is the first run, as the app is cold-started during the type constructor, we can skip this.
+					_app = AppInitializer.ColdStartApp();
+				}
+			}
+
+			_totalTestFixtureCount++;
 		}
 
 		[SetUp]
@@ -100,7 +126,15 @@ namespace SamplesApp.UITests
 			}
 		}
 
-		public FileInfo TakeScreenshot(string stepName)
+		public FileInfo TakeScreenshot(string stepName, bool? ignoreInSnapshotCompare = null)
+			=> TakeScreenshot(
+				stepName,
+				ignoreInSnapshotCompare != null
+					? new ScreenshotOptions { IgnoreInSnapshotCompare = ignoreInSnapshotCompare.Value }
+					: null
+			);
+
+		public FileInfo TakeScreenshot(string stepName, ScreenshotOptions options)
 		{
 			var title = $"{TestContext.CurrentContext.Test.Name}_{stepName}"
 				.Replace(" ", "_")
@@ -122,72 +156,42 @@ namespace SamplesApp.UITests
 
 				TestContext.AddTestAttachment(destFileName, stepName);
 
-				return new FileInfo(destFileName);
+				fileInfo = new FileInfo(destFileName);
 			}
 			else
 			{
 				TestContext.AddTestAttachment(fileInfo.FullName, stepName);
-
-				return fileInfo;
 			}
-		}
 
-		public void AssertScreenshotsAreEqual(FileInfo expected, FileInfo actual, IAppRect rect)
-			=> AssertScreenshotsAreEqual(expected, actual, new Rectangle((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height));
-		public void AssertScreenshotsAreEqual(FileInfo expected, FileInfo actual, Rectangle? rect = null)
-		{
-			rect = rect ?? new Rectangle(0, 0, int.MaxValue, int.MinValue);
-
-			using (var expectedBitmap = new Bitmap(expected.FullName))
-			using (var actualBitmap = new Bitmap(actual.FullName))
+			if(options != null)
 			{
-				Assert.AreEqual(expectedBitmap.Size.Width, actualBitmap.Size.Width, "Width");
-				Assert.AreEqual(expectedBitmap.Size.Height, actualBitmap.Size.Height, "Height");
+				var fileName = Path.Combine(fileInfo.DirectoryName, Path.GetFileNameWithoutExtension(fileInfo.FullName) + ".metadata");
 
-				for (var x = rect.Value.X; x < Math.Min(rect.Value.Width, expectedBitmap.Size.Width); x++)
-				for (var y = rect.Value.Y; y < Math.Min(rect.Value.Height, expectedBitmap.Size.Height); y++)
-				{
-					Assert.AreEqual(expectedBitmap.GetPixel(x, y), actualBitmap.GetPixel(x, y), $"Pixel {x},{y} (rel: {x-rect.Value.X},{y - rect.Value.Y})");
-				}
+				File.WriteAllText(fileName, $"IgnoreInSnapshotCompare={options.IgnoreInSnapshotCompare}");
 			}
-		}
 
-		public void AssertScreenshotsAreNotEqual(FileInfo expected, FileInfo actual, IAppRect rect)
-			=> AssertScreenshotsAreNotEqual(expected, actual, new Rectangle((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height));
-		public void AssertScreenshotsAreNotEqual(FileInfo expected, FileInfo actual, Rectangle? rect = null)
-		{
-			rect = rect ?? new Rectangle(0, 0, int.MaxValue, int.MinValue);
-
-			using (var expectedBitmap = new Bitmap(expected.FullName))
-			using (var actualBitmap = new Bitmap(actual.FullName))
-			{
-				if (expectedBitmap.Size.Width != actualBitmap.Size.Width
-					|| expectedBitmap.Size.Height != actualBitmap.Size.Height)
-				{
-					return;
-				}
-
-				for (var x = rect.Value.X; x < Math.Min(rect.Value.Width, expectedBitmap.Size.Width); x++)
-				for (var y = rect.Value.Y; y < Math.Min(rect.Value.Height, expectedBitmap.Size.Height); y++)
-				{
-					if (expectedBitmap.GetPixel(x, y) != actualBitmap.GetPixel(x, y))
-					{
-						return;
-					}
-				}
-
-				Assert.Fail("Screenshots are equals.");
-			}
+			return fileInfo;
 		}
 
 		private static void ValidateAutoRetry()
 		{
-			var testType = Type.GetType(TestContext.CurrentContext.Test.ClassName);
-			var methodInfo = testType?.GetMethod(TestContext.CurrentContext.Test.MethodName);
-			if (methodInfo?.GetCustomAttributes(typeof(AutoRetryAttribute), true).Length == 0 && false)
+			if (GetCurrentTestAttributes<AutoRetryAttribute>().Length == 0)
 			{
 				Assert.Fail($"The AutoRetryAttribute is not defined for this test");
 			}
+		}
+
+		private static T[] GetCurrentFixtureAttributes<T>() where T : Attribute
+		{
+			var testType = Type.GetType(TestContext.CurrentContext.Test.ClassName);
+			return testType?.GetCustomAttributes(typeof(T), true) is T[] array ? array : new T[0];
+		}
+
+		private static T[] GetCurrentTestAttributes<T>() where T : Attribute
+		{
+			var testType = Type.GetType(TestContext.CurrentContext.Test.ClassName);
+			var methodInfo = testType?.GetMethod(TestContext.CurrentContext.Test.MethodName);
+			return methodInfo?.GetCustomAttributes(typeof(T), true) is T[] array ? array : new T[0];
 		}
 
 		private Platform[] GetActivePlatforms()
@@ -221,11 +225,11 @@ namespace SamplesApp.UITests
 			return Array.Empty<Platform>();
 		}
 
-		protected void Run(string metadataName, bool waitForSampleControl = true)
+		protected void Run(string metadataName, bool waitForSampleControl = true, bool skipInitialScreenshot = false)
 		{
 			if (waitForSampleControl)
 			{
-				_app.WaitForElement("sampleControl");
+				_app.WaitForElement("sampleControl", timeout: TimeSpan.FromSeconds(5));
 			}
 
 			var testRunId = _app.InvokeGeneric("browser:SampleRunner|RunTest", metadataName);
@@ -234,9 +238,12 @@ namespace SamplesApp.UITests
 			{
 				var result = _app.InvokeGeneric("browser:SampleRunner|IsTestDone", testRunId).ToString();
 				return bool.TryParse(result, out var testDone) && testDone;
-			});
+			}, retryFrequency: TimeSpan.FromMilliseconds(50));
 
-			TakeScreenshot(metadataName.Replace(".", "_"));
+			if (!skipInitialScreenshot)
+			{
+				TakeScreenshot(metadataName.Replace(".", "_"));
+			}
 		}
 
 		internal IAppRect GetScreenDimensions()
@@ -252,6 +259,5 @@ namespace SamplesApp.UITests
 				return _app.GetScreenDimensions();
 			}
 		}
-
 	}
 }

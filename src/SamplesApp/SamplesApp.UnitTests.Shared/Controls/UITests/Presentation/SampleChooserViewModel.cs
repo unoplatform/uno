@@ -255,7 +255,7 @@ namespace SampleControl.Presentation
 #endif
 					var testQuery = from category in _categories
 									from sample in category.SamplesContent
-									where !sample.IgnoreInAutomatedTests
+									where !sample.IgnoreInSnapshotTests
 									// where sample.ControlName.Equals("GridViewVerticalGrouped")
 									select new SampleInfo
 									{
@@ -553,7 +553,7 @@ namespace SampleControl.Presentation
 					ViewModelType = control.attribute.ViewModelType,
 					Description = control.attribute.Description,
 					ControlType = control.type.AsType(),
-					IgnoreInAutomatedTests = control.attribute.IgnoreInAutomatedTests
+					IgnoreInSnapshotTests = control.attribute.IgnoreInSnapshotTests
 				};
 
 				var category = categories.SingleOrDefault(c=>c.Category == categoryStr);
@@ -804,7 +804,7 @@ namespace SampleControl.Presentation
 		{
 			var q = from category in _categories
 					from test in category.SamplesContent
-					where !test.IgnoreInAutomatedTests
+					where !test.IgnoreInSnapshotTests
 					select test.ControlType.FullName;
 
 			return string.Join(";", q);

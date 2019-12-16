@@ -20,7 +20,8 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<T4Bin>..\T4Generator\bin\$(Configuration)\T4Generator.exe</T4Bin>
+		<T4Path>..\T4Generator\bin\$(Configuration)</T4Path>
+		<T4Bin>$(T4Path)\T4Generator.exe</T4Bin>
 		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
 
@@ -247,7 +248,12 @@
 	DispatchToInnerBuilds is used for direct builds, CoreCompile/_UnoSourceGenerator is for 
 	project dependency induced builds.
 	-->
-	<Target Name="GenerateMixins" Inputs="@(MixinInput)" Outputs="@(MixinOutput)" BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator" Condition="'$(DesignTimeBuild)' != 'true'">
+	<Target Name="GenerateMixins"
+					Inputs="@(MixinInput)"
+					Outputs="@(MixinOutput)"
+					BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator"
+					DependsOnTargets="_OptimizeT4Generator"
+					Condition="'$(DesignTimeBuild)' != 'true'">
 
 		<ItemGroup>
 			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
@@ -289,6 +295,15 @@
 
 		<!-- This allows for the mixins to generate in parallel -->
 		<MSBuild BuildInParallel="true" Projects="@(MixinDefinition)" StopOnFirstFailure="True" Targets="_InnerGenerateMixins" />
+	</Target>
+
+	<Target Name="_OptimizeT4Generator" Condition="$([MSBuild]::IsOSUnixLike())">
+		<ItemGroup>
+			<_T4AOTFiles Include="$(T4Path)/*.dll" />
+		</ItemGroup>
+		
+		<Exec Command="mono --aot &quot;$(T4Bin)&quot;" />
+		<Exec Command="mono --aot &quot;%(_T4AOTFiles.Identity)&quot;" />
 	</Target>
 
 	<Target Name="_InnerGenerateMixins">

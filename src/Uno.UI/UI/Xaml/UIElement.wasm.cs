@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml
 
 			internal static string[] GetForType(Type type)
 			{
-				if(!_classNames.TryGetValue(type, out var names))
+				if (!_classNames.TryGetValue(type, out var names))
 				{
 					_classNames[type] = names = GetClassesForType(type).ToArray();
 				}
@@ -515,7 +515,7 @@ namespace Windows.UI.Xaml
 		{
 			var gcHandle = GCHandle.FromIntPtr((IntPtr)handle);
 
-			if(gcHandle.IsAllocated && gcHandle.Target is UIElement element)
+			if (gcHandle.IsAllocated && gcHandle.Target is UIElement element)
 			{
 				return element;
 			}
@@ -583,6 +583,11 @@ namespace Windows.UI.Xaml
 			{
 				SetStyle("visibility", "hidden");
 			}
+
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				UpdateDOMProperties();
+			}
 		}
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
@@ -602,6 +607,11 @@ namespace Windows.UI.Xaml
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
 		{
 			UpdateHitTest();
+
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				UpdateDOMProperties();
+			}
 		}
 
 		public override string ToString()
@@ -919,6 +929,32 @@ namespace Windows.UI.Xaml
 			);
 		}
 
+		/// <summary>
+		/// If corresponding feature flag is enabled, set layout properties as DOM attributes to aid in debugging.
+		/// </summary>
+		/// <remarks>
+		/// Calls to this method should be wrapped in a check of the feature flag, to avoid the expense of a virtual method call
+		/// that will most of the time do nothing in hot code paths.
+		/// </remarks>
+		private protected virtual void UpdateDOMProperties()
+		{
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				UpdateDOMXamlProperty(nameof(Visibility), Visibility);
+				UpdateDOMXamlProperty(nameof(IsHitTestVisible), IsHitTestVisible);
+			}
+		}
+
+		/// <summary>
+		/// Sets a Xaml property as a DOM attribute for debugging.
+		/// </summary>
+		/// <param name="propertyName">The property's name</param>
+		/// <param name="value">The current property value</param>
+		internal void UpdateDOMXamlProperty(string propertyName, object value)
+		{
+			WindowManagerInterop.SetAttribute(HtmlId, "xaml" + propertyName.ToLowerInvariant().Replace('.', '_'), value?.ToString() ?? "[null]");
+		}
+
 		private static KeyRoutedEventArgs PayloadToKeyArgs(object src, string payload)
 		{
 			return new KeyRoutedEventArgs(src, System.VirtualKeyHelper.FromKey(payload));
@@ -926,9 +962,9 @@ namespace Windows.UI.Xaml
 
 		private static RoutedEventArgs PayloadToFocusArgs(object src, string payload)
 		{
-			if(int.TryParse(payload, out int xamlHandle))
+			if (int.TryParse(payload, out int xamlHandle))
 			{
-				if(GetElementFromHandle(xamlHandle) is UIElement element)
+				if (GetElementFromHandle(xamlHandle) is UIElement element)
 				{
 					return new RoutedEventArgs(element);
 				}

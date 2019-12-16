@@ -1,5 +1,6 @@
-﻿// #define LOG_LAYOUT
+// #define LOG_LAYOUT
 
+using Windows.UI.Xaml.Media;
 using Microsoft.Extensions.Logging;
 using Uno.UI;
 #if !__WASM__
@@ -98,8 +99,7 @@ namespace Windows.UI.Xaml.Controls
 					.NumberOrDefault(MaxSize)
 					.Subtract(marginSize)
 					.AtLeast(default) // 0.0,0.0
-					.AtMost(maxSize)
-					.AtLeast(minSize);
+					.AtMost(maxSize);
 
 				var desiredSize = MeasureOverride(frameworkAvailableSize);
 
@@ -204,7 +204,6 @@ namespace Windows.UI.Xaml.Controls
 				var (minSize, maxSize) = this.Panel.GetMinMax();
 
 				arrangeSize = arrangeSize
-					.AtLeast(minSize)
 					.AtLeast(default); // 0.0,0.0
 
 				// We have to choose max between _unclippedDesiredSize and maxSize here, because
@@ -269,6 +268,8 @@ namespace Windows.UI.Xaml.Controls
 			var frameworkElement = view as IFrameworkElement;
 			var ret = default(Size);
 
+			// NaN values are accepted as input for MeasureOverride, but are treated as Infinity.
+			slotSize = slotSize.NumberOrDefault(MaxSize);
 
 			if (frameworkElement?.Visibility == Visibility.Collapsed)
 			{
@@ -295,6 +296,58 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				return ret;
+			}
+
+			if (frameworkElement != null && !(frameworkElement is FrameworkElement))
+			{
+				// For IFrameworkElement implementers that are not FrameworkElements, the constraint logic must
+				// be performed by the parent. Otherwise, the native element will take the size it needs without
+				// regards to explicit XAML size characteristics. The Android ProgressBar is a good example of
+				// that behavior.
+
+				var margin = frameworkElement.Margin;
+
+				if (margin != Thickness.Empty)
+				{
+					// Apply the margin for framework elements, as if it were padding to the child.
+					slotSize = new Size(
+						Max(0, slotSize.Width - margin.Left - margin.Right),
+						Max(0, slotSize.Height - margin.Top - margin.Bottom)
+					);
+				}
+
+				// Alias the Dependency Properties values to avoid double calls.
+				var childWidth = frameworkElement.Width;
+				var childMaxWidth = frameworkElement.MaxWidth;
+				var childHeight = frameworkElement.Height;
+				var childMaxHeight = frameworkElement.MaxHeight;
+
+				var optionalMaxWidth = !IsInfinity(childMaxWidth) && !IsNaN(childMaxWidth) ? childMaxWidth : (double?)null;
+				var optionalWidth = !IsNaN(childWidth) ? childWidth : (double?)null;
+				var optionalMaxHeight = !IsInfinity(childMaxHeight) && !IsNaN(childMaxHeight) ? childMaxHeight : (double?)null;
+				var optionalHeight = !IsNaN(childHeight) ? childHeight : (double?)null;
+
+				// After the margin has been removed, ensure the remaining space slot does not go
+				// over the explicit or maximum size of the child.
+				if (optionalMaxWidth != null || optionalWidth != null)
+				{
+					var constrainedWidth = Min(
+						optionalMaxWidth ?? double.PositiveInfinity,
+						optionalWidth ?? double.PositiveInfinity
+					);
+
+					slotSize.Width = Min(slotSize.Width, constrainedWidth);
+				}
+
+				if (optionalMaxHeight != null || optionalHeight != null)
+				{
+					var constrainedHeight = Min(
+						optionalMaxHeight ?? double.PositiveInfinity,
+						optionalHeight ?? double.PositiveInfinity
+					);
+
+					slotSize.Height = Min(slotSize.Height, constrainedHeight);
+				}
 			}
 
 			ret = MeasureChildOverride(view, slotSize);
@@ -351,7 +404,7 @@ namespace Windows.UI.Xaml.Controls
 					// Report the size to the parent without the margin, only if the
 					// size has changed or that the control required a measure
 					//
-					// This condition is required because of the measure caching that 
+					// This condition is required because of the measure caching that
 					// some systems apply (Like android UI).
 					ret = new Size(
 						ret.Width + margin.Left + margin.Right,
@@ -421,7 +474,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// In this implementation, since we do not have the ability to intercept proprely the measure and arrange
 			// because of the type of hierarchy (inheriting from native views), we must apply the margins and alignements
-			// from within the panel to its children. This makes the authoring of custom panels that do not inherit from 
+			// from within the panel to its children. This makes the authoring of custom panels that do not inherit from
 			// Panel that do not use this helper a bit more complex, but for all other panels that use this
 			// layouter, the logic is implied.
 
@@ -436,6 +489,9 @@ namespace Windows.UI.Xaml.Controls
 				// capture the child's state to avoid getting DependencyProperties values multiple times.
 				var childVerticalAlignment = frameworkElement.VerticalAlignment;
 				var childHorizontalAlignment = frameworkElement.HorizontalAlignment;
+
+				AdjustAlignment(view, ref childHorizontalAlignment, ref childVerticalAlignment);
+
 				var childMaxHeight = frameworkElement.MaxHeight;
 				var childMaxWidth = frameworkElement.MaxWidth;
 				var childMinHeight = frameworkElement.MinHeight;
@@ -563,6 +619,27 @@ namespace Windows.UI.Xaml.Controls
 			);
 		}
 
+		protected virtual void AdjustAlignment(View view, ref HorizontalAlignment childHorizontalAlignment,
+			ref VerticalAlignment childVerticalAlignment)
+		{
+			if (view is Image img && (img.Stretch == Stretch.None || img.Stretch == Stretch.Uniform))
+			{
+				// Image is a special control and is using the Vertical/Horizontal Alignment
+				// to calculate the final position of the image. On UWP, there's no difference
+				// between "Stretch" and "Center": they all behave like "Center", so we need
+				// to do the same here.
+				if (childVerticalAlignment == VerticalAlignment.Stretch)
+				{
+					childVerticalAlignment = VerticalAlignment.Center;
+				}
+
+				if (childHorizontalAlignment == HorizontalAlignment.Stretch)
+				{
+					childHorizontalAlignment = HorizontalAlignment.Center;
+				}
+			}
+		}
+
 		private double GetActualSize(
 			double size,
 			bool isStretch,
@@ -656,9 +733,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private string LoggingOwnerTypeName => ((object)Panel ?? this).GetType().Name;
 
-		private string LoggingOwnerName => Panel?.Name ?? Panel?.GetType().Name ?? LoggingOwnerTypeName;
-
-		public override string ToString() => $"[{LoggingOwnerName}.Layouter]";
+		public override string ToString() => $"[{LoggingOwnerTypeName}.Layouter]" + (string.IsNullOrEmpty(Panel?.Name) ? default : $"(name='{Panel.Name}')");
 	}
 }
 #endif

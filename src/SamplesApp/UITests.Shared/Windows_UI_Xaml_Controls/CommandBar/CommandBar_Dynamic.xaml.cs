@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Content.UITests.CommandBar
 {
-	[SampleControlInfo("CommandBar", "Dynamic", ignoreInAutomatedTests: true)]
+	[SampleControlInfo("CommandBar", "Dynamic", ignoreInSnapshotTests: true)]
 	public sealed partial class CommandBar_Dynamic : UserControl
 	{
 		public CommandBar_Dynamic()

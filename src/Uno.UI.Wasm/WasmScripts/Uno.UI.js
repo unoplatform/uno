@@ -39,6 +39,7 @@ var Windows;
                     CoreDispatcher.initMethods();
                     CoreDispatcher._isReady = isReady;
                     CoreDispatcher._isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
+                    CoreDispatcher._isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
                 }
                 /**
                  * Enqueues a core dispatcher callback on the javascript's event loop
@@ -63,14 +64,14 @@ var Windows;
                     return true;
                 }
                 static InnerWakeUp() {
-                    if (CoreDispatcher._isIOS && CoreDispatcher._isFirstCall) {
+                    if ((CoreDispatcher._isIOS || CoreDispatcher._isSafari) && CoreDispatcher._isFirstCall) {
                         //
                         // This is a workaround for the available call stack during the first 5 (?) seconds
                         // of the startup of an application. See https://github.com/mono/mono/issues/12357 for
                         // more details.
                         //
                         CoreDispatcher._isFirstCall = false;
-                        console.debug("Detected iOS, delaying first CoreDispatched dispatch for 5s (see https://github.com/mono/mono/issues/12357)");
+                        console.warn("Detected iOS, delaying first CoreDispatcher dispatch for 5 seconds (see https://github.com/mono/mono/issues/12357)");
                         window.setTimeout(() => this.WakeUp(), 5000);
                     }
                     else {
@@ -1259,8 +1260,8 @@ var Uno;
                 const offsetHeight = element.offsetHeight;
                 const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
                 const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
-                // +0.5 is added to take rounding into account
-                return [resultWidth + 0.5, resultHeight];
+                // +1 is added to take rounding/flooring into account
+                return [resultWidth + 1, resultHeight];
             }
             measureViewInternal(viewId, maxWidth, maxHeight) {
                 const element = this.getView(viewId);
@@ -1499,6 +1500,19 @@ var Uno;
                 const element = this.getView(elementId);
                 const htmlId = Number(element.getAttribute("XamlHandle"));
                 return WindowManager.getDependencyPropertyValueMethod(htmlId, propertyName);
+            }
+            /**
+             * Sets a dependency property value.
+             *
+             * Note that the casing of this method is intentionally Pascal for platform alignment.
+             */
+            SetDependencyPropertyValue(elementId, propertyName, propertyValue) {
+                if (!WindowManager.setDependencyPropertyValueMethod) {
+                    WindowManager.setDependencyPropertyValueMethod = Module.mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:SetDependencyPropertyValue");
+                }
+                const element = this.getView(elementId);
+                const htmlId = Number(element.getAttribute("XamlHandle"));
+                return WindowManager.setDependencyPropertyValueMethod(htmlId, propertyName, propertyValue);
             }
             /**
                 * Remove the loading indicator.

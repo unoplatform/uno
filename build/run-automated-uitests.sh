@@ -19,4 +19,8 @@ mkdir -p $UNO_UITEST_SCREENSHOT_PATH
 ## The python server serves the current working directory, and may be changed by the nunit runner
 bash -c "cd $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site; python server.py &"
 
-mono $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/test-bin/SamplesApp.UITests.dll
+export TEST_FILTERS="namespace != 'SamplesApp.UITests.Snap'"
+
+mono $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/NUnit.ConsoleRunner.3.10.0/tools/nunit3-console.exe \
+    --where "$TEST_FILTERS" \
+    $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/test-bin/SamplesApp.UITests.dll

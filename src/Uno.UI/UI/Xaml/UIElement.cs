@@ -18,6 +18,8 @@ using Uno;
 using Uno.UI.Controls;
 using Uno.UI.Media;
 using System;
+using Windows.UI.Xaml.Markup;
+using Microsoft.Extensions.Logging;
 
 #if __IOS__
 using UIKit;
@@ -256,6 +258,52 @@ namespace Windows.UI.Xaml
 		{
 			var dp = DependencyProperty.GetProperty(owner.GetType(), dependencyPropertyName);
 			return dp == null ? null : owner.GetValue(dp);
+		}
+
+		/// <summary>
+		/// Sets the specified dependency property value using the format "name|value"
+		/// </summary>
+		/// <param name="dependencyPropertyNameAndValue">The name and value of the property</param>
+		/// <returns>The currenty set value at the Local precedence</returns>
+		/// <remarks>
+		/// The signature of this method was chosen to work around a limitation of Xamarin.UITest with regards to
+		/// parameters passing on iOS, where the number of parameters follows a unconventional set of rules. Using
+		/// a single parameter with a simple delimitation format fits all platforms with little overhead.
+		/// </remarks>
+		internal static string SetDependencyPropertyValueInternal(DependencyObject owner, string dependencyPropertyNameAndValue)
+		{
+			var s = dependencyPropertyNameAndValue;
+			var index = s.IndexOf("|");
+
+			if (index != -1)
+			{
+				var dependencyPropertyName = s.Substring(0, index);
+				var value = s.Substring(index + 1);
+
+				if (DependencyProperty.GetProperty(owner.GetType(), dependencyPropertyName) is DependencyProperty dp)
+				{
+					if (owner.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						owner.Log().LogDebug($"SetDependencyPropertyValue({dependencyPropertyName}) = {value}");
+					}
+
+					owner.SetValue(dp, XamlBindingHelper.ConvertValue(dp.Type, value));
+
+					return owner.GetValue(dp)?.ToString();
+				}
+				else
+				{
+					if (owner.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						owner.Log().LogDebug($"Failed to find property [{dependencyPropertyName}] on [{owner}]");
+					}
+					return "**** Failed to find property";
+				}
+			}
+			else
+			{
+				return "**** Invalid property and value format.";
+			}
 		}
 
 		internal Rect LayoutSlot { get; set; } = default;

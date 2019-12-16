@@ -51,11 +51,22 @@ namespace Uno.UI.TestComparer
 			var definitions = await client.GetDefinitionsAsync(project, name: definitionName);
 
 			Console.WriteLine("Getting builds");
-			var builds = await client.GetBuildsAsync(project, definitions: new[] { definitions.First().Id }, branchName: targetBranchName, top: runLimit, queryOrder: BuildQueryOrder.FinishTimeDescending, statusFilter: BuildStatus.Completed);
+			var builds = await client.GetBuildsAsync(
+				project,
+				definitions: new[] { definitions.First().Id },
+				branchName: targetBranchName,
+				top: runLimit,
+				queryOrder: BuildQueryOrder.FinishTimeDescending,
+				statusFilter: BuildStatus.Completed,
+				resultFilter: BuildResult.Succeeded);
 
 			var currentBuild = await client.GetBuildAsync(project, buildId);
 
-			foreach (var build in builds.Concat(new[] { currentBuild }).Distinct(new BuildComparer()))
+			var suceededBuilds = builds
+				.Concat(new[] { currentBuild })
+				.Distinct(new BuildComparer());
+
+			foreach (var build in suceededBuilds)
 			{
 				var fullPath = Path.Combine(basePath, $@"artifacts\\{build.LastChangedDate:yyyyMMdd-hhmmss}-{build.Id}");
 
@@ -78,7 +89,31 @@ namespace Uno.UI.TestComparer
 
 
 						Console.WriteLine($"Extracting artifact for build {build.Id}");
-						ZipFile.ExtractToDirectory(tempFile, fullPath);
+
+						fullPath = fullPath.Replace("\\\\", "\\");
+
+						using (var archive = ZipFile.OpenRead(tempFile))
+						{
+							foreach (var entry in archive.Entries)
+							{
+								var outPath = Path.Combine(fullPath, entry.FullName.Replace("/", "\\"));
+
+								if (outPath.EndsWith("\\"))
+								{
+									Directory.CreateDirectory(@"\\?\" + outPath);
+								}
+								else
+								{
+									using (var stream = entry.Open())
+									{
+										using (var outStream = File.OpenWrite(@"\\?\" + outPath))
+										{
+											await stream.CopyToAsync(outStream);
+										}
+									}
+								}
+							}
+						}
 					}
 					else
 					{

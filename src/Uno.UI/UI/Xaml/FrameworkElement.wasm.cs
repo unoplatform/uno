@@ -75,7 +75,10 @@ namespace Windows.UI.Xaml
 				// Make sure to set the flag before raising the loaded event (duplicated with the base.ManagedOnLoaded)
 				base.IsLoaded = true;
 
-				UpdateDOMProperties();
+				if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+				{
+					UpdateDOMProperties();
+				}
 
 				try
 				{
@@ -155,8 +158,9 @@ namespace Windows.UI.Xaml
 			return Parent != null;
 		}
 
-		public double ActualWidth { get; internal set; }
-		public double ActualHeight { get; internal set; }
+		private Size _actualSize;
+		public double ActualWidth => GetActualWidth();
+		public double ActualHeight => GetActualHeight();
 
 		public event SizeChangedEventHandler SizeChanged;
 
@@ -165,6 +169,11 @@ namespace Windows.UI.Xaml
 			SizeChanged?.Invoke(this, args);
 			_renderTransform?.UpdateSize(args.NewSize);
 		}
+
+		internal void SetActualSize(Size size) => _actualSize = size;
+
+		private protected virtual double GetActualWidth() => _actualSize.Width;
+		private protected virtual double GetActualHeight() => _actualSize.Height;
 
 		static partial void OnGenericPropertyUpdatedPartial(object dependencyObject, DependencyPropertyChangedEventArgs args);
 
@@ -517,30 +526,35 @@ namespace Windows.UI.Xaml
 
 		private static void OnGenericPropertyUpdated(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			((FrameworkElement)dependencyObject).UpdateDOMProperties();
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				((FrameworkElement)dependencyObject).UpdateDOMProperties();
+			}
 		}
 
 		/// <summary>
 		/// If corresponding feature flag is enabled, set layout properties as DOM attributes to aid in debugging.
 		/// </summary>
-		private void UpdateDOMProperties()
+		/// <remarks>
+		/// Calls to this method should be wrapped in a check of the feature flag, to avoid the expense of a virtual method call
+		/// that will most of the time do nothing in hot code paths.
+		/// </remarks>
+		private protected override void UpdateDOMProperties()
 		{
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties && IsLoaded)
 			{
-				SetXamlProperty(nameof(Margin), Margin);
-				SetXamlProperty(nameof(HorizontalAlignment), HorizontalAlignment);
-				SetXamlProperty(nameof(VerticalAlignment), VerticalAlignment);
-				SetXamlProperty(nameof(Width), Width);
-				SetXamlProperty(nameof(Height), Height);
-				SetXamlProperty(nameof(MinWidth), MinWidth);
-				SetXamlProperty(nameof(MinHeight), MinHeight);
-				SetXamlProperty(nameof(MaxWidth), MaxWidth);
-				SetXamlProperty(nameof(MaxHeight), MaxHeight);
+				UpdateDOMXamlProperty(nameof(Margin), Margin);
+				UpdateDOMXamlProperty(nameof(HorizontalAlignment), HorizontalAlignment);
+				UpdateDOMXamlProperty(nameof(VerticalAlignment), VerticalAlignment);
+				UpdateDOMXamlProperty(nameof(Width), Width);
+				UpdateDOMXamlProperty(nameof(Height), Height);
+				UpdateDOMXamlProperty(nameof(MinWidth), MinWidth);
+				UpdateDOMXamlProperty(nameof(MinHeight), MinHeight);
+				UpdateDOMXamlProperty(nameof(MaxWidth), MaxWidth);
+				UpdateDOMXamlProperty(nameof(MaxHeight), MaxHeight);
+				UpdateDOMXamlProperty(nameof(IsEnabled), IsEnabled);
 
-				void SetXamlProperty(string propertyName, object value)
-				{
-					WindowManagerInterop.SetAttribute(HtmlId, "xaml" + propertyName.ToLowerInvariant(), value?.ToString() ?? "[null]");
-				}
+				base.UpdateDOMProperties();
 			}
 		}
 

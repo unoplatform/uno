@@ -1,0 +1,127 @@
+parameters:
+  vmImage: 'macOS-10.14'
+  xCodeRoot: '/Applications/Xcode_10.3.app'
+  XamarinSDKVersion: 5_18_1
+
+jobs:
+- job: iOS_Build
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  variables:
+    CI_Build: true
+    SourceLinkEnabled: falses
+    NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - template: templates/optimize-roslyn-mono.yml
+
+  - template: templates/ios-build-select-version.yml
+    parameters:
+      xCodeRoot: ${{ parameters.xCodeRoot }}
+      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
+
+  - bash: |
+      $(build.sourcesdirectory)/build/ios-uitest-build.sh
+
+    displayName: Build iOS App for UI Tests
+
+    env:
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.iOS/bin/iPhoneSimulator/Release/SamplesApp.app
+      Contents: '**'
+      TargetFolder: $(build.artifactstagingdirectory)/SamplesApp.app
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: ios-uitest-build
+      ArtifactType: Container
+
+- job: iOS_Tests
+
+  dependsOn: iOS_Build
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  strategy:
+    matrix:
+      Automated:
+        UITEST_SNAPSHOTS_ONLY: false
+
+      Snapshots_Group00:
+        UITEST_SNAPSHOTS_ONLY: true
+        UITEST_SNAPSHOTS_GROUP: 00
+
+      Snapshots_Group01:
+        UITEST_SNAPSHOTS_ONLY: true
+        UITEST_SNAPSHOTS_GROUP: 01
+
+  variables:
+    CI_Build: true
+    SourceLinkEnabled: falses
+    NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: ios-uitest-build
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/optimize-roslyn-mono.yml
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - template: templates/ios-build-select-version.yml
+    parameters:
+      xCodeRoot: ${{ parameters.xCodeRoot }}
+      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
+
+  - bash: |
+      $(build.sourcesdirectory)/build/ios-uitest-run.sh
+
+    displayName: Run iOS Simulator Tests
+
+    env:
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      UITEST_SNAPSHOTS_ONLY: "$(UITEST_SNAPSHOTS_ONLY)"
+      UITEST_SNAPSHOTS_GROUP: "$(UITEST_SNAPSHOTS_GROUP)"
+      UNO_UITEST_IOSBUNDLE_PATH: "$(build.sourcesdirectory)/build/ios-uitest-build/SamplesApp.app"
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'iOS Test Run ($(Agent.JobName))'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult.xml'
+      failTaskOnFailedTests: true
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-results
+      ArtifactType: Container

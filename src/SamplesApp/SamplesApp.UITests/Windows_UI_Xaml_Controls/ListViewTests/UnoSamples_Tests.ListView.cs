@@ -53,6 +53,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 		}
 
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.Android)]
 		public void ListView_ItemPanel_HotSwapTest()
 		{
@@ -104,7 +105,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			_app.WaitForText("StateTextBlock", "Measured");
 
-			TakeScreenshot($"{nameof(Check_ListView_Swallows_Measure)} before scroll");
+			TakeScreenshot("before scroll");
 
 			var measureTextBefore = _app.GetText("MeasureCountTextBlock");
 			var initialMeasureCount = int.Parse(measureTextBefore);
@@ -113,11 +114,54 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			_app.WaitForText("ResultTextBlock", "Scrolled");
 
-			TakeScreenshot($"{nameof(Check_ListView_Swallows_Measure)} after scroll");
+			TakeScreenshot("after scroll");
 
 			var measureTextAfter = _app.GetText("MeasureCountTextBlock");
 			var finalMeasureCount = int.Parse(measureTextAfter);
 			Assert.AreEqual(initialMeasureCount, finalMeasureCount);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ListView_Weird_Measure_During_Arrange()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_Weird_Measure");
+
+			_app.WaitForText("StatusTextBlock", "Finished");
+
+			TakeScreenshot("after layout");
+
+			var heightStr = _app.GetText("HeightTextBlock");
+			var height = int.Parse(heightStr);
+
+			Assert.AreEqual(224, height);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ListView_ObservableCollection_Unused_Space()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_ObservableCollection_Unused_Space");
+
+			_app.WaitForText("StatusTextBlock", "Ready");
+
+			TakeScreenshot("1 item");
+
+			var heightStrBefore = _app.GetText("HeightTextBlock");
+			var heightBefore = int.Parse(heightStrBefore);
+
+			_app.Tap("AddItemsButton");
+
+			_app.WaitForText("StatusTextBlock", "Finished");
+
+			TakeScreenshot("3 items");
+
+			var heightStrAfter = _app.GetText("HeightTextBlock");
+			var heightAfter = int.Parse(heightStrAfter);
+
+			Assert.Greater(heightBefore, 0);
+
+			Assert.AreEqual(3 * heightBefore, heightAfter);
 		}
 	}
 }
