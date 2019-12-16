@@ -89,18 +89,18 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 		{
 			Run(testName);
 
+			var picker = _app.Marked("modesPicker");
+
 			var currentModeButton = _app.Marked("currentMode");
 			_app.WaitForElement(currentModeButton);
-
-			var nextStretchButton = _app.Marked("nextStretch");
-			nextStretchButton.Tap();
+			_app.WaitForDependencyPropertyValue(currentModeButton, "Content", "00");
 
 			for (var i = 0; i < 4; i++)
 			{
+				picker.SetDependencyPropertyValue("Mode", "S" + i);
 				_app.WaitForDependencyPropertyValue(currentModeButton, "Content", (i * 16).ToString("00"));
 
 				base.TakeScreenshot("Mode-" + i);
-				nextStretchButton.Tap();
 			}
 		}
 	}
