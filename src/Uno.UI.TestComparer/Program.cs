@@ -36,8 +36,8 @@ namespace Umbrella.UI.TestComparer
 
 				new AppCenterTestsDownloader(appCenterApiKey).Download(appCenterApiKey, basePath, runLimit).Wait();
 
-				ProcessFiles(basePath, basePath, "", "ios", "0");
-				ProcessFiles(basePath, basePath, "", "Android", "0");
+				ProcessFiles(basePath, basePath, null, "", "ios", "0");
+				ProcessFiles(basePath, basePath, null, "", "Android", "0");
 			}
 			else if (args[0] == "azdo")
 			{
@@ -83,14 +83,14 @@ namespace Umbrella.UI.TestComparer
 				var targetBranch = !string.IsNullOrEmpty(targetBranchParam) && targetBranchParam != "$(System.PullRequest.TargetBranch)" ? targetBranchParam : sourceBranch;      	
 
 				var downloader = new AzureDevopsDownloader(pat, serverUri);
-				downloader.DownloadArtifacts(basePath, projectName, definitionName, artifactName, sourceBranch, targetBranch, currentBuild, runLimit).Wait();
+				var artifacts = await downloader.DownloadArtifacts(basePath, projectName, definitionName, artifactName, sourceBranch, targetBranch, currentBuild, runLimit);
 
 				var artifactsBasePath = Path.Combine(basePath, "artifacts");
 				var results = new List<CompareResult>();
 
 				foreach (var platform in GetValidPlatforms(artifactsBasePath))
 				{
-					var result = ProcessFiles(basePath, artifactsBasePath, artifactInnerBasePath, platform, currentBuild.ToString());
+					var result = ProcessFiles(basePath, artifactsBasePath, artifacts, artifactInnerBasePath, platform, currentBuild.ToString());
 					results.Add(result);
 				}
 
@@ -160,38 +160,48 @@ namespace Umbrella.UI.TestComparer
 
 		private static async Task TryPublishPRComments(List<CompareResult> results, string githubPAT, string sourceRepository, string githubPRid, int currentBuild)
 		{
+			var comment = await BuildPRComment(results, currentBuild);
+
 			if (!int.TryParse(githubPRid, out _))
 			{
 				Console.WriteLine($"No valid GitHub PR Id found, no PR comment will be posted.");
+				Console.WriteLine(comment);
 				return;
 			}
 
 			if (string.IsNullOrEmpty(githubPAT.Trim()) || githubPAT.StartsWith("$("))
 			{
 				Console.WriteLine($"No GitHub PAT, no PR comment will be posted.");
+				Console.WriteLine(comment);
 				return;
 			}
 
+			await GitHubClient.PostPRCommentsAsync(githubPAT, sourceRepository, githubPRid, comment);
+		}
+
+		private static async Task<string> BuildPRComment(List<CompareResult> results, int currentBuild)
+		{
+			var comment = new StringBuilder();
 			var hasErrors = results.Any(r => r.TotalTests - r.UnchangedTests != 0);
 
 			if (hasErrors)
 			{
-				var comment = new StringBuilder();
 				comment.AppendLine($"The build {currentBuild} found UI Test snapshots differences.\r\n");
 
 				foreach (var result in results)
 				{
-					comment.AppendLine($"* `{result.Platform}`: **{result.TotalTests - result.UnchangedTests}** changed over {result.TotalTests}\r\n");
+					var lastChangedTests = result.Tests.Where(t => t.ResultRun.LastOrDefault()?.HasChanged ?? false).ToList();
 
-					var changedTests = result.Tests.Where(t => t.HasChanged).Take(20).ToList();
+					comment.AppendLine($"* `{result.Platform}`: **{lastChangedTests.Count}** changed over {result.TotalTests}\r\n");
 
-					if (changedTests.Any())
+					if (lastChangedTests.Any())
 					{
+
 						comment.AppendLine("  <details>");
-						comment.AppendLine("  <summary>🚨🚨 Comparison Details 🚨🚨</summary>");
+						comment.AppendLine("  <summary>🚨🚨 Comparison Details (first 20) 🚨🚨</summary>");
 						comment.AppendLine("");
 
-						foreach (var test in changedTests)
+						foreach (var test in lastChangedTests.Take(20))
 						{
 							comment.AppendLine($"  - `{Path.GetFileNameWithoutExtension(test.TestName)}`");
 						}
@@ -200,20 +210,18 @@ namespace Umbrella.UI.TestComparer
 						comment.AppendLine("");
 					}
 				}
-
-				await GitHubClient.PostPRCommentsAsync(githubPAT, sourceRepository, githubPRid, comment.ToString());
 			}
 			else
 			{
-				var comment = $"The build {currentBuild} did not find any UI Test snapshots differences.";
-				await GitHubClient.PostPRCommentsAsync(githubPAT, sourceRepository, githubPRid, comment);
+				comment.Append($"The build {currentBuild} did not find any UI Test snapshots differences.");
 			}
+
+			return comment.ToString();
 		}
 
-
-		private static CompareResult ProcessFiles(string basePath, string artifactsBasePath, string artifactsInnerBasePath, string platform, string buildId)
+		private static CompareResult ProcessFiles(string basePath, string artifactsBasePath, string[] artifacts, string artifactsInnerBasePath, string platform, string buildId)
 		{
-			var result = new TestFilesComparer(basePath, artifactsBasePath, artifactsInnerBasePath, platform).Compare();
+			var result = new TestFilesComparer(basePath, artifactsBasePath, artifactsInnerBasePath, platform).Compare(artifacts);
 
 			GenerateHTMLResults(basePath, platform, result);
 			GenerateNUnitTestResults(basePath, platform, result, buildId);
