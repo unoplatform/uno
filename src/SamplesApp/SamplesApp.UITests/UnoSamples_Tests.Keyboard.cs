@@ -9,6 +9,7 @@ using SamplesApp.UITests;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests
 {
@@ -47,7 +48,7 @@ namespace SamplesApp.UITests
 				// Removing focus on normalTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				TakeScreenshot("0 - Remove Focus on normalTextBox");
+				TakeScreenshot("0 - Remove Focus on normalTextBox", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Keyboard predicted text can change*/);
 			}
 
 			{
@@ -59,7 +60,7 @@ namespace SamplesApp.UITests
 				// Removing focus on normalTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				TakeScreenshot("1 - Remove Focus on filledTextBox");
+				TakeScreenshot("1 - Remove Focus on filledTextBox", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Keyboard predicted text can change*/);
 			}
 
 			{
@@ -143,7 +144,7 @@ namespace SamplesApp.UITests
 				// Removing focus on normalTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				TakeScreenshot("0 - Remove Focus on normalTextBox");
+				TakeScreenshot("0 - Remove Focus on normalTextBox", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Keyboard predicted text can change*/);
 			}
 
 			{
@@ -155,7 +156,7 @@ namespace SamplesApp.UITests
 				// Removing focus on normalTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				TakeScreenshot("1 - Remove Focus on filledTextBox");
+				TakeScreenshot("1 - Remove Focus on filledTextBox", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Keyboard predicted text can change*/);
 			}
 
 			{

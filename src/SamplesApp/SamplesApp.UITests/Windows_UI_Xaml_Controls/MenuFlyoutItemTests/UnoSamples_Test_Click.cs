@@ -7,6 +7,7 @@ using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutItemTests
 {
@@ -27,7 +28,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutItemTests
 			// step 1: press button to show menu
 			_app.Tap(_app.Marked("mfiButton"));
 
-			TakeScreenshot("menuShown");
+			TakeScreenshot("menuShown", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Menu animation is midflight*/);
 
 			// step 2: click MenuFlyoutItem
 			_app.Tap(_app.Marked("mfiItem"));
@@ -35,7 +36,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutItemTests
 			// step 3: check result
 			_app.WaitForText(_app.Marked("mfiResult"), "success");  
 
-			TakeScreenshot("AfterSuccess");
+			TakeScreenshot("AfterSuccess", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Status bar appears with clock*/);
 		}
 	}
 }
