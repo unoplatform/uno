@@ -27,7 +27,7 @@ namespace Uno.UI.TestComparer
 			_collectionUri = collectionUri;
 		}
 
-		public async Task DownloadArtifacts(string basePath,
+		public async Task<string[]> DownloadArtifacts(string basePath,
 									  string project,
 									  string definitionName,
 									  string artifactName,
@@ -63,12 +63,16 @@ namespace Uno.UI.TestComparer
 			var currentBuild = await client.GetBuildAsync(project, buildId);
 
 			var suceededBuilds = builds
-				.Concat(new[] { currentBuild })
-				.Distinct(new BuildComparer());
+				.Distinct(new BuildComparer())
+				.OrderBy(b => b.FinishTime)
+				.Concat(new[] { currentBuild });
+
+			string BuildArtifactPath(Build build)
+				=> Path.Combine(basePath, $@"artifacts\{build.LastChangedDate:yyyyMMdd-hhmmss}-{build.Id}");
 
 			foreach (var build in suceededBuilds)
 			{
-				var fullPath = Path.Combine(basePath, $@"artifacts\\{build.LastChangedDate:yyyyMMdd-hhmmss}-{build.Id}");
+				var fullPath = BuildArtifactPath(build);
 
 				if (!Directory.Exists(fullPath))
 				{
@@ -86,7 +90,6 @@ namespace Uno.UI.TestComparer
 								await stream.CopyToAsync(f);
 							}
 						}
-
 
 						Console.WriteLine($"Extracting artifact for build {build.Id}");
 
@@ -125,6 +128,8 @@ namespace Uno.UI.TestComparer
 					Console.WriteLine($"Skipping already downloaded build {build.Id} artifacts");
 				}
 			}
+
+			return suceededBuilds.Select(BuildArtifactPath).ToArray();
 		}
 
 		private class BuildComparer : IEqualityComparer<Build>

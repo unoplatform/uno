@@ -20,7 +20,7 @@ namespace Uno.UI.TestComparer.Comparer
 			_platform = platform;
 		}
 
-		internal CompareResult Compare()
+		internal CompareResult Compare(string[] artifacts)
 		{
 			var testResult = new CompareResult(_platform);
 
@@ -32,18 +32,21 @@ namespace Uno.UI.TestComparer.Comparer
 			Directory.CreateDirectory(path);
 			Directory.CreateDirectory(diffPath);
 
-			var q1 = from directory in Directory.EnumerateDirectories(_artifactsBasePath)
-					 let info = new DirectoryInfo(directory)
-					 orderby info.CreationTime descending
-					 select directory;
+			if (artifacts == null)
+			{
+				var q1 = from directory in Directory.EnumerateDirectories(_artifactsBasePath)
+						 let info = new DirectoryInfo(directory)
+						 orderby info.FullName descending
+						 select directory;
 
-			q1 = q1.ToArray();
+				var orderedDirectories = from directory in q1
+										 orderby directory
+										 select directory;
 
-			var orderedDirectories = from directory in q1
-									 orderby directory
-									 select directory;
+				artifacts = orderedDirectories.ToArray();
+			}
 
-			var q = from directory in orderedDirectories.Select((v, i) => new { Index = i, Path = v })
+			var q = from directory in artifacts.Select((v, i) => new { Index = i, Path = v })
 					let files = from sample in EnumerateFiles(Path.Combine(directory.Path, _artifactsInnerBasePath, _platform), "*.png").AsParallel()
 								where CanBeUsedForCompare(sample)
 								select new { File = sample, Id = BuildSha1(sample) }
@@ -51,12 +54,12 @@ namespace Uno.UI.TestComparer.Comparer
 					{
 						Path = directory.Path,
 						Index = directory.Index,
-						Files = files.ToArray(),
+						Files = files.AsParallel().ToArray(),
 					};
 
 			var allFolders = LogForeach(q, i => Console.WriteLine($"Processed {i.Path}")).ToArray();
 
-			testResult.Folders.AddRange(allFolders.Select((p, index) => (index, p.Path)));
+			testResult.Folders.AddRange(allFolders.Select((p, index) => (index, p.Path)).AsParallel());
 
 			var allFiles = allFolders
 				.SelectMany(folder => folder
