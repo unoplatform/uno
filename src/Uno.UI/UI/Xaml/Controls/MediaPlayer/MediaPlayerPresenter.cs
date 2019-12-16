@@ -84,7 +84,13 @@ namespace Windows.UI.Xaml.Controls
 		public MediaPlayerPresenter() : base()
 		{
 		}
-		
+
+		protected override void OnUnloaded()
+		{
+			MediaPlayer.Stop();
+			base.OnUnloaded();
+		}
+
 		private void OnVideoRatioChanged(Windows.Media.Playback.MediaPlayer sender, double args)
 		{
 			_currentRatio = args;
