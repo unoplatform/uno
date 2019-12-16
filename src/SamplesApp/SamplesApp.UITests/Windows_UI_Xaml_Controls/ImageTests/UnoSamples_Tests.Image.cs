@@ -97,6 +97,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			for (var i = 0; i < 4; i++)
 			{
+				// Use SetDependencyPropertyValue instead of Tap for performance on iOS/Android (Tap takes multiple seconds to complete)
 				picker.SetDependencyPropertyValue("Mode", "S" + i);
 				_app.WaitForDependencyPropertyValue(currentModeButton, "Content", (i * 16).ToString("00"));
 
