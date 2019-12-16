@@ -305,18 +305,23 @@ namespace Windows.UI.Xaml.Controls
 
 		private Size LayoutTypography(Size size)
 		{
-			if (_textContainer == null || _attributedString == null)
-			{
-				return default(Size);
-			}
-			
 			if (UseLayoutManager)
 			{
+				if (_textContainer == null)
+				{
+					return default(Size);
+				}
+
 				_textContainer.Size = size;
 				return _layoutManager.GetUsedRectForTextContainer(_textContainer).Size;
 			}
 			else
 			{
+				if (_attributedString == null)
+				{
+					return default(Size);
+				}
+
 				return _attributedString.GetBoundingRect(size, NSStringDrawingOptions.UsesLineFragmentOrigin, null).Size;
 			}
 		}
