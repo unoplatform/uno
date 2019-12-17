@@ -200,8 +200,6 @@ namespace Uno.UI
 			);
 		}
 
-<<<<<<< HEAD
-=======
 		[Pure]
 		internal static Rect AtLeast(this Rect value, Size least) => new Rect(value.Location, value.Size.AtLeast(least));
 
@@ -223,7 +221,6 @@ namespace Uno.UI
 		}
 
 		[Pure]
->>>>>>> 7c16eb346... Fixed image alignment on iOS
 		internal static double AspectRatio(this Rect rect) => rect.Size.AspectRatio();
 
 		[Pure]

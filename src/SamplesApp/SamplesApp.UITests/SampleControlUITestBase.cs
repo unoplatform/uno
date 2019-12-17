@@ -221,19 +221,11 @@ namespace SamplesApp.UITests
 			return Array.Empty<Platform>();
 		}
 
-<<<<<<< HEAD
-		protected void Run(string metadataName, bool waitForSampleControl = true)
-		{
-			if (waitForSampleControl)
-			{
-				_app.WaitForElement("sampleControl");
-=======
 		protected void Run(string metadataName, bool waitForSampleControl = true, bool skipInitialScreenshot = false, int sampleLoadTimeout = 5)
 		{
 			if (waitForSampleControl)
 			{
 				_app.WaitForElement("sampleControl", timeout: TimeSpan.FromSeconds(sampleLoadTimeout));
->>>>>>> b6ba4695a... CI build time: removed initial screenshot for image tests
 			}
 
 			var testRunId = _app.InvokeGeneric("browser:SampleRunner|RunTest", metadataName);
