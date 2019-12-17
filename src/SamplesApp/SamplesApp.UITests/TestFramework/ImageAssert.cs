@@ -73,5 +73,17 @@ namespace SamplesApp.UITests.TestFramework
 				Assert.AreEqual(expectedColor.ToArgb(), pixel.ToArgb()); //Convert to ARGB value, because 'named colors' are not considered equal to their unnamed equivalents(!)
 			}
 		}
+
+		public static void AssertDoesNotHaveColorAt(FileInfo screenshot, float x, float y, Color excludedColor)
+		{
+			using (var bitmap = new Bitmap(screenshot.FullName))
+			{
+				Assert.GreaterOrEqual(bitmap.Width, (int)x);
+				Assert.GreaterOrEqual(bitmap.Height, (int)y);
+				var pixel = bitmap.GetPixel((int)x, (int)y);
+
+				Assert.AreNotEqual(excludedColor.ToArgb(), pixel.ToArgb()); //Convert to ARGB value, because 'named colors' are not considered equal to their unnamed equivalents(!)
+			}
+		}
 	}
 }
