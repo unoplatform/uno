@@ -113,7 +113,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 
 		/// <summary>
-		/// Sets the light-dismiss colour, if the overlay is enabled. The external API for modifying this is to override the PopupLightDismissOverlayBackground, etc static resource values.
+		/// Sets the light-dismiss colour, if the overlay is enabled. The external API for modifying this is to override the PopupLightDismissOverlayBackground, etc, static resource values.
 		/// </summary>
 		internal Brush LightDismissOverlayBackground
 		{
