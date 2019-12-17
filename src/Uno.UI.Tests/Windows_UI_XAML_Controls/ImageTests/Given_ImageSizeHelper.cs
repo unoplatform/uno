@@ -93,8 +93,8 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.ImageTests
 		public async Task MeasureSource_Expected_Result(
 			Stretch stretch,
 			string alignment,
-            double imageNaturalWidth,
-            double imageNaturalHeight,
+			double imageNaturalWidth,
+			double imageNaturalHeight,
 			double finalWidth,
 			double finalHeight,
 			double expectedX,
@@ -139,12 +139,10 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.ImageTests
 					break;
 			}
 
-			var image = new Image {Stretch = stretch, HorizontalAlignment = horizontal, VerticalAlignment = vertical};
+			var image = new Image { Stretch = stretch, HorizontalAlignment = horizontal, VerticalAlignment = vertical };
 
-			var measuredRect = new Rect(default, imageNaturalSize);
-
-			image.MeasureSource(finalSize, ref measuredRect);
-			image.ArrangeSource(finalSize, ref measuredRect);
+			var containerRect = image.MeasureSource(finalSize, imageNaturalSize);
+			var measuredRect = image.ArrangeSource(finalSize, containerRect);
 
 			measuredRect.Should().Be(
 				expectedRect,

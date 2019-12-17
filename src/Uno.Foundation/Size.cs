@@ -1,8 +1,10 @@
 ﻿using System.ComponentModel;
+using System.Diagnostics;
 using System.Security;
 
 namespace Windows.Foundation
 {
+	[DebuggerDisplay("{Width}x{Height}")]
 	[TypeConverter(typeof(SizeConverter))]
 	public partial struct Size
 	{
@@ -22,9 +24,9 @@ namespace Windows.Foundation
 
 		public override bool Equals(object o)
 		{
-			if(o is Size other)
+			if (o is Size other)
 			{
-				return other.Width == Width 
+				return other.Width == Width
 					&& other.Height == Height;
 			}
 

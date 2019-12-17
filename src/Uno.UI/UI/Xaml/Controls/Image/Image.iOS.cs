@@ -11,6 +11,7 @@ using Windows.Foundation;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using CoreAnimation;
 using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
@@ -209,7 +210,6 @@ namespace Windows.UI.Xaml.Controls
 				SourceImageSize = image?.Size.ToFoundationSize() ?? default(Size);
 			}
 
-			this.InvalidateMeasure();
 			SetNeedsLayout();
 
 			if (Image != null)
@@ -271,9 +271,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			try
 			{
-				_layouter.Arrange(Bounds);
+				_layoutRequested = false;
+				base.LayoutSubviews();
 
-				UpdateLayerRect(Bounds.Size);
+				UpdateLayerRect();
 			}
 			catch (Exception e)
 			{
@@ -297,11 +298,10 @@ namespace Windows.UI.Xaml.Controls
 			return _previousSize = size;
 		}
 
-		private (Size, CGSize, HorizontalAlignment, VerticalAlignment, Stretch) _layerLastParameters;
-
-
-		private void UpdateLayerRect(Size availableSize)
+		private void UpdateLayerRect()
 		{
+			var availableSize = Frame.Size;
+
 			if (SourceImageSize.Width == 0 || SourceImageSize.Height == 0 || availableSize.Width == 0 || availableSize.Height == 0 || Image == null)
 			{
 				return; // nothing to do
@@ -312,35 +312,33 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var parameters = (availableSize, Image.Size, HorizontalAlignment, VerticalAlignment, Stretch);
-			if (parameters == _layerLastParameters)
-			{
-				return; // nothing to update
-			}
-
-			_layerLastParameters = parameters;
-
 			var imageSize = Image.Size.ToFoundationSize();
 
-			var sourceRect = new Rect(Point.Zero, imageSize);
+			// Calculate the resulting space required on screen for the image
+			var containerSize = this.MeasureSource(availableSize, imageSize);
 
-			this.MeasureSource(availableSize, ref sourceRect);
-			this.ArrangeSource(availableSize, ref sourceRect);
+			// Calculate the position of the image to follow stretch and alignment requirements
+			var contentRect = this.ArrangeSource(availableSize, containerSize);
 
-			var relativeX = sourceRect.X / imageSize.Width;
-			var relativeY = sourceRect.Y / imageSize.Height;
-			var relativeWidth =
-				imageSize.Width > availableSize.Width
-					? availableSize.Width / sourceRect.Width
-					: 1.0d + relativeX;
-			var relativeHeight =
-				imageSize.Height > availableSize.Height
-					? availableSize.Height / sourceRect.Height
-					: 1.0d + relativeY;
+			// Calculate the required container to position the image in the AvailableSize
+			var containerRect = new Rect(default, availableSize);
+			containerRect.Intersect(contentRect);
 
-			var rect = new CGRect(-relativeX, -relativeY, relativeWidth, relativeHeight);
+			// Calculate a relative (0 to 1) X, Y, Width & Height for the image position
+			var relativeX = contentRect.X / contentRect.Width;
+			var relativeY = contentRect.Y / contentRect.Height;
+			var relativeWidth = availableSize.Width / contentRect.Width;
+			var relativeHeight = availableSize.Height / contentRect.Height;
+			var contentRelativeRect = new CGRect(-relativeX, -relativeY, relativeWidth, relativeHeight);
 
-			Layer.ContentsRect = rect;
+			// Apply the relative position
+			Layer.ContentsRect = contentRelativeRect;
+
+			// Add a clipping mask to prevent the GPU from rendering padding pixels
+			Layer.Mask = new CAShapeLayer
+			{
+				Path = CGPath.FromRect(containerRect.ToCGRect())
+			};
 		}
 	}
 }

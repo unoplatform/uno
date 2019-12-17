@@ -59,6 +59,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 		[Test]
 		[AutoRetry]
+		public void Screenshots_Image_Stretch_Alignment_SizeOnControl()
+		{
+			RunScreenShots_Image_Alignment_page("UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.Image_Stretch_Alignment_SizeOnControl");
+		}
+
+		[Test]
+		[AutoRetry]
 		public void Screenshots_Image_Stretch_Alignment_Smaller()
 		{
 			RunScreenShots_Image_Alignment_page("Uno.UI.Samples.UITests.Image.Image_Stretch_Alignment_Smaller");
@@ -80,20 +87,21 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 		private void RunScreenShots_Image_Alignment_page(string testName)
 		{
-			Run(testName);
+			Run(testName, skipInitialScreenshot: true);
+
+			var picker = _app.Marked("modesPicker");
 
 			var currentModeButton = _app.Marked("currentMode");
 			_app.WaitForElement(currentModeButton);
-
-			var nextStretchButton = _app.Marked("nextStretch");
-			nextStretchButton.Tap();
+			_app.WaitForDependencyPropertyValue(currentModeButton, "Content", "00");
 
 			for (var i = 0; i < 4; i++)
 			{
+				// Use SetDependencyPropertyValue instead of Tap for performance on iOS/Android (Tap takes multiple seconds to complete)
+				picker.SetDependencyPropertyValue("Mode", "S" + i);
 				_app.WaitForDependencyPropertyValue(currentModeButton, "Content", (i * 16).ToString("00"));
 
 				base.TakeScreenshot("Mode-" + i);
-				nextStretchButton.Tap();
 			}
 		}
 	}
