@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Popup
 	{
-		private readonly PopupWindow _popupWindow;
+		private PopupWindow _popupWindow;
 
 		internal FlyoutPlacementMode Placement { get; set; }
 

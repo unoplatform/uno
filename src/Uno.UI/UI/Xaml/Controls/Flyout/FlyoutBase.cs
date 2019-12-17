@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public FlyoutBase()
 		{
-			LightDismissOverlayBackground = Resources["FlyoutLightDismissOverlayBackground"] as Brush ??
+			LightDismissOverlayBackground = Application.Current?.Resources["FlyoutLightDismissOverlayBackground"] as Brush ??
 				// This is normally a no-op - the above line should retrieve the framework-level resource. This is purely to fail the build when
 				// Resources/Styles are overhauled (and the above will no longer be valid)
 				Uno.UI.GlobalStaticResources.FlyoutLightDismissOverlayBackground as Brush;
