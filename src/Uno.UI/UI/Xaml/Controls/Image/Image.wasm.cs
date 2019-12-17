@@ -255,10 +255,11 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
-			var finalPosition = new Windows.Foundation.Rect(Windows.Foundation.Point.Zero, _lastMeasuredSize);
+			// Calculate the resulting space required on screen for the image
+			var containerSize = this.MeasureSource(finalSize, _lastMeasuredSize);
 
-			this.MeasureSource(finalSize, ref finalPosition);
-			this.ArrangeSource(finalSize, ref finalPosition);
+			// Calculate the position of the image to follow stretch and alignment requirements
+			var finalPosition = this.ArrangeSource(finalSize, containerSize);
 
 			_htmlImage.ArrangeElementNative(finalPosition, false, clipRect: null);
 

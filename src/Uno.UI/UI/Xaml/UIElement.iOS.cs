@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml
 
 			this.Layer.Mask = new CAShapeLayer
 			{
-				Path = CGPath.FromRect(ToCGRect(rect))
+				Path = CGPath.FromRect(rect.ToCGRect())
 			};
 		}
 
@@ -121,17 +121,6 @@ namespace Windows.UI.Xaml
 		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
 		{
 			return relativeTo.ConvertPointToCoordinateSpace(position, relativeTo);
-		}
-
-		private CGRect ToCGRect(Rect rect)
-		{
-			return new CGRect
-			(
-				(nfloat)(rect.X),
-				(nfloat)(rect.Y),
-				(nfloat)(rect.Width),
-				(nfloat)(rect.Height)
-			);
 		}
 
 		public GeneralTransform TransformToVisual(UIElement visual)
