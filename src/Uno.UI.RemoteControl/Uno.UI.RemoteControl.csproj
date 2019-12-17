@@ -29,9 +29,15 @@
 	<ItemGroup>
 		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
 	</ItemGroup>
-	
+
 	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
 		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
+			<LogicalName>$(AssemblyName).xml</LogicalName>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
+		<EmbeddedResource Include="LinkerDefinition.Xamarin.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
 		</EmbeddedResource>
 	</ItemGroup>
@@ -53,7 +59,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 		<PackageReference Include="Uno.MonoAnalyzers" />
 		<PackageReference Include="Uno.Wasm.WebSockets" Version="1.0.0-dev.28" />
 	</ItemGroup>

@@ -22,6 +22,7 @@ namespace Windows.UI.Xaml.Shapes
 				typeof(global::Windows.UI.Xaml.Shapes.Polyline),
 				new FrameworkPropertyMetadata(
 					defaultValue: default(global::Windows.UI.Xaml.Media.PointCollection),
+				    options: FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
 					propertyChangedCallback: (s, e) => ((Polyline)s).OnPointsChanged()
 				)
 			);

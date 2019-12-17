@@ -495,7 +495,20 @@
 				<Member 
 					fullName="System.Void Windows.Devices.Lights.Lamp..ctor()"
 					reason="Parameter-less ctor does not exist in UWP" />
-			</Methods>
+				<Member 
+					fullName="Windows.UI.Xaml.ResourceDictionary[] Windows.UI.Xaml.ResourceDictionary.get_MergedDictionaries()"
+					reason="Aligned API" />
+				<Member 
+					fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.Devices.Geolocation.Geoposition&gt; Windows.Devices.Geolocation.Geolocator.GetGeopositionAsync()"
+					reason="Aligned API" />
+				<Member 
+					fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.Devices.Geolocation.Geoposition&gt; Windows.Devices.Geolocation.Geolocator.GetGeopositionAsync(System.TimeSpan maximumAge, System.TimeSpan timeout)"
+					reason="Aligned API" />
+				<Member
+					fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.Devices.Geolocation.GeolocationAccessStatus&gt; Windows.Devices.Geolocation.Geolocator.RequestAccessAsync()"
+					reason="Aligned API" />
+
+            </Methods>
 			
 			<Fields>
 				<Member 

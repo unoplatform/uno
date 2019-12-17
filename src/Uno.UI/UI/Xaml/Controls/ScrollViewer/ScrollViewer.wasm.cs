@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using Windows.Foundation;
+using Microsoft.Extensions.Logging;
+using Uno.Logging;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -15,5 +18,17 @@ namespace Windows.UI.Xaml.Controls
 		// the clipping is enabled to the size of the scrollviewer, even if overflow-y is auto)
 		bool ICustomClippingElement.AllowClippingToLayoutSlot => false;
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
-    }
+
+		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
+		{
+			if (_sv != null)
+			{
+				_sv.ScrollTo(horizontalOffset, verticalOffset, disableAnimation);
+			}
+			else if (_log.IsEnabled(LogLevel.Warning))
+			{
+				_log.Warn("Cannot ChangeView as ScrollContentPresenter is not ready yet.");
+			}
+		}
+	}
 }

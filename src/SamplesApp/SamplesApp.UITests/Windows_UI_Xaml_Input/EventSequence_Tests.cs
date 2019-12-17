@@ -13,26 +13,32 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 	public class EventSequence_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		public void TestTap()
 			=> RunSequence("Tap");
 
 		[Test]
+		[AutoRetry]
 		public void TestClick()
 			=> RunSequence("Click");
 
 		[Test]
+		[AutoRetry]
 		public void TestTranslatedTap()
 			=> RunSequence("TranslatedTap", TranslateOverElement);
 
 		[Test]
+		[AutoRetry]
 		public void TestTranslatedClick()
 			=> RunSequence("TranslatedClick", TranslateOverElement);
 
 		[Test]
+		[AutoRetry]
 		public void TestHyperlink()
 			=> RunSequence("Hyperlink", TapSomewhereInElement);
 
 		[Test]
+		[AutoRetry]
 		public void TestListView()
 			=> RunSequence("ListView", TapSomewhereInElement);
 
@@ -52,7 +58,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		{
 			tap = tap ?? TapElement;
 
-			Run("UITests.Shared.Windows_UI_Input.PointersTests.EventsSequences");
+			Run("UITests.Shared.Windows_UI_Input.PointersTests.EventsSequences", skipInitialScreenshot: true);
 
 			var target = _app.Marked($"Test{testName}Target");
 			var reset = _app.Marked($"Test{testName}Reset");
@@ -64,7 +70,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			tap(target);
 			validate.Tap();
 
-			TakeScreenshot("Result");
+			TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 
 			_app.WaitForDependencyPropertyValue(result, "Text", "SUCCESS");
 		}

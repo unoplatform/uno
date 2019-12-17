@@ -1,50 +1,41 @@
 using System;
-
-using Uno.Extensions;
-using Uno.UI.Views.Controls;
-using Windows.UI.Xaml;
-using Windows.UI.Xaml.Media;
-using Uno.UI.Services;
-using Foundation;
-using UIKit;
-using CoreGraphics;
-using Uno.Disposables;
-using Uno.Diagnostics.Eventing;
-using Windows.UI.Core;
-using System.Threading.Tasks;
 using System.Threading;
-using Windows.Foundation;
+using System.Threading.Tasks;
+using CoreGraphics;
+using UIKit;
+using Uno.Diagnostics.Eventing;
+using Uno.Extensions;
 using Uno.Logging;
-using Windows.UI.Xaml.Media.Imaging;
-using Windows.Storage.Streams;
 using Uno.UI.Extensions;
+using Windows.Foundation;
+using Windows.Storage.Streams;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Media.Imaging;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class Image : UIImageView, IImage
 	{
-        private Size _sourceImageSize;
+		private Size _sourceImageSize;
 
-        /// <summary>
-        /// The size of the native image data
-        /// </summary>
-        private Size SourceImageSize
-        {
-            get
-            {
-                return _sourceImageSize;
-            }
-            set
-            {
-                _sourceImageSize = value;
+		/// <summary>
+		/// The size of the native image data
+		/// </summary>
+		private Size SourceImageSize
+		{
+			get => _sourceImageSize;
+			set
+			{
+				_sourceImageSize = value;
 
-                if (Source is BitmapSource bitmapSource)
-                {
-                    bitmapSource.PixelWidth = (int)_sourceImageSize.Width;
-                    bitmapSource.PixelHeight = (int)_sourceImageSize.Height;
-                }
-            }
-        }
+				if (Source is BitmapSource bitmapSource)
+				{
+					bitmapSource.PixelWidth = (int)_sourceImageSize.Width;
+					bitmapSource.PixelHeight = (int)_sourceImageSize.Height;
+				}
+			}
+		}
 
 		public Image()
 		{
@@ -156,7 +147,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetImageFromWriteableBitmap(WriteableBitmap writeableBitmap)
 		{
-			if(writeableBitmap.PixelBuffer is InMemoryBuffer memoryBuffer)
+			if (writeableBitmap.PixelBuffer is InMemoryBuffer memoryBuffer)
 			{
 				// Convert RGB colorspace.
 				var bgraBuffer = memoryBuffer.Data;
@@ -218,7 +209,9 @@ namespace Windows.UI.Xaml.Controls
 				SourceImageSize = image?.Size.ToFoundationSize() ?? default(Size);
 			}
 
-			SetNeedsLayoutOrDisplay();
+			this.InvalidateMeasure();
+			SetNeedsLayout();
+
 			if (Image != null)
 			{
 				OnImageOpened(image);
@@ -243,34 +236,57 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateContentMode(Stretch stretch)
 		{
-			switch (stretch)
+			if (FeatureConfiguration.Image.LegacyIosAlignment)
 			{
-				case Stretch.Uniform:
-					ContentMode = UIViewContentMode.ScaleAspectFit;
-					break;
+				switch (stretch)
+				{
+					case Stretch.Uniform:
+						ContentMode = UIViewContentMode.ScaleAspectFit;
+						break;
 
-				case Stretch.None:
-					ContentMode = UIViewContentMode.Center;
-					break;
+					case Stretch.None:
+						ContentMode = UIViewContentMode.Center;
+						break;
 
-				case Stretch.UniformToFill:
-					ContentMode = UIViewContentMode.ScaleAspectFill;
-					break;
+					case Stretch.UniformToFill:
+						ContentMode = UIViewContentMode.ScaleAspectFill;
+						break;
 
-				case Stretch.Fill:
-					ContentMode = UIViewContentMode.ScaleToFill;
-					break;
+					case Stretch.Fill:
+						ContentMode = UIViewContentMode.ScaleToFill;
+						break;
 
-				default:
-					throw new NotSupportedException("Stretch mode {0} is not supported".InvariantCultureFormat(stretch));
+					default:
+						throw new NotSupportedException(
+							"Stretch mode {0} is not supported".InvariantCultureFormat(stretch));
+				}
+			}
+			else
+			{
+				SetNeedsLayout();
 			}
 		}
 
+		public override void LayoutSubviews()
+		{
+			try
+			{
+				_layouter.Arrange(Bounds);
+
+				UpdateLayerRect(Bounds.Size);
+			}
+			catch (Exception e)
+			{
+				this.Log().Error($"Layout failed in {GetType()}", e);
+			}
+		}
 
 		partial void OnStretchChanged(Stretch newValue, Stretch oldValue)
 		{
 			UpdateContentMode(newValue);
 		}
+
+		private CGSize _previousSize;
 
 		public override CGSize SizeThatFits(CGSize size)
 		{
@@ -278,7 +294,53 @@ namespace Windows.UI.Xaml.Controls
 
 			size = _layouter.Measure(size.ToFoundationSize());
 
-			return size;
+			return _previousSize = size;
+		}
+
+		private (Size, CGSize, HorizontalAlignment, VerticalAlignment, Stretch) _layerLastParameters;
+
+
+		private void UpdateLayerRect(Size availableSize)
+		{
+			if (SourceImageSize.Width == 0 || SourceImageSize.Height == 0 || availableSize.Width == 0 || availableSize.Height == 0 || Image == null)
+			{
+				return; // nothing to do
+			}
+
+			if (FeatureConfiguration.Image.LegacyIosAlignment)
+			{
+				return;
+			}
+
+			var parameters = (availableSize, Image.Size, HorizontalAlignment, VerticalAlignment, Stretch);
+			if (parameters == _layerLastParameters)
+			{
+				return; // nothing to update
+			}
+
+			_layerLastParameters = parameters;
+
+			var imageSize = Image.Size.ToFoundationSize();
+
+			var sourceRect = new Rect(Point.Zero, imageSize);
+
+			this.MeasureSource(availableSize, ref sourceRect);
+			this.ArrangeSource(availableSize, ref sourceRect);
+
+			var relativeX = sourceRect.X / imageSize.Width;
+			var relativeY = sourceRect.Y / imageSize.Height;
+			var relativeWidth =
+				imageSize.Width > availableSize.Width
+					? availableSize.Width / sourceRect.Width
+					: 1.0d + relativeX;
+			var relativeHeight =
+				imageSize.Height > availableSize.Height
+					? availableSize.Height / sourceRect.Height
+					: 1.0d + relativeY;
+
+			var rect = new CGRect(-relativeX, -relativeY, relativeWidth, relativeHeight);
+
+			Layer.ContentsRect = rect;
 		}
 	}
 }

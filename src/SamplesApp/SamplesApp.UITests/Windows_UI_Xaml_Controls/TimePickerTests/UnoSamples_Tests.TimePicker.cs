@@ -19,38 +19,46 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		[Ignore("Not available yet")]
 		public void TimePickerFlyout_DiscardChanges()
 		{
-			Run("Uno.UI.Samples.Content.UITests.TimePicker.TimePicker_Automated");
-
-			_app.WaitForElement(_app.Marked("btnApplyNewTime"));
-
-			var txtSelectedTime = _app.Marked("txtSelectedTime");
-			var myTimePicker = _app.Marked("myTimePicker");
-
-			// Assert initial state 
-			Assert.AreEqual("14:50", txtSelectedTime.GetDependencyPropertyValue("Text")?.ToString());
-			Assert.AreEqual("14:50:00", myTimePicker.GetDependencyPropertyValue("Time")?.ToString());
-
-			_app.SetOrientationPortrait();
-
-			// Open and dismiss flyout
-			myTimePicker.Tap();
-			var myDevice = _app.Device.GetType();
-			if (_app.Device.GetType().Name.Contains("Android"))
+			try
 			{
-				_app.TapCoordinates(988, 1625);
-				_app.Wait(2);
-				_app.TapCoordinates(988, 1625);
 
-				_app.Find("Cancel").Tap();
-				_app.Wait(2);
+				Run("Uno.UI.Samples.Content.UITests.TimePicker.TimePicker_Automated", skipInitialScreenshot: true);
+
+				_app.WaitForElement(_app.Marked("btnApplyNewTime"));
+
+				var txtSelectedTime = _app.Marked("txtSelectedTime");
+				var myTimePicker = _app.Marked("myTimePicker");
+
+				// Assert initial state 
+				Assert.AreEqual("14:50", txtSelectedTime.GetDependencyPropertyValue("Text")?.ToString());
+				Assert.AreEqual("14:50:00", myTimePicker.GetDependencyPropertyValue("Time")?.ToString());
+
+				_app.SetOrientationPortrait();
+
+				// Open and dismiss flyout
+				myTimePicker.Tap();
+				var myDevice = _app.Device.GetType();
+				if (_app.Device.GetType().Name.Contains("Android"))
+				{
+					_app.TapCoordinates(988, 1625);
+					_app.Wait(2);
+					_app.TapCoordinates(988, 1625);
+
+					_app.Find("Cancel").Tap();
+					_app.Wait(2);
+				}
+				else
+				{
+					// To do Task Number: - 155260 complete test case for IOS.
+				}
+				//Assert final state
+				Assert.AreEqual("14:50", txtSelectedTime.GetDependencyPropertyValue("Text")?.ToString());
+				Assert.AreEqual("14:50:00", myTimePicker.GetDependencyPropertyValue("Time")?.ToString());
 			}
-			else
+			finally
 			{
-				// To do Task Number: - 155260 complete test case for IOS.
+				_app.SetOrientationLandscape();
 			}
-			//Assert final state
-			Assert.AreEqual("14:50", txtSelectedTime.GetDependencyPropertyValue("Text")?.ToString());
-			Assert.AreEqual("14:50:00", myTimePicker.GetDependencyPropertyValue("Time")?.ToString());
 		}
 
 		[Test]
@@ -58,38 +66,45 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		[Ignore("Not available yet")]
 		public void TimePickerFlyout_ApplyChanges()
 		{
-			Run("Uno.UI.Samples.Content.UITests.TimePicker.TimePicker_Automated");
-
-			_app.WaitForElement(_app.Marked("btnApplyNewTime"));
-
-			var txtSelectedTime = _app.Marked("txtSelectedTime");
-			var myTimePicker = _app.Marked("myTimePicker");
-
-			// Assert initial state 
-			Assert.AreEqual("14:50", txtSelectedTime.GetDependencyPropertyValue("Text")?.ToString());
-			Assert.AreEqual("14:50:00", myTimePicker.GetDependencyPropertyValue("Time")?.ToString());
-
-			_app.SetOrientationPortrait();
-
-			// Open, change ime and click on ok to apply changes and to close flyout
-			myTimePicker.Tap();
-			var myDevice = _app.Device.GetType();
-			if (_app.Device.GetType().Name.Contains("Android"))
+			try
 			{
-				_app.TapCoordinates(988, 1625);
-				_app.Wait(2);
-				_app.TapCoordinates(988, 1625);
+				Run("Uno.UI.Samples.Content.UITests.TimePicker.TimePicker_Automated", skipInitialScreenshot: true);
 
-				_app.Find("OK").Tap();
-				_app.Wait(2);
+				_app.WaitForElement(_app.Marked("btnApplyNewTime"));
 
-				//Assert final state
-				Assert.AreNotEqual("14:50", txtSelectedTime.GetDependencyPropertyValue("Text")?.ToString());
-				Assert.AreNotEqual("14:50:00", myTimePicker.GetDependencyPropertyValue("Time")?.ToString());
+				var txtSelectedTime = _app.Marked("txtSelectedTime");
+				var myTimePicker = _app.Marked("myTimePicker");
+
+				// Assert initial state 
+				Assert.AreEqual("14:50", txtSelectedTime.GetDependencyPropertyValue("Text")?.ToString());
+				Assert.AreEqual("14:50:00", myTimePicker.GetDependencyPropertyValue("Time")?.ToString());
+
+				_app.SetOrientationPortrait();
+
+				// Open, change ime and click on ok to apply changes and to close flyout
+				myTimePicker.Tap();
+				var myDevice = _app.Device.GetType();
+				if (_app.Device.GetType().Name.Contains("Android"))
+				{
+					_app.TapCoordinates(988, 1625);
+					_app.Wait(2);
+					_app.TapCoordinates(988, 1625);
+
+					_app.Find("OK").Tap();
+					_app.Wait(2);
+
+					//Assert final state
+					Assert.AreNotEqual("14:50", txtSelectedTime.GetDependencyPropertyValue("Text")?.ToString());
+					Assert.AreNotEqual("14:50:00", myTimePicker.GetDependencyPropertyValue("Time")?.ToString());
+				}
+				else
+				{
+					// To do Task Number: - 155260 complete test case for IOS.KD
+				}
 			}
-			else
+			finally
 			{
-				// To do Task Number: - 155260 complete test case for IOS.KD
+				_app.SetOrientationLandscape();
 			}
 		}
 
@@ -97,7 +112,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		[AutoRetry]
 		public void TimePickerFlyout_DoesntApplyDefaultTime()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Sample1");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Sample1", skipInitialScreenshot: true);
 
 			_app.WaitForElement(_app.Marked("theTimePicker"));
 			var theTimePicker = _app.Marked("theTimePicker");
@@ -107,6 +122,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 			{
 				Assert.AreEqual("12:00:00", theTimePicker.GetDependencyPropertyValue("Time")?.ToString());
 			}
+
+			// Dismiss the flyout
+			_app.TapCoordinates(10, 10);
 		}
 
 		[Test]
@@ -114,7 +132,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void TimePickerFlyout_HasDataContextTest()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Sample2");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Sample2", skipInitialScreenshot: true);
 
 			_app.WaitForElement(_app.Marked("theTimePicker"));
 
@@ -127,6 +145,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 			//Assert
 			Assert.IsNotNull(theTimePicker.GetDependencyPropertyValue("DataContext"));
 			Assert.IsNotNull(timePickerFlyout.GetDependencyPropertyValue("DataContext"));
+
+			// Dismiss the flyout
+			_app.TapCoordinates(10, 10);
 		}
 
 		[Test]
@@ -134,7 +155,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		[ActivePlatforms(Platform.iOS)]
 		public void TimePickerFlyout_HasContentTest()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Sample2");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Sample2", skipInitialScreenshot: true);
 
 			_app.WaitForElement(_app.Marked("theTimePicker"));
 
@@ -146,6 +167,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 
 			//Assert
 			Assert.IsNotNull(timePickerFlyout.GetDependencyPropertyValue("Content"));
+
+			// Dismiss the flyout
+			_app.TapCoordinates(10, 10);
 		}
 
 		[Test]
@@ -153,7 +177,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void TimePicker_Flyout()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.TimePicker_Flyout_Automated");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.TimePicker_Flyout_Automated", skipInitialScreenshot: true);
 
 			var picker = _app.Marked("TestTimePicker");
 
@@ -161,7 +185,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 
 			picker.Tap();
 
-			TakeScreenshot("TimePicker - Flyout");
+			TakeScreenshot("TimePicker - Flyout", ignoreInSnapshotCompare: true);
+
+			// Dismiss the flyout
+			_app.TapCoordinates(10, 10);
 		}
 	}
 }

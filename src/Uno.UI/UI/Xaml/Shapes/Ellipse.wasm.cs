@@ -1,6 +1,7 @@
 ﻿using Windows.Foundation;
 using Windows.UI.Xaml.Wasm;
 using Uno.Extensions;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -20,12 +21,16 @@ namespace Windows.UI.Xaml.Shapes
 			return _ellipse;
 		}
 
-		protected override Size MeasureOverride(Size availableSize)
+		protected override Size ArrangeOverride(Size finalSize)
 		{
-			var bounds = GetBounds();
+			var minMax = this.GetMinMax();
 
-			var cx = bounds.Width / 2;
-			var cy = bounds.Height / 2;
+			var arrangeSize = finalSize
+				.AtLeast(minMax.min)
+				.AtMost(minMax.max);
+
+			var cx = arrangeSize.Width / 2;
+			var cy = arrangeSize.Height / 2;
 
 			var strokeThickness = ActualStrokeThickness;
 
@@ -35,7 +40,7 @@ namespace Windows.UI.Xaml.Shapes
 				("rx", (cx - strokeThickness).ToStringInvariant()),
 				("ry", (cy - strokeThickness).ToStringInvariant()));
 
-			return base.MeasureOverride(availableSize);
+			return base.ArrangeOverride(finalSize);
 		}
 	}
 }

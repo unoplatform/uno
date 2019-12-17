@@ -28,5 +28,73 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			// Take screenshot
 			TakeScreenshot("WriteableBitmap_Invalidate - Result");
 		}
+
+		[Test]
+		[AutoRetry]
+		public void Screenshots_Image_Stretch_Algmnt_Inf_Horizontal()
+		{
+			RunScreenShots_Image_Alignment_page("UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.Image_Stretch_Algmnt_Inf_Horizontal");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Screenshots_Image_Stretch_Algmnt_Inf_Vertical()
+		{
+			RunScreenShots_Image_Alignment_page("UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.Image_Stretch_Algmnt_Inf_Vertical");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Screenshots_Image_Stretch_Alignment_Bigger()
+		{
+			RunScreenShots_Image_Alignment_page("Uno.UI.Samples.UITests.Image.Image_Stretch_Alignment_Bigger");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Screenshots_Image_Stretch_Alignment_Equal()
+		{
+			RunScreenShots_Image_Alignment_page("Uno.UI.Samples.UITests.Image.Image_Stretch_Alignment_Equal");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Screenshots_Image_Stretch_Alignment_Smaller()
+		{
+			RunScreenShots_Image_Alignment_page("Uno.UI.Samples.UITests.Image.Image_Stretch_Alignment_Smaller");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Screenshots_Image_Stretch_Alignment_Taller()
+		{
+			RunScreenShots_Image_Alignment_page("Uno.UI.Samples.UITests.Image.Image_Stretch_Alignment_Taller");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Screenshots_Image_Stretch_Alignment_Wider()
+		{
+			RunScreenShots_Image_Alignment_page("Uno.UI.Samples.UITests.Image.Image_Stretch_Alignment_Wider");
+		}
+
+		private void RunScreenShots_Image_Alignment_page(string testName)
+		{
+			Run(testName);
+
+			var currentModeButton = _app.Marked("currentMode");
+			_app.WaitForElement(currentModeButton);
+
+			var nextStretchButton = _app.Marked("nextStretch");
+			nextStretchButton.Tap();
+
+			for (var i = 0; i < 4; i++)
+			{
+				_app.WaitForDependencyPropertyValue(currentModeButton, "Content", (i * 16).ToString("00"));
+
+				base.TakeScreenshot("Mode-" + i);
+				nextStretchButton.Tap();
+			}
+		}
 	}
 }

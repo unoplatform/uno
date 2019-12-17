@@ -197,6 +197,40 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests
 			);
 		}
 
+		[TestMethod]
+		public void When_SingleRow_And_MinWidth_And_Same_Width()
+		{
+			var sut = new Grid();
+			sut.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLengthHelper.Auto });
+			sut.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star), MinWidth = 48 });
+
+			var inner = new Border();
+			inner.RequestedDesiredSize = new Size(343, 0);
+
+			sut.Children.Add(inner);
+
+			sut.Measure(new Size(343, 979));
+
+			Assert.AreEqual(new Size(343, 0), sut.DesiredSize);
+		}
+
+		[TestMethod]
+		public void When_SingleColumn_And_MinHeight_And_Same_Height()
+		{
+			var sut = new Grid();
+			sut.RowDefinitions.Add(new RowDefinition() { Height = GridLengthHelper.Auto });
+			sut.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star), MinHeight = 48 });
+
+			var inner = new Border();
+			inner.RequestedDesiredSize = new Size(0, 343);
+
+			sut.Children.Add(inner);
+
+			sut.Measure(new Size(979, 343));
+
+			Assert.AreEqual(new Size(0, 343), sut.DesiredSize);
+		}
+
 		private void ConstructAndTestSingleRowGrid(double gridWidth, params (double ExpectedWidth, GridUnitType UnitType, double Size, double? MinWidth, double? MaxWidth)[] columns)
 		{
 			var grid = ConstructSingleRowGrid(columns.Select(c => (c.UnitType, c.Size, c.MinWidth, c.MaxWidth)).ToArray());

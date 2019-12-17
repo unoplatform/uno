@@ -1,0 +1,170 @@
+parameters:
+  pool: ''
+
+jobs:
+- job: Wasm_UITests_Build
+  container: nv-bionic-wasm
+
+  pool:
+    vmImage: 'ubuntu-16.04'
+
+  variables:
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - task: CacheBeta@0
+    condition: eq(variables['enable_package_cache'], 'true')
+    inputs:
+      key: nuget | $(Agent.OS) | $(Agent.JobName) | $(build.sourcesdirectory)/**/*.csproj | $(build.sourcesdirectory)/**/Directory.Build.targets | $(build.sourcesdirectory)/**/Directory.Build.props
+      path: $(NUGET_PACKAGES)
+    displayName: Cache NuGet packages
+    
+  - template: templates/optimize-roslyn-mono.yml
+
+  - bash: |
+      sudo cert-sync /etc/ssl/certs/ca-certificates.crt
+
+    displayName: 'Update the SSL trusted certificates'
+    
+  - bash: |
+      source /emsdk/emsdk_env.sh
+      msbuild /r /p:Configuration=Release src/SamplesApp/SamplesApp.Wasm/SamplesApp.Wasm.csproj /p:UnoSourceGeneratorUseGenerationHost=true /p:UnoSourceGeneratorUseGenerationController=false
+
+    displayName: 'Build sample app'
+
+  - bash: |
+      msbuild /r /p:Configuration=Release src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
+
+    displayName: 'Build Tests'
+
+  - task: CopyFiles@2
+    displayName: 'Publish Wasm Site'
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm/bin/Release/netstandard2.0/dist
+      Contents: '**/*.*'
+      TargetFolder: $(build.artifactstagingdirectory)/site
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: CopyFiles@2
+    displayName: 'Publish Wasm UITest binaries'
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.UITests/bin/Release/net47
+      Contents: '**/*.*'
+      TargetFolder: $(build.artifactstagingdirectory)/test-bin
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+      
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: wasm-uitest-binaries
+      ArtifactType: Container
+
+- job: Wasm_UITests_Snap
+  dependsOn: Wasm_UITests_Build
+  container: nv-bionic-wasm
+
+  pool:
+    vmImage: 'ubuntu-16.04'
+
+  variables:
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: wasm-uitest-binaries
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/optimize-roslyn-mono.yml
+
+  - bash: |
+      set -euo pipefail
+      IFS=$'\n\t'
+      cd $BUILD_SOURCESDIRECTORY/build/wasm-uitest-binaries/site
+      python server.py &
+      cd $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.Wasm.UITests
+      npm install
+      node app
+
+    env:
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+
+    displayName: 'Running UI Tests'
+
+  - task: CopyFiles@2
+    displayName: 'Publish Wasm Tests results'
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.Wasm.UITests/out
+      Contents: '**/*.*'
+      TargetFolder: $(build.artifactstagingdirectory)/screenshots/wasm
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-results
+      ArtifactType: Container
+
+
+- job: Wasm_UITests_Automated
+  dependsOn: Wasm_UITests_Build
+  container: nv-bionic-wasm
+
+  pool:
+    vmImage: 'ubuntu-16.04'
+
+  variables:
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/optimize-roslyn-mono.yml
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: wasm-uitest-binaries
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - bash: |
+      chmod +x $BUILD_SOURCESDIRECTORY/build/run-automated-uitests.sh
+      $BUILD_SOURCESDIRECTORY/build/run-automated-uitests.sh
+
+    env:
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+
+    displayName: 'Running UI Tests'
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testResultsFiles: '$(build.sourcesdirectory)/build/wasm-uitest-binaries/TestResult.xml'
+      testRunTitle: 'WebAssembly Test Run'
+      testResultsFormat: 'NUnit'
+      failTaskOnFailedTests: true
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-results
+      ArtifactType: Container

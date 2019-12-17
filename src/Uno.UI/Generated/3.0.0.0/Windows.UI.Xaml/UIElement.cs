@@ -1144,7 +1144,7 @@ namespace Windows.UI.Xaml
 		// Skipping already declared method Windows.UI.Xaml.UIElement.CapturePointer(Windows.UI.Xaml.Input.Pointer)
 		// Skipping already declared method Windows.UI.Xaml.UIElement.ReleasePointerCapture(Windows.UI.Xaml.Input.Pointer)
 		// Skipping already declared method Windows.UI.Xaml.UIElement.ReleasePointerCaptures()
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.GeneralTransform TransformToVisual( global::Windows.UI.Xaml.UIElement visual)
 		{
