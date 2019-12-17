@@ -436,6 +436,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						{
 							writer.AppendLineInvariant("_initialized = true;");
 
+							foreach (var file in files)
+							{
+								writer.AppendLineInvariant("RegisterResources_{0}();", file.UniqueID);
+								writer.AppendLineInvariant("RegisterImplicitStylesResources_{0}();", file.UniqueID);
+							}
+
 							foreach (var ambientResource in _ambientGlobalResources)
 							{
 								if (ambientResource.GetMethods().Any(m => m.Name == "Initialize"))
@@ -444,12 +450,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								}
 
 								writer.AppendLineInvariant("AddResolver(global::{0}.FindResource);", ambientResource.GetFullName());
-							}
-
-							foreach (var file in files)
-							{
-								writer.AppendLineInvariant("RegisterResources_{0}();", file.UniqueID);
-								writer.AppendLineInvariant("RegisterImplicitStylesResources_{0}();", file.UniqueID);
 							}
 						}
 					}
