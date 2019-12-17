@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly SerialDisposable _closePopup = new SerialDisposable();
 
-		public Popup()
+		partial void InitializePartial()
 		{
 			PopupPanel = new PopupPanel(this);
 		}
@@ -30,9 +30,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (PopupPanel != null)
 			{
-				PopupPanel.Background = newIsLightDismissEnabled
-					? new SolidColorBrush(Colors.Transparent)
-					: null;
+				PopupPanel.Background = GetPanelBackground();
 			}
 		}
 
@@ -67,9 +65,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					newPanel.Children.Add(Child);
 				}
-				newPanel.Background = IsLightDismissEnabled
-					? new SolidColorBrush(Colors.Transparent)
-					: null;
+				newPanel.Background = GetPanelBackground();
 			}
 		}
 

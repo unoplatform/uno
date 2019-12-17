@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal FlyoutPlacementMode Placement { get; set; }
 
-		public Popup()
+		partial void InitializePartial()
 		{
 			_popupWindow = new PopupWindow(this, WindowManagerLayoutParams.MatchParent, WindowManagerLayoutParams.MatchParent, true);
 
@@ -116,14 +116,7 @@ namespace Windows.UI.Xaml.Controls
 				return; // nothing to do
 			}
 
-			if (isLightDismiss)
-			{
-				PopupPanel.Background = new SolidColorBrush(Colors.Transparent);
-			}
-			else
-			{
-				PopupPanel.Background = null;
-			}
+			PopupPanel.Background = GetPanelBackground();
 		}
 
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)

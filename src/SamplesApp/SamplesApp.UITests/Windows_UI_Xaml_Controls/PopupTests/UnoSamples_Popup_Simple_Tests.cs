@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -7,6 +8,7 @@ using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 {
@@ -99,6 +101,34 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 			toggleButton.Tap(); // should dismiss here
 			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", false);
 			TakeScreenshot("Popup_Simple - NonDismissiblePopup - Popup closed"); // We add a screen shot in order to make sure that the check of the bool IsChecked is valid!
+		}
+
+		[Test]
+		[AutoRetry]
+		public void PopupWithOverlay()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.Popup.Popup_Overlay_On");
+
+			var before = TakeScreenshot("Before");
+			var rect = _app.GetRect("LocatorRectangle");
+			ImageAssert.AssertHasColorAt(before, rect.CenterX, rect.CenterY, Color.Blue);
+
+			_app.Tap("PopupCheckBox");
+
+			_app.WaitForElement("PopupChild");
+
+			var during = TakeScreenshot("During", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Status bar appears with clock*/);
+
+			ImageAssert.AssertDoesNotHaveColorAt(during, rect.CenterX, rect.CenterY, Color.Blue);
+
+			// Dismiss popup
+			_app.TapCoordinates(10, 10);
+
+			_app.WaitForNoElement("PopupChild");
+
+			var after = TakeScreenshot("After");
+
+			ImageAssert.AssertHasColorAt(after, rect.CenterX, rect.CenterY, Color.Blue);
 		}
 	}
 }

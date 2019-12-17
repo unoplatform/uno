@@ -5,6 +5,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Markup;
 using Uno.Extensions;
 using Uno.Logging;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -20,6 +21,40 @@ namespace Windows.UI.Xaml.Controls
 		/// However when an Anchor is set on a popup, the Child will instead be top/left aligned to the location of this Anchor.
 		/// </remarks>
 		internal UIElement Anchor { get; set; }
+
+		/// <summary>
+		/// Returns true if the popup should show the light-dismiss overlay with its current configuration, false if not
+		/// </summary>
+		private bool ShouldShowLightDismissOverlay
+		{
+			get
+			{
+				switch (LightDismissOverlayMode)
+				{
+					case LightDismissOverlayMode.Auto:
+						return false; //TODO: establish sensible platform defaults
+					case LightDismissOverlayMode.On:
+						return true;
+					case LightDismissOverlayMode.Off:
+						return false;
+				}
+
+				throw new InvalidOperationException($"Invalid value {LightDismissOverlayMode} for {nameof(LightDismissOverlayMode)}");
+			}
+		}
+
+		public Popup()
+		{
+			InitializePartial();
+
+			LightDismissOverlayBackground = Resources["PopupLightDismissOverlayBackground"] as Brush ??
+				// This is normally a no-op - the above line should retrieve the framework-level resource. This is purely to fail the build when
+				// Resources/Styles are overhauled (and the above will no longer be valid)
+				Uno.UI.GlobalStaticResources.PopupLightDismissOverlayBackground as Brush;
+			ApplyLightDismissOverlayMode();
+		}
+
+		partial void InitializePartial();
 
 		/// <summary>
 		/// The <see cref="PopupPanel"/> which host this Popup
@@ -66,6 +101,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			OnPopupPanelChangedPartial(oldHost, newHost);
+
+			ApplyLightDismissOverlayMode();
 		}
 
 		partial void OnPopupPanelChangedPartial(PopupPanel oldHost, PopupPanel newHost);
@@ -108,5 +145,62 @@ namespace Windows.UI.Xaml.Controls
 				popup.IsOpen = false;
 			}
 		};
+
+		public LightDismissOverlayMode LightDismissOverlayMode
+		{
+			get
+			{
+				return (LightDismissOverlayMode)this.GetValue(LightDismissOverlayModeProperty);
+			}
+			set
+			{
+				this.SetValue(LightDismissOverlayModeProperty, value);
+			}
+		}
+
+		public static DependencyProperty LightDismissOverlayModeProperty { get; } =
+		DependencyProperty.Register(
+			"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
+			typeof(Popup),
+			new FrameworkPropertyMetadata(default(LightDismissOverlayMode), (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
+
+		private void ApplyLightDismissOverlayMode()
+		{
+			if (PopupPanel != null)
+			{
+				PopupPanel.Background = GetPanelBackground();
+			}
+		}
+
+		/// <summary>
+		/// Get background Brush to use for the PopupPanel.
+		/// </summary>
+		private Brush GetPanelBackground()
+		{
+			if (ShouldShowLightDismissOverlay)
+			{
+				return LightDismissOverlayBackground;
+			}
+			else if (IsLightDismissEnabled)
+			{
+				return SolidColorBrushHelper.Transparent;
+			}
+			else
+			{
+				return null;
+			}
+		}
+
+		/// <summary>
+		/// Sets the light-dismiss colour, if the overlay is enabled. The external API for modifying this is to override the PopupLightDismissOverlayBackground, etc, static resource values.
+		/// </summary>
+		internal Brush LightDismissOverlayBackground
+		{
+			get { return (Brush)GetValue(LightDismissOverlayBackgroundProperty); }
+			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
+		}
+
+		internal static readonly DependencyProperty LightDismissOverlayBackgroundProperty =
+			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(Popup), new PropertyMetadata(null, (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
 	}
 }
