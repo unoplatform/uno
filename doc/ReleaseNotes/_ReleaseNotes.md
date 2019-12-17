@@ -5,6 +5,7 @@
 - Added support for using a `string` value in a `StaticResource` when using `CreateFromStringAttribute'
 - [Android] Adds support for `FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay`
 - Add support for `Grid.ColumnSpacing` and `Grid.RowSpacing`
+- Add clarification in [documentation](../articles/uno-development/working-with-the-samples-apps.md) for adding automated UI tests
 
 ### Breaking changes
 -

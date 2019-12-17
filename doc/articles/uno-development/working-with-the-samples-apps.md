@@ -51,6 +51,7 @@ This attribute can be placed at the test or class level.
 
 - Setup an android simulator or device, start it
 - Deploy and run the `SamplesApp.Droid` application on that device
+- After you have added a new test page, you must launch the samples application once before running the test, otherwise the code for that page is not generated and the test will fail.
 
 ## Running UI Tests
 
