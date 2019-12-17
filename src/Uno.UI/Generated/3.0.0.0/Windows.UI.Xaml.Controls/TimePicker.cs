@@ -66,20 +66,6 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property ClockIdentifier
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.LightDismissOverlayMode LightDismissOverlayMode
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.LightDismissOverlayMode)this.GetValue(LightDismissOverlayModeProperty);
-			}
-			set
-			{
-				this.SetValue(LightDismissOverlayModeProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan? SelectedTime
 		{
 			get
@@ -124,14 +110,6 @@ namespace Windows.UI.Xaml.Controls
 			"Time", typeof(global::System.TimeSpan), 
 			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
 			new FrameworkPropertyMetadata(default(global::System.TimeSpan)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"LightDismissOverlayMode", typeof(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode), 
-			typeof(global::Windows.UI.Xaml.Controls.TimePicker), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
