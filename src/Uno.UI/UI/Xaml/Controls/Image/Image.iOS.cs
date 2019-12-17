@@ -11,6 +11,7 @@ using Windows.Foundation;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using CoreAnimation;
 using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
@@ -262,7 +263,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				ContentMode = UIViewContentMode.ScaleToFill;
 				SetNeedsLayout();
 			}
 		}
@@ -324,27 +324,21 @@ namespace Windows.UI.Xaml.Controls
 			var containerRect = new Rect(default, availableSize);
 			containerRect.Intersect(contentRect);
 
-			var relativeX = (contentRect.X - containerRect.X) / contentRect.Width;
-			var relativeY = (contentRect.Y - containerRect.Y) / contentRect.Height;
-			var relativeWidth =
-				containerRect.Width < contentRect.Width
-					? containerRect.Width / contentRect.Width
-					: 1.0d + relativeX;
-			var relativeHeight =
-				containerRect.Height < contentRect.Height
-					? containerRect.Height / contentRect.Height
-					: 1.0d + relativeY;
-
+			// Calculate a relative (0 to 1) X, Y, Width & Height for the image position
+			var relativeX = contentRect.X / contentRect.Width;
+			var relativeY = contentRect.Y / contentRect.Height;
+			var relativeWidth = availableSize.Width / contentRect.Width;
+			var relativeHeight = availableSize.Height / contentRect.Height;
 			var contentRelativeRect = new CGRect(-relativeX, -relativeY, relativeWidth, relativeHeight);
 
+			// Apply the relative position
 			Layer.ContentsRect = contentRelativeRect;
 
-			containerRect = containerRect.AtMost(availableSize);
-			containerRect.X += Frame.X;
-			containerRect.Y += Frame.Y;
-
-			Frame = containerRect;
-			ClipsToBounds = true;
+			// Add a clipping mask to prevent the GPU from rendering padding pixels
+			Layer.Mask = new CAShapeLayer
+			{
+				Path = CGPath.FromRect(containerRect.ToCGRect())
+			};
 		}
 	}
 }
