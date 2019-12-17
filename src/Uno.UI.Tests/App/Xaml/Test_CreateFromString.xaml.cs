@@ -20,6 +20,7 @@ namespace Uno.UI.Tests.App.Xaml
 	{
 		public MyLocationPointControl TestLocationPoint => TestLocationControl;
 		public MyLocationPointControl TestLocationPoint2 => TestLocationControl2;
+		public MyLocationPointControl TestLocationPoint3 => TestLocationControl3;
 
 		public Test_CreateFromString()
 		{
