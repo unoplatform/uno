@@ -32,7 +32,8 @@ namespace Windows.UI.Xaml.Controls
 				switch (LightDismissOverlayMode)
 				{
 					case LightDismissOverlayMode.Auto:
-						return false; //TODO: establish sensible platform defaults
+						// For now, default to false for all platforms. This may be adjusted in the future.
+						return false;
 					case LightDismissOverlayMode.On:
 						return true;
 					case LightDismissOverlayMode.Off:
