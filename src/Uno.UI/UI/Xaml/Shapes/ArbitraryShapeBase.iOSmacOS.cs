@@ -300,9 +300,25 @@ namespace Windows.UI.Xaml.Shapes
 			var path = GetPath();
 			if (path == null)
 			{
-				return default(Size);
+				return default;
 			}
 			var bounds = path.PathBoundingBox;
+
+			if (bounds.IsEmpty)
+			{
+				return default;
+			}
+
+			// On iOS 11, the origin (X, Y) of bounds could be infinite, leading to strange results.
+			if (nfloat.IsInfinity(bounds.X))
+			{
+				bounds.X = 0;
+			}
+
+			if (nfloat.IsInfinity(bounds.Y))
+			{
+				bounds.Y = 0;
+			}
 
 			var pathWidth = bounds.Width;
 			var pathHeight = bounds.Height;
