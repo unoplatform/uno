@@ -41,6 +41,8 @@ The tutorial walks you through creating a cross platform application with Uno, w
     - Click back on the Browse tab and install the following NuGet Packages to each of the projects in your solution:
         - `Refractored.MvvmHelpers`
 
+1. Finally, you'll need to close any opened file in the editor, then close the solution or Visual Studio, then re-open it. This is a workaround for a Visual studio issue regarding the XAML editor.
+
 ## Setting up our Model
 
 1. Add a Models folder in the Shared Project.
@@ -225,7 +227,9 @@ The tutorial walks you through creating a cross platform application with Uno, w
     }
     ```
 
-1. Now that we have some basic data to bind to, in the **Solution Explorer**, double-click **MainPage.xaml** to open, then add the following code. We will start by adding a XML Namespace for the Converters and Controls from the Microsoft Community Toolkit as shown below:
+1. Now that we have some basic data to bind to, in the **Solution Explorer**, double-click **MainPage.xaml** to open it.
+1. At the top left corner of the editor select **BugTracker.UWP**
+1. Then we'll add some XAML. We will start with an XML Namespace for the Converters as shown below:
 
     ```xml
     <Page x:Class="BugTracker.MainPage"
