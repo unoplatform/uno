@@ -298,7 +298,10 @@ namespace Windows.UI.Xaml.Controls
 				return ret;
 			}
 
-			if (frameworkElement != null && !(frameworkElement is FrameworkElement))
+			if (frameworkElement != null
+				&& !(frameworkElement is FrameworkElement)
+				&& !(frameworkElement is Image)
+				)
 			{
 				// For IFrameworkElement implementers that are not FrameworkElements, the constraint logic must
 				// be performed by the parent. Otherwise, the native element will take the size it needs without
