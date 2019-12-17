@@ -6,6 +6,7 @@
 - [Android] Adds support for `FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay`
 - Add support for `Grid.ColumnSpacing` and `Grid.RowSpacing`
 - Add clarification in [documentation](../articles/uno-development/working-with-the-samples-apps.md) for adding automated UI tests
+- Add support for `Popup.LightDismissOverlayMode`, as well as `DatePicker.LightDismissOverlayMode` and `Flyout.LightDismissOverlayMode`
 
 ### Breaking changes
 -
