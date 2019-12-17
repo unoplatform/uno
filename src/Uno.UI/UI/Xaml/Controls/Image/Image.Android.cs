@@ -517,14 +517,15 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// If the image control does not have finite bounds, then it must go through another measure/arrange pass after the image is set. 
+		/// If the image control does not have finite bounds, or if finite bounds have not yet been computed, then it must go through
+		/// another measure/arrange pass after the image is set. 
 		/// This is not guaranteed to happen if RequestLayout is called from within a layout pass, so we must set the image on the dispatcher 
 		/// even if we wouldn't otherwise.
 		/// </summary>
 		/// <returns></returns>
 		private bool MustDispatchSetSource()
 		{
-			return (!_hasFiniteBounds ?? false) && _isInLayout;
+			return (!_hasFiniteBounds ?? true) && _isInLayout;
 		}
 
 		private void ResetSource()
