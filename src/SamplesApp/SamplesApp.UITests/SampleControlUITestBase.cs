@@ -122,7 +122,7 @@ namespace SamplesApp.UITests
 				&& TestContext.CurrentContext.Result.Outcome != ResultState.Ignored
 			)
 			{
-				TakeScreenshot($"{TestContext.CurrentContext.Test.Name} - Tear down on error");
+				TakeScreenshot($"{TestContext.CurrentContext.Test.Name} - Tear down on error", ignoreInSnapshotCompare: true);
 			}
 		}
 
