@@ -122,7 +122,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 			ImageAssert.AssertDoesNotHaveColorAt(during, rect.CenterX, rect.CenterY, Color.Blue);
 
 			// Dismiss popup
-			_app.TapCoordinates(10, 10);
+			var screenRect = _app.Marked("sampleContent").FirstResult().Rect;
+			_app.TapCoordinates(10, screenRect.Bottom - 10);
 
 			_app.WaitForNoElement("PopupChild");
 
