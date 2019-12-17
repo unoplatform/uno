@@ -10,26 +10,26 @@ namespace Windows.UI.Xaml.Controls
 	internal static class ImageSizeHelper
 	{
 		[Pure]
-		public static Size MeasureSource(this Image image, Size finalSize, Size child)
+		public static Size MeasureSource(this Image image, Size finalSize, Size imageSize)
 		{
 			switch (image.Stretch)
 			{
 				case UniformToFill:
 					{
-						var childAspectRatio = child.AspectRatio();
+						var childAspectRatio = imageSize.AspectRatio();
 						var finalAspectRatio = finalSize.AspectRatio();
 						if (childAspectRatio <= finalAspectRatio)
 						{
 							// Child wider than parent, so we're using the width to fill
 							// It's also the default mode if aspect ratios are the same
-							child.Width = finalSize.Width;
-							child.Height = finalSize.Width / childAspectRatio;
+							imageSize.Width = finalSize.Width;
+							imageSize.Height = finalSize.Width / childAspectRatio;
 						}
 						else
 						{
 							// child is taller than parent, so where' using the height to fill
-							child.Width = finalSize.Height * childAspectRatio;
-							child.Height = finalSize.Height;
+							imageSize.Width = finalSize.Height * childAspectRatio;
+							imageSize.Height = finalSize.Height;
 						}
 
 						break;
@@ -37,19 +37,19 @@ namespace Windows.UI.Xaml.Controls
 
 				case Uniform:
 					{
-						var childAspectRatio = child.AspectRatio();
+						var childAspectRatio = imageSize.AspectRatio();
 						var finalAspectRatio = finalSize.AspectRatio();
 						if (childAspectRatio <= finalAspectRatio)
 						{
 							// Child wider than parent, so we're using the height to fill
-							child.Width = finalSize.Height * childAspectRatio;
-							child.Height = finalSize.Height;
+							imageSize.Width = finalSize.Height * childAspectRatio;
+							imageSize.Height = finalSize.Height;
 						}
 						else
 						{
 							// child is taller than parent, so where' using the width to fill
-							child.Width = finalSize.Width;
-							child.Height = finalSize.Width / childAspectRatio;
+							imageSize.Width = finalSize.Width;
+							imageSize.Height = finalSize.Width / childAspectRatio;
 						}
 
 						break;
@@ -57,14 +57,14 @@ namespace Windows.UI.Xaml.Controls
 
 				case Fill:
 					{
-						child = finalSize;
+						imageSize = finalSize;
 						break;
 					}
 
 					// In case of None, there's no adjustment to make to the size of the image
 			}
 
-			return child;
+			return imageSize;
 		}
 
 		[Pure]
