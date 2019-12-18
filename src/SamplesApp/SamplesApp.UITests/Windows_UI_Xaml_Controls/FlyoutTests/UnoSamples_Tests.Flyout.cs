@@ -38,7 +38,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
-    public void FlyoutTest_DataBoundButton_CommandExecutes()
+        public void FlyoutTest_DataBoundButton_CommandExecutes()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_ButtonInContent");
 
@@ -54,6 +54,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 			_app.Tap(dataBoundButton);
 			Assert.AreEqual("Button was clicked", dataBoundText.GetText());
+			
+			_app.TapCoordinates(10, 100);
 		}
 
 		[Test]
