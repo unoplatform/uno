@@ -39,16 +39,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 		private void Test(bool aboveEquals, bool belowEquals, [CallerMemberName] string test = null)
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.ComboBox.ComboBox_DropDownPlacement");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ComboBox.ComboBox_DropDownPlacement", skipInitialScreenshot: true);
 
 			var sut = _app.WaitForElement(test).Single();
 
-			var notOpened = TakeScreenshot("not_opened");
+			var notOpened = TakeScreenshot("not_opened", ignoreInSnapshotCompare: true);
 
 			// Open the combo
 			_app.TapCoordinates(sut.Rect.Right - 10, sut.Rect.CenterY);
 
-			var opened = TakeScreenshot("opened");
+			var opened = TakeScreenshot("opened", ignoreInSnapshotCompare: true);
 
 			// Make sure to close the combo
 			_app.TapCoordinates(sut.Rect.X - 10, sut.Rect.Y - 10);
