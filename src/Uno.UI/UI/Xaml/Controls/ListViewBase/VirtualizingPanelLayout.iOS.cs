@@ -475,6 +475,10 @@ namespace Windows.UI.Xaml.Controls
 		/// <returns>The total collection size</returns>
 		private CGSize PrepareLayoutInternal(bool createLayoutInfo, bool isCollectionChanged, CGSize size)
 		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"PrepareLayoutInternal() - recalculating layout, createLayoutInfo={createLayoutInfo}, dirtyState={_dirtyState}, size={size} ");
+			}
 			Dictionary<NSIndexPath, CGSize?> oldItemSizes = null;
 			Dictionary<int, CGSize?> oldGroupHeaderSizes = null;
 
