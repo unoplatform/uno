@@ -291,8 +291,6 @@ namespace Windows.UI.Xaml.Controls
 
 		public override CGSize SizeThatFits(CGSize size)
 		{
-			size = IFrameworkElementHelper.SizeThatFits(this, size);
-
 			size = _layouter.Measure(size.ToFoundationSize());
 
 			return _previousSize = size;
