@@ -1,15 +1,19 @@
 ﻿<Page
-    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ComboBox.ComboBox_DropDownPlacement"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ComboBox.ComboBox_DropDownPlacement"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ComboBox"
-	xmlns:not_win="using:Uno.UI.Xaml.Controls"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d not_win"
-    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+	xmlns:not_win="http://uno.ui/not_win"
+	xmlns:uno="using:Uno.UI.Xaml.Controls"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d not_win"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-    <Grid BorderBrush="DarkRed" BorderThickness="2,50,2,100">
+	<win:TextBlock Text="This sample demos a Uno only feature and is not available on Windows." />
+
+	<not_win:Grid BorderBrush="DarkRed" BorderThickness="2,50,2,100">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition />
 			<ColumnDefinition />
@@ -37,7 +41,7 @@
 			VerticalAlignment="Center"
 			ItemsSource="12345"
 			SelectedIndex="-1"
-			not_win:ComboBox.DropDownPreferredPlacement="Above" />
+			uno:ComboBox.DropDownPreferredPlacement="Above" />
 
 		<ComboBox
 			x:Name="NoSelectionPreferCentered"
@@ -46,7 +50,7 @@
 			VerticalAlignment="Center"
 			ItemsSource="12345"
 			SelectedIndex="-1"
-			not_win:ComboBox.DropDownPreferredPlacement="Centered" />
+			uno:ComboBox.DropDownPreferredPlacement="Centered" />
 
 		<ComboBox
 			x:Name="NoSelectionPreferBelow"
@@ -55,7 +59,7 @@
 			VerticalAlignment="Center"
 			ItemsSource="12345"
 			SelectedIndex="-1"
-			not_win:ComboBox.DropDownPreferredPlacement="Below" />
+			uno:ComboBox.DropDownPreferredPlacement="Below" />
 
 		<ComboBox
 			x:Name="NoSelectionPreferAuto"
@@ -64,7 +68,7 @@
 			VerticalAlignment="Center"
 			ItemsSource="12345"
 			SelectedIndex="-1"
-			not_win:ComboBox.DropDownPreferredPlacement="Auto" />
+			uno:ComboBox.DropDownPreferredPlacement="Auto" />
 
 
 
@@ -76,7 +80,7 @@
 			VerticalAlignment="Center"
 			ItemsSource="12345"
 			SelectedIndex="0"
-			not_win:ComboBox.DropDownPreferredPlacement="Above" />
+			uno:ComboBox.DropDownPreferredPlacement="Above" />
 
 		<ComboBox
 			x:Name="FirstSelectedPreferCentered"
@@ -85,7 +89,7 @@
 			VerticalAlignment="Center"
 			ItemsSource="12345"
 			SelectedIndex="0"
-			not_win:ComboBox.DropDownPreferredPlacement="Centered" />
+			uno:ComboBox.DropDownPreferredPlacement="Centered" />
 
 		<ComboBox
 			x:Name="FirstSelectedPreferBelow"
@@ -94,7 +98,7 @@
 			VerticalAlignment="Center"
 			ItemsSource="12345"
 			SelectedIndex="0"
-			not_win:ComboBox.DropDownPreferredPlacement="Below" />
+			uno:ComboBox.DropDownPreferredPlacement="Below" />
 
 		<ComboBox
 			x:Name="FirstSelectedPreferAuto"
@@ -103,7 +107,7 @@
 			VerticalAlignment="Center"
 			ItemsSource="12345"
 			SelectedIndex="0"
-			not_win:ComboBox.DropDownPreferredPlacement="Auto" />
+			uno:ComboBox.DropDownPreferredPlacement="Auto" />
 
 
 
@@ -115,7 +119,7 @@
 			VerticalAlignment="Center"
 			ItemsSource="12345"
 			SelectedIndex="2"
-			not_win:ComboBox.DropDownPreferredPlacement="Above" />
+			uno:ComboBox.DropDownPreferredPlacement="Above" />
 
 		<ComboBox
 			x:Name="MiddleSelectedPreferCentered"
@@ -124,7 +128,7 @@
 			VerticalAlignment="Center"
 			ItemsSource="12345"
 			SelectedIndex="2"
-			not_win:ComboBox.DropDownPreferredPlacement="Centered" />
+			uno:ComboBox.DropDownPreferredPlacement="Centered" />
 
 		<ComboBox
 			x:Name="MiddleSelectedPreferBelow"
@@ -133,7 +137,7 @@
 			VerticalAlignment="Center"
 			ItemsSource="12345"
 			SelectedIndex="2"
-			not_win:ComboBox.DropDownPreferredPlacement="Below" />
+			uno:ComboBox.DropDownPreferredPlacement="Below" />
 
 		<ComboBox
 			x:Name="MiddleSelectedPreferAuto"
@@ -142,7 +146,7 @@
 			VerticalAlignment="Center"
 			ItemsSource="12345"
 			SelectedIndex="2"
-			not_win:ComboBox.DropDownPreferredPlacement="Auto" />
+			uno:ComboBox.DropDownPreferredPlacement="Auto" />
 
 
 
@@ -154,7 +158,7 @@
 			VerticalAlignment="Center"
 			ItemsSource="12345"
 			SelectedIndex="4"
-			not_win:ComboBox.DropDownPreferredPlacement="Above" />
+			uno:ComboBox.DropDownPreferredPlacement="Above" />
 
 		<ComboBox
 			x:Name="LastSelectedPreferCentered"
@@ -163,7 +167,7 @@
 			VerticalAlignment="Center"
 			ItemsSource="12345"
 			SelectedIndex="4"
-			not_win:ComboBox.DropDownPreferredPlacement="Centered" />
+			uno:ComboBox.DropDownPreferredPlacement="Centered" />
 
 		<ComboBox
 			x:Name="LastSelectedPreferBelow"
@@ -172,7 +176,7 @@
 			VerticalAlignment="Center"
 			ItemsSource="12345"
 			SelectedIndex="4"
-			not_win:ComboBox.DropDownPreferredPlacement="Below" />
+			uno:ComboBox.DropDownPreferredPlacement="Below" />
 
 		<ComboBox
 			x:Name="LastSelectedPreferAuto"
@@ -181,6 +185,6 @@
 			VerticalAlignment="Center"
 			ItemsSource="12345"
 			SelectedIndex="4"
-			not_win:ComboBox.DropDownPreferredPlacement="Auto" />
-	</Grid>
+			uno:ComboBox.DropDownPreferredPlacement="Auto" />
+	</not_win:Grid>
 </Page>
