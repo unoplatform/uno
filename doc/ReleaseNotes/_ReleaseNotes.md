@@ -17,6 +17,7 @@
 - #2227 fixed Color & SolidColorBrush literal values generation
 - [Android] Fix bug where setting Canvas.ZIndex would apply shadow effect in some cases
 - #2287 Vertical `ListView` containing a horizontal `ScrollViewer`: horizontal scrolling is difficult, only works when the gesture is perfectly horizontal
+- #2130 Grid - fix invalid measure when total star size is 0
 
 ## Release 2.0
 
