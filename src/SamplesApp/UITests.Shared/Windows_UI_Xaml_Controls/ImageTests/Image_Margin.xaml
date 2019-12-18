@@ -1,5 +1,5 @@
 ﻿<Page
-    x:Class="UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.Image_Margin"
+    x:Class="Uno.UI.Samples.UITests.Image.Image_Margin"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ImageTests"
