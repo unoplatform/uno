@@ -95,8 +95,13 @@ namespace Windows.UI.Xaml.Controls
 
 				var marginSize = Panel.GetMarginSize();
 
+				// NaN values are accepted as input here, particularly when coming from
+				// SizeThatFits in Image or Scrollviewer. Clamp the value here as it is reused
+				// below for the clipping value.
+				availableSize = availableSize
+					.NumberOrDefault(MaxSize);
+
 				var frameworkAvailableSize = availableSize
-					.NumberOrDefault(MaxSize)
 					.Subtract(marginSize)
 					.AtLeast(default) // 0.0,0.0
 					.AtMost(maxSize);
