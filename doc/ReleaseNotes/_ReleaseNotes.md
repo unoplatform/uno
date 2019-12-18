@@ -19,6 +19,7 @@
 - [Android] Fix bug where setting Canvas.ZIndex would apply shadow effect in some cases
 - #2287 Vertical `ListView` containing a horizontal `ScrollViewer`: horizontal scrolling is difficult, only works when the gesture is perfectly horizontal
 - #2130 Grid - fix invalid measure when total star size is 0
+- [iOS] Fix invalid image measure on constrained images with `Margin`
 
 ## Release 2.0
 
