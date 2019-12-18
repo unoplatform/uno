@@ -728,17 +728,6 @@ namespace Windows.UI.Xaml.Controls
 			return MeasureChild(view, slotSize);
 		}
 
-		private Size GetConstrainedSize(Size availableSize)
-		{
-			var constrainedSize = IFrameworkElementHelper.SizeThatFits(Panel as IFrameworkElement, availableSize);
-
-#if XAMARIN_IOS
-			return constrainedSize.ToFoundationSize();
-#else
-			return constrainedSize;
-#endif
-		}
-
 		private string LoggingOwnerTypeName => ((object)Panel ?? this).GetType().Name;
 
 		public override string ToString() => $"[{LoggingOwnerTypeName}.Layouter]" + (string.IsNullOrEmpty(Panel?.Name) ? default : $"(name='{Panel.Name}')");
