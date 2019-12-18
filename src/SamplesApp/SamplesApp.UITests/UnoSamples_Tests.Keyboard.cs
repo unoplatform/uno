@@ -446,7 +446,7 @@ namespace SamplesApp.UITests
 
 			var final = TakeScreenshot("final");
 
-			ImageAssert.AssertScreenshotsAreEqual(initial, final);
+			ImageAssert.AreEqual(initial, final);
 		}
 	}
 }

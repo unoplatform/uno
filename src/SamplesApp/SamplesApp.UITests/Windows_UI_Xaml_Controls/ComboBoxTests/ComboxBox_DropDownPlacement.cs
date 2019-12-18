@@ -60,21 +60,21 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 			if (aboveEquals)
 			{
-				ImageAssert.AssertScreenshotsAreEqual(notOpened, opened, above);
+				ImageAssert.AreEqual(notOpened, opened, above);
 			}
 			else
 			{
-				ImageAssert.AssertScreenshotsAreNotEqual(notOpened, opened, above);
+				ImageAssert.AreNotEqual(notOpened, opened, above);
 			}
 
 			if (belowEquals)
 			{
 				// On Android the StatusBar may flicker when we open a ComboBox, so validate the 
-				ImageAssert.AssertScreenshotsAreEqual(notOpened, opened, below);
+				ImageAssert.AreEqual(notOpened, opened, below);
 			}
 			else
 			{
-				ImageAssert.AssertScreenshotsAreNotEqual(notOpened, opened, below);
+				ImageAssert.AreNotEqual(notOpened, opened, below);
 			}
 		}
 	}
