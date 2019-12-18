@@ -1058,5 +1058,30 @@ namespace Uno.UI.Tests.GridTests
 			SUT.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
 			SUT.RowDefinitions.Clear();
 		}
+		[TestMethod]
+		public void When_Zero_Star_Size()
+		{
+			var SUT = new Grid();
+			SUT.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLength.Auto });
+			SUT.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(0, GridUnitType.Star) });
+			SUT.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+			SUT.RowDefinitions.Add(new RowDefinition() { Height = GridLength.Auto });
+
+			SUT.Children.Add(GetChild(0, 0));
+			SUT.Children.Add(GetChild(0, 1));
+			SUT.Children.Add(GetChild(1, 0));
+			SUT.Children.Add(GetChild(1, 1));
+
+			SUT.Measure(new Windows.Foundation.Size(800, 800));
+			Assert.AreEqual(new Windows.Foundation.Size(50, 100), SUT.DesiredSize);
+
+			Border GetChild(int col, int row)
+			{
+				var border = new Border { Height = 50, Width = 50 };
+				Grid.SetColumn(border, col);
+				Grid.SetRow(border, row);
+				return border;
+			}
+		}
 	}
 }
