@@ -38,6 +38,28 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 		[Test]
 		[AutoRetry]
+        public void FlyoutTest_DataBoundButton_CommandExecutes()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.Flyout.Flyout_ButtonInContent");
+
+			var flyoutButton = _app.Marked("FlyoutButton");
+			var dataBoundButton = _app.Marked("DataBoundButton");
+			var dataBoundText = _app.Marked("DataBoundText");
+
+			_app.WaitForElement(flyoutButton);
+			_app.Tap(flyoutButton);
+
+			_app.WaitForElement(dataBoundButton);
+			Assert.AreEqual("Button not clicked", dataBoundText.GetText());
+
+			_app.Tap(dataBoundButton);
+			Assert.AreEqual("Button was clicked", dataBoundText.GetText());
+			
+			_app.TapCoordinates(10, 100);
+		}
+
+		[Test]
+		[AutoRetry]
 		public void FlyoutTest_Target()
 		{
 			Run("Uno.UI.Samples.Content.UITests.Flyout.Flyout_Target");
