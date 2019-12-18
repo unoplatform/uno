@@ -93,6 +93,20 @@ To run the tests:
 
 Note that the same operation is run during the CI, in a specific job running under Linux. The screen shots are located in the Unit Tests section under `Screenshots Compare Test Run` as well as in the build artifact.
 
+## Running iOS UI Tests in a Simulator on macOS 
+
+Running UI Tests in iOS Simulators on macOS requires, as of VS4Mac 8.4, to build and run the tests from the command line. Editing the Uno.UI solution is not a particularly stable experience yet.
+
+In a terminal, run the following:
+``` bash
+cd build
+./local-ios-uitest-run.sh
+```
+
+The Uno.UI solution will build, and the UI tests will run. You may need to adjust some of the parameters in the script, such as:
+- `UITEST_SNAPSHOTS_ONLY` which runs automated or snapshots tests
+- `UITEST_SNAPSHOTS_GROUP` which controls which group of tests will be run. Note that this feature is mainly used for build performance, where tests from different groups can be run in parallel during the CI.
+
 ## Validating the WebAssembly UI Tests results
 
 In the CI build, an artifact named `wasm-uitests` is generated and contains an HTML file that shows all the differences
