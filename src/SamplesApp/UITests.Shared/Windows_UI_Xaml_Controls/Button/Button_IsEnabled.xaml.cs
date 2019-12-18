@@ -7,7 +7,7 @@ using Uno.UI.Samples.Presentation.SamplePages;
 
 namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 {
-	[SampleControlInfo("Button", "Button_IsEnabled", typeof(ButtonTestsViewModel))]
+	[SampleControlInfo("Button", "Button_IsEnabled", typeof(ButtonTestsViewModel), ignoreInSnapshotTests: true)]
 	public sealed partial class Button_IsEnabled : UserControl
 	{
 		public Button_IsEnabled()

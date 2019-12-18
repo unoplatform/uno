@@ -95,8 +95,13 @@ namespace Windows.UI.Xaml.Controls
 
 				var marginSize = Panel.GetMarginSize();
 
+				// NaN values are accepted as input here, particularly when coming from
+				// SizeThatFits in Image or Scrollviewer. Clamp the value here as it is reused
+				// below for the clipping value.
+				availableSize = availableSize
+					.NumberOrDefault(MaxSize);
+
 				var frameworkAvailableSize = availableSize
-					.NumberOrDefault(MaxSize)
 					.Subtract(marginSize)
 					.AtLeast(default) // 0.0,0.0
 					.AtMost(maxSize);
@@ -721,17 +726,6 @@ namespace Windows.UI.Xaml.Controls
 		Size ILayouter.MeasureChild(View view, Size slotSize)
 		{
 			return MeasureChild(view, slotSize);
-		}
-
-		private Size GetConstrainedSize(Size availableSize)
-		{
-			var constrainedSize = IFrameworkElementHelper.SizeThatFits(Panel as IFrameworkElement, availableSize);
-
-#if XAMARIN_IOS
-			return constrainedSize.ToFoundationSize();
-#else
-			return constrainedSize;
-#endif
 		}
 
 		private string LoggingOwnerTypeName => ((object)Panel ?? this).GetType().Name;
