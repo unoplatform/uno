@@ -13,7 +13,7 @@
 
 	<win:TextBlock Text="This sample demos a Uno only feature and is not available on Windows." />
 
-	<not_win:Grid BorderBrush="DarkRed" BorderThickness="2,50,2,100">
+	<not_win:Grid BorderBrush="DarkRed" BorderThickness="2,2,2,100">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition />
 			<ColumnDefinition />

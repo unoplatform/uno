@@ -55,8 +55,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 			// Assertions
 			const int testHeight = 50;
-			var above = new Rectangle((int)sut.Rect.X, (int)sut.Rect.Y - testHeight - 3, (int)sut.Rect.Width, testHeight);
-			var below = new Rectangle((int)sut.Rect.X, (int)sut.Rect.Bottom + 3, (int)sut.Rect.Width, testHeight);
+			const int tolerance = 10; // Margins, etc
+			var above = new Rectangle((int)sut.Rect.X, (int)sut.Rect.Y - testHeight - tolerance, (int)sut.Rect.Width, testHeight);
+			var below = new Rectangle((int)sut.Rect.X, (int)sut.Rect.Bottom + tolerance, (int)sut.Rect.Width, testHeight);
 
 			if (aboveEquals)
 			{
