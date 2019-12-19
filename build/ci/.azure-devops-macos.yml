@@ -15,12 +15,11 @@ jobs:
   - checkout: self
     clean: true
 
-  - task: CacheBeta@0
-    condition: eq(variables['enable_package_cache'], 'true')
-    inputs:
-      key: nuget | $(Agent.OS) | $(Agent.JobName) | $(build.sourcesdirectory)/**/*.csproj | $(build.sourcesdirectory)/**/Directory.Build.targets | $(build.sourcesdirectory)/**/Directory.Build.props
-      path: $(NUGET_PACKAGES)
-    displayName: Cache NuGet packages
+  - template: templates/optimize-roslyn-mono.yml
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
 
   - bash: /bin/bash -c "sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 5_18_1"
     displayName: Select Xamarin Version

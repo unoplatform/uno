@@ -1467,13 +1467,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return _xamlConversionTypes.Any(ns => ns.Equals(symbol));
 		}
 
-		private string BuildXamlTypeConverterLiteralValue(INamedTypeSymbol symbol, string memberValue)
+		private string BuildXamlTypeConverterLiteralValue(INamedTypeSymbol symbol, string memberValue, bool includeQuotations)
 		{
 			var attributeData = symbol.FindAttribute(XamlConstants.Types.CreateFromStringAttribute);
 			var returnType = attributeData?.NamedArguments.FirstOrDefault(kvp => kvp.Key == "MethodName").Value.Value;
 
-			// Return a string that contains the code which calls the "conversion" function with the member value
-			return "{0}(\"{1}\")".InvariantCultureFormat(returnType, memberValue);
+			if (includeQuotations)
+			{
+				// Return a string that contains the code which calls the "conversion" function with the member value
+				return "{0}(\"{1}\")".InvariantCultureFormat(returnType, memberValue);
+			}
+			else
+			{
+				// Return a string that contains the code which calls the "conversion" function with the member value.
+				// By not including quotations, this allows us to use static resources instead of string values.
+				return "{0}({1})".InvariantCultureFormat(returnType, memberValue);
+			}
 		}
 
 		private XamlMemberDefinition FindMember(XamlObjectDefinition xamlObjectDefinition, string memberName)
@@ -2832,7 +2841,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
                 targetPropertyType = targetPropertyType ?? FindPropertyType(member.Member);
 
-                if (!_isGeneratingGlobalResource && _staticResources.TryGetValue(resourcePath, out var res))
+				// If the property Type is attributed with the CreateFromStringAttribute
+				if (IsXamlTypeConverter(targetPropertyType))
+				{
+					string memberValue;
+
+					// Build the member string based on wether it's a local
+					// StaticResource or a global StaticResource
+					if (_staticResources.TryGetValue(resourcePath, out var _))
+					{
+						memberValue = $"StaticResources.{SanitizeResourceName(resourcePath)}";
+					}
+					else
+					{
+						memberValue = $"{GetGlobalStaticResource(resourcePath)}.ToString()";
+					}
+
+					// We must build the member value as a call to a "conversion" function
+					return BuildXamlTypeConverterLiteralValue(targetPropertyType, memberValue, includeQuotations: false);
+				}
+				if (!_isGeneratingGlobalResource && _staticResources.TryGetValue(resourcePath, out var res))
                 {
                     return ApplyCast($"StaticResources.{SanitizeResourceName(resourcePath)}", useSafeCast, res);
                 }
@@ -2930,7 +2958,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             if (IsXamlTypeConverter(propertyType))
             {
                 // We must build the member value as a call to a "conversion" function
-                return BuildXamlTypeConverterLiteralValue(propertyType, memberValue);
+                return BuildXamlTypeConverterLiteralValue(propertyType, memberValue, includeQuotations: true);
             }
 
             propertyType = FindUnderlyingType(propertyType);

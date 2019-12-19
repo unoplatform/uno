@@ -1,6 +1,7 @@
 ﻿using Uno.Extensions;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Globalization;
@@ -10,6 +11,7 @@ using CoreGraphics;
 
 namespace Windows.Foundation
 {
+	[DebuggerDisplay("{X},{Y}")]
 	public partial struct Point
 	{
 		public Point(double x, double y)
@@ -48,21 +50,21 @@ namespace Windows.Foundation
 			return new Point(p1.X - p2.X, p1.Y - p2.Y);
 		}
 
-        public static implicit operator Point(string point)
-        {
-            var parts = point
-                .Split(new[] { ',' })
-                .Select(value => double.Parse(value, CultureInfo.InvariantCulture))
-                .ToArray();
+		public static implicit operator Point(string point)
+		{
+			var parts = point
+				.Split(new[] { ',' })
+				.Select(value => double.Parse(value, CultureInfo.InvariantCulture))
+				.ToArray();
 
-            return new Point(parts[0], parts[1]);
-        }
+			return new Point(parts[0], parts[1]);
+		}
 
-        public override int GetHashCode() => X.GetHashCode() ^ Y.GetHashCode();
+		public override int GetHashCode() => X.GetHashCode() ^ Y.GetHashCode();
 
 		public override bool Equals(object obj)
 		{
-			if(obj is Point)
+			if (obj is Point)
 			{
 				var point = (Point)obj;
 

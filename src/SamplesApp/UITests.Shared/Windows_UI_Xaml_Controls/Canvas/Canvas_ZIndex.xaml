@@ -1,0 +1,53 @@
+﻿<UserControl x:Class="UITests.Shared.Windows_UI_Xaml_Controls.Canvas.Canvas_ZIndex"
+			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+			 xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.Canvas"
+			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+			 mc:Ignorable="d"
+			 d:DesignHeight="300"
+			 d:DesignWidth="400">
+
+	<Grid>
+		<Canvas Width="240"
+				Height="240">
+			<Border x:Name="CanvasBorderBlue"
+					Width="80"
+					Height="40"
+					CornerRadius="10"
+					Background="Blue"
+					Canvas.Left="100"
+					Canvas.Top="80"
+					Canvas.ZIndex="30" />
+			<Border x:Name="CanvasBorderGreen"
+					Width="40"
+					Height="120"
+					CornerRadius="10"
+					Background="Green"
+					Canvas.Left="100"
+					Canvas.Top="40"
+					Canvas.ZIndex="20" />
+			<Border x:Name="CanvasBorderRed"
+					Width="120"
+					Height="40"
+					CornerRadius="10"
+					Background="Red"
+					Canvas.Left="60"
+					Canvas.Top="40"
+					Canvas.ZIndex="10" />
+			<ContentControl Content="7"
+							Canvas.ZIndex="60"
+							Canvas.Top="10"
+							Canvas.Left="10">
+				<ContentControl.ContentTemplate>
+					<DataTemplate>
+						<Ellipse Fill="Brown"
+								 Height="18"
+								 Width="18"
+								 IsHitTestVisible="False" />
+					</DataTemplate>
+				</ContentControl.ContentTemplate>
+			</ContentControl>
+		</Canvas>
+	</Grid>
+</UserControl>

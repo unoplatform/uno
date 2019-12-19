@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Media.Transform
 {
-	[SampleControlInfo("Transform", "Animated_View_With_Transformed_Ancestor")]
+	[SampleControlInfo("Transform", "Animated_View_With_Transformed_Ancestor", ignoreInSnapshotTests: true)]
 	public sealed partial class Animated_View_With_Transformed_Ancestor : UserControl
     {
         public Animated_View_With_Transformed_Ancestor()

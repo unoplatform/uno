@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Globalization;
 using System.Linq;
 using Uno.Diagnostics.Eventing;
@@ -75,8 +75,7 @@ namespace Windows.UI.Xaml
 				.NumberOrDefault(MaxSize)
 				.Subtract(marginSize)
 				.AtLeast(new Size(0, 0))
-				.AtMost(maxSize)
-				.AtLeast(minSize);
+				.AtMost(maxSize);
 
 			var desiredSize = MeasureOverride(frameworkAvailableSize);
 

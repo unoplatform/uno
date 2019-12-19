@@ -2,6 +2,10 @@
 
 ### Features
 - Add support for Automation SetDependencyPropertyValue in Uno.UITest
+- Added support for using a `string` value in a `StaticResource` when using `CreateFromStringAttribute'
+- [Android] Adds support for `FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay`
+- Add support for `Grid.ColumnSpacing` and `Grid.RowSpacing`
+- Add clarification in [documentation](../articles/uno-development/working-with-the-samples-apps.md) for adding automated UI tests
 
 ### Breaking changes
 -
@@ -13,6 +17,10 @@
 - [Wasm] Add arbitrary delay in Safari macOS to avoid StackOverflow issues
 - #2227 fixed Color & SolidColorBrush literal values generation
 - [WASM] fixed Shapes pointer events hit-box
+- [Android] Fix bug where setting Canvas.ZIndex would apply shadow effect in some cases
+- #2287 Vertical `ListView` containing a horizontal `ScrollViewer`: horizontal scrolling is difficult, only works when the gesture is perfectly horizontal
+- #2130 Grid - fix invalid measure when total star size is 0
+- [iOS] Fix invalid image measure on constrained images with `Margin`
 
 ## Release 2.0
 
@@ -21,7 +29,7 @@
 * [#2040] Support for ms-settings:// special URIs on Android and iOS, Launcher API alignments to match UWP behavior
 * [#2029](https://github.com/unoplatform/uno/pull/2029) Support for MenuFlyoutItem.Click
 * support /[file]/[name] format in ResourceLoader.GetForCurrentView().GetString()
-* [#2039] Added support for Xaml type conversions using CreateFromStringAttribute.
+* [#2039] Added support for Xaml type conversions using `CreateFromStringAttribute`.
 * [#] Support for `Windows.Devices.Lights.Lamp` on iOS, Android.
 * [#1970](https://github.com/unoplatform/uno/pull/1970) Added support for `AnalyticsInfo` properties on iOS, Android and WASM
 * [#1207] Implemented some `PackageId` properties
@@ -222,6 +230,7 @@
 * #2129 WebAssembly Bootstrapper update to remove the implicit .NET 4.6.2 dependency, and support for long file paths on Windows.
 * #2147 Fix NRE in android-specific TextBox.ImeOptions
 * #2146 [iOS] ListView doesn't take extra space when items are added to collection
+* [iOS] Animation might run twice
 
 ## Release 1.45.0
 ### Features

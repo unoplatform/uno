@@ -4,31 +4,20 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Private.Infrastructure;
-using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using MUXControlsTestApp.Utilities;
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
 	class Given_ProgressRing
 	{
-		private async Task Dispatch(DispatchedHandler p)
-		{
-#if !NETFX_CORE
-			await CoreApplication.GetCurrentView().Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, p);
-#else
-			await CoreApplication.MainView.Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, p);
-#endif
-		}
-
 		[TestMethod]
-		public async Task When_ProgressRing_Collapsed()
-		{
-			await Dispatch(() =>
+		public Task When_ProgressRing_Collapsed() =>
+			RunOnUIThread.Execute(() =>
 			{
 				var SUT = new ProgressRing
 				{
@@ -54,6 +43,5 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				root.Measure(new Size(1000, 1000));
 				Assert.AreEqual(10d + 5d + 5d, root.DesiredSize.Height);
 			});
-		}
 	}
 }

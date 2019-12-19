@@ -140,7 +140,13 @@ namespace Windows.UI.Composition
 				animation.TimingFunction = _timingFunction;
 				_animation = animation;
 			}
-			_animation.BeginTime = CAAnimation.CurrentMediaTime() + delayMilliseconds / __millisecondsPerSecond;
+
+			if (delayMilliseconds > 0)
+			{
+				// Note: We must make sure to use the time relative to the 'layer', otherwise we might introduce a random delay and the animations
+				//		 will run twice (once "managed" while updating the DP, and a second "native" using this animator)
+				_animation.BeginTime = layer.ConvertTimeFromLayer(CAAnimation.CurrentMediaTime() + delayMilliseconds / __millisecondsPerSecond, null);
+			}
 			_animation.Duration = durationMilliseconds / __millisecondsPerSecond;
 			_animation.FillMode = CAFillMode.Forwards;
 			_animation.RemovedOnCompletion = false;

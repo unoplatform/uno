@@ -181,6 +181,14 @@ import android.view.ViewParent;
 		if (adapter.getCustomDispatchIsActive()) {
 			// Log.i(LOGTAG, _indent + "CUSTOM dispatch (" + target.getChildrenRenderTransformCount() + " of " + view.getChildCount() + " children are transformed )");
 
+			// Because we do not call dispatchToSuper(), we must manually call requestDisallowInterceptTouchEvent in the same circumstances
+			// that dispatchToSuper would, otherwise we get inconsistencies (children have the flag but parents do not).
+			final boolean isCancel = event.getAction() == MotionEvent.ACTION_CANCEL;
+			final boolean isHover = event.getAction() == MotionEvent.ACTION_HOVER_MOVE;
+			if (isDown || isCancel || isHover) {
+				view.requestDisallowInterceptTouchEvent(false);
+			}
+
 			childIsTouchTarget = dispatchStaticTransformedMotionEvent(adapter, event);
 		} else {
 			// Log.i(LOGTAG, _indent + "SUPER dispatch (none of the " + view.getChildCount() + " children is transformed)");

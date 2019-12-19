@@ -18,11 +18,10 @@ resources:
     image: nventive/wasm-build:1.5
 
 jobs:
-- template: .azure-devops-windows.yml
-- template: .azure-devops-docs.yml
-- template: .azure-devops-wasm-uitests.yml
-- template: .azure-devops-macos.yml
-- template: .azure-devops-android-tests.yml
-- template: .azure-devops-ios-tests.yml
-
-
+- template: build/ci/.azure-devops-windows.yml
+- template: build/ci/.azure-devops-docs.yml
+- template: build/ci/.azure-devops-wasm-uitests.yml
+- template: build/ci/.azure-devops-macos.yml
+- template: build/ci/.azure-devops-android-tests.yml
+- template: build/ci/.azure-devops-ios-tests.yml
+- template: build/ci/.azure-devops-screenshot-compare.yml

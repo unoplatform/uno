@@ -1,5 +1,6 @@
-﻿// #define LOG_LAYOUT
+// #define LOG_LAYOUT
 
+using Windows.UI.Xaml.Media;
 using Microsoft.Extensions.Logging;
 using Uno.UI;
 #if !__WASM__
@@ -94,12 +95,16 @@ namespace Windows.UI.Xaml.Controls
 
 				var marginSize = Panel.GetMarginSize();
 
+				// NaN values are accepted as input here, particularly when coming from
+				// SizeThatFits in Image or Scrollviewer. Clamp the value here as it is reused
+				// below for the clipping value.
+				availableSize = availableSize
+					.NumberOrDefault(MaxSize);
+
 				var frameworkAvailableSize = availableSize
-					.NumberOrDefault(MaxSize)
 					.Subtract(marginSize)
 					.AtLeast(default) // 0.0,0.0
-					.AtMost(maxSize)
-					.AtLeast(minSize);
+					.AtMost(maxSize);
 
 				var desiredSize = MeasureOverride(frameworkAvailableSize);
 
@@ -204,7 +209,6 @@ namespace Windows.UI.Xaml.Controls
 				var (minSize, maxSize) = this.Panel.GetMinMax();
 
 				arrangeSize = arrangeSize
-					.AtLeast(minSize)
 					.AtLeast(default); // 0.0,0.0
 
 				// We have to choose max between _unclippedDesiredSize and maxSize here, because
@@ -299,7 +303,10 @@ namespace Windows.UI.Xaml.Controls
 				return ret;
 			}
 
-			if(frameworkElement != null && !(frameworkElement is FrameworkElement))
+			if (frameworkElement != null
+				&& !(frameworkElement is FrameworkElement)
+				&& !(frameworkElement is Image)
+				)
 			{
 				// For IFrameworkElement implementers that are not FrameworkElements, the constraint logic must
 				// be performed by the parent. Otherwise, the native element will take the size it needs without
@@ -405,7 +412,7 @@ namespace Windows.UI.Xaml.Controls
 					// Report the size to the parent without the margin, only if the
 					// size has changed or that the control required a measure
 					//
-					// This condition is required because of the measure caching that 
+					// This condition is required because of the measure caching that
 					// some systems apply (Like android UI).
 					ret = new Size(
 						ret.Width + margin.Left + margin.Right,
@@ -475,7 +482,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// In this implementation, since we do not have the ability to intercept proprely the measure and arrange
 			// because of the type of hierarchy (inheriting from native views), we must apply the margins and alignements
-			// from within the panel to its children. This makes the authoring of custom panels that do not inherit from 
+			// from within the panel to its children. This makes the authoring of custom panels that do not inherit from
 			// Panel that do not use this helper a bit more complex, but for all other panels that use this
 			// layouter, the logic is implied.
 
@@ -490,6 +497,9 @@ namespace Windows.UI.Xaml.Controls
 				// capture the child's state to avoid getting DependencyProperties values multiple times.
 				var childVerticalAlignment = frameworkElement.VerticalAlignment;
 				var childHorizontalAlignment = frameworkElement.HorizontalAlignment;
+
+				AdjustAlignment(view, ref childHorizontalAlignment, ref childVerticalAlignment);
+
 				var childMaxHeight = frameworkElement.MaxHeight;
 				var childMaxWidth = frameworkElement.MaxWidth;
 				var childMinHeight = frameworkElement.MinHeight;
@@ -617,6 +627,27 @@ namespace Windows.UI.Xaml.Controls
 			);
 		}
 
+		protected virtual void AdjustAlignment(View view, ref HorizontalAlignment childHorizontalAlignment,
+			ref VerticalAlignment childVerticalAlignment)
+		{
+			if (view is Image img && (img.Stretch == Stretch.None || img.Stretch == Stretch.Uniform))
+			{
+				// Image is a special control and is using the Vertical/Horizontal Alignment
+				// to calculate the final position of the image. On UWP, there's no difference
+				// between "Stretch" and "Center": they all behave like "Center", so we need
+				// to do the same here.
+				if (childVerticalAlignment == VerticalAlignment.Stretch)
+				{
+					childVerticalAlignment = VerticalAlignment.Center;
+				}
+
+				if (childHorizontalAlignment == HorizontalAlignment.Stretch)
+				{
+					childHorizontalAlignment = HorizontalAlignment.Center;
+				}
+			}
+		}
+
 		private double GetActualSize(
 			double size,
 			bool isStretch,
@@ -695,17 +726,6 @@ namespace Windows.UI.Xaml.Controls
 		Size ILayouter.MeasureChild(View view, Size slotSize)
 		{
 			return MeasureChild(view, slotSize);
-		}
-
-		private Size GetConstrainedSize(Size availableSize)
-		{
-			var constrainedSize = IFrameworkElementHelper.SizeThatFits(Panel as IFrameworkElement, availableSize);
-
-#if XAMARIN_IOS
-			return constrainedSize.ToFoundationSize();
-#else
-			return constrainedSize;
-#endif
 		}
 
 		private string LoggingOwnerTypeName => ((object)Panel ?? this).GetType().Name;

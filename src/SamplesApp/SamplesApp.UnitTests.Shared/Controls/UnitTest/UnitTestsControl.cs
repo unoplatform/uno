@@ -7,6 +7,7 @@ using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -94,6 +95,7 @@ namespace Uno.UI.Samples.Tests
 				var testResultBlock = new TextBlock()
 				{
 					Text = testName,
+					TextWrapping = TextWrapping.Wrap,
 					FontFamily = new FontFamily("Courier New"),
 					Foreground = new SolidColorBrush(GetTestResultColor(testResult))
 				};
@@ -173,53 +175,76 @@ namespace Uno.UI.Samples.Tests
 						ReportMessage($"Running test {testName}");
 						ReportRunTestCount($"Run tests: {++runTests}");
 
-						try
+						var runsOnUIThread = testMethod.GetCustomAttribute(typeof(Uno.UI.RuntimeTests.RunsOnUIThreadAttribute)) != null;
+						var dataRows = testMethod.GetCustomAttributes<DataRowAttribute>();
+						if (dataRows.Any())
 						{
-							var runsOnUIThread = testMethod.GetCustomAttribute(typeof(Uno.UI.RuntimeTests.RunsOnUIThreadAttribute)) != null;
-							type.init?.Invoke(instance, new object[0]);
-
-							object returnValue = null;
-							if (runsOnUIThread)
+							foreach (var row in dataRows)
 							{
-								await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-								{
-									returnValue = testMethod.Invoke(instance, new object[0]);
-								});
+								var d = row.Data;
+								await InvokeTestMethod(d);
 							}
-							else
-							{
-								returnValue = testMethod.Invoke(instance, new object[0]);
-							}
-
-							if (testMethod.ReturnType == typeof(Task))
-							{
-								var task = (Task)returnValue;
-								var timeoutTask = Task.Delay(DefaultUnitTestTimeout);
-
-								var resultingTask = await Task.WhenAny(task, timeoutTask);
-
-								if (resultingTask == timeoutTask)
-								{
-									throw new TimeoutException($"Test execution timed out after {DefaultUnitTestTimeout}");
-								}
-							}
-
-							ReportTestResult(testName, TestResult.Sucesss);
 						}
-						catch (Exception e)
+						else
 						{
-							failedTests++;
-							if (e is AggregateException agg)
+							await InvokeTestMethod(new object[0]);
+						}
+
+						async Task InvokeTestMethod(object[] parameters)
+						{
+							var fullTestName = $"{testName}({parameters.Select(p => p.ToString()).JoinBy(", ")})";
+							try
 							{
-								e = agg.InnerExceptions.FirstOrDefault();
+								type.init?.Invoke(instance, new object[0]);
+
+								object returnValue = null;
+								if (runsOnUIThread)
+								{
+									await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+									{
+										returnValue = testMethod.Invoke(instance, parameters);
+									});
+								}
+								else
+								{
+									returnValue = testMethod.Invoke(instance, parameters);
+								}
+
+								if (testMethod.ReturnType == typeof(Task))
+								{
+									var task = (Task)returnValue;
+									var timeoutTask = Task.Delay(DefaultUnitTestTimeout);
+
+									var resultingTask = await Task.WhenAny(task, timeoutTask);
+
+									if (resultingTask == timeoutTask)
+									{
+										throw new TimeoutException($"Test execution timed out after {DefaultUnitTestTimeout}");
+									}
+
+									if (resultingTask.Exception != null)
+									{
+										throw resultingTask.Exception;
+									}
+								}
+								ReportTestResult(fullTestName, TestResult.Sucesss);
+							}
+							catch (Exception e)
+							{
+								failedTests++;
+								if (e is AggregateException agg)
+								{
+									e = agg.InnerExceptions.FirstOrDefault();
+								}
+
+								if (e is TargetInvocationException tie)
+								{
+									e = tie.InnerException;
+								}
+
+								ReportTestResult(fullTestName, TestResult.Failed, e);
 							}
 
-							if (e is TargetInvocationException tie)
-							{
-								e = tie.InnerException;
-							}
-
-							ReportTestResult(testName, TestResult.Failed, e);
 						}
 						try
 						{

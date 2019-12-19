@@ -140,9 +140,15 @@ namespace Windows.UI.Xaml
 			);
 		}
 
+
+		/// <summary>
+        /// Sets the specified dependency property value using the format "name|value"
+        /// </summary>
+        /// <param name="dependencyPropertyNameAndvalue">The name and value of the property</param>
+        /// <returns>The currenty set value at the Local precedence</returns>
 		[Java.Interop.Export(nameof(SetDependencyPropertyValue))]
-		public string SetDependencyPropertyValue(string dependencyPropertyName, string value)
-			=> SetDependencyPropertyValueInternal(this, dependencyPropertyName, value);
+		public string SetDependencyPropertyValue(string dependencyPropertyNameAndValue)
+			=> SetDependencyPropertyValueInternal(this, dependencyPropertyNameAndValue);
 
 		/// <summary>
 		/// Provides a native value for the dependency property with the given name on the current instance. If the value is a primitive type, 
@@ -257,6 +263,53 @@ namespace Windows.UI.Xaml
 					}
 
 					return null;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Convenience method to find all views with the given name.
+		/// </summary>
+		public FrameworkElement[] FindViewsByName(string name) => FindViewsByName(name, searchDescendantsOnly: false);
+
+
+		/// <summary>
+		/// Convenience method to find all views with the given name.
+		/// </summary>
+		/// <param name="searchDescendantsOnly">If true, only look in descendants of the current view; otherwise search the entire visual tree.</param>
+		public FrameworkElement[] FindViewsByName(string name, bool searchDescendantsOnly)
+		{
+
+			View topLevel = this;
+
+			if (!searchDescendantsOnly)
+			{
+				while (topLevel.Parent is View newTopLevel)
+				{
+					topLevel = newTopLevel;
+				}
+			}
+
+			return GetMatchesInChildren(topLevel).ToArray();
+
+			IEnumerable<FrameworkElement> GetMatchesInChildren(View parentView)
+			{
+				if (!(parentView is ViewGroup parent))
+				{
+					yield break;
+				}
+
+				foreach (var child in parent.GetChildren())
+				{
+					if (child is FrameworkElement fe && fe.Name == name)
+					{
+						yield return fe;
+					}
+
+					foreach (var match in GetMatchesInChildren(child))
+					{
+						yield return match;
+					}
 				}
 			}
 		}

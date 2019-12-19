@@ -5,11 +5,10 @@ IFS=$'\n\t'
 echo "Listing iOS simulators"
 xcrun simctl list devices --json
 
+## Preemptively start the simulator
 /Applications/Xcode.app/Contents/Developer/Applications/Simulator.app/Contents/MacOS/Simulator &
 
 cd $BUILD_SOURCESDIRECTORY
-
-msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.iOS/SamplesApp.iOS.csproj
 msbuild /r /p:Configuration=Release $BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.UITests/SamplesApp.UITests.csproj
 
 cd $BUILD_SOURCESDIRECTORY/build
@@ -38,15 +37,18 @@ else
 		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests' or \
 		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Media.Animation_Tests' or \
 		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ControlTests' or \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests' \
+		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests' or \
+		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests'
 	"
 fi
 
 export UNO_UITEST_PLATFORM=iOS
-export UNO_UITEST_IOSBUNDLE_PATH=$BUILD_SOURCESDIRECTORY/src/SamplesApp/SamplesApp.iOS/bin/iPhoneSimulator/Release/SamplesApp.app
 export UNO_UITEST_SCREENSHOT_PATH=$BUILD_ARTIFACTSTAGINGDIRECTORY/screenshots/$SCREENSHOTS_FOLDERNAME
 
 mkdir -p $UNO_UITEST_SCREENSHOT_PATH
+
+# Imported app bundle from artifacts is not executable
+chmod -R +x $UNO_UITEST_IOSBUNDLE_PATH
 
 # Move to the screenshot directory so that the output path is the proper one, as
 # required by Xamarin.UITest

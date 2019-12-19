@@ -67,8 +67,7 @@ namespace SamplesApp.UITests
 				Assert.Fail("A Unit test failed. Details:\n" + details);
 			}
 
-			TakeScreenshot("Runtime Tests Results");
+			TakeScreenshot("Runtime Tests Results",	ignoreInSnapshotCompare: true);
 		}
-
 	}
 }

@@ -128,7 +128,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public Canvas()
 		{
+			InitializePartial();
 		}
+
+		partial void InitializePartial();
 
 		public static double GetLeft(global::Windows.UI.Xaml.UIElement element) => GetLeft((DependencyObject)element);
 

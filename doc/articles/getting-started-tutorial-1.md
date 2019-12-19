@@ -35,11 +35,13 @@ The tutorial walks you through creating a cross platform application with Uno, w
     > The C# and XAML snippets in this tutorial requires that the solution is named **BugTracker**. Using a different name will result in build errors when you copy code from this tutorial into the solution.
 
 1. Right click on the Solution and select `Manage NuGet Packages for Solution` from the context menu.
-
+    - Make sure to select **nuget.org** or **NuGet official package source** as the package source
     - Click on the Updates tab. Update the following packages to the latest stable version, if they're not up to date: `Uno.Core`, `Uno.UI`, and `Uno.Wasm.Bootstrap`.
         - Note: **do not** update the `Microsoft.Extensions.Logging.Console`. Recent versions of the package use APIs that aren't supported by WebAssembly, and aren't compatible with Uno.
     - Click back on the Browse tab and install the following NuGet Packages to each of the projects in your solution:
         - `Refractored.MvvmHelpers`
+
+1. Finally, you'll need to close any opened file in the editor, then close the solution or Visual Studio, then re-open it. This is a workaround for a Visual studio issue regarding the XAML editor.
 
 ## Setting up our Model
 
@@ -225,7 +227,9 @@ The tutorial walks you through creating a cross platform application with Uno, w
     }
     ```
 
-1. Now that we have some basic data to bind to, in the **Solution Explorer**, double-click **MainPage.xaml** to open, then add the following code. We will start by adding a XML Namespace for the Converters and Controls from the Microsoft Community Toolkit as shown below:
+1. Now that we have some basic data to bind to, in the **Solution Explorer**, double-click **MainPage.xaml** to open it.
+1. At the top left corner of the editor select **BugTracker.UWP**
+1. Then we'll add some XAML. We will start with an XML Namespace for the Converters as shown below:
 
     ```xml
     <Page x:Class="BugTracker.MainPage"

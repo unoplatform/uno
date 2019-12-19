@@ -21,6 +21,8 @@ jobs:
       key: nuget | $(Agent.OS) | $(Agent.JobName) | $(build.sourcesdirectory)/**/*.csproj | $(build.sourcesdirectory)/**/Directory.Build.targets | $(build.sourcesdirectory)/**/Directory.Build.props
       path: $(NUGET_PACKAGES)
     displayName: Cache NuGet packages
+    
+  - template: templates/optimize-roslyn-mono.yml
 
   - bash: |
       sudo cert-sync /etc/ssl/certs/ca-certificates.crt
@@ -83,6 +85,8 @@ jobs:
         artifactName: wasm-uitest-binaries
         downloadPath: '$(build.sourcesdirectory)/build'
 
+  - template: templates/optimize-roslyn-mono.yml
+
   - bash: |
       set -euo pipefail
       IFS=$'\n\t'
@@ -129,6 +133,12 @@ jobs:
   - checkout: self
     clean: true
 
+  - template: templates/optimize-roslyn-mono.yml
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
   - task: DownloadBuildArtifacts@0
     inputs:
         artifactName: wasm-uitest-binaries
@@ -157,61 +167,4 @@ jobs:
     inputs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: uitests-results
-      ArtifactType: Container
-
-- job: Wasm_UITests_Compare
-  dependsOn:
-    - Wasm_UITests_Snap
-    - Android_Tests
-    - iOS_Tests
-    - Wasm_UITests_Automated
-
-  pool:
-    vmImage: 'vs2017-win2016'
-
-  steps:
-  - checkout: self
-    clean: true
-
-  - task: NuGetToolInstaller@0
-    inputs:
-      versionSpec: 4.9.1
-      checkLatest: false
-
-  - task: MSBuild@1
-    inputs:
-      solution: src/Uno.UI.TestComparer/Uno.UI.TestComparer.csproj
-      msbuildLocationMethod: version
-      msbuildVersion: latest
-      msbuildArchitecture: x86
-      msbuildArguments: /r "/p:Configuration=Release"
-      clean: false
-      maximumCpuCount: true
-      restoreNugetPackages: false
-      logProjectEvents: false
-      createLogFile: false
-
-  - script: |
-      src\Uno.UI.TestComparer\bin\Release\Uno.UI.TestComparer.exe "azdo" --pat="$(UITestsCompare_PAT)" --base-path="$(build.artifactstagingdirectory)" --source-branch="%GIT_SOURCEBRANCH%" --target-branch="%GIT_TARGETBRANCH%" --artifact-name="uitests-results" --artifact-inner-path="uitests-results\screenshots" --definition-name="$(Build.DefinitionName)" --project-name="$(System.TeamProject)" --server-uri="$(System.TeamFoundationCollectionUri)" --current-build="$(Build.BuildId)" --run-limit="3" --github-pat="$(CommentsGitHubPAT)" --source-repository="$(system.pullRequest.sourceRepositoryUri)" --github-pr-id="$(system.pullRequest.pullRequestNumber)"
-      
-    env:
-      GIT_TARGETBRANCH: "$(System.PullRequest.TargetBranch)"
-      GIT_SOURCEBRANCH: "$(Build.SourceBranch)"
-
-    displayName: 'Compare UI Tests screenshots'
-    condition: eq(variables['Build.Repository.Provider'], 'GitHub')
-
-
-  - task: PublishTestResults@2
-    condition: always()
-    inputs:
-      testResultsFiles: '$(build.artifactstagingdirectory)\*.xml'
-      testRunTitle: 'Screenshots Compare Test Run'
-      testResultsFormat: 'NUnit'
-      failTaskOnFailedTests: false
-
-  - task: PublishBuildArtifacts@1
-    inputs:
-      PathtoPublish: $(build.artifactstagingdirectory)
-      ArtifactName: wasm-uitests-compare-results
       ArtifactType: Container

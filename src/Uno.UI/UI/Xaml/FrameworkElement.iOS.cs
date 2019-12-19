@@ -48,7 +48,8 @@ namespace Windows.UI.Xaml
 
 					if (RequiresMeasure)
 					{
-						XamlMeasure(Bounds.Size);
+						// Add back the Margin (which is normally 'outside' the view's bounds) - the layouter will subtract it again
+						XamlMeasure(Bounds.Size.Add(Margin));
 					}
 
 					OnBeforeArrange();
@@ -64,7 +65,7 @@ namespace Windows.UI.Xaml
 					RequiresArrange = false;
 				}
 			}
-			catch(Exception e)
+			catch (Exception e)
 			{
 				this.Log().Error($"Layout failed in {GetType()}", e);
 			}
@@ -122,7 +123,7 @@ namespace Windows.UI.Xaml
 
 				var xamlMeasure = XamlMeasure(size);
 
-				if(xamlMeasure != null)
+				if (xamlMeasure != null)
 				{
 					return _lastMeasure = xamlMeasure.Value;
 				}
