@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Text;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
@@ -76,8 +77,6 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 			{
 				child.Arrange(new Rect(0, 0, finalSize.Width, finalSize.Height));
 			}
-
-			this.Log().Info(() => "Arrange final size.");
 
 			return finalSize;
 #endif
