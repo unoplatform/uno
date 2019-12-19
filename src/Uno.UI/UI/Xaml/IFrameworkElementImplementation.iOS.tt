@@ -413,10 +413,11 @@ namespace <#= mixin.NamespaceName #>
 		}
 		#endregion
 
+		public double ActualWidth => GetActualWidth();
+		public double ActualHeight => GetActualHeight();
 
-		public virtual double ActualWidth { get { return _actualSize.Width; } }
-
-		public virtual double ActualHeight { get { return _actualSize.Height; } }
+		private protected virtual double GetActualWidth() => _actualSize.Width;
+		private protected virtual double GetActualHeight() => _actualSize.Height;
 
 		private Size _actualSize;
 		public override CGRect Frame
@@ -1030,10 +1031,20 @@ namespace <#= mixin.NamespaceName #>
 				return null;
 			}
 
-			Console.WriteLine($"GetDependencyPropertyValue({dependencyPropertyName}) = {dpValue}");
-
 			// If all else fails, just return the string representation of the DP's value
 			return new global::Foundation.NSString(dpValue.ToString());
+		}
+
+				
+		/// <summary>
+		/// Sets the specified dependency property value using the format "name|value"
+		/// </summary>
+		/// <param name="dependencyPropertyNameAndvalue">The name and value of the property</param>
+		/// <returns>The currenty set value at the Local precedence</returns>
+		[global::Foundation.Export("setDependencyPropertyValue:")]
+		public global::Foundation.NSString SetDependencyPropertyValue(global::Foundation.NSString dependencyPropertyNameAndValue)
+		{
+				return new global::Foundation.NSString(UIElement.SetDependencyPropertyValueInternal(this, dependencyPropertyNameAndValue) ?? "");
 		}
 		
 		#region AutomationPeer

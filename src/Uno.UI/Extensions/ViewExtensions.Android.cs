@@ -559,6 +559,7 @@ namespace Uno.UI
 				var namePart = string.IsNullOrEmpty(name) ? "" : $"-'{name}'";
 
 				var fe = innerView as IFrameworkElement;
+				var u = innerView as UIElement;
 
 				return sb
 						.Append(spacing)
@@ -569,7 +570,9 @@ namespace Uno.UI
 						.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
 						.Append(fe != null && fe.Margin != default(Thickness) ? $" Margin={fe.Margin}" : "")
 						.Append(fe != null && fe.GetPadding() is Thickness p && p != default(Thickness) ? $" Padding={p}" : "")
-						.Append(innerView is UIElement u ? $" DesiredSize={u.DesiredSize}" : "")
+						.Append(u != null ? $" DesiredSize={u.DesiredSize}" : "")
+						.Append(u?.Clip != null ? $" Clip={u.Clip.Rect}" : "")
+						.Append(u != null ? $" NeedsClipToSlot={u.NeedsClipToSlot}" : "")
 						.AppendLine();
 			}
 		}

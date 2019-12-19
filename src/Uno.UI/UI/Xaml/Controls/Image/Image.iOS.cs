@@ -11,31 +11,32 @@ using Windows.Foundation;
 using Windows.Storage.Streams;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
+using CoreAnimation;
 using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class Image : UIImageView, IImage
 	{
-        private Size _sourceImageSize;
+		private Size _sourceImageSize;
 
-        /// <summary>
-        /// The size of the native image data
-        /// </summary>
-        private Size SourceImageSize
-        {
-            get => _sourceImageSize;
-            set
-            {
-                _sourceImageSize = value;
+		/// <summary>
+		/// The size of the native image data
+		/// </summary>
+		private Size SourceImageSize
+		{
+			get => _sourceImageSize;
+			set
+			{
+				_sourceImageSize = value;
 
-                if (Source is BitmapSource bitmapSource)
-                {
-                    bitmapSource.PixelWidth = (int)_sourceImageSize.Width;
-                    bitmapSource.PixelHeight = (int)_sourceImageSize.Height;
-                }
-            }
-        }
+				if (Source is BitmapSource bitmapSource)
+				{
+					bitmapSource.PixelWidth = (int)_sourceImageSize.Width;
+					bitmapSource.PixelHeight = (int)_sourceImageSize.Height;
+				}
+			}
+		}
 
 		public Image()
 		{
@@ -147,7 +148,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetImageFromWriteableBitmap(WriteableBitmap writeableBitmap)
 		{
-			if(writeableBitmap.PixelBuffer is InMemoryBuffer memoryBuffer)
+			if (writeableBitmap.PixelBuffer is InMemoryBuffer memoryBuffer)
 			{
 				// Convert RGB colorspace.
 				var bgraBuffer = memoryBuffer.Data;
@@ -209,7 +210,8 @@ namespace Windows.UI.Xaml.Controls
 				SourceImageSize = image?.Size.ToFoundationSize() ?? default(Size);
 			}
 
-			SetNeedsLayoutOrDisplay();
+			SetNeedsLayout();
+
 			if (Image != null)
 			{
 				OnImageOpened(image);
@@ -259,28 +261,46 @@ namespace Windows.UI.Xaml.Controls
 							"Stretch mode {0} is not supported".InvariantCultureFormat(stretch));
 				}
 			}
+			else
+			{
+				SetNeedsLayout();
+			}
 		}
 
+		public override void LayoutSubviews()
+		{
+			try
+			{
+				_layoutRequested = false;
+				base.LayoutSubviews();
+
+				UpdateLayerRect();
+			}
+			catch (Exception e)
+			{
+				this.Log().Error($"Layout failed in {GetType()}", e);
+			}
+		}
 
 		partial void OnStretchChanged(Stretch newValue, Stretch oldValue)
 		{
 			UpdateContentMode(newValue);
 		}
 
+		private CGSize _previousSize;
+
 		public override CGSize SizeThatFits(CGSize size)
 		{
-			size = IFrameworkElementHelper.SizeThatFits(this, size);
-
 			size = _layouter.Measure(size.ToFoundationSize());
 
-			UpdateLayerRect(size);
-
-			return size;
+			return _previousSize = size;
 		}
 
-		private void UpdateLayerRect(Size availableSize)
+		private void UpdateLayerRect()
 		{
-			if (SourceImageSize.Width == 0 || SourceImageSize.Height == 0 || availableSize.Width == 0 || availableSize.Height == 0)
+			var availableSize = Frame.Size;
+
+			if (SourceImageSize.Width == 0 || SourceImageSize.Height == 0 || availableSize.Width == 0 || availableSize.Height == 0 || Image == null)
 			{
 				return; // nothing to do
 			}
@@ -291,19 +311,32 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var imageSize = Image.Size.ToFoundationSize();
-			var sourceRect = new Rect(Point.Zero, imageSize);
 
-			this.MeasureSource(availableSize, ref sourceRect);
-			this.ArrangeSource(availableSize, ref sourceRect);
+			// Calculate the resulting space required on screen for the image
+			var containerSize = this.MeasureSource(availableSize, imageSize);
 
-			var relativeX = sourceRect.X / imageSize.Width;
-			var relativeY = sourceRect.Y / imageSize.Height;
-			var relativeWidth = availableSize.Width / sourceRect.Width;
-			var relativeHeight = availableSize.Height / sourceRect.Height;
+			// Calculate the position of the image to follow stretch and alignment requirements
+			var contentRect = this.ArrangeSource(availableSize, containerSize);
 
-			var rect = new CGRect(-relativeX, -relativeY, relativeWidth, relativeHeight);
+			// Calculate the required container to position the image in the AvailableSize
+			var containerRect = new Rect(default, availableSize);
+			containerRect.Intersect(contentRect);
 
-			Layer.ContentsRect = rect;
+			// Calculate a relative (0 to 1) X, Y, Width & Height for the image position
+			var relativeX = contentRect.X / contentRect.Width;
+			var relativeY = contentRect.Y / contentRect.Height;
+			var relativeWidth = availableSize.Width / contentRect.Width;
+			var relativeHeight = availableSize.Height / contentRect.Height;
+			var contentRelativeRect = new CGRect(-relativeX, -relativeY, relativeWidth, relativeHeight);
+
+			// Apply the relative position
+			Layer.ContentsRect = contentRelativeRect;
+
+			// Add a clipping mask to prevent the GPU from rendering padding pixels
+			Layer.Mask = new CAShapeLayer
+			{
+				Path = CGPath.FromRect(containerRect.ToCGRect())
+			};
 		}
 	}
 }

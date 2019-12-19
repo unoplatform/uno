@@ -27,8 +27,11 @@ namespace Windows.UI.Xaml
 			InitializePointers();
 		}
 
+		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
+
 		partial void ApplyNativeClip(Rect rect)
 		{
+
 			if (rect.IsEmpty
 				|| double.IsPositiveInfinity(rect.X)
 				|| double.IsPositiveInfinity(rect.Y)
@@ -36,13 +39,16 @@ namespace Windows.UI.Xaml
 				|| double.IsPositiveInfinity(rect.Height)
 			)
 			{
-				this.Layer.Mask = null;
+				if (!ClippingIsSetByCornerRadius)
+				{
+					this.Layer.Mask = null;
+				}
 				return;
 			}
 
 			this.Layer.Mask = new CAShapeLayer
 			{
-				Path = CGPath.FromRect(ToCGRect(rect))
+				Path = CGPath.FromRect(rect.ToCGRect())
 			};
 		}
 
@@ -63,7 +69,7 @@ namespace Windows.UI.Xaml
 			if (base.Hidden != newVisibility.IsHidden())
 			{
 				base.Hidden = newVisibility.IsHidden();
-				this.SetNeedsLayout();
+				InvalidateMeasure();
 
 				if (newVisibility == Visibility.Visible)
 				{
@@ -115,17 +121,6 @@ namespace Windows.UI.Xaml
 		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
 		{
 			return relativeTo.ConvertPointToCoordinateSpace(position, relativeTo);
-		}
-
-		private CGRect ToCGRect(Rect rect)
-		{
-			return new CGRect
-			(
-				(nfloat)(rect.X),
-				(nfloat)(rect.Y),
-				(nfloat)(rect.Width),
-				(nfloat)(rect.Height)
-			);
 		}
 
 		public GeneralTransform TransformToVisual(UIElement visual)

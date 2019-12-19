@@ -70,5 +70,8 @@ namespace Windows.UI.Xaml.Controls
 
 		internal override bool IsViewHit()
 			=> Background != null || base.IsViewHit();
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Child is UIElement ue) || ue.RenderTransform == null;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
 	}
 }

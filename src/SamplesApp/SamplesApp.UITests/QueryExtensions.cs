@@ -20,10 +20,10 @@ namespace SamplesApp.UITests
 		/// <summary>
 		/// Wait for element to be available and to have the expected value for its Text property.
 		/// </summary>
-		public static void WaitForText(this IApp app, string elementName, string expectedText)
+		public static void WaitForText(this IApp app, string elementName, string expectedText, TimeSpan? timeout = null)
 		{
 			var element = app.Marked(elementName);
-			app.WaitForElement(element);
+			app.WaitForElement(element, timeout: timeout);
 			app.WaitForText(element, expectedText);
 		}
 
@@ -40,6 +40,14 @@ namespace SamplesApp.UITests
 			var element = app.Marked(elementName);
 			app.WaitForElement(element);
 			return element.GetText();
+		}
+
+		/// <summary>
+		/// Get bounds rect for an element.
+		/// </summary>
+		public static IAppRect GetRect(this IApp app, string elementName)
+		{
+			return app.WaitForElement(elementName).Single().Rect;
 		}
 	}
 }

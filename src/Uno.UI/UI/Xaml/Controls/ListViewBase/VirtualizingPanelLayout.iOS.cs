@@ -96,6 +96,10 @@ namespace Windows.UI.Xaml.Controls
 		/// The most recent available size given by measure.
 		/// </summary>
 		private CGSize _lastAvailableSize;
+		/// <summary>
+		/// The available size when layout was most recently recreated.
+		/// </summary>
+		private CGSize _lastArrangeSize;
 		private bool _invalidatingHeadersOnBoundsChange;
 		private bool _invalidatingOnCollectionChanged;
 		private UnusedSpaceState _unusedSpaceState;
@@ -419,6 +423,7 @@ namespace Windows.UI.Xaml.Controls
 						if (_dirtyState == DirtyState.NeedsRelayout)
 						{
 							_hasDynamicItemSizes = false;
+							_lastArrangeSize = availableSize;
 						}
 						_pendingCollectionChanges.Clear();
 						_dirtyState = DirtyState.None;
@@ -450,10 +455,13 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var oldBreadth = GetBreadth(oldAvailableSize);
 			var newBreadth = GetBreadth(newAvailableSize);
+			var oldArrangeBreadth = GetBreadth(_lastArrangeSize);
 
 			// Recalculate layout only when the breadth changes. Extent changes don't affect the desired extent reported by layouting (since 
 			// items always get measured with infinite extent).
 			return NMath.Abs(oldBreadth - newBreadth) > epsilon
+				// If the new measure size happens to have been used for the most recent arrange, we don't need to relayout
+				&& NMath.Abs(oldArrangeBreadth - newBreadth) > epsilon
 				// Skip recalculating layout for 0 size.
 				&& !newAvailableSize.IsEmpty;
 		}
@@ -467,6 +475,10 @@ namespace Windows.UI.Xaml.Controls
 		/// <returns>The total collection size</returns>
 		private CGSize PrepareLayoutInternal(bool createLayoutInfo, bool isCollectionChanged, CGSize size)
 		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"PrepareLayoutInternal() - recalculating layout, createLayoutInfo={createLayoutInfo}, dirtyState={_dirtyState}, size={size} ");
+			}
 			Dictionary<NSIndexPath, CGSize?> oldItemSizes = null;
 			Dictionary<int, CGSize?> oldGroupHeaderSizes = null;
 
@@ -590,7 +602,7 @@ namespace Windows.UI.Xaml.Controls
 				//Ensure container for group exists even if group contains no items, to simplify subsequent logic
 				if (createLayoutInfo)
 				{
-					_itemLayoutInfos[section] = new Dictionary<NSIndexPath, UICollectionViewLayoutAttributes>(); 
+					_itemLayoutInfos[section] = new Dictionary<NSIndexPath, UICollectionViewLayoutAttributes>();
 				}
 				//b. Layout items in group
 				var itemsBreadth = LayoutItemsInGroup(section, availableGroupBreadth, ref frame, createLayoutInfo, oldItemSizes);
@@ -967,6 +979,12 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_invalidatingOnCollectionChanged = true;
 			_pendingCollectionChanges.Enqueue(change);
+
+			if (change.Action == NotifyCollectionChangedAction.Add && DidLeaveUnusedSpace())
+			{
+				// If we're adding an item and the previous layout didn't use all available space, we probably need more space.
+				PropagateUnusedSpaceRelayout();
+			}
 		}
 
 		/// <summary>
@@ -1122,15 +1140,23 @@ namespace Windows.UI.Xaml.Controls
 			var lastReported = GetExtent(_lastReportedSize);
 			if (DidLeaveUnusedSpace() && DynamicContentExtent > lastReported)
 			{
-				SetWillConsumeUnusedSpace();
-
 				SetExtent(ref _lastReportedSize, DynamicContentExtent);
 
-				var nativePanel = CollectionView as NativeListViewBase;
-				nativePanel.SetNeedsLayout();
-				// NativeListViewBase swallows layout requests by design
-				nativePanel.SetSuperviewNeedsLayout();
+				PropagateUnusedSpaceRelayout();
 			}
+		}
+
+		/// <summary>
+		/// We left space 'on the table' in a previous measure+arrange and now we need more, propagate a layout request.
+		/// </summary>
+		private void PropagateUnusedSpaceRelayout()
+		{
+			SetWillConsumeUnusedSpace();
+
+			var nativePanel = CollectionView as NativeListViewBase;
+			nativePanel.SetNeedsLayout();
+			// NativeListViewBase swallows layout requests by design
+			nativePanel.SetSuperviewNeedsLayout();
 		}
 
 		/// <summary>

@@ -6,7 +6,7 @@ using UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.Models;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker
 {
-	[SampleControlInfo("DatePicker", "DatePicker_SampleContent", typeof(DatePickerViewModel))]
+	[SampleControlInfo("DatePicker", "DatePicker_SampleContent", typeof(DatePickerViewModel), ignoreInSnapshotTests: true)]
 	public sealed partial class DatePicker_SampleContent : UserControl
     {
         public DatePicker_SampleContent()

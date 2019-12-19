@@ -75,5 +75,26 @@ namespace Uno.UI.Extensions
 
 			return time;
 		}
+
+		/// <summary>
+		/// Normalize TimeSpan between 0 and 24h inclusive
+		/// </summary>
+		/// <returns>Normalized TimeSpan</returns>
+		internal static TimeSpan NormalizeToDay(this TimeSpan value)
+		{
+			var day = TimeSpan.FromDays(1);
+
+			while (value < TimeSpan.Zero)
+			{
+				value += day;
+			}
+
+			while (value > day)
+			{
+				value -= day;
+			}
+
+			return value;
+		}
 	}
 }

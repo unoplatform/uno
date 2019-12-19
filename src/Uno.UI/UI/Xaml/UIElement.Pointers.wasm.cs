@@ -326,6 +326,11 @@ namespace Windows.UI.Xaml
 					// This is done by setting 'pointer-events' to 'none'.
 					element.SetStyle("pointer-events", "none");
 				}
+
+				if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+				{
+					element.UpdateDOMProperties();
+				}
 			}
 		}
 		#endregion

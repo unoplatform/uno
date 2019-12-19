@@ -94,7 +94,7 @@ namespace Windows.UI.Xaml.Controls
 			OnIsSpellCheckEnabledChanged(CreateInitialValueChangerEventArgs(IsSpellCheckEnabledProperty, IsSpellCheckEnabledProperty.GetMetadata(GetType()).DefaultValue, IsSpellCheckEnabled));
 			OnTextAlignmentChanged(CreateInitialValueChangerEventArgs(TextAlignmentProperty, TextAlignmentProperty.GetMetadata(GetType()).DefaultValue, TextAlignment));
 			OnTextWrappingChanged(CreateInitialValueChangerEventArgs(TextWrappingProperty, TextWrappingProperty.GetMetadata(GetType()).DefaultValue, TextWrapping));
-			OnFocusStateChanged((FocusState)FocusStateProperty.GetMetadata(GetType()).DefaultValue, FocusState);
+			OnFocusStateChanged((FocusState)FocusStateProperty.GetMetadata(GetType()).DefaultValue, FocusState, initial: true);
 
 			var buttonRef = _deleteButton?.GetTarget();
 
@@ -596,11 +596,13 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		protected override void OnFocusStateChanged(FocusState oldValue, FocusState newValue)
+			=> OnFocusStateChanged(oldValue, newValue, initial: false);
+		private void OnFocusStateChanged(FocusState oldValue, FocusState newValue, bool initial)
 		{
 			base.OnFocusStateChanged(oldValue, newValue);
 			OnFocusStateChangedPartial(newValue);
 
-			if (newValue == FocusState.Unfocused)
+			if (!initial && newValue == FocusState.Unfocused)
 			{
 				// Manually update Source when losing focus because TextProperty's default UpdateSourceTrigger is Explicit
 				var bindingExpression = GetBindingExpression(TextProperty);

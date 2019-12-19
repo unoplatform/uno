@@ -409,10 +409,11 @@ namespace <#= mixin.NamespaceName #>
 		}
 		#endregion
 
+		public double ActualWidth => GetActualWidth();
+		public double ActualHeight => GetActualHeight();
 
-		public virtual double ActualWidth { get { return _actualSize.Width; } }
-
-		public virtual double ActualHeight { get { return _actualSize.Height; } }
+		private protected virtual double GetActualWidth() => _actualSize.Width;
+		private protected virtual double GetActualHeight() => _actualSize.Height;
 
 		private Size _actualSize;
 		public override CGRect Frame
@@ -993,7 +994,19 @@ namespace <#= mixin.NamespaceName #>
 		
 		private static readonly Uri _defaultUri = new Uri("ms-appx:///");
 		public Uri BaseUri { get; internal set; } = _defaultUri;
-		
+
+						
+		/// <summary>
+		/// Sets the specified dependency property value using the format "name|value"
+		/// </summary>
+		/// <param name="dependencyPropertyNameAndValue">The name and value of the property</param>
+		/// <returns>The currenty set value at the Local precedence</returns>
+		[global::Foundation.Export("setDependencyPropertyValue:")]
+		public global::Foundation.NSString SetDependencyPropertyValue(global::Foundation.NSString dependencyPropertyNameAndValue)
+		{
+			return new global::Foundation.NSString(UIElement.SetDependencyPropertyValueInternal(this, dependencyPropertyNameAndValue) ?? "");
+		}
+
 		/// <summary>
 		/// Provides a native value for the dependency property with the given name on the current instance. If the value is a primitive type, 
 		/// its native representation is returned. Otherwise, the <see cref="object.ToString"/> implementation is used/returned instead.

@@ -1,12 +1,35 @@
 ﻿# Release notes
 
-## Next version
+### Features
+- Support for `EmailManager.ShowComposeNewEmailAsync`
+- Add support for Automation SetDependencyPropertyValue in Uno.UITest
+- Added support for using a `string` value in a `StaticResource` when using `CreateFromStringAttribute'
+- [Android] Adds support for `FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay`
+- Add support for `Grid.ColumnSpacing` and `Grid.RowSpacing`
+- Add clarification in [documentation](../articles/uno-development/working-with-the-samples-apps.md) for adding automated UI tests
+
+### Breaking changes
+-
+
+### Bug fixes
+- [#2230] `DisplayInformation` leaks memory
+- [WASM] Shapes now update when their Fill brush's Color changes
+- [WASM] Fix bug where changing `IsEnabled` from false to true on `Control` inside another `Control` didn't work
+- [Wasm] Add arbitrary delay in Safari macOS to avoid StackOverflow issues
+- #2227 fixed Color & SolidColorBrush literal values generation
+- [Android] Fix bug where setting Canvas.ZIndex would apply shadow effect in some cases
+- #2287 Vertical `ListView` containing a horizontal `ScrollViewer`: horizontal scrolling is difficult, only works when the gesture is perfectly horizontal
+- #2130 Grid - fix invalid measure when total star size is 0
+- [iOS] Fix invalid image measure on constrained images with `Margin`
+
+## Release 2.0
 
 ### Features
-* Support for `EmailManager.ShowComposeNewEmailAsync`
+
+* [#2040] Support for ms-settings:// special URIs on Android and iOS, Launcher API alignments to match UWP behavior
 * [#2029](https://github.com/unoplatform/uno/pull/2029) Support for MenuFlyoutItem.Click
 * support /[file]/[name] format in ResourceLoader.GetForCurrentView().GetString()
-* [#2039] Added support for Xaml type conversions using CreateFromStringAttribute.
+* [#2039] Added support for Xaml type conversions using `CreateFromStringAttribute`.
 * [#] Support for `Windows.Devices.Lights.Lamp` on iOS, Android.
 * [#1970](https://github.com/unoplatform/uno/pull/1970) Added support for `AnalyticsInfo` properties on iOS, Android and WASM
 * [#1207] Implemented some `PackageId` properties
@@ -100,6 +123,7 @@
 * [Wasm] Add the ability to focus a TextBox by clicking its header
 * Add support for `ToggleButton.IsThreeState` and `ToggleButton.Indeterminate`
 * [Wasm] Add support for `TextBox.IsReadonly`
+* [iOS] [WASM] `Path` now supports `LinearGradientBrush` as `Fill`
 
 ### Breaking changes
 * `TextBox` no longer raises TextChanged when its template is applied, in line with UWP.
@@ -115,6 +139,7 @@
  * [WASM] The tranform returned by `UIElement.TransformToVisual` is now including scale, rotation or any custom transformation that was declard on a parent element (transform was only including translate components)
 
 ### Bug fixes
+* [#2186](https://github.com/unoplatform/uno/pull/2186) Fix Canvas Measurement to behave like UWP
 * [#2093](https://github.com/unoplatform/uno/pull/2093) Fix missing measurement option for polyline and polygon
 * Font size, used for ComboBoxItems, are same as in ComboBox content (not smaller)
 * [#2023](https://github.com/unoplatform/uno/pull/2023) Android WebView.NavigateToString doesn't throw exception even when string is very long.
@@ -201,8 +226,11 @@
 * [Android] #2007 ComboBox does not take Window.VisibleBounds to position its popup
 * [Wasm] Fixes the measure of a TextBoxView #2034 #2095
 * [Android] [Wasm] Recent clipping improvements were incompleted. Fixed a case where a control was allowed to draw itself to use more than available place in the _arrange_ phase.
+* [iOS] Fix negative result value of TimePicker. Now value range is limited from 0 to 1 day
 * #2129 WebAssembly Bootstrapper update to remove the implicit .NET 4.6.2 dependency, and support for long file paths on Windows.
 * #2147 Fix NRE in android-specific TextBox.ImeOptions
+* #2146 [iOS] ListView doesn't take extra space when items are added to collection
+* [iOS] Animation might run twice
 
 ## Release 1.45.0
 ### Features

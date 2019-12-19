@@ -18,7 +18,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 {
-	[SampleControlInfo("TextBox")]
+	[SampleControlInfo("TextBox", ignoreInSnapshotTests: true /*Keyboard may be appearing*/)]
 	public sealed partial class TextBox_DeleteButton_Automated : UserControl
     {
         public TextBox_DeleteButton_Automated()

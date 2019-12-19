@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -12,6 +13,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 	public class Manipulation_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		public void TestManipulation()
 		{
 			Run("UITests.Shared.Windows_UI_Input.GestureRecognizerTests.ManipulationEvents");

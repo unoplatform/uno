@@ -96,6 +96,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
         private readonly INamedTypeSymbol _dataBindingSymbol;
         private readonly INamedTypeSymbol _styleSymbol;
         private readonly INamedTypeSymbol _setterSymbol;
+		private readonly INamedTypeSymbol _colorSymbol;
 
         private readonly List<INamedTypeSymbol> _markupExtensionTypes;
 		private readonly List<INamedTypeSymbol> _xamlConversionTypes;
@@ -165,6 +166,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             _iDictionaryOfTKeySymbol = GetType("System.Collections.Generic.IDictionary`2");
             _dataBindingSymbol = GetType("Windows.UI.Xaml.Data.Binding");
             _styleSymbol = GetType(XamlConstants.Types.Style);
+			_colorSymbol = GetType(XamlConstants.Types.Color);
 
             _markupExtensionTypes = _medataHelper.GetAllTypesDerivingFrom(_markupExtensionSymbol).ToList();
             _xamlConversionTypes = _medataHelper.GetAllTypesAttributedWith(XamlConstants.Types.CreateFromStringAttribute).ToList();
@@ -435,6 +437,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (_isUiAutomationMappingEnabled)
 			{
 				writer.AppendLineInvariant("global::Uno.UI.FrameworkElementHelper.IsUiAutomationMappingEnabled = true;");
+
+				if (_isWasm)
+				{
+					// When automation mapping is enabled, remove the element ID from the ToString so test screenshots stay the same.
+					writer.AppendLineInvariant("global::Uno.UI.FeatureConfiguration.UIElement.RenderToStringWithId = false;");
+				}
 			}
 		}
 
@@ -1459,13 +1467,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return _xamlConversionTypes.Any(ns => ns.Equals(symbol));
 		}
 
-		private string BuildXamlTypeConverterLiteralValue(INamedTypeSymbol symbol, string memberValue)
+		private string BuildXamlTypeConverterLiteralValue(INamedTypeSymbol symbol, string memberValue, bool includeQuotations)
 		{
 			var attributeData = symbol.FindAttribute(XamlConstants.Types.CreateFromStringAttribute);
 			var returnType = attributeData?.NamedArguments.FirstOrDefault(kvp => kvp.Key == "MethodName").Value.Value;
 
-			// Return a string that contains the code which calls the "conversion" function with the member value
-			return "{0}(\"{1}\")".InvariantCultureFormat(returnType, memberValue);
+			if (includeQuotations)
+			{
+				// Return a string that contains the code which calls the "conversion" function with the member value
+				return "{0}(\"{1}\")".InvariantCultureFormat(returnType, memberValue);
+			}
+			else
+			{
+				// Return a string that contains the code which calls the "conversion" function with the member value.
+				// By not including quotations, this allows us to use static resources instead of string values.
+				return "{0}({1})".InvariantCultureFormat(returnType, memberValue);
+			}
 		}
 
 		private XamlMemberDefinition FindMember(XamlObjectDefinition xamlObjectDefinition, string memberName)
@@ -1625,6 +1642,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                                 BuildChild(writer, implicitContentChild, implicitContentChild.Objects.First());
                             }
                         }
+						else if (IsType(topLevelControl.Type, XamlConstants.Types.SolidColorBrush))
+						{
+							if (implicitContentChild.Value is string content && !content.IsNullOrWhiteSpace())
+							{
+								writer.AppendLineInvariant($"{setterPrefix}Color = {BuildColor(content)}");
+							}
+						}
                         else if (IsLinearGradientBrush(topLevelControl.Type))
                         {
                             BuildCollection(writer, isInline, setterPrefix + "GradientStops", implicitContentChild);
@@ -2817,7 +2841,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
                 targetPropertyType = targetPropertyType ?? FindPropertyType(member.Member);
 
-                if (!_isGeneratingGlobalResource && _staticResources.TryGetValue(resourcePath, out var res))
+				// If the property Type is attributed with the CreateFromStringAttribute
+				if (IsXamlTypeConverter(targetPropertyType))
+				{
+					string memberValue;
+
+					// Build the member string based on wether it's a local
+					// StaticResource or a global StaticResource
+					if (_staticResources.TryGetValue(resourcePath, out var _))
+					{
+						memberValue = $"StaticResources.{SanitizeResourceName(resourcePath)}";
+					}
+					else
+					{
+						memberValue = $"{GetGlobalStaticResource(resourcePath)}.ToString()";
+					}
+
+					// We must build the member value as a call to a "conversion" function
+					return BuildXamlTypeConverterLiteralValue(targetPropertyType, memberValue, includeQuotations: false);
+				}
+				if (!_isGeneratingGlobalResource && _staticResources.TryGetValue(resourcePath, out var res))
                 {
                     return ApplyCast($"StaticResources.{SanitizeResourceName(resourcePath)}", useSafeCast, res);
                 }
@@ -2915,7 +2958,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             if (IsXamlTypeConverter(propertyType))
             {
                 // We must build the member value as a call to a "conversion" function
-                return BuildXamlTypeConverterLiteralValue(propertyType, memberValue);
+                return BuildXamlTypeConverterLiteralValue(propertyType, memberValue, includeQuotations: true);
             }
 
             propertyType = FindUnderlyingType(propertyType);
@@ -3254,21 +3297,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                     .Aggregate((s1, s2) => "{0},{1}".InvariantCultureFormat(s1, s2));
         }
 
-        private string BuildColor(string memberValue)
-        {
-            var colorHelper = (INamedTypeSymbol)_medataHelper.GetTypeByFullName(XamlConstants.Types.Colors);
+		private string BuildColor(string memberValue)
+		{
+			var colorsSymbol = (INamedTypeSymbol)_medataHelper.GetTypeByFullName(XamlConstants.Types.Colors);
+			if (colorsSymbol.FindField(_colorSymbol, memberValue, StringComparison.OrdinalIgnoreCase) is IFieldSymbol field)
+			{
+				return $"{GlobalPrefix}{XamlConstants.Types.Colors}.{field.Name}";
+			}
+			else
+			{
+				memberValue = string.Join(", ", ColorCodeParser.ParseColorCode(memberValue));
 
-            if (colorHelper.GetFields().Any(m => m.Name.Equals(memberValue, StringComparison.OrdinalIgnoreCase)))
-            {
-                return $"{XamlConstants.Types.Colors}.{memberValue}";
-            }
-            else
-            {
-                memberValue = string.Join(", ", ColorCodeParser.ParseColorCode(memberValue));
-
-                return "Windows.UI.ColorHelper.FromARGB({0})".InvariantCultureFormat(memberValue);
-            }
-        }
+				return $"{GlobalPrefix}Windows.UI.ColorHelper.FromARGB({memberValue})";
+			}
+		}
 
         private string BuildBindingOption(XamlMemberDefinition m, INamedTypeSymbol propertyType, bool prependCastToType)
         {

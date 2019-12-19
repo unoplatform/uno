@@ -6,7 +6,7 @@
     <type fullname="Windows.UI.Xaml.Window" />
     <type fullname="Windows.UI.Xaml.Media.BrushConverter" />
     <type fullname="Windows.UI.Xaml.Media.ImageSourceConverter" />
-    <type fullname="Windows.UI.Xaml.Media.CornerRadiusConverter" />
+    <type fullname="Windows.UI.Xaml.CornerRadiusConverter" />
     <type fullname="Uno.Media.GeometryConverter" />
     <type fullname="Windows.UI.Xaml.ThicknessConverter" />
     <type fullname="Windows.UI.Xaml.ObservableVectorWrapper" />

@@ -44,6 +44,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\home.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Icons\play.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\lockscreenlogo.scale-200.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\ScrollGesture.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\splashscreen.scale-200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\square150x150logo.scale-200.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\square44x44logo.scale-200.png" />

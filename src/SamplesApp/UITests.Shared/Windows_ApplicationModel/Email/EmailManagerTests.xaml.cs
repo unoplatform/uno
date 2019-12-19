@@ -29,7 +29,6 @@ namespace UITests.Shared.Windows_ApplicationModel.Email
 	[SampleControlInfo(
 		"Windows.ApplicationModel",
 		"EmailManager",
-		ignoreInAutomatedTests: true,
 		description: "Test the EmailManager.ShowComposeNewEmailAsync API.",
 		viewModelType: typeof(EmailManagerViewModel))]
 	public sealed partial class EmailManagerTests : Page

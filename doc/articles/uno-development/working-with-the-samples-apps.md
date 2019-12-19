@@ -7,6 +7,8 @@ Those applications are structured in a way that samples can created out of norma
 
 Those applications are located in the `SamplesApp` folder of the solution, and a live development out of the master branch version for the WebAssembly application can be found here: https://unoui-sampleapp-unoui-sampleapp-staging.azurewebsites.net
 
+This article contains instructions and guidelines for authoring UI tests for Uno. For guidance on other test strategies used in the Uno codebase, see [this guide](../contributing/guidelines/creating-tests.md).
+
 ## Creating UI Tests
 
 The goal of these UI Tests is to :
@@ -49,6 +51,7 @@ This attribute can be placed at the test or class level.
 
 - Setup an android simulator or device, start it
 - Deploy and run the `SamplesApp.Droid` application on that device
+- After you have added a new test page, you must launch the samples application once before running the test, otherwise the code for that page is not generated and the test will fail.
 
 ## Running UI Tests
 
@@ -90,6 +93,20 @@ To run the tests:
 - The screen shots are placed in a folder named `out`
 
 Note that the same operation is run during the CI, in a specific job running under Linux. The screen shots are located in the Unit Tests section under `Screenshots Compare Test Run` as well as in the build artifact.
+
+## Running iOS UI Tests in a Simulator on macOS 
+
+Running UI Tests in iOS Simulators on macOS requires, as of VS4Mac 8.4, to build and run the tests from the command line. Editing the Uno.UI solution is not a particularly stable experience yet.
+
+In a terminal, run the following:
+``` bash
+cd build
+./local-ios-uitest-run.sh
+```
+
+The Uno.UI solution will build, and the UI tests will run. You may need to adjust some of the parameters in the script, such as:
+- `UITEST_SNAPSHOTS_ONLY` which runs automated or snapshots tests
+- `UITEST_SNAPSHOTS_GROUP` which controls which group of tests will be run. Note that this feature is mainly used for build performance, where tests from different groups can be run in parallel during the CI.
 
 ## Validating the WebAssembly UI Tests results
 

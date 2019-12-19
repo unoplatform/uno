@@ -305,6 +305,15 @@ namespace Uno.UI
 			/// referencing the ** type ** ScrollViewer in any way.
 			/// </remarks>
 			public static ScrollViewerUpdatesMode DefaultUpdatesMode { get; set; } = ScrollViewerUpdatesMode.AsynchronousIdle;
+
+#if __ANDROID__
+			/// <summary>
+			/// This value defines an optional delay to be set for native ScrollBar thumbs to disapear. The
+			/// platform default is 300ms, which can make the thumbs appear on screenshots, changing this value
+			/// to <see cref="TimeSpan.Zero"/> makes those disapear faster.
+			/// </summary>
+			public static TimeSpan? AndroidScrollbarFadeDelay { get; set; }
+#endif
 		}
 
 		public static class ToolTip
