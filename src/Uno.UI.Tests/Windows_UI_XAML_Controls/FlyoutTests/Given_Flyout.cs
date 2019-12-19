@@ -15,6 +15,12 @@ namespace Uno.UI.Tests.FlyoutTests
 	[TestClass]
 	public class Given_Flyout
 	{
+		[TestInitialize]
+		public void Init()
+		{
+			UnitTestsApp.App.EnsureApplication();
+		}
+
 		[TestMethod]
 		public void When_ChildIsBigger_PlacementBottom()
 		{
