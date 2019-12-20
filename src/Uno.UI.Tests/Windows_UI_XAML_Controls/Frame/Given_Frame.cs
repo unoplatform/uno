@@ -15,6 +15,12 @@ namespace Uno.UI.Tests.FrameTests
 	[TestClass]
 	public class Given_Frame
 	{
+		[TestInitialize]
+		public void Init()
+		{
+			UnitTestsApp.App.EnsureApplication();
+		}
+
 		[TestMethod]
 		public void When_RemovedPage()
 		{

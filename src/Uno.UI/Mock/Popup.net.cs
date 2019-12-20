@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Popup
 	{
-		public Popup()
+		partial void InitializePartial()
 		{
 			PopupPanel = new PopupPanel(this);
 		}

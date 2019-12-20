@@ -53,6 +53,11 @@ namespace Windows.UI.Xaml.Controls
 
 		public ComboBox()
 		{
+			LightDismissOverlayBackground = Resources["ComboBoxLightDismissOverlayBackground"] as Brush ??
+				// This is normally a no-op - the above line should retrieve the framework-level resource. This is purely to fail the build when
+				// Resources/Styles are overhauled (and the above will no longer be valid)
+				Uno.UI.GlobalStaticResources.ComboBoxLightDismissOverlayBackground as Brush;
+
 			IsItemClickEnabled = true;
 		}
 
@@ -78,6 +83,9 @@ namespace Windows.UI.Xaml.Controls
 			if (_popup is PopupBase popup)
 			{
 				popup.CustomLayouter = new DropDownLayouter(this, popup);
+
+				popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
+				popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
 			}
 
 			UpdateHeaderVisibility();
@@ -370,6 +378,36 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return new ComboBoxAutomationPeer(this);
 		}
+
+		public LightDismissOverlayMode LightDismissOverlayMode
+		{
+			get
+			{
+				return (LightDismissOverlayMode)this.GetValue(LightDismissOverlayModeProperty);
+			}
+			set
+			{
+				this.SetValue(LightDismissOverlayModeProperty, value);
+			}
+		}
+
+		public static DependencyProperty LightDismissOverlayModeProperty { get; } =
+		DependencyProperty.Register(
+			"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
+			typeof(ComboBox),
+			new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));
+
+		/// <summary>
+		/// Sets the light-dismiss colour, if the overlay is enabled. The external API for modifying this is to override the PopupLightDismissOverlayBackground, etc, static resource values.
+		/// </summary>
+		internal Brush LightDismissOverlayBackground
+		{
+			get { return (Brush)GetValue(LightDismissOverlayBackgroundProperty); }
+			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
+		}
+
+		internal static readonly DependencyProperty LightDismissOverlayBackgroundProperty =
+			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(ComboBox), new PropertyMetadata(null));
 
 		private class DropDownLayouter : PopupBase.IDynamicPopupLayouter
 		{
