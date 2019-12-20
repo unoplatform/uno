@@ -9,7 +9,7 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-	<Page.Resources>
+	<UserControl.Resources>
 		<DataTemplate x:Key="ProportionalItemTemplate">
 			<u:ProportionalPanel Mode="HeightFollowsWidth"
 								 Ratio="1"
@@ -46,7 +46,7 @@
 				</Grid>
 			</u:ProportionalPanel>
 		</DataTemplate>
-	</Page.Resources>
+	</UserControl.Resources>
 
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 		<ListView ItemsSource="0123456789"
