@@ -5,15 +5,20 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:local="using:UITests.Shared.Windows_UI_Xaml_Controls.ComboBox"
 	xmlns:not_win="http://uno.ui/not_win"
+	xmlns:not_wasm="http://uno.ui/not_wasm"
+	xmlns:wasm="http://uno.ui/wasm"
 	xmlns:uno="using:Uno.UI.Xaml.Controls"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-	mc:Ignorable="d not_win"
+	mc:Ignorable="d not_win wasm not_wasm"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<win:TextBlock Text="This sample demos a Uno only feature and is not available on Windows." />
 
-	<not_win:Grid BorderBrush="DarkRed" BorderThickness="2,2,2,100">
+	<not_win:Grid
+		BorderBrush="DarkRed"
+		wasm:BorderThickness="2,2,2,100"
+		not_wasm:BorderThickness="2,50,2,100">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition />
 			<ColumnDefinition />
