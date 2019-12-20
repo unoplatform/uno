@@ -39,14 +39,26 @@ namespace SamplesApp.UITests.TestFramework
 				Assert.AreEqual(expectedBitmap.Size.Width, actualBitmap.Size.Width, "Screenshot Width");
 				Assert.AreEqual(expectedBitmap.Size.Height, actualBitmap.Size.Height, "Screenshot Height");
 
-				for (var x = 0; x < Math.Min(expectedRect.Width, expectedBitmap.Size.Width); x++)
-					for (var y = 0; y < Math.Min(expectedRect.Height, expectedBitmap.Size.Height); y++)
-					{
-						Assert.AreEqual(
-							expectedBitmap.GetPixel(x + expectedRect.X, y + expectedRect.Y),
-							actualBitmap.GetPixel(x + actualRect.X, y + actualRect.Y),
-							$"Pixel {x},{y}");
-					}
+				var width = Math.Min(expectedRect.Width, expectedBitmap.Size.Width);
+				var height = Math.Min(expectedRect.Height, expectedBitmap.Size.Height);
+
+				(int x, int y) expectedOffset = (
+					expectedRect.X < 0 ? expectedBitmap.Size.Width + expectedRect.X : expectedRect.X,
+					expectedRect.Y < 0 ? expectedBitmap.Size.Height + expectedRect.Y : expectedRect.Y
+				);
+				(int x, int y) actualOffset = (
+					actualRect.X < 0 ? actualBitmap.Size.Width + actualRect.X : actualRect.X,
+					actualRect.Y < 0 ? actualBitmap.Size.Height + actualRect.Y : actualRect.Y
+				);
+
+				for (var x = 0; x < width; x++)
+				for (var y = 0; y < height; y++)
+				{
+					Assert.AreEqual(
+						expectedBitmap.GetPixel(x + expectedOffset.x, y + expectedOffset.y),
+						actualBitmap.GetPixel(x + actualOffset.x, y + actualOffset.y),
+						$"Pixel {x},{y}");
+				}
 			}
 		}
 
@@ -76,14 +88,26 @@ namespace SamplesApp.UITests.TestFramework
 				Assert.AreEqual(expectedBitmap.Size.Width, actualBitmap.Size.Width, "Screenshot Width");
 				Assert.AreEqual(expectedBitmap.Size.Height, actualBitmap.Size.Height, "Screenshot Height");
 
-				for (var x = 0; x < Math.Min(expectedRect.Width, expectedBitmap.Size.Width); x++)
-					for (var y = 0; y < Math.Min(expectedRect.Height, expectedBitmap.Size.Height); y++)
+				var width = Math.Min(expectedRect.Width, expectedBitmap.Size.Width);
+				var height = Math.Min(expectedRect.Height, expectedBitmap.Size.Height);
+
+				(int x, int y) expectedOffset = (
+					expectedRect.X < 0 ? expectedBitmap.Size.Width + expectedRect.X : expectedRect.X,
+					expectedRect.Y < 0 ? expectedBitmap.Size.Height + expectedRect.Y : expectedRect.Y
+				);
+				(int x, int y) actualOffset = (
+					actualRect.X < 0 ? actualBitmap.Size.Width + actualRect.X : actualRect.X,
+					actualRect.Y < 0 ? actualBitmap.Size.Height + actualRect.Y : actualRect.Y
+				);
+
+				for (var x = 0; x < width; x++)
+				for (var y = 0; y < height; y++)
+				{
+					if (expectedBitmap.GetPixel(x + expectedOffset.x, y + expectedOffset.y) != actualBitmap.GetPixel(x + actualOffset.x, y + actualOffset.y))
 					{
-						if (expectedBitmap.GetPixel(x + expectedRect.X, y + expectedRect.Y) != actualBitmap.GetPixel(x + actualRect.X, y + actualRect.Y))
-						{
-							return;
-						}
+						return;
 					}
+				}
 
 				Assert.Fail("Screenshots are equals.");
 			}
