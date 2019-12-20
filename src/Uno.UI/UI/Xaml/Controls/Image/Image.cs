@@ -129,6 +129,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnSourceChanged(ImageSource oldValue, ImageSource newValue)
 		{
+			SetTargetImageSize(null);
+
 			if (newValue is WriteableBitmap wb)
 			{
 				wb.Invalidated += OnInvalidated;
@@ -229,7 +231,7 @@ namespace Windows.UI.Xaml.Controls
 			return double.IsNaN(Height) ? (double.IsInfinity(stretchedHeight) ? fallbackIfInfinite : stretchedHeight) : Height;
 		}
 
-		partial void SetTargetImageSize(Size targetSize);
+		partial void SetTargetImageSize(Size? targetSize);
 
 		public override string ToString()
 		{
@@ -263,6 +265,15 @@ namespace Windows.UI.Xaml.Controls
 			protected override string Name => Panel.Name;
 
 			protected override Size MeasureOverride(Size availableSize)
+			{
+				var size = InnerMeasureOverride(availableSize);
+
+				ImageControl.SetTargetImageSize(availableSize);
+
+				return size;
+			}
+
+			private Size InnerMeasureOverride(Size availableSize)
 			{
 				var img = ImageControl;
 				var sourceSize = img.SourceImageSize;
@@ -413,7 +424,7 @@ namespace Windows.UI.Xaml.Controls
 						var loadedSize = ImageControl.SourceImageSize.LogicalToPhysicalPixels();
 
 						if (((renderedSize.Width + 512) < loadedSize.Width ||
-							(renderedSize.Height + 512) < loadedSize.Height) && ImageControl.Source.UseTargetSize)
+							(renderedSize.Height + 512) < loadedSize.Height) && !ImageControl.Source.UseTargetSize)
 						{
 							this.Log().Warn("The image was opened with a size of {0} and is displayed using a size of only {1}. Try optimizing the image size by using a smaller source or not using Stretch.Uniform or using fixed Width and Height."
 								.InvariantCultureFormat(loadedSize, renderedSize));
