@@ -118,7 +118,11 @@
 	<wasm:Style
 		x:Key="NativeDefaultCheckBox"
 		TargetType="CheckBox"
-		BasedOn="{StaticResource XamlDefaultCheckBox}" />
+				BasedOn="{StaticResource XamlDefaultCheckBox}" />
+
+	<net461:Style x:Key="NativeDefaultCheckBox"
+				TargetType="CheckBox"
+				BasedOn="{StaticResource XamlDefaultCheckBox}" />
 
 	<xamarin:Style
 		TargetType="CheckBox"
@@ -454,7 +458,12 @@
 	<wasm:Style
 		x:Key="NativeDefaultFrame"
 		TargetType="Frame"
-		BasedOn="{StaticResource XamlDefaultFrame}" />
+				BasedOn="{StaticResource XamlDefaultFrame}" />
+
+	<!-- Default native Frame styles -->
+	<net461:Style x:Key="NativeDefaultFrame"
+				TargetType="Frame"
+				BasedOn="{StaticResource XamlDefaultFrame}" />
 
 	<xamarin:Style
 		TargetType="Frame"
