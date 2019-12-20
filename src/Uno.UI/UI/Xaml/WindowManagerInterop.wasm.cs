@@ -121,7 +121,7 @@ namespace Uno.UI.Xaml
 
 		#region SetElementTransform
 
-		internal static void SetElementTransform(IntPtr htmlId, Matrix3x2 matrix)
+		internal static void SetElementTransform(IntPtr htmlId, Matrix3x2 matrix, bool requiresClipping)
 		{
 			if (UseJavascriptEval)
 			{
@@ -130,7 +130,8 @@ namespace Uno.UI.Xaml
 				SetStyles(
 					htmlId,
 					new[] { ("transform", native.ToStringInvariant()) },
-					true
+					setAsArranged: true,
+					clipToBounds: requiresClipping
 				);
 			}
 			else
@@ -220,11 +221,11 @@ namespace Uno.UI.Xaml
 		#endregion
 
 		#region SetStyleDouble
-		internal static void SetStyleDouble(IntPtr htmlId, string name, double value)
+		internal static void SetStyleDouble(IntPtr htmlId, string name, double value, bool requiresClipping)
 		{
 			if (UseJavascriptEval)
 			{
-				SetStyles(htmlId, new[] { (name, value.ToString(CultureInfo.InvariantCulture)) });
+				SetStyles(htmlId, new[] { (name, value.ToString(CultureInfo.InvariantCulture)) }, setAsArranged: false, clipToBounds: requiresClipping);
 			}
 			else
 			{
@@ -254,7 +255,7 @@ namespace Uno.UI.Xaml
 
 		#region SetStyles
 
-		internal static void SetStyles(IntPtr htmlId, (string name, string value)[] styles, bool setAsArranged = false, bool clipToBounds = false)
+		internal static void SetStyles(IntPtr htmlId, (string name, string value)[] styles, bool setAsArranged, bool clipToBounds)
 		{
 			if (UseJavascriptEval)
 			{
@@ -320,7 +321,10 @@ namespace Uno.UI.Xaml
 			{
 				var parms = new WindowManagerSetClassesParams
 				{
-					HtmlId = htmlId, CssClasses = cssClasses, CssClasses_Length = cssClasses.Length, Index = index
+					HtmlId = htmlId,
+					CssClasses = cssClasses,
+					CssClasses_Length = cssClasses.Length,
+					Index = index
 				};
 
 				TSInteropMarshaller.InvokeJS<WindowManagerSetClassesParams>("Uno:setClassesNative", parms);
@@ -879,7 +883,7 @@ namespace Uno.UI.Xaml
 					ClipToBounds = clipToBounds
 				};
 
-				if(clipRect != null)
+				if (clipRect != null)
 				{
 					parms.Clip = true;
 					parms.ClipTop = clipRect.Value.Top;
@@ -939,7 +943,7 @@ namespace Uno.UI.Xaml
 
 				return (
 					clientSize: new Size(ret.ClientWidth, ret.ClientHeight),
-					offsetSize:new Size(ret.OffsetWidth, ret.OffsetHeight)
+					offsetSize: new Size(ret.OffsetWidth, ret.OffsetHeight)
 				);
 			}
 		}
