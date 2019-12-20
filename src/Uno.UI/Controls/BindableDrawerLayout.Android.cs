@@ -525,13 +525,12 @@ namespace Uno.UI.Controls
 			// at a wrong size.
 
 			// To fix this, we simply apply the control's constraints (min+max defined sizes)
-
 			var availableSize = ViewHelper.LogicalSizeFromSpec(widthMeasureSpec, heightMeasureSpec);
 			var sizeForChildren = this.ApplySizeConstraints(availableSize).LogicalToPhysicalPixels();
 
 			base.OnMeasure(
-				(int)sizeForChildren.Width | (int)MeasureSpecMode.AtMost,
-				(int)sizeForChildren.Height | (int)MeasureSpecMode.AtMost);
+				ViewHelper.MakeMeasureSpec((int)sizeForChildren.Width, MeasureSpecMode.AtMost),
+				ViewHelper.MakeMeasureSpec((int)sizeForChildren.Height, MeasureSpecMode.AtMost));
 		}
 
 		/// <inheritdoc />
