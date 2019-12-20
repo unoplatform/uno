@@ -146,15 +146,6 @@ import android.view.ViewParent;
 
 			adapter.setCustomDispatchIsActive(target.getChildrenRenderTransformCount() > 0);
 			adapter.setCachedTarget(null);
-
-			// Make sure that the system won't stole the motion events if the ManipulationMode is not 'System'.
-			// Note: We have to do this in native as we might not forward the ACTION_DOWN if !target.getIsNativeMotionEventsEnabled()
-			// Note: This is automatically cleared on each ACTION_UP
-			if (target.getIsNativeMotionEventsInterceptForbidden()) {
-				// Log.i(LOGTAG, _indent + "INTERCEPT disable (i.e. scrolling disabled on parents)");
-
-				view.requestDisallowInterceptTouchEvent(true);
-			}
 		}
 
 		if (!target.getNativeIsHitTestVisible() || !target.getNativeIsEnabled()) {
@@ -183,22 +174,40 @@ import android.view.ViewParent;
 		//		 (e.g. the growing circles in buttons when keeping pressed (RippleEffect)).
 
 		boolean childIsTouchTarget; // a.k.a. blocking
-		if (adapter.getCustomDispatchIsActive()) {
+		final boolean isCustomDispatch = adapter.getCustomDispatchIsActive();
+		if (isCustomDispatch) {
 			// Log.i(LOGTAG, _indent + "CUSTOM dispatch (" + target.getChildrenRenderTransformCount() + " of " + view.getChildCount() + " children are transformed )");
 
-			// Because we do not call dispatchToSuper(), we must manually call requestDisallowInterceptTouchEvent in the same circumstances
-			// that dispatchToSuper would, otherwise we get inconsistencies (children have the flag but parents do not).
-			final boolean isCancel = event.getAction() == MotionEvent.ACTION_CANCEL;
-			final boolean isHover = event.getAction() == MotionEvent.ACTION_HOVER_MOVE;
-			if (isDown || isCancel || isHover) {
-				view.requestDisallowInterceptTouchEvent(false);
-			}
 
 			childIsTouchTarget = dispatchStaticTransformedMotionEvent(adapter, event);
 		} else {
 			// Log.i(LOGTAG, _indent + "SUPER dispatch (none of the " + view.getChildCount() + " children is transformed)");
 
 			childIsTouchTarget = adapter.dispatchToSuper(event);
+		}
+
+		if (isDown) {
+			// Make sure that the system won't stole the motion events if the ManipulationMode is not 'System'.
+			// Note: We have to do this in native as we might not forward the ACTION_DOWN if !target.getIsNativeMotionEventsEnabled()
+			// Note: This is automatically cleared on each ACTION_UP
+			// Note: This must be done **after** invoking the super.dispatch as it will reset the **local flag** in 'resetTouchState'
+			//		 https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/view/ViewGroup.java#2600
+			if (target.getIsNativeMotionEventsInterceptForbidden()) {
+				// Log.i(LOGTAG, _indent + "INTERCEPT disable (i.e. scrolling disabled on parents)");
+
+				view.requestDisallowInterceptTouchEvent(true);
+			}
+		} else if (isCustomDispatch && (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)) {
+			// In case of a custom dispatch, we had bypassed a the 'resetTouchState' (https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/view/ViewGroup.java#2779)
+			// which is invoked in case of a "endOfSequence" event and which clears the **local** disallow intercept flag.
+			// As we cannot reset the local flag only we have to 'requestDisallowInterceptTouchEvent(false)' which will
+			// clear the local flag, and also walk up the tree and clear the flag on all parents.
+			// Note: As we manage this flag only for "pressed sequence", and as the `requestDisallowInterceptTouchEvent` is much heavier
+			//		 than removeing a local flag, not like the super.dispatch, we won't reset it for ACTION_HOVER_MOVE.
+
+			// Log.i(LOGTAG, _indent + "INTERCEPT restored (i.e. scrolling restored on parents)");
+
+			view.requestDisallowInterceptTouchEvent(false);
 		}
 
 		// Note: There is a bug (#14712) where the UnoViewGroup receives the MOTION_DOWN,
