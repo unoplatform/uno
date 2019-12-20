@@ -878,7 +878,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected CGSize GetItemSizeForIndexPath(NSIndexPath indexPath, nfloat availableBreadth)
+		private protected CGSize GetItemSizeForIndexPath(NSIndexPath indexPath, nfloat availableBreadth)
 		{
 			return Source.GetTarget()?.GetItemSize(CollectionView, indexPath, GetAvailableChildSize(availableBreadth)) ?? CGSize.Empty;
 		}
