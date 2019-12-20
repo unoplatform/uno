@@ -222,6 +222,11 @@ namespace Windows.UI.Xaml
 
 			RequiresClipping = needsClipToSlot;
 
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				UpdateDOMXamlProperty(nameof(RequiresClipping), RequiresClipping);
+			}
+
 			ArrangeNative(offset);
 		}
 
