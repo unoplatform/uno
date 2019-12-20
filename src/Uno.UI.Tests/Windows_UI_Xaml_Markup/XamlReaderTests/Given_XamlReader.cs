@@ -38,6 +38,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 				.AmbientLoggerFactory
 				.AddConsole(LogLevel.Debug)
 				.AddDebug(LogLevel.Debug);
+
+			UnitTestsApp.App.EnsureApplication();
 		}
 
 		[TestMethod]
