@@ -7,11 +7,13 @@ namespace Uno.Devices.Enumeration.Internal
 {
 	internal interface IDeviceClassProvider
 	{
+		Task<DeviceInformation[]> FindAllAsync();
+
 		void WatchStart();
 
 		void WatchStop();
 
-		Task<DeviceInformation[]> FindAllAsync();
+		bool CanWatch { get; }
 
 		event EventHandler<DeviceInformation> WatchAdded;
 
