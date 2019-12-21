@@ -54,10 +54,10 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// </summary>
 		~MidiDeviceWatcher()
 		{
-			_deviceWatcher.Added -= DeviceWatcher_Added;
-			_deviceWatcher.Removed -= DeviceWatcher_Removed;
-			_deviceWatcher.Updated -= DeviceWatcher_Updated;
-			_deviceWatcher.EnumerationCompleted -= DeviceWatcher_EnumerationCompleted;
+			_deviceWatcher?.Added -= DeviceWatcher_Added;
+			_deviceWatcher?.Removed -= DeviceWatcher_Removed;
+			_deviceWatcher?.Updated -= DeviceWatcher_Updated;
+			_deviceWatcher?.EnumerationCompleted -= DeviceWatcher_EnumerationCompleted;
 		}
 
 		/// <summary>
