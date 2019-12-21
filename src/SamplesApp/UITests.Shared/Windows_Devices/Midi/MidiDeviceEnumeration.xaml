@@ -1,0 +1,121 @@
+﻿<UserControl
+    x:Class="UITests.Shared.Windows_Devices.Midi.MidiDeviceEnumerationTests"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="using:UITests.Shared.Windows_Devices"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    d:DesignHeight="1000"
+    d:DesignWidth="1000"
+    mc:Ignorable="d">
+    <Grid x:Name="rootGrid" Margin="12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+        <!--  Main content is scrollable  -->
+        <ScrollViewer
+            Grid.Row="0"
+            Margin="0,0,0,40"
+            VerticalScrollBarVisibility="Auto"
+            VerticalScrollMode="Auto">
+            <RelativePanel HorizontalAlignment="Stretch">
+                <!--  Auto-detect MIDI devices  -->
+                <TextBlock
+                    x:Name="deviceAutoDetectToggleLabel"
+                    Margin="0,6,0,0"
+                    Text="AUTO-DETECT" />
+                <ToggleSwitch
+                    x:Name="deviceAutoDetectToggle"
+                    Margin="8,0,0,0"
+                    IsOn="False" />
+
+                <!--  List input MIDI devices  -->
+                <TextBlock x:Name="listInputDevicesButtonLabel" Text="INPUT" />
+                <Button x:Name="listInputDevicesButton" Content="List all input devices" />
+                <!--  Input MIDI device details  -->
+                <ListBox x:Name="inputDevices" ItemsSource="{Binding MidiInDevices}" />
+                <ListBox x:Name="inputDeviceProperties" />
+
+                <!--  List output MIDI devices  -->
+                <TextBlock x:Name="listOutputDevicesButtonLabel" Text="OUTPUT" />
+                <Button x:Name="listOutputDevicesButton" Content="List all output devices" />
+                <!--  Output MIDI device details  -->
+                <ListBox x:Name="outputDevices" />
+                <ListBox x:Name="outputDeviceProperties" />
+            </RelativePanel>
+        </ScrollViewer>
+
+        <!--
+            Status Block for providing messages to the user.  Use the
+            NotifyUser() method to populate the message
+        -->
+        <Border
+            x:Name="errorBorder"
+            Grid.Row="1"
+            Background="Red" />
+        <TextBlock
+            x:Name="statusBlock"
+            Grid.Row="1"
+            Margin="12,10,12,10"
+            Visibility="Collapsed" />
+        <VisualStateManager.VisualStateGroups>
+            <VisualStateGroup>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="800" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="deviceAutoDetectToggle.(RelativePanel.RightOf)" Value="deviceAutoDetectToggleLabel" />
+                        <Setter Target="listInputDevicesButtonLabel.(RelativePanel.AlignLeftWith)" Value="deviceAutoDetectToggleLabel" />
+                        <Setter Target="listInputDevicesButtonLabel.(RelativePanel.Below)" Value="deviceAutoDetectToggleLabel" />
+                        <Setter Target="listInputDevicesButton.(RelativePanel.AlignLeftWith)" Value="listInputDevicesButtonLabel" />
+                        <Setter Target="listInputDevicesButton.(RelativePanel.Below)" Value="listInputDevicesButtonLabel" />
+                        <Setter Target="inputDevices.(RelativePanel.AlignLeftWith)" Value="listInputDevicesButton" />
+                        <Setter Target="inputDevices.(RelativePanel.Below)" Value="listInputDevicesButton" />
+                        <!--  Properties are beside the device list  -->
+                        <Setter Target="inputDeviceProperties.(RelativePanel.AlignTopWith)" Value="inputDevices" />
+                        <Setter Target="inputDeviceProperties.(RelativePanel.RightOf)" Value="inputDevices" />
+                        <Setter Target="listOutputDevicesButtonLabel.(RelativePanel.AlignLeftWith)" Value="deviceAutoDetectToggleLabel" />
+                        <Setter Target="listOutputDevicesButtonLabel.(RelativePanel.Below)" Value="inputDeviceProperties" />
+                        <Setter Target="listOutputDevicesButton.(RelativePanel.AlignLeftWith)" Value="listOutputDevicesButtonLabel" />
+                        <Setter Target="listOutputDevicesButton.(RelativePanel.Below)" Value="listOutputDevicesButtonLabel" />
+                        <Setter Target="outputDevices.(RelativePanel.AlignLeftWith)" Value="listOutputDevicesButton" />
+                        <Setter Target="outputDevices.(RelativePanel.Below)" Value="listOutputDevicesButton" />
+                        <!--  Properties are beside the device list  -->
+                        <Setter Target="outputDeviceProperties.(RelativePanel.AlignTopWith)" Value="outputDevices" />
+                        <Setter Target="outputDeviceProperties.(RelativePanel.RightOf)" Value="outputDevices" />
+                    </VisualState.Setters>
+                </VisualState>
+                <VisualState>
+                    <VisualState.StateTriggers>
+                        <AdaptiveTrigger MinWindowWidth="40" />
+                    </VisualState.StateTriggers>
+                    <VisualState.Setters>
+                        <Setter Target="deviceAutoDetectToggle.(RelativePanel.RightOf)" Value="deviceAutoDetectToggleLabel" />
+                        <Setter Target="listInputDevicesButtonLabel.(RelativePanel.AlignLeftWith)" Value="deviceAutoDetectToggleLabel" />
+                        <Setter Target="listInputDevicesButtonLabel.(RelativePanel.Below)" Value="deviceAutoDetectToggleLabel" />
+                        <Setter Target="listInputDevicesButton.(RelativePanel.AlignLeftWith)" Value="listInputDevicesButtonLabel" />
+                        <Setter Target="listInputDevicesButton.(RelativePanel.Below)" Value="listInputDevicesButtonLabel" />
+                        <Setter Target="inputDevices.(RelativePanel.AlignLeftWith)" Value="listInputDevicesButton" />
+                        <Setter Target="inputDevices.(RelativePanel.Below)" Value="listInputDevicesButton" />
+                        <!--  Move the properties to below the device list  -->
+                        <Setter Target="inputDeviceProperties.(RelativePanel.AlignLeftWith)" Value="inputDevices" />
+                        <Setter Target="inputDeviceProperties.(RelativePanel.Below)" Value="inputDevices" />
+                        <Setter Target="inputDeviceProperties.(Margin)" Value="0,20,20,0" />
+                        <Setter Target="listOutputDevicesButtonLabel.(RelativePanel.AlignLeftWith)" Value="deviceAutoDetectToggleLabel" />
+                        <Setter Target="listOutputDevicesButtonLabel.(RelativePanel.Below)" Value="inputDeviceProperties" />
+                        <Setter Target="listOutputDevicesButton.(RelativePanel.AlignLeftWith)" Value="listOutputDevicesButtonLabel" />
+                        <Setter Target="listOutputDevicesButton.(RelativePanel.Below)" Value="listOutputDevicesButtonLabel" />
+                        <Setter Target="outputDevices.(RelativePanel.AlignLeftWith)" Value="listOutputDevicesButton" />
+                        <Setter Target="outputDevices.(RelativePanel.Below)" Value="listOutputDevicesButton" />
+                        <!--  Move the properties to below the device list  -->
+                        <Setter Target="outputDeviceProperties.(RelativePanel.AlignLeftWith)" Value="outputDevices" />
+                        <Setter Target="outputDeviceProperties.(RelativePanel.Below)" Value="outputDevices" />
+                        <Setter Target="outputDeviceProperties.(Margin)" Value="0,20,20,0" />
+                    </VisualState.Setters>
+                </VisualState>
+            </VisualStateGroup>
+        </VisualStateManager.VisualStateGroups>
+    </Grid>
+</UserControl>
