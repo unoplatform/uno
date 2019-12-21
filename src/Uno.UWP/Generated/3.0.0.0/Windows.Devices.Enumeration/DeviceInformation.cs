@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Enumeration
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DeviceInformation 
@@ -17,7 +17,7 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  string Id
 		{
@@ -27,7 +27,7 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  bool IsDefault
 		{
@@ -37,7 +37,7 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  bool IsEnabled
 		{
@@ -47,7 +47,7 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  string Name
 		{
@@ -57,7 +57,7 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyDictionary<string, object> Properties
 		{
@@ -67,7 +67,7 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Enumeration.DeviceInformationKind Kind
 		{
