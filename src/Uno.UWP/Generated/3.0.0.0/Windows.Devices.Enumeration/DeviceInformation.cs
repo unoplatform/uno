@@ -144,7 +144,7 @@ namespace Windows.Devices.Enumeration
 			throw new global::System.NotImplementedException("The member DeviceWatcher DeviceInformation.CreateWatcher(string aqsFilter, IEnumerable<string> additionalProperties, DeviceInformationKind kind) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformation> CreateFromIdAsync( string deviceId)
 		{
@@ -172,7 +172,7 @@ namespace Windows.Devices.Enumeration
 			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceInformationCollection> DeviceInformation.FindAllAsync(DeviceClass deviceClass) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Enumeration.DeviceInformationCollection> FindAllAsync( string aqsFilter)
 		{
@@ -200,7 +200,7 @@ namespace Windows.Devices.Enumeration
 			throw new global::System.NotImplementedException("The member DeviceWatcher DeviceInformation.CreateWatcher(DeviceClass deviceClass) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Devices.Enumeration.DeviceWatcher CreateWatcher( string aqsFilter)
 		{
