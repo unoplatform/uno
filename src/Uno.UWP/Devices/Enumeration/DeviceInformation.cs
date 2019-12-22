@@ -4,18 +4,14 @@ namespace Windows.Devices.Enumeration
 {
 	public partial class DeviceInformation
 	{
-		internal DeviceInformation(string deviceClassGuid, string id) => Id = $"{deviceClassGuid}_{id}";
+		internal DeviceInformation(string deviceClassGuid, string id) => Id = FormatDeviceId(deviceClassGuid, id);
 
 		public string Id { get; }
 
 		public bool IsDefault { get; internal set; }
 
-		public bool IsEnabled { get; internal set; }
+		public bool IsEnabled { get; internal set; } = true;
 
 		public string Name { get; internal set; }
-
-		public IReadOnlyDictionary<string, object> Properties { get; internal set; }
-
-		public DeviceInformationKind Kind { get; internal set; }
 	}
 }

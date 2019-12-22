@@ -34,6 +34,8 @@ namespace Windows.Devices.Enumeration
 		public static IAsyncOperation<DeviceInformationCollection> FindAllAsync(string aqsFilter) =>
 			FindAllInternalAsync(aqsFilter).AsAsyncOperation();
 
+		internal static string FormatDeviceId(string deviceClassGuid, string deviceId) => $"{deviceId}#{{{deviceClassGuid}}}";
+
 		private static async Task<DeviceInformationCollection> FindAllInternalAsync(string aqsFilter)
 		{
 			var providers = GetMatchingProviders(aqsFilter).ToArray();
