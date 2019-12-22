@@ -26,15 +26,18 @@ namespace Windows.Devices.Enumeration
 			return new DeviceWatcher(providers);
 		}
 
-		public static IAsyncOperation<DeviceInformation> CreateFromIdAsync(string deviceId)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<DeviceInformation> DeviceInformation.CreateFromIdAsync(string deviceId) is not implemented in Uno.");
-		}
-
 		public static IAsyncOperation<DeviceInformationCollection> FindAllAsync(string aqsFilter) =>
 			FindAllInternalAsync(aqsFilter).AsAsyncOperation();
 
-		internal static string FormatDeviceId(string deviceClassGuid, string deviceId) => $"{deviceId}#{{{deviceClassGuid}}}";
+		internal static string FormatDeviceId(string deviceClassGuid, string id) => $"{id}#{{{deviceClassGuid}}}";
+
+		internal static (string deviceClassGuid, string id) ParseDeviceId(string deviceId)
+		{
+			var parts = deviceId.Split("#");
+			var id = parts[0];
+			var deviceClassGuid = parts[1].Trim(new[] { '{', '}' });
+			return (deviceClassGuid, id);
+		}
 
 		private static async Task<DeviceInformationCollection> FindAllInternalAsync(string aqsFilter)
 		{

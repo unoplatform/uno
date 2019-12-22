@@ -69,6 +69,24 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			_watchMidiManager.Dispose();
 			WatchStopped?.Invoke(this, null);
 		}
+		
+		internal (MidiDeviceInfo device, MidiDeviceInfo.PortInfo port) GetNativeDeviceInfo(string midiDeviceId)
+		{
+			var parsed = ParseMidiDeviceId(midiDeviceId);			
+			using (var midiManager = ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>())
+			{
+				return midiManager
+					.GetDevices()
+					.Where(d => d.Id == parsed.id)
+					.SelectMany(d =>
+						d.GetPorts()
+							.Where(p =>
+								p.Type == _portType &&
+								p.PortNumber == parsed.portNumber)
+							.Select(p => (device: d, port: p)))
+					.FirstOrDefault();				
+			}
+		}
 
 		private void OnDeviceAdded(MidiDeviceInfo deviceInfo)
 		{
@@ -128,6 +146,14 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			return deviceInformation;
 		}
 
+		private static (int id, int portNumber) ParseMidiDeviceId(string id)
+		{
+			var parts = id.Split("_");
+			var intId = int.Parse(parts[0]);
+			var portNumber = int.Parse(parts[1]);
+			return (intId, portNumber);
+		}
+
 		private static string GetMidiDeviceId(MidiDeviceInfo deviceInfo, MidiDeviceInfo.PortInfo portInfo)
 		{
 			return $"{deviceInfo.Id.ToString()}_{portInfo.PortNumber}";
@@ -140,7 +166,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 				.Where(d => d.GetPorts().Any(p => p.Type == _portType))
 				.SelectMany(d => d.GetPorts().Select(p => (device: d, port: p)))
 				.Select(pair => CreateDeviceInformation(pair.device, pair.port));
-		}
+		}		
 
 		private class DeviceCallback : MidiManager.DeviceCallback
 		{
