@@ -8,6 +8,28 @@
     d:DesignHeight="1000"
     d:DesignWidth="1000"
     mc:Ignorable="d">
+    <UserControl.Resources>
+        <Style x:Key="DeviceListStyle" TargetType="ListView">
+            <Setter Property="Height" Value="230" />
+            <Setter Property="MaxHeight" Value="230" />
+            <Setter Property="Width" Value="300" />
+            <Setter Property="Margin" Value="0,0,20,0" />
+        </Style>
+
+        <Style x:Key="DevicePropertiesStyle" TargetType="ListView">
+            <Setter Property="Height" Value="230" />
+            <Setter Property="MaxHeight" Value="230" />
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="MaxWidth" Value="900" />
+            <Setter Property="Margin" Value="0,0,20,0" />
+        </Style>
+
+        <Style x:Key="ScenarioButtonStyle" TargetType="Button">
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Margin" Value="0,10,0,20" />
+        </Style>
+
+    </UserControl.Resources>
     <Grid x:Name="rootGrid" Margin="12">
         <Grid.RowDefinitions>
             <RowDefinition Height="*" />
@@ -32,17 +54,29 @@
 
                 <!--  List input MIDI devices  -->
                 <TextBlock x:Name="listInputDevicesButtonLabel" Text="INPUT" />
-                <Button x:Name="listInputDevicesButton" Content="List all input devices" />
+                <Button
+                    x:Name="listInputDevicesButton"
+                    Command="{Binding EnumerateInDevicesCommand}"
+                    Content="List all input devices" />
                 <!--  Input MIDI device details  -->
-                <ListBox x:Name="inputDevices" ItemsSource="{Binding MidiInDevices}" />
-                <ListBox x:Name="inputDeviceProperties" />
+                <ListView
+                    x:Name="inputDevices"
+                    ItemsSource="{Binding MidiInDevices}"
+                    Style="{StaticResource DeviceListStyle}" />
+                <ListView x:Name="inputDeviceProperties" Style="{StaticResource DevicePropertiesStyle}" />
 
                 <!--  List output MIDI devices  -->
                 <TextBlock x:Name="listOutputDevicesButtonLabel" Text="OUTPUT" />
-                <Button x:Name="listOutputDevicesButton" Content="List all output devices" />
+                <Button
+                    x:Name="listOutputDevicesButton"
+                    Command="{Binding EnumerateOutDevicesCommand}"
+                    Content="List all output devices" />
                 <!--  Output MIDI device details  -->
-                <ListBox x:Name="outputDevices" />
-                <ListBox x:Name="outputDeviceProperties" />
+                <ListView
+                    x:Name="outputDevices"
+                    ItemsSource="{Binding MidiOutDevices}"
+                    Style="{StaticResource DeviceListStyle}" />
+                <ListView x:Name="outputDeviceProperties" Style="{StaticResource DevicePropertiesStyle}" />
             </RelativePanel>
         </ScrollViewer>
 

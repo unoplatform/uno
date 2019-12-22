@@ -26,12 +26,12 @@ namespace Windows.Devices.Enumeration
 		{
 			foreach (var provider in _providers)
 			{
-				provider.WatchStart();
 				provider.WatchAdded += Provider_WatchAdded;
 				provider.WatchEnumerationCompleted += Provider_WatchEnumerationCompleted;
 				provider.WatchRemoved += Provider_WatchRemoved;
 				provider.WatchStopped += Provider_WatchStopped;
 				provider.WatchUpdated += Provider_WatchUpdated;
+				provider.WatchStart();
 			}
 			Status = DeviceWatcherStatus.Started;
 		}

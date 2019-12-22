@@ -54,10 +54,10 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// </summary>
 		~MidiDeviceWatcher()
 		{
-			_deviceWatcher?.Added -= DeviceWatcher_Added;
-			_deviceWatcher?.Removed -= DeviceWatcher_Removed;
-			_deviceWatcher?.Updated -= DeviceWatcher_Updated;
-			_deviceWatcher?.EnumerationCompleted -= DeviceWatcher_EnumerationCompleted;
+			_deviceWatcher.Added -= DeviceWatcher_Added;
+			_deviceWatcher.Removed -= DeviceWatcher_Removed;
+			_deviceWatcher.Updated -= DeviceWatcher_Updated;
+			_deviceWatcher.EnumerationCompleted -= DeviceWatcher_EnumerationCompleted;
 		}
 
 		/// <summary>
@@ -100,7 +100,9 @@ namespace UITests.Shared.Windows_Devices.Midi
 			if ((_deviceInformationCollection == null) || (_deviceInformationCollection.Count == 0))
 			{
 				// Start with a clean list
-				_portList.Clear();				
+				_portList.Clear();
+
+				_portList.Add("No MIDI output devices found!");
 			}
 			// If devices are found, enumerate them and add them to the list
 			else

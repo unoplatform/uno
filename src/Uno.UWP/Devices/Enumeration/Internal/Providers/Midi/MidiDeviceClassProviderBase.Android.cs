@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Android.Content;
 using Android.Media.Midi;
 using Android.Runtime;
+using Android.Service.VR;
 using Uno.UI;
 using Windows.Devices.Enumeration;
 
@@ -14,7 +15,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 	internal abstract class MidiDeviceClassProviderBase : IDeviceClassProvider
 	{
 		private readonly MidiPortType _portType;
-		private MidiManager _midiManager;
+		private MidiManager _watchMidiManager;
 		private DeviceCallback _deviceCallback;
 
 		public MidiDeviceClassProviderBase(MidiPortType portType) => _portType = portType;
@@ -26,56 +27,119 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		public event EventHandler<DeviceInformationUpdate> WatchRemoved;
 		public event EventHandler<object> WatchStopped;
 		public event EventHandler<DeviceInformationUpdate> WatchUpdated;
-		
-		public Task<DeviceInformation[]> FindAllAsync() =>
-			Task.FromResult(
-				GetMidiDevices()
-					.Select(CreateDeviceInformation)
-					.ToArray());
 
-		public void WatchStart()
+		public Task<DeviceInformation[]> FindAllAsync()
 		{
-			if (_deviceCallback == null)
+			using (var midiManager = ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>())
 			{
-				return;
+				return Task.FromResult(
+					GetMidiDevices(midiManager).ToArray());
 			}
-
-			_midiManager = _midiManager ?? ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>();
-			_midiManager.RegisterDeviceCallback(_deviceCallback = new DeviceCallback(this), null);
 		}
 
-		public void WatchStop()
+		public void WatchStart()
 		{
 			if (_deviceCallback != null)
 			{
 				return;
 			}
 
-			_midiManager.UnregisterDeviceCallback(_deviceCallback);
+			_watchMidiManager = _watchMidiManager ?? ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>();
+
+			var devices = GetMidiDevices(_watchMidiManager).ToArray();
+			foreach (var device in devices)
+			{
+				WatchAdded?.Invoke(this, device);
+			}
+			OnEnumerationCompleted(devices.LastOrDefault());
+
+			_watchMidiManager.RegisterDeviceCallback(_deviceCallback = new DeviceCallback(this), null);
+		}
+
+		public void WatchStop()
+		{
+			if (_deviceCallback == null)
+			{
+				return;
+			}
+
+			_watchMidiManager.UnregisterDeviceCallback(_deviceCallback);
 			_deviceCallback?.Dispose();
 			_deviceCallback = null;
-			_midiManager.Dispose();
+			_watchMidiManager.Dispose();
 			WatchStopped?.Invoke(this, null);
+		}
+
+		private void OnDeviceAdded(MidiDeviceInfo deviceInfo)
+		{
+			foreach (var port in deviceInfo.GetPorts().Where(p => p.Type == _portType))
+			{
+				WatchAdded?.Invoke(this, CreateDeviceInformation(deviceInfo, port));
+			}
+		}
+
+		private void OnDeviceRemoved(MidiDeviceInfo deviceInfo)
+		{
+			foreach (var port in deviceInfo.GetPorts().Where(p => p.Type == _portType))
+			{
+				WatchRemoved?.Invoke(this, CreateDeviceInformationUpdate(deviceInfo, port));
+			}
+		}
+
+		private void OnDeviceUpdated(MidiDeviceStatus status)
+		{
+			foreach (var port in status.DeviceInfo.GetPorts().Where(p => p.Type == _portType))
+			{
+				WatchUpdated?.Invoke(this, CreateDeviceInformationUpdate(status.DeviceInfo, port));
+			}
+		}
+
+		private void OnEnumerationCompleted(DeviceInformation lastDeviceInformation)
+		{
+			WatchEnumerationCompleted?.Invoke(this, lastDeviceInformation);
 		}
 
 		private bool DeviceMatchesType(MidiDeviceInfo info) =>
 			_portType == MidiPortType.Input ?
 				info.InputPortCount > 0 : info.OutputPortCount > 0;
 
-		private static DeviceInformation CreateDeviceInformation(MidiDeviceInfo info)
+		private DeviceInformation CreateDeviceInformation(MidiDeviceInfo deviceInfo, MidiDeviceInfo.PortInfo portInfo)
 		{
+			var name = "";
+			if (deviceInfo.Properties.ContainsKey(MidiDeviceInfo.PropertyName))
+			{
+				name = deviceInfo.Properties.GetString(MidiDeviceInfo.PropertyName);
+			}
 
-			throw new NotImplementedException();
+			var deviceInformation = new DeviceInformation(
+				_portType == MidiPortType.Input ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut,
+				GetMidiDeviceId(deviceInfo, portInfo))
+			{
+				Name = name
+			};
+			return deviceInformation;
 		}
 
-		private static DeviceInformationUpdate CreateDeviceInformationUpdate(MidiDeviceInfo info, bool isRemoved) => throw new NotImplementedException();
-
-		private IEnumerable<MidiDeviceInfo> GetMidiDevices()
+		private DeviceInformationUpdate CreateDeviceInformationUpdate(MidiDeviceInfo deviceInfo, MidiDeviceInfo.PortInfo portInfo)
 		{
-			return _midiManager
+			var deviceInformation = new DeviceInformationUpdate(
+				_portType == MidiPortType.Input ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut,
+				GetMidiDeviceId(deviceInfo, portInfo));
+			return deviceInformation;
+		}
+
+		private static string GetMidiDeviceId(MidiDeviceInfo deviceInfo, MidiDeviceInfo.PortInfo portInfo)
+		{
+			return $"{deviceInfo.Id.ToString()}_{portInfo.PortNumber}";
+		}
+
+		private IEnumerable<DeviceInformation> GetMidiDevices(MidiManager midiManager)
+		{
+			return midiManager
 				.GetDevices()
-				.Where(d => d.GetPorts()
-					.Any(p => p.Type == _portType));
+				.Where(d => d.GetPorts().Any(p => p.Type == _portType))
+				.SelectMany(d => d.GetPorts().Select(p => (device: d, port: p)))
+				.Select(pair => CreateDeviceInformation(pair.device, pair.port));
 		}
 
 		private class DeviceCallback : MidiManager.DeviceCallback
@@ -89,7 +153,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			{
 				if (_provider.DeviceMatchesType(device))
 				{
-					_provider.WatchAdded?.Invoke(_provider, CreateDeviceInformation(device));
+					_provider.OnDeviceAdded(device);
 				}
 			}
 
@@ -97,7 +161,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			{
 				if (_provider.DeviceMatchesType(device))
 				{
-					_provider.WatchRemoved?.Invoke(_provider, CreateDeviceInformationUpdate(device, true));
+					_provider.OnDeviceRemoved(device);
 				}
 			}
 
@@ -105,7 +169,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			{
 				if (_provider.DeviceMatchesType(status.DeviceInfo))
 				{
-					_provider.WatchUpdated?.Invoke(_provider, CreateDeviceInformationUpdate(status.DeviceInfo, false));
+					_provider.OnDeviceUpdated(status);
 				}
 			}
 		}
