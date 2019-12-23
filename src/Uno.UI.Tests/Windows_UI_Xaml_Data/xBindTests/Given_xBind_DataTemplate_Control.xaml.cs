@@ -4,7 +4,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -17,41 +16,19 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace UITests.Shared.Windows_UI_Xaml.xBindTests
+namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 {
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	[SampleControlInfo("XBind")]
-	public sealed partial class xBind_Functions : Page
-    {
-        public xBind_Functions()
-        {
-            this.InitializeComponent();
-
+	public sealed partial class Given_xBind_DataTemplate_Control : Page
+	{
+		public Given_xBind_DataTemplate_Control()
+		{
+			this.InitializeComponent();
 			root.Content = new MyDataTemplateClass();
 		}
 
-		private void OnUpdateTemplate(object sender, object args)
-		{
-			if (root.Content is MyDataTemplateClass c)
-			{
-				c.MyProperty = "new update";
-			}
-		}
-
-		private string Multiply(double a, double b)
-			=> (a * b).ToString();
-	}
-
-	public static class StaticType
-	{
-		public static int PropertyIntValue { get; } = 42;
-
-		public static string PropertyStringValue { get; } = "42";
-
-		public static string Add(double a, double b)
-			=> (a + b).ToString();
 	}
 
 	public class MyDataTemplateClass : INotifyPropertyChanged

@@ -99,8 +99,7 @@
 		<PRIResource Include="**\*.resw" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(BuildingInsideUnoSourceGenerator)'!=''">
-		<Page Include="Windows_UI_Xaml_Data\xBindTests\Given_StaticResource_Control.xaml" />
-		<Page Include="Windows_UI_Xaml_Data\xBindTests\Given_xBind_Functions_Control.xaml" />
+		<Page Include="Windows_UI_Xaml_Data\**\*.xaml" />
 		<Page Include="App\App.xaml" />
 		<Page Include="App\Xaml\Test_CreateFromString.xaml" />
 		<Page Include="App\Xaml\Test_Dictionary.xaml" />
@@ -127,9 +126,6 @@
 			<DesignTime>True</DesignTime>
 			<AutoGen>True</AutoGen>
 			<DependentUpon>Resources.resw</DependentUpon>
-		</Compile>
-		<Compile Update="Windows_UI_Xaml_Data\xBindTests\Given_xBind_Functions_Control.xaml.cs">
-		  <DependentUpon>$fileinputname$.xaml</DependentUpon>
 		</Compile>
 	</ItemGroup>
 

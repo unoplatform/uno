@@ -6,21 +6,22 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 {
 	internal static class XBindExpressionParser
 	{
-		internal static string[] ParseProperties(string rawFunction)
+		internal static string[] ParseProperties(string rawFunction, Func<string, bool> isStaticMethod)
 		{
 			if (!string.IsNullOrEmpty(rawFunction))
 			{
-				var csu = Microsoft.CodeAnalysis.CSharp.SyntaxFactory.ParseCompilationUnit(
+				var csu = ParseCompilationUnit(
 					$"class __Temp {{ private Func<object> __prop => {rawFunction} }}");
 
 				if (csu.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().FirstOrDefault() is ArrowExpressionClauseSyntax arrow)
 				{
-					var v = new Visitor();
+					var v = new Visitor(isStaticMethod);
 					v.Visit(arrow);
 
 					return v.IdentifierNames.ToArray();
@@ -30,19 +31,118 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			return new string[0];
 		}
 
+		internal static string Rewrite(string contextName, string rawFunction, Func<string, bool> isStaticMethod)
+		{
+			var csu = ParseCompilationUnit(
+				$"class __Temp {{ private Func<object> __prop => {rawFunction}; }}");
+
+			var csuRewritten = new Rewriter(contextName, isStaticMethod).Visit(csu);
+
+			return csuRewritten
+				.DescendantNodes()
+				.OfType<ArrowExpressionClauseSyntax>()
+				.First()
+				.Expression
+				.ToFullString();
+		}
+
+		class Rewriter : CSharpSyntaxRewriter
+		{
+			private readonly string _contextName;
+			private readonly Func<string, bool> _isStaticMethod;
+
+			public Rewriter(string contextName, Func<string, bool> isStaticMethod)
+			{
+				_contextName = contextName;
+				_isStaticMethod = isStaticMethod;
+			}
+
+			public override SyntaxNode VisitInvocationExpression(InvocationExpressionSyntax node)
+			{
+				var e = base.VisitInvocationExpression(node);
+
+				var isValidParent = !Helpers.IsInsideMethod(node).result && !Helpers.IsInsideMemberAccessExpression(node).result;
+
+				if (isValidParent && !_isStaticMethod(node.Expression.ToFullString()))
+				{
+					var output = ParseCompilationUnit($"class __Temp {{ private Func<object> __prop => {_contextName}.{e.ToFullString()}; }}");
+
+					var o2 = output.DescendantNodes().OfType<InvocationExpressionSyntax>().First();
+					return o2;
+				}
+				else
+				{
+					return e;
+				}
+			}
+
+			public override SyntaxNode VisitMemberAccessExpression(MemberAccessExpressionSyntax node)
+			{
+				var e = base.VisitMemberAccessExpression(node);
+				var isValidParent = !Helpers.IsInsideMethod(node).result && !Helpers.IsInsideMemberAccessExpression(node).result;
+
+				if (isValidParent)
+				{
+					var output = ParseCompilationUnit($"{_contextName}.{e.ToFullString()}");
+
+					var o2 =  output.DescendantNodes().OfType<IncompleteMemberSyntax>().First().DescendantNodes().First();
+					return o2;
+				}
+				else
+				{
+					return e;
+				}
+			}
+
+			public override SyntaxNode VisitIdentifierName(IdentifierNameSyntax node)
+			{
+				var isValidParent = !Helpers.IsInsideMethod(node).result && !Helpers.IsInsideMemberAccessExpression(node).result;
+
+				if (isValidParent)
+				{
+					var newExpression = MemberAccessExpression(
+						SyntaxKind.SimpleMemberAccessExpression
+						, IdentifierName(_contextName)
+						, node
+					);
+
+					return newExpression;
+				}
+				else
+				{
+					return base.VisitIdentifierName(node);
+				}
+			}
+		}
+
 		class Visitor : CSharpSyntaxWalker
 		{
+			private readonly Func<string, bool> _isStaticMethod;
+
 			public List<string> IdentifierNames { get; } = new List<string>();
 
-			public Visitor()
+			public Visitor(Func<string, bool> isStaticMethod)
 			{
+				_isStaticMethod = isStaticMethod;
+			}
+
+			public override void VisitInvocationExpression(InvocationExpressionSyntax node)
+			{
+				base.VisitInvocationExpression(node);
+
+				if (!_isStaticMethod(node.Expression.ToFullString()) && node.Expression is MemberAccessExpressionSyntax memberAccess)
+				{
+					IdentifierNames.Add(memberAccess.Expression.ToString());
+				}
 			}
 
 			public override void VisitMemberAccessExpression(MemberAccessExpressionSyntax node)
 			{
 				base.VisitMemberAccessExpression(node);
 
-				var isValidParent = !IsInsideMethod(node) && !IsInsideMemberAccessExpression(node); ;
+				var isInsideMethod = Helpers.IsInsideMethod(node);
+				var isInsideMemberAccess = Helpers.IsInsideMemberAccessExpression(node);
+				var isValidParent = !isInsideMethod.result && !isInsideMemberAccess.result;
 
 				if (isValidParent)
 				{
@@ -54,33 +154,38 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			{
 				base.VisitIdentifierName(node);
 
-				var isValidParent = !IsInsideMethod(node) && !IsInsideMemberAccessExpression(node);
+				var isInsideMethod = Helpers.IsInsideMethod(node);
+				var isInsideMemberAccess = Helpers.IsInsideMemberAccessExpression(node);
+				var isValidParent = !isInsideMethod.result && !isInsideMemberAccess.result;
 
 				if (isValidParent)
 				{
 					IdentifierNames.Add(node.Identifier.Text);
 				}
 			}
+		}
 
-			private bool IsInsideMemberAccessExpression(SyntaxNode node)
+		private static class Helpers
+		{
+			internal static (bool result, MemberAccessExpressionSyntax memberAccess) IsInsideMemberAccessExpression(SyntaxNode node)
 			{
 				var currentNode = node.Parent;
 
 				do
 				{
-					if (currentNode is MemberAccessExpressionSyntax invocation)
+					if (currentNode is MemberAccessExpressionSyntax memberAccess)
 					{
-						return true;
+						return (true, memberAccess);
 					}
 
 					currentNode = currentNode.Parent;
 				}
 				while (currentNode != null);
 
-				return false;
+				return (false, null);
 			}
 
-			private bool IsInsideMethod(SyntaxNode node)
+			internal static (bool result, InvocationExpressionSyntax expression) IsInsideMethod(SyntaxNode node)
 			{
 				var currentNode = node.Parent;
 				var child = node;
@@ -90,7 +195,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					if (currentNode is InvocationExpressionSyntax invocation
 						&& invocation.Expression == child)
 					{
-						return true;
+						return (true, invocation);
 					}
 
 					child = currentNode;
@@ -98,9 +203,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				}
 				while (currentNode != null);
 
-				return false;
+				return (false, null);
 			}
 		}
-
 	}
 }

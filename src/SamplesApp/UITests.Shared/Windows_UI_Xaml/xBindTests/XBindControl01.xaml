@@ -13,7 +13,7 @@
 		<StackPanel>
 			<TextBlock x:Uid="textBlock1" Text="{x:Bind MyValue}" />
 			<TextBlock>
-				<Run Text="Should be 2: " />
+				<Run Text="Should be 1: " />
 				<Run Text="{x:Bind BindingCounter}" />
 			</TextBlock>
 			<TextBlock x:Uid="textBlock2">

@@ -65,7 +65,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
         private int _applyIndex = 0;
         private int _collectionIndex = 0;
         private int _subclassIndex = 0;
-        private readonly XamlGlobalStaticResourcesMap _globalStaticResourcesMap;
+		private int _xBindCount = 0;
+		private readonly XamlGlobalStaticResourcesMap _globalStaticResourcesMap;
         private readonly bool _isUiAutomationMappingEnabled;
         private readonly Dictionary<string, string[]> _uiAutomationMappings;
         private readonly string _defaultLanguage;
@@ -105,7 +106,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
         private bool _isGeneratingGlobalResource = false;
 
-        static XamlFileGenerator()
+		static XamlFileGenerator()
         {
             _findContentProperty = Funcs.Create<INamedTypeSymbol, IPropertySymbol>(SourceFindContentProperty).AsLockedMemoized();
             _isAttachedProperty = Funcs.Create<INamedTypeSymbol, string, bool>(SourceIsAttachedProperty).AsLockedMemoized();
@@ -310,7 +311,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
                                 BuildNamedResources(writer, _namedResources);
 
-                                if (isDirectUserControlChild)
+								BuildCompiledBindingsInitializer(writer, _className.className);
+
+								if (isDirectUserControlChild)
                                 {
                                     writer.AppendLineInvariant("return content;");
                                 }
@@ -326,6 +329,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                                 {
                                     writer.AppendLineInvariant("Content = (_View)GetContent();");
 
+									BuildCompiledBindingsInitializer(writer, _className.className);
+
 									if (_isDebug)
 									{
 										writer.AppendLineInvariant($"global::Uno.UI.FrameworkElementHelper.SetBaseUri(this, \"file:///{_fileDefinition.FilePath.Replace("\\", "/")}\");");
@@ -339,6 +344,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
                             BuildChildSubclasses(writer);
 
+							BuildCompiledBindings(writer, _className.className);
                         }
 
                         if (!IsApplication(topLevelControl.Type))
@@ -366,7 +372,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             return writer.ToString();
         }
 
-        private void BuildInitializeXamlOwner(IndentedStringBuilder writer)
+		private void BuildInitializeXamlOwner(IndentedStringBuilder writer)
         {
             using (writer.BlockInvariant("private void InitializeXamlOwner()"))
             {
@@ -614,7 +620,55 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             }
         }
 
-        private string BuildControlInitializerDeclaration(string className, XamlObjectDefinition topLevelControl)
+		private (string bindingsInterfaceName, string bindingsClassName) GetBindingsTypeNames(string className)
+			=> ($"I{className}_Bindings", $"{className}_Bindings");
+
+		private void BuildCompiledBindingsInitializer(IndentedStringBuilder writer, string className)
+		{
+			if (_xBindCount != 0)
+			{
+				writer.AppendLineInvariant($"Bindings = new {GetBindingsTypeNames(className).bindingsClassName}(this);");
+			}
+		}
+
+		private void BuildCompiledBindings(IndentedStringBuilder writer, string className)
+		{
+			if (_xBindCount != 0)
+			{
+				var (bindingsInterfaceName, bindingsClassName) = GetBindingsTypeNames(className);
+
+				using (writer.BlockInvariant($"private interface {bindingsInterfaceName}"))
+				{
+					writer.AppendLineInvariant("void Initialize();");
+					writer.AppendLineInvariant("void Update();");
+					writer.AppendLineInvariant("void StopTracking();");
+				}
+
+				writer.AppendLineInvariant($"#pragma warning disable 0169 //  Suppress unused field warning in case Bindings is not used.");
+				writer.AppendLineInvariant($"private {bindingsInterfaceName} Bindings;");
+				writer.AppendLineInvariant($"#pragma warning restore 0169");
+
+				writer.AppendLineInvariant($"[global::System.Diagnostics.DebuggerNonUserCodeAttribute()]");
+				using (writer.BlockInvariant($"private class {bindingsClassName} : {bindingsInterfaceName}"))
+				{
+					writer.AppendLineInvariant($"private readonly {className} _owner;");
+
+					using (writer.BlockInvariant($"public {bindingsClassName}({className} owner)"))
+					{
+						writer.AppendLineInvariant($"_owner = owner;");
+					}
+
+					using (writer.BlockInvariant($"void {bindingsInterfaceName}.Initialize()")) { }
+					using (writer.BlockInvariant($"void {bindingsInterfaceName}.Update()"))
+					{
+						writer.AppendLineInvariant($"_owner.ApplyCompiledBindings();");
+					}
+					using (writer.BlockInvariant($"void {bindingsInterfaceName}.StopTracking()")) { }
+				}
+			}
+		}
+
+		private string BuildControlInitializerDeclaration(string className, XamlObjectDefinition topLevelControl)
         {
             if (IsPage(topLevelControl.Type))
             {
@@ -1489,7 +1543,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             return xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == memberName);
         }
 
-        private XamlMemberDefinition GetMember(XamlObjectDefinition xamlObjectDefinition, string memberName)
+		private XamlMemberDefinition FindMember(XamlObjectDefinition xamlObjectDefinition, string memberName, string ns)
+			=> xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == memberName && m.Member.PreferredXamlNamespace == ns);
+
+		private XamlMemberDefinition GetMember(XamlObjectDefinition xamlObjectDefinition, string memberName)
         {
             var member = FindMember(xamlObjectDefinition, memberName);
 
@@ -2620,10 +2677,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             var bindNode = member.Objects.FirstOrDefault(o => o.Type.Name == "Bind");
             var templateBindingNode = member.Objects.FirstOrDefault(o => o.Type.Name == "TemplateBinding");
 
-            // If a binding is inside a DataTemplate, the binding root in the case of an x:Bind is
-            // the DataContext, not the control's instance.
-            var isInsideDataTemplate = IsMemberInsideDataTemplate(member.Owner);
-
             string GetBindingOptions()
             {
 				if (bindingNode != null)
@@ -2640,6 +2693,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						.Members
 						.Where(m => m.Member.Name != "_PositionalParameters" && m.Member.Name != "Path")
 						.Select(BuildMemberPropertyValue)
+						.Concat(bindNode.Members.Any(m => m.Member.Name == "Mode") ? "" : "Mode = BindingMode.OneTime")
 						.JoinBy(", ");
 
 				}
@@ -2662,7 +2716,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 var isAttachedProperty = IsDependencyProperty(member.Member);
                 var isBindingType = FindPropertyType(member.Member) == _dataBindingSymbol;
 
-				var bindEvalFunction = bindNode != null && !isInsideDataTemplate ? BuildXBindEvalFunction(bindNode) : "";
+				var bindEvalFunction = bindNode != null ? BuildXBindEvalFunction(member, bindNode) : "";
 
                 if (isAttachedProperty)
                 {
@@ -2714,8 +2768,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             }
         }
 
-		private string BuildXBindEvalFunction(XamlObjectDefinition bindNode)
+		private string BuildXBindEvalFunction(XamlMemberDefinition member, XamlObjectDefinition bindNode)
 		{
+			_xBindCount++;
+
+			// If a binding is inside a DataTemplate, the binding root in the case of an x:Bind is
+			// the DataContext, not the control's instance.
+			var (isInsideDataTemplate, dataTemplateObject) = IsMemberInsideDataTemplate(member.Owner);
+
 			var pathMember = bindNode.Members.FirstOrDefault(m => m.Member.Name == "_PositionalParameters" || m.Member.Name == "Path");
 
 			if (pathMember != null)
@@ -2733,23 +2793,64 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					.Replace("x:True", "true")
 					?? "";
 
-				foreach(var ns in _fileDefinition.Namespaces.Where(ns => ns.Namespace.StartsWith("using:")))
-				{
-					rawFunction = rawFunction.Replace($"{ns.Prefix}:", ns.Namespace.TrimStart("using:") + ".");
-				}
+				rawFunction = RewriteNamespaces(rawFunction);
 
-				var propertyPaths = XBindExpressionParser.ParseProperties(rawFunction);
+				var modeMember = bindNode.Members.FirstOrDefault(m => m.Member.Name == "Mode")?.Value?.ToString() ?? "OneTime";
+
+				// Populate the property paths only if updateable bindings.
+				var propertyPaths = modeMember != "OneTime"
+					? XBindExpressionParser.ParseProperties(rawFunction, IsStaticMethod)
+					: new string[0];
 
 				var pathsArray = propertyPaths.Any()
 					? ", new [] {" + string.Join(", ", propertyPaths.Select(p => $"\"{p}\"")) + "}"
 					: "";
 
-				return $".Apply(___b => global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, this, _ => {rawFunction}{pathsArray}))";
+				if (isInsideDataTemplate)
+				{
+					var dataTypeObject = FindMember(dataTemplateObject, "DataType", XamlConstants.XamlXmlNamespace);
+					if (dataTypeObject == null)
+					{
+						throw new Exception($"Unable to find x:DataType in enclosing DataTemplate");
+					}
+
+					var dataType = RewriteNamespaces(dataTypeObject.Value?.ToString());
+
+					var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, IsStaticMethod);
+
+					return $".Apply(___b => global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {dataType} ___tctx ? (object)({contextFunction}) : null{pathsArray}))";
+
+				}
+				else
+				{
+
+					return $".Apply(___b => global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, this, ___ctx => {rawFunction}{pathsArray}))";
+				}
 			}
 			else
 			{
 				return "";
 			}
+		}
+
+		bool IsStaticMethod(string fullMethodName)
+		{
+			var lastDotIndex = fullMethodName.LastIndexOf(".");
+
+			var className = lastDotIndex != -1 ? fullMethodName.Substring(0, lastDotIndex) : fullMethodName;
+			var methodName = lastDotIndex != -1 ? fullMethodName.Substring(lastDotIndex + 1) : fullMethodName;
+
+			return _medataHelper.FindTypeByFullName(className) is INamedTypeSymbol typeSymbol && typeSymbol.GetMethods().Any(m => m.Name == methodName);
+		}
+
+		private string RewriteNamespaces(string xamlString)
+		{
+			foreach (var ns in _fileDefinition.Namespaces.Where(ns => ns.Namespace.StartsWith("using:")))
+			{
+				xamlString = xamlString.Replace($"{ns.Prefix}:", ns.Namespace.TrimStart("using:") + ".");
+			}
+
+			return xamlString;
 		}
 
 		private string BuildMemberPropertyValue(XamlMemberDefinition m)
@@ -2835,22 +2936,22 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return "{0}{1}".InvariantCultureFormat(cast, provideValue);
 		}
 
-		private bool IsMemberInsideDataTemplate(XamlObjectDefinition xamlObject)
+		private (bool isInside, XamlObjectDefinition xamlObject) IsMemberInsideDataTemplate(XamlObjectDefinition xamlObject)
             => IsMemberInside(xamlObject, "DataTemplate");
 
         private bool IsMemberInsideFrameworkTemplate(XamlObjectDefinition xamlObject)
-            => IsMemberInside(xamlObject, "DataTemplate")
-            || IsMemberInside(xamlObject, "ControlTemplate")
-            || IsMemberInside(xamlObject, "ItemsPanelTemplate");
+            => IsMemberInside(xamlObject, "DataTemplate").isInside
+			|| IsMemberInside(xamlObject, "ControlTemplate").isInside
+			|| IsMemberInside(xamlObject, "ItemsPanelTemplate").isInside;
 
         private bool IsMemberInsideResourceDictionary(XamlObjectDefinition xamlObject)
-            => IsMemberInside(xamlObject, "ResourceDictionary", maxDepth: 1);
+            => IsMemberInside(xamlObject, "ResourceDictionary", maxDepth: 1).isInside;
 
-        private static bool IsMemberInside(XamlObjectDefinition xamlObject, string typeName, int? maxDepth = null)
+        private static (bool isInside, XamlObjectDefinition xamlObject) IsMemberInside(XamlObjectDefinition xamlObject, string typeName, int? maxDepth = null)
         {
             if (xamlObject == null)
             {
-                return false;
+                return (false, null);
             }
 
             int depth = 0;
@@ -2858,14 +2959,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             {
                 if (xamlObject.Type?.Name == typeName)
                 {
-                    return true;
+                    return (true, xamlObject);
                 }
 
                 xamlObject = xamlObject.Owner;
             }
             while (xamlObject != null && (maxDepth == null || ++depth <= maxDepth));
 
-            return false;
+            return (false, null);
         }
 
         private string GetStaticResourceName(XamlMemberDefinition member, INamedTypeSymbol targetPropertyType = null)

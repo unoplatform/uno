@@ -7,16 +7,41 @@
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  mc:Ignorable="d"
 	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+	
+	<Page.Resources>
+		<DataTemplate x:Key="MyTemplate"
+					  x:DataType="local:MyDataTemplateClass">
+			<StackPanel>
+				<TextBlock x:Name="_MyProperty"
+						   Text="{x:Bind MyProperty}" />
+				<TextBlock x:Name="_MyProperty_Function"
+						   Text="{x:Bind MyProperty.ToUpper()}" />
+				<TextBlock x:Name="_MyProperty_Formatted"
+						   Text="{x:Bind sys:String.Format('Formatted {0}', MyProperty)}" />
+				<TextBlock x:Name="_MyProperty_Function_OneWay"
+						   Text="{x:Bind MyProperty.ToUpper(), Mode=OneWay}" />
+				<TextBlock x:Name="_MyProperty_Formatted_OneWay"
+						   Text="{x:Bind sys:String.Format('Formatted {0}', MyProperty), Mode=OneWay}" />
+			</StackPanel>
+		</DataTemplate>
+	</Page.Resources>
 
 	<Grid>
 		<StackPanel>
 			<TextBlock Text="{x:Bind local:StaticType.PropertyIntValue}" />
 			<TextBlock Text="{x:Bind local:StaticType.PropertyStringValue}" />
-			<Slider x:Name="slider1" />
-			<Slider x:Name="slider2" />
+			<TextBlock Text="{x:Bind local:StaticType.PropertyStringValue.ToUpper()}" />
+			<Slider x:Name="slider1" Minimum="20"/>
+			<Slider x:Name="slider2" Minimum="22"/>
 			<TextBlock Text="{x:Bind Multiply(slider1.Value, slider2.Value), Mode=OneWay}" />
 			<TextBlock Text="{x:Bind local:StaticType.Add(slider1.Value, slider2.Value), Mode=OneWay}" />
 			<TextBlock Text="{x:Bind sys:String.Format('slider1: {0}, slider2:{1}', slider1.Value, slider2.Value), Mode=OneWay}" />
+			<Button x:Name="updateTemplateButton"
+					Content="Update"
+					Click="OnUpdateTemplate" />
+			<ContentControl x:Name="root"
+							x:FieldModifier="public"
+							ContentTemplate="{StaticResource MyTemplate}" />
 		</StackPanel>
 	</Grid>
 </Page>

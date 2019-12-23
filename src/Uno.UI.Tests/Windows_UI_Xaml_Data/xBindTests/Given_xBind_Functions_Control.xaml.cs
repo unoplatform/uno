@@ -91,7 +91,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			}
 		}
 
-
 		public int MyIntProperty
 		{
 			get { return _myIntProperty; }
@@ -101,7 +100,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MyIntProperty)));
 			}
 		}
-
 	}
 
 	public static class StaticClass

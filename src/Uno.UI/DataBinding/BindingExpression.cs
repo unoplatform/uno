@@ -113,17 +113,18 @@ namespace Windows.UI.Xaml.Data
 				_isCompiledSource = true;
 				ExplicitSource = ParentBinding.CompiledSource;
 
-				if (ParentBinding.XBindPropertyPaths != null)
-				{
-					_updateSources = ParentBinding
-						.XBindPropertyPaths
-						.Select(p => new BindingPath(path: p, fallbackValue: null, precedence: null, allowPrivateMembers: true)
-						{
-							DataContext = ParentBinding.CompiledSource,
-							ValueChangedListener = this
-						})
-						.ToArray();
-				}
+			}
+
+			if (ParentBinding.XBindPropertyPaths != null)
+			{
+				_updateSources = ParentBinding
+					.XBindPropertyPaths
+					.Select(p => new BindingPath(path: p, fallbackValue: null, precedence: null, allowPrivateMembers: true)
+					{
+						DataContext = ParentBinding.CompiledSource,
+						ValueChangedListener = this
+					})
+					.ToArray();
 			}
 
 			if (ParentBinding.ElementName != null)
@@ -428,15 +429,34 @@ namespace Windows.UI.Xaml.Data
 				// registration may receive the new datacontext value.
 				_subscription.Disposable = null;
 
-				_bindingPath.ValueChangedListener = this;
 
-				_bindingPath.SetWeakDataContext(weakDataContext);
-
-				_subscription.Disposable = Actions.ToDisposable(() => _bindingPath.ValueChangedListener = null);
+				if (_updateSources != null)
+				{
+					foreach (var source in _updateSources)
+					{
+						source.SetWeakDataContext(weakDataContext);
+					}
+				}
+				else
+				{
+					_bindingPath.ValueChangedListener = this;
+					_bindingPath.SetWeakDataContext(weakDataContext);
+					_subscription.Disposable = Actions.ToDisposable(() => _bindingPath.ValueChangedListener = null);
+				}
 			}
 			else
 			{
-				_bindingPath.DataContext = null;
+				if (_updateSources != null)
+				{
+					foreach (var source in _updateSources)
+					{
+						source.DataContext = null;
+					}
+				}
+				else
+				{
+					_bindingPath.DataContext = null;
+				}
 
 				if (ParentBinding.FallbackValue != null)
 				{
@@ -455,7 +475,7 @@ namespace Windows.UI.Xaml.Data
 		{
 			if (ParentBinding.XBindSelector != null)
 			{
-				SetTargetValueSafe(ParentBinding.XBindSelector(null));
+				SetTargetValueSafe(ParentBinding.XBindSelector(DataContext));
 			}
 			else
 			{
