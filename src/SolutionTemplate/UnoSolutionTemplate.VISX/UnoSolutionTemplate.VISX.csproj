@@ -163,7 +163,7 @@
       <Version>15.9.20</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.ComponentModelHost" version="15.8.525" />
-    <PackageReference Include="Microsoft.VisualStudio.CoreUtility" version="15.6.27740" />
+    <PackageReference Include="Microsoft.VisualStudio.CoreUtility" version="16.4.280" />
     <PackageReference Include="Microsoft.VisualStudio.ImageCatalog" version="15.9.28307" />
     <PackageReference Include="Microsoft.VisualStudio.Imaging" version="15.9.28307" />
     <PackageReference Include="Microsoft.VisualStudio.Imaging.Interop.14.0.DesignTime" version="14.3.26930" />
