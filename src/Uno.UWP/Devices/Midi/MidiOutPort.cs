@@ -1,4 +1,4 @@
-﻿#if __ANDROID__ || __IOS__
+﻿#if __ANDROID__ || __IOS__ || __WASM__
 using Uno.Devices.Enumeration.Internal;
 
 namespace Windows.Devices.Midi

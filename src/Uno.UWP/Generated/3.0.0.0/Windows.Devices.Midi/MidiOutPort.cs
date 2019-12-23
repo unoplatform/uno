@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Midi
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || NET461 || false || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MidiOutPort : global::Windows.Devices.Midi.IMidiOutPort,global::System.IDisposable
@@ -17,7 +17,7 @@ namespace Windows.Devices.Midi
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void SendMessage( global::Windows.Devices.Midi.IMidiMessage midiMessage)
 		{
@@ -39,14 +39,14 @@ namespace Windows.Devices.Midi
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiOutPort", "void MidiOutPort.Dispose()");
 		}
 		#endif
-		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Midi.IMidiOutPort> FromIdAsync( string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IMidiOutPort> MidiOutPort.FromIdAsync(string deviceId) is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelector()
 		{

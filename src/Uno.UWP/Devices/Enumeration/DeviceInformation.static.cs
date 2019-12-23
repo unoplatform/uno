@@ -3,14 +3,13 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Uno.Devices.Enumeration.Internal;
-using Uno.Devices.Enumeration.Internal.Providers.Midi;
 using Windows.Foundation;
 
 namespace Windows.Devices.Enumeration
 {
 	public partial class DeviceInformation
 	{
-#if !__ANDROID__
+#if !__ANDROID__ && !__WASM__
 		private static readonly Dictionary<string, Func<IDeviceClassProvider>> _deviceClassProviders = new Dictionary<string, Func<IDeviceClassProvider>>();
 #endif
 
@@ -29,12 +28,12 @@ namespace Windows.Devices.Enumeration
 		public static IAsyncOperation<DeviceInformationCollection> FindAllAsync(string aqsFilter) =>
 			FindAllInternalAsync(aqsFilter).AsAsyncOperation();
 
-		internal static string FormatDeviceId(string deviceClassGuid, string id) => $"{id}#{{{deviceClassGuid}}}";
+		internal static string FormatDeviceId(string deviceClassGuid, string id) => $"{Uri.EscapeDataString(id)}#{{{deviceClassGuid}}}";
 
 		internal static (string deviceClassGuid, string id) ParseDeviceId(string deviceId)
 		{
-			var parts = deviceId.Split("#");
-			var id = parts[0];
+			var parts = deviceId.Split(new[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
+			var id = Uri.UnescapeDataString(parts[0]);
 			var deviceClassGuid = parts[1].Trim(new[] { '{', '}' });
 			return (deviceClassGuid, id);
 		}

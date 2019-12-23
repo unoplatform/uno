@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Midi
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || NET461 || false || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MidiInPort : global::System.IDisposable
