@@ -1705,7 +1705,8 @@ namespace MonoTests.Uno.Xaml
 
 				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml}Bind"},
 				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}_PositionalParameters", },
-				new SequenceItem { NodeType = XamlNodeType.Value, Value = "Add(a.Value, b.Value)", },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "Add(a.Value", },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "b.Value)", },
 				new SequenceItem { NodeType = XamlNodeType.EndMember, },
 				new SequenceItem { NodeType = XamlNodeType.EndObject, },
 
@@ -1740,7 +1741,10 @@ namespace MonoTests.Uno.Xaml
 
 				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml}Bind"},
 				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}Bind.Path", },
-				new SequenceItem { NodeType = XamlNodeType.Value, Value = "Add(a.Value, b.Value)", },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "Add(a.Value", },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}_PositionalParameters", },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "b.Value)", },
 				new SequenceItem { NodeType = XamlNodeType.EndMember, },
 				new SequenceItem { NodeType = XamlNodeType.EndObject, },
 
@@ -1776,7 +1780,8 @@ namespace MonoTests.Uno.Xaml
 
 				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml}Bind"},
 				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}_PositionalParameters", },
-				new SequenceItem { NodeType = XamlNodeType.Value, Value = "Test(45.2, 'myString')", },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "Test(45.2", },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "'myString')", },
 				new SequenceItem { NodeType = XamlNodeType.EndMember, },
 				new SequenceItem { NodeType = XamlNodeType.EndObject, },
 

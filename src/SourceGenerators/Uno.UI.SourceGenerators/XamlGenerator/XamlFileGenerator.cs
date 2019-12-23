@@ -3257,11 +3257,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
             {
                 var memberValue = member.Value?.ToString();
 
-                propertyType = propertyType ?? FindPropertyType(member.Member);
+				var originalType = propertyType;
+
+				propertyType = propertyType ?? FindPropertyType(member.Member);
 
                 if (propertyType != null)
                 {
-                    return BuildLiteralValue(propertyType, memberValue, owner, member.Member.Name, objectUid);
+                    var s = BuildLiteralValue(propertyType, memberValue, owner, member.Member.Name, objectUid);
+
+					s += $"/* {propertyType}/{originalType}, {memberValue}, {member?.Member?.DeclaringType?.Name}/{member?.Member?.Name} */";
+
+					return s;
                 }
                 else
                 {
