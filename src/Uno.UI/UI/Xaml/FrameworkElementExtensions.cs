@@ -208,7 +208,6 @@ namespace Windows.UI.Xaml
 			return element.Margin(new Thickness(leftRight, topBottom, leftRight, topBottom));
 		}
 
-#if !NET461
 		/// <summary>
 		/// Bind property on <param name="element"/> to a property on <param name="source"/> of the same name.
 		/// </summary>
@@ -216,7 +215,6 @@ namespace Windows.UI.Xaml
 		{
 			return element.Binding(property, property, source, bindingMode);
 		}
-#endif
 
 		internal static Thickness? GetPadding(this IFrameworkElement frameworkElement)
 		{

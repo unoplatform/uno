@@ -14,13 +14,14 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace SamplesApp.Windows_UI_Xaml_Media.Geometry
+namespace UITests.Shared.Windows_UI_Xaml_Controls.Popup
 {
-	[SampleControlInfo("Geometry", "ArcSegment")]
-	public sealed partial class ArcSegmentPage : Page
+	[SampleControlInfo(description:"Popup with light-dismiss and overlay enabled")]
+	public sealed partial class Popup_Overlay_On : UserControl
 	{
-		public ArcSegmentPage()
+		public Popup_Overlay_On()
 		{
 			this.InitializeComponent();
 		}

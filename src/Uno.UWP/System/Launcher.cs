@@ -25,6 +25,7 @@ namespace Windows.System
 				throw new ArgumentNullException(nameof(uri));
 			}
 
+#if !__WASM__
 			if (!CoreDispatcher.Main.HasThreadAccess)
 			{
 				if (typeof(Launcher).Log().IsEnabled(LogLevel.Error))
@@ -34,6 +35,7 @@ namespace Windows.System
 				// LaunchUriAsync throws the following exception if used on UI thread on UWP
 				throw new InvalidOperationException($"{nameof(LaunchUriAsync)} must be called on the UI thread");
 			}
+#endif
 
 			return LaunchUriPlatformAsync(uri);
 #else
@@ -58,7 +60,11 @@ namespace Windows.System
 			}
 
 			// this method may run on the background thread on UWP
+#if !__WASM__
 			if (CoreDispatcher.Main.HasThreadAccess)
+#else
+			if(true)
+#endif
 			{
 				return QueryUriSupportPlatformAsync(uri, launchQuerySupportType).AsAsyncOperation();
 			}

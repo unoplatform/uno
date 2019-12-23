@@ -11,7 +11,8 @@
 
 	<SolidColorBrush x:Key="SuperiorColor"
 					 Color="MediumSpringGreen" />
-
+	<SolidColorBrush x:Key="DatePickerLightDismissOverlayBackground"
+					 Color="Orchid" />
 	<!--Default CheckBox style-->
 	<Style TargetType="CheckBox">
 		<Setter Property="Foreground"
