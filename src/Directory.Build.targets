@@ -13,7 +13,7 @@
   </Target>
 
   <ItemGroup>
-    <PackageReference Update="Uno.SourceGenerationTasks" Version="1.32.0-dev.297" />
+    <PackageReference Update="Uno.SourceGenerationTasks" Version="1.32.0" />
     <PackageReference Update="Uno.SourceGeneration" Version="1.32.0" />
     <PackageReference Update="Uno.Core" Version="1.29.0-dev.93" />
     <PackageReference Update="Uno.Core.Build" Version="1.29.0" />
