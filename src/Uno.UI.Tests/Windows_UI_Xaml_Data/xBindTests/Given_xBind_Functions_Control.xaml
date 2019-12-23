@@ -34,6 +34,14 @@
 				   Text="{x:Bind StaticClass.PublicStaticProperty}" />
 
 		<!-- functions -->
+		<TextBlock x:Name="_InstanceFunction_Parameterless"
+				   x:FieldModifier="public"
+				   Text="{x:Bind Parameterless()}" />
+
+		<TextBlock x:Name="_StaticFunction_Parameterless"
+				   x:FieldModifier="public"
+				   Text="{x:Bind StaticParameterless()}" />
+		
 		<TextBlock x:Name="_InstanceFunction_OneParam"
 				   x:FieldModifier="public"
 				   Text="{x:Bind Offset(InstanceProperty)}" />
@@ -46,6 +54,14 @@
 				   x:FieldModifier="public"
 				   Text="{x:Bind Add(InstanceProperty, 42.42)}" />
 
+		<TextBlock x:Name="_InstanceFunction_Boolean_False"
+				   x:FieldModifier="public"
+				   Text="{x:Bind BoolFunc(x:False)}" />
+
+		<TextBlock x:Name="_InstanceFunction_Boolean_True"
+				   x:FieldModifier="public"
+				   Text="{x:Bind BoolFunc(x:True)}" />
+
 		<TextBlock x:Name="_System_Function"
 				   x:FieldModifier="public"
 				   Text="{x:Bind sys:String.Format('{0}, {1}', InstanceProperty, StaticProperty)}" />
@@ -57,5 +73,9 @@
 		<TextBlock x:Name="_InstanceFunction_OneParam_DP_Update"
 				   x:FieldModifier="public"
 				   Text="{x:Bind Offset(InstanceDP)}" />
+
+		<TextBlock x:Name="_InstanceFunction_TwoParam_Update"
+				   x:FieldModifier="public"
+				   Text="{x:Bind Add(InstanceDP, MyxBindClassInstance.MyIntProperty)}" />
 	</Grid>
 </Page>

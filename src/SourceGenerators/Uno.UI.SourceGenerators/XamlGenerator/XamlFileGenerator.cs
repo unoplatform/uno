@@ -2644,13 +2644,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				}
 				if (templateBindingNode != null)
-                {
-                    return templateBindingNode
-                        .Members
-                        .Select(BuildMemberPropertyValue)
-                        .Concat("RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent)")
-                        .JoinBy(", ");
-                }
+				{
+					return templateBindingNode
+						.Members
+						.Select(BuildMemberPropertyValue)
+   						.Concat("RelativeSource = new RelativeSource(RelativeSourceMode.TemplatedParent)")
+					 .JoinBy(", ");
+				}
 
                 return null;
             }
@@ -2728,9 +2728,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// are being removed during the first phase and replaced by "connections".
 				rawFunction = rawFunction
 					.Replace("^" + XamlConstants.XBindSubstitute, "\\\'")
-					.Replace(XamlConstants.XBindSubstitute, '\"') ?? "";
-
-				// Debugger.Launch();
+					.Replace(XamlConstants.XBindSubstitute, '\"')
+					.Replace("x:False", "false")
+					.Replace("x:True", "true")
+					?? "";
 
 				foreach(var ns in _fileDefinition.Namespaces.Where(ns => ns.Namespace.StartsWith("using:")))
 				{

@@ -23,6 +23,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 	/// </summary>
 	public sealed partial class Given_xBind_Functions_Control : Page
 	{
+		public int OffsetCallCount;
+		public int AddIntCallCount;
+		public int AddDoubleCallCount;
+
 		public Given_xBind_Functions_Control()
 		{
 			this.InitializeComponent();
@@ -47,11 +51,27 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		public static readonly DependencyProperty InstanceDPProperty =
 			DependencyProperty.Register("InstanceDP", typeof(int), typeof(Given_xBind_Functions_Control), new PropertyMetadata(-1));
 
-		private string Offset(int value) => (value + 10).ToString();
+		private string Offset(int value)
+		{
+			OffsetCallCount++;
+			return (value + 10).ToString();
+		}
 
-		private string Add(int left, int right) => (left + right).ToString();
+		private string Parameterless() => "Parameter-less result";
+		private static string StaticParameterless() => "Static Parameter-less result";
+		private string BoolFunc(bool flag) => flag ? "Was true" : "Was false";
 
-		private string Add(double left, double right) => (left + right).ToString();
+		private string Add(int left, int right)
+		{
+			AddIntCallCount++;
+			return (left + right).ToString();
+		}
+
+		private string Add(double left, double right)
+		{
+			AddDoubleCallCount++;
+			return (left + right).ToString();
+		}
 	}
 
 	public class MyxBindClass : INotifyPropertyChanged
@@ -59,6 +79,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		public event PropertyChangedEventHandler PropertyChanged;
 
 		private string _myproperty = "Initial";
+		private int _myIntProperty = -3;
 
 		public string MyProperty
 		{
@@ -69,6 +90,18 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MyProperty)));
 			}
 		}
+
+
+		public int MyIntProperty
+		{
+			get { return _myIntProperty; }
+			set
+			{
+				_myIntProperty = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MyIntProperty)));
+			}
+		}
+
 	}
 
 	public static class StaticClass

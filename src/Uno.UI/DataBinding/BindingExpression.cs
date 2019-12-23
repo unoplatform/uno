@@ -113,13 +113,17 @@ namespace Windows.UI.Xaml.Data
 				_isCompiledSource = true;
 				ExplicitSource = ParentBinding.CompiledSource;
 
-				_updateSources = ParentBinding
-					.XBindPropertyPaths
-					.Select(p => new BindingPath(path: p, fallbackValue: null, precedence: null, allowPrivateMembers: true) {
-						DataContext = ParentBinding.CompiledSource,
-						ValueChangedListener = this
-					})
-					.ToArray();
+				if (ParentBinding.XBindPropertyPaths != null)
+				{
+					_updateSources = ParentBinding
+						.XBindPropertyPaths
+						.Select(p => new BindingPath(path: p, fallbackValue: null, precedence: null, allowPrivateMembers: true)
+						{
+							DataContext = ParentBinding.CompiledSource,
+							ValueChangedListener = this
+						})
+						.ToArray();
+				}
 			}
 
 			if (ParentBinding.ElementName != null)
