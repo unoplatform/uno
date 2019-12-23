@@ -575,5 +575,19 @@
 					reason="Not part of the UWP API."/>
 			</Properties>
 		</IgnoreSet>
+		
+		<IgnoreSet baseVersion="2.0.0">
+			<Methods>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.RoutedEvent..ctor(System.String name)"
+					reason="Not part of the UWP API." />
+				<Member
+					fullName="Windows.Foundation.Point Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs.GetPosition()"
+					reason="Not part of the UWP API." />
+				<Member
+					fullName="Windows.Foundation.Point Windows.UI.Xaml.Input.TappedRoutedEventArgs.GetPosition()"
+					reason="Not part of the UWP API." />
+            </Methods>
+		</IgnoreSet>
 	</IgnoreSets>
 </DiffIgnore>
