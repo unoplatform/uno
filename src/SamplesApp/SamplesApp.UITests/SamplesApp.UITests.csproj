@@ -7,7 +7,7 @@
 
 	<ItemGroup> 
 		<PackageReference Include="FluentAssertions" Version="5.9.0" />
-		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.3.0" />
+		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.4.0" />
 		<PackageReference Include="NUnit" />
 		<PackageReference Include="NUnit3TestAdapter" /> 
 		<PackageReference Include="Xamarin.UITest" Version="3.0.5" />
