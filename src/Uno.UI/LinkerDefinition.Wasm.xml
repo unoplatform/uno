@@ -34,7 +34,10 @@
       <method name="DispatchAccessRequest" />
       <method name="DispatchGeoposition" />
       <method name="DispatchError" />      
-    </type>    
+    </type>
+    <type fullname="Uno.Devices.Midi.Internal.WasmMidiAccess">
+      <method name="DispatchRequest" />
+    </type>
   </assembly>
   
   <assembly fullname="Uno.Foundation">

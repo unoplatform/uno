@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Midi
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || NET461 || false || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MidiNoteOffMessage : global::Windows.Devices.Midi.IMidiMessage
@@ -27,7 +27,7 @@ namespace Windows.Devices.Midi
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.Midi.MidiMessageType Type
 		{
@@ -37,7 +37,7 @@ namespace Windows.Devices.Midi
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  byte Channel
 		{
@@ -47,7 +47,7 @@ namespace Windows.Devices.Midi
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  byte Note
 		{
@@ -57,7 +57,7 @@ namespace Windows.Devices.Midi
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  byte Velocity
 		{
@@ -67,7 +67,7 @@ namespace Windows.Devices.Midi
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public MidiNoteOffMessage( byte channel,  byte note,  byte velocity) 
 		{
