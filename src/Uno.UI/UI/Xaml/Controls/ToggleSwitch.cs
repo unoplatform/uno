@@ -247,7 +247,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// If the user only drags the thumb by a few pixels before releasing it, 
 			// we interpret it as a Tap rather than a drag gesture.
-			// Note: We do not use the Tapped event as this offers a better sync between 
+			// Note: We do not use the Tapped event as this offers a better sync between
+			//		 the drag state / events and the IsOn update.
 			if (_maxDragDistance < GestureRecognizer.TapMaxXDelta)
 			{
 				IsOn = !IsOn;
