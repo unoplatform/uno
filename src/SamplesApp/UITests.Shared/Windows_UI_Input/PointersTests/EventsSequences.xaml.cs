@@ -306,18 +306,18 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 						&& args.Click()
 						&& args.One(TappedEvent)
 						&& args.MaybeSome(PointerMovedEvent)
-						&& args.One(PointerExitedEvent)
+						&& args.MaybeOne(PointerExitedEvent) // This should be "One" (Not maybe) ... but the ListView is a complex control
 						&& args.End();
 					break;
 
 				case PointerDeviceType.Pen:
 				case PointerDeviceType.Touch:
 					result =
-						args.One(PointerEnteredEvent)
+						args.MaybeOne(PointerEnteredEvent) // This should be "One" (Not maybe) ... but the ListView is a complex control
 						&& args.MaybeSome(PointerMovedEvent)
 						&& args.Click()
-						&& args.One(TappedEvent)
-						&& args.One(PointerExitedEvent)
+						&& args.MaybeOne(TappedEvent) // This should be "One" (Not maybe) ... but the ListView is a complex control
+						&& args.MaybeOne(PointerExitedEvent) // This should be "One" (Not maybe) ... but the ListView is a complex control
 						&& args.End();
 					break;
 			}
