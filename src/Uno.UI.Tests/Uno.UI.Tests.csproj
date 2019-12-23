@@ -6,6 +6,7 @@
 		<OutputPath>bin\$(Platform)\$(Configuration)</OutputPath>
 		<LangVersion>7.2</LangVersion>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<UseUnoXamlParser>true</UseUnoXamlParser>
 	</PropertyGroup>
 
 	<PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -99,6 +100,7 @@
 	</ItemGroup>
 	<ItemGroup Condition="'$(BuildingInsideUnoSourceGenerator)'!=''">
 		<Page Include="Windows_UI_Xaml_Data\xBindTests\Given_StaticResource_Control.xaml" />
+		<Page Include="Windows_UI_Xaml_Data\xBindTests\Given_xBind_Functions_Control.xaml" />
 		<Page Include="App\App.xaml" />
 		<Page Include="App\Xaml\Test_CreateFromString.xaml" />
 		<Page Include="App\Xaml\Test_Dictionary.xaml" />
@@ -126,6 +128,9 @@
 			<AutoGen>True</AutoGen>
 			<DependentUpon>Resources.resw</DependentUpon>
 		</Compile>
+		<Compile Update="Windows_UI_Xaml_Data\xBindTests\Given_xBind_Functions_Control.xaml.cs">
+		  <DependentUpon>$fileinputname$.xaml</DependentUpon>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
@@ -149,6 +154,9 @@
 		<None Update="ResourceLoader\Strings\fr\Resources.resw">
 			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
 			<Generator>ResXFileCodeGenerator</Generator>
+		</None>
+		<None Update="Windows_UI_Xaml_Data\xBindTests\Given_xBind_Functions_Control.xaml">
+		  <Generator></Generator>
 		</None>
 	</ItemGroup>
 
