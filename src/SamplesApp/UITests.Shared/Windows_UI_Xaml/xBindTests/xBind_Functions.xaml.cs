@@ -29,8 +29,8 @@ namespace UITests.Shared.Windows_UI_Xaml.xBindTests
             this.InitializeComponent();
         }
 
-		private string Add(double a, double b)
-			=> (a + b).ToString();
+		private string Multiply(double a, double b)
+			=> (a * b).ToString();
 	}
 
 	public static class StaticType

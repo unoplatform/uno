@@ -14,11 +14,9 @@
 			<TextBlock Text="{x:Bind local:StaticType.PropertyStringValue}" />
 			<Slider x:Name="slider1" />
 			<Slider x:Name="slider2" />
-			<TextBlock x:Name="instanceMember"
-					   Text="{x:Bind Add(slider1.Value, slider2.Value)}" />
-			<TextBlock x:Name="staticMember"
-					   Text="{x:Bind local:StaticType.Add(slider1.Value, slider2.Value)}" />
-			<TextBlock Text="{x:Bind sys:String.Format('slider1 ^' {0}', staticMember.Text)}" />
+			<TextBlock Text="{x:Bind Multiply(slider1.Value, slider2.Value), Mode=OneWay}" />
+			<TextBlock Text="{x:Bind local:StaticType.Add(slider1.Value, slider2.Value), Mode=OneWay}" />
+			<TextBlock Text="{x:Bind sys:String.Format('slider1: {0}, slider2:{1}', slider1.Value, slider2.Value), Mode=OneWay}" />
 		</StackPanel>
 	</Grid>
 </Page>

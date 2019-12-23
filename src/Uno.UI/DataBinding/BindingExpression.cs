@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Data
 
 				_updateSources = ParentBinding
 					.XBindPropertyPaths
-					.Select(p => new BindingPath(p, null) {
+					.Select(p => new BindingPath(path: p, fallbackValue: null, precedence: null, allowPrivateMembers: true) {
 						DataContext = ParentBinding.CompiledSource,
 						ValueChangedListener = this
 					})
