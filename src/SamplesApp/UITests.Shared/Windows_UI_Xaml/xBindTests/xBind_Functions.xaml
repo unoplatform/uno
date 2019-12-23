@@ -1,0 +1,24 @@
+﻿<Page x:Class="UITests.Shared.Windows_UI_Xaml.xBindTests.xBind_Functions"
+	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	  xmlns:local="using:UITests.Shared.Windows_UI_Xaml.xBindTests"
+	  xmlns:sys="using:System"
+	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	  mc:Ignorable="d"
+	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Grid>
+		<StackPanel>
+			<TextBlock Text="{x:Bind local:StaticType.PropertyIntValue}" />
+			<TextBlock Text="{x:Bind local:StaticType.PropertyStringValue}" />
+			<Slider x:Name="slider1" />
+			<Slider x:Name="slider2" />
+			<TextBlock x:Name="instanceMember"
+					   Text="{x:Bind Add(slider1.Value, slider2.Value)}" />
+			<TextBlock x:Name="staticMember"
+					   Text="{x:Bind local:StaticType.Add(slider1.Value, slider2.Value)}" />
+			<TextBlock Text="{x:Bind sys:String.Format('slider1 ^' {0}', staticMember.Text)}" />
+		</StackPanel>
+	</Grid>
+</Page>

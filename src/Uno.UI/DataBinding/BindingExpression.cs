@@ -56,6 +56,8 @@ namespace Windows.UI.Xaml.Data
 			set => _explicitSourceStore = WeakReferencePool.RentWeakReference(this, value);
 		}
 
+		private BindingPath[] _updateSources = null;
+
 		public string TargetName => TargetPropertyDetails.Property.Name;
 
 		public object DataContext
@@ -110,6 +112,14 @@ namespace Windows.UI.Xaml.Data
 			{
 				_isCompiledSource = true;
 				ExplicitSource = ParentBinding.CompiledSource;
+
+				_updateSources = ParentBinding
+					.XBindPropertyPaths
+					.Select(p => new BindingPath(p, null) {
+						DataContext = ParentBinding.CompiledSource,
+						ValueChangedListener = this
+					})
+					.ToArray();
 			}
 
 			if (ParentBinding.ElementName != null)
@@ -439,7 +449,14 @@ namespace Windows.UI.Xaml.Data
 
 		void IValueChangedListener.OnValueChanged(object o)
 		{
-			SetTargetValueSafe(o);
+			if (ParentBinding.XBindSelector != null)
+			{
+				SetTargetValueSafe(ParentBinding.XBindSelector(null));
+			}
+			else
+			{
+				SetTargetValueSafe(o);
+			}
 		}
 
 		private void SetTargetValueSafe(object v)
