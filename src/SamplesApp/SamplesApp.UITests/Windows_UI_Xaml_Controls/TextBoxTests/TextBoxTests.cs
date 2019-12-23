@@ -1,4 +1,6 @@
-﻿using System.Linq;
+﻿using System;
+using System.Drawing;
+using System.Linq;
 using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
@@ -167,12 +169,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser, Platform.iOS)] // Disabled on Android due to pixel color approximation, will be restored in next PR
 		public void PasswordBox_RevealInScrollViewer()
 		{
 			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.PasswordBox_Reveal_Scroll");
 
 			var passwordBox = _app.WaitForElement("MyPasswordBox").Single();
-			var initial = TakeScreenshot("initial");
+			_app.Wait(TimeSpan.FromMilliseconds(500)); // Make sure to show the status bar
+			var initial = TakeScreenshot("initial", ignoreInSnapshotCompare: true);
 
 			// Focus the PasswordBox
 			_app.TapCoordinates(passwordBox.Rect.X + 10, passwordBox.Rect.Y);
@@ -180,9 +184,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			// Press the reveal button, and move up (so the ScrollViewer will kick in and cancel the pointer), then release
 			_app.DragCoordinates(passwordBox.Rect.X + 10, passwordBox.Rect.Right - 10, passwordBox.Rect.X - 100, passwordBox.Rect.Right - 10);
 
-			var result = TakeScreenshot("result");
+			var result = TakeScreenshot("result", ignoreInSnapshotCompare: true);
 
-			ImageAssert.AssertScreenshotsAreEqual(initial, result, passwordBox.Rect);
+			ImageAssert.AreEqual(initial, result, new Rectangle(
+				(int)passwordBox.Rect.X + 8, // +8 : ignore borders (as we are still focused)
+				(int)passwordBox.Rect.Y + 8,
+				100, // Ignore the reveal button on right (as we are still focused)
+				(int)passwordBox.Rect.Height - 16));
 		}
 	}
 }

@@ -72,7 +72,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 			var textRect = _app.GetRect("FunnyTextBlock");
 
-			ImageAssert.AssertScreenshotsAreNotEqual(blueBefore, blackBefore, textRect);
+			ImageAssert.AreNotEqual(blueBefore, blackBefore, textRect);
 
 			_app.Tap("ChangeTextBlockButton");
 
@@ -84,7 +84,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 			var blueAfter = TakeScreenshot("After - blue");
 
-			ImageAssert.AssertScreenshotsAreEqual(blueBefore, blueAfter, textRect);
+			ImageAssert.AreEqual(blueBefore, blueAfter, textRect);
 		}
 	}
 }

@@ -299,7 +299,7 @@ namespace Uno.UI
 			/// For better compatibility with Windows, you should keep the default value 'AsynchronousIdle'.
 			/// </summary>
 			/// <remarks>
-			/// As this boolean is read only once when initializing the dependency property,
+			/// As this value is read only once when initializing the dependency property,
 			/// make sure to define it in the early stages of you application initialization,
 			/// before any UI related initialization (like generic styles init) and even before
 			/// referencing the ** type ** ScrollViewer in any way.
@@ -337,6 +337,20 @@ namespace Uno.UI
 			/// This is a mechanism to prevent hard-to-diagnose stack overflow when a resource name is not found.
 			/// </remarks>
 			public static int MaxRecursiveResolvingDepth { get; set; } = 12;
+		}
+
+		public static class ComboBox
+		{
+			/// <summary>
+			/// This defines the default value of the <see cref="UI.Xaml.Controls.ComboBox.DropDownPreferredPlacementProperty"/>. (cf. Remarks.)
+			/// </summary>
+			/// <remarks>
+			/// As this value is read only once when initializing the dependency property,
+			/// make sure to define it in the early stages of you application initialization,
+			/// before any UI related initialization (like generic styles init) and even before
+			/// referencing the ** type ** ComboBox in any way.
+			/// </remarks>
+			public static Uno.UI.Xaml.Controls.DropDownPlacement DefaultDropDownPreferredPlacement { get; set; } = Uno.UI.Xaml.Controls.DropDownPlacement.Auto;
 		}
 	}
 }
