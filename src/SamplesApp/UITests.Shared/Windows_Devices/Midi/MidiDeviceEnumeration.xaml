@@ -75,8 +75,15 @@
                 <ListView
                     x:Name="outputDevices"
                     ItemsSource="{Binding MidiOutDevices}"
+                    SelectedIndex="{Binding SelectedOutputDeviceIndex, Mode=TwoWay}"
                     Style="{StaticResource DeviceListStyle}" />
                 <ListView x:Name="outputDeviceProperties" Style="{StaticResource DevicePropertiesStyle}" />
+                <Button
+                    x:Name="playButton"
+                    Command="{Binding PlayCommand}"
+                    Content="Play"
+                    RelativePanel.AlignLeftWith="outputDevices"
+                    RelativePanel.Below="outputDevices" />
             </RelativePanel>
         </ScrollViewer>
 
