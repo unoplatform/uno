@@ -1,27 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using Uno.Extensions;
+using Uno.UI.Samples.UITests.Helpers;
 using Uno.UI.Toolkit;
 using TextBlock = Windows.UI.Xaml.Controls.TextBlock;
-
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 {
@@ -41,7 +31,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 		private async void TransformToVisual_Transform_Loaded(object sender, RoutedEventArgs e)
 		{
-			await Task.Delay(1000);
+			await Task.Delay(500); // On Android automated UI tests, make sure the status bar is collapsed and window resized before starting tests.
 
 			_tests.Run(
 				() => When_TransformToRoot(),
@@ -194,32 +184,6 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 			Assert.IsTrue(RectCloseComparer.UI.Equals(expected, result));
 		}
-	}
-
-	internal class RectCloseComparer : IEqualityComparer<Rect>
-	{
-		private readonly double _epsilon;
-
-		public static RectCloseComparer Default { get; } = new RectCloseComparer(Double.Epsilon);
-
-		public static RectCloseComparer UI { get; } = new RectCloseComparer(.5);
-
-		public RectCloseComparer(double epsilon)
-		{
-			_epsilon = epsilon;
-		}
-
-		/// <inheritdoc />
-		public bool Equals(Rect left, Rect right)
-			=> Math.Abs(left.X - right.X) < _epsilon
-				&& Math.Abs(left.Y - right.Y) < _epsilon
-				&& Math.Abs(left.Width - right.Width) < _epsilon
-				&& Math.Abs(left.Height - right.Height) < _epsilon;
-
-		/// <inheritdoc />
-		public int GetHashCode(Rect obj)
-			=> ((int)obj.Width)
-				^ ((int)obj.Height);
 	}
 
 	internal class TestRunner
