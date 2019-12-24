@@ -136,7 +136,8 @@ import android.view.ViewParent;
 		_currentMotionIsHandled = false;
 		_currentMotionOriginalSource = null;
 
-		final boolean isBeginOfSequence = event.getAction() == MotionEvent.ACTION_DOWN || event.getAction() == MotionEvent.ACTION_HOVER_ENTER;
+		final boolean isDown = event.getAction() == MotionEvent.ACTION_DOWN;
+		final boolean isBeginOfSequence = isDown || event.getAction() == MotionEvent.ACTION_HOVER_ENTER;
 		if (isBeginOfSequence) {
 			// When we receive a pointer DOWN, we have to reset the down -> move -> up sequence,
 			// so the dispatch will re-evaluate the _customDispatchTouchTarget;
