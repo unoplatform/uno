@@ -6,20 +6,22 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class DragDeltaEventArgs : RoutedEventArgs
 	{
-		public double HorizontalChange
-		{
-			get;
-		}
-
-		public double VerticalChange
-		{
-			get;
-		}
-
 		public DragDeltaEventArgs(double horizontalChange, double verticalChange)
 		{
 			HorizontalChange = horizontalChange;
 			VerticalChange = verticalChange;
 		}
+
+		internal DragDeltaEventArgs(object originalSource, double horizontalChange, double verticalChange)
+			: base(originalSource)
+		{
+			HorizontalChange = horizontalChange;
+			VerticalChange = verticalChange;
+		}
+
+		public double HorizontalChange { get; }
+
+		public double VerticalChange { get; }
+
 	}
 }

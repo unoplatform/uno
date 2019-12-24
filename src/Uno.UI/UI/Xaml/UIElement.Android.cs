@@ -126,17 +126,30 @@ namespace Windows.UI.Xaml
 			Alpha = IsRenderingSuspended ? 0 : (float)Opacity;
 		}
 
-		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
+		internal Point GetPosition(Point position, UIElement relativeTo)
 		{
+			if (relativeTo == this)
+			{
+				return position;
+			}
+
 			var currentViewLocation = new int[2];
 			GetLocationInWindow(currentViewLocation);
 
+			if (relativeTo == null)
+			{
+				return new Point(
+					position.X + ViewHelper.PhysicalToLogicalPixels(currentViewLocation[0]),
+					position.Y + ViewHelper.PhysicalToLogicalPixels(currentViewLocation[1])
+				);
+			}
+
 			var relativeToLocation = new int[2];
-			GetLocationInWindow(relativeToLocation);
+			relativeTo.GetLocationInWindow(relativeToLocation);
 
 			return new Point(
-				currentViewLocation[0] - relativeToLocation[0],
-				currentViewLocation[1] - relativeToLocation[1]
+				position.X + ViewHelper.PhysicalToLogicalPixels(currentViewLocation[0] - relativeToLocation[0]),
+				position.Y + ViewHelper.PhysicalToLogicalPixels(currentViewLocation[1] - relativeToLocation[1])
 			);
 		}
 

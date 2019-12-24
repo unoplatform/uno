@@ -179,8 +179,8 @@ namespace Windows.UI.Input
 
 		#region Tap (includes DoubleTap)
 		internal const ulong MultiTapMaxDelayTicks = TimeSpan.TicksPerMillisecond * 1000;
-		internal const int TapMaxXDelta = 15;
-		internal const int TapMaxYDelta = 15;
+		internal const int TapMaxXDelta = 10;
+		internal const int TapMaxYDelta = 10;
 
 		public event TypedEventHandler<GestureRecognizer, TappedEventArgs> Tapped;
 
