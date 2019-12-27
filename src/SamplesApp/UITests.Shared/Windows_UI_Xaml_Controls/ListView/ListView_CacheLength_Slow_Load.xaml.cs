@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace SamplesApp.Windows_UI_Xaml_Controls.ListView
 {
-	[SampleControlInfo("ListView", "ListView_CacheLength_Slow_Load", description: "ListView with slow-loading images, illustrating caching behaviour.")]
+	[SampleControlInfo("ListView", "ListView_CacheLength_Slow_Load", ignoreInSnapshotTests: true, description: "ListView with slow-loading images, illustrating caching behaviour.")]
 	public sealed partial class ListView_CacheLength_Slow_Load : UserControl
 	{
 		public ListView_CacheLength_Slow_Load()

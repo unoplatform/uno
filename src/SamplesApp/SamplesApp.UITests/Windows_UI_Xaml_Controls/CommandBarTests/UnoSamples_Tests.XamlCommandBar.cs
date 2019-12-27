@@ -16,7 +16,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 	{
 		[Test]
 		[AutoRetry]
-		public void ComboBoxTests_PickerDefaultValue()
+		public void XamlCommandBar_Automated()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.CommandBar.CommandBar_Xaml_Automated");
 

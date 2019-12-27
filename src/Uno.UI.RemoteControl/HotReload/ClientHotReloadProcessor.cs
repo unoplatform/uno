@@ -138,8 +138,8 @@ namespace Uno.UI.RemoteControl.HotReload
 							yield return EnumerateInstances(border.Child, baseUri);
 							break;
 
-						case ContentControl control when control.ContentTemplateRoot != null: 
-							yield return EnumerateInstances(control.ContentTemplateRoot, baseUri);
+						case ContentControl control when control.ContentTemplateRoot != null || control.Content != null: 
+							yield return EnumerateInstances(control.ContentTemplateRoot ?? control.Content, baseUri);
 							break;
 
 						case Control control:

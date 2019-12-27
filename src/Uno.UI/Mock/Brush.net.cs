@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Media
 	{
 		internal static IDisposable AssignAndObserveBrush(Brush b, Action<Color> colorSetter)
 		{
-			throw new NotImplementedException();
+			return null;
 		}
 
 	}

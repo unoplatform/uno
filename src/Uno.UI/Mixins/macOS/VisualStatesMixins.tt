@@ -2,12 +2,13 @@
 <#@output extension="g.cs" #>
 #if __MACOS__
 <# 	
-	AddClass("Windows.UI.Xaml.Controls", "TextBox", hasCommonStates: true);
+	AddClass("Windows.UI.Xaml.Controls", "TextBox", hasCommonStates: true, hasCommonOverState: true, hasCommonFocusedState: true);
 	AddClass("Windows.UI.Xaml.Controls", "Button", hasCommonStates: true, hasCommonPressedState: true);
 	AddClass("Windows.UI.Xaml.Controls.Primitives", "ToggleButton", hasCommonStates: true, hasCommonCheckedState: true, hasCommonPressedState: true);
 	AddClass("Windows.UI.Xaml.Controls", "RadioButton", hasCommonStates: true, hasCheckedStates: true, hasCommonPressedState: true);
 	AddClass("Windows.UI.Xaml.Controls", "HyperlinkButton", hasCommonStates: true, hasCommonPressedState: true);
 	AddClass("Windows.UI.Xaml.Controls", "CheckBox", hasCommonStates: true, hasCombinedCheckedState: true, hasCommonPressedState: true);
+	AddClass("Windows.UI.Xaml.Controls", "ToggleSwitch", hasCommonStates: true, hasCommonOverState: true, hasCommonPressedState: true);
 #>
 <#@include file="..\..\UI\Xaml\Controls\VisualStatesImplementation.tt"#>
 #endif

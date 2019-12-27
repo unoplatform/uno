@@ -3,6 +3,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Wasm;
 using Uno.Extensions;
 using System;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -39,11 +40,13 @@ namespace Windows.UI.Xaml.Shapes
 			var strokeThickness = ActualStrokeThickness;
 
 			var childRect = new Rect(
-				strokeThickness / 2,
-				strokeThickness / 2,
-				finalSize.Width - strokeThickness,
-				finalSize.Height - strokeThickness
-			);
+					strokeThickness / 2,
+					strokeThickness / 2,
+					finalSize.Width - strokeThickness,
+					finalSize.Height - strokeThickness
+				)
+				.AtLeast(new Size(0, 0));
+			;
 
 			_rectangle.Arrange(childRect);
 			_rectangle.SetAttribute(
@@ -54,7 +57,7 @@ namespace Windows.UI.Xaml.Shapes
 			);
 
 			_rectangle.Clip = new RectangleGeometry() { Rect = new Rect(0, 0, finalSize.Width, finalSize.Height) };
-			
+
 			return finalSize;
 		}
 

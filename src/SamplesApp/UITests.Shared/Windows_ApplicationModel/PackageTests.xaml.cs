@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace UITests.Shared.Windows_ApplicationModel
 {
-	[SampleControlInfo("Windows.ApplicationModel", "Package", ignoreInAutomatedTests: true, description: "Tests the Package and PackageId properties")]
+	[SampleControlInfo("Windows.ApplicationModel", "Package", ignoreInSnapshotTests: true, description: "Tests the Package and PackageId properties")]
 
 	public sealed partial class PackageTests : UserControl
 	{

@@ -53,6 +53,35 @@ body {
   position: fixed;
 }
 
+svg.uno-frameworkelement.uno-unarranged,
+iframe.uno-frameworkelement.uno-unarranged,
+img.uno-frameworkelement.uno-unarranged,
+video.uno-frameworkelement.uno-unarranged,
+embed.uno-frameworkelement.uno-unarranged {
+  /*
+    "Replaced element" (like iFrame, img, video, ... cf. https://developer.mozilla.org/en-US/docs/Web/CSS/Replaced_element)
+    have a default size of 300x150px (as described here https://www.w3.org/TR/css-sizing-3/#intrinsic-sizes)
+    > For boxes without an intrinsic aspect ratio:
+    >     [../..]
+    >     Otherwise, use 300px for the width and/or 150px for the height as needed.
+
+    SVG element that does not have a measurable viewport are also requested to follow the same logic
+    https://www.w3.org/TR/SVGMobile12/coords.html#InitialViewport
+    >  If the parent document is styled with CSS, then the negotiation process must follow the CSS rules for replaced elements.
+
+    Here we make sure that any unarranged "replaced element" have a fixed with / height to 0,
+    so they won't be taken in consideration by scroll viewers (overflow) which are computing their extent in native.
+
+    A common visual effect of this, is that a non virtualized GridView with items smaller than 150px height
+    is vertically scrollable when it should not! (There is a Rectangle in their template, which rendered using an SVG element).
+
+    Note: this is required has have set a "transform: translate(0, 0);" on all ".uno-uielement",
+          which has a side effect to establish a "containing block" (cf. WindowManager.ts on measureViewInternal()).
+  */
+  width: 0;
+  height: 0;
+}
+
 .uno-textblock {
   text-rendering: optimizeLegibility; /* iOS Safari */
   -webkit-touch-callout: none; /* Safari */

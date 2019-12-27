@@ -57,15 +57,8 @@ namespace Windows.UI.Xaml.Controls
 			_horizontalThumb = GetTemplateChild("HorizontalThumb") as Thumb;
 			_verticalThumb = GetTemplateChild("VerticalThumb") as Thumb;
 
-			if (_horizontalThumb != null)
-			{
-				_horizontalThumb.ShouldCapturePointer = false;
-			}
-
-			if (_verticalThumb != null)
-			{
-				_verticalThumb.ShouldCapturePointer = false;
-			}
+			_horizontalThumb?.DisablePointersTracking();
+			_verticalThumb?.DisablePointersTracking();
 
 			_verticalTemplate = GetTemplateChild("VerticalTemplate") as FrameworkElement;
 			_verticalTrackRect = GetTemplateChild("VerticalTrackRect") as Rectangle;

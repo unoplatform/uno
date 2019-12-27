@@ -15,6 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Automation
 	public class AutomationId_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		public void TestSimple()
 		{
 			Run("UITests.Shared.Windows_UI.Xaml_Automation.AutomationProperties_AutomationId");

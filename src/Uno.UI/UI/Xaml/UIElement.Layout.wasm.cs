@@ -76,6 +76,11 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
+			if (double.IsNaN(availableSize.Width) || double.IsNaN(availableSize.Height))
+			{
+				throw new InvalidOperationException($"Cannot measure [{GetType()}] with NaN");
+			}
+
 			var isCloseToPreviousMeasure = availableSize == _previousAvailableSize;
 
 			if (Visibility == Visibility.Collapsed)
@@ -145,8 +150,7 @@ namespace Windows.UI.Xaml
 				{
 					if (this is FrameworkElement frameworkElement)
 					{
-						frameworkElement.ActualHeight = _size.Height;
-						frameworkElement.ActualWidth = _size.Width;
+						frameworkElement.SetActualSize(_size);
 						frameworkElement.RaiseSizeChanged(new SizeChangedEventArgs(this, previousSize, _size));
 					}
 				}

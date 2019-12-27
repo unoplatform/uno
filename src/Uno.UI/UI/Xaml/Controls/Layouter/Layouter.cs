@@ -1,5 +1,6 @@
-﻿// #define LOG_LAYOUT
+// #define LOG_LAYOUT
 
+using Windows.UI.Xaml.Media;
 using Microsoft.Extensions.Logging;
 using Uno.UI;
 #if !__WASM__
@@ -16,8 +17,8 @@ using static System.Math;
 using static Uno.UI.LayoutHelper;
 using Uno.Diagnostics.Eventing;
 using Windows.Foundation;
-
 #if XAMARIN_ANDROID
+using Android.Views;
 using View = Android.Views.View;
 using Font = Android.Graphics.Typeface;
 #elif XAMARIN_IOS_UNIFIED
@@ -45,6 +46,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private static readonly IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 		private readonly ILogger _logDebug;
+
+		private readonly Size MaxSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
 
 		private Size _unclippedDesiredSize;
 
@@ -80,9 +83,9 @@ namespace Windows.UI.Xaml.Controls
 				);
 			}
 
-			if(Panel.Visibility == Visibility.Collapsed)
+			if (Panel.Visibility == Visibility.Collapsed)
 			{
-				// A collapsed element should not be measure measured at all
+				// A collapsed element should not be measured at all
 				return default;
 			}
 
@@ -92,11 +95,16 @@ namespace Windows.UI.Xaml.Controls
 
 				var marginSize = Panel.GetMarginSize();
 
+				// NaN values are accepted as input here, particularly when coming from
+				// SizeThatFits in Image or Scrollviewer. Clamp the value here as it is reused
+				// below for the clipping value.
+				availableSize = availableSize
+					.NumberOrDefault(MaxSize);
+
 				var frameworkAvailableSize = availableSize
 					.Subtract(marginSize)
 					.AtLeast(default) // 0.0,0.0
-					.AtMost(maxSize)
-					.AtLeast(minSize);
+					.AtMost(maxSize);
 
 				var desiredSize = MeasureOverride(frameworkAvailableSize);
 
@@ -123,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 				SetDesiredChildSize(Panel as View, desiredSize.Add(marginSize));
 
 				var clippedDesiredSize = desiredSize
-					
+
 					.AtMost(availableSize)
 					.AtLeast(new Size(0, 0));
 
@@ -169,12 +177,7 @@ namespace Windows.UI.Xaml.Controls
 				bool allowClipToSlot;
 				bool needsClipToSlot;
 
-				if (Panel.RenderTransform != null)
-				{
-					allowClipToSlot = false;
-					needsClipToSlot = false;
-				}
-				else if (Panel is ICustomClippingElement customClippingElement)
+				if (Panel is ICustomClippingElement customClippingElement)
 				{
 					// Some controls may control itself how clipping is applied
 					allowClipToSlot = customClippingElement.AllowClippingToLayoutSlot;
@@ -198,7 +201,7 @@ namespace Windows.UI.Xaml.Controls
 
 					else if (IsLessThanAndNotCloseTo(arrangeSize.Height, _unclippedDesiredSize.Height))
 					{
-							_logDebug?.Debug($"{this}: (arrangeSize.Height) {arrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
+						_logDebug?.Debug($"{this}: (arrangeSize.Height) {arrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
 						needsClipToSlot = true;
 					}
 				}
@@ -206,26 +209,27 @@ namespace Windows.UI.Xaml.Controls
 				var (minSize, maxSize) = this.Panel.GetMinMax();
 
 				arrangeSize = arrangeSize
-					.AtLeast(minSize)
 					.AtLeast(default); // 0.0,0.0
 
+				// We have to choose max between _unclippedDesiredSize and maxSize here, because
+				// otherwise setting of max property could cause arrange at less then _unclippedDesiredSize.
+				// Clipping by Max is needed to limit stretch here
 				var effectiveMaxSize = Max(_unclippedDesiredSize, maxSize);
-				arrangeSize = arrangeSize
-					.AtMost(finalRect.Size)
-					.AtMost(effectiveMaxSize);
 
-				if (allowClipToSlot && !needsClipToSlot)
+				if (allowClipToSlot)
 				{
 					if (IsLessThanAndNotCloseTo(effectiveMaxSize.Width, arrangeSize.Width))
 					{
 						_logDebug?.Debug($"{this}: (effectiveMaxSize.Width) {effectiveMaxSize.Width} < {arrangeSize.Width}: NEEDS CLIPPING.");
 						needsClipToSlot = true;
+						arrangeSize.Width = effectiveMaxSize.Width;
 					}
 
-					else if (IsLessThanAndNotCloseTo(effectiveMaxSize.Height, arrangeSize.Height))
+					if (IsLessThanAndNotCloseTo(effectiveMaxSize.Height, arrangeSize.Height))
 					{
 						_logDebug?.Debug($"{this}: (effectiveMaxSize.Height) {effectiveMaxSize.Height} < {arrangeSize.Height}: NEEDS CLIPPING.");
 						needsClipToSlot = true;
+						arrangeSize.Height = effectiveMaxSize.Height;
 					}
 				}
 
@@ -233,7 +237,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (uiElement != null)
 				{
-					uiElement.RenderSize = renderSize;
+					uiElement.RenderSize = renderSize.AtMost(maxSize);
 					uiElement.NeedsClipToSlot = needsClipToSlot;
 					uiElement.ApplyClip();
 
@@ -268,6 +272,91 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var frameworkElement = view as IFrameworkElement;
 			var ret = default(Size);
+
+			// NaN values are accepted as input for MeasureOverride, but are treated as Infinity.
+			slotSize = slotSize.NumberOrDefault(MaxSize);
+
+			if (frameworkElement?.Visibility == Visibility.Collapsed)
+			{
+				// By default iOS views measure to normal size, even if they're hidden.
+				// We want the collapsed behavior, so we return a 0,0 size instead.
+
+				// Note: Visibility is checked in both Measure and MeasureChild, since some IFrameworkElement children may not have their own Layouter
+				SetDesiredChildSize(view, ret);
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					var viewName = frameworkElement.SelectOrDefault(f => f.Name, "NativeView");
+
+					this.Log().DebugFormat(
+						"[{0}/{1}] MeasureChild(HIDDEN/{2}/{3}/{4}/{5}) = {6}",
+						LoggingOwnerTypeName,
+						Name,
+						view.GetType(),
+						viewName,
+						slotSize,
+						frameworkElement.Margin,
+						ret
+					);
+				}
+
+				return ret;
+			}
+
+			if (frameworkElement != null
+				&& !(frameworkElement is FrameworkElement)
+				&& !(frameworkElement is Image)
+				)
+			{
+				// For IFrameworkElement implementers that are not FrameworkElements, the constraint logic must
+				// be performed by the parent. Otherwise, the native element will take the size it needs without
+				// regards to explicit XAML size characteristics. The Android ProgressBar is a good example of
+				// that behavior.
+
+				var margin = frameworkElement.Margin;
+
+				if (margin != Thickness.Empty)
+				{
+					// Apply the margin for framework elements, as if it were padding to the child.
+					slotSize = new Size(
+						Max(0, slotSize.Width - margin.Left - margin.Right),
+						Max(0, slotSize.Height - margin.Top - margin.Bottom)
+					);
+				}
+
+				// Alias the Dependency Properties values to avoid double calls.
+				var childWidth = frameworkElement.Width;
+				var childMaxWidth = frameworkElement.MaxWidth;
+				var childHeight = frameworkElement.Height;
+				var childMaxHeight = frameworkElement.MaxHeight;
+
+				var optionalMaxWidth = !IsInfinity(childMaxWidth) && !IsNaN(childMaxWidth) ? childMaxWidth : (double?)null;
+				var optionalWidth = !IsNaN(childWidth) ? childWidth : (double?)null;
+				var optionalMaxHeight = !IsInfinity(childMaxHeight) && !IsNaN(childMaxHeight) ? childMaxHeight : (double?)null;
+				var optionalHeight = !IsNaN(childHeight) ? childHeight : (double?)null;
+
+				// After the margin has been removed, ensure the remaining space slot does not go
+				// over the explicit or maximum size of the child.
+				if (optionalMaxWidth != null || optionalWidth != null)
+				{
+					var constrainedWidth = Min(
+						optionalMaxWidth ?? double.PositiveInfinity,
+						optionalWidth ?? double.PositiveInfinity
+					);
+
+					slotSize.Width = Min(slotSize.Width, constrainedWidth);
+				}
+
+				if (optionalMaxHeight != null || optionalHeight != null)
+				{
+					var constrainedHeight = Min(
+						optionalMaxHeight ?? double.PositiveInfinity,
+						optionalHeight ?? double.PositiveInfinity
+					);
+
+					slotSize.Height = Min(slotSize.Height, constrainedHeight);
+				}
+			}
 
 			ret = MeasureChildOverride(view, slotSize);
 
@@ -323,7 +412,7 @@ namespace Windows.UI.Xaml.Controls
 					// Report the size to the parent without the margin, only if the
 					// size has changed or that the control required a measure
 					//
-					// This condition is required because of the measure caching that 
+					// This condition is required because of the measure caching that
 					// some systems apply (Like android UI).
 					ret = new Size(
 						ret.Width + margin.Left + margin.Right,
@@ -393,7 +482,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			// In this implementation, since we do not have the ability to intercept proprely the measure and arrange
 			// because of the type of hierarchy (inheriting from native views), we must apply the margins and alignements
-			// from within the panel to its children. This makes the authoring of custom panels that do not inherit from 
+			// from within the panel to its children. This makes the authoring of custom panels that do not inherit from
 			// Panel that do not use this helper a bit more complex, but for all other panels that use this
 			// layouter, the logic is implied.
 
@@ -408,6 +497,9 @@ namespace Windows.UI.Xaml.Controls
 				// capture the child's state to avoid getting DependencyProperties values multiple times.
 				var childVerticalAlignment = frameworkElement.VerticalAlignment;
 				var childHorizontalAlignment = frameworkElement.HorizontalAlignment;
+
+				AdjustAlignment(view, ref childHorizontalAlignment, ref childVerticalAlignment);
+
 				var childMaxHeight = frameworkElement.MaxHeight;
 				var childMaxWidth = frameworkElement.MaxWidth;
 				var childMinHeight = frameworkElement.MinHeight;
@@ -535,6 +627,27 @@ namespace Windows.UI.Xaml.Controls
 			);
 		}
 
+		protected virtual void AdjustAlignment(View view, ref HorizontalAlignment childHorizontalAlignment,
+			ref VerticalAlignment childVerticalAlignment)
+		{
+			if (view is Image img && (img.Stretch == Stretch.None || img.Stretch == Stretch.Uniform))
+			{
+				// Image is a special control and is using the Vertical/Horizontal Alignment
+				// to calculate the final position of the image. On UWP, there's no difference
+				// between "Stretch" and "Center": they all behave like "Center", so we need
+				// to do the same here.
+				if (childVerticalAlignment == VerticalAlignment.Stretch)
+				{
+					childVerticalAlignment = VerticalAlignment.Center;
+				}
+
+				if (childHorizontalAlignment == HorizontalAlignment.Stretch)
+				{
+					childHorizontalAlignment = HorizontalAlignment.Center;
+				}
+			}
+		}
+
 		private double GetActualSize(
 			double size,
 			bool isStretch,
@@ -615,22 +728,9 @@ namespace Windows.UI.Xaml.Controls
 			return MeasureChild(view, slotSize);
 		}
 
-		private Size GetConstrainedSize(Size availableSize)
-		{
-			var constrainedSize = IFrameworkElementHelper.SizeThatFits(Panel as IFrameworkElement, availableSize);
-
-#if XAMARIN_IOS
-			return constrainedSize.ToFoundationSize();
-#else
-			return constrainedSize;
-#endif
-		}
-
 		private string LoggingOwnerTypeName => ((object)Panel ?? this).GetType().Name;
 
-		private string LoggingOwnerName => Panel?.Name ?? Panel?.GetType().Name ?? LoggingOwnerTypeName;
-
-		public override string ToString() => $"[{LoggingOwnerName}.Layouter]";
+		public override string ToString() => $"[{LoggingOwnerTypeName}.Layouter]" + (string.IsNullOrEmpty(Panel?.Name) ? default : $"(name='{Panel.Name}')");
 	}
 }
 #endif

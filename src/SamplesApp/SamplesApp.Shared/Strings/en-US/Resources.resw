@@ -153,4 +153,10 @@
   <data name="Given_ResourcesService.When_Get_ResourceFromResw" xml:space="preserve">
     <value>Value for When_Get_ResourceFromResw (en-US)</value>
   </data>
+  <data name="pkResShared" xml:space="preserve">
+    <value>Shared text from Resources</value>
+  </data>
+  <data name="pkResUniqResources" xml:space="preserve">
+    <value>Uniq text from Resources</value>
+  </data>
 </root>

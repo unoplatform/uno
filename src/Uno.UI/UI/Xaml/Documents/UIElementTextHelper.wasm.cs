@@ -101,7 +101,7 @@ namespace Uno.UI.UI.Xaml.Documents
 			else
 			{
 				var value = (double)localValue;
-				element.SetStyle("font-size", $"{value.ToStringInvariant()}px");
+				element.SetStyle("font-size", value.ToStringInvariant() + "px");
 			}
 		}
 
@@ -110,7 +110,7 @@ namespace Uno.UI.UI.Xaml.Documents
 			// Not available yet
 		}
 
-		internal static void SetTextTrimming(this UIElement element, object localValue)
+		private static void SetTextTrimming(this UIElement element, object localValue)
 		{
 			switch (localValue)
 			{
@@ -159,7 +159,7 @@ namespace Uno.UI.UI.Xaml.Documents
 			else
 			{
 				var value = (int) localValue;
-				element.SetStyle("letter-spacing", $"{(value / 1000.0).ToStringInvariant()}em");
+				element.SetStyle("letter-spacing", (value / 1000.0).ToStringInvariant() + "em");
 			}
 		}
 
@@ -178,7 +178,7 @@ namespace Uno.UI.UI.Xaml.Documents
 				}
 				else
 				{
-					element.SetStyle("line-height", $"{value.ToStringInvariant()}px");
+					element.SetStyle("line-height", value.ToStringInvariant() + "px");
 				}
 			}
 		}
@@ -214,23 +214,28 @@ namespace Uno.UI.UI.Xaml.Documents
 			}
 		}
 
-		internal static void SetTextWrapping(this UIElement element, object localValue)
+		internal static void SetTextWrappingAndTrimming(this UIElement element, object textWrapping, object textTrimming)
 		{
-			if (localValue is UnsetValue)
+			if (textWrapping is UnsetValue)
 			{
 				element.ResetStyle("white-space", "word-break", "text-overflow");
 			}
 			else
 			{
-				var value = (TextWrapping) localValue;
+				var value = (TextWrapping) textWrapping;
 				switch (value)
 				{
 					case TextWrapping.NoWrap:
 						element.SetAttribute("wrap", "off");
 						element.SetStyle(
 							("white-space", "pre"),
-							("word-break", ""),
-							("text-overflow", ""));
+							("word-break", ""));
+
+						// Triming and wrapping are not yet supported by browsers. This spec would enable it:
+						// https://drafts.csswg.org/css-overflow-3/#propdef-block-ellipsis
+						//
+						// For now, trimming isonly supported when wrapping is disabled.
+						SetTextTrimming(element, textTrimming);
 						break;
 					case TextWrapping.Wrap:
 						element.SetAttribute("wrap", "soft");

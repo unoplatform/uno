@@ -84,6 +84,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string SolidColorBrushHelper = BaseXamlNamespace + ".SolidColorBrushHelper";
 			public const string GridLength = BaseXamlNamespace + ".GridLength";
 			public const string GridUnitType = BaseXamlNamespace + ".GridUnitType";
+			public const string Color = RootUINamespace + ".Color";
 			public const string Colors = RootUINamespace + ".Colors";
 			public const string Thickness = BaseXamlNamespace + ".Thickness";
 			public const string Application = BaseXamlNamespace + ".Application";

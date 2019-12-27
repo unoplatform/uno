@@ -208,6 +208,9 @@ namespace Windows.UI.Xaml.Controls
 			UnregisterEventHandler("scroll", (EventHandler)OnScroll);
 		}
 
+		public void ScrollTo(double? horizontalOffset, double? verticalOffset, bool disableAnimation)
+			=> WindowManagerInterop.ScrollTo(HtmlId, horizontalOffset, verticalOffset, disableAnimation);
+
 		private void OnScroll(object sender, EventArgs args)
 		{
 			var left = GetProperty("scrollLeft");

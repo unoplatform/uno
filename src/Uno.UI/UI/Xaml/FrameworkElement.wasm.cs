@@ -14,6 +14,7 @@ using System.Collections;
 using System.Runtime.CompilerServices;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
+using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
 {
@@ -73,6 +74,11 @@ namespace Windows.UI.Xaml
 			{
 				// Make sure to set the flag before raising the loaded event (duplicated with the base.ManagedOnLoaded)
 				base.IsLoaded = true;
+
+				if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+				{
+					UpdateDOMProperties();
+				}
 
 				try
 				{
@@ -151,9 +157,10 @@ namespace Windows.UI.Xaml
 		{
 			return Parent != null;
 		}
-		
-		public double ActualWidth { get; internal set; }
-		public double ActualHeight { get; internal set; }
+
+		private Size _actualSize;
+		public double ActualWidth => GetActualWidth();
+		public double ActualHeight => GetActualHeight();
 
 		public event SizeChangedEventHandler SizeChanged;
 
@@ -162,6 +169,11 @@ namespace Windows.UI.Xaml
 			SizeChanged?.Invoke(this, args);
 			_renderTransform?.UpdateSize(args.NewSize);
 		}
+
+		internal void SetActualSize(Size size) => _actualSize = size;
+
+		private protected virtual double GetActualWidth() => _actualSize.Width;
+		private protected virtual double GetActualHeight() => _actualSize.Height;
 
 		static partial void OnGenericPropertyUpdatedPartial(object dependencyObject, DependencyPropertyChangedEventArgs args);
 
@@ -306,6 +318,10 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(
 					defaultValue: Thickness.Empty,
 					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
+					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
 				)
 		);
 
@@ -326,6 +342,10 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(
 					defaultValue: Xaml.HorizontalAlignment.Stretch,
 					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
+					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
 				)
 			);
 
@@ -346,6 +366,10 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(
 					defaultValue: Xaml.VerticalAlignment.Stretch,
 					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
+					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
 				)
 			);
 
@@ -366,6 +390,10 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(
 					defaultValue: double.NaN,
 					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
+					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
 				)
 			);
 
@@ -386,6 +414,10 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(
 					defaultValue: double.NaN,
 					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
+					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
 				)
 			);
 
@@ -406,6 +438,10 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(
 					defaultValue: 0.0d,
 					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
+#if DEBUG
+					,
+					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
 				)
 			);
 
@@ -426,7 +462,11 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(
 					defaultValue: 0.0d,
 					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
-				)
+#if DEBUG
+					,
+					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
+					)
 			);
 
 		public double MinHeight
@@ -446,7 +486,11 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(
 					defaultValue: double.PositiveInfinity,
 					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
-				)
+#if DEBUG
+					,
+					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
+					)
 			);
 
 		public double MaxWidth
@@ -466,7 +510,11 @@ namespace Windows.UI.Xaml
 				new FrameworkPropertyMetadata(
 					defaultValue: double.PositiveInfinity,
 					options: FrameworkPropertyMetadataOptions.AutoConvert | FrameworkPropertyMetadataOptions.AffectsMeasure
-				)
+#if DEBUG
+					,
+					propertyChangedCallback: OnGenericPropertyUpdated
+#endif
+					)
 			);
 
 		public double MaxHeight
@@ -475,5 +523,49 @@ namespace Windows.UI.Xaml
 			set { this.SetValue(MaxHeightProperty, value); }
 		}
 		#endregion
+
+		private static void OnGenericPropertyUpdated(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				((FrameworkElement)dependencyObject).UpdateDOMProperties();
+			}
+		}
+
+		/// <summary>
+		/// If corresponding feature flag is enabled, set layout properties as DOM attributes to aid in debugging.
+		/// </summary>
+		/// <remarks>
+		/// Calls to this method should be wrapped in a check of the feature flag, to avoid the expense of a virtual method call
+		/// that will most of the time do nothing in hot code paths.
+		/// </remarks>
+		private protected override void UpdateDOMProperties()
+		{
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties && IsLoaded)
+			{
+				UpdateDOMXamlProperty(nameof(Margin), Margin);
+				UpdateDOMXamlProperty(nameof(HorizontalAlignment), HorizontalAlignment);
+				UpdateDOMXamlProperty(nameof(VerticalAlignment), VerticalAlignment);
+				UpdateDOMXamlProperty(nameof(Width), Width);
+				UpdateDOMXamlProperty(nameof(Height), Height);
+				UpdateDOMXamlProperty(nameof(MinWidth), MinWidth);
+				UpdateDOMXamlProperty(nameof(MinHeight), MinHeight);
+				UpdateDOMXamlProperty(nameof(MaxWidth), MaxWidth);
+				UpdateDOMXamlProperty(nameof(MaxHeight), MaxHeight);
+				UpdateDOMXamlProperty(nameof(IsEnabled), IsEnabled);
+
+				base.UpdateDOMProperties();
+			}
+		}
+
+		public override string ToString()
+		{
+			if (FeatureConfiguration.UIElement.RenderToStringWithId && !Name.IsNullOrEmpty())
+			{
+				return $"{base.ToString()}\"{Name}\"";
+			}
+
+			return base.ToString();
+		}
 	}
 }

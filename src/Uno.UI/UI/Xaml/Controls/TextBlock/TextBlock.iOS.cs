@@ -307,11 +307,21 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (UseLayoutManager)
 			{
+				if (_textContainer == null)
+				{
+					return default(Size);
+				}
+
 				_textContainer.Size = size;
 				return _layoutManager.GetUsedRectForTextContainer(_textContainer).Size;
 			}
 			else
 			{
+				if (_attributedString == null)
+				{
+					return default(Size);
+				}
+
 				return _attributedString.GetBoundingRect(size, NSStringDrawingOptions.UsesLineFragmentOrigin, null).Size;
 			}
 		}

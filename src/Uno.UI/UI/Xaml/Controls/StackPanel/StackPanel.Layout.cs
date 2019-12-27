@@ -93,10 +93,6 @@ namespace Windows.UI.Xaml.Controls
 			var spacing = Spacing;
 			var count = Children.Count;
 
-			var finalSize = isHorizontal
-				? new Size(0, arrangeSize.Height)
-				: new Size(arrangeSize.Width, 0);
-
 			for (var i = 0; i < count; i++)
 			{
 				var view = Children[i];
@@ -115,8 +111,6 @@ namespace Windows.UI.Xaml.Controls
 					previousChildSize = desiredChildSize.Width;
 					childRectangle.Width = desiredChildSize.Width;
 					childRectangle.Height = Math.Max(arrangeSize.Height, desiredChildSize.Height);
-
-					finalSize.Width += desiredChildSize.Width;
 				}
 				else
 				{
@@ -130,8 +124,6 @@ namespace Windows.UI.Xaml.Controls
 					previousChildSize = desiredChildSize.Height;
 					childRectangle.Height = desiredChildSize.Height;
 					childRectangle.Width = Math.Max(arrangeSize.Width, desiredChildSize.Width);
-
-					finalSize.Height += desiredChildSize.Height;
 				}
 
 				var adjustedRectangle = childRectangle;
@@ -139,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 				ArrangeElement(view, adjustedRectangle);
 			}
 
-			var finalSizeWithBorderAndPadding = finalSize.Add(borderAndPaddingSize);
+			var finalSizeWithBorderAndPadding = arrangeSize.Add(borderAndPaddingSize);
 
 			return finalSizeWithBorderAndPadding;
 		}

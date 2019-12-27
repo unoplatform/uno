@@ -13,6 +13,7 @@
 			<Polygon x:Name="DPolygon" Points="300,200 400,125 400,275" Stroke="black" StrokeThickness="5" />
 		</StackPanel>
 		<Button x:Name="ChangeShape" Margin="0,5,0,0" Content="Change Shape" Click="Change_Shape"/>
+		<Button x:Name="ClearShape" Margin="0,5,0,0" Content="Clear Shape" Click="Clear_Shape"/>
 	</StackPanel>
 
 </Page>

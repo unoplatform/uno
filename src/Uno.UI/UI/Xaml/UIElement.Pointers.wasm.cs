@@ -1,26 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
-using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
-using System.Runtime.InteropServices;
-using System.Threading;
-using Microsoft.Extensions.Logging;
-using Uno;
-using Uno.Extensions;
 using Uno.Foundation;
-using Uno.Logging;
-using Uno.UI.Xaml.Input;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.System;
-using Uno.Collections;
-using Uno.UI;
-using System.Numerics;
 using Windows.UI.Input;
+using Uno.UI;
 using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
@@ -112,16 +100,16 @@ namespace Windows.UI.Xaml
 		}
 
 		private static PointerRoutedEventArgs PayloadToEnteredPointerArgs(object snd, string payload) => PayloadToPointerArgs(snd, payload, isInContact: false, canBubble: false);
-		private static PointerRoutedEventArgs PayloadToPressedPointerArgs(object snd, string payload) => PayloadToPointerArgs(snd, payload, isInContact: true, pressed: true);
+		private static PointerRoutedEventArgs PayloadToPressedPointerArgs(object snd, string payload) => PayloadToPointerArgs(snd, payload, isInContact: true);
 		private static PointerRoutedEventArgs PayloadToMovedPointerArgs(object snd, string payload) => PayloadToPointerArgs(snd, payload, isInContact: true);
-		private static PointerRoutedEventArgs PayloadToReleasedPointerArgs(object snd, string payload) => PayloadToPointerArgs(snd, payload, isInContact: true, pressed: false);
+		private static PointerRoutedEventArgs PayloadToReleasedPointerArgs(object snd, string payload) => PayloadToPointerArgs(snd, payload, isInContact: true);
 		private static PointerRoutedEventArgs PayloadToExitedPointerArgs(object snd, string payload) => PayloadToPointerArgs(snd, payload, isInContact: false, canBubble: false);
-		private static PointerRoutedEventArgs PayloadToCancelledPointerArgs(object snd, string payload) => PayloadToPointerArgs(snd, payload, isInContact: false, pressed: false);
+		private static PointerRoutedEventArgs PayloadToCancelledPointerArgs(object snd, string payload) => PayloadToPointerArgs(snd, payload, isInContact: false);
 
-		private static PointerRoutedEventArgs PayloadToPointerArgs(object snd, string payload, bool isInContact, bool canBubble = true, bool? pressed = null)
+		private static PointerRoutedEventArgs PayloadToPointerArgs(object snd, string payload, bool isInContact, bool canBubble = true)
 		{
 			var parts = payload?.Split(';');
-			if (parts?.Length != 9)
+			if (parts?.Length != 10)
 			{
 				return null;
 			}
@@ -131,40 +119,18 @@ namespace Windows.UI.Xaml
 			var y = double.Parse(parts[2], CultureInfo.InvariantCulture);
 			var ctrl = parts[3] == "1";
 			var shift = parts[4] == "1";
-			var button = int.Parse(parts[5], CultureInfo.InvariantCulture); // -1: none, 0:main, 1:middle, 2:other (commonly main=left, other=right)
-			var typeStr = parts[6];
-			var srcHandle = int.Parse(parts[7]);
-			var timestamp = double.Parse(parts[8], CultureInfo.InvariantCulture);
+			var buttons = int.Parse(parts[5], CultureInfo.InvariantCulture);
+			var buttonUpdate = int.Parse(parts[6], CultureInfo.InvariantCulture);
+			var typeStr = parts[7];
+			var srcHandle = int.Parse(parts[8], CultureInfo.InvariantCulture);
+			var timestamp = double.Parse(parts[9], CultureInfo.InvariantCulture);
 
+			var src = GetElementFromHandle(srcHandle) ?? (UIElement)snd;
 			var position = new Point(x, y);
 			var pointerType = ConvertPointerTypeString(typeStr);
-			var key =
-				button == 0 ? VirtualKey.LeftButton
-				: button == 1 ? VirtualKey.MiddleButton
-				: button == 2 ? VirtualKey.RightButton
-				: VirtualKey.None; // includes -1 == none
 			var keyModifiers = VirtualKeyModifiers.None;
 			if (ctrl) keyModifiers |= VirtualKeyModifiers.Control;
 			if (shift) keyModifiers |= VirtualKeyModifiers.Shift;
-			var update = PointerUpdateKind.Other;
-			if (pressed.HasValue)
-			{
-				if (pressed.Value)
-				{
-					update = key == VirtualKey.LeftButton ? PointerUpdateKind.LeftButtonPressed
-						: key == VirtualKey.MiddleButton ? PointerUpdateKind.MiddleButtonPressed
-						: key == VirtualKey.RightButton ? PointerUpdateKind.RightButtonPressed
-						: PointerUpdateKind.Other;
-				}
-				else
-				{
-					update = key == VirtualKey.LeftButton ? PointerUpdateKind.LeftButtonReleased
-						: key == VirtualKey.MiddleButton ? PointerUpdateKind.MiddleButtonReleased
-						: key == VirtualKey.RightButton ? PointerUpdateKind.RightButtonReleased
-						: PointerUpdateKind.Other;
-				}
-			}
-			var src = GetElementFromHandle(srcHandle) ?? (UIElement)snd;
 
 			return new PointerRoutedEventArgs(
 				timestamp,
@@ -172,9 +138,9 @@ namespace Windows.UI.Xaml
 				pointerType,
 				position,
 				isInContact,
-				key,
+				(WindowManagerInterop.HtmlPointerButtonsState)buttons,
+				(WindowManagerInterop.HtmlPointerButtonUpdate)buttonUpdate,
 				keyModifiers,
-				update,
 				src,
 				canBubble);
 		}
@@ -188,6 +154,8 @@ namespace Windows.UI.Xaml
 				default:
 					type = PointerDeviceType.Mouse;
 					break;
+				// Note: As of 2019-11-28, once pen pressed events pressed/move/released are reported as TOUCH on Firefox
+				//		 https://bugzilla.mozilla.org/show_bug.cgi?id=1449660
 				case "PEN":
 					type = PointerDeviceType.Pen;
 					break;
@@ -325,6 +293,11 @@ namespace Windows.UI.Xaml
 					// we don't want to be the target of hit-testing and raise any pointer events.
 					// This is done by setting 'pointer-events' to 'none'.
 					element.SetStyle("pointer-events", "none");
+				}
+
+				if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+				{
+					element.UpdateDOMProperties();
 				}
 			}
 		}

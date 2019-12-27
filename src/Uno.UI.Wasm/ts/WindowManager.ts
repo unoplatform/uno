@@ -128,11 +128,14 @@
 		private containerElement: HTMLDivElement;
 		private rootContent: HTMLElement;
 
+		private cursorStyleElement: HTMLElement;
+
 		private allActiveElementsById: { [id: number]: HTMLElement | SVGElement } = {};
 
 		private static resizeMethod: any;
 		private static dispatchEventMethod: any;
 		private static getDependencyPropertyValueMethod: any;
+		private static setDependencyPropertyValueMethod: any;
 
 		private constructor(private containerElementId: string, private loadingElementId: string) {
 			this.initDom();
@@ -353,6 +356,28 @@
 			const params = WindowManagerSetAttributeParams.unmarshal(pParams);
 			const element = this.getView(params.HtmlId);
 			element.setAttribute(params.Name, params.Value);
+
+			return true;
+		}
+
+		/**
+			* Removes an attribute for an element.
+			*/
+		public removeAttribute(elementId: number, name: string): string {
+			const element = this.getView(elementId);
+			element.removeAttribute(name);
+
+			return "ok";
+		}
+
+		/**
+			* Removes an attribute for an element.
+			*/
+		public removeAttributeNative(pParams: number): boolean {
+
+			const params = WindowManagerRemoveAttributeParams.unmarshal(pParams);
+			const element = this.getView(params.HtmlId);
+			element.removeAttribute(params.Name);
 
 			return true;
 		}
@@ -876,7 +901,7 @@
 				src = src.parentElement;
 			}
 
-			return `${evt.pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.button};${evt.pointerType};${srcHandle};${evt.timeStamp}`;
+			return `${evt.pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.buttons};${evt.button};${evt.pointerType};${srcHandle};${evt.timeStamp}`;
 		}
 
 		/**
@@ -1210,6 +1235,18 @@
 		private static MAX_WIDTH = `${Number.MAX_SAFE_INTEGER}vw`;
 		private static MAX_HEIGHT = `${Number.MAX_SAFE_INTEGER}vh`;
 
+		private measureElement(element: HTMLElement): [number, number] {
+
+			const offsetWidth = element.offsetWidth;
+			const offsetHeight = element.offsetHeight;
+
+			const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
+			const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
+
+			// +1 is added to take rounding/flooring into account
+			return [resultWidth + 1, resultHeight];
+		}
+
 		private measureViewInternal(viewId: number, maxWidth: number, maxHeight: number): [number, number] {
 			const element = this.getView(viewId) as HTMLElement;
 
@@ -1217,7 +1254,13 @@
 			const originalStyleCssText = elementStyle.cssText;
 			let parentElement: HTMLElement = null;
 			let parentElementWidthHeight: { width: string, height: string } = null;
-			let unconnectedRoot = null;
+			let unconnectedRoot: HTMLElement = null;
+
+			let cleanupUnconnectedRoot = function (owner: HTMLDivElement) {
+				if (unconnectedRoot !== null) {
+					owner.removeChild(unconnectedRoot);
+				}
+			}
 
 			try {
 				if (!element.isConnected) {
@@ -1286,15 +1329,27 @@
 					const imgElement = element as HTMLImageElement;
 					return [imgElement.naturalWidth, imgElement.naturalHeight];
 				}
+				else if (element instanceof HTMLInputElement) {
+					const inputElement = element as HTMLInputElement;
+
+					cleanupUnconnectedRoot(this.containerElement);
+
+					// Create a temporary element that will contain the input's content
+					var textOnlyElement = document.createElement("p") as HTMLParagraphElement;
+					textOnlyElement.style.cssText = updatedStyleString;
+					textOnlyElement.innerText = inputElement.value;
+
+					unconnectedRoot = textOnlyElement;
+					this.containerElement.appendChild(unconnectedRoot);
+
+					var textSize = this.measureElement(textOnlyElement);
+					var inputSize = this.measureElement(element);
+
+					// Take the width of the inner text, but keep the height of the input element.
+					return [textSize[0], inputSize[1]];
+				}
 				else {
-					const offsetWidth = element.offsetWidth;
-					const offsetHeight = element.offsetHeight;
-
-					const resultWidth = offsetWidth ? offsetWidth : element.clientWidth;
-					const resultHeight = offsetHeight ? offsetHeight : element.clientHeight;
-
-					// +0.5 is added to take rounding into account
-					return [resultWidth + 0.5, resultHeight];
+					return this.measureElement(element);
 				}
 			}
 			finally {
@@ -1305,10 +1360,23 @@
 					parentElement.style.height = parentElementWidthHeight.height;
 				}
 
-				if (unconnectedRoot !== null) {
-					this.containerElement.removeChild(unconnectedRoot);
-				}
+				cleanupUnconnectedRoot(this.containerElement);
 			}
+		}
+
+		public scrollTo(pParams: number): boolean {
+
+			const params = WindowManagerScrollToOptionsParams.unmarshal(pParams);
+			const elt = this.getView(params.HtmlId);
+			const opts = <ScrollToOptions>({
+				left: params.HasLeft ? params.Left : undefined,
+				top: params.HasTop ? params.Top : undefined,
+				behavior: <ScrollBehavior>(params.DisableAnimation ? "auto" : "smooth")
+			});
+
+			elt.scrollTo(opts);
+
+			return true;
 		}
 
 		public setImageRawData(viewId: number, dataPtr: number, width: number, height: number): string {
@@ -1486,6 +1554,22 @@
 		}
 
 		/**
+		 * Sets a dependency property value.
+		 *
+		 * Note that the casing of this method is intentionally Pascal for platform alignment.
+		 */
+		public SetDependencyPropertyValue(elementId: number, propertyNameAndValue: string) : string {
+			if (!WindowManager.setDependencyPropertyValueMethod) {
+				WindowManager.setDependencyPropertyValueMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:SetDependencyPropertyValue");
+			}
+
+			const element = this.getView(elementId) as HTMLElement;
+			const htmlId = Number(element.getAttribute("XamlHandle"));
+
+			return WindowManager.setDependencyPropertyValueMethod(htmlId, propertyNameAndValue);
+		}
+
+		/**
 			* Remove the loading indicator.
 			*
 			* In a future version it will also handle the splashscreen.
@@ -1583,6 +1667,32 @@
 				return false;
 			}
 			return rootElement === element || rootElement.contains(element);
+		}
+
+		public setCursor(cssCursor: string): string {
+			const unoBody = document.getElementById(this.containerElementId);
+
+			if (unoBody) {
+
+				//always cleanup
+				if (this.cursorStyleElement != undefined) {
+					this.cursorStyleElement.remove();
+					this.cursorStyleElement= undefined
+				}
+
+				//only add custom overriding style if not auto 
+				if (cssCursor != "auto") {
+
+					// this part is only to override default css:  .uno-buttonbase {cursor: pointer;}
+
+					this.cursorStyleElement = document.createElement("style");
+					this.cursorStyleElement.innerHTML = ".uno-buttonbase { cursor: " + cssCursor + "; }";
+					document.body.appendChild(this.cursorStyleElement);
+				}
+
+				unoBody.style.cursor = cssCursor;
+			}
+			return "ok";
 		}
 	}
 

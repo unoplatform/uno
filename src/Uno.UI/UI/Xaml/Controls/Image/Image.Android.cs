@@ -155,6 +155,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		private int? _targetWidth;
+		private int? _targetHeight;
+
+		partial void SetTargetImageSize(Size targetSize)
+		{
+			var physicalSize = targetSize.LogicalToPhysicalPixels();
+			_targetWidth = physicalSize.Width.SelectOrDefault(w => w != 0 ? (int?)w : null);
+			_targetHeight = physicalSize.Height.SelectOrDefault(h => h != 0 ? (int?)h : null);
+
+			TryOpenImage();
+		}
+
 		public override void SetImageDrawable(Drawable drawable)
 		{
 			if (drawable != null)
@@ -252,8 +264,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void TryOpenImage()
 		{
+			var imageSource = Source;
 
-			if (_openedImage == Source)
+			if (_openedImage == imageSource)
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
@@ -262,29 +275,18 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			// If the ImageSource has the UseTargetSize set, the image 
-			// must not be loaded until the first layout has been done.
-			if (Source != null && Source.UseTargetSize && !IsLoaded)
+			if (imageSource != null && imageSource.UseTargetSize)
 			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				// If the ImageSource has the UseTargetSize set, the image 
+				// must not be loaded until the first layout has been done.
+				if (!IsLoaded)
 				{
-					this.Log().Debug(this.ToString() + " TryOpenImage - cancelling because view is not loaded");
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug(this.ToString() + " TryOpenImage - cancelling because view is not loaded");
+					}
+					return;
 				}
-				return;
-			}
-
-			// We can't open the image until we have the proper target size, which is 
-			// being computed after the layout has been completed.
-			// However, if we have already determined that the Image has nonfinite bounds (eg because it 
-			//has no set Width/Height and is inside control that permits infinite space), then we will never
-			//be able to set a targetSize and must load the image without one.
-			if (Source != null && Source.UseTargetSize && _targetWidth == null && _targetHeight == null && (_hasFiniteBounds ?? true) && !MustOpenImageToMeasure())
-			{
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					this.Log().Debug(this.ToString() + " TryOpenImage - cancelling because view needs to be measured");
-				}
-				return;
 			}
 
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
@@ -292,7 +294,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Debug(this.ToString() + " TryOpenImage - proceeding");
 			}
 
-			_openedImage = Source;
+			_openedImage = null;
 			_successfullyOpenedImage = null;
 
 			using (
@@ -305,45 +307,62 @@ namespace Windows.UI.Xaml.Controls
 			{
 				try
 				{
-					if (_openedImage is WriteableBitmap wb)
+					if (imageSource is WriteableBitmap wb)
 					{
 						SetFromWriteableBitmap(wb);
 					}
 					// We want to reset the image when there is no source provided.
-					else if (!_openedImage?.HasSource() ?? true)
+					else if (!imageSource?.HasSource() ?? true)
 					{
 						ResetSource();
 					}
-					else if (_openedImage.ImageData != null)
+					else if (imageSource.ImageData != null)
 					{
-						SetSourceBitmap(_openedImage);
+						SetSourceBitmap(imageSource);
 					}
-					else if (_openedImage.BitmapDrawable != null)
+					else if (imageSource.BitmapDrawable != null)
 					{
-						SetSourceDrawable(_openedImage);
+						SetSourceDrawable(imageSource);
 					}
-					else if (_openedImage.ResourceId.HasValue)
+					else if (imageSource.ResourceId.HasValue)
 					{
-						var dummy = SetSourceResource(_openedImage);
+						var dummy = SetSourceResource(imageSource);
 					}
-					else if (_openedImage.FilePath.HasValue() || _openedImage.WebUri != null || _openedImage.Stream != null)
+					else if (imageSource.FilePath.HasValue() || imageSource.WebUri != null || imageSource.Stream != null)
 					{
-						var dummy = SetSourceUriOrStream(_openedImage);
+						// We can't open the image until we have the proper target size, which is 
+						// being computed after the layout has been completed.
+						// However, if we have already determined that the Image has non-finite bounds (eg because it 
+						// has no set Width/Height and is inside control that permits infinite space), then we will never
+						// be able to set a targetSize and must load the image without one.
+						if (imageSource.UseTargetSize && _targetWidth == null && _targetHeight == null && (_hasFiniteBounds ?? true) && !MustOpenImageToMeasure())
+						{
+							if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+							{
+								this.Log().Debug(this.ToString() + " TryOpenImage - cancelling because view needs to be measured");
+							}
+
+							return;
+						}
+
+						var dummy = SetSourceUriOrStream(imageSource);
 					}
 					else
 					{
 						throw new NotSupportedException("The provided ImageSource is not supported.");
 					}
+
+					_openedImage = imageSource;
 				}
 				catch (OperationCanceledException)
 				{
 					// We may not have opened the image correctly, try next time.
-					_openedImage = null;
+					Source = null;
 				}
 				catch (Exception e)
 				{
 					this.Log().Error("Could not change image source", e);
-					OnImageFailed(_openedImage);
+					OnImageFailed(imageSource);
 				}
 			}
 		}
@@ -498,14 +517,15 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// If the image control does not have finite bounds, then it must go through another measure/arrange pass after the image is set. 
+		/// If the image control does not have finite bounds, or if finite bounds have not yet been computed, then it must go through
+		/// another measure/arrange pass after the image is set. 
 		/// This is not guaranteed to happen if RequestLayout is called from within a layout pass, so we must set the image on the dispatcher 
 		/// even if we wouldn't otherwise.
 		/// </summary>
 		/// <returns></returns>
 		private bool MustDispatchSetSource()
 		{
-			return (!_hasFiniteBounds ?? false) && _isInLayout;
+			return (!_hasFiniteBounds ?? true) && _isInLayout;
 		}
 
 		private void ResetSource()
@@ -541,11 +561,11 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var sourceRect = new Windows.Foundation.Rect(Windows.Foundation.Point.Zero, SourceImageSize);
-			var imageRect = new Windows.Foundation.Rect(Windows.Foundation.Point.Zero, frameSize);
+			// Calculate the resulting space required on screen for the image
+			var containerSize = this.MeasureSource(frameSize, SourceImageSize);
 
-			this.MeasureSource(imageRect, ref sourceRect);
-			this.ArrangeSource(imageRect, ref sourceRect);
+			// Calculate the position of the image to follow stretch and alignment requirements
+			var sourceRect = this.ArrangeSource(frameSize, containerSize);
 
 			var scaleX = (sourceRect.Width / SourceImageSize.Width) * _sourceImageScale;
 			var scaleY = (sourceRect.Height / SourceImageSize.Height) * _sourceImageScale;

@@ -20,6 +20,7 @@ using Uno.Collections;
 using Uno.UI;
 using System.Numerics;
 using Windows.UI.Input;
+using Windows.UI.Xaml.Controls;
 using Uno.UI.Xaml;
 
 namespace Windows.UI.Xaml
@@ -32,6 +33,7 @@ namespace Windows.UI.Xaml
 
 		private readonly GCHandle _gcHandle;
 		private readonly bool _isFrameworkElement;
+		private Rect _nativeLayoutSlot; // The LayoutSLot requested JS, and which also contains Margins.
 
 		private protected int? Depth { get; private set; }
 
@@ -41,7 +43,7 @@ namespace Windows.UI.Xaml
 
 			internal static string[] GetForType(Type type)
 			{
-				if(!_classNames.TryGetValue(type, out var names))
+				if (!_classNames.TryGetValue(type, out var names))
 				{
 					_classNames[type] = names = GetClassesForType(type).ToArray();
 				}
@@ -166,8 +168,15 @@ namespace Windows.UI.Xaml
 		private long _arrangeCount = 0;
 #endif
 
+		/// <summary>
+		/// Natively arranges and clips an element.
+		/// </summary>
+		/// <param name="rect">The dimensions to apply to the element</param>
+		/// <param name="clipToBounds">Whether the element should be clipped to its bounds</param>
+		/// <param name="clipRect">The Clip rect to set, if any</param>
 		protected internal void ArrangeElementNative(Rect rect, bool clipToBounds, Rect? clipRect)
 		{
+			_nativeLayoutSlot = rect;
 			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipToBounds, clipRect);
 
 #if DEBUG
@@ -196,6 +205,11 @@ namespace Windows.UI.Xaml
 		protected internal void SetAttribute(string name, string value)
 		{
 			Uno.UI.Xaml.WindowManagerInterop.SetAttribute(HtmlId, name, value);
+		}
+
+		protected internal void RemoveAttribute(string name)
+		{
+			Uno.UI.Xaml.WindowManagerInterop.RemoveAttribute(HtmlId, name);
 		}
 
 		protected internal void SetAttribute(params (string name, string value)[] attributes)
@@ -501,7 +515,7 @@ namespace Windows.UI.Xaml
 		{
 			var gcHandle = GCHandle.FromIntPtr((IntPtr)handle);
 
-			if(gcHandle.IsAllocated && gcHandle.Target is UIElement element)
+			if (gcHandle.IsAllocated && gcHandle.Target is UIElement element)
 			{
 				return element;
 			}
@@ -569,6 +583,11 @@ namespace Windows.UI.Xaml
 			{
 				SetStyle("visibility", "hidden");
 			}
+
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				UpdateDOMProperties();
+			}
 		}
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
@@ -588,6 +607,11 @@ namespace Windows.UI.Xaml
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue)
 		{
 			UpdateHitTest();
+
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				UpdateDOMProperties();
+			}
 		}
 
 		public override string ToString()
@@ -601,31 +625,70 @@ namespace Windows.UI.Xaml
 		}
 
 		public GeneralTransform TransformToVisual(UIElement visual)
+			=> new MatrixTransform { Matrix = new Matrix(TransformToVisualCore(visual)) };
+
+		private Matrix3x2 TransformToVisualCore(UIElement visual)
 		{
-			var bounds = GetBoundingClientRect();
-			var otherBounds = new Rect(0, 0, 0, 0);
-
-			// If visual is null, we transform the element to the window
-			if (visual == null)
+			if (visual == this)
 			{
-				// Do nothing (leave at 0,0)
-			}
-			else
-			{
-				otherBounds = visual.GetBoundingClientRect();
+				return Matrix3x2.Identity;
 			}
 
-			return new MatrixTransform
+			var matrix = Matrix3x2.Identity;
+			double offsetX = 0.0, offsetY = 0.0;
+			var elt = this;
+			do
 			{
-				Matrix = new Matrix(
-					m11: 1,
-					m12: 0,
-					m21: 0,
-					m22: 1,
-					offsetX: bounds.X - otherBounds.X,
-					offsetY: bounds.Y - otherBounds.Y
-				)
-			};
+				var transform = elt.RenderTransform;
+				if (transform == null)
+				{
+					// As this is the common case, avoid Matrix computation when a basic addition is sufficient
+					offsetX += elt._nativeLayoutSlot.X;
+					offsetY += elt._nativeLayoutSlot.Y;
+				}
+				else
+				{
+					// First apply any pending arrange offset that would have been impacted by this RenderTransform (eg. scaled)
+					// Friendly reminder: Matrix multiplication is usually not commutative ;)
+					matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
+					matrix *= transform.MatrixCore;
+
+					offsetX = elt._nativeLayoutSlot.X;
+					offsetY = elt._nativeLayoutSlot.Y;
+				}
+
+				if (elt is ScrollViewer sv)
+				{
+					var zoom = sv.ZoomFactor;
+					if (zoom != 1)
+					{
+						matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
+						matrix *= Matrix3x2.CreateScale(zoom);
+
+						offsetX = -sv.HorizontalOffset;
+						offsetY = -sv.VerticalOffset;
+					}
+					else
+					{
+						offsetX -= sv.HorizontalOffset;
+						offsetY -= sv.VerticalOffset;
+					}
+				}
+			} while ((elt = elt.GetParent() as UIElement) != null && elt != visual); // If possible we stop as soon as we reach 'visual'
+
+			matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
+
+			if (visual != null && elt != visual)
+			{
+				// Unfortunately we didn't find the 'visual' in our parent hierarchy,
+				// so matrix == thisToRoot and we now have to compute the transform 'rootToVisual'.
+				var visualToRoot = visual.TransformToVisualCore(null);
+				Matrix3x2.Invert(visualToRoot, out var rootToVisual);
+
+				matrix *= rootToVisual;
+			}
+
+			return matrix;
 		}
 
 		internal virtual bool IsEnabledOverride() => true;
@@ -866,6 +929,32 @@ namespace Windows.UI.Xaml
 			);
 		}
 
+		/// <summary>
+		/// If corresponding feature flag is enabled, set layout properties as DOM attributes to aid in debugging.
+		/// </summary>
+		/// <remarks>
+		/// Calls to this method should be wrapped in a check of the feature flag, to avoid the expense of a virtual method call
+		/// that will most of the time do nothing in hot code paths.
+		/// </remarks>
+		private protected virtual void UpdateDOMProperties()
+		{
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				UpdateDOMXamlProperty(nameof(Visibility), Visibility);
+				UpdateDOMXamlProperty(nameof(IsHitTestVisible), IsHitTestVisible);
+			}
+		}
+
+		/// <summary>
+		/// Sets a Xaml property as a DOM attribute for debugging.
+		/// </summary>
+		/// <param name="propertyName">The property's name</param>
+		/// <param name="value">The current property value</param>
+		internal void UpdateDOMXamlProperty(string propertyName, object value)
+		{
+			WindowManagerInterop.SetAttribute(HtmlId, "xaml" + propertyName.ToLowerInvariant().Replace('.', '_'), value?.ToString() ?? "[null]");
+		}
+
 		private static KeyRoutedEventArgs PayloadToKeyArgs(object src, string payload)
 		{
 			return new KeyRoutedEventArgs(src, System.VirtualKeyHelper.FromKey(payload));
@@ -873,9 +962,9 @@ namespace Windows.UI.Xaml
 
 		private static RoutedEventArgs PayloadToFocusArgs(object src, string payload)
 		{
-			if(int.TryParse(payload, out int xamlHandle))
+			if (int.TryParse(payload, out int xamlHandle))
 			{
-				if(GetElementFromHandle(xamlHandle) is UIElement element)
+				if (GetElementFromHandle(xamlHandle) is UIElement element)
 				{
 					return new RoutedEventArgs(element);
 				}

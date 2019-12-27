@@ -20,6 +20,7 @@ using Windows.UI.Xaml.Data;
 using Microsoft.Extensions.Logging;
 
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml.Controls;
 #if __ANDROID__
 using Android.Views;
 using _View = Android.Views.View;
@@ -53,6 +54,11 @@ namespace Windows.UI.Xaml.Controls
 
 		public ComboBox()
 		{
+			LightDismissOverlayBackground = Resources["ComboBoxLightDismissOverlayBackground"] as Brush ??
+				// This is normally a no-op - the above line should retrieve the framework-level resource. This is purely to fail the build when
+				// Resources/Styles are overhauled (and the above will no longer be valid)
+				Uno.UI.GlobalStaticResources.ComboBoxLightDismissOverlayBackground as Brush;
+
 			IsItemClickEnabled = true;
 		}
 
@@ -78,6 +84,9 @@ namespace Windows.UI.Xaml.Controls
 			if (_popup is PopupBase popup)
 			{
 				popup.CustomLayouter = new DropDownLayouter(this, popup);
+
+				popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
+				popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
 			}
 
 			UpdateHeaderVisibility();
@@ -371,6 +380,36 @@ namespace Windows.UI.Xaml.Controls
 			return new ComboBoxAutomationPeer(this);
 		}
 
+		public LightDismissOverlayMode LightDismissOverlayMode
+		{
+			get
+			{
+				return (LightDismissOverlayMode)this.GetValue(LightDismissOverlayModeProperty);
+			}
+			set
+			{
+				this.SetValue(LightDismissOverlayModeProperty, value);
+			}
+		}
+
+		public static DependencyProperty LightDismissOverlayModeProperty { get; } =
+		DependencyProperty.Register(
+			"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
+			typeof(ComboBox),
+			new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));
+
+		/// <summary>
+		/// Sets the light-dismiss colour, if the overlay is enabled. The external API for modifying this is to override the PopupLightDismissOverlayBackground, etc, static resource values.
+		/// </summary>
+		internal Brush LightDismissOverlayBackground
+		{
+			get { return (Brush)GetValue(LightDismissOverlayBackgroundProperty); }
+			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
+		}
+
+		internal static readonly DependencyProperty LightDismissOverlayBackgroundProperty =
+			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(ComboBox), new PropertyMetadata(null));
+
 		private class DropDownLayouter : PopupBase.IDynamicPopupLayouter
 		{
 			private readonly ComboBox _combo;
@@ -427,7 +466,7 @@ namespace Windows.UI.Xaml.Controls
 			private const int _itemsToShow = 9;
 
 			/// <inheritdoc />
-			public void Arrange(Size finalSize, Rect visibleBounds, Size desiredSize)
+			public void Arrange(Size finalSize, Rect visibleBounds, Size desiredSize, Point? upperLeftLocation)
 			{
 				if (!(_popup.Child is FrameworkElement child))
 				{
@@ -460,25 +499,32 @@ namespace Windows.UI.Xaml.Controls
 					selectedIndex = itemsCount / 2;
 				}
 
+				var placement = Uno.UI.Xaml.Controls.ComboBox.GetDropDownPreferredPlacement(_combo);
 				var stickyThreshold = Math.Max(1, Math.Min(4, (itemsCount / 2) - 1));
-				if (selectedIndex >= 0 && selectedIndex < stickyThreshold)
+				switch (placement)
 				{
-					// Try to appear below
-					frame.Y = comboRect.Top;
-				}
-				else if (selectedIndex >= 0 && selectedIndex >= itemsCount - stickyThreshold
-					// As we don't scroll into view to the selected item, this case seems awkward if the selected item
-					// is not directly visible (i.e. without scrolling) when the drop-down appears.
-					// So if we detect that we should had to scroll to make it visible, we don't try to appear above!
-					&& (itemsCount <= _itemsToShow && frame.Height < (_combo.ActualHeight * _itemsToShow) - 3))
-				{
-					// Try to appear above
-					frame.Y = comboRect.Bottom - frame.Height;
-				}
-				else
-				{
-					// Try to appear centered
-					frame.Y = comboRect.Top - (frame.Height / 2.0) + (comboRect.Height / 2.0);
+					case DropDownPlacement.Below:
+					case DropDownPlacement.Auto when selectedIndex >= 0 && selectedIndex < stickyThreshold:
+						frame.Y = comboRect.Top;
+						break;
+
+					case DropDownPlacement.Above:
+					case DropDownPlacement.Auto when
+							selectedIndex >= 0 && selectedIndex >= itemsCount - stickyThreshold
+							// As we don't scroll into view to the selected item, this case seems awkward if the selected item
+							// is not directly visible (i.e. without scrolling) when the drop-down appears.
+							// So if we detect that we should had to scroll to make it visible, we don't try to appear above!
+							&& (itemsCount <= _itemsToShow && frame.Height < (_combo.ActualHeight * _itemsToShow) - 3):
+
+						frame.Y = comboRect.Bottom - frame.Height;
+						break;
+
+					case DropDownPlacement.Centered:
+					case DropDownPlacement.Auto: // For now we don't support other alignments than top/bottom/center, but on UWP auto can also be 2/3 - 1/3
+					default:
+						// Try to appear centered
+						frame.Y = comboRect.Top - (frame.Height / 2.0) + (comboRect.Height / 2.0);
+						break;
 				}
 
 				// Make sure that the popup does not appears out of the viewport
@@ -506,6 +552,14 @@ namespace Windows.UI.Xaml.Controls
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{
 					this.Log().Debug($"Layout the combo's dropdown at {frame} (desired: {desiredSize} / available: {finalSize} / visible: {visibleBounds} / selected: {selectedIndex} of {itemsCount})");
+				}
+
+				if(upperLeftLocation is Point offset)
+				{
+					// Compensate for origin location is some popup providers (Android
+					// is one, particularly when the status bar is translucent)
+					frame.X -= offset.X;
+					frame.Y -= offset.Y;
 				}
 
 				child.Arrange(frame);

@@ -1,0 +1,105 @@
+jobs:
+
+- job: Android_Build_For_Tests
+
+  pool:
+    vmImage: 'macOS-10.14'
+
+  variables:
+    CI_Build: true
+    SourceLinkEnabled: false
+    NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/optimize-roslyn-mono.yml
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - bash: /bin/bash -c "sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 5_18_1"
+    displayName: Select Xamarin Version
+
+  - bash: |
+      $(build.sourcesdirectory)/build/android-uitest-build.sh
+
+    displayName: Build Android Test Package
+
+    env:
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-android-build
+      ArtifactType: Container
+
+- job: Android_Tests
+  dependsOn: Android_Build_For_Tests
+
+  variables:
+    CI_Build: true
+    SourceLinkEnabled: false
+    NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
+
+  pool:
+    vmImage: 'macOS-10.14'
+
+  strategy:
+    matrix:
+      # Most tests pass, will be enabled in a later PR
+      #Android_5.0:
+      #  ANDROID_SIMULATOR_APILEVEL: 21
+      #  UITEST_TEST_MODE_NAME: Automated
+      Android_9.0:
+        ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_TEST_MODE_NAME: Automated
+      Android_9.0_Snapshots:
+        ANDROID_SIMULATOR_APILEVEL: 28
+        UITEST_TEST_MODE_NAME: Snapshots
+        UITEST_SNAPSHOTS_ONLY: true
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - task: DownloadBuildArtifacts@0
+    inputs:
+        artifactName: uitests-android-build
+        downloadPath: '$(build.sourcesdirectory)/build'
+
+  - template: templates/optimize-roslyn-mono.yml
+
+  - bash: /bin/bash -c "sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 5_18_1"
+    displayName: Select Xamarin Version
+
+  - bash: |
+      $(build.sourcesdirectory)/build/android-uitest-run.sh
+
+    displayName: Run Android Tests
+
+    env:
+      BUILD_SOURCESDIRECTORY: "$(build.sourcesdirectory)"
+      BUILD_ARTIFACTSTAGINGDIRECTORY: "$(build.artifactstagingdirectory)"
+      ANDROID_SIMULATOR_APILEVEL: $(ANDROID_SIMULATOR_APILEVEL)
+      UITEST_SNAPSHOTS_ONLY: "$(UITEST_SNAPSHOTS_ONLY)"
+ 
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testRunTitle: 'Android $(ANDROID_SIMULATOR_APILEVEL) $(UITEST_TEST_MODE_NAME) Test Run'
+      testResultsFormat: 'NUnit'
+      testResultsFiles: '$(build.sourcesdirectory)/build/TestResult.xml'
+      failTaskOnFailedTests: true
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uitests-results
+      ArtifactType: Container

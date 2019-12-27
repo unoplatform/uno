@@ -22,7 +22,7 @@ This mode replicates **UWP**'s `CommandBar`. It is templatable and supports a te
 #### Usage Example
 
 ```cs
-<Style TargetType="CommandBar" BasedOn="XamlDefaultCommandBar" />
+<Style TargetType="CommandBar" BasedOn="{StaticResource XamlDefaultCommandBar}" />
 ```
 
 #### Remarks
@@ -48,7 +48,7 @@ The rest of this document will exclusively cover this mode.
 #### Usage Example
 
 ```cs
-<Style TargetType="CommandBar" BasedOn="NativeDefaultCommandBar" />
+<Style TargetType="CommandBar" BasedOn="{StaticResource NativeDefaultCommandBar}" />
 ```
 
 #### Remarks

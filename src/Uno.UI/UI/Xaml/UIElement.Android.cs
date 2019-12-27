@@ -4,10 +4,15 @@ using Uno.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using Windows.Foundation;
 using Android.Support.V4.View;
 using Windows.UI.Xaml.Media;
+using Android.Graphics;
 using Android.Views;
+using Matrix = Windows.UI.Xaml.Media.Matrix;
+using Point = Windows.Foundation.Point;
+using Rect = Windows.Foundation.Rect;
+using Java.Interop;
+using Windows.UI.Xaml.Markup;
 
 namespace Windows.UI.Xaml
 {
@@ -28,7 +33,22 @@ namespace Windows.UI.Xaml
 			}
 
 			ViewCompat.SetClipBounds(this, rect.LogicalToPhysicalPixels());
+
 			SetClipChildren(NeedsClipToSlot);
+		}
+
+		/// <summary>
+		/// This method is called from the OnDraw of elements supporting rounded corners:
+		/// Border, Rectangle, Panel...
+		/// </summary>
+		private protected void AdjustCornerRadius(Android.Graphics.Canvas canvas, CornerRadius cornerRadius)
+		{
+			if (cornerRadius != CornerRadius.None)
+			{
+				var rect = new RectF(canvas.ClipBounds);
+				var clipPath = cornerRadius.GetOutlinePath(rect);
+				canvas.ClipPath(clipPath);
+			}
 		}
 
 		private bool _renderTransformRegisteredParentChanged;
@@ -106,19 +126,42 @@ namespace Windows.UI.Xaml
 			Alpha = IsRenderingSuspended ? 0 : (float)Opacity;
 		}
 
-		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
+		internal Point GetPosition(Point position, UIElement relativeTo)
 		{
+			if (relativeTo == this)
+			{
+				return position;
+			}
+
 			var currentViewLocation = new int[2];
 			GetLocationInWindow(currentViewLocation);
 
+			if (relativeTo == null)
+			{
+				return new Point(
+					position.X + ViewHelper.PhysicalToLogicalPixels(currentViewLocation[0]),
+					position.Y + ViewHelper.PhysicalToLogicalPixels(currentViewLocation[1])
+				);
+			}
+
 			var relativeToLocation = new int[2];
-			GetLocationInWindow(relativeToLocation);
+			relativeTo.GetLocationInWindow(relativeToLocation);
 
 			return new Point(
-				currentViewLocation[0] - relativeToLocation[0],
-				currentViewLocation[1] - relativeToLocation[1]
+				position.X + ViewHelper.PhysicalToLogicalPixels(currentViewLocation[0] - relativeToLocation[0]),
+				position.Y + ViewHelper.PhysicalToLogicalPixels(currentViewLocation[1] - relativeToLocation[1])
 			);
 		}
+
+
+		/// <summary>
+        /// Sets the specified dependency property value using the format "name|value"
+        /// </summary>
+        /// <param name="dependencyPropertyNameAndvalue">The name and value of the property</param>
+        /// <returns>The currenty set value at the Local precedence</returns>
+		[Java.Interop.Export(nameof(SetDependencyPropertyValue))]
+		public string SetDependencyPropertyValue(string dependencyPropertyNameAndValue)
+			=> SetDependencyPropertyValueInternal(this, dependencyPropertyNameAndValue);
 
 		/// <summary>
 		/// Provides a native value for the dependency property with the given name on the current instance. If the value is a primitive type, 
@@ -233,6 +276,53 @@ namespace Windows.UI.Xaml
 					}
 
 					return null;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Convenience method to find all views with the given name.
+		/// </summary>
+		public FrameworkElement[] FindViewsByName(string name) => FindViewsByName(name, searchDescendantsOnly: false);
+
+
+		/// <summary>
+		/// Convenience method to find all views with the given name.
+		/// </summary>
+		/// <param name="searchDescendantsOnly">If true, only look in descendants of the current view; otherwise search the entire visual tree.</param>
+		public FrameworkElement[] FindViewsByName(string name, bool searchDescendantsOnly)
+		{
+
+			View topLevel = this;
+
+			if (!searchDescendantsOnly)
+			{
+				while (topLevel.Parent is View newTopLevel)
+				{
+					topLevel = newTopLevel;
+				}
+			}
+
+			return GetMatchesInChildren(topLevel).ToArray();
+
+			IEnumerable<FrameworkElement> GetMatchesInChildren(View parentView)
+			{
+				if (!(parentView is ViewGroup parent))
+				{
+					yield break;
+				}
+
+				foreach (var child in parent.GetChildren())
+				{
+					if (child is FrameworkElement fe && fe.Name == name)
+					{
+						yield return fe;
+					}
+
+					foreach (var match in GetMatchesInChildren(child))
+					{
+						yield return match;
+					}
 				}
 			}
 		}

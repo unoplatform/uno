@@ -247,8 +247,6 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 #if NETFX_CORE
 						&& args.One(PointerReleasedEvent)
 						&& args.Click()
-#elif __WASM__ // KNOWN ISSUE: We don't get a released if not previously pressed, but pressed are muted by the Hyperlink which is a UIElement on wasm
-						&& args.Click()
 #else
 						&& args.Click()
 						&& args.One(PointerReleasedEvent)
@@ -306,34 +304,21 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 						args.One(PointerEnteredEvent)
 						&& args.Some(PointerMovedEvent) // Could be "Maybe" but WASM UI test generate it and we want to validate it
 						&& args.Click()
-#if NETFX_CORE // We should get a Tapped on all platforms but ListView is a weird/complex control ...
 						&& args.One(TappedEvent)
-#endif
 						&& args.MaybeSome(PointerMovedEvent)
-						&& args.One(PointerExitedEvent)
+						&& args.MaybeOne(PointerExitedEvent) // This should be "One" (Not maybe) ... but the ListView is a complex control
 						&& args.End();
 					break;
 
 				case PointerDeviceType.Pen:
 				case PointerDeviceType.Touch:
-#if __IOS__ || __ANDROID__
-					// KNOWN ISSUE:
-					//	On iOS and Android as the Entered/Exited are generated on Pressed/Released, which are Handled by the ListViewItem,
-					//	so we do not receive the expected Entered/Exited on parent control.
-					//	As a side effect we will also not receive the Tap as it is an interpretation of those missing Pointer events.
 					result =
-						args.Click()
-						&& args.End();
-#else
-					result =
-						args.One(PointerEnteredEvent)
+						args.MaybeOne(PointerEnteredEvent) // This should be "One" (Not maybe) ... but the ListView is a complex control
+						&& args.MaybeSome(PointerMovedEvent)
 						&& args.Click()
-#if NETFX_CORE // We should get a Tapped on all platforms but ListView is a weird/complex control ...
-						&& args.One(TappedEvent)
-#endif
-						&& args.One(PointerExitedEvent)
+						&& args.MaybeOne(TappedEvent) // This should be "One" (Not maybe) ... but the ListView is a complex control
+						&& args.MaybeOne(PointerExitedEvent) // This should be "One" (Not maybe) ... but the ListView is a complex control
 						&& args.End();
-#endif
 					break;
 			}
 

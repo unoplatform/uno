@@ -10,6 +10,7 @@ declare namespace Windows.UI.Core {
     class CoreDispatcher {
         static _coreDispatcherCallback: any;
         static _isIOS: boolean;
+        static _isSafari: boolean;
         static _isFirstCall: boolean;
         static _isReady: Promise<boolean>;
         static _isWaitingReady: boolean;
@@ -152,6 +153,7 @@ declare namespace Uno.UI {
         private static resizeMethod;
         private static dispatchEventMethod;
         private static getDependencyPropertyValueMethod;
+        private static setDependencyPropertyValueMethod;
         private constructor();
         /**
             * Creates the UWP-compatible splash screen
@@ -217,6 +219,14 @@ declare namespace Uno.UI {
             * Set an attribute for an element.
             */
         setAttributeNative(pParams: number): boolean;
+        /**
+            * Removes an attribute for an element.
+            */
+        removeAttribute(elementId: number, name: string): string;
+        /**
+            * Removes an attribute for an element.
+            */
+        removeAttributeNative(pParams: number): boolean;
         /**
             * Get an attribute for an element.
             */
@@ -448,7 +458,9 @@ declare namespace Uno.UI {
         measureViewNative(pParams: number, pReturn: number): boolean;
         private static MAX_WIDTH;
         private static MAX_HEIGHT;
+        private measureElement;
         private measureViewInternal;
+        scrollTo(pParams: number): boolean;
         setImageRawData(viewId: number, dataPtr: number, width: number, height: number): string;
         /**
          * Sets the provided image with a mono-chrome version of the provided url.
@@ -495,6 +507,12 @@ declare namespace Uno.UI {
          * Note that the casing of this method is intentionally Pascal for platform alignment.
          */
         GetDependencyPropertyValue(elementId: number, propertyName: string): string;
+        /**
+         * Sets a dependency property value.
+         *
+         * Note that the casing of this method is intentionally Pascal for platform alignment.
+         */
+        SetDependencyPropertyValue(elementId: number, propertyName: string, propertyValue: string): string;
         /**
             * Remove the loading indicator.
             *
@@ -597,6 +615,11 @@ declare class WindowManagerRegisterEventOnViewParams {
     EventExtractorName: string;
     static unmarshal(pData: number): WindowManagerRegisterEventOnViewParams;
 }
+declare class WindowManagerRemoveAttributeParams {
+    HtmlId: number;
+    Name: string;
+    static unmarshal(pData: number): WindowManagerRemoveAttributeParams;
+}
 declare class WindowManagerRemoveViewParams {
     HtmlId: number;
     ChildView: number;
@@ -607,6 +630,15 @@ declare class WindowManagerResetStyleParams {
     Styles_Length: number;
     Styles: Array<string>;
     static unmarshal(pData: number): WindowManagerResetStyleParams;
+}
+declare class WindowManagerScrollToOptionsParams {
+    Left: number;
+    Top: number;
+    HasLeft: boolean;
+    HasTop: boolean;
+    DisableAnimation: boolean;
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerScrollToOptionsParams;
 }
 declare class WindowManagerSetAttributeParams {
     HtmlId: number;

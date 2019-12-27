@@ -7,7 +7,7 @@ using System.Text;
 
 namespace Windows.Foundation
 {
-	[DebuggerDisplay("[Rect {rect.X}-{rect.Y}-{rect.Width}-{rect.Height}]")]
+	[DebuggerDisplay("[Rect {Size}@{Location}]")]
 	public partial struct Rect
 	{
 		private const string _negativeErrorMessage = "Non-negative number required.";
@@ -88,7 +88,7 @@ namespace Windows.Foundation
 		public double Right => X + Width;
 		public double Bottom => Y + Height;
 
-		public bool IsEmpty => Empty.Equals(this);	
+		public bool IsEmpty => Empty.Equals(this);
 
 		public static implicit operator Rect(string text)
 		{
@@ -206,7 +206,7 @@ namespace Windows.Foundation
 			this = new Rect(left, top, right - left, bottom - top);
 		}
 
-		public bool Equals(Rect value) 
+		public bool Equals(Rect value)
 			=> value.X == X
 				&& value.Y == Y
 				&& value.Width == Width
@@ -218,7 +218,7 @@ namespace Windows.Foundation
 
 		public static bool operator !=(Rect left, Rect right) => !left.Equals(right);
 
-		public override bool Equals(object obj) 
+		public override bool Equals(object obj)
 			=> obj is Rect r ? r.Equals(this) : base.Equals(obj);
 	}
 }

@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Reflection;
 using Uno.Extensions;
+using Windows.UI.Xaml.Controls;
 
 #if NETFX_CORE
 using Windows.UI.Xaml;
@@ -77,7 +78,7 @@ namespace Windows.UI.Xaml
 				dependencyProperty = GetDependencyPropertyFromFields(element, propertyName);
 			}
 
-			if(dependencyProperty == null)
+			if (dependencyProperty == null)
 			{
 				throw new InvalidOperationException("Unable to find the dependency property [{0}]".InvariantCultureFormat(propertyName));
 			}
@@ -207,7 +208,6 @@ namespace Windows.UI.Xaml
 			return element.Margin(new Thickness(leftRight, topBottom, leftRight, topBottom));
 		}
 
-#if !NET461
 		/// <summary>
 		/// Bind property on <param name="element"/> to a property on <param name="source"/> of the same name.
 		/// </summary>
@@ -215,7 +215,32 @@ namespace Windows.UI.Xaml
 		{
 			return element.Binding(property, property, source, bindingMode);
 		}
-#endif
+
+		internal static Thickness? GetPadding(this IFrameworkElement frameworkElement)
+		{
+			switch (frameworkElement)
+			{
+				case Grid g:
+					return g.Padding;
+
+				case StackPanel sp:
+					return sp.Padding;
+
+				case Control c:
+					return c.Padding;
+
+				case ContentPresenter cp:
+					return cp.Padding;
+
+				case Border b:
+					return b.Padding;
+
+				case Panel p:
+					return p.Padding;
+			}
+
+			return null;
+		}
 	}
 }
 #endif

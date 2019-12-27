@@ -191,6 +191,18 @@ namespace SamplesApp
 
 						//  Binder memory references tracking
 						// { "ReferenceHolder", LogLevel.Debug },
+
+						// ListView-related messages
+						// { "Windows.UI.Xaml.Controls.ListViewBase", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.ListView", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.GridView", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.VirtualizingPanelLayout", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.NativeListViewBase", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.ListViewBaseSource", LogLevel.Debug }, //iOS
+						// { "Windows.UI.Xaml.Controls.ListViewBaseInternalContainer", LogLevel.Debug }, //iOS
+						// { "Windows.UI.Xaml.Controls.NativeListViewBaseAdapter", LogLevel.Debug }, //Android
+						// { "Windows.UI.Xaml.Controls.BufferViewCache", LogLevel.Debug }, //Android
+						// { "Windows.UI.Xaml.Controls.VirtualizingPanelGenerator", LogLevel.Debug }, //WASM
 					}
 				)
 #if DEBUG
@@ -233,6 +245,11 @@ namespace SamplesApp
 									async () => await statusBar.HideAsync()
 								);
 							}
+#endif
+
+#if __ANDROID__
+							Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = false;
+							Uno.UI.FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay = TimeSpan.Zero;
 #endif
 
 #if HAS_UNO

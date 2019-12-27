@@ -25,10 +25,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnTextClearedPartial() => FocusTextView();
 		protected virtual bool FocusTextView() => FocusManager.Focus(_textBoxView);
 
-		partial void OnAcceptsReturnChangedPartial(DependencyPropertyChangedEventArgs e)
-		{
 
-		}
 
 
 		private void UpdateTextBoxView()
@@ -65,6 +62,16 @@ namespace Windows.UI.Xaml.Controls
 		partial void InitializePropertiesPartial()
 		{
 			ApplyEnabled();
+
+			if(_header != null)
+			{
+				AddHandler(PointerReleasedEvent, (PointerEventHandler)OnHeaderClick, true);
+			}
+		}
+
+		private void OnHeaderClick(object sender, object args)
+		{
+			FocusTextView();
 		}
 
 		protected void SetIsPassword(bool isPassword)
@@ -72,6 +79,21 @@ namespace Windows.UI.Xaml.Controls
 			if (_textBoxView != null)
 			{
 				_textBoxView.SetIsPassword(isPassword);
+			}
+		}
+
+		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e)
+		{
+			if(e.NewValue is bool isReadonly)
+			{
+				if (isReadonly)
+				{
+					_textBoxView?.SetAttribute("readonly", "readonly");
+				}
+				else
+				{
+					_textBoxView?.RemoveAttribute("readonly");
+				}
 			}
 		}
 
@@ -90,7 +112,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextWrappingChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
-			_textBoxView?.SetTextWrapping(TextWrapping);
+			_textBoxView?.SetTextWrappingAndTrimming(textWrapping: TextWrapping, textTrimming: null);
 		}
 
 		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e)

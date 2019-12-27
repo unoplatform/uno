@@ -171,6 +171,11 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		public override void Measure(Size availableSize)
 		{
+			if (double.IsNaN(availableSize.Width) || double.IsNaN(availableSize.Height))
+			{
+				throw new InvalidOperationException($"Cannot measure [{GetType()}] with NaN");
+			}
+
 			_layouter.Measure(availableSize);
 			OnMeasurePartial(availableSize);
 		}

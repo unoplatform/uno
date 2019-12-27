@@ -71,7 +71,7 @@
       <Version>16.0.374-pre</Version>
     </PackageReference>
     <PackageReference Include="System.ComponentModel.Composition">
-      <Version>4.5.0</Version>
+      <Version>4.7.0</Version>
     </PackageReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

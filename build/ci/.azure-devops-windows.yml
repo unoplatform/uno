@@ -1,0 +1,103 @@
+parameters:
+  pool: ''
+
+jobs:
+- job: VS_Latest
+
+  pool:
+    vmImage: 'vs2017-win2016'
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+
+    # This is required to be able to use hard links as much as possible
+    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+    
+  - task: GitVersion@5
+    inputs:
+      useConfigFile: true
+      configFilePath: GitVersion.yml
+      updateAssemblyInfo: false
+
+  - task: NuGetToolInstaller@0
+    inputs:
+      versionSpec: 4.9.1
+      checkLatest: false
+
+  # Required for the Wasm uitests project
+  - task: NodeTool@0
+
+  - powershell: .\build\Install-WindowsSdkISO.ps1 17763
+    displayName: Insider SDK
+
+  - task: MSBuild@1
+    inputs:
+      solution: Build/Uno.UI.Build.csproj
+      msbuildLocationMethod: version
+      msbuildVersion: latest
+      msbuildArchitecture: x86
+      msbuildArguments: /r /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /nodeReuse:true /detailedsummary /m:16 /nr:false /bl:$(build.artifactstagingdirectory)\build.binlog
+      clean: false
+      maximumCpuCount: true
+      restoreNugetPackages: false
+      logProjectEvents: false
+      createLogFile: false
+      
+  - task: VSTest@2
+    inputs:
+      testAssemblyVer2: |
+        **\*test*.dll
+        !**\obj\**
+        !**\*Wasm.Test*.dll
+        !**\*UITests.dll
+        !**\*.RuntimeTests.dll
+      vstestLocationMethod: version
+      vsTestVersion: latest
+      testSelector: testAssemblies
+
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/Build
+      Contents: '*.nupkg'
+      TargetFolder: $(build.artifactstagingdirectory)\vslatest
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: CopyFiles@2
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)\src\SamplesApp\SamplesApp.Wasm\bin\Release\netstandard2.0\dist
+      Contents: '**\*.*'
+      TargetFolder: $(build.artifactstagingdirectory)\sampleapp-wasm
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: PowerShell@2
+    displayName: Authenticode Sign Packages
+    inputs:
+      filePath: build/Sign-Package.ps1
+    env:
+      SignClientUser: $(SignClientUser)
+      SignClientSecret: $(SignClientSecret)
+      SignPackageName: "Uno Platform"
+      SignPackageDescription: "The Uno Platform"
+      ArtifactDirectory: $(build.artifactstagingdirectory)\vslatest
+    condition: and(succeeded(), not(eq(variables['build.reason'], 'PullRequest')), not(eq(variables['SignClientSecret'], '')), not(eq(variables['SignClientUser'], '')))
+
+  - task: PublishBuildArtifacts@1
+    # https://developercommunity.visualstudio.com/content/problem/284991/public-vsts-previouw-cant-set-build-number-of-pr-b.html
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: NugetPackages
+      ArtifactType: Container
