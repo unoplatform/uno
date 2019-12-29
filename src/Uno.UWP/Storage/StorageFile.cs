@@ -34,17 +34,7 @@ namespace Windows.Storage
 			_fileUri = uri;
 		}
 
-		public async Task DeleteAsync()
-		{
-			if (Scheme != "FILE")
-			{
-				throw new InvalidOperationException("Cannot delete a file on a non local storage.");
-			}
-
-			var fileInfo = new FileInfo(Path);
-
-			fileInfo.Delete();
-		}
+		public async Task DeleteAsync() => DeleteAsync(CancellationToken.None);
 		
 		public async Task DeleteAsync(CancellationToken ct)
 		{
