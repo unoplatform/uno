@@ -39,7 +39,7 @@
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
-			<Version>2.3.1</Version>
+			<Version>3.4.0</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common">
