@@ -19,9 +19,16 @@ namespace Windows.Storage
 		private static string GetLocalFolder()
 		{
 			var documents = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-			var folder = Path.GetFullPath(Path.Combine(documents, "..", "Library", "Data"));
-			Directory.CreateDirectory(folder);
-			return folder;
+			var applicationDataPath = Path.GetFullPath(
+				Path.Combine(
+					documents,
+					"Library",
+					"Application Support",
+					NSBundle.MainBundle.BundleIdentifier,
+					"Local"));
+			// Ensure LocalFolder directory exists
+			Directory.CreateDirectory(applicationDataPath);
+			return applicationDataPath;
 		}
 
 		private static string GetRoamingFolder()
