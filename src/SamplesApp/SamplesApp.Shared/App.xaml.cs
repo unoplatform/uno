@@ -52,6 +52,8 @@ namespace SamplesApp
 		/// <seealso cref="https://github.com/unoplatform/uno/issues/1741"/>
 		public void AssertIssue1790()
 		{
+			//TODO: Return macOS assert when ApplicationData is fixed
+#if !__MACOS__
 			void AssertIsUsable(Windows.Storage.ApplicationDataContainer container)
 			{
 				const string issue1790 = nameof(issue1790);
@@ -64,6 +66,7 @@ namespace SamplesApp
 
 			AssertIsUsable(Windows.Storage.ApplicationData.Current.LocalSettings);
 			AssertIsUsable(Windows.Storage.ApplicationData.Current.RoamingSettings);
+#endif
 		}
 
 		/// <summary>
