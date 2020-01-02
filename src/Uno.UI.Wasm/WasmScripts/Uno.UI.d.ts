@@ -149,6 +149,7 @@ declare namespace Uno.UI {
         static initNative(pParams: number): boolean;
         private containerElement;
         private rootContent;
+        private cursorStyleElement;
         private allActiveElementsById;
         private static resizeMethod;
         private static dispatchEventMethod;
@@ -512,7 +513,7 @@ declare namespace Uno.UI {
          *
          * Note that the casing of this method is intentionally Pascal for platform alignment.
          */
-        SetDependencyPropertyValue(elementId: number, propertyName: string, propertyValue: string): string;
+        SetDependencyPropertyValue(elementId: number, propertyNameAndValue: string): string;
         /**
             * Remove the loading indicator.
             *
@@ -526,6 +527,7 @@ declare namespace Uno.UI {
         private resize;
         private dispatchEvent;
         private getIsConnectedToRootElement;
+        setCursor(cssCursor: string): string;
     }
 }
 declare class StorageFolderMakePersistentParams {
@@ -888,6 +890,11 @@ declare namespace Windows.UI.Core {
         enable(): void;
         disable(): void;
         private clearStack;
+    }
+}
+declare namespace Windows.UI.ViewManagement {
+    class ApplicationViewTitleBar {
+        static setBackgroundColor(colorString: string): void;
     }
 }
 declare namespace Windows.UI.Xaml {

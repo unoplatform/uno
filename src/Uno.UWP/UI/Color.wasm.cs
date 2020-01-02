@@ -14,5 +14,17 @@ namespace Windows.UI
 			+ B.ToString(CultureInfo.InvariantCulture) + ","
 			+ (A / 255.0).ToString(CultureInfo.InvariantCulture)
 			+ ")";
+
+		internal string ToHexString()
+		{
+			var result = "#";
+			if (A != 255)
+			{
+				// Include alpha chanel only when required.
+				result += A.ToString("X2");
+			}
+			result += $"{R.ToString("X2")}{G.ToString("X2")}{B.ToString("X2")}";
+			return result;
+		}
 	}
 }

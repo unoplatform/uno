@@ -1,6 +1,7 @@
 ﻿# Release notes
 
 ### Features
+- Add support for ApplicationViewTitleBar.BackgroundColor on WASM
 - Add support for Automation SetDependencyPropertyValue in Uno.UITest
 - Added support for using a `string` value in a `StaticResource` when using `CreateFromStringAttribute'
 - [Android] Adds support for `FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay`
