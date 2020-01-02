@@ -336,7 +336,8 @@ namespace Windows.UI.Xaml
 
 			AddHandler(routedEvent, handlers.Count, handler, handledEventsToo);
 
-			if (handledEventsToo)
+			if (handledEventsToo
+				&& !routedEvent.IsAlwaysBubbled) // This event is always bubbled, no needs to update the flag
 			{
 				UpdateSubscribedToHandledEventsToo();
 			}
@@ -349,7 +350,8 @@ namespace Windows.UI.Xaml
 
 			AddHandler(routedEvent, handlers.Count, handler, handledEventsToo);
 
-			if (handledEventsToo)
+			if (handledEventsToo
+				&& !routedEvent.IsAlwaysBubbled) // This event is always bubbled, no needs to update the flag
 			{
 				UpdateSubscribedToHandledEventsToo();
 			}
@@ -395,7 +397,8 @@ namespace Windows.UI.Xaml
 				{
 					handlers.Remove(matchingHandler);
 
-					if (matchingHandler.HandledEventsToo)
+					if (matchingHandler.HandledEventsToo
+						&& !routedEvent.IsAlwaysBubbled) // This event is always bubbled, no need to update the flag
 					{
 						UpdateSubscribedToHandledEventsToo();
 					}
@@ -450,6 +453,12 @@ namespace Windows.UI.Xaml
 
 			foreach (var eventHandlers in _eventHandlerStore)
 			{
+				if (eventHandlers.Key.IsAlwaysBubbled)
+				{
+					// This event is always bubbled, no need to include it in the SubscribedToHandledEventsToo
+					continue;
+				}
+
 				foreach (var handler in eventHandlers.Value)
 				{
 					if (handler.HandledEventsToo)
@@ -560,7 +569,42 @@ namespace Windows.UI.Xaml
 		// This method is a workaround for https://github.com/mono/mono/issues/12981
 		// It can be inlined in RaiseEvent when fixed.
 		private static bool RaiseOnParent(RoutedEvent routedEvent, RoutedEventArgs args, UIElement parent)
-			=> parent.RaiseEvent(routedEvent, args);
+			=> parent.PrepareManagedEventBubbling(routedEvent, args, out args)
+				&& parent.RaiseEvent(routedEvent, args);
+
+		private bool PrepareManagedEventBubbling(RoutedEvent routedEvent, RoutedEventArgs args, out RoutedEventArgs alteredArgs)
+		{
+			var isBubblingAllowed = true;
+			alteredArgs = args;
+			if (routedEvent.IsPointerEvent)
+			{
+				PrepareManagedPointerEventBubbling(routedEvent, ref alteredArgs, ref isBubblingAllowed);
+			}
+			else if (routedEvent.IsKeyEvent)
+			{
+				PrepareManagedKeyEventBubbling(routedEvent, ref alteredArgs, ref isBubblingAllowed);
+			}
+			else if (routedEvent.IsFocusEvent)
+			{
+				PrepareManagedFocusEventBubbling(routedEvent, ref alteredArgs, ref isBubblingAllowed);
+			}
+			else if (routedEvent.IsManipulationEvent)
+			{
+				PrepareManagedManipulationEventBubbling(routedEvent, ref alteredArgs, ref isBubblingAllowed);
+			}
+			else if (routedEvent.IsGestureEvent)
+			{
+				PrepareManagedGestureEventBubbling(routedEvent, ref alteredArgs, ref isBubblingAllowed);
+			}
+
+			return isBubblingAllowed;
+		}
+
+		partial void PrepareManagedPointerEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed);
+		partial void PrepareManagedKeyEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed);
+		partial void PrepareManagedFocusEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed);
+		partial void PrepareManagedManipulationEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed);
+		partial void PrepareManagedGestureEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed);
 
 		private static bool IsHandled(RoutedEventArgs args)
 		{
@@ -585,6 +629,14 @@ namespace Windows.UI.Xaml
 
 		private bool AnyParentInterested(RoutedEvent routedEvent)
 		{
+			// Pointer events must always be dispatched to all parents in order to update visual states,
+			// update manipulation, detect gestures, etc.
+			// (They are then interpreted by each parent in the PrepareManagedPointerEventBubbling)
+			if (routedEvent.IsAlwaysBubbled)
+			{
+				return true;
+			}
+
 			// [9] Any parent interested?
 			var subscribedToHandledEventsToo = SubscribedToHandledEventsToo;
 			var flag = routedEvent.Flag;

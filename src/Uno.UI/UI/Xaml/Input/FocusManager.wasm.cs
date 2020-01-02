@@ -48,17 +48,20 @@ namespace Windows.UI.Xaml.Input
 				// Don't change the focus if the element already has the focus
 				&& !ReferenceEquals(element, _focusedElement))
 			{
-				// Make sure that the managed UI knowns that the element was unfocused, no matter if the new focused element can be focused or not
-				(_focusedElement as Control)?.SetFocused(false);
-
 				// Try to find the first focusable parent and set it as focused, otherwise just keep it for reference (GetFocusedElement())
 				var ownerControl = element.GetParents().OfType<Control>().Where(control => control.IsFocusable).FirstOrDefault();
 				if (ownerControl == null)
 				{
+					// Make sure that the managed UI knows that the element was unfocused, no matter if the new focused element can be focused or not
+					(_focusedElement as Control)?.SetFocused(false);
+
 					_focusedElement = element;
 				}
-				else
+				else if (!ReferenceEquals(ownerControl, _focusedElement))
 				{
+					// Make sure that the managed UI knows that the element was unfocused, no matter if the new focused element can be focused or not
+					(_focusedElement as Control)?.SetFocused(false);
+
 					if (ownerControl.SetFocused(true))
 					{
 						_fallbackFocusedElement = element;

@@ -431,7 +431,7 @@ namespace SamplesApp.UITests
 
 			_app.WaitForElement(singleTextBox);
 
-			var initial = TakeScreenshot("initial");
+			var initial = TakeScreenshot("initial", ignoreInSnapshotCompare: true);
 
 			singleTextBox.Tap();
 			_app.Wait(2);
@@ -444,9 +444,11 @@ namespace SamplesApp.UITests
 			_app.Wait(3);
 			_app.Back();
 
-			var final = TakeScreenshot("final");
+			var final = TakeScreenshot("final", ignoreInSnapshotCompare: true);
 
-			ImageAssert.AssertScreenshotsAreEqual(initial, final);
+			// We only validate that the bottom of the screen is the same (so the keyboard is no longer visible).
+			// This is to avoid content offset if the status bar was opened by the keyboard or the message box.
+			ImageAssert.AreEqual(initial, final, new Rectangle(0, -100, int.MaxValue, 100));
 		}
 	}
 }

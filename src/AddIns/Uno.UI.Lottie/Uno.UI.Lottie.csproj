@@ -22,7 +22,7 @@
 		<PackageReference Include="Microsoft.TypeScript.Compiler" Version="3.6.0" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" Version="3.6.0" />
 		<PackageReference Include="Uno.MonoAnalyzers" Version="1.0.0-dev.4" />
-		<PackageReference Include="Uno.SourceGenerationTasks" Version="1.32.0-dev.288" />
+		<PackageReference Include="Uno.SourceGenerationTasks" Version="1.32.0" />
 	</ItemGroup>
 
 	<Import Project="..\..\Common.targets" />

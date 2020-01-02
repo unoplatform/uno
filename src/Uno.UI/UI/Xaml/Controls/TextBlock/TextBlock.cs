@@ -639,6 +639,9 @@ namespace Windows.UI.Xaml.Controls
 			if (sender is Hyperlink hyperlink
 				&& hyperlink.IsCaptured(e.Pointer))
 			{
+				// Un UWP we don't get the Tapped event, so make sure to abort it
+				(hyperlink.GetParent() as TextBlock)?.CompleteGesture();
+
 				hyperlink.ReleasePointerPressed(e.Pointer);
 			}
 
@@ -689,6 +692,9 @@ namespace Windows.UI.Xaml.Controls
 			if (sender is TextBlock that
 				&& that.IsCaptured(e.Pointer))
 			{
+				// On UWP we don't get the Tapped event, so make sure to abort it.
+				that.CompleteGesture();
+
 				// On UWP we don't get any CaptureLost, so make sure to manually release the capture silently
 				that.ReleasePointerCapture(e.Pointer, muteEvent: true);
 

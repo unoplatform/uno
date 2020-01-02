@@ -8,6 +8,7 @@
 	AddClass("Windows.UI.Xaml.Controls", "RadioButton", hasCommonStates: true, hasCheckedStates: true, hasCommonOverState: true, hasCommonPressedState: true);
 	AddClass("Windows.UI.Xaml.Controls", "HyperlinkButton", hasCommonStates: true, hasCommonOverState: true, hasCommonPressedState: true);
 	AddClass("Windows.UI.Xaml.Controls", "CheckBox", hasCommonStates: true, hasCombinedCheckedState: true, hasCommonOverState: true, hasCommonPressedState: true);
+	AddClass("Windows.UI.Xaml.Controls", "ToggleSwitch", hasCommonStates: true, hasCommonOverState: true, hasCommonPressedState: true);
 #>
 <#@include file="..\..\UI\Xaml\Controls\VisualStatesImplementation.tt"#>
 #endif

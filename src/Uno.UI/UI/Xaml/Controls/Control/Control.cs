@@ -55,7 +55,6 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override bool IsSimpleLayout => true;
 
-
 		private void SetDefaultForeground()
 		{
 			//override the default value from dependency property based on application theme
@@ -638,9 +637,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnIsFocusableChanged();
 		internal bool IsFocusable =>
-			Visibility == Visibility.Visible &&
-			IsEnabled &&
-			IsTabStop;
+			Visibility == Visibility.Visible
+			&& IsEnabled
+			&& IsTabStop;
 
 		public bool Focus(FocusState value)
 		{
