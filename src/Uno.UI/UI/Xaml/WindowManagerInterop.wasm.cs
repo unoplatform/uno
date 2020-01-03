@@ -993,5 +993,32 @@ namespace Uno.UI.Xaml
 			public IntPtr HtmlId;
 		}
 		#endregion
+
+		#region Pointers
+		[Flags]
+		internal enum HtmlPointerButtonsState
+		{
+			// https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events#Determining_button_states
+
+			None = 0,
+			Left = 1,
+			Middle = 4,
+			Right = 2,
+			X1 = 8,
+			X2 = 16,
+			Eraser = 32,
+		}
+
+		internal enum HtmlPointerButtonUpdate
+		{
+			None = -1,
+			Left = 0,
+			Middle = 1,
+			Right = 2,
+			X1 = 3,
+			X2 = 4,
+			Eraser = 5
+		}
+		#endregion
 	}
 }

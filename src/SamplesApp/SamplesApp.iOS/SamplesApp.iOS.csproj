@@ -137,7 +137,7 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
     <PackageReference Include="MSTest.TestFramework" Version="2.0.0" />
     <PackageReference Include="Xamarin.TestCloud.Agent">
-      <Version>0.21.8</Version>
+      <Version>0.21.9</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

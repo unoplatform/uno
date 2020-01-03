@@ -257,7 +257,7 @@ namespace Windows.UI.Xaml
 					{
 						if (capture != this)
 						{
-							throw new InvalidOperationException("There is already another ");
+							throw new InvalidOperationException("There is already another active capture.");
 						}
 					}
 					else

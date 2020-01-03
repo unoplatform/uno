@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>xamarinmac20;MonoAndroid90;xamarinios10;net461;netstandard2.0</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
@@ -302,8 +302,8 @@
 			<_T4AOTFiles Include="$(T4Path)/*.dll" />
 		</ItemGroup>
 		
-		<Exec Command="mono --aot &quot;$(T4Bin)&quot;" />
-		<Exec Command="mono --aot &quot;%(_T4AOTFiles.Identity)&quot;" />
+		<Exec ContinueOnError="WarnAndContinue" Command="mono --aot &quot;$(T4Bin)&quot;" />
+		<Exec ContinueOnError="WarnAndContinue" Command="mono --aot &quot;%(_T4AOTFiles.Identity)&quot;" />
 	</Target>
 
 	<Target Name="_InnerGenerateMixins">

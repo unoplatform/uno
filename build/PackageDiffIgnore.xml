@@ -507,7 +507,15 @@
 				<Member
 					fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.Devices.Geolocation.GeolocationAccessStatus&gt; Windows.Devices.Geolocation.Geolocator.RequestAccessAsync()"
 					reason="Aligned API" />
-
+				<Member
+					fullName="System.Void Windows.UI.Xaml.RoutedEvent..ctor(System.String name)"
+					reason="Not part of the UWP API." />
+				<Member
+					fullName="Windows.Foundation.Point Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs.GetPosition()"
+					reason="Not part of the UWP API." />
+				<Member
+					fullName="Windows.Foundation.Point Windows.UI.Xaml.Input.TappedRoutedEventArgs.GetPosition()"
+					reason="Not part of the UWP API." />
             </Methods>
 			
 			<Fields>
@@ -566,6 +574,23 @@
 					fullName="Windows.UI.Xaml.RoutedEventArgs Windows.UI.Xaml.RoutedEventArgs::Empty()"
 					reason="Not part of the UWP API."/>
 			</Properties>
+		</IgnoreSet>
+		
+		<IgnoreSet baseVersion="2.0.528">
+			<Methods>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.RoutedEvent..ctor(System.String name)"
+					reason="Not part of the UWP API." />
+				<Member
+					fullName="Windows.Foundation.Point Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs.GetPosition()"
+					reason="Not part of the UWP API." />
+				<Member
+					fullName="Windows.Foundation.Point Windows.UI.Xaml.Input.TappedRoutedEventArgs.GetPosition()"
+					reason="Not part of the UWP API." />
+				<Member 
+					fullName="System.Void Windows.UI.ViewManagement.ApplicationViewTitleBar..ctor()"
+					reason="Parameter-less ctor does not exist in UWP" />
+            </Methods>
 		</IgnoreSet>
 	</IgnoreSets>
 </DiffIgnore>

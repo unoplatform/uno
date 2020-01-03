@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Runtime.CompilerServices;
 using Uno.UI.Extensions;
 using Uno.Logging;
 using Uno.Extensions;
@@ -61,6 +62,7 @@ namespace Uno.UI
 			} 
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static CGSize PhysicalToLogicalPixels(this CGSize size)
 		{
 			return size;
@@ -68,6 +70,7 @@ namespace Uno.UI
 			// return new SizeF(size.Width / MainScreenScale, size.Height / MainScreenScale);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static Windows.Foundation.Size PhysicalToLogicalPixels(this Windows.Foundation.Size size)
 		{
 			return size;
@@ -75,6 +78,7 @@ namespace Uno.UI
 			// return new SizeF(size.Width / MainScreenScale, size.Height / MainScreenScale);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static CGSize LogicalToPhysicalPixels(this Windows.Foundation.Size size)
 		{
 			var ret = new CGSize((nfloat)size.Width, (nfloat)size.Height);
@@ -83,6 +87,7 @@ namespace Uno.UI
 			// return new SizeF(size.Width * MainScreenScale, size.Height * MainScreenScale);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static CGSize LogicalToPhysicalPixels(this CGSize size)
 		{
 			return size;
@@ -90,6 +95,7 @@ namespace Uno.UI
 			// return new SizeF(size.Width * MainScreenScale, size.Height * MainScreenScale);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static CGRect PhysicalToLogicalPixels(this CGRect size)
 		{
 			return size;
@@ -102,6 +108,19 @@ namespace Uno.UI
 			//);
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Windows.Foundation.Point PhysicalToLogicalPixels(this Windows.Foundation.Point point)
+		{
+			return point;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		public static Windows.Foundation.Point LogicalToPhysicalPixels(this Windows.Foundation.Point point)
+		{
+			return point;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static CGRect LogicalToPhysicalPixels(this CGRect size)
 		{
 			// https://markpospesel.wordpress.com/2013/02/27/cgrectintegral/

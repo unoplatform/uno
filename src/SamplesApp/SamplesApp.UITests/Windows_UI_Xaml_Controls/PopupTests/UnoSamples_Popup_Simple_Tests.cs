@@ -111,7 +111,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 
 			var before = TakeScreenshot("Before");
 			var rect = _app.GetRect("LocatorRectangle");
-			ImageAssert.AssertHasColorAt(before, rect.CenterX, rect.CenterY, Color.Blue);
+			ImageAssert.HasColorAt(before, rect.CenterX, rect.CenterY, Color.Blue);
 
 			_app.Tap("PopupCheckBox");
 
@@ -129,7 +129,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 
 			var after = TakeScreenshot("After");
 
-			ImageAssert.AssertHasColorAt(after, rect.CenterX, rect.CenterY, Color.Blue);
+			ImageAssert.HasColorAt(after, rect.CenterX, rect.CenterY, Color.Blue);
 		}
 	}
 }
