@@ -21,6 +21,7 @@
 								xamarinios10 (iOS)
 								MonoAndroid90 (Android 9.0)
 								netstandard2.0 (WebAssembly)
+								xamarinmac20 (macOS)
 								net461 (Tests)
 
         Only one target can be built, and the corresponding solution filter must
