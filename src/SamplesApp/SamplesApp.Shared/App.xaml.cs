@@ -52,7 +52,10 @@ namespace SamplesApp
 		/// <seealso cref="https://github.com/unoplatform/uno/issues/1741"/>
 		public void AssertIssue1790()
 		{
-			//TODO: Return macOS assert when ApplicationData is fixed
+			if (this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning("Assert for issue 1790 should be enabled on all platforms when issue #2213 is fixed");
+			}
 #if !__MACOS__
 			void AssertIsUsable(Windows.Storage.ApplicationDataContainer container)
 			{
