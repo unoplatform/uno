@@ -8,4 +8,6 @@ On Android, it lets the user choose the target e-mail application before composi
 
 On iOS, it uses `MFMailComposeViewController` but falls back to `mailto:` in case user has not set up any e-mail account yet.
 
-ON other platforms, the `mailto:` URI is used to try to compose the e-mail. This uses the `Launcher` API to launch the URI, so works on all platforms where `Launcher` is supported.
+On other platforms, the `mailto:` URI is used to try to compose the e-mail. This uses the `Launcher` API to launch the URI, so works on all platforms where `Launcher` is supported.
+
+E-mail attachments are not supported yet.
