@@ -30,13 +30,15 @@ namespace Uno.UI.RuntimeTests.Tests
 		public async void When_DeleteFile()
 		{
 			
-			var folder = Windows.Storage.ApplicationData.Current.LocalFolder;
-			Assert.IsNotNull(folder, "cannot get LocalFolder - error outside tested method");
+			var _folder = Windows.Storage.ApplicationData.Current.LocalFolder;
+			Assert.IsNotNull(_folder, "cannot get LocalFolder - error outside tested method");
 
+			Windows.Storage.StorageFile _file = null;
+			
 			try
 			{
-				var file = await folder.CreateFileAsync( _filename, Windows.Storage.CreationCollisionOption.FailIfExists);
-				Assert.IsNotNull(file, "cannot create file - error outside tested method");
+				_file = await folder.CreateFileAsync( _filename, Windows.Storage.CreationCollisionOption.FailIfExists);
+				Assert.IsNotNull(_file, "cannot create file - error outside tested method");
 			}
 			catch
 			{
@@ -46,7 +48,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		  // try delete file
 			try
 			{
-		  		await file.DeleteAsync();
+		  		await _file.DeleteAsync();
 			}
 			catch
 			{
@@ -54,7 +56,7 @@ namespace Uno.UI.RuntimeTests.Tests
 			}
 
 			// check if method works
-			var fileAfter = await folder.TryGetItemAsync("test-deletingfile.txt");
+			var fileAfter = await _folder.TryGetItemAsync("test-deletingfile.txt");
 			Assert.IsNull(file, "file is not deleted - tested method fails");
       
 		}
