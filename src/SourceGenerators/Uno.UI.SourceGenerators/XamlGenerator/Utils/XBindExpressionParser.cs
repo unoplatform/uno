@@ -65,16 +65,31 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 				if (isValidParent && !_isStaticMethod(node.Expression.ToFullString()))
 				{
-					var output = ParseCompilationUnit($"class __Temp {{ private Func<object> __prop => {_contextName}.{e.ToFullString()}; }}");
+					if (e is InvocationExpressionSyntax newSyntax)
+					{
+						var methodName = Nullify(newSyntax.Expression);
+						var arguments = newSyntax.ArgumentList.ToFullString();
+						var output = ParseCompilationUnit($"class __Temp {{ private Func<object> __prop => {ContextBuilder}{methodName}{arguments}; }}");
 
-					var o2 = output.DescendantNodes().OfType<InvocationExpressionSyntax>().First();
-					return o2;
+						var o2 = output.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().First().Expression;
+						return o2;
+					}
+					else
+					{
+						throw new Exception();
+					}
 				}
 				else
 				{
 					return e;
 				}
 			}
+
+			private string Nullify(SyntaxNode expression)
+				=> expression.ToFullString().Replace(".", "?.");
+
+			private object ContextBuilder
+				=> string.IsNullOrEmpty(_contextName) ? "" : _contextName + ".";
 
 			public override SyntaxNode VisitMemberAccessExpression(MemberAccessExpressionSyntax node)
 			{
@@ -83,7 +98,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 				if (isValidParent)
 				{
-					var output = ParseCompilationUnit($"{_contextName}.{e.ToFullString()}");
+					var newMemberAccess = Nullify(e);
+					var output = ParseCompilationUnit($"{ContextBuilder}{newMemberAccess}");
 
 					var o2 =  output.DescendantNodes().OfType<IncompleteMemberSyntax>().First().DescendantNodes().First();
 					return o2;
@@ -100,13 +116,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 				if (isValidParent)
 				{
-					var newExpression = MemberAccessExpression(
-						SyntaxKind.SimpleMemberAccessExpression
-						, IdentifierName(_contextName)
-						, node
-					);
+					var newIdentifier = Nullify(node);
+					var output = ParseCompilationUnit($"{ContextBuilder}{newIdentifier}");
 
-					return newExpression;
+					var o2 = output.DescendantNodes().OfType<IncompleteMemberSyntax>().First().DescendantNodes().First();
+					return o2;
 				}
 				else
 				{

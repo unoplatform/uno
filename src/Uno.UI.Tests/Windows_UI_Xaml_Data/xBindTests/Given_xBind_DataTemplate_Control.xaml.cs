@@ -38,9 +38,17 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		private string _myproperty = "Initial";
 		private int _myIntProperty = -3;
 
+		public int MyPropertyGetCounter { get; set; } = 0;
+
+
 		public string MyProperty
 		{
-			get { return _myproperty; }
+			get
+			{
+				MyPropertyGetCounter++;
+
+				return _myproperty;
+			}
 			set
 			{
 				_myproperty = value;

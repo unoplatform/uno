@@ -48,7 +48,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("VALUE 2", _MyProperty_Function.Text);
 			Assert.AreEqual("Formatted Value 2", _MyProperty_Formatted.Text);
 		}
-
+		
 		[TestMethod]
 		public void When_Updated_Property()
 		{
@@ -73,6 +73,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			var _MyProperty_Formatted_OneWay = SUT.FindName("_MyProperty_Formatted_OneWay") as TextBlock;
 			Assert.AreEqual("Formatted Initial", _MyProperty_Formatted_OneWay.Text);
 
+			Assert.AreEqual(9, data.MyPropertyGetCounter);
+
 			data.MyProperty = "Other value";
 
 			Assert.AreEqual("Initial", _MyProperty.Text);
@@ -80,6 +82,46 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("Formatted Initial", _MyProperty_Formatted.Text);
 			Assert.AreEqual("OTHER VALUE", _MyProperty_Function_OneWay.Text);
 			Assert.AreEqual("Formatted Other value", _MyProperty_Formatted_OneWay.Text);
+
+			Assert.AreEqual(13, data.MyPropertyGetCounter);
 		}
+
+		[TestMethod]
+		public void When_Updated_With_Null()
+		{
+			var SUT = new Given_xBind_DataTemplate_Control();
+			var data = new MyDataTemplateClass();
+			SUT.root.Content = data;
+
+			SUT.ForceLoaded();
+
+			var _MyProperty = SUT.FindName("_MyProperty") as TextBlock;
+			Assert.AreEqual("Initial", _MyProperty.Text);
+
+			var _MyProperty_Function = SUT.FindName("_MyProperty_Function") as TextBlock;
+			Assert.AreEqual("INITIAL", _MyProperty_Function.Text);
+
+			var _MyProperty_Formatted = SUT.FindName("_MyProperty_Formatted") as TextBlock;
+			Assert.AreEqual("Formatted Initial", _MyProperty_Formatted.Text);
+
+			var _MyProperty_Function_OneWay = SUT.FindName("_MyProperty_Function_OneWay") as TextBlock;
+			Assert.AreEqual("INITIAL", _MyProperty_Function_OneWay.Text);
+
+			var _MyProperty_Formatted_OneWay = SUT.FindName("_MyProperty_Formatted_OneWay") as TextBlock;
+			Assert.AreEqual("Formatted Initial", _MyProperty_Formatted_OneWay.Text);
+
+			Assert.AreEqual(9, data.MyPropertyGetCounter);
+
+			data.MyProperty = null;
+
+			Assert.AreEqual("Initial", _MyProperty.Text);
+			Assert.AreEqual("INITIAL", _MyProperty_Function.Text);
+			Assert.AreEqual("Formatted Initial", _MyProperty_Formatted.Text);
+			Assert.IsNull(null, _MyProperty_Function_OneWay.Text);
+			Assert.AreEqual("Formatted ", _MyProperty_Formatted_OneWay.Text);
+
+			Assert.AreEqual(13, data.MyPropertyGetCounter);
+		}
+
 	}
 }
