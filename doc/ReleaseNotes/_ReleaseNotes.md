@@ -2,6 +2,7 @@
 
 ### Features
 - Add support for `StorageFile.DeleteAsync()`
+- Add support for `StorageFolder.CreateFileAsync(string path)`
 - Add support for ApplicationViewTitleBar.BackgroundColor on WASM
 - Add support for Automation SetDependencyPropertyValue in Uno.UITest
 - Added support for using a `string` value in a `StaticResource` when using `CreateFromStringAttribute'
