@@ -14,6 +14,7 @@
 -
 
 ### Bug fixes
+- [#2213] Fixed `ApplicationData` on MacOS, added support for `LocalSettings`
 - Made macOS Samples app skeleton runnable (temporarily removed ApplicationData check on startup, fixed reference), added xamarinmacos20 to crosstargeting_override sample
 - [#2230] `DisplayInformation` leaks memory
 - [WASM] Shapes now update when their Fill brush's Color changes
