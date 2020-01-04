@@ -9,10 +9,10 @@ namespace Windows.UI.Xaml.Media
 
 		public FontFamily(string familyName)
 		{
-#if !__WASM__
 			Source = familyName;
-#else
-			Source = ParseFontFamilySource(familyName);
+
+#if __WASM__
+			ParsedSource = ParseFontFamilySource(familyName);
 #endif
 
 			// This instance is immutable, we can cache the hash code.
@@ -59,6 +59,12 @@ namespace Windows.UI.Xaml.Media
 		}
 
 #if __WASM__
+		/// <summary>
+		/// Contains the parsed font family for use in WASM
+		/// (matches CSS @font-face's font-family)
+		/// </summary>
+		internal string ParsedSource { get; }
+
 		private string ParseFontFamilySource(string familyName)
 		{
 			const string ForwardSlash = "/";
