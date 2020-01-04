@@ -1,4 +1,4 @@
-# Developing with Uno.UI
+﻿# Developing with Uno.UI
 
 ## Pre-requisites
 
@@ -387,13 +387,45 @@ Adding a custom font is done through the use of WebFonts, using a data-URI:
 
 ```css
 @font-face {
-  font-family: "Symbols";
+  font-family: "Roboto";
   /* winjs-symbols.woff2: https://github.com/Microsoft/fonts/tree/master/Symbols */
   src: url(data:application/x-font-woff;charset=utf-8;base64,d09GMgABAAA...) format('woff');
 }
 ```
 
 This type of declaration is required to avoid measuring errors if the font requested by a `TextBlock` or a `FontIcon` needs to be downloaded first. Specifying it using a data-URI ensures the font is readily available.
+
+The font names are referenced based on the `#` name, so 
+
+```xml
+<Setter Property="FontFamily"
+        Value="ms-appx:///Assets/Fonts/yourfont01.ttf#Roboto" />
+```
+
+Will match the following `@font-face`:
+
+```css
+@font-face {
+  font-family: "Roboto";
+  ...
+}
+```
+
+In case your `FontFamily` value does not contain `#`, we fall back to the font file name. Hence for:
+
+```xml
+<Setter Property="FontFamily"
+        Value="ms-appx:///Assets/Fonts/yourfont01.ttf" />
+```
+
+Will match:
+
+```css
+@font-face {
+  font-family: "yourfont01";
+  ...
+}
+```
 
 #### Custom Fonts Notes
 Please note that some custom fonts need the FontFamily and FontWeight properties to be set at the same time in order to work properly on TextBlocks, Runs and for styles Setters.
