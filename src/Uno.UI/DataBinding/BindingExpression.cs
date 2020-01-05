@@ -112,7 +112,6 @@ namespace Windows.UI.Xaml.Data
 			{
 				_isCompiledSource = true;
 				ExplicitSource = ParentBinding.CompiledSource;
-
 			}
 
 			if (ParentBinding.XBindPropertyPaths != null)
@@ -121,8 +120,6 @@ namespace Windows.UI.Xaml.Data
 					.XBindPropertyPaths
 					.Select(p => new BindingPath(path: p, fallbackValue: null, precedence: null, allowPrivateMembers: true)
 					{
-						DataContext = ParentBinding.CompiledSource,
-						ValueChangedListener = this
 					})
 					.ToArray();
 			}
@@ -429,13 +426,30 @@ namespace Windows.UI.Xaml.Data
 				// registration may receive the new datacontext value.
 				_subscription.Disposable = null;
 
-
 				if (_updateSources != null)
 				{
-					foreach (var source in _updateSources)
+					foreach (var bindingPath in _updateSources)
 					{
-						source.SetWeakDataContext(weakDataContext);
+						bindingPath.ValueChangedListener = this;
+
+						if (ParentBinding.CompiledSource != null)
+						{
+							bindingPath.DataContext = ParentBinding.CompiledSource;
+						}
+						else
+						{
+							bindingPath.SetWeakDataContext(weakDataContext);
+						}
 					}
+
+					_subscription.Disposable = Actions.ToDisposable(() =>
+					{
+						foreach (var bindingPath in _updateSources)
+						{
+							bindingPath.ValueChangedListener = null;
+						}
+					});
+
 				}
 				else
 				{

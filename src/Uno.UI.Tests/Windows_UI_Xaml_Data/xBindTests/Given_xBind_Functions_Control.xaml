@@ -28,12 +28,12 @@
 				   x:FieldModifier="public"
 				   Text="{x:Bind MyxBindClassInstance.MyProperty, Mode=OneWay}" />
 
-		<!-- Static class members -->
+		 <!-- Static class members --> 
 		<TextBlock x:Name="_StaticClass_PublicStaticProperty"
 				   x:FieldModifier="public"
 				   Text="{x:Bind StaticClass.PublicStaticProperty}" />
 
-		<!-- functions -->
+		<!-- functions --> 
 		<TextBlock x:Name="_InstanceFunction_Parameterless"
 				   x:FieldModifier="public"
 				   Text="{x:Bind Parameterless()}" />
@@ -69,13 +69,17 @@
 		<TextBlock x:Name="_System_Function_with_Quote"
 				   x:FieldModifier="public"
 				   Text="{x:Bind sys:String.Format('{0}, ^'{1}^'', InstanceProperty, StaticProperty)}" />
-		
-		<TextBlock x:Name="_InstanceFunction_OneParam_DP_Update"
+
+		<TextBlock x:Name="_InstanceFunction_OneParam_DP_Update_OneTime"
 				   x:FieldModifier="public"
 				   Text="{x:Bind Offset(InstanceDP)}" />
 
+		<TextBlock x:Name="_InstanceFunction_OneParam_DP_Update_OneWay"
+				   x:FieldModifier="public"
+				   Text="{x:Bind Offset(InstanceDP), Mode=OneWay}" />
+
 		<TextBlock x:Name="_InstanceFunction_TwoParam_Update"
 				   x:FieldModifier="public"
-				   Text="{x:Bind Add(InstanceDP, MyxBindClassInstance.MyIntProperty)}" />
+				   Text="{x:Bind Add(InstanceDP, MyxBindClassInstance.MyIntProperty), Mode=OneWay}" />
 	</Grid>
 </Page>
