@@ -2,6 +2,7 @@
 
 ### Features
 - Add support for `StorageFile.DeleteAsync()`
+- Support for `EmailManager.ShowComposeNewEmailAsync`
 - Add support for `StorageFolder.CreateFileAsync(string path)`
 - Add support for ApplicationViewTitleBar.BackgroundColor on WASM
 - Add support for Automation SetDependencyPropertyValue in Uno.UITest
@@ -29,7 +30,6 @@
 ## Release 2.0
 
 ### Features
-
 * [#2040] Support for ms-settings:// special URIs on Android and iOS, Launcher API alignments to match UWP behavior
 * [#2029](https://github.com/unoplatform/uno/pull/2029) Support for MenuFlyoutItem.Click
 * support /[file]/[name] format in ResourceLoader.GetForCurrentView().GetString()

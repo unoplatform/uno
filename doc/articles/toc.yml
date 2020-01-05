@@ -72,6 +72,8 @@
     href: features\windows-applicationmodel.md
   - name: Windows.ApplicationModel.Calls
     href: features\windows-applicationmodel-calls.md
+  - name: Windows.ApplicationModel.Email
+    href: features\windows-applicationmodel-email.md
   - name: Windows.Devices.Lights
     href: features\windows-devices-lights.md
   - name: Windows.Devices.Sensors
