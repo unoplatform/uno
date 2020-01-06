@@ -40,7 +40,7 @@
 - Inheritance
 - Mode
 - Trigger
-- x:Bind *(without phases and expressions)*
+- x:Bind with support functions
 - Converters
 - Attached Properties binding
 - RelativeSource.Self
