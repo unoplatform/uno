@@ -344,6 +344,7 @@ For more information, see the [TextBlock](https://msdn.microsoft.com/en-us/libra
 ### Custom Fonts
 
 #### Custom Fonts on Android
+
 Fonts must be placed in the `Assets` folder of the head project, matching the path of the fonts in Windows, and marked as `AndroidAsset`.
 The format is the same as Windows, as follows:
 
@@ -357,6 +358,7 @@ The format is the same as Windows, as follows:
 ```
 
 #### Custom Fonts on iOS
+
 Fonts must be placed in the `Resources` folder of the head project, be marked as
 `BundleResource` for the build type.
 
@@ -383,11 +385,12 @@ The format is the same as Windows, as follows:
 ```
 
 #### Custom fonts on WebAssembly
+
 Adding a custom font is done through the use of WebFonts, using a data-URI:
 
 ```css
 @font-face {
-  font-family: "Roboto";
+  font-family: "Symbols";
   /* winjs-symbols.woff2: https://github.com/Microsoft/fonts/tree/master/Symbols */
   src: url(data:application/x-font-woff;charset=utf-8;base64,d09GMgABAAA...) format('woff');
 }
@@ -395,7 +398,7 @@ Adding a custom font is done through the use of WebFonts, using a data-URI:
 
 This type of declaration is required to avoid measuring errors if the font requested by a `TextBlock` or a `FontIcon` needs to be downloaded first. Specifying it using a data-URI ensures the font is readily available.
 
-The font names are referenced based on the `#` name, so 
+The font names are referenced based on the `#` name, so:
 
 ```xml
 <Setter Property="FontFamily"
@@ -411,7 +414,7 @@ Will match the following `@font-face`:
 }
 ```
 
-In case your `FontFamily` value does not contain `#`, we fall back to the font file name. Hence for:
+In case your `FontFamily` value does not contain `#`, Uno falls back to the font file name. Hence for:
 
 ```xml
 <Setter Property="FontFamily"
@@ -428,6 +431,7 @@ Will match:
 ```
 
 #### Custom Fonts Notes
+
 Please note that some custom fonts need the FontFamily and FontWeight properties to be set at the same time in order to work properly on TextBlocks, Runs and for styles Setters.
 If that's your case, here are some examples of code:
 
