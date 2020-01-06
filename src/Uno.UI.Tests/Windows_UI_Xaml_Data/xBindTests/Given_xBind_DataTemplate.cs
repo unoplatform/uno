@@ -27,7 +27,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			var _MyProperty_Formatted = SUT.FindName("_MyProperty_Formatted") as TextBlock;
 			Assert.AreEqual("Formatted Initial", _MyProperty_Formatted.Text);
 		}
-		 
+
 		[TestMethod]
 		public void When_Updated_Source()
 		{
@@ -49,7 +49,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("VALUE 2", _MyProperty_Function.Text);
 			Assert.AreEqual("Formatted Value 2", _MyProperty_Formatted.Text);
 		}
-		
+
 		[TestMethod]
 		public void When_Updated_Property()
 		{
@@ -124,5 +124,27 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual(13, data.MyPropertyGetCounter);
 		}
 
+		[TestMethod]
+		public void When_Loaded_Then_Reset()
+		{
+			var SUT = new DataTemplate_Control();
+			var data = new MyDataTemplateClass();
+			SUT.root.Content = data;
+
+			SUT.ForceLoaded();
+
+			Assert.IsTrue(data.HasPropertyChangedListeners);
+
+			var _MyProperty_Formatted_OneWay = SUT.FindName("_MyProperty_Formatted_OneWay") as TextBlock;
+			Assert.AreEqual("Formatted Initial", _MyProperty_Formatted_OneWay.Text);
+
+			data.MyProperty = "Other value";
+
+			Assert.AreEqual("Formatted Other value", _MyProperty_Formatted_OneWay.Text);
+
+			SUT.root.Content = null;
+
+			Assert.IsFalse(data.HasPropertyChangedListeners);
+		}
 	}
 }

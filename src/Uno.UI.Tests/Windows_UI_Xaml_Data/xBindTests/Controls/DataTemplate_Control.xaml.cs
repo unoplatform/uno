@@ -28,7 +28,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 			this.InitializeComponent();
 			root.Content = new MyDataTemplateClass();
 		}
-
 	}
 
 	public class MyDataTemplateClass : INotifyPropertyChanged
@@ -40,6 +39,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 
 		public int MyPropertyGetCounter { get; set; } = 0;
 
+		internal bool HasPropertyChangedListeners => PropertyChanged != null;
 
 		public string MyProperty
 		{
