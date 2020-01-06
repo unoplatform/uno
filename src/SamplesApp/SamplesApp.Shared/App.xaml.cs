@@ -51,12 +51,7 @@ namespace SamplesApp
 		/// </summary>
 		/// <seealso cref="https://github.com/unoplatform/uno/issues/1741"/>
 		public void AssertIssue1790()
-		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().LogWarning("Assert for issue 1790 should be enabled on all platforms when issue #2213 is fixed");
-			}
-#if !__MACOS__
+		{			
 			void AssertIsUsable(Windows.Storage.ApplicationDataContainer container)
 			{
 				const string issue1790 = nameof(issue1790);
@@ -69,7 +64,6 @@ namespace SamplesApp
 
 			AssertIsUsable(Windows.Storage.ApplicationData.Current.LocalSettings);
 			AssertIsUsable(Windows.Storage.ApplicationData.Current.RoamingSettings);
-#endif
 		}
 
 		/// <summary>
