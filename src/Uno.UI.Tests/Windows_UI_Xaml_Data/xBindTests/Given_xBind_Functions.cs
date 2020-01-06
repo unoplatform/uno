@@ -57,7 +57,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("Was true", SUT._InstanceFunction_Boolean_True.Text);
 
 			Assert.AreEqual(1, SUT.AddDoubleCallCount);
-			Assert.AreEqual(3, SUT.AddIntCallCount);
+			Assert.AreEqual(2, SUT.AddIntCallCount);
 			Assert.AreEqual(3, SUT.OffsetCallCount);
 		}
 
@@ -111,7 +111,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("9", SUT._InstanceFunction_OneParam_DP_Update_OneWay.Text);
 
 			Assert.AreEqual(1, SUT.AddDoubleCallCount);
-			Assert.AreEqual(3, SUT.AddIntCallCount);
+			Assert.AreEqual(2, SUT.AddIntCallCount);
 			Assert.AreEqual(3, SUT.OffsetCallCount);
 
 			SUT.InstanceDP = 42;
@@ -120,7 +120,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("52", SUT._InstanceFunction_OneParam_DP_Update_OneWay.Text);
 
 			Assert.AreEqual(1, SUT.AddDoubleCallCount);
-			Assert.AreEqual(4, SUT.AddIntCallCount);
+			Assert.AreEqual(3, SUT.AddIntCallCount);
 			Assert.AreEqual(4, SUT.OffsetCallCount);
 		}
 
@@ -140,7 +140,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("-4", SUT._InstanceFunction_TwoParam_Update.Text);
 
 			Assert.AreEqual(1, SUT.AddDoubleCallCount);
-			Assert.AreEqual(3, SUT.AddIntCallCount);
+			Assert.AreEqual(2, SUT.AddIntCallCount);
 			Assert.AreEqual(3, SUT.OffsetCallCount);
 
 			SUT.InstanceDP = 10;
@@ -148,7 +148,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("7", SUT._InstanceFunction_TwoParam_Update.Text);
 
 			Assert.AreEqual(1, SUT.AddDoubleCallCount);
-			Assert.AreEqual(4, SUT.AddIntCallCount);
+			Assert.AreEqual(3, SUT.AddIntCallCount);
 			Assert.AreEqual(4, SUT.OffsetCallCount);
 
 			SUT.MyxBindClassInstance.MyIntProperty = 10;
@@ -156,7 +156,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("20", SUT._InstanceFunction_TwoParam_Update.Text);
 
 			Assert.AreEqual(1, SUT.AddDoubleCallCount);
-			Assert.AreEqual(5, SUT.AddIntCallCount);
+			Assert.AreEqual(4, SUT.AddIntCallCount);
 			Assert.AreEqual(4, SUT.OffsetCallCount);
 		}
 	}

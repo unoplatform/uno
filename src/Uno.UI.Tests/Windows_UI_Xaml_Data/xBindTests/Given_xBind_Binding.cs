@@ -12,6 +12,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 	public class Given_xBind_Binding
 	{
 		[TestMethod]
+		[Ignore]
 		public void When_Initial_Value()
 		{
 			var SUT = new Binding_Control();

@@ -28,6 +28,10 @@ namespace SamplesApp.UITests
 				Assert.AreEqual("42", tb.GetDependencyPropertyValue("Text")?.ToString());
 			}
 			{
+				var tb = _app.Marked("textBlock1_Counter");
+				Assert.AreEqual("Should be 1:  1", tb.GetDependencyPropertyValue("Text")?.ToString());
+			}
+			{
 				var tb = _app.Marked("textBlock2");
 				Assert.AreEqual("Should be 42:  42", tb.GetDependencyPropertyValue("Text")?.ToString());
 			}
@@ -40,9 +44,8 @@ namespace SamplesApp.UITests
 				Assert.AreEqual("Should be 44:  44", tb.GetDependencyPropertyValue("Text")?.ToString());
 			}
 			{
-				// x:Bind is evaluated too many times
-				// var tb = _app.Marked("textBlock5");
-				// Assert.AreEqual("Should be 1:  1", tb.GetDependencyPropertyValue("Text")?.ToString());
+				var tb = _app.Marked("textBlock5");
+				Assert.AreEqual("Should be 2:  2", tb.GetDependencyPropertyValue("Text")?.ToString());
 			}
 			{
 				var tb = _app.Marked("textBlock6");
