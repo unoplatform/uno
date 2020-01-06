@@ -342,8 +342,8 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 				=>  $"X=(Σ:{cumulative.Translation.X:' '000.00;'-'000.00} / Δ:{delta.Translation.X:' '00.00;'-'00.00}) "
 				+ $"| Y=(Σ:{cumulative.Translation.Y:' '000.00;'-'000.00} / Δ:{delta.Translation.Y:' '00.00;'-'00.00}) ";
 
-			private static string F(global::Windows.Foundation.Point size)
-				=> $"[{size.X:F2}, {size.X:F2}]";
+			private static string F(global::Windows.Foundation.Point pt)
+				=> $"[{pt.X:F2}, {pt.Y:F2}]";
 
 			private static string F(PointerPointProperties props)
 			{

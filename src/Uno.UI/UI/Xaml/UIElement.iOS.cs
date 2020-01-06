@@ -123,30 +123,6 @@ namespace Windows.UI.Xaml
 			return relativeTo.ConvertPointToCoordinateSpace(position, relativeTo);
 		}
 
-		public GeneralTransform TransformToVisual(UIElement visual)
-		{
-			// If visual is null, we transform the element to the window
-			if (visual == null)
-			{
-				visual = Xaml.Window.Current.Content;
-			}
-
-			var unit = new CGRect(0, 0, 1, 1);
-			var transformed = visual.ConvertRectFromView(unit, this);
-
-			return new MatrixTransform
-			{
-				Matrix = new Matrix(
-					m11: 1,
-					m12: 0,
-					m21: 0,
-					m22: 1,
-					offsetX: transformed.X,
-					offsetY: transformed.Y
-				)
-			};
-		}
-
 #if DEBUG
 		public static Predicate<UIView> ViewOfInterestSelector { get; set; } = v => (v as FrameworkElement)?.Name == "TargetView";
 
