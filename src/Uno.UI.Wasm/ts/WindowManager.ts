@@ -513,10 +513,7 @@
 		}
 
 		/**
-			* Set the CSS style of a html element.
-			*
-			* To remove a value, set it to empty string.
-			* @param styles A dictionary of styles to apply on html element.
+			* Remove the CSS style of a html element.
 			*/
 		public resetStyle(elementId: number, names: string[]): string {
 			this.resetStyleInternal(elementId, names);
@@ -524,10 +521,7 @@
 		}
 
 		/**
-			* Set the CSS style of a html element.
-			*
-			* To remove a value, set it to empty string.
-			* @param styles A dictionary of styles to apply on html element.
+			* Remove the CSS style of a html element.
 			*/
 		public resetStyleNative(pParams: number): boolean {
 			const params = WindowManagerResetStyleParams.unmarshal(pParams);
@@ -624,7 +618,7 @@
 
 			style.transform = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
 
-			element.classList.remove(WindowManager.unoUnarrangedClassName);
+			this.setAsArranged(element);
 
 			return true;
 		}
