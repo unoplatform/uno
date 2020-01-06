@@ -1,6 +1,5 @@
 ﻿#if __WASM__
 using System;
-using System.Diagnostics;
 
 namespace Windows.UI.Xaml.Media
 {
