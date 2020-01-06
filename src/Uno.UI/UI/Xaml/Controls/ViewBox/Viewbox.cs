@@ -105,22 +105,23 @@ namespace Windows.UI.Xaml.Controls
 
 		private double AdjustWithDirection(double uniformToFillScale)
 		{
+			if (double.IsNaN(uniformToFillScale) || double.IsInfinity(uniformToFillScale))
+			{
+				return 1;
+			}
+
 			switch (StretchDirection)
 			{
 				case StretchDirection.UpOnly:
-					uniformToFillScale = Math.Max(1, uniformToFillScale);
-					break;
+					return Math.Max(1, uniformToFillScale);
 
 				case StretchDirection.DownOnly:
-					uniformToFillScale = Math.Min(1, uniformToFillScale);
-					break;
+					return Math.Min(1, uniformToFillScale);
 
 				default:
 				case StretchDirection.Both:
-					break;
+					return uniformToFillScale;
 			}
-
-			return uniformToFillScale;
 		}
 	}
 }
