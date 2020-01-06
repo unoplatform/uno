@@ -2791,6 +2791,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					.Replace(XamlConstants.XBindSubstitute, '\"')
 					.Replace("x:False", "false")
 					.Replace("x:True", "true")
+					.Replace("x:Null", "null")
 					?? "";
 
 				rawFunction = RewriteNamespaces(rawFunction);

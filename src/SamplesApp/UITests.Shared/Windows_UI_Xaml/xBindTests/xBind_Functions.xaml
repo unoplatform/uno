@@ -35,7 +35,7 @@
 			<Slider x:Name="slider2" Minimum="22"/>
 			<TextBlock Text="{x:Bind Multiply(slider1.Value, slider2.Value), Mode=OneWay}" />
 			<TextBlock Text="{x:Bind local:StaticType.Add(slider1.Value, slider2.Value), Mode=OneWay}" />
-			<TextBlock Text="{x:Bind sys:String.Format('slider1: {0}, slider2:{1}', slider1.Value, slider2.Value), Mode=OneWay}" />
+			<TextBlock Text="{x:Bind sys:String.Format(x:Null, 'slider1: {0}, slider2:{1}', slider1.Value, slider2.Value), Mode=OneWay}" />
 			<Button x:Name="updateTemplateButton"
 					Content="Update"
 					Click="OnUpdateTemplate" />
