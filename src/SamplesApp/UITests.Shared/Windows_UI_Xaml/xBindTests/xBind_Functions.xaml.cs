@@ -48,7 +48,7 @@ namespace UITests.Shared.Windows_UI_Xaml.xBindTests
 	{
 		public static int PropertyIntValue { get; } = 42;
 
-		public static string PropertyStringValue { get; } = "42";
+		public static string PropertyStringValue { get; } = "value 43";
 
 		public static string Add(double a, double b)
 			=> (a + b).ToString();

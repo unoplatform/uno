@@ -7,20 +7,20 @@
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	  mc:Ignorable="d"
 	  Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-	
+
 	<Page.Resources>
 		<DataTemplate x:Key="MyTemplate"
 					  x:DataType="local:MyDataTemplateClass">
 			<StackPanel>
-				<TextBlock x:Name="_MyProperty"
+				<TextBlock x:Name="_DataTemplate_MyProperty"
 						   Text="{x:Bind MyProperty}" />
-				<TextBlock x:Name="_MyProperty_Function"
+				<TextBlock x:Name="_DataTemplate_MyProperty_Function"
 						   Text="{x:Bind MyProperty.ToUpper()}" />
-				<TextBlock x:Name="_MyProperty_Formatted"
+				<TextBlock x:Name="_DataTemplate_MyProperty_Formatted"
 						   Text="{x:Bind sys:String.Format('Formatted {0}', MyProperty)}" />
-				<TextBlock x:Name="_MyProperty_Function_OneWay"
+				<TextBlock x:Name="_DataTemplate_MyProperty_Function_OneWay"
 						   Text="{x:Bind MyProperty.ToUpper(), Mode=OneWay}" />
-				<TextBlock x:Name="_MyProperty_Formatted_OneWay"
+				<TextBlock x:Name="_DataTemplate_MyProperty_Formatted_OneWay"
 						   Text="{x:Bind sys:String.Format('Formatted {0}', MyProperty), Mode=OneWay}" />
 			</StackPanel>
 		</DataTemplate>
@@ -28,14 +28,22 @@
 
 	<Grid>
 		<StackPanel>
-			<TextBlock Text="{x:Bind local:StaticType.PropertyIntValue}" />
-			<TextBlock Text="{x:Bind local:StaticType.PropertyStringValue}" />
-			<TextBlock Text="{x:Bind local:StaticType.PropertyStringValue.ToUpper()}" />
-			<Slider x:Name="slider1" Minimum="20"/>
-			<Slider x:Name="slider2" Minimum="22"/>
-			<TextBlock Text="{x:Bind Multiply(slider1.Value, slider2.Value), Mode=OneWay}" />
-			<TextBlock Text="{x:Bind local:StaticType.Add(slider1.Value, slider2.Value), Mode=OneWay}" />
-			<TextBlock Text="{x:Bind sys:String.Format(x:Null, 'slider1: {0}, slider2:{1}', slider1.Value, slider2.Value), Mode=OneWay}" />
+			<TextBlock x:Name="_StaticPropertyIntValue"
+					   Text="{x:Bind local:StaticType.PropertyIntValue}" />
+			<TextBlock x:Name="_StaticPropertyStringValue"
+					   Text="{x:Bind local:StaticType.PropertyStringValue}" />
+			<TextBlock x:Name="_StaticPropertyStringValueFunction"
+					   Text="{x:Bind local:StaticType.PropertyStringValue.ToUpper()}" />
+			<Slider x:Name="slider1"
+					Minimum="20" />
+			<Slider x:Name="slider2"
+					Minimum="22" />
+			<TextBlock x:Name="_MemberFunctionMultiple_Bind_OneWay"
+					   Text="{x:Bind Multiply(slider1.Value, slider2.Value), Mode=OneWay}" />
+			<TextBlock x:Name="_SaticFunctionMultiple_Bind_OneWay"
+					   Text="{x:Bind local:StaticType.Add(slider1.Value, slider2.Value), Mode=OneWay}" />
+			<TextBlock x:Name="_SystemFunction_Bind_OneWay"
+					   Text="{x:Bind sys:String.Format(x:Null, 'slider1: {0}, slider2:{1}', slider1.Value, slider2.Value), Mode=OneWay}" />
 			<Button x:Name="updateTemplateButton"
 					Content="Update"
 					Click="OnUpdateTemplate" />
