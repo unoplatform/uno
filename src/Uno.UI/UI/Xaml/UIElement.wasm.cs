@@ -134,12 +134,12 @@ namespace Windows.UI.Xaml
 
 		protected internal void SetStyle(string name, string value)
 		{
-			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, new[] { (name, value) }, setAsArranged: false, clipToBounds: RequiresClipping);
+			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, new[] { (name, value) });
 		}
 
 		protected internal void SetStyle(string name, double value)
 		{
-			Uno.UI.Xaml.WindowManagerInterop.SetStyleDouble(HtmlId, name, value, requiresClipping: RequiresClipping);
+			Uno.UI.Xaml.WindowManagerInterop.SetStyleDouble(HtmlId, name, value);
 		}
 
 		protected internal void SetStyle(params (string name, string value)[] styles)
@@ -149,7 +149,7 @@ namespace Windows.UI.Xaml
 				return; // nothing to do
 			}
 
-			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, styles, setAsArranged: false, clipToBounds: RequiresClipping);
+			Uno.UI.Xaml.WindowManagerInterop.SetStyles(HtmlId, styles);
 		}
 
 		/// <summary>

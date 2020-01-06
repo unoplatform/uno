@@ -129,10 +129,10 @@ namespace Uno.UI.Xaml
 
 				SetStyles(
 					htmlId,
-					new[] { ("transform", native.ToStringInvariant()) },
-					setAsArranged: true,
-					clipToBounds: requiresClipping
+					new[] { ("transform", native.ToStringInvariant()) }
 				);
+
+				SetArrangeProperties(htmlId, requiresClipping);
 			}
 			else
 			{
@@ -221,11 +221,11 @@ namespace Uno.UI.Xaml
 		#endregion
 
 		#region SetStyleDouble
-		internal static void SetStyleDouble(IntPtr htmlId, string name, double value, bool requiresClipping)
+		internal static void SetStyleDouble(IntPtr htmlId, string name, double value)
 		{
 			if (UseJavascriptEval)
 			{
-				SetStyles(htmlId, new[] { (name, value.ToString(CultureInfo.InvariantCulture)) }, setAsArranged: false, clipToBounds: requiresClipping);
+				SetStyles(htmlId, new[] { (name, value.ToString(CultureInfo.InvariantCulture)) });
 			}
 			else
 			{
@@ -255,14 +255,12 @@ namespace Uno.UI.Xaml
 
 		#region SetStyles
 
-		internal static void SetStyles(IntPtr htmlId, (string name, string value)[] styles, bool setAsArranged, bool clipToBounds)
+		internal static void SetStyles(IntPtr htmlId, (string name, string value)[] styles)
 		{
 			if (UseJavascriptEval)
 			{
-				var setAsArrangeString = setAsArranged ? "true" : "false";
-				var clipToBoundsString = setAsArranged ? "true" : "false";
 				var stylesStr = string.Join(", ", styles.Select(s => "\"" + s.name + "\": \"" + WebAssemblyRuntime.EscapeJs(s.value) + "\""));
-				var command = "Uno.UI.WindowManager.current.setStyle(\"" + htmlId + "\", {" + stylesStr + "}," + setAsArrangeString + "," + clipToBoundsString + "); ";
+				var command = "Uno.UI.WindowManager.current.setStyle(\"" + htmlId + "\", {" + stylesStr + "}); ";
 
 				WebAssemblyRuntime.InvokeJS(command);
 			}
@@ -279,8 +277,6 @@ namespace Uno.UI.Xaml
 				var parms = new WindowManagerSetStylesParams
 				{
 					HtmlId = htmlId,
-					SetAsArranged = setAsArranged,
-					ClipToBounds = clipToBounds,
 					Pairs_Length = pairs.Length,
 					Pairs = pairs,
 				};
@@ -295,17 +291,25 @@ namespace Uno.UI.Xaml
 		{
 			public IntPtr HtmlId;
 
-			public bool SetAsArranged;
-
 			public int Pairs_Length;
 
 			[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)]
 			public string[] Pairs;
-
-			public bool ClipToBounds;
 		}
 
 		#endregion
+
+		private static void SetArrangeProperties(IntPtr htmlId, bool requiresClipping)
+		{
+			if (!UseJavascriptEval)
+			{
+				throw new InvalidOperationException("This should only be called when UseJavascriptEval flag is set");
+			}
+
+			var command = "Uno.UI.WindowManager.current.setArrangeProperties(\"" + htmlId + "\", " + (requiresClipping ? "true" : "false") + "); ";
+
+			WebAssemblyRuntime.InvokeJS(command);
+		}
 
 		#region SetClasses
 
@@ -866,10 +870,10 @@ namespace Uno.UI.Xaml
 						("width", rect.Width.ToString(CultureInfo.InvariantCulture) + "px"),
 						("height", rect.Height.ToString(CultureInfo.InvariantCulture) + "px"),
 						("clip", clipRect2)
-					},
-					clipToBounds: clipToBounds,
-					setAsArranged: true
+					}
 				);
+
+				SetArrangeProperties(htmlId, clipToBounds);
 			}
 			else
 			{

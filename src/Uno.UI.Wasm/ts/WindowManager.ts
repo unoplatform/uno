@@ -453,20 +453,13 @@
 			* To remove a value, set it to empty string.
 			* @param styles A dictionary of styles to apply on html element.
 			*/
-		public setStyle(elementId: number, styles: { [name: string]: string }, setAsArranged: boolean = false, clipToBounds?: boolean): string {
+		public setStyle(elementId: number, styles: { [name: string]: string }): string {
 			const element = this.getView(elementId);
 
 			for (const style in styles) {
 				if (styles.hasOwnProperty(style)) {
 					element.style.setProperty(style, styles[style]);
 				}
-			}
-
-			if (setAsArranged) {
-				this.setAsArranged(element);
-			}
-			if (typeof clipToBounds === "boolean") {
-				this.setClipToBounds(element, clipToBounds);
 			}
 
 			return "ok";
@@ -493,12 +486,6 @@
 				elementStyle.setProperty(key, value);
 			}
 
-			if (params.SetAsArranged) {
-				this.setAsArranged(element);
-			}
-
-			this.setClipToBounds(element, params.ClipToBounds);
-
 			return true;
 		}
 
@@ -514,6 +501,15 @@
 			element.style.setProperty(params.Name, String(params.Value));
 
 			return true;
+		}
+
+		public setArrangeProperties(elementId: number, clipToBounds: boolean): string {
+			const element = this.getView(elementId);
+
+			this.setAsArranged(element);
+			this.setClipToBounds(element, clipToBounds);
+
+			return "ok";
 		}
 
 		/**
