@@ -12,10 +12,10 @@ namespace Uno.UI.SourceGenerators.Tests
 		[TestMethod]
 
 		// DataTemplates (with context)
-		[DataRow("ctx", "MyProperty.A", "ctx.MyProperty?.A")]
+		[DataRow("ctx", "MyProperty.A", "ctx.MyProperty.A")]
 		[DataRow("ctx", "MyProperty", "ctx.MyProperty")]
-		[DataRow("ctx", "MyProperty.A.ToLower()", "ctx.MyProperty?.A?.ToLower()")]
-		[DataRow("ctx", "System.String.Format('{0:X8}', a.Value)", "System.String.Format('{0:X8}', ctx.a?.Value)")]
+		[DataRow("ctx", "MyProperty.A.ToLower()", "ctx.MyProperty.A.ToLower()")]
+		[DataRow("ctx", "System.String.Format('{0:X8}', a.Value)", "System.String.Format('{0:X8}', ctx.a.Value)")]
 		[DataRow("ctx", "Static.MyFunction(42.0)", "Static.MyFunction(42.0)")]
 		[DataRow("ctx", "Static.MyFunction(true)", "Static.MyFunction(true)")]
 		[DataRow("ctx", "Static.MyFunction(MyProperty)", "Static.MyFunction(ctx.MyProperty)")]
@@ -23,10 +23,10 @@ namespace Uno.UI.SourceGenerators.Tests
 		[DataRow("ctx", "MyFunction(MyProperty)", "ctx.MyFunction(ctx.MyProperty)")]
 
 		// Main class (without context)
-		[DataRow("", "MyProperty.A", "MyProperty?.A")]
+		[DataRow("", "MyProperty.A", "MyProperty.A")]
 		[DataRow("", "MyProperty", "MyProperty")]
-		[DataRow("", "MyProperty.A.ToLower()", "MyProperty?.A?.ToLower()")]
-		[DataRow("", "System.String.Format('{0:X8}', a.Value)", "System.String.Format('{0:X8}', a?.Value)")]
+		[DataRow("", "MyProperty.A.ToLower()", "MyProperty.A.ToLower()")]
+		[DataRow("", "System.String.Format('{0:X8}', a.Value)", "System.String.Format('{0:X8}', a.Value)")]
 		[DataRow("", "Static.MyFunction(42.0)", "Static.MyFunction(42.0)")]
 		[DataRow("", "Static.MyFunction(true)", "Static.MyFunction(true)")]
 		[DataRow("", "Static.MyFunction(MyProperty)", "Static.MyFunction(MyProperty)")]

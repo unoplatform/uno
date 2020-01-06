@@ -31,7 +31,7 @@
 		 <!-- Static class members --> 
 		<TextBlock x:Name="_StaticClass_PublicStaticProperty"
 				   x:FieldModifier="public"
-				   Text="{x:Bind StaticClass.PublicStaticProperty}" />
+				   Text="{x:Bind local:StaticClass.PublicStaticProperty}" />
 
 		<!-- functions --> 
 		<TextBlock x:Name="_InstanceFunction_Parameterless"

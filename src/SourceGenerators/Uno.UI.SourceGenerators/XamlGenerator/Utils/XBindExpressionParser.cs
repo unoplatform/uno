@@ -67,7 +67,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				{
 					if (e is InvocationExpressionSyntax newSyntax)
 					{
-						var methodName = Nullify(newSyntax.Expression);
+						var methodName = newSyntax.Expression.ToFullString();
 						var arguments = newSyntax.ArgumentList.ToFullString();
 						var output = ParseCompilationUnit($"class __Temp {{ private Func<object> __prop => {ContextBuilder}{methodName}{arguments}; }}");
 
@@ -85,9 +85,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				}
 			}
 
-			private string Nullify(SyntaxNode expression)
-				=> expression.ToFullString().Replace(".", "?.");
-
 			private object ContextBuilder
 				=> string.IsNullOrEmpty(_contextName) ? "" : _contextName + ".";
 
@@ -98,10 +95,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 				if (isValidParent)
 				{
-					var newMemberAccess = Nullify(e);
-					var output = ParseCompilationUnit($"{ContextBuilder}{newMemberAccess}");
+					var output = ParseCompilationUnit($"class __Temp {{ private Func<object> __prop => {ContextBuilder}{e.ToFullString()}; }}");
 
-					var o2 =  output.DescendantNodes().OfType<IncompleteMemberSyntax>().First().DescendantNodes().First();
+					var o2 = output.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().First().Expression;
 					return o2;
 				}
 				else
@@ -116,10 +112,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 				if (isValidParent)
 				{
-					var newIdentifier = Nullify(node);
-					var output = ParseCompilationUnit($"{ContextBuilder}{newIdentifier}");
+					var newIdentifier = node.ToFullString();
+					var output = ParseCompilationUnit($"class __Temp {{ private Func<object> __prop => {ContextBuilder}{newIdentifier}; }}");
 
-					var o2 = output.DescendantNodes().OfType<IncompleteMemberSyntax>().First().DescendantNodes().First();
+					var o2 = output.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().First().Expression;
 					return o2;
 				}
 				else

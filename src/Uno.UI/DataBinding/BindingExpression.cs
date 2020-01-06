@@ -489,7 +489,24 @@ namespace Windows.UI.Xaml.Data
 		{
 			if (ParentBinding.XBindSelector != null)
 			{
-				SetTargetValueSafe(ParentBinding.XBindSelector(DataContext));
+				try
+				{
+					var canSetTarget = _updateSources?.None(s => s.ValueType == null) ?? true;
+
+					if (canSetTarget)
+					{
+						SetTargetValueSafe(ParentBinding.XBindSelector(DataContext));
+					}
+				}
+				catch (Exception e)
+				{
+					ApplyFallbackValue();
+
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+					{
+						this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
+					}
+				}
 			}
 			else
 			{
@@ -543,7 +560,10 @@ namespace Windows.UI.Xaml.Data
 			}
 			catch (Exception e)
 			{
-				this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				{
+					this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
+				}
 
 				ApplyFallbackValue();
 			}
