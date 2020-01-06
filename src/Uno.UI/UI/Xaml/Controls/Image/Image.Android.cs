@@ -175,9 +175,9 @@ namespace Windows.UI.Xaml.Controls
 					//   - Arrange invokes SetTargetImageSize with [0;0] which is ignored as there is already a tentative decode size.
 					//   - The image gets loaded and the InvalidateMeasure is called
 					//   - The measure is invoked again, returns the natural size of the image. If the SetTargetImageSize is called with
-					//     a different size, the image gets reloaded with a different decode size.
+					//     a larger size, the image gets reloaded with a different decode size.
 					//   - The arrange is invoked again with the proper final size. If the SetTargetImageSize is called with
-					//     a different size, the image gets reloaded again with a different decode size.
+					//     a larger size, the image gets reloaded again with a different decode size.
 					//
 					// The above scenario may be at disadvantage if the image does not have a Width/Height, or if the
 					// image gets a different size in measure and arrange. A warning message gets displayed in such cases.
@@ -186,7 +186,7 @@ namespace Windows.UI.Xaml.Controls
 						(Source?.UseTargetSize ?? false)
 						&& _targetWidth != null
 						&& _targetHeight != null
-						&& (_targetWidth != originalTargetWidth || _targetHeight != originalTargetHeight)
+						&& (_targetWidth > originalTargetWidth || _targetHeight > originalTargetHeight)
 						&& _openedImage != null
 					)
 					{
