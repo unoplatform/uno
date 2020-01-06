@@ -95,14 +95,6 @@ namespace Windows.UI.Xaml.Controls
 
 			var availableSize = ViewHelper.LogicalSizeFromSpec(widthMeasureSpec, heightMeasureSpec);
 
-			if (!double.IsNaN(Width) || !double.IsNaN(Height))
-			{
-				availableSize = new Windows.Foundation.Size(
-					double.IsNaN(Width) ? availableSize.Width : Width,
-					double.IsNaN(Height) ? availableSize.Height : Height
-				);
-			}
-
 			var measuredSize = _layouter.Measure(availableSize);
 
 			if (
