@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 {
@@ -13,7 +14,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		[TestMethod]
 		public void When_Initial_Value()
 		{
-			var SUT = new Given_xBind_Functions_Control();
+			var SUT = new Functions_Control();
 
 			Assert.IsNull(SUT._InstanceProperty.Text);
 			Assert.IsNull(SUT._StaticProperty.Text);
@@ -63,7 +64,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		[TestMethod]
 		public void When_Update_DP()
 		{
-			var SUT = new Given_xBind_Functions_Control();
+			var SUT = new Functions_Control();
 
 			Assert.IsNull(SUT._InstanceDP.Text);
 
@@ -79,7 +80,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		[TestMethod]
 		public void When_Update_InnerProperty()
 		{
-			var SUT = new Given_xBind_Functions_Control();
+			var SUT = new Functions_Control();
 
 			Assert.IsNull(SUT._InnerProperty.Text);
 
@@ -95,7 +96,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		[TestMethod]
 		public void When_Function_OneParam_Update_DP()
 		{
-			var SUT = new Given_xBind_Functions_Control();
+			var SUT = new Functions_Control();
 
 			Assert.IsNull(SUT._InstanceFunction_OneParam_DP_Update_OneTime.Text);
 			Assert.IsNull(SUT._InstanceFunction_OneParam_DP_Update_OneWay.Text);
@@ -126,7 +127,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		[TestMethod]
 		public void When_Function_TwoParam_Update_DP()
 		{
-			var SUT = new Given_xBind_Functions_Control();
+			var SUT = new Functions_Control();
 
 			Assert.IsNull(SUT._InstanceFunction_TwoParam_Update.Text);
 

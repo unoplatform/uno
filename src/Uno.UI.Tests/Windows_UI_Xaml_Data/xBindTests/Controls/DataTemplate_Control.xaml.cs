@@ -16,14 +16,14 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
+namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 {
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	public sealed partial class Given_xBind_DataTemplate_Control : Page
+	public sealed partial class DataTemplate_Control : Page
 	{
-		public Given_xBind_DataTemplate_Control()
+		public DataTemplate_Control()
 		{
 			this.InitializeComponent();
 			root.Content = new MyDataTemplateClass();

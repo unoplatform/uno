@@ -106,6 +106,12 @@
 		<Page Include="App\Xaml\Test_Control.xaml" />
 		<Page Include="App\Xaml\Test_MarkupExtension.xaml" />
 	</ItemGroup>
+	<ItemGroup>
+	  <Compile Remove="Windows_UI_Xaml_Data\xBindTests\Controls\Given_xBind_Binding_Control.cs" />
+	</ItemGroup>
+	<ItemGroup>
+	  <None Remove="Windows_UI_Xaml_Data\xBindTests\Controls\Given_xBind_Binding_Control.xaml" />
+	</ItemGroup>
 
 	<ItemGroup>
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
@@ -151,7 +157,10 @@
 			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
 			<Generator>ResXFileCodeGenerator</Generator>
 		</None>
-		<None Update="Windows_UI_Xaml_Data\xBindTests\Given_xBind_Functions_Control.xaml">
+		<None Update="Windows_UI_Xaml_Data\xBindTests\Controls\Binding_Control.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</None>
+		<None Update="Windows_UI_Xaml_Data\xBindTests\Controls\Functions_Control.xaml">
 		  <Generator></Generator>
 		</None>
 	</ItemGroup>

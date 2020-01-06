@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 {
@@ -13,7 +14,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		[TestMethod]
 		public void When_Initial_Value()
 		{
-			var SUT = new Given_xBind_Binding_Control();
+			var SUT = new Binding_Control();
 
 			Assert.IsNull(SUT._StringField.Text);
 

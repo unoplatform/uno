@@ -16,18 +16,18 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
+namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 {
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	public sealed partial class Given_xBind_Functions_Control : Page
+	public sealed partial class Functions_Control : Page
 	{
 		public int OffsetCallCount;
 		public int AddIntCallCount;
 		public int AddDoubleCallCount;
 
-		public Given_xBind_Functions_Control()
+		public Functions_Control()
 		{
 			this.InitializeComponent();
 		}
@@ -49,7 +49,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		public MyxBindClass MyxBindClassInstance { get; } = new MyxBindClass();
 
 		public static readonly DependencyProperty InstanceDPProperty =
-			DependencyProperty.Register("InstanceDP", typeof(int), typeof(Given_xBind_Functions_Control), new PropertyMetadata(-1));
+			DependencyProperty.Register("InstanceDP", typeof(int), typeof(Functions_Control), new PropertyMetadata(-1));
 
 		private string Offset(int value)
 		{

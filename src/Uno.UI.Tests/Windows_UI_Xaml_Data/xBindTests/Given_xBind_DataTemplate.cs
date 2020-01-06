@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
 using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
@@ -14,7 +15,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		[TestMethod]
 		public void When_Initial_Value()
 		{
-			var SUT = new Given_xBind_DataTemplate_Control();
+			var SUT = new DataTemplate_Control();
 			SUT.ForceLoaded();
 
 			var _MyProperty = SUT.FindName("_MyProperty") as TextBlock;
@@ -30,7 +31,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		[TestMethod]
 		public void When_Updated_Source()
 		{
-			var SUT = new Given_xBind_DataTemplate_Control();
+			var SUT = new DataTemplate_Control();
 			SUT.ForceLoaded();
 
 			var _MyProperty = SUT.FindName("_MyProperty") as TextBlock;
@@ -52,7 +53,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		[TestMethod]
 		public void When_Updated_Property()
 		{
-			var SUT = new Given_xBind_DataTemplate_Control();
+			var SUT = new DataTemplate_Control();
 			var data = new MyDataTemplateClass();
 			SUT.root.Content = data;
 
@@ -89,7 +90,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		[TestMethod]
 		public void When_Updated_With_Null()
 		{
-			var SUT = new Given_xBind_DataTemplate_Control();
+			var SUT = new DataTemplate_Control();
 			var data = new MyDataTemplateClass();
 			SUT.root.Content = data;
 
