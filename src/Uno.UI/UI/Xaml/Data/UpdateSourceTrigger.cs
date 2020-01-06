@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Data
+﻿using Uno;
+
+namespace Windows.UI.Xaml.Data
 {
 	/// <summary>
 	/// Defines constants that indicate when a binding source is updated by its binding target in two-way binding.
@@ -12,11 +14,16 @@
 		/// <summary>
 		/// The binding source is updated whenever the binding target value changes. This is detected automatically by the binding system.
 		/// </summary>
-		PropertyChanged,
+		PropertyChanged = 1,
 		/// <summary>
 		/// The binding source is updated only when you call the BindingExpression.UpdateSource method.
 		/// </summary>
-		Explicit,
+		Explicit = 2,
+		/// <summary>	
+		/// The binding source is updated whenever the binding target element loses focus.
+		/// </summary>
+		[NotImplemented]
+		LostFocus = 3,
 	}
 }
 

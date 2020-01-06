@@ -24,6 +24,7 @@ labels: kind/consumer-experience, kind/documentation, triage/untriaged
 - [ ] iOS
 - [ ] Android
 - [ ] WebAssembly
+- [ ] macOS
 - [ ] Windows
 
 ## Anything else we need to know?
