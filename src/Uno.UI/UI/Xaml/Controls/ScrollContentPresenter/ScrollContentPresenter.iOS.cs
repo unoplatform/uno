@@ -176,9 +176,14 @@ namespace Windows.UI.Xaml.Controls
 
 				size = AdjustSize(size);
 
+
 				var availableSizeForChild = size;
-				availableSizeForChild.Width -= (nfloat)horizontalMargin;
-				availableSizeForChild.Height -= (nfloat)verticalMargin;
+				if (!(_content is IFrameworkElement))
+				{
+					// Apply margin if the content is native (otherwise it will apply it itself)
+					availableSizeForChild.Width -= (nfloat)horizontalMargin;
+					availableSizeForChild.Height -= (nfloat)verticalMargin;
+				}
 
 				_measuredSize = _content.SizeThatFits(availableSizeForChild);
 				_measuredSize.Width += (nfloat)horizontalMargin;
