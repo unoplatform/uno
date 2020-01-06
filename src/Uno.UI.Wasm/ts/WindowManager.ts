@@ -55,7 +55,7 @@
 		 * Builds a promise that will signal the ability for the dispatcher
 		 * to initiate work.
 		 * */
-		private static buildReadyPromise(): Promise<boolean>  {
+		private static buildReadyPromise(): Promise<boolean> {
 			return new Promise<boolean>(resolve => {
 				Promise.all(
 					[WindowManager.buildSplashScreen()]
@@ -145,7 +145,7 @@
 			* Creates the UWP-compatible splash screen
 			* 
 			*/
-		static setupSplashScreen(splashImage:HTMLImageElement): void {
+		static setupSplashScreen(splashImage: HTMLImageElement): void {
 
 			if (UnoAppManifest && UnoAppManifest.splashScreenImage) {
 
@@ -215,7 +215,7 @@
 
 			const params = WindowManagerCreateContentParams.unmarshal(pParams);
 
-			const def = <IContentDefinition> {
+			const def = <IContentDefinition>{
 				id: params.HtmlId,
 				handle: params.Handle,
 				isFocusable: params.IsFocusable,
@@ -417,7 +417,7 @@
 		/**
 			* Set a property for an element.
 			*/
-		public setPropertyNative(pParams:number): boolean {
+		public setPropertyNative(pParams: number): boolean {
 
 			const params = WindowManagerSetPropertyParams.unmarshal(pParams);
 			const element = this.getView(params.HtmlId);
@@ -532,7 +532,7 @@
 		private resetStyleInternal(elementId: number, names: string[]): void {
 			const element = this.getView(elementId);
 
-			for(const name of names) {
+			for (const name of names) {
 				element.style.setProperty(name, "");
 			}
 		}
@@ -858,10 +858,10 @@
 
 			if (eventFilterName) {
 				switch (eventFilterName) {
-				case "LeftPointerEventFilter":
-					return this.leftPointerEventFilter;
-				case "Default":
-					return this.defaultEventFilter;
+					case "LeftPointerEventFilter":
+						return this.leftPointerEventFilter;
+					case "Default":
+						return this.defaultEventFilter;
 				}
 
 				throw `Event filter ${eventFilterName} is not supported`;
@@ -1158,7 +1158,7 @@
 		public getBoundingClientRect(elementId: number): string {
 
 			const bounds = (<any>this.getView(elementId)).getBoundingClientRect();
-			return `${bounds.left};${bounds.top};${bounds.right-bounds.left};${bounds.bottom-bounds.top}`;
+			return `${bounds.left};${bounds.top};${bounds.right - bounds.left};${bounds.bottom - bounds.top}`;
 		}
 
 		public getBBox(elementId: number): string {
@@ -1532,7 +1532,7 @@
 		 *
 		 * Note that the casing of this method is intentionally Pascal for platform alignment.
 		 */
-		public GetDependencyPropertyValue(elementId: number, propertyName: string) : string {
+		public GetDependencyPropertyValue(elementId: number, propertyName: string): string {
 			if (!WindowManager.getDependencyPropertyValueMethod) {
 				WindowManager.getDependencyPropertyValueMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:GetDependencyPropertyValue");
 			}
@@ -1548,7 +1548,7 @@
 		 *
 		 * Note that the casing of this method is intentionally Pascal for platform alignment.
 		 */
-		public SetDependencyPropertyValue(elementId: number, propertyNameAndValue: string) : string {
+		public SetDependencyPropertyValue(elementId: number, propertyNameAndValue: string): string {
 			if (!WindowManager.setDependencyPropertyValueMethod) {
 				WindowManager.setDependencyPropertyValueMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:SetDependencyPropertyValue");
 			}
@@ -1631,7 +1631,7 @@
 
 		private dispatchEvent(element: HTMLElement | SVGElement, eventName: string, eventPayload: string = null): boolean {
 			const htmlId = Number(element.getAttribute("XamlHandle"));
-			
+
 			// console.debug(`${element.getAttribute("id")}: Raising event ${eventName}.`);
 
 			if (!htmlId) {
@@ -1667,7 +1667,7 @@
 				//always cleanup
 				if (this.cursorStyleElement != undefined) {
 					this.cursorStyleElement.remove();
-					this.cursorStyleElement= undefined
+					this.cursorStyleElement = undefined
 				}
 
 				//only add custom overriding style if not auto 
