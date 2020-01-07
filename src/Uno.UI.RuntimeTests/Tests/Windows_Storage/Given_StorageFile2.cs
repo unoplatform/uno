@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using Windows.ApplicationModel.Resources;
 using Windows.ApplicationModel.Resources.Core;
 
@@ -37,7 +38,7 @@ namespace Uno.UI.RuntimeTests.Tests
 
 			Windows.Storage.StorageFile _file = null;
 			
-      DateTimeOffset _dateBefore = DateTimeOffset.Now;
+      		DateTimeOffset _dateBefore = DateTimeOffset.Now;
       
 			try
 			{
@@ -49,15 +50,15 @@ namespace Uno.UI.RuntimeTests.Tests
 			  Assert.IsNotNull(null, "CreateFile exception - error outside tested method");
 			}
 
-      DateTimeOffset _dateAfter = DateTimeOffset.Now;
+      		DateTimeOffset _dateAfter = DateTimeOffset.Now;
 
-      // test of DateCreated
+			// test of DateCreated
 
-      // now, some wait - to be sure that returned date is not simply 'current date'
-      // FAT has two seconds resolution - so wait should be longer
-      await Task.Delay(5000);
-      
-      DateTimeOffset _dateCreated;
+			// now, some wait - to be sure that returned date is not simply 'current date'
+			// FAT has two seconds resolution - so wait should be longer
+			await Task.Delay(5000);
+
+			DateTimeOffset _dateCreated = DateTimeOffset.Now; // unneeded initialization - just to skip compiler error of using uninitialized variable
 			try
 			{
 		  		_dateCreated = _file.DateCreated;
@@ -67,19 +68,19 @@ namespace Uno.UI.RuntimeTests.Tests
 				Assert.IsNotNull(null, "DateCreated exception - error in tested method");
 			}
 
-      _dateBefore = _dateBefore.AddSeconds(-2);
-      _dateAfter = _dateAfter.AddSeconds(2);
+		  _dateBefore = _dateBefore.AddSeconds(-2);
+		  _dateAfter = _dateAfter.AddSeconds(2);
       
 			// check if method works
-      if(_dateCreated < _dateBefore)
-      {
+		  if(_dateCreated < _dateBefore)
+		  {
 				Assert.IsNotNull(null, "DateCreated: too early - method doesnt work");
-      }
+		  }
 
-      if(_dateCreated > _dateAfter)
-      {
+		  if(_dateCreated > _dateAfter)
+		  {
 				Assert.IsNotNull(null, "DateCreated: too late - method doesnt work");
-      }
+		  }
 
       
 		}
