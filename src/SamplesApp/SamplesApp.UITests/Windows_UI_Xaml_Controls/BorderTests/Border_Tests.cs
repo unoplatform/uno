@@ -20,11 +20,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 
 			_app.WaitForElement("ClippedBorder");
 
+			var before = TakeScreenshot("Before property change");
+
 			_app.Tap("ClippedBorder");
 
 			_app.WaitForDependencyPropertyValue(_app.Marked("ClippedBorder"), "ManipulationMode", "None");
 
-			TakeScreenshot("After property change");
+			var after = TakeScreenshot("After property change");
+
+			ImageAssert.AreEqual(before, after);
 		}
 	}
 }
