@@ -33,7 +33,6 @@ namespace Windows.UI.Xaml
 
 		private readonly GCHandle _gcHandle;
 		private readonly bool _isFrameworkElement;
-		private Rect _nativeLayoutSlot; // The LayoutSLot requested JS, and which also contains Margins.
 
 		private protected int? Depth { get; private set; }
 
@@ -176,7 +175,7 @@ namespace Windows.UI.Xaml
 		/// <param name="clipRect">The Clip rect to set, if any</param>
 		protected internal void ArrangeElementNative(Rect rect, bool clipToBounds, Rect? clipRect)
 		{
-			_nativeLayoutSlot = rect;
+			LayoutSlotWithMarginsAndAlignments = rect;
 			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipToBounds, clipRect);
 
 #if DEBUG
@@ -622,73 +621,6 @@ namespace Windows.UI.Xaml
 			}
 
 			return base.ToString();
-		}
-
-		public GeneralTransform TransformToVisual(UIElement visual)
-			=> new MatrixTransform { Matrix = new Matrix(TransformToVisualCore(visual)) };
-
-		private Matrix3x2 TransformToVisualCore(UIElement visual)
-		{
-			if (visual == this)
-			{
-				return Matrix3x2.Identity;
-			}
-
-			var matrix = Matrix3x2.Identity;
-			double offsetX = 0.0, offsetY = 0.0;
-			var elt = this;
-			do
-			{
-				var transform = elt.RenderTransform;
-				if (transform == null)
-				{
-					// As this is the common case, avoid Matrix computation when a basic addition is sufficient
-					offsetX += elt._nativeLayoutSlot.X;
-					offsetY += elt._nativeLayoutSlot.Y;
-				}
-				else
-				{
-					// First apply any pending arrange offset that would have been impacted by this RenderTransform (eg. scaled)
-					// Friendly reminder: Matrix multiplication is usually not commutative ;)
-					matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
-					matrix *= transform.MatrixCore;
-
-					offsetX = elt._nativeLayoutSlot.X;
-					offsetY = elt._nativeLayoutSlot.Y;
-				}
-
-				if (elt is ScrollViewer sv)
-				{
-					var zoom = sv.ZoomFactor;
-					if (zoom != 1)
-					{
-						matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
-						matrix *= Matrix3x2.CreateScale(zoom);
-
-						offsetX = -sv.HorizontalOffset;
-						offsetY = -sv.VerticalOffset;
-					}
-					else
-					{
-						offsetX -= sv.HorizontalOffset;
-						offsetY -= sv.VerticalOffset;
-					}
-				}
-			} while ((elt = elt.GetParent() as UIElement) != null && elt != visual); // If possible we stop as soon as we reach 'visual'
-
-			matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
-
-			if (visual != null && elt != visual)
-			{
-				// Unfortunately we didn't find the 'visual' in our parent hierarchy,
-				// so matrix == thisToRoot and we now have to compute the transform 'rootToVisual'.
-				var visualToRoot = visual.TransformToVisualCore(null);
-				Matrix3x2.Invert(visualToRoot, out var rootToVisual);
-
-				matrix *= rootToVisual;
-			}
-
-			return matrix;
 		}
 
 		internal virtual bool IsEnabledOverride() => true;
