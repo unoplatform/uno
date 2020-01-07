@@ -1,18 +1,7 @@
 ﻿using Uno.Extensions;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Uno.Disposables;
-using System.Text;
-using Uno.UI;
-using Windows.UI.Core;
-using Windows.UI.Xaml.Media;
-using System.Threading.Tasks;
-using Windows.UI.Text;
-using Uno.Logging;
 using Uno.UI.UI.Xaml.Documents;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -24,9 +13,6 @@ namespace Windows.UI.Xaml.Controls
 		protected override bool RequestFocus(FocusState state) => FocusTextView();
 		partial void OnTextClearedPartial() => FocusTextView();
 		protected virtual bool FocusTextView() => FocusManager.Focus(_textBoxView);
-
-
-
 
 		private void UpdateTextBoxView()
 		{
@@ -61,9 +47,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void InitializePropertiesPartial()
 		{
-			ApplyEnabled();
-
-			if(_header != null)
+			if (_header != null)
 			{
 				AddHandler(PointerReleasedEvent, (PointerEventHandler)OnHeaderClick, true);
 			}
@@ -82,21 +66,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e)
-		{
-			if(e.NewValue is bool isReadonly)
-			{
-				if (isReadonly)
-				{
-					_textBoxView?.SetAttribute("readonly", "readonly");
-				}
-				else
-				{
-					_textBoxView?.RemoveAttribute("readonly");
-				}
-			}
-		}
-
 		partial void OnForegroundColorChangedPartial(Brush newValue)
 		{
 			_textBoxView?.SetForeground(newValue);
@@ -104,10 +73,15 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void UpdateFontPartial()
 		{
-			_textBoxView?.SetFontSize(FontSize);
-			_textBoxView?.SetFontStyle(FontStyle);
-			_textBoxView?.SetFontWeight(FontWeight);
-			_textBoxView?.SetFontFamily(FontFamily);
+			if(_textBoxView == null)
+			{
+				return;
+			}
+
+			_textBoxView.SetFontSize(FontSize);
+			_textBoxView.SetFontStyle(FontStyle);
+			_textBoxView.SetFontWeight(FontWeight);
+			_textBoxView.SetFontFamily(FontFamily);
 		}
 
 		partial void OnTextWrappingChangedPartial(DependencyPropertyChangedEventArgs e)
@@ -129,10 +103,20 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnIsEnabledChanged(oldValue, newValue);
 
-			ApplyEnabled();
+			ApplyEnabled(newValue);
 		}
 
-		private void ApplyEnabled() => _textBoxView?.SetEnabled(IsEnabled);
+		partial void OnIsReadonlyChangedPartial(DependencyPropertyChangedEventArgs e)
+		{
+			if (e.NewValue is bool isReadonly)
+			{
+				ApplyIsReadonly(isReadonly);
+			}
+		}
+
+		private void ApplyEnabled(bool? isEnabled = null) => _textBoxView?.SetEnabled(isEnabled ?? IsEnabled);
+
+		private void ApplyIsReadonly(bool? isReadOnly = null) => _textBoxView?.SetIsReadOnly(isReadOnly ?? IsReadOnly);
 
 		public int SelectionStart
 		{
