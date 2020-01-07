@@ -26,8 +26,6 @@ namespace Windows.UI.Xaml.Controls
 			InitializeBinder();
 			LayoutParameters = new ViewGroup.LayoutParams(ViewGroup.LayoutParams.MatchParent, ViewGroup.LayoutParams.MatchParent);
 			_layouter = new NativePagedViewLayouter(this);
-
-			MotionEventSplittingEnabled = false;
 		}
 
 		//TODO generated code - but note call of base.OnMeasure

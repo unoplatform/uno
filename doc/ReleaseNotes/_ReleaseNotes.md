@@ -11,6 +11,7 @@
 - Add clarification in [documentation](../articles/uno-development/working-with-the-samples-apps.md) for adding automated UI tests
 - Add support for `Popup.LightDismissOverlayMode`, as well as `DatePicker.LightDismissOverlayMode` and `Flyout.LightDismissOverlayMode`
 - `TransformToVisual` now returns a real transform to convert coordinates between views (was only returning a translate transform to offset the origin of controls)
+- Multiple pointers at same time on screen (a.k.a. Multi-touch) are now supported
 
 ### Breaking changes
 -
