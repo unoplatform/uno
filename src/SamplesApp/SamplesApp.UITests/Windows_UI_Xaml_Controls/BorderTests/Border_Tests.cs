@@ -22,7 +22,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 
 			_app.Tap("ClippedBorder");
 
-			_app.WaitForDependencyPropertyValue(_app.Marked("ClippedBorder"), "ManipulationMode", "ManipulationModes.None");
+			_app.WaitForDependencyPropertyValue(_app.Marked("ClippedBorder"), "ManipulationMode", "None");
 
 			TakeScreenshot("After property change");
 		}
