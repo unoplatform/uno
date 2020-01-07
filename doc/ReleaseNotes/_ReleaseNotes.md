@@ -52,6 +52,7 @@
 - Enable partial `NavigationView.ItemSource` scenario (https://github.com/unoplatform/uno/issues/2477)
 - [Wasm] Fail gracefully if IDBFS is not enabled in emscripten
 - [#2513] Fix `TransformGroup` not working
+- [Android] 164249 fixed TextBox.Text flickering when using custom IInputFilter with MaxLength set
 
 ## Release 2.0
 
