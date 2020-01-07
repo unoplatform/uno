@@ -36,7 +36,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			void HasValidSize(string name)
 			{
-				var rect = _app.Query(_app.Marked(name)).First().Rect;
+				var element = _app.Marked(name);
+				_app.WaitForElement(element);
+				var rect = _app.Query(element).First().Rect;
 				Assert.That(rect.Width != 0);
 				Assert.That(rect.Height != 0);
 			}
