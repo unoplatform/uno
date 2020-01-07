@@ -103,6 +103,12 @@ namespace XamlGenerationTests.Shared.MarkupExtensions
 		}
 	}
 
+	public class ComplexObject
+	{
+		public string StringProp { get; set; }
+		public int IntProp { get; set; }
+	}
+
 	public class NoReturnTypeMarkupExt : Windows.UI.Xaml.Markup.MarkupExtension
 	{
 		public Values UseValue { get; set; }

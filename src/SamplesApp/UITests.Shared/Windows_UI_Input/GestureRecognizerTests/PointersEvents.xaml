@@ -342,6 +342,53 @@
 					Content="Handle event"
 					Margin="20, 0"
 					Visibility="{Binding ElementName=_gestureDoubleTapped, Path=IsOn}"/>
+
+
+				<Slider
+					x:Name="_translateX"
+					Header="Translate X"
+					Minimum="-300"
+					Maximum="300"
+					Value="0" />
+				<Slider
+					x:Name="_translateY"
+					Header="Translate Y"
+					Minimum="-300"
+					Maximum="300"
+					Value="0" />
+				<Slider
+					x:Name="_rotate"
+					Header="Rotation"
+					Minimum="-360"
+					Maximum="360"
+					Value="0"/>
+				<Slider
+					x:Name="_scaleX"
+					Header="Scale X"
+					Minimum=".01"
+					Maximum="10"
+					Value="1"
+					StepFrequency=".01" />
+				<Slider
+					x:Name="_scaleY"
+					Header="Scale Y"
+					Minimum=".01"
+					Maximum="10"
+					Value="1"
+					StepFrequency=".01" />
+				<Slider
+					x:Name="_skewX"
+					Header="Skew X"
+					Minimum="-360"
+					Maximum="360"
+					Value="0" />
+				<Slider
+					x:Name="_skewY"
+					Header="Skew Y"
+					Minimum="-360"
+					Maximum="360"
+					Value="0" />
+					
 			</StackPanel>
 		</ScrollViewer>
 
@@ -358,7 +405,18 @@
 					Margin="50, 50, 0, 0"
 					Width="200"
 					Height="200"
-					Background="DeepPink" />
+					Background="DeepPink">
+					<Border.RenderTransform>
+						<CompositeTransform
+							TranslateX="{Binding ElementName=_translateX, Path=Value}"
+							TranslateY="{Binding ElementName=_translateY, Path=Value}"
+							Rotation="{Binding ElementName=_rotate, Path=Value}"
+							ScaleX="{Binding ElementName=_scaleX, Path=Value}"
+							ScaleY="{Binding ElementName=_scaleY, Path=Value}"
+							SkewX="{Binding ElementName=_skewX, Path=Value}"
+							SkewY="{Binding ElementName=_skewY, Path=Value}" />
+					</Border.RenderTransform>
+				</Border>
 			</Grid>
 		</ScrollViewer>
 

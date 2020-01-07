@@ -1,4 +1,4 @@
-#if __IOS__
+#if __IOS__ || __MACOS__
 using System;
 using System.Collections;
 using System.Collections.Generic;
