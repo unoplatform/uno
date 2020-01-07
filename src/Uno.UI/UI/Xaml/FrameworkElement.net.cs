@@ -95,6 +95,11 @@ namespace Windows.UI.Xaml
 			IsLoaded = true;
 			OnLoading();
 			OnLoaded();
+
+			foreach(var child in GetChildren().OfType<FrameworkElement>())
+			{
+				child.ForceLoaded();
+			}
 		}
 
 		public int InvalidateMeasureCallCount { get; private set; }
