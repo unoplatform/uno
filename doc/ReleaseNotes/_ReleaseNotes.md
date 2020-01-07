@@ -32,6 +32,7 @@
 - [#2033] Add Missing `LostFocus` Value to `UpdateSourceTrigger` Enum
 - [Android] Fix Image margin calculation on fixed size
 - [iOS] #2361 ListView would measure children with infinite width
+- [#2398] Fully qualify the `MethodName` value for `CreateFromStringAttribute' if it's not fully qualified it the code
 
 ## Release 2.0
 
