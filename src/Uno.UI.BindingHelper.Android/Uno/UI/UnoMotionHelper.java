@@ -25,13 +25,13 @@ import android.view.ViewParent;
 	final boolean getCustomDispatchIsActive() { return _isCustomDispatchIsActive; }
 	final void setCustomDispatchIsActive(boolean isCustomDispatchIsActive) { _isCustomDispatchIsActive = isCustomDispatchIsActive; }
 
-	// The "cached target" is used by the custom dispatch logic to track the last child to which an event was sent
+	// The "current target" is used by the custom dispatch logic to track the last child to which an event was sent
 	// This is required in order to make sure to follow the full events sequences: down->move->up OR enter->move->exit
-	// (For instance on a HOVER_MOVE, if the pointer goes out of the current "cached target" we still make sure to
-	// send it to this "cached target" the event in order to raise the HOVER_EXIT)
-	private View _cachedTarget;
-	final View getCachedTarget() { return _cachedTarget; }
-	final void setCachedTarget(View child) { _cachedTarget = child; }
+	// (For instance on a HOVER_MOVE, if the pointer goes out of this "current target" we still make sure to
+	// send it to this "current target" the event in order to raise the HOVER_EXIT)
+	private View _currentTarget;
+	final View getCurrentTarget() { return _currentTarget; }
+	final void setCurrentTarget(View child) { _currentTarget = child; }
 
 	// specific to the raised event (generic vs touch)
 
@@ -145,7 +145,7 @@ import android.view.ViewParent;
 			//		 we expect that the children will properly split the events
 
 			adapter.setCustomDispatchIsActive(target.getChildrenRenderTransformCount() > 0);
-			adapter.setCachedTarget(null);
+			adapter.setCurrentTarget(null);
 		}
 
 		if (!target.getNativeIsHitTestVisible() || !target.getNativeIsEnabled()) {
@@ -317,13 +317,13 @@ import android.view.ViewParent;
 		// ViewGroup.dispatchTouchEvent() isn't called for Down then all subsequent events won't be handled correctly
 		// (because mFirstTouchTarget won't be set)
 
-		final View cachedChild = adapter.getCachedTarget();
-		if (cachedChild != null) {
+		final View currentTarget = adapter.getCurrentTarget();
+		if (currentTarget != null) {
 			// We already have a target for the events, try to apply the static transform and dispatch the event.
 			// If the event was not handled and we are not dealing with a "strong sequence" (a.k.a. implicit capture),
-			// we need to update the cached target.
+			// we need to update the current target.
 
-			final boolean handled = dispatchStaticTransformedMotionEvent(adapter, cachedChild, true, event);
+			final boolean handled = dispatchStaticTransformedMotionEvent(adapter, currentTarget, true, event);
 			if (handled || adapter.getIsStrongSequence()) {
 				return true;
 			}
@@ -336,22 +336,22 @@ import android.view.ViewParent;
 			View child = view.getChildAt(i);
 
 			// Same check as native "canViewReceivePointerEvents"
-			if (child == cachedChild || child.getVisibility() != View.VISIBLE || child.getAnimation() != null) {
+			if (child == currentTarget || child.getVisibility() != View.VISIBLE || child.getAnimation() != null) {
 				continue;
 			}
 
 			if (dispatchStaticTransformedMotionEvent(adapter, child, false, event)) {
-				adapter.setCachedTarget(child); // (try to) cache the child for future events
+				adapter.setCurrentTarget(child); // (try to) cache the child for future events
 				return true; // Stop at the first child which is able to handle the event
 			}
 		}
 
 		// No target found ...
-		adapter.setCachedTarget(null);
+		adapter.setCurrentTarget(null);
 		return false;
 	}
 
-	private boolean dispatchStaticTransformedMotionEvent(Uno.UI.MotionTargetAdapter adapter, View child, boolean isCachedTarget, MotionEvent event){
+	private boolean dispatchStaticTransformedMotionEvent(Uno.UI.MotionTargetAdapter adapter, View child, boolean isSequenceContinuation, MotionEvent event){
 		// For the ACTION_CANCEL the coordinates are not set properly:
 		// "Canceling motions is a special case.  We don't need to perform any transformations
 		// or filtering.  The important part is the action, not the contents."
@@ -372,7 +372,7 @@ import android.view.ViewParent;
 
 			event.offsetLocation(offsetX, offsetY);
 
-			handled = dispatchStaticTransformedMotionEventCore(adapter, child, event, isCachedTarget);
+			handled = dispatchStaticTransformedMotionEventCore(adapter, child, event, isSequenceContinuation);
 
 			event.offsetLocation(-offsetX, -offsetY);
 		} else {
@@ -386,7 +386,7 @@ import android.view.ViewParent;
 			transformedEvent.offsetLocation(offsetX, offsetY);
 			transformedEvent.transform(inverse);
 
-			handled = dispatchStaticTransformedMotionEventCore(adapter, child, transformedEvent, isCachedTarget);
+			handled = dispatchStaticTransformedMotionEventCore(adapter, child, transformedEvent, isSequenceContinuation);
 
 			transformedEvent.recycle();
 		}
@@ -394,27 +394,27 @@ import android.view.ViewParent;
 		return handled;
 	}
 
-	private boolean dispatchStaticTransformedMotionEventCore(Uno.UI.MotionTargetAdapter adapter, View child, MotionEvent transformedEvent, boolean isCachedTarget) {
-		if ((isCachedTarget && adapter.getIsStrongSequence()) || isMotionInView(transformedEvent, child)) {
+	private boolean dispatchStaticTransformedMotionEventCore(Uno.UI.MotionTargetAdapter adapter, View child, MotionEvent transformedEvent, boolean isSequenceContinuation) {
+		if ((isSequenceContinuation && adapter.getIsStrongSequence()) || isMotionInView(transformedEvent, child)) {
 			// At this point the target is either a cached target of an adapter which abstract a strong event sequence
 			// with an implicit capture (i.e. down->move->up), OR the pointer is over the target.
 			// In both cases, we have to dispatch the motion event to it, and propagates its handling result.
 
-			// Log.i(LOGTAG, _indent + "Dispatching to child " + child.toString() + " [evt: " + String.format("%.2f", transformedEvent.getX()) + "," + String.format("%.2f", transformedEvent.getY()) + " | isCachedTarget: " + isCachedTarget + " | inView: " + isMotionInView(transformedEvent, child) + "]");
+			// Log.i(LOGTAG, _indent + "Dispatching to child " + child.toString() + " [evt: " + String.format("%.2f", transformedEvent.getX()) + "," + String.format("%.2f", transformedEvent.getY()) + " | isSequenceContinuation: " + isSequenceContinuation + " | inView: " + isMotionInView(transformedEvent, child) + "]");
 
 			return adapter.dispatchToChild(child, transformedEvent);
-		} else if (isCachedTarget) {
-			// If the target is comming from cache, but the pointer is no longer over it,
+		} else if (isSequenceContinuation) {
+			// If the target is comming from cache (a.k.a. current), but the pointer is no longer over it,
 			// we still forward the event to it in order to clean up it state, but we don't consider
 			// the event as handled (so the caller will be able to cycle on other sibblings to find the new target)
 
-			// Log.i(LOGTAG, _indent + "Dispatching to **OLD** cached child " + child.toString() + " (Will be removed from cache as no longer in view) [evt: " + String.format("%.2f", transformedEvent.getX()) + "," + String.format("%.2f", transformedEvent.getY()) + " | isCachedTarget: " + isCachedTarget + " | inView: " + isMotionInView(transformedEvent, child) + "]");
+			// Log.i(LOGTAG, _indent + "Dispatching to **PREVIOUS** current target " + child.toString() + " (Will be removed from current as no longer in view) [evt: " + String.format("%.2f", transformedEvent.getX()) + "," + String.format("%.2f", transformedEvent.getY()) + " | isSequenceContinuation: " + isSequenceContinuation + " | inView: " + isMotionInView(transformedEvent, child) + "]");
 
 			adapter.dispatchToChild(child, transformedEvent);
 
 			return false;
 		} else {
-			// Log.i(LOGTAG, _indent + "Ignoring child " + child.toString() + " as its not in cache nor in view [evt: " + String.format("%.2f", transformedEvent.getX()) + "," + String.format("%.2f", transformedEvent.getY()) + " | isCachedTarget: " + isCachedTarget + " | inView: " + isMotionInView(transformedEvent, child) + "]");
+			// Log.i(LOGTAG, _indent + "Ignoring child " + child.toString() + " as its not flagged as current target of sequence nor in view [evt: " + String.format("%.2f", transformedEvent.getX()) + "," + String.format("%.2f", transformedEvent.getY()) + " | isSequenceContinuation: " + isSequenceContinuation + " | inView: " + isMotionInView(transformedEvent, child) + "]");
 
 			return false;
 		}
