@@ -9,20 +9,25 @@ using Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 {
 	[TestClass]
-	public class Given_StaticResource
+	public class Given_xBind_Binding
 	{
 		[TestMethod]
-		public void When_xBind_Resource()
+		[Ignore]
+		public void When_Initial_Value()
 		{
-			var SUT = new StaticResource_Control();
+			var SUT = new Binding_Control();
 
-			Assert.IsNull(SUT.mySource.Source);
-
-			SUT.MyProperty = 42;
+			Assert.IsNull(SUT._StringField.Text);
 
 			SUT.ForceLoaded();
 
-			Assert.AreEqual(42, SUT.mySource.Source);
+			Assert.AreEqual("initial", SUT._StringField.Text);
+
+			SUT.stringField = "updated";
+
+			SUT.DoUpdate();
+
+			Assert.AreEqual("updated", SUT._StringField.Text);
 		}
 	}
 }

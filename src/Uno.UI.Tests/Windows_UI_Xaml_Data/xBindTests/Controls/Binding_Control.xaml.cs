@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -15,18 +16,23 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
+namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 {
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	public sealed partial class Given_StaticResource_Control : Page
+	public sealed partial class Binding_Control : Page
 	{
-		public Given_StaticResource_Control()
+		public Binding_Control()
 		{
 			this.InitializeComponent();
 		}
 
-		public object MyProperty { get; set; }
+		public string stringField = "initial";
+
+		public void DoUpdate()
+		{
+			Bindings.Update();
+		}
 	}
 }
