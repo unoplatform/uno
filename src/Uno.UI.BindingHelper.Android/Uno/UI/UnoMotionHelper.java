@@ -137,8 +137,8 @@ import android.view.ViewParent;
 		_currentMotionOriginalSource = null;
 
 		final boolean isDown = event.getAction() == MotionEvent.ACTION_DOWN;
-		final boolean isBeginOfSequence = isDown || event.getAction() == MotionEvent.ACTION_HOVER_ENTER;
-		if (isBeginOfSequence) {
+		final boolean isBeginningOfSequence = isDown || event.getAction() == MotionEvent.ACTION_HOVER_ENTER;
+		if (isBeginningOfSequence) {
 			// When we receive a pointer DOWN, we have to reset the down -> move -> up sequence,
 			// so the dispatch will re-evaluate the _customDispatchTouchTarget;
 			// Note: we do not support the MotionEvent splitting for the custom touch target,
@@ -155,11 +155,11 @@ import android.view.ViewParent;
 			return false;
 		}
 
-		if (isBeginOfSequence && !isMotionInView(event, view)) {
+		if (isBeginningOfSequence && !isMotionInView(event, view)) {
 			// When using the "super" dispatch path, it's possible that for visual constraints (i.e. clipping),
 			// the view must not handle the touch. If that's the case, the touch event must be dispatched
 			// to other controls.
-			// Note: We do this check only when starting a new manipulation (isBeginOfSequence), so the whole down->move->up sequence is ignored;
+			// Note: We do this check only when starting a new manipulation (isBeginningOfSequence), so the whole down->move->up sequence is ignored;
 			// Warning: We should also do this check for events that does not have strong sequence concept (i.e. Hover)
 			// 			(!dispatch.getIsTargetCachingSupported() || isDown), BUT if we do this, we may miss some HOVER_EXIT
 			//			So we prefer to not follow the UWP behavior (PointerEnter/Exit are raised only when entering/leaving
