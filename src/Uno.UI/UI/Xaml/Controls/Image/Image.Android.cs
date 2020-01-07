@@ -411,8 +411,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool MustOpenImageToMeasure()
 		{
-			// If an image doesn't have fixed sizes and is Uniform, we must use its aspect ratio to measure it.
-			return Stretch == Stretch.Uniform && (double.IsNaN(Width) || double.IsNaN(Height));
+			// If an image doesn't have fixed sizes and is Uniform or None, we must use its aspect ratio to measure it.
+			return (Stretch == Stretch.Uniform || Stretch == Stretch.None) && (double.IsNaN(Width) || double.IsNaN(Height));
 		}
 
 		private async Task SetSourceUriOrStream(ImageSource newImageSource)
@@ -428,7 +428,7 @@ namespace Windows.UI.Xaml.Controls
 
 				_imageFetchDisposable.Disposable = disposable;
 
-                var bitmap = await newImageSource.Open(disposable.Token, this, _targetWidth, _targetHeight);
+				var bitmap = await newImageSource.Open(disposable.Token, this, _targetWidth, _targetHeight);
 
 				if (newImageSource.IsImageLoadedToUiDirectly)
 				{

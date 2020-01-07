@@ -15,7 +15,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 	{
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.iOS, Platform.Android, Platform.Browser)]
 		public void WriteableBitmap_Invalidate()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ImageTests.ImageSourceWriteableBitmapInvalidate");
@@ -27,6 +26,25 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			// Take screenshot
 			TakeScreenshot("WriteableBitmap_Invalidate - Result");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ImageStretch_None()
+		{
+			Run("Uno.UI.Samples.UITests.ImageTestsControl.Image_Stretch_None");
+
+			void HasValidSize(string name)
+			{
+				var rect = _app.Query(_app.Marked(name)).First().Rect;
+				Assert.That(rect.Width != 0);
+				Assert.That(rect.Height != 0);
+			}
+
+			HasValidSize("image01");
+			HasValidSize("image02");
+			HasValidSize("image03");
+			HasValidSize("image04");
 		}
 
 		[Test]
