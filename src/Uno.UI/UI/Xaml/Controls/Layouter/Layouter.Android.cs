@@ -74,8 +74,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetArrangeLogicalSize(View view, Rect frame)
 		{
-			var uiElement = view as UIElement;
-			if (uiElement != null)
+			if (view is UIElement uiElement)
 			{
 				uiElement.ArrangeLogicalSize = frame;
 			}
@@ -83,8 +82,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void ResetArrangeLogicalSize(View view)
 		{
-			var uiElement = view as UIElement;
-			if (uiElement != null)
+			if (view is UIElement uiElement)
 			{
 				uiElement.ArrangeLogicalSize = null;
 			}
