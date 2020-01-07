@@ -53,19 +53,45 @@ namespace Windows.UI.Xaml.Shapes
 			var bounds = owner.Bounds;
 			var area = new CGRect(0, 0, bounds.Width, bounds.Height);
 
-			var newState = new LayoutState(area, background, borderThickness, borderBrush, cornerRadius, backgroundImage);
-			var previousLayoutState = _currentState;
-
-			if (!newState.Equals(previousLayoutState))
+			if (cornerRadius != CornerRadius.None)
 			{
+				//Creating a new view so that the CornerRadius does not mask the Elevation of the control
+				var viewGrid = new _View();
+
+				var newState = new LayoutState(area, background, borderThickness, borderBrush, cornerRadius, backgroundImage);
+				var previousLayoutState = _currentState;
+
+				if (!newState.Equals(previousLayoutState))
+				{
 #if __MACOS__
-				owner.WantsLayer = true;
+					owner.WantsLayer = true;
 #endif
 
-				_layerDisposable.Disposable = null;
-				_layerDisposable.Disposable = InnerCreateLayer(owner as UIElement, owner.Layer, area, background, borderThickness, borderBrush, cornerRadius);
+					_layerDisposable.Disposable = null;
+					_layerDisposable.Disposable = InnerCreateLayer(viewGrid as UIElement, viewGrid.Layer, area, background, borderThickness, borderBrush, cornerRadius);
 
-				_currentState = newState;
+					_currentState = newState;
+				}
+
+				//TODO Cleanup layers
+				owner.Layer.InsertSublayer(viewGrid.Layer, owner.Layer.Sublayers.Length - 1);
+			}
+			else
+			{
+				var newState = new LayoutState(area, background, borderThickness, borderBrush, cornerRadius, backgroundImage);
+				var previousLayoutState = _currentState;
+
+				if (!newState.Equals(previousLayoutState))
+				{
+#if __MACOS__
+					owner.WantsLayer = true;
+#endif
+
+					_layerDisposable.Disposable = null;
+					_layerDisposable.Disposable = InnerCreateLayer(owner as UIElement, owner.Layer, area, background, borderThickness, borderBrush, cornerRadius);
+
+					_currentState = newState;
+				}
 			}
 		}
 
