@@ -29,6 +29,7 @@
 - [iOS] Fix invalid image measure on constrained images with `Margin`
 - `ViewBox` no longer alters its child's `RenderTransform`
 - [#2033] Add Missing `LostFocus` Value to `UpdateSourceTrigger` Enum
+- [Android] Fix Image margin calculation on fixed size
 
 ## Release 2.0
 
