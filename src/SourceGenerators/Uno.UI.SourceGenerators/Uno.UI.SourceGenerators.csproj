@@ -106,7 +106,7 @@
 			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\tools</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
-			<_OutputFiles Include="$(TargetDir)*.*" />
+			<_OutputFiles Include="$(TargetDir)**" />
 		</ItemGroup>
 		<MakeDir Directories="$(_TargetNugetFolder)" />
 		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
