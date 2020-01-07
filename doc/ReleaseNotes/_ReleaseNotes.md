@@ -30,6 +30,7 @@
 - `ViewBox` no longer alters its child's `RenderTransform`
 - [#2033] Add Missing `LostFocus` Value to `UpdateSourceTrigger` Enum
 - [Android] Fix Image margin calculation on fixed size
+- [iOS] #2361 ListView would measure children with infinite width
 
 ## Release 2.0
 
