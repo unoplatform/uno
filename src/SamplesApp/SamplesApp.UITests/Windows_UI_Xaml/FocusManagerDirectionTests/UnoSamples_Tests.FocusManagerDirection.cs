@@ -6,6 +6,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -13,6 +14,22 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 {
 	public partial class UnoSamples_Tests : SampleControlUITestBase
 	{
+		private void ChangeFocusAndAssertBeforeAfter(IApp app, Action<IApp> changeFocus, QueryEx target, string initialText, string finalText)
+		{
+			// Focus target
+			changeFocus(app);
+
+			// Assert initial state
+			Assert.AreEqual(initialText, target.GetDependencyPropertyValue("Text")?.ToString());
+
+			// Update text content
+			_app.ClearText();
+			_app.EnterText(finalText);
+
+			// Assert final state
+			Assert.AreEqual(finalText, target.GetDependencyPropertyValue("Text")?.ToString());
+		}
+
 		[Test]
 		[AutoRetry]
 		public void FocusManager_FocusDirection_Next_Validation()
@@ -26,30 +43,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 			_app.Tap(firstTextBox);
 
-			// Click on next button to move to next text box
-			_app.Tap(nextButton);
-
-			// Assert initial state for textbox 2
-			Assert.AreEqual("2", secondTextBox.GetDependencyPropertyValue("Text")?.ToString());
-
-			_app.ClearText();
-			_app.EnterText("Second text box got focus");
-
-			// Assert final state for textbox 2
-			Assert.AreEqual("Second text box got focus", secondTextBox.GetDependencyPropertyValue("Text")?.ToString());
-
-			// Click on next button to move to next text box
-			_app.Tap(nextButton);
-
-			// Assert initial state for textbox 3
-			Assert.AreEqual("3", thirdTextBox.GetDependencyPropertyValue("Text")?.ToString());
-
-			_app.ClearText();
-			_app.EnterText("Third text box got focus");
-
-			// Assert final state for textbox 3
-			Assert.AreEqual("Third text box got focus", thirdTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			ChangeFocusAndAssertBeforeAfter(_app, app => app.Tap(nextButton), secondTextBox, "2", "Second text box got focus");
+			ChangeFocusAndAssertBeforeAfter(_app, app => app.Tap(nextButton), thirdTextBox, "3", "Third text box got focus");
 		}
+
 
 		[Test]
 		[AutoRetry]
@@ -64,29 +61,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 			_app.Tap(sixthTextBox);
 
-			// Click on previous button to move to previous text box
-			_app.Tap(previousButton);
-
-			// Assert initial state for textbox 5
-			Assert.AreEqual("5", fifthTextBox.GetDependencyPropertyValue("Text")?.ToString());
-
-			_app.ClearText();
-			_app.EnterText("Fifth text box got focus");
-
-			// Assert final state for textbox 5
-			Assert.AreEqual("Fifth text box got focus", fifthTextBox.GetDependencyPropertyValue("Text")?.ToString());
-
-			// Click on previous button to move to previous text box
-			_app.Tap(previousButton);
-
-			// Assert initial state for textbox 4
-			Assert.AreEqual("4", fourthTextBox.GetDependencyPropertyValue("Text")?.ToString());
-
-			_app.ClearText();
-			_app.EnterText("Fourth text box got focus");
-
-			// Assert final state for textbox 4
-			Assert.AreEqual("Fourth text box got focus", fourthTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			ChangeFocusAndAssertBeforeAfter(_app, app => app.Tap(previousButton), fifthTextBox, "5", "Fifth text box got focus");
+			ChangeFocusAndAssertBeforeAfter(_app, app => app.Tap(previousButton), fourthTextBox, "4", "Fourth text box got focus");
 		}
 
 		[Test]
@@ -102,29 +78,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 			_app.Tap(eighthTextBox);
 
-			// Click on up button to move to 5th text box
-			_app.Tap(upButton);
-
-			// Assert initial state for textbox 5
-			Assert.AreEqual("5", fifthTextBox.GetDependencyPropertyValue("Text")?.ToString());
-
-			_app.ClearText();
-			_app.EnterText("Fifth text box got focus");
-
-			// Assert final state for textbox 5
-			Assert.AreEqual("Fifth text box got focus", fifthTextBox.GetDependencyPropertyValue("Text")?.ToString());
-
-			// Click on up button to move to text box 2
-			_app.Tap(upButton);
-
-			// Assert initial state for textbox 2
-			Assert.AreEqual("2", secondTextBox.GetDependencyPropertyValue("Text")?.ToString());
-
-			_app.ClearText();
-			_app.EnterText("Second text box got focus");
-
-			// Assert final state for textbox 2
-			Assert.AreEqual("Second text box got focus", secondTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			ChangeFocusAndAssertBeforeAfter(_app, app => app.Tap(upButton), fifthTextBox, "5", "Fifth text box got focus");
+			ChangeFocusAndAssertBeforeAfter(_app, app => app.Tap(upButton), secondTextBox, "2", "Second text box got focus");
 		}
 
 		[Test]
@@ -140,29 +95,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 			_app.Tap(secondTextBox);
 
-			// Click on down button to move to text box 5
-			_app.Tap(downButton);
-
-			// Assert initial state for textbox 5
-			Assert.AreEqual("5", fifthTextBox.GetDependencyPropertyValue("Text")?.ToString());
-
-			_app.ClearText();
-			_app.EnterText("Fifth text box got focus");
-
-			// Assert final state for textbox 5
-			Assert.AreEqual("Fifth text box got focus", fifthTextBox.GetDependencyPropertyValue("Text")?.ToString());
-
-			// Click on down button to move to text box 8
-			_app.Tap(downButton);
-
-			// Assert initial state for textbox 8
-			Assert.AreEqual("8", eighthTextBox.GetDependencyPropertyValue("Text")?.ToString());
-
-			_app.ClearText();
-			_app.EnterText("Eighth text box got focus");
-
-			// Assert final state for textbox 8
-			Assert.AreEqual("Eighth text box got focus", eighthTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			ChangeFocusAndAssertBeforeAfter(_app, app => app.Tap(downButton), fifthTextBox, "5", "Fifth text box got focus");
+			ChangeFocusAndAssertBeforeAfter(_app, app => app.Tap(downButton), eighthTextBox, "8", "Eighth text box got focus");
 		}
 
 		[Test]
@@ -178,29 +112,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 			_app.Tap(sixthTextBox);
 
-			// Click on left button to move to left text box
-			_app.Tap(leftButton);
-
-			// Assert initial state for textbox 5
-			Assert.AreEqual("5", fifthTextBox.GetDependencyPropertyValue("Text")?.ToString());
-
-			_app.ClearText();
-			_app.EnterText("Fifth text box got focus");
-
-			// Assert final state for textbox 5
-			Assert.AreEqual("Fifth text box got focus", fifthTextBox.GetDependencyPropertyValue("Text")?.ToString());
-
-			// Click on left button to move to left text box
-			_app.Tap(leftButton);
-
-			// Assert initial state for textbox 4
-			Assert.AreEqual("4", fourthTextBox.GetDependencyPropertyValue("Text")?.ToString());
-
-			_app.ClearText();
-			_app.EnterText("Fourth text box got focus");
-
-			// Assert final state for textbox 4
-			Assert.AreEqual("Fourth text box got focus", fourthTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			ChangeFocusAndAssertBeforeAfter(_app, app => app.Tap(leftButton), fifthTextBox, "5", "Fifth text box got focus");
+			ChangeFocusAndAssertBeforeAfter(_app, app => app.Tap(leftButton), fourthTextBox, "4", "Fourth text box got focus");
 		}
 
 		[Test]
@@ -216,29 +129,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 			_app.Tap(firstTextBox);
 
-			// Click on right button to move to right text box
-			_app.Tap(rightButton);
-
-			// Assert initial state for textbox 2
-			Assert.AreEqual("2", secondTextBox.GetDependencyPropertyValue("Text")?.ToString());
-
-			_app.ClearText();
-			_app.EnterText("Second text box got focus");
-
-			// Assert final state for textbox 2
-			Assert.AreEqual("Second text box got focus", secondTextBox.GetDependencyPropertyValue("Text")?.ToString());
-
-			// Click on right button to move to right text box
-			_app.Tap(rightButton);
-
-			// Assert initial state for textbox 3
-			Assert.AreEqual("3", thirdTextBox.GetDependencyPropertyValue("Text")?.ToString());
-
-			_app.ClearText();
-			_app.EnterText("Third text box got focus");
-
-			// Assert final state for textbox 3
-			Assert.AreEqual("Third text box got focus", thirdTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			ChangeFocusAndAssertBeforeAfter(_app, app => app.Tap(rightButton), secondTextBox, "2", "Second text box got focus");
+			ChangeFocusAndAssertBeforeAfter(_app, app => app.Tap(rightButton), thirdTextBox, "3", "Third text box got focus");
 		}
 	}
 }
