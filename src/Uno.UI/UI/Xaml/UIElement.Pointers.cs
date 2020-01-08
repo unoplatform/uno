@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -132,7 +133,7 @@ namespace Windows.UI.Xaml
 			if (sender is UIElement elt && !elt.IsHitTestVisibleCoalesced)
 			{
 				elt.Release(PointerCaptureKind.Any);
-				elt.SetPressed(null, false, muteEvent: true);
+				elt.ClearPressed();
 				elt.SetOver(null, false, muteEvent: true);
 			}
 		};
@@ -142,7 +143,7 @@ namespace Windows.UI.Xaml
 			if (sender is UIElement elt)
 			{
 				elt.Release(PointerCaptureKind.Any);
-				elt.SetPressed(null, false, muteEvent: true);
+				elt.ClearPressed();
 				elt.SetOver(null, false, muteEvent: true);
 			}
 		};
@@ -325,6 +326,10 @@ namespace Windows.UI.Xaml
 			else if (routedEvent == DoubleTappedEvent)
 			{
 				_gestures.Value.GestureSettings |= GestureSettings.DoubleTap;
+			}
+			else if (routedEvent == RightTappedEvent)
+			{
+				_gestures.Value.GestureSettings |= GestureSettings.RightTap;
 			}
 		}
 		#endregion
@@ -680,6 +685,8 @@ namespace Windows.UI.Xaml
 		#endregion
 
 		#region Pointer pressed state (Updated by the partial API OnNative***)
+		private readonly HashSet<uint> _pressedPointers = new HashSet<uint>(4);
+
 		/// <summary>
 		/// Indicates if a pointer was pressed while over the element (i.e. PressedState).
 		/// Note: The pressed state will remain true even if the pointer exits the control (while pressed)
@@ -691,7 +698,7 @@ namespace Windows.UI.Xaml
 		/// So it means that this flag will be maintained only if you subscribe at least to one pointer event
 		/// (or override one of the OnPointer*** methods).
 		/// </remarks>
-		internal bool IsPointerPressed { get; set; } // TODO: 'Set' should be private, but we need to update all controls that are setting
+		internal bool IsPointerPressed => _pressedPointers.Count != 0;
 
 		/// <summary>
 		/// Indicates if a pointer was pressed while over the element (i.e. PressedState)
@@ -704,30 +711,49 @@ namespace Windows.UI.Xaml
 		/// So it means that this method will give valid state only if you subscribe at least to one pointer event
 		/// (or override one of the OnPointer*** methods).
 		/// </remarks>
-		internal bool IsPressed(Pointer pointer) => IsPointerPressed;
+		/// <remarks>
+		/// Note that on UWP the "pressed" state is managed **PER POINTER**, and not per pressed button on the given pointer.
+		/// It means that with a mouse if you follow this sequence : press left => press right => release right => release left,
+		/// you will get only one 'PointerPressed' and one 'PointerReleased'.
+		/// Same thing if you release left first (press left => press right => release left => release right), and for the pen's barrel button.
+		/// </remarks>
+		internal bool IsPressed(Pointer pointer) => _pressedPointers.Contains(pointer.PointerId);
 
 		private bool SetPressed(PointerRoutedEventArgs args, bool isPressed, bool muteEvent = false)
 		{
-			var wasPressed = IsPointerPressed;
-			IsPointerPressed = isPressed;
-
-			if (muteEvent
-				|| wasPressed == isPressed) // nothing changed
+			var wasPressed = IsPressed(args.Pointer);
+			if (wasPressed == isPressed) // nothing changed
 			{
 				return false;
 			}
 
 			if (isPressed) // Pressed
 			{
+				_pressedPointers.Add(args.Pointer.PointerId);
+
+				if (muteEvent)
+				{
+					return false;
+				}
+
 				args.Handled = false;
 				return RaisePointerEvent(PointerPressedEvent, args);
 			}
 			else // Released
 			{
+				_pressedPointers.Remove(args.Pointer.PointerId);
+
+				if (muteEvent)
+				{
+					return false;
+				}
+
 				args.Handled = false;
 				return RaisePointerEvent(PointerReleasedEvent, args);
 			}
 		}
+
+		private void ClearPressed() => _pressedPointers.Clear();
 		#endregion
 
 		#region Pointer capture state (Updated by the partial API OnNative***)
