@@ -21,6 +21,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private readonly SerialDisposable _collectionViewSubscription = new SerialDisposable();
 		private BindingPath _path;
+		private bool _selectingItem;
 
 		/// <summary>
 		/// This is always true for <see cref="FlipView"/> and <see cref="ComboBox"/>, and depends on the value of <see cref="ListViewBase.SelectionMode"/> for <see cref="ListViewBase"/>.
@@ -49,44 +50,72 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set => this.SetValue(SelectedItemProperty, value);
 		}
 
+		internal virtual void OnSelectorItemIsSelectedChanged(SelectorItem item)
+		{
+			OnSelectedItemChanged(SelectedItem, item.IsSelected ? item : null);
+		}
+
 		internal virtual void OnSelectedItemChanged(object oldSelectedItem, object selectedItem)
 		{
-			var wasSelectionUnset = oldSelectedItem == null && (!GetItems()?.Contains(null) ?? false);
-			var isSelectionUnset = false;
-			if (!GetItems()?.Contains(selectedItem) ?? false)
+			if (!_selectingItem)
 			{
-				if (selectedItem == null)
+				try
 				{
-					isSelectionUnset = true;
+					_selectingItem = true;
+					var wasSelectionUnset = oldSelectedItem == null && (!GetItems()?.Contains(null) ?? false);
+					var isSelectionUnset = false;
+					if (!GetItems()?.Contains(selectedItem) ?? false)
+					{
+						if (selectedItem == null)
+						{
+							isSelectionUnset = true;
+						}
+						else
+						{
+							//Prevent SelectedItem being set to an invalid value
+							SelectedItem = oldSelectedItem;
+						
+							return;
+						}
+					}
+
+					// If SelectedIndex is -1 and SelectedItem is being changed from non-null to null, this indicates that we're desetting 
+					// SelectedItem, not setting a null inside the collection as selected. Little edge case there. (Note that this relies 
+					// on user interactions setting SelectedIndex which then sets SelectedItem.)
+					if (SelectedIndex == -1 && selectedItem == null)
+					{
+						isSelectionUnset = true;
+					}
+
+					var newIndex = IndexFromItem(selectedItem);
+					if (SelectedIndex != newIndex)
+					{
+						SelectedIndex = newIndex;
+					}
+
+					InvokeSelectionChanged(wasSelectionUnset ? new object[] { } : new[] { oldSelectedItem },
+						isSelectionUnset ? new object[] { } : new[] { selectedItem }
+					);
+					OnSelectedItemChangedPartial(oldSelectedItem, selectedItem);
+
+					UpdateSelectedValue();
+
+					TryUpdateSelectorItemIsSelected(oldSelectedItem, false);
+					TryUpdateSelectorItemIsSelected(selectedItem, true);
 				}
-				else
+				finally
 				{
-					//Prevent SelectedItem being set to an invalid value
-					SelectedItem = oldSelectedItem;
-					return;
+					_selectingItem = false;
 				}
 			}
+		}
 
-			// If SelectedIndex is -1 and SelectedItem is being changed from non-null to null, this indicates that we're desetting 
-			// SelectedItem, not setting a null inside the collection as selected. Little edge case there. (Note that this relies 
-			// on user interactions setting SelectedIndex which then sets SelectedItem.)
-			if (SelectedIndex == -1 && selectedItem == null)
+		private void TryUpdateSelectorItemIsSelected(object item, bool isSelected)
+		{
+			if (item is SelectorItem si)
 			{
-				isSelectionUnset = true;
+				si.IsSelected = isSelected;
 			}
-
-			var newIndex = IndexFromItem(selectedItem);
-			if (SelectedIndex != newIndex)
-			{
-				SelectedIndex = newIndex;
-			}
-
-			InvokeSelectionChanged(wasSelectionUnset ? new object[] { } : new[] { oldSelectedItem },
-				isSelectionUnset ? new object[] { } : new[] { selectedItem }
-			);
-			OnSelectedItemChangedPartial(oldSelectedItem, selectedItem);
-
-			UpdateSelectedValue();
 		}
 
 		private void UpdateSelectedValue()
@@ -102,6 +131,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				_path = null;
 			}
+
 
 			if (_path != null)
 			{
