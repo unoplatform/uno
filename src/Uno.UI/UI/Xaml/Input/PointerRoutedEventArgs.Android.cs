@@ -15,17 +15,29 @@ namespace Windows.UI.Xaml.Input
 {
 	partial class PointerRoutedEventArgs
 	{
+		private const int _pointerIdsCount = (int)MotionEventActions.PointerIndexMask >> (int)MotionEventActions.PointerIndexShift; // 0xff
+		private const int _pointerIdsShift = 31 - (int)MotionEventActions.PointerIndexShift; // 23
+
 		private readonly MotionEvent _nativeEvent;
+		private readonly int _pointerIndex;
 		private readonly UIElement _receiver;
 
-		internal PointerRoutedEventArgs(MotionEvent nativeEvent, UIElement originalSource, UIElement receiver) : this()
+		internal PointerRoutedEventArgs(MotionEvent nativeEvent, int pointerIndex, UIElement originalSource, UIElement receiver) : this()
 		{
 			_nativeEvent = nativeEvent;
+			_pointerIndex = pointerIndex;
 			_receiver = receiver;
 
-			var pointerId = (uint)nativeEvent.DeviceId; // The nativeEvent.GetPointerId(**) almost always returns 0
-			var type = nativeEvent.GetToolType(nativeEvent.ActionIndex).ToPointerDeviceType();
-			var isInContact = IsInContact(type, nativeEvent);
+			// Here we assume that usually pointerId is 'PointerIndexShift' bits long (8 bits / 255 ids),
+			// and that usually the deviceId is [0, something_not_too_big_hopefully_less_than_0x00ffffff].
+			// If deviceId is greater than 0x00ffffff, we might have a conflict but only in case of multi touch
+			// and with a high variation of deviceId. We assume that's safe enough.
+
+			// Note: Make sure to use the GetPointerId in order to make sure to keep the same id while: down_1 / down_2 / up_1 / up_2
+			// otherwise up_2 will be with the id of 1
+			var pointerId = ((uint)nativeEvent.GetPointerId(pointerIndex) & _pointerIdsCount) << _pointerIdsShift | (uint)nativeEvent.DeviceId;
+			var type = nativeEvent.GetToolType(pointerIndex).ToPointerDeviceType();
+			var isInContact = IsInContact(type, nativeEvent, pointerIndex);
 			var keys = nativeEvent.MetaState.ToVirtualKeyModifiers();
 
 			FrameId = (uint)_nativeEvent.EventTime;
@@ -39,39 +51,52 @@ namespace Windows.UI.Xaml.Input
 		{
 			var timestamp = ToTimeStamp(_nativeEvent.EventTime);
 			var device = PointerDevice.For(Pointer.PointerDeviceType);
-			var rawPosition = new Point(_nativeEvent.RawX, _nativeEvent.RawY).PhysicalToLogicalPixels(); // Relative to the screen
-			var position = GetPosition(relativeTo);
+
+			var (rawPosition, position) = GetPositions(relativeTo);
 			var properties = GetProperties();
 
 			return new PointerPoint(FrameId, timestamp, device, Pointer.PointerId, rawPosition, position, Pointer.IsInContact, properties);
 		}
 
-		private Point GetPosition(UIElement relativeTo)
+		private (Point raw, Point relative) GetPositions(UIElement relativeTo)
 		{
-			var phyX = _nativeEvent.GetX(_nativeEvent.ActionIndex);
-			var phyY = _nativeEvent.GetY(_nativeEvent.ActionIndex);
+			var phyX = _nativeEvent.GetX(_pointerIndex);
+			var phyY = _nativeEvent.GetY(_pointerIndex);
 
+			Point raw, relative;
 			if (relativeTo == null) // Relative to the window
 			{
-				var viewCoords = new int[2];
-				_receiver.GetLocationInWindow(viewCoords);
+				var windowToReceiver = new int[2];
+				_receiver.GetLocationInWindow(windowToReceiver);
 
-				phyX += viewCoords[0];
-				phyY += viewCoords[1];
-
-				return new Point(phyX, phyY).PhysicalToLogicalPixels();
+				relative = new Point(phyX + windowToReceiver[0], phyY + windowToReceiver[1]).PhysicalToLogicalPixels();
 			}
 			else if (relativeTo == _receiver) // Fast path
 			{
-				return new Point(phyX, phyY).PhysicalToLogicalPixels();
+				relative = new Point(phyX, phyY).PhysicalToLogicalPixels();
 			}
 			else
 			{
 				var posRelToReceiver = new Point(phyX, phyX).PhysicalToLogicalPixels();
 				var posRelToTarget = UIElement.GetTransform(from: _receiver, to: relativeTo).Transform(posRelToReceiver);
 
-				return posRelToTarget;
+				relative = posRelToTarget;
 			}
+
+			// Raw coordinates are relative to the screen (easier for the gesture recognizer to track fingers for manipulations)
+			// if (ANDROID > 10)
+			// {
+			//		var raw = new Point(_nativeEvent.getRawX(_pointerIndex), _nativeEvent.getRawY(_pointerIndex)).PhysicalToLogicalPixels();
+			// }
+			// else
+			{
+				var screenToReceiver = new int[2];
+				_receiver.GetLocationOnScreen(screenToReceiver);
+
+				raw = new Point(phyX + screenToReceiver[0], phyY + screenToReceiver[1]).PhysicalToLogicalPixels();
+			}
+
+			return (raw, relative);
 		}
 
 		private PointerPointProperties GetProperties()
@@ -82,7 +107,7 @@ namespace Windows.UI.Xaml.Input
 				IsInRange = Pointer.IsInRange
 			};
 
-			var type = _nativeEvent.GetToolType(_nativeEvent.ActionIndex);
+			var type = _nativeEvent.GetToolType(_pointerIndex);
 			var action = _nativeEvent.Action;
 			var isDown = action.HasFlag(MotionEventActions.Down) || action.HasFlag(MotionEventActions.PointerDown);
 			var isUp = action.HasFlag(MotionEventActions.Up) || action.HasFlag(MotionEventActions.PointerUp);
@@ -166,7 +191,7 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 
-		private static bool IsInContact(PointerDeviceType type, MotionEvent nativeEvent)
+		private static bool IsInContact(PointerDeviceType type, MotionEvent nativeEvent, int pointerIndex)
 		{
 			switch (type)
 			{
@@ -174,7 +199,7 @@ namespace Windows.UI.Xaml.Input
 					return nativeEvent.ButtonState != 0;
 
 				case PointerDeviceType.Pen:
-					return nativeEvent.GetAxisValue(Axis.Distance, nativeEvent.ActionIndex) == 0;
+					return nativeEvent.GetAxisValue(Axis.Distance, pointerIndex) == 0;
 
 				default:
 				case PointerDeviceType.Touch:
