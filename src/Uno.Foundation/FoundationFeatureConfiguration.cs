@@ -12,7 +12,29 @@ namespace Uno
 		/// </summary>
 		internal static void RestoreDefaults()
 		{
+			GestureRecognizer.RestoreDefaults();
 			Rect.RestoreDefaults();
+		}
+
+		public static class GestureRecognizer
+		{
+			internal static void RestoreDefaults()
+			{
+				InterpretMouseLeftLongPressAsRightTap = _defaultInterpretMouseLeftLongPressAsRightTap;
+			}
+
+#if __ANDROID__
+			private const bool _defaultInterpretMouseLeftLongPressAsRightTap = true;
+			/// <summary>
+			/// Determines if unlike UWP, long press on the left button of a mouse should be interpreted as a right tap.
+			/// This is useful as the right button is commonly used by Android devices for back navigation.
+			/// Using a long press with left button will be more intuitive for Android's users.
+			/// Note that a long press on the right button is usually not used for back navigation, and will always be interpreted
+			/// as a right tap no matter the value of this flag.
+			/// </summary>
+			[DefaultValue(_defaultInterpretMouseLeftLongPressAsRightTap)]
+			public static bool InterpretMouseLeftLongPressAsRightTap { get; set; } = _defaultInterpretMouseLeftLongPressAsRightTap;
+#endif
 		}
 
 		public static class Rect

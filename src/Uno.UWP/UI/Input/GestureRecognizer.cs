@@ -181,14 +181,14 @@ namespace Windows.UI.Input
 
 		#region Tap (includes DoubleTap and RightTap)
 		internal const ulong MultiTapMaxDelayTicks = TimeSpan.TicksPerMillisecond * 1000;
-		internal const ulong HoldMinDelayTicks = TimeSpan.TicksPerMillisecond * 2000;
+		internal const ulong HoldMinDelayTicks = TimeSpan.TicksPerMillisecond * 800;
 		internal const int TapMaxXDelta = 10;
 		internal const int TapMaxYDelta = 10;
 
+		private (ulong id, ulong ts, Point position) _lastSingleTap;
+
 		public event TypedEventHandler<GestureRecognizer, TappedEventArgs> Tapped;
 		public event TypedEventHandler<GestureRecognizer, RightTappedEventArgs> RightTapped;
-
-		private (ulong id, ulong ts, Point position) _lastSingleTap;
 
 		public bool CanBeDoubleTap(PointerPoint value) => IsMultiTapGesture(_lastSingleTap, value);
 
@@ -226,7 +226,7 @@ namespace Windows.UI.Input
 
 		private bool TryRecognizeRightTap(List<PointerPoint> points, PointerPoint pointerUp = null)
 		{
-			if (pointerUp == null || !_gestureSettings.HasFlag(GestureSettings.RightTap))
+			if (!_gestureSettings.HasFlag(GestureSettings.RightTap))
 			{
 				return false;
 			}
@@ -235,17 +235,27 @@ namespace Windows.UI.Input
 			(PointerPoint point, ulong id) start;
 			switch (points[0].PointerDevice.PointerDeviceType)
 			{
-				case PointerDeviceType.Mouse:
-					isRightTap = IsTapGesture(RightButton, points, pointerUp, out start);
-					break;
 				case PointerDeviceType.Pen when IsTapGesture(BarrelButton, points, pointerUp, out start):
 					isRightTap = true;
 					break;
-				case PointerDeviceType.Pen: // Some pens does not have a barrel button, so we also allow long press
-				case PointerDeviceType.Touch:
-					isRightTap = IsHoldGesture(LeftButton, points, out start) && pointerUp.Timestamp - start.point.Timestamp > HoldMinDelayTicks;
+#if !__ANDROID__
+				case PointerDeviceType.Mouse:
+					isRightTap = IsTapGesture(RightButton, points, pointerUp, out start);
+					break;
+#else
+				// On Android, usually the right button is mapped to back navigation. So, unlike UWP, we also allow a long press with
+				// the left button to be more user friendly. This is configurable 
+				case PointerDeviceType.Mouse when IsTapGesture(RightButton, points, pointerUp, out start):
+					isRightTap = true;
 					break;
 
+				case PointerDeviceType.Mouse when Uno.FoundationFeatureConfiguration.GestureRecognizer.InterpretMouseLeftLongPressAsRightTap:
+#endif
+				case PointerDeviceType.Pen: // Some pens does not have a barrel button, so we also allow long press (and anyway it's the UWP behavior)
+				case PointerDeviceType.Touch:
+					isRightTap = IsTapGesture(LeftButton, points, pointerUp, out start) && pointerUp.Timestamp - start.point.Timestamp > HoldMinDelayTicks;
+					break;
+						
 				default:
 					return false;
 			}
@@ -277,7 +287,7 @@ namespace Windows.UI.Input
 				return false;
 			}
 
-			// For the pointer up, we check only the distance, as it's expected that the IsLeftButtonPressed changed!
+			// For the pointer up, we check only the distance, as it's expected that the pressed button changed!
 			if (IsOutOfTapRange(pointerUp.Position, start.point.Position))
 			{
 				return false;
@@ -349,7 +359,7 @@ namespace Windows.UI.Input
 		private static bool IsOutOfTapRange(Point p1, Point p2)
 			=> Math.Abs(p1.X - p2.X) > TapMaxXDelta
 			|| Math.Abs(p1.Y - p2.Y) > TapMaxYDelta;
-		#endregion
+#endregion
 
 		private static ulong GetPointerIdentifier(PointerPoint point)
 		{
