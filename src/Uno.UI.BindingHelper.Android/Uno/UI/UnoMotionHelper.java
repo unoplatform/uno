@@ -76,7 +76,7 @@ import android.view.ViewParent;
 	private View _currentMotionOriginalSource;
 
 	// To trace the pointer events (dispatchTouchEvent and dispatchGenericMotionEvent),
-	// uncomment this and then uncomment logs in the method itself.
+	// uncomment this and then uncomment logs in the method itself (Replace all "// Log" by "Log").
 	/*
 	private static String _indent = "";
 	public boolean dispatchMotionEvent(Uno.UI.MotionTargetAdapter adapter, MotionEvent event)
@@ -454,6 +454,9 @@ import android.view.ViewParent;
 			case MotionEvent.ACTION_HOVER_ENTER:
 			case MotionEvent.ACTION_HOVER_MOVE:
 			case MotionEvent.ACTION_HOVER_EXIT:
+			case 211: // Stylus down while holding the barrel button
+			case 213: // Stylus move while holding the barrel button
+			case 212: // Stylus up while holding the barrel button
 				return true;
 			default:
 				return false;

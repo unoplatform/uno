@@ -15,12 +15,28 @@ namespace Windows.UI.Xaml.Input
 {
 	partial class PointerRoutedEventArgs
 	{
+		/// <summary>
+		/// The stylus is pressed while holding the barrel button
+		/// </summary>
+		internal const MotionEventActions StylusWithBarrelDown = (MotionEventActions)211;
+		/// <summary>
+		/// The stylus is moved after having been pressed while holding the barrel button
+		/// </summary>
+		internal const MotionEventActions StylusWithBarrelMove = (MotionEventActions)213;
+		/// <summary>
+		/// The stylus is released after having been pressed while holding the barrel button
+		/// </summary>
+		internal const MotionEventActions StylusWithBarrelUp = (MotionEventActions)212;
+
 		private const int _pointerIdsCount = (int)MotionEventActions.PointerIndexMask >> (int)MotionEventActions.PointerIndexShift; // 0xff
 		private const int _pointerIdsShift = 31 - (int)MotionEventActions.PointerIndexShift; // 23
 
 		private readonly MotionEvent _nativeEvent;
 		private readonly int _pointerIndex;
 		private readonly UIElement _receiver;
+		private readonly PointerPointProperties _properties;
+
+		internal bool HasPressedButton => _properties.HasPressedButton;
 
 		internal PointerRoutedEventArgs(MotionEvent nativeEvent, int pointerIndex, UIElement originalSource, UIElement receiver) : this()
 		{
@@ -36,26 +52,27 @@ namespace Windows.UI.Xaml.Input
 			// Note: Make sure to use the GetPointerId in order to make sure to keep the same id while: down_1 / down_2 / up_1 / up_2
 			// otherwise up_2 will be with the id of 1
 			var pointerId = ((uint)nativeEvent.GetPointerId(pointerIndex) & _pointerIdsCount) << _pointerIdsShift | (uint)nativeEvent.DeviceId;
-			var type = nativeEvent.GetToolType(pointerIndex).ToPointerDeviceType();
-			var isInContact = IsInContact(type, nativeEvent, pointerIndex);
+			var nativePointerType = nativeEvent.GetToolType(pointerIndex);
+			var pointerType = nativePointerType.ToPointerDeviceType();
+			var isInContact = IsInContact(pointerType, nativeEvent, pointerIndex);
 			var keys = nativeEvent.MetaState.ToVirtualKeyModifiers();
 
 			FrameId = (uint)_nativeEvent.EventTime;
-			Pointer = new Pointer(pointerId, type, isInContact, isInRange: true);
+			Pointer = new Pointer(pointerId, pointerType, isInContact, isInRange: true);
 			KeyModifiers = keys;
 			OriginalSource = originalSource;
 			CanBubbleNatively = true;
+
+			_properties = GetProperties(nativePointerType); // Last: we need the Pointer property to be set!
 		}
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
 			var timestamp = ToTimeStamp(_nativeEvent.EventTime);
 			var device = PointerDevice.For(Pointer.PointerDeviceType);
-
 			var (rawPosition, position) = GetPositions(relativeTo);
-			var properties = GetProperties();
 
-			return new PointerPoint(FrameId, timestamp, device, Pointer.PointerId, rawPosition, position, Pointer.IsInContact, properties);
+			return new PointerPoint(FrameId, timestamp, device, Pointer.PointerId, rawPosition, position, Pointer.IsInContact, _properties);
 		}
 
 		private (Point raw, Point relative) GetPositions(UIElement relativeTo)
@@ -99,7 +116,7 @@ namespace Windows.UI.Xaml.Input
 			return (raw, relative);
 		}
 
-		private PointerPointProperties GetProperties()
+		private PointerPointProperties GetProperties(MotionEventToolType type)
 		{
 			var props = new PointerPointProperties
 			{
@@ -107,7 +124,6 @@ namespace Windows.UI.Xaml.Input
 				IsInRange = Pointer.IsInRange
 			};
 
-			var type = _nativeEvent.GetToolType(_pointerIndex);
 			var action = _nativeEvent.Action;
 			var isDown = action.HasFlag(MotionEventActions.Down) || action.HasFlag(MotionEventActions.PointerDown);
 			var isUp = action.HasFlag(MotionEventActions.Up) || action.HasFlag(MotionEventActions.PointerUp);
@@ -118,19 +134,34 @@ namespace Windows.UI.Xaml.Input
 					props.IsLeftButtonPressed = Pointer.IsInContact;
 					updates = isDown ? _fingerDownUpdates : isUp ? _fingerUpUpdates : _none;
 					break;
+
 				case MotionEventToolType.Mouse:
 					props.IsLeftButtonPressed = _nativeEvent.IsButtonPressed(MotionEventButtonState.Primary);
 					props.IsMiddleButtonPressed = _nativeEvent.IsButtonPressed(MotionEventButtonState.Tertiary);
 					props.IsRightButtonPressed = _nativeEvent.IsButtonPressed(MotionEventButtonState.Secondary);
 					updates = isDown ? _mouseDownUpdates : isUp ? _mouseUpUpdates : _none;
 					break;
+
+				// Note: On UWP, if you touch screen while already holding the barrel button, you will get a right + barrel,
+				//		 ** BUT ** if you touch screen and THEN press the barrel button props will be left + barrel until released.
+				//		 On Android this distinction seems to be flagged by the "1101 ****" action flag (i.e. "StylusWithBarrel***" actions),
+				//		 so here we set the Is<Left|Right>ButtonPressed based on the action and we don't try to link it to the barrel button state.
+				case MotionEventToolType.Stylus when action == StylusWithBarrelDown:
+				case MotionEventToolType.Stylus when action == StylusWithBarrelMove:
+				case MotionEventToolType.Stylus when action == StylusWithBarrelUp:
+					// Note: We still validate the "IsButtonPressed(StylusPrimary)" as the user might release the button while pressed.
+					//		 In that case we will still receive moves and up with the "StylusWithBarrel***" actions.
+					props.IsBarrelButtonPressed = _nativeEvent.IsButtonPressed(MotionEventButtonState.StylusPrimary);
+					props.IsRightButtonPressed = Pointer.IsInContact;
+					break;
 				case MotionEventToolType.Stylus:
 					props.IsBarrelButtonPressed = _nativeEvent.IsButtonPressed(MotionEventButtonState.StylusPrimary);
-					props.IsLeftButtonPressed = Pointer.IsInContact && !props.IsBarrelButtonPressed;
+					props.IsLeftButtonPressed = Pointer.IsInContact;
 					break;
 				case MotionEventToolType.Eraser:
 					props.IsEraser = true;
 					break;
+
 				case MotionEventToolType.Unknown: // used by Xamarin.UITest
 					props.IsLeftButtonPressed = true;
 					break;
@@ -198,14 +229,17 @@ namespace Windows.UI.Xaml.Input
 				case PointerDeviceType.Mouse:
 					return nativeEvent.ButtonState != 0;
 
-				case PointerDeviceType.Pen:
-					return nativeEvent.GetAxisValue(Axis.Distance, pointerIndex) == 0;
-
 				default:
+				case PointerDeviceType.Pen:
 				case PointerDeviceType.Touch:
-					return nativeEvent.Action.HasFlag(MotionEventActions.Down)
-						|| nativeEvent.Action.HasFlag(MotionEventActions.PointerDown)
-						|| nativeEvent.Action.HasFlag(MotionEventActions.Move);
+					// WARNING: MotionEventActions.Down == 0, so action.HasFlag(MotionEventActions.Up) is always true!
+					var action = nativeEvent.Action;
+					return !action.HasFlag(MotionEventActions.Up)
+						&& !action.HasFlag(MotionEventActions.PointerUp)
+						&& !action.HasFlag(MotionEventActions.Cancel)
+						&& !action.HasFlag(MotionEventActions.HoverEnter)
+						&& !action.HasFlag(MotionEventActions.HoverMove)
+						&& !action.HasFlag(MotionEventActions.HoverExit);
 			}
 		}
 		#endregion

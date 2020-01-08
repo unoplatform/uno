@@ -8,6 +8,8 @@ namespace Windows.UI.Input
 		{
 		}
 
+		internal bool HasPressedButton => IsLeftButtonPressed || IsMiddleButtonPressed || IsRightButtonPressed || IsXButton1Pressed || IsXButton2Pressed || IsBarrelButtonPressed;
+
 		public bool IsPrimary { get; internal set; }
 
 		public bool IsInRange { get; internal set; }
