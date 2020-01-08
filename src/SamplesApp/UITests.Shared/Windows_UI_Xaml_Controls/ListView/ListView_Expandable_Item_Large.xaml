@@ -40,7 +40,9 @@
 				<ListView.HeaderTemplate>
 					<DataTemplate>
 						<StackPanel>
-							<Border Height="270"
+							<CheckBox x:Name="CheckBoxHeader"
+												Content="IsExpanded - Header" />
+							<Border Height="230"
 											Width="140"
 											Margin="5"
 											Background="Green"/>
@@ -48,9 +50,7 @@
 											Width="90"
 											Margin="5"
 											Background="Blue"
-											Visibility="{Binding IsChecked, ElementName=CheckBox, Converter={StaticResource boolToVisibility}, FallbackValue=Collapsed}" />
-							<CheckBox x:Name="CheckBox"
-												Content="IsExpanded - Header" />
+											Visibility="{Binding IsChecked, ElementName=CheckBoxHeader, Converter={StaticResource boolToVisibility}, FallbackValue=Collapsed}" />
 						</StackPanel>
 					</DataTemplate>
 				</ListView.HeaderTemplate>

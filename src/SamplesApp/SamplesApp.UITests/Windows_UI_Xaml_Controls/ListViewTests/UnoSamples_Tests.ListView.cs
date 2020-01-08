@@ -1,12 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
-using Uno.UITest;
+using UITests.Shared.Helpers;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -162,6 +157,167 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			Assert.Greater(heightBefore, 0);
 
 			Assert.AreEqual(3 * heightBefore, heightAfter);
+		}
+		
+		[Test]
+		[AutoRetry]
+		public void ListView_ExpandableItem_ExpandSingleItem()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item");
+
+			var checkBox = _app.Marked("CheckBox");
+			_app.WaitForElement(checkBox);
+
+			// Save initial state(not expanded)
+			var screenshot1 = _app.Screenshot("ListView Expanded Control - Initial State");
+
+			// Expand and compare
+			ClickCheckBoxAt(0);
+			var screenshot2 = _app.Screenshot("ListView Expanded Control - expanded State");
+			if (!UITestHelper.CompareScreenShots(screenshot1, screenshot2))
+			{
+				Assert.Fail("Expand is not working");
+			}
+
+			// Collapse and compare
+			ClickCheckBoxAt(0);
+			var screenshot3 = _app.Screenshot("ListView Expanded Control - collapsed State");
+			if (UITestHelper.CompareScreenShots(screenshot1, screenshot3))
+			{
+				Assert.Fail("Collapse is not working");
+			}
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ListView_ExpandableItem_ExpandMultipleItems()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item");
+
+			var checkBox = _app.Marked("CheckBox");
+			_app.WaitForElement(checkBox);
+
+			// Save initial state(not expanded)
+			var screenshot1 = _app.Screenshot("ListView Expanded Control - Initial State");
+
+			// Expand multiple items and compare
+			ClickCheckBoxAt(0);
+			ClickCheckBoxAt(1);
+			ClickCheckBoxAt(2);
+			var screenshot2 = _app.Screenshot("ListView Expanded Control - expanded State");
+			if (!UITestHelper.CompareScreenShots(screenshot1, screenshot2))
+			{
+				Assert.Fail("Control is not working");
+			}
+
+			// Collapse all and compare 
+			ClickCheckBoxAt(0);
+			ClickCheckBoxAt(1);
+			ClickCheckBoxAt(2);
+			var screenshot3 = _app.Screenshot("ListView Expanded Control - collapsed State");
+			if (UITestHelper.CompareScreenShots(screenshot1, screenshot3))
+			{
+				Assert.Fail("Collapse is not working");
+			}
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ListView_ExpandableItemLarge_ExpandHeader_Validation()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item_Large");
+
+			var checkBoxHeader = _app.Marked("CheckBoxHeader");
+			_app.WaitForElement(checkBoxHeader);
+
+			// Save initial state(not expanded)
+			var screenshot1 = _app.Screenshot("ListView Expanded Control - Initial State");
+
+			// Expand and compare
+			checkBoxHeader.Tap();
+			var screenshot2 = _app.Screenshot("ListView Expanded Control - expanded State");
+			if (!UITestHelper.CompareScreenShots(screenshot1, screenshot2))
+			{
+				Assert.Fail("Expand is not working");
+			}
+
+			// Collapse and compare 
+			checkBoxHeader.Tap();
+			var screenshot3 = _app.Screenshot("ListView Expanded Control - collapsed State");
+			if (UITestHelper.CompareScreenShots(screenshot1, screenshot3))
+			{
+				Assert.Fail("Collapse is not working");
+			}
+		}
+		[Test]
+		[AutoRetry]
+		public void ListView_ExpandableItemLarge_ExpandHeaderWithMultipleItems_Validation()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item_Large");
+
+			var checkBoxHeader = _app.Marked("CheckBoxHeader");
+			_app.WaitForElement(checkBoxHeader);
+
+			// Save initial state(not expanded)
+			var screenshot1 = _app.Screenshot("ListView Expanded Control - Initial State");
+
+			// Expand and compare
+			checkBoxHeader.Tap();
+			ClickCheckBoxAt(0);
+			ClickCheckBoxAt(1);
+			ClickCheckBoxAt(2);
+			var screenshot2 = _app.Screenshot("ListView Expanded Control - expanded State");
+			if (!UITestHelper.CompareScreenShots(screenshot1, screenshot2))
+			{
+				Assert.Fail("Expand is not working");
+			}
+
+			// Collapse and compare
+			checkBoxHeader.Tap();
+			ClickCheckBoxAt(0);
+			ClickCheckBoxAt(1);
+			ClickCheckBoxAt(2);
+			var screenshot3 = _app.Screenshot("ListView Expanded Control - collapsed State");
+			if (UITestHelper.CompareScreenShots(screenshot1, screenshot3))
+			{
+				Assert.Fail("Collapse is not working");
+			}
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ListView_ExpandableItemLarge_ExpandHeaderWithSingleItem_Validation()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item_Large");
+
+			var checkBoxHeader = _app.Marked("CheckBoxHeader");
+			_app.WaitForElement(checkBoxHeader);
+
+			// Save initial state(not expanded)
+			var screenshot1 = _app.Screenshot("ListView Expanded Control - Initial State");
+
+			// Expand multiple items, header and compare
+			checkBoxHeader.Tap();
+			ClickCheckBoxAt(0);
+			var screenshot2 = _app.Screenshot("ListView Expanded Control - expanded State");
+			if (!UITestHelper.CompareScreenShots(screenshot1, screenshot2))
+			{
+				Assert.Fail("Expand is not working");
+			}
+
+			// Collapse all and compare 
+			checkBoxHeader.Tap();
+			ClickCheckBoxAt(0);
+			var screenshot3 = _app.Screenshot("ListView Expanded Control - collapsed State");
+			if (UITestHelper.CompareScreenShots(screenshot1, screenshot3))
+			{
+				Assert.Fail("Collapse is not working");
+			}
+		}
+
+		private void ClickCheckBoxAt(int i)
+		{
+			_app.Marked("CheckBox").AtIndex(i).Tap();
 		}
 	}
 }
