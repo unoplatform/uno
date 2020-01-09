@@ -29,7 +29,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				_animation = new LottieAnimationView(Android.App.Application.Context);
 				_animation.EnableMergePathsForKitKatAndAbove(true);
-				_animation.UseHardwareAcceleration(UseHardwareAcceleration);
+				_animation.SetRenderMode(RenderMode.Hardware);
 
 				//_animation.Scale = (float)Scale;
 				SetProperties();
