@@ -19,10 +19,16 @@
 			<TextBlock x:Name="ItemClickedTextBlock"/>
 			<Border BorderBrush="Green" BorderThickness="2">
 				<ListView ItemsSource="{Binding [SampleItems]}"
-						  Width="100"
-						  Height="300"
-						  IsItemClickEnabled="True"
-						  ItemClick="ListView_ItemClick_1"/>
+											Width="100"
+											Height="300"
+											IsItemClickEnabled="True"
+											ItemClick="ListView_ItemClick_1">
+					<ListView.ItemTemplate>
+						<DataTemplate>
+							<TextBlock x:Name="NumberListTextBlock" Text= "{Binding}"/>
+						</DataTemplate>
+					</ListView.ItemTemplate>
+				</ListView>
 			</Border>
 		</StackPanel>
 	</controls:SampleControl>
