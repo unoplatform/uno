@@ -20,7 +20,11 @@ namespace Uno
 		{
 			internal static void RestoreDefaults()
 			{
+#if __ANDROID__
 				InterpretMouseLeftLongPressAsRightTap = _defaultInterpretMouseLeftLongPressAsRightTap;
+#elif __IOS__
+				InterpretForceTouchAsRightTap = _defaultInterpretForceTouchAsRightTap;
+#endif
 			}
 
 #if __ANDROID__
@@ -35,6 +39,16 @@ namespace Uno
 			[DefaultValue(_defaultInterpretMouseLeftLongPressAsRightTap)]
 			public static bool InterpretMouseLeftLongPressAsRightTap { get; set; } = _defaultInterpretMouseLeftLongPressAsRightTap;
 #endif
+#if __IOS__
+			private const bool _defaultInterpretForceTouchAsRightTap = true;
+			/// <summary>
+			/// Determines if force touch (a.k.a. 3D touch) should be interpreted as a right tap.
+			/// Note that a long press will always be interpreted as a right tap no matter the value of this flag.
+			/// </summary>
+			[DefaultValue(_defaultInterpretForceTouchAsRightTap)]
+			public static bool InterpretForceTouchAsRightTap { get; set; } = _defaultInterpretForceTouchAsRightTap;
+#endif
+
 		}
 
 		public static class Rect

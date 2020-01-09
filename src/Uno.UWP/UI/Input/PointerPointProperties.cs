@@ -30,6 +30,8 @@ namespace Windows.UI.Input
 
 		public bool IsEraser { get; internal set; }
 
+		public float Pressure { get; internal set; } = 0.5f; // According to the doc, the default value is .5
+
 		public PointerUpdateKind PointerUpdateKind { get; internal set; }
 
 		[global::Uno.NotImplemented]
