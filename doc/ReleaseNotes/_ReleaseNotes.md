@@ -33,6 +33,7 @@
 - [Android] Fix Image margin calculation on fixed size
 - [iOS] #2361 ListView would measure children with infinite width
 - [WASM] Fix bug where changing a property could remove the required clipping on a view
+- [Android] Fix unconstrained Image loading issue when contained in a ContentControl template
 
 ## Release 2.0
 
