@@ -1,4 +1,4 @@
-# Release notes
+﻿# Release notes
 
 ### Features
 - Support for `EmailManager.ShowComposeNewEmailAsync`
@@ -31,6 +31,7 @@
 - `ViewBox` no longer alters its child's `RenderTransform`
 - [#2033] Add Missing `LostFocus` Value to `UpdateSourceTrigger` Enum
 - [Android] Fix Image margin calculation on fixed size
+- [Android] Native views weren't clipped correctly
 - [iOS] #2361 ListView would measure children with infinite width
 - [WASM] Fix bug where changing a property could remove the required clipping on a view
 - [Android] Fix unconstrained Image loading issue when contained in a ContentControl template
