@@ -187,7 +187,7 @@ namespace Windows.UI.Xaml
 
 		protected internal void SetNativeTransform(Matrix3x2 matrix)
 		{
-			Uno.UI.Xaml.WindowManagerInterop.SetElementTransform(HtmlId, matrix);
+			Uno.UI.Xaml.WindowManagerInterop.SetElementTransform(HtmlId, matrix, requiresClipping: RequiresClipping);
 		}
 
 		protected internal void ResetStyle(params string[] names)
