@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private readonly SerialDisposable _collectionViewSubscription = new SerialDisposable();
 		private BindingPath _path;
-		private bool _selectingItem;
+		private bool _disableRaiseSelectionChanged;
 
 		/// <summary>
 		/// This is always true for <see cref="FlipView"/> and <see cref="ComboBox"/>, and depends on the value of <see cref="ListViewBase.SelectionMode"/> for <see cref="ListViewBase"/>.
@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			typeof(Selector),
 			new PropertyMetadata(
 				defaultValue: null,
-				propertyChangedCallback: (s, e) => (s as Selector).OnSelectedItemChanged(e.OldValue, e.NewValue)
+				propertyChangedCallback: (s, e) => (s as Selector).OnSelectedItemChanged(e.OldValue, e.NewValue, updateItemSelectedState: true)
 			)
 		);
 
@@ -50,72 +50,87 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set => this.SetValue(SelectedItemProperty, value);
 		}
 
-		internal virtual void OnSelectorItemIsSelectedChanged(SelectorItem item)
+		internal virtual void OnSelectorItemIsSelectedChanged(SelectorItem item, bool oldIsSelected, bool newIsSelected)
 		{
-			OnSelectedItemChanged(SelectedItem, item.IsSelected ? item : null);
-		}
-
-		internal virtual void OnSelectedItemChanged(object oldSelectedItem, object selectedItem)
-		{
-			if (!_selectingItem)
+			if (ReferenceEquals(SelectedItem, item) && !newIsSelected)
 			{
-				try
-				{
-					_selectingItem = true;
-					var wasSelectionUnset = oldSelectedItem == null && (!GetItems()?.Contains(null) ?? false);
-					var isSelectionUnset = false;
-					if (!GetItems()?.Contains(selectedItem) ?? false)
-					{
-						if (selectedItem == null)
-						{
-							isSelectionUnset = true;
-						}
-						else
-						{
-							//Prevent SelectedItem being set to an invalid value
-							SelectedItem = oldSelectedItem;
-						
-							return;
-						}
-					}
-
-					// If SelectedIndex is -1 and SelectedItem is being changed from non-null to null, this indicates that we're desetting 
-					// SelectedItem, not setting a null inside the collection as selected. Little edge case there. (Note that this relies 
-					// on user interactions setting SelectedIndex which then sets SelectedItem.)
-					if (SelectedIndex == -1 && selectedItem == null)
-					{
-						isSelectionUnset = true;
-					}
-
-					var newIndex = IndexFromItem(selectedItem);
-					if (SelectedIndex != newIndex)
-					{
-						SelectedIndex = newIndex;
-					}
-
-					InvokeSelectionChanged(wasSelectionUnset ? new object[] { } : new[] { oldSelectedItem },
-						isSelectionUnset ? new object[] { } : new[] { selectedItem }
-					);
-					OnSelectedItemChangedPartial(oldSelectedItem, selectedItem);
-
-					UpdateSelectedValue();
-
-					TryUpdateSelectorItemIsSelected(oldSelectedItem, false);
-					TryUpdateSelectorItemIsSelected(selectedItem, true);
-				}
-				finally
-				{
-					_selectingItem = false;
-				}
+				SelectedItem = null;
+			}
+			else if (!ReferenceEquals(SelectedItem, item) && newIsSelected)
+			{
+				SelectedItem = item;
 			}
 		}
 
-		private void TryUpdateSelectorItemIsSelected(object item, bool isSelected)
+		internal virtual void OnSelectedItemChanged(object oldSelectedItem, object selectedItem, bool updateItemSelectedState)
+		{
+			var wasSelectionUnset = oldSelectedItem == null && (!GetItems()?.Contains(null) ?? false);
+			var isSelectionUnset = false;
+			if (!GetItems()?.Contains(selectedItem) ?? false)
+			{
+				if (selectedItem == null)
+				{
+					isSelectionUnset = true;
+				}
+				else
+				{
+					try
+					{
+						_disableRaiseSelectionChanged = true;
+
+						//Prevent SelectedItem being set to an invalid value
+						SelectedItem = oldSelectedItem;
+					}
+					finally
+					{
+						_disableRaiseSelectionChanged = false;
+					}
+						
+					return;
+				}
+			}
+
+			// If SelectedIndex is -1 and SelectedItem is being changed from non-null to null, this indicates that we're desetting 
+			// SelectedItem, not setting a null inside the collection as selected. Little edge case there. (Note that this relies 
+			// on user interactions setting SelectedIndex which then sets SelectedItem.)
+			if (SelectedIndex == -1 && selectedItem == null)
+			{
+				isSelectionUnset = true;
+			}
+
+			var newIndex = IndexFromItem(selectedItem);
+			if (SelectedIndex != newIndex)
+			{
+				SelectedIndex = newIndex;
+			}
+
+			InvokeSelectionChanged(wasSelectionUnset ? new object[] { } : new[] { oldSelectedItem },
+				isSelectionUnset ? new object[] { } : new[] { selectedItem }
+			);
+
+			OnSelectedItemChangedPartial(oldSelectedItem, selectedItem);
+
+			UpdateSelectedValue();
+
+			if (updateItemSelectedState)
+			{
+				TryUpdateSelectorItemIsSelected(oldSelectedItem, false);
+				TryUpdateSelectorItemIsSelected(selectedItem, true);
+			}
+		}
+
+		internal void TryUpdateSelectorItemIsSelected(object item, bool isSelected)
 		{
 			if (item is SelectorItem si)
 			{
 				si.IsSelected = isSelected;
 			}
+		}
+
+		internal bool DisableRaiseSelectionChanged
+		{
+			get => _disableRaiseSelectionChanged;
+			set => _disableRaiseSelectionChanged = value;
 		}
 
 		private void UpdateSelectedValue()
@@ -149,7 +164,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal void InvokeSelectionChanged(object[] removedItems, object[] addedItems)
 		{
-			SelectionChanged?.Invoke(this, new SelectionChangedEventArgs(this, removedItems, addedItems));
+			if (!_disableRaiseSelectionChanged)
+			{
+				SelectionChanged?.Invoke(this, new SelectionChangedEventArgs(this, removedItems, addedItems));
+			}
 		}
 
 		public int SelectedIndex
