@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml
 			// This won't work when UIElements and non-UIElements are mixed in the same Panel,
 			// but it should cover most cases in practice, and anyway should be superceded when
 			// IFrameworkElement will be removed.
-			SetClipChildren(AreChildrenNativeViewsOnly);
+			SetClipChildren(FeatureConfiguration.UIElement.AlwaysClipNativeChildren ? AreChildrenNativeViewsOnly : false);
 
 			if (rect.IsEmpty)
 			{
