@@ -33,6 +33,7 @@
 - [Android] Fix Image margin calculation on fixed size
 - [iOS] #2361 ListView would measure children with infinite width
 - [#2398] Fully qualify the `MethodName` value for `CreateFromStringAttribute' if it's not fully qualified it the code
+- [Android] Fix unconstrained Image loading issue when contained in a ContentControl template
 
 ## Release 2.0
 
