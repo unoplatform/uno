@@ -685,7 +685,7 @@ namespace Windows.UI.Xaml
 		#endregion
 
 		#region Pointer pressed state (Updated by the partial API OnNative***)
-		private readonly HashSet<uint> _pressedPointers = new HashSet<uint>(4);
+		private readonly HashSet<uint> _pressedPointers = new HashSet<uint>();
 
 		/// <summary>
 		/// Indicates if a pointer was pressed while over the element (i.e. PressedState).
