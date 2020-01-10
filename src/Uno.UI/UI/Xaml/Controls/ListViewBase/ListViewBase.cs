@@ -143,23 +143,28 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal override void OnSelectorItemIsSelectedChanged(SelectorItem item, bool oldIsSelected, bool newIsSelected)
+		internal override void OnSelectorItemIsSelectedChanged(SelectorItem container, bool oldIsSelected, bool newIsSelected)
 		{
 			if (!_modifyingSelectionInternally)
 			{
+				var item = ItemFromContainer(container);
+
 				if (!newIsSelected)
 				{
 					SelectedItems.Remove(item);
 				}
 				else
 				{
-					if (!IsSelectionMultiple
-						&& SelectedItems.FirstOrDefault() is object selectedItem)
+					if (!SelectedItems.Contains(item))
 					{
-						SelectedItems.Remove(selectedItem);
-					}
+						if (!IsSelectionMultiple
+							&& SelectedItems.FirstOrDefault() is object selectedItem)
+						{
+							SelectedItems.Remove(selectedItem);
+						}
 
-					SelectedItems.Add(item);
+						SelectedItems.Add(item);
+					}
 				}
 			}
 		}
@@ -206,15 +211,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-
 				try
 				{
 					_modifyingSelectionInternally = true;
-
-					base.OnSelectedItemChanged(
-						oldSelectedItem: oldSelectedItem,
-						selectedItem: selectedItem,
-						updateItemSelectedState: false);
 
 					if (selectedItem != null)
 					{
@@ -229,6 +228,11 @@ namespace Windows.UI.Xaml.Controls
 				{
 					_modifyingSelectionInternally = false;
 				}
+
+				base.OnSelectedItemChanged(
+					oldSelectedItem: oldSelectedItem,
+					selectedItem: selectedItem,
+					updateItemSelectedState: true);
 			}
 		}
 
@@ -248,10 +252,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void OnSelectedIndexChanged(int oldSelectedIndex, int newSelectedIndex)
+		internal override void OnSelectedIndexChanged(int oldSelectedIndex, int newSelectedIndex)
 		{
-			SetSelectedState(oldSelectedIndex, false);
-			SetSelectedState(newSelectedIndex, true);
+			base.OnSelectedIndexChanged(oldSelectedIndex, newSelectedIndex);
+
+			//SetSelectedState(oldSelectedIndex, false);
+			//SetSelectedState(newSelectedIndex, true);
 		}
 
 		protected override void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
@@ -289,9 +295,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void Initialize()
 		{
-			this.RegisterDisposablePropertyChangedCallback(SelectedIndexProperty, (s, e) => (s as ListViewBase).OnSelectedIndexChanged((int)e.OldValue, (int)e.NewValue));
 			SelectionChanged += OnSelectionChanged;
 		}
+
 
 		private ICommand _itemClickCommand;
 		//TODO: Remove this as it doesn't exist on Windows

@@ -50,8 +50,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set => this.SetValue(SelectedItemProperty, value);
 		}
 
-		internal virtual void OnSelectorItemIsSelectedChanged(SelectorItem item, bool oldIsSelected, bool newIsSelected)
+		internal virtual void OnSelectorItemIsSelectedChanged(SelectorItem container, bool oldIsSelected, bool newIsSelected)
 		{
+			var item = ItemFromContainer(container);
+
 			if (ReferenceEquals(SelectedItem, item) && !newIsSelected)
 			{
 				SelectedItem = null;
@@ -183,7 +185,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			)
 		);
 
-		private void OnSelectedIndexChanged(int oldSelectedIndex, int newSelectedIndex)
+		internal virtual void OnSelectedIndexChanged(int oldSelectedIndex, int newSelectedIndex)
 		{
 			var newSelectedItem = ItemFromIndex(newSelectedIndex);
 
