@@ -53,9 +53,10 @@ namespace Windows.UI.Xaml.Input
 			// and with a high variation of deviceId. We assume that's safe enough.
 			var pointerId = ((uint)_pointerIndex & _pointerIdsCount) << _pointerIdsShift | (uint)nativeEvent.DeviceId;
 			var nativePointerAction = nativeEvent.Action;
+			var nativePointerButtons = nativeEvent.ButtonState;
 			var nativePointerType = nativeEvent.GetToolType(_pointerIndex);
 			var pointerType = nativePointerType.ToPointerDeviceType();
-			var isInContact = IsInContact(nativePointerAction);
+			var isInContact = IsInContact(nativeEvent, pointerType,  nativePointerAction, nativePointerButtons);
 			var keys = nativeEvent.MetaState.ToVirtualKeyModifiers();
 
 			FrameId = (uint)_nativeEvent.EventTime;
@@ -64,7 +65,7 @@ namespace Windows.UI.Xaml.Input
 			OriginalSource = originalSource;
 			CanBubbleNatively = true;
 
-			_properties = GetProperties(nativePointerType, nativePointerAction); // Last: we need the Pointer property to be set!
+			_properties = GetProperties(nativePointerType, nativePointerAction, nativePointerButtons); // Last: we need the Pointer property to be set!
 		}
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
@@ -117,7 +118,7 @@ namespace Windows.UI.Xaml.Input
 			return (raw, relative);
 		}
 
-		private PointerPointProperties GetProperties(MotionEventToolType type, MotionEventActions action)
+		private PointerPointProperties GetProperties(MotionEventToolType type, MotionEventActions action, MotionEventButtonState buttons)
 		{
 			var props = new PointerPointProperties
 			{
@@ -137,9 +138,9 @@ namespace Windows.UI.Xaml.Input
 					break;
 
 				case MotionEventToolType.Mouse:
-					props.IsLeftButtonPressed = _nativeEvent.IsButtonPressed(MotionEventButtonState.Primary);
-					props.IsMiddleButtonPressed = _nativeEvent.IsButtonPressed(MotionEventButtonState.Tertiary);
-					props.IsRightButtonPressed = _nativeEvent.IsButtonPressed(MotionEventButtonState.Secondary);
+					props.IsLeftButtonPressed = buttons.HasFlag(MotionEventButtonState.Primary);
+					props.IsMiddleButtonPressed = buttons.HasFlag(MotionEventButtonState.Tertiary);
+					props.IsRightButtonPressed = buttons.HasFlag(MotionEventButtonState.Secondary);
 					updates = isDown ? _mouseDownUpdates : isUp ? _mouseUpUpdates : _none;
 					// Pressure = .5f => Keeps default as UWP returns .5 for Mouse no matter is button is pressed or not (Android return 1.0 while pressing a button, but 0 otherwise).
 					break;
@@ -153,12 +154,12 @@ namespace Windows.UI.Xaml.Input
 				case MotionEventToolType.Stylus when action == StylusWithBarrelUp:
 					// Note: We still validate the "IsButtonPressed(StylusPrimary)" as the user might release the button while pressed.
 					//		 In that case we will still receive moves and up with the "StylusWithBarrel***" actions.
-					props.IsBarrelButtonPressed = _nativeEvent.IsButtonPressed(MotionEventButtonState.StylusPrimary);
+					props.IsBarrelButtonPressed = buttons.HasFlag(MotionEventButtonState.StylusPrimary);
 					props.IsRightButtonPressed = Pointer.IsInContact;
 					props.Pressure = Math.Min(1f, _nativeEvent.GetPressure(_pointerIndex)); // Might exceed 1.0 on Android
 					break;
 				case MotionEventToolType.Stylus:
-					props.IsBarrelButtonPressed = _nativeEvent.IsButtonPressed(MotionEventButtonState.StylusPrimary);
+					props.IsBarrelButtonPressed = buttons.HasFlag(MotionEventButtonState.StylusPrimary);
 					props.IsLeftButtonPressed = Pointer.IsInContact;
 					props.Pressure = Math.Min(1f, _nativeEvent.GetPressure(_pointerIndex)); // Might exceed 1.0 on Android
 					break;
@@ -227,14 +228,25 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 
-		private static bool IsInContact(MotionEventActions action)
-			// WARNING: MotionEventActions.Down == 0, so action.HasFlag(MotionEventActions.Up) is always true!
-			=> !action.HasFlag(MotionEventActions.Up)
-				&& !action.HasFlag(MotionEventActions.PointerUp)
-				&& !action.HasFlag(MotionEventActions.Cancel)
-				&& !action.HasFlag(MotionEventActions.HoverEnter)
-				&& !action.HasFlag(MotionEventActions.HoverMove)
-				&& !action.HasFlag(MotionEventActions.HoverExit);
+		private static bool IsInContact(MotionEvent nativeEvent, PointerDeviceType pointerType, MotionEventActions action, MotionEventButtonState buttons)
+		{
+			switch (pointerType)
+			{
+				case PointerDeviceType.Mouse:
+					// For mouse, we cannot only rely on action: We will get a "HoverExit" when we press the left button.
+					return buttons != 0;
+
+				case PointerDeviceType.Pen:
+					return nativeEvent.GetAxisValue(Axis.Distance, nativeEvent.ActionIndex) == 0;
+
+				default:
+				case PointerDeviceType.Touch:
+					// WARNING: MotionEventActions.Down == 0, so action.HasFlag(MotionEventActions.Up) is always true!
+					return !action.HasFlag(MotionEventActions.Up)
+						&& !action.HasFlag(MotionEventActions.PointerUp)
+						&& !action.HasFlag(MotionEventActions.Cancel);
+			}
+		}	
 		#endregion
 	}
 }

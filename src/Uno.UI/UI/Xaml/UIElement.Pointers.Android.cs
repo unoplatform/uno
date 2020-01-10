@@ -131,7 +131,8 @@ namespace Windows.UI.Xaml
 
 				// We get ACTION_DOWN and ACTION_UP only for "left" button, and instead we get a HOVER_MOVE when pressing/releasing the right button of the mouse.
 				// So on each POINTER_MOVE we make sure to update the pressed state if it does not match.
-				case MotionEventActions.HoverMove when args.HasPressedButton && !IsPressed(args.Pointer):
+				// Note: We can also have HOVER_MOVE with barrel button pressed, so we make sure to "PointerDown" only for Mouse.
+				case MotionEventActions.HoverMove when args.Pointer.PointerDeviceType == PointerDeviceType.Mouse && args.HasPressedButton && !IsPressed(args.Pointer):
 					return OnNativePointerDown(args) | OnNativePointerMoveWithOverCheck(args, isInView);
 				case MotionEventActions.HoverMove when !args.HasPressedButton && IsPressed(args.Pointer):
 					return OnNativePointerUp(args) | OnNativePointerMoveWithOverCheck(args, isInView);
