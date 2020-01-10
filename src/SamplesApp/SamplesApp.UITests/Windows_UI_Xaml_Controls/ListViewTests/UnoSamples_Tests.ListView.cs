@@ -163,5 +163,45 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			Assert.AreEqual(3 * heightBefore, heightAfter);
 		}
+
+		[Test]
+		[AutoRetry]
+		public void ListView_SelectedItems()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewSelectedItems");
+
+			_app.Tap("Right 0");
+			_app.WaitForText("_selectedItem", "Selected item: 0");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(0, ), RemovedItems=()");
+
+			_app.Tap("Left 0");
+			_app.WaitForText("_selectedItem", "Selected item: ");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(), RemovedItems=(0, )");
+
+			_app.Tap("Left 0");
+			_app.WaitForText("_selectedItem", "Selected item: 0");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(0, ), RemovedItems=()");
+
+			_app.Tap("Left 1");
+			_app.WaitForText("_selectedItem", "Selected item: 0");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(1, ), RemovedItems=()");
+
+			_app.Tap("Left 2");
+			_app.WaitForText("_selectedItem", "Selected item: 0");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(2, ), RemovedItems=()");
+
+			_app.Tap("Center 3");
+			_app.WaitForText("_selectedItem", "Selected item: 3");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(3, ), RemovedItems=(0, 1, 2, )");
+
+			_app.Tap("Right 0");
+			_app.Tap("Right 1");
+			_app.Tap("Right 2");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(2, ), RemovedItems=()");
+
+			_app.Tap("ClearSelectedItemButton");
+
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(), RemovedItems=(3, 0, 1, 2, )");
+		}
 	}
 }
