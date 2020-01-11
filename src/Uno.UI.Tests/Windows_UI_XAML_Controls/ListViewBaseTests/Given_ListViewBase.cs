@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.Extensions;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -19,22 +20,12 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		[TestMethod]
 		public void When_MultiSelectedItem()
 		{
-			var style = new Style(typeof(Windows.UI.Xaml.Controls.ListViewBase))
-			{
-				Setters =  {
-					new Setter<ItemsControl>("Template", t =>
-						t.Template = Funcs.Create(() =>
-							new ItemsPresenter()
-						)
-					)
-				}
-			};
-
 			var panel = new StackPanel();
 
 			var SUT = new ListViewBase()
 			{
-				Style = style,
+				Template = new ControlTemplate(() => new ItemsPresenter()),
+				ItemContainerStyle = BuildBasicContainerStyle(),
 				ItemsPanel = new ItemsPanelTemplate(() => panel),
 				Items = {
 					new Border { Name = "b1" },
@@ -61,24 +52,14 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		[TestMethod]
 		public void When_SingleSelectedItem_Event()
 		{
-			var style = new Style(typeof(Windows.UI.Xaml.Controls.ListViewBase))
-			{
-				Setters =  {
-					new Setter<ItemsControl>("Template", t =>
-						t.Template = Funcs.Create(() =>
-							new ItemsPresenter()
-						)
-					)
-				}
-			};
-
 			var panel = new StackPanel();
 
 			var item = new Border { Name = "b1" };
 			var SUT = new ListViewBase()
 			{
-				Style = style,
+				Template = new ControlTemplate(() => new ItemsPresenter()),
 				ItemsPanel = new ItemsPanelTemplate(() => panel),
+				ItemContainerStyle = BuildBasicContainerStyle(),
 				Items = {
 					item
 				}
@@ -127,22 +108,12 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		[TestMethod]
 		public void When_ResetItemsSource()
 		{
-			var style = new Style(typeof(Windows.UI.Xaml.Controls.ListViewBase))
-			{
-				Setters =  {
-					new Setter<ItemsControl>("Template", t =>
-						t.Template = Funcs.Create(() =>
-							new ItemsPresenter()
-						)
-					)
-				}
-			};
-
 			var panel = new StackPanel();
 
 			var SUT = new ListViewBase()
 			{
-				Style = style,
+				Template = new ControlTemplate(() => new ItemsPresenter()),
+				ItemContainerStyle = BuildBasicContainerStyle(),
 				ItemsPanel = new ItemsPanelTemplate(() => panel),
 				SelectionMode = ListViewSelectionMode.Single,
 			};
@@ -157,7 +128,10 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		[TestMethod]
 		public void When_SelectionChanged_Changes_Selection()
 		{
-			var list = new ListView();
+			var list = new ListView()
+			{
+				ItemContainerStyle = BuildBasicContainerStyle(),
+			};
 			list.ItemsSource = Enumerable.Range(0, 20);
 
 			list.SelectionChanged += OnSelectionChanged;
@@ -176,7 +150,10 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		[TestMethod]
 		public void When_SelectionChanged_Changes_Selection_Repeated()
 		{
-			var list = new ListView();
+			var list = new ListView()
+			{
+				ItemContainerStyle = BuildBasicContainerStyle(),
+			};
 			list.ItemsSource = Enumerable.Range(0, 20);
 			var callbackCount = 0;
 
@@ -206,6 +183,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			var SUT = new ListView()
 			{
 				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemContainerStyle = BuildBasicContainerStyle(),
 				Template = new ControlTemplate(() => new ItemsPresenter()),
 				SelectionMode = ListViewSelectionMode.Single,
 			};
@@ -274,6 +252,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			var SUT = new ListView()
 			{
 				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemContainerStyle = BuildBasicContainerStyle(),
 				Template = new ControlTemplate(() => new ItemsPresenter()),
 				SelectionMode = ListViewSelectionMode.Multiple,
 			};
@@ -343,6 +322,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			var SUT = new ListView()
 			{
 				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemContainerStyle = BuildBasicContainerStyle(),
 				Template = new ControlTemplate(() => new ItemsPresenter()),
 				SelectionMode = ListViewSelectionMode.Single,
 			};
@@ -384,6 +364,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			var SUT = new ListView()
 			{
 				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemContainerStyle = BuildBasicContainerStyle(),
 				Template = new ControlTemplate(() => new ItemsPresenter()),
 				SelectionMode = ListViewSelectionMode.Multiple,
 			};
@@ -442,6 +423,21 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			Assert.AreEqual(2, SUT.SelectedItems.Count);
 		}
+
+		private Style BuildBasicContainerStyle() =>
+			new Style(typeof(Windows.UI.Xaml.Controls.ListViewItem))
+			{
+				Setters =  {
+					new Setter<ItemsControl>("Template", t =>
+						t.Template = Funcs.Create(() =>
+							new ContentPresenter().Apply(p => {
+								p.SetBinding(ContentPresenter.ContentTemplateProperty, new Binding(){ Path = "ContentTemplate", RelativeSource = RelativeSource.TemplatedParent });
+								p.SetBinding(ContentPresenter.ContentProperty, new Binding(){ Path = "Content", RelativeSource = RelativeSource.TemplatedParent });
+							})
+						)
+					)
+				}
+			};
 	}
 
 	public class MyModel
