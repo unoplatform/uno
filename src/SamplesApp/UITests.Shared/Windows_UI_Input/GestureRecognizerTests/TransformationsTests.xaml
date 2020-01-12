@@ -15,7 +15,7 @@
 		</Grid.RowDefinitions>
 
 		<Border
-			x:Name="Parent"
+			x:Name="_Parent"
 			BorderThickness="10"
 			BorderBrush="DeepSkyBlue"
 			Background="Red"
