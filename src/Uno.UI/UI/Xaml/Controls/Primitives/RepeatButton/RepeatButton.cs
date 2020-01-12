@@ -157,8 +157,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			var pointerPoint = args.GetCurrentPoint(this);
 			var isLeftButtonPressed = pointerPoint.Properties.IsLeftButtonPressed;
 
-			Console.WriteLine($"RepeatButton.OnPointerPressed {isLeftButtonPressed} {ClickMode}");
-
 			if (isLeftButtonPressed)
 			{
 				if (ClickMode != ClickMode.Hover)
@@ -194,8 +192,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				_timer.Tick += TimerCallback;
 			}
 
-			Console.WriteLine($"RepeatButton.StartTimer Delay:{Delay} _timer.IsEnabled:{_timer.IsEnabled}");
-
 			if (!_timer.IsEnabled)
 			{
 				_timer.Interval = TimeSpan.FromMilliseconds(Delay);
@@ -228,8 +224,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				_timer.Interval = interval;
 			}
-
-			Console.WriteLine($"RepeatButton.TimerCallback interval:{interval} IsPressed:{IsPressed} IsPointerOver:{IsPointerOver}");
 
 			var isPressed = IsPressed;
 

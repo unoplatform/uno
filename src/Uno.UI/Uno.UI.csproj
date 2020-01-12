@@ -326,7 +326,6 @@
 	</ItemGroup>
 	<ItemGroup>
 		<Folder Include="Mixins\Wasm\" />
-		<Folder Include="UI\Xaml\Controls\RepeatButton\" />
 		<Folder Include="UI\Xaml\Maps\Presenters\" />
 	</ItemGroup>
 
