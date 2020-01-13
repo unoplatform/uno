@@ -24,6 +24,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			var SUT = new ListViewBase()
 			{
+				Style = null,
 				Template = new ControlTemplate(() => new ItemsPresenter()),
 				ItemContainerStyle = BuildBasicContainerStyle(),
 				ItemsPanel = new ItemsPanelTemplate(() => panel),
@@ -57,6 +58,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			var item = new Border { Name = "b1" };
 			var SUT = new ListViewBase()
 			{
+				Style = null,
 				Template = new ControlTemplate(() => new ItemsPresenter()),
 				ItemsPanel = new ItemsPanelTemplate(() => panel),
 				ItemContainerStyle = BuildBasicContainerStyle(),
@@ -112,6 +114,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 
 			var SUT = new ListViewBase()
 			{
+				Style = null,
 				Template = new ControlTemplate(() => new ItemsPresenter()),
 				ItemContainerStyle = BuildBasicContainerStyle(),
 				ItemsPanel = new ItemsPanelTemplate(() => panel),
@@ -130,6 +133,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		{
 			var list = new ListView()
 			{
+				Style = null,
 				ItemContainerStyle = BuildBasicContainerStyle(),
 			};
 			list.ItemsSource = Enumerable.Range(0, 20);
@@ -152,6 +156,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		{
 			var list = new ListView()
 			{
+				Style = null,
 				ItemContainerStyle = BuildBasicContainerStyle(),
 			};
 			list.ItemsSource = Enumerable.Range(0, 20);
@@ -182,6 +187,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		{
 			var SUT = new ListView()
 			{
+				Style = null,
 				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
 				ItemContainerStyle = BuildBasicContainerStyle(),
 				Template = new ControlTemplate(() => new ItemsPresenter()),
@@ -251,6 +257,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		{
 			var SUT = new ListView()
 			{
+				Style = null,
 				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
 				ItemContainerStyle = BuildBasicContainerStyle(),
 				Template = new ControlTemplate(() => new ItemsPresenter()),
@@ -321,6 +328,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		{
 			var SUT = new ListView()
 			{
+				Style = null,
 				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
 				ItemContainerStyle = BuildBasicContainerStyle(),
 				Template = new ControlTemplate(() => new ItemsPresenter()),
