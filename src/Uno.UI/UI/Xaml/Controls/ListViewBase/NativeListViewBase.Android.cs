@@ -65,8 +65,6 @@ namespace Windows.UI.Xaml.Controls
 
 			InitializeSnapHelper();
 
-			MotionEventSplittingEnabled = false;
-
 			_shouldRecalibrateFlingVelocity = (int)Android.OS.Build.VERSION.SdkInt >= 28; // Android.OS.BuildVersionCodes.P
 
 			// // This is required for animations not to be cut off by transformed ancestor views. (#1333)

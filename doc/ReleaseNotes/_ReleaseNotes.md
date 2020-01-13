@@ -1,4 +1,4 @@
-# Release notes
+﻿# Release notes
 
 ### Features
 - Support for `EmailManager.ShowComposeNewEmailAsync`
@@ -11,6 +11,7 @@
 - Add clarification in [documentation](../articles/uno-development/working-with-the-samples-apps.md) for adding automated UI tests
 - Add support for `Popup.LightDismissOverlayMode`, as well as `DatePicker.LightDismissOverlayMode` and `Flyout.LightDismissOverlayMode`
 - `TransformToVisual` now returns a real transform to convert coordinates between views (was only returning a translate transform to offset the origin of controls)
+- Multiple pointers at same time on screen (a.k.a. Multi-touch) are now supported
 
 ### Breaking changes
 -
@@ -31,6 +32,11 @@
 - `ViewBox` no longer alters its child's `RenderTransform`
 - [#2033] Add Missing `LostFocus` Value to `UpdateSourceTrigger` Enum
 - [Android] Fix Image margin calculation on fixed size
+- [Android] Native views weren't clipped correctly
+- [iOS] #2361 ListView would measure children with infinite width
+- [#2398] Fully qualify the `MethodName` value for `CreateFromStringAttribute' if it's not fully qualified it the code
+- [WASM] Fix bug where changing a property could remove the required clipping on a view
+- [Android] Fix unconstrained Image loading issue when contained in a ContentControl template
 
 ## Release 2.0
 

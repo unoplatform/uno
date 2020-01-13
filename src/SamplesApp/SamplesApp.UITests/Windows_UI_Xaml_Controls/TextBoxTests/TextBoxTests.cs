@@ -150,21 +150,26 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		{
 			Run("Uno.UI.Samples.UITests.TextBoxControl.TextBox_IsReadOnly");
 
-			var button = _app.Marked("button");
+			var tglReadonly = _app.Marked("tglReadonly");
 			var txt = _app.Marked("txt");
 
-			_app.EnterText(txt, "Hello !");
+			const string initialText = "This text should initially be READONLY and ENABLED...";
+			_app.WaitForText(txt, initialText);
 
-			_app.WaitForText(txt, "This is the starting text...Hello !");
+			_app.EnterText(txt, "ERROR1");
+			_app.WaitForText(txt, initialText);
 
-			button.Tap();
-			_app.EnterText(txt, "Hello did not work!");
+			tglReadonly.Tap();
+			_app.EnterText(txt, "Hello!");
+			_app.WaitForText(txt, initialText + "Hello!");
 
-			_app.WaitForText(txt, "This is the starting text...Hello !");
+			tglReadonly.Tap();
+			_app.EnterText(txt, "ERROR2");
+			_app.WaitForText(txt, initialText + "Hello!");
 
-			button.Tap();
-			_app.EnterText(txt, "Works again!");
-			_app.WaitForText(txt, "This is the starting text...Hello !Works again!");
+			tglReadonly.Tap();
+			_app.EnterText(txt, " Works again!");
+			_app.WaitForText(txt, initialText + "Hello! Works again!");
 		}
 
 		[Test]

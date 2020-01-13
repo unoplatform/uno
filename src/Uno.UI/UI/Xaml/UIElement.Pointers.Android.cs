@@ -68,10 +68,40 @@ namespace Windows.UI.Xaml
 				srcElement = this;
 			}
 
-			var args = new PointerRoutedEventArgs(nativeEvent, srcElement, this);
+			var pointerCount = nativeEvent.PointerCount;
+			var action = nativeEvent.Action;
+			var actionMasked = action & MotionEventActions.Mask;
+			if (pointerCount > 1 && actionMasked == MotionEventActions.Move)
+			{
+				// When we get a move, we make sure to raise the move for all pointers.
+				// Note: We could probably also raise a move for pointers other than ActionIndex for other actions
+				//		 but as multi touch is only for fingers, we get a lot of events (due to the approx.) and it's
+				//		 safer to not try to over-interpret events.
 
+				var handled = false;
+				for (var pointerIndex = 0; pointerIndex < pointerCount; pointerIndex++)
+				{
+					var args = new PointerRoutedEventArgs(nativeEvent, pointerIndex, srcElement, this);
+					var argsAction = MotionEventActions.Move;
+
+					handled |= OnNativeMotionEvent(args, argsAction, isInView);
+				}
+
+				return handled;
+			}
+			else
+			{
+				var args = new PointerRoutedEventArgs(nativeEvent, nativeEvent.ActionIndex, srcElement, this);
+				var argsAction = actionMasked;
+
+				return OnNativeMotionEvent(args, argsAction, isInView);
+			}
+		}
+
+		private bool OnNativeMotionEvent(PointerRoutedEventArgs args, MotionEventActions action, bool isInView)
+		{
 			// Warning: MotionEvent of other kinds are filtered out in native code (UnoMotionHelper.java)
-			switch (nativeEvent.ActionMasked)
+			switch (action)
 			{
 				case MotionEventActions.HoverEnter:
 					return OnNativePointerEnter(args);
@@ -109,8 +139,9 @@ namespace Windows.UI.Xaml
 				default:
 					if (this.Log().IsEnabled(LogLevel.Warning))
 					{
-						this.Log().Warn($"We receive a native motion event of '{nativeEvent.ActionMasked}', but this is not supported and should have been filtered out in native code.");
+						this.Log().Warn($"We receive a native motion event of '{action}', but this is not supported and should have been filtered out in native code.");
 					}
+
 					return false;
 			}
 		}
