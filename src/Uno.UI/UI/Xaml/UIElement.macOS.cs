@@ -1,4 +1,4 @@
-﻿using CoreAnimation;
+using CoreAnimation;
 using CoreGraphics;
 using Foundation;
 using Uno.Extensions;
@@ -22,6 +22,8 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : BindableNSView
 	{
+		private NSTrackingArea _trackingArea;
+
 		internal bool IsPointerCaptured { get; set; }
 
 		#region Logs
@@ -41,8 +43,24 @@ namespace Windows.UI.Xaml
 			InitializePointers();
 		}
 
-
+		public override void UpdateTrackingAreas()
+		{
+			if (_trackingArea != null)
+			{
+				RemoveTrackingArea(_trackingArea);
+			}
+			var options =
+				NSTrackingAreaOptions.MouseEnteredAndExited |
+				NSTrackingAreaOptions.MouseMoved |
+				NSTrackingAreaOptions.ActiveInKeyWindow;
+			
+			_trackingArea = new NSTrackingArea(this.Bounds, options, this, null);
+			AddTrackingArea(_trackingArea);
+		}
+		
 		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
+
+
 
         partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -254,17 +272,112 @@ namespace Windows.UI.Xaml
 						OriginalSource = this
 					};
 
-					pointerEventIsHandledInManaged = RaiseEvent(PointerEnteredEvent, args);
-
-					args.Handled = false; // reset for "pressed" event
-
-					pointerEventIsHandledInManaged = RaiseEvent(PointerPressedEvent, args) || pointerEventIsHandledInManaged;
+					pointerEventIsHandledInManaged = RaisePointerEvent(PointerPressedEvent, args);
 				}
 
 				if (!pointerEventIsHandledInManaged)
 				{
 					// Bubble up the event natively
 					base.MouseDown(evt);
+				}
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledException(e);
+			}
+		}
+
+		public override void MouseMoved(NSEvent evt)
+		{
+			try
+			{
+				var pointerEventIsHandledInManaged = false;
+
+				if (evt.IsTouchInView(this))
+				{
+					IsPointerPressed = true;
+					IsPointerOver = true;
+
+					// evt.AllTouches raises a invalid selector exception
+					var args = new PointerRoutedEventArgs(null, evt)
+					{
+						CanBubbleNatively = true,
+						OriginalSource = this
+					};
+					
+					pointerEventIsHandledInManaged = RaisePointerEvent(PointerMovedEvent, args);
+				}
+
+				if (!pointerEventIsHandledInManaged)
+				{
+					// Bubble up the event natively
+					base.MouseMoved(evt);
+				}
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledException(e);
+			}
+		}
+
+		public override void MouseEntered(NSEvent evt)
+		{
+			try
+			{
+				var pointerEventIsHandledInManaged = false;
+
+				if (evt.IsTouchInView(this))
+				{
+					IsPointerPressed = true;
+					IsPointerOver = true;
+
+					// evt.AllTouches raises a invalid selector exception
+					var args = new PointerRoutedEventArgs(null, evt)
+					{
+						CanBubbleNatively = true,
+						OriginalSource = this
+					};
+
+					pointerEventIsHandledInManaged = RaisePointerEvent(PointerEnteredEvent, args);
+				}
+
+				if (!pointerEventIsHandledInManaged)
+				{
+					// Bubble up the event natively
+					base.MouseEntered(evt);
+				}
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledException(e);
+			}
+		}
+
+		public override void MouseExited(NSEvent evt)
+		{
+			try
+			{
+				var pointerEventIsHandledInManaged = false;
+
+				if (evt.IsTouchInView(this))
+				{
+					IsPointerPressed = true;
+					IsPointerOver = true;
+
+					// evt.AllTouches raises a invalid selector exception
+					var args = new PointerRoutedEventArgs(null, evt)
+					{
+						CanBubbleNatively = true,
+						OriginalSource = this
+					};
+
+					pointerEventIsHandledInManaged = RaisePointerEvent(PointerExitedEvent, args);
+				}
+
+				if (!pointerEventIsHandledInManaged)
+				{
+					// Bubble up the event natively
+					base.MouseExited(evt);
 				}
 			}
 			catch (Exception e)
@@ -292,23 +405,23 @@ namespace Windows.UI.Xaml
 
 				if (!wasPointerOver && IsPointerOver)
 				{
-					pointerEventIsHandledInManaged = RaiseEvent(PointerEnteredEvent, args);
+					pointerEventIsHandledInManaged = RaisePointerEvent(PointerEnteredEvent, args);
 				}
 				else if (wasPointerOver && !IsPointerOver)
 				{
-					pointerEventIsHandledInManaged = RaiseEvent(PointerExitedEvent, args);
+					pointerEventIsHandledInManaged = RaisePointerEvent(PointerExitedEvent, args);
 				}
 
 				if (IsPointerCaptured || IsPointerOver)
 				{
 					args.Handled = false; // reset as unhandled
-					pointerEventIsHandledInManaged = RaiseEvent(PointerReleasedEvent, args) || pointerEventIsHandledInManaged;
+					pointerEventIsHandledInManaged = RaisePointerEvent(PointerReleasedEvent, args) || pointerEventIsHandledInManaged;
 				}
 
 				if (IsPointerCaptured)
 				{
 					args.Handled = false; // reset as unhandled
-					pointerEventIsHandledInManaged = RaiseEvent(PointerCaptureLostEvent, args) || pointerEventIsHandledInManaged;
+					pointerEventIsHandledInManaged = RaisePointerEvent(PointerCaptureLostEvent, args) || pointerEventIsHandledInManaged;
 				}
 
 				if (!pointerEventIsHandledInManaged)
@@ -344,18 +457,18 @@ namespace Windows.UI.Xaml
 
 				if (IsPointerCaptured || IsPointerOver)
 				{
-					pointerEventIsHandledInManaged = RaiseEvent(PointerMovedEvent, args);
+					pointerEventIsHandledInManaged = RaisePointerEvent(PointerMovedEvent, args);
 				}
 
 				if (!wasPointerOver && IsPointerOver)
 				{
 					args.Handled = false; // reset as unhandled
-					pointerEventIsHandledInManaged = RaiseEvent(PointerEnteredEvent, args) || pointerEventIsHandledInManaged;
+					pointerEventIsHandledInManaged = RaisePointerEvent(PointerEnteredEvent, args) || pointerEventIsHandledInManaged;
 				}
 				else if (wasPointerOver && !IsPointerOver)
 				{
 					args.Handled = false; // reset as unhandled
-					pointerEventIsHandledInManaged = RaiseEvent(PointerExitedEvent, args) || pointerEventIsHandledInManaged;
+					pointerEventIsHandledInManaged = RaisePointerEvent(PointerExitedEvent, args) || pointerEventIsHandledInManaged;
 				}
 
 				if (!pointerEventIsHandledInManaged)
