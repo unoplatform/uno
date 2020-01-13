@@ -221,6 +221,12 @@ namespace Windows.UI.Xaml
 				that.SafeRaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(that, args));
 			}
 		};
+
+		private static readonly TypedEventHandler<GestureRecognizer, RightTappedEventArgs> OnRecognizerRightTapped = (sender, args) =>
+		{
+			var that = (UIElement)sender.Owner;
+			that.SafeRaiseEvent(RightTappedEvent, new RightTappedRoutedEventArgs(that, args));
+		};
 		#endregion
 
 		private bool _isGestureCompleted;
@@ -235,6 +241,7 @@ namespace Windows.UI.Xaml
 			recognizer.ManipulationInertiaStarting += OnRecognizerManipulationInertiaStarting;
 			recognizer.ManipulationCompleted += OnRecognizerManipulationCompleted;
 			recognizer.Tapped += OnRecognizerTapped;
+			recognizer.RightTapped += OnRecognizerRightTapped;
 
 			// Allow partial parts to subscribe to pointer events (WASM)
 			OnGestureRecognizerInitialized(recognizer);
