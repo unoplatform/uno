@@ -11,9 +11,8 @@ namespace Windows.UI.Xaml.Input
 {
 	partial class PointerRoutedEventArgs
 	{
-		private static long _pseudoNextFrameId;
-		private readonly uint _pseudoFrameId = (uint)Interlocked.Increment(ref _pseudoNextFrameId);
-		private readonly ulong _pseudoTimestamp = (ulong)DateTime.UtcNow.Ticks;
+		private const int LeftMouseButtonMask = 1;
+		private const int RightMouseButtonMask = 2;
 
 		private readonly NSEvent _nativeEvent;
 		private readonly NSSet _nativeTouches;
@@ -23,22 +22,83 @@ namespace Windows.UI.Xaml.Input
 			_nativeEvent = nativeEvent;
 			_nativeTouches = touches;
 
-			FrameId = _pseudoFrameId;
-			Pointer = new Pointer(nativeEvent);
+			var pointerId = (uint)0;
+			var pointerDeviceType = GetPointerDeviceType(nativeEvent.Type);
+
+			var isInContact = GetIsInContact(nativeEvent);
+
+			FrameId = ToFrameId(_nativeEvent.Timestamp);
+			Pointer = new Pointer(pointerId, pointerDeviceType, isInContact, isInRange: true);
+			KeyModifiers = System.VirtualKeyModifiers.None; //TODO: Properly set virtual key modifiers
+			OriginalSource = null; //TODO: get original source
 			CanBubbleNatively = true;
 		}
-
 
 		public PointerPoint GetCurrentPoint(UIElement relativeTo)
 		{
 			var device = PointerDevice.For(PointerDeviceType.Mouse);
-			var point = relativeTo.ConvertPointFromView(_nativeEvent.LocationInWindow, null);
-			var properties = new PointerPointProperties() { IsInRange = true, IsPrimary = true };
+			var rawPosition = _nativeEvent.LocationInWindow;
+			var position = relativeTo != null ?
+				relativeTo.ConvertPointFromView(_nativeEvent.LocationInWindow, null) :
+				rawPosition;
+			
+			var properties = new PointerPointProperties()
+			{
+				IsInRange = true,
+				IsPrimary = true,
+				IsLeftButtonPressed = ((int)NSEvent.CurrentPressedMouseButtons & LeftMouseButtonMask) == LeftMouseButtonMask,
+				IsRightButtonPressed = ((int)NSEvent.CurrentPressedMouseButtons & RightMouseButtonMask) == RightMouseButtonMask
+			};
 
-			return new PointerPoint(FrameId, _pseudoTimestamp, device, 0, point, point, true, properties);
+			return new PointerPoint(
+				FrameId,
+				ToTimeStamp(_nativeEvent.Timestamp),
+				device,
+				Pointer.PointerId,
+				rawPosition,
+				position,
+				Pointer.IsInContact,
+				properties);
 		}
 
 		#region Misc static helpers
+		private static long? _bootTime;
+
+		private static bool GetIsInContact(NSEvent nativeEvent)
+		{
+			return
+				nativeEvent.Type == NSEventType.LeftMouseDown ||
+				nativeEvent.Type == NSEventType.LeftMouseDragged ||
+				nativeEvent.Type == NSEventType.RightMouseDown ||
+				nativeEvent.Type == NSEventType.RightMouseDragged ||
+				nativeEvent.Type == NSEventType.OtherMouseDown ||
+				nativeEvent.Type == NSEventType.OtherMouseDragged;
+		}
+
+		private static PointerDeviceType GetPointerDeviceType(NSEventType eventType)
+		{
+			switch (eventType)
+			{
+				case AppKit.NSEventType.DirectTouch:
+					return PointerDeviceType.Touch;
+				case AppKit.NSEventType.TabletPoint:
+				case AppKit.NSEventType.TabletProximity:
+					return PointerDeviceType.Pen;
+				default:
+					return PointerDeviceType.Mouse;
+			}
+		}
+
+		private static ulong ToTimeStamp(double timestamp)
+		{
+			if (!_bootTime.HasValue)
+			{
+				_bootTime = DateTime.UtcNow.Ticks - (long)(TimeSpan.TicksPerSecond * new NSProcessInfo().SystemUptime);
+			}
+
+			return (ulong)_bootTime.Value + (ulong)(TimeSpan.TicksPerSecond * timestamp);
+		}
+
 		private static uint ToFrameId(double timestamp)
 		{
 			// The precision of the frameId is 10 frame per ms ... which should be enough
