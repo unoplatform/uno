@@ -1,6 +1,4 @@
-﻿#if !NET461
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.System;
@@ -25,4 +23,3 @@ namespace Windows.UI.Xaml.Input
 		public global::Windows.System.VirtualKey OriginalKey { get; }
 	}
 }
-#endif

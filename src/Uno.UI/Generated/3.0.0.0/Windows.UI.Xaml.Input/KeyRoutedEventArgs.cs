@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Input
 	#endif
 	public  partial class KeyRoutedEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
 	{
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  bool Handled
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.VirtualKey Key
 		{
