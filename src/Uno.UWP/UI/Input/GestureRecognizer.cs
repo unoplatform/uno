@@ -329,7 +329,7 @@ namespace Windows.UI.Input
 						return true;
 					}
 #if __IOS__
-					if (Uno.FoundationFeatureConfiguration.GestureRecognizer.InterpretForceTouchAsRightTap
+					if (Uno.WinRTFeatureConfiguration.GestureRecognizer.InterpretForceTouchAsRightTap
 						&& isLeftTap
 						&& isForceTouch)
 					{
@@ -361,7 +361,7 @@ namespace Windows.UI.Input
 #if __ANDROID__
 					// On Android, usually the right button is mapped to back navigation. So, unlike UWP,
 					// we also allow a long press with the left button to be more user friendly.
-					if (Uno.FoundationFeatureConfiguration.GestureRecognizer.InterpretMouseLeftLongPressAsRightTap
+					if (Uno.WinRTFeatureConfiguration.GestureRecognizer.InterpretMouseLeftLongPressAsRightTap
 						&& IsTapGesture(LeftButton, points, pointerUp, out start, out _)
 						&& pointerUp.Timestamp - start.point.Timestamp > HoldMinDelayTicks)
 					{
