@@ -16,8 +16,8 @@
 			<RowDefinition />
 			<RowDefinition Height="Auto" />
 			<RowDefinition />
-			<!--<RowDefinition Height="Auto" />
-			<RowDefinition />-->
+			<RowDefinition Height="Auto" />
+			<RowDefinition />
 		</Grid.RowDefinitions>
 
 		<Grid.ColumnDefinitions>
@@ -118,7 +118,45 @@
 			Height="150"
 			Background="#008018">
 			<ListView
-				ItemsSource="0123456789abcdef">
+				ItemsSource="0123456789abcdef"
+				IsItemClickEnabled="True"
+				SelectionMode="Single">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<Border
+							Height="50"
+							Width="125"
+							Background="#11000000"
+							BorderBrush="#33000000"
+							BorderThickness="3"
+							Margin="3"
+							RightTapped="ItemRightTapped">
+							<TextBlock
+								VerticalAlignment="Center"
+								HorizontalAlignment="Center"
+								Text="{Binding}" />
+						</Border>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</Border>
+
+
+		<TextBlock
+			Text="ListView item click disabled"
+			Grid.Row="6"
+			Grid.Column="0" 
+			HorizontalAlignment="Center"/>
+		<Border
+			Grid.Row="7"
+			Grid.Column="0"
+			Width="150"
+			Height="150"
+			Background="#0000F9">
+			<ListView
+				ItemsSource="0123456789abcdef"
+				IsItemClickEnabled="False"
+				SelectionMode="None">
 				<ListView.ItemTemplate>
 					<DataTemplate>
 						<Border
