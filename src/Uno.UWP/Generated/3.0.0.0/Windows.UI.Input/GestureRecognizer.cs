@@ -467,7 +467,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.GestureRecognizer, global::Windows.UI.Input.RightTappedEventArgs> RightTapped
 		{

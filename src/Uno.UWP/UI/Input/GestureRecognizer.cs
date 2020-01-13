@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Windows.Devices.Input;
 using Windows.Foundation;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
@@ -154,7 +155,8 @@ namespace Windows.UI.Input
 				return;
 			}
 
-			var recognized = TryRecognizeTap(points, pointerUp);
+			var recognized = TryRecognizeRightTap(points, pointerUp) // We check right tap first as for touch a right tap is a press and hold of the finger :)
+				|| TryRecognizeTap(points, pointerUp);
 
 			if (!recognized && _log.IsEnabled(LogLevel.Information))
 			{
@@ -177,47 +179,144 @@ namespace Windows.UI.Input
 		internal Manipulation PendingManipulation => _manipulation;
 		#endregion
 
-		#region Tap (includes DoubleTap)
+		#region Tap (includes DoubleTap and RightTap)
 		internal const ulong MultiTapMaxDelayTicks = TimeSpan.TicksPerMillisecond * 1000;
+		internal const ulong HoldMinDelayTicks = TimeSpan.TicksPerMillisecond * 2000;
 		internal const int TapMaxXDelta = 10;
 		internal const int TapMaxYDelta = 10;
 
 		public event TypedEventHandler<GestureRecognizer, TappedEventArgs> Tapped;
+		public event TypedEventHandler<GestureRecognizer, RightTappedEventArgs> RightTapped;
 
-		private (ulong, ulong, Point) _lastSingleTap;
+		private (ulong id, ulong ts, Point position) _lastSingleTap;
 
-		public bool CanBeDoubleTap(PointerPoint value)
+		public bool CanBeDoubleTap(PointerPoint value) => IsMultiTapGesture(_lastSingleTap, value);
+
+		private bool TryRecognizeTap(List<PointerPoint> points, PointerPoint pointerUp = null)
+		{
+			if (IsTapGesture(LeftButton, points, pointerUp, out var start))
+			{
+				// pointerUp is not null here!
+
+				_lastSingleTap = (start.id, pointerUp.Timestamp, pointerUp.Position);
+				Tapped?.Invoke(this, new TappedEventArgs(start.point.PointerDevice.PointerDeviceType, start.point.Position, tapCount: 1));
+
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		private bool TryRecognizeMultiTap(PointerPoint pointerDown)
+		{
+			if (IsMultiTapGesture(_lastSingleTap, pointerDown))
+			{
+				_lastSingleTap = default; // The Recognizer supports only double tap, even on UWP
+				Tapped?.Invoke(this, new TappedEventArgs(pointerDown.PointerDevice.PointerDeviceType, pointerDown.Position, tapCount: 2));
+
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		private bool TryRecognizeRightTap(List<PointerPoint> points, PointerPoint pointerUp = null)
+		{
+			if (pointerUp == null || !_gestureSettings.HasFlag(GestureSettings.RightTap))
+			{
+				return false;
+			}
+
+			bool isRightTap;
+			(PointerPoint point, ulong id) start;
+			switch (points[0].PointerDevice.PointerDeviceType)
+			{
+				case PointerDeviceType.Mouse:
+					isRightTap = IsTapGesture(RightButton, points, pointerUp, out start);
+					break;
+				case PointerDeviceType.Pen when IsTapGesture(BarrelButton, points, pointerUp, out start):
+					isRightTap = true;
+					break;
+				case PointerDeviceType.Pen: // Some pens does not have a barrel button, so we also allow long press
+				case PointerDeviceType.Touch:
+					isRightTap = IsHoldGesture(LeftButton, points, out start) && pointerUp.Timestamp - start.point.Timestamp > HoldMinDelayTicks;
+					break;
+
+				default:
+					return false;
+			}
+
+			if (isRightTap)
+			{
+				RightTapped?.Invoke(this, new RightTappedEventArgs(start.point.PointerDevice.PointerDeviceType, start.point.Position));
+
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		// A Tap gesture is: 1 down -> * moves close to the down with same buttons pressed -> 1 up
+		private static bool IsTapGesture(CheckButton isExpectedButton, List<PointerPoint> points, PointerPoint pointerUp, out (PointerPoint point, ulong id) start)
+		{
+			if (pointerUp == null) // no tap if no up!
+			{
+				start = default;
+				return false;
+			}
+
+			// Validate that all the intermediates points are valid
+			if (!IsHoldGesture(isExpectedButton, points, out start))
+			{
+				return false;
+			}
+
+			// For the pointer up, we check only the distance, as it's expected that the IsLeftButtonPressed changed!
+			if (IsOutOfTapRange(pointerUp.Position, start.point.Position))
+			{
+				return false;
+			}
+
+			return true;
+		}
+
+		private bool IsMultiTapGesture((ulong id, ulong ts, Point position) previousTap, PointerPoint down)
 		{
 			if (!_gestureSettings.HasFlag(GestureSettings.DoubleTap))
 			{
 				return false;
 			}
 
-			var (lastTapId, lastTapTs, lastTapLocation) = _lastSingleTap;
-			if (lastTapTs == 0)
+			if (previousTap.ts == 0) // i.s. no previous tap to compare with
 			{
 				return false;
 			}
 
-			var currentId = GetPointerIdentifier(value);
-			var currentTs = value.Timestamp;
-			var currentPosition = value.Position;
+			var currentId = GetPointerIdentifier(down);
+			var currentTs = down.Timestamp;
+			var currentPosition = down.Position;
 
-			return lastTapId == currentId
-				&& currentTs - lastTapTs <= MultiTapMaxDelayTicks
-				&& !IsOutOfTapRange(lastTapLocation, currentPosition);
+			return previousTap.id == currentId
+				&& currentTs - previousTap.ts <= MultiTapMaxDelayTicks
+				&& !IsOutOfTapRange(previousTap.position, currentPosition);
 		}
 
-		private bool TryRecognizeTap(List<PointerPoint> points, PointerPoint pointerUp = null)
+		// A Hold gesture is: 1 down -> * moves close to the down with same buttons pressed
+		private static bool IsHoldGesture(CheckButton isExpectedButton, List<PointerPoint> points, out (PointerPoint point, ulong id) start)
 		{
-			if (pointerUp == null)
+			var startPoint = points[0]; // down
+			start = (startPoint, GetPointerIdentifier(startPoint));
+
+			if (!isExpectedButton(start.point)) // We validate only the start as for other points we validate the full pointer identifier
 			{
 				return false;
 			}
-
-			var start = points[0]; // down
-			var end = pointerUp;
-			var startIdentifier = GetPointerIdentifier(start);
 
 			// Validate tap gesture
 			// Note: There is no limit for the duration of the tap!
@@ -228,46 +327,31 @@ namespace Windows.UI.Input
 
 				if (
 					// The pointer changed (left vs right click)
-					pointIdentifier != startIdentifier
+					pointIdentifier != start.id
 
 					// Pointer moved to far
-					|| IsOutOfTapRange(point.Position, start.Position)
+					|| IsOutOfTapRange(point.Position, start.point.Position)
 				)
 				{
 					return false;
 				}
 			}
-			// For the pointer up, we check only the distance, as it's expected that the IsLeftButtonPressed changed!
-			if (IsOutOfTapRange(end.Position, start.Position))
-			{
-				return false;
-			}
-
-			_lastSingleTap = (startIdentifier, end.Timestamp, end.Position);
-			Tapped?.Invoke(this, new TappedEventArgs(start.PointerDevice.PointerDeviceType, start.Position, tapCount: 1));
 
 			return true;
 		}
+
+		private delegate bool CheckButton(PointerPoint point);
+
+		private static readonly CheckButton LeftButton = (PointerPoint point) => point.Properties.IsLeftButtonPressed;
+		private static readonly CheckButton RightButton = (PointerPoint point) => point.Properties.IsRightButtonPressed;
+		private static readonly CheckButton BarrelButton = (PointerPoint point) => point.Properties.IsBarrelButtonPressed;
 
 		private static bool IsOutOfTapRange(Point p1, Point p2)
 			=> Math.Abs(p1.X - p2.X) > TapMaxXDelta
 			|| Math.Abs(p1.Y - p2.Y) > TapMaxYDelta;
-
-		private bool TryRecognizeMultiTap(PointerPoint pointerDown)
-		{
-			if (!CanBeDoubleTap(pointerDown))
-			{
-				return false;
-			}
-
-			_lastSingleTap = default; // The Recognizer supports only double tap, even on UWP
-			Tapped?.Invoke(this, new TappedEventArgs(pointerDown.PointerDevice.PointerDeviceType, pointerDown.Position, tapCount: 2));
-
-			return true;
-		}
 		#endregion
 
-		private ulong GetPointerIdentifier(PointerPoint point)
+		private static ulong GetPointerIdentifier(PointerPoint point)
 		{
 			// For mouse, the PointerId is the same, no matter the button pressed.
 			// The only thing that changes are flags in the properties.
