@@ -25,7 +25,8 @@
 			<Pivot.HeaderTemplate>
 				<DataTemplate>
 					<StackPanel>
-						<TextBlock Text="{Binding Title}" />
+						<TextBlock x:Name="ItemHeaderTextBlock"
+								   Text="{Binding Title}" />
 					</StackPanel>
 				</DataTemplate>
 			</Pivot.HeaderTemplate>
