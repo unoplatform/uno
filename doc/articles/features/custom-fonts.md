@@ -1,4 +1,6 @@
-#### Custom Fonts on Android
+# Custom Fonts
+
+## Custom Fonts on Android
 
 Fonts must be placed in the `Assets` folder of the head project, matching the path of the fonts in Windows, and marked as `AndroidAsset`.
 The format is the same as Windows, as follows:
@@ -12,7 +14,7 @@ The format is the same as Windows, as follows:
 <Setter Property="FontFamily" Value="ms-appx:///Assets/Fonts/Roboto-Regular.ttf#Roboto" />
 ```
 
-#### Custom Fonts on iOS
+## Custom Fonts on iOS
 
 Fonts must be placed in the `Resources` folder of the head project, be marked as
 `BundleResource` for the build type.
@@ -39,7 +41,7 @@ The format is the same as Windows, as follows:
 <Setter Property="FontFamily" Value="ms-appx:///Assets/Fonts/yourfont01.ttf#Roboto" />
 ```
 
-#### Custom fonts on WebAssembly
+## Custom fonts on WebAssembly
 
 Adding a custom font is done through the use of WebFonts, using a data-URI:
 
@@ -85,7 +87,7 @@ Will match:
 }
 ```
 
-#### Custom Fonts Notes
+## Custom Fonts Notes
 
 Please note that some custom fonts need the FontFamily and FontWeight properties to be set at the same time in order to work properly on TextBlocks, Runs and for styles Setters.
 If that's your case, here are some examples of code:
