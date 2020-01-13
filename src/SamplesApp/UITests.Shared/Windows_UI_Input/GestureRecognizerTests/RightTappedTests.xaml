@@ -42,7 +42,7 @@
 			Grid.Column="0"
 			HorizontalAlignment="Center"/>
 		<Border
-			x:Name="BasicTarget"
+			x:Name="Basic_Target"
 			Grid.Row="3"
 			Grid.Column="0"
 			Width="150"
@@ -60,9 +60,10 @@
 			Grid.Column="1"
 			Width="150"
 			Height="150"
-			Background="#FFA52C">
+			Background="#FFA52C"
+			x:Name="Transformed_Parent">
 			<Border
-				x:Name="TransformedTarget"
+				x:Name="Transformed_Target"
 				HorizontalAlignment="Left"
 				VerticalAlignment="Top"
 				Width="50"
@@ -90,12 +91,13 @@
 				VerticalScrollMode="Enabled"
 				VerticalScrollBarVisibility="Visible"
 				HorizontalScrollMode="Enabled"
-				HorizontalScrollBarVisibility="Visible">
+				HorizontalScrollBarVisibility="Visible"
+				x:Name="InScroll_ScrollViewer">
 				<Grid
 					Width="300"
 					Height="300">
 					<Border
-						x:Name="InScroll"
+						x:Name="InScroll_Target"
 						Width="100"
 						Height="100"
 						HorizontalAlignment="Right"
@@ -120,7 +122,8 @@
 			<ListView
 				ItemsSource="0123456789abcdef"
 				IsItemClickEnabled="True"
-				SelectionMode="Single">
+				SelectionMode="Single"
+				x:Name="ListViewWithItemClick">
 				<ListView.ItemTemplate>
 					<DataTemplate>
 						<Border
@@ -156,7 +159,8 @@
 			<ListView
 				ItemsSource="0123456789abcdef"
 				IsItemClickEnabled="False"
-				SelectionMode="None">
+				SelectionMode="None"
+				x:Name="ListViewWithoutItemClick">
 				<ListView.ItemTemplate>
 					<DataTemplate>
 						<Border
