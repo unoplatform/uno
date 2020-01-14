@@ -14,7 +14,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.NavigationViewTests
 	{
 		[Test]
 		[AutoRetry()]
-		public void Pivot_Non_PivotItem_Items()
+		public void BasicNavigationView()
 		{
 			Run("SamplesApp.Samples.Windows_UI_Xaml_Controls.NavigationViewTests.NavigationView_Pane_Automated");
 

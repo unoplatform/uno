@@ -14,10 +14,10 @@
 					SelectedItem="{Binding SelectedItem, Mode=TwoWay}">
 		<NavigationView.MenuItemTemplate>
 			<DataTemplate x:DataType="models:NavigationViewItemViewModel">
-				<NavigationViewItem Content="{x:Bind Title}">
+				<NavigationViewItem Content="{x:Bind Title}"
+									AutomationProperties.AutomationId="{x:Bind sys:String.Format('Item {0}', Title)}">
 					<NavigationViewItem.Icon>
-						<SymbolIcon Symbol="{x:Bind Symbol}"
-									AutomationProperties.AutomationId="{x:Bind sys:String.Format('Item {0}', Title)}" />
+						<SymbolIcon Symbol="{x:Bind Symbol}" />
 					</NavigationViewItem.Icon>
 				</NavigationViewItem>
 			</DataTemplate>
