@@ -13,8 +13,12 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-using Microsoft.UI.Xaml.Controls;
 using Windows.Globalization.NumberFormatting;
+
+// Condition to be removed when UWP will be updated to 18362+
+#if HAS_UNO
+using Microsoft.UI.Xaml.Controls;
+#endif
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -26,9 +30,12 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
         public MUX_Test()
         {
             this.InitializeComponent();
+#if HAS_UNO
 			TestNumberBox.RegisterPropertyChangedCallback(NumberBox.TextProperty, new DependencyPropertyChangedCallback(TextPropertyChanged));
+#endif
 		}
 
+#if HAS_UNO
 		private void SpinMode_Changed(object sender, RoutedEventArgs e)
 		{
 			if (TestNumberBox != null)
@@ -128,5 +135,6 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		{
 			TextTextBox.Text = TestNumberBox.Text;
 		}
+#endif
 	}
 }

@@ -6,11 +6,12 @@
 			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 			 xmlns:contract5Present="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 mc:Ignorable="d"
+			 xmlns:xamarin="http://uno.ui/xamarin"
+			 mc:Ignorable="d xamarin"
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
 
-	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+	<xamarin:Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="Auto" />
@@ -166,6 +167,6 @@
 			</StackPanel>
 		</Grid>
 
-	</Grid>
+	</xamarin:Grid>
 
 </UserControl>
