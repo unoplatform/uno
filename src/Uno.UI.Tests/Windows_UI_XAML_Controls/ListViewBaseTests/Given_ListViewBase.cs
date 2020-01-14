@@ -432,6 +432,50 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			Assert.AreEqual(2, SUT.SelectedItems.Count);
 		}
 
+		[TestMethod]
+		public void When_ItemClick()
+		{
+			var SUT = new ListView()
+			{
+				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemContainerStyle = BuildBasicContainerStyle(),
+				Template = new ControlTemplate(() => new ItemsPresenter()),
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+
+			SUT.ForceLoaded();
+
+			var selectionChanged = new List<SelectionChangedEventArgs>();
+
+			SUT.SelectionChanged += (s, e) => {
+				selectionChanged.Add(e);
+			};
+
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			var source = new[] {
+				"item 0",
+				"item 1",
+				"item 2",
+				"item 3",
+				"item 4"
+			};
+
+			SUT.ItemsSource = source;
+
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			if (SUT.ContainerFromItem(source[1]) is SelectorItem si)
+			{
+				SUT?.OnItemClicked(si);
+			}
+
+			Assert.AreEqual(source[1], SUT.SelectedValue);
+			Assert.AreEqual(1, selectionChanged.Count);
+			Assert.AreEqual(source[1], selectionChanged[0].AddedItems[0]);
+			Assert.AreEqual(0, selectionChanged[0].RemovedItems.Count);
+		}
+
 		private Style BuildBasicContainerStyle() =>
 			new Style(typeof(Windows.UI.Xaml.Controls.ListViewItem))
 			{

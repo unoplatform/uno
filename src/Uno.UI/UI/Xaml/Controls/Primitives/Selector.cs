@@ -127,6 +127,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				si.IsSelected = isSelected;
 			}
+			else if (ContainerFromItem(item) is SelectorItem si2)
+			{
+				si2.IsSelected = isSelected;
+			}
 		}
 
 		internal bool DisableRaiseSelectionChanged
