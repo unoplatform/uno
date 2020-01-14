@@ -47,7 +47,7 @@ namespace Uno.UI.RuntimeTests.Tests
 			}
 			catch
 			{
-			  Assert.Fail("CreateFile exception - error outside tested method");
+			  	Assert.Fail("CreateFile exception - error outside tested method");
 			}
 
       		DateTimeOffset _dateAfter = DateTimeOffset.Now;
@@ -65,26 +65,25 @@ namespace Uno.UI.RuntimeTests.Tests
 			}
 			catch
 			{
-				Assert.IsNotNull(null, "DateCreated exception - error in tested method");
+				Assert.Fail("DateCreated exception - error in tested method");
 			}
 
-		  _dateBefore = _dateBefore.AddSeconds(-2);
-		  _dateAfter = _dateAfter.AddSeconds(2);
+		   _dateBefore = _dateBefore.AddSeconds(-2);
+		   _dateAfter = _dateAfter.AddSeconds(2);
       
 			// check if method works
-		  if(_dateCreated < _dateBefore)
-		  {
-				Assert.IsNotNull(null, "DateCreated: too early - method doesnt work");
-		  }
+		   if(_dateCreated < _dateBefore)
+		   {
+				Assert.Fail("DateCreated: too early - method doesnt work");
+		   }
 
-		  if(_dateCreated > _dateAfter)
-		  {
-				Assert.IsNotNull(null, "DateCreated: too late - method doesnt work");
-		  }
+		   if(_dateCreated > _dateAfter)
+		   {
+				Assert.Fail("DateCreated: too late - method doesnt work");
+		   }
 
       
 		}
-
 
 	}
 }
