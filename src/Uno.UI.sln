@@ -150,12 +150,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.Samples.UITest.Generato
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.SourceGenerators.Tests", "SourceGenerators\Uno.UI.SourceGenerators.Tests\Uno.UI.SourceGenerators.Tests.csproj", "{34DB4266-6184-4889-8D16-92F22C43BB15}"
 EndProject
-Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "System.Xaml", "SourceGenerators\WinUIXaml\System.Xaml\System.Xaml.shproj", "{2F9ECEF0-F8C3-4F81-B6BE-29217E6CE9A4}"
-EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{04b1b5eb-d42e-47de-ada0-eb863e5574fd}*SharedItemsImports = 13
-		SourceGenerators\WinUIXaml\System.Xaml\System.Xaml.projitems*{2f9ecef0-f8c3-4f81-b6be-29217e6ce9a4}*SharedItemsImports = 13
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{313fcf91-a6db-4585-a23e-49bbeef4784d}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{313fcf91-a6db-4585-a23e-49bbeef4784d}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{3fdf0f2d-cc11-49be-8634-f81638d595c6}*SharedItemsImports = 4
@@ -5604,7 +5601,6 @@ Global
 		{BCB38AAE-4CDA-43C2-AA10-C3A935B08F79} = {E8E628C1-3BAF-4C67-AF41-78B1B30AC8CC}
 		{E6872579-B7A0-42CE-AE97-44234BB55625} = {995C1054-AB61-42EE-9A17-C32155BD6D13}
 		{34DB4266-6184-4889-8D16-92F22C43BB15} = {D4EBD71B-1C17-4774-A73C-D0BFD8FA3737}
-		{2F9ECEF0-F8C3-4F81-B6BE-29217E6CE9A4} = {02DF1FE3-A56C-4F96-95D8-42B55D2A8988}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {9B2608F4-D82B-4B72-B399-33E822DF01D0}
