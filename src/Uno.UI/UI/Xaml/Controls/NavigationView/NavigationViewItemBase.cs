@@ -12,6 +12,12 @@ using Uno.UI;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 
+#if XAMARIN_IOS_UNIFIED
+using UIKit;
+#elif __MACOS__
+using AppKit;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class NavigationViewItemBase : ListViewItem

@@ -11,6 +11,12 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Uno.UI;
 
+#if XAMARIN_IOS_UNIFIED
+using UIKit;
+#elif __MACOS__
+using AppKit;
+#endif
+
 namespace Windows.UI.Xaml.Controls
 {
 	public  partial class NavigationViewList : ListView
