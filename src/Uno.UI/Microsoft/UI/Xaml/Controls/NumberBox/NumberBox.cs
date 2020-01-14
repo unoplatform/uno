@@ -14,6 +14,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation.Metadata;
 using System.Globalization;
+using Uno.Disposables;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -27,12 +28,7 @@ namespace Microsoft.UI.Xaml.Controls
 		TextBox m_textBox;
 		Windows.UI.Xaml.Controls.Primitives.Popup m_popup;
 
-		//RepeatButton.Click_revoker m_upButtonClickRevoker;
-		//RepeatButton.Click_revoker m_downButtonClickRevoker;
-		//TextBox.KeyDown_revoker m_textBoxKeyDownRevoker;
-		//TextBox.KeyUp_revoker m_textBoxKeyUpRevoker;
-		//RepeatButton.Click_revoker m_popupUpButtonClickRevoker;
-		//RepeatButton.Click_revoker m_popupDownButtonClickRevoker;
+		SerialDisposable _eventSubscriptions = new SerialDisposable();
 
 		static string c_numberBoxDownButtonName = "DownSpinButton";
 		static string c_numberBoxUpButtonName = "UpSpinButton";
@@ -72,6 +68,9 @@ namespace Microsoft.UI.Xaml.Controls
 			GotFocus += OnNumberBoxGotFocus;
 			LostFocus += OnNumberBoxLostFocus;
 
+			Loaded += (s, e) => InitializeTemplate();
+			Unloaded += (s, e) => DisposeRegistrations();
+
 			DefaultStyleKey = this;
 		}
 
@@ -82,13 +81,22 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override void OnApplyTemplate()
 		{
+			InitializeTemplate();
+		}
+
+		private void InitializeTemplate()
+		{
+			_eventSubscriptions.Disposable = null;
+
+			var registrations = new CompositeDisposable();
+
 			var spinDownName = ResourceAccessor.GetLocalizedStringResource("NumberBoxDownSpinButtonName");
 			var spinUpName = ResourceAccessor.GetLocalizedStringResource("NumberBoxUpSpinButtonName");
 
 			if (this.GetTemplateChild(c_numberBoxDownButtonName) is RepeatButton spinDown)
 			{
-				/*m_downButtonClickRevoker = */
 				spinDown.Click += OnSpinDownClick;
+				registrations.Add(() => spinDown.Click -= OnSpinDownClick);
 
 				// Do localization for the down button
 				if (string.IsNullOrEmpty(AutomationProperties.GetName(spinDown)))
@@ -100,6 +108,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (GetTemplateChild(c_numberBoxUpButtonName) is RepeatButton spinUp)
 			{
 				spinUp.Click += OnSpinUpClick;
+				registrations.Add(() => spinUp.Click -= OnSpinUpClick);
 
 				// Do localization for the up button
 				if (string.IsNullOrEmpty(AutomationProperties.GetName(spinUp)))
@@ -110,10 +119,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (GetTemplateChild(c_numberBoxTextBoxName) is TextBox textBox)
 			{
-				/*m_textBoxKeyDownRevoker =*/
 				textBox.KeyDown += OnNumberBoxKeyDown;
-				/*m_textBoxKeyUpRevoker =*/
+				registrations.Add(() => textBox.KeyDown -= OnNumberBoxKeyDown);
 				textBox.KeyUp += OnNumberBoxKeyUp;
+				registrations.Add(() => textBox.KeyUp -= OnNumberBoxKeyUp);
 
 				m_textBox = textBox;
 			}
@@ -139,14 +148,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (GetTemplateChild(c_numberBoxPopupDownButtonName) is RepeatButton popupSpinDown)
 			{
-				/*m_popupDownButtonClickRevoker = */
 				popupSpinDown.Click += OnSpinDownClick;
+				registrations.Add(() => popupSpinDown.Click -= OnSpinDownClick);
 			}
 
 			if (GetTemplateChild(c_numberBoxPopupUpButtonName) is RepeatButton popupSpinUp)
 			{
-				/*m_popupUpButtonClickRevoker = */
 				popupSpinUp.Click += OnSpinUpClick;
+				registrations.Add(() => popupSpinUp.Click -= OnSpinUpClick);
 			}
 
 			// .NET rounds to 12 significant digits when displaying doubles, so we will do the same.
@@ -165,6 +174,13 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				UpdateTextToValue();
 			}
+
+			_eventSubscriptions.Disposable = registrations;
+		}
+
+		private void DisposeRegistrations()
+		{
+			_eventSubscriptions.Disposable = null;
 		}
 
 		private void OnValuePropertyChanged(DependencyPropertyChangedEventArgs args)
