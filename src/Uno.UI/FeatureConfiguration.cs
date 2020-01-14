@@ -288,15 +288,6 @@ namespace Uno.UI
 			/// the values change subsequently. This restriction doesn't apply to debug Uno builds.
 			/// </remarks>
 			public static bool AssignDOMXamlProperties { get; set; } = false;
-#elif __ANDROID__
-			/// <summary>
-			/// When this is set, non-UIElements will always be clipped to their bounds (<see cref="Android.Views.ViewGroup.ClipChildren"/> will
-			/// always be set to true on their parent). 
-			/// </summary>
-			/// <remarks>
-			/// This is true by default as most native views assume that they will be clipped, and can display incorrectly otherwise.
-			/// </remarks>
-			public static bool AlwaysClipNativeChildren { get; set; } = true;
 #endif
 		}
 

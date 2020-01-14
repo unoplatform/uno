@@ -41,7 +41,7 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.OverScroller;
 import android.widget.TextView;
-import android.support.v4.widget.EdgeEffectCompat;
+import androidx.core.widget.EdgeEffectCompat;
 import android.util.Log;
 
 /**

@@ -13,6 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		private List<PivotItemFragment> _fragments;
 
 		public PivotAdapter(AndroidX.Fragment.App.FragmentManager fragmentManager, NativePivotPresenter pivot)
+#pragma warning disable CS0618 // Type or member is obsolete
 			: base(fragmentManager)
 		{
 			if (pivot == null)
@@ -27,6 +28,7 @@ namespace Windows.UI.Xaml.Controls
 		public PivotAdapter(AndroidX.Fragment.App.FragmentManager fm) : base(fm)
 		{
 		}
+#pragma warning restore CS0618 // Type or member is obsolete
 
 		public void OnDataContextChanged()
 		{

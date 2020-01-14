@@ -1,4 +1,4 @@
-<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>xamarinmac20;MonoAndroid10.0;xamarinios10;net461;netstandard2.0</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid90;MonoAndroid10.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
@@ -180,14 +180,17 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid10.0'">
-				<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4">
-			<Version>1.0.0-preview02</Version>
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4">
+			<Version>1.0.0-rc1</Version>
 		</PackageReference>
 		<PackageReference Include="Xamarin.AndroidX.AppCompat">
-			<Version>1.0.2-preview02</Version>
+			<Version>1.1.0-rc1</Version>
 		</PackageReference>
 		<PackageReference Include="Xamarin.AndroidX.RecyclerView">
-			<Version>1.0.0-preview02</Version>
+			<Version>1.1.0-rc1</Version>
+		</PackageReference>
+		<PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData">
+			<Version>2.1.0-rc1</Version>
 		</PackageReference>
 	</ItemGroup>
 

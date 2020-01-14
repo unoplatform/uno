@@ -15,10 +15,12 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly TextBox _textBox;
 
+
+
 		public Brush Foreground
 		{
-			get => (Brush)GetValue(ForegroundProperty);
-			set => SetValue(ForegroundProperty, value);
+			get { return (Brush)GetValue(ForegroundProperty); }
+			set { SetValue(ForegroundProperty, value); }
 		}
 
 		internal static readonly DependencyProperty ForegroundProperty =
@@ -93,9 +95,15 @@ namespace Windows.UI.Xaml.Controls
 			InvalidateMeasure();
 		}
 
-		internal void SetTextNative(string text) => SetProperty("value", text);
+		internal void SetTextNative(string text)
+		{
+			SetProperty("value", text);
+		}
 
-		protected override Size MeasureOverride(Size availableSize) => MeasureView(availableSize);
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			return MeasureView(availableSize);
+		}
 
 		internal void SetIsPassword(bool isPassword)
 		{
@@ -106,18 +114,9 @@ namespace Windows.UI.Xaml.Controls
 			SetAttribute("type", isPassword ? "password" : "text");
 		}
 
-		internal void SetEnabled(bool newValue) => SetProperty("disabled", newValue ? "false" : "true");
-
-		internal void SetIsReadOnly(bool isReadOnly)
+		internal void SetEnabled(bool newValue)
 		{
-			if (isReadOnly)
-			{
-				SetAttribute("readonly", "readonly");
-			}
-			else
-			{
-				RemoveAttribute("readonly");
-			}
+			SetProperty("disabled", newValue ? "false" : "true");
 		}
 
 		public int SelectionStart
@@ -132,6 +131,9 @@ namespace Windows.UI.Xaml.Controls
 			set => SetProperty("selectionEnd", value.ToString());
 		}
 
-		internal override bool IsViewHit() => true;
+		internal override bool IsViewHit()
+		{
+			return true;
+		}
 	}
 }

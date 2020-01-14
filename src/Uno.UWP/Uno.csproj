@@ -59,11 +59,11 @@
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid10.0'">
 		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4">
-			<Version>1.0.0-preview02</Version>
+			<Version>1.0.0-rc1</Version>
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
 		<PackageReference Include="Xamarin.AndroidX.AppCompat">
-			<Version>1.0.2-preview02</Version>
+			<Version>1.1.0-rc1</Version>
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
 	</ItemGroup>

@@ -59,6 +59,7 @@ namespace Windows.UI.Xaml.Controls
 			return _item;
 		}
 
+#pragma warning disable CS0618 // Type or member is obsolete
 		private void Update()
 		{
 			if (UserVisibleHint && _created && _item != null)
@@ -68,6 +69,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+#pragma warning disable CS0672 // Member overrides obsolete member
 		public override bool UserVisibleHint
 		{
 			get { return base.UserVisibleHint; }
@@ -77,5 +79,7 @@ namespace Windows.UI.Xaml.Controls
 				Update();
 			}
 		}
+#pragma warning restore CS0672 // Member overrides obsolete member
+#pragma warning restore CS0618 // Type or member is obsolete
 	}
 }

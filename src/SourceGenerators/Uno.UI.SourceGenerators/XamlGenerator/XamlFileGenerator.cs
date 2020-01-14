@@ -1523,28 +1523,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private string BuildXamlTypeConverterLiteralValue(INamedTypeSymbol symbol, string memberValue, bool includeQuotations)
 		{
 			var attributeData = symbol.FindAttribute(XamlConstants.Types.CreateFromStringAttribute);
-			var targetMethod = attributeData?.NamedArguments.FirstOrDefault(kvp => kvp.Key == "MethodName").Value.Value.ToString();
-
-			// Since the MethodName value can simply be the name of the method
-			// without its full path, example: nameof(MyConversionMethod), we must
-			// make sure to fully qualify the method name with its namespace
-			var fullyQualifiedOwnerType = !targetMethod.Contains('.')
-				? $"{symbol.GetFullName()}.{targetMethod}"
-				: targetMethod;
-
-			// Globalize the namespace
-			fullyQualifiedOwnerType = GetGlobalizedTypeName(fullyQualifiedOwnerType);
+			var returnType = attributeData?.NamedArguments.FirstOrDefault(kvp => kvp.Key == "MethodName").Value.Value;
 
 			if (includeQuotations)
 			{
 				// Return a string that contains the code which calls the "conversion" function with the member value
-				return "{0}(\"{1}\")".InvariantCultureFormat(fullyQualifiedOwnerType, memberValue);
+				return "{0}(\"{1}\")".InvariantCultureFormat(returnType, memberValue);
 			}
 			else
 			{
 				// Return a string that contains the code which calls the "conversion" function with the member value.
 				// By not including quotations, this allows us to use static resources instead of string values.
-				return "{0}({1})".InvariantCultureFormat(fullyQualifiedOwnerType, memberValue);
+				return "{0}({1})".InvariantCultureFormat(returnType, memberValue);
 			}
 		}
 

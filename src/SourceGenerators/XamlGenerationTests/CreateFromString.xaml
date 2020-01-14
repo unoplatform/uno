@@ -7,8 +7,6 @@
 			 mc:Ignorable="d">
 
 	<ctl:MyLocationPointControl x:Name="TestLocationControl"
-								LocationPoint="45.0392, 25.29232"
-								LocationPoint2="44.44, 24.24"
-								LocationPoint3="43.03, 23.29" />
+								LocationPoint="45.0392, 25.29232" />
 	
 </UserControl>

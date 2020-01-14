@@ -159,6 +159,8 @@
 
 * You will not be able to build projects targeting Android 9.0 locally anymore. Change your Android target to Android 10.0 or replace MonoAndroid10.0 by MonoAndroid90 in the TargetFrameworks of your projects files.
 
+* You will not be able to build projects targeting Android 9.0 locally anymore. Change your Android target to Android 10.0 or replace MonoAndroid10.0 by MonoAndroid90 in the TargetFrameworks of your projects files.
+
 ### Bug fixes
 * [#2186](https://github.com/unoplatform/uno/pull/2186) Fix Canvas Measurement to behave like UWP
 * [#2093](https://github.com/unoplatform/uno/pull/2093) Fix missing measurement option for polyline and polygon

@@ -10,12 +10,11 @@ The Uno Platform Hot Reload feature provides a way to modify the XAML displayed 
 - Cross-platform Hot Reload is supported
 
 ## How to use the XAML Hot Reload
-- Install the [Uno Platform Add-in](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) from the Visual Studio Marketplace.
 - Create a sample application using the **Uno Cross Platform App** template
 - Build an Uno application head (iOS, Android or WebAssembly), start it (with or without the debugger)
 - Change a XAML file from VS and the app should update
 
-> Note: You can also get pre-released version of the Visual Studio Extension from the [master CI builds artifacts](https://dev.azure.com/uno-platform/Uno%20Platform/_build?definitionId=5&_a=summary). 
+> Important note: If you're using this feature and an Uno stable release containing it has not been published, you will need to get the Visual Studio Extension from the [master CI builds artifacts](https://dev.azure.com/uno-platform/Uno%20Platform/_build?definitionId=5&_a=summary). 
 
 If you're using the XAML Hot Reload feature in an existing application, you'll need to add the following lines to your project:
 ```xml
@@ -28,7 +27,7 @@ Make sure that the version number is the same as the `Uno.UI` package.
 ## Troubleshooting
 - The application logs file reloads, so you should see diagnostics messages when a XAML file is reloaded.
 - The output window in VS has an output named "Uno Platform" in its drop down. Diagnostics messages from the VS integration appear there.
-- The file named `obj\Debug\XXX\g\RemoteControlGenerator\RemoteControl.g.cs` contains the connection information, verify that the information makes sense, particularly the port number.
+- The file named `obj\Debug\XXX\g\RemoteControlGenerator\HotReload.g.cs` contains the connection information, verify that the information makes sense, particularly the port number.
 - When a file is reloaded, XAML parsing errors will appear in the application's logs, on device or in browser.
 
 ## Known issues
@@ -39,8 +38,7 @@ Make sure that the version number is the same as the `Uno.UI` package.
     - Resolution: Restart VS and rebuild the app
 - The reload server may start twice (The VS **Uno Platform** output window shows two "Starting server" messages)
     - Resolution: Restart visual studio, rebuild the app.
-- The app does not update its XAML, because the port number in `RemoteControl.g.cs` is `0`.
-    - Ensure you have the right version of the _VSIX_ installed.
+- The app does not update its XAML, because the port number in `HotReload.g.cs` is `0`.
     - Resolution: Rebuild the app until the number is different than zero.
 - Updating a standalone `ResourceDictionary` XAML file does not work
     - Resolution: None at this time

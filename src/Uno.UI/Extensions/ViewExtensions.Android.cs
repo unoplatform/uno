@@ -560,7 +560,6 @@ namespace Uno.UI
 
 				var fe = innerView as IFrameworkElement;
 				var u = innerView as UIElement;
-				var vg = innerView as ViewGroup;
 
 				return sb
 						.Append(spacing)
@@ -574,7 +573,6 @@ namespace Uno.UI
 						.Append(u != null ? $" DesiredSize={u.DesiredSize}" : "")
 						.Append(u?.Clip != null ? $" Clip={u.Clip.Rect}" : "")
 						.Append(u != null ? $" NeedsClipToSlot={u.NeedsClipToSlot}" : "")
-						.Append(u == null && vg != null ? $" ClipChildren={vg.ClipChildren}" : "")
 						.AppendLine();
 			}
 		}

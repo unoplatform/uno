@@ -8,25 +8,17 @@
 
 	<UserControl.Resources>
 		<x:String x:Key="StaticCoordinates">33.33, 22</x:String>
-		<x:String x:Key="StaticCoordinates2">44.44, 24.24</x:String>
-		<x:String x:Key="StaticCoordinates3">43.03, 23.29</x:String>
 	</UserControl.Resources>
 
 	<StackPanel>
 		<ctl:MyLocationPointControl x:Name="TestLocationControl"
-									LocationPoint="45.0392, 25.29232"
-									LocationPoint2="44.44, 24.24"
-									LocationPoint3="43.03, 23.29" />
+									LocationPoint="45.0392, 25.29232" />
 
 		<ctl:MyLocationPointControl x:Name="TestLocationControl2"
-									LocationPoint="{StaticResource StaticCoordinates}"
-									LocationPoint2="{StaticResource StaticCoordinates2}"
-									LocationPoint3="{StaticResource StaticCoordinates3}" />
+									LocationPoint="{StaticResource StaticCoordinates}" />
 
 		<ctl:MyLocationPointControl x:Name="TestLocationControl3"
-									LocationPoint="{StaticResource GlobalCoordinates}"
-									LocationPoint2="{StaticResource GlobalCoordinates2}"
-									LocationPoint3="{StaticResource GlobalCoordinates3}" />
+									LocationPoint="{StaticResource GlobalCoordinates}" />
 
 	</StackPanel>
 

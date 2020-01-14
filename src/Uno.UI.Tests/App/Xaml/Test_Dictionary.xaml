@@ -2,8 +2,6 @@
 					xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
 
 	<x:String x:Key="GlobalCoordinates">11.22, 33</x:String>
-	<x:String x:Key="GlobalCoordinates2">44.44, 24.24</x:String>
-	<x:String x:Key="GlobalCoordinates3">43.03, 23.29</x:String>
 
 	<Style TargetType="Button"
 		   x:Key="ExplicitButtonStyle">
