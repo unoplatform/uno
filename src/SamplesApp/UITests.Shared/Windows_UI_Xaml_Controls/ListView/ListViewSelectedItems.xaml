@@ -26,7 +26,7 @@
 						SelectionMode="None">
 				<ListView.HeaderTemplate>
 					<DataTemplate>
-						<TextBlock Text="{Binding Name}" TextWrapping="Wrap"/>
+						<TextBlock Text="{Binding}" TextWrapping="Wrap"/>
 					</DataTemplate>
 				</ListView.HeaderTemplate>
 				<ListView.ItemTemplate>
@@ -49,7 +49,7 @@
 						SelectionMode="None">
 				<ListView.HeaderTemplate>
 					<DataTemplate>
-						<TextBlock Text="{Binding Name}" TextWrapping="Wrap"/>
+						<TextBlock Text="{Binding}" TextWrapping="Wrap"/>
 					</DataTemplate>
 				</ListView.HeaderTemplate>
 				<ListView.ItemTemplate>
