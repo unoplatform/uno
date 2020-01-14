@@ -70,7 +70,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static readonly DependencyProperty LargeChangeProperty =
-			DependencyProperty.Register("LargeChange", typeof(double), typeof(NumberBox), new PropertyMetadata(10.0/*, UNO TODO (s, e) => (s as NumberBox)?.OnLargeChangePropertyChanged(e)*/));
+			DependencyProperty.Register("LargeChange", typeof(double), typeof(NumberBox), new PropertyMetadata(10.0));
 
 		public string Text
 		{
