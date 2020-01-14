@@ -10,18 +10,29 @@
 
 	<ScrollViewer>
 		<StackPanel Spacing="12" toolkit:VisibleBoundsPadding.PaddingMask="All">
-			<TextBlock FontSize="18">Following controls should be of same look:</TextBlock>
+			<TextBlock FontSize="18">Following 5 buttons should be of same look &amp; size:</TextBlock>
 
 			<Border Height="40" Background="Aquamarine">
 
 				<StackPanel Orientation="Horizontal" Spacing="10">
 					<Button Width="80" VerticalAlignment="Stretch" Padding="5">BUTTON</Button>
 					<Button Width="80" Height="60" VerticalAlignment="Center" Padding="5">BUTTON</Button>
-					<Button Width="80" Height="80" Padding="5">BUTTON</Button>
+					<Button MinWidth="50" Width="80" MinHeight="10" Height="40" Padding="5">BUTTON</Button>
+					<Button MinWidth="80" Width="40" MinHeight="40" Height="20" Padding="5">BUTTON</Button>
+					<Button MaxWidth="80" Width="100" MaxHeight="40" Height="100" Padding="5">BUTTON</Button>
+					<Border>
+						<Control MinWidth="80" Width="40" MinHeight="40" Height="20">
+							<Control.Template>
+								<ControlTemplate>
+									<Button Padding="5">BUTTON</Button>
+								</ControlTemplate>
+							</Control.Template>
+						</Control>
+					</Border>
 				</StackPanel>
 			</Border>
 
-			<TextBlock FontSize="18">Following controls should be of same look:</TextBlock>
+			<TextBlock FontSize="18">Following 4 buttons should be of same look &amp; size:</TextBlock>
 
 			<Border Background="Orange" Height="28">
 				<StackPanel Orientation="Horizontal" Spacing="10">
@@ -43,6 +54,13 @@
 						<Border BorderThickness="2" BorderBrush="Blue">
 							<TextBlock FontSize="8" Padding="0">
 							BUTTON
+							</TextBlock>
+						</Border>
+					</Button>
+					<Button Width="30" MinWidth="65" Padding="0" Height="50" MaxHeight="25" MinHeight="36" VerticalAlignment="Center">
+						<Border BorderThickness="2" BorderBrush="Blue">
+							<TextBlock FontSize="8" Padding="0">
+								BUTTON
 							</TextBlock>
 						</Border>
 					</Button>
