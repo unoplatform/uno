@@ -19,7 +19,7 @@
     <PackageReference Update="Uno.Core.Build" Version="1.29.0" />
     <PackageReference Update="Uno.Wasm.Bootstrap" Version="1.0.10" />
     <DotNetCliToolReference Update="Uno.Wasm.Bootstrap.Cli" Version="1.0.10" />
-    <PackageReference Update="xamarin.build.download" Version="0.4.11" />
+    <PackageReference Update="xamarin.build.download" Version="0.8.0" />
     <PackageReference Update="Uno.MonoAnalyzers" Version="1.0.0-dev.4" PrivateAssets="all" />
     <PackageReference Update="System.Memory" Version="4.5.2" />
     <PackageReference Update="Uno.Wasm.WebSockets" Version="1.0.0-dev.28" />
