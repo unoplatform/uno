@@ -14,7 +14,6 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 	{
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)] // Inner marked element selection is not working for wasm
 		public void UpDownTest()
 		{
 			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.MUX_Test");
@@ -24,8 +23,8 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 			numBox.SetDependencyPropertyValue("SpinButtonPlacementMode", "Inline");
 
-			var upButton = numBox.Marked("UpSpinButton");
-			var downButton = numBox.Marked("DownSpinButton");
+			var upButton = numBox.Descendant().Marked("UpSpinButton");
+			var downButton = numBox.Descendant().Marked("DownSpinButton");
 
 			Console.WriteLine("Assert that up button increases value by 1");
 			upButton.Tap();
@@ -58,6 +57,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			Assert.AreEqual(100, numBox.GetDependencyPropertyValue<double>("Value"));
 
 			Console.WriteLine("Assert that incrementing after typing in a value validates the text first.");
+			numBox.ClearText();
 			numBox.EnterText("50");
 			upButton.Tap();
 			Assert.AreEqual(55, numBox.GetDependencyPropertyValue<double>("Value"));
@@ -65,7 +65,6 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)] // EnterText for wasm does not clear the field, but should
 		public void MinMaxTest()
 		{
 			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.MUX_Test");
@@ -86,29 +85,24 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			Console.Write("Assert that typing '123' in the NumberBox changes the value to 100");
 			numBox.ClearText();
 			numBox.EnterText("123");
-			_app.Tap("NewValueTextBox");
+			_app.PressEnter();
 
 			Assert.AreEqual(100, numBox.GetDependencyPropertyValue<double>("Value"));
 
 			Console.Write("Changing Max to 90; Assert value also changes to 90");
 			var maxBox = _app.Marked("MaxNumberBox");
-			maxBox.EnterText("90");
-			_app.Tap("NewValueTextBox");
+			maxBox.SetDependencyPropertyValue("Value", "90");
 			Assert.AreEqual(90, numBox.GetDependencyPropertyValue<double>("Value"));
 
 			Console.Write("Assert that setting the minimum above the maximum changes the maximum");
 			var minBox = _app.Marked("MinNumberBox");
-			minBox.ClearText();
-			minBox.EnterText("200");
-			_app.Tap("NewValueTextBox");
+			minBox.SetDependencyPropertyValue("Value", "200");
 			Assert.AreEqual(200, numBox.GetDependencyPropertyValue<double>("Minimum"));
 			Assert.AreEqual(200, numBox.GetDependencyPropertyValue<double>("Maximum"));
 			Assert.AreEqual(200, numBox.GetDependencyPropertyValue<double>("Value"));
 
 			Console.Write("Assert that setting the maximum below the minimum changes the minimum");
-			maxBox.ClearText();
-			maxBox.EnterText("150");
-			_app.Tap("NewValueTextBox");
+			maxBox.SetDependencyPropertyValue("Value", "150");
 			Assert.AreEqual(150, numBox.GetDependencyPropertyValue<double>("Minimum"));
 			Assert.AreEqual(150, numBox.GetDependencyPropertyValue<double>("Maximum"));
 			Assert.AreEqual(150, numBox.GetDependencyPropertyValue<double>("Value"));
@@ -178,11 +172,8 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			foreach (KeyValuePair<string, double> pair in expressions)
 			{
 				numBox.ClearText();
-
 				numBox.EnterText(pair.Key);
-
-				// Focus out
-				_app.Tap("NewValueTextBox");
+				_app.PressEnter();
 
 				var value = numBox.GetDependencyPropertyValue<double>("Value");
 				string output = "Expression '" + pair.Key + "' - expected: " + pair.Value + ", actual: " + value;
