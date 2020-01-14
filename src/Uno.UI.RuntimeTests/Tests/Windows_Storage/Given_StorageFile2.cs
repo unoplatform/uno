@@ -47,7 +47,7 @@ namespace Uno.UI.RuntimeTests.Tests
 			}
 			catch
 			{
-			  Assert.IsNotNull(null, "CreateFile exception - error outside tested method");
+			  Assert.Fail("CreateFile exception - error outside tested method");
 			}
 
       		DateTimeOffset _dateAfter = DateTimeOffset.Now;

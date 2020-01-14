@@ -1,7 +1,7 @@
 # Release notes
 
 ### Features
-- Add support for StorageFile:DateCreated
+- Add support for `StorageFile.DateCreated`
 - Support for `EmailManager.ShowComposeNewEmailAsync`
 - Add support for `StorageFolder.CreateFileAsync(string path)`
 - Add support for ApplicationViewTitleBar.BackgroundColor on WASM
