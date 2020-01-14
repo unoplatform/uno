@@ -1,10 +1,3 @@
-// Copyright (c) Microsoft Corporation. All rights reserved.
-// Licensed under the MIT License. See LICENSE in the project root for license information.
-
-//
-// This file is a C# translation of the NavigationViewList.cpp file from WinUI controls.
-//
-
 using System;
 using Windows.System;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -52,15 +45,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var index = base.IndexFromContainerInner(container);
 
-			if(index == -1)
+			if (index == -1
+				&& container is FrameworkElement fe
+				&& fe.FindFirstParent<SelectorItem>() is SelectorItem parentItem)
 			{
-				if(
-					container is FrameworkElement fe
-					&& fe.FindFirstParent<SelectorItem>() is SelectorItem parentItem
-				)
-				{
-					index = base.IndexFromContainerInner(parentItem);
-				}
+				index = base.IndexFromContainerInner(parentItem);
 			}
 
 			return index;
