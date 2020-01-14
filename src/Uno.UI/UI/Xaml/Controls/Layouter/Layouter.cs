@@ -655,52 +655,57 @@ namespace Windows.UI.Xaml.Controls
 		private double GetActualSize(
 			double size,
 			bool isStretch,
-			double childMaxHeight,
-			double childMinHeight,
-			double childHeight,
-			double childMargins,
-			bool hasChildHeight,
-			bool hasChildMaxHeight,
-			bool hasChildMinHeight,
+			double childMaxSize,
+			double childMinSize,
+			double childSize,
+			double childMarginSize,
+			bool hasChildSize,
+			bool hasChildMaxSize,
+			bool hasChildMinSize,
 			double desiredSize,
 			double frameSize)
 		{
 			//Default value
-			//childVerticalAlignment != VerticalAlignment.Stretch
-			var actualHeight = Min(size, desiredSize);
+			//childAlignment != Alignment.Stretch
+			double calculatedSize;
 
-			if (hasChildHeight)
+			if (hasChildMaxSize)
 			{
-				actualHeight = Min(childHeight + childMargins, size);
+				if (hasChildMinSize) // both min & max defined
+				{
+					calculatedSize = isStretch ? size  : desiredSize;
+
+					calculatedSize = Max(childMinSize + childMarginSize, calculatedSize);
+
+					calculatedSize = Min(childMaxSize + childMarginSize, calculatedSize);
+				}
+				else // only max defined
+				{
+					calculatedSize = Min(childMaxSize + childMarginSize,
+						isStretch
+							? size
+							: desiredSize
+					);
+				}
 			}
-			else if (hasChildMaxHeight && hasChildMinHeight)
+			else if (hasChildMinSize) // only min defined
 			{
-				actualHeight = Min(childMaxHeight + childMargins,
+				calculatedSize = Max(childMinSize + childMarginSize,
 					isStretch
 						? size
 						: desiredSize
 				);
-
-				actualHeight = Max(childMinHeight + childMargins, actualHeight);
 			}
-			else if (hasChildMaxHeight)
+			else if (hasChildSize)
 			{
-				actualHeight = Min(childMaxHeight + childMargins,
-					isStretch
-						? size
-						: desiredSize
-				);
+				calculatedSize = Min(childSize + childMarginSize, size);
 			}
-			else if (hasChildMinHeight)
+			else
 			{
-				actualHeight = Max(childMinHeight + childMargins,
-					isStretch
-						? size
-						: desiredSize
-				);
+				calculatedSize = Min(size, desiredSize);
 			}
 
-			return Min(actualHeight, frameSize);
+			return Min(calculatedSize, frameSize);
 		}
 
 		/// <summary>

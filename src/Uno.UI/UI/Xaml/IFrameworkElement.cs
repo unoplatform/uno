@@ -324,17 +324,19 @@ namespace Windows.UI.Xaml
 				return new CGSize(0, 0);
 			}
 
-			var width = e.Width
-				.NumberOrDefault(size.Width)
-				.NumberOrDefault(nfloat.PositiveInfinity)
-				.LocalMin(e.MaxWidth.NumberOrDefault(nfloat.PositiveInfinity))
-				.LocalMax(e.MinWidth.NumberOrDefault(nfloat.NegativeInfinity));
+			var (min, max) = e.GetMinMax();
 
-			var height = e.Height
-				.NumberOrDefault(size.Height)
+			var width = size
+				.Width
 				.NumberOrDefault(nfloat.PositiveInfinity)
-				.LocalMin(e.MaxHeight.NumberOrDefault(nfloat.PositiveInfinity))
-				.LocalMax(e.MinHeight.NumberOrDefault(nfloat.NegativeInfinity));
+				.LocalMin((nfloat)max.Width)
+				.LocalMax((nfloat)min.Width);
+
+			var height = size
+				.Height
+				.NumberOrDefault(nfloat.PositiveInfinity)
+				.LocalMin((nfloat)max.Height)
+				.LocalMax((nfloat)min.Height);
 
 			return new CGSize(width, height);
 		}
