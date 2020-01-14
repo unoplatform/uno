@@ -64,6 +64,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		}
 
 		[Test]
+		[AutoRetry]
 		public void MinMaxTest()
 		{
 			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.MUX_Test");
