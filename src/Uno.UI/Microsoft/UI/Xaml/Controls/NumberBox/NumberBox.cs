@@ -508,7 +508,7 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 					else
 					{
-						newText = roundedValue.ToString($"0.", CultureInfo.CurrentCulture);
+						newText = roundedValue.ToString($"0." + new string('#', (int)m_displayRounder.SignificantDigits), CultureInfo.CurrentCulture);
 					}
 				}
 
