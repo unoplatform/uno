@@ -18,8 +18,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.NavigationViewTests
 		{
 			Run("SamplesApp.Samples.Windows_UI_Xaml_Controls.NavigationViewTests.NavigationView_Pane_Automated");
 
-			var itemPlay = _app.Marked("Item Play");
-			var itemSave = _app.Marked("Item Save");
+			var itemPlay = _app.Marked("Item Play").Descendant().Marked("IconBox");
+			var itemSave = _app.Marked("Item Save").Descendant().Marked("IconBox");
 			var selectedItemText = _app.Marked("selectedItemText");
 
 			_app.Tap(itemPlay);
