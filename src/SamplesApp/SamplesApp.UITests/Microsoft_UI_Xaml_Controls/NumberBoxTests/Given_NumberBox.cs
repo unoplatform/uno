@@ -10,7 +10,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 {
-	public class ContentControlBehaviorTests : SampleControlUITestBase
+	public class NumberBoxTests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]
@@ -64,7 +64,6 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		}
 
 		[Test]
-		[AutoRetry]
 		public void MinMaxTest()
 		{
 			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.MUX_Test");
@@ -106,6 +105,66 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			Assert.AreEqual(150, numBox.GetDependencyPropertyValue<double>("Minimum"));
 			Assert.AreEqual(150, numBox.GetDependencyPropertyValue<double>("Maximum"));
 			Assert.AreEqual(150, numBox.GetDependencyPropertyValue<double>("Value"));
+		}
+
+		[Test]
+		[AutoRetry]
+		public void UpDownEnabledTest()
+		{
+			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.MUX_Test");
+
+			var numBox = _app.Marked("TestNumberBox");
+
+			numBox.SetDependencyPropertyValue("SpinButtonPlacementMode", "Inline");
+
+			var upButton = numBox.Descendant().Marked("UpSpinButton");
+			var downButton = numBox.Descendant().Marked("DownSpinButton");
+
+			_app.Tap("MinCheckBox");
+			_app.Tap("MaxCheckBox");
+
+			Console.WriteLine("Assert that when Value is at Minimum, the down spin button is disabled.");
+			Assert.IsTrue(upButton.GetDependencyPropertyValue<bool>("IsEnabled"));
+			Assert.IsFalse(downButton.GetDependencyPropertyValue<bool>("IsEnabled"));
+
+			Console.WriteLine("Assert that when Value is at Maximum, the up spin button is disabled.");
+			numBox.SetDependencyPropertyValue("Value", "100");
+
+			Assert.IsFalse(upButton.GetDependencyPropertyValue<bool>("IsEnabled"));
+			Assert.IsTrue(downButton.GetDependencyPropertyValue<bool>("IsEnabled"));
+
+			Console.WriteLine("Assert that when wrapping is enabled, spin buttons are enabled.");
+			_app.Tap("WrapCheckBox");
+			Assert.IsTrue(upButton.GetDependencyPropertyValue<bool>("IsEnabled"));
+			Assert.IsTrue(downButton.GetDependencyPropertyValue<bool>("IsEnabled"));
+			_app.Tap("WrapCheckBox");
+
+			Console.WriteLine("Assert that when Maximum is updated the up button is updated also.");
+			var maxBox = _app.Marked("MaxNumberBox");
+			maxBox.SetDependencyPropertyValue("Value", "200");
+
+			Assert.IsTrue(upButton.GetDependencyPropertyValue<bool>("IsEnabled"));
+			Assert.IsTrue(downButton.GetDependencyPropertyValue<bool>("IsEnabled"));
+
+			Console.WriteLine("Assert that spin buttons are disabled if value is NaN.");
+			numBox.SetDependencyPropertyValue("Value", "NaN");
+
+			Assert.IsFalse(upButton.GetDependencyPropertyValue<bool>("IsEnabled"));
+			Assert.IsFalse(downButton.GetDependencyPropertyValue<bool>("IsEnabled"));
+
+			numBox.SetDependencyPropertyValue("ValidationMode", "Disabled");
+
+			Console.WriteLine("Assert that when validation is off, spin buttons are enabled");
+			numBox.SetDependencyPropertyValue("Value", "0");
+
+			Assert.IsTrue(upButton.GetDependencyPropertyValue<bool>("IsEnabled"));
+			Assert.IsTrue(downButton.GetDependencyPropertyValue<bool>("IsEnabled"));
+
+			Console.WriteLine("...except in the NaN case");
+			numBox.SetDependencyPropertyValue("Value", "NaN");
+
+			Assert.IsFalse(upButton.GetDependencyPropertyValue<bool>("IsEnabled"));
+			Assert.IsFalse(downButton.GetDependencyPropertyValue<bool>("IsEnabled"));
 		}
 
 		[Test]
