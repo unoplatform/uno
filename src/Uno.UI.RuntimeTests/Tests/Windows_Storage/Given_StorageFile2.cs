@@ -15,7 +15,6 @@ namespace Uno.UI.RuntimeTests.Tests
     [TestClass]
     public class Given_StorageFile2
     {
-        
         String _filename;
         
         [TestInitialize]
@@ -32,58 +31,55 @@ namespace Uno.UI.RuntimeTests.Tests
         [TestMethod]
         public async void When_DateCreated()
         {
-            
-            var _folder = Windows.Storage.ApplicationData.Current.LocalFolder;
-            Assert.IsNotNull(_folder, "cannot get LocalFolder - error outside tested method");
+            var folderForTestFile = Windows.Storage.ApplicationData.Current.LocalFolder;
+            Assert.IsNotNull(folderForTestFile, "cannot get LocalFolder - error outside tested method");
 
-            Windows.Storage.StorageFile _file = null;
+            Windows.Storage.StorageFile testFile = null;
             
-            DateTimeOffset _dateBefore = DateTimeOffset.Now;
+            DateTimeOffset dateBeforeCreating = DateTimeOffset.Now;
       
             try
             {
-                _file = await _folder.CreateFileAsync( _filename, Windows.Storage.CreationCollisionOption.FailIfExists);
-                Assert.IsNotNull(_file, "cannot create file - error outside tested method");
+                testFile = await folderForTestFile.CreateFileAsync( _filename, Windows.Storage.CreationCollisionOption.FailIfExists);
+                Assert.IsNotNull(testFile, "cannot create file - error outside tested method");
             }
             catch
             {
                   Assert.Fail("CreateFile exception - error outside tested method");
             }
 
-            DateTimeOffset _dateAfter = DateTimeOffset.Now;
+            DateTimeOffset dateAfterCreating = DateTimeOffset.Now;
 
             // test of DateCreated
 
-            // now, some wait - to be sure that returned date is not simply 'current date'
-            // FAT has two seconds resolution - so wait should be longer
+            // first, some wait - to be sure that returned date is not simply 'current date'
+            // e.g. FAT has two seconds resolution - so wait should be longer
             await Task.Delay(5000);
 
-            DateTimeOffset _dateCreated = DateTimeOffset.Now; // unneeded initialization - just to skip compiler error of using uninitialized variable
+            DateTimeOffset dateOnCreating = DateTimeOffset.Now; // unneeded initialization - just to skip compiler error of using uninitialized variable
             try
             {
-                  _dateCreated = _file.DateCreated;
+                  dateOnCreating = testFile.DateCreated;
             }
             catch
             {
                 Assert.Fail("DateCreated exception - error in tested method");
             }
 
-           _dateBefore = _dateBefore.AddSeconds(-2);
-           _dateAfter = _dateAfter.AddSeconds(2);
+           dateBeforeCreating = dateBeforeCreating.AddSeconds(-2);
+           dateAfterCreating = dateAfterCreating.AddSeconds(2);
       
             // check if method works
-           if(_dateCreated < _dateBefore)
+           if(dateOnCreating < dateBeforeCreating)
            {
                 Assert.Fail("DateCreated: too early - method doesnt work");
            }
 
-           if(_dateCreated > _dateAfter)
+           if(dateOnCreating > dateAfterCreating)
            {
                 Assert.Fail("DateCreated: too late - method doesnt work");
            }
 
-      
         }
-
     }
 }
