@@ -248,7 +248,12 @@
 	DispatchToInnerBuilds is used for direct builds, CoreCompile/_UnoSourceGenerator is for 
 	project dependency induced builds.
 	-->
-	<Target Name="GenerateMixins" Inputs="@(MixinInput)" Outputs="@(MixinOutput)" BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator" DependsOnTargets="_OptimizeT4Generator" Condition="'$(DesignTimeBuild)' != 'true'">
+	<Target Name="GenerateMixins"
+					Inputs="@(MixinInput)"
+					Outputs="@(MixinOutput)"
+					BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator"
+					DependsOnTargets="_OptimizeT4Generator"
+					Condition="'$(DesignTimeBuild)' != 'true'">
 
 		<ItemGroup>
 			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
@@ -355,10 +360,6 @@
 			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
 			<UndefineProperties>TargetFramework</UndefineProperties>
 		</ProjectReference>
-	</ItemGroup>
-
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="UI\Xaml\Controls\Primitives\RepeatButton.cs" />
 	</ItemGroup>
 
 	<ItemGroup>
