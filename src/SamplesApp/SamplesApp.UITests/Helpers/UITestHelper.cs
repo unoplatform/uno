@@ -49,12 +49,5 @@ namespace UITests.Shared.Helpers
 			}
 			return true;
 		}
-		public static void SetScreenshotDirectory()
-		{
-#if DEBUG
-			// Enter path to save the screenshots locally";
-			System.Environment.CurrentDirectory = Constants.CurrentDirectoryPath;
-#endif
-		}
 	}
 }
