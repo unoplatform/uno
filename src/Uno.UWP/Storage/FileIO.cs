@@ -14,19 +14,23 @@ namespace Windows.Storage
 
 		public static global::Windows.Foundation.IAsyncAction WriteTextAsync( global::Windows.Storage.IStorageFile file,  string contents)
 		{
-        Stream fileStream = await file.OpenStreamForWriteAsync();
-        StreamWriter streamWriter = new StreamWriter(fileStream);
-        streamWriter.Write(contents); 
-        streamWriter.Dispose();
-        fileStream.Dispose();
+			using (Stream fileStream = await file.OpenStreamForWriteAsync())
+			{
+				using (StreamWriter streamWriter = new StreamWriter(fileStream))
+				{
+					await streamWriter.WriteAsync(contents); 
+				}
+			}
 		}
 
 		public static global::Windows.Foundation.IAsyncAction AppendTextAsync( global::Windows.Storage.IStorageFile file,  string contents)
 		{
-        Stream fileStream = await file.OpenStreamForWriteAsync();
-        fileStream.Seek(0, SeekOrigin.End);
-        StreamWriter streamWriter = new StreamWriter(fileStream);
-        streamWriter.Write(contents); 
-        streamWriter.Dispose();
-        fileStream.Dispose();
+			using (Stream fileStream = await file.OpenStreamForWriteAsync())
+			{
+				fileStream.Seek(0, SeekOrigin.End);
+				using (StreamWriter streamWriter = new StreamWriter(fileStream))
+				{
+					await streamWriter.WriteAsync(contents); 
+				}
+			}
 		}
