@@ -41,17 +41,16 @@ namespace Windows.UI.Xaml.Input
 		internal PointerRoutedEventArgs(MotionEvent nativeEvent, int pointerIndex, UIElement originalSource, UIElement receiver) : this()
 		{
 			_nativeEvent = nativeEvent;
+			_pointerIndex = pointerIndex;
 			_receiver = receiver;
-
-			// Note: Make sure to use the GetPointerId in order to make sure to keep the same id while: down_1 / down_2 / up_1 / up_2
-			//		 otherwise up_2 will be with the id of 1
-			_pointerIndex = nativeEvent.GetPointerId(pointerIndex);
 
 			// Here we assume that usually pointerId is 'PointerIndexShift' bits long (8 bits / 255 ids),
 			// and that usually the deviceId is [0, something_not_too_big_hopefully_less_than_0x00ffffff].
 			// If deviceId is greater than 0x00ffffff, we might have a conflict but only in case of multi touch
 			// and with a high variation of deviceId. We assume that's safe enough.
-			var pointerId = ((uint)_pointerIndex & _pointerIdsCount) << _pointerIdsShift | (uint)nativeEvent.DeviceId;
+			// Note: Make sure to use the GetPointerId in order to make sure to keep the same id while: down_1 / down_2 / up_1 / up_2
+			//		 otherwise up_2 will be with the id of 1
+			var pointerId = ((uint)nativeEvent.GetPointerId(pointerIndex) & _pointerIdsCount) << _pointerIdsShift | (uint)nativeEvent.DeviceId;
 			var nativePointerAction = nativeEvent.Action;
 			var nativePointerButtons = nativeEvent.ButtonState;
 			var nativePointerType = nativeEvent.GetToolType(_pointerIndex);
