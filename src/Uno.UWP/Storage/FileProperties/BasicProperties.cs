@@ -18,6 +18,11 @@ namespace Windows.Storage.FileProperties
 		{
 			get { return (ulong)_fileInfo.Length; }
 		}
+		
+		public DateTimeOffset DateModified
+		{
+			get { return File.GetLastWriteTime(_fileInfo.FullName); }
+		}
 	}
 
 }
