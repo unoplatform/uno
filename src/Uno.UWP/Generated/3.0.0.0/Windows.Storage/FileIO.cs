@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class FileIO 
@@ -21,7 +21,7 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> FileIO.ReadTextAsync(IStorageFile file, UnicodeEncoding encoding) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncAction WriteTextAsync( global::Windows.Storage.IStorageFile file,  string contents)
 		{
@@ -35,7 +35,7 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncAction FileIO.WriteTextAsync(IStorageFile file, string contents, UnicodeEncoding encoding) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncAction AppendTextAsync( global::Windows.Storage.IStorageFile file,  string contents)
 		{
