@@ -1,7 +1,7 @@
 ﻿# Release notes
 
 ### Features
-- Add support of Windows.Storage.FileIO.AppendTextAsync(IStorageFile, String)
+- Add support of Windows.Storage.FileIO.AppendTextAsync(IStorageFile, String) and WriteTextAsync(IStorageFile, String)
 - Add support for Automation SetDependencyPropertyValue in Uno.UITest
 - Added support for using a `string` value in a `StaticResource` when using `CreateFromStringAttribute'
 - [Android] Adds support for `FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay`
