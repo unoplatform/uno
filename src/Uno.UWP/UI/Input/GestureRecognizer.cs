@@ -213,7 +213,7 @@ namespace Windows.UI.Input
 
 		private bool TryRecognizeMultiTap(PointerPoint pointerDown)
 		{
-			if (_gestureSettings.HasFlag(GestureSettings.RightTap) && IsMultiTapGesture(_lastSingleTap, pointerDown))
+			if (_gestureSettings.HasFlag(GestureSettings.DoubleTap) && IsMultiTapGesture(_lastSingleTap, pointerDown))
 			{
 				_lastSingleTap = default; // The Recognizer supports only double tap, even on UWP
 				Tapped?.Invoke(this, new TappedEventArgs(pointerDown.PointerDevice.PointerDeviceType, pointerDown.Position, tapCount: 2));
