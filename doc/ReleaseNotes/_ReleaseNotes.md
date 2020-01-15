@@ -1,4 +1,4 @@
-# Release notes
+﻿# Release notes
 
 ### Features
 - Support for `EmailManager.ShowComposeNewEmailAsync`
@@ -18,6 +18,7 @@
 -
 
 ### Bug fixes
+- [#915] FontFamily values are now properly parsed on WebAssembly, updated docs with new info
 - [#2213] Fixed `ApplicationData` on MacOS, added support for `LocalSettings`
 - Made macOS Samples app skeleton runnable (temporarily removed ApplicationData check on startup, fixed reference), added xamarinmacos20 to crosstargeting_override sample
 - [#2230] `DisplayInformation` leaks memory
@@ -32,6 +33,7 @@
 - `ViewBox` no longer alters its child's `RenderTransform`
 - [#2033] Add Missing `LostFocus` Value to `UpdateSourceTrigger` Enum
 - [Android] Fix Image margin calculation on fixed size
+- [Android] Native views weren't clipped correctly
 - [iOS] #2361 ListView would measure children with infinite width
 - [#2398] Fully qualify the `MethodName` value for `CreateFromStringAttribute' if it's not fully qualified it the code
 - [WASM] Fix bug where changing a property could remove the required clipping on a view
