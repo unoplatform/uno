@@ -47,13 +47,16 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
-		<PackageReference Include="Xamarin.Android.Support.v4">
-			<Version>28.0.0.1</Version>
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4">
+			<Version>1.0.0-rc1</Version>
 			<PrivateAssets>none</PrivateAssets>
 		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
-			<Version>28.0.0.1</Version>
+		<PackageReference Include="Xamarin.AndroidX.AppCompat">
+			<Version>1.1.0-rc1</Version>
 			<PrivateAssets>none</PrivateAssets>
+		</PackageReference>
+		<PackageReference Include="Xamarin.AndroidX.Fragment">
+			<Version>1.1.0-rc1</Version>
 		</PackageReference>
 	</ItemGroup>
 

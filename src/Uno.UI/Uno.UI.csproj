@@ -32,8 +32,8 @@
 		<UnoForceProcessPRIResource>true</UnoForceProcessPRIResource>
 
 		<!-- Generate automation IDs in debug builds, use by UI tests. -->
-    <IsUiAutomationMappingEnabled Condition="'$(Configuration)'=='Debug'">true</IsUiAutomationMappingEnabled>
-  </PropertyGroup>
+		<IsUiAutomationMappingEnabled Condition="'$(Configuration)'=='Debug'">true</IsUiAutomationMappingEnabled>
+	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
 
@@ -168,14 +168,17 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
-		<PackageReference Include="Xamarin.Android.Support.v4" Version="28.0.0.1">
-			<PrivateAssets>none</PrivateAssets>
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4">
+			<Version>1.0.0-rc1</Version>
 		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="28.0.0.1">
-			<PrivateAssets>none</PrivateAssets>
+		<PackageReference Include="Xamarin.AndroidX.AppCompat">
+			<Version>1.1.0-rc1</Version>
 		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView" Version="28.0.0.1">
-			<PrivateAssets>none</PrivateAssets>
+		<PackageReference Include="Xamarin.AndroidX.RecyclerView">
+			<Version>1.1.0-rc1</Version>
+		</PackageReference>
+		<PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData">
+			<Version>2.1.0-rc1</Version>
 		</PackageReference>
 	</ItemGroup>
 
@@ -299,7 +302,7 @@
 		<ItemGroup>
 			<_T4AOTFiles Include="$(T4Path)/*.dll" />
 		</ItemGroup>
-		
+
 		<Exec ContinueOnError="WarnAndContinue" Command="mono --aot &quot;$(T4Bin)&quot;" />
 		<Exec ContinueOnError="WarnAndContinue" Command="mono --aot &quot;%(_T4AOTFiles.Identity)&quot;" />
 	</Target>
@@ -361,34 +364,34 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Update="BaseActivity.Callbacks.Implementation.Android.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	    <LastGenOutput>BaseActivity.Callbacks.Implementation.Android.cs</LastGenOutput>
-	  </None>
-	  <None Update="Mixins\Android\FrameworkElementMixins.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	    <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
-	  </None>
-	  <None Update="Mixins\Android\VisualStatesMixins.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	    <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-	  </None>
-	  <None Update="Mixins\macOS\FrameworkElementMixins.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	    <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
-	  </None>
-	  <None Update="Mixins\macOS\VisualStatesMixins.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	    <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-	  </None>
-	  <None Update="Mixins\net461\VisualStatesMixins.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	    <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-	  </None>
-	  <None Update="Mixins\Wasm\VisualStatesMixins.tt">
-	    <Generator>TextTemplatingFileGenerator</Generator>
-	    <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
-	  </None>
+		<None Update="BaseActivity.Callbacks.Implementation.Android.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>BaseActivity.Callbacks.Implementation.Android.cs</LastGenOutput>
+		</None>
+		<None Update="Mixins\Android\FrameworkElementMixins.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
+		</None>
+		<None Update="Mixins\Android\VisualStatesMixins.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
+		</None>
+		<None Update="Mixins\macOS\FrameworkElementMixins.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>
+		</None>
+		<None Update="Mixins\macOS\VisualStatesMixins.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
+		</None>
+		<None Update="Mixins\net461\VisualStatesMixins.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
+		</None>
+		<None Update="Mixins\Wasm\VisualStatesMixins.tt">
+			<Generator>TextTemplatingFileGenerator</Generator>
+			<LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
+		</None>
 	</ItemGroup>
 
 	<Target Name="GetPackagingOutputs" Condition=" '$(TargetFramework)' == 'uap10.0' " />
