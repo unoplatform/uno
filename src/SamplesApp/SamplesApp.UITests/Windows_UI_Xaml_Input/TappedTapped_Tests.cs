@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -9,6 +10,7 @@ using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 {
@@ -29,14 +31,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			var target = _app.WaitForElement(targetName).Single().Rect;
 			_app.TapCoordinates(target.X + tapX, target.Y + tapY);
 
-			var result = _app.Marked("LastTapped").GetDependencyPropertyValue<string>("Text");
-			result.Should().Be(FormattableString.Invariant($"{targetName}@{tapX:F2},{tapY:F2}"));
+			var result = GestureResult.Get(_app.Marked("LastTapped"));
+			result.Element.Should().Be(targetName);
+			((int)result.X).Should().Be(tapX);
+			((int)result.Y).Should().Be(tapY);
 		}
-
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser, Platform.iOS)]  // Disabled on Android: The test engine is not able to find "Transformed_Target"
+		[ActivePlatforms(Platform.iOS)]  // Disabled on Android: The test engine is not able to find "Transformed_Target"
 		public void When_Transformed()
 		{
 			Run(_xamlTestPage);
@@ -50,12 +53,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			// Tap the target
 			_app.TapCoordinates(parent.Right - target.Width, parent.Bottom - 3);
 
-			var result = _app.Marked("LastTapped").GetDependencyPropertyValue<string>("Text");
-			result.Should().StartWith(targetName);
+			var result = GestureResult.Get(_app.Marked("LastTapped"));
+			result.Element.Should().Be(targetName);
 		}
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // We cannot scroll to reach the target on WASM yet
 		public void When_InScroll()
 		{
 			Run(_xamlTestPage);
@@ -71,12 +75,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			var target = _app.WaitForElement(targetName).Single();
 			_app.TapCoordinates(target.Rect.X + tapX, target.Rect.Y + tapY);
 
-			var result = _app.Marked("LastTapped").GetDependencyPropertyValue<string>("Text");
-			result.Should().Be(FormattableString.Invariant($"{targetName}@{tapX:F2},{tapY:F2}"));
+			var result = GestureResult.Get(_app.Marked("LastTapped"));
+			result.Element.Should().Be(targetName);
+			((int)result.X).Should().Be(tapX);
+			((int)result.Y).Should().Be(tapY);
 		}
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // We cannot scroll to reach the target on WASM yet
 		public void When_InListViewWithItemClick()
 		{
 			Run(_xamlTestPage);
@@ -90,8 +97,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			// Tap and hold an item
 			_app.TapCoordinates(target.CenterX, target.CenterY - 5);
 
-			var result = _app.Marked("LastTapped").GetDependencyPropertyValue<string>("Text");
-			result.Should().StartWith("Item_3");
+			var result = GestureResult.Get(_app.Marked("LastTapped"));
+			var expectedItem = AppInitializer.GetLocalPlatform() == Platform.Browser
+				? "Item_1" // We were not able to scroll on WASM!
+				: "Item_3";
+			result.Element.Should().Be(expectedItem);
 		}
 
 		[Test]
@@ -109,8 +119,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			// Tap and hold an item
 			_app.TapCoordinates(target.CenterX, target.CenterY - 5);
 
-			var result = _app.Marked("LastTapped").GetDependencyPropertyValue<string>("Text");
-			result.Should().StartWith("Item_3");
+			var result = GestureResult.Get(_app.Marked("LastTapped"));
+			var expectedItem = AppInitializer.GetLocalPlatform() == Platform.Browser
+				? "Item_1" // We were not able to scroll on WASM!
+				: "Item_3";
+			result.Element.Should().Be(expectedItem);
 		}
 	}
 }

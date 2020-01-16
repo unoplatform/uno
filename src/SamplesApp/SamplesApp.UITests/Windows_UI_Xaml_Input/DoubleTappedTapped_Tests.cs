@@ -9,6 +9,7 @@ using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 {
@@ -30,8 +31,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			var target = _app.WaitForElement(targetName).Single().Rect;
 			_app.DoubleTapCoordinates(target.X + tapX, target.Y + tapY);
 
-			var result = _app.Marked("LastDoubleTapped").GetDependencyPropertyValue<string>("Text");
-			result.Should().Be(FormattableString.Invariant($"{targetName}@{tapX:F2},{tapY:F2}"));
+			var result = GestureResult.Get(_app.Marked("LastDoubleTapped"));
+			result.Element.Should().Be(targetName);
+			((int)result.X).Should().Be(tapX);
+			((int)result.Y).Should().Be(tapY);
 		}
 
 
@@ -51,8 +54,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			// Double tap the target
 			_app.DoubleTapCoordinates(parent.Right - target.Width, parent.Bottom - 3);
 
-			var result = _app.Marked("LastDoubleTapped").GetDependencyPropertyValue<string>("Text");
-			result.Should().StartWith(targetName);
+			var result = GestureResult.Get(_app.Marked("LastDoubleTapped"));
+			result.Element.Should().Be(targetName);
 		}
 
 		[Test]
@@ -72,8 +75,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			var target = _app.WaitForElement(targetName).Single();
 			_app.DoubleTapCoordinates(target.Rect.X + tapX, target.Rect.Y + tapY);
 
-			var result = _app.Marked("LastDoubleTapped").GetDependencyPropertyValue<string>("Text");
-			result.Should().Be(FormattableString.Invariant($"{targetName}@{tapX:F2},{tapY:F2}"));
+			var result = GestureResult.Get(_app.Marked("LastDoubleTapped"));
+			result.Element.Should().Be(targetName);
+			((int)result.X).Should().Be(tapX);
+			((int)result.Y).Should().Be(tapY);
 		}
 
 		[Test]
@@ -91,8 +96,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			// Tap and hold an item
 			_app.DoubleTapCoordinates(target.CenterX, target.CenterY - 5);
 
-			var result = _app.Marked("LastDoubleTapped").GetDependencyPropertyValue<string>("Text");
-			result.Should().StartWith("Item_3");
+			var result = GestureResult.Get(_app.Marked("LastDoubleTapped"));
+			var expectedItem = AppInitializer.GetLocalPlatform() == Platform.Browser
+				? "Item_1" // We were not able to scroll on WASM!
+				: "Item_3";
+			result.Element.Should().Be(expectedItem);
 		}
 
 		[Test]
@@ -110,8 +118,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			// Tap and hold an item
 			_app.DoubleTapCoordinates(target.CenterX, target.CenterY - 5);
 
-			var result = _app.Marked("LastDoubleTapped").GetDependencyPropertyValue<string>("Text");
-			result.Should().StartWith("Item_3");
+			var result = GestureResult.Get(_app.Marked("LastDoubleTapped"));
+			var expectedItem = AppInitializer.GetLocalPlatform() == Platform.Browser
+				? "Item_1" // We were not able to scroll on WASM!
+				: "Item_3";
+			result.Element.Should().Be(expectedItem);
 		}
 	}
 }

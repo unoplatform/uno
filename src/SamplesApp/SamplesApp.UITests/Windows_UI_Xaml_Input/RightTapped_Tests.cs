@@ -9,6 +9,7 @@ using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 {
@@ -30,8 +31,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			var target = _app.WaitForElement(targetName).Single().Rect;
 			_app.TouchAndHoldCoordinates(target.X + tapX, target.Y + tapY);
 
-			var result = _app.Marked("LastRightTapped").GetDependencyPropertyValue<string>("Text");
-			result.Should().Be(FormattableString.Invariant($"{targetName}@{tapX:F2},{tapY:F2}"));
+			var result = GestureResult.Get(_app.Marked("LastRightTapped"));
+			result.Element.Should().Be(targetName);
+			((int)result.X).Should().Be(tapX);
+			((int)result.Y).Should().Be(tapY);
 		}
 
 
@@ -51,8 +54,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			// Tap and hold the target
 			_app.TouchAndHoldCoordinates(parent.Right - target.Width, parent.Bottom - 3);
 
-			var result = _app.Marked("LastRightTapped").GetDependencyPropertyValue<string>("Text");
-			result.Should().StartWith(targetName);
+			var result = GestureResult.Get(_app.Marked("LastRightTapped"));
+			result.Element.Should().Be(targetName);
 		}
 
 		[Test]
@@ -73,8 +76,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			var target = _app.WaitForElement(targetName).Single();
 			_app.TouchAndHoldCoordinates(target.Rect.X + tapX, target.Rect.Y + tapY);
 
-			var result = _app.Marked("LastRightTapped").GetDependencyPropertyValue<string>("Text");
-			result.Should().Be(FormattableString.Invariant($"{targetName}@{tapX:F2},{tapY:F2}"));
+			var result = GestureResult.Get(_app.Marked("LastRightTapped"));
+			result.Element.Should().Be(targetName);
+			((int)result.X).Should().Be(tapX);
+			((int)result.Y).Should().Be(tapY);
 		}
 
 		[Test]
@@ -93,8 +98,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			// Tap and hold an item
 			_app.TouchAndHoldCoordinates(target.CenterX, target.CenterY - 5);
 
-			var result = _app.Marked("LastRightTapped").GetDependencyPropertyValue<string>("Text");
-			result.Should().StartWith("Item_3");
+			var result = GestureResult.Get(_app.Marked("LastRightTapped"));
+			var expectedItem = AppInitializer.GetLocalPlatform() == Platform.Browser
+				? "none" // Long press not supported with mouse
+				: "Item_3";
+			result.Element.Should().Be(expectedItem);
 		}
 
 		[Test]
@@ -113,8 +121,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			// Tap and hold an item
 			_app.TouchAndHoldCoordinates(target.CenterX, target.CenterY - 5);
 
-			var result = _app.Marked("LastRightTapped").GetDependencyPropertyValue<string>("Text");
-			result.Should().StartWith("Item_3");
+			var result = GestureResult.Get(_app.Marked("LastRightTapped"));
+			var expectedItem = AppInitializer.GetLocalPlatform() == Platform.Browser
+				? "none" // Long press not supported with mouse
+				: "Item_3";
+			result.Element.Should().Be(expectedItem);
 		}
 	}
 }
