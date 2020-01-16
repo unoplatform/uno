@@ -576,7 +576,7 @@
 			</Properties>
 		</IgnoreSet>
 		
-		<IgnoreSet baseVersion="2.0.528">
+		<IgnoreSet baseVersion="2.0.530">
 			<Methods>
 				<Member
 					fullName="System.Void Windows.UI.Xaml.RoutedEvent..ctor(System.String name)"
@@ -587,6 +587,16 @@
 				<Member
 					fullName="Windows.Foundation.Point Windows.UI.Xaml.Input.TappedRoutedEventArgs.GetPosition()"
 					reason="Not part of the UWP API." />
+				<Member 
+					fullName="System.Void Windows.UI.ViewManagement.ApplicationViewTitleBar..ctor()"
+					reason="Parameter-less ctor does not exist in UWP" />
+					
+				<Member
+					fullName="CoreGraphics.CGSize Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetItemSizeForIndexPath(Foundation.NSIndexPath indexPath)"
+					reason="Made internal, shouldn't normally be called by consumer code"/>
+				<Member
+					fullName="CoreGraphics.CGSize Windows.UI.Xaml.Controls.ListViewBaseSource.GetItemSize(UIKit.UICollectionView collectionView, Foundation.NSIndexPath indexPath)"
+					reason="Made internal, shouldn't normally be called by consumer code"/>
             </Methods>
 		</IgnoreSet>
 	</IgnoreSets>

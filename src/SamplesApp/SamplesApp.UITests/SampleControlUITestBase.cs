@@ -145,7 +145,9 @@ namespace SamplesApp.UITests
 			var fileNameWithoutExt = Path.GetFileNameWithoutExtension(fileInfo.Name);
 			if (fileNameWithoutExt != title)
 			{
-				var destFileName = Path.Combine(Path.GetDirectoryName(fileInfo.FullName), title + Path.GetExtension(fileInfo.Name));
+				var destFileName = Path
+					.Combine(Path.GetDirectoryName(fileInfo.FullName), title + Path.GetExtension(fileInfo.Name))
+					.GetNormalizedLongPath();
 
 				if (File.Exists(destFileName))
 				{
@@ -165,7 +167,9 @@ namespace SamplesApp.UITests
 
 			if(options != null)
 			{
-				var fileName = Path.Combine(fileInfo.DirectoryName, Path.GetFileNameWithoutExtension(fileInfo.FullName) + ".metadata");
+				var fileName = Path
+					.Combine(fileInfo.DirectoryName, Path.GetFileNameWithoutExtension(fileInfo.FullName) + ".metadata")
+					.GetNormalizedLongPath();
 
 				File.WriteAllText(fileName, $"IgnoreInSnapshotCompare={options.IgnoreInSnapshotCompare}");
 			}

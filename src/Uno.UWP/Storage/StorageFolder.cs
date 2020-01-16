@@ -174,6 +174,8 @@ namespace Windows.Storage
                     return (IStorageItem)result;
                 });
 
+		public IAsyncOperation<StorageFile> CreateFileAsync(string desiredName) => CreateFileAsync(desiredName, CreationCollisionOption.FailIfExists);
+
         public IAsyncOperation<StorageFile> CreateFileAsync(string path, CreationCollisionOption option) =>
             AsyncOperation.FromTask(async ct =>
             {

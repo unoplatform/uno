@@ -323,7 +323,7 @@ namespace Windows.UI.Input
 
 						return true;
 					}
-					else if (_pointer2.PointerId == point.PointerId)
+					else if (_pointer2 != null && _pointer2.PointerId == point.PointerId)
 					{
 						_pointer2 = point;
 						UpdateComputedValues();

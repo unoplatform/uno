@@ -11,6 +11,7 @@
 		<UnoSkipUserControlsInVisualTree>false</UnoSkipUserControlsInVisualTree>
 
 		<IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
+	<UseUnoXamlParser>true</UseUnoXamlParser>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(Configuration)'=='Debug'">
@@ -60,7 +61,7 @@
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
 		<PackageReference Include="Uno.Wasm.WebSockets" />
-		<PackageReference Include="Uno.Wasm.Bootstrap"/>
+		<PackageReference Include="Uno.Wasm.Bootstrap" />
 		<DotNetCliToolReference Include="Uno.Wasm.Bootstrap.Cli" />
 	</ItemGroup>
 

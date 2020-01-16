@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 {
@@ -13,7 +14,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		[TestMethod]
 		public void When_xBind_Resource()
 		{
-			var SUT = new Given_StaticResource_Control();
+			var SUT = new StaticResource_Control();
 
 			Assert.IsNull(SUT.mySource.Source);
 

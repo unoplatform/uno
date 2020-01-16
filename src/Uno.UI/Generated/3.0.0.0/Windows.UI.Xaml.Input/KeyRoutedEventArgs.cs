@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Input
 	#endif
 	public  partial class KeyRoutedEventArgs : global::Windows.UI.Xaml.RoutedEventArgs
 	{
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  bool Handled
 		{
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.VirtualKey Key
 		{
@@ -38,16 +38,6 @@ namespace Windows.UI.Xaml.Input
 			get
 			{
 				throw new global::System.NotImplementedException("The member CorePhysicalKeyStatus KeyRoutedEventArgs.KeyStatus is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.System.VirtualKey OriginalKey
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member VirtualKey KeyRoutedEventArgs.OriginalKey is not implemented in Uno.");
 			}
 		}
 		#endif
