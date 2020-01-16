@@ -19,6 +19,7 @@ using Uno.UI.Controls;
 using Uno.UI.Media;
 using System;
 using System.Numerics;
+using System.Reflection;
 using Windows.UI.Xaml.Markup;
 using Microsoft.Extensions.Logging;
 
@@ -213,6 +214,64 @@ namespace Windows.UI.Xaml
 			}
 
 			return matrix;
+		}
+
+		internal Thickness GetPadding()
+		{
+			var property = GetPaddingProperty();
+			return property == null ? Thickness.Empty : (Thickness)GetValue(property);
+		}
+
+		internal DependencyProperty GetPaddingProperty()
+		{
+			switch (this)
+			{
+				case Panel _:
+					return Panel.PaddingProperty;
+
+				case Control _:
+					return Control.PaddingProperty;
+
+				case ContentPresenter _:
+					return ContentPresenter.PaddingProperty;
+
+				case Border _:
+					return Border.PaddingProperty;
+			}
+
+			return GetDefaultPaddingProperty();
+		}
+
+		private static readonly Dictionary<Type, DependencyProperty> _paddingPropertyCache =
+			new Dictionary<Type, DependencyProperty>();
+
+		private DependencyProperty GetDefaultPaddingProperty()
+		{
+			var ownerType = GetType();
+
+			if (_paddingPropertyCache.TryGetValue(ownerType, out var property))
+			{
+				return property;
+			}
+
+			property =
+				ownerType
+					.GetTypeInfo()
+					.GetDeclaredProperty("PaddingProperty")
+					?.GetValue(null) as DependencyProperty
+				?? ownerType
+					.GetTypeInfo()
+					.GetDeclaredField("PaddingProperty")
+					?.GetValue(null) as DependencyProperty;
+
+			_paddingPropertyCache[ownerType] = property;
+
+			if (property == null)
+			{
+				this.Log().Warn($"The Padding dependency property does not exist on {ownerType}");
+			}
+
+			return property;
 		}
 
 		#region IsHitTestVisible Dependency Property

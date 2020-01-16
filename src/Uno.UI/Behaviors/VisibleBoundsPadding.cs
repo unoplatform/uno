@@ -129,18 +129,18 @@ namespace Uno.UI.Toolkit
 
 		public class VisibleBoundsDetails
 		{
-			private static ConditionalWeakTable<FrameworkElement, VisibleBoundsDetails> _instances = new ConditionalWeakTable<FrameworkElement, VisibleBoundsDetails>();
-			private WeakReference _owner;
-			private TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, object> _visibleBoundsChanged;
+			private static readonly ConditionalWeakTable<FrameworkElement, VisibleBoundsDetails> _instances =
+				new ConditionalWeakTable<FrameworkElement, VisibleBoundsDetails>();
+			private readonly WeakReference _owner;
+			private readonly TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, object> _visibleBoundsChanged;
 			private PaddingMask _paddingMask;
-			private Thickness _originalPadding;
-			private static Dictionary<Type, DependencyProperty> _paddingPropertyCache = new Dictionary<Type, DependencyProperty>();
+			private readonly Thickness _originalPadding;
 
 			internal VisibleBoundsDetails(FrameworkElement owner)
 			{
 				_owner = new WeakReference(owner);
 
-				_originalPadding = (Thickness)(Owner.GetValue(GetPaddingProperty()) ?? new Thickness(0));
+				_originalPadding = (Thickness)(Owner.GetValue(Owner.GetPaddingProperty()) ?? new Thickness(0));
 
 				_visibleBoundsChanged = (s2, e2) => UpdatePadding();
 
@@ -268,7 +268,7 @@ namespace Uno.UI.Toolkit
 
 			private void ApplyPadding(Thickness padding)
 			{
-				var property = GetPaddingProperty();
+				var property = Owner.GetPaddingProperty();
 
 				if (property != null)
 				{
@@ -279,64 +279,6 @@ namespace Uno.UI.Toolkit
 
 					Owner.SetValue(property, padding);
 				}
-			}
-
-			private DependencyProperty GetPaddingProperty()
-			{
-				switch (Owner)
-				{
-					case Grid g:
-						return Grid.PaddingProperty;
-
-					case StackPanel g:
-						return StackPanel.PaddingProperty;
-
-					case Control c:
-						return Control.PaddingProperty;
-
-					case ContentPresenter cp:
-						return ContentPresenter.PaddingProperty;
-
-					case Border b:
-						return Border.PaddingProperty;
-#if XAMARIN
-					// This provides support for external Panel implementations on Uno.
-					case Panel p:
-						return Panel.PaddingProperty;
-#endif
-				}
-
-				return GetDefaultPaddingProperty();
-			}
-
-			private DependencyProperty GetDefaultPaddingProperty()
-			{
-				var ownerType = Owner.GetType();
-
-				if (!_paddingPropertyCache.TryGetValue(ownerType, out var property))
-				{
-					property = ownerType
-						.GetTypeInfo()
-						.GetDeclaredProperty("PaddingProperty")
-						?.GetValue(null) as DependencyProperty;
-
-					if (property == null)
-					{
-						property = ownerType
-							.GetTypeInfo()
-							.GetDeclaredField("PaddingProperty")
-							?.GetValue(null) as DependencyProperty;
-					}
-
-					_paddingPropertyCache[ownerType] = property;
-
-					if (property == null)
-					{
-						this.Log().Warn($"The Padding dependency property does not exist on {ownerType}");
-					}
-				}
-
-				return property;
 			}
 
 			internal static VisibleBoundsDetails GetInstance(FrameworkElement element)
