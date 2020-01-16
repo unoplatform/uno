@@ -49,5 +49,15 @@ namespace SamplesApp.UITests
 		{
 			return app.WaitForElement(elementName).Single().Rect;
 		}
+
+		/// <summary>
+		/// Wait for the named element to have received focus (ie after being tapped).
+		/// </summary>
+		public static void WaitForFocus(this IApp app, string elementName)
+		{
+			var element = app.Marked(elementName);
+			app.WaitForElement(element);
+			app.WaitForDependencyPropertyValue(element, "FocusState", "Pointer");
+		}
 	}
 }
