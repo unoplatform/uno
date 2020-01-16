@@ -9,27 +9,27 @@ using Uno.UI.Samples.Controls;
 namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 {
 	[SampleControlInfo("Gesture recognizer")]
-	public sealed partial class TappedTest : Page
+	public sealed partial class RightTappedTests : Page
 	{
-		public TappedTest()
+		public RightTappedTests()
 		{
 			this.InitializeComponent();
 		}
 
-		private void TargetTapped(object sender, TappedRoutedEventArgs e)
+		private void TargetRightTapped(object sender, RightTappedRoutedEventArgs e)
 		{
 			var target = (FrameworkElement)sender;
 			var position = e.GetPosition(target).LogicalToPhysicalPixels();
 
-			LastTapped.Text = $"{target.Name}@{position.X:F2},{position.Y:F2}";
+			LastRightTapped.Text = $"{target.Name}@{position.X:F2},{position.Y:F2}";
 		}
 
-		private void ItemTapped(object sender, TappedRoutedEventArgs e)
+		private void ItemRightTapped(object sender, RightTappedRoutedEventArgs e)
 		{
 			var target = (FrameworkElement)sender;
 			var position = e.GetPosition(target).LogicalToPhysicalPixels();
 
-			LastTapped.Text = $"Item_{target.DataContext}@{position.X:F2},{position.Y:F2}";
+			LastRightTapped.Text = $"Item_{target.DataContext}@{position.X:F2},{position.Y:F2}";
 		}
 	}
 }

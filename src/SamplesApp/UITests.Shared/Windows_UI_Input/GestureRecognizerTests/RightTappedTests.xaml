@@ -1,5 +1,5 @@
 ﻿<Page
-	x:Class="UITests.Shared.Windows_UI_Input.GestureRecognizerTests.TappedTest"
+	x:Class="UITests.Shared.Windows_UI_Input.GestureRecognizerTests.RightTappedTests"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:local="using:UITests.Shared.Windows_UI_Input.GestureRecognizerTests"
@@ -7,7 +7,7 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
-
+	
 	<Grid>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
@@ -26,12 +26,12 @@
 		</Grid.ColumnDefinitions>
 
 		<TextBlock
-			Text="Double on each zones. Last double tapped:"
+			Text="Long press (touch), right click (mouse), use barrel button (pen) on each zones. Last right tapped:"
 			TextWrapping="Wrap"
 			Grid.Row="0"
 			Grid.ColumnSpan="2"/>
 		<TextBlock
-			x:Name="LastTapped"
+			x:Name="LastRightTapped"
 			Text="__none__"
 			Grid.Row="1"
 			Grid.ColumnSpan="2"/>
@@ -48,7 +48,7 @@
 			Width="150"
 			Height="150"
 			Background="#FF0018"
-			Tapped="TargetTapped" />
+			RightTapped="TargetRightTapped" />
 
 		<TextBlock
 			Text="With transformation"
@@ -69,7 +69,7 @@
 				Width="50"
 				Height="50"
 				Background="#33000000"
-				Tapped="TargetTapped">
+				RightTapped="TargetRightTapped">
 				<Border.RenderTransform>
 					<CompositeTransform Rotation="45" TranslateX="100" TranslateY="100" />
 				</Border.RenderTransform>
@@ -103,7 +103,7 @@
 						HorizontalAlignment="Right"
 						VerticalAlignment="Bottom"
 						Background="#33000000"
-						Tapped="TargetTapped" />
+						RightTapped="TargetRightTapped" />
 				</Grid>
 			</ScrollViewer>
 		</Border>
@@ -128,7 +128,7 @@
 				HorizontalAlignment="Center"
 				VerticalAlignment="Center"
 				Background="#33000000"
-				Tapped="TargetTapped" />
+				RightTapped="TargetRightTapped" />
 		</Button>
 
 		<TextBlock
@@ -156,7 +156,7 @@
 							BorderBrush="#33000000"
 							BorderThickness="3"
 							Margin="3"
-							Tapped="ItemTapped">
+							RightTapped="ItemRightTapped">
 							<TextBlock
 								VerticalAlignment="Center"
 								HorizontalAlignment="Center"
@@ -193,7 +193,7 @@
 							BorderBrush="#33000000"
 							BorderThickness="3"
 							Margin="3"
-							Tapped="ItemTapped">
+							RightTapped="ItemRightTapped">
 							<TextBlock
 								VerticalAlignment="Center"
 								HorizontalAlignment="Center"

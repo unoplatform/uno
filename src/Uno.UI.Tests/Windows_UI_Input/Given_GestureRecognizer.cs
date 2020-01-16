@@ -11,6 +11,7 @@ using Windows.UI.Input;
 using FluentAssertions;
 using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.Disposables;
 using Point = Windows.Foundation.Point;
 using static Uno.UI.Tests.Windows_UI_Input.GestureRecognizerTestExtensions;
 
@@ -186,6 +187,108 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			sut.ProcessDownEvent(25, 25 + GestureRecognizer.TapMaxYDelta + 1); // Second tap too far
 
 			taps.Should().BeEquivalentTo(Tap(25, 25));
+		}
+
+		[TestMethod]
+		public void RightTapped()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.RightTap };
+			var taps = new List<RightTappedEventArgs>();
+			sut.RightTapped += (snd, e) => taps.Add(e);
+
+			using (MouseRight())
+			{
+				sut.ProcessDownEvent(25, 25);
+				taps.Should().BeEmpty();
+
+				sut.CanBeDoubleTap(GetPoint(28, 28)).Should().BeFalse();
+				sut.ProcessUpEvent(27, 27);
+				taps.Should().BeEquivalentTo(RightTap(25, 25));
+			}
+		}
+
+		[TestMethod]
+		public void RightTapped_Duration()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.RightTap };
+			var taps = new List<RightTappedEventArgs>();
+			sut.RightTapped += (snd, e) => taps.Add(e);
+
+			using (MouseRight())
+			{
+				sut.ProcessDownEvent(25, 25);
+				taps.Should().BeEmpty();
+
+				sut.CanBeDoubleTap(GetPoint(28, 28)).Should().BeFalse();
+				sut.ProcessUpEvent(27, 27, ts: long.MaxValue); // No matter the duration for mouse
+				taps.Should().BeEquivalentTo(RightTap(25, 25));
+			}
+		}
+
+		[TestMethod]
+		public void RightTapped_Delta_X()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.RightTap };
+			var taps = new List<RightTappedEventArgs>();
+			sut.RightTapped += (snd, e) => taps.Add(e);
+
+			using (MouseRight())
+			{
+				sut.ProcessDownEvent(25, 25);
+				sut.ProcessUpEvent(25 + GestureRecognizer.TapMaxXDelta + 1, 25); // Moved too far
+
+				taps.Should().BeEmpty();
+			}
+		}
+
+		[TestMethod]
+		public void RightTapped_Delta_X_Back_Over()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.RightTap };
+			var taps = new List<RightTappedEventArgs>();
+			sut.RightTapped += (snd, e) => taps.Add(e);
+
+			using (MouseRight())
+			{
+				sut.ProcessDownEvent(25, 25);
+				sut.ProcessMoveEvent(25 + GestureRecognizer.TapMaxXDelta + 1, 25); // Moved too far
+				sut.ProcessUpEvent(25, 25); // Release over
+
+				taps.Should().BeEmpty();
+			}
+		}
+
+		[TestMethod]
+		public void RightTapped_Delta_Y()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.RightTap };
+			var taps = new List<RightTappedEventArgs>();
+			sut.RightTapped += (snd, e) => taps.Add(e);
+
+			using (MouseRight())
+			{
+				sut.ProcessDownEvent(25, 25);
+				sut.ProcessUpEvent(25, 25 + GestureRecognizer.TapMaxXDelta + 1); // Moved too far
+
+				taps.Should().BeEmpty();
+			}
+		}
+
+		[TestMethod]
+		public void RightTapped_Delta_Y_Back_Over()
+		{
+			var sut = new GestureRecognizer { GestureSettings = GestureSettings.RightTap };
+			var taps = new List<RightTappedEventArgs>();
+			sut.RightTapped += (snd, e) => taps.Add(e);
+
+			using (MouseRight())
+			{
+				sut.ProcessDownEvent(25, 25);
+				sut.ProcessMoveEvent(25, 25 + GestureRecognizer.TapMaxXDelta + 1); // Moved too far
+				sut.ProcessUpEvent(25, 25); // Release over
+
+				taps.Should().BeEmpty();
+			}
 		}
 
 		[TestMethod]
@@ -1005,6 +1108,57 @@ namespace Uno.UI.Tests.Windows_UI_Input
 	{
 		private static long _frameId = 0;
 
+		public static PointerDevice MousePointer { get; } = new PointerDevice(PointerDeviceType.Mouse);
+		public static PointerDevice PenPointer { get; } = new PointerDevice(PointerDeviceType.Pen);
+		public static PointerDevice TouchPointer { get; } = new PointerDevice(PointerDeviceType.Touch);
+
+		public static PointerPointProperties LeftButton { get; } = new PointerPointProperties
+		{
+			IsPrimary = true,
+			IsInRange = true,
+			IsLeftButtonPressed = true
+		};
+
+		public static PointerPointProperties RightButton { get; } = new PointerPointProperties
+		{
+			IsPrimary = true,
+			IsInRange = true,
+			IsRightButtonPressed = true
+		};
+
+		public static PointerPointProperties LeftBarrelButton { get; } = new PointerPointProperties
+		{
+			IsPrimary = true,
+			IsInRange = true,
+			IsLeftButtonPressed = true,
+			IsBarrelButtonPressed = true
+		};
+
+		public static PointerPointProperties RightBarrelButton { get; } = new PointerPointProperties
+		{
+			IsPrimary = true,
+			IsInRange = true,
+			IsRightButtonPressed = true,
+			IsBarrelButtonPressed = true
+		};
+
+		private static readonly AsyncLocal<(PointerDevice device, PointerPointProperties properties)> _currentPointer = new AsyncLocal<(PointerDevice device, PointerPointProperties properties)>();
+		public static IDisposable Pointer(PointerDevice device, PointerPointProperties properties)
+		{
+			_currentPointer.Value = (device, properties);
+
+			return Disposable.Create(() =>
+			{
+				_currentPointer.Value = default;
+			});
+		}
+
+		public static IDisposable Mouse() => Pointer(MousePointer, LeftButton);
+		public static IDisposable MouseRight() => Pointer(MousePointer, RightButton);
+		public static IDisposable Pen() => Pointer(PenPointer, LeftButton);
+		public static IDisposable PenWithBarrel() => Pointer(PenPointer, RightBarrelButton);
+		public static IDisposable Touch() => Pointer(TouchPointer, LeftButton);
+
 		public static PointerPoint GetPoint(
 			double x,
 			double y,
@@ -1014,23 +1168,24 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			bool? isInContact = true,
 			PointerPointProperties properties = null)
 		{
+			var currentPointer = _currentPointer.Value;
 			var frameId = (uint)Interlocked.Increment(ref _frameId);
 			id = id ?? 1;
 			ts = ts ?? frameId;
-			var pointer = new PointerDevice(device ?? PointerDeviceType.Touch);
+			var pointer = device.HasValue
+				? new PointerDevice(device.Value)
+				: (currentPointer.device ?? new PointerDevice(PointerDeviceType.Touch));
 			var location = new Windows.Foundation.Point(x, y);
-			properties = properties ?? new PointerPointProperties
-			{
-				IsPrimary = true,
-				IsInRange = true,
-				IsLeftButtonPressed = true,
-			};
+			properties = properties ?? currentPointer.properties ?? LeftButton;
 
 			return new PointerPoint(frameId, ts.Value, pointer, id.Value, location, location, isInContact.GetValueOrDefault(), properties);
 		}
 
 		public static TappedEventArgs Tap(double x, double y, uint tapCount = 1, PointerDeviceType? device = null)
-			=> new TappedEventArgs(device ?? PointerDeviceType.Touch, new Point(x, y), tapCount);
+			=> new TappedEventArgs(device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y), tapCount);
+
+		public static RightTappedEventArgs RightTap(double x, double y, PointerDeviceType? device = null)
+			=> new RightTappedEventArgs(device ?? _currentPointer.Value.device?.PointerDeviceType ?? PointerDeviceType.Touch, new Point(x, y));
 
 		public static void ProcessDownEvent(
 			this GestureRecognizer sut,

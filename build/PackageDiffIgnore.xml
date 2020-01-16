@@ -580,16 +580,16 @@
 			<Methods>
 				<Member
 					fullName="System.Void Windows.UI.Xaml.RoutedEvent..ctor(System.String name)"
-					reason="Not part of the UWP API." />
+					reason="Not part of the WinUI API." />
 				<Member
 					fullName="Windows.Foundation.Point Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs.GetPosition()"
-					reason="Not part of the UWP API." />
+					reason="Not part of the WinUI API." />
 				<Member
 					fullName="Windows.Foundation.Point Windows.UI.Xaml.Input.TappedRoutedEventArgs.GetPosition()"
-					reason="Not part of the UWP API." />
+					reason="Not part of the WinUI API." />
 				<Member 
 					fullName="System.Void Windows.UI.ViewManagement.ApplicationViewTitleBar..ctor()"
-					reason="Parameter-less ctor does not exist in UWP" />
+					reason="Parameter-less ctor does not exist in WinUI" />
 					
 				<Member
 					fullName="CoreGraphics.CGSize Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetItemSizeForIndexPath(Foundation.NSIndexPath indexPath)"
@@ -597,6 +597,16 @@
 				<Member
 					fullName="CoreGraphics.CGSize Windows.UI.Xaml.Controls.ListViewBaseSource.GetItemSize(UIKit.UICollectionView collectionView, Foundation.NSIndexPath indexPath)"
 					reason="Made internal, shouldn't normally be called by consumer code"/>
+					
+				<Member
+					fullName="System.Boolean Windows.UI.Xaml.Input.RightTappedRoutedEventArgs.get_Handled()"
+					reason="Auto property"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Input.RightTappedRoutedEventArgs.set_Handled(System.Boolean value)"
+					reason="Auto property"/>
+				<Member
+					fullName="System.Void Windows.UI.Input.RightTappedEventArgs..ctor()"
+					reason="Not part of the WinUI API."/>
             </Methods>
 		</IgnoreSet>
 	</IgnoreSets>

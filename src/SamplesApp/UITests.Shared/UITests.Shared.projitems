@@ -129,6 +129,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Input\GestureRecognizerTests\DoubleTappedTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Input\GestureRecognizerTests\GestureEventsCommons.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Input\GestureRecognizerTests\ManipulationEvents.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -138,6 +146,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Input\GestureRecognizerTests\Manipulation_WhenInScrollViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Input\GestureRecognizerTests\RightTappedTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -2967,6 +2979,12 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI.Xaml_Automation\AutomationProperties_Name.xaml.cs">
       <DependentUpon>AutomationProperties_Name.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\GestureRecognizerTests\DoubleTappedTests.xaml.cs">
+      <DependentUpon>DoubleTappedTests.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\GestureRecognizerTests\GestureEventsCommons.xaml.cs">
+      <DependentUpon>GestureEventsCommons.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\GestureRecognizerTests\ManipulationEvents.xaml.cs">
       <DependentUpon>ManipulationEvents.xaml</DependentUpon>
     </Compile>
@@ -2975,6 +2993,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\GestureRecognizerTests\Manipulation_WhenInScrollViewer.xaml.cs">
       <DependentUpon>Manipulation_WhenInScrollViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\GestureRecognizerTests\RightTappedTests.xaml.cs">
+      <DependentUpon>$fileinputname$.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\GestureRecognizerTests\TappedTest.xaml.cs">
       <DependentUpon>TappedTest.xaml</DependentUpon>
