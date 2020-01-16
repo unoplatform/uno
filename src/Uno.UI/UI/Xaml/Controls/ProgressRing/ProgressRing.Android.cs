@@ -31,7 +31,11 @@ namespace Windows.UI.Xaml.Controls
 
 			if (progressRing != null && foregroundColor != null)
 			{
-				progressRing.IndeterminateDrawable?.SetColorFilter(new BlendModeColorFilter(foregroundColor.Color, BlendMode.SrcIn));
+#if __ANDROID_28__
+				progressRing.IndeterminateDrawable?.SetColorFilter(foregroundColor.Color, PorterDuff.Mode.SrcIn);
+#else
+			    progressRing.IndeterminateDrawable?.SetColorFilter(new BlendModeColorFilter(foregroundColor.Color, BlendMode.SrcIn));
+#endif
 			}
 		}
 

@@ -43,10 +43,10 @@ namespace Windows.UI.Xaml.Controls
 			//Remove default native padding.
 			this.SetPadding(0, 0, 0, 0);
 
-            if (FeatureConfiguration.TextBox.HideCaret)
-            {
-                SetCursorVisible(false);
-            }
+			if (FeatureConfiguration.TextBox.HideCaret)
+			{
+				SetCursorVisible(false);
+			}
 
 			_isInitialized = true;
 
@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml.Controls
 				using (var textView = new TextView(context))
 				{
 					textViewClass = textView.Class;
-			    }
+				}
 				var editText = new EditText(context);
 
 				_cursorDrawableResField = textViewClass.GetDeclaredField("mCursorDrawableRes");
@@ -143,7 +143,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
-				    // set differently in Android P (API 28) and higher
+					// set differently in Android P (API 28) and higher
 					_cursorDrawableField = _editorField.Get(editText).Class.GetDeclaredField("mDrawableForCursor");
 					_cursorDrawableField.Accessible = true;
 				}
@@ -165,15 +165,26 @@ namespace Windows.UI.Xaml.Controls
 						var drawables = new Drawable[2];
 						drawables[0] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
 						drawables[1] = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+#if __ANDROID_28__
+
+						drawables[0].SetColorFilter(color, PorterDuff.Mode.SrcIn);
+						drawables[1].SetColorFilter(color, PorterDuff.Mode.SrcIn);
+#else
 						drawables[0].SetColorFilter(new BlendModeColorFilter(color, BlendMode.SrcIn));
 						drawables[1].SetColorFilter(new BlendModeColorFilter(color, BlendMode.SrcIn));
+#endif
 						_cursorDrawableField.Set(editor, drawables);
 					}
 					else
 					{
 						var drawable = ContextCompat.GetDrawable(editText.Context, mCursorDrawableRes);
+#if __ANDROID_28__
+						drawable.SetColorFilter(color, PorterDuff.Mode.SrcIn);
+#else
 						drawable.SetColorFilter(new BlendModeColorFilter(color, BlendMode.SrcIn));
+#endif
 						_cursorDrawableField.Set(editor, drawable);
+
 					}
 				}
 				catch (Exception)

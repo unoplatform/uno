@@ -32,7 +32,7 @@ namespace Uno.UI.Controls
 
 			TextOn = "";
 			TextOff = "";
-        }
+		}
 
 		#region TextColor DependencyProperty
 
@@ -76,7 +76,12 @@ namespace Uno.UI.Controls
 		{
 			if (newValue is SolidColorBrush asColorBrush)
 			{
+#if __ANDROID_28__
+
+				ThumbDrawable?.SetColorFilter(asColorBrush.Color, PorterDuff.Mode.SrcIn);
+#else
 				ThumbDrawable?.SetColorFilter(new BlendModeColorFilter(asColorBrush.Color, BlendMode.SrcIn));
+#endif
 			}
 		}
 
@@ -100,7 +105,11 @@ namespace Uno.UI.Controls
 		{
 			if (newValue is SolidColorBrush asColorBrush)
 			{
+#if __ANDROID_28__
+				TrackDrawable?.SetColorFilter(asColorBrush.Color, PorterDuff.Mode.SrcIn);
+#else
 				TrackDrawable?.SetColorFilter(new BlendModeColorFilter(asColorBrush.Color, BlendMode.SrcIn));
+#endif
 			}
 		}
 
