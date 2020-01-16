@@ -29,7 +29,10 @@ For more information about these prerequisites, see [Installing Xamarin](https:/
 
     ![](Assets/tutorial01/manage-extensions.png)
 
-1. In the Extension Manager expand the Online node and search for `Uno`. Download the [`Uno Platform Solution Templates`](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) extension and restart Visual Studio.
+1. In the Extensions manager expand the Online node and search for `Uno`. Download the [`Uno Platform Solution Templates`](https://marketplace.visualstudio.com/items?itemName=nventivecorp.uno-platform-addin) extension and restart Visual Studio.
+
+> [!NOTE]
+> If nothing appears when you search for "uno" in the Extensions manager, search for the full name of the extension, "uno platform solution templates". Certain versions of Visual Studio 2019 have a bug in the search function in the Extensions manager.
 
     ![](Assets/tutorial01/uno-extensions.PNG)
 
