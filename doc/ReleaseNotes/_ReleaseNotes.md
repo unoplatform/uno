@@ -35,6 +35,7 @@
 - [Android] Fix Image margin calculation on fixed size
 - [Android] Native views weren't clipped correctly
 - [iOS] #2361 ListView would measure children with infinite width
+- [iOS] Fix crash when using ComboBox template with native Picker and changing ItemsSource to null after SelectedItem was set
 - [#2398] Fully qualify the `MethodName` value for `CreateFromStringAttribute' if it's not fully qualified it the code
 - [WASM] Fix bug where changing a property could remove the required clipping on a view
 - [Android] Fix unconstrained Image loading issue when contained in a ContentControl template
