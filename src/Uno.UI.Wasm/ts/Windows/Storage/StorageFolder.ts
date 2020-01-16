@@ -44,7 +44,7 @@
 			}
 
 			if (typeof IDBFS === 'undefined') {
-				console.warn(`IDBFS is not enabled in mono's configuration, peristence is disabled`);
+				console.warn(`IDBFS is not enabled in mono's configuration, persistence is disabled`);
 
 				return;
 			}
