@@ -109,16 +109,39 @@
 		</Border>
 
 		<TextBlock
-			Text="ListView"
+			Text="In button"
 			Grid.Row="4"
 			Grid.Column="1" 
 			HorizontalAlignment="Center"/>
-		<Border
+		<Button
 			Grid.Row="5"
 			Grid.Column="1"
 			Width="150"
 			Height="150"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center"
 			Background="#008018">
+			<Border
+				x:Name="InButton_Target"
+				Width="100"
+				Height="100"
+				HorizontalAlignment="Center"
+				VerticalAlignment="Center"
+				Background="#33000000"
+				RightTapped="TargetRightTapped" />
+		</Button>
+
+		<TextBlock
+			Text="ListView"
+			Grid.Row="6"
+			Grid.Column="0" 
+			HorizontalAlignment="Center"/>
+		<Border
+			Grid.Row="7"
+			Grid.Column="0"
+			Width="150"
+			Height="150"
+			Background="#0000F9">
 			<ListView
 				ItemsSource="0123456789abcdef"
 				IsItemClickEnabled="True"
@@ -148,14 +171,14 @@
 		<TextBlock
 			Text="ListView item click disabled"
 			Grid.Row="6"
-			Grid.Column="0" 
+			Grid.Column="1" 
 			HorizontalAlignment="Center"/>
 		<Border
 			Grid.Row="7"
-			Grid.Column="0"
+			Grid.Column="1"
 			Width="150"
 			Height="150"
-			Background="#0000F9">
+			Background="#86007D">
 			<ListView
 				ItemsSource="0123456789abcdef"
 				IsItemClickEnabled="False"
