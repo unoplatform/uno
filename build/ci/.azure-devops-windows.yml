@@ -51,7 +51,9 @@ jobs:
       restoreNugetPackages: false
       logProjectEvents: false
       createLogFile: false
-      
+
+  - task: VisualStudioTestPlatformInstaller@1
+
   - task: VSTest@2
     inputs:
       testAssemblyVer2: |
