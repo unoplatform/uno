@@ -73,19 +73,16 @@ namespace Windows.UI.Input
 
 		internal void ProcessMoveEvents(IList<PointerPoint> value, bool isRelevant)
 		{
-			if (isRelevant)
+			foreach (var point in value)
 			{
-				foreach (var point in value)
+				if (_activePointers.TryGetValue(point.PointerId, out var points))
 				{
-					if (_activePointers.TryGetValue(point.PointerId, out var points))
-					{
-						points.Add(point);
-					}
-					else if (_log.IsEnabled(LogLevel.Information))
-					{
-						// info: We might get some PointerMove for mouse even if not pressed!
-						_log.Info("Received a 'Move' for a pointer which was not considered as down. Ignoring event.");
-					}
+					points.Add(point);
+				}
+				else if (_log.IsEnabled(LogLevel.Information))
+				{
+					// info: We might get some PointerMove for mouse even if not pressed!
+					_log.Info("Received a 'Move' for a pointer which was not considered as down. Ignoring event.");
 				}
 			}
 
@@ -104,18 +101,14 @@ namespace Windows.UI.Input
 			if (_activePointers.Remove(value.PointerId, out var points))
 			{
 #endif
-
 				// Note: At this point we MAY be IsActive == false, which is the expected behavior (same as UWP)
 				//		 even if we will fire some events now.
 
-				if (isRelevant)
-				{
-					// We need to process only events that are bubbling natively to this control (i.e. isIrrelevant == false),
-					// if they are bubbling in managed it means that they where handled a child control,
-					// so we should not use them for gesture recognition.
+				// We need to process only events that are bubbling natively to this control (i.e. isIrrelevant == false),
+				// if they are bubbling in managed it means that they where handled a child control,
+				// so we should not use them for gesture recognition.
 
-					Recognize(points, pointerUp: value);
-				}
+				Recognize(points, pointerUp: value);
 
 				_manipulation?.Remove(value);
 			}

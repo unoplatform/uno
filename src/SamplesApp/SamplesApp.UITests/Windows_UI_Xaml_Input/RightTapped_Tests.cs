@@ -36,11 +36,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Android, Platform.iOS)] // We cannot test right button click on WASM yet
-		public void When_WithTransformed()
+		public void When_Transformed()
 		{
 			Run("UITests.Shared.Windows_UI_Input.GestureRecognizerTests.RightTappedTests");
 
-			const string parentName = "Transformed_Parent", targetName = "Transformed_Target";
+			const string parentName = "Transformed_Parent";
+			const string targetName = "Transformed_Target";
 
 			var parent = _app.WaitForElement(parentName).Single().Rect;
 			var target = _app.WaitForElement(targetName).Single().Rect;
@@ -91,7 +92,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			_app.TouchAndHoldCoordinates(target.CenterX, target.CenterY);
 
 			var result = _app.Marked("LastRightTapped").GetDependencyPropertyValue<string>("Text");
-			result.Should().Be("__none__"); // Gesture was muted by the item click!
+			result.Should().StartWith("Item_3");
 		}
 
 		[Test]
@@ -113,6 +114,5 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			var result = _app.Marked("LastRightTapped").GetDependencyPropertyValue<string>("Text");
 			result.Should().StartWith("Item_3");
 		}
-
 	}
 }
