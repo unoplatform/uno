@@ -31,7 +31,7 @@ else
 	export TEST_FILTERS=" \
 		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests' or \
 		namespace = 'SamplesApp.UITests' or \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Input.VisualState_Tests' or \
+		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Input' or \
 		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests' or \
 		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests' or \
 		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests' or \
