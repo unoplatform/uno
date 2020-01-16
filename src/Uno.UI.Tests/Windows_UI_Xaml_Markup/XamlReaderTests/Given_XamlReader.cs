@@ -248,7 +248,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 						return 44.0;
 					default:
 						throw new NotSupportedException($"{resourceName} is unknown");
-				};
+				}
 			};
 
 			var s = GetContent(nameof(When_StaticResource));
