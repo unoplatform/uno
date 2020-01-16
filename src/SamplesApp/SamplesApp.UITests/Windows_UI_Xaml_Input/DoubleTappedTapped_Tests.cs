@@ -12,14 +12,13 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 {
-	[Ignore("DoubleTapCoordinates is not implemented yet")] 
+	[Ignore("DoubleTapCoordinates is not implemented yet https://github.com/unoplatform/Uno.UITest/issues/29")] 
 	public class DoubleTapped_Tests : SampleControlUITestBase
 	{
 		private const string _xamlTestPage = "UITests.Shared.Windows_UI_Input.GestureRecognizerTests.DoubleTappedTests";
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)] // We cannot test right button click on WASM yet
 		public void When_Basic()
 		{
 			Run(_xamlTestPage);
@@ -38,7 +37,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)] // We cannot test right button click on WASM yet
+		[ActivePlatforms(Platform.Browser, Platform.iOS)] // Disabled on Android: The test engine is not able to find "Transformed_Target"
 		public void When_Transformed()
 		{
 			Run(_xamlTestPage);
@@ -58,7 +57,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)] // We cannot test right button click on WASM yet
 		public void When_InScroll()
 		{
 			Run(_xamlTestPage);
@@ -80,7 +78,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)] // We cannot test right button click on WASM yet
 		public void When_InListViewWithItemClick()
 		{
 			Run(_xamlTestPage);
@@ -92,7 +89,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			_app.DragCoordinates(target.CenterX, target.Bottom - 3, target.CenterX, target.Y + 3);
 
 			// Tap and hold an item
-			_app.DoubleTapCoordinates(target.CenterX, target.CenterY);
+			_app.DoubleTapCoordinates(target.CenterX, target.CenterY - 5);
 
 			var result = _app.Marked("LastDoubleTapped").GetDependencyPropertyValue<string>("Text");
 			result.Should().StartWith("Item_3");
@@ -100,7 +97,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android, Platform.iOS)] // We cannot test right button click on WASM yet
 		public void When_InListViewWithoutItemClick()
 		{
 			Run(_xamlTestPage);
@@ -112,7 +108,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			_app.DragCoordinates(target.CenterX, target.Bottom - 3, target.CenterX, target.Y + 3);
 
 			// Tap and hold an item
-			_app.DoubleTapCoordinates(target.CenterX, target.CenterY);
+			_app.DoubleTapCoordinates(target.CenterX, target.CenterY - 5);
 
 			var result = _app.Marked("LastDoubleTapped").GetDependencyPropertyValue<string>("Text");
 			result.Should().StartWith("Item_3");
