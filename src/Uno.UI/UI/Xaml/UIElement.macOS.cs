@@ -130,21 +130,6 @@ namespace Windows.UI.Xaml
 			);
 		}
 
-		public GeneralTransform TransformToVisual(UIElement visual)
-		{
-			// If visual is null, we transform the element to the window
-			if (visual == null)
-			{
-				visual = Xaml.Window.Current.Content;
-			}
-
-			var unit = new CGRect(0, 0, 1, 1);
-			var transformed = visual.ConvertRectFromView(unit, this);
-
-			// TODO: UWP returns a MatrixTransform here. For now TransformToVisual doesn't support rotations, scalings, etc.
-			return new TranslateTransform { X = transformed.X, Y = transformed.Y };
-		}
-
 		/// <summary>
 		/// Gets the origin point of the <paramref name="view"/> in the clippingParent's 
 		/// coordinate system.

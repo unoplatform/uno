@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -13,20 +14,16 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
-namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
+namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 {
-	/// <summary>
-	/// An empty page that can be used on its own or navigated to within a Frame.
-	/// </summary>
-	public sealed partial class Given_StaticResource_Control : Page
+	[SampleControlInfo(description: "ListView containing a ProportionalPanel, which must be measured with correct width to work properly")]
+	public sealed partial class ListView_ProportionalPanel : UserControl
 	{
-		public Given_StaticResource_Control()
+		public ListView_ProportionalPanel()
 		{
 			this.InitializeComponent();
 		}
-
-		public object MyProperty { get; set; }
 	}
 }

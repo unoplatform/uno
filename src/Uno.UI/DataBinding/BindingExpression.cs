@@ -56,6 +56,8 @@ namespace Windows.UI.Xaml.Data
 			set => _explicitSourceStore = WeakReferencePool.RentWeakReference(this, value);
 		}
 
+		private BindingPath[] _updateSources = null;
+
 		public string TargetName => TargetPropertyDetails.Property.Name;
 
 		public object DataContext
@@ -110,6 +112,16 @@ namespace Windows.UI.Xaml.Data
 			{
 				_isCompiledSource = true;
 				ExplicitSource = ParentBinding.CompiledSource;
+			}
+
+			if (ParentBinding.XBindPropertyPaths != null)
+			{
+				_updateSources = ParentBinding
+					.XBindPropertyPaths
+					.Select(p => new BindingPath(path: p, fallbackValue: null, precedence: null, allowPrivateMembers: true)
+					{
+					})
+					.ToArray();
 			}
 
 			if (ParentBinding.ElementName != null)
@@ -414,15 +426,51 @@ namespace Windows.UI.Xaml.Data
 				// registration may receive the new datacontext value.
 				_subscription.Disposable = null;
 
-				_bindingPath.ValueChangedListener = this;
+				if (_updateSources != null)
+				{
+					foreach (var bindingPath in _updateSources)
+					{
+						bindingPath.ValueChangedListener = this;
 
-				_bindingPath.SetWeakDataContext(weakDataContext);
+						if (ParentBinding.CompiledSource != null)
+						{
+							bindingPath.DataContext = ParentBinding.CompiledSource;
+						}
+						else
+						{
+							bindingPath.SetWeakDataContext(weakDataContext);
+						}
+					}
 
-				_subscription.Disposable = Actions.ToDisposable(() => _bindingPath.ValueChangedListener = null);
+					_subscription.Disposable = Actions.ToDisposable(() =>
+					{
+						foreach (var bindingPath in _updateSources)
+						{
+							bindingPath.ValueChangedListener = null;
+						}
+					});
+
+				}
+				else
+				{
+					_bindingPath.ValueChangedListener = this;
+					_bindingPath.SetWeakDataContext(weakDataContext);
+					_subscription.Disposable = Actions.ToDisposable(() => _bindingPath.ValueChangedListener = null);
+				}
 			}
 			else
 			{
-				_bindingPath.DataContext = null;
+				if (_updateSources != null)
+				{
+					foreach (var source in _updateSources)
+					{
+						source.DataContext = null;
+					}
+				}
+				else
+				{
+					_bindingPath.DataContext = null;
+				}
 
 				if (ParentBinding.FallbackValue != null)
 				{
@@ -439,7 +487,31 @@ namespace Windows.UI.Xaml.Data
 
 		void IValueChangedListener.OnValueChanged(object o)
 		{
-			SetTargetValueSafe(o);
+			if (ParentBinding.XBindSelector != null)
+			{
+				try
+				{
+					var canSetTarget = _updateSources?.None(s => s.ValueType == null) ?? true;
+
+					if (canSetTarget)
+					{
+						SetTargetValueSafe(ParentBinding.XBindSelector(DataContext));
+					}
+				}
+				catch (Exception e)
+				{
+					ApplyFallbackValue();
+
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+					{
+						this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
+					}
+				}
+			}
+			else
+			{
+				SetTargetValueSafe(o);
+			}
 		}
 
 		private void SetTargetValueSafe(object v)
@@ -488,7 +560,10 @@ namespace Windows.UI.Xaml.Data
 			}
 			catch (Exception e)
 			{
-				this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				{
+					this.Log().Error("Failed to apply binding to property [{0}] on [{1}] ({2})".InvariantCultureFormat(TargetPropertyDetails, _targetOwnerType, e.Message), e);
+				}
 
 				ApplyFallbackValue();
 			}
