@@ -18,7 +18,7 @@ namespace Uno.UI.RuntimeTests.Tests
         [TestInitialize]
         public void Init()
         {
-            _filename = DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt";
+            _filename = "deletefile-" + DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt";
         }
 
         [TestCleanup]
