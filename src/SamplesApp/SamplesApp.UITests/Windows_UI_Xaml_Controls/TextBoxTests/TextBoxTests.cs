@@ -221,5 +221,55 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			text2.Should().Be(text1, because: "Text content should not change at max length.");
 			text3.Should().Be("TextChanged: 1");
 		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_No_Text_Entered()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxControl.TextBox_Binding_Null");
+
+			const string MappedText = "MappedText";
+			const string TextBox = "TargetTextBox";
+			const string DummyButton = "DummyButton";
+
+			string GetMappedText() => _app.GetText(MappedText);
+
+			void DefocusTextBox()
+			{
+				_app.Tap(DummyButton);
+
+				_app.WaitForFocus(DummyButton);
+			}
+
+			Assert.AreEqual("initial", GetMappedText());
+
+			_app.Tap(TextBox);
+
+			_app.WaitForFocus(TextBox);
+
+			DefocusTextBox();
+
+			Assert.AreEqual("initial", GetMappedText()); //Binding not pushed on losing focus
+
+			_app.Tap(TextBox);
+
+			_app.EnterText("fleep");
+
+			DefocusTextBox();
+
+			Assert.AreEqual("fleep", GetMappedText());
+
+			_app.Tap("ResetButton");
+
+			_app.WaitForText(MappedText, "reset");
+
+			_app.Tap(TextBox);
+
+			_app.WaitForFocus(TextBox);
+
+			DefocusTextBox();
+
+			Assert.AreEqual("reset", GetMappedText());
+		}
 	}
 }
