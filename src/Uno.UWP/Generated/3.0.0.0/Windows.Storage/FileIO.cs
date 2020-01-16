@@ -28,7 +28,7 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncAction FileIO.WriteTextAsync(IStorageFile file, string contents) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncAction WriteTextAsync( global::Windows.Storage.IStorageFile file,  string contents,  global::Windows.Storage.Streams.UnicodeEncoding encoding)
 		{
@@ -42,7 +42,7 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncAction FileIO.AppendTextAsync(IStorageFile file, string contents) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncAction AppendTextAsync( global::Windows.Storage.IStorageFile file,  string contents,  global::Windows.Storage.Streams.UnicodeEncoding encoding)
 		{
