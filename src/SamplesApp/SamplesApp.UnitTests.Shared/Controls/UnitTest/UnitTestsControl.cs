@@ -193,7 +193,7 @@ namespace Uno.UI.Samples.Tests
 
 						async Task InvokeTestMethod(object[] parameters)
 						{
-							var fullTestName = $"{testName}({parameters.Select(p => p.ToString()).JoinBy(", ")})";
+                            var fullTestName = $"{testName}({parameters.Select(p => p?.ToString() ?? "<null>").JoinBy(", ")})";
 
 							counters.run++;
 							ReportMessage($"Running test {fullTestName}");
