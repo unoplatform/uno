@@ -197,10 +197,8 @@ namespace Windows.UI.Input
 
 		#region Actual Tap gestures recognition (static)
 		// The beginning of a Tap gesture is: 1 down -> * moves close to the down with same buttons pressed
-		private static bool IsBeginningTapGesture(CheckButton isExpectedButton, Gesture points, out bool isForceTouch)
+		private static bool IsBeginningOfTapGesture(CheckButton isExpectedButton, Gesture points)
 		{
-			isForceTouch = false;
-
 			if (!isExpectedButton(points.Down)) // We validate only the start as for other points we validate the full pointer identifier
 			{
 				return false;
@@ -208,39 +206,24 @@ namespace Windows.UI.Input
 
 			// Validate tap gesture
 			// Note: There is no limit for the duration of the tap!
-			for (var i = 0; i < points.Count; i++)
+			if (points.HasMovedOutOfTapRange || points.HasChangedPointerIdentifier)
 			{
-				var point = points[i];
-				var pointIdentifier = GetPointerIdentifier(point);
-
-				if (
-					// The pointer changed (left vs right click)
-					pointIdentifier != points.PointerIdentifier
-
-					// Pointer moved to far
-					|| IsOutOfTapRange(point.Position, points.Down.Position)
-				)
-				{
-					return false;
-				}
-
-				isForceTouch |= point.Properties.Pressure >= HoldMinPressure;
+				return false;
 			}
 
 			return true;
 		}
 
 		// A Tap gesture is: 1 down -> * moves close to the down with same buttons pressed -> 1 up
-		private static bool IsTapGesture(CheckButton isExpectedButton, Gesture points, out bool isForceTouch)
+		private static bool IsTapGesture(CheckButton isExpectedButton, Gesture points)
 		{
 			if (points.Up == null) // no tap if no up!
 			{
-				isForceTouch = false;
 				return false;
 			}
 
 			// Validate that all the intermediates points are valid
-			if (!IsBeginningTapGesture(isExpectedButton, points, out isForceTouch))
+			if (!IsBeginningOfTapGesture(isExpectedButton, points))
 			{
 				return false;
 			}
@@ -272,10 +255,10 @@ namespace Windows.UI.Input
 
 		private static bool IsRightTapGesture(Gesture points, out bool isLongPress)
 		{
-			switch (points[0].PointerDevice.PointerDeviceType)
+			switch (points.PointerType)
 			{
 				case PointerDeviceType.Touch:
-					var isLeftTap = IsTapGesture(LeftButton, points, out var isForceTouch);
+					var isLeftTap = IsTapGesture(LeftButton, points);
 					if (isLeftTap && IsLongPress(points))
 					{
 						isLongPress = true;
@@ -284,7 +267,7 @@ namespace Windows.UI.Input
 #if __IOS__
 					if (Uno.WinRTFeatureConfiguration.GestureRecognizer.InterpretForceTouchAsRightTap
 						&& isLeftTap
-						&& isForceTouch)
+						&& points.HasExceedMinHoldPressure)
 					{
 						isLongPress = true; // We handle the pressure exactly like a long press
 						return true;
@@ -294,15 +277,14 @@ namespace Windows.UI.Input
 					return false;
 
 				case PointerDeviceType.Pen:
-					if (IsTapGesture(BarrelButton, points, out _))
+					if (IsTapGesture(BarrelButton, points))
 					{
 						isLongPress = false;
 						return true;
 					}
 
 					// Some pens does not have a barrel button, so we also allow long press (and anyway it's the UWP behavior)
-					if (IsTapGesture(LeftButton, points, out _)
-						&& IsLongPress(points))
+					if (IsTapGesture(LeftButton, points) && IsLongPress(points))
 					{
 						isLongPress = true;
 						return true;
@@ -312,7 +294,7 @@ namespace Windows.UI.Input
 					return false;
 
 				case PointerDeviceType.Mouse:
-					if (IsTapGesture(RightButton, points, out _))
+					if (IsTapGesture(RightButton, points))
 					{
 						isLongPress = false;
 						return true;
@@ -321,7 +303,7 @@ namespace Windows.UI.Input
 					// On Android, usually the right button is mapped to back navigation. So, unlike UWP,
 					// we also allow a long press with the left button to be more user friendly.
 					if (Uno.WinRTFeatureConfiguration.GestureRecognizer.InterpretMouseLeftLongPressAsRightTap
-						&& IsTapGesture(LeftButton, points, out _)
+						&& IsTapGesture(LeftButton, points)
 						&& IsLongPress(points))
 					{
 						isLongPress = true;

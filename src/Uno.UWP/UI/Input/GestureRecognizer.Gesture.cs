@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Reflection;
 using Windows.Devices.Input;
 using Windows.System;
 using Microsoft.Extensions.Logging;
@@ -14,7 +15,7 @@ namespace Windows.UI.Input
 		/// <summary>
 		/// This is the state machine which handles the gesture ([Double|Right]Tapped and Holding gestures)
 		/// </summary>
-		private class Gesture : List<PointerPoint>
+		private class Gestur
 		{
 			private readonly GestureRecognizer _recognizer;
 			private DispatcherQueueTimer _holdingTimer;
@@ -31,11 +32,17 @@ namespace Windows.UI.Input
 
 			public bool IsCompleted { get; private set; }
 
+			public bool HasMovedOutOfTapRange { get; private set; }
+
+			public bool HasChangedPointerIdentifier { get; private set; }
+
+			public bool HasExceedMinHoldPressure { get; private set; }
+
 			public Gesture(GestureRecognizer recognizer, PointerPoint down)
-				: base(16)
 			{
 				_recognizer = recognizer;
-				_settings = recognizer._gestureSettings | GestureSettings.Tap; // On WinUI, Tap is always raised no matter the flag set on the recognizer
+				_settings = recognizer._gestureSettings & GestureSettingsHelper.SupportedGestures; // Keep only flags of supported gestures, so we can more quickly disable us if possible
+				_settings |= GestureSettings.Tap; // On WinUI, Tap is always raised no matter the flag set on the recognizer
 
 				Down = down;
 				PointerIdentifier = GetPointerIdentifier(down);
@@ -61,10 +68,12 @@ namespace Windows.UI.Input
 				}
 
 				// Update internal state
-				Add(point);
+				HasMovedOutOfTapRange |= IsOutOfTapRange(Down.Position, point.Position);
+				HasChangedPointerIdentifier |= PointerIdentifier != GetPointerIdentifier(point);
+				HasExceedMinHoldPressure |= point.Properties.Pressure >= HoldMinPressure;
 
 				// Process the pointer
-				TryStartHolding(point);
+				TryUpdateHolding(point);
 			}
 
 			public void ProcessUp(PointerPoint up)
@@ -137,11 +146,6 @@ namespace Windows.UI.Input
 
 			private void TryRecognize()
 			{
-				if (Count == 0)
-				{
-					return;
-				}
-
 				var recognized = TryRecognizeRightTap() // We check right tap first as for touch a right tap is a press and hold of the finger :)
 					|| TryRecognizeTap();
 
@@ -153,7 +157,7 @@ namespace Windows.UI.Input
 
 			private bool TryRecognizeTap()
 			{
-				if (_settings.HasFlag(GestureSettings.Tap) && IsTapGesture(LeftButton, this, out _))
+				if (_settings.HasFlag(GestureSettings.Tap) && IsTapGesture(LeftButton, this))
 				{
 					// Note: Up cannot be 'null' here!
 
@@ -197,14 +201,26 @@ namespace Windows.UI.Input
 				}
 			}
 
-			private void TryStartHolding(PointerPoint current = null, bool timeElapsed = false)
+			private void TryUpdateHolding(PointerPoint current = null, bool timeElapsed = false)
 			{
 				Debug.Assert(timeElapsed || current != null);
 
-				if (SupportsHolding()
+				if (HasMovedOutOfTapRange)
+				{
+					StopHoldingTimer();
+
+					var currentState = _holdingState;
+					_holdingState = HoldingState.Canceled;
+
+					if (currentState == HoldingState.Started)
+					{
+						_recognizer.Holding?.Invoke(_recognizer, new HoldingEventArgs(Down.PointerId, PointerType, Down.Position, HoldingState.Canceled));
+					}
+				}
+				else if (SupportsHolding()
 					&& !_holdingState.HasValue
 					&& (timeElapsed || IsLongPress(this, current))
-					&& IsBeginningTapGesture(LeftButton, this, out _))
+					&& IsBeginningOfTapGesture(LeftButton, this))
 				{
 					StopHoldingTimer();
 
@@ -239,7 +255,7 @@ namespace Windows.UI.Input
 			private bool NeedsHoldingTimer()
 			{
 				// When possible we don't start a timer for the Holding event, instead we rely on the fact that
-				// we get a lot of small moves due to the lack of precision of the capture device.
+				// we get a lot of small moves due to the lack of precision of the capture device (pen and touch).
 
 				switch (PointerType)
 				{
@@ -255,7 +271,7 @@ namespace Windows.UI.Input
 					_holdingTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
 					_holdingTimer.Interval = TimeSpan.FromTicks(HoldMinDelayTicks);
 					_holdingTimer.State = this;
-					_holdingTimer.Tick += OnHoldTimerTick;
+					_holdingTimer.Tick += OnHoldingTimerTick;
 					_holdingTimer.Start();
 				}
 			}
@@ -266,10 +282,10 @@ namespace Windows.UI.Input
 				_holdingTimer = null;
 			}
 
-			private static void OnHoldTimerTick(DispatcherQueueTimer timer, object _)
+			private static void OnHoldingTimerTick(DispatcherQueueTimer timer, object _)
 			{
 				timer.Stop();
-				((Gesture)timer.State).TryStartHolding(timeElapsed: true);
+				((Gesture)timer.State).TryUpdateHolding(timeElapsed: true);
 			}
 			#endregion
 		}
