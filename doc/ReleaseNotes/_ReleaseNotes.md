@@ -34,6 +34,7 @@
 - [#2033] Add Missing `LostFocus` Value to `UpdateSourceTrigger` Enum
 - [Android] Fix Image margin calculation on fixed size
 - [Android] Native views weren't clipped correctly
+- [Android] Border thickness was incorrect when CornerRadius was set
 - [iOS] #2361 ListView would measure children with infinite width
 - [iOS] Fix crash when using ComboBox template with native Picker and changing ItemsSource to null after SelectedItem was set
 - [#2398] Fully qualify the `MethodName` value for `CreateFromStringAttribute' if it's not fully qualified it the code
