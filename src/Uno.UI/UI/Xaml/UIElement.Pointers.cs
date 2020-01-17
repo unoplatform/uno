@@ -228,6 +228,12 @@ namespace Windows.UI.Xaml
 			var that = (UIElement)sender.Owner;
 			that.SafeRaiseEvent(RightTappedEvent, new RightTappedRoutedEventArgs(that, args));
 		};
+
+		private static readonly TypedEventHandler<GestureRecognizer, HoldingEventArgs> OnRecognizerHolding = (sender, args) =>
+		{
+			var that = (UIElement)sender.Owner;
+			that.SafeRaiseEvent(HoldingEvent, new HoldingRoutedEventArgs(that, args));
+		};
 		#endregion
 
 		private bool _isGestureCompleted;
@@ -243,6 +249,7 @@ namespace Windows.UI.Xaml
 			recognizer.ManipulationCompleted += OnRecognizerManipulationCompleted;
 			recognizer.Tapped += OnRecognizerTapped;
 			recognizer.RightTapped += OnRecognizerRightTapped;
+			recognizer.Holding += OnRecognizerHolding;
 
 			// Allow partial parts to subscribe to pointer events (WASM)
 			OnGestureRecognizerInitialized(recognizer);
@@ -330,6 +337,10 @@ namespace Windows.UI.Xaml
 			else if (routedEvent == RightTappedEvent)
 			{
 				_gestures.Value.GestureSettings |= GestureSettings.RightTap;
+			}
+			else if (routedEvent == HoldingEvent)
+			{
+				_gestures.Value.GestureSettings |= GestureSettings.Hold; // Note: We do not set GestureSettings.HoldWithMouse as WinUI never raises Holding for mouse pointers
 			}
 		}
 		#endregion
