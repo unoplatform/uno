@@ -378,11 +378,13 @@ namespace Windows.UI.Xaml
 			{
 				if (_gestures.IsValueCreated)
 				{
-					_gestures.Value.AbortHolding();
+					_gestures.Value.PreventHolding(((HoldingRoutedEventArgs) args).PointerId);
 				}
 			}
 			else
 			{
+				// Note: Here we should prevent only the same gesture ... but actually currently supported gestures
+				// are mutually exclusive, so if a child element detected a gesture, it's safe to prevent all of them.
 				CompleteGesture(); // Make sure to set the flag _isGestureCompleted, so won't try to recognize double tap
 			}
 		}
