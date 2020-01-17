@@ -30,5 +30,27 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 
 			ImageAssert.AreEqual(before, after);
 		}
+
+		[Test]
+		[AutoRetry]
+		public void Check_CornerRadius_Border()
+		{
+			// Verify that border is drawn with the same thickness with/without CornerRadius
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.BorderTests.Border_CornerRadius_Toggle");
+
+			_app.WaitForElement("SubjectBorder");
+
+			var verificationRect = _app.GetRect("SnapshotBorder");
+
+			var scrBefore = TakeScreenshot("No CornerRadius");
+
+			_app.Tap("ToggleCornerRadiusButton");
+
+			_app.WaitForText("StatusTextBlock", "5");
+
+			var scrAfter = TakeScreenshot("CornerRadius=5");
+
+			ImageAssert.AreAlmostEqual(scrBefore, scrAfter, verificationRect, permittedPixelError: 5);
+		}
 	}
 }
