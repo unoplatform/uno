@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DispatcherQueueTimer 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  bool IsRepeating
 		{
@@ -21,7 +21,7 @@ namespace Windows.System
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan Interval
 		{
@@ -35,7 +35,7 @@ namespace Windows.System
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  bool IsRunning
 		{
@@ -50,14 +50,14 @@ namespace Windows.System
 		// Forced skipping of method Windows.System.DispatcherQueueTimer.IsRunning.get
 		// Forced skipping of method Windows.System.DispatcherQueueTimer.IsRepeating.get
 		// Forced skipping of method Windows.System.DispatcherQueueTimer.IsRepeating.set
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  void Start()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.DispatcherQueueTimer", "void DispatcherQueueTimer.Start()");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  void Stop()
 		{
@@ -66,7 +66,7 @@ namespace Windows.System
 		#endif
 		// Forced skipping of method Windows.System.DispatcherQueueTimer.Tick.add
 		// Forced skipping of method Windows.System.DispatcherQueueTimer.Tick.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.System.DispatcherQueueTimer, object> Tick
 		{

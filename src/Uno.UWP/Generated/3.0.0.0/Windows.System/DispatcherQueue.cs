@@ -7,7 +7,7 @@ namespace Windows.System
 	#endif
 	public  partial class DispatcherQueue 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  global::Windows.System.DispatcherQueueTimer CreateTimer()
 		{
@@ -32,7 +32,7 @@ namespace Windows.System
 		// Forced skipping of method Windows.System.DispatcherQueue.ShutdownStarting.remove
 		// Forced skipping of method Windows.System.DispatcherQueue.ShutdownCompleted.add
 		// Forced skipping of method Windows.System.DispatcherQueue.ShutdownCompleted.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.System.DispatcherQueue GetForCurrentThread()
 		{
