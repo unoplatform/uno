@@ -549,8 +549,7 @@ namespace Windows.UI.Xaml.Controls
 							hasChildHeight,
 							hasChildMaxHeight,
 							hasChildMinHeight,
-							desiredSize.Height,
-							frame.Height);
+							desiredSize.Height);
 
 						switch (childVerticalAlignment)
 						{
@@ -589,8 +588,7 @@ namespace Windows.UI.Xaml.Controls
 							hasChildWidth,
 							hasChildMaxWidth,
 							hasChildMinWidth,
-							desiredSize.Width,
-							frame.Width);
+							desiredSize.Width);
 
 						switch (childHorizontalAlignment)
 						{
@@ -653,7 +651,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private double GetActualSize(
-			double size,
+			double frameSize,
 			bool isStretch,
 			double childMaxSize,
 			double childMinSize,
@@ -662,50 +660,25 @@ namespace Windows.UI.Xaml.Controls
 			bool hasChildSize,
 			bool hasChildMaxSize,
 			bool hasChildMinSize,
-			double desiredSize,
-			double frameSize)
+			double desiredSize)
 		{
-			//Default value
-			//childAlignment != Alignment.Stretch
-			double calculatedSize;
-
-			if (hasChildMaxSize)
+			var min = hasChildMinSize ? childMinSize + childMarginSize : NegativeInfinity;
+			var max = hasChildMaxSize ? childMaxSize + childMarginSize : PositiveInfinity;
+			if (!hasChildSize)
 			{
-				if (hasChildMinSize) // both min & max defined
-				{
-					calculatedSize = isStretch ? size  : desiredSize;
-
-					calculatedSize = Max(childMinSize + childMarginSize, calculatedSize);
-
-					calculatedSize = Min(childMaxSize + childMarginSize, calculatedSize);
-				}
-				else // only max defined
-				{
-					calculatedSize = Min(childMaxSize + childMarginSize,
-						isStretch
-							? size
-							: desiredSize
-					);
-				}
-			}
-			else if (hasChildMinSize) // only min defined
-			{
-				calculatedSize = Max(childMinSize + childMarginSize,
-					isStretch
-						? size
-						: desiredSize
-				);
-			}
-			else if (hasChildSize)
-			{
-				calculatedSize = Min(childSize + childMarginSize, size);
+				childSize = isStretch
+					? frameSize
+					: desiredSize + childMarginSize;
 			}
 			else
 			{
-				calculatedSize = Min(size, desiredSize);
+				childSize += childMarginSize;
 			}
 
-			return Min(calculatedSize, frameSize);
+			return childSize
+				.Min(frameSize) // at most
+				.Min(max) // at most
+				.Max(min); // at least
 		}
 
 		/// <summary>

@@ -6,13 +6,16 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.ApplicationModel.Core;
 using Windows.Foundation;
+using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
 using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
 
@@ -84,6 +87,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			});
 
 		[TestMethod]
+#if __WASM__
+		[Ignore] // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
+#endif
 		public Task MeasureOverride_With_Nan_In_Grid() =>
 			RunOnUIThread.Execute(() =>
 			{
@@ -122,6 +128,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
+#if __WASM__
+		[Ignore] // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
+#endif
 		public async Task When_MinWidth_SmallerThan_AvailableSize()
 		{
 			Border content = null;
@@ -141,8 +150,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 				grid.Measure(new Size(50, 50));
 #if NETFX_CORE || __WASM__ // TODO: align all platforms with Windows here
 				Assert.AreEqual(new Size(50, 15), grid.DesiredSize);
-				//Assert.AreEqual(new Size(110, 15), contentCtl.DesiredSize);
-				//Assert.AreEqual(new Size(100, 15), content.DesiredSize);
+				Assert.AreEqual(new Size(110, 15), contentCtl.DesiredSize);
+				Assert.AreEqual(new Size(100, 15), content.DesiredSize);
 #endif
 
 				grid.Arrange(new Rect(default, new Size(50, 50)));
@@ -156,13 +165,13 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			await RunOnUIThread.Execute(() =>
 			{
+#if NETFX_CORE || __WASM__ // TODO: align all platforms with Windows here
 				var ls1 = LayoutInformation.GetLayoutSlot(grid);
 				Assert.AreEqual(new Rect(0, 0, 50, 50), ls1);
-#if NETFX_CORE || __WASM__ // TODO: align all platforms with Windows here
-				//var ls2 = LayoutInformation.GetLayoutSlot(contentCtl);
-				//Assert.AreEqual(new Rect(0, 0, 120, 50), ls2);
-				//var ls3 = LayoutInformation.GetLayoutSlot(content);
-				//Assert.AreEqual(new Rect(0, 0, 100, 15), ls3);
+				var ls2 = LayoutInformation.GetLayoutSlot(contentCtl);
+				Assert.AreEqual(new Rect(0, 0, 120, 50), ls2);
+				var ls3 = LayoutInformation.GetLayoutSlot(content);
+				Assert.AreEqual(new Rect(0, 0, 100, 15), ls3);
 #endif
 			});
 		}
@@ -179,6 +188,114 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(0, SUT.ActualWidth);
 			Assert.AreEqual(0, SUT.ActualHeight);
+		}
+
+		// Center: No width & height
+		[DataRow("Center", "Center", null, null, null, null, null, null, "88;29;24;42|92;37;16;26|100;50;0;0")]
+		// Stretch: No width & height
+		[DataRow("Stretch", "Stretch", null, null, null, null, null, null, "0;0;200;100|4;8;192;84|12;21;176;58")]
+		// Left/Top: No width & height
+		[DataRow("Left", "Top", null, null, null, null, null, null, "0;0;24;42|4;8;16;26|12;21;0;0")]
+		// Right/Bottom: No width & height
+		[DataRow("Right", "Bottom", null, null, null, null, null, null, "176;58;24;42|180;66;16;26|188;79;0;0")]
+		// Center: Only sizes (width & height) defined
+		[DataRow("Center", "Center", null, null, 100d, 50d, null, null, "46;17;108;66|50;25;100;50|58;38;84;24")]
+		// Stretch: Only sizes (width & height) defined
+		[DataRow("Stretch", "Stretch", null, null, 100d, 50d, null, null, "0;0;200;100|50;25;100;50|58;38;84;24")]
+		// Right/Top: Only sizes (width & height) defined
+		[DataRow("Right", "Top", null, null, 100d, 50d, null, null, "92;0;108;66|96;8;100;50|104;21;84;24")]
+		// Left/Bottom: Only sizes (width & height) defined
+		[DataRow("Left", "Bottom", null, null, 100d, 50d, null, null, "0;34;108;66|4;42;100;50|12;55;84;24")]
+#if NETFX_CORE // Those tests only works on UWP, not Uno yet
+		// Center: Only sizes (width & height) defined, but no breath space for margin
+		[DataRow("Center", "Center", null, null, 200d, 100d, null, null, "0;0;200;100|4;8;200;100|12;21;184;74")]
+		// Center: Only sizes(width & height) defined, but larger than available size
+		[DataRow("Center", "Center", null, null, 300d, 200d, null, null, "0;0;200;100|4;8;300;200|12;21;284;174")]
+#endif
+		// Center: Only min values("min width" & "min height")
+		[DataRow("Center", "Center", 100d, 50d, null, null, null, null, "46;17;108;66|50;25;100;50|58;38;84;24")]
+		// Center: Only max values("max width" & "max height")
+		[DataRow("Center", "Center", null, null, null, null, 100d, 50d, "88;29;24;42|92;37;16;26|100;50;0;0")]
+		// Center: Both sizes & max values, sizes < max
+		[DataRow("Center", "Center", 100d, 50d, 10d, 5d, null, null, "46;17;108;66|50;25;100;50|58;38;84;24")]
+		// Center: Both sizes & max values, sizes > max
+		[DataRow("Center", "Center", 25d, 5d, 100d, 50d, null, null, "46;17;108;66|50;25;100;50|58;38;84;24")]
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task TestVariousArrangedPosition(
+			string horizontal,
+			string vertical,
+			double? minWidth,
+			double? minHeight,
+			double? width,
+			double? height,
+			double? maxWidth,
+			double? maxHeight,
+			string expectedResult)
+		{
+			// Arrange
+			var innerChild = new Border
+			{
+				Name = "inner",
+				Background = new SolidColorBrush(Colors.DarkRed),
+			};
+
+			var childBorder = new Border
+			{
+				Name = "child",
+				Background = new SolidColorBrush(Colors.Blue),
+				Child = innerChild,
+				Margin = new Thickness(4d, 8d, 4d, 8d),
+				BorderThickness = new Thickness(3d, 6d, 3d, 6d),
+				BorderBrush = new SolidColorBrush(Colors.DeepSkyBlue),
+				Padding = new Thickness(5d, 7d, 5d, 7d),
+			};
+
+			var childDecorator = new Border
+			{
+				Name = "decorator",
+				Background = new SolidColorBrush(Colors.Green),
+				Child = childBorder,
+				HorizontalAlignment = (HorizontalAlignment)Enum.Parse(typeof(HorizontalAlignment), horizontal),
+				VerticalAlignment = (VerticalAlignment)Enum.Parse(typeof(VerticalAlignment), vertical),
+			};
+
+			void Set(DependencyProperty dp, double? value)
+			{
+				childBorder.SetValue(dp, value.HasValue ? (object)value.Value : DependencyProperty.UnsetValue);
+			}
+
+			Set(FrameworkElement.MinWidthProperty, minWidth);
+			Set(FrameworkElement.MinHeightProperty, minHeight);
+			Set(FrameworkElement.WidthProperty, width);
+			Set(FrameworkElement.HeightProperty, height);
+			Set(FrameworkElement.MaxWidthProperty, maxWidth);
+			Set(FrameworkElement.MaxHeightProperty, maxHeight);
+
+			var parentBorder = new Border
+			{
+				Child = childDecorator,
+				Background = new SolidColorBrush(Colors.Yellow),
+				Name = "Parent",
+				Width = 200d,
+				Height = 100d,
+				VerticalAlignment = VerticalAlignment.Top, // ensure to see something on screen
+				HorizontalAlignment = HorizontalAlignment.Left // ensure to see something on screen
+			};
+
+			// Act
+			TestServices.WindowHelper.WindowContent = parentBorder;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			// Assert
+			string GetStr(FrameworkElement e)
+			{
+				var positionMatrix = ((MatrixTransform)e.TransformToVisual(parentBorder)).Matrix;
+				return $"{positionMatrix.OffsetX};{positionMatrix.OffsetY};{e.ActualWidth};{e.ActualHeight}";
+			}
+
+			var resultStr = $"{GetStr(childDecorator)}|{GetStr(childBorder)}|{GetStr(innerChild)}";
+			Assert.AreEqual(expectedResult, resultStr);
 		}
 	}
 

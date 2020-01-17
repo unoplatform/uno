@@ -222,6 +222,12 @@ namespace Windows.UI.Xaml
 			return property == null ? Thickness.Empty : (Thickness)GetValue(property);
 		}
 
+		internal Thickness GetBorderThickness()
+		{
+			var property = GetBorderThicknessProperty();
+			return property == null ? Thickness.Empty : (Thickness)GetValue(property);
+		}
+
 		internal DependencyProperty GetPaddingProperty()
 		{
 			switch (this)
@@ -239,36 +245,57 @@ namespace Windows.UI.Xaml
 					return Border.PaddingProperty;
 			}
 
-			return GetDefaultPaddingProperty();
+			return GetDependencyPropertyUsingReflection("PaddingProperty");
 		}
 
-		private static readonly Dictionary<Type, DependencyProperty> _paddingPropertyCache =
-			new Dictionary<Type, DependencyProperty>();
-
-		private DependencyProperty GetDefaultPaddingProperty()
+		internal DependencyProperty GetBorderThicknessProperty()
 		{
-			var ownerType = GetType();
+			switch (this)
+			{
+				case Panel _:
+					return Panel.BorderThicknessProperty;
 
-			if (_paddingPropertyCache.TryGetValue(ownerType, out var property))
+				case Control _:
+					return Control.BorderThicknessProperty;
+
+				case ContentPresenter _:
+					return ContentPresenter.BorderThicknessProperty;
+
+				case Border _:
+					return Border.BorderThicknessProperty;
+			}
+
+			return GetDependencyPropertyUsingReflection("BorderThicknessProperty");
+		}
+
+		private static readonly Dictionary<(Type type, string property), DependencyProperty> _dependencyPropertyReflectionCache =
+			new Dictionary<(Type, string), DependencyProperty>();
+
+		private DependencyProperty GetDependencyPropertyUsingReflection(string propertyName)
+		{
+			var type = GetType();
+			var key = (ownerType: type, propertyName);
+
+			if (_dependencyPropertyReflectionCache.TryGetValue(key, out var property))
 			{
 				return property;
 			}
 
 			property =
-				ownerType
+				type
 					.GetTypeInfo()
-					.GetDeclaredProperty("PaddingProperty")
+					.GetDeclaredProperty(propertyName)
 					?.GetValue(null) as DependencyProperty
-				?? ownerType
+				?? type
 					.GetTypeInfo()
-					.GetDeclaredField("PaddingProperty")
+					.GetDeclaredField(propertyName)
 					?.GetValue(null) as DependencyProperty;
 
-			_paddingPropertyCache[ownerType] = property;
+			_dependencyPropertyReflectionCache[key] = property;
 
 			if (property == null)
 			{
-				this.Log().Warn($"The Padding dependency property does not exist on {ownerType}");
+				this.Log().Warn($"The {propertyName} dependency property does not exist on {type}");
 			}
 
 			return property;

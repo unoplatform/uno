@@ -175,7 +175,15 @@ namespace Windows.UI.Xaml
 		/// <param name="clipRect">The Clip rect to set, if any</param>
 		protected internal void ArrangeElementNative(Rect rect, bool clipToBounds, Rect? clipRect)
 		{
-			LayoutSlotWithMarginsAndAlignments = rect;
+			var parent = VisualTreeHelper.GetParent(this) as UIElement;
+			LayoutSlotWithMarginsAndAlignments = parent == null ? rect : rect.DeflateBy(parent.GetBorderThickness());
+#if !DEBUG
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+#endif
+			{
+				UpdateDOMXamlProperty(nameof(LayoutSlotWithMarginsAndAlignments), LayoutSlotWithMarginsAndAlignments);
+			}
+
 			Uno.UI.Xaml.WindowManagerInterop.ArrangeElement(HtmlId, rect, clipToBounds, clipRect);
 
 #if DEBUG

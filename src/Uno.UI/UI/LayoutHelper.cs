@@ -153,20 +153,20 @@ namespace Uno.UI
 		}
 
 		[Pure]
-		internal static Rect GrowBy(this Rect left, Thickness right)
+		internal static Rect InflateBy(this Rect left, Thickness right)
 		{
 			var newWidth = right.Left + left.Width + right.Right;
 			var newHeight = right.Top + left.Height + right.Bottom;
 
-			// If the result is negative, origin stays the same
-			var newX = newWidth >= 0 ? left.X - right.Left : left.X;
-			var newY = newHeight >= 0 ? left.Y - right.Top : left.Y;
+			// The origin is always following the left/top
+			var newX = left.X - right.Left;
+			var newY = left.Y - right.Top;
 
 			return new Rect(newX, newY, Math.Max(newWidth, 0d), Math.Max(newHeight, 0d));
 		}
 
 		[Pure]
-		internal static Rect ShrinkBy(this Rect left, Thickness right) => left.GrowBy(right.GetInverse());
+		internal static Rect DeflateBy(this Rect left, Thickness right) => left.InflateBy(right.GetInverse());
 
 		[Pure]
 		internal static double NumberOrDefault(this double value, double defaultValue)

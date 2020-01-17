@@ -321,6 +321,7 @@ namespace Uno.UI.Samples.Tests
 
 			return from type in types
 				   where type.GetTypeInfo().GetCustomAttribute(typeof(Microsoft.VisualStudio.TestTools.UnitTesting.TestClassAttribute)) != null
+				   orderby type.Name
 				   select BuildType(type);
 		}
 

@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml
 			_logDebug?.Debug($"{DepthIndentation}{this}: InnerArrangeCore({finalRect})");
 			var arrangeSize = finalRect.Size;
 
-			var (minSize, maxSize) = this.GetMinMax();
+			var (_, maxSize) = this.GetMinMax();
 			var marginSize = this.GetMarginSize();
 
 			arrangeSize = arrangeSize
