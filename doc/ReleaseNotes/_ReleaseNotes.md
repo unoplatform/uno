@@ -17,6 +17,7 @@
 - Multiple pointers at same time on screen (a.k.a. Multi-touch) are now supported
 - Add support for WinUI 2.3 [`NumberBox`](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.numberbox?view=winui-2.3)
 - Add support of the `UIElement.RightTapped` event
+- Add support of the `UIElement.Holding` event
 
 ### Breaking changes
 -
