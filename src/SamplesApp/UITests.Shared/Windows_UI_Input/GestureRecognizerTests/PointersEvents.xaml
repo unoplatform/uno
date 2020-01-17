@@ -342,6 +342,18 @@
 					Content="Handle event"
 					Margin="20, 0"
 					Visibility="{Binding ElementName=_gestureDoubleTapped, Path=IsOn}"/>
+				<ToggleSwitch
+					x:Name="_gestureRightTapped" 
+					Header="Right tapped"
+					OnContent="Subscribed to right tap"
+					OffContent="Right tap disabled"
+					Toggled="OnConfigChanged"
+					IsOn="False" />
+				<CheckBox
+					x:Name="_gestureRightTappedHandle" 
+					Content="Handle event"
+					Margin="20, 0"
+					Visibility="{Binding ElementName=_gestureRightTapped, Path=IsOn}"/>
 
 
 				<Slider

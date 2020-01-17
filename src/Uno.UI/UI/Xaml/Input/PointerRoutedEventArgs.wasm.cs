@@ -14,6 +14,7 @@ namespace Windows.UI.Xaml.Input
 		private readonly Point _absolutePosition;
 		private readonly WindowManagerInterop.HtmlPointerButtonsState _buttons;
 		private readonly WindowManagerInterop.HtmlPointerButtonUpdate _buttonUpdate;
+		private readonly double _pressure;
 
 		internal PointerRoutedEventArgs(
 			double timestamp,
@@ -24,6 +25,7 @@ namespace Windows.UI.Xaml.Input
 			WindowManagerInterop.HtmlPointerButtonsState buttons,
 			WindowManagerInterop.HtmlPointerButtonUpdate buttonUpdate,
 			VirtualKeyModifiers keys,
+			double pressure,
 			UIElement source,
 			bool canBubbleNatively)
 			: this()
@@ -32,6 +34,7 @@ namespace Windows.UI.Xaml.Input
 			_absolutePosition = absolutePosition;
 			_buttons = buttons;
 			_buttonUpdate = buttonUpdate;
+			_pressure = pressure;
 
 			FrameId = ToFrameId(timestamp);
 			Pointer = new Pointer(pointerId, pointerType, isInContact, isInRange: true);
@@ -63,21 +66,28 @@ namespace Windows.UI.Xaml.Input
 
 			props.IsLeftButtonPressed = _buttons.HasFlag(WindowManagerInterop.HtmlPointerButtonsState.Left);
 			props.IsMiddleButtonPressed = _buttons.HasFlag(WindowManagerInterop.HtmlPointerButtonsState.Middle);
-			if (_buttons.HasFlag(WindowManagerInterop.HtmlPointerButtonsState.Right))
-			{
-				switch (Pointer.PointerDeviceType)
-				{
-					case PointerDeviceType.Mouse:
-						props.IsMiddleButtonPressed = true;
-						break;
-					case PointerDeviceType.Pen:
-						props.IsBarrelButtonPressed = true;
-						break;
-				}
-			}
+			props.IsRightButtonPressed = _buttons.HasFlag(WindowManagerInterop.HtmlPointerButtonsState.Right);
 			props.IsXButton1Pressed = _buttons.HasFlag(WindowManagerInterop.HtmlPointerButtonsState.X1);
 			props.IsXButton2Pressed = _buttons.HasFlag(WindowManagerInterop.HtmlPointerButtonsState.X2);
 			props.IsEraser = _buttons.HasFlag(WindowManagerInterop.HtmlPointerButtonsState.Eraser);
+
+			switch (Pointer.PointerDeviceType)
+			{
+				// For touch and mouse, we keep the default pressure of .5, as WinUI
+
+				case PointerDeviceType.Pen:
+					// !!! WARNING !!! Here we have a slight different behavior compared to WinUI:
+					// On WinUI we will get IsRightButtonPressed (with IsBarrelButtonPressed) only if the user is pressing
+					// the barrel button when pen goes "in contact" (i.e. touches the screen), otherwise we will get
+					// IsLeftButtonPressed and IsBarrelButtonPressed.
+					// Here we set IsRightButtonPressed as soon as the barrel button was pressed, no matter
+					// if the pen was already in contact or not.
+					// This is acceptable since the UIElement pressed state is **per pointer** (not buttons of pointer)
+					// and GestureRecognizer always checks that pressed buttons didn't changed for a single gesture.
+					props.IsBarrelButtonPressed = props.IsRightButtonPressed;
+					props.Pressure = (float)_pressure;
+					break;
+			}
 
 			props.PointerUpdateKind = ToUpdateKind(_buttonUpdate, props);
 

@@ -244,7 +244,7 @@ namespace Windows.UI.Xaml
 
 				if (evt.IsTouchInView(this))
 				{
-					IsPointerPressed = true;
+					_pressedPointers.Add(0);
 					IsPointerOver = true;
 
 					// evt.AllTouches raises a invalid selector exception
@@ -317,7 +317,7 @@ namespace Windows.UI.Xaml
 					base.MouseUp(evt);
 				}
 
-				IsPointerPressed = false;
+				ClearPressed();
 				IsPointerOver = false;
 			}
 			catch (Exception e)

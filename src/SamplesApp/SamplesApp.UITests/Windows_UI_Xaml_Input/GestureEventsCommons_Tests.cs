@@ -11,14 +11,14 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 {
-	public class Tapped_Tests : SampleControlUITestBase
+	public class GestureEventsCommons_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Android)] // Fixed in another commit coming soon
 		public void When_Tapped_Then_ArgsLocationIsValid()
 		{
-			Run("UITests.Shared.Windows_UI_Input.GestureRecognizerTests.TappedTest");
+			Run("UITests.Shared.Windows_UI_Input.GestureRecognizerTests.GestureEventsCommons");
 
 			var root = _app.WaitForElement("WhenTappedThenArgsLocationIsValid_Root").Single();
 			var target = _app.WaitForElement("WhenTappedThenArgsLocationIsValid_Target").Single();
@@ -39,7 +39,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		[AutoRetry]
 		public void When_ChildHandlesPointers()
 		{
-			Run("UITests.Shared.Windows_UI_Input.GestureRecognizerTests.TappedTest");
+			Run("UITests.Shared.Windows_UI_Input.GestureRecognizerTests.GestureEventsCommons");
 
 			var target = _app.WaitForElement("WhenChildHandlesPointers_Target").Single();
 
@@ -47,14 +47,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			_app.TapCoordinates(target.Rect.X + tapX, target.Rect.Y + tapY);
 
 			var result = _app.Marked("WhenChildHandlesPointers_Result").GetDependencyPropertyValue<string>("Text");
-			result.Should().Be("Tapped");
+			result.Should().Be("Yes");
 		}
 
 		[Test]
 		[AutoRetry]
 		public void When_MultipleTappedRecognizer()
 		{
-			Run("UITests.Shared.Windows_UI_Input.GestureRecognizerTests.TappedTest");
+			Run("UITests.Shared.Windows_UI_Input.GestureRecognizerTests.GestureEventsCommons");
 
 			var target = _app.WaitForElement("WhenMultipleTappedRecognizer_Target").Single();
 
