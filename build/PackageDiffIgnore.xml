@@ -607,6 +607,15 @@
 				<Member
 					fullName="System.Void Windows.UI.Input.RightTappedEventArgs..ctor()"
 					reason="Not part of the WinUI API."/>
+				<Member
+					fullName="System.Boolean Windows.UI.Xaml.Input.HoldingRoutedEventArgs.get_Handled()"
+					reason="Auto property"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Input.HoldingRoutedEventArgs.set_Handled(System.Boolean value)"
+					reason="Auto property"/>
+				<Member
+					fullName="System.Void Windows.UI.Input.HoldingEventArgs..ctor()"
+					reason="Not part of the WinUI API."/>
             </Methods>
 		</IgnoreSet>
 	</IgnoreSets>
