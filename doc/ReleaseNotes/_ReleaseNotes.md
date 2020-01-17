@@ -2,6 +2,9 @@
 
 ### Features
 - Add support of Windows.Storage.FileIO.AppendTextAsync(IStorageFile, String) and WriteTextAsync(IStorageFile, String)
+- Support for `EmailManager.ShowComposeNewEmailAsync`
+- Add support for `StorageFolder.CreateFileAsync(string path)`
+- Add support for ApplicationViewTitleBar.BackgroundColor on WASM
 - Add support for Automation SetDependencyPropertyValue in Uno.UITest
 - Added support for using a `string` value in a `StaticResource` when using `CreateFromStringAttribute'
 - [Android] Adds support for `FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay`
