@@ -12,7 +12,6 @@ using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Microsoft.Extensions.Logging;
-
 #if XAMARIN_IOS
 using UIKit;
 #elif __MACOS__
@@ -20,6 +19,7 @@ using AppKit;
 #endif
 
 #if IS_UNO
+using Uno.UI.Extensions;
 using _VisibleBoundsPadding = Uno.UI.Behaviors.InternalVisibleBoundsPadding;
 #else
 using Uno.UI.Toolkit.Extensions;
@@ -140,13 +140,13 @@ namespace Uno.UI.Toolkit
 			{
 				_owner = new WeakReference(owner);
 
-				_originalPadding = (Thickness)(Owner.GetValue(Owner.GetPaddingProperty()) ?? new Thickness(0));
+				_originalPadding = owner.GetPadding();
 
 				_visibleBoundsChanged = (s2, e2) => UpdatePadding();
 
-				Owner.LayoutUpdated += (s, e) => UpdatePadding();
-				Owner.Loaded += (s, e) => ApplicationView.GetForCurrentView().VisibleBoundsChanged += _visibleBoundsChanged;
-				Owner.Unloaded += (s, e) => ApplicationView.GetForCurrentView().VisibleBoundsChanged -= _visibleBoundsChanged;
+				owner.LayoutUpdated += (s, e) => UpdatePadding();
+				owner.Loaded += (s, e) => ApplicationView.GetForCurrentView().VisibleBoundsChanged += _visibleBoundsChanged;
+				owner.Unloaded += (s, e) => ApplicationView.GetForCurrentView().VisibleBoundsChanged -= _visibleBoundsChanged;
 			}
 
 			private FrameworkElement Owner => _owner.Target as FrameworkElement;
@@ -268,16 +268,9 @@ namespace Uno.UI.Toolkit
 
 			private void ApplyPadding(Thickness padding)
 			{
-				var property = Owner.GetPaddingProperty();
-
-				if (property != null)
+				if (Owner.SetPadding(padding) && _log.Value.IsEnabled(LogLevel.Debug))
 				{
-					if (_log.Value.IsEnabled(LogLevel.Debug))
-					{
-						_log.Value.LogDebug($"ApplyPadding={padding}");
-					}
-
-					Owner.SetValue(property, padding);
+					_log.Value.LogDebug($"ApplyPadding={padding}");
 				}
 			}
 

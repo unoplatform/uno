@@ -216,30 +216,134 @@ namespace Windows.UI.Xaml
 			return element.Binding(property, property, source, bindingMode);
 		}
 
-		internal static Thickness? GetPadding(this IFrameworkElement frameworkElement)
+		internal static bool TryGetPadding(this IFrameworkElement frameworkElement, out Thickness padding)
 		{
 			switch (frameworkElement)
 			{
 				case Grid g:
-					return g.Padding;
+					padding = g.Padding;
+					return true;
 
 				case StackPanel sp:
-					return sp.Padding;
+					padding = sp.Padding;
+					return true;
 
 				case Control c:
-					return c.Padding;
+					padding = c.Padding;
+					return true;
 
 				case ContentPresenter cp:
-					return cp.Padding;
+					padding = cp.Padding;
+					return true;
 
 				case Border b:
-					return b.Padding;
+					padding = b.Padding;
+					return true;
 
 				case Panel p:
-					return p.Padding;
+					padding = p.Padding;
+					return true;
 			}
 
-			return null;
+			padding = default;
+			return false;
+		}
+
+		internal static bool TrySetPadding(this IFrameworkElement frameworkElement, Thickness padding)
+		{
+			switch (frameworkElement)
+			{
+				case Grid g:
+					g.Padding = padding;
+					return true;
+
+				case StackPanel sp:
+					sp.Padding = padding;
+					return true;
+
+				case Control c:
+					c.Padding = padding;
+					return true;
+
+				case ContentPresenter cp:
+					cp.Padding = padding;
+					return true;
+
+				case Border b:
+					b.Padding = padding;
+					return true;
+
+				case Panel p:
+					p.Padding = padding;
+					return true;
+			}
+
+			return false;
+		}
+
+		internal static bool TryGetBorderThickness(this IFrameworkElement frameworkElement, out Thickness borderThickness)
+		{
+			switch (frameworkElement)
+			{
+				case Grid g:
+					borderThickness = g.BorderThickness;
+					return true;
+
+				case StackPanel sp:
+					borderThickness = sp.BorderThickness;
+					return true;
+
+				case Control c:
+					borderThickness = c.BorderThickness;
+					return true;
+
+				case ContentPresenter cp:
+					borderThickness = cp.BorderThickness;
+					return true;
+
+				case Border b:
+					borderThickness = b.BorderThickness;
+					return true;
+
+				case Panel p:
+					borderThickness = p.BorderThickness;
+					return true;
+			}
+
+			borderThickness = default;
+			return false;
+		}
+
+		internal static bool TrySetBorderThickness(this IFrameworkElement frameworkElement, Thickness borderThickness)
+		{
+			switch (frameworkElement)
+			{
+				case Grid g:
+					g.BorderThickness = borderThickness;
+					return true;
+
+				case StackPanel sp:
+					sp.BorderThickness = borderThickness;
+					return true;
+
+				case Control c:
+					c.BorderThickness = borderThickness;
+					return true;
+
+				case ContentPresenter cp:
+					cp.BorderThickness = borderThickness;
+					return true;
+
+				case Border b:
+					b.BorderThickness = borderThickness;
+					return true;
+
+				case Panel p:
+					p.BorderThickness = borderThickness;
+					return true;
+			}
+
+			return false;
 		}
 	}
 }

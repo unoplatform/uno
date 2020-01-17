@@ -22,6 +22,7 @@ using System.Numerics;
 using Windows.UI.Input;
 using Windows.UI.Xaml.Controls;
 using Uno.UI.Xaml;
+using Uno.UI.Extensions;
 
 namespace Windows.UI.Xaml
 {

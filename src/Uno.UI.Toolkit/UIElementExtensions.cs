@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Reflection;
 using System.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -58,5 +59,129 @@ namespace Uno.UI.Toolkit
 		}
 
 		#endregion
+
+#if NETFX_CORE
+		public static Thickness GetPadding(this UIElement uiElement)
+		{
+			if (uiElement is FrameworkElement fe && fe.TryGetPadding(out var padding))
+			{
+				return padding;
+			}
+
+			var property = uiElement.GetDependencyPropertyUsingReflection("PaddingProperty");
+			return property == null ? default : (Thickness)uiElement.GetValue(property);
+		}
+
+		public static bool SetPadding(this UIElement uiElement, Thickness padding)
+		{
+			if (uiElement is FrameworkElement fe && fe.TrySetPadding(padding))
+			{
+				return true;
+			}
+
+			var property = uiElement.GetDependencyPropertyUsingReflection("PaddingProperty");
+			if (property != null)
+			{
+				uiElement.SetValue(property, padding);
+				return true;
+			}
+
+			return false;
+		}
+
+		internal static bool TryGetPadding(this FrameworkElement frameworkElement, out Thickness padding)
+		{
+			switch (frameworkElement)
+			{
+				case Grid g:
+					padding = g.Padding;
+					return true;
+
+				case StackPanel sp:
+					padding = sp.Padding;
+					return true;
+
+				case Control c:
+					padding = c.Padding;
+					return true;
+
+				case ContentPresenter cp:
+					padding = cp.Padding;
+					return true;
+
+				case Border b:
+					padding = b.Padding;
+					return true;
+			}
+
+			padding = default;
+			return false;
+		}
+
+		internal static bool TrySetPadding(this FrameworkElement frameworkElement, Thickness padding)
+		{
+			switch (frameworkElement)
+			{
+				case Grid g:
+					g.Padding = padding;
+					return true;
+
+				case StackPanel sp:
+					sp.Padding = padding;
+					return true;
+
+				case Control c:
+					c.Padding = padding;
+					return true;
+
+				case ContentPresenter cp:
+					cp.Padding = padding;
+					return true;
+
+				case Border b:
+					b.Padding = padding;
+					return true;
+			}
+
+			return false;
+		}
+
+		private static Dictionary<(Type type, string property), DependencyProperty> _dependencyPropertyReflectionCache;
+
+		internal static DependencyProperty GetDependencyPropertyUsingReflection(this UIElement uiElement, string propertyName)
+		{
+			var type = uiElement.GetType();
+			var key = (ownerType: type, propertyName);
+
+			_dependencyPropertyReflectionCache =
+				_dependencyPropertyReflectionCache
+				?? new Dictionary<(Type, string), DependencyProperty>(2);
+
+			if (_dependencyPropertyReflectionCache.TryGetValue(key, out var property))
+			{
+				return property;
+			}
+
+			property =
+				type
+					.GetTypeInfo()
+					.GetDeclaredProperty(propertyName)
+					?.GetValue(null) as DependencyProperty
+				?? type
+					.GetTypeInfo()
+					.GetDeclaredField(propertyName)
+					?.GetValue(null) as DependencyProperty;
+
+			_dependencyPropertyReflectionCache[key] = property;
+
+			if (property == null)
+			{
+				uiElement.Log().Warn($"The {propertyName} dependency property does not exist on {type}");
+			}
+
+			return property;
+		}
+
+#endif
 	}
 }
