@@ -65,14 +65,14 @@ namespace SamplesApp.UITests.TestFramework
 
 		/// <summary>
 		/// Asserts that two screenshots are equal to each other inside the area of the nominated rect to within the given pixel error
-		/// (ie, neither the A, R, G, or B values differ by more than the permitted error for any pixel).
+		/// (ie, the A, R, G, or B values cumulatively differ by more than the permitted error for any pixel).
 		/// </summary>
 		public static void AreAlmostEqual(FileInfo expected, FileInfo actual, IAppRect rect, int permittedPixelError)
 			=> AreAlmostEqual(expected, actual, new Rectangle((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height), permittedPixelError);
 
 		/// <summary>
 		/// Asserts that two screenshots are equal to each other inside the area of the nominated rect to within the given pixel error
-		/// (ie, neither the A, R, G, or B values differ by more than the permitted error for any pixel).
+		/// (ie, the A, R, G, or B values cumulatively differ by more than the permitted error for any pixel).
 		/// </summary>
 		public static void AreAlmostEqual(FileInfo expected, FileInfo actual, Rectangle? rect = null, int permittedPixelError = 5)
 		{
@@ -82,7 +82,7 @@ namespace SamplesApp.UITests.TestFramework
 
 		/// <summary>
 		/// Asserts that two screenshots are equal to each other inside the area of the nominated rect to within the given pixel error
-		/// (ie, neither the A, R, G, or B values differ by more than the permitted error for any pixel).
+		/// (ie, the A, R, G, or B values cumulatively differ by more than the permitted error for any pixel).
 		/// </summary>
 		public static void AreAlmostEqual(FileInfo expected, IAppRect expectedRect, FileInfo actual, IAppRect actualRect, int permittedPixelError)
 			=> AreAlmostEqual(
@@ -94,7 +94,7 @@ namespace SamplesApp.UITests.TestFramework
 
 		/// <summary>
 		/// Asserts that two screenshots are equal to each other inside the area of the nominated rect to within the given pixel error
-		/// (ie, neither the A, R, G, or B values differ by more than the permitted error for any pixel).
+		/// (ie, the A, R, G, or B values cumulatively differ by more than the permitted error for any pixel).
 		/// </summary>
 		public static void AreAlmostEqual(FileInfo expected, Rectangle expectedRect, FileInfo actual, Rectangle actualRect, int permittedPixelError)
 		{
@@ -129,11 +129,12 @@ namespace SamplesApp.UITests.TestFramework
 							continue;
 						}
 
-						if (Abs(expectedPixel.R - actualPixel.R) > permittedPixelError
-							|| Abs(expectedPixel.G - actualPixel.G) > permittedPixelError
-							|| Abs(expectedPixel.B - actualPixel.B) > permittedPixelError
-							|| Abs(expectedPixel.A - actualPixel.A) > permittedPixelError
-						)
+						var cumulativeError = Abs(expectedPixel.R - actualPixel.R)
+							+ Abs(expectedPixel.G - actualPixel.G)
+							+ Abs(expectedPixel.B - actualPixel.B)
+							+ Abs(expectedPixel.A - actualPixel.A);
+
+						if (cumulativeError > permittedPixelError)
 						{
 							Assert.Fail($"Difference between expected={expectedPixel} and actual={actualPixel} at {x},{y} exceeds permitted error of {permittedPixelError}");
 						}
