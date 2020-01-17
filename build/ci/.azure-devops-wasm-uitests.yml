@@ -65,6 +65,8 @@ jobs:
       PathtoPublish: $(build.artifactstagingdirectory)
       ArtifactName: wasm-uitest-binaries
       ArtifactType: Container
+      searchFolder: '$(Build.BinariesDirectory)' # https://github.com/microsoft/azure-pipelines-tasks/issues/10072
+
 
 - job: Wasm_UITests_Snap
   dependsOn: Wasm_UITests_Build
