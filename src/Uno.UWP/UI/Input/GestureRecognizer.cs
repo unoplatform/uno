@@ -3,7 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Windows.Devices.Input;
 using Windows.Foundation;
+using Windows.System;
+using Windows.UI.Core;
 using Microsoft.Extensions.Logging;
+using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
 
@@ -12,7 +15,7 @@ namespace Windows.UI.Input
 	public partial class GestureRecognizer 
 	{
 		private readonly ILogger _log;
-		private IDictionary<uint, List<PointerPoint>> _activePointers = new Dictionary<uint, List<PointerPoint>>();
+		private IDictionary<uint, PointsCollection> _activePointers = new Dictionary<uint, PointsCollection>();
 		private GestureSettings _gestureSettings;
 
 		public GestureSettings GestureSettings
@@ -54,7 +57,7 @@ namespace Windows.UI.Input
 				return;
 			}
 
-			_activePointers[value.PointerId] = new List<PointerPoint>(16) { value };
+			_activePointers[value.PointerId] = new PointsCollection(value);
 
 			if (_isManipulationEnabled)
 			{
@@ -73,6 +76,8 @@ namespace Windows.UI.Input
 
 		internal void ProcessMoveEvents(IList<PointerPoint> value, bool isRelevant)
 		{
+			// Even if the pointer was considered as irrelevant, we still buffer it as it is part of the user interaction
+			// and we should considered it for the gesture recognition when processing the up.
 			foreach (var point in value)
 			{
 				if (_activePointers.TryGetValue(point.PointerId, out var points))
@@ -81,7 +86,8 @@ namespace Windows.UI.Input
 				}
 				else if (_log.IsEnabled(LogLevel.Information))
 				{
-					// info: We might get some PointerMove for mouse even if not pressed!
+					// info: We might get some PointerMove for mouse even if not pressed,
+					//		 or if gesture was completed by user / other gesture recognizers.
 					_log.Info("Received a 'Move' for a pointer which was not considered as down. Ignoring event.");
 				}
 			}
@@ -103,6 +109,8 @@ namespace Windows.UI.Input
 #endif
 				// Note: At this point we MAY be IsActive == false, which is the expected behavior (same as UWP)
 				//		 even if we will fire some events now.
+
+				points.End(value);
 
 				// We need to process only events that are bubbling natively to this control (i.e. isIrrelevant == false),
 				// if they are bubbling in managed it means that they where handled a child control,
@@ -127,7 +135,7 @@ namespace Windows.UI.Input
 
 			// Capture the list in order to avoid alteration while enumerating
 			var current = _activePointers;
-			_activePointers = new Dictionary<uint, List<PointerPoint>>();
+			_activePointers = new Dictionary<uint, PointsCollection>();
 
 			// Note: At this point we are IsActive == false, which is the expected behavior (same as UWP)
 			//		 even if we will fire some events now.
@@ -135,21 +143,22 @@ namespace Windows.UI.Input
 			// Complete all pointers
 			foreach (var points in current.Values)
 			{
-				Recognize(points, pointerUp: null);
+				points.Complete();
+				Recognize(points);
 			}
 
 			_manipulation?.Complete();
 		}
 
-		private void Recognize(List<PointerPoint> points, PointerPoint pointerUp)
+		private void Recognize(PointsCollection points)
 		{
 			if (points.Count == 0)
 			{
 				return;
 			}
 
-			var recognized = TryRecognizeRightTap(points, pointerUp) // We check right tap first as for touch a right tap is a press and hold of the finger :)
-				|| TryRecognizeTap(points, pointerUp);
+			var recognized = TryRecognizeRightTap(points) // We check right tap first as for touch a right tap is a press and hold of the finger :)
+				|| TryRecognizeTap(points);
 
 			if (!recognized && _log.IsEnabled(LogLevel.Information))
 			{
@@ -174,7 +183,7 @@ namespace Windows.UI.Input
 
 		#region Tap (includes DoubleTap and RightTap)
 		internal const ulong MultiTapMaxDelayTicks = TimeSpan.TicksPerMillisecond * 1000;
-		internal const ulong HoldMinDelayTicks = TimeSpan.TicksPerMillisecond * 800;
+		internal const long HoldMinDelayTicks = TimeSpan.TicksPerMillisecond * 800;
 		internal const float HoldMinPressure = .75f;
 		internal const int TapMaxXDelta = 10;
 		internal const int TapMaxYDelta = 10;
@@ -187,14 +196,14 @@ namespace Windows.UI.Input
 		public bool CanBeDoubleTap(PointerPoint value)
 			=> _gestureSettings.HasFlag(GestureSettings.DoubleTap) && IsMultiTapGesture(_lastSingleTap, value);
 
-		private bool TryRecognizeTap(List<PointerPoint> points, PointerPoint pointerUp = null)
+		private bool TryRecognizeTap(PointsCollection points)
 		{
-			if (IsTapGesture(LeftButton, points, pointerUp, out var start, out _))
+			if (IsTapGesture(LeftButton, points, out _))
 			{
 				// pointerUp is not null here!
 
-				_lastSingleTap = (start.id, pointerUp.Timestamp, pointerUp.Position);
-				Tapped?.Invoke(this, new TappedEventArgs(start.point.PointerDevice.PointerDeviceType, start.point.Position, tapCount: 1));
+				_lastSingleTap = (points.PointerIdentifier, points.Up.Timestamp, points.Up.Position);
+				Tapped?.Invoke(this, new TappedEventArgs(points.Down.PointerDevice.PointerDeviceType, points.Down.Position, tapCount: 1));
 
 				return true;
 			}
@@ -219,11 +228,11 @@ namespace Windows.UI.Input
 			}
 		}
 
-		private bool TryRecognizeRightTap(List<PointerPoint> points, PointerPoint pointerUp = null)
+		private bool TryRecognizeRightTap(PointsCollection points)
 		{
-			if (_gestureSettings.HasFlag(GestureSettings.RightTap) && IsRightTapGesture(points, pointerUp, out var start))
+			if (_gestureSettings.HasFlag(GestureSettings.RightTap) && IsRightTapGesture(points, out var isLongPress))
 			{
-				RightTapped?.Invoke(this, new RightTappedEventArgs(start.point.PointerDevice.PointerDeviceType, start.point.Position));
+				RightTapped?.Invoke(this, new RightTappedEventArgs(points.Down.PointerDevice.PointerDeviceType, points.Down.Position));
 
 				return true;
 			}
@@ -235,30 +244,28 @@ namespace Windows.UI.Input
 
 		#region Actual Tap gestures recognition (static)
 		// The beginning of a Tap gesture is: 1 down -> * moves close to the down with same buttons pressed
-		private static bool IsBeginningTapGesture(CheckButton isExpectedButton, List<PointerPoint> points, out (PointerPoint point, ulong id) start, out bool isForceTouch)
+		private static bool IsBeginningTapGesture(CheckButton isExpectedButton, PointsCollection points, out bool isForceTouch)
 		{
-			var startPoint = points[0]; // down
-			start = (startPoint, GetPointerIdentifier(startPoint));
 			isForceTouch = false;
 
-			if (!isExpectedButton(start.point)) // We validate only the start as for other points we validate the full pointer identifier
+			if (!isExpectedButton(points.Down)) // We validate only the start as for other points we validate the full pointer identifier
 			{
 				return false;
 			}
 
 			// Validate tap gesture
 			// Note: There is no limit for the duration of the tap!
-			for (var i = 1; i < points.Count; i++)
+			for (var i = 0; i < points.Count; i++)
 			{
 				var point = points[i];
 				var pointIdentifier = GetPointerIdentifier(point);
 
 				if (
 					// The pointer changed (left vs right click)
-					pointIdentifier != start.id
+					pointIdentifier != points.PointerIdentifier
 
 					// Pointer moved to far
-					|| IsOutOfTapRange(point.Position, start.point.Position)
+					|| IsOutOfTapRange(point.Position, points.Down.Position)
 				)
 				{
 					return false;
@@ -271,23 +278,22 @@ namespace Windows.UI.Input
 		}
 
 		// A Tap gesture is: 1 down -> * moves close to the down with same buttons pressed -> 1 up
-		private static bool IsTapGesture(CheckButton isExpectedButton, List<PointerPoint> points, PointerPoint pointerUp, out (PointerPoint point, ulong id) start, out bool isForceTouch)
+		private static bool IsTapGesture(CheckButton isExpectedButton, PointsCollection points, out bool isForceTouch)
 		{
-			if (pointerUp == null) // no tap if no up!
+			if (points.Up == null) // no tap if no up!
 			{
-				start = default;
 				isForceTouch = false;
 				return false;
 			}
 
 			// Validate that all the intermediates points are valid
-			if (!IsBeginningTapGesture(isExpectedButton, points, out start, out isForceTouch))
+			if (!IsBeginningTapGesture(isExpectedButton, points, out isForceTouch))
 			{
 				return false;
 			}
 
 			// For the pointer up, we check only the distance, as it's expected that the pressed button changed!
-			if (IsOutOfTapRange(pointerUp.Position, start.point.Position))
+			if (IsOutOfTapRange(points.Down.Position, points.Up.Position))
 			{
 				return false;
 			}
@@ -311,14 +317,15 @@ namespace Windows.UI.Input
 				&& !IsOutOfTapRange(previousTap.position, currentPosition);
 		}
 
-		private static bool IsRightTapGesture(List<PointerPoint> points, PointerPoint pointerUp, out (PointerPoint point, ulong id) start)
+		private static bool IsRightTapGesture(PointsCollection points, out bool isLongPress)
 		{
 			switch (points[0].PointerDevice.PointerDeviceType)
 			{
 				case PointerDeviceType.Touch:
-					var isLeftTap = IsTapGesture(LeftButton, points, pointerUp, out start, out var isForceTouch);
-					if (isLeftTap && pointerUp.Timestamp - start.point.Timestamp > HoldMinDelayTicks)
+					var isLeftTap = IsTapGesture(LeftButton, points, out var isForceTouch);
+					if (isLeftTap && points.Up.Timestamp - points.Down.Timestamp > HoldMinDelayTicks)
 					{
+						isLongPress = true;
 						return true;
 					}
 #if __IOS__
@@ -326,45 +333,53 @@ namespace Windows.UI.Input
 						&& isLeftTap
 						&& isForceTouch)
 					{
+						isLongPress = true; // We handle the pressure exactly like a long press
 						return true;
 					}
 #endif
+					isLongPress = false;
 					return false;
 
 				case PointerDeviceType.Pen:
-					if (IsTapGesture(BarrelButton, points, pointerUp, out start, out _))
+					if (IsTapGesture(BarrelButton, points, out _))
 					{
+						isLongPress = false;
 						return true;
 					}
 
 					// Some pens does not have a barrel button, so we also allow long press (and anyway it's the UWP behavior)
-					if (IsTapGesture(LeftButton, points, pointerUp, out start, out _)
-						&& pointerUp.Timestamp - start.point.Timestamp > HoldMinDelayTicks)
+					if (IsTapGesture(LeftButton, points, out _)
+						&& points.Up.Timestamp - points.Down.Timestamp > HoldMinDelayTicks)
 					{
+						isLongPress = true;
 						return true;
 					}
 
+					isLongPress = false;
 					return false;
 
 				case PointerDeviceType.Mouse:
-					if (IsTapGesture(RightButton, points, pointerUp, out start, out _))
+					if (IsTapGesture(RightButton, points, out _))
 					{
+						isLongPress = false;
 						return true;
 					}
 #if __ANDROID__
 					// On Android, usually the right button is mapped to back navigation. So, unlike UWP,
 					// we also allow a long press with the left button to be more user friendly.
 					if (Uno.WinRTFeatureConfiguration.GestureRecognizer.InterpretMouseLeftLongPressAsRightTap
-						&& IsTapGesture(LeftButton, points, pointerUp, out start, out _)
-						&& pointerUp.Timestamp - start.point.Timestamp > HoldMinDelayTicks)
+						&& IsTapGesture(LeftButton, points, out _)
+						&& points.Up.Timestamp - points.Down.Timestamp > HoldMinDelayTicks)
 					{
+						isLongPress = true;
 						return true;
 					}
 #endif
+					isLongPress = false;
 					return false;
 
 				default:
-					start = default;
+					isLongPress = false;
 					return false;
 			}
 		}
@@ -383,6 +398,99 @@ namespace Windows.UI.Input
 		#endregion
 
 		#endregion
+
+		private class PointsCollection : List<PointerPoint>
+		{
+			public PointsCollection(PointerPoint down)
+				: base(16)
+			{
+				Down = down;
+				PointerIdentifier = GetPointerIdentifier(down);
+				PointerType = down.PointerDevice.PointerDeviceType;
+
+				BeginHold();
+			}
+
+			public new void Add(PointerPoint point)
+			{
+				base.Add(point);
+
+				TryRecognizeHolding(point.Timestamp);
+			}
+
+			public void End(PointerPoint up)
+			{
+				// Note: We DO NOT Add the up, as it is usually handled a different way!
+
+				Up = up;
+
+				AbortHold();
+			}
+
+			public void Complete()
+			{
+				AbortHold();
+			}
+
+			public ulong PointerIdentifier { get; }
+
+			public PointerDeviceType PointerType { get; }
+
+			public PointerPoint Down { get; }
+
+			public PointerPoint Up { get; private set; }
+
+			public bool IsHoldingRaised { get; private set; }
+
+			private static bool NeedsHoldingTimer(PointerDeviceType type) => true;
+			private DispatcherQueueTimer _holdingTimer;
+			private bool _canBeHold = true;
+
+			private void BeginHold()
+			{
+				// When possible we don't start a timer for the Holding event, instead we rely on the fact that
+				// we get a lot of small moves due to the lack of precision of the capture device.
+				if (NeedsHoldingTimer(PointerType))
+				{
+					_holdingTimer = DispatcherQueue.GetForCurrentThread().CreateTimer();
+					_holdingTimer.Interval = TimeSpan.FromTicks(HoldMinDelayTicks);
+					_holdingTimer.State = this;
+					_holdingTimer.Tick += OnHoldTimerTick;
+					_holdingTimer.Start();
+				}
+			}
+
+			private void AbortHold()
+			{
+				_canBeHold = false;
+				_holdingTimer?.Stop();
+			}
+
+			private static void OnHoldTimerTick(DispatcherQueueTimer timer, object _)
+			{
+				timer.Stop();
+				((PointsCollection)timer.State).TryRecognizeHolding(timeElapsed: true);
+			}
+
+			private void TryRecognizeHolding(ulong currentTime = 0, bool timeElapsed = false)
+			{
+				if (!_canBeHold || IsHoldingRaised)
+				{
+					return;
+				}
+
+				if ((timeElapsed || currentTime - Down.Timestamp > HoldMinDelayTicks)
+					&& IsBeginningTapGesture(LeftButton, this, out _))
+				{
+					SetHolding(HoldingState.Started);
+				}
+			}
+
+			private void SetHolding(HoldingState state)
+			{
+				Holding?.Invoke(this, null);
+			}
+		}
 
 		private static ulong GetPointerIdentifier(PointerPoint point)
 		{

@@ -374,9 +374,16 @@ namespace Windows.UI.Xaml
 		partial void PrepareManagedGestureEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed)
 		{
 			// When we bubble a gesture event from a child, we make sure to abort any pending gesture/manipulation on the current element
-			if (_gestures.IsValueCreated)
+			if (routedEvent == HoldingEvent)
 			{
-				_gestures.Value.CompleteGesture();
+				if (_gestures.IsValueCreated)
+				{
+					_gestures.Value.AbortHolding();
+				}
+			}
+			else
+			{
+				CompleteGesture(); // Make sure to set the flag _isGestureCompleted, so won't try to recognize double tap
 			}
 		}
 
@@ -506,7 +513,7 @@ namespace Windows.UI.Xaml
 				// We need to process only events that are bubbling natively to this control,
 				// if they are bubbling in managed it means that they were handled by a child control,
 				// so we should not use them for gesture recognition.
-				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), isManagedBubblingEvent || isOverOrCaptured);
+				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), !isManagedBubblingEvent || isOverOrCaptured);
 			}
 
 			return handledInManaged;
@@ -530,7 +537,7 @@ namespace Windows.UI.Xaml
 				// We need to process only events that are bubbling natively to this control (i.e. isOverOrCaptured == true),
 				// if they are bubbling in managed it means that they where handled a child control,
 				// so we should not use them for gesture recognition.
-				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this), isManagedBubblingEvent || isOverOrCaptured);
+				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this), !isManagedBubblingEvent || isOverOrCaptured);
 			}
 
 			// We release the captures on up but only after the released event and processed the gesture
