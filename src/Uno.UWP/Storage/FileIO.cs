@@ -11,7 +11,7 @@ using Windows.Storage.Streams;
 namespace Windows.Storage
 {
 	public partial class FileIO
-
+	{
 
 		private static async Task AppendWriteTextAsync(global::Windows.Storage.IStorageFile file, string contents, global::Windows.Storage.Streams.UnicodeEncoding encoding, bool append)
 		{
@@ -87,3 +87,5 @@ namespace Windows.Storage
 		public static global::Windows.Foundation.IAsyncAction WriteTextAsync( global::Windows.Storage.IStorageFile file,  string contents) => AppendWriteTextAsync(file, contents, false);
 
 		public static global::Windows.Foundation.IAsyncAction AppendTextAsync( global::Windows.Storage.IStorageFile file,  string contents) => AppendWriteTextAsync(file, contents, true);
+	}
+}
