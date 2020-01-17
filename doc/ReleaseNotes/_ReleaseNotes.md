@@ -41,6 +41,7 @@
 - [WASM] Fix bug where changing a property could remove the required clipping on a view
 - [Android] Fix unconstrained Image loading issue when contained in a ContentControl template
 - Enable partial `NavigationView.ItemSource` scenario (https://github.com/unoplatform/uno/issues/2477)
+- [Wasm] Fail gracefully if IDBFS is not enabled in emscripten
 
 ## Release 2.0
 
