@@ -15,7 +15,7 @@ namespace Windows.UI.Input
 		/// <summary>
 		/// This is the state machine which handles the gesture ([Double|Right]Tapped and Holding gestures)
 		/// </summary>
-		private class Gestur
+		private class Gesture
 		{
 			private readonly GestureRecognizer _recognizer;
 			private DispatcherQueueTimer _holdingTimer;
