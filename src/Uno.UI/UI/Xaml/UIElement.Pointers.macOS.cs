@@ -91,14 +91,14 @@ namespace Windows.UI.Xaml
 			try
 			{
 				var args = new PointerRoutedEventArgs(null, evt, this);
-
+				
 				var pointerEventIsHandledInManaged = OnNativePointerEnter(args);
 
 				if (!pointerEventIsHandledInManaged)
 				{
 					// Bubble up the event natively
 					base.MouseEntered(evt);
-				}							
+				}
 			}
 			catch (Exception e)
 			{
@@ -146,52 +146,7 @@ namespace Windows.UI.Xaml
 			catch (Exception e)
 			{
 				Application.Current.RaiseRecoverableUnhandledException(e);
-			}
-			//try
-			//{
-			//	var wasPointerOver = IsPointerOver;
-			//	IsPointerOver = evt.IsTouchInView(this);
-
-			//	// Call entered/exited one last time
-			//	// evt.AllTouches raises a invalid selector exception
-			//	var args = new PointerRoutedEventArgs(null, evt, this);
-
-			//	var pointerEventIsHandledInManaged = false;
-
-			//	if (!wasPointerOver && IsPointerOver)
-			//	{
-			//		pointerEventIsHandledInManaged = RaisePointerEvent(PointerEnteredEvent, args);
-			//	}
-			//	else if (wasPointerOver && !IsPointerOver)
-			//	{
-			//		pointerEventIsHandledInManaged = RaisePointerEvent(PointerExitedEvent, args);
-			//	}
-
-			//	if (IsPointerCaptured || IsPointerOver)
-			//	{
-			//		args.Handled = false; // reset as unhandled
-			//		pointerEventIsHandledInManaged = RaisePointerEvent(PointerReleasedEvent, args) || pointerEventIsHandledInManaged;
-			//	}
-
-			//	if (IsPointerCaptured)
-			//	{
-			//		args.Handled = false; // reset as unhandled
-			//		pointerEventIsHandledInManaged = RaisePointerEvent(PointerCaptureLostEvent, args) || pointerEventIsHandledInManaged;
-			//	}
-
-			//	if (!pointerEventIsHandledInManaged)
-			//	{
-			//		// Bubble up the event natively
-			//		base.MouseUp(evt);
-			//	}
-
-			//	IsPointerPressed = false;
-			//	IsPointerOver = false;
-			//}
-			//catch (Exception e)
-			//{
-			//	Application.Current.RaiseRecoverableUnhandledException(e);
-			//}
+			}			
 		}
 
 		public override void MouseDragged(NSEvent evt)

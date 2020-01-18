@@ -12,6 +12,9 @@ namespace Windows.UI.Xaml.Input
 {
 	partial class PointerRoutedEventArgs
 	{
+		private const int TabletPointEventSubtype = 1;
+		private const int TabletProximityEventSubtype = 2;
+
 		private const int LeftMouseButtonMask = 1;
 		private const int RightMouseButtonMask = 2;
 
@@ -23,8 +26,12 @@ namespace Windows.UI.Xaml.Input
 			_nativeEvent = nativeEvent;
 			_nativeTouches = touches;
 
+			var pointerDeviceType = GetPointerDeviceType(nativeEvent);
 			var pointerId = (uint)0;
-			var pointerDeviceType = GetPointerDeviceType(nativeEvent.Type);
+			if (pointerDeviceType == PointerDeviceType.Pen)
+			{
+				pointerId = (uint)nativeEvent.PointingDeviceID();
+			}
 
 			var isInContact = GetIsInContact(nativeEvent);
 
@@ -42,14 +49,21 @@ namespace Windows.UI.Xaml.Input
 			var position = relativeTo != null ?
 				relativeTo.ConvertPointFromView(_nativeEvent.LocationInWindow, null) :
 				rawPosition;
-			
+
 			var properties = new PointerPointProperties()
 			{
 				IsInRange = true,
 				IsPrimary = true,
 				IsLeftButtonPressed = ((int)NSEvent.CurrentPressedMouseButtons & LeftMouseButtonMask) == LeftMouseButtonMask,
-				IsRightButtonPressed = ((int)NSEvent.CurrentPressedMouseButtons & RightMouseButtonMask) == RightMouseButtonMask
+				IsRightButtonPressed = ((int)NSEvent.CurrentPressedMouseButtons & RightMouseButtonMask) == RightMouseButtonMask,				
 			};
+
+			if (Pointer.PointerDeviceType == PointerDeviceType.Pen)
+			{
+				properties.XTilt = (float)_nativeEvent.Tilt.X;
+				properties.YTilt = (float)_nativeEvent.Tilt.Y;
+				properties.Pressure = (float)_nativeEvent.Pressure;
+			}
 
 			return new PointerPoint(
 				FrameId,
@@ -76,18 +90,17 @@ namespace Windows.UI.Xaml.Input
 				nativeEvent.Type == NSEventType.OtherMouseDragged;
 		}
 
-		private static PointerDeviceType GetPointerDeviceType(NSEventType eventType)
+		private static PointerDeviceType GetPointerDeviceType(NSEvent nativeEvent)
 		{
-			switch (eventType)
+			if (nativeEvent.Type == NSEventType.DirectTouch)
 			{
-				case AppKit.NSEventType.DirectTouch:
-					return PointerDeviceType.Touch;
-				case AppKit.NSEventType.TabletPoint:
-				case AppKit.NSEventType.TabletProximity:
-					return PointerDeviceType.Pen;
-				default:
-					return PointerDeviceType.Mouse;
+				return PointerDeviceType.Touch;
 			}
+			if (IsTabletPointingEvent(nativeEvent))
+			{
+				return PointerDeviceType.Pen;
+			}
+			return PointerDeviceType.Mouse;
 		}
 
 		private VirtualKeyModifiers GetVirtualKeyModifiers(NSEvent nativeEvent)
@@ -133,6 +146,57 @@ namespace Windows.UI.Xaml.Input
 			// The precision of the frameId is 10 frame per ms ... which should be enough
 			return (uint)(timestamp * 1000.0 * 10.0);
 		}
+
+		/// <summary>
+		/// Taken from <see cref="https://github.com/xamarin/xamarin-macios/blob/bc492585d137d8c3d3a2ffc827db3cdaae3cc869/src/AppKit/NSEvent.cs#L127" />
+		/// </summary>
+		/// <param name="nativeEvent">Native event</param>
+		/// <returns>Value indicating whether the event is recognized as a "mouse" event.</returns>
+		private static bool IsMouseEvent(NSEvent nativeEvent)
+		{
+			switch (nativeEvent.Type)
+			{
+				case NSEventType.LeftMouseDown:
+				case NSEventType.LeftMouseUp:
+				case NSEventType.RightMouseDown:
+				case NSEventType.RightMouseUp:
+				case NSEventType.MouseMoved:
+				case NSEventType.LeftMouseDragged:
+				case NSEventType.RightMouseDragged:
+				case NSEventType.MouseEntered:
+				case NSEventType.MouseExited:
+				case NSEventType.OtherMouseDown:
+				case NSEventType.OtherMouseUp:
+				case NSEventType.OtherMouseDragged:
+					return true;
+				default:
+					return false;
+			}
+		}
+
+		/// <summary>
+		/// Inspiration from <see cref="https://github.com/xamarin/xamarin-macios/blob/bc492585d137d8c3d3a2ffc827db3cdaae3cc869/src/AppKit/NSEvent.cs#L148"/>
+		/// with some modifications.
+		/// </summary>
+		/// <param name="nativeEvent">Native event</param>
+		/// <returns>Value indicating whether the event is in fact coming from a tablet device.</returns>
+		private static bool IsTabletPointingEvent(NSEvent nativeEvent)
+		{
+			//limitation - mouse entered event currently throws for Subtype
+			//(selector not working, although it should, according to docs)
+			if (IsMouseEvent(nativeEvent) &&
+				nativeEvent.Type != NSEventType.MouseEntered &&
+				nativeEvent.Type != NSEventType.MouseExited) 
+			{
+				//Xamarin debugger proxy for NSEvent incorrectly says Subtype
+				//works only for Custom events, but that is not the case
+				return
+					nativeEvent.Subtype == TabletPointEventSubtype ||
+					nativeEvent.Subtype == TabletProximityEventSubtype;
+			}
+			return nativeEvent.Type == NSEventType.TabletPoint;
+		}
+
 		#endregion
 	}
 }

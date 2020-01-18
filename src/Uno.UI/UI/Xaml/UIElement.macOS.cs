@@ -22,8 +22,6 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : BindableNSView
 	{
-		private NSTrackingArea _trackingArea;
-
 		internal bool IsPointerCaptured { get; set; }
 
 		#region Logs
