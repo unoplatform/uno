@@ -177,7 +177,6 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		
 		#if false
 		[global::Uno.NotImplemented]
 		public  float Pressure
