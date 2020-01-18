@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml
 					var args = new PointerRoutedEventArgs(nativeEvent, pointerIndex, srcElement, this);
 					var argsAction = MotionEventActions.Move;
 
-					handled |= OnNativeMotionEvent(args, argsAction, isInView);
+					handled |= OnNativeMotionEvent(nativeEvent, args, argsAction, isInView);
 				}
 
 				return handled;
@@ -94,11 +94,11 @@ namespace Windows.UI.Xaml
 				var args = new PointerRoutedEventArgs(nativeEvent, nativeEvent.ActionIndex, srcElement, this);
 				var argsAction = actionMasked;
 
-				return OnNativeMotionEvent(args, argsAction, isInView);
+				return OnNativeMotionEvent(nativeEvent, args, argsAction, isInView);
 			}
 		}
 
-		private bool OnNativeMotionEvent(PointerRoutedEventArgs args, MotionEventActions action, bool isInView)
+		private bool OnNativeMotionEvent(MotionEvent nativeEvent, PointerRoutedEventArgs args, MotionEventActions action, bool isInView)
 		{
 			// Warning: MotionEvent of other kinds are filtered out in native code (UnoMotionHelper.java)
 			switch (action)
@@ -117,16 +117,27 @@ namespace Windows.UI.Xaml
 				case MotionEventActions.Down when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
 				case MotionEventActions.PointerDown when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
 					return OnNativePointerEnter(args) | OnNativePointerDown(args);
+				case PointerRoutedEventArgs.StylusWithBarrelDown:
 				case MotionEventActions.Down:
 				case MotionEventActions.PointerDown:
 					return OnNativePointerDown(args);
 				case MotionEventActions.Up when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
 				case MotionEventActions.PointerUp when args.Pointer.PointerDeviceType == PointerDeviceType.Touch:
 					return OnNativePointerUp(args) | OnNativePointerExited(args);
+				case PointerRoutedEventArgs.StylusWithBarrelUp:
 				case MotionEventActions.Up:
 				case MotionEventActions.PointerUp:
 					return OnNativePointerUp(args);
 
+				// We get ACTION_DOWN and ACTION_UP only for "left" button, and instead we get a HOVER_MOVE when pressing/releasing the right button of the mouse.
+				// So on each POINTER_MOVE we make sure to update the pressed state if it does not match.
+				// Note: We can also have HOVER_MOVE with barrel button pressed, so we make sure to "PointerDown" only for Mouse.
+				case MotionEventActions.HoverMove when args.Pointer.PointerDeviceType == PointerDeviceType.Mouse && args.HasPressedButton && !IsPressed(args.Pointer):
+					return OnNativePointerDown(args) | OnNativePointerMoveWithOverCheck(args, isInView);
+				case MotionEventActions.HoverMove when !args.HasPressedButton && IsPressed(args.Pointer):
+					return OnNativePointerUp(args) | OnNativePointerMoveWithOverCheck(args, isInView);
+
+				case PointerRoutedEventArgs.StylusWithBarrelMove:
 				case MotionEventActions.Move:
 				case MotionEventActions.HoverMove:
 					// Note: We use the OnNativePointerMove**WithOverCheck** in order to update the over state in case of press -> move out -> release

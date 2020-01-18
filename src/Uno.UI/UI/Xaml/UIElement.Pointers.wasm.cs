@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml
 		private static PointerRoutedEventArgs PayloadToPointerArgs(object snd, string payload, bool isInContact, bool canBubble = true)
 		{
 			var parts = payload?.Split(';');
-			if (parts?.Length != 10)
+			if (parts?.Length != 11)
 			{
 				return null;
 			}
@@ -124,6 +124,7 @@ namespace Windows.UI.Xaml
 			var typeStr = parts[7];
 			var srcHandle = int.Parse(parts[8], CultureInfo.InvariantCulture);
 			var timestamp = double.Parse(parts[9], CultureInfo.InvariantCulture);
+			var pressure = double.Parse(parts[10], CultureInfo.InvariantCulture);
 
 			var src = GetElementFromHandle(srcHandle) ?? (UIElement)snd;
 			var position = new Point(x, y);
@@ -141,6 +142,7 @@ namespace Windows.UI.Xaml
 				(WindowManagerInterop.HtmlPointerButtonsState)buttons,
 				(WindowManagerInterop.HtmlPointerButtonUpdate)buttonUpdate,
 				keyModifiers,
+				pressure,
 				src,
 				canBubble);
 		}

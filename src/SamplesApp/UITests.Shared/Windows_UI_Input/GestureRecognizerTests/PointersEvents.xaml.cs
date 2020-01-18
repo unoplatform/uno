@@ -49,6 +49,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 		private readonly ManipulationCompletedEventHandler _logManipulationCompleted;
 		private readonly TappedEventHandler _logTapped;
 		private readonly DoubleTappedEventHandler _logDoubleTapped;
+		private readonly RightTappedEventHandler _logRightTapped;
 
 		private bool _isReady;
 
@@ -77,6 +78,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 			_logManipulationCompleted = new ManipulationCompletedEventHandler(CreateHandler(ManipulationCompletedEvent, "Manip completed", _manipCompletedHandle));
 			_logTapped = new TappedEventHandler(CreateHandler(TappedEvent, "Tapped", _gestureTappedHandle));
 			_logDoubleTapped = new DoubleTappedEventHandler(CreateHandler(DoubleTappedEvent, "DoubleTapped", _gestureDoubleTappedHandle));
+			_logRightTapped = new RightTappedEventHandler(CreateHandler(RightTappedEvent, "RightTapped", _gestureRightTappedHandle));
 
 			_log.ItemsSource = _eventLog;
 			_pointerType.ItemsSource = Enum.GetNames(typeof(PointerDeviceType));
@@ -162,6 +164,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 			target.RemoveHandler(ManipulationCompletedEvent, _logManipulationCompleted);
 			target.RemoveHandler(TappedEvent, _logTapped);
 			target.RemoveHandler(DoubleTappedEvent, _logDoubleTapped);
+			target.RemoveHandler(RightTappedEvent, _logRightTapped);
 
 			if (allEvents || _ptEntered.IsOn)
 				target.AddHandler(PointerEnteredEvent, _logPointerEntered, handledToo);
@@ -191,6 +194,8 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 				target.AddHandler(TappedEvent, _logTapped, handledToo);
 			if (allEvents || _gestureDoubleTapped.IsOn)
 				target.AddHandler(DoubleTappedEvent, _logDoubleTapped, handledToo);
+			if (allEvents || _gestureRightTapped.IsOn)
+				target.AddHandler(RightTappedEvent, _logRightTapped, handledToo);
 		}
 
 		private (EventValidity, string error) Validate(object snd, RoutedEvent evt, RoutedEventArgs args)
@@ -329,6 +334,8 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 						return $"{Src(tapped)} | hd={tapped.Handled} | position={F(tapped.GetPosition(Sender as UIElement))}";
 					case DoubleTappedRoutedEventArgs doubleTapped:
 						return $"{Src(doubleTapped)} | hd={doubleTapped.Handled} | position={F(doubleTapped.GetPosition(Sender as UIElement))}";
+					case RightTappedRoutedEventArgs rightTapped:
+						return $"{Src(rightTapped)} | hd={rightTapped.Handled} | position={F(rightTapped.GetPosition(Sender as UIElement))}";
 
 					default:
 						return string.Empty;

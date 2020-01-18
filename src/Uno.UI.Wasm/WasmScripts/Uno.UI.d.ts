@@ -254,7 +254,7 @@ declare namespace Uno.UI {
             */
         setStyle(elementId: number, styles: {
             [name: string]: string;
-        }, setAsArranged?: boolean, clipToBounds?: boolean): string;
+        }): string;
         /**
         * Set the CSS style of a html element.
         *
@@ -267,18 +267,13 @@ declare namespace Uno.UI {
         *
         */
         setStyleDoubleNative(pParams: number): boolean;
+        setArrangeProperties(elementId: number, clipToBounds: boolean): string;
         /**
-            * Set the CSS style of a html element.
-            *
-            * To remove a value, set it to empty string.
-            * @param styles A dictionary of styles to apply on html element.
+            * Remove the CSS style of a html element.
             */
         resetStyle(elementId: number, names: string[]): string;
         /**
-            * Set the CSS style of a html element.
-            *
-            * To remove a value, set it to empty string.
-            * @param styles A dictionary of styles to apply on html element.
+            * Remove the CSS style of a html element.
             */
         resetStyleNative(pParams: number): boolean;
         private resetStyleInternal;
@@ -695,10 +690,8 @@ declare class WindowManagerSetStyleDoubleParams {
 }
 declare class WindowManagerSetStylesParams {
     HtmlId: number;
-    SetAsArranged: boolean;
     Pairs_Length: number;
     Pairs: Array<string>;
-    ClipToBounds: boolean;
     static unmarshal(pData: number): WindowManagerSetStylesParams;
 }
 declare class WindowManagerSetXUidParams {
