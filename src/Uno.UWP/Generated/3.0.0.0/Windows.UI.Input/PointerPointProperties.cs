@@ -177,7 +177,11 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
+<<<<<<< HEAD
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+=======
+		#if false
+>>>>>>> mac-pointer-events
 		[global::Uno.NotImplemented]
 		public  float Pressure
 		{

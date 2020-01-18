@@ -239,6 +239,9 @@ As those events are tightly coupled to the native events, Uno has to make some c
 * On Firefox, pressed pointers are reported as fingers. This means you will receive events with `PointerDeviceType == Pen` only for hovering 
   (i.e. `Pointer<Enter|Move|Exit>` - note that, as of 2019-11-28, once pressed `PointerMove` will be flagged as "touch") 
   and you won't  be able to track the barrel button nor the eraser. (cf. https://bugzilla.mozilla.org/show_bug.cgi?id=1449660)
+* On WASM, if you touch the screen with the pen **then** you press the barrel button (still while touching the screen), the pointer events will
+  have the `IsRightButtonPressed` set (in addition of the `IsBarrelButtonPressed`). On WinUI and Android you get this flag only if the barrel 
+  button was pressed at the moment where you touched the screen, otherwise you will have the `IsLeftButtonPressed` and the `IsBarrelButtonPressed`.
 
 ### Pointer capture
 

@@ -1,6 +1,7 @@
-# Release notes
+﻿# Release notes
 
 ### Features
+
 - Support for `PointerEntered`, `PointerExited` and `PointerMoved` events on macOS
 - Support for `EmailManager.ShowComposeNewEmailAsync`
 - Add support for `StorageFolder.CreateFileAsync(string path)`
@@ -13,12 +14,16 @@
 - Add support for `Popup.LightDismissOverlayMode`, as well as `DatePicker.LightDismissOverlayMode` and `Flyout.LightDismissOverlayMode`
 - `TransformToVisual` now returns a real transform to convert coordinates between views (was only returning a translate transform to offset the origin of controls)
 - Multiple pointers at same time on screen (a.k.a. Multi-touch) are now supported
+- Add support for WinUI 2.3 [`NumberBox`](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.numberbox?view=winui-2.3)
+- Add support of the `UIElement.RightTapped` event
 
 ### Breaking changes
 -
 
 ### Bug fixes
+
 - [#2465] Raising macOS Button Click event
+- [#915] FontFamily values are now properly parsed on WebAssembly, updated docs with new info
 - [#2213] Fixed `ApplicationData` on MacOS, added support for `LocalSettings`
 - Made macOS Samples app skeleton runnable (temporarily removed ApplicationData check on startup, fixed reference), added xamarinmacos20 to crosstargeting_override sample
 - [#2230] `DisplayInformation` leaks memory
@@ -33,10 +38,14 @@
 - `ViewBox` no longer alters its child's `RenderTransform`
 - [#2033] Add Missing `LostFocus` Value to `UpdateSourceTrigger` Enum
 - [Android] Fix Image margin calculation on fixed size
+- [Android] Native views weren't clipped correctly
 - [iOS] #2361 ListView would measure children with infinite width
+- [iOS] Fix crash when using ComboBox template with native Picker and changing ItemsSource to null after SelectedItem was set
 - [#2398] Fully qualify the `MethodName` value for `CreateFromStringAttribute' if it's not fully qualified it the code
 - [WASM] Fix bug where changing a property could remove the required clipping on a view
 - [Android] Fix unconstrained Image loading issue when contained in a ContentControl template
+- Enable partial `NavigationView.ItemSource` scenario (https://github.com/unoplatform/uno/issues/2477)
+- [Wasm] Fail gracefully if IDBFS is not enabled in emscripten
 
 ## Release 2.0
 

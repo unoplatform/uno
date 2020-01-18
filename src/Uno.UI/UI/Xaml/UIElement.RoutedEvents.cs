@@ -105,6 +105,8 @@ namespace Windows.UI.Xaml
 
 		public static RoutedEvent DoubleTappedEvent { get; } = new RoutedEvent(RoutedEventFlag.DoubleTapped);
 
+		public static RoutedEvent RightTappedEvent { get; } = new RoutedEvent(RoutedEventFlag.RightTapped);
+
 		public static RoutedEvent KeyDownEvent { get; } = new RoutedEvent(RoutedEventFlag.KeyDown);
 
 		public static RoutedEvent KeyUpEvent { get; } = new RoutedEvent(RoutedEventFlag.KeyUp);
@@ -295,6 +297,12 @@ namespace Windows.UI.Xaml
 		{
 			add => AddHandler(DoubleTappedEvent, value, false);
 			remove => RemoveHandler(DoubleTappedEvent, value);
+		}
+
+		public event RightTappedEventHandler RightTapped
+		{
+			add => AddHandler(RightTappedEvent, value, false);
+			remove => RemoveHandler(RightTappedEvent, value);
 		}
 
 #if __MACOS__
@@ -660,6 +668,9 @@ namespace Windows.UI.Xaml
 					break;
 				case DoubleTappedEventHandler doubleTappedEventHandler:
 					doubleTappedEventHandler(this, (DoubleTappedRoutedEventArgs)args);
+					break;
+				case RightTappedEventHandler rightTappedEventHandler:
+					rightTappedEventHandler(this, (RightTappedRoutedEventArgs)args);
 					break;
 				case KeyEventHandler keyEventHandler:
 					keyEventHandler(this, (KeyRoutedEventArgs)args);

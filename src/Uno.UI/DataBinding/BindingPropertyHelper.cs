@@ -306,6 +306,14 @@ namespace Uno.UI.DataBinding
 						return attachedPropertyGetter.ReturnType;
 					}
 
+					if(type.IsPrimitive && property == "Value")
+					{
+						// This case is trying assuming that Value for a primitive is used for the case
+						// of a Nullable primitive.
+
+						return type;
+					}
+
 					_log.ErrorFormat("The [{0}] property getter does not exist on type [{1}]", property, type);
 					return null;
 				}
