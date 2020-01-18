@@ -38,8 +38,6 @@ namespace Windows.UI.Input
 		public float XTilt { get; internal set; } = 0f;
 
 		public float YTilt { get; internal set; } = 0f;
-
-		public float Pressure { get; internal set; } = 0.5f;
 #endif
 
 		[global::Uno.NotImplemented]
