@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading;
 using Windows.Devices.Input;
 using AppKit;
+using Windows.System;
 using Foundation;
 using Windows.UI.Input;
 
@@ -17,7 +18,7 @@ namespace Windows.UI.Xaml.Input
 		private readonly NSEvent _nativeEvent;
 		private readonly NSSet _nativeTouches;
 
-		internal PointerRoutedEventArgs(NSSet touches, NSEvent nativeEvent) : this()
+		internal PointerRoutedEventArgs(NSSet touches, NSEvent nativeEvent, UIElement source) : this()
 		{
 			_nativeEvent = nativeEvent;
 			_nativeTouches = touches;
@@ -29,8 +30,8 @@ namespace Windows.UI.Xaml.Input
 
 			FrameId = ToFrameId(_nativeEvent.Timestamp);
 			Pointer = new Pointer(pointerId, pointerDeviceType, isInContact, isInRange: true);
-			KeyModifiers = System.VirtualKeyModifiers.None; //TODO: Properly set virtual key modifiers
-			OriginalSource = null; //TODO: get original source
+			KeyModifiers = GetVirtualKeyModifiers(nativeEvent);
+			OriginalSource = source;
 			CanBubbleNatively = true;
 		}
 
@@ -87,6 +88,34 @@ namespace Windows.UI.Xaml.Input
 				default:
 					return PointerDeviceType.Mouse;
 			}
+		}
+
+		private VirtualKeyModifiers GetVirtualKeyModifiers(NSEvent nativeEvent)
+		{
+			var modifiers = VirtualKeyModifiers.None;
+
+			if (nativeEvent.ModifierFlags.HasFlag(NSEventModifierMask.AlphaShiftKeyMask) ||
+				nativeEvent.ModifierFlags.HasFlag(NSEventModifierMask.ShiftKeyMask))
+			{
+				modifiers |= VirtualKeyModifiers.Shift;
+			}
+
+			if (nativeEvent.ModifierFlags.HasFlag(NSEventModifierMask.AlternateKeyMask))
+			{
+				modifiers |= VirtualKeyModifiers.Menu;
+			}
+
+			if(nativeEvent.ModifierFlags.HasFlag(NSEventModifierMask.CommandKeyMask))
+			{
+				modifiers |= VirtualKeyModifiers.Windows;
+			}
+
+			if (nativeEvent.ModifierFlags.HasFlag(NSEventModifierMask.ControlKeyMask))
+			{
+				modifiers |= VirtualKeyModifiers.Control;
+			}
+
+			return modifiers;
 		}
 
 		private static ulong ToTimeStamp(double timestamp)

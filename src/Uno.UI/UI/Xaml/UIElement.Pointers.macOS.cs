@@ -1,0 +1,237 @@
+using CoreAnimation;
+using CoreGraphics;
+using Foundation;
+using Uno.Extensions;
+using Uno.UI.Controls;
+using Windows.Foundation;
+using Windows.UI.Xaml.Input;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Uno.Logging;
+using Uno;
+using Windows.Devices.Input;
+using Microsoft.Extensions.Logging;
+using Windows.UI.Xaml.Media;
+using Uno.UI.Extensions;
+using Uno.UI;
+using AppKit;
+
+namespace Windows.UI.Xaml
+{
+	public partial class UIElement : BindableNSView
+	{
+		private NSTrackingArea _trackingArea;
+
+		/// <summary>
+		/// Set up tracking area to be able to handle additional mouse events -
+		/// entered, existed, moved
+		/// </summary>
+		public override void UpdateTrackingAreas()
+		{
+			if (_trackingArea != null)
+			{
+				RemoveTrackingArea(_trackingArea);
+			}
+
+			var options =
+				NSTrackingAreaOptions.MouseEnteredAndExited |
+				NSTrackingAreaOptions.MouseMoved |
+				NSTrackingAreaOptions.ActiveInKeyWindow;
+
+			_trackingArea = new NSTrackingArea(this.Bounds, options, this, null);
+			AddTrackingArea(_trackingArea);
+		}
+
+		public override void MouseDown(NSEvent evt)
+		{
+			try
+			{
+				// evt.AllTouches raises a invalid selector exception
+				var args = new PointerRoutedEventArgs(null, evt, this);
+				 
+				var pointerEventIsHandledInManaged = OnNativePointerDown(args);
+
+				if (!pointerEventIsHandledInManaged)
+				{
+					// Bubble up the event natively
+					base.MouseDown(evt);
+				}
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledException(e);
+			}
+		}
+
+		public override void MouseMoved(NSEvent evt)
+		{
+			try
+			{
+				// evt.AllTouches raises a invalid selector exception
+				var args = new PointerRoutedEventArgs(null, evt, this);				
+
+				var pointerEventIsHandledInManaged = OnNativePointerMove(args);
+
+				if (!pointerEventIsHandledInManaged)
+				{
+					// Bubble up the event natively
+					base.MouseMoved(evt);
+				}
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledException(e);
+			}
+		}
+
+		public override void MouseEntered(NSEvent evt)
+		{
+			try
+			{
+				var args = new PointerRoutedEventArgs(null, evt, this);
+
+				var pointerEventIsHandledInManaged = OnNativePointerEnter(args);
+
+				if (!pointerEventIsHandledInManaged)
+				{
+					// Bubble up the event natively
+					base.MouseEntered(evt);
+				}							
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledException(e);
+			}
+		}
+
+		public override void MouseExited(NSEvent evt)
+		{
+			try
+			{
+				// evt.AllTouches raises a invalid selector exception
+				var args = new PointerRoutedEventArgs(null, evt, this);				 
+
+				var pointerEventIsHandledInManaged = OnNativePointerExited(args);
+
+				if (!pointerEventIsHandledInManaged)
+				{
+					// Bubble up the event natively
+					base.MouseExited(evt);
+				}
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledException(e);
+			}
+		}
+
+		public override void MouseUp(NSEvent evt)
+		{
+			try
+			{
+				// evt.AllTouches raises a invalid selector exception
+				var args = new PointerRoutedEventArgs(null, evt, this);
+				var pointerEventIsHandledInManaged = false;
+
+				pointerEventIsHandledInManaged = OnNativePointerUp(args);
+
+				if (!pointerEventIsHandledInManaged)
+				{
+					// Bubble up the event natively
+					base.MouseUp(evt);
+				}
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledException(e);
+			}
+			//try
+			//{
+			//	var wasPointerOver = IsPointerOver;
+			//	IsPointerOver = evt.IsTouchInView(this);
+
+			//	// Call entered/exited one last time
+			//	// evt.AllTouches raises a invalid selector exception
+			//	var args = new PointerRoutedEventArgs(null, evt, this);
+
+			//	var pointerEventIsHandledInManaged = false;
+
+			//	if (!wasPointerOver && IsPointerOver)
+			//	{
+			//		pointerEventIsHandledInManaged = RaisePointerEvent(PointerEnteredEvent, args);
+			//	}
+			//	else if (wasPointerOver && !IsPointerOver)
+			//	{
+			//		pointerEventIsHandledInManaged = RaisePointerEvent(PointerExitedEvent, args);
+			//	}
+
+			//	if (IsPointerCaptured || IsPointerOver)
+			//	{
+			//		args.Handled = false; // reset as unhandled
+			//		pointerEventIsHandledInManaged = RaisePointerEvent(PointerReleasedEvent, args) || pointerEventIsHandledInManaged;
+			//	}
+
+			//	if (IsPointerCaptured)
+			//	{
+			//		args.Handled = false; // reset as unhandled
+			//		pointerEventIsHandledInManaged = RaisePointerEvent(PointerCaptureLostEvent, args) || pointerEventIsHandledInManaged;
+			//	}
+
+			//	if (!pointerEventIsHandledInManaged)
+			//	{
+			//		// Bubble up the event natively
+			//		base.MouseUp(evt);
+			//	}
+
+			//	IsPointerPressed = false;
+			//	IsPointerOver = false;
+			//}
+			//catch (Exception e)
+			//{
+			//	Application.Current.RaiseRecoverableUnhandledException(e);
+			//}
+		}
+
+		public override void MouseDragged(NSEvent evt)
+		{
+			try
+			{
+				var wasPointerOver = IsPointerOver;
+				IsPointerOver = evt.IsTouchInView(this);
+
+				var pointerEventIsHandledInManaged = false;
+
+				// evt.AllTouches raises a invalid selector exception
+				var args = new PointerRoutedEventArgs(null, evt, this);
+
+				if (IsPointerCaptured || IsPointerOver)
+				{
+					pointerEventIsHandledInManaged = OnNativePointerMove(args);
+				}
+
+				if (!wasPointerOver && IsPointerOver)
+				{
+					args.Handled = false; // reset as unhandled
+					pointerEventIsHandledInManaged = OnNativePointerEnter(args) || pointerEventIsHandledInManaged;
+				}
+				else if (wasPointerOver && !IsPointerOver)
+				{
+					args.Handled = false; // reset as unhandled
+					pointerEventIsHandledInManaged = OnNativePointerExited(args) || pointerEventIsHandledInManaged;
+				}
+
+				if (!pointerEventIsHandledInManaged)
+				{
+					// Bubble up the event natively
+					base.MouseDragged(evt);
+				}
+			}
+			catch (Exception e)
+			{
+				Application.Current.RaiseRecoverableUnhandledException(e);
+			}
+		}
+	}
+}
