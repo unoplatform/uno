@@ -116,7 +116,7 @@ namespace Windows.UI.Input
 		internal void ProcessUpEvent(PointerPoint value, bool isRelevant)
 		{
 #if NET461 || __WASM__
-			if (_gestures.TryGetValue(value.PointerId, out var points))
+			if (_gestures.TryGetValue(value.PointerId, out var gesture))
 			{
 				_gestures.Remove(value.PointerId);
 #else
