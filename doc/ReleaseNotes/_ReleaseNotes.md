@@ -1,8 +1,9 @@
-﻿# Release notes
+# Release notes
 
 ### Features
 
 - Support for `PointerEntered`, `PointerExited` and `PointerMoved` events on macOS
+- Support for `Launcher` API on macOS, support for special URIs
 - Support for `EmailManager.ShowComposeNewEmailAsync`
 - Add support for `StorageFolder.CreateFileAsync(string path)`
 - Add support for ApplicationViewTitleBar.BackgroundColor on WASM
@@ -23,6 +24,7 @@
 ### Bug fixes
 
 - [#2465] Raising macOS Button Click event
+- [#2506] `DesignMode.DesignMode2Enabled` no longer throws (is always `false` on non-UWP platforms)
 - [#915] FontFamily values are now properly parsed on WebAssembly, updated docs with new info
 - [#2213] Fixed `ApplicationData` on MacOS, added support for `LocalSettings`
 - Made macOS Samples app skeleton runnable (temporarily removed ApplicationData check on startup, fixed reference), added xamarinmacos20 to crosstargeting_override sample

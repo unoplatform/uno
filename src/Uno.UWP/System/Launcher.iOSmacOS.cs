@@ -1,7 +1,12 @@
-﻿#if __IOS__
+﻿#if __IOS__ || __MACOS__
 using System;
 using System.Threading.Tasks;
+#if __IOS__
 using UIKit;
+#else
+using AppKit;
+using Foundation;
+#endif
 using AppleUrl = global::Foundation.NSUrl;
 
 namespace Windows.System
@@ -15,20 +20,30 @@ namespace Windows.System
 				return await HandleSpecialUriAsync(uri);
 			}
 
+			var appleUrl = new AppleUrl(uri.OriginalString);
+#if __IOS__
 			return UIApplication.SharedApplication.OpenUrl(
-				new AppleUrl(uri.OriginalString));
+				appleUrl);
+#else
+			return NSWorkspace.SharedWorkspace.OpenUrl(
+				appleUrl);
+#endif
 		}
 
 
 		public static Task<LaunchQuerySupportStatus> QueryUriSupportPlatformAsync(
 			Uri uri,
 			LaunchQuerySupportType launchQuerySupportType)
-		{            
+		{
 			bool canOpenUri;
 			if (!IsSpecialUri(uri))
 			{
+#if __IOS__
 				canOpenUri = UIApplication.SharedApplication.CanOpenUrl(
 					new AppleUrl(uri.OriginalString));
+#else
+				canOpenUri = NSWorkspace.SharedWorkspace.UrlForApplication(new NSUrl(uri.AbsoluteUri)) != null;
+#endif
 			}
 			else
 			{
