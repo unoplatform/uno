@@ -62,7 +62,7 @@ namespace Uno.UI.Toolkit
 
 		#endregion
 
-		public static Thickness GetPadding(this UIElement uiElement)
+		internal static Thickness GetPadding(this UIElement uiElement)
 		{
 			if (uiElement is FrameworkElement fe && fe.TryGetPadding(out var padding))
 			{
@@ -73,7 +73,7 @@ namespace Uno.UI.Toolkit
 			return property != null && uiElement.GetValue(property) is Thickness t ? t : default;
 		}
 
-		public static bool SetPadding(this UIElement uiElement, Thickness padding)
+		internal static bool SetPadding(this UIElement uiElement, Thickness padding)
 		{
 			if (uiElement is FrameworkElement fe && fe.TrySetPadding(padding))
 			{
