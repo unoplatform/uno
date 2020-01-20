@@ -12,7 +12,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 {
-	public partial class UnoSamples_Tests : SampleControlUITestBase
+	public partial class FocusManagerDirection_Tests : SampleControlUITestBase
 	{
 		private void ChangeFocusAndAssertBeforeAfter(IApp app, Action<IApp> changeFocus, QueryEx target, string initialText, string finalText)
 		{
@@ -32,7 +32,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android)] // Wasm is disabled https://github.com/unoplatform/uno/issues/2476
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // Wasm is disabled https://github.com/unoplatform/uno/issues/2476
 		public void FocusManager_FocusDirection_Next_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_FocusDirection");
@@ -51,7 +51,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android)] // Wasm is disabled https://github.com/unoplatform/uno/issues/2476
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // Wasm is disabled https://github.com/unoplatform/uno/issues/2476
 		public void FocusManager_FocusDirection_Previous_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_FocusDirection");
@@ -69,7 +69,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android)] // Wasm is disabled https://github.com/unoplatform/uno/issues/2476
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // Wasm is disabled https://github.com/unoplatform/uno/issues/2476
 		public void FocusManager_FocusDirection_Up_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_FocusDirection");
@@ -87,7 +87,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android)] // Wasm is disabled https://github.com/unoplatform/uno/issues/2476
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // Wasm is disabled https://github.com/unoplatform/uno/issues/2476
 		public void FocusManager_FocusDirection_Down_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_FocusDirection");
@@ -105,7 +105,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android)] // Wasm is disabled https://github.com/unoplatform/uno/issues/2476
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // Wasm is disabled https://github.com/unoplatform/uno/issues/2476
 		public void FocusManager_FocusDirection_Left_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_FocusDirection");
@@ -123,7 +123,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests
 
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Android)] // Wasm is disabled https://github.com/unoplatform/uno/issues/2476
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // Wasm is disabled https://github.com/unoplatform/uno/issues/2476
 		public void FocusManager_FocusDirection_Right_Validation()
 		{
 			Run("Uno.UI.Samples.Content.UITests.FocusManager.FocusManager_FocusDirection");
