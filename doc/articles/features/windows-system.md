@@ -52,7 +52,7 @@ In case of Android, we support the following nested URIs.
 | `ms-settings:developers` | `Settings.ActionApplicationDevelopmentSettings` |
 
 
-In case of macOS, we support the following nested URIs, mapped to Preference Panes (/System/Library/PreferencePanes)
+In case of macOS, Uno supports the following nested URIs, mapped to Preference Panes (/System/Library/PreferencePanes)
 
 | Settings URI | macOS Mapping |
 |--------------|----------|
