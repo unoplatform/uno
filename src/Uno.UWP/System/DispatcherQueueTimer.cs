@@ -124,5 +124,10 @@ namespace Windows.System
 				Tick?.Invoke(this, null);
 			}
 		}
+
+		~DispatcherQueueTimer()
+		{
+			Stop();
+		}
 	}
 }
