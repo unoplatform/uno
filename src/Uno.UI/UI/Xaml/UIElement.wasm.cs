@@ -178,9 +178,8 @@ namespace Windows.UI.Xaml
 		{
 			var parent = VisualTreeHelper.GetParent(this) as UIElement;
 			LayoutSlotWithMarginsAndAlignments = parent == null ? rect : rect.DeflateBy(parent.GetBorderThickness());
-#if !DEBUG
+
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
-#endif
 			{
 				UpdateDOMXamlProperty(nameof(LayoutSlotWithMarginsAndAlignments), LayoutSlotWithMarginsAndAlignments);
 			}
