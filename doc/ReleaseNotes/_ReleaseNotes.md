@@ -1,6 +1,7 @@
-﻿# Release notes
+# Release notes
 
 ### Features
+- Support for `Launcher` API on macOS, support for special URIs
 - Support for `EmailManager.ShowComposeNewEmailAsync`
 - Add support for `StorageFolder.CreateFileAsync(string path)`
 - Add support for ApplicationViewTitleBar.BackgroundColor on WASM
