@@ -4,6 +4,8 @@ using System.Reflection;
 using System.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Uno.Extensions;
+using Uno.Logging;
 
 namespace Uno.UI.Toolkit
 {
@@ -60,7 +62,6 @@ namespace Uno.UI.Toolkit
 
 		#endregion
 
-#if NETFX_CORE
 		public static Thickness GetPadding(this UIElement uiElement)
 		{
 			if (uiElement is FrameworkElement fe && fe.TryGetPadding(out var padding))
@@ -68,8 +69,8 @@ namespace Uno.UI.Toolkit
 				return padding;
 			}
 
-			var property = uiElement.GetDependencyPropertyUsingReflection("PaddingProperty");
-			return property == null ? default : (Thickness)uiElement.GetValue(property);
+			var property = uiElement.GetDependencyPropertyUsingReflection<Thickness>("PaddingProperty");
+			return property != null && uiElement.GetValue(property) is Thickness t ? t : default;
 		}
 
 		public static bool SetPadding(this UIElement uiElement, Thickness padding)
@@ -79,7 +80,7 @@ namespace Uno.UI.Toolkit
 				return true;
 			}
 
-			var property = uiElement.GetDependencyPropertyUsingReflection("PaddingProperty");
+			var property = uiElement.GetDependencyPropertyUsingReflection<Thickness>("PaddingProperty");
 			if (property != null)
 			{
 				uiElement.SetValue(property, padding);
@@ -148,9 +149,10 @@ namespace Uno.UI.Toolkit
 
 		private static Dictionary<(Type type, string property), DependencyProperty> _dependencyPropertyReflectionCache;
 
-		internal static DependencyProperty GetDependencyPropertyUsingReflection(this UIElement uiElement, string propertyName)
+		internal static DependencyProperty GetDependencyPropertyUsingReflection<TProperty>(this UIElement uiElement, string propertyName)
 		{
 			var type = uiElement.GetType();
+			var propertyType = typeof(TProperty);
 			var key = (ownerType: type, propertyName);
 
 			_dependencyPropertyReflectionCache =
@@ -172,16 +174,21 @@ namespace Uno.UI.Toolkit
 					.GetDeclaredField(propertyName)
 					?.GetValue(null) as DependencyProperty;
 
-			_dependencyPropertyReflectionCache[key] = property;
-
 			if (property == null)
 			{
 				uiElement.Log().Warn($"The {propertyName} dependency property does not exist on {type}");
 			}
+#if !NETFX_CORE
+			else if (property.Type != propertyType)
+			{
+				uiElement.Log().Warn($"The {propertyName} dependency property {type} is not of the {propertyType} Type.");
+				property = null;
+			}
+#endif
+
+			_dependencyPropertyReflectionCache[key] = property;
 
 			return property;
 		}
-
-#endif
 	}
 }
