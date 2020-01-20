@@ -176,6 +176,7 @@ namespace Uno.UI.Samples.Tests
 						ReportRunTestCount($"Run tests: {++runTests}");
 
 						var runsOnUIThread = testMethod.GetCustomAttribute(typeof(Uno.UI.RuntimeTests.RunsOnUIThreadAttribute)) != null;
+						var expectedException = testMethod.GetCustomAttributes<ExpectedExceptionAttribute>().SingleOrDefault();
 						var dataRows = testMethod.GetCustomAttributes<DataRowAttribute>();
 						if (dataRows.Any())
 						{
@@ -227,7 +228,15 @@ namespace Uno.UI.Samples.Tests
 										throw resultingTask.Exception;
 									}
 								}
-								ReportTestResult(fullTestName, TestResult.Sucesss);
+
+								if (expectedException == null)
+								{
+									ReportTestResult(fullTestName, TestResult.Sucesss);
+								}
+								else
+								{
+									ReportTestResult(fullTestName, TestResult.Failed, message: $"Test did not throw the excepted exception of type {expectedException.ExceptionType.Name}");
+								}
 							}
 							catch (Exception e)
 							{
@@ -242,7 +251,14 @@ namespace Uno.UI.Samples.Tests
 									e = tie.InnerException;
 								}
 
-								ReportTestResult(fullTestName, TestResult.Failed, e);
+								if (expectedException == null || !expectedException.ExceptionType.IsInstanceOfType(e))
+								{
+									ReportTestResult(fullTestName, TestResult.Failed, e);
+								}
+								else
+								{
+									ReportTestResult(fullTestName, TestResult.Sucesss, e);
+								}
 							}
 
 						}
