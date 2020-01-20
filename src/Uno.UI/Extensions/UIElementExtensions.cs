@@ -7,7 +7,7 @@ using Uno.Logging;
 
 namespace Uno.UI.Extensions
 {
-	internal static partial class UIElementExtensions
+	public static partial class UIElementExtensions
 	{
 		internal static Thickness GetPadding(this UIElement uiElement)
 		{
