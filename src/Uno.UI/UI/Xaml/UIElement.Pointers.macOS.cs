@@ -133,9 +133,8 @@ namespace Windows.UI.Xaml
 			{
 				// evt.AllTouches raises a invalid selector exception
 				var args = new PointerRoutedEventArgs(null, evt, this);
-				var pointerEventIsHandledInManaged = false;
-
-				pointerEventIsHandledInManaged = OnNativePointerUp(args);
+				
+				var pointerEventIsHandledInManaged = OnNativePointerUp(args);
 
 				if (!pointerEventIsHandledInManaged)
 				{
@@ -153,30 +152,11 @@ namespace Windows.UI.Xaml
 		{
 			try
 			{
-				var wasPointerOver = IsPointerOver;
-				IsPointerOver = evt.IsTouchInView(this);
-
-				var pointerEventIsHandledInManaged = false;
-
 				// evt.AllTouches raises a invalid selector exception
 				var args = new PointerRoutedEventArgs(null, evt, this);
-
-				if (IsPointerCaptured || IsPointerOver)
-				{
-					pointerEventIsHandledInManaged = OnNativePointerMove(args);
-				}
-
-				if (!wasPointerOver && IsPointerOver)
-				{
-					args.Handled = false; // reset as unhandled
-					pointerEventIsHandledInManaged = OnNativePointerEnter(args) || pointerEventIsHandledInManaged;
-				}
-				else if (wasPointerOver && !IsPointerOver)
-				{
-					args.Handled = false; // reset as unhandled
-					pointerEventIsHandledInManaged = OnNativePointerExited(args) || pointerEventIsHandledInManaged;
-				}
-
+				
+				var pointerEventIsHandledInManaged = OnNativePointerMoveWithOverCheck(args, evt.IsTouchInView(this));
+				
 				if (!pointerEventIsHandledInManaged)
 				{
 					// Bubble up the event natively
