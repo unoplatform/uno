@@ -23,6 +23,11 @@ namespace Windows.System
 			get => _interval;
 			set
 			{
+				if (value < TimeSpan.Zero)
+				{
+					throw new ArgumentException(nameof(value)); // WinUI throws a ArgumentException, not and ArgumentOutOfRangeException
+				}
+
 				if (_interval != value)
 				{
 					_interval = value;

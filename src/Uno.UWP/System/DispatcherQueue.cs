@@ -17,10 +17,13 @@ namespace Windows.System
 
 		public static DispatcherQueue GetForCurrentThread()
 		{
-			CoreDispatcher.CheckThreadAccess();
-
-			if (_current == null)
+			if (_current == null) // Do not even check for thread access if we already have a value!
 			{
+				if (!CoreDispatcher.Main.HasThreadAccess)
+				{
+					return default;
+				}
+
 				_current = new DispatcherQueue();
 			}
 
