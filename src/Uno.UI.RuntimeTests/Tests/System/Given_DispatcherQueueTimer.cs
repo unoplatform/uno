@@ -74,6 +74,7 @@ namespace Uno.UI.RuntimeTests.Tests.System
 			}
 		}
 
+#if !WINDOWS_UWP
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_Tick_Then_RunningOnDispatcher()
@@ -102,6 +103,7 @@ namespace Uno.UI.RuntimeTests.Tests.System
 				timer.Stop();
 			}
 		}
+#endif
 
 		[TestMethod]
 		[RunsOnUIThread]
