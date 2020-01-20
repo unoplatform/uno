@@ -616,6 +616,12 @@
 				<Member
 					fullName="System.Void Windows.UI.Input.HoldingEventArgs..ctor()"
 					reason="Not part of the WinUI API."/>
+				<Member
+					fullName="System.Void Windows.System.DispatcherQueue..ctor()"
+					reason="Not part of the WinUI API."/>
+				<Member
+					fullName="System.Void Windows.System.DispatcherQueueTimer..ctor()"
+					reason="Not part of the WinUI API."/>
             </Methods>
 		</IgnoreSet>
 	</IgnoreSets>
