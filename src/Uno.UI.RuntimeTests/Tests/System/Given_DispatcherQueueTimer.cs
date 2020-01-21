@@ -22,14 +22,14 @@ namespace Uno.UI.RuntimeTests.Tests.System
 
 			try
 			{
-				timer.Interval = TimeSpan.FromMilliseconds(100);
+				timer.Interval = TimeSpan.FromMilliseconds(10);
 				timer.Tick += (snd, e) => tcs.SetResult(default);
 
 				timer.Start();
 
 				Assert.IsTrue(timer.IsRunning);
 
-				await Task.WhenAny(tcs.Task, Task.Delay(1000));
+				await Task.WhenAny(tcs.Task, Task.Delay(10000));
 
 				Assert.IsTrue(tcs.Task.IsCompleted);
 			}
@@ -49,7 +49,7 @@ namespace Uno.UI.RuntimeTests.Tests.System
 
 			try
 			{
-				timer.Interval = TimeSpan.FromMilliseconds(100);
+				timer.Interval = TimeSpan.FromMilliseconds(10);
 				timer.Tick += (snd, e) =>
 				{
 					if (++count >= 3)
@@ -63,7 +63,7 @@ namespace Uno.UI.RuntimeTests.Tests.System
 				Assert.IsTrue(timer.IsRunning);
 				Assert.IsTrue(timer.IsRepeating);
 
-				await Task.WhenAny(tcs.Task, Task.Delay(1000));
+				await Task.WhenAny(tcs.Task, Task.Delay(10000));
 
 				Assert.IsTrue(tcs.Task.IsCompleted);
 				Assert.AreEqual(count, 3);
