@@ -21,13 +21,13 @@
 					<Button MinWidth="80" Width="40" MinHeight="40" Height="20" Padding="5">BUTTON</Button>
 					<Button MaxWidth="80" Width="100" MaxHeight="40" Height="100" Padding="5">BUTTON</Button>
 					<Border>
-						<Control MinWidth="80" Width="40" MinHeight="40" Height="20">
-							<Control.Template>
+						<ContentControl MinWidth="80" Width="40" MinHeight="40" Height="20">
+							<ContentControl.Template>
 								<ControlTemplate>
-									<Button Padding="5">BUTTON</Button>
+									<Button Padding="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">BUTTON</Button>
 								</ControlTemplate>
-							</Control.Template>
-						</Control>
+							</ContentControl.Template>
+						</ContentControl>
 					</Border>
 				</StackPanel>
 			</Border>
