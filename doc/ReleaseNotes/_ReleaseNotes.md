@@ -2,7 +2,7 @@
 
 ### Features
 
-- Support for `PointerEntered`, `PointerExited` and `PointerMoved` events on macOS
+- Support for `PointerDown`, `PointerUp` `PointerEntered`, `PointerExited` and `PointerMoved` events on macOS
 - Support for `Launcher` API on macOS, support for special URIs
 - Support for `EmailManager.ShowComposeNewEmailAsync`
 - Add support for `StorageFolder.CreateFileAsync(string path)`
