@@ -15,7 +15,6 @@ namespace Uno.UI.RuntimeTests.Tests.System
 	{
 		[TestMethod]
 		[RunsOnUIThread]
-		[Ignore] // This test is disabled on the CI as depending of the server's load it might fail randomly
 		public async Task When_ScheduleWorkItem()
 		{
 			var tcs = new TaskCompletionSource<object>();
@@ -30,7 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.System
 
 				Assert.IsTrue(timer.IsRunning);
 
-				await Task.WhenAny(tcs.Task, Task.Delay(10000));
+				await Task.WhenAny(tcs.Task, Task.Delay(30000));
 
 				Assert.IsTrue(tcs.Task.IsCompleted);
 			}
@@ -42,7 +41,6 @@ namespace Uno.UI.RuntimeTests.Tests.System
 
 		[TestMethod]
 		[RunsOnUIThread]
-		[Ignore] // This test is disabled on the CI as depending of the server's load it might fail randomly
 		public async Task When_ScheduleRepeatingWorkItem()
 		{
 			var tcs = new TaskCompletionSource<object>();
@@ -65,7 +63,7 @@ namespace Uno.UI.RuntimeTests.Tests.System
 				Assert.IsTrue(timer.IsRunning);
 				Assert.IsTrue(timer.IsRepeating);
 
-				await Task.WhenAny(tcs.Task, Task.Delay(10000));
+				await Task.WhenAny(tcs.Task, Task.Delay(30000));
 
 				Assert.IsTrue(tcs.Task.IsCompleted);
 				Assert.AreEqual(count, 3);
