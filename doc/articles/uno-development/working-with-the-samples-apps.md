@@ -55,7 +55,7 @@ This attribute can be placed at the test or class level.
 
 ## Running UI Tests
 
-- Open the [`Constants.cs`](src/SamplesApp/SamplesApp.UITests/Constants.cs) file and change the `CurrentPlatform` field to the platform you want to test.
+- Open the [`Constants.cs`](https://github.com/unoplatform/uno/blob/master/src/SamplesApp/SamplesApp.UITests/Constants.cs) file and change the `CurrentPlatform` field to the platform you want to test.
 - Select a test in the `SamplesApp.UITests` project and run a specific test.
 
 ## Troubleshooting tests running during the CI
