@@ -10,7 +10,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PivotTests
 {
-	public class UnoSamples_Pivot_Tests : SampleControlUITestBase
+	public class PivotTests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry()]
