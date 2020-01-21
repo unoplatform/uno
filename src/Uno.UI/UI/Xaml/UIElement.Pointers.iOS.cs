@@ -20,6 +20,7 @@ namespace Windows.UI.Xaml
 
 		partial void InitializePointersPartial()
 		{
+			MultipleTouchEnabled = true;
 			RegisterLoadActions(PrepareParentTouchesManagers, ReleaseParentTouchesManager);
 		}
 
@@ -47,11 +48,14 @@ namespace Windows.UI.Xaml
 			{
 				NotifyParentTouchesManagersManipulationStarted();
 
-				var args = new PointerRoutedEventArgs(touches, evt, this);
 				var isHandledOrBubblingInManaged = default(bool);
+				foreach (UITouch touch in touches)
+				{
+					var args = new PointerRoutedEventArgs(touch, evt, this);
 
-				isHandledOrBubblingInManaged |= OnNativePointerEnter(args);
-				isHandledOrBubblingInManaged |= OnNativePointerDown(args);
+					isHandledOrBubblingInManaged |= OnNativePointerEnter(args);
+					isHandledOrBubblingInManaged |= OnNativePointerDown(args);
+				}
 
 				/*
 				 * **** WARNING ****
@@ -86,12 +90,16 @@ namespace Windows.UI.Xaml
 		{
 			try
 			{
-				var args = new PointerRoutedEventArgs(touches, evt, this);
-				var isPointerOver = evt.IsTouchInView(this);
+				var isHandledOrBubblingInManaged = default(bool);
+				foreach (UITouch touch in touches)
+				{
+					var args = new PointerRoutedEventArgs(touch, evt, this);
+					var isPointerOver = touch.IsTouchInView(this);
 
-				// As we don't have enter/exit equivalents on iOS, we have to update the IsOver on each move
-				// Note: Entered / Exited are raised *before* the Move (Checked using the args timestamp)
-				var isHandledOrBubblingInManaged = OnNativePointerMoveWithOverCheck(args, isPointerOver);
+					// As we don't have enter/exit equivalents on iOS, we have to update the IsOver on each move
+					// Note: Entered / Exited are raised *before* the Move (Checked using the args timestamp)
+					isHandledOrBubblingInManaged |= OnNativePointerMoveWithOverCheck(args, isPointerOver);
+				}
 
 				if (!isHandledOrBubblingInManaged)
 				{
@@ -109,11 +117,14 @@ namespace Windows.UI.Xaml
 		{
 			try
 			{
-				var args = new PointerRoutedEventArgs(touches, evt, this);
 				var isHandledOrBubblingInManaged = default(bool);
+				foreach (UITouch touch in touches)
+				{
+					var args = new PointerRoutedEventArgs(touch, evt, this);
 
-				isHandledOrBubblingInManaged |= OnNativePointerUp(args);
-				isHandledOrBubblingInManaged |= OnNativePointerExited(args);
+					isHandledOrBubblingInManaged |= OnNativePointerUp(args);
+					isHandledOrBubblingInManaged |= OnNativePointerExited(args);
+				}
 
 				if (!isHandledOrBubblingInManaged)
 				{
@@ -133,15 +144,18 @@ namespace Windows.UI.Xaml
 		{
 			try
 			{
-				var args = new PointerRoutedEventArgs(touches, evt, this);
 				var isHandledOrBubblingInManaged = default(bool);
+				foreach (UITouch touch in touches)
+				{
+					var args = new PointerRoutedEventArgs(touch, evt, this);
 
-				// Note: We should have raise either PointerCaptureLost or PointerCancelled here depending of the reason which
-				//		 drives the system to bubble a lost. However we don't have this kind of information on iOS, and it's
-				//		 usually due to the ScrollView which kicks in. So we always raise the CaptureLost which is the behavior
-				//		 on UWP when scroll starts (even if no capture are actives at this time).
+					// Note: We should have raise either PointerCaptureLost or PointerCancelled here depending of the reason which
+					//		 drives the system to bubble a lost. However we don't have this kind of information on iOS, and it's
+					//		 usually due to the ScrollView which kicks in. So we always raise the CaptureLost which is the behavior
+					//		 on UWP when scroll starts (even if no capture are actives at this time).
 
-				isHandledOrBubblingInManaged |= OnNativePointerCancel(args, isSwallowedBySystem: true);
+					isHandledOrBubblingInManaged |= OnNativePointerCancel(args, isSwallowedBySystem: true);
+				}
 
 				if (!isHandledOrBubblingInManaged)
 				{
@@ -403,7 +417,7 @@ namespace Windows.UI.Xaml
 		#endregion
 
 		#region Capture
-		// Pointer capture is not supported on iOS
+		// Pointer capture is not needed on iOS, otherwise we could use ExclusiveTouch = true;
 		// partial void CapturePointerNative(Pointer pointer);
 		// partial void ReleasePointerNative(Pointer pointer);
 		#endregion
