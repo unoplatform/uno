@@ -34,6 +34,12 @@ namespace Windows.UI.Input
 
 		public PointerUpdateKind PointerUpdateKind { get; internal set; }
 
+#if __MACOS__
+		public float XTilt { get; internal set; } = 0f;
+
+		public float YTilt { get; internal set; } = 0f;
+#endif
+
 		[global::Uno.NotImplemented]
 		public int MouseWheelDelta => 0;
 

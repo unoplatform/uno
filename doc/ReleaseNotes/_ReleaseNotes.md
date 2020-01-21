@@ -1,6 +1,8 @@
 # Release notes
 
 ### Features
+
+- Support for `PointerDown`, `PointerUp` `PointerEntered`, `PointerExited` and `PointerMoved` events on macOS
 - Support for `Launcher` API on macOS, support for special URIs
 - Support for `EmailManager.ShowComposeNewEmailAsync`
 - Add support for `StorageFolder.CreateFileAsync(string path)`
@@ -20,6 +22,8 @@
 -
 
 ### Bug fixes
+
+- [#2465] Raising macOS Button Click event
 - [#2506] `DesignMode.DesignMode2Enabled` no longer throws (is always `false` on non-UWP platforms)
 - [#915] FontFamily values are now properly parsed on WebAssembly, updated docs with new info
 - [#2213] Fixed `ApplicationData` on MacOS, added support for `LocalSettings`
