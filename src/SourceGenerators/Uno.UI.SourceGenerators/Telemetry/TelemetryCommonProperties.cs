@@ -81,9 +81,9 @@ namespace Uno.UI.SourceGenerators.Telemetry
 
 		private string GetProductVersion()
 		{
-			if(this.GetType().Assembly.GetCustomAttributes(typeof(AssemblyFileVersionAttribute)).FirstOrDefault() is AssemblyFileVersionAttribute attribute)
+			if(this.GetType().Assembly.GetCustomAttributes(typeof(AssemblyInformationalVersionAttribute)).FirstOrDefault() is AssemblyInformationalVersionAttribute attribute)
 			{
-				return attribute.Version;
+				return attribute.InformationalVersion;
 			}
 
 			return "Unknown";

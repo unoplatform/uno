@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -132,7 +133,7 @@ namespace Windows.UI.Xaml
 			if (sender is UIElement elt && !elt.IsHitTestVisibleCoalesced)
 			{
 				elt.Release(PointerCaptureKind.Any);
-				elt.SetPressed(null, false, muteEvent: true);
+				elt.ClearPressed();
 				elt.SetOver(null, false, muteEvent: true);
 			}
 		};
@@ -142,7 +143,7 @@ namespace Windows.UI.Xaml
 			if (sender is UIElement elt)
 			{
 				elt.Release(PointerCaptureKind.Any);
-				elt.SetPressed(null, false, muteEvent: true);
+				elt.ClearPressed();
 				elt.SetOver(null, false, muteEvent: true);
 			}
 		};
@@ -221,6 +222,18 @@ namespace Windows.UI.Xaml
 				that.SafeRaiseEvent(DoubleTappedEvent, new DoubleTappedRoutedEventArgs(that, args));
 			}
 		};
+
+		private static readonly TypedEventHandler<GestureRecognizer, RightTappedEventArgs> OnRecognizerRightTapped = (sender, args) =>
+		{
+			var that = (UIElement)sender.Owner;
+			that.SafeRaiseEvent(RightTappedEvent, new RightTappedRoutedEventArgs(that, args));
+		};
+
+		private static readonly TypedEventHandler<GestureRecognizer, HoldingEventArgs> OnRecognizerHolding = (sender, args) =>
+		{
+			var that = (UIElement)sender.Owner;
+			that.SafeRaiseEvent(HoldingEvent, new HoldingRoutedEventArgs(that, args));
+		};
 		#endregion
 
 		private bool _isGestureCompleted;
@@ -235,6 +248,8 @@ namespace Windows.UI.Xaml
 			recognizer.ManipulationInertiaStarting += OnRecognizerManipulationInertiaStarting;
 			recognizer.ManipulationCompleted += OnRecognizerManipulationCompleted;
 			recognizer.Tapped += OnRecognizerTapped;
+			recognizer.RightTapped += OnRecognizerRightTapped;
+			recognizer.Holding += OnRecognizerHolding;
 
 			// Allow partial parts to subscribe to pointer events (WASM)
 			OnGestureRecognizerInitialized(recognizer);
@@ -319,6 +334,14 @@ namespace Windows.UI.Xaml
 			{
 				_gestures.Value.GestureSettings |= GestureSettings.DoubleTap;
 			}
+			else if (routedEvent == RightTappedEvent)
+			{
+				_gestures.Value.GestureSettings |= GestureSettings.RightTap;
+			}
+			else if (routedEvent == HoldingEvent)
+			{
+				_gestures.Value.GestureSettings |= GestureSettings.Hold; // Note: We do not set GestureSettings.HoldWithMouse as WinUI never raises Holding for mouse pointers
+			}
 		}
 		#endregion
 
@@ -362,9 +385,18 @@ namespace Windows.UI.Xaml
 		partial void PrepareManagedGestureEventBubbling(RoutedEvent routedEvent, ref RoutedEventArgs args, ref bool isBubblingAllowed)
 		{
 			// When we bubble a gesture event from a child, we make sure to abort any pending gesture/manipulation on the current element
-			if (_gestures.IsValueCreated)
+			if (routedEvent == HoldingEvent)
 			{
-				_gestures.Value.CompleteGesture();
+				if (_gestures.IsValueCreated)
+				{
+					_gestures.Value.PreventHolding(((HoldingRoutedEventArgs) args).PointerId);
+				}
+			}
+			else
+			{
+				// Note: Here we should prevent only the same gesture ... but actually currently supported gestures
+				// are mutually exclusive, so if a child element detected a gesture, it's safe to prevent all of them.
+				CompleteGesture(); // Make sure to set the flag _isGestureCompleted, so won't try to recognize double tap
 			}
 		}
 
@@ -494,7 +526,7 @@ namespace Windows.UI.Xaml
 				// We need to process only events that are bubbling natively to this control,
 				// if they are bubbling in managed it means that they were handled by a child control,
 				// so we should not use them for gesture recognition.
-				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), isManagedBubblingEvent || isOverOrCaptured);
+				_gestures.Value.ProcessMoveEvents(args.GetIntermediatePoints(this), !isManagedBubblingEvent || isOverOrCaptured);
 			}
 
 			return handledInManaged;
@@ -518,7 +550,7 @@ namespace Windows.UI.Xaml
 				// We need to process only events that are bubbling natively to this control (i.e. isOverOrCaptured == true),
 				// if they are bubbling in managed it means that they where handled a child control,
 				// so we should not use them for gesture recognition.
-				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this), isManagedBubblingEvent || isOverOrCaptured);
+				_gestures.Value.ProcessUpEvent(args.GetCurrentPoint(this), !isManagedBubblingEvent || isOverOrCaptured);
 			}
 
 			// We release the captures on up but only after the released event and processed the gesture
@@ -673,6 +705,8 @@ namespace Windows.UI.Xaml
 		#endregion
 
 		#region Pointer pressed state (Updated by the partial API OnNative***)
+		private readonly HashSet<uint> _pressedPointers = new HashSet<uint>();
+
 		/// <summary>
 		/// Indicates if a pointer was pressed while over the element (i.e. PressedState).
 		/// Note: The pressed state will remain true even if the pointer exits the control (while pressed)
@@ -684,7 +718,7 @@ namespace Windows.UI.Xaml
 		/// So it means that this flag will be maintained only if you subscribe at least to one pointer event
 		/// (or override one of the OnPointer*** methods).
 		/// </remarks>
-		internal bool IsPointerPressed { get; set; } // TODO: 'Set' should be private, but we need to update all controls that are setting
+		internal bool IsPointerPressed => _pressedPointers.Count != 0;
 
 		/// <summary>
 		/// Indicates if a pointer was pressed while over the element (i.e. PressedState)
@@ -697,30 +731,49 @@ namespace Windows.UI.Xaml
 		/// So it means that this method will give valid state only if you subscribe at least to one pointer event
 		/// (or override one of the OnPointer*** methods).
 		/// </remarks>
-		internal bool IsPressed(Pointer pointer) => IsPointerPressed;
+		/// <remarks>
+		/// Note that on UWP the "pressed" state is managed **PER POINTER**, and not per pressed button on the given pointer.
+		/// It means that with a mouse if you follow this sequence : press left => press right => release right => release left,
+		/// you will get only one 'PointerPressed' and one 'PointerReleased'.
+		/// Same thing if you release left first (press left => press right => release left => release right), and for the pen's barrel button.
+		/// </remarks>
+		internal bool IsPressed(Pointer pointer) => _pressedPointers.Contains(pointer.PointerId);
 
 		private bool SetPressed(PointerRoutedEventArgs args, bool isPressed, bool muteEvent = false)
 		{
-			var wasPressed = IsPointerPressed;
-			IsPointerPressed = isPressed;
-
-			if (muteEvent
-				|| wasPressed == isPressed) // nothing changed
+			var wasPressed = IsPressed(args.Pointer);
+			if (wasPressed == isPressed) // nothing changed
 			{
 				return false;
 			}
 
 			if (isPressed) // Pressed
 			{
+				_pressedPointers.Add(args.Pointer.PointerId);
+
+				if (muteEvent)
+				{
+					return false;
+				}
+
 				args.Handled = false;
 				return RaisePointerEvent(PointerPressedEvent, args);
 			}
 			else // Released
 			{
+				_pressedPointers.Remove(args.Pointer.PointerId);
+
+				if (muteEvent)
+				{
+					return false;
+				}
+
 				args.Handled = false;
 				return RaisePointerEvent(PointerReleasedEvent, args);
 			}
 		}
+
+		private void ClearPressed() => _pressedPointers.Clear();
 		#endregion
 
 		#region Pointer capture state (Updated by the partial API OnNative***)
