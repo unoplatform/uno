@@ -113,7 +113,7 @@ namespace SamplesApp.UITests.TestFramework
 			}
 		}
 
-		public static void HasColorAt(FileInfo screenshot, float x, float y, Color expectedColor)
+		public static void HasColorAt(FileInfo screenshot, float x, float y, Color expectedColor, byte tolerance = 0)
 		{
 			using (var bitmap = new Bitmap(screenshot.FullName))
 			{
@@ -121,11 +121,18 @@ namespace SamplesApp.UITests.TestFramework
 				Assert.GreaterOrEqual(bitmap.Height, (int)y);
 				var pixel = bitmap.GetPixel((int)x, (int)y);
 
-				Assert.AreEqual(expectedColor.ToArgb(), pixel.ToArgb()); //Convert to ARGB value, because 'named colors' are not considered equal to their unnamed equivalents(!)
+				var expected = ToArgbCode(expectedColor);
+				var actual = ToArgbCode(pixel);
+
+				//Convert to ARGB value, because 'named colors' are not considered equal to their unnamed equivalents(!)
+				Assert.IsTrue(Math.Abs(pixel.A - expectedColor.A) <= tolerance, $"[{x},{y}] Alpha (expected: {expected} | actual: {actual})");
+				Assert.IsTrue(Math.Abs(pixel.R - expectedColor.R) <= tolerance, $"[{x},{y}] Red (expected: {expected} | actual: {actual})");
+				Assert.IsTrue(Math.Abs(pixel.G - expectedColor.G) <= tolerance, $"[{x},{y}] Green (expected: {expected} | actual: {actual})");
+				Assert.IsTrue(Math.Abs(pixel.B - expectedColor.B) <= tolerance, $"[{x},{y}] Blue (expected: {expected} | actual: {actual})");
 			}
 		}
 
-		public static void AssertDoesNotHaveColorAt(FileInfo screenshot, float x, float y, Color excludedColor)
+		public static void AssertDoesNotHaveColorAt(FileInfo screenshot, float x, float y, Color excludedColor, byte tolerance = 0)
 		{
 			using (var bitmap = new Bitmap(screenshot.FullName))
 			{
@@ -133,8 +140,19 @@ namespace SamplesApp.UITests.TestFramework
 				Assert.GreaterOrEqual(bitmap.Height, (int)y);
 				var pixel = bitmap.GetPixel((int)x, (int)y);
 
-				Assert.AreNotEqual(excludedColor.ToArgb(), pixel.ToArgb()); //Convert to ARGB value, because 'named colors' are not considered equal to their unnamed equivalents(!)
+				var excluded = ToArgbCode(excludedColor);
+				var actual = ToArgbCode(pixel);
+
+				//Convert to ARGB value, because 'named colors' are not considered equal to their unnamed equivalents(!)
+				var equals = Math.Abs(pixel.A - excludedColor.A) <= tolerance
+					&& Math.Abs(pixel.R - excludedColor.R) <= tolerance
+					&& Math.Abs(pixel.G - excludedColor.G) <= tolerance
+					&& Math.Abs(pixel.B - excludedColor.B) <= tolerance;
+
+				Assert.IsFalse(equals, $"[{x},{y}] Alpha (excluded: {excluded} | actual: {actual})");
 			}
 		}
+		private static string ToArgbCode(Color color)
+			=> $"{color.A:X2}{color.R:X2}{color.G:X2}{color.B:X2}";
 	}
 }
