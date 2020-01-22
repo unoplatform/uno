@@ -25,13 +25,13 @@ import android.view.ViewParent;
 	final boolean getCustomDispatchIsActive() { return _isCustomDispatchIsActive; }
 	final void setCustomDispatchIsActive(boolean isCustomDispatchIsActive) { _isCustomDispatchIsActive = isCustomDispatchIsActive; }
 
-	// The "cached target" is used by the custom dispatch logic to track the last child to which an event was sent
+	// The "current target" is used by the custom dispatch logic to track the last child to which an event was sent
 	// This is required in order to make sure to follow the full events sequences: down->move->up OR enter->move->exit
-	// (For instance on a HOVER_MOVE, if the pointer goes out of the current "cached target" we still make sure to
-	// send it to this "cached target" the event in order to raise the HOVER_EXIT)
-	private View _cachedTarget;
-	final View getCachedTarget() { return _cachedTarget; }
-	final void setCachedTarget(View child) { _cachedTarget = child; }
+	// (For instance on a HOVER_MOVE, if the pointer goes out of this "current target" we still make sure to
+	// send it to this "current target" the event in order to raise the HOVER_EXIT)
+	private View _currentTarget;
+	final View getCurrentTarget() { return _currentTarget; }
+	final void setCurrentTarget(View child) { _currentTarget = child; }
 
 	// specific to the raised event (generic vs touch)
 
@@ -66,6 +66,11 @@ import android.view.ViewParent;
 /* internal */ final class UnoMotionHelper {
 	private static final String LOGTAG = "UnoViewGroup";
 
+	// Stylus when barrel is pressed when touching the screen
+	private static final int STYLUS_WITH_BARREL_DOWN = 211;
+	private static final int STYLUS_WITH_BARREL_MOVE = 213;
+	private static final int STYLUS_WITH_BARREL_UP = 212;
+
 	/**
 	 * The singleton instance of the helper
 	 */
@@ -76,14 +81,14 @@ import android.view.ViewParent;
 	private View _currentMotionOriginalSource;
 
 	// To trace the pointer events (dispatchTouchEvent and dispatchGenericMotionEvent),
-	// uncomment this and then uncomment logs in the method itself.
+	// uncomment this and then uncomment logs in the method itself (Replace all "// Log" by "Log").
 	/*
 	private static String _indent = "";
 	public boolean dispatchMotionEvent(Uno.UI.MotionTargetAdapter adapter, MotionEvent event)
 	{
 		final ViewGroup view = adapter.asViewGroup();
 		final String originalIndent = _indent;
-		Log.i(LOGTAG, _indent + "    + " + view.toString() + "(" + System.identityHashCode(this) + ") " +
+		Log.i(LOGTAG, _indent + "    + " + view.toString() + "(" + System.identityHashCode(view) + ") " +
 			"[evt: " + String.format("%.2f", event.getX()) + "," + String.format("%.2f", event.getY()) + " | size: " + view.getWidth() + "x" + view.getHeight() + " | scroll: x="+ view.getScrollX() + " y=" + view.getScrollY() + "]");
 		_indent += "    | ";
 		Log.i(LOGTAG, _indent + event.toString());
@@ -137,24 +142,15 @@ import android.view.ViewParent;
 		_currentMotionOriginalSource = null;
 
 		final boolean isDown = event.getAction() == MotionEvent.ACTION_DOWN;
-		final boolean isBeginOfSequence = isDown || event.getAction() == MotionEvent.ACTION_HOVER_ENTER;
-		if (isBeginOfSequence) {
+		final boolean isBeginningOfSequence = isDown || event.getAction() == MotionEvent.ACTION_HOVER_ENTER || event.getAction() == STYLUS_WITH_BARREL_DOWN;
+		if (isBeginningOfSequence) {
 			// When we receive a pointer DOWN, we have to reset the down -> move -> up sequence,
 			// so the dispatch will re-evaluate the _customDispatchTouchTarget;
 			// Note: we do not support the MotionEvent splitting for the custom touch target,
 			//		 we expect that the children will properly split the events
 
 			adapter.setCustomDispatchIsActive(target.getChildrenRenderTransformCount() > 0);
-			adapter.setCachedTarget(null);
-
-			// Make sure that the system won't stole the motion events if the ManipulationMode is not 'System'.
-			// Note: We have to do this in native as we might not forward the ACTION_DOWN if !target.getIsNativeMotionEventsEnabled()
-			// Note: This is automatically cleared on each ACTION_UP
-			if (target.getIsNativeMotionEventsInterceptForbidden()) {
-				// Log.i(LOGTAG, _indent + "INTERCEPT disable (i.e. scrolling disabled on parents)");
-
-				view.requestDisallowInterceptTouchEvent(true);
-			}
+			adapter.setCurrentTarget(null);
 		}
 
 		if (!target.getNativeIsHitTestVisible() || !target.getNativeIsEnabled()) {
@@ -164,16 +160,16 @@ import android.view.ViewParent;
 			return false;
 		}
 
-		if (isBeginOfSequence && !isMotionInView(event, view)) {
+		if (isBeginningOfSequence && !isMotionInView(event, view)) {
 			// When using the "super" dispatch path, it's possible that for visual constraints (i.e. clipping),
 			// the view must not handle the touch. If that's the case, the touch event must be dispatched
 			// to other controls.
-			// Note: We do this check only when starting a new manipulation (isBeginOfSequence), so the whole down->move->up sequence is ignored;
+			// Note: We do this check only when starting a new manipulation (isBeginningOfSequence), so the whole down->move->up sequence is ignored;
 			// Warning: We should also do this check for events that does not have strong sequence concept (i.e. Hover)
 			// 			(!dispatch.getIsTargetCachingSupported() || isDown), BUT if we do this, we may miss some HOVER_EXIT
 			//			So we prefer to not follow the UWP behavior (PointerEnter/Exit are raised only when entering/leaving
 			//			non clipped content) and get all the events.
-			// Log.i(LOGTAG, _indent + "BLOCKED (not in view due to clipping)");
+			// Log.i(LOGTAG, _indent + "BLOCKED (not in view due to clipping, or invalid dispatch comming from custom)");
 
 			return false;
 		}
@@ -183,22 +179,40 @@ import android.view.ViewParent;
 		//		 (e.g. the growing circles in buttons when keeping pressed (RippleEffect)).
 
 		boolean childIsTouchTarget; // a.k.a. blocking
-		if (adapter.getCustomDispatchIsActive()) {
+		final boolean isCustomDispatch = adapter.getCustomDispatchIsActive();
+		if (isCustomDispatch) {
 			// Log.i(LOGTAG, _indent + "CUSTOM dispatch (" + target.getChildrenRenderTransformCount() + " of " + view.getChildCount() + " children are transformed )");
 
-			// Because we do not call dispatchToSuper(), we must manually call requestDisallowInterceptTouchEvent in the same circumstances
-			// that dispatchToSuper would, otherwise we get inconsistencies (children have the flag but parents do not).
-			final boolean isCancel = event.getAction() == MotionEvent.ACTION_CANCEL;
-			final boolean isHover = event.getAction() == MotionEvent.ACTION_HOVER_MOVE;
-			if (isDown || isCancel || isHover) {
-				view.requestDisallowInterceptTouchEvent(false);
-			}
 
 			childIsTouchTarget = dispatchStaticTransformedMotionEvent(adapter, event);
 		} else {
 			// Log.i(LOGTAG, _indent + "SUPER dispatch (none of the " + view.getChildCount() + " children is transformed)");
 
 			childIsTouchTarget = adapter.dispatchToSuper(event);
+		}
+
+		if (isDown) {
+			// Make sure that the system won't stole the motion events if the ManipulationMode is not 'System'.
+			// Note: We have to do this in native as we might not forward the ACTION_DOWN if !target.getIsNativeMotionEventsEnabled()
+			// Note: This is automatically cleared on each ACTION_UP
+			// Note: This must be done **after** invoking the super.dispatch as it will reset the **local flag** in 'resetTouchState'
+			//		 https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/view/ViewGroup.java#2600
+			if (target.getIsNativeMotionEventsInterceptForbidden()) {
+				// Log.i(LOGTAG, _indent + "INTERCEPT disable (i.e. scrolling disabled on parents)");
+
+				view.requestDisallowInterceptTouchEvent(true);
+			}
+		} else if (isCustomDispatch && (event.getAction() == MotionEvent.ACTION_UP || event.getAction() == MotionEvent.ACTION_CANCEL)) {
+			// In case of a custom dispatch, we had bypassed a the 'resetTouchState' (https://android.googlesource.com/platform/frameworks/base/+/master/core/java/android/view/ViewGroup.java#2779)
+			// which is invoked in case of a "endOfSequence" event and which clears the **local** disallow intercept flag.
+			// As we cannot reset the local flag only we have to 'requestDisallowInterceptTouchEvent(false)' which will
+			// clear the local flag, and also walk up the tree and clear the flag on all parents.
+			// Note: As we manage this flag only for "pressed sequence", and as the `requestDisallowInterceptTouchEvent` is much heavier
+			//		 than removeing a local flag, not like the super.dispatch, we won't reset it for ACTION_HOVER_MOVE.
+
+			// Log.i(LOGTAG, _indent + "INTERCEPT restored (i.e. scrolling restored on parents)");
+
+			view.requestDisallowInterceptTouchEvent(false);
 		}
 
 		// Note: There is a bug (#14712) where the UnoViewGroup receives the MOTION_DOWN,
@@ -308,14 +322,16 @@ import android.view.ViewParent;
 		// ViewGroup.dispatchTouchEvent() isn't called for Down then all subsequent events won't be handled correctly
 		// (because mFirstTouchTarget won't be set)
 
-		final View cachedChild = adapter.getCachedTarget();
-		if (cachedChild != null) {
+		final View currentTarget = adapter.getCurrentTarget();
+		if (currentTarget != null) {
 			// We already have a target for the events, try to apply the static transform and dispatch the event.
 			// If the event was not handled and we are not dealing with a "strong sequence" (a.k.a. implicit capture),
-			// we need to update the cached target.
+			// we need to update the current target.
 
-			final boolean handled = dispatchStaticTransformedMotionEvent(adapter, cachedChild, true, event);
+			final boolean handled = dispatchStaticTransformedMotionEvent(adapter, currentTarget, true, event);
 			if (handled || adapter.getIsStrongSequence()) {
+				// Log.i(LOGTAG, _indent + "Custom dispatched to current target " + currentTarget.toString() + " [handled: " + handled + " | isStrongSequence: " + adapter.getIsStrongSequence() + "]");
+
 				return true;
 			}
 		}
@@ -327,22 +343,29 @@ import android.view.ViewParent;
 			View child = view.getChildAt(i);
 
 			// Same check as native "canViewReceivePointerEvents"
-			if (child == cachedChild || child.getVisibility() != View.VISIBLE || child.getAnimation() != null) {
+			if (child == currentTarget || child.getVisibility() != View.VISIBLE || child.getAnimation() != null) {
+				// Log.i(LOGTAG, _indent + "Custom dispatch ignored child #" + i + " (" + child.toString() + ") [isCurrent: " + (child == currentTarget) + " | visibility: " + child.getVisibility() + " | isAnimating: " + (child.getAnimation() != null) + "]");
+
 				continue;
 			}
 
 			if (dispatchStaticTransformedMotionEvent(adapter, child, false, event)) {
-				adapter.setCachedTarget(child); // (try to) cache the child for future events
+				// Log.i(LOGTAG, _indent + "Custom dispatch is setting child #" + i + " (" + child.toString() + ") as current target.");
+
+				adapter.setCurrentTarget(child); // (try to) cache the child for future events
 				return true; // Stop at the first child which is able to handle the event
+			} else {
+				// Log.i(LOGTAG, _indent + "Custom dispatch tried child #" + i + " (" + child.toString() + ") but dispatch return false.");
 			}
 		}
 
 		// No target found ...
-		adapter.setCachedTarget(null);
+		// Log.i(LOGTAG, _indent + "Custom dispatch was not able to find a target child, current is being cleared.");
+		adapter.setCurrentTarget(null);
 		return false;
 	}
 
-	private boolean dispatchStaticTransformedMotionEvent(Uno.UI.MotionTargetAdapter adapter, View child, boolean isCachedTarget, MotionEvent event){
+	private boolean dispatchStaticTransformedMotionEvent(Uno.UI.MotionTargetAdapter adapter, View child, boolean isSequenceContinuation, MotionEvent event){
 		// For the ACTION_CANCEL the coordinates are not set properly:
 		// "Canceling motions is a special case.  We don't need to perform any transformations
 		// or filtering.  The important part is the action, not the contents."
@@ -363,7 +386,7 @@ import android.view.ViewParent;
 
 			event.offsetLocation(offsetX, offsetY);
 
-			handled = dispatchStaticTransformedMotionEventCore(adapter, child, event, isCachedTarget);
+			handled = dispatchStaticTransformedMotionEventCore(adapter, child, event, isSequenceContinuation);
 
 			event.offsetLocation(-offsetX, -offsetY);
 		} else {
@@ -377,7 +400,7 @@ import android.view.ViewParent;
 			transformedEvent.offsetLocation(offsetX, offsetY);
 			transformedEvent.transform(inverse);
 
-			handled = dispatchStaticTransformedMotionEventCore(adapter, child, transformedEvent, isCachedTarget);
+			handled = dispatchStaticTransformedMotionEventCore(adapter, child, transformedEvent, isSequenceContinuation);
 
 			transformedEvent.recycle();
 		}
@@ -385,27 +408,27 @@ import android.view.ViewParent;
 		return handled;
 	}
 
-	private boolean dispatchStaticTransformedMotionEventCore(Uno.UI.MotionTargetAdapter adapter, View child, MotionEvent transformedEvent, boolean isCachedTarget) {
-		if ((isCachedTarget && adapter.getIsStrongSequence()) || isMotionInView(transformedEvent, child)) {
+	private boolean dispatchStaticTransformedMotionEventCore(Uno.UI.MotionTargetAdapter adapter, View child, MotionEvent transformedEvent, boolean isSequenceContinuation) {
+		if ((isSequenceContinuation && adapter.getIsStrongSequence()) || isMotionInView(transformedEvent, child)) {
 			// At this point the target is either a cached target of an adapter which abstract a strong event sequence
 			// with an implicit capture (i.e. down->move->up), OR the pointer is over the target.
 			// In both cases, we have to dispatch the motion event to it, and propagates its handling result.
 
-			// Log.i(LOGTAG, _indent + "Dispatching to child " + child.toString() + " [evt: " + String.format("%.2f", transformedEvent.getX()) + "," + String.format("%.2f", transformedEvent.getY()) + " | isCachedTarget: " + isCachedTarget + " | inView: " + isMotionInView(transformedEvent, child) + "]");
+			// Log.i(LOGTAG, _indent + "Dispatching to child " + child.toString() + " [evt: " + String.format("%.2f", transformedEvent.getX()) + "," + String.format("%.2f", transformedEvent.getY()) + " | isSequenceContinuation: " + isSequenceContinuation + " | isStrongSequence: " + adapter.getIsStrongSequence() + " | inView: " + isMotionInView(transformedEvent, child) + "]");
 
 			return adapter.dispatchToChild(child, transformedEvent);
-		} else if (isCachedTarget) {
-			// If the target is comming from cache, but the pointer is no longer over it,
+		} else if (isSequenceContinuation) {
+			// If the target is comming from cache (a.k.a. current), but the pointer is no longer over it,
 			// we still forward the event to it in order to clean up it state, but we don't consider
 			// the event as handled (so the caller will be able to cycle on other sibblings to find the new target)
 
-			// Log.i(LOGTAG, _indent + "Dispatching to **OLD** cached child " + child.toString() + " (Will be removed from cache as no longer in view) [evt: " + String.format("%.2f", transformedEvent.getX()) + "," + String.format("%.2f", transformedEvent.getY()) + " | isCachedTarget: " + isCachedTarget + " | inView: " + isMotionInView(transformedEvent, child) + "]");
+			// Log.i(LOGTAG, _indent + "Dispatching to **PREVIOUS** current target " + child.toString() + " (Will be removed from current as no longer in view) [evt: " + String.format("%.2f", transformedEvent.getX()) + "," + String.format("%.2f", transformedEvent.getY()) + " | isSequenceContinuation: " + isSequenceContinuation + " | inView: " + isMotionInView(transformedEvent, child) + "]");
 
 			adapter.dispatchToChild(child, transformedEvent);
 
 			return false;
 		} else {
-			// Log.i(LOGTAG, _indent + "Ignoring child " + child.toString() + " as its not in cache nor in view [evt: " + String.format("%.2f", transformedEvent.getX()) + "," + String.format("%.2f", transformedEvent.getY()) + " | isCachedTarget: " + isCachedTarget + " | inView: " + isMotionInView(transformedEvent, child) + "]");
+			// Log.i(LOGTAG, _indent + "Ignoring child " + child.toString() + " as its not flagged as current target of sequence nor in view [evt: " + String.format("%.2f", transformedEvent.getX()) + "," + String.format("%.2f", transformedEvent.getY()) + " | isSequenceContinuation: " + isSequenceContinuation + " | inView: " + isMotionInView(transformedEvent, child) + "]");
 
 			return false;
 		}
@@ -445,6 +468,9 @@ import android.view.ViewParent;
 			case MotionEvent.ACTION_HOVER_ENTER:
 			case MotionEvent.ACTION_HOVER_MOVE:
 			case MotionEvent.ACTION_HOVER_EXIT:
+			case STYLUS_WITH_BARREL_DOWN:
+			case STYLUS_WITH_BARREL_MOVE:
+			case STYLUS_WITH_BARREL_UP:
 				return true;
 			default:
 				return false;

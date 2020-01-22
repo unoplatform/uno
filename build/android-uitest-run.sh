@@ -3,16 +3,28 @@ set -euo pipefail
 IFS=$'\n\t'
 
 export BUILDCONFIGURATION=Release
+export ANDROID_HOME=$BUILD_SOURCESDIRECTORY/build/android-sdk
 
 cd $BUILD_SOURCESDIRECTORY/build
+
+mkdir android-sdk
+pushd android-sdk
+wget https://dl.google.com/android/repository/sdk-tools-darwin-4333796.zip
+unzip sdk-tools-darwin-4333796.zip
+popd
 
 # uncomment the following lines to override the installed Xamarin.Android SDK
 # wget -nv https://jenkins.mono-project.com/view/Xamarin.Android/job/xamarin-android-d16-2/49/Azure/processDownloadRequest/xamarin-android/xamarin-android/bin/BuildRelease/Xamarin.Android.Sdk-OSS-9.4.0.59_d16-2_6d9b105.pkg
 # sudo installer -verbose -pkg Xamarin.Android.Sdk-OSS-9.4.0.59_d16-2_6d9b105.pkg -target /
 
 # Install AVD files
-echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install 'system-images;android-28;google_apis;x86'
-echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis;x86"
+echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install 'tools'| tr '\r' '\n' | uniq
+echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install 'platform-tools'  | tr '\r' '\n' | uniq
+echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install 'build-tools;28.0.3' | tr '\r' '\n' | uniq
+echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install 'platforms;android-28' | tr '\r' '\n' | uniq
+echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install 'extras;android;m2repository' | tr '\r' '\n' | uniq
+echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install 'system-images;android-28;google_apis;x86' | tr '\r' '\n' | uniq
+echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis;x86" | tr '\r' '\n' | uniq
 
 # Create emulator
 echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n xamarin_android_emulator -k "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis;x86" --sdcard 128M --force

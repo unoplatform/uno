@@ -641,18 +641,12 @@ var Uno;
                 * To remove a value, set it to empty string.
                 * @param styles A dictionary of styles to apply on html element.
                 */
-            setStyle(elementId, styles, setAsArranged = false, clipToBounds) {
+            setStyle(elementId, styles) {
                 const element = this.getView(elementId);
                 for (const style in styles) {
                     if (styles.hasOwnProperty(style)) {
                         element.style.setProperty(style, styles[style]);
                     }
-                }
-                if (setAsArranged) {
-                    this.setAsArranged(element);
-                }
-                if (typeof clipToBounds === "boolean") {
-                    this.setClipToBounds(element, clipToBounds);
                 }
                 return "ok";
             }
@@ -672,10 +666,6 @@ var Uno;
                     const value = pairs[i + 1];
                     elementStyle.setProperty(key, value);
                 }
-                if (params.SetAsArranged) {
-                    this.setAsArranged(element);
-                }
-                this.setClipToBounds(element, params.ClipToBounds);
                 return true;
             }
             /**
@@ -688,21 +678,21 @@ var Uno;
                 element.style.setProperty(params.Name, String(params.Value));
                 return true;
             }
+            setArrangeProperties(elementId, clipToBounds) {
+                const element = this.getView(elementId);
+                this.setAsArranged(element);
+                this.setClipToBounds(element, clipToBounds);
+                return "ok";
+            }
             /**
-                * Set the CSS style of a html element.
-                *
-                * To remove a value, set it to empty string.
-                * @param styles A dictionary of styles to apply on html element.
+                * Remove the CSS style of a html element.
                 */
             resetStyle(elementId, names) {
                 this.resetStyleInternal(elementId, names);
                 return "ok";
             }
             /**
-                * Set the CSS style of a html element.
-                *
-                * To remove a value, set it to empty string.
-                * @param styles A dictionary of styles to apply on html element.
+                * Remove the CSS style of a html element.
                 */
             resetStyleNative(pParams) {
                 const params = WindowManagerResetStyleParams.unmarshal(pParams);
@@ -781,7 +771,7 @@ var Uno;
                 const element = this.getView(params.HtmlId);
                 var style = element.style;
                 style.transform = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
-                element.classList.remove(WindowManager.unoUnarrangedClassName);
+                this.setAsArranged(element);
                 return true;
             }
             /**
@@ -1000,7 +990,7 @@ var Uno;
                     }
                     src = src.parentElement;
                 }
-                return `${evt.pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.buttons};${evt.button};${evt.pointerType};${srcHandle};${evt.timeStamp}`;
+                return `${evt.pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.buttons};${evt.button};${evt.pointerType};${srcHandle};${evt.timeStamp};${evt.pressure}`;
             }
             /**
              * keyboard event extractor to be used with registerEventOnView
@@ -2214,13 +2204,10 @@ class WindowManagerSetStylesParams {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
-            ret.SetAsArranged = Boolean(Module.getValue(pData + 4, "i32"));
+            ret.Pairs_Length = Number(Module.getValue(pData + 4, "i32"));
         }
         {
-            ret.Pairs_Length = Number(Module.getValue(pData + 8, "i32"));
-        }
-        {
-            var pArray = Module.getValue(pData + 12, "*");
+            var pArray = Module.getValue(pData + 8, "*");
             if (pArray !== 0) {
                 ret.Pairs = new Array();
                 for (var i = 0; i < ret.Pairs_Length; i++) {
@@ -2236,9 +2223,6 @@ class WindowManagerSetStylesParams {
             else {
                 ret.Pairs = null;
             }
-        }
-        {
-            ret.ClipToBounds = Boolean(Module.getValue(pData + 16, "i32"));
         }
         return ret;
     }

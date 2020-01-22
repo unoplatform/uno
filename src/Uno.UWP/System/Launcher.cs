@@ -17,7 +17,7 @@ namespace Windows.System
 
 		public static Task<bool> LaunchUriAsync(Uri uri)
 		{
-#if __IOS__ || __ANDROID__ || __WASM__
+#if __IOS__ || __ANDROID__ || __WASM__ || __MACOS__
 
 			if (uri == null)
 			{
@@ -48,7 +48,7 @@ namespace Windows.System
 #endif
 		}
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __IOS__ || __MACOS__
 		public static IAsyncOperation<LaunchQuerySupportStatus> QueryUriSupportAsync(
 			Uri uri,
 			LaunchQuerySupportType launchQuerySupportType)

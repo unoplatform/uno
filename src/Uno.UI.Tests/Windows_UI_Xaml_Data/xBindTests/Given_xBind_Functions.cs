@@ -159,5 +159,56 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual(4, SUT.AddIntCallCount);
 			Assert.AreEqual(4, SUT.OffsetCallCount);
 		}
+
+		[TestMethod]
+		public void When_NullableProperty()
+		{
+			var SUT = new Binding_Nullable();
+
+			Assert.IsNull(SUT._NullableBinding.Text);
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("False", SUT._NullableBinding.Text);
+
+			SUT.myCheckBox.IsChecked = true;
+
+			Assert.AreEqual("True", SUT._NullableBinding.Text);
+
+			SUT.myCheckBox.IsChecked = false;
+
+			Assert.AreEqual("False", SUT._NullableBinding.Text);
+
+			SUT.myCheckBox.IsChecked = null;
+
+			Assert.AreEqual("False", SUT._NullableBinding.Text);
+		}
+
+		[TestMethod]
+		public void When_NullableProperty_And_ThreeState()
+		{
+			var SUT = new Binding_Nullable();
+			SUT.myCheckBox.IsThreeState = true;
+			SUT.myCheckBox.IsChecked = null;
+
+			Assert.IsNull(SUT._NullableBinding.Text);
+
+			SUT.ForceLoaded();
+
+			Assert.IsNull(SUT._NullableBinding.Text);
+
+			SUT.myCheckBox.IsChecked = true;
+
+			Assert.AreEqual("True", SUT._NullableBinding.Text);
+
+			SUT.myCheckBox.IsChecked = false;
+
+			Assert.AreEqual("False", SUT._NullableBinding.Text);
+
+			SUT.myCheckBox.IsChecked = null;
+
+			Assert.AreEqual("False", SUT._NullableBinding.Text);
+		}
+
 	}
 }

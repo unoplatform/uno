@@ -1,6 +1,4 @@
-﻿#if !NET461
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.System;
@@ -14,6 +12,7 @@ namespace Windows.UI.Xaml.Input
 			: base(originalSource)
 		{
 			Key = key;
+			OriginalKey = key;
 		}
 
 		public bool Handled { get; set; }
@@ -21,6 +20,6 @@ namespace Windows.UI.Xaml.Input
 
 		//TODO
 		//public CorePhysicalKeyStatus KeyStatus { get; }
+		public global::Windows.System.VirtualKey OriginalKey { get; }
 	}
 }
-#endif
