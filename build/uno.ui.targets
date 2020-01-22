@@ -56,10 +56,10 @@
   <Target Name="_UnoNotifyNugetOverride" BeforeTargets="PrepareProjectReferences">
     <ItemGroup>
       <!--
-      If System.* files are present, the package may have been overriden by an Uno.UI solution
+      If System.Collections* files are present, the package may have been overriden by an Uno.UI solution
       version before the introduction of this check.
       -->
-      <_OverrideFiles Include="$(MSBuildThisFileDirectory)../../tools/System*.dll"/>
+      <_OverrideFiles Include="$(MSBuildThisFileDirectory)../../tools/System.Collections*.dll"/>
     </ItemGroup>
     <PropertyGroup>
       <_warnForUnoOverride>false</_warnForUnoOverride>
