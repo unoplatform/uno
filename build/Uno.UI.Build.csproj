@@ -119,7 +119,7 @@
 
 		<MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0;CopyDSYM=False;UnoSampleAppDisableAPKGeneration=True;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(GITVERSION_FullSemVer)"
              Projects="..\src\Uno.UI.sln"
-             Targets="Build"
+             Targets="Restore;Build"
              RebaseOutputs="false"
              BuildInParallel="true" />
 
@@ -127,14 +127,14 @@
 
 	<Target Name="BuildCImacOS">
 
-		<MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0;CopyDSYM=False;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true" Projects="..\src\Uno.UI-vs4mac.sln" Targets="Build" RebaseOutputs="false" BuildInParallel="true" />
+		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true" Projects="..\src\Uno.UI-vs4mac.sln" Targets="Restore;Build" RebaseOutputs="false" BuildInParallel="true" />
 
 	</Target>
 
 	<Target Name="GenerateDoc">
 
 		<!-- Restore the nuget packages for the whole solution -->
-		<MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0;CopyDSYM=False;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true" Projects="..\src\Uno.UI.sln" Targets="Restore" RebaseOutputs="false" BuildInParallel="true" />
+		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true" Projects="..\src\Uno.UI.sln" Targets="Restore" RebaseOutputs="false" BuildInParallel="true" />
 
 		<MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0" Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj" Targets="Restore;Build" />
 		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\net461\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
