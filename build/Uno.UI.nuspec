@@ -16,16 +16,6 @@
 
     <dependencies>
 
-      <!-- Android 8.0 -->
-      <group targetFramework="MonoAndroid80">
-        <dependency id="Xamarin.Android.Support.v4" version="26.1.0.1" />
-        <dependency id="Xamarin.Android.Support.v7.AppCompat" version="26.1.0.1" />
-        <dependency id="Xamarin.Android.Support.v7.RecyclerView" version="26.1.0.1" />
-        <dependency id="Uno.SourceGenerationTasks" version="1.32.0-dev.297" />
-        <dependency id="Uno.Core" version="1.29.0-dev.93" />
-        <dependency id="Uno.Core.Build" version="1.29.0-dev.93" />
-      </group>
-
       <!-- Android 9.0 -->
       <group targetFramework="MonoAndroid90">
         <dependency id="Xamarin.Android.Support.v4" version="28.0.0.1" />
@@ -134,19 +124,6 @@
     <file src="..\src\Uno.UI.Toolkit\bin\Release\xamarinios10\Uno.UI.Toolkit.pdb" target="lib\xamarinios10" />
     <file src="..\src\Uno.UI.Toolkit\bin\Release\netstandard2.0\Uno.UI.Toolkit.dll" target="lib\netstandard2.0" />
     <file src="..\src\Uno.UI.Toolkit\bin\Release\netstandard2.0\Uno.UI.Toolkit.pdb" target="lib\netstandard2.0" />
-
-    <!-- Android 8.0 -->
-    <file src="..\src\Uno.UI\Bin\Release\monoandroid80\Uno.dll" target="lib\MonoAndroid80" />
-    <file src="..\src\Uno.UI\Bin\Release\monoandroid80\Uno.pdb" target="lib\MonoAndroid80" />
-    <file src="..\src\Uno.UI\Bin\Release\monoandroid80\Uno.Foundation.dll" target="lib\MonoAndroid80" />
-    <file src="..\src\Uno.UI\Bin\Release\monoandroid80\Uno.Foundation.pdb" target="lib\MonoAndroid80" />
-    <file src="..\src\Uno.UI\Bin\Release\monoandroid80\Uno.UI.BindingHelper.Android.dll" target="lib\MonoAndroid80" />
-    <file src="..\src\Uno.UI\Bin\Release\monoandroid80\Uno.UI.BindingHelper.Android.pdb" target="lib\MonoAndroid80" />
-    <file src="..\src\Uno.UI\Bin\Release\monoandroid80\Uno.UI.dll" target="lib\MonoAndroid80" />
-    <file src="..\src\Uno.UI\Bin\Release\monoandroid80\Uno.UI.pdb" target="lib\MonoAndroid80" />
-    <file src="..\src\Uno.UI\Bin\Release\monoandroid80\Uno.Xaml.dll" target="lib\MonoAndroid80" />
-    <file src="..\src\Uno.UI\Bin\Release\monoandroid80\Uno.Xaml.pdb" target="lib\MonoAndroid80" />
-    <file src="..\src\Uno.UI\Bin\Release\monoandroid80\*.xml" target="lib\MonoAndroid80" />
 
     <!-- Android 9.0 -->
     <file src="..\src\Uno.UI\Bin\Release\monoandroid90\Uno.dll" target="lib\MonoAndroid90" />

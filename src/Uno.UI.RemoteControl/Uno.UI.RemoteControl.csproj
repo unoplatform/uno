@@ -2,7 +2,7 @@
   
   <PropertyGroup>
     <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid90;netstandard2.0</TargetFrameworks>
-    <TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+    <TargetFrameworksCI>MonoAndroid90;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">

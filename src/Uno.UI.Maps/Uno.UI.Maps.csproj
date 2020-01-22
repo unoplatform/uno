@@ -38,12 +38,6 @@
 		<PackageReference Include="Uno.Core.Build"/>
 	</ItemGroup>
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
-		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="60.1142.1" />
-		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="60.1142.1" />
-		<PackageReference Include="Xamarin.Android.Support.v4" Version="26.1.0.1" PrivateAssets="none" />
-	</ItemGroup>
-
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
 		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="71.1600.0" />
 		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="71.1600.0" />

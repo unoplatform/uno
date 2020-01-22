@@ -2,7 +2,7 @@
   
   <PropertyGroup>
     <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid90;net461;netstandard2.0</TargetFrameworks>
-    <TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+    <TargetFrameworksCI>MonoAndroid90;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
   </PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
@@ -46,17 +46,6 @@
 		<PackageReference Include="Uno.MonoAnalyzers" />
 	</ItemGroup>
 	
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
-		<PackageReference Include="Xamarin.Android.Support.v4">
-			<Version>26.1.0.1</Version>
-			<PrivateAssets>none</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
-			<Version>26.1.0.1</Version>
-			<PrivateAssets>none</PrivateAssets>
-		</PackageReference>
-	</ItemGroup>
-
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
 		<PackageReference Include="Xamarin.Android.Support.v4">
 			<Version>28.0.0.1</Version>
