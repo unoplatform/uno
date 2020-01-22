@@ -64,7 +64,8 @@ namespace Windows.UI.Xaml.Input
 			{
 				IsPrimary = true,
 				IsInRange = Pointer.IsInRange,
-				IsLeftButtonPressed = Pointer.IsInContact
+				IsLeftButtonPressed = Pointer.IsInContact,
+				Pressure = (float)(_nativeTouch.Force / _nativeTouch.MaximumPossibleForce)
 			};
 
 		#region Misc static helpers

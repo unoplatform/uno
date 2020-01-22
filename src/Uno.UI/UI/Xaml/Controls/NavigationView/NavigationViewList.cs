@@ -7,7 +7,9 @@
 
 using System;
 using Windows.System;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -31,9 +33,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		protected override DependencyObject GetContainerForItemOverride()
-			=> new NavigationViewItem() { IsGeneratedContainer = true };
-
-
+			=> IsTemplateOwnContainer ? CreateOwnContainer() : new NavigationViewItem() { IsGeneratedContainer = true };
 
 		// IItemsControlOverrides
 

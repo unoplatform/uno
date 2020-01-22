@@ -8,99 +8,200 @@
 	mc:Ignorable="d"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<StackPanel>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition />
+			<RowDefinition Height="Auto" />
+			<RowDefinition />
+			<RowDefinition Height="Auto" />
+			<RowDefinition />
+		</Grid.RowDefinitions>
+
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition />
+			<ColumnDefinition />
+		</Grid.ColumnDefinitions>
+
+		<TextBlock
+			Text="Double on each zones. Last double tapped:"
+			TextWrapping="Wrap"
+			Grid.Row="0"
+			Grid.ColumnSpan="2"/>
+		<TextBlock
+			x:Name="LastTapped"
+			Text="__none__"
+			Grid.Row="1"
+			Grid.ColumnSpan="2"/>
+
+		<TextBlock
+			Text="Basic"
+			Grid.Row="2"
+			Grid.Column="0"
+			HorizontalAlignment="Center"/>
 		<Border
-			x:Name="WhenTappedThenArgsLocationIsValid_Root"
-			Width="250"
-			BorderThickness="3"
-			BorderBrush="#FF0018"
-			HorizontalAlignment="Left"
-			VerticalAlignment="Top">
-			<StackPanel>
-				<TextBlock Text="Test event args location" />
-				<Border
-					x:Name="WhenTappedThenArgsLocationIsValid_Target"
-					Width="100"
-					Height="100"
-					Tapped="WhenTappedThenArgsLocationIsValid_OnTargetTapped"
-					Background="#FF0018">
-					<TextBlock Text="Touch target" />
-				</Border>
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="Relative to test root (physical px): " />
-					<TextBlock Name="WhenTappedThenArgsLocationIsValid_Result_RelativeToRoot" />
-				</StackPanel>
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="Relative to target (physical px): " />
-					<TextBlock Name="WhenTappedThenArgsLocationIsValid_Result_RelativeToTarget" />
-				</StackPanel>
-			</StackPanel>
+			x:Name="Basic_Target"
+			Grid.Row="3"
+			Grid.Column="0"
+			Width="150"
+			Height="150"
+			Background="#FF0018"
+			Tapped="TargetTapped" />
+
+		<TextBlock
+			Text="With transformation"
+			Grid.Row="2"
+			Grid.Column="1" 
+			HorizontalAlignment="Center"/>
+		<Border
+			Grid.Row="3"
+			Grid.Column="1"
+			Width="150"
+			Height="150"
+			Background="#FFA52C"
+			x:Name="Transformed_Parent">
+			<Border
+				x:Name="Transformed_Target"
+				HorizontalAlignment="Left"
+				VerticalAlignment="Top"
+				Width="50"
+				Height="50"
+				Background="#33000000"
+				Tapped="TargetTapped">
+				<Border.RenderTransform>
+					<CompositeTransform Rotation="45" TranslateX="100" TranslateY="100" />
+				</Border.RenderTransform>
+			</Border>
 		</Border>
 
+		<TextBlock
+			Text="In ScrollViewer"
+			Grid.Row="4"
+			Grid.Column="0" 
+			HorizontalAlignment="Center"/>
 		<Border
-			Width="250"
-			BorderThickness="3"
-			BorderBrush="#FFA52C"
-			HorizontalAlignment="Left"
-			VerticalAlignment="Top">
-			<StackPanel>
-				<TextBlock Text="Test when child handles all pointer events" />
-				<Border
-					Width="100"
-					Height="100"
-					Background="#FFA52C"
-					Tapped="WhenChildHandlesPointers_OnParentTapped">
+			Grid.Row="5"
+			Grid.Column="0"
+			Width="150"
+			Height="150"
+			Background="#FFFF41">
+			<ScrollViewer
+				VerticalScrollMode="Enabled"
+				VerticalScrollBarVisibility="Visible"
+				HorizontalScrollMode="Enabled"
+				HorizontalScrollBarVisibility="Visible"
+				x:Name="InScroll_ScrollViewer">
+				<Grid
+					Width="300"
+					Height="300">
 					<Border
-						x:Name="WhenChildHandlesPointers_Target"
-						Width="70"
-						Height="70"
-						Background="#66FFFFFF"
-						PointerEntered="HandlePointerEvent"
-						PointerPressed="HandlePointerEvent"
-						PointerMoved="HandlePointerEvent"
-						PointerReleased="HandlePointerEvent"
-						PointerExited="HandlePointerEvent"
-						PointerCanceled="HandlePointerEvent"
-						PointerCaptureLost="HandlePointerEvent"
-						PointerWheelChanged="HandlePointerEvent">
-						<TextBlock Text="Touch target"/>
-					</Border>
-				</Border>
-				<TextBlock x:Name="WhenChildHandlesPointers_Result" />
-			</StackPanel>
+						x:Name="InScroll_Target"
+						Width="100"
+						Height="100"
+						HorizontalAlignment="Right"
+						VerticalAlignment="Bottom"
+						Background="#33000000"
+						Tapped="TargetTapped" />
+				</Grid>
+			</ScrollViewer>
 		</Border>
 
+		<TextBlock
+			Text="In button"
+			Grid.Row="4"
+			Grid.Column="1" 
+			HorizontalAlignment="Center"/>
+		<Button
+			Grid.Row="5"
+			Grid.Column="1"
+			Width="150"
+			Height="150"
+			HorizontalAlignment="Center"
+			VerticalAlignment="Center"
+			Background="#008018">
+			<Border
+				x:Name="InButton_Target"
+				Width="100"
+				Height="100"
+				HorizontalAlignment="Center"
+				VerticalAlignment="Center"
+				Background="#33000000"
+				Tapped="TargetTapped" />
+		</Button>
+
+		<TextBlock
+			Text="ListView"
+			Grid.Row="6"
+			Grid.Column="0" 
+			HorizontalAlignment="Center"/>
 		<Border
-			Width="250"
-			BorderThickness="3"
-			BorderBrush="#FFFF41"
-			HorizontalAlignment="Left"
-			VerticalAlignment="Top">
-			<StackPanel>
-				<TextBlock Text="Test duplicated tapped event" />
-				<Border
-					Width="100"
-					Height="100"
-					Background="#FFFF41"
-					Tapped="WhenMultipleTappedRecognizer_OnParentTapped">
-					<Border
-						x:Name="WhenMultipleTappedRecognizer_Target"
-						Width="70"
-						Height="70"
-						Background="#66FFFFFF"
-						Tapped="WhenMultipleTappedRecognizer_OnTargetTapped">
-						<TextBlock Text="Touch target"/>
-					</Border>
-				</Border>
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="Tapped on parent: " />
-					<TextBlock x:Name="WhenMultipleTappedRecognizer_Result_Parent" Text="0" />
-				</StackPanel>
-				<StackPanel Orientation="Horizontal">
-					<TextBlock Text="Tapped on target: " />
-					<TextBlock x:Name="WhenMultipleTappedRecognizer_Result_Target" Text="0" />
-				</StackPanel>
-			</StackPanel>
+			Grid.Row="7"
+			Grid.Column="0"
+			Width="150"
+			Height="150"
+			Background="#0000F9">
+			<ListView
+				ItemsSource="0123456789abcdef"
+				IsItemClickEnabled="True"
+				SelectionMode="Single"
+				x:Name="ListViewWithItemClick">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<Border
+							Height="50"
+							Width="125"
+							Background="#11000000"
+							BorderBrush="#33000000"
+							BorderThickness="3"
+							Margin="3"
+							Tapped="ItemTapped">
+							<TextBlock
+								VerticalAlignment="Center"
+								HorizontalAlignment="Center"
+								Text="{Binding}" />
+						</Border>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
 		</Border>
-	</StackPanel>
+
+
+		<TextBlock
+			Text="ListView item click disabled"
+			Grid.Row="6"
+			Grid.Column="1" 
+			HorizontalAlignment="Center"/>
+		<Border
+			Grid.Row="7"
+			Grid.Column="1"
+			Width="150"
+			Height="150"
+			Background="#86007D">
+			<ListView
+				ItemsSource="0123456789abcdef"
+				IsItemClickEnabled="False"
+				SelectionMode="None"
+				x:Name="ListViewWithoutItemClick">
+				<ListView.ItemTemplate>
+					<DataTemplate>
+						<Border
+							Height="50"
+							Width="125"
+							Background="#11000000"
+							BorderBrush="#33000000"
+							BorderThickness="3"
+							Margin="3"
+							Tapped="ItemTapped">
+							<TextBlock
+								VerticalAlignment="Center"
+								HorizontalAlignment="Center"
+								Text="{Binding}" />
+						</Border>
+					</DataTemplate>
+				</ListView.ItemTemplate>
+			</ListView>
+		</Border>
+	</Grid>
 </Page>

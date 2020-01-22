@@ -66,6 +66,11 @@ import android.view.ViewParent;
 /* internal */ final class UnoMotionHelper {
 	private static final String LOGTAG = "UnoViewGroup";
 
+	// Stylus when barrel is pressed when touching the screen
+	private static final int STYLUS_WITH_BARREL_DOWN = 211;
+	private static final int STYLUS_WITH_BARREL_MOVE = 213;
+	private static final int STYLUS_WITH_BARREL_UP = 212;
+
 	/**
 	 * The singleton instance of the helper
 	 */
@@ -76,14 +81,14 @@ import android.view.ViewParent;
 	private View _currentMotionOriginalSource;
 
 	// To trace the pointer events (dispatchTouchEvent and dispatchGenericMotionEvent),
-	// uncomment this and then uncomment logs in the method itself.
+	// uncomment this and then uncomment logs in the method itself (Replace all "// Log" by "Log").
 	/*
 	private static String _indent = "";
 	public boolean dispatchMotionEvent(Uno.UI.MotionTargetAdapter adapter, MotionEvent event)
 	{
 		final ViewGroup view = adapter.asViewGroup();
 		final String originalIndent = _indent;
-		Log.i(LOGTAG, _indent + "    + " + view.toString() + "(" + System.identityHashCode(this) + ") " +
+		Log.i(LOGTAG, _indent + "    + " + view.toString() + "(" + System.identityHashCode(view) + ") " +
 			"[evt: " + String.format("%.2f", event.getX()) + "," + String.format("%.2f", event.getY()) + " | size: " + view.getWidth() + "x" + view.getHeight() + " | scroll: x="+ view.getScrollX() + " y=" + view.getScrollY() + "]");
 		_indent += "    | ";
 		Log.i(LOGTAG, _indent + event.toString());
@@ -137,7 +142,7 @@ import android.view.ViewParent;
 		_currentMotionOriginalSource = null;
 
 		final boolean isDown = event.getAction() == MotionEvent.ACTION_DOWN;
-		final boolean isBeginningOfSequence = isDown || event.getAction() == MotionEvent.ACTION_HOVER_ENTER;
+		final boolean isBeginningOfSequence = isDown || event.getAction() == MotionEvent.ACTION_HOVER_ENTER || event.getAction() == STYLUS_WITH_BARREL_DOWN;
 		if (isBeginningOfSequence) {
 			// When we receive a pointer DOWN, we have to reset the down -> move -> up sequence,
 			// so the dispatch will re-evaluate the _customDispatchTouchTarget;
@@ -164,7 +169,7 @@ import android.view.ViewParent;
 			// 			(!dispatch.getIsTargetCachingSupported() || isDown), BUT if we do this, we may miss some HOVER_EXIT
 			//			So we prefer to not follow the UWP behavior (PointerEnter/Exit are raised only when entering/leaving
 			//			non clipped content) and get all the events.
-			// Log.i(LOGTAG, _indent + "BLOCKED (not in view due to clipping)");
+			// Log.i(LOGTAG, _indent + "BLOCKED (not in view due to clipping, or invalid dispatch comming from custom)");
 
 			return false;
 		}
@@ -325,6 +330,8 @@ import android.view.ViewParent;
 
 			final boolean handled = dispatchStaticTransformedMotionEvent(adapter, currentTarget, true, event);
 			if (handled || adapter.getIsStrongSequence()) {
+				// Log.i(LOGTAG, _indent + "Custom dispatched to current target " + currentTarget.toString() + " [handled: " + handled + " | isStrongSequence: " + adapter.getIsStrongSequence() + "]");
+
 				return true;
 			}
 		}
@@ -337,16 +344,23 @@ import android.view.ViewParent;
 
 			// Same check as native "canViewReceivePointerEvents"
 			if (child == currentTarget || child.getVisibility() != View.VISIBLE || child.getAnimation() != null) {
+				// Log.i(LOGTAG, _indent + "Custom dispatch ignored child #" + i + " (" + child.toString() + ") [isCurrent: " + (child == currentTarget) + " | visibility: " + child.getVisibility() + " | isAnimating: " + (child.getAnimation() != null) + "]");
+
 				continue;
 			}
 
 			if (dispatchStaticTransformedMotionEvent(adapter, child, false, event)) {
+				// Log.i(LOGTAG, _indent + "Custom dispatch is setting child #" + i + " (" + child.toString() + ") as current target.");
+
 				adapter.setCurrentTarget(child); // (try to) cache the child for future events
 				return true; // Stop at the first child which is able to handle the event
+			} else {
+				// Log.i(LOGTAG, _indent + "Custom dispatch tried child #" + i + " (" + child.toString() + ") but dispatch return false.");
 			}
 		}
 
 		// No target found ...
+		// Log.i(LOGTAG, _indent + "Custom dispatch was not able to find a target child, current is being cleared.");
 		adapter.setCurrentTarget(null);
 		return false;
 	}
@@ -400,7 +414,7 @@ import android.view.ViewParent;
 			// with an implicit capture (i.e. down->move->up), OR the pointer is over the target.
 			// In both cases, we have to dispatch the motion event to it, and propagates its handling result.
 
-			// Log.i(LOGTAG, _indent + "Dispatching to child " + child.toString() + " [evt: " + String.format("%.2f", transformedEvent.getX()) + "," + String.format("%.2f", transformedEvent.getY()) + " | isSequenceContinuation: " + isSequenceContinuation + " | inView: " + isMotionInView(transformedEvent, child) + "]");
+			// Log.i(LOGTAG, _indent + "Dispatching to child " + child.toString() + " [evt: " + String.format("%.2f", transformedEvent.getX()) + "," + String.format("%.2f", transformedEvent.getY()) + " | isSequenceContinuation: " + isSequenceContinuation + " | isStrongSequence: " + adapter.getIsStrongSequence() + " | inView: " + isMotionInView(transformedEvent, child) + "]");
 
 			return adapter.dispatchToChild(child, transformedEvent);
 		} else if (isSequenceContinuation) {
@@ -454,6 +468,9 @@ import android.view.ViewParent;
 			case MotionEvent.ACTION_HOVER_ENTER:
 			case MotionEvent.ACTION_HOVER_MOVE:
 			case MotionEvent.ACTION_HOVER_EXIT:
+			case STYLUS_WITH_BARREL_DOWN:
+			case STYLUS_WITH_BARREL_MOVE:
+			case STYLUS_WITH_BARREL_UP:
 				return true;
 			default:
 				return false;

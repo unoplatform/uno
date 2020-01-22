@@ -990,7 +990,7 @@ var Uno;
                     }
                     src = src.parentElement;
                 }
-                return `${evt.pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.buttons};${evt.button};${evt.pointerType};${srcHandle};${evt.timeStamp}`;
+                return `${evt.pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.buttons};${evt.button};${evt.pointerType};${srcHandle};${evt.timeStamp};${evt.pressure}`;
             }
             /**
              * keyboard event extractor to be used with registerEventOnView
