@@ -4,21 +4,47 @@ All Uno Platform UI controls inherit directly from native views, which makes for
 
 Xamarin.Forms [provides a way](https://docs.microsoft.com/en-us/xamarin/xamarin-forms/platform/native-views/code) to use native-inheriting views to be added as part of its visual tree.
 
+## Initialize
+
+In code-behind, before adding Uno.UI controls to the visual tree or in your Xamarin Forms App constructor you should initialize Uno UI. 
+
+Example for Android:
+
+```csharp
+        public App()
+        {
+#if __ANDROID__
+            // set current Activity. You may use 'Plugin.CurrentActivity' NuGet package
+            Uno.UI.ContextHelper.Current = Plugin.CurrentActivity.CrossCurrentActivity.Current.Activity;
+            // or if you use Xamarin.Essentials v1.4.0 and higher
+            Uno.UI.ContextHelper.Current = Xamarin.Essentials.Platform.CurrentActivity;
+#endif
+            // create an instance of Application, otherwise Uno.UI controls won't work in Xamarin Forms
+            new Windows.UI.Xaml.Application();
+
+            InitializeComponent();
+            MainPage = new MainPage();
+        }
+
+```
+
 ## Add Uno views in Xamarin Forms XAML
 
-Xamarin.Forms support adding views directly in XAML documents, using platform specific namespaces: 
+Xamarin.Forms supports adding views directly in XAML documents, using platform specific namespaces: 
 
 ```xml
 <ContentPage xmlns="http://xamarin.com/schemas/2014/forms"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:UnoFormsApp"
              xmlns:ios="clr-namespace:Windows.UI.Xaml.Controls;assembly=Uno.UI;targetPlatform=iOS"
+             xmlns:android="clr-namespace:Windows.UI.Xaml.Controls;assembly=Uno.UI;targetPlatform=Android"
              x:Class="UnoFormsApp.MainPage">
 
     <StackLayout Margin="50">
         <!-- Place new controls here -->
         <Label Text="Xamarin.Forms Label"  />
-        <ios:TextBlock Text="Uno Platform TextBlock" />
+        <ios:TextBlock Text="iOS Uno Platform TextBlock" />
+        <android:TextBlock Text="Android Uno Platform TextBlock" />
     </StackLayout>
 
 </ContentPage>
@@ -34,12 +60,10 @@ From the code-behind, it's possible to use a ContentView control to host the Uno
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:local="clr-namespace:UnoFormsApp"
              x:Class="UnoFormsApp.MainPage">
-
-    <StackLayout Margin="50">
+    <Grid Margin="50">
         <Label Text="Xamarin.Forms Label"  />
         <ContentView x:Name="myContent"/>
-    </StackLayout>
-
+    </Grid>
 </ContentPage>
 ```
 
@@ -57,9 +81,6 @@ namespace UnoFormsApp
         public MainPage()
         {
             InitializeComponent();
-
-            // Initialize the Uno styling once
-            global::Windows.UI.Xaml.GenericStyles.Initialize();
 
             myContent.Content = new ContentControl {
                 Content = new Border {
