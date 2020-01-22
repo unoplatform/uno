@@ -49,6 +49,7 @@
 - [Android] Fix unconstrained Image loading issue when contained in a ContentControl template
 - Enable partial `NavigationView.ItemSource` scenario (https://github.com/unoplatform/uno/issues/2477)
 - [Wasm] Fail gracefully if IDBFS is not enabled in emscripten
+- [#2513] Fix `TransformGroup` not working
 
 ## Release 2.0
 
