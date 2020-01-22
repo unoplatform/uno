@@ -1,9 +1,4 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests

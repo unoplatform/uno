@@ -391,6 +391,9 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Provides the size reported during the last call to Measure.
 		/// </summary>
+		/// <remarks>
+		/// DesiredSize INCLUDES MARGINS.
+		/// </remarks>
 		public Size DesiredSize
 		{
 			get;
