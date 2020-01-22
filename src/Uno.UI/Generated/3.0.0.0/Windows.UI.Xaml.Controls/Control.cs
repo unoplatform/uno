@@ -560,7 +560,7 @@ namespace Windows.UI.Xaml.Controls
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Control", "void Control.OnDoubleTapped(DoubleTappedRoutedEventArgs e)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		protected virtual void OnHolding( global::Windows.UI.Xaml.Input.HoldingRoutedEventArgs e)
 		{

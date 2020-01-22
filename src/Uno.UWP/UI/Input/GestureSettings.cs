@@ -17,10 +17,8 @@ namespace Windows.UI.Input
 		/// <summary>Enable support for the double-tap gesture.</summary>
 		DoubleTap = 2U,
 		/// <summary>Enable support for the press and hold gesture (from a single touch or pen/stylus contact). The Holding event is raised if a time threshold is crossed before the contact is lifted, an additional contact is detected, or a gesture is started.</summary>
-		[global::Uno.NotImplemented] // The GestureRecognizer won't raise this event
 		Hold = 4U,
 		/// <summary>Enable support for the press and hold gesture through the left button on a mouse. The Holding event is raised if a time threshold is crossed before the left button is released or a gesture is started.This gesture can be used to display a context menu.</summary>
-		[global::Uno.NotImplemented] // The GestureRecognizer won't raise this event
 		HoldWithMouse = 8U,
 		/// <summary>Enable support for a right-tap interaction. The RightTapped event is raised when the contact is lifted or the mouse button released.</summary>
 		RightTap = 16U,
@@ -86,6 +84,16 @@ namespace Windows.UI.Input
 			| GestureSettings.HoldWithMouse
 			| GestureSettings.RightTap
 			| GestureSettings.CrossSlide;
+
+		/// <summary>
+		/// A combination of all "gesture" flags that can be raised by the GestureRecognizer
+		/// </summary>
+		public const GestureSettings SupportedGestures =
+			GestureSettings.Tap
+			| GestureSettings.DoubleTap
+			| GestureSettings.Hold
+			| GestureSettings.HoldWithMouse
+			| GestureSettings.RightTap;
 
 		/// <summary>
 		/// A combination of all "drag and drop" flags

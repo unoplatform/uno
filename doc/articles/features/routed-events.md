@@ -31,8 +31,8 @@
 | _gesture events_         
 | `Tapped`                      | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.tapped) |
 | `DoubleTapped`                | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.doubletapped) |
-| `RightTapped`                 | No      | No      | No      | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.righttapped) |
-| `Holding`                     | No      | No      | No      | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.holding) |
+| `RightTapped`                 | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.righttapped) |
+| `Holding`                     | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.holding) |
 
 Notes:
 
@@ -169,10 +169,8 @@ These _routed events_ are not implemented yet in Uno:
 * `DragLeave`
 * `DragOver`
 * `Drop`
-* `Holding`
 * `ManipulationInertiaStarting`
 * `PointerWheelChanged`
-* `RightTapped`
 
 ### Property `OriginalSource` might not be accurate on _RoutedEventArgs_
 
@@ -242,6 +240,8 @@ As those events are tightly coupled to the native events, Uno has to make some c
 * On WASM, if you touch the screen with the pen **then** you press the barrel button (still while touching the screen), the pointer events will
   have the `IsRightButtonPressed` set (in addition of the `IsBarrelButtonPressed`). On WinUI and Android you get this flag only if the barrel 
   button was pressed at the moment where you touched the screen, otherwise you will have the `IsLeftButtonPressed` and the `IsBarrelButtonPressed`.
+* The `Holding` event is not raised after a given delay like on WinUI, but instead we rely on the fact that we usually 
+  get a lot of moves for pens and fingers, so we raise the event only when we get a move that exceed defined thresholds for holding.
 
 ### Pointer capture
 
@@ -259,5 +259,4 @@ will never be fired. The `Velocities` properties of event args are not implement
 
 They are generated from the PointerXXX events (using the `Windows.UI.Input.GestureRecognizer`) and are bubbling in managed only.
 
-Currently only the `Tapped` and `DoubleTapped` gestures are supported. Note that those events are not linked in any way to a native equivalent, 
-but are fully interpreted in managed code.
+Note that `Tapped` and `DoubleTapped` are not linked in any way to a native equivalent, but are fully interpreted in managed code.

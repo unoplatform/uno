@@ -596,7 +596,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent HoldingEvent
 		{
@@ -1507,7 +1507,7 @@ namespace Windows.UI.Xaml
 		}
 		#endif
 		// Skipping already declared event Windows.UI.Xaml.UIElement.GotFocus
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.Input.HoldingEventHandler Holding
 		{
