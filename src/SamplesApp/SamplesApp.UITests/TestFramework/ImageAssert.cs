@@ -144,11 +144,12 @@ namespace SamplesApp.UITests.TestFramework
 				var actual = ToArgbCode(pixel);
 
 				//Convert to ARGB value, because 'named colors' are not considered equal to their unnamed equivalents(!)
-				Assert.IsFalse(Math.Abs(pixel.A - excludedColor.A) <= tolerance, $"[{x},{y}] Alpha (excluded: {excluded} | actual: {actual})");
-				Assert.IsFalse(Math.Abs(pixel.R - excludedColor.R) <= tolerance, $"[{x},{y}] Red (excluded: {excluded} | actual: {actual})");
-				Assert.IsFalse(Math.Abs(pixel.G - excludedColor.G) <= tolerance, $"[{x},{y}] Green (excluded: {excluded} | actual: {actual})");
-				Assert.IsFalse(Math.Abs(pixel.B - excludedColor.B) <= tolerance, $"[{x},{y}] Blue (excluded: {excluded} | actual: {actual})");
+				var equals = Math.Abs(pixel.A - excludedColor.A) <= tolerance
+					&& Math.Abs(pixel.R - excludedColor.R) <= tolerance
+					&& Math.Abs(pixel.G - excludedColor.G) <= tolerance
+					&& Math.Abs(pixel.B - excludedColor.B) <= tolerance;
 
+				Assert.IsFalse(equals, $"[{x},{y}] Alpha (excluded: {excluded} | actual: {actual})");
 			}
 		}
 		private static string ToArgbCode(Color color)
