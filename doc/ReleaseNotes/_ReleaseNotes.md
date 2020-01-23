@@ -1,6 +1,8 @@
 # Release notes
 
 ### Features
+
+- Support for `TryEnterFullScreenMode` and `ExitFullScreenMode` on WebAssembly
 - Add support for `StorageFile.DeleteAsync()`
 - Support for `PointerDown`, `PointerUp` `PointerEntered`, `PointerExited` and `PointerMoved` events on macOS
 - Support for `Launcher` API on macOS, support for special URIs
