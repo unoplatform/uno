@@ -26,12 +26,17 @@ using Java.Lang;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 {
-	[SampleControlInfo("TextBox", "TextBox_Formatting_Flicker", description: "Continuing to enter value once the max length is reached, should not cause the text box content to be changed again.")]
+	[SampleControlInfo("TextBox", "TextBox_Formatting_Flicker", description: "Continuing to enter value past the max length specified, should not cause the text box content to be changed again.")]
 	public sealed partial class TextBox_Formatting_Flicker : UserControl
 	{
+		private int _textChangedCounter = 0;
+
 		public TextBox_Formatting_Flicker()
 		{
 			this.InitializeComponent();
+
+			SomeTextBox.MaxLength = $"modified {0:D3} times".Length;
+			SomeTextBox.TextChanged += (s, e) => Scoreboard.Text = $"TextChanged: {++_textChangedCounter}";
 		}
 
 #if __ANDROID__
@@ -55,15 +60,16 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests
 				};
 			}
 
-			SomeTextBox.MaxLength = $"modified on {DateTime.Now:HHmmss.fff}".Length;
 			void SetFilter(TextBoxView tbv) => tbv.SetFilters(new IInputFilter[] { new CustomInputFilter() });
 		}
 
 		private class CustomInputFilter : Java.Lang.Object, Android.Text.IInputFilter
 		{
+			private int _counter = 0;
+
 			public ICharSequence FilterFormatted(ICharSequence source, int start, int end, ISpanned dest, int dstart, int dend)
 			{
-				return new Java.Lang.String($"modified on {DateTime.Now:HHmmss.fff}");
+				return new Java.Lang.String($"modified {++_counter:D3} times");
 			}
 		}
 #endif

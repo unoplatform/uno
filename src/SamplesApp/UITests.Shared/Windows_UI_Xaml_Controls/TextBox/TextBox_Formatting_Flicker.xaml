@@ -11,5 +11,7 @@
 	<StackPanel>
 		<TextBlock>Just type anything:</TextBlock>
 		<TextBox x:Name="SomeTextBox" />
+		<TextBlock x:Name="Scoreboard"
+				   Margin="0,15,0,0"/>
 	</StackPanel>
 </UserControl>
