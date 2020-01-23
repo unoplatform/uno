@@ -201,6 +201,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_ViewManagement\FullScreenModeTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_ViewManagement\TitleBarColorTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -3035,6 +3039,9 @@
       <DependentUpon>JumpListTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_StartScreen\JumpListTestsViewModel.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_ViewManagement\FullScreenModeTests.xaml.cs">
+      <DependentUpon>FullScreenModeTests.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_ViewManagement\TitleBarColorTests.xaml.cs">
       <DependentUpon>TitleBarColorTests.xaml</DependentUpon>
     </Compile>

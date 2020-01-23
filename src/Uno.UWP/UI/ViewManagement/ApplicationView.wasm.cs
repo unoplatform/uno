@@ -7,6 +7,8 @@ namespace Windows.UI.ViewManagement
 {
 	partial class ApplicationView
 	{
+		private const string ApplicationViewTsType = "Windows.UI.ViewManagement.ApplicationView";
+
 		internal void SetVisibleBounds(Rect newVisibleBounds)
 		{
 			if (newVisibleBounds != VisibleBounds)
@@ -35,6 +37,23 @@ namespace Windows.UI.ViewManagement
 				var command = "Uno.UI.WindowManager.current.setWindowTitle(\"" + escapedValue + "\");";
 				WebAssemblyRuntime.InvokeJS(command);
 			}
+		}
+
+		public bool TryEnterFullScreenMode()
+		{
+			SetFullScreenMode(true);
+			return true;
+		}
+
+		public void ExitFullScreenMode()
+		{
+			SetFullScreenMode(false);
+		}
+
+		private void SetFullScreenMode(bool turnOn)
+		{
+			var jsEval = $"{ApplicationViewTsType}.setFullScreenMode({turnOn.ToString().ToLowerInvariant()})";
+			WebAssemblyRuntime.InvokeJS(jsEval);
 		}
 	}
 }

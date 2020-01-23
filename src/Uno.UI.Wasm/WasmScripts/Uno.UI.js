@@ -2357,6 +2357,10 @@ var Windows;
                     console.warn("IndexedDB is not available (private mode or uri starts with file:// ?), changes will not be persisted.");
                     return;
                 }
+                if (typeof IDBFS === 'undefined') {
+                    console.warn(`IDBFS is not enabled in mono's configuration, persistence is disabled`);
+                    return;
+                }
                 console.debug("Making persistent: " + path);
                 FS.mkdir(path);
                 FS.mount(IDBFS, {}, path);
@@ -2741,6 +2745,26 @@ var Windows;
             }
             Core.SystemNavigationManager = SystemNavigationManager;
         })(Core = UI.Core || (UI.Core = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var ViewManagement;
+        (function (ViewManagement) {
+            class ApplicationView {
+                static setFullScreenMode(turnOn) {
+                    if (turnOn) {
+                        document.documentElement.requestFullscreen();
+                    }
+                    else {
+                        document.exitFullscreen();
+                    }
+                }
+            }
+            ViewManagement.ApplicationView = ApplicationView;
+        })(ViewManagement = UI.ViewManagement || (UI.ViewManagement = {}));
     })(UI = Windows.UI || (Windows.UI = {}));
 })(Windows || (Windows = {}));
 var Windows;
