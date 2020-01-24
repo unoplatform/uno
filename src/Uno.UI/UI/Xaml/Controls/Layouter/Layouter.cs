@@ -170,7 +170,7 @@ namespace Windows.UI.Xaml.Controls
 					this.Log().DebugFormat("[{0}/{1}] Arrange({2}/{3}/{4}/{5})", LoggingOwnerTypeName, Name, GetType(), Panel.Name, finalRect, Panel.Margin);
 				}
 
-				var arrangeSize = uiElement.ClippedFrame?.Size ?? finalRect.Size;
+				var clippedArrangeSize = uiElement.ClippedFrame?.Size ?? finalRect.Size;
 
 				bool allowClipToSlot;
 				bool needsClipToSlot;
@@ -187,26 +187,27 @@ namespace Windows.UI.Xaml.Controls
 					needsClipToSlot = false;
 				}
 
-				_logDebug?.Debug($"{this}: InnerArrangeCore({finalRect}) - allowClip={allowClipToSlot}, arrangeSize={arrangeSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipToSlot}");
+				_logDebug?.Debug($"{this}: InnerArrangeCore({finalRect}) - allowClip={allowClipToSlot}, clippedArrangeSize={clippedArrangeSize}, _unclippedDesiredSize={_unclippedDesiredSize}, forcedClipping={needsClipToSlot}");
 
 				if (allowClipToSlot && !needsClipToSlot)
 				{
-					if (IsLessThanAndNotCloseTo(arrangeSize.Width, _unclippedDesiredSize.Width))
+					if (IsLessThanAndNotCloseTo(clippedArrangeSize.Width, _unclippedDesiredSize.Width))
 					{
-						_logDebug?.Debug($"{this}: (arrangeSize.Width) {arrangeSize.Width} < {_unclippedDesiredSize.Width}: NEEDS CLIPPING.");
+						_logDebug?.Debug($"{this}: (arrangeSize.Width) {clippedArrangeSize.Width} < {_unclippedDesiredSize.Width}: NEEDS CLIPPING.");
 						needsClipToSlot = true;
 					}
 
-					else if (IsLessThanAndNotCloseTo(arrangeSize.Height, _unclippedDesiredSize.Height))
+					else if (IsLessThanAndNotCloseTo(clippedArrangeSize.Height, _unclippedDesiredSize.Height))
 					{
-						_logDebug?.Debug($"{this}: (arrangeSize.Height) {arrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
+						_logDebug?.Debug($"{this}: (arrangeSize.Height) {clippedArrangeSize.Height} < {_unclippedDesiredSize.Height}: NEEDS CLIPPING.");
 						needsClipToSlot = true;
 					}
 				}
 
 				var (minSize, maxSize) = this.Panel.GetMinMax();
 
-				arrangeSize = arrangeSize
+				var arrangeSize = finalRect
+					.Size
 					.AtLeast(default); // 0.0,0.0
 
 				// We have to choose max between _unclippedDesiredSize and maxSize here, because
