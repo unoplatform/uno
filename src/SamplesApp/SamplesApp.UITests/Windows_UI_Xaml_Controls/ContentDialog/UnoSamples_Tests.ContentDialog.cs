@@ -50,6 +50,44 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 
 		[Test]
 		[AutoRetry]
+		public void Simple_ContentDialog_06_Reuse()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Simple");
+
+			var showDialog6 = _app.Marked("showDialog6");
+
+			_app.WaitForElement(showDialog6);
+
+			var dialogResult = _app.Marked("dialogResult");
+
+			// Assert initial state 
+			Assert.AreEqual("Undefined", dialogResult.GetDependencyPropertyValue("Text")?.ToString());
+
+			_app.Tap(showDialog6);
+
+			var primaryButton = _app.Marked("PrimaryButton");
+			_app.WaitForElement(primaryButton);
+
+			CurrentTestTakeScreenShot("Primary Button");
+
+			_app.Tap(primaryButton);
+
+			_app.WaitForDependencyPropertyValue(dialogResult, "Text", "Primary");
+
+			_app.Tap(showDialog6);
+
+			var secondaryButton = _app.Marked("SecondaryButton");
+			_app.WaitForElement(secondaryButton);
+
+			CurrentTestTakeScreenShot("Secondary Button");
+
+			_app.Tap(secondaryButton);
+
+			_app.WaitForDependencyPropertyValue(dialogResult, "Text", "Secondary");
+		}
+
+		[Test]
+		[AutoRetry]
 		public void Simple_ContentDialog_01_Primary_Disabled()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Simple");

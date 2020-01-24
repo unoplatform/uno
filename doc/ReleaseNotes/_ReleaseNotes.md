@@ -18,6 +18,7 @@
 - Add support for WinUI 2.3 [`NumberBox`](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.numberbox?view=winui-2.3)
 - Add support of the `UIElement.RightTapped` event
 - Add support of the `UIElement.Holding` event
+- [Android] Add support for non-native `Popup` through `FeatureConfiguration.Popup.UseNativePopup`, set to true by default. (See #2533 for more details)
 
 ### Breaking changes
 -
