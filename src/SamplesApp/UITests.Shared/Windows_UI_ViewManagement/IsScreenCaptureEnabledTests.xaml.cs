@@ -20,16 +20,19 @@ namespace UITests.Shared.Windows_UI_ViewManagement
 {
 	[SampleControlInfo("Windows.UI.ViewManagement", "IsScreenCaptureEnabled", description: "Allows disabling screen capture (currently available on Android only)")]
 	public sealed partial class IsScreenCaptureEnabledTests : UserControl
-    {
-        public IsScreenCaptureEnabledTests()
-        {
-            this.InitializeComponent();
-#if __ANDROID__ || WINDOWS_UWP
-			CaptureCheckBox.IsChecked = ApplicationView.GetForCurrentView().IsScreenCaptureEnabled;
-#else
-			InfoMessage.Text = "API not supported on this platform.";
-			CaptureCheckBox.IsEnabled = false;
-#endif
+	{
+		public IsScreenCaptureEnabledTests()
+		{
+			this.InitializeComponent();
+			if (ApiInformation.IsPropertyPresent("Windows.UI.ViewManagement.ApplicationView", "IsScreenCaptureEnabled"))
+			{
+				CaptureCheckBox.IsChecked = ApplicationView.GetForCurrentView().IsScreenCaptureEnabled;
+			}
+			else
+			{
+				InfoMessage.Text = "API not supported on this platform.";
+				CaptureCheckBox.IsEnabled = false;
+			}
 		}
 
 		private void CaptureCheckBoxChanged(object sender, RoutedEventArgs e)

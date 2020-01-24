@@ -9,8 +9,8 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <StackPanel>
-		<CheckBox Content="Is screen capture enabled" x:Name="CaptureCheckBox" IsThreeState="False" Checked="CaptureCheckBoxChanged" Unchecked="CaptureCheckBoxChanged" />
+	<StackPanel>
+		<CheckBox Content="Is screen capture enabled" x:Name="CaptureCheckBox" Checked="CaptureCheckBoxChanged" Unchecked="CaptureCheckBoxChanged" />
 		<TextBlock x:Name="InfoMessage" Text="Screen capture is disabled now, you should not be able to take screenshots" Visibility="Collapsed" Foreground="Red" />
 	</StackPanel>
 </UserControl>
