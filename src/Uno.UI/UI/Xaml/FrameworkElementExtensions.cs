@@ -205,7 +205,7 @@ namespace Windows.UI.Xaml
 		public static T Margin<T>(this T element, float leftRight, float topBottom)
 			where T : IFrameworkElement
 		{
-			return element.Margin(new Thickness(leftRight, topBottom, leftRight, topBottom));
+			return element.Margin(new Thickness(leftRight, topBottom));
 		}
 
 		/// <summary>

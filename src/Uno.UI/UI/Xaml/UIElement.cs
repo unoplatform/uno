@@ -308,7 +308,7 @@ namespace Windows.UI.Xaml
 
 			if (NeedsClipToSlot)
 			{
-				var boundsClipping = new Rect(0, 0, RenderSize.Width, RenderSize.Height);
+				var boundsClipping = ClippedFrame ?? Rect.Empty;
 				if (rect.IsEmpty)
 				{
 					rect = boundsClipping;
@@ -408,6 +408,13 @@ namespace Windows.UI.Xaml
 		public virtual void Measure(Size availableSize)
 		{
 		}
+
+#if !__WASM__
+		/// <summary>
+		/// This is the Frame that should be used as "available Size" for the Arrange phase.
+		/// </summary>
+		internal Rect? ClippedFrame;
+#endif
 
 		public virtual void Arrange(Rect finalRect)
 		{

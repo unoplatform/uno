@@ -126,16 +126,12 @@ namespace Windows.UI.Xaml.Controls
 
 				_unclippedDesiredSize = desiredSize;
 
-				desiredSize = desiredSize.AtMost(maxSize);
+				var clippedDesiredSize = desiredSize
+					.AtMost(frameworkAvailableSize);
 
 				// DesiredSize must include margins
 				// However, we return the size to the parent without the margins
-				SetDesiredChildSize(Panel as View, desiredSize.Add(marginSize));
-
-				var clippedDesiredSize = desiredSize
-
-					.AtMost(availableSize)
-					.AtLeast(new Size(0, 0));
+				SetDesiredChildSize(Panel as View, clippedDesiredSize.Add(marginSize));
 
 				return clippedDesiredSize;
 			}
@@ -174,7 +170,7 @@ namespace Windows.UI.Xaml.Controls
 					this.Log().DebugFormat("[{0}/{1}] Arrange({2}/{3}/{4}/{5})", LoggingOwnerTypeName, Name, GetType(), Panel.Name, finalRect, Panel.Margin);
 				}
 
-				var arrangeSize = finalRect.Size;
+				var arrangeSize = uiElement.ClippedFrame?.Size ?? finalRect.Size;
 
 				bool allowClipToSlot;
 				bool needsClipToSlot;
@@ -422,8 +418,13 @@ namespace Windows.UI.Xaml.Controls
 					);
 				}
 			}
+			else
+			{
+				// For native controls only - because it's already set in Layouter.Measure()
+				// for Uno's managed controls
+				SetDesiredChildSize(view, ret);
+			}
 
-			SetDesiredChildSize(view, ret);
 
 			return ret;
 		}
@@ -444,17 +445,22 @@ namespace Windows.UI.Xaml.Controls
 			{
 				return;
 			}
-			frame = ApplyMarginAndAlignments(view, frame);
+			var (finalFrame, clippedFrame) = ApplyMarginAndAlignments(view, frame);
 			if (view is UIElement elt)
 			{
-				elt.LayoutSlotWithMarginsAndAlignments = frame;
+				elt.LayoutSlotWithMarginsAndAlignments = finalFrame;
 			}
 
-			ArrangeChildOverride(view, frame);
+			ArrangeChildOverride(view, finalFrame);
 
-			if (raiseLayoutUpdated && view is FrameworkElement fe)
+			if (view is FrameworkElement fe)
 			{
-				fe?.OnLayoutUpdated();
+				if (raiseLayoutUpdated)
+				{
+					fe?.OnLayoutUpdated();
+				}
+
+				fe.ClippedFrame = clippedFrame;
 			}
 		}
 
@@ -484,7 +490,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected abstract string Name { get; }
 
-		private Rect ApplyMarginAndAlignments(View view, Rect frame)
+		private (Rect layoutFrame, Rect clippedFrame) ApplyMarginAndAlignments(View view, Rect frame)
 		{
 			// In this implementation, since we do not have the ability to intercept properly the measure and arrange
 			// because of the type of hierarchy (inheriting from native views), we must apply the margins and alignments
@@ -492,13 +498,18 @@ namespace Windows.UI.Xaml.Controls
 			// Panel that do not use this helper a bit more complex, but for all other panels that use this
 			// layouter, the logic is implied.
 
+			// The result "layoutFrame" gives the positioning of the element, relative to the origin of the parent's frame.
+			// The result "clippedFrame" gives the resulting boundaries of the element.
+			// If clipping is required, that's were it should occurs.
+
+			var layoutFrame = frame;
+			var clippedFrame = frame;
+
 			if (view is IFrameworkElement frameworkElement)
 			{
 				// Apply the margin for framework elements, as if it were padding to the child.
-				double x = frame.X;
-				double y = frame.Y;
-				double width = frame.Width;
-				double height = frame.Height;
+
+				var (x, y, width, height) = frame;
 
 				// capture the child's state to avoid getting DependencyProperties values multiple times.
 				var childVerticalAlignment = frameworkElement.VerticalAlignment;
@@ -535,14 +546,14 @@ namespace Windows.UI.Xaml.Controls
 
 					// Apply vertical alignment
 					if (
-						(childVerticalAlignment != VerticalAlignment.Stretch && desiredSize.Height <= height)
+						childVerticalAlignment != VerticalAlignment.Stretch
 						|| hasChildHeight
 						|| hasChildMaxHeight
 						|| hasChildMinHeight
 					)
 					{
 						var actualHeight = GetActualSize(
-							height,
+							frame.Height,
 							childVerticalAlignment == VerticalAlignment.Stretch,
 							childMaxHeight,
 							childMinHeight,
@@ -553,20 +564,32 @@ namespace Windows.UI.Xaml.Controls
 							hasChildMinHeight,
 							desiredSize.Height);
 
-						switch (childVerticalAlignment)
+						if (actualHeight == frame.Height)
 						{
-							case VerticalAlignment.Top:
-								y = frame.Y;
-								break;
+							y = frame.Y; // nothing to align: we're using exactly the available height
 
-							case VerticalAlignment.Bottom:
-								y = frame.Y + frame.Height - actualHeight;
-								break;
+						}
+						else
+						{
+							switch (childVerticalAlignment)
+							{
+								case VerticalAlignment.Top:
+									y = frame.Y;
+									break;
 
-							case VerticalAlignment.Stretch:
-							case VerticalAlignment.Center:
-								y = frame.Y + (frame.Height - actualHeight) / 2;
-								break;
+								case VerticalAlignment.Bottom:
+									y = frame.Y + frame.Height - actualHeight;
+									break;
+
+								case VerticalAlignment.Stretch:
+									// On UWP, when a control is taking more height than available from
+									// parent, it will be top-aligned when its alignment is Stretch
+									y = frame.Y + Max((frame.Height - actualHeight) / 2d, 0d);
+									break;
+								case VerticalAlignment.Center:
+									y = frame.Y + (frame.Height - actualHeight) / 2d;
+									break;
+							}
 						}
 
 						height = actualHeight;
@@ -574,14 +597,14 @@ namespace Windows.UI.Xaml.Controls
 
 					// Apply horizontal alignment
 					if (
-						(childHorizontalAlignment != HorizontalAlignment.Stretch && desiredSize.Width <= width)
+						childHorizontalAlignment != HorizontalAlignment.Stretch
 						|| hasChildWidth
 						|| hasChildMaxWidth
 						|| hasChildMinWidth
 					)
 					{
 						var actualWidth = GetActualSize(
-							width,
+							frame.Width,
 							childHorizontalAlignment == HorizontalAlignment.Stretch,
 							childMaxWidth,
 							childMinWidth,
@@ -592,43 +615,71 @@ namespace Windows.UI.Xaml.Controls
 							hasChildMinWidth,
 							desiredSize.Width);
 
-						switch (childHorizontalAlignment)
+						if (actualWidth == frame.Width)
 						{
-							case HorizontalAlignment.Left:
-								x = frame.X;
-								break;
+							x = frame.X; // nothing to align: we're using exactly the available width
+						}
+						else
+						{
+							switch (childHorizontalAlignment)
+							{
+								case HorizontalAlignment.Left:
+									x = frame.X;
+									break;
 
-							case HorizontalAlignment.Right:
-								x = frame.X + frame.Width - actualWidth;
-								break;
+								case HorizontalAlignment.Right:
+									x = frame.X + frame.Width - actualWidth;
+									break;
 
-							case HorizontalAlignment.Stretch:
-							case HorizontalAlignment.Center:
-								x = frame.X + (frame.Width - actualWidth) / 2;
-								break;
+								case HorizontalAlignment.Stretch:
+									// On UWP, when a control is taking more width than available from
+									// parent, it will be left-aligned when its alignment is Stretch
+									x = frame.X + Max((frame.Width - actualWidth) / 2d, 0d);
+									break;
+								case HorizontalAlignment.Center:
+									x = frame.X + (frame.Width - actualWidth) / 2d;
+									break;
+							}
 						}
 
 						width = actualWidth;
 					}
 				}
 
-				frame = new Rect(
-					x + childMargin.Left,
-					y + childMargin.Top,
-					width - childMargin.Left - childMargin.Right,
-					height - childMargin.Top - childMargin.Bottom
-					);
+				// Calculate Create layoutFrame and apply child's margins
+				layoutFrame = new Rect(x, y, width, height).DeflateBy(childMargin);
 
-				frame.Size = frameworkElement.AdjustArrange(frame.Size);
+				// Give opportunity to element to alter arranged size
+				layoutFrame.Size = frameworkElement.AdjustArrange(layoutFrame.Size);
 
+				// Calculate clipped frame.
+				var clippedFrameWithParentOrigin =
+					layoutFrame
+						.IntersectWith(frame.DeflateBy(childMargin))
+					?? Rect.Empty;
+
+				// Rebase the origin of the clipped frame to layout
+				clippedFrame = new Rect(
+					clippedFrameWithParentOrigin.X - layoutFrame.X,
+					clippedFrameWithParentOrigin.Y - layoutFrame.Y,
+					clippedFrameWithParentOrigin.Width,
+					clippedFrameWithParentOrigin.Height);
+			}
+			else
+			{
+				layoutFrame = new Rect(
+					x: IsNaN(layoutFrame.X) ? 0 : layoutFrame.X,
+					y: IsNaN(layoutFrame.Y) ? 0 : layoutFrame.Y,
+					width: Max(0, IsNaN(layoutFrame.Width) ? 0 : layoutFrame.Width),
+					height: Max(0, IsNaN(layoutFrame.Height) ? 0 : layoutFrame.Height)
+				);
+
+				// Clipped frame & layout frame are the same for native elements
+				clippedFrame = layoutFrame;
 			}
 
-			return new Rect(
-				x: IsNaN(frame.X) ? 0 : frame.X,
-				y: IsNaN(frame.Y) ? 0 : frame.Y,
-				width: Max(0, IsNaN(frame.Width) ? 0 : frame.Width),
-				height: Max(0, IsNaN(frame.Height) ? 0 : frame.Height)
-			);
+
+			return (layoutFrame, clippedFrame);
 		}
 
 		protected virtual void AdjustAlignment(View view, ref HorizontalAlignment childHorizontalAlignment,
@@ -670,7 +721,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				childSize = isStretch
 					? frameSize
-					: desiredSize; // desiredSize already includes margin
+					: desiredSize + childMarginSize;
 			}
 			else
 			{
