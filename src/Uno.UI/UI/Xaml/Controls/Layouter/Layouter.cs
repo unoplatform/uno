@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 
 				var frameworkAvailableSize = availableSize
 					.Subtract(marginSize)
-					.AtLeast(default) // 0.0,0.0
+					.AtLeastZero()
 					.AtMost(maxSize);
 
 				var desiredSize = MeasureOverride(frameworkAvailableSize);
@@ -120,7 +120,9 @@ namespace Windows.UI.Xaml.Controls
 					throw new InvalidOperationException($"{this}: Invalid measured size {desiredSize}. NaN or Infinity are invalid desired size.");
 				}
 
-				desiredSize = desiredSize.AtLeast(minSize);
+				desiredSize = desiredSize
+					.AtLeast(minSize)
+					.AtLeastZero();
 
 				_unclippedDesiredSize = desiredSize;
 

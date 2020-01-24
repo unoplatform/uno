@@ -143,7 +143,7 @@ namespace Windows.UI.Xaml
 
 			arrangeSize = arrangeSize
 				.Subtract(marginSize)
-				.AtLeast(new Size(0, 0));
+				.AtLeastZero();
 
 			var customClippingElement = (this as ICustomClippingElement);
 			var allowClipToSlot = customClippingElement?.AllowClippingToLayoutSlot ?? true; // Some controls may control itself how clipping is applied
@@ -209,7 +209,7 @@ namespace Windows.UI.Xaml
 
 			var clientSize = finalRect.Size
 				.Subtract(marginSize)
-				.AtLeast(new Size(0, 0));
+				.AtLeastZero();
 
 			var offset = this.GetAlignmentOffset(clientSize, clippedInkSize);
 			offset = new Point(
