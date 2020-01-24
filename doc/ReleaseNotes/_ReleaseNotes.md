@@ -58,6 +58,7 @@
 - [#1956] Fis iOS invalid final state when switching visual state before current state's animation is completed.
 - Fix `Selector` support for IsSelected (#1606)
 - [Android] 164249 fixed TextBox.Text flickering when using custom IInputFilter with MaxLength set
+- [Android] Adjust `TextBlock.TextDecorations` is not updating properly
 
 ## Release 2.0
 
