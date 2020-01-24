@@ -19,7 +19,9 @@ namespace Windows.Storage
 		{
 			if (file is null)
 			{
-				throw new NullReferenceException("StorageFile cannot be null");
+				// UWP throws NullReferenceException
+				// but it was choosen to throw ArgumentNullException , as it is more appriopriate in this caase
+				throw new ArgumentNullException("StorageFile cannot be null");
 			}
 
 			Encoding encodingForWriter = Encoding.UTF8;
