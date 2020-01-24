@@ -444,6 +444,9 @@ namespace Windows.UI.Xaml
 		public void InvalidateArrange()
 		{
 			InvalidateMeasure();
+#if !__WASM__
+			ClippedFrame = null;
+#endif
 		}
 #endif
 
