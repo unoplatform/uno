@@ -6,36 +6,39 @@ namespace Uno.UI.Samples.Controls
 {
 
 	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
-	public sealed class SampleControlInfoAttribute : Attribute
+	public sealed class SampleControlInfoAttribute : SampleAttribute
 	{
-		readonly string _controlName;
-		readonly string _category;
-		readonly Type _viewModelType;
-		readonly bool _ignoreInSnapshotTests;
-		readonly string _description;
-
 		public SampleControlInfoAttribute(
 			string category = null,
 			string controlName = null,
 			Type viewModelType = null,
 			bool ignoreInSnapshotTests = false,
 			string description = null)
+			: base(category)
 		{
-			this._controlName = controlName;
-			this._category = category;
-			this._viewModelType = viewModelType;
-			this._ignoreInSnapshotTests = ignoreInSnapshotTests;
-			this._description = description;
-        }
-		
-		public string ControlName => _controlName;
+			Name = controlName;
+			ViewModelType = viewModelType;
+			IgnoreInSnapshotTests = ignoreInSnapshotTests;
+			Description = description;
+		}
+	}
 
-		public string Category => _category;
+	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
+	public class SampleAttribute : Attribute
+	{
+		public SampleAttribute(params string[] categories)
+		{
+			Categories = categories;
+		}
 
-		public Type ViewModelType => _viewModelType;
+		public string[] Categories { get; }
 
-		public bool IgnoreInSnapshotTests => _ignoreInSnapshotTests;
+		public string Name { get; set; }
 
-		public string Description => _description;
+		public bool IgnoreInSnapshotTests { get; set; }
+
+		public Type ViewModelType { get; set; }
+
+		public string Description { get; set; }
 	}
 }
