@@ -20,6 +20,7 @@ This guide will walk you through the set-up process for building cross-platform 
     * **ASP**.**NET and web** workload installed, along with .NET Core 2.2 (for WASM development)
 
     ![visual-studio-installer-web](Assets/quick-start/vs-install-web.png)
+    * [.NET Core 2.2](https://dotnet.microsoft.com/download/dotnet-core/2.2)
 
 For more information about these prerequisites, see [Installing Xamarin](https://docs.microsoft.com/en-us/xamarin/get-started/installation/). For information about connecting Visual Studio to a Mac build host, see [Pair to Mac for Xamarin.iOS development](https://docs.microsoft.com/en-us/xamarin/ios/get-started/installation/windows/connecting-to-mac/).
 
