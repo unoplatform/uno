@@ -117,7 +117,10 @@ namespace Windows.UI.Xaml.Controls
 					return;
 				}
 
-				Select(row, component: 0, animated: true);
+				if (Items.Length > 0) // If we have no Items, we don't need to call UIPickerView.Select(). Skipping the call avoids a native crash under certain narrow circumstances. (https://github.com/unoplatform/private/issues/115)
+				{
+					Select(row, component: 0, animated: true);
+				}
 			}
 			else if (newSelectedItem != null && Items[0] == null)
 			{

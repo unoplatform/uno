@@ -21,7 +21,8 @@ Here's what to look for:
 	- Prefer Storyboard setters to `ObjectAnimationUsingKeyFrames` if there is only one key frame.
 	- Prefer changing the properties of a visual element instead of switching opacity or visibility of an element.
 - Image Assets
-	- Try using an image that is appropriate for the DPI and screen size. 
+	- Try using an image that is appropriate for the DPI and screen size.
+    - Whenever possible, specify and explicit Width and Height on `Image`.
 	- The pixel size of an image will impact the loading time of the image. If the image is intentionally blurry, prefer reducing the physical size of the image over 
 	  the compressed disk size of the image.
 - Paths

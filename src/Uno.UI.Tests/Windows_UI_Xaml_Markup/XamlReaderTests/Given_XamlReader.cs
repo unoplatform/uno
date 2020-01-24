@@ -23,15 +23,23 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 	[TestClass]
 	public class Given_XamlReader : Context
 	{
+		/// <summary>
+		/// The DefaultResolver associated with the active app, temporarily removed while these tests are run.
+		/// </summary>
+		Func<string, object> _appResolver;
+
 		[TestCleanup]
 		public void Cleanup()
 		{
-			ResourceDictionary.DefaultResolver = null;
+			ResourceDictionary.DefaultResolver = _appResolver;
 		}
 
 		[TestInitialize]
 		public void Initialize()
 		{
+			UnitTestsApp.App.EnsureApplication();
+
+			_appResolver = ResourceDictionary.DefaultResolver;
 			ResourceDictionary.DefaultResolver = null;
 
 			Uno.Extensions.LogExtensionPoint

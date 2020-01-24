@@ -17,7 +17,7 @@ namespace Windows.System
 
 		public static Task<bool> LaunchUriAsync(Uri uri)
 		{
-#if __IOS__ || __ANDROID__ || __WASM__
+#if __IOS__ || __ANDROID__ || __WASM__ || __MACOS__
 
 			if (uri == null)
 			{
@@ -25,6 +25,7 @@ namespace Windows.System
 				throw new ArgumentNullException(nameof(uri));
 			}
 
+#if !__WASM__
 			if (!CoreDispatcher.Main.HasThreadAccess)
 			{
 				if (typeof(Launcher).Log().IsEnabled(LogLevel.Error))
@@ -34,6 +35,7 @@ namespace Windows.System
 				// LaunchUriAsync throws the following exception if used on UI thread on UWP
 				throw new InvalidOperationException($"{nameof(LaunchUriAsync)} must be called on the UI thread");
 			}
+#endif
 
 			return LaunchUriPlatformAsync(uri);
 #else
@@ -46,7 +48,7 @@ namespace Windows.System
 #endif
 		}
 
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __IOS__ || __MACOS__
 		public static IAsyncOperation<LaunchQuerySupportStatus> QueryUriSupportAsync(
 			Uri uri,
 			LaunchQuerySupportType launchQuerySupportType)
@@ -58,7 +60,11 @@ namespace Windows.System
 			}
 
 			// this method may run on the background thread on UWP
+#if !__WASM__
 			if (CoreDispatcher.Main.HasThreadAccess)
+#else
+			if(true)
+#endif
 			{
 				return QueryUriSupportPlatformAsync(uri, launchQuerySupportType).AsAsyncOperation();
 			}

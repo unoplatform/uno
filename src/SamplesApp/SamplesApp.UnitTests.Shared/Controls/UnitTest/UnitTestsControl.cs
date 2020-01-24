@@ -57,16 +57,14 @@ namespace Uno.UI.Samples.Tests
 			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => runStatus.Text = message);
 		}
 
-		private void ReportRunTestCount(string message)
-		{
-			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => runTestCount.Text = message);
-		}
-
-		private void ReportFailedTests(int failedCount)
+		private void ReportTestsResults((int run, int ignored, int succeeded, int failed) counters)
 		{
 			void Update()
 			{
-				failedTests.Text = failedCount.ToString();
+				runTestCount.Text = counters.run.ToString();
+				ignoredTestCount.Text = counters.ignored.ToString();
+				succeededTestCount.Text = counters.succeeded.ToString();
+				failedTestCount.Text = counters.failed.ToString();
 			}
 
 			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, Update);
@@ -88,10 +86,15 @@ namespace Uno.UI.Samples.Tests
 			);
 		}
 
-		private void ReportTestResult(string testName, TestResult testResult, Exception error = null, string message = null)
+		private void ReportTestResult(string testName, TestResult testResult, (int run, int ignored, int succeeded, int failed) counters, Exception error = null, string message = null)
 		{
 			void Update()
 			{
+				runTestCount.Text = counters.run.ToString();
+				ignoredTestCount.Text = counters.ignored.ToString();
+				succeededTestCount.Text = counters.succeeded.ToString();
+				failedTestCount.Text = counters.failed.ToString();
+
 				var testResultBlock = new TextBlock()
 				{
 					Text = testName,
@@ -144,11 +147,10 @@ namespace Uno.UI.Samples.Tests
 
 		private async Task RunTests(CancellationToken cts)
 		{
+			(int run, int ignored, int succeeded, int failed) counters = (0, 0, 0, 0);
+
 			try
 			{
-				var failedTests = 0;
-				var runTests = 0;
-
 				ReportMessage("Enumerating tests");
 
 				var testTypes = InitializeTests();
@@ -168,14 +170,13 @@ namespace Uno.UI.Samples.Tests
 
 						if (IsIgnored(testMethod, out var ignoreMessage))
 						{
-							ReportTestResult(testName, TestResult.Ignored, message: ignoreMessage);
+							counters.ignored++;
+							ReportTestResult(testName, TestResult.Ignored, counters, message: ignoreMessage);
 							continue;
 						}
 
-						ReportMessage($"Running test {testName}");
-						ReportRunTestCount($"Run tests: {++runTests}");
-
 						var runsOnUIThread = testMethod.GetCustomAttribute(typeof(Uno.UI.RuntimeTests.RunsOnUIThreadAttribute)) != null;
+						var expectedException = testMethod.GetCustomAttributes<ExpectedExceptionAttribute>().SingleOrDefault();
 						var dataRows = testMethod.GetCustomAttributes<DataRowAttribute>();
 						if (dataRows.Any())
 						{
@@ -193,6 +194,11 @@ namespace Uno.UI.Samples.Tests
 						async Task InvokeTestMethod(object[] parameters)
 						{
 							var fullTestName = $"{testName}({parameters.Select(p => p.ToString()).JoinBy(", ")})";
+
+							counters.run++;
+							ReportMessage($"Running test {fullTestName}");
+							ReportTestsResults(counters);
+
 							try
 							{
 								type.init?.Invoke(instance, new object[0]);
@@ -227,11 +233,20 @@ namespace Uno.UI.Samples.Tests
 										throw resultingTask.Exception;
 									}
 								}
-								ReportTestResult(fullTestName, TestResult.Sucesss);
+
+								if (expectedException == null)
+								{
+									counters.succeeded++;
+									ReportTestResult(fullTestName, TestResult.Sucesss, counters);
+								}
+								else
+								{
+									counters.failed++;
+									ReportTestResult(fullTestName, TestResult.Failed, counters, message: $"Test did not throw the excepted exception of type {expectedException.ExceptionType.Name}");
+								}
 							}
 							catch (Exception e)
 							{
-								failedTests++;
 								if (e is AggregateException agg)
 								{
 									e = agg.InnerExceptions.FirstOrDefault();
@@ -242,28 +257,40 @@ namespace Uno.UI.Samples.Tests
 									e = tie.InnerException;
 								}
 
-								ReportTestResult(fullTestName, TestResult.Failed, e);
+								if (expectedException == null || !expectedException.ExceptionType.IsInstanceOfType(e))
+								{
+									counters.failed++;
+									ReportTestResult(fullTestName, TestResult.Failed, counters, e);
+								}
+								else
+								{
+									counters.succeeded++;
+									ReportTestResult(fullTestName, TestResult.Sucesss, counters, e);
+								}
 							}
-
 						}
+
 						try
 						{
 							type.cleanup?.Invoke(instance, new object[0]);
 						}
 						catch (Exception e)
 						{
-							ReportTestResult(testName + " Cleanup", TestResult.Failed, e);
+							counters.failed++;
+							ReportTestResult(testName + " Cleanup", TestResult.Failed, counters, e);
 						}
 					}
 				}
 
 				ReportMessage("Tests finished running.");
-				ReportFailedTests(failedTests);
+				ReportTestsResults(counters);
 			}
 			catch (Exception e)
 			{
+				counters.failed = -1;
 				ReportMessage($"Tests runner failed {e}");
-				ReportFailedTests(-1);
+				ReportTestResult("Runtime exception", TestResult.Failed, counters, e);
+				ReportTestsResults(counters);
 			}
 		}
 

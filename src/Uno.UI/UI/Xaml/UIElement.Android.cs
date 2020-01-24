@@ -18,6 +18,32 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : BindableView
 	{
+		/// <summary>
+		/// Returns true if this element has children and they are all native (non-UIElements), false if it has no children or if at
+		/// least one is a UIElement.
+		/// </summary>
+		private bool AreChildrenNativeViewsOnly
+		{
+			get
+			{
+				var shadow = (this as IShadowChildrenProvider).ChildrenShadow;
+				if (shadow.Count == 0)
+				{
+					return false;
+				}
+
+				foreach (var child in shadow)
+				{
+					if (child is UIElement)
+					{
+						return false;
+					}
+				}
+
+				return true;
+			}
+		}
+
 		public UIElement()
 			: base(ContextHelper.Current)
 		{
@@ -26,6 +52,12 @@ namespace Windows.UI.Xaml
 
 		partial void ApplyNativeClip(Rect rect)
 		{
+			// Non-UIElements typically expect to be clipped, and display incorrectly otherwise
+			// This won't work when UIElements and non-UIElements are mixed in the same Panel,
+			// but it should cover most cases in practice, and anyway should be superceded when
+			// IFrameworkElement will be removed.
+			SetClipChildren(FeatureConfiguration.UIElement.AlwaysClipNativeChildren ? AreChildrenNativeViewsOnly : false);
+
 			if (rect.IsEmpty)
 			{
 				ViewCompat.SetClipBounds(this, null);
@@ -64,11 +96,10 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public GeneralTransform TransformToVisual(UIElement visual)
-		{
-			return TransformToVisual(this, visual);
-		}
-
+		/// <summary>
+		/// WARNING: This provides an approximation for Android.View only.
+		/// Prefer to use the GetTransform between 2 UIElement when possible.
+		/// </summary>
 		internal static GeneralTransform TransformToVisual(View element, View visual)
 		{
 			var thisRect = new int[2];
@@ -126,26 +157,39 @@ namespace Windows.UI.Xaml
 			Alpha = IsRenderingSuspended ? 0 : (float)Opacity;
 		}
 
-		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
+		internal Point GetPosition(Point position, UIElement relativeTo)
 		{
+			if (relativeTo == this)
+			{
+				return position;
+			}
+
 			var currentViewLocation = new int[2];
 			GetLocationInWindow(currentViewLocation);
 
+			if (relativeTo == null)
+			{
+				return new Point(
+					position.X + ViewHelper.PhysicalToLogicalPixels(currentViewLocation[0]),
+					position.Y + ViewHelper.PhysicalToLogicalPixels(currentViewLocation[1])
+				);
+			}
+
 			var relativeToLocation = new int[2];
-			GetLocationInWindow(relativeToLocation);
+			relativeTo.GetLocationInWindow(relativeToLocation);
 
 			return new Point(
-				currentViewLocation[0] - relativeToLocation[0],
-				currentViewLocation[1] - relativeToLocation[1]
+				position.X + ViewHelper.PhysicalToLogicalPixels(currentViewLocation[0] - relativeToLocation[0]),
+				position.Y + ViewHelper.PhysicalToLogicalPixels(currentViewLocation[1] - relativeToLocation[1])
 			);
 		}
 
 
 		/// <summary>
-        /// Sets the specified dependency property value using the format "name|value"
-        /// </summary>
-        /// <param name="dependencyPropertyNameAndvalue">The name and value of the property</param>
-        /// <returns>The currenty set value at the Local precedence</returns>
+		/// Sets the specified dependency property value using the format "name|value"
+		/// </summary>
+		/// <param name="dependencyPropertyNameAndvalue">The name and value of the property</param>
+		/// <returns>The currenty set value at the Local precedence</returns>
 		[Java.Interop.Export(nameof(SetDependencyPropertyValue))]
 		public string SetDependencyPropertyValue(string dependencyPropertyNameAndValue)
 			=> SetDependencyPropertyValueInternal(this, dependencyPropertyNameAndValue);

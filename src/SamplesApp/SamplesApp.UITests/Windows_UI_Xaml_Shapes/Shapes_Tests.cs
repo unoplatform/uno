@@ -128,7 +128,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 
 			var bounds = _app.GetRect("TargetRectangle");
 
-			ImageAssert.AssertHasColorAt(screenshot, bounds.CenterX, bounds.CenterY, Color.Blue);
+			ImageAssert.HasColorAt(screenshot, bounds.CenterX, bounds.CenterY, Color.Blue);
 		}
 	}
 }

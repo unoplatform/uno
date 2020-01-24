@@ -310,15 +310,11 @@ namespace Uno.UI
 		[Pure]
 		internal static Rect GetBoundsRectRelativeTo(this UIElement element, UIElement relativeTo)
 		{
+			var elementToTarget = element.TransformToVisual(relativeTo);
 			var elementRect = new Rect(default, element.RenderSize);
-			if (element.RenderTransform != null)
-			{
-				elementRect = element.RenderTransform.TransformBounds(elementRect);
-			}
+			var elementRectRelToTarget = elementToTarget.TransformBounds(elementRect);
 
-			var transformToRoot = element.TransformToVisual(relativeTo);
-			var rect = transformToRoot.TransformBounds(elementRect);
-			return rect;
+			return elementRectRelToTarget;
 		}
 
 		[Pure]

@@ -17,21 +17,7 @@ namespace Windows.UI.Xaml.Input
 		}
 
 
-#if __MACOS__
-		internal Pointer(AppKit.NSEvent uiEvent)
-		{
-			switch (uiEvent.Type)
-			{
-				case AppKit.NSEventType.DirectTouch:
-					PointerDeviceType = PointerDeviceType.Touch;
-					break;
-
-				case AppKit.NSEventType.MouseMoved:
-					PointerDeviceType = PointerDeviceType.Mouse;
-					break;
-			}
-		}
-#elif __WASM__
+#if __WASM__
 		internal Pointer(uint id, PointerDeviceType type)
 		{
 			PointerId = id;

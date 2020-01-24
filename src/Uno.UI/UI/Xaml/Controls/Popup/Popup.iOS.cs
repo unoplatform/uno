@@ -17,10 +17,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private UIView _mainWindow;
 
-		public Popup()
-		{
-		}
-
 		public UIView MainWindow
 		{
 			get
@@ -57,9 +53,7 @@ namespace Windows.UI.Xaml.Controls
 					newPanel.AddSubview(Child);
 				}
 
-				newPanel.Background = IsLightDismissEnabled
-					? new SolidColorBrush(Colors.Transparent)
-					: null;
+				newPanel.Background = GetPanelBackground();
 
 				RegisterPopupPanel();
 			}
@@ -125,9 +119,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (PopupPanel != null)
 			{
-				PopupPanel.Background = newIsLightDismissEnabled
-					? new SolidColorBrush(Colors.Transparent)
-					: null;
+				PopupPanel.Background = GetPanelBackground();
 			}
 		}
 
