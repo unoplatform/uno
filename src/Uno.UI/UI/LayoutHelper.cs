@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics.Contracts;
 using System.Runtime.CompilerServices;
-using System.Text;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using static System.Double;
@@ -12,6 +10,22 @@ namespace Uno.UI
 {
 	internal static class LayoutHelper
 	{
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal static void Deconstruct(this Rect rect, out double x, out double y, out double width, out double height)
+		{
+			x = rect.X;
+			y = rect.Y;
+			width = rect.Width;
+			height = rect.Height;
+		}
+
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal static void Deconstruct(this Size size, out double width, out double height)
+		{
+			width = size.Width;
+			height = size.Height;
+		}
+
 		[Pure]
 		internal static Size GetMinSize(this IFrameworkElement e) => new Size(e.MinWidth, e.MinHeight).NumberOrDefault(new Size(0, 0));
 
