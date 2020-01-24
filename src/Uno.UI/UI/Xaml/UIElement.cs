@@ -308,7 +308,11 @@ namespace Windows.UI.Xaml
 
 			if (NeedsClipToSlot)
 			{
+#if __WASM__
+				var boundsClipping = new Rect(0, 0, RenderSize.Width, RenderSize.Height);
+#else
 				var boundsClipping = ClippedFrame ?? Rect.Empty;
+#endif
 				if (rect.IsEmpty)
 				{
 					rect = boundsClipping;
