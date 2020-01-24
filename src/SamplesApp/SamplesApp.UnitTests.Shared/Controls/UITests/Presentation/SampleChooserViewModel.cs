@@ -813,7 +813,7 @@ description:
 					where !test.IgnoreInSnapshotTests
 					select test.ControlType.FullName;
 
-			return string.Join(";", q);
+			return string.Join(";", q.Distinct());
 		}
 
 		public async Task SetSelectedSample(CancellationToken ct, string metadataName)
