@@ -100,7 +100,7 @@ namespace Windows.UI.Xaml
 				&& availableSize == _lastAvailableSize
 			)
 			{
-				return _lastMeasure;
+				return null;
 			}
 
 			_lastAvailableSize = availableSize;
@@ -108,10 +108,7 @@ namespace Windows.UI.Xaml
 
 			var result = _layouter.Measure(SizeFromUISize(availableSize));
 
-			result = IFrameworkElementHelper
-				.SizeThatFits(this, result)
-				.ToFoundationSize();
-
+			// Result here exclude the margins on the element
 			return result.LogicalToPhysicalPixels();
 		}
 
