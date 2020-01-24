@@ -94,8 +94,7 @@ namespace Windows.Foundation
 		{
 			var parts = text
 				.Split(new[] { ',' })
-				.Select(double.Parse)
-				.ToArray();
+				.SelectToArray(s => double.Parse(s, NumberFormatInfo.InvariantInfo));
 
 			return new Rect
 			(
