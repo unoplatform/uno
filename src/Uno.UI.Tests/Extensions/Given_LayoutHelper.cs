@@ -3,6 +3,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using FluentAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.Extensions;
 
 namespace Uno.UI.Tests.Extensions
 {
@@ -143,9 +144,9 @@ namespace Uno.UI.Tests.Extensions
 		[TestMethod]
 		public void LayoutHelper_DeflateBy(string rect, string thickness, string expected)
 		{
-			var sut = ParseRect(rect);
+			var sut = (Rect)rect;
 			var toGrow = ParseThickness(thickness);
-			var expectedRect = ParseRect(expected);
+			var expectedRect = (Rect)expected;
 
 			sut.DeflateBy(toGrow).Should().Be(expectedRect);
 		}
@@ -158,11 +159,29 @@ namespace Uno.UI.Tests.Extensions
 		[TestMethod]
 		public void LayoutHelper_InflateBy(string rect, string thickness, string expected)
 		{
-			var sut = ParseRect(rect);
+			var sut = (Rect)rect;
 			var toGrow = ParseThickness(thickness);
-			var expectedRect = ParseRect(expected);
+			var expectedRect = (Rect)expected;
 
 			sut.InflateBy(toGrow).Should().Be(expectedRect);
+		}
+
+		[DataRow("0,0,0,0", "0,0,0,0", "0,0,0,0")]
+		[DataRow("10,10,0,0", "0,0,0,0", "null")]
+		[DataRow("0,0,100,100", "0,0,100,100", "0,0,100,100")]
+		[DataRow("0,0,10,100", "0,0,100,10", "0,0,10,10")]
+		[DataRow("0,0,100,10", "0,0,10,100", "0,0,10,10")]
+		[DataRow("0,0,-100,-10", "0,0,-10,-100", "null")]
+		[DataRow("-100,-100,100,100", "-10,-10,10,10", "-10,-10,10,10")]
+		[DataRow("-100,-100,200,200", "-100,-100,10,10", "-100,-100,10,10")]
+		[DataRow("100,200,300,400", "400,300,200,100", "400,300,0,100")]
+		[TestMethod]
+		public void LayoutHelper_IntersectWith(string rect1, string rect2, string expected)
+		{
+			((Rect)rect1)
+				.IntersectWith((Rect)rect2)
+				.Should()
+				.Be(ParseNullableRect(expected));
 		}
 
 		private static Size ParseSize(string s)
@@ -181,14 +200,9 @@ namespace Uno.UI.Tests.Extensions
 				ParseDouble(parts.Length > 2 ? parts[3] : (parts.Length > 1 ? parts[1] : parts[0])));
 		}
 
-		private static Rect ParseRect(string s)
+		private static Rect? ParseNullableRect(string s)
 		{
-			var parts = s.Split(',');
-			return new Rect(
-				ParseDouble(parts[0]),
-				ParseDouble(parts[1]),
-				ParseDouble(parts[2]),
-				ParseDouble(parts[3]));
+			return s.IsNullOrWhiteSpace() || s == "null" ? (Rect?)null : (Rect)s;
 		}
 
 		private static double ParseDouble(string p)

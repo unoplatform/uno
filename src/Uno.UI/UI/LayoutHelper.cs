@@ -233,6 +233,51 @@ namespace Uno.UI
 		[Pure]
 		internal static Rect AtLeast(this Rect value, Size least) => new Rect(value.Location, value.Size.AtLeast(least));
 
+		[Pure]
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal static Size AtLeastZero(this Size value)
+		{
+			return new Size(
+				value.Width.AtLeast(0d),
+				value.Height.AtLeast(0d)
+			);
+		}
+
+		/// <summary>
+		/// Return overlapped zone, if any
+		/// </summary>
+		/// <returns>null means no overlap</returns>
+		[Pure]
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
+		internal static Rect? IntersectWith(this Rect rect1, Rect rect2)
+		{
+			if(rect1.Equals(rect2))
+			{
+				return rect1;
+			}
+
+			var left = Math.Max(rect1.Left, rect2.Left);
+			var right = Math.Min(rect1.Right, rect2.Right);
+			var top = Math.Max(rect1.Top, rect2.Top);
+			var bottom = Math.Min(rect1.Bottom, rect2.Bottom);
+
+			if (right >= left && bottom >= top)
+			{
+				return new Rect(left, top, right - left, bottom - top);
+			}
+			else
+			{
+				return null;
+			}
+		}
+
+		[Pure]
+		internal static Rect UnionWith(this Rect rect1, Rect rect2)
+		{
+			rect1.Union(rect2);
+			return rect1;
+		}
+
 		/// <summary>
 		/// Test if a Rect "fits" totally in another one.
 		/// </summary>
