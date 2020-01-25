@@ -98,6 +98,7 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 
+#if !__ANDROID__
 		/// <summary>
 		/// Gets or sets the desired accuracy in meters for data returned from the location service.
 		/// </summary>
