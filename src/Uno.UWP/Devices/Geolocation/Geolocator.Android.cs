@@ -62,8 +62,6 @@ namespace Windows.Devices.Geolocation
 			}
 		}
 
-		public Task<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
-			=> GetGeopositionAsync();
 
 		public static async Task<GeolocationAccessStatus> RequestAccessAsync()
 		{
@@ -82,7 +80,7 @@ namespace Windows.Devices.Geolocation
 
 					// If geolocators subscribed to PositionChanged before the location permission was granted,
 					// make sure to initialize these geolocators now so they can start broadcasting.
-					foreach(var subscriber in _positionChangedSubscriptions)
+					foreach (var subscriber in _positionChangedSubscriptions)
 					{
 						subscriber.Key.TryInitialize();
 					}
@@ -158,10 +156,167 @@ namespace Windows.Devices.Geolocation
 			_positionChangedSubscriptions.TryRemove(this, out var _);
 		}
 
+		public async Task<Windows.Devices.Geolocation.Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
+		{
+
+			_locationManager = (LocationManager)Android.App.Application.Context.GetSystemService(Android.Content.Context.LocationService);
+
+			_reportInterval = 1000;
+			_movementThreshold = 0;
+
+			RequestUpdates();
+
+			var providers = _locationManager.GetProviders(_locationCriteria, true);
+			int bestAccuracy = 10000;
+			Location bestLocation = null;
+
+			BroadcastStatus(PositionStatus.Initializing);
+
+			var startDate = DateTimeOffset.UtcNow;
+			foreach (string locationProvider in providers)
+			{
+				var location = _locationManager.GetLastKnownLocation(locationProvider);
+				if (location != null)
+				{
+					// check how old is this fix
+					var date = DateTimeOffset.FromUnixTimeMilliseconds(location.Time);
+					if (date + maximumAge > startDate)
+					{   // can be used, but is it best accuracy?
+						if (location.HasAccuracy)
+						{
+							if (location.Accuracy < bestAccuracy)
+							{
+								bestAccuracy = (int)location.Accuracy;
+								bestLocation = location;
+							}
+						}
+						else
+							bestLocation = location;
+					}
+				}
+			}
+
+			if (bestLocation != null)
+			{
+				RemoveUpdates();
+				BroadcastStatus(PositionStatus.Ready);
+				return bestLocation.ToGeoPosition();
+			}
+
+			// wait for fix
+			for (int i = (int)(timeout.TotalMilliseconds / 250.0); i > 0; i--)
+			{
+				await Task.Delay(250);
+				if (_locChanged)
+				{
+					RemoveUpdates();
+					BroadcastStatus(PositionStatus.Ready);
+					return _location.ToGeoPosition();
+				}
+			}
+
+			BroadcastStatus(PositionStatus.Disabled);
+			RemoveUpdates();
+			throw new TimeoutException("Timeout in GetGeopositionAsync(TimeSpan,TimeSpan)");
+
+		}
+
+		~Geolocator()
+        {
+			RemoveUpdates();
+			_locationManager?.Dispose();
+        }
+
+		private void RemoveUpdates()
+		{
+			if (this is null)
+			{ // when caled from destructor
+				return;
+			}
+			_locationManager?.RemoveUpdates(this);
+		}
+
+		private void RequestUpdates()
+		{
+			if (_desiredAccuracyInMeters.HasValue)
+			{
+				if (_desiredAccuracyInMeters.Value < 100)
+				{
+					_locationCriteria.HorizontalAccuracy = Accuracy.High;
+				}
+				else
+					if (_desiredAccuracyInMeters.Value < 500)
+				{
+					_locationCriteria.HorizontalAccuracy = Accuracy.Medium;
+				}
+				else
+				{
+					_locationCriteria.HorizontalAccuracy = Accuracy.Low;
+				}
+
+			}
+			else
+			{
+				_locationCriteria.HorizontalAccuracy = Accuracy.Medium;
+			}
+
+			_locationManager?.RequestLocationUpdates(_reportInterval, (float)_movementThreshold, _locationCriteria, this, Looper.MainLooper);
+		}
+
+		private uint _reportInterval = 1000;
+		private double _movementThreshold = 0;
+
+		static bool _locChanged = false;
+		static Location _location;
+
+		private Criteria _locationCriteria = new Android.Locations.Criteria() { HorizontalAccuracy = Accuracy.Medium };
+
+
+		public uint ReportInterval
+		{
+			get => _reportInterval;
+			set
+			{
+				_reportInterval = value;
+				RemoveUpdates();
+				RequestUpdates();
+			}
+		}
+
+		public double MovementThreshold
+		{
+			get => _movementThreshold;
+			set
+			{
+				_movementThreshold = value;
+				RemoveUpdates();
+				RequestUpdates();
+			}
+		}
+
+		public uint? DesiredAccuracyInMeters
+		{
+			get => _desiredAccuracyInMeters;
+			set
+			{
+				_desiredAccuracyInMeters = value;
+				RemoveUpdates();
+				RequestUpdates();
+			}
+		}
+
+#region Android ILocationListener
 		public void OnLocationChanged(Location location)
 		{
-			BroadcastStatus(PositionStatus.Ready);
-			this._positionChanged?.Invoke(this, new PositionChangedEventArgs(location.ToGeoPosition()));
+			DateTimeOffset date = DateTimeOffset.FromUnixTimeMilliseconds(location.Time);
+			if (date.AddMinutes(1) > DateTimeOffset.UtcNow)
+			{// only from last minute (we don't want to get some obsolete location)
+				_locChanged = true;
+				_location = location;
+
+				BroadcastStatus(PositionStatus.Ready);
+				this._positionChanged?.Invoke(this, new PositionChangedEventArgs(location.ToGeoPosition()));
+			}
 		}
 
 		public void OnProviderDisabled(string provider)
@@ -174,7 +329,10 @@ namespace Windows.Devices.Geolocation
 
 		public void OnStatusChanged(string provider, [GeneratedEnum] Availability status, Bundle extras)
 		{
-		}		
+			// This method was deprecated in API level 29 (Android 10). This callback will never be invoked.
+		}
+
+#endregion
 	}
 
 	static class Extensions
