@@ -75,13 +75,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
-		public void ListView_VirtualizePanelAdaptaterCache()
+		public void ListView_VirtualizePanelAdaptaterIdCache()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_VirtualizePanelAdaptaterCache");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_VirtualizePanelAdaptaterIdCache");
 
-			var result = _app.Query(e => e.Text("Success"));
+			var textResult = _app.Marked("TextResult");
+			_app.WaitForText(textResult, "Success");
 
-			TakeScreenshot($"ListView_VirtualizePanelAdaptaterCache");
+			TakeScreenshot($"ListView_VirtualizePanelAdaptaterIdCache");
 		}
 
 		[Test]
