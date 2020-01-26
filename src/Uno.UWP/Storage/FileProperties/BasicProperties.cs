@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -21,7 +21,7 @@ namespace Windows.Storage.FileProperties
 		
 		public DateTimeOffset DateModified
 		{
-			get { return File.GetLastWriteTime(_fileInfo.FullName); }
+			get => File.GetLastWriteTime(_fileInfo.FullName);
 		}
 	}
 
