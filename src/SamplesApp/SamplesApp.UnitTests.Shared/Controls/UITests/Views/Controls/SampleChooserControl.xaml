@@ -113,7 +113,7 @@
 			<DataTemplate x:Key="SampleTemplate">
 				<Border Style="{StaticResource TemplateContainerStyle}">
 					<u:StarStackPanel Orientation="Horizontal"
-									  Sizes="*,Auto, Auto">
+									  Sizes="*,Auto,Auto">
 						<TextBlock Text="{Binding ControlName}"
 								   Style="{StaticResource Typo02}"
 								   TextWrapping="NoWrap"
@@ -465,7 +465,8 @@
 							VerticalAlignment="Center"
 							VerticalContentAlignment="Center"
 							HorizontalContentAlignment="Center"
-							Foreground="{StaticResource Color06Brush}" />
+							Foreground="{StaticResource Color06Brush}"
+							Visibility="{Binding IsDebug}" />
 
 					<!-- Previous Button -->
 					<Button Style="{StaticResource IconButtonStyle}"
