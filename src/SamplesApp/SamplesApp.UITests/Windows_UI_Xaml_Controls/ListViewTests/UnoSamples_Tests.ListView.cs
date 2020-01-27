@@ -77,7 +77,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 		[AutoRetry]
 		public void ListView_VirtualizePanelAdaptaterIdCache()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_VirtualizePanelAdaptaterIdCache");
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_VirtualizePanelAdaptaterIdCache");
+
+			_app.Tap("MyButton");
 
 			var textResult = _app.Marked("TextResult");
 			_app.WaitForText(textResult, "Success");
