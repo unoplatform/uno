@@ -503,9 +503,6 @@ namespace Windows.UI.Xaml.Controls
 			// The result "clippedFrame" gives the resulting boundaries of the element.
 			// If clipping is required, that's were it should occurs.
 
-			var layoutFrame = frame;
-			var clippedFrame = frame;
-
 			if (view is IFrameworkElement frameworkElement)
 			{
 				// Apply the margin for framework elements, as if it were padding to the child.
@@ -648,7 +645,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				// Calculate Create layoutFrame and apply child's margins
-				layoutFrame = new Rect(x, y, width, height).DeflateBy(childMargin);
+				var layoutFrame = new Rect(x, y, width, height).DeflateBy(childMargin);
 
 				// Give opportunity to element to alter arranged size
 				layoutFrame.Size = frameworkElement.AdjustArrange(layoutFrame.Size);
@@ -660,27 +657,26 @@ namespace Windows.UI.Xaml.Controls
 					?? Rect.Empty;
 
 				// Rebase the origin of the clipped frame to layout
-				clippedFrame = new Rect(
+				var clippedFrame = new Rect(
 					clippedFrameWithParentOrigin.X - layoutFrame.X,
 					clippedFrameWithParentOrigin.Y - layoutFrame.Y,
 					clippedFrameWithParentOrigin.Width,
 					clippedFrameWithParentOrigin.Height);
+
+				return (layoutFrame, clippedFrame);
 			}
 			else
 			{
-				layoutFrame = new Rect(
-					x: IsNaN(layoutFrame.X) ? 0 : layoutFrame.X,
-					y: IsNaN(layoutFrame.Y) ? 0 : layoutFrame.Y,
-					width: Max(0, IsNaN(layoutFrame.Width) ? 0 : layoutFrame.Width),
-					height: Max(0, IsNaN(layoutFrame.Height) ? 0 : layoutFrame.Height)
+				var layoutFrame = new Rect(
+					x: IsNaN(frame.X) ? 0 : frame.X,
+					y: IsNaN(frame.Y) ? 0 : frame.Y,
+					width: Max(0, IsNaN(frame.Width) ? 0 : frame.Width),
+					height: Max(0, IsNaN(frame.Height) ? 0 : frame.Height)
 				);
 
 				// Clipped frame & layout frame are the same for native elements
-				clippedFrame = layoutFrame;
+				return (layoutFrame, layoutFrame);
 			}
-
-
-			return (layoutFrame, clippedFrame);
 		}
 
 		protected virtual void AdjustAlignment(View view, ref HorizontalAlignment childHorizontalAlignment,
