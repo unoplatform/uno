@@ -50,8 +50,15 @@ namespace Windows.UI.Xaml.Automation.Peers
 			"Type", typeof(global::Windows.UI.Xaml.Automation.AnnotationType), 
 			typeof(global::Windows.UI.Xaml.Automation.Peers.AutomationPeerAnnotation), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.AnnotationType)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public AutomationPeerAnnotation() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeerAnnotation", "AutomationPeerAnnotation.AutomationPeerAnnotation(AnnotationType type)");
+		}
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public AutomationPeerAnnotation( global::Windows.UI.Xaml.Automation.AnnotationType type) : base()
 		{

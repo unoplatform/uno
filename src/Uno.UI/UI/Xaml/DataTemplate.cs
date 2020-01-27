@@ -21,6 +21,8 @@ namespace Windows.UI.Xaml
 {
 	public partial class DataTemplate : FrameworkTemplate
 	{
+		public DataTemplate() : this(null) { }
+
 		public DataTemplate (Func<View> factory)
 			: base (factory)
 		{
