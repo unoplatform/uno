@@ -223,14 +223,19 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal override void OnSelectedItemChanged(object oldSelectedItem, object selectedItem)
+		internal override void OnSelectedItemChanged(object oldSelectedItem, object selectedItem, bool updateItemSelectedState)
 		{
 			if (oldSelectedItem is _View view)
 			{
 				// Ensure previous SelectedItem is put back in the dropdown list if it's a view
 				RestoreSelectedItem(view);
 			}
-			base.OnSelectedItemChanged(oldSelectedItem, selectedItem);
+
+			base.OnSelectedItemChanged(
+				oldSelectedItem: oldSelectedItem,
+				selectedItem: selectedItem,
+				updateItemSelectedState: updateItemSelectedState);
+
 			UpdateContentPresenter();
 		}
 

@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public FlipView()
 		{
-			this.RegisterDisposablePropertyChangedCallback(SelectedIndexProperty, (s, e) => (s as FlipView)?.OnSelectedIndexChanged((int)e.OldValue, (int)e.NewValue));
+
 		}
 
 		public bool UseTouchAnimationsForAllNavigation
@@ -46,8 +46,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void OnSelectedIndexChanged(int oldValue, int newValue)
+		internal override void OnSelectedIndexChanged(int oldValue, int newValue)
 		{
+			base.OnSelectedIndexChanged(oldValue, newValue);
+
 			// Never animate for changes greater than next/previous item
 			var smallChange = Math.Abs(newValue - oldValue) <= 1;
 			OnSelectedIndexChangedPartial(oldValue, newValue, smallChange && UseTouchAnimationsForAllNavigation);

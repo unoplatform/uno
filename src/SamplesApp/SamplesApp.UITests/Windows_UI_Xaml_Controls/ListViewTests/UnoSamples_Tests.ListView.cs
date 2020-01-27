@@ -75,13 +75,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
-		public void ListView_VirtualizePanelAdaptaterCache()
+		public void ListView_VirtualizePanelAdaptaterIdCache()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_VirtualizePanelAdaptaterCache");
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_VirtualizePanelAdaptaterIdCache");
 
-			var result = _app.Query(e => e.Text("Success"));
+			_app.Tap("MyButton");
 
-			TakeScreenshot($"ListView_VirtualizePanelAdaptaterCache");
+			var textResult = _app.Marked("TextResult");
+			_app.WaitForText(textResult, "Success");
+
+			TakeScreenshot($"ListView_VirtualizePanelAdaptaterIdCache");
 		}
 
 		[Test]
@@ -162,6 +165,71 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			Assert.Greater(heightBefore, 0);
 
 			Assert.AreEqual(3 * heightBefore, heightAfter);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ListView_SelectedItem()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_SelectedItem");
+
+			_app.WaitForText("_SelectedItem", "3");
+			_app.WaitForText("itemsStackPanelListSelectedItem", "3");
+			_app.WaitForText("stackPanelListSelectedItem", "3");
+
+			{
+				var firstItem = _app.Marked("itemsStackPanelList").Descendant().Marked("1");
+				_app.Tap(firstItem);
+				_app.WaitForText("itemsStackPanelListSelectedItem", "1");
+			}
+
+			{
+				var firstItem = _app.Marked("stackPanelList").Descendant().Marked("1");
+				_app.Tap(firstItem);
+				_app.WaitForText("itemsStackPanelListSelectedItem", "1");
+			}
+
+			TakeScreenshot("Both Selection Changed");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ListView_SelectedItems()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewSelectedItems");
+
+			_app.Tap("Right 0");
+			_app.WaitForText("_selectedItem", "Selected item: 0");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(0, ), RemovedItems=()");
+
+			_app.Tap("Left 0");
+			_app.WaitForText("_selectedItem", "Selected item: ");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(), RemovedItems=(0, )");
+
+			_app.Tap("Left 0");
+			_app.WaitForText("_selectedItem", "Selected item: 0");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(0, ), RemovedItems=()");
+
+			_app.Tap("Left 1");
+			_app.WaitForText("_selectedItem", "Selected item: 0");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(1, ), RemovedItems=()");
+
+			_app.Tap("Left 2");
+			_app.WaitForText("_selectedItem", "Selected item: 0");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(2, ), RemovedItems=()");
+
+			_app.Tap("Center 3");
+			_app.WaitForText("_selectedItem", "Selected item: 3");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(3, ), RemovedItems=(0, 1, 2, )");
+
+			_app.Tap("Right 0");
+			_app.Tap("Right 1");
+			_app.Tap("Right 2");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(2, ), RemovedItems=()");
+
+			_app.Tap("ClearSelectedItemButton");
+
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(), RemovedItems=(3, 0, 1, 2, )");
 		}
 	}
 }
