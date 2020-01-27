@@ -3,7 +3,7 @@
 The Uno solution provides a set of sample applications that provide a way to test features, as
 well as provide a way to write UI Tests.
 
-Those applications are structured in a way that samples can created out of normal `UserControl` instances, 
+Those applications are structured in a way that samples can be created out of normal `UserControl` instances, 
 marked with the `SampleAttribute` (and previous `SampleControlInfoAttribute`) so the sample application can discover them.
 
 Those applications are located in the `SamplesApp` folder of the solution, and a live development out of the master branch
@@ -25,7 +25,7 @@ To create a UI Test for the sample applications:
 - Create a new `UserControl` from the Visual Studio templates in the `UITests.Shared` project
 - Add `[Uno.UI.Samples.Controls.Sample]` on the code-behind class. 
 
-  _Note: This attribute also accepts few other metadata about you sample like a list of `Categories`, a `Name`,
+  _Note: This attribute also accepts a few other metadata about your sample, such as a list of `Categories`, a `Name`,
   a `Description` etc. Check the `SampleAttribute` XML-doc for more info._
 
 - Run the samples application, and the sample should appear in the samples browser
