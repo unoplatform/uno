@@ -54,6 +54,7 @@
 - Enable partial `NavigationView.ItemSource` scenario (https://github.com/unoplatform/uno/issues/2477)
 - [Wasm] Fail gracefully if IDBFS is not enabled in emscripten
 - [#2513] Fix `TransformGroup` not working
+- [#1956] Fis iOS invalid final state when switching visual state before current state's animation is completed.
 - Fix `Selector` support for IsSelected (#1606)
 - [Android] 164249 fixed TextBox.Text flickering when using custom IInputFilter with MaxLength set
 
