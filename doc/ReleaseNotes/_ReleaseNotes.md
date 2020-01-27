@@ -40,6 +40,7 @@
 - #2287 Vertical `ListView` containing a horizontal `ScrollViewer`: horizontal scrolling is difficult, only works when the gesture is perfectly horizontal
 - #2130 Grid - fix invalid measure when total star size is 0
 - [iOS] Fix invalid image measure on constrained images with `Margin`
+- [#2364] fixed missing Xaml IntelliSense on newly created project 
 - `ViewBox` no longer alters its child's `RenderTransform`
 - [#2033] Add Missing `LostFocus` Value to `UpdateSourceTrigger` Enum
 - [Android] Fix Image margin calculation on fixed size
