@@ -10,7 +10,7 @@
 
 	<ScrollViewer>
 		<StackPanel Spacing="8" toolkit:VisibleBoundsPadding.PaddingMask="All">
-			<TextBlock FontSize="18">Following 5 buttons should be of same look &amp; size:</TextBlock>
+			<TextBlock FontSize="18">Following 6 buttons should be of same look &amp; size:</TextBlock>
 
 			<Border Height="40" Background="Aquamarine">
 

@@ -1,22 +1,23 @@
 // #define LOG_LAYOUT
 
-using Windows.UI.Xaml.Media;
-using Microsoft.Extensions.Logging;
-using Uno.UI;
 #if !__WASM__
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
-using Uno.Extensions;
+using Microsoft.Extensions.Logging;
+using Windows.Foundation;
+using Windows.UI.Xaml.Media;
 using Uno;
+using Uno.Extensions;
 using Uno.Logging;
 using Uno.Collections;
+using Uno.Diagnostics.Eventing;
+using Uno.UI;
 using static System.Double;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
-using Uno.Diagnostics.Eventing;
-using Windows.Foundation;
+
 #if XAMARIN_ANDROID
 using Android.Views;
 using View = Android.Views.View;

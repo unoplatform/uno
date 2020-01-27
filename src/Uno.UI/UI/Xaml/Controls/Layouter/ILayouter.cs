@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿#if !__WASM__
 using Windows.Foundation;
-using System.Linq;
-using System.Text;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -71,3 +68,4 @@ namespace Windows.UI.Xaml.Controls
 		Size GetDesiredSize(View view);
 	}
 }
+#endif
