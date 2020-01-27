@@ -183,6 +183,39 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		}
 
 		[TestMethod]
+		public void When_ViewModelSource_SelectionChanged_Changes_Selection()
+		{
+			var SUT = new ListView()
+			{
+				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemContainerStyle = BuildBasicContainerStyle(),
+				Template = new ControlTemplate(() => new ItemsPresenter()),
+				SelectionMode = ListViewSelectionMode.Single,
+			};
+
+			var source = Enumerable.Range(0, 20).Select(i => new MyViewModel { MyValue = i }).ToArray();
+			SUT.ItemsSource = source;
+
+			Assert.IsNull(SUT.SelectedItem);
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			var selectionChanged = new List<SelectionChangedEventArgs>();
+			SUT.SelectionChanged += (s, e) => selectionChanged.Add(e);
+			SUT.SelectedItem = source[1];
+
+			Assert.AreEqual(1, SUT.SelectedIndex);
+
+			if (SUT.ContainerFromIndex(1) is ListViewItem s1)
+			{
+				Assert.IsTrue(s1.IsSelected);
+			}
+			else
+			{
+				Assert.Fail("Container should be a ListViewItem");
+			}
+		}
+
+		[TestMethod]
 		public void When_Single_SelectionChanged_And_SelectorItem_IsSelected_Changed()
 		{
 			var SUT = new ListView()
@@ -495,6 +528,11 @@ namespace Uno.UI.Tests.ListViewBaseTests
 	public class MyModel
 	{
 		public object SelectedItem { get; set; }
+	}
+
+	public class MyViewModel
+	{
+		public int MyValue { get; set; }
 	}
 
 	public class MyItemsControl : ItemsControl
