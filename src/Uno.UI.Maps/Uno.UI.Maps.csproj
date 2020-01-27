@@ -40,7 +40,7 @@
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid10.0'">
 		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="71.1600.0" />
 		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="71.1610.0" />
-		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0-preview02" PrivateAssets="none" />
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0-rc1" PrivateAssets="none" />
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
