@@ -1,4 +1,5 @@
 ﻿#if __ANDROID__
+using System;
 using Android.App;
 using Android.Views;
 using Uno.Extensions;
@@ -11,6 +12,33 @@ namespace Windows.UI.ViewManagement
 {
 	partial class ApplicationView
 	{
+		public bool IsScreenCaptureEnabled
+		{
+			get
+			{
+				if (!(ContextHelper.Current is Activity activity))
+				{
+					throw new InvalidOperationException($"{nameof(IsScreenCaptureEnabled)} API must be called when Activity is created");
+				}
+				return !activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.Secure);
+			}
+			set
+			{
+				if (!(ContextHelper.Current is Activity activity))
+				{
+					throw new InvalidOperationException($"{nameof(IsScreenCaptureEnabled)} API must be called when Activity is created");
+				}
+				if (value)
+				{
+					activity.Window.ClearFlags(WindowManagerFlags.Secure);
+				}
+				else
+				{
+					activity.Window.SetFlags(WindowManagerFlags.Secure, WindowManagerFlags.Secure);
+				}
+			}
+		}
+
 		internal void SetVisibleBounds(Rect newVisibleBounds)
 		{
 			if (newVisibleBounds != VisibleBounds)
