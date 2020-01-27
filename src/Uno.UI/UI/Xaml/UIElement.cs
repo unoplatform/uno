@@ -297,8 +297,10 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				rect = Clip?.Rect ?? Rect.Empty;
+				rect = Clip.Rect;
 
+				// Currently only TranslateTransform is supported on a clipping mask
+				// (because the calculated mask is a Rect right now...)
 				if (Clip?.Transform is TranslateTransform translateTransform)
 				{
 					rect.X += translateTransform.X;
