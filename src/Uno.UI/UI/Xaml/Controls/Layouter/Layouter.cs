@@ -450,6 +450,7 @@ namespace Windows.UI.Xaml.Controls
 			if (view is UIElement elt)
 			{
 				elt.LayoutSlotWithMarginsAndAlignments = finalFrame;
+				elt.ClippedFrame = clippedFrame;
 			}
 
 			ArrangeChildOverride(view, finalFrame);
@@ -460,8 +461,6 @@ namespace Windows.UI.Xaml.Controls
 				{
 					fe?.OnLayoutUpdated();
 				}
-
-				fe.ClippedFrame = clippedFrame;
 			}
 		}
 
