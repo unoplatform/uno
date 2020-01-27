@@ -170,7 +170,7 @@ namespace Windows.UI.Xaml.Controls
 					this.Log().DebugFormat("[{0}/{1}] Arrange({2}/{3}/{4}/{5})", LoggingOwnerTypeName, Name, GetType(), Panel.Name, finalRect, Panel.Margin);
 				}
 
-				var clippedArrangeSize = uiElement.ClippedFrame?.Size ?? finalRect.Size;
+				var clippedArrangeSize = uiElement?.ClippedFrame?.Size ?? finalRect.Size;
 
 				bool allowClipToSlot;
 				bool needsClipToSlot;
