@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				// Note: The popup alignment is ensure by the PopupPanel itself
-				child.Arrange(new Rect(new Point(), finalSize));
+				ArrangeElement(child, new Rect(new Point(), finalSize));
 			}
 
 			return finalSize;

@@ -22,7 +22,7 @@
 - Add support of the `UIElement.Holding` event
 
 ### Breaking changes
--
+- [Android] Enable support for non-native `Popup` by default. Can be deactivated through `FeatureConfiguration.Popup.UseNativePopup` set to true (See #2533 for more details)
 
 ### Bug fixes
 

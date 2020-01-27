@@ -55,6 +55,19 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests
 			dialogResult.Text = result.ToString();
 		}
 
+		ContentDialog_Simple_Dialog _dialog6;
+
+		private async void OnMyButtonClick6(object sender, object args)
+		{
+			if (_dialog6 == null)
+			{
+				_dialog6 = new ContentDialog_Simple_Dialog { };
+			}
+
+			var result = await _dialog6.ShowAsync();
+			dialogResult.Text = result.ToString();
+		}
+
 		private void ContentDialog_PrimaryButtonClick(object sender, ContentDialogButtonClickEventArgs args)
 		{
 
