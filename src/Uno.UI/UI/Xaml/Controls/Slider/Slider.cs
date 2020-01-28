@@ -20,7 +20,8 @@ namespace Windows.UI.Xaml.Controls
 		private ContentPresenter _headerContentPresenter;
 		private Thumb _horizontalThumb, _verticalThumb;
 		private FrameworkElement _horizontalTemplate, _verticalTemplate;
-		private bool _duringDrag;
+		private bool _isDragging; // between DragStart and DragCompleted
+		private bool _isInDragDelta; // is reacting to a DragDelta
 		private Rectangle _horizontalDecreaseRect;
 		private Rectangle _horizontalTrackRect;
 		private Rectangle _verticalDecreaseRect;
@@ -154,7 +155,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			ApplyValueToSlide();
 
-			IsPointerPressed = false;
+			_isDragging = false;
 			UpdateCommonState();
 		}
 
@@ -162,7 +163,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			try
 			{
-				_duringDrag = true;
+				_isInDragDelta = true;
 
 				if (Orientation == Orientation.Horizontal)
 				{
@@ -183,7 +184,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			finally
 			{
-				_duringDrag = false;
+				_isInDragDelta = false;
 			}
 		}
 
@@ -191,10 +192,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (HasXamlTemplate)
 			{
-				// Disable parent scrolling on Android
-#if XAMARIN_ANDROID
-				this.RequestDisallowInterceptTouchEvent(true);
-#endif
 				if (Orientation == Orientation.Horizontal)
 				{
 					_horizontalInitial = GetSanitizedDimension(_horizontalDecreaseRect.Width);
@@ -204,7 +201,7 @@ namespace Windows.UI.Xaml.Controls
 					_verticalInitial = GetSanitizedDimension(_verticalDecreaseRect.Height);
 				}
 
-				IsPointerPressed = true;
+				_isDragging = true;
 				UpdateCommonState();
 			}
 		}
@@ -215,7 +212,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				VisualStateManager.GoToState(this, "Disabled", useTransitions);
 			}
-			else if (IsPointerPressed)
+			else if (_isDragging)
 			{
 				VisualStateManager.GoToState(this, "Pressed", useTransitions);
 			}
@@ -277,19 +274,19 @@ namespace Windows.UI.Xaml.Controls
 			// The _decreaseRect's height/width is updated, which in turn pushes or pulls the Thumb to its correct position
 			if (Orientation == Orientation.Horizontal)
 			{
-                if (_horizontalThumb != null && _horizontalDecreaseRect != null)
-                {
-                    var maxWidth = ActualWidth - _horizontalThumb.ActualWidth;
-                    _horizontalDecreaseRect.Width = (float)((Value - Minimum) / (Maximum - Minimum)) * maxWidth;
-                }
+				if (_horizontalThumb != null && _horizontalDecreaseRect != null)
+				{
+					var maxWidth = ActualWidth - _horizontalThumb.ActualWidth;
+					_horizontalDecreaseRect.Width = (float)((Value - Minimum) / (Maximum - Minimum)) * maxWidth;
+				}
 			}
 			else
 			{
-                if (_verticalThumb != null && _verticalDecreaseRect != null)
-                {
-                    var maxHeight = ActualHeight - _verticalThumb.ActualHeight;
-                    _verticalDecreaseRect.Height = (float)((Value - Minimum) / (Maximum - Minimum)) * maxHeight;
-                }
+				if (_verticalThumb != null && _verticalDecreaseRect != null)
+				{
+					var maxHeight = ActualHeight - _verticalThumb.ActualHeight;
+					_verticalDecreaseRect.Height = (float)((Value - Minimum) / (Maximum - Minimum)) * maxHeight;
+				}
 			}
 		}
 
@@ -311,7 +308,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnValueChanged(oldValue, newValue);
 
-			if (!_duringDrag && HasXamlTemplate)
+			if (!_isInDragDelta && HasXamlTemplate)
 			{
 				ApplyValueToSlide();
 			}
@@ -319,21 +316,24 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SubscribeSliderContainerPressed()
 		{
-			if (_sliderContainer != null && IsTrackerEnabled)
+			// This allows the user to start sliding by clicking anywhere on the slider
+			// In that case, the Thumb won't  be able to capture the pointer and instead we will replicate
+			// its behavior and "push" to it the drag events (on which we are already subscribed).
+
+			var container = _sliderContainer;
+			if (container != null && IsTrackerEnabled)
 			{
 				_sliderContainerSubscription.Disposable = null;
 
-				_sliderContainer.PointerPressed += OnSliderContainerPressed;
-				_sliderContainer.PointerMoved += OnSliderContainerMoved;
-				_sliderContainer.PointerReleased += OnSliderContainerReleased;
-				_sliderContainer.PointerCanceled += OnSliderContainerCanceled;
+				container.PointerPressed += OnSliderContainerPressed;
+				container.PointerMoved += OnSliderContainerMoved;
+				container.PointerCaptureLost += OnSliderContainerCaptureLost;
 
 				_sliderContainerSubscription.Disposable = Disposable.Create(() =>
 				{
-					_sliderContainer.PointerPressed -= OnSliderContainerPressed;
-					_sliderContainer.PointerMoved -= OnSliderContainerMoved;
-					_sliderContainer.PointerReleased -= OnSliderContainerReleased;
-					_sliderContainer.PointerCanceled -= OnSliderContainerCanceled;
+					container.PointerPressed -= OnSliderContainerPressed;
+					container.PointerMoved -= OnSliderContainerMoved;
+					container.PointerCaptureLost -= OnSliderContainerCaptureLost;
 				});
 			}
 		}
@@ -341,60 +341,36 @@ namespace Windows.UI.Xaml.Controls
 		private void OnSliderContainerPressed(object sender, PointerRoutedEventArgs e)
 		{
 			var container = sender as FrameworkElement;
-			var point = e.GetCurrentPoint(container).Position;
+			if (container.CapturePointer(e.Pointer))
+			{
+				var point = e.GetCurrentPoint(container).Position;
+				var newOffset = Orientation == Orientation.Horizontal
+					? point.X / container.ActualWidth
+					: 1 - (point.Y / container.ActualHeight);
 
-			var newOffset = Orientation == Orientation.Horizontal ?
-				point.X / container.ActualWidth :
-				1 - (point.Y / container.ActualHeight);
-
-			ApplySlideToValue(newOffset);
-
-			Thumb?.StartDrag(point);
-
-			// This captures downstream events outside the slider's bounds.
-			container.CapturePointer(e.Pointer);
-
-			// This is currently obligatory on Android to be able to receive downstream touch events (eg PointerMoved etc).
-			e.Handled = true;
-		}
-
-		private void OnSliderContainerCanceled(object sender, PointerRoutedEventArgs e)
-		{
-			OnDragCompleted(sender, null);
-
-			var container = sender as FrameworkElement;
-			container.ReleasePointerCapture(e.Pointer);
-		}
-
-		private void OnSliderContainerReleased(object sender, PointerRoutedEventArgs e)
-		{
-			var container = sender as FrameworkElement;
-			var point = e.GetCurrentPoint(container).Position;
-
-			ApplyValueToSlide();
-
-			Thumb?.CompleteDrag(point);
-
-			container.ReleasePointerCapture(e.Pointer);
-
-			e.Handled = true;
+				ApplySlideToValue(newOffset);
+				Thumb?.StartDrag(point);
+			}
 		}
 
 		private void OnSliderContainerMoved(object sender, PointerRoutedEventArgs e)
 		{
 			var container = sender as FrameworkElement;
-#if __WASM__
-			if (!container.IsCaptured(e.Pointer))
+			if (container.IsCaptured(e.Pointer))
 			{
-				return;
-			}
-#endif
+				var point = e.GetCurrentPoint(container).Position;
 
+				Thumb?.DeltaDrag(point);
+			}
+		}
+
+		private void OnSliderContainerCaptureLost(object sender, PointerRoutedEventArgs e)
+		{
+			var container = sender as FrameworkElement;
 			var point = e.GetCurrentPoint(container).Position;
 
-			Thumb?.DeltaDrag(point);
-
-			e.Handled = true;
+			ApplyValueToSlide();
+			Thumb?.CompleteDrag(point);
 		}
 
 		#region IsTrackerEnabled DependencyProperty

@@ -20,13 +20,15 @@ namespace Windows.Foundation.Metadata
 			"Uno"
 		};
 
+		private static bool IsImplementedByUno(MemberInfo member) => (member?.GetCustomAttributes(typeof(Uno.NotImplementedAttribute), false)?.Length ?? -1) == 0;
+
 		public static bool IsTypePresent(string typeName)
 		{
 			lock (_gate)
 			{
 				if (!_isTypePresent.TryGetValue(typeName, out var result))
 				{
-					_isTypePresent[typeName] = result = GetValidType(typeName)?.GetCustomAttributes(typeof(Uno.NotImplementedAttribute), false)?.Length == 0;
+					_isTypePresent[typeName] = result = IsImplementedByUno(GetValidType(typeName));
 				}
 
 				return result;
@@ -43,19 +45,21 @@ namespace Windows.Foundation.Metadata
 				.Any() ?? false;
 
 		public static bool IsEventPresent(string typeName, string eventName)
-			=> GetValidType(typeName)
-				?.GetEvent(eventName) != null;
+			=> IsImplementedByUno(
+				GetValidType(typeName)
+				?.GetEvent(eventName));
 
 		public static bool IsPropertyPresent(string typeName, string propertyName) 
-			=> GetValidType(typeName)
-				?.GetProperty(propertyName) != null;
+			=> IsImplementedByUno(
+				GetValidType(typeName)
+				?.GetProperty(propertyName));
 
 		public static bool IsReadOnlyPropertyPresent(string typeName, string propertyName)
 		{
 			var property = GetValidType(typeName)
 				?.GetProperty(propertyName);
 
-			if(property != null)
+			if(IsImplementedByUno(property))
 			{
 				return property.GetMethod != null && property.SetMethod == null;
 			}
@@ -68,7 +72,7 @@ namespace Windows.Foundation.Metadata
 			var property = GetValidType(typeName)
 				?.GetProperty(propertyName);
 
-			if (property != null)
+			if (IsImplementedByUno(property))
 			{
 				return property.GetMethod != null && property.SetMethod != null;
 			}

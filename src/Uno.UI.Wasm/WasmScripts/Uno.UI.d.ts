@@ -149,6 +149,7 @@ declare namespace Uno.UI {
         static initNative(pParams: number): boolean;
         private containerElement;
         private rootContent;
+        private cursorStyleElement;
         private allActiveElementsById;
         private static resizeMethod;
         private static dispatchEventMethod;
@@ -253,7 +254,7 @@ declare namespace Uno.UI {
             */
         setStyle(elementId: number, styles: {
             [name: string]: string;
-        }, setAsArranged?: boolean, clipToBounds?: boolean): string;
+        }): string;
         /**
         * Set the CSS style of a html element.
         *
@@ -266,18 +267,13 @@ declare namespace Uno.UI {
         *
         */
         setStyleDoubleNative(pParams: number): boolean;
+        setArrangeProperties(elementId: number, clipToBounds: boolean): string;
         /**
-            * Set the CSS style of a html element.
-            *
-            * To remove a value, set it to empty string.
-            * @param styles A dictionary of styles to apply on html element.
+            * Remove the CSS style of a html element.
             */
         resetStyle(elementId: number, names: string[]): string;
         /**
-            * Set the CSS style of a html element.
-            *
-            * To remove a value, set it to empty string.
-            * @param styles A dictionary of styles to apply on html element.
+            * Remove the CSS style of a html element.
             */
         resetStyleNative(pParams: number): boolean;
         private resetStyleInternal;
@@ -512,7 +508,7 @@ declare namespace Uno.UI {
          *
          * Note that the casing of this method is intentionally Pascal for platform alignment.
          */
-        SetDependencyPropertyValue(elementId: number, propertyName: string, propertyValue: string): string;
+        SetDependencyPropertyValue(elementId: number, propertyNameAndValue: string): string;
         /**
             * Remove the loading indicator.
             *
@@ -526,6 +522,7 @@ declare namespace Uno.UI {
         private resize;
         private dispatchEvent;
         private getIsConnectedToRootElement;
+        setCursor(cssCursor: string): string;
     }
 }
 declare class StorageFolderMakePersistentParams {
@@ -693,10 +690,8 @@ declare class WindowManagerSetStyleDoubleParams {
 }
 declare class WindowManagerSetStylesParams {
     HtmlId: number;
-    SetAsArranged: boolean;
     Pairs_Length: number;
     Pairs: Array<string>;
-    ClipToBounds: boolean;
     static unmarshal(pData: number): WindowManagerSetStylesParams;
 }
 declare class WindowManagerSetXUidParams {
@@ -888,6 +883,11 @@ declare namespace Windows.UI.Core {
         enable(): void;
         disable(): void;
         private clearStack;
+    }
+}
+declare namespace Windows.UI.ViewManagement {
+    class ApplicationViewTitleBar {
+        static setBackgroundColor(colorString: string): void;
     }
 }
 declare namespace Windows.UI.Xaml {

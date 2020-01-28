@@ -11,23 +11,41 @@
 			 d:DesignHeight="300"
 			 d:DesignWidth="400">
 
-	<ScrollViewer>
-		<StackPanel>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition />
+			<RowDefinition />
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition />
+			<ColumnDefinition />
+		</Grid.ColumnDefinitions>
 
+		<StackPanel Grid.Row="0"
+					Grid.Column="0">
 			<TextBlock Text="The Image should be larger than the ScrollViewer" />
 			<ScrollViewer Height="150"
 						  Width="150">
-				<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
-					   Stretch="None" />
+				<Image x:Name="image01"
+					   Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
+					   Stretch="None"
+					   AutomationProperties.AutomationId="image01" />
 			</ScrollViewer>
+		</StackPanel>
 
+		<StackPanel Grid.Row="1"
+					Grid.Column="0">
 			<TextBlock Text="The Image should be smaller than the ScrollViewer" />
-			<ScrollViewer Height="250"
-						  Width="250">
-				<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
+			<ScrollViewer Height="150"
+						  Width="150">
+				<Image x:Name="image02"
+					   Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
 					   Stretch="None" />
 			</ScrollViewer>
+		</StackPanel>
 
+		<StackPanel Grid.Row="0"
+					Grid.Column="1">
 			<TextBlock Text="The Image should perfectly align with the Border (Uri)" />
 			<Grid Width="250"
 				  Height="250"
@@ -37,13 +55,17 @@
 						Background="Red"
 						VerticalAlignment="Center"
 						HorizontalAlignment="Center" />
-				<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
+				<Image x:Name="image03"
+					   Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
 					   Stretch="None"
 					   Opacity="0.5"
 					   VerticalAlignment="Center"
 					   HorizontalAlignment="Center" />
 			</Grid>
+		</StackPanel>
 
+		<StackPanel Grid.Row="1"
+					Grid.Column="1">
 			<TextBlock Text="The Image should perfectly align with the Border (Resource)" />
 			<Grid Width="150"
 				  Height="150"
@@ -53,64 +75,14 @@
 						Background="Red"
 						VerticalAlignment="Center"
 						HorizontalAlignment="Center" />
-				<Image Source="ms-appx:///Assets/colors300.png"
+				<Image x:Name="image04"
+					   AutomationProperties.AutomationId="image04"
+					   Source="ms-appx:///Assets/colors300.png"
 					   Stretch="None"
 					   Opacity="0.5"
 					   VerticalAlignment="Center"
 					   HorizontalAlignment="Center" />
 			</Grid>
-
 		</StackPanel>
-	</ScrollViewer>
-
-	<!--<StackPanel>
-		<TextBlock Text="The Image and the Border should have the same size" />
-		-->
-	<!-- Source is 200x200 -->
-	<!--
-		<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
-			   Stretch="None" />
-		<Border Background="Red"
-				Height="200"
-				Width="200" />
-	</StackPanel>-->
-
-	<!--<StackPanel>
-		<StackPanel>
-			<TextBlock Text="The Image and the Border should have the same size" />
-			-->
-	<!-- Source is 200x200 -->
-	<!--
-			<Border Background="Red"
-					Height="200"
-					Width="200" />
-			<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
-				   Stretch="None" />
-			-->
-	<!--<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
-				   Stretch="None"
-				   VerticalAlignment="Center"
-				   HorizontalAlignment="Center"
-				   Height="100"
-				   Width="100" />-->
-	<!--<Border BorderThickness="2"
-					BorderBrush="Green"
-					HorizontalAlignment="Center"
-					VerticalAlignment="Center">
-				<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
-					   VerticalAlignment="Center"
-					   HorizontalAlignment="Center"
-					   Stretch="None"
-					   Height="300"
-					   Width="300" />
-			</Border>-->
-
-	<!--<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
-				   Stretch="Uniform" />
-			<Image Source="https://blog.xenproject.org/wp-content/uploads/2014/10/Testing.jpg"
-				   Stretch="Fill" />-->
-	<!--
-		</StackPanel>
-	</StackPanel>-->
-
+	</Grid>
 </UserControl>

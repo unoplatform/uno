@@ -48,22 +48,5 @@ namespace Windows.UI.Xaml
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newVisibility)
 		{
 		}
-
-		public GeneralTransform TransformToVisual(UIElement visual)
-		{
-			// stub
-
-			return new MatrixTransform
-			{
-				Matrix = new Matrix(
-					m11: 1,
-					m12: 0,
-					m21: 0,
-					m22: 1,
-					offsetX: 0, //TODO
-					offsetY: 0  //TODO
-				)
-			};
-		}
 	}
 }

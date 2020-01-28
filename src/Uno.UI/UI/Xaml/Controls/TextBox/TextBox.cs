@@ -69,10 +69,7 @@ namespace Windows.UI.Xaml.Controls
 			this.RegisterParentChangedCallback(this, OnParentChanged);
 		}
 
-		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args)
-		{
-			UpdateFontPartial();
-		}
+		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args) => UpdateFontPartial();
 
 		protected TextBox(bool isPassword)
 		{
@@ -86,6 +83,7 @@ namespace Windows.UI.Xaml.Controls
 			OnInputScopeChanged(CreateInitialValueChangerEventArgs(InputScopeProperty, null, InputScope));
 			OnMaxLengthChanged(CreateInitialValueChangerEventArgs(MaxLengthProperty, null, MaxLength));
 			OnAcceptsReturnChanged(CreateInitialValueChangerEventArgs(AcceptsReturnProperty, null, AcceptsReturn));
+			OnIsReadonlyChanged(CreateInitialValueChangerEventArgs(IsReadOnlyProperty, null, IsReadOnly));
 			OnIsEnabledChanged(false, IsEnabled);
 			OnForegroundColorChanged(null, Foreground);
 			UpdateFontPartial();
@@ -142,16 +140,13 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void InitializePropertiesPartial();
 
-		private DependencyPropertyChangedEventArgs CreateInitialValueChangerEventArgs(DependencyProperty property, object oldValue, object newValue)
-		{
-			return new DependencyPropertyChangedEventArgs(property, oldValue, DependencyPropertyValuePrecedences.DefaultValue, newValue, DependencyPropertyValuePrecedences.DefaultValue);
-		}
+		private DependencyPropertyChangedEventArgs CreateInitialValueChangerEventArgs(DependencyProperty property, object oldValue, object newValue) => new DependencyPropertyChangedEventArgs(property, oldValue, DependencyPropertyValuePrecedences.DefaultValue, newValue, DependencyPropertyValuePrecedences.DefaultValue);
 
 		#region Text DependencyProperty
 
 		public string Text
 		{
-			get { return (string)this.GetValue(TextProperty); }
+			get => (string)this.GetValue(TextProperty);
 			set {
 				if (value == null)
 				{
@@ -295,10 +290,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void UpdateFontPartial();
 
-		protected override void OnForegroundColorChanged(Brush oldValue, Brush newValue)
-		{
-			OnForegroundColorChangedPartial(newValue);
-		}
+		protected override void OnForegroundColorChanged(Brush oldValue, Brush newValue) => OnForegroundColorChangedPartial(newValue);
 
 		partial void OnForegroundColorChangedPartial(Brush newValue);
 
@@ -306,8 +298,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public string PlaceholderText
 		{
-			get { return (string)this.GetValue(PlaceholderTextProperty); }
-			set { this.SetValue(PlaceholderTextProperty, value); }
+			get => (string)this.GetValue(PlaceholderTextProperty);
+			set => this.SetValue(PlaceholderTextProperty, value);
 		}
 
 		public static readonly DependencyProperty PlaceholderTextProperty =
@@ -324,8 +316,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public InputScope InputScope
 		{
-			get { return (InputScope)this.GetValue(InputScopeProperty); }
-			set { this.SetValue(InputScopeProperty, value); }
+			get => (InputScope)this.GetValue(InputScopeProperty);
+			set => this.SetValue(InputScopeProperty, value);
 		}
 
 		public static readonly DependencyProperty InputScopeProperty =
@@ -348,10 +340,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		protected void OnInputScopeChanged(DependencyPropertyChangedEventArgs e)
-		{
-			OnInputScopeChangedPartial(e);
-		}
+		protected void OnInputScopeChanged(DependencyPropertyChangedEventArgs e) => OnInputScopeChangedPartial(e);
 		partial void OnInputScopeChangedPartial(DependencyPropertyChangedEventArgs e);
 
 		#endregion
@@ -360,8 +349,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public int MaxLength
 		{
-			get { return (int)this.GetValue(MaxLengthProperty); }
-			set { this.SetValue(MaxLengthProperty, value); }
+			get => (int)this.GetValue(MaxLengthProperty);
+			set => this.SetValue(MaxLengthProperty, value);
 		}
 
 		public static readonly DependencyProperty MaxLengthProperty =
@@ -375,10 +364,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		private void OnMaxLengthChanged(DependencyPropertyChangedEventArgs e)
-		{
-			OnMaxLengthChangedPartial(e);
-		}
+		private void OnMaxLengthChanged(DependencyPropertyChangedEventArgs e) => OnMaxLengthChangedPartial(e);
 
 		partial void OnMaxLengthChangedPartial(DependencyPropertyChangedEventArgs e);
 
@@ -388,8 +374,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool AcceptsReturn
 		{
-			get { return (bool)this.GetValue(AcceptsReturnProperty); }
-			set { this.SetValue(AcceptsReturnProperty, value); }
+			get => (bool)this.GetValue(AcceptsReturnProperty);
+			set => this.SetValue(AcceptsReturnProperty, value);
 		}
 
 		public static readonly DependencyProperty AcceptsReturnProperty =
@@ -416,8 +402,8 @@ namespace Windows.UI.Xaml.Controls
 		#region TextWrapping DependencyProperty
 		public TextWrapping TextWrapping
 		{
-			get { return (TextWrapping)this.GetValue(TextWrappingProperty); }
-			set { this.SetValue(TextWrappingProperty, value); }
+			get => (TextWrapping)this.GetValue(TextWrappingProperty);
+			set => this.SetValue(TextWrappingProperty, value);
 		}
 
 		public static readonly DependencyProperty TextWrappingProperty =
@@ -444,8 +430,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool IsReadOnly
 		{
-			get { return (bool)GetValue(IsReadOnlyProperty); }
-			set { SetValue(IsReadOnlyProperty, value); }
+			get => (bool)GetValue(IsReadOnlyProperty);
+			set => SetValue(IsReadOnlyProperty, value);
 		}
 
 		public static readonly DependencyProperty IsReadOnlyProperty =
@@ -473,9 +459,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public object Header
 		{
-			get { return (object)GetValue(HeaderProperty); }
-			set { SetValue(HeaderProperty, value); }
+			get => (object)GetValue(HeaderProperty);
+			set => SetValue(HeaderProperty, value);
 		}
+
 		public static readonly DependencyProperty HeaderProperty =
 			DependencyProperty.Register("Header",
 				typeof(object),
@@ -487,8 +474,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public DataTemplate HeaderTemplate
 		{
-			get { return (DataTemplate)GetValue(HeaderTemplateProperty); }
-			set { SetValue(HeaderTemplateProperty, value); }
+			get => (DataTemplate)GetValue(HeaderTemplateProperty);
+			set => SetValue(HeaderTemplateProperty, value);
 		}
 
 		public static readonly DependencyProperty HeaderTemplateProperty =
@@ -516,8 +503,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public bool IsSpellCheckEnabled
 		{
-			get { return (bool)this.GetValue(IsSpellCheckEnabledProperty); }
-			set { this.SetValue(IsSpellCheckEnabledProperty, value); }
+			get => (bool)this.GetValue(IsSpellCheckEnabledProperty);
+			set => this.SetValue(IsSpellCheckEnabledProperty, value);
 		}
 
 		public static readonly DependencyProperty IsSpellCheckEnabledProperty =
@@ -531,10 +518,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		protected virtual void OnIsSpellCheckEnabledChanged(DependencyPropertyChangedEventArgs e)
-		{
-			OnIsSpellCheckEnabledChangedPartial(e);
-		}
+		protected virtual void OnIsSpellCheckEnabledChanged(DependencyPropertyChangedEventArgs e) => OnIsSpellCheckEnabledChangedPartial(e);
 
 		partial void OnIsSpellCheckEnabledChangedPartial(DependencyPropertyChangedEventArgs e);
 
@@ -545,8 +529,8 @@ namespace Windows.UI.Xaml.Controls
 		[Uno.NotImplemented]
 		public bool IsTextPredictionEnabled
 		{
-			get { return (bool)this.GetValue(IsTextPredictionEnabledProperty); }
-			set { this.SetValue(IsTextPredictionEnabledProperty, value); }
+			get => (bool)this.GetValue(IsTextPredictionEnabledProperty);
+			set => this.SetValue(IsTextPredictionEnabledProperty, value);
 		}
 
 		[Uno.NotImplemented]
@@ -561,10 +545,7 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 
-		protected virtual void OnIsTextPredictionEnabledChanged(DependencyPropertyChangedEventArgs e)
-		{
-			OnIsTextPredictionEnabledChangedPartial(e);
-		}
+		protected virtual void OnIsTextPredictionEnabledChanged(DependencyPropertyChangedEventArgs e) => OnIsTextPredictionEnabledChangedPartial(e);
 
 		partial void OnIsTextPredictionEnabledChangedPartial(DependencyPropertyChangedEventArgs e);
 
@@ -586,10 +567,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register("TextAlignment", typeof(TextAlignment), typeof(TextBox), new PropertyMetadata(TextAlignment.Left, (s, e) => ((TextBox)s)?.OnTextAlignmentChanged(e)));
 
 
-		protected virtual void OnTextAlignmentChanged(DependencyPropertyChangedEventArgs e)
-		{
-			OnTextAlignmentChangedPartial(e);
-		}
+		protected virtual void OnTextAlignmentChanged(DependencyPropertyChangedEventArgs e) => OnTextAlignmentChangedPartial(e);
 
 		partial void OnTextAlignmentChangedPartial(DependencyPropertyChangedEventArgs e);
 
@@ -597,6 +575,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnFocusStateChanged(FocusState oldValue, FocusState newValue)
 			=> OnFocusStateChanged(oldValue, newValue, initial: false);
+
 		private void OnFocusStateChanged(FocusState oldValue, FocusState newValue, bool initial)
 		{
 			base.OnFocusStateChanged(oldValue, newValue);
@@ -702,24 +681,12 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnTextClearedPartial();
 
-		internal void OnSelectionChanged()
-		{
-			SelectionChanged?.Invoke(this, new RoutedEventArgs(this));
-		}
+		internal void OnSelectionChanged() => SelectionChanged?.Invoke(this, new RoutedEventArgs(this));
 
-		public void OnTemplateRecycled()
-		{
-			DeleteText();
-		}
+		public void OnTemplateRecycled() => DeleteText();
 
-		protected override AutomationPeer OnCreateAutomationPeer()
-		{
-			return new TextBoxAutomationPeer(this);
-		}
+		protected override AutomationPeer OnCreateAutomationPeer() => new TextBoxAutomationPeer(this);
 
-		public override string GetAccessibilityInnerText()
-		{
-			return Text;
-		}
+		public override string GetAccessibilityInnerText() => Text;
 	}
 }

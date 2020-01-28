@@ -2,59 +2,15 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Email
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class EmailMessage 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  string Subject
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string EmailMessage.Subject is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMessage", "string EmailMessage.Subject");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  string Body
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string EmailMessage.Body is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMessage", "string EmailMessage.Body");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Email.EmailRecipient> Bcc
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<EmailRecipient> EmailMessage.Bcc is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Email.EmailRecipient> CC
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<EmailRecipient> EmailMessage.CC is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Subject
+		// Skipping already declared property Body
+		// Skipping already declared property Bcc
+		// Skipping already declared property CC
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Email.EmailAttachment> Attachments
@@ -65,16 +21,7 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Email.EmailRecipient> To
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IList<EmailRecipient> EmailMessage.To is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property To
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool AllowInternetImages
@@ -187,20 +134,7 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.ApplicationModel.Email.EmailRecipient Sender
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member EmailRecipient EmailMessage.Sender is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMessage", "EmailRecipient EmailMessage.Sender");
-			}
-		}
-		#endif
+		// Skipping already declared property Sender
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string RemoteId
@@ -461,13 +395,7 @@ namespace Windows.ApplicationModel.Email
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public EmailMessage() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Email.EmailMessage", "EmailMessage.EmailMessage()");
-		}
-		#endif
+		// Skipping already declared method Windows.ApplicationModel.Email.EmailMessage.EmailMessage()
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessage.EmailMessage()
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessage.Subject.get
 		// Forced skipping of method Windows.ApplicationModel.Email.EmailMessage.Subject.set

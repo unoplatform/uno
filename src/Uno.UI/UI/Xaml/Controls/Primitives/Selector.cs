@@ -21,6 +21,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private readonly SerialDisposable _collectionViewSubscription = new SerialDisposable();
 		private BindingPath _path;
+		private bool _disableRaiseSelectionChanged;
 
 		/// <summary>
 		/// This is always true for <see cref="FlipView"/> and <see cref="ComboBox"/>, and depends on the value of <see cref="ListViewBase.SelectionMode"/> for <see cref="ListViewBase"/>.
@@ -39,7 +40,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			typeof(Selector),
 			new PropertyMetadata(
 				defaultValue: null,
-				propertyChangedCallback: (s, e) => (s as Selector).OnSelectedItemChanged(e.OldValue, e.NewValue)
+				propertyChangedCallback: (s, e) => (s as Selector).OnSelectedItemChanged(e.OldValue, e.NewValue, updateItemSelectedState: true)
 			)
 		);
 
@@ -49,7 +50,21 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set => this.SetValue(SelectedItemProperty, value);
 		}
 
-		internal virtual void OnSelectedItemChanged(object oldSelectedItem, object selectedItem)
+		internal virtual void OnSelectorItemIsSelectedChanged(SelectorItem container, bool oldIsSelected, bool newIsSelected)
+		{
+			var item = ItemFromContainer(container);
+
+			if (ReferenceEquals(SelectedItem, item) && !newIsSelected)
+			{
+				SelectedItem = null;
+			}
+			else if (!ReferenceEquals(SelectedItem, item) && newIsSelected)
+			{
+				SelectedItem = item;
+			}
+		}
+
+		internal virtual void OnSelectedItemChanged(object oldSelectedItem, object selectedItem, bool updateItemSelectedState)
 		{
 			var wasSelectionUnset = oldSelectedItem == null && (!GetItems()?.Contains(null) ?? false);
 			var isSelectionUnset = false;
@@ -61,8 +76,18 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 				else
 				{
-					//Prevent SelectedItem being set to an invalid value
-					SelectedItem = oldSelectedItem;
+					try
+					{
+						_disableRaiseSelectionChanged = true;
+
+						//Prevent SelectedItem being set to an invalid value
+						SelectedItem = oldSelectedItem;
+					}
+					finally
+					{
+						_disableRaiseSelectionChanged = false;
+					}
+						
 					return;
 				}
 			}
@@ -84,9 +109,34 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			InvokeSelectionChanged(wasSelectionUnset ? new object[] { } : new[] { oldSelectedItem },
 				isSelectionUnset ? new object[] { } : new[] { selectedItem }
 			);
+
 			OnSelectedItemChangedPartial(oldSelectedItem, selectedItem);
 
 			UpdateSelectedValue();
+
+			if (updateItemSelectedState)
+			{
+				TryUpdateSelectorItemIsSelected(oldSelectedItem, false);
+				TryUpdateSelectorItemIsSelected(selectedItem, true);
+			}
+		}
+
+		internal void TryUpdateSelectorItemIsSelected(object item, bool isSelected)
+		{
+			if (item is SelectorItem si)
+			{
+				si.IsSelected = isSelected;
+			}
+			else if (ContainerFromItem(item) is SelectorItem si2)
+			{
+				si2.IsSelected = isSelected;
+			}
+		}
+
+		internal bool DisableRaiseSelectionChanged
+		{
+			get => _disableRaiseSelectionChanged;
+			set => _disableRaiseSelectionChanged = value;
 		}
 
 		private void UpdateSelectedValue()
@@ -102,6 +152,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				_path = null;
 			}
+
 
 			if (_path != null)
 			{
@@ -119,7 +170,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		internal void InvokeSelectionChanged(object[] removedItems, object[] addedItems)
 		{
-			SelectionChanged?.Invoke(this, new SelectionChangedEventArgs(this, removedItems, addedItems));
+			if (!_disableRaiseSelectionChanged)
+			{
+				SelectionChanged?.Invoke(this, new SelectionChangedEventArgs(this, removedItems, addedItems));
+			}
 		}
 
 		public int SelectedIndex
@@ -135,7 +189,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			)
 		);
 
-		private void OnSelectedIndexChanged(int oldSelectedIndex, int newSelectedIndex)
+		internal virtual void OnSelectedIndexChanged(int oldSelectedIndex, int newSelectedIndex)
 		{
 			var newSelectedItem = ItemFromIndex(newSelectedIndex);
 

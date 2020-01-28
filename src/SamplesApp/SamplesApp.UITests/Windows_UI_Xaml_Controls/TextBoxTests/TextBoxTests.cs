@@ -150,21 +150,26 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 		{
 			Run("Uno.UI.Samples.UITests.TextBoxControl.TextBox_IsReadOnly");
 
-			var button = _app.Marked("button");
+			var tglReadonly = _app.Marked("tglReadonly");
 			var txt = _app.Marked("txt");
 
-			_app.EnterText(txt, "Hello !");
+			const string initialText = "This text should initially be READONLY and ENABLED...";
+			_app.WaitForText(txt, initialText);
 
-			_app.WaitForText(txt, "This is the starting text...Hello !");
+			_app.EnterText(txt, "ERROR1");
+			_app.WaitForText(txt, initialText);
 
-			button.Tap();
-			_app.EnterText(txt, "Hello did not work!");
+			tglReadonly.Tap();
+			_app.EnterText(txt, "Hello!");
+			_app.WaitForText(txt, initialText + "Hello!");
 
-			_app.WaitForText(txt, "This is the starting text...Hello !");
+			tglReadonly.Tap();
+			_app.EnterText(txt, "ERROR2");
+			_app.WaitForText(txt, initialText + "Hello!");
 
-			button.Tap();
-			_app.EnterText(txt, "Works again!");
-			_app.WaitForText(txt, "This is the starting text...Hello !Works again!");
+			tglReadonly.Tap();
+			_app.EnterText(txt, " Works again!");
+			_app.WaitForText(txt, initialText + "Hello! Works again!");
 		}
 
 		[Test]
@@ -191,6 +196,30 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 				(int)passwordBox.Rect.Y + 8,
 				100, // Ignore the reveal button on right (as we are still focused)
 				(int)passwordBox.Rect.Height - 16));
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android)]
+		public void TextBox_Formatting_FlickerText()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_Formatting_Flicker");
+
+			var textbox = _app.Marked("SomeTextBox");
+			var scoreboard = _app.Marked("Scoreboard");
+			_app.WaitForElement(textbox);
+
+			textbox.Tap().EnterTextAndDismiss("a");
+			var text1 = textbox.GetDependencyPropertyValue<string>("Text");
+
+			text1.Should().StartWith("modified ", because: "custom IInputFilter should've hijacked the input");
+
+			textbox.Tap().EnterTextAndDismiss("a");
+			var text2 = textbox.GetDependencyPropertyValue<string>("Text");
+			var text3 = scoreboard.GetDependencyPropertyValue<string>("Text");
+
+			text2.Should().Be(text1, because: "Text content should not change at max length.");
+			text3.Should().Be("TextChanged: 1");
 		}
 	}
 }

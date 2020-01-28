@@ -232,6 +232,16 @@ namespace Windows.UI.Xaml.Controls
 				DoubleTapped += OnDoubleTappedHandler;
 			}
 
+			if (implementedEvents.HasFlag(RoutedEventFlag.RightTapped))
+			{
+				RightTapped += OnRightTappedHandler;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.Holding))
+			{
+				Holding += OnHoldingHandler;
+			}
+
 			if (implementedEvents.HasFlag(RoutedEventFlag.KeyDown))
 			{
 				KeyDown += OnKeyDownHandler;
@@ -755,6 +765,8 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual void OnManipulationCompleted(ManipulationCompletedRoutedEventArgs e) { }
 		protected virtual void OnTapped(TappedRoutedEventArgs e) { }
 		protected virtual void OnDoubleTapped(DoubleTappedRoutedEventArgs e) { }
+		protected virtual void OnRightTapped(RightTappedRoutedEventArgs e) { }
+		protected virtual void OnHolding(HoldingRoutedEventArgs e) { }
 		protected virtual void OnKeyDown(KeyRoutedEventArgs args) { }
 		protected virtual void OnKeyUp(KeyRoutedEventArgs args) { }
 		protected virtual void OnGotFocus(RoutedEventArgs e) { }
@@ -802,6 +814,12 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly DoubleTappedEventHandler OnDoubleTappedHandler =
 			(object sender, DoubleTappedRoutedEventArgs args) => ((Control)sender).OnDoubleTapped(args);
 
+		private static readonly RightTappedEventHandler OnRightTappedHandler =
+			(object sender, RightTappedRoutedEventArgs args) => ((Control)sender).OnRightTapped(args);
+
+		private static readonly HoldingEventHandler OnHoldingHandler =
+			(object sender, HoldingRoutedEventArgs args) => ((Control)sender).OnHolding(args);
+
 		private static readonly KeyEventHandler OnKeyDownHandler =
 			(object sender, KeyRoutedEventArgs args) => ((Control)sender).OnKeyDown(args);
 
@@ -820,6 +838,8 @@ namespace Windows.UI.Xaml.Controls
 		private static readonly Type[] _pointerArgsType = new[] { typeof(PointerRoutedEventArgs) };
 		private static readonly Type[] _tappedArgsType = new[] { typeof(TappedRoutedEventArgs) };
 		private static readonly Type[] _doubleTappedArgsType = new[] { typeof(DoubleTappedRoutedEventArgs) };
+		private static readonly Type[] _rightTappedArgsType = new[] { typeof(RightTappedRoutedEventArgs) };
+		private static readonly Type[] _holdingArgsType = new[] { typeof(HoldingRoutedEventArgs) };
 		private static readonly Type[] _keyArgsType = new[] { typeof(KeyRoutedEventArgs) };
 		private static readonly Type[] _routedArgsType = new[] { typeof(RoutedEventArgs) };
 		private static readonly Type[] _manipStartingArgsType = new[] { typeof(ManipulationStartingRoutedEventArgs) };
@@ -914,6 +934,16 @@ namespace Windows.UI.Xaml.Controls
 			if (GetIsEventOverrideImplemented(type, nameof(OnDoubleTapped), _doubleTappedArgsType))
 			{
 				result |= RoutedEventFlag.DoubleTapped;
+			}
+
+			if (GetIsEventOverrideImplemented(type, nameof(OnRightTapped), _rightTappedArgsType))
+			{
+				result |= RoutedEventFlag.RightTapped;
+			}
+
+			if (GetIsEventOverrideImplemented(type, nameof(OnHolding), _holdingArgsType))
+			{
+				result |= RoutedEventFlag.Holding;
 			}
 
 			if (GetIsEventOverrideImplemented(type, nameof(OnKeyDown), _keyArgsType))
