@@ -65,6 +65,8 @@ jobs:
       vstestLocationMethod: version
       vsTestVersion: latest
       testSelector: testAssemblies
+      batchingBasedOnAgentsOption: customBatchSize
+      customBatchSizeValue: 200 # test count / 10 (https://developercommunity.visualstudio.com/content/problem/891803/vstestconsoleadapter-fails-with-outofmemory.html?childToView=896206#comment-896206)
 
   - task: CopyFiles@2
     inputs:
