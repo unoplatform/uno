@@ -3,6 +3,8 @@
 #pragma warning disable 67
 
 using System;
+using System.Collections.Generic;
+using Windows.Foundation;
 
 namespace Windows.UI.ViewManagement
 {
@@ -11,6 +13,7 @@ namespace Windows.UI.ViewManagement
 		private static ApplicationView _instance = new ApplicationView();
 
 		private ApplicationViewTitleBar _titleBar = new ApplicationViewTitleBar();
+		private IReadOnlyList<Rect> _spanningRects = new List<Rect>(0);
 
 		[global::Uno.NotImplemented]
 		public int Id => 1;
@@ -53,5 +56,12 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, global::Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs> Consolidated;
 
+		internal IReadOnlyList<Rect> GetSpanningRects()
+		{
+			UpdateSpanningRects();
+			return _spanningRects;
+		}
+
+		partial void UpdateSpanningRects();
 	}
 }
