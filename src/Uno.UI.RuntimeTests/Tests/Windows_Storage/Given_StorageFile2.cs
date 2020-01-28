@@ -85,7 +85,7 @@ namespace Uno.UI.RuntimeTests.Tests
 			}
 
 			// third, it should not be "datetime.now"
-			int initialTimeDiff = DateTimeOffset.Now - dateOnCreating;
+			var initialTimeDiff = DateTimeOffset.Now - dateOnCreating;
 			int loopGuard; 
 			for(loopGuard = 20; loopGuard > 0; loopGuard--) // wait for date change for max 5 seconds
 			{
