@@ -50,11 +50,9 @@ namespace Uno.UI.RuntimeTests.Tests
 
             DateTimeOffset dateAfterCreating = DateTimeOffset.Now;
 
-            // test of DateCreated
-
-            // first, some wait - to be sure that returned date is not simply 'current date'
-            // e.g. FAT has two seconds resolution - so wait should be longer
-            await Task.Delay(5000);
+			
+			
+            // tests of DateCreated
 
             DateTimeOffset dateOnCreating = DateTimeOffset.Now; // unneeded initialization - just to skip compiler error of using uninitialized variable
             try
@@ -66,20 +64,40 @@ namespace Uno.UI.RuntimeTests.Tests
                 Assert.Fail("DateCreated exception - error in tested method");
             }
 
-           dateBeforeCreating = dateBeforeCreating.AddSeconds(-2);
-           dateAfterCreating = dateAfterCreating.AddSeconds(2);
-      
-            // check if method works
-           if(dateOnCreating < dateBeforeCreating)
-           {
+			// while testing date, we should remember about filesystem date resolution.
+			// FAT: 2 seconds, but we don't have FAT
+			// NTFS: 100 ns
+			// VFAT (SD cards): can be as small as 10 ms
+			// ext4 (internal Android): can be below 1 ms
+			// APFS (since iOS 10.3): 1 ns
+			// HFS+ (before iOS 10.3): 1 s
+			
+			// first, date should not be year 1601 or something like that...
+			if(dateOnCreating < dateBeforeCreating.AddSeconds(-2))
+			{
                 Assert.Fail("DateCreated: too early - method doesnt work");
-           }
+			}
 
-           if(dateOnCreating > dateAfterCreating)
-           {
+			// second, date should not be in future
+			if(dateOnCreating > dateAfterCreating.AddSeconds(2))
+			{
                 Assert.Fail("DateCreated: too late - method doesnt work");
-           }
+			}
 
+			// third, it should not be "datetime.now"
+			int initialTimeDiff = DateTimeOffset.Now - dateOnCreating;
+			int loopGuard; 
+			for(loopGuard = 20; loopGuard > 0; loopGuard--) // wait for date change for max 5 seconds
+			{
+				await Task.Delay(250);
+				dateOnCreating = testFile.DateCreated;
+				if(DateTimeOffset.Now - dateOnCreating > initialTimeDiff)
+					break;
+			}
+			if(loopGuard < 1)
+			{
+                Assert.Fail("DateCreated: probably == DateTime.Now, - method doesnt work");
+			}
         }
     }
 }
