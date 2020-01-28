@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal sealed override Size MeasureCore(Size availableSize)
+		internal sealed override void MeasureCore(Size availableSize)
 		{
 			if (_trace.IsEnabled)
 			{
@@ -55,18 +55,18 @@ namespace Windows.UI.Xaml
 
 				using (traceActivity)
 				{
-					return InnerMeasureCore(availableSize.Subtract(Margin));
+					InnerMeasureCore(availableSize.Subtract(Margin));
 				}
 			}
 			else
 			{
 				// This method is split in two functions to avoid the dynCalls
 				// invocations generation for mono-wasm AOT inside of try/catch/finally blocks.
-				return InnerMeasureCore(availableSize.Subtract(Margin));
+				InnerMeasureCore(availableSize.Subtract(Margin));
 			}
 		}
 
-		private Size InnerMeasureCore(Size availableSize)
+		private void InnerMeasureCore(Size availableSize)
 		{
 			var (minSize, maxSize) = this.GetMinMax();
 			var marginSize = this.GetMarginSize();
@@ -103,17 +103,13 @@ namespace Windows.UI.Xaml
 			_unclippedDesiredSize = desiredSize;
 
 			var clippedDesiredSize = desiredSize
-				.AtMost(availableSize);
+				.AtMost(availableSize)
+				.Add(marginSize);
 
 			// DesiredSize must include margins
-			// However, we return the size to the parent without the margins
-			SetDesiredSize(clippedDesiredSize.Add(marginSize));
+			SetDesiredSize(clippedDesiredSize);
 
-			var retSize = clippedDesiredSize;
-
-			_logDebug?.Debug($"{DepthIndentation}[{this}] Measure({Name}/{availableSize}/{Margin}) = {retSize} _unclippedDesiredSize={_unclippedDesiredSize}");
-
-			return retSize;
+			_logDebug?.Debug($"{DepthIndentation}[{this}] Measure({Name}/{availableSize}/{Margin}) = {clippedDesiredSize} _unclippedDesiredSize={_unclippedDesiredSize}");
 		}
 
 		internal sealed override void ArrangeCore(Rect finalRect)

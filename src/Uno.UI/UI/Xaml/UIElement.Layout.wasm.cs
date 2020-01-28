@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml
 
 			InvalidateArrange();
 
-			var desiredSize = MeasureCore(availableSize);
+			MeasureCore(availableSize);
 			_previousAvailableSize = availableSize;
 			_isMeasureValid = true;
 		}
@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal virtual Size MeasureCore(Size availableSize)
+		internal virtual void MeasureCore(Size availableSize)
 		{
 			throw new NotSupportedException("UIElement doesn't implement MeasureCore. Inherit from FrameworkElement, which properly implements MeasureCore.");
 		}

@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private readonly Size MaxSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
 
-		private Size _unclippedDesiredSize;
+		internal Size _unclippedDesiredSize;
 
 		private const double SIZE_EPSILON = 0.05d;
 
@@ -128,11 +128,11 @@ namespace Windows.UI.Xaml.Controls
 				_unclippedDesiredSize = desiredSize;
 
 				var clippedDesiredSize = desiredSize
-					.AtMost(frameworkAvailableSize);
+					.AtMost(frameworkAvailableSize)
+					.Add(marginSize);
 
 				// DesiredSize must include margins
-				// However, we return the size to the parent without the margins
-				SetDesiredChildSize(Panel as View, clippedDesiredSize.Add(marginSize));
+				SetDesiredChildSize(Panel as View, clippedDesiredSize);
 
 				return clippedDesiredSize;
 			}
@@ -403,24 +403,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			if (frameworkElement != null && frameworkElement.Visibility != Visibility.Collapsed)
-			{
-				var margin = frameworkElement.Margin;
-
-				if (margin != Thickness.Empty)
-				{
-					// Report the size to the parent without the margin, only if the
-					// size has changed or that the control required a measure
-					//
-					// This condition is required because of the measure caching that
-					// some systems apply (Like android UI).
-					ret = new Size(
-						ret.Width + margin.Left + margin.Right,
-						ret.Height + margin.Top + margin.Bottom
-					);
-				}
-			}
-			else
+			if (frameworkElement == null || frameworkElement.Visibility == Visibility.Collapsed)
 			{
 				// For native controls only - because it's already set in Layouter.Measure()
 				// for Uno's managed controls
