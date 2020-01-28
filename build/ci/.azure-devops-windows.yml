@@ -107,6 +107,6 @@ jobs:
     condition: eq(variables['Build.Reason'], 'PullRequest')
     inputs:
       command: 'push'
-      feedsToUse: 'select'
       packagesToPush: '$(build.artifactstagingdirectory)/vslatest/**/*.nupkg'
-      publishVstsFeed: 'uno-pullrequests'
+      nuGetFeedType: 'internal'
+      publishVstsFeed: '1dd81cbd-cb35-41de-a570-b0df3571a196/a70dae92-4e3d-4540-bf93-9b22ec98d19d'
