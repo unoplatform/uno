@@ -1,4 +1,3 @@
-﻿#if !__WASM__
 using Windows.Foundation;
 
 #if XAMARIN_ANDROID
@@ -68,4 +67,3 @@ namespace Windows.UI.Xaml.Controls
 		Size GetDesiredSize(View view);
 	}
 }
-#endif

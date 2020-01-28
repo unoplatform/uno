@@ -46,7 +46,6 @@ namespace Windows.UI.Xaml.Shapes
 					finalSize.Height - strokeThickness
 				)
 				.AtLeast(new Size(0, 0));
-			;
 
 			_rectangle.Arrange(childRect);
 			_rectangle.SetAttribute(
