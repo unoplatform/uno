@@ -2,11 +2,17 @@
 
 	export class ApplicationView {
 
-		public static setFullScreenMode(turnOn: boolean) {
+		public static setFullScreenMode(turnOn: boolean): boolean {
 			if (turnOn) {
-				document.documentElement.requestFullscreen();
+				if (document.fullscreenEnabled) {
+					document.documentElement.requestFullscreen();
+					return true;
+				} else {
+					return false;
+				}
 			} else {
 				document.exitFullscreen();
+				return true;
 			}
 		}
 

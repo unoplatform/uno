@@ -1,4 +1,5 @@
-﻿using Uno.Extensions;
+﻿using System;
+using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Logging;
 using Windows.Foundation;
@@ -39,21 +40,15 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		public bool TryEnterFullScreenMode()
-		{
-			SetFullScreenMode(true);
-			return true;
-		}
+		public bool TryEnterFullScreenMode() => SetFullScreenMode(true);
 
-		public void ExitFullScreenMode()
-		{
-			SetFullScreenMode(false);
-		}
+		public void ExitFullScreenMode() => SetFullScreenMode(false);
 
-		private void SetFullScreenMode(bool turnOn)
+		private bool SetFullScreenMode(bool turnOn)
 		{
 			var jsEval = $"{ApplicationViewTsType}.setFullScreenMode({turnOn.ToString().ToLowerInvariant()})";
-			WebAssemblyRuntime.InvokeJS(jsEval);
+			var result = WebAssemblyRuntime.InvokeJS(jsEval);
+			return bool.TryParse(result, out var modeSwitchSuccessful) && modeSwitchSuccessful;			
 		}
 	}
 }

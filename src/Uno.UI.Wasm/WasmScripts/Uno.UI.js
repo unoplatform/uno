@@ -2756,10 +2756,17 @@ var Windows;
             class ApplicationView {
                 static setFullScreenMode(turnOn) {
                     if (turnOn) {
-                        document.documentElement.requestFullscreen();
+                        if (document.fullscreenEnabled) {
+                            document.documentElement.requestFullscreen();
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
                     }
                     else {
                         document.exitFullscreen();
+                        return true;
                     }
                 }
             }

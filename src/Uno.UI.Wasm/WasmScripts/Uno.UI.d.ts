@@ -887,7 +887,7 @@ declare namespace Windows.UI.Core {
 }
 declare namespace Windows.UI.ViewManagement {
     class ApplicationView {
-        static setFullScreenMode(turnOn: boolean): void;
+        static setFullScreenMode(turnOn: boolean): boolean;
     }
 }
 declare namespace Windows.UI.ViewManagement {
