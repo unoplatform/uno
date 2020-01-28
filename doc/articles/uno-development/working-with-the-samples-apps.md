@@ -3,11 +3,14 @@
 The Uno solution provides a set of sample applications that provide a way to test features, as
 well as provide a way to write UI Tests.
 
-Those applications are structured in a way that samples can created out of normal `UserControl` instances, marked with the `SampleControlInfoAttribute` so the sample application can discover them.
+Those applications are structured in a way that samples can be created out of normal `UserControl` instances, 
+marked with the `SampleAttribute` (and previous `SampleControlInfoAttribute`) so the sample application can discover them.
 
-Those applications are located in the `SamplesApp` folder of the solution, and a live development out of the master branch version for the WebAssembly application can be found here: https://unoui-sampleapp-unoui-sampleapp-staging.azurewebsites.net
+Those applications are located in the `SamplesApp` folder of the solution, and a live development out of the master branch
+ version for the WebAssembly application can be found here: https://unoui-sampleapp-unoui-sampleapp-staging.azurewebsites.net
 
-This article contains instructions and guidelines for authoring UI tests for Uno. For guidance on other test strategies used in the Uno codebase, see [this guide](../contributing/guidelines/creating-tests.md).
+This article contains instructions and guidelines for authoring UI tests for Uno. For guidance on other test strategies used 
+in the Uno codebase, see [this guide](../contributing/guidelines/creating-tests.md).
 
 ## Creating UI Tests
 
@@ -20,7 +23,11 @@ The goal of these UI Tests is to :
 To create a UI Test for the sample applications:
 - Create or reuse a folder named from the namespace of the control or class your want to test, replacing "`.`" by "`_`"
 - Create a new `UserControl` from the Visual Studio templates in the `UITests.Shared` project
-- Add `[Uno.UI.Samples.Controls.SampleControlInfo("Replace_with_control_or_class_name", "MyTestName", description: "MyDescription")]` on the code-behind class.
+- Add `[Uno.UI.Samples.Controls.Sample]` on the code-behind class. 
+
+  _Note: This attribute also accepts a few other metadata about your sample, such as a list of `Categories`, a `Name`,
+  a `Description` etc. Check the `SampleAttribute` XML-doc for more info._
+
 - Run the samples application, and the sample should appear in the samples browser
 
 The Uno.UI process validates does two types of validations:

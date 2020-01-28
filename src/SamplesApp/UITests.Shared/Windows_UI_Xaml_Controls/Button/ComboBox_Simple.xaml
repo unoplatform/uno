@@ -16,7 +16,6 @@
 				<StackPanel >
 					<ComboBox ItemsSource="{Binding [ComboBoxSimple_ItemsSource]}" SelectedItem="{Binding [ComboBoxSimple_SelectedItem]}" xamarin:Command="{Binding [ComboBoxSimple_Command]}"/>
 					<TextBlock Text="{Binding [ComboBoxSimple_SelectedItem]}" />
-					<TextBlock Text="{Binding [MyData]}" />
 					<Button Content="Generate new list" Command="{Binding [ComboBoxSimple_GenerateNewList]}" />
 				</StackPanel>
 			</DataTemplate>

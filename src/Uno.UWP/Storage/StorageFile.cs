@@ -34,6 +34,12 @@ namespace Windows.Storage
 			_fileUri = uri;
 		}
 
+		public IAsyncAction DeleteAsync() =>
+			AsyncAction.FromTask(async ct =>
+			{
+				await DeleteAsync(CancellationToken.None);
+			});
+			
 		public async Task DeleteAsync(CancellationToken ct)
 		{
 			if (Scheme != "FILE")

@@ -197,5 +197,79 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 				100, // Ignore the reveal button on right (as we are still focused)
 				(int)passwordBox.Rect.Height - 16));
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android)]
+		public void TextBox_Formatting_FlickerText()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_Formatting_Flicker");
+
+			var textbox = _app.Marked("SomeTextBox");
+			var scoreboard = _app.Marked("Scoreboard");
+			_app.WaitForElement(textbox);
+
+			textbox.Tap().EnterTextAndDismiss("a");
+			var text1 = textbox.GetDependencyPropertyValue<string>("Text");
+
+			text1.Should().StartWith("modified ", because: "custom IInputFilter should've hijacked the input");
+
+			textbox.Tap().EnterTextAndDismiss("a");
+			var text2 = textbox.GetDependencyPropertyValue<string>("Text");
+			var text3 = scoreboard.GetDependencyPropertyValue<string>("Text");
+
+			text2.Should().Be(text1, because: "Text content should not change at max length.");
+			text3.Should().Be("TextChanged: 1");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_No_Text_Entered()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxControl.TextBox_Binding_Null");
+
+			const string MappedText = "MappedText";
+			const string TextBox = "TargetTextBox";
+			const string DummyButton = "DummyButton";
+
+			string GetMappedText() => _app.GetText(MappedText);
+
+			void DefocusTextBox()
+			{
+				_app.Tap(DummyButton);
+
+				_app.WaitForFocus(DummyButton);
+			}
+
+			Assert.AreEqual("initial", GetMappedText());
+
+			_app.Tap(TextBox);
+
+			_app.WaitForFocus(TextBox);
+
+			DefocusTextBox();
+
+			Assert.AreEqual("initial", GetMappedText()); //Binding not pushed on losing focus
+
+			_app.Tap(TextBox);
+
+			_app.EnterText("fleep");
+
+			DefocusTextBox();
+
+			Assert.AreEqual("fleep", GetMappedText());
+
+			_app.Tap("ResetButton");
+
+			_app.WaitForText(MappedText, "reset");
+
+			_app.Tap(TextBox);
+
+			_app.WaitForFocus(TextBox);
+
+			DefocusTextBox();
+
+			Assert.AreEqual("reset", GetMappedText());
+		}
 	}
 }

@@ -2,6 +2,8 @@
 
 ### Features
 - Add support for `StorageFile.DateCreated`
+- Support for `ApplicationView.IsScreenCaptureEnabled` on Android
+- Add support for `StorageFile.DeleteAsync()`
 - Support for `PointerDown`, `PointerUp` `PointerEntered`, `PointerExited` and `PointerMoved` events on macOS
 - Support for `Launcher` API on macOS, support for special URIs
 - Support for `EmailManager.ShowComposeNewEmailAsync`
@@ -20,7 +22,7 @@
 - Add support of the `UIElement.Holding` event
 
 ### Breaking changes
--
+- [Android] Enable support for non-native `Popup` by default. Can be deactivated through `FeatureConfiguration.Popup.UseNativePopup` set to true (See #2533 for more details)
 
 ### Bug fixes
 
@@ -38,17 +40,24 @@
 - #2287 Vertical `ListView` containing a horizontal `ScrollViewer`: horizontal scrolling is difficult, only works when the gesture is perfectly horizontal
 - #2130 Grid - fix invalid measure when total star size is 0
 - [iOS] Fix invalid image measure on constrained images with `Margin`
+- [#2364] fixed missing Xaml IntelliSense on newly created project 
 - `ViewBox` no longer alters its child's `RenderTransform`
 - [#2033] Add Missing `LostFocus` Value to `UpdateSourceTrigger` Enum
 - [Android] Fix Image margin calculation on fixed size
 - [Android] Native views weren't clipped correctly
+- [Android] Border thickness was incorrect when CornerRadius was set
 - [iOS] #2361 ListView would measure children with infinite width
 - [iOS] Fix crash when using ComboBox template with native Picker and changing ItemsSource to null after SelectedItem was set
 - [#2398] Fully qualify the `MethodName` value for `CreateFromStringAttribute' if it's not fully qualified it the code
 - [WASM] Fix bug where changing a property could remove the required clipping on a view
+- #2294 Fix TextBox text binding is updated by simply unfocusing
 - [Android] Fix unconstrained Image loading issue when contained in a ContentControl template
 - Enable partial `NavigationView.ItemSource` scenario (https://github.com/unoplatform/uno/issues/2477)
 - [Wasm] Fail gracefully if IDBFS is not enabled in emscripten
+- [#2513] Fix `TransformGroup` not working
+- [#1956] Fis iOS invalid final state when switching visual state before current state's animation is completed.
+- Fix `Selector` support for IsSelected (#1606)
+- [Android] 164249 fixed TextBox.Text flickering when using custom IInputFilter with MaxLength set
 
 ## Release 2.0
 

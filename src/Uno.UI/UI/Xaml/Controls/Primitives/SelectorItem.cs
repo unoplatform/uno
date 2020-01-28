@@ -120,6 +120,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		partial void OnIsSelectedChangedPartial(bool oldIsSelected, bool newIsSelected)
 		{
 			UpdateCommonStates();
+
+			Selector?.OnSelectorItemIsSelectedChanged(this, oldIsSelected, newIsSelected);
 		}
 
 		private void UpdateCommonStatesWithoutNeedsLayout(ManipulationUpdateKind manipulationUpdate = ManipulationUpdateKind.None)
