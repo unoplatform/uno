@@ -212,7 +212,7 @@ namespace SamplesApp.UITests.TestFramework
 			}
 		}
 
-		public static void AssertDoesNotHaveColorAt(FileInfo screenshot, float x, float y, Color excludedColor, byte tolerance = 0)
+		public static void DoesNotHaveColorAt(FileInfo screenshot, float x, float y, Color excludedColor, byte tolerance = 0)
 		{
 			using (var bitmap = new Bitmap(screenshot.FullName))
 			{
