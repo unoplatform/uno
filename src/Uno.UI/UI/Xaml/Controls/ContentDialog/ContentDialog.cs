@@ -71,6 +71,7 @@ namespace Windows.UI.Xaml.Controls
 				if (!args.Cancel)
 				{
 					_popup.IsOpen = false;
+					_popup.Child = null;
 
 					Closed?.Invoke(this, new ContentDialogClosedEventArgs(result));
 				}

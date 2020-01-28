@@ -576,7 +576,7 @@
 			</Properties>
 		</IgnoreSet>
 		
-		<IgnoreSet baseVersion="2.0.530">
+		<IgnoreSet baseVersion="2.0.532">
 			<Methods>
 				<Member
 					fullName="System.Void Windows.UI.Xaml.RoutedEvent..ctor(System.String name)"

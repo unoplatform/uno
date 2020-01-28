@@ -14,6 +14,7 @@
 	<EnableLocationBrowseButton>true</EnableLocationBrowseButton>
 	<Icon>__TemplateIcon.png</Icon>
 	<PreviewImage>__PreviewImage.png</PreviewImage>
+	<CreateInPlace>true</CreateInPlace>
   </TemplateData>
   <TemplateContent>
 	<Project TargetFileName="$ext_safeprojectname$.iOS.csproj" File="UnoQuickStart.iOS.csproj" ReplaceParameters="true">

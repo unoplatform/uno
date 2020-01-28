@@ -20,6 +20,8 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ItemsPanelTemplate : FrameworkTemplate
 	{
+		public ItemsPanelTemplate() : this(null) { }
+
 		public ItemsPanelTemplate(Func<View> factory)
 			: base (factory)
 		{
