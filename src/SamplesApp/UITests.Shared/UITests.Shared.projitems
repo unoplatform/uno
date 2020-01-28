@@ -6,7 +6,7 @@
     <SharedGUID>beb0ab3a-16a7-49cf-ad5e-f4a53b985afe</SharedGUID>
   </PropertyGroup>
   <PropertyGroup Label="Configuration">
-    <Import_RootNamespace>UITests</Import_RootNamespace>
+    <Import_RootNamespace>UITests.Shared</Import_RootNamespace>
   </PropertyGroup>
   <ItemGroup>
     <Page Include="$(MSBuildThisFileDirectory)Lottie\SampleLottieAnimation.xaml">
@@ -2397,11 +2397,7 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\DoubleAnimation_FinalState.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\SequentialAnimationsPage.xaml">
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Animation\SequentialAnimationsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -4103,10 +4099,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Input\RoutedEvents\RoutedEvent_TappedControl.xaml.cs">
       <DependentUpon>RoutedEvent_TappedControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\DoubleAnimation_FinalState.xaml.cs">
-      <DependentUpon>DoubleAnimation_FinalState.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\SequentialAnimationsPage.xaml.cs">
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\Animation\SequentialAnimationsPage.xaml.cs">
       <DependentUpon>SequentialAnimationsPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media\CompositionTargetTests\CompositionTarget_Rendering.xaml.cs">

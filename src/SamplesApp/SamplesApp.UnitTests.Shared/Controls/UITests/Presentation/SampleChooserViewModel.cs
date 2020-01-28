@@ -19,7 +19,6 @@ using Uno.Logging;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml;
 using System.IO;
-using Windows.UI.Popups;
 using Uno.Disposables;
 
 #if XAMARIN || NETSTANDARD2_0
@@ -82,11 +81,6 @@ namespace SampleControl.Presentation
 			ObserveChanges();
 
 			_categories = GetSamples();
-
-			if (this.Log().IsEnabled(LogLevel.Information))
-			{
-				this.Log().Info($"Found {_categories.SelectMany(c => c.SamplesContent).Distinct().Count()} sample(s) in {_categories.Count} categories.");
-			}
 		}
 
 		/// <summary>
@@ -159,8 +153,11 @@ namespace SampleControl.Presentation
 			CategoriesSelected = section == Section.Library || section == Section.Samples;
 
 			RecentsVisibility = section == Section.Recents;
+
 			FavoritesVisibility = section == Section.Favorites;
+
 			SearchVisibility = section == Section.Search;
+
 			SampleVisibility = section == Section.Samples;
 
 			_lastSection = section;
@@ -535,31 +532,43 @@ namespace SampleControl.Presentation
 		/// <returns></returns>
 		private List<SampleChooserCategory> GetSamples()
 		{
-			var categories =
-				from assembly in GetAllAssembies()
-				from type in FindDefinedAssemblies(assembly)
-				let sampleAttribute = FindSampleAttribute(type)
-				where sampleAttribute != null
-				let content = GetContent(type, sampleAttribute)
-				from category in content.Categories
-				group content by category into contentByCategory
-				orderby contentByCategory.Key
-				select new SampleChooserCategory(contentByCategory);
+			var query = from assembly in GetAllAssembies()
+						from type in FindDefinedAssemblies(assembly)
+						let sampleAttribute = FindSampleAttribute(type)
+						where sampleAttribute != null
+						select (type, attribute: sampleAttribute);
 
-			return categories.AsParallel().ToList();
+			query = query.ToArray();
 
-			SampleChooserContent GetContent(TypeInfo type, SampleAttribute attribute)
-				=> new SampleChooserContent
+			var categories = new SortedSet<SampleChooserCategory>();
+
+			foreach (var control in query)
+			{
+				var categoryStr = control.attribute.Category ?? control.type.Namespace.Split('.').Last();
+
+
+				var sampleControl = new SampleChooserContent
 				{
-					ControlName = attribute.Name ?? type.Name,
-					Categories = attribute.Categories?.Where(c => !string.IsNullOrWhiteSpace(c)).Any() ?? false
-						? attribute.Categories.Where(c => !string.IsNullOrWhiteSpace(c)).ToArray()
-						: new[] { type.Namespace.Split('.').Last().TrimStart("Windows_UI_Xaml").TrimStart("Windows_UI") },
-					ViewModelType = attribute.ViewModelType,
-					Description = attribute.Description,
-					ControlType = type.AsType(),
-					IgnoreInSnapshotTests = attribute.IgnoreInSnapshotTests
+					ControlName = control.attribute.ControlName ?? control.type.Name,
+					ViewModelType = control.attribute.ViewModelType,
+					Description = control.attribute.Description,
+					ControlType = control.type.AsType(),
+					IgnoreInSnapshotTests = control.attribute.IgnoreInSnapshotTests
 				};
+
+				var category = categories.SingleOrDefault(c=>c.Category == categoryStr);
+				if(category == null)
+				{
+					category = new SampleChooserCategory {Category = categoryStr};
+					categories.Add(category);
+				}
+
+				category.SamplesContent.Add(sampleControl);
+			}
+
+			this.Log().Info($"Found {query.Count()} sample(s) in {categories.Count} categorie(s).");
+
+			return categories.ToList();
 		}
 
 		private static IEnumerable<TypeInfo> FindDefinedAssemblies(Assembly assembly)
@@ -574,14 +583,14 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		private static SampleAttribute FindSampleAttribute(TypeInfo type)
+		private static SampleControlInfoAttribute FindSampleAttribute(TypeInfo type)
 		{
 			try
 			{
 				if (!(type.Namespace?.StartsWith("System.Windows") ?? true))
 				{
 					return type?.GetCustomAttributes()
-						.OfType<SampleAttribute>()
+						.OfType<SampleControlInfoAttribute>()
 						.FirstOrDefault();
 				}
 				return null;
@@ -665,21 +674,6 @@ namespace SampleControl.Presentation
 			if (NextSample != null)
 			{
 				ContentPhone = await UpdateContent(ct, NextSample);
-			}
-		}
-
-		private async Task ShowTestInformation(CancellationToken ct)
-		{
-			var sample = CurrentSelectedSample;
-			if (sample != null)
-			{
-				var text = $@"
-view: {sample.ControlType.FullName}
-categories: {sample.Categories?.JoinBy(", ")}
-description:
-" + sample.Description;
-
-				await new MessageDialog(text.Trim(), sample.ControlName).ShowAsync();
 			}
 		}
 
@@ -813,7 +807,7 @@ description:
 					where !test.IgnoreInSnapshotTests
 					select test.ControlType.FullName;
 
-			return string.Join(";", q.Distinct());
+			return string.Join(";", q);
 		}
 
 		public async Task SetSelectedSample(CancellationToken ct, string metadataName)

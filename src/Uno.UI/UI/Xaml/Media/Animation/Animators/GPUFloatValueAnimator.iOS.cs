@@ -206,21 +206,45 @@ namespace Windows.UI.Xaml.Media.Animation
 			ReleaseCoreAnimation();
 		}
 
-		public bool IsRunning => _valueAnimator.IsRunning;
+		public bool IsRunning
+		{
+			get
+			{
+				return _valueAnimator.IsRunning;
+			}
+		}
 
 		public long StartDelay
 		{
-			get => _valueAnimator.StartDelay;
+			get
+			{
+				return _valueAnimator.StartDelay;
+			}
 
-			set => _valueAnimator.StartDelay = value;
+			set
+			{
+				_valueAnimator.StartDelay = value;
+			}
 		}
 
-		public object AnimatedValue => _valueAnimator.AnimatedValue;
+		public object AnimatedValue
+		{
+			get
+			{
+				return _valueAnimator.AnimatedValue;
+			}
+		}
 
 		public long CurrentPlayTime
 		{
-			get => _valueAnimator.CurrentPlayTime;
-			set => _valueAnimator.CurrentPlayTime = value;
+			get
+			{
+				return _valueAnimator.CurrentPlayTime;
+			}
+			set
+			{
+				_valueAnimator.CurrentPlayTime = value;
+			}
 		}
 
 		public long Duration => _duration;

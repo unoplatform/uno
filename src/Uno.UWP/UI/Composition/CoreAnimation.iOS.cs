@@ -5,7 +5,6 @@ using Uno.Extensions;
 using Uno.Logging;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Text;
 using System.Threading;
 using UIKit;
@@ -18,29 +17,25 @@ namespace Windows.UI.Composition
 
 		private static int _id = 0;
 
-		private readonly WeakReference<CALayer> _layer;
-		private readonly string _property;
-		private readonly string _key;
-		private readonly float _from;
-		private readonly float _to;
-		private readonly float _delayMilliseconds;
-		private readonly float _durationMilliseconds;
-		private readonly CAMediaTimingFunction _timingFunction;
-		private readonly Func<float, NSValue> _nsValueConversion;
-		private readonly bool _isDiscrete; // No interpolation
-		private readonly Action _onCompleted;
+		private WeakReference<CALayer> _layer;
+		private string _property;
+		private string _key;
+		private float _from;
+		private float _to;
+		private float _delayMilliseconds;
+		private float _durationMilliseconds;
+		private CAMediaTimingFunction _timingFunction;
+		private long? _pausedTime;
+		private float? _pausedValue;
+		private Func<float, NSValue> _nsValueConversion;
+		private Action _onFinish;		
+		private bool _isDiscrete; // No interpolation
 		private readonly Action _prepare;
 		private readonly Action _cleanup;
 
-		private (CAAnimation animation, float from, float to) _current;
-		private (StopReason reason, long? time, float? value) _stop;
-
-		private enum StopReason
-		{
-			Completed = 0, // The animation stopped it self because it has reached the end of its timeline
-			Paused, // The animation was paused, so we have to prepare for a resume, and hold the value
-			Canceled, // The animation was canceled, we have to rollback the value
-		}
+		CAAnimation _animation = null;
+		EventHandler _onAnimationStarted = null;
+		EventHandler<CAAnimationStateEventArgs> _onAnimationStopped = null;
 
 		public UnoCoreAnimation(
 			CALayer layer,
@@ -51,10 +46,11 @@ namespace Windows.UI.Composition
 			float durationMilliseconds,
 			CAMediaTimingFunction timingFunction,
 			Func<float, NSValue> nsValueConversion,
-			Action onCompleted,
+			Action onFinish,
 			bool isDiscrete,
 			Action prepare = null,
-			Action cleanup = null)
+			Action cleanup = null
+		)
 		{
 			_layer = new WeakReference<CALayer>(layer);
 			_property = property;
@@ -65,7 +61,7 @@ namespace Windows.UI.Composition
 			_durationMilliseconds = durationMilliseconds;
 			_timingFunction = timingFunction;
 			_nsValueConversion = nsValueConversion;
-			_onCompleted = onCompleted;
+			_onFinish = onFinish;
 			_isDiscrete = isDiscrete;
 			_prepare = prepare;
 			_cleanup = cleanup;
@@ -73,202 +69,186 @@ namespace Windows.UI.Composition
 
 		public void Start()
 		{
-			StartAnimation(_from, _to, _delayMilliseconds, _durationMilliseconds);
+			_pausedTime = null;
+			_pausedValue = null;
+
+			ExecuteIfLayer(view => Animate(view, _from, _to, _delayMilliseconds, _durationMilliseconds));
 		}
 
 		public void Pause(long? pausedTime, float? pausedValue)
 		{
-			StopAnimation(StopReason.Paused, pausedTime, pausedValue);
+			_pausedTime = pausedTime;
+			_pausedValue = pausedValue;
+
+			ExecuteIfLayer(view => StopAnimation(view));
 		}
 
 		public void Resume()
 		{
 			var startDelay = _delayMilliseconds;
 			var duration = _durationMilliseconds;
-			var from = _from;
 
-			// If we were paused, we try to effectively resume animation from the its last known state
-			if (_stop.reason == StopReason.Paused)
+			if (_pausedTime.HasValue)
 			{
-				if (_stop.time.HasValue)
-				{
-					if (_stop.time.Value > 0) // We were stopped while animating
-					{
-						startDelay = 0;
-						duration = _durationMilliseconds + _stop.time.Value;
-					}
-					else // We were stopped while waiting for the start delay
-					{
-						startDelay = _delayMilliseconds + _stop.time.Value;
-						duration = _durationMilliseconds;
-					}
-				}
-				if (_stop.value.HasValue)
-				{
-					from = _stop.value.Value;
-				}
+				startDelay = _pausedTime.Value > 0 ? 0 : _delayMilliseconds + _pausedTime.Value;
+				duration = _pausedTime.Value > 0 ? _durationMilliseconds - _pausedTime.Value : _durationMilliseconds;
 			}
 
-			StartAnimation(from, _to, startDelay, duration);
+			ExecuteIfLayer(view => Animate(
+				view,
+				_pausedValue.HasValue ? _pausedValue.Value : _from,
+				_to,
+				startDelay,
+				duration
+			));
+
+			_pausedTime = null;
+			_pausedValue = null;
 		}
 
 		public void Cancel()
 		{
-			StopAnimation(StopReason.Canceled);
+			_pausedTime = null;
+			_pausedValue = null;
+
+			ExecuteIfLayer(view => StopAnimation(view));
 		}
 
-		private void StartAnimation(float from, float to, float delayMilliseconds, float durationMilliseconds)
+		private void ExecuteIfLayer(Action<CALayer> action)
 		{
-			if (!_layer.TryGetTarget(out var layer))
+			if (_layer.TryGetTarget(out var layer))
 			{
-				return;
+				action(layer);
 			}
+		}
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			{
-				this.Log().DebugFormat("CoreAnimation '{0}' is starting from {1} to {2}.", _key, from, to);
-			}
-
-			CAAnimation animation;
+		private void Animate(CALayer layer, float from, float to, float delayMilliseconds, float durationMilliseconds)
+		{
 			if (_isDiscrete)
 			{
-				var discreteAnim = CAKeyFrameAnimation.FromKeyPath(_property);
-				discreteAnim.KeyTimes = new NSNumber[] { new NSNumber(0.0), new NSNumber(1.0) };
-				discreteAnim.Values = new NSObject[] { _nsValueConversion(to) };
-				discreteAnim.CalculationMode = CAKeyFrameAnimation.AnimationDescrete;
-
-				animation = discreteAnim;
+				var animation = CAKeyFrameAnimation.FromKeyPath(_property);
+				animation.KeyTimes = new NSNumber[] { new NSNumber(0.0), new NSNumber(1.0) };
+				animation.Values = new NSObject[] { _nsValueConversion(to) };
+				animation.CalculationMode = CAKeyFrameAnimation.AnimationDescrete;
+				_animation = animation;
 			}
 			else
 			{
-				var continuousAnim = CABasicAnimation.FromKeyPath(_property);
-				continuousAnim.From = _nsValueConversion(from);
-				continuousAnim.To = _nsValueConversion(to);
-				continuousAnim.TimingFunction = _timingFunction;
-
-				animation = continuousAnim;
+				var animation = CABasicAnimation.FromKeyPath(_property);
+				animation.From = _nsValueConversion(from);
+				animation.To = _nsValueConversion(to);
+				animation.TimingFunction = _timingFunction;
+				_animation = animation;
 			}
+
 			if (delayMilliseconds > 0)
 			{
 				// Note: We must make sure to use the time relative to the 'layer', otherwise we might introduce a random delay and the animations
 				//		 will run twice (once "managed" while updating the DP, and a second "native" using this animator)
-				animation.BeginTime = layer.ConvertTimeFromLayer(CAAnimation.CurrentMediaTime() + delayMilliseconds / __millisecondsPerSecond, null);
+				_animation.BeginTime = layer.ConvertTimeFromLayer(CAAnimation.CurrentMediaTime() + delayMilliseconds / __millisecondsPerSecond, null);
 			}
-			animation.Duration = durationMilliseconds / __millisecondsPerSecond;
-			animation.FillMode = CAFillMode.Forwards;
-			animation.RemovedOnCompletion = true;
-			animation.AnimationStarted += OnAnimationStarted;
-			animation.AnimationStopped += OnAnimationStopped;
-
-			// Start the animation
-			_stop = default; // Cleanup stop reason
-			_current = (animation, from, to);
-			layer.AddAnimation(animation, _key); // This will effectively start the animation (and invoke OnAnimationStarted after the begin delay)
-		}
-
-		private void StopAnimation(StopReason reason, long? time = default, float? value = default)
-		{
-			if (_current.animation == null || !_layer.TryGetTarget(out var layer))
-			{
-				return;
-			}
+			_animation.Duration = durationMilliseconds / __millisecondsPerSecond;
+			_animation.FillMode = CAFillMode.Forwards;
+			_animation.RemovedOnCompletion = false;
 
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				this.Log().DebugFormat("CoreAnimation '{0}' is forcefully stopping.", _key);
+				this.Log().DebugFormat("CoreAnimation on property {0} from {1} to {2} is starting.", _property, from, to);
 			}
 
-			_stop = (reason, time, value);
-			layer.RemoveAnimation(_key); // This will effectively stop the animation (and invoke OnAnimationStopped)
-		}
-
-		private void OnAnimationStarted(object sender, EventArgs _)
-		{
-			if (sender is CAAnimation animation)
+			_onAnimationStarted = (s, e) =>
 			{
-				animation.AnimationStarted -= OnAnimationStarted; // Prevent leak
-			}
+				// This will disable the transform while the native animation handles it
+				// It must be the first thing we do when the animation starts
+				// (However we have to wait for the first frame in order to not remove the transform while waiting for the BeginTime)
+				_prepare?.Invoke();
 
-			if (_current.animation != sender)
-			{
-				return; // We are no longer the current animation, do not interfere with the current
-			}
+				var anim = s as CAAnimation;
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			{
-				this.Log().DebugFormat("CoreAnimation '{0}' has started.", _property);
-			}
-
-			// This will disable the transform while the native animation handles it
-			// It must be the first thing we do when the animation starts
-			// (However we have to wait for the first frame in order to not remove the transform while waiting for the BeginTime)
-			_prepare?.Invoke();
-		}
-
-		private void OnAnimationStopped(object sender, CAAnimationStateEventArgs args)
-		{
-			// This callback will be invoked when the animation is stopped, no matter the reason (completed, paused or canceled)
-
-			if (sender is CAAnimation animation)
-			{
-				animation.AnimationStopped -= OnAnimationStopped; // Prevent leak
-			}
-
-			var (currentAnim, from, to) = _current;
-			if (currentAnim != sender)
-			{
-				return; // We are no longer the current animation, do not interfere with the current
-			}
-			_current = default;
-
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			{
-				this.Log().DebugFormat("CoreAnimation on property {0} has been {1}.", _property, _stop.reason);
-			}
-
-			// First commit the expected final (end, current or initial) value.
-			if (_layer.TryGetTarget(out var layer))
-			{
-				var keyPath = new NSString(_property);
-				NSObject finalValue;
-				switch (_stop.reason)
+				if (anim == null)
 				{
-					case StopReason.Paused:
-						finalValue = _stop.value.HasValue
-							? _nsValueConversion(_stop.value.Value)
-							: layer.ValueForKeyPath(keyPath);
-						break;
+					return;
+				}
 
-					case StopReason.Canceled:
-						finalValue = _nsValueConversion(from);
-						break;
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().DebugFormat("CoreAnimation on property {0} from {1} to {2} started.", _property, from, to);
+				}
 
-					default:
-					case StopReason.Completed:
-						finalValue = _nsValueConversion(to);
-						break;
+				anim.AnimationStarted -= _onAnimationStarted;
+				anim.AnimationStopped += _onAnimationStopped;
+			};
+
+			_onAnimationStopped = (s, e) =>
+			{
+				var anim = s as CAAnimation;
+
+				if (anim == null)
+				{
+					return;
 				}
 
 				CATransaction.Begin();
 				CATransaction.DisableActions = true;
-				layer.SetValueForKeyPath(finalValue, keyPath);
+				layer.SetValueForKeyPath(_nsValueConversion(to), new NSString(_property));
 				CATransaction.Commit();
-			}
+				_cleanup?.Invoke();
 
-			// Then reactivate the managed code handling of transforms that was disabled by the _prepare.
-			_cleanup?.Invoke();
+				anim.AnimationStopped -= _onAnimationStopped;
 
-			// Finally raise callbacks
-			if (_stop.reason == StopReason.Completed)
+				if (e.Finished)
+				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().DebugFormat("CoreAnimation on property {0} from {1} to {2} finished.", _property, from, to);
+					}
+					
+					_onFinish();
+
+					ExecuteIfLayer(l => l.RemoveAnimation(_key));
+
+				}
+				else
+				{
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().DebugFormat("CoreAnimation on property {0} from {1} to {2} stopped before finishing.", _property, from, to);
+					}
+
+					anim.AnimationStarted += _onAnimationStarted;
+				}
+			};
+
+			_animation.AnimationStarted += _onAnimationStarted;
+
+			layer.AddAnimation(_animation, _key);
+		}
+
+		private void StopAnimation(CALayer layer)
+		{
+			layer.RemoveAnimation(_key);
+			
+			if (_animation == null || _onAnimationStarted == null || _onAnimationStopped == null)
 			{
-				Debug.Assert(args.Finished);
-				_onCompleted();
+				return;
 			}
+
+			this.Log().DebugFormat("CoreAnimation on property {0} was forcefully stopped.", _property);
+
+			_animation.AnimationStarted -= _onAnimationStarted;
+			_animation.AnimationStopped -= _onAnimationStopped;
+
+			_animation = null;
+			_onAnimationStarted = null;
+			_onAnimationStopped = null;
 		}
 
 		public void Dispose()
 		{
-			StopAnimation(StopReason.Canceled);
+			if (_animation != null)
+			{
+				ExecuteIfLayer(view => StopAnimation(view));
+			}
 		}
 	}
 }

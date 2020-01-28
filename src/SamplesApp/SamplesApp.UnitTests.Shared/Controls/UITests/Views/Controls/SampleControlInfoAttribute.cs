@@ -6,60 +6,36 @@ namespace Uno.UI.Samples.Controls
 {
 
 	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = true)]
-	public sealed class SampleControlInfoAttribute : SampleAttribute
+	public sealed class SampleControlInfoAttribute : Attribute
 	{
+		readonly string _controlName;
+		readonly string _category;
+		readonly Type _viewModelType;
+		readonly bool _ignoreInSnapshotTests;
+		readonly string _description;
+
 		public SampleControlInfoAttribute(
 			string category = null,
 			string controlName = null,
 			Type viewModelType = null,
 			bool ignoreInSnapshotTests = false,
 			string description = null)
-			: base(category)
 		{
-			Name = controlName;
-			ViewModelType = viewModelType;
-			IgnoreInSnapshotTests = ignoreInSnapshotTests;
-			Description = description;
-		}
-	}
+			this._controlName = controlName;
+			this._category = category;
+			this._viewModelType = viewModelType;
+			this._ignoreInSnapshotTests = ignoreInSnapshotTests;
+			this._description = description;
+        }
+		
+		public string ControlName => _controlName;
 
-	[AttributeUsage(AttributeTargets.Class, Inherited = false, AllowMultiple = false)]
-	public class SampleAttribute : Attribute
-	{
-		/// <summary>
-		/// Marks a class as a sample test control that can be browsed by the SampleChooserControl
-		/// and which can be used by automated tests.
-		/// </summary>
-		/// <param name="categories">An optional list of categories to which this sample is related to</param>
-		public SampleAttribute(params string[] categories)
-		{
-			Categories = categories;
-		}
+		public string Category => _category;
 
-		/// <summary>
-		/// An optional list of categories to which this sample is related to
-		/// </summary>
-		public string[] Categories { get; }
+		public Type ViewModelType => _viewModelType;
 
-		/// <summary>
-		/// An optional name for this sample. Default will be the name of the class.
-		/// </summary>
-		public string Name { get; set; }
+		public bool IgnoreInSnapshotTests => _ignoreInSnapshotTests;
 
-		/// <summary>
-		/// Determines if this sample should be included or not in the automated screenshot comparison.
-		/// If this flag is not set, the sample will be included.
-		/// </summary>
-		public bool IgnoreInSnapshotTests { get; set; }
-
-		/// <summary>
-		/// An optional ViewModel type that will be instantiated and set as DataContext of the sample control
-		/// </summary>
-		public Type ViewModelType { get; set; }
-
-		/// <summary>
-		/// An optional description of the sample. A good practice is to explain the expected result of the sample.
-		/// </summary>
-		public string Description { get; set; }
+		public string Description => _description;
 	}
 }
