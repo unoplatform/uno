@@ -15,8 +15,9 @@ namespace Uno.UI.DualScreen
 {
 	public class DuoApplicationViewSpanningRects : IApplicationViewSpanningRects
 	{
-		Microsoft.Device.Display.ScreenHelper _helper;
-		List<Rect> _spanningRects = null;
+		private bool? _isDualScreenDevice;
+		private Microsoft.Device.Display.ScreenHelper _helper;
+		private List<Rect> _spanningRects = null;
 
 		private readonly List<Rect> EmptyList = new List<Rect>(0);
 
@@ -28,13 +29,9 @@ namespace Uno.UI.DualScreen
 		{
 			if (ContextHelper.Current is Activity currentActivity)
 			{
-				if (_helper == null)
-				{
-					_helper = new Microsoft.Device.Display.ScreenHelper();
-					_helper.Initialize(currentActivity);
-				}
+				InitializeHelper(currentActivity);
 
-				if (_helper?.IsDualMode ?? false)
+				if (_isDualScreenDevice.Value && _helper.IsDualMode)
 				{
 					var wuxWindowBounds = ApplicationView.GetForCurrentView().VisibleBounds.LogicalToPhysicalPixels();
 					var helperOrientation = _helper.GetRotation();
@@ -42,70 +39,61 @@ namespace Uno.UI.DualScreen
 
 					var occludedRects = _helper
 						.DisplayMask
-						.GetBoundingRectsForRotation(_helper.GetRotation())
+						.GetBoundingRectsForRotation(helperOrientation)
 						.Select(r => (Rect)r)
 						.ToArray();
 
 					if (occludedRects.Length > 0)
 					{
-						Android.Graphics.Rect aBounds = new Android.Graphics.Rect();
-						currentActivity.Window.DecorView.RootView.GetDrawingRect(aBounds);
-
-
 						Rect bounds = wuxWindowBounds;
 						var occludedRect = occludedRects[0];
 						var intersection = bounds;
 						intersection.Intersect(occludedRect);
 
-						if(wuOrientation == DisplayOrientations.Portrait || wuOrientation == DisplayOrientations.PortraitFlipped)
+						if (wuOrientation == DisplayOrientations.Portrait || wuOrientation == DisplayOrientations.PortraitFlipped)
 						{
-							var statusBarRect = StatusBar.GetForCurrentView().OccludedRect.LogicalToPhysicalPixels();
-							occludedRect.Y -= statusBarRect.Height;
+							// Compensate for the status bar size (the occluded area is rooted on the screen size, whereas
+							// wuxWindowBoundsis rooted on the visible size of the window, unless the status bar is translucent.
+							if (bounds.X == 0 && bounds.Y == 0)
+							{
+								var statusBarRect = StatusBar.GetForCurrentView().OccludedRect.LogicalToPhysicalPixels();
+								occludedRect.Y -= statusBarRect.Height;
+							}
 						}
 
-						if (bounds == wuxWindowBounds)
+						if (intersection != Rect.Empty)
 						{
-							if (intersection != Rect.Empty)
+							if (occludedRect.X == bounds.X)
 							{
-								if (occludedRect.X == bounds.X)
-								{
-									_spanningRects = new List<Rect> {
+								_spanningRects = new List<Rect> {
 										new Rect(bounds.X, bounds.Y, bounds.Width, occludedRect.Y),
 										new Rect(bounds.X, bounds.Y + occludedRect.Y + occludedRect.Height, bounds.Width, bounds.Height - (occludedRect.Y + occludedRect.Height)),
 									};
 
-									if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-									{
-										this.Log().Debug($"DualMode: Horizontal spanning rects: {string.Join(";", _spanningRects)}");
-									}
-								}
-								else if (occludedRect.Y == bounds.Y)
+								if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 								{
-									// Horizontal
+									this.Log().Debug($"DualMode: Horizontal spanning rects: {string.Join(";", _spanningRects)}");
+								}
+							}
+							else if (occludedRect.Y == bounds.Y)
+							{
+								// Horizontal
 
-									_spanningRects = new List<Rect> {
+								_spanningRects = new List<Rect> {
 										new Rect(bounds.X, bounds.Y, occludedRect.X, bounds.Height),
 										new Rect(bounds.X + occludedRect.X + occludedRect.Width, bounds.Y, bounds.Width - (occludedRect.X + occludedRect.Width), bounds.Height),
 									};
 
-									if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-									{
-										this.Log().Debug($"DualMode: Vertical spanning rects: {string.Join(";", _spanningRects)}");
-									}
-								}
-								else
+								if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 								{
-									if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-									{
-										this.Log().Debug($"DualMode: Unknown screen layout");
-									}
+									this.Log().Debug($"DualMode: Vertical spanning rects: {string.Join(";", _spanningRects)}");
 								}
 							}
 							else
 							{
 								if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 								{
-									this.Log().Debug($"DualMode: Without intersection, single screen");
+									this.Log().Debug($"DualMode: Unknown screen layout");
 								}
 							}
 						}
@@ -113,7 +101,7 @@ namespace Uno.UI.DualScreen
 						{
 							if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 							{
-								this.Log().Debug($"DualMode: Skipping inconsistent window size");
+								this.Log().Debug($"DualMode: Without intersection, single screen");
 							}
 						}
 					}
@@ -128,6 +116,20 @@ namespace Uno.UI.DualScreen
 			}
 
 			return _spanningRects ?? EmptyList;
+		}
+
+		private void InitializeHelper(Activity currentActivity)
+		{
+			if (!_isDualScreenDevice.HasValue && _helper == null)
+			{
+				_isDualScreenDevice = Microsoft.Device.Display.ScreenHelper.IsDualScreenDevice(currentActivity);
+
+				if (_isDualScreenDevice.Value)
+				{
+					_helper = new Microsoft.Device.Display.ScreenHelper();
+					_helper.Initialize(currentActivity);
+				}
+			}
 		}
 
 		private SurfaceOrientation GetOrientation()
