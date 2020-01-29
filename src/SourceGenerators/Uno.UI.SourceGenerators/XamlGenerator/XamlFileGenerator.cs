@@ -3073,7 +3073,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 var closure = $"c{_applyIndex++}";
                 if (useSafeCast)
                 {
-                    return $"((System.Object)({value}) is {type} {closure} ? {closure} : default({type}))";
+                    return $"(global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({type}), {value}) is {type} {closure} ? {closure} : default({type}))";
                 }
                 else
                 {
