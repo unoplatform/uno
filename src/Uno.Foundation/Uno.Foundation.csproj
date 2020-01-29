@@ -40,6 +40,11 @@
 		<PackageReference Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />
 	</ItemGroup>
 
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Extensibility\ApiExtensibility.cs" />
+	  <UpToDateCheckInput Remove="Extensibility\ApiExtensionAttribute.cs" />
+	</ItemGroup>
+
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 </Project>
