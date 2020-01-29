@@ -43,7 +43,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(TwoPaneView);
 
 			SizeChanged += OnSizeChanged;
-			Window.Current.SizeChanged += OnWindowSizeChanged;
+			Windows.UI.Xaml.Window.Current.SizeChanged += OnWindowSizeChanged;
 
 			this.RegisterDisposablePropertyChangedCallback((e, s, a) => OnPropertyChanged(a));
 		}
