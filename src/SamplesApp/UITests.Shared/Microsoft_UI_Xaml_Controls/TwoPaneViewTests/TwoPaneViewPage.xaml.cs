@@ -17,7 +17,7 @@ using TwoPaneViewTallModeConfiguration = Microsoft.UI.Xaml.Controls.TwoPaneViewT
 using DisplayRegionHelperTestApi = Microsoft.UI.Xaml.Controls.DisplayRegionHelperTestApi;
 using Uno.UI.Samples.Controls;
 
-namespace MUXControlsTestApp
+namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
 {
 	[SampleControlInfo("TwoPaneView", "MUX_Test")]
 	public sealed partial class TwoPaneViewPage : Page
