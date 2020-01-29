@@ -256,5 +256,35 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			// Assert after double click while myCheckBox is enabled
 			Check(true, "Assert after another double click while myCheckBox should stay checked");
 		}
+
+		[Test]
+		[AutoRetry]
+		public void Button_NestedButtons_Validation()
+		{
+			Run("nVentive.Umbrella.Views.UI.Samples.Content.UITests.ButtonTestsControl.Nested_Buttons");
+
+			var outer = _app.Marked("Outer");
+			var inner = _app.Marked("Inner");
+			var validateCommandTextBlock = _app.Marked("ValidateCommandTextBlock");
+
+			// Initial validation
+			Assert.AreEqual("", validateCommandTextBlock.GetDependencyPropertyValue("Text")?.ToString());
+
+			// Click on outer button and validate
+			_app.TapCoordinates(outer.FirstResult().Rect.X + 30, outer.FirstResult().Rect.Y + 30);
+			string command1 = validateCommandTextBlock.GetDependencyPropertyValue("Text")?.ToString();
+			if (!command1.Contains("OuterCommand"))
+			{
+				Assert.Fail("Outer button is not clicked");
+			}
+
+			// Click on inner button and validate
+			_app.TapCoordinates(inner.FirstResult().Rect.X + 30, inner.FirstResult().Rect.Y + 30);
+			string command2 = validateCommandTextBlock.GetDependencyPropertyValue("Text")?.ToString();
+			if (!command2.Contains("InnerCommand"))
+			{
+				Assert.Fail("Inner button is not clicked");
+			}
+		}
 	}
 }
