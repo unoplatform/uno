@@ -12,10 +12,11 @@
 					xmlns:android="http://uno.ui/android"
 					xmlns:not_wasm="http://uno.ui/not_wasm"
 					xmlns:wasm="http://uno.ui/wasm"
+					xmlns:macos="http://uno.ui/macos"
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
 					xmlns:uBehaviors="using:Uno.UI.Behaviors"
-					mc:Ignorable="d xamarin ios android not_wasm wasm">
+					mc:Ignorable="d xamarin ios android not_wasm wasm macos">
 
 	<!-- TODO: How does UWP override the default FontFamily value of 11 with 15? -->
 	<wasm:Style TargetType="TextBlock">
@@ -34,6 +35,15 @@
 			</Setter.Value>
 		</Setter>
 	</wasm:Style>
+	<macos:Style TargetType="ItemsControl">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ItemsControl">
+					<ItemsPresenter Padding="{TemplateBinding Padding}" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</macos:Style>
 
 	<!-- Default style for Windows.UI.Xaml.Controls.ContentControl -->
 	<Style TargetType="ContentControl">
