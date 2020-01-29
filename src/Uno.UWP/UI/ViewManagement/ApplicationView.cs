@@ -5,15 +5,18 @@
 using System;
 using System.Collections.Generic;
 using Windows.Foundation;
+using Uno.Foundation.Extensibility;
 
 namespace Windows.UI.ViewManagement
 {
 	public partial class ApplicationView
+		: IApplicationViewSpanningRects
 	{
 		private static ApplicationView _instance = new ApplicationView();
 
 		private ApplicationViewTitleBar _titleBar = new ApplicationViewTitleBar();
-		private IReadOnlyList<Rect> _spanningRects = new List<Rect>(0);
+		private IReadOnlyList<Rect> _defaultSpanningRects;
+		private IApplicationViewSpanningRects _applicationViewSpanningRects;
 
 		[global::Uno.NotImplemented]
 		public int Id => 1;
@@ -56,12 +59,29 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, global::Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs> Consolidated;
 
-		internal IReadOnlyList<Rect> GetSpanningRects()
+		public IReadOnlyList<Rect> GetSpanningRects()
 		{
-			UpdateSpanningRects();
-			return _spanningRects;
+			TryInitializeSpanningRectsExtension();
+
+			if (_applicationViewSpanningRects != null)
+			{
+				return _applicationViewSpanningRects.GetSpanningRects();
+			}
+			else
+			{
+				return _defaultSpanningRects;
+			}
 		}
 
-		partial void UpdateSpanningRects();
+		private void TryInitializeSpanningRectsExtension()
+		{
+			if (_defaultSpanningRects == null && _applicationViewSpanningRects == null)
+			{
+				if (!ApiExtensibility.CreateInstance<IApplicationViewSpanningRects>(this, out _applicationViewSpanningRects))
+				{
+					_defaultSpanningRects = new List<Rect>(0);
+				}
+			}
+		}
 	}
 }
