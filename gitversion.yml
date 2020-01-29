@@ -13,7 +13,8 @@ branches:
   pull-request:
     regex: ^(pull|pull\-requests|pr)[/-]
     mode: ContinuousDeployment
-    tag: PullRequest
+    tag: 'PullRequest'
+    tag-number-pattern: '[/-](?<number>\d+)[-/]'
     increment: none
 
   beta:
