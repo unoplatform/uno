@@ -15,18 +15,18 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 	[TestFixture]
 	public partial class DoubleAnimation_Tests : SampleControlUITestBase
 	{
-		private const string _finalStateTestControl = "UITests.Windows_UI_Xaml_Media_Animation.DoubleAnimation_FinalState";
+		private const string _finalStateTransformsTestControl = "UITests.Windows_UI_Xaml_Media_Animation.DoubleAnimation_FinalState_Transforms";
 
-		[Test] [AutoRetry] public void When_Completed_With_FillBehaviorStop_Then_Rollback() => TestFinalState();
-		[Test] [AutoRetry] public void When_Completed_With_FillBehaviorHold_Then_Hold() => TestFinalState();
-		[Test] [AutoRetry] public void When_Paused_With_FillBehaviorStop_Then_Hold() => TestFinalState();
-		[Test] [AutoRetry] public void When_Paused_With_FillBehaviorHold_Then_Hold() => TestFinalState();
-		[Test] [AutoRetry] public void When_Canceled_With_FillBehaviorStop_Then_Rollback() => TestFinalState();
-		[Test] [AutoRetry] public void When_Canceled_With_FillBehaviorHold_Then_Rollback() => TestFinalState();
+		[Test] [AutoRetry] public void When_Transforms_Completed_With_FillBehaviorStop_Then_Rollback() => TestTransformsFinalState();
+		[Test] [AutoRetry] public void When_Transforms_Completed_With_FillBehaviorHold_Then_Hold() => TestTransformsFinalState();
+		[Test] [AutoRetry] public void When_Transforms_Paused_With_FillBehaviorStop_Then_Hold() => TestTransformsFinalState();
+		[Test] [AutoRetry] public void When_Transforms_Paused_With_FillBehaviorHold_Then_Hold() => TestTransformsFinalState();
+		[Test] [AutoRetry] public void When_Transforms_Canceled_With_FillBehaviorStop_Then_Rollback() => TestTransformsFinalState();
+		[Test] [AutoRetry] public void When_Transforms_Canceled_With_FillBehaviorHold_Then_Rollback() => TestTransformsFinalState();
 
-		private void TestFinalState([CallerMemberName] string testName = null)
+		private void TestTransformsFinalState([CallerMemberName] string testName = null)
 		{
-			var match = Regex.Match(testName, @"When_(?<type>\w+)_With_FillBehavior(?<fill>\w+)_Then_(?<expected>\w+)");
+			var match = Regex.Match(testName, @"When_Transforms_(?<type>\w+)_With_FillBehavior(?<fill>\w+)_Then_(?<expected>\w+)");
 			if (!match.Success)
 			{
 				throw new InvalidOperationException("Invalid test name.");
@@ -60,7 +60,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 					throw new InvalidOperationException("Invalid test name.");
 			}
 
-			Run(_finalStateTestControl);
+			Run(_finalStateTransformsTestControl, skipInitialScreenshot: true);
 
 			var initial = TakeScreenshot("Initial", ignoreInSnapshotCompare: true);
 			var initialLocation = _app.WaitForElement($"{type}AnimationHost_{fill}").Single().Rect;
@@ -73,7 +73,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 			_app.WaitForDependencyPropertyValue(_app.Marked("Status"), "Text", "Completed");
 
 			// Assert
-			var final = TakeScreenshot("Final", ignoreInSnapshotCompare: false);
+			var final = TakeScreenshot("Final", ignoreInSnapshotCompare: true);
 			var finalLocation = _app.WaitForElement($"{type}AnimationHost_{fill}").Single().Rect;
 			var actualDelta = finalLocation.Y - initialLocation.Y;
 

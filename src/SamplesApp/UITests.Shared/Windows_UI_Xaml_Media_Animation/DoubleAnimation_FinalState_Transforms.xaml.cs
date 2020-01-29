@@ -11,12 +11,21 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Media_Animation
 {
-	[Sample("Animations")]
-	public sealed partial class DoubleAnimation_FinalState : Page
+	[Sample("Animations", "Transform", Name="DoubleAnimation transforms final state", Description = _description)]
+	public sealed partial class DoubleAnimation_FinalState_Transforms : Page
 	{
+		private const string _description = @"This (automated) test validate the final state of when animating transformation using a double animation.
+
+Expected result:
+  * Completed: stays at bottom if HOLD, goes back to top if STOP
+  * Paused: stays in the middle no matter the fill behavior
+  * Canceled: goes back to top no matter the fille behavior
+
+If 'Set From' was selected, then rollback means back to value before animation, not the 'From' value!";
+
 		private TimeSpan _duration;
 
-		public DoubleAnimation_FinalState()
+		public DoubleAnimation_FinalState_Transforms()
 		{
 			this.InitializeComponent();
 
@@ -34,12 +43,12 @@ namespace UITests.Windows_UI_Xaml_Media_Animation
 				CreateAnimation(CompletedAnimationHost_Hold, FillBehavior.HoldEnd),
 				CreateAnimation(CompletedAnimationHost_Stop, FillBehavior.Stop)
 			};
-			var toPause = new []
+			var toPause = new[]
 			{
 				CreateAnimation(PausedAnimationHost_Hold, FillBehavior.HoldEnd),
 				CreateAnimation(PausedAnimationHost_Stop, FillBehavior.Stop)
 			};
-			var toCancel = new []
+			var toCancel = new[]
 			{
 				CreateAnimation(CanceledAnimationHost_Hold, FillBehavior.HoldEnd),
 				CreateAnimation(CanceledAnimationHost_Stop, FillBehavior.Stop)

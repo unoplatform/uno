@@ -119,7 +119,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 
 			var during = TakeScreenshot("During", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Status bar appears with clock*/);
 
-			ImageAssert.AssertDoesNotHaveColorAt(during, rect.CenterX, rect.CenterY, Color.Blue);
+			ImageAssert.DoesNotHaveColorAt(during, rect.CenterX, rect.CenterY, Color.Blue);
 
 			// Dismiss popup
 			var screenRect = _app.Marked("sampleContent").FirstResult().Rect;
