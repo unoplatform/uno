@@ -36,12 +36,20 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 		enum ViewMode { Pane1Only, Pane2Only, LeftRight, RightLeft, TopBottom, BottomTop }
 
+		[SetUp]
+		public void TestSetup()
+		{
+			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests.TwoPaneViewPage");
+
+			var controlWidthText = _app.Marked("ControlWidthText");
+
+			Assert.IsTrue(controlWidthText.GetDependencyPropertyValue<int>("Text") > 641, "The window size must be large enough for the control Width to be larger than 641");
+		}
+
 		[Test]
 		[AutoRetry]
 		public void ViewModeTest()
 		{
-			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests.TwoPaneViewPage");
-
 			{
 				SetControlWidth(ControlWidth.Wide);
 				SetControlHeight(ControlHeight.Tall);
@@ -92,7 +100,6 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		[AutoRetry]
 		public void ThresholdTest()
 		{
-			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests.TwoPaneViewPage");
 			{
 				SetControlWidth(ControlWidth.Wide);
 				SetControlHeight(ControlHeight.Tall);
@@ -113,9 +120,9 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 		[Test]
 		[AutoRetry]
+		[Ignore("May be fixed by https://github.com/unoplatform/uno/pull/2481")]
 		public void RegionTest()
 		{
-			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests.TwoPaneViewPage");
 			{
 				Console.WriteLine("Assert horizontal split regions");
 				SetComboBox("SimulateComboBox", "LeftRight");
@@ -137,9 +144,9 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 		[Test]
 		[AutoRetry]
+		[Ignore("May be fixed by https://github.com/unoplatform/uno/pull/2481")]
 		public void RegionOffsetTest()
 		{
-			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests.TwoPaneViewPage");
 			{
 				Console.WriteLine("Assert horizontal split regions with control offset from simulated window");
 				SetComboBox("SimulateComboBox", "LeftRight");
@@ -165,9 +172,9 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 
 		[Test]
 		[AutoRetry]
+		[Ignore("May be fixed by https://github.com/unoplatform/uno/pull/2481")]
 		public void SingleRegionTest()
 		{
-			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests.TwoPaneViewPage");
 			{
 				Console.WriteLine("Assert control acts appropriately when there are multiple regions but the control is only in one of them");
 
@@ -192,15 +199,15 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		[AutoRetry]
 		public void InitialPanePriorityTest()
 		{
-			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests.TwoPaneViewPage");
 			{
 				Console.WriteLine("Assert when pane priority is set to pane 2 on the small split panel, it only loads pane 2 (bug 14486142)");
 
-				var paneContent1 = _app.Marked("SmallContent1");
-				var paneContent2 = _app.Marked("SmallContent2");
+				// Assert panes are actually being shown correctly
+				var paneContent1Query = _app.Marked("TwoPaneViewSmall").Descendant().Marked("PART_Pane1ScrollViewer");
+				var paneContent2Query = _app.Marked("TwoPaneViewSmall").Descendant().Marked("PART_Pane2ScrollViewer");
 
-				_app.WaitForNoElement(paneContent1);
-				_app.WaitForElement(paneContent2);
+				_app.WaitForDependencyPropertyValue(paneContent1Query, "Visibility", "Collapsed");
+				_app.WaitForDependencyPropertyValue(paneContent2Query, "Visibility", "Visible");
 			}
 		}
 
@@ -208,7 +215,6 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		[AutoRetry]
 		public void PaneLengthTest()
 		{
-			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests.TwoPaneViewPage");
 			{
 				SetControlWidth(ControlWidth.Wide);
 				SetControlHeight(ControlHeight.Tall);
@@ -264,32 +270,38 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			Assert.AreEqual(expectedConfiguration.ToString(), configurationTextBlock.GetText());
 
 			// Assert panes are actually being shown correctly
-			var paneContent1 = _app.Marked("Content1");
-			var paneContent2 = _app.Marked("Content2");
+			var paneContent1Query = _app.Marked("TwoPaneView").Descendant().Marked("PART_Pane1ScrollViewer");
+			var paneContent2Query = _app.Marked("TwoPaneView").Descendant().Marked("PART_Pane2ScrollViewer");
 
-			var paneContent1BoundingRectangle = _app.Query(paneContent1).First().Rect;
-			var paneContent2BoundingRectangle = _app.Query(paneContent2).First().Rect;
+			var paneContent1 = _app.Query(paneContent1Query).FirstOrDefault();
+			var paneContent2 = _app.Query(paneContent2Query).FirstOrDefault();
+
+			var paneContent1BoundingRectangle = _app.Query(paneContent1Query).First().Rect;
+			var paneContent2BoundingRectangle = _app.Query(paneContent2Query).First().Rect;
+
+			var pane1Visibility = paneContent1Query.GetDependencyPropertyValue<string>("Visibility");
+			var pane2Visibility = paneContent2Query.GetDependencyPropertyValue<string>("Visibility");
 
 			if (mode != ViewMode.Pane2Only)
 			{
-				Assert.IsNotNull(paneContent1, "Expected to find pane1");
+				Assert.AreEqual("Visible", paneContent1Query.GetDependencyPropertyValue<string>("Visibility"), "Expected to find pane1");
 				Console.WriteLine("Content 1 dimensions: " + paneContent1BoundingRectangle.ToString());
 			}
 
 			if (mode != ViewMode.Pane1Only)
 			{
-				Assert.IsNotNull(paneContent2, "Expected to find pane2");
+				Assert.AreEqual("Visible", paneContent2Query.GetDependencyPropertyValue<string>("Visibility"), "Expected to find pane2");
 				Console.WriteLine("Content 2 dimensions: " + paneContent2BoundingRectangle.ToString());
 			}
 
 			if (mode == ViewMode.Pane2Only)
 			{
-				Assert.IsNull(paneContent1, "Expected not to find pane1");
+				Assert.AreEqual("Collapsed", paneContent1Query.GetDependencyPropertyValue<string>("Visibility"), "Expected not to find pane1");
 			}
 
 			if (mode == ViewMode.Pane1Only)
 			{
-				Assert.IsNull(paneContent2, "Expected not to find pane2");
+				Assert.AreEqual("Collapsed", paneContent2Query.GetDependencyPropertyValue<string>("Visibility"), "Expected not to find pane2");
 			}
 
 			switch (mode)
@@ -370,7 +382,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		{
 			Console.WriteLine("Setting min wide width to " + width);
 			var widthTextBox = _app.Marked("MinWideModeWidthTextBox");
-			widthTextBox.SetDependencyPropertyValue("Text", width.ToString());
+			var value = widthTextBox.SetDependencyPropertyValue("Text", width.ToString());
 			// Wait.ForIdle();
 		}
 
@@ -378,7 +390,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		{
 			Console.WriteLine("Setting min tall height to " + height);
 			var heightTextBox = _app.Marked("MinTallModeHeightTextBox");
-			heightTextBox.SetDependencyPropertyValue("Text", height.ToString());
+			var value = heightTextBox.SetDependencyPropertyValue("Text", height.ToString());
 			// Wait.ForIdle();
 		}
 
@@ -386,7 +398,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		{
 			Console.WriteLine("Setting '" + comboBoxName + "' to '" + item + "'");
 			var comboBox = _app.Marked(comboBoxName);
-			comboBox.SetDependencyPropertyValue("SelectedItem", item);
+			var value = comboBox.SetDependencyPropertyValue("SelectedItem", item);
 			// Wait.ForIdle();
 		}
 

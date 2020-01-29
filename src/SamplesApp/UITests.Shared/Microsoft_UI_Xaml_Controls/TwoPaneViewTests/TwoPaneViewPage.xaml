@@ -25,22 +25,22 @@
                 <TextBlock Text="Options" Style="{ThemeResource StandardGroupHeader}"/>
                 <TextBlock Text="Width:"/>
                 <ComboBox x:Name="WidthComboBox" AutomationProperties.Name="WidthComboBox" SelectedIndex="0" HorizontalAlignment="Stretch" SelectionChanged="WidthComboBox_SelectionChanged">
-                    <ComboBoxItem Content="Default"/>
-                    <ComboBoxItem Content="Wide"/>
-                    <ComboBoxItem Content="Narrow"/>
+					<x:String>Default</x:String>
+					<x:String>Wide</x:String>
+                    <x:String>Narrow</x:String>
                 </ComboBox>
 
                 <TextBlock Text="Height:" Margin="0,12,0,0"/>
                 <ComboBox x:Name="HeightComboBox" AutomationProperties.Name="HeightComboBox" SelectedIndex="0" HorizontalAlignment="Stretch" SelectionChanged="HeightComboBox_SelectionChanged">
-                    <ComboBoxItem Content="Default"/>
-                    <ComboBoxItem Content="Tall"/>
-                    <ComboBoxItem Content="Short"/>
+                    <x:String>Default</x:String>
+                    <x:String>Tall</x:String>
+                    <x:String>Short</x:String>
                 </ComboBox>
 
                 <TextBlock Text="Pane Priority:" Margin="0,12,0,0"/>
                 <ComboBox x:Name="PanePriorityComboBox" AutomationProperties.Name="PanePriorityComboBox" SelectedIndex="0" HorizontalAlignment="Stretch" SelectionChanged="PanePriorityComboBox_SelectionChanged">
-                    <ComboBoxItem Content="Pane1"/>
-                    <ComboBoxItem Content="Pane2"/>
+                    <x:String>Pane1</x:String>
+                    <x:String>Pane2</x:String>
                 </ComboBox>
 
                 <TextBlock Text="Pane1Length:" Margin="0,12,0,0"/>
@@ -52,9 +52,9 @@
 
                     <TextBox x:Name="Pane1LengthTextBox" AutomationProperties.Name="Pane1LengthTextBox" Text="1" TextChanged="Pane1LengthTextBox_TextChanged"/>
                     <ComboBox Grid.Column="1" x:Name="Pane1LengthComboBox" AutomationProperties.Name="Pane1LengthComboBox" SelectedIndex="0" HorizontalAlignment="Stretch" SelectionChanged="Pane1LengthComboBox_SelectionChanged">
-                        <ComboBoxItem Content="Auto"/>
-                        <ComboBoxItem Content="Pixel"/>
-                        <ComboBoxItem Content="Star"/>
+                        <x:String>Auto</x:String>
+                        <x:String>Pixel</x:String>
+                        <x:String>Star</x:String>
                     </ComboBox>
                 </Grid>
 
@@ -67,24 +67,24 @@
 
                     <TextBox x:Name="Pane2LengthTextBox" AutomationProperties.Name="Pane2LengthTextBox" Text="1" TextChanged="Pane2LengthTextBox_TextChanged"/>
                     <ComboBox Grid.Column="1" x:Name="Pane2LengthComboBox" AutomationProperties.Name="Pane2LengthComboBox" SelectedIndex="2" HorizontalAlignment="Stretch" SelectionChanged="Pane2LengthComboBox_SelectionChanged">
-                        <ComboBoxItem Content="Auto"/>
-                        <ComboBoxItem Content="Pixel"/>
-                        <ComboBoxItem Content="Star"/>
+                        <x:String>Auto</x:String>
+                        <x:String>Pixel</x:String>
+                        <x:String>Star</x:String>
                     </ComboBox>
                 </Grid>
 
                 <TextBlock Text="Wide Configuration:" Margin="0,12,0,0"/>
                 <ComboBox x:Name="WideModeConfigurationComboBox" AutomationProperties.Name="WideModeConfigurationComboBox" SelectedIndex="0" HorizontalAlignment="Stretch" SelectionChanged="WideModeConfigurationComboBox_SelectionChanged">
-                    <ComboBoxItem Content="LeftRight"/>
-                    <ComboBoxItem Content="RightLeft"/>
-                    <ComboBoxItem Content="SinglePane"/>
+                    <x:String>LeftRight</x:String>
+                    <x:String>RightLeft</x:String>
+                    <x:String>SinglePane</x:String>
                 </ComboBox>
 
                 <TextBlock Text="Tall Configuration:" Margin="0,12,0,0"/>
                 <ComboBox x:Name="TallModeConfigurationComboBox" AutomationProperties.Name="TallModeConfigurationComboBox" SelectedIndex="0" HorizontalAlignment="Stretch" SelectionChanged="TallModeConfigurationComboBox_SelectionChanged">
-                    <ComboBoxItem Content="TopBottom"/>
-                    <ComboBoxItem Content="BottomTop"/>
-                    <ComboBoxItem Content="SinglePane"/>
+                    <x:String>TopBottom</x:String>
+                    <x:String>BottomTop</x:String>
+                    <x:String>SinglePane</x:String>
                 </ComboBox>
 
                 <TextBlock Text="Min Wide Width:" Margin="0,12,0,0"/>
@@ -95,9 +95,9 @@
 
                 <TextBlock Text="Simulate regions:" Margin="0,12,0,0"/>
                 <ComboBox x:Name="SimulateComboBox" AutomationProperties.Name="SimulateComboBox" SelectedIndex="0" HorizontalAlignment="Stretch" SelectionChanged="SimulateComboBox_SelectionChanged">
-                    <ComboBoxItem Content="None"/>
-                    <ComboBoxItem Content="LeftRight"/>
-                    <ComboBoxItem Content="TopBottom"/>
+                    <x:String>None</x:String>
+                    <x:String>LeftRight</x:String>
+                    <x:String>TopBottom</x:String>
                 </ComboBox>
 
                 <CheckBox x:Name="AddMarginCheckBox" AutomationProperties.Name="AddMarginCheckBox" Content="Add margin" Margin="0,12,0,0" Checked="AddMarginCheckBox_Checked" Unchecked="AddMarginCheckBox_Unchecked"/>
