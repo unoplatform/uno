@@ -1,6 +1,5 @@
 ﻿#if __ANDROID__
 using System;
-using System.Linq;
 using Android.App;
 using Android.Views;
 using Uno.Extensions;
