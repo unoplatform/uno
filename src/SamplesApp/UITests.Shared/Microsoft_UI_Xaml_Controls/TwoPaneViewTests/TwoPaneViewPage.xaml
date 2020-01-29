@@ -5,16 +5,17 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:local="using:UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests"
+	xmlns:xamarin="http://uno.ui/xamarin"
     xmlns:muxcontrols="using:Microsoft.UI.Xaml.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d">
+    mc:Ignorable="d xamarin">
 
     <Page.Resources>
         <SolidColorBrush x:Key="ContentBorderBrush" Color="Gray" Opacity="0.25"/>
     </Page.Resources>
 
-    <Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <xamarin:Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="Auto"/>
             <ColumnDefinition Width="*"/>
@@ -184,5 +185,5 @@
 
             </Grid>
         </Grid>
-    </Grid>
+    </xamarin:Grid>
 </Page>

@@ -8,14 +8,16 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.Graphics.Display;
+using Uno.UI.Samples.Controls;
 
+#if HAS_UNO
 using TwoPaneView = Microsoft.UI.Xaml.Controls.TwoPaneView;
 using TwoPaneViewMode = Microsoft.UI.Xaml.Controls.TwoPaneViewMode;
 using TwoPaneViewPriority = Microsoft.UI.Xaml.Controls.TwoPaneViewPriority;
 using TwoPaneViewWideModeConfiguration = Microsoft.UI.Xaml.Controls.TwoPaneViewWideModeConfiguration;
 using TwoPaneViewTallModeConfiguration = Microsoft.UI.Xaml.Controls.TwoPaneViewTallModeConfiguration;
 using DisplayRegionHelperTestApi = Microsoft.UI.Xaml.Controls.DisplayRegionHelperTestApi;
-using Uno.UI.Samples.Controls;
+#endif
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
 {
@@ -37,14 +39,17 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
         public TwoPaneViewPage()
         {
             this.InitializeComponent();
-            
+
+#if HAS_UNO
             DisplayRegionHelperTestApi.SimulateDisplayRegions = false;
 
             TwoPaneView.ModeChanged += TwoPaneView_ModeChanged;
             ConfigurationTextBlock.Text = TwoPaneView.Mode.ToString();
+#endif
         }
 
-        private void TwoPaneView_ModeChanged(TwoPaneView sender, object args)
+#if HAS_UNO
+		private void TwoPaneView_ModeChanged(TwoPaneView sender, object args)
         {
             ConfigurationTextBlock.Text = TwoPaneView.Mode.ToString();
         }
@@ -273,5 +278,6 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
                 }
             }
         }
+#endif
     }
 }
