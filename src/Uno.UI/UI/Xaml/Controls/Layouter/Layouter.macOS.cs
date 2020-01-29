@@ -139,9 +139,9 @@ namespace Windows.UI.Xaml.Controls
 				return null;
 			}
 
-			if (view.Layer.Transform.IsIdentity)
+			if (view.Layer?.Transform.IsIdentity ?? true)
 			{
-				// Transform is identity anyway
+				// Transform is identity anyway, or Layer is null
 				return null;
 			}
 
