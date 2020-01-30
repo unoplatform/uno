@@ -114,7 +114,7 @@ If not, use this: [new feature request](https://github.com/unoplatform/uno/issue
 
 ### Contribute to Uno
 This is best (or: preferable) option, if using newer Uno versions / checking existing PR doesn't solve your problem. Best, but also it requires much more time from your side.
-Check the 'Contributing to Uno' documentation for guides to [building Uno](uno-development/debugging-uno-ui.md), [creating samples](uno-development/working-with-the-samples-apps.md) and other topics.
+Check the 'Contributing to Uno' documentation for guides to [building Uno](uno-development/debugging-uno-ui.md), [creating samples](uno-development/working-with-the-samples-apps.md), [basic philosophy of working with Uno](contributing/guidelines/first-steps.md) and other topics.
 
 ### Make a stripped-down version
 As last resort, you can make some app functions work only under Windows, and WASM/iOS/Android versions somehow limited.
