@@ -43,7 +43,7 @@
     - name: Migrating a class library to Uno
       href: howto-migrate-existing-code.md
     - name: Migrating existing UWP app to Uno
-      href: getting-started/migrating-apps.md
+      href: migrating-apps.md
 - name: Using Uno - features and controls
   items:
   - name: Accessibility
