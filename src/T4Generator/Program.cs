@@ -116,7 +116,12 @@ namespace CustomHost
             if (File.Exists(requestFileName))
             {
                 content = File.ReadAllText(requestFileName);
-                return true;
+
+				// convert to Windows line endings
+				content = content.Replace("\n", "\r\n");
+				content = content.Replace("\r\r\n", "\r\n");
+
+				return true;
             }
             //This can be customized to search specific paths for the file.  
             //This can be customized to accept paths to search as command line  
@@ -348,7 +353,13 @@ namespace CustomHost
             string input = File.ReadAllText(templateFileName);
             //Transform the text template.  
             string output = engine.ProcessTemplate(input, host);
-            string outputFileName = Path.GetFileNameWithoutExtension(templateFileName);
+
+			// convert to Windows line endings
+			output = output.Replace("\n", "\r\n");
+			output = output.Replace("\r\r\n", "\r\n");
+
+
+			string outputFileName = Path.GetFileNameWithoutExtension(templateFileName);
             outputFileName = Path.Combine(outputPath ?? Path.GetDirectoryName(templateFileName), outputFileName);
             outputFileName = outputFileName + host.FileExtension;
             File.WriteAllText(outputFileName, output, host.FileEncoding);
