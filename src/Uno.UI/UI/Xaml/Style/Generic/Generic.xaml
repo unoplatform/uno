@@ -5792,7 +5792,7 @@
 						</Grid.ColumnDefinitions>
 						<ContentPresenter x:Name="HeaderContentPresenter"
 										  x:DeferLoadStrategy="Lazy"
-										  Visibility="Collapsed"
+										  Visibility="Visible"
 										  Foreground="{ThemeResource SystemControlForegroundBaseHighBrush}"
 										  Grid.ColumnSpan="4"
 										  Content="{TemplateBinding Header}"
