@@ -20,6 +20,8 @@
 - Add support for WinUI 2.3 [`NumberBox`](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.numberbox?view=winui-2.3)
 - Add support of the `UIElement.RightTapped` event
 - Add support of the `UIElement.Holding` event
+- [MacOS] Support for `ScrollViewer`
+- [MacOS] Support for `LinearGradientBrush`
 
 ### Breaking changes
 - [Android] Enable support for non-native `Popup` by default. Can be deactivated through `FeatureConfiguration.Popup.UseNativePopup` set to true (See #2533 for more details)
@@ -57,6 +59,7 @@
 - [#1956] Fis iOS invalid final state when switching visual state before current state's animation is completed.
 - Fix `Selector` support for IsSelected (#1606)
 - [Android] 164249 fixed TextBox.Text flickering when using custom IInputFilter with MaxLength set
+- [MacOS] Fix exceptions when modifying UIElementCollection, layouting view with null `Layer`
 
 ## Release 2.0
 
