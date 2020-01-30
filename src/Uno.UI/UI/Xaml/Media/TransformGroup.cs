@@ -7,6 +7,18 @@ using System.Numerics;
 using System.Text;
 using Windows.UI.Xaml.Markup;
 
+#if __ANDROID__
+using _View = Android.Views.View;
+#elif __IOS__
+using _View = UIKit.UIView;
+#elif __MACOS__
+using _View = AppKit.NSView;
+#elif __WASM__
+using _View = Windows.UI.Xaml.UIElement;
+#else
+using _View = System.Object;
+#endif
+
 namespace Windows.UI.Xaml.Media
 {
 	[ContentProperty(Name = "Children")]
@@ -89,10 +101,20 @@ namespace Windows.UI.Xaml.Media
 			NotifyChanged();
 		}
 
-		private void OnChildAdded(Transform transform) => transform.Changed += OnChildTransformChanged;
-		private void OnChildRemoved(Transform transform) => transform.Changed -= OnChildTransformChanged;
+		private void OnChildAdded(Transform transform)
+		{
+			transform.View = View; // Animation support
+			transform.Changed += OnChildTransformChanged;
+		}
 
-		private void OnChildTransformChanged(object sender, EventArgs e) => NotifyChanged();
+		private void OnChildRemoved(Transform transform)
+		{
+			transform.View = null; // Animation support
+			transform.Changed -= OnChildTransformChanged;
+		}
+
+		private void OnChildTransformChanged(object sender, EventArgs e)
+			=> NotifyChanged();
 
 		public Matrix Value => new Matrix(MatrixCore);
 
@@ -112,7 +134,33 @@ namespace Windows.UI.Xaml.Media
 
 			return matrix;
 		}
-	}
 
+		#region Support of Animation of TransformGroup
+		/*
+		 * Animation are not running on the TransformGroup itself but on child transforms.
+		 * We are only delegating the required properties for animation to children transforms here.
+		 * All those can be safely removed once animation will not assume that a given Transform
+		 * can be used only for a single element at a time!
+		 */
+#if __IOS__
+		/// <inheritdoc />
+		internal override bool IsAnimating => Children.Any(child => child.IsAnimating);
+#endif
+
+		/// <inheritdoc />
+		internal override _View View
+		{
+			get => base.View;
+			set
+			{
+				base.View = value;
+				foreach (var child in Children)
+				{
+					child.View = value;
+				}
+			}
+		}
+		#endregion
+	}
 }
 
