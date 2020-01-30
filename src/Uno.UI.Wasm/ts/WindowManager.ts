@@ -1601,6 +1601,11 @@
 			}
 
 			window.addEventListener("resize", x => this.resize());
+			window.addEventListener("contextmenu", x => {
+				if (!(x.target instanceof HTMLInputElement)) {
+					x.preventDefault();
+				}
+			})
 		}
 
 		private removeLoading() {
