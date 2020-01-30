@@ -61,6 +61,12 @@ namespace Windows.UI.Xaml.Controls
 		/// Set when <see cref="RaiseTextChanged"/> has been dispatched but not yet called.
 		/// </summary>
 		private bool _isTextChangedPending;
+		/// <summary>
+		/// True if Text has changed while the TextBox has had focus, false otherwise
+		///
+		/// This flag is checked to avoid pushing a value to a two-way binding if no edits have occurred, per UWP's behavior.
+		/// </summary>
+		private bool _hasTextChangedThisFocusSession;
 
 		public TextBox()
 		{
@@ -176,6 +182,8 @@ namespace Windows.UI.Xaml.Controls
 
 		protected virtual void OnTextChanged(DependencyPropertyChangedEventArgs e)
 		{
+			_hasTextChangedThisFocusSession = true;
+
 			if (!_isInvokingTextChanged)
 			{
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
@@ -581,7 +589,7 @@ namespace Windows.UI.Xaml.Controls
 			base.OnFocusStateChanged(oldValue, newValue);
 			OnFocusStateChangedPartial(newValue);
 
-			if (!initial && newValue == FocusState.Unfocused)
+			if (!initial && newValue == FocusState.Unfocused && _hasTextChangedThisFocusSession)
 			{
 				// Manually update Source when losing focus because TextProperty's default UpdateSourceTrigger is Explicit
 				var bindingExpression = GetBindingExpression(TextProperty);
@@ -589,6 +597,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			UpdateButtonStates();
+
+			if (oldValue == FocusState.Unfocused || newValue == FocusState.Unfocused)
+			{
+				_hasTextChangedThisFocusSession = false;
+			}
 		}
 		partial void OnFocusStateChangedPartial(FocusState focusState);
 

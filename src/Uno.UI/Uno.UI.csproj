@@ -362,6 +362,12 @@
 	    <Generator>TextTemplatingFileGenerator</Generator>
 	    <LastGenOutput>BaseActivity.Callbacks.Implementation.Android.cs</LastGenOutput>
 	  </None>
+	  <None Update="C:\s\nv.github\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\TwoPaneView\TwoPaneView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="C:\s\nv.github\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\TwoPaneView\TwoPaneView_rs1.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
 	  <None Update="Mixins\Android\FrameworkElementMixins.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>
 	    <LastGenOutput>FrameworkElementMixins.g.cs</LastGenOutput>

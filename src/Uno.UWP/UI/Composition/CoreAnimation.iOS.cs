@@ -103,6 +103,7 @@ namespace Windows.UI.Composition
 						duration = _durationMilliseconds;
 					}
 				}
+
 				if (_stop.value.HasValue)
 				{
 					from = _stop.value.Value;
@@ -133,8 +134,8 @@ namespace Windows.UI.Composition
 			if (_isDiscrete)
 			{
 				var discreteAnim = CAKeyFrameAnimation.FromKeyPath(_property);
-				discreteAnim.KeyTimes = new NSNumber[] { new NSNumber(0.0), new NSNumber(1.0) };
-				discreteAnim.Values = new NSObject[] { _nsValueConversion(to) };
+				discreteAnim.KeyTimes = new NSNumber[] {new NSNumber(0.0), new NSNumber(1.0)};
+				discreteAnim.Values = new NSObject[] {_nsValueConversion(to)};
 				discreteAnim.CalculationMode = CAKeyFrameAnimation.AnimationDescrete;
 
 				animation = discreteAnim;
@@ -148,17 +149,21 @@ namespace Windows.UI.Composition
 
 				animation = continuousAnim;
 			}
+
 			if (delayMilliseconds > 0)
 			{
 				// Note: We must make sure to use the time relative to the 'layer', otherwise we might introduce a random delay and the animations
 				//		 will run twice (once "managed" while updating the DP, and a second "native" using this animator)
 				animation.BeginTime = layer.ConvertTimeFromLayer(CAAnimation.CurrentMediaTime() + delayMilliseconds / __millisecondsPerSecond, null);
 			}
+
 			animation.Duration = durationMilliseconds / __millisecondsPerSecond;
 			animation.FillMode = CAFillMode.Forwards;
-			animation.RemovedOnCompletion = true;
-			animation.AnimationStarted += OnAnimationStarted;
-			animation.AnimationStopped += OnAnimationStopped;
+			// Let the 'OnAnimationStop' forcefully apply the final value before removing the animation.
+			// That's required for Storyboards that animating multiple properties of the same object at once.
+			animation.RemovedOnCompletion = false; 
+			animation.AnimationStarted += OnAnimationStarted(animation);
+			animation.AnimationStopped += OnAnimationStopped(animation);
 
 			// Start the animation
 			_stop = default; // Cleanup stop reason
@@ -182,87 +187,113 @@ namespace Windows.UI.Composition
 			layer.RemoveAnimation(_key); // This will effectively stop the animation (and invoke OnAnimationStopped)
 		}
 
-		private void OnAnimationStarted(object sender, EventArgs _)
+		private EventHandler OnAnimationStarted(CAAnimation animation)
 		{
-			if (sender is CAAnimation animation)
-			{
-				animation.AnimationStarted -= OnAnimationStarted; // Prevent leak
-			}
+			EventHandler handler = default;
+			handler= Handler;
 
-			if (_current.animation != sender)
-			{
-				return; // We are no longer the current animation, do not interfere with the current
-			}
+			return handler;
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			void Handler(object sender, EventArgs _)
 			{
-				this.Log().DebugFormat("CoreAnimation '{0}' has started.", _property);
-			}
+				// Note: The sender is usually not the same managed instance of the started animation
+				//		 (even the sender.Handle is not the same). So we cannot rely on it to determine
+				//		 if we are still the '_current'. Instead we have to create a new handler
+				//		 for each started animation which captures its target 'animation' instance.
 
-			// This will disable the transform while the native animation handles it
-			// It must be the first thing we do when the animation starts
-			// (However we have to wait for the first frame in order to not remove the transform while waiting for the BeginTime)
-			_prepare?.Invoke();
+				animation.AnimationStarted -= handler; // Prevent leak
+
+				if (_current.animation != animation)
+				{
+					return; // We are no longer the current animation, do not interfere with the current
+				}
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().DebugFormat("CoreAnimation '{0}' has started.", _property);
+				}
+
+				// This will disable the transform while the native animation handles it
+				// It must be the first thing we do when the animation starts
+				// (However we have to wait for the first frame in order to not remove the transform while waiting for the BeginTime)
+				_prepare?.Invoke();
+			}
 		}
 
-		private void OnAnimationStopped(object sender, CAAnimationStateEventArgs args)
+		private EventHandler<CAAnimationStateEventArgs> OnAnimationStopped(CAAnimation animation)
 		{
 			// This callback will be invoked when the animation is stopped, no matter the reason (completed, paused or canceled)
 
-			if (sender is CAAnimation animation)
-			{
-				animation.AnimationStopped -= OnAnimationStopped; // Prevent leak
-			}
+			EventHandler<CAAnimationStateEventArgs> handler = default;
+			handler = Handler;
 
-			var (currentAnim, from, to) = _current;
-			if (currentAnim != sender)
-			{
-				return; // We are no longer the current animation, do not interfere with the current
-			}
-			_current = default;
+			return handler;
 
-			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			void Handler(object sender, CAAnimationStateEventArgs args)
 			{
-				this.Log().DebugFormat("CoreAnimation on property {0} has been {1}.", _property, _stop.reason);
-			}
+				// Note: The sender is usually not the same managed instance of the started animation
+				//		 (even the sender.Handle is not the same). So we cannot rely on it to determine
+				//		 if we are still the '_current'. Instead we have to create a new handler
+				//		 for each started animation which captures its target 'animation' instance.
 
-			// First commit the expected final (end, current or initial) value.
-			if (_layer.TryGetTarget(out var layer))
-			{
-				var keyPath = new NSString(_property);
-				NSObject finalValue;
-				switch (_stop.reason)
+				animation.AnimationStopped -= handler; // Prevent leak
+
+				var (currentAnim, from, to) = _current;
+				if (currentAnim != animation)
 				{
-					case StopReason.Paused:
-						finalValue = _stop.value.HasValue
-							? _nsValueConversion(_stop.value.Value)
-							: layer.ValueForKeyPath(keyPath);
-						break;
-
-					case StopReason.Canceled:
-						finalValue = _nsValueConversion(from);
-						break;
-
-					default:
-					case StopReason.Completed:
-						finalValue = _nsValueConversion(to);
-						break;
+					return; // We are no longer the current animation, do not interfere with the current
 				}
 
-				CATransaction.Begin();
-				CATransaction.DisableActions = true;
-				layer.SetValueForKeyPath(finalValue, keyPath);
-				CATransaction.Commit();
-			}
+				_current = default;
 
-			// Then reactivate the managed code handling of transforms that was disabled by the _prepare.
-			_cleanup?.Invoke();
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().DebugFormat("CoreAnimation on property {0} has been {1}.", _property, _stop.reason);
+				}
 
-			// Finally raise callbacks
-			if (_stop.reason == StopReason.Completed)
-			{
-				Debug.Assert(args.Finished);
-				_onCompleted();
+				// First commit the expected final (end, current or initial) value.
+				if (_layer.TryGetTarget(out var layer))
+				{
+					var keyPath = new NSString(_property);
+					NSObject finalValue;
+					switch (_stop.reason)
+					{
+						case StopReason.Paused:
+							finalValue = _stop.value.HasValue
+								? _nsValueConversion(_stop.value.Value)
+								: layer.ValueForKeyPath(keyPath);
+							break;
+
+						case StopReason.Canceled:
+							finalValue = _nsValueConversion(from);
+							break;
+
+						default:
+						case StopReason.Completed:
+							finalValue = _nsValueConversion(to);
+							break;
+					}
+
+					CATransaction.Begin();
+					CATransaction.DisableActions = true;
+					layer.SetValueForKeyPath(finalValue, keyPath);
+					CATransaction.Commit();
+				}
+
+				// Then reactivate the managed code handling of transforms that was disabled by the _prepare.
+				_cleanup?.Invoke();
+
+				// Finally raise callbacks
+				if (_stop.reason == StopReason.Completed)
+				{
+					Debug.Assert(args.Finished);
+
+					// We have to remove the animation only in case of 'StopReason.Completed',
+					// for other cases it's what we actually did to request the stop.
+					layer?.RemoveAnimation(_key);
+
+					_onCompleted();
+				}
 			}
 		}
 

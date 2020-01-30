@@ -146,7 +146,7 @@ namespace SamplesApp.UITests.TestFramework
 			=> AreNotEqual(expected, actual, new Rectangle((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height));
 		public static void AreNotEqual(FileInfo expected, FileInfo actual, Rectangle? rect = null)
 		{
-			rect = rect ?? new Rectangle(0, 0, int.MaxValue, int.MinValue);
+			rect = rect ?? new Rectangle(0, 0, int.MaxValue, int.MaxValue);
 			AreNotEqual(expected, rect.Value, actual, rect.Value);
 		}
 
@@ -212,7 +212,7 @@ namespace SamplesApp.UITests.TestFramework
 			}
 		}
 
-		public static void AssertDoesNotHaveColorAt(FileInfo screenshot, float x, float y, Color excludedColor, byte tolerance = 0)
+		public static void DoesNotHaveColorAt(FileInfo screenshot, float x, float y, Color excludedColor, byte tolerance = 0)
 		{
 			using (var bitmap = new Bitmap(screenshot.FullName))
 			{

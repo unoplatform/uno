@@ -69,7 +69,7 @@ namespace Uno.Samples.UITest.Generator
 		}
 
 		private object GetAttributePropertyValue(AttributeData attr, string name)
-			=> attr.NamedArguments.FirstOrDefault(kvp => kvp.Key == name).Value;
+			=> attr.NamedArguments.FirstOrDefault(kvp => kvp.Key == name).Value.Value;
 
 		private object GetConstructorParameterValue(AttributeData info, string name)
 			=> info.ConstructorArguments.IsDefaultOrEmpty
