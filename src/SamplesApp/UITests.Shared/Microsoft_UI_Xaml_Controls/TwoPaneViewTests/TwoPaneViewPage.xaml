@@ -22,7 +22,7 @@
         </Grid.ColumnDefinitions>
 
         <ScrollViewer>
-            <StackPanel Orientation="Vertical" Padding="12" Background="{ThemeResource SystemChromeLowColor}" MinWidth="250">
+            <StackPanel x:Name="PropertiesPanel" AutomationProperties.Name="PropertiesPanel" Orientation="Vertical" Padding="12" Background="{ThemeResource SystemChromeLowColor}" MinWidth="250">
                 <TextBlock Text="Options" Style="{ThemeResource StandardGroupHeader}"/>
                 <TextBlock Text="Width:"/>
                 <ComboBox x:Name="WidthComboBox" AutomationProperties.Name="WidthComboBox" SelectedIndex="0" HorizontalAlignment="Stretch" SelectionChanged="WidthComboBox_SelectionChanged">
