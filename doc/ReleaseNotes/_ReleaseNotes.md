@@ -63,6 +63,7 @@
 - Fix `Selector` support for IsSelected (#1606)
 - [Android] 164249 fixed TextBox.Text flickering when using custom IInputFilter with MaxLength set
 - Fix invalid conversion when using ThemeResource (e.g. Color resource to Brush property)
+- Fix XamlBindingHelper.Convert double to GridLength
 
 ## Release 2.0
 
