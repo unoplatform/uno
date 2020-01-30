@@ -260,3 +260,7 @@ will never be fired. The `Velocities` properties of event args are not implement
 They are generated from the PointerXXX events (using the `Windows.UI.Input.GestureRecognizer`) and are bubbling in managed only.
 
 Note that `Tapped` and `DoubleTapped` are not linked in any way to a native equivalent, but are fully interpreted in managed code.
+
+In order to match the WinUI behavior, on WASM the default "Context menu" of the browser is disabled (except for the `TextBox`), 
+no matter if you use / handle the `RightTapped` event or not.
+Be aware that on some browser (Firefox), user can still request to get the "Context menu" on right click.
