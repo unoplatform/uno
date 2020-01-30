@@ -69,13 +69,8 @@ namespace Uno.UI.DataBinding
 		{
 			_path = (path ?? "").Trim();
 
-			var items = _path.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries);
-
-			var parsedItems = ParseDependencyPropertyAccess(items);
-
 			BindingItem bindingItem = null;
-
-			foreach (var item in parsedItems.Reverse())
+			foreach (var item in SplitPath(_path).Reverse())
 			{
 				bindingItem = new BindingItem(bindingItem, item, fallbackValue, precedence, allowPrivateMembers);
 				_chain = bindingItem;
@@ -105,32 +100,6 @@ namespace Uno.UI.DataBinding
 			return _chain.Flatten(i => i.Next);
 		}
 
-		private IEnumerable<string> ParseDependencyPropertyAccess(string[] items)
-		{
-			var output = new List<string>();
-
-			for (int i = 0; i < items.Length; i++)
-			{
-				var item = items[i];
-
-				if (item.Length != 0 && item[0] == '(')
-				{
-					var sb = new StringBuilder();
-					sb.Append(item);
-
-					while (!item.EndsWith(")"))
-					{
-						sb.Append("." + (item = items[++i]));
-					}
-
-					yield return sb.ToString().Trim(new[] { '(', ')' });
-				}
-				else
-				{
-					yield return item;
-				}
-			}
-		}
 
 		/// <summary>
 		/// Registers a property changed registration handler.
@@ -291,6 +260,61 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
+		#region Miscs helpers
+		/// <summary>
+		/// Splits the given string path in parts usable by BindingItem
+		/// </summary>
+		private static IEnumerable<string> SplitPath(string path)
+		{
+			var property = new StringBuilder(path.Length);
+			bool isInAttachedProperty = false, isInItemIndex = false;
+			for (var i = 0; i < path.Length; i++)
+			{
+				var c = path[i];
+				switch (c)
+				{
+					case '(':
+						isInAttachedProperty = true;
+						break;
+
+					case ')' when isInAttachedProperty:
+						isInAttachedProperty = false;
+						yield return property.ToString();
+						property.Clear();
+						break;
+
+					case '[':
+						property.Append('[');
+						isInItemIndex = true;
+						break;
+
+					case ']' when isInItemIndex:
+						property.Append(']');
+						isInItemIndex = false;
+						yield return property.ToString();
+						property.Clear();
+						break;
+
+					case '.' when !isInAttachedProperty:
+						if (property.Length > 0)
+						{
+							yield return property.ToString();
+							property.Clear();
+						}
+						break;
+
+					default:
+						property.Append(c);
+						break;
+				}
+			}
+
+			if (property.Length > 0)
+			{
+				yield return property.ToString();
+			}
+		}
+
 		/// <summary>
 		/// Subscibes for updates to the INotifyPropertyChanged interface.
 		/// </summary>
@@ -341,6 +365,7 @@ namespace Uno.UI.DataBinding
 
 			return null;
 		}
+		#endregion
 
 		private sealed class BindingItem : IBindingItem, IDisposable
 		{
