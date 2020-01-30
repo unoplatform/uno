@@ -2,6 +2,7 @@
   <PropertyGroup>
 		<TargetFrameworks>MonoAndroid90</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid90</TargetFrameworksCI>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 	</PropertyGroup>
 	
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">

@@ -2,6 +2,7 @@
   <PropertyGroup>
 		<TargetFrameworks>MonoAndroid90;xamarinios10</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10</TargetFrameworksCI>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 	</PropertyGroup>
 	
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
