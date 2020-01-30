@@ -25,7 +25,7 @@
 - [Android] Enable support for non-native `Popup` by default. Can be deactivated through `FeatureConfiguration.Popup.UseNativePopup` set to true (See #2533 for more details)
 
 ### Bug fixes
-
+- ToggleSwitch.Header is now displayed.
 - [#2465] Raising macOS Button Click event
 - [#2506] `DesignMode.DesignMode2Enabled` no longer throws (is always `false` on non-UWP platforms)
 - [#915] FontFamily values are now properly parsed on WebAssembly, updated docs with new info
