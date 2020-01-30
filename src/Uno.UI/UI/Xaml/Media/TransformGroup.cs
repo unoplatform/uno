@@ -6,7 +6,8 @@ using System.Linq;
 using System.Numerics;
 using System.Text;
 using Windows.UI.Xaml.Markup;
-
+using Uno.Extensions;
+using Uno.Logging;
 #if __ANDROID__
 using _View = Android.Views.View;
 #elif __IOS__
@@ -143,11 +144,15 @@ namespace Windows.UI.Xaml.Media
 		 * can be used only for a single element at a time!
 		 */
 #if __IOS__
-		/// <inheritdoc />
 		internal override bool IsAnimating => Children.Any(child => child.IsAnimating);
+#elif __ANDROID__
+		internal override bool IsAnimating
+		{
+			get => Children.Any(child => child.IsAnimating);
+			set => this.Log().Error("Nothing is animatable on a TransformGroup.");
+		}
 #endif
 
-		/// <inheritdoc />
 		internal override _View View
 		{
 			get => base.View;
