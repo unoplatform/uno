@@ -18,7 +18,7 @@
 - `TransformToVisual` now returns a real transform to convert coordinates between views (was only returning a translate transform to offset the origin of controls)
 - Multiple pointers at same time on screen (a.k.a. Multi-touch) are now supported
 - Add support for WinUI 2.3 [`NumberBox`](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.numberbox?view=winui-2.3)
-- Add support of the `UIElement.RightTapped` event
+- Add support of the `UIElement.RightTapped` event (The context menu won't appear anymore on WASM, except for the `TextBox`)
 - Add support of the `UIElement.Holding` event
 
 ### Breaking changes
