@@ -40,10 +40,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		private const string TranslateTransformYWithNamespace = "Windows.UI.Xaml.Media:TranslateTransform.Y";
 		private const string RotateTransformAngle = "RotateTransform.Angle";
 		private const string RotateTransformAngleWithNamespace = "Windows.UI.Xaml.Media:RotateTransform.Angle";
-		private const string ScaleTransformX = "ScaleTransform.X";
-		private const string ScaleTransformXWithNamespace = "Windows.UI.Xaml.Media:ScaleTransform.X";
-		private const string ScaleTransformY = "ScaleTransform.Y";
-		private const string ScaleTransformYWithNamespace = "Windows.UI.Xaml.Media:ScaleTransform.Y";
+		private const string ScaleTransformX = "ScaleTransform.ScaleX";
+		private const string ScaleTransformXWithNamespace = "Windows.UI.Xaml.Media:ScaleTransform.ScaleX";
+		private const string ScaleTransformY = "ScaleTransform.ScaleY";
+		private const string ScaleTransformYWithNamespace = "Windows.UI.Xaml.Media:ScaleTransform.ScaleY";
 		private const string SkewTransformAngleX = "SkewTransform.AngleX";
 		private const string SkewTransformAngleXWithNamespace = "Windows.UI.Xaml.Media:SkewTransform.AngleX";
 		private const string SkewTransformAngleY = "SkewTransform.AngleY";
@@ -133,51 +133,41 @@ namespace Windows.UI.Xaml.Media.Animation
 		private void InitializeCoreAnimation()
 		{
 			var animatedItem = _bindingPath.LastOrDefault();
-
-			var view = animatedItem.DataContext as UIView;
-			#region PickAnimation
-			// If we animate the opacity
-			if (view != null && animatedItem.PropertyName.EndsWith("Opacity"))
+			switch (animatedItem.DataContext)
 			{
-				_coreAnimation = InitializeOpacityCoreAnimation(view);
-				return;
+				case UIView view when animatedItem.PropertyName.EndsWith("Opacity"):
+					_coreAnimation = InitializeOpacityCoreAnimation(view);
+					return;
+
+				case TranslateTransform translate:
+					_coreAnimation = InitializeTranslateCoreAnimation(translate, animatedItem);
+					return;
+
+				case RotateTransform rotate:
+					_coreAnimation = InitializeRotateCoreAnimation(rotate, animatedItem);
+					return;
+
+				case ScaleTransform scale:
+					_coreAnimation = InitializeScaleCoreAnimation(scale, animatedItem);
+					return;
+
+				case SkewTransform skew:
+					_coreAnimation = InitializeSkewCoreAnimation(skew, animatedItem);
+					return;
+
+				case CompositeTransform composite:
+					_coreAnimation = InitializeCompositeCoreAnimation(composite, animatedItem);
+					return;
+
+				// case TransformGroup group:
+				//  ==> No needs to validate the TransformGroup: there is no animatable property on it.
+				//		If a anmiation is declared on it (e.g. "(UIElement.RenderTransform).(TransformGroup.Children)[0].(ScaleTransform.ScaleX)"),
+				//		the _bindingPath should resolve the target child Transform, and animatedItem.DataContext should be the ScaleTransform.
+
+
+				default:
+					throw new NotSupportedException(__notSupportedProperty);
 			}
-
-			var dataContextType = animatedItem.DataContext.GetType();
-
-			// If we animate a Transform
-			if (dataContextType == typeof(TranslateTransform))
-			{
-				_coreAnimation = InitializeTranslateCoreAnimation(animatedItem);
-				return;
-			}
-
-			if (dataContextType == typeof(RotateTransform))
-			{
-				_coreAnimation = InitializeRotateCoreAnimation(animatedItem);
-				return;
-			}
-
-			if (dataContextType == typeof(ScaleTransform))
-			{
-				_coreAnimation = InitializeScaleCoreAnimation(animatedItem);
-				return;
-			}
-
-			if (dataContextType == typeof(SkewTransform))
-			{
-				_coreAnimation = InitializeSkewCoreAnimation(animatedItem);
-				return;
-			}
-
-			if (dataContextType == typeof(CompositeTransform))
-			{
-				_coreAnimation = InitializeCompositeCoreAnimation(animatedItem);
-				return;
-			}
-
-			throw new NotSupportedException(__notSupportedProperty);
-			#endregion
 		}
 
 		public void Pause()
@@ -250,10 +240,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			return CreateCoreAnimation(view, "opacity", value => new NSNumber(value));
 		}
-		private UnoCoreAnimation InitializeTranslateCoreAnimation(IBindingItem animatedItem)
+		private UnoCoreAnimation InitializeTranslateCoreAnimation(TranslateTransform transform, IBindingItem animatedItem)
 		{
-			var transform = animatedItem.DataContext as TranslateTransform;
-
 			if (animatedItem.PropertyName.Equals("X")
 				|| animatedItem.PropertyName.Equals(TranslateTransformX)
 				|| animatedItem.PropertyName.Equals(TranslateTransformXWithNamespace))
@@ -272,10 +260,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 
-		private UnoCoreAnimation InitializeRotateCoreAnimation(IBindingItem animatedItem)
+		private UnoCoreAnimation InitializeRotateCoreAnimation(RotateTransform transform, IBindingItem animatedItem)
 		{
-			var transform = animatedItem.DataContext as RotateTransform;
-
 			if (animatedItem.PropertyName.Equals("Angle")
 				|| animatedItem.PropertyName.Equals(RotateTransformAngle)
 				|| animatedItem.PropertyName.Equals(RotateTransformAngleWithNamespace))
@@ -288,10 +274,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 
-		private UnoCoreAnimation InitializeScaleCoreAnimation(IBindingItem animatedItem)
+		private UnoCoreAnimation InitializeScaleCoreAnimation(ScaleTransform transform, IBindingItem animatedItem)
 		{
-			var transform = animatedItem.DataContext as ScaleTransform;
-
 			if (animatedItem.PropertyName.Equals("ScaleX")
 				|| animatedItem.PropertyName.Equals(ScaleTransformX)
 				|| animatedItem.PropertyName.Equals(ScaleTransformXWithNamespace))
@@ -310,10 +294,9 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 
-		private UnoCoreAnimation InitializeSkewCoreAnimation(IBindingItem animatedItem)
+		private UnoCoreAnimation InitializeSkewCoreAnimation(SkewTransform transform, IBindingItem animatedItem)
 		{
 			// We need to review this.  This won't play along if other transforms are happening at the same time since we are animating the whole transform
-			var transform = animatedItem.DataContext as SkewTransform;
 			UIView view = transform.View;
 
 			if (animatedItem.PropertyName.Equals("AngleX")
@@ -334,10 +317,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 
-		private UnoCoreAnimation InitializeCompositeCoreAnimation(IBindingItem animatedItem)
+		private UnoCoreAnimation InitializeCompositeCoreAnimation(CompositeTransform transform, IBindingItem animatedItem)
 		{
-			var transform = animatedItem.DataContext as CompositeTransform;
-
 			switch (animatedItem.PropertyName)
 			{
 				case CompositeTransformCenterX:
