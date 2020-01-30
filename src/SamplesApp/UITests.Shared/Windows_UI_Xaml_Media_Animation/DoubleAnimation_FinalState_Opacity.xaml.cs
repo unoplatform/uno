@@ -13,7 +13,7 @@ namespace UITests.Windows_UI_Xaml_Media_Animation
 	[Sample("Animations", Name = "DoubleAnimation opacity final state", Description = _description)]
 	public sealed partial class DoubleAnimation_FinalState_Opacity : Page
 	{
-		private const string _description = @"This (automated) test validate the final state of when animating opacity using a double animation.
+		private const string _description = @"This (automated) test validates the final state of when animating opacity using a double animation.
 
 Expected result:
   * Completed: stays at 0 if HOLD, goes back to 1 if STOP
