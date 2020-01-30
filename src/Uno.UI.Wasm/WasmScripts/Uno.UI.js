@@ -2357,6 +2357,10 @@ var Windows;
                     console.warn("IndexedDB is not available (private mode or uri starts with file:// ?), changes will not be persisted.");
                     return;
                 }
+                if (typeof IDBFS === 'undefined') {
+                    console.warn(`IDBFS is not enabled in mono's configuration, persistence is disabled`);
+                    return;
+                }
                 console.debug("Making persistent: " + path);
                 FS.mkdir(path);
                 FS.mount(IDBFS, {}, path);
