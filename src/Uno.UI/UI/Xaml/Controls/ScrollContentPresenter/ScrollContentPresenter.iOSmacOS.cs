@@ -17,7 +17,7 @@ using _NativeScrollView = AppKit.NSScrollView;
 using _View = AppKit.NSView;
 #else
 using UIKit;
-using _NativeScrollView = AppKit.UIScrollView;
+using _NativeScrollView = UIKit.UIScrollView;
 using _View = UIKit.UIView;
 #endif
 using CoreGraphics;
