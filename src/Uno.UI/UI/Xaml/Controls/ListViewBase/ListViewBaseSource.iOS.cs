@@ -43,19 +43,7 @@ namespace Windows.UI.Xaml.Controls
 	[Bindable]
 	public partial class ListViewBaseSource : UICollectionViewSource
 	{
-
-		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
-
 		private Dictionary<ListViewBaseInternalContainer, List<Action>> _onRecycled = new Dictionary<ListViewBaseInternalContainer, List<Action>>();
-
-		public static class TraceProvider
-		{
-			public readonly static Guid Id = Guid.Parse("{EE64E62E-67BD-496A-A8B1-4A142642B3A3}");
-
-			public const int ListViewBaseSource_GetCellStart = 1;
-			public const int ListViewBaseSource_GetCellStop = 2;
-		}
-
 
 		#region Members
 
@@ -98,87 +86,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			actions.Add(action);
-		}
-
-		public override UICollectionViewCell GetCell(UICollectionView collectionView, NSIndexPath indexPath)
-		{
-			using (
-			   _trace.WriteEventActivity(
-				   TraceProvider.ListViewBaseSource_GetCellStart,
-				   TraceProvider.ListViewBaseSource_GetCellStop
-			   )
-			)
-			{
-				// Marks this item to be materialized, so its actual measured size 
-				// is used during the calculation of the layout.
-				// This is required for paged lists, so that the layout calculation
-				// does not eagerly get all the items of the ItemsSource.
-				UpdateLastMaterializedItem(indexPath);
-
-				var index = Owner?.XamlParent?.GetIndexFromIndexPath(IndexPath.FromNSIndexPath(indexPath)) ?? -1;
-
-				var identifier = GetReusableCellIdentifier(indexPath);
-
-				var listView = (NativeListViewBase)collectionView;
-				var cell = (ListViewBaseInternalContainer)collectionView.DequeueReusableCell(identifier, indexPath);
-
-				using (cell.InterceptSetNeedsLayout())
-				{
-					var selectorItem = cell.Content as SelectorItem;
-
-					if (selectorItem == null ||
-						// If it's not a generated container then it must be an item that returned true for IsItemItsOwnContainerOverride (eg an
-						// explicitly-defined ListViewItem), and shouldn't be recycled for a different item.
-						!selectorItem.IsGeneratedContainer)
-					{
-						cell.Owner = Owner;
-						selectorItem = Owner?.XamlParent?.GetContainerForIndex(index) as SelectorItem;
-						cell.Content = selectorItem;
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-						{
-							this.Log().Debug($"Creating new view at indexPath={indexPath}.");
-						}
-
-						FrameworkElement.InitializePhaseBinding(selectorItem);
-
-						// Ensure the item has a parent, since it's added to the native collection view
-						// which does not automatically sets the parent DependencyObject.
-						selectorItem.SetParent(Owner?.XamlParent);
-					}
-					else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-					{
-						this.Log().Debug($"Reusing view at indexPath={indexPath}, previously bound to {selectorItem.DataContext}.");
-					}
-
-					Owner?.XamlParent?.PrepareContainerForIndex(selectorItem, index);
-
-					// Normally this happens when the SelectorItem.Content is set, but there's an edge case where after a refresh, a
-					// container can be dequeued which happens to have had exactly the same DataContext as the new item.
-					cell.ClearMeasuredSize();
-				}
-
-				Owner?.XamlParent?.TryLoadMoreItems(index);
-
-				return cell;
-			}
-		}
-
-		/// <summary>
-		/// Update record of the furthest item materialized.
-		/// </summary>
-		/// <param name="newItem">Item currently being materialized.</param>
-		/// <returns>True if the value has changed and the layout would change.</returns>
-		internal bool UpdateLastMaterializedItem(NSIndexPath newItem)
-		{
-			if (newItem.Compare(_lastMaterializedItem) > 0)
-			{
-				_lastMaterializedItem = newItem;
-				return Owner.ItemTemplateSelector != null; ;
-			}
-			else
-			{
-				return false;
-			}
 		}
 
 		public override void WillDisplayCell(UICollectionView collectionView, UICollectionViewCell cell, NSIndexPath indexPath)
@@ -270,28 +177,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		#endregion
-
-		/// <summary>
-		/// Determine the identifier to use for the dequeuing.
-		/// This avoid for already materialized items with a specific template
-		/// to switch to a different template, and have to re-create the content 
-		/// template.
-		/// </summary>
-		private NSString GetReusableCellIdentifier(NSIndexPath indexPath)
-		{
-			NSString identifier;
-			var template = GetTemplateForItem(indexPath);
-
-			if (!_templateCells.TryGetValue(template ?? _nullDataTemplateKey, out identifier))
-			{
-				identifier = new NSString(_templateCache.Count.ToString(CultureInfo.InvariantCulture));
-				_templateCells[template ?? _nullDataTemplateKey] = identifier;
-
-				Owner.RegisterClassForCell(typeof(ListViewBaseInternalContainer), identifier);
-			}
-
-			return identifier;
-		}
 	}
 
 	/// <summary>

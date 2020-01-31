@@ -10,9 +10,5 @@ namespace Windows.UI.Xaml.Controls
 	[Bindable]
 	public partial class ListViewBaseSource : NSCollectionViewDataSource
 	{
-		public override NSCollectionViewItem GetItem(NSCollectionView collectionView, NSIndexPath indexPath)
-		{
-			return new ListViewBaseInternalContainer(); //TODO
-		}
 	}
 }
