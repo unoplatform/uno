@@ -5,7 +5,11 @@ using Windows.UI.Xaml;
 using Uno.Extensions;
 using Uno.Disposables;
 using Foundation;
+#if __IOS__
 using UIKit;
+#else
+using AppKit;
+#endif
 using CoreGraphics;
 using Uno.UI.Extensions;
 
@@ -31,7 +35,11 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override nfloat LayoutItemsInGroup(int group, nfloat availableBreadth, ref CGRect frame, bool createLayoutInfo, Dictionary<NSIndexPath, CGSize?> oldItemSizes)
 		{
+#if __IOS__
 			var itemsInGroup = CollectionView.NumberOfItemsInSection(group);
+#else
+			var itemsInGroup = CollectionView.GetNumberOfItems(group);
+#endif
 			if (itemsInGroup == 0)
 			{
 				_sectionEnd[group] = GetExtentEnd(frame);

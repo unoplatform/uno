@@ -10,7 +10,7 @@ namespace Uno.Extensions
 	{
 		public static NSIndexPath ToNSIndexPath(this IndexPath indexPath)
 		{
-			return NSIndexPath.FromRowSection(indexPath.Row, indexPath.Section);
+			return NSIndexPath.FromItemSection(indexPath.Row, indexPath.Section);
 		}
 
 		public static IndexPath ToIndexPath(this NSIndexPath nsIndexPath)

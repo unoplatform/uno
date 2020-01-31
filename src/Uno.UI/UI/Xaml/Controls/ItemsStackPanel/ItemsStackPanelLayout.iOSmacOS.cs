@@ -6,20 +6,16 @@ using System.Drawing;
 using System.Linq;
 using Uno.Disposables;
 
-#if XAMARIN_IOS_UNIFIED
 using Foundation;
-using UIKit;
 using CoreGraphics;
+#if __IOS__
+using UIKit;
 using LayoutInfo = System.Collections.Generic.Dictionary<Foundation.NSIndexPath, UIKit.UICollectionViewLayoutAttributes>;
-#elif XAMARIN_IOS
-using MonoTouch.Foundation;
-using MonoTouch.UIKit;
-using MonoTouch.CoreGraphics;
-using CGRect = System.Drawing.RectangleF;
-using nfloat = System.Single;
-using nint = System.Int32;
-using CGPoint = System.Drawing.PointF;
-using CGSize = System.Drawing.SizeF;
+using _LayoutAttributes = UIKit.UICollectionViewLayoutAttributes;
+#else
+using AppKit;
+using LayoutInfo = System.Collections.Generic.Dictionary<Foundation.NSIndexPath, AppKit.NSCollectionViewLayoutAttributes>;
+using _LayoutAttributes = AppKit.NSCollectionViewLayoutAttributes;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -37,13 +33,16 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override nfloat LayoutItemsInGroup(int group, nfloat availableBreadth, ref CGRect frame, bool createLayoutInfo, Dictionary<NSIndexPath, CGSize?> oldItemSizes)
 		{
-
-			var numberOfItems = CollectionView.NumberOfItemsInSection(group);
+#if __IOS__
+			var itemsInGroup = CollectionView.NumberOfItemsInSection(group);
+#else
+			var itemsInGroup = CollectionView.GetNumberOfItems(group);
+#endif
 
 			_sectionEnd[group] = GetExtentEnd(frame);
 
 			nfloat measuredBreadth = 0;
-			for (var row = 0; row < numberOfItems; ++row)
+			for (var row = 0; row < itemsInGroup; ++row)
 			{
 				var indexPath = GetNSIndexPathFromRowSection(row, group);
 				frame.Size = oldItemSizes?.UnoGetValueOrDefault(indexPath) ?? GetItemSizeForIndexPath(indexPath, availableBreadth);
@@ -76,13 +75,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private protected override void UpdateLayoutAttributesForItem(UICollectionViewLayoutAttributes updatingItem, bool shouldRecurse)
+		private protected override void UpdateLayoutAttributesForItem(_LayoutAttributes updatingItem, bool shouldRecurse)
 		{
 			while (updatingItem != null)
 			{
 				//Update extent of either subsequent item in group, subsequent group header, or footer
 				var currentIndex = updatingItem.IndexPath;
-				var nextIndexInGroup = GetNSIndexPathFromRowSection(currentIndex.Row + 1, currentIndex.Section);
+				var nextIndexInGroup = GetNSIndexPathFromRowSection((int)(currentIndex.Item + 1), (int)currentIndex.Section);
 
 				// Get next item in current group
 				var elementToAdjust = LayoutAttributesForItem(nextIndexInGroup);
@@ -92,10 +91,10 @@ namespace Windows.UI.Xaml.Controls
 					// No more items in current group, get group header of next group
 					elementToAdjust = LayoutAttributesForSupplementaryView(
 						NativeListViewBase.ListViewSectionHeaderElementKindNS,
-						GetNSIndexPathFromRowSection(0, currentIndex.Section + 1));
+						GetNSIndexPathFromRowSection(0, (int)currentIndex.Section + 1));
 
 					//This is the last item in section, update information used by sticky headers.
-					_sectionEnd[currentIndex.Section] = GetExtentEnd(updatingItem.Frame);
+					_sectionEnd[(int)currentIndex.Section] = GetExtentEnd(updatingItem.Frame);
 				}
 
 				if (elementToAdjust == null)
@@ -130,7 +129,7 @@ namespace Windows.UI.Xaml.Controls
 				else
 				{
 					//Update group header
-					var inlineFrame = GetInlineHeaderFrame(elementToAdjust.IndexPath.Section);
+					var inlineFrame = GetInlineHeaderFrame((int)elementToAdjust.IndexPath.Section);
 					var extentDifference = GetExtentEnd(updatingItem.Frame) - GetExtentStart(inlineFrame);
 					if (extentDifference != 0)
 					{

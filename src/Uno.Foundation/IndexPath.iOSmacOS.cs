@@ -11,7 +11,7 @@ namespace Uno.UI
 	{
 		internal static IndexPath FromNSIndexPath(Foundation.NSIndexPath indexPath)
 		{
-			return new IndexPath(indexPath.Row, indexPath.Section);
+			return new IndexPath((int)indexPath.Item, (int)indexPath.Section);
 		}
 	}
 }

@@ -1,4 +1,4 @@
-﻿#if !NET461 && !__MACOS__
+﻿#if !NET461
 using System;
 using System.Collections.Generic;
 using System.Text;
