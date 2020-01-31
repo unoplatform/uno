@@ -3,6 +3,7 @@ parameters:
 
 jobs:
 - job: VS_Latest
+  timeoutInMinutes: 90
 
   pool:
     vmImage: 'vs2017-win2016'
