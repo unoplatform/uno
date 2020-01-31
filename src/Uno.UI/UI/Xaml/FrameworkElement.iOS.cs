@@ -100,7 +100,7 @@ namespace Windows.UI.Xaml
 				&& availableSize == _lastAvailableSize
 			)
 			{
-				return null;
+				return _lastMeasure;
 			}
 
 			_lastAvailableSize = availableSize;
@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml
 			var result = _layouter.Measure(SizeFromUISize(availableSize));
 
 			// Result here exclude the margins on the element
-			return result.LogicalToPhysicalPixels();
+			return _lastMeasure = result.LogicalToPhysicalPixels();
 		}
 
 		public override CGSize SizeThatFits(CGSize size)
