@@ -47,7 +47,10 @@ namespace Uno.Xaml
 			: this (schemaContext, invoker)
 		{
 			if (underlyingType == null)
+			{
 				throw new ArgumentNullException ("underlyingType");
+			}
+
 			type = underlyingType;
 			underlying_type = type;
 
@@ -55,11 +58,18 @@ namespace Uno.Xaml
 			if (XamlLanguage.InitializingTypes) {
 				// These are special. Only XamlLanguage members are with shorthand name.
 				if (type == typeof (PropertyDefinition))
+				{
 					Name = "Property";
+				}
 				else if (type == typeof (MemberDefinition))
+				{
 					Name = "Member";
+				}
 				else
+				{
 					Name = GetXamlName (type);
+				}
+
 				PreferredXamlNamespace = XamlLanguage.Xaml2006Namespace;
 			} else if ((xt = XamlLanguage.AllTypes.FirstOrDefault (t => t.UnderlyingType == type)) != null) {
 				Name = xt.Name;
@@ -71,7 +81,9 @@ namespace Uno.Xaml
 			if (type.IsGenericType) {
 				TypeArguments = new List<XamlType> ();
 				foreach (var gta in type.GetGenericArguments ())
+				{
 					TypeArguments.Add (schemaContext.GetXamlType (gta));
+				}
 			}
 		}
 
@@ -79,11 +91,19 @@ namespace Uno.Xaml
 			: this (schemaContext, null)
 		{
 			if (unknownTypeNamespace == null)
+			{
 				throw new ArgumentNullException ("unknownTypeNamespace");
+			}
+
 			if (unknownTypeName == null)
+			{
 				throw new ArgumentNullException ("unknownTypeName");
+			}
+
 			if (schemaContext == null)
+			{
 				throw new ArgumentNullException ("schemaContext");
+			}
 
 			type = typeof (object);
 			Name = unknownTypeName;
@@ -100,7 +120,10 @@ namespace Uno.Xaml
 		XamlType (XamlSchemaContext schemaContext, XamlTypeInvoker invoker)
 		{
 			if (schemaContext == null)
+			{
 				throw new ArgumentNullException ("schemaContext");
+			}
+
 			SchemaContext = schemaContext;
 			this.invoker = invoker ?? new XamlTypeInvoker (this);
 		}
@@ -247,7 +270,10 @@ namespace Uno.Xaml
 		internal string GetInternalXmlName ()
 		{
 			if (IsMarkupExtension && Name.EndsWith ("Extension", StringComparison.Ordinal))
+			{
 				return Name.Substring (0, Name.Length - 9);
+			}
+
 			var stn = XamlLanguage.SpecialNames.FirstOrDefault (s => s.Type == this);
 			return stn != null ? stn.Name : Name;
 		}
@@ -285,11 +311,19 @@ namespace Uno.Xaml
 		public override int GetHashCode ()
 		{
 			if (UnderlyingType != null)
+			{
 				return UnderlyingType.GetHashCode ();
+			}
+
 			int x = Name.GetHashCode () << 7 + PreferredXamlNamespace.GetHashCode ();
 			if (TypeArguments != null)
+			{
 				foreach (var t in TypeArguments)
+				{
 					x = t.GetHashCode () + x << 5;
+				}
+			}
+
 			return x;
 		}
 
@@ -302,7 +336,10 @@ namespace Uno.Xaml
 		public virtual bool CanAssignTo (XamlType xamlType)
 		{
 			if (this.UnderlyingType == null)
+			{
 				return xamlType == XamlLanguage.Object;
+			}
+
 			var ut = xamlType.UnderlyingType ?? typeof (object);
 			return ut.IsAssignableFrom (UnderlyingType);
 		}
@@ -376,7 +413,10 @@ namespace Uno.Xaml
 		protected virtual IEnumerable<XamlMember> LookupAllAttachableMembers ()
 		{
 			if (UnderlyingType == null)
+			{
 				return BaseType != null ? BaseType.GetAllAttachableMembers () : empty_array;
+			}
+
 			if (all_attachable_members_cache == null) {
 				all_attachable_members_cache = new List<XamlMember> (DoLookupAllAttachableMembers ());
 				all_attachable_members_cache.Sort (TypeExtensionMethods.CompareMembers);
@@ -398,10 +438,16 @@ namespace Uno.Xaml
 				string name = null;
 				if (mi.Name.StartsWith ("Get", StringComparison.Ordinal)) {
 					if (mi.ReturnType == typeof (void))
+					{
 						continue;
+					}
+
 					var args = mi.GetParameters ();
 					if (args.Length != 1)
+					{
 						continue;
+					}
+
 					name = mi.Name.Substring (3);
 					gl.Add (name, mi);
 				} else if (mi.Name.StartsWith ("Set", StringComparison.Ordinal)) {
@@ -410,13 +456,19 @@ namespace Uno.Xaml
 					//	continue;
 					var args = mi.GetParameters ();
 					if (args.Length != 2)
+					{
 						continue;
+					}
+
 					name = mi.Name.Substring (3);
 					sl.Add (name, mi);
 				} else if (mi.Name.EndsWith ("Handler", StringComparison.Ordinal)) {
 					var args = mi.GetParameters ();
 					if (args.Length != 2)
+					{
 						continue;
+					}
+
 					if (mi.Name.StartsWith ("Add", StringComparison.Ordinal)) {
 						name = mi.Name.Substring (3, mi.Name.Length - 3 - 7);
 						al.Add (name, mi);
@@ -426,7 +478,9 @@ namespace Uno.Xaml
 					}*/
 				}
 				if (name != null && !nl.Contains (name))
+				{
 					nl.Add (name);
+				}
 			}
 
 			foreach (var name in nl) {
@@ -434,11 +488,16 @@ namespace Uno.Xaml
 				var g = gl.TryGetValue (name, out m) ? m : null;
 				var s = sl.TryGetValue (name, out m) ? m : null;
 				if (g != null || s != null)
+				{
 					yield return new XamlMember (name, g, s, SchemaContext);
+				}
+
 				var a = al.TryGetValue (name, out m) ? m : null;
 				//var r = rl.TryGetValue (name, out m) ? m : null;
 				if (a != null)
+				{
 					yield return new XamlMember (name, a, SchemaContext);
+				}
 			}
 		}
 
@@ -447,7 +506,10 @@ namespace Uno.Xaml
 		protected virtual IEnumerable<XamlMember> LookupAllMembers ()
 		{
 			if (UnderlyingType == null)
+			{
 				return BaseType != null ? BaseType.GetAllMembers () : empty_array;
+			}
+
 			if (all_members_cache == null) {
 				all_members_cache = new List<XamlMember> (DoLookupAllMembers ());
 				all_members_cache.Sort (TypeExtensionMethods.CompareMembers);
@@ -462,18 +524,27 @@ namespace Uno.Xaml
 		{
 			// This is a hack that is likely required due to internal implementation difference in System.Uri. Our Uri has two readonly collection properties
 			if (this == XamlLanguage.Uri)
+			{
 				yield break;
+			}
 
 			var bf = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance;
 
 			foreach (var pi in UnderlyingType.GetProperties (bf)) {
 				if (pi.Name.Contains (".")) // exclude explicit interface implementations.
+				{
 					continue;
+				}
+
 				if (pi.CanRead && (pi.CanWrite || IsCollectionType (pi.PropertyType) || typeof (IXmlSerializable).IsAssignableFrom (pi.PropertyType)) && pi.GetIndexParameters ().Length == 0)
+				{
 					yield return new XamlMember (pi, SchemaContext);
+				}
 			}
 			foreach (var ei in UnderlyingType.GetEvents (bf))
+			{
 				yield return new XamlMember (ei, SchemaContext);
+			}
 		}
 		
 		static bool IsPublicAccessor (MethodInfo mi)
@@ -484,7 +555,10 @@ namespace Uno.Xaml
 		bool IsCollectionType (Type type)
 		{
 			if (type == null)
+			{
 				return false;
+			}
+
 			var xt = SchemaContext.GetXamlType (type);
 			return xt.LookupCollectionKind () != XamlCollectionKind.None;
 		}
@@ -515,9 +589,13 @@ namespace Uno.Xaml
 		{
 			if (base_type == null) {
 				if (UnderlyingType == null)
+				{
 					base_type = SchemaContext.GetXamlType (typeof (object));
+				}
 				else
+				{
 					base_type = type.BaseType == null || type.BaseType == typeof (object) ? null : SchemaContext.GetXamlType (type.BaseType);
+				}
 			}
 			return base_type;
 		}
@@ -526,15 +604,24 @@ namespace Uno.Xaml
 		protected internal virtual XamlCollectionKind LookupCollectionKind ()
 		{
 			if (UnderlyingType == null)
+			{
 				return BaseType != null ? BaseType.LookupCollectionKind () : XamlCollectionKind.None;
+			}
+
 			if (type.IsArray)
+			{
 				return XamlCollectionKind.Array;
+			}
 
 			if (type.ImplementsAnyInterfacesOf (typeof (IDictionary), typeof (IDictionary<,>)))
+			{
 				return XamlCollectionKind.Dictionary;
+			}
 
 			if (type.ImplementsAnyInterfacesOf (typeof (IList), typeof (ICollection<>)))
+			{
 				return XamlCollectionKind.Collection;
+			}
 
 			return XamlCollectionKind.None;
 		}
@@ -542,11 +629,15 @@ namespace Uno.Xaml
 		protected virtual bool LookupConstructionRequiresArguments ()
 		{
 			if (UnderlyingType == null)
+			{
 				return false;
+			}
 
 			// not sure if it is required, but MemberDefinition return true while they are abstract and it makes no sense.
 			if (UnderlyingType.IsAbstract)
+			{
 				return true;
+			}
 
 			// FIXME: probably some primitive types are treated as special.
 			switch (Type.GetTypeCode (UnderlyingType)) {
@@ -554,7 +645,10 @@ namespace Uno.Xaml
 				return true;
 			case TypeCode.Object:
 				if (UnderlyingType == typeof (TimeSpan))
+				{
 					return false;
+				}
+
 				break;
 			default:
 				return false;
@@ -572,14 +666,22 @@ namespace Uno.Xaml
 		protected virtual IList<XamlType> LookupContentWrappers ()
 		{
 			if (GetCustomAttributeProvider () == null)
+			{
 				return null;
+			}
 
 			var arr = GetCustomAttributeProvider ().GetCustomAttributes (typeof (ContentWrapperAttribute), false);
 			if (arr == null || arr.Length == 0)
+			{
 				return null;
+			}
+
 			var l = new XamlType [arr.Length];
-			for (int i = 0; i < l.Length; i++) 
+			for (int i = 0; i < l.Length; i++)
+			{
 				l [i] = SchemaContext.GetXamlType (((ContentWrapperAttribute) arr [i]).ContentWrapper);
+			}
+
 			return l;
 		}
 
@@ -614,13 +716,25 @@ namespace Uno.Xaml
 		protected virtual bool LookupIsConstructible ()
 		{
 			if (UnderlyingType == null)
+			{
 				return true;
+			}
+
 			if (IsMarkupExtension)
+			{
 				return true;
+			}
+
 			if (UnderlyingType.IsAbstract)
+			{
 				return false;
+			}
+
 			if (!IsNameValid)
+			{
 				return false;
+			}
+
 			return true;
 		}
 
@@ -663,25 +777,43 @@ namespace Uno.Xaml
 		protected virtual XamlType LookupItemType ()
 		{
 			if (IsArray)
+			{
 				return new XamlType (type.GetElementType (), SchemaContext);
+			}
+
 			if (IsDictionary) {
 				if (!IsGeneric)
+				{
 					return new XamlType (typeof (object), SchemaContext);
+				}
+
 				return new XamlType (type.GetGenericArguments () [1], SchemaContext);
 			}
 			if (!IsCollection)
+			{
 				return null;
+			}
+
 			if (!IsGeneric)
+			{
 				return new XamlType (typeof (object), SchemaContext);
+			}
+
 			return new XamlType (type.GetGenericArguments () [0], SchemaContext);
 		}
 
 		protected virtual XamlType LookupKeyType ()
 		{
 			if (!IsDictionary)
+			{
 				return null;
+			}
+
 			if (!IsGeneric)
+			{
 				return new XamlType (typeof (object), SchemaContext);
+			}
+
 			return new XamlType (type.GetGenericArguments () [0], SchemaContext);
 		}
 
@@ -700,7 +832,9 @@ namespace Uno.Xaml
 		protected virtual IList<XamlType> LookupPositionalParameters (int parameterCount)
 		{
 			if (UnderlyingType == null/* || !IsMarkupExtension*/) // see nunit tests...
+			{
 				return null;
+			}
 
 			// check if there is applicable ConstructorArgumentAttribute.
 			// If there is, then return its type.
@@ -708,16 +842,23 @@ namespace Uno.Xaml
 				foreach (var xm in GetAllMembers ()) {
 					var ca = xm.GetCustomAttributeProvider ().GetCustomAttribute<ConstructorArgumentAttribute> (false);
 					if (ca != null)
+					{
 						return new XamlType [] {xm.Type};
+					}
 				}
 			}
 
 			var methods = (from m in UnderlyingType.GetConstructors (BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance) where m.GetParameters ().Length == parameterCount select m).ToArray ();
 			if (methods.Length == 1)
+			{
 				return (from p in methods [0].GetParameters () select SchemaContext.GetXamlType (p.ParameterType)).ToArray ();
+			}
 
 			if (SchemaContext.SupportMarkupExtensionsWithDuplicateArity)
+			{
 				throw new NotSupportedException ("The default LookupPositionalParameters implementation does not allow duplicate arity of markup extensions");
+			}
+
 			return null;
 		}
 
@@ -727,10 +868,16 @@ namespace Uno.Xaml
 		{
 			var a = this.GetCustomAttribute<XamlSetMarkupExtensionAttribute> ();
 			if (a == null)
+			{
 				return null;
+			}
+
 			var mi = type.GetMethod (a.XamlSetMarkupExtensionHandler, flags_get_static);
 			if (mi == null)
+			{
 				throw new ArgumentException ("Binding to XamlSetMarkupExtensionHandler failed");
+			}
+
 			return (EventHandler<XamlSetMarkupExtensionEventArgs>) Delegate.CreateDelegate (typeof (EventHandler<XamlSetMarkupExtensionEventArgs>), mi);
 		}
 
@@ -738,10 +885,16 @@ namespace Uno.Xaml
 		{
 			var a = this.GetCustomAttribute<XamlSetTypeConverterAttribute> ();
 			if (a == null)
+			{
 				return null;
+			}
+
 			var mi = type.GetMethod (a.XamlSetTypeConverterHandler, flags_get_static);
 			if (mi == null)
+			{
 				throw new ArgumentException ("Binding to XamlSetTypeConverterHandler failed");
+			}
+
 			return (EventHandler<XamlSetTypeConverterEventArgs>) Delegate.CreateDelegate (typeof (EventHandler<XamlSetTypeConverterEventArgs>), mi);
 		}
 
@@ -754,25 +907,36 @@ namespace Uno.Xaml
 		{
 			var t = UnderlyingType;
 			if (t == null)
+			{
 				return null;
+			}
 
 			// equivalent to TypeExtension.
 			// FIXME: not sure if it should be specially handled here.
 			if (t == typeof (Type))
+			{
 				t = typeof (TypeExtension);
+			}
 
 			var a = GetCustomAttributeProvider ();
 			var ca = a != null ? a.GetCustomAttribute<TypeConverterAttribute> (false) : null;
 			if (ca != null)
+			{
 				return SchemaContext.GetValueConverter<TypeConverter> (Type.GetType (ca.ConverterTypeName), this);
+			}
 
 			if (t == typeof (object)) // This is a special case. ConverterType is null.
+			{
 				return SchemaContext.GetValueConverter<TypeConverter> (null, this);
+			}
 
 			// It's still not decent to check CollectionConverter.
 			var tct = t.GetTypeConverter ().GetType ();
 			if (tct != typeof (TypeConverter) && tct != typeof (CollectionConverter) && tct != typeof (ReferenceConverter))
+			{
 				return SchemaContext.GetValueConverter<TypeConverter> (tct, this);
+			}
+
 			return null;
 		}
 
@@ -799,22 +963,31 @@ namespace Uno.Xaml
 		internal static XamlValueConverter<ValueSerializer> LookupValueSerializer (XamlType targetType, ICustomAttributeProvider provider)
 		{
 			if (provider == null)
+			{
 				return null;
+			}
 
 #if NET461
             var a = provider.GetCustomAttribute<ValueSerializerAttribute> (true);
 			if (a != null)
+			{
 				return new XamlValueConverter<ValueSerializer> (a.ValueSerializerType ?? Type.GetType (a.ValueSerializerTypeName), targetType);
+			}
 
 			if (targetType.BaseType != null) {
 				var ret = targetType.BaseType.LookupValueSerializer ();
 				if (ret != null)
+				{
 					return ret;
+				}
 			}
 
 			if (targetType.UnderlyingType == typeof (string)) {
 				if (string_value_serializer == null)
+				{
 					string_value_serializer = new XamlValueConverter<ValueSerializer> (typeof (StringValueSerializer), targetType);
+				}
+
 				return string_value_serializer;
 			}
 #endif
@@ -826,13 +999,22 @@ namespace Uno.Xaml
 		{
 			string n;
 			if (!type.IsNestedPublic && !type.IsNestedAssembly && !type.IsNestedPrivate)
+			{
 				n = type.Name;
+			}
 			else
+			{
 				n = GetXamlName (type.DeclaringType) + "+" + type.Name;
+			}
+
 			if (type.IsGenericType && !type.ContainsGenericParameters) // the latter condition is to filter out "nested non-generic type within generic type".
+			{
 				return n.Substring (0, n.IndexOf ('`'));
+			}
 			else
+			{
 				return n;
+			}
 		}
 	}
 }

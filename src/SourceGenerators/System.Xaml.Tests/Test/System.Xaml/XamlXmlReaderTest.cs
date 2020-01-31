@@ -59,7 +59,9 @@ namespace MonoTests.Uno.Xaml
 		{
 			var r = GetReader (filename);
 			while (!r.IsEof)
+			{
 				r.Read ();
+			}
 		}
 
 		[Test]
@@ -2038,9 +2040,14 @@ namespace MonoTests.Uno.Xaml
 			while (true) {
 				r.Read ();
 				if (r.Member != null && r.Member.IsEvent)
+				{
 					break;
+				}
+
 				if (r.IsEof)
+				{
 					Assert.Fail ("Items did not appear");
+				}
 			}
 
 			Assert.AreEqual (xm, r.Member, "#x1");
@@ -2076,7 +2083,9 @@ namespace MonoTests.Uno.Xaml
 			Assert.AreEqual (XamlNodeType.EndMember, r.NodeType, "#x82");
 
 			while (!r.IsEof)
+			{
 				r.Read ();
+			}
 
 			r.Close ();
 		}
@@ -2393,7 +2402,9 @@ namespace MonoTests.Uno.Xaml
 		{
 			var r = GetReader ("AbstractContainer.xml");
 			while (!r.IsEof)
+			{
 				r.Read ();
+			}
 		}
 
 		[Test]
@@ -2401,7 +2412,9 @@ namespace MonoTests.Uno.Xaml
 		{
 			var r = GetReader ("ReadOnlyPropertyContainer.xml");
 			while (!r.IsEof)
+			{
 				r.Read ();
+			}
 		}
 
 		[Test]

@@ -60,7 +60,10 @@ namespace Windows.UI.Xaml.Controls
 		public Deque(int capacity)
 		{
 			if (capacity < 0)
+			{
 				throw new ArgumentOutOfRangeException(nameof(capacity), "Capacity may not be negative.");
+			}
+
 			_buffer = new T[capacity];
 		}
 
@@ -71,7 +74,9 @@ namespace Windows.UI.Xaml.Controls
 		public Deque(IEnumerable<T> collection)
 		{
 			if (collection == null)
+			{
 				throw new ArgumentNullException(nameof(collection));
+			}
 
 			var source = CollectionHelpers.ReifyCollection(collection);
 			var count = source.Count;
@@ -171,7 +176,10 @@ namespace Windows.UI.Xaml.Controls
 			foreach (var sourceItem in this)
 			{
 				if (comparer.Equals(item, sourceItem))
+				{
 					return ret;
+				}
+
 				++ret;
 			}
 
@@ -203,7 +211,9 @@ namespace Windows.UI.Xaml.Controls
 			foreach (var entry in this)
 			{
 				if (comparer.Equals(item, entry))
+				{
 					return true;
+				}
 			}
 			return false;
 		}
@@ -227,7 +237,9 @@ namespace Windows.UI.Xaml.Controls
 		void ICollection<T>.CopyTo(T[] array, int arrayIndex)
 		{
 			if (array == null)
+			{
 				throw new ArgumentNullException(nameof(array));
+			}
 
 			int count = Count;
 			CheckRangeArguments(array.Length, arrayIndex, count);
@@ -242,7 +254,9 @@ namespace Windows.UI.Xaml.Controls
 		private void CopyToArray(Array array, int arrayIndex = 0)
 		{
 			if (array == null)
+			{
 				throw new ArgumentNullException(nameof(array));
+			}
 
 			if (IsSplit)
 			{
@@ -272,7 +286,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			int index = IndexOf(item);
 			if (index == -1)
+			{
 				return false;
+			}
 
 			DoRemoveAt(index);
 			return true;
@@ -310,18 +326,30 @@ namespace Windows.UI.Xaml.Controls
 		private static bool IsT(object value)
 		{
 			if (value is T)
+			{
 				return true;
+			}
+
 			if (value != null)
+			{
 				return false;
+			}
+
 			return default(T) == null;
 		}
 
 		int IList.Add(object value)
 		{
 			if (value == null && default(T) != null)
+			{
 				throw new ArgumentNullException(nameof(value), "Value cannot be null.");
+			}
+
 			if (!IsT(value))
+			{
 				throw new ArgumentException("Value is of incorrect type.", nameof(value));
+			}
+
 			AddToBack((T)value);
 			return Count - 1;
 		}
@@ -339,9 +367,15 @@ namespace Windows.UI.Xaml.Controls
 		void IList.Insert(int index, object value)
 		{
 			if (value == null && default(T) != null)
+			{
 				throw new ArgumentNullException("value", "Value cannot be null.");
+			}
+
 			if (!IsT(value))
+			{
 				throw new ArgumentException("Value is of incorrect type.", "value");
+			}
+
 			Insert(index, (T)value);
 		}
 
@@ -358,7 +392,9 @@ namespace Windows.UI.Xaml.Controls
 		void IList.Remove(object value)
 		{
 			if (IsT(value))
+			{
 				Remove((T)value);
+			}
 		}
 
 		object IList.this[int index]
@@ -371,9 +407,15 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 				if (value == null && default(T) != null)
+				{
 					throw new ArgumentNullException(nameof(value), "Value cannot be null.");
+				}
+
 				if (!IsT(value))
+				{
 					throw new ArgumentException("Value is of incorrect type.", nameof(value));
+				}
+
 				this[index] = (T)value;
 			}
 		}
@@ -381,7 +423,10 @@ namespace Windows.UI.Xaml.Controls
 		void ICollection.CopyTo(Array array, int index)
 		{
 			if (array == null)
+			{
 				throw new ArgumentNullException(nameof(array), "Destination array cannot be null.");
+			}
+
 			CheckRangeArguments(array.Length, index, Count);
 
 			try
@@ -509,10 +554,14 @@ namespace Windows.UI.Xaml.Controls
 			set
 			{
 				if (value < Count)
+				{
 					throw new ArgumentOutOfRangeException(nameof(value), "Capacity cannot be set to a value less than Count");
+				}
 
 				if (value == _buffer.Length)
+				{
 					return;
+				}
 
 				// Create the new _buffer and copy our existing range.
 				T[] newBuffer = new T[value];
@@ -625,7 +674,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_offset -= value;
 			if (_offset < 0)
+			{
 				_offset += Capacity;
+			}
+
 			return _offset;
 		}
 
@@ -704,7 +756,9 @@ namespace Windows.UI.Xaml.Controls
 				int copyCount = index;
 				int writeIndex = Capacity - collectionCount;
 				for (int j = 0; j != copyCount; ++j)
+				{
 					_buffer[DequeIndexToBufferIndex(writeIndex + j)] = _buffer[DequeIndexToBufferIndex(j)];
+				}
 
 				// Rotate to the new view
 				PreDecrement(collectionCount);
@@ -717,7 +771,9 @@ namespace Windows.UI.Xaml.Controls
 				int copyCount = Count - index;
 				int writeIndex = index + collectionCount;
 				for (int j = copyCount - 1; j != -1; --j)
+				{
 					_buffer[DequeIndexToBufferIndex(writeIndex + j)] = _buffer[DequeIndexToBufferIndex(index + j)];
+				}
 			}
 
 			// Copy new items into place
@@ -765,7 +821,9 @@ namespace Windows.UI.Xaml.Controls
 				int copyCount = index;
 				int writeIndex = collectionCount;
 				for (int j = copyCount - 1; j != -1; --j)
+				{
 					_buffer[DequeIndexToBufferIndex(writeIndex + j)] = _buffer[DequeIndexToBufferIndex(j)];
+				}
 
 				// Rotate to new view
 				PostIncrement(collectionCount);
@@ -778,7 +836,9 @@ namespace Windows.UI.Xaml.Controls
 				int copyCount = Count - collectionCount - index;
 				int readIndex = index + collectionCount;
 				for (int j = 0; j != copyCount; ++j)
+				{
 					_buffer[DequeIndexToBufferIndex(index + j)] = _buffer[DequeIndexToBufferIndex(readIndex + j)];
+				}
 			}
 
 			// Adjust valid count
@@ -869,7 +929,9 @@ namespace Windows.UI.Xaml.Controls
 		public T RemoveFromBack()
 		{
 			if (IsEmpty)
+			{
 				throw new InvalidOperationException("The deque is empty.");
+			}
 
 			return DoRemoveFromBack();
 		}
@@ -882,7 +944,9 @@ namespace Windows.UI.Xaml.Controls
 		public T RemoveFromFront()
 		{
 			if (IsEmpty)
+			{
 				throw new InvalidOperationException("The deque is empty.");
+			}
 
 			return DoRemoveFromFront();
 		}
@@ -931,17 +995,27 @@ namespace Windows.UI.Xaml.Controls
 			public static IReadOnlyCollection<TElement> ReifyCollection<TElement>(IEnumerable<TElement> source)
 			{
 				if (source == null)
+				{
 					throw new ArgumentNullException(nameof(source));
+				}
 
 				var result = source as IReadOnlyCollection<TElement>;
 				if (result != null)
+				{
 					return result;
+				}
+
 				var collection = source as ICollection<TElement>;
 				if (collection != null)
+				{
 					return new CollectionWrapper<TElement>(collection);
+				}
+
 				var nongenericCollection = source as ICollection;
 				if (nongenericCollection != null)
+				{
 					return new NongenericCollectionWrapper<TElement>(nongenericCollection);
+				}
 
 				return new List<TElement>(source);
 			}
@@ -953,7 +1027,10 @@ namespace Windows.UI.Xaml.Controls
 				public NongenericCollectionWrapper(ICollection collection)
 				{
 					if (collection == null)
+					{
 						throw new ArgumentNullException(nameof(collection));
+					}
+
 					_collection = collection;
 				}
 
@@ -968,7 +1045,9 @@ namespace Windows.UI.Xaml.Controls
 				public IEnumerator<TElement> GetEnumerator()
 				{
 					foreach (TElement item in _collection)
+					{
 						yield return item;
+					}
 				}
 
 				IEnumerator IEnumerable.GetEnumerator()
@@ -984,7 +1063,10 @@ namespace Windows.UI.Xaml.Controls
 				public CollectionWrapper(ICollection<TElement> collection)
 				{
 					if (collection == null)
+					{
 						throw new ArgumentNullException(nameof(collection));
+					}
+
 					_collection = collection;
 				}
 

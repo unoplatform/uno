@@ -62,7 +62,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			var widthzize = _app.Query(_app.Marked("DPolygon")).First().Rect.Width;
 
 			if (widthzize == 0)
+			{
 				Assert.Fail("Shape not changed");
+			}
 
 			TakeScreenshot($"PolygonPage - ChangeShape-After clear");
 		}
@@ -81,7 +83,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			var widthzize = _app.Query(_app.Marked("DPolyline")).First().Rect.Width;
 
 			if(widthzize == 0)
+			{
 				Assert.Fail("Shape not changed");
+			}
 
 			TakeScreenshot($"PolylinePage - ChangeShape-After clear");
 		}

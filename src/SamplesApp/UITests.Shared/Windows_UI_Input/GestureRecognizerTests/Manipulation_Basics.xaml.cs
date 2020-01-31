@@ -24,7 +24,10 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 
 		private void UpdateManipulation(object sender, RoutedEventArgs e)
 		{
-			if (!_isReady) return;
+			if (!_isReady)
+			{
+				return;
+			}
 
 			var mode = default(ManipulationModes);
 

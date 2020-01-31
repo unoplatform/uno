@@ -78,7 +78,10 @@ namespace Uno.Xaml
 		public XamlObjectWriter (XamlSchemaContext schemaContext, XamlObjectWriterSettings settings)
 		{
 			if (schemaContext == null)
+			{
 				throw new ArgumentNullException ("schemaContext");
+			}
+
 			this.sctx = schemaContext;
 			this.settings = settings ?? new XamlObjectWriterSettings ();
 			var manager = new XamlWriterStateManager<XamlObjectWriterException, XamlObjectWriterException> (false);
@@ -128,7 +131,9 @@ namespace Uno.Xaml
 		protected override void Dispose (bool disposing)
 		{
 			if (!disposing)
+			{
 				return;
+			}
 
 			intl.CloseAll ();
 		}
@@ -136,25 +141,33 @@ namespace Uno.Xaml
 		protected internal virtual void OnAfterBeginInit (object value)
 		{
 			if (settings.AfterBeginInitHandler != null)
+			{
 				settings.AfterBeginInitHandler (this, new XamlObjectEventArgs (value));
+			}
 		}
 
 		protected internal virtual void OnAfterEndInit (object value)
 		{
 			if (settings.AfterEndInitHandler != null)
+			{
 				settings.AfterEndInitHandler (this, new XamlObjectEventArgs (value));
+			}
 		}
 
 		protected internal virtual void OnAfterProperties (object value)
 		{
 			if (settings.AfterPropertiesHandler != null)
+			{
 				settings.AfterPropertiesHandler (this, new XamlObjectEventArgs (value));
+			}
 		}
 
 		protected internal virtual void OnBeforeProperties (object value)
 		{
 			if (settings.BeforePropertiesHandler != null)
+			{
 				settings.BeforePropertiesHandler (this, new XamlObjectEventArgs (value));
+			}
 		}
 
 		protected internal virtual bool OnSetValue (object eventSender, XamlMember member, object value)
@@ -235,12 +248,17 @@ namespace Uno.Xaml
 			if (object_states.Count > 0) {
 				var pstate = object_states.Peek ();
 				if (CurrentMemberState.Value != null)
+				{
 					throw new XamlDuplicateMemberException (String.Format ("Member '{0}' is already written to current type '{1}'", CurrentMember, pstate.Type));
+				}
 			} else {
 				var obj = source.Settings.RootObjectInstance;
 				if (obj != null) {
 					if (state.Type.UnderlyingType != null && !state.Type.UnderlyingType.IsAssignableFrom (obj.GetType ()))
+					{
 						throw new XamlObjectWriterException (String.Format ("RootObjectInstance type '{0}' is not assignable to '{1}'", obj.GetType (), state.Type));
+					}
+
 					state.Value = obj;
 					state.IsInstantiated = true;
 				}
@@ -248,7 +266,9 @@ namespace Uno.Xaml
 			}
 			object_states.Push (state);
 			if (!state.Type.IsContentValue (service_provider))
+			{
 				InitializeObjectIfRequired (true);
+			}
 
 			state.IsXamlWriterCreated = true;
 			source.OnBeforeProperties (state.Value);
@@ -260,7 +280,10 @@ namespace Uno.Xaml
 			var xm = CurrentMember;
 			var instance = xm.Invoker.GetValue (object_states.Peek ().Value);
 			if (instance == null)
+			{
 				throw new XamlObjectWriterException (String.Format ("The value  for '{0}' property is null", xm.Name));
+			}
+
 			state.Value = instance;
 			state.IsInstantiated = true;
 			object_states.Push (state);
@@ -285,8 +308,10 @@ namespace Uno.Xaml
 			
 			// call this (possibly) before the object is added to parent collection. (bug #3003 also expects this)
 			if (state.IsXamlWriterCreated)
+			{
 				source.OnAfterProperties (obj);
-			
+			}
+
 			var nfr = obj as NameFixupRequired;
 			if (nfr != null && object_states.Count > 0) { // IF the root object to be written is x:Reference, then the Result property will become the NameFixupRequired. That's what .NET also does.
 				// actually .NET seems to seek "parent" object in its own IXamlNameResolver implementation.
@@ -297,13 +322,19 @@ namespace Uno.Xaml
 				pending_name_references.Add ((NameFixupRequired) obj);
 			}
 			else
+			{
 				StoreAppropriatelyTypedValue (obj, state.KeyValue);
-			
+			}
+
 			if (state.Type.IsAmbient)
+			{
 				ambient_provider.Pop ();
+			}
 			else
+			{
 				HandleEndInit (obj);
-			
+			}
+
 			object_states.Push (state);
 			if (object_states.Count == 1) {
 				Result = obj;
@@ -324,7 +355,9 @@ namespace Uno.Xaml
 
 			// FIXME: this condition needs to be examined. What is known to be prevented are: PositionalParameters, Initialization and Base (the last one sort of indicates there's a lot more).
 			else if (!(property is XamlDirective))
+			{
 				InitializeObjectIfRequired (false);
+			}
 		}
 
 		static readonly BindingFlags static_flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
@@ -345,11 +378,17 @@ namespace Uno.Xaml
 					var contents = (List<object>) state.Value;
 					var mi = state.Type.UnderlyingType.GetMethods (static_flags).FirstOrDefault (mii => mii.Name == state.FactoryMethod && mii.GetParameters ().Length == contents.Count);
 					if (mi == null)
+					{
 						throw new XamlObjectWriterException (String.Format ("Specified static factory method '{0}' for type '{1}' was not found", state.FactoryMethod, state.Type));
+					}
+
 					state.Value = mi.Invoke (null, contents.ToArray ());
 				}
 				else
+				{
 					PopulateObject (false, (List<object>) state.Value);
+				}
+
 				state.IsInstantiated = true;
 				escaped_objects.Pop ();
 			} else if (xm == XamlLanguage.Initialization) {
@@ -359,23 +398,35 @@ namespace Uno.Xaml
 				name_scope.RegisterName (name, state.Value);
 			} else {
 				if (xm.IsEvent)
+				{
 					SetEvent (xm, (string) CurrentMemberState.Value);
+				}
 				else if (!xm.IsReadOnly) // exclude read-only object such as collection item.
+				{
 					SetValue (xm, CurrentMemberState.Value);
+				}
 			}
 		}
 
 		void SetEvent (XamlMember member, string value)
 		{
 			if (member.UnderlyingMember == null)
+			{
 				throw new XamlObjectWriterException (String.Format ("Event {0} has no underlying member to attach event", member));
+			}
 
 			int idx = value.LastIndexOf ('.');
 			var xt = idx < 0 ? root_state.Type : ResolveTypeFromName (value.Substring (0, idx));
 			if (xt == null)
+			{
 				throw new XamlObjectWriterException (String.Format ("Referenced type {0} in event {1} was not found", value, member));
+			}
+
 			if (xt.UnderlyingType == null)
+			{
 				throw new XamlObjectWriterException (String.Format ("Referenced type {0} in event {1} has no underlying type", value, member));
+			}
+
 			string mn = idx < 0 ? value : value.Substring (idx + 1);
 			var ev = (EventInfo) member.UnderlyingMember;
 			// get an appropriate MethodInfo overload whose signature matches the event's handler type.
@@ -385,7 +436,10 @@ namespace Uno.Xaml
 			var target = root_state.Value;
 			var mi = target.GetType().GetMethod (mn, BindingFlags.Instance | BindingFlags.NonPublic | BindingFlags.Public, null, (from pi in eventMethodParams select pi.ParameterType).ToArray (), null);
 			if (mi == null)
+			{
 				throw new XamlObjectWriterException (String.Format ("Referenced value method {0} in type {1} indicated by event {2} was not found", mn, value, member));
+			}
+
 			var obj = object_states.Peek ().Value;
 			ev.AddEventHandler (obj, Delegate.CreateDelegate (ev.EventHandlerType, target, mi));
 		}
@@ -393,17 +447,25 @@ namespace Uno.Xaml
 		void SetValue (XamlMember member, object value)
 		{
 			if (member == XamlLanguage.FactoryMethod)
+			{
 				object_states.Peek ().FactoryMethod = (string) value;
+			}
 			else if (member.IsDirective)
+			{
 				return;
+			}
 			else
+			{
 				SetValue (member, object_states.Peek ().Value, value);
+			}
 		}
 		
 		void SetValue (XamlMember member, object target, object value)
 		{
 			if (!source.OnSetValue (target, member, value))
+			{
 				member.Invoker.SetValue (target, value);
+			}
 		}
 
 		void PopulateObject (bool considerPositionalParameters, IList<object> contents)
@@ -415,18 +477,27 @@ namespace Uno.Xaml
 
 			var argv = new object [argt.Count];
 			for (int i = 0; i < argv.Length; i++)
+			{
 				argv [i] = GetCorrectlyTypedValue (args [i], argt [i], contents [i]);
+			}
+
 			state.Value = state.Type.Invoker.CreateInstance (argv);
 			state.IsInstantiated = true;
 			if (state.Type.IsAmbient)
+			{
 				ambient_provider.Push (new AmbientPropertyValue (CurrentMember, state.Value));
+			}
+
 			HandleBeginInit (state.Value);
 		}
 
 		protected override void OnWriteValue (object value)
 		{
 			if (CurrentMemberState.Value != null)
+			{
 				throw new XamlDuplicateMemberException (String.Format ("Member '{0}' is already written to current type '{1}'", CurrentMember, object_states.Peek ().Type));
+			}
+
 			StoreAppropriatelyTypedValue (value, null);
 		}
 
@@ -453,18 +524,28 @@ namespace Uno.Xaml
 					var xdata = (XData) obj;
 					var ixser = xm.Invoker.GetValue (state.Value) as IXmlSerializable;
 					if (ixser != null)
+					{
 						ixser.ReadXml ((XmlReader) xdata.XmlReader);
+					}
 				}
 				else if (xm == XamlLanguage.Base)
+				{
 					ms.Value = GetCorrectlyTypedValue (null, xm.Type, obj);
+				}
 				else if (xm == XamlLanguage.Name || xm == xt.GetAliasedProperty (XamlLanguage.Name))
+				{
 					ms.Value = GetCorrectlyTypedValue (xm, XamlLanguage.String, obj);
+				}
 				else if (xm == XamlLanguage.Key)
+				{
 					state.KeyValue = GetCorrectlyTypedValue (null, xt.KeyType, obj);
+				}
 				else {
 					if (!AddToCollectionIfAppropriate (xt, xm, parent, obj, keyObj)) {
 						if (!xm.IsReadOnly)
+						{
 							ms.Value = GetCorrectlyTypedValue (xm, xm.Type, obj);
+						}
 					}
 				}
 			}
@@ -477,13 +558,20 @@ namespace Uno.Xaml
 			    xm == XamlLanguage.PositionalParameters ||
 			    xm == XamlLanguage.Arguments) {
 				if (xt.IsDictionary)
+				{
 					mt.Invoker.AddToDictionary (parent, GetCorrectlyTypedValue (null, xt.KeyType, keyObj), GetCorrectlyTypedValue (null, xt.ItemType, obj));
+				}
 				else // collection. Note that state.Type isn't usable for PositionalParameters to identify collection kind.
+				{
 					mt.Invoker.AddToCollection (parent, GetCorrectlyTypedValue (null, xt.ItemType, obj));
+				}
+
 				return true;
 			}
 			else
+			{
 				return false;
+			}
 		}
 
 		object GetCorrectlyTypedValue (XamlMember xm, XamlType xt, object value)
@@ -507,36 +595,56 @@ namespace Uno.Xaml
 		{
 			if (value == null) {
 				if (xt.IsContentValue (service_provider)) // it is for collection/dictionary key and item
+				{
 					return null;
+				}
 				else
+				{
 					return xt.IsNullable ? null : xt.Invoker.CreateInstance (new object [0]);
+				}
 			}
 			if (xt == null)
+			{
 				return value;
+			}
 
 			// Not sure if this is really required though...
 			var vt = sctx.GetXamlType (value.GetType ());
 			if (vt.CanAssignTo (xt))
+			{
 				return value;
+			}
 
 			// FIXME: this could be generalized by some means, but I cannot find any.
 			if (xt.UnderlyingType == typeof (XamlType) && value is string)
+			{
 				value = ResolveTypeFromName ((string) value);
+			}
 
 			// FIXME: this could be generalized by some means, but I cannot find any.
 			if (xt.UnderlyingType == typeof (Type))
+			{
 				value = new TypeExtension ((string) value).ProvideValue (service_provider);
+			}
+
 			if (xt == XamlLanguage.Type && value is string)
+			{
 				value = new TypeExtension ((string) value);
-			
+			}
+
 			if (IsAllowedType (xt, value))
+			{
 				return value;
+			}
 
 			var xtc = (xm != null ? xm.TypeConverter : null) ?? xt.TypeConverter;
 			if (xtc != null && value != null) {
 				var tc = xtc.ConverterInstance;
 				if (tc != null && tc.CanConvertFrom (value.GetType ()))
+				{
 					value = tc.ConvertFrom (value);
+				}
+
 				return value;
 			}
 
@@ -562,24 +670,37 @@ namespace Uno.Xaml
 		{
 			var state = object_states.Peek ();
 			if (state.IsInstantiated)
+			{
 				return;
+			}
 
 			if (waitForParameters && (state.Type.ConstructionRequiresArguments || state.Type.HasPositionalParameters (service_provider)))
+			{
 				return;
+			}
 
 			// FIXME: "The default techniques in absence of a factory method are to attempt to find a default constructor, then attempt to find an identified type converter on type, member, or destination type."
 			// http://msdn.microsoft.com/en-us/library/system.xaml.xamllanguage.factorymethod%28VS.100%29.aspx
 			object obj;
 			if (state.FactoryMethod != null) // FIXME: it must be implemented and verified with tests.
+			{
 				throw new NotImplementedException ();
+			}
 			else
+			{
 				obj = state.Type.Invoker.CreateInstance (null);
+			}
+
 			state.Value = obj;
 			state.IsInstantiated = true;
 			if (state.Type.IsAmbient)
+			{
 				ambient_provider.Push (new AmbientPropertyValue (CurrentMember, obj));
+			}
 			else
+			{
 				HandleBeginInit (obj);
+			}
 		}
 
 		internal IXamlNameResolver name_resolver {
@@ -598,9 +719,14 @@ namespace Uno.Xaml
 					// FIXME: sort out relationship between name_scope and name_resolver. (unify to name_resolver, probably)
 					var obj = name_scope.FindName (name) ?? name_resolver.Resolve (name, out isFullyInitialized);
 					if (obj == null)
+					{
 						throw new XamlObjectWriterException (String.Format ("Unresolved object reference '{0}' was found", name));
+					}
+
 					if (!AddToCollectionIfAppropriate (fixup.ParentType, fixup.ParentMember, fixup.ParentValue, obj, null)) // FIXME: is keyObj always null?
+					{
 						SetValue (fixup.ParentMember, fixup.ParentValue, obj);
+					}
 				}
 			}
 		}
@@ -609,7 +735,10 @@ namespace Uno.Xaml
 		{
 			var si = value as ISupportInitialize;
 			if (si == null)
+			{
 				return;
+			}
+
 			si.BeginInit ();
 			source.OnAfterBeginInit (value);
 		}
@@ -618,7 +747,10 @@ namespace Uno.Xaml
 		{
 			var si = value as ISupportInitialize;
 			if (si == null)
+			{
 				return;
+			}
+
 			si.EndInit ();
 			source.OnAfterEndInit (value);
 		}

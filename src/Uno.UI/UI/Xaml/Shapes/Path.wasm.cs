@@ -87,7 +87,9 @@ namespace Windows.UI.Xaml.Shapes
 				}
 
 				if (figure.IsClosed)
+				{
 					pathlist.Add("Z");
+				}
 			}
 			return FormattableString.Invariant($"{string.Join(" ", pathlist.ToArray())}");
 		}

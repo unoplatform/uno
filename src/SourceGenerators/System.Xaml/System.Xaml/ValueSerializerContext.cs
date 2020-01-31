@@ -47,9 +47,15 @@ namespace Uno.Xaml
 		public ValueSerializerContext (PrefixLookup prefixLookup, XamlSchemaContext schemaContext, IAmbientProvider ambientProvider)
 		{
 			if (prefixLookup == null)
+			{
 				throw new ArgumentNullException ("prefixLookup");
+			}
+
 			if (schemaContext == null)
+			{
 				throw new ArgumentNullException ("schemaContext");
+			}
+
 			prefix_lookup = prefixLookup;
 			namespace_resolver = new NamespaceResolver (prefix_lookup.Namespaces);
 			type_resolver = new XamlTypeResolver (namespace_resolver, schemaContext);
@@ -60,19 +66,40 @@ namespace Uno.Xaml
 		public object GetService (Type serviceType)
 		{
 			if (serviceType == typeof (INamespacePrefixLookup))
+			{
 				return prefix_lookup;
+			}
+
 			if (serviceType == typeof (IXamlNamespaceResolver))
+			{
 				return namespace_resolver;
+			}
+
 			if (serviceType == typeof (IXamlNameResolver))
+			{
 				return name_resolver;
+			}
+
 			if (serviceType == typeof (IXamlNameProvider))
+			{
 				return name_resolver;
+			}
+
 			if (serviceType == typeof (IXamlTypeResolver))
+			{
 				return type_resolver;
+			}
+
 			if (serviceType == typeof (IAmbientProvider))
+			{
 				return ambient_provider;
+			}
+
 			if (serviceType == typeof (IXamlSchemaContextProvider))
+			{
 				return this;
+			}
+
 			return null;
 		}
 		
@@ -138,8 +165,13 @@ namespace Uno.Xaml
 		public string GetNamespace (string prefix)
 		{
 			foreach (var nsd in source)
+			{
 				if (nsd.Prefix == prefix)
+				{
 					return nsd.Namespace;
+				}
+			}
+
 			return null;
 		}
 	
@@ -187,42 +219,64 @@ namespace Uno.Xaml
 					// pop, call recursively, then push back.
 					var p = live_stack.Pop ();
 					if (p.RetrievedProperty != null && ceilingTypes != null && ceilingTypes.Contains (p.RetrievedProperty.Type))
+					{
 						yield break;
+					}
+
 					if (DoesAmbientPropertyApply (p, types, properties))
+					{
 						yield return p;
+					}
 
 					foreach (var i in GetAllAmbientValues (ceilingTypes, searchLiveStackOnly, types, properties))
+					{
 						yield return i;
+					}
 
 					live_stack.Push (p);
 				}
 			} else {
 				// FIXME: does ceilingTypes matter?
 				foreach (var p in values)
+				{
 					if (DoesAmbientPropertyApply (p, types, properties))
+					{
 						yield return p;
+					}
+				}
 			}
 		}
 		
 		bool DoesAmbientPropertyApply (AmbientPropertyValue p, IEnumerable<XamlType> types, params XamlMember [] properties)
 		{
 			if (types == null || !types.Any () || types.Any (xt => xt.UnderlyingType != null && xt.UnderlyingType.IsInstanceOfType (p.Value)))
+			{
 				if (properties == null || !properties.Any () || properties.Contains (p.RetrievedProperty))
+				{
 					return true;
+				}
+			}
+
 			return false;
 		}
 		
 		public object GetFirstAmbientValue (params XamlType [] types)
 		{
 			foreach (var obj in GetAllAmbientValues (types))
+			{
 				return obj;
+			}
+
 			return null;
 		}
 		
 		public AmbientPropertyValue GetFirstAmbientValue (IEnumerable<XamlType> ceilingTypes, params XamlMember [] properties)
 		{
 			foreach (var obj in GetAllAmbientValues (ceilingTypes, properties))
+			{
 				return obj;
+			}
+
 			return null;
 		}
 	}

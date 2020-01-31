@@ -297,7 +297,9 @@ namespace Windows.UI.Xaml.Controls
 		void UpdateVisualState(bool useTransitions)
 		{
 			if (!m_appliedTemplate)
+			{
 				return;
+			}
 
 			UpdateVisualStateForNavigationViewListPositionChange();
 

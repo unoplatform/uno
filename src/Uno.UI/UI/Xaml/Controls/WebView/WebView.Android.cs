@@ -171,9 +171,13 @@ namespace Windows.UI.Xaml.Controls
 
 			// Iterate through every next/previous (depending on direction) history entry until a valid one is found
 			for (int i = history.CurrentIndex + direction; 0 <= i && i < history.Size; i += direction)
+			{
 				if (GetIsHistoryEntryValid(history.GetItemAtIndex(i).Url))
 					// return the absolute number of steps from the current entry to the nearest valid entry
+				{
 					return Math.Abs(i - history.CurrentIndex);
+				}
+			}
 
 			return 0; // no valid entry found
 		}

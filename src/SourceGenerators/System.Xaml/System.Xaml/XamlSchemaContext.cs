@@ -56,12 +56,18 @@ namespace Uno.Xaml
 		public XamlSchemaContext (IEnumerable<Assembly> referenceAssemblies, XamlSchemaContextSettings settings)
 		{
 			if (referenceAssemblies != null)
+			{
 				reference_assemblies = new List<Assembly> (referenceAssemblies);
+			}
 			else
+			{
 				AppDomain.CurrentDomain.AssemblyLoad += OnAssemblyLoaded;
+			}
 
 			if (settings == null)
+			{
 				return;
+			}
 
 			FullyQualifyAssemblyNamesInClrNamespaces = settings.FullyQualifyAssemblyNamesInClrNamespaces;
 			SupportMarkupExtensionsWithDuplicateArity = settings.SupportMarkupExtensionsWithDuplicateArity;
@@ -70,7 +76,9 @@ namespace Uno.Xaml
 		~XamlSchemaContext ()
 		{
 			if (reference_assemblies == null)
+			{
 				AppDomain.CurrentDomain.AssemblyLoad -= OnAssemblyLoaded;
+			}
 		}
 
 		IList<Assembly> reference_assemblies;
@@ -101,9 +109,15 @@ namespace Uno.Xaml
 			lock (gate)
 			{
 				if (clrNamespace == null) // could happen on nested generic type (see bug #680385-comment#4). Not sure if null is correct though.
+				{
 					return null;
+				}
+
 				if (xaml_nss == null) // fill it first
+				{
 					GetAllXamlNamespaces();
+				}
+
 				string ret;
 				return xaml_nss.TryGetValue(clrNamespace, out ret) ? ret : null;
 			}
@@ -117,7 +131,9 @@ namespace Uno.Xaml
 				{
 					xaml_nss = new Dictionary<string, string>();
 					foreach (var ass in AssembliesInScope)
+					{
 						FillXamlNamespaces(ass);
+					}
 				}
 				return xaml_nss.Values.Distinct();
 			}
@@ -128,19 +144,28 @@ namespace Uno.Xaml
 			lock (gate)
 			{
 				if (xamlNamespace == null)
+				{
 					throw new ArgumentNullException("xamlNamespace");
+				}
+
 				if (all_xaml_types == null)
 				{
 					all_xaml_types = new Dictionary<string, List<XamlType>>();
 					foreach (var ass in AssembliesInScope)
+					{
 						FillAllXamlTypes(ass);
+					}
 				}
 
 				List<XamlType> l;
 				if (all_xaml_types.TryGetValue(xamlNamespace, out l))
+				{
 					return l;
+				}
 				else
+				{
 					return empty_xaml_types;
+				}
 			}
 		}
 
@@ -149,14 +174,22 @@ namespace Uno.Xaml
 			lock (gate)
 			{
 				if (xmlns == null)
+				{
 					throw new ArgumentNullException("xmlns");
+				}
+
 				if (xmlns == XamlLanguage.Xaml2006Namespace)
+				{
 					return "x";
+				}
+
 				if (prefixes == null)
 				{
 					prefixes = new Dictionary<string, string>();
 					foreach (var ass in AssembliesInScope)
+					{
 						FillPrefixes(ass);
+					}
 				}
 				string ret;
 				return prefixes.TryGetValue(xmlns, out ret) ? ret : "p"; // default
@@ -193,9 +226,16 @@ namespace Uno.Xaml
 			{
 				XamlType xt = run_time_types.FirstOrDefault(t => t.UnderlyingType == type);
 				if (xt == null)
+				{
 					foreach (var ns in GetAllXamlNamespaces())
+					{
 						if ((xt = GetAllXamlTypes(ns).FirstOrDefault(t => t.UnderlyingType == type)) != null)
+						{
 							break;
+						}
+					}
+				}
+
 				if (xt == null)
 				{
 					xt = new XamlType(type, this);
@@ -210,16 +250,23 @@ namespace Uno.Xaml
 			lock (gate)
 			{
 				if (xamlTypeName == null)
+				{
 					throw new ArgumentNullException("xamlTypeName");
+				}
 
 				var n = xamlTypeName;
 				if (n.TypeArguments.Count == 0) // non-generic
+				{
 					return GetXamlType(n.Namespace, n.Name);
+				}
 
 				// generic
 				XamlType[] typeArgs = new XamlType[n.TypeArguments.Count];
 				for (int i = 0; i < typeArgs.Length; i++)
+				{
 					typeArgs[i] = GetXamlType(n.TypeArguments[i]);
+				}
+
 				return GetXamlType(n.Namespace, n.Name, typeArgs);
 			}
 		}
@@ -230,26 +277,37 @@ namespace Uno.Xaml
 			{
 				string dummy;
 				if (TryGetCompatibleXamlNamespace(xamlNamespace, out dummy))
+				{
 					xamlNamespace = dummy;
+				}
 
 				XamlType ret;
 				if (xamlNamespace == XamlLanguage.Xaml2006Namespace)
 				{
 					ret = XamlLanguage.SpecialNames.Find(name, xamlNamespace);
 					if (ret == null)
+					{
 						ret = XamlLanguage.AllTypes.FirstOrDefault(t => TypeMatches(t, xamlNamespace, name, typeArguments));
+					}
+
 					if (ret != null)
+					{
 						return ret;
+					}
 				}
 				ret = run_time_types.FirstOrDefault(t => TypeMatches(t, xamlNamespace, name, typeArguments));
 				if (ret == null)
+				{
 					ret = GetAllXamlTypes(xamlNamespace).FirstOrDefault(t => TypeMatches(t, xamlNamespace, name, typeArguments));
+				}
 
 				if (reference_assemblies == null)
 				{
 					var type = ResolveXamlTypeName(xamlNamespace, name, typeArguments);
 					if (type != null)
+					{
 						ret = GetXamlType(type);
+					}
 				}
 
 				// If the type was not found, it just returns null.
@@ -260,11 +318,18 @@ namespace Uno.Xaml
 		bool TypeMatches (XamlType t, string ns, string name, XamlType [] typeArgs)
 		{
 			if (t.PreferredXamlNamespace == ns && t.Name == name && t.TypeArguments.ListEquals (typeArgs))
+			{
 				return true;
+			}
+
 			if (t.IsMarkupExtension)
+			{
 				return t.PreferredXamlNamespace == ns && t.Name.Substring (0, Math.Max(0, t.Name.Length - 9)) == name && t.TypeArguments.ListEquals (typeArgs);
+			}
 			else
+			{
 				return false;
+			}
 		}
 
 		protected internal virtual Assembly OnAssemblyResolve (string assemblyName)
@@ -279,12 +344,17 @@ namespace Uno.Xaml
 			lock (gate)
 			{
 				if (xamlNamespace == null)
+				{
 					throw new ArgumentNullException("xamlNamespace");
+				}
+
 				if (compat_nss == null)
 				{
 					compat_nss = new Dictionary<string, string>();
 					foreach (var ass in AssembliesInScope)
+					{
 						FillCompatibilities(ass);
+					}
 				}
 				return compat_nss.TryGetValue(xamlNamespace, out compatibleNamespace);
 			}
@@ -293,35 +363,54 @@ namespace Uno.Xaml
 		void OnAssemblyLoaded (object o, AssemblyLoadEventArgs e)
 		{
 			if (reference_assemblies != null)
+			{
 				return; // do nothing
+			}
 
 			if (xaml_nss != null)
+			{
 				FillXamlNamespaces (e.LoadedAssembly);
+			}
+
 			if (prefixes != null)
+			{
 				FillPrefixes (e.LoadedAssembly);
+			}
+
 			if (compat_nss != null)
+			{
 				FillCompatibilities (e.LoadedAssembly);
+			}
+
 			if (all_xaml_types != null)
+			{
 				FillAllXamlTypes (e.LoadedAssembly);
+			}
 		}
 
 		// cache updater methods
 		void FillXamlNamespaces (Assembly ass)
 		{
 			foreach (XmlnsDefinitionAttribute xda in ass.GetCustomAttributes (typeof (XmlnsDefinitionAttribute), false))
+			{
 				xaml_nss.Add (xda.ClrNamespace, xda.XmlNamespace);
+			}
 		}
 		
 		void FillPrefixes (Assembly ass)
 		{
 			foreach (XmlnsPrefixAttribute xpa in ass.GetCustomAttributes (typeof (XmlnsPrefixAttribute), false))
+			{
 				prefixes.Add (xpa.XmlNamespace, xpa.Prefix);
+			}
 		}
 		
 		void FillCompatibilities (Assembly ass)
 		{
 			foreach (XmlnsCompatibleWithAttribute xca in ass.GetCustomAttributes (typeof (XmlnsCompatibleWithAttribute), false))
+			{
 				compat_nss.Add (xca.OldNamespace, xca.NewNamespace);
+			}
 		}
 
 		void FillAllXamlTypes (Assembly ass)
@@ -333,8 +422,12 @@ namespace Uno.Xaml
 					all_xaml_types.Add (xda.XmlNamespace, l);
 				}
 				foreach (var t in ass.GetTypes ())
+				{
 					if (t.Namespace == xda.ClrNamespace)
+					{
 						l.Add (GetXamlType (t));
+					}
+				}
 			}
 		}
 
@@ -351,25 +444,38 @@ namespace Uno.Xaml
 			if (ns == XamlLanguage.Xaml2006Namespace) {
 				var xt = XamlLanguage.SpecialNames.Find (name, ns);
 				if (xt == null)
+				{
 					xt = XamlLanguage.AllTypes.FirstOrDefault (t => t.Name == xmlLocalName);
+				}
+
 				if (xt == null)
+				{
 					throw new FormatException (string.Format ("There is no type '{0}' in XAML namespace", name));
+				}
+
 				return xt.UnderlyingType;
 			}
 			else if (!ns.StartsWith ("clr-namespace:", StringComparison.Ordinal))
+			{
 				return null;
+			}
 
 			Type [] genArgs = null;
 			if (typeArguments != null && typeArguments.Count > 0) {
 				genArgs = (from t in typeArguments select t.UnderlyingType).ToArray ();
 				if (genArgs.Any (t => t == null))
+				{
 					return null;
+				}
 			}
 
 			// convert xml namespace to clr namespace and assembly
 			string [] split = ns.Split (new char[] { ';' });
 			if (split.Length != 2 || split [0].Length < clr_ns_len || split [1].Length <= clr_ass_len)
+			{
 				throw new XamlParseException (string.Format ("Cannot resolve runtime namespace from XML namespace '{0}'", ns));
+			}
+
 			string tns = split [0].Substring (clr_ns_len);
 			string aname = split [1].Substring (clr_ass_len);
 
@@ -378,7 +484,10 @@ namespace Uno.Xaml
 			// MarkupExtension type could omit "Extension" part in XML name.
 			Type ret = ass == null ? null : ass.GetType (taqn) ?? ass.GetType (GetTypeName (tns, name + "Extension", genArgs));
 			if (ret == null)
+			{
 				throw new XamlParseException (string.Format ("Cannot resolve runtime type from XML namespace '{0}', local name '{1}' with {2} type arguments ({3})", ns, name, typeArguments !=null ? typeArguments.Count : 0, taqn));
+			}
+
 			return genArgs == null ? ret : ret.MakeGenericType (genArgs);
 		}
 		
@@ -386,7 +495,10 @@ namespace Uno.Xaml
 		{
 			string tfn = tns.Length > 0 ? tns + '.' + name : name;
 			if (genArgs != null)
+			{
 				tfn += "`" + genArgs.Length;
+			}
+
 			return tfn;
 		}
 	}

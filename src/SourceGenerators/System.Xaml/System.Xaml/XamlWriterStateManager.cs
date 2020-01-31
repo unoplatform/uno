@@ -133,7 +133,9 @@ namespace Uno.Xaml
 		{
 			// somewhat hacky state change to not reject StartMember->EndMember.
 			if (state == XamlWriteState.MemberStarted)
+			{
 				state = XamlWriteState.ValueWritten;
+			}
 		}
 
 		public void EndMember ()
@@ -181,7 +183,10 @@ namespace Uno.Xaml
 		public void Namespace ()
 		{
 			if (!allow_ns_at_value && (state == XamlWriteState.ValueWritten || state == XamlWriteState.ObjectStarted))
+			{
 				throw CreateError (String.Format ("Namespace declarations cannot be written at {0} state", state));
+			}
+
 			ns_pushed = true;
 		}
 
@@ -214,7 +219,10 @@ namespace Uno.Xaml
 					return;
 				case XamlNodeType.EndMember:
 					if (allow_empty_member)
+					{
 						return;
+					}
+
 					break;
 				}
 				break;
@@ -230,11 +238,17 @@ namespace Uno.Xaml
 				switch (next) {
 				case XamlNodeType.Value:
 					if (allow_parallel_values | accept_multiple_values)
+					{
 						return;
+					}
+
 					break;
 				case XamlNodeType.StartObject:
 					if (allow_object_after_value)
+					{
 						return;
+					}
+
 					break;
 				case XamlNodeType.EndMember:
 					return;
@@ -257,9 +271,13 @@ namespace Uno.Xaml
 				// strange, but on WriteEndMember it throws XamlXmlWriterException, while for other nodes it throws IOE.
 				string msg = String.Format ("Namespace declarations cannot be written before {0}", next);
 				if (next == XamlNodeType.EndMember)
+				{
 					throw CreateError (msg);
+				}
 				else
+				{
 					throw CreateNamespaceError (msg);
+				}
 			}
 		}
 

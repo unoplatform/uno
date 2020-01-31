@@ -31,7 +31,10 @@ namespace Windows.UI.Xaml.Media.Animation
 
 				case EasingMode.EaseInOut:
 					if ((currentTime /= duration / 2) < 1)
+					{
 						return finalValue / 2 * (currentTime * currentTime * (((s *= (1.525)) + 1) * currentTime - s)) + startValue;
+					}
+
 					return finalValue / 2 * ((currentTime -= 2) * currentTime * (((s *= (1.525)) + 1) * currentTime + s) + 2) + startValue;
 
 				default:

@@ -29,7 +29,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CanvasTests
 			var BorderOutHeight = _app.Query(_app.Marked("BBorderOutCanvas")).First().Rect.Height;
 
 			if (BorderInWidth != BorderOutWidth || BorderInHeight != BorderOutHeight)
+			{
 				Assert.Fail("Border in canvas measurement failed");
+			}
 
 			TakeScreenshot($"Measure_Children_In_Canvas - Measure Border");
 		}

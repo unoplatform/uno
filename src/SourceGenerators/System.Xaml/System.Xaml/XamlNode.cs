@@ -186,7 +186,9 @@ namespace Uno.Xaml
 			// Note that if the XamlType has the default constructor, we don't need "Arguments".
 			IEnumerable<XamlMember> args = type.ConstructionRequiresArguments ? type.GetSortedConstructorArguments () : null;
 			if (args != null && args.Any ())
+			{
 				yield return XamlLanguage.Arguments;
+			}
 
 			if (type.IsContentValue (vsctx)) {
 				yield return XamlLanguage.Initialization;
@@ -201,22 +203,32 @@ namespace Uno.Xaml
 			foreach (var m in type.GetAllMembers ()) {
 				// do not read constructor arguments twice (they are written inside Arguments).
 				if (args != null && args.Contains (m))
+				{
 					continue;
+				}
+
 				// do not return non-public members (of non-collection/xdata). Not sure why .NET filters out them though.
 				if (!m.IsReadPublic)
+				{
 					continue;
+				}
+
 				if (!m.IsWritePublic &&
 				    !m.Type.IsXData &&
 				    !m.Type.IsArray &&
 				    !m.Type.IsCollection &&
 				    !m.Type.IsDictionary)
+				{
 					continue;
+				}
 
 				yield return m;
 			}
 			
 			if (type.IsCollection)
+			{
 				yield return XamlLanguage.Items;
+			}
 		}
 	}
 	
@@ -225,21 +237,37 @@ namespace Uno.Xaml
 		internal static object GetMemberValue (this XamlObject xobj, XamlMember xm)
 		{
 			if (xm.IsUnknown)
+			{
 				return null;
+			}
 
 			if (xm.IsAttachable)
+			{
 				return xobj.GetRawValue (); // attachable property value
+			}
 
 			// FIXME: this looks like an ugly hack. Is this really true? What if there's MarkupExtension that uses another MarkupExtension type as a member type.
 			var obj = xobj.Context.GetRawValue ();
 			if (xm == XamlLanguage.Initialization)
+			{
 				return obj;
+			}
+
 			if (xm == XamlLanguage.Items) // collection itself.
+			{
 				return obj;
+			}
+
 			if (xm == XamlLanguage.Arguments) // object itself
+			{
 				return obj;
+			}
+
 			if (xm == XamlLanguage.PositionalParameters)
+			{
 				return xobj.GetRawValue (); // dummy value
+			}
+
 			return xm.Invoker.GetValue (xobj.GetRawValue ());
 		}
 	}

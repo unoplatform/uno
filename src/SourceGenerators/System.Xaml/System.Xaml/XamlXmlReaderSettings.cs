@@ -40,7 +40,10 @@ namespace Uno.Xaml
 		{
 			var s = settings;
 			if (s == null)
+			{
 				return;
+			}
+
 			CloseInput = s.CloseInput;
 			SkipXmlCompatibilityProcessing = s.SkipXmlCompatibilityProcessing;
 			XmlLang = s.XmlLang;

@@ -328,11 +328,18 @@ namespace MonoTests.Uno.Xaml
 
 			// .NET returns StringConverter, but it should not premise that key must be string (it is object)
 			if (name == "Key")
+			{
 				;//Assert.IsNull (d.TypeConverter, "#12")
+			}
 			else if (type.IsGenericType || name == "_Initialization" || name == "_UnknownContent")
+			{
 				Assert.IsNull (d.TypeConverter, "#12");
+			}
 			else
+			{
 				Assert.IsNotNull (d.TypeConverter, "#12");
+			}
+
 			Assert.IsNull (d.ValueSerializer, "#13");
 			Assert.IsNull (d.DeferringLoader, "#14");
 			Assert.IsNull (d.UnderlyingMember, "#15");
@@ -793,9 +800,14 @@ namespace MonoTests.Uno.Xaml
 			Assert.IsNull (t.ContentWrappers, "#24");
 			// string is a special case.
 			if (t == XamlLanguage.String)
+			{
 				Assert.IsNotNull (t.ValueSerializer, "#26");
+			}
 			else
+			{
 				Assert.IsNull (t.ValueSerializer, "#26");
+			}
+
 			//Assert.IsNull (t.DeferringLoader, "#28");
 		}
 
@@ -816,9 +828,14 @@ namespace MonoTests.Uno.Xaml
 			TestXamlTypeCommon (t, name, underlyingType, true, false);
 			Assert.IsTrue (t.IsMarkupExtension, "#14");
 			if (noTypeConverter)
+			{
 				Assert.IsNull (t.TypeConverter, "#25");
+			}
 			else
+			{
 				Assert.IsNotNull (t.TypeConverter, "#25");
+			}
+
 			Assert.IsNotNull (t.MarkupExtensionReturnType, "#29");
 			Assert.AreEqual (extReturnType, t.MarkupExtensionReturnType.UnderlyingType, "#29-2");
 			Assert.IsNull (t.Invoker.SetMarkupExtensionHandler, "#31"); // orly?
@@ -832,9 +849,14 @@ namespace MonoTests.Uno.Xaml
 			Assert.IsNotNull (m.Invoker, "#3");
 			Assert.IsNotNull (m.Invoker.UnderlyingGetter, "#3-2");
 			if (hasSetter)
+			{
 				Assert.IsNotNull (m.Invoker.UnderlyingSetter, "#3-3");
+			}
 			else
+			{
 				Assert.IsNull (m.Invoker.UnderlyingSetter, "#3-3");
+			}
+
 			Assert.IsFalse (m.IsUnknown, "#4");
 			Assert.IsTrue (m.IsReadPublic, "#5");
 			Assert.AreEqual (hasSetter, m.IsWritePublic, "#6");
@@ -847,12 +869,20 @@ namespace MonoTests.Uno.Xaml
 			Assert.AreEqual (type, m.Type.UnderlyingType, "#11-2");
 			// Property.Type is a special case here.
 			if (name == "Type" && m.DeclaringType != XamlLanguage.Property)
+			{
 				Assert.AreEqual (m.Type.TypeConverter, m.TypeConverter, "#12");
+			}
+
 			// String type is a special case here.
 			if (type == typeof (string))
+			{
 				Assert.AreEqual (m.Type.ValueSerializer, m.ValueSerializer, "#13a");
+			}
 			else
+			{
 				Assert.IsNull (m.ValueSerializer, "#13b");
+			}
+
 			Assert.IsNull (m.DeferringLoader, "#14");
 			Assert.IsNotNull (m.UnderlyingMember, "#15");
 			Assert.AreEqual (!hasSetter, m.IsReadOnly, "#16");

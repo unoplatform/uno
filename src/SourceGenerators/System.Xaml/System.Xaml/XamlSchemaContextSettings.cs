@@ -40,7 +40,10 @@ namespace Uno.Xaml
 			// null is allowed.
 			var s = settings;
 			if (s == null)
+			{
 				return;
+			}
+
 			FullyQualifyAssemblyNamesInClrNamespaces = s.FullyQualifyAssemblyNamesInClrNamespaces;
 			SupportMarkupExtensionsWithDuplicateArity = s.SupportMarkupExtensionsWithDuplicateArity;
 		}

@@ -40,7 +40,9 @@ namespace Uno.Xaml
 			// null settings is allowed (!)
 			var s = settings;
 			if (s == null)
+			{
 				return;
+			}
 
 			AllowProtectedMembersOnRoot = s.AllowProtectedMembersOnRoot;
 			BaseUri = s.BaseUri;

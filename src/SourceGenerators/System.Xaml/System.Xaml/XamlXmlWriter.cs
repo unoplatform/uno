@@ -88,9 +88,15 @@ namespace Uno.Xaml
 		public XamlXmlWriter (XmlWriter xmlWriter, XamlSchemaContext schemaContext, XamlXmlWriterSettings settings)
 		{
 			if (xmlWriter == null)
+			{
 				throw new ArgumentNullException ("xmlWriter");
+			}
+
 			if (schemaContext == null)
+			{
 				throw new ArgumentNullException ("schemaContext");
+			}
+
 			this.w = xmlWriter;
 			this.sctx = schemaContext;
 			this.settings = settings ?? new XamlXmlWriterSettings ();
@@ -115,13 +121,17 @@ namespace Uno.Xaml
 		protected override void Dispose (bool disposing)
 		{
 			if (!disposing)
+			{
 				return;
+			}
 
 			intl.CloseAll ();
 
 			w.Flush ();
 			if (settings.CloseOutput)
+			{
 				w.Close ();
+			}
 		}
 
 		public void Flush ()
@@ -215,13 +225,24 @@ namespace Uno.Xaml
 
 			var member = CurrentMember;
 			if (member == XamlLanguage.Initialization)
+			{
 				return;
+			}
+
 			if (member == XamlLanguage.Items)
+			{
 				return;
+			}
+
 			if (member.Type.IsCollection && member.IsReadOnly)
+			{
 				return;
+			}
+
 			if (member.DeclaringType != null && member == member.DeclaringType.ContentProperty)
+			{
 				return;
+			}
 
 			if (inside_toplevel_positional_parameter) {
 				w.WriteEndAttribute ();
@@ -264,7 +285,9 @@ namespace Uno.Xaml
 				w.WriteString (name);
 				// space between type and first member (if any).
 				if (xamlType.IsMarkupExtension && xamlType.GetSortedConstructorArguments ().GetEnumerator ().MoveNext ())
+				{
 					w.WriteString (" ");
+				}
 			} else {
 				WritePendingNamespaces ();
 				w.WriteStartElement (prefix, xamlType.GetInternalXmlName (), xamlType.PreferredXamlNamespace);
@@ -273,7 +296,10 @@ namespace Uno.Xaml
 					w.WriteStartAttribute ("x", "TypeArguments", XamlLanguage.Xaml2006Namespace);
 					for (int i = 0; i < l.Count; i++) {
 						if (i > 0)
+						{
 							w.WriteString (", ");
+						}
+
 						w.WriteString (new XamlTypeName (l [i]).ToString (prefix_lookup));
 					}
 					w.WriteEndAttribute ();
@@ -289,7 +315,9 @@ namespace Uno.Xaml
 				var state = object_states.Pop ();
 
 				if (!CurrentMember.Type.IsCollection)
+				{
 					throw new InvalidOperationException (String.Format ("WriteGetObject method can be invoked only when current member '{0}' is of collection type", CurrentMember));
+				}
 
 				object_states.Push (state);
 			}
@@ -301,25 +329,42 @@ namespace Uno.Xaml
 		{
 			var cm = CurrentMemberState;
 			if (cm == null || cm.OccuredAs != AllowedMemberLocations.Any)
+			{
 				return;
+			}
 
 			var state = object_states.Peek ();
 			if (nodeType == XamlNodeType.Value)
+			{
 				OnWriteStartMemberAttribute (state.Type, CurrentMember);
+			}
 			else
+			{
 				OnWriteStartMemberElement (state.Type, CurrentMember);
+			}
 		}
 		
 		protected override void OnWriteStartMember (XamlMember member)
 		{
 			if (member == XamlLanguage.Initialization)
+			{
 				return;
+			}
+
 			if (member == XamlLanguage.Items)
+			{
 				return;
+			}
+
 			if (member.Type.IsCollection && member.IsReadOnly)
+			{
 				return;
+			}
+
 			if (member.DeclaringType != null && member == member.DeclaringType.ContentProperty)
+			{
 				return;
+			}
 
 			var state = object_states.Peek ();
 			
@@ -338,7 +383,9 @@ namespace Uno.Xaml
 				inside_toplevel_positional_parameter = true;
 			}
 			else if (w.WriteState == WriteState.Attribute)
+			{
 				inside_attribute_object = true;
+			}
 
 			if (w.WriteState == WriteState.Attribute) {
 				if (state.PositionalParameterIndex < 0) {
@@ -348,7 +395,9 @@ namespace Uno.Xaml
 				}
 			}
 			else if (member == XamlLanguage.PositionalParameters && posprms == null && state.Type.GetSortedConstructorArguments ().All (m => m == state.Type.ContentProperty)) // PositionalParameters and ContentProperty, excluding such cases that it is already processed above (as attribute).
+			{
 				OnWriteStartMemberContent (state.Type, member);
+			}
 			else {
 				switch (IsAttribute (state.Type, member)) {
 				case AllowedMemberLocations.Attribute:
@@ -367,7 +416,10 @@ namespace Uno.Xaml
 		bool IsAtTopLevelObject ()
 		{
 			if (object_states.Count == 1)
+			{
 				return true;
+			}
+
 			var tmp = object_states.Pop ();
 			var parentMember = object_states.Peek ().WrittenProperties.LastOrDefault ().Member;
 			object_states.Push (tmp);
@@ -386,28 +438,47 @@ namespace Uno.Xaml
 			}
 
 			if (xm == XamlLanguage.Initialization)
+			{
 				return AllowedMemberLocations.MemberElement;
+			}
+
 			if (mt.HasPositionalParameters (service_provider))
+			{
 				return AllowedMemberLocations.Attribute;
+			}
+
 			if (w.WriteState == WriteState.Content)
+			{
 				return AllowedMemberLocations.MemberElement;
+			}
+
 			if (xt.IsDictionary && xm != XamlLanguage.Key)
+			{
 				return AllowedMemberLocations.MemberElement; // as each item holds a key.
+			}
 
 			var xd = xm as XamlDirective;
 			if (xd != null && (xd.AllowedLocation & AllowedMemberLocations.Attribute) == 0)
+			{
 				return AllowedMemberLocations.MemberElement;
+			}
 
 			// surprisingly, WriteNamespace() can affect this.
 			if (local_nss2.Count > 0)
+			{
 				return AllowedMemberLocations.MemberElement;
+			}
 
 			// Somehow such a "stranger" is processed as an element.
 			if (xd == null && !xt.GetAllMembers ().Contains (xm))
+			{
 				return AllowedMemberLocations.None;
+			}
 
 			if (xm.IsContentValue (service_provider) || mt.IsContentValue (service_provider))
+			{
 				return AllowedMemberLocations.Attribute;
+			}
 
 			return AllowedMemberLocations.MemberElement;
 		}
@@ -427,7 +498,9 @@ namespace Uno.Xaml
 			string name = xm.GetInternalXmlName ();
 			if (xt.PreferredXamlNamespace == xm.PreferredXamlNamespace &&
 			    !(xm is XamlDirective)) // e.g. x:Key inside x:Int should not be written as Key.
+			{
 				w.WriteStartAttribute (name);
+			}
 			else {
 				string prefix = GetPrefix (xm.PreferredXamlNamespace);
 				w.WriteStartAttribute (prefix, name, xm.PreferredXamlNamespace);
@@ -443,13 +516,17 @@ namespace Uno.Xaml
 		protected override void OnWriteValue (object value)
 		{
 			if (value != null && !(value is string))
+			{
 				throw new ArgumentException ("Non-string value cannot be written.");
+			}
 
 			XamlMember xm = CurrentMember;
 			WritePendingStartMember (XamlNodeType.Value);
 
 			if (w.WriteState != WriteState.Attribute)
+			{
 				WritePendingNamespaces ();
+			}
 
 			string s = GetValueString (xm, value);
 
@@ -471,7 +548,9 @@ namespace Uno.Xaml
 				break;
 			default:
 				if (inside_toplevel_positional_parameter)
+				{
 					throw new XamlXmlWriterException (String.Format ("The XAML reader input has more than one positional parameter values within a top-level object {0} because it tries to write all of the argument values as an attribute value of the first argument. While XamlObjectReader can read such an object, XamlXmlWriter cannot write such an object to XML.", state.Type));
+				}
 
 				state.PositionalParameterIndex++;
 				w.WriteString (", ");
@@ -489,9 +568,13 @@ namespace Uno.Xaml
 		{
 			foreach (var nd in local_nss) {
 				if (String.IsNullOrEmpty (nd.Prefix))
+				{
 					w.WriteAttributeString ("xmlns", nd.Namespace);
+				}
 				else
+				{
 					w.WriteAttributeString ("xmlns", nd.Prefix, Xmlns2000Namespace, nd.Namespace);
+				}
 			}
 			local_nss.Clear ();
 

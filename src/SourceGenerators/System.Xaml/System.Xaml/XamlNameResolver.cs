@@ -62,7 +62,10 @@ namespace Uno.Xaml
 		internal void NameScopeInitializationCompleted (object sender)
 		{
 			if (OnNameScopeInitializationComplete != null)
+			{
 				OnNameScopeInitializationComplete (sender, EventArgs.Empty);
+			}
+
 			objects.Clear ();
 		}
 		
@@ -70,15 +73,21 @@ namespace Uno.Xaml
 		public void Save ()
 		{
 			if (saved_count != 0)
+			{
 				throw new Exception ();
+			}
+
 			saved_count = objects.Count;
 			saved_referenced_count = referenced.Count;
 		}
 		public void Restore ()
 		{
 			while (saved_count < objects.Count)
+			{
 				objects.Remove (objects.Last ().Key);
-				referenced.Remove (objects.Last ().Key);
+			}
+
+			referenced.Remove (objects.Last ().Key);
 			saved_count = 0;
 			referenced.RemoveRange (saved_referenced_count, referenced.Count - saved_referenced_count);
 			saved_referenced_count = 0;
@@ -87,7 +96,10 @@ namespace Uno.Xaml
 		internal void SetNamedObject (string name, object value, bool fullyInitialized)
 		{
 			if (value == null)
+			{
 				throw new ArgumentNullException ("value");
+			}
+
 			objects [name] = new NamedObject (name, value, fullyInitialized);
 		}
 		
@@ -99,8 +111,13 @@ namespace Uno.Xaml
 		public string GetName (object value)
 		{
 			foreach (var no in objects.Values)
+			{
 				if (object.ReferenceEquals (no.Value, value))
+				{
 					return no.Name;
+				}
+			}
+
 			return null;
 		}
 
@@ -112,7 +129,10 @@ namespace Uno.Xaml
 		internal string GetReferencedName (object val)
 		{
 			if (!referenced.Contains (val))
+			{
 				return null;
+			}
+
 			return GetName (val);
 		}
 		
@@ -129,7 +149,9 @@ namespace Uno.Xaml
 		public IEnumerable<KeyValuePair<string, object>> GetAllNamesAndValuesInScope ()
 		{
 			foreach (var pair in objects)
+			{
 				yield return new KeyValuePair<string,object> (pair.Key, pair.Value.Value);
+			}
 		}
 
 		public object Resolve (string name)

@@ -64,8 +64,13 @@ namespace Uno.Xaml
 		protected override void Dispose (bool disposing)
 		{
 			while (nest > 0)
+			{
 				if (!Read ())
+				{
 					break;
+				}
+			}
+
 			base.Dispose (disposing);
 		}
 		
@@ -80,10 +85,14 @@ namespace Uno.Xaml
 					return false; // already consumed
 				}
 				if (!source.Read ())
+				{
 					return false;
+				}
 			}
 			else
+			{
 				started = true;
+			}
 
 			switch (source.NodeType) {
 			case XamlNodeType.StartObject:

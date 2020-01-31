@@ -49,19 +49,27 @@ namespace Uno.Xaml.Schema
 		public override object ConvertTo (ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
 		{
 			if (!CanConvertTo (context, destinationType))
+			{
 				throw new NotSupportedException (String.Format ("Conversion to type {0} is not supported", destinationType));
+			}
 
 			var vctx = (IValueSerializerContext) context;
 			var lookup = vctx != null ? (INamespacePrefixLookup) vctx.GetService (typeof (INamespacePrefixLookup)) : null;
 			var xt = value as XamlType;
 			if (xt != null && destinationType == typeof (string)) {
 				if (lookup != null)
+				{
 					return new XamlTypeName (xt).ToString (lookup);
+				}
 				else
+				{
 					return xt.UnderlyingType != null ? xt.UnderlyingType.ToString () : xt.ToString ();
+				}
 			}
 			else
+			{
 				return base.ConvertTo (context, culture, value, destinationType); // it seems it still handles not-supported types (such as int).
+			}
 		}
 	}
 }

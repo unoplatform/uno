@@ -38,7 +38,10 @@ namespace Uno.Xaml
 		public XamlNodeQueue (XamlSchemaContext schemaContext)
 		{
 			if (schemaContext == null)
+			{
 				throw new ArgumentNullException ("schemaContext");
+			}
+
 			this.ctx = schemaContext;
 			reader = new XamlNodeQueueReader (this);
 			writer = new XamlNodeQueueWriter (this);

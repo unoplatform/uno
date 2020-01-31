@@ -43,7 +43,10 @@ namespace Uno.Xaml.Schema
 		public XamlTypeInvoker (XamlType type)
 		{
 			if (type == null)
+			{
 				throw new ArgumentNullException ("type");
+			}
+
 			this.type = type;
 		}
 		
@@ -52,7 +55,9 @@ namespace Uno.Xaml.Schema
 		void ThrowIfUnknown ()
 		{
 			if (type == null || type.UnderlyingType == null)
+			{
 				throw new NotSupportedException (String.Format ("Current operation is valid only when the underlying type on a XamlType is known, but it is unknown for '{0}'", type));
+			}
 		}
 
 		public EventHandler<XamlSetMarkupExtensionEventArgs> SetMarkupExtensionHandler {
@@ -66,9 +71,14 @@ namespace Uno.Xaml.Schema
 		public virtual void AddToCollection (object instance, object item)
 		{
 			if (instance == null)
+			{
 				throw new ArgumentNullException ("instance");
+			}
+
 			if (item == null)
+			{
 				throw new ArgumentNullException ("item");
+			}
 
 			var ct = instance.GetType ();
 			var xct = type == null ? null : type.SchemaContext.GetXamlType (ct);
@@ -77,33 +87,46 @@ namespace Uno.Xaml.Schema
 			// FIXME: this method lookup should be mostly based on GetAddMethod(). At least iface method lookup must be done there.
 			if (type != null && type.UnderlyingType != null) {
 				if (!xct.IsCollection) // not sure why this check is done only when UnderlyingType exists...
+				{
 					throw new NotSupportedException (String.Format ("Non-collection type '{0}' does not support this operation", xct));
+				}
+
 				if (ct.IsAssignableFrom (type.UnderlyingType))
+				{
 					mi = GetAddMethod (type.SchemaContext.GetXamlType (item.GetType ()));
+				}
 			}
 
 			if (mi == null) {
 				if (ct.IsGenericType) {
 					mi = ct.GetMethod ("Add", ct.GetGenericArguments ());
 					if (mi == null)
+					{
 						mi = LookupAddMethod (ct, typeof (ICollection<>).MakeGenericType (ct.GetGenericArguments ()));
+					}
 				} else {
 					mi = ct.GetMethod ("Add", new Type [] {typeof (object)});
 					if (mi == null)
+					{
 						mi = LookupAddMethod (ct, typeof (IList));
+					}
 				}
 			}
 
 			if (mi == null)
+			{
 				throw new InvalidOperationException (String.Format ("The collection type '{0}' does not have 'Add' method", ct));
-			
+			}
+
 			mi.Invoke (instance, new object [] {item});
 		}
 
 		public virtual void AddToDictionary (object instance, object key, object item)
 		{
 			if (instance == null)
+			{
 				throw new ArgumentNullException ("instance");
+			}
 
 			var t = instance.GetType ();
 			// FIXME: this likely needs similar method lookup to AddToCollection().
@@ -112,11 +135,15 @@ namespace Uno.Xaml.Schema
 			if (t.IsGenericType) {
 				mi = instance.GetType ().GetMethod ("Add", t.GetGenericArguments ());
 				if (mi == null)
+				{
 					mi = LookupAddMethod (t, typeof (IDictionary<,>).MakeGenericType (t.GetGenericArguments ()));
+				}
 			} else {
 				mi = instance.GetType ().GetMethod ("Add", new Type [] {typeof (object), typeof (object)});
 				if (mi == null)
+				{
 					mi = LookupAddMethod (t, typeof (IDictionary));
+				}
 			}
 			mi.Invoke (instance, new object [] {key, item});
 		}
@@ -125,8 +152,13 @@ namespace Uno.Xaml.Schema
 		{
 			var map = ct.GetInterfaceMap (iface);
 			for (int i = 0; i < map.TargetMethods.Length; i++)
+			{
 				if (map.InterfaceMethods [i].Name == "Add")
+				{
 					return map.TargetMethods [i];
+				}
+			}
+
 			return null;
 		}
 
@@ -149,7 +181,10 @@ namespace Uno.Xaml.Schema
 		public virtual IEnumerator GetItems (object instance)
 		{
 			if (instance == null)
+			{
 				throw new ArgumentNullException ("instance");
+			}
+
 			return ((IEnumerable) instance).GetEnumerator ();
 		}
 	}

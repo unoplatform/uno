@@ -21,7 +21,11 @@ namespace Windows.Foundation.Collections
 
 		public void Add(T item)
 		{
-			if (item == null) throw new ArgumentNullException(nameof(item));
+			if (item == null)
+			{
+				throw new ArgumentNullException(nameof(item));
+			}
+
 			_innerList.Add(item);
 		}
 
@@ -37,7 +41,11 @@ namespace Windows.Foundation.Collections
 
 		public void Insert(int index, T item)
 		{
-			if (item == null) throw new ArgumentNullException(nameof(item));
+			if (item == null)
+			{
+				throw new ArgumentNullException(nameof(item));
+			}
+
 			_innerList.Insert(index, item);
 		}
 

@@ -36,7 +36,9 @@ namespace Uno.UI.Behaviors
 			var textBox = sender as TextBox;
 
 			if (textBox == null)
+			{
 				return;
+			}
 
 			textBox.RegisterLoadActions(() => RegisterTextChanged(textBox), () => UnregisterTextChanged(textBox));
 		}
@@ -89,7 +91,9 @@ namespace Uno.UI.Behaviors
 			var newValueAsString = (string)e.NewValue;
 
 			if (newValueAsString != null)
+			{
 				textBox.Text = newValueAsString;
+			}
 		} 
 
 #endregion

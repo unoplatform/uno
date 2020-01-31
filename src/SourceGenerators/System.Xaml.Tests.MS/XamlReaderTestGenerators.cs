@@ -358,7 +358,9 @@ namespace System.Xaml.Tests.MS
 		{
 			var r = GetReader(filename);
 			while (!r.IsEof)
+			{
 				r.Read();
+			}
 		}
 
 		XamlReader GetReader(string filename)

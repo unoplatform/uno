@@ -64,9 +64,13 @@ namespace Uno.UI
 			il.EmitCall(OpCodes.Call, methodInfo, null);
 
 			if (methodInfo.ReturnType == typeof(void))
+			{
 				il.Emit(OpCodes.Ldnull);
+			}
 			else
+			{
 				EmitBoxIfNeeded(il, methodInfo.ReturnType);
+			}
 
 			il.Emit(OpCodes.Ret);
 

@@ -159,7 +159,10 @@ namespace MonoTests.Uno.Xaml
 		{
 			var r = new XamlObjectReader(new ReadOnlyPropertyContainer() { Foo = "x" });
 			while (r.NodeType != XamlNodeType.StartMember)
+			{
 				r.Read();
+			}
+
 			r.Skip();
 			Assert.AreEqual(XamlNodeType.EndObject, r.NodeType, "#1");
 		}
@@ -388,7 +391,9 @@ namespace MonoTests.Uno.Xaml
 			{
 				var r = new XamlObjectReader(new XData() { Text = "xdata text" }); // XmlReader implementation is not visible.
 				while (!r.IsEof)
+				{
 					r.Read();
+				}
 			});
 		}
 
@@ -401,7 +406,9 @@ namespace MonoTests.Uno.Xaml
 				var obj = new XDataWrapper() { Markup = new XData() { Text = "<my_xdata/>" } };
 				var r = new XamlObjectReader(obj);
 				while (!r.IsEof)
+				{
 					r.Read();
+				}
 			});
 		}
 
@@ -420,7 +427,9 @@ namespace MonoTests.Uno.Xaml
 		{
 			var r = new XamlObjectReader(instance);
 			while (!r.IsEof)
+			{
 				r.Read();
+			}
 		}
 
 		[Test]
@@ -678,7 +687,9 @@ namespace MonoTests.Uno.Xaml
 			var obj = new AbstractContainer () { Value2 = new DerivedObject () { Foo = "x" } };
 			var xr = new XamlObjectReader (obj);
 			while (!xr.IsEof)
+			{
 				xr.Read ();
+			}
 		}
 
 		[Test]
@@ -688,11 +699,18 @@ namespace MonoTests.Uno.Xaml
 			var xr = new XamlObjectReader (obj);
 			var xt = xr.SchemaContext.GetXamlType (obj.GetType ());
 			while (xr.Read ())
+			{
 				if (xr.NodeType == XamlNodeType.StartMember)
+				{
 					break;
+				}
+			}
+
 			Assert.AreEqual (xt.GetMember ("Foo"), xr.Member, "#1");
 			while (!xr.IsEof)
+			{
 				xr.Read ();
+			}
 		}
 
 		[Test]
@@ -717,7 +735,10 @@ namespace MonoTests.Uno.Xaml
 		{
 			var obj = new CollectionContentProperty ();
 			for (int i = 0; i < 4; i++)
+			{
 				obj.ListOfItems.Add (new SimpleClass ());
+			}
+
 			var xr = new XamlObjectReader (obj);
 			Read_CollectionContentProperty (xr, false);
 		}
@@ -729,7 +750,10 @@ namespace MonoTests.Uno.Xaml
 			var l = new List<object> ();
 			obj.ListOfItems.Add (l);
 			for (int i = 0; i < 4; i++)
+			{
 				l.Add (new SimpleClass ());
+			}
+
 			var xr = new XamlObjectReader (obj);
 			Read_CollectionContentPropertyX (xr, false);
 		}

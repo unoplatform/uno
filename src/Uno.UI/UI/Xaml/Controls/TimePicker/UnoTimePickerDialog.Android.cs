@@ -122,7 +122,9 @@ namespace Windows.UI.Xaml.Controls
 				{
 					var childResult = FindNumberPicker(childViewGroup, maxValue);
 					if (childResult != null)
+					{
 						return childResult;
+					}
 				}
 			}
 

@@ -39,20 +39,31 @@ namespace Uno.Xaml
 		public static T GetCustomAttribute<T> (this ICustomAttributeProvider type, bool inherit) where T : Attribute
 		{
 			foreach (var a in type.GetCustomAttributes (typeof (T), inherit))
+			{
 				return (T) (object) a;
+			}
+
 			return null;
 		}
 
 		public static T GetCustomAttribute<T> (this XamlType type) where T : Attribute
 		{
 			if (type.UnderlyingType == null)
+			{
 				return null;
+			}
 
 			T ret = type.GetCustomAttributeProvider ().GetCustomAttribute<T> (true);
 			if (ret != null)
+			{
 				return ret;
+			}
+
 			if (type.BaseType != null)
+			{
 				return type.BaseType.GetCustomAttribute<T> ();
+			}
+
 			return null;
 		}
 
@@ -64,18 +75,33 @@ namespace Uno.Xaml
 		public static bool ImplementsInterface (this Type type, Type definition)
 		{
 			if (type == null)
+			{
 				throw new ArgumentNullException ("type");
+			}
+
 			if (definition == null)
+			{
 				throw new ArgumentNullException ("definition");
+			}
+
 			if (type == definition)
+			{
 				return true;
+			}
 
 			if (type.IsGenericType && type.GetGenericTypeDefinition () == definition)
+			{
 				return true;
+			}
 
 			foreach (var iface in type.GetInterfaces ())
+			{
 				if (iface == definition || (iface.IsGenericType && iface.GetGenericTypeDefinition () == definition))
+				{
 					return true;
+				}
+			}
+
 			return false;
 		}
 		
@@ -90,32 +116,54 @@ namespace Uno.Xaml
 			// FIXME: should this manually checked, or is there any way to automate it?
 			// Also XamlSchemaContext might be involved but this method signature does not take it consideration.
 			if (o == null)
+			{
 				return null_value;
+			}
+
 			if (o is Array)
+			{
 				return new ArrayExtension ((Array) o);
+			}
+
 			if (o is Type)
+			{
 				return new TypeExtension ((Type) o);
+			}
+
 			return o;
 		}
 		
 		public static string GetStringValue (XamlType xt, XamlMember xm, object obj, IValueSerializerContext vsctx)
 		{
 			if (obj == null)
+			{
 				return String.Empty;
+			}
+
 			if (obj is Type)
+			{
 				return new XamlTypeName (xt.SchemaContext.GetXamlType ((Type) obj)).ToString (vsctx != null ? vsctx.GetService (typeof (INamespacePrefixLookup)) as INamespacePrefixLookup : null);
+			}
 
 			var vs = (xm != null ? xm.ValueSerializer : null) ?? xt.ValueSerializer;
 			if (vs != null)
+			{
 				return vs.ConverterInstance.ConvertToString (obj, vsctx);
+			}
 
 			// FIXME: does this make sense?
 			var vc = (xm != null ? xm.TypeConverter : null) ?? xt.TypeConverter;
 			var tc = vc != null ? vc.ConverterInstance : null;
 			if (tc != null && typeof (string) != null && tc.CanConvertTo (vsctx, typeof (string)))
+			{
 				return (string) tc.ConvertTo (vsctx, CultureInfo.InvariantCulture, obj, typeof (string));
+			}
+
 			if (obj is string || obj == null)
+			{
 				return (string) obj;
+			}
+
 			throw new InvalidCastException (String.Format ("Cannot cast object '{0}' to string", obj.GetType ()));
 		}
 		
@@ -143,14 +191,19 @@ namespace Uno.Xaml
 			public override object ConvertFrom (ITypeDescriptorContext context, CultureInfo culture, object value)
 			{
 				if (type == typeof (DateTime))
+				{
 					return System.Xml.XmlConvert.ToDateTime ((string) value, System.Xml.XmlDateTimeSerializationMode.Unspecified);
+				}
+
 				return ((IConvertible) value).ToType (type, CultureInfo.InvariantCulture);
 			}
 			public override object ConvertTo (ITypeDescriptorContext context, CultureInfo culture, object value, Type destinationType)
 			{
 				if (value is DateTime)
 #pragma warning disable CS0618 // Type or member is obsolete
+				{
 					return System.Xml.XmlConvert.ToString ((DateTime) value);
+				}
 #pragma warning restore CS0618 // Type or member is obsolete
 				return ((IConvertible) value).ToType (destinationType, CultureInfo.InvariantCulture);
 			}
@@ -161,32 +214,58 @@ namespace Uno.Xaml
 		public static bool IsContentValue (this XamlMember member, IValueSerializerContext vsctx)
 		{
 			if (member == XamlLanguage.Initialization)
+			{
 				return true;
+			}
+
 			if (member == XamlLanguage.PositionalParameters || member == XamlLanguage.Arguments)
+			{
 				return false; // it's up to the argument (no need to check them though, as IList<object> is not of value)
+			}
+
 			if (member.TypeConverter != null && member.TypeConverter.ConverterInstance != null && member.TypeConverter.ConverterInstance.CanConvertTo (vsctx, typeof (string)))
+			{
 				return true;
+			}
+
 			return IsContentValue (member.Type,vsctx);
 		}
 
 		public static bool IsContentValue (this XamlType type, IValueSerializerContext vsctx)
 		{
 			if (type.TypeConverter != null && type.TypeConverter.ConverterInstance != null && type.TypeConverter.ConverterInstance.CanConvertTo (vsctx, typeof (string)))
+			{
 				return true;
+			}
+
 			return false;
 		}
 
 		public static bool ListEquals (this IList<XamlType> a1, IList<XamlType> a2)
 		{
 			if (a1 == null || a1.Count == 0)
+			{
 				return a2 == null || a2.Count == 0;
+			}
+
 			if (a2 == null || a2.Count == 0)
+			{
 				return false;
+			}
+
 			if (a1.Count != a2.Count)
+			{
 				return false;
+			}
+
 			for (int i = 0; i < a1.Count; i++)
+			{
 				if (a1 [i] != a2 [i])
+				{
 					return false;
+				}
+			}
+
 			return true;
 		}
 
@@ -201,19 +280,30 @@ namespace Uno.Xaml
 		static bool ExaminePositionalParametersApplicable (this XamlType type, IValueSerializerContext vsctx)
 		{
 			if (!type.IsMarkupExtension || type.UnderlyingType == null)
+			{
 				return false;
+			}
 
 			var args = type.GetSortedConstructorArguments ();
 			if (args == null)
+			{
 				return false;
+			}
 
 			foreach (var arg in args)
+			{
 				if (arg.Type != null && !arg.Type.IsContentValue (vsctx))
+				{
 					return false;
+				}
+			}
 
 			Type [] argTypes = (from arg in args select arg.Type.UnderlyingType).ToArray ();
 			if (argTypes.Any (at => at == null))
+			{
 				return false;
+			}
+
 			var ci = type.UnderlyingType.GetConstructor (argTypes);
 			return ci != null;
 		}
@@ -229,14 +319,27 @@ namespace Uno.Xaml
 			foreach (var ci in type.UnderlyingType.GetConstructors ().Where (c => c.GetParameters ().Length == args.Length)) {
 				var pis = ci.GetParameters ();
 				if (args.Length != pis.Length)
+				{
 					continue;
+				}
+
 				bool mismatch = false;
 				foreach (var pi in pis)
-				for (int i = 0; i < args.Length; i++)
-					if (!args.Any (a => a.ConstructorArgumentName () == pi.Name))
-						mismatch = true;
+				{
+					for (int i = 0; i < args.Length; i++)
+					{
+						if (!args.Any (a => a.ConstructorArgumentName () == pi.Name))
+						{
+							mismatch = true;
+						}
+					}
+				}
+
 				if (mismatch)
+				{
 					continue;
+				}
+
 				return args.OrderBy (c => pis.FindParameterWithName (c.ConstructorArgumentName ()).Position);
 			}
 			return null;
@@ -258,21 +361,36 @@ namespace Uno.Xaml
 		{
 			// ConstructorArguments and PositionalParameters go first.
 			if (m1 == XamlLanguage.PositionalParameters)
+			{
 				return -1;
+			}
+
 			if (m2 == XamlLanguage.PositionalParameters)
+			{
 				return 1;
+			}
+
 			if (m1.IsConstructorArgument ()) {
 				if (!m2.IsConstructorArgument ())
+				{
 					return -1;
+				}
 			}
 			else if (m2.IsConstructorArgument ())
+			{
 				return 1;
+			}
 
 			// ContentProperty is returned at last.
 			if (m1.DeclaringType != null && m1.DeclaringType.ContentProperty == m1)
+			{
 				return 1;
+			}
+
 			if (m2.DeclaringType != null && m2.DeclaringType.ContentProperty == m2)
+			{
 				return -1;
+			}
 
 			// then, compare names.
 			return String.CompareOrdinal (m1.Name, m2.Name);

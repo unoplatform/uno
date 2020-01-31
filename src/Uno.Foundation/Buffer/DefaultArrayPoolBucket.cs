@@ -60,7 +60,10 @@ namespace Uno.Buffers
                 }
                 finally
                 {
-                    if (lockTaken) _lock.Exit(false);
+                    if (lockTaken)
+                    {
+	                    _lock.Exit(false);
+                    }
                 }
 
                 // While we were holding the lock, we grabbed whatever was at the next available index, if
@@ -103,7 +106,10 @@ namespace Uno.Buffers
                 }
                 finally
                 {
-                    if (lockTaken) _lock.Exit(false);
+                    if (lockTaken)
+                    {
+	                    _lock.Exit(false);
+                    }
                 }
             }
         }

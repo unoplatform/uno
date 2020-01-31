@@ -180,8 +180,10 @@ namespace Uno.Media
                                 Point end = ReadPoint(reader, point, relative);
                                 
                                 if(previousControlPoint != null)
-                                    previousControlPoint = MirrorControlPoint((Point)previousControlPoint, point);
-                                
+                                {
+	                                previousControlPoint = MirrorControlPoint((Point)previousControlPoint, point);
+                                }
+
                                 _context.QuadraticBezierTo(previousControlPoint ?? point, end, true, false);
                                 point = end;
                                 break;
@@ -206,8 +208,10 @@ namespace Uno.Media
                                 Point end = ReadPoint(reader, point, relative);
                                 
                                 if(previousControlPoint != null)
-                                    previousControlPoint = MirrorControlPoint((Point)previousControlPoint, point);
-                                
+                                {
+	                                previousControlPoint = MirrorControlPoint((Point)previousControlPoint, point);
+                                }
+
                                 _context.BezierTo(previousControlPoint ?? point, point2, end, true, false);
                                 previousControlPoint = point2;
                                 point = end;
@@ -346,8 +350,10 @@ namespace Uno.Media
                     char.IsDigit(c))
                 {
                     if (b.Length != 0 && !readExponent && c == '-')
-                        break;
-                    
+                    {
+	                    break;
+                    }
+
                     b.Append(c);
                     reader.Read();
 

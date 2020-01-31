@@ -52,7 +52,9 @@ namespace MonoTests.Uno.Xaml
 			var r = new XamlBackgroundReader (GetReader (filename));
 			r.StartThread ();
 			while (!r.IsEof)
+			{
 				r.Read ();
+			}
 		}
 
 		[Test]

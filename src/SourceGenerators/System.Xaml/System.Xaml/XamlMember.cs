@@ -40,7 +40,10 @@ namespace Uno.Xaml
 			: this (schemaContext, invoker)
 		{
 			if (eventInfo == null)
+			{
 				throw new ArgumentNullException ("eventInfo");
+			}
+
 			Name = eventInfo.Name;
 			underlying_member = eventInfo;
 			DeclaringType = schemaContext.GetXamlType (eventInfo.DeclaringType);
@@ -58,7 +61,10 @@ namespace Uno.Xaml
 			: this (schemaContext, invoker)
 		{
 			if (propertyInfo == null)
+			{
 				throw new ArgumentNullException ("propertyInfo");
+			}
+
 			Name = propertyInfo.Name;
 			underlying_member = propertyInfo;
 			DeclaringType = schemaContext.GetXamlType (propertyInfo.DeclaringType);
@@ -76,9 +82,15 @@ namespace Uno.Xaml
 			: this (schemaContext, invoker)
 		{
 			if (attachableEventName == null)
+			{
 				throw new ArgumentNullException ("attachableEventName");
+			}
+
 			if (adder == null)
+			{
 				throw new ArgumentNullException ("adder");
+			}
+
 			Name = attachableEventName;
 			VerifyAdderSetter (adder);
 			underlying_member = adder;
@@ -98,9 +110,15 @@ namespace Uno.Xaml
 			: this (schemaContext, invoker)
 		{
 			if (attachablePropertyName == null)
+			{
 				throw new ArgumentNullException ("attachablePropertyName");
+			}
+
 			if (getter == null && setter == null)
+			{
 				throw new ArgumentNullException ("getter", "Either property getter or setter must be non-null.");
+			}
+
 			Name = attachablePropertyName;
 			VerifyGetter (getter);
 			VerifyAdderSetter (setter);
@@ -115,9 +133,15 @@ namespace Uno.Xaml
 		public XamlMember (string name, XamlType declaringType, bool isAttachable)
 		{
 			if (name == null)
+			{
 				throw new ArgumentNullException ("name");
+			}
+
 			if (declaringType == null)
+			{
 				throw new ArgumentNullException ("declaringType");
+			}
+
 			Name = name;
 			this.invoker = new XamlMemberInvoker (this);
 			context = declaringType.SchemaContext;
@@ -140,7 +164,10 @@ namespace Uno.Xaml
 		XamlMember(XamlSchemaContext schemaContext, XamlMemberInvoker invoker)
 		{
 			if (schemaContext == null)
+			{
 				throw new ArgumentNullException ("schemaContext");
+			}
+
 			context = schemaContext;
 			this.invoker = invoker ?? new XamlMemberInvoker (this);
 		}
@@ -272,7 +299,10 @@ namespace Uno.Xaml
 		{
 			// this should be in general correct; XamlMembers are almost not comparable.
 			if (Object.ReferenceEquals (this, other))
+			{
 				return true;
+			}
+
 			// It does not compare XamlSchemaContext.
 			return !IsNull (other) &&
 				underlying_member == other.underlying_member &&
@@ -296,9 +326,13 @@ namespace Uno.Xaml
 			if (is_attachable || String.IsNullOrEmpty(PreferredXamlNamespace))
 			{
 				if (DeclaringType == null)
+				{
 					return Name;
+				}
 				else
+				{
 					return String.Concat(DeclaringType.UnderlyingType.FullName, ".", Name);
+				}
 			}
 			else
 			{
@@ -360,9 +394,15 @@ namespace Uno.Xaml
 		protected virtual bool LookupIsReadPublic ()
 		{
 			if (underlying_member == null)
+			{
 				return true;
+			}
+
 			if (UnderlyingGetter != null)
+			{
 				return UnderlyingGetter.IsPublic;
+			}
+
 			return false;
 		}
 
@@ -375,16 +415,25 @@ namespace Uno.Xaml
 		{
 			var pi = underlying_member as PropertyInfo;
 			if (pi != null)
+			{
 				return !pi.CanRead && pi.CanWrite;
+			}
+
 			return UnderlyingGetter == null && UnderlyingSetter != null;
 		}
 
 		protected virtual bool LookupIsWritePublic ()
 		{
 			if (underlying_member == null)
+			{
 				return true;
+			}
+
 			if (UnderlyingSetter != null)
+			{
 				return UnderlyingSetter.IsPublic;
+			}
+
 			return false;
 		}
 
@@ -396,7 +445,10 @@ namespace Uno.Xaml
 		protected virtual XamlType LookupType ()
 		{
 			if (type == null)
+			{
 				type = context.GetXamlType (DoGetType ());
+			}
+
 			return type;
 		}
 		
@@ -405,14 +457,26 @@ namespace Uno.Xaml
 		{
 			var pi = underlying_member as PropertyInfo;
 			if (pi != null)
+			{
 				return pi.PropertyType;
+			}
+
 			var ei = underlying_member as EventInfo;
 			if (ei != null)
+			{
 				return ei.EventHandlerType;
+			}
+
 			if (underlying_setter != null)
+			{
 				return underlying_setter.GetParameters () [1].ParameterType;
+			}
+
 			if (underlying_getter != null)
+			{
 				return underlying_getter.GetParameters () [0].ParameterType;
+			}
+
 			return typeof (object);
 		}
 
@@ -420,14 +484,21 @@ namespace Uno.Xaml
 		{
 			var t = Type.UnderlyingType;
 			if (t == null)
+			{
 				return null;
+			}
+
 			if (t == typeof (object)) // it is different from XamlType.LookupTypeConverter().
+			{
 				return null;
+			}
 
 			var a = GetCustomAttributeProvider ();
 			var ca = a != null ? a.GetCustomAttribute<TypeConverterAttribute> (false) : null;
 			if (ca != null)
+			{
 				return context.GetValueConverter<TypeConverter> (System.Type.GetType (ca.ConverterTypeName), Type);
+			}
 
 			return Type.TypeConverter;
 		}
@@ -450,9 +521,14 @@ namespace Uno.Xaml
 		protected virtual XamlValueConverter<ValueSerializer> LookupValueSerializer ()
 		{
 			if (is_predefined_directive) // FIXME: this is likely a hack.
+			{
 				return null;
+			}
+
 			if (Type == null)
+			{
 				return null;
+			}
 
 			return XamlType.LookupValueSerializer (Type, LookupCustomAttributeProvider ()) ?? Type.ValueSerializer;
 		}
@@ -460,17 +536,27 @@ namespace Uno.Xaml
 		void VerifyGetter (MethodInfo method)
 		{
 			if (method == null)
+			{
 				return;
+			}
+
 			if (method.GetParameters ().Length != 1 || method.ReturnType == typeof (void))
+			{
 				throw new ArgumentException (String.Format ("Property getter for {0} must have exactly one argument and must have non-void return type.", Name));
+			}
 		}
 
 		void VerifyAdderSetter (MethodInfo method)
 		{
 			if (method == null)
+			{
 				return;
+			}
+
 			if (method.GetParameters ().Length != 2)
+			{
 				throw new ArgumentException (String.Format ("Property getter or event adder for {0} must have exactly one argument and must have non-void return type.", Name));
+			}
 		}
 	}
 }

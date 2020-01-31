@@ -461,7 +461,9 @@ namespace MonoTests.Uno.Xaml.Schema
 			public MyNSResolver (bool returnNullForEmpty)
 			{
 				if (!returnNullForEmpty)
+				{
 					dic.Add (String.Empty, String.Empty);
+				}
 			}
 
 			Dictionary<string,string> dic = new Dictionary<string,string> ();
@@ -480,7 +482,9 @@ namespace MonoTests.Uno.Xaml.Schema
 			public IEnumerable<NamespaceDeclaration> GetNamespacePrefixes ()
 			{
 				foreach (var p in dic)
+				{
 					yield return new NamespaceDeclaration (p.Value, p.Key);
+				}
 			}
 		}
 	}

@@ -71,7 +71,9 @@ namespace Uno.Xaml
 		{
 			var xobj = new XamlObject (GetType (root), root);
 			foreach (var node in GetNodes (null, xobj))
+			{
 				yield return node;
+			}
 		}
 		
 		IEnumerable<XamlNodeInfo> GetNodes (XamlMember xm, XamlObject xobj)
@@ -84,7 +86,10 @@ namespace Uno.Xaml
 			// collection items: each item is exposed as a standalone object that has StartObject, EndObject and contents.
 			if (xm == XamlLanguage.Items) {
 				foreach (var xn in GetItemsNodes (xm, xobj))
+				{
 					yield return xn;
+				}
+
 				yield break;
 			}
 			
@@ -94,7 +99,9 @@ namespace Uno.Xaml
 					var argv = argm.Invoker.GetValue (xobj.GetRawValue ());
 					var xarg = new XamlObject (argm.Type, argv);
 					foreach (var cn in GetNodes (null, xarg))
+					{
 						yield return cn;
+					}
 				}
 				yield break;
 			}
@@ -103,7 +110,9 @@ namespace Uno.Xaml
 			if (xm == XamlLanguage.PositionalParameters) {
 				foreach (var argm in xobj.Type.GetSortedConstructorArguments ()) {
 					foreach (var cn in GetNodes (argm, new XamlObject (argm.Type, xobj.GetMemberValue (argm)), null, true))
+					{
 						yield return cn;
+					}
 				}
 				yield break;
 			}
@@ -123,13 +132,22 @@ namespace Uno.Xaml
 					var val = xobj.GetRawValue ();
 					if (val == null) {
 						if (!partOfPositionalParameters)
+						{
 							foreach (var xn in GetNodes (null, null_object))
+							{
 								yield return xn;
+							}
+						}
 						else
+						{
 							yield return new XamlNodeInfo (String.Empty);
+						}
 					}
 					else
+					{
 						yield return new XamlNodeInfo (TypeExtensionMethods.GetStringValue (xtt, xm, val, value_serializer_ctx));
+					}
+
 					yield break;
 				}
 			}
@@ -153,12 +171,17 @@ namespace Uno.Xaml
 				var xw = XmlWriter.Create (sw, new XmlWriterSettings () { OmitXmlDeclaration = true, ConformanceLevel = ConformanceLevel.Auto });
 				var val = xobj.GetRawValue () as IXmlSerializable;
 				if (val == null)
+				{
 					yield break; // do not output anything
+				}
+
 				val.WriteXml (xw);
 				xw.Close ();
 				var obj = new XData () { Text = sw.ToString () };
 				foreach (var xn in GetNodes (null, new XamlObject (XamlLanguage.XData, obj)))
+				{
 					yield return xn;
+				}
 			} else {
 				// Object - could become Reference
 				var val = xobj.GetRawValue ();
@@ -169,13 +192,19 @@ namespace Uno.Xaml
 						NameResolver.SaveAsReferenced (val); // Record it as named object.
 						// Then return Reference object instead.
 						foreach (var xn in GetNodes (null, new XamlObject (XamlLanguage.Reference, new Reference (refName))))
+						{
 							yield return xn;
+						}
+
 						yield break;
 					} else {
 						// The object appeared in the xaml tree for the first time. So we store the reference with a unique name so that it could be referenced later.
 						refName = GetReferenceName (xobj);
 						if (NameResolver.IsCollectingReferences && NameResolver.Contains (refName))
+						{
 							throw new InvalidOperationException (String.Format ("There is already an object of type {0} named as '{1}'. Object names must be unique.", val.GetType (), refName));
+						}
+
 						NameResolver.SetNamedObject (refName, val, true); // probably fullyInitialized is always true here.
 					}
 				}
@@ -186,11 +215,16 @@ namespace Uno.Xaml
 					if (name != null) {
 						var sobj = new XamlObject (XamlLanguage.String, name);
 						foreach (var cn in GetMemberNodes (new XamlNodeMember (sobj, XamlLanguage.Name), new XamlNodeInfo [] { new XamlNodeInfo (name)}))
+						{
 							yield return cn;
+						}
 					}
 				}
 				foreach (var xn in GetObjectMemberNodes (xobj))
+				{
 					yield return xn;
+				}
+
 				yield return new XamlNodeInfo (XamlNodeType.EndObject, xobj);
 			}
 		}
@@ -201,7 +235,10 @@ namespace Uno.Xaml
 		{
 			var xm = xobj.Type.GetAliasedProperty (XamlLanguage.Name);
 			if (xm != null)
+			{
 				return (string) xm.Invoker.GetValue (xobj.GetRawValue ());
+			}
+
 			return "__ReferenceID" + used_reference_ids++;
 		}
 
@@ -209,7 +246,10 @@ namespace Uno.Xaml
 		{
 				yield return new XamlNodeInfo (XamlNodeType.StartMember, member);
 				foreach (var cn in contents)
+				{
 					yield return cn;
+				}
+
 				yield return new XamlNodeInfo (XamlNodeType.EndMember, member);
 		}
 
@@ -223,7 +263,9 @@ namespace Uno.Xaml
 
 			// FIXME: find out why root Reference has PositionalParameters.
 			if (xobj.GetRawValue () != root && xobj.Type == XamlLanguage.Reference)
+			{
 				yield return new XamlNodeMember (xobj, XamlLanguage.PositionalParameters);
+			}
 			else {
 				var inst = xobj.GetRawValue ();
 				var atts = new KeyValuePair<AttachableMemberIdentifier,object> [AttachablePropertyServices.GetAttachedPropertyCount (inst)];
@@ -233,7 +275,9 @@ namespace Uno.Xaml
 					yield return new XamlNodeMember (new XamlObject (axt, p.Value), axt.GetAttachableMember (p.Key.MemberName));
 				}
 				foreach (var xm in xobj.Type.GetAllObjectReaderMembersByType (vsctx))
+				{
 					yield return new XamlNodeMember (xobj, xm);
+				}
 			}
 		}
 
@@ -247,7 +291,9 @@ namespace Uno.Xaml
 					NameResolver.Save ();
 					try {
 						if (!GetNodes (xce.Current.Member, xce.Current.Value).GetEnumerator ().MoveNext ())
+						{
 							continue;
+						}
 					} finally {
 						NameResolver.Restore ();
 					}
@@ -260,14 +306,18 @@ namespace Uno.Xaml
 					NameResolver.Save ();
 					try {
 						if (!(e.MoveNext () && e.MoveNext () && e.MoveNext ())) // GetObject, EndObject and more
+						{
 							continue;
+						}
 					} finally {
 						NameResolver.Restore ();
 					}
 				}
 
 				foreach (var cn in GetMemberNodes (xce.Current, GetNodes (xce.Current.Member, xce.Current.Value)))
+				{
 					yield return cn;
+				}
 			}
 		}
 
@@ -275,7 +325,10 @@ namespace Uno.Xaml
 		{
 			var obj = xobj.GetRawValue ();
 			if (obj == null)
+			{
 				yield break;
+			}
+
 			var ie = xobj.Type.Invoker.GetItems (obj);
 			while (ie.MoveNext ()) {
 				var iobj = ie.Current;
@@ -305,12 +358,19 @@ namespace Uno.Xaml
 					var nodes1 = en.Skip (1).Take (en.Length - 2);
 					var nodes2 = GetKeyNodes (ikey, xobj.Type.KeyType, xknm);
 					foreach (var xn in EnumerateMixingMember (nodes1, XamlLanguage.Key, nodes2))
+					{
 						yield return xn;
+					}
+
 					yield return en [en.Length - 1];
 				}
 				else
+				{
 					foreach (var xn in GetNodes (null, xiobj))
+					{
 						yield return xn;
+					}
+				}
 			}
 		}
 		
@@ -318,7 +378,10 @@ namespace Uno.Xaml
 		{
 			if (nodes2 == null) {
 				foreach (var cn in nodes1)
+				{
 					yield return cn;
+				}
+
 				yield break;
 			}
 
@@ -328,27 +391,40 @@ namespace Uno.Xaml
 			while (e1.MoveNext ()) {
 				if (e1.Current.NodeType == XamlNodeType.StartMember) {
 					if (nest > 0)
+					{
 						nest++;
+					}
 					else
 						if (TypeExtensionMethods.CompareMembers (m2, e1.Current.Member.Member) < 0) {
 							while (e2.MoveNext ())
+							{
 								yield return e2.Current;
+							}
 						}
 						else
+						{
 							nest++;
+						}
 				}
 				else if (e1.Current.NodeType == XamlNodeType.EndMember)
+				{
 					nest--;
+				}
+
 				yield return e1.Current;
 			}
 			while (e2.MoveNext ())
+			{
 				yield return e2.Current;
+			}
 		}
 
 		IEnumerable<XamlNodeInfo> GetKeyNodes (object ikey, XamlType keyType, XamlNodeMember xknm)
 		{
 			foreach (var xn in GetMemberNodes (xknm, GetNodes (XamlLanguage.Key, new XamlObject (GetType (ikey), ikey), keyType, false)))
+			{
 				yield return xn;
+			}
 		}
 
 		// Namespace and Reference retrieval.
@@ -360,20 +436,31 @@ namespace Uno.Xaml
 			NameResolver.IsCollectingReferences = true;
 			foreach (var xn in GetNodes ()) {
 				if (xn.NodeType == XamlNodeType.GetObject)
+				{
 					continue; // it is out of consideration here.
+				}
+
 				if (xn.NodeType == XamlNodeType.StartObject) {
 					foreach (var ns in NamespacesInType (xn.Object.Type))
+					{
 						PrefixLookup.LookupPrefix (ns);
+					}
 				} else if (xn.NodeType == XamlNodeType.StartMember) {
 					var xm = xn.Member.Member;
 					// This filtering is done as a black list so far. There does not seem to be any usable property on XamlDirective.
 					if (xm == XamlLanguage.Items || xm == XamlLanguage.PositionalParameters || xm == XamlLanguage.Initialization)
+					{
 						continue;
+					}
+
 					PrefixLookup.LookupPrefix (xn.Member.Member.PreferredXamlNamespace);
 				} else {
 					if (xn.NodeType == XamlNodeType.Value && xn.Value is Type)
 						// this tries to lookup existing prefix, and if there isn't any, then adds a new declaration.
+					{
 						TypeExtensionMethods.GetStringValue (XamlLanguage.Type, xn.Member.Member, xn.Value, value_serializer_ctx);
+					}
+
 					continue;
 				}
 			}
@@ -391,7 +478,9 @@ namespace Uno.Xaml
 				yield return XamlLanguage.Xaml2006Namespace;
 				foreach (var targ in xt.TypeArguments)
 					foreach (var ns in NamespacesInType (targ))
+					{
 						yield return ns;
+					}
 			}
 		}
 	}

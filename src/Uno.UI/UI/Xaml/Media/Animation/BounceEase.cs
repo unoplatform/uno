@@ -20,9 +20,13 @@ namespace Windows.UI.Xaml.Media.Animation
 				case EasingMode.EaseInOut:
 
 					if (currentTime < duration / 2)
+					{
 						return BounceEaseIn(currentTime * 2, 0, finalValue, duration) * .5 + startValue;
+					}
 					else
+					{
 						return BounceEaseOut(currentTime * 2 - duration, 0, finalValue, duration) * .5 + finalValue * .5 + startValue;
+					}
 
 				default:
 					return finalValue * currentTime / duration + startValue;
@@ -37,13 +41,21 @@ namespace Windows.UI.Xaml.Media.Animation
 		public static double BounceEaseOut(double currentTime, double startValue, double finalValue, double duration)
 		{
 			if ((currentTime /= duration) < (1 / 2.75))
+			{
 				return finalValue * (7.5625 * currentTime * currentTime) + startValue;
+			}
 			else if (currentTime < (2 / 2.75))
+			{
 				return finalValue * (7.5625 * (currentTime -= (1.5 / 2.75)) * currentTime + .75) + startValue;
+			}
 			else if (currentTime < (2.5 / 2.75))
+			{
 				return finalValue * (7.5625 * (currentTime -= (2.25 / 2.75)) * currentTime + .9375) + startValue;
+			}
 			else
+			{
 				return finalValue * (7.5625 * (currentTime -= (2.625 / 2.75)) * currentTime + .984375) + startValue;
+			}
 		}
 	}
 }

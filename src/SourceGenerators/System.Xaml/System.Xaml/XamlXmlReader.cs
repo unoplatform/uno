@@ -165,9 +165,15 @@ namespace Uno.Xaml
 		public override bool Read ()
 		{
 			if (IsDisposed)
+			{
 				throw new ObjectDisposedException ("reader");
+			}
+
 			if (iter == null)
+			{
 				iter = parser.Parse ().GetEnumerator ();
+			}
+
 			iter.MoveNext ();
 			return iter.Current.NodeType != XamlNodeType.None;
 		}
@@ -202,9 +208,14 @@ namespace Uno.Xaml
 		public XamlXmlParser (XmlReader xmlReader, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings)
 		{
 			if (xmlReader == null)
+			{
 				throw new ArgumentNullException ("xmlReader");
+			}
+
 			if (schemaContext == null)
+			{
 				throw new ArgumentNullException ("schemaContext");
+			}
 
 			sctx = schemaContext;
 			this.settings = settings ?? new XamlXmlReaderSettings ();
@@ -246,7 +257,10 @@ namespace Uno.Xaml
 		{
 			r.MoveToContent ();
 			foreach (var xi in ReadObjectElement (null, null))
+			{
 				yield return xi;
+			}
+
 			yield return Node (XamlNodeType.None, null);
 		}
 		
@@ -268,7 +282,9 @@ namespace Uno.Xaml
 			if (r.MoveToFirstAttribute ()) {
 				do {
 					if (r.NamespaceURI == XamlLanguage.Xmlns2000Namespace)
+					{
 						yield return Node (XamlNodeType.NamespaceDeclaration, new NamespaceDeclaration (r.Value, r.Prefix == "xmlns" ? r.LocalName : String.Empty));
+					}
 				} while (r.MoveToNextAttribute ());
 				r.MoveToElement ();
 			}
@@ -299,7 +315,9 @@ namespace Uno.Xaml
 				if (currentMember != null && !xt.CanAssignTo(currentMember.Type))
 				{
 					if (currentMember.DeclaringType != null && currentMember.DeclaringType.ContentProperty == currentMember)
+					{
 						isGetObject = true;
+					}
 
 					// It could still be GetObject if current_member
 					// is not a directive and current type is not
@@ -309,14 +327,19 @@ namespace Uno.Xaml
 					// seealso: bug #682131
 					else if (!(currentMember is XamlDirective) &&
 						!xt.IsMarkupExtension)
+					{
 						isGetObject = true;
+					}
 				}
 
 				if (isGetObject)
 				{
 					yield return Node(XamlNodeType.GetObject, currentMember.Type);
 					foreach (var ni in ReadMembers(parentType, currentMember.Type))
+					{
 						yield return ni;
+					}
+
 					yield return Node(XamlNodeType.EndObject, currentMember.Type);
 					yield break;
 				}
@@ -394,11 +417,16 @@ namespace Uno.Xaml
 				{
 					r.Read();
 					foreach (var ni in ReadMembers(parentType, xt))
+					{
 						yield return ni;
+					}
+
 					r.ReadEndElement();
 				}
 				else
+				{
 					r.Read(); // consume empty element.
+				}
 
 				yield return Node(XamlNodeType.EndObject, xt);
 			}
@@ -415,13 +443,19 @@ namespace Uno.Xaml
 					// FIXME: parse type arguments etc.
 					foreach (var x in ReadMemberElement (parentType, xt)) {
 						if (x.NodeType == XamlNodeType.None)
+						{
 							yield break;
+						}
+
 						yield return x;
 					}
 					continue;
 				default:
 					foreach (var x in ReadMemberText (xt))
+					{
 						yield return x;
+					}
+
 					continue;
 				}
 			}
@@ -446,7 +480,9 @@ namespace Uno.Xaml
 				}
 			}
 			foreach (var p in l)
+			{
 				members.Remove (p);
+			}
 
 			IList<XamlTypeName> typeArgs = typeArgNames == null ? null : XamlTypeName.ParseList (typeArgNames, xaml_namespace_resolver);
 			var xtn = new XamlTypeName (ns, name, typeArgs);
@@ -468,7 +504,9 @@ namespace Uno.Xaml
 				{
 					string xmlbase = r.GetAttribute("base", XamlLanguage.Xml1998Namespace) ?? r.BaseURI;
 					if (xmlbase != null)
+					{
 						l.Add(new Pair(XamlLanguage.Base, xmlbase));
+					}
 				}
 			}
 
@@ -582,9 +620,15 @@ namespace Uno.Xaml
 		XamlMember GetExtraMember (XamlType xt)
 		{
 			if (xt.ContentProperty != null) // e.g. Array.Items
+			{
 				return xt.ContentProperty;
+			}
+
 			if (xt.IsCollection || xt.IsDictionary)
+			{
 				return XamlLanguage.Items;
+			}
+
 			return null;
 		}
 
@@ -598,7 +642,9 @@ namespace Uno.Xaml
 			// this value is for Initialization, or Content property value
 			XamlMember xm;
 			if (xt.ContentProperty != null)
+			{
 				xm = xt.ContentProperty;
+			}
 			else
 			{
 				if (xt.UnderlyingType == null)
@@ -693,7 +739,10 @@ namespace Uno.Xaml
 					if ((xm = GetExtraMember (xt)) != null) {
 						// Note that this does not involve r.Read()
 						foreach (var ni in ReadMember (xt, xm))
+						{
 							yield return ni;
+						}
+
 						yield break;
 					}
 				}
@@ -725,13 +774,17 @@ namespace Uno.Xaml
 				if (idx == -1 && !xm.IsDirective && xm.DeclaringType.UnderlyingType == null)
 				{
 					foreach (var ni in ReadCollectionItems(xt, xm))
+					{
 						yield return ni;
+					}
 				}
 				else
 				{
 					r.Read();
 					foreach (var ni in ReadMember(xt, xm))
+					{
 						yield return ni;
+					}
 
 					if (!r.IsEmptyElement)
 					{
@@ -755,7 +808,9 @@ namespace Uno.Xaml
 				else
 				{ 
 					foreach (var ni in ReadCollectionItems(xt, xm))
+					{
 						yield return ni;
+					}
 				}
 			}
 		}
@@ -769,22 +824,33 @@ namespace Uno.Xaml
 				r.Read ();
 			} else if (!xm.IsWritePublic) {
 				if (xm.Type.IsXData)
+				{
 					foreach (var ni in ReadXData ())
+					{
 						yield return ni;
+					}
+				}
 				else if (xm.Type.IsCollection) {
 					yield return Node (XamlNodeType.GetObject, xm.Type);
 					yield return Node (XamlNodeType.StartMember, XamlLanguage.Items);
 					foreach (var ni in ReadCollectionItems (parentType, XamlLanguage.Items))
+					{
 						yield return ni;
+					}
+
 					yield return Node (XamlNodeType.EndMember, XamlLanguage.Items);
 					yield return Node (XamlNodeType.EndObject, xm.Type);
 				}
 				else
+				{
 					throw new XamlParseException (String.Format ("Read-only member '{0}' showed up in the source XML, and the xml contains element content that cannot be read.", xm.Name)) { LineNumber = this.LineNumber, LinePosition = this.LinePosition };
+				}
 			} else {
 				if (xm.Type.IsCollection || xm.Type.IsDictionary) {
 					foreach (var ni in ReadCollectionItems (parentType, xm))
+					{
 						yield return ni;
+					}
 				}
 				else
 				{
@@ -793,7 +859,10 @@ namespace Uno.Xaml
 						foreach (var ni in ReadObjectElement(parentType, xm))
 						{
 							if (ni.NodeType == XamlNodeType.None)
+							{
 								throw new Exception("should not happen");
+							}
+
 							yield return ni;
 						}
 					}					
@@ -924,7 +993,9 @@ namespace Uno.Xaml
 			public IEnumerable<NamespaceDeclaration> GetNamespacePrefixes ()
 			{
 				foreach (var p in source.GetNamespacesInScope (XmlNamespaceScope.All))
+				{
 					yield return new NamespaceDeclaration (p.Value, p.Key);
+				}
 			}
 		}
 	}

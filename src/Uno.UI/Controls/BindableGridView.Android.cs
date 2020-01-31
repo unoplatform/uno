@@ -140,14 +140,20 @@ namespace Uno.UI.Controls
 		private void ExecuteCommandOnItem(ICommand command, int position)
 		{
 			if (command == null)
+			{
 				return;
+			}
 
 			var item = BindableAdapter.GetRawItem(position);
 			if (item == null)
+			{
 				return;
+			}
 
 			if (!command.CanExecute(item))
+			{
 				return;
+			}
 
 			command.Execute(item);
 		}

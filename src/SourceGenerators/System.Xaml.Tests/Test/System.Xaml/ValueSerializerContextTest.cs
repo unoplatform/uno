@@ -59,7 +59,10 @@ namespace MonoTests.Uno.Xaml
 			var obj = new TestValueSerialized ();
 			var xr = new XamlObjectReader (obj);
 			while (!xr.IsEof)
+			{
 				xr.Read ();
+			}
+
 			Assert.IsNotNull (Context, "premise#1");
 			GetServiceCoreReader ();
 

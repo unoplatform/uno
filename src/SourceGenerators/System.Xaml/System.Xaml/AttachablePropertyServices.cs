@@ -16,7 +16,10 @@ namespace Uno.Xaml
 		{
 			Table t;
 			if (instance == null || !props.TryGetValue (instance, out t))
+			{
 				return;
+			}
+
 			((ICollection<KeyValuePair<AttachableMemberIdentifier,object>>) t).CopyTo (array, index);
 		}
 
@@ -29,7 +32,9 @@ namespace Uno.Xaml
 		public static bool RemoveProperty (object instance, AttachableMemberIdentifier name)
 		{
 			if (name == null)
+			{
 				throw new ArgumentNullException ("name");
+			}
 
 			Table t;
 			return instance != null && props.TryGetValue (instance, out t) ? t.Remove (name) : false;
@@ -38,7 +43,9 @@ namespace Uno.Xaml
 		public static void SetProperty (object instance, AttachableMemberIdentifier name, object value)
 		{
 			if (name == null)
+			{
 				throw new ArgumentNullException ("name");
+			}
 
 			Table t;
 			if (!props.TryGetValue (instance, out t)) {
@@ -51,7 +58,9 @@ namespace Uno.Xaml
 		public static bool TryGetProperty (object instance, AttachableMemberIdentifier name, out object value)
 		{
 			if (name == null)
+			{
 				throw new ArgumentNullException ("name");
+			}
 
 			Table t;
 			value = null;

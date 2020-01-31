@@ -61,7 +61,9 @@ namespace MonoTests.System.Windows.Markup
 				}
 				var v = t.ValueSerializer.ConverterInstance;
 				foreach (var val in test_values)
+				{
 					Assert.IsTrue (v.CanConvertToString (val, null), t.Name + "_" + (val != null ? val.GetType () : null));
+				}
 			}
 		}
 
@@ -79,13 +81,17 @@ namespace MonoTests.System.Windows.Markup
 					continue;
 				}
 				else if (v == null)
+				{
 					Assert.Fail ("Missing serializer for " + t.Name);
+				}
 
 				// String ValueSerializer is the only exceptional one that mostly fails ConvertToString().
 				// For remaining types, ConvertToString() should succeed.
 				// What is funny or annoying here is, that always return true for CanConvertToString() while everything fails at ConvertToString() on .NET.
 				if (t.UnderlyingType == typeof (string))
+				{
 					continue;
+				}
 
 				int i = 0;
 				foreach (var val in test_values) {

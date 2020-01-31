@@ -54,7 +54,10 @@ namespace Uno.Xaml
 			public XamlType Find (string name, string ns)
 			{
 				if (ns != XamlLanguage.Xaml2006Namespace)
+				{
 					return null;
+				}
+
 				var stn = this.FirstOrDefault (s => s.Name == name);
 				return stn != null ? stn.Type : null;
 			}
@@ -225,19 +228,33 @@ namespace Uno.Xaml
 		internal static bool IsValidXamlName (string name)
 		{
 			if (string.IsNullOrEmpty (name))
+			{
 				return false;
+			}
+
 			if (!IsValidXamlName (name [0], true))
+			{
 				return false;
+			}
+
 			foreach (char c in name)
+			{
 				if (!IsValidXamlName (c, false))
+				{
 					return false;
+				}
+			}
+
 			return true;
 		}
 
 		static bool IsValidXamlName (char c, bool first)
 		{
 			if (c == '_')
+			{
 				return true;
+			}
+
 			switch (char.GetUnicodeCategory (c)) {
 			case UnicodeCategory.LowercaseLetter:
 			case UnicodeCategory.UppercaseLetter:

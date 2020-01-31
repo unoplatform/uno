@@ -46,7 +46,10 @@ namespace Uno.Xaml
 		{
 			object obj = external != null ? external.FindName (name) : null;
 			if (obj != null)
+			{
 				return obj;
+			}
+
 			return table.TryGetValue (name, out obj) ? obj : null;
 		}
 

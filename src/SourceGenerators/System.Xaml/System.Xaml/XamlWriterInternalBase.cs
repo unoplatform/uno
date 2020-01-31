@@ -119,8 +119,13 @@ namespace Uno.Xaml
 		internal string GetPrefix (string ns)
 		{
 			foreach (var nd in namespaces)
+			{
 				if (nd.Namespace == ns)
+				{
 					return nd.Prefix;
+				}
+			}
+
 			return null;
 		}
 
@@ -151,7 +156,9 @@ namespace Uno.Xaml
 		public void WriteNamespace (NamespaceDeclaration namespaceDeclaration)
 		{
 			if (namespaceDeclaration == null)
+			{
 				throw new ArgumentNullException ("namespaceDeclaration");
+			}
 
 			manager.Namespace ();
 
@@ -162,7 +169,9 @@ namespace Uno.Xaml
 		public void WriteStartObject (XamlType xamlType)
 		{
 			if (xamlType == null)
+			{
 				throw new ArgumentNullException ("xamlType");
+			}
 
 			manager.StartObject ();
 
@@ -182,20 +191,29 @@ namespace Uno.Xaml
 		public void WriteStartMember (XamlMember property)
 		{
 			if (property == null)
+			{
 				throw new ArgumentNullException ("property");
+			}
 
 			manager.StartMember ();
 			if (property == XamlLanguage.PositionalParameters)
 				// this is an exception that indicates the state manager to accept more than values within this member.
+			{
 				manager.AcceptMultipleValues = true;
+			}
 
 			var state = object_states.Peek ();
 			var wpl = state.WrittenProperties;
 			if (wpl.Any (wp => wp.Member == property))
+			{
 				throw new XamlDuplicateMemberException (String.Format ("Property '{0}' is already set to this '{1}' object", property, object_states.Peek ().Type));
+			}
+
 			wpl.Add (new MemberAndValue (property));
 			if (property == XamlLanguage.PositionalParameters)
+			{
 				state.PositionalParameterIndex = 0;
+			}
 
 			OnWriteStartMember (property);
 		}
@@ -240,16 +258,25 @@ namespace Uno.Xaml
 		{
 			// change XamlXmlReader too if we change here.
 			if ((value as string) == String.Empty) // FIXME: there could be some escape syntax.
+			{
 				return "\"\"";
+			}
+
 			if (value is string)
+			{
 				return (string) value;
+			}
 
 			var xt = value == null ? XamlLanguage.Null : sctx.GetXamlType (value.GetType ());
 			var vs = xm.ValueSerializer ?? xt.ValueSerializer;
 			if (vs != null)
+			{
 				return vs.ConverterInstance.ConvertToString (value, service_provider);
+			}
 			else
+			{
 				throw new XamlXmlWriterException (String.Format ("Value type is '{0}' but it must be either string or any type that is convertible to string indicated by TypeConverterAttribute.", value != null ? value.GetType () : null));
+			}
 		}
 	}
 }

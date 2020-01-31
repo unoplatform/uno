@@ -143,7 +143,9 @@ namespace MonoTests.Uno.Xaml
 		public override object ProvideValue (IServiceProvider serviceProvider)
 		{
 			if (Type == null)
+			{
 				throw new InvalidOperationException ("Type property must be set before calling ProvideValue method");
+			}
 
 			Array a = Array.CreateInstance (Type, Items.Count);
 			Items.CopyTo (a, 0);
@@ -183,7 +185,9 @@ namespace MonoTests.Uno.Xaml
 		public override object ProvideValue (IServiceProvider serviceProvider)
 		{
 			if (Type == null)
+			{
 				throw new InvalidOperationException ("Type property must be set before calling ProvideValue method");
+			}
 
 			Array a = Array.CreateInstance (Type, Items.Count);
 			Items.CopyTo (a, 0);
@@ -530,7 +534,10 @@ namespace MonoTests.Uno.Xaml
 			var sp = context as IServiceProvider;
 			// ValueSerializerContextTest.Context = (IValueSerializerContext) context; -> causes InvalidCastException
 			if ((source as string) == "v")
+			{
 				return new TestValueSerialized ();
+			}
+
 			throw new Exception ("huh");
 		}
 
@@ -592,7 +599,9 @@ namespace MonoTests.Uno.Xaml
 			if (raw != null) {
 				var xr = XmlReader.Create (new StringReader (raw));
 				while (!xr.EOF)
+				{
 					writer.WriteNode (xr, false);
+				}
 			}
 		}
 		
@@ -764,11 +773,18 @@ namespace MonoTests.Uno.Xaml
 		public object Examine ()
 		{
 			if (Event1 != null)
+			{
 				Event1 (this, EventArgs.Empty);
+			}
+
 			if (Event2 != null)
+			{
 				return Event2 ();
+			}
 			else
+			{
 				return null;
+			}
 		}
 
 		public void Method1 ()
@@ -797,11 +813,18 @@ namespace MonoTests.Uno.Xaml
 		public object Examine ()
 		{
 			if (Event1 != null)
+			{
 				Event1 (this, default (TEventArgs));
+			}
+
 			if (Event2 != null)
+			{
 				return Event2 ();
+			}
 			else
+			{
 				return null;
+			}
 		}
 
 		public void Method1 ()
@@ -970,7 +993,9 @@ namespace SecondTest
 		{
 			string configValue = value as string;
 			if (string.IsNullOrWhiteSpace (configValue))
+			{
 				return null;
+			}
 
 			string delimiterStr = ", ";
 			char [] delimiters = delimiterStr.ToCharArray ();
@@ -978,7 +1003,9 @@ namespace SecondTest
 
 			List<uint?> parsedList = new List<uint?> (tokens.Length);
 			foreach (string token in tokens)
+			{
 				parsedList.Add(uint.Parse(token));
+			}
 
 			return parsedList;
 		}
@@ -1027,7 +1054,10 @@ namespace SecondTest
 			// ResourceDict is marked as Ambient, so the instance current being deserialized should be in this list.
 			List<AmbientPropertyValue> list = provider.GetAllAmbientValues (null, false, types) as List<AmbientPropertyValue>;
 			if (list.Count != 1)
+			{
 				throw new Exception ("expected ambient property count == 1 but " + list.Count);
+			}
+
 			for (int i = 0; i < list.Count; i++) {
 				AmbientPropertyValue value = list [i];
 				ResourcesDict dict = value.Value as ResourcesDict;
@@ -1289,7 +1319,11 @@ Loaded Parent
 		public static string GetAssociatedProperty (Child child)
 		{
 			object value;
-			if (child.Properties.TryGetValue ("myassociatedproperty", out value)) return value as string;
+			if (child.Properties.TryGetValue ("myassociatedproperty", out value))
+			{
+				return value as string;
+			}
+
 			return null;
 		}
 		

@@ -348,7 +348,10 @@ namespace MonoTests.Uno.Xaml.Schema
 			var items = i.GetItems (list);
 			var arr = new List<object> ();
 			while (items.MoveNext ())
+			{
 				arr.Add (items.Current);
+			}
+
 			Assert.AreEqual (5, arr [0], "#1");
 			Assert.AreEqual (0, arr [2], "#2");
 		}
@@ -365,7 +368,10 @@ namespace MonoTests.Uno.Xaml.Schema
 			var items = i.GetItems (dic);
 			var arr = new List<object> ();
 			while (items.MoveNext ())
+			{
 				arr.Add (items.Current);
+			}
+
 			Assert.AreEqual (new KeyValuePair<int,string> (5, "foo"), arr [0], "#1");
 			Assert.AreEqual (new KeyValuePair<int,string> (0, "baz"), arr [2], "#1");
 		}

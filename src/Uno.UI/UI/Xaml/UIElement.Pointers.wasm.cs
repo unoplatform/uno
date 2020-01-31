@@ -130,8 +130,15 @@ namespace Windows.UI.Xaml
 			var position = new Point(x, y);
 			var pointerType = ConvertPointerTypeString(typeStr);
 			var keyModifiers = VirtualKeyModifiers.None;
-			if (ctrl) keyModifiers |= VirtualKeyModifiers.Control;
-			if (shift) keyModifiers |= VirtualKeyModifiers.Shift;
+			if (ctrl)
+			{
+				keyModifiers |= VirtualKeyModifiers.Control;
+			}
+
+			if (shift)
+			{
+				keyModifiers |= VirtualKeyModifiers.Shift;
+			}
 
 			return new PointerRoutedEventArgs(
 				timestamp,

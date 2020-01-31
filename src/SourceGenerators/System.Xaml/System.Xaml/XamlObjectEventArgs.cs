@@ -33,7 +33,10 @@ namespace Uno.Xaml
 		public XamlObjectEventArgs (object instance)
 		{
 			if (instance == null)
+			{
 				throw new ArgumentNullException ("instance");
+			}
+
 			Instance = instance;
 		}
 

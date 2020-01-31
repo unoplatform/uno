@@ -48,9 +48,15 @@ namespace Uno.Xaml
 		static string FormatLine (string message, int lineNumber, int linePosition)
 		{
 			if (lineNumber <= 0)
+			{
 				return message;
+			}
+
 			if (linePosition <= 0)
+			{
 				return String.Format ("{0} at line {1}", message, lineNumber);
+			}
+
 			return String.Format ("{0} at line {1}, position {2}", message, lineNumber, linePosition);
 		}
 

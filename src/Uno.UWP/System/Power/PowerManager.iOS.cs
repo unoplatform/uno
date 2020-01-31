@@ -32,7 +32,11 @@ namespace Windows.System.Power
 			   
 		private static void StartEnergySaverStatusMonitoring()
 		{
-			if (_isSimulator) return;
+			if (_isSimulator)
+			{
+				return;
+			}
+
 			TryAddNotificationSubscription(
 				NSProcessInfo.PowerStateDidChangeNotification,
 				ref _powerStateChangeSubscription,
@@ -44,7 +48,11 @@ namespace Windows.System.Power
 
 		private static void StartRemainingChargePercentMonitoring()
 		{
-			if (_isSimulator) return;
+			if (_isSimulator)
+			{
+				return;
+			}
+
 			TryAddNotificationSubscription(
 				UIDevice.BatteryLevelDidChangeNotification,
 				ref _batteryLevelChangeSubscription,
@@ -68,9 +76,13 @@ namespace Windows.System.Power
 
 		private static void StartIosBatteryStateMonitoring()
 		{
-			if (_isSimulator) return;
+			if (_isSimulator)
+			{
+				return;
+			}
+
 			if (_batteryStatusChanged == null &&
-				_powerSupplyStatusChanged == null)
+			    _powerSupplyStatusChanged == null)
 			{
 				TryAddNotificationSubscription(
 				UIDevice.BatteryStateDidChangeNotification,
@@ -127,8 +139,15 @@ namespace Windows.System.Power
 
 		private static int GetRemainingChargePercent()
 		{
-			if (_isSimulator) return 100;
-			if (_device.BatteryLevel < 0.0f) return 0;
+			if (_isSimulator)
+			{
+				return 100;
+			}
+
+			if (_device.BatteryLevel < 0.0f)
+			{
+				return 0;
+			}
 
 			return (int)Math.Round(_device.BatteryLevel * 100f);
 		}

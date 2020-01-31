@@ -85,7 +85,9 @@ namespace Uno.Xaml
 			ret.Type = xt;
 
 			if (idx < 0)
+			{
 				return ret;
+			}
 
 			var valueWithoutBinding = raw.Substring(idx + 1, raw.Length - idx - 1);
 

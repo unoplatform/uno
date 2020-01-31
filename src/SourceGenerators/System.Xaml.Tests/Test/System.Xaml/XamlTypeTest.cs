@@ -559,7 +559,9 @@ namespace MonoTests.Uno.Xaml
 			Assert.AreEqual (2, members.Count, "#31");
 			string [] names = {"Arg1", "Arg2"};
 			foreach (var member in members)
+			{
 				Assert.IsTrue (Array.IndexOf (names, member.Name) >= 0, "#32");
+			}
 		}
 
 		[Test]
@@ -649,7 +651,9 @@ namespace MonoTests.Uno.Xaml
 		{
 			foreach (var xt in XamlLanguage.AllTypes)
 				foreach (var xd in XamlLanguage.AllDirectives)
+				{
 					Assert.IsNull (xt.GetAliasedProperty (xd), xt.Name + " and " + xd.Name);
+				}
 		}
 
 		[DictionaryKeyProperty ("Key")]
@@ -749,7 +753,10 @@ namespace MonoTests.Uno.Xaml
 		{
 			foreach (var xt1 in XamlLanguage.AllTypes)
 				foreach (var xt2 in XamlLanguage.AllTypes)
+				{
 					Assert.AreEqual (xt1.UnderlyingType.IsAssignableFrom (xt2.UnderlyingType), xt2.CanAssignTo (xt1), "{0} to {1}", xt1, xt2);
+				}
+
 			Assert.IsTrue (XamlLanguage.Type.CanAssignTo (XamlLanguage.Object), "x#1"); // specific test
 			Assert.IsFalse (new MyXamlType ("MyFooBar", null, sctx).CanAssignTo (XamlLanguage.String), "x#2"); // custom type to string -> false
 			Assert.IsTrue (new MyXamlType ("MyFooBar", null, sctx).CanAssignTo (XamlLanguage.Object), "x#3"); // custom type to object -> true!

@@ -31,7 +31,10 @@ namespace Uno.Xaml
 		public XamlBackgroundReader (XamlReader wrappedReader)
 		{
 			if (wrappedReader == null)
+			{
 				throw new ArgumentNullException ("wrappedReader");
+			}
+
 			r = wrappedReader;
 			q = new XamlNodeQueue (r.SchemaContext) { LineInfoProvider = r as IXamlLineInfo };
 		}
@@ -91,7 +94,10 @@ namespace Uno.Xaml
 		public override bool Read ()
 		{
 			if (q.IsEmpty)
+			{
 				wait.WaitOne ();
+			}
+
 			return q.Reader.Read ();
 		}
 		
@@ -103,7 +109,10 @@ namespace Uno.Xaml
 		public void StartThread (string threadName)
 		{
 			if (thread != null)
+			{
 				throw new InvalidOperationException ("Thread has already started");
+			}
+
 			thread = new Thread (new ParameterizedThreadStart (delegate {
 				while (do_work && r.Read ()) {
 					q.Writer.WriteNode (r);

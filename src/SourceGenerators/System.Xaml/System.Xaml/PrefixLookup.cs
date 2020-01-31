@@ -50,9 +50,13 @@ namespace Uno.Xaml
 		{
 			var nd = Namespaces.FirstOrDefault (n => n.Namespace == ns);
 			if (nd == null && IsCollectingNamespaces)
+			{
 				return AddNamespace (ns);
+			}
 			else
+			{
 				return nd != null ? nd.Prefix : null;
+			}
 		}
 		
 		public string AddNamespace (string ns)
@@ -60,13 +64,22 @@ namespace Uno.Xaml
 			var l = Namespaces;
 			string prefix, s;
 			if (ns == XamlLanguage.Xaml2006Namespace)
+			{
 				prefix = "x";
+			}
 			else if (!l.Any (i => i.Prefix == String.Empty))
+			{
 				prefix = String.Empty;
+			}
 			else if ((s = GetAcronym (ns)) != null && !l.Any (i => i.Prefix == s))
+			{
 				prefix = s;
+			}
 			else
+			{
 				prefix = sctx.GetPreferredPrefix (ns);
+			}
+
 			l.Add (new NamespaceDeclaration (ns, prefix));
 			return prefix;
 		}
@@ -75,15 +88,26 @@ namespace Uno.Xaml
 		{
 			int idx = ns.IndexOf (';');
 			if (idx < 0)
+			{
 				return null;
+			}
+
 			string pre = "clr-namespace:";
 			if (!ns.StartsWith (pre, StringComparison.Ordinal))
+			{
 				return null;
+			}
+
 			ns = ns.Substring (pre.Length, idx - pre.Length);
 			string ac = "";
 			foreach (string nsp in ns.Split (new char[] { '.' }))
+			{
 				if (nsp.Length > 0)
+				{
 					ac += nsp [0];
+				}
+			}
+
 			return ac.Length > 0 ? ac.ToLower (CultureInfo.InvariantCulture) : null;
 		}
 	}

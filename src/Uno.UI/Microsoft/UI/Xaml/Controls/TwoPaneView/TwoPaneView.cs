@@ -130,7 +130,10 @@ namespace Microsoft.UI.Xaml.Controls
 		void UpdateMode()
 		{
 			// Don't bother running this logic until after we hit OnApplyTemplate.
-			if (!m_loaded) return;
+			if (!m_loaded)
+			{
+				return;
+			}
 
 			double controlWidth = ActualWidth;
 			double controlHeight = ActualHeight;

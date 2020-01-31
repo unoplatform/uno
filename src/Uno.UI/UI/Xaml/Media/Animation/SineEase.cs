@@ -19,7 +19,9 @@ namespace Windows.UI.Xaml.Media.Animation
 
 				case EasingMode.EaseInOut:
 					if ((currentTime /= duration / 2) < 1)
+					{
 						return finalValue / 2 * (Math.Sin(Math.PI * currentTime / 2)) + startValue;
+					}
 
 					return -finalValue / 2 * (Math.Cos(Math.PI * --currentTime / 2) - 2) + startValue;
 

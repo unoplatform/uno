@@ -133,7 +133,9 @@ namespace Uno.UI.Controls
         protected virtual void OnScreenChanged(ScreenChangedEventArgs e)
         {
             if (ScreenChanged != null)
-                ScreenChanged(this, e);
+            {
+	            ScreenChanged(this, e);
+            }
         }
 
         #endregion
@@ -149,7 +151,9 @@ namespace Uno.UI.Controls
             set
             {
                 if (null != Adapter)
-                    Adapter.UnregisterDataSetObserver(_dataSetObserver);
+                {
+	                Adapter.UnregisterDataSetObserver(_dataSetObserver);
+                }
 
                 _adapter = value;
                 _adapter.RegisterDataSetObserver(_dataSetObserver);
@@ -214,8 +218,10 @@ namespace Uno.UI.Controls
             base.OnLayout(changed, left, top, right, bottom);
 
             if (null == Adapter)
-                return;
-			
+            {
+	            return;
+            }
+
             _paddingTop = PaddingTop;
             _height = bottom - top;
             LayoutChildren();
@@ -235,9 +241,11 @@ namespace Uno.UI.Controls
 			}
 
 			if (Scroller.ComputeScrollOffset())
-                _nextX = Scroller.CurrX;
+			{
+				_nextX = Scroller.CurrX;
+			}
 
-            if (_nextX <= 0)
+			if (_nextX <= 0)
             {
                 _nextX = 0;
                 Scroller.ForceFinished(true);
@@ -257,7 +265,9 @@ namespace Uno.UI.Controls
             CurrentX = _nextX;
 
             if (!Scroller.IsFinished)
-                Post(RefreshPosition);
+            {
+	            Post(RefreshPosition);
+            }
         }
 
         private void RecycleAllItems()
@@ -374,13 +384,19 @@ namespace Uno.UI.Controls
             var edge = _displayOffset; //TODO: https://github.com/dinocore1/DevsmartLib-Android/issues/24
             var child = GetChildAt(ChildCount - 1);
             if (null != child)
-                edge = child.Right;
+            {
+	            edge = child.Right;
+            }
+
             FillListRight(edge, dx);
 
             edge = 0;
             child = GetChildAt(0);
             if (null != child)
-                edge = child.Left;
+            {
+	            edge = child.Left;
+            }
+
             FillListLeft(edge, dx);
         }
 
@@ -405,7 +421,9 @@ namespace Uno.UI.Controls
 			    }
 
 			    if (_maxX < 0)
+			    {
 				    _maxX = 0;
+			    }
 
 			    _rightViewIndex++;
 		    }
@@ -490,7 +508,10 @@ namespace Uno.UI.Controls
             if (Snap) // Oh snap!
             {
                 if (_velocityTracker == null)
-                    _velocityTracker = VelocityTracker.Obtain();
+                {
+	                _velocityTracker = VelocityTracker.Obtain();
+                }
+
                 _velocityTracker.AddMovement(e);
 
                 if (e.Action == MotionEventActions.Cancel || e.Action == MotionEventActions.Up)
@@ -500,11 +521,17 @@ namespace Uno.UI.Controls
                     var velocityX = (int)velocityTracker.XVelocity;
 
                     if (velocityX > _densityAdjustedSnapVelocity && CurrentScreen > 0)
-                        SnapToScreen(CurrentScreen - 1);
+                    {
+	                    SnapToScreen(CurrentScreen - 1);
+                    }
                     else if (velocityX < -_densityAdjustedSnapVelocity && CurrentScreen < Adapter.Count - 1)
-                        SnapToScreen(CurrentScreen + 1);
+                    {
+	                    SnapToScreen(CurrentScreen + 1);
+                    }
                     else
-                        SnapToDestination();
+                    {
+	                    SnapToDestination();
+                    }
 
                     if (null != _velocityTracker)
                     {
@@ -548,9 +575,13 @@ namespace Uno.UI.Controls
             var deltaX = _nextX - (Width * CurrentScreen);
 
             if ((deltaX < 0) && CurrentScreen != 0 && (Width / FractionOfScreenWidthForSwipe < -deltaX))
-                whichScreen--;
+            {
+	            whichScreen--;
+            }
             else if ((deltaX > 0) && (CurrentScreen + 1 != Adapter.Count) && (Width / FractionOfScreenWidthForSwipe < deltaX))
-                whichScreen++;
+            {
+	            whichScreen++;
+            }
 
             SnapToScreen(whichScreen, duration);
         }
@@ -670,13 +701,23 @@ namespace Uno.UI.Controls
                 {
                     var child = _horizontalListView.GetChildAt(i);
 
-                    if (!IsEventWithinView(e, child)) continue;
+                    if (!IsEventWithinView(e, child))
+                    {
+	                    continue;
+                    }
+
                     if (null != _horizontalListView.OnItemClickListener)
-                        _horizontalListView.OnItemClickListener.OnItemClick(_horizontalListView, child, _horizontalListView._leftViewIndex + 1 + i,
-                                                                            _horizontalListView.Adapter.GetItemId(_horizontalListView._leftViewIndex + 1 + i));
+                    {
+	                    _horizontalListView.OnItemClickListener.OnItemClick(_horizontalListView, child, _horizontalListView._leftViewIndex + 1 + i,
+		                    _horizontalListView.Adapter.GetItemId(_horizontalListView._leftViewIndex + 1 + i));
+                    }
+
                     if (null != _horizontalListView.OnItemSelectedListener)
-                        _horizontalListView.OnItemSelectedListener.OnItemSelected(_horizontalListView, child, _horizontalListView._leftViewIndex + 1 + i,
-                                                                                  _horizontalListView.Adapter.GetItemId(_horizontalListView._leftViewIndex + 1 + i));
+                    {
+	                    _horizontalListView.OnItemSelectedListener.OnItemSelected(_horizontalListView, child, _horizontalListView._leftViewIndex + 1 + i,
+		                    _horizontalListView.Adapter.GetItemId(_horizontalListView._leftViewIndex + 1 + i));
+                    }
+
                     break;
                 }
 
@@ -689,10 +730,17 @@ namespace Uno.UI.Controls
                 {
                     var child = _horizontalListView.GetChildAt(i);
 
-                    if (!IsEventWithinView(e, child)) continue;
+                    if (!IsEventWithinView(e, child))
+                    {
+	                    continue;
+                    }
+
                     if (null != _horizontalListView.OnItemLongClickListener)
-                        _horizontalListView.OnItemLongClickListener.OnItemLongClick(_horizontalListView, child, _horizontalListView._leftViewIndex + 1 + i,
-                                                                                    _horizontalListView.Adapter.GetItemId(_horizontalListView._leftViewIndex + 1 + i));
+                    {
+	                    _horizontalListView.OnItemLongClickListener.OnItemLongClick(_horizontalListView, child, _horizontalListView._leftViewIndex + 1 + i,
+		                    _horizontalListView.Adapter.GetItemId(_horizontalListView._leftViewIndex + 1 + i));
+                    }
+
                     break;
                 }
             }

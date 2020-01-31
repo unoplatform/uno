@@ -167,35 +167,74 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 			target.RemoveHandler(RightTappedEvent, _logRightTapped);
 
 			if (allEvents || _ptEntered.IsOn)
+			{
 				target.AddHandler(PointerEnteredEvent, _logPointerEntered, handledToo);
+			}
+
 			if (allEvents || _ptPressed.IsOn)
+			{
 				target.AddHandler(PointerPressedEvent, _logPointerPressed, handledToo);
+			}
+
 			if (allEvents || _ptMoved.IsOn)
+			{
 				target.AddHandler(PointerMovedEvent, _logPointerMoved, handledToo);
+			}
+
 			if (allEvents || _ptReleased.IsOn)
+			{
 				target.AddHandler(PointerReleasedEvent, _logPointerReleased, handledToo);
+			}
+
 			if (allEvents || _ptExited.IsOn)
+			{
 				target.AddHandler(PointerExitedEvent, _logPointerExited, handledToo);
+			}
+
 			if (allEvents || _ptCanceled.IsOn)
+			{
 				target.AddHandler(PointerCanceledEvent, _logPointerCanceled, handledToo);
+			}
+
 			if (allEvents || _ptCaptureLost.IsOn)
+			{
 				target.AddHandler(PointerCaptureLostEvent, _logPointerCaptureLost, handledToo);
+			}
 
 			if (allEvents || _manipStarting.IsOn)
+			{
 				target.AddHandler(ManipulationStartingEvent, _logManipulationStarting, handledToo);
+			}
+
 			if (allEvents || _manipStarted.IsOn)
+			{
 				target.AddHandler(ManipulationStartedEvent, _logManipulationStarted, handledToo);
+			}
+
 			if (allEvents || _manipDelta.IsOn)
+			{
 				target.AddHandler(ManipulationDeltaEvent, _logManipulationDelta, handledToo);
+			}
+
 			if (allEvents || _manipCompleted.IsOn)
+			{
 				target.AddHandler(ManipulationCompletedEvent, _logManipulationCompleted, handledToo);
+			}
 
 			if (allEvents || _gestureTapped.IsOn)
+			{
 				target.AddHandler(TappedEvent, _logTapped, handledToo);
+			}
+
 			if (allEvents || _gestureDoubleTapped.IsOn)
+			{
 				target.AddHandler(DoubleTappedEvent, _logDoubleTapped, handledToo);
+			}
+
 			if (allEvents || _gestureRightTapped.IsOn)
+			{
 				target.AddHandler(RightTappedEvent, _logRightTapped, handledToo);
+			}
 		}
 
 		private (EventValidity, string error) Validate(object snd, RoutedEvent evt, RoutedEventArgs args)
@@ -357,21 +396,57 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 				var builder = new StringBuilder();
 
 				// Common
-				if (props.IsPrimary) builder.Append("primary ");
-				if (props.IsInRange) builder.Append("in_range ");
+				if (props.IsPrimary)
+				{
+					builder.Append("primary ");
+				}
 
-				if (props.IsLeftButtonPressed) builder.Append("left ");
-				if (props.IsMiddleButtonPressed) builder.Append("middle ");
-				if (props.IsRightButtonPressed) builder.Append("right ");
+				if (props.IsInRange)
+				{
+					builder.Append("in_range ");
+				}
+
+				if (props.IsLeftButtonPressed)
+				{
+					builder.Append("left ");
+				}
+
+				if (props.IsMiddleButtonPressed)
+				{
+					builder.Append("middle ");
+				}
+
+				if (props.IsRightButtonPressed)
+				{
+					builder.Append("right ");
+				}
 
 				// Mouse
-				if (props.IsHorizontalMouseWheel) builder.Append("scroll_Y ");
-				if (props.IsXButton1Pressed) builder.Append("alt_butt_1 ");
-				if (props.IsXButton2Pressed) builder.Append("alt_butt_2");
+				if (props.IsHorizontalMouseWheel)
+				{
+					builder.Append("scroll_Y ");
+				}
+
+				if (props.IsXButton1Pressed)
+				{
+					builder.Append("alt_butt_1 ");
+				}
+
+				if (props.IsXButton2Pressed)
+				{
+					builder.Append("alt_butt_2");
+				}
 
 				// Pen
-				if (props.IsBarrelButtonPressed) builder.Append("barrel ");
-				if (props.IsEraser) builder.Append("eraser ");
+				if (props.IsBarrelButtonPressed)
+				{
+					builder.Append("barrel ");
+				}
+
+				if (props.IsEraser)
+				{
+					builder.Append("eraser ");
+				}
 
 				// Misc
 				builder.Append('(');

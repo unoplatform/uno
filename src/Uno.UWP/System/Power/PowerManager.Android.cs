@@ -128,7 +128,10 @@ namespace Windows.System.Power
 		{
 			//two different events use this broadcast receiver
 			if (_powerSupplyStatusChanged != null ||
-				_batteryStatusChanged != null) return;
+				_batteryStatusChanged != null)
+			{
+				return;
+			}
 
 			if (_powerConnectionBroadcastReceiver != null)
 			{
@@ -152,7 +155,10 @@ namespace Windows.System.Power
 		{
 			//two events use this broadcast
 			if (_batteryStatusChanged != null ||
-				_remainingChargePercentChanged != null) return;
+				_remainingChargePercentChanged != null)
+			{
+				return;
+			}
 
 			if (_batteryChangedBroadcastReceiver != null)
 			{

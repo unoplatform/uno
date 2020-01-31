@@ -67,14 +67,20 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
 
         private void PanePriorityComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (TwoPaneView == null) return;
+            if (TwoPaneView == null)
+            {
+	            return;
+            }
 
             TwoPaneView.PanePriority = PanePriorityComboBox.SelectedIndex == 0 ? TwoPaneViewPriority.Pane1 : TwoPaneViewPriority.Pane2;
         }
 
         private void WideModeConfigurationComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (TwoPaneView == null) return;
+            if (TwoPaneView == null)
+            {
+	            return;
+            }
 
             switch (WideModeConfigurationComboBox.SelectedIndex)
             {
@@ -86,7 +92,10 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
 
         private void TallModeConfigurationComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (TwoPaneView == null) return;
+            if (TwoPaneView == null)
+            {
+	            return;
+            }
 
             switch (TallModeConfigurationComboBox.SelectedIndex)
             {
@@ -98,7 +107,10 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
 
         private void MinWideModeWidthTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (TwoPaneView == null) return;
+            if (TwoPaneView == null)
+            {
+	            return;
+            }
 
             double newWidth;
             if (double.TryParse(MinWideModeWidthTextBox.Text, out newWidth))
@@ -109,7 +121,10 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
 
         private void MinTallModeHeightTextBox_TextChanged(object sender, TextChangedEventArgs e)
         {
-            if (TwoPaneView == null) return;
+            if (TwoPaneView == null)
+            {
+	            return;
+            }
 
             double newHeight;
             if (double.TryParse(MinTallModeHeightTextBox.Text, out newHeight))
@@ -120,7 +135,10 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
 
         private void WidthComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (TwoPaneView == null) return;
+            if (TwoPaneView == null)
+            {
+	            return;
+            }
 
             switch (WidthComboBox.SelectedIndex)
             {
@@ -132,7 +150,10 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
 
         private void HeightComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (TwoPaneView == null) return;
+            if (TwoPaneView == null)
+            {
+	            return;
+            }
 
             switch (HeightComboBox.SelectedIndex)
             {
@@ -144,7 +165,10 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
 
         private void SimulateComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            if (TwoPaneView == null) return;
+            if (TwoPaneView == null)
+            {
+	            return;
+            }
 
             switch (SimulateComboBox.SelectedIndex)
             {
@@ -250,7 +274,10 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TwoPaneViewTests
 
         private void UpdateLength(int pane)
         {
-            if (TwoPaneView == null) return;
+            if (TwoPaneView == null)
+            {
+	            return;
+            }
 
             TextBox textBox = pane == 1 ? Pane1LengthTextBox : Pane2LengthTextBox;
             ComboBox comboBox = pane == 1 ? Pane1LengthComboBox : Pane2LengthComboBox;

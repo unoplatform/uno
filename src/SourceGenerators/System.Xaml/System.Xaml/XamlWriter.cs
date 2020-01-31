@@ -56,7 +56,9 @@ namespace Uno.Xaml
 		public void WriteNode (XamlReader reader)
 		{
 			if (reader == null)
+			{
 				throw new ArgumentNullException ("reader");
+			}
 
 			switch (reader.NodeType) {
 			case XamlNodeType.StartObject:

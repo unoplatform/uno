@@ -43,7 +43,10 @@ namespace Uno.Xaml
 			: this (new string [] {xamlNamespace}, name, new XamlType (typeof (object), new XamlSchemaContext (new XamlSchemaContextSettings ())), null, AllowedMemberLocations.Any)
 		{
 			if (xamlNamespace == null)
+			{
 				throw new ArgumentNullException ("xamlNamespace");
+			}
+
 			is_unknown = true;
 		}
 
@@ -51,9 +54,14 @@ namespace Uno.Xaml
 			: base (true, xamlNamespaces != null ? xamlNamespaces.FirstOrDefault () : null, name)
 		{
 			if (xamlNamespaces == null)
+			{
 				throw new ArgumentNullException ("xamlNamespaces");
+			}
+
 			if (xamlType == null)
+			{
 				throw new ArgumentNullException ("xamlType");
+			}
 
 			type = xamlType;
 			xaml_namespaces = new List<string> (xamlNamespaces);
@@ -153,7 +161,10 @@ namespace Uno.Xaml
 		protected override sealed XamlValueConverter<TypeConverter> LookupTypeConverter ()
 		{
 			if (type_converter == null)
+			{
 				type_converter = base.LookupTypeConverter ();
+			}
+
 			return type_converter;
 		}
 

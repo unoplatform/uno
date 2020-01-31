@@ -75,10 +75,15 @@ namespace Uno.Xaml
 		public XamlObjectReader (object instance, XamlSchemaContext schemaContext, XamlObjectReaderSettings settings)
 		{
 			if (schemaContext == null)
+			{
 				throw new ArgumentNullException ("schemaContext");
+			}
+
 			// FIXME: special case? or can it be generalized? In .NET, For Type instance Instance returns TypeExtension at root StartObject, while for Array it remains to return Array.
 			if (instance is Type)
+			{
 				instance = new TypeExtension ((Type) instance);
+			}
 
 			// See also Instance property for this weirdness.
 			this.root_raw = instance;
@@ -92,10 +97,15 @@ namespace Uno.Xaml
 			if (instance != null) {
 				var type = new InstanceContext (instance).GetRawValue ().GetType ();
 				if (!type.IsPublic)
+				{
 					throw new XamlObjectReaderException (String.Format ("instance type '{0}' must be public and non-nested.", type));
+				}
+
 				var xt = SchemaContext.GetXamlType (type);
 				if (xt.ConstructionRequiresArguments && !xt.GetConstructorArguments ().Any () && xt.TypeConverter == null)
+				{
 					throw new XamlObjectReaderException (String.Format ("instance type '{0}' has no default constructor.", type));
+				}
 			}
 
 			value_serializer_context = new ValueSerializerContext (new PrefixLookup (sctx), sctx, null);
@@ -142,13 +152,21 @@ namespace Uno.Xaml
 		public override XamlNodeType NodeType {
 			get {
 				if (is_eof)
+				{
 					return XamlNodeType.None;
+				}
 				else if (nodes != null)
+				{
 					return nodes.Current.NodeType;
+				}
 				else if (ns_iterator != null)
+				{
 					return XamlNodeType.NamespaceDeclaration;
+				}
 				else
+				{
 					return XamlNodeType.None;
+				}
 			}
 		}
 
@@ -163,7 +181,10 @@ namespace Uno.Xaml
 		public override object Value {
 			get {
 				if (NodeType != XamlNodeType.Value)
+				{
 					return null;
+				}
+
 				return nodes.Current.Value;
 			}
 		}
@@ -171,20 +192,40 @@ namespace Uno.Xaml
 		public override bool Read ()
 		{
 			if (IsDisposed)
+			{
 				throw new ObjectDisposedException ("reader");
+			}
+
 			if (IsEof)
+			{
 				return false;
-			
+			}
+
 			if (ns_iterator == null)
+			{
 				ns_iterator = PrefixLookup.Namespaces.GetEnumerator ();
+			}
+
 			if (ns_iterator.MoveNext ())
+			{
 				return true;
+			}
+
 			if (nodes == null)
+			{
 				nodes = new XamlObjectNodeIterator (root, sctx, value_serializer_context).GetNodes ().GetEnumerator ();
+			}
+
 			if (nodes.MoveNext ())
+			{
 				return true;
+			}
+
 			if (!is_eof)
+			{
 				is_eof = true;
+			}
+
 			return false;
 		}
 	}

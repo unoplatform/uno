@@ -374,13 +374,19 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 			if (kind.HasFlag(EventsKind.Click))
 			{
 				if (target is ButtonBase button)
+				{
 					button.Click += (snd, e) => OnEvent(ClickEvent, "Click", e);
+				}
 
 				if (target is Hyperlink hyperlink)
+				{
 					hyperlink.Click += (snd, e) => OnEvent(ClickEvent, "Click", e);
+				}
 
 				if (target is ListViewBase listView)
+				{
 					listView.ItemClick += (snd, e) => OnEvent(ClickEvent, "Click", e);
+				}
 			}
 
 			void OnEvent(object evt, string evtName, RoutedEventArgs e, string extra = null)

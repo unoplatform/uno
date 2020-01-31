@@ -22,7 +22,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 
 			// Try to scroll up
 			_app.DragCoordinates(sut.Rect.CenterX, sut.Rect.Bottom - 5, sut.Rect.CenterX, sut.Rect.Y + 5); // Touch scroll
-			for (var i = 0; i < 10; i++) _app.TapCoordinates(sut.Rect.Right - 5, sut.Rect.Bottom - 5); // Mouse scroll
+			for (var i = 0; i < 10; i++)
+			{
+				_app.TapCoordinates(sut.Rect.Right - 5, sut.Rect.Bottom - 5); // Mouse scroll
+			}
 
 			var final = TakeScreenshot("final");
 

@@ -652,7 +652,10 @@ namespace MonoTests.Uno.Xaml
 			var sw = new StringWriter ();
 			var w = new XamlXmlWriter (sw, sctx, null);
 			while (r.Read ())
+			{
 				w.WriteNode (r);
+			}
+
 			w.Close ();
 			Assert.AreEqual (xml, sw.ToString ().Replace ('"', '\''), "#1");
 		}
@@ -663,7 +666,10 @@ namespace MonoTests.Uno.Xaml
 			var r = new XamlObjectReader ("foo", sctx);
 			var w = new XamlObjectWriter (sctx, null);
 			while (r.Read ())
+			{
 				w.WriteNode (r);
+			}
+
 			w.Close ();
 			Assert.AreEqual ("foo", w.Result, "#1");
 		}
@@ -1090,7 +1096,10 @@ namespace MonoTests.Uno.Xaml
 		{
 			var obj = new CollectionContentProperty ();
 			for (int i = 0; i < 4; i++)
+			{
 				obj.ListOfItems.Add (new SimpleClass ());
+			}
+
 			Assert.AreEqual (ReadXml ("CollectionContentProperty.xml").Trim (), XamlServices.Save (obj), "#1");
 		}
 
@@ -1101,7 +1110,10 @@ namespace MonoTests.Uno.Xaml
 			var l = new List<object> ();
 			obj.ListOfItems.Add (l);
 			for (int i = 0; i < 4; i++)
+			{
 				l.Add (new SimpleClass ());
+			}
+
 			Assert.AreEqual (ReadXml ("CollectionContentPropertyX.xml").Trim (), XamlServices.Save (obj), "#1");
 		}
 

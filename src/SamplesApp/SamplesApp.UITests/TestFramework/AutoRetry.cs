@@ -77,12 +77,18 @@ namespace SamplesApp.UITests.TestFramework
 					// and we want to look at restructuring the API in the future.
 					catch (Exception ex)
 					{
-						if (context.CurrentResult == null) context.CurrentResult = context.CurrentTest.MakeTestResult();
+						if (context.CurrentResult == null)
+						{
+							context.CurrentResult = context.CurrentTest.MakeTestResult();
+						}
+
 						context.CurrentResult.RecordException(ex);
 					}
 
 					if (context.CurrentResult.ResultState != ResultState.Failure && context.CurrentResult.ResultState.Status != ResultState.Failure.Status)
+					{
 						break;
+					}
 
 					// Clear result for retry
 					if (count > 0)

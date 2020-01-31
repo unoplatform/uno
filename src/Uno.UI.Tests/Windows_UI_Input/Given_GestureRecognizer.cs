@@ -914,13 +914,17 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			protected void AreEquals(string name, Point? expected, Point actual)
 			{
 				if (expected.HasValue && expected.Value != actual)
+				{
 					_pendingAssertResult.Add((name, expected.Value, actual));
+				}
 			}
 
 			protected void AreEquals(string name, bool? expected, bool actual)
 			{
 				if (expected.HasValue && expected.Value != actual)
+				{
 					_pendingAssertResult.Add((name, expected.Value, actual));
+				}
 			}
 
 			protected void AreEquals(string name, ManipulationDelta? expected, ManipulationDelta actual)
@@ -933,19 +937,29 @@ namespace Uno.UI.Tests.Windows_UI_Input
 				var e = expected.Value;
 
 				if (e.Translation.X != actual.Translation.X)
+				{
 					_pendingAssertResult.Add((name + ".Translation.X", expected.Value.Translation.X, actual.Translation.X));
+				}
 
 				if (e.Translation.Y != actual.Translation.Y)
+				{
 					_pendingAssertResult.Add((name + ".Translation.Y", expected.Value.Translation.Y, actual.Translation.Y));
+				}
 
 				if (Math.Abs(e.Rotation - actual.Rotation) > .00001)
+				{
 					_pendingAssertResult.Add((name + ".Rotation", expected.Value.Rotation, actual.Rotation));
+				}
 
 				if (Math.Abs(e.Scale - actual.Scale) > .00001)
+				{
 					_pendingAssertResult.Add((name + ".Scale", expected.Value.Scale, actual.Scale));
+				}
 
 				if (Math.Abs(e.Expansion - actual.Expansion) > .00001)
+				{
 					_pendingAssertResult.Add((name + ".Expansion", expected.Value.Expansion, actual.Expansion));
+				}
 			}
 
 			/// <inheritdoc />

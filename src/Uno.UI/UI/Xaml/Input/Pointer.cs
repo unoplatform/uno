@@ -40,17 +40,35 @@ namespace Windows.UI.Xaml.Input
 
 		public bool Equals(Pointer other)
 		{
-			if (ReferenceEquals(null, other)) return false;
-			if (ReferenceEquals(this, other)) return true;
+			if (ReferenceEquals(null, other))
+			{
+				return false;
+			}
+
+			if (ReferenceEquals(this, other))
+			{
+				return true;
+			}
 
 			return PointerDeviceType == other.PointerDeviceType && PointerId == other.PointerId;
 		}
 
 		public override bool Equals(object obj)
 		{
-			if (ReferenceEquals(null, obj)) return false;
-			if (ReferenceEquals(this, obj)) return true;
-			if (!(obj is Pointer other)) return false;
+			if (ReferenceEquals(null, obj))
+			{
+				return false;
+			}
+
+			if (ReferenceEquals(this, obj))
+			{
+				return true;
+			}
+
+			if (!(obj is Pointer other))
+			{
+				return false;
+			}
 
 			return PointerDeviceType == other.PointerDeviceType && PointerId == other.PointerId;
 		}
