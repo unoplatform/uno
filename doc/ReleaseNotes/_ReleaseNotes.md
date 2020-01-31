@@ -80,6 +80,7 @@
 - [Android] Adjust `TextBlock.TextDecorations` is not updating properly
 - Adjust `XamlBindingHelper` for `GridLength` and `TimeSpan`
 - Add missing `ListView` resources
+- #2570 [Android/iOS] fixed ObjectDisposedException in BindingPath
 
 ## Release 2.0
 
