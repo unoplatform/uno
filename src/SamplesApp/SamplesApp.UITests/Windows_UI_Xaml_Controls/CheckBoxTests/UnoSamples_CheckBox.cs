@@ -21,13 +21,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 
 			_app.WaitForElement(twoState01);
 
-			_app.Tap(twoState01);
+			_app.FastTap(twoState01);
 			_app.WaitForText(result, "Checked twoState01 True");
 
-			_app.Tap(twoState01);
+			_app.FastTap(twoState01);
 			_app.WaitForText(result, "Unchecked twoState01 False");
 
-			_app.Tap(twoState01);
+			_app.FastTap(twoState01);
 			_app.WaitForText(result, "Checked twoState01 True");
 		}
 
@@ -42,22 +42,22 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 
 			_app.WaitForElement(twoState01);
 
-			_app.Tap(twoState01);
+			_app.FastTap(twoState01);
 			_app.WaitForText(result, "Checked threeState01 True");
 
 			TakeScreenshot("Checked");
 
-			_app.Tap(twoState01);
+			_app.FastTap(twoState01);
 			_app.WaitForText(result, "Indeterminate threeState01 ");
 
 			TakeScreenshot("Indeterminate");
 
-			_app.Tap(twoState01);
+			_app.FastTap(twoState01);
 			_app.WaitForText(result, "Unchecked threeState01 False");
 
 			TakeScreenshot("Unchecked");
 
-			_app.Tap(twoState01);
+			_app.FastTap(twoState01);
 			_app.WaitForText(result, "Checked threeState01 True");
 		}
 	}

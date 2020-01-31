@@ -30,7 +30,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			_app.WaitForDependencyPropertyValue(loadStateElement, "Text", "none");
 
 			_app.WaitForElement(button);
-			button.Tap();
+			button.FastTap();
 
 			_app.WaitForDependencyPropertyValue(bitmapWidthElement, "Text", "1252");
 			_app.WaitForDependencyPropertyValue(bitmapHeightElement, "Text", "836");

@@ -36,7 +36,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 				_app.SetOrientationPortrait();
 
 				// Open and dismiss flyout
-				myTimePicker.Tap();
+				myTimePicker.FastTap();
 				var myDevice = _app.Device.GetType();
 				if (_app.Device.GetType().Name.Contains("Android"))
 				{
@@ -44,7 +44,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 					_app.Wait(2);
 					_app.TapCoordinates(988, 1625);
 
-					_app.Find("Cancel").Tap();
+					_app.Find("Cancel").FastTap();
 					_app.Wait(2);
 				}
 				else
@@ -82,7 +82,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 				_app.SetOrientationPortrait();
 
 				// Open, change ime and click on ok to apply changes and to close flyout
-				myTimePicker.Tap();
+				myTimePicker.FastTap();
 				var myDevice = _app.Device.GetType();
 				if (_app.Device.GetType().Name.Contains("Android"))
 				{
@@ -90,7 +90,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 					_app.Wait(2);
 					_app.TapCoordinates(988, 1625);
 
-					_app.Find("OK").Tap();
+					_app.Find("OK").FastTap();
 					_app.Wait(2);
 
 					//Assert final state
@@ -140,7 +140,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 			var timePickerFlyout = theTimePicker.Child;
 
 			// Open flyout
-			theTimePicker.Tap();
+			theTimePicker.FastTap();
 
 			//Assert
 			Assert.IsNotNull(theTimePicker.GetDependencyPropertyValue("DataContext"));
@@ -163,7 +163,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 			var timePickerFlyout = theTimePicker.Child;
 
 			// Open flyout
-			theTimePicker.Tap();
+			theTimePicker.FastTap();
 
 			//Assert
 			Assert.IsNotNull(timePickerFlyout.GetDependencyPropertyValue("Content"));
@@ -183,7 +183,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TimePickerTests
 
 			_app.WaitForElement(picker);
 
-			picker.Tap();
+			picker.FastTap();
 
 			TakeScreenshot("TimePicker - Flyout", ignoreInSnapshotCompare: true);
 

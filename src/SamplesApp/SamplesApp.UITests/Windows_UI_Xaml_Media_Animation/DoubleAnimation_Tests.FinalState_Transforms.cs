@@ -69,7 +69,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 			expectedDelta *= scale;
 			tolerance *= scale;
 
-			_app.Marked("StartButton").Tap();
+			_app.Marked("StartButton").FastTap();
 			_app.WaitForDependencyPropertyValue(_app.Marked("Status"), "Text", "Completed");
 
 			// Assert

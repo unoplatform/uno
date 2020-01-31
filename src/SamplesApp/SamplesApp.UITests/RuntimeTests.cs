@@ -31,7 +31,7 @@ namespace SamplesApp.UITests
 
 			_app.WaitForElement(runButton);
 
-			_app.Tap(runButton);
+			_app.FastTap(runButton);
 
 			var lastChange = DateTimeOffset.Now;
 			var lastValue = "";
