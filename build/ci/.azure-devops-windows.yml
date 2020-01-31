@@ -41,7 +41,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /nodeReuse:true /detailedsummary /m /nr:false /bl:$(build.artifactstagingdirectory)\build.binlog
+      msbuildArguments: /r /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /nodeReuse:true /detailedsummary /m # /bl:$(build.artifactstagingdirectory)\build.binlog
       clean: false
       maximumCpuCount: true
       restoreNugetPackages: false
@@ -104,9 +104,10 @@ jobs:
 
   # Publish PR packages to local feed to enable canary testing from PR artifacts
   - task: NuGetCommand@2
-    condition: eq(variables['Build.Reason'], 'PullRequest')
+    condition: and(eq(variables['System.PullRequest.IsFork'], 'False'), eq(variables['Build.Reason'], 'PullRequest'))
     inputs:
       command: 'push'
       packagesToPush: '$(build.artifactstagingdirectory)/vslatest/**/*.nupkg'
       nuGetFeedType: 'internal'
       publishVstsFeed: '1dd81cbd-cb35-41de-a570-b0df3571a196/a70dae92-4e3d-4540-bf93-9b22ec98d19d'
+      allowPackageConflicts: true
