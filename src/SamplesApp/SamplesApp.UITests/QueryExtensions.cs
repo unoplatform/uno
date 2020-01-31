@@ -61,19 +61,19 @@ namespace SamplesApp.UITests
 		public static void FastTap(this IApp app, string elementName)
 		{
 			var tapPosition = app.GetRect(elementName);
-			app.TapCoordinates(tapPosition.CenterX, tapPosition.Y);
+			app.TapCoordinates(tapPosition.CenterX, tapPosition.CenterY);
 		}
 
 		public static void FastTap(this IApp app, QueryEx query)
 		{
 			var tapPosition = app.GetRect(query);
-			app.TapCoordinates(tapPosition.CenterX, tapPosition.Y);
+			app.TapCoordinates(tapPosition.CenterX, tapPosition.CenterY);
 		}
 
 		public static void FastTap(this IApp app, Func<IAppQuery, IAppQuery> query)
 		{
 			var tapPosition = app.GetRect(query);
-			app.TapCoordinates(tapPosition.CenterX, tapPosition.Y);
+			app.TapCoordinates(tapPosition.CenterX, tapPosition.CenterY);
 		}
 
 		public static QueryEx FastTap(this QueryEx query)
