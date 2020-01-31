@@ -115,11 +115,7 @@ namespace CustomHost
             //----------------------------------------------------------------  
             if (File.Exists(requestFileName))
             {
-                content = File.ReadAllText(requestFileName);
-
-				// convert to Windows line endings
-				content = content.Replace("\n", "\r\n");
-				content = content.Replace("\r\r\n", "\r\n");
+                content = Tools.ConvertLineEndings(File.ReadAllText(requestFileName));
 
 				return true;
             }
@@ -352,11 +348,7 @@ namespace CustomHost
             //Read the text template.  
             string input = File.ReadAllText(templateFileName);
             //Transform the text template.  
-            string output = engine.ProcessTemplate(input, host);
-
-			// convert to Windows line endings
-			output = output.Replace("\n", "\r\n");
-			output = output.Replace("\r\r\n", "\r\n");
+            string output = Tools.ConvertLineEndings(engine.ProcessTemplate(input, host));
 
 
 			string outputFileName = Path.GetFileNameWithoutExtension(templateFileName);
@@ -370,4 +362,26 @@ namespace CustomHost
             }
         }
     }
+
+	static class Tools
+	{
+
+		public static string ConvertLineEndings(string input)
+		{
+
+			// convert to common (Unix) line endings
+			string output = input.Replace("\r\n", "\n");	// from Windows
+			output = output.Replace("\r", "\n");            // from old Mac
+
+			// if current line endings is different, make conversion
+			if (Environment.NewLine != "\n")
+			{
+				output = output.Replace("\n", Environment.NewLine);
+			}
+
+			return output;
+
+		}
+	}
+
 }
