@@ -4,11 +4,12 @@ using System.Text;
 using AppKit;
 using CoreGraphics;
 using Uno;
+using Uno.UI;
 using Windows.UI.Xaml.Automation.Peers;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class NativeListViewBase : NSCollectionView
+	public partial class NativeListViewBase : NSCollectionView, IHasSizeThatFits
 	{
 		[NotImplemented]
 		internal CGPoint ContentOffset { get; set; } // TODO: implement
@@ -32,6 +33,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return null;
 		}
+
+		public CGSize SizeThatFits(CGSize size) => NativeLayout?.SizeThatFits(size) ?? default(CGSize);
 	}
 
 	internal partial class BlockLayout : Border
