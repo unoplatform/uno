@@ -1,4 +1,4 @@
-﻿#if XAMARIN_IOS || XAMARIN_ANDROID
+﻿#if XAMARIN_IOS || XAMARIN_ANDROID || __MACOS__
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -6,6 +6,8 @@ using System.Text;
 using _View = Android.Views.View;
 #elif XAMARIN_IOS
 using _View = UIKit.UIView;
+#elif __MACOS__
+using _View = AppKit.NSView;
 #else
 using View = Windows.UI.Xaml.FrameworkElement;
 #endif

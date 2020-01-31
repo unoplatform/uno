@@ -9,9 +9,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ListViewBase : Selector
 	{
-
-		private int PageSize => throw new NotImplementedException();
-
 		private protected override bool ShouldItemsControlManageChildren => !(ItemsPanelRoot is IVirtualizingPanel);
 
 		private void Refresh()
@@ -44,11 +41,13 @@ namespace Windows.UI.Xaml.Controls
 			Refresh();
 		}
 
-		private ContentControl ContainerFromGroupIndex(int groupIndex) => throw new NotImplementedException();
-
-		private void TryLoadMoreItems()
+		private void InitializeNativePanel(NativeListViewBase panel)
 		{
-			//TODO: ISupportIncrementalLoading
+			var source = new ListViewBaseSource(panel);
+			panel.Source = source;
+			panel.NativeLayout.Source = new WeakReference<ListViewBaseSource>(source);
 		}
+
+		private ContentControl ContainerFromGroupIndex(int groupIndex) => throw new NotImplementedException();
 	}
 }

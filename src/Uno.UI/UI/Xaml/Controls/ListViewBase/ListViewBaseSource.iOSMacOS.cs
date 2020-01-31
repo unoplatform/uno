@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Windows.Foundation;
 using Windows.UI.Xaml.Data;
+using Uno.Logging;
 #if __IOS__
 using UIKit;
 #else
@@ -15,7 +16,6 @@ using AppKit;
 
 namespace Windows.UI.Xaml.Controls
 {
-	[Bindable]
 	public partial class ListViewBaseSource
 	{
 		/// <summary>
@@ -42,6 +42,173 @@ namespace Windows.UI.Xaml.Controls
 			get { return _owner?.GetTarget(); }
 			set { _owner = new WeakReference<NativeListViewBase>(value); }
 		}
+
+
+		public ListViewBaseSource(NativeListViewBase owner)
+		{
+			Owner = owner;
+		}
+
+		#region Overrides
+#if __IOS__
+		public override nint NumberOfSections(UICollectionView collectionView)
+#else
+		public override nint GetNumberOfSections(NSCollectionView collectionView)
+#endif
+		{
+			var itemsSections = Owner.XamlParent.IsGrouping ?
+				Owner.XamlParent.NumberOfDisplayGroups :
+				1;
+			return itemsSections + SupplementarySections;
+		}
+
+#if __IOS__
+		public override nint GetItemsCount(UICollectionView collectionView, nint section)
+#else
+		public override nint GetNumberofItems(NSCollectionView collectionView, nint section)
+#endif
+		{
+			int count;
+			if (Owner.XamlParent.IsGrouping)
+			{
+				count = GetGroupedItemsCount(section);
+			}
+			else
+			{
+				count = GetUngroupedItemsCount(section);
+			}
+
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"Count requested for section {section}, returning {count}");
+			}
+			return count;
+		}
+
+		private int GetUngroupedItemsCount(nint section)
+		{
+			int count;
+			if (section == 0)
+			{
+				count = Owner.XamlParent.NumberOfItems;
+			}
+			else
+			{
+				// Extra section added to accommodate header+footer, contains no items.
+				count = 0;
+			}
+
+			return count;
+		}
+
+		private int GetGroupedItemsCount(nint section)
+		{
+			if ((int)section >= Owner.XamlParent.NumberOfDisplayGroups)
+			{
+				// Header+footer section which is empty
+				return 0;
+			}
+			return Owner.XamlParent.GetDisplayGroupCount((int)section);
+		}
+
+#if __IOS__ //TODO
+#if __IOS__
+		public override UICollectionReusableView GetViewForSupplementaryElement(
+			UICollectionView collectionView,
+			NSString elementKind,
+			NSIndexPath indexPath)
+#else
+		public override NSView GetView(NSCollectionView collectionView, NSString elementKind, NSIndexPath indexPath)
+#endif
+		{
+			var listView = (NativeListViewBase)collectionView;
+
+			if (elementKind == NativeListViewBase.ListViewHeaderElementKind)
+			{
+				return GetBindableSupplementaryView(
+					collectionView: listView,
+					elementKind: NativeListViewBase.ListViewHeaderElementKindNS,
+					indexPath: indexPath,
+					reuseIdentifier: NativeListViewBase.ListViewHeaderReuseIdentifierNS,
+					context: listView.Header,
+					template: listView.HeaderTemplate,
+					style: null
+				);
+			}
+
+			else if (elementKind == NativeListViewBase.ListViewFooterElementKind)
+			{
+				return GetBindableSupplementaryView(
+					collectionView: listView,
+					elementKind: NativeListViewBase.ListViewFooterElementKindNS,
+					indexPath: indexPath,
+					reuseIdentifier: NativeListViewBase.ListViewFooterReuseIdentifierNS,
+					context: listView.Footer,
+					template: listView.FooterTemplate,
+					style: null
+				);
+			}
+
+			else if (elementKind == NativeListViewBase.ListViewSectionHeaderElementKind)
+			{
+				// Ensure correct template can be retrieved
+				UpdateLastMaterializedItem(indexPath);
+
+				return GetBindableSupplementaryView(
+					collectionView: listView,
+					elementKind: NativeListViewBase.ListViewSectionHeaderElementKindNS,
+					indexPath: indexPath,
+					reuseIdentifier: NativeListViewBase.ListViewSectionHeaderReuseIdentifierNS,
+					//ICollectionViewGroup.Group is used as context for sectionHeader
+					context: listView.XamlParent.GetGroupAtDisplaySection((int)indexPath.Section).Group,
+					template: GetTemplateForGroupHeader((int)indexPath.Section),
+					style: listView.GroupStyle?.HeaderContainerStyle
+				);
+			}
+
+			else
+			{
+				throw new NotSupportedException("Unsupported element kind: {0}".InvariantCultureFormat(elementKind));
+			}
+		}
+
+		private _ReusableView GetBindableSupplementaryView(
+			NativeListViewBase collectionView,
+			NSString elementKind,
+			NSIndexPath indexPath,
+			NSString reuseIdentifier,
+			object context,
+			DataTemplate template,
+			Style style)
+		{
+			var supplementaryView = (ListViewBaseInternalContainer)collectionView.DequeueReusableSupplementaryView(
+				elementKind,
+				reuseIdentifier,
+				indexPath);
+
+			using (supplementaryView.InterceptSetNeedsLayout())
+			{
+				if (supplementaryView.Content == null)
+				{
+					supplementaryView.Owner = Owner;
+					var content = CreateContainerForElementKind(elementKind);
+					content.HorizontalContentAlignment = HorizontalAlignment.Stretch;
+					content.VerticalContentAlignment = VerticalAlignment.Stretch;
+					supplementaryView.Content = content
+						.Binding("Content", "");
+				}
+				supplementaryView.Content.ContentTemplate = template;
+				supplementaryView.Content.DataContext = context;
+				if (style != null)
+				{
+					supplementaryView.Content.Style = style;
+				}
+			}
+
+			return supplementaryView;
+		}
+#endif
+		#endregion
 
 		/// <summary>
 		/// Visual element which stops layout requests from propagating up. Used for measuring templates.
