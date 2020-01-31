@@ -57,28 +57,6 @@ namespace Windows.UI.Xaml.Controls
 		internal UIElement.TouchesManager TouchesManager { get; /* readonly in int */ private set; }
 		#endregion
 
-		/// <summary>
-		/// Get all currently visible supplementary views.
-		/// </summary>
-		internal IEnumerable<UICollectionReusableView> VisibleSupplementaryViews
-		{
-			get
-			{
-				foreach (var view in GetVisibleSupplementaryViews(ListViewHeaderElementKindNS))
-				{
-					yield return view;
-				}
-				foreach (var view in GetVisibleSupplementaryViews(ListViewSectionHeaderElementKindNS))
-				{
-					yield return view;
-				}
-				foreach (var view in GetVisibleSupplementaryViews(ListViewFooterElementKindNS))
-				{
-					yield return view;
-				}
-			}
-		}
-
 		internal IEnumerable<SelectorItem> CachedItemViews => Enumerable.Empty<SelectorItem>();
 
 		private bool UseCollectionAnimations => XamlParent?.UseCollectionAnimations ?? true;

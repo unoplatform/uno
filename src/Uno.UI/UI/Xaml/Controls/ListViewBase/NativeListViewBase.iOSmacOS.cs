@@ -3,12 +3,17 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using Foundation;
+#if __IOS__
+using _ReusableView = UIKit.UICollectionReusableView;
+#else
+using _ReusableView = AppKit.INSCollectionViewElement;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class NativeListViewBase
 	{
-		#region Constants
+#region Constants
 		public static readonly NSString ListViewItemReuseIdentifierNS = new NSString(nameof(ListViewItemReuseIdentifier));
 		public const string ListViewItemReuseIdentifier = nameof(ListViewItemReuseIdentifier);
 
@@ -32,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public static readonly NSString ListViewSectionHeaderElementKindNS = new NSString(nameof(ListViewSectionHeaderElementKind));
 		public const string ListViewSectionHeaderElementKind = nameof(ListViewSectionHeaderElementKind);
-		#endregion
+#endregion
 
 		public Thickness Padding
 		{
@@ -104,6 +109,28 @@ namespace Windows.UI.Xaml.Controls
 		public object Footer
 		{
 			get { return XamlParent?.ResolveFooterContext(); }
+		}
+
+		/// <summary>
+		/// Get all currently visible supplementary views.
+		/// </summary>
+		internal IEnumerable<_ReusableView> VisibleSupplementaryViews
+		{
+			get
+			{
+				foreach (var view in GetVisibleSupplementaryViews(ListViewHeaderElementKindNS))
+				{
+					yield return view;
+				}
+				foreach (var view in GetVisibleSupplementaryViews(ListViewSectionHeaderElementKindNS))
+				{
+					yield return view;
+				}
+				foreach (var view in GetVisibleSupplementaryViews(ListViewFooterElementKindNS))
+				{
+					yield return view;
+				}
+			}
 		}
 
 		internal void SetNeedsReloadData()
