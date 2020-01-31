@@ -10,6 +10,20 @@ namespace Windows.UI.Xaml.Controls
 		public ContentControl Content { get; set; }
 		public NativeListViewBase Owner { get; internal set; } //Stub
 
+		/// <summary>
+		/// Native constructor, do not use explicitly.
+		/// </summary>
+		/// <remarks>
+		/// Used by the Xamarin Runtime to materialize native 
+		/// objects that may have been collected in the managed world.
+		/// </remarks>
+		public ListViewBaseInternalContainer(IntPtr handle) : base(handle) { }
+
+		public ListViewBaseInternalContainer()
+		{
+
+		}
+
 		public override void LoadView()
 		{
 			View = Content;

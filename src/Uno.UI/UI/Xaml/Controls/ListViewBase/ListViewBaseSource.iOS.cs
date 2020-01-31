@@ -184,20 +184,6 @@ namespace Windows.UI.Xaml.Controls
 	/// </summary>
 	internal class ListViewBaseInternalContainer : UICollectionViewCell
 	{
-		/// <summary>
-		/// Native constructor, do not use explicitly.
-		/// </summary>
-		/// <remarks>
-		/// Used by the Xamarin Runtime to materialize native 
-		/// objects that may have been collected in the managed world.
-		/// </remarks>
-		public ListViewBaseInternalContainer(IntPtr handle) : base(handle) { }
-
-		public ListViewBaseInternalContainer()
-		{
-
-		}
-
 		private CGSize _lastUsedSize;
 		private CGSize? _measuredContentSize;
 		private readonly SerialDisposable _contentChangedDisposable = new SerialDisposable();
