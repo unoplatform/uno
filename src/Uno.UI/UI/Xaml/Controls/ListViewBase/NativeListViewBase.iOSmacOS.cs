@@ -59,7 +59,11 @@ namespace Windows.UI.Xaml.Controls
 				if (value != null)
 				{
 					value.Source = new WeakReference<ListViewBaseSource>(Source);
-					value.Padding = Padding;
+if (NativeLayout != null)
+					{
+						// Copy previous padding
+						value.Padding = Padding;
+					}
 				}
 
 				CollectionViewLayout = value;
