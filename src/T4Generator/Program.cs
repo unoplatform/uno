@@ -115,7 +115,7 @@ namespace CustomHost
             //----------------------------------------------------------------  
             if (File.Exists(requestFileName))
             {
-                content = Tools.ConvertLineEndings(File.ReadAllText(requestFileName));
+                content = T4Generator.Tools.ConvertLineEndings(File.ReadAllText(requestFileName));
 
 				return true;
             }
@@ -348,7 +348,7 @@ namespace CustomHost
             //Read the text template.  
             string input = File.ReadAllText(templateFileName);
             //Transform the text template.  
-            string output = Tools.ConvertLineEndings(engine.ProcessTemplate(input, host));
+            string output = T4Generator.Tools.ConvertLineEndings(engine.ProcessTemplate(input, host));
 
 
 			string outputFileName = Path.GetFileNameWithoutExtension(templateFileName);
@@ -363,25 +363,5 @@ namespace CustomHost
         }
     }
 
-	static class Tools
-	{
-
-		public static string ConvertLineEndings(string input)
-		{
-
-			// convert to common (Unix) line endings
-			string output = input.Replace("\r\n", "\n");	// from Windows
-			output = output.Replace("\r", "\n");            // from old Mac
-
-			// if current line endings is different, make conversion
-			if (Environment.NewLine != "\n")
-			{
-				output = output.Replace("\n", Environment.NewLine);
-			}
-
-			return output;
-
-		}
-	}
 
 }
