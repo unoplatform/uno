@@ -159,7 +159,9 @@ namespace Windows.UI.Composition
 
 			animation.Duration = durationMilliseconds / __millisecondsPerSecond;
 			animation.FillMode = CAFillMode.Forwards;
-			animation.RemovedOnCompletion = true;
+			// Let the 'OnAnimationStop' forcefully apply the final value before removing the animation.
+			// That's required for Storyboards that animating multiple properties of the same object at once.
+			animation.RemovedOnCompletion = false; 
 			animation.AnimationStarted += OnAnimationStarted(animation);
 			animation.AnimationStopped += OnAnimationStopped(animation);
 
@@ -285,6 +287,11 @@ namespace Windows.UI.Composition
 				if (_stop.reason == StopReason.Completed)
 				{
 					Debug.Assert(args.Finished);
+
+					// We have to remove the animation only in case of 'StopReason.Completed',
+					// for other cases it's what we actually did to request the stop.
+					layer?.RemoveAnimation(_key);
+
 					_onCompleted();
 				}
 			}

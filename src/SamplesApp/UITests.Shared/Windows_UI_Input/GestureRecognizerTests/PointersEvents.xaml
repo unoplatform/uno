@@ -432,7 +432,7 @@
 			</Grid>
 		</ScrollViewer>
 
-		<ListView Grid.Column="2" Grid.Row="1" x:Name="_log">
+		<ListView Grid.Column="2" Grid.Row="1" x:Name="_logs">
 			<ItemsControl.ItemTemplate>
 				<DataTemplate>
 					<StackPanel>

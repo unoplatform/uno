@@ -134,12 +134,14 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnFontSizeChangedPartial() => _paint = null;
 		partial void OnCharacterSpacingChangedPartial() => _paint = null;
 		partial void OnForegroundChangedPartial() => _paint = null;
+		partial void OnTextDecorationsChangedPartial() => _paint = null;
 
 		// Invalidate _ellipsize
 		partial void OnTextTrimmingChangedPartial() => _ellipsize = null;
 
 		// Invalidate _layoutAlignment
 		partial void OnTextAlignmentChangedPartial() => _layoutAlignment = null;
+
 
 		#endregion
 
