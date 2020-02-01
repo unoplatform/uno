@@ -1539,6 +1539,11 @@ var Uno;
                     document.body.appendChild(this.containerElement);
                 }
                 window.addEventListener("resize", x => this.resize());
+                window.addEventListener("contextmenu", x => {
+                    if (!(x.target instanceof HTMLInputElement)) {
+                        x.preventDefault();
+                    }
+                });
             }
             removeLoading() {
                 if (!this.loadingElementId) {
@@ -2355,6 +2360,10 @@ var Windows;
                 }
                 if (!this.isIndexDBAvailable()) {
                     console.warn("IndexedDB is not available (private mode or uri starts with file:// ?), changes will not be persisted.");
+                    return;
+                }
+                if (typeof IDBFS === 'undefined') {
+                    console.warn(`IDBFS is not enabled in mono's configuration, persistence is disabled`);
                     return;
                 }
                 console.debug("Making persistent: " + path);

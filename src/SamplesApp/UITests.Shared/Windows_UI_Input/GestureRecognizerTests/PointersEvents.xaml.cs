@@ -80,7 +80,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 			_logDoubleTapped = new DoubleTappedEventHandler(CreateHandler(DoubleTappedEvent, "DoubleTapped", _gestureDoubleTappedHandle));
 			_logRightTapped = new RightTappedEventHandler(CreateHandler(RightTappedEvent, "RightTapped", _gestureRightTappedHandle));
 
-			_log.ItemsSource = _eventLog;
+			_logs.ItemsSource = _eventLog;
 			_pointerType.ItemsSource = Enum.GetNames(typeof(PointerDeviceType));
 			_pointerType.SelectedValue = PointerDeviceType.Touch.ToString();
 			_manipMode.ItemsSource = _manipulationModes.Keys;
