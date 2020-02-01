@@ -1,4 +1,4 @@
-#if __IOS__
+#if __IOS__ || __MACOS__
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,7 +21,9 @@ namespace Windows.Devices.Geolocation
 				DesiredAccuracy = DesiredAccuracy == PositionAccuracy.Default ? 10 : 1,
 			};
 
-			_locationManager.RequestWhenInUseAuthorization();
+#if __IOS__ //required only for iOS
+				mgr.RequestWhenInUseAuthorization();
+#endif
 
 			_locationManager.LocationsUpdated += _locationManager_LocationsUpdated;
 
@@ -96,7 +98,9 @@ namespace Windows.Devices.Geolocation
 					}
 				};
 
+#if __IOS__ //required only for iOS
 				mgr.RequestWhenInUseAuthorization();
+#endif
 
 				if (CLLocationManager.Status != CLAuthorizationStatus.NotDetermined)
 				{
