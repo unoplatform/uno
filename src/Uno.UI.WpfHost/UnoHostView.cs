@@ -210,10 +210,6 @@ namespace Uno.UI.WpfHost
 
 	public class UnoDispatch
 	{
-		public UnoDispatch()
-		{
-		}
-
 		public void Resize(string newSize)
 		{
 			var d = Windows.UI.Core.CoreDispatcher.Main.RunAsync(

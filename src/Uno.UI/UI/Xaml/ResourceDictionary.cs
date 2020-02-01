@@ -11,10 +11,6 @@ namespace Windows.UI.Xaml
 		private readonly Dictionary<object, object> _values = new Dictionary<object, object>();
 		private int _resolvingDepth = 0;
 
-		public ResourceDictionary()
-		{
-		}
-
 		public static Func<string, object> DefaultResolver { get; set; }
 
 		public Uri Source

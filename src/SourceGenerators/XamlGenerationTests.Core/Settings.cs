@@ -17,11 +17,7 @@ namespace XamlGenerationTests.Shared.Controls
 {
 	public sealed partial class Settings : Control
     {
-        public Settings()
-        {
-        }
-
-        public int MyCustomProperty2
+	    public int MyCustomProperty2
 		{
             get;
             set;

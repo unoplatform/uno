@@ -8,11 +8,6 @@ namespace Uno.UI.Controls.Legacy
 {
 	internal partial class ListViewHeader : ContentControl
 	{
-		public ListViewHeader()
-		{
-
-		}
-
 		/// <remarks>
 		/// Ensure that the ContentControl will create its chidren even
 		/// if it has no parent view. This is critical for the recycling panels,

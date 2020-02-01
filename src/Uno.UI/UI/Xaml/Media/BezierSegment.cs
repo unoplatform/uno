@@ -2,10 +2,6 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class BezierSegment : PathSegment
 	{
-		public BezierSegment()
-		{
-		}
-
 		#region Point1
 
 		public Foundation.Point Point1

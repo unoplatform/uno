@@ -19,10 +19,6 @@ namespace Windows.Media.Capture
 			get;
 		} = new CameraCaptureUIVideoCaptureSettings();
 
-		public CameraCaptureUI()
-		{
-		}
-
 		public global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CaptureFileAsync(global::Windows.Media.Capture.CameraCaptureUIMode mode)
 		{
 			return AsyncOperation.FromTask(ct => CaptureFile(ct, mode));

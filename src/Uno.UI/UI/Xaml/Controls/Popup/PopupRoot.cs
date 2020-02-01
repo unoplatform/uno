@@ -8,10 +8,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	internal partial class PopupRoot : Panel
 	{
-		public PopupRoot()
-		{
-		}
-
 		protected override void OnChildrenChanged()
 		{
 			base.OnChildrenChanged();

@@ -290,7 +290,6 @@ namespace MonoTests.Uno.Xaml
 
 		private class TestClass2
 		{
-			internal TestClass2 () {}
 		}
 
 		[Test]

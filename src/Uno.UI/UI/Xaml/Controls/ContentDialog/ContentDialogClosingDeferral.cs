@@ -6,8 +6,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private Action _deferralAction;
 
-		public ContentDialogClosingDeferral() { }
-
 		Action IDeferral.DeferralAction { get => _deferralAction; set => _deferralAction = value; }
 
 		public void Complete() => _deferralAction?.Invoke();

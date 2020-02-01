@@ -20,10 +20,6 @@ namespace Windows.UI.Xaml.Controls
 		private UIPopoverController _popover;
 		private Panel _host;
 
-		public Popover()
-		{
-		}
-
 		private void OnPopoverDidDismiss(object sender, EventArgs e)
 		{
 			this.IsOpen = false;

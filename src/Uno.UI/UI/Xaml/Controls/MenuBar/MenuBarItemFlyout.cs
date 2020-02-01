@@ -6,10 +6,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		internal Control m_presenter;
 
-		public MenuBarItemFlyout() : base()
-		{
-		}
-
 		protected override Control CreatePresenter()
 		{
 			m_presenter = base.CreatePresenter();

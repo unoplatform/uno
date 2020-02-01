@@ -10,10 +10,6 @@ namespace Windows.Globalization.NumberFormatting
 		[NotImplemented]
 		public RoundingAlgorithm RoundingAlgorithm { get; set; } = RoundingAlgorithm.RoundHalfUp;
 
-		public SignificantDigitsNumberRounder() 
-		{
-		}
-
 		[NotImplemented]
 		public int RoundInt32( int value)
 		{

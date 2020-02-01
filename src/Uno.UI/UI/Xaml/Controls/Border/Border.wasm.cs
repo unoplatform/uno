@@ -17,10 +17,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private SerialDisposable _brushChanged = new SerialDisposable();
 
-		public Border()
-		{
-		}
-
 		partial void OnChildChangedPartial(View previousValue, View newValue)
 		{
 			if (previousValue != null)

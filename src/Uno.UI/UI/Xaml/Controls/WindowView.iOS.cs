@@ -24,11 +24,6 @@ namespace Windows.UI.Xaml.Controls
 		private NSObject _didChangeStatusBarOrientationObserver;
 		private NSObject _didChangeStatusBarFrameObserver;
 		private bool _disposed;
-		
-		public WindowView()
-		{
-			
-		}
 
 		protected override void Dispose (bool disposing)
 		{

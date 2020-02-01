@@ -52,11 +52,7 @@ namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 
 	public partial class ImageBrush_StreamSource_Data : DependencyObject
 	{
-		public ImageBrush_StreamSource_Data()
-		{
-		}
-
-#region MySource DependencyProperty
+		#region MySource DependencyProperty
 
 		public ImageSource MySource
 		{

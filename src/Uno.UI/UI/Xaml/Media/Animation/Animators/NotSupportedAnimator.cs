@@ -11,10 +11,6 @@ namespace Windows.UI.Xaml.Media.Animation
 {
 	internal sealed class NotSupportedAnimator : IValueAnimator, IDisposable
 	{
-		public NotSupportedAnimator()
-		{
-		}
-
 		public void Start()
 		{
 			this.Log().Error("NotSupportedAnimator.Start");

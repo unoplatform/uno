@@ -97,19 +97,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.VisualStateManagerTests
 
 	public class MyItem : ContentControl
 	{
-		public MyItem()
-		{
-
-		}
 	}
 
 	public class MyPresenter : ContentControl
 	{
-		public MyPresenter()
-		{
-
-		}
-
 		protected override bool GoToElementStateCore(string stateName, bool useTransitions)
 		{
 			if (stateName == "state2")

@@ -11,10 +11,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		private readonly Dictionary<string, List<StaticResourceDefinition>> _map = new Dictionary<string, List<StaticResourceDefinition>>();
 
-		public XamlGlobalStaticResourcesMap()
-		{
-		}
-
 		internal StaticResourceDefinition FindResource(string resourceKey)
 		{
 			var list = GetListForKey(resourceKey);

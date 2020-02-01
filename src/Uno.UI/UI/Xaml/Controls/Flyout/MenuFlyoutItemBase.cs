@@ -6,9 +6,5 @@ namespace Windows.UI.Xaml.Controls
 {
     public abstract partial class MenuFlyoutItemBase : Control
     {
-		public MenuFlyoutItemBase()
-		{
-
-		}
     }
 }

@@ -11,11 +11,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class FlipView : Selector
 	{
-		public FlipView()
-		{
-
-		}
-
 		public bool UseTouchAnimationsForAllNavigation
 		{
 			get { return (bool)GetValue(UseTouchAnimationsForAllNavigationProperty); }

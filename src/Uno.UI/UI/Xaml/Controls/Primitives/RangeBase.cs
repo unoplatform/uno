@@ -6,11 +6,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
     public abstract partial class RangeBase : Control
     {
-		public RangeBase()
-		{
-		}
-		
-		#region Value
+	    #region Value
 
 		public double Value
 		{

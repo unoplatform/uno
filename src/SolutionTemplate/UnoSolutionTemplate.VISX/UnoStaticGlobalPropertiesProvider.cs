@@ -15,11 +15,6 @@ namespace UnoSolutionTemplate
 	public class UnoStaticGlobalPropertiesProvider : StaticGlobalPropertiesProviderBase
 	{
 #if DEBUG
-		static UnoStaticGlobalPropertiesProvider()
-		{
-			// Note that the type ctor is invoked, but not the ctor, this generally means that the IProjectService
-			// version referenced by the package is not using the proper version (has to match vs16 or vs15)
-		}
 #endif
 
 		[ImportingConstructor]

@@ -1423,9 +1423,7 @@ namespace Uno.UI.Tests.BinderTests
 
     internal partial class SimpleDependencyObject1 : DependencyObject
     {
-        public SimpleDependencyObject1() { }
-
-        public static readonly DependencyProperty MyPropertyProperty =
+	    public static readonly DependencyProperty MyPropertyProperty =
             DependencyProperty.Register("MyProperty", typeof(string), typeof(SimpleDependencyObject1),
                 new PropertyMetadata(
                     "default1",
@@ -1443,8 +1441,6 @@ namespace Uno.UI.Tests.BinderTests
 
     internal partial class MyDependencyObject1 : DependencyObject
 	{
-		public MyDependencyObject1() { }
-
 		public static readonly DependencyProperty MyPropertyProperty =
 			DependencyProperty.Register("MyProperty", typeof(string), typeof(MyDependencyObject1),
 				new PropertyMetadata(
@@ -1472,8 +1468,6 @@ namespace Uno.UI.Tests.BinderTests
 
 			MyPropertyProperty.OverrideMetadata(typeof(MyDependencyObject2), metadata);
 		}
-
-		public MyDependencyObject2() { }
 	}
 
     internal partial class MyDependencyObject3 : MyDependencyObject2
@@ -1488,8 +1482,6 @@ namespace Uno.UI.Tests.BinderTests
 
 			MyPropertyProperty.OverrideMetadata(typeof(MyDependencyObject3), metadata);
 		}
-
-		public MyDependencyObject3() { }
 	}
 
     internal partial class NullablePropertyOwner : FrameworkElement

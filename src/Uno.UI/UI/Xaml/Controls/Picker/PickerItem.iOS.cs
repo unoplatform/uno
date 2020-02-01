@@ -7,9 +7,5 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class PickerItem : SelectorItem
     {
-		public PickerItem()
-		{
-			
-		}
-	}
+    }
 }

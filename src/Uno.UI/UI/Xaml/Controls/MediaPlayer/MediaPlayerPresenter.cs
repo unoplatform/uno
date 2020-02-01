@@ -81,10 +81,6 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
-		public MediaPlayerPresenter() : base()
-		{
-		}
-
 		protected override void OnUnloaded()
 		{
 			MediaPlayer.Stop();

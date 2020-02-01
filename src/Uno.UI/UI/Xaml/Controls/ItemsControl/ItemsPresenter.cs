@@ -45,16 +45,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		public ItemsPresenter()
-		{
-			// A content presenter does not propagate its own templated 
-			// parent. The content's TemplatedParent has already been set by the
-			// content presenter to its own templated parent.
-
-			//TODO TEMPLATED PARENT
-			// PropagateTemplatedParent = false;
-		}
-
 		#region Padding DependencyProperty
 
 		public Thickness Padding

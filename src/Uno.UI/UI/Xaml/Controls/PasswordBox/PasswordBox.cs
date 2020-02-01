@@ -16,11 +16,6 @@ namespace Windows.UI.Xaml.Controls
 		private Button _revealButton;
 		private readonly SerialDisposable _revealButtonSubscription = new SerialDisposable();
 
-		public PasswordBox()
-		{
-
-		}
-
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();

@@ -13,11 +13,6 @@ namespace Windows.UI.Xaml.Media.Animation
 	{
 		private readonly Duration _duration = new Duration(TimeSpan.FromMilliseconds(100));
 
-		public EntranceThemeTransition()
-		{
-			//TODO EASING FUNCTION Task 3086
-		}
-
 		#region FromHorizontalOffset Property
 
 		public float FromHorizontalOffset

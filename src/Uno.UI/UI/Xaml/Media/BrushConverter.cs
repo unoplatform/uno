@@ -9,11 +9,6 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class BrushConverter : TypeConverter
 	{
-		public BrushConverter()
-		{
-
-		}
-
 		public override bool CanConvertFrom(ITypeDescriptorContext context, Type sourceType)
 		{
 			var canConvert =

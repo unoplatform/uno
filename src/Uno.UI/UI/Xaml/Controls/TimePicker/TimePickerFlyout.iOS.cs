@@ -19,10 +19,6 @@ namespace Windows.UI.Xaml.Controls
 		internal protected FrameworkElement _headerUntapZone;
 		private bool _isInitialized;
 
-		public TimePickerFlyout()
-		{
-		}
-
 		protected override void InitializePopupPanel()
 		{
 			_popup.PopupPanel = new PickerFlyoutPopupPanel(this)

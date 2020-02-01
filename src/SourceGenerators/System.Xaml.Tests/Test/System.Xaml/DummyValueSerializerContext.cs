@@ -37,10 +37,6 @@ namespace MonoTests.Uno.Xaml
 {
 	public class DummyValueSerializerContext : IValueSerializerContext
 	{
-		public DummyValueSerializerContext ()
-		{
-		}
-
 		public object GetService (Type serviceType)
 		{
 			throw new NotImplementedException ();

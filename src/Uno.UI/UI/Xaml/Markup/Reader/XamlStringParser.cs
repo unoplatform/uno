@@ -16,10 +16,6 @@ namespace Windows.UI.Xaml.Markup.Reader
 	{
 		private int _depth = 0;
 
-		public XamlStringParser()
-		{
-		}
-
 		public XamlFileDefinition Parse(string content)
 		{
 			var document = XmlReader.Create(new StringReader(content));

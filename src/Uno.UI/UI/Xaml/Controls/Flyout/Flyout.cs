@@ -75,10 +75,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 		#endregion
 
-		public Flyout()
-		{
-		}
-
 		protected internal override void Close()
 		{
 			// This overload is required for binary compatibility

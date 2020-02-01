@@ -7,11 +7,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class Page : UserControl
 	{
-		public Page()
-		{
-
-		}
-
 		protected internal virtual void OnNavigatedFrom(NavigationEventArgs e) { }
 
 		protected internal virtual void OnNavigatedTo(NavigationEventArgs e) { }

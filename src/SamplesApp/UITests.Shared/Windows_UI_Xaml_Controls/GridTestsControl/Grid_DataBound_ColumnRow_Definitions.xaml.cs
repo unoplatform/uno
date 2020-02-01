@@ -49,10 +49,6 @@ namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 
 	public partial class Grid_DataBound_ColumnRow_Definitions_Context : DependencyObject
 	{
-		public Grid_DataBound_ColumnRow_Definitions_Context()
-		{
-		}
-
 		#region Value1 DependencyProperty
 
 		public int Value1

@@ -12,11 +12,6 @@ namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 	{
 		private static readonly string[] ButtonNames = { "ButtonOutsideScrollViewer", "ButtonInsideScrollViewer", "ButtonInsideContentControl" };
 
-		public FindNameTestControl()
-		{
-
-		}
-
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();

@@ -27,10 +27,5 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		}
 
 		#endregion
-
-		public TickBar()
-		{
-
-		}
 	}
 }

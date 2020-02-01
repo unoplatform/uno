@@ -33,9 +33,5 @@ namespace Uno.UI.Samples.Content.UITests.ContentControlTestsControl
 
 	public partial class MySelectorItem : SelectorItem
 	{
-		public MySelectorItem()
-		{
-
-		}
 	}
 }

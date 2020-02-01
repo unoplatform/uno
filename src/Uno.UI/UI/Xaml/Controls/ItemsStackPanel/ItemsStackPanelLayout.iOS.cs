@@ -33,8 +33,6 @@ namespace Windows.UI.Xaml.Controls
 		internal override bool SupportsDynamicItemSizes => true;
 		#endregion
 
-		public ItemsStackPanelLayout() { }
-
 		protected override nfloat LayoutItemsInGroup(int group, nfloat availableBreadth, ref CGRect frame, bool createLayoutInfo, Dictionary<NSIndexPath, CGSize?> oldItemSizes)
 		{
 

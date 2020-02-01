@@ -4,10 +4,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class FlyoutPresenter : ContentControl
 	{
-		public FlyoutPresenter()
-		{
-		}
-
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
 			// All pointer-related should be "eaten" to prevent closing

@@ -447,11 +447,6 @@ namespace Uno.UI.Tests.BinderTests.ManualPropagation
 
 	public partial class MyObject : DependencyObject
 	{
-		public MyObject()
-		{
-
-		}
-
 		#region SubObject DependencyProperty
 
 		public SubObject SubObject

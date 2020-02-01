@@ -2,8 +2,6 @@ namespace Windows.UI.Xaml.Media.Animation
 {
 	public  partial class EntranceNavigationTransitionInfo : NavigationTransitionInfo
 	{
-		public EntranceNavigationTransitionInfo() : base() { }
-
 		#region IsTargetElement
 	
 		public static bool GetIsTargetElement(UIElement element)

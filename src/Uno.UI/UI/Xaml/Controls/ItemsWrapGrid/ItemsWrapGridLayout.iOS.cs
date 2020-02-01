@@ -18,8 +18,6 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private CGSize? _implicitItemSize;
 
-		public ItemsWrapGridLayout() { }
-
 		#region Properties
 		internal override bool SupportsDynamicItemSizes => false;
 		#endregion

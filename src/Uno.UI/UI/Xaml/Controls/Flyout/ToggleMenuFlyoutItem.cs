@@ -4,11 +4,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ToggleMenuFlyoutItem : MenuFlyoutItem
 	{
-		public ToggleMenuFlyoutItem()
-		{
-
-		}
-
 		#region IsChecked
 
 		public bool IsChecked

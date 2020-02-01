@@ -8,8 +8,5 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class StackPanel
 	{
-		public StackPanel()
-		{
-		}
 	}
 }

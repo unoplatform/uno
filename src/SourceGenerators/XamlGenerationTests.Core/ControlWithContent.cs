@@ -15,13 +15,7 @@ namespace XamlGenerationTests.Shared.Controls
     [ContentProperty(Name = "Content")]
     public sealed partial class ControlWithContent : Control
     {
-        public ControlWithContent()
-        {
-        }
-
-
-
-		#region MyTemplate DependencyProperty
+	    #region MyTemplate DependencyProperty
 
 		public DataTemplate MyTemplate
 		{

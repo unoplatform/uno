@@ -20,10 +20,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ContentControl
 	{
-		public ContentControl()
-		{
-		}
-
 		public override void MovedToSuperview()
 		{
 			base.MovedToSuperview();

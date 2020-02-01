@@ -6,10 +6,6 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class ArcSegment : PathSegment
 	{
-		public ArcSegment()
-		{
-		}
-
 		#region SweepDirection
 
 		public SweepDirection SweepDirection

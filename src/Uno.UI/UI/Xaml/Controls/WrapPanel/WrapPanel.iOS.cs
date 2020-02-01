@@ -6,10 +6,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class WrapPanel : Panel
 	{
-		public WrapPanel()
-		{
-		}
-
 		partial void OnItemHeightChangedPartial()
 		{
 			LayoutIfNeeded();

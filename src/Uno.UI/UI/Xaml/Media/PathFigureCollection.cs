@@ -6,10 +6,6 @@ namespace Windows.UI.Xaml.Media
 {
 	public  partial class PathFigureCollection : DependencyObjectCollection<PathFigure>
 	{
-		public PathFigureCollection()
-		{
-		}
-
 		private protected override void OnCollectionChanged()
 		{
 			base.OnCollectionChanged();

@@ -184,10 +184,6 @@ namespace Uno.UI.Controls
 	/// </summary>
 	internal partial class AppBarButtonWrapper : Border
 	{
-		public AppBarButtonWrapper()
-		{
-		}
-
 		protected override Size MeasureOverride(Size availableSize)
 		{
 			// Giving it full available space so that its child can properly be measured and positioned after

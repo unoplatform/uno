@@ -62,10 +62,6 @@ namespace MonoTests.Uno.Xaml
 
 	public class ComplexPositionalParameterWrapper
 	{
-		public ComplexPositionalParameterWrapper ()
-		{
-		}
-		
 		public ComplexPositionalParameterClass Param { get; set; }
 	}
 	
@@ -444,10 +440,6 @@ namespace MonoTests.Uno.Xaml
 
 	public class StaticExtensionWrapper
 	{
-		public StaticExtensionWrapper ()
-		{
-		}
-		
 		public StaticExtension Param { get; set; }
 
 		public static string Foo = "foo";
@@ -455,10 +447,6 @@ namespace MonoTests.Uno.Xaml
 	
 	public class TypeExtensionWrapper
 	{
-		public TypeExtensionWrapper ()
-		{
-		}
-		
 		public TypeExtension Param { get; set; }
 	}
 	
@@ -511,10 +499,6 @@ namespace MonoTests.Uno.Xaml
 	[TypeConverter (typeof (TestValueConverter))]
 	public class TestValueSerialized
 	{
-		public TestValueSerialized ()
-		{
-		}
-
 		public string Foo { get; set; }
 	}
 
@@ -676,10 +660,6 @@ namespace MonoTests.Uno.Xaml
 	
 	public class AttachedPropertyStore : IAttachedPropertyStore
 	{
-		public AttachedPropertyStore ()
-		{
-		}
-
 		private readonly Dictionary<AttachableMemberIdentifier,object> props = new Dictionary<AttachableMemberIdentifier,object> ();
 
 		public int PropertyCount {

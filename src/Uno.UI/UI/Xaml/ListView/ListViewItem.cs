@@ -14,10 +14,6 @@ namespace Windows.UI.Xaml.Controls
 	/// <remarks>This container supports vertical scrolling and stretching for the whole item.</remarks>
 	public partial class ListViewItem : SelectorItem
 	{
-		public ListViewItem()
-		{
-		}
-
 		[global::Uno.NotImplemented]
 		public global::Windows.UI.Xaml.Controls.Primitives.ListViewItemTemplateSettings TemplateSettings { get; } = new Primitives.ListViewItemTemplateSettings();
 

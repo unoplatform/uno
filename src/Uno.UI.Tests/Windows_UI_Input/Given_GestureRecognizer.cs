@@ -990,10 +990,6 @@ namespace Uno.UI.Tests.Windows_UI_Input
 			private Point? _position;
 			private ManipulationDelta? _cumulative;
 
-			public StartedValidator()
-			{
-			}
-
 			public StartedValidator At(double x, double y)
 			{
 				_position = new Point(x, y);

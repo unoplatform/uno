@@ -14,11 +14,6 @@ namespace Windows.UI.Xaml.Controls
 	/// </summary>
 	public partial class ProgressRing : BindableUIActivityIndicatorView, DependencyObject
 	{
-		public ProgressRing()
-		{
-
-		}
-
 		private static void OnForegroundChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			var progressRing = dependencyObject as ProgressRing;

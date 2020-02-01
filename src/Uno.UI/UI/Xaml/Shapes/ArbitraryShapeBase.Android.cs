@@ -24,11 +24,6 @@ namespace Windows.UI.Xaml.Shapes
 		private double _controlWidth;
 		private double _controlHeight;
 
-		public ArbitraryShapeBase()
-		{
-
-		}
-
 		private Size GetActualSize() => new Size(_controlWidth, _controlHeight);
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)

@@ -8,10 +8,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
     public partial class ListViewItemPresenter : ContentPresenter
     {
-		public ListViewItemPresenter()
-		{
-
-		}
-	}
+    }
 }
 #endif

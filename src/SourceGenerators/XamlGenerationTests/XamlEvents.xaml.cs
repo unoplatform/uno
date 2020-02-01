@@ -6,10 +6,6 @@ namespace XamlGenerationTests.Shared
 {
 	public partial class XamlEvents : UserControl
 	{
-		public XamlEvents()
-		{
-
-		}
 		private void Button_Click(object sender, RoutedEventArgs e)
 		{
 

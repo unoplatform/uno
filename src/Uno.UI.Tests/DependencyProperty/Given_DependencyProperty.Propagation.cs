@@ -484,11 +484,6 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 
 	public partial class MyObject : DependencyObject
 	{
-		public MyObject()
-		{
-
-		}
-
 		public DependencyObject SelfTest
 		{
 			get { return (DependencyObject)GetValue(SelfTestProperty); }

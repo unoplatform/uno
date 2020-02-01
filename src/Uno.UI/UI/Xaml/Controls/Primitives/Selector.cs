@@ -28,11 +28,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		/// </summary>
 		internal virtual bool IsSingleSelection => true;
 
-		public Selector()
-		{
-
-		}
-
 		public static readonly DependencyProperty SelectedItemProperty =
 		DependencyProperty.Register(
 			"SelectedItem",

@@ -11,10 +11,6 @@ namespace Windows.UI.Xaml.Controls
 	/// </summary>
 	public partial class DatePickerSelector : ContentControl
 	{
-		public DatePickerSelector()
-		{
-
-		}
 		//Properties defined in DependencyPropertyMixins
 	}
 }

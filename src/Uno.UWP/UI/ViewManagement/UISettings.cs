@@ -152,11 +152,6 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
-		public UISettings()
-		{
-
-		}
-
 		[NotImplemented]
 		public global::Windows.UI.Color UIElementColor(global::Windows.UI.ViewManagement.UIElementType desiredElement)
 		{

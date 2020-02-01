@@ -1203,11 +1203,6 @@ namespace Uno.UI.Tests.BinderTests
 
 	public partial class MyControl : DependencyObject
 	{
-		public MyControl()
-		{
-
-		}
-
 		public int MyProperty
 		{
 			get { return (int)this.GetValue(MyPropertyProperty); }

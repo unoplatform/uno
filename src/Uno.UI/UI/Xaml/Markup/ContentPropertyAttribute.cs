@@ -13,10 +13,6 @@ namespace Windows.UI.Xaml.Markup
 		private string _name;
 
 		// This is a positional argument
-		public ContentPropertyAttribute()
-		{
-
-		}
 
 		public string Name
 		{

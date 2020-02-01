@@ -9,11 +9,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class MenuFlyoutItem : MenuFlyoutItemBase
 	{
-		public MenuFlyoutItem()
-		{
-
-		}
-
 		#region CommandParameter
 
 		public object CommandParameter

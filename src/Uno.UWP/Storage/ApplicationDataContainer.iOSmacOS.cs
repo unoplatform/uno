@@ -19,11 +19,6 @@ namespace Windows.Storage
 
 		private class NSUserDefaultsPropertySet : IPropertySet
 		{
-
-			public NSUserDefaultsPropertySet()
-			{
-			}
-
 			public object this[string key]
 			{
 				get

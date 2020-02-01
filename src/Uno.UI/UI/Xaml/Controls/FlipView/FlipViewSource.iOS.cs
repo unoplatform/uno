@@ -13,10 +13,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class FlipViewSource : UICollectionViewSource
 	{
-		public FlipViewSource()
-		{
-		}
-
 		private WeakReference<FlipView> _ownerReference;
 		internal FlipView Owner
 		{

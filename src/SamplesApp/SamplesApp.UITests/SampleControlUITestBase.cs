@@ -17,10 +17,6 @@ namespace SamplesApp.UITests
 		protected IApp _app;
 		private static int _totalTestFixtureCount;
 
-		public SampleControlUITestBase()
-		{
-		}
-
 		[OneTimeSetUp]
 		public void SingleSetup()
 		{

@@ -29,10 +29,6 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		partial void OnExponentChangedPartial(double oldValue, double newValue);
 
-		public ExponentialEase()
-		{
-		}
-
 		public override double Ease(double currentTime, double startValue, double finalValue, double duration)
 		{
 			var t = currentTime / duration;

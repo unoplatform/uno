@@ -7,13 +7,6 @@ namespace Windows.UI.Popups
 	public sealed partial class UICommandSeparator : IUICommand
 	{
 		/// <summary>
-		/// Creates a new instance of the UICommand class.
-		/// </summary>
-		public UICommandSeparator()
-		{
-		}
-
-		/// <summary>
 		/// Gets or sets the identifier of the command.
 		/// </summary>
 		public object Id { get; set; }

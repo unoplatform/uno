@@ -12,8 +12,6 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class RectangleGeometry : Geometry
 	{
-		public RectangleGeometry() { }
-
 		#region Rect DependencyProperty
 
 		public Rect Rect

@@ -9,10 +9,6 @@ namespace Windows.ApplicationModel.Chat
 	{
 		private string _body;
 
-		public ChatMessage()
-		{
-		}
-
 		public string Body
 		{
 			get => _body;

@@ -9,8 +9,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public sealed partial class ItemClickEventArgs : RoutedEventArgs
 	{
-		public ItemClickEventArgs() { }
-
 		public object ClickedItem { get; set; }
 	}
 }

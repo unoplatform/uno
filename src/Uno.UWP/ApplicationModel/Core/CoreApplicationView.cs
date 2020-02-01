@@ -6,10 +6,6 @@ namespace Windows.ApplicationModel.Core
 	{
 		private CoreApplicationViewTitleBar _titleBar;
 
-		public CoreApplicationView()
-		{
-		}
-
 		public CoreDispatcher Dispatcher => CoreDispatcher.Main;
 
 		public CoreApplicationViewTitleBar TitleBar

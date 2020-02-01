@@ -89,10 +89,6 @@ namespace Uno.UI
 			public Action<View> AttachedHandler { get; set; }
 			public Action<View> DetachedHandler { get; set; }
 
-			public AttachedChangedListener()
-			{
-			}
-
 			public void OnViewAttachedToWindow(View attachedView)
 			{
 				if (AttachedHandler != null)

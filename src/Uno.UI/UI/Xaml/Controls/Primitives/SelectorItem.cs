@@ -65,11 +65,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		private uint _goToStateRequest;
 		private DateTime _pauseStateUpdateUntil;
 
-		public SelectorItem()
-		{
-
-		}
-
 		private Selector Selector => ItemsControl.ItemsControlFromItemContainer(this) as Selector;
 
 		private bool IsItemClickEnabled

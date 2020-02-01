@@ -14,10 +14,6 @@ namespace Windows.UI.Xaml
 	{
 		private readonly Dictionary<string, ManagedWeakReference> _names = new Dictionary<string, ManagedWeakReference>();
 
-		public NameScope()
-		{
-		}
-
 		public object FindName(string name)
 		{
 			return _names.TryGetValue(name, out var element)

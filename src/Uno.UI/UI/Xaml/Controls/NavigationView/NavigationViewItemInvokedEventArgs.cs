@@ -18,9 +18,5 @@ namespace Windows.UI.Xaml.Controls
 		public NavigationViewItemBase InvokedItemContainer { get; internal set; }
 
 		public NavigationTransitionInfo RecommendedNavigationTransitionInfo { get; internal set; }
-
-		public NavigationViewItemInvokedEventArgs()
-		{
-		}
 	}
 }

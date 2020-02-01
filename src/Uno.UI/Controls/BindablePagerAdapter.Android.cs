@@ -27,10 +27,6 @@ namespace Uno.UI.Controls
 		private IEnumerable _itemsSource;
 		private readonly Dictionary<int, View> _views = new Dictionary<int, View>();
 
-		public BindablePagerAdapter()
-		{
-		}
-
 		public override int Count
 		{
 			get 

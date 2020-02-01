@@ -31,10 +31,6 @@ namespace Windows.UI.Xaml.Controls
 		private Button _lightDismissLayer;
 		private bool _isViewReady;
 
-        public SplitView()
-        {
-        }
-
 #if XAMARIN_IOS
 		public override void LayoutSubviews()
 		{

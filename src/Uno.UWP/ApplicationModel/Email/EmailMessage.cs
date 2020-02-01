@@ -13,10 +13,6 @@ namespace Windows.ApplicationModel.Email
 		private string _subject = string.Empty;
 		private string _body = string.Empty;
 
-		public EmailMessage()
-		{
-		}
-
 		public string Subject
 		{
 			get => _subject;

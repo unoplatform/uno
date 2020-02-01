@@ -9,11 +9,6 @@ namespace XamlGenerationTests.Shared
 	[ContentProperty(Name = "ContentOverride")]
 	public partial class ContentControlWithOverridenContentProperty : ContentControl
 	{
-		public ContentControlWithOverridenContentProperty()
-		{
-		}
-
-
 		public object ContentOverride
 		{
 			get { return (object)this.GetValue(ContentOverrideProperty); }

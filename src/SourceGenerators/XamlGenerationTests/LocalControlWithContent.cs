@@ -9,11 +9,6 @@ namespace XamlGenerationTests.Shared
 	[ContentProperty(Name = "Content")]
 	public partial class LocalControlWithContent : Control
 	{
-		public LocalControlWithContent()
-		{
-		}
-
-
 		public object Content
 		{
 			get { return (object)this.GetValue(ContentProperty); }

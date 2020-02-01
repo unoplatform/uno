@@ -28,11 +28,6 @@ namespace Uno.UI.Samples.Controls
 {
 	public partial class StarStackPanel : Panel
 	{
-		public StarStackPanel()
-		{
-
-		}
-
 		private double HorizontalTrim => Padding.Left + Padding.Right;
 		private double VerticalTrim => Padding.Top + Padding.Bottom;
 		private Point ChildrenOffset => new Point(Padding.Left, Padding.Top);

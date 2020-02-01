@@ -2,8 +2,6 @@ namespace Windows.UI.Xaml.Media.Animation
 {
 	public  partial class CommonNavigationTransitionInfo : NavigationTransitionInfo
 	{
-		public CommonNavigationTransitionInfo() : base() { }
-
 		#region IsStaggeringEnabled
 
 		public bool IsStaggeringEnabled

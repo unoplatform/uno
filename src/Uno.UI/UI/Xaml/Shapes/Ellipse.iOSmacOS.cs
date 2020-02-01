@@ -13,10 +13,6 @@ namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Ellipse : ArbitraryShapeBase
 	{
-		public Ellipse()
-		{
-		}
-
 		protected override CGPath GetPath()
 		{
 			var controlSize = SizeFromUISize(Bounds.Size);

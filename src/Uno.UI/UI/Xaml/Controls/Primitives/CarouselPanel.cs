@@ -9,10 +9,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class CarouselPanel : StackPanel //TODO: VirtualizingPanel https://github.com/unoplatform/uno/issues/1133
 	{
-
-		public CarouselPanel()
-		{
-		}
 	}
 }
 #endif

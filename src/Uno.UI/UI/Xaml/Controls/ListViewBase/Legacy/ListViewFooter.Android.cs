@@ -8,12 +8,7 @@ namespace Uno.UI.Controls.Legacy
 {
     internal partial class ListViewFooter : ContentControl
     {
-		public ListViewFooter()
-		{
-
-		}
-
-		/// <remarks>
+	    /// <remarks>
 		/// Ensure that the ContentControl will create its chidren even
 		/// if it has no parent view. This is critical for the recycling panels,
 		/// where the content is databound before being assigned to its

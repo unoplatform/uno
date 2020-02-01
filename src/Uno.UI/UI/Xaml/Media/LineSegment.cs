@@ -4,10 +4,6 @@ namespace Windows.UI.Xaml.Media
 {
 	public  partial class LineSegment : PathSegment
 	{
-		public LineSegment()
-		{
-		}
-
 		#region Point
 
 		public Point Point

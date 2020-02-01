@@ -7,10 +7,6 @@ namespace XamlGenerationTests.Shared
 {
 	public partial class XBindUserControl : UserControl
 	{
-		public XBindUserControl()
-		{
-		}
-
 		public string Test { get; set; }
 
 		public MyType TypeProperty { get; set; }
