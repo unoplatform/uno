@@ -8,7 +8,7 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 		internal string Text { get; private set; }
 
-#if !(NET461 || __MACOS__)
+#if !NET461
 		public void SetText(string text)
 		{
 			if (text == null)
