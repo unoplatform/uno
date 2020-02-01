@@ -2,6 +2,7 @@
 
 ### Features
 
+- Support for `Clipboard` get/set Text content on macOS
 - Support for `ApplicationView.IsScreenCaptureEnabled` on Android
 - Add support for `StorageFile.DeleteAsync()`
 - Support for `PointerDown`, `PointerUp` `PointerEntered`, `PointerExited` and `PointerMoved` events on macOS
