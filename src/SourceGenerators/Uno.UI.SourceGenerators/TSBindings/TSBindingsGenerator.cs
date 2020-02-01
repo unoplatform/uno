@@ -11,7 +11,7 @@ using Uno.SourceGeneration;
 
 namespace Uno.UI.SourceGenerators.TSBindings
 {
-	class TSBindingsGenerator : SourceGenerator
+	internal class TSBindingsGenerator : SourceGenerator
 	{
 		private string _bindingsPaths;
 		private string[] _sourceAssemblies;

@@ -30,7 +30,7 @@
 			}
 		}
 
-		static string CleanupPath (string path)
+		private static string CleanupPath (string path)
 		{
 			if (string.IsNullOrEmpty (path)) {
 				return "";
@@ -43,7 +43,7 @@
 			return path;
 		}
 
-		readonly string _path;
+		private readonly string _path;
 
 		/// <summary>
 		/// Gets the path value held by this PropertyPath.

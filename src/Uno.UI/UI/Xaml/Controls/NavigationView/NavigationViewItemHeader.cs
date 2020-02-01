@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 			NavigationView.CreateAndAttachHeaderAnimation(visual);
 		}
 
-		void OnSplitViewPropertyChanged(DependencyObject sender, DependencyProperty args)
+		private void OnSplitViewPropertyChanged(DependencyObject sender, DependencyProperty args)
 		{
 			if (args == SplitView.IsPaneOpenProperty ||
 				args == SplitView.DisplayModeProperty)
@@ -58,7 +58,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void UpdateIsClosedCompact()
+		private void UpdateIsClosedCompact()
 		{
 			var splitView = GetSplitView();
 			if (splitView != null)
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void UpdateVisualState(bool useTransitions)
+		private void UpdateVisualState(bool useTransitions)
 		{
 			VisualStateManager.GoToState(this, m_isClosedCompact ? "HeaderTextCollapsed" : "HeaderTextVisible", useTransitions);
 		}

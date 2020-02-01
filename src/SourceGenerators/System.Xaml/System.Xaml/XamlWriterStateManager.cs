@@ -112,12 +112,12 @@ namespace Uno.Xaml
 		}
 
 		// configuration
-		bool allow_ns_at_value, allow_object_after_value, allow_parallel_values, allow_empty_member, allow_multiple_results;
+		private bool allow_ns_at_value, allow_object_after_value, allow_parallel_values, allow_empty_member, allow_multiple_results;
 
 		// state
-		XamlWriteState state = XamlWriteState.Initial;
-		bool ns_pushed;
-		bool accept_multiple_values; // It is PositionalParameters-specific state.
+		private XamlWriteState state = XamlWriteState.Initial;
+		private bool ns_pushed;
+		private bool accept_multiple_values; // It is PositionalParameters-specific state.
 
 		public XamlWriteState State {
 			get { return state; }
@@ -195,7 +195,7 @@ namespace Uno.Xaml
 			ns_pushed = false;
 		}
 
-		void CheckState (XamlNodeType next)
+		private void CheckState (XamlNodeType next)
 		{
 			switch (state) {
 			case XamlWriteState.Initial:
@@ -264,8 +264,8 @@ namespace Uno.Xaml
 			}
 			throw CreateError (String.Format ("{0} is not allowed at current state {1}", next, state));
 		}
-		
-		void RejectNamespaces (XamlNodeType next)
+
+		private void RejectNamespaces (XamlNodeType next)
 		{
 			if (ns_pushed) {
 				// strange, but on WriteEndMember it throws XamlXmlWriterException, while for other nodes it throws IOE.

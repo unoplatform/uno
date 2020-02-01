@@ -44,7 +44,7 @@ namespace MonoTests.Uno.Xaml
 	{
 		// read test
 
-		XamlReader GetReader (string filename, bool ignoreWhitespace = false)
+		private XamlReader GetReader (string filename, bool ignoreWhitespace = false)
 		{
 			var directory = Path.GetDirectoryName(new Uri(GetType().Assembly.CodeBase).LocalPath);
 
@@ -55,7 +55,7 @@ namespace MonoTests.Uno.Xaml
 			return new XamlXmlReader (XmlReader.Create (new StringReader (xml), s));
 		}
 
-		void ReadTest (string filename)
+		private void ReadTest (string filename)
 		{
 			var r = GetReader (filename);
 			while (!r.IsEof)

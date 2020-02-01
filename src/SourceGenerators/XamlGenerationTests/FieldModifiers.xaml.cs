@@ -27,7 +27,7 @@ namespace XamlGenerationTests.Shared
 		}
     }
 
-	class AccessibilityTest
+    internal class AccessibilityTest
 	{
 		public AccessibilityTest(FieldModifiers f)
 		{

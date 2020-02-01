@@ -28,10 +28,10 @@ namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Rectangle
 	{
-		CAShapeLayer _rectangleLayer = new CAShapeLayer();
-		CAGradientLayer _gradientLayer;
-		SerialDisposable _fillSubscription = new SerialDisposable();
-		SerialDisposable _strokeSubscription = new SerialDisposable();
+		private CAShapeLayer _rectangleLayer = new CAShapeLayer();
+		private CAGradientLayer _gradientLayer;
+		private SerialDisposable _fillSubscription = new SerialDisposable();
+		private SerialDisposable _strokeSubscription = new SerialDisposable();
 
 		public Rectangle()
 		{

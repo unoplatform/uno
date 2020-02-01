@@ -13,7 +13,7 @@ namespace Uno.UWPSyncGenerator
 	/// <summary>
 	/// Generates documentation about what parts of the UWP contract are currently implemented by Uno.
 	/// </summary>
-	class DocGenerator : Generator
+	internal class DocGenerator : Generator
 	{
 		private const string DocPath = @"..\..\..\..\..\doc\articles";
 		private const string ImplementedViewsFileName = "implemented-views.md";

@@ -19,7 +19,7 @@ namespace SamplesApp.Samples.Windows_UI_Xaml_Controls.NavigationViewTests
 
 		public IList<NavigationViewItemViewModel> Items { get; }
 
-		NavigationViewItemViewModel _selectedItem;
+		private NavigationViewItemViewModel _selectedItem;
 		public NavigationViewItemViewModel SelectedItem
 		{
 			get => _selectedItem;

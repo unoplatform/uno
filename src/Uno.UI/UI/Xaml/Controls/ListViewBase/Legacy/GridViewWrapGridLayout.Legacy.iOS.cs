@@ -21,7 +21,7 @@ namespace Uno.UI.Controls.Legacy
 			Initialize();
 		}
 
-		void Initialize()
+		private void Initialize()
 		{
 			ScrollDirection = ListViewBaseScrollDirection.Vertical;
 			ItemSize = new SizeF(200f, 112f);

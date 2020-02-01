@@ -18,7 +18,7 @@ namespace Windows.UI.Popups
 {
 	public partial class MessageDialog
 	{
-		const int MaximumCommands = 3;
+		private const int MaximumCommands = 3;
 
 		public IAsyncOperation<IUICommand> ShowAsync()
 		{

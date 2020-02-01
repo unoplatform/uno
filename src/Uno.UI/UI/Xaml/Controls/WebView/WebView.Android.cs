@@ -365,7 +365,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			private IValueCallback _filePathCallback;
 
-			readonly SerialDisposable _fileChooserTaskDisposable = new SerialDisposable();
+			private readonly SerialDisposable _fileChooserTaskDisposable = new SerialDisposable();
 
 			public override bool OnShowFileChooser(Android.Webkit.WebView webView, IValueCallback filePathCallback, FileChooserParams fileChooserParams)
 			{

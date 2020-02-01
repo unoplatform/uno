@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Controls
 {
-	partial class ItemsStackPanelLayout : VirtualizingPanelLayout
+	internal partial class ItemsStackPanelLayout : VirtualizingPanelLayout
 	{
 		public override Orientation ScrollOrientation { get { return Orientation; } }
 	}

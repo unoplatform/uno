@@ -6,7 +6,7 @@ using Uno.Extensions;
 
 namespace Uno.UI.RemoteControl.Host
 {
-	static class RemoteControlExtensions
+	internal static class RemoteControlExtensions
 	{
 		public static IApplicationBuilder UseRemoteControlServer(
 			this IApplicationBuilder app,

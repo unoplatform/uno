@@ -1476,7 +1476,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// If there are no groups, this probably means that the source is grouped and Header or Footer are pushing all items completely out of view.
-		int? GetDynamicStartFromHeader()
+		private int? GetDynamicStartFromHeader()
 		{
 			if (HeaderViewCount > 0)
 			{

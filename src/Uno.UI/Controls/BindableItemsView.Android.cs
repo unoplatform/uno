@@ -28,12 +28,12 @@ namespace Uno.UI.Controls
 	[Windows.UI.Xaml.Data.Bindable]
 	public partial class BindableItemsView : LinearLayout
 	{
-		CompositeDisposable _subscriptions = new CompositeDisposable();
+		private CompositeDisposable _subscriptions = new CompositeDisposable();
 
-		IEnumerable _itemsSource;
-		HorizontalScrollView _horizontalScrollView;
+		private IEnumerable _itemsSource;
+		private HorizontalScrollView _horizontalScrollView;
 
-		bool _scrollIndexChanged = true;
+		private bool _scrollIndexChanged = true;
 
 		public BindableItemsView(Android.Content.Context context, IAttributeSet attrs)
 			: base(context, attrs)
@@ -88,7 +88,7 @@ namespace Uno.UI.Controls
 		}
 		private EventHandler<ItemsSourceChangedEventArgs> _itemsSourceChanged;
 
-		int _scrollToIndex = -1;
+		private int _scrollToIndex = -1;
 		public int ScrollToIndex
 		{
 			get

@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml
 	/// <summary>
 	/// A <see cref="DependencyPropertyDetails"/> collection
 	/// </summary>
-    partial class DependencyPropertyDetailsCollection
+	internal partial class DependencyPropertyDetailsCollection
 	{
 		private ImmutableList<BindingExpression> _bindings = ImmutableList<BindingExpression>.Empty;
 		private ImmutableList<BindingExpression> _templateBindings = ImmutableList<BindingExpression>.Empty;

@@ -238,7 +238,7 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenter
 		}
 	}
 
-	static partial class CoordinateExtensions
+	internal static partial class CoordinateExtensions
 	{
 		public static LatLng ToLatLng(this Geopoint c)
 		{

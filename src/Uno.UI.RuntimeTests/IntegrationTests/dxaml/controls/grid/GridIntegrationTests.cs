@@ -17,23 +17,23 @@ namespace Windows.UI.Xaml.Tests.Controls.Grid_Tests
 	[TestClass]
 	public class GridIntegrationTests
 	{
-		const double s_rectSize = 30.0;
-		const double s_gridSize = 700.0;
-		const double s_errorMargin = 0.0001;
+		private const double s_rectSize = 30.0;
+		private const double s_gridSize = 700.0;
+		private const double s_errorMargin = 0.0001;
 
-		bool ClassSetup()
+		private bool ClassSetup()
 		{
 			TestServices.EnsureInitialized();
 			return true;
 		}
 
-		bool TestSetup()
+		private bool TestSetup()
 		{
 			// TestServices.WindowHelper.InitializeXaml(new MetadataProvider());
 			return true;
 		}
 
-		bool TestCleanup()
+		private bool TestCleanup()
 		{
 			TestServices.WindowHelper.ShutdownXaml();
 			TestServices.WindowHelper.VerifyTestCleanup();

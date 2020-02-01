@@ -2862,7 +2862,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-		bool IsStaticMethod(string fullMethodName)
+		private bool IsStaticMethod(string fullMethodName)
 		{
 			var lastDotIndex = fullMethodName.LastIndexOf(".");
 

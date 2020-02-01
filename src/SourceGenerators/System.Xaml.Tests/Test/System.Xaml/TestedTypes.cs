@@ -131,7 +131,7 @@ namespace MonoTests.Uno.Xaml
 			this.Type = type;
 		}
 
-		IList items;
+		private IList items;
 		public IList Items {
 			get { return items; }
 			private set { items = value; }
@@ -173,7 +173,7 @@ namespace MonoTests.Uno.Xaml
 			this.Type = type;
 		}
 
-		IList items;
+		private IList items;
 		public IList Items {
 			get { return items; }
 			private set { items = value; }
@@ -195,7 +195,7 @@ namespace MonoTests.Uno.Xaml
 		}
 	}
 
-	class TestClass1
+	internal class TestClass1
 	{
 	}
 
@@ -562,7 +562,7 @@ namespace MonoTests.Uno.Xaml
 			this.val = val;
 		}
 
-		XmlSerializable val;
+		private XmlSerializable val;
 
 		public XmlSerializable Value {
 			get { return val; }
@@ -581,7 +581,7 @@ namespace MonoTests.Uno.Xaml
 			this.raw = raw;
 		}
 
-		string raw;
+		private string raw;
 
 		public string GetRaw ()
 		{
@@ -656,7 +656,7 @@ namespace MonoTests.Uno.Xaml
 			AttachablePropertyServices.SetProperty (target, ProtectedIdentifier, value);
 		}
 
-		static Dictionary<object,List<EventHandler>> handlers = new Dictionary<object,List<EventHandler>> ();
+		private static Dictionary<object,List<EventHandler>> handlers = new Dictionary<object,List<EventHandler>> ();
 
 		public static void AddXHandler (object target, EventHandler handler)
 		{
@@ -679,8 +679,8 @@ namespace MonoTests.Uno.Xaml
 		public AttachedPropertyStore ()
 		{
 		}
-		
-		Dictionary<AttachableMemberIdentifier,object> props = new Dictionary<AttachableMemberIdentifier,object> ();
+
+		private Dictionary<AttachableMemberIdentifier,object> props = new Dictionary<AttachableMemberIdentifier,object> ();
 
 		public int PropertyCount {
 			get { return props.Count; }
@@ -721,7 +721,7 @@ namespace MonoTests.Uno.Xaml
 	{
 		public static readonly AttachableMemberIdentifier FooIdentifier = new AttachableMemberIdentifier (typeof (AttachedWrapper2), "Foo");
 
-		static AttachedPropertyStore store = new AttachedPropertyStore ();
+		private static AttachedPropertyStore store = new AttachedPropertyStore ();
 
 		public static string GetFoo (object target)
 		{
@@ -866,7 +866,7 @@ namespace MonoTests.Uno.Xaml
 
 	public class ReadOnlyPropertyContainer
 	{
-		string foo;
+		private string foo;
 		public string Foo {
 			get { return foo; }
 			set { foo = Bar = value; }
@@ -1260,14 +1260,14 @@ Loaded Parent
 
 	public class BaseItem : ISupportInitialize
 	{
-		Dictionary<string, object> properties = new Dictionary<string, object> ();
+		private Dictionary<string, object> properties = new Dictionary<string, object> ();
 		
 		public Dictionary<string, object> Properties
 		{
 			get { return properties; }
 		}
 
-		string title;
+		private string title;
 
 		public string Title
 		{
@@ -1308,7 +1308,7 @@ Loaded Parent
 	[ContentProperty ("Children")]
 	public class Parent : BaseItem
 	{
-		BaseItemCollection children = new BaseItemCollection ();
+		private BaseItemCollection children = new BaseItemCollection ();
 		
 		public BaseItemCollection Children
 		{

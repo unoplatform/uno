@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 
-		void Initialize ()
+		private void Initialize ()
 		{
 		}
 

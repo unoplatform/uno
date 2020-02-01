@@ -31,7 +31,7 @@ namespace Uno.Xaml
 {
 	public class XamlDirective : XamlMember
 	{
-		class DirectiveMemberInvoker : XamlMemberInvoker
+		private class DirectiveMemberInvoker : XamlMemberInvoker
 		{
 			public DirectiveMemberInvoker (XamlDirective directive)
 				: base (directive)
@@ -72,11 +72,11 @@ namespace Uno.Xaml
 		}
 
 		public AllowedMemberLocations AllowedLocation { get; private set; }
-		XamlValueConverter<TypeConverter> type_converter;
-		XamlType type;
-		XamlMemberInvoker invoker;
-		bool is_unknown;
-		IList<string> xaml_namespaces;
+		private XamlValueConverter<TypeConverter> type_converter;
+		private XamlType type;
+		private XamlMemberInvoker invoker;
+		private bool is_unknown;
+		private IList<string> xaml_namespaces;
 
 		// this is for XamlLanguage.UnknownContent
 		internal bool InternalIsUnknown {

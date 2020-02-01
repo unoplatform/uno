@@ -18,52 +18,52 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// XAML Element for the first TextBlock matching x:Name of InitialsTextBlock.
 		/// </summary>
-		TextBlock m_initialsTextBlock;
+		private TextBlock m_initialsTextBlock;
 
 		/// <summary>
 		/// XAML Element for the first TextBlock matching x:Name of BadgeNumberTextBlock.
 		/// </summary>
-		TextBlock m_badgeNumberTextBlock;
+		private TextBlock m_badgeNumberTextBlock;
 
 		/// <summary>
 		/// XAML Element for the first TextBlock matching x:Name of BadgeGlyphIcon.
 		/// </summary>
-		FontIcon m_badgeGlyphIcon;
+		private FontIcon m_badgeGlyphIcon;
 
 		/// <summary>
 		/// XAML Element for the first ImageBrush matching x:Name of BadgeImageBrush.
 		/// </summary>
-		ImageBrush m_badgeImageBrush;
+		private ImageBrush m_badgeImageBrush;
 
 		/// <summary>
 		/// XAML Element for the first Ellipse matching x:Name of BadgingBackgroundEllipse.
 		/// </summary>
-		Ellipse m_badgingEllipse;
+		private Ellipse m_badgingEllipse;
 
 		/// <summary>
 		/// XAML Element for the first Ellipse matching x:Name of BadgingEllipse.
 		/// </summary>
-		Ellipse m_badgingBackgroundEllipse;
+		private Ellipse m_badgingBackgroundEllipse;
 
 		/// <summary>
 		/// The async operation object representing the loading and assignment of the Thumbnail.
 		/// </summary>
-		IAsyncOperation<IRandomAccessStreamWithContentType> m_profilePictureReadAsync;
+		private IAsyncOperation<IRandomAccessStreamWithContentType> m_profilePictureReadAsync;
 
 		/// <summary>
 		/// The initials from the DisplayName property.
 		/// </summary>
-		string m_displayNameInitials;
+		private string m_displayNameInitials;
 
 		/// <summary>
 		/// The initials from the Contact property.
 		/// </summary>
-		string m_contactDisplayNameInitials;
+		private string m_contactDisplayNameInitials;
 
 		/// <summary>
 		/// The ImageSource from the Contact property.
 		/// </summary>
-		ImageSource m_contactImageSource;
+		private ImageSource m_contactImageSource;
 		private readonly string SR_GroupName				= "GroupName";
 		private readonly string SR_PersonName				= "PersonName";
 		private readonly string SR_BadgeItemTextOverride	= "BadgeItemTextOverride";
@@ -92,7 +92,7 @@ namespace Windows.UI.Xaml.Controls
 			this.RegisterDisposablePropertyChangedCallback((s, p, e) => OnPropertyChanged(e));
 		}
 
-		async Task<BitmapImage> LoadImageAsync(IRandomAccessStreamReference thumbStreamReference)
+		private async Task<BitmapImage> LoadImageAsync(IRandomAccessStreamReference thumbStreamReference)
 		{
 			m_profilePictureReadAsync = null;
 
@@ -176,7 +176,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateIfReady();
 		}
 
-		string GetInitials()
+		private string GetInitials()
 		{
 			if (!string.IsNullOrEmpty(Initials))
 			{
@@ -192,7 +192,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		ImageSource GetImageSource()
+		private ImageSource GetImageSource()
 		{
 			if (ProfilePicture != null)
 			{
@@ -204,7 +204,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void UpdateIfReady()
+		private void UpdateIfReady()
 		{
 			string initials = GetInitials();
 			ImageSource imageSrc = GetImageSource();
@@ -253,7 +253,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateAutomationName();
 		}
 
-		void UpdateBadge()
+		private void UpdateBadge()
 		{
 			if (BadgeImageSource != null)
 			{
@@ -286,7 +286,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateAutomationName();
 		}
 
-		void UpdateBadgeNumber()
+		private void UpdateBadgeNumber()
 		{
 			if (m_badgingEllipse == null || m_badgeNumberTextBlock == null)
 			{
@@ -315,7 +315,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void UpdateBadgeGlyph()
+		private void UpdateBadgeGlyph()
 		{
 			if (m_badgingEllipse == null || m_badgeGlyphIcon == null)
 			{
@@ -337,7 +337,7 @@ namespace Windows.UI.Xaml.Controls
 			m_badgeGlyphIcon.Glyph = badgeGlyph;
 		}
 
-		void UpdateBadgeImageSource()
+		private void UpdateBadgeImageSource()
 		{
 			if (m_badgeImageBrush == null)
 			{
@@ -361,7 +361,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void UpdateAutomationName()
+		private void UpdateAutomationName()
 		{
 			Contact contact = Contact;
 			string automationName;
@@ -436,7 +436,7 @@ namespace Windows.UI.Xaml.Controls
 			AutomationProperties.SetName(this, automationName);
 		}
 
-		string GetLocalizedPluralBadgeItemStringResource(int  numericValue)
+		private string GetLocalizedPluralBadgeItemStringResource(int  numericValue)
 		{
 			int valueMod10 = numericValue % 10;
 			string value;
@@ -477,7 +477,7 @@ namespace Windows.UI.Xaml.Controls
 			return value;
 		}
 
-		void UpdateControlForContact(bool isNewContact)
+		private void UpdateControlForContact(bool isNewContact)
 		{
 			Contact contact = Contact;
 
@@ -574,7 +574,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateIfReady();
 		}
 
-		void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
+		private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
 			DependencyProperty property = args.Property;
 
@@ -605,14 +605,14 @@ namespace Windows.UI.Xaml.Controls
 			// No additional action required for s_PreferSmallImageProperty
 		}
 
-		void OnDisplayNameChanged(DependencyPropertyChangedEventArgs args)
+		private void OnDisplayNameChanged(DependencyPropertyChangedEventArgs args)
 		{
 			m_displayNameInitials = InitialsGenerator.InitialsFromDisplayName(DisplayName);
 
 			UpdateIfReady();
 		}
 
-		void OnContactChanged(DependencyPropertyChangedEventArgs args)
+		private void OnContactChanged(DependencyPropertyChangedEventArgs args)
 		{
 			bool isNewContact = true;
 
@@ -632,7 +632,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateControlForContact(isNewContact);
 		}
 
-		void OnSizeChanged(object sender, SizeChangedEventArgs args)
+		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			{
 				bool widthChanged = (args.NewSize.Width != args.PreviousSize.Width);
@@ -688,7 +688,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void OnUnloaded(object sender, RoutedEventArgs e)
+		private void OnUnloaded(object sender, RoutedEventArgs e)
 		{
 			if (m_profilePictureReadAsync != null)
 			{

@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace UWPUsageStatsGenerator
 {
-	class Program
+	internal class Program
 	{
-		static void Main(string[] args)
+		private static void Main(string[] args)
 		{
 			var types = new List<string>();
 

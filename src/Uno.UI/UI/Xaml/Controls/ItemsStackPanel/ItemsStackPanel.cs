@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ItemsStackPanel : Panel, IVirtualizingPanel
 	{
-		VirtualizingPanelLayout _layout;
+		private VirtualizingPanelLayout _layout;
 
 #if __WASM__
 		[NotImplemented]

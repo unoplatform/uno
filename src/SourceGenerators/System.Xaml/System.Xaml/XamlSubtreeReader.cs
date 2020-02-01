@@ -31,8 +31,8 @@ namespace Uno.Xaml
 		{
 			this.source = source;
 		}
-		
-		XamlReader source;
+
+		private XamlReader source;
 
 		public override bool IsEof {
 			get { return started && (nest == 0 || source.IsEof); }
@@ -73,9 +73,9 @@ namespace Uno.Xaml
 
 			base.Dispose (disposing);
 		}
-		
-		bool started;
-		int nest;
+
+		private bool started;
+		private int nest;
 		
 		public override bool Read ()
 		{

@@ -176,7 +176,7 @@ namespace Windows.Media.Capture
 		}
 	}
 
-	class CameraDelegate : UIImagePickerControllerDelegate
+	internal class CameraDelegate : UIImagePickerControllerDelegate
 	{
 		private readonly TaskCompletionSource<NSDictionary> _cts;
 

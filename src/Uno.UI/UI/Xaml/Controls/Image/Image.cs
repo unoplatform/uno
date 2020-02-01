@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 			public const int Image_SetImageStop = 6;
 		}
 
-		void Initialize()
+		private void Initialize()
 		{
 			InitializeBinder();
 			IFrameworkElementHelper.Initialize(this);

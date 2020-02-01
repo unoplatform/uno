@@ -10,7 +10,7 @@ using Uno.Disposables;
 
 namespace Windows.UI.Xaml.Controls
 {
-	enum NavigationViewSplitVectorID
+	internal enum NavigationViewSplitVectorID
 	{
 		NotInitialized = 0,
 		PrimaryList = 1,
@@ -265,7 +265,7 @@ namespace Windows.UI.Xaml.Controls
 			return width;
 		}
 
-		void InvalidWidthCache()
+		private void InvalidWidthCache()
 		{
 			ResetAttachedData(-1.0f);
 		}
@@ -280,7 +280,7 @@ namespace Windows.UI.Xaml.Controls
 			m_overflowButtonCachedWidth = width;
 		}
 
-		bool IsItemSelectableInPrimaryList(object  value)
+		private bool IsItemSelectableInPrimaryList(object  value)
 		{
 			int index = IndexOf(value);
 			return (index != -1);
@@ -291,7 +291,7 @@ namespace Windows.UI.Xaml.Controls
 			return IndexOfImpl(value, vectorID);
 		}
 
-		void OnDataSourceChanged(object  sender, NotifyCollectionChangedEventArgs args)
+		private void OnDataSourceChanged(object  sender, NotifyCollectionChangedEventArgs args)
 		{
 			switch (args.Action)
 			{
@@ -326,7 +326,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		bool IsValidWidth(double width)
+		private bool IsValidWidth(double width)
 		{
 			return (width >= 0) && (width < double.MaxValue);
 		}
@@ -362,7 +362,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void SetWidthForItem(int index, double width)
+		private void SetWidthForItem(int index, double width)
 		{
 			if (IsValidWidth(width))
 			{
@@ -370,7 +370,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void ChangeDataSource(IEnumerable newValue)
+		private void ChangeDataSource(IEnumerable newValue)
 		{
 			var oldValue = m_dataSource;
 			if (oldValue != newValue)
@@ -403,7 +403,7 @@ namespace Windows.UI.Xaml.Controls
 			return GetVectorIDForItem(index) == NavigationViewSplitVectorID.PrimaryList;
 		}
 
-		bool IsContainerNavigationViewItem(int index)
+		private bool IsContainerNavigationViewItem(int index)
 		{
 			bool isContainerNavigationViewItem = true;
 
@@ -415,7 +415,7 @@ namespace Windows.UI.Xaml.Controls
 			return isContainerNavigationViewItem;
 		}
 
-		bool IsContainerNavigationViewHeader(int index)
+		private bool IsContainerNavigationViewHeader(int index)
 		{
 			bool isContainerNavigationViewHeader = false;
 

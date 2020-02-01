@@ -8,9 +8,9 @@ using System.Xml;
 
 namespace ResourceConverter
 {
-	class Program
+	internal class Program
 	{
-		static void Main(string[] args)
+		private static void Main(string[] args)
 		{
 			Console.WriteLine("Converting iOS resource file [{0}] to Android resource file [{1}]", args[0], args[1]);
 

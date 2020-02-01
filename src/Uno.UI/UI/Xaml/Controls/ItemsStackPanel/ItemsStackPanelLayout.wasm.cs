@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml.Controls
 {
-	partial class ItemsStackPanelLayout
+	internal partial class ItemsStackPanelLayout
 	{
 		protected override Line CreateLine(GeneratorDirection fillDirection, double extentOffset, double availableBreadth, IndexPath nextVisibleItem)
 		{

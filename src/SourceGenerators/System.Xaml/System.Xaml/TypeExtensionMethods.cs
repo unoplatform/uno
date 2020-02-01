@@ -32,7 +32,7 @@ using Uno.Xaml.Schema;
 
 namespace Uno.Xaml
 {
-	static class TypeExtensionMethods
+	internal static class TypeExtensionMethods
 	{
 		#region inheritance search and custom attribute provision
 
@@ -108,8 +108,8 @@ namespace Uno.Xaml
 		#endregion
 		
 		#region type conversion and member value retrieval
-		
-		static readonly NullExtension null_value = new NullExtension ();
+
+		private static readonly NullExtension null_value = new NullExtension ();
 
 		public static object GetExtensionWrapped (object o)
 		{
@@ -173,9 +173,9 @@ namespace Uno.Xaml
 		}
 		
 		// FIXME: I want this to cover all the existing types and make it valid in both MOBILE and !MOBILE.
-		class ConvertibleTypeConverter<T> : TypeConverter
+		private class ConvertibleTypeConverter<T> : TypeConverter
 		{
-			Type type;
+			private Type type;
 			public ConvertibleTypeConverter ()
 			{
 				this.type = typeof (T);
@@ -276,8 +276,8 @@ namespace Uno.Xaml
 				type == XamlLanguage.Static ||
 				ExaminePositionalParametersApplicable (type, vsctx) && type.ConstructionRequiresArguments;
 		}
-		
-		static bool ExaminePositionalParametersApplicable (this XamlType type, IValueSerializerContext vsctx)
+
+		private static bool ExaminePositionalParametersApplicable (this XamlType type, IValueSerializerContext vsctx)
 		{
 			if (!type.IsMarkupExtension || type.UnderlyingType == null)
 			{
@@ -345,7 +345,7 @@ namespace Uno.Xaml
 			return null;
 		}
 
-		static ParameterInfo FindParameterWithName (this IEnumerable<ParameterInfo> pis, string name)
+		private static ParameterInfo FindParameterWithName (this IEnumerable<ParameterInfo> pis, string name)
 		{
 			return pis.FirstOrDefault (pi => pi.Name == name);
 		}

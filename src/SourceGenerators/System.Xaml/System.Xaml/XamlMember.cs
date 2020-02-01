@@ -161,7 +161,7 @@ namespace Uno.Xaml
 			return m;
 		}
 
-		XamlMember(XamlSchemaContext schemaContext, XamlMemberInvoker invoker)
+		private XamlMember(XamlSchemaContext schemaContext, XamlMemberInvoker invoker)
 		{
 			if (schemaContext == null)
 			{
@@ -179,14 +179,14 @@ namespace Uno.Xaml
 			is_directive = isDirective;
 		}
 
-		XamlType type, target_type;
-		MemberInfo underlying_member;
-		MethodInfo underlying_getter, underlying_setter;
-		XamlSchemaContext context;
-		XamlMemberInvoker invoker;
-		bool is_attachable, is_event, is_directive;
-		bool is_predefined_directive = XamlLanguage.InitializingDirectives;
-		string directive_ns;
+		private XamlType type, target_type;
+		private MemberInfo underlying_member;
+		private MethodInfo underlying_getter, underlying_setter;
+		private XamlSchemaContext context;
+		private XamlMemberInvoker invoker;
+		private bool is_attachable, is_event, is_directive;
+		private bool is_predefined_directive = XamlLanguage.InitializingDirectives;
+		private string directive_ns;
 
 		internal MethodInfo UnderlyingGetter {
 			get { return LookupUnderlyingGetter (); }
@@ -227,8 +227,8 @@ namespace Uno.Xaml
 		public XamlValueConverter<XamlDeferringLoader> DeferringLoader {
 			get { return LookupDeferringLoader (); }
 		}
-		
-		static readonly XamlMember [] empty_members = new XamlMember [0];
+
+		private static readonly XamlMember [] empty_members = new XamlMember [0];
 		
 		public IList<XamlMember> DependsOn {
 			get { return LookupDependsOn () ?? empty_members; }
@@ -279,7 +279,7 @@ namespace Uno.Xaml
 			return IsNull (xamlMember1) ? IsNull (xamlMember2) : xamlMember1.Equals (xamlMember2);
 		}
 
-		static bool IsNull (XamlMember a)
+		private static bool IsNull (XamlMember a)
 		{
 			return Object.ReferenceEquals (a, null);
 		}
@@ -365,7 +365,7 @@ namespace Uno.Xaml
 			return null;
 		}
 
-		static readonly XamlMember [] empty_list = new XamlMember [0];
+		private static readonly XamlMember [] empty_list = new XamlMember [0];
 
 		protected virtual IList<XamlMember> LookupDependsOn ()
 		{
@@ -451,9 +451,9 @@ namespace Uno.Xaml
 
 			return type;
 		}
-		
 
-		Type DoGetType ()
+
+		private Type DoGetType ()
 		{
 			var pi = underlying_member as PropertyInfo;
 			if (pi != null)
@@ -533,7 +533,7 @@ namespace Uno.Xaml
 			return XamlType.LookupValueSerializer (Type, LookupCustomAttributeProvider ()) ?? Type.ValueSerializer;
 		}
 
-		void VerifyGetter (MethodInfo method)
+		private void VerifyGetter (MethodInfo method)
 		{
 			if (method == null)
 			{
@@ -546,7 +546,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		void VerifyAdderSetter (MethodInfo method)
+		private void VerifyAdderSetter (MethodInfo method)
 		{
 			if (method == null)
 			{

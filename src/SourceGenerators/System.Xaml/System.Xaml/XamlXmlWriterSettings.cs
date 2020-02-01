@@ -35,7 +35,7 @@ namespace Uno.Xaml
 		{
 		}
 
-		XamlXmlWriterSettings (XamlXmlWriterSettings other)
+		private XamlXmlWriterSettings (XamlXmlWriterSettings other)
 			: base (other)
 		{
 			AssumeValidInput = other.AssumeValidInput;

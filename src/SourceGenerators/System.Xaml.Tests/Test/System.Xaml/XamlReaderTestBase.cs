@@ -1336,8 +1336,8 @@ namespace MonoTests.Uno.Xaml
 
 			Assert.IsFalse (r.Read (), "end");
 		}
-		
-		void Read_Dictionary2_ConstructorArgument (XamlReader r, XamlMember ctorArgMember, int i)
+
+		private void Read_Dictionary2_ConstructorArgument (XamlReader r, XamlMember ctorArgMember, int i)
 		{
 			Assert.IsTrue (r.Read (), "smi#1-1." + i);
 			Assert.AreEqual (XamlNodeType.StartMember, r.NodeType, "smi#1-2." + i);
@@ -1351,7 +1351,7 @@ namespace MonoTests.Uno.Xaml
 			Assert.AreEqual (XamlNodeType.EndMember, r.NodeType, "emi#1-2." + i);
 		}
 
-		void Read_Dictionary2_Key (XamlReader r, int i)
+		private void Read_Dictionary2_Key (XamlReader r, int i)
 		{
 			Assert.IsTrue (r.Read (), "smi#2-1." + i);
 			Assert.AreEqual (XamlNodeType.StartMember, r.NodeType, "smi#2-2." + i);
@@ -2784,7 +2784,7 @@ namespace MonoTests.Uno.Xaml
 			Assert.IsFalse (r.Read (), "end");
 		}
 
-		void ReadKey_AmbientPropertyContainer (XamlReader r, int i, bool extensionBased)
+		private void ReadKey_AmbientPropertyContainer (XamlReader r, int i, bool extensionBased)
 		{
 			// m:Key
 			Assert.IsTrue (r.Read (), "sm#4-1." + i);
@@ -2822,7 +2822,7 @@ namespace MonoTests.Uno.Xaml
 			Assert.AreEqual (XamlNodeType.EndMember, r.NodeType, "em#4-2." + i);
 		}
 
-		void ReadName_AmbientPropertyContainer (XamlReader r, int i)
+		private void ReadName_AmbientPropertyContainer (XamlReader r, int i)
 		{
 			// m:Name
 			Assert.IsTrue (r.Read (), "sm#3-1." + i);
@@ -2838,7 +2838,7 @@ namespace MonoTests.Uno.Xaml
 			Assert.AreEqual (XamlNodeType.EndMember, r.NodeType, "em#3-2." + i);
 		}
 
-		void ReadTestProperty_AmbientPropertyContainer (XamlReader r, int i, bool extensionBased)
+		private void ReadTestProperty_AmbientPropertyContainer (XamlReader r, int i, bool extensionBased)
 		{
 			var xt = new XamlType (typeof (SecondTest.TestObject), r.SchemaContext);
 
@@ -2865,7 +2865,7 @@ namespace MonoTests.Uno.Xaml
 			Assert.AreEqual (XamlNodeType.EndMember, r.NodeType, "em#2-2." + i);
 		}
 
-		void ReadReasourceExtension_AmbientPropertyContainer (XamlReader r, int i, bool extensionBased)
+		private void ReadReasourceExtension_AmbientPropertyContainer (XamlReader r, int i, bool extensionBased)
 		{
 			// t:ResourceExtension
 			var xt = r.SchemaContext.GetXamlType (typeof (SecondTest.ResourceExtension));
@@ -2908,7 +2908,7 @@ namespace MonoTests.Uno.Xaml
 			Assert.AreEqual (XamlNodeType.EndObject, r.NodeType, "eo#z-2." + i);
 		}
 
-		void ReadReference_AmbientPropertyContainer (XamlReader r, int i, bool extensionBased)
+		private void ReadReference_AmbientPropertyContainer (XamlReader r, int i, bool extensionBased)
 		{
 			// x:Reference
 			Assert.IsTrue (r.Read (), "so#zz2-1." + i);
@@ -3396,7 +3396,7 @@ if (i == 0) {
 			Assert.IsFalse (r.Read (), "end");
 		}
 
-		void ReadAttachedProperty (XamlReader r, XamlMember xm, string value, string label)
+		private void ReadAttachedProperty (XamlReader r, XamlMember xm, string value, string label)
 		{
 			Assert.IsTrue (r.Read (), label + "#1-1");
 			Assert.AreEqual (XamlNodeType.StartMember, r.NodeType, label + "#1-2");
@@ -3527,7 +3527,7 @@ if (i == 0) {
 			Assert.AreEqual (XamlNodeType.EndMember, r.NodeType, "ebase#2");
 		}
 
-		void ReadNamespace (XamlReader r, string prefix, string ns, string label)
+		private void ReadNamespace (XamlReader r, string prefix, string ns, string label)
 		{
 			Assert.IsTrue (r.Read (), label + "-1");
 			Assert.AreEqual (XamlNodeType.NamespaceDeclaration, r.NodeType, label + "-2");

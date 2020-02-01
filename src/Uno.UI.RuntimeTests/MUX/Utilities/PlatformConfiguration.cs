@@ -31,7 +31,7 @@ namespace Common
 
     public class PlatformConfiguration
     {
-        const OSVersion MaxOSVersion = OSVersion.Redstone2;
+	    private const OSVersion MaxOSVersion = OSVersion.Redstone2;
 
         private const ushort InvalidAPIVersion = 255;
         private static ushort _currentAPIVersion = InvalidAPIVersion;

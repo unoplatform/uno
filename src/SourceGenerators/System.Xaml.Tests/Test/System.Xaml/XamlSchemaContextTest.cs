@@ -39,12 +39,12 @@ namespace MonoTests.Uno.Xaml
 	[TestFixture]
 	public class XamlSchemaContextTest
 	{
-		XamlSchemaContext NewStandardContext ()
+		private XamlSchemaContext NewStandardContext ()
 		{
 			return new XamlSchemaContext (new Assembly [] {typeof (XamlSchemaContext).Assembly });
 		}
 
-		XamlSchemaContext NewThisAssemblyContext ()
+		private XamlSchemaContext NewThisAssemblyContext ()
 		{
 			return new XamlSchemaContext (new Assembly [] {GetType ().Assembly });
 		}

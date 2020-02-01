@@ -62,9 +62,9 @@ namespace Uno.Xaml
 			member = default (XamlNodeMember);
 		}
 
-		XamlNodeType node_type;
-		object value;
-		XamlNodeMember member;
+		private XamlNodeType node_type;
+		private object value;
+		private XamlNodeMember member;
 		
 		public XamlNodeType NodeType {
 			get { return node_type; }
@@ -104,9 +104,9 @@ namespace Uno.Xaml
 			this.type = type;
 			this.context = context;
 		}
-		
-		readonly XamlType type;
-		readonly InstanceContext context;
+
+		private readonly XamlType type;
+		private readonly InstanceContext context;
 		
 		public XamlType Type {
 			get { return type; }
@@ -115,8 +115,8 @@ namespace Uno.Xaml
 		public InstanceContext Context {
 			get { return context; }
 		}
-		
-		XamlType GetType (object obj)
+
+		private XamlType GetType (object obj)
 		{
 			return type.SchemaContext.GetXamlType (obj.GetType ());
 		}
@@ -134,9 +134,9 @@ namespace Uno.Xaml
 			this.owner = owner;
 			this.member = member;
 		}
-		
-		readonly XamlObject owner;
-		readonly XamlMember member;
+
+		private readonly XamlObject owner;
+		private readonly XamlMember member;
 		
 		public XamlObject Owner {
 			get { return owner; }
@@ -151,7 +151,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		XamlType GetType (object obj)
+		private XamlType GetType (object obj)
 		{
 			return obj == null ? XamlLanguage.Null : owner.Type.SchemaContext.GetXamlType (new InstanceContext (obj).GetRawValue ().GetType ());
 		}
@@ -164,8 +164,8 @@ namespace Uno.Xaml
 		{
 			this.value = value;
 		}
-		
-		object value;
+
+		private object value;
 		
 		public object GetRawValue ()
 		{

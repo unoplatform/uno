@@ -108,7 +108,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		double Clamp(double valueToClamp, double min, double max)
+		private double Clamp(double valueToClamp, double min, double max)
 		{
 			return Math.Min(Math.Max(valueToClamp, min), max);
 		}

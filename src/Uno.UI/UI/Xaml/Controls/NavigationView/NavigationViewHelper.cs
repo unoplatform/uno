@@ -44,7 +44,7 @@ namespace Windows.UI.Xaml.Controls
 
 	public class NavigationViewItemHelper<T> where T : Control
 	{
-		static string c_selectionIndicatorName = "SelectionIndicator";
+		private static string c_selectionIndicatorName = "SelectionIndicator";
 		public NavigationViewItemHelper()
 		{
 		}
@@ -56,6 +56,6 @@ namespace Windows.UI.Xaml.Controls
 			m_selectionIndicator = item.GetTemplateChild(c_selectionIndicatorName) as UIElement;
 		}
 
-		UIElement m_selectionIndicator;
+		private UIElement m_selectionIndicator;
 	}
 }

@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Controls
 {
-	partial class ItemsWrapGridLayout : VirtualizingPanelLayout
+	internal partial class ItemsWrapGridLayout : VirtualizingPanelLayout
 	{
 
 		public override Orientation ScrollOrientation

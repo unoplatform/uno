@@ -26,7 +26,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Media.CompositionTargetTests
 			this.InitializeComponent();
 		}
 
-		TimeSpan oldRenderingTime;
+		private TimeSpan oldRenderingTime;
 		private void StartButton_Click(object sender, RoutedEventArgs args)
 		{
 			var counter = 0;

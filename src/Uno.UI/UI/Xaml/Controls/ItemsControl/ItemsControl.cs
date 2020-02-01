@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 			Initialize();
 		}
 
-		void Initialize()
+		private void Initialize()
 		{
 			InitializePartial();
 

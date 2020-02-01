@@ -88,13 +88,13 @@ namespace Uno.Xaml
 			intl = new XamlObjectWriterInternal (this, sctx, manager);
 		}
 
-		XamlSchemaContext sctx;
-		XamlObjectWriterSettings settings;
+		private XamlSchemaContext sctx;
+		private XamlObjectWriterSettings settings;
 
-		XamlObjectWriterInternal intl;
+		private XamlObjectWriterInternal intl;
 
 		//int line, column;
-		bool lineinfo_was_given;
+		private bool lineinfo_was_given;
 
 		internal XamlObjectWriterSettings Settings {
 			get { return settings; }
@@ -217,9 +217,9 @@ namespace Uno.Xaml
 	}
 
 	// specific implementation
-	class XamlObjectWriterInternal : XamlWriterInternalBase
+	internal class XamlObjectWriterInternal : XamlWriterInternalBase
 	{
-		const string Xmlns2000Namespace = "http://www.w3.org/2000/xmlns/";
+		private const string Xmlns2000Namespace = "http://www.w3.org/2000/xmlns/";
 
 		public XamlObjectWriterInternal (XamlObjectWriter source, XamlSchemaContext schemaContext, XamlWriterStateManager manager)
 			: base (schemaContext, manager)
@@ -229,12 +229,12 @@ namespace Uno.Xaml
 			var ext = source.Settings.ExternalNameScope;
 			name_scope = ext != null && source.Settings.RegisterNamesOnExternalNamescope ? ext : new NameScope (ext);
 		}
-		
-		XamlObjectWriter source;
-		XamlSchemaContext sctx;
-		INameScope name_scope;
-		List<NameFixupRequired> pending_name_references = new List<NameFixupRequired> ();
-		AmbientProvider ambient_provider = new AmbientProvider ();
+
+		private XamlObjectWriter source;
+		private XamlSchemaContext sctx;
+		private INameScope name_scope;
+		private List<NameFixupRequired> pending_name_references = new List<NameFixupRequired> ();
+		private AmbientProvider ambient_provider = new AmbientProvider ();
 
 		public INameScope NameScope {
 			get { return name_scope; }
@@ -342,7 +342,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		Stack<object> escaped_objects = new Stack<object> ();
+		private Stack<object> escaped_objects = new Stack<object> ();
 
 		protected override void OnWriteStartMember (XamlMember property)
 		{
@@ -360,7 +360,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		static readonly BindingFlags static_flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
+		private static readonly BindingFlags static_flags = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
 
 		protected override void OnWriteEndMember ()
 		{
@@ -408,7 +408,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		void SetEvent (XamlMember member, string value)
+		private void SetEvent (XamlMember member, string value)
 		{
 			if (member.UnderlyingMember == null)
 			{
@@ -444,7 +444,7 @@ namespace Uno.Xaml
 			ev.AddEventHandler (obj, Delegate.CreateDelegate (ev.EventHandlerType, target, mi));
 		}
 
-		void SetValue (XamlMember member, object value)
+		private void SetValue (XamlMember member, object value)
 		{
 			if (member == XamlLanguage.FactoryMethod)
 			{
@@ -459,8 +459,8 @@ namespace Uno.Xaml
 				SetValue (member, object_states.Peek ().Value, value);
 			}
 		}
-		
-		void SetValue (XamlMember member, object target, object value)
+
+		private void SetValue (XamlMember member, object target, object value)
 		{
 			if (!source.OnSetValue (target, member, value))
 			{
@@ -468,7 +468,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		void PopulateObject (bool considerPositionalParameters, IList<object> contents)
+		private void PopulateObject (bool considerPositionalParameters, IList<object> contents)
 		{
 			var state = object_states.Peek ();
 
@@ -505,8 +505,8 @@ namespace Uno.Xaml
 		{
 			// nothing to do here.
 		}
-		
-		void StoreAppropriatelyTypedValue (object obj, object keyObj)
+
+		private void StoreAppropriatelyTypedValue (object obj, object keyObj)
 		{
 			var ms = CurrentMemberState; // note that this retrieves parent's current property for EndObject.
 			if (ms != null) {
@@ -551,7 +551,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		bool AddToCollectionIfAppropriate (XamlType xt, XamlMember xm, object parent, object obj, object keyObj)
+		private bool AddToCollectionIfAppropriate (XamlType xt, XamlMember xm, object parent, object obj, object keyObj)
 		{
 			var mt = xm.Type;
 			if (xm == XamlLanguage.Items ||
@@ -574,7 +574,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		object GetCorrectlyTypedValue (XamlMember xm, XamlType xt, object value)
+		private object GetCorrectlyTypedValue (XamlMember xm, XamlType xt, object value)
 		{
 			try {
 				return DoGetCorrectlyTypedValue (xm, xt, value);
@@ -591,7 +591,7 @@ namespace Uno.Xaml
 		// When it is passed null, then it returns a default instance.
 		// For example, passing null as Int32 results in 0.
 		// But do not immediately try to instantiate with the type, since the type might be abstract.
-		object DoGetCorrectlyTypedValue (XamlMember xm, XamlType xt, object value)
+		private object DoGetCorrectlyTypedValue (XamlMember xm, XamlType xt, object value)
 		{
 			if (value == null) {
 				if (xt.IsContentValue (service_provider)) // it is for collection/dictionary key and item
@@ -651,13 +651,13 @@ namespace Uno.Xaml
 			throw new XamlObjectWriterException (String.Format ("Value '{0}' (of type {1}) is not of or convertible to type {0} (member {3})", value, value != null ? (object) value.GetType () : "(null)", xt, xm));
 		}
 
-		XamlType ResolveTypeFromName (string name)
+		private XamlType ResolveTypeFromName (string name)
 		{
 			var nsr = (IXamlNamespaceResolver) service_provider.GetService (typeof (IXamlNamespaceResolver));
 			return sctx.GetXamlType (XamlTypeName.Parse (name, nsr));
 		}
 
-		bool IsAllowedType (XamlType xt, object value)
+		private bool IsAllowedType (XamlType xt, object value)
 		{
 			return  xt == null ||
 				xt.UnderlyingType == null ||
@@ -665,8 +665,8 @@ namespace Uno.Xaml
 				value == null && xt == XamlLanguage.Null ||
 				xt.IsMarkupExtension && IsAllowedType (xt.MarkupExtensionReturnType, value);
 		}
-		
-		void InitializeObjectIfRequired (bool waitForParameters)
+
+		private void InitializeObjectIfRequired (bool waitForParameters)
 		{
 			var state = object_states.Peek ();
 			if (state.IsInstantiated)
@@ -711,7 +711,7 @@ namespace Uno.Xaml
 			get { return ambient_provider; }
 		}
 
-		void ResolvePendingReferences ()
+		private void ResolvePendingReferences ()
 		{
 			foreach (var fixup in pending_name_references) {
 				foreach (var name in fixup.Names) {
@@ -730,8 +730,8 @@ namespace Uno.Xaml
 				}
 			}
 		}
-		
-		void HandleBeginInit (object value)
+
+		private void HandleBeginInit (object value)
 		{
 			var si = value as ISupportInitialize;
 			if (si == null)
@@ -742,8 +742,8 @@ namespace Uno.Xaml
 			si.BeginInit ();
 			source.OnAfterBeginInit (value);
 		}
-		
-		void HandleEndInit (object value)
+
+		private void HandleEndInit (object value)
 		{
 			var si = value as ISupportInitialize;
 			if (si == null)

@@ -104,11 +104,11 @@ namespace Uno.Xaml
 			intl = new XamlXmlWriterInternal (xmlWriter, sctx, manager);
 		}
 
-		XmlWriter w;
-		XamlSchemaContext sctx;
-		XamlXmlWriterSettings settings;
+		private XmlWriter w;
+		private XamlSchemaContext sctx;
+		private XamlXmlWriterSettings settings;
 
-		XamlXmlWriterInternal intl;
+		private XamlXmlWriterInternal intl;
 
 		public override XamlSchemaContext SchemaContext {
 			get { return sctx; }
@@ -176,9 +176,9 @@ namespace Uno.Xaml
 	}
 	
 	// specific implementation
-	class XamlXmlWriterInternal : XamlWriterInternalBase
+	internal class XamlXmlWriterInternal : XamlWriterInternalBase
 	{
-		const string Xmlns2000Namespace = "http://www.w3.org/2000/xmlns/";
+		private const string Xmlns2000Namespace = "http://www.w3.org/2000/xmlns/";
 
 		public XamlXmlWriterInternal (XmlWriter w, XamlSchemaContext schemaContext, XamlWriterStateManager manager)
 			: base (schemaContext, manager)
@@ -186,8 +186,8 @@ namespace Uno.Xaml
 			this.w = w;
 //			this.sctx = schemaContext;
 		}
-		
-		XmlWriter w;
+
+		private XmlWriter w;
 //		XamlSchemaContext sctx;
 		
 		// Here's a complication.
@@ -197,10 +197,10 @@ namespace Uno.Xaml
 		// - When the next element or content is being written, local_nss items are written *within* current element, BUT after all attribute members are written. Hence I had to preserve all those nsdecls at such late.
 		// - When current *start* element is closed, then copy local_nss2 items into local_nss.
 		// - When there was no children i.e. end element immediately occurs, local_nss should be written at this stage too, and local_nss2 are *ignored*.
-		List<NamespaceDeclaration> local_nss = new List<NamespaceDeclaration> ();
-		List<NamespaceDeclaration> local_nss2 = new List<NamespaceDeclaration> ();
-		bool inside_toplevel_positional_parameter;
-		bool inside_attribute_object;
+		private List<NamespaceDeclaration> local_nss = new List<NamespaceDeclaration> ();
+		private List<NamespaceDeclaration> local_nss2 = new List<NamespaceDeclaration> ();
+		private bool inside_toplevel_positional_parameter;
+		private bool inside_attribute_object;
 
 		protected override void OnWriteEndObject ()
 		{
@@ -324,8 +324,8 @@ namespace Uno.Xaml
 
 			WritePendingStartMember (XamlNodeType.GetObject);
 		}
-		
-		void WritePendingStartMember (XamlNodeType nodeType)
+
+		private void WritePendingStartMember (XamlNodeType nodeType)
 		{
 			var cm = CurrentMemberState;
 			if (cm == null || cm.OccuredAs != AllowedMemberLocations.Any)
@@ -413,7 +413,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		bool IsAtTopLevelObject ()
+		private bool IsAtTopLevelObject ()
 		{
 			if (object_states.Count == 1)
 			{
@@ -427,7 +427,7 @@ namespace Uno.Xaml
 			return parentMember == XamlLanguage.Items;
 		}
 
-		AllowedMemberLocations IsAttribute (XamlType ownerType, XamlMember xm)
+		private AllowedMemberLocations IsAttribute (XamlType ownerType, XamlMember xm)
 		{
 			var xt = ownerType;
 			var mt = xm.Type;
@@ -483,7 +483,7 @@ namespace Uno.Xaml
 			return AllowedMemberLocations.MemberElement;
 		}
 
-		void OnWriteStartMemberElement (XamlType xt, XamlMember xm)
+		private void OnWriteStartMemberElement (XamlType xt, XamlMember xm)
 		{
 			CurrentMemberState.OccuredAs = AllowedMemberLocations.MemberElement;
 			string prefix = GetPrefix (xm.PreferredXamlNamespace);
@@ -491,8 +491,8 @@ namespace Uno.Xaml
 			WritePendingNamespaces ();
 			w.WriteStartElement (prefix, name, xm.PreferredXamlNamespace);
 		}
-		
-		void OnWriteStartMemberAttribute (XamlType xt, XamlMember xm)
+
+		private void OnWriteStartMemberAttribute (XamlType xt, XamlMember xm)
 		{
 			CurrentMemberState.OccuredAs = AllowedMemberLocations.Attribute;
 			string name = xm.GetInternalXmlName ();
@@ -507,7 +507,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		void OnWriteStartMemberContent (XamlType xt, XamlMember member)
+		private void OnWriteStartMemberContent (XamlType xt, XamlMember member)
 		{
 			// FIXME: well, it is sorta nasty, would be better to define different enum.
 			CurrentMemberState.OccuredAs = (AllowedMemberLocations) 0xFF;
@@ -563,8 +563,8 @@ namespace Uno.Xaml
 		{
 			local_nss2.Add (nd);
 		}
-		
-		void WritePendingNamespaces ()
+
+		private void WritePendingNamespaces ()
 		{
 			foreach (var nd in local_nss) {
 				if (String.IsNullOrEmpty (nd.Prefix))

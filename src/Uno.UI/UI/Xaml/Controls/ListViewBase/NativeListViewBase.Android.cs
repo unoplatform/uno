@@ -16,9 +16,9 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private bool _isInAnimatedScroll;
 
-		bool _shouldRecalibrateFlingVelocity;
-		float? _previousX, _previousY;
-		float? _deltaX, _deltaY;
+		private bool _shouldRecalibrateFlingVelocity;
+		private float? _previousX, _previousY;
+		private float? _deltaX, _deltaY;
 
 		internal BufferViewCache ViewCache { get; }
 

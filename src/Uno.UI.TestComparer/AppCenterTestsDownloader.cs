@@ -301,7 +301,7 @@ namespace Uno.UI.TestComparer
 		public Uri Original { get; set; }
 	}
 
-	class AuthenticatedHttpClientHandler : HttpClientHandler
+	internal class AuthenticatedHttpClientHandler : HttpClientHandler
 	{
 		private readonly string _secret;
 

@@ -100,7 +100,7 @@ namespace Uno.Xaml
 		{
 		}
 
-		static readonly XmlReaderSettings file_reader_settings = new XmlReaderSettings () { CloseInput =true };
+		private static readonly XmlReaderSettings file_reader_settings = new XmlReaderSettings () { CloseInput =true };
 
 		public XamlXmlReader (string fileName, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings)
 			: this (XmlReader.Create (fileName, file_reader_settings), schemaContext, settings)
@@ -119,8 +119,8 @@ namespace Uno.Xaml
 		
 		#endregion
 
-		XamlXmlParser parser;
-		IEnumerator<XamlXmlNodeInfo> iter;
+		private XamlXmlParser parser;
+		private IEnumerator<XamlXmlNodeInfo> iter;
 
 		public bool HasLineInfo {
 			get { return iter != null ? iter.Current.HasLineInfo : false; }
@@ -178,8 +178,8 @@ namespace Uno.Xaml
 			return iter.Current.NodeType != XamlNodeType.None;
 		}
 	}
-	
-	struct XamlXmlNodeInfo
+
+	internal struct XamlXmlNodeInfo
 	{
 		public XamlXmlNodeInfo (XamlNodeType nodeType, object nodeValue, IXmlLineInfo lineInfo)
 		{
@@ -202,8 +202,8 @@ namespace Uno.Xaml
 		public XamlNodeType NodeType;
 		public object NodeValue;
 	}
-	
-	class XamlXmlParser
+
+	internal class XamlXmlParser
 	{
 		public XamlXmlParser (XmlReader xmlReader, XamlSchemaContext schemaContext, XamlXmlReaderSettings settings)
 		{
@@ -232,13 +232,13 @@ namespace Uno.Xaml
 			line_info = r as IXmlLineInfo;
 			xaml_namespace_resolver = new NamespaceResolver (r as IXmlNamespaceResolver);
 		}
-		
-		XmlReader r;
-		IXmlLineInfo line_info;
-		XamlSchemaContext sctx;
-		XamlXmlReaderSettings settings;
-		IXamlNamespaceResolver xaml_namespace_resolver;
-		Stack<string[]> ignorables = new Stack<string[]>();
+
+		private XmlReader r;
+		private IXmlLineInfo line_info;
+		private XamlSchemaContext sctx;
+		private XamlXmlReaderSettings settings;
+		private IXamlNamespaceResolver xaml_namespace_resolver;
+		private Stack<string[]> ignorables = new Stack<string[]>();
 
 		internal XmlReader Reader {
 			get { return r; }
@@ -248,7 +248,7 @@ namespace Uno.Xaml
 			get { return sctx; }
 		}
 
-		XamlXmlNodeInfo Node (XamlNodeType nodeType, object nodeValue)
+		private XamlXmlNodeInfo Node (XamlNodeType nodeType, object nodeValue)
 		{
 			return new XamlXmlNodeInfo (nodeType, nodeValue, line_info);
 		}
@@ -265,7 +265,7 @@ namespace Uno.Xaml
 		}
 		
 		// Note that it could return invalid (None) node to tell the caller that it is not really an object element.
-		IEnumerable<XamlXmlNodeInfo> ReadObjectElement (XamlType parentType, XamlMember currentMember)
+		private IEnumerable<XamlXmlNodeInfo> ReadObjectElement (XamlType parentType, XamlMember currentMember)
 		{
 			if (r.NodeType != XmlNodeType.Element) {
 				//throw new XamlParseException (String.Format ("Element is expected, but got {0}", r.NodeType));
@@ -435,7 +435,7 @@ namespace Uno.Xaml
 		private static string CleanupBindingEscape(string value)
 			=> value.StartsWith("{}") ? value.Substring(2) : value;
 
-		IEnumerable<XamlXmlNodeInfo> ReadMembers (XamlType parentType, XamlType xt)
+		private IEnumerable<XamlXmlNodeInfo> ReadMembers (XamlType parentType, XamlType xt)
 		{
 			for (r.MoveToContent (); r.NodeType != XmlNodeType.EndElement; r.MoveToContent ()) {
 				switch (r.NodeType) {
@@ -461,7 +461,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		StartTagInfo GetStartTagInfo ()
+		private StartTagInfo GetStartTagInfo ()
 		{
 			string name = r.LocalName;
 			string ns = r.NamespaceURI;
@@ -489,10 +489,10 @@ namespace Uno.Xaml
 			return new StartTagInfo () { Name = name, Namespace = ns, TypeName = xtn, Members = members, Attributes = atts};
 		}
 
-		bool xmlbase_done;
+		private bool xmlbase_done;
 
 		// returns remaining attributes to be processed
-		Dictionary<string,string> ProcessAttributes (XmlReader r, List<Pair> members)
+		private Dictionary<string,string> ProcessAttributes (XmlReader r, List<Pair> members)
 		{
 			var l = members;
 
@@ -570,7 +570,7 @@ namespace Uno.Xaml
 		}
 
 
-		void ProcessAttributesToMember (XamlSchemaContext sctx, StartTagInfo sti, XamlType xt)
+		private void ProcessAttributesToMember (XamlSchemaContext sctx, StartTagInfo sti, XamlType xt)
 		{
 			foreach (var p in sti.Attributes) {
 				int nsidx = p.Key.IndexOf (':');
@@ -617,7 +617,7 @@ namespace Uno.Xaml
 		}
 
 		// returns an optional member without xml node.
-		XamlMember GetExtraMember (XamlType xt)
+		private XamlMember GetExtraMember (XamlType xt)
 		{
 			if (xt.ContentProperty != null) // e.g. Array.Items
 			{
@@ -632,12 +632,12 @@ namespace Uno.Xaml
 			return null;
 		}
 
-		static XamlDirective FindStandardDirective (string name, AllowedMemberLocations loc)
+		private static XamlDirective FindStandardDirective (string name, AllowedMemberLocations loc)
 		{
 			return XamlLanguage.AllDirectives.FirstOrDefault (dd => (dd.AllowedLocation & loc) != 0 && dd.Name == name);
 		}
 
-		IEnumerable<XamlXmlNodeInfo> ReadMemberText (XamlType xt)
+		private IEnumerable<XamlXmlNodeInfo> ReadMemberText (XamlType xt)
 		{
 			// this value is for Initialization, or Content property value
 			XamlMember xm;
@@ -692,7 +692,7 @@ namespace Uno.Xaml
 			return value;
 		}
 
-		IEnumerable<XamlXmlNodeInfo> ReadContentElements(XamlType parentType)
+		private IEnumerable<XamlXmlNodeInfo> ReadContentElements(XamlType parentType)
 		{
 			for (
 				r.MoveToContent();
@@ -713,7 +713,7 @@ namespace Uno.Xaml
 		}
 
 		// member element, implicit member, children via content property, or value
-		IEnumerable<XamlXmlNodeInfo> ReadMemberElement (XamlType parentType, XamlType xt)
+		private IEnumerable<XamlXmlNodeInfo> ReadMemberElement (XamlType parentType, XamlType xt)
 		{
 			if (IsIgnored(r.Prefix))
 			{
@@ -815,7 +815,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		IEnumerable<XamlXmlNodeInfo> ReadMember (XamlType parentType, XamlMember xm)
+		private IEnumerable<XamlXmlNodeInfo> ReadMember (XamlType parentType, XamlMember xm)
 		{
 			yield return Node (XamlNodeType.StartMember, xm);
 
@@ -872,7 +872,7 @@ namespace Uno.Xaml
 			yield return Node (XamlNodeType.EndMember, xm);
 		}
 
-		IEnumerable<XamlXmlNodeInfo> ReadCollectionItems (XamlType parentType, XamlMember xm)
+		private IEnumerable<XamlXmlNodeInfo> ReadCollectionItems (XamlType parentType, XamlMember xm)
 		{
 			var member = xm;
 
@@ -914,7 +914,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		IEnumerable<XamlXmlNodeInfo> ReadXData ()
+		private IEnumerable<XamlXmlNodeInfo> ReadXData ()
 		{
 			var xt = XamlLanguage.XData;
 			var xm = xt.GetMember ("Text");
@@ -978,7 +978,7 @@ namespace Uno.Xaml
 
 		internal class NamespaceResolver : IXamlNamespaceResolver
 		{
-			IXmlNamespaceResolver source;
+			private IXmlNamespaceResolver source;
 
 			public NamespaceResolver (IXmlNamespaceResolver source)
 			{

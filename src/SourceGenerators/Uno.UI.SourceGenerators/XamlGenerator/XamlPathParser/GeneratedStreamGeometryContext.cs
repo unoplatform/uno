@@ -12,7 +12,7 @@ namespace Uno.Media
 {
 	internal class GeneratedStreamGeometryContext : StreamGeometryContext
 	{
-		StringBuilder _builder;
+		private StringBuilder _builder;
 
 		public string Generated { get { return _builder.ToString() + "})"; } }
 

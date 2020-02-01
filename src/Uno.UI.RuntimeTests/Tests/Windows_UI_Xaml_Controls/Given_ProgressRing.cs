@@ -13,7 +13,7 @@ using MUXControlsTestApp.Utilities;
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
 	[TestClass]
-	class Given_ProgressRing
+	internal class Given_ProgressRing
 	{
 		[TestMethod]
 		public Task When_ProgressRing_Collapsed() =>

@@ -49,8 +49,8 @@ namespace Uno.Xaml
 			public bool FullyInitialized { get; set; }
 		}
 
-		Dictionary<string,NamedObject> objects = new Dictionary<string,NamedObject> ();
-		List<object> referenced = new List<object> ();
+		private Dictionary<string,NamedObject> objects = new Dictionary<string,NamedObject> ();
+		private List<object> referenced = new List<object> ();
 
 		[MonoTODO]
 		public bool IsFixupTokenAvailable {
@@ -68,8 +68,8 @@ namespace Uno.Xaml
 
 			objects.Clear ();
 		}
-		
-		int saved_count, saved_referenced_count;
+
+		private int saved_count, saved_referenced_count;
 		public void Save ()
 		{
 			if (saved_count != 0)

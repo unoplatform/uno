@@ -31,7 +31,7 @@ namespace Uno.Xaml.Schema
 {
 	public class XamlTypeInvoker
 	{
-		static readonly XamlTypeInvoker unknown = new XamlTypeInvoker ();
+		private static readonly XamlTypeInvoker unknown = new XamlTypeInvoker ();
 		public static XamlTypeInvoker UnknownInvoker {
 			get { return unknown; }
 		}
@@ -49,10 +49,10 @@ namespace Uno.Xaml.Schema
 
 			this.type = type;
 		}
-		
-		XamlType type;
 
-		void ThrowIfUnknown ()
+		private XamlType type;
+
+		private void ThrowIfUnknown ()
 		{
 			if (type == null || type.UnderlyingType == null)
 			{
@@ -147,8 +147,8 @@ namespace Uno.Xaml.Schema
 			}
 			mi.Invoke (instance, new object [] {key, item});
 		}
-		
-		MethodInfo LookupAddMethod (Type ct, Type iface)
+
+		private MethodInfo LookupAddMethod (Type ct, Type iface)
 		{
 			var map = ct.GetInterfaceMap (iface);
 			for (int i = 0; i < map.TargetMethods.Length; i++)

@@ -4,7 +4,7 @@ using Uno.Media;
 
 namespace Uno.MsBuildTasks.Utils.XamlPathParser
 {
-	static class Parsers
+	internal static class Parsers
 	{
 		internal static string ParseGeometry(string pathString, IFormatProvider formatProvider)
 		{

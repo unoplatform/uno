@@ -1652,9 +1652,9 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 #if DEBUG
-		UICollectionViewLayoutAttributes[] AllItemLayoutAttributes => _itemLayoutInfos?.SelectMany(kvp => kvp.Value.Values).ToArray();
+		private UICollectionViewLayoutAttributes[] AllItemLayoutAttributes => _itemLayoutInfos?.SelectMany(kvp => kvp.Value.Values).ToArray();
 
-		CGRect[] AllItemFrames => AllItemLayoutAttributes?.Select(l => l.Frame).ToArray();
+		private CGRect[] AllItemFrames => AllItemLayoutAttributes?.Select(l => l.Frame).ToArray();
 #endif
 	}
 }

@@ -21,7 +21,7 @@ namespace SampleControl.Entities
 		public string Description { get; set; }
 		public bool IgnoreInSnapshotTests { get; internal set; }
 
-		bool _isFavorite;
+		private bool _isFavorite;
 		public bool IsFavorite
 		{
 			get => _isFavorite;

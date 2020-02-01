@@ -328,7 +328,7 @@ namespace Windows.UI.Core
 			}
 		}
 
-		async void DispatchWakeUp()
+		private async void DispatchWakeUp()
 		{
 			await Task.Delay(RenderEventThrottle);
 			if (ShouldRaiseRenderEvents)

@@ -215,7 +215,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void OnTimeChangedPartial(TimeSpan oldTime, TimeSpan newTime)
+		private void OnTimeChangedPartial(TimeSpan oldTime, TimeSpan newTime)
 		{
 			UpdateDisplayedDate();
 		}

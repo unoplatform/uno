@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml
 	/// <summary>
 	/// A <see cref="DependencyPropertyDetails"/> collection
 	/// </summary>
-    partial class DependencyPropertyDetailsCollection
+	internal partial class DependencyPropertyDetailsCollection
     {
 		private readonly Type _ownerType;
 		private readonly ManagedWeakReference _ownerReference;

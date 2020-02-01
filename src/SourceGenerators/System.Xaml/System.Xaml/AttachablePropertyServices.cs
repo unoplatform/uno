@@ -6,11 +6,11 @@ namespace Uno.Xaml
 {
 	public static class AttachablePropertyServices
 	{
-		class Table : Dictionary<AttachableMemberIdentifier,object>
+		private class Table : Dictionary<AttachableMemberIdentifier,object>
 		{
 		}
 
-		static Dictionary<object,Table> props = new Dictionary<object,Table> ();
+		private static Dictionary<object,Table> props = new Dictionary<object,Table> ();
 
 		public static void CopyPropertiesTo (object instance, KeyValuePair<AttachableMemberIdentifier,object> [] array, int index)
 		{

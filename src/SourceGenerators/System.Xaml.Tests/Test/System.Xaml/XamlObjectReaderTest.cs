@@ -198,7 +198,7 @@ namespace MonoTests.Uno.Xaml
 			Read_TypeOrTypeExtension(r);
 		}
 
-		void Read_TypeOrTypeExtension(XamlObjectReader r)
+		private void Read_TypeOrTypeExtension(XamlObjectReader r)
 		{
 			Read_TypeOrTypeExtension(r, delegate {
 				Assert.IsTrue(r.Instance is TypeExtension, "#26");
@@ -219,7 +219,7 @@ namespace MonoTests.Uno.Xaml
 			Read_TypeOrTypeExtension2(r);
 		}
 
-		void Read_TypeOrTypeExtension2(XamlObjectReader r)
+		private void Read_TypeOrTypeExtension2(XamlObjectReader r)
 		{
 			Read_TypeOrTypeExtension2(r, delegate {
 				Assert.IsTrue(r.Instance is TypeExtension, "#26");
@@ -248,7 +248,7 @@ namespace MonoTests.Uno.Xaml
 			Read_NullOrNullExtension(r, o);
 		}
 
-		void Read_NullOrNullExtension(XamlObjectReader r, object instance)
+		private void Read_NullOrNullExtension(XamlObjectReader r, object instance)
 		{
 			Read_NullOrNullExtension(r, delegate {
 				Assert.AreEqual(instance, r.Instance, "#26"); // null and NullExtension are different here.
@@ -276,7 +276,7 @@ namespace MonoTests.Uno.Xaml
 			Read_ListInt32(obj);
 		}
 
-		void Read_ListInt32(List<int> obj)
+		private void Read_ListInt32(List<int> obj)
 		{
 			var r = new XamlObjectReader(obj);
 			Read_ListInt32(r, delegate {
@@ -333,12 +333,12 @@ namespace MonoTests.Uno.Xaml
 			Read_ArrayOrArrayExtensionOrMyArrayExtension(r, obj, typeof(MyArrayExtension));
 		}
 
-		void Read_ArrayOrArrayExtension(XamlObjectReader r, object instance)
+		private void Read_ArrayOrArrayExtension(XamlObjectReader r, object instance)
 		{
 			Read_ArrayOrArrayExtensionOrMyArrayExtension(r, instance, typeof(ArrayExtension));
 		}
 
-		void Read_ArrayOrArrayExtensionOrMyArrayExtension(XamlObjectReader r, object instance, Type extType)
+		private void Read_ArrayOrArrayExtensionOrMyArrayExtension(XamlObjectReader r, object instance, Type extType)
 		{
 			Read_ArrayOrArrayExtensionOrMyArrayExtension(r, delegate {
 				Assert.AreEqual(instance, r.Instance, "#26"); // different between Array and ArrayExtension. Also, different from Type and TypeExtension (Type returns TypeExtension, while Array remains to return Array)
@@ -423,7 +423,7 @@ namespace MonoTests.Uno.Xaml
 			SimpleReadStandardType(new TypeExtension());
 		}
 
-		void SimpleReadStandardType(object instance)
+		private void SimpleReadStandardType(object instance)
 		{
 			var r = new XamlObjectReader(instance);
 			while (!r.IsEof)

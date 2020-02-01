@@ -48,7 +48,7 @@ namespace Uno.UI.Helpers.WinUI
 			return IsInDesignModeV1();
 		}
 
-		static bool? s_isInDesignModeV1;
+		private static bool? s_isInDesignModeV1;
 		public static bool IsInDesignModeV1()
 		{
 			if (s_isInDesignModeV1 == null)
@@ -59,7 +59,7 @@ namespace Uno.UI.Helpers.WinUI
 			return s_isInDesignModeV1.Value;
 		}
 
-		static bool? s_isInDesignModeV2;
+		private static bool? s_isInDesignModeV2;
 		public static bool IsInDesignModeV2()
 		{
 			if (s_isInDesignModeV2 == null)
@@ -115,7 +115,7 @@ namespace Uno.UI.Helpers.WinUI
 			return !IsAPIContractV3Available();
 		}
 
-		static bool? s_IsXamlCompositionBrushBaseAvailable_isAvailable;
+		private static bool? s_IsXamlCompositionBrushBaseAvailable_isAvailable;
 
 		public static bool IsXamlCompositionBrushBaseAvailable()
 		{
@@ -128,7 +128,7 @@ namespace Uno.UI.Helpers.WinUI
 			return s_IsXamlCompositionBrushBaseAvailable_isAvailable.Value;
 		}
 
-		static bool? s_movesLightFromRSVToRootVisual;
+		private static bool? s_movesLightFromRSVToRootVisual;
 
 		public static bool DoesXamlMoveRSVLightToRootVisual()
 		{
@@ -141,7 +141,7 @@ namespace Uno.UI.Helpers.WinUI
 			return s_movesLightFromRSVToRootVisual.Value;
 		}
 
-		static bool? s_DoesListViewItemPresenterVSMWork_isAvailable;
+		private static bool? s_DoesListViewItemPresenterVSMWork_isAvailable;
 
 		public static bool DoesListViewItemPresenterVSMWork()
 		{
@@ -154,7 +154,7 @@ namespace Uno.UI.Helpers.WinUI
 			return s_DoesListViewItemPresenterVSMWork_isAvailable.Value;
 		}
 
-		static bool? s_IsCoreWindowActivationModeAvailable_isAvailable;
+		private static bool? s_IsCoreWindowActivationModeAvailable_isAvailable;
 		public static bool IsCoreWindowActivationModeAvailable()
 		{
 			if (s_IsCoreWindowActivationModeAvailable_isAvailable == null)
@@ -166,7 +166,7 @@ namespace Uno.UI.Helpers.WinUI
 			return s_IsCoreWindowActivationModeAvailable_isAvailable.Value;
 		}
 
-		static bool? s_isFlyoutShowOptionsAvailable = false;
+		private static bool? s_isFlyoutShowOptionsAvailable = false;
 		public static bool IsFlyoutShowOptionsAvailable()
 		{
 			if (s_isFlyoutShowOptionsAvailable == null)
@@ -181,7 +181,7 @@ namespace Uno.UI.Helpers.WinUI
 
 		// VisualInteractionSourceRedirectionMode.PointerWheelOnly and VisualInteractionSourceRedirectionMode.CapableTouchpadAndPointerWheel
 		// were introduced late in RS4.
-		static bool? s_areInteractionTrackerPointerWheelRedirectionModesAvailable;
+		private static bool? s_areInteractionTrackerPointerWheelRedirectionModesAvailable;
 		public static bool AreInteractionTrackerPointerWheelRedirectionModesAvailable()
 		{
 			if (s_areInteractionTrackerPointerWheelRedirectionModesAvailable == null)
@@ -195,7 +195,7 @@ namespace Uno.UI.Helpers.WinUI
 			return s_areInteractionTrackerPointerWheelRedirectionModesAvailable.Value;
 		}
 
-		static bool? s_isScrollViewerReduceViewportForCoreInputViewOcclusionsAvailable;
+		private static bool? s_isScrollViewerReduceViewportForCoreInputViewOcclusionsAvailable;
 		public static bool IsScrollViewerReduceViewportForCoreInputViewOcclusionsAvailable()
 		{
 			if (s_isScrollViewerReduceViewportForCoreInputViewOcclusionsAvailable == null)
@@ -208,7 +208,7 @@ namespace Uno.UI.Helpers.WinUI
 			return s_isScrollViewerReduceViewportForCoreInputViewOcclusionsAvailable.Value;
 		}
 
-		static bool? s_isScrollContentPresenterSizesContentToTemplatedParentAvailable;
+		private static bool? s_isScrollContentPresenterSizesContentToTemplatedParentAvailable;
 		public static bool IsScrollContentPresenterSizesContentToTemplatedParentAvailable()
 		{
 			if (s_isScrollContentPresenterSizesContentToTemplatedParentAvailable == null)
@@ -221,7 +221,7 @@ namespace Uno.UI.Helpers.WinUI
 			return s_isScrollContentPresenterSizesContentToTemplatedParentAvailable.Value;
 		}
 
-		static bool? s_isFrameworkElementInvalidateViewportAvailable;
+		private static bool? s_isFrameworkElementInvalidateViewportAvailable;
 		public static bool IsFrameworkElementInvalidateViewportAvailable()
 		{
 
@@ -232,7 +232,7 @@ namespace Uno.UI.Helpers.WinUI
 			return s_isFrameworkElementInvalidateViewportAvailable.Value;
 		}
 
-		static bool? s_isDisplayRegionGetForCurrentViewAvailable;
+		private static bool? s_isDisplayRegionGetForCurrentViewAvailable;
 		public static bool IsDisplayRegionGetForCurrentViewAvailable()
 		{
 			if (s_isDisplayRegionGetForCurrentViewAvailable == null)
@@ -244,7 +244,7 @@ namespace Uno.UI.Helpers.WinUI
 			return s_isDisplayRegionGetForCurrentViewAvailable.Value;
 		}
 
-		static bool s_areFacadesAvailable = false;
+		private static bool s_areFacadesAvailable = false;
 		public static bool IsTranslationFacadeAvailable(UIElement element)
 		{
 			// s_areFacadesAvailable = (element.try_as<Windows.UI.Xaml.IUIElement9>() != null)
@@ -252,7 +252,7 @@ namespace Uno.UI.Helpers.WinUI
 			return s_areFacadesAvailable;
 		}
 
-		static bool? s_IsIconSourceElementAvailable_isAvailable;
+		private static bool? s_IsIconSourceElementAvailable_isAvailable;
 		public static bool IsIconSourceElementAvailable()
 		{
 			if (s_IsIconSourceElementAvailable_isAvailable == null)
@@ -265,7 +265,7 @@ namespace Uno.UI.Helpers.WinUI
 			return s_IsIconSourceElementAvailable_isAvailable.Value;
 		}
 
-		static bool? s_IsStandardUICommandAvailable_isAvailable;
+		private static bool? s_IsStandardUICommandAvailable_isAvailable;
 		public static bool IsStandardUICommandAvailable()
 		{
 			if (s_IsStandardUICommandAvailable_isAvailable == null)
@@ -279,7 +279,7 @@ namespace Uno.UI.Helpers.WinUI
 			return s_IsStandardUICommandAvailable_isAvailable.Value;
 		}
 
-		static bool? s_IsDispatcherQueueAvailable_isAvailable;
+		private static bool? s_IsDispatcherQueueAvailable_isAvailable;
 		public static bool IsDispatcherQueueAvailable()
 		{
 			if (s_IsDispatcherQueueAvailable_isAvailable == null)
@@ -293,7 +293,7 @@ namespace Uno.UI.Helpers.WinUI
 			return s_IsDispatcherQueueAvailable_isAvailable.Value;
 		}
 
-		static bool? s_IsXamlRootAvailable;
+		private static bool? s_IsXamlRootAvailable;
 		public static bool IsXamlRootAvailable()
 		{
 			if (s_IsXamlRootAvailable == null)
@@ -307,7 +307,7 @@ namespace Uno.UI.Helpers.WinUI
 			return s_IsXamlRootAvailable.Value;
 		}
 
-		static bool? s_isThemeShadowAvailable;
+		private static bool? s_isThemeShadowAvailable;
 		static public bool IsThemeShadowAvailable()
 		{
 			if (s_isThemeShadowAvailable == null)
@@ -320,8 +320,8 @@ namespace Uno.UI.Helpers.WinUI
 			return s_isThemeShadowAvailable.Value;
 		}
 
-		static bool isAPIContractVxAvailableInitialized = false;
-		static bool isAPIContractVxAvailable = false;
+		private static bool isAPIContractVxAvailableInitialized = false;
+		private static bool isAPIContractVxAvailable = false;
 
 		public static bool IsAPIContractVxAvailable(ushort apiVersion)
 		{
@@ -535,7 +535,7 @@ namespace Uno.UI.Helpers.WinUI
 			return doIntersect;
 		}
 
-		object FindResourceOrNull(string resource, ResourceDictionary resources)
+		private object FindResourceOrNull(string resource, ResourceDictionary resources)
 		{
 			object boxedResource = resource;
 			return resources.HasKey(boxedResource) ? resources.Lookup(boxedResource) : null;

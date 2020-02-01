@@ -16,9 +16,9 @@ using Uno.UI.TestComparer.Comparer;
 
 namespace Umbrella.UI.TestComparer
 {
-	class Program
+	internal class Program
 	{
-		static async Task Main(string[] args)
+		private static async Task Main(string[] args)
 		{
 			if (args[0] == "appcenter")
 			{

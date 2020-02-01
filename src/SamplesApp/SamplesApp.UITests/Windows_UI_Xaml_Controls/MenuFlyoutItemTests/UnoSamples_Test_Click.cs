@@ -12,7 +12,7 @@ using Uno.UITests.Helpers;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutItemTests
 {
 	[TestFixture]
-	class UnoSamples_Test_Click: SampleControlUITestBase
+	internal class UnoSamples_Test_Click: SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]

@@ -36,7 +36,7 @@ namespace MonoTests.Uno.Xaml
 	[TestFixture]
 	public class XamlDirectiveTest
 	{
-		XamlSchemaContext sctx = new XamlSchemaContext (new XamlSchemaContextSettings ());
+		private XamlSchemaContext sctx = new XamlSchemaContext (new XamlSchemaContextSettings ());
 
 		[Test]
 		public void ConstructorNameNull ()

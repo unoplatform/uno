@@ -20,30 +20,32 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class NumberBox : Control
 	{
-		bool m_valueUpdating = false;
-		bool m_textUpdating = false;
+		private bool m_valueUpdating = false;
+		private bool m_textUpdating = false;
 
-		SignificantDigitsNumberRounder m_displayRounder = new SignificantDigitsNumberRounder();
+		private SignificantDigitsNumberRounder m_displayRounder = new SignificantDigitsNumberRounder();
 
-		TextBox m_textBox;
-		Windows.UI.Xaml.Controls.Primitives.Popup m_popup;
+		private TextBox m_textBox;
+		private Windows.UI.Xaml.Controls.Primitives.Popup m_popup;
 
-		SerialDisposable _eventSubscriptions = new SerialDisposable();
+		private SerialDisposable _eventSubscriptions = new SerialDisposable();
 
-		static string c_numberBoxDownButtonName = "DownSpinButton";
-		static string c_numberBoxUpButtonName = "UpSpinButton";
-		static string c_numberBoxTextBoxName = "InputBox";
+		private static string c_numberBoxDownButtonName = "DownSpinButton";
+		private static string c_numberBoxUpButtonName = "UpSpinButton";
+
+		private static string c_numberBoxTextBoxName = "InputBox";
 		// UNO TODO static string c_numberBoxPopupButtonName= "PopupButton";
-		static string c_numberBoxPopupName = "UpDownPopup";
-		static string c_numberBoxPopupDownButtonName = "PopupDownSpinButton";
-		static string c_numberBoxPopupUpButtonName = "PopupUpSpinButton";
+		private static string c_numberBoxPopupName = "UpDownPopup";
+		private static string c_numberBoxPopupDownButtonName = "PopupDownSpinButton";
+
+		private static string c_numberBoxPopupUpButtonName = "PopupUpSpinButton";
 		// UNO TODO static string c_numberBoxPopupContentRootName= "PopupContentRoot";
 
 		// UNO TODO static double c_popupShadowDepth = 16.0;
 		// UNO TODO static string c_numberBoxPopupShadowDepthName= "NumberBoxPopupShadowDepth";
 
 		// Shockingly, there is no standard function for trimming strings.
-		const string c_whitespace = " \n\r\t\f\v";
+		private const string c_whitespace = " \n\r\t\f\v";
 
 		private static string trim(string s)
 		{

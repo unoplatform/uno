@@ -54,7 +54,7 @@ namespace Uno.UI.Tests.FrameTests
 		}
 	}
 
-	class MyPage : Page
+	internal class MyPage : Page
 	{
 	}
 }

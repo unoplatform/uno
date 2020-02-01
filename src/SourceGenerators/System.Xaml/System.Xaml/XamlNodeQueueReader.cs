@@ -30,8 +30,8 @@ namespace Uno.Xaml
 {
 	internal class XamlNodeQueueReader : XamlReader, IXamlLineInfo
 	{
-		XamlNodeQueue source;
-		XamlNodeLineInfo node;
+		private XamlNodeQueue source;
+		private XamlNodeLineInfo node;
 
 		public XamlNodeQueueReader (XamlNodeQueue source)
 		{

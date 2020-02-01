@@ -124,7 +124,7 @@ namespace Uno.UI.Tests.BinderTests
 
 		public class MyDynamicObject : DynamicObject, INotifyPropertyChanged
 		{
-			Dictionary<string, object> dictionary = new Dictionary<string, object>();
+			private Dictionary<string, object> dictionary = new Dictionary<string, object>();
 
 			public int Count => dictionary.Count;
 

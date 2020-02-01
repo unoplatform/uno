@@ -111,17 +111,18 @@ namespace Uno.Xaml
 			value_serializer_context = new ValueSerializerContext (new PrefixLookup (sctx), sctx, null);
 			new XamlObjectNodeIterator (instance, sctx, value_serializer_context).PrepareReading ();
 		}
-		
-		bool is_eof;
-		object root, root_raw;
-		XamlSchemaContext sctx;
+
+		private bool is_eof;
+		private object root, root_raw;
+
+		private XamlSchemaContext sctx;
 //		XamlObjectReaderSettings settings;
-		IValueSerializerContext value_serializer_context;
+private IValueSerializerContext value_serializer_context;
 
-		IEnumerator<NamespaceDeclaration> ns_iterator;
-		IEnumerator<XamlNodeInfo> nodes;
+private IEnumerator<NamespaceDeclaration> ns_iterator;
+private IEnumerator<XamlNodeInfo> nodes;
 
-		PrefixLookup PrefixLookup {
+private PrefixLookup PrefixLookup {
 			get { return (PrefixLookup) value_serializer_context.GetService (typeof (INamespacePrefixLookup)); }
 		}
 

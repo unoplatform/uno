@@ -41,7 +41,7 @@ namespace Uno.Xaml
 			return IsNull (left) ? IsNull (right) : left.Equals (right);
 		}
 
-		static bool IsNull (AttachableMemberIdentifier a)
+		private static bool IsNull (AttachableMemberIdentifier a)
 		{
 			return Object.ReferenceEquals (a, null);
 		}

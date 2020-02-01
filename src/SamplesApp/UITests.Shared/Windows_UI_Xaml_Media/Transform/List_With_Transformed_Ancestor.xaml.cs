@@ -26,8 +26,8 @@ namespace UITests.Shared.Windows_UI_Xaml_Media.Transform
 			this.InitializeComponent();
 		}
 
-		Point _initialPoint;
-		bool _isPressed;
+		private Point _initialPoint;
+		private bool _isPressed;
 		private void Border_PointerMoved(object sender, PointerRoutedEventArgs e)
 		{
 			if (!_isPressed)

@@ -40,14 +40,14 @@ namespace MonoTests.Uno.Xaml
 	[TestFixture]
 	public partial class XamlBackgroundReaderTest : XamlReaderTestBase
 	{
-		XamlReader GetReader (string filename)
+		private XamlReader GetReader (string filename)
 		{
 			var directory = Path.GetDirectoryName(new Uri(GetType().Assembly.CodeBase).LocalPath);
 
 			return new XamlXmlReader (XmlReader.Create (Path.Combine (directory, "Test/XmlFiles", filename), new XmlReaderSettings () { CloseInput =true }));
 		}
 
-		void ReadTest (string filename)
+		private void ReadTest (string filename)
 		{
 			var r = new XamlBackgroundReader (GetReader (filename));
 			r.StartThread ();

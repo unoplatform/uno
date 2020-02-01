@@ -39,8 +39,8 @@ namespace Uno.Xaml
 			sctx = schemaContext;
 			Namespaces = new List<NamespaceDeclaration> ();
 		}
-		
-		XamlSchemaContext sctx;
+
+		private XamlSchemaContext sctx;
 		
 		public bool IsCollectingNamespaces { get; set; }
 		
@@ -83,8 +83,8 @@ namespace Uno.Xaml
 			l.Add (new NamespaceDeclaration (ns, prefix));
 			return prefix;
 		}
-		
-		string GetAcronym (string ns)
+
+		private string GetAcronym (string ns)
 		{
 			int idx = ns.IndexOf (';');
 			if (idx < 0)

@@ -22,7 +22,7 @@ using Path = System.Object;
 
 namespace Uno.Media
 {
-	class PathStreamGeometryContext : StreamGeometryContext
+	internal class PathStreamGeometryContext : StreamGeometryContext
 	{
 		private readonly List<Point> _points = new List<Point>();
 		private readonly StreamGeometry _owner;

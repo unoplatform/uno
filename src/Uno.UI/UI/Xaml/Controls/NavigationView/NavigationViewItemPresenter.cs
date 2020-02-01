@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public  partial class NavigationViewItemPresenter : global::Windows.UI.Xaml.Controls.ContentControl
 	{
-		NavigationViewItemHelper<NavigationViewItemPresenter> m_helper = new NavigationViewItemHelper<NavigationViewItemPresenter>();
+		private NavigationViewItemHelper<NavigationViewItemPresenter> m_helper = new NavigationViewItemHelper<NavigationViewItemPresenter>();
 
 		public global::Windows.UI.Xaml.Controls.IconElement Icon
 		{
@@ -73,7 +73,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			return VisualStateManager.GoToState(this, state, useTransitions);
 		}
 
-		NavigationViewItem GetNavigationViewItem()
+		private NavigationViewItem GetNavigationViewItem()
 		{
 			NavigationViewItem navigationViewItem = null;
 

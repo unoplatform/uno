@@ -9,13 +9,13 @@ using Microsoft.CodeAnalysis.MSBuild;
 
 namespace Uno.UWPSyncGenerator
 {
-	class Program
+	internal class Program
 	{
-		const string SyncMode = "sync";
-		const string DocMode = "doc";
-		const string AllMode = "all";
+		private const string SyncMode = "sync";
+		private const string DocMode = "doc";
+		private const string AllMode = "all";
 
-		static void Main(string[] args)
+		private static void Main(string[] args)
 		{
 			if (args.Length == 0)
 			{

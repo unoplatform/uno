@@ -37,12 +37,12 @@ namespace Uno.Xaml
 {
 	internal class ValueSerializerContext : IValueSerializerContext, IXamlSchemaContextProvider
 	{
-		XamlNameResolver name_resolver = new XamlNameResolver ();
-		XamlTypeResolver type_resolver;
-		NamespaceResolver namespace_resolver;
-		PrefixLookup prefix_lookup;
-		XamlSchemaContext sctx;
-		IAmbientProvider ambient_provider;
+		private XamlNameResolver name_resolver = new XamlNameResolver ();
+		private XamlTypeResolver type_resolver;
+		private NamespaceResolver namespace_resolver;
+		private PrefixLookup prefix_lookup;
+		private XamlSchemaContext sctx;
+		private IAmbientProvider ambient_provider;
 
 		public ValueSerializerContext (PrefixLookup prefixLookup, XamlSchemaContext schemaContext, IAmbientProvider ambientProvider)
 		{
@@ -136,8 +136,8 @@ namespace Uno.Xaml
 
 	internal class XamlTypeResolver : IXamlTypeResolver
 	{
-		NamespaceResolver ns_resolver;
-		XamlSchemaContext schema_context;
+		private NamespaceResolver ns_resolver;
+		private XamlSchemaContext schema_context;
 
 		public XamlTypeResolver (NamespaceResolver namespaceResolver, XamlSchemaContext schemaContext)
 		{
@@ -159,8 +159,8 @@ namespace Uno.Xaml
 		{
 			this.source = source;
 		}
-	
-		IList<NamespaceDeclaration> source;
+
+		private IList<NamespaceDeclaration> source;
 	
 		public string GetNamespace (string prefix)
 		{
@@ -183,8 +183,8 @@ namespace Uno.Xaml
 
 	internal class AmbientProvider : IAmbientProvider
 	{
-		List<AmbientPropertyValue> values = new List<AmbientPropertyValue> ();
-		Stack<AmbientPropertyValue> live_stack = new Stack<AmbientPropertyValue> ();
+		private List<AmbientPropertyValue> values = new List<AmbientPropertyValue> ();
+		private Stack<AmbientPropertyValue> live_stack = new Stack<AmbientPropertyValue> ();
 
 		public void Push (AmbientPropertyValue v)
 		{
@@ -211,8 +211,8 @@ namespace Uno.Xaml
 		{
 			return DoGetAllAmbientValues (ceilingTypes, searchLiveStackOnly, types, properties).ToList ();
 		}
-		
-		IEnumerable<AmbientPropertyValue> DoGetAllAmbientValues (IEnumerable<XamlType> ceilingTypes, bool searchLiveStackOnly, IEnumerable<XamlType> types, params XamlMember [] properties)
+
+		private IEnumerable<AmbientPropertyValue> DoGetAllAmbientValues (IEnumerable<XamlType> ceilingTypes, bool searchLiveStackOnly, IEnumerable<XamlType> types, params XamlMember [] properties)
 		{
 			if (searchLiveStackOnly) {
 				if (live_stack.Count > 0) {
@@ -246,8 +246,8 @@ namespace Uno.Xaml
 				}
 			}
 		}
-		
-		bool DoesAmbientPropertyApply (AmbientPropertyValue p, IEnumerable<XamlType> types, params XamlMember [] properties)
+
+		private bool DoesAmbientPropertyApply (AmbientPropertyValue p, IEnumerable<XamlType> types, params XamlMember [] properties)
 		{
 			if (types == null || !types.Any () || types.Any (xt => xt.UnderlyingType != null && xt.UnderlyingType.IsInstanceOfType (p.Value)))
 			{

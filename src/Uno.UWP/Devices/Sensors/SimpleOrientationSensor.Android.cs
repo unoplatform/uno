@@ -195,7 +195,7 @@ namespace Windows.Devices.Sensors
 
 		private class SettingsContentObserver : ContentObserver
 		{
-			Action _onChanged;
+			private Action _onChanged;
 
 			public SettingsContentObserver(Handler handler, Action onChange) : base(handler)
 			{

@@ -26,7 +26,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 		/// <summary>
 		/// The DefaultResolver associated with the active app, temporarily removed while these tests are run.
 		/// </summary>
-		Func<string, object> _appResolver;
+		private Func<string, object> _appResolver;
 
 		[TestCleanup]
 		public void Cleanup()

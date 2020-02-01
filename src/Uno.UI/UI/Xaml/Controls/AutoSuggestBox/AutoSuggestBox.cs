@@ -200,7 +200,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void RegisterEvents()
+		private void RegisterEvents()
 		{
 			if (_textBox != null)
 			{
@@ -223,7 +223,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void UnregisterEvents()
+		private void UnregisterEvents()
 		{
 			if (_textBox != null)
 			{

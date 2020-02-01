@@ -81,16 +81,16 @@ namespace Uno.Xaml
 			}
 		}
 
-		IList<Assembly> reference_assemblies;
+		private IList<Assembly> reference_assemblies;
 
 		// assembly attribute caches
-		Dictionary<string,string> xaml_nss;
-		Dictionary<string,string> prefixes;
-		Dictionary<string,string> compat_nss;
-		Dictionary<string,List<XamlType>> all_xaml_types;
-		XamlType [] empty_xaml_types = new XamlType [0];
-		List<XamlType> run_time_types = new List<XamlType> ();
-		object gate = new object();
+		private Dictionary<string,string> xaml_nss;
+		private Dictionary<string,string> prefixes;
+		private Dictionary<string,string> compat_nss;
+		private Dictionary<string,List<XamlType>> all_xaml_types;
+		private XamlType [] empty_xaml_types = new XamlType [0];
+		private List<XamlType> run_time_types = new List<XamlType> ();
+		private object gate = new object();
 
 		public bool FullyQualifyAssemblyNamesInClrNamespaces { get; private set; }
 
@@ -98,7 +98,7 @@ namespace Uno.Xaml
 			get { return reference_assemblies; }
 		}
 
-		IEnumerable<Assembly> AssembliesInScope {
+		private IEnumerable<Assembly> AssembliesInScope {
 			get { return reference_assemblies ?? AppDomain.CurrentDomain.GetAssemblies (); }
 		}
 
@@ -201,8 +201,8 @@ namespace Uno.Xaml
 		{
 			return new XamlValueConverter<TConverterBase> (converterType, targetType);
 		}
-		
-		Dictionary<Pair,XamlDirective> xaml_directives = new Dictionary<Pair,XamlDirective> ();
+
+		private Dictionary<Pair,XamlDirective> xaml_directives = new Dictionary<Pair,XamlDirective> ();
 		
 		public virtual XamlDirective GetXamlDirective (string xamlNamespace, string name)
 		{
@@ -315,7 +315,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		bool TypeMatches (XamlType t, string ns, string name, XamlType [] typeArgs)
+		private bool TypeMatches (XamlType t, string ns, string name, XamlType [] typeArgs)
 		{
 			if (t.PreferredXamlNamespace == ns && t.Name == name && t.TypeArguments.ListEquals (typeArgs))
 			{
@@ -360,7 +360,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		void OnAssemblyLoaded (object o, AssemblyLoadEventArgs e)
+		private void OnAssemblyLoaded (object o, AssemblyLoadEventArgs e)
 		{
 			if (reference_assemblies != null)
 			{
@@ -389,23 +389,23 @@ namespace Uno.Xaml
 		}
 
 		// cache updater methods
-		void FillXamlNamespaces (Assembly ass)
+		private void FillXamlNamespaces (Assembly ass)
 		{
 			foreach (XmlnsDefinitionAttribute xda in ass.GetCustomAttributes (typeof (XmlnsDefinitionAttribute), false))
 			{
 				xaml_nss.Add (xda.ClrNamespace, xda.XmlNamespace);
 			}
 		}
-		
-		void FillPrefixes (Assembly ass)
+
+		private void FillPrefixes (Assembly ass)
 		{
 			foreach (XmlnsPrefixAttribute xpa in ass.GetCustomAttributes (typeof (XmlnsPrefixAttribute), false))
 			{
 				prefixes.Add (xpa.XmlNamespace, xpa.Prefix);
 			}
 		}
-		
-		void FillCompatibilities (Assembly ass)
+
+		private void FillCompatibilities (Assembly ass)
 		{
 			foreach (XmlnsCompatibleWithAttribute xca in ass.GetCustomAttributes (typeof (XmlnsCompatibleWithAttribute), false))
 			{
@@ -413,7 +413,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		void FillAllXamlTypes (Assembly ass)
+		private void FillAllXamlTypes (Assembly ass)
 		{
 			foreach (XmlnsDefinitionAttribute xda in ass.GetCustomAttributes (typeof (XmlnsDefinitionAttribute), false)) {
 				var l = all_xaml_types.FirstOrDefault (p => p.Key == xda.XmlNamespace).Value;
@@ -433,10 +433,10 @@ namespace Uno.Xaml
 
 		// XamlTypeName -> Type resolution
 
-		static readonly int clr_ns_len = "clr-namespace:".Length;
-		static readonly int clr_ass_len = "assembly=".Length;
+		private static readonly int clr_ns_len = "clr-namespace:".Length;
+		private static readonly int clr_ass_len = "assembly=".Length;
 
-		Type ResolveXamlTypeName (string xmlNamespace, string xmlLocalName, IList<XamlType> typeArguments)
+		private Type ResolveXamlTypeName (string xmlNamespace, string xmlLocalName, IList<XamlType> typeArguments)
 		{
 			string ns = xmlNamespace;
 			string name = xmlLocalName;
@@ -490,8 +490,8 @@ namespace Uno.Xaml
 
 			return genArgs == null ? ret : ret.MakeGenericType (genArgs);
 		}
-		
-		static string GetTypeName (string tns, string name, Type [] genArgs)
+
+		private static string GetTypeName (string tns, string name, Type [] genArgs)
 		{
 			string tfn = tns.Length > 0 ? tns + '.' + name : name;
 			if (genArgs != null)

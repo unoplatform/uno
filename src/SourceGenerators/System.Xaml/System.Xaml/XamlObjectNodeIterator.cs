@@ -37,7 +37,7 @@ namespace Uno.Xaml
 {
 	internal class XamlObjectNodeIterator
 	{
-		static readonly XamlObject null_object = new XamlObject (XamlLanguage.Null, null);
+		private static readonly XamlObject null_object = new XamlObject (XamlLanguage.Null, null);
 
 		public XamlObjectNodeIterator (object root, XamlSchemaContext schemaContext, IValueSerializerContext vctx)
 		{
@@ -45,23 +45,24 @@ namespace Uno.Xaml
 			this.root = root;
 			value_serializer_ctx = vctx;
 		}
-		
-		XamlSchemaContext ctx;
-		object root;
-		IValueSerializerContext value_serializer_ctx;
-		
-		PrefixLookup PrefixLookup {
+
+		private XamlSchemaContext ctx;
+		private object root;
+		private IValueSerializerContext value_serializer_ctx;
+
+		private PrefixLookup PrefixLookup {
 			get { return (PrefixLookup) value_serializer_ctx.GetService (typeof (INamespacePrefixLookup)); }
 		}
-		XamlNameResolver NameResolver {
+
+		private XamlNameResolver NameResolver {
 			get { return (XamlNameResolver) value_serializer_ctx.GetService (typeof (IXamlNameResolver)); }
 		}
 
 		public XamlSchemaContext SchemaContext {
 			get { return ctx; }
 		}
-		
-		XamlType GetType (object obj)
+
+		private XamlType GetType (object obj)
 		{
 			return obj == null ? XamlLanguage.Null : ctx.GetXamlType (obj.GetType ());
 		}
@@ -75,13 +76,13 @@ namespace Uno.Xaml
 				yield return node;
 			}
 		}
-		
-		IEnumerable<XamlNodeInfo> GetNodes (XamlMember xm, XamlObject xobj)
+
+		private IEnumerable<XamlNodeInfo> GetNodes (XamlMember xm, XamlObject xobj)
 		{
 			return GetNodes (xm, xobj, null, false);
 		}
 
-		IEnumerable<XamlNodeInfo> GetNodes (XamlMember xm, XamlObject xobj, XamlType overrideMemberType, bool partOfPositionalParameters)
+		private IEnumerable<XamlNodeInfo> GetNodes (XamlMember xm, XamlObject xobj, XamlType overrideMemberType, bool partOfPositionalParameters)
 		{
 			// collection items: each item is exposed as a standalone object that has StartObject, EndObject and contents.
 			if (xm == XamlLanguage.Items) {
@@ -228,10 +229,10 @@ namespace Uno.Xaml
 				yield return new XamlNodeInfo (XamlNodeType.EndObject, xobj);
 			}
 		}
-		
-		int used_reference_ids;
-		
-		string GetReferenceName (XamlObject xobj)
+
+		private int used_reference_ids;
+
+		private string GetReferenceName (XamlObject xobj)
 		{
 			var xm = xobj.Type.GetAliasedProperty (XamlLanguage.Name);
 			if (xm != null)
@@ -242,7 +243,7 @@ namespace Uno.Xaml
 			return "__ReferenceID" + used_reference_ids++;
 		}
 
-		IEnumerable<XamlNodeInfo> GetMemberNodes (XamlNodeMember member, IEnumerable<XamlNodeInfo> contents)
+		private IEnumerable<XamlNodeInfo> GetMemberNodes (XamlNodeMember member, IEnumerable<XamlNodeInfo> contents)
 		{
 				yield return new XamlNodeInfo (XamlNodeType.StartMember, member);
 				foreach (var cn in contents)
@@ -253,7 +254,7 @@ namespace Uno.Xaml
 				yield return new XamlNodeInfo (XamlNodeType.EndMember, member);
 		}
 
-		IEnumerable<XamlNodeMember> GetNodeMembers (XamlObject xobj, IValueSerializerContext vsctx)
+		private IEnumerable<XamlNodeMember> GetNodeMembers (XamlObject xobj, IValueSerializerContext vsctx)
 		{
 			// XData.XmlReader is not returned.
 			if (xobj.Type == XamlLanguage.XData) {
@@ -281,7 +282,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		IEnumerable<XamlNodeInfo> GetObjectMemberNodes (XamlObject xobj)
+		private IEnumerable<XamlNodeInfo> GetObjectMemberNodes (XamlObject xobj)
 		{
 			var xce = GetNodeMembers (xobj, value_serializer_ctx).GetEnumerator ();
 			while (xce.MoveNext ()) {
@@ -321,7 +322,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		IEnumerable<XamlNodeInfo> GetItemsNodes (XamlMember xm, XamlObject xobj)
+		private IEnumerable<XamlNodeInfo> GetItemsNodes (XamlMember xm, XamlObject xobj)
 		{
 			var obj = xobj.GetRawValue ();
 			if (obj == null)
@@ -373,8 +374,8 @@ namespace Uno.Xaml
 				}
 			}
 		}
-		
-		IEnumerable<XamlNodeInfo> EnumerateMixingMember (IEnumerable<XamlNodeInfo> nodes1, XamlMember m2, IEnumerable<XamlNodeInfo> nodes2)
+
+		private IEnumerable<XamlNodeInfo> EnumerateMixingMember (IEnumerable<XamlNodeInfo> nodes1, XamlMember m2, IEnumerable<XamlNodeInfo> nodes2)
 		{
 			if (nodes2 == null) {
 				foreach (var cn in nodes1)
@@ -419,7 +420,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		IEnumerable<XamlNodeInfo> GetKeyNodes (object ikey, XamlType keyType, XamlNodeMember xknm)
+		private IEnumerable<XamlNodeInfo> GetKeyNodes (object ikey, XamlType keyType, XamlNodeMember xknm)
 		{
 			foreach (var xn in GetMemberNodes (xknm, GetNodes (XamlLanguage.Key, new XamlObject (GetType (ikey), ikey), keyType, false)))
 			{
@@ -469,8 +470,8 @@ namespace Uno.Xaml
 			NameResolver.IsCollectingReferences = false;
 			NameResolver.NameScopeInitializationCompleted (this);
 		}
-		
-		IEnumerable<string> NamespacesInType (XamlType xt)
+
+		private IEnumerable<string> NamespacesInType (XamlType xt)
 		{
 			yield return xt.PreferredXamlNamespace;
 			if (xt.TypeArguments != null) {

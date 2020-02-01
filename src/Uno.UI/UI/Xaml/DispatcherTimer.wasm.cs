@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml
 {
 	partial class DispatcherTimer
 	{
-		Timer _timer;
+		private Timer _timer;
 
 		private void StartNative(TimeSpan interval)
 		{

@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return AutomationControlType.Spinner;
 		}
 
-		NumberBox GetImpl()
+		private NumberBox GetImpl()
 		{
 			return _owner;
 		}

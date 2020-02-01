@@ -207,7 +207,7 @@ namespace Uno.UI.Tests
 			}
 		}
 
-		class MyProvider : IWeakReferenceProvider
+		private class MyProvider : IWeakReferenceProvider
 		{
 			public MyProvider()
 			{

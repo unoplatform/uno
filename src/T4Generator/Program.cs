@@ -13,7 +13,7 @@ namespace CustomHost
     //The host is responsible for all input and output, locating files,   
     //and anything else related to the external environment.  
     //-------------------------------------------------------------------------  
-    class CustomCmdLineHost : ITextTemplatingEngineHost
+    internal class CustomCmdLineHost : ITextTemplatingEngineHost
     {
         //the path and file name of the text template that is being processed  
         //---------------------------------------------------------------------  
@@ -305,9 +305,9 @@ namespace CustomHost
     //text templating transformation engine, and will transform the  
     //template to create the generated text output file.  
     //-------------------------------------------------------------------------  
-    class Program
+    internal class Program
     {
-        static void Main(string[] args)
+	    private static void Main(string[] args)
         {
             try
             {
@@ -318,7 +318,8 @@ namespace CustomHost
                 Console.WriteLine(ex.Message);
             }
         }
-        static void ProcessTemplate(string[] args)
+
+	    private static void ProcessTemplate(string[] args)
         {
             string templateFileName = null;
             string outputPath = null;

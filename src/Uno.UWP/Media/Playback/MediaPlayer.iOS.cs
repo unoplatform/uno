@@ -118,8 +118,8 @@ namespace Windows.Media.Playback
 
 		public static NSString RateObservationContext = new NSString("AVCustomEditPlayerViewControllerRateObservationContext");
 
-		const string MsAppXScheme = "ms-appx";
-		const string MsAppDataScheme = "ms-appdata";
+		private const string MsAppXScheme = "ms-appx";
+		private const string MsAppDataScheme = "ms-appdata";
 
 		public IVideoSurface RenderSurface { get; } = new VideoSurface();
 

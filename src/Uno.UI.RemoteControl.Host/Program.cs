@@ -8,9 +8,9 @@ using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.RemoteControl.Host
 {
-	class Program
+	internal class Program
 	{
-		static void Main(string[] args)
+		private static void Main(string[] args)
 		{
 			var httpPort = 0;
 

@@ -505,7 +505,7 @@ namespace Uno.UI.Controls.Legacy
 			return (Owner.GroupStyle?.HeaderTemplate).SelectOrDefault(ht => GetTemplateSize(ht, ListViewBase.ListViewSectionHeaderElementKindNS), CGSize.Empty);
 		}
 
-		HashSet<NSIndexPath> _materializedItems = new HashSet<NSIndexPath>();
+		private HashSet<NSIndexPath> _materializedItems = new HashSet<NSIndexPath>();
 
 		public virtual CGSize GetItemSize(UICollectionView collectionView, NSIndexPath indexPath)
 		{

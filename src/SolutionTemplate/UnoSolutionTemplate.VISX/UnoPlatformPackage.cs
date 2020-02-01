@@ -108,7 +108,7 @@ namespace UnoSolutionTemplate
 			}
 		}
 
-		void InvokeOnMainThread(Func<Task> func)
+		private void InvokeOnMainThread(Func<Task> func)
 		{
 			JoinableTaskFactory.RunAsync(async () =>
 			{

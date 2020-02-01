@@ -75,9 +75,9 @@ namespace Uno.Xaml
 			public XamlType Type { get; private set; }
 		}
 
-		static readonly XamlSchemaContext sctx = new XamlSchemaContext (new Assembly [] {typeof (XamlType).Assembly});
+		private static readonly XamlSchemaContext sctx = new XamlSchemaContext (new Assembly [] {typeof (XamlType).Assembly});
 
-		static XamlType XT<T> ()
+		private static XamlType XT<T> ()
 		{
 			return sctx.GetXamlType (typeof (T));
 		}
@@ -160,13 +160,13 @@ namespace Uno.Xaml
 			SpecialNames = new SpecialTypeNameList ();
 		}
 
-		static readonly string [] xaml_nss = new string [] {Xaml2006Namespace};
+		private static readonly string [] xaml_nss = new string [] {Xaml2006Namespace};
 
 		public static IList<string> XamlNamespaces {
 			get { return xaml_nss; }
 		}
 
-		static readonly string [] xml_nss = new string [] {Xml1998Namespace};
+		private static readonly string [] xml_nss = new string [] {Xml1998Namespace};
 
 		public static IList<string> XmlNamespaces {
 			get { return xml_nss; }
@@ -248,7 +248,7 @@ namespace Uno.Xaml
 			return true;
 		}
 
-		static bool IsValidXamlName (char c, bool first)
+		private static bool IsValidXamlName (char c, bool first)
 		{
 			if (c == '_')
 			{

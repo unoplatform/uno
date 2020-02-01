@@ -14,7 +14,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 {
 	public class ListViewGroupedViewModel : ViewModelBase
 	{
-		Random _rnd = null;
+		private Random _rnd = null;
 		private bool _areStickyHeadersEnabled;
 		private double _variableWidth;
 

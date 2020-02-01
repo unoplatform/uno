@@ -51,8 +51,8 @@ namespace Uno.Xaml
 			service_provider = new ValueSerializerContext (p, schemaContext, AmbientProvider);
 		}
 
-		XamlSchemaContext sctx;
-		XamlWriterStateManager manager;
+		private XamlSchemaContext sctx;
+		private XamlWriterStateManager manager;
 
 		internal IValueSerializerContext service_provider;
 
@@ -62,7 +62,7 @@ namespace Uno.Xaml
 			get { return (PrefixLookup) service_provider.GetService (typeof (INamespacePrefixLookup)); }
 		}
 
-		List<NamespaceDeclaration> namespaces {
+		private List<NamespaceDeclaration> namespaces {
 			get { return prefix_lookup.Namespaces; }
 		}
 

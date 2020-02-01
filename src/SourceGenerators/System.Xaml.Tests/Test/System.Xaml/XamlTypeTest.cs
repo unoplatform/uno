@@ -39,7 +39,7 @@ namespace MonoTests.Uno.Xaml
 	[TestFixture]
 	public class XamlTypeTest
 	{
-		XamlSchemaContext sctx = new XamlSchemaContext (null, null);
+		private XamlSchemaContext sctx = new XamlSchemaContext (null, null);
 
 		[Test]
 		public void ConstructorTypeNullType ()
@@ -287,8 +287,8 @@ namespace MonoTests.Uno.Xaml
 		public class TestClass1
 		{
 		}
-	
-		class TestClass2
+
+		private class TestClass2
 		{
 			internal TestClass2 () {}
 		}
@@ -304,7 +304,7 @@ namespace MonoTests.Uno.Xaml
 			Assert.IsTrue (new XamlType (typeof (object), sctx).IsConstructible, "#4");
 		}
 
-		class AttachableClass
+		private class AttachableClass
 		{
 			public event EventHandler<EventArgs> SimpleEvent;
 			public void AddSimpleHandler (object o, EventHandler h)
@@ -586,8 +586,8 @@ namespace MonoTests.Uno.Xaml
 		{
 			TypeConveter_TypeOrTypeExtension (typeof (TypeExtension));
 		}
-		
-		void TypeConveter_TypeOrTypeExtension (Type type)
+
+		private void TypeConveter_TypeOrTypeExtension (Type type)
 		{
 			var xtc = new XamlType (type, sctx).TypeConverter;
 			Assert.IsNotNull (xtc, "#7");
@@ -910,7 +910,7 @@ namespace MonoTests.Uno.Xaml
 		}
 	}
 
-	class MyXamlType : XamlType
+	internal class MyXamlType : XamlType
 	{
 		public MyXamlType (string fullName, IList<XamlType> typeArguments, XamlSchemaContext context)
 			: base (fullName, typeArguments, context)

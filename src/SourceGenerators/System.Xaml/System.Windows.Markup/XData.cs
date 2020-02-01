@@ -35,8 +35,8 @@ namespace System.Windows.Markup
 	[ContentProperty ("Text")]
 	public sealed class XData
 	{
-		string text;
-		XmlReader reader;
+		private string text;
+		private XmlReader reader;
 
 		public string Text {
 			get { return text; }

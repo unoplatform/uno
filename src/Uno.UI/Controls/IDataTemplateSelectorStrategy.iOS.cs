@@ -18,7 +18,7 @@ namespace Uno.UI.Views.Controls
 	{
 		#region CurrentStrategy Property
 
-		IDataTemplateSelectorStrategy _currentStrategy;
+		private IDataTemplateSelectorStrategy _currentStrategy;
 
 		public IDataTemplateSelectorStrategy CurrentStrategy {
 			get {
@@ -30,7 +30,7 @@ namespace Uno.UI.Views.Controls
 			}
 		}
 
-		void OnCurrentStrategyChanged ()
+		private void OnCurrentStrategyChanged ()
 		{
 			ContentTemplate = SelectTemplateFactory (Content);
 		}

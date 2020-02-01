@@ -9,7 +9,7 @@ using Uno.Extensions;
 
 namespace Uno.UWPSyncGenerator
 {
-	class SyncGenerator : Generator
+	internal class SyncGenerator : Generator
 	{
 		protected override void ProcessType(INamedTypeSymbol type, INamespaceSymbol ns)
 		{

@@ -43,7 +43,7 @@ namespace Uno.Xaml
 		/// </summary>
 		private static Regex BindingMembersRegex = new Regex("[^'\",]+'[^^']+'|[^'\",]+\"[^\"]+\"|[^,]+");
 
-		Dictionary<XamlMember, object> args = new Dictionary<XamlMember, object>();
+		private Dictionary<XamlMember, object> args = new Dictionary<XamlMember, object>();
 		public Dictionary<XamlMember, object> Arguments
 		{
 			get { return args; }
@@ -176,7 +176,7 @@ namespace Uno.Xaml
 
 		private static bool IsValidMarkupExtension(string valueString) => valueString.StartsWith("{") && !valueString.StartsWith("{}");
 
-		static string UnescapeValue(string s)
+		private static string UnescapeValue(string s)
 		{
 			if (s.StartsWith("{}"))
 			{
@@ -201,7 +201,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		static Exception Error(string format, params object[] args)
+		private static Exception Error(string format, params object[] args)
 		{
 			return new XamlParseException(String.Format(format, args));
 		}

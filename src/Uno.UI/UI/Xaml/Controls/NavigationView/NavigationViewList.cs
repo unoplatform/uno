@@ -15,9 +15,9 @@ namespace Windows.UI.Xaml.Controls
 {
 	public  partial class NavigationViewList : ListView
 	{
-		NavigationViewListPosition m_navigationViewListPosition = NavigationViewListPosition.LeftNav;
-		bool m_showFocusVisual = true;
-		WeakReference<NavigationView> m_navigationView = null;
+		private NavigationViewListPosition m_navigationViewListPosition = NavigationViewListPosition.LeftNav;
+		private bool m_showFocusVisual = true;
+		private WeakReference<NavigationView> m_navigationView = null;
 
 		// For topnav, like alarm application, we may only need icon and no content for NavigationViewItem. 
 		// ListView raise ItemClicked event, but it only provides the content and not the container.
@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls
 		// So we need to provide a container to help with this. Below solution is fragile. We expect Task 17546992 will finally resolved from os
 		// Before ListView raises OnItemClick, it checks if IsItemItsOwnContainerOverride in ListViewBase::OnItemClick
 		// We assume this is the container of the clicked item.
-		NavigationViewItemBase m_lastItemCalledInIsItemItsOwnContainerOverride;
+		private NavigationViewItemBase m_lastItemCalledInIsItemItsOwnContainerOverride;
 
 		public NavigationViewList() : base()
 		{
@@ -137,7 +137,7 @@ namespace Windows.UI.Xaml.Controls
 			return m_lastItemCalledInIsItemItsOwnContainerOverride;
 		}
 
-		void PropagateChangeToAllContainers<T>(Action<T> function) where T:class
+		private void PropagateChangeToAllContainers<T>(Action<T> function) where T:class
 		{
 			var items = Items;
 			if (items != null)

@@ -37,7 +37,7 @@ namespace MonoTests.Uno.Xaml.Schema
 	[TestFixture]
 	public class XamlTypeInvokerTest
 	{
-		XamlSchemaContext sctx = new XamlSchemaContext (new XamlSchemaContextSettings ());
+		private XamlSchemaContext sctx = new XamlSchemaContext (new XamlSchemaContextSettings ());
 
 		[Test]
 		public void ConstructorTypeNull ()
@@ -77,7 +77,7 @@ namespace MonoTests.Uno.Xaml.Schema
 		public class TestClassMarkupExtension2
 		{
 			// delegate type mismatch
-			void HandleMarkupExtension ()
+			private void HandleMarkupExtension ()
 			{
 			}
 		}
@@ -115,7 +115,7 @@ namespace MonoTests.Uno.Xaml.Schema
 		public class TestClassMarkupExtension4
 		{
 			// can be private.
-			static void HandleMarkupExtension (object o, XamlSetMarkupExtensionEventArgs a)
+			private static void HandleMarkupExtension (object o, XamlSetMarkupExtensionEventArgs a)
 			{
 			}
 		}
@@ -148,7 +148,7 @@ namespace MonoTests.Uno.Xaml.Schema
 		public class TestClassTypeConverter2
 		{
 			// delegate type mismatch
-			void HandleTypeConverter ()
+			private void HandleTypeConverter ()
 			{
 			}
 		}
@@ -186,7 +186,7 @@ namespace MonoTests.Uno.Xaml.Schema
 		public class TestClassTypeConverter4
 		{
 			// can be private.
-			static void HandleTypeConverter (object o, XamlSetTypeConverterEventArgs a)
+			private static void HandleTypeConverter (object o, XamlSetTypeConverterEventArgs a)
 			{
 			}
 		}

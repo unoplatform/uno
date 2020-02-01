@@ -34,7 +34,7 @@ namespace Uno.UI.Helpers.WinUI
 		}
 	}
 
-	class Util
+	internal class Util
 	{
 		public static Visibility VisibilityFromBool(bool visible)
 		{

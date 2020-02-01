@@ -45,8 +45,8 @@ namespace Windows.Media.Playback
 		private List<Uri> _playlistItems;
 		private int _playlistIndex;
 
-		const string MsAppXScheme = "ms-appx";
-		const string MsAppDataScheme = "ms-appdata";
+		private const string MsAppXScheme = "ms-appx";
+		private const string MsAppDataScheme = "ms-appdata";
 
 		public virtual IVideoSurface RenderSurface { get; private set; } = new VideoSurface(Application.Context);
 

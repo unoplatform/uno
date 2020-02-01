@@ -42,7 +42,7 @@ namespace Uno.UI.Views.Controls
             Initialize();
 		}
 
-        void Initialize()
+		private void Initialize()
         {
             DelaysContentTouches = true;
 		}

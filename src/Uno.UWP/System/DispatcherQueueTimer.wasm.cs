@@ -9,7 +9,7 @@ namespace Windows.System
 {
 	partial class DispatcherQueueTimer
 	{
-		Timer _timer;
+		private Timer _timer;
 
 		private void StartNative(TimeSpan interval)
 		{

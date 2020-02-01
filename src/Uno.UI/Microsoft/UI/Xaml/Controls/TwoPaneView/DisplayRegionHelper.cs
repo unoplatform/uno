@@ -11,10 +11,10 @@ namespace Microsoft.UI.Xaml.Controls
 		private bool m_simulateDisplayRegions = false;
 		private TwoPaneViewMode m_simulateMode = TwoPaneViewMode.SinglePane;
 
-		static readonly Rect m_simulateWide0 = new Rect(0, 0, 300, 400);
-		static readonly Rect m_simulateWide1 = new Rect(312, 0, 300, 400);
-		static readonly Rect m_simulateTall0 = new Rect(0, 0, 400, 300);
-		static readonly Rect m_simulateTall1 = new Rect(0, 312, 400, 300);
+		private static readonly Rect m_simulateWide0 = new Rect(0, 0, 300, 400);
+		private static readonly Rect m_simulateWide1 = new Rect(312, 0, 300, 400);
+		private static readonly Rect m_simulateTall0 = new Rect(0, 0, 400, 300);
+		private static readonly Rect m_simulateTall1 = new Rect(0, 312, 400, 300);
 
 		internal static DisplayRegionHelperInfo GetRegionInfo()
 		{

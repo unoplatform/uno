@@ -23,7 +23,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Media.ImageBrushTests
 	[SampleControlInfo(category: "ImageBrushTestControl")]
 	public sealed partial class ImageBrush_SameWithDelay : UserControl
 	{
-		BrushContext _ctx = new BrushContext();
+		private BrushContext _ctx = new BrushContext();
 
 		public ImageBrush_SameWithDelay()
 		{

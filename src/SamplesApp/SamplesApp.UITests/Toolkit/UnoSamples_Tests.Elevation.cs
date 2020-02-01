@@ -13,7 +13,7 @@ namespace SamplesApp.UITests.Toolkit
 {
 
 	[TestFixture]
-	partial class UnoSamples_Tests : SampleControlUITestBase
+	internal partial class UnoSamples_Tests : SampleControlUITestBase
 	{
 
 		[Test]

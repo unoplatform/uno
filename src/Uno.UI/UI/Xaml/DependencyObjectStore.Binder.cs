@@ -171,7 +171,7 @@ namespace Windows.UI.Xaml
 			_templatedParentProperty = templatedParentProperty;
 		}
 
-		static void InitializeStaticBinder()
+		private static void InitializeStaticBinder()
 		{
 			// Register the ability for the BindingPath to subscribe to dependency property changes.
 			BindingPath.RegisterPropertyChangedRegistrationHandler(SubscribeToDependencyPropertyChanged);
@@ -510,7 +510,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		(bool hasValueInherits, bool hasValueDoesNotInherit) GetPropertyInheritanceConfiguration(DependencyPropertyDetails propertyDetails)
+		private (bool hasValueInherits, bool hasValueDoesNotInherit) GetPropertyInheritanceConfiguration(DependencyPropertyDetails propertyDetails)
 		{
 			if(
 				propertyDetails.Property == _templatedParentProperty 

@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		NavigationViewListPosition m_position = NavigationViewListPosition.LeftNav;
+		private NavigationViewListPosition m_position = NavigationViewListPosition.LeftNav;
 
 		protected virtual void OnNavigationViewListPositionChanged() { }
 

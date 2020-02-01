@@ -16,7 +16,7 @@ using Refit;
 
 namespace Uno.UI.TestComparer
 {
-	class AzureDevopsDownloader
+	internal class AzureDevopsDownloader
 	{
 		private readonly string _pat;
 		private readonly string _collectionUri;

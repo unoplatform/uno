@@ -36,11 +36,11 @@ namespace MonoTests.Uno.Xaml.Schema
 	[TestFixture]
 	public class XamlMemberInvokerTest
 	{
-		XamlSchemaContext sctx = new XamlSchemaContext (new XamlSchemaContextSettings ());
-		PropertyInfo str_len = typeof (string).GetProperty ("Length");
-		PropertyInfo sb_len = typeof (StringBuilder).GetProperty ("Length");
-		PropertyInfo xr_resolver = typeof (XmlResolver).GetProperty ("Credentials");
-		EventInfo ass_load = typeof (AppDomain).GetEvent ("AssemblyLoad");
+		private XamlSchemaContext sctx = new XamlSchemaContext (new XamlSchemaContextSettings ());
+		private PropertyInfo str_len = typeof (string).GetProperty ("Length");
+		private PropertyInfo sb_len = typeof (StringBuilder).GetProperty ("Length");
+		private PropertyInfo xr_resolver = typeof (XmlResolver).GetProperty ("Credentials");
+		private EventInfo ass_load = typeof (AppDomain).GetEvent ("AssemblyLoad");
 
 		[Test]
 		public void ConstructorNull ()
@@ -219,7 +219,7 @@ namespace MonoTests.Uno.Xaml.Schema
 			});
 		}
 
-		void DummyAssemblyLoad (object o, AssemblyLoadEventArgs e)
+		private void DummyAssemblyLoad (object o, AssemblyLoadEventArgs e)
 		{
 		}
 
@@ -261,7 +261,7 @@ namespace MonoTests.Uno.Xaml.Schema
 			});
 		}
 
-		class MyXamlMember : XamlMember
+		private class MyXamlMember : XamlMember
 		{
 			public MyXamlMember (PropertyInfo pi, XamlSchemaContext context)
 				: base (pi, context)
@@ -279,15 +279,15 @@ namespace MonoTests.Uno.Xaml.Schema
 			}
 		}
 
-		class MyException : Exception
+		private class MyException : Exception
 		{
 		}
 
-		class MyXamlMemberInvoker : XamlMemberInvoker
+		private class MyXamlMemberInvoker : XamlMemberInvoker
 		{
 		}
 
-		class TestClass
+		private class TestClass
 		{
 			public TestClass ()
 			{

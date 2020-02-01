@@ -23,7 +23,7 @@ namespace Uno.UI.Controls
 #pragma warning restore CS0618 // Type or member is obsolete
 		}
 
-		ViewStates _monthVisibility;
+		private ViewStates _monthVisibility;
 		public ViewStates MonthVisibility
 		{
 			get { return _monthVisibility; }
@@ -37,7 +37,7 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		ViewStates _yearVisibility;
+		private ViewStates _yearVisibility;
 		public ViewStates YearVisibility
 		{
 			get { return _yearVisibility; }
@@ -51,7 +51,7 @@ namespace Uno.UI.Controls
 			}
 		}
 
-		ViewStates _dayVisibility;
+		private ViewStates _dayVisibility;
 		public ViewStates DayVisibility
 		{
 			get { return _dayVisibility; }

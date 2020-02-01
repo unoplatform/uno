@@ -33,8 +33,8 @@ namespace Windows.UI.Xaml.Media
 			public const int ImageSource_SetImageDecodeStop = 2;
 		}
 
-		const string MsAppXScheme = "ms-appx";
-		const string MsAppDataScheme = "ms-appdata";
+		private const string MsAppXScheme = "ms-appx";
+		private const string MsAppDataScheme = "ms-appdata";
 
         /// <summary>
         /// The default downloader instance used by all the new instances of <see cref="ImageSource"/>.

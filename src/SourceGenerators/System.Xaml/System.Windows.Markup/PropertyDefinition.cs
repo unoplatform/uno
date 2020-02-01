@@ -36,7 +36,7 @@ namespace System.Windows.Markup
 			attributes = new List<Attribute> ();
 		}
 
-		List<Attribute> attributes;
+		private List<Attribute> attributes;
 		public IList<Attribute> Attributes {
 			get { return attributes; }
 		}
@@ -44,7 +44,7 @@ namespace System.Windows.Markup
 		[DefaultValue ("public")]
 		public string Modifier { get; set; }
 
-		string name;
+		private string name;
 		public override string Name { 
 			get { return name; }
 			set { name = value; }

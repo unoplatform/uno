@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ItemsWrapGrid : Panel, IVirtualizingPanel
 	{
-		VirtualizingPanelLayout _layout;
+		private VirtualizingPanelLayout _layout;
 
 		public int FirstVisibleIndex => _layout?.FirstVisibleIndex ?? -1;
 

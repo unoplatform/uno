@@ -45,7 +45,7 @@ namespace Uno.Xaml
 		{
 		}
 
-		static string FormatLine (string message, int lineNumber, int linePosition)
+		private static string FormatLine (string message, int lineNumber, int linePosition)
 		{
 			if (lineNumber <= 0)
 			{

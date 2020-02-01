@@ -363,7 +363,7 @@ namespace System.Xaml.Tests.MS
 			}
 		}
 
-		XamlReader GetReader(string filename)
+		private XamlReader GetReader(string filename)
 		{
 			var directory = Path.GetDirectoryName(new Uri(GetType().Assembly.CodeBase).LocalPath);
 			string xml = File.ReadAllText(Path.Combine(directory, "XmlFiles", filename)).Replace("System.Xaml_test_net_4_0", "Uno.Xaml.Tests");

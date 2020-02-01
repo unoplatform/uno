@@ -200,7 +200,7 @@ namespace System.Windows.Markup
 
 	internal class TypeValueSerializer : ValueSerializer
 	{
-		TypeExtensionConverter txc = new TypeExtensionConverter ();
+		private TypeExtensionConverter txc = new TypeExtensionConverter ();
 
 		public override bool CanConvertFromString (string value, IValueSerializerContext context)
 		{
@@ -242,7 +242,7 @@ namespace System.Windows.Markup
 			c = typeConverter;
 		}
 
-		TypeConverter c;
+		private TypeConverter c;
 
 		public override bool CanConvertFromString (string value, IValueSerializerContext context)
 		{

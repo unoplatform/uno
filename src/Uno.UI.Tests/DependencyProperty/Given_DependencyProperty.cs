@@ -1411,17 +1411,17 @@ namespace Uno.UI.Tests.BinderTests
 
     #region DependencyObjects
 
-    partial class MockDependencyObject : DependencyObject
+    internal partial class MockDependencyObject : DependencyObject
 	{
 
 	}
 
-	partial class MockDependencyObject2 : MockDependencyObject
+    internal partial class MockDependencyObject2 : MockDependencyObject
 	{
 
 	}
 
-    partial class SimpleDependencyObject1 : DependencyObject
+    internal partial class SimpleDependencyObject1 : DependencyObject
     {
         public SimpleDependencyObject1() { }
 
@@ -1441,7 +1441,7 @@ namespace Uno.UI.Tests.BinderTests
     }
 
 
-    partial class MyDependencyObject1 : DependencyObject
+    internal partial class MyDependencyObject1 : DependencyObject
 	{
 		public MyDependencyObject1() { }
 
@@ -1459,7 +1459,7 @@ namespace Uno.UI.Tests.BinderTests
 		public int CoerceValueCallbackCount { get; set; } = 0;
 	}
 
-	partial class MyDependencyObject2 : MyDependencyObject1
+    internal partial class MyDependencyObject2 : MyDependencyObject1
 	{
 		static MyDependencyObject2()
 		{
@@ -1476,7 +1476,7 @@ namespace Uno.UI.Tests.BinderTests
 		public MyDependencyObject2() { }
 	}
 
-	partial class MyDependencyObject3 : MyDependencyObject2
+    internal partial class MyDependencyObject3 : MyDependencyObject2
 	{
 		static MyDependencyObject3()
 		{
@@ -1492,7 +1492,7 @@ namespace Uno.UI.Tests.BinderTests
 		public MyDependencyObject3() { }
 	}
 
-	partial class NullablePropertyOwner : FrameworkElement
+    internal partial class NullablePropertyOwner : FrameworkElement
 	{
 
 		#region MyNullable DependencyProperty

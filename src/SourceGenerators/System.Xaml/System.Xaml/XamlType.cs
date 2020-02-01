@@ -117,7 +117,7 @@ namespace Uno.Xaml
 		{
 		}
 
-		XamlType (XamlSchemaContext schemaContext, XamlTypeInvoker invoker)
+		private XamlType (XamlSchemaContext schemaContext, XamlTypeInvoker invoker)
 		{
 			if (schemaContext == null)
 			{
@@ -128,13 +128,13 @@ namespace Uno.Xaml
 			this.invoker = invoker ?? new XamlTypeInvoker (this);
 		}
 
-		Type type, underlying_type;
+		private Type type, underlying_type;
 
 //		string explicit_ns;
 
 		// populated properties
-		XamlType base_type;
-		XamlTypeInvoker invoker;
+		private XamlType base_type;
+		private XamlTypeInvoker invoker;
 
 		internal EventHandler<XamlSetMarkupExtensionEventArgs> SetMarkupExtensionHandler {
 			get { return LookupSetMarkupExtensionHandler (); }
@@ -283,7 +283,7 @@ namespace Uno.Xaml
 			return IsNull (xamlType1) ? IsNull (xamlType2) : xamlType1.Equals (xamlType2);
 		}
 
-		static bool IsNull (XamlType a)
+		private static bool IsNull (XamlType a)
 		{
 			return Object.ReferenceEquals (a, null);
 		}
@@ -424,7 +424,7 @@ namespace Uno.Xaml
 			return all_attachable_members_cache;
 		}
 
-		IEnumerable<XamlMember> DoLookupAllAttachableMembers ()
+		private IEnumerable<XamlMember> DoLookupAllAttachableMembers ()
 		{
 			// based on http://msdn.microsoft.com/en-us/library/ff184560.aspx
 			var bf = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
@@ -501,7 +501,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		static readonly XamlMember [] empty_array = new XamlMember [0];
+		private static readonly XamlMember [] empty_array = new XamlMember [0];
 
 		protected virtual IEnumerable<XamlMember> LookupAllMembers ()
 		{
@@ -516,11 +516,11 @@ namespace Uno.Xaml
 			}
 			return all_members_cache;
 		}
-		
-		List<XamlMember> all_members_cache;
-		List<XamlMember> all_attachable_members_cache;
 
-		IEnumerable<XamlMember> DoLookupAllMembers ()
+		private List<XamlMember> all_members_cache;
+		private List<XamlMember> all_attachable_members_cache;
+
+		private IEnumerable<XamlMember> DoLookupAllMembers ()
 		{
 			// This is a hack that is likely required due to internal implementation difference in System.Uri. Our Uri has two readonly collection properties
 			if (this == XamlLanguage.Uri)
@@ -546,13 +546,13 @@ namespace Uno.Xaml
 				yield return new XamlMember (ei, SchemaContext);
 			}
 		}
-		
-		static bool IsPublicAccessor (MethodInfo mi)
+
+		private static bool IsPublicAccessor (MethodInfo mi)
 		{
 			return mi != null && mi.IsPublic;
 		}
 
-		bool IsCollectionType (Type type)
+		private bool IsCollectionType (Type type)
 		{
 			if (type == null)
 			{
@@ -862,7 +862,7 @@ namespace Uno.Xaml
 			return null;
 		}
 
-		BindingFlags flags_get_static = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
+		private BindingFlags flags_get_static = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
 
 		protected virtual EventHandler<XamlSetMarkupExtensionEventArgs> LookupSetMarkupExtensionHandler ()
 		{
@@ -952,7 +952,7 @@ namespace Uno.Xaml
 		}
 
 #if NET461
-		static XamlValueConverter<ValueSerializer> string_value_serializer;
+		private static XamlValueConverter<ValueSerializer> string_value_serializer;
 #endif
 
 		protected virtual XamlValueConverter<ValueSerializer> LookupValueSerializer ()
@@ -995,7 +995,7 @@ namespace Uno.Xaml
 			return null;
 		}
 
-		static string GetXamlName (Type type)
+		private static string GetXamlName (Type type)
 		{
 			string n;
 			if (!type.IsNestedPublic && !type.IsNestedAssembly && !type.IsNestedPrivate)

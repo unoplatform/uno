@@ -9,7 +9,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	internal class NumberBoxParser
 	{
-		static string c_numberBoxOperators = "+-*/^";
+		private static string c_numberBoxOperators = "+-*/^";
 
 		// Returns list of MathTokens from expression input string. If there are any parsing errors, it returns an empty vector.
 		private static List<MathToken> GetTokens(string input, INumberParser numberParser)
@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Attempts to parse a number from the beginning of the given input string. Returns the character size of the matched string.
-		static (double, int) GetNextNumber(string input, INumberParser numberParser)
+		private static (double, int) GetNextNumber(string input, INumberParser numberParser)
 		{
 			// Attempt to parse anything before an operator or space as a number
 			Regex regex = new Regex("^-?([^-+/*\\(\\)\\^\\s]+)");
@@ -103,7 +103,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return (double.NaN, 0);
 		}
 
-		static int GetPrecedenceValue(char c)
+		private static int GetPrecedenceValue(char c)
 		{
 			int opPrecedence = 0;
 			if (c == '*' || c == '/')
@@ -119,7 +119,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Converts a list of tokens from infix format (e.g. "3 + 5") to postfix (e.g. "3 5 +")
-		static List<MathToken> ConvertInfixToPostfix(List<MathToken> infixTokens)
+		private static List<MathToken> ConvertInfixToPostfix(List<MathToken> infixTokens)
 		{
 			List<MathToken> postfixTokens= new List<MathToken>();
 			Stack<MathToken> operatorStack = new Stack<MathToken>();
@@ -190,7 +190,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return postfixTokens;
 		}
 
-		static double? ComputePostfixExpression(List<MathToken> tokens)
+		private static double? ComputePostfixExpression(List<MathToken> tokens)
 		{
 			Stack<double> stack = new Stack<double>();
 

@@ -299,17 +299,17 @@ namespace MonoTests.Uno.Xaml
 			TestXamlDirectiveCommon (d, "_UnknownContent", XamlLanguage.Xaml2006Namespace, AllowedMemberLocations.MemberElement, typeof (object), true);
 		}
 
-		void TestXamlDirectiveCommon (XamlDirective d, string name, AllowedMemberLocations allowedLocation, Type type)
+		private void TestXamlDirectiveCommon (XamlDirective d, string name, AllowedMemberLocations allowedLocation, Type type)
 		{
 			TestXamlDirectiveCommon (d, name, XamlLanguage.Xaml2006Namespace, allowedLocation, type);
 		}
 
-		void TestXamlDirectiveCommon (XamlDirective d, string name, string ns, AllowedMemberLocations allowedLocation, Type type)
+		private void TestXamlDirectiveCommon (XamlDirective d, string name, string ns, AllowedMemberLocations allowedLocation, Type type)
 		{
 			TestXamlDirectiveCommon (d, name, ns, allowedLocation, type, false);
 		}
 
-		void TestXamlDirectiveCommon (XamlDirective d, string name, string ns, AllowedMemberLocations allowedLocation, Type type, bool isUnknown)
+		private void TestXamlDirectiveCommon (XamlDirective d, string name, string ns, AllowedMemberLocations allowedLocation, Type type, bool isUnknown)
 		{
 			Assert.AreEqual (allowedLocation, d.AllowedLocation, "#1");
 			Assert.IsNull (d.DeclaringType, "#2");
@@ -761,17 +761,17 @@ namespace MonoTests.Uno.Xaml
 
 		// common test methods
 
-		void TestXamlTypeCommon (XamlType t, string name, Type underlyingType, bool nullable)
+		private void TestXamlTypeCommon (XamlType t, string name, Type underlyingType, bool nullable)
 		{
 			TestXamlTypeCommon (t, name, underlyingType, nullable, false);
 		}
 
-		void TestXamlTypeCommon (XamlType t, string name, Type underlyingType, bool nullable, bool constructionRequiresArguments)
+		private void TestXamlTypeCommon (XamlType t, string name, Type underlyingType, bool nullable, bool constructionRequiresArguments)
 		{
 			TestXamlTypeCommon (t, name, underlyingType, nullable, constructionRequiresArguments, true);
 		}
 
-		void TestXamlTypeCommon (XamlType t, string name, Type underlyingType, bool nullable, bool constructionRequiresArguments, bool isConstructible)
+		private void TestXamlTypeCommon (XamlType t, string name, Type underlyingType, bool nullable, bool constructionRequiresArguments, bool isConstructible)
 		{
 			Assert.IsNotNull (t.Invoker, "#1");
 			Assert.IsTrue (t.IsNameValid, "#2");
@@ -811,7 +811,7 @@ namespace MonoTests.Uno.Xaml
 			//Assert.IsNull (t.DeferringLoader, "#28");
 		}
 
-		void TestXamlTypePrimitive (XamlType t, string name, Type underlyingType, bool nullable, bool constructorRequiresArguments)
+		private void TestXamlTypePrimitive (XamlType t, string name, Type underlyingType, bool nullable, bool constructorRequiresArguments)
 		{
 			TestXamlTypeCommon (t, name, underlyingType, nullable, constructorRequiresArguments);
 			Assert.IsFalse (t.IsMarkupExtension, "#14");
@@ -823,7 +823,7 @@ namespace MonoTests.Uno.Xaml
 			Assert.AreEqual (0, l.Length, "#31");
 		}
 
-		void TestXamlTypeExtension (XamlType t, string name, Type underlyingType, Type extReturnType, bool noTypeConverter)
+		private void TestXamlTypeExtension (XamlType t, string name, Type underlyingType, Type extReturnType, bool noTypeConverter)
 		{
 			TestXamlTypeCommon (t, name, underlyingType, true, false);
 			Assert.IsTrue (t.IsMarkupExtension, "#14");
@@ -841,7 +841,7 @@ namespace MonoTests.Uno.Xaml
 			Assert.IsNull (t.Invoker.SetMarkupExtensionHandler, "#31"); // orly?
 		}
 
-		void TestMemberCommon (XamlMember m, string name, Type type, Type declType, bool hasSetter)
+		private void TestMemberCommon (XamlMember m, string name, Type type, Type declType, bool hasSetter)
 		{
 			Assert.IsNotNull (m, "#1");
 			Assert.IsNotNull (m.DeclaringType, "#2");

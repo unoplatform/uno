@@ -29,7 +29,7 @@ namespace Uno.Media
 	[TypeConverter(typeof(GeometryConverter))]
 	public sealed partial class StreamGeometry : Geometry
 	{
-		Path bezierPath;
+		private Path bezierPath;
 
 		public FillRule FillRule { get; set; }
 

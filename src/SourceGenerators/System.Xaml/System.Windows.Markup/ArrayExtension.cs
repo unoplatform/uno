@@ -65,7 +65,7 @@ namespace System.Windows.Markup
 		[ConstructorArgument ("arrayType")]
 		public Type Type { get; set; }
 
-		IList items;
+		private IList items;
 		[DesignerSerializationVisibility (DesignerSerializationVisibility.Content)]
 		public IList Items {
 			get { return items; }

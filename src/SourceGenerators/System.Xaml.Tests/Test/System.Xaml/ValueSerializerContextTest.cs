@@ -78,8 +78,8 @@ namespace MonoTests.Uno.Xaml
 			Assert.IsNotNull (Provider, "premise#2"); // cannot get Context, it does not give IValueSerializerContext in the test.
 			GetServiceCoreWriter ();
 		}
-		
-		void GetServiceCoreReader ()
+
+		private void GetServiceCoreReader ()
 		{
 			//Assert.IsNull (Provider.GetService (typeof (IXamlNameResolver)), "#1");
 			Assert.IsNotNull (Provider.GetService (typeof (IXamlNameProvider)), "#2");
@@ -92,8 +92,8 @@ namespace MonoTests.Uno.Xaml
 			//Assert.IsNull (Provider.GetService (typeof (IDestinationTypeProvider)), "#9");
 			//Assert.IsNull (Provider.GetService (typeof (IXamlObjectWriterFactory)), "#10");
 		}
-		
-		void GetServiceCoreWriter ()
+
+		private void GetServiceCoreWriter ()
 		{
 			Assert.IsNotNull (Provider.GetService (typeof (IXamlNameResolver)), "#1");
 			//Assert.IsNull (Provider.GetService (typeof (IXamlNameProvider)), "#2");

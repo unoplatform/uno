@@ -85,7 +85,7 @@ namespace Windows.Devices.Geolocation
 		}		
 	}
 
-	static class Extensions
+	internal static class Extensions
 	{
 		private const uint Wgs84SpatialReferenceId = 4326;
 

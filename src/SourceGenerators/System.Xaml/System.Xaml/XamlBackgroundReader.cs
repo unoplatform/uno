@@ -38,12 +38,12 @@ namespace Uno.Xaml
 			r = wrappedReader;
 			q = new XamlNodeQueue (r.SchemaContext) { LineInfoProvider = r as IXamlLineInfo };
 		}
-		
-		Thread thread;
-		XamlReader r;
-		XamlNodeQueue q;
-		bool read_all_done, do_work = true;
-		ManualResetEvent wait = new ManualResetEvent (true);
+
+		private Thread thread;
+		private XamlReader r;
+		private XamlNodeQueue q;
+		private bool read_all_done, do_work = true;
+		private ManualResetEvent wait = new ManualResetEvent (true);
 
 		public bool HasLineInfo {
 			get { return ((IXamlLineInfo) q.Reader).HasLineInfo; }

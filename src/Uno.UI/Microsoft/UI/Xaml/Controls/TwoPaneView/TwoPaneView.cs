@@ -13,29 +13,29 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TwoPaneView : Windows.UI.Xaml.Controls.Control
 	{
-		const string c_pane1ScrollViewerName = "PART_Pane1ScrollViewer";
-		const string c_pane2ScrollViewerName = "PART_Pane2ScrollViewer";
+		private const string c_pane1ScrollViewerName = "PART_Pane1ScrollViewer";
+		private const string c_pane2ScrollViewerName = "PART_Pane2ScrollViewer";
 
-		const string c_columnLeftName = "PART_ColumnLeft";
-		const string c_columnMiddleName = "PART_ColumnMiddle";
-		const string c_columnRightName = "PART_ColumnRight";
-		const string c_rowTopName = "PART_RowTop";
-		const string c_rowMiddleName = "PART_RowMiddle";
-		const string c_rowBottomName = "PART_RowBottom";
+		private const string c_columnLeftName = "PART_ColumnLeft";
+		private const string c_columnMiddleName = "PART_ColumnMiddle";
+		private const string c_columnRightName = "PART_ColumnRight";
+		private const string c_rowTopName = "PART_RowTop";
+		private const string c_rowMiddleName = "PART_RowMiddle";
+		private const string c_rowBottomName = "PART_RowBottom";
 
-		ViewMode m_currentMode = ViewMode.None;
+		private ViewMode m_currentMode = ViewMode.None;
 
-		bool m_loaded = false;
+		private bool m_loaded = false;
 
 		//Control.Loaded_revoker m_pane1LoadedRevoker;
 		//Control.Loaded_revoker m_pane2LoadedRevoker;
 
-		ColumnDefinition m_columnLeft;
-		ColumnDefinition m_columnMiddle;
-		ColumnDefinition m_columnRight;
-		RowDefinition m_rowTop;
-		RowDefinition m_rowMiddle;
-		RowDefinition m_rowBottom;
+		private ColumnDefinition m_columnLeft;
+		private ColumnDefinition m_columnMiddle;
+		private ColumnDefinition m_columnRight;
+		private RowDefinition m_rowTop;
+		private RowDefinition m_rowMiddle;
+		private RowDefinition m_rowBottom;
 
 
 		public TwoPaneView()
@@ -82,7 +82,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void SetScrollViewerProperties(string scrollViewerName, CompositeDisposable disposable)
+		private void SetScrollViewerProperties(string scrollViewerName, CompositeDisposable disposable)
 		{
 			if (SharedHelpers.IsRS5OrHigher())
 			{
@@ -101,7 +101,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void OnScrollViewerLoaded(object sender, RoutedEventArgs args)
+		private void OnScrollViewerLoaded(object sender, RoutedEventArgs args)
 		{
 			if (sender is FrameworkElement scrollViewer)
 			{
@@ -117,17 +117,17 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs args)
+		private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs args)
 		{
 			UpdateMode();
 		}
 
-		void OnSizeChanged(object sender, SizeChangedEventArgs args)
+		private void OnSizeChanged(object sender, SizeChangedEventArgs args)
 		{
 			UpdateMode();
 		}
 
-		void UpdateMode()
+		private void UpdateMode()
 		{
 			// Don't bother running this logic until after we hit OnApplyTemplate.
 			if (!m_loaded)
@@ -207,7 +207,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void UpdateRowsColumns(ViewMode newMode, DisplayRegionHelperInfo info, Rect rcControl)
+		private void UpdateRowsColumns(ViewMode newMode, DisplayRegionHelperInfo info, Rect rcControl)
 		{
 			if (m_columnLeft != null && m_columnMiddle != null && m_columnRight != null && m_rowTop != null && m_rowMiddle != null && m_rowBottom != null)
 			{
@@ -268,14 +268,14 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		Rect GetControlRect()
+		private Rect GetControlRect()
 		{
 			// Find out where this control is in the window
 			GeneralTransform transform = TransformToVisual(DisplayRegionHelper.WindowElement());
 			return transform.TransformBounds(new Rect ( 0, 0, (float)ActualWidth, (float)ActualHeight ));
 		}
 
-		bool IsInMultipleRegions(DisplayRegionHelperInfo info, Rect rcControl)
+		private bool IsInMultipleRegions(DisplayRegionHelperInfo info, Rect rcControl)
 		{
 			bool isInMultipleRegions = false;
 
@@ -306,7 +306,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return isInMultipleRegions;
 		}
 
-		void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
+		private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
 			var property = args.Property;
 

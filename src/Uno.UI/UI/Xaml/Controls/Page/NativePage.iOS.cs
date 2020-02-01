@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 			Initialize (); 
 		}
 
-		void Initialize ()
+		private void Initialize ()
 		{
 			AutomaticallyAdjustsScrollViewInsets = false;
 			InitializeComponent();
@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		protected abstract void InitializeComponent();
 
-		UIView _content;
+		private UIView _content;
 
 		public UIView Content
 		{

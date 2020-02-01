@@ -8,8 +8,7 @@ namespace SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox
 	[SampleControlInfo("ComboBox", "ComboBox_With_ItemTemplate")]
 	public sealed partial class ComboBox_With_ItemTemplate : UserControl
 	{
-
-		const int FrameRate = 500;
+		private const int FrameRate = 500;
 
 		public ComboBox_With_ItemTemplate()
 		{

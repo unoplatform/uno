@@ -21,9 +21,9 @@ namespace Windows.UI.Xaml.Controls
 	[Data.Bindable]
 	public partial class WindowView : UIView
 	{
-		NSObject _didChangeStatusBarOrientationObserver;
-		NSObject _didChangeStatusBarFrameObserver;
-		bool _disposed;
+		private NSObject _didChangeStatusBarOrientationObserver;
+		private NSObject _didChangeStatusBarFrameObserver;
+		private bool _disposed;
 		
 		public WindowView()
 		{
@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void AddObservers ()
+		private void AddObservers ()
 		{
 			RemoveObservers ();
 			RotateAccordingToStatusBarOrientationAndSupportedOrientations ();
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 			_didChangeStatusBarFrameObserver = NSNotificationCenter.DefaultCenter.AddObserver (UIApplication.DidChangeStatusBarFrameNotification, action);
 		}
 
-		void RemoveObservers ()
+		private void RemoveObservers ()
 		{
 			if (_didChangeStatusBarOrientationObserver != null) {
 				NSNotificationCenter.DefaultCenter.RemoveObserver (_didChangeStatusBarOrientationObserver);
@@ -76,7 +76,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void RotateAccordingToStatusBarOrientationAndSupportedOrientations ()
+		private void RotateAccordingToStatusBarOrientationAndSupportedOrientations ()
 		{
 			var angle = UIInterfaceOrientationAngleOfOrientation (UIApplication.SharedApplication.StatusBarOrientation);
 			var transform = CGAffineTransform.MakeRotation (angle);
@@ -90,7 +90,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		static nfloat StatusBarHeight {
+		private static nfloat StatusBarHeight {
 			get {
 				var orientation = UIApplication.SharedApplication.StatusBarOrientation;
 				if (orientation == UIInterfaceOrientation.LandscapeLeft || orientation == UIInterfaceOrientation.LandscapeRight) {
@@ -114,7 +114,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		static float UIInterfaceOrientationAngleOfOrientation (UIInterfaceOrientation orientation)
+		private static float UIInterfaceOrientationAngleOfOrientation (UIInterfaceOrientation orientation)
 		{
 			float angle = 0f;
 
@@ -135,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 			return angle;
 		}
 
-		static UIInterfaceOrientationMask UIInterfaceOrientationMaskFromOrientation (UIInterfaceOrientation orientation)
+		private static UIInterfaceOrientationMask UIInterfaceOrientationMaskFromOrientation (UIInterfaceOrientation orientation)
 		{
 			return (UIInterfaceOrientationMask)(1 << (int)orientation);
 		}

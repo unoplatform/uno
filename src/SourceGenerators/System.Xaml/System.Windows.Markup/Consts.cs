@@ -30,7 +30,7 @@ namespace System.Windows.Markup
 	}
 
 	[System.AttributeUsage(AttributeTargets.All, Inherited = false, AllowMultiple = true)]
-	sealed class MonoTODOAttribute : Attribute
+	internal sealed class MonoTODOAttribute : Attribute
 	{
 		public MonoTODOAttribute()
 		{

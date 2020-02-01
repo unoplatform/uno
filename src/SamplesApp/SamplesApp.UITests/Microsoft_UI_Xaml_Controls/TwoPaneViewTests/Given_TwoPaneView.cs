@@ -29,14 +29,19 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		private const double c_controlMargin_right = 30.0;
 		private const double c_controlMargin_bottom = 20.0;
 
-		enum ControlWidth { Default, Wide, Narrow }
-		enum ControlHeight { Default, Tall, Short }
-		enum WideModeConfiguration { LeftRight, RightLeft, SinglePane }
-		enum TallModeConfiguration { TopBottom, BottomTop, SinglePane }
-		enum PanePriority { Pane1, Pane2 }
-		enum TwoPaneViewMode { SinglePane, Wide, Tall }
+		private enum ControlWidth { Default, Wide, Narrow }
 
-		enum ViewMode { Pane1Only, Pane2Only, LeftRight, RightLeft, TopBottom, BottomTop }
+		private enum ControlHeight { Default, Tall, Short }
+
+		private enum WideModeConfiguration { LeftRight, RightLeft, SinglePane }
+
+		private enum TallModeConfiguration { TopBottom, BottomTop, SinglePane }
+
+		private enum PanePriority { Pane1, Pane2 }
+
+		private enum TwoPaneViewMode { SinglePane, Wide, Tall }
+
+		private enum ViewMode { Pane1Only, Pane2Only, LeftRight, RightLeft, TopBottom, BottomTop }
 
 		[SetUp]
 		public void TestSetup()

@@ -21,7 +21,7 @@ namespace UnitTestsApp
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	sealed partial class App : Application
+	internal sealed partial class App : Application
 	{
 		public Grid HostView { get; private set; }
 		public App()

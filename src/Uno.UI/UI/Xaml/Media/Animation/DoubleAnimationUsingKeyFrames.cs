@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public DoubleKeyFrameCollection KeyFrames { get; }
 
-		bool _wasBeginScheduled = false;
+		private bool _wasBeginScheduled = false;
 		void ITimeline.Begin()
 		{
 			if (!_wasBeginScheduled)

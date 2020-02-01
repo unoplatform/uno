@@ -108,9 +108,9 @@ namespace MonoTests.System.Windows.Markup
 			x.ProvideValue (new Resolver (true, true));
 		}
 
-		class Resolver : IServiceProvider, IXamlTypeResolver
+		private class Resolver : IServiceProvider, IXamlTypeResolver
 		{
-			bool works, resolves;
+			private bool works, resolves;
 
 			public Resolver (bool worksFine, bool resolvesFine)
 			{

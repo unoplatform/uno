@@ -19,7 +19,7 @@ namespace Uno.UI.Samples.Content.UITests
 
 	public sealed partial class DoubleAnimationTestsControl : UserControl
 	{
-		const int FrameRate = 500;
+		private const int FrameRate = 500;
 
 		public DoubleAnimationTestsControl()
 		{

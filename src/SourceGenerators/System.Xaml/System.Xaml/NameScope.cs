@@ -31,11 +31,11 @@ using Uno.Xaml.Schema;
 
 namespace Uno.Xaml
 {
-	class NameScope : INameScope
+	internal class NameScope : INameScope
 	{
-		Dictionary<string,object> table = new Dictionary<string,object> ();
+		private Dictionary<string,object> table = new Dictionary<string,object> ();
 		// It is an external read-only namescope.
-		INameScope external;
+		private INameScope external;
 
 		public NameScope (INameScope external)
 		{

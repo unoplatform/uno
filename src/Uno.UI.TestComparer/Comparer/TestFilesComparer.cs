@@ -10,7 +10,7 @@ using System.Windows.Media.Imaging;
 
 namespace Uno.UI.TestComparer.Comparer
 {
-	class TestFilesComparer
+	internal class TestFilesComparer
 	{
 		public TestFilesComparer(string basePath, string artifactsBasePath, string artifactsInnerBasePath, string platform)
 		{

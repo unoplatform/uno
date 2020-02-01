@@ -428,7 +428,7 @@ namespace SampleControl.Presentation
 			};
 		}
 
-		CancellationTokenSource _pendingSearch;
+		private CancellationTokenSource _pendingSearch;
 
 		private void TryUpdateSearchResults()
 		{

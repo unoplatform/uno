@@ -12,7 +12,7 @@ using Uno.UI.RemoteControl.HotReload.Messages;
 
 namespace Uno.UI.RemoteControl.Host.HotReload
 {
-	class ServerHotReloadProcessor : IServerProcessor, IDisposable
+	internal class ServerHotReloadProcessor : IServerProcessor, IDisposable
 	{
 		private FileSystemWatcher[] _watchers;
 		private IRemoteControlServer _remoteControlServer;

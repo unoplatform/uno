@@ -187,7 +187,7 @@ namespace Uno.UI.Helpers.WinUI
 		}
 
 
-		void OnRemoveAt(int index)
+		private void OnRemoveAt(int index)
 		{
 			var vectorID = m_flags[index];
 
@@ -204,7 +204,7 @@ namespace Uno.UI.Helpers.WinUI
 			m_attachedData.RemoveAt(index);
 		}
 
-		void OnReplace(int index)
+		private void OnReplace(int index)
 		{
 			var splitVector = GetVectorForItem(index);
 			if (splitVector != null)
@@ -214,7 +214,7 @@ namespace Uno.UI.Helpers.WinUI
 			}
 		}
 
-		void OnInsertAt(int index)
+		private void OnInsertAt(int index)
 		{
 			var vectorID = DefaultVectorIDOnInsert();
 			var defaultAttachedData = DefaultAttachedData();
@@ -234,12 +234,12 @@ namespace Uno.UI.Helpers.WinUI
 			m_attachedData.Insert(index, defaultAttachedData);
 		}
 
-		int GetPreferIndex(int index, TVectorId vectorID)
+		private int GetPreferIndex(int index, TVectorId vectorID)
 		{
 			return RangeCount(0, index, vectorID);
 		}
 
-		int RangeCount(int start, int end, TVectorId vectorID)
+		private int RangeCount(int start, int end, TVectorId vectorID)
 		{
 			int count = 0;
 			for (int i = start; i < end; i++)
@@ -253,8 +253,8 @@ namespace Uno.UI.Helpers.WinUI
 		}
 
 		// length is the same as data source, and used to identify which SplitVector it belongs to.
-		List<TVectorId> m_flags = new List<TVectorId>();
-		List<AttachedDataType> m_attachedData = new List<AttachedDataType>();
-		SplitVector<T, TVectorId>[] m_splitVectors;
+		private List<TVectorId> m_flags = new List<TVectorId>();
+		private List<AttachedDataType> m_attachedData = new List<AttachedDataType>();
+		private SplitVector<T, TVectorId>[] m_splitVectors;
 }
 }

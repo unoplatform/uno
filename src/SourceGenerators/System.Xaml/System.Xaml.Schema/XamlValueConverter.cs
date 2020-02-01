@@ -46,7 +46,7 @@ namespace Uno.Xaml.Schema
 			Name = name;
 		}
 
-		TConverterBase converter_instance;
+		private TConverterBase converter_instance;
 		public TConverterBase ConverterInstance {
 			get {
 				if (converter_instance == null)
@@ -67,7 +67,7 @@ namespace Uno.Xaml.Schema
 			return IsNull (converter1) ? IsNull (converter2) : converter1.Equals (converter2);
 		}
 
-		static bool IsNull (XamlValueConverter<TConverterBase> a)
+		private static bool IsNull (XamlValueConverter<TConverterBase> a)
 		{
 			return Object.ReferenceEquals (a, null);
 		}

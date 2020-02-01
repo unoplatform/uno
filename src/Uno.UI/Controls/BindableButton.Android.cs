@@ -68,12 +68,12 @@ namespace Uno.UI.Controls
 			this.RegisterLongClick(BindableButton_LongClick).DisposeWith(_subscriptions);
 		}
 
-		void BindableButton_LongClick(object sender, View.LongClickEventArgs e)
+		private void BindableButton_LongClick(object sender, View.LongClickEventArgs e)
 		{
 			ExecuteCommand(LongClickCommand, LongClickCommandParameter);
 		}
 
-		void BindableButton_Click(object sender, EventArgs e)
+		private void BindableButton_Click(object sender, EventArgs e)
 		{
 			ExecuteCommand(ClickCommand, ClickCommandParameter);
 		}

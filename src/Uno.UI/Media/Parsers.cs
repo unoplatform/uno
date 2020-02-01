@@ -2,7 +2,7 @@
 
 namespace Uno.Media
 {
-	static class Parsers
+	internal static class Parsers
 	{
 		internal static Geometry ParseGeometry(string pathString)
 		{

@@ -89,9 +89,9 @@ namespace MonoTests.System.Windows.Markup
 			Assert.AreEqual ("FOO", x.ProvideValue (r), "#1");
 		}
 
-		class NameServiceProvider : IServiceProvider
+		private class NameServiceProvider : IServiceProvider
 		{
-			Resolver resolver;
+			private Resolver resolver;
 
 			public NameServiceProvider (bool worksFine, bool resolvesFine)
 			{
@@ -105,9 +105,9 @@ namespace MonoTests.System.Windows.Markup
 			}
 		}
 
-		class Resolver : IXamlNameResolver
+		private class Resolver : IXamlNameResolver
 		{
-			bool resolves;
+			private bool resolves;
 
 			public Resolver (bool resolvesFine)
 			{

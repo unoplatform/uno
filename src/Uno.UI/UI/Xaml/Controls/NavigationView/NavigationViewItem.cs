@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class NavigationViewItem : NavigationViewItemBase
 	{
-		const string c_navigationViewItemPresenterName = "NavigationViewItemPresenter";
+		private const string c_navigationViewItemPresenterName = "NavigationViewItemPresenter";
 
 		private long m_splitViewIsPaneOpenChangedRevoker;
 		private long m_splitViewDisplayModeChangedRevoker;
@@ -28,15 +28,15 @@ namespace Windows.UI.Xaml.Controls
 		private SerialDisposable _splitViewSubscriptions = new SerialDisposable();
 
 		// tracker_ref<ToolTip> m_toolTip { this };
-		NavigationViewItemHelper<NavigationViewItem> m_helper = new NavigationViewItemHelper<NavigationViewItem>();
-		NavigationViewItemPresenter m_navigationViewItemPresenter;
-		object m_suggestedToolTipContent;
+		private NavigationViewItemHelper<NavigationViewItem> m_helper = new NavigationViewItemHelper<NavigationViewItem>();
+		private NavigationViewItemPresenter m_navigationViewItemPresenter;
+		private object m_suggestedToolTipContent;
 
-		bool m_isClosedCompact = false;
+		private bool m_isClosedCompact = false;
 
-		bool m_appliedTemplate = false;
-		bool m_hasKeyboardFocus = false;
-		bool m_isContentChangeHandlingDelayedForTopNav = false;
+		private bool m_appliedTemplate = false;
+		private bool m_hasKeyboardFocus = false;
+		private bool m_isContentChangeHandlingDelayedForTopNav = false;
 
 		internal void UpdateVisualStateNoTransition()
 		{
@@ -118,7 +118,7 @@ namespace Windows.UI.Xaml.Controls
 			return selectIndicator;
 		}
 
-		void OnSplitViewPropertyChanged(DependencyObject sender, DependencyProperty args)
+		private void OnSplitViewPropertyChanged(DependencyObject sender, DependencyProperty args)
 		{
 			if (args == SplitView.CompactPaneLengthProperty)
 			{
@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void UpdateCompactPaneLength()
+		private void UpdateCompactPaneLength()
 		{
 			var splitView = GetSplitView();
 			if (splitView != null)
@@ -140,7 +140,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void UpdateIsClosedCompact()
+		private void UpdateIsClosedCompact()
 		{
 			var splitView = GetSplitView();
 			if (splitView != null)
@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void UpdateNavigationViewItemToolTip()
+		private void UpdateNavigationViewItemToolTip()
 		{
 			var toolTipContent = ToolTipService.GetToolTip(this);
     
@@ -169,7 +169,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void SuggestedToolTipChanged(object newContent)
+		private void SuggestedToolTipChanged(object newContent)
 		{
 			var potentialString = newContent;
 			bool stringableToolTip = potentialString is string;
@@ -196,7 +196,7 @@ namespace Windows.UI.Xaml.Controls
 			m_suggestedToolTipContent = newToolTipContent;
 		}
 
-		void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
+		private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
 			var property = args.Property;
 			if (property == IconProperty)
@@ -205,13 +205,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void UpdateVisualStateForIconAndContent(bool showIcon, bool showContent)
+		private void UpdateVisualStateForIconAndContent(bool showIcon, bool showContent)
 		{
 			var stateName = showIcon ? (showContent ? "IconOnLeft": "IconOnly") : "ContentOnly";
 			VisualStateManager.GoToState(this, stateName, false /*useTransitions*/);
 		}
 
-		void UpdateVisualStateForNavigationViewListPositionChange()
+		private void UpdateVisualStateForNavigationViewListPositionChange()
 		{
 			var position = Position();
 			var stateName = NavigationViewItemHelper.c_OnLeftNavigation;
@@ -255,7 +255,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void UpdateVisualStateForKeyboardFocusedState()
+		private void UpdateVisualStateForKeyboardFocusedState()
 		{
 			var focusState = "KeyboardNormal";
 			if (m_hasKeyboardFocus)
@@ -266,7 +266,7 @@ namespace Windows.UI.Xaml.Controls
 			VisualStateManager.GoToState(this, focusState, false /*useTransitions*/);
 		}
 
-		void UpdateVisualStateForToolTip()
+		private void UpdateVisualStateForToolTip()
 		{
 #if !IS_UNO
 			// Since RS5, ToolTip apply to NavigationViewItem directly to make Keyboard focus has tooltip too.
@@ -294,7 +294,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		}
 
-		void UpdateVisualState(bool useTransitions)
+		private void UpdateVisualState(bool useTransitions)
 		{
 			if (!m_appliedTemplate)
 			{
@@ -322,33 +322,33 @@ namespace Windows.UI.Xaml.Controls
 			UpdateVisualStateForKeyboardFocusedState();
 		}
 
-		bool ShouldShowIcon()
+		private bool ShouldShowIcon()
 		{
 			return Icon != null;
 		}
 
-		bool ShouldEnableToolTip()
+		private bool ShouldEnableToolTip()
 		{
 			// We may enable Tooltip for IconOnly in the future, but not now
 			return IsOnLeftNav() && m_isClosedCompact;
 		}
 
-		bool ShouldShowContent()
+		private bool ShouldShowContent()
 		{
 			return Content != null;
 		}
 
-		bool IsOnLeftNav()
+		private bool IsOnLeftNav()
 		{
 			return Position() == NavigationViewListPosition.LeftNav;
 		}
 
-		bool IsOnTopPrimary()
+		private bool IsOnTopPrimary()
 		{
 			return Position() == NavigationViewListPosition.TopPrimary;
 		}
 
-		NavigationViewItemPresenter GetPresenter()
+		private NavigationViewItemPresenter GetPresenter()
 		{
 			NavigationViewItemPresenter presenter = null;
 			if (m_navigationViewItemPresenter != null)

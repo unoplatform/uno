@@ -41,10 +41,10 @@ namespace MonoTests.Uno.Xaml
 	[Ignore("To be updated after uno support")]
 	public class XamlObjectWriterTest
 	{
-		PropertyInfo str_len = typeof (string).GetProperty ("Length");
-		XamlSchemaContext sctx = new XamlSchemaContext (null, null);
-		XamlType xt, xt2, xt3, xt4;
-		XamlMember xm, xm2, xm3;
+		private PropertyInfo str_len = typeof (string).GetProperty ("Length");
+		private XamlSchemaContext sctx = new XamlSchemaContext (null, null);
+		private XamlType xt, xt2, xt3, xt4;
+		private XamlMember xm, xm2, xm3;
 
 		public XamlObjectWriterTest ()
 		{
@@ -915,7 +915,7 @@ namespace MonoTests.Uno.Xaml
 		
 		// common use case based tests (to other readers/writers).
 
-		XamlReader GetReader (string filename)
+		private XamlReader GetReader (string filename)
 		{
 			var directory = Path.GetDirectoryName(new Uri(GetType().Assembly.CodeBase).LocalPath);
 

@@ -40,10 +40,10 @@ namespace MonoTests.Uno.Xaml
 	[Ignore("To be updated after uno support")]
 	public class XamlXmlWriterTest
 	{
-		PropertyInfo str_len = typeof (string).GetProperty ("Length");
-		XamlSchemaContext sctx = new XamlSchemaContext (null, null);
-		XamlType xt, xt2;
-		XamlMember xm;
+		private PropertyInfo str_len = typeof (string).GetProperty ("Length");
+		private XamlSchemaContext sctx = new XamlSchemaContext (null, null);
+		private XamlType xt, xt2;
+		private XamlMember xm;
 
 		public XamlXmlWriterTest ()
 		{
@@ -699,7 +699,7 @@ namespace MonoTests.Uno.Xaml
 			string xml = String.Format (@"<?xml version='1.0' encoding='utf-16'?><TestXmlWriterClass1 xmlns='clr-namespace:MonoTests.Uno.Xaml;assembly={0}' xmlns:x='http://schemas.microsoft.com/winfx/2006/xaml'></TestXmlWriterClass1>",  GetType ().Assembly.GetName ().Name);
 		}
 
-		string ReadXml (string name)
+		private string ReadXml (string name)
 		{
 			var directory = Path.GetDirectoryName(new Uri(GetType().Assembly.CodeBase).LocalPath);
 

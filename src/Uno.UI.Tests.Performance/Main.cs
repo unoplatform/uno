@@ -10,9 +10,9 @@ using Windows.UI.Xaml;
 
 namespace Uno.UI.Tests.Performance
 {
-    class Program
+	internal class Program
     {
-		static void Main(string[] args)
+	    private static void Main(string[] args)
 		{
 			DataContextOnly_GraphPropagation();
 			Thread.Sleep(1000);

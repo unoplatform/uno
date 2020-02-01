@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Uno.UI.RemoteControl.HotReload.Messages
 {
-	class ConfigureServer : IMessage
+	internal class ConfigureServer : IMessage
 	{
 		public const string Name = nameof(ConfigureServer);
 

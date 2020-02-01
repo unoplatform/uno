@@ -155,7 +155,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		static string GetFirstFullCharacter(string str)
+		private static string GetFirstFullCharacter(string str)
 		{
 			// Index should begin at the first desireable character.
 			int  start = 0;
@@ -218,10 +218,10 @@ namespace Windows.UI.Xaml.Controls
 			return str.Substring(start, Math.Min(strLength, str.Length));
 		}
 
-		static string[] Split(string source, char delim, int maxIterations)
+		private static string[] Split(string source, char delim, int maxIterations)
 			=> source.Split(new[] { delim }, maxIterations);
 
-		static void StripTrailingBrackets(string source)
+		private static void StripTrailingBrackets(string source)
 		{
 			// Guidance from the world readiness team is that text within a final set of brackets
 			// can be removed for the purposes of calculating initials. ex. John Smith (OSG)
@@ -250,7 +250,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		static CharacterType GetCharacterType(string str)
+		private static CharacterType GetCharacterType(string str)
 		{
 			// Since we're doing initials, we're really only interested in the first
 			// few characters. If the first three characters aren't a glyph then
@@ -300,7 +300,7 @@ namespace Windows.UI.Xaml.Controls
 			return result;
 		}
 
-		static CharacterType GetCharacterType(char character)
+		private static CharacterType GetCharacterType(char character)
 		{
 			// To ensure predictable behavior, we're currently operating on a whitelist of character sets.
 			//

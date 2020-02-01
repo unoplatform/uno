@@ -46,7 +46,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				.ToFullString();
 		}
 
-		class Rewriter : CSharpSyntaxRewriter
+		private class Rewriter : CSharpSyntaxRewriter
 		{
 			private readonly string _contextName;
 			private readonly Func<string, bool> _isStaticMethod;
@@ -125,7 +125,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			}
 		}
 
-		class Visitor : CSharpSyntaxWalker
+		private class Visitor : CSharpSyntaxWalker
 		{
 			private readonly Func<string, bool> _isStaticMethod;
 

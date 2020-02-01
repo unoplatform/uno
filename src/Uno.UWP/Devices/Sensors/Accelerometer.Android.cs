@@ -85,7 +85,7 @@ namespace Windows.Devices.Sensors
 			}
 		}
 
-		class ReadingChangedListener : Java.Lang.Object, ISensorEventListener
+		private class ReadingChangedListener : Java.Lang.Object, ISensorEventListener
 		{
 			private readonly Accelerometer _accelerometer;
 			private long _lastTimestamp;
@@ -112,7 +112,7 @@ namespace Windows.Devices.Sensors
 			}
 		}
 
-		class ShakeListener : Java.Lang.Object, ISensorEventListener
+		private class ShakeListener : Java.Lang.Object, ISensorEventListener
 		{
 			private readonly ShakeDetector _shakeDetector;
 

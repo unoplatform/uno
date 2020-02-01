@@ -3,7 +3,7 @@
 
 namespace Windows.UI.Xaml.Controls
 {
-	enum FlyoutLocation
+	internal enum FlyoutLocation
 	{
 		Left,
 		Right

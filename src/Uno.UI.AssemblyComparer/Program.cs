@@ -8,9 +8,9 @@ using System.Threading.Tasks;
 
 namespace Uno.UI.AssemblyComparer
 {
-    class Program
+	internal class Program
     {
-        static void Main(string[] args)
+	    private static void Main(string[] args)
         {
 			var source = ReadModule(args[0]);
 			var target = ReadModule(args[1]);

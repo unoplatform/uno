@@ -10,7 +10,7 @@ namespace Windows.UI.Xaml.Media.Animation
 {
 	public partial class KeySpline : DependencyObject
 	{
-		const int Steps = 64;
+		private const int Steps = 64;
 
 		private Point[] _positions;
 		private bool _isDirty;

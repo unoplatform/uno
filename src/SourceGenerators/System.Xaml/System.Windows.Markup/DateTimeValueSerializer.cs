@@ -31,7 +31,7 @@ namespace System.Windows.Markup
 	// [System.Runtime.CompilerServices.TypeForwardedFrom (Consts.AssemblyWindowsBase)]
 	public class DateTimeValueSerializer : ValueSerializer
 	{
-		const DateTimeStyles styles = DateTimeStyles.RoundtripKind | DateTimeStyles.NoCurrentDateDefault | DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite;
+		private const DateTimeStyles styles = DateTimeStyles.RoundtripKind | DateTimeStyles.NoCurrentDateDefault | DateTimeStyles.AllowLeadingWhite | DateTimeStyles.AllowTrailingWhite;
 
 		public override bool CanConvertFromString (string value, IValueSerializerContext context)
 		{

@@ -255,7 +255,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			}
 		}
 
-		class GeneratedTypeInfo
+		private class GeneratedTypeInfo
 		{
 			public GeneratedTypeInfo(int index, bool hasProperties)
 			{

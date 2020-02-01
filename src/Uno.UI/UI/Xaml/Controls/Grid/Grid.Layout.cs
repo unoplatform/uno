@@ -1266,7 +1266,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		readonly struct Column
+		private readonly struct Column
 		{
 			public GridSize Width { get; }
 			public double MinWidth { get; }
@@ -1280,7 +1280,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		readonly struct Row
+		private readonly struct Row
 		{
 			public GridSize Height { get; }
 			public double MinHeight { get; }

@@ -104,7 +104,7 @@ namespace MonoTests.System.Windows.Markup
 			});
 		}
 
-		const string FooBar = "foobar";
+		private const string FooBar = "foobar";
 
 
 		[Test]

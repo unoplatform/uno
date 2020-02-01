@@ -249,9 +249,9 @@ namespace MonoTests.Uno.Xaml.Schema
 			Assert.AreEqual ("", XamlTypeName.ToString (new XamlTypeName [0], new MyNamespaceLookup ()), "#1");
 		}
 
-		class MyNamespaceLookup : INamespacePrefixLookup
+		private class MyNamespaceLookup : INamespacePrefixLookup
 		{
-			Dictionary<string,string> dic = new Dictionary<string,string> ();
+			private Dictionary<string,string> dic = new Dictionary<string,string> ();
 
 			public void Add (string prefix, string ns)
 			{
@@ -265,7 +265,7 @@ namespace MonoTests.Uno.Xaml.Schema
 			}
 		}
 
-		XamlTypeName dummy;
+		private XamlTypeName dummy;
 
 		[Test]
 		public void TryParseNullName ()
@@ -451,7 +451,7 @@ namespace MonoTests.Uno.Xaml.Schema
 			Assert.AreEqual ("{urn:bar}List({urn:bar}KeyValuePair({http://schemas.microsoft.com/winfx/2006/xaml}Int32, {urn:foo}DateTime))", xn.ToString (), "#3");
 		}
 
-		class MyNSResolver : IXamlNamespaceResolver
+		private class MyNSResolver : IXamlNamespaceResolver
 		{
 			public MyNSResolver ()
 				: this (false)
@@ -466,7 +466,7 @@ namespace MonoTests.Uno.Xaml.Schema
 				}
 			}
 
-			Dictionary<string,string> dic = new Dictionary<string,string> ();
+			private Dictionary<string,string> dic = new Dictionary<string,string> ();
 
 			public void Add (string prefix, string ns)
 			{

@@ -252,12 +252,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void CloseMenuFlyout()
+		private void CloseMenuFlyout()
 		{
 			m_flyout.Hide();
 		}
 
-		void OpenFlyoutFrom(FlyoutLocation location)
+		private void OpenFlyoutFrom(FlyoutLocation location)
 		{
 			if (m_menuBar != null)
 			{
@@ -274,17 +274,17 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void AddPassThroughElement(DependencyObject element)
+		private void AddPassThroughElement(DependencyObject element)
 		{
 			m_passThroughElement = element;
 		}
 
-		bool IsFlyoutOpen()
+		private bool IsFlyoutOpen()
 		{
 			return m_isFlyoutOpen;
 		}
 
-		void Invoke()
+		private void Invoke()
 		{
 			if (IsFlyoutOpen())
 			{
@@ -297,7 +297,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Menu Flyout Events
-		void OnFlyoutClosed(object sender, object args)
+		private void OnFlyoutClosed(object sender, object args)
 		{
 			m_isFlyoutOpen = false;
 
@@ -309,7 +309,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateVisualStates();
 		}
 
-		void OnFlyoutOpening(object sender, object args)
+		private void OnFlyoutOpening(object sender, object args)
 		{
 			Focus(FocusState.Pointer);
 
@@ -323,12 +323,12 @@ namespace Windows.UI.Xaml.Controls
 			UpdateVisualStates();
 		}
 
-		void OnVisualPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
+		private void OnVisualPropertyChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
 			UpdateVisualStates();
 		}
 
-		void UpdateVisualStates()
+		private void UpdateVisualStates()
 		{
 			if (m_button != null)
 			{

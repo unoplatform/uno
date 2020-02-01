@@ -15,9 +15,9 @@ namespace Uno.UI.Controls
 {
 	public class ViewControllerTransitioningDeligate : UIViewControllerTransitioningDelegate
 	{
-        readonly IUIViewControllerAnimatedTransitioning _showTransition;
+		private readonly IUIViewControllerAnimatedTransitioning _showTransition;
 
-        readonly IUIViewControllerAnimatedTransitioning _hideTransition;
+		private readonly IUIViewControllerAnimatedTransitioning _hideTransition;
 
         public ViewControllerTransitioningDeligate(IUIViewControllerAnimatedTransitioning show,IUIViewControllerAnimatedTransitioning hide)
         {

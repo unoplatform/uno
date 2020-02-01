@@ -52,7 +52,7 @@ namespace Uno.UI.Views.Controls
 			InitializeBinder();
 		}
 
-		string _text;
+		private string _text;
 
 		public string Text
 		{

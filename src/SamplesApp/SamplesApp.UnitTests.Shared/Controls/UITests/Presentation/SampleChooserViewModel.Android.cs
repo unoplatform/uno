@@ -126,7 +126,7 @@ namespace SampleControl.Presentation
 			}
 		}
 
-		Bitmap renderSurface;
+		private Bitmap renderSurface;
 
 		private Bitmap CaptureView(View view)
 		{

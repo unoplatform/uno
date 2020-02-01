@@ -23,19 +23,19 @@ namespace Windows.UI.Xaml.Media.Animation
 {
 	internal class PanelTransitionHelper
 	{
-		readonly Panel _source;
-		Storyboard _onLoadedStoryboard = null;
-		bool _onLoadedisAnimating = false;
-		bool _onUpdatedIsAnimating = false;
+		private readonly Panel _source;
+		private Storyboard _onLoadedStoryboard = null;
+		private bool _onLoadedisAnimating = false;
+		private bool _onUpdatedIsAnimating = false;
 
-		Storyboard _onUpdatedStoryboard = null;
+		private Storyboard _onUpdatedStoryboard = null;
 
-		Dictionary<View, Point> _childsInitialPositions = new Dictionary<View, Point>();
-		List<ChildWithOffset> _modifiedChildWithOffset = new List<ChildWithOffset>();
-		List<IFrameworkElement> _previouslyAddedElements = new List<IFrameworkElement>();
+		private Dictionary<View, Point> _childsInitialPositions = new Dictionary<View, Point>();
+		private List<ChildWithOffset> _modifiedChildWithOffset = new List<ChildWithOffset>();
+		private List<IFrameworkElement> _previouslyAddedElements = new List<IFrameworkElement>();
 
 
-		List<IFrameworkElement> _elements = new List<IFrameworkElement>();
+		private List<IFrameworkElement> _elements = new List<IFrameworkElement>();
 
 		internal PanelTransitionHelper(Panel source)
 		{

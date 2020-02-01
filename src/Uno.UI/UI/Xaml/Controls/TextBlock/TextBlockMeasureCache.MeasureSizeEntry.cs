@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Result of a single measure
 		/// </summary>
-		class MeasureSizeEntry
+		private class MeasureSizeEntry
 		{
 			public MeasureSizeEntry(Size measuredSize, global::System.Collections.Generic.LinkedListNode<Uno.CachedTuple<double, double>> node)
 			{

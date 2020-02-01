@@ -28,7 +28,7 @@ namespace Uno.Xaml.Schema
 {
 	public class XamlMemberInvoker
 	{
-		static readonly XamlMemberInvoker unknown = new XamlMemberInvoker ();
+		private static readonly XamlMemberInvoker unknown = new XamlMemberInvoker ();
 		public static XamlMemberInvoker UnknownInvoker {
 			get { return unknown; }
 		}
@@ -47,7 +47,7 @@ namespace Uno.Xaml.Schema
 			this.member = member;
 		}
 
-		XamlMember member;
+		private XamlMember member;
 
 		public MethodInfo UnderlyingGetter {
 			get { return member != null ? member.UnderlyingGetter : null; }
@@ -57,7 +57,7 @@ namespace Uno.Xaml.Schema
 			get { return member != null ? member.UnderlyingSetter : null; }
 		}
 
-		void ThrowIfUnknown ()
+		private void ThrowIfUnknown ()
 		{
 			if (member == null)
 			{

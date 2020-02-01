@@ -39,15 +39,15 @@ namespace MonoTests.System.Windows.Markup
 	[TestFixture]
 	public class TypeExtensionConverterTest
 	{
-		class XamlTypeResolver : IXamlTypeResolver
+		private class XamlTypeResolver : IXamlTypeResolver
 		{
 			public Type Resolve (string qualifiedTypeName)
 			{
 				throw new NotImplementedException ();
 			}
 		}
-		
-		class TypeDescriptorContext : ITypeDescriptorContext
+
+		private class TypeDescriptorContext : ITypeDescriptorContext
 		{
 			public object Service { get; set; }
 

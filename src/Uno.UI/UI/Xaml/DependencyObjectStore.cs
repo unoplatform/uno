@@ -823,7 +823,7 @@ namespace Windows.UI.Xaml
 		}
 
 		// Keep a list of inherited properties that have been updated so they can be reset.
-		HashSet<DependencyProperty> _updatedProperties = new HashSet<DependencyProperty>(DependencyPropertyComparer.Default);
+		private HashSet<DependencyProperty> _updatedProperties = new HashSet<DependencyProperty>(DependencyPropertyComparer.Default);
 
 		private void OnParentPropertyChangedCallback(ManagedWeakReference sourceInstance, DependencyProperty parentProperty, DependencyPropertyChangedEventArgs args)
 		{

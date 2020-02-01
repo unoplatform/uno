@@ -136,7 +136,7 @@ namespace Uno.Xaml.Schema
 			return list;
 		}
 
-		static readonly char [] comma_or_parens = new char [] {',', '(', ')'};
+		private static readonly char [] comma_or_parens = new char [] {',', '(', ')'};
 
 		public static bool TryParseList (string typeNameList, IXamlNamespaceResolver namespaceResolver, out IList<XamlTypeName> result)
 		{
@@ -221,7 +221,7 @@ namespace Uno.Xaml.Schema
 			return DoToString (typeNameList, prefixLookup);
 		}
 
-		static string DoToString (IList<XamlTypeName> typeNameList, INamespacePrefixLookup prefixLookup)
+		private static string DoToString (IList<XamlTypeName> typeNameList, INamespacePrefixLookup prefixLookup)
 		{
 			bool comma = false;
 			string ret = "";
@@ -247,7 +247,7 @@ namespace Uno.Xaml.Schema
 			TypeArguments = empty_type_args;
 		}
 
-		static readonly XamlTypeName [] empty_type_args = new XamlTypeName [0];
+		private static readonly XamlTypeName [] empty_type_args = new XamlTypeName [0];
 
 		public XamlTypeName (XamlType xamlType)
 			: this ()

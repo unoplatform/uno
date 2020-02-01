@@ -12,8 +12,7 @@ namespace Uno.UI.RuntimeTests.Tests
     [TestClass]
     public class Given_StorageFile
     {
-        
-        String _filename;
+	    private String _filename;
         
         [TestInitialize]
         public void Init()
