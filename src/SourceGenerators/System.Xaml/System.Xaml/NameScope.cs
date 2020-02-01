@@ -33,9 +33,9 @@ namespace Uno.Xaml
 {
 	internal class NameScope : INameScope
 	{
-		private Dictionary<string,object> table = new Dictionary<string,object> ();
+		private readonly Dictionary<string,object> table = new Dictionary<string,object> ();
 		// It is an external read-only namescope.
-		private INameScope external;
+		private readonly INameScope external;
 
 		public NameScope (INameScope external)
 		{

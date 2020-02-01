@@ -15,7 +15,7 @@ namespace Uno.UI.RemoteControl.Host.HotReload
 	internal class ServerHotReloadProcessor : IServerProcessor, IDisposable
 	{
 		private FileSystemWatcher[] _watchers;
-		private IRemoteControlServer _remoteControlServer;
+		private readonly IRemoteControlServer _remoteControlServer;
 
 		public ServerHotReloadProcessor(IRemoteControlServer remoteControlServer)
 		{

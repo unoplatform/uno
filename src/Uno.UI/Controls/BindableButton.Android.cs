@@ -22,7 +22,7 @@ namespace Uno.UI.Controls
 {
 	public partial class BindableButton : Android.Support.V7.Widget.AppCompatButton, DependencyObject
 	{
-		private SerialDisposable _commandCanExecute = new SerialDisposable();
+		private readonly SerialDisposable _commandCanExecute = new SerialDisposable();
 		private CompositeDisposable _subscriptions = new CompositeDisposable();
 
 		public BindableButton(Android.Content.Context context)

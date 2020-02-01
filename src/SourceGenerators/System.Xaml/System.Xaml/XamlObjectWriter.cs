@@ -88,10 +88,10 @@ namespace Uno.Xaml
 			intl = new XamlObjectWriterInternal (this, sctx, manager);
 		}
 
-		private XamlSchemaContext sctx;
-		private XamlObjectWriterSettings settings;
+		private readonly XamlSchemaContext sctx;
+		private readonly XamlObjectWriterSettings settings;
 
-		private XamlObjectWriterInternal intl;
+		private readonly XamlObjectWriterInternal intl;
 
 		//int line, column;
 		private bool lineinfo_was_given;
@@ -230,11 +230,11 @@ namespace Uno.Xaml
 			name_scope = ext != null && source.Settings.RegisterNamesOnExternalNamescope ? ext : new NameScope (ext);
 		}
 
-		private XamlObjectWriter source;
-		private XamlSchemaContext sctx;
-		private INameScope name_scope;
-		private List<NameFixupRequired> pending_name_references = new List<NameFixupRequired> ();
-		private AmbientProvider ambient_provider = new AmbientProvider ();
+		private readonly XamlObjectWriter source;
+		private readonly XamlSchemaContext sctx;
+		private readonly INameScope name_scope;
+		private readonly List<NameFixupRequired> pending_name_references = new List<NameFixupRequired> ();
+		private readonly AmbientProvider ambient_provider = new AmbientProvider ();
 
 		public INameScope NameScope {
 			get { return name_scope; }
@@ -342,7 +342,7 @@ namespace Uno.Xaml
 			}
 		}
 
-		private Stack<object> escaped_objects = new Stack<object> ();
+		private readonly Stack<object> escaped_objects = new Stack<object> ();
 
 		protected override void OnWriteStartMember (XamlMember property)
 		{

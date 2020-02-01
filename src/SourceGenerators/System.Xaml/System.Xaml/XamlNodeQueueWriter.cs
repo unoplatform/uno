@@ -30,7 +30,7 @@ namespace Uno.Xaml
 {
 	internal class XamlNodeQueueWriter : XamlWriter
 	{
-		private XamlNodeQueue source;
+		private readonly XamlNodeQueue source;
 
 		public XamlNodeQueueWriter (XamlNodeQueue source)
 		{

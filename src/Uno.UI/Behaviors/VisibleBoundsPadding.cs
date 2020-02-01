@@ -130,8 +130,8 @@ namespace Uno.UI.Toolkit
 		public class VisibleBoundsDetails
 		{
 			private static ConditionalWeakTable<FrameworkElement, VisibleBoundsDetails> _instances = new ConditionalWeakTable<FrameworkElement, VisibleBoundsDetails>();
-			private WeakReference _owner;
-			private TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, object> _visibleBoundsChanged;
+			private readonly WeakReference _owner;
+			private readonly TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, object> _visibleBoundsChanged;
 			private PaddingMask _paddingMask;
 			private Thickness _originalPadding;
 			private static Dictionary<Type, DependencyProperty> _paddingPropertyCache = new Dictionary<Type, DependencyProperty>();

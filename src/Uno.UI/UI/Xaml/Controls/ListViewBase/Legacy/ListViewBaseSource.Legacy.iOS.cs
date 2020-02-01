@@ -58,9 +58,9 @@ namespace Uno.UI.Controls.Legacy
 
 		#region Members
 		private DataTemplateSelector _currentSelector;
-		private Dictionary<DataTemplate, CGSize> _templateCache = new Dictionary<DataTemplate, CGSize>(DataTemplate.FrameworkTemplateEqualityComparer.Default);
-		private Dictionary<DataTemplate, NSString> _templateCells = new Dictionary<DataTemplate, NSString>(DataTemplate.FrameworkTemplateEqualityComparer.Default);
-		private Dictionary<InternalContainer, List<Action>> _onRecycled = new Dictionary<InternalContainer, List<Action>>();
+		private readonly Dictionary<DataTemplate, CGSize> _templateCache = new Dictionary<DataTemplate, CGSize>(DataTemplate.FrameworkTemplateEqualityComparer.Default);
+		private readonly Dictionary<DataTemplate, NSString> _templateCells = new Dictionary<DataTemplate, NSString>(DataTemplate.FrameworkTemplateEqualityComparer.Default);
+		private readonly Dictionary<InternalContainer, List<Action>> _onRecycled = new Dictionary<InternalContainer, List<Action>>();
 		private IEnumerable _items;
 		#endregion
 
@@ -505,7 +505,7 @@ namespace Uno.UI.Controls.Legacy
 			return (Owner.GroupStyle?.HeaderTemplate).SelectOrDefault(ht => GetTemplateSize(ht, ListViewBase.ListViewSectionHeaderElementKindNS), CGSize.Empty);
 		}
 
-		private HashSet<NSIndexPath> _materializedItems = new HashSet<NSIndexPath>();
+		private readonly HashSet<NSIndexPath> _materializedItems = new HashSet<NSIndexPath>();
 
 		public virtual CGSize GetItemSize(UICollectionView collectionView, NSIndexPath indexPath)
 		{

@@ -251,7 +251,7 @@ namespace MonoTests.Uno.Xaml.Schema
 
 		private class MyNamespaceLookup : INamespacePrefixLookup
 		{
-			private Dictionary<string,string> dic = new Dictionary<string,string> ();
+			private readonly Dictionary<string,string> dic = new Dictionary<string,string> ();
 
 			public void Add (string prefix, string ns)
 			{
@@ -466,7 +466,7 @@ namespace MonoTests.Uno.Xaml.Schema
 				}
 			}
 
-			private Dictionary<string,string> dic = new Dictionary<string,string> ();
+			private readonly Dictionary<string,string> dic = new Dictionary<string,string> ();
 
 			public void Add (string prefix, string ns)
 			{

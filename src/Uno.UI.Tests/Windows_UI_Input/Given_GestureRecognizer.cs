@@ -829,7 +829,7 @@ namespace Uno.UI.Tests.Windows_UI_Input
 	{
 		private readonly GestureRecognizer _recognizer;
 
-		private List<(GestureRecognizer snd, object args)> _result = new List<(GestureRecognizer, object)>();
+		private readonly List<(GestureRecognizer snd, object args)> _result = new List<(GestureRecognizer, object)>();
 
 		public ManipulationRecorder(GestureRecognizer recognizer)
 		{

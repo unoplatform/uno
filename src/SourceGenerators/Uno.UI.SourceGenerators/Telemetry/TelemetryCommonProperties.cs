@@ -31,7 +31,7 @@ namespace Uno.UI.SourceGenerators.Telemetry
 			_getCurrentDirectory = getCurrentDirectory ?? Directory.GetCurrentDirectory;
 		}
 
-		private Func<string> _getCurrentDirectory;
+		private readonly Func<string> _getCurrentDirectory;
 
 		public const string OSVersion = "OS Version";
 		public const string OSPlatform = "OS Platform";

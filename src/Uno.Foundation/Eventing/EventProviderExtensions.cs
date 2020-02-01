@@ -209,7 +209,7 @@ namespace Uno.Diagnostics.Eventing
 		/// </summary>
 		public class DisposableEventActivity : IDisposable
 		{
-			private Action _disposable;
+			private readonly Action _disposable;
 
 			public DisposableEventActivity(EventActivity eventActivity, Action disposable)
 			{

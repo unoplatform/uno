@@ -40,10 +40,10 @@ namespace MonoTests.Uno.Xaml
 	[Ignore("To be updated after uno support")]
 	public class XamlXmlWriterTest
 	{
-		private PropertyInfo str_len = typeof (string).GetProperty ("Length");
-		private XamlSchemaContext sctx = new XamlSchemaContext (null, null);
+		private readonly PropertyInfo str_len = typeof (string).GetProperty ("Length");
+		private readonly XamlSchemaContext sctx = new XamlSchemaContext (null, null);
 		private XamlType xt, xt2;
-		private XamlMember xm;
+		private readonly XamlMember xm;
 
 		public XamlXmlWriterTest ()
 		{

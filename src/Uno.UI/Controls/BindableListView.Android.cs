@@ -23,7 +23,7 @@ namespace Uno.UI.Controls
 {
 	public partial class BindableListView : Android.Widget.ListView, DependencyObject
 	{
-		private SerialDisposable _clickRegistration = new SerialDisposable();
+		private readonly SerialDisposable _clickRegistration = new SerialDisposable();
 
 		public BindableListView(Android.Content.Context context)
 			: base(context)

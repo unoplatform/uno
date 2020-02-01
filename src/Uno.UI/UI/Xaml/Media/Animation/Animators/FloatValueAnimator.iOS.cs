@@ -15,8 +15,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		private const long MaxNumberOfFrames = 10000;// 10,000 frames is enough 40kb of floats
 		private const long MinNumberOfFrames = 1;// At least 1 frame please     
 
-		private float _from;
-		private float _to;
+		private readonly float _from;
+		private readonly float _to;
 		private long _duration;
 
 		private float[] _animatedValues;

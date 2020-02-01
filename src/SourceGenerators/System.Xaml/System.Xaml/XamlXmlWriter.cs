@@ -104,11 +104,11 @@ namespace Uno.Xaml
 			intl = new XamlXmlWriterInternal (xmlWriter, sctx, manager);
 		}
 
-		private XmlWriter w;
-		private XamlSchemaContext sctx;
-		private XamlXmlWriterSettings settings;
+		private readonly XmlWriter w;
+		private readonly XamlSchemaContext sctx;
+		private readonly XamlXmlWriterSettings settings;
 
-		private XamlXmlWriterInternal intl;
+		private readonly XamlXmlWriterInternal intl;
 
 		public override XamlSchemaContext SchemaContext {
 			get { return sctx; }
@@ -187,7 +187,7 @@ namespace Uno.Xaml
 //			this.sctx = schemaContext;
 		}
 
-		private XmlWriter w;
+		private readonly XmlWriter w;
 //		XamlSchemaContext sctx;
 		
 		// Here's a complication.
@@ -197,8 +197,8 @@ namespace Uno.Xaml
 		// - When the next element or content is being written, local_nss items are written *within* current element, BUT after all attribute members are written. Hence I had to preserve all those nsdecls at such late.
 		// - When current *start* element is closed, then copy local_nss2 items into local_nss.
 		// - When there was no children i.e. end element immediately occurs, local_nss should be written at this stage too, and local_nss2 are *ignored*.
-		private List<NamespaceDeclaration> local_nss = new List<NamespaceDeclaration> ();
-		private List<NamespaceDeclaration> local_nss2 = new List<NamespaceDeclaration> ();
+		private readonly List<NamespaceDeclaration> local_nss = new List<NamespaceDeclaration> ();
+		private readonly List<NamespaceDeclaration> local_nss2 = new List<NamespaceDeclaration> ();
 		private bool inside_toplevel_positional_parameter;
 		private bool inside_attribute_object;
 

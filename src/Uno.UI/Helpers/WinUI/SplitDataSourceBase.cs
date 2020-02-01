@@ -253,8 +253,8 @@ namespace Uno.UI.Helpers.WinUI
 		}
 
 		// length is the same as data source, and used to identify which SplitVector it belongs to.
-		private List<TVectorId> m_flags = new List<TVectorId>();
-		private List<AttachedDataType> m_attachedData = new List<AttachedDataType>();
-		private SplitVector<T, TVectorId>[] m_splitVectors;
+		private readonly List<TVectorId> m_flags = new List<TVectorId>();
+		private readonly List<AttachedDataType> m_attachedData = new List<AttachedDataType>();
+		private readonly SplitVector<T, TVectorId>[] m_splitVectors;
 }
 }

@@ -28,7 +28,7 @@ namespace UITests.Shared.Windows_UI_Xaml.xBindTests
 
 		public string PublicField = "Enemy";
 #pragma warning disable CS0414
-		private string PrivateField = "Ryan";
+		private readonly string PrivateField = "Ryan";
 #pragma warning restore CS0414
 	}
 }

@@ -39,7 +39,7 @@ namespace MonoTests.Uno.Xaml
 	[TestFixture]
 	public class XamlTypeTest
 	{
-		private XamlSchemaContext sctx = new XamlSchemaContext (null, null);
+		private readonly XamlSchemaContext sctx = new XamlSchemaContext (null, null);
 
 		[Test]
 		public void ConstructorTypeNullType ()

@@ -37,8 +37,8 @@ namespace MonoTests.Uno.Xaml.Schema
 	[TestFixture]
 	public class XamlTypeTypeConverterTest
 	{
-		private XamlTypeTypeConverter c = new XamlTypeTypeConverter ();
-		private XamlSchemaContext sctx = new XamlSchemaContext (null, null);
+		private readonly XamlTypeTypeConverter c = new XamlTypeTypeConverter ();
+		private readonly XamlSchemaContext sctx = new XamlSchemaContext (null, null);
 
 		[Test]
 		public void CanConvertFrom ()

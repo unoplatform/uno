@@ -62,8 +62,8 @@ namespace Uno.Xaml
 			member = default (XamlNodeMember);
 		}
 
-		private XamlNodeType node_type;
-		private object value;
+		private readonly XamlNodeType node_type;
+		private readonly object value;
 		private XamlNodeMember member;
 		
 		public XamlNodeType NodeType {
@@ -165,7 +165,7 @@ namespace Uno.Xaml
 			this.value = value;
 		}
 
-		private object value;
+		private readonly object value;
 		
 		public object GetRawValue ()
 		{

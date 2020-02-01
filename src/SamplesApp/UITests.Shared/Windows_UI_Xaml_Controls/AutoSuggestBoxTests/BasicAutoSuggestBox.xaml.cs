@@ -22,7 +22,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.AutoSuggestBoxTests
 	[SampleControlInfo("AutoSuggestBox", nameof(BasicAutoSuggestBox))]
 	public sealed partial class BasicAutoSuggestBox : UserControl
 	{
-		private ObservableCollection<string> _suggestions = new ObservableCollection<string>();
+		private readonly ObservableCollection<string> _suggestions = new ObservableCollection<string>();
 
 		public BasicAutoSuggestBox()
 		{

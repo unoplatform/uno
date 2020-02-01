@@ -175,7 +175,7 @@ namespace Uno.Xaml
 		// FIXME: I want this to cover all the existing types and make it valid in both MOBILE and !MOBILE.
 		private class ConvertibleTypeConverter<T> : TypeConverter
 		{
-			private Type type;
+			private readonly Type type;
 			public ConvertibleTypeConverter ()
 			{
 				this.type = typeof (T);

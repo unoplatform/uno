@@ -130,7 +130,7 @@ namespace Windows.UI.Core
 		{
 			private readonly static IntPtr _class;
 			private readonly static IntPtr _ctor;
-			private Action _action;
+			private readonly Action _action;
 
 			static CoreDispatcherImplementor()
 			{

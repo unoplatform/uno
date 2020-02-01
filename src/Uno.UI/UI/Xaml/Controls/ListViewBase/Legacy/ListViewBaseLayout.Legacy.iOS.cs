@@ -37,8 +37,8 @@ namespace Uno.UI.Controls.Legacy
 		private float _lineSpacing;
 		private ListViewBaseScrollDirection _scrollDirection;
 		private float _intersectionSpacing;
-		private Dictionary<CachedTuple<int, int>, NSIndexPath> _indexPaths = new Dictionary<CachedTuple<int, int>, NSIndexPath>(CachedTuple<int, int>.Comparer);
-		private Dictionary<CachedTuple<int, int>, UICollectionViewLayoutAttributes> _layoutAttributesForIndexPaths = new Dictionary<CachedTuple<int, int>, UICollectionViewLayoutAttributes>(CachedTuple<int, int>.Comparer);
+		private readonly Dictionary<CachedTuple<int, int>, NSIndexPath> _indexPaths = new Dictionary<CachedTuple<int, int>, NSIndexPath>(CachedTuple<int, int>.Comparer);
+		private readonly Dictionary<CachedTuple<int, int>, UICollectionViewLayoutAttributes> _layoutAttributesForIndexPaths = new Dictionary<CachedTuple<int, int>, UICollectionViewLayoutAttributes>(CachedTuple<int, int>.Comparer);
 		private DirtyState _dirtyState;
 		private CGSize _lastReportedSize;
 		private CGSize _lastAvailableSize;

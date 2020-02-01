@@ -29,9 +29,9 @@ namespace Uno.UI.Controls
 	[Windows.UI.Xaml.Data.Bindable]
 	public class BindableListAdapter : ItemContainerHolderAdapter
 	{
-		private Android.Content.Context _context;
+		private readonly Android.Content.Context _context;
 		private IEnumerable _itemsSource;
-		private SerialDisposable _notifyCollectionChanged = new SerialDisposable();
+		private readonly SerialDisposable _notifyCollectionChanged = new SerialDisposable();
 
 		private object _header;
 		private object _footer;
@@ -40,12 +40,12 @@ namespace Uno.UI.Controls
 		private DataTemplateSelector _itemTemplateSelector;
 		private Style _itemContainerStyle;
 		private DataTemplate _headerTemplate;
-		private HashSet<object> _selectedItems = new HashSet<object>();
+		private readonly HashSet<object> _selectedItems = new HashSet<object>();
 
 		/// <summary>
 		/// All unique templates used; used to return ViewTypeCount
 		/// </summary>
-		private List<DataTemplate> _usedTemplates = new List<DataTemplate>();
+		private readonly List<DataTemplate> _usedTemplates = new List<DataTemplate>();
 
 		public IEnumerable<object> SelectedItems
 		{

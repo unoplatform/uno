@@ -36,11 +36,11 @@ namespace MonoTests.Uno.Xaml.Schema
 	[TestFixture]
 	public class XamlMemberInvokerTest
 	{
-		private XamlSchemaContext sctx = new XamlSchemaContext (new XamlSchemaContextSettings ());
-		private PropertyInfo str_len = typeof (string).GetProperty ("Length");
-		private PropertyInfo sb_len = typeof (StringBuilder).GetProperty ("Length");
-		private PropertyInfo xr_resolver = typeof (XmlResolver).GetProperty ("Credentials");
-		private EventInfo ass_load = typeof (AppDomain).GetEvent ("AssemblyLoad");
+		private readonly XamlSchemaContext sctx = new XamlSchemaContext (new XamlSchemaContextSettings ());
+		private readonly PropertyInfo str_len = typeof (string).GetProperty ("Length");
+		private readonly PropertyInfo sb_len = typeof (StringBuilder).GetProperty ("Length");
+		private readonly PropertyInfo xr_resolver = typeof (XmlResolver).GetProperty ("Credentials");
+		private readonly EventInfo ass_load = typeof (AppDomain).GetEvent ("AssemblyLoad");
 
 		[Test]
 		public void ConstructorNull ()

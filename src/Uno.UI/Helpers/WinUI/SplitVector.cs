@@ -119,9 +119,9 @@ namespace Uno.UI.Helpers.WinUI
 
 		public int Size() { return m_indexesInOriginalVector.Count; }
 
-		private TVectorId m_vectorID;
-		private IList<T> m_vector = new	List<T>();
-		private List<int> m_indexesInOriginalVector = new List<int>();
-		private Func<T, int> m_indexFunctionFromDataSource;
+		private readonly TVectorId m_vectorID;
+		private readonly IList<T> m_vector = new	List<T>();
+		private readonly List<int> m_indexesInOriginalVector = new List<int>();
+		private readonly Func<T, int> m_indexFunctionFromDataSource;
 	}
 }

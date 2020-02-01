@@ -14,7 +14,7 @@ namespace Uno.UI.TestComparer
 {
     public class AppCenterTestsDownloader
     {
-		private string _secret;
+		private readonly string _secret;
 
 		public AppCenterTestsDownloader(string secret)
 		{

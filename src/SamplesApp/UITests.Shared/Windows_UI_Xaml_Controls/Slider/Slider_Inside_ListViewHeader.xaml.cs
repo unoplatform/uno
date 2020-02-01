@@ -7,7 +7,7 @@ namespace Uno.UI.Samples.Content.UITests.Slider
 	public sealed partial class Slider_Inside_ListViewHeader : UserControl
     {
 #pragma warning disable CS0414
-		private double OverallPerformance = 0.0; // Used in XAML
+		private readonly double OverallPerformance = 0.0; // Used in XAML
 
         public Slider_Inside_ListViewHeader()
         {

@@ -37,7 +37,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private int CacheHalfLength => Layout.CacheHalfLengthInViews;
 
-		private Dictionary<UnoViewHolder, List<Action>> _onRecycled = new Dictionary<UnoViewHolder, List<Action>>(); //Used by Phase binding
+		private readonly Dictionary<UnoViewHolder, List<Action>> _onRecycled = new Dictionary<UnoViewHolder, List<Action>>(); //Used by Phase binding
 
 		//Inclusive
 		private int TrailingBufferTargetStart => Math.Max(ConvertIndexToDisplayPosition(0), TrailingBufferTargetEnd - CacheHalfLength);

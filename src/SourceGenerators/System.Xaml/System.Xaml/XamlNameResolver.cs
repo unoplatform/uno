@@ -49,8 +49,8 @@ namespace Uno.Xaml
 			public bool FullyInitialized { get; set; }
 		}
 
-		private Dictionary<string,NamedObject> objects = new Dictionary<string,NamedObject> ();
-		private List<object> referenced = new List<object> ();
+		private readonly Dictionary<string,NamedObject> objects = new Dictionary<string,NamedObject> ();
+		private readonly List<object> referenced = new List<object> ();
 
 		[MonoTODO]
 		public bool IsFixupTokenAvailable {

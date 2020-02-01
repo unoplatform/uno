@@ -85,7 +85,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public class OnSetTimeListener : Java.Lang.Object, IOnTimeSetListener
 		{
-			private Action<Android.Widget.TimePicker, int, int> _action;
+			private readonly Action<Android.Widget.TimePicker, int, int> _action;
 
 			public OnSetTimeListener(Action<Android.Widget.TimePicker, int, int> action)
 			{

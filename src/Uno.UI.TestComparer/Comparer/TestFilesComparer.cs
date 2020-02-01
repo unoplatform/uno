@@ -204,7 +204,7 @@ namespace Uno.UI.TestComparer.Comparer
 			return null;
 		}
 
-		private Dictionary<string, int> _fileHashesTable = new Dictionary<string, int>();
+		private readonly Dictionary<string, int> _fileHashesTable = new Dictionary<string, int>();
 		private readonly string _basePath;
 		private readonly string _artifactsBasePath;
 		private readonly string _artifactsInnerBasePath;

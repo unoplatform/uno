@@ -30,10 +30,10 @@ namespace Uno.Xaml
 {
 	public class XamlNodeQueue
 	{
-		private Queue<XamlNodeLineInfo> queue = new Queue<XamlNodeLineInfo> ();
-		private XamlSchemaContext ctx;
-		private XamlReader reader;
-		private XamlWriter writer;
+		private readonly Queue<XamlNodeLineInfo> queue = new Queue<XamlNodeLineInfo> ();
+		private readonly XamlSchemaContext ctx;
+		private readonly XamlReader reader;
+		private readonly XamlWriter writer;
 
 		public XamlNodeQueue (XamlSchemaContext schemaContext)
 		{

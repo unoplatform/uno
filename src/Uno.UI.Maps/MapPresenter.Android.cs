@@ -27,8 +27,8 @@ namespace Windows.UI.Xaml.Controls.Maps.Presenter
 	{
 		private Grid _mapGrid, _layerGrid;
 
-		private MapReadyCallback _callback;
-		private GoogleMapView _internalMapView;
+		private readonly MapReadyCallback _callback;
+		private readonly GoogleMapView _internalMapView;
 		private GoogleMap _map;
 		private Thickness _padding;
 		private MapLifeCycleCallBacks _callbacks;

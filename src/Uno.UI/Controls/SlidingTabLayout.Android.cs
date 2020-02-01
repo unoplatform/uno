@@ -29,14 +29,14 @@ namespace Uno.UI.Controls
 		private const int TabViewPaddingDips = 16;
 		private const int TabViewTextSizeSp = 12;
 
-		private int _titleOffset;
+		private readonly int _titleOffset;
 
 		private int _tabViewLayoutId;
 		private int _tabViewTextViewId;
 		private bool _distributeEvenly;
 
 		private ViewPager _viewPager;
-		private SparseArray<string> _contentDescriptions = new SparseArray<string>();
+		private readonly SparseArray<string> _contentDescriptions = new SparseArray<string>();
 		private ViewPager.IOnPageChangeListener _viewPagerPageChangeListener;
 
 		private readonly SlidingTabStrip _tabStrip;
@@ -258,7 +258,7 @@ namespace Uno.UI.Controls
 		{
 			private int _scrollState;
 
-			private SlidingTabLayout _owner;
+			private readonly SlidingTabLayout _owner;
 
 			public InternalViewPagerListener(SlidingTabLayout owner)
 			{

@@ -45,7 +45,7 @@ namespace Uno.UI.Controls.Legacy
 
 		#region Fields
 
-		private SerialDisposable _notifyCollectionChanged = new SerialDisposable();
+		private readonly SerialDisposable _notifyCollectionChanged = new SerialDisposable();
 		private readonly SerialDisposable _notifyCollectionGroupsChanged = new SerialDisposable();
 
 		private readonly List<object> _selectedItems = new List<object>();

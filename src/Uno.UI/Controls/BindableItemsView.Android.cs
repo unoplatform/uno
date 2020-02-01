@@ -28,10 +28,10 @@ namespace Uno.UI.Controls
 	[Windows.UI.Xaml.Data.Bindable]
 	public partial class BindableItemsView : LinearLayout
 	{
-		private CompositeDisposable _subscriptions = new CompositeDisposable();
+		private readonly CompositeDisposable _subscriptions = new CompositeDisposable();
 
 		private IEnumerable _itemsSource;
-		private HorizontalScrollView _horizontalScrollView;
+		private readonly HorizontalScrollView _horizontalScrollView;
 
 		private bool _scrollIndexChanged = true;
 

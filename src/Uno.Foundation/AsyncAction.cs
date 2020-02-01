@@ -10,11 +10,11 @@ namespace Windows.Foundation
 {
 	internal class AsyncAction : IAsyncAction
 	{
-		private CancellationTokenSource _cts = new CancellationTokenSource();
+		private readonly CancellationTokenSource _cts = new CancellationTokenSource();
 		private AsyncActionCompletedHandler _onCompleted;
-		private Task _task;
+		private readonly Task _task;
 		private AsyncStatus _status;
-		private uint _id = 0;
+		private readonly uint _id = 0;
 
 		public static AsyncAction FromTask(Func<CancellationToken, Task> taskBuilder) => new AsyncAction(taskBuilder);
 

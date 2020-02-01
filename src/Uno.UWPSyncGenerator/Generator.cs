@@ -145,7 +145,7 @@ namespace Uno.UWPSyncGenerator
 			public T WasmSymbol;
 			public T UAPSymbol;
 
-			private ImplementedFor _implementedFor;
+			private readonly ImplementedFor _implementedFor;
 			public ImplementedFor ImplementedFor => _implementedFor;
 			public ImplementedFor ImplementedForMain => ImplementedFor & ImplementedFor.Main;
 

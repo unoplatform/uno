@@ -111,7 +111,7 @@ namespace Windows.Media.Capture
 			// This dictionary is used to keep track of the original activities that requests the values.
 			private static Dictionary<int, MediaPickerActivity> _originalActivities = new Dictionary<int, MediaPickerActivity>();
 
-			private TaskCompletionSource<MediaPickerActivityResult> _resultCompletionSource = new TaskCompletionSource<MediaPickerActivityResult>();
+			private readonly TaskCompletionSource<MediaPickerActivityResult> _resultCompletionSource = new TaskCompletionSource<MediaPickerActivityResult>();
 			private int _requestCode;
 
 			internal async Task<MediaPickerActivityResult> GetActivityResult(CancellationToken ct, Intent intent, int requestCode = 0)

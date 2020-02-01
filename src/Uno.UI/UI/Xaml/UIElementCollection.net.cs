@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class UIElementCollection : BatchCollection<UIElement>
 	{
-        private List<UIElement> _elements ;
+        private readonly List<UIElement> _elements ;
 
         public UIElementCollection(FrameworkElement view) : base(view)
         {

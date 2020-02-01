@@ -33,7 +33,7 @@ namespace UITests.Shared.Windows_Devices
 	[Bindable]
 	public class GeolocatorTestsViewModel : ViewModelBase
 	{
-		private Geolocator _geolocator = new Geolocator();
+		private readonly Geolocator _geolocator = new Geolocator();
 
 		private GeolocationAccessStatus _geolocationAccessStatus;
 		private PositionStatus _positionStatus;

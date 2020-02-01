@@ -91,7 +91,7 @@ namespace MonoTests.System.Windows.Markup
 
 		private class NameServiceProvider : IServiceProvider
 		{
-			private Resolver resolver;
+			private readonly Resolver resolver;
 
 			public NameServiceProvider (bool worksFine, bool resolvesFine)
 			{
@@ -107,7 +107,7 @@ namespace MonoTests.System.Windows.Markup
 
 		private class Resolver : IXamlNameResolver
 		{
-			private bool resolves;
+			private readonly bool resolves;
 
 			public Resolver (bool resolvesFine)
 			{

@@ -37,12 +37,12 @@ namespace Uno.Xaml
 {
 	internal class ValueSerializerContext : IValueSerializerContext, IXamlSchemaContextProvider
 	{
-		private XamlNameResolver name_resolver = new XamlNameResolver ();
-		private XamlTypeResolver type_resolver;
-		private NamespaceResolver namespace_resolver;
-		private PrefixLookup prefix_lookup;
-		private XamlSchemaContext sctx;
-		private IAmbientProvider ambient_provider;
+		private readonly XamlNameResolver name_resolver = new XamlNameResolver ();
+		private readonly XamlTypeResolver type_resolver;
+		private readonly NamespaceResolver namespace_resolver;
+		private readonly PrefixLookup prefix_lookup;
+		private readonly XamlSchemaContext sctx;
+		private readonly IAmbientProvider ambient_provider;
 
 		public ValueSerializerContext (PrefixLookup prefixLookup, XamlSchemaContext schemaContext, IAmbientProvider ambientProvider)
 		{
@@ -136,8 +136,8 @@ namespace Uno.Xaml
 
 	internal class XamlTypeResolver : IXamlTypeResolver
 	{
-		private NamespaceResolver ns_resolver;
-		private XamlSchemaContext schema_context;
+		private readonly NamespaceResolver ns_resolver;
+		private readonly XamlSchemaContext schema_context;
 
 		public XamlTypeResolver (NamespaceResolver namespaceResolver, XamlSchemaContext schemaContext)
 		{
@@ -160,7 +160,7 @@ namespace Uno.Xaml
 			this.source = source;
 		}
 
-		private IList<NamespaceDeclaration> source;
+		private readonly IList<NamespaceDeclaration> source;
 	
 		public string GetNamespace (string prefix)
 		{
@@ -183,8 +183,8 @@ namespace Uno.Xaml
 
 	internal class AmbientProvider : IAmbientProvider
 	{
-		private List<AmbientPropertyValue> values = new List<AmbientPropertyValue> ();
-		private Stack<AmbientPropertyValue> live_stack = new Stack<AmbientPropertyValue> ();
+		private readonly List<AmbientPropertyValue> values = new List<AmbientPropertyValue> ();
+		private readonly Stack<AmbientPropertyValue> live_stack = new Stack<AmbientPropertyValue> ();
 
 		public void Push (AmbientPropertyValue v)
 		{

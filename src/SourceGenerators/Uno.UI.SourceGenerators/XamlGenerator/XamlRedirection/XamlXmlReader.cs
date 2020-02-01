@@ -8,12 +8,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 {
 	internal class XamlXmlReader : IDisposable
 	{
-		private XmlReader document;
-		private XamlSchemaContext context;
-		private XamlXmlReaderSettings settings;
+		private readonly XmlReader document;
+		private readonly XamlSchemaContext context;
+		private readonly XamlXmlReaderSettings settings;
 
-		private __ms::System.Xaml.XamlXmlReader _systemReader;
-		private __uno::Uno.Xaml.XamlXmlReader _unoReader;
+		private readonly __ms::System.Xaml.XamlXmlReader _systemReader;
+		private readonly __uno::Uno.Xaml.XamlXmlReader _unoReader;
 
 		public XamlXmlReader(XmlReader document, XamlSchemaContext context, XamlXmlReaderSettings settings)
 		{

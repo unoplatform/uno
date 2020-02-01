@@ -134,7 +134,7 @@ namespace Uno.Xaml
 
 		// populated properties
 		private XamlType base_type;
-		private XamlTypeInvoker invoker;
+		private readonly XamlTypeInvoker invoker;
 
 		internal EventHandler<XamlSetMarkupExtensionEventArgs> SetMarkupExtensionHandler {
 			get { return LookupSetMarkupExtensionHandler (); }
@@ -862,7 +862,7 @@ namespace Uno.Xaml
 			return null;
 		}
 
-		private BindingFlags flags_get_static = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
+		private readonly BindingFlags flags_get_static = BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Static;
 
 		protected virtual EventHandler<XamlSetMarkupExtensionEventArgs> LookupSetMarkupExtensionHandler ()
 		{

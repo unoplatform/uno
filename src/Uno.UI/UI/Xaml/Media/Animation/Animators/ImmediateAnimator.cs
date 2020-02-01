@@ -6,8 +6,8 @@ namespace Windows.UI.Xaml.Media.Animation
 {
 	internal sealed class ImmediateAnimator : IValueAnimator, IDisposable
 	{
-		private float _from;
-		private float _to;
+		private readonly float _from;
+		private readonly float _to;
 		private long _duration;
 
 		public ImmediateAnimator(float from, float to)

@@ -24,7 +24,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 		private string _defaultNamespace;
 
-		private Dictionary<INamedTypeSymbol, GeneratedTypeInfo> _typeMap = new Dictionary<INamedTypeSymbol, GeneratedTypeInfo>();
+		private readonly Dictionary<INamedTypeSymbol, GeneratedTypeInfo> _typeMap = new Dictionary<INamedTypeSymbol, GeneratedTypeInfo>();
 		private INamedTypeSymbol[] _bindableAttributeSymbol;
 		private ITypeSymbol _dependencyPropertySymbol;
 		private INamedTypeSymbol _objectSymbol;

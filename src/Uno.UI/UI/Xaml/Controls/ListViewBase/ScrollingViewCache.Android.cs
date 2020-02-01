@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private readonly NativeListViewBase _owner;
 		private VirtualizingPanelLayout Layout => _owner.NativeLayout as VirtualizingPanelLayout;
-		private Dictionary<UnoViewHolder, List<Action>> _onRecycled = new Dictionary<UnoViewHolder, List<Action>>();
+		private readonly Dictionary<UnoViewHolder, List<Action>> _onRecycled = new Dictionary<UnoViewHolder, List<Action>>();
 
 		private int MaxCacheSize { get; } = 10;
 

@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 
 	internal class TopNavigationViewDataProvider : SplitDataSourceBase<object, NavigationViewSplitVectorID, double>
 	{
-		private SerialDisposable m_dataSourceChanged = new SerialDisposable();
+		private readonly SerialDisposable m_dataSourceChanged = new SerialDisposable();
 		private Action<NotifyCollectionChangedEventArgs> m_dataChangeCallback;
 
 		private IEnumerable m_dataSource;

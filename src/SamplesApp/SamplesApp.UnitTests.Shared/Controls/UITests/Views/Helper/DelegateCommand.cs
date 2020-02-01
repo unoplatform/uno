@@ -6,7 +6,7 @@ namespace Uno.UI.Common
 {
 	public class DelegateCommand : ICommand
 	{
-		private Action _action;
+		private readonly Action _action;
 		private bool _canExecuteEnabled = true;
 
 		public event EventHandler CanExecuteChanged;

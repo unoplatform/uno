@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Caching the id is more efficient, and also important in the case of the ItemsSource changing, when the (former) item may no longer be in the new collection.
 		/// </summary>
-		private Dictionary<int, int> _idCache = new Dictionary<int, int>();
+		private readonly Dictionary<int, int> _idCache = new Dictionary<int, int>();
 
 		/// <summary>
 		/// Items that have been temporarily scrapped and can be reused without being rebound.

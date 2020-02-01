@@ -22,9 +22,9 @@ namespace Uno.Helpers.Activities
 
 		// Some devices (Galaxy S4) use a second activity to get the result.
 		// This dictionary is used to keep track of the original activities that requests the values.
-		private Dictionary<int, AwaitableResultActivity> _originalActivities = new Dictionary<int, AwaitableResultActivity>();
+		private readonly Dictionary<int, AwaitableResultActivity> _originalActivities = new Dictionary<int, AwaitableResultActivity>();
 
-		private TaskCompletionSource<ActivityResult> _resultCompletionSource = new TaskCompletionSource<ActivityResult>();
+		private readonly TaskCompletionSource<ActivityResult> _resultCompletionSource = new TaskCompletionSource<ActivityResult>();
 		private int _requestCode;
 
 		internal static async Task<AwaitableResultActivity> StartAsync(CancellationToken cancellationToken = default)

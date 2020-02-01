@@ -37,7 +37,7 @@ namespace MonoTests.Uno.Xaml.Schema
 	[TestFixture]
 	public class XamlTypeInvokerTest
 	{
-		private XamlSchemaContext sctx = new XamlSchemaContext (new XamlSchemaContextSettings ());
+		private readonly XamlSchemaContext sctx = new XamlSchemaContext (new XamlSchemaContextSettings ());
 
 		[Test]
 		public void ConstructorTypeNull ()

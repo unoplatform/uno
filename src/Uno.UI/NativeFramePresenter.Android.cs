@@ -31,7 +31,7 @@ namespace Uno.UI.Controls
 		private Frame _frame;
 		private bool _isUpdatingStack = false;
 		private PageStackEntry _currentEntry;
-		private Queue<(PageStackEntry pageEntry, NavigationEventArgs args)> _stackUpdates = new Queue<(PageStackEntry, NavigationEventArgs)>();
+		private readonly Queue<(PageStackEntry pageEntry, NavigationEventArgs args)> _stackUpdates = new Queue<(PageStackEntry, NavigationEventArgs)>();
 
 		public NativeFramePresenter()
 		{

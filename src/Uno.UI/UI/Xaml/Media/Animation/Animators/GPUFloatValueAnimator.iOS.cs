@@ -24,8 +24,8 @@ namespace Windows.UI.Xaml.Media.Animation
 	{
 		private static readonly string __notSupportedProperty = "This transform is not supported by GPU enabled animations.";
 
-		private float _to;
-		private float _from;
+		private readonly float _to;
+		private readonly float _from;
 		private long _duration;
 		private IEnumerable<IBindingItem> _bindingPath;
 		private FloatValueAnimator _valueAnimator;

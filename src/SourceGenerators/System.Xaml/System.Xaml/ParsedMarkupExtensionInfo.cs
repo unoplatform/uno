@@ -43,7 +43,7 @@ namespace Uno.Xaml
 		/// </summary>
 		private static Regex BindingMembersRegex = new Regex("[^'\",]+'[^^']+'|[^'\",]+\"[^\"]+\"|[^,]+");
 
-		private Dictionary<XamlMember, object> args = new Dictionary<XamlMember, object>();
+		private readonly Dictionary<XamlMember, object> args = new Dictionary<XamlMember, object>();
 		public Dictionary<XamlMember, object> Arguments
 		{
 			get { return args; }

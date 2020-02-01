@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class SinglelineTextBoxDelegate : UITextFieldDelegate
 	{
-		private WeakReference<TextBox> _textBox;
+		private readonly WeakReference<TextBox> _textBox;
 
 		public SinglelineTextBoxDelegate(WeakReference<TextBox> textbox)
 		{

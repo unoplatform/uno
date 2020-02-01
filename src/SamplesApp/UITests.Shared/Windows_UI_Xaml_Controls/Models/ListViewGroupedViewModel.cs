@@ -14,7 +14,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 {
 	public class ListViewGroupedViewModel : ViewModelBase
 	{
-		private Random _rnd = null;
+		private readonly Random _rnd = null;
 		private bool _areStickyHeadersEnabled;
 		private double _variableWidth;
 
@@ -158,7 +158,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 
 		private class EmptyGroup<TKey, TValue> : IGrouping<TKey, TValue>
 		{
-			private TKey _key;
+			private readonly TKey _key;
 
 			public EmptyGroup(TKey key)
 			{

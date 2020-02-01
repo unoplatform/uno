@@ -12,7 +12,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizerTests
 	[SampleControlInfo("Gesture recognizer")]
 	public sealed partial class Manipulation_Basics : Page
 	{
-		private bool _isReady;
+		private readonly bool _isReady;
 
 		public Manipulation_Basics()
 		{

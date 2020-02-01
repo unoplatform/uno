@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Shapes
 	{
 		private LayoutState _currentState;
 
-		private SerialDisposable _layerDisposable = new SerialDisposable();
+		private readonly SerialDisposable _layerDisposable = new SerialDisposable();
 
 
 		/// <summary>

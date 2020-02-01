@@ -9,7 +9,7 @@ namespace Uno.UI.Controls.Legacy
 	/// </summary>
 	public class ListViewBaseLayoutTemplate
 	{
-		private Func<ListViewBaseLayout> _template;
+		private readonly Func<ListViewBaseLayout> _template;
 
 		public ListViewBaseLayoutTemplate(Func<ListViewBaseLayout> template)
 		{

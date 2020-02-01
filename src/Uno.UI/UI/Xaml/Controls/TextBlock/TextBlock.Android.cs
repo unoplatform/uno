@@ -424,12 +424,12 @@ namespace Windows.UI.Xaml.Controls
 			private readonly TextWrapping _textWrapping;
 			private readonly int _maxLines;
 			private readonly bool _exactWidth;
-			private float _lineHeight;
-			private LineStackingStrategy _lineStackingStrategy;
+			private readonly float _lineHeight;
+			private readonly LineStackingStrategy _lineStackingStrategy;
 			private float _addedSpacing;
 			private static BoringLayout.Metrics UnknownBoring = new BoringLayout.Metrics();
 			private BoringLayout.Metrics _metrics = UnknownBoring;
-			private TextPaint _paint;
+			private readonly TextPaint _paint;
 
 			/// <summary>
 			/// The size of this layout.

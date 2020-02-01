@@ -13,7 +13,7 @@ namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 	[SampleControlInfo("Button", "Buttons")]
 	public sealed partial class Buttons : UserControl
 	{
-		private ButtonsViewModel _viewModel;
+		private readonly ButtonsViewModel _viewModel;
 
 		public Buttons()
 		{
@@ -87,7 +87,7 @@ namespace Uno.UI.Samples.Content.UITests.ButtonTestsControl
 
 	public class ActionCommand : ICommand
 	{
-		private Action<object> _action;
+		private readonly Action<object> _action;
 
 		public ActionCommand(Action action)
 		{

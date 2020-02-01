@@ -195,7 +195,7 @@ namespace Windows.Devices.Sensors
 
 		private class SettingsContentObserver : ContentObserver
 		{
-			private Action _onChanged;
+			private readonly Action _onChanged;
 
 			public SettingsContentObserver(Handler handler, Action onChange) : base(handler)
 			{
@@ -213,7 +213,7 @@ namespace Windows.Devices.Sensors
 
 		private class SimpleOrientationEventListener : OrientationEventListener
 		{
-			private Action<int> _orientationChanged;
+			private readonly Action<int> _orientationChanged;
 
 			public SimpleOrientationEventListener(Action<int> orientationChanged) : base(ContextHelper.Current, SensorDelay.Normal)
 			{

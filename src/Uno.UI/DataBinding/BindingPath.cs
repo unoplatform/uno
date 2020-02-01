@@ -21,8 +21,8 @@ namespace Uno.UI.DataBinding
 		private static List<PropertyChangedRegistrationHandler> _propertyChangedHandlers = new List<PropertyChangedRegistrationHandler>();
 		private readonly string _path;
 
-		private BindingItem _chain;
-		private BindingItem _value;
+		private readonly BindingItem _chain;
+		private readonly BindingItem _value;
 		private ManagedWeakReference _dataContextWeakStorage;
 		private bool _disposed;
 

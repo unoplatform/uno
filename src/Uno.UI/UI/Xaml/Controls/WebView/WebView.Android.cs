@@ -203,7 +203,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private class ScriptResponse : Java.Lang.Object, IValueCallback
 		{
-			private Action<string> _setCallBackValue;
+			private readonly Action<string> _setCallBackValue;
 			public ScriptResponse(Action<string> setCallBackValue)
 			{
 				_setCallBackValue = setCallBackValue;

@@ -22,7 +22,7 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 		private class Visitor : CSharpSyntaxWalker
 		{
-			private SemanticModel model;
+			private readonly SemanticModel model;
 
 			public bool HasInitializeCall { get; private set; }
 

@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 
-		private UICollectionViewFlowLayout _layout;
+		private readonly UICollectionViewFlowLayout _layout;
 
 		public override void LayoutSubviews()
 		{

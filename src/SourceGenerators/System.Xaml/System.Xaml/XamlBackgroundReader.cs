@@ -40,10 +40,10 @@ namespace Uno.Xaml
 		}
 
 		private Thread thread;
-		private XamlReader r;
-		private XamlNodeQueue q;
+		private readonly XamlReader r;
+		private readonly XamlNodeQueue q;
 		private bool read_all_done, do_work = true;
-		private ManualResetEvent wait = new ManualResetEvent (true);
+		private readonly ManualResetEvent wait = new ManualResetEvent (true);
 
 		public bool HasLineInfo {
 			get { return ((IXamlLineInfo) q.Reader).HasLineInfo; }

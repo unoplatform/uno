@@ -9,7 +9,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.Button
 	[SampleControlInfo("Button", "Overlapped_Buttons")]
 	public sealed partial class Overlapped_Buttons : Page
 	{
-		private Dictionary<string, int> clicks = new Dictionary<string, int>();
+		private readonly Dictionary<string, int> clicks = new Dictionary<string, int>();
 
 		public Overlapped_Buttons()
 		{

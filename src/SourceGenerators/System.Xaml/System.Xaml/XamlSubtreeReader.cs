@@ -32,7 +32,7 @@ namespace Uno.Xaml
 			this.source = source;
 		}
 
-		private XamlReader source;
+		private readonly XamlReader source;
 
 		public override bool IsEof {
 			get { return started && (nest == 0 || source.IsEof); }

@@ -26,7 +26,7 @@ namespace Uno.Media
 	{
 		private readonly List<Point> _points = new List<Point>();
 		private readonly StreamGeometry _owner;
-		private Path bezierPath = new Path();
+		private readonly Path bezierPath = new Path();
 
 		internal PathStreamGeometryContext(StreamGeometry owner)
 		{

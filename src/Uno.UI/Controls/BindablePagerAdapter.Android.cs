@@ -25,7 +25,7 @@ namespace Uno.UI.Controls
 	public class BindablePagerAdapter : PagerAdapter, View.IOnClickListener
 	{
 		private IEnumerable _itemsSource;
-		private Dictionary<int, View> _views = new Dictionary<int, View>();
+		private readonly Dictionary<int, View> _views = new Dictionary<int, View>();
 
 		public BindablePagerAdapter()
 		{

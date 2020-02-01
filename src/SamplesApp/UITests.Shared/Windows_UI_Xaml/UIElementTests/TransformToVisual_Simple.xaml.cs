@@ -12,9 +12,9 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 	[SampleControlInfo("UIElement", "TransformToVisual_Simple")]
 	public sealed partial class TransformToVisual_Simple : UserControl
 	{
-		private Grid _outer;
-		private Border _inner;
-		private Rectangle _content;
+		private readonly Grid _outer;
+		private readonly Border _inner;
+		private readonly Rectangle _content;
 
 		public TransformToVisual_Simple()
 		{

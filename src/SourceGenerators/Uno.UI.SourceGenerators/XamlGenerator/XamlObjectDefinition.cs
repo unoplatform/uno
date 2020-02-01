@@ -13,7 +13,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #endif
     internal class XamlObjectDefinition
 	{
-		private XamlType _type;
+		private readonly XamlType _type;
 
 		public XamlObjectDefinition(XamlType type, int lineNumber, int linePosition, XamlObjectDefinition owner)
 		{

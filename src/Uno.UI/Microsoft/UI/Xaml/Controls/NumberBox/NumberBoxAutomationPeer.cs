@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public class NumberBoxAutomationPeer : AutomationPeer, IRangeValueProvider
 	{
-		private NumberBox _owner;
+		private readonly NumberBox _owner;
 
 		internal NumberBoxAutomationPeer(NumberBox owner)
 		{

@@ -9,7 +9,7 @@ namespace Uno.UI.Samples.Content.UITests.TextBoxControl
 	[SampleControlInfo("TextBox", "TextBox_Selection", typeof(TextBoxViewModel))]
 	public sealed partial class TextBox_Selection : UserControl
     {
-		private SerialDisposable _subscriptions = new SerialDisposable();
+		private readonly SerialDisposable _subscriptions = new SerialDisposable();
 
 		public TextBox_Selection()
         {

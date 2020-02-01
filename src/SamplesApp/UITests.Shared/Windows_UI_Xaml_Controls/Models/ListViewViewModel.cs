@@ -22,7 +22,7 @@ namespace SamplesApp.Windows_UI_Xaml_Controls.Models
 		private object[] _randomItems = new object[0];
 		private string _newInput = "1,1,2,2,3,3";
 		private List<string> _sampleItemsGenerated = new List<string> { "1", "1", "2", "2", "3", "3" };
-		private List<string> _singleItemList = new List<string> { "1" };
+		private readonly List<string> _singleItemList = new List<string> { "1" };
 		private double _variableWidth = 500d;
 		private string _selectedItem = "3";
 

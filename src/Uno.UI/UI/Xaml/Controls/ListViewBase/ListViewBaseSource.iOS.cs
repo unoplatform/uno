@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 
-		private Dictionary<ListViewBaseInternalContainer, List<Action>> _onRecycled = new Dictionary<ListViewBaseInternalContainer, List<Action>>();
+		private readonly Dictionary<ListViewBaseInternalContainer, List<Action>> _onRecycled = new Dictionary<ListViewBaseInternalContainer, List<Action>>();
 		/// <summary>
 		/// We include one extra section to ensure Header and Footer can display even when we have no sections (ie an empty grouped source).
 		/// </summary>
@@ -72,8 +72,8 @@ namespace Windows.UI.Xaml.Controls
 
 		#region Members
 		private DataTemplateSelector _currentSelector;
-		private Dictionary<DataTemplate, CGSize> _templateCache = new Dictionary<DataTemplate, CGSize>(DataTemplate.FrameworkTemplateEqualityComparer.Default);
-		private Dictionary<DataTemplate, NSString> _templateCells = new Dictionary<DataTemplate, NSString>(DataTemplate.FrameworkTemplateEqualityComparer.Default);
+		private readonly Dictionary<DataTemplate, CGSize> _templateCache = new Dictionary<DataTemplate, CGSize>(DataTemplate.FrameworkTemplateEqualityComparer.Default);
+		private readonly Dictionary<DataTemplate, NSString> _templateCells = new Dictionary<DataTemplate, NSString>(DataTemplate.FrameworkTemplateEqualityComparer.Default);
 		/// <summary>
 		/// The furthest item in the source which has already been materialized. Items up to this point can safely be retrieved.
 		/// </summary>

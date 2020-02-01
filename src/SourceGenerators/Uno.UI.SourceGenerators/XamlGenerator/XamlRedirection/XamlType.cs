@@ -8,14 +8,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 {
 	internal class XamlType : IEquatable<XamlType>
 	{
-		private string unknownTypeNamespace;
-		private string unknownTypeName;
-		private List<XamlType> list;
-		private XamlSchemaContext xamlSchemaContext;
-		private bool _isUnknown;
+		private readonly string unknownTypeNamespace;
+		private readonly string unknownTypeName;
+		private readonly List<XamlType> list;
+		private readonly XamlSchemaContext xamlSchemaContext;
+		private readonly bool _isUnknown;
 
-		private __ms::System.Xaml.XamlType _msDeclaringType;
-		private __uno::Uno.Xaml.XamlType _unoDeclaringType;
+		private readonly __ms::System.Xaml.XamlType _msDeclaringType;
+		private readonly __uno::Uno.Xaml.XamlType _unoDeclaringType;
 
 		public static XamlType FromType(__ms::System.Xaml.XamlType declaringType) => declaringType != null ? new XamlType(declaringType) : null;
 		public static XamlType FromType(__uno::Uno.Xaml.XamlType declaringType) => declaringType != null ? new XamlType(declaringType) : null;

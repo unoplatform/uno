@@ -16,7 +16,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ImageTests
 	[SampleControlInfo(category: "Image", controlName: nameof(ImageSourceWriteableBitmapInvalidate))]
 	public sealed partial class ImageSourceWriteableBitmapInvalidate : Page
 	{
-		private WriteableBitmap _bitmap;
+		private readonly WriteableBitmap _bitmap;
 
 		public ImageSourceWriteableBitmapInvalidate()
 		{

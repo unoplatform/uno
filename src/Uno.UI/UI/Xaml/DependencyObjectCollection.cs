@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml
 	{
 		public event VectorChangedEventHandler<T> VectorChanged;
 
-		private List<T> _list = new List<T>();
+		private readonly List<T> _list = new List<T>();
 
 		public DependencyObjectCollection()
 		{

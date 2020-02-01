@@ -180,13 +180,13 @@ namespace Uno.Xaml
 		}
 
 		private XamlType type, target_type;
-		private MemberInfo underlying_member;
+		private readonly MemberInfo underlying_member;
 		private MethodInfo underlying_getter, underlying_setter;
 		private XamlSchemaContext context;
-		private XamlMemberInvoker invoker;
+		private readonly XamlMemberInvoker invoker;
 		private bool is_attachable, is_event, is_directive;
-		private bool is_predefined_directive = XamlLanguage.InitializingDirectives;
-		private string directive_ns;
+		private readonly bool is_predefined_directive = XamlLanguage.InitializingDirectives;
+		private readonly string directive_ns;
 
 		internal MethodInfo UnderlyingGetter {
 			get { return LookupUnderlyingGetter (); }

@@ -23,11 +23,11 @@ namespace Windows.UI.Xaml.Markup.Reader
 {
 	internal class XamlObjectBuilder
 	{
-		private XamlFileDefinition _fileDefinition;
+		private readonly XamlFileDefinition _fileDefinition;
 		private XamlTypeResolver TypeResolver { get; }
 		private readonly List<(string elementName, ElementNameSubject bindingSubject)> _elementNames = new List<(string, ElementNameSubject)>();
 		private readonly Stack<Type> _styleTargetTypeStack = new Stack<Type>();
-		private Queue<Action> _postActions = new Queue<Action>();
+		private readonly Queue<Action> _postActions = new Queue<Action>();
 		private static readonly Regex _attachedPropertMatch = new Regex(@"(\(.*?\))");
 
 		public XamlObjectBuilder(XamlFileDefinition xamlFileDefinition)

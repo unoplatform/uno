@@ -19,7 +19,7 @@ namespace Uno.UI.Controls
 		private readonly Func<int, int> _itemTypeSelector;
 		private readonly HashSet<View>[] _pools;
 		private readonly HashSet<View> _recycler = new HashSet<View>();
-		private Dictionary<View, List<Action>> _onRecycled = new Dictionary<View, List<Action>>();
+		private readonly Dictionary<View, List<Action>> _onRecycled = new Dictionary<View, List<Action>>();
 
 		public AbsListViewSecondaryPool(Func<int, int> itemTypeSelector, int viewTypeCount)
 		{

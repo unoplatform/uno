@@ -5,8 +5,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 {
 	internal class NamespaceDeclaration
 	{
-		private __uno::Uno.Xaml.NamespaceDeclaration _unoNs;
-		private __ms::System.Xaml.NamespaceDeclaration _msNs;
+		private readonly __uno::Uno.Xaml.NamespaceDeclaration _unoNs;
+		private readonly __ms::System.Xaml.NamespaceDeclaration _msNs;
 
 		public NamespaceDeclaration(__ms::System.Xaml.NamespaceDeclaration ns)
 			=> _msNs = ns;

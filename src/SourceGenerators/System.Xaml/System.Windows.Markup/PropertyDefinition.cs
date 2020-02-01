@@ -36,7 +36,7 @@ namespace System.Windows.Markup
 			attributes = new List<Attribute> ();
 		}
 
-		private List<Attribute> attributes;
+		private readonly List<Attribute> attributes;
 		public IList<Attribute> Attributes {
 			get { return attributes; }
 		}

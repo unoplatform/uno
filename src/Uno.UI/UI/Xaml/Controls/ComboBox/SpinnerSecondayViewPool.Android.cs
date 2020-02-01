@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 		private static Field _mScrapField;
 
 		private SparseArray _mScrap;
-		private HashSet<View> _views = new HashSet<View>();
+		private readonly HashSet<View> _views = new HashSet<View>();
 
 		public SpinnerViewPool(SpinnerEx owner)
 		{

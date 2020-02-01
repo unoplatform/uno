@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// The orientation of the structure.
 		/// </summary>
-		private Orientation _orientation;
+		private readonly Orientation _orientation;
 
 		/// <summary>
 		/// Gets the orientation of the structure.

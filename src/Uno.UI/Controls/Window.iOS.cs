@@ -46,7 +46,7 @@ namespace Uno.UI.Controls
 
 		private UIView _focusedView; // Not really the "focused", but the last view which was touched.
 		private WeakReference<UIScrollView> _scrollViewModifiedForKeyboard;
-		private InputPane _inputPane;
+		private readonly InputPane _inputPane;
 		private EventProviderExtensions.DisposableEventActivity _touchTrace;
 
 		internal event Action FrameChanged;

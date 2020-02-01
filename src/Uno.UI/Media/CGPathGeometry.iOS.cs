@@ -11,7 +11,7 @@ namespace Uno.UI.Media
 {
 	public class CGPathGeometry : Geometry
 	{
-		private CGPath _path;
+		private readonly CGPath _path;
 		public CGPathGeometry(CGPath path)
 		{
 			_path = path;

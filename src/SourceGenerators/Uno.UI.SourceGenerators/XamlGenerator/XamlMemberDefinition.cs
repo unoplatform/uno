@@ -12,7 +12,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 #endif
     internal class XamlMemberDefinition
 	{
-		private XamlMember _xamlMember;
+		private readonly XamlMember _xamlMember;
 
 		public XamlMemberDefinition(XamlMember xamlMember, int lineNumber, int linePosition, XamlObjectDefinition owner = null)
 		{

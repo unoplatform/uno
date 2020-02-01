@@ -73,10 +73,10 @@ namespace Uno.Xaml
 
 		public AllowedMemberLocations AllowedLocation { get; private set; }
 		private XamlValueConverter<TypeConverter> type_converter;
-		private XamlType type;
-		private XamlMemberInvoker invoker;
+		private readonly XamlType type;
+		private readonly XamlMemberInvoker invoker;
 		private bool is_unknown;
-		private IList<string> xaml_namespaces;
+		private readonly IList<string> xaml_namespaces;
 
 		// this is for XamlLanguage.UnknownContent
 		internal bool InternalIsUnknown {

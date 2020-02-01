@@ -23,7 +23,7 @@ namespace UITests.Shared.Windows_Phone
 	[SampleControlInfo("Windows.Phone", "Devices.Notifications.VibrationDevice", description: "Verifies the Windows.Phone.Devices.Notifications.VibrationDevice API")]
 	public sealed partial class Devices_Notifications_VibrationDevice : UserControl
 	{
-		private VibrationDevice _vibrationDevice;
+		private readonly VibrationDevice _vibrationDevice;
 
 		public Devices_Notifications_VibrationDevice()
 		{

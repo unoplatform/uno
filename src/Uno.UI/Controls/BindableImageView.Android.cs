@@ -690,7 +690,7 @@ namespace Uno.UI.Controls
 
 		private class ScaleListener : ScaleGestureDetector.SimpleOnScaleGestureListener
 		{
-			private BindableImageView _parent;
+			private readonly BindableImageView _parent;
 
 			public ScaleListener(BindableImageView parent)
 			{
@@ -712,7 +712,7 @@ namespace Uno.UI.Controls
 
 		private class DoubleTapListener : GestureDetector.SimpleOnGestureListener
 		{
-			private BindableImageView _parent;
+			private readonly BindableImageView _parent;
 
 			public DoubleTapListener(BindableImageView parent)
 			{

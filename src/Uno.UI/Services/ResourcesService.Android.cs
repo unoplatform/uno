@@ -4,7 +4,7 @@ namespace Uno.UI.Services
 {
 	public class ResourcesService : IResourcesService
 	{
-		private Android.Content.Context _applicationContext;
+		private readonly Android.Content.Context _applicationContext;
 
 		public ResourcesService(Android.Content.Context applicationContext)
 		{

@@ -30,7 +30,7 @@ namespace Uno.UI
 		// This dictionary is used to keep track of the original activities that requests the values.
 		private static Dictionary<int, DelegateActivity> _originalActivities = new Dictionary<int, DelegateActivity>();
 
-		private TaskCompletionSource<OnActivityResultArgs> _completionSource = new TaskCompletionSource<OnActivityResultArgs>();
+		private readonly TaskCompletionSource<OnActivityResultArgs> _completionSource = new TaskCompletionSource<OnActivityResultArgs>();
 
 		private int _requestCode;
 

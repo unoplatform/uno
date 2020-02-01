@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Data
 {
 	internal partial class CollectionView : ICollectionView
 	{
-		private IEnumerable _collection;
+		private readonly IEnumerable _collection;
 		private readonly bool _isGrouped;
 		private readonly PropertyPath _itemsPath;
 

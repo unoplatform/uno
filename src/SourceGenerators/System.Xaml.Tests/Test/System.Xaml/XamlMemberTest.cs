@@ -38,14 +38,14 @@ namespace MonoTests.Uno.Xaml
 	// FIXME: uncomment TypeConverter tests
 	public class XamlMemberTest
 	{
-		private XamlSchemaContext sctx = new XamlSchemaContext (new XamlSchemaContextSettings ());
-		private EventInfo ass_load = typeof (AppDomain).GetEvent ("AssemblyLoad");
-		private PropertyInfo str_len = typeof (string).GetProperty ("Length");
-		private PropertyInfo sb_len = typeof (StringBuilder).GetProperty ("Length");
-		private MethodInfo dummy_add = typeof (XamlMemberTest).GetMethod ("DummyAddMethod");
-		private MethodInfo dummy_get = typeof (XamlMemberTest).GetMethod ("DummyGetMethod");
-		private MethodInfo dummy_set = typeof (XamlMemberTest).GetMethod ("DummySetMethod");
-		private MethodInfo dummy_set2 = typeof (Dummy).GetMethod ("DummySetMethod");
+		private readonly XamlSchemaContext sctx = new XamlSchemaContext (new XamlSchemaContextSettings ());
+		private readonly EventInfo ass_load = typeof (AppDomain).GetEvent ("AssemblyLoad");
+		private readonly PropertyInfo str_len = typeof (string).GetProperty ("Length");
+		private readonly PropertyInfo sb_len = typeof (StringBuilder).GetProperty ("Length");
+		private readonly MethodInfo dummy_add = typeof (XamlMemberTest).GetMethod ("DummyAddMethod");
+		private readonly MethodInfo dummy_get = typeof (XamlMemberTest).GetMethod ("DummyGetMethod");
+		private readonly MethodInfo dummy_set = typeof (XamlMemberTest).GetMethod ("DummySetMethod");
+		private readonly MethodInfo dummy_set2 = typeof (Dummy).GetMethod ("DummySetMethod");
 
 		[Test]
 		public void ConstructorEventInfoNullEventInfo ()

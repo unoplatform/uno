@@ -46,9 +46,9 @@ namespace Uno.Xaml
 			value_serializer_ctx = vctx;
 		}
 
-		private XamlSchemaContext ctx;
-		private object root;
-		private IValueSerializerContext value_serializer_ctx;
+		private readonly XamlSchemaContext ctx;
+		private readonly object root;
+		private readonly IValueSerializerContext value_serializer_ctx;
 
 		private PrefixLookup PrefixLookup {
 			get { return (PrefixLookup) value_serializer_ctx.GetService (typeof (INamespacePrefixLookup)); }

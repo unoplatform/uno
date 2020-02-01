@@ -8,12 +8,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 {
 	internal class XamlMember : IEquatable<XamlMember>
 	{
-		private string _name;
+		private readonly string _name;
 		private XamlType _declaringType;
-		private bool _isAttachable;
+		private readonly bool _isAttachable;
 
-		private __uno::Uno.Xaml.XamlMember _unoMember;
-		private __ms::System.Xaml.XamlMember _msMember;
+		private readonly __uno::Uno.Xaml.XamlMember _unoMember;
+		private readonly __ms::System.Xaml.XamlMember _msMember;
 		public static XamlMember FromMember(__uno::Uno.Xaml.XamlMember member) => member != null ? new XamlMember(member) : null;
 		public static XamlMember FromMember(__ms::System.Xaml.XamlMember member) => member != null ? new XamlMember(member) : null;
 

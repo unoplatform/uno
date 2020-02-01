@@ -18,7 +18,7 @@ namespace Uno.Roslyn
 
 		private Project _project;
 		private readonly INamedTypeSymbol _nullableSymbol;
-		private string[] _additionalTypes;
+		private readonly string[] _additionalTypes;
 		private readonly Dictionary<string, INamedTypeSymbol> _legacyTypes;
 		private readonly Func<string, ITypeSymbol[]> _findTypesByName;
 		private readonly Func<string, ITypeSymbol> _findTypeByFullName;

@@ -23,7 +23,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ListView
 	[SampleControlInfo(description: "ListView inside StackPanel that can have items added to its ItemsSource. Should remeasure correctly.")]
 	public sealed partial class ListView_ObservableCollection_Unused_Space : UserControl
 	{
-		private MyViewModel _vm;
+		private readonly MyViewModel _vm;
 
 		public ListView_ObservableCollection_Unused_Space()
 		{

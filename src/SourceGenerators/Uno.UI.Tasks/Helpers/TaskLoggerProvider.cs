@@ -8,8 +8,8 @@ namespace Uno.UI.Tasks.Helpers
 {
     public class TaskLoggerProvider : ILoggerProvider
     {
-        private TaskLoggingHelper _taskLog;
-        private List<TaskLogger> _loggers = new List<TaskLogger>();
+        private readonly TaskLoggingHelper _taskLog;
+        private readonly List<TaskLogger> _loggers = new List<TaskLogger>();
 
         public TaskLoggerProvider(TaskLoggingHelper taskLog)
         {

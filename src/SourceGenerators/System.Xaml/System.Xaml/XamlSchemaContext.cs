@@ -81,16 +81,16 @@ namespace Uno.Xaml
 			}
 		}
 
-		private IList<Assembly> reference_assemblies;
+		private readonly IList<Assembly> reference_assemblies;
 
 		// assembly attribute caches
 		private Dictionary<string,string> xaml_nss;
 		private Dictionary<string,string> prefixes;
 		private Dictionary<string,string> compat_nss;
 		private Dictionary<string,List<XamlType>> all_xaml_types;
-		private XamlType [] empty_xaml_types = new XamlType [0];
-		private List<XamlType> run_time_types = new List<XamlType> ();
-		private object gate = new object();
+		private readonly XamlType [] empty_xaml_types = new XamlType [0];
+		private readonly List<XamlType> run_time_types = new List<XamlType> ();
+		private readonly object gate = new object();
 
 		public bool FullyQualifyAssemblyNamesInClrNamespaces { get; private set; }
 
@@ -202,7 +202,7 @@ namespace Uno.Xaml
 			return new XamlValueConverter<TConverterBase> (converterType, targetType);
 		}
 
-		private Dictionary<Pair,XamlDirective> xaml_directives = new Dictionary<Pair,XamlDirective> ();
+		private readonly Dictionary<Pair,XamlDirective> xaml_directives = new Dictionary<Pair,XamlDirective> ();
 		
 		public virtual XamlDirective GetXamlDirective (string xamlNamespace, string name)
 		{

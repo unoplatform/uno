@@ -562,7 +562,7 @@ namespace MonoTests.Uno.Xaml
 			this.val = val;
 		}
 
-		private XmlSerializable val;
+		private readonly XmlSerializable val;
 
 		public XmlSerializable Value {
 			get { return val; }
@@ -680,7 +680,7 @@ namespace MonoTests.Uno.Xaml
 		{
 		}
 
-		private Dictionary<AttachableMemberIdentifier,object> props = new Dictionary<AttachableMemberIdentifier,object> ();
+		private readonly Dictionary<AttachableMemberIdentifier,object> props = new Dictionary<AttachableMemberIdentifier,object> ();
 
 		public int PropertyCount {
 			get { return props.Count; }
@@ -1260,7 +1260,7 @@ Loaded Parent
 
 	public class BaseItem : ISupportInitialize
 	{
-		private Dictionary<string, object> properties = new Dictionary<string, object> ();
+		private readonly Dictionary<string, object> properties = new Dictionary<string, object> ();
 		
 		public Dictionary<string, object> Properties
 		{
@@ -1308,7 +1308,7 @@ Loaded Parent
 	[ContentProperty ("Children")]
 	public class Parent : BaseItem
 	{
-		private BaseItemCollection children = new BaseItemCollection ();
+		private readonly BaseItemCollection children = new BaseItemCollection ();
 		
 		public BaseItemCollection Children
 		{

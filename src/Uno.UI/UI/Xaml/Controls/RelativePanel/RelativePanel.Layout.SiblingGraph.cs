@@ -22,8 +22,8 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private class SiblingGraph
 		{
-			private List<Sibling> _entryPoints = new List<Sibling>();
-			private List<Sibling> _nodes = new List<Sibling>();
+			private readonly List<Sibling> _entryPoints = new List<Sibling>();
+			private readonly List<Sibling> _nodes = new List<Sibling>();
 
 			/// <summary>
 			/// Adds a node to the Sibling Graph.

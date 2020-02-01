@@ -882,7 +882,7 @@ namespace Uno.UI.Tests.BinderTests
 
 		public partial class BaseTarget : DependencyObject
 		{
-			private List<object> _dataContextChangedList = new List<object>();
+			private readonly List<object> _dataContextChangedList = new List<object>();
 
 			public BaseTarget(BaseTarget parent = null)
 			{
@@ -1148,7 +1148,7 @@ namespace Uno.UI.Tests.BinderTests
 
 		public class PrivateField
 		{
-			private int MyField;
+			private readonly int MyField;
 
 			public PrivateField(int value)
 			{

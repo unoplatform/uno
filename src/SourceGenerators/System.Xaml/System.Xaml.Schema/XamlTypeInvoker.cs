@@ -50,7 +50,7 @@ namespace Uno.Xaml.Schema
 			this.type = type;
 		}
 
-		private XamlType type;
+		private readonly XamlType type;
 
 		private void ThrowIfUnknown ()
 		{

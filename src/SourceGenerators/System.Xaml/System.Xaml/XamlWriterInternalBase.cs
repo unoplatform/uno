@@ -51,8 +51,8 @@ namespace Uno.Xaml
 			service_provider = new ValueSerializerContext (p, schemaContext, AmbientProvider);
 		}
 
-		private XamlSchemaContext sctx;
-		private XamlWriterStateManager manager;
+		private readonly XamlSchemaContext sctx;
+		private readonly XamlWriterStateManager manager;
 
 		internal IValueSerializerContext service_provider;
 

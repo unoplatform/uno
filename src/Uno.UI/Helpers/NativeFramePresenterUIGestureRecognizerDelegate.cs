@@ -7,7 +7,7 @@ namespace Uno.UI.Helpers
 {
 	internal class NativeFramePresenterUIGestureRecognizerDelegate : UIGestureRecognizerDelegate
 	{
-		private Func<UINavigationController> _navigationController; 
+		private readonly Func<UINavigationController> _navigationController; 
 		public NativeFramePresenterUIGestureRecognizerDelegate(Func<UINavigationController> navigationController)
 		{
 			_navigationController = navigationController;

@@ -60,9 +60,9 @@ namespace UITests.Shared.Windows_UI_Input.PointersTests
 		}
 
 #if __IOS__ // On iOS pen is handled exactly as if it was a finger ...
-		private bool PenSupportsHover = false;
+		private readonly bool PenSupportsHover = false;
 #else
-		private bool PenSupportsHover = true;
+		private readonly bool PenSupportsHover = true;
 #endif
 
 		private PointerDeviceType PointerType => (PointerDeviceType)Enum.Parse(typeof(PointerDeviceType), _pointerType.SelectedValue.ToString());

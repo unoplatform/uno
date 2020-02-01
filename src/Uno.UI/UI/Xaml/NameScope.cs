@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml
 	[EditorBrowsable(EditorBrowsableState.Never)]
 	public class NameScope : INameScope
 	{
-		private Dictionary<string, ManagedWeakReference> _names = new Dictionary<string, ManagedWeakReference>();
+		private readonly Dictionary<string, ManagedWeakReference> _names = new Dictionary<string, ManagedWeakReference>();
 
 		public NameScope()
 		{

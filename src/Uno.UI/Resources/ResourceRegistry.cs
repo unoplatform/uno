@@ -15,9 +15,9 @@ namespace Uno.Presentation.Resources
 		/// <returns>A resource instance, otherwise null</returns>
 		public delegate object ResourceLookupHandler(string resourceName);
 
-		private object _gate = new object();
+		private readonly object _gate = new object();
 		private readonly Dictionary<object, Func<object>> _resources = new Dictionary<object, Func<object>>();
-		private List<ResourceLookupHandler> _lookups = new List<ResourceLookupHandler>();
+		private readonly List<ResourceLookupHandler> _lookups = new List<ResourceLookupHandler>();
 
 		/// <summary>
 		/// Registers a selector that will be used if the no resources are found.

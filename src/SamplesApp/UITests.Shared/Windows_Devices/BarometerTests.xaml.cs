@@ -32,7 +32,7 @@ namespace UITests.Shared.Windows_Devices
         [Bindable]
         public class BarometerTestsViewModel : ViewModelBase
         {
-            private Barometer _barometer;
+            private readonly Barometer _barometer;
             private bool _readingChangedAttached;
             private string _sensorStatus;
             private double _stationPressureInHectopascals;

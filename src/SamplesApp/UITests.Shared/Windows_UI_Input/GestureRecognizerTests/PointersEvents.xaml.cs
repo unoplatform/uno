@@ -51,7 +51,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 		private readonly DoubleTappedEventHandler _logDoubleTapped;
 		private readonly RightTappedEventHandler _logRightTapped;
 
-		private bool _isReady;
+		private readonly bool _isReady;
 
 		public PointersEvents()
 		{

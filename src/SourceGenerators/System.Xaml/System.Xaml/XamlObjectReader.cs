@@ -115,9 +115,9 @@ namespace Uno.Xaml
 		private bool is_eof;
 		private object root, root_raw;
 
-		private XamlSchemaContext sctx;
+		private readonly XamlSchemaContext sctx;
 //		XamlObjectReaderSettings settings;
-private IValueSerializerContext value_serializer_context;
+private readonly IValueSerializerContext value_serializer_context;
 
 private IEnumerator<NamespaceDeclaration> ns_iterator;
 private IEnumerator<XamlNodeInfo> nodes;

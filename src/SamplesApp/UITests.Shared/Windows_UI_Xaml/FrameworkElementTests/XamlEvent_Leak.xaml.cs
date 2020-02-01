@@ -67,7 +67,7 @@ namespace UITests.Shared.Windows_UI_Xaml.FrameworkElementTests
 
 		private class Holder
 		{
-			private Action<int> _update;
+			private readonly Action<int> _update;
 			private static int _counter;
 
 			public Holder(Action<int> update)

@@ -25,7 +25,7 @@ namespace Uno.UI.RemoteControl
 
 		private readonly (string endpoint, int port)[] _serverAdresses;
 		private WebSocket _webSocket;
-		private Dictionary<string, IRemoteControlProcessor> _processors = new Dictionary<string, IRemoteControlProcessor>();
+		private readonly Dictionary<string, IRemoteControlProcessor> _processors = new Dictionary<string, IRemoteControlProcessor>();
 
 		private RemoteControlClient(Type appType)
 		{

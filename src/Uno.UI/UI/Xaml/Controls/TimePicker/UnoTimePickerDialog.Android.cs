@@ -12,10 +12,10 @@ namespace Windows.UI.Xaml.Controls
 	public class UnoTimePickerDialog : TimePickerDialog
 	{
 		private Android.Widget.TimePicker _picker;
-		private int _minuteIncrement = 1;
-		private int _hourOfDay;
-		private int _minute;
-		private bool _is24HourView;
+		private readonly int _minuteIncrement = 1;
+		private readonly int _hourOfDay;
+		private readonly int _minute;
+		private readonly bool _is24HourView;
 
 		public bool IsInSpinnerMode { get; private set; }
 

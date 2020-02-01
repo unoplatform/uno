@@ -119,7 +119,7 @@ namespace Uno.Xaml
 		
 		#endregion
 
-		private XamlXmlParser parser;
+		private readonly XamlXmlParser parser;
 		private IEnumerator<XamlXmlNodeInfo> iter;
 
 		public bool HasLineInfo {
@@ -233,12 +233,12 @@ namespace Uno.Xaml
 			xaml_namespace_resolver = new NamespaceResolver (r as IXmlNamespaceResolver);
 		}
 
-		private XmlReader r;
-		private IXmlLineInfo line_info;
-		private XamlSchemaContext sctx;
-		private XamlXmlReaderSettings settings;
-		private IXamlNamespaceResolver xaml_namespace_resolver;
-		private Stack<string[]> ignorables = new Stack<string[]>();
+		private readonly XmlReader r;
+		private readonly IXmlLineInfo line_info;
+		private readonly XamlSchemaContext sctx;
+		private readonly XamlXmlReaderSettings settings;
+		private readonly IXamlNamespaceResolver xaml_namespace_resolver;
+		private readonly Stack<string[]> ignorables = new Stack<string[]>();
 
 		internal XmlReader Reader {
 			get { return r; }
@@ -966,7 +966,7 @@ namespace Uno.Xaml
 
 		private class Disposable : IDisposable
 		{
-			private Action _action;
+			private readonly Action _action;
 
 			public Disposable(Action action)
 			{
@@ -978,7 +978,7 @@ namespace Uno.Xaml
 
 		internal class NamespaceResolver : IXamlNamespaceResolver
 		{
-			private IXmlNamespaceResolver source;
+			private readonly IXmlNamespaceResolver source;
 
 			public NamespaceResolver (IXmlNamespaceResolver source)
 			{

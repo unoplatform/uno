@@ -127,7 +127,7 @@ namespace Uno.UI.Controls
         private int _heightMeasureSpec;
         private int _widthMeasureSpec;
         private int _paddingTop;
-        private GravityFlags _alignMode = GravityFlags.Center;
+        private readonly GravityFlags _alignMode = GravityFlags.Center;
         private int _height;
 
         protected virtual void OnScreenChanged(ScreenChangedEventArgs e)

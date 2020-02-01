@@ -13,8 +13,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		private readonly SerialDisposable _scheduledFrame = new SerialDisposable();
 		private readonly Stopwatch _watch = new Stopwatch();
 
-		private float _from;
-		private float _to;
+		private readonly float _from;
+		private readonly float _to;
 
 		public object AnimatedValue { get; private set; }
 

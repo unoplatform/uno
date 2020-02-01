@@ -40,7 +40,7 @@ namespace Uno.Xaml
 			Namespaces = new List<NamespaceDeclaration> ();
 		}
 
-		private XamlSchemaContext sctx;
+		private readonly XamlSchemaContext sctx;
 		
 		public bool IsCollectingNamespaces { get; set; }
 		

@@ -31,11 +31,11 @@ namespace Windows.UI.Xaml.Media.Animation
 		private Storyboard _onUpdatedStoryboard = null;
 
 		private Dictionary<View, Point> _childsInitialPositions = new Dictionary<View, Point>();
-		private List<ChildWithOffset> _modifiedChildWithOffset = new List<ChildWithOffset>();
-		private List<IFrameworkElement> _previouslyAddedElements = new List<IFrameworkElement>();
+		private readonly List<ChildWithOffset> _modifiedChildWithOffset = new List<ChildWithOffset>();
+		private readonly List<IFrameworkElement> _previouslyAddedElements = new List<IFrameworkElement>();
 
 
-		private List<IFrameworkElement> _elements = new List<IFrameworkElement>();
+		private readonly List<IFrameworkElement> _elements = new List<IFrameworkElement>();
 
 		internal PanelTransitionHelper(Panel source)
 		{

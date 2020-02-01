@@ -47,7 +47,7 @@ namespace Uno.Xaml.Schema
 			this.member = member;
 		}
 
-		private XamlMember member;
+		private readonly XamlMember member;
 
 		public MethodInfo UnderlyingGetter {
 			get { return member != null ? member.UnderlyingGetter : null; }
