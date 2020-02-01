@@ -22,7 +22,7 @@ namespace Windows.Devices.Geolocation
 			};
 
 #if __IOS__ //required only for iOS
-				mgr.RequestWhenInUseAuthorization();
+			_locationManager.RequestWhenInUseAuthorization();
 #endif
 
 			_locationManager.LocationsUpdated += _locationManager_LocationsUpdated;
