@@ -180,7 +180,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			_app.EnterText(numBox, "5 + 3");
 			Assert.AreEqual("0", numBox.GetText());
 
-			_app.FastTap("ExpressionCheckBox");
+			_app.Tap("ExpressionCheckBox");
 
 			int numErrors = 0;
 			const double resetValue = double.NaN;
