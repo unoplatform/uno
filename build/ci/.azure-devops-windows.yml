@@ -59,9 +59,10 @@ jobs:
         !**\*Wasm.Test*.dll
         !**\*UITests.dll
         !**\*.RuntimeTests.dll
-      vsTestVersion: 'toolsInstaller'
-      testSelector: 'testAssemblies'
-      batchingBasedOnAgentsOption: 'customBatchSize'
+      vstestLocationMethod: version
+      vsTestVersion: latest
+      testSelector: testAssemblies
+      batchingBasedOnAgentsOption: customBatchSize
       rerunFailedTests: 'true'
       customBatchSizeValue: 200 # test count / 10 (https://developercommunity.visualstudio.com/content/problem/891803/vstestconsoleadapter-fails-with-outofmemory.html?childToView=896206#comment-896206)
 
