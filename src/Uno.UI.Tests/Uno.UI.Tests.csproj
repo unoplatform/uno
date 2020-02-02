@@ -151,18 +151,6 @@
 			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
 			<Generator>ResXFileCodeGenerator</Generator>
 		</None>
-		<None Update="Windows_UI_Xaml_Data\xBindTests\Controls\Binding_StateTrigger.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</None>
-		<None Update="Windows_UI_Xaml_Data\xBindTests\Controls\Binding_Nullable.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</None>
-		<None Update="Windows_UI_Xaml_Data\xBindTests\Controls\Binding_Control.xaml">
-		  <Generator>MSBuild:Compile</Generator>
-		</None>
-		<None Update="Windows_UI_Xaml_Data\xBindTests\Controls\Functions_Control.xaml">
-		  <Generator></Generator>
-		</None>
 	</ItemGroup>
 
 </Project>
