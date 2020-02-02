@@ -3,6 +3,7 @@ using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Logging;
 using Windows.Foundation;
+using System.Globalization;
 
 namespace Windows.UI.ViewManagement
 {
@@ -46,7 +47,7 @@ namespace Windows.UI.ViewManagement
 
 		private bool SetFullScreenMode(bool turnOn)
 		{
-			var jsEval = $"{ApplicationViewTsType}.setFullScreenMode({turnOn.ToString().ToLowerInvariant()})";
+			var jsEval = $"{ApplicationViewTsType}.setFullScreenMode({turnOn.ToString(CultureInfo.InvariantCulture).ToLowerInvariant()})";
 			var result = WebAssemblyRuntime.InvokeJS(jsEval);
 			return bool.TryParse(result, out var modeSwitchSuccessful) && modeSwitchSuccessful;			
 		}
