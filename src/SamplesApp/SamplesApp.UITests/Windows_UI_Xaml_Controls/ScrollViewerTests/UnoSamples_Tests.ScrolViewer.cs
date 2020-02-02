@@ -27,12 +27,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 			var validate = _app.Marked("_validate");
 			var result = _app.Marked("_result");
 
-			selectMode.Tap();
+			selectMode.FastTap();
 
 			//Drag upward
 			_app.DragCoordinates(sut.Rect.X + 10, sut.Rect.Y + 110, sut.Rect.X + 10, sut.Rect.Y + 10);
 
-			validate.Tap();
+			validate.FastTap();
 			TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 			_app.WaitForDependencyPropertyValue(result, "Text", "SUCCESS");
 		}
@@ -49,12 +49,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 			var validate = _app.Marked("_validate");
 			var result = _app.Marked("_result");
 
-			selectMode.Tap();
+			selectMode.FastTap();
 
 			//Drag upward
 			_app.DragCoordinates(sut.Rect.X + 10, sut.Rect.Y + 110, sut.Rect.X + 10, sut.Rect.Y + 10);
 
-			validate.Tap();
+			validate.FastTap();
 			TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 			_app.WaitForDependencyPropertyValue(result, "Text", "SUCCESS");
 		}

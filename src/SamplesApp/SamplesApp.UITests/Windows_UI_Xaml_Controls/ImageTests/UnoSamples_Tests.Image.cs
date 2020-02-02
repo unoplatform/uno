@@ -22,7 +22,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			// Request to render
 			var button = _app.Marked("_update");
 			_app.WaitForElement(button);
-			button.Tap();
+			button.FastTap();
 
 			// Take screenshot
 			TakeScreenshot("WriteableBitmap_Invalidate - Result");
