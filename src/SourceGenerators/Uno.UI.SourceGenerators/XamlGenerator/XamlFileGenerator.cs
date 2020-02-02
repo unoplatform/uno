@@ -2836,7 +2836,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					.Select(p => $"\"{p}\"");
 
 				var pathsArray = propertyPaths.Any()
-					? ", new [] {" + string.Join(", ", formattedPaths + "}")
+					? ", new [] {" + string.Join(", ", formattedPaths) + "}"
 					: "";
 
 				if (isInsideDataTemplate)
