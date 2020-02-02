@@ -34,7 +34,7 @@ namespace SamplesApp.UITests
 			TakeScreenshot("Popup - Dismissable - 1 - InitialState");
 			Assert.AreEqual(null, PopupText.GetDependencyPropertyValue("Text")?.ToString());
 
-			OpenDismissablePopupButton.Tap();
+			OpenDismissablePopupButton.FastTap();
 
 			_app.WaitForElement(PopupText, timeout: TimeSpan.FromSeconds(5));
 
@@ -67,8 +67,8 @@ namespace SamplesApp.UITests
 			TakeScreenshot("Popup - Non Dismissable - 1 - InitialState");
 			Assert.AreEqual(null, PopupText.GetDependencyPropertyValue("Text")?.ToString());
 
-			OpenNonDismissablePopupButton.Tap();
-			OpenNonDismissablePopupButton.Tap();
+			OpenNonDismissablePopupButton.FastTap();
+			OpenNonDismissablePopupButton.FastTap();
 
 			_app.WaitForElement(PopupText, timeout: TimeSpan.FromSeconds(5));
 
@@ -101,7 +101,7 @@ namespace SamplesApp.UITests
 			TakeScreenshot("Popup - No Fixed Height - 1 - InitialState");
 			Assert.AreEqual(null, PopupText.GetDependencyPropertyValue("Text")?.ToString());
 
-			OpenNoFixedHeightPopupButton.Tap();
+			OpenNoFixedHeightPopupButton.FastTap();
 
 			_app.WaitForElement(PopupText, timeout: TimeSpan.FromSeconds(5));
 

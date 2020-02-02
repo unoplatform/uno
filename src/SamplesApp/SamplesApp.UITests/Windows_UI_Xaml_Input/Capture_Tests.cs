@@ -42,7 +42,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			=> RunTest("NestedIsEnabled");
 
 
-		private readonly Action<QueryEx> TouchAndHold = element => /*element.TouchAndHold() not implemented ... we can use tap instead */ element.Tap();
+		private readonly Action<QueryEx> TouchAndHold = element => /*element.TouchAndHold() not implemented ... we can use tap instead */ element.FastTap();
 		private void TouchAndMoveOut(QueryEx element)
 		{
 			var rect = _app.WaitForElement(element).Single().Rect;

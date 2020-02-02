@@ -27,7 +27,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Automation
 			{
 				var itemName = $"Item{i:00}";
 				_app.WaitForElement(itemName);
-				_app.Tap(itemName);
+				_app.FastTap(itemName);
 				_app.WaitForDependencyPropertyValue(result, "Text", $"Item {i:00}");
 			}
 		}
