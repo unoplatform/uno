@@ -1,6 +1,7 @@
 using System;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
@@ -146,8 +147,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 		[Test]
 		[AutoRetry]
-        [ActivePlatforms(Platform.Browser, Platform.Android)] // unstable test on iOS
-		public void TextBox_Readonly()
+		public async Task TextBox_Readonly()
 		{
 			Run("Uno.UI.Samples.UITests.TextBoxControl.TextBox_IsReadOnly");
 
@@ -157,15 +157,20 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			const string initialText = "This text should initially be READONLY and ENABLED...";
 			_app.WaitForText(txt, initialText);
 
-			_app.EnterText(txt, "ERROR1");
+			// Don't use EnterText(txt, "") as it waits for the keyboard that will not arrive (on iOS)
+			_app.Tap(txt);
+			_app.EnterText("ERROR1");
 			_app.WaitForText(txt, initialText);
 
 			tglReadonly.FastTap();
 			_app.EnterText(txt, "Hello!");
+			await Task.Delay(100);
 			_app.WaitForText(txt, initialText + "Hello!");
 
 			tglReadonly.FastTap();
-			_app.EnterText(txt, "ERROR2");
+			_app.FastTap(txt);
+			_app.EnterText("ERROR2");
+			await Task.Delay(100);
 			_app.WaitForText(txt, initialText + "Hello!");
 
 			tglReadonly.FastTap();
