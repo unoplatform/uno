@@ -40,6 +40,11 @@
     <JavaSdkDirectory Condition="'$(JavaSdkDirectory)'=='' and '$(JAVA_HOME_8_X64)'!=''">$(JAVA_HOME_8_X64)</JavaSdkDirectory>
   </PropertyGroup>
 
+  <ItemGroup>
+	<!-- Include the reference assemblies to ensure that hard links don't use system files (workaround for same disk restriction)-->
+	<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+  </ItemGroup>
+
   <PropertyGroup>
     <IsMonoAndroid>$(TargetFramework.ToLower().StartsWith('monoandroid'))</IsMonoAndroid>
     <IsXamarinIOS>$(TargetFramework.ToLower().StartsWith('xamarinios'))</IsXamarinIOS>
