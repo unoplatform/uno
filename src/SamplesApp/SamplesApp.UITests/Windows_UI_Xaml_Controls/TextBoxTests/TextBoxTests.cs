@@ -159,7 +159,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			// Don't use EnterText(txt, "") as it waits for the keyboard that will not arrive (on iOS)
 			_app.Tap(txt);
-			_app.EnterText("ERROR1");
+			try
+			{
+				_app.EnterText("ERROR1");
+			}
+			catch(Exception e)
+			{
+				// Ignore the exception for now.
+				Console.WriteLine(e);
+			}
+
 			_app.WaitForText(txt, initialText);
 
 			tglReadonly.FastTap();
@@ -169,7 +178,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			tglReadonly.FastTap();
 			_app.FastTap(txt);
-			_app.EnterText("ERROR2");
+
+			try
+			{
+				_app.EnterText("ERROR2");
+			}
+			catch(Exception e)
+			{
+				Console.WriteLine(e);
+			}
+
 			await Task.Delay(100);
 			_app.WaitForText(txt, initialText + "Hello!");
 
