@@ -21,6 +21,26 @@ namespace Windows.UI.ViewManagement
 
 			VisibleBoundsChanged?.Invoke(this, null);
 		}
+
+		public string Title
+		{
+			get
+			{
+				if (NSApplication.SharedApplication.KeyWindow == null)
+				{
+					throw new InvalidOperationException($"{nameof(Title)} API must be used after KeyWindow is set");
+				}
+				return NSApplication.SharedApplication.KeyWindow.Title;
+			}
+			set
+			{
+				if (NSApplication.SharedApplication.KeyWindow == null)
+				{
+					throw new InvalidOperationException($"{nameof(Title)} API must be used after KeyWindow is set");
+				}
+				NSApplication.SharedApplication.KeyWindow.Title = value;
+			}
+		}
 	}
 }
 #endif
