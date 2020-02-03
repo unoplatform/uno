@@ -360,7 +360,7 @@ namespace Windows.UI.Xaml
 		/// Gets the max value being left or right.
 		/// </summary>
 		/// <remarks>
-		/// This method kept here for readbility
+		/// This method kept here for readability
 		/// of <see cref="SizeThatFits(IFrameworkElement, CGSize)"/> the keep its
 		/// fluent aspect.
 		/// It also does not use the generic extension that may create an very
