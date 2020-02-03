@@ -32,7 +32,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			_app.WaitForDependencyPropertyValue(theDatePicker, "DataContext", "UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.Models.DatePickerViewModel");
 
 			// Open flyout
-			theDatePicker.Tap();
+			theDatePicker.FastTap();
 
 			_app.WaitForElement(datePickerFlyout);
 
@@ -54,7 +54,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			var datePickerFlyout = _app.CreateQuery(q => q.WithClass("Windows_UI_Xaml_Controls_DatePickerFlyoutPresenter"));
 
 			// Open flyout
-			theDatePicker.Tap();
+			theDatePicker.FastTap();
 
 			_app.WaitForDependencyPropertyValue(datePickerFlyout, "Content", "Windows.UI.Xaml.Controls.DatePickerSelector");
 
@@ -74,7 +74,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 
 			_app.WaitForElement(button);
 
-			button.Tap();
+			button.FastTap();
 
 			TakeScreenshot("DatePicker - Flyout", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Status bar appears with clock*/);
 
@@ -97,7 +97,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			var minYear = theDatePicker.GetDependencyPropertyValue<string>("MinYear");
 
 			// Open flyout
-			theDatePicker.Tap();
+			theDatePicker.FastTap();
 
 			_app.WaitFor(() => datePickerFlyout.GetDependencyPropertyValue<string>("MinYear") == minYear);
 
@@ -120,7 +120,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			var maxYear = theDatePicker.GetDependencyPropertyValue<string>("MaxYear");
 
 			// Open flyout
-			theDatePicker.Tap();
+			theDatePicker.FastTap();
 
 			//Assert
 			_app.WaitFor(() => datePickerFlyout.GetDependencyPropertyValue<string>("MaxYear") == maxYear);
@@ -140,7 +140,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 
 			_app.WaitForElement(TestDatePickerFlyoutButton);
 
-			TestDatePickerFlyoutButton.Tap();
+			TestDatePickerFlyoutButton.FastTap();
 
 			_app.WaitForElement(datePickerFlyout);
 
