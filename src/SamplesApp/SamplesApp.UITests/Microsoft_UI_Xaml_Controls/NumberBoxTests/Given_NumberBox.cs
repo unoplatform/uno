@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 {
@@ -175,7 +177,15 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		{
 			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.MUX_Test");
 
-			var numBox = _app.Marked("TestNumberBox");
+			var currentPlatform = AppInitializer.GetLocalPlatform();
+
+			// Use the .All() so the Query returns the TextBox even if covered by the keyboard, until Uno.UITest
+			// supports it for Browsers.
+			var supportsAllQuery = currentPlatform == Platform.Android || currentPlatform == Platform.iOS;
+
+			var numBox = supportsAllQuery
+				? new QueryEx(q => q.All().Marked("TestNumberBox"))
+				: _app.Marked("TestNumberBox");
 
 			_app.EnterText(numBox, "5 + 3");
 			Assert.AreEqual("0", numBox.GetText());

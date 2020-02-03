@@ -25,13 +25,13 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void InsertCore(int index, NSView item)
 		{
-			if (_owner.Subviews.Length != 0)
+			if (index == _owner.Subviews.Length)
 			{
-				_owner.AddSubview(item, NSWindowOrderingMode.Above, _owner.Subviews[index]);
+				_owner.AddSubview(item);
 			}
 			else
 			{
-				_owner.AddSubview(item);
+				_owner.AddSubview(item, NSWindowOrderingMode.Above, _owner.Subviews[index]);
 			}
 		}
 
