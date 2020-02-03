@@ -40,14 +40,6 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-	  <None Remove="Storage\KnownFolders.Android.cs" />
-	</ItemGroup>
-	
-	<ItemGroup>
-	  <UpToDateCheckInput Remove="Storage\KnownFolders.Android.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.Core" />
