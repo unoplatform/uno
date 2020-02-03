@@ -235,6 +235,10 @@ namespace Windows.UI.Xaml
 		}
 #endregion
 
-		internal void RaiseTapped(TappedRoutedEventArgs args) => LogUnRegisterPointerReleasedNotImplemented();		
+		internal void RaiseTapped(TappedRoutedEventArgs args) => LogUnRegisterPointerReleasedNotImplemented();
+
+#if DEBUG
+		public string ShowLocalVisualTree(int fromHeight) => AppKit.UIViewExtensions.ShowLocalVisualTree(this, fromHeight);
+#endif
 	}
 }

@@ -38,7 +38,7 @@ namespace SamplesApp.UITests.Windows_Devices
 
 			try
 			{
-				_app.Tap("AttachReadingButton");
+				_app.FastTap("AttachReadingButton");
 
 				_app.Wait(TimeSpan.FromMilliseconds(500));
 
@@ -48,7 +48,7 @@ namespace SamplesApp.UITests.Windows_Devices
 			}
 			finally
 			{
-				_app.Tap("DetachReadingButton");
+				_app.FastTap("DetachReadingButton");
 			}
 		}
 
@@ -63,7 +63,7 @@ namespace SamplesApp.UITests.Windows_Devices
 
 			try
 			{
-				_app.Tap("AttachReadingButton");
+				_app.FastTap("AttachReadingButton");
 
 				_app.Wait(TimeSpan.FromMilliseconds(500));
 				var firstTimestampSnapshot = _app.GetText("TimestampRun");
@@ -76,7 +76,7 @@ namespace SamplesApp.UITests.Windows_Devices
 			}
 			finally
 			{
-				_app.Tap("DetachReadingButton");
+				_app.FastTap("DetachReadingButton");
 			}
 		}
 
@@ -91,9 +91,9 @@ namespace SamplesApp.UITests.Windows_Devices
 
 			try
 			{
-				_app.Tap("AttachReadingButton");
+				_app.FastTap("AttachReadingButton");
 				_app.Wait(TimeSpan.FromMilliseconds(500));
-				_app.Tap("DetachReadingButton");
+				_app.FastTap("DetachReadingButton");
 
 				//wait a bit to make sure last invoke finishes
 				_app.Wait(TimeSpan.FromMilliseconds(250));
@@ -107,7 +107,7 @@ namespace SamplesApp.UITests.Windows_Devices
 			}
 			finally
 			{
-				_app.Tap("DetachReadingButton");
+				_app.FastTap("DetachReadingButton");
 			}
 		}
 	}

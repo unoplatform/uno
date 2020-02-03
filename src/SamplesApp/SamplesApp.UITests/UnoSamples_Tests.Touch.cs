@@ -40,7 +40,7 @@ namespace SamplesApp.UITests
 				var button = _app.Marked("button_border_on_top");
 				var border = _app.Marked("button_border_on_top_border");
 
-				border.Tap();
+				border.FastTap();
 
 				var position = button.FirstResult().Rect;
 				_app.TapCoordinates(position.X + 2, position.Y + 2);

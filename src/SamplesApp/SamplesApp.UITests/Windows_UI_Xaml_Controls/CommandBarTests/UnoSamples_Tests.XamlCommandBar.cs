@@ -30,18 +30,18 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 			TakeScreenshot("Initial");
 
-			_app.Tap(shuffleButton);
+			_app.FastTap(shuffleButton);
 			_app.WaitForDependencyPropertyValue(shuffleButton, "IsChecked", true);
 			_app.WaitForDependencyPropertyValue(clickResult, "Text", "Shuffle");
 
 			TakeScreenshot("AfterShuffle");
 
-			_app.Tap(playButton);
+			_app.FastTap(playButton);
 			_app.WaitForDependencyPropertyValue(clickResult, "Text", "Play");
 
 			TakeScreenshot("AfterPlay");
 
-			_app.Tap(appBarContentButton);
+			_app.FastTap(appBarContentButton);
 			_app.WaitForDependencyPropertyValue(clickResult, "Text", "Click me");
 
 			TakeScreenshot("AfterClickMe");

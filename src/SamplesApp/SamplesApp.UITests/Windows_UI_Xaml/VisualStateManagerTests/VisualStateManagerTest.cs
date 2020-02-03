@@ -26,7 +26,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.VisualStateManagerTests
 			var border02 = _app.Marked("border02");
 			var border03 = _app.Marked("border03");
 
-			_app.Tap(changeState);
+			_app.FastTap(changeState);
 
 			_app.WaitForDependencyPropertyValue(border01_bound, "Background", "[SolidColorBrush [Color: 000000FF;000000FF;00000000;00000000]]");
 			_app.WaitForDependencyPropertyValue(border02, "Background", "[SolidColorBrush [Color: 000000FF;00000080;00000000;00000080]]");

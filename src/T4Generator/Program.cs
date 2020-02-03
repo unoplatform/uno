@@ -115,8 +115,9 @@ namespace CustomHost
             //----------------------------------------------------------------  
             if (File.Exists(requestFileName))
             {
-                content = File.ReadAllText(requestFileName);
-                return true;
+                content = T4Generator.Tools.ConvertLineEndings(File.ReadAllText(requestFileName));
+
+				return true;
             }
             //This can be customized to search specific paths for the file.  
             //This can be customized to accept paths to search as command line  
@@ -347,8 +348,10 @@ namespace CustomHost
             //Read the text template.  
             string input = File.ReadAllText(templateFileName);
             //Transform the text template.  
-            string output = engine.ProcessTemplate(input, host);
-            string outputFileName = Path.GetFileNameWithoutExtension(templateFileName);
+            string output = T4Generator.Tools.ConvertLineEndings(engine.ProcessTemplate(input, host));
+
+
+			string outputFileName = Path.GetFileNameWithoutExtension(templateFileName);
             outputFileName = Path.Combine(outputPath ?? Path.GetDirectoryName(templateFileName), outputFileName);
             outputFileName = outputFileName + host.FileExtension;
             File.WriteAllText(outputFileName, output, host.FileEncoding);
@@ -359,4 +362,6 @@ namespace CustomHost
             }
         }
     }
+
+
 }

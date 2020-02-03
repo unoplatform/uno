@@ -1,5 +1,4 @@
-﻿#if !__MACOS__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -777,5 +776,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-
-#endif
