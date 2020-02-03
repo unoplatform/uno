@@ -2,7 +2,17 @@
   <PropertyGroup>
 		<TargetFrameworks>MonoAndroid90;xamarinios10</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10</TargetFrameworksCI>
+		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 	</PropertyGroup>
+	
+	<PropertyGroup>
+    <Authors>nventive</Authors>
+    <PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
+    <PackageIconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</PackageIconUrl>
+    <RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
+    <Description>This package provides the ability for Uno Platform based apps to use the MapControl</Description>
+    <Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
+  </PropertyGroup>
 	
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
@@ -17,11 +27,9 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
-		<ProjectReference Include="..\Uno.UWP\Uno.csproj" />
-		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj" />
-		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="$(IsMonoAndroid)">
-			<TreatAsPackageReference>false</TreatAsPackageReference>
-		</ProjectReference>
+		<ProjectReference Include="..\Uno.UWP\Uno.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj" TreatAsPackageReference="false" PrivateAssets="all" />
+		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="$(IsMonoAndroid)"  TreatAsPackageReference="false" PrivateAssets="all" />
 	</ItemGroup>
 
 	<ItemGroup>

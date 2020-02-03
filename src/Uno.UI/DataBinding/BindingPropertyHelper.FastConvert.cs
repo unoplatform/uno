@@ -53,20 +53,28 @@ namespace Uno.UI.DataBinding
 				return true;
 			}
 
-			if (input is Enum)
+			switch (input)
 			{
-				if (FastEnumConvert(outputType, input, ref output))
-				{
-					return true;
-				}
-			}
+				case Enum _:
+					if (FastEnumConvert(outputType, input, ref output))
+					{
+						return true;
+					}
+					break;
 
-			if (input is bool boolInput)
-			{
-				if (FastBooleanConvert(outputType, boolInput, ref output))
-				{
-					return true;
-				}
+				case bool boolInput:
+					if (FastBooleanConvert(outputType, boolInput, ref output))
+					{
+						return true;
+					}
+					break;
+
+				case double doubleInput:
+					if (FastDoubleConvert(outputType, doubleInput, ref output))
+					{
+						return true;
+					}
+					break;
 			}
 
 			return false;
@@ -77,6 +85,17 @@ namespace Uno.UI.DataBinding
 			if (outputType == typeof(Visibility))
 			{
 				output = boolInput ? Visibility.Visible : Visibility.Collapsed;
+				return true;
+			}
+
+			return false;
+		}
+
+		private static bool FastDoubleConvert(Type outputType, double doubleInput, ref object output)
+		{
+			if (outputType == typeof(GridLength))
+			{
+				output = GridLengthHelper.FromPixels(doubleInput);
 				return true;
 			}
 

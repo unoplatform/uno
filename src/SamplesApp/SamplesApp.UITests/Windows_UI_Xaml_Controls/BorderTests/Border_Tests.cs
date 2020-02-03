@@ -22,7 +22,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 
 			var before = TakeScreenshot("Before property change");
 
-			_app.Tap("ClippedBorder");
+			_app.FastTap("ClippedBorder");
 
 			_app.WaitForDependencyPropertyValue(_app.Marked("ClippedBorder"), "ManipulationMode", "None");
 
@@ -44,7 +44,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.BorderTests
 
 			var scrBefore = TakeScreenshot("No CornerRadius");
 
-			_app.Tap("ToggleCornerRadiusButton");
+			_app.FastTap("ToggleCornerRadiusButton");
 
 			_app.WaitForText("StatusTextBlock", "5");
 

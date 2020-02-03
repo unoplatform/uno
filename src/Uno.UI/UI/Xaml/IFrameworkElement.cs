@@ -302,6 +302,10 @@ namespace Windows.UI.Xaml
 				var desiredSize = fe.DesiredSize;
 				return new CGSize(desiredSize.Width, desiredSize.Height);
 			}
+			else if (element is IHasSizeThatFits scp)
+			{
+				return scp.SizeThatFits(availableSize);
+			}
 			else
 			{
 				throw new NotSupportedException($"Unsupported measure for {element}");
