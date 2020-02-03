@@ -52,6 +52,8 @@ namespace Windows.Storage
 			fileInfo.Delete();
 		}
 
+		public global::System.DateTimeOffset DateCreated => File.GetCreationTime(Path);
+
 #if false
 		public async Task<Stream> GetThumbnailAsync(CancellationToken ct, ThumbnailMode mode, int size)
 		{

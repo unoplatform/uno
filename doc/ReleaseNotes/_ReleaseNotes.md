@@ -2,6 +2,7 @@
 
 ### Features
 - [Android] support of `KnownFolders.MusicLibrary` and `VideosLibrary`
+- Add support for `StorageFile.DateCreated`
 - Support for `ApplicationView.IsScreenCaptureEnabled` on Android
 - Add support for `StorageFile.DeleteAsync()`
 - Support for `PointerDown`, `PointerUp` `PointerEntered`, `PointerExited` and `PointerMoved` events on macOS
