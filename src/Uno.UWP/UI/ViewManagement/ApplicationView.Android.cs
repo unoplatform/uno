@@ -39,6 +39,28 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
+		public string Title
+		{
+			get
+			{
+				if (!(ContextHelper.Current is Activity activity))
+				{
+					throw new InvalidOperationException($"{nameof(Title)} API must be called when Activity is created");
+				}
+
+				return activity.Title;
+			}
+			set
+			{
+				if (!(ContextHelper.Current is Activity activity))
+				{
+					throw new InvalidOperationException($"{nameof(Title)} API must be called when Activity is created");
+				}
+
+				activity.Title = value;
+			}
+		}
+
 		internal void SetVisibleBounds(Rect newVisibleBounds)
 		{
 			if (newVisibleBounds != VisibleBounds)
