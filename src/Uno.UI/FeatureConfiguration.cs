@@ -158,7 +158,7 @@ namespace Uno.UI
 			/// <summary>
 			/// Use a native popup to display the popup content. Otherwise use the <see cref="PopupRoot"/>.
 			/// </summary>
-			public static bool UseNativePopup { get; set; } = false;
+			public static bool UseNativePopup { get; set; } = true;
 #endif
 		}
 

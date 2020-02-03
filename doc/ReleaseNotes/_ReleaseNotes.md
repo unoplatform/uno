@@ -29,9 +29,9 @@
 - Add support for `ApplicationView.GetSpanningRects`
 - Add base support for API Extensibility through `Uno.Foundation.Extensibility.ApiExtensibility` and `ApiExtensionAttribute`
 - Add support for Surface Duo through the `Uno.UI.DualScreen` package
+- [Android] Add support for non-native `Popup` by default. Can be enabled through `FeatureConfiguration.Popup.UseNativePopup` set to false (See #2533 for more details)
 
 ### Breaking changes
-- [Android] Enable support for non-native `Popup` by default. Can be deactivated through `FeatureConfiguration.Popup.UseNativePopup` set to true (See #2533 for more details)
 
 ### Bug fixes
 
