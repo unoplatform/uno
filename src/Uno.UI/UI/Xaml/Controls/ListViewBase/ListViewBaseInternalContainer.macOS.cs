@@ -7,7 +7,14 @@ namespace Windows.UI.Xaml.Controls
 {
 	internal partial class ListViewBaseInternalContainer : NSCollectionViewItem
 	{
-		public ContentControl Content { get; set; }
+		public ContentControl Content
+		{
+			get => (View as Border)?.Child as ContentControl;
+			set
+			{
+				(View as Border).Child = value;
+			}
+		}
 		public NativeListViewBase Owner { get; internal set; } //Stub
 
 		/// <summary>
@@ -26,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public override void LoadView()
 		{
-			View = Content;
+			View = new Border();
 		}
 
 		internal IDisposable InterceptSetNeedsLayout()
