@@ -49,11 +49,7 @@ namespace Windows.UI.Xaml.Controls
 #if XAMARIN
 		private View _content;
 
-		public
-#if __MACOS__
-			new
-#endif
-			View Content
+		public View Content
 		{
 			get { return _content; }
 			set
@@ -86,7 +82,11 @@ namespace Windows.UI.Xaml.Controls
 				return false;
 			}
 
+#if __MACOS__
+			return false;
+#else
 			return this.IsWidthConstrainedSimple() ?? (Parent as ILayoutConstraints)?.IsWidthConstrained(this) ?? false;
+#endif
 		}
 
 		bool ILayoutConstraints.IsHeightConstrained(View requester)
@@ -96,7 +96,11 @@ namespace Windows.UI.Xaml.Controls
 				return false;
 			}
 
+#if __MACOS__
+			return false;
+#else
 			return this.IsHeightConstrainedSimple() ?? (Parent as ILayoutConstraints)?.IsHeightConstrained(this) ?? false;
+#endif
 		}
 	}
 }

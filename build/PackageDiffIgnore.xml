@@ -622,7 +622,13 @@
 				<Member
 					fullName="System.Void Windows.System.DispatcherQueueTimer..ctor()"
 					reason="Not part of the WinUI API."/>
-            </Methods>
+			  <Member
+					fullName="System.Void Windows.Storage.KnownFolders..ctor()"
+					reason="Not part of the WinUI API."/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.ListViewBase..ctor()"
+					reason="Ctor is protected in WinUI."/>
+        </Methods>
 		</IgnoreSet>
 	</IgnoreSets>
 </DiffIgnore>
