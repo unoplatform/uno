@@ -65,7 +65,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 			var initial = TakeScreenshot("Initial", ignoreInSnapshotCompare: true);
 			var element = _app.WaitForElement($"{type}AnimationHost_{fill}").Single().Rect;
 
-			_app.Marked("StartButton").Tap();
+			_app.Marked("StartButton").FastTap();
 			_app.WaitForDependencyPropertyValue(_app.Marked("Status"), "Text", "Completed");
 
 			// Assert

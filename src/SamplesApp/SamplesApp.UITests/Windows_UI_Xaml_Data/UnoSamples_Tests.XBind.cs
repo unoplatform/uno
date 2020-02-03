@@ -100,7 +100,7 @@ namespace SamplesApp.UITests
 			var _DataTemplate_MyProperty_Formatted_OneWay = _app.Marked("_DataTemplate_MyProperty_Formatted_OneWay");
 			Assert.AreEqual("Formatted Initial", _DataTemplate_MyProperty_Formatted_OneWay.GetText());
 
-			updateTemplateButton.Tap();
+			updateTemplateButton.FastTap();
 
 			Assert.AreEqual("NEW UPDATE", _DataTemplate_MyProperty_Function_OneWay.GetText());
 			Assert.AreEqual("Formatted new update", _DataTemplate_MyProperty_Formatted_OneWay.GetText());

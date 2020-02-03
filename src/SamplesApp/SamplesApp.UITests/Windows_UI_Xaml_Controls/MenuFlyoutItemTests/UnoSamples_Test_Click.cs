@@ -26,12 +26,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutItemTests
 			TakeScreenshot("Initial");
 
 			// step 1: press button to show menu
-			_app.Tap(_app.Marked("mfiButton"));
+			_app.FastTap(_app.Marked("mfiButton"));
 
 			TakeScreenshot("menuShown", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Menu animation is midflight*/);
 
 			// step 2: click MenuFlyoutItem
-			_app.Tap(_app.Marked("mfiItem"));
+			_app.FastTap(_app.Marked("mfiItem"));
 
 			// step 3: check result
 			_app.WaitForText(_app.Marked("mfiResult"), "success");  

@@ -66,7 +66,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 			var blueBefore = TakeScreenshot("Before - blue");
 
-			_app.Tap("ChangeTextBlockButton");
+			_app.FastTap("ChangeTextBlockButton");
 
 			var blackBefore = TakeScreenshot("Before - black");
 
@@ -74,11 +74,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 			ImageAssert.AreNotEqual(blueBefore, blackBefore, textRect);
 
-			_app.Tap("ChangeTextBlockButton");
+			_app.FastTap("ChangeTextBlockButton");
 
 			//_app.WaitForNoElement("FunnyTextBlock"); // This times out on WASM because view is considered to be still there when collapsed - https://github.com/unoplatform/Uno.UITest/issues/25
 
-			_app.Tap("ChangeTextBlockButton");
+			_app.FastTap("ChangeTextBlockButton");
 
 			_app.WaitForElement("FunnyTextBlock");
 

@@ -1,8 +1,8 @@
 # Release notes
 
 ### Features
-
 - Support for `MessageDialog` on macOS
+- Add support for `StorageFile.DateCreated`
 - Support for `ApplicationView.IsScreenCaptureEnabled` on Android
 - Add support for `StorageFile.DeleteAsync()`
 - Support for `PointerDown`, `PointerUp` `PointerEntered`, `PointerExited` and `PointerMoved` events on macOS
@@ -21,6 +21,8 @@
 - Add support for WinUI 2.3 [`NumberBox`](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.numberbox?view=winui-2.3)
 - Add support of the `UIElement.RightTapped` event (The context menu won't appear anymore on WASM, except for the `TextBox`)
 - Add support of the `UIElement.Holding` event
+- [MacOS] Support for `ScrollViewer`
+- [MacOS] Support for `LinearGradientBrush`
 - Add support for [TwoPaneView](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.twopaneview?view=winui-2.3) control.
 - Add support for `ApplicationView.GetSpanningRects`
 - Add base support for API Extensibility through `Uno.Foundation.Extensibility.ApiExtensibility` and `ApiExtensionAttribute`
@@ -63,6 +65,7 @@
 - [#1956] Fis iOS invalid final state when switching visual state before current state's animation is completed.
 - Fix `Selector` support for IsSelected (#1606)
 - [Android] 164249 fixed TextBox.Text flickering when using custom IInputFilter with MaxLength set
+- [MacOS] Fix exceptions when modifying UIElementCollection, layouting view with null `Layer`
 - Fix invalid conversion when using ThemeResource (e.g. Color resource to Brush property)
 - Fix XamlBindingHelper.Convert double to GridLength
 - [Android] Adjust `TextBlock.TextDecorations` is not updating properly
