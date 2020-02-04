@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (Subviews.Length != 0)
 			{
-				throw new Exception("A Xaml IconElement may not contain more than one child.");
+				throw new InvalidOperationException("A Xaml IconElement may not contain more than one child.");
 			}
 
 			child.Frame = Bounds;
