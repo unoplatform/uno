@@ -40,17 +40,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			var presenter = _app.FindWithin(marked: "ContentPresenter", within: comboBox);
 
 			var button = _app.Marked("ChangeSelectionButton");
-			_app.Tap(button);
+			_app.FastTap(button);
 
 			var first = _app.FindWithin("_tb1", presenter);
 			Assert.AreEqual("Item 1", first.GetDependencyPropertyValue<string>("Text"));
 
-			_app.Tap(comboBox);
+			_app.FastTap(comboBox);
 			_app.TapCoordinates(300, 100);
 			first = _app.FindWithin("_tb1", presenter);
 			Assert.AreEqual("Item 1", first.GetDependencyPropertyValue<string>("Text"));
 
-			_app.Tap(button);
+			_app.FastTap(button);
 			var second = _app.FindWithin("_tb2", presenter);
 			Assert.AreEqual("Item 2", second.GetDependencyPropertyValue<string>("Text"));
 
@@ -73,7 +73,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			var resourcesFilterResult = _app.WaitForElement(combo01).First();
 			var sampleControlResult = _app.WaitForElement(sampleControl).First();
 
-			_app.Tap(combo01);
+			_app.FastTap(combo01);
 
 			var popupResult = _app.WaitForElement("PopupBorder").First();
 
@@ -81,12 +81,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 			_app.TapCoordinates(popupResult.Rect.Y - 10, popupResult.Rect.X);
 
-			_app.Tap(changeExtended);
+			_app.FastTap(changeExtended);
 
 			var resourcesFilterResultExtended = _app.WaitForElement(combo01).First();
 			var sampleControlResultExtended = _app.WaitForElement(sampleControl).First();
 
-			_app.Tap(combo01);
+			_app.FastTap(combo01);
 
 			var popupResultExtended = _app.WaitForElement("PopupBorder").First();
 

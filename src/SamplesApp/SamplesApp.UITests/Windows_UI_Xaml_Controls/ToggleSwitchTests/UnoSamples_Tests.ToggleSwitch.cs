@@ -30,8 +30,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToggleSwitchTests
 			Assert.AreEqual("False", toggleSwitchGroup.GetDependencyPropertyValue("IsOn")?.ToString());
 			Assert.AreEqual("True", separatedToggleSwitch.GetDependencyPropertyValue("IsOn")?.ToString());
 
-			unloadButton.Tap();
-			reloadButton.Tap();
+			unloadButton.FastTap();
+			reloadButton.FastTap();
 
 			//Assert final state
 			Assert.AreEqual("False", toggleSwitchGroup.GetDependencyPropertyValue("IsOn")?.ToString());

@@ -19,15 +19,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ControlTests
 
 			_app.WaitForText("CounterTextBlock", "0");
 
-			_app.Tap("ButtonUnderTest");
+			_app.FastTap("ButtonUnderTest");
 
 			_app.WaitForText("CounterTextBlock", "0");
 
-			_app.Tap("ToggleEnabledButton");
+			_app.FastTap("ToggleEnabledButton");
 
 			_app.WaitForText("IsEnabledTextBlock", "True");
 
-			_app.Tap("ButtonUnderTest");
+			_app.FastTap("ButtonUnderTest");
 
 			_app.WaitForText("CounterTextBlock", "1");
 		}

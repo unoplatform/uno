@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 {
@@ -27,11 +29,11 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			var downButton = numBox.Descendant().Marked("DownSpinButton");
 
 			Console.WriteLine("Assert that up button increases value by 1");
-			upButton.Tap();
+			upButton.FastTap();
 			Assert.AreEqual(1, numBox.GetDependencyPropertyValue<double>("Value"));
 
 			Console.WriteLine("Assert that down button decreases value by 1");
-			downButton.Tap();
+			downButton.FastTap();
 			Assert.AreEqual(0, numBox.GetDependencyPropertyValue<double>("Value"));
 
 			Console.WriteLine("Change SmallChange value to 5");
@@ -39,28 +41,28 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			smallChangeNumBox.SetDependencyPropertyValue("Text", "5");
 
 			Console.WriteLine("Assert that up button increases value by 5");
-			upButton.Tap();
+			upButton.FastTap();
 			Assert.AreEqual(5, numBox.GetDependencyPropertyValue<double>("Value"));
 
-			_app.Tap("MinCheckBox");
-			_app.Tap("MaxCheckBox");
+			_app.FastTap("MinCheckBox");
+			_app.FastTap("MaxCheckBox");
 
 			numBox.SetDependencyPropertyValue("Value", "100");
-			_app.Tap("WrapCheckBox");
+			_app.FastTap("WrapCheckBox");
 
 			Console.WriteLine("Assert that when wrapping is on, and value is at max, clicking the up button wraps to the min value.");
-			upButton.Tap();
+			upButton.FastTap();
 			Assert.AreEqual(0, numBox.GetDependencyPropertyValue<double>("Value"));
 
 			Console.WriteLine("Assert that when wrapping is on, clicking the down button wraps to the max value.");
-			downButton.Tap();
+			downButton.FastTap();
 			Assert.AreEqual(100, numBox.GetDependencyPropertyValue<double>("Value"));
 
 			Console.WriteLine("Assert that incrementing after typing in a value validates the text first.");
 			numBox.ClearText();
 			numBox.EnterText("50");
 			_app.PressEnter();
-			upButton.Tap();
+			upButton.FastTap();
 			Assert.AreEqual(55, numBox.GetDependencyPropertyValue<double>("Value"));
 		}
 
@@ -70,8 +72,8 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		{
 			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.MUX_Test");
 
-			_app.Tap("MinCheckBox");
-			_app.Tap("MaxCheckBox");
+			_app.FastTap("MinCheckBox");
+			_app.FastTap("MaxCheckBox");
 
 			var numBox = _app.Marked("TestNumberBox");
 			Assert.AreEqual(0, numBox.GetDependencyPropertyValue<double>("Minimum"));
@@ -122,8 +124,8 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			var upButton = numBox.Descendant().Marked("UpSpinButton");
 			var downButton = numBox.Descendant().Marked("DownSpinButton");
 
-			_app.Tap("MinCheckBox");
-			_app.Tap("MaxCheckBox");
+			_app.FastTap("MinCheckBox");
+			_app.FastTap("MaxCheckBox");
 
 			Console.WriteLine("Assert that when Value is at Minimum, the down spin button is disabled.");
 			Assert.IsTrue(upButton.GetDependencyPropertyValue<bool>("IsEnabled"));
@@ -136,10 +138,10 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			Assert.IsTrue(downButton.GetDependencyPropertyValue<bool>("IsEnabled"));
 
 			Console.WriteLine("Assert that when wrapping is enabled, spin buttons are enabled.");
-			_app.Tap("WrapCheckBox");
+			_app.FastTap("WrapCheckBox");
 			Assert.IsTrue(upButton.GetDependencyPropertyValue<bool>("IsEnabled"));
 			Assert.IsTrue(downButton.GetDependencyPropertyValue<bool>("IsEnabled"));
-			_app.Tap("WrapCheckBox");
+			_app.FastTap("WrapCheckBox");
 
 			Console.WriteLine("Assert that when Maximum is updated the up button is updated also.");
 			var maxBox = _app.Marked("MaxNumberBox");
@@ -175,7 +177,15 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		{
 			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.MUX_Test");
 
-			var numBox = _app.Marked("TestNumberBox");
+			var currentPlatform = AppInitializer.GetLocalPlatform();
+
+			// Use the .All() so the Query returns the TextBox even if covered by the keyboard, until Uno.UITest
+			// supports it for Browsers.
+			var supportsAllQuery = currentPlatform == Platform.Android || currentPlatform == Platform.iOS;
+
+			var numBox = supportsAllQuery
+				? new QueryEx(q => q.All().Marked("TestNumberBox"))
+				: _app.Marked("TestNumberBox");
 
 			_app.EnterText(numBox, "5 + 3");
 			Assert.AreEqual("0", numBox.GetText());

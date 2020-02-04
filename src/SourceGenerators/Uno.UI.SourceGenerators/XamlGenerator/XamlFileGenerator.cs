@@ -2831,8 +2831,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					? XBindExpressionParser.ParseProperties(rawFunction, IsStaticMethod)
 					: new string[0];
 
+				var formattedPaths = propertyPaths
+					.Where(p => !p.StartsWith("global::"))	// Don't include paths that start with global:: (e.g. Enums)
+					.Select(p => $"\"{p}\"");
+
 				var pathsArray = propertyPaths.Any()
-					? ", new [] {" + string.Join(", ", propertyPaths.Select(p => $"\"{p}\"")) + "}"
+					? ", new [] {" + string.Join(", ", formattedPaths) + "}"
 					: "";
 
 				if (isInsideDataTemplate)
@@ -2864,6 +2868,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		bool IsStaticMethod(string fullMethodName)
 		{
+			fullMethodName = fullMethodName.TrimStart("global::");
+
 			var lastDotIndex = fullMethodName.LastIndexOf(".");
 
 			var className = lastDotIndex != -1 ? fullMethodName.Substring(0, lastDotIndex) : fullMethodName;
@@ -2876,7 +2882,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			foreach (var ns in _fileDefinition.Namespaces.Where(ns => ns.Namespace.StartsWith("using:")))
 			{
-				xamlString = xamlString.Replace($"{ns.Prefix}:", ns.Namespace.TrimStart("using:") + ".");
+				// Replace namespaces with their fully qualified namespace.
+				// Add global:: so that qualified paths can be expluded from binding
+				// path observation.
+				xamlString = xamlString.Replace(
+					$"{ns.Prefix}:",
+					"global::" + ns.Namespace.TrimStart("using:") + ".");
 			}
 
 			return xamlString;

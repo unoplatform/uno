@@ -29,12 +29,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.WebViewTests
 			var clickResult = _app.Marked("WebView_NavigateToStringResult");
 
 			// step 1: generate long string
-			_app.Tap(startButton);
+			_app.FastTap(startButton);
 
 			_app.WaitForText(clickResult, "string ready");  // timeout here means: add wait
 
 			// step 2: NavigateTo
-			_app.Tap(startButton);
+			_app.FastTap(startButton);
 			_app.WaitForText(clickResult, "success");   // timeout here means: bug reappear
 
 			TakeScreenshot("AfterSuccess");

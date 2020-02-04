@@ -42,7 +42,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		public void TestListView()
 			=> RunSequence("ListView", TapSomewhereInElement);
 
-		private readonly Action<QueryEx> TapElement = element => element.Tap();
+		private readonly Action<QueryEx> TapElement = element => element.FastTap();
 		private void TranslateOverElement(QueryEx element)
 		{
 			var rect = _app.WaitForElement(element).Single().Rect;
@@ -66,9 +66,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			var result = _app.Marked($"Test{testName}Result");
 
 			_app.WaitForElement(target);
-			reset.Tap();
+			reset.FastTap();
 			tap(target);
-			validate.Tap();
+			validate.FastTap();
 
 			TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 
