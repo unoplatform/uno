@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -66,17 +67,24 @@ namespace UITests.Shared.Windows_Devices
 
 		private async void GetPedometerAsync()
 		{
-			_pedometer = await Pedometer.GetDefaultAsync();
-			_pedometer.ReportInterval = 10000;
-			Disposables.Add(Disposable.Create(() =>
+			try
 			{
-				if (_pedometer != null)
+				_pedometer = await Pedometer.GetDefaultAsync();
+				_pedometer.ReportInterval = 10000;
+				Disposables.Add(Disposable.Create(() =>
 				{
-					_pedometer.ReadingChanged -= Pedometer_ReadingChanged;
-				}
-			}));
+					if (_pedometer != null)
+					{
+						_pedometer.ReadingChanged -= Pedometer_ReadingChanged;
+					}
+				}));
 
-			RaisePropertyChanged(nameof(IsAvailable));
+				RaisePropertyChanged(nameof(IsAvailable));
+			}
+			catch (Exception ex)
+			{
+				PedometerStatus = $"Error occurred trying to get pedometer instance: {ex.Message}";
+			}
 		}
 
 		public Command AttachReadingChangedCommand => new Command((p) =>
