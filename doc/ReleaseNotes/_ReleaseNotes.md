@@ -1,6 +1,8 @@
 # Release notes
 
 ### Features
+
+- Support for `TryEnterFullScreenMode` and `ExitFullScreenMode` on WebAssembly
 - Support for `MessageDialog` on macOS
 - [Android] support of `KnownFolders.MusicLibrary` and `VideosLibrary`
 - Add support for `StorageFile.DateCreated`
