@@ -634,7 +634,10 @@
 				<Member
 					fullName="System.Void Windows.System.Profile.AnalyticsVersionInfo..ctor()"
 					reason="Not part of the WinUI API." />
-        </Methods>
+              <Member
+                  fullName="System.Void Windows.Networking.Connectivity.ConnectionProfile..ctor()"
+                  reason="Not part of the WinUI API." />
+            </Methods>
 		</IgnoreSet>
 	</IgnoreSets>
 </DiffIgnore>
