@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
-using System.Security;
 
 namespace Windows.Foundation
 {
@@ -26,18 +25,16 @@ namespace Windows.Foundation
 		{
 			if (o is Size other)
 			{
-				return other.Width == Width
-					&& other.Height == Height;
+				return other.Width.Equals(Width)
+					&& other.Height.Equals(Height);
 			}
 
 			return false;
 		}
 
-		public bool Equals(Size value)
-		{
-			return value.Width == Width
-					&& value.Height == Height;
-		}
+		public bool Equals(Size value) =>
+			value.Width.Equals(Width)
+			&& value.Height.Equals(Height);
 
 		public override int GetHashCode() => Width.GetHashCode() ^ Height.GetHashCode();
 
