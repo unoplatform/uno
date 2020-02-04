@@ -1,7 +1,10 @@
 # Release notes
 
 ### Features
+
 - Support for `AnalyticsInfo` on macOS
+- Support for `TryEnterFullScreenMode` and `ExitFullScreenMode` on WebAssembly
+- Support for `MessageDialog` on macOS
 - [Android] support of `KnownFolders.MusicLibrary` and `VideosLibrary`
 - Add support for `StorageFile.DateCreated`
 - Support for `ApplicationView.IsScreenCaptureEnabled` on Android
@@ -28,9 +31,11 @@
 - Add support for `ApplicationView.GetSpanningRects`
 - Add base support for API Extensibility through `Uno.Foundation.Extensibility.ApiExtensibility` and `ApiExtensionAttribute`
 - Add support for Surface Duo through the `Uno.UI.DualScreen` package
+- Add support for enums in x:Bind functions
+- Add XamlReader support for Primitive static resources
+- [Android] Add support for non-native `Popup` by default. Can be enabled through `FeatureConfiguration.Popup.UseNativePopup` set to false (See #2533 for more details)
 
 ### Breaking changes
-- [Android] Enable support for non-native `Popup` by default. Can be deactivated through `FeatureConfiguration.Popup.UseNativePopup` set to true (See #2533 for more details)
 
 ### Bug fixes
 
@@ -70,6 +75,8 @@
 - Fix invalid conversion when using ThemeResource (e.g. Color resource to Brush property)
 - Fix XamlBindingHelper.Convert double to GridLength
 - [Android] Adjust `TextBlock.TextDecorations` is not updating properly
+- Adjust `XamlBindingHelper` for `GridLength` and `TimeSpan`
+- Add missing `ListView` resources
 
 ## Release 2.0
 

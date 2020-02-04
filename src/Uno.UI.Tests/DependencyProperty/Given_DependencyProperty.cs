@@ -1,39 +1,21 @@
-﻿using Microsoft.Practices.ServiceLocation;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Moq;
-using Uno.Logging;
-using Uno.Extensions;
-using Uno.Presentation.Resources;
-using Uno.UI.DataBinding;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.UI.Xaml.Data;
 using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Runtime.CompilerServices;
-using Uno.Disposables;
-using System.ComponentModel;
-using Uno.UI;
 using Windows.UI.Xaml;
 using System.Threading;
 using Windows.UI.Xaml.Controls;
 using FluentAssertions;
-using Microsoft.Extensions.Logging;
 
 namespace Uno.UI.Tests.BinderTests
 {
 	[TestClass]
 	public partial class Given_DependencyProperty
 	{
-		[AssemblyInitialize]
+		[ClassInitialize]
 		public static void Init(TestContext ctx)
 		{
-			Uno.Extensions.LogExtensionPoint
-				.AmbientLoggerFactory
-				.AddConsole(LogLevel.Debug)
-				.AddDebug(LogLevel.Debug);
 		}
 
 		[TestMethod]
@@ -1220,74 +1202,74 @@ namespace Uno.UI.Tests.BinderTests
 		[TestMethod]
 		public void When_SetValue_And_RegisterPropertyChangedCallback()
 		{
-            var SUT = new SimpleDependencyObject1();
+			var SUT = new SimpleDependencyObject1();
 
-            int invocations = 0;
+			int invocations = 0;
 
-            var registration1 = SUT.RegisterPropertyChangedCallback(
-                SimpleDependencyObject1.MyPropertyProperty,
-                (s, e) =>
-                {
-                    invocations++;
-                }
-            );
+			var registration1 = SUT.RegisterPropertyChangedCallback(
+				SimpleDependencyObject1.MyPropertyProperty,
+				(s, e) =>
+				{
+					invocations++;
+				}
+			);
 
-            SUT.SetValue(SimpleDependencyObject1.MyPropertyProperty, "42");
+			SUT.SetValue(SimpleDependencyObject1.MyPropertyProperty, "42");
 
-            var value = SUT.GetValue(SimpleDependencyObject1.MyPropertyProperty);
+			var value = SUT.GetValue(SimpleDependencyObject1.MyPropertyProperty);
 
-            Assert.AreEqual("42", value);
-            Assert.AreEqual(1, invocations);
-            Assert.AreEqual(1, SUT.ChangedCallbackCount);
+			Assert.AreEqual("42", value);
+			Assert.AreEqual(1, invocations);
+			Assert.AreEqual(1, SUT.ChangedCallbackCount);
 
-            SUT.UnregisterPropertyChangedCallback(SimpleDependencyObject1.MyPropertyProperty, registration1);
+			SUT.UnregisterPropertyChangedCallback(SimpleDependencyObject1.MyPropertyProperty, registration1);
 
-            SUT.SetValue(SimpleDependencyObject1.MyPropertyProperty, "43");
+			SUT.SetValue(SimpleDependencyObject1.MyPropertyProperty, "43");
 
-            Assert.AreEqual(1, invocations);
-            Assert.AreEqual(2, SUT.ChangedCallbackCount);
-        }
+			Assert.AreEqual(1, invocations);
+			Assert.AreEqual(2, SUT.ChangedCallbackCount);
+		}
 
-        [TestMethod]
-        public void When_SetValue_And_RegisterPropertyChangedCallback_Recurse()
-        {
-            var SUT = new SimpleDependencyObject1();
+		[TestMethod]
+		public void When_SetValue_And_RegisterPropertyChangedCallback_Recurse()
+		{
+			var SUT = new SimpleDependencyObject1();
 
-            int invocations = 0;
-            int invocations2 = 0;
-            long registration2 = 0;
+			int invocations = 0;
+			int invocations2 = 0;
+			long registration2 = 0;
 
-            var registration1 = SUT.RegisterPropertyChangedCallback(
-                SimpleDependencyObject1.MyPropertyProperty,
-                (s, e) => {
-                    invocations++;
+			var registration1 = SUT.RegisterPropertyChangedCallback(
+				SimpleDependencyObject1.MyPropertyProperty,
+				(s, e) => {
+					invocations++;
 
-                    registration2 = SUT.RegisterPropertyChangedCallback(
-                        SimpleDependencyObject1.MyPropertyProperty,
-                        (s2, e2) => {
-                            invocations2++;
-                        }
-                    );
-                }
-            );
+					registration2 = SUT.RegisterPropertyChangedCallback(
+						SimpleDependencyObject1.MyPropertyProperty,
+						(s2, e2) => {
+							invocations2++;
+						}
+					);
+				}
+			);
 
-            SUT.SetValue(SimpleDependencyObject1.MyPropertyProperty, "42");
+			SUT.SetValue(SimpleDependencyObject1.MyPropertyProperty, "42");
 
-            var value = SUT.GetValue(SimpleDependencyObject1.MyPropertyProperty);
+			var value = SUT.GetValue(SimpleDependencyObject1.MyPropertyProperty);
 
-            Assert.AreEqual("42", value);
-            Assert.AreEqual(1, invocations);
-            Assert.AreEqual(1, SUT.ChangedCallbackCount);
-            Assert.AreEqual(0, invocations2);
+			Assert.AreEqual("42", value);
+			Assert.AreEqual(1, invocations);
+			Assert.AreEqual(1, SUT.ChangedCallbackCount);
+			Assert.AreEqual(0, invocations2);
 
-            SUT.UnregisterPropertyChangedCallback(SimpleDependencyObject1.MyPropertyProperty, registration1);
+			SUT.UnregisterPropertyChangedCallback(SimpleDependencyObject1.MyPropertyProperty, registration1);
 
-            SUT.SetValue(SimpleDependencyObject1.MyPropertyProperty, "43");
+			SUT.SetValue(SimpleDependencyObject1.MyPropertyProperty, "43");
 
-            Assert.AreEqual(1, invocations);
-            Assert.AreEqual(1, invocations2);
-            Assert.AreEqual(2, SUT.ChangedCallbackCount);
-        }
+			Assert.AreEqual(1, invocations);
+			Assert.AreEqual(1, invocations2);
+			Assert.AreEqual(2, SUT.ChangedCallbackCount);
+		}
 
 		[TestMethod]
 		public void When_ManualRegister()
@@ -1409,9 +1391,9 @@ namespace Uno.UI.Tests.BinderTests
 		}
 	}
 
-    #region DependencyObjects
+	#region DependencyObjects
 
-    partial class MockDependencyObject : DependencyObject
+	partial class MockDependencyObject : DependencyObject
 	{
 
 	}
@@ -1421,27 +1403,27 @@ namespace Uno.UI.Tests.BinderTests
 
 	}
 
-    partial class SimpleDependencyObject1 : DependencyObject
-    {
-        public SimpleDependencyObject1() { }
+	partial class SimpleDependencyObject1 : DependencyObject
+	{
+		public SimpleDependencyObject1() { }
 
-        public static readonly DependencyProperty MyPropertyProperty =
-            DependencyProperty.Register("MyProperty", typeof(string), typeof(SimpleDependencyObject1),
-                new PropertyMetadata(
-                    "default1",
-                    (s, e) => {
-                        (s as SimpleDependencyObject1).PropertyChangedCallbacks.Add("changed1: " + e.NewValue);
-                        (s as SimpleDependencyObject1).ChangedCallbackCount++;
-                    }
-                )
-            );
+		public static readonly DependencyProperty MyPropertyProperty =
+			DependencyProperty.Register("MyProperty", typeof(string), typeof(SimpleDependencyObject1),
+				new PropertyMetadata(
+					"default1",
+					(s, e) => {
+						(s as SimpleDependencyObject1).PropertyChangedCallbacks.Add("changed1: " + e.NewValue);
+						(s as SimpleDependencyObject1).ChangedCallbackCount++;
+					}
+				)
+			);
 
-        public List<string> PropertyChangedCallbacks = new List<string>();
-        public int ChangedCallbackCount { get; set; } = 0;
-    }
+		public List<string> PropertyChangedCallbacks = new List<string>();
+		public int ChangedCallbackCount { get; set; } = 0;
+	}
 
 
-    partial class MyDependencyObject1 : DependencyObject
+	partial class MyDependencyObject1 : DependencyObject
 	{
 		public MyDependencyObject1() { }
 

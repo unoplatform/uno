@@ -29,5 +29,19 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual("updated", SUT._StringField.Text);
 		}
+		 
+		[TestMethod]
+		public void When_StateTrigger()
+		{
+			var SUT = new Binding_StateTrigger();
+
+			Assert.IsNull(SUT._StringField.Text);
+
+			SUT.ForceLoaded();
+
+			SUT.MyState = MyState.Full;
+
+			Assert.AreEqual("Updated!", SUT._StringField.Text);
+		}
 	}
 }
