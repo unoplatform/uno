@@ -194,14 +194,14 @@ namespace Windows.UI.ViewManagement
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.FullScreenSystemOverlayMode.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.FullScreenSystemOverlayMode.set
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.IsFullScreenMode.get
-		#if false || false || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool TryEnterFullScreenMode()
 		{
 			throw new global::System.NotImplementedException("The member bool ApplicationView.TryEnterFullScreenMode() is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void ExitFullScreenMode()
 		{

@@ -1,9 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
@@ -16,21 +16,36 @@ using Windows.UI.Xaml.Navigation;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
 
-namespace Uno.UI.Samples.Content.UITests.CommandBar
+namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 {
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-#if __WASM__
-	[SampleControlInfo("CommandBar", "Long Title", ignoreInSnapshotTests: true)]
-#else
-	[SampleControlInfo("CommandBar", "Long Title")]
-#endif
-	public sealed partial class CommandBar_LongTitle : Page
+	public sealed partial class Binding_StateTrigger : Page, INotifyPropertyChanged
 	{
-		public CommandBar_LongTitle()
+		public Binding_StateTrigger()
 		{
 			this.InitializeComponent();
 		}
+
+		private MyState _myState;
+
+		public event PropertyChangedEventHandler PropertyChanged;
+
+		public MyState MyState
+		{
+			get => _myState;
+			set
+			{
+				_myState = value;
+				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MyState)));
+			}
+		}
+	}
+
+	public enum MyState
+	{
+		Default,
+		Full,
 	}
 }

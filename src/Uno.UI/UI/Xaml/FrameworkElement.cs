@@ -203,7 +203,7 @@ namespace Windows.UI.Xaml
 		/// space than what is available; the provided size might be accommodated if scrolling or other resize behavior is
 		/// possible in that particular container.
 		/// </param>
-		/// <returns>The measured size.</returns>
+		/// <returns>The measured size - INCLUDES THE MARGIN</returns>
 		protected Size MeasureElement(View view, Size availableSize)
 		{
 #if __WASM__

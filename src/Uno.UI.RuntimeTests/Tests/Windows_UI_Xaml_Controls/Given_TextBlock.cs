@@ -29,6 +29,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.IsTrue(SUT.ActualWidth > 0);
 			Assert.IsTrue(SUT.ActualHeight > 0);
 		}
+
 		[TestMethod]
 		[RunsOnUIThread]
 		public void Check_ActualWidth_After_Measure_Collapsed()

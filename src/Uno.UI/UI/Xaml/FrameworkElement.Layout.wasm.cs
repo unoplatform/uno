@@ -43,7 +43,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal sealed override Size MeasureCore(Size availableSize)
+		internal sealed override void MeasureCore(Size availableSize)
 		{
 			if (_trace.IsEnabled)
 			{
@@ -55,26 +55,31 @@ namespace Windows.UI.Xaml
 
 				using (traceActivity)
 				{
-					return InnerMeasureCore(availableSize);
+					InnerMeasureCore(availableSize.Subtract(Margin));
 				}
 			}
 			else
 			{
 				// This method is split in two functions to avoid the dynCalls
 				// invocations generation for mono-wasm AOT inside of try/catch/finally blocks.
-				return InnerMeasureCore(availableSize);
+				InnerMeasureCore(availableSize.Subtract(Margin));
 			}
 		}
 
-		private Size InnerMeasureCore(Size availableSize)
+		private void InnerMeasureCore(Size availableSize)
 		{
 			var (minSize, maxSize) = this.GetMinMax();
 			var marginSize = this.GetMarginSize();
 
+			// NaN values are accepted as input here, particularly when coming from
+			// SizeThatFits in Image or Scrollviewer. Clamp the value here as it is reused
+			// below for the clipping value.
+			availableSize = availableSize
+				.NumberOrDefault(MaxSize);
+
 			var frameworkAvailableSize = availableSize
-				.NumberOrDefault(MaxSize)
 				.Subtract(marginSize)
-				.AtLeast(new Size(0, 0))
+				.AtLeastZero()
 				.AtMost(maxSize);
 
 			var desiredSize = MeasureOverride(frameworkAvailableSize);
@@ -91,21 +96,20 @@ namespace Windows.UI.Xaml
 				throw new InvalidOperationException($"{this}: Invalid measured size {desiredSize}. NaN or Infinity are invalid desired size.");
 			}
 
-			desiredSize = desiredSize.AtLeast(minSize);
+			desiredSize = desiredSize
+				.AtLeast(minSize)
+				.AtLeastZero();
 
 			_unclippedDesiredSize = desiredSize;
 
-			desiredSize = desiredSize.AtMost(maxSize);
-
 			var clippedDesiredSize = desiredSize
-				.Add(marginSize)
-				.AtMost(availableSize);
+				.AtMost(availableSize)
+				.Add(marginSize);
 
-			var retSize = clippedDesiredSize.AtLeast(new Size(0, 0));
+			// DesiredSize must include margins
+			SetDesiredSize(clippedDesiredSize);
 
-			_logDebug?.Debug($"{DepthIndentation}[{this}] Measure({Name}/{availableSize}/{Margin}) = {retSize}");
-
-			return retSize;
+			_logDebug?.Debug($"{DepthIndentation}[{this}] Measure({Name}/{availableSize}/{Margin}) = {clippedDesiredSize} _unclippedDesiredSize={_unclippedDesiredSize}");
 		}
 
 		internal sealed override void ArrangeCore(Rect finalRect)
@@ -138,12 +142,12 @@ namespace Windows.UI.Xaml
 			_logDebug?.Debug($"{DepthIndentation}{this}: InnerArrangeCore({finalRect})");
 			var arrangeSize = finalRect.Size;
 
-			var (minSize, maxSize) = this.GetMinMax();
+			var (_, maxSize) = this.GetMinMax();
 			var marginSize = this.GetMarginSize();
 
 			arrangeSize = arrangeSize
 				.Subtract(marginSize)
-				.AtLeast(new Size(0, 0));
+				.AtLeastZero();
 
 			var customClippingElement = (this as ICustomClippingElement);
 			var allowClipToSlot = customClippingElement?.AllowClippingToLayoutSlot ?? true; // Some controls may control itself how clipping is applied
@@ -209,16 +213,21 @@ namespace Windows.UI.Xaml
 
 			var clientSize = finalRect.Size
 				.Subtract(marginSize)
-				.AtLeast(new Size(0, 0));
+				.AtLeastZero();
+
+			// Give opportunity to element to alter arranged size
+			clippedInkSize = AdjustArrange(clippedInkSize);
 
 			var offset = this.GetAlignmentOffset(clientSize, clippedInkSize);
+			var margin = Margin;
+
 			offset = new Point(
-				offset.X + finalRect.X + Margin.Left,
-				offset.Y + finalRect.Y + Margin.Top
+				offset.X + finalRect.X + margin.Left,
+				offset.Y + finalRect.Y + margin.Top
 			);
 
 			_logDebug?.Debug(
-				$"{DepthIndentation}[{this}] ArrangeChild(offset={offset}, margin={Margin}) [oldRenderSize={oldRenderSize}] [RenderSize={RenderSize}] [clippedInkSize={clippedInkSize}] [RequiresClipping={needsClipToSlot}]");
+				$"{DepthIndentation}[{this}] ArrangeChild(offset={offset}, margin={margin}) [oldRenderSize={oldRenderSize}] [RenderSize={RenderSize}] [clippedInkSize={clippedInkSize}] [RequiresClipping={needsClipToSlot}]");
 
 			RequiresClipping = needsClipToSlot;
 
@@ -227,7 +236,29 @@ namespace Windows.UI.Xaml
 				UpdateDOMXamlProperty(nameof(RequiresClipping), RequiresClipping);
 			}
 
-			ArrangeNative(offset);
+			if (needsClipToSlot)
+			{
+				var layoutFrame = new Rect(offset, clippedInkSize);
+
+				// Calculate clipped frame.
+				var clippedFrameWithParentOrigin =
+					layoutFrame
+						.IntersectWith(finalRect.DeflateBy(margin))
+					?? Rect.Empty;
+
+				// Rebase the origin of the clipped frame to layout
+				var clippedFrame = new Rect(
+					clippedFrameWithParentOrigin.X - layoutFrame.X,
+					clippedFrameWithParentOrigin.Y - layoutFrame.Y,
+					clippedFrameWithParentOrigin.Width,
+					clippedFrameWithParentOrigin.Height);
+
+				ArrangeNative(offset, clippedFrame);
+			}
+			else
+			{
+				ArrangeNative(offset);
+			}
 		}
 
 		internal Thickness GetThicknessAdjust()
@@ -252,7 +283,8 @@ namespace Windows.UI.Xaml
 		/// Calculates and applies native arrange properties.
 		/// </summary>
 		/// <param name="offset">Offset of the view from its parent</param>
-		private void ArrangeNative(Point offset)
+		/// <param name="clippedFrame">Zone to clip, if clipping is required</param>
+		private void ArrangeNative(Point offset, Rect clippedFrame = default)
 		{
 			_visualOffset = offset;
 
@@ -272,17 +304,18 @@ namespace Windows.UI.Xaml
 
 			Rect? getClip()
 			{
-				if (Clip != null)
+				// Clip transform not supported yet on Wasm
+
+				if (RequiresClipping) // if control should be clipped by layout constrains
 				{
-					return Clip.Rect;
+					if (Clip != null)
+					{
+						return clippedFrame.IntersectWith(Clip.Rect);
+					}
+					return clippedFrame;
 				}
 
-				if (RequiresClipping)
-				{
-					return new Rect(0, 0, newRect.Width, newRect.Height);
-				}
-
-				return null;
+				return Clip?.Rect;
 			}
 
 			var clipRect = getClip();
