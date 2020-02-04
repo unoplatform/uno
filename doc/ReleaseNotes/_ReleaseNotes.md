@@ -1,7 +1,7 @@
 # Release notes
 
 ### Features
-
+- Support for `Windows.Storage.FileProperties.BasicProperties.DateModified`
 - Support for `TryEnterFullScreenMode` and `ExitFullScreenMode` on WebAssembly
 - Support for `MessageDialog` on macOS
 - [Android] support of `KnownFolders.MusicLibrary` and `VideosLibrary`
