@@ -1,13 +1,10 @@
-﻿using Windows.UI.Xaml.Controls;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using AppKit;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class IconElement
-    {
+	{
 		partial void UnregisterSubView()
 		{
 			if (Subviews.Length > 0)
