@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Runtime.CompilerServices;
 using AppKit;
 using Uno.Extensions;
 using Uno.Logging;
@@ -26,19 +27,21 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				if (NSApplication.SharedApplication.KeyWindow == null)
-				{
-					throw new InvalidOperationException($"{nameof(Title)} API must be used after KeyWindow is set");
-				}
+				VerifyKeyWindowInitialized();
 				return NSApplication.SharedApplication.KeyWindow.Title;
 			}
 			set
 			{
-				if (NSApplication.SharedApplication.KeyWindow == null)
-				{
-					throw new InvalidOperationException($"{nameof(Title)} API must be used after KeyWindow is set");
-				}
+				VerifyKeyWindowInitialized();
 				NSApplication.SharedApplication.KeyWindow.Title = value;
+			}
+		}
+
+		private void VerifyKeyWindowInitialized([CallerMemberName]string propertyName = null)
+		{
+			if (NSApplication.SharedApplication.KeyWindow == null)
+			{
+				throw new InvalidOperationException($"{propertyName} API must be used after KeyWindow is set");
 			}
 		}
 	}
