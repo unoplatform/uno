@@ -1,7 +1,7 @@
 # Release notes
 
 ### Features
-
+- [Android] Support for `Windows.Networking.Connectivity.NetworkInformation` (partly)
 - Support for `AnalyticsInfo` on macOS
 - Support for `TryEnterFullScreenMode` and `ExitFullScreenMode` on WebAssembly
 - Support for `MessageDialog` on macOS
