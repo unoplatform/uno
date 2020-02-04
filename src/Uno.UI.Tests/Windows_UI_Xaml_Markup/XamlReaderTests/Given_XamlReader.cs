@@ -722,6 +722,23 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 			Assert.AreEqual(typeof(TextBlock), style.TargetType);
 		}
 
+		[TestMethod]
+		public void When_StaticResource_SystemTypes()
+		{
+			var s = GetContent(nameof(When_StaticResource_SystemTypes));
+			var r = Windows.UI.Xaml.Markup.XamlReader.Load(s) as UserControl;
+
+			Assert.IsTrue(r.Resources.ContainsKey("myDouble"));
+			Assert.IsTrue(r.Resources.ContainsKey("mySingle"));
+			Assert.IsTrue(r.Resources.ContainsKey("myInt32"));
+			Assert.IsTrue(r.Resources.ContainsKey("myString"));
+
+			Assert.AreEqual(42.42, r.Resources["myDouble"]);
+			Assert.AreEqual(42.42f, r.Resources["mySingle"]);
+			Assert.AreEqual((int)42, r.Resources["myInt32"]);
+			Assert.AreEqual("Result is 42", r.Resources["myString"]);
+		}
+
 		private string GetContent(string testName)
 		{
 			var assembly = this.GetType().Assembly;

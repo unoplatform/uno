@@ -29,6 +29,8 @@
 - Add support for `ApplicationView.GetSpanningRects`
 - Add base support for API Extensibility through `Uno.Foundation.Extensibility.ApiExtensibility` and `ApiExtensionAttribute`
 - Add support for Surface Duo through the `Uno.UI.DualScreen` package
+- Add support for enums in x:Bind functions
+- Add XamlReader support for Primitive static resources
 - [Android] Add support for non-native `Popup` by default. Can be enabled through `FeatureConfiguration.Popup.UseNativePopup` set to false (See #2533 for more details)
 
 ### Breaking changes
@@ -71,6 +73,8 @@
 - Fix invalid conversion when using ThemeResource (e.g. Color resource to Brush property)
 - Fix XamlBindingHelper.Convert double to GridLength
 - [Android] Adjust `TextBlock.TextDecorations` is not updating properly
+- Adjust `XamlBindingHelper` for `GridLength` and `TimeSpan`
+- Add missing `ListView` resources
 
 ## Release 2.0
 

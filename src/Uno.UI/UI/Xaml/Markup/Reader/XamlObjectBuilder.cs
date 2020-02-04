@@ -94,6 +94,14 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 				return rd;
 			}
+			else if (type.IsPrimitive && control.Members.Where(m => m.Member.Name == "_Initialization").FirstOrDefault()?.Value is string primitiveValue)
+			{
+				return Convert.ChangeType(primitiveValue, type, CultureInfo.InvariantCulture);
+			}
+			else if (type == typeof(string) && control.Members.Where(m => m.Member.Name == "_Initialization").FirstOrDefault()?.Value is string stringValue)
+			{
+				return stringValue;
+			}
 			else
 			{
 				var instance = Activator.CreateInstance(type);
