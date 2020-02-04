@@ -9,19 +9,39 @@
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<ScrollViewer>
-		<StackPanel Spacing="12" toolkit:VisibleBoundsPadding.PaddingMask="All">
-			<TextBlock FontSize="18">Following controls should be of same look:</TextBlock>
+		<StackPanel Spacing="8" toolkit:VisibleBoundsPadding.PaddingMask="All">
+			<TextBlock FontSize="18">Following 6 buttons should be of same look &amp; size:</TextBlock>
 
 			<Border Height="40" Background="Aquamarine">
 
 				<StackPanel Orientation="Horizontal" Spacing="10">
 					<Button Width="80" VerticalAlignment="Stretch" Padding="5">BUTTON</Button>
 					<Button Width="80" Height="60" VerticalAlignment="Center" Padding="5">BUTTON</Button>
-					<Button Width="80" Height="80" Padding="5">BUTTON</Button>
+					<Button MinWidth="50" Width="80" MinHeight="10" Height="40" Padding="5">BUTTON</Button>
+					<Button MinWidth="80" Width="40" MinHeight="40" Height="20" Padding="5">BUTTON</Button>
+					<Button MaxWidth="80" Width="100" MaxHeight="40" Height="120" Padding="5">BUTTON</Button>
+					<Border>
+						<ContentControl MinWidth="80" Width="40" MinHeight="40" Height="20">
+							<ContentControl.Template>
+								<ControlTemplate>
+									<Button Padding="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch">BUTTON</Button>
+								</ControlTemplate>
+							</ContentControl.Template>
+						</ContentControl>
+					</Border>
 				</StackPanel>
 			</Border>
 
-			<TextBlock FontSize="18">Following controls should be of same look:</TextBlock>
+			<StackPanel Orientation="Horizontal" Spacing="10">
+				<Rectangle Height="5" Width="80" Fill="Gray" />
+				<Rectangle Height="5" Width="80" Fill="Gray" />
+				<Rectangle Height="5" Width="80" Fill="Gray" />
+				<Rectangle Height="5" Width="80" Fill="Gray" />
+				<Rectangle Height="5" Width="80" Fill="Gray" />
+				<Rectangle Height="5" Width="80" Fill="Gray" />
+			</StackPanel>
+
+			<TextBlock FontSize="18">Following 4 buttons should be of same look &amp; size:</TextBlock>
 
 			<Border Background="Orange" Height="28">
 				<StackPanel Orientation="Horizontal" Spacing="10">
@@ -46,8 +66,71 @@
 							</TextBlock>
 						</Border>
 					</Button>
+					<Button Width="30" MinWidth="65" Padding="0" Height="60" MaxHeight="25" MinHeight="36" VerticalAlignment="Center">
+						<Border BorderThickness="2" BorderBrush="Blue">
+							<TextBlock FontSize="8" Padding="0">
+								BUTTON
+							</TextBlock>
+						</Border>
+					</Button>
 				</StackPanel>
 			</Border>
+
+			<TextBlock FontSize="18">Following 9 rectangles should be of same look &amp; size:</TextBlock>
+
+			<StackPanel Orientation="Horizontal" Spacing="10" Height="26">
+				<Border Width="60" Background="ForestGreen">
+					<Rectangle Margin="8" Fill="Blue" />
+				</Border>
+				<Border Width="60" Background="ForestGreen">
+					<Rectangle Margin="8" Fill="Blue" MinWidth="90" HorizontalAlignment="Center" />
+				</Border>
+				<Border Width="60" Background="ForestGreen">
+					<Rectangle Margin="8" Fill="Blue" MinWidth="90" HorizontalAlignment="Stretch" />
+				</Border>
+				<Border Width="60" Background="ForestGreen" Padding="8">
+					<Rectangle Fill="Blue" MinWidth="80" />
+				</Border>
+				<Border Width="60" Background="ForestGreen">
+					<Rectangle Margin="8" Fill="Blue" MinHeight="30" />
+				</Border>
+				<Border Width="60" Background="ForestGreen">
+					<Border Margin="8">
+						<StackPanel VerticalAlignment="Top">
+							<Rectangle Width="200" Height="200" Fill="Blue" />
+							<Rectangle Width="200" Height="200" Fill="Yellow" />
+						</StackPanel>
+					</Border>
+				</Border>
+				<Border Width="60" Background="ForestGreen" Padding="8">
+					<StackPanel VerticalAlignment="Center">
+						<Rectangle Width="200" Height="200" Fill="Yellow" />
+						<Rectangle Width="200" Height="200" Fill="Blue" />
+						<Rectangle Width="200" Height="200" Fill="Orange" />
+					</StackPanel>
+				</Border>
+				<Border Width="60" Background="ForestGreen" Padding="8">
+					<StackPanel VerticalAlignment="Bottom">
+						<Rectangle Width="200" Height="200" Fill="Yellow" />
+						<Rectangle Width="200" Height="200" Fill="Blue" />
+					</StackPanel>
+				</Border>
+				<Border Width="60">
+					<Rectangle Fill="Blue" Stroke="ForestGreen" StrokeThickness="8" />
+				</Border>
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal" Spacing="10">
+				<Border Height="5" Width="60" Background="Blue" BorderBrush="ForestGreen" BorderThickness="8,0" />
+				<Border Height="5" Width="60" Background="Blue" BorderBrush="ForestGreen" BorderThickness="8,0" />
+				<Border Height="5" Width="60" Background="Blue" BorderBrush="ForestGreen" BorderThickness="8,0" />
+				<Border Height="5" Width="60" Background="Blue" BorderBrush="ForestGreen" BorderThickness="8,0" />
+				<Border Height="5" Width="60" Background="Blue" BorderBrush="ForestGreen" BorderThickness="8,0" />
+				<Border Height="5" Width="60" Background="Blue" BorderBrush="ForestGreen" BorderThickness="8,0" />
+				<Border Height="5" Width="60" Background="Blue" BorderBrush="ForestGreen" BorderThickness="8,0" />
+				<Border Height="5" Width="60" Background="Blue" BorderBrush="ForestGreen" BorderThickness="8,0" />
+				<Border Height="5" Width="60" Background="Blue" BorderBrush="ForestGreen" BorderThickness="8,0" />
+			</StackPanel>
 
 			<Grid ColumnSpacing="10">
 				<Grid.ColumnDefinitions>
