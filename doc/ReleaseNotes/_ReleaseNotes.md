@@ -2,6 +2,7 @@
 
 ### Features
 
+- Support for `AnalyticsInfo` on macOS
 - Support for `TryEnterFullScreenMode` and `ExitFullScreenMode` on WebAssembly
 - Support for `MessageDialog` on macOS
 - [Android] support of `KnownFolders.MusicLibrary` and `VideosLibrary`
