@@ -622,12 +622,21 @@
 				<Member
 					fullName="System.Void Windows.System.DispatcherQueueTimer..ctor()"
 					reason="Not part of the WinUI API."/>
-			  <Member
+			 	<Member
 					fullName="System.Void Windows.Storage.KnownFolders..ctor()"
 					reason="Not part of the WinUI API."/>
 				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.ListViewBase..ctor()"
 					reason="Ctor is protected in WinUI."/>
+				<Member 
+					fullName="System.Void Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs..ctor()"
+					reason="Parameter-less ctor does not exist in UWP"/>
+				<Member 
+					fullName="System.Void Windows.Devices.Sensors.HingeAngleSensor..ctor()"
+					reason="Parameter-less ctor does not exist in UWP"/>
+				<Member 
+					fullName="System.Void Windows.Devices.Sensors.HingeAngleReading..ctor()"
+					reason="Parameter-less ctor does not exist in UWP"/>
         </Methods>
 		</IgnoreSet>
 	</IgnoreSets>
