@@ -14,10 +14,12 @@ namespace Windows.UI.Xaml
 
 		public Size DesiredSize => Visibility == Visibility.Collapsed ? new Size(0, 0) : _desiredSize;
 
-        /// <summary>
-        /// Backing property for <see cref="Windows.UI.Xaml.Controls.Primitives.LayoutInformation.GetAvailableSize(UIElement)"/>
-        /// </summary>
-        internal Size LastAvailableSize => _previousAvailableSize;
+		internal void SetDesiredSize(Size desiredSize) => _desiredSize = desiredSize;
+
+		/// <summary>
+		/// Backing property for <see cref="Windows.UI.Xaml.Controls.Primitives.LayoutInformation.GetAvailableSize(UIElement)"/>
+		/// </summary>
+		internal Size LastAvailableSize => _previousAvailableSize;
 
 		/// <summary>
 		/// When set, measure and invalidate requests will not be propagated further up the visual tree, ie they won't trigger a relayout.
@@ -101,10 +103,9 @@ namespace Windows.UI.Xaml
 
 			InvalidateArrange();
 
-			var desiredSize = MeasureCore(availableSize);
+			MeasureCore(availableSize);
 			_previousAvailableSize = availableSize;
 			_isMeasureValid = true;
-			_desiredSize = desiredSize;
 		}
 
 		public void Arrange(Rect finalRect)
@@ -128,7 +129,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal virtual Size MeasureCore(Size availableSize)
+		internal virtual void MeasureCore(Size availableSize)
 		{
 			throw new NotSupportedException("UIElement doesn't implement MeasureCore. Inherit from FrameworkElement, which properly implements MeasureCore.");
 		}
