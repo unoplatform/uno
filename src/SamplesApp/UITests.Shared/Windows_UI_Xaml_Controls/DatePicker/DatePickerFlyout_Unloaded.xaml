@@ -9,24 +9,34 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-	<Grid x:Name="root">
-		<StackPanel VerticalAlignment="Center">
-			<Button x:Name="TestDatePickerFlyoutButton"
-				Content="Open DatePickerFlyout">
-				<Button.Flyout>
-					<DatePickerFlyout x:Name="TestDatePickerFlyout"
-								  MinYear="{x:Bind Date}"
-								  Date="{x:Bind Date}"/>
-				</Button.Flyout>
-			</Button>
-			<DatePicker x:Name="theDatePicker"
-						Margin="15,10"
-						MinYear="{x:Bind Date}"
-						Date="{x:Bind Date}"
-						HorizontalAlignment="Center"
-						VerticalAlignment="Top">
-			</DatePicker>
+	<StackPanel x:Name="root" Spacing="8">
+		<TextBlock FontSize="16">
+			Manual testing: click following button, it will start a countdown for 5 seconds and will remove the picked from the UI.
+			When those controls are removed, any opened flyout should be dismissed at the same time. Restart test to test again.
+		</TextBlock>
+		<Button Click="UnloadClicked" x:Name="unloadBtn">START UNLOAD</Button>
+		<TextBlock FontSize="16">
+			&lt;DatePickerFlyout&gt;:
+		</TextBlock>
+		<Button x:Name="TestDatePickerFlyoutButton"
+		        Content="Open DatePickerFlyout">
+			<Button.Flyout>
+				<DatePickerFlyout x:Name="TestDatePickerFlyout"
+							  MinYear="{x:Bind Date}"
+							  Date="{x:Bind Date}"/>
+			</Button.Flyout>
+		</Button>
+		<TextBlock FontSize="16">
+			&lt;DatePicker&gt;:
+		</TextBlock>
+		<DatePicker x:Name="theDatePicker"
+		            Margin="15,10"
+		            MinYear="{x:Bind Date}"
+		            Date="{x:Bind Date}"
+		            HorizontalAlignment="Center"
+		            VerticalAlignment="Top">
+		</DatePicker>
 
-		</StackPanel>
-	</Grid>
+	</StackPanel>
+
 </UserControl>
