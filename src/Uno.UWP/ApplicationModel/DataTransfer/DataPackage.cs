@@ -9,14 +9,14 @@ namespace Windows.ApplicationModel.DataTransfer
 		internal string Text { get; private set; }
 
 #if !NET461
-		public void SetText(string text)
+		public void SetText(string value)
 		{
-			if (text == null)
+			if (value == null)
 			{
 				throw new ArgumentNullException("Text can't be null");
 			}
 
-			this.Text = text;
+			this.Text = value;
 		}
 #endif
 	}
