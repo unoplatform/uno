@@ -31,7 +31,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
-		public async void When_DateCreated()
+		public async Task When_DateCreated()
 		{
 			var folderForTestFile = Windows.Storage.ApplicationData.Current.LocalFolder;
 			Assert.IsNotNull(folderForTestFile, "cannot get LocalFolder - error outside tested method");
