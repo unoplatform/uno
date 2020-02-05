@@ -169,23 +169,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.WaitForElement(checkBox);
 
 			// Save initial state(not expanded)
-			var screenshot1 = _app.Screenshot("ListView Expanded Control - Initial State");
+			var screenshot1 = TakeScreenshot("Initial State");
 
 			// Expand and compare
 			ClickCheckBoxAt(0);
-			var screenshot2 = _app.Screenshot("ListView Expanded Control - expanded State");
-			if (!UITestHelper.CompareScreenShots(screenshot1, screenshot2))
-			{
-				Assert.Fail("Expand is not working");
-			}
+			var screenshot2 = TakeScreenshot("Expanded State");
+			ImageAssert.AreNotEqual(screenshot1, screenshot2);
 
 			// Collapse and compare
 			ClickCheckBoxAt(0);
-			var screenshot3 = _app.Screenshot("ListView Expanded Control - collapsed State");
-			if (UITestHelper.CompareScreenShots(screenshot1, screenshot3))
-			{
-				Assert.Fail("Collapse is not working");
-			}
+			var screenshot3 = TakeScreenshot("Collapsed State");
+			ImageAssert.AreEqual(screenshot1, screenshot3);
 		}
 
 		[Test]
@@ -198,27 +192,21 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.WaitForElement(checkBox);
 
 			// Save initial state(not expanded)
-			var screenshot1 = _app.Screenshot("ListView Expanded Control - Initial State");
+			var screenshot1 = TakeScreenshot("Initial State");
 
 			// Expand multiple items and compare
 			ClickCheckBoxAt(0);
 			ClickCheckBoxAt(1);
 			ClickCheckBoxAt(2);
-			var screenshot2 = _app.Screenshot("ListView Expanded Control - expanded State");
-			if (!UITestHelper.CompareScreenShots(screenshot1, screenshot2))
-			{
-				Assert.Fail("Control is not working");
-			}
+			var screenshot2 = TakeScreenshot("Expanded State");
+			ImageAssert.AreNotEqual(screenshot1, screenshot2);
 
 			// Collapse all and compare 
 			ClickCheckBoxAt(0);
 			ClickCheckBoxAt(1);
 			ClickCheckBoxAt(2);
-			var screenshot3 = _app.Screenshot("ListView Expanded Control - collapsed State");
-			if (UITestHelper.CompareScreenShots(screenshot1, screenshot3))
-			{
-				Assert.Fail("Collapse is not working");
-			}
+			var screenshot3 = TakeScreenshot("Collapsed State");
+			ImageAssert.AreEqual(screenshot1, screenshot3);
 		}
 
 		[Test]
@@ -231,23 +219,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.WaitForElement(checkBoxHeader);
 
 			// Save initial state(not expanded)
-			var screenshot1 = _app.Screenshot("ListView Expanded Control - Initial State");
+			var screenshot1 = TakeScreenshot("Initial State");
 
 			// Expand and compare
 			checkBoxHeader.Tap();
-			var screenshot2 = _app.Screenshot("ListView Expanded Control - expanded State");
-			if (!UITestHelper.CompareScreenShots(screenshot1, screenshot2))
-			{
-				Assert.Fail("Expand is not working");
-			}
+			var screenshot2 = TakeScreenshot("Expanded State");
+			ImageAssert.AreNotEqual(screenshot1, screenshot2);
 
 			// Collapse and compare 
 			checkBoxHeader.Tap();
-			var screenshot3 = _app.Screenshot("ListView Expanded Control - collapsed State");
-			if (UITestHelper.CompareScreenShots(screenshot1, screenshot3))
-			{
-				Assert.Fail("Collapse is not working");
-			}
+			var screenshot3 = TakeScreenshot("Collapsed State");
+			ImageAssert.AreAlmostEqual(screenshot1, screenshot3);
 		}
 		[Test]
 		[AutoRetry]
@@ -259,29 +241,23 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.WaitForElement(checkBoxHeader);
 
 			// Save initial state(not expanded)
-			var screenshot1 = _app.Screenshot("ListView Expanded Control - Initial State");
+			var screenshot1 = TakeScreenshot("Initial State");
 
 			// Expand and compare
 			checkBoxHeader.Tap();
 			ClickCheckBoxAt(0);
 			ClickCheckBoxAt(1);
 			ClickCheckBoxAt(2);
-			var screenshot2 = _app.Screenshot("ListView Expanded Control - expanded State");
-			if (!UITestHelper.CompareScreenShots(screenshot1, screenshot2))
-			{
-				Assert.Fail("Expand is not working");
-			}
+			var screenshot2 = TakeScreenshot("Expanded State");
+			ImageAssert.AreNotEqual(screenshot1, screenshot2);		
 
 			// Collapse and compare
 			checkBoxHeader.Tap();
 			ClickCheckBoxAt(0);
 			ClickCheckBoxAt(1);
 			ClickCheckBoxAt(2);
-			var screenshot3 = _app.Screenshot("ListView Expanded Control - collapsed State");
-			if (UITestHelper.CompareScreenShots(screenshot1, screenshot3))
-			{
-				Assert.Fail("Collapse is not working");
-			}
+			var screenshot3 = TakeScreenshot("Collapsed State");
+			ImageAssert.AreEqual(screenshot1, screenshot3);
 		}
 
 		[Test]
@@ -294,25 +270,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.WaitForElement(checkBoxHeader);
 
 			// Save initial state(not expanded)
-			var screenshot1 = _app.Screenshot("ListView Expanded Control - Initial State");
+			var screenshot1 = TakeScreenshot("Initial State");
 
 			// Expand multiple items, header and compare
 			checkBoxHeader.Tap();
 			ClickCheckBoxAt(0);
-			var screenshot2 = _app.Screenshot("ListView Expanded Control - expanded State");
-			if (!UITestHelper.CompareScreenShots(screenshot1, screenshot2))
-			{
-				Assert.Fail("Expand is not working");
-			}
+			var screenshot2 = TakeScreenshot("Expanded State");
+			ImageAssert.AreNotEqual(screenshot1, screenshot2);
 
 			// Collapse all and compare 
 			checkBoxHeader.Tap();
 			ClickCheckBoxAt(0);
-			var screenshot3 = _app.Screenshot("ListView Expanded Control - collapsed State");
-			if (UITestHelper.CompareScreenShots(screenshot1, screenshot3))
-			{
-				Assert.Fail("Collapse is not working");
-			}
+			var screenshot3 = TakeScreenshot("Collapsed State");
+			ImageAssert.AreEqual(screenshot1, screenshot3);
 		}
 
 		private void ClickCheckBoxAt(int i)
