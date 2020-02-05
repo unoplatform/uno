@@ -1,13 +1,11 @@
-- name: Home
-  href: https://platform.uno/
 - name: How it Works
   href: https://platform.uno/how-it-works/
 - name: Code Samples
   href: https://platform.uno/code-samples/
+- name: Showcases
+  href: https://platform.uno/showcases/
 - name: Docs
   href: https://platform.uno/docs/articles/intro.html
-- name: Support
-  href: https://platform.uno/support/
 - name: Blog
   href: https://platform.uno/blog/
 - name: Contact
