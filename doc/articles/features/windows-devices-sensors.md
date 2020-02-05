@@ -52,7 +52,7 @@ On Android, when both `ReadingChanged` and `Shaken` events are attached and the 
 
 #### Android
 
-On Android, the first reading returns the cumulative number of steps since the device was first booted up. I have noticed the sensor does not correctly respect the requested reporting interval, so we implemented this manually to make sure the `ReadingChanged` events are triggered only after the `ReportInterval` elapses.
+On Android, the first reading returns the cumulative number of steps since the device was first booted up. The sensor may not correctly respect the requested reporting interval, so the implementation does this manually to make sure the `ReadingChanged` events are triggered only after the `ReportInterval` elapses.
 
 Since Android 10, your application must declare the permission to use the step counter sensor by adding the following `uses-feature` declaration to the `AndroidManifest.xml` in your project:
 
