@@ -7,7 +7,7 @@ namespace Windows.UI.ViewManagement
 	#endif
 	public  partial class ApplicationView 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || false || __MACOS__
+		#if false || __IOS__ || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  string Title
 		{

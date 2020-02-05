@@ -3,6 +3,7 @@
 ### Features
 
 - Support for `Clipboard` get/set Text content on macOS
+- Support for `ApplicationView.Title` on Android and macOS
 - Support for `AnalyticsInfo` on macOS
 - Support for `TryEnterFullScreenMode` and `ExitFullScreenMode` on WebAssembly
 - Support for `MessageDialog` on macOS
