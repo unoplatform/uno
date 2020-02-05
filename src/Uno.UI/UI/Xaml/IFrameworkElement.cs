@@ -302,6 +302,10 @@ namespace Windows.UI.Xaml
 				var desiredSize = fe.DesiredSize;
 				return new CGSize(desiredSize.Width, desiredSize.Height);
 			}
+			else if (element is IHasSizeThatFits scp)
+			{
+				return scp.SizeThatFits(availableSize);
+			}
 			else
 			{
 				throw new NotSupportedException($"Unsupported measure for {element}");
@@ -320,17 +324,19 @@ namespace Windows.UI.Xaml
 				return new CGSize(0, 0);
 			}
 
-			var width = e.Width
-				.NumberOrDefault(size.Width)
-				.NumberOrDefault(nfloat.PositiveInfinity)
-				.LocalMin(e.MaxWidth.NumberOrDefault(nfloat.PositiveInfinity))
-				.LocalMax(e.MinWidth.NumberOrDefault(nfloat.NegativeInfinity));
+			var (min, max) = e.GetMinMax();
 
-			var height = e.Height
-				.NumberOrDefault(size.Height)
+			var width = size
+				.Width
 				.NumberOrDefault(nfloat.PositiveInfinity)
-				.LocalMin(e.MaxHeight.NumberOrDefault(nfloat.PositiveInfinity))
-				.LocalMax(e.MinHeight.NumberOrDefault(nfloat.NegativeInfinity));
+				.LocalMin((nfloat)max.Width)
+				.LocalMax((nfloat)min.Width);
+
+			var height = size
+				.Height
+				.NumberOrDefault(nfloat.PositiveInfinity)
+				.LocalMin((nfloat)max.Height)
+				.LocalMax((nfloat)min.Height);
 
 			return new CGSize(width, height);
 		}
@@ -354,7 +360,7 @@ namespace Windows.UI.Xaml
 		/// Gets the max value being left or right.
 		/// </summary>
 		/// <remarks>
-		/// This method kept here for readbility
+		/// This method kept here for readability
 		/// of <see cref="SizeThatFits(IFrameworkElement, CGSize)"/> the keep its
 		/// fluent aspect.
 		/// It also does not use the generic extension that may create an very

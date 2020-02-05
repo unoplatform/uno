@@ -641,18 +641,12 @@ var Uno;
                 * To remove a value, set it to empty string.
                 * @param styles A dictionary of styles to apply on html element.
                 */
-            setStyle(elementId, styles, setAsArranged = false, clipToBounds) {
+            setStyle(elementId, styles) {
                 const element = this.getView(elementId);
                 for (const style in styles) {
                     if (styles.hasOwnProperty(style)) {
                         element.style.setProperty(style, styles[style]);
                     }
-                }
-                if (setAsArranged) {
-                    this.setAsArranged(element);
-                }
-                if (typeof clipToBounds === "boolean") {
-                    this.setClipToBounds(element, clipToBounds);
                 }
                 return "ok";
             }
@@ -672,10 +666,6 @@ var Uno;
                     const value = pairs[i + 1];
                     elementStyle.setProperty(key, value);
                 }
-                if (params.SetAsArranged) {
-                    this.setAsArranged(element);
-                }
-                this.setClipToBounds(element, params.ClipToBounds);
                 return true;
             }
             /**
@@ -688,21 +678,21 @@ var Uno;
                 element.style.setProperty(params.Name, String(params.Value));
                 return true;
             }
+            setArrangeProperties(elementId, clipToBounds) {
+                const element = this.getView(elementId);
+                this.setAsArranged(element);
+                this.setClipToBounds(element, clipToBounds);
+                return "ok";
+            }
             /**
-                * Set the CSS style of a html element.
-                *
-                * To remove a value, set it to empty string.
-                * @param styles A dictionary of styles to apply on html element.
+                * Remove the CSS style of a html element.
                 */
             resetStyle(elementId, names) {
                 this.resetStyleInternal(elementId, names);
                 return "ok";
             }
             /**
-                * Set the CSS style of a html element.
-                *
-                * To remove a value, set it to empty string.
-                * @param styles A dictionary of styles to apply on html element.
+                * Remove the CSS style of a html element.
                 */
             resetStyleNative(pParams) {
                 const params = WindowManagerResetStyleParams.unmarshal(pParams);
@@ -781,7 +771,7 @@ var Uno;
                 const element = this.getView(params.HtmlId);
                 var style = element.style;
                 style.transform = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
-                element.classList.remove(WindowManager.unoUnarrangedClassName);
+                this.setAsArranged(element);
                 return true;
             }
             /**
@@ -1000,7 +990,7 @@ var Uno;
                     }
                     src = src.parentElement;
                 }
-                return `${evt.pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.button};${evt.pointerType};${srcHandle};${evt.timeStamp}`;
+                return `${evt.pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.buttons};${evt.button};${evt.pointerType};${srcHandle};${evt.timeStamp};${evt.pressure}`;
             }
             /**
              * keyboard event extractor to be used with registerEventOnView
@@ -1506,13 +1496,13 @@ var Uno;
              *
              * Note that the casing of this method is intentionally Pascal for platform alignment.
              */
-            SetDependencyPropertyValue(elementId, propertyName, propertyValue) {
+            SetDependencyPropertyValue(elementId, propertyNameAndValue) {
                 if (!WindowManager.setDependencyPropertyValueMethod) {
                     WindowManager.setDependencyPropertyValueMethod = Module.mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:SetDependencyPropertyValue");
                 }
                 const element = this.getView(elementId);
                 const htmlId = Number(element.getAttribute("XamlHandle"));
-                return WindowManager.setDependencyPropertyValueMethod(htmlId, propertyName, propertyValue);
+                return WindowManager.setDependencyPropertyValueMethod(htmlId, propertyNameAndValue);
             }
             /**
                 * Remove the loading indicator.
@@ -1549,6 +1539,11 @@ var Uno;
                     document.body.appendChild(this.containerElement);
                 }
                 window.addEventListener("resize", x => this.resize());
+                window.addEventListener("contextmenu", x => {
+                    if (!(x.target instanceof HTMLInputElement)) {
+                        x.preventDefault();
+                    }
+                });
             }
             removeLoading() {
                 if (!this.loadingElementId) {
@@ -1593,6 +1588,25 @@ var Uno;
                     return false;
                 }
                 return rootElement === element || rootElement.contains(element);
+            }
+            setCursor(cssCursor) {
+                const unoBody = document.getElementById(this.containerElementId);
+                if (unoBody) {
+                    //always cleanup
+                    if (this.cursorStyleElement != undefined) {
+                        this.cursorStyleElement.remove();
+                        this.cursorStyleElement = undefined;
+                    }
+                    //only add custom overriding style if not auto 
+                    if (cssCursor != "auto") {
+                        // this part is only to override default css:  .uno-buttonbase {cursor: pointer;}
+                        this.cursorStyleElement = document.createElement("style");
+                        this.cursorStyleElement.innerHTML = ".uno-buttonbase { cursor: " + cssCursor + "; }";
+                        document.body.appendChild(this.cursorStyleElement);
+                    }
+                    unoBody.style.cursor = cssCursor;
+                }
+                return "ok";
             }
         }
         WindowManager._isHosted = false;
@@ -2195,13 +2209,10 @@ class WindowManagerSetStylesParams {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
-            ret.SetAsArranged = Boolean(Module.getValue(pData + 4, "i32"));
+            ret.Pairs_Length = Number(Module.getValue(pData + 4, "i32"));
         }
         {
-            ret.Pairs_Length = Number(Module.getValue(pData + 8, "i32"));
-        }
-        {
-            var pArray = Module.getValue(pData + 12, "*");
+            var pArray = Module.getValue(pData + 8, "*");
             if (pArray !== 0) {
                 ret.Pairs = new Array();
                 for (var i = 0; i < ret.Pairs_Length; i++) {
@@ -2217,9 +2228,6 @@ class WindowManagerSetStylesParams {
             else {
                 ret.Pairs = null;
             }
-        }
-        {
-            ret.ClipToBounds = Boolean(Module.getValue(pData + 16, "i32"));
         }
         return ret;
     }
@@ -2352,6 +2360,10 @@ var Windows;
                 }
                 if (!this.isIndexDBAvailable()) {
                     console.warn("IndexedDB is not available (private mode or uri starts with file:// ?), changes will not be persisted.");
+                    return;
+                }
+                if (typeof IDBFS === 'undefined') {
+                    console.warn(`IDBFS is not enabled in mono's configuration, persistence is disabled`);
                     return;
                 }
                 console.debug("Making persistent: " + path);
@@ -2738,6 +2750,68 @@ var Windows;
             }
             Core.SystemNavigationManager = SystemNavigationManager;
         })(Core = UI.Core || (UI.Core = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var ViewManagement;
+        (function (ViewManagement) {
+            class ApplicationView {
+                static setFullScreenMode(turnOn) {
+                    if (turnOn) {
+                        if (document.fullscreenEnabled) {
+                            document.documentElement.requestFullscreen();
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                    else {
+                        document.exitFullscreen();
+                        return true;
+                    }
+                }
+            }
+            ViewManagement.ApplicationView = ApplicationView;
+        })(ViewManagement = UI.ViewManagement || (UI.ViewManagement = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var ViewManagement;
+        (function (ViewManagement) {
+            class ApplicationViewTitleBar {
+                static setBackgroundColor(colorString) {
+                    if (colorString == null) {
+                        //remove theme-color meta
+                        var metaThemeColorEntries = document.querySelectorAll("meta[name='theme-color']");
+                        for (let entry of metaThemeColorEntries) {
+                            entry.remove();
+                        }
+                    }
+                    else {
+                        var metaThemeColorEntries = document.querySelectorAll("meta[name='theme-color']");
+                        var metaThemeColor;
+                        if (metaThemeColorEntries.length == 0) {
+                            //create meta
+                            metaThemeColor = document.createElement("meta");
+                            metaThemeColor.setAttribute("name", "theme-color");
+                            document.head.appendChild(metaThemeColor);
+                        }
+                        else {
+                            metaThemeColor = metaThemeColorEntries[0];
+                        }
+                        metaThemeColor.setAttribute("content", colorString);
+                    }
+                }
+            }
+            ViewManagement.ApplicationViewTitleBar = ApplicationViewTitleBar;
+        })(ViewManagement = UI.ViewManagement || (UI.ViewManagement = {}));
     })(UI = Windows.UI || (Windows.UI = {}));
 })(Windows || (Windows = {}));
 var Windows;

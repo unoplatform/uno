@@ -18,13 +18,27 @@
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 		<StackPanel Grid.Row="0">
-			<Button x:Name="runButton"
-			  Content="Run"
-			  Click="OnRunTests" />
-			<TextBlock x:Name="runStatus"
-				 Text="Not initialized" />
-			<TextBlock x:Name="failedTests" Text="Pending..." />
-			<TextBlock x:Name="runTestCount" Text="None" />
+			<Button
+				x:Name="runButton"
+				Content="Run"
+				Click="OnRunTests" />
+
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Status: " />
+				<TextBlock x:Name="runStatus" Text="Not initialized" />
+			</StackPanel>
+
+			<StackPanel Orientation="Horizontal">
+				<TextBlock Text="Run: " />
+				<TextBlock x:Name="runTestCount" Text="None" />
+				<TextBlock Text=" | Ignored: " />
+				<TextBlock x:Name="ignoredTestCount" Text="None" />
+				<TextBlock Text=" | Succeeded: " />
+				<TextBlock x:Name="succeededTestCount" Text="None" />
+				<TextBlock Text=" | Failed: " />
+				<TextBlock x:Name="failedTestCount" Text="None" />
+			</StackPanel>
+			
 			<ScrollViewer Height="100">
 				<TextBlock x:Name="failedTestDetails" Opacity="0.5" />
 			</ScrollViewer>

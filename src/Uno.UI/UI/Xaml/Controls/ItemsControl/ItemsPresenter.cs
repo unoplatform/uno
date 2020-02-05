@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_itemsPanel != null)
 			{
-#if XAMARIN_IOS
+#if XAMARIN_IOS || __MACOS__
 				this.AddSubview(_itemsPanel);
 #elif XAMARIN_ANDROID
 			this.AddView(_itemsPanel);

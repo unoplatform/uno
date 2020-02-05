@@ -7,6 +7,7 @@ using System.Text;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -112,6 +113,48 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnMinYearChangedPartial();
 		#endregion
 
+		public LightDismissOverlayMode LightDismissOverlayMode
+		{
+			get
+			{
+				return (LightDismissOverlayMode)this.GetValue(LightDismissOverlayModeProperty);
+			}
+			set
+			{
+				this.SetValue(LightDismissOverlayModeProperty, value);
+			}
+		}
+
+		public static DependencyProperty LightDismissOverlayModeProperty { get; } =
+		DependencyProperty.Register(
+			"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
+			typeof(DatePicker),
+			new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));
+
+		/// <summary>
+		/// Sets the light-dismiss colour, if the overlay is enabled. The external API for modifying this is to override the PopupLightDismissOverlayBackground, etc static resource values.
+		/// </summary>
+		internal Brush LightDismissOverlayBackground
+		{
+			get { return (Brush)GetValue(LightDismissOverlayBackgroundProperty); }
+			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
+		}
+
+		internal static readonly DependencyProperty LightDismissOverlayBackgroundProperty =
+			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(DatePicker), new PropertyMetadata(null));
+
+		public DatePicker()
+		{
+			LightDismissOverlayBackground = Resources["DatePickerLightDismissOverlayBackground"] as Brush ??
+				// This is normally a no-op - the above line should retrieve the framework-level resource. This is purely to fail the build when
+				// Resources/Styles are overhauled (and the above will no longer be valid)
+				Uno.UI.GlobalStaticResources.DatePickerLightDismissOverlayBackground as Brush;
+
+			InitializePartial();
+		}
+
+		partial void InitializePartial();
+
 #if XAMARIN
 
 		#region Template parts
@@ -207,6 +250,8 @@ namespace Windows.UI.Xaml.Controls
 				BindToFlyout(nameof(Date));
 				BindToFlyout(nameof(MinYear));
 				BindToFlyout(nameof(MaxYear));
+				_flyoutButton.Flyout.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
+				_flyoutButton.Flyout.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
 #endif
 			}
 		}

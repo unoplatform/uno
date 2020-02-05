@@ -94,6 +94,8 @@ namespace Windows.UI.Xaml.Media
 
 		private void OnChildTransformChanged(object sender, EventArgs e) => NotifyChanged();
 
+		public Matrix Value => new Matrix(MatrixCore);
+
 		internal override Matrix3x2 ToMatrix(Point absoluteOrigin)
 		{
 			var matrix = Matrix3x2.Identity;

@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>xamarinmac20;MonoAndroid90;xamarinios10;net461;netstandard2.0</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
@@ -248,12 +248,7 @@
 	DispatchToInnerBuilds is used for direct builds, CoreCompile/_UnoSourceGenerator is for 
 	project dependency induced builds.
 	-->
-	<Target Name="GenerateMixins"
-					Inputs="@(MixinInput)"
-					Outputs="@(MixinOutput)"
-					BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator"
-					DependsOnTargets="_OptimizeT4Generator"
-					Condition="'$(DesignTimeBuild)' != 'true'">
+	<Target Name="GenerateMixins" Inputs="@(MixinInput)" Outputs="@(MixinOutput)" BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator" DependsOnTargets="_OptimizeT4Generator" Condition="'$(DesignTimeBuild)' != 'true'">
 
 		<ItemGroup>
 			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
@@ -302,8 +297,8 @@
 			<_T4AOTFiles Include="$(T4Path)/*.dll" />
 		</ItemGroup>
 		
-		<Exec Command="mono --aot &quot;$(T4Bin)&quot;" />
-		<Exec Command="mono --aot &quot;%(_T4AOTFiles.Identity)&quot;" />
+		<Exec ContinueOnError="WarnAndContinue" Command="mono --aot &quot;$(T4Bin)&quot;" />
+		<Exec ContinueOnError="WarnAndContinue" Command="mono --aot &quot;%(_T4AOTFiles.Identity)&quot;" />
 	</Target>
 
 	<Target Name="_InnerGenerateMixins">
@@ -366,6 +361,12 @@
 	  <None Update="BaseActivity.Callbacks.Implementation.Android.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>
 	    <LastGenOutput>BaseActivity.Callbacks.Implementation.Android.cs</LastGenOutput>
+	  </None>
+	  <None Update="C:\s\nv.github\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\TwoPaneView\TwoPaneView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="C:\s\nv.github\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\TwoPaneView\TwoPaneView_rs1.xaml">
+	    <Generator>MSBuild:Compile</Generator>
 	  </None>
 	  <None Update="Mixins\Android\FrameworkElementMixins.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>

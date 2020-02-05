@@ -4,6 +4,13 @@ namespace Windows.UI.ViewManagement
 {
 	public  partial class ApplicationViewTitleBar 
 	{
+		/// <summary>
+		/// Constructor is not public in UWP
+		/// </summary>
+		internal ApplicationViewTitleBar()
+		{
+		}
+
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Color? ButtonInactiveBackgroundColor
 		{
@@ -88,8 +95,8 @@ namespace Windows.UI.ViewManagement
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationViewTitleBar", "Color? ApplicationViewTitleBar.ButtonInactiveForegroundColor");
 			}
 		}
-		
-		
+
+#if !__WASM__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Color? BackgroundColor
 		{
@@ -103,7 +110,7 @@ namespace Windows.UI.ViewManagement
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationViewTitleBar", "Color? ApplicationViewTitleBar.BackgroundColor");
 			}
 		}
-		
+#endif
 		
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Color? InactiveForegroundColor

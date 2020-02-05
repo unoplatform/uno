@@ -471,8 +471,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					writer.AppendLineInvariant("/// <returns>The instance of the resources, otherwise null.</returns>");
 					using (writer.BlockInvariant("public static object FindResource(string name)"))
 					{
-						using (writer.BlockInvariant("foreach(var resolver in _resolvers)"))
+						using (writer.BlockInvariant("for (int i = _resolvers.Count - 1; i>=0; i--)"))
 						{
+							writer.AppendLineInvariant("var resolver = _resolvers[i];");
 							writer.AppendLineInvariant("var resource = resolver(name);");
 							writer.AppendLineInvariant("if(resource != null){{ return resource; }}");
 						}

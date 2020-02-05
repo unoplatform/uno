@@ -8,7 +8,7 @@ namespace Windows.UI.Xaml.Media
 	public  partial class TransformGroup : global::Windows.UI.Xaml.Media.Transform
 	{
 		// Skipping already declared property Children
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.Matrix Value
 		{

@@ -26,7 +26,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 			// Can't find popup that is outside of page.
 			//var button = _app.Marked("FlyoutToBottomButton");
-			//_app.Tap(button);
+			//_app.FastTap(button);
 
 			//_app.Wait(1);
 			//_app.WaitForElement(_app.Marked("BottomFlyout"));
@@ -47,12 +47,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			var dataBoundText = _app.Marked("DataBoundText");
 
 			_app.WaitForElement(flyoutButton);
-			_app.Tap(flyoutButton);
+			_app.FastTap(flyoutButton);
 
 			_app.WaitForElement(dataBoundButton);
 			Assert.AreEqual("Button not clicked", dataBoundText.GetText());
 
-			_app.Tap(dataBoundButton);
+			_app.FastTap(dataBoundButton);
 			Assert.AreEqual("Button was clicked", dataBoundText.GetText());
 			
 			_app.TapCoordinates(10, 100);
@@ -75,7 +75,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			{
 				var target1Result = _app.WaitForElement(target1).First();
 
-				_app.Tap(target1);
+				_app.FastTap(target1);
 
 				var innerContentResult = _app.WaitForElement(innerContent).First();
 
@@ -88,7 +88,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			{
 				var target2Result = _app.WaitForElement(target2).First();
 
-				_app.Tap(target2);
+				_app.FastTap(target2);
 
 				var innerContentResult = _app.WaitForElement(innerContent).First();
 
@@ -99,7 +99,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			}
 
 			{
-				_app.Tap(flyoutFull);
+				_app.FastTap(flyoutFull);
 
 				var innerContentResult = _app.WaitForElement(innerContent).First();
 
@@ -126,10 +126,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			var outerButton = _app.Marked("outerButton");
 			var innerButton = _app.Marked("innerButton");
 
-			_app.Tap(outerButton);
+			_app.FastTap(outerButton);
 			_app.WaitForElement(innerButton);
 
-			_app.Tap(innerButton);
+			_app.FastTap(innerButton);
 
 			_app.WaitForNoElement(outerButton);
 			_app.WaitForNoElement(innerButton);

@@ -34,6 +34,12 @@ namespace Windows.Storage
 			_fileUri = uri;
 		}
 
+		public IAsyncAction DeleteAsync() =>
+			AsyncAction.FromTask(async ct =>
+			{
+				await DeleteAsync(CancellationToken.None);
+			});
+			
 		public async Task DeleteAsync(CancellationToken ct)
 		{
 			if (Scheme != "FILE")
@@ -45,6 +51,8 @@ namespace Windows.Storage
 
 			fileInfo.Delete();
 		}
+
+		public global::System.DateTimeOffset DateCreated => File.GetCreationTime(Path);
 
 #if false
 		public async Task<Stream> GetThumbnailAsync(CancellationToken ct, ThumbnailMode mode, int size)

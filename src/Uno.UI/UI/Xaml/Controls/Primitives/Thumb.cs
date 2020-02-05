@@ -3,6 +3,7 @@
 #endif
 
 using System;
+using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Input;
@@ -40,7 +41,24 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			Initialize();
 		}
 
-		internal bool ShouldCapturePointer { get; set; } = true;
+		// 0b0[All][Mouse][Pen]
+		// this assume that PointerDeviceType.Touch = 0 / Pen = 1 / Mouse = 2
+		private int _disableCapturePointers = 0b0000; 
+
+		/// <summary>
+		/// Disable capture of all pointer kind
+		/// </summary>
+		internal void DisablePointersTracking()
+			=> _disableCapturePointers = 0b0100;
+
+		/// <summary>
+		/// Disable capture for mouse
+		/// </summary>
+		internal void DisableMouseTracking()
+			=> _disableCapturePointers |= (int)PointerDeviceType.Mouse;
+
+		private bool ShouldCapture(PointerDeviceType type)
+			=> (_disableCapturePointers & (0b0100 | (int)type)) == 0;
 
 		/// <summary>
 		/// Initializes necessary platform-specific components
@@ -56,65 +74,57 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_startLocation = location;
 
 			IsDragging = true;
-			DragStarted?.Invoke(this, new DragStartedEventArgs(0, 0));
+			DragStarted?.Invoke(this, new DragStartedEventArgs(this, 0, 0));
 		}
 
 		internal void DeltaDrag(Point location)
 		{
-			DragDelta?.Invoke(this, new DragDeltaEventArgs(location.X - _startLocation.X, location.Y - _startLocation.Y));
+			DragDelta?.Invoke(this, new DragDeltaEventArgs(this, location.X - _startLocation.X, location.Y - _startLocation.Y));
 		}
 
 		internal void CompleteDrag(Point location)
 		{
 			IsDragging = false;
-			DragCompleted?.Invoke(this, new DragCompletedEventArgs(location.X - _startLocation.X, location.Y - _startLocation.Y, false));
+			DragCompleted?.Invoke(this, new DragCompletedEventArgs(this, location.X - _startLocation.X, location.Y - _startLocation.Y, false));
 		}
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
 		{
 			base.OnPointerPressed(args);
 
-			if (ShouldCapturePointer)
+			if (!ShouldCapture(args.Pointer.PointerDeviceType))
 			{
-				args.Handled = true;
-				CapturePointer(args.Pointer);
-				StartDrag(args.GetCurrentPoint(this).Position);
+				return;
 			}
-		}
 
-		protected override void OnPointerCanceled(PointerRoutedEventArgs args)
-		{
-			base.OnPointerCanceled(args);
-
-			if (ShouldCapturePointer)
+			var point = args.GetCurrentPoint(this);
+			if (!point.Properties.IsLeftButtonPressed
+				|| !CapturePointer(args.Pointer))
 			{
-				args.Handled = true;
-				ReleasePointerCapture(args.Pointer);
-				CompleteDrag(args.GetCurrentPoint(this).Position);
+				return;
 			}
-		}
 
-		protected override void OnPointerReleased(PointerRoutedEventArgs args)
-		{
-			base.OnPointerReleased(args);
-
-			if (ShouldCapturePointer)
-			{
-				args.Handled = true;
-				ReleasePointerCapture(args.Pointer);
-				CompleteDrag(args.GetCurrentPoint(this).Position);
-			}
+			// Note: We don't handle event as UWP does not, and otherwise it will prevent parent control to update its visual state
+			StartDrag(point.Position);
 		}
 
 		protected override void OnPointerMoved(PointerRoutedEventArgs args)
 		{
 			base.OnPointerMoved(args);
 
-			if (ShouldCapturePointer && IsCaptured(args.Pointer))
+			if (IsCaptured(args.Pointer))
 			{
-				args.Handled = true;
+				// Note: We don't handle event as UWP does not, and otherwise it will prevent parent control to update its visual state
 				DeltaDrag(args.GetCurrentPoint(this).Position);
 			}
+		}
+
+		protected override void OnPointerCaptureLost(PointerRoutedEventArgs args)
+		{
+			base.OnPointerCaptureLost(args);
+
+			// Note: We don't handle event as UWP does not, and otherwise it will prevent parent control to update its visual state
+			CompleteDrag(args.GetCurrentPoint(this).Position);
 		}
 	}
 }

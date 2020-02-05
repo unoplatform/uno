@@ -10,32 +10,36 @@ namespace Windows.UI.Xaml.Input
 {
 	public sealed partial class TappedRoutedEventArgs : RoutedEventArgs, ICancellableRoutedEventArgs
 	{
+		private readonly UIElement _originalSource;
 		private readonly Point _position;
 
 		public TappedRoutedEventArgs() { }
 		
-		internal TappedRoutedEventArgs(object originalSource, TappedEventArgs args)
+		internal TappedRoutedEventArgs(UIElement originalSource, TappedEventArgs args)
 			: base(originalSource)
 		{
+			_originalSource = originalSource;
 			_position = args.Position;
 			PointerDeviceType = args.PointerDeviceType;
 		}
 
 		public bool Handled { get; set; }
 
-		public Point GetPosition() => _position;
-
-		public PointerDeviceType PointerDeviceType { get; internal set; }
+		public PointerDeviceType PointerDeviceType { get; }
 
 		public Point GetPosition(UIElement relativeTo)
 		{
-			if(relativeTo == null)
+			if (_originalSource == null)
+			{
+				return default; // Required for the default public ctor ...
+			}
+			else if (relativeTo == _originalSource)
 			{
 				return _position;
 			}
 			else
 			{
-				return relativeTo.GetPosition(_position, relativeTo);
+				return _originalSource.GetPosition(_position, relativeTo);
 			}
 		}
 	}

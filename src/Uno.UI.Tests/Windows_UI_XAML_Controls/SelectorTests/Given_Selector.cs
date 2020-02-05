@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
@@ -141,6 +142,143 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.SelectorTests
 
 			SUT.SelectedValue = null;
 			Assert.AreEqual(-1, SUT.SelectedIndex);
+		}
+
+		[TestMethod]
+		public void When_SelectedIndex_Changed()
+		{
+			var SUT = new Selector();
+			var selectionChanged = new List<SelectionChangedEventArgs>();
+
+			SUT.SelectionChanged += (s, e) => {
+				selectionChanged.Add(e);
+			};
+
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			var source = new[] {
+				"item 0",
+				"item 1",
+				"item 2",
+				"item 3",
+				"item 4"
+			};
+
+			SUT.ItemsSource = source;
+
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			SUT.SelectedIndex = 0;
+
+			Assert.AreEqual(source[0], SUT.SelectedValue);
+			Assert.AreEqual(1, selectionChanged.Count);
+			Assert.AreEqual(source[0], selectionChanged[0].AddedItems[0]);
+			Assert.AreEqual(0, selectionChanged[0].RemovedItems.Count);
+		}
+
+		[TestMethod]
+		public void When_SelectionChanged_And_SelectedItem_Changed()
+		{
+			var SUT = new Selector();
+			var selectionChanged = new List<SelectionChangedEventArgs>();
+
+			SUT.SelectionChanged += (s, e) => {
+				selectionChanged.Add(e);
+			};
+
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			var source = new[] {
+				new SelectorItem(){ Content = "item 1" },
+				new SelectorItem(){ Content = "item 2" },
+				new SelectorItem(){ Content = "item 3" },
+				new SelectorItem(){ Content = "item 4" },
+			};
+
+			SUT.ItemsSource = source;
+
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			SUT.SelectedItem = source[0];
+
+			Assert.AreEqual(source[0], SUT.SelectedValue);
+			Assert.AreEqual(1, selectionChanged.Count);
+			Assert.AreEqual(source[0], selectionChanged[0].AddedItems[0]);
+			Assert.AreEqual(0, selectionChanged[0].RemovedItems.Count);
+
+			SUT.SelectedItem = new ListViewItem() { Content = "unknown item" };
+
+			Assert.AreEqual(source[0], SUT.SelectedValue);
+			Assert.AreEqual(1, selectionChanged.Count);
+			Assert.AreEqual(source[0], selectionChanged[0].AddedItems[0]);
+			Assert.AreEqual(0, selectionChanged[0].RemovedItems.Count);
+		}
+
+		[TestMethod]
+		public void When_SelectionChanged_And_SelectorItem_IsSelected_Changed()
+		{
+			var SUT = new Selector() {
+				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				Template = new ControlTemplate(() => new ItemsPresenter()),
+			};
+			SUT.ForceLoaded();
+
+			var selectionChanged = new List<SelectionChangedEventArgs>();
+
+			SUT.SelectionChanged += (s, e) => {
+				selectionChanged.Add(e);
+			};
+
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			var source = new[] {
+				new SelectorItem(){ Content = "item 1" },
+				new SelectorItem(){ Content = "item 2" },
+				new SelectorItem(){ Content = "item 3" },
+				new SelectorItem(){ Content = "item 4" },
+			};
+
+			SUT.ItemsSource = source;
+
+			Assert.AreEqual(-1, SUT.SelectedIndex);
+
+			SUT.SelectedItem = source[0];
+
+			Assert.AreEqual(source[0], SUT.SelectedValue);
+			Assert.AreEqual(1, selectionChanged.Count);
+			Assert.AreEqual(source[0], selectionChanged[0].AddedItems[0]);
+			Assert.AreEqual(0, selectionChanged[0].RemovedItems.Count);
+			Assert.IsTrue(source[0].IsSelected);
+
+			source[1].IsSelected = true;
+
+			Assert.AreEqual(source[1], SUT.SelectedItem);
+			Assert.AreEqual(2, selectionChanged.Count);
+			Assert.AreEqual(source[1], selectionChanged.Last().AddedItems[0]);
+			Assert.AreEqual(1, selectionChanged.Last().RemovedItems.Count);
+			Assert.AreEqual(source[0], selectionChanged.Last().RemovedItems[0]);
+			Assert.IsFalse(source[0].IsSelected);
+
+			source[2].IsSelected = true;
+
+			Assert.AreEqual(source[2], SUT.SelectedItem);
+			Assert.AreEqual(3, selectionChanged.Count);
+			Assert.AreEqual(source[2], selectionChanged.Last().AddedItems[0]);
+			Assert.AreEqual(1, selectionChanged.Last().RemovedItems.Count);
+			Assert.AreEqual(source[1], selectionChanged.Last().RemovedItems[0]);
+			Assert.IsTrue(source[2].IsSelected);
+			Assert.IsFalse(source[1].IsSelected);
+			Assert.IsFalse(source[0].IsSelected);
+
+			source[2].IsSelected = false;
+
+			Assert.IsNull(SUT.SelectedItem);
+			Assert.AreEqual(4, selectionChanged.Count);
+			Assert.AreEqual(source[2], selectionChanged.Last().RemovedItems[0]);
+			Assert.AreEqual(0, selectionChanged.Last().AddedItems.Count);
+			Assert.IsFalse(source[0].IsSelected);
+			Assert.IsFalse(source[1].IsSelected);
+			Assert.IsFalse(source[2].IsSelected);
 		}
 	}
 }

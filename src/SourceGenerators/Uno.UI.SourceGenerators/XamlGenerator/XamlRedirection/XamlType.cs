@@ -53,7 +53,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection
 			=> _isUnknown
 			? unknownTypeName.GetHashCode()
 			: XamlConfig.IsUnoXaml
-				? _unoDeclaringType.GetHashCode()
+				? _unoDeclaringType.Name.GetHashCode()
 				: _msDeclaringType.GetHashCode();
 
 	}

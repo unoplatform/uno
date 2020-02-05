@@ -80,8 +80,6 @@ namespace Windows.UI.Xaml.Controls
 			ScrollBarStyle = ScrollbarStyles.OutsideOverlay; // prevents padding from affecting scrollbar position
 
 			_layouter = new ScrollViewerLayouter(this);
-
-			MotionEventSplittingEnabled = false;
 		}
 
 		private void InitializeScrollbars()
