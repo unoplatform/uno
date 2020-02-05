@@ -19,12 +19,9 @@ namespace Windows.UI.Xaml.Shapes
 		/// </summary>
 		private protected double ActualStrokeThickness
 		{
-			get
-			{
-				//Path does not need to define a stroke, in that case StrokeThickness should just return 0
-				//Other shapes like Ellipse and Polygon will not draw if Stroke is null so returning 0 will have no effect
-				return Stroke == null ? DefaultStrokeThicknessWhenNoStrokeDefined : StrokeThickness;
-			}
+			//Path does not need to define a stroke, in that case StrokeThickness should just return 0
+			//Other shapes like Ellipse and Polygon will not draw if Stroke is null so returning 0 will have no effect
+			get => Stroke == null ? DefaultStrokeThicknessWhenNoStrokeDefined : StrokeThickness;
 		}
 
 		#region Fill Dependency Property
@@ -83,7 +80,7 @@ namespace Windows.UI.Xaml.Shapes
 				typeof(double),
 				typeof(Shape),
 				new FrameworkPropertyMetadata(
-					defaultValue: 1.0,
+					defaultValue: 1.0d,
 					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
 					propertyChangedCallback: (s, e) => ((Shape)s).OnStrokeThicknessUpdated((double)e.NewValue)
 			)

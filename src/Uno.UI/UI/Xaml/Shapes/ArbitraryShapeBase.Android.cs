@@ -231,25 +231,16 @@ namespace Windows.UI.Xaml.Shapes
 
 			var bounds = physicalBounds.PhysicalToLogicalPixels();
 
-			if (bounds.IsEmpty)
-			{
-				return default;
-			}
-
-			var shouldPreserveOrigin = ShouldPreserveOrigin;
-			var pathWidth = shouldPreserveOrigin ? bounds.Right : bounds.Width();
-			var pathHeight = shouldPreserveOrigin ? bounds.Bottom : bounds.Height();
+			var stretch = Stretch;
+			var preserveOrigin = ShouldPreserveOrigin || stretch == Stretch.None;
+			var pathWidth = preserveOrigin ? bounds.Right : bounds.Width();
+			var pathHeight = preserveOrigin ? bounds.Bottom : bounds.Height();
 
 			var (min, max) = this.GetMinMax();
 			var userSize = availableSizeMinusStroke
 				.AtMost(max.Subtract(strokeSize))
 				.AtLeast(min.Subtract(strokeSize))
 				.AtLeastZero();
-
-			if(userSize.Width == 0 || userSize.Height ==0)
-			{
-				return default;
-			}
 
 			// Default values
 			var calculatedWidth = LimitWithUserSize(availableSize.Width, userSize.Width, pathWidth);
@@ -269,7 +260,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 
 			// Here we will override some of the default values
-			switch (Stretch)
+			switch (stretch)
 			{
 				// If the Stretch is None, the drawing is not the same size as the control
 				case Stretch.None:
