@@ -7,14 +7,14 @@ namespace Windows.Storage
 	#endif
 	public  partial class FileIO 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<string> ReadTextAsync( global::Windows.Storage.IStorageFile file)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> FileIO.ReadTextAsync(IStorageFile file) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<string> ReadTextAsync( global::Windows.Storage.IStorageFile file,  global::Windows.Storage.Streams.UnicodeEncoding encoding)
 		{
@@ -49,42 +49,42 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncAction FileIO.AppendTextAsync(IStorageFile file, string contents, UnicodeEncoding encoding) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<string>> ReadLinesAsync( global::Windows.Storage.IStorageFile file)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<string>> FileIO.ReadLinesAsync(IStorageFile file) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::System.Collections.Generic.IList<string>> ReadLinesAsync( global::Windows.Storage.IStorageFile file,  global::Windows.Storage.Streams.UnicodeEncoding encoding)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IList<string>> FileIO.ReadLinesAsync(IStorageFile file, UnicodeEncoding encoding) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncAction WriteLinesAsync( global::Windows.Storage.IStorageFile file,  global::System.Collections.Generic.IEnumerable<string> lines)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction FileIO.WriteLinesAsync(IStorageFile file, IEnumerable<string> lines) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncAction WriteLinesAsync( global::Windows.Storage.IStorageFile file,  global::System.Collections.Generic.IEnumerable<string> lines,  global::Windows.Storage.Streams.UnicodeEncoding encoding)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction FileIO.WriteLinesAsync(IStorageFile file, IEnumerable<string> lines, UnicodeEncoding encoding) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncAction AppendLinesAsync( global::Windows.Storage.IStorageFile file,  global::System.Collections.Generic.IEnumerable<string> lines)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction FileIO.AppendLinesAsync(IStorageFile file, IEnumerable<string> lines) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncAction AppendLinesAsync( global::Windows.Storage.IStorageFile file,  global::System.Collections.Generic.IEnumerable<string> lines,  global::Windows.Storage.Streams.UnicodeEncoding encoding)
 		{
