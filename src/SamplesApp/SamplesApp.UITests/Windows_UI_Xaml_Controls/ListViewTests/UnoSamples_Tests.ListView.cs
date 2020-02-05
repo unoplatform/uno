@@ -1,7 +1,6 @@
 ﻿using System;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
-using UITests.Shared.Helpers;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
