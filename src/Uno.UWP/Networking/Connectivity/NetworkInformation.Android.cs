@@ -34,32 +34,31 @@ namespace Windows.Networking.Connectivity
 				var netInterface = netInterfacesEnum.NextElement() as Java.Net.NetworkInterface;
 				if (netInterface.InterfaceAddresses != null)
 				{
-					string mamDisplayName = netInterface.DisplayName;
-					string mamInneName = netInterface.Name;
+					string androDisplayName = netInterface.DisplayName;
+					// another name, netInterface.Name, would be ignored (seems like == androDisplayName)
 
 					foreach (var interfaceAddress in netInterface.InterfaceAddresses)
 					{
-						int mamPrefixLength = interfaceAddress.NetworkPrefixLength;
+						int androPrefixLength = interfaceAddress.NetworkPrefixLength;
 						if (interfaceAddress.Address != null)
 						{
-							string mamCanonical = interfaceAddress.Address.CanonicalHostName;
-							string mamHostName = interfaceAddress.Address.HostName;
-							bool mamIPv46 = (interfaceAddress.Address.GetAddress().Count() == 4);
+							string androCanonical = interfaceAddress.Address.CanonicalHostName;
+							string androHostName = interfaceAddress.Address.HostName;	// seems like == androCanonical
+							bool androIPv46 = (interfaceAddress.Address.GetAddress().Count() == 4);
 
-							// mamy dane, zrobimy sobie wstawienie ich
+							// we have all required data from Android, and we can use them
 							HostName newHost = new HostName();
 							IPInformation newInfo = new IPInformation();
-							newInfo.PrefixLength = (byte)mamPrefixLength;
+							newInfo.PrefixLength = (byte)androPrefixLength;
 
 							newHost.IPInformation = newInfo;
-							newHost.Type = (mamIPv46) ? HostNameType.Ipv4 : HostNameType.Ipv6;
-							// ale kiedy domain? kiedy bluetooth?
+							newHost.Type = (androIPv46) ? HostNameType.Ipv4 : HostNameType.Ipv6;
+							// only these two types; UWP has also 'DomainName' and 'Bluetooth'
 
-							newHost.CanonicalName = mamCanonical;
-							newHost.RawName = mamHostName;
-							newHost.RawName = mamInneName;
-							newHost.DisplayName = mamDisplayName;
-							uwpList.Add(newHost);    // ale tak, zeby nie bylo powtorek!
+							newHost.CanonicalName = androCanonical;
+							newHost.RawName = androHostName;
+							newHost.DisplayName = androDisplayName;
+							uwpList.Add(newHost);    // assuming there would be no duplicates
 						}
 					}
 				}
