@@ -41,7 +41,11 @@ namespace Windows.Devices.Geolocation
 			BroadcastStatus(PositionStatus.Initializing);
 		}
 
-		public async Task<Geoposition> GetGeopositionAsync()
+#if __IOS__
+		public async Task<Geoposition> GetGeopositionAsync() //will be removed with #2240
+#else
+		public async IAsyncOperation<Geoposition> GetGeopositionAsync()
+#endif
 		{
 			BroadcastStatus(PositionStatus.Initializing);
 			var location = _locationManager.Location;
@@ -70,12 +74,20 @@ namespace Windows.Devices.Geolocation
 				)
 			);
 
-		public async Task<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
+#if __IOS__
+		public async Task<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout) //will be removed with #2240
+#else
+		public async IAsyncOperation<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
+#endif
 			=> await GetGeopositionAsync();
 
 		private static List<CLLocationManager> _requestManagers = new List<CLLocationManager>();
 
+#if __IOS__
 		public static async Task<GeolocationAccessStatus> RequestAccessAsync()
+#else
+		public static async IAsyncOperation<GeolocationAccessStatus> RequestAccessAsync()
+#endif
 		{
 			var mgr = new CLLocationManager();
 
