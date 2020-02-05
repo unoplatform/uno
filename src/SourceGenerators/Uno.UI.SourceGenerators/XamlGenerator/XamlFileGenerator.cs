@@ -3959,7 +3959,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
                 if (contentOwner != null)
                 {
-                    writer.Append("() =>");
+                    writer.Append("() => ");
                     // This case is to support the layout switching for the ListViewBaseLayout, which is not
                     // a FrameworkTemplate. This will need to be removed when this custom list view is removed.
                     var returnType = typeName == "ListViewBaseLayoutTemplate" ? "Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
