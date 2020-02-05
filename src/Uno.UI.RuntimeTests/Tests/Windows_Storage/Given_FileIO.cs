@@ -28,7 +28,7 @@ namespace Uno.UI.RuntimeTests.Tests
 		}
 
 		[TestMethod]
-		public async void When_WriteReadAppendRead()
+		public async Task When_WriteReadAppendRead()
 		{
 			var folderForTestFile = Windows.Storage.ApplicationData.Current.LocalFolder;
 			Assert.IsNotNull(folderForTestFile, "cannot get LocalFolder - error outside tested method");
