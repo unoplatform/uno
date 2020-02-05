@@ -39,8 +39,10 @@ namespace Windows.Storage
 					break;
 			}
 
-			using (Stream fileStream = await file.OpenStreamForWriteAsync())
+			Stream fileStream = null;
+			try
 			{
+				fileStream = await file.OpenStreamForWriteAsync();
 				if (append)
 				{
 					fileStream.Seek(0, SeekOrigin.End);
@@ -56,6 +58,13 @@ namespace Windows.Storage
 					await streamWriter.WriteAsync(contents);
 				}
 			}
+			finally
+			{
+				if(fileStream != null)
+				{
+					fileStream.Dispose();
+				}
+			}
 		}
 
 		public static IAsyncAction AppendTextAsync(IStorageFile file, string contents, Streams.UnicodeEncoding encoding) => AppendWriteTextAsync(file, contents, encoding, true).AsAsyncAction();
@@ -64,13 +73,13 @@ namespace Windows.Storage
 
 		private static string ConvertLinesToString(IEnumerable<string> lines)
 		{
-			string output = "";
+			StringBuilder output = new StringBuilder(); 
 			foreach (string line in lines)
 			{
-				output = output + line + Environment.NewLine;
+				output.Append(line + Environment.NewLine);
 			}
 
-			return output;
+			return output.ToString();
 		}
 
 		public static IAsyncAction WriteLinesAsync(IStorageFile file, IEnumerable<string> lines, Streams.UnicodeEncoding encoding)
