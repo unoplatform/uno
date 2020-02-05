@@ -23,7 +23,7 @@ To enable faster development, it's possible to use the [Visual Studio Solution F
 
 For instance, if you want to debug an iOS feature:
 - Make sure the `Uno.UI.sln` solution is not opened in Visual Studio.
-- Make a copy of the [src/crosstargeting_override.props.sample](src/crosstargeting_override.props.sample) file to `src/crosstargeting_override.props`
+- Make a copy of the [src/crosstargeting_override.props.sample](/src/crosstargeting_override.props.sample) file to `src/crosstargeting_override.props`
 - In this new file, uncomment the `UnoTargetFrameworkOverride` line and set its value to `xamarinios10`
 - Open the `Uno.UI-iOS-only.slnf` solution filter (either via the VS folder view, or the Windows explorer)
 - Build
@@ -40,10 +40,10 @@ Make sure **Enable source link support** check box is checked in **Tools** / **O
 / **Debugging** / **General** properties page.
 
 ## Updating the Nuget packages used by the Uno.UI solution
-The versions used are centralized in the [Directory.Build.targets](src/Directory.Build.targets) file, and all the
+The versions used are centralized in the [Directory.Build.targets](/src/Directory.Build.targets) file, and all the
 locations where `<PackageReference />` are used.
 
-When updating the versions of nuget packages, make sure to update the [Uno.UI.nuspec](build/Uno.UI.nuspec) file.
+When updating the versions of nuget packages, make sure to update the [Uno.UI.nuspec](/build/Uno.UI.nuspec) file.
 
 ## Debugging Uno.UI
 
