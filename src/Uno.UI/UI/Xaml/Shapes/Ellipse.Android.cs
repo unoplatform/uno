@@ -1,8 +1,6 @@
-﻿using Android.Graphics;
+﻿using Windows.Foundation;
+using Android.Graphics;
 using Uno.UI;
-using System;
-using System.Drawing;
-using Size = Windows.Foundation.Size;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -11,23 +9,18 @@ namespace Windows.UI.Xaml.Shapes
 		public Ellipse()
 		{
 			//Set default stretch value
-			this.Stretch = Windows.UI.Xaml.Media.Stretch.Fill;
+			this.SetValue(StretchProperty, Media.Stretch.Fill, DependencyPropertyValuePrecedences.DefaultValue);
 		}
 
-		protected override Android.Graphics.Path GetPath()
+		protected override Android.Graphics.Path GetPath(Size availableSize)
 		{
-			var minMaxInLogicalPixels = this.GetMinMax();
-
-			var viewGroup = this as UnoViewGroup;
-			var finalSizeInPhysicalPixels =
-				new Size(viewGroup.Width, viewGroup.Height)
-					.AtMost(minMaxInLogicalPixels.max.LogicalToPhysicalPixels())
-					.AtLeast(minMaxInLogicalPixels.min.LogicalToPhysicalPixels());
-
-			var bounds = new RectF(0, 0, (float)finalSizeInPhysicalPixels.Width, (float)finalSizeInPhysicalPixels.Height);
+			var bounds = this.ApplySizeConstraints(availableSize).LogicalToPhysicalPixels();
 
 			var output = new Android.Graphics.Path();
-			output.AddOval(bounds, Android.Graphics.Path.Direction.Cw);
+			output.AddOval(
+				new RectF(0, 0, (float)bounds.Width, (float)bounds.Height),
+				Android.Graphics.Path.Direction.Cw);
+
 			return output;
 		}
 	}
