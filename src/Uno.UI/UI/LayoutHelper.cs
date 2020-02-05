@@ -52,7 +52,10 @@ namespace Uno.UI
 			return (minSize, maxSize);
 		}
 
-		[Pure]
+		/// <summary>
+		/// Apply min/max and defined sized on control to an available size
+		/// </summary>
+		/// <returns>Available size after applying min/max</returns>
 		internal static Size ApplySizeConstraints(this IFrameworkElement e, Size forSize)
 		{
 			var (min, max) = e.GetMinMax();

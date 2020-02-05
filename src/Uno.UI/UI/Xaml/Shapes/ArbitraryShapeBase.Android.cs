@@ -46,7 +46,18 @@ namespace Windows.UI.Xaml.Shapes
 				return Disposable.Empty;
 			}
 
-			var drawables = new List<Drawable>();
+			var fill = Fill;
+			var stroke = Stroke;
+
+			if(fill == null && stroke == null)
+			{
+				// Nothing to draw!
+				return Disposable.Empty;
+			}
+
+			// predict list capacity to reduce memory handling
+			var drawablesCapacity = fill != null && stroke != null ? 2 : 1;
+			var drawables = new List<Drawable>(drawablesCapacity);
 
 			var path = GetPath(_lastAvailableSize);
 			if (path == null)
@@ -101,36 +112,36 @@ namespace Windows.UI.Xaml.Shapes
 			// Draw the fill
 			var drawArea = new Foundation.Rect(0, 0, _controlWidth, _controlHeight);
 
-			if (Fill is ImageBrush imageBrushFill)
+			if (fill is ImageBrush fillImageBrush)
 			{
-				var bitmapDrawable = new BitmapDrawable(Context.Resources, imageBrushFill.TryGetBitmap(drawArea, () => RefreshShape(forceRefresh: true), path));
+				var bitmapDrawable = new BitmapDrawable(Context.Resources, fillImageBrush.TryGetBitmap(drawArea, () => RefreshShape(forceRefresh: true), path));
 				drawables.Add(bitmapDrawable);
 			}
-			else
+			else if(fill != null)
 			{
-				var fill = Fill ?? SolidColorBrushHelper.Transparent;
 				var fillPaint = fill.GetFillPaint(drawArea);
 
-				var lineDrawable = new PaintDrawable();
-				lineDrawable.Shape = new PathShape(path, (float)_controlWidth, (float)_controlHeight);
+				var lineDrawable = new PaintDrawable
+				{
+					Shape = new PathShape(path, (float)_controlWidth, (float)_controlHeight)
+				};
 				lineDrawable.Paint.Color = fillPaint.Color;
 				lineDrawable.Paint.SetShader(fillPaint.Shader);
 				lineDrawable.Paint.SetStyle(Paint.Style.Fill);
 				lineDrawable.Paint.Alpha = fillPaint.Alpha;
 
-				SetStrokeDashEffect(lineDrawable.Paint);
-
 				drawables.Add(lineDrawable);
 			}
 
 			// Draw the contour
-			var stroke = Stroke;
 			if (stroke != null)
 			{
 				using (var strokeBrush = new Paint(stroke.GetStrokePaint(drawArea)))
 				{
-					var lineDrawable = new PaintDrawable();
-					lineDrawable.Shape = new PathShape(path, (float)_controlWidth, (float)_controlHeight);
+					var lineDrawable = new PaintDrawable
+					{
+						Shape = new PathShape(path, (float)_controlWidth, (float)_controlHeight)
+					};
 					lineDrawable.Paint.Color = strokeBrush.Color;
 					lineDrawable.Paint.SetShader(strokeBrush.Shader);
 					lineDrawable.Paint.StrokeWidth = (float)PhysicalStrokeThickness;
@@ -197,8 +208,19 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
-			_lastAvailableSize = availableSize;
-			var path = GetPath(availableSize);
+
+			if (availableSize == default)
+			{
+				return default;
+			}
+
+			var strokeThickness = ActualStrokeThickness;
+			var strokeSize = new Size(strokeThickness, strokeThickness);
+
+			var availableSizeMinusStroke = availableSize.Subtract(strokeSize);
+			_lastAvailableSize = availableSizeMinusStroke;
+
+			var path = GetPath(availableSizeMinusStroke);
 			if (path == null)
 			{
 				return default;
@@ -207,34 +229,34 @@ namespace Windows.UI.Xaml.Shapes
 			var physicalBounds = new RectF();
 			path.ComputeBounds(physicalBounds, false);
 
-			var bounds = ViewHelper.PhysicalToLogicalPixels(physicalBounds);
+			var bounds = physicalBounds.PhysicalToLogicalPixels();
 
-			var pathWidth = bounds.Width();
-			var pathHeight = bounds.Height();
-
-			if (ShouldPreserveOrigin)
+			if (bounds.IsEmpty)
 			{
-				pathWidth += bounds.Left;
-				pathHeight += bounds.Top;
+				return default;
 			}
 
-			var availableWidth = availableSize.Width;
-			var availableHeight = availableSize.Height;
+			var shouldPreserveOrigin = ShouldPreserveOrigin;
+			var pathWidth = shouldPreserveOrigin ? bounds.Right : bounds.Width();
+			var pathHeight = shouldPreserveOrigin ? bounds.Bottom : bounds.Height();
 
-			var userWidth = Width;
-			var userHeight = Height;
+			var (min, max) = this.GetMinMax();
+			var userSize = availableSizeMinusStroke
+				.AtMost(max.Subtract(strokeSize))
+				.AtLeast(min.Subtract(strokeSize))
+				.AtLeastZero();
 
-			var controlWidth = availableWidth <= 0 ? userWidth : availableWidth;
-			var controlHeight = availableHeight <= 0 ? userHeight : availableHeight;
+			if(userSize.Width == 0 || userSize.Height ==0)
+			{
+				return default;
+			}
 
 			// Default values
-			var calculatedWidth = LimitWithUserSize(controlWidth, userWidth, pathWidth);
-			var calculatedHeight = LimitWithUserSize(controlHeight, userHeight, pathHeight);
+			var calculatedWidth = LimitWithUserSize(availableSize.Width, userSize.Width, pathWidth);
+			var calculatedHeight = LimitWithUserSize(availableSize.Height, userSize.Height, pathHeight);
 
-			var strokeThickness = ActualStrokeThickness;
-
-			_scaleX = (calculatedWidth - strokeThickness) / pathWidth;
-			_scaleY = (calculatedHeight - strokeThickness) / pathHeight;
+			_scaleX = calculatedWidth / pathWidth;
+			_scaleY = calculatedHeight / pathHeight;
 
 			//Make sure that we have a valid scale if both of them are not set
 			if (double.IsInfinity(_scaleX) || double.IsNaN(_scaleX))
@@ -278,10 +300,13 @@ namespace Windows.UI.Xaml.Shapes
 				}
 			}
 
-			calculatedWidth += strokeThickness;
-			calculatedHeight += strokeThickness;
+			var calculatedSize =
+				new Size(
+					calculatedWidth,
+					calculatedHeight)
+					.Add(strokeSize);
 
-			return new Size(calculatedWidth, calculatedHeight);
+			return calculatedSize;
 		}
 	}
 }

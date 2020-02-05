@@ -6,10 +6,12 @@ namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Ellipse : ArbitraryShapeBase
 	{
-		public Ellipse()
+		protected override Size MeasureOverride(Size availableSize)
 		{
-			//Set default stretch value
-			this.SetValue(StretchProperty, Media.Stretch.Fill, DependencyPropertyValuePrecedences.DefaultValue);
+			base.MeasureOverride(availableSize);
+
+			// Ellipse will only ask for its "minimum" defined size.
+			return this.GetMinMax().min.AtLeastZero();
 		}
 
 		protected override Android.Graphics.Path GetPath(Size availableSize)
