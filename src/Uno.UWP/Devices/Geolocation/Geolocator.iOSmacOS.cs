@@ -84,7 +84,7 @@ namespace Windows.Devices.Geolocation
 		private static List<CLLocationManager> _requestManagers = new List<CLLocationManager>();
 
 #if __IOS__
-		public static async Task<GeolocationAccessStatus> RequestAccessAsync()
+		public static async Task<GeolocationAccessStatus> RequestAccessAsync() //will be removed with #2240
 #else
 		public static async IAsyncOperation<GeolocationAccessStatus> RequestAccessAsync()
 #endif
