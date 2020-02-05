@@ -585,6 +585,9 @@
 					fullName="Android.Graphics.Path Windows.UI.Xaml.Shapes.ArbitraryShapeBase.GetPath()"
 					reason="Not part of the WinUI API, breaking change should not have repercussion outside Uno.UI" />
 				<Member
+					fullName="CoreGraphics.CGPath Windows.UI.Xaml.Shapes.ArbitraryShapeBase.GetPath()"
+					reason="Not part of the WinUI API, breaking change should not have repercussion outside Uno.UI" />
+				<Member
 					fullName="Windows.Foundation.Point Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs.GetPosition()"
 					reason="Not part of the WinUI API." />
 				<Member
