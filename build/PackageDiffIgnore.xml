@@ -622,7 +622,7 @@
 				<Member
 					fullName="System.Void Windows.System.DispatcherQueueTimer..ctor()"
 					reason="Not part of the WinUI API."/>
-			 	<Member
+				<Member
 					fullName="System.Void Windows.Storage.KnownFolders..ctor()"
 					reason="Not part of the WinUI API."/>
 				<Member
@@ -637,6 +637,12 @@
 				<Member 
 					fullName="System.Void Windows.Devices.Sensors.HingeAngleReading..ctor()"
 					reason="Parameter-less ctor does not exist in UWP"/>
+				<Member
+					fullName="System.Void Windows.System.Profile.AnalyticsInfo..ctor()"
+					reason="Not part of the WinUI API." />
+				<Member
+					fullName="System.Void Windows.System.Profile.AnalyticsVersionInfo..ctor()"
+					reason="Not part of the WinUI API." />
         </Methods>
 		</IgnoreSet>
 	</IgnoreSets>

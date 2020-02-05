@@ -1,5 +1,6 @@
 ﻿#if __ANDROID__
 using System;
+using System.Runtime.CompilerServices;
 using Android.App;
 using Android.Views;
 using Uno.Extensions;
@@ -16,18 +17,12 @@ namespace Windows.UI.ViewManagement
 		{
 			get
 			{
-				if (!(ContextHelper.Current is Activity activity))
-				{
-					throw new InvalidOperationException($"{nameof(IsScreenCaptureEnabled)} API must be called when Activity is created");
-				}
+				var activity = GetCurrentActivity();
 				return !activity.Window.Attributes.Flags.HasFlag(WindowManagerFlags.Secure);
 			}
 			set
 			{
-				if (!(ContextHelper.Current is Activity activity))
-				{
-					throw new InvalidOperationException($"{nameof(IsScreenCaptureEnabled)} API must be called when Activity is created");
-				}
+				var activity = GetCurrentActivity();
 				if (value)
 				{
 					activity.Window.ClearFlags(WindowManagerFlags.Secure);
@@ -36,6 +31,20 @@ namespace Windows.UI.ViewManagement
 				{
 					activity.Window.SetFlags(WindowManagerFlags.Secure, WindowManagerFlags.Secure);
 				}
+			}
+		}
+
+		public string Title
+		{
+			get
+			{
+				var activity = GetCurrentActivity();
+				return activity.Title;
+			}
+			set
+			{
+				var activity = GetCurrentActivity();
+				activity.Title = value;
 			}
 		}
 
@@ -88,6 +97,17 @@ namespace Windows.UI.ViewManagement
 			}
 
 			activity.Window.DecorView.SystemUiVisibility = (StatusBarVisibility)uiOptions;
+		}
+
+
+		private Activity GetCurrentActivity([CallerMemberName]string propertyName = null)
+		{
+			if (!(ContextHelper.Current is Activity activity))
+			{
+				throw new InvalidOperationException($"{propertyName} API must be called when Activity is created");
+			}
+
+			return activity;
 		}
 	}
 }
