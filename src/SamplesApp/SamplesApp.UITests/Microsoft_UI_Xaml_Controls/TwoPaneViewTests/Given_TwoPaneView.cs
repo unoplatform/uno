@@ -168,7 +168,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 				SetComboBox("SimulateComboBox", "LeftRight");
 
 				var marginCheckbox = _app.Marked("AddMarginCheckBox");
-				marginCheckbox.Tap();
+				marginCheckbox.FastTap();
 				// Wait.ForIdle();
 
 				AssertViewMode(ViewMode.LeftRight);
@@ -197,7 +197,7 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 				SetComboBox("SimulateComboBox", "LeftRight");
 
 				var marginCheckbox = _app.Marked("OneSideCheckBox");
-				marginCheckbox.Tap();
+				marginCheckbox.FastTap();
 				// Wait.ForIdle();
 
 				AssertViewMode(ViewMode.Pane1Only);

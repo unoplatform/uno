@@ -93,6 +93,7 @@ namespace Windows.UI.Xaml
 		{
 		}
 
+		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public Size AdjustArrange(Size finalSize)
 		{
 			return finalSize;

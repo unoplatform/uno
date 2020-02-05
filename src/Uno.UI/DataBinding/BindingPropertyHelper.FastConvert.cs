@@ -38,17 +38,15 @@ namespace Uno.UI.DataBinding
 		/// </remarks>
 		private static bool FastConvert(Type outputType, object input, ref object output)
 		{
-			var stringInput = input as string;
-
 			if (
-				stringInput != null
+				input is string stringInput
 				&& FastStringConvert(outputType, stringInput, ref output)
 			)
 			{
 				return true;
 			}
 
-			if (FastNumberConvert(outputType, stringInput, ref output))
+			if (FastNumberConvert(outputType, input, ref output))
 			{
 				return true;
 			}
@@ -64,13 +62,6 @@ namespace Uno.UI.DataBinding
 
 				case bool boolInput:
 					if (FastBooleanConvert(outputType, boolInput, ref output))
-					{
-						return true;
-					}
-					break;
-
-				case double doubleInput:
-					if (FastDoubleConvert(outputType, doubleInput, ref output))
 					{
 						return true;
 					}
@@ -91,17 +82,6 @@ namespace Uno.UI.DataBinding
 			return false;
 		}
 
-		private static bool FastDoubleConvert(Type outputType, double doubleInput, ref object output)
-		{
-			if (outputType == typeof(GridLength))
-			{
-				output = GridLengthHelper.FromPixels(doubleInput);
-				return true;
-			}
-
-			return false;
-		}
-
 		private static bool FastEnumConvert(Type outputType, object input, ref object output)
 		{
 			if (outputType == typeof(string))
@@ -115,22 +95,42 @@ namespace Uno.UI.DataBinding
 
 		private static bool FastNumberConvert(Type outputType, object input, ref object output)
 		{
-			if (
-				input is double
-				&& outputType == typeof(float)
-			)
+			if (input is double doubleInput)
 			{
-				output = (float)(double)input;
-				return true;
+				if(outputType == typeof(float))
+				{
+					output = (float)doubleInput;
+					return true;
+				}
+				if (outputType == typeof(TimeSpan))
+				{
+					output = TimeSpan.FromSeconds(doubleInput);
+					return true;
+				}
+				if (outputType == typeof(GridLength))
+				{
+					output = GridLengthHelper.FromPixels(doubleInput);
+					return true;
+				}
 			}
 
-			if (
-				input is int
-				&& outputType == typeof(float)
-			)
+			if (input is int intInput)
 			{
-				output = (float)(int)input;
-				return true;
+				if (outputType == typeof(float))
+				{
+					output = (float)intInput;
+					return true;
+				}
+				if (outputType == typeof(TimeSpan))
+				{
+					output = TimeSpan.FromSeconds(intInput);
+					return true;
+				}
+				if (outputType == typeof(GridLength))
+				{
+					output = GridLengthHelper.FromPixels(intInput);
+					return true;
+				}
 			}
 
 			return false;

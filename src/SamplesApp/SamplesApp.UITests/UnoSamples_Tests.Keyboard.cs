@@ -41,7 +41,7 @@ namespace SamplesApp.UITests
 
 			{
 				// Setting focus on normalTextBox
-				_app.Tap(normalTextBox);
+				_app.FastTap(normalTextBox);
 				_app.Wait(1);
 				TakeScreenshot("0 - Focus on normalTextBox ", ignoreInSnapshotCompare: true);
 
@@ -53,7 +53,7 @@ namespace SamplesApp.UITests
 
 			{
 				// Setting focus on normalTextBox
-				_app.Tap(filledTextBox);
+				_app.FastTap(filledTextBox);
 				_app.Wait(1);
 				TakeScreenshot("1 - Focus on filledTextBox", ignoreInSnapshotCompare: true);
 
@@ -65,7 +65,7 @@ namespace SamplesApp.UITests
 
 			{
 				// Setting focus on placeholderTextTextBox
-				_app.Tap(placeholderTextTextBox);
+				_app.FastTap(placeholderTextTextBox);
 				_app.Wait(1);
 				TakeScreenshot("2 - Focus on placeholderTextTextBox", ignoreInSnapshotCompare: true);
 
@@ -77,7 +77,7 @@ namespace SamplesApp.UITests
 
 			{
 				// Setting focus on disabledTextBox
-				_app.Tap(disabledTextBox);
+				_app.FastTap(disabledTextBox);
 				_app.Wait(1);
 				TakeScreenshot("3 - Focus on disabledTextBox", ignoreInSnapshotCompare: true);
 
@@ -89,7 +89,7 @@ namespace SamplesApp.UITests
 
 			{
 				// Setting focus on multilineTextBox
-				_app.Tap(multilineTextBox);
+				_app.FastTap(multilineTextBox);
 				_app.Wait(1);
 				TakeScreenshot("4 - Focus on multilineTextBox", ignoreInSnapshotCompare: true);
 
@@ -101,7 +101,7 @@ namespace SamplesApp.UITests
 
 			{
 				// Setting focus on numberTextBox
-				_app.Tap(numberTextBox);
+				_app.FastTap(numberTextBox);
 				_app.Wait(1);
 				TakeScreenshot("5 - Focus on numberTextBox", ignoreInSnapshotCompare: true);
 
@@ -137,7 +137,7 @@ namespace SamplesApp.UITests
 
 			{
 				// Setting focus on normalTextBox
-				_app.Tap(normalTextBox);
+				_app.FastTap(normalTextBox);
 				_app.Wait(1);
 				TakeScreenshot("0 - Focus on normalTextBox", ignoreInSnapshotCompare: true);
 
@@ -149,7 +149,7 @@ namespace SamplesApp.UITests
 
 			{
 				// Setting focus on normalTextBox
-				_app.Tap(filledTextBox);
+				_app.FastTap(filledTextBox);
 				_app.Wait(1);
 				TakeScreenshot("1 - Focus on filledTextBox", ignoreInSnapshotCompare: true);
 
@@ -161,7 +161,7 @@ namespace SamplesApp.UITests
 
 			{
 				// Setting focus on placeholderTextTextBox
-				_app.Tap(placeholderTextTextBox);
+				_app.FastTap(placeholderTextTextBox);
 				_app.Wait(1);
 				TakeScreenshot("2 - Focus on placeholderTextTextBox", ignoreInSnapshotCompare: true);
 
@@ -173,7 +173,7 @@ namespace SamplesApp.UITests
 
 			{
 				// Setting focus on disabledTextBox
-				_app.Tap(disabledTextBox);
+				_app.FastTap(disabledTextBox);
 				_app.Wait(1);
 				TakeScreenshot("3 - Focus on disabledTextBox", ignoreInSnapshotCompare: true);
 
@@ -185,7 +185,7 @@ namespace SamplesApp.UITests
 
 			{
 				// Setting focus on multilineTextBox
-				_app.Tap(multilineTextBox);
+				_app.FastTap(multilineTextBox);
 				_app.Wait(1);
 				TakeScreenshot("4 - Focus on multilineTextBox", ignoreInSnapshotCompare: true);
 
@@ -197,7 +197,7 @@ namespace SamplesApp.UITests
 
 			{
 				// Setting focus on numberTextBox
-				_app.Tap(numberTextBox);
+				_app.FastTap(numberTextBox);
 				_app.Wait(1);
 				TakeScreenshot("5 - Focus on numberTextBox", ignoreInSnapshotCompare: true);
 
@@ -226,7 +226,7 @@ namespace SamplesApp.UITests
 
 			{
 				// Setting focus on normalTextBox
-				_app.Tap(normalTextBox);
+				_app.FastTap(normalTextBox);
 				_app.Wait(1);
 
 				// Writing in normalTextBox 
@@ -240,7 +240,7 @@ namespace SamplesApp.UITests
 
 			{
 				// Setting focus on disabledTextBox
-				_app.Tap(disabledTextBox);
+				_app.FastTap(disabledTextBox);
 				_app.Wait(1);
 
 				// Writing in disabledTextBox 
@@ -409,7 +409,7 @@ namespace SamplesApp.UITests
 		{
 			var tb = _app.Marked(textBoxName);
 			_app.WaitForElement(tb);
-			_app.Tap(tb);
+			_app.FastTap(tb);
 			_app.EnterText(tb, inputText);
 			_app.WaitFor(() => expectedText == GetText(tb));
 			return tb;
@@ -433,7 +433,7 @@ namespace SamplesApp.UITests
 
 			var initial = TakeScreenshot("initial", ignoreInSnapshotCompare: true);
 
-			singleTextBox.Tap();
+			singleTextBox.FastTap();
 			_app.Wait(2);
 
 			// Click on AppBar Button

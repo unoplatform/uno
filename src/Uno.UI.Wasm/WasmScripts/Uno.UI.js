@@ -2758,6 +2758,33 @@ var Windows;
     (function (UI) {
         var ViewManagement;
         (function (ViewManagement) {
+            class ApplicationView {
+                static setFullScreenMode(turnOn) {
+                    if (turnOn) {
+                        if (document.fullscreenEnabled) {
+                            document.documentElement.requestFullscreen();
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                    else {
+                        document.exitFullscreen();
+                        return true;
+                    }
+                }
+            }
+            ViewManagement.ApplicationView = ApplicationView;
+        })(ViewManagement = UI.ViewManagement || (UI.ViewManagement = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var ViewManagement;
+        (function (ViewManagement) {
             class ApplicationViewTitleBar {
                 static setBackgroundColor(colorString) {
                     if (colorString == null) {

@@ -108,11 +108,8 @@ namespace Windows.UI.Xaml
 
 			var result = _layouter.Measure(SizeFromUISize(availableSize));
 
-			result = IFrameworkElementHelper
-				.SizeThatFits(this, result)
-				.ToFoundationSize();
-
-			return result.LogicalToPhysicalPixels();
+			// Result here exclude the margins on the element
+			return _lastMeasure = result.LogicalToPhysicalPixels();
 		}
 
 		public override CGSize SizeThatFits(CGSize size)
