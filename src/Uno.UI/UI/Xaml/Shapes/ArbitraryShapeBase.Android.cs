@@ -208,7 +208,6 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected override Size MeasureOverride(Size availableSize)
 		{
-
 			if (availableSize == default)
 			{
 				return default;
@@ -218,9 +217,13 @@ namespace Windows.UI.Xaml.Shapes
 			var strokeSize = new Size(strokeThickness, strokeThickness);
 
 			var availableSizeMinusStroke = availableSize.Subtract(strokeSize);
-			_lastAvailableSize = availableSizeMinusStroke;
 
-			var path = GetPath(availableSizeMinusStroke);
+			var availableSizeWithAppliedConstrains =
+				this.ApplySizeConstraints(availableSizeMinusStroke, strokeSize);
+
+			_lastAvailableSize = availableSizeWithAppliedConstrains;
+
+			var path = GetPath(availableSizeWithAppliedConstrains);
 			if (path == null)
 			{
 				return default;
@@ -236,18 +239,8 @@ namespace Windows.UI.Xaml.Shapes
 			var pathWidth = preserveOrigin ? bounds.Right : bounds.Width();
 			var pathHeight = preserveOrigin ? bounds.Bottom : bounds.Height();
 
-			var (min, max) = this.GetMinMax();
-			var userSize = availableSizeMinusStroke
-				.AtMost(max.Subtract(strokeSize))
-				.AtLeast(min.Subtract(strokeSize))
-				.AtLeastZero();
-
-			// Default values
-			var calculatedWidth = LimitWithUserSize(availableSize.Width, userSize.Width, pathWidth);
-			var calculatedHeight = LimitWithUserSize(availableSize.Height, userSize.Height, pathHeight);
-
-			_scaleX = calculatedWidth / pathWidth;
-			_scaleY = calculatedHeight / pathHeight;
+			_scaleX = availableSizeWithAppliedConstrains.Width / pathWidth;
+			_scaleY = availableSizeWithAppliedConstrains.Height / pathHeight;
 
 			//Make sure that we have a valid scale if both of them are not set
 			if (double.IsInfinity(_scaleX) || double.IsNaN(_scaleX))
@@ -259,7 +252,10 @@ namespace Windows.UI.Xaml.Shapes
 				_scaleY = 1;
 			}
 
-			// Here we will override some of the default values
+			var calculatedWidth = 0d;
+			var calculatedHeight = 0d;
+
+			// Calculate size following stretch mode
 			switch (stretch)
 			{
 				// If the Stretch is None, the drawing is not the same size as the control

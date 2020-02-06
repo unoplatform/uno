@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected override Android.Graphics.Path GetPath(Size availableSize)
 		{
-			var bounds = this.ApplySizeConstraints(availableSize).LogicalToPhysicalPixels();
+			var bounds = availableSize.LogicalToPhysicalPixels();
 
 			var output = new Android.Graphics.Path();
 			output.AddOval(

@@ -64,6 +64,18 @@ namespace Uno.UI
 				.AtLeast(min); // UWP is applying "min" after "max", so if "min" > "max", "min" wins
 		}
 
+		/// <summary>
+		/// Apply min/max and defined sized on control to an available size
+		/// </summary>
+		/// <returns>Available size after applying min/max</returns>
+		internal static Size ApplySizeConstraints(this IFrameworkElement e, Size forSize, Size extraPadding)
+		{
+			var (min, max) = e.GetMinMax();
+			return forSize
+				.AtMost(max.Subtract(extraPadding))
+				.AtLeast(min.Subtract(extraPadding)); // UWP is applying "min" after "max", so if "min" > "max", "min" wins
+		}
+
 		[Pure]
 		internal static Size GetMarginSize(this IFrameworkElement frameworkElement)
 		{
