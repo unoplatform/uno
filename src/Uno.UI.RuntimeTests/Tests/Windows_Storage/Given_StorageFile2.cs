@@ -94,7 +94,9 @@ namespace Uno.UI.RuntimeTests.Tests
 				await Task.Delay(250);
 				dateOnCreating = testFile.DateCreated;
 				if (DateTimeOffset.Now - dateOnCreating > initialTimeDiff)
+				{
 					break;
+				}
 			}
 			if (loopGuard < 1)
 			{
