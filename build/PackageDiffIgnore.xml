@@ -622,12 +622,24 @@
 				<Member
 					fullName="System.Void Windows.System.DispatcherQueueTimer..ctor()"
 					reason="Not part of the WinUI API."/>
+				<Member
+					fullName="System.Void Windows.ApplicationModel.DataTransfer.Clipboard..ctor()"
+					reason="Not part of the WinUI API."/>
 			  <Member
 					fullName="System.Void Windows.Storage.KnownFolders..ctor()"
 					reason="Not part of the WinUI API."/>
 				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.ListViewBase..ctor()"
 					reason="Ctor is protected in WinUI."/>
+				<Member
+					fullName="System.Void Windows.System.Profile.AnalyticsInfo..ctor()"
+					reason="Not part of the WinUI API." />
+				<Member
+					fullName="System.Void Windows.System.Profile.AnalyticsVersionInfo..ctor()"
+					reason="Not part of the WinUI API." />
+				<Member
+					fullName="System.Void Windows.ApplicationModel.DataTransfer.DataPackage.SetText(System.String text)"
+					reason="UWP uses 'value' as the parameter name" />
         </Methods>
 		</IgnoreSet>
 	</IgnoreSets>
