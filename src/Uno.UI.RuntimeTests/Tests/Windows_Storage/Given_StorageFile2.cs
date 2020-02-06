@@ -147,7 +147,9 @@ namespace Uno.UI.RuntimeTests.Tests
 				await Task.Delay(250);
 				var dateModifiedLoop = (await testFile.GetBasicPropertiesAsync()).DateModified;
 				if (DateTimeOffset.Now - dateModifiedLoop > initialTimeDiff)
+				{
 					break;
+				}
 			}
 			if (loopGuard < 1)
 			{
