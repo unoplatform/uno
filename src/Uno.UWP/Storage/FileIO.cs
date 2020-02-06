@@ -178,11 +178,20 @@ namespace Windows.Storage
 			}
 
 			string output = "";
-			using (Stream fileStream = await file.OpenStreamForReadAsync())
-			{
+			Stream fileStream = null;
+			try
+            {
+				fileStream = await file.OpenStreamForReadAsync();
 				using (StreamReader streamReader = new StreamReader(fileStream))
 				{
 					output = streamReader.ReadToEnd();
+				}
+			}
+			finally
+			{
+				if(fileStream != null)
+                {
+					stream.Dispose();
 				}
 			}
 			return output;
