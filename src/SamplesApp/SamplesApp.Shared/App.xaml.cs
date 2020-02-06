@@ -23,6 +23,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Uno.Logging;
 
 namespace SamplesApp
 {
@@ -109,6 +110,7 @@ namespace SamplesApp
 
 				// Place the frame in the current Window
 				Windows.UI.Xaml.Window.Current.Content = rootFrame;
+				Console.WriteLine($"RootFrame: {rootFrame}");
 			}
 
 			if (e.PrelaunchActivated == false)
@@ -160,8 +162,13 @@ namespace SamplesApp
 			deferral.Complete();
 		}
 
-		static void ConfigureFilters(ILoggerFactory factory)
+		void ConfigureFilters(ILoggerFactory factory)
 		{
+#if HAS_UNO
+			System.Threading.Tasks.TaskScheduler.UnobservedTaskException += (s, e) => typeof(App).Log().Error("UnobservedTaskException", e.Exception);
+			AppDomain.CurrentDomain.UnhandledException += (s, e) => typeof(App).Log().Error("UnhandledException", e.ExceptionObject as Exception);
+#endif
+
 			factory
 				.WithFilter(new FilterLoggerSettings
 					{
