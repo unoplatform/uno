@@ -385,6 +385,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\RectArranged100x100.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\TransformToVisual_ScrollViewer.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -394,6 +398,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\TransformToVisual_Transform.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\UIElement_ArrangeOverride_Alignment.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -3206,11 +3214,17 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\TouchEventsTests\TouchViewModel.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\RectCloseComparer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\NativeView.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\RectArranged100x100.xaml.cs">
+      <DependentUpon>RectArranged100x100.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\TransformToVisual_ScrollViewer.xaml.cs">
       <DependentUpon>TransformToVisual_ScrollViewer.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\TransformToVisual_Transform.xaml.cs">
       <DependentUpon>TransformToVisual_Transform.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\UIElement_ArrangeOverride_Alignment.xaml.cs">
+      <DependentUpon>UIElement_ArrangeOverride_Alignment.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\UIElementTests\UIElement_Layout_Constrains.xaml.cs">
       <DependentUpon>UIElement_Layout_Constrains.xaml</DependentUpon>
