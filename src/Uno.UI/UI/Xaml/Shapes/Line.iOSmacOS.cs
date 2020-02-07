@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Line
 	{
-		protected override CGPath GetPath()
+		protected override CGPath GetPath(Size availableSize)
 		{
 			if (Math.Abs(X1 - X2) > double.Epsilon || Math.Abs(Y1 - Y2) > double.Epsilon)
 			{
