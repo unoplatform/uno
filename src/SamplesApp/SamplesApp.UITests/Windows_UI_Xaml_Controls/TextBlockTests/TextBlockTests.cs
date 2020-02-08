@@ -66,7 +66,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 			var blueBefore = TakeScreenshot("Before - blue");
 
-			_app.Tap("ChangeTextBlockButton");
+			_app.FastTap("ChangeTextBlockButton");
 
 			var blackBefore = TakeScreenshot("Before - black");
 
@@ -74,17 +74,43 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests
 
 			ImageAssert.AreNotEqual(blueBefore, blackBefore, textRect);
 
-			_app.Tap("ChangeTextBlockButton");
+			_app.FastTap("ChangeTextBlockButton");
 
 			//_app.WaitForNoElement("FunnyTextBlock"); // This times out on WASM because view is considered to be still there when collapsed - https://github.com/unoplatform/Uno.UITest/issues/25
 
-			_app.Tap("ChangeTextBlockButton");
+			_app.FastTap("ChangeTextBlockButton");
 
 			_app.WaitForElement("FunnyTextBlock");
 
 			var blueAfter = TakeScreenshot("After - blue");
 
 			ImageAssert.AreEqual(blueBefore, blueAfter, textRect);
+		}
+
+		[Test]
+		[AutoRetry]
+		public async Task When_TextDecoration_Changed()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl.TextBlock_Decorations");
+
+			var text01 = _app.Marked("text01");
+			var text02 = _app.Marked("text02");
+
+			var before = TakeScreenshot("Before");
+
+			text01.SetDependencyPropertyValue("TextDecorations", "1"); // Underline
+			text02.SetDependencyPropertyValue("TextDecorations", "2"); // Strikethrough
+
+			var after = TakeScreenshot("Updated");
+			
+			ImageAssert.AreNotEqual(before, after);
+
+			text01.SetDependencyPropertyValue("TextDecorations", "0"); // None
+			text02.SetDependencyPropertyValue("TextDecorations", "0"); // None
+
+			var restored = TakeScreenshot("Restored");
+
+			ImageAssert.AreEqual(before, restored);
 		}
 	}
 }

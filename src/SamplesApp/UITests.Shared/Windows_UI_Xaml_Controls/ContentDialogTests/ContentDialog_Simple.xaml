@@ -15,6 +15,7 @@
 	  <Button x:Name="showDialog3" Click="OnMyButtonClick3" Content="Show Dialog 3" />
 	  <Button x:Name="showDialog4" Click="OnMyButtonClick4" Content="Show Dialog 4 (Command)" />
 	  <Button x:Name="showDialog5" Click="OnMyButtonClick5" Content="Show Dialog 5 (Primary as Default Button)" />
+	  <Button x:Name="showDialog6" Click="OnMyButtonClick6" Content="Show Dialog 6 (Dialog Reuse)" />
 	  <TextBlock x:Name="dialogResult" Text="Undefined" />
 	  <TextBlock x:Name="commandResult" Text="Undefined" />
 	</StackPanel>

@@ -410,6 +410,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
         private void BuildApplicationInitializerBody(IndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
         {
             InitializeRemoteControlClient(writer);
+            GenerateApiExtensionRegistrations(writer);
 
             writer.AppendLineInvariant($"global::Windows.UI.Xaml.GenericStyles.Initialize();");
             writer.AppendLineInvariant($"global::Windows.UI.Xaml.ResourceDictionary.DefaultResolver = global::{_defaultNamespace}.GlobalStaticResources.FindResource;");
@@ -451,7 +452,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 		}
 
-        private void InitializeRemoteControlClient(IndentedStringBuilder writer)
+		private void GenerateApiExtensionRegistrations(IndentedStringBuilder writer)
+		{
+			var apiExtensionAttributeSymbol = _medataHelper.FindTypeByFullName("Uno.Foundation.Extensibility.ApiExtensionAttribute");
+
+			var query = from ext in _medataHelper.Compilation.ExternalReferences
+						let sym = _medataHelper.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
+						where sym != null
+						from attribute in sym.GetAllAttributes()
+						where attribute.AttributeClass == apiExtensionAttributeSymbol
+						select attribute.ConstructorArguments;
+
+			foreach(var registration in query)
+			{
+				writer.AppendLineInvariant($"global::Uno.Foundation.Extensibility.ApiExtensibility.Register(typeof(global::{registration.ElementAt(0).Value}), o => new global::{registration.ElementAt(1).Value}(o));");
+			}
+		}
+
+		private void InitializeRemoteControlClient(IndentedStringBuilder writer)
         {
             if (_isDebug)
             {
@@ -2813,8 +2831,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					? XBindExpressionParser.ParseProperties(rawFunction, IsStaticMethod)
 					: new string[0];
 
+				var formattedPaths = propertyPaths
+					.Where(p => !p.StartsWith("global::"))	// Don't include paths that start with global:: (e.g. Enums)
+					.Select(p => $"\"{p}\"");
+
 				var pathsArray = propertyPaths.Any()
-					? ", new [] {" + string.Join(", ", propertyPaths.Select(p => $"\"{p}\"")) + "}"
+					? ", new [] {" + string.Join(", ", formattedPaths) + "}"
 					: "";
 
 				if (isInsideDataTemplate)
@@ -2846,6 +2868,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		bool IsStaticMethod(string fullMethodName)
 		{
+			fullMethodName = fullMethodName.TrimStart("global::");
+
 			var lastDotIndex = fullMethodName.LastIndexOf(".");
 
 			var className = lastDotIndex != -1 ? fullMethodName.Substring(0, lastDotIndex) : fullMethodName;
@@ -2858,7 +2882,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			foreach (var ns in _fileDefinition.Namespaces.Where(ns => ns.Namespace.StartsWith("using:")))
 			{
-				xamlString = xamlString.Replace($"{ns.Prefix}:", ns.Namespace.TrimStart("using:") + ".");
+				// Replace namespaces with their fully qualified namespace.
+				// Add global:: so that qualified paths can be expluded from binding
+				// path observation.
+				xamlString = xamlString.Replace(
+					$"{ns.Prefix}:",
+					"global::" + ns.Namespace.TrimStart("using:") + ".");
 			}
 
 			return xamlString;
@@ -3055,7 +3084,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 var closure = $"c{_applyIndex++}";
                 if (useSafeCast)
                 {
-                    return $"((System.Object)({value}) is {type} {closure} ? {closure} : default({type}))";
+                    return $"(global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({type}), {value}) is {type} {closure} ? {closure} : default({type}))";
                 }
                 else
                 {

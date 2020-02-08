@@ -32,7 +32,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 
 			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", false);
 
-			toggleButton.Tap();
+			toggleButton.FastTap();
 
 			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", true);
 
@@ -40,7 +40,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 
 			_app.WaitForElement(popupContent);
 
-			popupContent.Tap();
+			popupContent.FastTap();
 
 			_app.Wait(0.25f);
 
@@ -78,14 +78,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", false);
 
 			// 1. Open the popup
-			toggleButton.Tap();
+			toggleButton.FastTap();
 			_app.Wait(0.25f);
 			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", true);
 			_app.WaitForElement(popupContent);
 			TakeScreenshot("Popup_Simple - NonDismissiblePopup - Popup opened");
 
 			// 2. Tap on content should keep the popup opened
-			popupContent.Tap();
+			popupContent.FastTap();
 			_app.Wait(0.25f);
 			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", true);
 			TakeScreenshot("Popup_Simple - NonDismissiblePopup - Popup stays open when tap on content");
@@ -98,7 +98,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 			TakeScreenshot("Popup_Simple - NonDismissiblePopup - Popup stays open when tap out of popup");
 
 			// 3. Close the popup (to make sure to not pollute other tests)
-			toggleButton.Tap(); // should dismiss here
+			toggleButton.FastTap(); // should dismiss here
 			_app.WaitForDependencyPropertyValue(toggleButton, "IsChecked", false);
 			TakeScreenshot("Popup_Simple - NonDismissiblePopup - Popup closed"); // We add a screen shot in order to make sure that the check of the bool IsChecked is valid!
 		}
@@ -113,13 +113,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 			var rect = _app.GetRect("LocatorRectangle");
 			ImageAssert.HasColorAt(before, rect.CenterX, rect.CenterY, Color.Blue);
 
-			_app.Tap("PopupCheckBox");
+			_app.FastTap("PopupCheckBox");
 
 			_app.WaitForElement("PopupChild");
 
 			var during = TakeScreenshot("During", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Status bar appears with clock*/);
 
-			ImageAssert.AssertDoesNotHaveColorAt(during, rect.CenterX, rect.CenterY, Color.Blue);
+			ImageAssert.DoesNotHaveColorAt(during, rect.CenterX, rect.CenterY, Color.Blue);
 
 			// Dismiss popup
 			var screenRect = _app.Marked("sampleContent").FirstResult().Rect;

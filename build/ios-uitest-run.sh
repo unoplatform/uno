@@ -39,7 +39,9 @@ else
 		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ControlTests' or \
 		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests' or \
 		namespace = 'SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests' or \
-		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests'
+		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests' or \
+		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests' or \
+		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Media_Animation.DoubleAnimation_Tests'
 	"
 fi
 

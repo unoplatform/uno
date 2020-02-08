@@ -99,12 +99,14 @@ namespace Windows.UI.Xaml.Shapes
 
 		protected void SetStrokeDashEffect(Paint strokePaint)
 		{
-			if (StrokeDashArray != null && StrokeDashArray.Count > 0)
+			var strokeDashArray = StrokeDashArray;
+
+			if (strokeDashArray != null && strokeDashArray.Count > 0)
 			{
 				// If only value specified in the dash array, copy and add it
-				if (StrokeDashArray.Count == 1)
+				if (strokeDashArray.Count == 1)
 				{
-					StrokeDashArray.Add(StrokeDashArray[0]);
+					strokeDashArray.Add(strokeDashArray[0]);
 				}
 
 				// Make sure the dash array has a positive number of items, Android cannot have an odd number
@@ -113,9 +115,9 @@ namespace Windows.UI.Xaml.Shapes
 				//		**  The intervals array must contain an even number of entries (>=2), with
 				//			the even indices specifying the "on" intervals, and the odd indices
 				//			specifying the "off" intervals.  **
-				if (StrokeDashArray.Count % 2 == 0)
+				if (strokeDashArray.Count % 2 == 0)
 				{
-					var pattern = StrokeDashArray.Select(d => (float)d).ToArray();
+					var pattern = strokeDashArray.Select(d => (float)d).ToArray();
 					strokePaint.SetPathEffect(new DashPathEffect(pattern, 0));
 				}
 				else

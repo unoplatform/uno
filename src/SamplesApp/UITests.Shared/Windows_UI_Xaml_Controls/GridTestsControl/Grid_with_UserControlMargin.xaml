@@ -11,8 +11,36 @@
 	d:DesignHeight="3000"
 	d:DesignWidth="400">
 
-	<Grid Background="Red">
-		<UserControl Background="Green" Margin="5" />
+	<Grid RowSpacing="10" Margin="10" Background="Pink">
+		<Grid.RowDefinitions>
+			<RowDefinition Height="*" />
+			<RowDefinition Height="*" />
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="100" />
+		</Grid.RowDefinitions>
+		<Grid Background="Red" Grid.Row="0">
+			<Border Background="Green" Margin="15" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+				<TextBlock>MARGIN</TextBlock>
+			</Border>
+		</Grid>
+		<Grid Background="Red" Grid.Row="1" Padding="15">
+			<Border Background="Green" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+				<TextBlock>PADDING</TextBlock>
+			</Border>
+		</Grid>
+		<Grid Grid.Row="2">
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="*" />
+				<ColumnDefinition Width="250" />
+			</Grid.ColumnDefinitions>
+			<Slider Grid.Column="0" HorizontalAlignment="Stretch" />
+			<TextBox Grid.Column="1" HorizontalAlignment="Stretch" Margin="15" />
+		</Grid>
+		<Border Background="LightGray" Margin="10">
+			<TextBlock>100px</TextBlock>
+
+		</Border>
+
 	</Grid>
 
 </UserControl>

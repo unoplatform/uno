@@ -15,6 +15,7 @@ namespace Uno.Samples.UITest.Generator
 	public class SnapShotTestGenerator : SourceGenerator
 	{
 		private INamedTypeSymbol _sampleControlInfoSymbol;
+		private INamedTypeSymbol _sampleSymbol;
 
 		public override void Execute(SourceGeneratorContext context)
 		{
@@ -30,29 +31,50 @@ namespace Uno.Samples.UITest.Generator
 			var compilation = GetCompilation(context, assembly);
 
 			_sampleControlInfoSymbol = compilation.compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleControlInfoAttribute");
+			_sampleSymbol = compilation.compilation.GetTypeByMetadataName("Uno.UI.Samples.Controls.SampleAttribute");
 
 			var query = from typeSymbol in compilation.compilation.SourceModule.GlobalNamespace.GetNamespaceTypes()
 						where typeSymbol.DeclaredAccessibility == Accessibility.Public
-						let info = typeSymbol.FindAttributeFlattened(_sampleControlInfoSymbol)
-						where info != null && info.ConstructorArguments != null
+						let info = typeSymbol.FindAttributeFlattened(_sampleSymbol) ?? typeSymbol.FindAttributeFlattened(_sampleControlInfoSymbol)
+						where info != null
 						let sampleInfo = GetSampleInfo(typeSymbol, info)
-						orderby sampleInfo.category
-						select (typeSymbol, sampleInfo.category, sampleInfo.name, sampleInfo.ignoreInSnapshotTests);
+						orderby sampleInfo.categories.First()
+						select (typeSymbol, sampleInfo.categories, sampleInfo.name, sampleInfo.ignoreInSnapshotTests);
 
 			query = query.Distinct();
 
 			GenerateTests(assembly, context, query);
 		}
 
-		private (string category, string name, bool ignoreInSnapshotTests) GetSampleInfo(INamedTypeSymbol symbol, AttributeData info) 
-			=> (
-				category: GetConstructorParameterValue(info, "category")?.ToString() ?? "Default",
-				name: AlignName(GetConstructorParameterValue(info, "controlName")?.ToString() ?? symbol.ToDisplayString()),
-				ignoreInSnapshotTests: GetConstructorParameterValue(info, "ignoreInSnapshotTests") is bool b ? b : false
-			);
+		private (string[] categories, string name, bool ignoreInSnapshotTests) GetSampleInfo(INamedTypeSymbol symbol, AttributeData attr)
+		{
+			if (attr.AttributeClass == _sampleControlInfoSymbol)
+			{
+				return (
+					categories: new[] { GetConstructorParameterValue(attr, "category")?.ToString() ?? "Default" },
+					name: AlignName(GetConstructorParameterValue(attr, "controlName")?.ToString() ?? symbol.ToDisplayString()),
+					ignoreInSnapshotTests: GetConstructorParameterValue(attr, "ignoreInSnapshotTests") is bool b && b
+				);
+			}
+			else
+			{
+				return (
+					categories: !attr.ConstructorArguments.IsDefaultOrEmpty && !attr.ConstructorArguments.Single().Values.IsDefaultOrEmpty
+						? attr.ConstructorArguments.Single().Values.Select(arg => arg.Value.ToString()).ToArray()
+						: new[] { "Default" },
+					name: AlignName(GetAttributePropertyValue(attr, "Name")?.ToString() ?? symbol.ToDisplayString()),
+					ignoreInSnapshotTests: GetAttributePropertyValue(attr, "IgnoreInSnapshotTests") is bool b && b
+				);
+			}
+		}
+
+		private object GetAttributePropertyValue(AttributeData attr, string name)
+			=> attr.NamedArguments.FirstOrDefault(kvp => kvp.Key == name).Value.Value;
 
 		private object GetConstructorParameterValue(AttributeData info, string name)
-			=> info.ConstructorArguments.ElementAt(GetParameterIndex(info, name)).Value;
+			=> info.ConstructorArguments.IsDefaultOrEmpty
+				? default
+				: info.ConstructorArguments.ElementAt(GetParameterIndex(info, name)).Value;
 
 		private int GetParameterIndex(AttributeData info, string name)
 			=> info
@@ -68,7 +90,7 @@ namespace Uno.Samples.UITest.Generator
 		private void GenerateTests(
 			string assembly,
 			SourceGeneratorContext context,
-			IEnumerable<(INamedTypeSymbol symbol, string category, string name, bool ignoreInSnapshotTests)> symbols)
+			IEnumerable<(INamedTypeSymbol symbol, string[] categories, string name, bool ignoreInSnapshotTests)> symbols)
 		{
 			var groups = 
 				from symbol in symbols.Select((v, i) => (index:i, value:v))
@@ -98,18 +120,16 @@ namespace Uno.Samples.UITest.Generator
 					{
 						foreach (var test in group.Symbols)
 						{
-							var info = GetSampleInfo(test.symbol, test.symbol.FindAttributeFlattened(_sampleControlInfoSymbol));
-
 							builder.AppendLineInvariant("[global::NUnit.Framework.Test]");
 							builder.AppendLineInvariant($"[global::NUnit.Framework.Description(\"runGroup:{group.Index % 2:00}, automated:{test.symbol.ToDisplayString()}\")]");
 
-							if (info.ignoreInSnapshotTests)
+							if (test.ignoreInSnapshotTests)
 							{
 								builder.AppendLineInvariant("[global::NUnit.Framework.Ignore(\"ignoreInSnapshotTests is set for attribute\")]");
 							}
 
 							builder.AppendLineInvariant("[global::SamplesApp.UITests.TestFramework.AutoRetry]");
-							using (builder.BlockInvariant($"public void {Sanitize(test.category)}_{Sanitize(info.name)}()"))
+							using (builder.BlockInvariant($"public void {Sanitize(test.categories.First())}_{Sanitize(test.name)}()"))
 							{
 								builder.AppendLineInvariant($"Run(\"{test.symbol}\", waitForSampleControl: false);");
 							}

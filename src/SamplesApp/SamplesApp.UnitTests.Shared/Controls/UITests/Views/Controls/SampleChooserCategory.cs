@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Uno;
 
@@ -12,6 +13,12 @@ namespace SampleControl.Entities
 		public SampleChooserCategory()
 		{
 			SamplesContent = new SortedSet<SampleChooserContent>(comparer: this);
+		}
+
+		public SampleChooserCategory(IGrouping<string, SampleChooserContent> contents)
+		{
+			Category = contents.Key;
+			SamplesContent = new SortedSet<SampleChooserContent>(contents, comparer: this);
 		}
 
 		public SortedSet<SampleChooserContent> SamplesContent { get; }

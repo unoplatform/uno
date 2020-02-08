@@ -2,6 +2,15 @@
 
 ### Features
 - Add support of Windows.Storage.FileIO.AppendTextAsync(IStorageFile, String) and WriteTextAsync(IStorageFile, String)
+- Support for `Geolocator` on macOS
+- Support for `Clipboard` get/set Text content on macOS
+- Support for `ApplicationView.Title` on Android and macOS
+- Support for `AnalyticsInfo` on macOS
+- Support for `TryEnterFullScreenMode` and `ExitFullScreenMode` on WebAssembly
+- Support for `MessageDialog` on macOS
+- [Android] support of `KnownFolders.MusicLibrary` and `VideosLibrary`
+- Add support for `StorageFile.DateCreated`
+- Support for `ApplicationView.IsScreenCaptureEnabled` on Android
 - Add support for `StorageFile.DeleteAsync()`
 - Support for `PointerDown`, `PointerUp` `PointerEntered`, `PointerExited` and `PointerMoved` events on macOS
 - Support for `Launcher` API on macOS, support for special URIs
@@ -17,11 +26,19 @@
 - `TransformToVisual` now returns a real transform to convert coordinates between views (was only returning a translate transform to offset the origin of controls)
 - Multiple pointers at same time on screen (a.k.a. Multi-touch) are now supported
 - Add support for WinUI 2.3 [`NumberBox`](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.numberbox?view=winui-2.3)
-- Add support of the `UIElement.RightTapped` event
+- Add support of the `UIElement.RightTapped` event (The context menu won't appear anymore on WASM, except for the `TextBox`)
 - Add support of the `UIElement.Holding` event
+- [MacOS] Support for `ScrollViewer`
+- [MacOS] Support for `LinearGradientBrush`
+- Add support for [TwoPaneView](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.twopaneview?view=winui-2.3) control.
+- Add support for `ApplicationView.GetSpanningRects`
+- Add base support for API Extensibility through `Uno.Foundation.Extensibility.ApiExtensibility` and `ApiExtensionAttribute`
+- Add support for Surface Duo through the `Uno.UI.DualScreen` package
+- Add support for enums in x:Bind functions
+- Add XamlReader support for Primitive static resources
+- [Android] Add support for non-native `Popup` by default. Can be enabled through `FeatureConfiguration.Popup.UseNativePopup` set to false (See #2533 for more details)
 
 ### Breaking changes
--
 
 ### Bug fixes
 
@@ -49,14 +66,25 @@
 - [iOS] Fix crash when using ComboBox template with native Picker and changing ItemsSource to null after SelectedItem was set
 - [#2398] Fully qualify the `MethodName` value for `CreateFromStringAttribute' if it's not fully qualified it the code
 - [WASM] Fix bug where changing a property could remove the required clipping on a view
+- #2294 Fix TextBox text binding is updated by simply unfocusing
 - [Android] Fix unconstrained Image loading issue when contained in a ContentControl template
 - Enable partial `NavigationView.ItemSource` scenario (https://github.com/unoplatform/uno/issues/2477)
 - [Wasm] Fail gracefully if IDBFS is not enabled in emscripten
 - [#2513] Fix `TransformGroup` not working
+- [#1956] Fis iOS invalid final state when switching visual state before current state's animation is completed.
+- Fix `Selector` support for IsSelected (#1606)
+- [Android] 164249 fixed TextBox.Text flickering when using custom IInputFilter with MaxLength set
+- [MacOS] Fix exceptions when modifying UIElementCollection, layouting view with null `Layer`
+- Fix invalid conversion when using ThemeResource (e.g. Color resource to Brush property)
+- Fix XamlBindingHelper.Convert double to GridLength
+- [Android] Adjust `TextBlock.TextDecorations` is not updating properly
+- Adjust `XamlBindingHelper` for `GridLength` and `TimeSpan`
+- Add missing `ListView` resources
 
 ## Release 2.0
 
 ### Features
+
 * [#2040] Support for ms-settings:// special URIs on Android and iOS, Launcher API alignments to match UWP behavior
 * [#2029](https://github.com/unoplatform/uno/pull/2029) Support for MenuFlyoutItem.Click
 * support /[file]/[name] format in ResourceLoader.GetForCurrentView().GetString()

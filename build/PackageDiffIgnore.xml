@@ -306,13 +306,13 @@
 				<Member
 					fullName="System.Void Windows.UI.Xaml.Media.Imaging.BitmapSource.set_PixelWidth(System.Int32 value)"
 					reason="Removed API not available in WinUI" />
-				<Member 
+				<Member
 					fullName="System.Void Windows.Devices.Sensors.GyrometerReadingChangedEventArgs..ctor()"
 					reason="Parameter-less ctor does not exist in UWP"/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.Devices.Sensors.Gyrometer..ctor()"
 					reason="Parameter-less ctor does not exist in UWP"/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.Devices.Sensors.GyrometerReading..ctor()"
 					reason="Parameter-less ctor does not exist in UWP"/>
 				<Member
@@ -327,181 +327,181 @@
 				<Member
 					fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources.get___ImplicitStyle_Windows_UI_Xaml_Controls_AppBarSeparator()"
 					reason="Implicit style moved to GenericStyles.cs" />
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Input.PointerPointProperties..ctor()"
 					reason="Invalid visibility."/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.Devices.Input.PointerDevice..ctor()"
 					reason="Invalid visibility."/>
-				<Member 
+				<Member
 					fullName="Windows.Foundation.Point Windows.UI.Xaml.Input.PointerRoutedEventArgs.GetCurrentPoint()"
 					reason="Method was missing a required parameter"/>
-				<Member 
+				<Member
 					fullName="Windows.Foundation.Point[] Windows.UI.Xaml.Input.PointerRoutedEventArgs.GetIntermediatePoints()"
 					reason="Method was missing a required parameter"/>
 				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ButtonBase.OnPointerMoved(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
 					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ButtonBase.OnPointerCanceled(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
 					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ButtonBase.OnPointerExited(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
 					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.ButtonBase.OnTapped(Windows.UI.Xaml.Input.TappedRoutedEventArgs e)"
 					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.SelectorItem.OnPointerCanceled(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
 					reason="Binary issue, but not an API changed. Ignore it since we already have some other bin conflict."/>
-				<Member 
+				<Member
 					fullName="System.Void Uno.UI.UnoViewGroup.set_IsAnimationInProgress(System.Boolean value)"
 					reason="Removed internal stuff."/>
-				<Member 
+				<Member
 					fullName="System.Boolean Uno.UI.UnoViewGroup.get_IsPointerCaptured()"
 					reason="Removed internal stuff."/>
-				<Member 
+				<Member
 					fullName="System.Single Uno.UI.UnoViewGroup.get_TransformedTouchX()"
 					reason="Removed internal stuff."/>
-				<Member 
+				<Member
 					fullName="System.Single Uno.UI.UnoViewGroup.get_TransformedTouchY()"
 					reason="Removed internal stuff."/>
-				<Member 
+				<Member
 					fullName="System.Void Uno.UI.UnoViewGroup.ClearCaptures()"
 					reason="Removed internal stuff."/>
-				<Member 
+				<Member
 					fullName="System.Boolean Uno.UI.UnoViewGroup.InvalidateTransformedHierarchy()"
 					reason="Removed internal stuff."/>
-				<Member 
+				<Member
 					fullName="System.Boolean Uno.UI.UnoViewGroup.IsCurrentPointer(Android.Views.MotionEvent e, System.Boolean isPointInView)"
 					reason="Removed internal stuff."/>
-				<Member 
+				<Member
 					fullName="System.Boolean Uno.UI.UnoViewGroup.IsLocalTouchPointInView(System.Single x, System.Single y)"
 					reason="Removed internal stuff."/>
-				<Member 
+				<Member
 					fullName="System.Void Uno.UI.UnoViewGroup.SetChildBlockedTouchEvent(System.Boolean childBlockedTouchEvent)"
 					reason="Removed internal stuff."/>
-				<Member 
+				<Member
 					fullName="System.Void Uno.UI.UnoViewGroup.SetChildHandledTouchEvent(System.Boolean childHandledTouchEvent)"
 					reason="Removed internal stuff."/>
-				<Member 
+				<Member
 					fullName="System.Void Uno.UI.UnoViewGroup.SetChildIsUnoViewGroup(System.Boolean childIsUnoViewGroup)"
 					reason="Removed internal stuff."/>
-				<Member 
+				<Member
 					fullName="System.Void Uno.UI.UnoRecyclerView.SetChildBlockedTouchEvent(System.Boolean childBlockedTouchEvent)"
 					reason="Removed internal stuff."/>
-				<Member 
+				<Member
 					fullName="System.Void Uno.UI.UnoRecyclerView.SetChildHandledTouchEvent(System.Boolean childHandledTouchEvent)"
 					reason="Removed internal stuff."/>
-				<Member 
+				<Member
 					fullName="System.Void Uno.UI.UnoRecyclerView.SetChildIsUnoViewGroup(System.Boolean childIsUnoViewGroup)"
 					reason="Removed internal stuff."/>
-				<Member 
+				<Member
 					fullName="System.Void Uno.UI.UnoViewGroup.SetNativeHitTestVisible(System.Boolean hitTestVisible)"
 					reason="Removed internal stuff."/>
-				<Member 
+				<Member
 					fullName="System.Void Uno.UI.UnoViewGroup.SetChildRenderTransform(Android.Views.View child, Android.Graphics.Matrix transform)"
 					reason="Changed visibility of internal method."/>
-				<Member 
+				<Member
 					fullName="System.Void Uno.UI.UnoViewGroup.RemoveChildRenderTransform(Android.Views.View child)"
 					reason="Changed visibility of internal method."/>
-				<Member 
+				<Member
 					fullName="System.Boolean Windows.UI.Xaml.Controls.NativeListViewBase.HitCheck()"
 					reason="Not part of the UWP API."/>
 				<Member
 					fullName="System.Void Windows.UI.Core.CoreWindow..ctor()"
 					reason="Invalid visibility."/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.SelectorItem.UpdateCommonStates()"
 					reason="Not part of the UWP API."/>
-				<Member 
+				<Member
 					fullName="System.String Windows.UI.Xaml.RoutedEvent.get_Name()"
 					reason="Not part of the UWP API."/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Xaml.Documents.Hyperlink.OnNavigateUriChanged()"
 					reason="Not part of the UWP API."/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Xaml.ExceptionRoutedEventArgs..ctor(System.String errorMessage)"
 					reason="Not part of the UWP API."/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Xaml.MediaFailedRoutedEventArgs..ctor()"
 					reason="Not part of the UWP API."/>
-				<Member 
+				<Member
 					fullName="Windows.UI.Xaml.RoutedEventArgs Windows.UI.Xaml.RoutedEventArgs.get_Empty()"
 					reason="Not part of the UWP API."/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Xaml.RoutedEventArgs..ctor(System.Object originalSource)"
 					reason="Not part of the UWP API."/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Xaml.SizeChangedEventArgs..ctor(Windows.Foundation.Size previousSize, Windows.Foundation.Size newSize)"
 					reason="Not part of the UWP API."/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Xaml.Input.KeyRoutedEventArgs..ctor()"
 					reason="Not part of the UWP API."/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.RangeBaseValueChangedEventArgs..ctor()"
 					reason="Not part of the UWP API."/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.Devices.Geolocation.StatusChangedEventArgs..ctor()"
 					readson="Constructor is not public in UWP" />
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Input.ManipulationStartedEventArgs..ctor()"
 					reason="Not part of the UWP API." />
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Input.ManipulationUpdatedEventArgs..ctor()"
 					reason="Not part of the UWP API." />
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Input.ManipulationInertiaStartingEventArgs..ctor()"
 					reason="Not part of the UWP API." />
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Input.ManipulationCompletedEventArgs..ctor()"
 					reason="Not part of the UWP API." />
-				<Member 
+				<Member
 					fullName="System.Boolean Windows.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.get_Handled()"
 					reason="Get/set methods removed as not part of the UWP API but property still present" />
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Xaml.Input.ManipulationStartingRoutedEventArgs.set_Handled(System.Boolean value)"
 					reason="Get/set methods removed as not part of the UWP API but property still present" />
-				<Member 
+				<Member
 					fullName="System.Boolean Windows.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.get_Handled()"
 					reason="Get/set methods removed as not part of the UWP API but property still present" />
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Xaml.Input.ManipulationStartedRoutedEventArgs.set_Handled(System.Boolean value)"
 					reason="Get/set methods removed as not part of the UWP API but property still present" />
-				<Member 
+				<Member
 					fullName="System.Boolean Windows.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.get_Handled()"
 					reason="Get/set methods removed as not part of the UWP API but property still present" />
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Xaml.Input.ManipulationDeltaRoutedEventArgs.set_Handled(System.Boolean value)"
 					reason="Get/set methods removed as not part of the UWP API but property still present" />
-				<Member 
+				<Member
 					fullName="System.Boolean Windows.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.get_Handled()"
 					reason="Get/set methods removed as not part of the UWP API but property still present" />
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Xaml.Input.ManipulationInertiaStartingRoutedEventArgs.set_Handled(System.Boolean value)"
 					reason="Get/set methods removed as not part of the UWP API but property still present" />
-				<Member 
+				<Member
 					fullName="System.Boolean Windows.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.get_Handled()"
 					reason="Get/set methods removed as not part of the UWP API but property still present" />
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.Xaml.Input.ManipulationCompletedRoutedEventArgs.set_Handled(System.Boolean value)"
 					reason="Get/set methods removed as not part of the UWP API but property still present" />
-				<Member 
+				<Member
 					fullName="System.Void Windows.System.Profile.AnalyticsInfo..ctor()"
 					reason="Not part of the UWP API." />
-				<Member 
+				<Member
 					fullName="System.Void Windows.System.Profile.AnalyticsVersionInfo..ctor()"
 					reason="Not part of the UWP API." />
-				<Member 
+				<Member
 					fullName="System.Void Windows.Devices.Lights.Lamp..ctor()"
 					reason="Parameter-less ctor does not exist in UWP" />
-				<Member 
+				<Member
 					fullName="Windows.UI.Xaml.ResourceDictionary[] Windows.UI.Xaml.ResourceDictionary.get_MergedDictionaries()"
 					reason="Aligned API" />
-				<Member 
+				<Member
 					fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.Devices.Geolocation.Geoposition&gt; Windows.Devices.Geolocation.Geolocator.GetGeopositionAsync()"
 					reason="Aligned API" />
-				<Member 
+				<Member
 					fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.Devices.Geolocation.Geoposition&gt; Windows.Devices.Geolocation.Geolocator.GetGeopositionAsync(System.TimeSpan maximumAge, System.TimeSpan timeout)"
 					reason="Aligned API" />
 				<Member
@@ -517,51 +517,51 @@
 					fullName="Windows.Foundation.Point Windows.UI.Xaml.Input.TappedRoutedEventArgs.GetPosition()"
 					reason="Not part of the UWP API." />
             </Methods>
-			
+
 			<Fields>
-				<Member 
+				<Member
 					fullName="System.Int32 Windows.UI.Input.GestureSettings::value__"
 					reason="Enum was a int instead of uint like UWP"/>
-				<Member 
+				<Member
 					fullName="System.Int32 Windows.System.VirtualKeyModifiers::value__"
 					reason="Enum was a int instead of uint like UWP"/>
-				<Member 
+				<Member
 					fullName="System.Int32 Windows.UI.Xaml.Input.ManipulationModes::value__"
 					reason="Enum was a int instead of uint like UWP"/>
 			</Fields>
-			
+
 			<Properties>
-				<Member 
+				<Member
 					fullName="Android.Views.View Windows.UI.Xaml.Controls.Popup::Anchor()"
 					reason="Invalid property visibility"/>
-				<Member 
+				<Member
 					fullName="System.String Windows.UI.Xaml.Controls.TextBoxView::BindableText()"
 					reason="Removed obsolete method. TextBoxView is internal on UWP, shouldn't normally be created or manipulated by user code."/>
-				<Member 
+				<Member
 					fullName="System.Boolean Uno.UI.UnoViewGroup::HasNonIdentityStaticTransformation()"
 					reason="Removed unneeded pseudo-internal property" />
-				<Member 
+				<Member
 					fullName="System.Boolean Uno.UI.UnoViewGroup::IsAnimationInProgress()"
 					reason="Removed unneeded pseudo-internal property" />
 				<Member
 					fullName="Windows.UI.Xaml.ResourceDictionary[] Windows.UI.Xaml.ResourceDictionary::MergedDictionaries()"
 					reason="Property type fixed to match UWP" />
-				<Member 
+				<Member
 					fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources::EllipsisButton()"
 					reason="Invalid global style renamed to align with CommandBar" />
-				<Member 
+				<Member
 					fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources::__ImplicitStyle_Windows_UI_Xaml_Controls_AppBarToggleButton()"
 					reason="Implicit style moved to GenericStyles.cs" />
-				<Member 
+				<Member
 					fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources::__ImplicitStyle_Windows_UI_Xaml_Controls_AppBarSeparator()"
 					reason="Implicit style moved to GenericStyles.cs" />
-				<Member 
+				<Member
 					fullName="System.Boolean Uno.UI.UnoViewGroup::IsPointerCaptured()"
 					reason="Removed internal stuff."/>
-				<Member 
+				<Member
 					fullName="System.Single Uno.UI.UnoViewGroup::TransformedTouchX()"
 					reason="Removed internal stuff."/>
-				<Member 
+				<Member
 					fullName="System.Single Uno.UI.UnoViewGroup::TransformedTouchY()"
 					reason="Removed internal stuff."/>
 				<Member
@@ -575,29 +575,35 @@
 					reason="Not part of the UWP API."/>
 			</Properties>
 		</IgnoreSet>
-		
+
 		<IgnoreSet baseVersion="2.0.532">
 			<Methods>
 				<Member
 					fullName="System.Void Windows.UI.Xaml.RoutedEvent..ctor(System.String name)"
 					reason="Not part of the WinUI API." />
 				<Member
+					fullName="Android.Graphics.Path Windows.UI.Xaml.Shapes.ArbitraryShapeBase.GetPath()"
+					reason="Not part of the WinUI API, breaking change should not have repercussion outside Uno.UI" />
+				<Member
+					fullName="CoreGraphics.CGPath Windows.UI.Xaml.Shapes.ArbitraryShapeBase.GetPath()"
+					reason="Not part of the WinUI API, breaking change should not have repercussion outside Uno.UI" />
+				<Member
 					fullName="Windows.Foundation.Point Windows.UI.Xaml.Input.DoubleTappedRoutedEventArgs.GetPosition()"
 					reason="Not part of the WinUI API." />
 				<Member
 					fullName="Windows.Foundation.Point Windows.UI.Xaml.Input.TappedRoutedEventArgs.GetPosition()"
 					reason="Not part of the WinUI API." />
-				<Member 
+				<Member
 					fullName="System.Void Windows.UI.ViewManagement.ApplicationViewTitleBar..ctor()"
 					reason="Parameter-less ctor does not exist in WinUI" />
-					
+
 				<Member
 					fullName="CoreGraphics.CGSize Windows.UI.Xaml.Controls.VirtualizingPanelLayout.GetItemSizeForIndexPath(Foundation.NSIndexPath indexPath)"
 					reason="Made internal, shouldn't normally be called by consumer code"/>
 				<Member
 					fullName="CoreGraphics.CGSize Windows.UI.Xaml.Controls.ListViewBaseSource.GetItemSize(UIKit.UICollectionView collectionView, Foundation.NSIndexPath indexPath)"
 					reason="Made internal, shouldn't normally be called by consumer code"/>
-					
+
 				<Member
 					fullName="System.Boolean Windows.UI.Xaml.Input.RightTappedRoutedEventArgs.get_Handled()"
 					reason="Auto property"/>
@@ -622,7 +628,25 @@
 				<Member
 					fullName="System.Void Windows.System.DispatcherQueueTimer..ctor()"
 					reason="Not part of the WinUI API."/>
-            </Methods>
+				<Member
+					fullName="System.Void Windows.ApplicationModel.DataTransfer.Clipboard..ctor()"
+					reason="Not part of the WinUI API."/>
+			  <Member
+					fullName="System.Void Windows.Storage.KnownFolders..ctor()"
+					reason="Not part of the WinUI API."/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.ListViewBase..ctor()"
+					reason="Ctor is protected in WinUI."/>
+				<Member
+					fullName="System.Void Windows.System.Profile.AnalyticsInfo..ctor()"
+					reason="Not part of the WinUI API." />
+				<Member
+					fullName="System.Void Windows.System.Profile.AnalyticsVersionInfo..ctor()"
+					reason="Not part of the WinUI API." />
+				<Member
+					fullName="System.Void Windows.ApplicationModel.DataTransfer.DataPackage.SetText(System.String text)"
+					reason="UWP uses 'value' as the parameter name" />
+        </Methods>
 		</IgnoreSet>
 	</IgnoreSets>
 </DiffIgnore>

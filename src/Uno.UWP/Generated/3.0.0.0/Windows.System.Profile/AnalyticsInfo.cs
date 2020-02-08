@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System.Profile
 {
-	#if false || false || NET461 || false || __MACOS__
+	#if false || false || NET461 || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AnalyticsInfo 
 	{
-		#if false || false || NET461 || false || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public static string DeviceForm
 		{
@@ -17,7 +17,7 @@ namespace Windows.System.Profile
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.System.Profile.AnalyticsVersionInfo VersionInfo
 		{

@@ -1,6 +1,7 @@
-﻿using System;
+using System;
 using System.Drawing;
 using System.Linq;
+using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
@@ -45,10 +46,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			var tb1 = _app.Marked("tb1");
 			var tb2 = _app.Marked("tb2");
 
-			tb1.Tap();
+			tb1.FastTap();
 			TakeScreenshot("tb1 focused", ignoreInSnapshotCompare: true);
 
-			tb2.Tap();
+			tb2.FastTap();
 			TakeScreenshot("tb2 focused", ignoreInSnapshotCompare: true);
 		}
 
@@ -64,12 +65,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			var textBox1Result_Before = _app.Query(textBox1).First();
 			var textBox2Result_Before = _app.Query(textBox2).First();
 
-			textBox1.Tap();
+			textBox1.FastTap();
 			textBox1.EnterText("hello 01");
 
 			_app.WaitForText(textBox1, "hello 01");
 
-			textBox2.Tap();
+			textBox2.FastTap();
 			textBox2.EnterText("hello 02");
 
 			_app.WaitForText(textBox2, "hello 02");
@@ -92,12 +93,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			var textBox1 = _app.Marked("textBox1");
 			var textBox2 = _app.Marked("textBox2");
 
-			textBox1.Tap();
+			textBox1.FastTap();
 			textBox1.EnterText("hello 01");
 
 			_app.WaitForText(textBox1, "hello 01");
 
-			textBox2.Tap();
+			textBox2.FastTap();
 			textBox2.EnterText("hello 02");
 
 			_app.WaitForText(textBox2, "hello 02");
@@ -106,7 +107,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			var textBox2Result = _app.Query(textBox2).First();
 
 			// Focus the first textbox
-			textBox1.Tap();
+			textBox1.FastTap();
 
 			var deleteButton1 = FindDeleteButton(textBox1Result);
 
@@ -118,7 +119,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			_app.WaitForText(textBox1, "");
 
 			// Focus the first textbox
-			textBox2.Tap();
+			textBox2.FastTap();
 
 			var deleteButton2 = FindDeleteButton(textBox2Result);
 
@@ -146,7 +147,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 		[Test]
 		[AutoRetry]
-		public void TextBox_Readonly()
+		public async Task TextBox_Readonly()
 		{
 			Run("Uno.UI.Samples.UITests.TextBoxControl.TextBox_IsReadOnly");
 
@@ -156,18 +157,41 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			const string initialText = "This text should initially be READONLY and ENABLED...";
 			_app.WaitForText(txt, initialText);
 
-			_app.EnterText(txt, "ERROR1");
+			// Don't use EnterText(txt, "") as it waits for the keyboard that will not arrive (on iOS)
+			_app.Tap(txt);
+			try
+			{
+				_app.EnterText("ERROR1");
+			}
+			catch(Exception e)
+			{
+				// Ignore the exception for now.
+				Console.WriteLine(e);
+			}
+
 			_app.WaitForText(txt, initialText);
 
-			tglReadonly.Tap();
+			tglReadonly.FastTap();
 			_app.EnterText(txt, "Hello!");
+			await Task.Delay(100);
 			_app.WaitForText(txt, initialText + "Hello!");
 
-			tglReadonly.Tap();
-			_app.EnterText(txt, "ERROR2");
+			tglReadonly.FastTap();
+			_app.FastTap(txt);
+
+			try
+			{
+				_app.EnterText("ERROR2");
+			}
+			catch(Exception e)
+			{
+				Console.WriteLine(e);
+			}
+
+			await Task.Delay(100);
 			_app.WaitForText(txt, initialText + "Hello!");
 
-			tglReadonly.Tap();
+			tglReadonly.FastTap();
 			_app.EnterText(txt, " Works again!");
 			_app.WaitForText(txt, initialText + "Hello! Works again!");
 		}
@@ -196,6 +220,80 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 				(int)passwordBox.Rect.Y + 8,
 				100, // Ignore the reveal button on right (as we are still focused)
 				(int)passwordBox.Rect.Height - 16));
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android)]
+		public void TextBox_Formatting_FlickerText()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_Formatting_Flicker");
+
+			var textbox = _app.Marked("SomeTextBox");
+			var scoreboard = _app.Marked("Scoreboard");
+			_app.WaitForElement(textbox);
+
+			textbox.Tap().EnterTextAndDismiss("a");
+			var text1 = textbox.GetDependencyPropertyValue<string>("Text");
+
+			text1.Should().StartWith("modified ", because: "custom IInputFilter should've hijacked the input");
+
+			textbox.Tap().EnterTextAndDismiss("a");
+			var text2 = textbox.GetDependencyPropertyValue<string>("Text");
+			var text3 = scoreboard.GetDependencyPropertyValue<string>("Text");
+
+			text2.Should().Be(text1, because: "Text content should not change at max length.");
+			text3.Should().Be("TextChanged: 1");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_No_Text_Entered()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxControl.TextBox_Binding_Null");
+
+			const string MappedText = "MappedText";
+			const string TextBox = "TargetTextBox";
+			const string DummyButton = "DummyButton";
+
+			string GetMappedText() => _app.GetText(MappedText);
+
+			void DefocusTextBox()
+			{
+				_app.FastTap(DummyButton);
+
+				_app.WaitForFocus(DummyButton);
+			}
+
+			Assert.AreEqual("initial", GetMappedText());
+
+			_app.FastTap(TextBox);
+
+			_app.WaitForFocus(TextBox);
+
+			DefocusTextBox();
+
+			Assert.AreEqual("initial", GetMappedText()); //Binding not pushed on losing focus
+
+			_app.FastTap(TextBox);
+
+			_app.EnterText("fleep");
+
+			DefocusTextBox();
+
+			Assert.AreEqual("fleep", GetMappedText());
+
+			_app.FastTap("ResetButton");
+
+			_app.WaitForText(MappedText, "reset");
+
+			_app.FastTap(TextBox);
+
+			_app.WaitForFocus(TextBox);
+
+			DefocusTextBox();
+
+			Assert.AreEqual("reset", GetMappedText());
 		}
 	}
 }

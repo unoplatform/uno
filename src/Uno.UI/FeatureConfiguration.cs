@@ -152,6 +152,16 @@ namespace Uno.UI
 			public static bool LegacyIosAlignment { get; set; } = false;
 		}
 
+		public static class Popup
+		{
+#if __ANDROID__
+			/// <summary>
+			/// Use a native popup to display the popup content. Otherwise use the <see cref="PopupRoot"/>.
+			/// </summary>
+			public static bool UseNativePopup { get; set; } = true;
+#endif
+		}
+
 		public static class Interop
 		{
 #if __WASM__

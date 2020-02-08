@@ -1539,6 +1539,11 @@ var Uno;
                     document.body.appendChild(this.containerElement);
                 }
                 window.addEventListener("resize", x => this.resize());
+                window.addEventListener("contextmenu", x => {
+                    if (!(x.target instanceof HTMLInputElement)) {
+                        x.preventDefault();
+                    }
+                });
             }
             removeLoading() {
                 if (!this.loadingElementId) {
@@ -2357,6 +2362,10 @@ var Windows;
                     console.warn("IndexedDB is not available (private mode or uri starts with file:// ?), changes will not be persisted.");
                     return;
                 }
+                if (typeof IDBFS === 'undefined') {
+                    console.warn(`IDBFS is not enabled in mono's configuration, persistence is disabled`);
+                    return;
+                }
                 console.debug("Making persistent: " + path);
                 FS.mkdir(path);
                 FS.mount(IDBFS, {}, path);
@@ -2741,6 +2750,33 @@ var Windows;
             }
             Core.SystemNavigationManager = SystemNavigationManager;
         })(Core = UI.Core || (UI.Core = {}));
+    })(UI = Windows.UI || (Windows.UI = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var UI;
+    (function (UI) {
+        var ViewManagement;
+        (function (ViewManagement) {
+            class ApplicationView {
+                static setFullScreenMode(turnOn) {
+                    if (turnOn) {
+                        if (document.fullscreenEnabled) {
+                            document.documentElement.requestFullscreen();
+                            return true;
+                        }
+                        else {
+                            return false;
+                        }
+                    }
+                    else {
+                        document.exitFullscreen();
+                        return true;
+                    }
+                }
+            }
+            ViewManagement.ApplicationView = ApplicationView;
+        })(ViewManagement = UI.ViewManagement || (UI.ViewManagement = {}));
     })(UI = Windows.UI || (Windows.UI = {}));
 })(Windows || (Windows = {}));
 var Windows;

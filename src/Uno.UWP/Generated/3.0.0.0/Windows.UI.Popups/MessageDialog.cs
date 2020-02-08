@@ -26,7 +26,7 @@ namespace Windows.UI.Popups
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.CancelCommandIndex.set
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.Content.get
 		// Forced skipping of method Windows.UI.Popups.MessageDialog.Content.set
-		#if false || false || NET461 || false || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.UI.Popups.IUICommand> ShowAsync()
 		{

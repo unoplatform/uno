@@ -56,6 +56,13 @@ namespace Windows.UI.Xaml.Controls
 				copy.Replace(start, end, tb, tbstart, tbend);
 				var previewText = copy.ToString();
 
+				// Modifying the text beyond max length will not be accepted. We discard this replace in advance to prevent
+				// raising the chain of text-related events: BeforeTextChanging, TextChanging, and TextChanged.
+				if (Owner.MaxLength > 0 && previewText.Length > Owner.MaxLength)
+				{
+					return this;
+				}
+
 				var finalText = Owner.ProcessTextInput(previewText);
 
 				if (Owner._wasLastEditModified = previewText != finalText)

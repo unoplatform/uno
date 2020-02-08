@@ -41,7 +41,7 @@ jobs:
 
 - job: Android_Tests
   dependsOn: Android_Build_For_Tests
-
+  timeoutInMinutes: 90
   variables:
     CI_Build: true
     SourceLinkEnabled: false

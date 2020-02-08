@@ -71,7 +71,11 @@ namespace SamplesApp
 		/// will be used such as when the application is launched to open a specific file.
 		/// </summary>
 		/// <param name="e">Details about the launch request and process.</param>
-		protected override void OnLaunched(LaunchActivatedEventArgs e)
+		protected
+#if HAS_UNO
+			internal
+#endif
+			override void OnLaunched(LaunchActivatedEventArgs e)
 		{
 #if __IOS__
 			// requires Xamarin Test Cloud Agent

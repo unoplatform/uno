@@ -55,7 +55,7 @@ jobs:
       ArtifactType: Container
 
 - job: iOS_Tests
-
+  timeoutInMinutes: 90
   dependsOn: iOS_Build
 
   pool:
