@@ -2,6 +2,9 @@
 
 ### Features
 - [Android] Support for `Windows.Networking.Connectivity.NetworkInformation` (partly)
+- Support for `Geolocator` on macOS
+- Support for `Clipboard` get/set Text content on macOS
+- Support for `ApplicationView.Title` on Android and macOS
 - Support for `AnalyticsInfo` on macOS
 - Support for `TryEnterFullScreenMode` and `ExitFullScreenMode` on WebAssembly
 - Support for `MessageDialog` on macOS
@@ -81,6 +84,7 @@
 ## Release 2.0
 
 ### Features
+
 * [#2040] Support for ms-settings:// special URIs on Android and iOS, Launcher API alignments to match UWP behavior
 * [#2029](https://github.com/unoplatform/uno/pull/2029) Support for MenuFlyoutItem.Click
 * support /[file]/[name] format in ResourceLoader.GetForCurrentView().GetString()
