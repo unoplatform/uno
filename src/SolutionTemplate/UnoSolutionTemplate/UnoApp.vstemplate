@@ -15,13 +15,13 @@
 	<PreviewImage>__PreviewImage.png</PreviewImage>
 	<NumberOfParentCategoriesToRollUp>2</NumberOfParentCategoriesToRollUp>
 	<LanguageTag>csharp</LanguageTag>
-        <PlatformTag>ios</PlatformTag>
-        <PlatformTag>android</PlatformTag>
+	<PlatformTag>ios</PlatformTag>
+	<PlatformTag>android</PlatformTag>
 	<PlatformTag>Windows</PlatformTag>
-        <ProjectTypeTag>mobile</ProjectTypeTag>
+	<ProjectTypeTag>mobile</ProjectTypeTag>
 	<ProjectTypeTag>UWP</ProjectTypeTag>
-        <ProjectTypeTag>Wasm</ProjectTypeTag>
-        <ProjectTypeTag>Platform Uno</ProjectTypeTag>
+	<ProjectTypeTag>Wasm</ProjectTypeTag>
+	<ProjectTypeTag>Platform Uno</ProjectTypeTag>
   </TemplateData>
   <TemplateContent>
 	<ProjectCollection>
