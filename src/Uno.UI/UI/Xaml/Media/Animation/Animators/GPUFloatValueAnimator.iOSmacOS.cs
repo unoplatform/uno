@@ -5,7 +5,13 @@ using System.Numerics;
 using System.Text;
 using Windows.Foundation;
 using Uno.UI.DataBinding;
+#if __IOS__
 using UIKit;
+using _View = UIKit.UIView;
+#else
+using AppKit;
+using _View = AppKit.NSView;
+#endif
 using CoreGraphics;
 using Foundation;
 using CoreAnimation;
@@ -33,7 +39,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		private IEasingFunction _easingFunction;
 		private bool _isDisposed;
 
-		#region PropertyNameConstants
+#region PropertyNameConstants
 		private const string TranslateTransformX = "TranslateTransform.X";
 		private const string TranslateTransformXWithNamespace = "Windows.UI.Xaml.Media:TranslateTransform.X";
 		private const string TranslateTransformY = "TranslateTransform.Y";
@@ -66,7 +72,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		private const string CompositeTransformSkewXWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.SkewX";
 		private const string CompositeTransformSkewY = "CompositeTransform.SkewY";
 		private const string CompositeTransformSkewYWithNamespace = "Windows.UI.Xaml.Media:CompositeTransform.SkewY";
-		#endregion
+#endregion
 
 		internal static Point GetAnchorForAnimation(Transform transform, Point relativeOrigin, Size viewSize)
 		{
@@ -135,7 +141,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			var animatedItem = _bindingPath.LastOrDefault();
 			switch (animatedItem.DataContext)
 			{
-				case UIView view when animatedItem.PropertyName.EndsWith("Opacity"):
+				case _View view when animatedItem.PropertyName.EndsWith("Opacity"):
 					_coreAnimation = InitializeOpacityCoreAnimation(view);
 					return;
 
@@ -235,8 +241,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			_valueAnimator.SetEasingFunction(easingFunction);
 		}
 
-		#region coreAnimationInitializers
-		private UnoCoreAnimation InitializeOpacityCoreAnimation(UIView view)
+#region coreAnimationInitializers
+		private UnoCoreAnimation InitializeOpacityCoreAnimation(_View view)
 		{
 			return CreateCoreAnimation(view, "opacity", value => new NSNumber(value));
 		}
@@ -297,7 +303,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		private UnoCoreAnimation InitializeSkewCoreAnimation(SkewTransform transform, IBindingItem animatedItem)
 		{
 			// We need to review this.  This won't play along if other transforms are happening at the same time since we are animating the whole transform
-			UIView view = transform.View;
+			_View view = transform.View;
 
 			if (animatedItem.PropertyName.Equals("AngleX")
 				|| animatedItem.PropertyName.Equals(SkewTransformAngleX)
@@ -363,7 +369,7 @@ namespace Windows.UI.Xaml.Media.Animation
 					throw new NotSupportedException(__notSupportedProperty);
 			}
 		}
-		#endregion
+#endregion
 
 		private UnoCoreAnimation CreateCoreAnimation(
 			Transform transform,
@@ -372,7 +378,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			=> CreateCoreAnimation(transform.View, property, nsValueConversion, transform.StartAnimation, transform.EndAnimation);
 		
 		private UnoCoreAnimation CreateCoreAnimation(
-			UIView view,
+			_View view,
 			string property,
 			Func<float, NSValue> nsValueConversion,
 			Action prepareAnimation = null,

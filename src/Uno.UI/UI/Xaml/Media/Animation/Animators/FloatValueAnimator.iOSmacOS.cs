@@ -23,7 +23,12 @@ namespace Windows.UI.Xaml.Media.Animation
 		private const int FrameRate = 50;
 
 		private long _numberOfFrames;
+#if __IOS__
 		private CADisplayLink _displayLink;
+#else
+		private NSTimer _timer;
+#endif
+
 		private double _startTime = 0;
 
 		private bool _isDisposed;
@@ -52,11 +57,13 @@ namespace Windows.UI.Xaml.Media.Animation
 				PrebuildFrames();//Preload as much of the animation as possible
 			}
 
-			IsRunning = true;	
+			IsRunning = true;
+
 			_startTime = 0;// Start time will be set if it is equal to zero
 
 			if (!_isAttachedToLooper)
 			{
+#if __IOS__
 				//http://www.bigspaceship.com/ios-animation-intervals/
 				_displayLink = CADisplayLink.Create(OnFrame);//OnFrame is called when an animation frame is ready
 
@@ -64,10 +71,34 @@ namespace Windows.UI.Xaml.Media.Animation
 				//Default == normal UI updates
 				_displayLink.AddToRunLoop(NSRunLoop.Main, NSRunLoopMode.Default);
 				//UITracking == updates during scrolling
-				_displayLink.AddToRunLoop(NSRunLoop.Main, NSRunLoopMode.UITracking); 
+				_displayLink.AddToRunLoop(NSRunLoop.Main, NSRunLoopMode.UITracking);
+#else
+				ScheduleTimer();
+#endif
 				_isAttachedToLooper = true;
 			}
 		}
+
+#if __MACOS__
+		private void ScheduleTimer()
+		{
+			if (_timer?.IsValid == true) return;
+			UnscheduleTimer();
+			_timer = NSTimer.CreateRepeatingScheduledTimer(0.001, OnTimerTick);
+		}
+
+		private void UnscheduleTimer()
+		{
+			_timer?.Invalidate();
+			_timer?.Dispose();
+			_timer = null;
+		}
+
+		private void OnTimerTick(NSTimer obj)
+		{
+			OnFrame();
+		}
+#endif
 
 		/// <summary>
 		/// Precalculates the frame values.
@@ -109,8 +140,11 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				return;
 			}
-
+#if __IOS__
 			var currentTime = _displayLink.Timestamp; // current time in seconds
+#else
+			var currentTime = NSProcessInfo.ProcessInfo.SystemUptime;
+#endif
 
 			if (_startTime == 0)
 			{   // if start time is not set, set it
@@ -135,7 +169,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			if (delta < 0)
 			{   // Start Delay can cause this - wait till the start delay is spent before continuing
-				return;	
+				return;
 			}
 
 			CurrentPlayTime = (long)delta; //Update play time
@@ -186,10 +220,12 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (_isAttachedToLooper)
 			{
+#if __IOS__
 				//Detach the _displayLink to the MainLoop (uiThread).
 				_displayLink?.RemoveFromRunLoop(NSRunLoop.Main, NSRunLoop.NSDefaultRunLoopMode);//detaches from the UI thread
 				_displayLink?.RemoveFromRunLoop(NSRunLoop.Main, NSRunLoop.UITrackingRunLoopMode);
 				_displayLink = null;
+#endif
 				_isAttachedToLooper = false;
 			}
 		}
@@ -214,6 +250,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public long StartDelay { get; set; }
 
+#if __IOS__
 		public bool IsRunning
 		{
 			get { return !(_displayLink?.Paused ?? false); }
@@ -225,6 +262,26 @@ namespace Windows.UI.Xaml.Media.Animation
 				}
 			}
 		}
+#else
+		public bool IsRunning
+		{
+			get => _timer?.IsValid ?? false;
+			private set
+			{
+				if (_timer != null)
+				{
+					if (value && !_timer.IsValid)
+					{
+						ScheduleTimer();
+					}
+					else
+					{
+						UnscheduleTimer();
+					}
+				}
+			}
+		}
+#endif
 
 		public long CurrentPlayTime { get; set; }
 
@@ -240,7 +297,11 @@ namespace Windows.UI.Xaml.Media.Animation
 			AnimationCancel = null;
 
 			Stop();
+#if __IOS__
 			_displayLink?.Dispose();
+#else
+			_timer?.Dispose();
+#endif
 		}
 	}
 }
