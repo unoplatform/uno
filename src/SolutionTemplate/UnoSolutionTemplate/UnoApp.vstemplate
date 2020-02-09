@@ -21,7 +21,7 @@
 	<ProjectTypeTag>mobile</ProjectTypeTag>
 	<ProjectTypeTag>UWP</ProjectTypeTag>
 	<ProjectTypeTag>Wasm</ProjectTypeTag>
-	<ProjectTypeTag>Platform Uno</ProjectTypeTag>
+	<ProjectTypeTag>Uno Platform</ProjectTypeTag>
   </TemplateData>
   <TemplateContent>
 	<ProjectCollection>
