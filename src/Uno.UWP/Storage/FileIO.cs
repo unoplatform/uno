@@ -191,7 +191,7 @@ namespace Windows.Storage
 			{
 				if(fileStream != null)
                 {
-					stream.Dispose();
+					fileStream.Dispose();
 				}
 			}
 			return output;
