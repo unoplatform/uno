@@ -203,7 +203,8 @@ namespace Windows.Storage
 		private static async Task<IList<string>> ReadLinesTaskAsync(IStorageFile file, Streams.UnicodeEncoding encoding)
 		{
 			string output = await ReadTextTaskAsync(file, encoding);
-			return output.Split(Environment.NewLine);
+			var separators = new String[] { Environment.NewLine };
+			return output.Split(separators, StringSplitOptions.None);
 		}
 
 		public static IAsyncOperation<IList<string>> ReadLinesAsync(IStorageFile file, Streams.UnicodeEncoding encoding)
@@ -211,7 +212,8 @@ namespace Windows.Storage
 		private static async Task<IList<string>> ReadLinesTaskAsync(IStorageFile file)
 		{
 			string output = await ReadTextTaskAsync(file);
-			return output.Split(Environment.NewLine);
+			var separators = new String[] { Environment.NewLine };
+			return output.Split(separators, StringSplitOptions.None);
 		}
 
 		public static IAsyncOperation<IList<string>> ReadLinesAsync(IStorageFile file)
