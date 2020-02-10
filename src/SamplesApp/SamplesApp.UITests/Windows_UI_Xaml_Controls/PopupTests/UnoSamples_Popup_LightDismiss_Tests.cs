@@ -13,7 +13,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 	public class UnoSamples_Popup_LightDismiss_Tests : SampleControlUITestBase
 	{
 		[Test]
-		[AutoRetry()]
+		[AutoRetry]
 		public void DismissablaPopups_ForwardOrder_Validation()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.Popup.Popup_LightDismiss");
@@ -68,7 +68,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 		}
 
 		[Test]
-		[AutoRetry()]
+		[AutoRetry]
 		public void DismissablaPopups_ReverseOrder_Validation()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.Popup.Popup_LightDismiss");
@@ -123,7 +123,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 		}
 
 		[Test]
-		[AutoRetry()]
+		[AutoRetry]
 		public void DismissablaPopups_WithOneNonDismissablePopup_Validation()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.Popup.Popup_LightDismiss");

@@ -13,7 +13,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.RadioButtonTests
 	public class UnoSamples_RadioButton_Tests : SampleControlUITestBase
 	{
 		[Test]
-		[AutoRetry()]
+		[AutoRetry]
 		public void RadioButtons_Enable_Validation()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.RadioButtonTests.RadioButton_IsEnabled_Automated");
@@ -40,7 +40,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.RadioButtonTests
 		}
 
 		[Test]
-		[AutoRetry()]
+		[AutoRetry]
 		public void RadioButtons_Disable_Validation()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.RadioButtonTests.RadioButton_IsEnabled_Automated");
