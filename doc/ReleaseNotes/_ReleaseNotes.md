@@ -2,6 +2,7 @@
 
 ### Features
 
+- Support for `Flyout` on macOS
 - Support for `Geolocator` on macOS
 - Support for `Clipboard` get/set Text content on macOS
 - Support for `ApplicationView.Title` on Android and macOS
