@@ -109,11 +109,11 @@ Let us know if you've made your app publicly available, we'll list it here!
 
 # Have questions? Feature requests? Issues?
 
-Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform), [create an issue](https://github.com/unoplatform/uno/issues) or [visit our Gitter](https://gitter.im/uno-platform/Lobby).
+Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform), [create an issue](https://github.com/unoplatform/uno/issues).
 
 # Contributing
 
-There are many ways that you can contribute to the Uno Platform, as the UWP API is pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements.
+There are many ways that you can contribute to the Uno Platform, as the UWP API is pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements. Come visit us on our [visit our Gitter](https://gitter.im/uno-platform/Lobby) for help on how to contribute!
 
 Contribute to Uno in your browser using [GitPod.io](https://gitpod.io), follow [our guide here](doc/articles/features/working-with-gitpod.md).
 

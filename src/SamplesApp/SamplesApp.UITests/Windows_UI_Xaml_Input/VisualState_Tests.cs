@@ -114,38 +114,33 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			_app.DragCoordinates(rect.X + 10, rect.Y + 10, rect.X - 30, rect.Y);
 
 			var final = TakeScreenshot("Final");
-			ImageAssert.AssertScreenshotsAreEqual(initial, final, rect);
+			ImageAssert.AreEqual(initial, final, rect);
 		}
 
 		[Test]
 		[AutoRetry]
-		public void TestTextBoxReleaseOut() => TestTextBoxReleasedOutState(
-			"MyTextBox",
-			"CommonStates.PointerOver",
-			"CommonStates.Focused");
+		public void TestTextBoxReleaseOut()
+		{
+			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.TextBox_VisualStates");
+
+			// Note: We don not validateFinalStateScreenShot as we are expecting to finish "focused" so may have the flashing cursor.
+			TestVisualTests("MyTextBox", ReleaseOut, validateFinalStateScreenShot: false, "CommonStates.PointerOver", "CommonStates.Focused");
+		}
 
 		[Test]
 		[AutoRetry]
-		public void TestTextBoxTap() => TestTextBoxTappedState(
-			"MyTextBox",
-			"CommonStates.PointerOver",
-			"CommonStates.Focused");
+		public void TestTextBoxTap()
+		{
+			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.TextBox_VisualStates");
+
+			// Note: We don not validateFinalStateScreenShot as we are expecting to finish "focused" so may have the flashing cursor.
+			TestVisualTests("MyTextBox", Tap, validateFinalStateScreenShot: false, "CommonStates.PointerOver", "CommonStates.Focused");
+		}
 
 		private void TestButtonReleasedOutState(string target, params string[] expectedStates)
 		{
 			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.Buttons");
-			TestVisualTests(target, ReleaseOut, expectedStates);
-		}
-
-		private void TestTextBoxReleasedOutState(string target, params string[] expectedStates)
-		{
-			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.TextBox_VisualStates");
-			TestVisualTests(target, ReleaseOut, expectedStates);
-		}
-		private void TestTextBoxTappedState(string target, params string[] expectedStates)
-		{
-			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.TextBox_VisualStates");
-			TestVisualTests(target, Tap, expectedStates);
+			TestVisualTests(target, ReleaseOut, true, expectedStates);
 		}
 
 		// Press over and move out to release
@@ -155,7 +150,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		private void Tap(IAppRect target)
 			=> _app.TapCoordinates(target.X + 2, target.Y + 2);
 
-		private void TestVisualTests(string targetName, Action<IAppRect> act, params string[] expectedStates)
+		private void TestVisualTests(string targetName, Action<IAppRect> act, bool validateFinalStateScreenShot, params string[] expectedStates)
 		{
 			var initial = TakeScreenshot("Initial", ignoreInSnapshotCompare: true);
 			var target = _app.WaitForElement(targetName).Single().Rect;
@@ -176,9 +171,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 				CollectionAssert.AreEqual(expectedStates, actualStates, StringComparer.OrdinalIgnoreCase);
 			}
 
-			// For the comparison, we compare only the location of the control (i.e. we provide the rect).
-			// This is required to NOT include the visual output ot the states (on the right of the test control)
-			ImageAssert.AssertScreenshotsAreEqual(initial, final, target);
+			if (validateFinalStateScreenShot)
+			{
+				// For the comparison, we compare only the location of the control (i.e. we provide the rect).
+				// This is required to NOT include the visual output ot the states (on the right of the test control)
+				ImageAssert.AreEqual(initial, final, target);
+			}
 		}
 	}
 }

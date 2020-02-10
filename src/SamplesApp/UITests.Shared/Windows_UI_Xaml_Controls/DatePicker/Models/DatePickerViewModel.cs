@@ -9,7 +9,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.Models
 	[Bindable]
 	public class DatePickerViewModel : ViewModelBase
 	{
-		private DateTimeOffset _date = DateTime.Now;
+		private DateTimeOffset _date = DateTimeOffset.FromUnixTimeSeconds(1580655600); // 02/02/2020 @ 3:00pm (UTC) - Groundhog day!
 
 		public DatePickerViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
@@ -21,10 +21,10 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.Models
 			set
 			{
 				_date = value;
-				RaisePropertyChanged("Date");
+				RaisePropertyChanged();
 			}
 		}
 
-		public ICommand SetToCurrentDate => GetOrCreateCommand(() => Date = DateTime.Now);
+		public ICommand SetToCurrentDate => GetOrCreateCommand(() => Date = DateTimeOffset.Now);
 	}
 }

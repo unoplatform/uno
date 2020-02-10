@@ -227,9 +227,6 @@ namespace Windows.UI.Xaml
 				(int)measuredSize.Width,
 				(int)measuredSize.Height
 			);
-
-
-			IFrameworkElementHelper.OnMeasureOverride(this);
 		}
 
 		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom)

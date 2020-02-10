@@ -31,8 +31,8 @@
 | _gesture events_         
 | `Tapped`                      | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.tapped) |
 | `DoubleTapped`                | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.doubletapped) |
-| `RightTapped`                 | No      | No      | No      | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.righttapped) |
-| `Holding`                     | No      | No      | No      | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.holding) |
+| `RightTapped`                 | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.righttapped) |
+| `Holding`                     | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.holding) |
 
 Notes:
 
@@ -169,10 +169,8 @@ These _routed events_ are not implemented yet in Uno:
 * `DragLeave`
 * `DragOver`
 * `Drop`
-* `Holding`
 * `ManipulationInertiaStarting`
 * `PointerWheelChanged`
-* `RightTapped`
 
 ### Property `OriginalSource` might not be accurate on _RoutedEventArgs_
 
@@ -236,6 +234,14 @@ As those events are tightly coupled to the native events, Uno has to make some c
   > a `PointerReleased` when clicking on an `Hyperlink`.
 * Unlike UWP, on the `Hyperlink` the `Click` will be raised before the `PointerReleased`.
 * The property `PointerPointProperties.PointerUpdateKind` is not set on Android 5.x and lower (API level < 23)
+* On Firefox, pressed pointers are reported as fingers. This means you will receive events with `PointerDeviceType == Pen` only for hovering 
+  (i.e. `Pointer<Enter|Move|Exit>` - note that, as of 2019-11-28, once pressed `PointerMove` will be flagged as "touch") 
+  and you won't  be able to track the barrel button nor the eraser. (cf. https://bugzilla.mozilla.org/show_bug.cgi?id=1449660)
+* On WASM, if you touch the screen with the pen **then** you press the barrel button (still while touching the screen), the pointer events will
+  have the `IsRightButtonPressed` set (in addition of the `IsBarrelButtonPressed`). On WinUI and Android you get this flag only if the barrel 
+  button was pressed at the moment where you touched the screen, otherwise you will have the `IsLeftButtonPressed` and the `IsBarrelButtonPressed`.
+* The `Holding` event is not raised after a given delay like on WinUI, but instead we rely on the fact that we usually 
+  get a lot of moves for pens and fingers, so we raise the event only when we get a move that exceed defined thresholds for holding.
 
 ### Pointer capture
 
@@ -253,5 +259,8 @@ will never be fired. The `Velocities` properties of event args are not implement
 
 They are generated from the PointerXXX events (using the `Windows.UI.Input.GestureRecognizer`) and are bubbling in managed only.
 
-Currently only the `Tapped` and `DoubleTapped` gestures are supported. Note that those events are not linked in any way to a native equivalent, 
-but are fully interpreted in managed code.
+Note that `Tapped` and `DoubleTapped` are not linked in any way to a native equivalent, but are fully interpreted in managed code.
+
+In order to match the WinUI behavior, on WASM the default "Context menu" of the browser is disabled (except for the `TextBox`), 
+no matter if you use / handle the `RightTapped` event or not.
+Be aware that on some browser (Firefox), user can still request to get the "Context menu" on right click.

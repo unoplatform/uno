@@ -30,7 +30,7 @@ namespace SamplesApp.UITests.Toolkit
 			// Take ScreenShot with no elevation
 			var screenshot_NoElevation = TakeScreenshot("Elevation - No Elevation");
 
-			turnElevation_ON_Button.Tap();
+			turnElevation_ON_Button.FastTap();
 
 			// Take ScreenShot of with elevation
 			var screenshot_WithElevation = TakeScreenshot("Elevation - With Elevation");

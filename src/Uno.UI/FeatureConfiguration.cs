@@ -152,6 +152,16 @@ namespace Uno.UI
 			public static bool LegacyIosAlignment { get; set; } = false;
 		}
 
+		public static class Popup
+		{
+#if __ANDROID__
+			/// <summary>
+			/// Use a native popup to display the popup content. Otherwise use the <see cref="PopupRoot"/>.
+			/// </summary>
+			public static bool UseNativePopup { get; set; } = true;
+#endif
+		}
+
 		public static class Interop
 		{
 #if __WASM__
@@ -288,6 +298,15 @@ namespace Uno.UI
 			/// the values change subsequently. This restriction doesn't apply to debug Uno builds.
 			/// </remarks>
 			public static bool AssignDOMXamlProperties { get; set; } = false;
+#elif __ANDROID__
+			/// <summary>
+			/// When this is set, non-UIElements will always be clipped to their bounds (<see cref="Android.Views.ViewGroup.ClipChildren"/> will
+			/// always be set to true on their parent). 
+			/// </summary>
+			/// <remarks>
+			/// This is true by default as most native views assume that they will be clipped, and can display incorrectly otherwise.
+			/// </remarks>
+			public static bool AlwaysClipNativeChildren { get; set; } = true;
 #endif
 		}
 
@@ -299,7 +318,7 @@ namespace Uno.UI
 			/// For better compatibility with Windows, you should keep the default value 'AsynchronousIdle'.
 			/// </summary>
 			/// <remarks>
-			/// As this boolean is read only once when initializing the dependency property,
+			/// As this value is read only once when initializing the dependency property,
 			/// make sure to define it in the early stages of you application initialization,
 			/// before any UI related initialization (like generic styles init) and even before
 			/// referencing the ** type ** ScrollViewer in any way.
@@ -337,6 +356,20 @@ namespace Uno.UI
 			/// This is a mechanism to prevent hard-to-diagnose stack overflow when a resource name is not found.
 			/// </remarks>
 			public static int MaxRecursiveResolvingDepth { get; set; } = 12;
+		}
+
+		public static class ComboBox
+		{
+			/// <summary>
+			/// This defines the default value of the <see cref="UI.Xaml.Controls.ComboBox.DropDownPreferredPlacementProperty"/>. (cf. Remarks.)
+			/// </summary>
+			/// <remarks>
+			/// As this value is read only once when initializing the dependency property,
+			/// make sure to define it in the early stages of you application initialization,
+			/// before any UI related initialization (like generic styles init) and even before
+			/// referencing the ** type ** ComboBox in any way.
+			/// </remarks>
+			public static Uno.UI.Xaml.Controls.DropDownPlacement DefaultDropDownPreferredPlacement { get; set; } = Uno.UI.Xaml.Controls.DropDownPlacement.Auto;
 		}
 	}
 }

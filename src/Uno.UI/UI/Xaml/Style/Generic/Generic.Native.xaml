@@ -16,8 +16,9 @@
 					xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
 					xmlns:mapsPresenter="using:Windows.UI.Xaml.Controls.Maps"
 					xmlns:wasm="http://uno.ui/wasm"
+					xmlns:net461="http://uno.ui/net461"
 					xmlns:not_wasm="http://uno.ui/not_wasm"
-					mc:Ignorable="d xamarin ios android wasm not_wasm">
+					mc:Ignorable="d xamarin ios android wasm not_wasm net461">
 
 	<wasm:ResourceDictionary.MergedDictionaries>
 		<!--
@@ -67,7 +68,11 @@
 	<wasm:Style
 		x:Key="NativeDefaultButton"
 		TargetType="Button"
-		BasedOn="{StaticResource XamlDefaultButton}" />
+				BasedOn="{StaticResource XamlDefaultButton}" />
+
+	<net461:Style x:Key="NativeDefaultButton"
+				TargetType="Button"
+				BasedOn="{StaticResource XamlDefaultButton}" />
 
 	<xamarin:Style
 		TargetType="Button"
@@ -113,7 +118,11 @@
 	<wasm:Style
 		x:Key="NativeDefaultCheckBox"
 		TargetType="CheckBox"
-		BasedOn="{StaticResource XamlDefaultCheckBox}" />
+				BasedOn="{StaticResource XamlDefaultCheckBox}" />
+
+	<net461:Style x:Key="NativeDefaultCheckBox"
+				TargetType="CheckBox"
+				BasedOn="{StaticResource XamlDefaultCheckBox}" />
 
 	<xamarin:Style
 		TargetType="CheckBox"
@@ -449,7 +458,12 @@
 	<wasm:Style
 		x:Key="NativeDefaultFrame"
 		TargetType="Frame"
-		BasedOn="{StaticResource XamlDefaultFrame}" />
+				BasedOn="{StaticResource XamlDefaultFrame}" />
+
+	<!-- Default native Frame styles -->
+	<net461:Style x:Key="NativeDefaultFrame"
+				TargetType="Frame"
+				BasedOn="{StaticResource XamlDefaultFrame}" />
 
 	<xamarin:Style
 		TargetType="Frame"

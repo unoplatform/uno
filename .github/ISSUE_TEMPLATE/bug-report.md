@@ -35,6 +35,7 @@ Affected platform(s):
 - [ ] Android
 - [ ] WebAssembly
 - [ ] WebAssembly renderers for Xamarin.Forms
+- [ ] macOS
 - [ ] Windows
 - [ ] Build tasks
 - [ ] Solution Templates

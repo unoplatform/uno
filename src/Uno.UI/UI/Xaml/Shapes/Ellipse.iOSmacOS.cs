@@ -17,10 +17,9 @@ namespace Windows.UI.Xaml.Shapes
 		{
 		}
 
-		protected override CGPath GetPath()
+		protected override CGPath GetPath(Size availableSize)
 		{
-			var controlSize = SizeFromUISize(Bounds.Size);
-			var calculatedBounds = this.ApplySizeConstraints(controlSize);
+			var calculatedBounds = this.ApplySizeConstraints(availableSize);
 
 			var strokeThickness = (nfloat)this.ActualStrokeThickness;
 

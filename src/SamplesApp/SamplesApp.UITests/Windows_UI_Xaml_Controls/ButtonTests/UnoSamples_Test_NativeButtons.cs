@@ -30,36 +30,36 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 
 			_app.WaitForElement(button01);
 
-			_app.Tap(button01);
+			_app.FastTap(button01);
 			_app.WaitForText(result, "Button button01 Clicked (1)");
 			_app.WaitForText(resultTapped, "Button button01 Tapped (1)");
 			_app.WaitForText(resultCommand, "Command Button 01 (1)");
 
-			_app.Tap(button02);
+			_app.FastTap(button02);
 			_app.WaitForText(result, "Button button01 Clicked (1)");
 			_app.WaitForText(resultTapped, "Button button01 Tapped (1)");
 			_app.WaitForText(resultCommand, "Command Button 01 (1)");
 
-			_app.Tap(enableButton02);
-			_app.Tap(button02);
+			_app.FastTap(enableButton02);
+			_app.FastTap(button02);
 			_app.WaitForText(result, "Button button02 Clicked (2)");
 			_app.WaitForText(resultTapped, "Button button02 Tapped (2)");
 			_app.WaitForText(resultCommand, "Command Button 02 (2)");
 
-			_app.Tap(toggleSwitch01);
+			_app.FastTap(toggleSwitch01);
 			_app.WaitForText(result, "ToggleSwitch toggleSwitch01 Toggled True (1)");
 
-			_app.Tap(toggleSwitch01);
+			_app.FastTap(toggleSwitch01);
 			_app.WaitForText(result, "ToggleSwitch toggleSwitch01 Toggled False (2)");
 
-			_app.Tap(toggleSwitch02);
+			_app.FastTap(toggleSwitch02);
 			_app.WaitForText(result, "ToggleSwitch toggleSwitch01 Toggled False (2)");
 
-			_app.Tap(enableToggleSwitch02);
-			_app.Tap(toggleSwitch02);
+			_app.FastTap(enableToggleSwitch02);
+			_app.FastTap(toggleSwitch02);
 			_app.WaitForText(result, "ToggleSwitch toggleSwitch02 Toggled True (3)");
 
-			_app.Tap(toggleSwitch02);
+			_app.FastTap(toggleSwitch02);
 			_app.WaitForText(result, "ToggleSwitch toggleSwitch02 Toggled False (4)");
 		}
 	}

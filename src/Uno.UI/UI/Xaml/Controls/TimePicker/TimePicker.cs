@@ -9,6 +9,7 @@ using Windows.Globalization;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -30,7 +31,13 @@ namespace Windows.UI.Xaml.Controls
 		private bool _isLoaded;
 		private bool _isViewReady;
 
-		public TimePicker() { }
+		public TimePicker()
+		{
+			LightDismissOverlayBackground = Resources["TimePickerLightDismissOverlayBackground"] as Brush ??
+				// This is normally a no-op - the above line should retrieve the framework-level resource. This is purely to fail the build when
+				// Resources/Styles are overhauled (and the above will no longer be valid)
+				Uno.UI.GlobalStaticResources.TimePickerLightDismissOverlayBackground as Brush;
+		}
 
 		#region Time DependencyProperty
 
@@ -108,6 +115,36 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+
+		public LightDismissOverlayMode LightDismissOverlayMode
+		{
+			get
+			{
+				return (LightDismissOverlayMode)this.GetValue(LightDismissOverlayModeProperty);
+			}
+			set
+			{
+				this.SetValue(LightDismissOverlayModeProperty, value);
+			}
+		}
+		public static DependencyProperty LightDismissOverlayModeProperty { get; } =
+		DependencyProperty.Register(
+			"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
+			typeof(TimePicker),
+			new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));
+
+		/// <summary>
+		/// Sets the light-dismiss colour, if the overlay is enabled. The external API for modifying this is to override the PopupLightDismissOverlayBackground, etc, static resource values.
+		/// </summary>
+		internal Brush LightDismissOverlayBackground
+		{
+			get { return (Brush)GetValue(LightDismissOverlayBackgroundProperty); }
+			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
+		}
+
+		internal static readonly DependencyProperty LightDismissOverlayBackgroundProperty =
+			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(TimePicker), new PropertyMetadata(null));
+
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();
@@ -168,6 +205,8 @@ namespace Windows.UI.Xaml.Controls
 				BindToFlyout(nameof(Time));
 				BindToFlyout(nameof(MinuteIncrement));
 				BindToFlyout(nameof(ClockIdentifier));
+				_flyoutButton.Flyout.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
+				_flyoutButton.Flyout.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
 #endif
 			}
 		}

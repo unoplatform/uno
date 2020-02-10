@@ -36,16 +36,54 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			// Assert initial state 
 			Assert.AreEqual("Undefined", dialogResult.GetDependencyPropertyValue("Text")?.ToString());
 
-			_app.Tap(showDialog1);
+			_app.FastTap(showDialog1);
 
 			var primaryButton = _app.Marked("PrimaryButton");
 			_app.WaitForElement(primaryButton);
 
 			CurrentTestTakeScreenShot("Primary Button");
 
-			_app.Tap(primaryButton);
+			_app.FastTap(primaryButton);
 
 			_app.WaitForDependencyPropertyValue(dialogResult, "Text", "Primary");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Simple_ContentDialog_06_Reuse()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Simple");
+
+			var showDialog6 = _app.Marked("showDialog6");
+
+			_app.WaitForElement(showDialog6);
+
+			var dialogResult = _app.Marked("dialogResult");
+
+			// Assert initial state 
+			Assert.AreEqual("Undefined", dialogResult.GetDependencyPropertyValue("Text")?.ToString());
+
+			_app.FastTap(showDialog6);
+
+			var primaryButton = _app.Marked("PrimaryButton");
+			_app.WaitForElement(primaryButton);
+
+			CurrentTestTakeScreenShot("Primary Button");
+
+			_app.FastTap(primaryButton);
+
+			_app.WaitForDependencyPropertyValue(dialogResult, "Text", "Primary");
+
+			_app.FastTap(showDialog6);
+
+			var secondaryButton = _app.Marked("SecondaryButton");
+			_app.WaitForElement(secondaryButton);
+
+			CurrentTestTakeScreenShot("Secondary Button");
+
+			_app.FastTap(secondaryButton);
+
+			_app.WaitForDependencyPropertyValue(dialogResult, "Text", "Secondary");
 		}
 
 		[Test]
@@ -63,14 +101,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			// Assert initial state 
 			Assert.AreEqual("Undefined", dialogResult.GetDependencyPropertyValue("Text")?.ToString());
 
-			_app.Tap(showDialog1);
+			_app.FastTap(showDialog1);
 
 			var primaryButton = _app.Marked("PrimaryButton");
 			_app.WaitForElement(primaryButton);
 
 			CurrentTestTakeScreenShot("Primary Button");
 
-			_app.Tap(primaryButton);
+			_app.FastTap(primaryButton);
 
 			_app.WaitForDependencyPropertyValue(dialogResult, "Text", "Undefined");
 
@@ -79,7 +117,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 
 			CurrentTestTakeScreenShot("Secondary Button");
 
-			_app.Tap(secondaryButton);
+			_app.FastTap(secondaryButton);
 
 			CurrentTestTakeScreenShot("Closed");
 		}
@@ -99,14 +137,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			// Assert initial state 
 			Assert.AreEqual("Undefined", dialogResult.GetDependencyPropertyValue("Text")?.ToString());
 
-			_app.Tap(showDialog1);
+			_app.FastTap(showDialog1);
 
 			var secondaryButton = _app.Marked("SecondaryButton");
 			_app.WaitForElement(secondaryButton);
 
 			CurrentTestTakeScreenShot("Secondary Button");
 
-			_app.Tap(secondaryButton);
+			_app.FastTap(secondaryButton);
 
 			_app.WaitForDependencyPropertyValue(dialogResult, "Text", "Secondary");
 		}
@@ -127,14 +165,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			// Assert initial state 
 			Assert.AreEqual("Undefined", dialogResult.GetDependencyPropertyValue("Text")?.ToString());
 
-			_app.Tap(showDialog1);
+			_app.FastTap(showDialog1);
 
 			var primaryButton = _app.Marked("PrimaryButton");
 			_app.WaitForElement(primaryButton);
 
 			CurrentTestTakeScreenShot("Primary Button");
 
-			_app.Tap(primaryButton);
+			_app.FastTap(primaryButton);
 
 			_app.WaitForDependencyPropertyValue(dialogResult, "Text", "Primary");
 			_app.WaitForDependencyPropertyValue(dialogCommand, "Text", "primaryCommand");
@@ -155,14 +193,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			// Assert initial state 
 			Assert.AreEqual("Undefined", dialogResult.GetDependencyPropertyValue("Text")?.ToString());
 
-			_app.Tap(showDialog1);
+			_app.FastTap(showDialog1);
 
 			var closeButton = _app.Marked("CloseButton");
 			_app.WaitForElement(closeButton);
 
 			CurrentTestTakeScreenShot("Close Button");
 
-			_app.Tap(closeButton);
+			_app.FastTap(closeButton);
 
 			_app.WaitForDependencyPropertyValue(dialogResult, "Text", "None");
 		}
@@ -182,20 +220,20 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			// Assert initial state 
 			Assert.AreEqual("Undefined", dialogResult.GetDependencyPropertyValue("Text")?.ToString());
 
-			_app.Tap(showDialog1);
+			_app.FastTap(showDialog1);
 
 			var dialogInnerButton = _app.Marked("dialogInnerButton");
 			_app.WaitForElement(dialogInnerButton);
 
 			CurrentTestTakeScreenShot("Secondary Button");
 
-			_app.Tap(dialogInnerButton);
+			_app.FastTap(dialogInnerButton);
 
 			var buttonClickResult = _app.Marked("buttonClickResult");
 			_app.WaitForDependencyPropertyValue(buttonClickResult, "Text", "OnDialogInnerButtonClick");
 
 			var dialogTb = _app.Marked("dialogTb");
-			_app.Tap(dialogTb);
+			_app.FastTap(dialogTb);
 			_app.EnterText("This is some text");
 
 			var dialogTextBinding = _app.Marked("dialogTextBinding");
@@ -204,7 +242,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			CurrentTestTakeScreenShot("Secondary Button");
 
 			var primaryButton = _app.Marked("SecondaryButton");
-			_app.Tap(primaryButton);
+			_app.FastTap(primaryButton);
 
 			_app.WaitForDependencyPropertyValue(dialogResult, "Text", "Secondary");
 		}
@@ -219,7 +257,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 
 			_app.WaitForElement(showDialog);
 
-			_app.Tap(showDialog);
+			_app.FastTap(showDialog);
 
 			var resultText = _app.Marked("ResultTextBlock");
 			var closedText = _app.Marked("DidCloseTextBlock");
@@ -239,22 +277,22 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 
 			_app.WaitForElement(showDialog);
 
-			_app.Tap(showDialog);
+			_app.FastTap(showDialog);
 
 			var closeButton = _app.Marked("CloseButton");
 			_app.WaitForElement(closeButton);
 
-			_app.Tap(closeButton);
+			_app.FastTap(closeButton);
 
 			var resultText = _app.Marked("ResultTextBlock");
 			var closedText = _app.Marked("DidCloseTextBlock");
 
 			var defer1 = _app.Marked("Complete1Button");
-			_app.Tap(defer1);
+			_app.FastTap(defer1);
 			_app.WaitForDependencyPropertyValue(resultText, "Text", "First complete called");
 
 			var defer2 = _app.Marked("Complete2Button");
-			_app.Tap(defer2);
+			_app.FastTap(defer2);
 			_app.WaitForDependencyPropertyValue(resultText, "Text", "Second complete called");
 
 			_app.WaitForDependencyPropertyValue(closedText, "Text", "Closed");
@@ -270,12 +308,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 
 			_app.WaitForElement(showDialog);
 
-			_app.Tap(showDialog);
+			_app.FastTap(showDialog);
 
 			var closeButton = _app.Marked("PrimaryButton");
 			_app.WaitForElement(closeButton);
 
-			_app.Tap(closeButton);
+			_app.FastTap(closeButton);
 
 			var resultText = _app.Marked("ResultTextBlock");
 			var closedText = _app.Marked("DidCloseTextBlock");
@@ -293,15 +331,15 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 
 			var showDialog = _app.Marked("ShowComboBoxDialog");
 			_app.WaitForElement(showDialog);
-			_app.Tap(showDialog);
+			_app.FastTap(showDialog);
 
 			var comboBox = _app.Marked("InnerComboBox");
 			_app.WaitForElement(comboBox);
-			_app.Tap(comboBox);
+			_app.FastTap(comboBox);
 
 			var item = _app.Marked("ComboElement4");
 			_app.WaitForElement(item);
-			_app.Tap(item);
+			_app.FastTap(item);
 
 			var resultsText = _app.Marked("ResultsTextBlock");
 			_app.WaitForDependencyPropertyValue(resultsText, "Text", "Item 4");
@@ -310,7 +348,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			var closeButton = _app.Marked("CloseButton");
 			_app.WaitForElement(closeButton);
 
-			_app.Tap(closeButton);
+			_app.FastTap(closeButton);
 		}
 	}
 }

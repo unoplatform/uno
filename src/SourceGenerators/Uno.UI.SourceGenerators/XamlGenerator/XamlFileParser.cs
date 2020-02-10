@@ -9,6 +9,7 @@ using Uno.Logging;
 using System.IO;
 using System.Reflection;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
+using System.Text.RegularExpressions;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -126,6 +127,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								"xmlns:{0}=\"{1}\"".InvariantCultureFormat(n, document.DocumentElement.GetNamespaceOfPrefix(""))
 							);
 					}
+				}
+
+				if (adjusted.Contains("{x:Bind"))
+				{
+					// Apply replacements to avoid having issues with the XAML parser which does not
+					// support quotes in positional markup extensions parameters.
+					// Note that the UWP preprocessor does not need to apply those replacements as the
+					// x:Bind expressions are being removed during the first phase and replaced by "connections".
+					adjusted = Regex.Replace(
+						adjusted,
+						"\"{x:Bind.*?}\"",
+						e => e.Value.Replace('\'', XamlConstants.XBindSubstitute)
+					);
 				}
 
 				return XmlReader.Create(new StringReader(adjusted));
@@ -261,7 +275,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 						else
 						{
-							member.Value = reader.Value;
+							if (member.Value is string s)
+							{
+								member.Value += ", " + reader.Value;
+							}
+							else
+							{
+								member.Value = reader.Value;
+							}
 						}
 						break;
 

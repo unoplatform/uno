@@ -67,7 +67,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			void TabWaitAndThenScreenshot(string buttonName)
 			{
-				_app.Marked(buttonName).Tap();
+				_app.Marked(buttonName).FastTap();
 				_app.Wait(TimeSpan.FromSeconds(2));
 				TakeScreenshot($"ListView_ItemPanel_HotSwap - {buttonName}");
 			}
@@ -75,13 +75,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
-		public void ListView_VirtualizePanelAdaptaterCache()
+		public void ListView_VirtualizePanelAdaptaterIdCache()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView.ListView_VirtualizePanelAdaptaterCache");
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_VirtualizePanelAdaptaterIdCache");
 
-			var result = _app.Query(e => e.Text("Success"));
+			_app.FastTap("MyButton");
 
-			TakeScreenshot($"ListView_VirtualizePanelAdaptaterCache");
+			var textResult = _app.Marked("TextResult");
+			_app.WaitForText(textResult, "Success");
+
+			TakeScreenshot($"ListView_VirtualizePanelAdaptaterIdCache");
 		}
 
 		[Test]
@@ -92,7 +95,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.ListView_Header_DataContextChanging");
 
 			_app.WaitForText("MyTextBlock", "InitialText InitialDataContext");
-			_app.Marked("MyButton").Tap();
+			_app.Marked("MyButton").FastTap();
 			_app.WaitForText("MyTextBlock", "InitialText InitialDataContext UpdatedDataContext");
 		}
 
@@ -110,7 +113,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			var measureTextBefore = _app.GetText("MeasureCountTextBlock");
 			var initialMeasureCount = int.Parse(measureTextBefore);
 
-			_app.Tap("ChangeViewButton");
+			_app.FastTap("ChangeViewButton");
 
 			_app.WaitForText("ResultTextBlock", "Scrolled");
 
@@ -150,7 +153,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			var heightStrBefore = _app.GetText("HeightTextBlock");
 			var heightBefore = int.Parse(heightStrBefore);
 
-			_app.Tap("AddItemsButton");
+			_app.FastTap("AddItemsButton");
 
 			_app.WaitForText("StatusTextBlock", "Finished");
 
@@ -162,6 +165,71 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			Assert.Greater(heightBefore, 0);
 
 			Assert.AreEqual(3 * heightBefore, heightAfter);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ListView_SelectedItem()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_SelectedItem");
+
+			_app.WaitForText("_SelectedItem", "3");
+			_app.WaitForText("itemsStackPanelListSelectedItem", "3");
+			_app.WaitForText("stackPanelListSelectedItem", "3");
+
+			{
+				var firstItem = _app.Marked("itemsStackPanelList").Descendant().Marked("1");
+				_app.FastTap(firstItem);
+				_app.WaitForText("itemsStackPanelListSelectedItem", "1");
+			}
+
+			{
+				var firstItem = _app.Marked("stackPanelList").Descendant().Marked("1");
+				_app.FastTap(firstItem);
+				_app.WaitForText("itemsStackPanelListSelectedItem", "1");
+			}
+
+			TakeScreenshot("Both Selection Changed");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ListView_SelectedItems()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewSelectedItems");
+
+			_app.FastTap("Right 0");
+			_app.WaitForText("_selectedItem", "Selected item: 0");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(0, ), RemovedItems=()");
+
+			_app.FastTap("Left 0");
+			_app.WaitForText("_selectedItem", "Selected item: ");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(), RemovedItems=(0, )");
+
+			_app.FastTap("Left 0");
+			_app.WaitForText("_selectedItem", "Selected item: 0");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(0, ), RemovedItems=()");
+
+			_app.FastTap("Left 1");
+			_app.WaitForText("_selectedItem", "Selected item: 0");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(1, ), RemovedItems=()");
+
+			_app.FastTap("Left 2");
+			_app.WaitForText("_selectedItem", "Selected item: 0");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(2, ), RemovedItems=()");
+
+			_app.FastTap("Center 3");
+			_app.WaitForText("_selectedItem", "Selected item: 3");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(3, ), RemovedItems=(0, 1, 2, )");
+
+			_app.FastTap("Right 0");
+			_app.FastTap("Right 1");
+			_app.FastTap("Right 2");
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(2, ), RemovedItems=()");
+
+			_app.FastTap("ClearSelectedItemButton");
+
+			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(), RemovedItems=(3, 0, 1, 2, )");
 		}
 	}
 }
