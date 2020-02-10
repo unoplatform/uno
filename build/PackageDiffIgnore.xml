@@ -637,6 +637,15 @@
 				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.ListViewBase..ctor()"
 					reason="Ctor is protected in WinUI."/>
+				<Member 
+					fullName="System.Void Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs..ctor()"
+					reason="Parameter-less ctor does not exist in UWP"/>
+				<Member 
+					fullName="System.Void Windows.Devices.Sensors.HingeAngleSensor..ctor()"
+					reason="Parameter-less ctor does not exist in UWP"/>
+				<Member 
+					fullName="System.Void Windows.Devices.Sensors.HingeAngleReading..ctor()"
+					reason="Parameter-less ctor does not exist in UWP"/>
 				<Member
 					fullName="System.Void Windows.System.Profile.AnalyticsInfo..ctor()"
 					reason="Not part of the WinUI API." />
