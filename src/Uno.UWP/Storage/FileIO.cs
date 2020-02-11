@@ -16,28 +16,31 @@ namespace Windows.Storage
 	public partial class FileIO
 	{
 
+		private static Encoding StreamsEncoding2TextEncoding(Streams.UnicodeEncoding encoding)
+		{
+			switch (encoding)
+			{
+				case Streams.UnicodeEncoding.Utf8:
+					return Encoding.UTF8;
+				case Streams.UnicodeEncoding.Utf16LE:
+					return Encoding.Unicode;
+				case Streams.UnicodeEncoding.Utf16BE:
+					return Encoding.BigEndianUnicode;
+			}
+
+			return Encoding.UTF8;
+		}
+
 		private static async Task AppendWriteTextAsync(IStorageFile file, string contents, Streams.UnicodeEncoding encoding, bool append)
 		{
 			if (file is null)
 			{
 				// UWP throws NullReferenceException
-				// but it was choosen to throw ArgumentNullException , as it is more appriopriate in this caase
+				// but it was chosen to throw ArgumentNullException , as it is more appropriate  in this case
 				throw new ArgumentNullException("StorageFile cannot be null");
 			}
 
-			Encoding encodingForWriter = Encoding.UTF8;
-			switch (encoding)
-			{
-				case Streams.UnicodeEncoding.Utf8:
-					encodingForWriter = Encoding.UTF8;
-					break;
-				case Streams.UnicodeEncoding.Utf16LE:
-					encodingForWriter = Encoding.Unicode;
-					break;
-				case Streams.UnicodeEncoding.Utf16BE:
-					encodingForWriter = Encoding.BigEndianUnicode;
-					break;
-			}
+			Encoding encodingForWriter = StreamsEncoding2TextEncoding(encoding);
 
 			Stream fileStream = null;
 			try
@@ -136,33 +139,19 @@ namespace Windows.Storage
 			if (file is null)
 			{
 				// UWP throws NullReferenceException
-				// but it was choosen to throw ArgumentNullException , as it is more appriopriate in this caase
+				// but it was chosen to throw ArgumentNullException , as it is more appropriate  in this case
 				throw new ArgumentNullException("StorageFile cannot be null");
 			}
 
-			Encoding encodingForReader = Encoding.UTF8;
-			switch (encoding)
-			{
-				case Streams.UnicodeEncoding.Utf8:
-					encodingForReader = Encoding.UTF8;
-					break;
-				case Streams.UnicodeEncoding.Utf16LE:
-					encodingForReader = Encoding.Unicode;
-					break;
-				case Streams.UnicodeEncoding.Utf16BE:
-					encodingForReader = Encoding.BigEndianUnicode;
-					break;
-			}
+			Encoding encodingForReader = StreamsEncoding2TextEncoding(encoding);
 
-			string output = "";
 			using (Stream fileStream = await file.OpenStreamForReadAsync())
 			{
 				using (StreamReader streamReader = new StreamReader(fileStream, encodingForReader))
 				{
-					output = streamReader.ReadToEnd();
+					return streamReader.ReadToEnd();
 				}
 			}
-			return output;
 		}
 
 		public static IAsyncOperation<string> ReadTextAsync(IStorageFile file, Streams.UnicodeEncoding encoding)
@@ -177,14 +166,13 @@ namespace Windows.Storage
 				throw new ArgumentNullException("StorageFile cannot be null");
 			}
 
-			string output = "";
 			Stream fileStream = null;
 			try
             {
 				fileStream = await file.OpenStreamForReadAsync();
 				using (StreamReader streamReader = new StreamReader(fileStream))
 				{
-					output = streamReader.ReadToEnd();
+					return streamReader.ReadToEnd();
 				}
 			}
 			finally
@@ -194,7 +182,6 @@ namespace Windows.Storage
 					fileStream.Dispose();
 				}
 			}
-			return output;
 		}
 
 		public static IAsyncOperation<string> ReadTextAsync(IStorageFile file)
@@ -202,7 +189,7 @@ namespace Windows.Storage
 
 		private static async Task<IList<string>> ReadLinesTaskAsync(IStorageFile file, Streams.UnicodeEncoding encoding)
 		{
-			string output = await ReadTextTaskAsync(file, encoding);
+			String output = await ReadTextTaskAsync(file, encoding);
 			var separators = new String[] { Environment.NewLine };
 			return output.Split(separators, StringSplitOptions.None);
 		}
@@ -219,6 +206,25 @@ namespace Windows.Storage
 		public static IAsyncOperation<IList<string>> ReadLinesAsync(IStorageFile file)
 			=> ReadLinesTaskAsync(file).AsAsyncOperation<IList<string>>();
 
+
+		public static async Task WriteBytesAsyncTask(IStorageFile file, byte[] buffer)
+		{
+			if (file is null)
+			{
+				// UWP throws NullReferenceException
+				// but it was chosen to throw ArgumentNullException , as it is more appropriate  in this case
+				throw new ArgumentNullException("StorageFile cannot be null");
+			}
+
+			using (Stream fileStream = await file.OpenStreamForWriteAsync())
+			{
+				fileStream.SetLength(0);
+				fileStream.Write(buffer,0,buffer.Length);
+			}
+		}
+
+		public static IAsyncAction WriteBytesAsync(IStorageFile file, byte[] buffer)
+			=> WriteBytesAsyncTask(file, buffer).AsAsyncAction();
 
 	}
 }
