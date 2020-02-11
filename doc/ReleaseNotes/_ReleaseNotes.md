@@ -1,7 +1,7 @@
 # Release notes
 
 ### Features
-- Add support of Windows.Storage.FileIO.AppendTextAsync(IStorageFile, String) and WriteTextAsync(IStorageFile, String)
+- Add support of `Windows.Storage.FileIO` (all methods, except Read and Write using IBuffer).
 - Support for `Geolocator` on macOS
 - Support for `Clipboard` get/set Text content on macOS
 - Support for `ApplicationView.Title` on Android and macOS
