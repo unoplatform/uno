@@ -117,7 +117,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 
 			_app.WaitForElement("PopupChild");
 
-			var during = TakeScreenshot("During", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Status bar appears with clock*/);
+			var during = TakeScreenshot("During", ignoreInSnapshotCompare: true);
 
 			ImageAssert.DoesNotHaveColorAt(during, rect.CenterX, rect.CenterY, Color.Blue);
 
@@ -127,7 +127,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PopupTests
 
 			_app.WaitForNoElement("PopupChild");
 
-			var after = TakeScreenshot("After");
+			var after = TakeScreenshot("After", ignoreInSnapshotCompare: true);
 
 			ImageAssert.HasColorAt(after, rect.CenterX, rect.CenterY, Color.Blue);
 		}

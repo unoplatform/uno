@@ -20,14 +20,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Shapes.PolylinePage");
 			_app.WaitForElement("DPolyline");
-			TakeScreenshot($"PolylinePage");
+			TakeScreenshot($"PolylinePage", ignoreInSnapshotCompare: true);
 			TabWaitAndThenScreenshot("ChangeShape");
 
 			void TabWaitAndThenScreenshot(string buttonName)
 			{
 				_app.Marked(buttonName).FastTap();
 				_app.WaitForElement("DPolyline");
-				TakeScreenshot($"PolylinePage - {buttonName}");
+				TakeScreenshot($"PolylinePage - {buttonName}", ignoreInSnapshotCompare: true);
 			}
 		}
 
@@ -37,14 +37,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Shapes.PolygonPage");
 			_app.WaitForElement("DPolygon");
-			TakeScreenshot($"PolygonPage");
+			TakeScreenshot($"PolygonPage", ignoreInSnapshotCompare: true);
 			TabWaitAndThenScreenshot("ChangeShape");
 
 			void TabWaitAndThenScreenshot(string buttonName)
 			{
 				_app.Marked(buttonName).FastTap();
 				_app.WaitForElement("DPolygon");
-				TakeScreenshot($"PolygonPage - {buttonName}");
+				TakeScreenshot($"PolygonPage - {buttonName}", ignoreInSnapshotCompare: true);
 			}
 		}
 
@@ -56,7 +56,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 
 			_app.WaitForElement("DPolygon");
 			_app.Marked("ClearShape").FastTap();
-			TakeScreenshot($"PolygonPage - ClearShape");
+			TakeScreenshot($"PolygonPage - ClearShape", ignoreInSnapshotCompare: true);
 
 			_app.Marked("ChangeShape").FastTap();
 			var widthzize = _app.Query(_app.Marked("DPolygon")).First().Rect.Width;
@@ -64,7 +64,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			if (widthzize == 0)
 				Assert.Fail("Shape not changed");
 
-			TakeScreenshot($"PolygonPage - ChangeShape-After clear");
+			TakeScreenshot($"PolygonPage - ChangeShape-After clear", ignoreInSnapshotCompare: true);
 		}
 
 		[Test]
@@ -113,7 +113,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Shapes.LinePage");
 			_app.WaitForElement("DLinePage");
-			TakeScreenshot($"LinePage");
+			TakeScreenshot($"LinePage", ignoreInSnapshotCompare: true);
 		}
 
 		[Test]

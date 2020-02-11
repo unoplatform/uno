@@ -409,13 +409,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - GetFocusedElement - ToggleButton - 1 - Initial State");
+			TakeScreenshot("FocusManager - GetFocusedElement - ToggleButton - 1 - Initial State", ignoreInSnapshotCompare: true);
 
 			frameworkElement.FastTap();
 
 			// Assert After Selection 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyToggleButton");
-			TakeScreenshot("FocusManager - GetFocusedElement - ToggleButton - 2 - After Selection");
+			TakeScreenshot("FocusManager - GetFocusedElement - ToggleButton - 2 - After Selection", ignoreInSnapshotCompare: true);
 		}
 
 		[Test]
@@ -433,7 +433,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert initial state 
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - LostFocus - ToggleButton - 1 - Initial State");
+			TakeScreenshot("FocusManager - LostFocus - ToggleButton - 1 - Initial State", ignoreInSnapshotCompare: true);
 
 			frameworkElement.FastTap();
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "MyToggleButton");
@@ -442,7 +442,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FocusManagerTests
 
 			// Assert Click outside
 			_app.WaitForDependencyPropertyValue(txtCurrentFocused, "Text", "<none>");
-			TakeScreenshot("FocusManager - LostFocus - ToggleButton - 2 - Click outside");
+			TakeScreenshot("FocusManager - LostFocus - ToggleButton - 2 - Click outside", ignoreInSnapshotCompare: true);
 		}
 
 		[Test]

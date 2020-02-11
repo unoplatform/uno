@@ -44,95 +44,78 @@ namespace SamplesApp.UITests
 				// Setting focus on normalTextBox
 				_app.FastTap(normalTextBox);
 				_app.Wait(1);
-				//TakeScreenshot("0 - Focus on normalTextBox ", ignoreInSnapshotCompare: true);
-				var screenshot1 = TakeScreenshot("0 - Focus on normalTextBox ", ignoreInSnapshotCompare: true);
-				ImageAssert.AreNotEqual(initialScreenshot, screenshot1);
-
+				TakeScreenshot("0 - Focus on normalTextBox ", ignoreInSnapshotCompare: true);
+				
 				// Removing focus on normalTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.DismissKeyboard();
 				_app.Wait(1);
-				//TakeScreenshot("0 - Remove Focus on normalTextBox", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Keyboard predicted text can change*/);
-				var screenshot2 = TakeScreenshot("0 - Remove Focus on normalTextBox", ignoreInSnapshotCompare: true);
-				ImageAssert.AreNotEqual(screenshot1, screenshot2);
-				ImageAssert.AreNotEqual(initialScreenshot, screenshot2);
+				TakeScreenshot("0 - Remove Focus on normalTextBox", ignoreInSnapshotCompare: true);
 			}
 
 			{
 				// Setting focus on normalTextBox
 				_app.FastTap(filledTextBox);
 				_app.Wait(1);
-				var screenshot1 = TakeScreenshot("1 - Focus on filledTextBox", ignoreInSnapshotCompare: true);
-				ImageAssert.AreNotEqual(initialScreenshot, screenshot1);
+				TakeScreenshot("1 - Focus on filledTextBox", ignoreInSnapshotCompare: true);
 
 				// Removing focus on normalTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.DismissKeyboard();
 				_app.Wait(1);
-				var screenshot2 = TakeScreenshot("1 - Remove Focus on filledTextBox", ignoreInSnapshotCompare: true /*Keyboard predicted text can change*/);
-				ImageAssert.AreNotEqual(screenshot1, screenshot2);
-				ImageAssert.AreNotEqual(initialScreenshot, screenshot2);
+				TakeScreenshot("1 - Remove Focus on filledTextBox", ignoreInSnapshotCompare: true);
 			}
 
 			{
 				// Setting focus on placeholderTextTextBox
 				_app.FastTap(placeholderTextTextBox);
 				_app.Wait(1);
-				var screenshot1 = TakeScreenshot("2 - Focus on placeholderTextTextBox", ignoreInSnapshotCompare: true);
-				ImageAssert.AreNotEqual(initialScreenshot, screenshot1);
-
+				TakeScreenshot("2 - Focus on placeholderTextTextBox", ignoreInSnapshotCompare: true);
+				
 				// Removing focus on placeholderTextTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.DismissKeyboard();
 				_app.Wait(1);
-				var screenshot2 = TakeScreenshot("2 - Remove Focus on placeholderTextTextBox", ignoreInSnapshotCompare: true);
-				ImageAssert.AreNotEqual(screenshot1, screenshot2);
-				ImageAssert.AreNotEqual(initialScreenshot, screenshot2);
+				TakeScreenshot("2 - Remove Focus on placeholderTextTextBox", ignoreInSnapshotCompare: true);
 			}
 
 			{
 				// Setting focus on disabledTextBox
 				_app.FastTap(disabledTextBox);
 				_app.Wait(1);
-				var screenshot1 = TakeScreenshot("3 - Focus on disabledTextBox", ignoreInSnapshotCompare: true);
+				TakeScreenshot("3 - Focus on disabledTextBox", ignoreInSnapshotCompare: true);
 				
 				// Removing focus on disabledTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.DismissKeyboard();
 				_app.Wait(1);
-				var screenshot2 = TakeScreenshot("3 - Remove Focus on disabledTextBox");
+				TakeScreenshot("3 - Remove Focus on disabledTextBox", ignoreInSnapshotCompare: true);
 			}
 
 			{
 				// Setting focus on multilineTextBox
 				_app.FastTap(multilineTextBox);
 				_app.Wait(1);
-				var screenshot1 = TakeScreenshot("4 - Focus on multilineTextBox", ignoreInSnapshotCompare: true);
-				ImageAssert.AreNotEqual(initialScreenshot, screenshot1);
-
+				TakeScreenshot("4 - Focus on multilineTextBox", ignoreInSnapshotCompare: true);
+				
 				// Removing focus on multilineTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.DismissKeyboard();
 				_app.Wait(1);
-				var screenshot2 = TakeScreenshot("4 - Remove Focus on multilineTextBox");
-				ImageAssert.AreNotEqual(screenshot1, screenshot2);
-				ImageAssert.AreNotEqual(initialScreenshot, screenshot2);
+				TakeScreenshot("4 - Remove Focus on multilineTextBox", ignoreInSnapshotCompare: true);
 			}
 
 			{
 				// Setting focus on numberTextBox
 				_app.FastTap(numberTextBox);
 				_app.Wait(1);
-				var screenshot1 = TakeScreenshot("5 - Focus on numberTextBox", ignoreInSnapshotCompare: true);
-				ImageAssert.AreNotEqual(initialScreenshot, screenshot1);
-
+				TakeScreenshot("5 - Focus on numberTextBox", ignoreInSnapshotCompare: true);
+				
 				// Removing focus on numberTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.DismissKeyboard();
 				_app.Wait(1);
-				var screenshot2 = TakeScreenshot("5 - Remove Focus on numberTextBox");
-				ImageAssert.AreNotEqual(screenshot1, screenshot2);
-				ImageAssert.AreNotEqual(initialScreenshot, screenshot2);
+				TakeScreenshot("5 - Remove Focus on numberTextBox", ignoreInSnapshotCompare: true);
 			}
 		}
 
@@ -168,7 +151,7 @@ namespace SamplesApp.UITests
 				// Removing focus on normalTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				TakeScreenshot("0 - Remove Focus on normalTextBox", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Keyboard predicted text can change*/);
+				TakeScreenshot("0 - Remove Focus on normalTextBox", ignoreInSnapshotCompare: true);
 			}
 
 			{
@@ -180,7 +163,7 @@ namespace SamplesApp.UITests
 				// Removing focus on normalTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				TakeScreenshot("1 - Remove Focus on filledTextBox", ignoreInSnapshotCompare: AppInitializer.GetLocalPlatform() == Platform.Android /*Keyboard predicted text can change*/);
+				TakeScreenshot("1 - Remove Focus on filledTextBox", ignoreInSnapshotCompare: true);
 			}
 
 			{
@@ -192,7 +175,7 @@ namespace SamplesApp.UITests
 				// Removing focus on placeholderTextTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				TakeScreenshot("2 - Remove Focus on placeholderTextTextBox");
+				TakeScreenshot("2 - Remove Focus on placeholderTextTextBox", ignoreInSnapshotCompare: true);
 			}
 
 			{
@@ -204,7 +187,7 @@ namespace SamplesApp.UITests
 				// Removing focus on disabledTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				TakeScreenshot("3 - Remove Focus on disabledTextBox");
+				TakeScreenshot("3 - Remove Focus on disabledTextBox", ignoreInSnapshotCompare: true);
 			}
 
 			{
@@ -216,7 +199,7 @@ namespace SamplesApp.UITests
 				// Removing focus on multilineTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				TakeScreenshot("4 - Remove Focus on multilineTextBox");
+				TakeScreenshot("4 - Remove Focus on multilineTextBox", ignoreInSnapshotCompare: true);
 			}
 
 			{
@@ -228,7 +211,7 @@ namespace SamplesApp.UITests
 				// Removing focus on numberTextBox
 				_app.TapCoordinates(0f, 0f);
 				_app.Wait(1);
-				TakeScreenshot("5 - Remove Focus on numberTextBox");
+				TakeScreenshot("5 - Remove Focus on numberTextBox", ignoreInSnapshotCompare: true);
 			}
 		}
 
