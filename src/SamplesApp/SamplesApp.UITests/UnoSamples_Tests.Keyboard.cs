@@ -39,7 +39,6 @@ namespace SamplesApp.UITests
 			Assert.AreEqual(string.Empty, multilineTextBox.GetDependencyPropertyValue("Text")?.ToString());
 			Assert.AreEqual(string.Empty, numberTextBox.GetDependencyPropertyValue("Text")?.ToString());
 
-			var initialScreenshot = TakeScreenshot("Initial state");
 			{
 				// Setting focus on normalTextBox
 				_app.FastTap(normalTextBox);
