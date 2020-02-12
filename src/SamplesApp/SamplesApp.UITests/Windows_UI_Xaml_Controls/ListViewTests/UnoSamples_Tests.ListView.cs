@@ -226,7 +226,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			string heightAfter = fixedHeightContainer.GetDependencyPropertyValue("Height")?.ToString();
 			Assert.AreNotEqual(heightBefore, heightAfter);			
 		}
-	}	
 
 		[Test]
 		[AutoRetry]
