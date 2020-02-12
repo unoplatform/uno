@@ -73,6 +73,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\HingeAngleSensorTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_Devices\LampTests.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -214,6 +218,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_ViewManagement\TitleBarColorTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\ButtonClipping652.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -589,6 +597,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\ImageAlignment2541.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_ImageSource_PixelSize.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -694,6 +706,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Popup\Popup_Overlay_On.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RadioButtonTests\RadioButton2450.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -2777,6 +2793,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\EllipseAlignment2542_2547.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\EllipsePage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -2785,7 +2805,15 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\LineStretchModes.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\MeasurePage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathStretchModes.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -2994,6 +3022,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\GeopositionDisplayControl.xaml.cs">
       <DependentUpon>GeopositionDisplayControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\HingeAngleSensorTests.xaml.cs">
+      <DependentUpon>HingeAngleSensorTests.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_Devices\LampTests.xaml.cs">
       <DependentUpon>LampTests.xaml</DependentUpon>
     </Compile>
@@ -3078,6 +3109,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_ViewManagement\TitleBarColorTests.xaml.cs">
       <DependentUpon>TitleBarColorTests.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\ButtonClipping652.xaml.cs">
+      <DependentUpon>ButtonClipping652.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Clipping\ButtonClippingTestsControl.xaml.cs">
       <DependentUpon>ButtonClippingTestsControl.xaml</DependentUpon>
@@ -3266,6 +3300,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\GridTestsControl\Grid_with_MinWidthColumns.xaml.cs">
       <DependentUpon>Grid_with_MinWidthColumns.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\ImageAlignment2541.xaml.cs">
+      <DependentUpon>ImageAlignment2541.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_ImageSource_PixelSize.xaml.cs">
       <DependentUpon>Image_ImageSource_PixelSize.xaml</DependentUpon>
     </Compile>
@@ -3336,6 +3373,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Popup\Popup_Overlay_On.xaml.cs">
       <DependentUpon>Popup_Overlay_On.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RadioButtonTests\RadioButton2450.xaml.cs">
+      <DependentUpon>RadioButton2450.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\RepeatButton\RepeatButton_Automated.xaml.cs">
       <DependentUpon>RepeatButton_Automated.xaml</DependentUpon>
@@ -4410,14 +4450,23 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\EasingDoubleKeyFrame_CompositeTransform_Container.xaml.cs">
       <DependentUpon>EasingDoubleKeyFrame_CompositeTransform_Container.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\EllipseAlignment2542_2547.xaml.cs">
+      <DependentUpon>EllipseAlignment2542_2547.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\EllipsePage.xaml.cs">
       <DependentUpon>EllipsePage.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\LinePage.xaml.cs">
       <DependentUpon>LinePage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\LineStretchModes.xaml.cs">
+      <DependentUpon>LineStretchModes.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\MeasurePage.xaml.cs">
       <DependentUpon>MeasurePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathStretchModes.xaml.cs">
+      <DependentUpon>PathStretchModes.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Shapes\PathTestsControl\AutoSizedPathCentered.xaml.cs">
       <DependentUpon>AutoSizedPathCentered.xaml</DependentUpon>

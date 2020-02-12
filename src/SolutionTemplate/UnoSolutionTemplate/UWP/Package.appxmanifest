@@ -8,7 +8,7 @@
 
   <Identity
     Name="$guid1$"
-    Publisher="CN=com.example"
+    Publisher="$XmlEscapedPublisherDistinguishedName$"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="$guid2$" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>

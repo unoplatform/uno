@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Text;
-using Android.Graphics;
+﻿using Android.Graphics;
 
 namespace Windows.UI.Xaml.Media
 {

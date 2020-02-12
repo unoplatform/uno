@@ -71,7 +71,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataPackage", "void DataPackage.SetDataProvider(string formatId, DataProviderHandler delayRenderer)");
 		}
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  void SetText( string value)
 		{

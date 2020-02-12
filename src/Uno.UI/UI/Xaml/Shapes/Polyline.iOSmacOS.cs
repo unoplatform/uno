@@ -10,7 +10,7 @@ namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Polyline
 	{
-		protected override CGPath GetPath()
+		protected override CGPath GetPath(Size availableSize)
 		{
 			var coords = Points;
 
