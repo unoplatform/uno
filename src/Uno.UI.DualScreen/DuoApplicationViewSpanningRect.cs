@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Android.App;
 using Android.Views;
 using Uno.Extensions;
@@ -19,7 +16,7 @@ namespace Uno.UI.DualScreen
 		private Microsoft.Device.Display.ScreenHelper _helper;
 		private List<Rect> _spanningRects = null;
 
-		private readonly List<Rect> EmptyList = new List<Rect>(0);
+		private readonly List<Rect> _emptyList = new List<Rect>(0);
 
 		public DuoApplicationViewSpanningRects(object owner)
 		{
@@ -40,12 +37,11 @@ namespace Uno.UI.DualScreen
 					var occludedRects = _helper
 						.DisplayMask
 						.GetBoundingRectsForRotation(helperOrientation)
-						.Select(r => (Rect)r)
-						.ToArray();
+						.SelectToArray(r => (Rect)r); // convert to managed Rect
 
 					if (occludedRects.Length > 0)
 					{
-						Rect bounds = wuxWindowBounds;
+						var bounds = wuxWindowBounds;
 						var occludedRect = occludedRects[0];
 						var intersection = bounds;
 						intersection.Intersect(occludedRect);
@@ -115,7 +111,7 @@ namespace Uno.UI.DualScreen
 				}
 			}
 
-			return _spanningRects ?? EmptyList;
+			return _spanningRects ?? _emptyList;
 		}
 
 		private void InitializeHelper(Activity currentActivity)

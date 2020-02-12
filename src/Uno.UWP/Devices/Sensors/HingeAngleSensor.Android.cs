@@ -11,7 +11,7 @@ namespace Windows.Devices.Sensors
 {
 	public partial class HingeAngleSensor
 	{
-		private readonly static object _syncLock = new object();
+		private static readonly object _syncLock = new object();
 
 		private static bool _initializationAttempted = false;
 		private static HingeAngleSensor _instance;
@@ -81,12 +81,9 @@ namespace Windows.Devices.Sensors
 			}
 			lock (_syncLock)
 			{
-				if (_hingeAngleSensor == null)
+				if (_hingeAngleSensor == null && !ApiExtensibility.CreateInstance(owner, out _hingeAngleSensor))
 				{
-					if (!ApiExtensibility.CreateInstance<INativeHingeAngleSensor>(owner, out _hingeAngleSensor))
-					{
-						owner.Log().Debug("You need to reference Uno.UI.DualScreen NuGet package from your project to use this feature.");
-					}
+					owner.Log().Warn("You need to reference Uno.UI.DualScreen NuGet package from your project to use this feature.");
 				}
 			}
 		}
