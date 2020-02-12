@@ -46,7 +46,7 @@ namespace Windows.UI.Xaml.Controls
 			for (var row = 0; row < numberOfItems; ++row)
 			{
 				var indexPath = GetNSIndexPathFromRowSection(row, group);
-				frame.Size = oldItemSizes?.UnoGetValueOrDefault(indexPath) ?? GetItemSizeForIndexPath(indexPath);
+				frame.Size = oldItemSizes?.UnoGetValueOrDefault(indexPath) ?? GetItemSizeForIndexPath(indexPath, availableBreadth);
 
 				//Give the maximum breadth available, since for now we don't adjust the measured width of the list based on the databound item
 				SetBreadth(ref frame, availableBreadth);

@@ -1,5 +1,4 @@
-﻿#if !__MACOS__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Text;
@@ -103,6 +102,9 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_modifyingSelectionInternally = true;
 				SelectedItem = SelectedItems.Where(item => items.Contains(item)).FirstOrDefault();
+
+				TryUpdateSelectorItemIsSelected(validRemovals, false);
+				TryUpdateSelectorItemIsSelected(validAdditions, true);
 			}
 			finally
 			{
@@ -114,6 +116,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 			_oldSelectedItems.Clear();
 			_oldSelectedItems.AddRange(SelectedItems);
+		}
+
+		private void TryUpdateSelectorItemIsSelected(object[] items, bool isSelected)
+		{
+			foreach (var added in items)
+			{
+				TryUpdateSelectorItemIsSelected(added, isSelected);
+			}
 		}
 
 		private void ResetSelection()
@@ -132,7 +142,33 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal override void OnSelectedItemChanged(object oldSelectedItem, object selectedItem)
+		internal override void OnSelectorItemIsSelectedChanged(SelectorItem container, bool oldIsSelected, bool newIsSelected)
+		{
+			if (!_modifyingSelectionInternally)
+			{
+				var item = ItemFromContainer(container);
+
+				if (!newIsSelected)
+				{
+					SelectedItems.Remove(item);
+				}
+				else
+				{
+					if (!SelectedItems.Contains(item))
+					{
+						if (!IsSelectionMultiple
+							&& SelectedItems.FirstOrDefault() is object selectedItem)
+						{
+							SelectedItems.Remove(selectedItem);
+						}
+
+						SelectedItems.Add(item);
+					}
+				}
+			}
+		}
+
+		internal override void OnSelectedItemChanged(object oldSelectedItem, object selectedItem, bool updateItemSelectedState)
 		{
 			if (_modifyingSelectionInternally)
 			{
@@ -174,8 +210,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				base.OnSelectedItemChanged(oldSelectedItem, selectedItem);
-
 				try
 				{
 					_modifyingSelectionInternally = true;
@@ -193,6 +227,11 @@ namespace Windows.UI.Xaml.Controls
 				{
 					_modifyingSelectionInternally = false;
 				}
+
+				base.OnSelectedItemChanged(
+					oldSelectedItem: oldSelectedItem,
+					selectedItem: selectedItem,
+					updateItemSelectedState: true);
 			}
 		}
 
@@ -212,10 +251,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void OnSelectedIndexChanged(int oldSelectedIndex, int newSelectedIndex)
+		internal override void OnSelectedIndexChanged(int oldSelectedIndex, int newSelectedIndex)
 		{
-			SetSelectedState(oldSelectedIndex, false);
-			SetSelectedState(newSelectedIndex, true);
+			base.OnSelectedIndexChanged(oldSelectedIndex, newSelectedIndex);
+
+			//SetSelectedState(oldSelectedIndex, false);
+			//SetSelectedState(newSelectedIndex, true);
 		}
 
 		protected override void OnItemsSourceChanged(DependencyPropertyChangedEventArgs e)
@@ -253,9 +294,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void Initialize()
 		{
-			this.RegisterDisposablePropertyChangedCallback(SelectedIndexProperty, (s, e) => (s as ListViewBase).OnSelectedIndexChanged((int)e.OldValue, (int)e.NewValue));
 			SelectionChanged += OnSelectionChanged;
 		}
+
 
 		private ICommand _itemClickCommand;
 		//TODO: Remove this as it doesn't exist on Windows
@@ -735,5 +776,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-
-#endif

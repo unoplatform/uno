@@ -126,6 +126,11 @@ namespace Windows.UI.Xaml.Media
 
 		internal async Task<Bitmap> Open(CancellationToken ct, Android.Widget.ImageView targetImage = null, int? targetWidth = null, int? targetHeight = null)
 		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug(this.ToString() + $" Open(tw:{targetWidth}x{targetHeight})");
+			}
+
 			IsImageLoadedToUiDirectly = false;
 
 			BitmapFactory.Options options = new BitmapFactory.Options();

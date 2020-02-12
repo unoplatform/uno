@@ -48,14 +48,14 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// </summary>
 		protected TimelineState State { get; set; }
 
-		public Nullable<TimeSpan> BeginTime
+		public TimeSpan? BeginTime
 		{
-			get => (Nullable<TimeSpan>) GetValue(BeginTimeProperty);
+			get => (TimeSpan?) GetValue(BeginTimeProperty);
 			set => SetValue(BeginTimeProperty, value);
 		}
 
 		public static readonly DependencyProperty BeginTimeProperty =
-			DependencyProperty.Register("BeginTime", typeof(Nullable<TimeSpan>), typeof(Timeline), new PropertyMetadata(TimeSpan.Zero));
+			DependencyProperty.Register("BeginTime", typeof(TimeSpan?), typeof(Timeline), new PropertyMetadata(TimeSpan.Zero));
 
 		public Duration Duration
 		{
@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		protected void OnCompleted()
 		{
-			this.Completed?.Invoke(this, null);
+			Completed?.Invoke(this, null);
 		}
 
 		/// <summary>

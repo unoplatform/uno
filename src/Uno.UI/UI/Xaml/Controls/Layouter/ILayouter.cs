@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
 using Windows.Foundation;
-using System.Linq;
-using System.Text;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;

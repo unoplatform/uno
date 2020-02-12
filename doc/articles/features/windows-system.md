@@ -4,9 +4,9 @@
 
 ### `LaunchUriAsync` 
 
-This API is supported on iOS, Android and WASM.
+This API is supported on iOS, Android, WASM and macOS.
 
-On iOS and Android, the `ms-settings:` special URI is supported. 
+On iOS, Android and macOS the `ms-settings:` special URI is supported. 
 
 In case of iOS, any such URI opens the main page of system settings (there is no settings deep-linking available on iOS).
 
@@ -52,6 +52,46 @@ In case of Android, we support the following nested URIs.
 | `ms-settings:developers` | `Settings.ActionApplicationDevelopmentSettings` |
 
 
+In case of macOS, Uno supports the following nested URIs, mapped to Preference Panes (/System/Library/PreferencePanes)
+
+| Settings URI | macOS Mapping |
+|--------------|----------|
+| `ms-settings:signinoptions-launchfaceenrollment` | `TouchID` |
+| `ms-settings:launchfingerprintenrollment` | `TouchID` |
+| `ms-settings:signinoptions ` | `Accounts` |
+| `ms-settings:emailandaccounts` | `InternetAccounts` |
+| `ms-settings:appsforwebsites` | `Settings.ActionManageDefaultAppsSettings` |
+| `ms-settings:tabletmode` | `Expose` |
+| `ms-settings:personalization-start` | `Expose` |
+| `ms-settings:personalization-background` | `DesktopScreenEffectsPref` |
+| `ms-settings:personalization` | `Appearance` |
+| `ms-settings:bluetooth` | `Bluetooth` |
+| `ms-settings:dateandtime` | `DateAndTime` |
+| `ms-settings:region` | `Localization` |
+| `ms-settings:typing` | `Keyboard` |
+| `ms-settings:display` | `Displays` |
+| `ms-settings:screenrotation` | `Displays` |
+| `ms-settings:taskbar` | `Dock` |
+| `ms-settings:batterysaver` | `EnergySaver` |
+| `ms-settings:powersleep` | `EnergySaver` |
+| `ms-settings:otherusers` | `FamilySharingPrefPane` |
+| `ms-settings:mousetouchpad` | `Mouse` |
+| `ms-settings:devices-touchpad` | `Trackpad` |
+| `ms-settings:network` | `Network` |
+| `ms-settings:privacy-notifications` | `Notifications` |
+| `ms-settings:printers` | `PrintAndFax` |
+| `ms-settings:privacy` | `Security` |
+| `ms-settings:crossdevice` | `SharingPref` |
+| `ms-settings:quiethours` | `ScreenTime` |
+| `ms-settings:quietmomentshome` | `ScreenTime` |
+| `ms-settings:sound` | `Sound` |
+| `ms-settings:windowsupdate` | `SoftwareUpdate` |
+| `ms-settings:cortana-windowssearch` | `Spotlight` |
+| `ms-settings:cortana` | `Speech` |
+| `ms-settings:storage` | `StartupDisk` |
+| `ms-settings:backup` | `TimeMachine` |
+| `ms-settings:easeofaccess` | `UniversalAccessPref` |
+
 #### Exceptions
 
 - When `uri` argument is `null`, `NullReferenceException` is thrown. Note this differs from UWP where `AccessViolationException` is thrown.
@@ -61,7 +101,7 @@ Exceptions are in line with UWP.
 
 ### `QueryUriSupportAsync` 
 
-This API is supported on iOS and Android and the implementation does not respect the `LaunchQuerySupportType` parameter yet. It also reports the aforementioned special `ms-settings` URIs on Android and iOS as supported.
+This API is supported on iOS, Android and macOS, and the implementation does not respect the `LaunchQuerySupportType` parameter yet. It also reports the aforementioned special `ms-settings` URIs on Android and iOS as supported.
 
 #### Exceptions
 

@@ -40,7 +40,7 @@
 - Inheritance
 - Mode
 - Trigger
-- x:Bind *(without phases and expressions)*
+- x:Bind with support functions
 - Converters
 - Attached Properties binding
 - RelativeSource.Self
@@ -153,6 +153,10 @@
 - MediaPlayer
 - ViewBox
 - PersonPicture
+
+## WinUI Specific Controls (Pre 3.0)
+- [NumberBox](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.numberbox?view=winui-2.3)
+- [TwoPaneView](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.twopaneview?view=winui-2.3)
 
 ### Non-UI features
 

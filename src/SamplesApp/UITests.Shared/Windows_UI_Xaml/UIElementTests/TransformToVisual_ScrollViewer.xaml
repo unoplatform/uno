@@ -55,7 +55,7 @@
 				VerticalScrollBarVisibility="Disabled"
 				HorizontalScrollMode="Enabled"
 				HorizontalScrollBarVisibility="Auto">
-				<Grid Height="1000">
+				<Grid Width="1000">
 					<TextBlock Text="Left" HorizontalAlignment="Left" x:Name="ScrollLeft" />
 					<TextBlock Text="Right" HorizontalAlignment="Right" x:Name="ScrollRight" />
 				</Grid>

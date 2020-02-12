@@ -23,7 +23,7 @@ namespace SamplesApp.UITests
 			Run("SamplesApp.Samples.UnitTests.UnitTestsPage");
 
 			var runButton = _app.Marked("runButton");
-			var failedTests = _app.Marked("failedTests");
+			var failedTests = _app.Marked("failedTestCount");
 			var runTestCount = _app.Marked("runTestCount");
 
 			bool IsTestExecutionDone()
@@ -31,7 +31,7 @@ namespace SamplesApp.UITests
 
 			_app.WaitForElement(runButton);
 
-			_app.Tap(runButton);
+			_app.FastTap(runButton);
 
 			var lastChange = DateTimeOffset.Now;
 			var lastValue = "";

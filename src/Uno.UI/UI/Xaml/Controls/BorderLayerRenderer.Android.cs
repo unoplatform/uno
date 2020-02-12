@@ -63,12 +63,12 @@ namespace Windows.UI.Xaml.Controls
 
 					// Clear previous value anyway in order to make sure the previous values are unset before the new ones.
 					// This prevents the case where a second update would set a new background and then set the background to null when disposing the previous.
-					_layerDisposable.Disposable = null; 
+					_layerDisposable.Disposable = null;
 				}
 
 				Action onImageSet = null;
 				var disposable = InnerCreateLayers(view, drawArea, background, borderThickness, borderBrush, cornerRadius, () => onImageSet?.Invoke());
-				
+
 				// Most of the time we immediately dispose the previous layer. In the case where we're using an ImageBrush,
 				// and the backing image hasn't changed, we dispose the previous layer at the moment the new background is applied,
 				// to prevent a visible flicker.
@@ -118,7 +118,10 @@ namespace Windows.UI.Xaml.Controls
 
 			if (cornerRadius != 0)
 			{
-				using (var path = cornerRadius.GetOutlinePath(drawArea.ToRectF()))
+				var adjustedLineWidth = physicalBorderThickness.Top; // TODO: handle non-uniform BorderThickness correctly
+				var adjustedArea = drawArea;
+				adjustedArea.Inflate(-adjustedLineWidth / 2, -adjustedLineWidth / 2);
+				using (var path = cornerRadius.GetOutlinePath(adjustedArea.ToRectF()))
 				{
 					path.SetFillType(Path.FillType.EvenOdd);
 
@@ -354,12 +357,12 @@ namespace Windows.UI.Xaml.Controls
 
 					if (physicalBorderThickness.Top != 0)
 					{
-						var adjustY = (float)physicalBorderThickness.Top / 2;						
+						var adjustY = (float)physicalBorderThickness.Top / 2;
 
 						using (var line = new Path())
-						{						
-							line.MoveTo((float)physicalBorderThickness.Left, (float)adjustY); 
-							line.LineTo(viewSize.Width - (float)physicalBorderThickness.Right, (float)adjustY); 
+						{
+							line.MoveTo((float)physicalBorderThickness.Left, (float)adjustY);
+							line.LineTo(viewSize.Width - (float)physicalBorderThickness.Right, (float)adjustY);
 							line.Close();
 
 							var lineDrawable = new PaintDrawable();
@@ -399,7 +402,7 @@ namespace Windows.UI.Xaml.Controls
 					if (physicalBorderThickness.Bottom != 0)
 					{
 						var adjustY = physicalBorderThickness.Bottom / 2;
-						
+
 						using (var line = new Path())
 						{
 							line.MoveTo((float)physicalBorderThickness.Left, (float)(viewSize.Height - adjustY));

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Drawing;
 using Windows.UI.Xaml;
 using Uno.Extensions;
 using Uno.UI.Extensions;
@@ -18,6 +17,7 @@ using Microsoft.Extensions.Logging;
 using System.Collections.Specialized;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -546,7 +546,7 @@ namespace Windows.UI.Xaml.Controls
 			if (xamlParent.ShouldShowHeader)
 			{
 				//1. Layout header at start
-				frame.Size = oldHeaderSize ?? GetHeaderSize();
+				frame.Size = oldHeaderSize ?? GetHeaderSize(size);
 				//Give the maximum breadth available, since for now we don't adjust the measured width of the list based on the databound item
 				SetBreadth(ref frame, availableBreadth);
 				if (createLayoutInfo)
@@ -574,7 +574,7 @@ namespace Windows.UI.Xaml.Controls
 					availableGroupBreadth -= (nfloat)GroupPaddingBreadthEnd;
 
 					//a. Layout group header, if present
-					frame.Size = oldGroupHeaderSizes?.UnoGetValueOrDefault(section) ?? GetSectionHeaderSize(section);
+					frame.Size = oldGroupHeaderSizes?.UnoGetValueOrDefault(section) ?? GetSectionHeaderSize(section, size);
 					if (RelativeGroupHeaderPlacement != RelativeHeaderPlacement.Adjacent)
 					{
 						//Give the maximum breadth available, since for now we don't adjust the measured width of the list based on the databound item
@@ -634,7 +634,7 @@ namespace Windows.UI.Xaml.Controls
 			if (xamlParent.ShouldShowFooter)
 			{
 				//3. Layout footer 
-				frame.Size = oldFooterSize ?? GetFooterSize();
+				frame.Size = oldFooterSize ?? GetFooterSize(size);
 				//Give the maximum breadth available, since for now we don't adjust the measured width of the list based on the databound item
 				SetBreadth(ref frame, availableBreadth);
 				if (createLayoutInfo)
@@ -878,24 +878,24 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected CGSize GetItemSizeForIndexPath(NSIndexPath indexPath)
+		private protected CGSize GetItemSizeForIndexPath(NSIndexPath indexPath, nfloat availableBreadth)
 		{
-			return Source.GetTarget()?.GetItemSize(CollectionView, indexPath) ?? CGSize.Empty;
+			return Source.GetTarget()?.GetItemSize(CollectionView, indexPath, GetAvailableChildSize(availableBreadth)) ?? CGSize.Empty;
 		}
 
-		private CGSize GetHeaderSize()
+		private CGSize GetHeaderSize(CGSize availableViewportSize)
 		{
-			return Source.GetTarget()?.GetHeaderSize() ?? CGSize.Empty;
+			return Source.GetTarget()?.GetHeaderSize(GetAvailableChildSize(availableViewportSize)) ?? CGSize.Empty;
 		}
 
-		private CGSize GetFooterSize()
+		private CGSize GetFooterSize(CGSize availableViewportSize)
 		{
-			return Source.GetTarget()?.GetFooterSize() ?? CGSize.Empty;
+			return Source.GetTarget()?.GetFooterSize(GetAvailableChildSize(availableViewportSize)) ?? CGSize.Empty;
 		}
 
-		private CGSize GetSectionHeaderSize(int section)
+		private CGSize GetSectionHeaderSize(int section, CGSize availableViewportSize)
 		{
-			return Source.GetTarget()?.GetSectionHeaderSize(section) ?? CGSize.Empty;
+			return Source.GetTarget()?.GetSectionHeaderSize(section, GetAvailableChildSize(availableViewportSize)) ?? CGSize.Empty;
 		}
 
 		/// <summary>
@@ -1629,6 +1629,26 @@ namespace Windows.UI.Xaml.Controls
 		protected CGRect GetInlineHeaderFrame(int section)
 		{
 			return _inlineHeaderFrames[section];
+		}
+
+		/// <summary>
+		/// Get size available to children, given an available breadth.
+		/// </summary>
+		private Size GetAvailableChildSize(nfloat availableBreadth)
+		{
+			return ScrollOrientation == Orientation.Vertical ?
+				new Size(availableBreadth, double.PositiveInfinity) :
+				new Size(double.PositiveInfinity, availableBreadth);
+		}
+
+		/// <summary>
+		/// Get size available to children, given an available size for the viewport.
+		/// </summary>
+		private Size GetAvailableChildSize(CGSize availableViewportSize)
+		{
+			return ScrollOrientation == Orientation.Vertical ?
+				new Size(availableViewportSize.Width, double.PositiveInfinity) :
+				new Size(double.PositiveInfinity, availableViewportSize.Height);
 		}
 
 #if DEBUG

@@ -308,7 +308,7 @@ namespace Uno.UI.Helpers.WinUI
 		}
 
 		static bool? s_isThemeShadowAvailable;
-		bool IsThemeShadowAvailable()
+		static public bool IsThemeShadowAvailable()
 		{
 			if (s_isThemeShadowAvailable == null)
 			{
