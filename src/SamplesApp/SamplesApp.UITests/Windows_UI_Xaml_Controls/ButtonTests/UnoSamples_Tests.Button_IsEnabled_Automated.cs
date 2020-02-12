@@ -273,7 +273,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			// Click on outer button and validate
 			_app.TapCoordinates(outer.FirstResult().Rect.X + 30, outer.FirstResult().Rect.Y + 30);
 			string command1 = validateCommandTextBlock.GetDependencyPropertyValue("Text")?.ToString();
-			if (!command1.Contains("OuterCommand"))
+			if (command1 != null && !command1.Contains("OuterCommand"))
 			{
 				Assert.Fail("Outer button is not clicked");
 			}
@@ -281,7 +281,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			// Click on inner button and validate
 			_app.TapCoordinates(inner.FirstResult().Rect.X + 30, inner.FirstResult().Rect.Y + 30);
 			string command2 = validateCommandTextBlock.GetDependencyPropertyValue("Text")?.ToString();
-			if (!command2.Contains("InnerCommand"))
+			if (command2 != null && !command2.Contains("InnerCommand"))
 			{
 				Assert.Fail("Inner button is not clicked");
 			}
