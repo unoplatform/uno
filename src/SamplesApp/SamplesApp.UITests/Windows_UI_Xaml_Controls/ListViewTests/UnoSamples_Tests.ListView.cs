@@ -196,7 +196,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Changing_Text");
 
-			var itemClickedTextBlock = _app.Marked("ItemClickedTextBlock");
 			var checkBox = _app.Marked("CheckBox");
 			var toggleTextBlock = _app.Marked("ToggleTextBlock");
 
