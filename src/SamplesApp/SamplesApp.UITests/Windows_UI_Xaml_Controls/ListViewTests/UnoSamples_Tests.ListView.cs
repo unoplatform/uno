@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
-using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -166,6 +160,58 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 			Assert.AreEqual(3 * heightBefore, heightAfter);
 		}
+		
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM is disabled https://github.com/unoplatform/uno/issues/2615
+		public void ListView_ExpandableItem_ExpandSingleItem()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item");
+
+			var checkBox = _app.Marked("CheckBox");
+			_app.WaitForElement(checkBox);
+
+			// Save initial state(not expanded)
+			var screenshot1 = TakeScreenshot("Initial State");
+
+			// Expand and compare
+			ClickCheckBoxAt(0);
+			var screenshot2 = TakeScreenshot("Expanded State");
+			ImageAssert.AreNotEqual(screenshot1, screenshot2);
+
+			// Collapse and compare
+			ClickCheckBoxAt(0);
+			var screenshot3 = TakeScreenshot("Collapsed State");
+			ImageAssert.AreEqual(screenshot1, screenshot3);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM is disabled https://github.com/unoplatform/uno/issues/2615
+		public void ListView_ExpandableItem_ExpandMultipleItems()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item");
+
+			var checkBox = _app.Marked("CheckBox");
+			_app.WaitForElement(checkBox);
+
+			// Save initial state(not expanded)
+			var screenshot1 = TakeScreenshot("Initial State");
+
+			// Expand multiple items and compare
+			ClickCheckBoxAt(0);
+			ClickCheckBoxAt(1);
+			ClickCheckBoxAt(2);
+			var screenshot2 = TakeScreenshot("Expanded State");
+			ImageAssert.AreNotEqual(screenshot1, screenshot2);
+
+			// Collapse all and compare 
+			ClickCheckBoxAt(0);
+			ClickCheckBoxAt(1);
+			ClickCheckBoxAt(2);
+			var screenshot3 = TakeScreenshot("Collapsed State");
+			ImageAssert.AreEqual(screenshot1, screenshot3);
+		}
 
 		[Test]
 		[AutoRetry]
@@ -194,6 +240,84 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM is disabled https://github.com/unoplatform/uno/issues/2615
+		public void ListView_ExpandableItemLarge_ExpandHeader_Validation()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item_Large");
+
+			var checkBoxHeader = _app.Marked("CheckBoxHeader");
+			_app.WaitForElement(checkBoxHeader);
+
+			// Save initial state(not expanded)
+			var screenshot1 = TakeScreenshot("Initial State");
+
+			// Expand and compare
+			checkBoxHeader.Tap();
+			var screenshot2 = TakeScreenshot("Expanded State");
+			ImageAssert.AreNotEqual(screenshot1, screenshot2);
+
+			// Collapse and compare 
+			checkBoxHeader.Tap();
+			var screenshot3 = TakeScreenshot("Collapsed State");
+			ImageAssert.AreAlmostEqual(screenshot1, screenshot3);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM is disabled https://github.com/unoplatform/uno/issues/2615
+		public void ListView_ExpandableItemLarge_ExpandHeaderWithMultipleItems_Validation()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item_Large");
+
+			var checkBoxHeader = _app.Marked("CheckBoxHeader");
+			_app.WaitForElement(checkBoxHeader);
+
+			// Save initial state(not expanded)
+			var screenshot1 = TakeScreenshot("Initial State");
+
+			// Expand and compare
+			checkBoxHeader.Tap();
+			ClickCheckBoxAt(0);
+			ClickCheckBoxAt(1);
+			ClickCheckBoxAt(2);
+			var screenshot2 = TakeScreenshot("Expanded State");
+			ImageAssert.AreNotEqual(screenshot1, screenshot2);		
+
+			// Collapse and compare
+			checkBoxHeader.Tap();
+			ClickCheckBoxAt(0);
+			ClickCheckBoxAt(1);
+			ClickCheckBoxAt(2);
+			var screenshot3 = TakeScreenshot("Collapsed State");
+			ImageAssert.AreEqual(screenshot1, screenshot3);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM is disabledListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_TestsListViewTests_Tests https://github.com/unoplatform/uno/issues/2615
+		public void ListView_ExpandableItemLarge_ExpandHeaderWithSingleItem_Validation()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Expandable_Item_Large");
+
+			var checkBoxHeader = _app.Marked("CheckBoxHeader");
+			_app.WaitForElement(checkBoxHeader);
+
+			// Save initial state(not expanded)
+			var screenshot1 = TakeScreenshot("Initial State");
+
+			// Expand multiple items, header and compare
+			checkBoxHeader.Tap();
+			ClickCheckBoxAt(0);
+			var screenshot2 = TakeScreenshot("Expanded State");
+			ImageAssert.AreNotEqual(screenshot1, screenshot2);
+
+			// Collapse all and compare 
+			checkBoxHeader.Tap();
+			ClickCheckBoxAt(0);
+			var screenshot3 = TakeScreenshot("Collapsed State");
+			ImageAssert.AreEqual(screenshot1, screenshot3);
+		}
+
 		public void ListView_SelectedItems()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewSelectedItems");
@@ -230,6 +354,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 			_app.FastTap("ClearSelectedItemButton");
 
 			_app.WaitForText("SelectionChangedTextBlock", "SelectionChanged event: AddedItems=(), RemovedItems=(3, 0, 1, 2, )");
+		}
+
+		private void ClickCheckBoxAt(int i)
+		{
+			_app.Marked("CheckBox").AtIndex(i).Tap();
 		}
 	}
 }
