@@ -7,10 +7,11 @@ using Uno.Logging;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.ViewManagement;
+using Uno.Devices.Sensors;
 
 namespace Uno.UI.DualScreen
 {
-	public class DuoApplicationViewSpanningRects : IApplicationViewSpanningRects
+	public class DuoApplicationViewSpanningRects : IApplicationViewSpanningRects, INativeDualScreenProvider
 	{
 		private bool? _isDualScreenDevice;
 		private Microsoft.Device.Display.ScreenHelper _helper;
@@ -141,6 +142,20 @@ namespace Uno.UI.DualScreen
 					return SurfaceOrientation.Rotation180;
 				case DisplayOrientations.LandscapeFlipped:
 					return SurfaceOrientation.Rotation270;
+			}
+		}
+
+		public bool? IsSpanned
+		{
+			get
+			{
+				if (ContextHelper.Current is Activity currentActivity)
+				{
+					InitializeHelper(currentActivity);
+					return _helper.IsDualMode;
+				}
+
+				return null;
 			}
 		}
 	}
