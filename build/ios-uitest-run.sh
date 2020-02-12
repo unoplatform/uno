@@ -38,6 +38,8 @@ else
 		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Media.Animation_Tests' or \
 		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ControlTests' or \
 		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBlockTests' or \
+		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests' or \
+		namespace = 'SamplesApp.UITests.Windows_UI_Xaml.FocusManagerDirectionTests'
 		namespace = 'SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests' or \
 		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests' or \
 		namespace = 'SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests' or \
