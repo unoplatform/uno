@@ -7,28 +7,37 @@
 	mc:Ignorable="d"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<Border Width="350" Height="350" BorderBrush="Red" BorderThickness="2">
-		<Grid>
-			<Grid.ColumnDefinitions>
-				<ColumnDefinition MinWidth="150" />
-				<ColumnDefinition MinWidth="150" />
-				<ColumnDefinition MinWidth="150" />
-			</Grid.ColumnDefinitions>
+	<StackPanel Spacing="10" Margin="10">
+		<TextBlock FontSize="15">
+			This is an illustration of Github bug
+			<Hyperlink NavigateUri="https://github.com/unoplatform/uno/issues/1885">#1885</Hyperlink>
+		</TextBlock>
 
-			<Rectangle Grid.Column="0" Fill="LightBlue" />
-			<Rectangle Grid.Column="1" Fill="LightGreen" />
-			<Rectangle Grid.Column="2" Fill="LightGray" />
+		<Border Width="350" Height="350" BorderBrush="Red" BorderThickness="2">
+			<Grid>
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition MinWidth="150" />
+					<ColumnDefinition MinWidth="150" />
+					<ColumnDefinition MinWidth="150" />
+				</Grid.ColumnDefinitions>
 
-			<TextBlock Grid.ColumnSpan="2" FontWeight="Bold" FontSize="20" TextWrapping="WrapWholeWords" Padding="10">
+				<Rectangle Grid.Column="0" Fill="LightBlue" />
+				<Rectangle Grid.Column="1" Fill="LightGreen" />
+				<Rectangle Grid.Column="2" Fill="LightGray" Stroke="Yellow" StrokeThickness="5" />
+
+				<StackPanel Height="40" Grid.ColumnSpan="3" VerticalAlignment="Bottom" Orientation="Horizontal" Margin="0,30">
+					<Border Width="150" Background="Blue" />
+					<Border Width="150" Background="Green" />
+					<Border Width="50" Background="Gray" BorderBrush="#C0C000" BorderThickness="5,0,0,0" />
+				</StackPanel>
+
+				<TextBlock Foreground="#BC4905"  Grid.ColumnSpan="2" FontWeight="Bold" FontSize="20" TextWrapping="WrapWholeWords" Padding="10">
 				3 columns of MinWidth=150 in a 350px wide border (red border)
 				- they should be aligned with central darker rectangles.
-			</TextBlock>
+				<LineBreak /><Run FontWeight="ExtraBold">3rd column shouldn't be drawn outside the grid (red border)</Run>
+				</TextBlock>
+			</Grid>
+		</Border>
 
-			<StackPanel Height="40" Grid.ColumnSpan="3" VerticalAlignment="Center" Orientation="Horizontal">
-				<Rectangle Width="150" Fill="Blue" />
-				<Rectangle Width="150" Fill="Green" />
-				<Rectangle Width="150" Fill="Gray" />
-			</StackPanel>
-		</Grid>
-	</Border>
+	</StackPanel>
 </Page>

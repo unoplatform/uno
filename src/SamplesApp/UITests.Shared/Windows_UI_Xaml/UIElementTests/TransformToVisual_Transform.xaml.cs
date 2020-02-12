@@ -1,26 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Linq.Expressions;
 using System.Reflection;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
-using Windows.UI.Xaml.Navigation;
 using Uno.Extensions;
+using Uno.UI.Samples.UITests.Helpers;
+using Uno.UI.Toolkit;
 using TextBlock = Windows.UI.Xaml.Controls.TextBlock;
-
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
 namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 {
@@ -40,7 +31,7 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 
 		private async void TransformToVisual_Transform_Loaded(object sender, RoutedEventArgs e)
 		{
-			await Task.Yield();
+			await Task.Delay(500); // On Android automated UI tests, make sure the status bar is collapsed and window resized before starting tests.
 
 			_tests.Run(
 				() => When_TransformToRoot(),
@@ -56,7 +47,8 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 		public void When_TransformToRoot()
 		{
 			var windowBounds = Windows.UI.Xaml.Window.Current.Bounds;
-			var originAbs = new Point(windowBounds.Width - Border1.ActualWidth, windowBounds.Height - Border1.ActualHeight);
+			var visible = VisibleBoundsPadding.WindowPadding;
+			var originAbs = new Point(windowBounds.Width - visible.Right - Border1.ActualWidth, windowBounds.Height - visible.Bottom - Border1.ActualHeight);
 
 			var sut = Border1.TransformToVisual(null);
 			var result = sut.TransformBounds(new Rect(0, 0, 50, 50));
@@ -67,7 +59,8 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 		public void When_TransformToRoot_With_TranslateTransform()
 		{
 			var windowBounds = Windows.UI.Xaml.Window.Current.Bounds;
-			var originAbs = new Point(windowBounds.Width - Border2.ActualWidth, windowBounds.Height - Border2.ActualHeight);
+			var visible = VisibleBoundsPadding.WindowPadding;
+			var originAbs = new Point(windowBounds.Width - visible.Right - Border2.ActualWidth, windowBounds.Height - visible.Bottom - Border2.ActualHeight);
 			const int tX = -50;
 			const int tY = -50;
 
@@ -80,7 +73,8 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 		public void When_TransformToRoot_With_InheritedTranslateTransform_And_Margin()
 		{
 			var windowBounds = Windows.UI.Xaml.Window.Current.Bounds;
-			var originAbs = new Point(windowBounds.Width - Border2.ActualWidth, windowBounds.Height - Border2.ActualHeight);
+			var visible = VisibleBoundsPadding.WindowPadding;
+			var originAbs = new Point(windowBounds.Width - visible.Right - Border2.ActualWidth, windowBounds.Height - visible.Bottom - Border2.ActualHeight);
 			const int tX = -50;
 			const int tY = -50;
 			const int marginX = 0;
@@ -189,32 +183,6 @@ namespace UITests.Shared.Windows_UI_Xaml.UIElementTests
 			expected = new Rect(expected.X + 50, expected.Y + 50, expected.Width, expected.Height);
 
 			Assert.IsTrue(RectCloseComparer.UI.Equals(expected, result));
-		}
-
-		private class RectCloseComparer : IEqualityComparer<Rect>
-		{
-			private readonly double _epsilon;
-
-			public static RectCloseComparer Default { get; } = new RectCloseComparer(double.Epsilon);
-
-			public static RectCloseComparer UI { get; } = new RectCloseComparer(.0001);
-
-			public RectCloseComparer(double epsilon)
-			{
-				_epsilon = epsilon;
-			}
-
-			/// <inheritdoc />
-			public bool Equals(Rect left, Rect right)
-				=> Math.Abs(left.X - right.X) < _epsilon
-				&& Math.Abs(left.Y - right.Y) < _epsilon
-				&& Math.Abs(left.Width - right.Width) < _epsilon
-				&& Math.Abs(left.Height - right.Height) < _epsilon;
-
-			/// <inheritdoc />
-			public int GetHashCode(Rect obj)
-				=> ((int)obj.Width)
-				^ ((int)obj.Height);
 		}
 	}
 

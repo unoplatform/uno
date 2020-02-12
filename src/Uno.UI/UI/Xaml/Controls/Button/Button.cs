@@ -59,8 +59,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		protected override AutomationPeer OnCreateAutomationPeer()
-		{
-			return new ButtonAutomationPeer(this);
-		}
+			=> new ButtonAutomationPeer(this);
 	}
 }

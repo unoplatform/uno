@@ -51,7 +51,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					_telemetry.TrackEvent(
 						"generate-xaml-done",
-						null,
+						new[] {
+							("IsRunningCI", IsRunningCI.ToString()),
+						},
 						new[] { ("Duration", elapsed.TotalSeconds) }
 					);
 				}
@@ -73,7 +75,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					_telemetry.TrackEvent(
 						"generate-xaml-failed",
-						new[] { ("ExceptionType", exception.GetType().ToString()) },
+						new[] {
+							("ExceptionType", exception.GetType().ToString()),
+							("IsRunningCI", IsRunningCI.ToString()),
+						},
 						new[] { ("Duration", elapsed.TotalSeconds) }
 					);
 				}
@@ -93,7 +98,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				try
 				{
-
 					// Determine if the Uno.UI solution is built
 					var isBuildingUno = _projectInstance.GetProperty("MSBuildProjectName")?.EvaluatedValue == "Uno.UI";
 

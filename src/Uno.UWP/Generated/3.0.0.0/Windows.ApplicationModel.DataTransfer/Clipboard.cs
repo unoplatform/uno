@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer
 {
-	#if false || false || NET461 || false || __MACOS__
+	#if false || false || NET461 || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Clipboard 
@@ -62,14 +62,14 @@ namespace Windows.ApplicationModel.DataTransfer
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.RoamingEnabledChanged.remove
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.HistoryEnabledChanged.add
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.Clipboard.HistoryEnabledChanged.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.ApplicationModel.DataTransfer.DataPackageView GetContent()
 		{
 			throw new global::System.NotImplementedException("The member DataPackageView Clipboard.GetContent() is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public static void SetContent( global::Windows.ApplicationModel.DataTransfer.DataPackage content)
 		{

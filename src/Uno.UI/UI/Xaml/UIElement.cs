@@ -18,6 +18,8 @@ using Uno;
 using Uno.UI.Controls;
 using Uno.UI.Media;
 using System;
+using System.Numerics;
+using System.Reflection;
 using Windows.UI.Xaml.Markup;
 using Microsoft.Extensions.Logging;
 
@@ -146,6 +148,74 @@ namespace Windows.UI.Xaml
 		}
 		#endregion
 
+		public GeneralTransform TransformToVisual(UIElement visual)
+			=> new MatrixTransform { Matrix = new Matrix(GetTransform(from: this, to: visual)) };
+
+		internal static Matrix3x2 GetTransform(UIElement from, UIElement to)
+		{
+			if (from == to)
+			{
+				return Matrix3x2.Identity;
+			}
+
+			var matrix = Matrix3x2.Identity;
+			double offsetX = 0.0, offsetY = 0.0;
+			var elt = from;
+			do
+			{
+				var layoutSlot = elt.LayoutSlotWithMarginsAndAlignments;
+				var transform = elt.RenderTransform;
+				if (transform == null)
+				{
+					// As this is the common case, avoid Matrix computation when a basic addition is sufficient
+					offsetX += layoutSlot.X;
+					offsetY += layoutSlot.Y;
+				}
+				else
+				{
+					// First apply any pending arrange offset that would have been impacted by this RenderTransform (eg. scaled)
+					// Friendly reminder: Matrix multiplication is usually not commutative ;)
+					matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
+					matrix *= transform.MatrixCore;
+
+					offsetX = layoutSlot.X;
+					offsetY = layoutSlot.Y;
+				}
+
+				if (elt is ScrollViewer sv)
+				{
+					var zoom = sv.ZoomFactor;
+					if (zoom != 1)
+					{
+						matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
+						matrix *= Matrix3x2.CreateScale(zoom);
+
+						offsetX = -sv.HorizontalOffset;
+						offsetY = -sv.VerticalOffset;
+					}
+					else
+					{
+						offsetX -= sv.HorizontalOffset;
+						offsetY -= sv.VerticalOffset;
+					}
+				}
+			} while ((elt = elt.GetParent() as UIElement) != null && elt != to); // If possible we stop as soon as we reach 'to'
+
+			matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
+
+			if (to != null && elt != to)
+			{
+				// Unfortunately we didn't find the 'to' in the parent hierarchy,
+				// so matrix == fromToRoot and we now have to compute the transform 'toToVisual'.
+				var toToRoot = GetTransform(to, null);
+				Matrix3x2.Invert(toToRoot, out var rootToVisual);
+
+				matrix *= rootToVisual;
+			}
+
+			return matrix;
+		}
+
 		#region IsHitTestVisible Dependency Property
 
 		public bool IsHitTestVisible
@@ -227,8 +297,10 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				rect = Clip?.Rect ?? Rect.Empty;
+				rect = Clip.Rect;
 
+				// Currently only TranslateTransform is supported on a clipping mask
+				// (because the calculated mask is a Rect right now...)
 				if (Clip?.Transform is TranslateTransform translateTransform)
 				{
 					rect.X += translateTransform.X;
@@ -238,7 +310,11 @@ namespace Windows.UI.Xaml
 
 			if (NeedsClipToSlot)
 			{
+#if __WASM__
 				var boundsClipping = new Rect(0, 0, RenderSize.Width, RenderSize.Height);
+#else
+				var boundsClipping = ClippedFrame ?? Rect.Empty;
+#endif
 				if (rect.IsEmpty)
 				{
 					rect = boundsClipping;
@@ -308,6 +384,8 @@ namespace Windows.UI.Xaml
 
 		internal Rect LayoutSlot { get; set; } = default;
 
+		internal Rect LayoutSlotWithMarginsAndAlignments { get; set; } = default;
+
 		internal bool NeedsClipToSlot { get; set; }
 
 #if !__WASM__
@@ -319,6 +397,9 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Provides the size reported during the last call to Measure.
 		/// </summary>
+		/// <remarks>
+		/// DesiredSize INCLUDES MARGINS.
+		/// </remarks>
 		public Size DesiredSize
 		{
 			get;
@@ -333,6 +414,13 @@ namespace Windows.UI.Xaml
 		public virtual void Measure(Size availableSize)
 		{
 		}
+
+#if !__WASM__
+		/// <summary>
+		/// This is the Frame that should be used as "available Size" for the Arrange phase.
+		/// </summary>
+		internal Rect? ClippedFrame;
+#endif
 
 		public virtual void Arrange(Rect finalRect)
 		{
@@ -362,6 +450,9 @@ namespace Windows.UI.Xaml
 		public void InvalidateArrange()
 		{
 			InvalidateMeasure();
+#if !__WASM__
+			ClippedFrame = null;
+#endif
 		}
 #endif
 

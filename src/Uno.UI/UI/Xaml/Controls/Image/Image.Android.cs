@@ -95,14 +95,6 @@ namespace Windows.UI.Xaml.Controls
 
 			var availableSize = ViewHelper.LogicalSizeFromSpec(widthMeasureSpec, heightMeasureSpec);
 
-			if (!double.IsNaN(Width) || !double.IsNaN(Height))
-			{
-				availableSize = new Windows.Foundation.Size(
-					double.IsNaN(Width) ? availableSize.Width : Width,
-					double.IsNaN(Height) ? availableSize.Height : Height
-				);
-			}
-
 			var measuredSize = _layouter.Measure(availableSize);
 
 			if (
@@ -158,13 +150,63 @@ namespace Windows.UI.Xaml.Controls
 		private int? _targetWidth;
 		private int? _targetHeight;
 
-		partial void SetTargetImageSize(Size targetSize)
+		partial void SetTargetImageSize(Size? targetSize)
 		{
-			var physicalSize = targetSize.LogicalToPhysicalPixels();
-			_targetWidth = physicalSize.Width.SelectOrDefault(w => w != 0 ? (int?)w : null);
-			_targetHeight = physicalSize.Height.SelectOrDefault(h => h != 0 ? (int?)h : null);
+			var originalTargetWidth = _targetWidth;
+			var originalTargetHeight = _targetHeight;
 
-			TryOpenImage();
+			if (targetSize != null)
+			{
+				// Ignore changes coming from MeasureOverride when a dimension is unconstrained. This will be picked up
+				// by ArrangeOverride.
+				if (!double.IsInfinity(targetSize.Value.Width) && !double.IsInfinity(targetSize.Value.Height))
+				{
+					var physicalSize = targetSize.Value.LogicalToPhysicalPixels();
+					_targetWidth = physicalSize.Width.SelectOrDefault(w => w != 0 ? (int?)w : null);
+					_targetHeight = physicalSize.Height.SelectOrDefault(h => h != 0 ? (int?)h : null);
+
+					// Here we validate that the target size is useable, and that it's not being reset to zero.
+					// The scenario is as follows:
+					//   - Image gets its source set, using UseTargetSize=true
+					//   - Image gets measured with a non-infinite size (e.g. the parent is constrained), calls SetTargetImageSize with the requested available size
+					//   - Measure returns [0;0] if there are no constraints on the image itself
+					//   - SetTargetImageSize determines if the size is usable, loads the image with the tentative available size as the decode size.
+					//   - Arrange is invoked with a [0;0] size as requsted by the measure (the image size is unknown)
+					//   - Arrange invokes SetTargetImageSize with [0;0] which is ignored as there is already a tentative decode size.
+					//   - The image gets loaded and the InvalidateMeasure is called
+					//   - The measure is invoked again, returns the natural size of the image. If the SetTargetImageSize is called with
+					//     a larger size, the image gets reloaded with a different decode size.
+					//   - The arrange is invoked again with the proper final size. If the SetTargetImageSize is called with
+					//     a larger size, the image gets reloaded again with a different decode size.
+					//
+					// The above scenario may be at disadvantage if the image does not have a Width/Height, or if the
+					// image gets a different size in measure and arrange. A warning message gets displayed in such cases.
+					//
+					if (
+						(Source?.UseTargetSize ?? false)
+						&& _targetWidth != null
+						&& _targetHeight != null
+						&& (_targetWidth > originalTargetWidth || _targetHeight > originalTargetHeight)
+						&& _openedImage != null
+					)
+					{
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+						{
+							this.Log().Debug(
+								this.ToString() +
+								$" Image is being reloaded because the target size has changed ({originalTargetWidth}x{originalTargetHeight} to {_targetWidth}x{_targetHeight})");
+						}
+
+						_openedImage = null;
+					}
+
+					TryOpenImage();
+				}
+			}
+			else
+			{
+				_targetWidth = _targetHeight = null;
+			}
 		}
 
 		public override void SetImageDrawable(Drawable drawable)
@@ -369,8 +411,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool MustOpenImageToMeasure()
 		{
-			// If an image doesn't have fixed sizes and is Uniform, we must use its aspect ratio to measure it.
-			return Stretch == Stretch.Uniform && (double.IsNaN(Width) || double.IsNaN(Height));
+			// If an image doesn't have fixed sizes and is Uniform or None, we must use its aspect ratio to measure it.
+			return (Stretch == Stretch.Uniform || Stretch == Stretch.None) && (double.IsNaN(Width) || double.IsNaN(Height));
 		}
 
 		private async Task SetSourceUriOrStream(ImageSource newImageSource)

@@ -24,7 +24,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml.ContentControlTests
 
 			void TabWaitAndThenScreenshot(string buttonName)
 			{
-				_app.Marked(buttonName).Tap();
+				_app.Marked(buttonName).FastTap();
 				TakeScreenshot($"ContentControlNoTemplateNoContent - {buttonName}");
 			}
 

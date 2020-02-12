@@ -10,6 +10,8 @@ using Windows.UI.Input;
 using Windows.UI.Xaml.Input;
 using Uno.Extensions.Specialized;
 using Uno.Logging;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 #if XAMARIN_IOS
 using View = UIKit.UIView;
 #elif __MACOS__
@@ -47,6 +49,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		public ButtonBase()
 		{
 			InitializeProperties();
+
+			Unloaded += (s, e) =>
+				IsPressed = false;
 		}
 
 		public new bool IsPointerOver
@@ -80,10 +85,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		#endregion
 
 		#region CommandParameter
-		public static global::Windows.UI.Xaml.DependencyProperty CommandParameterProperty { get; } =
-			Windows.UI.Xaml.DependencyProperty.Register(
-				"CommandParameter", typeof(object),
-				typeof(global::Windows.UI.Xaml.Controls.Primitives.ButtonBase),
+		public static DependencyProperty CommandParameterProperty { get; } =
+			DependencyProperty.Register(
+				"CommandParameter",
+				typeof(object),
+				typeof(Controls.Primitives.ButtonBase),
 				new FrameworkPropertyMetadata(default(object), OnCommandParameterChanged));
 
 		public object CommandParameter
@@ -97,6 +103,39 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			((ButtonBase)dependencyObject)?.CoerceValue(IsEnabledProperty);
 		}
 		#endregion
+
+		public ClickMode ClickMode
+		{
+			get => (ClickMode)this.GetValue(ClickModeProperty);
+			set => this.SetValue(ClickModeProperty, value);
+		}
+
+		public new bool IsPressed
+		{
+			get => (bool)GetValue(IsPressedProperty);
+			internal set => SetValue(IsPressedProperty, value);
+		}
+
+		public static DependencyProperty ClickModeProperty { get; } =
+		DependencyProperty.Register(
+			name: nameof(ClickMode),
+			propertyType: typeof(ClickMode),
+			ownerType: typeof(Controls.Primitives.ButtonBase),
+			typeMetadata: new FrameworkPropertyMetadata(ClickMode.Release));
+
+		public static DependencyProperty IsPointerOverProperty { get; } =
+		DependencyProperty.Register(
+			name: nameof(IsPointerOver),
+			propertyType: typeof(bool),
+			ownerType: typeof(Controls.Primitives.ButtonBase),
+			typeMetadata: new FrameworkPropertyMetadata(default(bool)));
+
+		public static DependencyProperty IsPressedProperty { get; } =
+		DependencyProperty.Register(
+			name: nameof(IsPressed),
+			propertyType: typeof(bool),
+			ownerType: typeof(Controls.Primitives.ButtonBase),
+			typeMetadata: new FrameworkPropertyMetadata(default(bool)));
 
 		partial void RegisterEvents();
 
@@ -191,6 +230,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				var handle = args.GetCurrentPoint(this).Properties.IsLeftButtonPressed && CapturePointer(args.Pointer);
 				args.Handled = handle;
 
+				IsPressed = true;
+
 				if (handle && mode == ClickMode.Press)
 				{
 					RaiseClick(args);
@@ -223,6 +264,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 						RaiseClick(args); // First raise the click
 					}
 				}
+
+				IsPressed = false;
 
 				// This should be automatically done by the pointers due to release, but if for any reason
 				// the state is invalid, this makes sure to not keep invalid capture longer than needed.

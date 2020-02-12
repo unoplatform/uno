@@ -51,7 +51,7 @@ namespace SamplesApp
 		/// </summary>
 		/// <seealso cref="https://github.com/unoplatform/uno/issues/1741"/>
 		public void AssertIssue1790()
-		{
+		{			
 			void AssertIsUsable(Windows.Storage.ApplicationDataContainer container)
 			{
 				const string issue1790 = nameof(issue1790);
@@ -71,7 +71,11 @@ namespace SamplesApp
 		/// will be used such as when the application is launched to open a specific file.
 		/// </summary>
 		/// <param name="e">Details about the launch request and process.</param>
-		protected override void OnLaunched(LaunchActivatedEventArgs e)
+		protected
+#if HAS_UNO
+			internal
+#endif
+			override void OnLaunched(LaunchActivatedEventArgs e)
 		{
 #if __IOS__
 			// requires Xamarin Test Cloud Agent

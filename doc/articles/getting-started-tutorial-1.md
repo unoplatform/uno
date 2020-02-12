@@ -4,11 +4,11 @@
 
 In this tutorial you will learn how to:
 
-- Add the Uno Project Templates to Visual Studio
-- Create a new Project with Uno
+- Add the Uno Platform Project Templates to Visual Studio
+- Create a new Project with Uno Platform
 - Learn basics on Model Binding
 
-The tutorial walks you through creating a cross platform application with Uno, which enables you to see a single Issue entry.
+The tutorial walks you through creating a cross platform application with Uno Platform - a simple Bug Tracking app - which enables you to see a single Issue entry.
 
 <div class="NOTE alert alert-info">
 <h5>Before you start the tutorial</h5>
@@ -392,7 +392,7 @@ You should see something similar to the screenshot below. You can [download the 
 ![tutorial-screenshot](Assets/quick-start/tutorial-screenshot.png)
 
 
-In this tutorial, you have learned how to:
+In this tutorial, through creating a simple Bug Tracking app you have learned how to:
 
 - Add the Uno Project Templates to Visual Studio
 - Create a new Project with Uno

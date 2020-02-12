@@ -8,7 +8,14 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<StackPanel Spacing="5">
-		<TextBlock Text="This is a line" />
-		<Line x:Name="DLinePage" Stroke="Black" X2="400" StrokeThickness="5"/>
+		<TextBlock Text="This is a horizontal black line - Should be aligned with the red one" />
+		<Line x:Name="DLinePage" Stroke="Black" X1="20"  X2="400" StrokeThickness="5" HorizontalAlignment="Left" />
+		<Rectangle Fill="Red" Margin="20,0,0,0" Width="380" Height="5" HorizontalAlignment="Left" />
+
+		<TextBlock Text="This is a vertical black line - Should be aligned with the red one" />
+		<StackPanel Orientation="Horizontal" Spacing="5" Margin="25,0,0,0">
+			<Line x:Name="DLinePage2" Stroke="Black" Y1="25"  Y2="100" StrokeThickness="5" VerticalAlignment="Top"/>
+			<Rectangle Fill="Red" Margin="0,25,0,0" Height="75" Width="5" VerticalAlignment="Top" />
+		</StackPanel>
 	</StackPanel>
 </Page>

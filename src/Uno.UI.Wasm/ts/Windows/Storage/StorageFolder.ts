@@ -43,9 +43,16 @@
 				return;
 			}
 
+			if (typeof IDBFS === 'undefined') {
+				console.warn(`IDBFS is not enabled in mono's configuration, persistence is disabled`);
+
+				return;
+			}
+
 			console.debug("Making persistent: " + path);
 
 			FS.mkdir(path);
+
 			FS.mount(IDBFS, {}, path);
 			// Request an initial sync to populate the file system
 			const that = this;

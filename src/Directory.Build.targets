@@ -13,9 +13,9 @@
   </Target>
 
   <ItemGroup>
-    <PackageReference Update="Uno.SourceGenerationTasks" Version="1.32.0-dev.297" />
+    <PackageReference Update="Uno.SourceGenerationTasks" Version="1.32.0" />
     <PackageReference Update="Uno.SourceGeneration" Version="1.32.0" />
-    <PackageReference Update="Uno.Core" Version="1.29.0-dev.93" />
+    <PackageReference Update="Uno.Core" Version="1.29.0" />
     <PackageReference Update="Uno.Core.Build" Version="1.29.0" />
     <PackageReference Update="Uno.Wasm.Bootstrap" Version="1.0.10" />
     <DotNetCliToolReference Update="Uno.Wasm.Bootstrap.Cli" Version="1.0.10" />
@@ -26,12 +26,13 @@
     <PackageReference Update="Microsoft.TypeScript.Compiler" Version="3.1.5" />
     <PackageReference Update="Microsoft.TypeScript.MSBuild" Version="3.1.5" />
     <PackageReference Update="NUnit" Version="3.12.0" />
-    <PackageReference Update="NUnit3TestAdapter" Version="3.15.1" />
-    <PackageReference Update="Uno.UITest" Version="1.0.0-dev.105" />
-    <PackageReference Update="Uno.UITest.Selenium" Version="1.0.0-dev.105" />
-    <PackageReference Update="Uno.UITest.Xamarin" Version="1.0.0-dev.105" />
-    <PackageReference Update="Uno.UITest.Helpers" Version="1.0.0-dev.105" />
+    <PackageReference Update="NUnit3TestAdapter" Version="3.16.0" />
+    <PackageReference Update="Uno.UITest" Version="1.0.0-dev.107" />
+    <PackageReference Update="Uno.UITest.Selenium" Version="1.0.0-dev.107" />
+    <PackageReference Update="Uno.UITest.Xamarin" Version="1.0.0-dev.107" />
+    <PackageReference Update="Uno.UITest.Helpers" Version="1.0.0-dev.107" />
     <PackageReference Update="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.2" />
   </ItemGroup>
 
 </Project>

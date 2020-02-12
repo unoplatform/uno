@@ -80,14 +80,13 @@ namespace Uno.UI.UI.Xaml.Documents
 				var value = (FontFamily) localValue;
 				if (value != null)
 				{
-					// TODO
 					var actualFontFamily = value.Source;
 					if (actualFontFamily == "XamlAutoFontFamily")
 					{
 						value = FontFamily.Default;
 					}
 
-					element.SetStyle("font-family", value.Source);
+					element.SetStyle("font-family", value.ParsedSource);
 				}
 			}
 		}

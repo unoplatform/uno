@@ -8,6 +8,8 @@ namespace Windows.UI.Input
 		{
 		}
 
+		internal bool HasPressedButton => IsLeftButtonPressed || IsMiddleButtonPressed || IsRightButtonPressed || IsXButton1Pressed || IsXButton2Pressed || IsBarrelButtonPressed;
+
 		public bool IsPrimary { get; internal set; }
 
 		public bool IsInRange { get; internal set; }
@@ -28,7 +30,15 @@ namespace Windows.UI.Input
 
 		public bool IsEraser { get; internal set; }
 
+		public float Pressure { get; internal set; } = 0.5f; // According to the doc, the default value is .5
+
 		public PointerUpdateKind PointerUpdateKind { get; internal set; }
+
+#if __MACOS__
+		public float XTilt { get; internal set; } = 0f;
+
+		public float YTilt { get; internal set; } = 0f;
+#endif
 
 		[global::Uno.NotImplemented]
 		public int MouseWheelDelta => 0;

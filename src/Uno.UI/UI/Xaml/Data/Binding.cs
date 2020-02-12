@@ -158,6 +158,24 @@ namespace Windows.UI.Xaml.Data
 		/// <value>The source.</value>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public object CompiledSource { get; set; }
+
+		/// <summary>
+		/// Provides the method used in the context of x:Bind expressions to
+		/// get the resulting value.
+		/// </summary>
+		internal Func<object, object> XBindSelector { get; private set; }
+
+		/// <summary>
+		/// List of paths to observe in the context x:Bind expressions
+		/// </summary>
+		internal string[] XBindPropertyPaths { get; private set; }
+
+		internal void SetBindingXBindProvider(object compiledSource, Func<object, object> xBindSelector, string[] propertyPaths = null)
+		{
+			CompiledSource = compiledSource;
+			XBindSelector = xBindSelector;
+			XBindPropertyPaths = propertyPaths;
+		}
 	}
 }
 

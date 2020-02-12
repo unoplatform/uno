@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Controls
 			var definedRows = GetRows(false).Span;
 
 			var spacingSize = new Size(ColumnSpacing * (definedColumns.Length - 1), RowSpacing * (definedRows.Length - 1));
-			availableSize.Subtract(spacingSize);
+			availableSize = availableSize.Subtract(spacingSize);
 
 			var considerStarColumnsAsAuto = ConsiderStarColumnsAsAuto(availableSize.Width);
 			var considerStarRowsAsAuto = ConsiderStarRowsAsAuto(availableSize.Height);
@@ -573,7 +573,7 @@ namespace Windows.UI.Xaml.Controls
 
 					var stars = sizes.WhereToMemory(s => s.IsStarSize, s => s.StarSize ?? 0).Span.Sum();
 
-					maxStarWidth = Math.Max(maxStarWidth, starWidth / stars);
+					maxStarWidth = stars == 0 ? 0d : Math.Max(maxStarWidth, starWidth / stars);
 				}
 
 				maxStarWidth = Math.Min(unitStarWidth, maxStarWidth);
@@ -903,7 +903,7 @@ namespace Windows.UI.Xaml.Controls
 
 					var stars = sizes.WhereToMemory(s => s.IsStarSize, s => s.StarSize ?? 0).Span.Sum();
 
-					maxStarHeight = Math.Max(maxStarHeight, starHeight / stars);
+					maxStarHeight = stars == 0 ? 0d : Math.Max(maxStarHeight, starHeight / stars);
 				}
 
 				maxStarHeight = Math.Min(unitStarHeight, maxStarHeight);

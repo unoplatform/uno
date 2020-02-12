@@ -30,20 +30,20 @@ namespace SamplesApp.UITests
 			// Assert initial state 
 			Assert.AreEqual("None", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
 
-			myRadioButton_1.Tap();
+			myRadioButton_1.FastTap();
 
 			// Assert after clicking once while radio buttons are enabled
 			Assert.AreEqual("Radio Button 1", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
 
 
-			myRadioButtonDisabler.Tap();
-			myRadioButton_2.Tap();
+			myRadioButtonDisabler.FastTap();
+			myRadioButton_2.FastTap();
 
 			// Assert after clicking once while radio buttons are disabled
 			Assert.AreEqual("Radio Button 1", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
 
-			myRadioButtonDisabler.Tap();
-			myRadioButton_2.Tap();
+			myRadioButtonDisabler.FastTap();
+			myRadioButton_2.FastTap();
 
 			// Assert after clicking once while radio buttons are enabled
 			Assert.AreEqual("Radio Button 2", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
@@ -65,21 +65,21 @@ namespace SamplesApp.UITests
 			// Assert initial state 
 			Assert.AreEqual("None", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
 
-			myRadioButton_1.Tap();
+			myRadioButton_1.FastTap();
 
 			// Assert after clicking once while radio buttons are enabled
 			Assert.AreEqual("Radio Button 1", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
-			myRadioButton_1.Tap();
+			myRadioButton_1.FastTap();
 
 			// Assert after clicking twice while radio buttons are enabled
 			Assert.AreEqual("Radio Button 1", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
 
-			myRadioButton_2.Tap();
+			myRadioButton_2.FastTap();
 
 			// Assert after clicking once while radio buttons are enabled
 			Assert.AreEqual("Radio Button 2", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
 
-			myRadioButton_2.Tap();
+			myRadioButton_2.FastTap();
 
 			// Assert after clicking twice while radio buttons are enabled
 			Assert.AreEqual("Radio Button 2", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
@@ -101,24 +101,24 @@ namespace SamplesApp.UITests
 			// Assert initial state 
 			Assert.AreEqual("None", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
 
-			myRadioButton_1.Tap();
+			myRadioButton_1.FastTap();
 
 			// Assert after clicking once while radio buttons are enabled
 			Assert.AreEqual("Radio Button 1", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
 
-			myRadioButtonDisabler.Tap();
+			myRadioButtonDisabler.FastTap();
 			// Assert after clicking once while radio buttons are disabled
 			Assert.AreEqual("Radio Button 1", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
 
-			myRadioButtonDisabler.Tap();
+			myRadioButtonDisabler.FastTap();
 
 			Assert.AreEqual("Radio Button 1", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
 
-			myRadioButton_2.Tap();
+			myRadioButton_2.FastTap();
 			// Assert after clicking once while radio buttons are enabled
 			Assert.AreEqual("Radio Button 2", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
 
-			myRadioButtonDisabler.Tap();
+			myRadioButtonDisabler.FastTap();
 			// Assert after clicking once while radio buttons are disabled
 			Assert.AreEqual("Radio Button 2", currentRadioButton.GetDependencyPropertyValue("Text")?.ToString());
 		}

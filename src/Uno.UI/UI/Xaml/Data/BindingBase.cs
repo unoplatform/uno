@@ -2,7 +2,7 @@
 
 namespace Windows.UI.Xaml.Data
 {
-	public abstract partial class BindingBase : DependencyObject
+	public partial class BindingBase : DependencyObject
 	{
 		public BindingBase()
 		{
