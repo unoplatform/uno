@@ -52,9 +52,9 @@ var Windows;
                         if (!CoreDispatcher._isWaitingReady) {
                             CoreDispatcher._isReady
                                 .then(() => {
-                                    CoreDispatcher.InnerWakeUp();
-                                    CoreDispatcher._isReady = null;
-                                });
+                                CoreDispatcher.InnerWakeUp();
+                                CoreDispatcher._isReady = null;
+                            });
                             CoreDispatcher._isWaitingReady = true;
                         }
                     }
@@ -1496,13 +1496,13 @@ var Uno;
              *
              * Note that the casing of this method is intentionally Pascal for platform alignment.
              */
-            SetDependencyPropertyValue(elementId, propertyName, propertyValue) {
+            SetDependencyPropertyValue(elementId, propertyNameAndValue) {
                 if (!WindowManager.setDependencyPropertyValueMethod) {
                     WindowManager.setDependencyPropertyValueMethod = Module.mono_bind_static_method("[Uno.UI] Uno.UI.Helpers.Automation:SetDependencyPropertyValue");
                 }
                 const element = this.getView(elementId);
                 const htmlId = Number(element.getAttribute("XamlHandle"));
-                return WindowManager.setDependencyPropertyValueMethod(htmlId, propertyName, propertyValue);
+                return WindowManager.setDependencyPropertyValueMethod(htmlId, propertyNameAndValue);
             }
             /**
                 * Remove the loading indicator.
@@ -1588,6 +1588,25 @@ var Uno;
                     return false;
                 }
                 return rootElement === element || rootElement.contains(element);
+            }
+            setCursor(cssCursor) {
+                const unoBody = document.getElementById(this.containerElementId);
+                if (unoBody) {
+                    //always cleanup
+                    if (this.cursorStyleElement != undefined) {
+                        this.cursorStyleElement.remove();
+                        this.cursorStyleElement = undefined;
+                    }
+                    //only add custom overriding style if not auto 
+                    if (cssCursor != "auto") {
+                        // this part is only to override default css:  .uno-buttonbase {cursor: pointer;}
+                        this.cursorStyleElement = document.createElement("style");
+                        this.cursorStyleElement.innerHTML = ".uno-buttonbase { cursor: " + cssCursor + "; }";
+                        document.body.appendChild(this.cursorStyleElement);
+                    }
+                    unoBody.style.cursor = cssCursor;
+                }
+                return "ok";
             }
         }
         WindowManager._isHosted = false;

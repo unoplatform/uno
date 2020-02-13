@@ -10,7 +10,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PivotTests
 {
-	public class PivotTests : SampleControlUITestBase
+	public class UnoSamples_Pivot_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry()]
@@ -26,6 +26,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PivotTests
 			_app.WaitForDependencyPropertyValue(selectedItemTitle, "Text", "item 1");
 			_app.WaitForDependencyPropertyValue(selectedItemContent, "Text", "My Item 1 Content");
 		}
+
 		[Test]
 		[AutoRetry()]
 		public void Pivot_Non_PivotItemChange_Validation()
@@ -34,16 +35,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PivotTests
 
 			var selectedItemTitle = _app.Marked("selectedItemTitle");
 			var selectedItemContent = _app.Marked("selectedItemContent");
-			var itemHeaderTextBlock = _app.Marked("ItemHeaderTextBlock");
+			var firstPivotItemHeader = _app.Marked("myPivot").Descendant().Marked("item 1");
+			var secondPivotItemHeader = _app.Marked("myPivot").Descendant().Marked("item 2");
 
 			// Select header 2 and assert
-			itemHeaderTextBlock.AtIndex(1).Tap();
+			_app.FastTap(secondPivotItemHeader);
 			_app.WaitForElement(_app.Marked("selectedItemTitle"));
 			_app.WaitForDependencyPropertyValue(selectedItemTitle, "Text", "item 2");
 			_app.WaitForDependencyPropertyValue(selectedItemContent, "Text", "My Item 2 Content");
 
 			// Select header 1 and assert
-			itemHeaderTextBlock.AtIndex(0).Tap();
+			_app.FastTap(firstPivotItemHeader);
 			_app.WaitForElement(_app.Marked("selectedItemTitle"));
 			_app.WaitForDependencyPropertyValue(selectedItemTitle, "Text", "item 1");
 			_app.WaitForDependencyPropertyValue(selectedItemContent, "Text", "My Item 1 Content");

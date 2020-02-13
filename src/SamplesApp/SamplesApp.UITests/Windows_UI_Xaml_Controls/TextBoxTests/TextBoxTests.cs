@@ -310,6 +310,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			beforeTextBox.EnterText("Enter text and verify that only e is permittable");
 			Assert.AreEqual("eeeeee", beforeTextBox.GetDependencyPropertyValue("Text")?.ToString());
 		}
+
 		[Test]
 		[AutoRetry]
 		public void TextBox_TextAlignment_Left_Validation()
