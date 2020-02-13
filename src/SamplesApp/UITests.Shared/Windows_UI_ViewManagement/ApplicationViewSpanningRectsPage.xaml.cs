@@ -27,6 +27,7 @@ namespace UITests.Windows_UI_ViewManagement
 
 		private void RecalculateRects()
 		{
+#if __ANDROID__
 			var transform = canvas.TransformToVisual(Window.Current.Content);
 			var canvasOrigin = transform.TransformPoint(new Point());
 
@@ -63,6 +64,7 @@ namespace UITests.Windows_UI_ViewManagement
 				rect2.Width = displayRects[1].Width;
 				rect2.Height = displayRects[1].Height;
 			}
+#endif
 		}
 	}
 }

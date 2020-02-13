@@ -12,7 +12,8 @@
 			<Rectangle Fill="LightBlue" Stroke="Blue" StrokeThickness="8" x:Name="rect2" />
 		</Canvas>
 		<TextBlock FontSize="32">
-			rect1=orange
+			Android Only!
+			<LineBreak/>rect1=orange
 			<LineBreak/>rect2=blue
 		</TextBlock>
 	</Grid>
