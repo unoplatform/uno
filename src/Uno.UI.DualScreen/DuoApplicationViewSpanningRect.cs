@@ -62,27 +62,41 @@ namespace Uno.UI.DualScreen
 
 							var bounds = wuxWindowBounds;
 							var occludedRect = occludedRects[0];
-							var intersection = bounds;
-							intersection.Intersect(occludedRect);
+							var intersection = bounds.IntersectWith(occludedRect);
 
-							//if (wuOrientation == DisplayOrientations.Portrait || wuOrientation == DisplayOrientations.PortraitFlipped)
-							//{
-							//	// Compensate for the status bar size (the occluded area is rooted on the screen size, whereas
-							//	// wuxWindowBoundsis rooted on the visible size of the window, unless the status bar is translucent.
-							//	if (bounds.X == 0 && bounds.Y == 0)
-							//	{
-							//		var statusBarRect = StatusBar.GetForCurrentView().OccludedRect.LogicalToPhysicalPixels();
-							//		occludedRect.Y -= statusBarRect.Height;
-							//	}
-							//}
+							if (wuOrientation == DisplayOrientations.Portrait || wuOrientation == DisplayOrientations.PortraitFlipped)
+							{
+								// Compensate for the status bar size (the occluded area is rooted on the screen size, whereas
+								// wuxWindowBoundsis rooted on the visible size of the window, unless the status bar is translucent.
+								if ((int)bounds.X == 0 && (int)bounds.Y == 0)
+								{
+									var statusBarRect = StatusBar.GetForCurrentView().OccludedRect.LogicalToPhysicalPixels();
+									occludedRect.Y -= statusBarRect.Height;
+								}
+							}
 
-							if (intersection != Rect.Empty) // Occluded region overlaps the app
+							if (intersection != null) // Occluded region overlaps the app
 							{
 								if ((int)occludedRect.X == (int)bounds.X)
 								{
+									// Vertical stacking
+									// +---------+
+									// |         |
+									// |         |
+									// +---------+
+									// +---------+
+									// |         |
+									// |         |
+									// +---------+
+
 									var spanningRects = new List<Rect> {
-										new Rect(bounds.X, bounds.Y, bounds.Width, occludedRect.Y),
-										new Rect(bounds.X, bounds.Y + occludedRect.Y + occludedRect.Height, bounds.Width, bounds.Height - (occludedRect.Y + occludedRect.Height)),
+										// top region
+										new Rect(bounds.X, bounds.Y, bounds.Width, occludedRect.Top),
+										// bottom region
+										new Rect(bounds.X,
+											occludedRect.Bottom,
+											bounds.Width,
+											bounds.Height - occludedRect.Bottom),
 									};
 
 									if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
@@ -94,11 +108,23 @@ namespace Uno.UI.DualScreen
 								}
 								else if ((int)occludedRect.Y == (int)bounds.Y)
 								{
-									// Horizontal
+									// Horizontal side-by-side
+									// +-----+ +-----+
+									// |     | |     |
+									// |     | |     |
+									// |     | |     |
+									// |     | |     |
+									// |     | |     |
+									// +-----+ +-----+
 
 									var spanningRects = new List<Rect> {
+										// left region
 										new Rect(bounds.X, bounds.Y, occludedRect.X, bounds.Height),
-										new Rect(bounds.X + occludedRect.X + occludedRect.Width, bounds.Y, bounds.Width - (occludedRect.X + occludedRect.Width), bounds.Height),
+										// right region
+										new Rect(occludedRect.Right,
+											bounds.Y,
+											bounds.Width - occludedRect.Right,
+											bounds.Height),
 									};
 
 									if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
