@@ -169,6 +169,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM is disabled https://github.com/unoplatform/uno/issues/2645
 		public void ListView_ItemClicked_Validation()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_ItemClick");
@@ -192,6 +193,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM is disabled https://github.com/unoplatform/uno/issues/2645
 		public void ListView_ChangingText_Validation()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Changing_Text");

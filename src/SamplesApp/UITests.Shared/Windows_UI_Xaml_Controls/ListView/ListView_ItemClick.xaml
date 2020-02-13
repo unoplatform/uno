@@ -20,7 +20,7 @@
 					BorderThickness="2">
 				<ListView ItemsSource="{Binding [SampleItems]}"
 						  Width="100"
-						  Height="300"
+						  Height="400"
 						  IsItemClickEnabled="True"
 						  ItemClick="ListView_ItemClick_1">
 					<ListView.ItemTemplate>
