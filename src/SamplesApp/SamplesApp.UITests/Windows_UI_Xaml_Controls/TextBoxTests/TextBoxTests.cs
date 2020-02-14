@@ -295,5 +295,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			Assert.AreEqual("reset", GetMappedText());
 		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_BeforeTextChanging_Validation()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_BeforeTextChanging");
+
+			var beforeTextBox = _app.Marked("BeforeTextBox");
+
+			// Enter text and verify that only e is permittable in text box
+			Assert.AreEqual("", beforeTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			beforeTextBox.EnterText("Enter text and verify that only e is permittable");
+			Assert.AreEqual("eeeeee", beforeTextBox.GetDependencyPropertyValue("Text")?.ToString());
+		}
 	}
 }
