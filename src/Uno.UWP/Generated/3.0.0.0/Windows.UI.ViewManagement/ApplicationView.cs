@@ -111,16 +111,6 @@ namespace Windows.UI.ViewManagement
 		// Skipping already declared property TitleBar
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.ViewManagement.ApplicationViewMode ViewMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ApplicationViewMode ApplicationView.ViewMode is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public static global::Windows.UI.ViewManagement.ApplicationViewState Value
 		{
 			get

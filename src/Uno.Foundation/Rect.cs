@@ -172,6 +172,9 @@ namespace Windows.Foundation
 		/// and the rectangle represented by the specified Windows.Foundation.Rect, and stores
 		/// the result as the current Windows.Foundation.Rect.
 		/// </summary>
+		/// <remarks>
+		/// Use .IntersectWith() extensions if you want a version without side-effects.
+		/// </remarks>
 		/// <param name="rect">The rectangle to intersect with the current rectangle.</param>
 		public void Intersect(Rect rect)
 		{
