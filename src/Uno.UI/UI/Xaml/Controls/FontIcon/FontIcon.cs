@@ -84,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_textBlock != null)
 			{
-				_textBlock.FontFamily = newValue; 
+				_textBlock.FontFamily = newValue;
 			}
 		}
 

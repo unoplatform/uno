@@ -7,7 +7,7 @@ using AppKit;
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class IconElement
-    {
+	{
 		partial void UnregisterSubView()
 		{
 			if (Subviews.Length > 0)
