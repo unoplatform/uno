@@ -3970,7 +3970,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 }
                 else
                 {
-                    writer.AppendFormatInvariant("/* This template does not have a content for this platform */");
+                    writer.AppendFormatInvariant("/* This template does not have a content for this platform */)");
                 }
             }
             else if (typeName == "NullExtension")
