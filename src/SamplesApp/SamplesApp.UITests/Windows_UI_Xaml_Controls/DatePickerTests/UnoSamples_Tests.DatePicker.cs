@@ -32,7 +32,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			_app.WaitForDependencyPropertyValue(theDatePicker, "DataContext", "UITests.Shared.Windows_UI_Xaml_Controls.DatePicker.Models.DatePickerViewModel");
 
 			// Open flyout
-			theDatePicker.FastTap();
+			theDatePicker.Tap();
 
 			_app.WaitForElement(datePickerFlyout);
 
@@ -54,7 +54,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			var datePickerFlyout = _app.CreateQuery(q => q.WithClass("Windows_UI_Xaml_Controls_DatePickerFlyoutPresenter"));
 
 			// Open flyout
-			theDatePicker.FastTap();
+			theDatePicker.Tap();
 
 			_app.WaitForDependencyPropertyValue(datePickerFlyout, "Content", "Windows.UI.Xaml.Controls.DatePickerSelector");
 
@@ -93,13 +93,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			var theDatePicker = _app.Marked("theDatePicker");
 			var datePickerFlyout = _app.CreateQuery(q => q.WithClass("Windows_UI_Xaml_Controls_DatePickerSelector"));
 
-			_app.WaitFor(() => theDatePicker.GetDependencyPropertyValue<string>("MinYear") != null);
+			_app.WaitFor(
+				() => theDatePicker.GetDependencyPropertyValue<string>("MinYear") != null,
+				timeoutMessage: "Unable to get property MinYear on theDataPicker");
 			var minYear = theDatePicker.GetDependencyPropertyValue<string>("MinYear");
 
 			// Open flyout
 			theDatePicker.FastTap();
 
-			_app.WaitFor(() => datePickerFlyout.GetDependencyPropertyValue<string>("MinYear") == minYear);
+			_app.WaitFor(
+				() => datePickerFlyout.GetDependencyPropertyValue<string>("MinYear") == minYear,
+				timeoutMessage: "Property MinYear on the flyout is not set properly");
 
 			_app.TapCoordinates(20, 20);
 		}
@@ -116,14 +120,18 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.DatePickerTests
 			var theDatePicker = _app.Marked("theDatePicker");
 			var datePickerFlyout = _app.CreateQuery(q => q.WithClass("Windows_UI_Xaml_Controls_DatePickerSelector"));
 
-			_app.WaitFor(() => theDatePicker.GetDependencyPropertyValue<string>("MaxYear") != null);
+			_app.WaitFor(
+				() => theDatePicker.GetDependencyPropertyValue<string>("MaxYear") != null,
+				timeoutMessage: "Unable to get property MaxYear on theDataPicker");
 			var maxYear = theDatePicker.GetDependencyPropertyValue<string>("MaxYear");
 
 			// Open flyout
 			theDatePicker.FastTap();
 
 			//Assert
-			_app.WaitFor(() => datePickerFlyout.GetDependencyPropertyValue<string>("MaxYear") == maxYear);
+			_app.WaitFor(
+				() => datePickerFlyout.GetDependencyPropertyValue<string>("MaxYear") == maxYear,
+				timeoutMessage: "Property MaxYear on the flyout is not set properly");
 
 			_app.TapCoordinates(20, 20);
 		}

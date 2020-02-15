@@ -1,13 +1,11 @@
-﻿using Android.Graphics;
+﻿using Windows.Foundation;
 using Uno.UI;
-using System;
-using System.Drawing;
 
 namespace Windows.UI.Xaml.Shapes
 {
     public partial class Line : ArbitraryShapeBase
 	{
-		protected override Android.Graphics.Path GetPath()
+		protected override Android.Graphics.Path GetPath(Size availableSize)
 		{
 			var output = new Android.Graphics.Path();
 

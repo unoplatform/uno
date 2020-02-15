@@ -19,6 +19,7 @@ using Uno.UI.Controls;
 using Uno.UI.Media;
 using System;
 using System.Numerics;
+using System.Reflection;
 using Windows.UI.Xaml.Markup;
 using Microsoft.Extensions.Logging;
 
@@ -296,8 +297,10 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				rect = Clip?.Rect ?? Rect.Empty;
+				rect = Clip.Rect;
 
+				// Currently only TranslateTransform is supported on a clipping mask
+				// (because the calculated mask is a Rect right now...)
 				if (Clip?.Transform is TranslateTransform translateTransform)
 				{
 					rect.X += translateTransform.X;
@@ -307,7 +310,11 @@ namespace Windows.UI.Xaml
 
 			if (NeedsClipToSlot)
 			{
+#if __WASM__
 				var boundsClipping = new Rect(0, 0, RenderSize.Width, RenderSize.Height);
+#else
+				var boundsClipping = ClippedFrame ?? Rect.Empty;
+#endif
 				if (rect.IsEmpty)
 				{
 					rect = boundsClipping;
@@ -390,6 +397,9 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Provides the size reported during the last call to Measure.
 		/// </summary>
+		/// <remarks>
+		/// DesiredSize INCLUDES MARGINS.
+		/// </remarks>
 		public Size DesiredSize
 		{
 			get;
@@ -404,6 +414,13 @@ namespace Windows.UI.Xaml
 		public virtual void Measure(Size availableSize)
 		{
 		}
+
+#if !__WASM__
+		/// <summary>
+		/// This is the Frame that should be used as "available Size" for the Arrange phase.
+		/// </summary>
+		internal Rect? ClippedFrame;
+#endif
 
 		public virtual void Arrange(Rect finalRect)
 		{
@@ -433,6 +450,9 @@ namespace Windows.UI.Xaml
 		public void InvalidateArrange()
 		{
 			InvalidateMeasure();
+#if !__WASM__
+			ClippedFrame = null;
+#endif
 		}
 #endif
 
