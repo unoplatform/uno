@@ -10,11 +10,14 @@ namespace Windows.ApplicationModel.Background
 	{
 		public  bool OneShot { get; }
 		public SystemTriggerType TriggerType { get; }
+#if !__ANDROID__
+		// Android implementation checks if triggerType is supported
 		public SystemTrigger( SystemTriggerType triggerType,  bool oneShot) 
 		{
 			OneShot = oneShot;
 			TriggerType = triggerType;
 		}
+#endif
 	}
 
 }

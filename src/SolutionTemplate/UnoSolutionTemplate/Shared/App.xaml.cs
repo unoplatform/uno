@@ -38,7 +38,14 @@ namespace $ext_safeprojectname$
 #if HAS_UNO || NETFX_CORE
             this.Suspending += OnSuspending;
 #endif
-        }
+
+#if __ANDROID__
+            // for background triggers work, we have to store two value inside Uno
+            Windows.ApplicationModel.Background.BackgroundTaskBuilder.UnoInitTriggers(
+                typeof(AndroidJobForUWPTriggers), androidBroadcastReceiver);
+#endif
+
+	}
 
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
@@ -180,5 +187,61 @@ namespace $ext_safeprojectname$
 			global::Uno.UI.Adapter.Microsoft.Extensions.Logging.LoggingAdapter.Initialize();
 #endif
         }
-    }
+
+#if __ANDROID__
+
+	// Android services are defined here, because we need '(App)App.Current'
+
+        Android.Content.BroadcastReceiver androidBroadcastReceiver = new AndroidBroadcastReceiverForUWPTriggers();
+
+
+	#region "handling TimeTrigger"
+
+    // for API 21 (), since 2014
+    [Android.App.Service(Permission = "android.permission.BIND_JOB_SERVICE")]
+	public class AndroidJobForUWPTriggers : Android.App.Job.JobService
+		{
+			public override bool OnStartJob(Android.App.Job.JobParameters @params)
+			{
+				// "Work that will take longer that a few milliseconds should be performed on a thread to avoid blocking the application."
+				System.Threading.Tasks.Task.Run(() =>
+				{
+					var jobParams = @params.Extras;
+                    // e.g. jobParams.GetInt("Freshness")
+
+                    var args = new BackgroundActivatedEventArgs(@params);
+                    ((App)App.Current).OnBackgroundActivated(args);
+
+                    // Have to tell the JobScheduler the work is done. 
+                    JobFinished(@params, false); // zwolnienie resources - ze niby nie trzeba Deferala brac?
+				});
+
+				// Return true because of the asynchronous work
+				return true;
+			}
+
+			public override bool OnStopJob(Android.App.Job.JobParameters @params)
+			{
+				// Android stops our Job
+				return false; // do not reschedule it
+			}
+		}
+	#endregion
+
+	#region "handling SystemTrigger"
+        public class AndroidBroadcastReceiverForUWPTriggers : Android.Content.BroadcastReceiver
+        {
+            public override void OnReceive(Android.Content.Context context, Android.Content.Intent intent)
+            {
+                var args = new BackgroundActivatedEventArgs(intent);
+                if (args.TaskInstance != null)
+                {
+                    ((App)App.Current).OnBackgroundActivated(args);
+                }
+            }
+        }
+	#endregion
+
+#endif
+}
 }
