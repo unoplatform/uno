@@ -1,7 +1,4 @@
-﻿using Windows.UI.Xaml.Controls;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
 using AppKit;
 
 namespace Windows.UI.Xaml.Controls
