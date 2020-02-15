@@ -655,6 +655,9 @@
 				<Member
 					fullName="System.Void Windows.ApplicationModel.DataTransfer.DataPackage.SetText(System.String text)"
 					reason="UWP uses 'value' as the parameter name" />
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.IconElement.AddIconElementView(Windows.UI.Xaml.UIElement child)"
+					reason="macOS requires NSView as AddIconElementView parameter" />
         </Methods>
 		</IgnoreSet>
 	</IgnoreSets>
