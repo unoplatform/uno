@@ -63,10 +63,6 @@ namespace Windows.UI.Xaml.Shapes
 
 			switch (Stretch)
 			{
-				default:
-				case Stretch.None:
-					area = CGRect.Empty;
-					break;
 				case Stretch.Fill:
 					area = Bounds;
 					break;
@@ -79,6 +75,9 @@ namespace Windows.UI.Xaml.Shapes
 					area = (area.Height > area.Width)
 						? (new global::System.Drawing.RectangleF((float)area.X, (float)area.Y, (float)area.Height, (float)area.Height))
 						: (new global::System.Drawing.RectangleF((float)area.X, (float)area.Y, (float)area.Width, (float)area.Width));
+					break;
+				default: // None
+					area = CGRect.Empty;
 					break;
 			}
 

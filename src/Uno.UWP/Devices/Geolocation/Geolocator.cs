@@ -1,4 +1,4 @@
-#if __IOS__ || __ANDROID__ || __WASM__
+#if __IOS__ || __ANDROID__ || __WASM__ || __MACOS__
 #pragma warning disable 67
 using System;
 using System.Collections.Concurrent;

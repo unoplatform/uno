@@ -21,6 +21,7 @@ namespace Windows.UI.Xaml
 		private static Window _current;
 		private RootViewController _mainController;
 		private UIElement _content;
+		private object _windowResizeNotificationObject;
 
 		/// <summary>
 		/// A function to generate a custom view controller which inherits from <see cref="RootViewController"/>.
@@ -45,19 +46,20 @@ namespace Windows.UI.Xaml
 			CoreWindow = new CoreWindow(_window);
 
 			InitializeCommon();
-		}
+		}		
 
 		private void ObserveOrientationAndSize()
 		{
-			//_window.FrameChanged +=
-			//	() => RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
+			_windowResizeNotificationObject = NSNotificationCenter.DefaultCenter.AddObserver(
+				new NSString("NSWindowDidResizeNotification"), ResizeObserver, null);
 
-			// TODO macOS
-			//var statusBar = StatusBar.GetForCurrentView();
-			//statusBar.Showing += (o, e) => UpdateCoreBounds();
-			//statusBar.Hiding += (o, e) => UpdateCoreBounds();
+			RaiseNativeSizeChanged(new CGSize(_window.Frame.Width, _window.Frame.Height));
 
-			RaiseNativeSizeChanged(ViewHelper.GetScreenSize());
+		}
+
+		private void ResizeObserver(NSNotification obj)
+		{
+			RaiseNativeSizeChanged(new CGSize(_window.Frame.Width, _window.Frame.Height));
 		}
 
 		partial void InternalActivate()
@@ -119,6 +121,6 @@ namespace Windows.UI.Xaml
 			{
 				applicationView.SetCoreBounds(_window, Bounds);
 			}
-		}
+		}		
 	}
 }
