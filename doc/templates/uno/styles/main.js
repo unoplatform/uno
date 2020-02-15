@@ -1,30 +1,47 @@
-if ( document.body.classList.contains('front-page') ) {
+document.addEventListener('DOMContentLoaded', function(){
+    if (document.body.classList.contains("front-page")) {
+        var last_known_scroll_position = 0;
+        var ticking = false;
+        var navbar = document.querySelector("header > .navbar");
 
-    var last_known_scroll_position = 0;
-    var ticking = false;
-    var navbar = document.querySelector('header > .navbar');
+        function doSomething(scroll_pos) {
+            if (scroll_pos >= 100) navbar.classList.add("scrolled");
+            else navbar.classList.remove("scrolled");
+        }
 
-    function doSomething(scroll_pos) {
+        window.addEventListener("scroll", function(e) {
+            last_known_scroll_position = window.scrollY;
 
-        if (scroll_pos>=100)
-            navbar.classList.add("scrolled");
-        else
-            navbar.classList.remove("scrolled");
+            if (!ticking) {
+                window.requestAnimationFrame(function() {
+                    doSomething(last_known_scroll_position);
+                    ticking = false;
+                });
+
+                ticking = true;
+            }
+        });
     }
 
-    window.addEventListener('scroll', function(e) {
+    // if local env, use toc.yml for main nav
+    // else use wp menu
+    if (window.location.hostname === 'localhost') {
+        const unoMenuReq = new XMLHttpRequest();
+        const unoMenuEndpoint = window.location.protocol + "//" + window.location.hostname + "/wp-json/wp/v2/menu";
+        unoMenuReq.open("get", unoMenuEndpoint, true);
+        unoMenuReq.onload = function (e) {
+            if (unoMenuReq.status === 200 && unoMenuReq.responseText)
+                document.getElementById("navbar").innerHTML = JSON.parse(unoMenuReq.responseText);
+        };
+        unoMenuReq.send();
+    }
 
-        last_known_scroll_position = window.scrollY;
+    document.addEventListener('click', function (e) {
+        const t = e.target;
+        if (window.innerWidth >= 980 || !t.matches('#navbar .has-children a')) return;
+        e.preventDefault();
+        t.parentElement.classList.toggle('open');
+    }, false);
 
-        if (!ticking) {
-
-            window.requestAnimationFrame(function() {
-                doSomething(last_known_scroll_position);
-                ticking = false;
-            });
-
-            ticking = true;
-        }
-    });
-}
+}, false);
 

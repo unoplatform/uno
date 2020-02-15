@@ -5,7 +5,7 @@ namespace Uno.Foundation.Extensibility
 	/// <summary>
 	/// ApiExtension registration for the <see cref="ApiExtensibility"/> class.
 	/// </summary>
-	[System.AttributeUsage(AttributeTargets.Assembly, Inherited = false, AllowMultiple = true)]
+	[AttributeUsage(AttributeTargets.Assembly, Inherited = false, AllowMultiple = true)]
 	public sealed class ApiExtensionAttribute : Attribute
 	{
 		/// <summary>

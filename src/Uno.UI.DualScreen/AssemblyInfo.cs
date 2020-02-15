@@ -1,7 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using Windows.UI.ViewManagement;
+using Uno.Devices.Sensors;
+using Uno.Foundation.Extensibility;
+using Uno.UI.DualScreen;
 
-[assembly: Uno.Foundation.Extensibility.ApiExtension(typeof(Windows.UI.ViewManagement.IApplicationViewSpanningRects), typeof(Uno.UI.DualScreen.DuoApplicationViewSpanningRects))]
+[assembly: ApiExtension(typeof(IApplicationViewSpanningRects), typeof(DuoApplicationViewSpanningRects))]
+[assembly: ApiExtension(typeof(INativeHingeAngleSensor), typeof(DuoHingeAngleSensor))]

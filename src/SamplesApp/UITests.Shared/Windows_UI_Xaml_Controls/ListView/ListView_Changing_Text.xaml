@@ -14,7 +14,8 @@
 				<StackPanel>
 					<CheckBox x:Name="CheckBox"
 							  Content="Toggle to change text" />
-					<TextBlock Text="{Binding IsChecked, ElementName=CheckBox}" />
+					<TextBlock x:Name="ToggleTextBlock"
+							   Text="{Binding IsChecked, ElementName=CheckBox}" />
 				</StackPanel>
 			</DataTemplate>
 		</ListView.ItemTemplate>

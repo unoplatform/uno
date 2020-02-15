@@ -25,4 +25,8 @@
 			<ProjectItem TargetFileName="$ext_safeprojectname$.Uwp_temporarykey.pfx" ReplaceParameters="false">UnoQuickStart.Uwp_temporarykey.pfx</ProjectItem>
 		</Project>
 	</TemplateContent>
+	<WizardExtension>
+		<Assembly>Microsoft.VisualStudio.WinRT.TemplateWizards, Version=15.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</Assembly>
+		<FullClassName>Microsoft.VisualStudio.WinRT.TemplateWizards.CreateProjectCertificate.Wizard</FullClassName>
+	</WizardExtension>
 </VSTemplate>

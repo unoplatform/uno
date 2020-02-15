@@ -12,8 +12,8 @@ namespace Uno.Foundation.Extensibility
 	/// </summary>
 	public static class ApiExtensibility
 	{
-		private static object _gate = new object();
-		private static Dictionary<Type, Func<object, object>> _registrations = new Dictionary<Type, Func<object, object>>();
+		private static readonly object _gate = new object();
+		private static readonly Dictionary<Type, Func<object, object>> _registrations = new Dictionary<Type, Func<object, object>>();
 
 		/// <summary>
 		/// Registers an extension instance builder for the specified type

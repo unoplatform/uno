@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Shapes
 {
 	public partial class Polygon
 	{
-		protected override CGPath GetPath()
+		protected override CGPath GetPath(Size availableSize)
 		{
 			var coords = Points;
 
