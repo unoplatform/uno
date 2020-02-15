@@ -215,6 +215,67 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ListViewTests
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM is disabled https://github.com/unoplatform/uno/issues/2645
+		public void ListView_ItemClicked_Validation()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_ItemClick");
+
+			var itemClickedTextBlock = _app.Marked("ItemClickedTextBlock");
+			var numberListTextBlock = _app.Marked("NumberListTextBlock");
+
+			// Assert click on 1st item
+			Assert.AreEqual("", itemClickedTextBlock.GetDependencyPropertyValue("Text")?.ToString());
+			numberListTextBlock.AtIndex(0).Tap();
+			Assert.AreEqual("1", itemClickedTextBlock.GetDependencyPropertyValue("Text")?.ToString());
+
+			// Assert click on 4th item
+			numberListTextBlock.AtIndex(3).Tap();
+			Assert.AreEqual("4", itemClickedTextBlock.GetDependencyPropertyValue("Text")?.ToString());
+
+			// Assert click on 8th item
+			numberListTextBlock.AtIndex(7).Tap();
+			Assert.AreEqual("8", itemClickedTextBlock.GetDependencyPropertyValue("Text")?.ToString());
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // WASM is disabled https://github.com/unoplatform/uno/issues/2645
+		public void ListView_ChangingText_Validation()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_Changing_Text");
+
+			var checkBox = _app.Marked("CheckBox");
+			var toggleTextBlock = _app.Marked("ToggleTextBlock");
+
+			// Assert text change of 1st item
+			Assert.AreEqual("False", toggleTextBlock.AtIndex(0).GetDependencyPropertyValue("Text")?.ToString());
+			checkBox.AtIndex(0).Tap();
+			Assert.AreEqual("True", toggleTextBlock.AtIndex(0).GetDependencyPropertyValue("Text")?.ToString());
+
+			// Assert text change of 6th item
+			Assert.AreEqual("False", toggleTextBlock.AtIndex(5).GetDependencyPropertyValue("Text")?.ToString());
+			checkBox.AtIndex(5).Tap();
+			Assert.AreEqual("True", toggleTextBlock.AtIndex(5).GetDependencyPropertyValue("Text")?.ToString());
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ListView_ChangeHeight_Validation()
+		{
+			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListViewChangeHeight");
+
+			var heightChangeButton = _app.Marked("HeightChangeButton");
+			var fixedHeightContainer = _app.Marked("FixedHeightContainer");
+
+			// Change height and assert
+			string heightBefore = fixedHeightContainer.GetDependencyPropertyValue("Height")?.ToString();
+			heightChangeButton.Tap();
+			string heightAfter = fixedHeightContainer.GetDependencyPropertyValue("Height")?.ToString();
+			Assert.AreNotEqual(heightBefore, heightAfter);			
+		}
+
+		[Test]
+		[AutoRetry]
 		public void ListView_SelectedItem()
 		{
 			Run("SamplesApp.Windows_UI_Xaml_Controls.ListView.ListView_SelectedItem");
