@@ -2,6 +2,7 @@
 
 ### Features
 
+- Support for full screen mode on macOS
 - Support for `ShowComposeSmsMessageAsync` on macOS
 - Support for `Flyout` on macOS
 - Support for `HingeAngleSensor` for Surface Duo
