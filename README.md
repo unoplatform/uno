@@ -5,6 +5,8 @@
 
 ## Build Mobile, Desktop and WebAssembly apps with C# and XAML. Today.
 
+[![Open Uno in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/unoplatform/uno) 
+
 [![Azure DevOps](https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/master?label=master)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5)
 [![Azure DevOps](https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/release/beta/Batman?label=release/beta/Batman)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5)
 [![Azure DevOps](https://img.shields.io/azure-devops/build/uno-platform/1dd81cbd-cb35-41de-a570-b0df3571a196/5/release/stable/Batman?label=release/stable/Batman)](https://uno-platform.visualstudio.com/Uno%20Platform/_build?definitionId=5)
@@ -107,11 +109,15 @@ Let us know if you've made your app publicly available, we'll list it here!
 
 # Have questions? Feature requests? Issues?
 
-Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform), [create an issue](https://github.com/unoplatform/uno/issues) or [visit our Gitter](https://gitter.im/uno-platform/Lobby).
+Make sure to visit our [FAQ](doc/articles/faq.md), [StackOverflow](https://stackoverflow.com/questions/tagged/uno-platform), [create an issue](https://github.com/unoplatform/uno/issues).
 
 # Contributing
 
-There are many ways that you can contribute to the Uno Platform, as the UWP API is pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements.
+There are many ways that you can contribute to the Uno Platform, as the UWP API is pretty large! Read our [contributing guide](CONTRIBUTING.md) to learn about our development process and how to propose bug fixes and improvements. Come visit us on our [visit our Gitter](https://gitter.im/uno-platform/Lobby) for help on how to contribute!
+
+Contribute to Uno in your browser using [GitPod.io](https://gitpod.io), follow [our guide here](doc/articles/features/working-with-gitpod.md).
+
+ [![Open in Gitpod](https://gitpod.io/button/open-in-gitpod.svg)](https://gitpod.io/#https://github.com/unoplatform/uno)
 
 # Contributors
 

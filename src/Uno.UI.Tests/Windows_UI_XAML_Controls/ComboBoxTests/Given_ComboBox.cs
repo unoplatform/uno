@@ -13,7 +13,13 @@ namespace Uno.UI.Tests.ComboBoxTests
 {
 	[TestClass]
     public class Given_ComboBox
-    {
+	{
+		[TestInitialize]
+		public void Init()
+		{
+			UnitTestsApp.App.EnsureApplication();
+		}
+
 		[TestMethod]
 		public void When_ComboBox_Is_First_Opening()
 		{

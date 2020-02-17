@@ -1,0 +1,67 @@
+jobs:
+
+- job: UITests_Screenshots_Compare
+  dependsOn:
+    - Wasm_UITests_Snap
+    - Wasm_UITests_Automated
+    - Android_Tests
+    - iOS_Tests
+
+  pool:
+    vmImage: 'vs2017-win2016'
+
+  variables:
+    COMPARE_WORKDIR: $(Build.SourcesDirectory)\snapshot-compare
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - task: NuGetToolInstaller@0
+    inputs:
+      versionSpec: 4.9.1
+      checkLatest: false
+
+  - task: MSBuild@1
+    inputs:
+      solution: src/Uno.UI.TestComparer/Uno.UI.TestComparer.csproj
+      msbuildLocationMethod: version
+      msbuildVersion: latest
+      msbuildArchitecture: x86
+      msbuildArguments: /r "/p:Configuration=Release"
+      clean: false
+      maximumCpuCount: true
+      restoreNugetPackages: false
+      logProjectEvents: false
+      createLogFile: false
+
+  - script: |
+      src\Uno.UI.TestComparer\bin\Release\Uno.UI.TestComparer.exe "azdo" --pat="$(UITestsCompare_PAT)" --base-path="$(COMPARE_WORKDIR)" --source-branch="%GIT_SOURCEBRANCH%" --target-branch="%GIT_TARGETBRANCH%" --artifact-name="uitests-results" --artifact-inner-path="uitests-results\screenshots" --definition-name="$(Build.DefinitionName)" --project-name="$(System.TeamProject)" --server-uri="$(System.TeamFoundationCollectionUri)" --current-build="$(Build.BuildId)" --run-limit="3" --github-pat="$(CommentsGitHubPAT)" --source-repository="$(system.pullRequest.sourceRepositoryUri)" --github-pr-id="$(system.pullRequest.pullRequestNumber)"
+      
+    env:
+      GIT_TARGETBRANCH: "$(System.PullRequest.TargetBranch)"
+      GIT_SOURCEBRANCH: "$(Build.SourceBranch)"
+
+    displayName: 'Compare UI Tests screenshots'
+    condition: eq(variables['Build.Repository.Provider'], 'GitHub')
+
+  - task: PublishTestResults@2
+    condition: always()
+    inputs:
+      testResultsFiles: '$(COMPARE_WORKDIR)\*.xml'
+      testRunTitle: 'Screenshots Compare Test Run'
+      testResultsFormat: 'NUnit'
+      failTaskOnFailedTests: false
+
+  - task: ArchiveFiles@2
+    inputs:
+      rootFolderOrFile: '$(COMPARE_WORKDIR)' 
+      includeRootFolder: true 
+      archiveType: 'zip'
+      archiveFile: '$(Build.ArtifactStagingDirectory)/snapshot-compare-results-$(Build.BuildId).zip' 
+
+  - task: PublishBuildArtifacts@1
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: wasm-uitests-compare-results
+      ArtifactType: Container

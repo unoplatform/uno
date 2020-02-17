@@ -43,3 +43,4 @@ Debugging WebAssembly via Google Chrome is experimentally supported by the Uno P
 > * For breakpoints to work properly, you should not open the debugger tools (<kbd>F12</kbd>) in the app's tab.
 > * If you are **debugging a library which is publishing SourceLinks**, you must disable it or you'll
 > always see the SourceLink code in the debugger. SourceLink should be activated only on Release build.
+> * When debugging in Chrome, <kbd>Ctrl</kbd>+<kbd>O</kbd> brings up a file-search field. That way it's a lot easier to find .cs files versus searching through the whole folder hierarchy.

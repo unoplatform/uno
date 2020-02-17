@@ -117,6 +117,42 @@ namespace Windows.UI.Xaml.Controls
 			DependencyObjectExtensions.SetValue(view, ColumnSpanProperty, columnSpan);
 		}
 		#endregion
+		
+		public double RowSpacing
+		{
+			get
+			{
+				return (double)this.GetValue(RowSpacingProperty);
+			}
+			set
+			{
+				this.SetValue(RowSpacingProperty, value);
+			}
+		}
+
+		public static DependencyProperty RowSpacingProperty { get; } =
+		DependencyProperty.Register(
+			"RowSpacing", typeof(double),
+			typeof(Grid),
+			new FrameworkPropertyMetadata(default(double), OnGenericPropertyChanged));
+
+		public double ColumnSpacing
+		{
+			get
+			{
+				return (double)this.GetValue(ColumnSpacingProperty);
+			}
+			set
+			{
+				this.SetValue(ColumnSpacingProperty, value);
+			}
+		}
+
+		public static DependencyProperty ColumnSpacingProperty { get; } =
+		DependencyProperty.Register(
+			"ColumnSpacing", typeof(double),
+			typeof(Grid),
+			new FrameworkPropertyMetadata(default(double), OnGenericPropertyChanged));
 
 		private static void OnGenericPropertyChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{

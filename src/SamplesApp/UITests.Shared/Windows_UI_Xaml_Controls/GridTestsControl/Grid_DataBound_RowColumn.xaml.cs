@@ -8,7 +8,7 @@ using Windows.UI;
 
 namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 {
-	[SampleControlInfo("GridTestsControl", "Grid_DataBound_RowColumn")]
+	[SampleControlInfo("GridTestsControl", "Grid_DataBound_RowColumn", ignoreInSnapshotTests: true)]
 	public sealed partial class Grid_DataBound_RowColumn : UserControl
 	{
 		public Grid_DataBound_RowColumn()

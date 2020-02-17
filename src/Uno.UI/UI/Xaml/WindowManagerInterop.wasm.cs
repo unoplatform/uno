@@ -121,7 +121,7 @@ namespace Uno.UI.Xaml
 
 		#region SetElementTransform
 
-		internal static void SetElementTransform(IntPtr htmlId, Matrix3x2 matrix)
+		internal static void SetElementTransform(IntPtr htmlId, Matrix3x2 matrix, bool requiresClipping)
 		{
 			if (UseJavascriptEval)
 			{
@@ -129,9 +129,10 @@ namespace Uno.UI.Xaml
 
 				SetStyles(
 					htmlId,
-					new[] { ("transform", native.ToStringInvariant()) },
-					true
+					new[] { ("transform", native.ToStringInvariant()) }
 				);
+
+				SetArrangeProperties(htmlId, requiresClipping);
 			}
 			else
 			{
@@ -254,14 +255,12 @@ namespace Uno.UI.Xaml
 
 		#region SetStyles
 
-		internal static void SetStyles(IntPtr htmlId, (string name, string value)[] styles, bool setAsArranged = false, bool clipToBounds = false)
+		internal static void SetStyles(IntPtr htmlId, (string name, string value)[] styles)
 		{
 			if (UseJavascriptEval)
 			{
-				var setAsArrangeString = setAsArranged ? "true" : "false";
-				var clipToBoundsString = setAsArranged ? "true" : "false";
 				var stylesStr = string.Join(", ", styles.Select(s => "\"" + s.name + "\": \"" + WebAssemblyRuntime.EscapeJs(s.value) + "\""));
-				var command = "Uno.UI.WindowManager.current.setStyle(\"" + htmlId + "\", {" + stylesStr + "}," + setAsArrangeString + "," + clipToBoundsString + "); ";
+				var command = "Uno.UI.WindowManager.current.setStyle(\"" + htmlId + "\", {" + stylesStr + "}); ";
 
 				WebAssemblyRuntime.InvokeJS(command);
 			}
@@ -278,8 +277,6 @@ namespace Uno.UI.Xaml
 				var parms = new WindowManagerSetStylesParams
 				{
 					HtmlId = htmlId,
-					SetAsArranged = setAsArranged,
-					ClipToBounds = clipToBounds,
 					Pairs_Length = pairs.Length,
 					Pairs = pairs,
 				};
@@ -294,17 +291,25 @@ namespace Uno.UI.Xaml
 		{
 			public IntPtr HtmlId;
 
-			public bool SetAsArranged;
-
 			public int Pairs_Length;
 
 			[MarshalAs(UnmanagedType.LPArray, ArraySubType = UnmanagedType.LPStr)]
 			public string[] Pairs;
-
-			public bool ClipToBounds;
 		}
 
 		#endregion
+
+		private static void SetArrangeProperties(IntPtr htmlId, bool requiresClipping)
+		{
+			if (!UseJavascriptEval)
+			{
+				throw new InvalidOperationException("This should only be called when UseJavascriptEval flag is set");
+			}
+
+			var command = "Uno.UI.WindowManager.current.setArrangeProperties(\"" + htmlId + "\", " + (requiresClipping ? "true" : "false") + "); ";
+
+			WebAssemblyRuntime.InvokeJS(command);
+		}
 
 		#region SetClasses
 
@@ -320,7 +325,10 @@ namespace Uno.UI.Xaml
 			{
 				var parms = new WindowManagerSetClassesParams
 				{
-					HtmlId = htmlId, CssClasses = cssClasses, CssClasses_Length = cssClasses.Length, Index = index
+					HtmlId = htmlId,
+					CssClasses = cssClasses,
+					CssClasses_Length = cssClasses.Length,
+					Index = index
 				};
 
 				TSInteropMarshaller.InvokeJS<WindowManagerSetClassesParams>("Uno:setClassesNative", parms);
@@ -430,8 +438,8 @@ namespace Uno.UI.Xaml
 		}
 
 		#endregion
-		#region SetAttributes
 
+		#region SetAttribute
 		internal static void SetAttribute(IntPtr htmlId, string name, string value)
 		{
 			if (UseJavascriptEval)
@@ -466,6 +474,38 @@ namespace Uno.UI.Xaml
 
 			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
 			public string Value;
+		}
+
+		#endregion
+
+		#region ClearAttribute
+		internal static void RemoveAttribute(IntPtr htmlId, string name)
+		{
+			if (UseJavascriptEval)
+			{
+				var command = "Uno.UI.WindowManager.current.removeAttribute(\"" + htmlId + "\", \"" + name + "\");";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerRemoveAttributeParams()
+				{
+					HtmlId = htmlId,
+					Name = name,
+				};
+
+				TSInteropMarshaller.InvokeJS<WindowManagerRemoveAttributeParams>("Uno:removeAttributeNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerRemoveAttributeParams
+		{
+			public IntPtr HtmlId;
+
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string Name;
 		}
 
 		#endregion
@@ -830,10 +870,10 @@ namespace Uno.UI.Xaml
 						("width", rect.Width.ToString(CultureInfo.InvariantCulture) + "px"),
 						("height", rect.Height.ToString(CultureInfo.InvariantCulture) + "px"),
 						("clip", clipRect2)
-					},
-					clipToBounds: clipToBounds,
-					setAsArranged: true
+					}
 				);
+
+				SetArrangeProperties(htmlId, clipToBounds);
 			}
 			else
 			{
@@ -847,7 +887,7 @@ namespace Uno.UI.Xaml
 					ClipToBounds = clipToBounds
 				};
 
-				if(clipRect != null)
+				if (clipRect != null)
 				{
 					parms.Clip = true;
 					parms.ClipTop = clipRect.Value.Top;
@@ -907,7 +947,7 @@ namespace Uno.UI.Xaml
 
 				return (
 					clientSize: new Size(ret.ClientWidth, ret.ClientHeight),
-					offsetSize:new Size(ret.OffsetWidth, ret.OffsetHeight)
+					offsetSize: new Size(ret.OffsetWidth, ret.OffsetHeight)
 				);
 			}
 		}
@@ -932,5 +972,61 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
+		#region ScrollTo
+		internal static void ScrollTo(IntPtr htmlId, double? left, double? top, bool disableAnimation)
+		{
+			var parms = new WindowManagerScrollToOptionsParams
+			{
+				HtmlId = htmlId,
+				HasLeft = left.HasValue,
+				Left = left ?? 0,
+				HasTop = top.HasValue,
+				Top = top ?? 0,
+				DisableAnimation = disableAnimation
+			};
+
+			TSInteropMarshaller.InvokeJS<WindowManagerScrollToOptionsParams>("Uno:scrollTo", parms);
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerScrollToOptionsParams
+		{
+			public double Left;
+			public double Top;
+			public bool HasLeft;
+			public bool HasTop;
+			public bool DisableAnimation;
+
+			public IntPtr HtmlId;
+		}
+		#endregion
+
+		#region Pointers
+		[Flags]
+		internal enum HtmlPointerButtonsState
+		{
+			// https://developer.mozilla.org/en-US/docs/Web/API/Pointer_events#Determining_button_states
+
+			None = 0,
+			Left = 1,
+			Middle = 4,
+			Right = 2,
+			X1 = 8,
+			X2 = 16,
+			Eraser = 32,
+		}
+
+		internal enum HtmlPointerButtonUpdate
+		{
+			None = -1,
+			Left = 0,
+			Middle = 1,
+			Right = 2,
+			X1 = 3,
+			X2 = 4,
+			Eraser = 5
+		}
+		#endregion
 	}
 }

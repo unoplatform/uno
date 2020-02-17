@@ -1,13 +1,12 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Drawing;
+using System.Globalization;
 using System.Linq;
-using System.Text;
+using Uno.Extensions;
 
 namespace Windows.Foundation
 {
-	[DebuggerDisplay("[Rect {rect.X}-{rect.Y}-{rect.Width}-{rect.Height}]")]
+	[DebuggerDisplay("[Rect {Size}@{Location}]")]
 	public partial struct Rect
 	{
 		private const string _negativeErrorMessage = "Non-negative number required.";
@@ -88,14 +87,13 @@ namespace Windows.Foundation
 		public double Right => X + Width;
 		public double Bottom => Y + Height;
 
-		public bool IsEmpty => Empty.Equals(this);	
+		public bool IsEmpty => Empty.Equals(this);
 
 		public static implicit operator Rect(string text)
 		{
 			var parts = text
 				.Split(new[] { ',' })
-				.Select(double.Parse)
-				.ToArray();
+				.SelectToArray(s => double.Parse(s, NumberFormatInfo.InvariantInfo));
 
 			return new Rect
 			(
@@ -174,6 +172,9 @@ namespace Windows.Foundation
 		/// and the rectangle represented by the specified Windows.Foundation.Rect, and stores
 		/// the result as the current Windows.Foundation.Rect.
 		/// </summary>
+		/// <remarks>
+		/// Use .IntersectWith() extensions if you want a version without side-effects.
+		/// </remarks>
 		/// <param name="rect">The rectangle to intersect with the current rectangle.</param>
 		public void Intersect(Rect rect)
 		{
@@ -206,19 +207,19 @@ namespace Windows.Foundation
 			this = new Rect(left, top, right - left, bottom - top);
 		}
 
-		public bool Equals(Rect value) 
+		public override int GetHashCode() => X.GetHashCode() ^ Y.GetHashCode() ^ Width.GetHashCode() ^ Height.GetHashCode();
+
+		public bool Equals(Rect value)
 			=> value.X == X
 				&& value.Y == Y
 				&& value.Width == Width
 				&& value.Height == Height;
 
-		public override int GetHashCode() => X.GetHashCode() ^ Y.GetHashCode() ^ Width.GetHashCode() ^ Height.GetHashCode();
+		public override bool Equals(object obj)
+			=> obj is Rect r ? r.Equals(this) : base.Equals(obj);
 
 		public static bool operator ==(Rect left, Rect right) => left.Equals(right);
 
 		public static bool operator !=(Rect left, Rect right) => !left.Equals(right);
-
-		public override bool Equals(object obj) 
-			=> obj is Rect r ? r.Equals(this) : base.Equals(obj);
 	}
 }

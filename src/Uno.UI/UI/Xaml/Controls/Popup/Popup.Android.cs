@@ -8,16 +8,17 @@ using System.Text;
 using static Android.Views.View;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class Popup
 	{
-		private readonly PopupWindow _popupWindow;
+		private PopupWindow _popupWindow;
 
 		internal FlyoutPlacementMode Placement { get; set; }
 
-		public Popup()
+		partial void InitializeNativePartial()
 		{
 			_popupWindow = new PopupWindow(this, WindowManagerLayoutParams.MatchParent, WindowManagerLayoutParams.MatchParent, true);
 
@@ -29,11 +30,9 @@ namespace Windows.UI.Xaml.Controls
 			OnIsLightDismissEnabledChanged(false, true);
 
 			_popupWindow.DismissEvent += OnPopupDismissed;
-
-			PopupPanel = new PopupPanel(this);
 		}
 
-		partial void OnPopupPanelChangedPartial(PopupPanel previousPanel, PopupPanel newPanel)
+		partial void OnPopupPanelChangedPartialNative(PopupPanel previousPanel, PopupPanel newPanel)
 		{
 			previousPanel?.Children.Clear();
 
@@ -55,9 +54,8 @@ namespace Windows.UI.Xaml.Controls
 			IsOpen = false;
 		}
 
-		protected override void OnIsOpenChanged(bool oldIsOpen, bool newIsOpen)
+		partial void OnIsOpenChangedNative(bool oldIsOpen, bool newIsOpen)
 		{
-			base.OnIsOpenChanged(oldIsOpen, newIsOpen);
 			if (newIsOpen)
 			{
 				PopupPanel.Visibility = Visibility.Visible;
@@ -73,25 +71,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override void OnChildChanged(View oldChild, View newChild)
-		{
-			base.OnChildChanged(oldChild, newChild);
 
-			PopupPanel.Children.Remove(oldChild);
-			PopupPanel.Children.Add(newChild);
-		}
 
-		private void Panel_PointerPressed(object sender, Input.PointerRoutedEventArgs e)
+		partial void OnIsLightDismissEnabledChangedNative(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
 		{
-			if (IsLightDismissEnabled)
-			{
-				IsOpen = false;
-			}
-		}
-
-		protected override void OnIsLightDismissEnabledChanged(bool oldIsLightDismissEnabled, bool newIsLightDismissEnabled)
-		{
-			base.OnIsLightDismissEnabledChanged(oldIsLightDismissEnabled, newIsLightDismissEnabled);
 			if (newIsLightDismissEnabled)
 			{
 				_popupWindow.OutsideTouchable = true;
@@ -116,20 +99,22 @@ namespace Windows.UI.Xaml.Controls
 				return; // nothing to do
 			}
 
-			if (isLightDismiss)
-			{
-				PopupPanel.Background = new SolidColorBrush(Colors.Transparent);
-			}
-			else
-			{
-				PopupPanel.Background = null;
-			}
+			PopupPanel.Background = GetPanelBackground();
 		}
 
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{
-			// Ensure Popup doesn't take any space.
-			this.SetMeasuredDimension(0, 0);
+			if (FeatureConfiguration.Popup.UseNativePopup)
+			{
+
+				// Ensure Popup doesn't take any space.
+				this.SetMeasuredDimension(0, 0);
+			}
+			else
+			{
+				base.OnMeasure(widthMeasureSpec, heightMeasureSpec);
+			}
+
 		}
 
 		/// <summary>
@@ -137,8 +122,11 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		internal void DisableFocus()
 		{
-			_popupWindow.Focusable = false;
-			_popupWindow.InputMethodMode = InputMethod.Needed;
+			if (_popupWindow != null)
+			{
+				_popupWindow.Focusable = false;
+				_popupWindow.InputMethodMode = InputMethod.Needed;
+			}
 		}
 	}
 }

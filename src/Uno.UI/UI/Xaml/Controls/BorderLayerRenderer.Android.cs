@@ -63,28 +63,22 @@ namespace Windows.UI.Xaml.Controls
 
 					// Clear previous value anyway in order to make sure the previous values are unset before the new ones.
 					// This prevents the case where a second update would set a new background and then set the background to null when disposing the previous.
-					_layerDisposable.Disposable = null; 
+					_layerDisposable.Disposable = null;
 				}
 
-				if (
-					background != null ||
-					(borderThickness != Thickness.Empty && borderBrush != null)
-				)
+				Action onImageSet = null;
+				var disposable = InnerCreateLayers(view, drawArea, background, borderThickness, borderBrush, cornerRadius, () => onImageSet?.Invoke());
+
+				// Most of the time we immediately dispose the previous layer. In the case where we're using an ImageBrush,
+				// and the backing image hasn't changed, we dispose the previous layer at the moment the new background is applied,
+				// to prevent a visible flicker.
+				if (shouldDisposeEagerly)
 				{
-					Action onImageSet = null;
-					var disposable = InnerCreateLayers(view, drawArea, background, borderThickness, borderBrush, cornerRadius, () => onImageSet?.Invoke());
-					
-					// Most of the time we immediately dispose the previous layer. In the case where we're using an ImageBrush,
-					// and the backing image hasn't changed, we dispose the previous layer at the moment the new background is applied,
-					// to prevent a visible flicker.
-					if (shouldDisposeEagerly)
-					{
-						_layerDisposable.Disposable = disposable;
-					}
-					else
-					{
-						onImageSet = () => _layerDisposable.Disposable = disposable;
-					}
+					_layerDisposable.Disposable = disposable;
+				}
+				else
+				{
+					onImageSet = () => _layerDisposable.Disposable = disposable;
 				}
 
 				if (willUpdateMeasures)
@@ -124,95 +118,12 @@ namespace Windows.UI.Xaml.Controls
 
 			if (cornerRadius != 0)
 			{
-				using (Path path = new Path())
+				var adjustedLineWidth = physicalBorderThickness.Top; // TODO: handle non-uniform BorderThickness correctly
+				var adjustedArea = drawArea;
+				adjustedArea.Inflate(-adjustedLineWidth / 2, -adjustedLineWidth / 2);
+				using (var path = cornerRadius.GetOutlinePath(adjustedArea.ToRectF()))
 				{
 					path.SetFillType(Path.FillType.EvenOdd);
-
-					var radius = new CornerRadius(
-						topLeft: ViewHelper.LogicalToPhysicalPixels(cornerRadius.TopLeft),
-						topRight: ViewHelper.LogicalToPhysicalPixels(cornerRadius.TopRight),
-						bottomRight: ViewHelper.LogicalToPhysicalPixels(cornerRadius.BottomRight),
-						bottomLeft: ViewHelper.LogicalToPhysicalPixels(cornerRadius.BottomLeft)
-					);
-
-					var adjustedLineWidth = physicalBorderThickness.Top;
-
-					var area = new Windows.Foundation.Rect(drawArea.Left, drawArea.Top, drawArea.Width, drawArea.Height);
-					area.Inflate(-adjustedLineWidth / 2, -adjustedLineWidth / 2);
-
-					// This represents the doubled radii used to draw arcs, with each one maxed at the area's size.
-					// The width and height can vary for the same corner (elliptical arc)
-					var topLeftDiameterHeight = Math.Min(radius.TopLeft * 2, area.Height);
-					var topLeftDiameterWidth = Math.Min(radius.TopLeft * 2, area.Width);
-					var topRightDiameterHeight = Math.Min(radius.TopRight * 2, area.Height);
-					var topRightDiameterWidth = Math.Min(radius.TopRight * 2, area.Width);
-					var bottomLeftDiameterHeight = Math.Min(radius.BottomLeft * 2, area.Height);
-					var bottomLeftDiameterWidth = Math.Min(radius.BottomLeft * 2, area.Width);
-					var bottomRightDiameterHeight = Math.Min(radius.BottomRight * 2, area.Height);
-					var bottomRightDiameterWidth = Math.Min(radius.BottomRight * 2, area.Width);
-
-					// Top line
-					path.MoveTo((float)(area.X + topLeftDiameterWidth / 2), (float)(area.Y));
-					path.LineTo((float)(area.Right - topRightDiameterWidth / 2), (float)(area.Y));
-
-					// Top right corner
-					path.ArcTo(
-						new RectF(
-							left: (float)(area.Right - topRightDiameterWidth),
-							top: (float)(area.Y),
-							bottom: (float)(area.Y + topRightDiameterHeight),
-							right: (float)(area.Right)
-						),
-						startAngle: 270,
-						sweepAngle: 90
-					);
-
-					// Right line
-					path.LineTo((float)area.Right, (float)(area.Bottom - bottomRightDiameterHeight / 2));
-
-					// Bottom right corner
-					path.ArcTo(
-						new RectF(
-							left: (float)(area.Right - bottomRightDiameterWidth),
-							top: (float)(area.Bottom - bottomRightDiameterHeight),
-							bottom: (float)area.Bottom,
-							right: (float)area.Right
-						),
-						startAngle: 0,
-						sweepAngle: 90
-					);
-
-					// Bottom line
-					path.LineTo((float)(area.X + bottomLeftDiameterWidth / 2), (float)area.Bottom);
-
-					// Bottom left corner
-					path.ArcTo(
-						new RectF(
-							left: (float)area.X,
-							top: (float)(area.Bottom - bottomLeftDiameterHeight),
-							bottom: (float)area.Bottom,
-							right: (float)(area.X + bottomLeftDiameterWidth)
-						),
-						startAngle: 90,
-						sweepAngle: 90
-					);
-
-					// Left line
-					path.LineTo((float)area.X, (float)(area.Y + topLeftDiameterHeight / 2));
-
-					// Top left corner
-					path.ArcTo(
-						new RectF(
-							left: (float)area.X,
-							top: (float)area.Y,
-							bottom: (float)(area.Y + topLeftDiameterHeight),
-							right: (float)(area.X + topLeftDiameterWidth)
-						),
-						startAngle: 180,
-						sweepAngle: 90
-					);
-
-					path.Close();
 
 					//We only need to set a background if the drawArea is non-zero
 					if (!drawArea.HasZeroArea())
@@ -446,12 +357,12 @@ namespace Windows.UI.Xaml.Controls
 
 					if (physicalBorderThickness.Top != 0)
 					{
-						var adjustY = (float)physicalBorderThickness.Top / 2;						
+						var adjustY = (float)physicalBorderThickness.Top / 2;
 
 						using (var line = new Path())
-						{						
-							line.MoveTo((float)physicalBorderThickness.Left, (float)adjustY); 
-							line.LineTo(viewSize.Width - (float)physicalBorderThickness.Right, (float)adjustY); 
+						{
+							line.MoveTo((float)physicalBorderThickness.Left, (float)adjustY);
+							line.LineTo(viewSize.Width - (float)physicalBorderThickness.Right, (float)adjustY);
 							line.Close();
 
 							var lineDrawable = new PaintDrawable();
@@ -491,7 +402,7 @@ namespace Windows.UI.Xaml.Controls
 					if (physicalBorderThickness.Bottom != 0)
 					{
 						var adjustY = physicalBorderThickness.Bottom / 2;
-						
+
 						using (var line = new Path())
 						{
 							line.MoveTo((float)physicalBorderThickness.Left, (float)(viewSize.Height - adjustY));

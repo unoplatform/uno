@@ -20,10 +20,10 @@ namespace SamplesApp.UITests
 		/// <summary>
 		/// Wait for element to be available and to have the expected value for its Text property.
 		/// </summary>
-		public static void WaitForText(this IApp app, string elementName, string expectedText)
+		public static void WaitForText(this IApp app, string elementName, string expectedText, TimeSpan? timeout = null)
 		{
 			var element = app.Marked(elementName);
-			app.WaitForElement(element);
+			app.WaitForElement(element, timeout: timeout);
 			app.WaitForText(element, expectedText);
 		}
 
@@ -40,6 +40,56 @@ namespace SamplesApp.UITests
 			var element = app.Marked(elementName);
 			app.WaitForElement(element);
 			return element.GetText();
+		}
+
+		/// <summary>
+		/// Get bounds rect for an element.
+		/// </summary>
+		public static IAppRect GetRect(this IApp app, string elementName)
+		{
+			return app.WaitForElement(elementName).Single().Rect;
+		}
+		public static IAppRect GetRect(this IApp app, QueryEx query)
+		{
+			return app.WaitForElement(query).Single().Rect;
+		}
+		public static IAppRect GetRect(this IApp app, Func<IAppQuery, IAppQuery> query)
+		{
+			return app.WaitForElement(query).Single().Rect;
+		}
+
+		public static void FastTap(this IApp app, string elementName)
+		{
+			var tapPosition = app.GetRect(elementName);
+			app.TapCoordinates(tapPosition.CenterX, tapPosition.CenterY);
+		}
+
+		public static void FastTap(this IApp app, QueryEx query)
+		{
+			var tapPosition = app.GetRect(query);
+			app.TapCoordinates(tapPosition.CenterX, tapPosition.CenterY);
+		}
+
+		public static void FastTap(this IApp app, Func<IAppQuery, IAppQuery> query)
+		{
+			var tapPosition = app.GetRect(query);
+			app.TapCoordinates(tapPosition.CenterX, tapPosition.CenterY);
+		}
+
+		public static QueryEx FastTap(this QueryEx query)
+		{
+			Helpers.App.FastTap(query);
+			return query;
+		}
+
+		/// <summary>
+		/// Wait for the named element to have received focus (ie after being tapped).
+		/// </summary>
+		public static void WaitForFocus(this IApp app, string elementName)
+		{
+			var element = app.Marked(elementName);
+			app.WaitForElement(element);
+			app.WaitForDependencyPropertyValue(element, "FocusState", "Pointer");
 		}
 	}
 }

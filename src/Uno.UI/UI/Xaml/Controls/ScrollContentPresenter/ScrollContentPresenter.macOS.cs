@@ -9,11 +9,17 @@ using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Drawing;
+using AppKit;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ScrollContentPresenter : ContentPresenter
+	public partial class ScrollContentPresenter : NSScrollView, IHasSizeThatFits
 	{
+		public nfloat ZoomScale {
+			get => Magnification;
+			set => Magnification = value;
+		}
 		public ScrollMode HorizontalScrollMode { get; set; }
 
 		public ScrollMode VerticalScrollMode { get; set; }
@@ -25,5 +31,28 @@ namespace Windows.UI.Xaml.Controls
 		public ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
 
 		public ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
+
+		public override bool NeedsLayout
+		{
+			get => base.NeedsLayout; set
+			{
+				base.NeedsLayout = value;
+
+				if (value)
+				{
+					_requiresMeasure = true;
+
+					if (Superview != null)
+					{
+						Superview.NeedsLayout = true;
+					}
+				}
+			}
+		}
+
+		partial void OnContentChanged(NSView previousView, NSView newView)
+		{
+			DocumentView = newView;
+		}
 	}
 }

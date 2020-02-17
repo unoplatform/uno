@@ -40,7 +40,7 @@
 							</ControlTemplate>
 						</Button.Template>
 					</Button>					
-					<TextBlock Text="{Binding [Message]}" />
+					<TextBlock Name="ValidateCommandTextBlock" Text="{Binding [Message]}" />
 				</StackPanel>
 			</DataTemplate>
 		</controls:SampleControl.SampleContent>

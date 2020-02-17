@@ -22,9 +22,10 @@ using Uno.Disposables;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class WebView : Control
+	public partial class WebView : Control, ICustomClippingElement
 	{
 		private Android.Webkit.WebView _webView;
+		private bool _wasLoadedFromString;
 
 		protected override void OnApplyTemplate()
 		{
@@ -70,6 +71,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
+			_wasLoadedFromString = false;
 			if (uri.Scheme.Equals("local", StringComparison.OrdinalIgnoreCase))
 			{
 				var path = $"file:///android_asset/{uri.PathAndQuery}";
@@ -119,6 +121,7 @@ namespace Windows.UI.Xaml.Controls
 					element => element.Value.JoinBy(", ")
 				);
 
+			_wasLoadedFromString = false;
 			_webView.LoadUrl(uri.AbsoluteUri, headers);
 		}
 
@@ -129,6 +132,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
+			_wasLoadedFromString = true;
 			_webView.LoadData(text, "text/html; charset=utf-8", "utf-8");
 		}
 
@@ -299,9 +303,12 @@ namespace Windows.UI.Xaml.Controls
 				var args = new WebViewNavigationCompletedEventArgs()
 				{
 					IsSuccess = _webViewSuccess,
-					Uri = new Uri(url),
 					WebErrorStatus = _webErrorStatus
 				};
+				if (!_webView._wasLoadedFromString && !string.IsNullOrEmpty(url))
+				{
+					args.Uri = new Uri(url);
+				}
 
 				_webView.NavigationCompleted?.Invoke(_webView, args);
 				base.OnPageFinished(view, url);
@@ -435,5 +442,10 @@ namespace Windows.UI.Xaml.Controls
 				return null;
 			}
 		}
+
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => true;
+
+		// Force clipping, otherwise native WebView may exceed its bounds in some circumstances (eg when Xaml WebView is animated)
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => true;
 	}
 }

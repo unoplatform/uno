@@ -2,7 +2,7 @@
 
 ## `Geolocator`
 
-The following `Geolocator` APIs are implemented on Android, iOS and WASM:
+The following `Geolocator` APIs are implemented on Android, iOS, macOS and WASM:
 
 * `RequestAccessAsync`
 * `GetGeolocationAsync`

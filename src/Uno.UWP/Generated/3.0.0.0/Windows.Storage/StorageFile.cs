@@ -47,7 +47,7 @@ namespace Windows.Storage
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::System.DateTimeOffset DateCreated
 		{
@@ -180,7 +180,7 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncAction StorageFile.RenameAsync(string desiredName, NameCollisionOption option) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction DeleteAsync()
 		{

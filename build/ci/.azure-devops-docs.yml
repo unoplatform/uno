@@ -1,0 +1,53 @@
+parameters:
+  pool: ''
+
+jobs:
+- job: Documentation
+
+  pool:
+    vmImage: 'vs2017-win2016'
+
+  variables:
+    CombinedConfiguration: Release|Any CPU
+    CI_Build: true
+    NUGET_PACKAGES: $(Agent.WorkFolder)\.nuget
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+    
+  - task: GitVersion@5
+    inputs:
+      useConfigFile: true
+      configFilePath: GitVersion.yml
+      updateAssemblyInfo: false
+
+  - task: NuGetToolInstaller@0
+    inputs:
+      versionSpec: 4.9.1
+      checkLatest: false
+
+  - task: MSBuild@1
+    inputs:
+      solution: Build/Uno.UI.Build.csproj
+      msbuildLocationMethod: version
+      msbuildVersion: latest
+      msbuildArchitecture: x86
+      msbuildArguments: /r /t:GenerateDoc /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary
+      clean: false
+      maximumCpuCount: true
+      restoreNugetPackages: false
+      logProjectEvents: false
+      createLogFile: false
+
+  - task: PublishBuildArtifacts@1
+    # https://developercommunity.visualstudio.com/content/problem/284991/public-vsts-previouw-cant-set-build-number-of-pr-b.html
+    condition: eq(variables['System.PullRequest.IsFork'], 'False')
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: NugetPackages
+      ArtifactType: Container

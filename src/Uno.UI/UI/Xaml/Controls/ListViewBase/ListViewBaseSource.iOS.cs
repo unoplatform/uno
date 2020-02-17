@@ -229,11 +229,11 @@ namespace Windows.UI.Xaml.Controls
 						}
 
 						FrameworkElement.InitializePhaseBinding(selectorItem);
-                        
-                        // Ensure the item has a parent, since it's added to the native collection view
-                        // which does not automatically sets the parent DependencyObject.
-                        selectorItem.SetParent(Owner?.XamlParent);
-                    }
+
+						// Ensure the item has a parent, since it's added to the native collection view
+						// which does not automatically sets the parent DependencyObject.
+						selectorItem.SetParent(Owner?.XamlParent);
+					}
 					else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
 						this.Log().Debug($"Reusing view at indexPath={indexPath}, previously bound to {selectorItem.DataContext}.");
@@ -485,24 +485,24 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		internal CGSize GetHeaderSize()
+		internal CGSize GetHeaderSize(Size availableSize)
 		{
-			return Owner.HeaderTemplate != null ? GetTemplateSize(Owner.HeaderTemplate, NativeListViewBase.ListViewHeaderElementKindNS) : CGSize.Empty;
+			return Owner.HeaderTemplate != null ? GetTemplateSize(Owner.HeaderTemplate, NativeListViewBase.ListViewHeaderElementKindNS, availableSize) : CGSize.Empty;
 		}
 
-		internal CGSize GetFooterSize()
+		internal CGSize GetFooterSize(Size availableSize)
 		{
-			return Owner.FooterTemplate != null ? GetTemplateSize(Owner.FooterTemplate, NativeListViewBase.ListViewFooterElementKindNS) : CGSize.Empty;
+			return Owner.FooterTemplate != null ? GetTemplateSize(Owner.FooterTemplate, NativeListViewBase.ListViewFooterElementKindNS, availableSize) : CGSize.Empty;
 		}
 
-		internal CGSize GetSectionHeaderSize(int section)
+		internal CGSize GetSectionHeaderSize(int section, Size availableSize)
 		{
 			var template = GetTemplateForGroupHeader(section);
-			return template.SelectOrDefault(ht => GetTemplateSize(ht, NativeListViewBase.ListViewSectionHeaderElementKindNS), CGSize.Empty);
+			return template.SelectOrDefault(ht => GetTemplateSize(ht, NativeListViewBase.ListViewSectionHeaderElementKindNS, availableSize), CGSize.Empty);
 		}
 
 
-		public virtual CGSize GetItemSize(UICollectionView collectionView, NSIndexPath indexPath)
+		internal CGSize GetItemSize(UICollectionView collectionView, NSIndexPath indexPath, Size availableSize)
 		{
 			DataTemplate itemTemplate = GetTemplateForItem(indexPath);
 
@@ -514,7 +514,7 @@ namespace Windows.UI.Xaml.Controls
 				_templateCells.Clear();
 			}
 
-			var size = GetTemplateSize(itemTemplate, NativeListViewBase.ListViewItemElementKindNS);
+			var size = GetTemplateSize(itemTemplate, NativeListViewBase.ListViewItemElementKindNS, availableSize);
 
 			if (size == CGSize.Empty)
 			{
@@ -564,9 +564,8 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		/// <param name="dataTemplate">A data template</param>
 		/// <returns>The actual size of the template</returns>
-		private CGSize GetTemplateSize(DataTemplate dataTemplate, NSString elementKind)
+		private CGSize GetTemplateSize(DataTemplate dataTemplate, NSString elementKind, Size availableSize)
 		{
-			//TODO: this should take an available breadth
 			CGSize size;
 
 			// Cache the sizes to avoid creating new templates every time.
@@ -600,7 +599,7 @@ namespace Windows.UI.Xaml.Controls
 					Owner.XamlParent.AddSubview(BlockLayout);
 					BlockLayout.AddSubview(container);
 					// Measure with PositiveInfinity rather than MaxValue, since some views handle this better.
-					size = Owner.NativeLayout.Layouter.MeasureChild(container, new Size(double.PositiveInfinity, double.PositiveInfinity));
+					size = Owner.NativeLayout.Layouter.MeasureChild(container, availableSize);
 
 					if ((size.Height > nfloat.MaxValue / 2 || size.Width > nfloat.MaxValue / 2) &&
 						this.Log().IsEnabled(LogLevel.Warning)
@@ -792,7 +791,7 @@ namespace Windows.UI.Xaml.Controls
 				return null;
 			}
 
-			if(Content == null)
+			if (Content == null)
 			{
 				this.Log().Error("Empty ListViewBaseInternalContainer content.");
 				return null;
@@ -840,13 +839,13 @@ namespace Windows.UI.Xaml.Controls
 						// cachedAttributes may be null if we have modified the collection with DeleteItems
 						var frame = cachedAttributes?.Frame ?? layoutAttributes.Frame;
 						SetExtent(ref frame, _measuredContentSize.Value);
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-						{
-							this.Log().Debug($"Adjusting layout attributes for item at {layoutAttributes.IndexPath}({layoutAttributes.RepresentedElementKind}), Content={Content?.Content}. Previous frame={layoutAttributes.Frame}, new frame={frame}.");
-						}
 						var sizesAreDifferent = frame.Size != layoutAttributes.Frame.Size;
 						if (sizesAreDifferent)
 						{
+							if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+							{
+								this.Log().Debug($"Adjusting layout attributes for item at {layoutAttributes.IndexPath}({layoutAttributes.RepresentedElementKind}), Content={Content?.Content}. Previous frame={layoutAttributes.Frame}, new frame={frame}.");
+							}
 							Owner.NativeLayout.HasDynamicElementSizes = true;
 							this.Frame = frame;
 							SetNeedsLayout();

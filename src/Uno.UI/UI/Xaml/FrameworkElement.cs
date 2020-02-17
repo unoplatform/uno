@@ -171,6 +171,11 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		public override void Measure(Size availableSize)
 		{
+			if (double.IsNaN(availableSize.Width) || double.IsNaN(availableSize.Height))
+			{
+				throw new InvalidOperationException($"Cannot measure [{GetType()}] with NaN");
+			}
+
 			_layouter.Measure(availableSize);
 			OnMeasurePartial(availableSize);
 		}
@@ -198,7 +203,7 @@ namespace Windows.UI.Xaml
 		/// space than what is available; the provided size might be accommodated if scrolling or other resize behavior is
 		/// possible in that particular container.
 		/// </param>
-		/// <returns>The measured size.</returns>
+		/// <returns>The measured size - INCLUDES THE MARGIN</returns>
 		protected Size MeasureElement(View view, Size availableSize)
 		{
 #if __WASM__
@@ -219,7 +224,7 @@ namespace Windows.UI.Xaml
 #if __WASM__
 			var adjust = GetThicknessAdjust();
 
-			// HTML mooves the origin along with the border thickness.
+			// HTML moves the origin along with the border thickness.
 			// Adjust the child based on this element's border thickness.
 			var rect = new Rect(finalRect.X - adjust.Left, finalRect.Y - adjust.Top, finalRect.Width, finalRect.Height);
 

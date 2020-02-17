@@ -18,24 +18,31 @@ namespace SamplesApp.UITests.CommandBar
 		[ActivePlatforms(Platform.Android, Platform.iOS)]
 		public void CommandBar_LongTitle_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_LongTitle");
+			try
+			{
+				Run("Uno.UI.Samples.Content.UITests.CommandBar.CommandBar_LongTitle");
 
-			_app.WaitForElement(_app.Marked("TextBlockWidthTest"));
+				_app.WaitForElement(_app.Marked("TextBlockWidthTest"));
 
-			// Initial state
-			_app.Screenshot("CommandBar - LongTitle - 1 - Initial State");
+				// Initial state
+				TakeScreenshot("CommandBar - LongTitle - 1 - Initial State");
 
-			// Set orientation Landscape
-			_app.SetOrientationLandscape();
-			_app.Screenshot("CommandBar - LongTitle - 2 - Orientation Landscape");
+				// Set orientation Landscape
+				_app.SetOrientationLandscape();
+				TakeScreenshot("CommandBar - LongTitle - 2 - Orientation Landscape");
 
-			// Set orientation Portrait
-			_app.SetOrientationPortrait();
-			_app.Screenshot("CommandBar - LongTitle - 3 - Orientation Portrait");
+				// Set orientation Portrait
+				_app.SetOrientationPortrait();
+				TakeScreenshot("CommandBar - LongTitle - 3 - Orientation Portrait");
 
-			// Set orientation Landscape (Again)
-			_app.SetOrientationLandscape();
-			_app.Screenshot("CommandBar - LongTitle - 4 - Orientation Landscape");
+				// Set orientation Landscape (Again)
+				_app.SetOrientationLandscape();
+				TakeScreenshot("CommandBar - LongTitle - 4 - Orientation Landscape");
+			}
+			finally
+			{
+				_app.SetOrientationLandscape();
+			}
 		}
 	}
 }

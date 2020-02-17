@@ -20,17 +20,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 
 			_app.Marked("richToolTip").FirstResult().Should().BeNull("Initial state");
 
-			_app.Marked("rect2").Tap();
+			_app.Marked("rect2").FastTap();
 
 			_app.Marked("richToolTip").FirstResult().Should().BeNull("Right after first click");
 
 			Thread.Sleep(1200);
 
-			_app.Marked("rect1").Tap();
+			_app.Marked("rect1").FastTap();
 
 			Thread.Sleep(200);
 
-			_app.Marked("rect2").Tap();
+			_app.Marked("rect2").FastTap();
 
 			_app.Marked("richToolTip").FirstResult().Should().BeNull("Right after second click");
 
@@ -38,17 +38,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 
 			_app.Marked("richToolTip").FirstResult().Should().NotBeNull("1.2s after click, should have a tooltip");
 
-			_app.Screenshot("opened-tooltip");
+			TakeScreenshot("opened-tooltip");
 
 			Thread.Sleep(7200);
 
 			_app.Marked("richToolTip").FirstResult().Should().BeNull("tooltip delay expired");
 
-			_app.Marked("rect1").Tap();
+			_app.Marked("rect1").FastTap();
 
 			Thread.Sleep(1200);
 
-			_app.Screenshot("opened-textonly-tooltip");
+			TakeScreenshot("opened-textonly-tooltip");
 		}
 	}
 }

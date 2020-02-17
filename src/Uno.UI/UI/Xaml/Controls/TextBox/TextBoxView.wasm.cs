@@ -7,12 +7,32 @@ using Windows.UI.Xaml.Media;
 using Uno.Logging;
 using Windows.Foundation;
 using System.Globalization;
+using Uno.UI.UI.Xaml.Documents;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class TextBoxView : FrameworkElement
 	{
 		private readonly TextBox _textBox;
+
+		public Brush Foreground
+		{
+			get => (Brush)GetValue(ForegroundProperty);
+			set => SetValue(ForegroundProperty, value);
+		}
+
+		internal static readonly DependencyProperty ForegroundProperty =
+			DependencyProperty.Register(
+				name: "Foreground",
+				propertyType: typeof(Brush),
+				ownerType: typeof(TextBoxView),
+				typeMetadata: new FrameworkPropertyMetadata(
+					defaultValue: null,
+					options: FrameworkPropertyMetadataOptions.Inherits,
+					propertyChangedCallback: (s, e) => (s as TextBoxView)?.OnForegroundChanged(e)));
+
+		private void OnForegroundChanged(DependencyPropertyChangedEventArgs e)
+			=> this.SetForeground(e.NewValue);
 
 		public TextBoxView(TextBox textBox, bool isMultiline) : base(isMultiline ? "textarea" : "input")
 		{
@@ -69,12 +89,13 @@ namespace Windows.UI.Xaml.Controls
 			{
 				SetTextNative(updatedText);
 			}
+
+			InvalidateMeasure();
 		}
 
-		internal void SetTextNative(string text)
-		{
-			SetProperty("value", text);
-		}
+		internal void SetTextNative(string text) => SetProperty("value", text);
+
+		protected override Size MeasureOverride(Size availableSize) => MeasureView(availableSize);
 
 		internal void SetIsPassword(bool isPassword)
 		{
@@ -85,9 +106,18 @@ namespace Windows.UI.Xaml.Controls
 			SetAttribute("type", isPassword ? "password" : "text");
 		}
 
-		internal void SetEnabled(bool newValue)
+		internal void SetEnabled(bool newValue) => SetProperty("disabled", newValue ? "false" : "true");
+
+		internal void SetIsReadOnly(bool isReadOnly)
 		{
-			SetProperty("disabled", newValue ? "false" : "true");
+			if (isReadOnly)
+			{
+				SetAttribute("readonly", "readonly");
+			}
+			else
+			{
+				RemoveAttribute("readonly");
+			}
 		}
 
 		public int SelectionStart
@@ -102,9 +132,6 @@ namespace Windows.UI.Xaml.Controls
 			set => SetProperty("selectionEnd", value.ToString());
 		}
 
-		internal override bool IsViewHit()
-		{
-			return true;
-		}
+		internal override bool IsViewHit() => true;
 	}
 }

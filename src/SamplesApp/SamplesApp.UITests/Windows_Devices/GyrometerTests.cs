@@ -14,6 +14,7 @@ namespace SamplesApp.UITests.Windows_Devices
 	public class GyrometerTests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void When_Gyrometer_Is_Retrived_With_GetDefault()
 		{
@@ -23,6 +24,7 @@ namespace SamplesApp.UITests.Windows_Devices
 		}
 
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void When_Reading_Is_Attached()
 		{
@@ -36,7 +38,7 @@ namespace SamplesApp.UITests.Windows_Devices
 
 			try
 			{
-				_app.Tap("AttachReadingButton");
+				_app.FastTap("AttachReadingButton");
 
 				_app.Wait(TimeSpan.FromMilliseconds(500));
 
@@ -46,11 +48,12 @@ namespace SamplesApp.UITests.Windows_Devices
 			}
 			finally
 			{
-				_app.Tap("DetachReadingButton");
+				_app.FastTap("DetachReadingButton");
 			}
 		}
 
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void When_Reading_Is_Attached_And_Waits()
 		{
@@ -60,7 +63,7 @@ namespace SamplesApp.UITests.Windows_Devices
 
 			try
 			{
-				_app.Tap("AttachReadingButton");
+				_app.FastTap("AttachReadingButton");
 
 				_app.Wait(TimeSpan.FromMilliseconds(500));
 				var firstTimestampSnapshot = _app.GetText("TimestampRun");
@@ -73,11 +76,12 @@ namespace SamplesApp.UITests.Windows_Devices
 			}
 			finally
 			{
-				_app.Tap("DetachReadingButton");
+				_app.FastTap("DetachReadingButton");
 			}
 		}
 
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS, Platform.Android)]
 		public void When_Reading_Is_Attached_And_Detaches()
 		{
@@ -87,9 +91,9 @@ namespace SamplesApp.UITests.Windows_Devices
 
 			try
 			{
-				_app.Tap("AttachReadingButton");
+				_app.FastTap("AttachReadingButton");
 				_app.Wait(TimeSpan.FromMilliseconds(500));
-				_app.Tap("DetachReadingButton");
+				_app.FastTap("DetachReadingButton");
 
 				//wait a bit to make sure last invoke finishes
 				_app.Wait(TimeSpan.FromMilliseconds(250));
@@ -103,7 +107,7 @@ namespace SamplesApp.UITests.Windows_Devices
 			}
 			finally
 			{
-				_app.Tap("DetachReadingButton");
+				_app.FastTap("DetachReadingButton");
 			}
 		}
 	}

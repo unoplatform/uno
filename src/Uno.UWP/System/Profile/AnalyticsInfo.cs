@@ -1,4 +1,4 @@
-#if __ANDROID__ || __IOS__ || __WASM__
+#if __ANDROID__ || __IOS__ || __WASM__ || __MACOS__
 namespace Windows.System.Profile
 {
 	public static partial class AnalyticsInfo

@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Uno.Disposables;
-using System.Text;
 using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Shapes
@@ -96,7 +95,7 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				if (double.IsNaN(height))
 				{
-					return new Rect(0.0, 0.0, 100.0, 100.0);
+					return new Rect(0.0, 0.0, 0.0, 0.0);
 				}
 
 				return new Rect(0.0, 0.0, height, height);

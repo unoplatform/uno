@@ -3,7 +3,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 {
-	[SampleControlInfo("GridTestsControl", "Grid_with_UserControlMargin")]
+	[SampleControlInfo]
 	public sealed partial class Grid_with_UserControlMargin : UserControl
 	{
 		public Grid_with_UserControlMargin()

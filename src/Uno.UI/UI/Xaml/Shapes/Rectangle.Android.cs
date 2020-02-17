@@ -37,5 +37,10 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			Invalidate();
 		}
+
+		protected override void RefreshShape(bool forceRefresh = false)
+		{
+			Invalidate();
+		}
 	}
 }

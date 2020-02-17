@@ -80,7 +80,7 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json">
-      <Version>12.0.2</Version>
+      <Version>12.0.3</Version>
     </PackageReference>
     <PackageReference Include="Uno.CodeGen">
       <Version>1.32.0</Version>
@@ -88,7 +88,7 @@
     <PackageReference Include="Uno.UniversalImageLoader" Version="1.9.32" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="MSTest.TestFramework" Version="2.0.0" />
+    <PackageReference Include="MSTest.TestFramework" Version="2.1.0" />
     <PackageReference Include="Uno.SourceGenerationTasks" />
     <PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
@@ -102,9 +102,17 @@
       <Project>{528AE586-5DF3-4DAD-AA5C-F12F4D5E0605}</Project>
       <Name>Uno.Foundation</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UI.DualScreen\Uno.UI.DualScreen.csproj">
+      <Project>{c187cd35-e5b4-4054-99c2-5d85ad9d6c73}</Project>
+      <Name>Uno.UI.DualScreen</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI.Maps\Uno.UI.Maps.csproj">
       <Project>{f25ccf70-5a21-4245-ae4e-342bc55f9e86}</Project>
       <Name>Uno.UI.Maps</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj">
+      <Project>{80798130-cb7e-4968-b4f6-554cc0fc8feb}</Project>
+      <Name>Uno.UI.RemoteControl</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj">
       <Project>{028f3ee0-d51b-469a-a72c-c272585dcd40}</Project>
@@ -157,7 +165,7 @@
   <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
   <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" />
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.CSharp.targets" />
-  <Target Name="GenerateBuild" DependsOnTargets="SignAndroidPackage" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''" />
+  <Target Name="GenerateBuild" DependsOnTargets="SignAndroidPackage" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'=='' and '$(UnoSampleAppDisableAPKGeneration)'==''" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
      Other similar extension points exist, see Microsoft.Common.targets.
 		<Target Name="BeforeBuild">

@@ -15,6 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Automation
 	public class AutomationId_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		public void TestSimple()
 		{
 			Run("UITests.Shared.Windows_UI.Xaml_Automation.AutomationProperties_AutomationId");
@@ -26,7 +27,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Automation
 			{
 				var itemName = $"Item{i:00}";
 				_app.WaitForElement(itemName);
-				_app.Tap(itemName);
+				_app.FastTap(itemName);
 				_app.WaitForDependencyPropertyValue(result, "Text", $"Item {i:00}");
 			}
 		}

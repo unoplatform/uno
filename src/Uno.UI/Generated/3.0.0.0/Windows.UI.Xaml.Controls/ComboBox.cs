@@ -59,20 +59,6 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property Header
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.LightDismissOverlayMode LightDismissOverlayMode
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.LightDismissOverlayMode)this.GetValue(LightDismissOverlayModeProperty);
-			}
-			set
-			{
-				this.SetValue(LightDismissOverlayModeProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  bool IsTextSearchEnabled
 		{
 			get
@@ -167,14 +153,6 @@ namespace Windows.UI.Xaml.Controls
 			"IsTextSearchEnabled", typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
 			new FrameworkPropertyMetadata(default(bool)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty LightDismissOverlayModeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"LightDismissOverlayMode", typeof(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode), 
-			typeof(global::Windows.UI.Xaml.Controls.ComboBox), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.LightDismissOverlayMode)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]

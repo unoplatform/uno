@@ -1615,6 +1615,235 @@ namespace MonoTests.Uno.Xaml
 		}
 
 		[Test]
+		public void Read_xBindFunctionSingleParamWithoutPath()
+		{
+			var sequence = new SequenceItem[]
+			{
+				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
+				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
+				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page"},
+
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = XamlLanguage.Base.ToString() },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "", },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}_UnknownContent", },
+				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}TextBlock"},
+
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}TextBlock.Text", },
+
+				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml}Bind"},
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}_PositionalParameters", },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "Add(a.Value)", },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+				new SequenceItem { NodeType = XamlNodeType.EndObject, },
+
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+
+				new SequenceItem { NodeType = XamlNodeType.EndObject, },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+				new SequenceItem { NodeType = XamlNodeType.EndObject, },
+				new SequenceItem { NodeType = XamlNodeType.None, },
+			};
+
+			ReadSequence("xBindFunctionSingleParamWithoutPath.xaml", sequence);
+		}
+
+		[Test]
+		public void Read_xBindFunctionSingleParamWithPath()
+		{
+			var sequence = new SequenceItem[]
+{
+				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
+				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
+				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page"},
+
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = XamlLanguage.Base.ToString() },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "", },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}_UnknownContent", },
+				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}TextBlock"},
+
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}TextBlock.Text", },
+
+				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml}Bind"},
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}Bind.Path", },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "Add(a.Value)", },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+				new SequenceItem { NodeType = XamlNodeType.EndObject, },
+
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+
+				new SequenceItem { NodeType = XamlNodeType.EndObject, },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+				new SequenceItem { NodeType = XamlNodeType.EndObject, },
+				new SequenceItem { NodeType = XamlNodeType.None, },
+};
+
+
+			ReadSequence("xBindFunctionSingleParamWithPath.xaml", sequence);
+		}
+
+		[Test]
+		public void Read_xBindFunctionTwoParamWithoutPath()
+		{
+			var sequence = new SequenceItem[]
+			{
+				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
+				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
+				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page"},
+
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = XamlLanguage.Base.ToString() },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "", },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}_UnknownContent", },
+				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}TextBlock"},
+
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}TextBlock.Text", },
+
+				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml}Bind"},
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}_PositionalParameters", },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "Add(a.Value", },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "b.Value)", },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+				new SequenceItem { NodeType = XamlNodeType.EndObject, },
+
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+
+				new SequenceItem { NodeType = XamlNodeType.EndObject, },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+				new SequenceItem { NodeType = XamlNodeType.EndObject, },
+				new SequenceItem { NodeType = XamlNodeType.None, },
+			};
+
+			ReadSequence("xBindFunctionTwoParamWithoutPath.xaml", sequence);
+		}
+
+		[Test]
+		public void Read_xBindFunctionTwoParamsWithPath()
+		{
+			var sequence = new SequenceItem[]
+			{
+				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
+				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
+				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page"},
+
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = XamlLanguage.Base.ToString() },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "", },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}_UnknownContent", },
+				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}TextBlock"},
+
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}TextBlock.Text", },
+
+				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml}Bind"},
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}Bind.Path", },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "Add(a.Value", },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}_PositionalParameters", },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "b.Value)", },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+				new SequenceItem { NodeType = XamlNodeType.EndObject, },
+
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+
+				new SequenceItem { NodeType = XamlNodeType.EndObject, },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+				new SequenceItem { NodeType = XamlNodeType.EndObject, },
+				new SequenceItem { NodeType = XamlNodeType.None, },
+			};
+
+
+			ReadSequence("xBindFunctionTwoParamsWithPath.xaml", sequence);
+		}
+
+		[Test]
+		public void Read_xBindFunctionStringDoubleParams()
+		{
+			var sequence = new SequenceItem[]
+			{
+				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
+				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
+				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page"},
+
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = XamlLanguage.Base.ToString() },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "", },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}_UnknownContent", },
+				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}TextBlock"},
+
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}TextBlock.Text", },
+
+				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml}Bind"},
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}_PositionalParameters", },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "Test(45.2", },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "'myString')", },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+				new SequenceItem { NodeType = XamlNodeType.EndObject, },
+
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+
+				new SequenceItem { NodeType = XamlNodeType.EndObject, },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+				new SequenceItem { NodeType = XamlNodeType.EndObject, },
+				new SequenceItem { NodeType = XamlNodeType.None, },
+			};
+
+
+			ReadSequence("xBindFunctionStringDoubleParams.xaml", sequence);
+		}
+
+		[Test]
+		public void Read_xBindFunctionEscapedString()
+		{
+			var sequence = new SequenceItem[]
+			{
+				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
+				new SequenceItem { NodeType = XamlNodeType.NamespaceDeclaration, },
+				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}Page"},
+
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = XamlLanguage.Base.ToString() },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "", },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}_UnknownContent", },
+				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}TextBlock"},
+
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}TextBlock.Text", },
+
+				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml}Bind"},
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}_PositionalParameters", },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "Test('myString ^' escaped ')", },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+				new SequenceItem { NodeType = XamlNodeType.EndObject, },
+
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml/presentation}TextBlock.Text2", },
+
+				new SequenceItem { NodeType = XamlNodeType.StartObject, TypeName = "{http://schemas.microsoft.com/winfx/2006/xaml}Bind"},
+				new SequenceItem { NodeType = XamlNodeType.StartMember, MemberType = "{http://schemas.microsoft.com/winfx/2006/xaml}_PositionalParameters", },
+				new SequenceItem { NodeType = XamlNodeType.Value, Value = "Test('myString  ^'  escaped ')", },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+				new SequenceItem { NodeType = XamlNodeType.EndObject, },
+
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+
+				new SequenceItem { NodeType = XamlNodeType.EndObject, },
+				new SequenceItem { NodeType = XamlNodeType.EndMember, },
+				new SequenceItem { NodeType = XamlNodeType.EndObject, },
+				new SequenceItem { NodeType = XamlNodeType.None, },
+			};
+
+
+			ReadSequence("xBindFunctionEscapedString.xaml", sequence);
+		}
+
+		[Test]
 		public void Read_Int32 ()
 		{
 			ReadTest ("Int32.xml");
@@ -2061,6 +2290,7 @@ namespace MonoTests.Uno.Xaml
 		}
 		
 		[Test]
+		[Ignore("Not supported for UWP XAML markup extensions")]
 		public void PositionalParameters2 ()
 		{
 			var r = GetReader ("PositionalParametersWrapper.xml");

@@ -558,12 +558,24 @@ namespace Uno.UI
 				var name = (innerView as IFrameworkElement)?.Name;
 				var namePart = string.IsNullOrEmpty(name) ? "" : $"-'{name}'";
 
+				var fe = innerView as IFrameworkElement;
+				var u = innerView as UIElement;
+				var vg = innerView as ViewGroup;
+
 				return sb
 						.Append(spacing)
 						.Append(innerView == viewOfInterest ? "*>" : ">")
 						.Append(innerView.ToString() + namePart)
-						.Append($"-({ViewHelper.PhysicalToLogicalPixels(innerView.Width)}x{ViewHelper.PhysicalToLogicalPixels(innerView.Height)})")
+						.Append($"-({ViewHelper.PhysicalToLogicalPixels(innerView.Width)}x{ViewHelper.PhysicalToLogicalPixels(innerView.Height)})@({ViewHelper.PhysicalToLogicalPixels(innerView.Left)},{ViewHelper.PhysicalToLogicalPixels(innerView.Top)})")
 						.Append($"  {innerView.Visibility}")
+						.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
+						.Append(fe != null && fe.Margin != default ? $" Margin={fe.Margin}" : "")
+						.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
+						.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
+						.Append(u != null ? $" DesiredSize={u.DesiredSize}" : "")
+						.Append(u?.Clip != null ? $" Clip={u.Clip.Rect}" : "")
+						.Append(u != null ? $" NeedsClipToSlot={u.NeedsClipToSlot}" : "")
+						.Append(u == null && vg != null ? $" ClipChildren={vg.ClipChildren}" : "")
 						.AppendLine();
 			}
 		}
