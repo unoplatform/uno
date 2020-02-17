@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected virtual void OnForegroundChanged(DependencyPropertyChangedEventArgs e) { }
 
-		protected void AddIconElementView(View child)
+		internal void AddIconElementView(View child)
 		{
 			RegisterSubView(child);
         }
