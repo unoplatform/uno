@@ -13,10 +13,12 @@ using Windows.UI.Xaml.Media;
 
 #if XAMARIN_IOS_UNIFIED
 using UIKit;
+using NativeView = UIKit.UIView;
 #elif XAMARIN_IOS
 using MonoTouch.UIKit;
 #elif __MACOS__
 using AppKit;
+using NativeView = AppKit.NSView;
 #endif
 
 #if !__MACOS__
@@ -205,19 +207,17 @@ namespace Windows.UI.Xaml
 
 		private static void InitWebView()
 		{
-#if !__MACOS__
 			var style = new Style(typeof(Windows.UI.Xaml.Controls.WebView))
 			{
 				Setters =  {
 					new Setter<WebView>("Template", t =>
-						t.Template = Funcs.Create<UIView>(() => (UIView)new UnoWKWebView() 
+						t.Template = Funcs.Create<NativeView>(() => (NativeView)new UnoWKWebView() 
 						)
 					)
 				}
 			};
 
 			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.WebView), style);
-#endif
 		}
 
 		private static void InitItemsControl()

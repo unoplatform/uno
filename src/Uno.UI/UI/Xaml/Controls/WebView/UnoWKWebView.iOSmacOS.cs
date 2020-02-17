@@ -13,10 +13,14 @@ using Uno.Logging;
 using Uno.UI.Web;
 using System.IO;
 using System.Linq;
-using UIKit;
 using Uno.UI.Services;
 using Microsoft.Extensions.Logging;
 using Windows.ApplicationModel.Resources;
+#if __IOS__
+using UIKit;
+#else
+using AppKit;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -51,10 +55,12 @@ namespace Windows.UI.Xaml.Controls
 			OkString = ok;
 			CancelString = cancel;
 
+#if __IOS__
 			if (UIDevice.CurrentDevice.CheckSystemVersion(10, 3))
 			{
 				_errorMap.Add(NSUrlError.FileOutsideSafeArea, WebErrorStatus.UnexpectedServerError);
 			}
+#endif
 		}
 
 		public void RegisterNavigationEvents(WebView xamlWebView)
@@ -151,11 +157,19 @@ namespace Windows.UI.Xaml.Controls
 
 				if (!navigationArgs.Cancel)
 				{
+#if __IOS__
 					if (UIKit.UIApplication.SharedApplication.CanOpenUrl(target))
 					{
 						UIKit.UIApplication.SharedApplication.OpenUrl(target);
 						_parentWebView.OnComplete(target, isSuccessful: true, status: WebErrorStatus.Unknown);
 					}
+#else
+					if (NSWorkspace.SharedWorkspace.UrlForApplication(new NSUrl(target.AbsoluteUri)) != null)
+					{
+						NSWorkspace.SharedWorkspace.OpenUrl(target);
+						_parentWebView.OnComplete(target, isSuccessful: true, status: WebErrorStatus.Unknown);
+					}
+#endif
 					else
 					{
 						_parentWebView.OnNavigationFailed(new WebViewNavigationFailedEventArgs()
@@ -178,7 +192,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void OnRunJavaScriptAlertPanel(WKWebView webview, string message, WKFrameInfo frame, Action completionHandler)
+		private async void OnRunJavaScriptAlertPanel(WKWebView webview, string message, WKFrameInfo frame, Action completionHandler)
 		{
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
@@ -186,12 +200,21 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			var controller = webview.FindViewController();
+
+#if __IOS__
 			var alert = UIKit.UIAlertController.Create(string.Empty, message, UIKit.UIAlertControllerStyle.Alert);
 			alert.AddAction(UIKit.UIAlertAction.Create(OkString, UIKit.UIAlertActionStyle.Default, null));
-
 			controller?.PresentViewController(alert, true, null);
-
 			completionHandler();
+#else
+			var alert = new NSAlert()
+			{
+				AlertStyle = NSAlertStyle.Informational,
+				InformativeText = message
+			};
+			alert.RunModal();
+			completionHandler();
+#endif
 		}
 
 		private void OnRunJavaScriptConfirmPanel(WKWebView webview, string message, WKFrameInfo frame, Action<bool> completionHandler)
@@ -206,6 +229,8 @@ namespace Windows.UI.Xaml.Controls
 			 *  https://github.com/xamarin/recipes/pull/20/files
 			 */
 			var controller = webview.FindViewController();
+
+#if __IOS__
 			var alert = UIKit.UIAlertController.Create(string.Empty, message, UIKit.UIAlertControllerStyle.Alert);
 			alert.AddAction(UIKit.UIAlertAction.Create(OkString, UIKit.UIAlertActionStyle.Default,
 				okAction => completionHandler(true)));
@@ -214,6 +239,19 @@ namespace Windows.UI.Xaml.Controls
 				cancelAction => completionHandler(false)));
 
 			controller?.PresentViewController(alert, true, null);
+#else
+			var alert = new NSAlert()
+			{
+				AlertStyle = NSAlertStyle.Informational,
+				InformativeText = message,
+			};
+			alert.AddButton(OkString);
+			alert.AddButton(CancelString);
+			alert.Buttons[0].Activated += (s, e) => completionHandler(true);
+			alert.Buttons[1].Activated += (s, e) => completionHandler(false);
+
+			alert.RunModal();
+#endif
 		}
 
 		private void OnRunJavaScriptTextInputPanel(WKWebView webview, string prompt, string defaultText, WKFrameInfo frame, Action<string> completionHandler)
@@ -223,6 +261,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().Debug($"OnRunJavaScriptTextInputPanel: {prompt}, {defaultText}");
 			}
 
+#if __IOS__
 			var alert = UIKit.UIAlertController.Create(string.Empty, prompt, UIKit.UIAlertControllerStyle.Alert);
 			UITextField alertTextField = null;
 
@@ -240,6 +279,23 @@ namespace Windows.UI.Xaml.Controls
 
 			var controller = webview.FindViewController();
 			controller?.PresentViewController(alert, true, null);
+#else
+			var alert = new NSAlert()
+			{
+				AlertStyle = NSAlertStyle.Informational,
+				InformativeText = prompt,
+			};
+			var textField = new NSTextField()
+			{
+				PlaceholderString = defaultText,
+			};
+			alert.AccessoryView = textField;
+			alert.AddButton(OkString);
+			alert.AddButton(CancelString);
+			alert.Buttons[0].Activated += (s, e) => completionHandler(textField.StringValue);
+			alert.Buttons[1].Activated += (s, e) => completionHandler(null);
+			alert.RunModal();
+#endif
 		}
 
 		private void OnStarted(WKWebView webView, WKNavigation navigation)
@@ -397,32 +453,8 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var uri = request.Url.ToUri();
 
-			if (UIKit.UIDevice.CurrentDevice.CheckSystemVersion(9, 0))
-			{
-				var readAccessFolderPath = GetBestFolderPath(uri);
-	
-				Uri readAccessUri;
-
-				if (Uri.TryCreate("file://" + readAccessFolderPath, UriKind.Absolute, out readAccessUri))
-				{
-					// LoadFileUrl will always fail on physical devices if readAccessUri changes for the same WebView instance.
-					LoadFileUrl(uri, readAccessUri);
-				}
-				else
-				{
-					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
-					{
-						this.Log().Error($"The uri [{uri}] is invalid.");
-					}
-
-					_parentWebView.OnNavigationFailed(new WebViewNavigationFailedEventArgs()
-					{
-						Uri = uri,
-						WebErrorStatus = WebErrorStatus.UnexpectedClientError
-					});
-				}
-			}
-			else
+#if __IOS__
+			if (!UIKit.UIDevice.CurrentDevice.CheckSystemVersion(9, 0))
 			{
 				if (this.Log().IsEnabled(LogLevel.Warning))
 				{
@@ -430,6 +462,30 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				base.LoadRequest(request);
+				return;
+			}
+#endif
+			var readAccessFolderPath = GetBestFolderPath(uri);
+
+			Uri readAccessUri;
+
+			if (Uri.TryCreate("file://" + readAccessFolderPath, UriKind.Absolute, out readAccessUri))
+			{
+				// LoadFileUrl will always fail on physical devices if readAccessUri changes for the same WebView instance.
+				LoadFileUrl(uri, readAccessUri);
+			}
+			else
+			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				{
+					this.Log().Error($"The uri [{uri}] is invalid.");
+				}
+
+				_parentWebView.OnNavigationFailed(new WebViewNavigationFailedEventArgs()
+				{
+					Uri = uri,
+					WebErrorStatus = WebErrorStatus.UnexpectedClientError
+				});
 			}
 		}
 
@@ -447,8 +503,11 @@ namespace Windows.UI.Xaml.Controls
 
 		void INativeWebView.SetScrollingEnabled(bool isScrollingEnabled)
 		{
+			//scroll view is currently available for iOS only
+#if __IOS__
 			ScrollView.ScrollEnabled = isScrollingEnabled;
 			ScrollView.Bounces = isScrollingEnabled;
+#endif
 		}
 
 		void INativeWebView.Reload()
