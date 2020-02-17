@@ -41,7 +41,7 @@
 			<Version>1.5.0.235</Version>
 		</PackageReference>
 		<PackageReference Include="NUnit.Runners">
-			<Version>3.9.0</Version>
+			<Version>3.11.1</Version>
 		</PackageReference>
 	</ItemGroup>
 
