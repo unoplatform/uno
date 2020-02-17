@@ -20,7 +20,7 @@ namespace SamplesApp.UITests
 		[AutoRetry]
 		public void Keyboard_Textbox_InsideScrollViewer_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Test_InsideScrollerViewer_Automated");
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Test_InsideScrollerViewer_Automated", skipInitialScreenshot: true);
 
 			_app.WaitForElement(_app.Marked("MultilineTextBox"));
 
@@ -122,7 +122,7 @@ namespace SamplesApp.UITests
 		[AutoRetry]
 		public void Keyboard_Textbox_NoScrollViewer_Validation()
 		{
-			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Test_NoScrollViewer_Automated");
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.Input_Test_NoScrollViewer_Automated", skipInitialScreenshot: true);
 
 			_app.WaitForElement(_app.Marked("MultilineTextBox"));
 
