@@ -127,9 +127,6 @@ namespace Windows.UI.Xaml.Media
 				foreach (var child in Children)
 				{
 					matrix *= child.ToMatrix(absoluteOrigin);
-					absoluteOrigin = new Point(
-						(absoluteOrigin.X * matrix.M11) + (absoluteOrigin.Y * matrix.M21) + matrix.M31,
-						(absoluteOrigin.X * matrix.M12) + (absoluteOrigin.Y * matrix.M22) + matrix.M32);
 				}
 			}
 
