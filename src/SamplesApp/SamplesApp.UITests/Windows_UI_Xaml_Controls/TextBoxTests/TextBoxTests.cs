@@ -414,5 +414,61 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			Assert.AreEqual("Testing text property", textChangedTextBlock.GetDependencyPropertyValue("Text")?.ToString());
 			Assert.AreEqual("Testing text property", lostFocusTextBlock.GetDependencyPropertyValue("Text")?.ToString());
 		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_DisabledWithAlphabet_Validation()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_Disabled");
+
+			// Tap in text box and verify the disability with alphabet
+			var disableOnfTextBox = _app.Marked("DisableOnfTextBox");
+			disableOnfTextBox.Tap();
+			disableOnfTextBox.EnterText("Text box is not disabled");
+			Assert.AreEqual("Text box is not disabled", disableOnfTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			disableOnfTextBox.ClearText();
+			disableOnfTextBox.EnterText("Disabled with f");
+			Assert.AreEqual("Disabled with ", disableOnfTextBox.GetDependencyPropertyValue("Text")?.ToString());
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_DisabledWithCheckBox_Validation()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_Disabled");
+
+			var disabledWithCheckboxTextBox = _app.Marked("DisabledWithCheckboxTextBox");
+			var enabledCheckBox = _app.Marked("EnabledCheckBox");
+
+			// Tap in text box and verify the disability with Checkbox
+			disabledWithCheckboxTextBox.Tap();
+			disabledWithCheckboxTextBox.EnterText("Text box is not disabled");
+			Assert.AreEqual("Text box is not disabled", disabledWithCheckboxTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			enabledCheckBox.Tap();
+
+			disabledWithCheckboxTextBox.ClearText();
+			Assert.AreNotEqual(string.Empty, disabledWithCheckboxTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			Assert.AreEqual("Text box is not disabled", disabledWithCheckboxTextBox.GetDependencyPropertyValue("Text")?.ToString());
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_DisabledWithToggleButton_Validation()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_Disabled_State");
+
+			var toggleSwitch = _app.Marked("ToggleSwitch");
+			var toggleControlledTextBox = _app.Marked("ToggleControlledTextBox");
+
+			// Tap in text box and verify the disability with toggle button
+			toggleControlledTextBox.Tap();
+			toggleControlledTextBox.EnterText("Text box is not disabled");
+			Assert.AreEqual("Text box is not disabled", toggleControlledTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			toggleSwitch.Tap();
+
+			toggleControlledTextBox.ClearText();
+			Assert.AreNotEqual(string.Empty, toggleControlledTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			Assert.AreEqual("Text box is not disabled", toggleControlledTextBox.GetDependencyPropertyValue("Text")?.ToString());
+		}
 	}
 }

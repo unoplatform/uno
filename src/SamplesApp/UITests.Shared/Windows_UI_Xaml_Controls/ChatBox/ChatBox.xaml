@@ -12,27 +12,30 @@
 	<controls:SampleControl SampleDescription="Translate the content above the keyboard after opening it (like a chat app). ">
 		<controls:SampleControl.SampleContent>
 			<DataTemplate>
-				<Grid extensions:InputPanelExtensions.IsPanIntoView="True">					
+				<Grid extensions:InputPanelExtensions.IsPanIntoView="True">
 					<StackPanel VerticalAlignment="Bottom">
 						<TextBlock Text="Known issue : On iOS only - When focusing the TextBox, the keyboard appears and our animation is played to translate upwards the content (the whole grid). But when clicking on a button (i.e : send  a message), the focus is lost, the keyboard hidden, and the tap is triggered. The tap should be triggered before the animation hide the keyboard."
 							   TextWrapping="Wrap"
 							   HorizontalAlignment="Center"
 							   Margin="20"/>
-						
-						<TextBlock HorizontalAlignment="Center">
-								<Run Text="You clicked" />							
-								<Run Text="{Binding ClickCount}" />						
-								<Run Text=" times" />
+
+						<TextBlock x:Name="ClicksCountTextBlock"
+									HorizontalAlignment="Center">
+									<Run Text="You clicked" />
+									<Run Text="{Binding ClickCount}" />
+									<Run Text="times" />
 						</TextBlock>
 
 						<StackPanel  Orientation="Horizontal" VerticalAlignment="Bottom"
 									  HorizontalAlignment="Center"
-									  Background="Aquamarine">					
-							<TextBox Text="TextBox"
+									  Background="Aquamarine">
+							<TextBox x:Name="TextBox"
+									 Text="TextBox"
 									 AcceptsReturn="True"
 									 Margin="20" />
 
-							<Button Content="Click on me"
+							<Button x:Name="ClickButton"
+									Content="Click on me"
 									Command="{Binding [ToggleHeader]}"
 									Margin="20" />
 						</StackPanel>

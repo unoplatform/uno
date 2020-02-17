@@ -257,6 +257,96 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			Check(true, "Assert after another double click while myCheckBox should stay checked");
 		}
 
+		private void VerifyTextBlockText(string text1, string text2, string text3)
+		{
+			var result = _app.Marked("result");
+			var resultTapped = _app.Marked("resultTapped");
+			var resultCommand = _app.Marked("resultCommand");
+
+			Assert.AreEqual(text1, result.GetDependencyPropertyValue("Text")?.ToString());
+			Assert.AreEqual(text2, resultTapped.GetDependencyPropertyValue("Text")?.ToString());
+			Assert.AreEqual(text3, resultCommand.GetDependencyPropertyValue("Text")?.ToString());
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Uno.UITest.Helpers.Queries.Platform.iOS, Uno.UITest.Helpers.Queries.Platform.Android)] // Wasm is disabled https://github.com/unoplatform/uno/issues/2664
+		public void ButtonNative_Button01_Validation()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.Buttons_Native");
+
+			// Verify text of all text blocks initially
+			VerifyTextBlockText("No value", "No value", "No command");
+
+			var button01 = _app.Marked("button01");
+
+			// Click on button01 and verify text and number of clicks in all text blocks
+			button01.Tap();
+			VerifyTextBlockText("Button button01 Clicked (1)", "Button button01 Tapped (1)", "Command Button 01 (1)");
+
+			// Again click on button01 and verify text and number of clicks in all text blocks
+			button01.Tap();
+			VerifyTextBlockText("Button button01 Clicked (2)", "Button button01 Tapped (2)", "Command Button 01 (2)");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Uno.UITest.Helpers.Queries.Platform.iOS, Uno.UITest.Helpers.Queries.Platform.Android)] // Wasm is disabled https://github.com/unoplatform/uno/issues/2664
+		public void ButtonNative_Button02_Validation()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.Buttons_Native");
+
+			// Verify text of all text blocks initially
+			VerifyTextBlockText("No value", "No value", "No command");
+
+			var button02 = _app.Marked("button02");
+			var enableButton02 = _app.Marked("enableButton02");
+
+			// Click on button02 and verify text- It should not change as button 02 is not enabled
+			button02.Tap();
+			VerifyTextBlockText("No value", "No value", "No command");
+
+			enableButton02.Tap();
+			VerifyTextBlockText("No value", "No value", "No command");
+
+			// Again click on button02 and verify text and number of clicks in all text blocks
+			button02.Tap();
+			VerifyTextBlockText("Button button02 Clicked (1)", "Button button02 Tapped (1)", "Command Button 02 (1)");
+
+			// Again click on button02 and verify text and number of clicks in all text blocks
+			button02.Tap();
+			VerifyTextBlockText("Button button02 Clicked (2)", "Button button02 Tapped (2)", "Command Button 02 (2)");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Uno.UITest.Helpers.Queries.Platform.iOS, Uno.UITest.Helpers.Queries.Platform.Android)] // Wasm is disabled https://github.com/unoplatform/uno/issues/2664
+		public void ButtonNative_ToggleSwitch_Validation()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.Buttons_Native");
+
+			// Verify text of all text blocks initially
+			VerifyTextBlockText("No value", "No value", "No command");
+
+			var toggleSwitch02 = _app.Marked("toggleSwitch02");
+			var enableToggleSwitch02 = _app.Marked("enableToggleSwitch02");
+
+			// Click on toggleSwitch02 and verify text- It should not change as toggleSwitch02 is not enabled
+			toggleSwitch02.Tap();
+			VerifyTextBlockText("No value", "No value", "No command");
+
+			enableToggleSwitch02.Tap();
+			VerifyTextBlockText("No value", "No value", "No command");
+
+			// Again click on toggleSwitch02 and verify text and number of clicks in all text blocks
+			toggleSwitch02.Tap();
+			VerifyTextBlockText("ToggleSwitch toggleSwitch02 Toggled True (1)", "No value", "No command");
+
+			// Again click on toggleSwitch02 and verify text and number of clicks in all text blocks
+			toggleSwitch02.Tap();
+			VerifyTextBlockText("ToggleSwitch toggleSwitch02 Toggled False (2)", "No value", "No command");
+		}
+
 		[Test]
 		[AutoRetry]
 		public void Button_NestedButtons_Validation()
