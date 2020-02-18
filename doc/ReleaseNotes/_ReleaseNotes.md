@@ -2,6 +2,7 @@
 
 ### Features
 
+- Support for `PhoneCallManager.ShowPhoneCallUI` on macOS
 - Support for full screen mode on macOS
 - Support for `ShowComposeSmsMessageAsync` on macOS
 - Support for `Flyout` on macOS
