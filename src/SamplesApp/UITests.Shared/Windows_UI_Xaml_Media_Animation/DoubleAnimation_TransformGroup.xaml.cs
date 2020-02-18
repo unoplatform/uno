@@ -1,20 +1,25 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
+using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Uno.UI.Samples.Controls;
+using Uno.Extensions;
 
 namespace UITests.Windows_UI_Xaml_Media_Animation
 {
-	[Sample("Animations", "Transform", Description = _description)]
+	[Sample("Animations", "Transform", Description = _description, IgnoreInSnapshotTests = true)]
 	public sealed partial class DoubleAnimation_TransformGroup : Page
 	{
 		private const string _description = @"This (automated) test validates animations of a TranformGroup.";
 
 		private TimeSpan _duration;
+		private IList<Storyboard> _animations;
 
 		public DoubleAnimation_TransformGroup()
 		{
@@ -27,7 +32,7 @@ namespace UITests.Windows_UI_Xaml_Media_Animation
 #endif
 		}
 
-		private void StartAnimations(object sender, RoutedEventArgs e)
+		private async void StartAnimations(object sender, RoutedEventArgs e)
 		{
 			var anims = new[]
 			{
@@ -55,6 +60,24 @@ namespace UITests.Windows_UI_Xaml_Media_Animation
 				};
 				a.Begin();
 			});
+
+			if (AutoPause.IsChecked.GetValueOrDefault())
+			{
+				await Task.Delay(_duration / 2);
+				Status.Text = "Paused";
+				anims.ForEach(a => a.Pause());
+				_animations = anims;
+			}
+			else
+			{
+				_animations = default;
+			}
+		}
+
+		private void ResumeAnimations(object sender, RoutedEventArgs e)
+		{
+			Status.Text = "Animating";
+			_animations?.ForEach(a => a.Resume());
 		}
 
 		private static string GetPath<TTransform>(Expression<Func<TTransform, object>> property)

@@ -12,13 +12,13 @@
 		<Style TargetType="Border" x:Key="Marker">
 			<Setter Property="Width" Value="50" />
 			<Setter Property="Height" Value="50" />
-			<Setter Property="Background" Value="LightGray" />
+			<Setter Property="Background" Value="#D3D3D3" />
 			<Setter Property="HorizontalAlignment" Value="Center" />
 			<Setter Property="VerticalAlignment" Value="Top" />
 		</Style>
 	</Page.Resources>
 
-	<Grid>
+	<Grid Background="#FFFFFF">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
@@ -32,12 +32,25 @@
 			<ColumnDefinition />
 		</Grid.ColumnDefinitions>
 
-		<Button
-			x:Name="StartButton"
+		<StackPanel
 			Grid.Row="0"
 			Grid.Column="0"
-			Content="Start animations"
-			Click="StartAnimations"/>
+			Orientation="Horizontal">
+			<Button
+				x:Name="StartButton"
+				Content="Start animations"
+				Click="StartAnimations"/>
+			<CheckBox
+				x:Name="AutoPause"
+				Content="Pause animation at half duration"
+				IsChecked="True"
+				IsThreeState="False" />
+			<Button
+				x:Name="ResumeButton"
+				Content="Resume animations"
+				Click="ResumeAnimations"
+				Visibility="{Binding ElementName=AutoPause, Path=IsChecked}"/>
+		</StackPanel>
 
 		<TextBlock
 			x:Name="Status"
