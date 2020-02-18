@@ -3,9 +3,11 @@ using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
+using SamplesApp.UITests._Utils;
 using Uno.UITest;
 using static System.Math;
 
@@ -193,6 +195,9 @@ namespace SamplesApp.UITests.TestFramework
 			}
 		}
 
+		public static void HasColorAt(FileInfo screenshot, float x, float y, string expectedColorCode, byte tolerance = 0)
+			=> HasColorAt(screenshot, x, y, ColorCodeParser.Parse(expectedColorCode), tolerance);
+
 		public static void HasColorAt(FileInfo screenshot, float x, float y, Color expectedColor, byte tolerance = 0)
 		{
 			using (var bitmap = new Bitmap(screenshot.FullName))
@@ -211,6 +216,45 @@ namespace SamplesApp.UITests.TestFramework
 				Assert.IsTrue(Math.Abs(pixel.B - expectedColor.B) <= tolerance, $"[{x},{y}] Blue (expected: {expected} | actual: {actual})");
 			}
 		}
+
+		public static void HasPixels(FileInfo screenshot, params ExpectedPixels[] expectations)
+		{
+			using (var bitmap = new Bitmap(screenshot.FullName))
+			{
+				foreach (var expectation in expectations)
+				{
+					var x = expectation.X;
+					var y = expectation.Y;
+
+					Assert.GreaterOrEqual(bitmap.Width, x);
+					Assert.GreaterOrEqual(bitmap.Height, y);
+
+					for (var py = 0; py < expectation.Values.GetLength(0); py++)
+					for (var px = 0; px < expectation.Values.GetLength(1); px++)
+					{
+						var expectedColor = expectation.Values[py, px];
+						if (expectedColor.IsEmpty)
+						{
+							continue;
+						}
+
+						var pixel = bitmap.GetPixel(x + px, y + py);
+
+						var expected = ToArgbCode(expectedColor);
+						var actual = ToArgbCode(pixel);
+
+						//Convert to ARGB value, because 'named colors' are not considered equal to their unnamed equivalents(!)
+						Assert.IsTrue(Math.Abs(pixel.A - expectedColor.A) <= expectation.Tolerance, $"{expectation.Name} {px},{py}: [{x},{y}] Alpha (expected: {expected} | actual: {actual})");
+						Assert.IsTrue(Math.Abs(pixel.R - expectedColor.R) <= expectation.Tolerance, $"{expectation.Name} {px},{py}: [{x},{y}] Red (expected: {expected} | actual: {actual})");
+						Assert.IsTrue(Math.Abs(pixel.G - expectedColor.G) <= expectation.Tolerance, $"{expectation.Name} {px},{py}: [{x},{y}] Green (expected: {expected} | actual: {actual})");
+						Assert.IsTrue(Math.Abs(pixel.B - expectedColor.B) <= expectation.Tolerance, $"{expectation.Name} {px},{py}: [{x},{y}] Blue (expected: {expected} | actual: {actual})");
+					}
+				}
+			}
+		}
+
+		public static void DoesNotHaveColorAt(FileInfo screenshot, float x, float y, string excludedColorCode, byte tolerance = 0)
+			=> DoesNotHaveColorAt(screenshot, x, y, ColorCodeParser.Parse(excludedColorCode), tolerance);
 
 		public static void DoesNotHaveColorAt(FileInfo screenshot, float x, float y, Color excludedColor, byte tolerance = 0)
 		{
@@ -234,5 +278,52 @@ namespace SamplesApp.UITests.TestFramework
 		}
 		private static string ToArgbCode(Color color)
 			=> $"{color.A:X2}{color.R:X2}{color.G:X2}{color.B:X2}";
+	}
+
+	public struct ExpectedPixels
+	{
+		public static ExpectedPixels At(string name, float x, float y)
+			=> new ExpectedPixels(name, x, y, new Color[0, 0]);
+
+		public static ExpectedPixels At(float x, float y, [CallerLineNumber] int line = -1)
+			=> new ExpectedPixels($"at line: {line}", x, y, new Color[0,0]);
+
+		public ExpectedPixels Pixels(string[,] pixels) => new ExpectedPixels(Name, X, Y, pixels, Tolerance);
+
+		public ExpectedPixels WithTolerance(byte tolerance) => new ExpectedPixels(Name, X, Y, Values, tolerance);
+
+		public ExpectedPixels(string name, float x, float y, Color[,] pixels, byte tolerance = 0)
+		{
+			Name = name;
+			X = (int)x;
+			Y = (int)y;
+			Values = pixels;
+			Tolerance = tolerance;
+		}
+
+		public ExpectedPixels(string name, float x, float y, string[,] pixels, byte tolerance = 0)
+		{
+			var colors = new Color[pixels.GetLength(0), pixels.GetLength(1)];
+			for (var py = 0; py < pixels.GetLength(0); py++)
+			for (var px = 0; px < pixels.GetLength(1); px++)
+			{
+				var colorCode = pixels[py, px];
+				colors[py, px] = string.IsNullOrWhiteSpace(colorCode)
+					? Color.Empty
+					: ColorCodeParser.Parse(colorCode);
+			}
+
+			Name = name;
+			X = (int)x;
+			Y = (int)y;
+			Values = colors;
+			Tolerance = tolerance;
+		}
+
+		public string Name { get; set; }
+		public int X { get; }
+		public int Y { get; }
+		public Color[,] Values { get; }
+		public byte Tolerance { get; }
 	}
 }
