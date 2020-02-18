@@ -1,5 +1,7 @@
 ﻿using System.ComponentModel;
 using System.Diagnostics;
+using System.Text;
+using Uno.Extensions;
 
 namespace Windows.Foundation
 {
@@ -38,7 +40,14 @@ namespace Windows.Foundation
 
 		public override int GetHashCode() => Width.GetHashCode() ^ Height.GetHashCode();
 
-		public override string ToString() => $"[{Width};{Height}]";
+		public override string ToString()
+		{
+			var sb = new StringBuilder(8);
+			sb.AppendFormatInvariant(null, Width);
+			sb.Append(',');
+			sb.AppendFormatInvariant(null, Height);
+			return sb.ToString();
+		}
 
 		public static bool operator ==(Size size1, Size size2) => size1.Equals(size2);
 
