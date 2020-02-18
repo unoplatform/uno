@@ -204,8 +204,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests
 			sut.ColumnDefinitions.Add(new ColumnDefinition() { Width = GridLengthHelper.Auto });
 			sut.ColumnDefinitions.Add(new ColumnDefinition() { Width = new GridLength(1, GridUnitType.Star), MinWidth = 48 });
 
-			var inner = new Border();
-			inner.RequestedDesiredSize = new Size(343, 0);
+			var inner = new Border() { Width = 343, Height = 0 };
 
 			sut.Children.Add(inner);
 
@@ -221,8 +220,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.GridTests
 			sut.RowDefinitions.Add(new RowDefinition() { Height = GridLengthHelper.Auto });
 			sut.RowDefinitions.Add(new RowDefinition() { Height = new GridLength(1, GridUnitType.Star), MinHeight = 48 });
 
-			var inner = new Border();
-			inner.RequestedDesiredSize = new Size(0, 343);
+			var inner = new Border() { Width = 0, Height = 343 };
 
 			sut.Children.Add(inner);
 
