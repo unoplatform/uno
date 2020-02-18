@@ -32,7 +32,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 		[AutoRetry]
 		public void ImageStretch_None()
 		{
-			Run("Uno.UI.Samples.UITests.ImageTestsControl.Image_Stretch_None");
+			Run("Uno.UI.Samples.UITests.ImageTestsControl.Image_Stretch_None", skipInitialScreenshot: true);
 
 			void HasValidSize(string name)
 			{

@@ -64,7 +64,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 		[AutoRetry]
 		public void ComboBoxTests_VisibleBounds()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.ComboBox.ComboBox_VisibleBounds");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ComboBox.ComboBox_VisibleBounds", skipInitialScreenshot: true);
 
 			var combo01 = _app.Marked("combo01");
 			var sampleControl = _app.Marked("sampleControl");
