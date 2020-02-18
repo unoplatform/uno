@@ -25,7 +25,7 @@ document.addEventListener('DOMContentLoaded', function(){
 
     // if local env, use toc.yml for main nav
     // else use wp menu
-    if (window.location.hostname === 'localhost') {
+    if (window.location.hostname !== 'localhost') {
         const unoMenuReq = new XMLHttpRequest();
         const unoMenuEndpoint = window.location.protocol + "//" + window.location.hostname + "/wp-json/wp/v2/menu";
         unoMenuReq.open("get", unoMenuEndpoint, true);
