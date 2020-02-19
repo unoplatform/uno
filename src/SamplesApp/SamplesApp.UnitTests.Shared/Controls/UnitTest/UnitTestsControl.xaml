@@ -1,12 +1,12 @@
-﻿<UserControl x:Class="Uno.UI.Samples.Tests.UnitTestsControl"
-			 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-			 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:local="using:Uno.UI.Samples.Content.Foundation"
-			 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-			 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-			 mc:Ignorable="d"
-			 d:DesignHeight="300"
-			 d:DesignWidth="400">
+﻿<UserControl
+	x:Class="Uno.UI.Samples.Tests.UnitTestsControl"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	d:DesignHeight="300"
+	d:DesignWidth="400">
 
 	<Grid>
 		<Grid.RowDefinitions>
@@ -18,10 +18,13 @@
 			<ColumnDefinition Width="*"/>
 		</Grid.ColumnDefinitions>
 		<StackPanel Grid.Row="0">
-			<Button
-				x:Name="runButton"
-				Content="Run"
-				Click="OnRunTests" />
+			<StackPanel Orientation="Horizontal">
+				<TextBox x:Name="testFilter" PlaceholderText="Enter test filter here" Width="200" />
+				<Button
+					x:Name="runButton"
+					Content="Run"
+					Click="OnRunTests" />
+			</StackPanel>
 
 			<StackPanel Orientation="Horizontal">
 				<TextBlock Text="Status: " />
@@ -29,14 +32,12 @@
 			</StackPanel>
 
 			<StackPanel Orientation="Horizontal">
-				<TextBlock Text="Run: " />
-				<TextBlock x:Name="runTestCount" Text="None" />
-				<TextBlock Text=" | Ignored: " />
-				<TextBlock x:Name="ignoredTestCount" Text="None" />
-				<TextBlock Text=" | Succeeded: " />
-				<TextBlock x:Name="succeededTestCount" Text="None" />
-				<TextBlock Text=" | Failed: " />
-				<TextBlock x:Name="failedTestCount" Text="None" />
+				<TextBlock FontSize="15">
+				  🏃‍: <Run x:Name="runTestCount" Text="None" />
+				| 🚫: <Run x:Name="ignoredTestCount" Foreground="DarkGray"  Text="None" />
+				| ✔️: <Run x:Name="succeededTestCount" Foreground="DarkGreen"  Text="None" />
+				| ❌: <Run x:Name="failedTestCount" Foreground="Red" Text="None" />
+				</TextBlock>
 			</StackPanel>
 			
 			<ScrollViewer Height="100">
@@ -44,7 +45,7 @@
 			</ScrollViewer>
 		</StackPanel>
 		<ScrollViewer Grid.Row="1">
-			<StackPanel x:Name="testResults">
+			<StackPanel x:Name="testResults" Background="Black">
 			</StackPanel>
 		</ScrollViewer>
 		<ScrollViewer  Grid.Column="1" Grid.RowSpan="2">
