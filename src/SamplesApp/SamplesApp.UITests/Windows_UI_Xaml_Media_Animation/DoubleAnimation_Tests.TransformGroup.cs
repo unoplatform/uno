@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using NUnit.Framework;
@@ -25,7 +26,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 		private const int elementVirtualSize = 50;
 
-		[Test] [AutoRetry] public void When_TransformGroup_Translate()
+		[Test]
+		[AutoRetry]
+		public void When_TransformGroup_Translate()
 		{
 			const string color = color1;
 			const int trY = 50;
@@ -38,6 +41,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Top left", host.X - 1, host.Y - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ defaultColor, defaultColor},
@@ -46,6 +50,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Top right", host.Right - 1, host.Y - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ defaultColor, defaultColor},
@@ -54,6 +59,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Bottom right", host.Right - 1, host.Bottom - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ color, defaultColor},
@@ -62,6 +68,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Bottom left", host.X - 1, host.Bottom - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ defaultColor, color},
@@ -76,6 +83,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Top left", host.X - 1, host.Y + finalTrY - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ defaultColor, bgColor},
@@ -84,6 +92,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Top right", host.Right - 1, host.Y + finalTrY - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ bgColor, defaultColor},
@@ -92,6 +101,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Bottom right", host.Right - 1, host.Bottom + finalTrY - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ color, defaultColor},
@@ -100,6 +110,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Bottom left", host.X - 1, host.Bottom + finalTrY - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ defaultColor, color},
@@ -124,6 +135,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Bottom left", host.X - 1, host.Bottom - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ defaultColor, color},
@@ -132,6 +144,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Bottom right", host.Right - 1, host.Bottom - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ color, defaultColor},
@@ -145,6 +158,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Top left", host.X - 1, host.Y - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ default, defaultColor},
@@ -153,6 +167,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Top right", host.Right - 1, host.Y - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ defaultColor, default},
@@ -161,6 +176,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Bottom right", host.Right - 1, host.Y + host.Height * scaleY - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ color, defaultColor},
@@ -169,6 +185,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Bottom left", host.X - 1, host.Y + host.Height * scaleY - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ defaultColor, color},
@@ -191,6 +208,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Bottom right", host.Right - 1, host.Bottom - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ color, color},
@@ -204,6 +222,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Top left", host.X - 1, host.Bottom - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ defaultColor, bgColor},
@@ -212,6 +231,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Top right", host.Right - 1, host.Bottom - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ bgColor, defaultColor},
@@ -220,6 +240,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Bottom right", host.Right - 1, host.Bottom + host.Width - 1) // pi / 2, so add width
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ color, defaultColor},
@@ -228,6 +249,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Bottom left", host.X - 1, host.Bottom + host.Width - 1) // pi / 2, so add width
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ defaultColor, color},
@@ -250,6 +272,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Bottom right", host.Right - 1, host.Bottom - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ color, defaultColor},
@@ -263,6 +286,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Top left", host.X - 1, host.Y - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ defaultColor, default, default, default, defaultColor},
@@ -274,6 +298,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Top right", host.Right - 1, host.Y + host.Height - 3) // skew Y is pi / 2, so add height
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ bgColor, defaultColor},
@@ -285,15 +310,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Bottom right", host.Right - 1, host.Bottom + host.Height - 1) // skew Y is pi / 2, so add height
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ color, defaultColor},
 						{ defaultColor, default},
 					})
-					.WithTolerance(192), // known to be up to 128 ...
+					.WithColorTolerance(192), // known to be up to 128 ...
 
 				ExpectedPixels
 					.At("Bottom left", host.X - 1, host.Bottom - 3)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ defaultColor, color},
@@ -320,6 +347,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Top left", host.X - 1, host.Y - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ defaultColor, defaultColor},
@@ -328,6 +356,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Top right", host.Right - 1, host.Y - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ defaultColor, defaultColor},
@@ -336,6 +365,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Bottom right", host.Right - 1, host.Bottom - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ color, defaultColor},
@@ -344,6 +374,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Bottom left", host.X - 1, host.Bottom - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ defaultColor, color},
@@ -358,6 +389,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Top left", host.X - 1, host.Y + finalTrY - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ defaultColor, bgColor},
@@ -366,6 +398,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Top right", host.Right - 1, host.Y + finalTrY - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ bgColor, defaultColor},
@@ -374,6 +407,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Bottom right", host.Right - 1, host.Bottom + finalTrY - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ color, defaultColor},
@@ -382,6 +416,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Bottom left", host.X - 1, host.Bottom + finalTrY - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ defaultColor, color},
@@ -404,19 +439,21 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Bottom left", host.X - 1, host.Y - 1)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ defaultColor, defaultColor},
 						{ defaultColor, bgColor},
-					})
+					}),
 
-				//ExpectedPixels
-				//	.At("Bottom right", host.Right - 1, host.Bottom - 1)
-				//	.Pixels(new[,]
-				//	{
-				//		{ color, color},
-				//		{ color, color},
-				//	})
+				ExpectedPixels
+					.At("Bottom right", host.Right - 1, host.Bottom - 1)
+					.WithPixelTolerance(x: 1, y: 1)
+					.Pixels(new[,]
+					{
+						{ color, color},
+						{ color, color},
+					})
 			);
 
 			// Assert the final state
@@ -425,6 +462,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Top left", host.X - 3, host.Bottom - 3)
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ defaultColor, default, default, default, default, bgColor},
@@ -436,6 +474,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Top right", (float)(host.X + host.Width * Math.Cos(Math.PI / 4) - 3), (float)(host.Y + host.Height * (1 + Math.Cos(Math.PI / 4)) - 3))
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ default, default, default, default, default, defaultColor},
@@ -447,6 +486,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Bottom right", host.X - 3, (float)(host.Bottom + host.Height * Math.Sqrt(2) - 3))
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ default, default, color, color, default, default},
@@ -458,6 +498,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 				ExpectedPixels
 					.At("Bottom left", (float)(host.X - host.Width * Math.Cos(Math.PI / 4) - 3), (float)(host.Y + host.Height * (1 + Math.Cos(Math.PI / 4)) - 3))
+					.WithPixelTolerance(x: 1, y: 1)
 					.Pixels(new[,]
 					{
 						{ defaultColor, default, default, default, default, default},
@@ -469,7 +510,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 			);
 		}
 
-		private (IAppRect host, float scale, FileInfo half, FileInfo final) BeginTransformGroupTest(string elementName)
+		private (Rectangle host, float scale, FileInfo half, FileInfo final) BeginTransformGroupTest(string elementName)
 		{
 			Run(_transformGroupTestControl, skipInitialScreenshot: true);
 			TakeScreenshot("Initial", ignoreInSnapshotCompare: true);
@@ -477,6 +518,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 			var status = _app.Marked("Status");
 			var host = _app.GetRect(elementName);
 			var scale = host.Height / elementVirtualSize;
+
+			// Capture the original rect (updated on WASM when the element moves)
+			var immutableHostRect = new Rectangle((int)host.X, (int)host.Y, (int)host.Width, (int)host.Height);
 
 			// Run the first half of the animation
 			_app.Marked("StartButton").Tap();
@@ -490,7 +534,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 			var final = TakeScreenshot("final", ignoreInSnapshotCompare: true);
 
-			return (host, scale, half, final);
+			return (immutableHostRect, scale, half, final);
 		}
 	}
 }

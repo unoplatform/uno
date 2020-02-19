@@ -219,6 +219,9 @@ namespace SamplesApp.UITests.TestFramework
 
 		public static void HasPixels(FileInfo screenshot, params ExpectedPixels[] expectations)
 		{
+			var isSuccess = true;
+			var result = new StringBuilder();
+
 			using (var bitmap = new Bitmap(screenshot.FullName))
 			{
 				foreach (var expectation in expectations)
@@ -229,27 +232,87 @@ namespace SamplesApp.UITests.TestFramework
 					Assert.GreaterOrEqual(bitmap.Width, x);
 					Assert.GreaterOrEqual(bitmap.Height, y);
 
-					for (var py = 0; py < expectation.Values.GetLength(0); py++)
-					for (var px = 0; px < expectation.Values.GetLength(1); px++)
+					result.AppendLine(expectation.Name);
+					isSuccess &= Validate(bitmap, expectation, result);
+					result.AppendLine();
+				}
+
+				if (!isSuccess)
+				{
+					Assert.Fail(result.ToString());
+				}
+			}
+		}
+
+		private static bool Validate(Bitmap bitmap, ExpectedPixels expectation, StringBuilder report)
+		{
+			var failMessage = default(string);
+			for (var offsetX = 0; offsetX <= expectation.OffsetTolerance.x; offsetX++)
+			for (var offsetY = 0; offsetY <= expectation.OffsetTolerance.y; offsetY++)
+			{
+				if (ValidatePixels(offsetX, offsetY)
+					|| (offsetX > 0 && ValidatePixels(-offsetX, offsetY))
+					|| (offsetX > 0 && offsetY > 0 && ValidatePixels(-offsetX, -offsetY))
+					|| (offsetY > 0 && ValidatePixels(offsetX, -offsetY)))
+				{
+					report.AppendLine("OK");
+					return true;
+				}
+			}
+
+			report.AppendLine(failMessage);
+			return false;
+
+			bool ValidatePixels(int offsetX, int offsetY)
+			{
+				var isSuccess = true;
+				var result = new StringBuilder();
+
+				for (var lin = 0; lin < expectation.Values.GetLength(0); lin++)
+				for (var col = 0; col < expectation.Values.GetLength(1); col++)
+				{
+					var expectedColor = expectation.Values[lin, col];
+					if (expectedColor.IsEmpty)
 					{
-						var expectedColor = expectation.Values[py, px];
-						if (expectedColor.IsEmpty)
-						{
-							continue;
-						}
+						continue;
+					}
 
-						var pixel = bitmap.GetPixel(x + px, y + py);
+					var pixelX = expectation.X + col + offsetX;
+					var pixelY = expectation.Y + lin + offsetY;
+					var pixel = bitmap.GetPixel(pixelX, pixelY);
 
-						var expected = ToArgbCode(expectedColor);
-						var actual = ToArgbCode(pixel);
+					var expected = ToArgbCode(expectedColor);
+					var actual = ToArgbCode(pixel);
 
-						//Convert to ARGB value, because 'named colors' are not considered equal to their unnamed equivalents(!)
-						Assert.IsTrue(Math.Abs(pixel.A - expectedColor.A) <= expectation.Tolerance, $"{expectation.Name} {px},{py}: [{x},{y}] Alpha (expected: {expected} | actual: {actual})");
-						Assert.IsTrue(Math.Abs(pixel.R - expectedColor.R) <= expectation.Tolerance, $"{expectation.Name} {px},{py}: [{x},{y}] Red (expected: {expected} | actual: {actual})");
-						Assert.IsTrue(Math.Abs(pixel.G - expectedColor.G) <= expectation.Tolerance, $"{expectation.Name} {px},{py}: [{x},{y}] Green (expected: {expected} | actual: {actual})");
-						Assert.IsTrue(Math.Abs(pixel.B - expectedColor.B) <= expectation.Tolerance, $"{expectation.Name} {px},{py}: [{x},{y}] Blue (expected: {expected} | actual: {actual})");
+					//Convert to ARGB value, because 'named colors' are not considered equal to their unnamed equivalents(!)
+					if (Math.Abs(pixel.A - expectedColor.A) > expectation.ColorTolerance)
+					{
+						isSuccess = false;
+						result.AppendLine($"{col},{lin}: [{pixelX},{pixelY}] Alpha (expected: {expected} | actual: {actual})");
+					}
+					if (Math.Abs(pixel.R - expectedColor.R) > expectation.ColorTolerance)
+					{
+						isSuccess = false;
+						result.AppendLine($"{col},{lin}: [{pixelX},{pixelY}] Red (expected: {expected} | actual: {actual})");
+					}
+					if (Math.Abs(pixel.G - expectedColor.G) > expectation.ColorTolerance)
+					{
+						isSuccess = false;
+						result.AppendLine($"{col},{lin}: [{pixelX},{pixelY}] Green (expected: {expected} | actual: {actual})");
+					}
+					if (Math.Abs(pixel.B - expectedColor.B) > expectation.ColorTolerance)
+					{
+						isSuccess = false;
+						result.AppendLine($"{col},{lin}: [{pixelX},{pixelY}] Blue (expected: {expected} | actual: {actual})");
 					}
 				}
+
+				if (failMessage == default) // so we keep only for offset 0,0
+				{
+					failMessage = result.ToString();
+				}
+
+				return isSuccess;
 			}
 		}
 
@@ -288,20 +351,23 @@ namespace SamplesApp.UITests.TestFramework
 		public static ExpectedPixels At(float x, float y, [CallerLineNumber] int line = -1)
 			=> new ExpectedPixels($"at line: {line}", x, y, new Color[0,0]);
 
-		public ExpectedPixels Pixels(string[,] pixels) => new ExpectedPixels(Name, X, Y, pixels, Tolerance);
+		public ExpectedPixels Pixels(string[,] pixels) => new ExpectedPixels(Name, X, Y, pixels, ColorTolerance, OffsetTolerance);
 
-		public ExpectedPixels WithTolerance(byte tolerance) => new ExpectedPixels(Name, X, Y, Values, tolerance);
+		public ExpectedPixels WithColorTolerance(byte tolerance) => new ExpectedPixels(Name, X, Y, Values, tolerance, OffsetTolerance);
 
-		public ExpectedPixels(string name, float x, float y, Color[,] pixels, byte tolerance = 0)
+		public ExpectedPixels WithPixelTolerance(int x = 0, int y = 0) => new ExpectedPixels(Name, X, Y, Values, ColorTolerance, (x, y));
+
+		public ExpectedPixels(string name, float x, float y, Color[,] pixels, byte colorTolerance = 0, (int x, int y) offsetTolerance = default)
 		{
 			Name = name;
 			X = (int)x;
 			Y = (int)y;
 			Values = pixels;
-			Tolerance = tolerance;
+			ColorTolerance = colorTolerance;
+			OffsetTolerance = offsetTolerance;
 		}
 
-		public ExpectedPixels(string name, float x, float y, string[,] pixels, byte tolerance = 0)
+		public ExpectedPixels(string name, float x, float y, string[,] pixels, byte colorTolerance = 0, (int x, int y) offsetTolerance = default)
 		{
 			var colors = new Color[pixels.GetLength(0), pixels.GetLength(1)];
 			for (var py = 0; py < pixels.GetLength(0); py++)
@@ -317,13 +383,15 @@ namespace SamplesApp.UITests.TestFramework
 			X = (int)x;
 			Y = (int)y;
 			Values = colors;
-			Tolerance = tolerance;
+			ColorTolerance = colorTolerance;
+			OffsetTolerance = offsetTolerance;
 		}
 
 		public string Name { get; set; }
 		public int X { get; }
 		public int Y { get; }
 		public Color[,] Values { get; }
-		public byte Tolerance { get; }
+		public byte ColorTolerance { get; }
+		public (int x, int y) OffsetTolerance { get; }
 	}
 }
