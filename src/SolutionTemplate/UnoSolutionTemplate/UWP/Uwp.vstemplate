@@ -15,7 +15,14 @@
 	</TemplateData>
 	<TemplateContent>
 		<Project File="UnoQuickStart.Uwp.csproj" TargetFileName="$ext_safeprojectname$.Uwp.csproj" ReplaceParameters="true">
-
+			<Folder Name="Assets" TargetFolderName="Assets">
+			  <ProjectItem TargetFileName="lockscreenlogo.scale-200.png" ReplaceParameters="false">lockscreenlogo.scale-200.png</ProjectItem>
+			  <ProjectItem TargetFileName="splashscreen.scale-200.png" ReplaceParameters="false">splashscreen.scale-200.png</ProjectItem>
+			  <ProjectItem TargetFileName="square150x150logo.scale-200.png" ReplaceParameters="false">square150x150logo.scale-200.png</ProjectItem>
+			  <ProjectItem TargetFileName="square44x44logo.scale-200.png" ReplaceParameters="false">square44x44logo.scale-200.png</ProjectItem>
+			  <ProjectItem TargetFileName="storelogo.png" ReplaceParameters="false">storelogo.png</ProjectItem>
+			  <ProjectItem TargetFileName="wide310x150logo.scale-200.png" ReplaceParameters="false">wide310x150logo.scale-200.png</ProjectItem>
+			</Folder>
 			<Folder Name="Properties" TargetFolderName="Properties">
 				<ProjectItem TargetFileName="AssemblyInfo.cs" ReplaceParameters="true">assemblyinfo.cs</ProjectItem>
 				<ProjectItem TargetFileName="Default.rd.xml" ReplaceParameters="false">default.rd.xml</ProjectItem>

@@ -91,6 +91,7 @@
     <None Include="iOS\Resources\Fonts\winjs-symbols.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="Shared\Assets\SharedAssets.md" />
     <None Include="Shared\Strings\en\Resources.resw">
       <SubType>Designer</SubType>
     </None>
@@ -125,13 +126,6 @@
       <SubType>Designer</SubType>
     </None>
     <None Include="Shared\Shared.vstemplate" />
-    <None Include="Shared\Assets\LockScreenLogo.scale-200.png" />
-    <None Include="Shared\Assets\SplashScreen.scale-200.png" />
-    <None Include="Shared\Assets\Square150x150Logo.scale-200.png" />
-    <None Include="Shared\Assets\Square44x44Logo.scale-200.png" />
-    <None Include="Shared\Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
-    <None Include="Shared\Assets\StoreLogo.png" />
-    <None Include="Shared\Assets\Wide310x150Logo.scale-200.png" />
     <None Include="UWP\Properties\Default.rd.xml" />
     <None Include="UWP\UnoQuickStart.Uwp.csproj">
       <SubType>Designer</SubType>
@@ -198,6 +192,13 @@
     </Content>
     <Content Include="iOS\Resources\SplashScreen%402x.png" />
     <Content Include="iOS\Resources\SplashScreen%403x.png" />
+    <Content Include="UWP\Assets\LockScreenLogo.scale-200.png" />
+    <Content Include="UWP\Assets\SplashScreen.scale-200.png" />
+    <Content Include="UWP\Assets\Square150x150Logo.scale-200.png" />
+    <Content Include="UWP\Assets\Square44x44Logo.scale-200.png" />
+    <Content Include="UWP\Assets\StoreLogo.png" />
+    <Content Include="UWP\Assets\Wide310x150Logo.scale-200.png" />
+    <Content Include="Wasm\Assets\SplashScreen.png" />
     <Content Include="Wasm\LinkerConfig.xml" />
     <Content Include="Wasm\WasmCSS\Fonts.css" />
     <Content Include="Wasm\WasmScripts\AppManifest.js" />
