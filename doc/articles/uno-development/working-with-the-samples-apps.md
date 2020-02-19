@@ -34,7 +34,7 @@ The Uno.UI process validates does two types of validations:
 - Screenshot based validation (with results comparison, see below)
 - Automated UI Testing for WebAssembly and Android using the `SamplesApp.UITests` and the [`Uno.UITest`](https://www.nuget.org/packages?q=uno.uitest) package.
 
-At this time, only WebAssembly and Android are used to run UI Tests, iOS is coming soon.
+UI Tests can be run on all platforms (iOS, Android and WebAssembly).
 
 ## Selectively ignore tests per platform
 
@@ -51,13 +51,13 @@ This attribute can be placed at the test or class level.
 
 ## Setup for Automated UI Tests on WebAssembly
 
-- Navigate to the `SamplesApp.Wasm.UITests` folder and run `npm i`. This will download Puppeteer and the Chrome driver.
-- Deploy and run the `SamplesApp.Wasm` application once.
+- Deploy and run the `SamplesApp.Wasm` application on the browser.
+- After you have added a new test page, you must launch the samples application once before running the test, otherwise the code for that page is not generated and the test will fail.
 
 ## Setup for Automated UI Tests on Android
 
-- Setup an android simulator or device, start it
-- Deploy and run the `SamplesApp.Droid` application on that device
+- Setup an android simulator or device, start it.
+- Deploy and run the `SamplesApp.Droid` application on that device.
 - After you have added a new test page, you must launch the samples application once before running the test, otherwise the code for that page is not generated and the test will fail.
 
 ## Running UI Tests
@@ -95,6 +95,7 @@ To create a Non-UI Test:
 The WebAssembly head has the ability to be run through puppeteer, and displays all tests in sequence. Puppeteer runs a headless version of Chromium, suited for running tests in a CI environment.
 
 To run the tests:
+- Navigate to the `SamplesApp.Wasm.UITests` folder and run `npm i`. This will download Puppeteer and the Chrome driver.
 - Build the `SamplesApp.Wasm.UITests.njsproj` project
 - Press `F5`, node will start and run the tests sequentially
 - The screen shots are placed in a folder named `out`
@@ -121,7 +122,7 @@ In the CI build, an artifact named `wasm-uitests` is generated and contains an H
 for screenshots taken for the past builds. Download this artifact and open the html file to determine if any screenshots
 have changed.
 
-## Troubleshooting the tests
+### Troubleshooting the tests
 It is possible to enable the chromium head using the configuration parameters in the [app.ts](src/SamplesApp/SamplesApp.Wasm.UITests/app.ts) file.
 
 # Creating performance benchmarks
