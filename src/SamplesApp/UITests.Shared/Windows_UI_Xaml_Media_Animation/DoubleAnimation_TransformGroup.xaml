@@ -34,7 +34,7 @@
 
 		<StackPanel
 			Grid.Row="0"
-			Grid.Column="0"
+			Grid.ColumnSpan="3"
 			Orientation="Horizontal">
 			<Button
 				x:Name="StartButton"
@@ -50,15 +50,13 @@
 				Content="Resume animations"
 				Click="ResumeAnimations"
 				Visibility="{Binding ElementName=AutoPause, Path=IsChecked}"/>
+			<TextBlock
+				x:Name="Status"
+				Margin="20,0"
+				VerticalAlignment="Center"
+				FontSize="16"
+				Text="Waiting" />
 		</StackPanel>
-
-		<TextBlock
-			x:Name="Status"
-			Grid.Row="0"
-			Grid.Column="2"
-			VerticalAlignment="Center"
-			FontSize="16"
-			Text="Waiting" />
 
 		<Border Style="{StaticResource Marker}" Grid.Row="2" Grid.Column="0" />
 		<Border Style="{StaticResource Marker}" Grid.Row="2" Grid.Column="1" />
