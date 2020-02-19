@@ -63,7 +63,7 @@ namespace UITests.Windows_UI_Xaml_Media_Animation
 
 			if (AutoPause.IsChecked.GetValueOrDefault())
 			{
-				await Task.Delay(_duration / 2);
+				await Task.Delay((int)_duration.TotalMilliseconds / 2);
 				Status.Text = "Paused";
 				anims.ForEach(a => a.Pause());
 				_animations = anims;
