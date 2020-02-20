@@ -28,6 +28,17 @@
 				</Setter.Value>
 			</Setter>
 		</Style>
+		<Style x:Key="CenteredFlyoutPresenterStyle" TargetType="FlyoutPresenter">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="FlyoutPresenter">
+						<ContentPresenter Content="{TemplateBinding Content}"
+										  HorizontalAlignment="Center"
+										  VerticalAlignment="Center" />
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
 	</UserControl.Resources>
 
 	<controls:SampleControl SampleDescription="Flyout tests">
@@ -93,6 +104,19 @@
 						<Button.Flyout>
 							<Flyout Placement="Full">
 								<Border Background="Blue"
+										Height="80"
+										Width="80">
+								</Border>
+							</Flyout>
+						</Button.Flyout>
+					</Button>
+
+					<Button Content="Show Flyout Centered Full"
+							Height="50"
+							Width="150">
+						<Button.Flyout>
+							<Flyout Placement="Full" FlyoutPresenterStyle="{StaticResource CenteredFlyoutPresenterStyle}">
+								<Border Background="SkyBlue"
 										Height="80"
 										Width="80">
 								</Border>
