@@ -80,6 +80,10 @@ namespace Uno.UI
 		internal static Size GetMarginSize(this IFrameworkElement frameworkElement)
 		{
 			var margin = frameworkElement.Margin;
+			if (margin == default)
+			{
+				return default;
+			}
 			var marginWidth = margin.Left + margin.Right;
 			var marginHeight = margin.Top + margin.Bottom;
 			return new Size(marginWidth, marginHeight);
@@ -156,6 +160,11 @@ namespace Uno.UI
 		[Pure]
 		internal static Size Add(this Size left, Size right)
 		{
+			if (right == default)
+			{
+				return left;
+			}
+
 			return new Size(
 				left.Width + right.Width,
 				left.Height + right.Height
@@ -165,6 +174,11 @@ namespace Uno.UI
 		[Pure]
 		internal static Size Add(this Size left, Thickness right)
 		{
+			if (right == default)
+			{
+				return left;
+			}
+
 			return new Size(
 				left.Width + right.Left + right.Right,
 				left.Height + right.Top + right.Bottom
@@ -174,6 +188,11 @@ namespace Uno.UI
 		[Pure]
 		internal static Size Subtract(this Size left, Size right)
 		{
+			if (right == default)
+			{
+				return left;
+			}
+
 			return new Size(
 				left.Width - right.Width,
 				left.Height - right.Height
@@ -183,6 +202,11 @@ namespace Uno.UI
 		[Pure]
 		internal static Size Subtract(this Size left, Thickness right)
 		{
+			if (right == Thickness.Empty)
+			{
+				return left;
+			}
+
 			return new Size(
 				left.Width - right.Left - right.Right,
 				left.Height - right.Top - right.Bottom

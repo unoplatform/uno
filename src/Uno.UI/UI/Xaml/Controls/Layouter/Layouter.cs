@@ -127,14 +127,17 @@ namespace Windows.UI.Xaml.Controls
 
 				_unclippedDesiredSize = desiredSize;
 
-				var clippedDesiredSize = desiredSize
-					.AtMost(frameworkAvailableSize)
+				var clippedDesiredSizeWithoutMargin = desiredSize
+					.AtMost(frameworkAvailableSize);
+
+				var clippedDesiredSize = clippedDesiredSizeWithoutMargin
 					.Add(marginSize);
 
-				// DesiredSize must include margins
+				// DesiredSize must include margins (to follow UWP behavior)
 				SetDesiredChildSize(Panel as View, clippedDesiredSize);
 
-				return clippedDesiredSize;
+				// We return the size w/o the margin to caller
+				return clippedDesiredSizeWithoutMargin;
 			}
 		}
 
@@ -701,7 +704,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				childSize = isStretch
 					? frameSize
-					: desiredSize + childMarginSize;
+					: desiredSize; // desired size always include margin, so no need to calculate it here
 			}
 			else
 			{
