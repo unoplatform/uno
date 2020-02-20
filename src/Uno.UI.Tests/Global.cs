@@ -15,10 +15,17 @@ namespace Uno.UI.Tests
 			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 			Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
 
+#if DEBUG
 			Uno.Extensions.LogExtensionPoint
 				.AmbientLoggerFactory
-				.AddConsole(LogLevel.Debug)
-				.AddDebug(LogLevel.Debug);
+				.AddConsole(LogLevel.Information)
+				.AddDebug(LogLevel.Information);
+#else
+			Uno.Extensions.LogExtensionPoint
+				.AmbientLoggerFactory
+				.AddConsole(LogLevel.Warning)
+				.AddDebug(LogLevel.Warning);
+#endif
 		}
 	}
 }
