@@ -19,14 +19,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		partial void UseHardware()
 		{
-			var view = Target as View;
-			var transform = Target as Transform;
-
-			if (transform != null)
-			{
-				view = transform.View;
-			}
-
+			var view = Target as View ?? (Target as Transform)?.View;
 			if (view != null)
 			{
 				view.SetLayerType(LayerType.Hardware, null);
