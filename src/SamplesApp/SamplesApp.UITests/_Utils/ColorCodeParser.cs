@@ -13,7 +13,7 @@ namespace SamplesApp.UITests._Utils
 				throw new ArgumentNullException(nameof(colorCode));
 			}
 
-			if (!colorCode.StartsWith("#"))
+			if (!colorCode.StartsWith("#", StringComparison.OrdinalIgnoreCase))
 			{
 				throw new FormatException("Color code must start with #");
 			}
