@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			if (--_runningAnimations == 0)
 			{
-				// First update the result matrix (as updates was ignored due to 'Animations' DP precedence)
+				// First update the result matrix (as updates were ignored due to 'Animations' DP precedence)
 				MatrixCore = ToMatrix(new Point(0, 0));
 
 				NotifyChanged();
@@ -52,5 +52,4 @@ namespace Windows.UI.Xaml.Media
 		}
 	}
 }
-
 
