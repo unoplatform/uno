@@ -97,9 +97,16 @@ The key will be set as the value for the parameter _MapServiceToken_ for the Map
         3.  Click on "Create Credentials", then "API key"
         4.  Copy the key generated as this will be the one we will use later in the application
 
-Note: For apps in production we suggest restricting the keys to be used only by your Android app. This is possible by using the SHA-1 fingerprint of your app.
+**Note:** For apps in production we suggest restricting the keys to be used only by your Android app. This is possible by using the SHA-1 fingerprint of your app.
 
 _For a detailed procedure on how to retrieve the SHA-1 fingerprint for your Android application, please follow this link: https://developers.google.com/maps/documentation/android-api/signup#release-cert_
+
+## Install the Nuget Package
+
+For both **iOS** and **Android** you will need to install the [Uno.UI.Maps](https://www.nuget.org/packages/Uno.UI.Maps/) NuGet package. 
+
+**Note:** There's only a pre-release version of this package so make sure to check on the "Include prerelease" checkbox in Visual Studio.
+
 
 ## Configure your application.
 
@@ -118,14 +125,10 @@ _For a detailed procedure on how to retrieve the SHA-1 fingerprint for your Andr
     
     Note: Since this key might vary depending on the platform and environment we suggest using a constant class where the key could be retrieved from.
 	
-    3.  Add the relevant permissions. For example, if you wish to access the user location
+    3.  Add the relevant permissions to `AssemblyInfo.cs`. For example, if you wish to access the user location
     
 	 ```csharp
 	[assembly: UsesPermission(Android.Manifest.Permission.AccessFineLocation)]
 	[assembly: UsesPermission("com.myapp.permission.MAPS_RECEIVE")]
 	[assembly: Permission(Name = "com.myapp.permission.MAPS_RECEIVE", ProtectionLevel = Android.Content.PM.Protection.Signature)]
 	```
-        
-**Important:** For both iOS and Android make sure to install the [Uno.UI.Maps](https://www.nuget.org/packages/Uno.UI.Maps/) NuGet package. 
-
-There's only a pre-release version of this package so make sure you check on the "Include prerelease" checkbox in Visual Studio.
