@@ -9,6 +9,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
+using Uno.UI.RuntimeTests;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
@@ -175,7 +176,8 @@ namespace Uno.UI.Samples.Tests
 							continue;
 						}
 
-						var runsOnUIThread = testMethod.GetCustomAttribute(typeof(Uno.UI.RuntimeTests.RunsOnUIThreadAttribute)) != null;
+						var runsOnUIThread = HasCustomAttribute<RunsOnUIThreadAttribute>(testMethod)
+							|| HasCustomAttribute<RunsOnUIThreadAttribute>(testMethod.DeclaringType);
 						var expectedException = testMethod.GetCustomAttributes<ExpectedExceptionAttribute>().SingleOrDefault();
 						var dataRows = testMethod.GetCustomAttributes<DataRowAttribute>();
 						if (dataRows.Any())
@@ -293,6 +295,9 @@ namespace Uno.UI.Samples.Tests
 				ReportTestsResults(counters);
 			}
 		}
+
+		private bool HasCustomAttribute<T>(MemberInfo testMethod)
+			=> testMethod.GetCustomAttribute(typeof(T)) != null;
 
 		private bool IsIgnored(MethodInfo testMethod, out string ignoreMessage)
 		{
