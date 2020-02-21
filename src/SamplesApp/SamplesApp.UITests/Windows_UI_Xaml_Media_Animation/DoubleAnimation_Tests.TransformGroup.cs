@@ -433,7 +433,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 			var (host, scale, half, final) = BeginTransformGroupTest("CrazyHost");
 
-			// "Half" is approximative, we only validate that the element is no longer in top left and is flowing bottom right
+			// "Half" is approximative, we only validate that the element is no longer in top left
 			ImageAssert.HasPixels(
 				half,
 
@@ -444,15 +444,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 					{
 						{ defaultColor, defaultColor},
 						{ defaultColor, bgColor},
-					}),
-
-				ExpectedPixels
-					.At("Bottom right", host.Right - 1, host.Bottom - 1)
-					.WithPixelTolerance(x: 1, y: 1)
-					.Pixels(new[,]
-					{
-						{ color, color},
-						{ color, color},
 					})
 			);
 
