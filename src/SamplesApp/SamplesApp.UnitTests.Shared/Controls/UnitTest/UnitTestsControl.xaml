@@ -32,12 +32,14 @@
 			</StackPanel>
 
 			<StackPanel Orientation="Horizontal">
-				<TextBlock FontSize="15">
-				  🏃‍: <Run x:Name="runTestCount" Text="None" />
-				| 🚫: <Run x:Name="ignoredTestCount" Foreground="DarkGray"  Text="None" />
-				| ✔️: <Run x:Name="succeededTestCount" Foreground="DarkGreen"  Text="None" />
-				| ❌: <Run x:Name="failedTestCount" Foreground="Red" Text="None" />
-				</TextBlock>
+				<TextBlock FontSize="15" Text="🏃‍: " />
+				<TextBlock FontSize="15" x:Name="runTestCount" Text="None" />
+				<TextBlock FontSize="15" Text=" 🚫: " />
+				<TextBlock FontSize="15" x:Name="ignoredTestCount" Foreground="DarkGray"  Text="None" />
+				<TextBlock FontSize="15" Text=" ✔️: " />
+				<TextBlock FontSize="15" x:Name="succeededTestCount" Foreground="DarkGreen"  Text="None" />
+				<TextBlock FontSize="15" Text=" ❌: " />
+				<TextBlock FontSize="15" x:Name="failedTestCount" Foreground="Red" Text="None" />
 			</StackPanel>
 			
 			<ScrollViewer Height="100">

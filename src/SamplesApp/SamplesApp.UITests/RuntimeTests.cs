@@ -27,7 +27,7 @@ namespace SamplesApp.UITests
 			var runTestCount = _app.Marked("runTestCount");
 
 			bool IsTestExecutionDone()
-				=> failedTests.GetDependencyPropertyValue("Text").ToString() != PendingTestsText;
+				=> runButton.GetDependencyPropertyValue<bool>("IsEnabled");
 
 			_app.WaitForElement(runButton);
 
