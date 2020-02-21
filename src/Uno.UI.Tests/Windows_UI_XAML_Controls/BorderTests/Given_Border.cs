@@ -58,6 +58,9 @@ namespace Uno.UI.Tests.BorderTests
         }
 
 		[TestMethod]
+#if __IOS__
+		[Ignore("Layout engine on ios needs actual layout pass")]
+#endif
 		public void When_Child_Has_Fixed_Size_Smaller_than_Parent()
 		{
 			var parentSize = new Windows.Foundation.Size(100, 100);
@@ -88,6 +91,9 @@ namespace Uno.UI.Tests.BorderTests
 		}
 
 		[TestMethod]
+#if __IOS__
+		[Ignore("Layout engine on ios needs actual layout pass")]
+#endif
 		public void When_Child_Is_Stretch()
 		{
 			var parentSize = new Windows.Foundation.Size(500, 500);
@@ -111,8 +117,8 @@ namespace Uno.UI.Tests.BorderTests
 		}
 
 		[TestMethod]
-#if NET461
-		[Ignore("Layout engine is incomplete on net461 for arrange")]
+#if NET461 || __IOS__
+		[Ignore("Layout engine is incomplete on net461 for arrange, ios needs actual layout pass")]
 #endif
 		public void When_Top_Align_Nested_With_Margin()
 		{
