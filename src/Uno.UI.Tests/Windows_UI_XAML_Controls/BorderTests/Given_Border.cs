@@ -17,6 +17,9 @@ using Windows.Foundation;
 namespace Uno.UI.Tests.BorderTests
 {
 	[TestClass]
+#if !NET461
+	[RuntimeTests.RunsOnUIThread]
+#endif
 	public class Given_Border : Context
 	{
 		[TestMethod]
