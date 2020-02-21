@@ -78,6 +78,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnPointerPressed(object sender, PointerRoutedEventArgs args)
 		{
+			if (_switchThumb != null && args.Handled)
+			{
+				// The thumb handles the pointer pressed event, which will prevent the default (generated) visual state update,
+				// so instead here we forcefully request an update in that case.
+				UpdateCommonStates(useTransitions: true);
+			}
+
 			args.Handled = true;
 			Focus(FocusState.Pointer);
 		}
