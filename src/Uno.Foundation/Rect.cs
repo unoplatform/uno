@@ -108,13 +108,13 @@ namespace Windows.Foundation
 		public static implicit operator string(Rect rect)
 		{
 			var sb = new StringBuilder();
-			sb.AppendFormatInvariant(null, rect.X);
+			sb.Append(rect.X.ToStringInvariant());
 			sb.Append(',');
-			sb.AppendFormatInvariant(null, rect.Y);
+			sb.Append(rect.Y.ToStringInvariant());
 			sb.Append(',');
-			sb.AppendFormatInvariant(null, rect.Width);
+			sb.Append(rect.Width.ToStringInvariant());
 			sb.Append(',');
-			sb.AppendFormatInvariant(null, rect.Height);
+			sb.Append(rect.Height.ToStringInvariant());
 			return sb.ToString();
 		}
 

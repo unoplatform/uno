@@ -127,17 +127,16 @@ namespace Windows.UI.Xaml.Controls
 
 				_unclippedDesiredSize = desiredSize;
 
-				var clippedDesiredSizeWithoutMargin = desiredSize
-					.AtMost(frameworkAvailableSize);
-
-				var clippedDesiredSize = clippedDesiredSizeWithoutMargin
+				var clippedDesiredSize = desiredSize
+					.AtMost(frameworkAvailableSize)
 					.Add(marginSize);
 
-				// DesiredSize must include margins (to follow UWP behavior)
+				// DesiredSize must include margins
+				// TODO: on UWP, it's not clipped. See test When_MinWidth_SmallerThan_AvailableSize
 				SetDesiredChildSize(Panel as View, clippedDesiredSize);
 
-				// We return the size w/o the margin to caller
-				return clippedDesiredSizeWithoutMargin;
+				// We return "clipped" desiredSize to caller... the unclipped version stays internal
+				return clippedDesiredSize;
 			}
 		}
 

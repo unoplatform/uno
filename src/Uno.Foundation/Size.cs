@@ -43,9 +43,9 @@ namespace Windows.Foundation
 		public override string ToString()
 		{
 			var sb = new StringBuilder(8);
-			sb.AppendFormatInvariant(null, Width);
+			sb.Append(Width.ToStringInvariant());
 			sb.Append(',');
-			sb.AppendFormatInvariant(null, Height);
+			sb.Append(Height.ToStringInvariant());
 			return sb.ToString();
 		}
 

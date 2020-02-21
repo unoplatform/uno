@@ -3,21 +3,21 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
-using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.UI;
-using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Private.Infrastructure;
 using MUXControlsTestApp.Utilities;
+#if __IOS__
+using UIKit;
+#endif
 
 namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 {
@@ -128,6 +128,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 #endif
 
 		[TestMethod]
+		[RunsOnUIThread]
 #if __WASM__
 		[Ignore] // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
 #endif
@@ -137,43 +138,38 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ContentControl contentCtl = null;
 			Grid grid = null;
 
-			await RunOnUIThread.Execute(() =>
-			{
-				content = new Border { Width = 100, Height = 15 };
+			content = new Border {Width = 100, Height = 15};
 
-				contentCtl = new ContentControl { MinWidth = 110, Content = content };
+			contentCtl = new ContentControl {MinWidth = 110, Content = content};
 
-				grid = new Grid() { MinWidth = 120 };
+			grid = new Grid() {MinWidth = 120};
 
-				grid.Children.Add(contentCtl);
+			grid.Children.Add(contentCtl);
 
-				grid.Measure(new Size(50, 50));
-#if NETFX_CORE || __WASM__ // TODO: align all platforms with Windows here
-				Assert.AreEqual(new Size(50, 15), grid.DesiredSize);
-				Assert.AreEqual(new Size(110, 15), contentCtl.DesiredSize);
-				Assert.AreEqual(new Size(100, 15), content.DesiredSize);
+			grid.Measure(new Size(50, 50));
+
+			Assert.AreEqual(new Size(50, 15), grid.DesiredSize);
+#if NETFX_CORE // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
+			Assert.AreEqual(new Size(110, 15), contentCtl.DesiredSize);
+			Assert.AreEqual(new Size(100, 15), content.DesiredSize);
 #endif
 
-				grid.Arrange(new Rect(default, new Size(50, 50)));
+			grid.Arrange(new Rect(default, new Size(50, 50)));
 
-				TestServices.WindowHelper.WindowContent = new Border { Child = grid, Width = 50, Height = 50 };
-			});
+			TestServices.WindowHelper.WindowContent = new Border {Child = grid, Width = 50, Height = 50};
 
 			await TestServices.WindowHelper.WaitForIdle();
-			await RunOnUIThread.Execute(() => { });
+			await Task.Delay(10);
 			await TestServices.WindowHelper.WaitForIdle();
 
-			await RunOnUIThread.Execute(() =>
-			{
-#if NETFX_CORE || __WASM__ // TODO: align all platforms with Windows here
-				var ls1 = LayoutInformation.GetLayoutSlot(grid);
-				Assert.AreEqual(new Rect(0, 0, 50, 50), ls1);
-				var ls2 = LayoutInformation.GetLayoutSlot(contentCtl);
-				Assert.AreEqual(new Rect(0, 0, 120, 50), ls2);
-				var ls3 = LayoutInformation.GetLayoutSlot(content);
-				Assert.AreEqual(new Rect(0, 0, 100, 15), ls3);
+#if NETFX_CORE // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
+			var ls1 = LayoutInformation.GetLayoutSlot(grid);
+			Assert.AreEqual(new Rect(0, 0, 50, 50), ls1);
+			var ls2 = LayoutInformation.GetLayoutSlot(contentCtl);
+			Assert.AreEqual(new Rect(0, 0, 120, 50), ls2);
+			var ls3 = LayoutInformation.GetLayoutSlot(content);
+			Assert.AreEqual(new Rect(0, 0, 100, 15), ls3);
 #endif
-			});
 		}
 
 		[TestMethod]
@@ -295,7 +291,14 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			}
 
 			var resultStr = $"{GetStr(childDecorator)}|{GetStr(childBorder)}|{GetStr(innerChild)}";
-			Assert.AreEqual(expectedResult, resultStr);
+
+#if __IOS__ || __ANDROID__
+			var layout = parentBorder.ShowLocalVisualTree();
+#else
+			var layout = "";
+#endif
+
+			Assert.AreEqual(expectedResult, resultStr, layout);
 		}
 	}
 
