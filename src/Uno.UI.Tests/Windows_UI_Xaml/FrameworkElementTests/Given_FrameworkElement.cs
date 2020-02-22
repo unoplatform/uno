@@ -10,6 +10,9 @@ using Windows.UI.Xaml.Controls;
 namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 {
 	[TestClass]
+#if !NET461
+	[RuntimeTests.RunsOnUIThread]
+#endif
 	public class Given_FrameworkElement
 	{
 		[TestMethod]
