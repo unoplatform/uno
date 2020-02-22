@@ -9,6 +9,7 @@ using Uno.Extensions;
 using Uno;
 using Uno.Logging;
 using View = Windows.UI.Xaml.UIElement;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -24,6 +25,8 @@ namespace Windows.UI.Xaml.Controls
 		protected void ArrangeChildOverride(View view, Rect frame)
 		{
 			view.Arranged = frame;
+			view.LayoutSlotWithMarginsAndAlignments = frame;
+			view.LayoutSlot = frame;
 		}
 
 		protected Size DesiredChildSize(View view)
