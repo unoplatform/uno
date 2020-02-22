@@ -45,7 +45,7 @@ namespace Windows.ApplicationModel.Calls
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PhoneCallStore> PhoneCallManager.RequestStoreAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public static void ShowPhoneCallUI( string phoneNumber,  string displayName)
 		{

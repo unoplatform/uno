@@ -3,6 +3,7 @@
 ### Features
 
 - Support for `FontIcon` on macOS
+- Support for `PhoneCallManager.ShowPhoneCallUI` on macOS
 - Support for full screen mode on macOS
 - Support for `ShowComposeSmsMessageAsync` on macOS
 - Support for `Flyout` on macOS
@@ -48,6 +49,7 @@
 
 ### Bug fixes
 
+- Fix for samples app compilation for macOS
 - [#2465] Raising macOS Button Click event
 - [#2506] `DesignMode.DesignMode2Enabled` no longer throws (is always `false` on non-UWP platforms)
 - [#915] FontFamily values are now properly parsed on WebAssembly, updated docs with new info

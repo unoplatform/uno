@@ -3953,12 +3953,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 || typeName == "ListViewBaseLayoutTemplate"
             )
             {
-                writer.AppendFormatInvariant("new {0}(() => ", GetGlobalizedTypeName(fullTypeName));
+                writer.AppendFormatInvariant("new {0}(", GetGlobalizedTypeName(fullTypeName));
 
                 var contentOwner = xamlObjectDefinition.Members.FirstOrDefault(m => m.Member.Name == "_UnknownContent");
 
                 if (contentOwner != null)
                 {
+                    writer.Append("() => ");
                     // This case is to support the layout switching for the ListViewBaseLayout, which is not
                     // a FrameworkTemplate. This will need to be removed when this custom list view is removed.
                     var returnType = typeName == "ListViewBaseLayoutTemplate" ? "Uno.UI.Controls.Legacy.ListViewBaseLayout" : "_View";
@@ -3969,7 +3970,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
                 }
                 else
                 {
-                    writer.AppendFormatInvariant("/* This template does not have a content for this platform */");
+                    writer.AppendFormatInvariant("/* This template does not have a content for this platform */)");
                 }
             }
             else if (typeName == "NullExtension")
