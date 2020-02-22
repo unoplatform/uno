@@ -45,6 +45,7 @@
 - Add template tags for the VS2019 VSIX template search experience
 
 ### Breaking changes
+- `IconElement.AddIconElementView` is now `internal` so it is not accessible from outside.
 
 ### Bug fixes
 
