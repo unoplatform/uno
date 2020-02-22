@@ -658,6 +658,12 @@
 				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.IconElement.AddIconElementView(Windows.UI.Xaml.UIElement child)"
 					reason="macOS requires NSView as AddIconElementView parameter" />
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.IconElement.AddIconElementView(Android.Views.View child)"
+					reason="Not part of UWP API" />
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.IconElement.AddIconElementView(UIKit.UIView child)"
+					reason="Not part of UWP API" />
         </Methods>
 		</IgnoreSet>
 	</IgnoreSets>
