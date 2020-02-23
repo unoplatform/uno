@@ -19,11 +19,11 @@
 		</Grid.ColumnDefinitions>
 		<StackPanel Grid.Row="0">
 			<StackPanel Orientation="Horizontal">
-				<TextBox x:Name="testFilter" PlaceholderText="Enter test filter here" Width="200" />
 				<Button
 					x:Name="runButton"
 					Content="Run"
 					Click="OnRunTests" />
+				<TextBox x:Name="testFilter" PlaceholderText="Enter test filter here" Width="140" />
 			</StackPanel>
 
 			<StackPanel Orientation="Horizontal">

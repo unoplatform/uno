@@ -129,9 +129,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 		[TestMethod]
 		[RunsOnUIThread]
-#if __WASM__
-		[Ignore] // Failing on WASM - https://github.com/unoplatform/uno/issues/2314
-#endif
 		public async Task When_MinWidth_SmallerThan_AvailableSize()
 		{
 			Border content = null;
