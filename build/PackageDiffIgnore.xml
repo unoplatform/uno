@@ -701,6 +701,14 @@
 				<Member 
 					fullName="CoreGraphics.CGSize Windows.UI.Xaml.IFrameworkElementHelper.Measure(AppKit.NSView element, Windows.Foundation.Size availableSize)"
 					reason="macOS only unused extension method"/>
+			  
+				<Member 
+					fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.Add(Windows.UI.Xaml.UIElement view)"
+					reason="macOS only breaking change"/>
+			  
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.Add(Windows.UI.Xaml.UIElement view)"
+					reason="macOS only breaking change"/>
 			</Methods>
 			<Properties>
 				<Member
