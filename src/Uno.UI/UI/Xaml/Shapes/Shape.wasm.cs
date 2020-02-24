@@ -33,21 +33,6 @@ namespace Windows.UI.Xaml.Shapes
 			OnStretchUpdatedPartial();
 		}
 
-		private void OnSvgChildrenChanged(object sender, NotifyCollectionChangedEventArgs e)
-			=> OnChildrenChanged();
-
-		protected override void OnLoaded()
-		{
-			base.OnLoaded();
-			SvgChildren.CollectionChanged += OnSvgChildrenChanged;
-		}
-
-		protected override void OnUnloaded()
-		{
-			base.OnUnloaded();
-			SvgChildren.CollectionChanged -= OnSvgChildrenChanged;
-		}
-
 		protected void InitCommonShapeProperties() // Should be called from base class constructor
 		{
 			// Initialize
@@ -57,10 +42,6 @@ namespace Windows.UI.Xaml.Shapes
 		}
 
 		protected abstract SvgElement GetMainSvgElement();
-
-		protected virtual void OnChildrenChanged()
-		{
-		}
 
 		partial void OnFillUpdatedPartial()
 		{
@@ -162,6 +143,12 @@ namespace Windows.UI.Xaml.Shapes
 			}
 
 			return _defs.Defs;
+		}
+
+		private protected override void OnHitTestVisibilityChanged(HitTestVisibility oldValue, HitTestVisibility newValue)
+		{
+			// We don't invoke the base, so we stay at the default "pointer-events: none" defined in Uno.UI.css in class svg.uno-uielement.
+			// This is required to avoid this SVG element (which is actually only a collection) to stoll pointer events.
 		}
 	}
 }
