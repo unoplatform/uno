@@ -1,4 +1,4 @@
-#if NET461 || __MACOS__
+﻿#if NET461 || __MACOS__
 #pragma warning disable CS0067
 #endif
 
@@ -67,25 +67,40 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public void CancelDrag() { }
 
-		private Point _startLocation;
+		// Note: We don't use the Manipulation events as we want to handle the PointerPressed event,
+		//		 however there is probably no good reason to not use the GestureRecognizer.
+		private Point _startLocation, _lastLocation;
 
-		internal void StartDrag(Point location)
+		internal void StartDrag(Point absoluteLocation)
 		{
-			_startLocation = location;
+			_startLocation = _lastLocation = absoluteLocation;
 
 			IsDragging = true;
 			DragStarted?.Invoke(this, new DragStartedEventArgs(this, 0, 0));
 		}
 
-		internal void DeltaDrag(Point location)
+		internal void DeltaDrag(Point absoluteLocation)
 		{
-			DragDelta?.Invoke(this, new DragDeltaEventArgs(this, location.X - _startLocation.X, location.Y - _startLocation.Y));
+			var deltaX = absoluteLocation.X - _lastLocation.X;
+			var deltaY = absoluteLocation.Y - _lastLocation.Y;
+			var totalX = absoluteLocation.X - _startLocation.X;
+			var totalY = absoluteLocation.Y - _startLocation.Y;
+
+			_lastLocation = absoluteLocation;
+
+			DragDelta?.Invoke(this, new DragDeltaEventArgs(this, deltaX, deltaY, totalX, totalY));
 		}
 
-		internal void CompleteDrag(Point location)
+		internal void CompleteDrag(Point absoluteLocation)
 		{
 			IsDragging = false;
-			DragCompleted?.Invoke(this, new DragCompletedEventArgs(this, location.X - _startLocation.X, location.Y - _startLocation.Y, false));
+
+			var deltaX = absoluteLocation.X - _lastLocation.X;
+			var deltaY = absoluteLocation.Y - _lastLocation.Y;
+			var totalX = absoluteLocation.X - _startLocation.X;
+			var totalY = absoluteLocation.Y - _startLocation.Y;
+
+			DragCompleted?.Invoke(this, new DragCompletedEventArgs(this, deltaX, deltaY, totalX, totalY, false));
 		}
 
 		protected override void OnPointerPressed(PointerRoutedEventArgs args)
@@ -97,7 +112,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				return;
 			}
 
-			var point = args.GetCurrentPoint(this);
+			// Note: Position MUST be absolute as the element might have moved
+			var point = args.GetCurrentPoint(null);
 			if (!point.Properties.IsLeftButtonPressed
 				|| !CapturePointer(args.Pointer))
 			{
@@ -118,7 +134,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			if (IsCaptured(args.Pointer))
 			{
 				// Note: We don't handle event as UWP does not, and otherwise it will prevent parent control to update its visual state
-				DeltaDrag(args.GetCurrentPoint(this).Position);
+				// Note2: Position MUST be absolute as the element might have moved
+				DeltaDrag(args.GetCurrentPoint(null).Position);
 			}
 		}
 
@@ -127,7 +144,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			base.OnPointerCaptureLost(args);
 
 			// Note: We don't handle event as UWP does not, and otherwise it will prevent parent control to update its visual state
-			CompleteDrag(args.GetCurrentPoint(this).Position);
+			// Note2: Position MUST be absolute as the element might have moved
+			CompleteDrag(args.GetCurrentPoint(null).Position);
 		}
 	}
 }
