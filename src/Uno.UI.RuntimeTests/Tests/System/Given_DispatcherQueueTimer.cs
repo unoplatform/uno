@@ -23,7 +23,7 @@ namespace Uno.UI.RuntimeTests.Tests.System
 			try
 			{
 				timer.Interval = TimeSpan.FromMilliseconds(10);
-				timer.Tick += (snd, e) => tcs.SetResult(default);
+				timer.Tick += (snd, e) => tcs.TrySetResult(default);
 
 				timer.Start();
 
@@ -54,7 +54,7 @@ namespace Uno.UI.RuntimeTests.Tests.System
 				{
 					if (++count >= 3)
 					{
-						tcs.SetResult(default);
+						tcs.TrySetResult(default);
 					}
 				};
 
@@ -89,7 +89,7 @@ namespace Uno.UI.RuntimeTests.Tests.System
 				timer.Tick += (snd, e) =>
 				{
 					hasThreadAccess = CoreDispatcher.Main.HasThreadAccess;
-					tcs.SetResult(default);
+					tcs.TrySetResult(default);
 				};
 
 				timer.Start();
