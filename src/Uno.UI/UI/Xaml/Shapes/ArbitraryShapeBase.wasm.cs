@@ -56,7 +56,7 @@ namespace Windows.UI.Xaml.Shapes
 			var translate = Matrix3x2.CreateTranslation((float)measurements.translateX, (float)measurements.translateY);
 			var matrix = translate * scale;
 
-			foreach (FrameworkElement child in GetChildren())
+			foreach (var child in GetChildren())
 			{
 				if (child is DefsSvgElement)
 				{
@@ -148,7 +148,7 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			var bbox = Rect.Empty;
 
-			foreach (FrameworkElement child in GetChildren())
+			foreach (var child in GetChildren())
 			{
 				if (child is DefsSvgElement)
 				{
@@ -170,7 +170,7 @@ namespace Windows.UI.Xaml.Shapes
 			return bbox;
 		}
 
-		private Rect GetBBoxWithStrokeThickness(FrameworkElement element)
+		private Rect GetBBoxWithStrokeThickness(UIElement element)
 		{
 			var bbox = element.GetBBox();
 			if (Stroke == null || StrokeThickness < double.Epsilon)
