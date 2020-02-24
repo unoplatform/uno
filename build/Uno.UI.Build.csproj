@@ -117,7 +117,7 @@
 	<Target Name="BuildCI">
 		<Exec Command="npm i" WorkingDirectory="..\src\SamplesApp\SamplesApp.Wasm.UITests" />
 
-		<MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0;CopyDSYM=False;UnoSampleAppDisableAPKGeneration=True;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(GITVERSION_FullSemVer)"
+		<MSBuild Properties="Configuration=Release;CopyDSYM=False;UnoSampleAppDisableAPKGeneration=True;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(GITVERSION_FullSemVer)"
              Projects="..\src\Uno.UI.sln"
              Targets="Restore;Build"
              RebaseOutputs="false"
@@ -136,7 +136,7 @@
 		<!-- Restore the nuget packages for the whole solution -->
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true" Projects="..\src\Uno.UI.sln" Targets="Restore" RebaseOutputs="false" BuildInParallel="true" />
 
-		<MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0" Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj" Targets="Restore;Build" />
+		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj" Targets="Restore;Build" />
 		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\net461\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
 		<Exec Command="$(Pkgdocfx_console)\tools\docfx.exe ..\doc\docfx.json -o $(OutputDir)\doc" />
 	</Target>

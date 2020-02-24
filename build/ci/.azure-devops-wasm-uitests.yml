@@ -1,12 +1,12 @@
 parameters:
-  pool: ''
+  vmImage: ''
 
 jobs:
 - job: Wasm_UITests_Build
   container: nv-bionic-wasm
 
   pool:
-    vmImage: 'ubuntu-16.04'
+    vmImage: ${{ parameters.vmImage }}
 
   variables:
     NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget

@@ -1,9 +1,14 @@
+parameters:
+  vmImage: ''
+  xCodeRoot: ''
+  XamarinSDKVersion: ''
+
 jobs:
 
 - job: Android_Build_For_Tests
 
   pool:
-    vmImage: 'macOS-10.14'
+    vmImage: ${{ parameters.vmImage }}
 
   variables:
     CI_Build: true
@@ -20,8 +25,10 @@ jobs:
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
 
-  - bash: /bin/bash -c "sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 6_4_0"
-    displayName: Select Xamarin Version
+  - template: templates/ios-build-select-version.yml
+    parameters:
+      xCodeRoot: ${{ parameters.xCodeRoot }}
+      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
   - bash: |
       $(build.sourcesdirectory)/build/android-uitest-build.sh
@@ -48,7 +55,7 @@ jobs:
     NUGET_PACKAGES: $(Agent.WorkFolder)/.nuget
 
   pool:
-    vmImage: 'macOS-10.14'
+    vmImage: ${{ parameters.vmImage }}
 
   strategy:
     matrix:
@@ -75,8 +82,10 @@ jobs:
 
   - template: templates/optimize-roslyn-mono.yml
 
-  - bash: /bin/bash -c "sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 5_18_1"
-    displayName: Select Xamarin Version
+  - template: templates/ios-build-select-version.yml
+    parameters:
+      xCodeRoot: ${{ parameters.xCodeRoot }}
+      XamarinSDKVersion: ${{ parameters.XamarinSDKVersion }}
 
   - bash: |
       $(build.sourcesdirectory)/build/android-uitest-run.sh

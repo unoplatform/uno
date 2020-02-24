@@ -17,12 +17,48 @@ resources:
   - container: nv-bionic-wasm
     image: unoplatform/wasm-build:2.0
 
+variables:
+  windowsVMImage: 'windows-2019'
+  linuxVMImage: 'ubuntu-16.04'
+  macOSVMImage: 'macOS-10.15'
+  xCodeRoot: '/Applications/Xcode_11.3.app'
+  XamarinSDKVersion: 6_6_0
+
 jobs:
 - template: build/ci/.azure-devops-windows.yml
+  parameters:
+    vmImage: '$(windowsVMImage)'
+
 - template: build/ci/.azure-devops-unit-tests.yml
+  parameters:
+    vmImage: '$(windowsVMImage)'
+
 - template: build/ci/.azure-devops-docs.yml
+  parameters:
+    vmImage: '$(windowsVMImage)'
+
 - template: build/ci/.azure-devops-wasm-uitests.yml
+  parameters:
+    vmImage: '$(linuxVMImage)'
+
 - template: build/ci/.azure-devops-macos.yml
+  parameters:
+    vmImage: '$(macOSVMImage)'
+    xCodeRoot: '$(xCodeRoot)'
+    XamarinSDKVersion: '$(XamarinSDKVersion)'
+
 - template: build/ci/.azure-devops-android-tests.yml
+  parameters:
+    vmImage: '$(macOSVMImage)'
+    xCodeRoot: '$(xCodeRoot)'
+    XamarinSDKVersion: '$(XamarinSDKVersion)'
+
 - template: build/ci/.azure-devops-ios-tests.yml
+  parameters:
+    vmImage: '$(macOSVMImage)'
+    xCodeRoot: '$(xCodeRoot)'
+    XamarinSDKVersion: '$(XamarinSDKVersion)'
+
 - template: build/ci/.azure-devops-screenshot-compare.yml
+  parameters:
+    vmImage: '$(windowsVMImage)'
