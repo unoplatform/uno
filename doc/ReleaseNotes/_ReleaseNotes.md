@@ -2,6 +2,7 @@
 
 ### Features
 
+- Support for `FontIcon` on macOS
 - Support for `PhoneCallManager.ShowPhoneCallUI` on macOS
 - Support for full screen mode on macOS
 - Support for `ShowComposeSmsMessageAsync` on macOS
@@ -45,6 +46,7 @@
 - Add template tags for the VS2019 VSIX template search experience
 
 ### Breaking changes
+- `IconElement.AddIconElementView` is now `internal` so it is not accessible from outside.
 
 ### Bug fixes
 
