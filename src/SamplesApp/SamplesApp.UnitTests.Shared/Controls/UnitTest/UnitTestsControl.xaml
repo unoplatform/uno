@@ -46,6 +46,8 @@
 				<TextBlock x:Name="failedTestDetails" Opacity="0.5" />
 			</ScrollViewer>
 		</StackPanel>
+		<TextBlock x:Name="failedTests" Grid.Row="1" />
+		<TextBlock x:Name="runningState" Grid.Row="1" />
 		<ScrollViewer Grid.Row="1">
 			<StackPanel x:Name="testResults" Background="Black">
 			</StackPanel>

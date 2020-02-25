@@ -67,6 +67,7 @@ namespace Uno.UI.Samples.Tests
 			void Setter()
 			{
 				runButton.IsEnabled = !isRunning;
+				runningState.Text = isRunning ? "Running" : "Finished";
 				runStatus.Text = message;
 			}
 
@@ -147,6 +148,11 @@ namespace Uno.UI.Samples.Tests
 
 				testResults.Children.Add(testResultBlock);
 				testResultBlock.StartBringIntoView();
+
+				if (testResult == TestResult.Error || testResult == TestResult.Failed)
+				{
+					failedTests.Text += "§" + testName;
+				}
 			}
 
 			var t = Dispatcher.RunAsync(

@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace SamplesApp.Samples.UnitTests
 {
-	[SampleControlInfo("Unit Tests", "Unit Tests Runner")]
+	[SampleControlInfo("Unit Tests", "Unit Tests Runner", ignoreInSnapshotTests: true)]
 	public sealed partial class UnitTestsPage : Page
 	{
 		public UnitTestsPage()
