@@ -211,7 +211,7 @@ namespace Windows.UI.Xaml.Controls
 
 				var arrangeSize = finalRect
 					.Size
-					.AtLeast(default); // 0.0,0.0
+					.AtLeastZero(); // 0.0,0.0
 
 				// We have to choose max between _unclippedDesiredSize and maxSize here, because
 				// otherwise setting of max property could cause arrange at less then _unclippedDesiredSize.
@@ -250,7 +250,6 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
-
 
 		/// <summary>
 		/// Determine the size of the panel.

@@ -187,7 +187,6 @@ namespace Windows.UI.Xaml
 		/// <param name="finalRect">The final size that the parent computes for the child in layout, provided as a <see cref="Windows.Foundation.Rect"/> value.</param>
 		public override void Arrange(Rect finalRect)
 		{
-			_layouter.Arrange(finalRect);
 			_layouter.ArrangeChild(this, finalRect, raiseLayoutUpdated: false);
 		}
 #endif
