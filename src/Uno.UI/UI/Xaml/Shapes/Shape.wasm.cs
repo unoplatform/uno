@@ -29,6 +29,7 @@ namespace Windows.UI.Xaml.Shapes
 		protected Shape() : base("svg", isSvg: true)
 		{
 			SvgChildren = new UIElementCollection(this);
+			SvgChildren.CollectionChanged += OnSvgChildrenChanged;
 
 			OnStretchUpdatedPartial();
 		}
@@ -42,6 +43,18 @@ namespace Windows.UI.Xaml.Shapes
 		}
 
 		protected abstract SvgElement GetMainSvgElement();
+
+		private static readonly NotifyCollectionChangedEventHandler OnSvgChildrenChanged = (object sender, NotifyCollectionChangedEventArgs args) =>
+		{
+			if (sender is UIElementCollection children && children.Owner is Shape shape)
+			{
+				shape.OnChildrenChanged();
+			}
+		};
+
+		protected virtual void OnChildrenChanged()
+		{
+		}
 
 		partial void OnFillUpdatedPartial()
 		{
