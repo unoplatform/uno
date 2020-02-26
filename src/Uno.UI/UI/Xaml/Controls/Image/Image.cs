@@ -268,6 +268,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var size = InnerMeasureOverride(availableSize);
 
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug(Panel.ToString() + $" measuring with availableSize={availableSize}");
+				}
+
 				ImageControl.SetTargetImageSize(availableSize);
 
 				return size;
