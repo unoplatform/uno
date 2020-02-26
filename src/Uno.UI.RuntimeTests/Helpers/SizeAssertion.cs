@@ -8,11 +8,11 @@ namespace Uno.UI
 {
 	internal static class SizeAssertionExtensions
 	{
-		internal static SizeAssertion Should(this Size size, double epsilon = 0d) => new SizeAssertion(size, epsilon);
+		internal static SizeAssertion Should(this Size size, double epsilon = 0.01d) => new SizeAssertion(size, epsilon);
 
-		internal static PointAssertion Should(this Point point, double epsilon = 0d) => new PointAssertion(point, epsilon);
+		internal static PointAssertion Should(this Point point, double epsilon = 0.01d) => new PointAssertion(point, epsilon);
 
-		internal static RectAssertion Should(this Rect rect, double epsilon = 0d) => new RectAssertion(rect, epsilon);
+		internal static RectAssertion Should(this Rect rect, double epsilon = 0.01d) => new RectAssertion(rect, epsilon);
 	}
 
 	internal class SizeAssertion : ReferenceTypeAssertions<Size, SizeAssertion>
@@ -41,7 +41,7 @@ namespace Uno.UI
 
 		public AndConstraint<SizeAssertion> BeOfWidth(double expectedWidth, double? epsilon = null, string because = null, params object[] becauseArgs)
 		{
-			Validate(expectedWidth, _size.Height, epsilon, because, becauseArgs, "Width");
+			Validate(expectedWidth, _size.Width, epsilon, because, becauseArgs, "Width");
 
 			return new AndConstraint<SizeAssertion>(this);
 		}
@@ -96,7 +96,7 @@ namespace Uno.UI
 			var difference = Math.Abs(expected - value);
 			Execute.Assertion
 				.BecauseOf(because, becauseArgs)
-				.ForCondition(difference < ep)
+				.ForCondition(difference <= ep)
 				.FailWith($"Expected {field} of {_point}{{reason}} to be at {expected}, but seems to be at {value} (difference of {difference}) with a tolerance of {ep}.");
 		}
 

@@ -55,7 +55,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.ImageTests
 			ImageSizeHelper
 				.AdjustSize(stretch, availableSize, imageNaturalSize)
 				.Should()
-				.Be(expectedOutputSize, $"Invalid output for image size {imageNaturalSize} when available is {availableSize} using stretch {stretch}");
+				.Be(expectedOutputSize, 0.5, $"Invalid output for image size {imageNaturalSize} when available is {availableSize} using stretch {stretch}");
 		}
 
 		[TestMethod]
@@ -146,6 +146,7 @@ namespace Uno.UI.Tests.Windows_UI_XAML_Controls.ImageTests
 
 			measuredRect.Should().Be(
 				expectedRect,
+				0.5,
 				$"Invalid output for image size {imageNaturalSize} when finalSize is {finalSize} using stretch {stretch} alignment {horizontal}/{vertical}");
 		}
 
