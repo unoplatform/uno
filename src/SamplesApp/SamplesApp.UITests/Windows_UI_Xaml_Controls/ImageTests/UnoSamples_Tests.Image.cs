@@ -146,5 +146,24 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, firstControlRect, permittedPixelError: 20);
 			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, secondControlRect, permittedPixelError: 20);
 		}
+
+		[Test]
+		[AutoRetry]
+		public void Late_With_Fixed_Dimensions()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.ImageWithLateSourceFixedDimensions");
+
+			_app.Tap("setSource");
+
+			_app.WaitForElement("lateImage");
+
+			var bmp = TakeScreenshot("Source set");
+
+			var expectedRect = _app.GetRect("refImage");
+
+			var lateRect = _app.GetRect("lateImage");
+
+			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, lateRect, permittedPixelError: 20);
+		}
 	}
 }

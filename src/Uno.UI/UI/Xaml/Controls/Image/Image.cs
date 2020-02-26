@@ -129,8 +129,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnSourceChanged(ImageSource oldValue, ImageSource newValue)
 		{
-			SetTargetImageSize(null);
-
 			if (newValue is WriteableBitmap wb)
 			{
 				wb.Invalidated += OnInvalidated;
