@@ -36,7 +36,7 @@
 			</Grid>
 			<Grid Grid.Column="6" MaxWidth="175" HorizontalAlignment="Left">
 				<Rectangle StrokeDashArray="2.5,1" Stroke="Brown" StrokeThickness="3" />
-				<Ellipse Height="125" Fill="DarkSalmon" x:Name="ellipse4" />
+				<Ellipse Height="125" Fill="DarkGreen" x:Name="ellipse4" />
 			</Grid>
 		</Grid>
 	</StackPanel>

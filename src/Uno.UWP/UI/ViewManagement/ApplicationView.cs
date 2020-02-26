@@ -5,6 +5,7 @@
 using System;
 using System.Collections.Generic;
 using Windows.Foundation;
+using Uno.Devices.Sensors;
 using Uno.Foundation.Extensibility;
 
 namespace Windows.UI.ViewManagement
@@ -59,18 +60,23 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, global::Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs> Consolidated;
 
+
+		public ApplicationViewMode ViewMode
+		{
+			get
+			{
+				TryInitializeSpanningRectsExtension();
+
+				return (_applicationViewSpanningRects as INativeDualScreenProvider)?.IsSpanned == true
+					? ApplicationViewMode.Spanning
+					: ApplicationViewMode.Default;
+			}
+		}
 		public IReadOnlyList<Rect> GetSpanningRects()
 		{
 			TryInitializeSpanningRectsExtension();
 
-			if (_applicationViewSpanningRects != null)
-			{
-				return _applicationViewSpanningRects.GetSpanningRects();
-			}
-			else
-			{
-				return _defaultSpanningRects;
-			}
+			return _applicationViewSpanningRects?.GetSpanningRects() ?? _defaultSpanningRects;
 		}
 
 		private void TryInitializeSpanningRectsExtension()

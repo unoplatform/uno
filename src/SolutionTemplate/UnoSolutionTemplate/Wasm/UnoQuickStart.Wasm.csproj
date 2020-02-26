@@ -16,8 +16,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Include="..\$ext_safeprojectname$.UWP\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />
-	</ItemGroup>
+    	<Content Include="Assets\SplashScreen.png" />
+  	</ItemGroup>
 
 	<ItemGroup>
 		<EmbeddedResource Include="WasmCSS\Fonts.css" />
@@ -31,7 +31,7 @@
 	<ItemGroup>
 		<!--
     This item group is required by the project template because of the
-    new SDK-Style project, otherwise some files are not aded automatically.
+    new SDK-Style project, otherwise some files are not added automatically.
 
     You can safely remove this ItemGroup completely.
     -->

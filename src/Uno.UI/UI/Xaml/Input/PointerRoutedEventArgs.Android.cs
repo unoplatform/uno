@@ -95,7 +95,7 @@ namespace Windows.UI.Xaml.Input
 			}
 			else
 			{
-				var posRelToReceiver = new Point(phyX, phyX).PhysicalToLogicalPixels();
+				var posRelToReceiver = new Point(phyX, phyY).PhysicalToLogicalPixels();
 				var posRelToTarget = UIElement.GetTransform(from: _receiver, to: relativeTo).Transform(posRelToReceiver);
 
 				relative = posRelToTarget;

@@ -1,7 +1,6 @@
 ﻿using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
-using Uno.UI.Views.Controls;
 using Uno.Extensions;
 using System;
 using System.Collections.Generic;
@@ -16,6 +15,12 @@ using Windows.UI.Xaml.Media;
 using UIKit;
 #elif XAMARIN_IOS
 using MonoTouch.UIKit;
+#elif __MACOS__
+using AppKit;
+#endif
+
+#if !__MACOS__
+using Uno.UI.Views.Controls;
 #endif
 
 namespace Windows.UI.Xaml
@@ -55,7 +60,8 @@ namespace Windows.UI.Xaml
 
 		private static void InitDatePicker()
         {
-            var style = new Style(typeof(Windows.UI.Xaml.Controls.DatePicker))
+#if !__MACOS__
+			var style = new Style(typeof(Windows.UI.Xaml.Controls.DatePicker))
             {
                 Setters =  {
                     new Setter<DatePicker>("Template", t =>
@@ -65,10 +71,12 @@ namespace Windows.UI.Xaml
             };
 
 			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.DatePicker), style);
+#endif
 		}
 
 		private static void InitDatePickerSelector()
 		{
+#if !__MACOS__
 			var style = new Style(typeof(Windows.UI.Xaml.Controls.DatePickerSelector))
 			{
 				Setters =  {
@@ -88,6 +96,7 @@ namespace Windows.UI.Xaml
 			};
 
 			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.DatePickerSelector), style);
+#endif
 		}
 
 #if !IS_UNO
@@ -196,6 +205,7 @@ namespace Windows.UI.Xaml
 
 		private static void InitWebView()
 		{
+#if !__MACOS__
 			var style = new Style(typeof(Windows.UI.Xaml.Controls.WebView))
 			{
 				Setters =  {
@@ -207,6 +217,7 @@ namespace Windows.UI.Xaml
 			};
 
 			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.WebView), style);
+#endif
 		}
 
 		private static void InitItemsControl()
@@ -228,6 +239,7 @@ namespace Windows.UI.Xaml
 
 		private static void InitFlipView()
 		{
+#if !__MACOS__
 			var style = new Style(typeof(Windows.UI.Xaml.Controls.FlipView))
 			{
 				Setters =  {
@@ -247,6 +259,7 @@ namespace Windows.UI.Xaml
 			};
 
 			Style.RegisterDefaultStyleForType(typeof(Windows.UI.Xaml.Controls.FlipView), style);
+#endif
 		}
 
 #if !IS_UNO

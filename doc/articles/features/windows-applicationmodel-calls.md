@@ -14,3 +14,6 @@
 
 **WASM**
 - Only implements the `ShowPhoneCallUI` method. Similarly to the other platforms the `displayName` parameter is not used
+
+**macOS**
+- Only implements the `ShowPhoneCallUI` method. Similarly to the other platforms the `displayName` parameter is not used

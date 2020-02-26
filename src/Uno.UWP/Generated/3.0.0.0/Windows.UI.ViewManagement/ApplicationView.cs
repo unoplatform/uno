@@ -56,7 +56,7 @@ namespace Windows.UI.ViewManagement
 		}
 		#endif
 		// Skipping already declared property Id
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public  bool IsFullScreen
 		{
@@ -109,16 +109,6 @@ namespace Windows.UI.ViewManagement
 		#endif
 		// Skipping already declared property IsFullScreenMode
 		// Skipping already declared property TitleBar
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.ViewManagement.ApplicationViewMode ViewMode
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ApplicationViewMode ApplicationView.ViewMode is not implemented in Uno.");
-			}
-		}
-		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.ViewManagement.ApplicationViewState Value
@@ -194,14 +184,14 @@ namespace Windows.UI.ViewManagement
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.FullScreenSystemOverlayMode.get
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.FullScreenSystemOverlayMode.set
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.IsFullScreenMode.get
-		#if false || false || NET461 || false || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  bool TryEnterFullScreenMode()
 		{
 			throw new global::System.NotImplementedException("The member bool ApplicationView.TryEnterFullScreenMode() is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  void ExitFullScreenMode()
 		{

@@ -2,6 +2,12 @@
 
 ### Features
 
+- Support for `FontIcon` on macOS
+- Support for `PhoneCallManager.ShowPhoneCallUI` on macOS
+- Support for full screen mode on macOS
+- Support for `ShowComposeSmsMessageAsync` on macOS
+- Support for `Flyout` on macOS
+- Support for `HingeAngleSensor` for Surface Duo
 - Support for `Geolocator` on macOS
 - Support for `Clipboard` get/set Text content on macOS
 - Support for `ApplicationView.Title` on Android and macOS
@@ -22,7 +28,7 @@
 - [Android] Adds support for `FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay`
 - Add support for `Grid.ColumnSpacing` and `Grid.RowSpacing`
 - Add clarification in [documentation](../articles/uno-development/working-with-the-samples-apps.md) for adding automated UI tests
-- Add support for `Popup.LightDismissOverlayMode`, as well as `DatePicker.LightDismissOverlayMode` and `Flyout.LightDismissOverlayMode`
+- Add support for `Popup.LightDismissOverlayMode`, as well as `DatePicker.LightDismissOverlayMode` and `Flyout.LightDismissOverlayMode`. To modify the background color of the Overlay see Popup.md, DatePicker.md, TimePicker.md and Flyout.md
 - `TransformToVisual` now returns a real transform to convert coordinates between views (was only returning a translate transform to offset the origin of controls)
 - Multiple pointers at same time on screen (a.k.a. Multi-touch) are now supported
 - Add support for WinUI 2.3 [`NumberBox`](https://docs.microsoft.com/en-us/uwp/api/microsoft.ui.xaml.controls.numberbox?view=winui-2.3)
@@ -37,11 +43,14 @@
 - Add support for enums in x:Bind functions
 - Add XamlReader support for Primitive static resources
 - [Android] Add support for non-native `Popup` by default. Can be enabled through `FeatureConfiguration.Popup.UseNativePopup` set to false (See #2533 for more details)
+- Add template tags for the VS2019 VSIX template search experience
 
 ### Breaking changes
+- `IconElement.AddIconElementView` is now `internal` so it is not accessible from outside.
 
 ### Bug fixes
 
+- Fix for samples app compilation for macOS
 - [#2465] Raising macOS Button Click event
 - [#2506] `DesignMode.DesignMode2Enabled` no longer throws (is always `false` on non-UWP platforms)
 - [#915] FontFamily values are now properly parsed on WebAssembly, updated docs with new info
