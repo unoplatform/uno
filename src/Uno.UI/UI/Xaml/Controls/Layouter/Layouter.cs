@@ -422,11 +422,6 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="frame">The rectangle to use, in Logical position</param>
 		public void ArrangeChild(View view, Rect frame)
 		{
-			ArrangeChild(view, frame, true);
-		}
-
-		internal void ArrangeChild(View view, Rect frame, bool raiseLayoutUpdated)
-		{
 			if ((view as IFrameworkElement)?.Visibility == Visibility.Collapsed)
 			{
 				return;
@@ -439,14 +434,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			ArrangeChildOverride(view, finalFrame);
-
-			if (view is FrameworkElement fe)
-			{
-				if (raiseLayoutUpdated)
-				{
-					fe?.OnLayoutUpdated();
-				}
-			}
 		}
 
 		private void LogArrange(View view, Rect frame)
