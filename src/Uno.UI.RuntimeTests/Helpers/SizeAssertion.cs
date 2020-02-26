@@ -13,6 +13,17 @@ namespace Uno.UI
 		internal static PointAssertion Should(this Point point, double epsilon = 0.01d) => new PointAssertion(point, epsilon);
 
 		internal static RectAssertion Should(this Rect rect, double epsilon = 0.01d) => new RectAssertion(rect, epsilon);
+
+		internal static (bool isDifferent, double difference) CheckDifference(double value1, double value2, double epsilon)
+		{
+			if (value1.Equals(value2))
+			{
+				return (false, 0d);
+			}
+
+			var difference = Math.Abs(value1 - value2);
+			return (difference > epsilon, difference);
+		}
 	}
 
 	internal class SizeAssertion : ReferenceTypeAssertions<Size, SizeAssertion>
@@ -56,11 +67,11 @@ namespace Uno.UI
 		private void Validate(double expected, double value, double? epsilon, string because, object[] becauseArgs,  string field)
 		{
 			var ep = epsilon ?? _epsilon;
-			var difference = Math.Abs(expected - value);
+			var d = SizeAssertionExtensions.CheckDifference(expected, value, ep);
 			Execute.Assertion
 				.BecauseOf(because, becauseArgs)
-				.ForCondition(difference <= ep)
-				.FailWith($"Expected {field} of {_size}{{reason}} to be {expected}, but seems to be {value} (difference of {difference}) with a tolerance of {ep}.");
+				.ForCondition(!d.isDifferent)
+				.FailWith($"Expected {field} of {_size}{{reason}} to be {expected}, but seems to be {value} (difference of {d.difference}) with a tolerance of {ep}.");
 		}
 	}
 
@@ -92,12 +103,11 @@ namespace Uno.UI
 			string field)
 		{
 			var ep = epsilon ?? _epsilon;
-
-			var difference = Math.Abs(expected - value);
+			var d = SizeAssertionExtensions.CheckDifference(expected, value, ep);
 			Execute.Assertion
 				.BecauseOf(because, becauseArgs)
-				.ForCondition(difference <= ep)
-				.FailWith($"Expected {field} of {_point}{{reason}} to be at {expected}, but seems to be at {value} (difference of {difference}) with a tolerance of {ep}.");
+				.ForCondition(!d.isDifferent)
+				.FailWith($"Expected {field} of {_point}{{reason}} to be at {expected}, but seems to be at {value} (difference of {d.difference}) with a tolerance of {ep}.");
 		}
 
 		public AndConstraint<PointAssertion> BeAtX(double expectedX, double? epsilon = null, string because = null, params object[] becauseArgs)
