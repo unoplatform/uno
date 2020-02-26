@@ -60,7 +60,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 			PixelWidth = 0;
 			PixelHeight = 0;
 
-			Stream = streamSource;
+			MemoryStream copy = new MemoryStream();
+			streamSource.CopyTo(copy);
+			Stream = copy;
 		}
 
 		public async Task SetSourceAsync(Stream streamSource)
