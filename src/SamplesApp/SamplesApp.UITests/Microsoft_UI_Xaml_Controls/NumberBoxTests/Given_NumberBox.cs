@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest;
@@ -175,92 +176,15 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests
 		[AutoRetry]
 		public void BasicExpressionTest()
 		{
-			Run("UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests.MUX_Test");
+			Run("UITests.Microsoft_UI_Xaml_Controls.NumberBoxTests.NumberBox_ExpressionTest");
 
-			var currentPlatform = AppInitializer.GetLocalPlatform();
+			_app.Marked("TestNumberBox").WaitUntilExists();
 
-			// Use the .All() so the Query returns the TextBox even if covered by the keyboard, until Uno.UITest
-			// supports it for Browsers.
-			var supportsAllQuery = currentPlatform == Platform.Android || currentPlatform == Platform.iOS;
+			_app.Marked("RunButton").FastTap();
 
-			var numBox = supportsAllQuery
-				? new QueryEx(q => q.All().Marked("TestNumberBox"))
-				: _app.Marked("TestNumberBox");
+			_app.WaitFor(()=> _app.Marked("Status").GetText() is string s && (s.Equals("Success") || s.StartsWith("Failure")));
 
-			_app.EnterText(numBox, "5 + 3");
-			Assert.AreEqual("0", numBox.GetText());
-
-			_app.Tap("ExpressionCheckBox");
-
-			int numErrors = 0;
-			const double resetValue = double.NaN;
-
-			Dictionary<string, double> expressions = new Dictionary<string, double>
-			{ 
-               // Valid expressions. None of these should evaluate to the reset value.
-				{ "5", 5 },
-				{ "-358", -358 },
-				{ "12.34", 12.34 },
-				{ "5 + 3", 8 },
-				{ "12345 + 67 + 890", 13302 },
-				{ "000 + 0011", 11 },
-				{ "5 - 3 + 2", 4 },
-				{ "3 + 2 - 5", 0 },
-				{ "9 - 2 * 6 / 4", 6 },
-				{ "9 - -7",  16 },
-				{ "9-3*2", 3 },         // no spaces
-				{ " 10  *   6  ", 60 }, // extra spaces
-				{ "10 /( 2 + 3 )", 2 },
-				{ "5 * -40", -200 },
-				{ "(1 - 4) / (2 + 1)", -1 },
-				{ "3 * ((4 + 8) / 2)", 18 },
-				{ "23 * ((0 - 48) / 8)", -138 },
-				{ "((74-71)*2)^3", 216 },
-				{ "2 - 2 ^ 3", -6 },
-				{ "2 ^ 2 ^ 2 / 2 + 9", 17 },
-				{ "5 ^ -2", 0.04 },
-				{ "5.09 + 14.333", 19.423 },
-				{ "2.5 * 0.35", 0.875 },
-				{ "-2 - 5", -7 },       // begins with negative number
-				{ "(10)", 10 },         // number in parens
-				{ "(-9)", -9 },         // negative number in parens
-				{ "0^0", 1 },           // who knew?
-
-				// These should not parse, which means they will reset back to the previous value.
-				{ "5x + 3y", resetValue },        // invalid chars
-				{ "5 + (3", resetValue },         // mismatched parens
-				{ "9 + (2 + 3))", resetValue },
-				{ "(2 + 3)(1 + 5)", resetValue }, // missing operator
-				{ "9 + + 7", resetValue },        // extra operators
-				{ "9 - * 7",  resetValue },
-				{ "9 - - 7",  resetValue },
-				{ "+9", resetValue },
-				{ "1 / 0", resetValue },          // divide by zero
-
-				// These don't currently work, but maybe should.
-				{ "-(3 + 5)", resetValue }, // negative sign in front of parens -- should be -8
-			};
-
-			foreach (KeyValuePair<string, double> pair in expressions)
-			{
-				numBox.ClearText();
-				numBox.EnterText(pair.Key);
-				_app.PressEnter();
-
-				var value = numBox.GetDependencyPropertyValue<double>("Value");
-				string output = "Expression '" + pair.Key + "' - expected: " + pair.Value + ", actual: " + value;
-				if (Math.Abs(pair.Value - value) > 0.00001)
-				{
-					numErrors++;
-					Console.WriteLine(output);
-				}
-				else
-				{
-					Console.WriteLine(output);
-				}
-			}
-
-			Assert.AreEqual(0, numErrors);
+			_app.Marked("Status").GetText().Should().Be("Success");
 		}
 	}
 }
