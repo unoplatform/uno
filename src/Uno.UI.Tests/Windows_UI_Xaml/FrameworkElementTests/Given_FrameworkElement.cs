@@ -56,13 +56,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 			using (new AssertionScope())
 			{
 				sutLayoutUpdate1.Should().Be(1, "sut-before");
-				item1LayoutUpdate1.Should().Be(1, "item1-before");
-
 				sutLayoutUpdate2.Should().Be(2, "sut-after");
-				item1LayoutUpdate2.Should().Be(2, "item1-after");
 
-				sutLayoutUpdatedCount.Should().Be(2, "sut-final");
-				item1LayoutUpdatedCount.Should().Be(2, "item1-final");
+#if __ANDROID__
+				item1LayoutUpdate1.Should().Be(1, "item1-before");
+				item1LayoutUpdate2.Should().Be(2, "item1-after");
+#endif
 			}
 		}
 
