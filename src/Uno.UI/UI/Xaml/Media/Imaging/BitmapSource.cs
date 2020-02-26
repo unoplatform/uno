@@ -59,10 +59,18 @@ namespace Windows.UI.Xaml.Media.Imaging
 		{
 			PixelWidth = 0;
 			PixelHeight = 0;
-
-			MemoryStream copy = new MemoryStream();
-			streamSource.CopyTo(copy);
-			Stream = copy;
+			
+			if (streamSource != null)
+			{
+				MemoryStream copy = new MemoryStream();
+				streamSource.CopyTo(copy);
+				Stream = copy;
+			}
+			else
+			{
+				//Same behavior as windows, although the documentation does not mention it!!!
+				throw new ArgumentException(nameof(streamSource));
+			}
 		}
 
 		public async Task SetSourceAsync(Stream streamSource)
