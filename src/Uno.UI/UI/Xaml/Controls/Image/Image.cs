@@ -266,7 +266,6 @@ namespace Windows.UI.Xaml.Controls
 
 			protected override Size MeasureOverride(Size availableSize)
 			{
-				var size = InnerMeasureOverride(availableSize);
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
@@ -274,6 +273,8 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				ImageControl.SetTargetImageSize(availableSize);
+
+				var size = InnerMeasureOverride(availableSize);
 
 				return size;
 			}

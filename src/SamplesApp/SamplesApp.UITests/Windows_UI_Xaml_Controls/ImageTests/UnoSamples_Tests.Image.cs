@@ -124,5 +124,27 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 				base.TakeScreenshot("Mode-" + i);
 			}
 		}
+
+		[Test]
+		[AutoRetry]
+		public void UniformToFill_Second_Load()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.Image_UseTargetSizeLate", skipInitialScreenshot: true);
+
+			_app.WaitForElement("loadImageButton");
+
+			_app.Tap("loadImageButton");
+
+			_app.WaitForElement("secondControl");
+
+			var bmp = TakeScreenshot("After");
+
+			var expectedRect = _app.GetRect("simpleImage");
+			var firstControlRect = _app.GetRect("firstControl");
+			var secondControlRect = _app.GetRect("secondControl");
+
+			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, firstControlRect, permittedPixelError: 20);
+			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, secondControlRect, permittedPixelError: 20);
+		}
 	}
 }
