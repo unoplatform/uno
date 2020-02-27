@@ -152,25 +152,18 @@ namespace Windows.UI.Xaml.Controls
 
 		private Size _previousArrangeSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
 
-		partial void SetTargetImageSize(Size? targetSize)
+		partial void SetTargetImageSize(Size targetSize)
 		{
-			if (targetSize != null)
+			// Ignore changes coming from MeasureOverride when a dimension is unconstrained. This will be picked up
+			// by ArrangeOverride.
+			if (!double.IsInfinity(targetSize.Width) && !double.IsInfinity(targetSize.Height))
 			{
-				// Ignore changes coming from MeasureOverride when a dimension is unconstrained. This will be picked up
-				// by ArrangeOverride.
-				if (!double.IsInfinity(targetSize.Value.Width) && !double.IsInfinity(targetSize.Value.Height))
-				{
-					var physicalSize = targetSize.Value.LogicalToPhysicalPixels();
-					_targetWidth = physicalSize.Width.SelectOrDefault(w => w != 0 ? (int?)w : null);
-					_targetHeight = physicalSize.Height.SelectOrDefault(h => h != 0 ? (int?)h : null);
+				var physicalSize = targetSize.LogicalToPhysicalPixels();
+				_targetWidth = physicalSize.Width.SelectOrDefault(w => w != 0 ? (int?)w : null);
+				_targetHeight = physicalSize.Height.SelectOrDefault(h => h != 0 ? (int?)h : null);
 
 
-					TryOpenImage();
-				}
-			}
-			else
-			{
-				_targetWidth = _targetHeight = null;
+				TryOpenImage();
 			}
 		}
 

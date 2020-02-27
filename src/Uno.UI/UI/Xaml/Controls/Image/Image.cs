@@ -241,7 +241,7 @@ namespace Windows.UI.Xaml.Controls
 			return double.IsNaN(Height) ? (double.IsInfinity(stretchedHeight) ? fallbackIfInfinite : stretchedHeight) : Height;
 		}
 
-		partial void SetTargetImageSize(Size? targetSize);
+		partial void SetTargetImageSize(Size targetSize);
 		partial void UpdateArrangeSize(Size arrangeSize);
 
 		public override string ToString()
