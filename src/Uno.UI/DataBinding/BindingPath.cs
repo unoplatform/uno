@@ -341,7 +341,10 @@ namespace Uno.UI.DataBinding
 							typeof(BindingPath).Log().Debug("Property changed for {0} on [{1}]".InvariantCultureFormat(propertyName, dataContextReference.Target?.GetType()));
 						}
 
-						(newValueActionWeak.Target as Action)?.Invoke();
+						if (!newValueActionWeak.IsDisposed)
+						{
+							(newValueActionWeak.Target as Action)?.Invoke();
+						}
 					}
 				};
 
