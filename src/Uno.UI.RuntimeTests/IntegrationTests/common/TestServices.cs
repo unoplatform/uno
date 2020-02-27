@@ -11,7 +11,7 @@ namespace Private.Infrastructure
 		{
 			public static object WindowContent
 			{
-				get { return RootControl.Content; }
+				get => RootControl.Content;
 				internal set
 				{
 					if (RootControl is ContentControl content)

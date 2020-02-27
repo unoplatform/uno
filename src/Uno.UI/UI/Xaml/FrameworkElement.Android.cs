@@ -268,7 +268,7 @@ namespace Windows.UI.Xaml
 				// So unless there was a layout requested, we can skip arranging the children.
 				(changed && _lastLayoutSize != newSize)
 
-				// Even if nothing changed, but a layout was requested, arrang the children.
+				// Even if nothing changed, but a layout was requested, arrange the children.
 				|| IsLayoutRequested
 			)
 			{

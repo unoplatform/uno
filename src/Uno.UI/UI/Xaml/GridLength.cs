@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml
 				 gridUnitType != GridUnitType.Pixel &&
 				 gridUnitType != GridUnitType.Star))
 			{
-				throw new ArgumentException(nameof(value));
+				throw new ArgumentException($"Invalid GridLength {value}{gridUnitType}.", nameof(value));
 			}
 
 			Value = (gridUnitType == GridUnitType.Auto) ? 1.0 : value;

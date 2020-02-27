@@ -180,10 +180,10 @@
 		</Style>
 	</Page.Resources>
 
-	<Grid>
-		<StackPanel>
-			<TextBox x:Name="textBox1" />
-			<TextBox x:Name="textBox2" Style="{StaticResource MyCustomTextBox}" Header="My Custom TextBox" />
-		</StackPanel>
-	</Grid>
+	<StackPanel Spacing="10">
+		<TextBlock FontSize="15">Simple TextBox without custom style</TextBlock>
+		<TextBox x:Name="textBox1" />
+		<TextBlock FontSize="15">Another TextBox with a custom Style/ControlTemplate</TextBlock>
+		<TextBox x:Name="textBox2" Style="{StaticResource MyCustomTextBox}" Header="My Custom TextBox" />
+	</StackPanel>
 </Page>

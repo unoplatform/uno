@@ -104,7 +104,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				return;
 			}
 
-			// Note: We don't handle event as UWP does not, and otherwise it will prevent parent control to update its visual state
+			// Note: WinUI handles only the PointerPressed event.
+			// Note2: Handling this event causes an issue in parent controls (like ToggleSwitch) that has a pressed visual state.
+			//		  In order to fix that, parents controls are expected to also listen for handled events too, and update their visual state in case.
+			args.Handled = true;
 			StartDrag(point.Position);
 		}
 

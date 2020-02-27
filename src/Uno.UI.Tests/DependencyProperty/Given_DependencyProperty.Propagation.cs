@@ -30,11 +30,6 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 		[TestInitialize]
 		public void Init()
 		{
-			Uno.Extensions.LogExtensionPoint
-				.AmbientLoggerFactory
-				.AddConsole(LogLevel.Debug)
-				.AddDebug(LogLevel.Debug);
-
 			global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(SubObject).TypeHandle);
 			global::System.Runtime.CompilerServices.RuntimeHelpers.RunClassConstructor(typeof(MyObject).TypeHandle);
 		}
