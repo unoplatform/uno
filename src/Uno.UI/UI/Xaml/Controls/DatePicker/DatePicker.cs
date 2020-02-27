@@ -263,15 +263,29 @@ namespace Windows.UI.Xaml.Controls
 
 		private void InitializeTextBlocks(IFrameworkElement container)
 		{
-			var items = GetOrderedTextBlocksForCulture(CultureInfo.CurrentCulture);
-			var flyoutButtonGrid = container.GetTemplateChild(FlyoutButtonGridPartName) as Grid;
+			if (container.GetTemplateChild(FlyoutButtonGridPartName) is Grid grid)
+			{
+				var items = GetOrderedTextBlocksForCulture(CultureInfo.CurrentCulture);
+				var oldColumnInfos = new[] { DayColumnPartName, MonthColumnPartName, YearColumnPartName }
+					// TODO: add safe-guard when GetTemplateChild(columnName) is implemented
+					.Select(x => GetColumnIndex(grid, x))
+					.Select(x => new { Column = x, grid.ColumnDefinitions.ElementAtOrDefault(x)?.Width })
+					.ToArray();
 
-			Grid.SetColumn(items[0], GetColumnIndex(flyoutButtonGrid, DayColumnPartName));
-			Grid.SetColumn(items[1], GetColumnIndex(flyoutButtonGrid, MonthColumnPartName));
-			Grid.SetColumn(items[2], GetColumnIndex(flyoutButtonGrid, YearColumnPartName));
+				// re-position TextBlocks' Grid.Column and their respective ColumnDefinition.Width
+				foreach (var item in items)
+				{
+					if (grid.ColumnDefinitions.ElementAtOrDefault(oldColumnInfos[item.NewIndex].Column) is ColumnDefinition definition &&
+						oldColumnInfos[item.OldIndex].Width.HasValue)
+					{
+						definition.Width = oldColumnInfos[item.OldIndex].Width.Value;
+					}
+					Grid.SetColumn(item.Item, oldColumnInfos[item.NewIndex].Column);
+				}
+			}
 		}
 
-		private TextBlock[] GetOrderedTextBlocksForCulture(CultureInfo culture)
+		private (TextBlock Item, int OldIndex, int NewIndex)[] GetOrderedTextBlocksForCulture(CultureInfo culture)
 		{
 			var currentDateFormat = culture.DateTimeFormat.ShortDatePattern;
 
@@ -279,14 +293,14 @@ namespace Windows.UI.Xaml.Controls
 			var monthIndex = currentDateFormat.IndexOf("m", StringComparison.InvariantCultureIgnoreCase);
 			var yearIndex = currentDateFormat.IndexOf("y", StringComparison.InvariantCultureIgnoreCase);
 
-			return new[]
+			return new (int Index, string SortKey, TextBlock Item)[]
 				{
-					new { Index = dayIndex, Item = _dayTextBlock },
-					new { Index = monthIndex, Item = _monthTextBlock },
-					new { Index = yearIndex, Item = _yearTextBlock }
+					(0, "d", _dayTextBlock),
+					(1, "m", _monthTextBlock),
+					(2, "y", _yearTextBlock),
 				}
-				.OrderBy(x => x.Index)
-				.Select(x => x.Item)
+				.OrderBy(x => currentDateFormat.IndexOf(x.SortKey, StringComparison.InvariantCultureIgnoreCase))
+				.Select((x, i) => ( x.Item, x.Index, i ))
 				.ToArray();
 		}
 
