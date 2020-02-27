@@ -338,32 +338,32 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void OnSliderContainerPressed(object sender, PointerRoutedEventArgs e)
+		private void OnSliderContainerPressed(object sender, PointerRoutedEventArgs args)
 		{
-			if (sender is FrameworkElement container && container.CapturePointer(e.Pointer))
+			if (sender is FrameworkElement container && container.CapturePointer(args.Pointer))
 			{
-				var point = e.GetCurrentPoint(container).Position;
+				var point = args.GetCurrentPoint(container).Position;
 				var newOffset = Orientation == Orientation.Horizontal
 					? point.X / container.ActualWidth
 					: 1 - (point.Y / container.ActualHeight);
 
 				ApplySlideToValue(newOffset);
-				Thumb?.StartDrag(e.GetCurrentPoint(null).Position);
+				Thumb?.StartDrag(args);
 			}
 		}
 
-		private void OnSliderContainerMoved(object sender, PointerRoutedEventArgs e)
+		private void OnSliderContainerMoved(object sender, PointerRoutedEventArgs args)
 		{
-			if (sender is FrameworkElement container && container.IsCaptured(e.Pointer))
+			if (sender is FrameworkElement container && container.IsCaptured(args.Pointer))
 			{
-				Thumb?.DeltaDrag(e.GetCurrentPoint(null).Position);
+				Thumb?.DeltaDrag(args);
 			}
 		}
 
-		private void OnSliderContainerCaptureLost(object sender, PointerRoutedEventArgs e)
+		private void OnSliderContainerCaptureLost(object sender, PointerRoutedEventArgs args)
 		{
 			ApplyValueToSlide();
-			Thumb?.CompleteDrag(e.GetCurrentPoint(null).Position);
+			Thumb?.CompleteDrag(args);
 		}
 
 		#region IsTrackerEnabled DependencyProperty
