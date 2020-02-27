@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using Uno.Extensions;
 
 namespace Windows.Foundation
@@ -104,8 +105,18 @@ namespace Windows.Foundation
 			);
 		}
 
-		public static implicit operator string(Rect rect) =>
-			$"{rect.X},{rect.Y},{rect.Width},{rect.Height}";
+		public static implicit operator string(Rect rect)
+		{
+			var sb = new StringBuilder();
+			sb.Append(rect.X.ToStringInvariant());
+			sb.Append(',');
+			sb.Append(rect.Y.ToStringInvariant());
+			sb.Append(',');
+			sb.Append(rect.Width.ToStringInvariant());
+			sb.Append(',');
+			sb.Append(rect.Height.ToStringInvariant());
+			return sb.ToString();
+		}
 
 		public override string ToString() => (string)this;
 

@@ -132,7 +132,6 @@ namespace Uno.UI.RuntimeTests.Tests.System
 		[ExpectedException(typeof(ArgumentException))]
 		public async Task When_SetNegativeInterval()
 		{
-			var tcs = new TaskCompletionSource<object>();
 			var timer = DispatcherQueue.GetForCurrentThread().CreateTimer();
 
 			timer.Interval = TimeSpan.FromMilliseconds(-100);

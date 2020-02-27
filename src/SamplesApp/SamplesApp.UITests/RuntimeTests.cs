@@ -23,11 +23,13 @@ namespace SamplesApp.UITests
 			Run("SamplesApp.Samples.UnitTests.UnitTestsPage");
 
 			var runButton = _app.Marked("runButton");
-			var failedTests = _app.Marked("failedTestCount");
+			var failedTestsCount = _app.Marked("failedTestCount");
+			var failedTests = _app.Marked("failedTests");
+			var runningState = _app.Marked("runningState");
 			var runTestCount = _app.Marked("runTestCount");
 
 			bool IsTestExecutionDone()
-				=> failedTests.GetDependencyPropertyValue("Text").ToString() != PendingTestsText;
+				=> runningState.GetDependencyPropertyValue<string>("Text").Equals("Finished", StringComparison.OrdinalIgnoreCase);
 
 			_app.WaitForElement(runButton);
 
@@ -58,13 +60,19 @@ namespace SamplesApp.UITests
 				Assert.Fail("A test run timed out");
 			}
 
-			var count = failedTests.GetDependencyPropertyValue("Text").ToString();
+			var count = failedTestsCount.GetDependencyPropertyValue("Text").ToString();
 
 			if (count != "0")
 			{
+				var tests = failedTests.GetDependencyPropertyValue<string>("Text")
+					.Split(new char[] { '§' }, StringSplitOptions.RemoveEmptyEntries)
+					.Select((x, i) => $"\t{i + 1}. {x}\n")
+					.ToArray();
+
 				var details = _app.Marked("failedTestDetails").GetDependencyPropertyValue("Text");
 
-				Assert.Fail("A Unit test failed. Details:\n" + details);
+				Assert.Fail(
+					$"{tests.Length} unit test(s) failed.\n\tFailing Tests:\n{string.Join("", tests)}\n\n---\n\tDetails:\n{details}");
 			}
 
 			TakeScreenshot("Runtime Tests Results",	ignoreInSnapshotCompare: true);

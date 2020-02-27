@@ -3,7 +3,7 @@ using Uno.UI.Samples.Controls;
 
 namespace Uno.UI.Samples.Content.UITests.GridTestsControl
 {
-	[SampleControlInfo("GridTestsControl", "CenteredGridinGridwithfixedsizechild")]
+	[SampleControlInfo("GridTestsControl", "CenteredGridinGridwithfixedsizechild", ignoreInSnapshotTests: true)]
 	public sealed partial class CenteredGridinGridwithfixedsizechild : UserControl
 	{
 		public CenteredGridinGridwithfixedsizechild()
