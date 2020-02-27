@@ -190,7 +190,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 		[AutoRetry]
 		public void Large_Image_With_Margin()
 		{
-			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.ImageWithLateSourceUniformToFill");
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.Image_Margin_Large");
 
 			var bmp = TakeScreenshot("Ready");
 
