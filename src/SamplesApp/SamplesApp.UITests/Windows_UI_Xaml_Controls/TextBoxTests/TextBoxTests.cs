@@ -3,6 +3,7 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest;
@@ -64,7 +65,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			var textBox2 = _app.Marked("textBox2");
 
 			var textBox1Result_Before = _app.Query(textBox1).First();
-			var textBox2Result_Before = _app.Query(textBox2).First();
 
 			textBox1.FastTap();
 			textBox1.EnterText("hello 01");
@@ -77,12 +77,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			_app.WaitForText(textBox2, "hello 02");
 
 			var textBox1Result_After = _app.Query(textBox1).First();
-			var textBox2Result_After = _app.Query(textBox2).First();
 
-			textBox1Result_After.Rect.Width.Should().Be(textBox1Result_Before.Rect.Width);
-			textBox1Result_After.Rect.Height.Should().Be(textBox1Result_Before.Rect.Height);
-			textBox1Result_After.Rect.X.Should().Be(textBox1Result_Before.Rect.X);
-			textBox1Result_After.Rect.Y.Should().Be(textBox1Result_Before.Rect.Y);
+			using (new AssertionScope())
+			{
+				textBox1Result_After.Rect.X.Should().Be(textBox1Result_Before.Rect.X);
+				// We doesn't check the Y here because of the status bar causing the test to be unreliable
+				textBox1Result_After.Rect.Width.Should().Be(textBox1Result_Before.Rect.Width);
+				textBox1Result_After.Rect.Height.Should().Be(textBox1Result_Before.Rect.Height);
+			}
 		}
 
 		[Test]
@@ -243,8 +245,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			var text2 = textbox.GetDependencyPropertyValue<string>("Text");
 			var text3 = scoreboard.GetDependencyPropertyValue<string>("Text");
 
-			text2.Should().Be(text1, because: "Text content should not change at max length.");
-			text3.Should().Be("TextChanged: 1");
+			using (new AssertionScope())
+			{
+				text2.Should().Be(text1, because: "Text content should not change at max length.");
+				text3.Should().Be("TextChanged: 1");
+			}
 		}
 
 		[Test]

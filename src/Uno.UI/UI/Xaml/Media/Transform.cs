@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Media
 		// Currently we support only one view par transform.
 		// But we can declare a Transform as a static resource and use it on multiple views.
 		// Note: This is now used only for animations
-		internal _View View { get; set; }
+		internal virtual _View View { get; set; }
 
 		#region GeneralTransform overrides
 		/// <inheritdoc />

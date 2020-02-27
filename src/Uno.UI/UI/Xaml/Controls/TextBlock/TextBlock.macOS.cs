@@ -36,7 +36,9 @@ namespace Windows.UI.Xaml.Controls
 		/// To enable these scenarios, we must use a (more expensive) NSLayoutManager for layouting and rendering.
 		/// </remarks>
 		private bool UseLayoutManager =>
-			true;
+			HasHyperlink ||
+			CanWrap && CanTrim ||
+			CanWrap && MaxLines != 0;
 
 		private bool CanWrap => TextWrapping != TextWrapping.NoWrap && MaxLines != 1;
 
@@ -53,7 +55,14 @@ namespace Windows.UI.Xaml.Controls
 		public override void DrawRect(CGRect rect)
 		{
 			_drawRect = GetDrawRect(rect);
-			_layoutManager?.DrawGlyphsForGlyphRange(new NSRange(0, (nint)_layoutManager.NumberOfGlyphs), _drawRect.Location);
+			if(UseLayoutManager)
+			{
+				_layoutManager?.DrawBackgroundForGlyphRange(new NSRange(0, (nint)_layoutManager.NumberOfGlyphs), _drawRect.Location);
+			}
+			else
+			{
+				_attributedString?.DrawString(_drawRect, NSStringDrawingOptions.UsesLineFragmentOrigin);
+			}
 		}
 
 		private CGRect GetDrawRect(CGRect rect)
@@ -338,12 +347,27 @@ namespace Windows.UI.Xaml.Controls
 
 		private Size LayoutTypography(Size size)
 		{
-			_textContainer.Size = size;
+			if (UseLayoutManager)
+			{
+				if (_textContainer == null)
+				{
+					return default(Size);
+				}
 
-            // Required for GetUsedRectForTextContainer to return a value.
-            _layoutManager.GetGlyphRange(_textContainer);
+				_textContainer.Size = size;
+				// Required for GetUsedRectForTextContainer to return a value.
+				_layoutManager.GetGlyphRange(_textContainer);
+				return _layoutManager.GetUsedRectForTextContainer(_textContainer).Size;
+			}
+			else
+			{
+				if (_attributedString == null)
+				{
+					return default(Size);
+				}
 
-			return _layoutManager.GetUsedRectForTextContainer(_textContainer).Size;
+				return _attributedString.BoundingRectWithSize(size, NSStringDrawingOptions.UsesLineFragmentOrigin, null).Size;
+			}
 		}
 
 		private int GetCharacterIndexAtPoint(Point point)
