@@ -242,6 +242,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void SetTargetImageSize(Size? targetSize);
+		partial void UpdateArrangeSize(Size arrangeSize);
 
 		public override string ToString()
 		{
@@ -433,6 +434,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				//If we are given a non-zero size to draw into, set the target dimensions to load the image with accordingly
+				ImageControl.UpdateArrangeSize(finalSize);
 				ImageControl.SetTargetImageSize(finalSize);
 
 				if (this.Log().IsEnabled(LogLevel.Warning))

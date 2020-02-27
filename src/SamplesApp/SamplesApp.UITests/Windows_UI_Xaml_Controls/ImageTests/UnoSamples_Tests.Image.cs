@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -183,6 +184,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 			var lateRect = _app.GetRect("lateImage");
 
 			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, lateRect, permittedPixelError: 20);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Large_Image_With_Margin()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.ImageWithLateSourceUniformToFill");
+
+			var bmp = TakeScreenshot("Ready");
+
+			var rect = _app.GetRect("outerBorder");
+
+			ImageAssert.DoesNotHaveColorAt(bmp, rect.CenterX, rect.CenterY, Color.Black);
 		}
 	}
 }
