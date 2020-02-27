@@ -5,16 +5,29 @@ using System.Text;
 using System.Threading.Tasks;
 using CoreGraphics;
 using UIKit;
+using Uno.Disposables;
+using Uno.Extensions;
 using Uno.UI;
 using Uno.UI.Common;
+using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
 
 namespace Windows.UI.Xaml.Controls
 {
+	//TODO: support Day/Month/YearVisible (Task 17591)
 	public partial class DatePickerFlyout : PickerFlyoutBase
 	{
+		#region Template Parts
+		public const string AcceptButtonPartName = "AcceptButton";
+		public const string DismissButtonPartName = "DismissButton";
+		#endregion
+
+		private readonly SerialDisposable _presenterLoadedDisposable = new SerialDisposable();
+		private readonly SerialDisposable _presenterUnloadedDisposable = new SerialDisposable();
 		private bool _isInitialized;
+		private DatePickerFlyoutPresenter _presenter;
+		private DatePickerSelector _selector;
 
 		public DatePickerFlyout()
 		{
@@ -50,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 
 			_isInitialized = true;
 
-			Content = new DatePickerSelector()
+			Content = _selector = new DatePickerSelector()
 			{
 				MinYear = MinYear,
 				MaxYear = MaxYear
@@ -58,10 +71,32 @@ namespace Windows.UI.Xaml.Controls
 
 			BindToContent("MinYear");
 			BindToContent("MaxYear");
+		}
 
-			//TODO: support Day/Month/YearVisible (Task 17591)
+		protected override Control CreatePresenter()
+		{
+			_presenter = new DatePickerFlyoutPresenter() { Content = _selector };
 
-			AttachAcceptCommand((DatePickerSelector)Content);
+			_presenterLoadedDisposable.Disposable = Disposable.Create(() => _presenter.Loaded -= OnPresenterLoaded);
+			_presenterUnloadedDisposable.Disposable = Disposable.Create(() => _presenter.Unloaded -= OnPresenterUnloaded);
+
+			_presenter.Loaded += OnPresenterLoaded;
+			_presenter.Unloaded += OnPresenterUnloaded;
+
+			return _presenter;
+
+			void OnPresenterLoaded(object sender, RoutedEventArgs e)
+			{
+				AttachFlyoutCommand(AcceptButtonPartName, x => x.Accept());
+				AttachFlyoutCommand(DismissButtonPartName, x => x.Dismiss());
+
+				_presenterLoadedDisposable.Disposable = null;
+			}
+			void OnPresenterUnloaded(object sender, RoutedEventArgs e)
+			{
+				_presenterLoadedDisposable.Disposable = null;
+				_presenterUnloadedDisposable.Disposable = null;
+			}
 		}
 
 		#region Content DependencyProperty
@@ -77,13 +112,12 @@ namespace Windows.UI.Xaml.Controls
 				typeof(IUIElement),
 				typeof(DatePickerFlyout),
 				new FrameworkPropertyMetadata(default(IUIElement), FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.ValueInheritsDataContext, OnContentChanged));
-		private DatePickerFlyoutPresenter _datePickerPresenter;
 
 		private static void OnContentChanged(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			var flyout = dependencyObject as DatePickerFlyout;
 
-			if (flyout._datePickerPresenter != null)
+			if (flyout._presenter != null)
 			{
 				if (args.NewValue is IDependencyObjectStoreProvider binder)
 				{
@@ -91,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 					binder.Store.SetValue(binder.Store.DataContextProperty, flyout.DataContext, DependencyPropertyValuePrecedences.Local);
 				}
 
-				flyout._datePickerPresenter.Content = args.NewValue;
+				flyout._presenter.Content = args.NewValue;
 			}
 		}
 		#endregion
@@ -110,7 +144,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (UIKit.UIDevice.CurrentDevice.CheckSystemVersion(10, 0))
 			{
-				((DatePickerSelector)Content).Date = validDate;
+				_selector.Date = validDate;
 			}
 			else
 			{
@@ -119,34 +153,38 @@ namespace Windows.UI.Xaml.Controls
 				this.Dispatcher.RunAsync(Core.CoreDispatcherPriority.Normal, async () =>
 				{
 					await Task.Delay(100);
-					((DatePickerSelector)Content).Date = validDate;
+					_selector.Date = validDate;
 				});
 			}
 		}
 
 		private void DatePickerFlyout_Closed(object sender, EventArgs e)
 		{
-			Date = ((DatePickerSelector)Content).Date;
+			_selector.Cancel();
 		}
 
-		protected override Control CreatePresenter()
+		private void Accept()
 		{
-			_datePickerPresenter = new DatePickerFlyoutPresenter()
-			{
-				Content = Content
-			};
-
-			AttachAcceptCommand(_datePickerPresenter);
-
-			return _datePickerPresenter;
+			_selector.SaveValue();
+			Date = _selector.Date;
+			Hide(false);
 		}
 
-		private void AttachAcceptCommand(IFrameworkElement rootControl)
+		private void Dismiss()
 		{
-			var acceptButton = rootControl.FindName("AcceptButton") as Button;
-			if (acceptButton != null && acceptButton.Command == null)
+			_selector.Cancel();
+			Hide(false);
+		}
+
+		private void AttachFlyoutCommand(string targetButtonName, Action<DatePickerFlyout> action)
+		{
+			if (_presenter.FindName(targetButtonName) is Button button)
 			{
-				acceptButton.Command = new DelegateCommand(Hide);
+				if (button.Command == null)
+				{
+					var self = WeakReferencePool.RentSelfWeakReference(this);
+					button.Command = new DelegateCommand(() => (self.Target as DatePickerFlyout)?.Apply(action));
+				}
 			}
 		}
 
