@@ -219,6 +219,18 @@ namespace Windows.UI.Xaml.Controls
 			_imageFetchDisposable.Disposable = cd;
 		}
 
+		/// <summary>
+		/// True if horizontally stretched within finite container, or defined by this.Width
+		/// </summary>
+		private bool HasKnownWidth(double availableWidth) => !double.IsNaN(Width) ||
+			(HorizontalAlignment == HorizontalAlignment.Stretch && !double.IsInfinity(availableWidth));
+
+		/// <summary>
+		/// True if vertically stretched within finite container, or defined by this.Height
+		/// </summary>
+		private bool HasKnownHeight(double availableHeight) => !double.IsNaN(Height) ||
+			(VerticalAlignment == VerticalAlignment.Stretch && !double.IsInfinity(availableHeight));
+
 		private double GetKnownWidth(double stretchedWidth, double fallbackIfInfinite)
 		{
 			return double.IsNaN(Width) ? (double.IsInfinity(stretchedWidth) ? fallbackIfInfinite : stretchedWidth) : Width;
@@ -284,6 +296,8 @@ namespace Windows.UI.Xaml.Controls
 
 				if (sourceSize == default)
 				{
+					// Setting _hasFiniteBounds here is important if the Source hasn't been set or fetched yet
+					ImageControl._hasFiniteBounds = ImageControl.HasKnownWidth(availableSize.Width) && ImageControl.HasKnownHeight(availableSize.Height);
 					return default;
 				}
 
@@ -309,6 +323,8 @@ namespace Windows.UI.Xaml.Controls
 				if (isWidthDefined && isHeightDefined)
 				{
 					// If both available width & available height are known here
+					ImageControl._hasFiniteBounds = true;
+
 					if (img.Stretch != Stretch.Uniform) // Fill or UniformToFill
 					{
 						// Fill & UniformToFill will both take all the available size
@@ -324,7 +340,6 @@ namespace Windows.UI.Xaml.Controls
 						this.Log().Debug(Panel.ToString() + $" measuring with Stretch.Uniform with availableSize={constrainedAvailableSize}, returning desiredSize={containerSize}");
 					}
 
-					ImageControl._hasFiniteBounds = true;
 					return containerSize;
 				}
 

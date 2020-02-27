@@ -165,5 +165,24 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, lateRect, permittedPixelError: 20);
 		}
+
+		[Test]
+		[AutoRetry]
+		public void Late_With_UniformToFill()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.ImageWithLateSourceUniformToFill");
+
+			_app.Tap("setSource");
+
+			_app.WaitForElement("lateImage");
+
+			var bmp = TakeScreenshot("Source set");
+
+			var expectedRect = _app.GetRect("refImage");
+
+			var lateRect = _app.GetRect("lateImage");
+
+			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, lateRect, permittedPixelError: 20);
+		}
 	}
 }
