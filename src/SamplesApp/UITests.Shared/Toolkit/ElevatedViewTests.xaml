@@ -19,7 +19,7 @@
 			<Button x:Name="blackColor" Tag="Black" Click="SetColor" Background="Black" Foreground="White">BLACK SHADOW</Button>
 			<Button x:Name="yellowColor" Tag="Yellow" Click="SetColor" Background="Yellow">YELLOW SHADOW</Button>
 			<Button x:Name="redColor" Tag="Red" Click="SetColor" Background="Red">RED SHADOW</Button>
-			<Button x:Name="blueColor" Tag="Blue" Click="SetColor" Background="Blue">BLUE SHADOW</Button>
+			<Button x:Name="blueColor" Tag="Blue" Click="SetColor" Background="Blue" Foreground="White">BLUE SHADOW</Button>
 		</StackPanel>
 		<TextBlock FontSize="15">
 			ElevatedView, some with rounded corners...
@@ -30,10 +30,10 @@
 				<Rectangle Fill="Red" />
 			</toolkit:ElevatedView>
 			<toolkit:ElevatedView Width="60" Height="60" CornerRadius="20" Background="Orange" ShadowColor="{Binding Tag, ElementName=elevation1}" Elevation="{Binding Value, ElementName=elevation1}">
-				<Rectangle Fill="Red" />
+				<Rectangle Fill="Red" Stroke="Blue" StrokeThickness="6" />
 			</toolkit:ElevatedView>
 			<toolkit:ElevatedView Width="60" Height="60" CornerRadius="10,5,10,35" Background="Orange" ShadowColor="{Binding Tag, ElementName=elevation1}" Elevation="{Binding Value, ElementName=elevation1}">
-				<Rectangle Fill="Red" />
+				<Rectangle Fill="Red" Stroke="Blue" StrokeThickness="6" />
 			</toolkit:ElevatedView>
 		</StackPanel>
 		<TextBlock FondSize="15">
