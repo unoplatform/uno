@@ -61,7 +61,6 @@ namespace Windows.UI.Xaml.Controls
 			// Animate to cover up the small delay in setting the date when the flyout is opened
 			var animated = !UIDevice.CurrentDevice.CheckSystemVersion(10, 0);
 
-			// todo: treat default value (min-value) as today
 			if (newDate < MinYear)
 			{
 				Date = MinYear;
@@ -71,6 +70,7 @@ namespace Windows.UI.Xaml.Controls
 				Date = MaxYear;
 			}
 
+			// todo: replace with UpdatePickerValue
 			_picker?.SetDate(
 				DateTime.SpecifyKind(Date.DateTime, DateTimeKind.Local).ToNSDate(),
 				animated: animated
@@ -116,7 +116,6 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (_newValue != null && _newValue != _initialValue)
 				{
-					// todo: should allow for today to be returned
 					var value = GetValueFromPicker();
 					if (Date.Year != value.Year || Date.Month != value.Month || Date.Day != value.Day) // fixme: compare date-only
 					{

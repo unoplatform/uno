@@ -14,6 +14,9 @@ namespace Windows.UI.Xaml.Controls
 	public partial class DatePicker : Control
 	{
 		public event EventHandler<DatePickerValueChangedEventArgs> DateChanged;
+		public event EventHandler<DatePickerSelectedValueChangedEventArgs> SelectedDateChanged;
+
+		private static readonly DateTimeOffset UnsetDateValue = DateTimeOffset.MinValue;
 
 		#region DateProperty
 
@@ -27,11 +30,17 @@ namespace Windows.UI.Xaml.Controls
 		//Set initial value of DatePicker to DateTimeOffset.MinValue to avoid 2 way binding issue where the DatePicker reset Date(DateTimeOffset.MinValue) after the initial binding value.
 		//We assume that this is the view model who will set the initial value just the time to fix #18331
 		public static readonly DependencyProperty DateProperty =
-			DependencyProperty.Register("Date", typeof(DateTimeOffset), typeof(DatePicker), new PropertyMetadata(DateTimeOffset.MinValue,
+			DependencyProperty.Register("Date", typeof(DateTimeOffset), typeof(DatePicker), new PropertyMetadata(UnsetDateValue,
 				(s, e) => ((DatePicker)s).OnDatePropertyChanged((DateTimeOffset)e.NewValue, (DateTimeOffset)e.OldValue)));
 
 		private void OnDatePropertyChanged(DateTimeOffset newValue, DateTimeOffset oldValue)
 		{
+			if ((SelectedDate != newValue) &&
+				!(newValue == UnsetDateValue && !SelectedDate.HasValue))
+			{
+				SelectedDate = newValue;
+			}
+
 #if XAMARIN
 			UpdateDisplayedDate();
 #endif
@@ -41,6 +50,33 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void OnDateChangedPartial();
+		#endregion
+
+		#region Property: SelectedDate
+		public static readonly DependencyProperty SelectedDateProperty = DependencyProperty.Register(
+			nameof(SelectedDate),
+			typeof(DateTimeOffset?),
+			typeof(DatePicker),
+			new PropertyMetadata(default(DateTimeOffset?), (s, e) => (s as DatePicker).OnSelectedDateChanged((DateTimeOffset?)e.NewValue, (DateTimeOffset?)e.OldValue)));
+
+		public DateTimeOffset? SelectedDate
+		{
+			get => (DateTimeOffset?)GetValue(SelectedDateProperty);
+			set => SetValue(SelectedDateProperty, value);
+		}
+
+		private void OnSelectedDateChanged(DateTimeOffset? newValue, DateTimeOffset? oldValue)
+		{
+			if (Date != (newValue ?? UnsetDateValue))
+			{
+				Date = newValue ?? UnsetDateValue;
+			}
+
+			OnSelectedDatePartial();
+			SelectedDateChanged?.Invoke(this, new DatePickerSelectedValueChangedEventArgs(newValue, oldValue));
+		}
+
+		partial void OnSelectedDatePartial();
 		#endregion
 
 		#region DayVisibleProperty
@@ -171,6 +207,7 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		private Button _flyoutButton;
+		private DatePickerFlyout _flyout;
 
 		private TextBlock _dayTextBlock;
 		private TextBlock _monthTextBlock;
@@ -237,28 +274,27 @@ namespace Windows.UI.Xaml.Controls
 			if (_flyoutButton != null)
 			{
 #if __IOS__ || __ANDROID__
-				_flyoutButton.Flyout = new DatePickerFlyout()
+				_flyoutButton.Flyout = _flyout = new DatePickerFlyout()
 				{
-#if __IOS__
-					Placement = FlyoutPlacement,
-#endif
 					Date = Date,
 					MinYear = MinYear,
-					MaxYear = MaxYear
+					MaxYear = MaxYear,
 				};
 
-				BindToFlyout(nameof(Date));
+				_flyout.Opened += (s, e) => _flyout.Date = SelectedDate ?? DateTimeOffset.Now;
+				_flyout.DatePicked += (s, e) => Date = e.NewDate;
+
 				BindToFlyout(nameof(MinYear));
 				BindToFlyout(nameof(MaxYear));
-				_flyoutButton.Flyout.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
-				_flyoutButton.Flyout.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
+				_flyout.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
+				_flyout.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
 #endif
 			}
 		}
 
 		private void BindToFlyout(string propertyName)
 		{
-			this.Binding(propertyName, propertyName, _flyoutButton.Flyout, BindingMode.TwoWay);
+			this.Binding(propertyName, propertyName, _flyout, BindingMode.TwoWay);
 		}
 
 		private void InitializeTextBlocks(IFrameworkElement container)
@@ -272,7 +308,7 @@ namespace Windows.UI.Xaml.Controls
 					.Select(x => new { Column = x, grid.ColumnDefinitions.ElementAtOrDefault(x)?.Width })
 					.ToArray();
 
-				// re-position TextBlocks' Grid.Column and their respective ColumnDefinition.Width
+				// update TextBlocks' Grid.Column and their respective ColumnDefinition.Width
 				foreach (var item in items)
 				{
 					if (grid.ColumnDefinitions.ElementAtOrDefault(oldColumnInfos[item.NewIndex].Column) is ColumnDefinition definition &&

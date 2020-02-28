@@ -23,6 +23,8 @@ namespace Windows.UI.Xaml.Controls
 		public const string DismissButtonPartName = "DismissButton";
 		#endregion
 
+		public event EventHandler<DatePickedEventArgs> DatePicked;
+
 		private readonly SerialDisposable _presenterLoadedDisposable = new SerialDisposable();
 		private readonly SerialDisposable _presenterUnloadedDisposable = new SerialDisposable();
 		private bool _isInitialized;
@@ -133,12 +135,15 @@ namespace Windows.UI.Xaml.Controls
 		private void DatePickerFlyout_Opening(object sender, EventArgs e)
 		{
 			InitializeContent();
+		}
 
+		partial void OnDateChangedPartialNative(DateTimeOffset oldDate, DateTimeOffset newDate)
+		{
 			// The date coerced by UIDatePicker doesn't propagate back to DatePickerSelector (#137137)
 			// When the user selected an invalid date, a `ValueChanged` will be raised after coercion to propagate the coerced date.
 			// However, when the `Date` is set below, there no `ValueChanged` to propagate the coerced date.
 			// To address this, we clamp the date between the valid range.
-			var validDate = Date;
+			var validDate = newDate;
 			validDate = validDate > MaxYear ? MaxYear : validDate;
 			validDate = validDate < MinYear ? MinYear : validDate;
 
@@ -166,8 +171,9 @@ namespace Windows.UI.Xaml.Controls
 		private void Accept()
 		{
 			_selector.SaveValue();
-			Date = _selector.Date;
 			Hide(false);
+
+			DatePicked?.Invoke(this, new DatePickedEventArgs(_selector.Date, Date));
 		}
 
 		private void Dismiss()

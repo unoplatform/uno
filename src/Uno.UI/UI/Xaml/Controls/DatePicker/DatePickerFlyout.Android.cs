@@ -13,8 +13,10 @@ using Windows.UI.Xaml.Data;
 namespace Windows.UI.Xaml.Controls
 {
     public partial class DatePickerFlyout : PickerFlyoutBase
-    {
-        private DatePickerDialog _dialog;
+	{
+		public event EventHandler<DatePickedEventArgs> DatePicked;
+
+		private DatePickerDialog _dialog;
 
         internal protected override void Open()
         {
@@ -44,6 +46,11 @@ namespace Windows.UI.Xaml.Controls
             _dialog.Show();
         }
 
+		partial void OnDateChangedPartialNative(DateTimeOffset oldDate, DateTimeOffset newDate)
+		{
+			_dialog?.UpdateDate(newDate.Date);
+		}
+
 		private void OnDismiss(object sender, EventArgs e)
 		{
 			Hide(canCancel: false);
@@ -56,9 +63,11 @@ namespace Windows.UI.Xaml.Controls
 
         private void OnDateSet(object sender, DatePickerDialog.DateSetEventArgs e)
         {
-#pragma warning disable CS0618 // Type or member is obsolete
-			Date = new DateTimeOffset(e.Year, e.MonthOfYear + 1, e.DayOfMonth, Date.Hour, Date.Minute, Date.Second, Date.Millisecond, Date.Offset);
-#pragma warning restore CS0618 // Type or member is obsolete
+			var newValue = new DateTimeOffset(e.Date + Date.TimeOfDay, Date.Offset);
+			var oldValue = Date;
+
+			Date = newValue;
+			DatePicked?.Invoke(this, new DatePickedEventArgs(newValue, oldValue));
 		}
     }
 }
