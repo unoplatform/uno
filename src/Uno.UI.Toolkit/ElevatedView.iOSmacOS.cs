@@ -94,11 +94,11 @@ namespace Uno.UI.Toolkit
 		{
 			if (Background == null)
 			{
-				this.SetElevationInternal(0);
+				this.SetElevationInternal(0, default);
 			}
 			else
 			{
-				this.SetElevationInternal(Elevation, _border.BoundsPath);
+				this.SetElevationInternal(Elevation, ShadowColor, _border.BoundsPath);
 			}
 		}
 

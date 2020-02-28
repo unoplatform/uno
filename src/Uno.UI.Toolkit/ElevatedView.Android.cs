@@ -13,7 +13,7 @@ namespace Uno.UI.Toolkit
 
 		private void UpdateElevation()
 		{
-			this.SetElevationInternal(Background == null ? 0 : Elevation);
+			this.SetElevationInternal(Background == null ? 0 : Elevation, ShadowColor);
 		}
 	}
 }
