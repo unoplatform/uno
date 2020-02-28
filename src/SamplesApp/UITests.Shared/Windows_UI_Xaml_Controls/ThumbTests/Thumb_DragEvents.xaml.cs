@@ -21,7 +21,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ThumbTests
 
 		private void OnThumbDragDelta(object sender, DragDeltaEventArgs e)
 		{
-#if XAMARIN // Total properties are uno only
+#if XAMARIN || __WASM__ // Total properties are uno only
 			DragDeltaOutput.Text = $"Δx={e.HorizontalChange:F2},Δy={e.VerticalChange:F2}|Σx={e.TotalHorizontalChange:F2},Σy={e.TotalVerticalChange:F2}";
 #else
 			DragDeltaOutput.Text = $"Δx={e.HorizontalChange:F2},Δy={e.VerticalChange:F2}|Σx=0.0,Σy=0.0";
@@ -30,7 +30,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ThumbTests
 
 		private void OnThumbDragCompleted(object sender, DragCompletedEventArgs e)
 		{
-#if XAMARIN // Total properties are uno only
+#if XAMARIN || __WASM__ // Total properties are uno only
 			DragCompletedOutput.Text = $"Δx={e.HorizontalChange:F2},Δy={e.VerticalChange:F2}|Σx={e.TotalHorizontalChange:F2},Σy={e.TotalVerticalChange:F2}";
 #else
 			DragCompletedOutput.Text = $"Δx={e.HorizontalChange:F2},Δy={e.VerticalChange:F2}|Σx=0.0,Σy=0.0";
