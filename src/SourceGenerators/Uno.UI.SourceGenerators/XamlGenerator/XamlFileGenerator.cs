@@ -18,8 +18,6 @@ using Uno;
 using Uno.Equality;
 using Uno.Logging;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
-using Mono.Cecil;
-using Microsoft.Cci;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
