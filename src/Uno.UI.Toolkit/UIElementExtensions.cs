@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using CoreGraphics;
@@ -19,9 +18,9 @@ namespace Uno.UI.Toolkit
 	{
 		#region Elevation
 
-		public static void SetElevation(this UIElement element, double Elevation)
+		public static void SetElevation(this UIElement element, double elevation)
 		{
-			element.SetValue(ElevationProperty, Elevation);
+			element.SetValue(ElevationProperty, elevation);
 		}
 
 		public static double GetElevation(this UIElement element)
@@ -55,7 +54,8 @@ namespace Uno.UI.Toolkit
 #if __ANDROID__
 			if (element is Android.Views.View view)
 			{
-				Android.Support.V4.View.ViewCompat.SetElevation(view, (float)Uno.UI.ViewHelper.LogicalToPhysicalPixels(elevation));
+				view.Elevation = (float)Uno.UI.ViewHelper.LogicalToPhysicalPixels(elevation);
+				//Android.Support.V4.View.ViewCompat.SetElevation(view, (float)Uno.UI.ViewHelper.LogicalToPhysicalPixels(elevation));
 			}
 #elif __IOS__
 			if (element is UIKit.UIView view)
