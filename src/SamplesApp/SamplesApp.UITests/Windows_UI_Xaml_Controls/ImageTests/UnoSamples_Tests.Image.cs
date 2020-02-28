@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -123,6 +124,82 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 				base.TakeScreenshot("Mode-" + i);
 			}
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Images sometimes fail to load on iOS https://github.com/unoplatform/uno/issues/2295
+		public void UniformToFill_Second_Load()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.Image_UseTargetSizeLate", skipInitialScreenshot: true);
+
+			_app.WaitForElement("loadImageButton");
+
+			_app.Tap("loadImageButton");
+
+			_app.WaitForElement("secondControl");
+
+			var bmp = TakeScreenshot("After");
+
+			var expectedRect = _app.GetRect("simpleImage");
+			var firstControlRect = _app.GetRect("firstControl");
+			var secondControlRect = _app.GetRect("secondControl");
+
+			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, firstControlRect, permittedPixelError: 20);
+			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, secondControlRect, permittedPixelError: 20);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // Images sometimes fail to load on iOS https://github.com/unoplatform/uno/issues/2295
+		public void Late_With_Fixed_Dimensions()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.ImageWithLateSourceFixedDimensions");
+
+			_app.Tap("setSource");
+
+			_app.WaitForElement("lateImage");
+
+			var bmp = TakeScreenshot("Source set");
+
+			var expectedRect = _app.GetRect("refImage");
+
+			var lateRect = _app.GetRect("lateImage");
+
+			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, lateRect, permittedPixelError: 20);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // Images sometimes fail to load on iOS https://github.com/unoplatform/uno/issues/2295
+		public void Late_With_UniformToFill()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.ImageWithLateSourceUniformToFill");
+
+			_app.Tap("setSource");
+
+			_app.WaitForElement("lateImage");
+
+			var bmp = TakeScreenshot("Source set");
+
+			var expectedRect = _app.GetRect("refImage");
+
+			var lateRect = _app.GetRect("lateImage");
+
+			ImageAssert.AreAlmostEqual(bmp, expectedRect, bmp, lateRect, permittedPixelError: 20);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Large_Image_With_Margin()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ImageTests.Image_Margin_Large");
+
+			var bmp = TakeScreenshot("Ready");
+
+			var rect = _app.GetRect("outerBorder");
+
+			ImageAssert.DoesNotHaveColorAt(bmp, rect.CenterX, rect.CenterY, Color.Black);
 		}
 	}
 }
