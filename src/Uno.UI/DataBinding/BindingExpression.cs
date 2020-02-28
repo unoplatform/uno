@@ -180,7 +180,24 @@ namespace Windows.UI.Xaml.Data
 					);
 				}
 
-				_bindingPath.Value = value;
+				if (ParentBinding.XBindBack != null)
+				{
+					try
+					{
+						ParentBinding.XBindBack(DataContext, value);
+					}
+					catch (Exception exception)
+					{
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+						{
+							this.Log().Error($"Failed to set the source value for x:Bind path [{ParentBinding.Path}]", exception);
+						}
+					}
+				}
+				else
+				{
+					_bindingPath.Value = value;
+				}
 			}
 #if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
 			finally

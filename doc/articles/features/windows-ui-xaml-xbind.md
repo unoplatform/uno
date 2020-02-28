@@ -55,6 +55,17 @@ Uno supports the [`x:Bind`](https://docs.microsoft.com/en-us/windows/uwp/xaml-pl
     <CalendarDatePicker Date="{x:Bind sys:DateTime.Parse(TextBlock1.Text)}" />
     ```
 
+- Use of `BindBack`
+  ```xaml
+  <TextBlock Text="{x:Bind sys:String.Format('{0}', MyInteger), BindBack=BindBackMyInteger, Mode=TwoWay}" />
+  ```
+  where this methods is available in the control:
+  ```csharp
+  public void BindBackMyInteger(string text)
+  {
+    MyInteger = int.Parse(text);
+  }
+  ```
+
 # Not supported
-- BindBack: `<TextBlock Text="{x:Bind a.MyFunc(b), BindBack=a.MyFunc2, Mode=TwoWay}" />`
 - Type casts 
