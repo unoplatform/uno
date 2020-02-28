@@ -56,13 +56,28 @@ namespace Windows.UI.Xaml.Shapes
 		{
 		}
 
+		private protected override void OnHitTestVisibilityChanged(HitTestVisibility oldValue, HitTestVisibility newValue)
+		{
+			// We don't invoke the base, so we stay at the default "pointer-events: none" defined in Uno.UI.css in class svg.uno-uielement.
+			// This is required to avoid this SVG element (which is actually only a collection) to stoll pointer events.
+		}
+
 		partial void OnFillUpdatedPartial()
 		{
-			UpdateHitTest();
+			// We don't request an update of the HitTest (UpdateHitTest()) since this element is never expected to be hit testable.
+			// Note: We also enforce that the default hit test == false is not altered in the OnHitTestVisibilityChanged.
+
+			// Instead we explicitly set the IsHitTestVisible on each child SvgElement
+			var fill = Fill;
+			foreach (var element in SvgChildren)
+			{
+				// Known issue: The hit test is only linked to the Fill, but should also take in consideration the Stroke and the StrokeThickness.
+				// Note: SvgChildren are internal elements, so it's legit to alter the IsHitTestVisible here.
+				element.IsHitTestVisible = fill != null;
+			}
 
 			var svgElement = GetMainSvgElement();
-
-			switch (Fill)
+			switch (fill)
 			{
 				case SolidColorBrush scb:
 					svgElement.SetStyle("fill", scb.Color.ToCssString());
@@ -79,6 +94,12 @@ namespace Windows.UI.Xaml.Shapes
 					_fillBrushSubscription.Disposable = new DisposableAction(
 						() => GetDefs().Remove(linearGradient)
 					);
+					break;
+				case null:
+					// The default is black if the style is not set in Web's' SVG. So if the Fill property is not set,
+					// we explicitly set the style to transparent in order to match the UWP behavior.
+					svgElement.SetStyle("fill", "transparent");
+					_fillBrushSubscription.Disposable = null;
 					break;
 				default:
 					svgElement.ResetStyle("fill");
@@ -156,12 +177,6 @@ namespace Windows.UI.Xaml.Shapes
 			}
 
 			return _defs.Defs;
-		}
-
-		private protected override void OnHitTestVisibilityChanged(HitTestVisibility oldValue, HitTestVisibility newValue)
-		{
-			// We don't invoke the base, so we stay at the default "pointer-events: none" defined in Uno.UI.css in class svg.uno-uielement.
-			// This is required to avoid this SVG element (which is actually only a collection) to stoll pointer events.
 		}
 	}
 }

@@ -265,7 +265,10 @@
 			Visibility="Collapsed"
 			Points="0,0 0,50 50,50"/>
 
-		<StackPanel Orientation="Horizontal">
+		<StackPanel
+			Grid.Row="6"
+			Grid.ColumnSpan="3"
+			Orientation="Horizontal">
 			<TextBlock Text="Last pressed: " />
 			<TextBlock x:Name="LastPressed" Text="__none__" />
 		</StackPanel>
