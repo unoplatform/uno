@@ -1,6 +1,4 @@
-﻿using Windows.UI.Xaml;
-using Windows.UI.Xaml.Controls;
-
+﻿#if NETFX_CORE || NET46
 namespace Uno.UI.Toolkit
 {
 	partial class ElevatedView : Border
@@ -13,3 +11,4 @@ namespace Uno.UI.Toolkit
 		}
 	}
 }
+#endif

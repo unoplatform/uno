@@ -4,9 +4,12 @@ using System.Reflection;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using CoreGraphics;
 using Uno.Extensions;
 using Uno.Logging;
+
+#if __IOS__ || __MACOS__
+using CoreGraphics;
+#endif
 
 namespace Uno.UI.Toolkit
 {
@@ -17,7 +20,7 @@ namespace Uno.UI.Toolkit
 #endif
 	public static class UIElementExtensions
 	{
-		#region Elevation
+#region Elevation
 
 		public static void SetElevation(this UIElement element, double elevation)
 		{
@@ -58,7 +61,6 @@ namespace Uno.UI.Toolkit
 			if (element is Android.Views.View view)
 			{
 				view.Elevation = (float)Uno.UI.ViewHelper.LogicalToPhysicalPixels(elevation);
-				//Android.Support.V4.View.ViewCompat.SetElevation(view, (float)Uno.UI.ViewHelper.LogicalToPhysicalPixels(elevation));
 			}
 #elif __IOS__
 			if (element is UIKit.UIView view)
@@ -83,13 +85,29 @@ namespace Uno.UI.Toolkit
 				}
 			}
 #elif __WASM__
-			// TODO
+			if (element is UIElement uiElement)
+			{
+				if (elevation > 0)
+				{
+					// Values for 1dp elevation according to https://material.io/guidelines/resources/shadows.html#shadows-illustrator
+					const double x = 0.25d;
+					const double y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
+					const double blur = 0.5f;
+
+					var str = $"{x * elevation}px {y * elevation}px {blur * elevation}px {shadowColor.ToCssString()}";
+					uiElement.SetStyle("box-shadow", str);
+				}
+				else
+				{
+					uiElement.ResetStyle("box-shadow");
+				}
+			}
 #elif NETFX_CORE
 			// TODO
 #endif
 		}
 
-		#endregion
+#endregion
 
 		internal static Thickness GetPadding(this UIElement uiElement)
 		{

@@ -1,4 +1,4 @@
-﻿#if __IOS__ || __MACOS__
+﻿#if __IOS__ || __MACOS__ || __WASM__
 using System;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -6,10 +6,11 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
-using CoreGraphics;
 #if XAMARIN_IOS_UNIFIED
+using CoreGraphics;
 using _View = UIKit.UIView;
 #elif __MACOS__
+using CoreGraphics;
 using _View = AppKit.NSView;
 #endif
 
@@ -20,7 +21,7 @@ namespace Uno.UI.Toolkit
 	partial class ElevatedView : FrameworkElement, ICustomClippingElement
 	{
 		/*
-		 *  +-Elevated----------------+
+		 *  +-ElevatedView------------+
 		 *  |                         |
 		 *  |  +-Border------------+  |
 		 *  |  |                   |  |
@@ -58,7 +59,11 @@ namespace Uno.UI.Toolkit
 			_border.Binding("Background", "Background", this, BindingMode.OneWay);
 
 			// Add the border in the Visual Tree
+#if __WASM__
+			AddChild(_border);
+#else
 			AddSubview(_border);
+#endif
 		}
 
 		public new static readonly DependencyProperty BackgroundProperty = DependencyProperty.Register(
@@ -98,11 +103,16 @@ namespace Uno.UI.Toolkit
 			}
 			else
 			{
+#if __WASM__
+				this.SetElevationInternal(Elevation, ShadowColor);
+				this.SetCornerRadius(CornerRadius);
+#else
 				this.SetElevationInternal(Elevation, ShadowColor, _border.BoundsPath);
+#endif
 			}
 		}
 
-		bool ICustomClippingElement.AllowClippingToLayoutSlot => false; // Never clip, since it will remove the shadow on iOS
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => false; // Never clip, since it will remove the shadow
 
 		bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
 	}
