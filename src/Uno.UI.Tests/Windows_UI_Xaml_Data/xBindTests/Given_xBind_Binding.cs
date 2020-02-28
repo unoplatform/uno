@@ -29,7 +29,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual("updated", SUT._StringField.Text);
 		}
-		 
+
 		[TestMethod]
 		public void When_StateTrigger()
 		{
@@ -42,6 +42,104 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			SUT.MyState = MyState.Full;
 
 			Assert.AreEqual("Updated!", SUT._StringField.Text);
+		}
+
+		[TestMethod]
+		public void When_Simple_TwoWay()
+		{
+			var SUT = new Binding_Simple_TwoWay();
+
+			Assert.AreEqual(0, SUT.MyIntProperty);
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(0, SUT.myObject.MyProperty);
+			Assert.AreEqual(0, SUT.MyIntProperty);
+
+			SUT.MyIntProperty = 1;
+
+			Assert.AreEqual(1, SUT.myObject.MyProperty);
+
+			Console.WriteLine("SUT.myObject.MyProperty = 2");
+			SUT.myObject.MyProperty = 2;
+
+			Assert.AreEqual(2, SUT.MyIntProperty);
+		}
+
+		[TestMethod]
+		public void When_Simple_TwoWay_Nested()
+		{
+			var SUT = new Binding_Simple_TwoWay();
+
+			Assert.AreEqual(0, SUT.Model.MyIntProperty);
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(0, SUT.myObjectNestedProperty.MyProperty);
+			Assert.AreEqual(0, SUT.Model.MyIntProperty);
+
+			SUT.Model.MyIntProperty = 1;
+
+			Assert.AreEqual(1, SUT.myObjectNestedProperty.MyProperty);
+
+			Console.WriteLine("SUT.myObject.MyProperty = 2");
+			SUT.myObjectNestedProperty.MyProperty = 2;
+
+			Assert.AreEqual(2, SUT.Model.MyIntProperty);
+		}
+
+		[TestMethod]
+		public void When_DataTemplate_TwoWay()
+		{
+			var SUT = new Binding_DataTemplate_TwoWay();
+
+			var rootData = new Binding_DataTemplate_TwoWay_Base();
+			SUT.root.Content = rootData;
+
+			Assert.AreEqual(0, rootData.MyIntProperty);
+
+			SUT.ForceLoaded();
+
+			var myObject = SUT.FindName("myObject") as Binding_DataTemplate_TwoWayTestObject;
+
+			Assert.AreEqual(0, myObject.MyProperty);
+			Assert.AreEqual(0, rootData.MyIntProperty);
+
+			rootData.MyIntProperty = 1;
+
+			Assert.AreEqual(1, myObject.MyProperty);
+
+			Console.WriteLine("myObject.MyProperty = 2");
+			myObject.MyProperty = 2;
+
+			Assert.AreEqual(2, rootData.MyIntProperty);
+		}
+
+		[TestMethod]
+		public void When_DataTemplate_TwoWay_Nested()
+		{
+			var SUT = new Binding_DataTemplate_TwoWay();
+
+			var rootData = new Binding_DataTemplate_TwoWay_Base();
+			SUT.root.Content = rootData;
+
+			Assert.AreEqual(0, rootData.Model.MyIntProperty);
+
+			SUT.ForceLoaded();
+
+			var myObjectNestedProperty = SUT.FindName("myObjectNestedProperty") as Binding_DataTemplate_TwoWayTestObject;
+
+			Assert.AreEqual(0, myObjectNestedProperty.MyProperty);
+			Assert.AreEqual(0, rootData.Model.MyIntProperty);
+
+			rootData.Model.MyIntProperty = 1;
+
+			Assert.AreEqual(1, myObjectNestedProperty.MyProperty);
+
+			Console.WriteLine("myObjectNestedProperty.MyProperty = 2");
+			myObjectNestedProperty.MyProperty = 2;
+
+			Assert.AreEqual(2, rootData.Model.MyIntProperty);
 		}
 	}
 }

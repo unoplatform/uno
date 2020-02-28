@@ -18,6 +18,7 @@ using Uno;
 using Uno.Equality;
 using Uno.Logging;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
+using Mono.Cecil;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -2809,6 +2810,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			if (pathMember != null)
 			{
 				var rawFunction = pathMember.Value?.ToString();
+				var propertyType = FindPropertyType(member.Member);
 
 				// Apply replacements to avoid having issues with the XAML parser which does not
 				// support quotes in positional markup extensions parameters.
@@ -2850,14 +2852,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var dataType = RewriteNamespaces(dataTypeObject.Value?.ToString());
 
 					var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, IsStaticMethod);
+					var bindBack = modeMember == "TwoWay" ? $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunction} = ({propertyType})__value; }} }}" : "null";
 
-					return $".Apply(___b => global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {dataType} ___tctx ? (object)({contextFunction}) : null{pathsArray}))";
-
+					return $".Apply(___b => global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {dataType} ___tctx ? (object)({contextFunction}) : null, {bindBack} {pathsArray}))";
 				}
 				else
 				{
+					var bindBack = modeMember == "TwoWay" ? $"(___tctx, __value) => {rawFunction} = ({propertyType})__value" : "null";
 
-					return $".Apply(___b => global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, this, ___ctx => {rawFunction}{pathsArray}))";
+					return $".Apply(___b => global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, this, ___ctx => {rawFunction}, {bindBack} {pathsArray}))";
 				}
 			}
 			else
