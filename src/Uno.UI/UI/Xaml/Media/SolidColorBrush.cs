@@ -22,7 +22,7 @@ using System.Drawing;
 
 namespace Windows.UI.Xaml.Media
 {
-	public partial class SolidColorBrush : Brush
+	public partial class SolidColorBrush : Brush, IEquatable<SolidColorBrush>
 	{
 		public SolidColorBrush()
 		{
@@ -77,5 +77,23 @@ namespace Windows.UI.Xaml.Media
 		{
 			return "[SolidColorBrush {0}]".InvariantCultureFormat(Color);
 		}
+
+		public override bool Equals(object obj) => Equals(obj as SolidColorBrush);
+
+		public bool Equals(SolidColorBrush other)
+		{
+			if (ReferenceEquals(null, other))
+			{
+				return false;
+			}
+
+			return ReferenceEquals(this, other) || ColorWithOpacity.Equals(other.ColorWithOpacity);
+		}
+
+		public override int GetHashCode() => ColorWithOpacity.GetHashCode();
+
+		public static bool operator ==(SolidColorBrush left, SolidColorBrush right) => Equals(left, right);
+
+		public static bool operator !=(SolidColorBrush left, SolidColorBrush right) => !Equals(left, right);
 	}
 }
