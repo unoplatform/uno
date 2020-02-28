@@ -3,9 +3,6 @@ using CoreGraphics;
 using System;
 using System.Collections.Generic;
 using Uno.Disposables;
-using System.Text;
-using Uno;
-using Uno.Extensions;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Extensions;
 
@@ -40,7 +37,7 @@ namespace Windows.UI.Xaml.Shapes
 		/// <param name="borderBrush">The border brush</param>
 		/// <param name="cornerRadius">The corner radius</param>
 		/// <param name="backgroundImage">The background image in case of a ImageBrush background</param>
-		public void UpdateLayer(
+		public CGPath UpdateLayer(
 			_View owner,
 			Brush background,
 			Thickness borderThickness,
@@ -63,10 +60,12 @@ namespace Windows.UI.Xaml.Shapes
 #endif
 
 				_layerDisposable.Disposable = null;
-				_layerDisposable.Disposable = InnerCreateLayer(owner as UIElement, owner.Layer, area, background, borderThickness, borderBrush, cornerRadius);
+				_layerDisposable.Disposable = InnerCreateLayer(owner as UIElement, owner.Layer, newState);
 
 				_currentState = newState;
 			}
+
+			return newState.BoundsPath;
 		}
 
 		/// <summary>
@@ -78,8 +77,15 @@ namespace Windows.UI.Xaml.Shapes
 			_currentState = null;
 		}
 
-		private static IDisposable InnerCreateLayer(UIElement owner, CALayer parent, CGRect area, Brush background, Thickness borderThickness, Brush borderBrush, CornerRadius cornerRadius)
+		private static IDisposable InnerCreateLayer(UIElement owner, CALayer parent, LayoutState state)
 		{
+
+			var area = state.Area;
+			var background = state.Background;
+			var borderThickness = state.BorderThickness;
+			var borderBrush = state.BorderBrush;
+			var cornerRadius = state.CornerRadius;
+
 			var disposables = new CompositeDisposable();
 			var sublayers = new List<CALayer>();
 
@@ -173,6 +179,8 @@ namespace Windows.UI.Xaml.Shapes
 				{
 					owner.ClippingIsSetByCornerRadius = true;
 				}
+
+				state.BoundsPath = path;
 			}
 			else
 			{
@@ -227,8 +235,6 @@ namespace Windows.UI.Xaml.Shapes
 
 				if (borderThickness != Thickness.Empty)
 				{
-					var strokeColor = borderBrush ?? SolidColorBrushHelper.Transparent;
-
 					Action<Action<CAShapeLayer, CGPath>> createLayer = builder =>
 					{
 						CAShapeLayer layer = new CAShapeLayer();
@@ -294,6 +300,8 @@ namespace Windows.UI.Xaml.Shapes
 						});
 					}
 				}
+
+				state.BoundsPath = CGPath.FromRect(parent.Bounds);
 			}
 
 			disposables.Add(() =>
@@ -416,9 +424,9 @@ namespace Windows.UI.Xaml.Shapes
 			public readonly CornerRadius CornerRadius;
 			public readonly _Image BackgroundImage;
 
-			public Transform Transform { get; }
+			internal CGPath BoundsPath { get; set; }
 
-			public LayoutState(CGRect area, Brush background, Thickness borderThickness, Brush borderBrush, CornerRadius cornerRadius, _Image backgroundImage)
+			public LayoutState(CGRect area, Brush background, Thickness borderThickness, Brush borderBrush,  CornerRadius cornerRadius, UIImage backgroundImage)
 			{
 				Area = area;
 				Background = background;
@@ -428,16 +436,18 @@ namespace Windows.UI.Xaml.Shapes
 				BackgroundImage = backgroundImage;
 			}
 
-			public bool Equals(LayoutState other)
-			{
-				return other != null
-					&& other.Area == Area
-					&& other.Background == Background
-					&& other.BorderBrush == BorderBrush
-					&& other.BorderThickness == BorderThickness
-					&& other.CornerRadius == CornerRadius
-					&& other.BackgroundImage == BackgroundImage;
-			}
+			public override int GetHashCode() => Background?.GetHashCode() ?? 0 + BorderBrush?.GetHashCode() ?? 0;
+
+			public override bool Equals(object obj) => Equals(obj as LayoutState);
+
+			public bool Equals(LayoutState other) =>
+				other != null
+				&& other.Area == Area
+				&& (other.Background?.Equals(Background) ?? false)
+				&& (other.BorderBrush?.Equals(BorderBrush) ?? false)
+				&& other.BorderThickness == BorderThickness
+				&& other.CornerRadius == CornerRadius
+				&& other.BackgroundImage == BackgroundImage;
 		}
 	}
 }

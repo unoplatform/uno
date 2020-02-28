@@ -40,7 +40,7 @@ namespace Windows.UI
 			&& color.G == G 
 			&& color.B == B;
 
-		public override int GetHashCode() => A ^ R ^ G ^ B;
+		public override int GetHashCode() => (A << 8) ^ (R << 6) ^ (G << 4) ^ B;
 
 		public override string ToString() => $"[Color: {A:X8};{R:X8};{G:X8};{B:X8}]";
 

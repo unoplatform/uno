@@ -4,6 +4,7 @@ using System.Reflection;
 using System.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using CoreGraphics;
 using Uno.Extensions;
 using Uno.Logging;
 
@@ -36,27 +37,52 @@ namespace Uno.UI.Toolkit
 				new PropertyMetadata(0, OnElevationChanged)
 			);
 
-		private static void OnElevationChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		private static void OnElevationChanged(DependencyObject dependencyObject,
+			DependencyPropertyChangedEventArgs args)
+		{
+			if (args.NewValue is double elevation)
+			{
+				SetElevationInternal(dependencyObject, elevation);
+			}
+		}
+
+#if __IOS__
+		internal static void SetElevationInternal(this DependencyObject element, double elevation, CGPath path = null)
+#else
+		internal static void SetElevationInternal(this DependencyObject element, double elevation)
+#endif
 		{
 #if __ANDROID__
-			if (dependencyObject is Android.Views.View view && args.NewValue is double elevation)
+			if (element is Android.Views.View view)
 			{
 				Android.Support.V4.View.ViewCompat.SetElevation(view, (float)Uno.UI.ViewHelper.LogicalToPhysicalPixels(elevation));
 			}
 #elif __IOS__
-			if (dependencyObject is UIKit.UIView view && args.NewValue is double elevation)
+			if (element is UIKit.UIView view)
 			{
-				// Values for 1dp elevation according to https://material.io/guidelines/resources/shadows.html#shadows-illustrator
-				const float Opacity = 0.26f;
-				const float X = 0;
-				const float Y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f. 
-				const float Blur = 0.5f;
+				if (elevation > 0)
+				{
+					// Values for 1dp elevation according to https://material.io/guidelines/resources/shadows.html#shadows-illustrator
+					const float opacity = 0.26f;
+					const float x = 0.25f;
+					const float y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
+					const float blur = 0.5f;
 
-				view.Layer.MasksToBounds = false;
-				view.Layer.ShadowOpacity = Opacity;
-				view.Layer.ShadowRadius = (nfloat)(Blur * elevation);
-				view.Layer.ShadowOffset = new CoreGraphics.CGSize(X * elevation, Y * elevation);
+					view.Layer.MasksToBounds = false;
+					view.Layer.ShadowOpacity = opacity;
+					view.Layer.ShadowRadius = (nfloat)(blur * elevation);
+					view.Layer.ShadowOffset = new CoreGraphics.CGSize(x * elevation, y * elevation);
+					view.Layer.ShadowPath = path;
+				}
+				else
+				{
+					view.Layer.ShadowOpacity = 0;
+				}
 			}
+#elif __WASM__
+			// TODO
+#elif NETFX_CORE
+			// TODO
 #endif
 		}
 
