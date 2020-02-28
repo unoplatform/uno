@@ -129,8 +129,6 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnSourceChanged(ImageSource oldValue, ImageSource newValue)
 		{
-			SetTargetImageSize(null);
-
 			if (newValue is WriteableBitmap wb)
 			{
 				wb.Invalidated += OnInvalidated;
@@ -221,6 +219,18 @@ namespace Windows.UI.Xaml.Controls
 			_imageFetchDisposable.Disposable = cd;
 		}
 
+		/// <summary>
+		/// True if horizontally stretched within finite container, or defined by this.Width
+		/// </summary>
+		private bool HasKnownWidth(double availableWidth) => !double.IsNaN(Width) ||
+			(HorizontalAlignment == HorizontalAlignment.Stretch && !double.IsInfinity(availableWidth));
+
+		/// <summary>
+		/// True if vertically stretched within finite container, or defined by this.Height
+		/// </summary>
+		private bool HasKnownHeight(double availableHeight) => !double.IsNaN(Height) ||
+			(VerticalAlignment == VerticalAlignment.Stretch && !double.IsInfinity(availableHeight));
+
 		private double GetKnownWidth(double stretchedWidth, double fallbackIfInfinite)
 		{
 			return double.IsNaN(Width) ? (double.IsInfinity(stretchedWidth) ? fallbackIfInfinite : stretchedWidth) : Width;
@@ -231,7 +241,8 @@ namespace Windows.UI.Xaml.Controls
 			return double.IsNaN(Height) ? (double.IsInfinity(stretchedHeight) ? fallbackIfInfinite : stretchedHeight) : Height;
 		}
 
-		partial void SetTargetImageSize(Size? targetSize);
+		partial void SetTargetImageSize(Size targetSize);
+		partial void UpdateArrangeSize(Size arrangeSize);
 
 		public override string ToString()
 		{
@@ -266,9 +277,15 @@ namespace Windows.UI.Xaml.Controls
 
 			protected override Size MeasureOverride(Size availableSize)
 			{
-				var size = InnerMeasureOverride(availableSize);
+
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+				{
+					this.Log().Debug(Panel.ToString() + $" measuring with availableSize={availableSize}");
+				}
 
 				ImageControl.SetTargetImageSize(availableSize);
+
+				var size = InnerMeasureOverride(availableSize);
 
 				return size;
 			}
@@ -280,6 +297,8 @@ namespace Windows.UI.Xaml.Controls
 
 				if (sourceSize == default)
 				{
+					// Setting _hasFiniteBounds here is important if the Source hasn't been set or fetched yet
+					ImageControl._hasFiniteBounds = ImageControl.HasKnownWidth(availableSize.Width) && ImageControl.HasKnownHeight(availableSize.Height);
 					return default;
 				}
 
@@ -305,6 +324,8 @@ namespace Windows.UI.Xaml.Controls
 				if (isWidthDefined && isHeightDefined)
 				{
 					// If both available width & available height are known here
+					ImageControl._hasFiniteBounds = true;
+
 					if (img.Stretch != Stretch.Uniform) // Fill or UniformToFill
 					{
 						// Fill & UniformToFill will both take all the available size
@@ -320,7 +341,6 @@ namespace Windows.UI.Xaml.Controls
 						this.Log().Debug(Panel.ToString() + $" measuring with Stretch.Uniform with availableSize={constrainedAvailableSize}, returning desiredSize={containerSize}");
 					}
 
-					ImageControl._hasFiniteBounds = true;
 					return containerSize;
 				}
 
@@ -414,6 +434,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 
 				//If we are given a non-zero size to draw into, set the target dimensions to load the image with accordingly
+				ImageControl.UpdateArrangeSize(finalSize);
 				ImageControl.SetTargetImageSize(finalSize);
 
 				if (this.Log().IsEnabled(LogLevel.Warning))
