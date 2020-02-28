@@ -57,7 +57,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			
 			_app.TapCoordinates(target.CenterX, target.CenterY);
 
-			var result = new QueryEx(q => q.All().Marked("LastPressed")).GetDependencyPropertyValue<string>("Text");
+			var result = _app.Marked("LastPressed").GetDependencyPropertyValue<string>("Text");
 
 			result.Should().Be(expected);
 		}
