@@ -581,6 +581,8 @@ namespace AppKit
 				var name = (innerView as IFrameworkElement)?.Name;
 				var namePart = string.IsNullOrEmpty(name) ? "" : $"-'{name}'";
 
+				var uiElement = innerView as UIElement;
+
 				return sb
 						.Append(spacing)
 						.Append(innerView == viewOfInterest ? "*>" : ">")
@@ -590,6 +592,7 @@ namespace AppKit
 #if __IOS__
 						.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
 #endif
+						.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
 						.AppendLine();
 			}
 		}
