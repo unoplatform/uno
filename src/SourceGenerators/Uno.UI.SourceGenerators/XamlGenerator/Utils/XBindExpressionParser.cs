@@ -12,7 +12,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 {
 	internal static class XBindExpressionParser
 	{
-		internal static string[] ParseProperties(string rawFunction, Func<string, bool> isStaticMethod)
+		internal static (string[] properties, bool hasFunction) ParseProperties(string rawFunction, Func<string, bool> isStaticMethod)
 		{
 			if (!string.IsNullOrEmpty(rawFunction))
 			{
@@ -24,11 +24,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 					var v = new Visitor(isStaticMethod);
 					v.Visit(arrow);
 
-					return v.IdentifierNames.ToArray();
+					return (v.IdentifierNames.ToArray(), v.HasMethodInvocation);
 				}
 			}
 
-			return new string[0];
+			return (new string[0], false);
 		}
 
 		internal static string Rewrite(string contextName, string rawFunction, Func<string, bool> isStaticMethod)
@@ -129,6 +129,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 		{
 			private readonly Func<string, bool> _isStaticMethod;
 
+			public bool HasMethodInvocation { get; private set; }
+
 			public List<string> IdentifierNames { get; } = new List<string>();
 
 			public Visitor(Func<string, bool> isStaticMethod)
@@ -139,6 +141,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 			public override void VisitInvocationExpression(InvocationExpressionSyntax node)
 			{
 				base.VisitInvocationExpression(node);
+
+				HasMethodInvocation = true;
 
 				if (!_isStaticMethod(node.Expression.ToFullString()) && node.Expression is MemberAccessExpressionSyntax memberAccess)
 				{

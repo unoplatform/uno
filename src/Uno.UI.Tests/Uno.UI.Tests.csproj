@@ -154,6 +154,9 @@
 			<LastGenOutput>Resources.Designer.cs</LastGenOutput>
 			<Generator>ResXFileCodeGenerator</Generator>
 		</None>
+		<None Update="Windows_UI_Xaml_Data\xBindTests\Controls\Binding_TwoWay_Object.xaml">
+		  <Generator>MSBuild:Compile</Generator>
+		</None>
 	</ItemGroup>
 
 </Project>

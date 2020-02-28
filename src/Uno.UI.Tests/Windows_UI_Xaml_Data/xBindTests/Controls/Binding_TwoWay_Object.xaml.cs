@@ -21,9 +21,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 	/// <summary>
 	/// An empty page that can be used on its own or navigated to within a Frame.
 	/// </summary>
-	public sealed partial class Binding_Simple_TwoWay : Page
+	public sealed partial class Binding_TwoWay_Object : Page
 	{
-		public Binding_Simple_TwoWay()
+		public Binding_TwoWay_Object()
 		{
 			this.InitializeComponent();
 		}
@@ -32,27 +32,27 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 
 		public int MyIntProperty
 		{
-			get { return (int)GetValue(MyIntPropertyProperty); }
-			set { SetValue(MyIntPropertyProperty, value); }
+			get => (int)GetValue(MyIntPropertyProperty);
+			set => SetValue(MyIntPropertyProperty, value);
 		}
 
 		public static readonly DependencyProperty MyIntPropertyProperty =
-			DependencyProperty.Register("MyIntProperty", typeof(int), typeof(Binding_Simple_TwoWay), new PropertyMetadata(0));
+			DependencyProperty.Register("MyIntProperty", typeof(int), typeof(Binding_TwoWay_Object), new PropertyMetadata(0));
 	}
 
-	public class Simple_TwoWayTestObject : Border
+	public class TwoWay_Object_TestObject : Border
 	{
-		public int MyProperty
+		public object MyProperty
 		{
-			get { return (int)GetValue(MyPropertyProperty); }
-			set { SetValue(MyPropertyProperty, value); }
+			get => (int)GetValue(MyPropertyProperty);
+			set => SetValue(MyPropertyProperty, value);
 		}
 
 		public static readonly DependencyProperty MyPropertyProperty =
-			DependencyProperty.Register("MyProperty", typeof(int), typeof(Simple_TwoWayTestObject), new PropertyMetadata(0));
+			DependencyProperty.Register("MyProperty", typeof(object), typeof(TwoWay_Object_TestObject), new PropertyMetadata(null));
 	}
 
-	public class Simple_TwoWayModel : INotifyPropertyChanged
+	public class TwoWay_Object_Model : INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 

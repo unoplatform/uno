@@ -19,6 +19,7 @@ using Uno.Equality;
 using Uno.Logging;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 using Mono.Cecil;
+using Microsoft.Cci;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -2720,7 +2721,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					return bindNode
 						.Members
-						.Where(m => m.Member.Name != "_PositionalParameters" && m.Member.Name != "Path")
+						.Where(m => m.Member.Name != "_PositionalParameters" && m.Member.Name != "Path" && m.Member.Name != "BindBack")
 						.Select(BuildMemberPropertyValue)
 						.Concat(bindNode.Members.Any(m => m.Member.Name == "Mode") ? "" : "Mode = BindingMode.OneTime")
 						.JoinBy(", ");
@@ -2827,17 +2828,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				rawFunction = RewriteNamespaces(rawFunction);
 
 				var modeMember = bindNode.Members.FirstOrDefault(m => m.Member.Name == "Mode")?.Value?.ToString() ?? "OneTime";
+				var rawBindBack = bindNode.Members.FirstOrDefault(m => m.Member.Name == "BindBack")?.Value?.ToString();
 
 				// Populate the property paths only if updateable bindings.
 				var propertyPaths = modeMember != "OneTime"
 					? XBindExpressionParser.ParseProperties(rawFunction, IsStaticMethod)
-					: new string[0];
+					: (properties: new string[0], hasFunction: false);
 
 				var formattedPaths = propertyPaths
+					.properties
 					.Where(p => !p.StartsWith("global::"))	// Don't include paths that start with global:: (e.g. Enums)
 					.Select(p => $"\"{p}\"");
 
-				var pathsArray = propertyPaths.Any()
+				var pathsArray = propertyPaths.properties.Any()
 					? ", new [] {" + string.Join(", ", formattedPaths) + "}"
 					: "";
 
@@ -2852,21 +2855,118 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					var dataType = RewriteNamespaces(dataTypeObject.Value?.ToString());
 
 					var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, IsStaticMethod);
-					var bindBack = modeMember == "TwoWay" ? $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunction} = ({propertyType})__value; }} }}" : "null";
 
-					return $".Apply(___b => global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {dataType} ___tctx ? (object)({contextFunction}) : null, {bindBack} {pathsArray}))";
+					string buildBindBack()
+					{
+						if (modeMember == "TwoWay")
+						{
+							if (propertyPaths.hasFunction)
+							{
+								if (!string.IsNullOrWhiteSpace(rawBindBack))
+								{
+									var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0], GetType(dataType));
+									return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ ___tctx.{rawBindBack}(({propertyType})__value); }} }}";
+									}
+								else
+								{
+									throw new NotSupportedException($"Expected BindBack for {contextFunction}");
+								}
+							}
+							else
+							{
+								if (propertyPaths.properties.Length == 1)
+								{
+									var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0], GetType(dataType));
+									return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunction} = ({targetPropertyType})__value; }} }}";
+								}
+								else
+								{
+									throw new NotSupportedException($"Invalid x:Bind property path count (This should not happen)");
+								}
+							}
+						}
+						else
+						{
+							return "null";
+						}
+					}
+
+					return $".Apply(___b => global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, null, ___ctx => ___ctx is {dataType} ___tctx ? (object)({contextFunction}) : null, {buildBindBack()} {pathsArray}))";
 				}
 				else
 				{
-					var bindBack = modeMember == "TwoWay" ? $"(___tctx, __value) => {rawFunction} = ({propertyType})__value" : "null";
+					string buildBindBack()
+					{
+						if(modeMember == "TwoWay")
+						{
+							if (propertyPaths.hasFunction)
+							{
+								if (!string.IsNullOrWhiteSpace(rawBindBack))
+								{
+									return $"(___tctx, __value) => {rawBindBack}(({propertyType})__value)";
+								}
+								else
+								{
+									throw new NotSupportedException($"Expected BindBack for x:Bind function [{rawFunction}]");
+								}
+							}
+							else
+							{
+								if(propertyPaths.properties.Length == 1)
+								{
+									var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0]);
+									return $"(___tctx, __value) => {rawFunction} = ({targetPropertyType})__value";
+								}
+								else
+								{
+									throw new NotSupportedException($"Invalid x:Bind property path count (This should not happen)");
+								}
+							}
+						}
+						else
+						{
+							return "null";
+						}
+					}
 
-					return $".Apply(___b => global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, this, ___ctx => {rawFunction}, {bindBack} {pathsArray}))";
+					return $".Apply(___b => global::Uno.UI.Xaml.BindingHelper.SetBindingXBindProvider(___b, this, ___ctx => {rawFunction}, {buildBindBack()} {pathsArray}))";
 				}
 			}
 			else
 			{
 				return "";
 			}
+		}
+
+		private ITypeSymbol GetXBindPropertyPathType(string propertyPath, INamedTypeSymbol rootType = null)
+		{
+			ITypeSymbol currentType = rootType ?? GetType(_className.ns + "." + _className.className);
+
+			var parts = propertyPath.Split('.');
+
+			foreach(var part in parts)
+			{
+				if(currentType.GetMembers().FirstOrDefault(m => m.Name == part) is ISymbol member)
+				{
+					var propertySymbol = member as IPropertySymbol;
+					var fieldSymbol = member as IFieldSymbol;
+
+					if (propertySymbol != null || fieldSymbol != null)
+					{
+						currentType = propertySymbol?.Type ?? fieldSymbol?.Type;
+					}
+					else
+					{
+						throw new InvalidOperationException($"Cannot use member [{part}] of type [{member}], as it is not a property of a field");
+					}
+				}
+				else
+				{
+					throw new InvalidOperationException($"Unable to find member [{part}] on type [{currentType}]");
+				}
+			}
+
+			return currentType;
 		}
 
 		bool IsStaticMethod(string fullMethodName)
