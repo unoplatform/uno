@@ -17,7 +17,7 @@ using _View = AppKit.NSView;
 namespace Uno.UI.Toolkit
 {
 	[ContentProperty(Name = "Content")]
-	public partial class ElevatedView : FrameworkElement, ICustomClippingElement
+	partial class ElevatedView : FrameworkElement, ICustomClippingElement
 	{
 		/*
 		 *  +-Elevated----------------+
@@ -86,15 +86,6 @@ namespace Uno.UI.Toolkit
 		{
 			get => (CornerRadius)GetValue(CornerRadiusProperty);
 			set => SetValue(CornerRadiusProperty, value);
-		}
-
-		public static readonly DependencyProperty ElevationProperty = DependencyProperty.Register(
-			"Elevation", typeof(double), typeof(ElevatedView), new PropertyMetadata(default(double), OnChanged));
-
-		public double Elevation
-		{
-			get => (double)GetValue(ElevationProperty);
-			set => SetValue(ElevationProperty, value);
 		}
 
 		private static void OnChanged(DependencyObject snd, DependencyPropertyChangedEventArgs evt) => ((ElevatedView)snd).UpdateElevation();

@@ -3,12 +3,12 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Uno.UI.Samples.Controls;
 
-namespace UITests.Windows_UI_Xaml.UIElementTests
+namespace UITests.Toolkit
 {
-	[SampleControlInfo("UIElement")]
-	public sealed partial class UIElement_Elevation : Page
+	[SampleControlInfo("Toolkit")]
+	public sealed partial class ElevatedViewTests : Page
 	{
-		public UIElement_Elevation()
+		public ElevatedViewTests()
 		{
 			this.InitializeComponent();
 		}
