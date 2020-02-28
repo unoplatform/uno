@@ -113,7 +113,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				if (isValidParent)
 				{
 					var newIdentifier = node.ToFullString();
-					var output = ParseCompilationUnit($"class __Temp {{ private Func<object> __prop => {ContextBuilder}{newIdentifier}; }}");
+
+					var rawFunction = string.IsNullOrWhiteSpace(newIdentifier)
+						? $"class __Temp {{ private Func<object> __prop => {_contextName}; }}"
+						: $"class __Temp {{ private Func<object> __prop => {ContextBuilder}{newIdentifier}; }}";
+
+					var output = ParseCompilationUnit(rawFunction);
 
 					var o2 = output.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().First().Expression;
 					return o2;

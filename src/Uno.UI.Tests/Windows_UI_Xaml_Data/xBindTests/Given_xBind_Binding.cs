@@ -60,7 +60,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual(1, SUT.myObject.MyProperty);
 
-			Console.WriteLine("SUT.myObject.MyProperty = 2");
 			SUT.myObject.MyProperty = 2;
 
 			Assert.AreEqual(2, SUT.MyIntProperty);
@@ -82,7 +81,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual(1, SUT.myObjectNestedProperty.MyProperty);
 
-			Console.WriteLine("SUT.myObject.MyProperty = 2");
 			SUT.myObjectNestedProperty.MyProperty = 2;
 
 			Assert.AreEqual(2, SUT.Model.MyIntProperty);
@@ -109,7 +107,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual(1, myObject.MyProperty);
 
-			Console.WriteLine("myObject.MyProperty = 2");
 			myObject.MyProperty = 2;
 
 			Assert.AreEqual(2, rootData.MyIntProperty);
@@ -136,12 +133,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual(1, myObjectNestedProperty.MyProperty);
 
-			Console.WriteLine("myObjectNestedProperty.MyProperty = 2");
 			myObjectNestedProperty.MyProperty = 2;
 
 			Assert.AreEqual(2, rootData.Model.MyIntProperty);
 		}
-
+		
 		[TestMethod]
 		public void When_Object_TwoWay()
 		{
@@ -158,7 +154,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual(1, SUT.myObject.MyProperty);
 
-			Console.WriteLine("SUT.myObject.MyProperty = 2");
 			SUT.myObject.MyProperty = 2;
 
 			Assert.AreEqual(2, SUT.MyIntProperty);
@@ -180,7 +175,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual(1, SUT.myObjectNestedProperty.MyProperty);
 
-			Console.WriteLine("SUT.myObjectNestedProperty.MyProperty = 2");
 			SUT.myObjectNestedProperty.MyProperty = 2;
 
 			Assert.AreEqual(2, SUT.Model.MyIntProperty);
@@ -207,7 +201,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual(1, myObject.MyProperty);
 
-			Console.WriteLine("myObject.MyProperty = 2");
 			myObject.MyProperty = 2;
 
 			Assert.AreEqual(2, rootData.MyIntProperty);
@@ -234,7 +227,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual(1, myObjectNestedProperty.MyProperty);
 
-			Console.WriteLine("myObjectNestedProperty.MyProperty = 2");
 			myObjectNestedProperty.MyProperty = 2;
 
 			Assert.AreEqual(2, rootData.Model.MyIntProperty);
@@ -256,7 +248,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual("1", SUT.myObject.MyProperty);
 
-			Console.WriteLine("SUT.myObject.MyProperty = 2");
 			SUT.myObject.MyProperty = "2";
 
 			Assert.AreEqual(2, SUT.MyIntProperty);
@@ -278,7 +269,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			Assert.AreEqual("1", SUT.myObjectNestedProperty.MyProperty);
 
-			Console.WriteLine("SUT.myObjectNestedProperty.MyProperty = 2");
 			SUT.myObjectNestedProperty.MyProperty = "2";
 
 			Assert.AreEqual(2, SUT.Model.MyIntProperty);
@@ -334,6 +324,37 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			myObjectNestedProperty.MyProperty = "2";
 
 			Assert.AreEqual(2, rootData.Model.MyIntProperty);
+		}
+
+		[TestMethod]
+		public void When_Converter()
+		{
+			var SUT = new Binding_Converter();
+
+			Assert.AreEqual(0, SUT.MyIntProperty);
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("v:0 p:test", SUT.myTextBlock.Text);
+			Assert.AreEqual("v:Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls.Binding_Converter p:test", SUT.myTextBlock2.Text);
+		}
+
+		[TestMethod]
+		public void When_Converter_DataTemplate()
+		{
+			var SUT = new Binding_Converter_DataTemplate();
+			var model = new Binding_Converter_DataTempate_Model();
+			SUT.root.Content = model;
+
+			Assert.AreEqual(0, model.MyIntProperty);
+
+			SUT.ForceLoaded();
+
+			var myTextBlock = SUT.FindName("myTextBlock") as Windows.UI.Xaml.Controls.TextBlock;
+			var myTextBlock2 = SUT.FindName("myTextBlock2") as Windows.UI.Xaml.Controls.TextBlock;
+
+			Assert.AreEqual("v:0 p:test", myTextBlock.Text);
+			Assert.AreEqual("v:Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls.Binding_Converter_DataTempate_Model p:test", myTextBlock2.Text);
 		}
 	}
 }

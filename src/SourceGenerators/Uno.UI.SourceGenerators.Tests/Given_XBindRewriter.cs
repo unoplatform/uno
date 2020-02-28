@@ -21,6 +21,7 @@ namespace Uno.UI.SourceGenerators.Tests
 		[DataRow("ctx", "Static.MyFunction(MyProperty)", "Static.MyFunction(ctx.MyProperty)")]
 		[DataRow("ctx", "MyNameSpace.Static2.MyFunction(MyProperty)", "MyNameSpace.Static2.MyFunction(ctx.MyProperty)")]
 		[DataRow("ctx", "MyFunction(MyProperty)", "ctx.MyFunction(ctx.MyProperty)")]
+		[DataRow("ctx", "", "ctx")]
 
 		// Main class (without context)
 		[DataRow("", "MyProperty.A", "MyProperty.A")]
