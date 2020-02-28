@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using CoreGraphics;
@@ -36,19 +37,21 @@ namespace Uno.UI.Toolkit
 				new PropertyMetadata(0, OnElevationChanged)
 			);
 
+		private static readonly Color ElevationColor = Color.FromArgb(64, 0, 0, 0);
+
 		private static void OnElevationChanged(DependencyObject dependencyObject,
 			DependencyPropertyChangedEventArgs args)
 		{
 			if (args.NewValue is double elevation)
 			{
-				SetElevationInternal(dependencyObject, elevation);
+				SetElevationInternal(dependencyObject, elevation, ElevationColor);
 			}
 		}
 
 #if __IOS__
-		internal static void SetElevationInternal(this DependencyObject element, double elevation, CGPath path = null)
+		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, CGPath path = null)
 #else
-		internal static void SetElevationInternal(this DependencyObject element, double elevation)
+		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor)
 #endif
 		{
 #if __ANDROID__
@@ -63,13 +66,13 @@ namespace Uno.UI.Toolkit
 				if (elevation > 0)
 				{
 					// Values for 1dp elevation according to https://material.io/guidelines/resources/shadows.html#shadows-illustrator
-					const float opacity = 0.26f;
 					const float x = 0.25f;
 					const float y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
 					const float blur = 0.5f;
 
 					view.Layer.MasksToBounds = false;
-					view.Layer.ShadowOpacity = opacity;
+					view.Layer.ShadowOpacity = shadowColor.A / 255f;
+					view.Layer.ShadowColor = UIKit.UIColor.FromRGB(shadowColor.R, shadowColor.G, shadowColor.B).CGColor;
 					view.Layer.ShadowRadius = (nfloat)(blur * elevation);
 					view.Layer.ShadowOffset = new CoreGraphics.CGSize(x * elevation, y * elevation);
 					view.Layer.ShadowPath = path;

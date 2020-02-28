@@ -1,4 +1,5 @@
-﻿using Windows.UI.Xaml;
+﻿using Windows.UI;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Toolkit
 {
@@ -15,6 +16,15 @@ namespace Uno.UI.Toolkit
 		{
 			get => (double)GetValue(ElevationProperty);
 			set => SetValue(ElevationProperty, value);
+		}
+
+		public static readonly DependencyProperty ShadowColorProperty = DependencyProperty.Register(
+			"ShadowColor", typeof(Color), typeof(ElevatedView), new PropertyMetadata(Color.FromArgb(64, 0, 0, 0), OnChanged));
+
+		public Color ShadowColor
+		{
+			get => (Color)GetValue(ShadowColorProperty);
+			set => SetValue(ShadowColorProperty, value);
 		}
 	}
 }
