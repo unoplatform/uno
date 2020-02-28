@@ -56,6 +56,8 @@
 
 ### Breaking changes
 - `IconElement.AddIconElementView` is now `internal` so it is not accessible from outside.
+- `Thumb.DragStarted.<Horizontal|Vertical>Offset` are now fullfilled (was always 0)
+- `Thumb.Drag<Delta|Completed>.<Horizontal|Vertical>` are now relative to the last event (was cummulative / relative to the started)
 - On iOS, the parent of the `ListViwItem` is now the `NativeListViewBase` (was the `ListView` it self) as described here https://github.com/unoplatform/uno/blob/master/doc/articles/controls/ListViewBase.md#difference-in-the-visual-tree
 
 ### Bug fixes
@@ -102,6 +104,13 @@
 - [Android] Adjust `TextBlock.TextDecorations` is not updating properly
 - Adjust `XamlBindingHelper` for `GridLength` and `TimeSpan`
 - Add missing `ListView` resources
+- [WASM] Setting null to the Fill no longer fill shapes in black
+- Shapes was not able to receive pointer events
+- [WASM] Invisble Shapes no longer prevent sub-elements to receive the pointer events
+- `Thumb.DragStarted.<Horizontal|Vertical>Offset` are now fullfilled (was always 0)
+- `Thumb.Drag<Delta|Completed>.<Horizontal|Vertical>` are now relative to the last event (was cummulative / relative to the started)
+- Thumb now handles the PointyerPressed event (like WinUI)
+- [WASM] Inserting an element at index 0 was appending the element instead of prepending it.
 - #2570 [Android/iOS] fixed ObjectDisposedException in BindingPath
 - #2107 [iOS] fixed ContentDialog doesn't block touch for background elements
 - #2108 [iOS/Android] fixed ContentDialog background doesn't change
