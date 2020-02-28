@@ -58,9 +58,6 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnDateChangedPartialNative(DateTimeOffset oldDate, DateTimeOffset newDate)
 		{
-			// Animate to cover up the small delay in setting the date when the flyout is opened
-			var animated = !UIDevice.CurrentDevice.CheckSystemVersion(10, 0);
-
 			if (newDate < MinYear)
 			{
 				Date = MinYear;
@@ -70,11 +67,11 @@ namespace Windows.UI.Xaml.Controls
 				Date = MaxYear;
 			}
 
-			// todo: replace with UpdatePickerValue
-			_picker?.SetDate(
-				DateTime.SpecifyKind(Date.DateTime, DateTimeKind.Local).ToNSDate(),
-				animated: animated
-			);
+			if (_picker != null)
+			{
+				// Animate to cover up the small delay in setting the date when the flyout is opened
+				UpdatePickerValue(Date, animated: !UIDevice.CurrentDevice.CheckSystemVersion(10, 0));
+			}
 		}
 
 		partial void OnMinYearChangedPartialNative(DateTimeOffset oldMinYear, DateTimeOffset newMinYear)
@@ -116,12 +113,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				if (_newValue != null && _newValue != _initialValue)
 				{
-					var value = GetValueFromPicker();
-					if (Date.Year != value.Year || Date.Month != value.Month || Date.Day != value.Day) // fixme: compare date-only
-					{
-						Date = value;
-						_initialValue = _newValue;
-					}
+					Date = ConvertFromNative(_newValue);
+					_initialValue = _newValue;
 				}
 
 				_picker.EndEditing(false);
@@ -136,14 +129,28 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdatePickerValue(DateTimeOffset value, bool animated = false)
 		{
-			var date = value.Date.ToNSDate(); // fixme
-			_picker?.SetDate(date, animated);
+			var components = new NSDateComponents()
+			{
+				Year = value.Year,
+				Month = value.Month,
+				Day = value.Day,
+			};
+			var date = _picker.Calendar.DateFromComponents(components);
+
+			_picker.SetDate(date, animated);
 			_initialValue = date;
 		}
 
-		private DateTimeOffset GetValueFromPicker()
+		private DateTimeOffset ConvertFromNative(NSDate value)
 		{
-			return new DateTimeOffset(_picker.Date.ToDateTime()); // fixme
+			var components = _picker.Calendar.Components(NSCalendarUnit.Year | NSCalendarUnit.Month | NSCalendarUnit.Day, value);
+			var date = new DateTimeOffset(
+				(int)components.Year, (int)components.Month, (int)components.Day,
+				Date.Hour, Date.Minute, Date.Second, Date.Millisecond,
+				Date.Offset
+			);
+
+			return date;
 		}
 	}
 }
