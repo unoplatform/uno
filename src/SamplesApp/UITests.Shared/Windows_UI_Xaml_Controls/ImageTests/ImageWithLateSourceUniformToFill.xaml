@@ -12,7 +12,7 @@
 	<controls:SampleControl SampleDescription="Source is set after the image is loaded and visible.">
 		<controls:SampleControl.SampleContent>
 			<DataTemplate>
-				<StackPanel>
+				<StackPanel MaxWidth="400">
 					<Button x:Name="setSource"
 							Content="Set image source"
 							Command="{Binding [SetSource]}" />
