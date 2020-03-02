@@ -28,8 +28,18 @@ namespace Windows.UI.Xaml.Media
 				{
 					_isAnimating = value;
 
-					MatrixCore = ToMatrix(new Point(0, 0));
-					NotifyChanged();
+					if (_isAnimating)
+					{
+						// We don't use the NotifyChanged() since it filters out change notifications when IsAnimating.
+						// Note: we also bypass the MatrixCore update which is actually irrelevant until animation completes.
+						Changed?.Invoke(this, EventArgs.Empty);
+					}
+					else
+					{
+						// Notify a change so the result matrix will be updated (as updates were ignored due to 'Animations' DP precedence),
+						// and the NativeRenderTransformAdapter will then apply this final matrix.
+						NotifyChanged();
+					}
 				}
 			}
 		}
