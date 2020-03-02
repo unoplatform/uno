@@ -9,26 +9,28 @@ namespace Windows.Devices.Sensors
 	{
 		private readonly static object _syncLock = new object();
 		
-		private static Pedometer _instance;
 		private static bool _initializationAttempted;
+		private static Task<Pedometer> _instanceTask;
 
 		private TypedEventHandler<Pedometer, PedometerReadingChangedEventArgs> _readingChanged;
-		
-		public static IAsyncOperation<Pedometer> GetDefaultAsync()
+
+		public static IAsyncOperation<Pedometer> GetDefaultAsync() => GetDefaultImplAsync().AsAsyncOperation();
+
+		private static async Task<Pedometer> GetDefaultImplAsync()
 		{
 			if (_initializationAttempted)
 			{
-				return Task.FromResult(_instance).AsAsyncOperation();
+				return await _instanceTask;
 			}
 			lock (_syncLock)
 			{
 				if (!_initializationAttempted)
 				{
-					_instance = TryCreateInstance();
+					_instanceTask = Task.Run(() => TryCreateInstance());
 					_initializationAttempted = true;
-				}
-				return Task.FromResult(_instance).AsAsyncOperation();
+				}				
 			}
+			return await _instanceTask;
 		}
 
 		public event TypedEventHandler<Pedometer, PedometerReadingChangedEventArgs> ReadingChanged
