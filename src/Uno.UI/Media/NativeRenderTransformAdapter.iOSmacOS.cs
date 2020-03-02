@@ -30,9 +30,14 @@ namespace Uno.UI.Media
 			{
 				// While animating the transform, we let the Animator apply the transform by itself, so do not update the Transform
 #if __IOS__
-				Owner.Layer.AnchorPoint = GPUFloatValueAnimator.GetAnchorForAnimation(Transform, CurrentOrigin, CurrentSize);
+				if (!_wasAnimating)
+				{
+					// At the beginning of the animation make sure we disable all properties of the transform
+					Owner.Layer.AnchorPoint = GPUFloatValueAnimator.GetAnchorForAnimation(Transform, CurrentOrigin, CurrentSize);
+					Owner.Layer.Transform = CoreAnimation.CATransform3D.Identity;
 
-				_wasAnimating = true;
+					_wasAnimating = true;
+				}
 
 				return;
 #else
