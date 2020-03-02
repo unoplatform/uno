@@ -1,7 +1,7 @@
 # Release notes
 
 ### Features
-
+- [Android] Support for getting from Clipboard (text, uri, html), and adding put to Clipboard of uri and html, test for it (on Android and for macOS)
 - Support for `FontIcon` on macOS
 - Support for `PhoneCallManager.ShowPhoneCallUI` on macOS
 - Support for full screen mode on macOS

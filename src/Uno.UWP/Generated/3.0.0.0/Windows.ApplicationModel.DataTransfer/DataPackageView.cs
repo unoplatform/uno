@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if false || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DataPackageView 
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.AvailableFormats.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool Contains( string formatId)
 		{
@@ -75,14 +75,14 @@ namespace Windows.ApplicationModel.DataTransfer
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> DataPackageView.GetTextAsync(string formatId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Uri> GetUriAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Uri> DataPackageView.GetUriAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<string> GetHtmlFormatAsync()
 		{
@@ -124,7 +124,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Uri> DataPackageView.GetApplicationLinkAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Uri> GetWebLinkAsync()
 		{
