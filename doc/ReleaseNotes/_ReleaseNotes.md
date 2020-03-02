@@ -2,6 +2,8 @@
 
 ### Features
 
+- Support for `FontIcon` on macOS
+- Support for `PhoneCallManager.ShowPhoneCallUI` on macOS
 - Support for full screen mode on macOS
 - Support for `ShowComposeSmsMessageAsync` on macOS
 - Support for `Flyout` on macOS
@@ -38,15 +40,17 @@
 - Add support for `ApplicationView.GetSpanningRects`
 - Add base support for API Extensibility through `Uno.Foundation.Extensibility.ApiExtensibility` and `ApiExtensionAttribute`
 - Add support for Surface Duo through the `Uno.UI.DualScreen` package
-- Add support for enums in x:Bind functions
+- Add support for enums in `x:Bind` functions and `BindBack`
 - Add XamlReader support for Primitive static resources
 - [Android] Add support for non-native `Popup` by default. Can be enabled through `FeatureConfiguration.Popup.UseNativePopup` set to false (See #2533 for more details)
 - Add template tags for the VS2019 VSIX template search experience
 
 ### Breaking changes
+- `IconElement.AddIconElementView` is now `internal` so it is not accessible from outside.
 
 ### Bug fixes
 
+- Fix for samples app compilation for macOS
 - [#2465] Raising macOS Button Click event
 - [#2506] `DesignMode.DesignMode2Enabled` no longer throws (is always `false` on non-UWP platforms)
 - [#915] FontFamily values are now properly parsed on WebAssembly, updated docs with new info
@@ -85,6 +89,7 @@
 - [Android] Adjust `TextBlock.TextDecorations` is not updating properly
 - Adjust `XamlBindingHelper` for `GridLength` and `TimeSpan`
 - Add missing `ListView` resources
+- #2570 [Android/iOS] fixed ObjectDisposedException in BindingPath
 
 ## Release 2.0
 

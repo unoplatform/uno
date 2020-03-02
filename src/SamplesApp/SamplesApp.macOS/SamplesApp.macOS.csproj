@@ -81,16 +81,12 @@
     <PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj">
-      <Project>{f9277925-fc11-4a97-8ca1-b4a33e726f55}</Project>
-      <Name>Uno.UI.Lottie</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj">
       <Project>{528AE586-5DF3-4DAD-AA5C-F12F4D5E0605}</Project>
       <Name>Uno.Foundation</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj">
-      <Project>{2eaf39e3-2ac9-457a-a5b2-47d6548799b3}</Project>
+      <Project>{F1FD5845-49E1-42B1-BF18-6493D1848330}</Project>
       <Name>Uno.UI.Toolkit</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj">
@@ -101,9 +97,17 @@
       <Project>{58C0CBAB-2619-4F58-BC41-5C74DBE31261}</Project>
       <Name>Uno</Name>
     </ProjectReference>
-		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj">
+		  <Project>{028F3EE0-D51B-469A-A72C-C272585DCD40}</Project>
+		  <Name>Uno.UI.RuntimeTests</Name>
+		</ProjectReference>
+		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj">
+      <Project>{21A31391-B907-457F-A522-689D44E6D6E4}</Project>
+      <Name>Uno.UI.Lottie</Name>
+    </ProjectReference>
 	</ItemGroup>
   <Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
+  <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" Condition="Exists('..\UITests.Shared\UITests.Shared.projitems')" />
   <Import Project="..\SamplesApp.Shared\SamplesApp.Shared.projitems" Label="Shared" Condition="Exists('..\SamplesApp.Shared\SamplesApp.Shared.projitems')" />
   <Import Project="..\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems" Label="Shared" />
   <ItemGroup>
@@ -122,6 +126,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Resources\" />
+    <Folder Include="Resources\Fonts\" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Info.plist" />
@@ -131,10 +136,14 @@
     <Compile Include="Main.cs" />
     <Compile Include="AppDelegate.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\Fonts\winjs-symbols.ttf">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </BundleResource>
+  </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Mac\Xamarin.Mac.CSharp.targets" />
 	
-		<Target Name="VS16Mac_RemoveSystemMemory"
-					BeforeTargets="ResolveAssemblyReferences">
+		<Target Name="VS16Mac_RemoveSystemMemory" BeforeTargets="ResolveAssemblyReferences">
 		<!--
 				VS4Mac seems to process System.Memory differently, and removes
 				the System.Memory local reference if the package is transitively referenced.

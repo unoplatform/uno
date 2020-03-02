@@ -7,6 +7,7 @@
       "SourceGenerators\\Uno.UI.SourceGenerators.Tests\\Uno.UI.SourceGenerators.Tests.csproj",
       "SourceGenerators\\Uno.UI.SourceGenerators\\Uno.UI.SourceGenerators.csproj",
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
+      "T4Generator\\T4Generator.csproj",
       "Uno.Foundation\\Uno.Foundation.csproj",
       "Uno.UI.Tests\\Uno.UI.Tests.csproj",
       "Uno.UI\\Uno.UI.csproj",

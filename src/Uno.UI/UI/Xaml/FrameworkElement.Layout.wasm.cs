@@ -55,14 +55,14 @@ namespace Windows.UI.Xaml
 
 				using (traceActivity)
 				{
-					InnerMeasureCore(availableSize.Subtract(Margin));
+					InnerMeasureCore(availableSize);
 				}
 			}
 			else
 			{
 				// This method is split in two functions to avoid the dynCalls
 				// invocations generation for mono-wasm AOT inside of try/catch/finally blocks.
-				InnerMeasureCore(availableSize.Subtract(Margin));
+				InnerMeasureCore(availableSize);
 			}
 		}
 
@@ -218,13 +218,18 @@ namespace Windows.UI.Xaml
 			// Give opportunity to element to alter arranged size
 			clippedInkSize = AdjustArrange(clippedInkSize);
 
-			var offset = this.GetAlignmentOffset(clientSize, clippedInkSize);
+			var (offset, overflow) = this.GetAlignmentOffset(clientSize, clippedInkSize);
 			var margin = Margin;
 
 			offset = new Point(
 				offset.X + finalRect.X + margin.Left,
 				offset.Y + finalRect.Y + margin.Top
 			);
+
+			if (overflow)
+			{
+				needsClipToSlot = true;
+			}
 
 			_logDebug?.Debug(
 				$"{DepthIndentation}[{this}] ArrangeChild(offset={offset}, margin={margin}) [oldRenderSize={oldRenderSize}] [RenderSize={RenderSize}] [clippedInkSize={clippedInkSize}] [RequiresClipping={needsClipToSlot}]");
@@ -259,6 +264,8 @@ namespace Windows.UI.Xaml
 			{
 				ArrangeNative(offset);
 			}
+
+			OnLayoutUpdated();
 		}
 
 		internal Thickness GetThicknessAdjust()

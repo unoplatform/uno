@@ -20,7 +20,7 @@
 							Width="100"
 							Height="100">
 				<ContentControl.Template>
-					<ControlTemplate TargetType="ContentConrol">
+					<ControlTemplate TargetType="ContentControl">
 						<Border x:Name="PART_ImageExBorder"
 								Background="{TemplateBinding Background}"
 								BorderBrush="{TemplateBinding BorderBrush}"
@@ -47,7 +47,7 @@
 							Width="100"
 							Height="100">
 				<ContentControl.Template>
-					<ControlTemplate TargetType="ContentConrol">
+					<ControlTemplate TargetType="ContentControl">
 						<Border x:Name="PART_ImageExBorder"
 								Background="{TemplateBinding Background}"
 								BorderBrush="{TemplateBinding BorderBrush}"
@@ -74,7 +74,7 @@
 							Width="100"
 							Height="100">
 				<ContentControl.Template>
-					<ControlTemplate TargetType="ContentConrol">
+					<ControlTemplate TargetType="ContentControl">
 						<Border x:Name="PART_ImageExBorder"
 								Background="{TemplateBinding Background}"
 								BorderBrush="{TemplateBinding BorderBrush}"

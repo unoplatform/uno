@@ -18,30 +18,15 @@ namespace Windows.UI.Xaml.Media.Animation
 		public void Start()
 		{
 			this.Log().Error("NotSupportedAnimator.Start");
-
-			if (Debugger.IsAttached)
-			{
-				throw new NotSupportedException();
-			}
 		}
 
 		public void Resume()
 		{
 			this.Log().Error("NotSupportedAnimator.Resume");
-
-			if (Debugger.IsAttached)
-			{
-				throw new NotSupportedException();
-			}
 		}
 		public void Pause()
 		{
 			this.Log().Error("NotSupportedAnimator.Pause");
-
-			if (Debugger.IsAttached)
-			{
-				throw new NotSupportedException();
-			}
 		}
 
 		/// <summary>
@@ -60,11 +45,6 @@ namespace Windows.UI.Xaml.Media.Animation
 		private void Stop()
 		{
 			this.Log().Error("NotSupportedAnimator.Stop");
-
-			if (Debugger.IsAttached)
-			{
-				throw new NotSupportedException();
-			}
 		}
 
 		/// <summary>
@@ -73,10 +53,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <param name="duration">Duration.</param>
 		public void SetDuration(long duration)
 		{
-			if (Debugger.IsAttached)
-			{
-				throw new NotSupportedException();
-			}
+			this.Log().Error("NotSupportedAnimator.SetDuration");
 		}
 
 		/// <summary>
@@ -86,11 +63,6 @@ namespace Windows.UI.Xaml.Media.Animation
 		public void SetEasingFunction(IEasingFunction easingFunction)
 		{
 			this.Log().Error("NotSupportedAnimator.SetEasingFunction");
-
-			if (Debugger.IsAttached)
-			{
-				throw new NotSupportedException();
-			}
 		}
 
 		public event EventHandler AnimationEnd;
@@ -110,10 +82,6 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public void Dispose()
 		{
-			if (Debugger.IsAttached)
-			{
-				throw new NotSupportedException();
-			}
 		}
 
 	}

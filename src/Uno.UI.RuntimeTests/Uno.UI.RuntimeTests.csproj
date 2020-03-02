@@ -22,14 +22,32 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
+		<PackageReference Include="FluentAssertions" Version="5.10.2" />
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<Reference Include="System.Xml" />
+		<Reference Include="System.Xml.Linq" />
 	</ItemGroup>
 
 	<ItemGroup>
     <Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
     <UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
   </ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'!='uap10.0.17763'">
+		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_Xaml\FrameworkElementTests\*.cs">
+			<Link>UnitTests\Windows_UI_Xaml\FrameworkElementTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
+		</Compile>
+		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_XAML_Controls\GridTests\Given_Grid_And_Min_Max.cs">
+			<Link>UnitTests\Windows_UI_Xaml_Controls\GridTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
+		</Compile>
+		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_XAML_Controls\GridTests\Context.cs">
+			<Link>UnitTests\Windows_UI_Xaml_Controls\GridTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
+		</Compile>
+		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI.Tests\Windows_UI_XAML_Controls\BorderTests\*.cs">
+			<Link>UnitTests\Windows_UI_Xaml_Controls\BorderTests\%(RecursiveDir)%(FileName)%(Extension)</Link>
+		</Compile>
+	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
 		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">

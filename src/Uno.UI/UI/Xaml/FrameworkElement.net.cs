@@ -4,6 +4,7 @@ using System.Linq;
 using Windows.Foundation;
 using View = Windows.UI.Xaml.UIElement;
 using System.Collections;
+using Uno.UI;
 
 namespace Windows.UI.Xaml
 {
@@ -77,6 +78,11 @@ namespace Windows.UI.Xaml
 			{
 				DesiredSize = RequestedDesiredSize.Value;
 			}
+		}
+
+		internal void InternalArrange(Rect frame)
+		{
+			_layouter.Arrange(frame);
 		}
 
 		static partial void OnGenericPropertyUpdatedPartial(object dependencyObject, DependencyPropertyChangedEventArgs args);

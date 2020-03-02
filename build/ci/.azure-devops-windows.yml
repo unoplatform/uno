@@ -49,23 +49,6 @@ jobs:
       logProjectEvents: false
       createLogFile: false
 
-  - task: VisualStudioTestPlatformInstaller@1
-
-  - task: VSTest@2
-    inputs:
-      testAssemblyVer2: |
-        **\*test*.dll
-        !**\obj\**
-        !**\*Wasm.Test*.dll
-        !**\*UITests.dll
-        !**\*.RuntimeTests.dll
-      vstestLocationMethod: version
-      vsTestVersion: latest
-      testSelector: testAssemblies
-      batchingBasedOnAgentsOption: customBatchSize
-      rerunFailedTests: 'true'
-      customBatchSizeValue: 200 # test count / 10 (https://developercommunity.visualstudio.com/content/problem/891803/vstestconsoleadapter-fails-with-outofmemory.html?childToView=896206#comment-896206)
-
   - task: CopyFiles@2
     inputs:
       SourceFolder: $(build.sourcesdirectory)/Build

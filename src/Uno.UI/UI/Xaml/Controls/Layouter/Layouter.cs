@@ -132,8 +132,10 @@ namespace Windows.UI.Xaml.Controls
 					.Add(marginSize);
 
 				// DesiredSize must include margins
+				// TODO: on UWP, it's not clipped. See test When_MinWidth_SmallerThan_AvailableSize
 				SetDesiredChildSize(Panel as View, clippedDesiredSize);
 
+				// We return "clipped" desiredSize to caller... the unclipped version stays internal
 				return clippedDesiredSize;
 			}
 		}
@@ -209,7 +211,7 @@ namespace Windows.UI.Xaml.Controls
 
 				var arrangeSize = finalRect
 					.Size
-					.AtLeast(default); // 0.0,0.0
+					.AtLeastZero(); // 0.0,0.0
 
 				// We have to choose max between _unclippedDesiredSize and maxSize here, because
 				// otherwise setting of max property could cause arrange at less then _unclippedDesiredSize.
@@ -248,7 +250,6 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
-
 
 		/// <summary>
 		/// Determine the size of the panel.
@@ -421,11 +422,6 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="frame">The rectangle to use, in Logical position</param>
 		public void ArrangeChild(View view, Rect frame)
 		{
-			ArrangeChild(view, frame, true);
-		}
-
-		internal void ArrangeChild(View view, Rect frame, bool raiseLayoutUpdated)
-		{
 			if ((view as IFrameworkElement)?.Visibility == Visibility.Collapsed)
 			{
 				return;
@@ -438,14 +434,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			ArrangeChildOverride(view, finalFrame);
-
-			if (view is FrameworkElement fe)
-			{
-				if (raiseLayoutUpdated)
-				{
-					fe?.OnLayoutUpdated();
-				}
-			}
 		}
 
 		private void LogArrange(View view, Rect frame)
@@ -701,7 +689,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				childSize = isStretch
 					? frameSize
-					: desiredSize + childMarginSize;
+					: desiredSize; // desired size always include margin, so no need to calculate it here
 			}
 			else
 			{

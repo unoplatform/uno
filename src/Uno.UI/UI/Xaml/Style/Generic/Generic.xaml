@@ -542,7 +542,7 @@
 						</Grid.RowDefinitions>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="32" />
+							<ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
