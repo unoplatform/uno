@@ -712,13 +712,15 @@
 								Grid.ColumnSpan="2"
 								Background="{TemplateBinding Background}"
 								BorderBrush="{TemplateBinding BorderBrush}"
-								BorderThickness="{TemplateBinding BorderThickness}" />
+								BorderThickness="{TemplateBinding BorderThickness}"
+								CornerRadius="{TemplateBinding CornerRadius}" />
 						<Border x:Name="HighlightBackground"
 								Grid.Row="1"
 								Grid.ColumnSpan="2"
 								Background="{ThemeResource SystemControlHighlightListAccentLowBrush}"
 								BorderBrush="{ThemeResource SystemControlHighlightBaseMediumLowBrush}"
 								BorderThickness="{TemplateBinding BorderThickness}"
+								CornerRadius="{TemplateBinding CornerRadius}"
 								Opacity="0" />
 						<ContentPresenter x:Name="ContentPresenter"
 										  Grid.Row="1"
