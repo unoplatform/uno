@@ -203,6 +203,7 @@
 										  ContentTransitions="{TemplateBinding ContentTransitions}"
 										  ContentTemplate="{TemplateBinding ContentTemplate}"
 										  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+										  CornerRadius="{TemplateBinding CornerRadius}"
 										  Padding="{TemplateBinding Padding}"
 										  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
 										  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -371,6 +372,7 @@
 								Grid.Row="1"
 								BorderBrush="{TemplateBinding BorderBrush}"
 								BorderThickness="{TemplateBinding BorderThickness}"
+								CornerRadius="{TemplateBinding CornerRadius}"
 								Grid.ColumnSpan="2"
 								Grid.RowSpan="1" />
 						<ContentPresenter x:Name="HeaderContentPresenter"
@@ -818,6 +820,7 @@
 						  Background="{TemplateBinding Background}"
 						  BorderBrush="{TemplateBinding BorderBrush}"
 						  BorderThickness="{TemplateBinding BorderThickness}"
+						  CornerRadius="{TemplateBinding CornerRadius}"
 						  Control.IsTemplateFocusTarget="True">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
@@ -997,7 +1000,8 @@
 					<Grid x:Name="ContentBorder"
 						  Background="{TemplateBinding Background}"
 						  BorderBrush="{TemplateBinding BorderBrush}"
-						  BorderThickness="{TemplateBinding BorderThickness}">
+						  BorderThickness="{TemplateBinding BorderThickness}"
+						  CornerRadius="{TemplateBinding CornerRadius}">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
 								<VisualState x:Name="Normal">
@@ -1427,7 +1431,8 @@
 					<Grid x:Name="ContentBorder"
 						  Background="{TemplateBinding Background}"
 						  BorderBrush="{TemplateBinding BorderBrush}"
-						  BorderThickness="{TemplateBinding BorderThickness}">
+						  BorderThickness="{TemplateBinding BorderThickness}"
+						  CornerRadius="{TemplateBinding CornerRadius}">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
 								<VisualState x:Name="Normal">
@@ -3234,6 +3239,7 @@
 										  ContentTransitions="{TemplateBinding ContentTransitions}"
 										  ContentTemplate="{TemplateBinding ContentTemplate}"
 										  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+										  CornerRadius="{TemplateBinding CornerRadius}"
 										  Padding="{TemplateBinding Padding}"
 										  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
 										  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -3273,7 +3279,8 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="ToggleButton">
 					<Grid x:Name="RootGrid"
-						  Background="{TemplateBinding Background}">
+						  Background="{TemplateBinding Background}"
+						  CornerRadius="{TemplateBinding CornerRadius}">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
 								<VisualState x:Name="Normal">
@@ -3488,6 +3495,7 @@
 										  ContentTransitions="{TemplateBinding ContentTransitions}"
 										  ContentTemplate="{TemplateBinding ContentTemplate}"
 										  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+										  CornerRadius="{TemplateBinding CornerRadius}"
 										  Padding="{TemplateBinding Padding}"
 										  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
 										  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -3943,7 +3951,8 @@
 				<ControlTemplate TargetType="RadioButton">
 					<Grid Background="{TemplateBinding Background}"
 						  BorderBrush="{TemplateBinding BorderBrush}"
-						  BorderThickness="{TemplateBinding BorderThickness}">
+						  BorderThickness="{TemplateBinding BorderThickness}"
+						  CornerRadius="{TemplateBinding CornerRadius}">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
 								<VisualState x:Name="Normal" />
@@ -4440,7 +4449,8 @@
 				<ControlTemplate TargetType="ListView">
 					<Border BorderBrush="{TemplateBinding BorderBrush}"
 							Background="{TemplateBinding Background}"
-							BorderThickness="{TemplateBinding BorderThickness}">
+							BorderThickness="{TemplateBinding BorderThickness}"
+							CornerRadius="{TemplateBinding CornerRadius}">
 						<ScrollViewer x:Name="ScrollViewer"
 									  xamarin:Style="{StaticResource ListViewBaseScrollViewerStyle}"
 									  TabNavigation="{TemplateBinding TabNavigation}"
@@ -4520,7 +4530,8 @@
 				<ControlTemplate TargetType="GridView">
 					<Border BorderBrush="{TemplateBinding BorderBrush}"
 							Background="{TemplateBinding Background}"
-							BorderThickness="{TemplateBinding BorderThickness}">
+							BorderThickness="{TemplateBinding BorderThickness}"
+							CornerRadius="{TemplateBinding CornerRadius}">
 						<ScrollViewer x:Name="ScrollViewer"
 									  xamarin:Style="{StaticResource ListViewBaseScrollViewerStyle}"
 									  TabNavigation="{TemplateBinding TabNavigation}"
@@ -4583,7 +4594,8 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="ScrollViewer">
 					<Border BorderBrush="{TemplateBinding BorderBrush}"
-							BorderThickness="{TemplateBinding BorderThickness}">
+							BorderThickness="{TemplateBinding BorderThickness}"
+							CornerRadius="{TemplateBinding CornerRadius}">
 						<win:VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="ScrollingIndicatorStates">
 								<VisualStateGroup.Transitions>
@@ -4950,6 +4962,7 @@
 								Grid.Row="1"
 								BorderBrush="{TemplateBinding BorderBrush}"
 								BorderThickness="{TemplateBinding BorderThickness}"
+								CornerRadius="{TemplateBinding CornerRadius}"
 								Grid.ColumnSpan="2"
 								Grid.RowSpan="1" />
 						<ContentPresenter x:Name="HeaderContentPresenter"
@@ -5082,6 +5095,7 @@
 									  Background="{TemplateBinding Background}"
 									  BorderBrush="{TemplateBinding BorderBrush}"
 									  BorderThickness="{TemplateBinding BorderThickness}"
+									  CornerRadius="{TemplateBinding CornerRadius}"
 									  Padding="{TemplateBinding Padding}"
 									  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
 									  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
@@ -5114,7 +5128,8 @@
 						<Border x:Name="DeterminateRoot"
 								Background="{TemplateBinding Background}"
 								BorderBrush="{TemplateBinding BorderBrush}"
-								BorderThickness="{TemplateBinding BorderThickness}">
+								BorderThickness="{TemplateBinding BorderThickness}"
+								CornerRadius="{TemplateBinding CornerRadius}">
 							<Rectangle x:Name="ProgressBarIndicator"
 									   Margin="{TemplateBinding Padding}"
 									   Fill="{TemplateBinding Foreground}"
@@ -5148,6 +5163,7 @@
 		            Background="{TemplateBinding Background}"
 		            BorderThickness="{TemplateBinding BorderThickness}"
 		            BorderBrush="{TemplateBinding BorderBrush}"
+					CornerRadius="{TemplateBinding CornerRadius}"
 		            Padding="{TemplateBinding Padding}"
 		            MaxWidth="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.MaxSideLength}"
 		            MaxHeight="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.MaxSideLength}"
@@ -5419,7 +5435,8 @@
 				<ControlTemplate TargetType="ListViewHeaderItem">
 					<StackPanel Background="{TemplateBinding Background}"
 								BorderBrush="{TemplateBinding BorderBrush}"
-								BorderThickness="{TemplateBinding BorderThickness}">
+								BorderThickness="{TemplateBinding BorderThickness}"
+								CornerRadius="{TemplateBinding CornerRadius}">
 						<ContentPresenter x:Name="ContentPresenter"
 										  Margin="{TemplateBinding Padding}"
 										  Content="{TemplateBinding Content}"
@@ -5465,7 +5482,8 @@
 				<ControlTemplate TargetType="GridViewHeaderItem">
 					<StackPanel Background="{TemplateBinding Background}"
 								BorderBrush="{TemplateBinding BorderBrush}"
-								BorderThickness="{TemplateBinding BorderThickness}">
+								BorderThickness="{TemplateBinding BorderThickness}"
+								CornerRadius="{TemplateBinding CornerRadius}">
 						<ContentPresenter x:Name="ContentPresenter"
 										  Margin="{TemplateBinding Padding}"
 										  Content="{TemplateBinding Content}"
@@ -5503,6 +5521,7 @@
 									  Background="{TemplateBinding Background}"
 									  BorderBrush="{TemplateBinding BorderBrush}"
 									  BorderThickness="{TemplateBinding BorderThickness}"
+									  CornerRadius="{TemplateBinding CornerRadius}"
 									  ContentTransitions="{TemplateBinding ContentTransitions}"
 									  ContentTemplate="{TemplateBinding ContentTemplate}"
 									  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
@@ -5542,7 +5561,8 @@
 				<ControlTemplate TargetType="ToggleSwitch">
 					<Grid Background="{TemplateBinding Background}"
 						  BorderBrush="{TemplateBinding BorderBrush}"
-						  BorderThickness="{TemplateBinding BorderThickness}">
+						  BorderThickness="{TemplateBinding BorderThickness}"
+						  CornerRadius="{TemplateBinding CornerRadius}">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
 								<VisualState x:Name="Normal" />
