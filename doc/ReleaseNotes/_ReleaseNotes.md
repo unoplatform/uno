@@ -2,6 +2,7 @@
 
 ### Features
 - [Android] Support for getting from Clipboard (text, uri, html), and adding put to Clipboard of uri and html, test for it (on Android and for macOS)
+- Added CornerRadius support to more default styles to match UWP (for list of updated styles see PR [#2713])
 - Support for `FontIcon` on macOS
 - Support for `PhoneCallManager.ShowPhoneCallUI` on macOS
 - Support for full screen mode on macOS
@@ -50,6 +51,8 @@
 
 ### Bug fixes
 
+- Adjust `CornerRadius` for `Button` style to apply properly
+- Add support for `CornerRadius` in default `ComboBox` style
 - Fix for samples app compilation for macOS
 - [#2465] Raising macOS Button Click event
 - [#2506] `DesignMode.DesignMode2Enabled` no longer throws (is always `false` on non-UWP platforms)
