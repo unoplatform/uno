@@ -3005,15 +3005,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// Replace namespaces with their fully qualified namespace.
 					// Add global:: so that qualified paths can be expluded from binding
 					// path observation.
-					xamlString = xamlString.Replace(
-						$"{ns.Prefix}:",
-						"global::" + ns.Namespace.TrimStart("using:") + ".");
+					xamlString = Regex.Replace(
+						xamlString,
+						$@"(^|[^\w])({ns.Prefix}:)",
+						"$1global::" + ns.Namespace.TrimStart("using:") + ".");
 				}
-				else if(ns.Namespace == XamlConstants.XamlXmlNamespace)
+				else if (ns.Namespace == XamlConstants.XamlXmlNamespace)
 				{
-					xamlString = xamlString.Replace(
-						$"{ns.Prefix}:",
-						"global::System.");
+					xamlString = Regex.Replace(
+						xamlString,
+						$@"(^|[^\w])({ns.Prefix}:)",
+						"$1global::System.");
 				}
 			}
 
