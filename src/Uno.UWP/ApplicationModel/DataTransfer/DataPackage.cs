@@ -9,7 +9,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		internal string Text { get; private set; }
 
 #if !(__ANDROID__ || NET461)
-		public void SetText(string text)
+		public void SetText(string value)
 		{
 			if (value == null)
 			{
