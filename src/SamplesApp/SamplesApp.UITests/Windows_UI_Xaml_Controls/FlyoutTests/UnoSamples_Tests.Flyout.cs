@@ -134,5 +134,82 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			_app.WaitForNoElement(outerButton);
 			_app.WaitForNoElement(innerButton);
 		}
+
+		[Test]
+		[AutoRetry]
+		public void FlyoutTest_Simple_FlyoutsCanBeDismissed()
+		{
+			Run("Uno.UI.Samples.Content.UITests.Flyout.Flyout_Simple");
+
+			var majorStepIndex = 0;
+			var testableFlyoutButtons = new string[]
+			{
+				"LeftFlyoutButton",
+				"RightFlyoutButton",
+				"BottomFlyoutButton",
+				"TopFlyoutButton",
+				//"FullFlyoutButton", // unclosable without native back button/gesture
+				"CenteredFullFlyoutButton",
+				//"FullOverlayFlyoutButton", // unclosable without native back button/gesture
+				"WithOffsetFlyoutButton",
+			}.ToDictionary(x => x, x => _app.Marked(x));
+
+			// initial state
+			_app.WaitForElement(testableFlyoutButtons.First().Value);
+			var initialScreenshot = TakeScreenshot($"{majorStepIndex++} Initial State", ignoreInSnapshotCompare: true);
+
+			var comparableRect = GetOsComparableRect();
+			var dismissArea = GetDismissAreaCenter();
+			foreach (var button in testableFlyoutButtons)
+			{
+				// show flyout
+				button.Value.Tap();
+				var flyoutOpenedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 0 Opened", ignoreInSnapshotCompare: true);
+
+				// dismiss flyout
+				_app.TapCoordinates(dismissArea.X, dismissArea.Y);
+				var flyoutDismissedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 1 Dismissed", ignoreInSnapshotCompare: true);
+
+				// compare
+				ImageAssert.AreNotEqual(flyoutOpenedScreenshot, initialScreenshot, comparableRect);
+				ImageAssert.AreEqual(flyoutDismissedScreenshot, initialScreenshot, comparableRect);
+
+				majorStepIndex++;
+			}
+
+			(float X, float Y) GetDismissAreaCenter()
+			{
+				// the dismiss area is safe to click, since no flyout should block this area (except: FullFlyoutButton, FullOverlayFlyoutButton)
+				/* [LeftFlyoutButton]
+				 * ...
+				 * [FullOverlayFlyoutButton]
+				 *         (dismiss area)
+				 *       [WithOffsetFlyoutButton margin=100] */
+				var rect1 = _app.GetRect("FullFlyoutButton");
+				var rect2 = _app.GetRect("WithOffsetFlyoutButton");
+
+				return (rect2.CenterX, (rect1.Bottom + rect2.Y) / 2);
+			}
+			Rectangle? GetOsComparableRect()
+			{
+				if (AppInitializer.GetLocalPlatform() == Platform.Android)
+				{
+					// the status bar area needs to be excluded for image comparison when flyouts are used
+					var screen = _app.GetScreenDimensions();
+					var statusBarRect = _app.GetRect("statusBarBackground");
+
+					return new Rectangle(
+						0,
+						(int)statusBarRect.Height,
+						(int)screen.Width,
+						(int)screen.Height - (int)statusBarRect.Height
+					);
+				}
+				else
+				{
+					return default;
+				}
+			}
+		}
 	}
 }
