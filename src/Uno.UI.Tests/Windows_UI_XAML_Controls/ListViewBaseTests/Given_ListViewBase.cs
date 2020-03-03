@@ -114,7 +114,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		{
 			var panel = new StackPanel();
 
-			var SUT = new ListViewBase()
+			var SUT = new ListView()
 			{
 				Style = null,
 				Template = new ControlTemplate(() => new ItemsPresenter()),
@@ -233,7 +233,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			{
 				Assert.Fail("Container should be a ListViewItem");
 			}
-		}
+	}
 
 		[TestMethod]
 		public void When_Single_SelectionChanged_And_SelectorItem_IsSelected_Changed()
@@ -533,12 +533,18 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			new Style(typeof(Windows.UI.Xaml.Controls.ListViewItem))
 			{
 				Setters =  {
-					new Setter<ItemsControl>("Template", t =>
+					new Setter<ListViewItem>("Template", t =>
 						t.Template = Funcs.Create(() =>
-							new ContentPresenter().Apply(p => {
-								p.SetBinding(ContentPresenter.ContentTemplateProperty, new Binding(){ Path = "ContentTemplate", RelativeSource = RelativeSource.TemplatedParent });
-								p.SetBinding(ContentPresenter.ContentProperty, new Binding(){ Path = "Content", RelativeSource = RelativeSource.TemplatedParent });
-							})
+							new Grid
+							{
+								Children = {
+									new ContentPresenter()
+										.Apply(p => {
+											p.SetBinding(ContentPresenter.ContentTemplateProperty, new Binding(){ Path = "ContentTemplate", RelativeSource = RelativeSource.TemplatedParent });
+											p.SetBinding(ContentPresenter.ContentProperty, new Binding(){ Path = "Content", RelativeSource = RelativeSource.TemplatedParent });
+										})
+								}
+							}
 						)
 					)
 				}

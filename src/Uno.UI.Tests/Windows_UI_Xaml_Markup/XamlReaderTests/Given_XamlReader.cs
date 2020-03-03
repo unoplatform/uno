@@ -41,11 +41,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Markup.XamlReaderTests
 
 			_appResolver = ResourceDictionary.DefaultResolver;
 			ResourceDictionary.DefaultResolver = null;
-
-			Uno.Extensions.LogExtensionPoint
-				.AmbientLoggerFactory
-				.AddConsole(LogLevel.Debug)
-				.AddDebug(LogLevel.Debug);
 		}
 
 		[TestMethod]
