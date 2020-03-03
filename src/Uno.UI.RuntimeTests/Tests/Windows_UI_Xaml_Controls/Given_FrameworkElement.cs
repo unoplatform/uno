@@ -135,11 +135,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ContentControl contentCtl = null;
 			Grid grid = null;
 
-			content = new Border {Width = 100, Height = 15};
+			content = new Border { Width = 100, Height = 15 };
 
-			contentCtl = new ContentControl {MinWidth = 110, Content = content};
+			contentCtl = new ContentControl { MinWidth = 110, Content = content };
 
-			grid = new Grid() {MinWidth = 120};
+			grid = new Grid() { MinWidth = 120 };
 
 			grid.Children.Add(contentCtl);
 
@@ -153,7 +153,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			grid.Arrange(new Rect(default, new Size(50, 50)));
 
-			TestServices.WindowHelper.WindowContent = new Border {Child = grid, Width = 50, Height = 50};
+			TestServices.WindowHelper.WindowContent = new Border { Child = grid, Width = 50, Height = 50 };
 
 			await TestServices.WindowHelper.WaitForIdle();
 			await Task.Delay(10);
@@ -325,8 +325,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			var actualHeight = Math.Round(outer.ActualHeight);
 			Assert.AreEqual(InnerBorderHeight, actualHeight);
 		}
-	}
 #endif
+	}
 
 	public partial class MyControl01 : FrameworkElement
 	{
