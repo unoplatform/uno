@@ -51,6 +51,7 @@
 
 ### Bug fixes
 
+- Adjust `CornerRadius` for `Button` style to apply properly
 - Add support for `CornerRadius` in default `ComboBox` style
 - Fix for samples app compilation for macOS
 - [#2465] Raising macOS Button Click event
