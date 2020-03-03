@@ -2,6 +2,7 @@
 
 ### Features
 
+- Added CornerRadius support to more default styles to match UWP (for list of updated styles see PR [#2713])
 - Support for `FontIcon` on macOS
 - Support for `PhoneCallManager.ShowPhoneCallUI` on macOS
 - Support for full screen mode on macOS
@@ -50,6 +51,7 @@
 
 ### Bug fixes
 
+- Adjust `CornerRadius` for `Button` style to apply properly
 - Add support for `CornerRadius` in default `ComboBox` style
 - Fix for samples app compilation for macOS
 - [#2465] Raising macOS Button Click event
