@@ -9,7 +9,7 @@
 	AddClass("Uno.UI.Controls.Legacy", "HorizontalGridView");
 	AddClass("Uno.UI.Controls.Legacy", "HorizontalListView");
 	AddClass("Windows.UI.Xaml.Controls", "ProgressRing");
-	AddClass("Windows.UI.Xaml.Controls", "ScrollContentPresenter");
+	AddClass("Windows.UI.Xaml.Controls", "ScrollContentPresenter", callsBaseOnLayout: false);
 	AddClass("Windows.UI.Xaml.Controls", "NativePagedView");
 	AddClass("Windows.UI.Xaml.Controls", "TextBoxView", hasNewMinWidthHeight: true, hasNewMaxWidthHeight: true);
 	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase", isUnoMotionTarget: true);
