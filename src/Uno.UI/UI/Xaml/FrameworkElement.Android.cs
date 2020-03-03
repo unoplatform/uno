@@ -211,12 +211,12 @@ namespace Windows.UI.Xaml
 
 			if (StretchAffectsMeasure)
 			{
-				if (HorizontalAlignment == HorizontalAlignment.Stretch)
+				if (HorizontalAlignment == HorizontalAlignment.Stretch && !double.IsPositiveInfinity(availableSize.Width))
 				{
 					measuredSize.Width = ViewHelper.MeasureSpecGetSize(widthMeasureSpec);
 				}
 
-				if (VerticalAlignment == VerticalAlignment.Stretch)
+				if (VerticalAlignment == VerticalAlignment.Stretch && !double.IsPositiveInfinity(availableSize.Height))
 				{
 					measuredSize.Height = ViewHelper.MeasureSpecGetSize(heightMeasureSpec);
 				}
