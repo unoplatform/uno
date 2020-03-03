@@ -85,7 +85,6 @@ namespace Windows.UI.Xaml.Controls
 				// phase must be done by the parent element's layouter.
 				// Here, it means adding the margin to the measured size.
 				ret = ret.Add(ife.Margin);
-				SetDesiredChildSize(view, ret);
 			}
 
 			var w = nfloat.IsNaN((nfloat)ret.Width) ? double.PositiveInfinity : Math.Min(slotSize.Width, ret.Width);

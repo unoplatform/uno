@@ -1,7 +1,12 @@
 ﻿using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+#if __IOS__
 using UIKit;
+#elif __MACOS__
+using AppKit;
+#endif
+using Uno.UI;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
@@ -19,7 +24,9 @@ namespace UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 		private async void OnLoaded(object sender, RoutedEventArgs e)
 		{
 			await Task.Delay(300);
+#if HAS_UNO
 			layout.Text = this.ShowLocalVisualTree();
+#endif
 		}
 	}
 }
