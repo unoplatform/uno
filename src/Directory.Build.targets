@@ -32,7 +32,7 @@
     <PackageReference Update="Uno.UITest.Xamarin" Version="1.0.0-dev.107" />
     <PackageReference Update="Uno.UITest.Helpers" Version="1.0.0-dev.107" />
     <PackageReference Update="System.ValueTuple" Version="4.5.0" />
-    <PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.3" />
+    <PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
   </ItemGroup>
 
 </Project>
