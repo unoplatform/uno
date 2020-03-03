@@ -297,7 +297,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(expectedResult, resultStr, layout);
 		}
+
+#if __ANDROID__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Native_Parent_And_Measure_Infinite()
+		{
+			const int InnerBorderHeight = 47;
+			var native = new MyLinearLayout();
+			var inner = new Border { Width = 200, Height = InnerBorderHeight };
+			var outer = new Grid() { VerticalAlignment = VerticalAlignment.Center };
+			var panel = new StackPanel();
+
+			native.Child = inner;
+			outer.Children.Add(native);
+			panel.Children.Add(outer);
+
+			TestServices.WindowHelper.WindowContent = panel;
+			await TestServices.WindowHelper.WaitForIdle(); //StretchAffectsMeasure is set when Loaded is called
+
+			panel.Measure(new Size(1000, 1000));
+
+			var measuredHeightLogical = Math.Round(Uno.UI.ViewHelper.PhysicalToLogicalPixels(outer.MeasuredHeight));
+			Assert.AreEqual(InnerBorderHeight, measuredHeightLogical);
+
+			outer.Arrange(new Rect(0, 0, 1000, 1000));
+			var actualHeight = Math.Round(outer.ActualHeight);
+			Assert.AreEqual(InnerBorderHeight, actualHeight);
+		}
 	}
+#endif
 
 	public partial class MyControl01 : FrameworkElement
 	{
