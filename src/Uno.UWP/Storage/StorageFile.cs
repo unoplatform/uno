@@ -208,9 +208,9 @@ namespace Windows.Storage
 		}
 
 		public IAsyncOperation<BasicProperties> GetBasicPropertiesAsync()
-			=> GetBasicPropertiesAsyncTask(new CancellationToken()).AsAsyncOperation<BasicProperties>();
+			=> GetBasicPropertiesAsync(new CancellationToken()).AsAsyncOperation<BasicProperties>();
 
-		public async Task<BasicProperties> GetBasicPropertiesAsyncTask(CancellationToken ct)
+		public async Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
 		{
 			return new BasicProperties(this);
 		}
