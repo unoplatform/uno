@@ -14,7 +14,8 @@ namespace Windows.Networking
 		public  string DisplayName { get; internal set; }
 		public  global::Windows.Networking.Connectivity.IPInformation IPInformation { get; internal set; }
 		public  string RawName { get; internal set; }
-		public  global::Windows.Networking.HostNameType Type { get; internal set; }
+		public  HostNameType Type { get; internal set; }
+
 
 		internal HostName()
 		{
