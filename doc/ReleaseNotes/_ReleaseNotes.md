@@ -1,7 +1,7 @@
 # Release notes
 
 ### Features
-
+- [Android] Support for `Application.Current.Exit`
 - Support for `FontIcon` on macOS
 - Support for `PhoneCallManager.ShowPhoneCallUI` on macOS
 - Support for full screen mode on macOS
