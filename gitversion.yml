@@ -15,7 +15,7 @@ branches:
     mode: ContinuousDeployment
     tag: 'PullRequest'
     tag-number-pattern: '[/-](?<number>\d+)[-/]'
-    increment: none
+    increment: Inherit
 
   beta:
     mode: ContinuousDeployment
@@ -39,14 +39,14 @@ branches:
     increment: none
 
   projects:
-    tag: ^proj-{BranchName}
-    regex: projects/(.*?)
+    tag: proj-{BranchName}
+    regex: ^projects/(.*?)
     source-branches: ['master']
     increment: none
 
   feature:
-    tag: ^feature.{BranchName}
-    regex: feature/(.*?)
+    tag: feature.{BranchName}
+    regex: ^feature/(.*?)
     source-branches: ['master']
     increment: none
 
