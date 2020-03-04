@@ -1,6 +1,7 @@
 # Release notes
 
 ### Features
+- Support for `Windows.Storage.FileProperties.BasicProperties.DateModified`
 
 - Added CornerRadius support to more default styles to match UWP (for list of updated styles see PR [#2713])
 - Support for `FontIcon` on macOS
