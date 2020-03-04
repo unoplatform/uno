@@ -13,7 +13,8 @@
 	d:DesignWidth="400">
 
 	<StackPanel>
-		<Button Content="Change height"
+		<Button x:Name="HeightChangeButton"
+						Content="Change height"
 						Click="ToggleHeight" />
 		<Border x:Name="FixedHeightContainer"
 						Width="125"

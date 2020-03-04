@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Controls;
 using System.Linq;
 using Windows.Foundation;
 using FluentAssertions;
-
+using FluentAssertions.Execution;
 using View = Windows.UI.Xaml.FrameworkElement;
 
 namespace Uno.UI.Tests.StackPanelTest
@@ -236,16 +236,23 @@ namespace Uno.UI.Tests.StackPanelTest
 			);
 
 			SUT.Measure(availableSize: new Size(width: 40, height: float.PositiveInfinity));
-			SUT.DesiredSize.Should().Be(new Size(20, 40));
-			c1.DesiredSize.Should().Be(new Size(10, 10));
-			c2.DesiredSize.Should().Be(new Size(20, 30));
+			using (new AssertionScope("Desired Sizes"))
+			{
+				SUT.DesiredSize.Should().Be(new Size(20, 40));
+				c1.DesiredSize.Should().Be(new Size(10, 10));
+				c2.DesiredSize.Should().Be(new Size(20, 30));
+			}
 
 			SUT.Arrange(finalRect: new Rect(x: 0, y: 0,width: 30, height: 40));
-			SUT.Arranged.Should().Be((Rect)"0,0,30,40");
-			c1.Arranged.Should().Be((Rect)"0,0,30,10");
-			c2.Arranged.Should().Be((Rect)"10,20,10,10");
 
-			SUT.GetChildren().Should().HaveCount(2);
+			using (new AssertionScope("Arranged Sizes"))
+			{
+				SUT.Arranged.Should().Be((Rect)"0,0,30,40");
+				c1.Arranged.Should().Be((Rect)"0,0,30,10");
+				c2.Arranged.Should().Be((Rect)"10,20,10,10");
+
+				SUT.GetChildren().Should().HaveCount(2);
+			}
 		}
 
 		[TestMethod]

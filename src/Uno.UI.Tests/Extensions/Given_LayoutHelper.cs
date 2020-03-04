@@ -88,8 +88,8 @@ namespace Uno.UI.Tests.Extensions
 
 			var (calculatedMin, calculatedMax) = element.GetMinMax();
 
-			calculatedMin.Should().Be(ParseSize(expectedMin), "Invalid calculated min size");
-			calculatedMax.Should().Be(ParseSize(expectedMax), "Invalid calculated max size");
+			calculatedMin.Should().Be(ParseSize(expectedMin), 2, "Invalid calculated min size");
+			calculatedMax.Should().Be(ParseSize(expectedMax), 2, "Invalid calculated max size");
 		}
 
 		[DataRow(",", ",", ",")]

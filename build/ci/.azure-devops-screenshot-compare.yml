@@ -6,6 +6,7 @@ jobs:
     - Wasm_UITests_Automated
     - Android_Tests
     - iOS_Tests
+  condition: succeededOrFailed()
 
   pool:
     vmImage: 'vs2017-win2016'
@@ -37,7 +38,7 @@ jobs:
 
   - script: |
       src\Uno.UI.TestComparer\bin\Release\Uno.UI.TestComparer.exe "azdo" --pat="$(UITestsCompare_PAT)" --base-path="$(COMPARE_WORKDIR)" --source-branch="%GIT_SOURCEBRANCH%" --target-branch="%GIT_TARGETBRANCH%" --artifact-name="uitests-results" --artifact-inner-path="uitests-results\screenshots" --definition-name="$(Build.DefinitionName)" --project-name="$(System.TeamProject)" --server-uri="$(System.TeamFoundationCollectionUri)" --current-build="$(Build.BuildId)" --run-limit="3" --github-pat="$(CommentsGitHubPAT)" --source-repository="$(system.pullRequest.sourceRepositoryUri)" --github-pr-id="$(system.pullRequest.pullRequestNumber)"
-      
+
     env:
       GIT_TARGETBRANCH: "$(System.PullRequest.TargetBranch)"
       GIT_SOURCEBRANCH: "$(Build.SourceBranch)"
@@ -55,10 +56,10 @@ jobs:
 
   - task: ArchiveFiles@2
     inputs:
-      rootFolderOrFile: '$(COMPARE_WORKDIR)' 
-      includeRootFolder: true 
+      rootFolderOrFile: '$(COMPARE_WORKDIR)'
+      includeRootFolder: true
       archiveType: 'zip'
-      archiveFile: '$(Build.ArtifactStagingDirectory)/snapshot-compare-results-$(Build.BuildId).zip' 
+      archiveFile: '$(Build.ArtifactStagingDirectory)/snapshot-compare-results-$(Build.BuildId).zip'
 
   - task: PublishBuildArtifacts@1
     inputs:

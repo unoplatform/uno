@@ -1,10 +1,14 @@
 using System;
 using System.Threading;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
+using Uno.Logging;
 using Windows.Foundation;
 
 namespace Windows.System
 {
-	public partial class DispatcherQueueTimer 
+	public partial class 
+		DispatcherQueueTimer 
 	{
 		private static class States
 		{
@@ -117,11 +121,21 @@ namespace Windows.System
 
 		private void RaiseTick()
 		{
-			if (IsRunning)
+			try
 			{
-				_lastTick = DateTimeOffset.UtcNow;
+				if (IsRunning)
+				{
+					_lastTick = DateTimeOffset.UtcNow;
 
-				Tick?.Invoke(this, null);
+					Tick?.Invoke(this, null);
+				}
+			}
+			catch (Exception e)
+			{
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error("Raising tick failed", e);
+				}
 			}
 		}
 

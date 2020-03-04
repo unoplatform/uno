@@ -2,6 +2,7 @@
 using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
+using System.Text;
 using Uno.Extensions;
 
 namespace Windows.Foundation
@@ -104,8 +105,18 @@ namespace Windows.Foundation
 			);
 		}
 
-		public static implicit operator string(Rect rect) =>
-			$"{rect.X},{rect.Y},{rect.Width},{rect.Height}";
+		public static implicit operator string(Rect rect)
+		{
+			var sb = new StringBuilder();
+			sb.Append(rect.X.ToStringInvariant());
+			sb.Append(',');
+			sb.Append(rect.Y.ToStringInvariant());
+			sb.Append(',');
+			sb.Append(rect.Width.ToStringInvariant());
+			sb.Append(',');
+			sb.Append(rect.Height.ToStringInvariant());
+			return sb.ToString();
+		}
 
 		public override string ToString() => (string)this;
 
@@ -172,6 +183,9 @@ namespace Windows.Foundation
 		/// and the rectangle represented by the specified Windows.Foundation.Rect, and stores
 		/// the result as the current Windows.Foundation.Rect.
 		/// </summary>
+		/// <remarks>
+		/// Use .IntersectWith() extensions if you want a version without side-effects.
+		/// </remarks>
 		/// <param name="rect">The rectangle to intersect with the current rectangle.</param>
 		public void Intersect(Rect rect)
 		{

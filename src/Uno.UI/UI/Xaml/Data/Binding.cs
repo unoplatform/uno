@@ -166,15 +166,21 @@ namespace Windows.UI.Xaml.Data
 		internal Func<object, object> XBindSelector { get; private set; }
 
 		/// <summary>
+		/// Provides the method used to set the value back to the source.
+		/// </summary>
+		internal Action<object, object> XBindBack { get; private set; }
+
+		/// <summary>
 		/// List of paths to observe in the context x:Bind expressions
 		/// </summary>
 		internal string[] XBindPropertyPaths { get; private set; }
 
-		internal void SetBindingXBindProvider(object compiledSource, Func<object, object> xBindSelector, string[] propertyPaths = null)
+		internal void SetBindingXBindProvider(object compiledSource, Func<object, object> xBindSelector, Action<object, object> xBindBack, string[] propertyPaths = null)
 		{
 			CompiledSource = compiledSource;
 			XBindSelector = xBindSelector;
 			XBindPropertyPaths = propertyPaths;
+			XBindBack = xBindBack;
 		}
 	}
 }

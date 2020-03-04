@@ -12,8 +12,6 @@ namespace Windows.UI.Xaml.Media.Animation
 {
     internal static partial class AnimatorFactory
     {
-		private static readonly string __notSupportedProperty = "This property is not supported by GPU enabled animations.";
-
 		/// <summary>
 		/// Creates the actual animator instance
 		/// </summary>
@@ -29,7 +27,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 
-		private static NativeValueAnimatorAdapter GetGPUAnimator(this Timeline timeline, double startingValue, double targetValue)
+		private static IValueAnimator GetGPUAnimator(this Timeline timeline, double startingValue, double targetValue)
 		{
 			// Overview    : http://developer.android.com/guide/topics/graphics/prop-animation.html#property-vs-view
 			// Performance : http://developer.android.com/guide/topics/graphics/hardware-accel.html#layers-anims
@@ -87,7 +85,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			//	{
 			//		case nameof(SkewTransform.AngleX):
 			//			return ObjectAnimator.OfFloat(skew.View, "scaleX", ViewHelper.LogicalToPhysicalPixels(targetValue), startingValue);
-			//
+
 			//		case nameof(SkewTransform.AngleY):
 			//			return ObjectAnimator.OfFloat(skew.View, "scaleY", ViewHelper.LogicalToPhysicalPixels(targetValue), startingValue);
 			//	}
@@ -120,7 +118,8 @@ namespace Windows.UI.Xaml.Media.Animation
 				}
 			}
 
-			throw new NotSupportedException(__notSupportedProperty);
+			Application.Current.RaiseRecoverableUnhandledException(new NotSupportedException($"GPU bound animation of {property} is not supported on {target}. Use a discrete animation instead."));
+			return new NativeValueAnimatorAdapter(ValueAnimator.OfFloat((float)startingValue, (float)targetValue));
 		}
 
 		internal static void UpdatePivotWhileAnimating(Transform transform, double pivotX, double pivotY)

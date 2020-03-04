@@ -1127,7 +1127,7 @@ var Uno;
                         this.dispatchEvent(childElement, "loading");
                     }
                 }
-                if (index && index < parentElement.childElementCount) {
+                if (index != null && index < parentElement.childElementCount) {
                     const insertBeforeElement = parentElement.children[index];
                     parentElement.insertBefore(childElement, insertBeforeElement);
                 }

@@ -3,8 +3,10 @@ using System.Drawing;
 using System.Linq;
 using System.Threading.Tasks;
 using FluentAssertions;
+using FluentAssertions.Execution;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
@@ -63,7 +65,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			var textBox2 = _app.Marked("textBox2");
 
 			var textBox1Result_Before = _app.Query(textBox1).First();
-			var textBox2Result_Before = _app.Query(textBox2).First();
 
 			textBox1.FastTap();
 			textBox1.EnterText("hello 01");
@@ -76,12 +77,14 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			_app.WaitForText(textBox2, "hello 02");
 
 			var textBox1Result_After = _app.Query(textBox1).First();
-			var textBox2Result_After = _app.Query(textBox2).First();
 
-			textBox1Result_After.Rect.Width.Should().Be(textBox1Result_Before.Rect.Width);
-			textBox1Result_After.Rect.Height.Should().Be(textBox1Result_Before.Rect.Height);
-			textBox1Result_After.Rect.X.Should().Be(textBox1Result_Before.Rect.X);
-			textBox1Result_After.Rect.Y.Should().Be(textBox1Result_Before.Rect.Y);
+			using (new AssertionScope())
+			{
+				textBox1Result_After.Rect.X.Should().Be(textBox1Result_Before.Rect.X);
+				// We doesn't check the Y here because of the status bar causing the test to be unreliable
+				textBox1Result_After.Rect.Width.Should().Be(textBox1Result_Before.Rect.Width);
+				textBox1Result_After.Rect.Height.Should().Be(textBox1Result_Before.Rect.Height);
+			}
 		}
 
 		[Test]
@@ -242,8 +245,11 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			var text2 = textbox.GetDependencyPropertyValue<string>("Text");
 			var text3 = scoreboard.GetDependencyPropertyValue<string>("Text");
 
-			text2.Should().Be(text1, because: "Text content should not change at max length.");
-			text3.Should().Be("TextChanged: 1");
+			using (new AssertionScope())
+			{
+				text2.Should().Be(text1, because: "Text content should not change at max length.");
+				text3.Should().Be("TextChanged: 1");
+			}
 		}
 
 		[Test]
@@ -294,6 +300,124 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			DefocusTextBox();
 
 			Assert.AreEqual("reset", GetMappedText());
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_BeforeTextChanging_Validation()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_BeforeTextChanging");
+
+			var beforeTextBox = _app.Marked("BeforeTextBox");
+
+			// Enter text and verify that only e is permittable in text box
+			Assert.AreEqual("", beforeTextBox.GetDependencyPropertyValue("Text")?.ToString());
+			beforeTextBox.EnterText("Enter text and verify that only e is permittable");
+			Assert.AreEqual("eeeeee", beforeTextBox.GetDependencyPropertyValue("Text")?.ToString());
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_TextAlignment_Left_Validation()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_TextAlignment");
+			
+			var leftAlignedTextBox = _app.Marked("LeftAlignedTextBox");
+
+			// Assert initial text alignment, change text and assert final text alignment
+			ChangeTextAndAssertBeforeAfter(leftAlignedTextBox, "Left", "LeftAlignedText", "Left");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_TextAlignment_Center_Validation()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_TextAlignment");
+
+			var centerAlignedTextBox = _app.Marked("CenterAlignedTextBox");
+
+			// Assert initial text alignment, change text and assert final text alignment
+			ChangeTextAndAssertBeforeAfter(centerAlignedTextBox, "Center", "CenterAlignedText", "Center");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_TextAlignment_Right_Validation()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_TextAlignment");
+
+			var rightAlignedTextBox = _app.Marked("RightAlignedTextBox");
+
+			// Assert initial text alignment, change text and assert final text alignment
+			ChangeTextAndAssertBeforeAfter(rightAlignedTextBox, "Right", "RightAlignedText", "Right");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_TextAlignment_Justify_Validation()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_TextAlignment");
+
+			var justifyAlignedTextBox = _app.Marked("JustifyAlignedTextBox");
+
+			// Assert initial text alignment, change text and assert final text alignment
+			ChangeTextAndAssertBeforeAfter(justifyAlignedTextBox, "Justify", "JustifyAlignedText", "Justify");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_TextAlignment_DetectFromContent_Validation()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_TextAlignment");
+
+			var detectFromContentAlignedTextBox = _app.Marked("DetectFromContentAlignedTextBox");
+
+			// Assert initial text alignment, change text and assert final text alignment
+			ChangeTextAndAssertBeforeAfter(detectFromContentAlignedTextBox, "DetectFromContent", "DetectFromContentAlignedText", "DetectFromContent");
+		}
+
+		private void ChangeTextAndAssertBeforeAfter(QueryEx textbox, string initialTextAlignment, string finalText, string finalTextAlignment)
+		{
+			// Focus textbox
+			textbox.Tap();
+
+			// Assert initial state
+			Assert.AreEqual(initialTextAlignment, textbox.GetDependencyPropertyValue("TextAlignment")?.ToString());
+
+			// Update text content
+			_app.ClearText();
+			_app.EnterText(finalText);
+
+			// Assert final state
+			Assert.AreEqual(finalTextAlignment, textbox.GetDependencyPropertyValue("TextAlignment")?.ToString());
+		}
+
+		[Test]
+		[AutoRetry]
+		public void TextBox_TextProperty_Validation()
+		{
+			Run("Uno.UI.Samples.Content.UITests.TextBoxControl.TextBox_TextProperty");
+
+			var textBox1 = _app.Marked("TextBox1");
+			var textBox2 = _app.Marked("TextBox2");
+			var textChangedTextBlock = _app.Marked("TextChangedTextBlock");
+			var lostFocusTextBlock = _app.Marked("LostFocusTextBlock");
+
+			// Initial verification of text
+			Assert.AreEqual("", textChangedTextBlock.GetDependencyPropertyValue("Text")?.ToString());
+			Assert.AreEqual("", lostFocusTextBlock.GetDependencyPropertyValue("Text")?.ToString());
+
+			// Change text and verify text of text blocks
+			textBox1.Tap();
+			textBox1.ClearText();
+			textBox1.EnterText("Testing text property");
+			Assert.AreEqual("Testing text property", textChangedTextBlock.GetDependencyPropertyValue("Text")?.ToString());
+			Assert.AreEqual("", lostFocusTextBlock.GetDependencyPropertyValue("Text")?.ToString());
+
+			// change focus and assert
+			textBox2.Tap();
+			Assert.AreEqual("Testing text property", textChangedTextBlock.GetDependencyPropertyValue("Text")?.ToString());
+			Assert.AreEqual("Testing text property", lostFocusTextBlock.GetDependencyPropertyValue("Text")?.ToString());
 		}
 	}
 }

@@ -6,10 +6,15 @@ using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
+using FluentAssertions;
+using FluentAssertions.Execution;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 {
 	[TestClass]
+#if !NET461
+	[RuntimeTests.RunsOnUIThread]
+#endif
 	public class Given_FrameworkElement
 	{
 		[TestMethod]
@@ -34,17 +39,30 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 
 			SUT.Children.Add(item1);
 
-			SUT.Measure(new Windows.Foundation.Size(1, 1));
-			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 1, 1));
+			SUT.Measure(new Size(1, 1));
+			SUT.Arrange(new Rect(0, 0, 1, 1));
 
-			Assert.AreEqual(1, sutLayoutUpdatedCount);
-			Assert.AreEqual(1, item1LayoutUpdatedCount);
+			var sutLayoutUpdate1 = sutLayoutUpdatedCount;
+			var item1LayoutUpdate1 = item1LayoutUpdatedCount;
 
-			SUT.Measure(new Windows.Foundation.Size(2, 2));
-			SUT.Arrange(new Windows.Foundation.Rect(0, 0, 2, 2));
+			SUT.Measure(new Size(2, 2));
+			SUT.Arrange(new Rect(0, 0, 2, 2));
 
-			Assert.AreEqual(2, sutLayoutUpdatedCount);
-			Assert.AreEqual(2, item1LayoutUpdatedCount);
+			var sutLayoutUpdate2 = sutLayoutUpdatedCount;
+			var item1LayoutUpdate2 = item1LayoutUpdatedCount;
+
+			SUT.Arrange(new Rect(0, 0, 2, 2));
+
+			using (new AssertionScope())
+			{
+				sutLayoutUpdate1.Should().Be(1, "sut-before");
+				sutLayoutUpdate2.Should().Be(2, "sut-after");
+
+#if __ANDROID__
+				item1LayoutUpdate1.Should().Be(1, "item1-before");
+				item1LayoutUpdate2.Should().Be(2, "item1-after");
+#endif
+			}
 		}
 
 		[TestMethod]
@@ -68,8 +86,11 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 			grid.Measure(new Size(1000, 1000));
 			grid.Arrange(new Rect(default(Point), grid.DesiredSize));
 
-			Assert.AreEqual(32d, grid.ActualWidth);
-			Assert.AreEqual(47d, grid.ActualHeight);
+			using (new AssertionScope())
+			{
+				grid.ActualWidth.Should().Be(32d, "width");
+				grid.ActualHeight.Should().Be(47d, "height");
+			}
 		}
 	}
 }
