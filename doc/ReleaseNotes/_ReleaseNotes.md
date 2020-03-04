@@ -93,6 +93,8 @@
 - Adjust `XamlBindingHelper` for `GridLength` and `TimeSpan`
 - Add missing `ListView` resources
 - #2570 [Android/iOS] fixed ObjectDisposedException in BindingPath
+- #2107 [iOS] fixed ContentDialog doesn't block touch for background elements
+- #2108 [iOS/Android] fixed ContentDialog background doesn't change
 
 ## Release 2.0
 
