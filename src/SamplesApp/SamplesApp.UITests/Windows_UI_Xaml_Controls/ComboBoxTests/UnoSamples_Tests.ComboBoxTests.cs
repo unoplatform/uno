@@ -98,5 +98,24 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			// compensates for a possible change of origins with android popups.
 			Assert.AreEqual(popupLocationDifference - sampleControlResultExtended.Rect.Y, popupLocationDifferenceExtended);
 		}
+
+
+		[Test]
+		[AutoRetry]
+		public void ComboBoxTests_Stretch()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ComboBox.ComboBox_Stretch");
+
+			var combo01 = _app.Marked("combo01");
+			var sampleControl = _app.Marked("sampleControl");
+
+			var sampleControlResult = _app.WaitForElement(sampleControl).First();
+
+			_app.FastTap(combo01);
+
+			var popupResult = _app.WaitForElement("PopupBorder").First();
+
+			Assert.IsTrue(popupResult.Rect.Width < sampleControlResult.Rect.Width / 2, "The popup should not stretch to the width of the screen");
+		}
 	}
 }
