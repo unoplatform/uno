@@ -1,4 +1,4 @@
-#if  __ANDROID__ || __MACOS__
+#if __ANDROID__ || __MACOS__
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -34,13 +34,13 @@ namespace Uno.UI.RuntimeTests.Tests
 			string testString = "some text which should be intact";
 
 			// setting clipboard
-			Windows.ApplicationModel.DataTransfer.DataPackage oClipCont = new Windows.ApplicationModel.DataTransfer.DataPackage();
+			var oClipCont = new Windows.ApplicationModel.DataTransfer.DataPackage();
 			oClipCont.SetText(testString);
 			Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(oClipCont);
 
 			// and reading from clipboard
-			Windows.ApplicationModel.DataTransfer.DataPackageView oClipCont = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
-			string stringFromClipboard = await oClipCont.GetTextAsync();
+			var clipView = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
+			string stringFromClipboard = await clipView.GetTextAsync();
 
 			Assert.AreEqual(stringFromClipboard, testString, false, "text was changed while putting and reading from Clipboard - error in tested methods");
 
