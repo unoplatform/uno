@@ -13,7 +13,7 @@ using Uno.UITests.Helpers;
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 {
 	[TestFixture]
-	public partial class Flyout_Tests : SampleControlUITestBase
+	public partial class Flyout_Tests : PopupUITestBase
 	{
 		[Test]
 		[AutoRetry]
@@ -158,7 +158,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			_app.WaitForElement(testableFlyoutButtons.First().Value);
 			var initialScreenshot = TakeScreenshot($"{majorStepIndex++} Initial State", ignoreInSnapshotCompare: true);
 
-			var comparableRect = GetOsComparableRect();
 			var dismissArea = GetDismissAreaCenter();
 			foreach (var button in testableFlyoutButtons)
 			{
@@ -171,8 +170,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 				var flyoutDismissedScreenshot = TakeScreenshot($"{majorStepIndex} {button.Key} 1 Dismissed", ignoreInSnapshotCompare: true);
 
 				// compare
-				ImageAssert.AreNotEqual(flyoutOpenedScreenshot, initialScreenshot, comparableRect);
-				ImageAssert.AreEqual(flyoutDismissedScreenshot, initialScreenshot, comparableRect);
+				ImageAssert.AreNotEqual(flyoutOpenedScreenshot, initialScreenshot);
+				ImageAssert.AreEqual(flyoutDismissedScreenshot, initialScreenshot);
 
 				majorStepIndex++;
 			}
@@ -185,30 +184,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 				 * [FullOverlayFlyoutButton]
 				 *         (dismiss area)
 				 *       [WithOffsetFlyoutButton margin=100] */
-				var rect1 = _app.GetRect("FullFlyoutButton");
+				var rect1 = _app.GetRect("FullOverlayFlyoutButton");
 				var rect2 = _app.GetRect("WithOffsetFlyoutButton");
 
 				return (rect2.CenterX, (rect1.Bottom + rect2.Y) / 2);
-			}
-			Rectangle? GetOsComparableRect()
-			{
-				if (AppInitializer.GetLocalPlatform() == Platform.Android)
-				{
-					// the status bar area needs to be excluded for image comparison when flyouts are used
-					var screen = _app.GetScreenDimensions();
-					var statusBarRect = _app.GetRect("statusBarBackground");
-
-					return new Rectangle(
-						0,
-						(int)statusBarRect.Height,
-						(int)screen.Width,
-						(int)screen.Height - (int)statusBarRect.Height
-					);
-				}
-				else
-				{
-					return default;
-				}
 			}
 		}
 	}
