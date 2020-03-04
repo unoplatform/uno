@@ -15,7 +15,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.AspNetCore.App" />
 		<PackageReference Include="Mono.Options" Version="6.6.0.161" />
-		<PackageReference Include="Unity" Version="5.11.3" />
+		<PackageReference Include="Unity" Version="5.11.4" />
 		<PackageReference Include="Uno.Core" Version="1.29.0" />
 	</ItemGroup>
 	
