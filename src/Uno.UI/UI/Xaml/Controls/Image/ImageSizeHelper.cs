@@ -197,7 +197,7 @@ namespace Windows.UI.Xaml.Controls
 		[Pure]
 		public static Size AdjustSize(this Image image, Size availableSize, Size measuredSize)
 		{
-			return AdjustSize(image.Stretch, availableSize, measuredSize);
+			return AdjustSize(image.Stretch, image.ApplySizeConstraints(availableSize), measuredSize);
 		}
 
 		[Pure]

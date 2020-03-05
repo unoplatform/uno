@@ -8,6 +8,7 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -19,7 +20,15 @@ namespace Windows.UI.Xaml.Controls
 
 		public ContentDialog() : base()
 		{
-			_popup = new Popup();
+			_popup = new Popup()
+			{
+				LightDismissOverlayMode = LightDismissOverlayMode.On,
+				LightDismissOverlayBackground = Resources["ContentDialogLightDismissOverlayBackground"] as Brush ??
+					// This is normally a no-op - the above line should retrieve the framework-level resource. This is purely to fail the build when
+					// Resources/Styles are overhauled (and the above will no longer be valid)
+					Uno.UI.GlobalStaticResources.ContentDialogLightDismissOverlayBackground as Brush,
+			};
+
 			_popup.PopupPanel = new ContentDialogPopupPanel(this);
 			_popup.Opened += (s, e) =>
 			{

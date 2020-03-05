@@ -2,6 +2,8 @@
 
 ### Features
 - [Android] Support for `Application.Current.Exit`
+- Support for `Windows.Storage.FileProperties.BasicProperties.DateModified`
+- Added CornerRadius support to more default styles to match UWP (for list of updated styles see PR [#2713])
 - Support for `FontIcon` on macOS
 - Support for `PhoneCallManager.ShowPhoneCallUI` on macOS
 - Support for full screen mode on macOS
@@ -50,6 +52,8 @@
 
 ### Bug fixes
 
+- Adjust `CornerRadius` for `Button` style to apply properly
+- Add support for `CornerRadius` in default `ComboBox` style
 - Fix for samples app compilation for macOS
 - [#2465] Raising macOS Button Click event
 - [#2506] `DesignMode.DesignMode2Enabled` no longer throws (is always `false` on non-UWP platforms)
@@ -90,6 +94,8 @@
 - Adjust `XamlBindingHelper` for `GridLength` and `TimeSpan`
 - Add missing `ListView` resources
 - #2570 [Android/iOS] fixed ObjectDisposedException in BindingPath
+- #2107 [iOS] fixed ContentDialog doesn't block touch for background elements
+- #2108 [iOS/Android] fixed ContentDialog background doesn't change
 
 ## Release 2.0
 

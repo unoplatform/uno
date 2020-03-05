@@ -2952,7 +2952,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			foreach(var part in parts)
 			{
-				if(currentType.GetMembers().FirstOrDefault(m => m.Name == part) is ISymbol member)
+				if(currentType.GetAllMembers().FirstOrDefault(m => m.Name == part) is ISymbol member)
 				{
 					var propertySymbol = member as IPropertySymbol;
 					var fieldSymbol = member as IFieldSymbol;
@@ -2964,6 +2964,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					else
 					{
 						throw new InvalidOperationException($"Cannot use member [{part}] of type [{member}], as it is not a property of a field");
+					}
+				}
+				else if(FindSubElementByName(_fileDefinition.Objects.First(), part) is XamlObjectDefinition elementByName)
+				{
+					currentType = GetType(elementByName.Type);
+
+					if(currentType == null)
+					{
+						throw new InvalidOperationException($"Unable to find member [{part}] on type [{elementByName.Type}]");
 					}
 				}
 				else
@@ -2989,14 +2998,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string RewriteNamespaces(string xamlString)
 		{
-			foreach (var ns in _fileDefinition.Namespaces.Where(ns => ns.Namespace.StartsWith("using:")))
+			foreach (var ns in _fileDefinition.Namespaces)
 			{
-				// Replace namespaces with their fully qualified namespace.
-				// Add global:: so that qualified paths can be expluded from binding
-				// path observation.
-				xamlString = xamlString.Replace(
-					$"{ns.Prefix}:",
-					"global::" + ns.Namespace.TrimStart("using:") + ".");
+				if (ns.Namespace.StartsWith("using:"))
+				{
+					// Replace namespaces with their fully qualified namespace.
+					// Add global:: so that qualified paths can be expluded from binding
+					// path observation.
+					xamlString = Regex.Replace(
+						xamlString,
+						$@"(^|[^\w])({ns.Prefix}:)",
+						"$1global::" + ns.Namespace.TrimStart("using:") + ".");
+				}
+				else if (ns.Namespace == XamlConstants.XamlXmlNamespace)
+				{
+					xamlString = Regex.Replace(
+						xamlString,
+						$@"(^|[^\w])({ns.Prefix}:)",
+						"$1global::System.");
+				}
 			}
 
 			return xamlString;

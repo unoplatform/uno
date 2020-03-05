@@ -11,6 +11,8 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 	[TestClass]
 	public class Given_xBind_Binding
 	{
+		private const int V = 42;
+
 		[TestMethod]
 		[Ignore]
 		public void When_Initial_Value()
@@ -513,6 +515,71 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			Assert.AreEqual("nested updated 7", SUT.Nested_Default_OneWay_OneWay_Property);
 			Assert.AreEqual("nested updated 12", SUT.Nested_Default_OneWay_TwoWay_Property);
 			Assert.AreEqual("nested updated 81", SUT.Nested_Default_OneWay_OneTime_Property);
+		}
+
+		[TestMethod]
+		public void When_TwoWay_NamedElement()
+		{
+			var SUT = new Binding_TwoWay_NamedElement();
+
+			Assert.AreEqual(0, SUT.MyIntProperty);
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(0, SUT.myObject.MyProperty);
+			Assert.AreEqual(0, SUT.myObject2.MyProperty);
+			Assert.AreEqual(0, SUT.MyIntProperty);
+
+			SUT.MyIntProperty = 1;
+
+			Assert.AreEqual(1, SUT.myObject.MyProperty);
+			Assert.AreEqual(1, SUT.myObject2.MyProperty);
+
+			SUT.myObject.MyProperty = 2;
+
+			Assert.AreEqual(2, SUT.MyIntProperty);
+			Assert.AreEqual(2, SUT.myObject2.MyProperty);
+
+			SUT.myObject2.MyProperty = 3;
+
+			Assert.AreEqual(3, SUT.MyIntProperty);
+			Assert.AreEqual(3, SUT.myObject.MyProperty);
+		}
+
+		[TestMethod]
+		public void When_TwoWay_InheritedProperty()
+		{
+			var SUT = new Binding_TwoWay_InheritedProperty();
+
+			Assert.AreEqual(0, SUT.mySlider.Value);
+			Assert.AreEqual(0, SUT.mySlider2.Value);
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual(0, SUT.mySlider.Value);
+			Assert.AreEqual(0, SUT.mySlider2.Value);
+
+			SUT.mySlider.Value = 42;
+			Assert.AreEqual(42, SUT.mySlider2.Value);
+
+			SUT.mySlider2.Value = 43;
+			Assert.AreEqual(43, SUT.mySlider.Value);
+		}
+
+		[TestMethod]
+		public void When_Primitive_DataTemplate()
+		{
+			var SUT = new Binding_Primitive_DataTemplate();
+
+			SUT.ForceLoaded();
+
+			var inner = SUT.root.FindName("inner") as Windows.UI.Xaml.Controls.TextBlock;
+
+			Assert.IsNull(inner.Text);
+
+			SUT.root.Content = "hello!";
+
+			Assert.AreEqual("hello!", inner.Text);
 		}
 	}
 }
