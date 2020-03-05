@@ -158,6 +158,26 @@ namespace Windows.UI.Xaml
 					parentElement = null;
 					return false;
 
+				case NativeListViewBase lv:
+					// We are a container of a ListView, there is known issue with the LayoutingSlot.
+					// Instead of following the standard transform computation, we shortcut few levels of the visual tree
+					// and directly detect the real slot of this item in the parent ScrollViewer using native API.
+					// The limitation with this is that if there is any RenderTransform in the bypassed layers which also
+					// not only changes the TrX/Y, they are going to be ignored.
+
+					// 1. Undo what was done by the shared code
+					offsetX -= LayoutSlotWithMarginsAndAlignments.X;
+					offsetY -= LayoutSlotWithMarginsAndAlignments.Y;
+
+					// 2.Natively compute the offset of this current item relative to this ScrollViewer and adjust offsets
+					var sv = lv.FindFirstParent<ScrollViewer>();
+					var offset = GetPosition(this, relativeTo: sv);
+					offsetX += offset.X;
+					offsetY += offset.Y;
+
+					// We return the parent of the ScrollViewer, so we bypass the <Horizontal|Vertical>Offset (and the Scale) handling in shared code.
+					return sv.TryGetParentUIElement(out parentElement, ref offsetX, ref offsetY);
+
 				case View view: // Android.View and Android.IViewParent
 					var windowToFirstParent = new int[2];
 					view.GetLocationInWindow(windowToFirstParent);
@@ -222,6 +242,30 @@ namespace Windows.UI.Xaml
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
 			Alpha = IsRenderingSuspended ? 0 : (float)Opacity;
+		}
+
+		internal static Point GetPosition(View view, View relativeTo = null)
+		{
+			if (view == relativeTo)
+			{
+				return default;
+			}
+
+			var windowToThis = new int[2];
+			view.GetLocationInWindow(windowToThis);
+
+			var location = new Point(windowToThis[0], windowToThis[1]);
+
+			if (relativeTo != null)
+			{
+				var windowToRelative = new int[2];
+				relativeTo.GetLocationInWindow(windowToRelative);
+
+				location.X -= windowToRelative[0];
+				location.Y -= windowToRelative[1];
+			}
+
+			return location.PhysicalToLogicalPixels();
 		}
 
 		internal Point GetPosition(Point position, UIElement relativeTo)
