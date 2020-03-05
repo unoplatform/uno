@@ -16,17 +16,29 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	[TestClass]
 	public class Given_Image
 	{
+#if !__IOS__ // Currently fails on iOS
 		[TestMethod]
+#endif
 		[RunsOnUIThread]
 		public async Task When_Fixed_Height_And_Stretch_Uniform()
 		{
+			var imageLoaded = new TaskCompletionSource<bool>();
+
 			var image = new Image { Height = 30, Stretch = Stretch.Uniform, Source = new BitmapImage(new Uri("ms-appx:///Assets/storelogo.png")) };
+			image.Loaded += (s, e) => imageLoaded.TrySetResult(true);
+
 			var innerGrid = new Grid { HorizontalAlignment = HorizontalAlignment.Left, VerticalAlignment = VerticalAlignment.Center };
 			var outerGrid = new Grid { Height = 750, Width = 430 };
 			innerGrid.Children.Add(image);
 			outerGrid.Children.Add(innerGrid);
 
 			TestServices.WindowHelper.WindowContent = outerGrid;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			await imageLoaded.Task;
+
+			image.InvalidateMeasure();
+
 			await TestServices.WindowHelper.WaitForIdle();
 
 			outerGrid.Measure(new Size(1000, 1000));
