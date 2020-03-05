@@ -67,9 +67,9 @@ namespace Uno.UI
 
 			while (view != null)
 			{
-				if (view is T)
+				if (view is T parent)
 				{
-					return (T)view;
+					return parent;
 				}
 
 				view = view.Parent;
