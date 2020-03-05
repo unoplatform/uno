@@ -199,23 +199,22 @@ namespace Windows.UI.Xaml
 						offsetY -= sv.VerticalOffset;
 					}
 				}
-			} while ((elt = elt.GetParent() as UIElement) != null && elt != to); // If possible we stop as soon as we reach 'to'
+			} while (elt.TryGetParentUIElement(out elt, ref offsetX, ref offsetY) && elt != to); // If possible we stop as soon as we reach 'to'
 
 			matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
 
 			if (to != null && elt != to)
 			{
 				// Unfortunately we didn't find the 'to' in the parent hierarchy,
-				// so matrix == fromToRoot and we now have to compute the transform 'toToVisual'.
+				// so matrix == fromToRoot and we now have to compute the transform 'toToRoot'.
 				var toToRoot = GetTransform(to, null);
-				Matrix3x2.Invert(toToRoot, out var rootToVisual);
+				Matrix3x2.Invert(toToRoot, out var rootToTo);
 
-				matrix *= rootToVisual;
+				matrix *= rootToTo;
 			}
 
 			return matrix;
 		}
-
 		#region IsHitTestVisible Dependency Property
 
 		public bool IsHitTestVisible
@@ -382,9 +381,9 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal Rect LayoutSlot { get; set; } = default;
+		public Rect LayoutSlot { get; set; } = default;
 
-		internal Rect LayoutSlotWithMarginsAndAlignments { get; set; } = default;
+		public Rect LayoutSlotWithMarginsAndAlignments { get; set; } = default;
 
 		internal bool NeedsClipToSlot { get; set; }
 

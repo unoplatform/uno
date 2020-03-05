@@ -1,9 +1,11 @@
 ﻿using Uno.UI;
 using Uno.UI.Controls;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Windows.UI.Xaml.Controls;
 using Android.Support.V4.View;
 using Windows.UI.Xaml.Media;
 using Android.Graphics;
@@ -130,6 +132,71 @@ namespace Windows.UI.Xaml
 					offsetY: ViewHelper.PhysicalToLogicalPixels(y)
 				)
 			};
+		}
+
+		/// <summary>
+		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
+		///	applied by a 'ViewGroup' between those elements.
+		/// </summary>
+		/// <param name="view"></param>
+		/// <param name="parentElement"></param>
+		/// <param name="offsetX"></param>
+		/// <param name="offsetY"></param>
+		/// <returns></returns>
+		private bool TryGetParentUIElement(out UIElement parentElement, ref double offsetX, ref double offsetY)
+		{
+			var parent = this.GetParent();
+			switch (parent) 
+			{
+				// First we try the direct parent, if it's from the known type we won't even have to adjust offsets
+
+				case UIElement elt:
+					parentElement = elt;
+					return true;
+
+				case null:
+					parentElement = null;
+					return false;
+
+				case View view: // Android.View and Android.IViewParent
+					var windowToFirstParent = new int[2];
+					view.GetLocationInWindow(windowToFirstParent);
+
+					do
+					{
+						parent = parent.GetParent();
+
+						switch (parent)
+						{
+							case UIElement eltParent:
+								// We found a UIElement in the parent hierarchy, we compute the X/Y offset between the
+								// first parent 'view' and this 'elt', and return it.
+
+								var windowToEltParent = new int[2];
+								eltParent.GetLocationInWindow(windowToEltParent);
+
+								parentElement = eltParent;
+								offsetX += ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[0] - windowToEltParent[0]);
+								offsetY += ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[1] - windowToEltParent[1]);
+								return true;
+
+							case null:
+								// We reached the top of the window without any UIElement in the hierarchy,
+								// so we adjust offsets using the X/Y position of the original 'view' in the window.
+
+								parentElement = null;
+								offsetX += ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[0]);
+								offsetY += ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[1]);
+								return false;
+						}
+					} while (true);
+
+				default:
+					Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException("Found a parent which is NOT a View."));
+
+					parentElement = null;
+					return false;
+			}
 		}
 
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
