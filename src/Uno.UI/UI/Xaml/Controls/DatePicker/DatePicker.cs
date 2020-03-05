@@ -1,4 +1,4 @@
-﻿using Uno.Extensions;
+using Uno.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -41,9 +41,7 @@ namespace Windows.UI.Xaml.Controls
 				SelectedDate = newValue;
 			}
 
-#if XAMARIN
 			UpdateDisplayedDate();
-#endif
 
 			OnDateChangedPartial();
 			DateChanged?.Invoke(this, new DatePickerValueChangedEventArgs(newValue, oldValue));
@@ -190,8 +188,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void InitializePartial();
-
-#if XAMARIN
 
 		#region Template parts
 		public const string DayTextBlockPartName = "DayTextBlock";
@@ -377,7 +373,6 @@ namespace Windows.UI.Xaml.Controls
 				_yearTextBlock.Text = Date.Year.ToStringInvariant();
 			}
 		}
-#endif
 
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{
