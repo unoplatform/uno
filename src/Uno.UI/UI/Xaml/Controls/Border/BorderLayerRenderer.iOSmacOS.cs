@@ -102,21 +102,12 @@ namespace Windows.UI.Xaml.Shapes
 				layer.LineWidth = (nfloat)adjustedLineWidth;
 				layer.FillColor = null;
 
-				var path = new CGPath();
 
 				Brush.AssignAndObserveBrush(borderBrush, color => layer.StrokeColor = color)
 					.DisposeWith(disposables);
+				var path = GetRoundedPath(cornerRadius, adjustedArea);
 
-				// How AddArcToPoint works:
-				// http://www.twistedape.me.uk/blog/2013/09/23/what-arctopointdoes/
-
-				path.MoveToPoint(adjustedArea.GetMidX(), adjustedArea.Y);
-				path.AddArcToPoint(adjustedArea.Right, adjustedArea.Top, adjustedArea.Right, adjustedArea.GetMidY(), (float)cornerRadius.TopRight);
-				path.AddArcToPoint(adjustedArea.Right, adjustedArea.Bottom, adjustedArea.GetMidX(), adjustedArea.Bottom, (float)cornerRadius.BottomRight);
-				path.AddArcToPoint(adjustedArea.Left, adjustedArea.Bottom, adjustedArea.Left, adjustedArea.GetMidY(), (float)cornerRadius.BottomLeft);
-				path.AddArcToPoint(adjustedArea.Left, adjustedArea.Top, adjustedArea.GetMidX(), adjustedArea.Top, (float)cornerRadius.TopLeft);
-
-				path.CloseSubpath();
+				var outerPath = GetRoundedPath(cornerRadius, area);
 
 				var lgbBackground = background as LinearGradientBrush;
 				var scbBackground = background as SolidColorBrush;
@@ -158,13 +149,13 @@ namespace Windows.UI.Xaml.Shapes
 
 				parent.Mask = new CAShapeLayer()
 				{
-					Path = path,
+					Path = outerPath,
 					Frame = area,
 					// We only use the fill color to create the mask area
 					FillColor = _Color.White.CGColor,
 				};
 
-				if(owner != null)
+				if (owner != null)
 				{
 					owner.ClippingIsSetByCornerRadius = true;
 				}
@@ -306,6 +297,25 @@ namespace Windows.UI.Xaml.Shapes
 			}
 			);
 			return disposables;
+		}
+
+		/// <summary>
+		/// Creates a rounded-rectangle path from the nominated bounds and corner radius.
+		/// </summary>
+		private static CGPath GetRoundedPath(CornerRadius cornerRadius, CGRect area)
+		{
+			var path = new CGPath();
+			// How AddArcToPoint works:
+			// http://www.twistedape.me.uk/blog/2013/09/23/what-arctopointdoes/
+
+			path.MoveToPoint(area.GetMidX(), area.Y);
+			path.AddArcToPoint(area.Right, area.Top, area.Right, area.GetMidY(), (float)cornerRadius.TopRight);
+			path.AddArcToPoint(area.Right, area.Bottom, area.GetMidX(), area.Bottom, (float)cornerRadius.BottomRight);
+			path.AddArcToPoint(area.Left, area.Bottom, area.Left, area.GetMidY(), (float)cornerRadius.BottomLeft);
+			path.AddArcToPoint(area.Left, area.Top, area.GetMidX(), area.Top, (float)cornerRadius.TopLeft);
+
+			path.CloseSubpath();
+			return path;
 		}
 
 		/// <summary>
