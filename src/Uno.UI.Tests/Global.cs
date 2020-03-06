@@ -2,6 +2,7 @@
 using System.Threading;
 using Microsoft.Extensions.Logging;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
+using Windows.UI.Xaml;
 
 namespace Uno.UI.Tests
 {
@@ -14,6 +15,8 @@ namespace Uno.UI.Tests
 			// Ensure all tests are run under the same culture context
 			Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
 			Thread.CurrentThread.CurrentUICulture = CultureInfo.InvariantCulture;
+
+			GenericStyles.Initialize();
 
 #if DEBUG
 			Uno.Extensions.LogExtensionPoint

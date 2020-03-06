@@ -13,6 +13,14 @@ namespace Windows.UI.Xaml.Controls
 {
 	abstract partial class VirtualizingPanelLayout : IScrollSnapPointsInfo
 	{
+		/// <summary>
+		/// Determines if the owner Panel is inside a popup. Used to determine
+		/// if the computation of the breadth should be using the parent's stretch
+		/// modes.
+		/// Related: https://github.com/unoplatform/uno/issues/135
+		/// </summary>
+		private bool IsInsidePopup { get; set; }
+
 		protected enum RelativeHeaderPlacement { Inline, Adjacent }
 
 		/// <summary>
@@ -122,6 +130,11 @@ namespace Windows.UI.Xaml.Controls
 				if (XamlParent == null)
 				{
 					return true;
+				}
+
+				if (IsInsidePopup)
+				{
+					return false;
 				}
 
 				if (ScrollOrientation == Orientation.Vertical)

@@ -138,6 +138,15 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
+			var hasPopupPanelParent = OwnerPanel.FindFirstParent<PopupPanel>() != null;
+			var hasListViewParent = OwnerPanel.FindFirstParent<ListViewBase>() != null;
+			IsInsidePopup = hasPopupPanelParent && !hasListViewParent;
+
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Calling {GetMethodTag()} hasPopupPanelParent={hasPopupPanelParent} hasListViewParent={hasListViewParent}");
+			}
+
 			if (
 				ItemsControl == null
 				&& OwnerPanel.TemplatedParent is ItemsControl popupItemsControl
@@ -398,7 +407,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"{GetMethodTag()} => {extent} -> {ret} {ScrollOrientation} {_availableSize.Height} {double.IsInfinity(_availableSize.Height)} AvailableBreadth:{AvailableBreadth}");
+				this.Log().LogDebug($"{GetMethodTag()} => {extent} -> {ret} {ScrollOrientation} {_availableSize.Height} {double.IsInfinity(_availableSize.Height)} ShouldBreadthStretch:{ShouldBreadthStretch} XamlParent:{XamlParent} AvailableBreadth:{AvailableBreadth}");
 			}
 
 			return ret;

@@ -5,7 +5,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.ScrollViewerTests
 {
-	[SampleControlInfo("ScrollViewer", nameof(ScrollViewer_Options))]
+	[SampleControlInfo(category: "ScrollViewer")]
 	public sealed partial class ScrollViewer_Options : Page
 	{
 		private static string[] Sizes = new[] {"Small", "Large"};

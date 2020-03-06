@@ -34,6 +34,25 @@ namespace Microsoft.CodeAnalysis
 			} while (symbol.SpecialType != SpecialType.System_Object);
 		}
 
+		public static IEnumerable<ISymbol> GetAllMembers(this ITypeSymbol symbol)
+		{
+			do
+			{
+				foreach (var member in symbol.GetMembers())
+				{
+					yield return member;
+				}
+
+				symbol = symbol.BaseType;
+
+				if (symbol == null)
+				{
+					break;
+				}
+
+			} while (symbol.SpecialType != SpecialType.System_Object);
+		}
+
 		public static IEnumerable<IEventSymbol> GetEvents(INamedTypeSymbol symbol) => symbol.GetMembers().OfType<IEventSymbol>();
 
 		/// <summary>

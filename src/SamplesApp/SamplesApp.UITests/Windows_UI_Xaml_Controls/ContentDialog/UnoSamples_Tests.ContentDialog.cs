@@ -15,7 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 	[TestFixture]
 	public partial class ContentDialog_Tests : SampleControlUITestBase
 	{
-		private void CurrentTestTakeScreenShot(string name) =>
+		private System.IO.FileInfo CurrentTestTakeScreenShot(string name) =>
 			// Screenshot taking for this fixture is disabled on Android because of the
 			// presence of the status bar when native popups are opened, adding the clock
 			// (that is always changing :)).
@@ -349,6 +349,64 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 			_app.WaitForElement(closeButton);
 
 			_app.FastTap(closeButton);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ContentDialog_Simple_NotLightDismissible()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Simple");
+
+			var showDialogButton = _app.Marked("showDialog1");
+			var statusBarBackground = _app.Marked("statusBarBackground");
+			var dialogSpace = _app.Marked("DialogSpace"); // from ContentDialog default ControlTemplate
+			var primaryButton = _app.Marked("PrimaryButton");
+
+			// initial state
+			_app.WaitForElement(showDialogButton);
+			var initialScreenshot = CurrentTestTakeScreenShot("0 Initial State");
+
+			// open dialog
+			_app.FastTap(showDialogButton);
+			_app.WaitForElement(primaryButton);
+			var dialogOpenedScreenshot = CurrentTestTakeScreenShot("1 ContentDialog Opened");
+
+			// tapping outside of dialog
+			var dialogRect = _app.GetRect(dialogSpace);
+			_app.TapCoordinates(dialogRect.CenterX, dialogRect.Bottom + 50);
+			var dialogStillOpenedScreenshot = CurrentTestTakeScreenShot("2 ContentDialog Still Opened");
+
+			// close dialog
+			_app.FastTap(primaryButton);
+			_app.Wait(seconds: 1);
+			var dialogClosedScreenshot = CurrentTestTakeScreenShot("3 ContentDialog Closed");
+
+			// compare
+			var comparableRect = GetOsComparableRect();
+			ImageAssert.AreNotEqual(initialScreenshot, dialogOpenedScreenshot, comparableRect);
+			ImageAssert.AreEqual(dialogOpenedScreenshot, dialogStillOpenedScreenshot, comparableRect);
+			ImageAssert.AreNotEqual(dialogStillOpenedScreenshot, dialogClosedScreenshot, comparableRect);
+
+			Rectangle? GetOsComparableRect()
+			{
+				if (AppInitializer.GetLocalPlatform() == Platform.Android)
+				{
+					// the status bar area needs to be excluded for image comparison
+					var screen = _app.GetScreenDimensions();
+					var statusBarRect = _app.GetRect(statusBarBackground);
+
+					return new Rectangle(
+						0,
+						(int)statusBarRect.Height,
+						(int)screen.Width,
+						(int)screen.Height - (int)statusBarRect.Height
+					);
+				}
+				else
+				{
+					return default;
+				}
+			}
 		}
 	}
 }

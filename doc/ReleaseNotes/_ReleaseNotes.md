@@ -1,7 +1,9 @@
 # Release notes
 
 ### Features
+- Support for `Windows.Storage.FileProperties.BasicProperties.DateModified`
 
+- Added CornerRadius support to more default styles to match UWP (for list of updated styles see PR [#2713])
 - Support for `FontIcon` on macOS
 - Support for `PhoneCallManager.ShowPhoneCallUI` on macOS
 - Support for full screen mode on macOS
@@ -50,6 +52,7 @@
 
 ### Bug fixes
 
+- Adjust `CornerRadius` for `Button` style to apply properly
 - Add support for `CornerRadius` in default `ComboBox` style
 - Fix for samples app compilation for macOS
 - [#2465] Raising macOS Button Click event
@@ -91,6 +94,9 @@
 - Adjust `XamlBindingHelper` for `GridLength` and `TimeSpan`
 - Add missing `ListView` resources
 - #2570 [Android/iOS] fixed ObjectDisposedException in BindingPath
+- #2107 [iOS] fixed ContentDialog doesn't block touch for background elements
+- #2108 [iOS/Android] fixed ContentDialog background doesn't change
+- #2680 [Wasm] Fix ComboBox should not stretch to the full window width
 
 ## Release 2.0
 
