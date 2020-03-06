@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics.SymbolStore;
+using System.Drawing;
 using System.Linq;
 using System.Runtime.Versioning;
 using System.Text;
@@ -57,6 +59,33 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ScrollViewerTests
 			validate.FastTap();
 			TakeScreenshot("Result", ignoreInSnapshotCompare: true);
 			_app.WaitForDependencyPropertyValue(result, "Text", "SUCCESS");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)] // IsIntermediate is not supported on Wasm yet
+		public void ScrollViewer_Clipping()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ScrollViewerTests.ScrollViewer_Clipping");
+
+			var sut = _app.WaitForElement(_app.Marked("scrollViewer1")).Single();
+			var updateButton = _app.Marked("UpdateButton");
+
+			var updateButtonRect = _app.WaitForElement(_app.Marked("intentionallyBlank")).Single().Rect;
+
+			updateButton.FastTap();
+
+			//Drag upward
+			_app.DragCoordinates(sut.Rect.CenterX, sut.Rect.CenterY, sut.Rect.CenterX, sut.Rect.CenterY - (sut.Rect.Height / 2));
+
+			var res = TakeScreenshot("Result", ignoreInSnapshotCompare: true);
+
+			ImageAssert.AreNotEqual(
+				expected: res,
+				expectedRect: new Rectangle((int)sut.Rect.X, (int)sut.Rect.Bottom - 20, (int)updateButtonRect.Width, (int)updateButtonRect.Height),
+				actual: res,
+				actualRect: new Rectangle((int)updateButtonRect.X, (int)updateButtonRect.Y, (int)updateButtonRect.Width, (int)updateButtonRect.Height)
+			);
 		}
 	}
 }
