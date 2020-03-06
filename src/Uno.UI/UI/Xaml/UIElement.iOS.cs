@@ -127,14 +127,9 @@ namespace Windows.UI.Xaml
 
 		/// <summary>
 		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
-		///	applied by a 'ViewGroup' between those elements.
+		///	applied by a 'UIView' between this element and its parent UIElement.
 		/// </summary>
-		/// <param name="view"></param>
-		/// <param name="parentElement"></param>
-		/// <param name="offsetX"></param>
-		/// <param name="offsetY"></param>
-		/// <returns></returns>
-		private bool TryGetParentUIElement(out UIElement parentElement, ref double offsetX, ref double offsetY)
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
 		{
 			var parent = this.GetParent();
 			switch (parent)
@@ -196,7 +191,6 @@ namespace Windows.UI.Xaml
 					return false;
 			}
 		}
-
 
 #if DEBUG
 		public static Predicate<UIView> ViewOfInterestSelector { get; set; } = v => (v as FrameworkElement)?.Name == "TargetView";
