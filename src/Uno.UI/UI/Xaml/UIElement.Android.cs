@@ -159,6 +159,7 @@ namespace Windows.UI.Xaml
 					// and directly detect the real slot of this item in the parent ScrollViewer using native API.
 					// The limitation with this is that if there is any RenderTransform in the bypassed layers which also
 					// not only changes the TrX/Y, they are going to be ignored.
+					// cf. https://github.com/unoplatform/uno/issues/2754
 
 					// 1. Undo what was done by the shared code
 					offsetX -= LayoutSlotWithMarginsAndAlignments.X;
