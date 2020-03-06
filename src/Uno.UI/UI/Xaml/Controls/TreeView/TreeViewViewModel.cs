@@ -7,14 +7,18 @@ using TreeNodeSelectionState = Windows.UI.Xaml.Controls.TreeViewNode.TreeNodeSel
 
 namespace Windows.UI.Xaml.Controls
 {
-    internal class TreeViewViewModel
-    {
+	internal class TreeViewViewModel
+	{
 		private bool m_isContentMode;
 		private List<TreeViewNode> m_selectedNodes;
+		private List<object> m_selectedItems;
+		private Dictionary<object, TreeViewNode> m_itemToNodeMap;
+
+		private TreeViewNode m_originNode;
 
 		public TreeViewViewModel()
 		{
-			//    auto selectedNodes = winrt::make_self<SelectedTreeNodeVector>();
+			//var selectedNodes = new List<TreeViewNode>);
 			//selectedNodes->SetViewModel(*this);
 			//m_selectedNodes.set(* selectedNodes);
 
@@ -24,7 +28,7 @@ namespace Windows.UI.Xaml.Controls
 
 			//    m_itemToNodeMap.set(winrt::make<HashMap<winrt::IInspectable, winrt::TreeViewNode>>());
 		}
-		
+
 		//ViewModel::~ViewModel()
 		//{
 		//	if (m_rootNodeChildrenChangedEventToken.value != 0)
@@ -38,12 +42,12 @@ namespace Windows.UI.Xaml.Controls
 		//	}
 		//}
 
-		private void ExpandNode(TreeViewNode value)
+		internal void ExpandNode(TreeViewNode value)
 		{
 			value.IsExpanded = true;
 		}
 
-		private void CollapseNode(TreeViewNode value)
+		internal void CollapseNode(TreeViewNode value)
 		{
 			value.IsExpanded = false;
 		}
@@ -68,15 +72,15 @@ namespace Windows.UI.Xaml.Controls
 		//	m_nodeCollapsedEventSource.remove(token);
 		//}
 
-		private void SelectAll()
+		internal void SelectAll()
 		{
-			//UpdateSelection(m_originNode.get(), TreeNodeSelectionState::Selected);
+			UpdateSelection(m_originNode, TreeNodeSelectionState.Selected);
 		}
 
-		private void ModifySelectByIndex(int index, TreeNodeSelectionState const& state)
+		private void ModifySelectByIndex(int index, TreeNodeSelectionState state)
 		{
-			//auto targetNode = GetNodeAt(index);
-			//UpdateSelection(targetNode, state);
+			var targetNode = GetNodeAt(index);
+			UpdateSelection(targetNode, state);
 		}
 
 		private uint Size
@@ -214,13 +218,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private void Clear()
 		{
-		//	// Don't call GetVectorInnerImpl()->Clear() directly because we need to remove hooked events
-		//	unsigned int count = Size();
-		//	while (count != 0)
-		//	{
-		//		RemoveAtEnd();
-		//		count--;
-		//	}
+			//	// Don't call GetVectorInnerImpl()->Clear() directly because we need to remove hooked events
+			//	unsigned int count = Size();
+			//	while (count != 0)
+			//	{
+			//		RemoveAtEnd();
+			//		count--;
+			//	}
 		}
 
 		//void ViewModel::ReplaceAll(winrt::array_view<winrt::IInspectable const> items)
@@ -450,76 +454,76 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateNodeSelection(TreeViewNode selectNode, TreeNodeSelectionState selectionState)
 		{
-		//	auto node = winrt::get_self<TreeViewNode>(selectNode);
-		//	if (selectionState != node->SelectionState())
-		//	{
-		//		node->SelectionState(selectionState);
-		//		auto selectedNodes = winrt::get_self<SelectedTreeNodeVector>(m_selectedNodes.get());
-		//		switch (selectionState)
-		//		{
-		//			case TreeNodeSelectionState::Selected:
-		//				selectedNodes->InsertAtCore(selectedNodes->Size(), selectNode);
-		//				m_selectedNodeChildrenChangedEventTokenVector.push_back(winrt::get_self<TreeViewNode>(selectNode)->ChildrenChanged({ this, &ViewModel::SelectedNodeChildrenChanged }));
-		//				break;
+			//	auto node = winrt::get_self<TreeViewNode>(selectNode);
+			//	if (selectionState != node->SelectionState())
+			//	{
+			//		node->SelectionState(selectionState);
+			//		auto selectedNodes = winrt::get_self<SelectedTreeNodeVector>(m_selectedNodes.get());
+			//		switch (selectionState)
+			//		{
+			//			case TreeNodeSelectionState::Selected:
+			//				selectedNodes->InsertAtCore(selectedNodes->Size(), selectNode);
+			//				m_selectedNodeChildrenChangedEventTokenVector.push_back(winrt::get_self<TreeViewNode>(selectNode)->ChildrenChanged({ this, &ViewModel::SelectedNodeChildrenChanged }));
+			//				break;
 
-		//			case TreeNodeSelectionState::PartialSelected:
-		//			case TreeNodeSelectionState::UnSelected:
-		//				unsigned int index;
-		//				if (selectedNodes->IndexOf(selectNode, index))
-		//				{
-		//					selectedNodes->RemoveAtCore(index);
-		//					winrt::get_self<TreeViewNode>(selectNode)->ChildrenChanged(m_selectedNodeChildrenChangedEventTokenVector[index]);
-		//					m_selectedNodeChildrenChangedEventTokenVector.erase(m_selectedNodeChildrenChangedEventTokenVector.begin() + index);
-		//				}
-		//				break;
-		//		}
-		//	}
+			//			case TreeNodeSelectionState::PartialSelected:
+			//			case TreeNodeSelectionState::UnSelected:
+			//				unsigned int index;
+			//				if (selectedNodes->IndexOf(selectNode, index))
+			//				{
+			//					selectedNodes->RemoveAtCore(index);
+			//					winrt::get_self<TreeViewNode>(selectNode)->ChildrenChanged(m_selectedNodeChildrenChangedEventTokenVector[index]);
+			//					m_selectedNodeChildrenChangedEventTokenVector.erase(m_selectedNodeChildrenChangedEventTokenVector.begin() + index);
+			//				}
+			//				break;
+			//		}
+			//	}
 		}
 
 		private void UpdateSelection(TreeViewNode selectNode, TreeNodeSelectionState selectionState)
 		{
-		//	if (NodeSelectionState(selectNode) != selectionState)
-		//	{
-		//		UpdateNodeSelection(selectNode, selectionState);
+			//	if (NodeSelectionState(selectNode) != selectionState)
+			//	{
+			//		UpdateNodeSelection(selectNode, selectionState);
 
-		//		if (!IsInSingleSelectionMode())
-		//		{
-		//			UpdateSelectionStateOfDescendants(selectNode, selectionState);
-		//			UpdateSelectionStateOfAncestors(selectNode);
-		//		}
-		//	}
+			//		if (!IsInSingleSelectionMode())
+			//		{
+			//			UpdateSelectionStateOfDescendants(selectNode, selectionState);
+			//			UpdateSelectionStateOfAncestors(selectNode);
+			//		}
+			//	}
 		}
 
 		private void UpdateSelectionStateOfDescendants(TreeViewNode targetNode, TreeNodeSelectionState selectionState)
 		{
-		//	if (selectionState == TreeNodeSelectionState::PartialSelected) return;
+			//	if (selectionState == TreeNodeSelectionState::PartialSelected) return;
 
-		//	for (auto const&childNode : targetNode.Children())
-		//    {
-		//		UpdateNodeSelection(childNode, selectionState);
-		//		UpdateSelectionStateOfDescendants(childNode, selectionState);
-		//		NotifyContainerOfSelectionChange(childNode, selectionState);
-		//	}
+			//	for (auto const&childNode : targetNode.Children())
+			//    {
+			//		UpdateNodeSelection(childNode, selectionState);
+			//		UpdateSelectionStateOfDescendants(childNode, selectionState);
+			//		NotifyContainerOfSelectionChange(childNode, selectionState);
+			//	}
 		}
 
 		private void UpdateSelectionStateOfAncestors(TreeViewNode targetNode)
 		{
-		//	if (auto parentNode = targetNode.Parent())
-		//    {
-		//		// no need to update m_originalNode since it's the logical root for TreeView and not accessible to users
-		//		if (parentNode != m_originNode.safe_get())
-		//		{
-		//			auto previousState = NodeSelectionState(parentNode);
-		//			auto selectionState = SelectionStateBasedOnChildren(parentNode);
+			//	if (auto parentNode = targetNode.Parent())
+			//    {
+			//		// no need to update m_originalNode since it's the logical root for TreeView and not accessible to users
+			//		if (parentNode != m_originNode.safe_get())
+			//		{
+			//			auto previousState = NodeSelectionState(parentNode);
+			//			auto selectionState = SelectionStateBasedOnChildren(parentNode);
 
-		//			if (previousState != selectionState)
-		//			{
-		//				UpdateNodeSelection(parentNode, selectionState);
-		//				NotifyContainerOfSelectionChange(parentNode, selectionState);
-		//				UpdateSelectionStateOfAncestors(parentNode);
-		//			}
-		//		}
-		//	}
+			//			if (previousState != selectionState)
+			//			{
+			//				UpdateNodeSelection(parentNode, selectionState);
+			//				NotifyContainerOfSelectionChange(parentNode, selectionState);
+			//				UpdateSelectionStateOfAncestors(parentNode);
+			//			}
+			//		}
+			//	}
 		}
 
 		private TreeNodeSelectionState SelectionStateBasedOnChildren(TreeViewNode node)
@@ -565,15 +569,12 @@ namespace Windows.UI.Xaml.Controls
 
 		internal IList<TreeViewNode> SelectedNodes => m_selectedNodes;
 
-		//winrt::IVector<winrt::IInspectable> ViewModel::GetSelectedItems()
-		//{
-		//	return m_selectedItems.get();
-		//}
+		internal IList<object> SelectedItems => m_selectedItems;
 
-		//winrt::TreeViewNode ViewModel::GetAssociatedNode(winrt::IInspectable item)
-		//{
-		//	return m_itemToNodeMap.get().Lookup(item);
-		//}
+		private TreeViewNode GetAssociatedNode(object item)
+		{
+			return m_itemToNodeMap[item]; //TODO: Throw or null?
+		}
 
 		internal bool IndexOfNode(TreeViewNode targetNode, int index)
 		{
@@ -838,7 +839,7 @@ namespace Windows.UI.Xaml.Controls
 		//	m_isContentMode = value;
 		//}
 
-		public bool IsContentMode => m_isContentMode;	
+		public bool IsContentMode { get => m_isContentMode; set => m_isContentMode = value; }
 
 		//void ViewModel::ClearEventTokenVectors()
 		//{

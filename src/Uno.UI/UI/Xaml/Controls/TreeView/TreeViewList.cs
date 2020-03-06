@@ -486,7 +486,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void EnableMultiselect(bool isEnabled)
+		internal void EnableMultiselect(bool isEnabled)
 		{
 			m_isMultiselectEnabled = isEnabled;
 		}

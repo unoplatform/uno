@@ -24,6 +24,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private event TypedEventHandler<TreeViewNode, IVectorChangedEventArgs> ChildrenChangedSource;
 
+		internal object ItemsSource { get; set; }
+
 		public TreeViewNode Parent
 		{
 			get => _parent;
