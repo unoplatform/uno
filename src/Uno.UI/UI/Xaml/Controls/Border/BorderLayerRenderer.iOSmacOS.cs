@@ -116,10 +116,17 @@ namespace Windows.UI.Xaml.Shapes
 
 				if (lgbBackground != null)
 				{
+					var fillMask = new CAShapeLayer()
+					{
+						Path = path,
+						Frame = area,
+						// We only use the fill color to create the mask area
+						FillColor = _Color.White.CGColor,
+					};
 					// We reduce the adjustedArea again so that the gradient is inside the border (like in Windows)
 					adjustedArea = adjustedArea.Shrink((nfloat)adjustedLineWidthOffset);
 
-					CreateLinearGradientBrushLayers(area, adjustedArea, parent, sublayers, ref insertionIndex, lgbBackground);
+					CreateLinearGradientBrushLayers(area, adjustedArea, parent, sublayers, ref insertionIndex, lgbBackground, fillMask);
 				}
 				else if (scbBackground != null)
 				{
@@ -131,10 +138,17 @@ namespace Windows.UI.Xaml.Shapes
 					var uiImage = imgBackground.ImageSource?.ImageData;
 					if (uiImage != null && uiImage.Size != CGSize.Empty)
 					{
+						var fillMask = new CAShapeLayer()
+						{
+							Path = path,
+							Frame = area,
+							// We only use the fill color to create the mask area
+							FillColor = _Color.White.CGColor,
+						};
 						// We reduce the adjustedArea again so that the image is inside the border (like in Windows)
 						adjustedArea = adjustedArea.Shrink((nfloat)adjustedLineWidthOffset);
 
-						CreateImageBrushLayers(area, adjustedArea, parent, sublayers, ref insertionIndex, imgBackground);
+						CreateImageBrushLayers(area, adjustedArea, parent, sublayers, ref insertionIndex, imgBackground, fillMask);
 					}
 				}
 				else
@@ -177,7 +191,7 @@ namespace Windows.UI.Xaml.Shapes
 					var insideArea = new CGRect(CGPoint.Empty, fullArea.Size);
 					var insertionIndex = 0;
 
-					CreateLinearGradientBrushLayers(fullArea, insideArea, parent, sublayers, ref insertionIndex, lgbBackground);
+					CreateLinearGradientBrushLayers(fullArea, insideArea, parent, sublayers, ref insertionIndex, lgbBackground, fillMask: null);
 				}
 				else if (scbBackground != null)
 				{
@@ -203,7 +217,7 @@ namespace Windows.UI.Xaml.Shapes
 						var insideArea = new CGRect(CGPoint.Empty, fullArea.Size);
 						var insertionIndex = 0;
 
-						CreateImageBrushLayers(fullArea, insideArea, parent, sublayers, ref insertionIndex, imgBackground);
+						CreateImageBrushLayers(fullArea, insideArea, parent, sublayers, ref insertionIndex, imgBackground, fillMask: null);
 					}
 				}
 				else
@@ -327,7 +341,8 @@ namespace Windows.UI.Xaml.Shapes
 		/// <param name="sublayers">List of layers to keep all references</param>
 		/// <param name="insertionIndex">Where in the layer the new layers will be added</param>
 		/// <param name="imageBrush">The ImageBrush containing all the image properties (UIImage, Stretch, AlignmentX, etc.)</param>
-		private static void CreateImageBrushLayers(CGRect fullArea, CGRect insideArea, CALayer layer, List<CALayer> sublayers, ref int insertionIndex, ImageBrush imageBrush)
+		/// <param name="fillMask">Optional mask layer (for when we use rounded corners)</param>
+		private static void CreateImageBrushLayers(CGRect fullArea, CGRect insideArea, CALayer layer, List<CALayer> sublayers, ref int insertionIndex, ImageBrush imageBrush, CAShapeLayer fillMask)
 		{
 			var uiImage = imageBrush.ImageSource.ImageData;
 
@@ -335,6 +350,7 @@ namespace Windows.UI.Xaml.Shapes
 			var imageContainerLayer = new CALayer
 			{
 				Frame = fullArea,
+				Mask = fillMask,
 				BackgroundColor = new CGColor(0, 0, 0, 0),
 				MasksToBounds = true,
 			};
@@ -365,12 +381,14 @@ namespace Windows.UI.Xaml.Shapes
 		/// <param name="sublayers">List of layers to keep all references</param>
 		/// <param name="insertionIndex">Where in the layer the new layers will be added</param>
 		/// <param name="linearGradientBrush">The LinearGradientBrush</param>
-		private static void CreateLinearGradientBrushLayers(CGRect fullArea, CGRect insideArea, CALayer layer, List<CALayer> sublayers, ref int insertionIndex, LinearGradientBrush linearGradientBrush)
+		/// <param name="fillMask">Optional mask layer (for when we use rounded corners)</param>
+		private static void CreateLinearGradientBrushLayers(CGRect fullArea, CGRect insideArea, CALayer layer, List<CALayer> sublayers, ref int insertionIndex, LinearGradientBrush linearGradientBrush, CAShapeLayer fillMask)
 		{
 			// This layer is the one we apply the mask on. It's the full size of the shape because the mask is as well.
 			var gradientContainerLayer = new CALayer
 			{
 				Frame = fullArea,
+				Mask = fillMask,
 				BackgroundColor = new CGColor(0, 0, 0, 0),
 				MasksToBounds = true,
 			};
