@@ -268,9 +268,9 @@ namespace Windows.UI.Xaml
 
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue);
 
-#endregion
+		#endregion
 
-#region Opacity Dependency Property
+		#region Opacity Dependency Property
 
 		public double Opacity
 		{
@@ -283,9 +283,9 @@ namespace Windows.UI.Xaml
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args);
 
-#endregion
+		#endregion
 
-#region Visibility Dependency Property
+		#region Visibility Dependency Property
 
 		/// <summary>
 		/// Sets the visibility of the current view
@@ -310,7 +310,7 @@ namespace Windows.UI.Xaml
 					(s, e) => (s as UIElement).OnVisibilityChanged((Visibility)e.OldValue, (Visibility)e.NewValue)
 				)
 			);
-#endregion
+		#endregion
 
 		internal bool IsRenderingSuspended { get; set; }
 
@@ -409,9 +409,9 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public Rect LayoutSlot { get; set; } = default;
+		internal Rect LayoutSlot { get; set; } = default;
 
-		public Rect LayoutSlotWithMarginsAndAlignments { get; set; } = default;
+		internal Rect LayoutSlotWithMarginsAndAlignments { get; set; } = default;
 
 		internal bool NeedsClipToSlot { get; set; }
 
