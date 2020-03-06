@@ -11,7 +11,7 @@ namespace Private.Infrastructure
 		{
 			public static object WindowContent
 			{
-				get { return RootControl.Content; }
+				get => RootControl.Content;
 				internal set
 				{
 					if (RootControl is ContentControl content)
@@ -89,6 +89,12 @@ namespace Private.Infrastructure
 		internal static void VERIFY_ARE_EQUAL<T>(T actual, T expected)
 		{
 			Assert.AreEqual(expected: expected, actual: actual);
+		}
+
+		internal static void VERIFY_ARE_VERY_CLOSE(double actual, double expected, double tolerance = 0.1d)
+		{
+			var difference = Math.Abs(actual - expected);
+			Assert.IsTrue(difference <= tolerance, $"Expected <{expected}>, actual <{actual}> (tolerance = {tolerance})");
 		}
 	}
 

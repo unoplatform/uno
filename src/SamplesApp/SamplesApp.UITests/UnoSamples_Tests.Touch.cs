@@ -33,14 +33,14 @@ namespace SamplesApp.UITests
 
 				Assert.AreEqual("0 - button inside grid", touchLog.GetDependencyPropertyValue<string>("Text"));
 
-				_app.Screenshot("0 - button inside grid");
+				TakeScreenshot("0 - button inside grid");
 			}
 
 			{
 				var button = _app.Marked("button_border_on_top");
 				var border = _app.Marked("button_border_on_top_border");
 
-				border.Tap();
+				border.FastTap();
 
 				var position = button.FirstResult().Rect;
 				_app.TapCoordinates(position.X + 2, position.Y + 2);
@@ -49,7 +49,7 @@ namespace SamplesApp.UITests
 
 				Assert.AreEqual("1 - button under grid", touchLog.GetDependencyPropertyValue<string>("Text"));
 
-				_app.Screenshot("0 - button inside grid");
+				TakeScreenshot("0 - button inside grid");
 			}
 		}
 	}

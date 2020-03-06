@@ -80,8 +80,6 @@ namespace Windows.UI.Xaml.Controls
 			ScrollBarStyle = ScrollbarStyles.OutsideOverlay; // prevents padding from affecting scrollbar position
 
 			_layouter = new ScrollViewerLayouter(this);
-
-			MotionEventSplittingEnabled = false;
 		}
 
 		private void InitializeScrollbars()
@@ -96,6 +94,11 @@ namespace Windows.UI.Xaml.Controls
 			else
 			{
 				InitializeScrollbars(null);
+			}
+
+			if (FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay != null)
+			{
+				ScrollBarDefaultDelayBeforeFade = (int)FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay.Value.TotalMilliseconds;
 			}
 		}
 
@@ -140,7 +143,6 @@ namespace Windows.UI.Xaml.Controls
 			IFrameworkElementHelper.OnMeasureOverride(this);
 		}
 
-		//TODO generated code
 		partial void OnLayoutPartial(bool changed, int left, int top, int right, int bottom)
 		{
 			var newSize = new Rect(0, 0, right - left, bottom - top).PhysicalToLogicalPixels();
@@ -151,6 +153,9 @@ namespace Windows.UI.Xaml.Controls
 			// the child at an invalid location when the visibility changes.
 
 			_layouter.Arrange(newSize);
+
+			// base.OnLayout is not invoked in the mixin to allow for the clipping algorithms
+			base.OnLayout(changed, left, top, right, bottom);
 		}
 
 		private void UpdateScrollSettings()

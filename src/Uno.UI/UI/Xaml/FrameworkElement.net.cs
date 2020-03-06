@@ -1,16 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Uno.Disposables;
-using System.Text;
-using System.Threading.Tasks;
-using Uno.Extensions;
-using Uno;
-using Uno.Logging;
-using Windows.UI.Xaml.Controls;
 using Windows.Foundation;
 using View = Windows.UI.Xaml.UIElement;
 using System.Collections;
+using Uno.UI;
 
 namespace Windows.UI.Xaml
 {
@@ -20,7 +14,7 @@ namespace Windows.UI.Xaml
 
 		partial void OnLoadingPartial();
 
-		public View AddChild(View child)
+		public T AddChild<T>(T child) where T : View
 		{
 			_children.Add(child);
 			child.SetParent(this);
@@ -28,7 +22,7 @@ namespace Windows.UI.Xaml
 			return child;
 		}
 
-		public View AddChild(View child, int index)
+		public T AddChild<T>(T child, int index) where T : View
 		{
 			_children.Insert(index, child);
 			child.SetParent(this);
@@ -36,7 +30,7 @@ namespace Windows.UI.Xaml
 			return child;
 		}
 
-		public View RemoveChild(View child)
+		public T RemoveChild<T>(T child) where T : View
 		{
 			_children.Remove(child);
 			child.SetParent(null);
@@ -86,6 +80,11 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		internal void InternalArrange(Rect frame)
+		{
+			_layouter.Arrange(frame);
+		}
+
 		static partial void OnGenericPropertyUpdatedPartial(object dependencyObject, DependencyPropertyChangedEventArgs args);
 
 		public bool IsLoaded { get; private set; }
@@ -95,6 +94,11 @@ namespace Windows.UI.Xaml
 			IsLoaded = true;
 			OnLoading();
 			OnLoaded();
+
+			foreach(var child in GetChildren().OfType<FrameworkElement>())
+			{
+				child.ForceLoaded();
+			}
 		}
 
 		public int InvalidateMeasureCallCount { get; private set; }
@@ -109,5 +113,9 @@ namespace Windows.UI.Xaml
 		public double ActualWidth => Arranged.Width;
 
 		public double ActualHeight => Arranged.Height;
+
+		public Size UnclippedDesiredSize => _layouter._unclippedDesiredSize;
+
+		public global::System.Uri BaseUri { get; internal set; }
 	}
 }

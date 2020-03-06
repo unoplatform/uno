@@ -35,24 +35,29 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		protected override void OnLayoutCore(bool changed, int left, int top, int right, int bottom)
-        {
-            base.OnLayoutCore(changed, left, top, right, bottom);
+		{
+			base.OnLayoutCore(changed, left, top, right, bottom);
 
-            UpdateBorder();
-        }
+			UpdateBorder();
+		}
 
-        partial void OnChildChangedPartial(View previousValue, View newValue)
-        {
-            if (previousValue != null)
-            {
-                RemoveView(previousValue);
-            }
+		partial void OnChildChangedPartial(View previousValue, View newValue)
+		{
+			if (previousValue != null)
+			{
+				RemoveView(previousValue);
+			}
 
 			if (newValue != null)
 			{
 				AddView(newValue);
 			}
-        }
+		}
+
+		protected override void OnDraw(Android.Graphics.Canvas canvas)
+		{
+			AdjustCornerRadius(canvas, CornerRadius);
+		}
 
 		private void UpdateBorder()
 		{
@@ -60,54 +65,51 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private void UpdateBorder(bool willUpdateMeasures)
-        {
-            if (IsLoaded)
-            {
-                _borderRenderer.UpdateLayers(
-                    this,
-                    Background,
-                    BorderThickness,
-                    BorderBrush,
-                    CornerRadius,
-                    Padding,
+		{
+			if (IsLoaded)
+			{
+				_borderRenderer.UpdateLayers(
+					this,
+					Background,
+					BorderThickness,
+					BorderBrush,
+					CornerRadius,
+					Padding,
 					willUpdateMeasures
 				);
-            }
-        }
+			}
+		}
 
-        protected override void OnLoaded()
-        {
-            base.OnLoaded();
-            UpdateBorder();
-        }
+		partial void OnBorderBrushChangedPartial()
+		{
+			UpdateBorder();
+		}
 
-        partial void OnBorderBrushChangedPartial()
-        {
-            UpdateBorder();
-        }
+		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
+		{
+			// Don't call base, just update the filling color.
+			_brushChanged.Disposable = Brush.AssignAndObserveBrush(e.NewValue as Brush, c => UpdateBorder(), UpdateBorder);
 
-        protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
-        {
-            // Don't call base, just update the filling color.
-            _brushChanged.Disposable = Brush.AssignAndObserveBrush(e.NewValue as Brush, c => UpdateBorder(), UpdateBorder);
+			UpdateBorder();
+		}
 
-            UpdateBorder();
-        }
+		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
+		{
+			UpdateBorder();
+		}
 
-        partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
-        {
-            UpdateBorder();
-        }
+		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
+		{
+			UpdateBorder(true);
+		}
 
-        partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
-        {
-            UpdateBorder(true);
-        }
+		partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue)
+		{
+			UpdateBorder();
+		}
 
-        partial void OnCornerRadiusUpdatedPartial(CornerRadius oldValue, CornerRadius newValue)
-        {
-            UpdateBorder();
-        }
-    }
+		bool ICustomClippingElement.AllowClippingToLayoutSlot => !(Child is UIElement ue) || ue.RenderTransform == null;
+		bool ICustomClippingElement.ForceClippingToLayoutSlot => CornerRadius != CornerRadius.None;
+	}
 }
 #endif

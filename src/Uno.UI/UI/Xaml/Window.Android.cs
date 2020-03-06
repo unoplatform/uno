@@ -3,12 +3,17 @@ using System;
 using Android.App;
 using Android.Util;
 using Android.Views;
+using Uno.Disposables;
+using Uno.Extensions;
+using Uno.Logging;
 using Uno.UI;
+using Windows.ApplicationModel.Core;
 using Windows.Foundation;
 using Windows.Graphics.Display;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml
 {
@@ -19,11 +24,16 @@ namespace Windows.UI.Xaml
 		private Border _rootBorder;
 		private Border _fullWindow;
 		private UIElement _content;
+		private PopupRoot _popupRoot;
 
 		public Window()
 		{
 			Dispatcher = CoreDispatcher.Main;
 			CoreWindow = new CoreWindow();
+
+			CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBarChanged
+				+= RaiseNativeSizeChanged;
+
 			InitializeCommon();
 		}
 
@@ -42,13 +52,15 @@ namespace Windows.UI.Xaml
 					HorizontalAlignment = HorizontalAlignment.Stretch,
 					Visibility = Visibility.Collapsed
 				};
+				_popupRoot = new PopupRoot();
 
 				_main = new Grid()
 				{
 					Children =
 					{
 						_rootBorder,
-						_fullWindow
+						_fullWindow,
+						_popupRoot
 					}
 				};
 
@@ -283,6 +295,31 @@ namespace Windows.UI.Xaml
 				|| flags.HasFlag(WindowManagerFlags.LayoutNoLimits);
 		}
 		#endregion
+
+		internal IDisposable OpenPopup(Popup popup)
+		{
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"Creating popup");
+			}
+
+			var popupPanel = popup.PopupPanel;
+			_popupRoot.Children.Add(popupPanel);
+
+			return new CompositeDisposable(
+				Disposable.Create(() => {
+
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						this.Log().Debug($"Closing popup");
+					}
+
+					_popupRoot.Children.Remove(popupPanel);
+				}),
+				VisualTreeHelper.RegisterOpenPopup(popup)
+			);
+		}
+
 	}
 }
 #endif

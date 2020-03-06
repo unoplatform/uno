@@ -250,17 +250,18 @@ namespace SampleControl.Presentation
 				_currentSelectedSample = value;
 				RaisePropertyChanged();
 				(ReloadCurrentTestCommand as DelegateCommand).CanExecuteEnabled = true;
+				(ShowTestInformationCommand as DelegateCommand).CanExecuteEnabled = true;
 
 				var currentTextIndex = SelectedCategory?.SamplesContent.IndexOf(value);
 				// Set Previous
 				PreviousSample = currentTextIndex == null || currentTextIndex < 1
 					? null
-					: SelectedCategory.SamplesContent[(int)currentTextIndex - 1];
+					: SelectedCategory.SamplesContent.Skip((int)currentTextIndex - 1).FirstOrDefault();
 
 				// Set Next
 				NextSample = currentTextIndex == null || currentTextIndex < 0 || currentTextIndex == SelectedCategory.SamplesContent.Count - 1
 					? null
-					: SelectedCategory.SamplesContent[(int)currentTextIndex + 1];
+					: SelectedCategory.SamplesContent.Skip((int)currentTextIndex + 1).FirstOrDefault();
 			}
 		}
 

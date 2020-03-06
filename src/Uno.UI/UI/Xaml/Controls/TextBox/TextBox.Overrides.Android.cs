@@ -56,6 +56,13 @@ namespace Windows.UI.Xaml.Controls
 				copy.Replace(start, end, tb, tbstart, tbend);
 				var previewText = copy.ToString();
 
+				// Modifying the text beyond max length will not be accepted. We discard this replace in advance to prevent
+				// raising the chain of text-related events: BeforeTextChanging, TextChanging, and TextChanged.
+				if (Owner.MaxLength > 0 && previewText.Length > Owner.MaxLength)
+				{
+					return this;
+				}
+
 				var finalText = Owner.ProcessTextInput(previewText);
 
 				if (Owner._wasLastEditModified = previewText != finalText)
@@ -108,33 +115,33 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			#region Redirects
-			public override IEditable Editable => _editableInputConnection.Editable;
+			public override IEditable Editable => _editableInputConnection?.Editable ?? _textBoxView.EditableText;
 
-			public override bool BeginBatchEdit() => _editableInputConnection.BeginBatchEdit();
+			public override bool BeginBatchEdit() => _editableInputConnection?.BeginBatchEdit() ?? false;
 
-			public override bool EndBatchEdit() => _editableInputConnection.EndBatchEdit();
+			public override bool EndBatchEdit() => _editableInputConnection?.EndBatchEdit() ?? false;
 
 			public override void CloseConnection()
 			{
 				// EditableInputConnection calls super.CloseConnection() Not obvious if we should call base here, or if it's not necessary (or would be harmful).
-				_editableInputConnection.CloseConnection();
+				_editableInputConnection?.CloseConnection();
 			}
 
-			public override bool ClearMetaKeyStates(MetaKeyStates states) => _editableInputConnection.ClearMetaKeyStates(states);
+			public override bool ClearMetaKeyStates(MetaKeyStates states) => _editableInputConnection?.ClearMetaKeyStates(states) ?? false;
 
-			public override bool CommitCompletion(CompletionInfo text) => _editableInputConnection.CommitCompletion(text);
+			public override bool CommitCompletion(CompletionInfo text) => _editableInputConnection?.CommitCompletion(text) ?? false;
 
-			public override bool CommitCorrection(CorrectionInfo correctionInfo) => _editableInputConnection.CommitCorrection(correctionInfo);
+			public override bool CommitCorrection(CorrectionInfo correctionInfo) => _editableInputConnection?.CommitCorrection(correctionInfo) ?? false;
 
-			public override bool PerformEditorAction(ImeAction actionCode) => _editableInputConnection.PerformEditorAction(actionCode);
+			public override bool PerformEditorAction(ImeAction actionCode) => _editableInputConnection?.PerformEditorAction(actionCode) ?? false;
 
-			public override bool PerformContextMenuAction(int id) => _editableInputConnection.PerformContextMenuAction(id);
+			public override bool PerformContextMenuAction(int id) => _editableInputConnection?.PerformContextMenuAction(id) ?? false;
 
-			public override ExtractedText GetExtractedText(ExtractedTextRequest request, GetTextFlags flags) => _editableInputConnection.GetExtractedText(request, flags);
+			public override ExtractedText GetExtractedText(ExtractedTextRequest request, GetTextFlags flags) => _editableInputConnection?.GetExtractedText(request, flags);
 
-			public override bool PerformPrivateCommand(string action, Bundle data) => _editableInputConnection.PerformPrivateCommand(action, data);
+			public override bool PerformPrivateCommand(string action, Bundle data) => _editableInputConnection?.PerformPrivateCommand(action, data) ?? false;
 
-			public override bool RequestCursorUpdates(int cursorUpdateMode) => _editableInputConnection.RequestCursorUpdates(cursorUpdateMode);
+			public override bool RequestCursorUpdates(int cursorUpdateMode) => _editableInputConnection?.RequestCursorUpdates(cursorUpdateMode) ?? false;
 			#endregion
 
 			public override bool CommitText(ICharSequence text, int newCursorPosition)
@@ -151,8 +158,8 @@ namespace Windows.UI.Xaml.Controls
 					return false;
 				}
 
-				var output = _editableInputConnection.CommitText(text, newCursorPosition);
-				return output;
+				var output = _editableInputConnection?.CommitText(text, newCursorPosition);
+				return output ?? false;
 			}
 
 			public override bool SetComposingText(ICharSequence text, int newCursorPosition)

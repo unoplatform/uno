@@ -5,6 +5,8 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Uno.Disposables;
 using System.Numerics;
+using Uno.UI;
+using Windows.UI.Xaml.Wasm;
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -56,6 +58,11 @@ namespace Windows.UI.Xaml.Shapes
 
 			foreach (FrameworkElement child in GetChildren())
 			{
+				if (child is DefsSvgElement)
+				{
+					// Defs hosts non-visual objects
+					continue;
+				}
 				child.SetNativeTransform(matrix);
 			}
 
@@ -73,7 +80,7 @@ namespace Windows.UI.Xaml.Shapes
 				return (new Size(contentBBox.Right, contentBBox.Bottom), 0, 0, 1, 1);
 			}
 
-			var contentAspectRatio = contentBBox.Width / contentBBox.Height;
+			var contentAspectRatio = contentBBox.AspectRatio();
 
 			//  Calculate the control size
 			var calculatedWidth = LimitWithUserSize(availableSize.Width, Width, contentBBox.Width);
@@ -143,6 +150,12 @@ namespace Windows.UI.Xaml.Shapes
 
 			foreach (FrameworkElement child in GetChildren())
 			{
+				if (child is DefsSvgElement)
+				{
+					// Defs hosts non-visual objects
+					continue;
+				}
+
 				var childRect = GetBBoxWithStrokeThickness(child);
 				if (bbox == Rect.Empty)
 				{

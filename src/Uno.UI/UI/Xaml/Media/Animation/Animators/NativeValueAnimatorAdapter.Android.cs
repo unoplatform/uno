@@ -219,7 +219,7 @@ namespace Windows.UI.Xaml.Media.Animation
 #if __ANDROID_19__
 			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.Kitkat)
 			{
-				_adaptee.Pause();
+				_adaptee.Resume();
 			}
 			else
 #endif

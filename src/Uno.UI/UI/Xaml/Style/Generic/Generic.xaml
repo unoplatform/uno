@@ -12,10 +12,11 @@
 					xmlns:android="http://uno.ui/android"
 					xmlns:not_wasm="http://uno.ui/not_wasm"
 					xmlns:wasm="http://uno.ui/wasm"
+					xmlns:macos="http://uno.ui/macos"
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
 					xmlns:uBehaviors="using:Uno.UI.Behaviors"
-					mc:Ignorable="d xamarin ios android not_wasm wasm">
+					mc:Ignorable="d xamarin ios android not_wasm wasm macos">
 
 	<!-- TODO: How does UWP override the default FontFamily value of 11 with 15? -->
 	<wasm:Style TargetType="TextBlock">
@@ -34,6 +35,15 @@
 			</Setter.Value>
 		</Setter>
 	</wasm:Style>
+	<macos:Style TargetType="ItemsControl">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="ItemsControl">
+					<ItemsPresenter Padding="{TemplateBinding Padding}" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</macos:Style>
 
 	<!-- Default style for Windows.UI.Xaml.Controls.ContentControl -->
 	<Style TargetType="ContentControl">
@@ -193,6 +203,7 @@
 										  ContentTransitions="{TemplateBinding ContentTransitions}"
 										  ContentTemplate="{TemplateBinding ContentTemplate}"
 										  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+										  CornerRadius="{TemplateBinding CornerRadius}"
 										  Padding="{TemplateBinding Padding}"
 										  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
 										  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -361,6 +372,7 @@
 								Grid.Row="1"
 								BorderBrush="{TemplateBinding BorderBrush}"
 								BorderThickness="{TemplateBinding BorderThickness}"
+								CornerRadius="{TemplateBinding CornerRadius}"
 								Grid.ColumnSpan="2"
 								Grid.RowSpan="1" />
 						<ContentPresenter x:Name="HeaderContentPresenter"
@@ -532,7 +544,7 @@
 						</Grid.RowDefinitions>
 						<Grid.ColumnDefinitions>
 							<ColumnDefinition Width="*" />
-							<ColumnDefinition Width="32" />
+							<ColumnDefinition Width="Auto" />
 						</Grid.ColumnDefinitions>
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
@@ -700,13 +712,15 @@
 								Grid.ColumnSpan="2"
 								Background="{TemplateBinding Background}"
 								BorderBrush="{TemplateBinding BorderBrush}"
-								BorderThickness="{TemplateBinding BorderThickness}" />
+								BorderThickness="{TemplateBinding BorderThickness}"
+								CornerRadius="{TemplateBinding CornerRadius}" />
 						<Border x:Name="HighlightBackground"
 								Grid.Row="1"
 								Grid.ColumnSpan="2"
 								Background="{ThemeResource SystemControlHighlightListAccentLowBrush}"
 								BorderBrush="{ThemeResource SystemControlHighlightBaseMediumLowBrush}"
 								BorderThickness="{TemplateBinding BorderThickness}"
+								CornerRadius="{TemplateBinding CornerRadius}"
 								Opacity="0" />
 						<ContentPresenter x:Name="ContentPresenter"
 										  Grid.Row="1"
@@ -773,6 +787,10 @@
 		</Setter>
 	</xamarin:Style>
 
+	<xamarin:Style x:Key="XamlDefaultComboBox"
+		   TargetType="ComboBox"
+		   BasedOn="{StaticResource DefaultComboBoxStyle}" />
+
 	<Style TargetType="ComboBox"
 		   BasedOn="{StaticResource DefaultComboBoxStyle}" />
 
@@ -791,13 +809,18 @@
 				Value="{ThemeResource SystemControlForegroundBaseHighBrush}" />
 		<Setter Property="UseSystemFocusVisuals"
 				Value="True" />
-		<Setter Property="Template">
+		<Setter Property="FontFamily"
+				Value="{ThemeResource ContentControlThemeFontFamily}" />
+		<Setter Property="FontSize"
+				Value="{ThemeResource ControlContentThemeFontSize}" />
+			<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="ComboBoxItem">
 					<Grid x:Name="LayoutRoot"
 						  Background="{TemplateBinding Background}"
 						  BorderBrush="{TemplateBinding BorderBrush}"
 						  BorderThickness="{TemplateBinding BorderThickness}"
+						  CornerRadius="{TemplateBinding CornerRadius}"
 						  Control.IsTemplateFocusTarget="True">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
@@ -977,7 +1000,8 @@
 					<Grid x:Name="ContentBorder"
 						  Background="{TemplateBinding Background}"
 						  BorderBrush="{TemplateBinding BorderBrush}"
-						  BorderThickness="{TemplateBinding BorderThickness}">
+						  BorderThickness="{TemplateBinding BorderThickness}"
+						  CornerRadius="{TemplateBinding CornerRadius}">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
 								<VisualState x:Name="Normal">
@@ -1407,7 +1431,8 @@
 					<Grid x:Name="ContentBorder"
 						  Background="{TemplateBinding Background}"
 						  BorderBrush="{TemplateBinding BorderBrush}"
-						  BorderThickness="{TemplateBinding BorderThickness}">
+						  BorderThickness="{TemplateBinding BorderThickness}"
+						  CornerRadius="{TemplateBinding CornerRadius}">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
 								<VisualState x:Name="Normal">
@@ -3143,7 +3168,8 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="Button">
 					<Grid x:Name="RootGrid"
-						  Background="{TemplateBinding Background}">
+						  Background="{TemplateBinding Background}"
+						  CornerRadius="{TemplateBinding CornerRadius}">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
 								<VisualState x:Name="Normal">
@@ -3214,6 +3240,7 @@
 										  ContentTransitions="{TemplateBinding ContentTransitions}"
 										  ContentTemplate="{TemplateBinding ContentTemplate}"
 										  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+										  CornerRadius="{TemplateBinding CornerRadius}"
 										  Padding="{TemplateBinding Padding}"
 										  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
 										  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -3253,7 +3280,8 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="ToggleButton">
 					<Grid x:Name="RootGrid"
-						  Background="{TemplateBinding Background}">
+						  Background="{TemplateBinding Background}"
+						  CornerRadius="{TemplateBinding CornerRadius}">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
 								<VisualState x:Name="Normal">
@@ -3468,6 +3496,7 @@
 										  ContentTransitions="{TemplateBinding ContentTransitions}"
 										  ContentTemplate="{TemplateBinding ContentTemplate}"
 										  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
+										  CornerRadius="{TemplateBinding CornerRadius}"
 										  Padding="{TemplateBinding Padding}"
 										  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
 										  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
@@ -3923,7 +3952,8 @@
 				<ControlTemplate TargetType="RadioButton">
 					<Grid Background="{TemplateBinding Background}"
 						  BorderBrush="{TemplateBinding BorderBrush}"
-						  BorderThickness="{TemplateBinding BorderThickness}">
+						  BorderThickness="{TemplateBinding BorderThickness}"
+						  CornerRadius="{TemplateBinding CornerRadius}">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
 								<VisualState x:Name="Normal" />
@@ -4420,7 +4450,8 @@
 				<ControlTemplate TargetType="ListView">
 					<Border BorderBrush="{TemplateBinding BorderBrush}"
 							Background="{TemplateBinding Background}"
-							BorderThickness="{TemplateBinding BorderThickness}">
+							BorderThickness="{TemplateBinding BorderThickness}"
+							CornerRadius="{TemplateBinding CornerRadius}">
 						<ScrollViewer x:Name="ScrollViewer"
 									  xamarin:Style="{StaticResource ListViewBaseScrollViewerStyle}"
 									  TabNavigation="{TemplateBinding TabNavigation}"
@@ -4500,7 +4531,8 @@
 				<ControlTemplate TargetType="GridView">
 					<Border BorderBrush="{TemplateBinding BorderBrush}"
 							Background="{TemplateBinding Background}"
-							BorderThickness="{TemplateBinding BorderThickness}">
+							BorderThickness="{TemplateBinding BorderThickness}"
+							CornerRadius="{TemplateBinding CornerRadius}">
 						<ScrollViewer x:Name="ScrollViewer"
 									  xamarin:Style="{StaticResource ListViewBaseScrollViewerStyle}"
 									  TabNavigation="{TemplateBinding TabNavigation}"
@@ -4563,7 +4595,8 @@
 			<Setter.Value>
 				<ControlTemplate TargetType="ScrollViewer">
 					<Border BorderBrush="{TemplateBinding BorderBrush}"
-							BorderThickness="{TemplateBinding BorderThickness}">
+							BorderThickness="{TemplateBinding BorderThickness}"
+							CornerRadius="{TemplateBinding CornerRadius}">
 						<win:VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="ScrollingIndicatorStates">
 								<VisualStateGroup.Transitions>
@@ -4930,6 +4963,7 @@
 								Grid.Row="1"
 								BorderBrush="{TemplateBinding BorderBrush}"
 								BorderThickness="{TemplateBinding BorderThickness}"
+								CornerRadius="{TemplateBinding CornerRadius}"
 								Grid.ColumnSpan="2"
 								Grid.RowSpan="1" />
 						<ContentPresenter x:Name="HeaderContentPresenter"
@@ -5062,6 +5096,7 @@
 									  Background="{TemplateBinding Background}"
 									  BorderBrush="{TemplateBinding BorderBrush}"
 									  BorderThickness="{TemplateBinding BorderThickness}"
+									  CornerRadius="{TemplateBinding CornerRadius}"
 									  Padding="{TemplateBinding Padding}"
 									  HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
 									  VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}" />
@@ -5094,7 +5129,8 @@
 						<Border x:Name="DeterminateRoot"
 								Background="{TemplateBinding Background}"
 								BorderBrush="{TemplateBinding BorderBrush}"
-								BorderThickness="{TemplateBinding BorderThickness}">
+								BorderThickness="{TemplateBinding BorderThickness}"
+								CornerRadius="{TemplateBinding CornerRadius}">
 							<Rectangle x:Name="ProgressBarIndicator"
 									   Margin="{TemplateBinding Padding}"
 									   Fill="{TemplateBinding Foreground}"
@@ -5128,6 +5164,7 @@
 		            Background="{TemplateBinding Background}"
 		            BorderThickness="{TemplateBinding BorderThickness}"
 		            BorderBrush="{TemplateBinding BorderBrush}"
+					CornerRadius="{TemplateBinding CornerRadius}"
 		            Padding="{TemplateBinding Padding}"
 		            MaxWidth="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.MaxSideLength}"
 		            MaxHeight="{Binding RelativeSource={RelativeSource TemplatedParent}, Path=TemplateSettings.MaxSideLength}"
@@ -5399,7 +5436,8 @@
 				<ControlTemplate TargetType="ListViewHeaderItem">
 					<StackPanel Background="{TemplateBinding Background}"
 								BorderBrush="{TemplateBinding BorderBrush}"
-								BorderThickness="{TemplateBinding BorderThickness}">
+								BorderThickness="{TemplateBinding BorderThickness}"
+								CornerRadius="{TemplateBinding CornerRadius}">
 						<ContentPresenter x:Name="ContentPresenter"
 										  Margin="{TemplateBinding Padding}"
 										  Content="{TemplateBinding Content}"
@@ -5445,7 +5483,8 @@
 				<ControlTemplate TargetType="GridViewHeaderItem">
 					<StackPanel Background="{TemplateBinding Background}"
 								BorderBrush="{TemplateBinding BorderBrush}"
-								BorderThickness="{TemplateBinding BorderThickness}">
+								BorderThickness="{TemplateBinding BorderThickness}"
+								CornerRadius="{TemplateBinding CornerRadius}">
 						<ContentPresenter x:Name="ContentPresenter"
 										  Margin="{TemplateBinding Padding}"
 										  Content="{TemplateBinding Content}"
@@ -5483,6 +5522,7 @@
 									  Background="{TemplateBinding Background}"
 									  BorderBrush="{TemplateBinding BorderBrush}"
 									  BorderThickness="{TemplateBinding BorderThickness}"
+									  CornerRadius="{TemplateBinding CornerRadius}"
 									  ContentTransitions="{TemplateBinding ContentTransitions}"
 									  ContentTemplate="{TemplateBinding ContentTemplate}"
 									  ContentTemplateSelector="{TemplateBinding ContentTemplateSelector}"
@@ -5522,7 +5562,8 @@
 				<ControlTemplate TargetType="ToggleSwitch">
 					<Grid Background="{TemplateBinding Background}"
 						  BorderBrush="{TemplateBinding BorderBrush}"
-						  BorderThickness="{TemplateBinding BorderThickness}">
+						  BorderThickness="{TemplateBinding BorderThickness}"
+						  CornerRadius="{TemplateBinding CornerRadius}">
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
 								<VisualState x:Name="Normal" />
@@ -7968,6 +8009,99 @@
 			</Setter.Value>
 		</Setter>
 	</Style>
+
+	<!-- Default style for Windows.UI.Xaml.Controls.Primitives.RepeatButton -->
+	<Style x:Name="XamlDefaultRepeatButton" TargetType="RepeatButton">
+	  <Setter Property="Background" Value="{ThemeResource RepeatButtonBackground}" />
+	  <Setter Property="BackgroundSizing" Value="OuterBorderEdge" />
+	  <Setter Property="Foreground" Value="{ThemeResource RepeatButtonForeground}" />
+	  <Setter Property="BorderBrush" Value="{ThemeResource RepeatButtonBorderBrush}" />
+	  <Setter Property="BorderThickness" Value="{ThemeResource ButtonBorderThemeThickness}" />
+	  <Setter Property="Padding" Value="{StaticResource ButtonPadding}" />
+	  <Setter Property="HorizontalAlignment" Value="Left" />
+	  <Setter Property="VerticalAlignment" Value="Center" />
+	  <Setter Property="FontFamily" Value="{ThemeResource ContentControlThemeFontFamily}" />
+	  <Setter Property="FontWeight" Value="Normal" />
+	  <Setter Property="FontSize" Value="{ThemeResource ControlContentThemeFontSize}" />
+	  <Setter Property="UseSystemFocusVisuals" Value="{StaticResource UseSystemFocusVisuals}" />
+	  <Setter Property="FocusVisualMargin" Value="-3" />
+	  <Setter Property="Template">
+		<Setter.Value>
+		  <ControlTemplate TargetType="RepeatButton">
+			<ContentPresenter x:Name="ContentPresenter"
+				Background="{TemplateBinding Background}"
+				BackgroundSizing="{TemplateBinding BackgroundSizing}"
+				BorderBrush="{TemplateBinding BorderBrush}"
+				BorderThickness="{TemplateBinding BorderThickness}"
+				Content="{TemplateBinding Content}"
+				ContentTemplate="{TemplateBinding ContentTemplate}"
+				ContentTransitions="{TemplateBinding ContentTransitions}"
+				CornerRadius="{TemplateBinding CornerRadius}"
+				Padding="{TemplateBinding Padding}"
+				HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+				VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+				AutomationProperties.AccessibilityView="Raw">
+
+			  <VisualStateManager.VisualStateGroups>
+				<VisualStateGroup x:Name="CommonStates">
+				  <VisualState x:Name="Normal" />
+
+				  <VisualState x:Name="PointerOver">
+
+					<Storyboard>
+					  <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+						<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBackgroundPointerOver}" />
+					  </ObjectAnimationUsingKeyFrames>
+					  <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+						<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBorderBrushPointerOver}" />
+					  </ObjectAnimationUsingKeyFrames>
+					  <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+						<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonForegroundPointerOver}" />
+					  </ObjectAnimationUsingKeyFrames>
+					</Storyboard>
+				  </VisualState>
+
+				  <VisualState x:Name="Pressed">
+
+					<Storyboard>
+					  <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+						<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBackgroundPressed}" />
+					  </ObjectAnimationUsingKeyFrames>
+					  <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+						<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBorderBrushPressed}" />
+					  </ObjectAnimationUsingKeyFrames>
+					  <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+						<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonForegroundPressed}" />
+					  </ObjectAnimationUsingKeyFrames>
+					</Storyboard>
+				  </VisualState>
+
+				  <VisualState x:Name="Disabled">
+
+					<Storyboard>
+					  <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Background">
+						<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBackgroundDisabled}" />
+					  </ObjectAnimationUsingKeyFrames>
+					  <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="BorderBrush">
+						<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonBorderBrushDisabled}" />
+					  </ObjectAnimationUsingKeyFrames>
+					  <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentPresenter" Storyboard.TargetProperty="Foreground">
+						<DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource RepeatButtonForegroundDisabled}" />
+					  </ObjectAnimationUsingKeyFrames>
+					</Storyboard>
+				  </VisualState>
+
+				</VisualStateGroup>
+
+			  </VisualStateManager.VisualStateGroups>
+			</ContentPresenter>
+
+		  </ControlTemplate>
+		</Setter.Value>
+	  </Setter>
+	</Style>
+
+	<Style TargetType="RepeatButton" BasedOn="{StaticResource XamlDefaultRepeatButton}" />
 
 	<win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
 	<xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />

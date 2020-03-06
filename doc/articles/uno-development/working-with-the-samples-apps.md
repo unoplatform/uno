@@ -3,9 +3,14 @@
 The Uno solution provides a set of sample applications that provide a way to test features, as
 well as provide a way to write UI Tests.
 
-Those applications are structured in a way that samples can created out of normal `UserControl` instances, marked with the `SampleControlInfoAttribute` so the sample application can discover them.
+Those applications are structured in a way that samples can be created out of normal `UserControl` instances, 
+marked with the `SampleAttribute` (and previous `SampleControlInfoAttribute`) so the sample application can discover them.
 
-Those applications are located in the `SamplesApp` folder of the solution, and a live development out of the master branch version for the WebAssembly application can be found here: https://unoui-sampleapp-unoui-sampleapp-staging.azurewebsites.net
+Those applications are located in the `SamplesApp` folder of the solution, and a live development out of the master branch
+ version for the WebAssembly application can be found here: https://unoui-sampleapp-unoui-sampleapp-staging.azurewebsites.net
+
+This article contains instructions and guidelines for authoring UI tests for Uno. For guidance on other test strategies used 
+in the Uno codebase, see [this guide](../contributing/guidelines/creating-tests.md).
 
 ## Creating UI Tests
 
@@ -18,14 +23,18 @@ The goal of these UI Tests is to :
 To create a UI Test for the sample applications:
 - Create or reuse a folder named from the namespace of the control or class your want to test, replacing "`.`" by "`_`"
 - Create a new `UserControl` from the Visual Studio templates in the `UITests.Shared` project
-- Add `[Uno.UI.Samples.Controls.SampleControlInfo("Replace_with_control_or_class_name", "MyTestName", description: "MyDescription")]` on the code-behind class.
+- Add `[Uno.UI.Samples.Controls.Sample]` on the code-behind class. 
+
+  _Note: This attribute also accepts a few other metadata about your sample, such as a list of `Categories`, a `Name`,
+  a `Description` etc. Check the `SampleAttribute` XML-doc for more info._
+
 - Run the samples application, and the sample should appear in the samples browser
 
 The Uno.UI process validates does two types of validations:
 - Screenshot based validation (with results comparison, see below)
 - Automated UI Testing for WebAssembly and Android using the `SamplesApp.UITests` and the [`Uno.UITest`](https://www.nuget.org/packages?q=uno.uitest) package.
 
-At this time, only WebAssembly and Android are used to run UI Tests, iOS is coming soon.
+UI Tests can be run on all platforms (iOS, Android and WebAssembly).
 
 ## Selectively ignore tests per platform
 
@@ -42,17 +51,18 @@ This attribute can be placed at the test or class level.
 
 ## Setup for Automated UI Tests on WebAssembly
 
-- Navigate to the `SamplesApp.Wasm.UITests` folder and run `npm i`. This will download Puppeteer and the Chrome driver.
-- Deploy and run the `SamplesApp.Wasm` application once.
+- Deploy and run the `SamplesApp.Wasm` application on the browser.
+- After you have added a new test page, you must launch the samples application once before running the test, otherwise the code for that page is not generated and the test will fail.
 
 ## Setup for Automated UI Tests on Android
 
-- Setup an android simulator or device, start it
-- Deploy and run the `SamplesApp.Droid` application on that device
+- Setup an android simulator or device, start it.
+- Deploy and run the `SamplesApp.Droid` application on that device.
+- After you have added a new test page, you must launch the samples application once before running the test, otherwise the code for that page is not generated and the test will fail.
 
 ## Running UI Tests
 
-- Open the [`Constants.cs`](src/SamplesApp/SamplesApp.UITests/Constants.cs) file and change the `CurrentPlatform` field to the platform you want to test.
+- Open the [`Constants.cs`](https://github.com/unoplatform/uno/blob/master/src/SamplesApp/SamplesApp.UITests/Constants.cs) file and change the `CurrentPlatform` field to the platform you want to test.
 - Select a test in the `SamplesApp.UITests` project and run a specific test.
 
 ## Troubleshooting tests running during the CI
@@ -85,11 +95,26 @@ To create a Non-UI Test:
 The WebAssembly head has the ability to be run through puppeteer, and displays all tests in sequence. Puppeteer runs a headless version of Chromium, suited for running tests in a CI environment.
 
 To run the tests:
+- Navigate to the `SamplesApp.Wasm.UITests` folder and run `npm i`. This will download Puppeteer and the Chrome driver.
 - Build the `SamplesApp.Wasm.UITests.njsproj` project
 - Press `F5`, node will start and run the tests sequentially
 - The screen shots are placed in a folder named `out`
 
 Note that the same operation is run during the CI, in a specific job running under Linux. The screen shots are located in the Unit Tests section under `Screenshots Compare Test Run` as well as in the build artifact.
+
+## Running iOS UI Tests in a Simulator on macOS 
+
+Running UI Tests in iOS Simulators on macOS requires, as of VS4Mac 8.4, to build and run the tests from the command line. Editing the Uno.UI solution is not a particularly stable experience yet.
+
+In a terminal, run the following:
+``` bash
+cd build
+./local-ios-uitest-run.sh
+```
+
+The Uno.UI solution will build, and the UI tests will run. You may need to adjust some of the parameters in the script, such as:
+- `UITEST_SNAPSHOTS_ONLY` which runs automated or snapshots tests
+- `UITEST_SNAPSHOTS_GROUP` which controls which group of tests will be run. Note that this feature is mainly used for build performance, where tests from different groups can be run in parallel during the CI.
 
 ## Validating the WebAssembly UI Tests results
 
@@ -97,7 +122,7 @@ In the CI build, an artifact named `wasm-uitests` is generated and contains an H
 for screenshots taken for the past builds. Download this artifact and open the html file to determine if any screenshots
 have changed.
 
-## Troubleshooting the tests
+### Troubleshooting the tests
 It is possible to enable the chromium head using the configuration parameters in the [app.ts](src/SamplesApp/SamplesApp.Wasm.UITests/app.ts) file.
 
 # Creating performance benchmarks

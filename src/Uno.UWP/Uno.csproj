@@ -36,9 +36,9 @@
 	<Import Project="..\Uno.CrossTargetting.props" />
 	
 	<ItemGroup>
-		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
+		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
 	</ItemGroup>
-
+	
 	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />

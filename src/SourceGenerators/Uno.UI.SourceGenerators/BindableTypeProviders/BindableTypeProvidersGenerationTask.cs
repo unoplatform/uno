@@ -127,7 +127,8 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 			writer.AppendLineInvariant("// *****************************************************************************");
 			writer.AppendLineInvariant("// </auto-generated>");
 			writer.AppendLine();
-			writer.AppendLineInvariant("#pragma warning disable 618 // Ignore obsolete members warnings");
+			writer.AppendLineInvariant("#pragma warning disable 618  // Ignore obsolete members warnings");
+			writer.AppendLineInvariant("#pragma warning disable 1591 // Ignore missing XML comment warnings");
 			writer.AppendLineInvariant("using System;");
 			writer.AppendLineInvariant("using System.Linq;");
 			writer.AppendLineInvariant("using System.Diagnostics;");
@@ -219,10 +220,10 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 					{
 						using (writer.BlockInvariant(@"lock(_knownMissingTypes)"))
 						{
-							using (writer.BlockInvariant(@"if(!_knownMissingTypes.Contains(type))"))
+							using (writer.BlockInvariant(@"if(!_knownMissingTypes.Contains(type) || !type.IsGenericType)"))
 							{
 								writer.AppendLineInvariant(@"_knownMissingTypes.Add(type);");
-								writer.AppendLineInvariant(@"Debug.WriteLine($""The type [{{type.FullName}}] is not known by the MetadataProvider, either add the Bindable attribute or add it to the TypeMetadataConfig.xml"");");
+								writer.AppendLineInvariant(@"Debug.WriteLine($""The Bindable attribute is missing and the type [{{type.FullName}}] is not known by the MetadataProvider. Reflection was used instead of the binding engine and generated static metadata. Add the Bindable attribute to prevent this message and performance issues."");");
 							}
 						}
 					}

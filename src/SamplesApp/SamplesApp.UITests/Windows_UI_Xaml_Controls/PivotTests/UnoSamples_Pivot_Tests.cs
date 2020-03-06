@@ -26,5 +26,29 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.PivotTests
 			_app.WaitForDependencyPropertyValue(selectedItemTitle, "Text", "item 1");
 			_app.WaitForDependencyPropertyValue(selectedItemContent, "Text", "My Item 1 Content");
 		}
+
+		[Test]
+		[AutoRetry()]
+		public void Pivot_Non_PivotItemChange_Validation()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.Pivot.Pivot_CustomContent_Automated");
+
+			var selectedItemTitle = _app.Marked("selectedItemTitle");
+			var selectedItemContent = _app.Marked("selectedItemContent");
+			var firstPivotItemHeader = _app.Marked("myPivot").Descendant().Marked("item 1");
+			var secondPivotItemHeader = _app.Marked("myPivot").Descendant().Marked("item 2");
+
+			// Select header 2 and assert
+			_app.FastTap(secondPivotItemHeader);
+			_app.WaitForElement(_app.Marked("selectedItemTitle"));
+			_app.WaitForDependencyPropertyValue(selectedItemTitle, "Text", "item 2");
+			_app.WaitForDependencyPropertyValue(selectedItemContent, "Text", "My Item 2 Content");
+
+			// Select header 1 and assert
+			_app.FastTap(firstPivotItemHeader);
+			_app.WaitForElement(_app.Marked("selectedItemTitle"));
+			_app.WaitForDependencyPropertyValue(selectedItemTitle, "Text", "item 1");
+			_app.WaitForDependencyPropertyValue(selectedItemContent, "Text", "My Item 1 Content");
+		}		
 	}
 }

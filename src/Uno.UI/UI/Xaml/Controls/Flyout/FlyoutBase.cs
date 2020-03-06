@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Uno.Disposables;
 using Windows.Foundation;
+using Windows.UI.Xaml.Media;
 
 #if XAMARIN_IOS
 using View = UIKit.UIView;
@@ -28,6 +29,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public FlyoutBase()
 		{
+			LightDismissOverlayBackground = Application.Current?.Resources["FlyoutLightDismissOverlayBackground"] as Brush ??
+				// This is normally a no-op - the above line should retrieve the framework-level resource. This is purely to fail the build when
+				// Resources/Styles are overhauled (and the above will no longer be valid)
+				Uno.UI.GlobalStaticResources.FlyoutLightDismissOverlayBackground as Brush;
+
 			_popup = new Windows.UI.Xaml.Controls.Popup()
 			{
 				Child = CreatePresenter(),
@@ -35,6 +41,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			_popup.Opened += OnPopupOpened;
 			_popup.Closed += OnPopupClosed;
+
+			_popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
+			_popup.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
 
 			InitializePopupPanel();
 		}
@@ -83,6 +92,37 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			);
 
 		#endregion
+
+		public LightDismissOverlayMode LightDismissOverlayMode
+		{
+			get
+			{
+				return (LightDismissOverlayMode)this.GetValue(LightDismissOverlayModeProperty);
+			}
+			set
+			{
+				this.SetValue(LightDismissOverlayModeProperty, value);
+			}
+		}
+
+		public static DependencyProperty LightDismissOverlayModeProperty { get; } =
+		Windows.UI.Xaml.DependencyProperty.Register(
+			"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
+			typeof(FlyoutBase),
+			new FrameworkPropertyMetadata(default(LightDismissOverlayMode)));
+
+
+		/// <summary>
+		/// Sets the light-dismiss colour, if the overlay is enabled. The external API for modifying this is to override the PopupLightDismissOverlayBackground, etc, static resource values.
+		/// </summary>
+		internal Brush LightDismissOverlayBackground
+		{
+			get { return (Brush)GetValue(LightDismissOverlayBackgroundProperty); }
+			set { SetValue(LightDismissOverlayBackgroundProperty, value); }
+		}
+
+		internal static readonly DependencyProperty LightDismissOverlayBackgroundProperty =
+			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(FlyoutBase), new PropertyMetadata(null));
 
 		public FrameworkElement Target { get; private set; }
 

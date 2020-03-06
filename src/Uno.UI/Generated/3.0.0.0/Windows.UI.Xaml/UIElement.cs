@@ -596,7 +596,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent HoldingEvent
 		{
@@ -715,7 +715,7 @@ namespace Windows.UI.Xaml
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Projection)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent RightTappedEvent
 		{
@@ -1144,7 +1144,7 @@ namespace Windows.UI.Xaml
 		// Skipping already declared method Windows.UI.Xaml.UIElement.CapturePointer(Windows.UI.Xaml.Input.Pointer)
 		// Skipping already declared method Windows.UI.Xaml.UIElement.ReleasePointerCapture(Windows.UI.Xaml.Input.Pointer)
 		// Skipping already declared method Windows.UI.Xaml.UIElement.ReleasePointerCaptures()
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.GeneralTransform TransformToVisual( global::Windows.UI.Xaml.UIElement visual)
 		{
@@ -1507,7 +1507,7 @@ namespace Windows.UI.Xaml
 		}
 		#endif
 		// Skipping already declared event Windows.UI.Xaml.UIElement.GotFocus
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.Input.HoldingEventHandler Holding
 		{
@@ -1627,7 +1627,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.Input.RightTappedEventHandler RightTapped
 		{

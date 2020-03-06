@@ -28,6 +28,8 @@ namespace Windows.UI.Xaml.Input
 
 		internal uint FrameId { get; }
 
+		internal bool CanceledByDirectManipulation { get; set; }
+
 		public bool IsGenerated { get; } = false; // Generated events are not supported by UNO
 
 		public bool Handled { get; set; }

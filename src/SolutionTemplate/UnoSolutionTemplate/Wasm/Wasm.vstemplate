@@ -14,11 +14,15 @@
 	<EnableLocationBrowseButton>true</EnableLocationBrowseButton>
 	<Icon>__TemplateIcon.png</Icon>
 	<PreviewImage>__PreviewImage.png</PreviewImage>
+	<CreateInPlace>true</CreateInPlace>
   </TemplateData>
   <TemplateContent>
 	<Project TargetFileName="$ext_safeprojectname$.Wasm.csproj" File="UnoQuickStart.Wasm.csproj" ReplaceParameters="true">
 	  <ProjectItem ReplaceParameters="true" TargetFileName="Program.cs">Program.cs</ProjectItem>
 	  <ProjectItem ReplaceParameters="true">LinkerConfig.xml</ProjectItem>
+      <Folder Name="Assets" TargetFolderName="Assets">
+        <ProjectItem TargetFileName="SplashScreen.png" ReplaceParameters="false">SplashScreen.png</ProjectItem>
+      </Folder>
       <Folder Name="wwwroot" TargetFolderName="wwwroot">
         <ProjectItem ReplaceParameters="true">web.config</ProjectItem>
       </Folder>

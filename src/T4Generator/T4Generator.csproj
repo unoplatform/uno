@@ -1,69 +1,38 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
-  <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{A94EFF4A-3CE5-4755-85E5-57D9119055AA}</ProjectGuid>
-    <OutputType>Exe</OutputType>
-    <RootNamespace>T4Generator</RootNamespace>
-    <AssemblyName>T4Generator</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
-    <TargetFrameworkProfile />
-    <PublishableProject>false</PublishableProject>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-  </PropertyGroup>
-  <ItemGroup>
-    <Reference Include="System" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" /> 
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
-    <Reference Include="System.Xml" />
-  </ItemGroup>
-  <ItemGroup>
-    <PackageReference Include="microsoft.visualstudio.texttemplating.15.0">
-      <Version>15.8.28010</Version>
-    </PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp">
-			<Version>2.9.0</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
-			<Version>2.9.0</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common">
-			<Version>2.9.0</Version>
-		</PackageReference>
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+		<TargetFramework>net472</TargetFramework>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+	</PropertyGroup>
+
+	<ItemGroup>
+		<None Remove="Properties\launchSettings.json" />
 	</ItemGroup>
-  <ItemGroup>
-    <Compile Include="Program.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-<Import Project="..\Common.targets" />
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="3.3.1" />
+		<PackageReference Include="Microsoft.VisualStudio.Telemetry" Version="16.3.2" />
+		<PackageReference Include="microsoft.visualstudio.texttemplating.15.0">
+			<Version>16.3.29316.127</Version>
+		</PackageReference>
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+	</ItemGroup>
+	
+	<Target Name="_ForceRemoveAnalyzers" BeforeTargets="CoreCompile">
+		<!-- Workaround for Linux and macos when building against mono where Analyzers 2.9.x depend on unknown members. This should not happen when building
+		     with "dotnet build"
+
+		CSC : error AD0001: Analyzer 'Microsoft.CodeAnalysis.Analyzers.MetaAnalyzers.CompareSymbolsCorrectlyAnalyzer' threw an exception of type
+				  'System.TypeLoadException' with message 'Could not load type of field 'Analyzer.Utilities.Extensions.IOperationExtensions:s_operationToCfgCache'
+					(0) due to: Could not resolve type with token 01000075 from typeref (expected class 'Microsoft.CodeAnalysis.FlowAnalysis.ControlFlowGraph' in
+					assembly 'Microsoft.CodeAnalysis, Version=2.9.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35') assembly:Microsoft.CodeAnalysis, Version=2.9.0.0,
+					Culture=neutral, PublicKeyToken=31bf3856ad364e35 type:Microsoft.CodeAnalysis.FlowAnalysis.ControlFlowGraph member:(null)'.
+		-->
+		<ItemGroup>
+			<Analyzer Remove="@(Analyzer)" />
+		</ItemGroup>
+	</Target>
+
 </Project>

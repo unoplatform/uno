@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>xamarinmac20;MonoAndroid90;xamarinios10;net461;netstandard2.0</TargetFrameworks>
 		<TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
@@ -20,7 +20,8 @@
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
 
-		<T4Bin>..\T4Generator\bin\$(Configuration)\T4Generator.exe</T4Bin>
+		<T4Path>..\T4Generator\bin\$(Configuration)</T4Path>
+		<T4Bin>$(T4Path)\T4Generator.exe</T4Bin>
 		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
 		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
 
@@ -37,12 +38,8 @@
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 	<ItemGroup>
-		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
-	</ItemGroup>
-
-	<ItemGroup>
-		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml;" />
-		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
+		<UpToDateCheckInput Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml;" Visible="False" />
+		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" Visible="False" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -247,7 +244,7 @@
 	DispatchToInnerBuilds is used for direct builds, CoreCompile/_UnoSourceGenerator is for 
 	project dependency induced builds.
 	-->
-	<Target Name="GenerateMixins" Inputs="@(MixinInput)" Outputs="@(MixinOutput)" BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator" Condition="'$(DesignTimeBuild)' != 'true'">
+	<Target Name="GenerateMixins" Inputs="@(MixinInput)" Outputs="@(MixinOutput)" BeforeTargets="DispatchToInnerBuilds;Build;_UnoSourceGenerator" DependsOnTargets="_OptimizeT4Generator" Condition="'$(DesignTimeBuild)' != 'true'">
 
 		<ItemGroup>
 			<MixinDefinition Include="$(MSBuildThisFileFullPath)">
@@ -289,6 +286,15 @@
 
 		<!-- This allows for the mixins to generate in parallel -->
 		<MSBuild BuildInParallel="true" Projects="@(MixinDefinition)" StopOnFirstFailure="True" Targets="_InnerGenerateMixins" />
+	</Target>
+
+	<Target Name="_OptimizeT4Generator" Condition="$([MSBuild]::IsOSUnixLike())">
+		<ItemGroup>
+			<_T4AOTFiles Include="$(T4Path)/*.dll" />
+		</ItemGroup>
+		
+		<Exec ContinueOnError="WarnAndContinue" Command="mono --aot &quot;$(T4Bin)&quot;" Condition="!exists('$(T4Bin).dylib')" />
+		<Exec ContinueOnError="WarnAndContinue" Command="mono --aot &quot;%(_T4AOTFiles.Identity)&quot;" Condition="!exists('%(_T4AOTFiles.Identity).dylib')" />
 	</Target>
 
 	<Target Name="_InnerGenerateMixins">
@@ -348,13 +354,15 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="UI\Xaml\Controls\ProgressRing\ProgressRingTemplateSettings.wasm.cs" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <None Update="BaseActivity.Callbacks.Implementation.Android.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>
 	    <LastGenOutput>BaseActivity.Callbacks.Implementation.Android.cs</LastGenOutput>
+	  </None>
+	  <None Update="C:\s\nv.github\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\TwoPaneView\TwoPaneView.xaml">
+	    <Generator>MSBuild:Compile</Generator>
+	  </None>
+	  <None Update="C:\s\nv.github\uno\src\Uno.UI\Microsoft\UI\Xaml\Controls\TwoPaneView\TwoPaneView_rs1.xaml">
+	    <Generator>MSBuild:Compile</Generator>
 	  </None>
 	  <None Update="Mixins\Android\FrameworkElementMixins.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>

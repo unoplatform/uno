@@ -46,6 +46,13 @@ namespace Windows.UI.Xaml.Controls
 		private static void OnLeftChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			(dependencyObject as IFrameworkElement)?.InvalidateArrange();
+
+#if __WASM__
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties && dependencyObject is UIElement element)
+			{
+				element.UpdateDOMXamlProperty("Canvas.Left", args.NewValue);
+			}
+#endif
 		}
 
 		#endregion
@@ -77,6 +84,13 @@ namespace Windows.UI.Xaml.Controls
 		private static void OnTopChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			(dependencyObject as IFrameworkElement)?.InvalidateArrange();
+
+#if __WASM__
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties && dependencyObject is UIElement element)
+			{
+				element.UpdateDOMXamlProperty("Canvas.Top", args.NewValue);
+			}
+#endif
 		}
 
 		#endregion
@@ -114,26 +128,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public Canvas()
 		{
-			DisableClipping();
+			InitializePartial();
 		}
 
-		private void DisableClipping()
-		{
-#if XAMARIN_IOS
-			if (FeatureConfiguration.UIElement.UseLegacyClipping)
-			{
-				// UIView Clipping
-				ClipsToBounds = false;
-			}
-			else
-			{
-				// UWP-Style clipping
-				ClipChildrenToBounds = false;
-			}
-#elif XAMARIN_ANDROID
-			SetClipChildren(false);
-#endif
-		}
+		partial void InitializePartial();
 
 		public static double GetLeft(global::Windows.UI.Xaml.UIElement element) => GetLeft((DependencyObject)element);
 

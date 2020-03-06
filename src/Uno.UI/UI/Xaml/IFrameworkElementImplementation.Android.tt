@@ -74,15 +74,11 @@ namespace <#= mixin.NamespaceName #>
 			return size;
 		}
 
-		public double ActualWidth
-		{
-			get { return _actualSize.Width; }
-		}
+		public double ActualWidth => GetActualWidth();
+		public double ActualHeight => GetActualHeight();
 
-		public double ActualHeight
-		{
-			get { return _actualSize.Height; }
-		}
+		private protected virtual double GetActualWidth() => _actualSize.Width;
+		private protected virtual double GetActualHeight() => _actualSize.Height;
 
 #if !<#= mixin.IsFrameworkElement #>
 		/// <summary>
@@ -525,7 +521,7 @@ namespace <#= mixin.NamespaceName #>
 		}
 		#endregion
 
-		#region HorizontalAlignment Dependency Property
+		#region VerticalAlignment Dependency Property
 
 		public static readonly DependencyProperty VerticalAlignmentProperty =
 			DependencyProperty.Register(
@@ -864,7 +860,10 @@ namespace <#= mixin.NamespaceName #>
 			var newSize = new Size(right - left, bottom - top).PhysicalToLogicalPixels();
 			var previousSize = _actualSize;
 
+#if <#= mixin.CallsBaseOnLayout #>
 			base.OnLayout(changed, left, top, right, bottom);
+#endif
+
 			OnLayoutPartial(changed, left, top, right, bottom);
 
 			_actualSize = newSize;
@@ -879,7 +878,8 @@ namespace <#= mixin.NamespaceName #>
 		partial void OnLayoutPartial(bool changed, int left, int top, int right, int bottom);
 #endif
 
-		public Uri BaseUri => new Uri("ms-appx:///");
+		private static readonly Uri _defaultUri = new Uri("ms-appx:///");
+		public Uri BaseUri { get; internal set; } = _defaultUri;
 
 		#region AutomationPeer
 
@@ -968,6 +968,7 @@ namespace <#= mixin.NamespaceName #>
 		bool isFocusable = false,
 		bool isUnoMotionTarget = false,
 		bool overridesOnLayout = true,
+		bool callsBaseOnLayout = true,
 		bool hasAutomationPeer = false
 	)
 	{
@@ -984,6 +985,7 @@ namespace <#= mixin.NamespaceName #>
 				OverridesOnLayout = overridesOnLayout ? "true" : "false",
 				IsFrameworkElement = className == "FrameworkElement" ? "true" : "false",
 				HasAutomationPeer = hasAutomationPeer ? "true" : "false",
+				CallsBaseOnLayout = callsBaseOnLayout ? "true" : "false",
 			}
 		);
 	}
@@ -1001,6 +1003,7 @@ namespace <#= mixin.NamespaceName #>
 		public string OverridesOnLayout;
 		public string IsFrameworkElement;
 		public string HasAutomationPeer;
+		public string CallsBaseOnLayout;
 	}
 
 	private List<MixinParams> _mixins = new List<MixinParams>();

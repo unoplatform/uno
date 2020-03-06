@@ -22,23 +22,16 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : BindableUIView
 	{
-
-#if DEBUG
-		/// <summary>
-		/// Provides the ability to disable clipping for an object provided by the selector.
-		/// </summary>
-		public static Func<object, bool> CanClipSelector { get; set; }
-#endif
-
-		private static Dictionary<UIView, CALayer> _debugLayers;
-
 		public UIElement()
 		{
 			InitializePointers();
 		}
 
-		partial void EnsureClip(Rect rect)
+		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
+
+		partial void ApplyNativeClip(Rect rect)
 		{
+
 			if (rect.IsEmpty
 				|| double.IsPositiveInfinity(rect.X)
 				|| double.IsPositiveInfinity(rect.Y)
@@ -46,12 +39,16 @@ namespace Windows.UI.Xaml
 				|| double.IsPositiveInfinity(rect.Height)
 			)
 			{
-				this.Layer.Mask = null;
+				if (!ClippingIsSetByCornerRadius)
+				{
+					this.Layer.Mask = null;
+				}
 				return;
 			}
+
 			this.Layer.Mask = new CAShapeLayer
 			{
-				Path = CGPath.FromRect(ToCGRect(rect))
+				Path = CGPath.FromRect(rect.ToCGRect())
 			};
 		}
 
@@ -72,7 +69,7 @@ namespace Windows.UI.Xaml
 			if (base.Hidden != newVisibility.IsHidden())
 			{
 				base.Hidden = newVisibility.IsHidden();
-				this.SetNeedsLayout();
+				InvalidateMeasure();
 
 				if (newVisibility == Visibility.Visible)
 				{
@@ -124,226 +121,6 @@ namespace Windows.UI.Xaml
 		internal Windows.Foundation.Point GetPosition(Point position, global::Windows.UI.Xaml.UIElement relativeTo)
 		{
 			return relativeTo.ConvertPointToCoordinateSpace(position, relativeTo);
-		}
-
-		private CGRect ToCGRect(Rect rect)
-		{
-			return new CGRect
-			(
-				(nfloat)(rect.X),
-				(nfloat)(rect.Y),
-				(nfloat)(rect.Width),
-				(nfloat)(rect.Height)
-			);
-		}
-
-		public GeneralTransform TransformToVisual(UIElement visual)
-		{
-			// If visual is null, we transform the element to the window
-			if (visual == null)
-			{
-				visual = Xaml.Window.Current.Content;
-			}
-
-			var unit = new CGRect(0, 0, 1, 1);
-			var transformed = visual.ConvertRectFromView(unit, this);
-
-			return new MatrixTransform
-			{
-				Matrix = new Matrix(
-					m11: 1,
-					m12: 0,
-					m21: 0,
-					m22: 1,
-					offsetX: transformed.X,
-					offsetY: transformed.Y
-				)
-			};
-		}
-
-
-		/// <summary>
-		/// Gets the parent view for the <paramref name="owner"/> which clips its content.
-		/// </summary>
-		/// <returns>A tuple of the clipping parent, and the view that let to this parent.</returns>
-		private static (UIView child, UIView clippingParent) GetClippingParent(UIView owner)
-		{
-			(UIView child, UIView clippingParent) GetClippingParent(UIView child, UIView parent)
-			{
-				if (parent is FrameworkElement pfe)
-				{
-					if (!pfe.ClipChildrenToBounds)
-					{
-						return GetClippingParent(pfe, pfe.Superview);
-					}
-					else
-					{
-						return (child, parent);
-					}
-				}
-				else
-				{
-					return (child, parent);
-				}
-			}
-
-
-			if (owner.Superview is FrameworkElement sfe && !sfe.ClipChildrenToBounds)
-			{
-				return GetClippingParent(owner, owner.Superview);
-			}
-
-			return (owner, owner.Superview);
-		}
-
-		internal static FrameworkElement UpdateMask(UIView owner, UIView superView = null)
-		{
-			superView = superView ?? owner.Superview;
-			var layer = owner.Layer;
-
-			var clippingParentResult = GetClippingParent(owner);
-
-			if (
-				clippingParentResult.clippingParent != null
-				&& owner is FrameworkElement tfe
-#if DEBUG
-				&& (CanClipSelector?.Invoke(owner) ?? true)
-#endif
-			)
-			{
-				var clippingParent = clippingParentResult.clippingParent;
-
-				if (clippingParentResult.child is FrameworkElement cfe && !cfe.ClipChildrenToBounds)
-				{
-					// If the immediate child of the clipping parent is not clipping its children, then the
-					// clipping parent is its parent (Ellipse -> Canvas -> Grid -> StackPanel)
-					clippingParent = clippingParentResult.clippingParent.Superview;
-				}
-
-				var absolutePosition = ConvertOriginPointToView(owner, clippingParent);
-
-				var clippingBounds = clippingParent.Bounds;
-
-				if (clippingBounds != CGRect.Empty)
-				{
-					var maskLayer = new CoreAnimation.CAShapeLayer();
-					var maskRect = new CGRect(-absolutePosition.X, -absolutePosition.Y, clippingBounds.Width, clippingBounds.Height);
-					maskLayer.Path = UIBezierPath.FromRect(maskRect).CGPath;
-					layer.Mask = maskLayer;
-
-					if (typeof(UIElement).Log().IsEnabled(LogLevel.Debug))
-					{
-						typeof(UIElement).Log().LogDebug($"UpdateMask o:{owner.GetType()} p:{clippingParent.GetType()} f:{owner.Frame} b:{owner.Bounds} m:{maskRect} t:{owner.Transform}");
-					}
-
-					CreateDebugLayer(owner, layer, absolutePosition, clippingBounds);
-
-					return clippingParent as FrameworkElement;
-				}
-				else
-				{
-					CreateDebugLayer(owner, layer, absolutePosition, clippingBounds);
-
-					if (typeof(UIElement).Log().IsEnabled(LogLevel.Debug))
-					{
-						typeof(UIElement).Log().LogDebug($"Mask disabled for CGRect.Empty parent o:{owner.GetType()}/{owner.GetHashCode():X8} p:{clippingParent.GetType()}/{clippingParent.GetHashCode():X8} f:{owner.Frame} b:{owner.Bounds} t:{owner.Transform}");
-					}
-				}
-			}
-
-			layer.Mask = null;
-
-			return null;
-		}
-
-		private static void CreateDebugLayer(UIView owner, CALayer layer, CGPoint absolutePosition, CGRect clippingBounds)
-		{
-			if (FeatureConfiguration.UIElement.ShowClippingBounds)
-			{
-				if (_debugLayers == null)
-				{
-					_debugLayers = new Dictionary<UIView, CALayer>();
-				}
-
-				if (_debugLayers.TryGetValue(owner, out var previousLayer))
-				{
-					previousLayer.RemoveFromSuperLayer();
-					_debugLayers.Remove(owner);
-				}
-
-				var debugLayer = new CoreAnimation.CAShapeLayer();
-				var debugMaskRect = new CGRect(
-					-absolutePosition.X,
-					-absolutePosition.Y,
-					clippingBounds.Width < 1 ? 5 : clippingBounds.Width,
-					clippingBounds.Height < 1 ? 5 : clippingBounds.Height
-				);
-
-				debugLayer.Path = UIBezierPath.FromRect(debugMaskRect).CGPath;
-				debugLayer.Frame = debugMaskRect;
-				debugLayer.LineWidth = 2;
-
-				if (clippingBounds.Width == 0 && clippingBounds.Height == 0)
-				{
-					debugLayer.StrokeColor = Colors.Red;
-				}
-				else if (clippingBounds.Width < 1 || clippingBounds.Height < 1)
-				{
-					debugLayer.StrokeColor = Colors.Purple;
-				}
-				else
-				{
-					debugLayer.StrokeColor = Colors.Blue;
-				}
-
-				debugLayer.Opaque = false;
-				debugLayer.BackgroundColor = UIColor.Clear.CGColor;
-				debugLayer.FillColor = UIColor.Clear.CGColor;
-				debugLayer.MasksToBounds = false;
-
-				_debugLayers.Add(owner, debugLayer);
-
-				if (layer.Sublayers != null)
-				{
-					layer.InsertSublayer(debugLayer, layer.Sublayers.Length);
-				}
-				else
-				{
-					layer.AddSublayer(debugLayer);
-				}
-			}
-		}
-
-		/// <summary>
-		/// Gets the origin point of the <paramref name="view"/> in the clippingParent's 
-		/// coordinate system.
-		/// </summary>
-		/// <param name="view">The view to get the point from</param>
-		/// <param name="parentView">The view for which to get the adjusted coordinates from</param>
-		/// <returns></returns>
-		private static CGPoint ConvertOriginPointToView(UIView view, UIView parentView)
-		{
-			var value = CGPoint.Empty;
-			var current = view;
-
-			do
-			{
-				if (current is FrameworkElement fr)
-				{
-					value.X += (nfloat)fr.AppliedFrame.X;
-					value.Y += (nfloat)fr.AppliedFrame.Y;
-				}
-				else
-				{
-					value.X += current.Frame.X;
-					value.Y += current.Frame.Y;
-				}
-
-				current = current.Superview;
-
-			} while (current != null && current != parentView);
-
-			return value;
 		}
 
 #if DEBUG

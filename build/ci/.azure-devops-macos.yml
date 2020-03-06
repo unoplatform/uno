@@ -1,0 +1,63 @@
+jobs:
+
+- job: macOS
+
+  variables:
+    CI_Build: true
+    SourceLinkEnabled: false
+    NUGET_PACKAGES: $(build.sourcesdirectory)/.nuget
+    XCODE_ROOT: /Applications/Xcode_10.3.app
+
+  pool:
+    vmImage: 'macOS-10.14'
+
+  steps:
+  - checkout: self
+    clean: true
+
+  - template: templates/optimize-roslyn-mono.yml
+
+  - template: templates/nuget-cache.yml
+    parameters:
+      nugetPackages: $(NUGET_PACKAGES)
+
+  - bash: /bin/bash -c "sudo $AGENT_HOMEDIRECTORY/scripts/select-xamarin-sdk.sh 5_18_1"
+    displayName: Select Xamarin Version
+    
+  - bash: /bin/bash -c "echo '##vso[task.setvariable variable=MD_APPLE_SDK_ROOT;]'${XCODE_ROOT};sudo xcode-select --switch ${XCODE_ROOT}/Contents/Developer"
+    displayName: Select Xcode
+
+  - task: NuGetToolInstaller@0
+    inputs:
+      versionSpec: 4.7.0
+      checkLatest: false
+
+  - task: MSBuild@1
+    inputs:
+      solution: src/SamplesApp/SamplesApp.macOS/SamplesApp.macOS.csproj
+      msbuildLocationMethod: version
+      msbuildVersion: latest
+      msbuildArchitecture: x86
+      msbuildArguments: /r /p:Configuration=Release /detailedsummary /bl:$(build.artifactstagingdirectory)/build-macos.binlog
+      clean: false
+      maximumCpuCount: true
+      restoreNugetPackages: false
+      logProjectEvents: false
+      createLogFile: false
+
+  - task: CopyFiles@2
+    displayName: 'Copy macOS artifacts'
+    inputs:
+      SourceFolder: $(build.sourcesdirectory)/src/SamplesApp/SamplesApp.macOS/bin/Release
+      Contents: '**/*.pkg'
+      TargetFolder: $(build.artifactstagingdirectory)
+      CleanTargetFolder: false
+      OverWrite: false
+      flattenFolders: false
+
+  - task: PublishBuildArtifacts@1
+    condition: always()
+    inputs:
+      PathtoPublish: $(build.artifactstagingdirectory)
+      ArtifactName: uno-macos-artifacts
+      ArtifactType: Container

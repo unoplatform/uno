@@ -1,0 +1,111 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+  
+  <PropertyGroup>
+    <TargetFrameworks>xamarinmac20;xamarinios10;MonoAndroid90;netstandard2.0</TargetFrameworks>
+    <TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+  </PropertyGroup>
+
+	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
+		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
+	</PropertyGroup>
+
+	<PropertyGroup>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+
+		<AndroidUseIntermediateDesignerFile>True</AndroidUseIntermediateDesignerFile>
+		<AndroidResgenFile>obj\$(TargetFramework)\Resources\Resource.Designer.cs</AndroidResgenFile>
+
+		<!-- Ensures the .xr.xml files are generated in a proper layout folder -->
+		<GenerateLibraryLayout>true</GenerateLibraryLayout>
+		
+		<NoWarn>$(NoWarn);NU1701</NoWarn>
+		
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<Deterministic>true</Deterministic>
+	</PropertyGroup>
+
+	<Import Project="..\Uno.CrossTargetting.props" />
+	
+	<ItemGroup>
+		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
+			<LogicalName>$(AssemblyName).xml</LogicalName>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(TargetFramework)'!='netstandard2.0'">
+		<EmbeddedResource Include="LinkerDefinition.Xamarin.xml">
+			<LogicalName>$(AssemblyName).xml</LogicalName>
+		</EmbeddedResource>
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="Helpers\WebSocketHelper.cs" />
+	  <UpToDateCheckInput Remove="HotReload\ClientHotReloadProcessor.cs" />
+	  <UpToDateCheckInput Remove="HotReload\HotReloadConstants.cs" />
+	  <UpToDateCheckInput Remove="HotReload\IRemoteControlClient.cs" />
+	  <UpToDateCheckInput Remove="HotReload\Messages\ConfigureServer.cs" />
+	  <UpToDateCheckInput Remove="HotReload\Messages\FileReload.cs" />
+	  <UpToDateCheckInput Remove="HotReload\Messages\Frame.cs" />
+	  <UpToDateCheckInput Remove="HotReload\Messages\IMessage.cs" />
+	  <UpToDateCheckInput Remove="HotReload\Messages\XamlLoadError.cs" />
+	  <UpToDateCheckInput Remove="IRemoteControlProcessor.cs" />
+	  <UpToDateCheckInput Remove="ProjectConfigurationAttribute.cs" />
+	  <UpToDateCheckInput Remove="RemoteControlClient.cs" />
+	  <UpToDateCheckInput Remove="ServerEndpointAttribute.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+		<PackageReference Include="Uno.MonoAnalyzers" />
+		<PackageReference Include="Uno.Wasm.WebSockets" Version="1.0.0-dev.28" />
+	</ItemGroup>
+
+	<ItemGroup Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or '$(TargetFramework)'=='xamarinmac20'">
+		<Reference Include="System.Numerics" />
+		<Reference Include="System.Numerics.Vectors" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\Uno.Foundation\Uno.Foundation.csproj" />
+		<ProjectReference Include="..\Uno.UWP\Uno.csproj" />
+		<ProjectReference Include="..\Uno.UI\Uno.UI.csproj" />
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(DocsGeneration)'==''">
+		<ProjectReference Include="..\Uno.UI.RemoteControl.Host\Uno.UI.RemoteControl.Host.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+	</ItemGroup>
+	
+	<ItemGroup Condition="'$(DocsGeneration)'=='' and $([MSBuild]::IsOsPlatform('Windows'))">
+		<ProjectReference Include="..\Uno.UI.RemoteControl.VS\Uno.UI.RemoteControl.VS.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+	</ItemGroup>
+
+	<Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
+
+	<Target Name="_UnoRemoteControlOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
+
+		<PropertyGroup>
+			<_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
+			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\uno.ui\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+		</PropertyGroup>
+		<ItemGroup>
+			<_OutputFiles Include="$(TargetDir)\*.*" />
+		</ItemGroup>
+		<MakeDir Directories="$(_TargetNugetFolder)" />
+
+		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+	</Target>
+</Project>

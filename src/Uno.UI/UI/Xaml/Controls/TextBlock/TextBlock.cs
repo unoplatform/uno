@@ -639,6 +639,9 @@ namespace Windows.UI.Xaml.Controls
 			if (sender is Hyperlink hyperlink
 				&& hyperlink.IsCaptured(e.Pointer))
 			{
+				// Un UWP we don't get the Tapped event, so make sure to abort it
+				(hyperlink.GetParent() as TextBlock)?.CompleteGesture();
+
 				hyperlink.ReleasePointerPressed(e.Pointer);
 			}
 
@@ -689,13 +692,21 @@ namespace Windows.UI.Xaml.Controls
 			if (sender is TextBlock that
 				&& that.IsCaptured(e.Pointer))
 			{
+				// On UWP we don't get the Tapped event, so make sure to abort it.
+				that.CompleteGesture();
+
 				// On UWP we don't get any CaptureLost, so make sure to manually release the capture silently
 				that.ReleasePointerCapture(e.Pointer, muteEvent: true);
 
 				// KNOWN ISSUE:
 				// On UWP the 'click' event is raised **after** the PointerReleased ... but deferring the event on the Dispatcher
 				// would move it after the PointerExited. So prefer to raise it before (actually like a Button).
-				that.FindHyperlinkAt(e.GetCurrentPoint(that).Position)?.ReleasePointerPressed(e.Pointer);
+				if (!(that.FindHyperlinkAt(e.GetCurrentPoint(that).Position)?.ReleasePointerPressed(e.Pointer) ?? false))
+				{
+					// We failed to find the hyperlink that made this capture but we ** silently ** removed the capture,
+					// so we won't receive the CaptureLost. So make sure to AbortPointerPressed on the Hyperlink which made the capture.
+					that.AbortHyperlinkCaptures(e.Pointer);
+				}
 			}
 
 			// e.Handled = true; ==> On UWP the pointer released is **NOT** handled
@@ -705,15 +716,20 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (sender is TextBlock that)
 			{
-				var handled = false;
-				foreach (var hyperlink in that._hyperlinks.ToArray()) // .ToArray() : for a strange reason on WASM the collection gets modified
-				{
-					handled |= hyperlink.hyperlink.AbortPointerPressed(e.Pointer);
-				}
-
-				e.Handled = handled;
+				e.Handled = that.AbortHyperlinkCaptures(e.Pointer);
 			}
 		};
+
+		private bool AbortHyperlinkCaptures(Pointer pointer)
+		{
+			var aborted = false;
+			foreach (var hyperlink in _hyperlinks.ToList()) // .ToList() : for a strange reason on WASM the collection gets modified
+			{
+				aborted |= hyperlink.hyperlink.AbortPointerPressed(pointer);
+			}
+
+			return aborted;
+		}
 
 		private readonly List<(int start, int end, Hyperlink hyperlink)> _hyperlinks = new List<(int start, int end, Hyperlink hyperlink)>();
 
@@ -813,6 +829,10 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return Text;
 		}
+
+		// This approximates UWP behavior
+		private protected override double GetActualWidth() => DesiredSize.Width;
+		private protected override double GetActualHeight() => DesiredSize.Height;
 	}
 }
 #endif

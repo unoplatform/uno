@@ -28,7 +28,9 @@
 	
     <Border core:TestAttachedPropertyOwner.CustomStyle="{StaticResource Test}"
 			core:TestAttachedPropertyOwner.HasStuff="True"
-			core:TestAttachedPropertyOwner.ExtraContent="{Binding Text, ElementName=Toto}">
+			core:TestAttachedPropertyOwner.ExtraContent="{Binding Text, ElementName=Toto}"
+			core:TestAttachedPropertyOwner.NullableType="19"
+			core:TestAttachedPropertyOwner.NullableEnum="Center">
         <core:TestAttachedPropertyOwner.MoreContent>
 			<TextBlock x:Name="Toto" />
 		</core:TestAttachedPropertyOwner.MoreContent>

@@ -12,7 +12,7 @@
 	<controls:SampleControl SampleDescription="Uniform100x100">
 		<controls:SampleControl.SampleContent>
 			<DataTemplate>
-				<Image Source="http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg"
+				<Image Source="https://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg"
 					   Width="100"
 					   Height="100"
 					   Stretch="Uniform" />

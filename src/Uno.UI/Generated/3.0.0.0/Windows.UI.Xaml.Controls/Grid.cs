@@ -15,34 +15,6 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property BorderBrush
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  double RowSpacing
-		{
-			get
-			{
-				return (double)this.GetValue(RowSpacingProperty);
-			}
-			set
-			{
-				this.SetValue(RowSpacingProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double ColumnSpacing
-		{
-			get
-			{
-				return (double)this.GetValue(ColumnSpacingProperty);
-			}
-			set
-			{
-				this.SetValue(ColumnSpacingProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Controls.BackgroundSizing BackgroundSizing
 		{
 			get
@@ -63,22 +35,6 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property BorderThicknessProperty
 		// Skipping already declared property CornerRadiusProperty
 		// Skipping already declared property PaddingProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ColumnSpacingProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"ColumnSpacing", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.Grid), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty RowSpacingProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"RowSpacing", typeof(double), 
-			typeof(global::Windows.UI.Xaml.Controls.Grid), 
-			new FrameworkPropertyMetadata(default(double)));
-		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty BackgroundSizingProperty { get; } = 

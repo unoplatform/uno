@@ -1,11 +1,18 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using Windows.UI.Input;
 using Uno.Disposables;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Uno.UI;
+
+#if __IOS__
+using UIKit;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -18,28 +25,25 @@ namespace Windows.UI.Xaml.Controls
 		private FrameworkElement _switchKnobBounds;
 		private TranslateTransform _knobTranslateTransform;
 
-		// If the user only drags the thumb by a few pixels before releasing it, 
-		// we interpret it as a Tap rather than a drag gesture.
-		// TODO: Implement and use the Tapped event instead?
-		private const double TapDistanceThreshold = 4;
 		private double _maxDragDistance = 0;
-		private bool InterpretAsTap => _maxDragDistance < TapDistanceThreshold;
 
 		public event RoutedEventHandler Toggled;
 
 		public ToggleSwitch()
 		{
+			InitializeVisualStates();
 		}
 
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
-			AddHandler(PointerPressedEvent, (PointerEventHandler) OnPointerPressed, true);
-			AddHandler(PointerExitedEvent, (PointerEventHandler) OnPointerExited, true);
-			AddHandler(PointerReleasedEvent, (PointerEventHandler) OnPointerReleased, true);
-			AddHandler(PointerCanceledEvent, (PointerEventHandler) OnPointerCanceled, true);
-			AddHandler(PointerEnteredEvent, (PointerEventHandler) OnPointerEntered, true);
+			if (!IsNativeTemplate)
+			{
+				AddHandler(PointerPressedEvent, (PointerEventHandler)OnPointerPressed, true);
+				AddHandler(PointerReleasedEvent, (PointerEventHandler)OnPointerReleased, true);
+				AddHandler(PointerCanceledEvent, (PointerEventHandler)OnPointerCanceled, true);
+			}
 
 			OnLoadedPartial();
 		}
@@ -50,34 +54,43 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnUnloaded();
 
-			RemoveHandler(PointerPressedEvent, (PointerEventHandler) OnPointerPressed);
-			RemoveHandler(PointerExitedEvent, (PointerEventHandler) OnPointerExited);
-			RemoveHandler(PointerReleasedEvent, (PointerEventHandler) OnPointerReleased);
-			RemoveHandler(PointerCanceledEvent, (PointerEventHandler) OnPointerCanceled);
-			RemoveHandler(PointerEnteredEvent, (PointerEventHandler) OnPointerEntered);
+			if (!IsNativeTemplate)
+			{
+				RemoveHandler(PointerPressedEvent, (PointerEventHandler)OnPointerPressed);
+				RemoveHandler(PointerReleasedEvent, (PointerEventHandler)OnPointerReleased);
+				RemoveHandler(PointerCanceledEvent, (PointerEventHandler)OnPointerCanceled);
+			}
+		}
+
+		private bool IsNativeTemplate
+		{
+			get
+			{
+#if __ANDROID__
+				return this.FindFirstChild<Uno.UI.Controls.BindableSwitchCompat>() != null;
+#elif __IOS__
+				return this.FindFirstChild<Uno.UI.Views.Controls.BindableUISwitch>() != null;
+#else
+				return false;
+#endif
+			}
 		}
 
 		private void OnPointerPressed(object sender, PointerRoutedEventArgs args)
 		{
-			IsPointerOver = true;
-			IsPointerPressed = true;
+			if (_switchThumb != null && args.Handled)
+			{
+				// The thumb handles the pointer pressed event, which will prevent the default (generated) visual state update,
+				// so instead here we forcefully request an update in that case.
+				UpdateCommonStates(useTransitions: true);
+			}
+
 			args.Handled = true;
 			Focus(FocusState.Pointer);
-			UpdateCommonState();
-		}
-
-		private void OnPointerExited(object sender, PointerRoutedEventArgs args)
-		{
-			IsPointerOver = false;
-			UpdateCommonState();
 		}
 
 		private void OnPointerReleased(object sender, PointerRoutedEventArgs args)
 		{
-			IsPointerOver = false;
-			IsPointerPressed = false;
-			UpdateCommonState();
-
 			if (_switchThumb == null)
 			{
 				IsOn = !IsOn;
@@ -86,15 +99,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnPointerCanceled(object sender, PointerRoutedEventArgs args)
 		{
-			IsPointerOver = false;
-			IsPointerPressed = false;
-			UpdateCommonState();
-		}
-
-		private void OnPointerEntered(object sender, PointerRoutedEventArgs args)
-		{
-			IsPointerOver = true;
-			UpdateCommonState();
+			if (_switchThumb == null)
+			{
+				IsOn = !IsOn;
+			}
 		}
 
 		protected virtual void OnToggled()
@@ -104,6 +112,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public global::Windows.UI.Xaml.Controls.Primitives.ToggleSwitchTemplateSettings TemplateSettings { get; } = new ToggleSwitchTemplateSettings();
 
+		#region IsOn (DP)
 		public bool IsOn
 		{
 			get => (bool)GetValue(IsOnProperty);
@@ -112,7 +121,9 @@ namespace Windows.UI.Xaml.Controls
 
 		public static readonly DependencyProperty IsOnProperty =
 			DependencyProperty.Register("IsOn", typeof(bool), typeof(ToggleSwitch), new PropertyMetadata(false, propertyChangedCallback: (s, e) => ((ToggleSwitch)s).OnIsOnChanged(e)));
+		#endregion
 
+		#region OnContentTemplate (DP)
 		public DataTemplate OnContentTemplate
 		{
 			get => (DataTemplate)GetValue(OnContentTemplateProperty);
@@ -121,7 +132,9 @@ namespace Windows.UI.Xaml.Controls
 
 		public static readonly DependencyProperty OnContentTemplateProperty =
 			DependencyProperty.Register("OnContentTemplate", typeof(DataTemplate), typeof(ToggleSwitch), new PropertyMetadata(null));
+		#endregion
 
+		#region OffContentTemplate (DP)
 		public DataTemplate OffContentTemplate
 		{
 			get => (DataTemplate)GetValue(OffContentTemplateProperty);
@@ -130,7 +143,9 @@ namespace Windows.UI.Xaml.Controls
 
 		public static readonly DependencyProperty OffContentTemplateProperty =
 			DependencyProperty.Register("OffContentTemplate", typeof(DataTemplate), typeof(ToggleSwitch), new PropertyMetadata(null));
+		#endregion
 
+		#region HeaderTemplate (DP)
 		public DataTemplate HeaderTemplate
 		{
 			get => (DataTemplate)GetValue(HeaderTemplateProperty);
@@ -139,7 +154,9 @@ namespace Windows.UI.Xaml.Controls
 
 		public static readonly DependencyProperty HeaderTemplateProperty =
 			DependencyProperty.Register("HeaderTemplate", typeof(DataTemplate), typeof(ToggleSwitch), new PropertyMetadata(null));
+		#endregion
 
+		#region OnContent (DP)
 		public object OnContent
 		{
 			get => (object)GetValue(OnContentProperty);
@@ -148,7 +165,9 @@ namespace Windows.UI.Xaml.Controls
 
 		public static readonly DependencyProperty OnContentProperty =
 			DependencyProperty.Register("OnContent", typeof(object), typeof(ToggleSwitch), new PropertyMetadata(null));
+		#endregion
 
+		#region OffContent (DP)
 		public object OffContent
 		{
 			get => (object)GetValue(OffContentProperty);
@@ -157,7 +176,9 @@ namespace Windows.UI.Xaml.Controls
 
 		public static readonly DependencyProperty OffContentProperty =
 			DependencyProperty.Register("OffContent", typeof(object), typeof(ToggleSwitch), new PropertyMetadata(null));
+		#endregion
 
+		#region Header (DP)
 		public object Header
 		{
 			get => (object)GetValue(HeaderProperty);
@@ -165,7 +186,8 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static readonly DependencyProperty HeaderProperty =
-			DependencyProperty.Register("Header", typeof(object), typeof(ToggleSwitch), new PropertyMetadata(null));
+			DependencyProperty.Register("Header", typeof(object), typeof(ToggleSwitch), new PropertyMetadata(null)); 
+		#endregion
 
 		protected override void OnApplyTemplate()
 		{
@@ -178,30 +200,29 @@ namespace Windows.UI.Xaml.Controls
 
 			_eventSubscriptions.Disposable = RegisterHandlers();
 
-			UpdateCommonState(false);
 			UpdateToggleState(false);
 			UpdateContentState(false);
 		}
 
 		private IDisposable RegisterHandlers()
 		{
-			// Setup the thumb's event listeners
-			if (_switchThumb != null)
+			var thumb = _switchThumb;
+			if (thumb == null)
 			{
-				_switchThumb.DragStarted += OnDragStarted;
-				_switchThumb.DragDelta += OnDragDelta;
-				_switchThumb.DragCompleted += OnDragCompleted;
+				return Disposable.Empty;
 			}
+
+			// Setup the thumb's event listeners
+			thumb.DragStarted += OnDragStarted;
+			thumb.DragDelta += OnDragDelta;
+			thumb.DragCompleted += OnDragCompleted;
 
 			return Disposable.Create(() =>
 			{
 				// Dispose of the thumb's event listeners
-				if (_switchThumb != null)
-				{
-					_switchThumb.DragStarted -= OnDragStarted;
-					_switchThumb.DragDelta -= OnDragDelta;
-					_switchThumb.DragCompleted -= OnDragCompleted;
-				}
+				thumb.DragStarted -= OnDragStarted;
+				thumb.DragDelta -= OnDragDelta;
+				thumb.DragCompleted -= OnDragCompleted;
 			});
 		}
 
@@ -219,9 +240,6 @@ namespace Windows.UI.Xaml.Controls
 			_maxDragDistance = 0;
 			UpdateSwitchKnobPosition(e.HorizontalOffset);
 
-			IsPointerPressed = true;
-			IsPointerOver = true;
-			UpdateCommonState();
 			UpdateToggleState();
 		}
 
@@ -234,21 +252,27 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnDragCompleted(object sender, DragCompletedEventArgs e)
 		{
-			if (InterpretAsTap)
+			// If the user only drags the thumb by a few pixels before releasing it, 
+			// we interpret it as a Tap rather than a drag gesture.
+			// Note: We do not use the Tapped event as this offers a better sync between
+			//		 the drag state / events and the IsOn update.
+			if (_maxDragDistance < GestureRecognizer.TapMaxXDelta)
 			{
 				IsOn = !IsOn;
 			}
 			else
 			{
-				IsOn = GetAbsoluteOffset(e.HorizontalChange) > (GetMaxOffset() / 2);
+				var isOn = GetAbsoluteOffset(e.HorizontalChange) > (GetMaxOffset() / 2);
+				if (isOn == IsOn)
+				{
+					UpdateSwitchKnobPosition(0);
+					UpdateToggleState();
+				}
+				else
+				{
+					IsOn = isOn;
+				}
 			}
-
-			UpdateSwitchKnobPosition(0);
-
-			IsPointerPressed = false;
-			IsPointerOver = false;
-			UpdateCommonState();
-			UpdateToggleState();
 		}
 
 		private double GetMaxOffset()
@@ -277,22 +301,6 @@ namespace Windows.UI.Xaml.Controls
 			if (_knobTranslateTransform != null)
 			{
 				_knobTranslateTransform.X = GetAbsoluteOffset(relativeOffset);
-			}
-		}
-
-		private void UpdateCommonState(bool useTransitions = true)
-		{
-			if (!IsEnabled)
-			{
-				VisualStateManager.GoToState(this, "Disabled", useTransitions);
-			}
-			else if (IsPointerPressed && IsPointerOver)
-			{
-				VisualStateManager.GoToState(this, "Pressed", useTransitions);
-			}
-			else
-			{
-				VisualStateManager.GoToState(this, "Normal", useTransitions);
 			}
 		}
 

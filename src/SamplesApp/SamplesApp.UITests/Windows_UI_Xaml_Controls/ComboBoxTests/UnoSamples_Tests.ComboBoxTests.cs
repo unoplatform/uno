@@ -40,17 +40,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			var presenter = _app.FindWithin(marked: "ContentPresenter", within: comboBox);
 
 			var button = _app.Marked("ChangeSelectionButton");
-			_app.Tap(button);
+			_app.FastTap(button);
 
 			var first = _app.FindWithin("_tb1", presenter);
 			Assert.AreEqual("Item 1", first.GetDependencyPropertyValue<string>("Text"));
 
-			_app.Tap(comboBox);
+			_app.FastTap(comboBox);
 			_app.TapCoordinates(300, 100);
 			first = _app.FindWithin("_tb1", presenter);
 			Assert.AreEqual("Item 1", first.GetDependencyPropertyValue<string>("Text"));
 
-			_app.Tap(button);
+			_app.FastTap(button);
 			var second = _app.FindWithin("_tb2", presenter);
 			Assert.AreEqual("Item 2", second.GetDependencyPropertyValue<string>("Text"));
 
@@ -58,6 +58,64 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			_app.TapCoordinates(10, 10);
 
 			Configuration.AttemptToFindTargetBeforeScrolling = scrollingInitial;
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ComboBoxTests_VisibleBounds()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ComboBox.ComboBox_VisibleBounds");
+
+			var combo01 = _app.Marked("combo01");
+			var sampleControl = _app.Marked("sampleControl");
+			var changeExtended = _app.Marked("changeExtended");
+
+			var resourcesFilterResult = _app.WaitForElement(combo01).First();
+			var sampleControlResult = _app.WaitForElement(sampleControl).First();
+
+			_app.FastTap(combo01);
+
+			var popupResult = _app.WaitForElement("PopupBorder").First();
+
+			var popupLocationDifference = popupResult.Rect.Y - resourcesFilterResult.Rect.Bottom;
+
+			_app.TapCoordinates(popupResult.Rect.Y - 10, popupResult.Rect.X);
+
+			_app.FastTap(changeExtended);
+
+			var resourcesFilterResultExtended = _app.WaitForElement(combo01).First();
+			var sampleControlResultExtended = _app.WaitForElement(sampleControl).First();
+
+			_app.FastTap(combo01);
+
+			var popupResultExtended = _app.WaitForElement("PopupBorder").First();
+
+			var popupLocationDifferenceExtended = popupResultExtended.Rect.Y - resourcesFilterResultExtended.Rect.Bottom;
+
+			Assert.AreEqual(popupLocationDifferenceExtended, 2, 1);
+
+			// Validates that the popup has not moved. The use of sampleControlResultExtended
+			// compensates for a possible change of origins with android popups.
+			Assert.AreEqual(popupLocationDifference - sampleControlResultExtended.Rect.Y, popupLocationDifferenceExtended);
+		}
+
+
+		[Test]
+		[AutoRetry]
+		public void ComboBoxTests_Stretch()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ComboBox.ComboBox_Stretch");
+
+			var combo01 = _app.Marked("combo01");
+			var sampleControl = _app.Marked("sampleControl");
+
+			var sampleControlResult = _app.WaitForElement(sampleControl).First();
+
+			_app.FastTap(combo01);
+
+			var popupResult = _app.WaitForElement("PopupBorder").First();
+
+			Assert.IsTrue(popupResult.Rect.Width < sampleControlResult.Rect.Width / 2, "The popup should not stretch to the width of the screen");
 		}
 	}
 }

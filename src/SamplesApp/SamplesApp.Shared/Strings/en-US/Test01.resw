@@ -126,4 +126,10 @@
   <data name="Given_ResourceLoader.When_NamedLoader_Test01_Only" xml:space="preserve">
     <value>This is en-US\Test01.resw only</value>
   </data>
+  <data name="pkResShared" xml:space="preserve">
+    <value>Shared text from Test01</value>
+  </data>
+  <data name="pkResUniqTest01" xml:space="preserve">
+    <value>Uniq text from Test01</value>
+  </data>
 </root>

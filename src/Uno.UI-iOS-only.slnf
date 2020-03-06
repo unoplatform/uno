@@ -4,6 +4,7 @@
     "projects": [
       "AddIns\\Uno.UI.Lottie\\Uno.UI.Lottie.csproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
+      "SamplesApp\\SamplesApp.UITests\\SamplesApp.UITests.csproj",
       "SamplesApp\\SamplesApp.UnitTests.Shared\\SamplesApp.UnitTests.Shared.shproj",
       "SamplesApp\\SamplesApp.iOS\\SamplesApp.iOS.csproj",
       "SamplesApp\\UITests.Shared\\UITests.Shared.shproj",
@@ -11,6 +12,8 @@
       "SourceGenerators\\Uno.UI.Tasks\\Uno.UI.Tasks.csproj",
       "T4Generator\\T4Generator.csproj",
       "Uno.Foundation\\Uno.Foundation.csproj",
+      "Uno.UI.RemoteControl.Host\\Uno.UI.RemoteControl.Host.csproj",
+      "Uno.UI.RemoteControl\\Uno.UI.RemoteControl.csproj",
       "Uno.UI.BindingHelper.Android\\Uno.UI.BindingHelper.Android.csproj",
       "Uno.UI.Maps\\Uno.UI.Maps.csproj",
       "Uno.UI.RuntimeTests\\Uno.UI.RuntimeTests.csproj",

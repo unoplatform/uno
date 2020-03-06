@@ -133,7 +133,14 @@ namespace Windows.UI.Xaml.Controls
 				visibleBounds.Width = Math.Min(finalSize.Width, visibleBounds.Width);
 				visibleBounds.Height = Math.Min(finalSize.Height, visibleBounds.Height);
 
-				Popup.CustomLayouter.Arrange(finalSize, visibleBounds, _lastMeasuredSize);
+				Popup.CustomLayouter.Arrange(
+					finalSize,
+					visibleBounds,
+					_lastMeasuredSize
+#if __ANDROID__
+					, visibleBounds.Location
+#endif
+				);
 
 				if (this.Log().IsEnabled(LogLevel.Debug))
 				{

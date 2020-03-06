@@ -1,15 +1,12 @@
 ﻿using Android.Graphics;
-using Uno.Media;
 using System;
 using System.Collections.Generic;
-using System.Text;
 using Uno.UI;
 using Windows.Foundation;
 using Uno.Disposables;
 using Android.Graphics.Drawables;
 using Android.Graphics.Drawables.Shapes;
 using Android.Views;
-using Uno.Extensions;
 using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Shapes
@@ -20,21 +17,10 @@ namespace Windows.UI.Xaml.Shapes
 		private double _scaleX;
 		private double _scaleY;
 
-		// Drawing size
-		private double _calculatedWidth;
-		private double _calculatedHeight;
-
 		// Drawing container size
 		private double _controlWidth;
 		private double _controlHeight;
-
-		private double _pathWidth;
-		private double _pathHeight;
-
-		public ArbitraryShapeBase()
-		{
-
-		}
+		private Size _lastAvailableSize;
 
 		private Size GetActualSize() => new Size(_controlWidth, _controlHeight);
 
@@ -51,7 +37,7 @@ namespace Windows.UI.Xaml.Shapes
 			RefreshShape();
 		}
 
-		protected abstract Android.Graphics.Path GetPath();
+		protected abstract Android.Graphics.Path GetPath(Size availableSize);
 
 		private IDisposable BuildDrawableLayer()
 		{
@@ -60,27 +46,40 @@ namespace Windows.UI.Xaml.Shapes
 				return Disposable.Empty;
 			}
 
-			var drawables = new List<Drawable>();
+			var fill = Fill;
+			var stroke = Stroke;
 
-			var path = GetPath();
+			if(fill == null && stroke == null)
+			{
+				// Nothing to draw!
+				return Disposable.Empty;
+			}
+
+			// predict list capacity to reduce memory handling
+			var drawablesCapacity = fill != null && stroke != null ? 2 : 1;
+			var drawables = new List<Drawable>(drawablesCapacity);
+
+			var path = GetPath(_lastAvailableSize);
 			if (path == null)
 			{
 				return Disposable.Empty;
 			}
 
 			// Scale the path using its Stretch
-			Android.Graphics.Matrix matrix = new Android.Graphics.Matrix();
-			switch (this.Stretch)
+			var matrix = new Android.Graphics.Matrix();
+			var stretchMode = Stretch;
+
+			switch (stretchMode)
 			{
-				case Media.Stretch.Fill:
-				case Media.Stretch.None:
+				case Stretch.Fill:
+				case Stretch.None:
 					matrix.SetScale((float)_scaleX, (float)_scaleY);
 					break;
-				case Media.Stretch.Uniform:
+				case Stretch.Uniform:
 					var scale = Math.Min(_scaleX, _scaleY);
 					matrix.SetScale((float)scale, (float)scale);
 					break;
-				case Media.Stretch.UniformToFill:
+				case Stretch.UniformToFill:
 					scale = Math.Max(_scaleX, _scaleY);
 					matrix.SetScale((float)scale, (float)scale);
 					break;
@@ -95,7 +94,7 @@ namespace Windows.UI.Xaml.Shapes
 			// Compute the bounds. This is needed for stretched shapes and stroke thickness translation calculations.
 			path.ComputeBounds(pathBounds, true);
 
-			if (Stretch == Stretch.None)
+			if (stretchMode == Stretch.None)
 			{
 				// Since we are not stretching, ensure we are using (0, 0) as origin.
 				pathBounds.Left = 0;
@@ -113,43 +112,43 @@ namespace Windows.UI.Xaml.Shapes
 			// Draw the fill
 			var drawArea = new Foundation.Rect(0, 0, _controlWidth, _controlHeight);
 
-			var imageBrushFill = Fill as ImageBrush;
-			if (imageBrushFill != null)
+			if (fill is ImageBrush fillImageBrush)
 			{
-				var bitmapDrawable = new BitmapDrawable(Context.Resources, imageBrushFill.TryGetBitmap(drawArea, () => RefreshShape(forceRefresh: true), path));
+				var bitmapDrawable = new BitmapDrawable(Context.Resources, fillImageBrush.TryGetBitmap(drawArea, () => RefreshShape(forceRefresh: true), path));
 				drawables.Add(bitmapDrawable);
 			}
-			else
+			else if(fill != null)
 			{
-				var fill = Fill ?? SolidColorBrushHelper.Transparent;
 				var fillPaint = fill.GetFillPaint(drawArea);
 
-				var lineDrawable = new PaintDrawable();
-				lineDrawable.Shape = new PathShape(path, (float)_controlWidth, (float)_controlHeight);
+				var lineDrawable = new PaintDrawable
+				{
+					Shape = new PathShape(path, (float)_controlWidth, (float)_controlHeight)
+				};
 				lineDrawable.Paint.Color = fillPaint.Color;
 				lineDrawable.Paint.SetShader(fillPaint.Shader);
 				lineDrawable.Paint.SetStyle(Paint.Style.Fill);
 				lineDrawable.Paint.Alpha = fillPaint.Alpha;
 
-				this.SetStrokeDashEffect(lineDrawable.Paint);
-
 				drawables.Add(lineDrawable);
 			}
 
 			// Draw the contour
-			if (Stroke != null)
+			if (stroke != null)
 			{
-				using (var strokeBrush = new Paint(Stroke.GetStrokePaint(drawArea)))
+				using (var strokeBrush = new Paint(stroke.GetStrokePaint(drawArea)))
 				{
-					var lineDrawable = new PaintDrawable();
-					lineDrawable.Shape = new PathShape(path, (float)_controlWidth, (float)_controlHeight);
+					var lineDrawable = new PaintDrawable
+					{
+						Shape = new PathShape(path, (float)_controlWidth, (float)_controlHeight)
+					};
 					lineDrawable.Paint.Color = strokeBrush.Color;
 					lineDrawable.Paint.SetShader(strokeBrush.Shader);
 					lineDrawable.Paint.StrokeWidth = (float)PhysicalStrokeThickness;
 					lineDrawable.Paint.SetStyle(Paint.Style.Stroke);
 					lineDrawable.Paint.Alpha = strokeBrush.Alpha;
 
-					this.SetStrokeDashEffect(lineDrawable.Paint);
+					SetStrokeDashEffect(lineDrawable.Paint);
 
 					drawables.Add(lineDrawable);
 				}
@@ -207,125 +206,94 @@ namespace Windows.UI.Xaml.Shapes
 			base.OnLayoutCore(changed, left, top, right, bottom);
 		}
 
-		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
+		protected override Size MeasureOverride(Size availableSize)
 		{
-			RectF pathBounds = new RectF();
-			var path = this.GetPath();
-			if (path != null)
+			if (availableSize == default)
 			{
-				path.ComputeBounds(pathBounds, false);
+				return default;
 			}
 
-			_pathWidth = pathBounds.Width();
-			_pathHeight = pathBounds.Height();
+			var strokeThickness = ActualStrokeThickness;
+			var strokeSize = new Size(strokeThickness, strokeThickness);
 
-			if (ShouldPreserveOrigin)
+			var availableSizeMinusStroke = availableSize.Subtract(strokeSize);
+
+			var availableSizeWithAppliedConstrains =
+				this.ApplySizeConstraints(availableSizeMinusStroke, strokeSize);
+
+			_lastAvailableSize = availableSizeWithAppliedConstrains;
+
+			var path = GetPath(availableSizeWithAppliedConstrains);
+			if (path == null)
 			{
-				_pathWidth += pathBounds.Left;
-				_pathHeight += pathBounds.Top;
+				return default;
 			}
 
-			var aspectRatio = _pathWidth / _pathHeight;
+			var physicalBounds = new RectF();
+			path.ComputeBounds(physicalBounds, false);
 
-			var widthMode = ViewHelper.MeasureSpecGetMode(widthMeasureSpec);
-			var heightMode = ViewHelper.MeasureSpecGetMode(heightMeasureSpec);
+			var bounds = physicalBounds.PhysicalToLogicalPixels();
 
-			var availableWidth = ViewHelper.MeasureSpecGetSize(widthMeasureSpec);
-			var availableHeight = ViewHelper.MeasureSpecGetSize(heightMeasureSpec);
+			var stretch = Stretch;
+			var preserveOrigin = ShouldPreserveOrigin || stretch == Stretch.None;
+			var pathWidth = preserveOrigin ? bounds.Right : bounds.Width();
+			var pathHeight = preserveOrigin ? bounds.Bottom : bounds.Height();
 
-			var userWidth = ViewHelper.LogicalToPhysicalPixels(this.Width);
-			var userHeight = ViewHelper.LogicalToPhysicalPixels(this.Height);
+			_scaleX = availableSizeWithAppliedConstrains.Width / pathWidth;
+			_scaleY = availableSizeWithAppliedConstrains.Height / pathHeight;
 
-			switch (widthMode)
+			//Make sure that we have a valid scale if both of them are not set
+			if (double.IsInfinity(_scaleX) || double.IsNaN(_scaleX))
 			{
-				case Android.Views.MeasureSpecMode.AtMost:
-				case Android.Views.MeasureSpecMode.Exactly:
-					_controlWidth = availableWidth;
-					break;
-				default:
-				case Android.Views.MeasureSpecMode.Unspecified:
-					switch (Stretch)
-					{
-						case Stretch.Uniform:
-							if (heightMode != Android.Views.MeasureSpecMode.Unspecified)
-							{
-								_controlWidth = availableHeight * aspectRatio;
-							}
-							else
-							{
-								_controlWidth = _pathWidth;
-							}
-							break;
-						default:
-							_controlWidth = _pathWidth;
-							break;
-					}
-					break;
+				_scaleX = 1;
+			}
+			if (double.IsInfinity(_scaleY) || double.IsNaN(_scaleY))
+			{
+				_scaleY = 1;
 			}
 
-			switch (heightMode)
-			{
-				case Android.Views.MeasureSpecMode.AtMost:
-				case Android.Views.MeasureSpecMode.Exactly:
-					_controlHeight = availableHeight;
-					break;
-				default:
-				case Android.Views.MeasureSpecMode.Unspecified:
-					switch (Stretch)
-					{
-						case Stretch.Uniform:
-							if (widthMode != Android.Views.MeasureSpecMode.Unspecified)
-							{
-								_controlHeight = availableWidth / aspectRatio;
-							}
-							else
-							{
-								_controlHeight = _pathHeight;
-							}
-							break;
-						default:
-							_controlHeight = _pathHeight;
-							break;
-					}
-					break;
-			}
+			var calculatedWidth = 0d;
+			var calculatedHeight = 0d;
 
-			// Default values
-			_calculatedWidth = LimitWithUserSize(_controlWidth, userWidth, _pathWidth);
-			_calculatedHeight = LimitWithUserSize(_controlHeight, userHeight, _pathHeight);
-			_scaleX = (_calculatedWidth - this.PhysicalStrokeThickness) / _pathWidth;
-			_scaleY = (_calculatedHeight - this.PhysicalStrokeThickness) / _pathHeight;
-
-			// Here we will override some of the default values
-			switch (this.Stretch)
+			// Calculate size following stretch mode
+			switch (stretch)
 			{
 				// If the Stretch is None, the drawing is not the same size as the control
-				case Media.Stretch.None:
+				case Stretch.None:
 					_scaleX = 1;
 					_scaleY = 1;
-					_calculatedWidth = (double)_pathWidth;
-					_calculatedHeight = (double)_pathHeight;
+					calculatedWidth = pathWidth;
+					calculatedHeight = pathHeight;
 					break;
-				case Media.Stretch.Fill:
+				case Stretch.Fill:
+					calculatedWidth = pathWidth * _scaleX;
+					calculatedHeight = pathHeight * _scaleY;
+
 					break;
 				// Override the _calculated dimensions if the stretch is Uniform or UniformToFill
-				case Media.Stretch.Uniform:
+				case Stretch.Uniform:
+				{
 					var scale = Math.Min(_scaleX, _scaleY);
-					_calculatedWidth = _pathWidth * scale;
-					_calculatedHeight = _pathHeight * scale;
+					calculatedWidth = pathWidth * scale;
+					calculatedHeight = pathHeight * scale;
 					break;
-				case Media.Stretch.UniformToFill:
-					scale = Math.Max(_scaleX, _scaleY);
-					_calculatedWidth = _pathWidth * scale;
-					_calculatedHeight = _pathHeight * scale;
+				}
+				case Stretch.UniformToFill:
+				{
+					var scale = Math.Max(_scaleX, _scaleY);
+					calculatedWidth = pathWidth * scale;
+					calculatedHeight = pathHeight * scale;
 					break;
+				}
 			}
 
-			_calculatedWidth += this.PhysicalStrokeThickness;
-			_calculatedHeight += this.PhysicalStrokeThickness;
+			var calculatedSize =
+				new Size(
+					calculatedWidth,
+					calculatedHeight)
+					.Add(strokeSize);
 
-			SetMeasuredDimension((int)Math.Ceiling(_calculatedWidth), (int)Math.Ceiling(_calculatedHeight));
-			IFrameworkElementHelper.OnMeasureOverride(this);
+			return calculatedSize;
 		}
 	}
 }

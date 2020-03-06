@@ -13,31 +13,36 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 	public class Capture_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS | Platform.Android)] // This fails with unit test
 		public void TestSimple()
 			=> RunTest("Simple", TouchAndMoveOut);
 
 		[Test]
+		[AutoRetry]
 		public void TestVisibility()
 			=> RunTest("Visibility");
 
 		[Test]
+		[AutoRetry]
 		public void TestNestedVisibility()
 			=> RunTest("NestedVisibility");
 
 		[Test]
+		[AutoRetry]
 		[Ignore("Inconsistent behavior between manual and unit test")]
 		public void TestIsEnabled()
 			=> RunTest("IsEnabled");
 
 		[Test]
+		[AutoRetry]
 		[Ignore("Inconsistent behavior between manual and unit test")]
 		[ActivePlatforms(Platform.Browser)] // The IsEnabled property is not inherited on other platforms yet.
 		public void TestNestedIsEnabled()
 			=> RunTest("NestedIsEnabled");
 
 
-		private readonly Action<QueryEx> TouchAndHold = element => /*element.TouchAndHold() not implemented ... we can use tap instead */ element.Tap();
+		private readonly Action<QueryEx> TouchAndHold = element => /*element.TouchAndHold() not implemented ... we can use tap instead */ element.FastTap();
 		private void TouchAndMoveOut(QueryEx element)
 		{
 			var rect = _app.WaitForElement(element).Single().Rect;

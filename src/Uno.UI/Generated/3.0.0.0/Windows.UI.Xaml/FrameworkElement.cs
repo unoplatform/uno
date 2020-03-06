@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml
 	#endif
 	public  partial class FrameworkElement 
 	{
-		#if false || false || NET461 || false || false
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  double Width
 		{
@@ -20,8 +20,8 @@ namespace Windows.UI.Xaml
 				this.SetValue(WidthProperty, value);
 			}
 		}
-		#endif
-		#if false || false || NET461 || false || false
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.VerticalAlignment VerticalAlignment
 		{
@@ -34,8 +34,8 @@ namespace Windows.UI.Xaml
 				this.SetValue(VerticalAlignmentProperty, value);
 			}
 		}
-		#endif
-		#if false || false || NET461 || __WASM__ || false
+#endif
+#if false || false || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public  object Tag
 		{
@@ -48,11 +48,11 @@ namespace Windows.UI.Xaml
 				this.SetValue(TagProperty, value);
 			}
 		}
-		#endif
+#endif
 		// Skipping already declared property Style
 		// Skipping already declared property Resources
 		// Skipping already declared property Name
-		#if false || false || NET461 || false || false
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  double MinWidth
 		{
@@ -65,8 +65,8 @@ namespace Windows.UI.Xaml
 				this.SetValue(MinWidthProperty, value);
 			}
 		}
-		#endif
-		#if false || false || NET461 || false || false
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  double MinHeight
 		{
@@ -79,8 +79,8 @@ namespace Windows.UI.Xaml
 				this.SetValue(MinHeightProperty, value);
 			}
 		}
-		#endif
-		#if false || false || NET461 || false || false
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  double MaxWidth
 		{
@@ -93,8 +93,8 @@ namespace Windows.UI.Xaml
 				this.SetValue(MaxWidthProperty, value);
 			}
 		}
-		#endif
-		#if false || false || NET461 || false || false
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  double MaxHeight
 		{
@@ -107,8 +107,8 @@ namespace Windows.UI.Xaml
 				this.SetValue(MaxHeightProperty, value);
 			}
 		}
-		#endif
-		#if false || false || NET461 || false || false
+#endif
+#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Thickness Margin
 		{
@@ -135,8 +135,8 @@ namespace Windows.UI.Xaml
 				this.SetValue(LanguageProperty, value);
 			}
 		}
-		#endif
-		#if false || false || NET461 || false || false
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.HorizontalAlignment HorizontalAlignment
 		{
@@ -149,8 +149,8 @@ namespace Windows.UI.Xaml
 				this.SetValue(HorizontalAlignmentProperty, value);
 			}
 		}
-		#endif
-		#if false || false || NET461 || false || false
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  double Height
 		{
@@ -163,8 +163,8 @@ namespace Windows.UI.Xaml
 				this.SetValue(HeightProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.FlowDirection FlowDirection
 		{
@@ -198,7 +198,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::System.Uri BaseUri
 		{
@@ -365,24 +365,24 @@ namespace Windows.UI.Xaml
 			"FlowDirection", typeof(global::Windows.UI.Xaml.FlowDirection), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.FlowDirection)));
-		#endif
-		#if false || false || NET461 || false || false
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"Height", typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || NET461 || false || false
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HorizontalAlignmentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"HorizontalAlignment", typeof(global::Windows.UI.Xaml.HorizontalAlignment), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.HorizontalAlignment)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LanguageProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -397,40 +397,40 @@ namespace Windows.UI.Xaml
 			"Margin", typeof(global::Windows.UI.Xaml.Thickness), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
-		#endif
-		#if false || false || NET461 || false || false
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MaxHeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"MaxHeight", typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || NET461 || false || false
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MaxWidthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"MaxWidth", typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || NET461 || false || false
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MinHeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"MinHeight", typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || NET461 || false || false
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MinWidthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"MinWidth", typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if false || false || NET461 || __WASM__ || false
+#endif
+#if false || false || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty NameProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
@@ -446,24 +446,24 @@ namespace Windows.UI.Xaml
 			"Tag", typeof(object), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(object)));
-		#endif
-		#if false || false || NET461 || false || false
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty VerticalAlignmentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"VerticalAlignment", typeof(global::Windows.UI.Xaml.VerticalAlignment), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.VerticalAlignment)));
-		#endif
-		#if false || false || NET461 || false || false
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty WidthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"Width", typeof(double), 
 			typeof(global::Windows.UI.Xaml.FrameworkElement), 
 			new FrameworkPropertyMetadata(default(double)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RequestedThemeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(

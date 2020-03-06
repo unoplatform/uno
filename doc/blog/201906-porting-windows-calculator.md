@@ -111,7 +111,7 @@ Callbacks are generally handled in C# via [`Marshal.GetFunctionPointerForDelegat
 
 While this works well for JIT-compatible platforms (Android and Windows) through the creation of stubs or trampolines at runtime, iOS and WebAssembly not support that.
 
-For iOS, [`UnmanagedFuntionPointer`](https://github.com/unoplatform/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/Calculator.Shared/CalcManager/CalculatorManager.Interop.cs#L128) needs to be added to that the callback pointer is generated at compile time.
+For iOS, [`UnmanagedFunctionPointer`](https://github.com/unoplatform/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/Calculator.Shared/CalcManager/CalculatorManager.Interop.cs#L128) needs to be added to that the callback pointer is generated at compile time.
 
 Mono-wasm does not yet support this feature, and [there's a need to rely](https://github.com/unoplatform/calculator/blob/2657413f889ba26f2e3d78e82d384794fdad3aec/src/Calculator.Wasm/WasmScripts/CalcManager.js#L18) on the [emscripten reserved function pointers](https://emscripten.org/docs/porting/connecting_cpp_and_javascript/Interacting-with-code.html#calling-javascript-functions-as-function-pointers-from-c) and `addFunction` helper function to get WebAssembly invocable callbacks to C#. Each Javascript registered function then calls back to C# using Mono's binding helper.
 

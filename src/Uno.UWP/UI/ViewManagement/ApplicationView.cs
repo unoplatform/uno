@@ -3,14 +3,21 @@
 #pragma warning disable 67
 
 using System;
+using System.Collections.Generic;
+using Windows.Foundation;
+using Uno.Devices.Sensors;
+using Uno.Foundation.Extensibility;
 
 namespace Windows.UI.ViewManagement
 {
 	public partial class ApplicationView
+		: IApplicationViewSpanningRects
 	{
 		private static ApplicationView _instance = new ApplicationView();
 
 		private ApplicationViewTitleBar _titleBar = new ApplicationViewTitleBar();
+		private IReadOnlyList<Rect> _defaultSpanningRects;
+		private IApplicationViewSpanningRects _applicationViewSpanningRects;
 
 		[global::Uno.NotImplemented]
 		public int Id => 1;
@@ -53,5 +60,34 @@ namespace Windows.UI.ViewManagement
 		[global::Uno.NotImplemented]
 		public event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.ApplicationView, global::Windows.UI.ViewManagement.ApplicationViewConsolidatedEventArgs> Consolidated;
 
+
+		public ApplicationViewMode ViewMode
+		{
+			get
+			{
+				TryInitializeSpanningRectsExtension();
+
+				return (_applicationViewSpanningRects as INativeDualScreenProvider)?.IsSpanned == true
+					? ApplicationViewMode.Spanning
+					: ApplicationViewMode.Default;
+			}
+		}
+		public IReadOnlyList<Rect> GetSpanningRects()
+		{
+			TryInitializeSpanningRectsExtension();
+
+			return _applicationViewSpanningRects?.GetSpanningRects() ?? _defaultSpanningRects;
+		}
+
+		private void TryInitializeSpanningRectsExtension()
+		{
+			if (_defaultSpanningRects == null && _applicationViewSpanningRects == null)
+			{
+				if (!ApiExtensibility.CreateInstance<IApplicationViewSpanningRects>(this, out _applicationViewSpanningRects))
+				{
+					_defaultSpanningRects = new List<Rect>(0);
+				}
+			}
+		}
 	}
 }

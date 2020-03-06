@@ -51,7 +51,7 @@ namespace SamplesApp
 		/// </summary>
 		/// <seealso cref="https://github.com/unoplatform/uno/issues/1741"/>
 		public void AssertIssue1790()
-		{
+		{			
 			void AssertIsUsable(Windows.Storage.ApplicationDataContainer container)
 			{
 				const string issue1790 = nameof(issue1790);
@@ -71,8 +71,16 @@ namespace SamplesApp
 		/// will be used such as when the application is launched to open a specific file.
 		/// </summary>
 		/// <param name="e">Details about the launch request and process.</param>
-		protected override void OnLaunched(LaunchActivatedEventArgs e)
+		protected
+#if HAS_UNO
+			internal
+#endif
+			override void OnLaunched(LaunchActivatedEventArgs e)
 		{
+#if __IOS__
+			// requires Xamarin Test Cloud Agent
+			Xamarin.Calabash.Start();
+#endif
 			var sw = Stopwatch.StartNew();
 			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
 				_ => Console.WriteLine("Done loading " + sw.Elapsed));
@@ -159,21 +167,26 @@ namespace SamplesApp
 					{
 						{ "Uno", LogLevel.Warning },
 						{ "Windows", LogLevel.Warning },
+
+						// RemoteControl and HotReload related
+						{ "Uno.UI.RemoteControl", LogLevel.Information },
+
 						// { "Uno.Foundation.WebAssemblyRuntime", LogLevel.Debug },
 						// { "Windows.UI.Xaml.Controls.PopupPanel", LogLevel.Debug },
 
 						// Generic Xaml events
-						//{ "Windows.UI.Xaml", LogLevel.Debug },
+						// { "Windows.UI.Xaml", LogLevel.Debug },
 						// { "Windows.UI.Xaml.Shapes", LogLevel.Debug },
-						//{ "Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug },
-						//{ "Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug },
+						// { "Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug },
+						// { "Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug },
 						// { "Windows.UI.Xaml.UIElement", LogLevel.Debug },
+						// { "Windows.UI.Xaml.FrameworkElement", LogLevel.Trace },
 						// { "Windows.UI.Xaml.Controls.TextBlock", LogLevel.Debug },
 
 						// Layouter specific messages
 						// { "Windows.UI.Xaml.Controls", LogLevel.Debug },
-						//{ "Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug },
-						//{ "Windows.UI.Xaml.Controls.Panel", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.Layouter", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.Panel", LogLevel.Debug },
 						// { "Windows.Storage", LogLevel.Debug },
 
 						// Binding related messages
@@ -182,10 +195,24 @@ namespace SamplesApp
 
 						//  Binder memory references tracking
 						// { "ReferenceHolder", LogLevel.Debug },
+
+						// ListView-related messages
+						// { "Windows.UI.Xaml.Controls.ListViewBase", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.ListView", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.GridView", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.VirtualizingPanelLayout", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.NativeListViewBase", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Controls.ListViewBaseSource", LogLevel.Debug }, //iOS
+						// { "Windows.UI.Xaml.Controls.ListViewBaseInternalContainer", LogLevel.Debug }, //iOS
+						// { "Windows.UI.Xaml.Controls.NativeListViewBaseAdapter", LogLevel.Debug }, //Android
+						// { "Windows.UI.Xaml.Controls.BufferViewCache", LogLevel.Debug }, //Android
+						// { "Windows.UI.Xaml.Controls.VirtualizingPanelGenerator", LogLevel.Debug }, //WASM
 					}
 				)
 #if DEBUG
+				//.AddConsole(LogLevel.Trace);
 				.AddConsole(LogLevel.Debug);
+
 #else
 				.AddConsole(LogLevel.Warning);
 #endif
@@ -222,6 +249,11 @@ namespace SamplesApp
 									async () => await statusBar.HideAsync()
 								);
 							}
+#endif
+
+#if __ANDROID__
+							Windows.ApplicationModel.Core.CoreApplication.GetCurrentView().TitleBar.ExtendViewIntoTitleBar = false;
+							Uno.UI.FeatureConfiguration.ScrollViewer.AndroidScrollbarFadeDelay = TimeSpan.Zero;
 #endif
 
 #if HAS_UNO
@@ -263,6 +295,14 @@ namespace SamplesApp
 				return "";
 			}
 		}
+
+#if __IOS__
+		[Foundation.Export("runTest:")] // notice the colon at the end of the method name
+		public Foundation.NSString RunTestBackdoor(Foundation.NSString value) => new Foundation.NSString(RunTest(value));
+
+		[Foundation.Export("isTestDone:")] // notice the colon at the end of the method name
+		public Foundation.NSString IsTestDoneBackdoor(Foundation.NSString value) => new Foundation.NSString(IsTestDone(value).ToString());
+#endif
 
 		public static bool IsTestDone(string testId) => int.TryParse(testId, out var id) ? _doneTests.Contains(id) : false;
 	}

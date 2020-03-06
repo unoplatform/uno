@@ -1,4 +1,4 @@
-﻿using CoreAnimation;
+using CoreAnimation;
 using CoreGraphics;
 using Foundation;
 using Uno.Extensions;
@@ -22,13 +22,6 @@ namespace Windows.UI.Xaml
 {
 	public partial class UIElement : BindableNSView
 	{
-#if DEBUG
-		/// <summary>
-		/// Provides the ability to disable clipping for an object provided by the selector.
-		/// </summary>
-		public static Func<object, bool> CanClipSelector { get; set; }
-#endif
-
 		internal bool IsPointerCaptured { get; set; }
 
 		#region Logs
@@ -46,28 +39,13 @@ namespace Windows.UI.Xaml
 		public UIElement()
 		{
 			InitializePointers();
-		}
+		}		
+		
+		internal bool ClippingIsSetByCornerRadius { get; set; } = false;
 
-		partial void EnsureClip(Rect rect)
-		{
-			if (rect.IsEmpty
-				|| double.IsPositiveInfinity(rect.X)
-				|| double.IsPositiveInfinity(rect.Y)
-				|| double.IsPositiveInfinity(rect.Width)
-				|| double.IsPositiveInfinity(rect.Height)
-			)
-			{
-				this.Layer.Mask = null;
-				return;
-			}
-			this.WantsLayer = true;
-			this.Layer.Mask = new CAShapeLayer
-			{
-				Path = CGPath.FromRect(ToCGRect(rect))
-			};
-		}
 
-		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
+
+        partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
 			// Don't update the internal value if the value is being animated.
 			// The value is being animated by the platform itself.
@@ -151,56 +129,6 @@ namespace Windows.UI.Xaml
 				(nfloat)(rect.Width),
 				(nfloat)(rect.Height)
 			);
-		}
-
-		public GeneralTransform TransformToVisual(UIElement visual)
-		{
-			// If visual is null, we transform the element to the window
-			if (visual == null)
-			{
-				visual = Xaml.Window.Current.Content;
-			}
-
-			var unit = new CGRect(0, 0, 1, 1);
-			var transformed = visual.ConvertRectFromView(unit, this);
-
-			// TODO: UWP returns a MatrixTransform here. For now TransformToVisual doesn't support rotations, scalings, etc.
-			return new TranslateTransform { X = transformed.X, Y = transformed.Y };
-		}
-
-
-		/// <summary>
-		/// Gets the parent view for the <paramref name="owner"/> which clips its content.
-		/// </summary>
-		/// <returns>A tuple of the clipping parent, and the view that let to this parent.</returns>
-		private static (NSView child, NSView clippingParent) GetClippingParent(NSView owner)
-		{
-			(NSView child, NSView clippingParent) GetClippingParent(NSView child, NSView parent)
-			{
-				if (parent is FrameworkElement pfe)
-				{
-					if (!pfe.ClipChildrenToBounds)
-					{
-						return GetClippingParent(pfe, pfe.Superview);
-					}
-					else
-					{
-						return (child, parent);
-					}
-				}
-				else
-				{
-					return (child, parent);
-				}
-			}
-
-
-			if (owner.Superview is FrameworkElement sfe && !sfe.ClipChildrenToBounds)
-			{
-				return GetClippingParent(owner, owner.Superview);
-			}
-
-			return (owner, owner.Superview);
 		}
 
 		/// <summary>
@@ -309,138 +237,8 @@ namespace Windows.UI.Xaml
 
 		internal void RaiseTapped(TappedRoutedEventArgs args) => LogUnRegisterPointerReleasedNotImplemented();
 
-		public override void MouseDown(NSEvent evt)
-		{
-			try
-			{
-				var pointerEventIsHandledInManaged = false;
-
-				if (evt.IsTouchInView(this))
-				{
-					IsPointerPressed = true;
-					IsPointerOver = true;
-
-					// evt.AllTouches raises a invalid selector exception
-					var args = new PointerRoutedEventArgs(null, evt)
-					{
-						CanBubbleNatively = true,
-						OriginalSource = this
-					};
-
-					pointerEventIsHandledInManaged = RaiseEvent(PointerEnteredEvent, args);
-
-					args.Handled = false; // reset for "pressed" event
-
-					pointerEventIsHandledInManaged = RaiseEvent(PointerPressedEvent, args) || pointerEventIsHandledInManaged;
-				}
-
-				if (!pointerEventIsHandledInManaged)
-				{
-					// Bubble up the event natively
-					base.MouseDown(evt);
-				}
-			}
-			catch (Exception e)
-			{
-				Application.Current.RaiseRecoverableUnhandledException(e);
-			}
-		}
-
-		public override void MouseUp(NSEvent evt)
-		{
-			try
-			{
-				var wasPointerOver = IsPointerOver;
-				IsPointerOver = evt.IsTouchInView(this);
-
-				// Call entered/exited one last time
-				// evt.AllTouches raises a invalid selector exception
-				var args = new PointerRoutedEventArgs(null, evt)
-				{
-					CanBubbleNatively = true,
-					OriginalSource = this
-				};
-
-				var pointerEventIsHandledInManaged = false;
-
-				if (!wasPointerOver && IsPointerOver)
-				{
-					pointerEventIsHandledInManaged = RaiseEvent(PointerEnteredEvent, args);
-				}
-				else if (wasPointerOver && !IsPointerOver)
-				{
-					pointerEventIsHandledInManaged = RaiseEvent(PointerExitedEvent, args);
-				}
-
-				if (IsPointerCaptured || IsPointerOver)
-				{
-					args.Handled = false; // reset as unhandled
-					pointerEventIsHandledInManaged = RaiseEvent(PointerReleasedEvent, args) || pointerEventIsHandledInManaged;
-				}
-
-				if (IsPointerCaptured)
-				{
-					args.Handled = false; // reset as unhandled
-					pointerEventIsHandledInManaged = RaiseEvent(PointerCaptureLostEvent, args) || pointerEventIsHandledInManaged;
-				}
-
-				if (!pointerEventIsHandledInManaged)
-				{
-					// Bubble up the event natively
-					base.MouseUp(evt);
-				}
-
-				IsPointerPressed = false;
-				IsPointerOver = false;
-			}
-			catch (Exception e)
-			{
-				Application.Current.RaiseRecoverableUnhandledException(e);
-			}
-		}
-
-		public override void MouseDragged(NSEvent evt)
-		{
-			try
-			{
-				var wasPointerOver = IsPointerOver;
-				IsPointerOver = evt.IsTouchInView(this);
-
-				var pointerEventIsHandledInManaged = false;
-
-				// evt.AllTouches raises a invalid selector exception
-				var args = new PointerRoutedEventArgs(null, evt)
-				{
-					CanBubbleNatively = true,
-					OriginalSource = this
-				};
-
-				if (IsPointerCaptured || IsPointerOver)
-				{
-					pointerEventIsHandledInManaged = RaiseEvent(PointerMovedEvent, args);
-				}
-
-				if (!wasPointerOver && IsPointerOver)
-				{
-					args.Handled = false; // reset as unhandled
-					pointerEventIsHandledInManaged = RaiseEvent(PointerEnteredEvent, args) || pointerEventIsHandledInManaged;
-				}
-				else if (wasPointerOver && !IsPointerOver)
-				{
-					args.Handled = false; // reset as unhandled
-					pointerEventIsHandledInManaged = RaiseEvent(PointerExitedEvent, args) || pointerEventIsHandledInManaged;
-				}
-
-				if (!pointerEventIsHandledInManaged)
-				{
-					// Bubble up the event natively
-					base.MouseDragged(evt);
-				}
-			}
-			catch (Exception e)
-			{
-				Application.Current.RaiseRecoverableUnhandledException(e);
-			}
-		}
+#if DEBUG
+		public string ShowLocalVisualTree(int fromHeight) => AppKit.UIViewExtensions.ShowLocalVisualTree(this, fromHeight);
+#endif
 	}
 }

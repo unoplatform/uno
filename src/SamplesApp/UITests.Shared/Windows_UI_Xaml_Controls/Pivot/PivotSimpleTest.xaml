@@ -10,48 +10,48 @@
     d:DesignHeight="300"
     d:DesignWidth="400">
 
-    <UserControl.Resources>
+	<UserControl.Resources>
 
-        <DataTemplate x:Key="FirstPivotItemTemplate">
-            <Ellipse />
-        </DataTemplate>
+		<DataTemplate x:Key="FirstPivotItemTemplate">
+			<Ellipse />
+		</DataTemplate>
 
-        <DataTemplate x:Key="SecondPivotItemTemplate">
-            <Rectangle />
-        </DataTemplate>
+		<DataTemplate x:Key="SecondPivotItemTemplate">
+			<Rectangle />
+		</DataTemplate>
 
-        <DataTemplate x:Key="ThirdPivotItemTemplate">
-            <Polygon />
-        </DataTemplate>
+		<DataTemplate x:Key="ThirdPivotItemTemplate">
+			<Polygon />
+		</DataTemplate>
 
-        <DataTemplate x:Key="FourthPivotItemTemplate">
-            <TextBlock Text="Fourth Template" />
-        </DataTemplate>
+		<DataTemplate x:Key="FourthPivotItemTemplate">
+			<TextBlock Text="Fourth Template" />
+		</DataTemplate>
 
-    </UserControl.Resources>
+	</UserControl.Resources>
 
-    <controls:SampleControl SampleDescription="Simple Pivot">
-        <controls:SampleControl.SampleContent>
-            <DataTemplate>
-                <Border Background="Aqua" Height="400" Width="400">
-                    <xamarin:Pivot Background="Red">
-                        <Pivot.Items>
-                            <PivotItem Header="First"
+	<controls:SampleControl SampleDescription="Simple Pivot">
+		<controls:SampleControl.SampleContent>
+			<DataTemplate>
+				<Border Background="Aqua" Height="400" Width="400">
+					<xamarin:Pivot Background="Red">
+						<Pivot.Items>
+							<PivotItem Header="First"
 									   Content="First Content"/>
-                            <PivotItem Header="Second">
+							<PivotItem Header="Second">
 								<TextBlock 
 									TextWrapping="Wrap"
 									Text="Second Content which is very long so it should wrap as we set the TextWrapping property of this property to Wrap. And_even_this_very_long_word_which_is_not_wrappable_should_wrap_as_the_PivotPanel_has_measured_its_children_using_the_width_of_its_parent_scrollviewer." />
 							</PivotItem>
-                            <PivotItem Header="Third" 
+							<PivotItem Header="Third" 
 									   Content="Third Content"/>
-                            <PivotItem Header="Fourth"
+							<PivotItem Header="Fourth"
 									   Content="Fourth Content"/>
-                        </Pivot.Items>
-                    </xamarin:Pivot>
-                </Border>
-            </DataTemplate>
-        </controls:SampleControl.SampleContent>
-    </controls:SampleControl>
+						</Pivot.Items>
+					</xamarin:Pivot>
+				</Border>
+			</DataTemplate>
+		</controls:SampleControl.SampleContent>
+	</controls:SampleControl>
 
 </UserControl>

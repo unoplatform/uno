@@ -41,6 +41,7 @@ namespace Windows.UI.Xaml.Controls
 				_revealButton.AddHandler(PointerReleasedEvent, endReveal, handledEventsToo: true);
 				_revealButton.AddHandler(PointerExitedEvent, endReveal, handledEventsToo: true);
 				_revealButton.AddHandler(PointerCanceledEvent, endReveal, handledEventsToo: true);
+				_revealButton.AddHandler(PointerCaptureLostEvent, endReveal, handledEventsToo: true);
 
 				_revealButtonSubscription.Disposable = Disposable.Create(() =>
 				{
@@ -48,6 +49,7 @@ namespace Windows.UI.Xaml.Controls
 					_revealButton.RemoveHandler(PointerReleasedEvent, endReveal);
 					_revealButton.RemoveHandler(PointerExitedEvent, endReveal);
 					_revealButton.RemoveHandler(PointerCanceledEvent, endReveal);
+					_revealButton.RemoveHandler(PointerCaptureLostEvent, endReveal);
 				});
 			}
 

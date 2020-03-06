@@ -7,19 +7,19 @@ using Uno.Extensions;
 
 namespace Windows.UI.Xaml
 {
-    public partial struct GridLength : IEquatable<GridLength>
-    {
-        public static GridLength Auto => GridLengthHelper.Auto;
+	public partial struct GridLength : IEquatable<GridLength>
+	{
+		public static GridLength Auto => GridLengthHelper.Auto;
 
-        public GridUnitType GridUnitType { get; private set; }
+		public GridUnitType GridUnitType { get; private set; }
 
-        public bool IsAbsolute { get { return GridUnitType == Xaml.GridUnitType.Pixel; } }
+		public bool IsAbsolute { get { return GridUnitType == Xaml.GridUnitType.Pixel; } }
 
-        public bool IsAuto { get { return GridUnitType == Xaml.GridUnitType.Auto; } }
+		public bool IsAuto { get { return GridUnitType == Xaml.GridUnitType.Auto; } }
 
-        public bool IsStar { get { return GridUnitType == Xaml.GridUnitType.Star; } }
+		public bool IsStar { get { return GridUnitType == Xaml.GridUnitType.Star; } }
 
-        public double Value { get; private set; }
+		public double Value { get; private set; }
 
 		public static implicit operator GridLength(string value)
 			=> FromString(value);
@@ -28,17 +28,17 @@ namespace Windows.UI.Xaml
 			=> new GridLength(value);
 
 		public GridLength(double pixels) : this(pixels, GridUnitType.Pixel)
-        {
-        }
+		{
+		}
 
-        public GridLength(double value, GridUnitType gridUnitType)
+		public GridLength(double value, GridUnitType gridUnitType)
 		{
 			if (double.IsNaN(value) || double.IsInfinity(value) || value < 0.0 ||
 				(gridUnitType != GridUnitType.Auto &&
 				 gridUnitType != GridUnitType.Pixel &&
 				 gridUnitType != GridUnitType.Star))
 			{
-				throw new ArgumentException(nameof(value));
+				throw new ArgumentException($"Invalid GridLength {value}{gridUnitType}.", nameof(value));
 			}
 
 			Value = (gridUnitType == GridUnitType.Auto) ? 1.0 : value;
@@ -121,5 +121,12 @@ namespace Windows.UI.Xaml
 				return false;
 			}
 		}
+
+		public override bool Equals(object obj) => obj is GridLength other ? Equals(other) : false;
+
+		public override int GetHashCode() => GridUnitType.GetHashCode() ^ Value.GetHashCode();
+
+		public static bool operator ==(GridLength gl1, GridLength gl2) => gl1.Equals(gl2);
+		public static bool operator !=(GridLength gl1, GridLength gl2) => !gl1.Equals(gl2);
 	}
 }

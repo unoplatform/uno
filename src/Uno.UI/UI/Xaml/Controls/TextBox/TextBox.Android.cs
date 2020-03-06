@@ -5,6 +5,7 @@ using Android.App;
 using Android.Graphics;
 using Android.Runtime;
 using Android.Text;
+using Android.Text.Method;
 using Android.Util;
 using Android.Views;
 using Android.Views.InputMethods;
@@ -30,6 +31,7 @@ namespace Windows.UI.Xaml.Controls
 		private TextBoxView _textBoxView;
 		private readonly SerialDisposable _keyboardDisposable = new SerialDisposable();
 		private Factory _editableFactory;
+		private IKeyListener _listener;
 
 		/// <summary>
 		/// If true, and <see cref="IsSpellCheckEnabled"/> is false, take vigorous measures to ensure that spell-check (ie predictive text) is
@@ -83,7 +85,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnLoaded();
 			SetupTextBoxView();
-			UpdateCommonStates();
 		}
 
 		partial void InitializePropertiesPartial()
@@ -131,7 +132,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private static object CoerceImeOptions(DependencyObject dependencyObject, object baseValue)
 		{
-			return dependencyObject is TextBox textBox && textBox.InputScope.GetFirstInputScopeNameValue() == InputScopeNameValue.Search
+			return dependencyObject is TextBox textBox && textBox.InputScope?.GetFirstInputScopeNameValue() == InputScopeNameValue.Search
 				? ImeAction.Search
 				: baseValue;
 		}
@@ -323,10 +324,22 @@ namespace Windows.UI.Xaml.Controls
 
 				if (IsReadOnly)
 				{
-					inputType = InputTypes.Null;
-				}
+					_textBoxView.InputType = InputTypes.Null;
 
-				_textBoxView.InputType = inputType;
+					// Clear the listener so the inputs have no effect.
+					// Setting the input type to InputTypes.Null is not enough.
+					_listener = _textBoxView.KeyListener;
+					_textBoxView.KeyListener = null;
+				}
+				else
+				{
+					if (_listener != null)
+					{
+						_textBoxView.KeyListener = _listener;
+					}
+
+					_textBoxView.InputType = inputType;
+				}
 			}
 		}
 

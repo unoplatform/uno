@@ -51,14 +51,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var uiElement = view as UIElement;
 
-			if (uiElement != null)
-			{
-				return uiElement.DesiredSize;
-			}
-			else
-			{
-				return LayouterHelper.LayoutProperties.GetValue(view, "desiredSize", () => default(Size));
-			}
+			return uiElement?.DesiredSize ?? LayouterHelper.LayoutProperties.GetValue(view, "desiredSize", () => default(Size));
 		}
 
 		protected Size MeasureChildOverride(View view, Size slotSize)
@@ -79,7 +72,21 @@ namespace Windows.UI.Xaml.Controls
 
 		protected abstract void MeasureChild(View view, int widthSpec, int heightSpec);
 
+		private void SetArrangeLogicalSize(View view, Rect frame)
+		{
+			if (view is UIElement uiElement)
+			{
+				uiElement.ArrangeLogicalSize = frame;
+			}
+		}
 
+		private void ResetArrangeLogicalSize(View view)
+		{
+			if (view is UIElement uiElement)
+			{
+				uiElement.ArrangeLogicalSize = null;
+			}
+		}
 
 		protected void ArrangeChildOverride(View view, Rect frame)
 		{
@@ -87,12 +94,21 @@ namespace Windows.UI.Xaml.Controls
 
 			var physicalFrame = frame.LogicalToPhysicalPixels();
 
-			view.Layout(
-				(int)physicalFrame.Left,
-				(int)physicalFrame.Top,
-				(int)physicalFrame.Right,
-				(int)physicalFrame.Bottom
-			);
+			try
+			{
+				SetArrangeLogicalSize(view, frame);
+
+				view.Layout(
+					(int)physicalFrame.Left,
+					(int)physicalFrame.Top,
+					(int)physicalFrame.Right,
+					(int)physicalFrame.Bottom
+				);
+			}
+			finally
+			{
+				ResetArrangeLogicalSize(view);
+			}
 		}
 	}
 

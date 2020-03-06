@@ -26,12 +26,12 @@ namespace Windows.UI.Xaml.Input
 			CanBubbleNatively = true; // Required for native gesture recognition (i.e. ScrollViewer), and integration of native components in the visual tree
 		}
 
-		internal PointerRoutedEventArgs(NSSet touches, UIEvent nativeEvent, UIElement receiver) : this()
+		internal PointerRoutedEventArgs(UITouch nativeTouch, UIEvent nativeEvent, UIElement receiver) : this()
 		{
-			_nativeTouch = (UITouch)touches.AnyObject;
+			_nativeTouch = nativeTouch;
 			_nativeEvent = nativeEvent;
 
-			var pointerId = (uint)_nativeTouch.Type;
+			var pointerId = (uint)_nativeTouch.Handle;
 			var type = _nativeTouch.Type == UITouchType.Stylus
 				? PointerDeviceType.Pen
 				: PointerDeviceType.Touch;
@@ -50,10 +50,13 @@ namespace Windows.UI.Xaml.Input
 		{
 			var timestamp = ToTimeStamp(_nativeTouch.Timestamp);
 			var device = PointerDevice.For(Pointer.PointerDeviceType);
-			var position = (Point)_nativeTouch.LocationInView(relativeTo);
+			var rawPosition = (Point)_nativeTouch.GetPreciseLocation(null);
+			var position = relativeTo == null
+				? rawPosition
+				: (Point)_nativeTouch.GetPreciseLocation(relativeTo);
 			var properties = GetProperties();
 
-			return new PointerPoint(FrameId, timestamp, device, Pointer.PointerId, position, position, Pointer.IsInContact, properties);
+			return new PointerPoint(FrameId, timestamp, device, Pointer.PointerId, rawPosition, position, Pointer.IsInContact, properties);
 		}
 
 		private PointerPointProperties GetProperties()
@@ -61,7 +64,8 @@ namespace Windows.UI.Xaml.Input
 			{
 				IsPrimary = true,
 				IsInRange = Pointer.IsInRange,
-				IsLeftButtonPressed = Pointer.IsInContact
+				IsLeftButtonPressed = Pointer.IsInContact,
+				Pressure = (float)(_nativeTouch.Force / _nativeTouch.MaximumPossibleForce)
 			};
 
 		#region Misc static helpers

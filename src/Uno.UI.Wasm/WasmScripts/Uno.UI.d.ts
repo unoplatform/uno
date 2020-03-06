@@ -10,6 +10,7 @@ declare namespace Windows.UI.Core {
     class CoreDispatcher {
         static _coreDispatcherCallback: any;
         static _isIOS: boolean;
+        static _isSafari: boolean;
         static _isFirstCall: boolean;
         static _isReady: Promise<boolean>;
         static _isWaitingReady: boolean;
@@ -123,6 +124,7 @@ declare namespace Uno.UI {
         static readonly isLoadEventsEnabled: boolean;
         private static readonly unoRootClassName;
         private static readonly unoUnarrangedClassName;
+        private static readonly unoClippedToBoundsClassName;
         private static _cctor;
         /**
             * Initialize the WindowManager
@@ -147,10 +149,12 @@ declare namespace Uno.UI {
         static initNative(pParams: number): boolean;
         private containerElement;
         private rootContent;
+        private cursorStyleElement;
         private allActiveElementsById;
         private static resizeMethod;
         private static dispatchEventMethod;
         private static getDependencyPropertyValueMethod;
+        private static setDependencyPropertyValueMethod;
         private constructor();
         /**
             * Creates the UWP-compatible splash screen
@@ -217,6 +221,14 @@ declare namespace Uno.UI {
             */
         setAttributeNative(pParams: number): boolean;
         /**
+            * Removes an attribute for an element.
+            */
+        removeAttribute(elementId: number, name: string): string;
+        /**
+            * Removes an attribute for an element.
+            */
+        removeAttributeNative(pParams: number): boolean;
+        /**
             * Get an attribute for an element.
             */
         getAttribute(elementId: number, name: string): any;
@@ -242,7 +254,7 @@ declare namespace Uno.UI {
             */
         setStyle(elementId: number, styles: {
             [name: string]: string;
-        }, setAsArranged?: boolean): string;
+        }): string;
         /**
         * Set the CSS style of a html element.
         *
@@ -255,18 +267,13 @@ declare namespace Uno.UI {
         *
         */
         setStyleDoubleNative(pParams: number): boolean;
+        setArrangeProperties(elementId: number, clipToBounds: boolean): string;
         /**
-            * Set the CSS style of a html element.
-            *
-            * To remove a value, set it to empty string.
-            * @param styles A dictionary of styles to apply on html element.
+            * Remove the CSS style of a html element.
             */
         resetStyle(elementId: number, names: string[]): string;
         /**
-            * Set the CSS style of a html element.
-            *
-            * To remove a value, set it to empty string.
-            * @param styles A dictionary of styles to apply on html element.
+            * Remove the CSS style of a html element.
             */
         resetStyleNative(pParams: number): boolean;
         private resetStyleInternal;
@@ -282,6 +289,7 @@ declare namespace Uno.UI {
         arrangeElementNative(pParams: number): boolean;
         private setAsArranged;
         private setAsUnarranged;
+        private setClipToBounds;
         /**
         * Sets the transform matrix of an element
         *
@@ -446,7 +454,9 @@ declare namespace Uno.UI {
         measureViewNative(pParams: number, pReturn: number): boolean;
         private static MAX_WIDTH;
         private static MAX_HEIGHT;
+        private measureElement;
         private measureViewInternal;
+        scrollTo(pParams: number): boolean;
         setImageRawData(viewId: number, dataPtr: number, width: number, height: number): string;
         /**
          * Sets the provided image with a mono-chrome version of the provided url.
@@ -494,6 +504,12 @@ declare namespace Uno.UI {
          */
         GetDependencyPropertyValue(elementId: number, propertyName: string): string;
         /**
+         * Sets a dependency property value.
+         *
+         * Note that the casing of this method is intentionally Pascal for platform alignment.
+         */
+        SetDependencyPropertyValue(elementId: number, propertyNameAndValue: string): string;
+        /**
             * Remove the loading indicator.
             *
             * In a future version it will also handle the splashscreen.
@@ -506,6 +522,7 @@ declare namespace Uno.UI {
         private resize;
         private dispatchEvent;
         private getIsConnectedToRootElement;
+        setCursor(cssCursor: string): string;
     }
 }
 declare class StorageFolderMakePersistentParams {
@@ -530,6 +547,7 @@ declare class WindowManagerArrangeElementParams {
     ClipRight: number;
     HtmlId: number;
     Clip: boolean;
+    ClipToBounds: boolean;
     static unmarshal(pData: number): WindowManagerArrangeElementParams;
 }
 declare class WindowManagerCreateContentParams {
@@ -594,6 +612,11 @@ declare class WindowManagerRegisterEventOnViewParams {
     EventExtractorName: string;
     static unmarshal(pData: number): WindowManagerRegisterEventOnViewParams;
 }
+declare class WindowManagerRemoveAttributeParams {
+    HtmlId: number;
+    Name: string;
+    static unmarshal(pData: number): WindowManagerRemoveAttributeParams;
+}
 declare class WindowManagerRemoveViewParams {
     HtmlId: number;
     ChildView: number;
@@ -604,6 +627,15 @@ declare class WindowManagerResetStyleParams {
     Styles_Length: number;
     Styles: Array<string>;
     static unmarshal(pData: number): WindowManagerResetStyleParams;
+}
+declare class WindowManagerScrollToOptionsParams {
+    Left: number;
+    Top: number;
+    HasLeft: boolean;
+    HasTop: boolean;
+    DisableAnimation: boolean;
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerScrollToOptionsParams;
 }
 declare class WindowManagerSetAttributeParams {
     HtmlId: number;
@@ -658,7 +690,6 @@ declare class WindowManagerSetStyleDoubleParams {
 }
 declare class WindowManagerSetStylesParams {
     HtmlId: number;
-    SetAsArranged: boolean;
     Pairs_Length: number;
     Pairs: Array<string>;
     static unmarshal(pData: number): WindowManagerSetStylesParams;
@@ -822,6 +853,27 @@ declare namespace Windows.Devices.Sensors {
         private static readingChangedHandler;
     }
 }
+interface Window {
+    opr: any;
+    opera: any;
+    mozVibrate(pattern: number | number[]): boolean;
+    msVibrate(pattern: number | number[]): boolean;
+    InstallTrigger: any;
+    HTMLElement: any;
+    StyleMedia: any;
+    chrome: any;
+    CSS: any;
+    safari: any;
+}
+interface Document {
+    documentMode: any;
+}
+declare namespace Windows.System.Profile {
+    class AnalyticsVersionInfo {
+        static getUserAgent(): string;
+        static getBrowserName(): string;
+    }
+}
 declare namespace Windows.UI.Core {
     class SystemNavigationManager {
         private static _current;
@@ -831,6 +883,16 @@ declare namespace Windows.UI.Core {
         enable(): void;
         disable(): void;
         private clearStack;
+    }
+}
+declare namespace Windows.UI.ViewManagement {
+    class ApplicationView {
+        static setFullScreenMode(turnOn: boolean): boolean;
+    }
+}
+declare namespace Windows.UI.ViewManagement {
+    class ApplicationViewTitleBar {
+        static setBackgroundColor(colorString: string): void;
     }
 }
 declare namespace Windows.UI.Xaml {

@@ -1,0 +1,65 @@
+﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+
+  <PropertyGroup>
+    <TargetFramework>net461</TargetFramework>
+  </PropertyGroup>
+
+	<PropertyGroup>
+		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
+		<NoWarn>$(NoWarn);NU1701</NoWarn>
+
+		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
+		<Deterministic>true</Deterministic>
+	</PropertyGroup>
+
+	<Import Project="..\Uno.CrossTargetting.props" />
+
+	<ItemGroup>
+		<UpToDateCheckInput Include="**\*.cs" Exclude="bin\**\*.cs;obj\**\*.cs;" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <UpToDateCheckInput Remove="EntryPoint.cs" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
+		<PackageReference Include="EnvDTE100" Version="10.0.3" />
+		<PackageReference Include="Microsoft.Build" Version="15.1.548" />
+		<PackageReference Include="Microsoft.VisualStudio.ProjectSystem" Version="15.0.751" />
+		<PackageReference Include="Microsoft.VisualStudio.Shell.15.0" Version="15.9.28307" />
+		<PackageReference Include="Microsoft.VisualStudio.Shell.Framework" Version="15.9.28307" />
+		<PackageReference Include="Microsoft.VisualStudio.Shell.Interop" Version="7.10.6072" />
+		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+	</ItemGroup>
+
+	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
+		<PropertyGroup>
+			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI.RemoteControl\$(UnoNugetOverrideVersion)\tools\rc</_TargetNugetFolder>
+		</PropertyGroup>
+		<ItemGroup>
+			<_OutputFiles Include="$(TargetDir)*.*" />
+		</ItemGroup>
+		<MakeDir Directories="$(_TargetNugetFolder)" />
+		<Message Importance="high" Text="OVERRIDING NUGET PACKAGE CACHE: $(_TargetNugetFolder)" />
+		<Copy SourceFiles="@(_OutputFiles)" DestinationFiles="@(_OutputFiles->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename)%(Extension)')" />
+		<Copy SourceFiles="@(_OutputFilesPDB)" DestinationFiles="@(_OutputFilesPDB->'$(_TargetNugetFolder)\%(RecursiveDir)%(Filename).pdb')" />
+	</Target>
+
+	<Target Name="_ForceRemoveAnalyzers" BeforeTargets="CoreCompile" Condition="$([MSBuild]::IsOsPlatform('Linux'))">
+		<!-- Workaround for Linux and macos when building against mono where Analyzers 2.9.x depend on unknown members. This should not happen when building
+		     with "dotnet build"
+		  CSC : error AD0001: Analyzer 'Microsoft.VisualStudio.Threading.Analyzers.VSTHRD010VsServiceUsageAnalyzer' threw an exception of
+			type 'System.Exception' with message 'Analyzer failure while processing syntax at /workspace/uno/src/Uno.UI.RemoteControl.VS/EntryPoint.cs(49,4):
+			System.BadImageFormatException Could not resolve field token 0x0400007c, due to: Could not load type of field
+			'Microsoft.VisualStudio.Threading.Analyzers.Utils+<>c:<>9__18_0' (5) due to: Could not load file or assembly
+			'Microsoft.CodeAnalysis.Workspaces, Version=1.2.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35' or one of
+			 its dependencies. assembly:/home/gitpod/.nuget/packages/microsoft.visualstudio.threading.analyzers/15.6.31/analyzers/cs/Microsoft.VisualStudio.Threading.Analyzers.dll
+			  type:<>c member:(null). Syntax: globalPropertiesProvider(OnProvideGlobalPropertiesAsync)'. [/workspace/uno/src/Uno.UI.RemoteControl.VS/Uno.UI.RemoteControl.VS.csproj]
+		-->
+		<ItemGroup>
+			<Analyzer Remove="@(Analyzer)" />
+		</ItemGroup>
+	</Target>
+
+</Project>

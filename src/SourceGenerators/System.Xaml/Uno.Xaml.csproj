@@ -1,4 +1,4 @@
-﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
+<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>xamarinmac20;net461;xamarinios10;MonoAndroid90;netstandard2.0</TargetFrameworks>
 		<TargetFrameworksCI>net461;MonoAndroid80;MonoAndroid90;xamarinios10;netstandard2.0;xamarinmac20</TargetFrameworksCI>
@@ -31,6 +31,7 @@
 
 	<ItemGroup>
 		<PackageReference Include="Uno.MonoAnalyzers" />
+		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
 	</ItemGroup>
 
 	<Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />

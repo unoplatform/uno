@@ -10,9 +10,17 @@ namespace Windows.UI.Input
 {
 	public partial class GestureRecognizer
 	{
-		private class Manipulation
+		internal class Manipulation
 		{
-			private enum ManipulationStates
+			internal static readonly Thresholds StartTouch = new Thresholds { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
+			internal static readonly Thresholds StartPen = new Thresholds { TranslateX = 15, TranslateY = 15, Rotate = 5, Expansion = 15 };
+			internal static readonly Thresholds StartMouse = new Thresholds { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
+
+			internal static readonly Thresholds DeltaTouch = new Thresholds { TranslateX = 2, TranslateY = 2, Rotate = .1, Expansion = 1 };
+			internal static readonly Thresholds DeltaPen = new Thresholds { TranslateX = 2, TranslateY = 2, Rotate = .1, Expansion = 1 };
+			internal static readonly Thresholds DeltaMouse = new Thresholds { TranslateX = 1, TranslateY = 1, Rotate = .1, Expansion = 1 };
+
+			private enum ManipulationState
 			{
 				Starting = 1,
 				Started = 2,
@@ -27,17 +35,39 @@ namespace Windows.UI.Input
 			private readonly bool _isRotateEnabled;
 			private readonly bool _isScaleEnabled;
 
-			private ManipulationStates _state = ManipulationStates.Starting;
+			private readonly Thresholds _startThresholds;
+			private readonly Thresholds _deltaThresholds;
+
+			private ManipulationState _state = ManipulationState.Starting;
 			private Points _origins;
-			private Points _lastPublished;
 			private Points _currents;
+			private ManipulationDelta _sumOfPublishedDelta = ManipulationDelta.Empty;
 
 			public Manipulation(GestureRecognizer recognizer, PointerPoint pointer1)
 			{
 				_recognizer = recognizer;
 				_deviceType = pointer1.PointerDevice.PointerDeviceType;
 
-				_origins = _lastPublished = _currents = pointer1;
+				_origins = _currents = pointer1;
+
+				switch (_deviceType)
+				{
+					case PointerDeviceType.Mouse:
+						_startThresholds = StartMouse;
+						_deltaThresholds = DeltaMouse;
+						break;
+
+					case PointerDeviceType.Pen:
+						_startThresholds = StartPen;
+						_deltaThresholds = DeltaPen;
+						break;
+
+					default:
+					case PointerDeviceType.Touch:
+						_startThresholds = StartTouch;
+						_deltaThresholds = DeltaTouch;
+						break;
+				}
 
 				var args = new ManipulationStartingEventArgs(_recognizer._gestureSettings);
 				_recognizer.ManipulationStarting?.Invoke(_recognizer, args);
@@ -47,11 +77,21 @@ namespace Windows.UI.Input
 				_isTranslateYEnabled = (settings & (GestureSettings.ManipulationTranslateY | GestureSettings.ManipulationTranslateRailsY)) != 0;
 				_isRotateEnabled = (settings & (GestureSettings.ManipulationRotate | GestureSettings.ManipulationRotateInertia)) != 0;
 				_isScaleEnabled = (settings & (GestureSettings.ManipulationScale | GestureSettings.ManipulationScaleInertia)) != 0;
+
+				if ((settings & GestureSettingsHelper.Manipulations) == 0)
+				{
+					_state = ManipulationState.Completed;
+				}
 			}
+
+			public bool IsActive(PointerDeviceType type, uint id)
+				=> _state != ManipulationState.Completed
+					&& _deviceType == type
+					&& _origins.ContainsPointer(id);
 
 			public void Add(PointerPoint point)
 			{
-				if (_state == ManipulationStates.Completed
+				if (_state == ManipulationState.Completed
 					|| point.PointerDevice.PointerDeviceType != _deviceType
 					|| _currents.HasPointer2)
 				{
@@ -59,16 +99,15 @@ namespace Windows.UI.Input
 				}
 
 				_origins.SetPointer2(point);
-				_lastPublished.SetPointer2(point);
 				_currents.SetPointer2(point);
 
-				// We force to start the manipulation (or update it) a second pointer is pressed
-				NotifyUpdate(forceUpdate: true);
+				// We force to start the manipulation (or update it) as soon as a second pointer is pressed
+				NotifyUpdate(pointerAdded: true);
 			}
 
 			public void Update(IList<PointerPoint> updated)
 			{
-				if (_state == ManipulationStates.Completed)
+				if (_state == ManipulationState.Completed)
 				{
 					return;
 				}
@@ -90,7 +129,7 @@ namespace Windows.UI.Input
 				if (TryUpdate(removed))
 				{
 					// For now we complete the Manipulation as soon as a pointer was removed ...
-					// not checked the UWP behavior for that!
+					// did not check the UWP behavior for that!
 					Complete();
 				}
 			}
@@ -100,16 +139,16 @@ namespace Windows.UI.Input
 				// If the manipulation was not started, we just abort the manipulation without any event
 				switch (_state)
 				{
-					case ManipulationStates.Started:
-						_state = ManipulationStates.Completed;
+					case ManipulationState.Started:
+						_state = ManipulationState.Completed;
 
 						_recognizer.ManipulationCompleted?.Invoke(
 							_recognizer,
-							new ManipulationCompletedEventArgs(_deviceType, _currents.Center, GetDelta(), isInertial: false));
+							new ManipulationCompletedEventArgs(_deviceType, _currents.Center, GetCumulative(), isInertial: false));
 						break;
 
 					default:
-						_state = ManipulationStates.Completed;
+						_state = ManipulationState.Completed;
 						break;
 				}
 
@@ -131,52 +170,66 @@ namespace Windows.UI.Input
 				return _currents.TryUpdate(point);
 			}
 
-			private void NotifyUpdate(bool forceUpdate = false)
+			private void NotifyUpdate(bool pointerAdded = false)
 			{
-				// Note: Make sure to update the _manipulationLast before raising the event, so if an exception is raised
-				//		 or if the manipulation is Completed, the Complete event args can use the updated _manipulationLast.
+				// Note: Make sure to update the _sumOfPublishedDelta before raising the event, so if an exception is raised
+				//		 or if the manipulation is Completed, the Complete event args can use the updated _sumOfPublishedDelta.
+
+				var cumulative = GetCumulative();
 
 				switch (_state)
 				{
-					case ManipulationStates.Starting:
-						var cumulative = GetDelta();
-						if (forceUpdate || IsSignificant(cumulative))
-						{
-							_state = ManipulationStates.Started;
-							_lastPublished = _currents;
+					case ManipulationState.Starting when pointerAdded:
+						_state = ManipulationState.Started;
+						_sumOfPublishedDelta = cumulative;
 
-							_recognizer.ManipulationStarted?.Invoke(
-								_recognizer,
-								new ManipulationStartedEventArgs(_deviceType, _currents.Center, cumulative));
-						}
+						_recognizer.ManipulationStarted?.Invoke(
+							_recognizer,
+							new ManipulationStartedEventArgs(_deviceType, _currents.Center, cumulative));
+
+						// No needs to publish an update when we start the manipulation due to an additional pointer as cumulative will be empty.
 
 						break;
 
-					case ManipulationStates.Started when _recognizer.ManipulationUpdated == null:
-						_lastPublished = _currents;
+					case ManipulationState.Starting when cumulative.IsSignificant(_startThresholds):
+						_state = ManipulationState.Started;
+						_sumOfPublishedDelta = cumulative;
+
+						// Note: We first start with an empty delta, then invoke Update.
+						//		 This is required to patch a common issue in applications that are using only the
+						//		 ManipulationUpdated.Delta property to track the pointer (like the WCT GridSplitter).
+						//		 UWP seems to do that only for Touch and Pen (i.e. the Delta is not empty on start with a mouse),
+						//		 but there is no side effect to use the same behavior for all pointer types.
+						_recognizer.ManipulationStarted?.Invoke(
+							_recognizer,
+							new ManipulationStartedEventArgs(_deviceType, _origins.Center, ManipulationDelta.Empty));
+						_recognizer.ManipulationUpdated?.Invoke(
+							_recognizer,
+							new ManipulationUpdatedEventArgs(_deviceType, _currents.Center, cumulative, cumulative, isInertial: false));
+
 						break;
 
-					case ManipulationStates.Started:
+					case ManipulationState.Started:
 						// Even if Scale and Angle are expected to be default when we add a pointer (i.e. forceUpdate == true),
 						// the 'delta' and 'cumulative' might still contains some TranslateX|Y compared to the previous Pointer1 location.
-						var delta = GetDelta(_lastPublished);
-						if (forceUpdate || IsSignificant(delta))
-						{
-							_lastPublished = _currents;
+						var delta = GetDelta(cumulative);
 
-							_recognizer.ManipulationUpdated.Invoke(
+						if (pointerAdded || delta.IsSignificant(_deltaThresholds))
+						{
+							_sumOfPublishedDelta = _sumOfPublishedDelta.Add(delta);
+
+							_recognizer.ManipulationUpdated?.Invoke(
 								_recognizer,
-								new ManipulationUpdatedEventArgs(_deviceType, _currents.Center, delta, GetDelta(), isInertial: false));
+								new ManipulationUpdatedEventArgs(_deviceType, _currents.Center, delta, cumulative, isInertial: false));
 						}
 						break;
 				}
 			}
 
-			private ManipulationDelta GetDelta() => GetDelta(_origins);
-			private ManipulationDelta GetDelta(Points from)
+			private ManipulationDelta GetCumulative()
 			{
-				var translateX = _isTranslateXEnabled ? _currents.Center.X - from.Center.X : 0;
-				var translateY = _isTranslateYEnabled ? _currents.Center.Y - from.Center.Y : 0;
+				var translateX = _isTranslateXEnabled ? _currents.Center.X - _origins.Center.X : 0;
+				var translateY = _isTranslateYEnabled ? _currents.Center.Y - _origins.Center.Y : 0;
 
 				double rotate;
 				float scale, expansion;
@@ -188,9 +241,9 @@ namespace Windows.UI.Input
 				}
 				else
 				{
-					rotate = _isRotateEnabled ? _currents.Angle - from.Angle : 0;
-					scale = _isScaleEnabled ? _currents.Distance / from.Distance : 1;
-					expansion = _isScaleEnabled ? _currents.Distance - from.Distance : 0;
+					rotate = _isRotateEnabled ? _currents.Angle - _origins.Angle : 0;
+					scale = _isScaleEnabled ? _currents.Distance / _origins.Distance : 1;
+					expansion = _isScaleEnabled ? _currents.Distance - _origins.Distance : 0;
 				}
 
 				return new ManipulationDelta
@@ -202,11 +255,32 @@ namespace Windows.UI.Input
 				};
 			}
 
-			private bool IsSignificant(ManipulationDelta delta)
-				=> Math.Abs(delta.Translation.X) >= MinManipulationDeltaTranslateX
-				|| Math.Abs(delta.Translation.Y) >= MinManipulationDeltaTranslateY
-				|| delta.Rotation >= MinManipulationDeltaRotate // We used the ToDegreeNormalized, no need to check for negative angles
-				|| Math.Abs(delta.Expansion) >= MinManipulationDeltaExpansion;
+			private ManipulationDelta GetDelta(ManipulationDelta cumulative)
+			{
+				var deltaSum = _sumOfPublishedDelta;
+
+				var translateX = _isTranslateXEnabled ? cumulative.Translation.X - deltaSum.Translation.X : 0;
+				var translateY = _isTranslateYEnabled ? cumulative.Translation.Y - deltaSum.Translation.Y : 0;
+				var rotate = _isRotateEnabled ? cumulative.Rotation - deltaSum.Rotation : 0;
+				var scale = _isScaleEnabled ? cumulative.Scale / deltaSum.Scale : 1;
+				var expansion = _isScaleEnabled ? cumulative.Expansion - deltaSum.Expansion : 0;
+
+				return new ManipulationDelta
+				{
+					Translation = new Point(translateX, translateY),
+					Rotation = (float)MathEx.NormalizeDegree(rotate),
+					Scale = scale,
+					Expansion = expansion
+				};
+			}
+
+			internal struct Thresholds
+			{
+				public int TranslateX;
+				public int TranslateY;
+				public double Rotate; // Degrees
+				public double Expansion;
+			}
 
 			// WARNING: This struct is ** MUTABLE **
 			private struct Points
@@ -214,7 +288,7 @@ namespace Windows.UI.Input
 				private PointerPoint _pointer1;
 				private PointerPoint _pointer2;
 
-				public Point Center;
+				public Point Center; // This is the center in ** absolute ** coordinates spaces (i.e. relative to the screen)
 				public float Distance;
 				public double Angle;
 
@@ -225,10 +299,14 @@ namespace Windows.UI.Input
 					_pointer1 = point;
 					_pointer2 = default;
 
-					Center = point.Position;
+					Center = point.RawPosition; // RawPosition => cf. Note in UpdateComputedValues().
 					Distance = 0;
 					Angle = 0;
 				}
+
+				public bool ContainsPointer(uint pointerId)
+					=> _pointer1.PointerId == pointerId
+					|| (HasPointer2 && _pointer2.PointerId == pointerId);
 
 				public void SetPointer2(PointerPoint point)
 				{
@@ -245,7 +323,7 @@ namespace Windows.UI.Input
 
 						return true;
 					}
-					else if (_pointer2.PointerId == point.PointerId)
+					else if (_pointer2 != null && _pointer2.PointerId == point.PointerId)
 					{
 						_pointer2 = point;
 						UpdateComputedValues();
@@ -260,16 +338,20 @@ namespace Windows.UI.Input
 
 				private void UpdateComputedValues()
 				{
+					// Note: Here we use the RawPosition in order to work in the ** absolute ** screen coordinates system
+					//		 This is required to avoid to be impacted the any transform applied on the element,
+					//		 and it's sufficient as values of the manipulation events are only values relative to the original touch point.
+
 					if (_pointer2 == null)
 					{
-						Center = _pointer1.Position;
+						Center = _pointer1.RawPosition;
 						Distance = 0;
 						Angle = 0;
 					}
 					else
 					{
-						var p1 = _pointer1.Position;
-						var p2 = _pointer2.Position;
+						var p1 = _pointer1.RawPosition;
+						var p2 = _pointer2.RawPosition;
 
 						Center = new Point((p1.X + p2.X) / 2, (p1.Y + p2.Y) / 2);
 						Distance = Vector2.Distance(p1.ToVector(), p2.ToVector());

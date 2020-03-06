@@ -17,7 +17,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TimePicker
 {
-	[SampleControlInfo("Time Picker", "Sample2", typeof(TimePickerViewModel))]
+	[SampleControlInfo("Time Picker", "Sample2", typeof(TimePickerViewModel), ignoreInSnapshotTests: true)]
 	public sealed partial class Sample2 : UserControl
 	{
 		public Sample2()

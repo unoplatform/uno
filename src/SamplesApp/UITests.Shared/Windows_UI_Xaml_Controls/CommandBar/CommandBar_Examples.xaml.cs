@@ -1,4 +1,4 @@
-﻿using System;
+﻿ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -19,17 +19,17 @@ using Windows.UI.Popups;
 
 namespace Uno.UI.Samples.Content.UITests.CommandBar
 {
-    [SampleControlInfo("CommandBar", "Examples")]
-    public sealed partial class CommandBar_Examples : UserControl
-    {
-        public CommandBar_Examples()
-        {
-            this.InitializeComponent();
-        }
+	[SampleControlInfo("CommandBar", "Examples", ignoreInSnapshotTests: true)]
+	public sealed partial class CommandBar_Examples : UserControl
+	{
+		public CommandBar_Examples()
+		{
+			this.InitializeComponent();
+		}
 
 		private async void OnCommandClicked(object sender, RoutedEventArgs e)
 		{
 			await new Windows.UI.Popups.MessageDialog("Clicked").ShowAsync();
 		}
-    }
+	}
 }

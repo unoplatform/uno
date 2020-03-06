@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
@@ -16,22 +18,31 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.MarkupExtensionTests
 		[TestMethod]
 		public void When_ExtensionProvidesValues()
 		{
-			var app = UnitTestsApp.App.EnsureApplication();
+			var currentCulture = Thread.CurrentThread.CurrentCulture;
+			try
+			{
+				Thread.CurrentThread.CurrentCulture = CultureInfo.InvariantCulture;
+				var app = UnitTestsApp.App.EnsureApplication();
 
-			var control = new Test_MarkupExtension();
-			app.HostView.Children.Add(control);
+				var control = new Test_MarkupExtension();
+				app.HostView.Children.Add(control);
 
-			Assert.AreEqual("Just a simple ... markup extension", control.TestText1.Text);
-			Assert.AreEqual("We should see the number 100 below:", control.TestText2.Text);
-			Assert.AreEqual("100", control.TestText3.Text);
-			Assert.AreEqual("True", control.TestText4.Text);
-			Assert.AreEqual("From a Resource String markup extension", control.TestText5.Text);
-			Assert.AreEqual("String from attached property markup extension", control.TestText6.Text);
-			Assert.AreEqual("True", control.TestText7.Text);
-			Assert.AreEqual("I am Value 1", control.TestText8.Text);
-			Assert.AreEqual(22.0, control.TestText9.FontSize);
-			Assert.AreEqual(3, control.TestText9.MaxLines);
-			Assert.IsInstanceOfType(control.TestText10.DataContext, typeof(TestEntityObject));
+				Assert.AreEqual("Just a simple ... markup extension", control.TestText1.Text);
+				Assert.AreEqual("We should see the number 100 below:", control.TestText2.Text);
+				Assert.AreEqual("100", control.TestText3.Text);
+				Assert.AreEqual("True", control.TestText4.Text);
+				Assert.AreEqual("From a Resource String markup extension", control.TestText5.Text);
+				Assert.AreEqual("String from attached property markup extension", control.TestText6.Text);
+				Assert.AreEqual("True", control.TestText7.Text);
+				Assert.AreEqual("I am Value 1", control.TestText8.Text);
+				Assert.AreEqual(22.0, control.TestText9.FontSize);
+				Assert.AreEqual(3, control.TestText9.MaxLines);
+				Assert.IsInstanceOfType(control.TestText10.DataContext, typeof(TestEntityObject));
+			}
+			finally
+			{
+				Thread.CurrentThread.CurrentCulture = currentCulture;
+			}
 		}
 	}
 

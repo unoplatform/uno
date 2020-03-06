@@ -1,31 +1,29 @@
-﻿using Android.Graphics;
+﻿using Windows.Foundation;
+using Android.Graphics;
 using Uno.UI;
-using System;
-using System.Drawing;
 
 namespace Windows.UI.Xaml.Shapes
 {
-    public partial class Ellipse : ArbitraryShapeBase
+	public partial class Ellipse : ArbitraryShapeBase
 	{
-        public Ellipse()
-        {
-			//Set default stretch value
-			this.Stretch = Windows.UI.Xaml.Media.Stretch.Fill;
-        }
-
-		private Android.Graphics.Path MakeOval(Windows.Foundation.Rect bounds)
-        {
-            var output = new Android.Graphics.Path();
-            output.AddOval(bounds.ToRectF(), Android.Graphics.Path.Direction.Cw);
-            return output;
-        }
-
-		protected override Android.Graphics.Path GetPath()
+		protected override Size MeasureOverride(Size availableSize)
 		{
-			//If no height is explicitly set we need to force the shape to be drawn.
-			var ovalHeight = double.IsNaN(Height) ? 100 : Height;
-			var ovalWidth = double.IsNaN(Width) ? 100 : Width;
-			return MakeOval(new Windows.Foundation.Rect(0, 0, ovalWidth, ovalHeight));
+			base.MeasureOverride(availableSize);
+
+			// Ellipse will only ask for its "minimum" defined size.
+			return this.GetMinMax().min.AtLeastZero();
+		}
+
+		protected override Android.Graphics.Path GetPath(Size availableSize)
+		{
+			var bounds = availableSize.LogicalToPhysicalPixels();
+
+			var output = new Android.Graphics.Path();
+			output.AddOval(
+				new RectF(0, 0, (float)bounds.Width, (float)bounds.Height),
+				Android.Graphics.Path.Direction.Cw);
+
+			return output;
 		}
 	}
 }

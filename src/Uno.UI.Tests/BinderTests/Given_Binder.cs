@@ -27,15 +27,6 @@ namespace Uno.UI.Tests.BinderTests
 	[TestClass]
 	public partial class Given_Binder
 	{
-		[TestInitialize]
-		public void Init()
-		{
-			Uno.Extensions.LogExtensionPoint
-				.AmbientLoggerFactory
-				.AddConsole(LogLevel.Debug)
-				.AddDebug(LogLevel.Debug);
-		}
-
 		[TestMethod]
 		public void When_Inherited_data_Context()
 		{
