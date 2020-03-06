@@ -199,7 +199,7 @@ namespace Windows.UI.Xaml
 						offsetY -= sv.VerticalOffset;
 					}
 				}
-			} while (elt.TryGetParentUIElement(out elt, ref offsetX, ref offsetY) && elt != to); // If possible we stop as soon as we reach 'to'
+			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref offsetX, ref offsetY) && elt != to); // If possible we stop as soon as we reach 'to'
 
 			matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
 
@@ -215,6 +215,34 @@ namespace Windows.UI.Xaml
 
 			return matrix;
 		}
+
+#if !__IOS__ && !__ANDROID__ // This is the default implementation, but is can be customized per platform
+		/// <summary>
+		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
+		///	applied by a 'UIView' between this element and its parent UIElement.
+		/// </summary>
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
+		{
+			var parent = this.GetParent();
+			switch (parent)
+			{
+				case UIElement elt:
+					parentElement = elt;
+					return true;
+
+				case null:
+					parentElement = null;
+					return false;
+
+				default:
+					Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException("Found a parent which is NOT a UIElement."));
+
+					parentElement = null;
+					return false;
+			}
+		}
+#endif
+
 		#region IsHitTestVisible Dependency Property
 
 		public bool IsHitTestVisible
@@ -240,9 +268,9 @@ namespace Windows.UI.Xaml
 
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue);
 
-		#endregion
+#endregion
 
-		#region Opacity Dependency Property
+#region Opacity Dependency Property
 
 		public double Opacity
 		{
@@ -255,9 +283,9 @@ namespace Windows.UI.Xaml
 
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args);
 
-		#endregion
+#endregion
 
-		#region Visibility Dependency Property
+#region Visibility Dependency Property
 
 		/// <summary>
 		/// Sets the visibility of the current view
@@ -282,7 +310,7 @@ namespace Windows.UI.Xaml
 					(s, e) => (s as UIElement).OnVisibilityChanged((Visibility)e.OldValue, (Visibility)e.NewValue)
 				)
 			);
-		#endregion
+#endregion
 
 		internal bool IsRenderingSuspended { get; set; }
 
