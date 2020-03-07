@@ -30,10 +30,9 @@ namespace Windows.UI.Xaml.Media
 			// will update the 'AnchorPoint' using current 'RenderOrigin' and current size.
 			if (++_runningAnimations == 1)
 			{
-				// While animating, we disable other properties of the transform
-				View.Layer.Transform = CoreAnimation.CATransform3D.Identity;
-
-				NotifyChanged();
+				// We don't use the NotifyChanged() since it will filters out changes when IsAnimating
+				// Note: we also bypass the MatrixCore update which is actually irrelevant until animation completes.
+				Changed?.Invoke(this, EventArgs.Empty);
 			}
 		}
 
@@ -41,13 +40,10 @@ namespace Windows.UI.Xaml.Media
 		{
 			if (--_runningAnimations == 0)
 			{
-				// First update the result matrix (as updates were ignored due to 'Animations' DP precedence)
-				MatrixCore = ToMatrix(new Point(0, 0));
-
+				// Notify a change so the result matrix will be updated (as updates were ignored due to 'Animations' DP precedence),
+				// and the NativeRenderTransformAdapter will then apply this final matrix.
 				NotifyChanged();
 
-				// Let the RenderTransformAdapter restore the 'AnchorPoint' to the 'RenderOrigin' and set the updated 'Transform'.
-				View.InvalidateArrange();
 			}
 		}
 	}
