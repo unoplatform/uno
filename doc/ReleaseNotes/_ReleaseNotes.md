@@ -1,8 +1,8 @@
 ﻿# Release notes
 
 ### Features
+- [Android] Support for `Application.Current.Exit`
 - Support for `Windows.Storage.FileProperties.BasicProperties.DateModified`
-
 - Added CornerRadius support to more default styles to match UWP (for list of updated styles see PR [#2713])
 - Support for `FontIcon` on macOS
 - Support for `PhoneCallManager.ShowPhoneCallUI` on macOS
