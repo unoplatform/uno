@@ -113,6 +113,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_StartScreen
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public async Task When_Description_Is_Empty_No_Exception()
 		{
 			try
