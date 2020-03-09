@@ -36,7 +36,7 @@
 				<Rectangle Fill="Red" Stroke="Blue" StrokeThickness="6" />
 			</toolkit:ElevatedView>
 		</StackPanel>
-		<TextBlock FondSize="15">
+		<TextBlock FontSize="15">
 			ElevatedView with Button in them...
 		</TextBlock>
 		<StackPanel Orientation="Horizontal" Spacing="10">
@@ -47,7 +47,7 @@
 				<Button Height="120" Width="120">BIG BUTTON</Button>
 			</toolkit:ElevatedView>
 		</StackPanel>
-		<TextBlock FondSize="15">
+		<TextBlock FontSize="15">
 			ElevatedView Without background (shouldn't be elevated)
 		</TextBlock>
 		<StackPanel Orientation="Horizontal" Spacing="10">
