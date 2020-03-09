@@ -529,6 +529,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\CommandBar_Native_With_Content.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\CommandBar_Xaml_Automated.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -3353,6 +3357,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ComboBox\ComboBox_VisibleBounds.xaml.cs">
       <DependentUpon>ComboBox_VisibleBounds.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\CommandBar_Native_With_Content.xaml.cs">
+      <DependentUpon>CommandBar_Native_With_Content.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\CommandBar\CommandBar_Xaml_Automated.xaml.cs">
       <DependentUpon>CommandBar_Xaml_Automated.xaml</DependentUpon>
