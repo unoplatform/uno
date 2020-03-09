@@ -46,6 +46,11 @@ namespace Windows.UI.Xaml
 
 		public override void MouseDown(NSEvent evt)
 		{
+			if (IsPointersSuspended)
+			{
+				return;
+			}
+
 			try
 			{
 				// evt.AllTouches raises a invalid selector exception
@@ -67,6 +72,11 @@ namespace Windows.UI.Xaml
 
 		public override void MouseMoved(NSEvent evt)
 		{
+			if (IsPointersSuspended)
+			{
+				return;
+			}
+
 			try
 			{
 				// evt.AllTouches raises a invalid selector exception
@@ -88,6 +98,11 @@ namespace Windows.UI.Xaml
 
 		public override void MouseEntered(NSEvent evt)
 		{
+			if (IsPointersSuspended)
+			{
+				return;
+			}
+
 			try
 			{
 				var args = new PointerRoutedEventArgs(null, evt, this);
@@ -108,6 +123,11 @@ namespace Windows.UI.Xaml
 
 		public override void MouseExited(NSEvent evt)
 		{
+			if (IsPointersSuspended)
+			{
+				return;
+			}
+
 			try
 			{
 				// evt.AllTouches raises a invalid selector exception
@@ -129,6 +149,11 @@ namespace Windows.UI.Xaml
 
 		public override void MouseUp(NSEvent evt)
 		{
+			if (IsPointersSuspended)
+			{
+				return;
+			}
+
 			try
 			{
 				// evt.AllTouches raises a invalid selector exception
@@ -150,6 +175,11 @@ namespace Windows.UI.Xaml
 
 		public override void MouseDragged(NSEvent evt)
 		{
+			if (IsPointersSuspended)
+			{
+				return;
+			}
+
 			try
 			{
 				// evt.AllTouches raises a invalid selector exception
