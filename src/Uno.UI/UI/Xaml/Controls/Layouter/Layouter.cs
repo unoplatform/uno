@@ -415,7 +415,6 @@ namespace Windows.UI.Xaml.Controls
 
 			return ret;
 		}
-		//public static bool _debugTemp1 = true;
 
 		/// <summary>
 		/// Arranges the location a child in the current panel
