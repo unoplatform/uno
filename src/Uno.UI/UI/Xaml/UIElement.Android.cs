@@ -172,7 +172,7 @@ namespace Windows.UI.Xaml
 					offsetY += offset.Y;
 
 					// We return the parent of the ScrollViewer, so we bypass the <Horizontal|Vertical>Offset (and the Scale) handling in shared code.
-					return sv.TryGetParentUIElement(out parentElement, ref offsetX, ref offsetY);
+					return sv.TryGetParentUIElementForTransformToVisual(out parentElement, ref offsetX, ref offsetY);
 
 				case View view: // Android.View and Android.IViewParent
 					var windowToFirstParent = new int[2];
