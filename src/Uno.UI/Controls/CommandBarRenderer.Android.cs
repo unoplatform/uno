@@ -79,7 +79,15 @@ namespace Uno.UI.Controls
 				// According to Google's Material Design Guidelines, the Toolbar must have a minimum height of 48.
 				// https://material.io/guidelines/layout/structure.html
 				Height = 48,
+				Name = "CommandBarRendererContentHolder",
+
+				// Set the alignment so that the measured sized
+				// returned is size of the child, not the available
+				// size provided to the ToolBar view.
+				VerticalAlignment = VerticalAlignment.Top,
+				HorizontalAlignment = HorizontalAlignment.Left,
 			};
+
 			_contentContainer.SetParent(Element);
 			Native.AddView(_contentContainer);
 			yield return Disposable.Create(() => Native.RemoveView(_contentContainer));
