@@ -35,7 +35,7 @@ using Point = Windows.Foundation.Point;
 
 namespace <#= mixin.NamespaceName #>
 {
-	public partial class <#= mixin.ClassName #> : IFrameworkElement, IXUidProvider
+	public partial class <#= mixin.ClassName #> : IFrameworkElement, IXUidProvider, IFrameworkElementInternal
 	{
 		private readonly static IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 
@@ -50,6 +50,8 @@ namespace <#= mixin.NamespaceName #>
 		public event SizeChangedEventHandler SizeChanged;
 
 		string IXUidProvider.Uid { get; set; }
+
+		bool IFrameworkElementInternal.HasLayouter => <#= mixin.HasLayouter #>;
 
 		public IFrameworkElement FindName(string name)
 		{
@@ -969,7 +971,8 @@ namespace <#= mixin.NamespaceName #>
 		bool isUnoMotionTarget = false,
 		bool overridesOnLayout = true,
 		bool callsBaseOnLayout = true,
-		bool hasAutomationPeer = false
+		bool hasAutomationPeer = false,
+		bool hasLayouter = false
 	)
 	{
 		_mixins.Add(
@@ -986,6 +989,7 @@ namespace <#= mixin.NamespaceName #>
 				IsFrameworkElement = className == "FrameworkElement" ? "true" : "false",
 				HasAutomationPeer = hasAutomationPeer ? "true" : "false",
 				CallsBaseOnLayout = callsBaseOnLayout ? "true" : "false",
+				HasLayouter = hasLayouter ? "true" : "false"
 			}
 		);
 	}
@@ -1004,6 +1008,7 @@ namespace <#= mixin.NamespaceName #>
 		public string IsFrameworkElement;
 		public string HasAutomationPeer;
 		public string CallsBaseOnLayout;
+		public string HasLayouter;
 	}
 
 	private List<MixinParams> _mixins = new List<MixinParams>();

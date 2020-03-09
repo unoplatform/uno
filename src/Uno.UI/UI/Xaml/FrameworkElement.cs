@@ -29,7 +29,7 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml
 {
-	public partial class FrameworkElement : UIElement, IFrameworkElement, ILayoutConstraints
+	public partial class FrameworkElement : UIElement, IFrameworkElement, IFrameworkElementInternal, ILayoutConstraints
 	{
 		public
 			static class TraceProvider
