@@ -6,7 +6,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Uno.Disposables;
-using Uno.UI.Sample.Views.Helper;
+using Uno.UI.Extensions;
 using Uno.UI.Samples.Controls;
 
 

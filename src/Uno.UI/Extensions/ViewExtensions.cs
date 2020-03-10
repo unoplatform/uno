@@ -29,19 +29,17 @@ namespace Uno.UI
 		/// <returns>A lazy enumerable of views</returns>
 		public static IEnumerable<_View> EnumerateAllChildren(this _ViewGroup view, Func<_View, bool> selector, int maxDepth = 20)
 		{
-			var children = view.GetChildren().OfType<UIElement>();
+			var children = view.GetChildren().OfType<_ViewGroup>();
 
-			foreach (var sub in children)
+			foreach (var child in children)
 			{
-				if (selector(sub))
+				if (selector(child))
 				{
-					yield return sub;
+					yield return child;
 				}
 				else if (maxDepth > 0)
 				{
-					var childGroup = sub as _ViewGroup;
-
-					if (childGroup != null)
+					if (child is _ViewGroup childGroup)
 					{
 						foreach (var subResult in childGroup.EnumerateAllChildren(selector, maxDepth - 1))
 						{
@@ -60,17 +58,15 @@ namespace Uno.UI
 		/// <returns>A lazy enumerable of views</returns>
 		public static IEnumerable<_View> EnumerateAllChildren(this _ViewGroup view, int maxDepth = 20)
 		{
-			var children = view.GetChildren().OfType<UIElement>();
+			var children = view.GetChildren().OfType<_ViewGroup>();
 
-			foreach (var sub in children)
+			foreach (var child in children)
 			{
-				yield return sub;
+				yield return child;
 
 				if (maxDepth > 0)
 				{
-					var childGroup = sub as _ViewGroup;
-
-					if (childGroup != null)
+					if (child is _ViewGroup childGroup)
 					{
 						foreach (var subResult in childGroup.EnumerateAllChildren(maxDepth - 1))
 						{

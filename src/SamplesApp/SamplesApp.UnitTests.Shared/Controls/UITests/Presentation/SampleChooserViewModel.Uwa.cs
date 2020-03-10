@@ -14,7 +14,7 @@ using System.Text;
 using Uno.Extensions;
 using Uno.Logging;
 using Microsoft.Extensions.Logging;
-using Uno.UI.Sample.Views.Helper;
+using Uno.UI.Extensions;
 
 #if NETFX_CORE
 using Windows.UI.Xaml;
