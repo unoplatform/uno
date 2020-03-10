@@ -48,7 +48,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.ComboBox
 		{
 			IEnumerable<string> GetElements()
 			{
-				foreach (var o in element.GetParentHierarchy())
+				foreach (var o in element.GetAllParents())
 				{
 					var e = o as FrameworkElement;
 					yield return $"{o.GetType().Name}[{e?.Name}]-{o}";
