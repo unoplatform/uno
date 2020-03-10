@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.System;
 using Windows.UI.Core;
+using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
 using TreeNodeSelectionState = Windows.UI.Xaml.Controls.TreeViewNode.TreeNodeSelectionState;
 
 namespace Windows.UI.Xaml.Controls
@@ -37,43 +39,29 @@ namespace Windows.UI.Xaml.Controls
 					HandleGamepadAInMultiselectMode(targetNode);
 					e.Handled = true;
 				}
+				else if (IsInReorderMode(key))
+				{
+					HandleReorder(key);
+					e.Handled = true;
+				}
+				// Collapse/Expand
+				else if (IsExpandCollapse(key))
+				{
+					var handled = HandleExpandCollapse(key);
+					if (handled)
+					{
+						e.Handled = true;
+					}
+				}
+				else if (key == VirtualKey.Space &&
+						 treeView.ListControl.IsMultiselect)
+				{
+					var selectionBox = m_selectionBox;
+					bool isSelected = CheckBoxSelectionState(selectionBox) == TreeNodeSelectionState.Selected;
+					selectionBox.IsChecked = !isSelected;
+					e.Handled = true;
+				}
 			}
-			//		if (auto targetNode = TreeNode())
-			//    {
-			//			auto treeView = AncestorTreeView();
-			//			auto key = e.Key();
-			//			auto originalKey = e.OriginalKey();
-
-			//			// If in multi-selection and gamepad a is pressed
-			//			if (originalKey == winrt::VirtualKey::GamepadA &&
-			//				treeView->ListControl()->IsMultiselect())
-			//			{
-			//				HandleGamepadAInMultiselectMode(targetNode);
-			//				e.Handled(true);
-			//			}
-			//			else if (IsInReorderMode(key))
-			//			{
-			//				HandleReorder(key);
-			//				e.Handled(true);
-			//			}
-			//			// Collapse/Expand
-			//			else if (IsExpandCollapse(key))
-			//			{
-			//				auto handled = HandleExpandCollapse(key);
-			//				if (handled)
-			//				{
-			//					e.Handled(true);
-			//				}
-			//			}
-			//			else if (key == winrt::VirtualKey::Space &&
-			//					 treeView->ListControl()->IsMultiselect())
-			//			{
-			//				auto selectionBox = m_selectionBox.get();
-			//				bool isSelected = CheckBoxSelectionState(selectionBox) == TreeNodeSelectionState::Selected;
-			//				selectionBox.IsChecked(!isSelected);
-			//				e.Handled(true);
-			//			}
-			//		}
 
 			// Call to base for all other key presses
 			base.OnKeyDown(e);
@@ -84,19 +72,19 @@ namespace Windows.UI.Xaml.Controls
 			//		if (!args.Handled() && args.AcceptedOperation() == winrt::Windows::ApplicationModel::DataTransfer::DataPackageOperation::Move)
 			//		{
 			//			winrt::TreeViewItem droppedOnItem = *this;
-			//			auto treeView = AncestorTreeView();
+			//			var treeView = AncestorTreeView();
 			//			if (treeView)
 			//			{
-			//				auto treeViewList = treeView->ListControl();
-			//				if (auto droppedNode = treeViewList->DraggedTreeViewNode())
+			//				var treeViewList = treeView->ListControl();
+			//				if (var droppedNode = treeViewList->DraggedTreeViewNode())
 			//            {
 			//					if (treeViewList->IsMutiSelectWithSelectedItems())
 			//					{
-			//						auto droppedOnNode = treeView->NodeFromContainer(droppedOnItem);
-			//						auto selectedRoots = treeViewList->GetRootsOfSelectedSubtrees();
-			//						for (auto & node : selectedRoots)
+			//						var droppedOnNode = treeView->NodeFromContainer(droppedOnItem);
+			//						var selectedRoots = treeViewList->GetRootsOfSelectedSubtrees();
+			//						for (var & node : selectedRoots)
 			//						{
-			//							auto nodeIndex = treeViewList->FlatIndex(node);
+			//							var nodeIndex = treeViewList->FlatIndex(node);
 			//							if (treeViewList->IsFlatIndexValid(nodeIndex))
 			//							{
 			//								treeViewList->RemoveNodeFromParent(node);
@@ -109,7 +97,7 @@ namespace Windows.UI.Xaml.Controls
 			//					}
 			//					else
 			//					{
-			//						auto droppedOnNode = treeView->NodeFromContainer(droppedOnItem);
+			//						var droppedOnNode = treeView->NodeFromContainer(droppedOnItem);
 
 			//						// Remove the item that was dragged
 			//						unsigned int removeIndex;
@@ -139,10 +127,10 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnDragOver(DragEventArgs args)
 		{
-			//		auto treeView = AncestorTreeView();
+			//		var treeView = AncestorTreeView();
 			//		if (treeView && !args.Handled())
 			//		{
-			//			auto treeViewList = treeView->ListControl();
+			//			var treeViewList = treeView->ListControl();
 			//			winrt::TreeViewItem draggedOverItem = *this;
 			//			winrt::TreeViewNode draggedOverNode = treeView->NodeFromContainer(draggedOverItem);
 			//			winrt::TreeViewNode draggedNode = treeViewList->DraggedTreeViewNode();
@@ -193,10 +181,10 @@ namespace Windows.UI.Xaml.Controls
 			//args.AcceptedOperation(winrt::Windows::ApplicationModel::DataTransfer::DataPackageOperation::None);
 			//args.DragUIOverride().IsGlyphVisible(true);
 
-			//auto treeView = AncestorTreeView();
+			//var treeView = AncestorTreeView();
 			//if (treeView && treeView->CanReorderItems() && !args.Handled())
 			//{
-			//	auto treeViewList = treeView->ListControl();
+			//	var treeViewList = treeView->ListControl();
 			//	winrt::TreeViewNode draggedNode = treeViewList->DraggedTreeViewNode();
 			//	if (draggedNode)
 			//	{
@@ -221,7 +209,7 @@ namespace Windows.UI.Xaml.Controls
 			//			{
 			//				if (m_expandContentTimer)
 			//				{
-			//					auto expandContentTimer = m_expandContentTimer.get();
+			//					var expandContentTimer = m_expandContentTimer.get();
 			//					expandContentTimer.Stop();
 			//					expandContentTimer.Start();
 			//				}
@@ -229,7 +217,7 @@ namespace Windows.UI.Xaml.Controls
 			//				{
 			//					// Initialize timer.
 			//					winrt::TimeSpan interval = winrt::TimeSpan::duration(c_dragOverInterval);
-			//					auto expandContentTimer = winrt::DispatcherTimer();
+			//					var expandContentTimer = winrt::DispatcherTimer();
 			//					m_expandContentTimer.set(expandContentTimer);
 			//					expandContentTimer.Interval(interval);
 			//					expandContentTimer.Tick({ this, &TreeViewItem::OnExpandContentTimerTick });
@@ -245,19 +233,20 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnDragLeave(DragEventArgs args)
 		{
-			//		if (!args.Handled())
-			//		{
-			//			if (auto treeView = AncestorTreeView())
-			//        {
-			//				auto treeViewList = treeView->ListControl();
-			//				treeViewList->SetDraggedOverItem(nullptr);
-			//			}
+			if (!args.Handled)
+			{
+				var treeView = AncestorTreeView;
+				if (treeView != null)
+				{
+					var treeViewList = treeView.ListControl;
+					treeViewList.SetDraggedOverItem(null);
+				}
 
-			//			if (m_expandContentTimer)
-			//			{
-			//				m_expandContentTimer.get().Stop();
-			//			}
-			//		}
+				if (m_expandContentTimer)
+				{
+					m_expandContentTimer.Stop();
+				}
+			}
 			base.OnDragLeave(args);
 		}
 
@@ -268,30 +257,30 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnApplyTemplate()
 		{
-			//		RecycleEvents();
+			RecycleEvents();
 
-			//		winrt::IControlProtected controlProtected = *this;
-			//		m_selectionBox.set(GetTemplateChildT<winrt::CheckBox>(c_multiSelectCheckBoxName, controlProtected));
-			//		RegisterPropertyChangedCallback(winrt::SelectorItem::IsSelectedProperty(), { this, &TreeViewItem::OnIsSelectedChanged });
+			IControlProtected controlProtected = *this;
+			m_selectionBox = (CheckBox)GetTemplateChild(c_multiSelectCheckBoxName);
+			RegisterPropertyChangedCallback(winrt::SelectorItem::IsSelectedProperty(), { this, &TreeViewItem::OnIsSelectedChanged });
 
-			//		if (m_selectionBox)
-			//		{
-			//			m_checkedEventRevoker = m_selectionBox.get().Checked(winrt::auto_revoke, { this, &TreeViewItem::OnCheckToggle });
-			//			m_uncheckedEventRevoker = m_selectionBox.get().Unchecked(winrt::auto_revoke, { this, &TreeViewItem::OnCheckToggle });
-			//		}
+			if (m_selectionBox)
+			{
+				m_checkedEventRevoker = m_selectionBox.get().Checked(winrt::auto_revoke, { this, &TreeViewItem::OnCheckToggle });
+				m_uncheckedEventRevoker = m_selectionBox.get().Unchecked(winrt::auto_revoke, { this, &TreeViewItem::OnCheckToggle });
+			}
 
-			//		auto chevron = GetTemplateChildT<winrt::UIElement>(c_expandCollapseChevronName, controlProtected);
-			//		if (chevron)
-			//		{
-			//			m_expandCollapseChevronPointerPressedToken = chevron.PointerPressed({ this, &TreeViewItem::OnExpandCollapseChevronPointerPressed });
-			//			m_expandCollapseChevron.set(chevron);
-			//		}
-			//		auto node = TreeNode();
-			//		if (node && IsInContentMode())
-			//		{
-			//			UpdateNodeIsExpandedAsync(node, IsExpanded());
-			//			node.HasUnrealizedChildren(HasUnrealizedChildren());
-			//		}
+			var chevron = (UIElement)GetTemplateChild(c_expandCollapseChevronName);
+			if (chevron != null)
+			{
+				m_expandCollapseChevronPointerPressedToken = chevron.PointerPressed({ this, &TreeViewItem::OnExpandCollapseChevronPointerPressed });
+				m_expandCollapseChevron.set(chevron);
+			}
+			var node = TreeNode;
+			if (node != null && IsInContentMode)
+			{
+				UpdateNodeIsExpandedAsync(node, IsExpanded);
+				node.HasUnrealizedChildren = HasUnrealizedChildren;
+			}
 			base.OnApplyTemplate();
 		}
 
@@ -302,35 +291,35 @@ namespace Windows.UI.Xaml.Controls
 		//	}
 
 		//	template<typename T>
-		//	T TreeViewItem::GetAncestorView()
-		//{
-		//    winrt::DependencyObject treeViewItemAncestor = *this;
-		//	T ancestorView = nullptr;
-		//    while (treeViewItemAncestor && !ancestorView)
-		//    {
-		//        treeViewItemAncestor = winrt::VisualTreeHelper::GetParent(treeViewItemAncestor);
-		//        ancestorView = treeViewItemAncestor.try_as<T>();
-		//    }
-		//    return ancestorView;
-		//}
+		private T GetAncestorView<T>()
+			where T : class
+		{
+			DependencyObject treeViewItemAncestor = this;
+			T ancestorview = null;
+			while (treeViewItemAncestor != null && ancestorview == null)
+			{
+				treeViewItemAncestor = VisualTreeHelper.GetParent(treeViewItemAncestor);
+				ancestorview = treeViewItemAncestor as T;
+			}
+			return ancestorview;
+		}
 
 		public TreeView AncestorTreeView
 		{
 			get
 			{
-				//	if (!m_ancestorTreeView.get())
-				//	{
-				//		m_ancestorTreeView = winrt::make_weak<winrt::TreeView>(GetAncestorView<winrt::TreeView>());
-				//	}
-				//	return winrt::get_self<TreeView>(m_ancestorTreeView.get())->get_strong();
-				throw new NotImplementedException();
+				if (m_ancestorTreeView == null)
+				{
+					m_ancestorTreeView = GetAncestorView<TreeView>();
+				}
+				return m_ancestorTreeView;
 			}
 		}
 
 		//void TreeViewItem::OnPropertyChanged(const winrt::DependencyPropertyChangedEventArgs& args)
 		//{
 		//	winrt::IDependencyProperty property = args.Property();
-		//	if (auto node = TreeNode()) 
+		//	if (var node = TreeNode()) 
 		//    {
 		//		if (property == s_IsExpandedProperty)
 		//		{
@@ -345,7 +334,7 @@ namespace Windows.UI.Xaml.Controls
 		//		{
 		//			winrt::IInspectable value = args.NewValue();
 
-		//			auto treeViewNode = winrt::get_self<TreeViewNode>(node);
+		//			var treeViewNode = winrt::get_self<TreeViewNode>(node);
 		//			treeViewNode->ItemsSource(value);
 		//			if (IsInContentMode())
 		//			{
@@ -364,54 +353,54 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnExpandContentTimerTick(object sender, EventArgs e)
 		{
-			//	if (m_expandContentTimer)
-			//	{
-			//		m_expandContentTimer.get().Stop();
-			//	}
+			if (m_expandContentTimer)
+			{
+				m_expandContentTimer.Stop();
+			}
 
-			//	if (auto draggedOverNode = TreeNode())
-			//    {
-			//		if (draggedOverNode && !draggedOverNode.IsExpanded())
-			//		{
-			//			draggedOverNode.IsExpanded(true);
-			//		}
-			//	}
+			var draggedOverNode = TreeNode;
+			if (draggedOverNode != null && !draggedOverNode.IsExpanded)
+			{
+				draggedOverNode.IsExpanded = true;
+			}
 		}
 
-		//void TreeViewItem::RaiseExpandCollapseAutomationEvent(bool isExpanded)
-		//{
-		//	if (winrt::AutomationPeer::ListenerExists(winrt::AutomationEvents::PropertyChanged))
-		//	{
-		//		auto expandState = isExpanded ? winrt::ExpandCollapseState::Expanded : winrt::ExpandCollapseState::Collapsed;
-		//		if (auto peer = winrt::FrameworkElementAutomationPeer::FromElement(*this))
-		//        {
-		//			auto treeViewItemPeer = peer.as< winrt::TreeViewItemAutomationPeer > ();
-		//			winrt::get_self<TreeViewItemAutomationPeer>(treeViewItemPeer)->RaiseExpandCollapseAutomationEvent(expandState);
-		//		}
-		//	}
-		//}
+		private void RaiseExpandCollapseAutomationEvent(bool isExpanded)
+		{
+			if (AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged))
+			{
+				var expandState = isExpanded ? ExpandCollapseState.Expanded : ExpandCollapseState.Collapsed;
+				var peer = FrameworkElementAutomationPeer.FromElement(this);
+				if (peer != null)
+				{
+					var treeViewItemPeer = (TreeViewItemAutomationPeer)peer;
+					treeViewItemPeer.RaiseExpandCollapseAutomationEvent(expandState);
+				}
+			}
+		}
 
-		//bool TreeViewItem::IsInReorderMode(winrt::VirtualKey key)
-		//{
-		//	auto ctrlState = winrt::CoreWindow::GetForCurrentThread().GetKeyState(winrt::VirtualKey::Control);
-		//	bool isControlPressed = (ctrlState & winrt::CoreVirtualKeyStates::Down) == winrt::CoreVirtualKeyStates::Down;
+		private bool IsInReorderMode(VirtualKey key)
+		{
+			var ctrlState = CoreWindow.GetForCurrentThread().GetKeyState(VirtualKey.Control);
+			bool isControlPressed = (ctrlState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
-		//	auto altState = winrt::CoreWindow::GetForCurrentThread().GetKeyState(winrt::VirtualKey::Menu);
-		//	bool isAltPressed = (altState & winrt::CoreVirtualKeyStates::Down) == winrt::CoreVirtualKeyStates::Down;
+			var altState = CoreWindow.GetForCurrentThread().GetKeyState(VirtualKey.Menu);
+			bool isAltPressed = (altState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
-		//	auto shiftState = winrt::CoreWindow::GetForCurrentThread().GetKeyState(winrt::VirtualKey::Shift);
-		//	bool isShiftPressed = (shiftState & winrt::CoreVirtualKeyStates::Down) == winrt::CoreVirtualKeyStates::Down;
+			var shiftState = CoreWindow.GetForCurrentThread().GetKeyState(VirtualKey.Shift);
+			bool isShiftPressed = (shiftState & CoreVirtualKeyStates.Down) == CoreVirtualKeyStates.Down;
 
-		//	bool isDirectionPressed = IsDirectionalKey(key);
+			bool isDirectionPressed = IsDirectionalKey(key);
 
-		//	bool canReorderItems = false;
-		//	if (auto treeView = AncestorTreeView())
-		//    {
-		//		canReorderItems = treeView->CanReorderItems();
-		//	}
+			bool canReorderItems = false;
+			var treeView = AncestorTreeView;
+			if (AncestorTreeView != null)
+			{
+				canReorderItems = treeView.CanReorderItems;
+			}
 
-		//	return canReorderItems && isDirectionPressed && isShiftPressed && isAltPressed && !isControlPressed;
-		//}
+			return canReorderItems && isDirectionPressed && isShiftPressed && isAltPressed && !isControlPressed;
+		}
 
 		private void UpdateTreeViewItemVisualState(TreeNodeSelectionState state)
 		{
@@ -425,32 +414,36 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		//void TreeViewItem::OnCheckToggle(winrt::IInspectable const& sender, winrt::RoutedEventArgs const& /*args*/)
-		//{
-		//	if (auto treeView = AncestorTreeView())
-		//    {
-		//		auto listControl = treeView->ListControl();
-		//		int index = listControl->IndexFromContainer(*this);
-		//		auto selectionState = CheckBoxSelectionState(sender.as< winrt::CheckBox > ());
-		//		listControl->ListViewModel()->ModifySelectByIndex(index, selectionState);
-		//		UpdateTreeViewItemVisualState(selectionState);
-		//		RaiseSelectionChangeEvents(selectionState == TreeNodeSelectionState::Selected);
-		//	}
-		//}
+		private void OnCheckToggle(object sender, RoutedEventArgs args)
+		{
+			var treeView = AncestorTreeView;
+			if (treeView != null)
+			{
+				var listControl = treeView.ListControl;
+				int index = listControl.IndexFromContainer(this);
+				var selectionState = CheckBoxSelectionState((CheckBox)sender);
+				listControl.ListViewModel.ModifySelectByIndex(index, selectionState);
+				UpdateTreeViewItemVisualState(selectionState);
+				RaiseSelectionChangeEvents(selectionState == TreeNodeSelectionState.Selected);
+			}
+		}
 
-		//void TreeViewItem::RaiseSelectionChangeEvents(bool isSelected)
-		//{
-		//	if (winrt::AutomationPeer peer = winrt::FrameworkElementAutomationPeer::FromElement(*this))
-		//    {
-		//		auto treeViewItemPeer = winrt::get_self<TreeViewItemAutomationPeer>(peer.as< winrt::TreeViewItemAutomationPeer > ());
+		private void RaiseSelectionChangeEvents(bool isSelected)
+		{
+			var peer = FrameworkElementAutomationPeer.FromElement(this);
+			if (peer != null)
+			{
+				var treeViewItemPeer = (TreeViewItemAutomationPeer)peer;
 
-		//		auto selectionEvent = isSelected ? winrt::AutomationEvents::SelectionItemPatternOnElementAddedToSelection : winrt::AutomationEvents::SelectionItemPatternOnElementRemovedFromSelection;
-		//		treeViewItemPeer->RaiseAutomationEvent(selectionEvent);
+				var selectionEvent = isSelected ?
+					AutomationEvents.SelectionItemPatternOnElementAddedToSelection :
+					AutomationEvents.SelectionItemPatternOnElementRemovedFromSelection;
+				treeViewItemPeer.RaiseAutomationEvent(selectionEvent);
 
-		//		auto isSelectedProperty = winrt::SelectionItemPatternIdentifiers::IsSelectedProperty();
-		//		treeViewItemPeer->RaisePropertyChangedEvent(isSelectedProperty, box_value(!isSelected).as< winrt::IReference<bool> > (), box_value(isSelected).as< winrt::IReference<bool> > ());
-		//	}
-		//}
+				var isSelectedProperty = SelectionItemPatternIdentifiers.IsSelectedProperty;
+				treeViewItemPeer.RaisePropertyChangedEvent(isSelectedProperty, !isSelected, isSelected);
+			}
+		}
 
 		private void UpdateSelection(bool isSelected)
 		{
@@ -631,106 +624,104 @@ namespace Windows.UI.Xaml.Controls
 					ReorderItems(listControl, targetNode, position, childIndex, false);
 				}
 			}
-			else if ((key == winrt::VirtualKey::Down || key == winrt::VirtualKey::Right) && (position != listControl->Items().Size() - 1))
+			else if ((key == VirtualKey.Down || key == VirtualKey.Right) && (position != listControl.Items.Count - 1))
 			{
-				unsigned int childIndex;
-				parentNode.Children().IndexOf(targetNode, childIndex);
-				if (childIndex != parentNode.Children().Size() - 1)
+				var childIndex = parentNode.Children.IndexOf(targetNode);
+				if (childIndex != parentNode.Children.Count - 1)
 				{
-					if (targetNode.IsExpanded())
+					if (targetNode.IsExpanded)
 					{
-						targetNode.IsExpanded(false);
+						targetNode.IsExpanded = false;
 					}
 
-					ReorderItems(*listControl, targetNode, position, childIndex, true);
+					ReorderItems(listControl, targetNode, position, childIndex, true);
 				}
 			}
 		}
 
-		//bool TreeViewItem::HandleExpandCollapse(winrt::VirtualKey key)
-		//{
-		//	auto treeView = AncestorTreeView();
-		//	winrt::TreeViewNode targetNode = treeView->NodeFromContainer(*this);
-		//	const auto flowDirectionReversed = (FlowDirection() == winrt::FlowDirection::RightToLeft);
-		//	bool isExpanded = targetNode.IsExpanded();
-		//	bool handled = false;
+		private bool HandleExpandCollapse(VirtualKey key)
+		{
+			var treeView = AncestorTreeView;
+			var targetNode = treeView.NodeFromContainer(this);
+			var flowDirectionReversed = FlowDirection == FlowDirection.RightToLeft;
+			bool isExpanded = targetNode.IsExpanded;
+			bool handled = false;
 
-		//	// Inputs for Collapse/Move to parent
-		//	if ((key == winrt::VirtualKey::Left && !flowDirectionReversed) ||
-		//		(key == winrt::VirtualKey::Right && flowDirectionReversed))
-		//	{
-		//		if (isExpanded)// Is expanded : need to collapse
-		//		{
-		//			targetNode.IsExpanded(false);
-		//			auto targetValue = treeView->ContainerFromNode(targetNode);
-		//			if (targetValue)
-		//			{
-		//				auto targetItem = targetValue.as< winrt::TreeViewItem > ();
-		//				targetItem.Focus(winrt::FocusState::Keyboard);
-		//			}
+			// Inputs for Collapse/Move to parent
+			if ((key == VirtualKey.Left && !flowDirectionReversed) ||
+				(key == VirtualKey.Right && flowDirectionReversed))
+			{
+				if (isExpanded)// Is expanded : need to collapse
+				{
+					targetNode.IsExpanded = false;
+					var targetValue = treeView.ContainerFromNode(targetNode);
+					if (targetValue != null)
+					{
+						var targetItem = (TreeViewItem)targetValue;
+						targetItem.Focus(FocusState.Keyboard);
+					}
 
-		//			handled = true;
-		//		}
-		//		else // Is collapsed: need to select parent
-		//		{
-		//			if (auto parentNode = targetNode.Parent())
-		//            {
-		//				if (auto parentValue = treeView->ContainerFromNode(parentNode))
-		//                {
-		//					auto parentItem = parentValue.as< winrt::TreeViewItem > ();
-		//					parentItem.Focus(winrt::FocusState::Keyboard);
-		//					handled = true;
-		//				}
-		//			}
-		//		}
-		//	}
-		//	// Inputs for Expand/Move to first child
-		//	else if ((key == winrt::VirtualKey::Right && !flowDirectionReversed) ||
-		//			 (key == winrt::VirtualKey::Left && flowDirectionReversed))
-		//	{
-		//		if (!isExpanded && targetNode.HasChildren()) // Is collapsed : need to expand
-		//		{
-		//			targetNode.IsExpanded(true);
-		//			handled = true;
-		//		}
-		//		else if (targetNode.Children().Size() > 0) // Is expanded and has children: need to select first child (if applicable)
-		//		{
-		//			auto childNode = targetNode.Children().GetAt(0).as< winrt::TreeViewNode > ();
-		//			auto childValue = treeView->ContainerFromNode(childNode);
-		//			if (childValue)
-		//			{
-		//				auto childItem = childValue.as< winrt::TreeViewItem > ();
-		//				childItem.Focus(winrt::FocusState::Keyboard);
-		//				handled = true;
-		//			}
-		//		}
-		//	}
+					handled = true;
+				}
+				else // Is collapsed: need to select parent
+				{
+					var parentNode = targetNode.Parent;
+					if (parentNode != null)
+					{
+						var parentValue = treeView.ContainerFromNode(parentNode);
+						if (parentValue != null)
+						{
+							var parentItem = (TreeViewItem)parentValue;
+							parentItem.Focus(FocusState.Keyboard);
+							handled = true;
+						}
+					}
+				}
+			}
+			// Inputs for Expand/Move to first child
+			else if ((key == VirtualKey.Right && !flowDirectionReversed) ||
+					 (key == VirtualKey.Left && flowDirectionReversed))
+			{
+				if (!isExpanded && targetNode.HasChildren) // Is collapsed : need to expand
+				{
+					targetNode.IsExpanded = true;
+					handled = true;
+				}
+				else if (targetNode.Children.Count > 0) // Is expanded and has children: need to select first child (if applicable)
+				{
+					var childNode = targetNode.Children[0];
+					var childValue = treeView.ContainerFromNode(childNode);
+					if (childValue != null)
+					{
+						var childItem = (TreeViewItem)childValue;
+						childItem.Focus(FocusState.Keyboard);
+						handled = true;
+					}
+				}
+			}
 
-		//	return handled;
-		//}
+			return handled;
+		}
 
-		//void TreeViewItem::OnExpandCollapseChevronPointerPressed(
-		//    const winrt::IInspectable& /*sender*/,
-		//    const winrt::PointerRoutedEventArgs& args)
-		//{
-		//	winrt::TreeViewNode targetNode = TreeNode();
-		//	auto isExpanded = !targetNode.IsExpanded();
-		//	targetNode.IsExpanded(isExpanded);
+		private void OnExpandCollapseChevronPointerPressed(object sender, PointerRoutedEventArgs args)
+		{
+			TreeViewNode targetNode = TreeNode;
+			var isExpanded = !targetNode.IsExpanded;
+			targetNode.IsExpanded = isExpanded;
+			args.Handled = true;
+		}
 
-		//	args.Handled(true);
-		//}
-
-		//void TreeViewItem::RecycleEvents(bool useSafeGet)
-		//{
-		//	if (auto chevron = useSafeGet ? m_expandCollapseChevron.safe_get() : m_expandCollapseChevron.get())
-		//    {
-		//		if (m_expandCollapseChevronPointerPressedToken.value)
-		//		{
-		//			chevron.PointerCanceled(m_expandCollapseChevronPointerPressedToken);
-		//			m_expandCollapseChevronPointerPressedToken.value = 0;
-		//		}
-		//	}
-		//}
+		private void RecycleEvents(bool useSafeGet)
+		{
+			if (var chevron = useSafeGet ? m_expandCollapseChevron : m_expandCollapseChevron.get())
+		    {
+				if (m_expandCollapseChevronPointerPressedToken.value)
+				{
+					chevron.PointerCanceled(m_expandCollapseChevronPointerPressedToken);
+					m_expandCollapseChevronPointerPressedToken.value = 0;
+				}
+			}
+		}
 
 		///* static */
 		private static bool IsDirectionalKey(VirtualKey key)
@@ -744,34 +735,33 @@ namespace Windows.UI.Xaml.Controls
 
 		private TreeViewNode TreeNode => AncestorTreeView?.NodeFromContainer(this);
 
-		////Setting IsExpanded changes the itemssource collection on the listview, which cannot be done during layout.
-		////We schedule it on the dispatcher so that it runs after layout pass.
-		//void TreeViewItem::UpdateNodeIsExpandedAsync(winrt::TreeViewNode const& node, bool isExpanded)
-		//{
-		//	auto dispatcher = winrt::Window::Current().Dispatcher();
-		//	auto ignore = dispatcher.RunAsync(
-		//		winrt::CoreDispatcherPriority::Normal,
-		//		winrt::DispatchedHandler([node, isExpanded]()
-
-		//	{
-		//		node.IsExpanded(isExpanded);
-		//	}));
-		//}
+		//Setting IsExpanded changes the itemssource collection on the listview, which cannot be done during layout.
+		//We schedule it on the dispatcher so that it runs after layout pass.
+		private void UpdateNodeIsExpandedAsync(TreeViewNode node, bool isExpanded)
+		{
+			var dispatcher = Window.Current.Dispatcher;
+			var ignore = dispatcher.RunAsync(
+				CoreDispatcherPriority.Normal,
+				() =>
+				{
+					node.IsExpanded = isExpanded;
+				});
+		}
 
 		private bool IsInContentMode => AncestorTreeView.ListControl.ListViewModel.IsContentMode;
 
 		private TreeNodeSelectionState CheckBoxSelectionState(CheckBox checkBox)
 		{
-			//	winrt::IReference<bool> winrtBool = checkBox.IsChecked();
-			//	if (winrtBool)
-			//	{
-			//		if (winrtBool.Value())
-			//		{
-			//			return TreeNodeSelectionState::Selected;
-			//		}
+			var winrtBool = checkBox.IsChecked;
+			if (winrtBool != null)
+			{
+				if (winrtBool.Values)
+				{
+					return TreeNodeSelectionState.Selected;
+				}
 
-			//		return TreeNodeSelectionState::UnSelected;
-			//	}
+				return TreeNodeSelectionState.UnSelected;
+			}
 
 			return TreeNodeSelectionState.PartialSelected;
 		}

@@ -61,7 +61,9 @@ namespace Windows.UI.Xaml.Controls
 			get
 			{
 				return ListControl?.ListViewModel?.SelectedNodes ??
-					m_pendingSelectedNodes; // we'll treat the pending selected nodes as SelectedNodes value if we don't have a list control or a view model
+					m_pendingSelectedNodes;
+				// we'll treat the pending selected nodes as SelectedNodes value
+				// if we don't have a list control or a view model
 			}
 		}
 
@@ -271,33 +273,34 @@ namespace Windows.UI.Xaml.Controls
 			listControl.EnableMultiselect(isMultiSelect);
 
 			var viewModel = listControl.ListViewModel;
-			//int size = viewModel->Size();
+			int size = viewModel.Size;
 
-			//			for (int i = 0; i < size; i++)
-			//			{
-			//				auto updateContainer = listControl->ContainerFromIndex(i).as< winrt::TreeViewItem > ();
-			//				if (updateContainer)
-			//				{
-			//					if (isMultiSelect)
-			//					{
-			//						if (auto targetNode = viewModel->GetNodeAt(i))
-			//                {
-			//				if (viewModel->IsNodeSelected(targetNode))
-			//				{
-			//					winrt::VisualStateManager::GoToState(updateContainer, L"TreeViewMultiSelectEnabledSelected", false);
-			//				}
-			//				else
-			//				{
-			//					winrt::VisualStateManager::GoToState(updateContainer, L"TreeViewMultiSelectEnabledUnselected", false);
-			//				}
-			//			}
-			//		}
-			//            else
-			//            {
-			//                winrt::VisualStateManager::GoToState(updateContainer, L"TreeViewMultiSelectDisabled", false);
-			//            }
-			//}
-			//    }
+			for (int i = 0; i < size; i++)
+			{
+				var updateContainer = listControl.ContainerFromIndex(i) as TreeViewItem;
+				if (updateContainer != null)
+				{
+					if (isMultiSelect)
+					{
+						var targetNode = viewModel.GetNodeAt(i);
+						if (targetNode != null)
+						{
+							if (viewModel.IsNodeSelected(targetNode))
+							{
+								VisualStateManager.GoToState(updateContainer, "TreeViewMultiSelectEnabledSelected", false);
+							}
+							else
+							{
+								VisualStateManager.GoToState(updateContainer, "TreeViewMultiSelectEnabledUnselected", false);
+							}
+						}
+					}
+					else
+					{
+						VisualStateManager.GoToState(updateContainer, "TreeViewMultiSelectDisabled", false);
+					}
+				}
+			}
 		}
 
 		protected override void OnApplyTemplate()
@@ -306,7 +309,7 @@ namespace Windows.UI.Xaml.Controls
 			if (ListControl != null)
 			{
 				var listPtr = m_listControl;
-				var viewModel = listPtr.ListViewModel();
+				var viewModel = listPtr.ListViewModel;
 				if (m_rootNode == null)
 				{
 					m_rootNode = new TreeViewNode();

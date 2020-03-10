@@ -12,9 +12,10 @@ namespace Windows.UI.Xaml.Controls
 		private bool m_isContentMode;
 		private List<TreeViewNode> m_selectedNodes;
 		private List<object> m_selectedItems;
-		private Dictionary<object, TreeViewNode> m_itemToNodeMap;
+		private Dictionary<object, TreeViewNode> m_itemToNodeMap
 
 		private TreeViewNode m_originNode;
+		private TreeViewList m_TreeViewList;
 
 		public TreeViewViewModel()
 		{
@@ -83,7 +84,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateSelection(targetNode, state);
 		}
 
-		private uint Size
+		internal int Size
 		{
 			get
 			{
@@ -136,7 +137,7 @@ namespace Windows.UI.Xaml.Controls
 		//	throw winrt::hresult_not_implemented();
 		//}
 
-		private TreeViewNode GetNodeAt(int index)
+		internal TreeViewNode GetNodeAt(int index)
 		{
 			//	auto inner = GetVectorInnerImpl();
 			//	return inner->GetAt(index).as< winrt::TreeViewNode > ();
@@ -234,76 +235,74 @@ namespace Windows.UI.Xaml.Controls
 		//}
 
 		//// Helper function
-		//void ViewModel::PrepareView(const winrt::TreeViewNode& originNode)
-		//{
-		//	// Remove any existing RootNode events/children
-		//	if (auto existingOriginNode = m_originNode.get())
-		//    {
-		//		for (int i = (existingOriginNode.Children().Size() - 1); i >= 0; i--)
-		//		{
-		//			auto removeNode = existingOriginNode.Children().GetAt(i).as< winrt::TreeViewNode > ();
-		//			RemoveNodeAndDescendantsFromView(removeNode);
-		//		}
+		internal void PrepareView(TreeViewNode originNode)
+		{
+			// Remove any existing RootNode events/children
+			var existingOriginNode = m_originNode;
+			if (existingOriginNode != null)
+			{
+				for (int i = (existingOriginNode.Children.Count - 1); i >= 0; i--)
+				{
+					var removeNode = existingOriginNode.Children[i];
+					RemoveNodeAndDescendantsFromView(removeNode);
+				}
 
-		//		if (m_rootNodeChildrenChangedEventToken.value != 0)
-		//		{
-		//			existingOriginNode.Children().as< winrt::IObservableVector < winrt::TreeViewNode >> ().VectorChanged(m_rootNodeChildrenChangedEventToken);
-		//		}
-		//	}
+				if (m_rootNodeChildrenChangedEventToken.value != 0)
+				{
+					existingOriginNode.Children.VectorChanged(m_rootNodeChildrenChangedEventToken);
+				}
+			}
 
-		//	// Add new RootNode & children
-		//	m_originNode.set(originNode);
-		//	m_rootNodeChildrenChangedEventToken = winrt::get_self<TreeViewNode>(originNode)->ChildrenChanged({ this, &ViewModel::TreeViewNodeVectorChanged });
-		//	originNode.IsExpanded(true);
+			//	// Add new RootNode & children
+			m_originNode = originNode;
+			m_rootNodeChildrenChangedEventToken = (originNode)->ChildrenChanged({ this, &ViewModel::TreeViewNodeVectorChanged });
+			originNode.IsExpanded = true;
 
-		//	int allOpenedDescendantsCount = 0;
-		//	for (unsigned int i = 0; i < originNode.Children().Size(); i++)
-		//	{
-		//		auto addNode = originNode.Children().GetAt(i).as< winrt::TreeViewNode > ();
-		//		AddNodeToView(addNode, i + allOpenedDescendantsCount);
-		//		allOpenedDescendantsCount = AddNodeDescendantsToView(addNode, i, allOpenedDescendantsCount);
-		//	}
-		//}
+			int allOpenedDescendantsCount = 0;
+			for (var i = 0; i < originNode.Children.Count; i++)
+			{
+				var addNode = originNode.Children[i];
+				AddNodeToView(addNode, i + allOpenedDescendantsCount);
+				allOpenedDescendantsCount = AddNodeDescendantsToView(addNode, i, allOpenedDescendantsCount);
+			}
+		}
 
 		//void ViewModel::SetOwningList(winrt::TreeViewList const& owningList)
 		//{
 		//	m_TreeViewList = winrt::make_weak(owningList);
 		//}
 
-		//winrt::TreeViewList ViewModel::ListControl()
-		//{
-		//	return m_TreeViewList.get();
-		//}
+		private TreeViewList ListControl => m_TreeViewList;
 
-		//bool ViewModel::IsInSingleSelectionMode()
-		//{
-		//	return m_TreeViewList.get().SelectionMode() == winrt::ListViewSelectionMode::Single;
-		//}
+		private bool IsInSingleSelectionMode()
+		{
+			return m_TreeViewList.SelectionMode == ListViewSelectionMode.Single;
+		}
 
-		//// Private helpers
-		//void ViewModel::AddNodeToView(const winrt::TreeViewNode& value, unsigned int index)
-		//{
-		//	InsertAt(index, value);
-		//}
+		// Private helpers
+		private void AddNodeToView(TreeViewNode value, int index)
+		{
+			InsertAt(index, value);
+		}
 
-		//int ViewModel::AddNodeDescendantsToView(const winrt::TreeViewNode& value, unsigned int index, int offset)
-		//{
-		//	if (value.IsExpanded())
-		//	{
-		//		unsigned int size = value.Children().Size();
-		//		for (unsigned int i = 0; i < size; i++)
-		//		{
-		//			auto childNode = value.Children().GetAt(i).as< winrt::TreeViewNode > ();
-		//			offset++;
-		//			AddNodeToView(childNode, offset + index);
-		//			offset = AddNodeDescendantsToView(childNode, index, offset);
-		//		}
+		private int AddNodeDescendantsToView(TreeViewNode value, int index, int offset)
+		{
+			if (value.IsExpanded)
+			{
+				int size = value.Children.Count;
+				for (var i = 0; i < size; i++)
+				{
+					var childNode = value.Children[i];
+					offset++;
+					AddNodeToView(childNode, offset + index);
+					offset = AddNodeDescendantsToView(childNode, index, offset);
+				}
 
-		//		return offset;
-		//	}
+				return offset;
+			}
 
-		//	return offset;
-		//}
+			return offset;
+		}
 
 		//void ViewModel::RemoveNodeAndDescendantsFromView(const winrt::TreeViewNode& value)
 		//{
@@ -447,10 +446,10 @@ namespace Windows.UI.Xaml.Controls
 			return m_selectedNodes.IndexOf(targetNode) != -1;
 		}
 
-		//TreeNodeSelectionState ViewModel::NodeSelectionState(winrt::TreeViewNode const& targetNode)
-		//{
-		//	return winrt::get_self<TreeViewNode>(targetNode)->SelectionState();
-		//}
+		private TreeNodeSelectionState NodeSelectionState(TreeViewNode targetNode)
+		{
+			return targetNode.SelectionState;
+		}
 
 		private void UpdateNodeSelection(TreeViewNode selectNode, TreeNodeSelectionState selectionState)
 		{
@@ -496,76 +495,77 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateSelectionStateOfDescendants(TreeViewNode targetNode, TreeNodeSelectionState selectionState)
 		{
-			//	if (selectionState == TreeNodeSelectionState::PartialSelected) return;
+			if (selectionState == TreeNodeSelectionState.PartialSelected) return;
 
-			//	for (auto const&childNode : targetNode.Children())
-			//    {
-			//		UpdateNodeSelection(childNode, selectionState);
-			//		UpdateSelectionStateOfDescendants(childNode, selectionState);
-			//		NotifyContainerOfSelectionChange(childNode, selectionState);
-			//	}
+			foreach (var childNode in targetNode.Children)
+			{
+				UpdateNodeSelection(childNode, selectionState);
+				UpdateSelectionStateOfDescendants(childNode, selectionState);
+				NotifyContainerOfSelectionChange(childNode, selectionState);
+			}
 		}
 
 		private void UpdateSelectionStateOfAncestors(TreeViewNode targetNode)
 		{
-			//	if (auto parentNode = targetNode.Parent())
-			//    {
-			//		// no need to update m_originalNode since it's the logical root for TreeView and not accessible to users
-			//		if (parentNode != m_originNode.safe_get())
-			//		{
-			//			auto previousState = NodeSelectionState(parentNode);
-			//			auto selectionState = SelectionStateBasedOnChildren(parentNode);
+			var parentNode = targetNode.Parent;
+			if (parentNode != null)
+			{
+				// no need to update m_originalNode since it's the logical root for TreeView and not accessible to users
+				if (parentNode != m_originNode)
+				{
+					var previousState = NodeSelectionState(parentNode);
+					var selectionState = SelectionStateBasedOnChildren(parentNode);
 
-			//			if (previousState != selectionState)
-			//			{
-			//				UpdateNodeSelection(parentNode, selectionState);
-			//				NotifyContainerOfSelectionChange(parentNode, selectionState);
-			//				UpdateSelectionStateOfAncestors(parentNode);
-			//			}
-			//		}
-			//	}
+					if (previousState != selectionState)
+					{
+						UpdateNodeSelection(parentNode, selectionState);
+						NotifyContainerOfSelectionChange(parentNode, selectionState);
+						UpdateSelectionStateOfAncestors(parentNode);
+					}
+				}
+			}
 		}
 
 		private TreeNodeSelectionState SelectionStateBasedOnChildren(TreeViewNode node)
 		{
-			//	bool hasSelectedChildren{ false };
-			//	bool hasUnSelectedChildren{ false };
+			bool hasSelectedChildren = false;
+			bool hasUnSelectedChildren = false;
 
-			//	for (auto const&childNode : node.Children())
-			//    {
-			//		auto state = NodeSelectionState(childNode);
-			//		if (state == TreeNodeSelectionState::Selected)
-			//		{
-			//			hasSelectedChildren = true;
-			//		}
-			//		else if (state == TreeNodeSelectionState::UnSelected)
-			//		{
-			//			hasUnSelectedChildren = true;
-			//		}
+			foreach (var childNode in node.Children)
+			{
+				var state = NodeSelectionState(childNode);
+				if (state == TreeNodeSelectionState.Selected)
+				{
+					hasSelectedChildren = true;
+				}
+				else if (state == TreeNodeSelectionState.UnSelected)
+				{
+					hasUnSelectedChildren = true;
+				}
 
-			//		if ((hasSelectedChildren && hasUnSelectedChildren) ||
-			//			state == TreeNodeSelectionState::PartialSelected)
-			//		{
-			//			return TreeNodeSelectionState::PartialSelected;
-			//		}
-			//	}
+				if ((hasSelectedChildren && hasUnSelectedChildren) ||
+					state == TreeNodeSelectionState.PartialSelected)
+				{
+					return TreeNodeSelectionState.PartialSelected;
+				}
+			}
 
-			//	return hasSelectedChildren ? TreeNodeSelectionState::Selected : TreeNodeSelectionState::UnSelected;
+			return hasSelectedChildren ? TreeNodeSelectionState.Selected : TreeNodeSelectionState.UnSelected;
 			throw new NotImplementedException();
 		}
 
-		//void ViewModel::NotifyContainerOfSelectionChange(winrt::TreeViewNode const& targetNode, TreeNodeSelectionState const& selectionState)
-		//{
-		//	if (m_TreeViewList)
-		//	{
-		//		auto container = winrt::get_self<TreeViewList>(m_TreeViewList.get())->ContainerFromNode(targetNode);
-		//		if (container)
-		//		{
-		//			winrt::TreeViewItem targetItem = container.as< winrt::TreeViewItem > ();
-		//			winrt::get_self<TreeViewItem>(targetItem)->UpdateSelectionVisual(selectionState);
-		//		}
-		//	}
-		//}
+		private void NotifyContainerOfSelectionChange(TreeViewNode targetNode, TreeNodeSelectionState selectionState)
+		{
+			if (m_TreeViewList != null)
+			{
+				var container = m_TreeViewList.ContainerFromNode(targetNode);
+				if (container != null)
+				{
+					var targetItem = (TreeViewItem)container;
+					targetItem.UpdateSelectionVisual(selectionState);
+				}
+			}
+		}
 
 		internal IList<TreeViewNode> SelectedNodes => m_selectedNodes;
 
