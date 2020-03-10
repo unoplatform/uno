@@ -24,29 +24,45 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class SolidColorBrush : Brush, IEquatable<SolidColorBrush>
 	{
+		/// <summary>
+		/// Blends the Color set on the SolidColorBrush with its Opacity. Should generally be used for rendering rather than the Color property itself.
+		/// </summary>
+		internal Color ColorWithOpacity
+		{
+			get; private set;
+		}
+
 		public SolidColorBrush()
 		{
 			IsAutoPropertyInheritanceEnabled = false;
-			UpdateColorWithOpacity(Color, Opacity);
 		}
-
-		partial void UpdateColorWithOpacity(Color newColor, double opacity);
 
 		public SolidColorBrush(Color color) : this()
 		{
 			Color = color;
+			UpdateColorWithOpacity(color);
+		}
+
+		/// <remarks>
+		/// This method is required for performance. Creating a native Color 
+		/// requires a round-trip with Objective-C, so updating this value only when opacity
+		/// and color changes is more efficient.
+		/// </remarks>
+		private void UpdateColorWithOpacity(Color newColor)
+		{
+			ColorWithOpacity = GetColorWithOpacity(newColor);
 		}
 
 		partial void OnColorChanged(Color oldValue, Color newValue)
 		{
-			UpdateColorWithOpacity(newValue, Opacity);
+			UpdateColorWithOpacity(newValue);
 		}
 
 		protected override void OnOpacityChanged(double oldValue, double newValue)
 		{
 			base.OnOpacityChanged(oldValue, newValue);
 
-			UpdateColorWithOpacity(Color, newValue);
+			UpdateColorWithOpacity(Color);
 		}
 
 		#region Color Dependency Property
@@ -73,10 +89,7 @@ namespace Windows.UI.Xaml.Media
 
 		#endregion
 
-		public override string ToString()
-		{
-			return "[SolidColorBrush {0}]".InvariantCultureFormat(Color);
-		}
+		public override string ToString() => "[SolidColorBrush {0}]".InvariantCultureFormat(Color);
 
 		public override bool Equals(object obj) => Equals(obj as SolidColorBrush);
 
