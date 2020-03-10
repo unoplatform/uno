@@ -2,7 +2,7 @@
 
 ### Features
 
-- Added new `<ElevatedView>` in the `Uno.Toolkit` to deal with elevation & rounded corners on all platforms
+- Added new `ElevatedView` in the `Uno.Toolkit` to provide elevation & rounded corners on all platforms
   (not supported on Windows yet, because need to target framework `10.0.18362.0`)
 - Support for `FontIcon` on macOS
 - Support for `PhoneCallManager.ShowPhoneCallUI` on macOS
