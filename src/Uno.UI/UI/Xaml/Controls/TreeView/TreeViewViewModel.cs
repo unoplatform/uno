@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation.Collections;
 using TreeNodeSelectionState = Windows.UI.Xaml.Controls.TreeViewNode.TreeNodeSelectionState;
 
 namespace Windows.UI.Xaml.Controls
@@ -10,9 +11,9 @@ namespace Windows.UI.Xaml.Controls
 	internal class TreeViewViewModel
 	{
 		private bool m_isContentMode;
-		private List<TreeViewNode> m_selectedNodes;
+		private SelectedTreeNodeVector m_selectedNodes;
 		private List<object> m_selectedItems;
-		private Dictionary<object, TreeViewNode> m_itemToNodeMap
+		private Dictionary<object, TreeViewNode> m_itemToNodeMap;
 
 		private TreeViewNode m_originNode;
 		private TreeViewList m_TreeViewList;
@@ -20,23 +21,23 @@ namespace Windows.UI.Xaml.Controls
 		public TreeViewViewModel()
 		{
 			//var selectedNodes = new List<TreeViewNode>);
-			//selectedNodes->SetViewModel(*this);
+			//selectedNodes.SetViewModel(*this);
 			//m_selectedNodes.set(* selectedNodes);
 
-			//    auto selectedItems = winrt::make_self<SelectedItemsVector>();
-			//selectedItems->SetViewModel(*this);
+			//    var selectedItems = make_self<SelectedItemsVector>();
+			//selectedItems.SetViewModel(*this);
 			//m_selectedItems.set(* selectedItems);
 
-			//    m_itemToNodeMap.set(winrt::make<HashMap<winrt::IInspectable, winrt::TreeViewNode>>());
+			//    m_itemToNodeMap.set(make<HashMap<IInspectable, TreeViewNode>>());
 		}
 
-		//ViewModel::~ViewModel()
+		//ViewModel.~ViewModel()
 		//{
 		//	if (m_rootNodeChildrenChangedEventToken.value != 0)
 		//	{
-		//		if (auto origin = m_originNode.safe_get())
+		//		if (var origin = m_originNode.safe_get())
 		//        {
-		//			winrt::get_self<TreeViewNode>(origin)->ChildrenChanged(m_rootNodeChildrenChangedEventToken);
+		//			get_self<TreeViewNode>(origin).ChildrenChanged(m_rootNodeChildrenChangedEventToken);
 		//		}
 
 		//		ClearEventTokenVectors();
@@ -53,22 +54,22 @@ namespace Windows.UI.Xaml.Controls
 			value.IsExpanded = false;
 		}
 
-		//winrt::event_token ViewModel::NodeExpanding(const winrt::TypedEventHandler<winrt::TreeViewNode, winrt::IInspectable>& handler)
+		//event_token ViewModel.NodeExpanding(const TypedEventHandler<TreeViewNode, IInspectable>& handler)
 		//{
 		//	return m_nodeExpandingEventSource.add(handler);
 		//}
 
-		//void ViewModel::NodeExpanding(const winrt::event_token token)
+		//void ViewModel.NodeExpanding(const event_token token)
 		//{
 		//	m_nodeExpandingEventSource.remove(token);
 		//}
 
-		//winrt::event_token ViewModel::NodeCollapsed(const winrt::TypedEventHandler<winrt::TreeViewNode, winrt::IInspectable>& handler)
+		//event_token ViewModel.NodeCollapsed(const TypedEventHandler<TreeViewNode, IInspectable>& handler)
 		//{
 		//	return m_nodeCollapsedEventSource.add(handler);
 		//}
 
-		//void ViewModel::NodeCollapsed(const winrt::event_token token)
+		//void ViewModel.NodeCollapsed(const event_token token)
 		//{
 		//	m_nodeCollapsedEventSource.remove(token);
 		//}
@@ -88,40 +89,40 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				//	auto inner = GetVectorInnerImpl();
-				//	return inner->Size();
+				//	var inner = GetVectorInnerImpl();
+				//	return inner.Size();
 				throw new NotImplementedException();
 			}
 		}
 
 		private object GetAt(uint index)
 		{
-			//winrt::TreeViewNode node = GetNodeAt(index);
+			//TreeViewNode node = GetNodeAt(index);
 			//return IsContentMode() ? node.Content() : node;
 			throw new NotImplementedException();
 		}
 
 		private uint IndexOf(object value, uint index)
 		{
-			//	if (auto indexOfFunction = GetCustomIndexOfFunction())
+			//	if (var indexOfFunction = GetCustomIndexOfFunction())
 			//    {
 			//		return indexOfFunction(value, index);
 			//	}
 
 			//	else
 			//	{
-			//		auto inner = GetVectorInnerImpl();
-			//		return inner->IndexOf(value, index);
+			//		var inner = GetVectorInnerImpl();
+			//		return inner.IndexOf(value, index);
 			//	}
 			throw new NotImplementedException();
 		}
 
-		//uint32_t ViewModel::GetMany(uint32_t const startIndex, winrt::array_view<winrt::IInspectable> values)
+		//uint32_t ViewModel.GetMany(uint32_t const startIndex, array_view<IInspectable> values)
 		//{
-		//	auto inner = GetVectorInnerImpl();
+		//	var inner = GetVectorInnerImpl();
 		//	if (IsContentMode())
 		//	{
-		//		auto vector = winrt::make<Vector<winrt::IInspectable>>();
+		//		var vector = make<Vector<IInspectable>>();
 		//		int size = Size();
 		//		for (int i = 0; i < size; i++)
 		//		{
@@ -129,60 +130,60 @@ namespace Windows.UI.Xaml.Controls
 		//		}
 		//		return vector.GetMany(startIndex, values);
 		//	}
-		//	return inner->GetMany(startIndex, values);
+		//	return inner.GetMany(startIndex, values);
 		//}
 
-		//winrt::IVectorView<winrt::IInspectable> ViewModel::GetView()
+		//IVectorView<IInspectable> ViewModel.GetView()
 		//{
-		//	throw winrt::hresult_not_implemented();
+		//	throw hresult_not_implemented();
 		//}
 
 		internal TreeViewNode GetNodeAt(int index)
 		{
-			//	auto inner = GetVectorInnerImpl();
-			//	return inner->GetAt(index).as< winrt::TreeViewNode > ();
+			//	var inner = GetVectorInnerImpl();
+			//	return inner.GetAt(index).as< TreeViewNode > ();
 			throw new NotImplementedException();
 		}
 
-		//void ViewModel::SetAt(uint32_t index, winrt::IInspectable const& value)
+		//void ViewModel.SetAt(uint32_t index, IInspectable const& value)
 		//{
-		//	auto inner = GetVectorInnerImpl();
-		//	auto current = inner->GetAt(index).as< winrt::TreeViewNode > ();
-		//	inner->SetAt(index, value);
+		//	var inner = GetVectorInnerImpl();
+		//	var current = inner.GetAt(index).as< TreeViewNode > ();
+		//	inner.SetAt(index, value);
 
-		//	winrt::TreeViewNode newNode = value.as< winrt::TreeViewNode > ();
+		//	TreeViewNode newNode = value.as< TreeViewNode > ();
 
-		//	auto tvnCurrent = winrt::get_self<TreeViewNode>(current);
-		//	tvnCurrent->ChildrenChanged(m_collectionChangedEventTokenVector[index]);
-		//	tvnCurrent->RemoveExpandedChanged(m_IsExpandedChangedEventTokenVector[index]);
+		//	var tvnCurrent = get_self<TreeViewNode>(current);
+		//	tvnCurrent.ChildrenChanged(m_collectionChangedEventTokenVector[index]);
+		//	tvnCurrent.RemoveExpandedChanged(m_IsExpandedChangedEventTokenVector[index]);
 
 		//	// Hook up events and replace tokens
-		//	auto tvnNewNode = winrt::get_self<TreeViewNode>(newNode);
-		//	m_collectionChangedEventTokenVector[index] = tvnNewNode->ChildrenChanged({ this, &ViewModel::TreeViewNodeVectorChanged });
-		//	m_IsExpandedChangedEventTokenVector[index] = tvnNewNode->AddExpandedChanged({ this, &ViewModel::TreeViewNodePropertyChanged });
+		//	var tvnNewNode = get_self<TreeViewNode>(newNode);
+		//	m_collectionChangedEventTokenVector[index] = tvnNewNode.ChildrenChanged({ this, &ViewModel.TreeViewNodeVectorChanged });
+		//	m_IsExpandedChangedEventTokenVector[index] = tvnNewNode.AddExpandedChanged({ this, &ViewModel.TreeViewNodePropertyChanged });
 		//}
 
-		//void ViewModel::InsertAt(uint32_t index, winrt::IInspectable const& value)
+		//void ViewModel.InsertAt(uint32_t index, IInspectable const& value)
 		//{
-		//	GetVectorInnerImpl()->InsertAt(index, value);
-		//	winrt::TreeViewNode newNode = value.as< winrt::TreeViewNode > ();
+		//	GetVectorInnerImpl().InsertAt(index, value);
+		//	TreeViewNode newNode = value.as< TreeViewNode > ();
 
 		//	//Hook up events and save tokens
-		//	auto tvnNewNode = winrt::get_self<TreeViewNode>(newNode);
-		//	m_collectionChangedEventTokenVector.insert(m_collectionChangedEventTokenVector.begin() + index, tvnNewNode->ChildrenChanged({ this, &ViewModel::TreeViewNodeVectorChanged }));
-		//	m_IsExpandedChangedEventTokenVector.insert(m_IsExpandedChangedEventTokenVector.begin() + index, tvnNewNode->AddExpandedChanged({ this, &ViewModel::TreeViewNodePropertyChanged }));
+		//	var tvnNewNode = get_self<TreeViewNode>(newNode);
+		//	m_collectionChangedEventTokenVector.insert(m_collectionChangedEventTokenVector.begin() + index, tvnNewNode.ChildrenChanged({ this, &ViewModel.TreeViewNodeVectorChanged }));
+		//	m_IsExpandedChangedEventTokenVector.insert(m_IsExpandedChangedEventTokenVector.begin() + index, tvnNewNode.AddExpandedChanged({ this, &ViewModel.TreeViewNodePropertyChanged }));
 		//}
 
-		//void ViewModel::RemoveAt(uint32_t index)
+		//void ViewModel.RemoveAt(uint32_t index)
 		//{
-		//	auto inner = GetVectorInnerImpl();
-		//	auto current = inner->GetAt(index).as< winrt::TreeViewNode > ();
-		//	inner->RemoveAt(index);
+		//	var inner = GetVectorInnerImpl();
+		//	var current = inner.GetAt(index).as< TreeViewNode > ();
+		//	inner.RemoveAt(index);
 
 		//	// Unhook event handlers
-		//	auto tvnCurrent = winrt::get_self<TreeViewNode>(current);
-		//	tvnCurrent->ChildrenChanged(m_collectionChangedEventTokenVector[index]);
-		//	tvnCurrent->RemoveExpandedChanged(m_IsExpandedChangedEventTokenVector[index]);
+		//	var tvnCurrent = get_self<TreeViewNode>(current);
+		//	tvnCurrent.ChildrenChanged(m_collectionChangedEventTokenVector[index]);
+		//	tvnCurrent.RemoveExpandedChanged(m_IsExpandedChangedEventTokenVector[index]);
 
 		//	// Remove tokens from vectors
 		//	m_collectionChangedEventTokenVector.erase(m_collectionChangedEventTokenVector.begin() + index);
@@ -191,26 +192,26 @@ namespace Windows.UI.Xaml.Controls
 
 		private void Append(object value)
 		{
-			//	GetVectorInnerImpl()->Append(value);
-			//	winrt::TreeViewNode newNode = value.as< winrt::TreeViewNode > ();
+			//	GetVectorInnerImpl().Append(value);
+			//	TreeViewNode newNode = value.as< TreeViewNode > ();
 
 			//	// Hook up events and save tokens
-			//	auto tvnNewNode = winrt::get_self<TreeViewNode>(newNode);
-			//	m_collectionChangedEventTokenVector.push_back(tvnNewNode->ChildrenChanged({ this, &ViewModel::TreeViewNodeVectorChanged }));
-			//	m_IsExpandedChangedEventTokenVector.push_back(tvnNewNode->AddExpandedChanged({ this, &ViewModel::TreeViewNodePropertyChanged }));
+			//	var tvnNewNode = get_self<TreeViewNode>(newNode);
+			//	m_collectionChangedEventTokenVector.push_back(tvnNewNode.ChildrenChanged({ this, &ViewModel.TreeViewNodeVectorChanged }));
+			//	m_IsExpandedChangedEventTokenVector.push_back(tvnNewNode.AddExpandedChanged({ this, &ViewModel.TreeViewNodePropertyChanged }));
 			throw new NotImplementedException();
 		}
 
-		//void ViewModel::RemoveAtEnd()
+		//void ViewModel.RemoveAtEnd()
 		//{
-		//	auto inner = GetVectorInnerImpl();
-		//	auto current = inner->GetAt(Size() - 1).as< winrt::TreeViewNode > ();
-		//	inner->RemoveAtEnd();
+		//	var inner = GetVectorInnerImpl();
+		//	var current = inner.GetAt(Size() - 1).as< TreeViewNode > ();
+		//	inner.RemoveAtEnd();
 
 		//	// unhook events
-		//	auto tvnCurrent = winrt::get_self<TreeViewNode>(current);
-		//	tvnCurrent->ChildrenChanged(m_collectionChangedEventTokenVector.back());
-		//	tvnCurrent->RemoveExpandedChanged(m_IsExpandedChangedEventTokenVector.back());
+		//	var tvnCurrent = get_self<TreeViewNode>(current);
+		//	tvnCurrent.ChildrenChanged(m_collectionChangedEventTokenVector.back());
+		//	tvnCurrent.RemoveExpandedChanged(m_IsExpandedChangedEventTokenVector.back());
 
 		//	// remove tokens
 		//	m_collectionChangedEventTokenVector.pop_back();
@@ -219,7 +220,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void Clear()
 		{
-			//	// Don't call GetVectorInnerImpl()->Clear() directly because we need to remove hooked events
+			//	// Don't call GetVectorInnerImpl().Clear() directly because we need to remove hooked events
 			//	unsigned int count = Size();
 			//	while (count != 0)
 			//	{
@@ -228,10 +229,10 @@ namespace Windows.UI.Xaml.Controls
 			//	}
 		}
 
-		//void ViewModel::ReplaceAll(winrt::array_view<winrt::IInspectable const> items)
+		//void ViewModel.ReplaceAll(array_view<IInspectable const> items)
 		//{
-		//	auto inner = GetVectorInnerImpl();
-		//	return inner->ReplaceAll(items);
+		//	var inner = GetVectorInnerImpl();
+		//	return inner.ReplaceAll(items);
 		//}
 
 		//// Helper function
@@ -255,7 +256,7 @@ namespace Windows.UI.Xaml.Controls
 
 			//	// Add new RootNode & children
 			m_originNode = originNode;
-			m_rootNodeChildrenChangedEventToken = (originNode)->ChildrenChanged({ this, &ViewModel::TreeViewNodeVectorChanged });
+			m_rootNodeChildrenChangedEventToken = (originNode).ChildrenChanged({ this, &ViewModel.TreeViewNodeVectorChanged });
 			originNode.IsExpanded = true;
 
 			int allOpenedDescendantsCount = 0;
@@ -267,10 +268,10 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		//void ViewModel::SetOwningList(winrt::TreeViewList const& owningList)
-		//{
-		//	m_TreeViewList = winrt::make_weak(owningList);
-		//}
+		internal void SetOwningList(TreeViewList owningList)
+		{
+			m_TreeViewList = owningList;
+		}
 
 		private TreeViewList ListControl => m_TreeViewList;
 
@@ -304,27 +305,26 @@ namespace Windows.UI.Xaml.Controls
 			return offset;
 		}
 
-		//void ViewModel::RemoveNodeAndDescendantsFromView(const winrt::TreeViewNode& value)
-		//{
-		//	UINT32 valueIndex;
-		//	if (value.IsExpanded())
-		//	{
-		//		unsigned int size = value.Children().Size();
-		//		for (unsigned int i = 0; i < size; i++)
-		//		{
-		//			auto childNode = value.Children().GetAt(i).as< winrt::TreeViewNode > ();
-		//			RemoveNodeAndDescendantsFromView(childNode);
-		//		}
-		//	}
+		private void RemoveNodeAndDescendantsFromView(TreeViewNode value)
+		{
+			if (value.IsExpanded)
+			{
+				int size = value.Children.Count;
+				for (int i = 0; i < size; i++)
+				{
+					var childNode = (TreeViewNode)value.Children[i];
+					RemoveNodeAndDescendantsFromView(childNode);
+				}
+			}
 
-		//	bool containsValue = IndexOfNode(value, valueIndex);
-		//	if (containsValue)
-		//	{
-		//		RemoveAt(valueIndex);
-		//	}
-		//}
+			bool containsValue = IndexOfNode(value, out var valueIndex);
+			if (containsValue)
+			{
+				RemoveAt(valueIndex);
+			}
+		}
 
-		//void ViewModel::RemoveNodesAndDescendentsWithFlatIndexRange(unsigned int lowIndex, unsigned int highIndex)
+		//void ViewModel.RemoveNodesAndDescendentsWithFlatIndexRange(unsigned int lowIndex, unsigned int highIndex)
 		//{
 		//	MUX_ASSERT(lowIndex <= highIndex);
 
@@ -334,7 +334,7 @@ namespace Windows.UI.Xaml.Controls
 		//	}
 		//}
 
-		//int ViewModel::GetNextIndexInFlatTree(const winrt::TreeViewNode& node)
+		//int ViewModel.GetNextIndexInFlatTree(const TreeViewNode& node)
 		//{
 		//	unsigned int index = 0;
 		//	bool isNodeInFlatList = IndexOfNode(node, index);
@@ -356,12 +356,12 @@ namespace Windows.UI.Xaml.Controls
 		//// To find the removed TreeViewNode:
 		////   calcuate allOpenedDescendantsCount in sender[0..index-1] first
 		////   then add offset and finally return TreeViewNode by looking up the flat tree.
-		//winrt::TreeViewNode ViewModel::GetRemovedChildTreeViewNodeByIndex(winrt::TreeViewNode const& node, unsigned int childIndex)
+		//TreeViewNode ViewModel.GetRemovedChildTreeViewNodeByIndex(TreeViewNode const& node, unsigned int childIndex)
 		//{
 		//	unsigned int allOpenedDescendantsCount = 0;
 		//	for (unsigned int i = 0; i < childIndex; i++)
 		//	{
-		//		winrt::TreeViewNode calcNode = node.Children().GetAt(i).as< winrt::TreeViewNode > ();
+		//		TreeViewNode calcNode = node.Children().GetAt(i).as< TreeViewNode > ();
 		//		if (calcNode.IsExpanded())
 		//		{
 		//			allOpenedDescendantsCount += GetExpandedDescendantCount(calcNode);
@@ -372,13 +372,13 @@ namespace Windows.UI.Xaml.Controls
 		//	return GetNodeAt(childIndexInFlatTree);
 		//}
 
-		//int ViewModel::CountDescendants(const winrt::TreeViewNode& value)
+		//int ViewModel.CountDescendants(const TreeViewNode& value)
 		//{
 		//	int descendantCount = 0;
 		//	unsigned int size = value.Children().Size();
 		//	for (unsigned int i = 0; i < size; i++)
 		//	{
-		//		auto childNode = value.Children().GetAt(i).as< winrt::TreeViewNode > ();
+		//		var childNode = value.Children().GetAt(i).as< TreeViewNode > ();
 		//		descendantCount++;
 		//		if (childNode.IsExpanded())
 		//		{
@@ -391,54 +391,50 @@ namespace Windows.UI.Xaml.Controls
 
 		private uint IndexOfNextSibling(TreeViewNode childNode)
 		{
-			//	auto parentNode = childNode.Parent();
-			//	unsigned int stopIndex;
-			//	bool isLastRelativeChild = true;
-			//	while (parentNode && isLastRelativeChild)
-			//	{
-			//		unsigned int relativeIndex;
-			//		parentNode.Children().IndexOf(childNode, relativeIndex);
-			//		if (parentNode.Children().Size() - 1 != relativeIndex)
-			//		{
-			//			isLastRelativeChild = false;
-			//		}
-			//		else
-			//		{
-			//			childNode = parentNode;
-			//			parentNode = parentNode.Parent();
-			//		}
-			//	}
+			var parentNode = childNode.Parent;
+			int stopIndex;
+			bool isLastRelativeChild = true;
+			while (parentNode != null && isLastRelativeChild)
+			{
+				int relativeIndex = parentNode.Children.IndexOf(childNode);
+				if (parentNode.Children.Count - 1 != relativeIndex)
+				{
+					isLastRelativeChild = false;
+				}
+				else
+				{
+					childNode = parentNode;
+					parentNode = parentNode.Parent;
+				}
+			}
 
-			//	if (parentNode)
-			//	{
-			//		unsigned int siblingIndex;
-			//		parentNode.Children().IndexOf(childNode, siblingIndex);
-			//		auto siblingNode = parentNode.Children().GetAt(siblingIndex + 1);
-			//		IndexOfNode(siblingNode, stopIndex);
-			//	}
-			//	else
-			//	{
-			//		stopIndex = Size();
-			//	}
+			if (parentNode != null)
+			{
+				int siblingIndex = parentNode.Children.IndexOf(childNode);
+				var siblingNode = parentNode.Children[siblingIndex + 1];
+				IndexOfNode(siblingNode, out var stopIndex);
+			}
+			else
+			{
+				stopIndex = Size;
+			}
 
-			//	return stopIndex;
-			throw new NotImplementedException();
+			return stopIndex;
 		}
 
 		private uint GetExpandedDescendantCount(TreeViewNode parentNode)
 		{
-			//	unsigned int allOpenedDescendantsCount = 0;
-			//	for (unsigned int i = 0; i < parentNode.Children().Size(); i++)
-			//	{
-			//		auto childNode = parentNode.Children().GetAt(i).as< winrt::TreeViewNode > ();
-			//		allOpenedDescendantsCount++;
-			//		if (childNode.IsExpanded())
-			//		{
-			//			allOpenedDescendantsCount += CountDescendants(childNode);
-			//		}
-			//	}
-			//	return allOpenedDescendantsCount;
-			throw new NotImplementedException();
+			var allOpenedDescendantsCount = 0;
+			for (var i = 0; i < parentNode.Children.Count; i++)
+			{
+				var childNode = (TreeViewNode)parentNode.Children[i];
+				allOpenedDescendantsCount++;
+				if (childNode.IsExpanded)
+				{
+					allOpenedDescendantsCount += CountDescendants(childNode);
+				}
+			}
+			return allOpenedDescendantsCount;
 		}
 
 		internal bool IsNodeSelected(TreeViewNode targetNode)
@@ -453,44 +449,44 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateNodeSelection(TreeViewNode selectNode, TreeNodeSelectionState selectionState)
 		{
-			//	auto node = winrt::get_self<TreeViewNode>(selectNode);
-			//	if (selectionState != node->SelectionState())
-			//	{
-			//		node->SelectionState(selectionState);
-			//		auto selectedNodes = winrt::get_self<SelectedTreeNodeVector>(m_selectedNodes.get());
-			//		switch (selectionState)
-			//		{
-			//			case TreeNodeSelectionState::Selected:
-			//				selectedNodes->InsertAtCore(selectedNodes->Size(), selectNode);
-			//				m_selectedNodeChildrenChangedEventTokenVector.push_back(winrt::get_self<TreeViewNode>(selectNode)->ChildrenChanged({ this, &ViewModel::SelectedNodeChildrenChanged }));
-			//				break;
+			var node = selectNode;
+			if (selectionState != node.SelectionState)
+			{
+				node.SelectionState = selectionState;
+				var selectedNodes = m_selectedNodes;
+				switch (selectionState)
+				{
+					case TreeNodeSelectionState.Selected:
+						selectedNodes.InsertAtCore(selectedNodes.Count, selectNode);
+						m_selectedNodeChildrenChangedEventTokenVector.push_back(get_self<TreeViewNode>(selectNode).ChildrenChanged({ this, &ViewModel.SelectedNodeChildrenChanged }));
+						break;
 
-			//			case TreeNodeSelectionState::PartialSelected:
-			//			case TreeNodeSelectionState::UnSelected:
-			//				unsigned int index;
-			//				if (selectedNodes->IndexOf(selectNode, index))
-			//				{
-			//					selectedNodes->RemoveAtCore(index);
-			//					winrt::get_self<TreeViewNode>(selectNode)->ChildrenChanged(m_selectedNodeChildrenChangedEventTokenVector[index]);
-			//					m_selectedNodeChildrenChangedEventTokenVector.erase(m_selectedNodeChildrenChangedEventTokenVector.begin() + index);
-			//				}
-			//				break;
-			//		}
-			//	}
+					case TreeNodeSelectionState.PartialSelected:
+					case TreeNodeSelectionState.UnSelected:
+						int index = selectedNodes.IndexOf(selectNode);
+						if (index > -1)
+						{
+							selectedNodes.RemoveAtCore(index);
+							selectNode.ChildrenChanged(m_selectedNodeChildrenChangedEventTokenVector[index]);
+							m_selectedNodeChildrenChangedEventTokenVector.erase(m_selectedNodeChildrenChangedEventTokenVector.begin() + index);
+						}
+						break;
+				}
+			}
 		}
 
-		private void UpdateSelection(TreeViewNode selectNode, TreeNodeSelectionState selectionState)
+		internal void UpdateSelection(TreeViewNode selectNode, TreeNodeSelectionState selectionState)
 		{
-			//	if (NodeSelectionState(selectNode) != selectionState)
-			//	{
-			//		UpdateNodeSelection(selectNode, selectionState);
+			if (NodeSelectionState(selectNode) != selectionState)
+			{
+				UpdateNodeSelection(selectNode, selectionState);
 
-			//		if (!IsInSingleSelectionMode())
-			//		{
-			//			UpdateSelectionStateOfDescendants(selectNode, selectionState);
-			//			UpdateSelectionStateOfAncestors(selectNode);
-			//		}
-			//	}
+				if (!IsInSingleSelectionMode())
+				{
+					UpdateSelectionStateOfDescendants(selectNode, selectionState);
+					UpdateSelectionStateOfAncestors(selectNode);
+				}
+			}
 		}
 
 		private void UpdateSelectionStateOfDescendants(TreeViewNode targetNode, TreeNodeSelectionState selectionState)
@@ -576,25 +572,25 @@ namespace Windows.UI.Xaml.Controls
 			return m_itemToNodeMap[item]; //TODO: Throw or null?
 		}
 
-		internal bool IndexOfNode(TreeViewNode targetNode, int index)
+		internal bool IndexOfNode(TreeViewNode targetNode, out int index)
 		{
-			//return GetVectorInnerImpl()->IndexOf(targetNode, index);
+			//return GetVectorInnerImpl().IndexOf(targetNode, index);
 			throw new NotImplementedException();
 		}
 
-		//void ViewModel::TreeViewNodeVectorChanged(winrt::TreeViewNode const& sender, winrt::IInspectable const& args)
+		//void ViewModel.TreeViewNodeVectorChanged(TreeViewNode const& sender, IInspectable const& args)
 		//{
-		//	winrt::CollectionChange collectionChange = args.as< winrt::IVectorChangedEventArgs > ().CollectionChange();
-		//	unsigned int index = args.as< winrt::IVectorChangedEventArgs > ().Index();
+		//	CollectionChange collectionChange = args.as< IVectorChangedEventArgs > ().CollectionChange();
+		//	unsigned int index = args.as< IVectorChangedEventArgs > ().Index();
 
 		//	switch (collectionChange)
 		//	{
 		//		// Reset case, commonly seen when a TreeNode is cleared.
 		//		// removes all nodes that need removing then 
 		//		// toggles a collapse / expand to ensure order.
-		//		case (winrt::CollectionChange::Reset):
+		//		case (CollectionChange.Reset):
 		//			{
-		//				auto resetNode = sender.as< winrt::TreeViewNode > ();
+		//				var resetNode = sender.as< TreeViewNode > ();
 		//				if (resetNode.IsExpanded())
 		//				{
 		//					//The lowIndex is the index of the first child, while the high index is the index of the last descendant in the list.
@@ -616,16 +612,16 @@ namespace Windows.UI.Xaml.Controls
 		//		// the inserted item in the correct index. If along the way we bump into
 		//		// the item being inserted, we insert there then return, because we don't
 		//		// need to do anything further.
-		//		case (winrt::CollectionChange::ItemInserted):
+		//		case (CollectionChange.ItemInserted):
 		//			{
-		//				auto targetNode = sender.as< winrt::TreeViewNode > ().Children().GetAt(index).as< winrt::TreeViewNode > ();
+		//				var targetNode = sender.as< TreeViewNode > ().Children().GetAt(index).as< TreeViewNode > ();
 
 		//				if (IsContentMode())
 		//				{
 		//					m_itemToNodeMap.get().Insert(targetNode.Content(), targetNode);
 		//				}
 
-		//				auto parentNode = targetNode.Parent();
+		//				var parentNode = targetNode.Parent();
 		//				unsigned int nextNodeIndex = GetNextIndexInFlatTree(parentNode);
 		//				int allOpenedDescendantsCount = 0;
 
@@ -633,7 +629,7 @@ namespace Windows.UI.Xaml.Controls
 		//				{
 		//					for (unsigned int i = 0; i < parentNode.Children().Size(); i++)
 		//					{
-		//						auto childNode = parentNode.Children().GetAt(i).as< winrt::TreeViewNode > ();
+		//						var childNode = parentNode.Children().GetAt(i).as< TreeViewNode > ();
 		//						if (childNode == targetNode)
 		//						{
 		//							AddNodeToView(targetNode, nextNodeIndex + i + allOpenedDescendantsCount);
@@ -654,12 +650,12 @@ namespace Windows.UI.Xaml.Controls
 
 		//		// Removes a node from the ViewModel when a TreeNode
 		//		// removes a child.
-		//		case (winrt::CollectionChange::ItemRemoved):
+		//		case (CollectionChange.ItemRemoved):
 		//			{
-		//				auto removingNodeParent = sender.as< winrt::TreeViewNode > ();
+		//				var removingNodeParent = sender.as< TreeViewNode > ();
 		//				if (removingNodeParent.IsExpanded())
 		//				{
-		//					auto removedNode = GetRemovedChildTreeViewNodeByIndex(removingNodeParent, index);
+		//					var removedNode = GetRemovedChildTreeViewNodeByIndex(removingNodeParent, index);
 		//					RemoveNodeAndDescendantsFromView(removedNode);
 		//					if (IsContentMode())
 		//					{
@@ -672,18 +668,18 @@ namespace Windows.UI.Xaml.Controls
 
 		//		// Triggered by a replace such as SetAt.
 		//		// Updates the TreeNode that changed in the ViewModel.
-		//		case (winrt::CollectionChange::ItemChanged):
+		//		case (CollectionChange.ItemChanged):
 		//			{
-		//				auto targetNode = sender.as< winrt::TreeViewNode > ().Children().GetAt(index).as< winrt::TreeViewNode > ();
-		//				auto changingNodeParent = sender.as< winrt::TreeViewNode > ();
+		//				var targetNode = sender.as< TreeViewNode > ().Children().GetAt(index).as< TreeViewNode > ();
+		//				var changingNodeParent = sender.as< TreeViewNode > ();
 		//				if (changingNodeParent.IsExpanded())
 		//				{
-		//					auto removedNode = GetRemovedChildTreeViewNodeByIndex(changingNodeParent, index);
+		//					var removedNode = GetRemovedChildTreeViewNodeByIndex(changingNodeParent, index);
 		//					unsigned int removedNodeIndex = 0;
 		//					MUX_ASSERT(IndexOfNode(removedNode, removedNodeIndex));
 
 		//					RemoveNodeAndDescendantsFromView(removedNode);
-		//					InsertAt(removedNodeIndex, targetNode.as< winrt::IInspectable > ());
+		//					InsertAt(removedNodeIndex, targetNode.as< IInspectable > ());
 
 		//					if (IsContentMode())
 		//					{
@@ -697,173 +693,168 @@ namespace Windows.UI.Xaml.Controls
 		//	}
 		//}
 
-		//void ViewModel::SelectedNodeChildrenChanged(winrt::TreeViewNode const& sender, winrt::IInspectable const& args)
-		//{
-		//	winrt::CollectionChange collectionChange = args.as< winrt::IVectorChangedEventArgs > ().CollectionChange();
-		//	unsigned int index = args.as< winrt::IVectorChangedEventArgs > ().Index();
-		//	auto changingChildrenNode = sender.as< winrt::TreeViewNode > ();
+		private void SelectedNodeChildrenChanged(TreeViewNode sender, object args)
+		{
+			var vectorChangedArgs = (IVectorChangedEventArgs)args;
+			CollectionChange collectionChange = vectorChangedArgs.CollectionChange;
+			var index = (int)vectorChangedArgs.Index; // Cast to int to be able to index
+			var changingChildrenNode = (TreeViewNode)sender;
 
-		//	switch (collectionChange)
-		//	{
-		//		case (winrt::CollectionChange::ItemInserted):
-		//			{
-		//				auto newNode = changingChildrenNode.Children().GetAt(index);
-		//				UpdateNodeSelection(newNode, NodeSelectionState(changingChildrenNode));
-		//				break;
-		//			}
+			switch (collectionChange)
+			{
+				case (CollectionChange.ItemInserted):
+					{
+						var newNode = changingChildrenNode.Children[index];
+						UpdateNodeSelection(newNode, NodeSelectionState(changingChildrenNode));
+						break;
+					}
 
-		//		case (winrt::CollectionChange::ItemChanged):
-		//			{
-		//				auto newNode = changingChildrenNode.Children().GetAt(index);
-		//				UpdateNodeSelection(newNode, NodeSelectionState(changingChildrenNode));
+				case (CollectionChange.ItemChanged):
+					{
+						var newNode = changingChildrenNode.Children[index];
+						UpdateNodeSelection(newNode, NodeSelectionState(changingChildrenNode));
 
-		//				auto selectedNodes = winrt::get_self<SelectedTreeNodeVector>(m_selectedNodes.get());
-		//				for (unsigned int i = 0; i < selectedNodes->Size(); i++)
-		//				{
-		//					auto selectNode = selectedNodes->GetAt(i);
-		//					auto ancestorNode = selectNode.Parent();
-		//					while (ancestorNode && ancestorNode.Parent())
-		//					{
-		//						ancestorNode = ancestorNode.Parent();
-		//					}
+						var selectedNodes = m_selectedNodes;
+						for (var i = 0; i < selectedNodes.Count; i++)
+						{
+							var selectNode = selectedNodes[i];
+							var ancestorNode = selectNode.Parent;
+							while (ancestorNode != null && ancestorNode.Parent != null)
+							{
+								ancestorNode = ancestorNode.Parent;
+							}
 
-		//					if (ancestorNode != m_originNode.get())
-		//					{
-		//						selectedNodes->RemoveAtCore(i);
-		//						m_selectedNodeChildrenChangedEventTokenVector.erase(m_selectedNodeChildrenChangedEventTokenVector.begin() + i);
-		//					}
-		//				}
-		//				break;
-		//			}
+							if (ancestorNode != m_originNode)
+							{
+								selectedNodes.RemoveAtCore(i);
+								m_selectedNodeChildrenChangedEventTokenVector.erase(m_selectedNodeChildrenChangedEventTokenVector.begin() + i);
+							}
+						}
+						break;
+					}
 
-		//		case (winrt::CollectionChange::ItemRemoved):
-		//		case (winrt::CollectionChange::Reset):
-		//			{
-		//				//This checks if there are still children, then re-evaluates parents selection based on current state of remaining children
-		//				//If a node has 2 children selected, and 1 unselected, and the unselected is removed, we then change the parent node to selected.
-		//				//If the last child is removed, we preserve the current selection state of the parent, and this code need not execute.
-		//				if (changingChildrenNode.Children().Size() > 0)
-		//				{
-		//					auto firstChildNode = changingChildrenNode.Children().GetAt(0);
-		//					UpdateSelectionStateOfAncestors(firstChildNode);
-		//				}
+				case (CollectionChange.ItemRemoved):
+				case (CollectionChange.Reset):
+					{
+						//This checks if there are still children, then re-evaluates parents selection based on current state of remaining children
+						//If a node has 2 children selected, and 1 unselected, and the unselected is removed, we then change the parent node to selected.
+						//If the last child is removed, we preserve the current selection state of the parent, and this code need not execute.
+						if (changingChildrenNode.Children.Count > 0)
+						{
+							var firstChildNode = changingChildrenNode.Children[0];
+							UpdateSelectionStateOfAncestors(firstChildNode);
+						}
 
-		//				auto selectedNodes = winrt::get_self<SelectedTreeNodeVector>(m_selectedNodes.get());
-		//				for (unsigned int i = 0; i < selectedNodes->Size(); i++)
-		//				{
-		//					auto selectNode = selectedNodes->GetAt(i);
-		//					auto ancestorNode = selectNode.Parent();
-		//					while (ancestorNode && ancestorNode.Parent())
-		//					{
-		//						ancestorNode = ancestorNode.Parent();
-		//					}
+						var selectedNodes = get_self<SelectedTreeNodeVector>(m_selectedNodes);
+						for (unsigned int i = 0; i < selectedNodes.Size(); i++)
+						{
+							var selectNode = selectedNodes.GetAt(i);
+							var ancestorNode = selectNode.Parent();
+							while (ancestorNode && ancestorNode.Parent())
+							{
+								ancestorNode = ancestorNode.Parent();
+							}
 
-		//					if (ancestorNode != m_originNode.get())
-		//					{
-		//						selectedNodes->RemoveAtCore(i);
-		//						m_selectedNodeChildrenChangedEventTokenVector.erase(m_selectedNodeChildrenChangedEventTokenVector.begin() + i);
-		//					}
-		//				}
-		//				break;
-		//			}
+							if (ancestorNode != m_originNode.get())
+							{
+								selectedNodes.RemoveAtCore(i);
+								m_selectedNodeChildrenChangedEventTokenVector.erase(m_selectedNodeChildrenChangedEventTokenVector.begin() + i);
+							}
+						}
+						break;
+					}
 
-		//	}
-		//}
+			}
+		}
 
-		//void ViewModel::TreeViewNodePropertyChanged(winrt::TreeViewNode const& sender, winrt::IDependencyPropertyChangedEventArgs const& args)
-		//{
-		//	winrt::IDependencyProperty property = args.Property();
-		//	if (property == TreeViewNode::s_IsExpandedProperty)
-		//	{
-		//		TreeViewNodeIsExpandedPropertyChanged(sender, args);
-		//	}
-		//	else if (property == TreeViewNode::s_HasChildrenProperty)
-		//	{
-		//		TreeViewNodeHasChildrenPropertyChanged(sender, args);
-		//	}
-		//}
+		private void TreeViewNodePropertyChanged(TreeViewNode sender, DependencyPropertyChangedEventArgs args)
+		{
+			DependencyProperty property = args.Property;
+			if (property == TreeViewNode.IsExpandedProperty)
+			{
+				TreeViewNodeIsExpandedPropertyChanged(sender, args);
+			}
+			else if (property == TreeViewNode.HasChildrenProperty)
+			{
+				TreeViewNodeHasChildrenPropertyChanged(sender, args);
+			}
+		}
 
-		//void ViewModel::TreeViewNodeIsExpandedPropertyChanged(winrt::TreeViewNode const& sender, winrt::IDependencyPropertyChangedEventArgs const& args)
-		//{
-		//	auto targetNode = sender.as< winrt::TreeViewNode > ();
-		//	if (targetNode.IsExpanded())
-		//	{
-		//		if (targetNode.Children().Size() != 0)
-		//		{
-		//			int openedDescendantOffset = 0;
-		//			unsigned int index;
-		//			IndexOfNode(targetNode, index);
-		//			index = index + 1;
-		//			for (unsigned int i = 0; i < targetNode.Children().Size(); i++)
-		//			{
-		//				winrt::TreeViewNode childNode{ nullptr };
-		//				childNode = targetNode.Children().GetAt(i).as< winrt::TreeViewNode > ();
-		//				AddNodeToView(childNode, index + i + openedDescendantOffset);
-		//				openedDescendantOffset = AddNodeDescendantsToView(childNode, index + i, openedDescendantOffset);
-		//			}
-		//		}
+		private void TreeViewNodeIsExpandedPropertyChanged(TreeViewNode sender, DependencyPropertyChangedEventArgs args)
+		{
+			var targetNode = (TreeViewNode)sender;
+			if (targetNode.IsExpanded)
+			{
+				if (targetNode.Children.Count != 0)
+				{
+					int openedDescendantOffset = 0;
+					IndexOfNode(targetNode, out var index);
+					index = index + 1;
+					for (var i = 0; i < targetNode.Children.Count; i++)
+					{
+						TreeViewNode childNode = null;
+						childNode = (TreeViewNode)targetNode.Children[i];
+						AddNodeToView(childNode, index + i + openedDescendantOffset);
+						openedDescendantOffset = AddNodeDescendantsToView(childNode, index + i, openedDescendantOffset);
+					}
+				}
 
-		//		//Notify TreeView that a node is being expanded.
-		//		m_nodeExpandingEventSource(targetNode, nullptr);
-		//	}
-		//	else
-		//	{
-		//		for (unsigned int i = 0; i < targetNode.Children().Size(); i++)
-		//		{
-		//			winrt::TreeViewNode childNode{ nullptr };
-		//			childNode = targetNode.Children().GetAt(i).as< winrt::TreeViewNode > ();
-		//			RemoveNodeAndDescendantsFromView(childNode);
-		//		}
+				//Notify TreeView that a node is being expanded.
+				m_nodeExpandingEventSource(targetNode, null);
+			}
+			else
+			{
+				for (var i = 0; i < targetNode.Children.Count; i++)
+				{
+					TreeViewNode childNode = null;
+					childNode = (TreeViewNode)targetNode.Children[i];
+					RemoveNodeAndDescendantsFromView(childNode);
+				}
 
-		//		//Notife TreeView that a node is being collapsed
-		//		m_nodeCollapsedEventSource(targetNode, nullptr);
-		//	}
-		//}
+				//Notife TreeView that a node is being collapsed
+				m_nodeCollapsedEventSource(targetNode, null);
+			}
+		}
 
-		//void ViewModel::TreeViewNodeHasChildrenPropertyChanged(winrt::TreeViewNode const& sender, winrt::IDependencyPropertyChangedEventArgs const& args)
-		//{
-		//	if (m_TreeViewList)
-		//	{
-		//		auto targetNode = sender.as< winrt::TreeViewNode > ();
-		//		auto container = winrt::get_self<TreeViewList>(m_TreeViewList.get())->ContainerFromNode(targetNode);
-		//		if (container)
-		//		{
-		//			winrt::TreeViewItem targetItem = container.as< winrt::TreeViewItem > ();
-		//			targetItem.GlyphOpacity(targetNode.HasChildren() ? 1.0 : 0.0);
-		//		}
-		//	}
-		//}
-
-		//void ViewModel::IsContentMode(const bool value)
-		//{
-		//	m_isContentMode = value;
-		//}
+		private void TreeViewNodeHasChildrenPropertyChanged(TreeViewNode sender, DependencyPropertyChangedEventArgs args)
+		{
+			if (m_TreeViewList != null)
+			{
+				var targetNode = sender;
+				var container = m_TreeViewList.ContainerFromNode(targetNode);
+				if (container != null)
+				{
+					TreeViewItem targetItem = (TreeViewItem)container;
+					targetItem.GlyphOpacity = targetNode.HasChildren ? 1.0 : 0.0);
+				}
+			}
+		}
 
 		public bool IsContentMode { get => m_isContentMode; set => m_isContentMode = value; }
 
-		//void ViewModel::ClearEventTokenVectors()
+		//void ViewModel.ClearEventTokenVectors()
 		//{
 		//	// Remove ChildrenChanged and ExpandedChanged events
-		//	auto inner = GetVectorInnerImpl();
+		//	var inner = GetVectorInnerImpl();
 		//	for (uint32_t i = 0; i < Size(); i++)
 		//	{
-		//		if (auto current = inner->SafeGetAt(i))
+		//		if (var current = inner.SafeGetAt(i))
 		//        {
-		//		auto tvnCurrent = winrt::get_self<TreeViewNode>(current.as< winrt::TreeViewNode > ());
-		//		tvnCurrent->ChildrenChanged(m_collectionChangedEventTokenVector.at(i));
-		//		tvnCurrent->RemoveExpandedChanged(m_IsExpandedChangedEventTokenVector.at(i));
+		//		var tvnCurrent = get_self<TreeViewNode>(current.as< TreeViewNode > ());
+		//		tvnCurrent.ChildrenChanged(m_collectionChangedEventTokenVector.at(i));
+		//		tvnCurrent.RemoveExpandedChanged(m_IsExpandedChangedEventTokenVector.at(i));
 		//	}
 		//}
 
 		//    // Remove SelectedNodeChildrenChangtedEvent
-		//    if (auto selectedNodes = m_selectedNodes.safe_get())
+		//    if (var selectedNodes = m_selectedNodes.safe_get())
 		//    {
 		//        for (uint32_t i = 0; i<selectedNodes.Size(); i++)
 		//        {
-		//            if (auto current = selectedNodes.GetAt(i))
+		//            if (var current = selectedNodes.GetAt(i))
 		//            {
-		//                auto node = winrt::get_self<TreeViewNode>(current.as< winrt::TreeViewNode > ());
-		//node->ChildrenChanged(m_selectedNodeChildrenChangedEventTokenVector[i]);
+		//                var node = get_self<TreeViewNode>(current.as< TreeViewNode > ());
+		//node.ChildrenChanged(m_selectedNodeChildrenChangedEventTokenVector[i]);
 		//            }
 		//        }
 		//    }

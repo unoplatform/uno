@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml.Controls
 						{
 							var droppedOnNode = treeView.NodeFromContainer(droppedOnItem);
 							var selectedRoots = treeViewList.GetRootsOfSelectedSubtrees();
-							for (var node = selectedRoots)
+							foreach (var node in selectedRoots)
 							{
 								var nodeIndex = treeViewList.FlatIndex(node);
 								if (treeViewList.IsFlatIndexValid(nodeIndex))
@@ -138,18 +138,18 @@ namespace Windows.UI.Xaml.Controls
 				TreeViewNode draggedOverNode = treeView.NodeFromContainer(draggedOverItem);
 				TreeViewNode draggedNode = treeViewList.DraggedTreeViewNode;
 
-				if (draggedNode && treeView.CanReorderItems)
+				if (draggedNode != null && treeView.CanReorderItems)
 				{
 					if (treeViewList.IsMutiSelectWithSelectedItems)
 					{
 						if (treeViewList.IsSelected(draggedOverNode))
 						{
-							args.AcceptedOperation(DataPackageOperation.None);
+							args.AcceptedOperation = DataPackageOperation.None;
 							treeViewList.SetDraggedOverItem(null);
 						}
 						else
 						{
-							args.AcceptedOperation(DataPackageOperation.Move);
+							args.AcceptedOperation = DataPackageOperation.Move;
 							treeViewList.SetDraggedOverItem(draggedOverItem);
 						}
 					}
@@ -183,11 +183,11 @@ namespace Windows.UI.Xaml.Controls
 			args.DragUIOverride.IsGlyphVisible = true;
 
 			var treeView = AncestorTreeView;
-			if (treeView && treeView.CanReorderItems && !args.Handled)
+			if (treeView != null && treeView.CanReorderItems && !args.Handled)
 			{
 				var treeViewList = treeView.ListControl;
 				TreeViewNode draggedNode = treeViewList.DraggedTreeViewNode;
-				if (draggedNode)
+				if (draggedNode != null)
 				{
 					TreeViewNode draggedOverNode = treeView.NodeFromContainer(draggedOverItem);
 					TreeViewNode walkNode = draggedOverNode.Parent;

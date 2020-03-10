@@ -3,145 +3,166 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Android.Database;
+using Windows.Foundation.Collections;
+using Windows.UI.Xaml.Controls;
+using TreeNodeSelectionState = Windows.UI.Xaml.Controls.TreeViewNode.TreeNodeSelectionState;
 
-namespace Uno.UI.UI.Xaml.Controls.TreeView
+namespace Windows.UI.Xaml.Controls
 {
 	internal partial class TreeViewViewModel
-    {
-		//		// Need to update node selection states on UI before vector changes.
-		//		// Listen on vector change events don't solve the problem because the event already happened when the event handler gets called.
-		//		// i.e. the node is alreay gone when we get to ItemRemoved callback.
-		//#pragma region SelectedTreeNodeVector
+	{
+		// Need to update node selection states on UI before vector changes.
+		// Listen on vector change events don't solve the problem because the event already happened when the event handler gets called.
+		// i.e. the node is alreay gone when we get to ItemRemoved callback.
+		private class SelectedTreeNodeVector : ObservableVector<TreeViewNode>
+		{
+			TreeViewViewModel m_viewModel = null;
 
-		//		typedef typename VectorOptionsFromFlag<winrt::TreeViewNode, MakeVectorParam<VectorFlag::Observable, VectorFlag::DependencyObjectBase>()> SelectedTreeNodeVectorOptions;
+			private void UpdateSelection(TreeViewNode node, TreeNodeSelectionState state)
+			{
+				if (node.SelectionState != state)
+				{
+					var viewModel = m_viewModel;
 
-		//class SelectedTreeNodeVector :
+					if (viewModel != null)
+					{
+						viewModel.UpdateSelection(node, state);
+						viewModel.NotifyContainerOfSelectionChange(node, state);
+					}
+				}
+			}
 
-		//	public ReferenceTracker<
-		//	SelectedTreeNodeVector,
-		//	reference_tracker_implements_t<typename SelectedTreeNodeVectorOptions::VectorType>::type,
-		//	typename TreeViewNodeVectorOptions::IterableType,
-		//	typename TreeViewNodeVectorOptions::ObservableVectorType>,
-		//    public TreeViewNodeVectorOptions::IVectorOwner
-		//{
-		//    Implement_Vector_Read(SelectedTreeNodeVectorOptions)
+			public void SetViewModel(TreeViewViewModel viewModel)
+			{
+				m_viewModel = viewModel;
+			}
 
-		//private:
-		//    winrt::weak_ref<ViewModel> m_viewModel { nullptr };
+			// Default write methods will trigger TreeView visual updates.
+			// If you want to update vector content without notifying TreeViewNodes, use "core" version of the methods.
+			internal void InsertAtCore(int index, TreeViewNode node)
+			{
+				GetVectorInnerImpl().Insert(index, node);
 
-		//		void UpdateSelection(winrt::TreeViewNode const& node, TreeNodeSelectionState state)
-		//    {
-		//        if (winrt::get_self<TreeViewNode>(node)->SelectionState() != state)
-		//        {
-		//            if (auto viewModel = m_viewModel.get())
-		//            {
-		//                viewModel->UpdateSelection(node, state);
-		//		viewModel->NotifyContainerOfSelectionChange(node, state);
-		//	}
-		//}
-		//    }
+				// Keep SelectedItems and SelectedNodes in sync
+				var viewModel = m_viewModel;
+				if (viewModel != null)
+				{
+					var selectedItems = viewModel.SelectedItems;
+					if (selectedItems.Count != Count)
+					{
+						var listControl = viewModel.ListControl;
+						if (listControl != null)
+						{
+							var item = listControl.ItemFromNode(node);
+							if (item != null)
+							{
+								selectedItems.Insert(index, item);
+							}
+						}
+					}
+				}
+			}
 
-		//public:
-		//    void SetViewModel(ViewModel& viewModel)
-		//{
-		//	m_viewModel = viewModel.get_weak();
-		//}
+			internal void RemoveAtCore(int index)
+			{
+				GetVectorInnerImpl().RemoveAt(index);
 
-		//void Append(winrt::TreeViewNode const& node)
-		//{
-		//	InsertAt(Size(), node);
-		//}
+				// Keep SelectedItems and SelectedNodes in sync
+				var viewModel = m_viewModel;
+				if (viewModel != null)
+				{
+					var selectedItems = viewModel.SelectedItems;
+					if (Count != selectedItems.Count)
+					{
+						selectedItems.RemoveAt(index);
+					}
+				}
+			}
 
-		//void InsertAt(unsigned int index, winrt::TreeViewNode const& node)
-		//{
-		//	if (!Contains(node))
-		//	{
-		//		// UpdateSelection will call InsertAtCore
-		//		UpdateSelection(node, TreeNodeSelectionState::Selected);
-		//	}
-		//}
+			//void InsertAt(int index, TreeViewNode node)
+			//{
+			//	if (!Contains(node))
+			//	{
+			//		// UpdateSelection will call InsertAtCore
+			//		UpdateSelection(node, TreeNodeSelectionState.Selected);
+			//	}
+			//}
 
-		//void SetAt(unsigned int index, winrt::TreeViewNode const& node)
-		//{
-		//	RemoveAt(index);
-		//	InsertAt(index, node);
-		//}
 
-		//void RemoveAt(unsigned int index)
-		//{
-		//	auto inner = GetVectorInnerImpl();
-		//	auto oldNode = winrt::get_self<TreeViewNode>(inner->GetAt(index));
-		//	// UpdateNodeSelection will call RemoveAtCore
-		//	UpdateSelection(*oldNode, TreeNodeSelectionState::UnSelected);
-		//}
+			//#pragma region SelectedTreeNodeVector
 
-		//void RemoveAtEnd()
-		//{
-		//	RemoveAt(Size() - 1);
-		//}
+			//		typedef typename VectorOptionsFromFlag<winrt::TreeViewNode, MakeVectorParam<VectorFlag::Observable, VectorFlag::DependencyObjectBase>()> SelectedTreeNodeVectorOptions;
 
-		//void ReplaceAll(winrt::array_view<winrt::TreeViewNode const> nodes)
-		//{
-		//	Clear();
+			//class SelectedTreeNodeVector :
 
-		//	for (auto const&node : nodes)
-		//        {
-		//		Append(node);
-		//	}
-		//}
+			//	public ReferenceTracker<
+			//	SelectedTreeNodeVector,
+			//	reference_tracker_implements_t<typename SelectedTreeNodeVectorOptions::VectorType>::type,
+			//	typename TreeViewNodeVectorOptions::IterableType,
+			//	typename TreeViewNodeVectorOptions::ObservableVectorType>,
+			//    public TreeViewNodeVectorOptions::IVectorOwner
+			//{
+			//    Implement_Vector_Read(SelectedTreeNodeVectorOptions)
 
-		//void Clear()
-		//{
-		//	while (Size() > 0)
-		//	{
-		//		RemoveAtEnd();
-		//	}
-		//}
+			//private:
+			//    
+			//}
+			//    }
 
-		//bool Contains(winrt::TreeViewNode const& node)
-		//{
-		//	uint32_t index;
-		//	return GetVectorInnerImpl()->IndexOf(node, index);
-		//}
+			//public:
+			//   
 
-		//// Default write methods will trigger TreeView visual updates.
-		//// If you want to update vector content without notifying TreeViewNodes, use "core" version of the methods.
-		//void InsertAtCore(unsigned int index, winrt::TreeViewNode const& node)
-		//{
-		//	GetVectorInnerImpl()->InsertAt(index, node);
 
-		//	// Keep SelectedItems and SelectedNodes in sync
-		//	if (auto viewModel = m_viewModel.get())
-		//        {
-		//		auto selectedItems = viewModel->GetSelectedItems();
-		//		if (selectedItems.Size() != Size())
-		//		{
-		//			if (auto listControl = viewModel->ListControl())
-		//                {
-		//				if (auto item = winrt::get_self<TreeViewList>(listControl)->ItemFromNode(node))
-		//                    {
-		//					selectedItems.InsertAt(index, item);
-		//				}
-		//			}
-		//		}
-		//	}
-		//}
 
-		//void RemoveAtCore(unsigned int index)
-		//{
-		//	GetVectorInnerImpl()->RemoveAt(index);
 
-		//	// Keep SelectedItems and SelectedNodes in sync
-		//	if (auto viewModel = m_viewModel.get())
-		//        {
-		//		auto selectedItems = viewModel->GetSelectedItems();
-		//		if (Size() != selectedItems.Size())
-		//		{
-		//			selectedItems.RemoveAt(index);
-		//		}
-		//	}
-		//}
-		//};
+
+			//void SetAt(unsigned int index, winrt::TreeViewNode const& node)
+			//{
+			//	RemoveAt(index);
+			//	InsertAt(index, node);
+			//}
+
+			//void RemoveAt(unsigned int index)
+			//{
+			//	auto inner = GetVectorInnerImpl();
+			//	auto oldNode = winrt::get_self<TreeViewNode>(inner->GetAt(index));
+			//	// UpdateNodeSelection will call RemoveAtCore
+			//	UpdateSelection(*oldNode, TreeNodeSelectionState::UnSelected);
+			//}
+
+			//void RemoveAtEnd()
+			//{
+			//	RemoveAt(Size() - 1);
+			//}
+
+			//void ReplaceAll(winrt::array_view<winrt::TreeViewNode const> nodes)
+			//{
+			//	Clear();
+
+			//	for (auto const&node : nodes)
+			//        {
+			//		Append(node);
+			//	}
+			//}
+
+			//void Clear()
+			//{
+			//	while (Size() > 0)
+			//	{
+			//		RemoveAtEnd();
+			//	}
+			//}
+
+			//bool Contains(winrt::TreeViewNode const& node)
+			//{
+			//	uint32_t index;
+			//	return GetVectorInnerImpl()->IndexOf(node, index);
+			//}
+
+		}
+
+
 
 		//#pragma endregion
 
@@ -151,7 +172,10 @@ namespace Uno.UI.UI.Xaml.Controls.TreeView
 
 		//typedef typename VectorOptionsFromFlag<winrt::IInspectable, MakeVectorParam<VectorFlag::Observable, VectorFlag::DependencyObjectBase>()> SelectedItemsVectorOptions;
 
-		//class SelectedItemsVector :
+		private class SelectedItemsVector : ObservableVector<object>
+		{
+
+		}
 
 		//	public ReferenceTracker<
 		//	SelectedItemsVector,
