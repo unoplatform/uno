@@ -39,7 +39,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			border.Measure(new Size(1000, 1000));
 			border.Arrange(new Rect(0, 0, 1000, 1000));
 
-			Assert.AreEqual(expectedSize, Math.Round(ring.ActualWidth));
 			Assert.AreEqual(expectedSize, Math.Round(ring.ActualHeight));
 		}
 
