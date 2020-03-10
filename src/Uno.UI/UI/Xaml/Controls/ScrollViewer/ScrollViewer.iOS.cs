@@ -48,7 +48,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (this.FindFirstParent<TextBox>() != null)
 			{
-				var multiline = this.FindFirstChild<MultilineTextBoxView>();
+				var multiline = ((UIView)this).FindFirstChild<MultilineTextBoxView>();
 				if (multiline != null)
 				{
 					_scrollableContainer = multiline;
