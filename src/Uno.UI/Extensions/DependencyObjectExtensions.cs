@@ -32,11 +32,12 @@ namespace Uno.UI.Extensions
 	internal static class DependencyObjectExtensions
 	{
 		/// <summary>
-		/// Get an enumerable sequence of all the parent objects of a given element.
+		/// ** Recursively ** gets an enumerable sequence of all the parent objects of a given element.
+		/// Parents are ordered from bottom to the top, i.e. from direct parent to the root of the window.
 		/// </summary>
 		/// <param name="element">The element to search from</param>
 		/// <param name="includeCurrent">Determines if the current <paramref name="element"/> should be included or not.</param>
-		public static IEnumerable<DependencyObject> GetParentHierarchy(this DependencyObject element, bool includeCurrent = true)
+		public static IEnumerable<DependencyObject> GetAllParents(this DependencyObject element, bool includeCurrent = true)
 		{
 			if (includeCurrent)
 			{
@@ -60,7 +61,7 @@ namespace Uno.UI.Extensions
 		/// <returns>The first found parent that is of the given type.</returns>
 		public static T FindFirstParent<T>(this DependencyObject element, bool includeCurrent = true)
 			where T : DependencyObject
-			=> element.GetParentHierarchy(includeCurrent).OfType<T>().FirstOrDefault();
+			=> element.GetAllParents(includeCurrent).OfType<T>().FirstOrDefault();
 
 		/// <summary>
 		/// Search for the first parent of the given type that is matching the given predicate.
@@ -72,7 +73,7 @@ namespace Uno.UI.Extensions
 		/// <returns>The first found parent that is of the given type.</returns>
 		public static T FindFirstParent<T>(this DependencyObject element, Func<T, bool> predicate, bool includeCurrent = true)
 			where T : DependencyObject
-			=> element.GetParentHierarchy(includeCurrent).OfType<T>().FirstOrDefault(predicate);
+			=> element.GetAllParents(includeCurrent).OfType<T>().FirstOrDefault(predicate);
 
 		/// <summary>
 		/// Gets direct children of the given DependencyObject

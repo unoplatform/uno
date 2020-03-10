@@ -63,6 +63,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			Assert.AreEqual("111;105;174;178|145;141;100;100", str);
 		}
 
+#if !WINDOWS_UWP // Cannot create a DataTemplate on UWP
 		[TestMethod]
 		[RunsOnUIThread]
 		public async Task When_TransformToVisual_ThroughListView()
@@ -134,6 +135,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 				Assert.IsTrue(Math.Abs(borderToSut.Height - 42) < tolerance);
 			}
 		}
-
+#endif
 	}
 }

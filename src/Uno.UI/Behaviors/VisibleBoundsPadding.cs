@@ -22,6 +22,7 @@ using AppKit;
 #if IS_UNO
 using _VisibleBoundsPadding = Uno.UI.Behaviors.InternalVisibleBoundsPadding;
 #else
+using Uno.UI.Toolkit.Extensions;
 using _VisibleBoundsPadding = Uno.UI.Toolkit.VisibleBoundsPadding;
 #endif
 
