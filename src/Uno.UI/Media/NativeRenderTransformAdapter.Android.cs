@@ -52,7 +52,7 @@ namespace Uno.UI.Media
 			{
 				this.Log().Error(
 					$"A RenderTransform was set on '{Owner}', but its parent is not a BindableView ({newParent.GetType().Name}), "
-					+ $"so the transform won't have any effect.");
+					+ "so the transform won't have any effect.");
 			}
 		}
 

@@ -3,14 +3,14 @@
 #if XAMARIN_ANDROID
 <# 
 	AddClass("Uno.UI.Controls.Legacy", "GridView");
-	AddClass("Windows.UI.Xaml", "FrameworkElement", overridesAttachedToWindow:true, overridesOnLayout: false, isUnoMotionTarget: true);
+	AddClass("Windows.UI.Xaml", "FrameworkElement", overridesAttachedToWindow:true, overridesOnLayout: false, isUnoMotionTarget: true, hasLayouter: true);
 	AddClass("Uno.UI.Controls.Legacy", "ListView");
-	AddClass("Windows.UI.Xaml.Controls", "Image", hasNewMaxWidthHeight: true, hasAutomationPeer: true);
+	AddClass("Windows.UI.Xaml.Controls", "Image", hasNewMaxWidthHeight: true, hasAutomationPeer: true, hasLayouter: true);
 	AddClass("Uno.UI.Controls.Legacy", "HorizontalGridView");
 	AddClass("Uno.UI.Controls.Legacy", "HorizontalListView");
 	AddClass("Windows.UI.Xaml.Controls", "ProgressRing");
-	AddClass("Windows.UI.Xaml.Controls", "ScrollContentPresenter");
-	AddClass("Windows.UI.Xaml.Controls", "NativePagedView");
+	AddClass("Windows.UI.Xaml.Controls", "ScrollContentPresenter", callsBaseOnLayout: false, hasLayouter: true);
+	AddClass("Windows.UI.Xaml.Controls", "NativePagedView", hasLayouter: true);
 	AddClass("Windows.UI.Xaml.Controls", "TextBoxView", hasNewMinWidthHeight: true, hasNewMaxWidthHeight: true);
 	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase", isUnoMotionTarget: true);
 #> 

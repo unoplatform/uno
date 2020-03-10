@@ -47,6 +47,11 @@ namespace Windows.UI.Xaml
 			}
 			return ApplicationTheme.Light;
 		}
+
+		public void Exit()
+		{
+			Android.OS.Process.KillProcess(Android.OS.Process.MyPid());
+		}
 	}
 }
 #endif

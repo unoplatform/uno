@@ -30,7 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="docfx.console" Version="2.49.0" GeneratePathProperty="true" />
+		<PackageReference Include="docfx.console" Version="2.50.0" GeneratePathProperty="true" />
 		<PackageReference Include="Microsoft.VisualStudio.TextTemplating.15.0">
 			<Version>16.3.29316.127</Version>
 		</PackageReference>

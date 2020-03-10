@@ -271,7 +271,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected Size MeasureChild(View view, Size slotSize)
 		{
-			var frameworkElement = view as IFrameworkElement;
+			var frameworkElement = view as IFrameworkElementInternal;
 			var ret = default(Size);
 
 			// NaN values are accepted as input for MeasureOverride, but are treated as Infinity.
@@ -404,7 +404,8 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			if (frameworkElement == null || frameworkElement.Visibility == Visibility.Collapsed)
+			var hasLayouter = frameworkElement?.HasLayouter ?? false;
+			if (!hasLayouter || frameworkElement.Visibility == Visibility.Collapsed)
 			{
 				// For native controls only - because it's already set in Layouter.Measure()
 				// for Uno's managed controls

@@ -30,9 +30,12 @@ using Windows.UI.Xaml.Automation;
 
 namespace <#= mixin.NamespaceName #>
 {
-	public partial class <#= mixin.ClassName #> : IFrameworkElement, IXUidProvider
-	{		
+	public partial class <#= mixin.ClassName #> : IFrameworkElement, IXUidProvider, IFrameworkElementInternal
+	{
 		string IXUidProvider.Uid { get; set; }
+
+		bool IFrameworkElementInternal.HasLayouter => <#= mixin.HasLayouter #>;
+
 
 #if !<#= mixin.IsFrameworkElement #>
 		/// <summary>
@@ -1110,7 +1113,8 @@ namespace <#= mixin.NamespaceName #>
 		bool hasAttachedToWindow = true,
 		bool overridesAttachedToWindow = false,
 		bool isNewBackground = false,
-		bool hasAutomationPeer = false
+		bool hasAutomationPeer = false,
+		bool hasLayouter = false
 	)
 	{
 		_mixins.Add(
@@ -1125,6 +1129,7 @@ namespace <#= mixin.NamespaceName #>
 				IsNewBackground = isNewBackground ? "new" : "",
 				IsFrameworkElement = className == "FrameworkElement" ? "true" : "false",
 				HasAutomationPeer = hasAutomationPeer ? "true" : "false",
+				HasLayouter = hasLayouter ? "true" : "false"
 			}
 		);
 	}
@@ -1141,6 +1146,7 @@ namespace <#= mixin.NamespaceName #>
 		public string IsNewBackground;
 		public string IsFrameworkElement;
 		public string HasAutomationPeer;
+		public string HasLayouter;
 	}
 
 	private List<MixinParams> _mixins = new List<MixinParams>();
