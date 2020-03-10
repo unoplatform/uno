@@ -94,6 +94,12 @@
 		</ProjectReference>
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.17763'">
+		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI\Extensions\DependencyObjectExtensions.cs">
+			<Link>Uno.UI\Extensions\%(RecursiveDir)%(FileName)%(Extension)</Link>
+		</Compile>
+	</ItemGroup>
+
 	<!-- Override existing target, this project cannot be published -->
 	<Target Name="Publish" />
 	<PropertyGroup>

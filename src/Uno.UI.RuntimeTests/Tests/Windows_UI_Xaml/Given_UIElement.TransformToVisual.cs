@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Media;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
+using Uno.UI.Extensions;
 
 #if __IOS__
 using UIKit;

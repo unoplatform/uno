@@ -30,7 +30,11 @@ namespace Uno.UI.Samples.Tests
 		private const StringComparison StrComp = StringComparison.InvariantCultureIgnoreCase;
 		private Task _runner;
 		private CancellationTokenSource _cts = new CancellationTokenSource();
+#if DEBUG
+		private readonly TimeSpan DefaultUnitTestTimeout = TimeSpan.FromSeconds(300);
+#else
 		private readonly TimeSpan DefaultUnitTestTimeout = TimeSpan.FromSeconds(60);
+#endif
 
 		private enum TestResult
 		{
