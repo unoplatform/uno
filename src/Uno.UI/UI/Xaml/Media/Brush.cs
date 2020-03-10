@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Windows.UI.Xaml.Media;
 using System.ComponentModel;
 
 namespace Windows.UI.Xaml.Media
@@ -22,8 +21,8 @@ namespace Windows.UI.Xaml.Media
 
 		public double Opacity
 		{
-			get => (double)this.GetValue(OpacityProperty);
-			set => this.SetValue(OpacityProperty, value);
+			get => (double)GetValue(OpacityProperty);
+			set => SetValue(OpacityProperty, value);
 		}
 
 		// Using a DependencyProperty as the backing store for Opacity.  This enables animation, styling, binding, etc...
@@ -46,8 +45,8 @@ namespace Windows.UI.Xaml.Media
 
 		public Transform RelativeTransform
 		{
-			get => (Transform)this.GetValue(RelativeTransformProperty);
-			set => this.SetValue(RelativeTransformProperty, value);
+			get => (Transform)GetValue(RelativeTransformProperty);
+			set => SetValue(RelativeTransformProperty, value);
 		}
 
 		public static readonly DependencyProperty RelativeTransformProperty =
@@ -61,8 +60,13 @@ namespace Windows.UI.Xaml.Media
 					propertyChangedCallback: (s, e) =>
 						((Brush)s).OnRelativeTransformChanged((Transform)e.OldValue, (Transform)e.NewValue)));
 
-        protected virtual void OnRelativeTransformChanged(Transform oldValue, Transform newValue)
-        {
-        }
-    }
+		protected virtual void OnRelativeTransformChanged(Transform oldValue, Transform newValue)
+		{
+		}
+
+		private protected Color GetColorWithOpacity(Color referenceColor)
+		{
+			return Color.FromArgb((byte)(Opacity * referenceColor.A), referenceColor.R, referenceColor.G, referenceColor.B);
+		}
+	}
 }

@@ -12,10 +12,7 @@ namespace Windows.UI
 
 		public byte R { get; set; }
 
-		public static Color FromArgb(byte a, byte r, byte g, byte b)
-		{
-			return new Color(a, r, g, b);
-		}
+		public static Color FromArgb(byte a, byte r, byte g, byte b) => new Color(a, r, g, b);
 
 		private Color(byte a, byte r, byte g, byte b)
 		{
