@@ -26,6 +26,12 @@ namespace Windows.UI.Xaml.Controls
 			get { return (Brush)GetValue(GlyphBrushProperty); }
 			set { SetValue(GlyphBrushProperty, value); }
 		}
+			   
+		public double GlyphOpacity
+		{
+			get { return (double)GetValue(GlyphOpacityProperty); }
+			set { SetValue(GlyphOpacityProperty, value); }
+		}
 
 		public double GlyphSize
 		{
@@ -65,6 +71,9 @@ namespace Windows.UI.Xaml.Controls
 
 		public static readonly DependencyProperty GlyphBrushProperty =
 			DependencyProperty.Register(nameof(GlyphBrush), typeof(Brush), typeof(TreeViewItem), new PropertyMetadata(null));
+
+		public static readonly DependencyProperty GlyphOpacityProperty =
+			DependencyProperty.Register(nameof(GlyphOpacity), typeof(double), typeof(TreeViewItem), new PropertyMetadata(1.0));
 
 		public static readonly DependencyProperty GlyphSizeProperty =
 			DependencyProperty.Register(nameof(GlyphSize), typeof(double), typeof(TreeViewItem), new PropertyMetadata(0));
