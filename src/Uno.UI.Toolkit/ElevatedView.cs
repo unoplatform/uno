@@ -51,7 +51,6 @@ namespace Uno.UI.Toolkit
 		protected override void OnApplyTemplate()
 		{
 			_border = GetTemplateChild("PART_Border") as Border;
-			Console.WriteLine($"ApplyTemplate - border={_border}");
 
 			UpdateElevation();
 		}

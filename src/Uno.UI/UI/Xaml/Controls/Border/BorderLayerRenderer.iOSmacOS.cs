@@ -426,7 +426,7 @@ namespace Windows.UI.Xaml.Shapes
 
 			internal CGPath BoundsPath { get; set; }
 
-			public LayoutState(CGRect area, Brush background, Thickness borderThickness, Brush borderBrush,  CornerRadius cornerRadius, UIImage backgroundImage)
+			public LayoutState(CGRect area, Brush background, Thickness borderThickness, Brush borderBrush, CornerRadius cornerRadius, _Image backgroundImage)
 			{
 				Area = area;
 				Background = background;
