@@ -13,7 +13,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Private.Infrastructure;
 using Uno.Extensions;
 using Uno.UI.Extensions;
-
+using DependencyObjectExtensions = Uno.UI.Extensions.DependencyObjectExtensions;
 #if __IOS__
 using UIKit;
 #endif
@@ -106,7 +106,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 
 				var container = listView.ContainerFromIndex(index) as ContentControl
 					?? throw new NullReferenceException($"Cannot find the container of item {index}");
-				var border = container.FindFirstChild<Border>()
+				var border = DependencyObjectExtensions.FindFirstChild<Border>(container)
 					?? throw new NullReferenceException($"Cannot find the materialized border of item {index}");
 
 				var containerToListView = container.TransformToVisual(listView).TransformBounds(new Rect(0, 0, 42, 42));
