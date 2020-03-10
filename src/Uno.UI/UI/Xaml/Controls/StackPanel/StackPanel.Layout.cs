@@ -87,7 +87,10 @@ namespace Windows.UI.Xaml.Controls
 			var isHorizontal = Orientation == Windows.UI.Xaml.Controls.Orientation.Horizontal;
 			var previousChildSize = 0.0;
 
-			this.Log().Debug($"StackPanel/{Name}: Arranging {Children.Count} children.");
+			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+			{
+				this.Log().Debug($"StackPanel/{Name}: Arranging {Children.Count} children.");
+			}
 
 			// Shadow variables for evaluation performance
 			var spacing = Spacing;
