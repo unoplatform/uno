@@ -1,4 +1,4 @@
-# Release notes
+﻿# Release notes
 
 ### Features
 
@@ -44,6 +44,7 @@
 - Add XamlReader support for Primitive static resources
 - [Android] Add support for non-native `Popup` by default. Can be enabled through `FeatureConfiguration.Popup.UseNativePopup` set to false (See #2533 for more details)
 - Add template tags for the VS2019 VSIX template search experience
+- [iOS] #2746 Fix border thickness when a corner radius is set
 
 ### Breaking changes
 - `IconElement.AddIconElementView` is now `internal` so it is not accessible from outside.
