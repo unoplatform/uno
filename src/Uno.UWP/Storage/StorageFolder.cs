@@ -241,6 +241,52 @@ namespace Windows.Storage
 				await TryInitializeStorage();
 
 				Directory.Delete(this.Path, true);
-			});
+            });
+
+		internal async Task<IReadOnlyList<IStorageItem>> GetItemsTask()
+		{
+			var items = new List<IStorageItem>();
+
+			foreach (var folder in Directory.GetDirectories(this.Path))
+			{
+				items.Add(await StorageFolder.GetFolderFromPathAsync(folder));
+			}
+
+			foreach (var folder in Directory.GetFiles(this.Path))
+			{
+				items.Add(await StorageFile.GetFileFromPathAsync(folder));
+			}
+
+			return items.AsReadOnly();
+		}
+
+		public IAsyncOperation<IReadOnlyList<IStorageItem>> GetItemsAsync() => GetItemsTask().AsAsyncOperation<IReadOnlyList<IStorageItem>>();
+
+		internal async Task<IReadOnlyList<StorageFile>> GetFilesTask()
+		{
+			var items = new List<StorageFile>();
+
+			foreach (var folder in Directory.GetFiles(this.Path))
+			{
+				items.Add(await StorageFile.GetFileFromPathAsync(folder));
+			}
+			return items.AsReadOnly();
+		}
+
+		public IAsyncOperation<IReadOnlyList<StorageFile>> GetFilesAsync() => GetFilesTask().AsAsyncOperation<IReadOnlyList<StorageFile>>();
+
+		internal async Task<IReadOnlyList<StorageFolder>> GetFoldersTask()
+		{
+			var items = new List<StorageFolder>();
+
+			foreach (var folder in Directory.GetDirectories(this.Path))
+			{
+				items.Add(await StorageFolder.GetFolderFromPathAsync(folder));
+			}
+
+			return items.AsReadOnly();
+		}
+
+		public IAsyncOperation<IReadOnlyList<StorageFolder>> GetFoldersAsync() => GetFoldersTask().AsAsyncOperation<IReadOnlyList<StorageFolder>>();
 	}
 }
