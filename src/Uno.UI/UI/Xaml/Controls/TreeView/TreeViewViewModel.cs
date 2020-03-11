@@ -260,7 +260,7 @@ namespace Windows.UI.Xaml.Controls
 
 			//	// Add new RootNode & children
 			m_originNode = originNode;
-			m_rootNodeChildrenChangedEventToken = (originNode).ChildrenChanged({ this, &ViewModel.TreeViewNodeVectorChanged });
+			originNode.ChildrenChanged += TreeViewNodeVectorChanged;
 			originNode.IsExpanded = true;
 
 			int allOpenedDescendantsCount = 0;
@@ -328,70 +328,72 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		//void ViewModel.RemoveNodesAndDescendentsWithFlatIndexRange(unsigned int lowIndex, unsigned int highIndex)
-		//{
-		//	MUX_ASSERT(lowIndex <= highIndex);
+		private void RemoveNodesAndDescendentsWithFlatIndexRange(int lowIndex, int highIndex)
+		{
+			if (lowIndex > highIndex)
+			{
+				throw new ArgumentOutOfRangeException(nameof(lowIndex));
+			}
 
-		//	for (int i = static_cast<int>(highIndex); i >= static_cast<int>(lowIndex); i--)
-		//	{
-		//		RemoveNodeAndDescendantsFromView(GetNodeAt(i));
-		//	}
-		//}
+			for (int i = highIndex; i >= lowIndex; i--)
+			{
+				RemoveNodeAndDescendantsFromView(GetNodeAt(i));
+			}
+		}
 
-		//int ViewModel.GetNextIndexInFlatTree(const TreeViewNode& node)
-		//{
-		//	unsigned int index = 0;
-		//	bool isNodeInFlatList = IndexOfNode(node, index);
+		private int GetNextIndexInFlatTree(TreeViewNode node)
+		{
+			bool isNodeInFlatList = IndexOfNode(node, out var index);
 
-		//	if (isNodeInFlatList)
-		//	{
-		//		index++;
-		//	}
-		//	else
-		//	{
-		//		// node is Root node, so next index in flat tree is 0
-		//		index = 0;
-		//	}
-		//	return index;
-		//}
+			if (isNodeInFlatList)
+			{
+				index++;
+			}
+			else
+			{
+				// node is Root node, so next index in flat tree is 0
+				index = 0;
+			}
+			return index;
+		}
 
-		//// When ViewModel receives a event, it only includes the sender(parent TreeViewNode) and index.
-		//// We can't use sender[index] directly because it is already updated/removed
-		//// To find the removed TreeViewNode:
-		////   calcuate allOpenedDescendantsCount in sender[0..index-1] first
-		////   then add offset and finally return TreeViewNode by looking up the flat tree.
-		//TreeViewNode ViewModel.GetRemovedChildTreeViewNodeByIndex(TreeViewNode const& node, unsigned int childIndex)
-		//{
-		//	unsigned int allOpenedDescendantsCount = 0;
-		//	for (unsigned int i = 0; i < childIndex; i++)
-		//	{
-		//		TreeViewNode calcNode = node.Children().GetAt(i).as< TreeViewNode > ();
-		//		if (calcNode.IsExpanded())
-		//		{
-		//			allOpenedDescendantsCount += GetExpandedDescendantCount(calcNode);
-		//		}
-		//	}
+		// When ViewModel receives a event, it only includes the sender(parent TreeViewNode) and index.
+		// We can't use sender[index] directly because it is already updated/removed
+		// To find the removed TreeViewNode:
+		//   calcuate allOpenedDescendantsCount in sender[0..index-1] first
+		//   then add offset and finally return TreeViewNode by looking up the flat tree.
+		private TreeViewNode GetRemovedChildTreeViewNodeByIndex(TreeViewNode node, int childIndex)
+		{
+			var allOpenedDescendantsCount = 0;
+			for (var i = 0; i < childIndex; i++)
+			{
+				TreeViewNode calcNode = node.Children[i];
+				if (calcNode.IsExpanded)
+				{
+					allOpenedDescendantsCount += GetExpandedDescendantCount(calcNode);
+				}
+			}
 
-		//	unsigned int childIndexInFlatTree = GetNextIndexInFlatTree(node) + childIndex + allOpenedDescendantsCount;
-		//	return GetNodeAt(childIndexInFlatTree);
-		//}
+			var childIndexInFlatTree = GetNextIndexInFlatTree(node) + childIndex + allOpenedDescendantsCount;
+			return GetNodeAt(childIndexInFlatTree);
+		}
 
-		//int ViewModel.CountDescendants(const TreeViewNode& value)
-		//{
-		//	int descendantCount = 0;
-		//	unsigned int size = value.Children().Size();
-		//	for (unsigned int i = 0; i < size; i++)
-		//	{
-		//		var childNode = value.Children().GetAt(i).as< TreeViewNode > ();
-		//		descendantCount++;
-		//		if (childNode.IsExpanded())
-		//		{
-		//			descendantCount = descendantCount + CountDescendants(childNode);
-		//		}
-		//	}
+		private int CountDescendants(TreeViewNode value)
+		{
+			int descendantCount = 0;
+			var size = value.Children.Count;
+			for (var i = 0; i < size; i++)
+			{
+				var childNode = value.Children[i];
+				descendantCount++;
+				if (childNode.IsExpanded)
+				{
+					descendantCount = descendantCount + CountDescendants(childNode);
+				}
+			}
 
-		//	return descendantCount;
-		//}
+			return descendantCount;
+		}
 
 		private uint IndexOfNextSibling(TreeViewNode childNode)
 		{
@@ -426,7 +428,7 @@ namespace Windows.UI.Xaml.Controls
 			return stopIndex;
 		}
 
-		private uint GetExpandedDescendantCount(TreeViewNode parentNode)
+		private int GetExpandedDescendantCount(TreeViewNode parentNode)
 		{
 			var allOpenedDescendantsCount = 0;
 			for (var i = 0; i < parentNode.Children.Count; i++)

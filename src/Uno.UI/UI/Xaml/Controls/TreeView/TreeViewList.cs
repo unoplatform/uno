@@ -102,6 +102,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// IControlOverrides
+		
 		protected override void OnDrop(DragEventArgs e)
 		{
 			DragEventArgs args = e;
@@ -138,6 +139,9 @@ namespace Windows.UI.Xaml.Controls
 
 			base.OnDrop(e);
 		}
+
+		// Required as OnDrop is protected and can't be accessed from outside
+		internal void OnDropInternal(DragEventArgs e) => OnDrop(e);
 
 		private void MoveNodeInto(TreeViewNode node, TreeViewNode insertAtNode)
 		{
@@ -546,7 +550,7 @@ namespace Windows.UI.Xaml.Controls
 			return index >= 0 && index < ListViewModel.Size;
 		}
 
-		private int RemoveNodeFromParent(TreeViewNode node)
+		internal int RemoveNodeFromParent(TreeViewNode node)
 		{
 			var children = node.Parent.Children;
 			int indexInParent = children.IndexOf(node);

@@ -662,6 +662,22 @@ namespace Windows.UI.Xaml.Controls
 			return false;
 		}
 
+		internal bool IsSelected(object item)
+		{
+			switch (SelectionMode)
+			{
+				case ListViewSelectionMode.None:
+					return false;
+				case ListViewSelectionMode.Single:
+					return item == SelectedItem;
+				case ListViewSelectionMode.Multiple:
+				case ListViewSelectionMode.Extended:
+					return SelectedItems.Contains(item);
+			}
+
+			return false;
+		}
+
 		/// <summary>
 		/// Try to fetch more items, if the ItemsSource supports <see cref="ISupportIncrementalLoading"/>.
 		/// </summary>

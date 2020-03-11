@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 							}
 
 							args.Handled = true;
-							treeViewList.OnDrop(args);
+							treeViewList.OnDropInternal(args);
 						}
 						else
 						{
@@ -121,7 +121,7 @@ namespace Windows.UI.Xaml.Controls
 
 								// If not set to true then the Reorder code of listview will override what is being done here.
 								args.Handled = true;
-								treeViewList.OnDrop(args);
+								treeViewList.OnDropInternal(args);
 							}
 							else
 							{
