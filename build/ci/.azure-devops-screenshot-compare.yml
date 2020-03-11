@@ -6,7 +6,7 @@ jobs:
     - Wasm_UITests_Automated
     - Android_Tests
     - iOS_Tests
-  condition: always()
+  condition: succeededOrFailed()
 
   pool:
     vmImage: 'vs2017-win2016'
