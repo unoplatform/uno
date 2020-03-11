@@ -9,9 +9,10 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class TreeView : Control
 	{
+		private const string c_listControlName = "ListControl";
+
 		private TreeViewNode m_rootNode;
 		private IList<TreeViewNode> m_pendingSelectedNodes;
-		private TreeViewList m_listControl;
 
 		public TreeView()
 		{
@@ -21,7 +22,7 @@ namespace Windows.UI.Xaml.Controls
 			m_pendingSelectedNodes = new List<TreeViewNode>();
 		}
 
-		internal TreeViewList ListControl { get => m_listControl; private set => m_listControl = value; }
+		internal TreeViewList ListControl { get; private set; }
 
 		public IList<TreeViewNode> RootNodes => m_rootNode.Children;
 
@@ -137,15 +138,15 @@ namespace Windows.UI.Xaml.Controls
 		private void OnItemClick(object sender, ItemClickEventArgs args)
 		{
 			var itemInvokedArgs = new TreeViewItemInvokedEventArgs(args.ClickedItem);
-			//TODO: m_itemInvokedEventSource(*this, *itemInvokedArgs);
+			ItemInvoked?.Invoke(this, itemInvokedArgs);
 		}
 
 		private void OnContainerContentChanging(object sender, ContainerContentChangingEventArgs args)
 		{
-			//	m_containerContentChangedSource(sender.as< winrt::ListView > (), args);
+			ContainerContentChanged?.Invoke((TreeView)sender, args);
 		}
 
-		private void OnNodeExpanding(TreeViewNode sender, EventArgs args)
+		private void OnNodeExpanding(TreeViewNode sender, object args)
 		{
 			var treeViewExpandingEventArgs = new TreeViewExpandingEventArgs(sender);
 
@@ -163,11 +164,11 @@ namespace Windows.UI.Xaml.Controls
 					templateSettings.ExpandedGlyphVisibility = Visibility.Visible;
 					templateSettings.CollapsedGlyphVisibility = Visibility.Collapsed;
 				}
-				//TODO: m_expandingEventSource(*this, *treeViewExpandingEventArgs);
+				Expanding?.Invoke(this, treeViewExpandingEventArgs);
 			}
 		}
 
-		private void OnNodeCollapsed(TreeViewNode sender, EventArgs args)
+		private void OnNodeCollapsed(TreeViewNode sender, object args)
 		{
 			var treeViewCollapsedEventArgs = new TreeViewCollapsedEventArgs(sender);
 
@@ -186,7 +187,7 @@ namespace Windows.UI.Xaml.Controls
 					templateSettings.ExpandedGlyphVisibility = Visibility.Collapsed;
 					templateSettings.CollapsedGlyphVisibility = Visibility.Visible;
 				}
-				//TODO: m_collapsedEventSource(*this, *treeViewCollapsedEventArgs);
+				Collapsed?.Invoke(this, treeViewCollapsedEventArgs);
 			}
 		}
 
@@ -219,7 +220,6 @@ namespace Windows.UI.Xaml.Controls
 							UpdateItemsSelectionMode(true);
 						}
 						break;
-
 				}
 			}
 			else if (property == ItemsSourceProperty)
@@ -239,31 +239,31 @@ namespace Windows.UI.Xaml.Controls
 		private void OnListControlDragItemsStarting(object sender, DragItemsStartingEventArgs args)
 		{
 			var treeViewArgs = new TreeViewDragItemsStartingEventArgs(args);
-			//TODO: m_dragItemsStartingEventSource(*this, *treeViewArgs);
+			DragItemsStarting?.Invoke(this, treeViewArgs);
 		}
 
 		private void OnListControlDragItemsCompleted(object sender, DragItemsCompletedEventArgs args)
 		{
-			//		const auto newParent = [items = args.Items(), listControl = ListControl(), rootNode = m_rootNode.get()]()
+			object CreateNewParent(IReadOnlyList<object> items, TreeViewList listControl, TreeViewNode rootNode)
+			{
+				if (listControl != null && items != null && items.Count > 0)
+				{
+					var draggedNode = listControl.NodeFromItem(items[0]);
+					if (draggedNode != null)
+					{
+						var parentNode = draggedNode.Parent;
+						if (parentNode != null && parentNode != rootNode)
+						{
+							return ListControl.ItemFromNode(parentNode);
+						}
+					}
+				}
+				return null;
+			}
+			var newParent = CreateNewParent(args.Items, ListControl, m_rootNode);
 
-
-			//	{
-			//			if (listControl && items && items.Size() > 0)
-			//			{
-			//				if (const auto draggedNode = listControl->NodeFromItem(items.GetAt(0)))
-			//            {
-			//					const auto parentNode = draggedNode.Parent();
-			//					if (parentNode && parentNode != rootNode)
-			//					{
-			//						return listControl->ItemFromNode(parentNode);
-			//					}
-			//				}
-			//			}
-			//			return static_cast<winrt::IInspectable>(nullptr);
-			//		} ();
-
-			//		const auto treeViewArgs = winrt::make_self<TreeViewDragItemsCompletedEventArgs>(args, newParent);
-			//		m_dragItemsCompletedEventSource(*this, *treeViewArgs);
+			var treeViewArgs = new TreeViewDragItemsCompletedEventArgs(args, newParent);
+			DragItemsCompleted?.Invoke(this, treeViewArgs);
 		}
 
 
@@ -305,10 +305,10 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnApplyTemplate()
 		{
-			ListControl = GetTemplateChild(c_listControlName);
+			ListControl = (TreeViewList)GetTemplateChild(c_listControlName);
 			if (ListControl != null)
 			{
-				var listPtr = m_listControl;
+				var listPtr = ListControl;
 				var viewModel = listPtr.ListViewModel;
 				if (m_rootNode == null)
 				{
@@ -321,8 +321,8 @@ namespace Windows.UI.Xaml.Controls
 				}
 				viewModel.PrepareView(m_rootNode);
 				viewModel.SetOwningList(ListControl);
-				viewModel.NodeExpanding({ this, &TreeView::OnNodeExpanding });
-				viewModel.NodeCollapsed({ this, &TreeView::OnNodeCollapsed });
+				viewModel.NodeExpanding += OnNodeExpanding;
+				viewModel.NodeCollapsed += OnNodeCollapsed;
 
 				var selectionMode = SelectionMode;
 				if (selectionMode == TreeViewSelectionMode.Single)
@@ -338,19 +338,19 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
-				m_itemClickRevoker = listControl.ItemClick(winrt::auto_revoke, { this, &TreeView::OnItemClick });
-				m_containerContentChangingRevoker = listControl.ContainerContentChanging(winrt::auto_revoke, { this, &TreeView::OnContainerContentChanging });
-				m_dragItemsStartingRevoker = listControl.DragItemsStarting(winrt::auto_revoke, { this, &TreeView::OnListControlDragItemsStarting });
-				m_dragItemsCompletedRevoker = listControl.DragItemsCompleted(winrt::auto_revoke, { this, &TreeView::OnListControlDragItemsCompleted });
+				ListControl.ItemClick += OnItemClick;
+				ListControl.ContainerContentChanging += OnContainerContentChanging;
+				ListControl.DragItemsStarting += OnListControlDragItemsStarting;
+				ListControl.DragItemsCompleted += OnListControlDragItemsCompleted;
 
-				if (m_pendingSelectedNodes && m_pendingSelectedNodes.get().Size() > 0)
+				if (m_pendingSelectedNodes != null && m_pendingSelectedNodes.Count > 0)
 				{
-					auto selectedNodes = viewModel->GetSelectedNodes();
-					for (auto const&node : m_pendingSelectedNodes.get())
-				            {
+					var selectedNodes = viewModel.SelectedNodes;
+					foreach (var node in m_pendingSelectedNodes)
+					{
 						selectedNodes.Append(node);
 					}
-					m_pendingSelectedNodes.get().Clear();
+					m_pendingSelectedNodes.Clear();
 				}
 			}
 		}

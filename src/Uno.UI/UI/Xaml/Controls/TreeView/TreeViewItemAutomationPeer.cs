@@ -70,26 +70,26 @@ namespace Windows.UI.Xaml.Automation.Peers
 		// IAutomationPeerOverrides
 		protected override object GetPatternCore(PatternInterface patternInterface)
 		{
-		    if (patternInterface == PatternInterface.ExpandCollapse)
-		    {
-		        return this;
-		    }
+			if (patternInterface == PatternInterface.ExpandCollapse)
+			{
+				return this;
+			}
 
 			var treeView = GetParentTreeView();
 
 			if (treeView != null)
-		    {
-		        if (patternInterface == PatternInterface.SelectionItem && treeView.SelectionMode != TreeViewSelectionMode.None)
-		        {
-		            return this;
-		        }
-		    }
+			{
+				if (patternInterface == PatternInterface.SelectionItem && treeView.SelectionMode != TreeViewSelectionMode.None)
+				{
+					return this;
+				}
+			}
 
-		    return base.GetPatternCore(patternInterface);
+			return base.GetPatternCore(patternInterface);
 		}
 
 
-protected override AutomationControlType GetAutomationControlTypeCore()
+		protected override AutomationControlType GetAutomationControlTypeCore()
 		{
 			return AutomationControlType.TreeItem;
 		}
@@ -132,7 +132,7 @@ protected override AutomationControlType GetAutomationControlTypeCore()
 			{
 				var targetParentNode = targetNode.Parent;
 				if (targetParentNode != null)
-		        {
+				{
 					var position = targetParentNode.Children.IndexOf(targetNode);
 					if (position != -1)
 					{
@@ -154,7 +154,7 @@ protected override AutomationControlType GetAutomationControlTypeCore()
 			{
 				var targetParentNode = targetNode.Parent;
 				if (targetParentNode != null)
-		        {
+				{
 					var size = targetParentNode.Children.Count;
 					setSize = size;
 				}
@@ -178,7 +178,7 @@ protected override AutomationControlType GetAutomationControlTypeCore()
 			return level;
 		}
 
-		private void RaiseExpandCollapseAutomationEvent(ExpandCollapseState newState)
+		internal void RaiseExpandCollapseAutomationEvent(ExpandCollapseState newState)
 		{
 			if (AutomationPeer.ListenerExists(AutomationEvents.PropertyChanged))
 			{

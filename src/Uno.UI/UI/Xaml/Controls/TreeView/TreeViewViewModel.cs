@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Windows.Foundation;
 using Windows.Foundation.Collections;
 using TreeNodeSelectionState = Windows.UI.Xaml.Controls.TreeViewNode.TreeNodeSelectionState;
 
@@ -54,6 +55,7 @@ namespace Windows.UI.Xaml.Controls
 			value.IsExpanded = false;
 		}
 
+		internal event TypedEventHandler<TreeViewNode, object> NodeExpanding;
 		//event_token ViewModel.NodeExpanding(const TypedEventHandler<TreeViewNode, IInspectable>& handler)
 		//{
 		//	return m_nodeExpandingEventSource.add(handler);
@@ -63,6 +65,8 @@ namespace Windows.UI.Xaml.Controls
 		//{
 		//	m_nodeExpandingEventSource.remove(token);
 		//}
+
+		internal event TypedEventHandler<TreeViewNode, object> NodeCollapsed;
 
 		//event_token ViewModel.NodeCollapsed(const TypedEventHandler<TreeViewNode, IInspectable>& handler)
 		//{
@@ -79,7 +83,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateSelection(m_originNode, TreeNodeSelectionState.Selected);
 		}
 
-		private void ModifySelectByIndex(int index, TreeNodeSelectionState state)
+		internal void ModifySelectByIndex(int index, TreeNodeSelectionState state)
 		{
 			var targetNode = GetNodeAt(index);
 			UpdateSelection(targetNode, state);
@@ -567,7 +571,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal IList<object> SelectedItems => m_selectedItems;
 
-		private TreeViewNode GetAssociatedNode(object item)
+		internal TreeViewNode GetAssociatedNode(object item)
 		{
 			return m_itemToNodeMap[item]; //TODO: Throw or null?
 		}

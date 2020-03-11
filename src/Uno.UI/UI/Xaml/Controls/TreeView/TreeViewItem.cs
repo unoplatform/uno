@@ -8,6 +8,7 @@ using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using TreeNodeSelectionState = Windows.UI.Xaml.Controls.TreeViewNode.TreeNodeSelectionState;
@@ -16,6 +17,11 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class TreeViewItem
 	{
+		private const long c_dragOverInterval = 1000 * 10000;
+		private const string c_multiSelectCheckBoxName = "MultiSelectCheckBox";
+		private const string c_expandCollapseChevronName = "ExpandCollapseChevron";
+
+
 		private bool m_expansionCycled;
 		private CheckBox m_selectionBox;
 		private DispatcherTimer m_expandContentTimer;
@@ -217,9 +223,9 @@ namespace Windows.UI.Xaml.Controls
 							else
 							{
 								// Initialize timer.
-								TimeSpan interval = TimeSpan::duration(c_dragOverInterval);
+								TimeSpan interval = new TimeSpan(c_dragOverInterval);
 								var expandContentTimer = new DispatcherTimer();
-								m_expandContentTimer.set(expandContentTimer);
+								m_expandContentTimer = expandContentTimer;
 								expandContentTimer.Interval = interval;
 								expandContentTimer.Tick += OnExpandContentTimerTick;
 								expandContentTimer.Start();
@@ -243,7 +249,7 @@ namespace Windows.UI.Xaml.Controls
 					treeViewList.SetDraggedOverItem(null);
 				}
 
-				if (m_expandContentTimer)
+				if (m_expandContentTimer != null)
 				{
 					m_expandContentTimer.Stop();
 				}
@@ -260,21 +266,21 @@ namespace Windows.UI.Xaml.Controls
 		{
 			RecycleEvents();
 
-			IControlProtected controlProtected = *this;
+			var controlProtected = this;
 			m_selectionBox = (CheckBox)GetTemplateChild(c_multiSelectCheckBoxName);
-			RegisterPropertyChangedCallback(winrt::SelectorItem::IsSelectedProperty(), { this, &TreeViewItem::OnIsSelectedChanged });
+			RegisterPropertyChangedCallback(SelectorItem.IsSelectedProperty, OnIsSelectedChanged);
 
-			if (m_selectionBox)
+			if (m_selectionBox != null)
 			{
-				m_checkedEventRevoker = m_selectionBox.get().Checked(winrt::auto_revoke, { this, &TreeViewItem::OnCheckToggle });
-				m_uncheckedEventRevoker = m_selectionBox.get().Unchecked(winrt::auto_revoke, { this, &TreeViewItem::OnCheckToggle });
+				m_selectionBox.Checked += OnCheckToggle;
+				m_selectionBox.Unchecked += OnCheckToggle;
 			}
 
 			var chevron = (UIElement)GetTemplateChild(c_expandCollapseChevronName);
 			if (chevron != null)
 			{
-				m_expandCollapseChevronPointerPressedToken = chevron.PointerPressed({ this, &TreeViewItem::OnExpandCollapseChevronPointerPressed });
-				m_expandCollapseChevron.set(chevron);
+				chevron.PointerPressed += OnExpandCollapseChevronPointerPressed;
+				m_expandCollapseChevron = chevron;
 			}
 			var node = TreeNode;
 			if (node != null && IsInContentMode)
@@ -285,11 +291,11 @@ namespace Windows.UI.Xaml.Controls
 			base.OnApplyTemplate();
 		}
 
-		//	TreeViewItem::~TreeViewItem()
-		//	{
-		//		// We only need to use safe_get in the deconstruction loop
-		//		RecycleEvents(true /* useSafeGet */);
-		//	}
+		~TreeViewItem()
+		{
+			// We only need to use safe_get in the deconstruction loop
+			RecycleEvents(true /* useSafeGet */);
+		}
 
 		private T GetAncestorView<T>()
 			where T : class
@@ -570,7 +576,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				var targetItem = lvi;
 				targetItem.Focus(FocusState.Keyboard);
-				listControl.UpdateDropTargetDropEffect(false, false, targetItem);
+				((TreeViewList)listControl).UpdateDropTargetDropEffect(false, false, targetItem);
 				AutomationPeer ancestorPeer = FrameworkElementAutomationPeer.FromElement(listControl);
 				ancestorPeer.RaiseAutomationEvent(AutomationEvents.Dropped);
 			}
@@ -715,16 +721,17 @@ namespace Windows.UI.Xaml.Controls
 			args.Handled = true;
 		}
 
-		private void RecycleEvents(bool useSafeGet)
+		private void RecycleEvents(bool useSafeGet = false)
 		{
-			if (var chevron = useSafeGet ? m_expandCollapseChevron : m_expandCollapseChevron.get())
-		    {
-				if (m_expandCollapseChevronPointerPressedToken.value)
-				{
-					chevron.PointerCanceled(m_expandCollapseChevronPointerPressedToken);
-					m_expandCollapseChevronPointerPressedToken.value = 0;
-				}
-			}
+			//var chevron = m_expandCollapseChevron;
+			//if (chevron != null)
+			//{
+			//	if (m_expandCollapseChevronPointerPressedToken.value)
+			//	{
+			//		chevron.PointerCanceled(m_expandCollapseChevronPointerPressedToken);
+			//		m_expandCollapseChevronPointerPressedToken.value = 0;
+			//	}
+			//}
 		}
 
 		///* static */
@@ -759,7 +766,7 @@ namespace Windows.UI.Xaml.Controls
 			var winrtBool = checkBox.IsChecked;
 			if (winrtBool != null)
 			{
-				if (winrtBool.Values)
+				if (winrtBool.Value)
 				{
 					return TreeNodeSelectionState.Selected;
 				}

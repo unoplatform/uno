@@ -12,7 +12,8 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class TreeViewList : ListView
 	{
-		private bool m_isMultiselectEnabled;
+		private bool m_isMultiselectEnabled = false;
+		private bool m_itemsSourceAttached = false;
 		private string m_dropTargetDropEffectString;
 		private UIElement m_draggedOverItem;
 		private int m_emptySlotIndex;
@@ -22,9 +23,9 @@ namespace Windows.UI.Xaml.Controls
 		{
 			ListViewModel = new TreeViewViewModel();
 
-			//		DragItemsStarting({ this, &TreeViewList.OnDragItemsStarting });
-			//    DragItemsCompleted({ this, &TreeViewList.OnDragItemsCompleted });
-			//    ContainerContentChanging({ this, &TreeViewList.OnContainerContentChanging });
+			DragItemsStarting += OnDragItemsStarting;
+			DragItemsCompleted += OnDragItemsCompleted;
+			ContainerContentChanging += OnContainerContentChanging;
 		}
 
 		internal TreeViewViewModel ListViewModel { get; private set; }
@@ -39,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 				var tvItem = (TreeViewItem)ContainerFromItem(dragItem);
 				m_draggedTreeViewNode = NodeFromContainer(tvItem);
 				bool isMultipleDragging = false;
-				if (IsMutiSelectWithSelectedItems())
+				if (IsMutiSelectWithSelectedItems)
 				{
 					int selectedCount = ListViewModel.SelectedNodes.Count;
 					if (selectedCount > 1)
@@ -112,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 					// Get the node at which we will insert
 					TreeViewNode insertAtNode = NodeAtFlatIndex(m_emptySlotIndex);
 
-					if (IsMutiSelectWithSelectedItems())
+					if (IsMutiSelectWithSelectedItems)
 					{
 						// Multiselect drag and drop. In the selected items, find all the selected subtrees 
 						// and move each of those subtrees.
@@ -301,7 +302,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void PrepareContainerForItemOverride(DependencyObject element, object item)
 		{
-			var itemNode = (TreeViewNode)NodeFromContainer(element));
+			var itemNode = (TreeViewNode)NodeFromContainer(element);
 			TreeViewItem itemContainer = (TreeViewItem)element;
 			var selectionState = itemNode.SelectionState;
 
@@ -363,7 +364,7 @@ namespace Windows.UI.Xaml.Controls
 		protected override AutomationPeer OnCreateAutomationPeer() =>
 			new TreeViewListAutomationPeer(this);
 
-		private string GetDropTargetDropEffect()
+		internal string GetDropTargetDropEffect()
 		{
 			if (string.IsNullOrEmpty(m_dropTargetDropEffectString))
 			{
@@ -489,12 +490,14 @@ namespace Windows.UI.Xaml.Controls
 
 		internal bool IsMultiselect => m_isMultiselectEnabled;
 
-		private bool IsMutiSelectWithSelectedItems()
+		internal bool IsMutiSelectWithSelectedItems
 		{
-			//    var selectedItems = ListViewModel().GetSelectedNodes();
-			//bool isMutiSelect = m_isMultiselectEnabled && selectedItems.Size() > 0;
-			//    return isMutiSelect;
-			throw new NotImplementedException();
+			get
+			{
+				var selectedItems = ListViewModel.SelectedNodes;
+				bool isMutiSelect = m_isMultiselectEnabled && selectedItems.Count > 0;
+				return isMutiSelect;
+			}
 		}
 
 		private bool IsSelected(TreeViewNode node)
@@ -515,35 +518,32 @@ namespace Windows.UI.Xaml.Controls
 
 		internal IList<TreeViewNode> GetRootsOfSelectedSubtrees()
 		{
-			//    std.vector<TreeViewNode> roots;
-			//var selectedItems = ListViewModel().GetSelectedNodes();
-			//    for (unsigned int i = 0; i<selectedItems.Size(); i++)
-			//    {
-			//        var item = selectedItems.GetAt(i);
-			//var selectionRoot = GetRootOfSelection(item);
-			//var it = std.find(roots.cbegin(), roots.cend(), selectionRoot);
-			//        if (it == roots.cend())
-			//        {
-			//            roots.emplace_back(selectionRoot);
-			//        }
-			//    }
+			var roots = new List<TreeViewNode>();
+			var selectedItems = ListViewModel.SelectedNodes;
+			for (var i = 0; i < selectedItems.Count; i++)
+			{
+				var item = selectedItems[i];
+				var selectionRoot = GetRootOfSelection(item);
 
-			//    return roots;
-			throw new NotImplementedException();
+				if (!roots.Contains(selectionRoot))
+				{
+					roots.Add(selectionRoot);
+				}
+			}
+
+			return roots;
 		}
 
-		private int FlatIndex(TreeViewNode node)
+		internal int FlatIndex(TreeViewNode node)
 		{
-			var flatIndex = 0;
-			bool found = ListViewModel.IndexOfNode(node, flatIndex);
+			bool found = ListViewModel.IndexOfNode(node, out var flatIndex);
 			flatIndex = found ? flatIndex : -1;
 			return flatIndex;
 		}
 
-		private bool IsFlatIndexValid(int index)
+		internal bool IsFlatIndexValid(int index)
 		{
-			//    return index >= 0 && index<static_cast<int>(ListViewModel().Size());
-			throw new NotImplementedException();
+			return index >= 0 && index < ListViewModel.Size;
 		}
 
 		private int RemoveNodeFromParent(TreeViewNode node)
@@ -561,8 +561,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool IsIndexValid(int index)
 		{
-			//	return index >= 0 && index < (int)Items().Size();
-			throw new NotImplementedException();
+			return index >= 0 && index < Items.Count;
 		}
 
 		private string GetAutomationName(int index)
@@ -593,40 +592,39 @@ namespace Windows.UI.Xaml.Controls
 
 		private string BuildEffectString(string priorString, string afterString, string dragString, string dragOverString)
 		{
-			//	hstring resultString;
-			//	if (!priorString.empty() && !afterString.empty())
-			//	{
-			//		resultString = StringUtil.FormatString(
-			//			ResourceAccessor.GetLocalizedStringResource(SR_PlaceBetweenString),
-			//			dragString.data(), priorString.data(), afterString.data());
-			//	}
-			//	else if (!priorString.empty())
-			//	{
-			//		resultString = StringUtil.FormatString(
-			//			ResourceAccessor.GetLocalizedStringResource(SR_PlaceAfterString),
-			//			dragString.data(), priorString.data());
-			//	}
-			//	else if (!afterString.empty())
-			//	{
-			//		resultString = StringUtil.FormatString(
-			//			ResourceAccessor.GetLocalizedStringResource(SR_PlaceBeforeString),
-			//			dragString.data(), afterString.data());
-			//	}
-			//	else if (!dragOverString.empty())
-			//	{
-			//		resultString = StringUtil.FormatString(
-			//			ResourceAccessor.GetLocalizedStringResource(SR_DropIntoNodeString),
-			//			dragString.data(), dragOverString.data());
-			//	}
-			//	else
-			//	{
-			//		resultString = StringUtil.FormatString(
-			//			ResourceAccessor.GetLocalizedStringResource(SR_FallBackPlaceString),
-			//			dragString.data());
-			//	}
+			string resultString;
+			if (!string.IsNullOrEmpty(priorString) && !string.IsNullOrEmpty(afterString))
+			{
+				resultString = StringUtil.FormatString(
+					ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PlaceBetweenString),
+					dragString, priorString, afterString);
+			}
+			else if (!string.IsNullOrEmpty(priorString))
+			{
+				resultString = StringUtil.FormatString(
+					ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PlaceAfterString),
+					dragString, priorString);
+			}
+			else if (!string.IsNullOrEmpty(afterString))
+			{
+				resultString = StringUtil.FormatString(
+					ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_PlaceBeforeString),
+					dragString, afterString);
+			}
+			else if (!string.IsNullOrEmpty(dragOverString))
+			{
+				resultString = StringUtil.FormatString(
+					ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_DropIntoNodeString),
+					dragString, dragOverString);
+			}
+			else
+			{
+				resultString = StringUtil.FormatString(
+					ResourceAccessor.GetLocalizedStringResource(ResourceAccessor.SR_FallBackPlaceString),
+					dragString);
+			}
 
-			//	return resultString;
-			throw new NotImplementedException();
+			return resultString;
 		}
 
 		private int IndexInParent(TreeViewNode node)
@@ -672,7 +670,7 @@ namespace Windows.UI.Xaml.Controls
 			return IsContentMode ? ContainerFromItem(node.Content) : ContainerFromItem(node);
 		}
 
-		private TreeViewNode NodeFromItem(object item)
+		internal TreeViewNode NodeFromItem(object item)
 		{
 			return IsContentMode ?
 				ListViewModel.GetAssociatedNode(item) :
