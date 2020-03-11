@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private static UnsafeWeakAttachedDictionary<View, string> _layoutProperties = new UnsafeWeakAttachedDictionary<View, string>();
+		private static readonly UnsafeWeakAttachedDictionary<View, string> _layoutProperties = new UnsafeWeakAttachedDictionary<View, string>();
 
 		protected Size MeasureChildOverride(View view, Size slotSize)
 		{
@@ -79,12 +79,18 @@ namespace Windows.UI.Xaml.Controls
 				ret.ToString();
 			}
 
+			if (!(view is FrameworkElement) && view is IFrameworkElement ife)
+			{
+				// If the child is not a FrameworkElement, part of the "Measure"
+				// phase must be done by the parent element's layouter.
+				// Here, it means adding the margin to the measured size.
+				ret = ret.Add(ife.Margin);
+			}
 
+			var w = nfloat.IsNaN((nfloat)ret.Width) ? double.PositiveInfinity : Math.Min(slotSize.Width, ret.Width);
+			var h = nfloat.IsNaN((nfloat)ret.Height) ? double.PositiveInfinity : Math.Min(slotSize.Height, ret.Height);
 
-			ret.Width = nfloat.IsNaN((nfloat)ret.Width) ? double.PositiveInfinity : Math.Min(slotSize.Width, ret.Width);
-			ret.Height = nfloat.IsNaN((nfloat)ret.Height) ? double.PositiveInfinity : Math.Min(slotSize.Height, ret.Height);
-
-			return ret;
+			return new Size(w, h);
 		}
 
 		protected void ArrangeChildOverride(View view, Rect frame)
