@@ -3583,7 +3583,10 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.DependencyObjectStore.SetResourceBinding(Windows.UI.Xaml.DependencyProperty dependencyProperty, System.Object resourceKey, System.Boolean isTheme, System.Object context)"
 				reason="No longer used method that shouldn't be called from user code" />
-		</Methods>
+			<Member
+				fullName="System.Void Windows.ApplicationModel.Chat.ChatMessageReader..ctor()"
+				reason="Not part of the UWP API"/>
+        </Methods>
 		<Fields>
 			<Member
 				fullName="System.String Windows.UI.Xaml.Controls.DatePicker::DayTextBlockPartName"
