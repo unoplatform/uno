@@ -281,7 +281,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ButtonTests
 			var button01 = _app.Marked("button01");
 
 			// Click on button01 and verify text and number of clicks in all text blocks
-			button01.Tap();
+			button01.FastTap();
 			VerifyTextBlockText("Button button01 Clicked (1)", "Button button01 Tapped (1)", "Command Button 01 (1)");
 
 			// Again click on button01 and verify text and number of clicks in all text blocks
