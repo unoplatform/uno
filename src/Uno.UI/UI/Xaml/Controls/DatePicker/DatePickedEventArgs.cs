@@ -4,7 +4,11 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class DatePickedEventArgs
 	{
-		public DatePickedEventArgs(DateTimeOffset newDate, DateTimeOffset oldDate)
+		public DatePickedEventArgs()
+		{
+		}
+
+		internal DatePickedEventArgs(DateTimeOffset newDate, DateTimeOffset oldDate)
 		{
 			NewDate = newDate;
 			OldDate = oldDate;

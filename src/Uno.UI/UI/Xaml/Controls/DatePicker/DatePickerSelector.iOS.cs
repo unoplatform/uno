@@ -6,6 +6,7 @@ using UIKit;
 using Uno.UI.Extensions;
 using Uno.Extensions;
 using Uno.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -22,7 +23,11 @@ namespace Windows.UI.Xaml.Controls
 			_picker = this.FindSubviewsOfType<UIDatePicker>().FirstOrDefault();
 			if (_picker == null)
 			{
-				this.Log().DebugIfEnabled(() => $"No {nameof(UIDatePicker)} was found in the visual hierarchy.");
+				if (this.Log().IsEnabled(LogLevel.Error))
+				{
+					this.Log().Error($"No {nameof(UIDatePicker)} was found in the visual hierarchy.");
+				}
+
 				return;
 			}
 

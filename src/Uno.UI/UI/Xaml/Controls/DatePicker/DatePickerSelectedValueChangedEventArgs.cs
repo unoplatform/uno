@@ -6,7 +6,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public sealed partial class DatePickerSelectedValueChangedEventArgs
 	{
-		public DatePickerSelectedValueChangedEventArgs(DateTimeOffset? newDate, DateTimeOffset? oldDate)
+		internal DatePickerSelectedValueChangedEventArgs(DateTimeOffset? newDate, DateTimeOffset? oldDate)
 		{
 			NewDate = newDate;
 			OldDate = oldDate;
