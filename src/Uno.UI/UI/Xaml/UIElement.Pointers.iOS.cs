@@ -27,6 +27,11 @@ namespace Windows.UI.Xaml
 		#region Native touch handling (i.e. source of the pointer / gesture events)
 		public override void TouchesBegan(NSSet touches, UIEvent evt)
 		{
+			if (IsPointersSuspended)
+			{
+				return; // Will also prevent subsequents events
+			}
+
 			/* Note: Here we have a mismatching behavior with UWP, if the events bubble natively we're going to get
 					 (with Ctrl_02 is a child of Ctrl_01):
 							Ctrl_02: Entered
