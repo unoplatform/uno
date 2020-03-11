@@ -341,6 +341,9 @@ namespace Windows.UI.Xaml
 				case FileOpenPicker.RequestCode:
 					FileOpenPicker.TryHandleIntent(data, resultCode);
 					break;
+				case Windows.ApplicationModel.Chat.ChatMessageStore.RequestCode:
+					Windows.ApplicationModel.Chat.ChatMessageStore.TryHandleIntent(data, resultCode);
+					break;
 			}
 		}
 
