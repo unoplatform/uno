@@ -631,7 +631,7 @@
 				<Member
 					fullName="System.Void Windows.ApplicationModel.DataTransfer.Clipboard..ctor()"
 					reason="Not part of the WinUI API."/>
-			  <Member
+				<Member
 					fullName="System.Void Windows.Storage.KnownFolders..ctor()"
 					reason="Not part of the WinUI API."/>
 				<Member
@@ -664,10 +664,16 @@
 				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.IconElement.AddIconElementView(UIKit.UIView child)"
 					reason="Not part of UWP API" />
-        <Member
+				<Member
 					fullName="System.Void Windows.ApplicationModel.Calls.PhoneCallManager..ctor()"
 					reason="Class is static in UWP" />
-        </Methods>
+				<Member
+					fullName="Windows.UI.Color Windows.UI.Xaml.Media.Brush.GetColorWithOpacity(Windows.UI.Color referenceColor)"
+					reason="Not part of the WinUI API." />
+				<Member
+					fullName="System.Void Uno.UI.Toolkit.UIElementExtensions.SetElevation(Windows.UI.Xaml.UIElement element, System.Double Elevation)"
+					reason="Naming uniformization, not a binary breaking change." />
+			</Methods>
 		</IgnoreSet>
 	</IgnoreSets>
 </DiffIgnore>
