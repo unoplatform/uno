@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
@@ -28,7 +24,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 				{
 					return peer.ExpandCollapseState;
 				}
-				throw new InvalidOperationException(UIA_E_ELEMENTNOTENABLED);
+				throw new InvalidOperationException("Element not enabled");
 			}
 		}
 
@@ -40,7 +36,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 				peer.Collapse();
 				return;
 			}
-			throw new InvalidOperationException(UIA_E_ELEMENTNOTENABLED);
+			throw new InvalidOperationException("Element not enabled");
 		}
 
 		public void Expand()
@@ -51,7 +47,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 				peer.Expand();
 				return;
 			}
-			throw new InvalidOperationException(UIA_E_ELEMENTNOTENABLED);
+			throw new InvalidOperationException("Element not enabled");
 		}
 
 		// IAutomationPeerOverrides
@@ -86,7 +82,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 					}
 				}
 			}
-			throw new InvalidOperationException(UIA_E_ELEMENTNOTENABLED);
+			throw new InvalidOperationException("Element not enabled");
 		}
 	}
 }

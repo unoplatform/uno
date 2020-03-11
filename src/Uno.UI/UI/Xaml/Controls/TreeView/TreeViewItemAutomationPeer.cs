@@ -1,12 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Java.Lang.Annotation;
-using Uno.UI.Helpers.WinUI;
-using Windows.Graphics.Display;
-using Windows.UI.Xaml.Automation.Peers;
+﻿using Uno.UI.Helpers.WinUI;
 using Windows.UI.Xaml.Automation.Provider;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;

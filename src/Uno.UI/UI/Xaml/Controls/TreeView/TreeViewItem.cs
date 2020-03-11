@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.ApplicationModel.DataTransfer;
 using Windows.System;
 using Windows.UI.Core;
@@ -20,12 +16,12 @@ namespace Windows.UI.Xaml.Controls
 		private const long c_dragOverInterval = 1000 * 10000;
 		private const string c_multiSelectCheckBoxName = "MultiSelectCheckBox";
 		private const string c_expandCollapseChevronName = "ExpandCollapseChevron";
-
-
+		
 		private bool m_expansionCycled;
 		private CheckBox m_selectionBox;
 		private DispatcherTimer m_expandContentTimer;
 		private TreeView m_ancestorTreeView;
+		private UIElement m_expandCollapseChevron;
 
 		public TreeViewItem()
 		{
@@ -205,7 +201,7 @@ namespace Windows.UI.Xaml.Controls
 
 					if (walkNode != draggedNode && draggedNode != draggedOverNode)
 					{
-						args.AcceptedOperation(DataPackageOperation.Move);
+						args.AcceptedOperation = DataPackageOperation.Move;
 					}
 
 					TreeViewNode droppedOnNode = TreeNode;

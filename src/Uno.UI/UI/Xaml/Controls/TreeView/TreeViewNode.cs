@@ -1,11 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Windows.Foundation;
+﻿using System.Collections.Generic;
 using Windows.Foundation.Collections;
-using Windows.UI.Xaml;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -17,12 +11,10 @@ namespace Windows.UI.Xaml.Controls
 		public TreeViewNode()
 		{
 			var collection = new ObservableVector<TreeViewNode>();
-			//collection.SetParent(this);
+			collection.SetParent(this);
 			Children = collection;
 			collection.VectorChanged += ChildVectorChanged;
 		}
-
-		private event TypedEventHandler<TreeViewNode, IVectorChangedEventArgs> ChildrenChangedSource;
 
 		internal object ItemsSource { get; set; }
 
@@ -49,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 		internal bool IsContentMode { get; set; }
 
 		internal TreeNodeSelectionState SelectionState { get; set; }
-		
+
 		public IList<TreeViewNode> Children { get; }
 
 		private void UpdateDepth(int depth)
@@ -81,7 +73,7 @@ namespace Windows.UI.Xaml.Controls
 		private void RaiseChildrenChanged(CollectionChange collectionChange, uint index)
 		{
 			var args = new VectorChangedEventArgs(collectionChange, index);
-			ChildrenChangedSource?.Invoke(this, args);
+			ChildrenChanged?.Invoke(this, args);
 		}
 
 		internal enum TreeNodeSelectionState

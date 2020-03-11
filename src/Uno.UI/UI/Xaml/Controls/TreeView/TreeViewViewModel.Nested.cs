@@ -1,11 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Android.Database;
-using Windows.Foundation.Collections;
-using Windows.UI.Xaml.Controls;
+﻿using Windows.Foundation.Collections;
 using TreeNodeSelectionState = Windows.UI.Xaml.Controls.TreeViewNode.TreeNodeSelectionState;
 
 namespace Windows.UI.Xaml.Controls
@@ -174,27 +167,15 @@ namespace Windows.UI.Xaml.Controls
 
 		private class SelectedItemsVector : ObservableVector<object>
 		{
+			private TreeViewViewModel m_viewModel;
 
+			public void SetViewModel(TreeViewViewModel viewModel)
+			{
+				m_viewModel = viewModel;
+			}
 		}
 
-		//	public ReferenceTracker<
-		//	SelectedItemsVector,
-		//	reference_tracker_implements_t<typename SelectedItemsVectorOptions::VectorType>::type,
-		//	typename SelectedItemsVectorOptions::IterableType,
-		//	typename SelectedItemsVectorOptions::ObservableVectorType>,
-		//    public SelectedItemsVectorOptions::IVectorOwner
-		//{
-		//    Implement_Vector_Read(SelectedItemsVectorOptions)
-
-		//private:
-		//    winrt::weak_ref<ViewModel> m_viewModel { nullptr };
-
-		//public:
-		//    void SetViewModel(ViewModel& viewModel)
-		//{
-		//	m_viewModel = viewModel.get_weak();
-		//}
-
+		
 		//void Append(winrt::IInspectable const& item)
 		//{
 		//	InsertAt(Size(), item);
