@@ -4,8 +4,8 @@
 <# 
 	AddClass("Windows.UI.Xaml.Controls", "SinglelineTextBoxView", isUIControl: true, hasAttachedToWindow: true, overridesAttachedToWindow: false, isNewBackground: true);
 	AddClass("Windows.UI.Xaml.Controls", "MultilineTextBoxView", isUIControl: false, hasAttachedToWindow: true, overridesAttachedToWindow: false, isNewBackground: false);
-	AddClass("Windows.UI.Xaml", "FrameworkElement", defineSetNeedsLayout: false, defineLayoutSubviews: false, hasAttachedToWindow: false, overridesAttachedToWindow: true);
-	AddClass("Windows.UI.Xaml.Controls", "Image", defineLayoutSubviews: false, overridesAttachedToWindow: false, hasAutomationPeer: true);
+	AddClass("Windows.UI.Xaml", "FrameworkElement", defineSetNeedsLayout: false, defineLayoutSubviews: false, hasAttachedToWindow: false, overridesAttachedToWindow: true, hasLayouter: true);
+	AddClass("Windows.UI.Xaml.Controls", "Image", defineLayoutSubviews: false, overridesAttachedToWindow: false, hasAutomationPeer: true, hasLayouter: true);
 	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false);
 	AddClass("Uno.UI.Controls.Legacy", "ListViewBase", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false);
 	AddClass("Windows.UI.Xaml.Controls", "ProgressRing", hasAttachedToWindow: false, overridesAttachedToWindow: true);

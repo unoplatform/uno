@@ -2,6 +2,8 @@
 
 ### Features
 
+- Added new `ElevatedView` in the `Uno.Toolkit` to provide elevation & rounded corners on all platforms
+  (not supported on Windows yet, because need to target framework `10.0.18362.0`)
 - Support for `FontIcon` on macOS
 - Support for `PhoneCallManager.ShowPhoneCallUI` on macOS
 - Support for full screen mode on macOS
@@ -45,6 +47,7 @@
 - [Android] Add support for non-native `Popup` by default. Can be enabled through `FeatureConfiguration.Popup.UseNativePopup` set to false (See #2533 for more details)
 - Add template tags for the VS2019 VSIX template search experience
 - [iOS] #2746 Fix border thickness when a corner radius is set
+- [Android] #2762 ProgressRing wasn't displaying inside a StackPanel
 
 ### Breaking changes
 - `IconElement.AddIconElementView` is now `internal` so it is not accessible from outside.
@@ -68,7 +71,7 @@
 - #2287 Vertical `ListView` containing a horizontal `ScrollViewer`: horizontal scrolling is difficult, only works when the gesture is perfectly horizontal
 - #2130 Grid - fix invalid measure when total star size is 0
 - [iOS] Fix invalid image measure on constrained images with `Margin`
-- [#2364] fixed missing Xaml IntelliSense on newly created project 
+- [#2364] fixed missing Xaml IntelliSense on newly created project
 - `ViewBox` no longer alters its child's `RenderTransform`
 - [#2033] Add Missing `LostFocus` Value to `UpdateSourceTrigger` Enum
 - [Android] Fix Image margin calculation on fixed size

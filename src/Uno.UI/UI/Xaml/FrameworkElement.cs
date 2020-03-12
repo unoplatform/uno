@@ -29,7 +29,7 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml
 {
-	public partial class FrameworkElement : UIElement, IFrameworkElement, ILayoutConstraints
+	public partial class FrameworkElement : UIElement, IFrameworkElement, IFrameworkElementInternal, ILayoutConstraints
 	{
 		public
 			static class TraceProvider
@@ -187,9 +187,7 @@ namespace Windows.UI.Xaml
 		/// <param name="finalRect">The final size that the parent computes for the child in layout, provided as a <see cref="Windows.Foundation.Rect"/> value.</param>
 		public override void Arrange(Rect finalRect)
 		{
-#if !__ANDROID__ // On Android .ArrangeChild() will call .Arrange() in its flow.
 			_layouter.Arrange(finalRect);
-#endif
 			_layouter.ArrangeChild(this, finalRect);
 		}
 #endif
