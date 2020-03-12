@@ -10,6 +10,8 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
+		bool IFrameworkElementInternal.HasLayouter => true;
+
 		internal List<View> _children = new List<View>();
 
 		partial void OnLoadingPartial();
