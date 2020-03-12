@@ -326,6 +326,30 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			Assert.AreEqual(InnerBorderHeight, actualHeight);
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_AreDimensionsConstrained_And_Margin()
+		{
+			const double setHeight = 45d;
+			var outerPanel = new Grid { Width = 72, Height = setHeight, Margin = new Thickness(8) };
+#if !NETFX_CORE
+			outerPanel.AreDimensionsConstrained = true;
+#endif
+			var innerView = new AspectRatioView { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+			outerPanel.Children.Add(innerView);
+
+			TestServices.WindowHelper.WindowContent = outerPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(setHeight, Math.Round(innerView.ActualHeight));
+
+			outerPanel.InvalidateMeasure(); // On Android, AreDimensionsConstrained=true causes view to be measured+arranged through alternate code path
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(setHeight, Math.Round(innerView.ActualHeight));
+		}
 	}
 
 	public partial class MyControl01 : FrameworkElement
@@ -351,6 +375,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			MeasureOverrides.Add(availableSize);
 			return base.MeasureOverride(BaseAvailableSize ?? availableSize);
+		}
+	}
+
+	public partial class AspectRatioView : FrameworkElement
+	{
+		public double AspectRatio { get; set; } = 1.5;
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			var height = double.IsPositiveInfinity(availableSize.Height) ? 0 : availableSize.Height;
+			var width = height * AspectRatio;
+			return new Size(width, height);
 		}
 	}
 }
