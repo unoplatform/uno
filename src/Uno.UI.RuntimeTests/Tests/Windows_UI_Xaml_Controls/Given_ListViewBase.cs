@@ -12,6 +12,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 	public class Given_ListViewBase
 	{
 		[TestMethod]
+		[RunsOnUIThread]
 		public void ValidSelectionChange()
 		{
 			var source = Enumerable.Range(0, 10).ToArray();
@@ -23,6 +24,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public void InvalidSelectionChangeValidPrevious()
 		{
 			var source = Enumerable.Range(0, 10).ToArray();
@@ -34,6 +36,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		}
 
 		[TestMethod]
+		[RunsOnUIThread]
 		public void InvalidSelectionChangeInvalidPrevious()
 		{
 			var source = Enumerable.Range(0, 10).ToArray();
