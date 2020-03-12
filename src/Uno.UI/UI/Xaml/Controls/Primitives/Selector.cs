@@ -68,7 +68,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			var wasSelectionUnset = oldSelectedItem == null && (!GetItems()?.Contains(null) ?? false);
 			var isSelectionUnset = false;
-			if (!GetItems()?.Contains(selectedItem) ?? false)
+			var items = GetItems();
+			if (!items?.Contains(selectedItem) ?? false)
 			{
 				if (selectedItem == null)
 				{
@@ -76,18 +77,24 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				}
 				else
 				{
+					var selectionToReset = items?.Contains(oldSelectedItem) ?? false ?
+						oldSelectedItem
+						// Note: in this scenario (previous SelectedItem no longer in collection either), Windows still leaves it at the
+						// previous value. We don't try to reproduce this behaviour, amongst other reasons because under Uno's DP system
+						// this would push an invalid value back through any 2-way binding.
+						: null;
 					try
 					{
 						_disableRaiseSelectionChanged = true;
 
 						//Prevent SelectedItem being set to an invalid value
-						SelectedItem = oldSelectedItem;
+						SelectedItem = selectionToReset;
 					}
 					finally
 					{
 						_disableRaiseSelectionChanged = false;
 					}
-						
+
 					return;
 				}
 			}
@@ -143,7 +150,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			if (SelectedValuePath.HasValue())
 			{
-				if(_path?.Path != SelectedValuePath)
+				if (_path?.Path != SelectedValuePath)
 				{
 					_path = new Uno.UI.DataBinding.BindingPath(SelectedValuePath, null);
 				}
@@ -271,7 +278,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		private void IsSynchronizedWithCurrentItemChanged(bool? oldValue, bool? newValue)
 		{
-			if(newValue == true)
+			if (newValue == true)
 			{
 				throw new ArgumentOutOfRangeException("True is not a supported value for this property");
 			}

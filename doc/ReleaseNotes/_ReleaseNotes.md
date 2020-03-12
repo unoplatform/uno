@@ -51,6 +51,7 @@
 - Add template tags for the VS2019 VSIX template search experience
 - [iOS] #2746 Fix border thickness when a corner radius is set
 - [Android] #2762 ProgressRing wasn't displaying inside a StackPanel
+- #2797 Stack overflow in ListView when changing SelectedItem to and from invalid valu
 
 ### Breaking changes
 - `IconElement.AddIconElementView` is now `internal` so it is not accessible from outside.
