@@ -68,15 +68,11 @@ public abstract class UnoRecyclerView
 
 	private void notifyChildRemoved(View child)
 	{
-		Uno.UI.UnoViewGroup childViewGroup = child instanceof Uno.UI.UnoViewGroup
-			? (Uno.UI.UnoViewGroup)child
-			: null;
-
-		if(childViewGroup != null)
+		if(child instanceof Uno.UI.UnoViewGroup)
 		{
 			// This is required because the Parent property is set to null
 			// after the onDetachedFromWindow is called.
-			childViewGroup.onRemovedFromParent();
+			((Uno.UI.UnoViewGroup)child).onRemovedFromParent();
 		}
 	}
 }

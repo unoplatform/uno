@@ -1,9 +1,11 @@
 ﻿using Uno.UI;
 using Uno.UI.Controls;
+using Uno.UI.Extensions;
 using Uno.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Windows.UI.Xaml.Controls;
 using Android.Support.V4.View;
 using Windows.UI.Xaml.Media;
 using Android.Graphics;
@@ -132,6 +134,87 @@ namespace Windows.UI.Xaml
 			};
 		}
 
+		/// <summary>
+		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
+		///	applied by a 'ViewGroup' between this element and its parent UIElement.
+		/// </summary>
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
+		{
+			var parent = this.GetParent();
+			switch (parent) 
+			{
+				// First we try the direct parent, if it's from the known type we won't even have to adjust offsets
+
+				case UIElement elt:
+					parentElement = elt;
+					return true;
+
+				case null:
+					parentElement = null;
+					return false;
+
+				case NativeListViewBase lv:
+					// We are a container of a ListView, there is known issue with the LayoutingSlot.
+					// Instead of following the standard transform computation, we shortcut few levels of the visual tree
+					// and directly detect the real slot of this item in the parent ScrollViewer using native API.
+					// The limitation with this is that if there is any RenderTransform in the bypassed layers which also
+					// not only changes the TrX/Y, they are going to be ignored.
+					// cf. https://github.com/unoplatform/uno/issues/2754
+
+					// 1. Undo what was done by the shared code
+					offsetX -= LayoutSlotWithMarginsAndAlignments.X;
+					offsetY -= LayoutSlotWithMarginsAndAlignments.Y;
+
+					// 2.Natively compute the offset of this current item relative to this ScrollViewer and adjust offsets
+					var sv = lv.FindFirstParent<ScrollViewer>();
+					var offset = GetPosition(this, relativeTo: sv);
+					offsetX += offset.X;
+					offsetY += offset.Y;
+
+					// We return the parent of the ScrollViewer, so we bypass the <Horizontal|Vertical>Offset (and the Scale) handling in shared code.
+					return sv.TryGetParentUIElementForTransformToVisual(out parentElement, ref offsetX, ref offsetY);
+
+				case View view: // Android.View and Android.IViewParent
+					var windowToFirstParent = new int[2];
+					view.GetLocationInWindow(windowToFirstParent);
+
+					do
+					{
+						parent = parent.GetParent();
+
+						switch (parent)
+						{
+							case UIElement eltParent:
+								// We found a UIElement in the parent hierarchy, we compute the X/Y offset between the
+								// first parent 'view' and this 'elt', and return it.
+
+								var windowToEltParent = new int[2];
+								eltParent.GetLocationInWindow(windowToEltParent);
+
+								parentElement = eltParent;
+								offsetX += ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[0] - windowToEltParent[0]);
+								offsetY += ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[1] - windowToEltParent[1]);
+								return true;
+
+							case null:
+								// We reached the top of the window without any UIElement in the hierarchy,
+								// so we adjust offsets using the X/Y position of the original 'view' in the window.
+
+								parentElement = null;
+								offsetX += ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[0]);
+								offsetY += ViewHelper.PhysicalToLogicalPixels(windowToFirstParent[1]);
+								return false;
+						}
+					} while (true);
+
+				default:
+					Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException("Found a parent which is NOT a View."));
+
+					parentElement = null;
+					return false;
+			}
+		}
+
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newValue)
 		{
 			var newNativeVisibility = newValue == Visibility.Visible ? Android.Views.ViewStates.Visible : Android.Views.ViewStates.Gone;
@@ -155,6 +238,30 @@ namespace Windows.UI.Xaml
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args)
 		{
 			Alpha = IsRenderingSuspended ? 0 : (float)Opacity;
+		}
+
+		internal static Point GetPosition(View view, View relativeTo = null)
+		{
+			if (view == relativeTo)
+			{
+				return default;
+			}
+
+			var windowToThis = new int[2];
+			view.GetLocationInWindow(windowToThis);
+
+			var location = new Point(windowToThis[0], windowToThis[1]);
+
+			if (relativeTo != null)
+			{
+				var windowToRelative = new int[2];
+				relativeTo.GetLocationInWindow(windowToRelative);
+
+				location.X -= windowToRelative[0];
+				location.Y -= windowToRelative[1];
+			}
+
+			return location.PhysicalToLogicalPixels();
 		}
 
 		internal Point GetPosition(Point position, UIElement relativeTo)

@@ -232,7 +232,7 @@ namespace Windows.UI.Xaml.Controls
 
 						// Ensure the item has a parent, since it's added to the native collection view
 						// which does not automatically sets the parent DependencyObject.
-						selectorItem.SetParent(Owner?.XamlParent);
+						selectorItem.SetParent(Owner?.XamlParent?.InternalItemsPanelRoot);
 					}
 					else if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 					{
@@ -715,7 +715,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			get
 			{
-				return /* Cache the content ?*/ContentView.Subviews.FirstOrDefault() as ContentControl;
+				return /* Cache the content ?*/ContentView?.Subviews.FirstOrDefault() as ContentControl;
 			}
 			set
 			{
@@ -744,6 +744,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				base.Frame = value;
 				UpdateContentViewFrame();
+				UpdateContentLayoutSlots(value);
 			}
 		}
 
@@ -760,6 +761,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				base.Bounds = value;
 				UpdateContentViewFrame();
+				UpdateContentLayoutSlots(Frame);
 			}
 		}
 
@@ -772,6 +774,20 @@ namespace Windows.UI.Xaml.Controls
 			if (ContentView != null)
 			{
 				ContentView.Frame = Bounds;
+			}
+		}
+
+		/// <summary>
+		/// Fakely propagate the applied Frame of this internal container as the LayoutSlot of the publicly visible container.
+		/// This is required for the UIElement.TransformToVisual to work properly.
+		/// </summary>
+		private void UpdateContentLayoutSlots(Rect frame)
+		{
+			var content = Content;
+			if (content != null)
+			{
+				content.LayoutSlot = frame;
+				content.LayoutSlotWithMarginsAndAlignments = frame;
 			}
 		}
 
@@ -912,6 +928,11 @@ namespace Windows.UI.Xaml.Controls
 			if (Content != null)
 			{
 				Layouter.ArrangeChild(Content, new Rect(0, 0, (float)size.Width, (float)size.Height));
+
+				// The item has to be arranged relative to this internal container (at 0,0),
+				// but doing this the LayoutSlot[WithMargins] has been updated, 
+				// so we fakely re-inject the relative position of the item in its parent.
+				UpdateContentLayoutSlots(Frame);
 			}
 		}
 

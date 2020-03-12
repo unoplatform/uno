@@ -95,6 +95,12 @@
 		</ProjectReference>
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.17763'">
+		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI\Extensions\DependencyObjectExtensions.cs">
+			<Link>Uno.UI\Extensions\%(RecursiveDir)%(FileName)%(Extension)</Link>
+		</Compile>
+	</ItemGroup>
+
 	<ItemGroup>
 		<None Update="Themes\Generic.xaml" />
 	</ItemGroup>
