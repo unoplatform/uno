@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.System;
@@ -101,7 +102,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			if (!_bootTime.HasValue)
 			{
-				_bootTime = (ulong) (double.Parse(WebAssemblyRuntime.InvokeJS("Date.now() - performance.now()")) * TimeSpan.TicksPerMillisecond);
+				_bootTime = (ulong)(double.Parse(WebAssemblyRuntime.InvokeJS("Date.now() - performance.now()"), CultureInfo.InvariantCulture) * TimeSpan.TicksPerMillisecond);
 			}
 
 			return _bootTime.Value + (ulong)(timestamp * TimeSpan.TicksPerMillisecond);
