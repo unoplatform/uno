@@ -60,7 +60,7 @@
 
 ### Bug fixes
 
-- [iOS] Applying a `<RenderTransform>` on an image were producing wrong layout result.
+- [iOS] Applying a `<RenderTransform>` on an image was producing an incorrect layout result.
 - Add support for `CornerRadius` in default `ComboBox` style
 - Fix for samples app compilation for macOS
 - [#2465] Raising macOS Button Click event
