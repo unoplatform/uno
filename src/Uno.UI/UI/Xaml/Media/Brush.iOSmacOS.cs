@@ -23,39 +23,29 @@ namespace Windows.UI.Xaml.Media
 		{
 			var disposables = new CompositeDisposable();
 
-			if (b != null)
+			if (b is SolidColorBrush colorBrush)
 			{
-				var colorBrush = b as SolidColorBrush;
-				var imageBrush = b as ImageBrush;
+				colorSetter(colorBrush.ColorWithOpacity);
 
-				if (colorBrush != null)
-				{
-					colorSetter(colorBrush.ColorWithOpacity);
-
-					colorBrush.RegisterDisposablePropertyChangedCallback(
+				colorBrush.RegisterDisposablePropertyChangedCallback(
 						SolidColorBrush.ColorProperty,
 						(s, colorArg) => colorSetter((s as SolidColorBrush).ColorWithOpacity)
 					)
 					.DisposeWith(disposables);
 
-					colorBrush.RegisterDisposablePropertyChangedCallback(
+				colorBrush.RegisterDisposablePropertyChangedCallback(
 						SolidColorBrush.OpacityProperty,
 						(s, colorArg) => colorSetter((s as SolidColorBrush).ColorWithOpacity)
 					)
 					.DisposeWith(disposables);
-				}
-				else if (imageBrush != null)
-				{
-					Action<_Image> action = _ => colorSetter(SolidColorBrushHelper.Transparent.Color);
+			}
+			else if (b is ImageBrush imageBrush)
+			{
+				Action<_Image> action = _ => colorSetter(SolidColorBrushHelper.Transparent.Color);
 
-					imageBrush.ImageChanged += action;
+				imageBrush.ImageChanged += action;
 
-					disposables.Add(() => imageBrush.ImageChanged -= action);
-				}
-				else
-				{
-					colorSetter(SolidColorBrushHelper.Transparent.Color);
-				}
+				disposables.Add(() => imageBrush.ImageChanged -= action);
 			}
 			else
 			{
@@ -64,6 +54,5 @@ namespace Windows.UI.Xaml.Media
 
 			return disposables;
 		}
-
 	}
 }
