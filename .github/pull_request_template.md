@@ -32,17 +32,15 @@ What kind of change does this PR introduce?
 
 Please check if your PR fulfills the following requirements:
 
-- [ ] Tested code with current [supported SDKs](https://github.com/unoplatform/uno/blob/master/README.md#uno-features)
 - [ ] Docs have been added/updated which fit [documentation template](https://github.com/unoplatform/uno/blob/master/doc/.feature-template.md) (for bug fixes / features)
 - [ ] [Unit Tests and/or UI Tests](https://github.com/unoplatform/uno/blob/master/doc/articles/uno-development/working-with-the-samples-apps.md) for the changes have been added (for bug fixes / features) (if applicable)
-- [ ] [Wasm UI Tests](https://github.com/unoplatform/uno/blob/master/doc/articles/uno-development/working-with-the-samples-apps.md#running-the-webassembly-ui-tests-snapshots) are not showing unexpected any differences. Validate PR `Screenshots Compare Test Run` results.
+- [ ] Validated PR `Screenshots Compare Test Run` results.
 - [ ] Contains **NO** breaking changes
-- [ ] Updated the [Release Notes](https://github.com/unoplatform/uno/tree/master/doc/ReleaseNotes)
-- [ ] Associated with an issue (GitHub or internal)
+- [ ] Associated with an issue (GitHub or internal) and uses the [automatic close keywords](https://help.github.com/en/github/managing-your-work-on-github/linking-a-pull-request-to-an-issue).
+- Commits must be following the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/#summary) specification.
 
 <!-- If this PR contains a breaking change, please describe the impact and migration path for existing applications below.
      Please note that breaking changes are likely to be rejected -->
-
 
 ## Other information
 
