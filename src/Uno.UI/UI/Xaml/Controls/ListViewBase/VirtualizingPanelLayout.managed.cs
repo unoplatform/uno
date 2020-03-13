@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __WASM__ || __MACOS__
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -10,6 +11,9 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using static System.Math;
 using static Windows.UI.Xaml.Controls.Primitives.GeneratorDirection;
+#if __MACOS__
+using AppKit;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -446,7 +450,11 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private double CalculatePanelMeasureBreadth() => ShouldMeasuredBreadthStretch ? AvailableBreadth :
-					_materializedLines.Select(l => GetDesiredBreadth(l.FirstView)).MaxOrDefault() + GetBreadth(XamlParent.ScrollViewer.ScrollBarSize);
+					_materializedLines.Select(l => GetDesiredBreadth(l.FirstView)).MaxOrDefault()
+#if __WASM__
+			+ GetBreadth(XamlParent.ScrollViewer.ScrollBarSize)
+#endif
+				;
 
 		private double CalculatePanelArrangeBreadth() => ShouldMeasuredBreadthStretch ? AvailableBreadth :
 					_materializedLines.Select(l => GetActualBreadth(l.FirstView)).MaxOrDefault();
@@ -647,7 +655,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private double GetStart(FrameworkElement child)
 		{
-			var offset = child.RelativePosition;
+			var offset = GetRelativePosition(child);
 			return ScrollOrientation == Orientation.Vertical ?
 				offset.Y - child.Margin.Top :
 				offset.X - child.Margin.Left;
@@ -655,7 +663,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private double GetEnd(FrameworkElement child)
 		{
-			var offset = child.RelativePosition;
+			var offset = GetRelativePosition(child);
 			return ScrollOrientation == Orientation.Vertical ?
 				offset.Y + child.ActualHeight + child.Margin.Bottom :
 				offset.X + child.ActualWidth + child.Margin.Right;
@@ -692,6 +700,12 @@ namespace Windows.UI.Xaml.Controls
 			return $"Parent ItemsControl={ItemsControl} ItemsSource={ItemsControl?.ItemsSource} NoOfItems={ItemsControl?.NumberOfItems} FirstMaterialized={GetFirstMaterializedIndexPath()} LastMaterialized={GetLastMaterializedIndexPath()} ExtendedViewportStart={ExtendedViewportStart} ExtendedViewportEnd={ExtendedViewportEnd} GetItemsStart()={GetItemsStart()} GetItemsEnd()={GetItemsEnd()}";
 		}
 
+#if __WASM__
+		private static Point GetRelativePosition(FrameworkElement child) => child.RelativePosition;
+#elif __MACOS__
+		private static Point GetRelativePosition(FrameworkElement child) => child.Frame.Location;
+#endif
+
 		/// <summary>
 		/// Represents a single row in a vertically-scrolling panel, or a column in a horizontally-scrolling panel.
 		/// </summary>
@@ -721,3 +735,4 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __WASM__ || __MACOS__
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -195,3 +196,4 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
+#endif

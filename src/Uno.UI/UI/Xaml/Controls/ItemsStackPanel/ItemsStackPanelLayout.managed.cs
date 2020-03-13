@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __WASM__ || __MACOS__
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
@@ -21,3 +22,4 @@ namespace Windows.UI.Xaml.Controls
 		protected override int GetItemsPerLine() => 1;
 	}
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if __WASM__ || __MACOS__
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI.DataBinding;
@@ -13,3 +14,4 @@ namespace Windows.UI.Xaml.Controls
 		protected override Size ArrangeOverride(Size finalSize) => _layout.ArrangeOverride(finalSize);
 	}
 }
+#endif
