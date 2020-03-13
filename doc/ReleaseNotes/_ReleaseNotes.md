@@ -3,7 +3,10 @@
 ### Features
 
 - Added new `ElevatedView` in the `Uno.Toolkit` to provide elevation & rounded corners on all platforms
-  (not supported on Windows yet, because need to target framework `10.0.18362.0`)
+  (not supported on Windows yet, because Uno needs to target framework `10.0.18362.0`)
+- [Android] Support for `Application.Current.Exit`
+- Support for `Windows.Storage.FileProperties.BasicProperties.DateModified`
+- Added CornerRadius support to more default styles to match UWP (for list of updated styles see PR [#2713])
 - Support for `FontIcon` on macOS
 - Support for `PhoneCallManager.ShowPhoneCallUI` on macOS
 - Support for full screen mode on macOS
@@ -57,6 +60,7 @@
 
 ### Bug fixes
 
+- [iOS] Applying a `<RenderTransform>` on an image was producing an incorrect layout result.
 - Add support for `CornerRadius` in default `ComboBox` style
 - Fix for samples app compilation for macOS
 - [#2465] Raising macOS Button Click event

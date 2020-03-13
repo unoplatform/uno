@@ -685,6 +685,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_Transforms.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_UseTargetSizeLate.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -3437,6 +3441,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_Stretch_Modes_Picker.xaml.cs">
       <DependentUpon>Image_Stretch_Modes_Picker.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_Transforms.xaml.cs">
+      <DependentUpon>Image_Transforms.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ImageTests\Image_UseTargetSizeLate.xaml.cs">
       <DependentUpon>Image_UseTargetSizeLate.xaml</DependentUpon>
     </Compile>
@@ -5433,6 +5440,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_set_hc.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_unset.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\rating_unset_hc.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\rect.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Reveal.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\ScrollViewer.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\search.png" />
