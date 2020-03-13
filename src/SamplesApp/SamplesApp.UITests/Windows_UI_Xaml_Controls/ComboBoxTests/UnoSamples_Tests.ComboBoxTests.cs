@@ -99,7 +99,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			Assert.AreEqual(popupLocationDifference - sampleControlResultExtended.Rect.Y, popupLocationDifferenceExtended);
 		}
 
-
 		[Test]
 		[AutoRetry]
 		public void ComboBoxTests_Stretch()
@@ -116,6 +115,61 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			var popupResult = _app.WaitForElement("PopupBorder").First();
 
 			Assert.IsTrue(popupResult.Rect.Width < sampleControlResult.Rect.Width / 2, "The popup should not stretch to the width of the screen");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ComboBoxTests_Fullscreen_Popup_Generic()
+		{
+			Run("SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_FullScreen_Popup");
+
+			var values2 = _app.Marked("Values2");
+			var sampleControl = _app.Marked("sampleControl");
+
+			var sampleControlResult = _app.WaitForElement(sampleControl).First();
+
+			_app.FastTap(values2);
+
+			var popupResult = _app.WaitForElement("PopupBorder").First();
+
+			TakeScreenshot("Opened");
+
+			Assert.AreEqual(popupResult.Rect.Width, sampleControlResult.Rect.Width, "The popup must stretch horizontally");
+			Assert.IsTrue(popupResult.Rect.Height < sampleControlResult.Rect.Height / 2, "The popup should not stretch to the height of the screen");
+
+			_app.TapCoordinates(sampleControlResult.Rect.Width / 2, popupResult.Rect.Bottom + 20);
+
+			_app.WaitForNoElement("PopupBorder");
+
+			TakeScreenshot("Closed");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)]
+		public void ComboBoxTests_Fullscreen_Popup_iOS()
+		{
+			Run("SamplesApp.Wasm.Windows_UI_Xaml_Controls.ComboBox.ComboBox_FullScreen_Popup");
+
+			var values2 = _app.Marked("Units1");
+			var sampleControl = _app.Marked("sampleControl");
+
+			var sampleControlResult = _app.WaitForElement(sampleControl).First();
+
+			_app.FastTap(values2);
+
+			TakeScreenshot("Opened");
+
+			var popupResult = _app.WaitForElement("PopupBorder").First();
+
+			Assert.AreEqual(popupResult.Rect.Width, sampleControlResult.Rect.Width, "The popup must stretch horizontally");
+			Assert.IsTrue(popupResult.Rect.Height < sampleControlResult.Rect.Height / 2, "The popup should not stretch to the height of the screen");
+
+			_app.TapCoordinates(sampleControlResult.Rect.Width / 2, popupResult.Rect.Bottom + 20);
+
+			_app.WaitForNoElement("PopupBorder");
+
+			TakeScreenshot("Closed");
 		}
 	}
 }
