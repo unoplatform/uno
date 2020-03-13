@@ -1149,6 +1149,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TreeView\TreeViewPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ToolTip\ToolTip_Long_Text.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4135,6 +4139,11 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\UIElementCollectionTests\UIElementCollection_Insert.xaml.cs">
       <DependentUpon>UIElementCollection_Insert.xaml</DependentUpon>
+	</Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TreeView\TreeViewItemSource.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TreeView\TreeViewNode2.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Microsoft_UI_Xaml_Controls\TreeView\TreeViewPage.xaml.cs">
+      <DependentUpon>TreeViewPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ViewBoxTests\ViewBox_Alignment.xaml.cs">
       <DependentUpon>ViewBox_Alignment.xaml</DependentUpon>
