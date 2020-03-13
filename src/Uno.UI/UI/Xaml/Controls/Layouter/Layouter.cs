@@ -17,6 +17,7 @@ using Uno.UI;
 using static System.Double;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
+using System.Diagnostics.Contracts;
 
 #if XAMARIN_ANDROID
 using Android.Views;
@@ -51,8 +52,6 @@ namespace Windows.UI.Xaml.Controls
 		private readonly Size MaxSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
 
 		internal Size _unclippedDesiredSize;
-
-		private const double SIZE_EPSILON = 0.05d;
 
 		public IFrameworkElement Panel { get; }
 
@@ -140,9 +139,17 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		[Pure]
+		private static bool IsCloseReal(double a, double b)
+		{
+			var x = Abs((a - b) / (b == 0d ? 1d : b));
+			return x < 1.85e-3d;
+		}
+
+		[Pure]
 		private static bool IsLessThanAndNotCloseTo(double a, double b)
 		{
-			return a < b - SIZE_EPSILON;
+			return (a < b) && !IsCloseReal(a, b);
 		}
 
 		/// <summary>
