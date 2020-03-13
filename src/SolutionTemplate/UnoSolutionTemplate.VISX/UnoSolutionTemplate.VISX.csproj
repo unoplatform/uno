@@ -193,7 +193,7 @@
     <PackageReference Include="Newtonsoft.Json" version="12.0.3" />
     <PackageReference Include="NuGet.VisualStudio" version="4.5.0" />
     <PackageReference Include="stdole" version="7.0.3303" />
-    <PackageReference Include="StreamJsonRpc" version="2.3.99" />
+    <PackageReference Include="StreamJsonRpc" version="2.3.103" />
   </ItemGroup>
   <ItemGroup />
   <ItemGroup>

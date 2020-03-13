@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
 using Uno.Disposables;
-using System.Drawing;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -11,46 +9,31 @@ namespace Windows.UI.Xaml.Media
 	{
 		internal static IDisposable AssignAndObserveBrush(Brush b, Action<Color> colorSetter)
 		{
-
 			var disposables = new CompositeDisposable();
 
-			if (b != null)
+			if (b is SolidColorBrush colorBrush)
 			{
-				var colorBrush = b as SolidColorBrush;
-				var imageBrush = b as ImageBrush;
+				colorSetter(colorBrush.ColorWithOpacity);
 
-				if (colorBrush != null)
-				{
-					colorSetter(colorBrush.ColorWithOpacity);
-
-					colorBrush.RegisterDisposablePropertyChangedCallback(
+				colorBrush.RegisterDisposablePropertyChangedCallback(
 						SolidColorBrush.ColorProperty,
 						(s, colorArg) => colorSetter((s as SolidColorBrush).ColorWithOpacity)
 					)
 					.DisposeWith(disposables);
 
-					colorBrush.RegisterDisposablePropertyChangedCallback(
+				colorBrush.RegisterDisposablePropertyChangedCallback(
 						SolidColorBrush.OpacityProperty,
 						(s, colorArg) => colorSetter((s as SolidColorBrush).ColorWithOpacity)
 					)
 					.DisposeWith(disposables);
-				}
-				else
-				{
-					colorSetter(SolidColorBrushHelper.Transparent.Color);
-				}
 			}
+			// ImageBrush not supported yet on Wasm
 			else
 			{
 				colorSetter(SolidColorBrushHelper.Transparent.Color);
 			}
 
 			return disposables;
-		}
-
-		protected Color GetColorWithOpacity(Color referenceColor)
-		{
-			return Color.FromArgb((byte)(Opacity * referenceColor.A), referenceColor.R, referenceColor.G, referenceColor.B);
 		}
 	}
 }

@@ -199,22 +199,49 @@ namespace Windows.UI.Xaml
 						offsetY -= sv.VerticalOffset;
 					}
 				}
-			} while ((elt = elt.GetParent() as UIElement) != null && elt != to); // If possible we stop as soon as we reach 'to'
+			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref offsetX, ref offsetY) && elt != to); // If possible we stop as soon as we reach 'to'
 
 			matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
 
 			if (to != null && elt != to)
 			{
 				// Unfortunately we didn't find the 'to' in the parent hierarchy,
-				// so matrix == fromToRoot and we now have to compute the transform 'toToVisual'.
+				// so matrix == fromToRoot and we now have to compute the transform 'toToRoot'.
 				var toToRoot = GetTransform(to, null);
-				Matrix3x2.Invert(toToRoot, out var rootToVisual);
+				Matrix3x2.Invert(toToRoot, out var rootToTo);
 
-				matrix *= rootToVisual;
+				matrix *= rootToTo;
 			}
 
 			return matrix;
 		}
+
+#if !__IOS__ && !__ANDROID__ // This is the default implementation, but is can be customized per platform
+		/// <summary>
+		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
+		///	applied by a 'UIView' between this element and its parent UIElement.
+		/// </summary>
+		private bool TryGetParentUIElementForTransformToVisual(out UIElement parentElement, ref double offsetX, ref double offsetY)
+		{
+			var parent = this.GetParent();
+			switch (parent)
+			{
+				case UIElement elt:
+					parentElement = elt;
+					return true;
+
+				case null:
+					parentElement = null;
+					return false;
+
+				default:
+					Application.Current.RaiseRecoverableUnhandledException(new InvalidOperationException("Found a parent which is NOT a UIElement."));
+
+					parentElement = null;
+					return false;
+			}
+		}
+#endif
 
 		#region IsHitTestVisible Dependency Property
 

@@ -6,7 +6,7 @@ using System.Text;
 using Uno.Disposables;
 using Windows.UI.Xaml.Shapes;
 using Windows.UI.Xaml.Media;
-
+using CoreGraphics;
 #if __IOS__
 using UIKit;
 using _View = UIKit.UIView;
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				backgroundImage = backgroundImage ?? (Background as ImageBrush)?.ImageSource?.ImageData;
 
-                _borderRenderer.UpdateLayer(
+				BoundsPath = _borderRenderer.UpdateLayer(
 					this,
 					Background,
 					BorderThickness,
@@ -114,6 +114,8 @@ namespace Windows.UI.Xaml.Controls
 		}
         bool ICustomClippingElement.AllowClippingToLayoutSlot => CornerRadius == CornerRadius.None && (!(Child is UIElement ue) || ue.RenderTransform == null);
         bool ICustomClippingElement.ForceClippingToLayoutSlot => false;
+
+		internal CGPath BoundsPath { get; private set; }
 	}
 }
 #endif

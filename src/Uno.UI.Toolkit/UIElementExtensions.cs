@@ -1,11 +1,15 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Text;
+using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Uno.Extensions;
 using Uno.Logging;
+
+#if __IOS__ || __MACOS__
+using CoreGraphics;
+#endif
 
 namespace Uno.UI.Toolkit
 {
@@ -16,11 +20,11 @@ namespace Uno.UI.Toolkit
 #endif
 	public static class UIElementExtensions
 	{
-		#region Elevation
+#region Elevation
 
-		public static void SetElevation(this UIElement element, double Elevation)
+		public static void SetElevation(this UIElement element, double elevation)
 		{
-			element.SetValue(ElevationProperty, Elevation);
+			element.SetValue(ElevationProperty, elevation);
 		}
 
 		public static double GetElevation(this UIElement element)
@@ -36,31 +40,74 @@ namespace Uno.UI.Toolkit
 				new PropertyMetadata(0, OnElevationChanged)
 			);
 
-		private static void OnElevationChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		private static readonly Color ElevationColor = Color.FromArgb(64, 0, 0, 0);
+
+		private static void OnElevationChanged(DependencyObject dependencyObject,
+			DependencyPropertyChangedEventArgs args)
+		{
+			if (args.NewValue is double elevation)
+			{
+				SetElevationInternal(dependencyObject, elevation, ElevationColor);
+			}
+		}
+
+#if __IOS__
+		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, CGPath path = null)
+#else
+		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor)
+#endif
 		{
 #if __ANDROID__
-			if (dependencyObject is Android.Views.View view && args.NewValue is double elevation)
+			if (element is Android.Views.View view)
 			{
-				Android.Support.V4.View.ViewCompat.SetElevation(view, (float)Uno.UI.ViewHelper.LogicalToPhysicalPixels(elevation));
+				view.Elevation = (float)Uno.UI.ViewHelper.LogicalToPhysicalPixels(elevation);
 			}
 #elif __IOS__
-			if (dependencyObject is UIKit.UIView view && args.NewValue is double elevation)
+			if (element is UIKit.UIView view)
 			{
-				// Values for 1dp elevation according to https://material.io/guidelines/resources/shadows.html#shadows-illustrator
-				const float Opacity = 0.26f;
-				const float X = 0;
-				const float Y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f. 
-				const float Blur = 0.5f;
+				if (elevation > 0)
+				{
+					// Values for 1dp elevation according to https://material.io/guidelines/resources/shadows.html#shadows-illustrator
+					const float x = 0.25f;
+					const float y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
+					const float blur = 0.5f;
 
-				view.Layer.MasksToBounds = false;
-				view.Layer.ShadowOpacity = Opacity;
-				view.Layer.ShadowRadius = (nfloat)(Blur * elevation);
-				view.Layer.ShadowOffset = new CoreGraphics.CGSize(X * elevation, Y * elevation);
+					view.Layer.MasksToBounds = false;
+					view.Layer.ShadowOpacity = shadowColor.A / 255f;
+					view.Layer.ShadowColor = UIKit.UIColor.FromRGB(shadowColor.R, shadowColor.G, shadowColor.B).CGColor;
+					view.Layer.ShadowRadius = (nfloat)(blur * elevation);
+					view.Layer.ShadowOffset = new CoreGraphics.CGSize(x * elevation, y * elevation);
+					view.Layer.ShadowPath = path;
+				}
+				else
+				{
+					view.Layer.ShadowOpacity = 0;
+				}
 			}
+#elif __WASM__
+			if (element is UIElement uiElement)
+			{
+				if (elevation > 0)
+				{
+					// Values for 1dp elevation according to https://material.io/guidelines/resources/shadows.html#shadows-illustrator
+					const double x = 0.25d;
+					const double y = 0.92f * 0.5f; // Looks more accurate than the recommended 0.92f.
+					const double blur = 0.5f;
+
+					var str = $"{x * elevation}px {y * elevation}px {blur * elevation}px {shadowColor.ToCssString()}";
+					uiElement.SetStyle("box-shadow", str);
+				}
+				else
+				{
+					uiElement.ResetStyle("box-shadow");
+				}
+			}
+#elif NETFX_CORE
+			// TODO
 #endif
 		}
 
-		#endregion
+#endregion
 
 		internal static Thickness GetPadding(this UIElement uiElement)
 		{

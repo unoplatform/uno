@@ -46,16 +46,16 @@ namespace Windows.UI.Xaml.Controls
 			UpdateContentMode(Stretch); // Set the default value of the UIImageView
 		}
 
-		partial void HitCheckOverridePartial(ref bool hitCheck)
-		{
-			hitCheck = Image != null;
-		}
-
 		public Image(IntPtr handle)
 			: base(handle)
 		{
 			Initialize();
 			ClipsToBounds = true;
+		}
+
+		partial void HitCheckOverridePartial(ref bool hitCheck)
+		{
+			hitCheck = Image != null;
 		}
 
 		private void TryOpenImage()
@@ -287,18 +287,12 @@ namespace Windows.UI.Xaml.Controls
 			UpdateContentMode(newValue);
 		}
 
-		private CGSize _previousSize;
-
-		public override CGSize SizeThatFits(CGSize size)
-		{
-			size = _layouter.Measure(size.ToFoundationSize());
-
-			return _previousSize = size;
-		}
+		public override CGSize SizeThatFits(CGSize size) => _layouter.Measure(size.ToFoundationSize());
 
 		private void UpdateLayerRect()
 		{
-			var availableSize = Frame.Size;
+			// Use "Bounds" over "Frame" because it includes all transforms
+			var availableSize = Bounds.Size.ToFoundationSize(); ;
 
 			if (SourceImageSize.Width == 0 || SourceImageSize.Height == 0 || availableSize.Width == 0 || availableSize.Height == 0 || Image == null)
 			{
