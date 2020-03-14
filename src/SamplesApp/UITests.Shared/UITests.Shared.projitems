@@ -3057,6 +3057,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Xaml_CodeGen\BindableMetadataGlobalizationTest.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="$(MSBuildThisFileDirectory)Helpers\BindableBase.cs" />
@@ -5381,6 +5385,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml\Enability\BasicEnability.xaml.cs">
       <DependentUpon>BasicEnability.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Xaml_CodeGen\BindableMetadataGlobalizationTest.xaml.cs">
+      <DependentUpon>BindableMetadataGlobalizationTest.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
