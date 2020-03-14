@@ -1,11 +1,14 @@
-﻿using Uno.UI.Helpers.WinUI;
+﻿using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
+using Uno.UI.Helpers.WinUI;
 using Windows.UI.Xaml.Automation.Provider;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
-	public partial class TreeViewItemAutomationPeer
+	public partial class TreeViewItemAutomationPeer : ListViewItemAutomationPeer, IExpandCollapseProvider
 	{
 		private readonly TreeViewItem _owner;
 

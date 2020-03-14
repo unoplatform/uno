@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Controls
+﻿using Windows.UI.Xaml;
+
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TreeViewItemTemplateSettings : DependencyObject
 	{

@@ -1,9 +1,10 @@
 ﻿using System;
 using Microsoft.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation.Provider;
 using Windows.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Automation.Peers
+namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public partial class TreeViewListAutomationPeer : SelectorAutomationPeer, ISelectionProvider, IDropTargetProvider
 	{

@@ -3,10 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using Uno.UI.Helpers.WinUI;
 using Windows.ApplicationModel.DataTransfer;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls;
 
-namespace Windows.UI.Xaml.Controls
+namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class TreeViewList : ListView
 	{
