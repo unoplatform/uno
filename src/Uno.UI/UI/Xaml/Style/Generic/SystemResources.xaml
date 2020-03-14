@@ -3935,7 +3935,6 @@
 	<x:Double x:Key="DatePickerFlyoutPresenterAcceptDismissHostGridHeight">41</x:Double>
 	<x:Double x:Key="DatePickerFlyoutPresenterItemHeight">40</x:Double>
 
-	<x:Double x:Key="TreeViewItemMinHeight">32</x:Double>
 	<x:Double x:Key="TreeViewItemContentHeight">32</x:Double>
 	<x:Double x:Key="SliderPreContentMargin">15</x:Double>
 	<x:Double x:Key="SliderPostContentMargin">15</x:Double>

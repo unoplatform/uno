@@ -11,7 +11,7 @@ using TreeNodeSelectionState = Windows.UI.Xaml.Controls.TreeViewNode.TreeNodeSel
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class TreeViewItem
+	public partial class TreeViewItem : ListViewItem
 	{
 		private const long c_dragOverInterval = 1000 * 10000;
 		private const string c_multiSelectCheckBoxName = "MultiSelectCheckBox";

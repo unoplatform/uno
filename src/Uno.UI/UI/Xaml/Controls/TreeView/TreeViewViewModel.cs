@@ -165,8 +165,9 @@ namespace Windows.UI.Xaml.Controls
 
 			// Hook up events and save tokens
 			var tvnNewNode = newNode;
-			m_collectionChangedEventTokenVector.push_back(tvnNewNode.ChildrenChanged({ this, &ViewModel.TreeViewNodeVectorChanged }));
-			m_IsExpandedChangedEventTokenVector.push_back(tvnNewNode.AddExpandedChanged({ this, &ViewModel.TreeViewNodePropertyChanged }));
+			//TODO
+			//m_collectionChangedEventTokenVector.push_back(tvnNewNode.ChildrenChanged({ this, &ViewModel.TreeViewNodeVectorChanged }));
+			//m_IsExpandedChangedEventTokenVector.push_back(tvnNewNode.AddExpandedChanged({ this, &ViewModel.TreeViewNodePropertyChanged }));
 		}
 
 		private void RemoveAtEnd()
@@ -177,12 +178,14 @@ namespace Windows.UI.Xaml.Controls
 
 			// unhook events
 			var tvnCurrent = current;
-			tvnCurrent.ChildrenChanged(m_collectionChangedEventTokenVector.back());
-			tvnCurrent.RemoveExpandedChanged(m_IsExpandedChangedEventTokenVector.back());
+			//TODO
+			//tvnCurrent.ChildrenChanged(m_collectionChangedEventTokenVector.back());
+			//tvnCurrent.RemoveExpandedChanged(m_IsExpandedChangedEventTokenVector.back());
 
 			// remove tokens
-			m_collectionChangedEventTokenVector.pop_back();
-			m_IsExpandedChangedEventTokenVector.pop_back();
+			//TODO
+			//m_collectionChangedEventTokenVector.pop_back();
+			//m_IsExpandedChangedEventTokenVector.pop_back();
 		}
 
 		private new void Clear()
@@ -216,11 +219,12 @@ namespace Windows.UI.Xaml.Controls
 					RemoveNodeAndDescendantsFromView(removeNode);
 				}
 
-				if (m_rootNodeChildrenChangedEventToken.value != 0)
-				{
-					var childrenVector = (ObservableVector<TreeViewNode>)existingOriginNode.Children;
-					childrenVector.VectorChanged(m_rootNodeChildrenChangedEventToken);
-				}
+				//TODO
+				//if (m_rootNodeChildrenChangedEventToken.value != 0)
+				//{
+				//	var childrenVector = (ObservableVector<TreeViewNode>)existingOriginNode.Children;
+				//	childrenVector.VectorChanged(m_rootNodeChildrenChangedEventToken);
+				//}
 			}
 
 			//	// Add new RootNode & children
@@ -429,7 +433,8 @@ namespace Windows.UI.Xaml.Controls
 				{
 					case TreeNodeSelectionState.Selected:
 						selectedNodes.InsertAtCore(selectedNodes.Count, selectNode);
-						m_selectedNodeChildrenChangedEventTokenVector.push_back(get_self<TreeViewNode>(selectNode).ChildrenChanged({ this, &ViewModel.SelectedNodeChildrenChanged }));
+						//TODO
+						//m_selectedNodeChildrenChangedEventTokenVector.push_back(get_self<TreeViewNode>(selectNode).ChildrenChanged({ this, &ViewModel.SelectedNodeChildrenChanged }));
 						break;
 
 					case TreeNodeSelectionState.PartialSelected:
@@ -438,8 +443,9 @@ namespace Windows.UI.Xaml.Controls
 						if (index > -1)
 						{
 							selectedNodes.RemoveAtCore(index);
-							selectNode.ChildrenChanged(m_selectedNodeChildrenChangedEventTokenVector[index]);
-							m_selectedNodeChildrenChangedEventTokenVector.erase(m_selectedNodeChildrenChangedEventTokenVector.begin() + index);
+							//TODO
+							//selectNode.ChildrenChanged(m_selectedNodeChildrenChangedEventTokenVector[index]);
+							//m_selectedNodeChildrenChangedEventTokenVector.erase(m_selectedNodeChildrenChangedEventTokenVector.begin() + index);
 						}
 						break;
 				}
@@ -701,7 +707,8 @@ namespace Windows.UI.Xaml.Controls
 							if (ancestorNode != m_originNode)
 							{
 								selectedNodes.RemoveAtCore(i);
-								m_selectedNodeChildrenChangedEventTokenVector.erase(m_selectedNodeChildrenChangedEventTokenVector.begin() + i);
+								//TODO
+								//m_selectedNodeChildrenChangedEventTokenVector.erase(m_selectedNodeChildrenChangedEventTokenVector.begin() + i);
 							}
 						}
 						break;
@@ -732,7 +739,8 @@ namespace Windows.UI.Xaml.Controls
 							if (ancestorNode != m_originNode)
 							{
 								selectedNodes.RemoveAtCore(i);
-								m_selectedNodeChildrenChangedEventTokenVector.erase(m_selectedNodeChildrenChangedEventTokenVector.begin() + i);
+								//TODO
+								//m_selectedNodeChildrenChangedEventTokenVector.erase(m_selectedNodeChildrenChangedEventTokenVector.begin() + i);
 							}
 						}
 						break;
@@ -816,8 +824,9 @@ namespace Windows.UI.Xaml.Controls
 				{
 					var current = inner[i];
 					var tvnCurrent = (TreeViewNode)current;
-					tvnCurrent.ChildrenChanged(m_collectionChangedEventTokenVector.at(i));
-					tvnCurrent.RemoveExpandedChanged(m_IsExpandedChangedEventTokenVector.at(i));
+					//TODO
+					//tvnCurrent.ChildrenChanged(m_collectionChangedEventTokenVector.at(i));
+					//tvnCurrent.RemoveExpandedChanged(m_IsExpandedChangedEventTokenVector.at(i));
 				}
 			}
 
@@ -831,15 +840,17 @@ namespace Windows.UI.Xaml.Controls
 					if (current != null)
 					{
 						var node = (TreeViewNode)current;
-						node.ChildrenChanged(m_selectedNodeChildrenChangedEventTokenVector[i]);
+						//TODO
+						//node.ChildrenChanged(m_selectedNodeChildrenChangedEventTokenVector[i]);
 					}
 				}
 			}
 
 			// Clear token vectors
-			m_collectionChangedEventTokenVector.clear();
-			m_IsExpandedChangedEventTokenVector.clear();
-			m_selectedNodeChildrenChangedEventTokenVector.clear();
+			//TODO
+			//m_collectionChangedEventTokenVector.clear();
+			//m_IsExpandedChangedEventTokenVector.clear();
+			//m_selectedNodeChildrenChangedEventTokenVector.clear();
 		}
 
 	}

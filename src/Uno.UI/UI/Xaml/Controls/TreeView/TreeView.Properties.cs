@@ -83,6 +83,6 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(nameof(ItemTemplateSelector), typeof(DataTemplateSelector), typeof(TreeView), new PropertyMetadata(null));
 
 		public static readonly DependencyProperty SelectionModeProperty =
-			DependencyProperty.Register(nameof(SelectionMode), typeof(TreeViewSelectionMode), typeof(TreeView), new PropertyMetadata(TreeViewSelectionMode.Single))
+			DependencyProperty.Register(nameof(SelectionMode), typeof(TreeViewSelectionMode), typeof(TreeView), new PropertyMetadata(TreeViewSelectionMode.Single));
 	}
 }

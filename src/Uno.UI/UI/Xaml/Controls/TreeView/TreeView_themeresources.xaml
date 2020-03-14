@@ -98,7 +98,7 @@
             <SolidColorBrush x:Key="TreeViewItemCheckGlyphSelected" Color="{ThemeResource SystemColorWindowTextColor}" />
             <Thickness x:Key="TreeViewItemBorderThemeThickness">1</Thickness>
             <x:Double x:Key="TreeViewItemMinHeight">32</x:Double>
-        </ResourceDictionary>
+		</ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
     
 </ResourceDictionary>
