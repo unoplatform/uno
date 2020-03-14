@@ -5,9 +5,9 @@ using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 
-namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
+namespace MUX.UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 {
-	public class TreeViewItemSource : INotifyPropertyChanged
+	public partial class TreeViewItemSource : INotifyPropertyChanged
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 		public String Content { get; set; }

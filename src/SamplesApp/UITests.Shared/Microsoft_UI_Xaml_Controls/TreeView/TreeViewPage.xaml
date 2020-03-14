@@ -5,7 +5,7 @@
     x:Name="TwoPaneViewTestPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests"
+    xmlns:local="using:MUX.UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests"
 	xmlns:xamarin="http://uno.ui/xamarin"
     xmlns:muxcontrols="using:Microsoft.UI.Xaml.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"

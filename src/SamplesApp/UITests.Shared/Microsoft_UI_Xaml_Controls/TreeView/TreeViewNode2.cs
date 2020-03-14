@@ -8,7 +8,7 @@ using TreeViewNode = Microsoft.UI.Xaml.Controls.TreeViewNode;
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 {
 	// An empty class to test TreeViewNode inheritance
-	class TreeViewNode2 : TreeViewNode
+	public partial class TreeViewNode2 : TreeViewNode
 	{
 
 	}
