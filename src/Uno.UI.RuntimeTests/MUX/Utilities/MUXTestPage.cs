@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Media;
 
 namespace MUXControlsTestApp.Utilities
 {
-    public class MUXTestPage : Page
+    public partial class MUXTestPage : Page
     {
 		public static List<T> FindVisualChildrenByType<T>(FrameworkElement parent) where T : class
 		{

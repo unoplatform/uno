@@ -4,12 +4,13 @@ using Windows.System;
 using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
-using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using TreeNodeSelectionState = Microsoft.UI.Xaml.Controls.TreeViewNode.TreeNodeSelectionState;
+using Windows.UI.Xaml.Automation.Peers;
+using TreeViewItemAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.TreeViewItemAutomationPeer;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -18,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private const long c_dragOverInterval = 1000 * 10000;
 		private const string c_multiSelectCheckBoxName = "MultiSelectCheckBox";
 		private const string c_expandCollapseChevronName = "ExpandCollapseChevron";
-		
+
 		private bool m_expansionCycled;
 		private CheckBox m_selectionBox;
 		private DispatcherTimer m_expandContentTimer;
@@ -74,7 +75,7 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnKeyDown(e);
 		}
 
-		protected override void OnDrop(DragEventArgs args)
+		protected override void OnDrop(Windows.UI.Xaml.DragEventArgs args)
 		{
 			if (!args.Handled && args.AcceptedOperation == DataPackageOperation.Move)
 			{
@@ -96,7 +97,7 @@ namespace Microsoft.UI.Xaml.Controls
 								if (treeViewList.IsFlatIndexValid(nodeIndex))
 								{
 									treeViewList.RemoveNodeFromParent(node);
-									droppedOnNode.Children.Add(node);
+									((TreeViewNodeVector)droppedOnNode.Children).Append(node);
 								}
 							}
 
@@ -112,10 +113,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 							if (droppedNode != droppedOnNode)
 							{
-								droppedNode.Parent.Children.RemoveAt(removeIndex);
+								((TreeViewNodeVector)droppedOnNode.Parent.Children).RemoveAt(removeIndex);
 
 								// Append the dragged dropped item as a child of the node it was dropped onto
-								droppedOnNode.Children.Add(droppedNode);
+								((TreeViewNodeVector)droppedOnNode.Children).Append(droppedNode);
 
 								// If not set to true then the Reorder code of listview will override what is being done here.
 								args.Handled = true;
@@ -132,7 +133,7 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnDrop(args);
 		}
 
-		protected override void OnDragOver(DragEventArgs args)
+		protected override void OnDragOver(Windows.UI.Xaml.DragEventArgs args)
 		{
 			var treeView = AncestorTreeView;
 			if (treeView != null && !args.Handled)
@@ -179,7 +180,7 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnDragOver(args);
 		}
 
-		protected override void OnDragEnter(DragEventArgs args)
+		protected override void OnDragEnter(Windows.UI.Xaml.DragEventArgs args)
 		{
 			TreeViewItem draggedOverItem = this;
 
@@ -236,7 +237,7 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnDragEnter(args);
 		}
 
-		protected override void OnDragLeave(DragEventArgs args)
+		protected override void OnDragLeave(Windows.UI.Xaml.DragEventArgs args)
 		{
 			if (!args.Handled)
 			{
@@ -564,9 +565,9 @@ namespace Microsoft.UI.Xaml.Controls
 			skippedItem?.Focus(FocusState.Keyboard);
 
 			var parentNode = targetNode.Parent;
-			var children = parentNode.Children;
+			var children = (TreeViewNodeVector)parentNode.Children;
 			children.RemoveAt(childIndex);
-			children.Insert(childIndex + positionModifier, targetNode);
+			children.InsertAt(childIndex + positionModifier, targetNode);
 			listControl.UpdateLayout();
 
 			var lvi = AncestorTreeView.ContainerFromNode(targetNode) as TreeViewItem;

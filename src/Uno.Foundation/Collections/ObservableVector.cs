@@ -10,7 +10,7 @@ namespace Windows.Foundation.Collections
 	{
 		private readonly List<T> _list = new List<T>();
 
-		public T this[int index]
+		public virtual T this[int index]
 		{
 			get { return _list[index]; }
 			set

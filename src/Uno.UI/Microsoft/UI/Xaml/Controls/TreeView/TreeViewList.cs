@@ -7,6 +7,8 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
+using TreeViewListAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.TreeViewListAutomationPeer;
+using DragEventArgs = Windows.UI.Xaml.DragEventArgs;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -103,9 +105,9 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// IControlOverrides
 		
-		protected override void OnDrop(DragEventArgs e)
+		protected override void OnDrop(Windows.UI.Xaml.DragEventArgs e)
 		{
-			DragEventArgs args = e;
+			var args = e;
 
 			if (args.AcceptedOperation == DataPackageOperation.Move && !args.Handled)
 			{
@@ -141,7 +143,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// Required as OnDrop is protected and can't be accessed from outside
-		internal void OnDropInternal(DragEventArgs e) => OnDrop(e);
+		internal void OnDropInternal(Windows.UI.Xaml.DragEventArgs e) => OnDrop(e);
 
 		private void MoveNodeInto(TreeViewNode node, TreeViewNode insertAtNode)
 		{
@@ -155,19 +157,19 @@ namespace Microsoft.UI.Xaml.Controls
 				// insert as the first child
 				if (insertAtNode.IsExpanded && insertOffset == 1)
 				{
-					insertAtNode.Children.Insert(0, node);
+					((TreeViewNodeVector)insertAtNode.Children).InsertAt(0, node);
 				}
 				else
 				{
 					// Add the item to the new parent (parent of the insertAtNode)
-					var children = insertAtNode.Parent.Children;
+					var children = (TreeViewNodeVector)insertAtNode.Parent.Children;
 					int insertNodeIndexInParent = IndexInParent(insertAtNode);
-					children.Insert(insertNodeIndexInParent + insertOffset, node);
+					children.InsertAt(insertNodeIndexInParent + insertOffset, node);
 				}
 			}
 		}
 
-		protected override void OnDragOver(DragEventArgs args)
+		protected override void OnDragOver(Windows.UI.Xaml.DragEventArgs args)
 		{
 			if (!args.Handled)
 			{
@@ -285,7 +287,7 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnDragOver(args);
 		}
 
-		protected override void OnDragEnter(DragEventArgs args)
+		protected override void OnDragEnter(Windows.UI.Xaml.DragEventArgs args)
 		{
 			if (!args.Handled)
 			{
@@ -294,7 +296,7 @@ namespace Microsoft.UI.Xaml.Controls
 			base.OnDragEnter(args);
 		}
 
-		protected override void OnDragLeave(DragEventArgs args)
+		protected override void OnDragLeave(Windows.UI.Xaml.DragEventArgs args)
 		{
 			m_emptySlotIndex = -1;
 			base.OnDragLeave(args);
@@ -552,7 +554,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal int RemoveNodeFromParent(TreeViewNode node)
 		{
-			var children = node.Parent.Children;
+			var children = (TreeViewNodeVector)node.Parent.Children;
 			int indexInParent = children.IndexOf(node);
 
 			if (indexInParent > -1)

@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Media.Animation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class TreeView
+	public partial class TreeView 
 	{
 		public bool CanDragItems
 		{

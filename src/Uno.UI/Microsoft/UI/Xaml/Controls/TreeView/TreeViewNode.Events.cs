@@ -1,5 +1,6 @@
 ﻿using Windows.Foundation;
 using Windows.Foundation.Collections;
+using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -7,6 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		internal event TypedEventHandler<TreeViewNode, IVectorChangedEventArgs> ChildrenChanged;
 
-		internal event TypedEventHandler<TreeViewNode, DependencyPropertyChangedEventArgs> ExpandedChanged;
+		//TODO:
+		//internal event TypedEventHandler<TreeViewNode, DependencyPropertyChangedEventArgs> ExpandedChanged;
 	}
 }
