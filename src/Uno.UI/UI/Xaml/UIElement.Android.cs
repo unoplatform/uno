@@ -473,8 +473,8 @@ namespace Windows.UI.Xaml
 
 		public FrameworkElement FrameworkElementOfInterest => ViewOfInterest as FrameworkElement;
 
-		public string ShowDescendants() => ViewExtensions.ShowDescendants(this);
-		public string ShowLocalVisualTree(int fromHeight) => ViewExtensions.ShowLocalVisualTree(this, fromHeight);
+		public string ShowDescendants() => Uno.UI.ViewExtensions.ShowDescendants(this);
+		public string ShowLocalVisualTree(int fromHeight) => Uno.UI.ViewExtensions.ShowLocalVisualTree(this, fromHeight);
 #endif
 	}
 }

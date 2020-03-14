@@ -1,5 +1,4 @@
-﻿#if __WASM__ || __MACOS__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -11,16 +10,27 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using static System.Math;
 using static Windows.UI.Xaml.Controls.Primitives.GeneratorDirection;
+using Uno.UI.Extensions;
 #if __MACOS__
 using AppKit;
+#elif __IOS__
+using UIKit;
+#endif
+#if __IOS__ || __ANDROID__
+using _Panel = Uno.UI.Controls.ManagedItemsStackPanel;
+#else
+using _Panel = Windows.UI.Xaml.Controls.Panel;
 #endif
 
 namespace Windows.UI.Xaml.Controls
 {
+#if __IOS__ || __ANDROID__
+	public abstract partial class ManagedVirtualizingPanelLayout : DependencyObject
+#else
 	public abstract partial class VirtualizingPanelLayout : DependencyObject
+#endif
 	{
-		private IVirtualizingPanel Owner { get; set; }
-		private Panel OwnerPanel => Owner as Panel;
+		private _Panel OwnerPanel { get; set; }
 		private protected VirtualizingPanelGenerator Generator { get; private set; }
 
 		private ScrollViewer ScrollViewer { get; set; }
@@ -116,9 +126,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool ShouldMeasuredBreadthStretch => ShouldBreadthStretch && GetBreadth(_availableSize) < double.MaxValue / 2;
 
-		internal void Initialize(IVirtualizingPanel owner)
+		internal void Initialize(_Panel owner)
 		{
-			Owner = owner ?? throw new ArgumentNullException(nameof(owner));
+			OwnerPanel = owner ?? throw new ArgumentNullException(nameof(owner));
 			OwnerPanel.Loaded += OnLoaded;
 			OwnerPanel.Unloaded += OnUnloaded;
 
@@ -127,10 +137,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
 		{
-			FrameworkElement parent = OwnerPanel;
-			while (parent != null && ItemsControl == null)
+			foreach (var parent in OwnerPanel.GetVisualAncestry())
 			{
-				parent = parent.Parent as FrameworkElement;
 				if (parent is ScrollViewer scrollViewer && ScrollViewer == null)
 				{
 					ScrollViewer = scrollViewer;
@@ -139,6 +147,7 @@ namespace Windows.UI.Xaml.Controls
 				else if (parent is ItemsControl itemsControl)
 				{
 					ItemsControl = itemsControl;
+					break;
 				}
 			}
 
@@ -702,8 +711,10 @@ namespace Windows.UI.Xaml.Controls
 
 #if __WASM__
 		private static Point GetRelativePosition(FrameworkElement child) => child.RelativePosition;
-#elif __MACOS__
+#elif __MACOS__ || __IOS__
 		private static Point GetRelativePosition(FrameworkElement child) => child.Frame.Location;
+#elif __ANDROID__
+		private static Point GetRelativePosition(FrameworkElement child) => new Point(ViewHelper.PhysicalToLogicalPixels(child.Left), ViewHelper.PhysicalToLogicalPixels(child.Top));
 #endif
 
 		/// <summary>
@@ -735,4 +746,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif

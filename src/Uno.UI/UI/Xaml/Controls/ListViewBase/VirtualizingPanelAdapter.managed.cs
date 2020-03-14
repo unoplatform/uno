@@ -1,10 +1,14 @@
-﻿#if __WASM__ || __MACOS__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
+#if __ANDROID__ || __IOS__
+using _VirtualizingPanelLayout = Windows.UI.Xaml.Controls.ManagedVirtualizingPanelLayout;
+#else
+using _VirtualizingPanelLayout = Windows.UI.Xaml.Controls.VirtualizingPanelLayout;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -15,7 +19,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private const int CacheLimit = 10;
 		private const int NoTemplateItemId = -1;
-		private readonly VirtualizingPanelLayout _owner;
+		private readonly _VirtualizingPanelLayout _owner;
 		private readonly Dictionary<int, Stack<FrameworkElement>> _itemContainerCache = new Dictionary<int, Stack<FrameworkElement>>();
 		/// <summary>
 		/// Caching the id is more efficient, and also important in the case of the ItemsSource changing, when the (former) item may no longer be in the new collection.
@@ -29,7 +33,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private ItemsControl ItemsControl => _owner.ItemsControl;
 
-		public VirtualizingPanelGenerator(VirtualizingPanelLayout owner)
+		public VirtualizingPanelGenerator(_VirtualizingPanelLayout owner)
 		{
 			_owner = owner;
 		}
@@ -196,4 +200,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif
