@@ -19,6 +19,11 @@ namespace Uno.UI.Controls
 
 		public ManagedItemsStackPanel()
 		{
+			if (FeatureConfiguration.ListViewBase.DefaultCacheLength.HasValue)
+			{
+				CacheLength = FeatureConfiguration.ListViewBase.DefaultCacheLength.Value;
+			}
+
 			CreateLayoutIfNeeded();
 			_layout.Initialize(this);
 		}
@@ -38,9 +43,8 @@ namespace Uno.UI.Controls
 				//				_layout.BindToEquivalentProperty(this, nameof(AreStickyGroupHeadersEnabled));
 				//				_layout.BindToEquivalentProperty(this, nameof(GroupHeaderPlacement));
 				//				_layout.BindToEquivalentProperty(this, nameof(GroupPadding));
-				//#if !XAMARIN_IOS
-				//				_layout.BindToEquivalentProperty(this, nameof(CacheLength));
-				//#endif
+
+				_layout.BindToEquivalentProperty(this, nameof(CacheLength));
 			}
 		}
 
@@ -74,6 +78,38 @@ namespace Uno.UI.Controls
 		partial void OnOrientationChangedPartialNative(Orientation oldOrientation, Orientation newOrientation);
 
 		#endregion
+
+		#region CacheLength DependencyProperty
+
+		public double CacheLength
+		{
+			get { return (double)this.GetValue(CacheLengthProperty); }
+			set { this.SetValue(CacheLengthProperty, value); }
+		}
+
+		public static readonly DependencyProperty CacheLengthProperty =
+			DependencyProperty.Register(
+				"CacheLength",
+				typeof(double),
+				typeof(ManagedItemsStackPanel),
+				new FrameworkPropertyMetadata(
+					defaultValue: (double)4.0,
+					options: FrameworkPropertyMetadataOptions.None,
+					propertyChangedCallback: (s, e) => ((ManagedItemsStackPanel)s)?.OnCacheLengthChanged((double)e.OldValue, (double)e.NewValue)
+				)
+			);
+
+		protected virtual void OnCacheLengthChanged(double oldCacheLength, double newCacheLength)
+		{
+			OnCacheLengthChangedPartial(oldCacheLength, newCacheLength);
+			OnCacheLengthChangedPartialNative(oldCacheLength, newCacheLength);
+		}
+
+		partial void OnCacheLengthChangedPartial(double oldCacheLength, double newCacheLength);
+		partial void OnCacheLengthChangedPartialNative(double oldCacheLength, double newCacheLength);
+
+		#endregion
+
 #if __IOS__
 		public override void SetSuperviewNeedsLayout()
 		{
