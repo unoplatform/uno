@@ -33,14 +33,14 @@ namespace Windows.Foundation.Collections
 		public event VectorChangedEventHandler<T> VectorChanged;
 		public event VectorChangedEventHandler UntypedVectorChanged;
 
-		public void Add(T item)
+		public virtual void Add(T item)
 		{
 			_list.Add(item);
 
 			RaiseVectorChanged(CollectionChange.ItemInserted, _list.Count - 1);
 		}
 
-		public void Clear()
+		public virtual void Clear()
 		{
 			_list.Clear();
 
@@ -55,7 +55,7 @@ namespace Windows.Foundation.Collections
 
 		public int IndexOf(T item) => _list.IndexOf(item);
 
-		public void Insert(int index, T item)
+		public virtual void Insert(int index, T item)
 		{
 			_list.Insert(index, item);
 
@@ -78,7 +78,7 @@ namespace Windows.Foundation.Collections
 			}
 		}
 
-		public void RemoveAt(int index)
+		public virtual void RemoveAt(int index)
 		{
 			_list.RemoveAt(index);
 

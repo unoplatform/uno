@@ -1,5 +1,4 @@
 ﻿using Windows.Foundation.Collections;
-using TreeNodeSelectionState = Microsoft.UI.Xaml.Controls.TreeViewNode.TreeNodeSelectionState;
 
 namespace Microsoft.UI.Xaml.Controls
 {

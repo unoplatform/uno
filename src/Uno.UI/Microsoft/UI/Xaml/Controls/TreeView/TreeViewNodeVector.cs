@@ -23,8 +23,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_parent = value;
 		}
 
-
-		IList GetWritableParentItemsSource()
+		private IList GetWritableParentItemsSource()
 		{
 			IList parentItemsSource = null;
 
@@ -41,6 +40,8 @@ namespace Microsoft.UI.Xaml.Controls
 			InsertAt(Count, item, updateItemsSource);
 		}
 
+		public override void Add(TreeViewNode item) => Append(item);
+
 		public void InsertAt(int index, TreeViewNode item, bool updateItemsSource = true)
 		{
 			var inner = GetVectorInnerImpl();
@@ -48,7 +49,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				throw new InvalidOperationException("Parent node must be set");
 			}
-			if (index <= inner.Count)
+			if (index > inner.Count)
 			{
 				throw new IndexOutOfRangeException("Index out of range for Insert");
 			}
@@ -67,16 +68,24 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
+		public override void Insert(int index, TreeViewNode item) => InsertAt(index, item);
+
 		public void SetAt(int index, TreeViewNode item, bool updateItemsSource = true)
 		{
 			RemoveAt(index, updateItemsSource);
 			InsertAt(index, item, updateItemsSource);
 		}
+		
+		public override TreeViewNode this[int index]
+		{
+			get => base[index];
+			set => SetAt(index, value);
+		}
 
 		public void RemoveAt(int index, bool updateItemsSource = true)
 		{
 			var inner = GetVectorInnerImpl();
-			var targetNode = inner.GetAt(index);
+			var targetNode = inner[index];
 			targetNode.Parent = null;
 
 			inner.RemoveAt(index);
@@ -90,6 +99,8 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 		}
+
+		public override void RemoveAt(int index) => RemoveAt(index, true);		
 
 		public void RemoveAtEnd(bool updateItemsSource = true)
 		{
@@ -151,5 +162,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 			}
 		}
+
+		public override void Clear() => Clear(true);
 	}
 }

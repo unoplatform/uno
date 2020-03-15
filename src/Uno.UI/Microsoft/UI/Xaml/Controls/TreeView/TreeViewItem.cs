@@ -8,7 +8,6 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
-using TreeNodeSelectionState = Microsoft.UI.Xaml.Controls.TreeViewNode.TreeNodeSelectionState;
 using Windows.UI.Xaml.Automation.Peers;
 using TreeViewItemAutomationPeer = Microsoft.UI.Xaml.Automation.Peers.TreeViewItemAutomationPeer;
 
@@ -495,7 +494,7 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateSelection((bool)GetValue(args));
 		}
 
-		private void UpdateMultipleSelection(TreeViewNode.TreeNodeSelectionState state)
+		private void UpdateMultipleSelection(TreeNodeSelectionState state)
 		{
 			switch (state)
 			{
