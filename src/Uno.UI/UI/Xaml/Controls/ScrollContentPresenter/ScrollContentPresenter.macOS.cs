@@ -36,9 +36,17 @@ namespace Windows.UI.Xaml.Controls
 
 		public float MaximumZoomScale { get; set; }
 
-		public ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
+		private bool ShowsVerticalScrollIndicator
+		{
+			get => HasVerticalScroller;
+			set => HasVerticalScroller = value;
+		}
 
-		public ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
+		private bool ShowsHorizontalScrollIndicator
+		{
+			get => HasHorizontalScroller;
+			set => HasHorizontalScroller = value;
+		}
 
 		public override bool NeedsLayout
 		{

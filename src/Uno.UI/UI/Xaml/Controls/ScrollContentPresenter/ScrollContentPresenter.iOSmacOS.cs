@@ -30,7 +30,31 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private CGSize _measuredSize;
 		private bool _requiresMeasure;
-			   
+
+		private ScrollBarVisibility _verticalScrollBarVisibility;
+		private ScrollBarVisibility _horizotalScrollBarVisibility;
+
+		public ScrollBarVisibility VerticalScrollBarVisibility
+		{
+			get { return _verticalScrollBarVisibility; }
+			set
+			{
+				_verticalScrollBarVisibility = value;
+
+				ShowsVerticalScrollIndicator = value == ScrollBarVisibility.Auto || value == ScrollBarVisibility.Visible;
+			}
+		}
+		public ScrollBarVisibility HorizontalScrollBarVisibility
+		{
+			get { return _horizotalScrollBarVisibility; }
+			set
+			{
+				_horizotalScrollBarVisibility = value;
+
+				ShowsHorizontalScrollIndicator = value == ScrollBarVisibility.Auto || value == ScrollBarVisibility.Visible;
+			}
+		}
+
 #if __IOS__
 		public override
 #else
