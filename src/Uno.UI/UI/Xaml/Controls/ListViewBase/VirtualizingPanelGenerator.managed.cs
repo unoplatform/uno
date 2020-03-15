@@ -20,6 +20,9 @@ namespace Windows.UI.Xaml.Controls
 		private const int CacheLimit = 10;
 		private const int NoTemplateItemId = -1;
 		private readonly _VirtualizingPanelLayout _owner;
+		/// <summary>
+		/// Recycled item containers that can be reused as needed. This is actually multiple caches indexed by template id.
+		/// </summary>
 		private readonly Dictionary<int, Stack<FrameworkElement>> _itemContainerCache = new Dictionary<int, Stack<FrameworkElement>>();
 		/// <summary>
 		/// Caching the id is more efficient, and also important in the case of the ItemsSource changing, when the (former) item may no longer be in the new collection.
@@ -38,6 +41,9 @@ namespace Windows.UI.Xaml.Controls
 			_owner = owner;
 		}
 
+		/// <summary>
+		/// Returns a container view bound to the item at <paramref name="index"/>, recycling an available view if possible, or creating a new container if not.
+		/// </summary>
 		public FrameworkElement DequeueViewForItem(int index)
 		{
 			//Try scrap first to save rebinding view
@@ -64,6 +70,9 @@ namespace Windows.UI.Xaml.Controls
 			return container;
 		}
 
+		/// <summary>
+		/// Try to retrieve a cached container for a given template <paramref name="id"/>. Returns null if none is available.
+		/// </summary>
 		private FrameworkElement TryDequeueCachedContainer(int id)
 		{
 			if (_itemContainerCache.TryGetValue(id, out var cache))
@@ -79,6 +88,9 @@ namespace Windows.UI.Xaml.Controls
 			return null;
 		}
 
+		/// <summary>
+		/// Try to retrieve a temporarily-scrapped container for given item <paramref name="index"/>. Returns null if none is available.
+		/// </summary>
 		private FrameworkElement TryGetScrappedContainer(int index)
 		{
 			if (_scrapCache.TryGetValue(index, out var container))
@@ -91,6 +103,11 @@ namespace Windows.UI.Xaml.Controls
 			return null;
 		}
 
+		/// <summary>
+		/// Return a container to the reuse pool once it has finished being displayed.
+		/// </summary>
+		/// <param name="container">The item container to recycle.</param>
+		/// <param name="index">The item index that the container was being used for.</param>
 		public void RecycleViewForItem(FrameworkElement container, int index)
 		{
 			var id = GetItemId(index);
@@ -110,6 +127,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 				else
 				{
+					// Cache is full, remove the view
 					DiscardContainer(container);
 				}
 			}
@@ -127,9 +145,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		/// <summary>
+		/// Completely remove an item container that will not be reused again.
+		/// </summary>
 		private static void DiscardContainer(FrameworkElement container)
 		{
-			// Cache is full, remove the view
 			var parent = (container.Parent) as Panel;
 			if (parent != null)
 			{
@@ -140,8 +160,8 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Send view to temporary scrap. Intended for use during lightweight layout rebuild. Views in scrap will be reused without being rebound if a view for that position is requested.
 		/// </summary>
-		/// <param name="container"></param>
-		/// <param name="index"></param>
+		/// <param name="container">The item container to scrap</param>
+		/// <param name="index">The item index that the container is currently bound to</param>
 		public void ScrapViewForItem(FrameworkElement container, int index)
 		{
 			_scrapCache[index] = container;
@@ -162,7 +182,7 @@ namespace Windows.UI.Xaml.Controls
 
 		/// <summary>
 		/// Hide cached views that are no longer displaying materialized items. Doing this in a single batch, rather than repeatedly toggling
-		/// the visibility as items are recycled and then reused, significantly improves scrolling performance.
+		/// the visibility as items are recycled and then reused, significantly improves scrolling performance in WebAssembly.
 		/// </summary>
 		public void UpdateVisibilities()
 		{
@@ -177,6 +197,9 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		/// <summary>
+		/// Get the container reuse ID associated with the item <paramref name="index"/>, based on the template associated with it (eg if <see cref="ItemsControl.ItemTemplateSelector"/> is set)
+		/// </summary>
 		private int GetItemId(int index)
 		{	
 			if(_idCache.TryGetValue(index, out var value))

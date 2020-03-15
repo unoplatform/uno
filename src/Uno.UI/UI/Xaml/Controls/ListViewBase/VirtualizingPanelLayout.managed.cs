@@ -59,6 +59,9 @@ namespace Windows.UI.Xaml.Controls
 			_availableSize.Width :
 			_availableSize.Height;
 
+		/// <summary>
+		/// The current offset from the original scroll position.
+		/// </summary>
 		private double ScrollOffset
 		{
 			get
@@ -74,8 +77,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		/// <summary>
+		/// The size of the scroll viewport.
+		/// </summary>
 		private Size ViewportSize { get; set; }
 
+		/// <summary>
+		/// The extent (parallel to scroll direction) of the scroll viewport.
+		/// </summary>
 		private double ViewportExtent
 		{
 			get
@@ -99,7 +108,9 @@ namespace Windows.UI.Xaml.Controls
 		/// The end of the visible viewport, relative to the end of the panel.
 		/// </summary>
 		private double ViewportEnd => ScrollOffset + ViewportExtent;
-
+		/// <summary>
+		/// The additional length in pixels for which to create buffered views.
+		/// </summary>
 		private double ViewportExtension => CacheLength * ViewportExtent * 0.5;
 		/// <summary>
 		/// The start of the 'extended viewport,' the area of the visible viewport plus the buffer area defined by <see cref="CacheLength"/>.
@@ -276,6 +287,10 @@ namespace Windows.UI.Xaml.Controls
 			return EstimatePanelSize(isMeasure: false);
 		}
 
+		/// <summary>
+		/// Update the item container layout by removing no-longer-visible views and adding visible views.
+		/// </summary>
+		/// <param name="extentAdjustment">Adjustment to apply when calculating fillable area.</param>
 		private void UpdateLayout(double? extentAdjustment = null)
 		{
 			OwnerPanel.ShouldInterceptInvalidate = true;
@@ -296,6 +311,9 @@ namespace Windows.UI.Xaml.Controls
 			OwnerPanel.ShouldInterceptInvalidate = false;
 		}
 
+		/// <summary>
+		/// Called after an update cycle is completed. 
+		/// </summary>
 		private void UpdateCompleted()
 		{
 			// If we're not stretched, then added views may change the breadth of the list, so we allow measure requests to propagate
@@ -384,26 +402,32 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void RecycleLine(Line firstMaterializedLine)
+		/// <summary>
+		/// Recycle all views for a given line.
+		/// </summary>
+		private void RecycleLine(Line line)
 		{
-			for (int i = 0; i < firstMaterializedLine.ContainerViews.Length; i++)
+			for (int i = 0; i < line.ContainerViews.Length; i++)
 			{
-				Generator.RecycleViewForItem(firstMaterializedLine.ContainerViews[i], firstMaterializedLine.FirstItemFlat + i);
+				Generator.RecycleViewForItem(line.ContainerViews[i], line.FirstItemFlat + i);
 			}
 		}
 
 		/// <summary>
 		/// Send views in line to temporary scrap.
 		/// </summary>
-		/// <param name="firstMaterializedLine"></param>
-		private void ScrapLine(Line firstMaterializedLine)
+		private void ScrapLine(Line line)
 		{
-			for (int i = 0; i < firstMaterializedLine.ContainerViews.Length; i++)
+			for (int i = 0; i < line.ContainerViews.Length; i++)
 			{
-				Generator.ScrapViewForItem(firstMaterializedLine.ContainerViews[i], firstMaterializedLine.FirstItemFlat + i);
+				Generator.ScrapViewForItem(line.ContainerViews[i], line.FirstItemFlat + i);
 			}
 		}
 
+		/// <summary>
+		/// Estimate the 'correct' size of the panel.
+		/// </summary>
+		/// <param name="isMeasure">True if this is called from measure, false if after arrange.</param>
 		private Size EstimatePanelSize(bool isMeasure)
 		{
 			var extent = EstimatePanelExtent();
@@ -426,6 +450,9 @@ namespace Windows.UI.Xaml.Controls
 			return ret;
 		}
 
+		/// <summary>
+		/// Estimate the 'correct' extent of the panel, based on number and guessed size of remaining unmaterialized items.
+		/// </summary>
 		private double EstimatePanelExtent()
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -501,7 +528,6 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private void ScrapLayout()
 		{
-
 			var firstVisibleItem = GetFirstMaterializedIndexPath();
 
 			_dynamicSeedIndex = GetDynamicSeedIndex(firstVisibleItem);
