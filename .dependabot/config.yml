@@ -3,7 +3,11 @@ update_configs:
   - package_manager: "dotnet:nuget"
     directory: "/"
     update_schedule: "weekly"
-
+    
+    commit_message:
+      prefix: "chore"
+      include_scope: true
+      
     default_labels:
       - "kind/dependency"
       - "do-not-merge/work-in-progress"
