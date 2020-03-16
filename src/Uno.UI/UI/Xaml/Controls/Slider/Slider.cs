@@ -169,7 +169,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					var maxWidth = ActualWidth - _horizontalThumb.ActualWidth;
 
-					_horizontalDecreaseRect.Width = Math.Min(Math.Max(0, _horizontalInitial + (float)e.HorizontalChange), maxWidth);
+					_horizontalDecreaseRect.Width = Math.Min(Math.Max(0, _horizontalInitial + (float)e.TotalHorizontalChange), maxWidth);
 
 					ApplySlideToValue(_horizontalDecreaseRect.Width / maxWidth);
 				}
@@ -177,7 +177,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					var maxHeight = ActualHeight - _horizontalThumb.ActualHeight;
 
-					_verticalDecreaseRect.Height = Math.Min(Math.Max(0, _verticalInitial - (float)e.VerticalChange), (float)maxHeight);
+					_verticalDecreaseRect.Height = Math.Min(Math.Max(0, _verticalInitial - (float)e.TotalVerticalChange), (float)maxHeight);
 
 					ApplySlideToValue(_verticalDecreaseRect.Height / maxHeight);
 				}
@@ -338,39 +338,32 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void OnSliderContainerPressed(object sender, PointerRoutedEventArgs e)
+		private void OnSliderContainerPressed(object sender, PointerRoutedEventArgs args)
 		{
-			var container = sender as FrameworkElement;
-			if (container.CapturePointer(e.Pointer))
+			if (sender is FrameworkElement container && container.CapturePointer(args.Pointer))
 			{
-				var point = e.GetCurrentPoint(container).Position;
+				var point = args.GetCurrentPoint(container).Position;
 				var newOffset = Orientation == Orientation.Horizontal
 					? point.X / container.ActualWidth
 					: 1 - (point.Y / container.ActualHeight);
 
 				ApplySlideToValue(newOffset);
-				Thumb?.StartDrag(point);
+				Thumb?.StartDrag(args);
 			}
 		}
 
-		private void OnSliderContainerMoved(object sender, PointerRoutedEventArgs e)
+		private void OnSliderContainerMoved(object sender, PointerRoutedEventArgs args)
 		{
-			var container = sender as FrameworkElement;
-			if (container.IsCaptured(e.Pointer))
+			if (sender is FrameworkElement container && container.IsCaptured(args.Pointer))
 			{
-				var point = e.GetCurrentPoint(container).Position;
-
-				Thumb?.DeltaDrag(point);
+				Thumb?.DeltaDrag(args);
 			}
 		}
 
-		private void OnSliderContainerCaptureLost(object sender, PointerRoutedEventArgs e)
+		private void OnSliderContainerCaptureLost(object sender, PointerRoutedEventArgs args)
 		{
-			var container = sender as FrameworkElement;
-			var point = e.GetCurrentPoint(container).Position;
-
 			ApplyValueToSlide();
-			Thumb?.CompleteDrag(point);
+			Thumb?.CompleteDrag(args);
 		}
 
 		#region IsTrackerEnabled DependencyProperty

@@ -423,15 +423,7 @@ namespace Windows.UI.Xaml
 			OnAddingChild(child);
 
 			_children.Add(child);
-
-			if (index.HasValue)
-			{
-				Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, child.HtmlId, index);
-			}
-			else
-			{
-				Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, child.HtmlId);
-			}
+			Uno.UI.Xaml.WindowManagerInterop.AddView(HtmlId, child.HtmlId, index);
 
 			OnChildAdded(child);
 
