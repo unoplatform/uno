@@ -245,9 +245,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnDragDelta(object sender, DragDeltaEventArgs e)
 		{
-			var dragDistance = Math.Abs(e.HorizontalChange);
+			var dragDistance = Math.Abs(e.TotalHorizontalChange);
 			_maxDragDistance = Math.Max(dragDistance, _maxDragDistance);
-			UpdateSwitchKnobPosition(e.HorizontalChange);
+			UpdateSwitchKnobPosition(e.TotalHorizontalChange);
 		}
 
 		private void OnDragCompleted(object sender, DragCompletedEventArgs e)
@@ -262,7 +262,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				var isOn = GetAbsoluteOffset(e.HorizontalChange) > (GetMaxOffset() / 2);
+				var isOn = GetAbsoluteOffset(e.TotalHorizontalChange) > (GetMaxOffset() / 2);
 				if (isOn == IsOn)
 				{
 					UpdateSwitchKnobPosition(0);

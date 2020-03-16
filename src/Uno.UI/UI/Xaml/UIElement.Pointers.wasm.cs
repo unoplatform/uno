@@ -202,7 +202,7 @@ namespace Windows.UI.Xaml
 			this.CoerceValue(HitTestVisibilityProperty);
 		}
 
-		private enum HitTestVisibility
+		private protected enum HitTestVisibility
 		{
 			/// <summary>
 			/// The element and its children can't be targeted by hit-testing.
@@ -280,27 +280,34 @@ namespace Windows.UI.Xaml
 
 		private static void OnHitTestVisibilityChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			if (dependencyObject is UIElement element && args.NewValue is HitTestVisibility hitTestVisibility)
+			if (dependencyObject is UIElement element
+				&& args.OldValue is HitTestVisibility oldValue
+				&& args.NewValue is HitTestVisibility newValue)
 			{
-				if (hitTestVisibility == HitTestVisibility.Visible)
-				{
-					// By default, elements have 'pointer-event' set to 'auto' (see Uno.UI.css .uno-uielement class).
-					// This means that they can be the target of hit-testing and will raise pointer events when interacted with.
-					// This is aligned with HitTestVisibilityProperty's default value of Visible.
-					element.SetStyle("pointer-events", "auto");
-				}
-				else
-				{
-					// If HitTestVisibilityProperty is calculated to Invisible or Collapsed,
-					// we don't want to be the target of hit-testing and raise any pointer events.
-					// This is done by setting 'pointer-events' to 'none'.
-					element.SetStyle("pointer-events", "none");
-				}
+				element.OnHitTestVisibilityChanged(oldValue, newValue);
+			}
+		}
 
-				if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
-				{
-					element.UpdateDOMProperties();
-				}
+		private protected virtual void OnHitTestVisibilityChanged(HitTestVisibility oldValue, HitTestVisibility newValue)
+		{
+			if (newValue == HitTestVisibility.Visible)
+			{
+				// By default, elements have 'pointer-event' set to 'auto' (see Uno.UI.css .uno-uielement class).
+				// This means that they can be the target of hit-testing and will raise pointer events when interacted with.
+				// This is aligned with HitTestVisibilityProperty's default value of Visible.
+				SetStyle("pointer-events", "auto");
+			}
+			else
+			{
+				// If HitTestVisibilityProperty is calculated to Invisible or Collapsed,
+				// we don't want to be the target of hit-testing and raise any pointer events.
+				// This is done by setting 'pointer-events' to 'none'.
+				SetStyle("pointer-events", "none");
+			}
+
+			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)
+			{
+				UpdateDOMProperties();
 			}
 		}
 		#endregion
