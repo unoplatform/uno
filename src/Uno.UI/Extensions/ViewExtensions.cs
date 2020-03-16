@@ -11,6 +11,7 @@ using _View = Windows.UI.Xaml.UIElement;
 #endif
 
 using System.Collections.Generic;
+using Uno.Extensions;
 
 namespace Uno.UI.Extensions
 {
