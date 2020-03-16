@@ -4,11 +4,11 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Controls
 {
-    public partial class UserControl : ContentControl
-    {
+	public partial class UserControl : ContentControl
+	{
 		public UserControl()
 		{
 
 		}
-    }
+	}
 }
