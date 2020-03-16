@@ -7,10 +7,12 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 {
 	[TestFixture]
+	[ActivePlatforms(Platform.Android, Platform.Browser)] // Disabled for iOS: https://github.com/unoplatform/uno/issues/1955
 	public class ComboxBox_DropDownPlacement : SampleControlUITestBase
 	{
 		[Test] [AutoRetry] public void NoSelectionPreferAbove() => TestAbove();
