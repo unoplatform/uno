@@ -1,5 +1,4 @@
-﻿#if __ANDROID__ || __IOS__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.UI.Xaml;
@@ -7,6 +6,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Controls
 {
+#if __ANDROID__ || __IOS__
 	/// <summary>
 	/// An ItemsStackPanel implementation which doesn't rely on high-level native list controls.
 	/// </summary>
@@ -135,6 +135,7 @@ namespace Uno.UI.Controls
 		}
 #endif
 	}
-}
-
+#else
+	public partial class ManagedItemsStackPanel : ItemsStackPanel { } // Make available on other platforms for Xaml compatibility
 #endif
+}
