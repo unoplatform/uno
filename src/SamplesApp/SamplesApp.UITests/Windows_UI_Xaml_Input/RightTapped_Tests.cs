@@ -85,6 +85,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Android, Platform.iOS)] // We cannot test right button click on WASM yet
+		[Ignore("https://github.com/unoplatform/uno/issues/2739")]
 		public void When_InListViewWithItemClick()
 		{
 			Run(_xamlTestPage);
@@ -108,6 +109,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Android, Platform.iOS)] // We cannot test right button click on WASM yet
+		[Ignore("https://github.com/unoplatform/uno/issues/2739")]
 		public void When_InListViewWithoutItemClick()
 		{
 			Run(_xamlTestPage);

@@ -80,13 +80,17 @@ namespace Uno.UI
 		internal static Size GetMarginSize(this IFrameworkElement frameworkElement)
 		{
 			var margin = frameworkElement.Margin;
+			if (margin == default)
+			{
+				return default;
+			}
 			var marginWidth = margin.Left + margin.Right;
 			var marginHeight = margin.Top + margin.Bottom;
 			return new Size(marginWidth, marginHeight);
 		}
 
 		[Pure]
-		internal static Point GetAlignmentOffset(this IFrameworkElement e, Size clientSize, Size renderSize)
+		internal static (Point offset, bool overflow) GetAlignmentOffset(this IFrameworkElement e, Size clientSize, Size renderSize)
 		{
 			// Start with Bottom-Right alignment, multiply by 0/0.5/1 for Top-Left/Center/Bottom-Right alignment
 			var offset = new Point(
@@ -94,11 +98,16 @@ namespace Uno.UI
 				clientSize.Height - renderSize.Height
 			);
 
+			var overflow = false;
+
 			switch (e.HorizontalAlignment)
 			{
 				case HorizontalAlignment.Stretch when renderSize.Width > clientSize.Width:
+					offset.X = 0;
+					overflow = true;
+					break;
 				case HorizontalAlignment.Left:
-					offset.X *= 0;
+					offset.X = 0;
 					break;
 				case HorizontalAlignment.Stretch:
 				case HorizontalAlignment.Center:
@@ -112,8 +121,11 @@ namespace Uno.UI
 			switch (e.VerticalAlignment)
 			{
 				case VerticalAlignment.Stretch when renderSize.Height > clientSize.Height:
+					offset.Y = 0;
+					overflow = true;
+					break;
 				case VerticalAlignment.Top:
-					offset.Y *= 0;
+					offset.Y = 0;
 					break;
 				case VerticalAlignment.Stretch:
 				case VerticalAlignment.Center:
@@ -124,7 +136,7 @@ namespace Uno.UI
 					break;
 			}
 
-			return offset;
+			return (offset, overflow);
 		}
 
 		[Pure]
@@ -148,6 +160,11 @@ namespace Uno.UI
 		[Pure]
 		internal static Size Add(this Size left, Size right)
 		{
+			if (right == default)
+			{
+				return left;
+			}
+
 			return new Size(
 				left.Width + right.Width,
 				left.Height + right.Height
@@ -157,6 +174,11 @@ namespace Uno.UI
 		[Pure]
 		internal static Size Add(this Size left, Thickness right)
 		{
+			if (right == default)
+			{
+				return left;
+			}
+
 			return new Size(
 				left.Width + right.Left + right.Right,
 				left.Height + right.Top + right.Bottom
@@ -166,6 +188,11 @@ namespace Uno.UI
 		[Pure]
 		internal static Size Subtract(this Size left, Size right)
 		{
+			if (right == default)
+			{
+				return left;
+			}
+
 			return new Size(
 				left.Width - right.Width,
 				left.Height - right.Height
@@ -175,6 +202,11 @@ namespace Uno.UI
 		[Pure]
 		internal static Size Subtract(this Size left, Thickness right)
 		{
+			if (right == Thickness.Empty)
+			{
+				return left;
+			}
+
 			return new Size(
 				left.Width - right.Left - right.Right,
 				left.Height - right.Top - right.Bottom

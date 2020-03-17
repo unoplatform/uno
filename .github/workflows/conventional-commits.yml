@@ -1,0 +1,20 @@
+name: Conventional Commits
+
+on:
+  pull_request:
+    branches:
+      - master
+      - release/* 
+
+env:
+  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+jobs:
+  commitsar:
+    name: Validate for conventional commits
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: Run commitsar
+        uses: docker://outillage/commitsar:0.11.2

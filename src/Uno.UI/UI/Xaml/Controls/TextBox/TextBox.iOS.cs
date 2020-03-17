@@ -29,13 +29,6 @@ namespace Windows.UI.Xaml.Controls
 			OnKeyboardAppearanceChanged(KeyboardAppearance);
 		}
 
-		public override CGSize SizeThatFits(CGSize size)
-		{
-			size = base.SizeThatFits(size);
-			size = IFrameworkElementHelper.SizeThatFits(this, size);
-			return size;
-		}
-
 		partial void OnFocusStateChangedPartial(FocusState focusState)
 		{
 			if (_textBoxView != null)

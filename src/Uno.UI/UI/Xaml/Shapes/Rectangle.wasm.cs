@@ -25,16 +25,6 @@ namespace Windows.UI.Xaml.Shapes
 			return _rectangle;
 		}
 
-		protected override Size MeasureOverride(Size availableSize)
-		{
-			var strokeThickness = ActualStrokeThickness;
-
-			_rectangle.Width = Width - strokeThickness;
-			_rectangle.Height = Height - strokeThickness;
-
-			return base.MeasureOverride(availableSize);
-		}
-
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			var strokeThickness = ActualStrokeThickness;

@@ -83,6 +83,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
+		[Ignore("https://github.com/unoplatform/uno/issues/2739")]
 		public void When_InListViewWithItemClick()
 		{
 			Run(_xamlTestPage);
@@ -105,6 +106,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
+		[Ignore("https://github.com/unoplatform/uno/issues/2739")]
 		public void When_InListViewWithoutItemClick()
 		{
 			Run(_xamlTestPage);

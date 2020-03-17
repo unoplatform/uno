@@ -150,63 +150,59 @@ namespace Windows.UI.Xaml.Controls
 		private int? _targetWidth;
 		private int? _targetHeight;
 
-		partial void SetTargetImageSize(Size? targetSize)
+		private Size _previousArrangeSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
+
+		partial void SetTargetImageSize(Size targetSize)
 		{
-			var originalTargetWidth = _targetWidth;
-			var originalTargetHeight = _targetHeight;
-
-			if (targetSize != null)
+			// Ignore changes coming from MeasureOverride when a dimension is unconstrained. This will be picked up
+			// by ArrangeOverride.
+			if (!double.IsInfinity(targetSize.Width) && !double.IsInfinity(targetSize.Height))
 			{
-				// Ignore changes coming from MeasureOverride when a dimension is unconstrained. This will be picked up
-				// by ArrangeOverride.
-				if (!double.IsInfinity(targetSize.Value.Width) && !double.IsInfinity(targetSize.Value.Height))
+				var physicalSize = targetSize.LogicalToPhysicalPixels();
+				_targetWidth = physicalSize.Width.SelectOrDefault(w => w != 0 ? (int?)w : null);
+				_targetHeight = physicalSize.Height.SelectOrDefault(h => h != 0 ? (int?)h : null);
+
+
+				TryOpenImage();
+			}
+		}
+
+		partial void UpdateArrangeSize(Size arrangeSize)
+		{
+			// Here we validate that the target size is useable, and that it's not being reset to zero.
+			// The scenario is as follows:
+			//   - Image gets its source set, using UseTargetSize=true
+			//   - Image gets measured with a non-infinite size (e.g. the parent is constrained), calls SetTargetImageSize with the requested available size
+			//   - Measure returns [0;0] if there are no constraints on the image itself
+			//   - SetTargetImageSize determines if the size is usable, loads the image with the tentative available size as the decode size.
+			//   - Arrange is invoked with a [0;0] size as requsted by the measure (the image size is unknown)
+			//   - Arrange invokes SetTargetImageSize with [0;0] which is ignored as there is already a tentative decode size.
+			//   - The image gets loaded and the InvalidateMeasure is called
+			//   - The measure is invoked again, returns the natural size of the image. If the SetTargetImageSize is called with
+			//     a larger size, the image gets reloaded with a different decode size.
+			//   - The arrange is invoked again with the proper final size. If the SetTargetImageSize is called with
+			//     a larger size, the image gets reloaded again with a different decode size.
+			//
+			// The above scenario may be at disadvantage if the image does not have a Width/Height, or if the
+			// image gets a different size in measure and arrange. A warning message gets displayed in such cases.
+			//
+			if (
+				(Source?.UseTargetSize ?? false)
+				&& (arrangeSize.Width > _previousArrangeSize.Width || arrangeSize.Height > _previousArrangeSize.Height)
+				&& _openedImage != null
+			)
+			{
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
 				{
-					var physicalSize = targetSize.Value.LogicalToPhysicalPixels();
-					_targetWidth = physicalSize.Width.SelectOrDefault(w => w != 0 ? (int?)w : null);
-					_targetHeight = physicalSize.Height.SelectOrDefault(h => h != 0 ? (int?)h : null);
-
-					// Here we validate that the target size is useable, and that it's not being reset to zero.
-					// The scenario is as follows:
-					//   - Image gets its source set, using UseTargetSize=true
-					//   - Image gets measured with a non-infinite size (e.g. the parent is constrained), calls SetTargetImageSize with the requested available size
-					//   - Measure returns [0;0] if there are no constraints on the image itself
-					//   - SetTargetImageSize determines if the size is usable, loads the image with the tentative available size as the decode size.
-					//   - Arrange is invoked with a [0;0] size as requsted by the measure (the image size is unknown)
-					//   - Arrange invokes SetTargetImageSize with [0;0] which is ignored as there is already a tentative decode size.
-					//   - The image gets loaded and the InvalidateMeasure is called
-					//   - The measure is invoked again, returns the natural size of the image. If the SetTargetImageSize is called with
-					//     a larger size, the image gets reloaded with a different decode size.
-					//   - The arrange is invoked again with the proper final size. If the SetTargetImageSize is called with
-					//     a larger size, the image gets reloaded again with a different decode size.
-					//
-					// The above scenario may be at disadvantage if the image does not have a Width/Height, or if the
-					// image gets a different size in measure and arrange. A warning message gets displayed in such cases.
-					//
-					if (
-						(Source?.UseTargetSize ?? false)
-						&& _targetWidth != null
-						&& _targetHeight != null
-						&& (_targetWidth > originalTargetWidth || _targetHeight > originalTargetHeight)
-						&& _openedImage != null
-					)
-					{
-						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
-						{
-							this.Log().Debug(
-								this.ToString() +
-								$" Image is being reloaded because the target size has changed ({originalTargetWidth}x{originalTargetHeight} to {_targetWidth}x{_targetHeight})");
-						}
-
-						_openedImage = null;
-					}
-
-					TryOpenImage();
+					this.Log().Debug(
+						this.ToString() +
+						$" Image is being reloaded because the target size has changed ({_previousArrangeSize.Width}x{_previousArrangeSize.Height} to {arrangeSize.Width}x{arrangeSize.Height})");
 				}
+
+				_openedImage = null;
 			}
-			else
-			{
-				_targetWidth = _targetHeight = null;
-			}
+
+			_previousArrangeSize = arrangeSize;
 		}
 
 		public override void SetImageDrawable(Drawable drawable)

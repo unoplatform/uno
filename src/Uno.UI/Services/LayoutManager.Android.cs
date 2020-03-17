@@ -49,7 +49,7 @@ namespace Uno.UI.Services
 				{
 					typeof(LayoutManager).Log().LogDebug($"Measuring {view} with {GetAncestorCount(view)} ancestors in visual tree.");
 				}
-				IFrameworkElementHelper.Measure(view, view.ActualSize);
+				IFrameworkElementHelper.Measure(view, view.ActualSize.Add(view.Margin));
 			}
 			foreach (var view in queue)
 			{

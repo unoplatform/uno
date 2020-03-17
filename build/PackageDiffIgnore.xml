@@ -631,7 +631,7 @@
 				<Member
 					fullName="System.Void Windows.ApplicationModel.DataTransfer.Clipboard..ctor()"
 					reason="Not part of the WinUI API."/>
-			  <Member
+				<Member
 					fullName="System.Void Windows.Storage.KnownFolders..ctor()"
 					reason="Not part of the WinUI API."/>
 				<Member
@@ -676,6 +676,12 @@
 				<Member
 					fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources.get___ImplicitStyle_Windows_UI_Xaml_Controls_DatePickerSelector()"
 					reason="Style removed from monoandroid (xamarin:Style with only ios:Setter)" />
+				<Member
+					fullName="Windows.UI.Color Windows.UI.Xaml.Media.Brush.GetColorWithOpacity(Windows.UI.Color referenceColor)"
+					reason="Not part of the WinUI API." />
+				<Member
+					fullName="System.Void Uno.UI.Toolkit.UIElementExtensions.SetElevation(Windows.UI.Xaml.UIElement element, System.Double Elevation)"
+					reason="Naming uniformization, not a binary breaking change." />
 			</Methods>
 			<Properties>
 				<Member

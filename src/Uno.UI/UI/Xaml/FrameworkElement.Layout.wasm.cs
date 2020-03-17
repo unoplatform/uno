@@ -218,13 +218,18 @@ namespace Windows.UI.Xaml
 			// Give opportunity to element to alter arranged size
 			clippedInkSize = AdjustArrange(clippedInkSize);
 
-			var offset = this.GetAlignmentOffset(clientSize, clippedInkSize);
+			var (offset, overflow) = this.GetAlignmentOffset(clientSize, clippedInkSize);
 			var margin = Margin;
 
 			offset = new Point(
 				offset.X + finalRect.X + margin.Left,
 				offset.Y + finalRect.Y + margin.Top
 			);
+
+			if (overflow)
+			{
+				needsClipToSlot = true;
+			}
 
 			_logDebug?.Debug(
 				$"{DepthIndentation}[{this}] ArrangeChild(offset={offset}, margin={margin}) [oldRenderSize={oldRenderSize}] [RenderSize={RenderSize}] [clippedInkSize={clippedInkSize}] [RequiresClipping={needsClipToSlot}]");

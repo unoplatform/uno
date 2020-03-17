@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Extensions;
 using Windows.Foundation;
@@ -10,6 +11,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
+using FluentAssertions;
 
 namespace Uno.UI.Tests.ListViewBaseTests
 {
@@ -112,7 +114,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		{
 			var panel = new StackPanel();
 
-			var SUT = new ListViewBase()
+			var SUT = new ListView()
 			{
 				Style = null,
 				Template = new ControlTemplate(() => new ItemsPresenter()),
@@ -137,17 +139,27 @@ namespace Uno.UI.Tests.ListViewBaseTests
 				ItemContainerStyle = BuildBasicContainerStyle(),
 			};
 			list.ItemsSource = Enumerable.Range(0, 20);
+            var callbackCount = 0;
 
 			list.SelectionChanged += OnSelectionChanged;
 			list.SelectedItem = 7;
 
-			Assert.AreEqual(14, list.SelectedItem);
-			Assert.AreEqual(14, list.SelectedIndex);
+			using (new AssertionScope())
+			{
+				list.SelectedItem.Should().Be(14);
+				list.SelectedIndex.Should().Be(14);
+				callbackCount.Should().Be(2);
+			}
 
 			void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 			{
 				var l = sender as ListViewBase;
 				l.SelectedItem = 14;
+
+				if (callbackCount++ > 100)
+				{
+					throw new InvalidOperationException("callbackCount >100... clearly broken.");
+				}
 			}
 		}
 
@@ -165,9 +177,12 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			list.SelectionChanged += OnSelectionChanged;
 			list.SelectedItem = 7;
 
-			Assert.AreEqual(14, list.SelectedItem);
-			Assert.AreEqual(14, list.SelectedIndex);
-			Assert.AreEqual(8, callbackCount); //Unlike eg TextBox.TextChanged there is no guard on reentrant modification
+            using (new AssertionScope())
+            {
+                list.SelectedItem.Should().Be(14);
+                list.SelectedIndex.Should().Be(14);
+                callbackCount.Should().Be(8); //Unlike eg TextBox.TextChanged there is no guard on reentrant modification
+			}
 
 			void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
 			{
@@ -178,6 +193,11 @@ namespace Uno.UI.Tests.ListViewBaseTests
 				{
 					selected++;
 					l.SelectedItem = selected;
+				}
+
+				if (callbackCount > 100)
+				{
+					throw new InvalidOperationException("callbackCount >100... clearly broken.");
 				}
 			}
 		}
@@ -213,7 +233,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			{
 				Assert.Fail("Container should be a ListViewItem");
 			}
-		}
+	}
 
 		[TestMethod]
 		public void When_Single_SelectionChanged_And_SelectorItem_IsSelected_Changed()
@@ -513,12 +533,18 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			new Style(typeof(Windows.UI.Xaml.Controls.ListViewItem))
 			{
 				Setters =  {
-					new Setter<ItemsControl>("Template", t =>
+					new Setter<ListViewItem>("Template", t =>
 						t.Template = Funcs.Create(() =>
-							new ContentPresenter().Apply(p => {
-								p.SetBinding(ContentPresenter.ContentTemplateProperty, new Binding(){ Path = "ContentTemplate", RelativeSource = RelativeSource.TemplatedParent });
-								p.SetBinding(ContentPresenter.ContentProperty, new Binding(){ Path = "Content", RelativeSource = RelativeSource.TemplatedParent });
-							})
+							new Grid
+							{
+								Children = {
+									new ContentPresenter()
+										.Apply(p => {
+											p.SetBinding(ContentPresenter.ContentTemplateProperty, new Binding(){ Path = "ContentTemplate", RelativeSource = RelativeSource.TemplatedParent });
+											p.SetBinding(ContentPresenter.ContentProperty, new Binding(){ Path = "Content", RelativeSource = RelativeSource.TemplatedParent });
+										})
+								}
+							}
 						)
 					)
 				}

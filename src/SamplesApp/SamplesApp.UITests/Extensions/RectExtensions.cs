@@ -1,3 +1,4 @@
+using System.Drawing;
 using Uno.UITest;
 
 namespace SamplesApp.UITests
@@ -12,6 +13,11 @@ namespace SamplesApp.UITests
 		public static float GetBottom(this IAppRect rect)
 		{
 			return rect.Y + rect.Height;
+		}
+
+		public static Rectangle ToRectangle(this IAppRect rect)
+		{
+			return new Rectangle((int)rect.X, (int)rect.Y, (int)rect.Width, (int)rect.Height);
 		}
 	}
 }

@@ -16,6 +16,12 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly DependencyObject _owner;
 
+		/// <summary>
+		/// The owner of this collection.
+		/// This is intended to be used to redispatch to a specific instance in ** static ** CollectionChanged handlers.
+		/// </summary>
+		internal DependencyObject Owner => _owner;
+
 		public BatchCollection(DependencyObject owner)
 		{
 			_owner = owner;

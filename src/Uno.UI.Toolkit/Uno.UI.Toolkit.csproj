@@ -25,6 +25,7 @@
 	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
+
 	<ItemGroup>
 	  <Compile Include="..\Uno.UI\Behaviors\VisibleBoundsPadding.cs" Link="VisibleBoundsPadding.cs" />
 	</ItemGroup>
@@ -94,13 +95,23 @@
 		</ProjectReference>
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.17763'">
+		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI\Extensions\DependencyObjectExtensions.cs">
+			<Link>Uno.UI\Extensions\%(RecursiveDir)%(FileName)%(Extension)</Link>
+		</Compile>
+	</ItemGroup>
+   
+	<ItemGroup>
+	  <Page Update="Themes\Generic.xaml" />
+	</ItemGroup>
+
 	<!-- Override existing target, this project cannot be published -->
 	<Target Name="Publish" />
 	<PropertyGroup>
 		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 	</PropertyGroup>
 
-	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac)" />
+	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" Condition="$(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) or '$(TargetFramework)'=='netstandard2.0'" />
 
 	<Import Project="..\Common.targets" />
 	

@@ -211,12 +211,12 @@ namespace Windows.UI.Xaml
 
 			if (StretchAffectsMeasure)
 			{
-				if (HorizontalAlignment == HorizontalAlignment.Stretch)
+				if (HorizontalAlignment == HorizontalAlignment.Stretch && !double.IsPositiveInfinity(availableSize.Width))
 				{
 					measuredSize.Width = ViewHelper.MeasureSpecGetSize(widthMeasureSpec);
 				}
 
-				if (VerticalAlignment == VerticalAlignment.Stretch)
+				if (VerticalAlignment == VerticalAlignment.Stretch && !double.IsPositiveInfinity(availableSize.Height))
 				{
 					measuredSize.Height = ViewHelper.MeasureSpecGetSize(heightMeasureSpec);
 				}
@@ -268,7 +268,7 @@ namespace Windows.UI.Xaml
 				// So unless there was a layout requested, we can skip arranging the children.
 				(changed && _lastLayoutSize != newSize)
 
-				// Even if nothing changed, but a layout was requested, arrang the children.
+				// Even if nothing changed, but a layout was requested, arrange the children.
 				|| IsLayoutRequested
 			)
 			{

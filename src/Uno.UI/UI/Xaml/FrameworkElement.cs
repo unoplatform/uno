@@ -29,7 +29,7 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml
 {
-	public partial class FrameworkElement : UIElement, IFrameworkElement, ILayoutConstraints
+	public partial class FrameworkElement : UIElement, IFrameworkElement, IFrameworkElementInternal, ILayoutConstraints
 	{
 		public
 			static class TraceProvider
@@ -188,7 +188,7 @@ namespace Windows.UI.Xaml
 		public override void Arrange(Rect finalRect)
 		{
 			_layouter.Arrange(finalRect);
-			_layouter.ArrangeChild(this, finalRect, raiseLayoutUpdated: false);
+			_layouter.ArrangeChild(this, finalRect);
 		}
 #endif
 

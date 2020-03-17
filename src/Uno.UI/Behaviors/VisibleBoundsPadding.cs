@@ -6,6 +6,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Uno.Collections;
 using Uno.Extensions;
+using Uno.UI.Extensions;
 using Uno.Logging;
 using Windows.Foundation;
 using Windows.UI.ViewManagement;
@@ -19,7 +20,6 @@ using AppKit;
 #endif
 
 #if IS_UNO
-using Uno.UI.Extensions;
 using _VisibleBoundsPadding = Uno.UI.Behaviors.InternalVisibleBoundsPadding;
 #else
 using Uno.UI.Toolkit.Extensions;

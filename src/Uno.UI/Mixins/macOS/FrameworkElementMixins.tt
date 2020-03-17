@@ -2,8 +2,8 @@
 <#@output extension="g.cs" #>
 #if __MACOS__
 <# 
-	AddClass("Windows.UI.Xaml", "FrameworkElement", defineSetNeedsLayout: false, defineLayoutSubviews: false, hasAttachedToWindow: false, overridesAttachedToWindow: true);
-	AddClass("Windows.UI.Xaml.Controls", "Image", overridesAttachedToWindow: false, hasAutomationPeer: true);
+	AddClass("Windows.UI.Xaml", "FrameworkElement", defineSetNeedsLayout: false, defineLayoutSubviews: false, hasAttachedToWindow: false, overridesAttachedToWindow: true, hasLayouter: true);
+	AddClass("Windows.UI.Xaml.Controls", "Image", overridesAttachedToWindow: false, hasAutomationPeer: true, hasLayouter: true);
 
 	// TODO
 	// AddClass("Windows.UI.Xaml.Controls", "ScrollContentPresenter", defineSetNeedsLayout: false, defineLayoutSubviews: false, hasAttachedToWindow: false, overridesAttachedToWindow: false);

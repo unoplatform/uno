@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
@@ -14,10 +13,12 @@ using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.UI;
 using Windows.UI.Core;
+using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
@@ -26,9 +27,14 @@ namespace Uno.UI.Samples.Tests
 {
 	public sealed partial class UnitTestsControl : UserControl
 	{
+		private const StringComparison StrComp = StringComparison.InvariantCultureIgnoreCase;
 		private Task _runner;
 		private CancellationTokenSource _cts = new CancellationTokenSource();
+#if DEBUG
+		private readonly TimeSpan DefaultUnitTestTimeout = TimeSpan.FromSeconds(300);
+#else
 		private readonly TimeSpan DefaultUnitTestTimeout = TimeSpan.FromSeconds(60);
+#endif
 
 		private enum TestResult
 		{
@@ -50,12 +56,26 @@ namespace Uno.UI.Samples.Tests
 		private void OnRunTests(object sender, RoutedEventArgs e)
 		{
 			_cts = new CancellationTokenSource();
-			_runner = Task.Run(async () => await RunTests(_cts.Token));
+			var filter = testFilter.Text.Trim();
+			if (string.IsNullOrEmpty(filter))
+			{
+				filter = null;
+			}
+
+			testResults.Children.Clear();
+			_runner = Task.Run(async () => await RunTests(_cts.Token, filter));
 		}
 
-		private void ReportMessage(string message)
+		private void ReportMessage(string message, bool isRunning = true)
 		{
-			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, () => runStatus.Text = message);
+			void Setter()
+			{
+				runButton.IsEnabled = !isRunning;
+				runningState.Text = isRunning ? "Running" : "Finished";
+				runStatus.Text = message;
+			}
+
+			var t = Dispatcher.RunAsync(Windows.UI.Core.CoreDispatcherPriority.Normal, Setter);
 		}
 
 		private void ReportTestsResults((int run, int ignored, int succeeded, int failed) counters)
@@ -77,12 +97,15 @@ namespace Uno.UI.Samples.Tests
 				Windows.UI.Core.CoreDispatcherPriority.Normal,
 				() =>
 				{
-					var testResult = new TextBlock()
+					var testResultBlock = new TextBlock()
 					{
-						Text = $"{testClass.Name} ({testClass.Assembly.GetName().Name})"
+						Text = $"{testClass.Name} ({testClass.Assembly.GetName().Name})",
+						Foreground = new SolidColorBrush(Colors.White),
+						FontSize = 16d
 					};
 
-					testResults.Children.Insert(0, testResult);
+					testResults.Children.Add(testResultBlock);
+					testResultBlock.StartBringIntoView();
 				}
 			);
 		}
@@ -98,20 +121,28 @@ namespace Uno.UI.Samples.Tests
 
 				var testResultBlock = new TextBlock()
 				{
-					Text = testName,
 					TextWrapping = TextWrapping.Wrap,
 					FontFamily = new FontFamily("Courier New"),
-					Foreground = new SolidColorBrush(GetTestResultColor(testResult))
+					Margin = new Thickness(8, 0, 0, 0),
+					Foreground = new SolidColorBrush(Colors.LightGray)
 				};
+
+				testResultBlock.Inlines.Add(new Run
+				{
+					Text = GetTestResultIcon(testResult) + ' ' + testName,
+					FontSize = 13.5d,
+					Foreground = new SolidColorBrush(GetTestResultColor(testResult)),
+					FontWeight = FontWeights.ExtraBold
+				});
 
 				if (message != null)
 				{
-					testResultBlock.Text += ", " + message;
+					testResultBlock.Inlines.Add(new Run { Text = "\n  ..." + message, FontStyle = FontStyle.Italic });
 				}
 
 				if (error != null)
 				{
-					testResultBlock.Text += ", " + error.Message;
+					testResultBlock.Inlines.Add(new Run { Text = "\n==>" + error.Message, Foreground = new SolidColorBrush(Colors.Red) });
 
 					if (testResult == TestResult.Failed || testResult == TestResult.Error)
 					{
@@ -119,7 +150,13 @@ namespace Uno.UI.Samples.Tests
 					}
 				}
 
-				testResults.Children.Insert(0, testResultBlock);
+				testResults.Children.Add(testResultBlock);
+				testResultBlock.StartBringIntoView();
+
+				if (testResult == TestResult.Error || testResult == TestResult.Failed)
+				{
+					failedTests.Text += "§" + testName;
+				}
 			}
 
 			var t = Dispatcher.RunAsync(
@@ -127,26 +164,41 @@ namespace Uno.UI.Samples.Tests
 				Update);
 		}
 
-		private Color GetTestResultColor(TestResult testResult)
+		private string GetTestResultIcon(TestResult testResult)
 		{
 			switch (testResult)
 			{
 				default:
 				case TestResult.Error:
-					return Colors.DarkRed;
-
 				case TestResult.Failed:
-					return Colors.Red;
+					return "❌";
 
 				case TestResult.Ignored:
-					return Colors.DarkOrange;
+					return "🚫";
 
 				case TestResult.Sucesss:
-					return Colors.Green;
+					return "✔️";
 			}
 		}
 
-		private async Task RunTests(CancellationToken cts)
+		private Color GetTestResultColor(TestResult testResult)
+		{
+			switch (testResult)
+			{
+				case TestResult.Error:
+				case TestResult.Failed:
+				default:
+					return Colors.Red;
+
+				case TestResult.Ignored:
+					return Colors.Orange;
+
+				case TestResult.Sucesss:
+					return Colors.LightGreen;
+			}
+		}
+
+		private async Task RunTests(CancellationToken ct, string filter)
 		{
 			(int run, int ignored, int succeeded, int failed) counters = (0, 0, 0, 0);
 
@@ -160,12 +212,21 @@ namespace Uno.UI.Samples.Tests
 
 				foreach (var type in testTypes.Where(t => t.type != null))
 				{
+					var tests = type.tests
+						.Where(t => filter == null || t.DeclaringType.Name.Contains(filter, StrComp) || t.Name.Contains(filter, StrComp))
+						.ToArray();
+
+					if(tests.Length == 0)
+					{
+						continue;
+					}
+
 					ReportTestClass(type.type.GetTypeInfo());
-					ReportMessage($"Running {type.tests.Length}");
+					ReportMessage($"Running {tests.Length} test methods");
 
 					var instance = Activator.CreateInstance(type: type.type);
 
-					foreach (var testMethod in type.tests)
+					foreach (var testMethod in tests)
 					{
 						string testName = testMethod.Name;
 
@@ -195,7 +256,7 @@ namespace Uno.UI.Samples.Tests
 
 						async Task InvokeTestMethod(object[] parameters)
 						{
-                            var fullTestName = $"{testName}({parameters.Select(p => p?.ToString() ?? "<null>").JoinBy(", ")})";
+							var fullTestName = $"{testName}({parameters.Select(p => p?.ToString() ?? "<null>").JoinBy(", ")})";
 
 							counters.run++;
 							ReportMessage($"Running test {fullTestName}");
@@ -284,7 +345,7 @@ namespace Uno.UI.Samples.Tests
 					}
 				}
 
-				ReportMessage("Tests finished running.");
+				ReportMessage("Tests finished running.", isRunning: false);
 				ReportTestsResults(counters);
 			}
 			catch (Exception e)

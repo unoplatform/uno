@@ -39,7 +39,7 @@ using ViewGroup = Windows.UI.Xaml.UIElement;
 namespace Windows.UI.Xaml.Controls
 {
 	[ContentProperty(Name = "Content")]
-	public partial class ContentPresenter : FrameworkElement,  ICustomClippingElement
+	public partial class ContentPresenter : FrameworkElement, ICustomClippingElement
 	{
 		private bool _firstLoadResetDone;
 		private View _contentTemplateRoot;
@@ -829,7 +829,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetImplicitContent()
 		{
-			if(!FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent)
+			if (!FeatureConfiguration.ContentPresenter.UseImplicitContentFromTemplatedParent)
 			{
 				return;
 			}
@@ -955,7 +955,8 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
-			base.OnBackgroundChanged(e);
+			// Don't call base, the UpdateBorder() method handles drawing the background.
+			// base.OnBackgroundChanged(e);
 
 			UpdateBorder();
 		}

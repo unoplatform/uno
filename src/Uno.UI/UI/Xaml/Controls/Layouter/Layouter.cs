@@ -17,6 +17,7 @@ using Uno.UI;
 using static System.Double;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
+using System.Diagnostics.Contracts;
 
 #if XAMARIN_ANDROID
 using Android.Views;
@@ -51,8 +52,6 @@ namespace Windows.UI.Xaml.Controls
 		private readonly Size MaxSize = new Size(double.PositiveInfinity, double.PositiveInfinity);
 
 		internal Size _unclippedDesiredSize;
-
-		private const double SIZE_EPSILON = 0.05d;
 
 		public IFrameworkElement Panel { get; }
 
@@ -132,15 +131,25 @@ namespace Windows.UI.Xaml.Controls
 					.Add(marginSize);
 
 				// DesiredSize must include margins
+				// TODO: on UWP, it's not clipped. See test When_MinWidth_SmallerThan_AvailableSize
 				SetDesiredChildSize(Panel as View, clippedDesiredSize);
 
+				// We return "clipped" desiredSize to caller... the unclipped version stays internal
 				return clippedDesiredSize;
 			}
 		}
 
+		[Pure]
+		private static bool IsCloseReal(double a, double b)
+		{
+			var x = Abs((a - b) / (b == 0d ? 1d : b));
+			return x < 1.85e-3d;
+		}
+
+		[Pure]
 		private static bool IsLessThanAndNotCloseTo(double a, double b)
 		{
-			return a < b - SIZE_EPSILON;
+			return (a < b) && !IsCloseReal(a, b);
 		}
 
 		/// <summary>
@@ -209,7 +218,7 @@ namespace Windows.UI.Xaml.Controls
 
 				var arrangeSize = finalRect
 					.Size
-					.AtLeast(default); // 0.0,0.0
+					.AtLeastZero(); // 0.0,0.0
 
 				// We have to choose max between _unclippedDesiredSize and maxSize here, because
 				// otherwise setting of max property could cause arrange at less then _unclippedDesiredSize.
@@ -249,7 +258,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-
 		/// <summary>
 		/// Determine the size of the panel.
 		/// </summary>
@@ -270,7 +278,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected Size MeasureChild(View view, Size slotSize)
 		{
-			var frameworkElement = view as IFrameworkElement;
+			var frameworkElement = view as IFrameworkElementInternal;
 			var ret = default(Size);
 
 			// NaN values are accepted as input for MeasureOverride, but are treated as Infinity.
@@ -403,7 +411,8 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			if (frameworkElement == null || frameworkElement.Visibility == Visibility.Collapsed)
+			var hasLayouter = frameworkElement?.HasLayouter ?? false;
+			if (!hasLayouter || frameworkElement.Visibility == Visibility.Collapsed)
 			{
 				// For native controls only - because it's already set in Layouter.Measure()
 				// for Uno's managed controls
@@ -421,11 +430,6 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="frame">The rectangle to use, in Logical position</param>
 		public void ArrangeChild(View view, Rect frame)
 		{
-			ArrangeChild(view, frame, true);
-		}
-
-		internal void ArrangeChild(View view, Rect frame, bool raiseLayoutUpdated)
-		{
 			if ((view as IFrameworkElement)?.Visibility == Visibility.Collapsed)
 			{
 				return;
@@ -438,14 +442,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			ArrangeChildOverride(view, finalFrame);
-
-			if (view is FrameworkElement fe)
-			{
-				if (raiseLayoutUpdated)
-				{
-					fe?.OnLayoutUpdated();
-				}
-			}
 		}
 
 		private void LogArrange(View view, Rect frame)
@@ -701,7 +697,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				childSize = isStretch
 					? frameSize
-					: desiredSize + childMarginSize;
+					: desiredSize; // desired size always include margin, so no need to calculate it here
 			}
 			else
 			{

@@ -38,6 +38,15 @@ body {
   transform: translate(0, 0);
 }
 
+svg.uno-uielement {
+  /*
+    The SVG elements are not intended to be a touch target (they are only a holder collection of child shapes),
+    instead it's their child SvgElement that should be the target of the pointer.
+    This also ensure that we are HitTestVisible only for shapes that has a fill.
+  */
+  pointer-events: none;
+}
+
 .uno-frameworkelement.uno-clippedToBounds {
   /*
     This CSS class is applied when a control is a _clipping mode_:
