@@ -21,7 +21,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ImageTests
 
 			_app.WaitForElement("rect4");
 
-			var imageRects = new[] {"img0", "img1", "img2", "img3", "img4"}
+			var imageRects = new[] { "img0", "img1", "img2", "img3", "img4" }
 				.Select(x => _app.GetRect(x))
 				.ToArray();
 
