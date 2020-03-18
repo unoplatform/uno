@@ -40,7 +40,7 @@ namespace Windows.UI.Xaml.Controls
 
 		internal void UpdateVisualStateNoTransition()
 		{
-			UpdateVisualState(false /*useTransition*/);
+			UpdateLocalVisualState(false /*useTransition*/);
 		}
 
 		internal bool IsContentChangeHandlingDelayedForTopNav() { return m_isContentChangeHandlingDelayedForTopNav; }
@@ -88,7 +88,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnApplyTemplate()
 		{
-			// Stop UpdateVisualState before template is applied. Otherwise the visual may not the same as we expect
+			// Stop UpdateLocalVisualState before template is applied. Otherwise the visual may not the same as we expect
 			m_appliedTemplate = false;
  
 			base.OnApplyTemplate();
@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Check if the pane is closed and if the splitview is in either compact mode.
 				m_isClosedCompact = !splitView.IsPaneOpen && (splitView.DisplayMode == SplitViewDisplayMode.CompactOverlay || splitView.DisplayMode == SplitViewDisplayMode.CompactInline);
-				UpdateVisualState(true /*useTransitions*/);
+				UpdateLocalVisualState(true /*useTransitions*/);
 			}
 		}
 
@@ -294,7 +294,7 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		}
 
-		void UpdateVisualState(bool useTransitions)
+		void UpdateLocalVisualState(bool useTransitions)
 		{
 			if (!m_appliedTemplate)
 				return;
