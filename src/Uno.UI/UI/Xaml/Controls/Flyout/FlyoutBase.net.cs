@@ -26,8 +26,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_popup.Anchor = placementTarget;
 		}
 
-		internal FlyoutPresenter GetPresenter() => _popup.Child as FlyoutPresenter;
-
 		internal PopupPanel GetPopupPanel() => _popup.PopupPanel;
 	}
 }

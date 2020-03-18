@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Windows.Input;
+using Uno.UI.Common;
 using Uno.UI.Samples.Controls;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -26,6 +28,20 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.MenuBarTests
 			this.InitializeComponent();
 		}
 
+		public ICommand MyCommand => new DelegateCommand<object>(param => result.Text = $"command param:{param}");
 
+		public ICommand MyXamlUICommand => new XamlUICommand {
+			Label = "XamlCommand",
+			Description = "My XamlCommand Description",
+			Command = new DelegateCommand<object>(param => result.Text = $"xamluicommand param:{param}")
+		};
+
+		private void MenuFlyoutItem_Click(object sender, RoutedEventArgs e)
+		{
+			if (sender is MenuFlyoutItem item)
+			{
+				result.Text = $"click text:{item.Text}";
+			}
+		}
 	}
 }

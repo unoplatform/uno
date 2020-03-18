@@ -8,6 +8,8 @@ using Windows.UI.Xaml.Controls;
 using Uno.Extensions;
 using Uno.Disposables;
 using Windows.Globalization.DateTimeFormatting;
+using Uno.UI.Extensions;
+
 #if XAMARIN_IOS
 using UIKit;
 using _View = UIKit.UIView;
@@ -61,7 +63,7 @@ namespace Windows.UI.Xaml.Media
 					yield return subtree;
 				}
 
-				foreach (var child in subtree.GetChildren())
+				foreach (var child in subtree.GetChildren().OfType<UIElement>())
 				{
 					var canTest = includeAllElements
 						|| ( child.IsHitTestVisible && child.IsViewHit());

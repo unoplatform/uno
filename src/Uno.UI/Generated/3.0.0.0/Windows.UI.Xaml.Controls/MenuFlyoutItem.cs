@@ -1,5 +1,8 @@
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
+using System;
+using Windows.Foundation;
+
 namespace Windows.UI.Xaml.Controls
 {
 	#if false || false || false || false || false
@@ -10,53 +13,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property Text
 		// Skipping already declared property CommandParameter
 		// Skipping already declared property Command
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Controls.IconElement Icon
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Controls.IconElement)this.GetValue(IconProperty);
-			}
-			set
-			{
-				this.SetValue(IconProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  string KeyboardAcceleratorTextOverride
-		{
-			get
-			{
-				return (string)this.GetValue(KeyboardAcceleratorTextOverrideProperty);
-			}
-			set
-			{
-				this.SetValue(KeyboardAcceleratorTextOverrideProperty, value);
-			}
-		}
-		#endif
-		// Skipping already declared property CommandParameterProperty
-		// Skipping already declared property CommandProperty
-		// Skipping already declared property TextProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty IconProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Icon", typeof(global::Windows.UI.Xaml.Controls.IconElement), 
-			typeof(global::Windows.UI.Xaml.Controls.MenuFlyoutItem), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.IconElement)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty KeyboardAcceleratorTextOverrideProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"KeyboardAcceleratorTextOverride", typeof(string), 
-			typeof(global::Windows.UI.Xaml.Controls.MenuFlyoutItem), 
-			new FrameworkPropertyMetadata(default(string)));
-		#endif
+
 		// Skipping already declared method Windows.UI.Xaml.Controls.MenuFlyoutItem.MenuFlyoutItem()
 		// Forced skipping of method Windows.UI.Xaml.Controls.MenuFlyoutItem.MenuFlyoutItem()
 		// Forced skipping of method Windows.UI.Xaml.Controls.MenuFlyoutItem.Text.get

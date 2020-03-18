@@ -4,5 +4,8 @@ namespace Windows.UI.Xaml.Controls
 {
 	public  partial class MenuFlyoutSeparator : MenuFlyoutItemBase
 	{
+		public MenuFlyoutSeparator() 
+		{
+		}
 	}
 }

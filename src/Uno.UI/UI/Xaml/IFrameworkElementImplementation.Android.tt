@@ -247,11 +247,14 @@ namespace <#= mixin.NamespaceName #>
 			typeof(bool),
 			typeof(<#= mixin.ClassName #>), 
 			new PropertyMetadata(
-				true, 
+				defaultValue: true, 
 				propertyChangedCallback: (s, e) => {
 					((<#= mixin.ClassName #>)s).OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue);
 					((<#= mixin.ClassName #>)s).IsEnabledChanged?.Invoke(s, e);
 				}
+#if <#= mixin.IsFrameworkElement #>
+				, coerceValueCallback: (s, v) => (s as FrameworkElement)?.CoerceIsEnabled(v)
+#endif
 			)
 		);
 

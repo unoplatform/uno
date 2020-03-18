@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml
 
 		private void Initialize()
 		{
-			KeyboardAccelerators = new List<KeyboardAccelerator>();
+			this.SetValue(KeyboardAcceleratorsProperty, new List<KeyboardAccelerator>(), DependencyPropertyValuePrecedences.DefaultValue);
 		}
 
 		string IXUidProvider.Uid

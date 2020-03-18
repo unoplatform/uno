@@ -353,6 +353,7 @@
 		</ProjectReference>
 	</ItemGroup>
 
+
 	<ItemGroup>
 	  <None Update="BaseActivity.Callbacks.Implementation.Android.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>

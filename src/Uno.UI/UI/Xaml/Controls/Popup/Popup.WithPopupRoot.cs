@@ -20,10 +20,14 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private readonly SerialDisposable _closePopup = new SerialDisposable();
 
+#if __ANDROID__
+		private bool _useNativePopup = FeatureConfiguration.Popup.UseNativePopup;
+#endif
+
 		partial void InitializePartial()
 		{
 #if __ANDROID__
-			if (FeatureConfiguration.Popup.UseNativePopup)
+			if (_useNativePopup)
 			{
 				InitializeNativePartial();
 			}
@@ -51,7 +55,7 @@ namespace Windows.UI.Xaml.Controls
 			base.OnIsLightDismissEnabledChanged(oldIsLightDismissEnabled, newIsLightDismissEnabled);
 
 #if __ANDROID__
-			if (FeatureConfiguration.Popup.UseNativePopup)
+			if (_useNativePopup)
 			{
 				OnIsLightDismissEnabledChangedNative(oldIsLightDismissEnabled, newIsLightDismissEnabled);
 			}
@@ -77,7 +81,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 #if __ANDROID__
-			if (FeatureConfiguration.Popup.UseNativePopup)
+			if (_useNativePopup)
 			{
 				OnIsOpenChangedNative(oldIsOpen, newIsOpen);
 			}
@@ -102,7 +106,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnPopupPanelChangedPartial(PopupPanel previousPanel, PopupPanel newPanel)
 		{
 #if __ANDROID__
-			if (FeatureConfiguration.Popup.UseNativePopup)
+			if (_useNativePopup)
 			{
 				OnPopupPanelChangedPartialNative(previousPanel, newPanel);
 			}
