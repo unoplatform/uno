@@ -31,18 +31,16 @@ namespace Microsoft.UI.Xaml.Controls
 			m_itemToNodeMap = new Dictionary<object, TreeViewNode>();
 		}
 
-		//ViewModel.~ViewModel()
-		//{
-		//	if (m_rootNodeChildrenChangedEventToken.value != 0)
-		//	{
-		//		if (var origin = m_originNode.safe_get())
-		//        {
-		//			get_self<TreeViewNode>(origin).ChildrenChanged(m_rootNodeChildrenChangedEventToken);
-		//		}
+		~TreeViewViewModel()
+		{
+			var origin = m_originNode;
+			if (origin != null)
+			{
+				origin.ChildrenChanged -= TreeViewNodeVectorChanged;
+			}
 
-		//		ClearEventTokenVectors();
-		//	}
-		//}
+			ClearEventTokenVectors();
+		}
 
 		internal void ExpandNode(TreeViewNode value)
 		{
@@ -69,15 +67,6 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateSelection(targetNode, state);
 		}
 
-		internal int Size
-		{
-			get
-			{
-				var inner = GetVectorInnerImpl();
-				return inner.Count;
-			}
-		}
-
 		private object GetAt(int index)
 		{
 			TreeViewNode node = GetNodeAt(index);
@@ -86,6 +75,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private new int IndexOf(object value)
 		{
+			//GetCustomIndexOfFunction not used
 			var inner = GetVectorInnerImpl();
 			return inner.IndexOf(value);
 		}
@@ -96,7 +86,7 @@ namespace Microsoft.UI.Xaml.Controls
 			if (IsContentMode)
 			{
 				var vector = new List<object>();
-				int size = Size;
+				int size = Count;
 				for (int i = 0; i < size; i++)
 				{
 					vector.Append(GetNodeAt(i).Content);
@@ -112,50 +102,55 @@ namespace Microsoft.UI.Xaml.Controls
 			return (TreeViewNode)inner[index];
 		}
 
-		//void ViewModel.SetAt(uint32_t index, IInspectable const& value)
-		//{
-		//	var inner = GetVectorInnerImpl();
-		//	var current = inner.GetAt(index).as< TreeViewNode > ();
-		//	inner.SetAt(index, value);
+		private void SetAt(int index, object value)
+		{
+			var inner = GetVectorInnerImpl();
+			var current = (TreeViewNode)inner[index];
+			inner[index] = value;
 
-		//	TreeViewNode newNode = value.as< TreeViewNode > ();
+			TreeViewNode newNode = (TreeViewNode)value;
 
-		//	var tvnCurrent = get_self<TreeViewNode>(current);
-		//	tvnCurrent.ChildrenChanged(m_collectionChangedEventTokenVector[index]);
-		//	tvnCurrent.RemoveExpandedChanged(m_IsExpandedChangedEventTokenVector[index]);
+			var tvnCurrent = current;
+			tvnCurrent.ChildrenChanged -= TreeViewNodeVectorChanged;
+			tvnCurrent.ExpandedChanged -= TreeViewNodePropertyChanged;
 
-		//	// Hook up events and replace tokens
-		//	var tvnNewNode = get_self<TreeViewNode>(newNode);
-		//	m_collectionChangedEventTokenVector[index] = tvnNewNode.ChildrenChanged({ this, &ViewModel.TreeViewNodeVectorChanged });
-		//	m_IsExpandedChangedEventTokenVector[index] = tvnNewNode.AddExpandedChanged({ this, &ViewModel.TreeViewNodePropertyChanged });
-		//}
+			// Hook up events and replace tokens
+			var tvnNewNode = (TreeViewNode)newNode;
+			tvnNewNode.ChildrenChanged += TreeViewNodeVectorChanged;
+			tvnNewNode.ExpandedChanged += TreeViewNodePropertyChanged;
+		}
 
-		//void ViewModel.InsertAt(uint32_t index, IInspectable const& value)
-		//{
-		//	GetVectorInnerImpl().InsertAt(index, value);
-		//	TreeViewNode newNode = value.as< TreeViewNode > ();
 
-		//	//Hook up events and save tokens
-		//	var tvnNewNode = get_self<TreeViewNode>(newNode);
-		//	m_collectionChangedEventTokenVector.insert(m_collectionChangedEventTokenVector.begin() + index, tvnNewNode.ChildrenChanged({ this, &ViewModel.TreeViewNodeVectorChanged }));
-		//	m_IsExpandedChangedEventTokenVector.insert(m_IsExpandedChangedEventTokenVector.begin() + index, tvnNewNode.AddExpandedChanged({ this, &ViewModel.TreeViewNodePropertyChanged }));
-		//}
+		public override object this[int index]
+		{
+			get => GetAt(index);
+			set => SetAt(index, value);
+		}
 
-		//void ViewModel.RemoveAt(uint32_t index)
-		//{
-		//	var inner = GetVectorInnerImpl();
-		//	var current = inner.GetAt(index).as< TreeViewNode > ();
-		//	inner.RemoveAt(index);
+		internal void InsertAt(int index, object value)
+		{
+			GetVectorInnerImpl().Insert(index, value);
+			TreeViewNode newNode = (TreeViewNode)value;
 
-		//	// Unhook event handlers
-		//	var tvnCurrent = get_self<TreeViewNode>(current);
-		//	tvnCurrent.ChildrenChanged(m_collectionChangedEventTokenVector[index]);
-		//	tvnCurrent.RemoveExpandedChanged(m_IsExpandedChangedEventTokenVector[index]);
+			// Hook up events and save tokens
+			var tvnNewNode = newNode;
+			tvnNewNode.ChildrenChanged += TreeViewNodeVectorChanged;
+			tvnNewNode.ExpandedChanged += TreeViewNodePropertyChanged;
+		}
 
-		//	// Remove tokens from vectors
-		//	m_collectionChangedEventTokenVector.erase(m_collectionChangedEventTokenVector.begin() + index);
-		//	m_IsExpandedChangedEventTokenVector.erase(m_IsExpandedChangedEventTokenVector.begin() + index);
-		//}
+		public override void Insert(int index, object item) => InsertAt(index, item);
+
+		public override void RemoveAt(int index)
+		{
+			var inner = GetVectorInnerImpl();
+			var current = (TreeViewNode)inner[index];
+			inner.RemoveAt(index);
+
+			// Unhook event handlers
+			var tvnCurrent = (TreeViewNode)current;
+			tvnCurrent.ChildrenChanged -= TreeViewNodeVectorChanged;
+			tvnCurrent.ExpandedChanged -= TreeViewNodePropertyChanged;
+		}
 
 		private void Append(object value)
 		{
@@ -164,10 +159,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// Hook up events and save tokens
 			var tvnNewNode = newNode;
-			//TODO
-			//m_collectionChangedEventTokenVector.push_back(tvnNewNode.ChildrenChanged({ this, &ViewModel.TreeViewNodeVectorChanged }));
-			//m_IsExpandedChangedEventTokenVector.push_back(tvnNewNode.AddExpandedChanged({ this, &ViewModel.TreeViewNodePropertyChanged }));
+			tvnNewNode.ChildrenChanged += TreeViewNodeVectorChanged;
+			tvnNewNode.ExpandedChanged += TreeViewNodePropertyChanged;
 		}
+
+		public override void Add(object item) => Append(item);
 
 		private void RemoveAtEnd()
 		{
@@ -177,20 +173,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// unhook events
 			var tvnCurrent = current;
-			//TODO
-			//tvnCurrent.ChildrenChanged(m_collectionChangedEventTokenVector.back());
-			//tvnCurrent.RemoveExpandedChanged(m_IsExpandedChangedEventTokenVector.back());
-
-			// remove tokens
-			//TODO
-			//m_collectionChangedEventTokenVector.pop_back();
-			//m_IsExpandedChangedEventTokenVector.pop_back();
+			tvnCurrent.ChildrenChanged -= TreeViewNodeVectorChanged;
+			tvnCurrent.ExpandedChanged -= TreeViewNodePropertyChanged;
 		}
 
-		private new void Clear()
+		public override void Clear()
 		{
 			// Don't call GetVectorInnerImpl().Clear() directly because we need to remove hooked events
-			int count = Size;
+			int count = Count;
 			while (count != 0)
 			{
 				RemoveAtEnd();
@@ -218,12 +208,7 @@ namespace Microsoft.UI.Xaml.Controls
 					RemoveNodeAndDescendantsFromView(removeNode);
 				}
 
-				//TODO
-				//if (m_rootNodeChildrenChangedEventToken.value != 0)
-				//{
-				//	var childrenVector = (ObservableVector<TreeViewNode>)existingOriginNode.Children;
-				//	childrenVector.VectorChanged(m_rootNodeChildrenChangedEventToken);
-				//}
+				existingOriginNode.ChildrenChanged -= TreeViewNodeVectorChanged;
 			}
 
 			//	// Add new RootNode & children
@@ -390,7 +375,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 			else
 			{
-				stopIndex = Size;
+				stopIndex = Count;
 			}
 
 			return stopIndex;
@@ -413,7 +398,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal bool IsNodeSelected(TreeViewNode targetNode)
 		{
-			return m_selectedNodes.IndexOf(targetNode) != -1;
+			return m_selectedNodes.IndexOf(targetNode) > -1;
 		}
 
 		private TreeNodeSelectionState NodeSelectionState(TreeViewNode targetNode)
@@ -432,8 +417,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					case TreeNodeSelectionState.Selected:
 						selectedNodes.InsertAtCore(selectedNodes.Count, selectNode);
-						//TODO
-						//m_selectedNodeChildrenChangedEventTokenVector.push_back(get_self<TreeViewNode>(selectNode).ChildrenChanged({ this, &ViewModel.SelectedNodeChildrenChanged }));
+						selectNode.ChildrenChanged += SelectedNodeChildrenChanged;
 						break;
 
 					case TreeNodeSelectionState.PartialSelected:
@@ -442,9 +426,7 @@ namespace Microsoft.UI.Xaml.Controls
 						if (index > -1)
 						{
 							selectedNodes.RemoveAtCore(index);
-							//TODO
-							//selectNode.ChildrenChanged(m_selectedNodeChildrenChangedEventTokenVector[index]);
-							//m_selectedNodeChildrenChangedEventTokenVector.erase(m_selectedNodeChildrenChangedEventTokenVector.begin() + index);
+							selectNode.ChildrenChanged -= SelectedNodeChildrenChanged;							
 						}
 						break;
 				}
@@ -707,6 +689,7 @@ namespace Microsoft.UI.Xaml.Controls
 							{
 								selectedNodes.RemoveAtCore(i);
 								//TODO
+								selectNode.ChildrenChanged -= SelectedNodeChildrenChanged;
 								//m_selectedNodeChildrenChangedEventTokenVector.erase(m_selectedNodeChildrenChangedEventTokenVector.begin() + i);
 							}
 						}
@@ -738,6 +721,7 @@ namespace Microsoft.UI.Xaml.Controls
 							if (ancestorNode != m_originNode)
 							{
 								selectedNodes.RemoveAtCore(i);
+								selectNode.ChildrenChanged -= SelectedNodeChildrenChanged;
 								//TODO
 								//m_selectedNodeChildrenChangedEventTokenVector.erase(m_selectedNodeChildrenChangedEventTokenVector.begin() + i);
 							}
@@ -817,15 +801,14 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			// Remove ChildrenChanged and ExpandedChanged events
 			var inner = GetVectorInnerImpl();
-			for (var i = 0; i < Size; i++)
+			for (var i = 0; i < Count; i++)
 			{
 				if (i < inner.Count)
 				{
 					var current = inner[i];
 					var tvnCurrent = (TreeViewNode)current;
-					//TODO
-					//tvnCurrent.ChildrenChanged(m_collectionChangedEventTokenVector.at(i));
-					//tvnCurrent.RemoveExpandedChanged(m_IsExpandedChangedEventTokenVector.at(i));
+					tvnCurrent.ChildrenChanged -= TreeViewNodeVectorChanged;
+					tvnCurrent.ExpandedChanged -= TreeViewNodePropertyChanged;
 				}
 			}
 
@@ -839,17 +822,10 @@ namespace Microsoft.UI.Xaml.Controls
 					if (current != null)
 					{
 						var node = (TreeViewNode)current;
-						//TODO
-						//node.ChildrenChanged(m_selectedNodeChildrenChangedEventTokenVector[i]);
+						node.ChildrenChanged -= SelectedNodeChildrenChanged;
 					}
 				}
 			}
-
-			// Clear token vectors
-			//TODO
-			//m_collectionChangedEventTokenVector.clear();
-			//m_IsExpandedChangedEventTokenVector.clear();
-			//m_selectedNodeChildrenChangedEventTokenVector.clear();
 		}
 
 	}

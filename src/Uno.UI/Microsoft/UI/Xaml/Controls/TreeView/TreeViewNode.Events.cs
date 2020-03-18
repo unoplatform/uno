@@ -8,7 +8,6 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		internal event TypedEventHandler<TreeViewNode, IVectorChangedEventArgs> ChildrenChanged;
 
-		//TODO:
-		//internal event TypedEventHandler<TreeViewNode, DependencyPropertyChangedEventArgs> ExpandedChanged;
+		internal event TypedEventHandler<TreeViewNode, DependencyPropertyChangedEventArgs> ExpandedChanged;
 	}
 }
