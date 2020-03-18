@@ -21,7 +21,7 @@ branches:
     mode: ContinuousDeployment
     regex: ^release/beta/.*
     tag: beta
-    increment: inherit
+    increment: none
     source-branches: ['master']
 
   stable:
