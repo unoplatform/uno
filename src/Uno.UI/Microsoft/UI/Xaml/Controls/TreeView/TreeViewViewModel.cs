@@ -245,7 +245,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_TreeViewList = owningList;
 		}
 
-		private TreeViewList ListControl => m_TreeViewList;
+		internal TreeViewList ListControl => m_TreeViewList;
 
 		private bool IsInSingleSelectionMode()
 		{
@@ -526,7 +526,7 @@ namespace Microsoft.UI.Xaml.Controls
 			throw new NotImplementedException();
 		}
 
-		private void NotifyContainerOfSelectionChange(TreeViewNode targetNode, TreeNodeSelectionState selectionState)
+		internal void NotifyContainerOfSelectionChange(TreeViewNode targetNode, TreeNodeSelectionState selectionState)
 		{
 			if (m_TreeViewList != null)
 			{
