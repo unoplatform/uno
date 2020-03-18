@@ -523,4 +523,112 @@
 		</Setter>
 	</android:Style>
 
+	<!--#region DatePicker Styles and Resources-->
+	<ios:Style x:Key="IosDatePickerFlyoutButtonStyle"
+			   TargetType="Button">
+		<Setter Property="FontSize"
+				Value="15" />
+		<Setter Property="Background"
+				Value="Transparent" />
+		<Setter Property="Foreground"
+				Value="#FF007AFF" />
+		<Setter Property="Margin"
+				Value="15,0" />
+		<Setter Property="HorizontalContentAlignment"
+				Value="Center" />
+		<Setter Property="VerticalAlignment"
+				Value="Stretch" />
+		<Setter Property="VerticalContentAlignment"
+				Value="Center" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="Button">
+					<TextBlock Text="{TemplateBinding Content}"
+							   FontSize="{TemplateBinding FontSize}"
+							   Foreground="{TemplateBinding Foreground}"
+							   Background="{TemplateBinding Background}"
+							   HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+							   VerticalAlignment="{TemplateBinding VerticalContentAlignment}" />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</ios:Style>
+
+	<ios:Style TargetType="DatePickerFlyoutPresenter">
+		<Setter Property="Background"
+				Value="White" />
+		<Setter Property="VerticalAlignment"
+				Value="Stretch" />
+		<Setter Property="HorizontalAlignment"
+				Value="Stretch" />
+		<Setter Property="HorizontalContentAlignment"
+				Value="Stretch" />
+		<Setter Property="VerticalContentAlignment"
+				Value="Bottom" />
+		<Setter Property="IsTabStop"
+				Value="False" />
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="DatePickerFlyoutPresenter">
+					<Grid x:Name="ContentPanel"
+						  Background="{TemplateBinding Background}"
+						  BorderBrush="{TemplateBinding BorderBrush}"
+						  BorderThickness="{TemplateBinding BorderThickness}"
+						  HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+						  VerticalAlignment="{TemplateBinding VerticalContentAlignment}">
+
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="Auto" />
+						</Grid.RowDefinitions>
+
+						<Grid Grid.Row="0"
+							  x:Name="AcceptDissHostGrid"
+							  Height="44">
+							<Grid.ColumnDefinitions>
+								<ColumnDefinition Width="Auto" />
+								<ColumnDefinition Width="*" />
+								<ColumnDefinition Width="Auto" />
+							</Grid.ColumnDefinitions>
+
+							<Button Grid.Column="0"
+									x:Name="DismissButton"
+									x:Uid="DatePickerFlyoutDismissButton"
+									Content="Cancel"
+									HorizontalAlignment="Left"
+									Style="{StaticResource IosDatePickerFlyoutButtonStyle}" />
+
+							<Button Grid.Column="2"
+									x:Name="AcceptButton"
+									x:Uid="DatePickerFlyoutAcceptButton"
+									Content="Done"
+									HorizontalAlignment="Right"
+									Style="{StaticResource IosDatePickerFlyoutButtonStyle}" />
+						</Grid>
+
+						<ContentPresenter Grid.Row="1"
+										  Content="{TemplateBinding Content}"
+										  Foreground="{TemplateBinding Foreground}"
+										  HorizontalAlignment="Stretch"
+										  VerticalAlignment="Stretch"
+										  HorizontalContentAlignment="Stretch"
+										  VerticalContentAlignment="Stretch" />
+					</Grid>
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</ios:Style>
+
+	<ios:Style TargetType="DatePickerSelector">
+		<Setter Property="Template">
+			<Setter.Value>
+				<ControlTemplate TargetType="DatePickerSelector">
+					<native_ios:UIDatePicker />
+				</ControlTemplate>
+			</Setter.Value>
+		</Setter>
+	</ios:Style>
+
+	<!--#endregion-->
+
 </ResourceDictionary>

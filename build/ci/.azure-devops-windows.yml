@@ -50,6 +50,7 @@ jobs:
       createLogFile: false
 
   - task: CopyFiles@2
+    condition: always()
     inputs:
       SourceFolder: $(build.sourcesdirectory)/Build
       Contents: '*.nupkg'

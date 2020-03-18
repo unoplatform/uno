@@ -11,7 +11,7 @@ env:
 
 jobs:
   commitsar:
-    name: Check all commits
+    name: Validate for conventional commits
     runs-on: ubuntu-latest
 
     steps:
