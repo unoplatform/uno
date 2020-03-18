@@ -15,9 +15,9 @@
 		</Grid.RowDefinitions>
 
 		<MenuBar>
-			<MenuBarItem Title="File">
-				<MenuFlyoutSubItem Text="New">
-					<MenuFlyoutItem Text="Plain Text Document"
+			<MenuBarItem x:Name="fileMenu" Title="File">
+				<MenuFlyoutSubItem x:Name="newMenu" Text="New">
+					<MenuFlyoutItem x:Name="plainTextMenu" Text="Plain Text Document"
 									Command="{x:Bind MyCommand}" CommandParameter="Plain Text" />
 					<MenuFlyoutItem Text="Plain Text Document (NoParam)"
 									Command="{x:Bind MyCommand}" />
@@ -52,7 +52,7 @@
 								AccessKey="X" />
 			</MenuBarItem>
 
-			<MenuBarItem Title="Edit">
+			<MenuBarItem x:Name="editMenu" Title="Edit">
 				<MenuFlyoutItem Text="Undo" 
 								Click="MenuFlyoutItem_Click"/>
 				<MenuFlyoutItem Text="Cut" 
@@ -63,7 +63,7 @@
 								Click="MenuFlyoutItem_Click" />
 			</MenuBarItem>
 
-			<MenuBarItem Title="Help">
+			<MenuBarItem x:Name="helpMenu" Title="Help">
 				<MenuFlyoutItem Text="About" 
 								Click="MenuFlyoutItem_Click"/>
 			</MenuBarItem>
