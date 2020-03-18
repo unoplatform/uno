@@ -25,7 +25,7 @@ using _Panel = Windows.UI.Xaml.Controls.Panel;
 namespace Windows.UI.Xaml.Controls
 {
 #if __IOS__ || __ANDROID__
-	public abstract partial class ManagedVirtualizingPanelLayout : DependencyObject
+	internal abstract partial class ManagedVirtualizingPanelLayout : DependencyObject
 #else
 	public abstract partial class VirtualizingPanelLayout : DependencyObject
 #endif

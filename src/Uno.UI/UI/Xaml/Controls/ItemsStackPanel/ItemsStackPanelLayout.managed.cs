@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 namespace Windows.UI.Xaml.Controls
 {
 #if __ANDROID__ || __IOS__
-	public partial class ManagedItemsStackPanelLayout : ManagedVirtualizingPanelLayout
+	internal partial class ManagedItemsStackPanelLayout : ManagedVirtualizingPanelLayout
 #else
 	partial class ItemsStackPanelLayout
 #endif

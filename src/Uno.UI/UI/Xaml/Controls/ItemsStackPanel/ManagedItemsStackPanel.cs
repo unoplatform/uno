@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using System.ComponentModel;
 
 namespace Uno.UI.Controls
 {
@@ -11,6 +12,7 @@ namespace Uno.UI.Controls
 	/// An ItemsStackPanel implementation which doesn't rely on high-level native list controls.
 	/// </summary>
 	/// <remarks>For now this panel mainly exists for testing purposes, to be able to debug the WASM/MacOS implementation on Android or iOS.</remarks>
+	[EditorBrowsable(EditorBrowsableState.Never)]
 	public partial class ManagedItemsStackPanel : Panel
 	{
 		ManagedVirtualizingPanelLayout _layout;
