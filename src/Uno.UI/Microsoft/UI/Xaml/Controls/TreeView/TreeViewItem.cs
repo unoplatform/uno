@@ -29,6 +29,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			DefaultStyleKey = typeof(TreeViewItem);
 			SetValue(TreeViewItemTemplateSettingsProperty, new TreeViewItemTemplateSettings());
+
+			this.RegisterDisposablePropertyChangedCallback((s, p, e) => OnPropertyChanged(e));
 		}
 
 		protected override void OnKeyDown(KeyRoutedEventArgs e)
@@ -721,15 +723,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void RecycleEvents(bool useSafeGet = false)
 		{
-			//var chevron = m_expandCollapseChevron;
-			//if (chevron != null)
-			//{
-			//	if (m_expandCollapseChevronPointerPressedToken.value)
-			//	{
-			//		chevron.PointerCanceled(m_expandCollapseChevronPointerPressedToken);
-			//		m_expandCollapseChevronPointerPressedToken.value = 0;
-			//	}
-			//}
+			var chevron = m_expandCollapseChevron;
+			if (chevron != null)
+			{
+				chevron.PointerPressed -= OnExpandCollapseChevronPointerPressed;
+			}
 		}
 
 		///* static */

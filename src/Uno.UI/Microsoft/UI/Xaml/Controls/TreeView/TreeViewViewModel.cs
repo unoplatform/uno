@@ -426,7 +426,7 @@ namespace Microsoft.UI.Xaml.Controls
 						if (index > -1)
 						{
 							selectedNodes.RemoveAtCore(index);
-							selectNode.ChildrenChanged -= SelectedNodeChildrenChanged;							
+							selectNode.ChildrenChanged -= SelectedNodeChildrenChanged;
 						}
 						break;
 				}

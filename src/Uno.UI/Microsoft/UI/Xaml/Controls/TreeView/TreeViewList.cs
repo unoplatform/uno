@@ -182,7 +182,7 @@ namespace Microsoft.UI.Xaml.Controls
 					int aboveIndex = -1;
 					int belowIndex = -1;
 					var itemsSource = ListViewModel;
-					int size = itemsSource.Size;
+					int size = itemsSource.Count;
 					var point = args.GetPosition((UIElement)insertionPanel);
 					insertionPanel.GetInsertionIndexes(point, out aboveIndex, out belowIndex);
 
@@ -549,7 +549,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal bool IsFlatIndexValid(int index)
 		{
-			return index >= 0 && index < ListViewModel.Size;
+			return index >= 0 && index < ListViewModel.Count;
 		}
 
 		internal int RemoveNodeFromParent(TreeViewNode node)
@@ -659,7 +659,7 @@ namespace Microsoft.UI.Xaml.Controls
 		internal TreeViewNode NodeFromContainer(DependencyObject container)
 		{
 			int index = container != null ? IndexFromContainer(container) : -1;
-			if (index >= 0 && index < ListViewModel.Size)
+			if (index >= 0 && index < ListViewModel.Count)
 			{
 				return NodeAtFlatIndex(index);
 			}

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Collections.Specialized;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -7,7 +8,7 @@ using Windows.UI.Xaml.Data;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class TreeViewNode : DependencyObject
+	public partial class TreeViewNode : DependencyObject, ICustomPropertyProvider, IStringable
 	{
 		private TreeViewNode _parent;
 		private bool _hasUnrealizedChildren;
@@ -20,6 +21,8 @@ namespace Microsoft.UI.Xaml.Controls
 			collection.SetParent(this);
 			Children = collection;
 			collection.VectorChanged += ChildVectorChanged;
+
+			this.RegisterDisposablePropertyChangedCallback((s, p, e) => OnPropertyChanged(e));
 		}
 
 		public TreeViewNode Parent
@@ -77,8 +80,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
 			DependencyProperty property = args.Property;
-			//TODO:
-			//m_propertyChangedEventSource(this, args);
+			ExpandedChanged?.Invoke(this, args);
 		}
 
 		private void RaiseChildrenChanged(CollectionChange collectionChange, uint index)
@@ -92,8 +94,7 @@ namespace Microsoft.UI.Xaml.Controls
 			get => m_itemsSource;
 			set
 			{
-				//TODO:
-				if( m_itemsDataSource != null)
+				if (m_itemsDataSource != null)
 				{
 					m_itemsDataSource.CollectionChanged -= OnItemsSourceChanged;
 				}
@@ -238,45 +239,17 @@ namespace Microsoft.UI.Xaml.Controls
 			return GetType().Name;
 		}
 
-		//#pragma region ICustomPropertyProvider
+		Type ICustomPropertyProvider.Type => typeof(TreeViewNode);
 
-		//	TypeName TreeViewNode.Type()
-		//	{
-		//		var outer = get_strong().as< IInspectable > ();
-		//		TypeName typeName;
-		//		typeName.Kind = TypeKind.Metadata;
-		//		typeName.Name = get_class_name(outer);
-		//		return typeName;
-		//	}
+		ICustomProperty ICustomPropertyProvider.GetCustomProperty(string name) => null;
 
-		//	ICustomProperty TreeViewNode.GetCustomProperty(hstring const& name)
-		//	{
-		//		return nullptr;
-		//	}
+		ICustomProperty ICustomPropertyProvider.GetIndexedProperty(string name, Type type) => null;
 
-		//	ICustomProperty TreeViewNode.GetIndexedProperty(hstring const& name, TypeName const& type)
-		//	{
-		//		return nullptr;
-		//	}
-
-		//	hstring TreeViewNode.GetStringRepresentation()
-		//	{
-		//		return GetContentAsString();
-		//	}
-
-		//#pragma endregion
-
-		//#pragma region IStringable
-		//	hstring TreeViewNode.ToString()
-		//	{
-		//		return GetContentAsString();
-		//	}
-		//#pragma endregion
+		string ICustomPropertyProvider.GetStringRepresentation() => GetContentAsString();
 
 		public override string ToString()
 		{
 			return GetContentAsString();
 		}
-
 	}
 }

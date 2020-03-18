@@ -18,8 +18,13 @@ namespace Microsoft.UI.Xaml.Controls
 	public class ItemsSourceView : INotifyCollectionChanged
 	{
 		private int m_cachedSize = -1;
-		private IList m_vector = null;
+
+		private IList m_vector;
+
 		private IKeyIndexMapping m_uniqueIdMaping;
+		private INotifyCollectionChanged m_notifyCollectionChanged;
+		private IBindableObservableVector m_bindableObservableVector;
+		private IObservableVector<object> m_observableVector;
 
 		public ItemsSourceView(object source)
 		{
@@ -28,42 +33,20 @@ namespace Microsoft.UI.Xaml.Controls
 				throw new ArgumentNullException("Argument 'source' is null.");
 			}
 
-			var vector = source as IList<object>;
-			if (vector != null)
+			var list = source as IList;
+			if (list != null)
 			{
-				m_vector = vector;
+				m_vector = list;
 				ListenToCollectionChanges();
 			}
 			else
 			{
-				// The bindable interop interface are abi compatible with the corresponding
-				// WinRT interfaces.
-				var bindableVector = source as IList;
-				if (bindableVector != null)
+				var enumerable = source as IEnumerable;
+				if (enumerable != null)
 				{
-					m_vector.set(reinterpret_cast <const IVector<object>&> (bindableVector));
-					ListenToCollectionChanges();
+					m_vector = WrapIterable(enumerable);
 				}
-				else
-				{
-					var iterable = source.try_as<IIterable<object>>();
-					if (iterable)
-					{
-						m_vector.set(WrapIterable(iterable));
-					}
-					else
-					{
-						var bindableIterable = source.try_as<IBindableIterable>();
-						if (bindableIterable)
-						{
-							m_vector.set(WrapIterable(reinterpret_cast <const IIterable<object> &> (bindableIterable)));
-						}
-						else
-						{
-							throw hresult_invalid_argument(L"Argument 'source' is not a supported vector.");
-						}
-					}
-				}
+				throw new ArgumentException("Argument 'source' is not a supported vector.");
 			}
 
 			m_uniqueIdMaping = source as IKeyIndexMapping;
@@ -118,7 +101,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 
-		~InspectingDataSource()
+		~ItemsSourceView()
 		{
 			UnListenToCollectionChanges();
 		}
@@ -179,37 +162,31 @@ namespace Microsoft.UI.Xaml.Controls
 			return index;
 		}
 
-		//IVector<object> WrapIterable(const IIterable<object>& iterable)
-		//{
-		//	var vector = make < Vector < object, MakeVectorParam< VectorFlag.DependencyObjectBase > () >> ();
-		//	var iterator = iterable.First();
-		//	while (iterator.HasCurrent())
-		//	{
-		//		vector.Append(iterator.Current());
-		//		iterator.MoveNext();
-		//	}
+		private IList WrapIterable(IEnumerable enumerable)
+		{
+			var vector = new List<object>();
+			foreach (var obj in enumerable)
+			{
+				vector.Add(obj);
+			}
+			return vector;
+		}
 
-		//	return vector;
-		//}
-
-		//private void UnListenToCollectionChanges()
-		//{
-		//	var notifyCollection = m_notifyCollectionChanged.safe_get()
-		//			if ()
-		//	{
-		//		notifyCollection.CollectionChanged(m_eventToken);
-		//	}
-
-		//	else if (var bindableObservableCollection = m_bindableObservableVector.safe_get())
-		//					{
-		//		bindableObservableCollection.VectorChanged(m_eventToken);
-		//	}
-
-		//					else if (var observableCollection = m_observableVector.safe_get())
-		//					{
-		//		observableCollection.VectorChanged(m_eventToken);
-		//	}
-		//}
+		private void UnListenToCollectionChanges()
+		{
+			if (m_notifyCollectionChanged != null)
+			{
+				m_notifyCollectionChanged.CollectionChanged -= OnCollectionChanged;
+			}
+			else if (m_bindableObservableVector != null)
+			{
+				m_bindableObservableVector.VectorChanged -= OnBindableVectorChanged;
+			}
+			else if (m_observableVector != null)
+			{
+				m_observableVector.VectorChanged -= OnVectorChanged;
+			}
+		}
 
 		void ListenToCollectionChanges()
 		{
@@ -220,24 +197,24 @@ namespace Microsoft.UI.Xaml.Controls
 			var incc = m_vector as INotifyCollectionChanged;
 			if (incc != null)
 			{
-				m_eventToken = incc.CollectionChanged({ this, &OnCollectionChanged });
+				incc.CollectionChanged += OnCollectionChanged;
 				m_notifyCollectionChanged = incc;
 			}
 			else
 			{
-				var bindableObservableVector = m_vector.try_as<IBindableObservableVector>();
-				if (bindableObservableVector)
+				var bindableObservableVector = m_vector as IBindableObservableVector;
+				if (bindableObservableVector != null)
 				{
-					m_eventToken = bindableObservableVector.VectorChanged({ this, &OnBindableVectorChanged });
-					m_bindableObservableVector.set(bindableObservableVector);
+					bindableObservableVector.VectorChanged += OnBindableVectorChanged;
+					m_bindableObservableVector = bindableObservableVector;
 				}
 				else
 				{
-					var observableVector = m_vector.try_as<IObservableVector<object>>();
-					if (observableVector)
+					var observableVector = m_vector as IObservableVector<object>;
+					if (observableVector != null)
 					{
-						m_eventToken = observableVector.VectorChanged({ this, &OnVectorChanged });
-						m_observableVector.set(observableVector);
+						observableVector.VectorChanged += OnVectorChanged;
+						m_observableVector = observableVector;
 					}
 				}
 			}
@@ -280,11 +257,13 @@ namespace Microsoft.UI.Xaml.Controls
 					action = NotifyCollectionChangedAction.Add;
 					newStartingIndex = (int)e.Index;
 					newItems.Append(null);
+					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(action, newItems, newStartingIndex));
 					break;
 				case CollectionChange.ItemRemoved:
 					action = NotifyCollectionChangedAction.Remove;
 					oldStartingIndex = (int)e.Index;
 					oldItems.Append(null);
+					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(action, oldItems, oldStartingIndex));
 					break;
 				case CollectionChange.ItemChanged:
 					action = NotifyCollectionChangedAction.Replace;
@@ -292,14 +271,17 @@ namespace Microsoft.UI.Xaml.Controls
 					newStartingIndex = oldStartingIndex;
 					newItems.Append(null);
 					oldItems.Append(null);
+					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(action, newItems, oldItems, newStartingIndex));
 					break;
 				case CollectionChange.Reset:
 					action = NotifyCollectionChangedAction.Reset;
+					OnItemsSourceChanged(new NotifyCollectionChangedEventArgs(action));
 					break;
 				default:
 					throw new InvalidOperationException("Unsupported collection change");
 			}
 
+			//WinUI uses NotifyCollectionChangedEventArgs with 5 args
 			//OnItemsSourceChanged(
 			//	new NotifyCollectionChangedEventArgs(
 			//		action,

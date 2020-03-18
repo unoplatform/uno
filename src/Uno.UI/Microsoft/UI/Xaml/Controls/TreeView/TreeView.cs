@@ -18,6 +18,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			m_rootNode = new TreeViewNode();
 			m_pendingSelectedNodes = new List<TreeViewNode>();
+
+			this.RegisterDisposablePropertyChangedCallback((s, p, e) => OnPropertyChanged(e));
 		}
 
 		internal TreeViewList ListControl { get; private set; }
@@ -271,7 +273,7 @@ namespace Microsoft.UI.Xaml.Controls
 			listControl.EnableMultiselect(isMultiSelect);
 
 			var viewModel = listControl.ListViewModel;
-			int size = viewModel.Size;
+			int size = viewModel.Count;
 
 			for (int i = 0; i < size; i++)
 			{
