@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NET461
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -201,8 +202,8 @@ namespace Windows.UI.Xaml.Controls
 		/// Get the container reuse ID associated with the item <paramref name="index"/>, based on the template associated with it (eg if <see cref="ItemsControl.ItemTemplateSelector"/> is set)
 		/// </summary>
 		private int GetItemId(int index)
-		{	
-			if(_idCache.TryGetValue(index, out var value))
+		{
+			if (_idCache.TryGetValue(index, out var value))
 			{
 				return value;
 			}
@@ -223,3 +224,5 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
+
+#endif

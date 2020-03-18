@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NET461
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -772,3 +773,5 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
+
+#endif

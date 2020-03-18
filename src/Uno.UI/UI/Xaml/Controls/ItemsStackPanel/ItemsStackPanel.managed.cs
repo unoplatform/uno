@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NET461
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI.DataBinding;
@@ -19,3 +20,5 @@ namespace Windows.UI.Xaml.Controls
 		protected override Size ArrangeOverride(Size finalSize) => _layout.ArrangeOverride(finalSize);
 	}
 }
+
+#endif

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NET461
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
@@ -29,3 +30,5 @@ namespace Windows.UI.Xaml.Controls
 		protected override int GetItemsPerLine() => 1;
 	}
 }
+
+#endif
