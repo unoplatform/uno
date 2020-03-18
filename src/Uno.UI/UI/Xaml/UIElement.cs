@@ -32,8 +32,12 @@ namespace Windows.UI.Xaml
 	public partial class UIElement : DependencyObject, IXUidProvider
 	{
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
-		private readonly List<KeyboardAccelerator> _keyboardAccelerators = new List<KeyboardAccelerator>();
 		private string _uid;
+
+		private void Initialize()
+		{
+			KeyboardAccelerators = new List<KeyboardAccelerator>();
+		}
 
 		string IXUidProvider.Uid
 		{
@@ -503,7 +507,17 @@ namespace Windows.UI.Xaml
 
 		internal virtual bool IsViewHit() => true;
 
-		[global::Uno.NotImplemented]
-		public IList<KeyboardAccelerator> KeyboardAccelerators => _keyboardAccelerators;
+		public IList<KeyboardAccelerator> KeyboardAccelerators
+		{
+			get => (IList<KeyboardAccelerator>)GetValue(KeyboardAcceleratorsProperty);
+			internal set => SetValue(KeyboardAcceleratorsProperty, value);
+		}
+
+		internal static readonly DependencyProperty KeyboardAcceleratorsProperty =
+			DependencyProperty.Register(
+				name: "KeyboardAccelerators",
+				propertyType: typeof(IList<KeyboardAccelerator>),
+				ownerType: typeof(UIElement),
+				typeMetadata: new PropertyMetadata(null));
 	}
 }

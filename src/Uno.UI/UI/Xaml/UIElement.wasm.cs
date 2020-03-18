@@ -75,6 +75,8 @@ namespace Windows.UI.Xaml
 
 		public UIElement(string htmlTag = "div", bool isSvg = false)
 		{
+			Initialize();
+
 			_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
 			_isFrameworkElement = this is FrameworkElement;
 			HtmlTag = htmlTag;

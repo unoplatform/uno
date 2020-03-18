@@ -49,6 +49,7 @@ namespace Windows.UI.Xaml
 		public UIElement()
 			: base(ContextHelper.Current)
 		{
+			Initialize();
 			InitializePointers();
 		}
 
