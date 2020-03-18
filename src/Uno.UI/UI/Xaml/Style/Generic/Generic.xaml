@@ -1827,54 +1827,55 @@
 	<xamarin:Style TargetType="GridViewItem"
 				   BasedOn="{StaticResource GridViewItemExpanded}" />
 
-	<!--Default style for DatePicker -->
+	<!-- Default style for DatePicker -->
 	<Style TargetType="DatePicker">
-		<ios:Setter Property="FlyoutPlacement"
-					Value="Full" />
-		<Setter Property="Orientation"
-				Value="Horizontal" />
 		<Setter Property="IsTabStop"
 				Value="False" />
 		<Setter Property="FontSize"
 				Value="17" />
+		<Setter Property="BorderBrush"
+				Value="{StaticResource SystemControlForegroundBaseLowBrush}" />
+		<Setter Property="BorderThickness"
+				Value="2" />
 		<Setter Property="Foreground"
-				Value="Red" />
+				Value="Black" />
 		<Setter Property="Background"
 				Value="Transparent" />
 		<Setter Property="HorizontalAlignment"
-				Value="Center" />
+				Value="Left" />
 		<Setter Property="VerticalAlignment"
-				Value="Center" />
+				Value="Top" />
 		<Setter Property="Padding"
 				Value="0" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="DatePicker">
-					<StackPanel x:Name="LayoutRoot">
+					<Grid x:Name="LayoutRoot">
+						<Grid.RowDefinitions>
+							<RowDefinition Height="Auto" />
+							<RowDefinition Height="*" />
+						</Grid.RowDefinitions>
+						
 						<VisualStateManager.VisualStateGroups>
 							<VisualStateGroup x:Name="CommonStates">
 								<VisualState x:Name="Normal" />
-								<VisualState x:Name="Disabled">
-									<Storyboard>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="HeaderContentPresenter"
-																	   Storyboard.TargetProperty="Foreground">
-											<DiscreteObjectKeyFrame KeyTime="0"
-																	Value="Black" />
-										</ObjectAnimationUsingKeyFrames>
-									</Storyboard>
-								</VisualState>
+								<VisualState x:Name="Disabled" />
 							</VisualStateGroup>
 						</VisualStateManager.VisualStateGroups>
+
 						<ContentPresenter x:Name="HeaderContentPresenter"
+										  Grid.Row="0"
 										  x:DeferLoadStrategy="Lazy"
 										  Visibility="Collapsed"
 										  Content="{TemplateBinding Header}"
 										  ContentTemplate="{TemplateBinding HeaderTemplate}"
 										  Margin="0,0,0,8"
 										  Background="{TemplateBinding Background}"
-										  Foreground="{StaticResource Color02Brush}"
+										  Foreground="{TemplateBinding Foreground}"
 										  AutomationProperties.AccessibilityView="Raw" />
+						
 						<Button x:Name="FlyoutButton"
+								Grid.Row="1"
 								Style="{StaticResource DatePickerFlyoutButtonStyle}"
 								Foreground="{TemplateBinding Foreground}"
 								Background="{TemplateBinding Background}"
@@ -1886,38 +1887,63 @@
 								Padding="0"
 								HorizontalAlignment="Stretch"
 								HorizontalContentAlignment="Stretch"
-								VerticalAlignment="Stretch"
-								VerticalContentAlignment="Stretch">
-							<StackPanel Orientation="Horizontal"
-										HorizontalAlignment="Center">
-								<!--MONTH / DAY-->
-								<TextBlock Text="{Binding Date, RelativeSource={RelativeSource TemplatedParent}}" />
+								VerticalAlignment="Top">
+							<Grid x:Name="FlyoutButtonContentGrid">
+								<Grid.ColumnDefinitions>
+									<ColumnDefinition Width="78*"
+													  x:Name="DayColumn" />
+									<ColumnDefinition Width="Auto"
+													  x:Name="FirstSpacerColumn" />
+									<ColumnDefinition Width="132*"
+													  x:Name="MonthColumn" />
+									<ColumnDefinition Width="Auto"
+													  x:Name="SecondSpacerColumn" />
+									<ColumnDefinition Width="78*"
+													  x:Name="YearColumn" />
+								</Grid.ColumnDefinitions>
 
-								<!--SEPERATOR-->
-								<xamarin:Rectangle Width="1"
-												   Fill="#FFFFFFFF"
-												   Margin="20,0" />
-								<win:TextBlock Text="|"
-											   Foreground="Black"
-											   Margin="20,0" />
-
-								<!--TIME-->
-								<TextBlock Text="{Binding Date, RelativeSource={RelativeSource TemplatedParent}}" />
-
-								<!--SEPERATOR-->
-								<xamarin:Rectangle Width="1"
-												   Fill="#FFFFFFFF"
-												   Margin="20,0" />
-								<win:TextBlock Text="|"
-											   Foreground="Black"
-											   Margin="20,0" />
-
-								<!--PERIOD-->
-								<TextBlock Text="{Binding Date, RelativeSource={RelativeSource TemplatedParent}}" />
-
-							</StackPanel>
+								<TextBlock x:Name="DayTextBlock"
+										   Text="Day"
+										   FontFamily="{TemplateBinding FontFamily}"
+										   FontWeight="{TemplateBinding FontWeight}"
+										   FontSize="{TemplateBinding FontSize}"
+										   TextAlignment="Center"
+										   Padding="0,3,0,6"
+										   HorizontalAlignment="Center"
+										   AutomationProperties.AccessibilityView="Raw" />
+								<TextBlock x:Name="MonthTextBlock"
+										   Text="Month"
+										   FontFamily="{TemplateBinding FontFamily}"
+										   FontWeight="{TemplateBinding FontWeight}"
+										   FontSize="{TemplateBinding FontSize}"
+										   TextAlignment="Left"
+										   Padding="9,3,0,6"
+										   Margin="1,0,0,0"
+										   HorizontalAlignment="Center"
+										   AutomationProperties.AccessibilityView="Raw" />
+								<TextBlock x:Name="YearTextBlock"
+										   Text="Year"
+										   FontFamily="{TemplateBinding FontFamily}"
+										   FontWeight="{TemplateBinding FontWeight}"
+										   FontSize="{TemplateBinding FontSize}"
+										   TextAlignment="Center"
+										   Padding="0,3,0,6"
+										   HorizontalAlignment="Center"
+										   AutomationProperties.AccessibilityView="Raw" />
+								
+								<Rectangle x:Name="FirstPickerSpacing"
+										   Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
+										   HorizontalAlignment="Center"
+										   Width="2"
+										   Grid.Column="1" />
+								<Rectangle x:Name="SecondPickerSpacing"
+										   Fill="{ThemeResource SystemControlForegroundBaseLowBrush}"
+										   HorizontalAlignment="Center"
+										   Width="2"
+										   Grid.Column="3" />
+							</Grid>
 						</Button>
-					</StackPanel>
+					</Grid>
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
@@ -1991,10 +2017,6 @@
 										  BorderBrush="{TemplateBinding BorderBrush}"
 										  HorizontalContentAlignment="Stretch"
 										  VerticalContentAlignment="Stretch"
-										  Margin="0"
-										  Padding="0"
-										  VerticalAlignment="Center"
-										  HorizontalAlignment="Stretch"
 										  AutomationProperties.AccessibilityView="Raw" />
 					</Grid>
 				</ControlTemplate>
@@ -2002,7 +2024,7 @@
 		</Setter>
 	</Style>
 
-		<!--Default style for TimePickerSelector - Xamarin-only control internal to TimePickerFlyout-->
+	<!--Default style for TimePickerSelector - Xamarin-only control internal to TimePickerFlyout-->
 	<xamarin:Style TargetType="TimePickerSelector">
 		<ios:Setter Property="Template">
 			<Setter.Value>

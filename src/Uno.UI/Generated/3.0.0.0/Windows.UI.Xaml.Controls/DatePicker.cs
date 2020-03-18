@@ -111,20 +111,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.DateTimeOffset? SelectedDate
-		{
-			get
-			{
-				return (global::System.DateTimeOffset?)this.GetValue(SelectedDateProperty);
-			}
-			set
-			{
-				this.SetValue(SelectedDateProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property SelectedDate
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CalendarIdentifierProperty { get; } = 
@@ -185,16 +172,9 @@ namespace Windows.UI.Xaml.Controls
 			"YearFormat", typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.DatePicker), 
 			new FrameworkPropertyMetadata(default(string)));
-		#endif
+#endif
 		// Skipping already declared property YearVisibleProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectedDateProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectedDate", typeof(global::System.DateTimeOffset?), 
-			typeof(global::Windows.UI.Xaml.Controls.DatePicker), 
-			new FrameworkPropertyMetadata(default(global::System.DateTimeOffset?)));
-		#endif
+		// Skipping already declared property SelectedDateProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.DatePicker.DatePicker()
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePicker.DatePicker()
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePicker.Header.get
@@ -247,21 +227,6 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePicker.MaxYearProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePicker.OrientationProperty.get
 		// Skipping already declared event Windows.UI.Xaml.Controls.DatePicker.DateChanged
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.DatePicker, global::Windows.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs> SelectedDateChanged
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.DatePicker", "event TypedEventHandler<DatePicker, DatePickerSelectedValueChangedEventArgs> DatePicker.SelectedDateChanged");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.DatePicker", "event TypedEventHandler<DatePicker, DatePickerSelectedValueChangedEventArgs> DatePicker.SelectedDateChanged");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.Controls.DatePicker.SelectedDateChanged
 	}
 }
