@@ -601,7 +601,9 @@ Gets or sets a value indicating whether the user can interact with the control.
 - > How can I add an elevation shadow to the CommandBar on Android?
   
   ```xml
-  <CommandBar toolkit:CommandBarExtensions.Elevation="4" />
+  xmlns:toolkit="using:Uno.UI.Toolkit"
+  ...
+  <CommandBar toolkit:UIElementExtensions.Elevation="4" />
   ```
   
 - > How can I use a Path for the AppBarButton Icon?
