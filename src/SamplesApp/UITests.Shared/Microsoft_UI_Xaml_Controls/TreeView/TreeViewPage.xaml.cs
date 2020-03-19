@@ -96,14 +96,14 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			});
 		}
 
-		protected internal override void OnNavigatedFrom(NavigationEventArgs e)
-		{
-			// Unset all override flags to avoid impacting subsequent tests
-			//TODO
-			//MaterialHelperTestApi.IgnoreAreEffectsFast = false;
-			//MaterialHelperTestApi.SimulateDisabledByPolicy = false;
-			base.OnNavigatedFrom(e);
-		}
+		//protected override void OnNavigatedFrom(global::Windows.UI.Xaml.Navigation.NavigationEventArgs e)
+		//{
+		//	// Unset all override flags to avoid impacting subsequent tests
+		//	//TODO
+		//	//MaterialHelperTestApi.IgnoreAreEffectsFast = false;
+		//	//MaterialHelperTestApi.SimulateDisabledByPolicy = false;
+		//	base.OnNavigatedFrom(e);
+		//}
 
 		private string GetSelection(TreeView tree)
 		{
