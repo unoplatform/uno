@@ -746,7 +746,7 @@ namespace Microsoft.UI.Xaml.Controls
 		//We schedule it on the dispatcher so that it runs after layout pass.
 		private void UpdateNodeIsExpandedAsync(TreeViewNode node, bool isExpanded)
 		{
-			var dispatcher = Window.Current.Dispatcher;
+			var dispatcher = Windows.UI.Xaml.Window.Current.Dispatcher;
 			var ignore = dispatcher.RunAsync(
 				CoreDispatcherPriority.Normal,
 				() =>
