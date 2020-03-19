@@ -1,0 +1,17 @@
+﻿// Copyright (c) Microsoft Corporation. All rights reserved.
+// Licensed under the MIT License. See LICENSE in the project root for license information.
+
+using MUXControlsTestApp.Utilities;
+using Uno.UI.Samples.Controls;
+
+namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
+{
+	[SampleControlInfo("TreeView", "MUX_Test_TreeViewNodeInMarkup")]
+	public sealed partial class TreeViewNodeInMarkupTestPage : MUXTestPage
+    {
+        public TreeViewNodeInMarkupTestPage()
+        {
+            this.InitializeComponent();
+        }
+    }
+}

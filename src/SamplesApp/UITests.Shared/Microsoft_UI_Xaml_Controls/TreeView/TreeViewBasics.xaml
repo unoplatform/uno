@@ -5,11 +5,12 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:UITests.Microsoft_UI_Xaml_Controls.TreeView"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:xamarin="http://uno.ui/xamarin"
     xmlns:muxc="using:Microsoft.UI.Xaml.Controls"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-    mc:Ignorable="d">
+    mc:Ignorable="d xamarin">
 
-    <Grid>
+    <xamarin:Grid>
         <muxc:TreeView>
             <muxc:TreeView.RootNodes>
                 <muxc:TreeViewNode Content="Flavors" IsExpanded="True">
@@ -27,5 +28,5 @@
                 </muxc:TreeViewNode>
             </muxc:TreeView.RootNodes>
         </muxc:TreeView>
-    </Grid>
+    </xamarin:Grid>
 </Page>

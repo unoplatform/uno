@@ -5,14 +5,14 @@
     x:Name="TwoPaneViewTestPage"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:local="using:MUX.UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests"
 	xmlns:xamarin="http://uno.ui/xamarin"
     xmlns:muxcontrols="using:Microsoft.UI.Xaml.Controls"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    mc:Ignorable="d xamarin">
+	xmlns:local="using:MUX.UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests"
+	mc:Ignorable="d xamarin">
 
-	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12">
+	<xamarin:Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12">
 		<Grid.RowDefinitions>
 			<RowDefinition Height="*"/>
 			<RowDefinition Height="Auto"/>
@@ -159,5 +159,5 @@
 			<TextBox x:Name="ExceptionMessage" IsReadOnly="True" Grid.Column="1" Margin="1"/>
 			<Button x:Name="ClearException" Content="Clear" Click="ClearException_Click" Grid.Column="2" Margin="1"/>
 		</Grid>
-	</Grid>
+	</xamarin:Grid>
 </utilities:MUXTestPage>

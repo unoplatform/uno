@@ -13,7 +13,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Navigation;
 using Windows.UI.Xaml.Media;
 using System.Collections.ObjectModel;
-
+#if HAS_UNO
 using TreeViewSelectionMode = Microsoft.UI.Xaml.Controls.TreeViewSelectionMode;
 using TreeViewNode = Microsoft.UI.Xaml.Controls.TreeViewNode;
 using TreeView = Microsoft.UI.Xaml.Controls.TreeView;
@@ -23,9 +23,11 @@ using TreeViewDragItemsStartingEventArgs = Microsoft.UI.Xaml.Controls.TreeViewDr
 using TreeViewDragItemsCompletedEventArgs = Microsoft.UI.Xaml.Controls.TreeViewDragItemsCompletedEventArgs;
 using TreeViewList = Microsoft.UI.Xaml.Controls.TreeViewList;
 using TreeViewItem = Microsoft.UI.Xaml.Controls.TreeViewItem;
+#endif
 using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
 using MUXControlsTestApp.Utilities;
+using MUXControlsTestApp;
 using MUX.UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests;
 
 namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
@@ -33,18 +35,20 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 	[SampleControlInfo("TreeView", "MUX_Test_TreeViewPage")]
 	public sealed partial class TreeViewPage : MUXTestPage
 	{
+#if HAS_UNO
 		bool _disableClickToExpand;
 		public TreeViewItem flyoutTVI;
 		TreeViewNode _visualRoot;
 		TreeViewNode _virtualizedNode;
 		public ObservableCollection<TreeViewItemSource> TestTreeViewItemsSource { get; set; }
 		public ObservableCollection<TreeViewItemSource> TestTreeView2ItemsSource { get; set; }
+#endif
 
 		public TreeViewPage()
 		{
 			this.DataContext = this;
 			this.InitializeComponent();
-
+#if HAS_UNO
 			//TODO
 			//MaterialHelperTestApi.IgnoreAreEffectsFast = true;
 			//MaterialHelperTestApi.SimulateDisabledByPolicy = false;
@@ -64,8 +68,10 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 			var item1 = new TreeViewItemSource() { Content = "item1" };
 			var item2 = new TreeViewItemSource() { Content = "item2" };
 			TestTreeView2ItemsSource = new ObservableCollection<TreeViewItemSource>() { item1, item2 };
+#endif
 		}
 
+#if HAS_UNO
 		private ObservableCollection<TreeViewItemSource> PrepareItemsSource(bool expandRootNode = false)
 		{
 			var root0 = new TreeViewItemSource() { Content = "Root.0" };
@@ -781,8 +787,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 		private void ItemTemplateSelectorTestPage_Click(object sender, RoutedEventArgs e)
 		{
-			//TODO:
-			//this.Frame.Navigate(typeof(TreeViewItemTemplateSelectorTestPage));
+			this.Frame.Navigate(typeof(TreeViewItemTemplateSelectorTestPage));
 		}
 
 		private void AddNodeWithEmpyUnrealizedChildren_Click(object sender, RoutedEventArgs e)
@@ -969,9 +974,8 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 		}
 
 		private void TreeViewLateDataInitTestPage_Click(object sender, RoutedEventArgs e)
-		{
-			//TODO:
-			//Frame.NavigateWithoutAnimation(typeof(TreeViewLateDataInitTest));
+		{			
+			this.Frame.Navigate(typeof(TreeViewLateDataInitTest));
 		}
 
 		private void ToggleRoot0Selection_Click(object sender, RoutedEventArgs e)
@@ -982,8 +986,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 
 		private void TreeViewNodeInMarkupTestPage_Click(object sender, RoutedEventArgs e)
 		{
-			//TODO:
-			//Frame.Navigate(typeof(TreeViewNodeInMarkupTestPage));
+			Frame.Navigate(typeof(TreeViewNodeInMarkupTestPage));
 		}
 
 		private void ClearException_Click(object sender, RoutedEventArgs e)
@@ -1006,5 +1009,6 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.TreeViewTests
 		{
 			TestTreeViewItemsSource[0].IsExpanded = !TestTreeViewItemsSource[0].IsExpanded;
 		}
+#endif
 	}
 }
