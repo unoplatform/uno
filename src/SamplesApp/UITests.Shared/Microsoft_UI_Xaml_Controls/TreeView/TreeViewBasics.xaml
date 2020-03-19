@@ -16,7 +16,13 @@
                     <muxc:TreeViewNode.Children>
                         <muxc:TreeViewNode Content="Vanilla" />
                         <muxc:TreeViewNode Content="Strawberry" />
-                        <muxc:TreeViewNode Content="Chocolate" />
+                        <muxc:TreeViewNode Content="Chocolate">
+                            <muxc:TreeViewNode.Children>
+                                <muxc:TreeViewNode Content="Dark" />
+                                <muxc:TreeViewNode Content="White" />
+                            </muxc:TreeViewNode.Children>
+                        </muxc:TreeViewNode>
+                        <muxc:TreeViewNode Content="Caramel" />
                     </muxc:TreeViewNode.Children>
                 </muxc:TreeViewNode>
             </muxc:TreeView.RootNodes>
