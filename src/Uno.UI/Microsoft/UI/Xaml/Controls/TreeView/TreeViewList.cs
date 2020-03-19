@@ -341,6 +341,13 @@ namespace Microsoft.UI.Xaml.Controls
 			templateSettings.ExpandedGlyphVisibility = itemNode.IsExpanded ? Visibility.Visible : Visibility.Collapsed;
 			templateSettings.CollapsedGlyphVisibility = !itemNode.IsExpanded ? Visibility.Visible : Visibility.Collapsed;
 
+			// Uno Workaround - waiting for #1453, remove this when fixed
+			var treeViewItem = itemContainer;
+			var targetNode = NodeFromContainer(treeViewItem);
+			treeViewItem.UpdateIndentation(targetNode.Depth);
+			treeViewItem.UpdateSelectionVisual(targetNode.SelectionState);
+			// workaround end
+
 			base.PrepareContainerForItemOverride(element, item);
 
 			if (selectionState != itemNode.SelectionState)
@@ -351,7 +358,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected override DependencyObject GetContainerForItemOverride()
 		{
-			var targetItem = new TreeViewItem();
+			var targetItem = new TreeViewItem() { IsGeneratedContainer = true };
 			return targetItem;
 		}
 

@@ -7,7 +7,7 @@
     xmlns:local="using:Microsoft.UI.Xaml.Controls"
     xmlns:media="using:Microsoft.UI.Xaml.Media">
     <!--  TODO WinUI: Base on ListViewItemRevealStyle when implemented  -->
-    <Style x:Key="MUX_TreeViewItemStyle" TargetType="local:TreeViewItem">
+	<Style x:Key="MUX_TreeViewItemStyle" TargetType="local:TreeViewItem" BasedOn="{StaticResource ListViewItemExpanded}">
         <Setter Property="Padding" Value="0" />
         <Setter Property="Background" Value="{ThemeResource TreeViewItemBackground}" />
         <Setter Property="BorderBrush" Value="{ThemeResource TreeViewItemBorderBrush}" />
