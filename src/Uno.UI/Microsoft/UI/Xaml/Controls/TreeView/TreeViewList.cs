@@ -25,6 +25,8 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			ListViewModel = new TreeViewViewModel();
 
+			Style = Style.DefaultStyleForType(typeof(ListView));
+
 			DragItemsStarting += OnDragItemsStarting;
 			DragItemsCompleted += OnDragItemsCompleted;
 			ContainerContentChanging += OnContainerContentChanging;

@@ -4,7 +4,7 @@ using Windows.UI.Xaml.Media.Animation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class TreeView 
+	public partial class TreeView
 	{
 		public bool CanDragItems
 		{
@@ -76,7 +76,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty.Register(nameof(ItemContainerTransitions), typeof(TransitionCollection), typeof(TreeView), new PropertyMetadata(null));
 
 		public static readonly DependencyProperty ItemsSourceProperty =
-			DependencyProperty.Register(nameof(ItemsSource), typeof(object), typeof(TreeView), new PropertyMetadata(null));
+			DependencyProperty.Register(nameof(ItemsSource), typeof(object), typeof(TreeView), new PropertyMetadata(null, OnItemsSourcePropertyChanged));
 
 		public static readonly DependencyProperty ItemTemplateProperty =
 			DependencyProperty.Register(nameof(ItemTemplate), typeof(DataTemplate), typeof(TreeView), new PropertyMetadata(null));
@@ -85,6 +85,22 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty.Register(nameof(ItemTemplateSelector), typeof(DataTemplateSelector), typeof(TreeView), new PropertyMetadata(null));
 
 		public static readonly DependencyProperty SelectionModeProperty =
-			DependencyProperty.Register(nameof(SelectionMode), typeof(TreeViewSelectionMode), typeof(TreeView), new PropertyMetadata(TreeViewSelectionMode.Single));
+			DependencyProperty.Register(nameof(SelectionMode), typeof(TreeViewSelectionMode), typeof(TreeView), new PropertyMetadata(TreeViewSelectionMode.Single, OnSelectionModePropertyChanged));
+
+		private static void OnItemsSourcePropertyChanged(
+			DependencyObject sender,
+			DependencyPropertyChangedEventArgs args)
+		{
+			var owner = (TreeView)sender;
+			owner.OnPropertyChanged(args);
+		}
+
+		private static void OnSelectionModePropertyChanged(
+			DependencyObject sender,
+			DependencyPropertyChangedEventArgs args)
+		{
+			var owner = (TreeView)sender;
+			owner.OnPropertyChanged(args);
+		}
 	}
 }

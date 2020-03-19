@@ -58,9 +58,8 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public override void RemoveAt(int index)
-		{
-			var inner = GetVectorInnerImpl();
-			var oldNode = inner[index];
+		{			
+			var oldNode = base[index];
 			// UpdateNodeSelection will call RemoveAtCore
 			UpdateSelection(oldNode, TreeNodeSelectionState.UnSelected);
 		}
@@ -89,7 +88,7 @@ namespace Microsoft.UI.Xaml.Controls
 		// If you want to update vector content without notifying TreeViewNodes, use "core" version of the methods.
 		internal void InsertAtCore(int index, TreeViewNode node)
 		{
-			GetVectorInnerImpl().Insert(index, node);
+			base.Insert(index, node);
 
 			// Keep SelectedItems and SelectedNodes in sync
 			var viewModel = m_viewModel;
@@ -110,7 +109,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void RemoveAtCore(int index)
 		{
-			GetVectorInnerImpl().RemoveAt(index);
+			base.RemoveAt(index);
 
 			// Keep SelectedItems and SelectedNodes in sync
 			var viewModel = m_viewModel;

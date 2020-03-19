@@ -30,7 +30,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DefaultStyleKey = typeof(TreeViewItem);
 			SetValue(TreeViewItemTemplateSettingsProperty, new TreeViewItemTemplateSettings());
 
-			this.RegisterDisposablePropertyChangedCallback((s, p, e) => OnPropertyChanged(e));
+			//this.RegisterDisposablePropertyChangedCallback((s, p, e) => OnPropertyChanged(e));
 		}
 
 		protected override void OnKeyDown(KeyRoutedEventArgs e)

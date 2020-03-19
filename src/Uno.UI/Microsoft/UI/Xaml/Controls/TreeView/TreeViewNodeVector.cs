@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Uno.Extensions;
 using Uno.UI;
 using Windows.Foundation.Collections;
 
@@ -43,20 +44,19 @@ namespace Microsoft.UI.Xaml.Controls
 		public override void Add(TreeViewNode item) => Append(item);
 
 		public void InsertAt(int index, TreeViewNode item, bool updateItemsSource = true)
-		{
-			var inner = GetVectorInnerImpl();
+		{			
 			if (m_parent == null)
 			{
 				throw new InvalidOperationException("Parent node must be set");
 			}
-			if (index > inner.Count)
+			if (index > base.Count)
 			{
 				throw new IndexOutOfRangeException("Index out of range for Insert");
 			}
 
 			item.Parent = m_parent;
 
-			inner.Insert(index, item);
+			base.Insert(index, item);
 
 			if (updateItemsSource)
 			{
@@ -75,7 +75,7 @@ namespace Microsoft.UI.Xaml.Controls
 			RemoveAt(index, updateItemsSource);
 			InsertAt(index, item, updateItemsSource);
 		}
-		
+
 		public override TreeViewNode this[int index]
 		{
 			get => base[index];
@@ -84,11 +84,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void RemoveAt(int index, bool updateItemsSource = true)
 		{
-			var inner = GetVectorInnerImpl();
-			var targetNode = inner[index];
+			var targetNode = this[index];
 			targetNode.Parent = null;
 
-			inner.RemoveAt(index);
+			base.RemoveAt(index);
 
 			if (updateItemsSource)
 			{
@@ -100,19 +99,17 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public override void RemoveAt(int index) => RemoveAt(index, true);		
+		public override void RemoveAt(int index) => RemoveAt(index, true);
 
 		public void RemoveAtEnd(bool updateItemsSource = true)
 		{
-			var index = GetVectorInnerImpl().Count - 1;
+			var index = Count - 1;
 			RemoveAt(index, updateItemsSource);
 		}
 
 		public void ReplaceAll(TreeViewNode[] values, bool updateItemsSource = true)
 		{
-			var inner = GetVectorInnerImpl();
-
-			var count = inner.Count;
+			var count = Count;
 			if (count > 0)
 			{
 				Clear(updateItemsSource);
@@ -132,25 +129,27 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 
-				inner.Clear();
-				inner.AddRange(values);
+				base.Clear();
+				foreach (var value in values)
+				{
+					base.Add(value);
+				}
 			}
 		}
 
 		public void Clear(bool updateItemsSource = true)
-		{
-			var inner = GetVectorInnerImpl();
-			var count = inner.Count;
+		{			
+			var count = Count;
 
 			if (count > 0)
 			{
 				for (var i = 0; i < count; i++)
 				{
-					var node = inner[i];
+					var node = this[i];
 					node.Parent = null;
 				}
 
-				inner.Clear();
+				base.Clear();
 
 				if (updateItemsSource)
 				{

@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 			Children = collection;
 			collection.VectorChanged += ChildVectorChanged;
 
-			this.RegisterDisposablePropertyChangedCallback((s, p, e) => OnPropertyChanged(e));
+			//this.RegisterDisposablePropertyChangedCallback((s, p, e) => OnPropertyChanged(e));
 		}
 
 		public TreeViewNode Parent

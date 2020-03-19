@@ -87,8 +87,6 @@ namespace Windows.Foundation.Collections
 
 		IEnumerator IEnumerable.GetEnumerator() => _list.GetEnumerator();
 
-		internal List<T> GetVectorInnerImpl() => _list;
-
 		private void RaiseVectorChanged(CollectionChange change, int index)
 		{
 			VectorChanged?.Invoke(this, new VectorChangedEventArgs(change, (uint)index));

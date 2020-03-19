@@ -75,14 +75,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private new int IndexOf(object value)
 		{
-			//GetCustomIndexOfFunction not used
-			var inner = GetVectorInnerImpl();
-			return inner.IndexOf(value);
+			//GetCustomIndexOfFunction not used			
+			return base.IndexOf(value);
 		}
 
 		private object[] GetMany(int startIndex)
-		{
-			var inner = GetVectorInnerImpl();
+		{			
 			if (IsContentMode)
 			{
 				var vector = new List<object>();
@@ -93,20 +91,23 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				return vector.Skip(startIndex).ToArray();
 			}
-			return inner.Skip(startIndex).ToArray();
+			var list = new List<object>();
+			for (int i = startIndex; i < Count; i++)
+			{
+				list.Add(base[i]);
+			}
+			return list.ToArray();
 		}
 
 		internal TreeViewNode GetNodeAt(int index)
-		{
-			var inner = GetVectorInnerImpl();
-			return (TreeViewNode)inner[index];
+		{			
+			return (TreeViewNode)base[index];
 		}
 
 		private void SetAt(int index, object value)
 		{
-			var inner = GetVectorInnerImpl();
-			var current = (TreeViewNode)inner[index];
-			inner[index] = value;
+			var current = (TreeViewNode)base[index];
+			base[index] = value;
 
 			TreeViewNode newNode = (TreeViewNode)value;
 
@@ -129,7 +130,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void InsertAt(int index, object value)
 		{
-			GetVectorInnerImpl().Insert(index, value);
+			base.Insert(index, value);
 			TreeViewNode newNode = (TreeViewNode)value;
 
 			// Hook up events and save tokens
@@ -141,10 +142,9 @@ namespace Microsoft.UI.Xaml.Controls
 		public override void Insert(int index, object item) => InsertAt(index, item);
 
 		public override void RemoveAt(int index)
-		{
-			var inner = GetVectorInnerImpl();
-			var current = (TreeViewNode)inner[index];
-			inner.RemoveAt(index);
+		{			
+			var current = (TreeViewNode)base[index];
+			base.RemoveAt(index);
 
 			// Unhook event handlers
 			var tvnCurrent = (TreeViewNode)current;
@@ -154,7 +154,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void Append(object value)
 		{
-			GetVectorInnerImpl().Add(value);
+			base.Add(value);
 			TreeViewNode newNode = (TreeViewNode)value;
 
 			// Hook up events and save tokens
@@ -167,9 +167,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void RemoveAtEnd()
 		{
-			var inner = GetVectorInnerImpl();
-			var current = (TreeViewNode)inner[Count - 1];
-			inner.RemoveAt(inner.Count - 1);
+			var current = (TreeViewNode)base[Count - 1];
+			base.RemoveAt(base.Count - 1);
 
 			// unhook events
 			var tvnCurrent = current;
@@ -190,9 +189,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void ReplaceAll(object[] items)
 		{
-			var inner = GetVectorInnerImpl();
-			inner.Clear();
-			inner.AddRange(items);
+			base.Clear();
+			foreach (var item in items)
+			{
+				base.Add(item);
+			}
 		}
 
 		//// Helper function
@@ -532,7 +533,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal bool IndexOfNode(TreeViewNode targetNode, out int index)
 		{
-			index = GetVectorInnerImpl().IndexOf(targetNode);
+			index = base.IndexOf(targetNode);
 			return index > -1;
 		}
 
@@ -799,13 +800,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void ClearEventTokenVectors()
 		{
-			// Remove ChildrenChanged and ExpandedChanged events
-			var inner = GetVectorInnerImpl();
+			// Remove ChildrenChanged and ExpandedChanged events			
 			for (var i = 0; i < Count; i++)
 			{
-				if (i < inner.Count)
+				if (i < base.Count)
 				{
-					var current = inner[i];
+					var current = base[i];
 					var tvnCurrent = (TreeViewNode)current;
 					tvnCurrent.ChildrenChanged -= TreeViewNodeVectorChanged;
 					tvnCurrent.ExpandedChanged -= TreeViewNodePropertyChanged;

@@ -19,7 +19,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_rootNode = new TreeViewNode();
 			m_pendingSelectedNodes = new List<TreeViewNode>();
 
-			this.RegisterDisposablePropertyChangedCallback((s, p, e) => OnPropertyChanged(e));
+			//this.RegisterDisposablePropertyChangedCallback((s, p, e) => OnPropertyChanged(e));
 		}
 
 		internal TreeViewList ListControl { get; private set; }

@@ -22,7 +22,7 @@ namespace Microsoft.UI.Xaml.Controls
 			get { return (Brush)GetValue(GlyphBrushProperty); }
 			set { SetValue(GlyphBrushProperty, value); }
 		}
-			   
+
 		public double GlyphOpacity
 		{
 			get { return (double)GetValue(GlyphOpacityProperty); }
@@ -75,15 +75,39 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty.Register(nameof(GlyphSize), typeof(double), typeof(TreeViewItem), new PropertyMetadata(0));
 
 		public static readonly DependencyProperty HasUnrealizedChildrenProperty =
-			DependencyProperty.Register(nameof(HasUnrealizedChildren), typeof(bool), typeof(TreeViewItem), new PropertyMetadata(false));
+			DependencyProperty.Register(nameof(HasUnrealizedChildren), typeof(bool), typeof(TreeViewItem), new PropertyMetadata(false, OnHasUnrealizedChildrenPropertyChanged));
 
 		public static readonly DependencyProperty IsExpandedProperty =
-			DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(TreeViewItem), new PropertyMetadata(false));
+			DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(TreeViewItem), new PropertyMetadata(false, OnIsExpandedPropertyChanged));
 
 		public static readonly DependencyProperty ItemsSourceProperty =
-			DependencyProperty.Register(nameof(ItemsSource), typeof(object), typeof(TreeViewItem), new PropertyMetadata(null));
-		
+			DependencyProperty.Register(nameof(ItemsSource), typeof(object), typeof(TreeViewItem), new PropertyMetadata(null, OnItemsSourcePropertyChanged));
+
 		public static readonly DependencyProperty TreeViewItemTemplateSettingsProperty =
 			DependencyProperty.Register(nameof(TreeViewItemTemplateSettings), typeof(TreeViewItemTemplateSettings), typeof(TreeViewItem), new PropertyMetadata(null));
+
+		private static void OnHasUnrealizedChildrenPropertyChanged(
+			DependencyObject sender,
+			DependencyPropertyChangedEventArgs args)
+		{
+			var owner = (TreeViewItem)sender;
+			owner.OnPropertyChanged(args);
+		}
+
+		private static void OnIsExpandedPropertyChanged(
+			DependencyObject sender,
+			DependencyPropertyChangedEventArgs args)
+		{
+			var owner = (TreeViewItem)sender;
+			owner.OnPropertyChanged(args);
+		}
+
+		private static void OnItemsSourcePropertyChanged(
+			DependencyObject sender,
+			DependencyPropertyChangedEventArgs args)
+		{
+			var owner = (TreeViewItem)sender;
+			owner.OnPropertyChanged(args);
+		}
 	}
 }

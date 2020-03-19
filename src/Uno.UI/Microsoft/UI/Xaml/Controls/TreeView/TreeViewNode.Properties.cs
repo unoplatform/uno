@@ -9,12 +9,12 @@ namespace Microsoft.UI.Xaml.Controls
 			get { return (object)GetValue(ContentProperty); }
 			set { SetValue(ContentProperty, value); }
 		}
-				
+
 		public int Depth
 		{
 			get { return (int)GetValue(DepthProperty); }
 			private set { SetValue(DepthProperty, value); }
-		}		
+		}
 
 		public bool HasChildren
 		{
@@ -30,14 +30,30 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public static readonly DependencyProperty ContentProperty =
 			DependencyProperty.Register(nameof(Content), typeof(object), typeof(TreeViewNode), new PropertyMetadata(null));
-		
+
 		public static readonly DependencyProperty DepthProperty =
 			DependencyProperty.Register(nameof(Depth), typeof(int), typeof(TreeViewNode), new PropertyMetadata(-1));
 
 		public static readonly DependencyProperty HasChildrenProperty =
-			DependencyProperty.Register(nameof(HasChildren), typeof(bool), typeof(TreeViewNode), new PropertyMetadata(false));
-			   
+			DependencyProperty.Register(nameof(HasChildren), typeof(bool), typeof(TreeViewNode), new PropertyMetadata(false, OnHasChildrenPropertyChanged));
+
 		public static readonly DependencyProperty IsExpandedProperty =
-			DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(TreeViewNode), new PropertyMetadata(false));
+			DependencyProperty.Register(nameof(IsExpanded), typeof(bool), typeof(TreeViewNode), new PropertyMetadata(false, OnIsExpandedPropertyChanged));
+
+		private static void OnHasChildrenPropertyChanged(
+			DependencyObject sender,
+			DependencyPropertyChangedEventArgs args)
+		{
+			var owner = (TreeViewNode)sender;
+			owner.OnPropertyChanged(args);
+		}
+
+		private static void OnIsExpandedPropertyChanged(
+			DependencyObject sender,
+			DependencyPropertyChangedEventArgs args)
+		{
+			var owner = (TreeViewNode)sender;
+			owner.OnPropertyChanged(args);
+		}
 	}
 }

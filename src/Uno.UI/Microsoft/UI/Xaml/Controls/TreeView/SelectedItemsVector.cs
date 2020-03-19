@@ -24,7 +24,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (!Contains(item))
 			{
-				GetVectorInnerImpl().Insert(index, item);
+				base.Insert(index, item);
 
 				// Keep SelectedNodes and SelectedItems in sync
 				var viewModel = m_viewModel;
@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public override void RemoveAt(int index)
 		{
-			GetVectorInnerImpl().RemoveAt(index);
+			base.RemoveAt(index);
 
 			// Keep SelectedNodes and SelectedItems in sync
 			var viewModel = m_viewModel;
