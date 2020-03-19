@@ -60,10 +60,10 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		public static readonly DependencyProperty CollapsedGlyphProperty =
-			DependencyProperty.Register(nameof(CollapsedGlyph), typeof(string), typeof(TreeViewItem), new PropertyMetadata("\uE76C"));
+			DependencyProperty.Register(nameof(CollapsedGlyph), typeof(string), typeof(TreeViewItem), new PropertyMetadata("\uE0E3")); // UWP uses uE76C
 
 		public static readonly DependencyProperty ExpandedGlyphProperty =
-			DependencyProperty.Register(nameof(ExpandedGlyph), typeof(string), typeof(TreeViewItem), new PropertyMetadata("\uE70D"));
+			DependencyProperty.Register(nameof(ExpandedGlyph), typeof(string), typeof(TreeViewItem), new PropertyMetadata("\uE0E5")); // UWP uses uE70D
 
 		public static readonly DependencyProperty GlyphBrushProperty =
 			DependencyProperty.Register(nameof(GlyphBrush), typeof(Brush), typeof(TreeViewItem), new PropertyMetadata(null));
@@ -72,7 +72,7 @@ namespace Microsoft.UI.Xaml.Controls
 			DependencyProperty.Register(nameof(GlyphOpacity), typeof(double), typeof(TreeViewItem), new PropertyMetadata(1.0));
 
 		public static readonly DependencyProperty GlyphSizeProperty =
-			DependencyProperty.Register(nameof(GlyphSize), typeof(double), typeof(TreeViewItem), new PropertyMetadata(0));
+			DependencyProperty.Register(nameof(GlyphSize), typeof(double), typeof(TreeViewItem), new PropertyMetadata(12.0));
 
 		public static readonly DependencyProperty HasUnrealizedChildrenProperty =
 			DependencyProperty.Register(nameof(HasUnrealizedChildren), typeof(bool), typeof(TreeViewItem), new PropertyMetadata(false, OnHasUnrealizedChildrenPropertyChanged));
