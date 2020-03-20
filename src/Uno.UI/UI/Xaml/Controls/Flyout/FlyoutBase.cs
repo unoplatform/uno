@@ -31,6 +31,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		protected internal Windows.UI.Xaml.Controls.Popup _popup;
 		private bool _isLightDismissEnabled = true;
+		private Point? _popupPositionInTarget;
 		private readonly SerialDisposable _sizeChangedDisposable = new SerialDisposable();
 
 		public FlyoutBase()
@@ -95,7 +96,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			if (_popup.Child is FrameworkElement child)
 			{
-				SizeChangedEventHandler handler = (_, __) => SetPopupPositionPartial(Target);
+				SizeChangedEventHandler handler = (_, __) => SetPopupPositionPartial(Target, _popupPositionInTarget);
 
 				child.SizeChanged += handler;
 
@@ -162,6 +163,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		public FrameworkElement Target { get; private set; }
 
+		/// <summary>
+		/// Defines an optional position of the popup in the <see cref="Target"/> element.
+		/// </summary>
+		internal Point? PopupPositionInTarget => _popupPositionInTarget;
+
 		public void Hide()
 		{
 			Hide(canCancel: true);
@@ -192,12 +198,20 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			Closed?.Invoke(this, EventArgs.Empty);
 		}
 
-		public virtual void ShowAt(FrameworkElement placementTarget)
+		public void ShowAt(FrameworkElement placementTarget)
 		{
-			ShowAtCore(placementTarget);
+			ShowAtCore(placementTarget, null);
 		}
 
-		private protected virtual void ShowAtCore(FrameworkElement placementTarget)
+		public void ShowAt(DependencyObject placementTarget, FlyoutShowOptions showOptions)
+		{
+			if (placementTarget is FrameworkElement fe)
+			{
+				ShowAtCore(fe, showOptions);
+			}
+		}
+
+		private protected virtual void ShowAtCore(FrameworkElement placementTarget, FlyoutShowOptions showOptions)
 		{
 			EnsurePopupCreated();
 
@@ -215,6 +229,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 
 			Target = placementTarget;
+
+			if(showOptions != null)
+			{
+				_popupPositionInTarget = showOptions.Position;
+			}
 
 			OnOpening();
 			Opening?.Invoke(this, EventArgs.Empty);
@@ -250,12 +269,12 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		protected internal virtual void Open()
 		{
-			SetPopupPositionPartial(Target);
+			SetPopupPositionPartial(Target, _popupPositionInTarget);
 
 			_popup.IsOpen = true;
 		}
 
-		partial void SetPopupPositionPartial(UIElement placementTarget);
+		partial void SetPopupPositionPartial(UIElement placementTarget, Point? absolutePosition);
 
 		partial void OnDataContextChangedPartial(DependencyPropertyChangedEventArgs e)
 		{

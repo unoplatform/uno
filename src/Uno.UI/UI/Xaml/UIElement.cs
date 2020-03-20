@@ -22,6 +22,7 @@ using System.Numerics;
 using System.Reflection;
 using Windows.UI.Xaml.Markup;
 using Microsoft.Extensions.Logging;
+using Windows.UI.Xaml.Controls.Primitives;
 
 #if __IOS__
 using UIKit;
@@ -314,6 +315,52 @@ namespace Windows.UI.Xaml
 					(s, e) => (s as UIElement).OnVisibilityChanged((Visibility)e.OldValue, (Visibility)e.NewValue)
 				)
 			);
+		#endregion
+
+		#region ContextFlyout Dependency Property
+		public FlyoutBase ContextFlyout
+		{
+			get => (FlyoutBase)GetValue(ContextFlyoutProperty);
+			set => SetValue(ContextFlyoutProperty, value);
+		}
+
+		public static DependencyProperty ContextFlyoutProperty { get; } =
+			DependencyProperty.Register(
+				nameof(ContextFlyout),
+				typeof(FlyoutBase),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(
+					defaultValue: null,
+					propertyChangedCallback: (s, e) => (s as UIElement).OnContextFlyoutChanged((FlyoutBase)e.OldValue, (FlyoutBase)e.NewValue)
+				)
+			);
+
+		private protected virtual void OnContextFlyoutChanged(FlyoutBase oldValue, FlyoutBase newValue)
+		{
+			if(newValue != null)
+			{
+				RightTapped += OpenContextFlyout;
+			}
+			else
+			{
+				RightTapped -= OpenContextFlyout;
+			}
+		}
+
+		private void OpenContextFlyout(object sender, RightTappedRoutedEventArgs args)
+		{
+			if (this is FrameworkElement fe)
+			{
+				ContextFlyout?.ShowAt(
+					placementTarget: fe,
+					showOptions: new FlyoutShowOptions()
+					{
+						Position = args.GetPosition(this)
+					}
+				);
+			}
+		}
+
 		#endregion
 
 		internal bool IsRenderingSuspended { get; set; }

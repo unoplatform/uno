@@ -71,6 +71,8 @@ namespace Windows.UI.Xaml.Controls
 
 		protected abstract FrameworkElement AnchorControl { get; }
 
+		protected abstract Point? PositionInAnchorControl { get; }
+
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			foreach (var child in Children)
@@ -103,6 +105,15 @@ namespace Windows.UI.Xaml.Controls
 			// Make sure the desiredSize fits in the panel
 			desiredSize.Width = Math.Min(desiredSize.Width, visibleBounds.Width);
 			desiredSize.Height = Math.Min(desiredSize.Height, visibleBounds.Height);
+
+			if(PositionInAnchorControl is Point point)
+			{
+				return new Rect(
+					x: anchorRect.X + point.X,
+					y: anchorRect.Y + point.Y,
+					width: desiredSize.Width,
+					height: desiredSize.Height);
+			}
 
 			// Try all placements...
 			var placementsToTry = PlacementsToTry.TryGetValue(PopupPlacement, out var p)

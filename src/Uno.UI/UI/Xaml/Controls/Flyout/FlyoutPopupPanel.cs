@@ -26,6 +26,7 @@ namespace Windows.UI.Xaml.Controls
 		protected override FlyoutPlacementMode PopupPlacement => _flyout.Placement;
 
 		protected override FrameworkElement AnchorControl => _flyout.Target as FrameworkElement;
+		protected override Point? PositionInAnchorControl => _flyout.PopupPositionInTarget;
 	}
 }
 #endif

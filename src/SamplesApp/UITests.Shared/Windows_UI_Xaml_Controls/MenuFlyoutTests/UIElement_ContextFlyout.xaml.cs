@@ -12,22 +12,23 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
-
-// The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 		  
-namespace UITests.Shared.Windows_UI_Xaml_Controls.MenuFlyoutItemTests
+namespace UITests.Shared.Windows_UI_Xaml_Controls.MenuFlyoutTests
 {
-	[Uno.UI.Samples.Controls.SampleControlInfo("MenuFlyoutItem", "MenuFlyoutItem_Click", description: "Testing click on MenuFlyoutItem")]
-    public sealed partial class MenuFlyoutItem_Click : UserControl
+	[Uno.UI.Samples.Controls.SampleControlInfo("MenuFlyout")]
+    public sealed partial class UIElement_ContextFlyout : UserControl
     {
-        public MenuFlyoutItem_Click()
+        public UIElement_ContextFlyout()
         {
             this.InitializeComponent();
         }
 
-		public void FlyoutItem_Click(object sender, object args)
+		public void OnMenuItemClick(object sender, object args)
 		{
-			mfiResult.Text = "success";
+			if (sender is MenuFlyoutItem item)
+			{
+				result.Text = "click: " + item.Text;
+			}
 		}
 	}
 }

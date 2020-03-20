@@ -19,7 +19,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 		[AutoRetry]
 		public void MenuFlyoutItem_ClickTest()
 		{
-			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuFlyoutItemTests.MenuFlyoutItem_Click");
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuFlyoutTests.MenuFlyoutItem_Click");
 
 			_app.WaitForElement(_app.Marked("mfiButton"));
 
@@ -143,6 +143,30 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 			_app.WaitForNoElement("exitItem");
 
 			TakeScreenshot("AfterSuccess");
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // We cannot test right button click on WASM yet
+		public void UIElement_ContextFlyout()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuFlyoutTests.UIElement_ContextFlyout");
+
+			var result = _app.Marked("result");
+			var myBorder = _app.Marked("myBorder");
+
+			var myBorderRect = _app.Query(_app.Marked("myBorder")).First().Rect;
+			_app.TouchAndHoldCoordinates(myBorderRect.CenterX, myBorderRect.CenterY);
+
+			TakeScreenshot("opened");
+
+			_app.FastTap(_app.Marked("testItem1"));
+			Assert.AreEqual("click: test1", result.GetText());
+
+			_app.TouchAndHoldCoordinates(myBorderRect.CenterX, myBorderRect.CenterY);
+
+			_app.FastTap(_app.Marked("testItem2"));
+			Assert.AreEqual("click: test2", result.GetText());
 		}
 	}
 }

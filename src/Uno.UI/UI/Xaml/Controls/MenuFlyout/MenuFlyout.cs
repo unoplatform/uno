@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void ShowAt(UIElement targetElement, Point point)
 		{
-			ShowAtCore((FrameworkElement)targetElement);
+			ShowAtCore((FrameworkElement)targetElement, new FlyoutShowOptions { Position = point });
 		}
 
 		private void OnPropertyChanged2(DependencyObject s, DependencyPropertyChangedEventArgs e)
@@ -122,9 +122,11 @@ namespace Windows.UI.Xaml.Controls
 			return presenter;
 		}
 
-		private protected override void ShowAtCore(FrameworkElement pPlacementTarget)
+		private protected override void ShowAtCore(FrameworkElement pPlacementTarget, FlyoutShowOptions showOptions)
 		{
-			base.ShowAtCore(pPlacementTarget);
+			m_openWindowed = false;
+
+			base.ShowAtCore(pPlacementTarget, showOptions);
 
 			if (m_openWindowed)
 			{
@@ -299,12 +301,6 @@ namespace Windows.UI.Xaml.Controls
 			// UNO TODO
 			// Rect windowRect = default;
 			// (DXamlCore.GetCurrent().GetContentBoundsForElement(GetHandle(), &windowRect));
-		}
-
-		public override void ShowAt(FrameworkElement pPlacementTarget)
-		{
-			m_openWindowed = false;
-			base.ShowAtCore(pPlacementTarget);
 		}
 
 		void ShowAtImpl(UIElement pTargetElement, Point targetPoint)

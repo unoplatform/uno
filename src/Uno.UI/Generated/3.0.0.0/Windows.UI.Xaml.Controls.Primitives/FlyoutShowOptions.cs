@@ -2,9 +2,6 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
 	public  partial class FlyoutShowOptions 
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
@@ -18,20 +15,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Primitives.FlyoutShowOptions", "FlyoutShowMode FlyoutShowOptions.ShowMode");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Foundation.Point? Position
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Point? FlyoutShowOptions.Position is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Primitives.FlyoutShowOptions", "Point? FlyoutShowOptions.Position");
 			}
 		}
 		#endif
@@ -61,13 +44,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Primitives.FlyoutShowOptions", "Rect? FlyoutShowOptions.ExclusionRect");
 			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public FlyoutShowOptions() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Primitives.FlyoutShowOptions", "FlyoutShowOptions.FlyoutShowOptions()");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.FlyoutShowOptions.FlyoutShowOptions()
