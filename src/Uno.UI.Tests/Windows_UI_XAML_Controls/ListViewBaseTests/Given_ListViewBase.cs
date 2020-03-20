@@ -19,6 +19,9 @@ namespace Uno.UI.Tests.ListViewBaseTests
 	public class Given_ListViewBase
 	{
 #if !NETFX_CORE
+		// Make sure to have a valid custom theme set, so it won't try to read it from the Application.Current(<<== null).RequestedTheme
+		[TestInitialize] public void Init() => global::Uno.UI.ApplicationHelper.RequestedCustomTheme = "HighContrast";
+
 		[TestMethod]
 		public void When_MultiSelectedItem()
 		{
@@ -233,7 +236,7 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			{
 				Assert.Fail("Container should be a ListViewItem");
 			}
-	}
+		}
 
 		[TestMethod]
 		public void When_Single_SelectionChanged_And_SelectorItem_IsSelected_Changed()
@@ -483,6 +486,49 @@ namespace Uno.UI.Tests.ListViewBaseTests
 			}
 
 			Assert.AreEqual(2, SUT.SelectedItems.Count);
+		}
+
+		[TestMethod]
+		public void When_Multi_SelectionModeChanged()
+		{
+			var SUT = new ListView()
+			{
+				ItemsPanel = new ItemsPanelTemplate(() => new StackPanel()),
+				ItemContainerStyle = BuildBasicContainerStyle(),
+				Template = new ControlTemplate(() => new ItemsPresenter()),
+				SelectionMode = ListViewSelectionMode.Multiple,
+			};
+
+			SUT.ForceLoaded();
+
+			var source = Enumerable.Range(0, 10).Select(v => v.ToString()).ToArray();
+			SUT.ItemsSource = source;
+
+			Assert.IsNull(SUT.SelectedItem);
+
+			if (SUT.ContainerFromIndex(2) is ListViewItem s1)
+			{
+				s1.IsSelected = true;
+			}
+			else
+			{
+				Assert.Fail("Container should be a ListViewItem");
+			}
+
+			if (SUT.ContainerFromIndex(3) is ListViewItem s2)
+			{
+				s2.IsSelected = true;
+			}
+			else
+			{
+				Assert.Fail("Container should be a ListViewItem");
+			}
+
+			Assert.AreEqual(2, SUT.SelectedItems.Count);
+
+			SUT.SelectionMode = ListViewSelectionMode.None;
+
+			Assert.AreEqual(0, SUT.SelectedItems.Count);
 		}
 
 		[TestMethod]
