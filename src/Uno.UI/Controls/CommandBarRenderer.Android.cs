@@ -123,6 +123,9 @@ namespace Uno.UI.Controls
 				new[] { CommandBar.VisibilityProperty },
 				new[] { CommandBar.PaddingProperty },
 				new[] { CommandBar.OpacityProperty },
+				new[] { CommandBar.HorizontalContentAlignmentProperty },
+				new[] { CommandBar.VerticalContentAlignmentProperty },
+				new[] { CommandBar.OpacityProperty },
 				new[] { SubtitleProperty },
 				new[] { NavigationCommandProperty },
 				new[] { BackButtonVisibilityProperty },
@@ -149,6 +152,8 @@ namespace Uno.UI.Controls
 			// Content
 			Native.Title = Element.Content as string;
 			_contentContainer.Child = Element.Content as View;
+			_contentContainer.VerticalAlignment = Element.VerticalContentAlignment;
+			_contentContainer.HorizontalAlignment = Element.HorizontalContentAlignment;
 			_contentContainer.Visibility = Element.Content is View
 				? Visibility.Visible
 				: Visibility.Collapsed;
