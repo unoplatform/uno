@@ -80,10 +80,13 @@ namespace Windows.UI.Xaml.Controls
 
 			if (!(view is FrameworkElement) && view is IFrameworkElement ife)
 			{
-				// If the child is not a FrameworkElement, part of the "Measure"
-				// phase must be done by the parent element's layouter.
-				// Here, it means adding the margin to the measured size.
-				ret = ret.Add(ife.Margin);
+				if(!(view is Image)) // Except for Image
+				{
+					// If the child is not a FrameworkElement, part of the "Measure"
+					// phase must be done by the parent element's layouter.
+					// Here, it means adding the margin to the measured size.
+					ret = ret.Add(ife.Margin);
+				}
 			}
 
 			var w = nfloat.IsNaN((nfloat)ret.Width) ? double.PositiveInfinity : Math.Min(slotSize.Width, ret.Width);

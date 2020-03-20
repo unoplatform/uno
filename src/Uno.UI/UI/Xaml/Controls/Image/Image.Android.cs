@@ -105,15 +105,17 @@ namespace Windows.UI.Xaml.Controls
 				measuredSize = this.AdjustSize(availableSize, measuredSize);
 			}
 
-			measuredSize = measuredSize.LogicalToPhysicalPixels();
+			var physicalMeasuredSize = measuredSize
+				.LogicalToPhysicalPixels();
 
 			// Report our final dimensions.
-			SetMeasuredDimension(
-				(int)measuredSize.Width,
-				(int)measuredSize.Height
-			);
+			var width = (int)physicalMeasuredSize.Width;
+			var height = (int)physicalMeasuredSize.Height;
 
-			IFrameworkElementHelper.OnMeasureOverride(this);
+			SetMeasuredDimension(width, height);
+
+			IFrameworkElementHelper
+				.SizeThatFits(this, new Size(width, height).PhysicalToLogicalPixels());
 		}
 
 		partial void OnLayoutPartial(bool changed, int left, int top, int right, int bottom)
