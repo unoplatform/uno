@@ -346,7 +346,7 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnSelectionModeChangedPartial(ListViewSelectionMode oldSelectionMode, ListViewSelectionMode newSelectionMode)
 		{
 			SelectedIndex = -1;
-			foreach (var item in SelectedItems)
+			foreach (var item in SelectedItems.ToList())
 			{
 				SetSelectedState(IndexFromItem(item), false);
 			}
