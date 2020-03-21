@@ -9,11 +9,7 @@
     xmlns:controls="using:Microsoft.UI.Xaml.Controls"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     mc:Ignorable="d">
-
-	<!--<Page.Resources>
-		<local:MyCommand x:Key="TestExecuteCommand" />
-	</Page.Resources>-->
-
+	
 	<Grid Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12">
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition Width="*"/>
