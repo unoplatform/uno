@@ -156,6 +156,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="SixLabors.ImageSharp" Version="1.0.0-beta0007" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.Core" />
 		<PackageReference Include="Uno.Core.Build" />

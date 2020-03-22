@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using Uno.Diagnostics.Eventing;
@@ -11,6 +12,8 @@ using Uno.Disposables;
 using Windows.Storage.Streams;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
+using SixLabors.ImageSharp.Advanced;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -102,7 +105,28 @@ namespace Windows.UI.Xaml.Controls
 
 			_lastMeasuredSize = _zeroSize;
 
-			if (source is WriteableBitmap wb)
+			var stream = source?.Stream;
+			if (stream != null)
+			{
+				stream.Seek(0, SeekOrigin.Begin);
+				var image = SixLabors.ImageSharp.Image.Load<Bgra32>(stream);
+				var bytes=MemoryMarshal.AsBytes(image.GetPixelSpan()).ToArray();
+				var gch = GCHandle.Alloc(bytes, GCHandleType.Pinned);
+				var pinnedData = gch.AddrOfPinnedObject();
+				try
+				{
+					WebAssemblyRuntime.InvokeJS(
+						"Uno.UI.WindowManager.current.setImageRawData(" + _htmlImage.HtmlId + ", " + pinnedData + ", " + image.Width + ", " + image.Height + ");"
+					);
+
+					InvalidateMeasure();
+				}
+				finally
+				{
+					gch.Free();
+				}
+			}
+			else if (source is WriteableBitmap wb)
 			{
 				void setImageContent()
 				{
