@@ -9,6 +9,7 @@ using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.Logging;
 using Windows.Foundation;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -268,9 +269,18 @@ namespace Uno.UI.Toolkit
 
 			private void ApplyPadding(Thickness padding)
 			{
-				if (Owner.SetPadding(padding) && _log.Value.IsEnabled(LogLevel.Debug))
+#if __IOS__
+				// Requeue the set of padding to prevent bugs with text alignment like
+				// defined in this issue: https://github.com/unoplatform/uno/issues/2836
+				Owner.Dispatcher.RunAsync(CoreDispatcherPriority.High, Set);
+
+				void Set()
+#endif
 				{
-					_log.Value.LogDebug($"ApplyPadding={padding}");
+					if (Owner.SetPadding(padding) && _log.Value.IsEnabled(LogLevel.Debug))
+					{
+						_log.Value.LogDebug($"ApplyPadding={padding}");
+					}
 				}
 			}
 
