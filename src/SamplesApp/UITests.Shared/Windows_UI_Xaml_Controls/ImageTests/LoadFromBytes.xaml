@@ -15,8 +15,7 @@
 			 d:DesignWidth="400" x:Name="Root">
 
 	<StackPanel>
-		<TextBlock Text="Image loaded from a stream (implicit cast to ImageSource):"/>
-		<Image x:Name="MyImage"
-		       Stretch="UniformToFill"/>
+		<TextBlock Text="Image loaded from bytes"/>
+		<Image x:Name="MyImage" Stretch="UniformToFill"/>
 	</StackPanel>
 </UserControl>
