@@ -1,8 +1,7 @@
 ﻿using System;
-using System.Globalization;
+using System.IO;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
-using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Logging;
@@ -102,7 +101,15 @@ namespace Windows.UI.Xaml.Controls
 
 			_lastMeasuredSize = _zeroSize;
 
-			if (source is WriteableBitmap wb)
+			var stream = source?.Stream;
+			if (stream != null)
+			{
+				stream.Position = 0;
+				var encodedBytes = Convert.ToBase64String(stream.ReadBytes());
+				var url = "data:application/octet-stream;base64," + encodedBytes;
+				SetImageUrl(url);
+			}
+			else if (source is WriteableBitmap wb)
 			{
 				void setImageContent()
 				{
