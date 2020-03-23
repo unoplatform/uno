@@ -145,6 +145,8 @@ namespace Uno.UI.Toolkit
 
 				_visibleBoundsChanged = (s2, e2) => UpdatePadding();
 
+				owner.SizeChanged += (s, e) => UpdatePadding();
+
 				owner.Loaded += (s, e) =>
 				{
 					UpdatePadding();
