@@ -1,7 +1,7 @@
 ﻿var UnoAppManifest = {
 
     splashScreenImage: "Assets/SplashScreen.png",
-    splashScreenColor: "#00f",
+    splashScreenColor: "#0078D7",
     displayName: "$ext_safeprojectname$"
 
 }
