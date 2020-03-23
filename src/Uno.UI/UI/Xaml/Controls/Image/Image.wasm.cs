@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Buffers.Text;
-using System.Globalization;
 using System.IO;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
-using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Foundation;
 using Uno.Logging;
@@ -13,8 +10,6 @@ using Uno.Disposables;
 using Windows.Storage.Streams;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
-using SixLabors.ImageSharp.Advanced;
-using SixLabors.ImageSharp.PixelFormats;
 
 namespace Windows.UI.Xaml.Controls
 {
