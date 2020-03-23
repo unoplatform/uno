@@ -12,7 +12,8 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class ContentDialog : ContentControl
+	public partial class 
+		ContentDialog : ContentControl
 	{
 		internal readonly Popup _popup;
 		private TaskCompletionSource<ContentDialogResult> _tcs;
@@ -73,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public void Hide() => Hide(ContentDialogResult.None);
-		private void Hide(ContentDialogResult result)
+		private bool Hide(ContentDialogResult result)
 		{
 			void Complete(ContentDialogClosingEventArgs args)
 			{
@@ -97,6 +98,8 @@ namespace Windows.UI.Xaml.Controls
 			{
 				closingArgs.EventRaiseCompleted();
 			}
+
+			return !closingArgs.Cancel;
 		}
 
 		protected override void OnApplyTemplate()
@@ -260,9 +263,13 @@ namespace Windows.UI.Xaml.Controls
 				if (!a.Cancel)
 				{
 					const ContentDialogResult result = ContentDialogResult.None;
-					_tcs.SetResult(result);
+
 					CloseButtonCommand.ExecuteIfPossible(CloseButtonCommandParameter);
-					Hide(result);
+
+					if (Hide(result))
+					{
+						_tcs.SetResult(result);
+					}
 				}
 			}
 
@@ -282,9 +289,11 @@ namespace Windows.UI.Xaml.Controls
 				if (!a.Cancel)
 				{
 					const ContentDialogResult result = ContentDialogResult.Secondary;
-					_tcs.SetResult(result);
 					SecondaryButtonCommand.ExecuteIfPossible(SecondaryButtonCommandParameter);
-					Hide(result);
+					if (Hide(result))
+					{
+						_tcs.SetResult(result);
+					}
 				}
 			}
 
@@ -305,10 +314,12 @@ namespace Windows.UI.Xaml.Controls
 				if (!a.Cancel)
 				{
 					const ContentDialogResult result = ContentDialogResult.Primary;
-					_tcs.SetResult(result);
 					PrimaryButtonCommand.ExecuteIfPossible(PrimaryButtonCommandParameter);
 
-					Hide(result);
+					if(Hide(result))
+					{
+						_tcs.SetResult(result);
+					}
 				}
 			}
 
