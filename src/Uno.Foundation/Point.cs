@@ -52,12 +52,21 @@ namespace Windows.Foundation
 
 		public static implicit operator Point(string point)
 		{
-			var parts = point
-				.Split(new[] { ',' })
-				.Select(value => double.Parse(value, CultureInfo.InvariantCulture))
-				.ToArray();
+			if (string.IsNullOrEmpty(point))
+			{
+				// Marker to enable null-comparison if the string comparer
+				// has been called with null.
+				return new Point(double.NaN, double.NaN);
+			}
+			else
+			{
+				var parts = point
+					.Split(new[] { ',' })
+					.Select(value => double.Parse(value, CultureInfo.InvariantCulture))
+					.ToArray();
 
-			return new Point(parts[0], parts[1]);
+				return new Point(parts[0], parts[1]);
+			}
 		}
 
 		public override int GetHashCode() => X.GetHashCode() ^ Y.GetHashCode();
