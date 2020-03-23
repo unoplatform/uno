@@ -145,8 +145,11 @@ namespace Uno.UI.Toolkit
 
 				_visibleBoundsChanged = (s2, e2) => UpdatePadding();
 
-				owner.LayoutUpdated += (s, e) => UpdatePadding();
-				owner.Loaded += (s, e) => ApplicationView.GetForCurrentView().VisibleBoundsChanged += _visibleBoundsChanged;
+				owner.Loaded += (s, e) =>
+				{
+					UpdatePadding();
+					ApplicationView.GetForCurrentView().VisibleBoundsChanged += _visibleBoundsChanged;
+				};
 				owner.Unloaded += (s, e) => ApplicationView.GetForCurrentView().VisibleBoundsChanged -= _visibleBoundsChanged;
 			}
 
@@ -160,6 +163,11 @@ namespace Uno.UI.Toolkit
 				}
 
 				if (!AreBoundsAspectRatiosConsistent)
+				{
+					return;
+				}
+
+				if (!Owner.IsLoaded)
 				{
 					return;
 				}
@@ -269,18 +277,9 @@ namespace Uno.UI.Toolkit
 
 			private void ApplyPadding(Thickness padding)
 			{
-#if __IOS__
-				// Requeue the set of padding to prevent bugs with text alignment like
-				// defined in this issue: https://github.com/unoplatform/uno/issues/2836
-				Owner.Dispatcher.RunAsync(CoreDispatcherPriority.High, Set);
-
-				void Set()
-#endif
+				if (Owner.SetPadding(padding) && _log.Value.IsEnabled(LogLevel.Debug))
 				{
-					if (Owner.SetPadding(padding) && _log.Value.IsEnabled(LogLevel.Debug))
-					{
-						_log.Value.LogDebug($"ApplyPadding={padding}");
-					}
+					_log.Value.LogDebug($"ApplyPadding={padding}");
 				}
 			}
 
