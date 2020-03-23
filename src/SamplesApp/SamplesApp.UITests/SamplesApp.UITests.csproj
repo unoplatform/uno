@@ -6,7 +6,7 @@
 	</PropertyGroup>
 
 	<ItemGroup> 
-		<PackageReference Include="FluentAssertions" Version="5.10.2" />
+		<PackageReference Include="FluentAssertions" Version="5.10.3" />
 		<PackageReference Include="Microsoft.NET.Test.Sdk" Version="16.5.0" />
 		<PackageReference Include="NUnit" />
 		<PackageReference Include="NUnit3TestAdapter" /> 
