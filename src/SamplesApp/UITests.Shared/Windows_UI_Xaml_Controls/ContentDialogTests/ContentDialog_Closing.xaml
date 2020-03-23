@@ -21,6 +21,9 @@
 			<Button x:Name="PrimaryDialog"
 					Content="Show dialog with Primary button"
 					Click="PrimaryDialog_Click" />
+			<Button x:Name="PrimaryDialogCancelClosing"
+					Content="Show dialog with Primary button and cancel closing"
+					Click="PrimaryDialogCancelClosing_Click" />
 			<TextBlock x:Name="ResultTextBlock"
 					   Margin="50" />
 			<TextBlock x:Name="DidCloseTextBlock"
