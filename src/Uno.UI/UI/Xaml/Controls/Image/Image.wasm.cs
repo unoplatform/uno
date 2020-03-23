@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers.Text;
 using System.Globalization;
 using System.IO;
 using Windows.Foundation;
@@ -109,22 +110,9 @@ namespace Windows.UI.Xaml.Controls
 			if (stream != null)
 			{
 				stream.Seek(0, SeekOrigin.Begin);
-				var image = SixLabors.ImageSharp.Image.Load<Bgra32>(stream);
-				var bytes=MemoryMarshal.AsBytes(image.GetPixelSpan()).ToArray();
-				var gch = GCHandle.Alloc(bytes, GCHandleType.Pinned);
-				var pinnedData = gch.AddrOfPinnedObject();
-				try
-				{
-					WebAssemblyRuntime.InvokeJS(
-						"Uno.UI.WindowManager.current.setImageRawData(" + _htmlImage.HtmlId + ", " + pinnedData + ", " + image.Width + ", " + image.Height + ");"
-					);
-
-					InvalidateMeasure();
-				}
-				finally
-				{
-					gch.Free();
-				}
+				var encodedBytes = Convert.ToBase64String(stream.ReadBytes());
+				var url = $"data:application/octet-stream;base64,{encodedBytes}";
+				SetImageUrl(url);
 			}
 			else if (source is WriteableBitmap wb)
 			{

@@ -1,31 +1,19 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Net;
 using System.Net.Http;
-using System.Runtime.InteropServices.WindowsRuntime;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.UI.Samples.Controls;
-using Windows.Foundation;
-using Windows.Foundation.Collections;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Controls.Primitives;
-using Windows.UI.Xaml.Data;
-using Windows.UI.Xaml.Input;
-using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
-using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageTestsControl
 {
 	[SampleControlInfo("Image", "LoadFromBytes")]
 	public sealed partial class LoadFromBytes : UserControl
 	{
-		private string _imageUrl =
-			"http://lh5.ggpht.com/lxBMauupBiLIpgOgu5apeiX_YStXeHRLK1oneS4NfwwNt7fGDKMP0KpQIMwfjfL9GdHRVEavmg7gOrj5RYC4qwrjh3Y0jCWFDj83jzg";
+		private readonly string _imageUrl = "https://www.spriters-resource.com/resources/sheet_icons/30/32521.png";
 
 		public LoadFromBytes()
 		{
@@ -35,12 +23,10 @@ namespace Uno.UI.Samples.UITests.ImageTestsControl
 
 		private async void OnLoaded(object sender, RoutedEventArgs e)
 		{
-			Stream stream;
-
 			var client = new HttpClient(new CorsByPassHandler());
 
 			var result = await client.GetAsync(_imageUrl);
-			stream = await result.Content.ReadAsStreamAsync();
+			var stream = await result.Content.ReadAsStreamAsync();
 
 
 			var bitmap = new BitmapImage();
@@ -54,7 +40,6 @@ namespace Uno.UI.Samples.UITests.ImageTestsControl
 				{
 					await bitmap.SetSourceAsync(memStream.AsRandomAccessStream());
 				}
-
 #endif
 			MyImage.Source = bitmap;
 
