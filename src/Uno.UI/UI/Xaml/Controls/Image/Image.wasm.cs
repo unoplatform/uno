@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				stream.Seek(0, SeekOrigin.Begin);
 				var encodedBytes = Convert.ToBase64String(stream.ReadBytes());
-				var url = $"data:application/octet-stream;base64,{encodedBytes}";
+				var url = "data:application/octet-stream;base64," + encodedBytes;
 				SetImageUrl(url);
 			}
 			else if (source is WriteableBitmap wb)
