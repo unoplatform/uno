@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NET461
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -10,13 +11,27 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using static System.Math;
 using static Windows.UI.Xaml.Controls.Primitives.GeneratorDirection;
+using Uno.UI.Extensions;
+#if __MACOS__
+using AppKit;
+#elif __IOS__
+using UIKit;
+#endif
+#if __IOS__ || __ANDROID__
+using _Panel = Uno.UI.Controls.ManagedItemsStackPanel;
+#else
+using _Panel = Windows.UI.Xaml.Controls.Panel;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
+#if __IOS__ || __ANDROID__
+	internal abstract partial class ManagedVirtualizingPanelLayout : DependencyObject
+#else
 	public abstract partial class VirtualizingPanelLayout : DependencyObject
+#endif
 	{
-		private IVirtualizingPanel Owner { get; set; }
-		private Panel OwnerPanel => Owner as Panel;
+		private _Panel OwnerPanel { get; set; }
 		private protected VirtualizingPanelGenerator Generator { get; private set; }
 
 		private ScrollViewer ScrollViewer { get; set; }
@@ -45,6 +60,9 @@ namespace Windows.UI.Xaml.Controls
 			_availableSize.Width :
 			_availableSize.Height;
 
+		/// <summary>
+		/// The current offset from the original scroll position.
+		/// </summary>
 		private double ScrollOffset
 		{
 			get
@@ -60,8 +78,14 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
+		/// <summary>
+		/// The size of the scroll viewport.
+		/// </summary>
 		private Size ViewportSize { get; set; }
 
+		/// <summary>
+		/// The extent (parallel to scroll direction) of the scroll viewport.
+		/// </summary>
 		private double ViewportExtent
 		{
 			get
@@ -85,7 +109,9 @@ namespace Windows.UI.Xaml.Controls
 		/// The end of the visible viewport, relative to the end of the panel.
 		/// </summary>
 		private double ViewportEnd => ScrollOffset + ViewportExtent;
-
+		/// <summary>
+		/// The additional length in pixels for which to create buffered views.
+		/// </summary>
 		private double ViewportExtension => CacheLength * ViewportExtent * 0.5;
 		/// <summary>
 		/// The start of the 'extended viewport,' the area of the visible viewport plus the buffer area defined by <see cref="CacheLength"/>.
@@ -112,9 +138,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private bool ShouldMeasuredBreadthStretch => ShouldBreadthStretch && GetBreadth(_availableSize) < double.MaxValue / 2;
 
-		internal void Initialize(IVirtualizingPanel owner)
+		internal void Initialize(_Panel owner)
 		{
-			Owner = owner ?? throw new ArgumentNullException(nameof(owner));
+			OwnerPanel = owner ?? throw new ArgumentNullException(nameof(owner));
 			OwnerPanel.Loaded += OnLoaded;
 			OwnerPanel.Unloaded += OnUnloaded;
 
@@ -123,10 +149,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
 		{
-			FrameworkElement parent = OwnerPanel;
-			while (parent != null && ItemsControl == null)
+			foreach (var parent in OwnerPanel.GetVisualAncestry())
 			{
-				parent = parent.Parent as FrameworkElement;
 				if (parent is ScrollViewer scrollViewer && ScrollViewer == null)
 				{
 					ScrollViewer = scrollViewer;
@@ -135,6 +159,7 @@ namespace Windows.UI.Xaml.Controls
 				else if (parent is ItemsControl itemsControl)
 				{
 					ItemsControl = itemsControl;
+					break;
 				}
 			}
 
@@ -263,6 +288,10 @@ namespace Windows.UI.Xaml.Controls
 			return EstimatePanelSize(isMeasure: false);
 		}
 
+		/// <summary>
+		/// Update the item container layout by removing no-longer-visible views and adding visible views.
+		/// </summary>
+		/// <param name="extentAdjustment">Adjustment to apply when calculating fillable area.</param>
 		private void UpdateLayout(double? extentAdjustment = null)
 		{
 			OwnerPanel.ShouldInterceptInvalidate = true;
@@ -283,6 +312,9 @@ namespace Windows.UI.Xaml.Controls
 			OwnerPanel.ShouldInterceptInvalidate = false;
 		}
 
+		/// <summary>
+		/// Called after an update cycle is completed. 
+		/// </summary>
 		private void UpdateCompleted()
 		{
 			// If we're not stretched, then added views may change the breadth of the list, so we allow measure requests to propagate
@@ -371,26 +403,32 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		private void RecycleLine(Line firstMaterializedLine)
+		/// <summary>
+		/// Recycle all views for a given line.
+		/// </summary>
+		private void RecycleLine(Line line)
 		{
-			for (int i = 0; i < firstMaterializedLine.ContainerViews.Length; i++)
+			for (int i = 0; i < line.ContainerViews.Length; i++)
 			{
-				Generator.RecycleViewForItem(firstMaterializedLine.ContainerViews[i], firstMaterializedLine.FirstItemFlat + i);
+				Generator.RecycleViewForItem(line.ContainerViews[i], line.FirstItemFlat + i);
 			}
 		}
 
 		/// <summary>
 		/// Send views in line to temporary scrap.
 		/// </summary>
-		/// <param name="firstMaterializedLine"></param>
-		private void ScrapLine(Line firstMaterializedLine)
+		private void ScrapLine(Line line)
 		{
-			for (int i = 0; i < firstMaterializedLine.ContainerViews.Length; i++)
+			for (int i = 0; i < line.ContainerViews.Length; i++)
 			{
-				Generator.ScrapViewForItem(firstMaterializedLine.ContainerViews[i], firstMaterializedLine.FirstItemFlat + i);
+				Generator.ScrapViewForItem(line.ContainerViews[i], line.FirstItemFlat + i);
 			}
 		}
 
+		/// <summary>
+		/// Estimate the 'correct' size of the panel.
+		/// </summary>
+		/// <param name="isMeasure">True if this is called from measure, false if after arrange.</param>
 		private Size EstimatePanelSize(bool isMeasure)
 		{
 			var extent = EstimatePanelExtent();
@@ -413,6 +451,9 @@ namespace Windows.UI.Xaml.Controls
 			return ret;
 		}
 
+		/// <summary>
+		/// Estimate the 'correct' extent of the panel, based on number and guessed size of remaining unmaterialized items.
+		/// </summary>
 		private double EstimatePanelExtent()
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -446,7 +487,11 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		private double CalculatePanelMeasureBreadth() => ShouldMeasuredBreadthStretch ? AvailableBreadth :
-					_materializedLines.Select(l => GetDesiredBreadth(l.FirstView)).MaxOrDefault() + GetBreadth(XamlParent.ScrollViewer.ScrollBarSize);
+					_materializedLines.Select(l => GetDesiredBreadth(l.FirstView)).MaxOrDefault()
+#if __WASM__
+			+ GetBreadth(XamlParent.ScrollViewer.ScrollBarSize)
+#endif
+				;
 
 		private double CalculatePanelArrangeBreadth() => ShouldMeasuredBreadthStretch ? AvailableBreadth :
 					_materializedLines.Select(l => GetActualBreadth(l.FirstView)).MaxOrDefault();
@@ -484,7 +529,6 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		private void ScrapLayout()
 		{
-
 			var firstVisibleItem = GetFirstMaterializedIndexPath();
 
 			_dynamicSeedIndex = GetDynamicSeedIndex(firstVisibleItem);
@@ -647,7 +691,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private double GetStart(FrameworkElement child)
 		{
-			var offset = child.RelativePosition;
+			var offset = GetRelativePosition(child);
 			return ScrollOrientation == Orientation.Vertical ?
 				offset.Y - child.Margin.Top :
 				offset.X - child.Margin.Left;
@@ -655,7 +699,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private double GetEnd(FrameworkElement child)
 		{
-			var offset = child.RelativePosition;
+			var offset = GetRelativePosition(child);
 			return ScrollOrientation == Orientation.Vertical ?
 				offset.Y + child.ActualHeight + child.Margin.Bottom :
 				offset.X + child.ActualWidth + child.Margin.Right;
@@ -692,6 +736,14 @@ namespace Windows.UI.Xaml.Controls
 			return $"Parent ItemsControl={ItemsControl} ItemsSource={ItemsControl?.ItemsSource} NoOfItems={ItemsControl?.NumberOfItems} FirstMaterialized={GetFirstMaterializedIndexPath()} LastMaterialized={GetLastMaterializedIndexPath()} ExtendedViewportStart={ExtendedViewportStart} ExtendedViewportEnd={ExtendedViewportEnd} GetItemsStart()={GetItemsStart()} GetItemsEnd()={GetItemsEnd()}";
 		}
 
+#if __WASM__
+		private static Point GetRelativePosition(FrameworkElement child) => child.RelativePosition;
+#elif __MACOS__ || __IOS__
+		private static Point GetRelativePosition(FrameworkElement child) => child.Frame.Location;
+#elif __ANDROID__
+		private static Point GetRelativePosition(FrameworkElement child) => new Point(ViewHelper.PhysicalToLogicalPixels(child.Left), ViewHelper.PhysicalToLogicalPixels(child.Top));
+#endif
+
 		/// <summary>
 		/// Represents a single row in a vertically-scrolling panel, or a column in a horizontally-scrolling panel.
 		/// </summary>
@@ -721,3 +773,5 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
+
+#endif

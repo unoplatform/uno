@@ -20,8 +20,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : UIScrollView, DependencyObject
 	{
-		private ScrollBarVisibility _verticalScrollBarVisibility;
-		private ScrollBarVisibility _horizotalScrollBarVisibility;
 		/// <summary>
 		/// Is the UIScrollView currently undergoing animated scrolling, either user-initiated or programmatic.
 		/// </summary>
@@ -123,27 +121,6 @@ namespace Windows.UI.Xaml.Controls
 			if (newView != null)
 			{
 				AddSubview(newView);
-			}
-		}
-
-		public ScrollBarVisibility VerticalScrollBarVisibility
-		{
-			get { return _verticalScrollBarVisibility; }
-			set
-			{
-				_verticalScrollBarVisibility = value;
-
-				ShowsVerticalScrollIndicator = value == ScrollBarVisibility.Auto || value == ScrollBarVisibility.Visible;
-			}
-		}
-		public ScrollBarVisibility HorizontalScrollBarVisibility
-		{
-			get { return _horizotalScrollBarVisibility; }
-			set
-			{
-				_horizotalScrollBarVisibility = value;
-
-				ShowsHorizontalScrollIndicator = value == ScrollBarVisibility.Auto || value == ScrollBarVisibility.Visible;
 			}
 		}
 

@@ -1,81 +1,34 @@
-#if NET461 || __WASM__
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using Uno.Disposables;
-using System.Text;
-
-using Uno.Extensions;
-using Uno.Logging;
-using Windows.UI.Xaml;
-using Uno.UI.Extensions;
-using System.Drawing;
-using Windows.UI.Core;
-using System.Threading.Tasks;
-
-using _ViewGroup = Windows.UI.Xaml.UIElement;
+#if __IOS__
+using UIKit;
+using _View = UIKit.UIView;
+#elif __MACOS__
+using AppKit;
+using _View = AppKit.NSView;
+#elif __ANDROID__
+using _View = Android.Views.ViewGroup;
+#else
 using _View = Windows.UI.Xaml.UIElement;
+#endif
 
-namespace Uno.UI
+using System.Collections.Generic;
+using Uno.Extensions;
+using Windows.UI.Xaml;
+
+namespace Uno.UI.Extensions
 {
 	public static partial class ViewExtensions
 	{
 		/// <summary>
-		/// Enumerates all the children for a specified view group.
+		/// Get all ancestor views of <paramref name="view"/>, in order from its immediate parent to the root of the visual tree.
 		/// </summary>
-		/// <param name="view">The view group to get the children from</param>
-		/// <param name="selector">The selector function</param>
-		/// <param name="maxDepth">The depth to stop looking for children.</param>
-		/// <returns>A lazy enumerable of views</returns>
-		public static IEnumerable<_View> EnumerateAllChildren(this _ViewGroup view, Func<_View, bool> selector, int maxDepth = 20)
+		public static IEnumerable<_View> GetVisualAncestry(this _View view)
 		{
-			var children = view.GetChildren().OfType<_ViewGroup>();
-
-			foreach (var child in children)
+			var ancestor = view.GetVisualTreeParent();
+			while (ancestor != null)
 			{
-				if (selector(child))
-				{
-					yield return child;
-				}
-				else if (maxDepth > 0)
-				{
-					if (child is _ViewGroup childGroup)
-					{
-						foreach (var subResult in childGroup.EnumerateAllChildren(selector, maxDepth - 1))
-						{
-							yield return subResult;
-						}
-					}
-				}
-			}
-		}
-
-		/// <summary>
-		/// Enumerates all the children for a specified view group.
-		/// </summary>
-		/// <param name="view">The view group to get the children from</param>
-		/// <param name="maxDepth">The depth to stop looking for children.</param>
-		/// <returns>A lazy enumerable of views</returns>
-		public static IEnumerable<_View> EnumerateAllChildren(this _ViewGroup view, int maxDepth = 20)
-		{
-			var children = view.GetChildren().OfType<_ViewGroup>();
-
-			foreach (var child in children)
-			{
-				yield return child;
-
-				if (maxDepth > 0)
-				{
-					if (child is _ViewGroup childGroup)
-					{
-						foreach (var subResult in childGroup.EnumerateAllChildren(maxDepth - 1))
-						{
-							yield return subResult;
-						}
-					}
-				}
+				yield return ancestor;
+				ancestor = ancestor.GetVisualTreeParent();
 			}
 		}
 	}
 }
-#endif
