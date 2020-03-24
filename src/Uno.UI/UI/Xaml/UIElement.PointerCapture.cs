@@ -110,7 +110,7 @@ namespace Windows.UI.Xaml
 					}
 					else
 					{
-						// Add the new king to the target
+						// Add the new kind to the target
 						target.Kind |= kind;
 					}
 				}
@@ -245,7 +245,7 @@ namespace Windows.UI.Xaml
 				}
 				else if (IsImplicitOnly)
 				{
-					// If the capture is implicit, we should not filter out events for child elements.
+					// If the capture is implicit, we should not filter out events for children elements.
 
 					return true;
 				}
