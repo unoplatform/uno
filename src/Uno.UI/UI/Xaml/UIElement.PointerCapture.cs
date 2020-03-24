@@ -102,10 +102,15 @@ namespace Windows.UI.Xaml
 					{
 						return false;
 					}
+					else
+					{
+						// Add the new king to the target
+						target.Kind |= kind;
+					}
 				}
 				else
 				{
-					target = new PointerCaptureTarget(element);
+					target = new PointerCaptureTarget(element, kind);
 					_targets.Add(element, target);
 
 					// If the capture is made while raising an event (usually captures are made in PointerPressed handlers)
@@ -114,11 +119,15 @@ namespace Windows.UI.Xaml
 					if (relatedArgs?.Pointer == Pointer)
 					{
 						Update(target, relatedArgs);
+
+						// In case of an implicit capture we also override the native element used for the capture.
+						// cf. remarks of the PointerCaptureTarget.NativeCaptureElement.
+						if (kind == PointerCaptureKind.Implicit)
+						{
+							target.NativeCaptureElement = relatedArgs?.OriginalSource as UIElement ?? element;
+						}
 					}
 				}
-
-				// Add the new king to the target
-				target.Kind |= kind;
 
 				// If we added an explicit capture, we update the _localExplicitCaptures of the target element
 				if (kind == PointerCaptureKind.Explicit)
@@ -268,7 +277,7 @@ namespace Windows.UI.Xaml
 
 					if (_nativeCaptureElement == null)
 					{
-						_nativeCaptureElement = _targets.Single().Key;
+						_nativeCaptureElement = _targets.Single().Value.NativeCaptureElement;
 
 						try
 						{
@@ -309,15 +318,28 @@ namespace Windows.UI.Xaml
 
 		private class PointerCaptureTarget
 		{
-			public PointerCaptureTarget(UIElement element)
+			public PointerCaptureTarget(UIElement element, PointerCaptureKind kind)
 			{
-				Element = element;
+				NativeCaptureElement = Element = element;
+				Kind = kind;
 			}
 
 			/// <summary>
 			/// The target element to which event args should be forwarded
 			/// </summary>
 			public UIElement Element { get; }
+
+			/// <summary>
+			/// The element to used for the native capture
+			/// </summary>
+			/// <remarks>
+			/// On WASM this might be different than the <see cref="Element"/>:
+			/// In case of implicit capture, the element used for the capture will prevent any pointer event on sub element
+			/// (sub element will actually get a pointer 'leave' on capture, and a 'enter' on capture release).
+			/// So instead of capturing using the actual element, we use the 'OriginalSource' of the 'relatedArgs',
+			/// so event will still be sent to sub elements and we will then filter them out if needed.
+			/// </remarks>
+			public UIElement NativeCaptureElement { get; set; }
 
 			/// <summary>
 			/// Gets tha current capture kind that was enabled on the target
