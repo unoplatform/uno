@@ -1,4 +1,4 @@
-﻿#if !NET461 && !__MACOS__
+﻿#if !NET461
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Controls
 				CacheLength = FeatureConfiguration.ListViewBase.DefaultCacheLength.Value;
 			}
 
-#if __WASM__
+#if __WASM__ || __MACOS__
 			CreateLayoutIfNeeded();
 			_layout.Initialize(this);
 #endif
