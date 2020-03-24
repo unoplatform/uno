@@ -26,6 +26,7 @@
 			ManipulationDelta="OnParentManipDelta"
 			ManipulationCompleted="OnParentManipCompleted">
 			<Border
+				x:Name="_target"
 				Width="100"
 				Height="100"
 				VerticalAlignment="Center"
