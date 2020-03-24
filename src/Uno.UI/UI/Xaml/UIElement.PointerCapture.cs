@@ -78,6 +78,12 @@ namespace Windows.UI.Xaml
 			/// </summary>
 			public long MostRecentDispatchedEventFrameId { get; private set; }
 
+			/// <summary>
+			/// Determines if this capture was made only for implicit kind
+			/// (So we should not use it to filter out some event on other controls)
+			/// </summary>
+			public bool IsImplicitOnly { get; private set; } = true;
+
 			public IEnumerable<PointerCaptureTarget> Targets => _targets.Values;
 
 			public bool IsTarget(UIElement element, PointerCaptureKind kinds)
@@ -132,6 +138,7 @@ namespace Windows.UI.Xaml
 				// If we added an explicit capture, we update the _localExplicitCaptures of the target element
 				if (kind == PointerCaptureKind.Explicit)
 				{
+					IsImplicitOnly = false;
 					element._localExplicitCaptures.Add(Pointer);
 				}
 
@@ -190,7 +197,7 @@ namespace Windows.UI.Xaml
 				}
 
 				// If we remove an explicit capture, we update the _localExplicitCaptures of the target element
-				if (kinds.HasFlag(PointerCaptureKind.Explicit)
+				if (kinds.HasFlag(PointerCaptureKind.Explicit) 
 					&& target.Kind.HasFlag(PointerCaptureKind.Explicit))
 				{
 					target.Element._localExplicitCaptures.Remove(Pointer);
@@ -198,11 +205,13 @@ namespace Windows.UI.Xaml
 
 				target.Kind &= ~kinds;
 
-				// The element is no longer listing for event, remove it.
+				// The element is no longer listening for events, remove it.
 				if (target.Kind == PointerCaptureKind.None)
 				{
 					_targets.Remove(target.Element);
 				}
+
+				IsImplicitOnly = _targets.None(t => t.Value.Kind.HasFlag(PointerCaptureKind.Explicit));
 
 				// Validate / update the state of this capture
 				EnsureEffectiveCaptureState();
@@ -231,6 +240,12 @@ namespace Windows.UI.Xaml
 				else if (_targets.TryGetValue(element, out var target))
 				{
 					Update(target, args);
+
+					return true;
+				}
+				else if (IsImplicitOnly)
+				{
+					// If the capture is implicit, we should not filter out events for child elements.
 
 					return true;
 				}
