@@ -1,6 +1,6 @@
 ﻿#if __ANDROID__
-using Android.Support.V4.Graphics.Drawable;
-using Android.Support.V7.Widget;
+using AndroidX.Core.Graphics.Drawable;
+using AndroidX.AppCompat.Widget;
 using System;
 using System.Collections.Generic;
 using System.Text;

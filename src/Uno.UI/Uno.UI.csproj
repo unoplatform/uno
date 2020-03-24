@@ -1,7 +1,7 @@
 <Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
-		<TargetFrameworks>xamarinmac20;MonoAndroid90;xamarinios10;net461;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid90;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
+		<TargetFrameworks>xamarinmac20;MonoAndroid10.0;xamarinios10;net461;netstandard2.0</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid90;MonoAndroid10.0;xamarinios10;net461;netstandard2.0;xamarinmac20</TargetFrameworksCI>
 	</PropertyGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
@@ -167,15 +167,17 @@
 	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
-		<PackageReference Include="Xamarin.Android.Support.v4" Version="28.0.0.1">
-			<PrivateAssets>none</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat" Version="28.0.0.1">
-			<PrivateAssets>none</PrivateAssets>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView" Version="28.0.0.1">
-			<PrivateAssets>none</PrivateAssets>
-		</PackageReference>
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4"/>
+		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
+		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
+		<PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid10.0'">
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4"/>
+		<PackageReference Include="Xamarin.AndroidX.AppCompat" />
+		<PackageReference Include="Xamarin.AndroidX.RecyclerView" />
+		<PackageReference Include="Xamarin.AndroidX.Lifecycle.LiveData" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -190,7 +192,7 @@
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
 		<ProjectReference Include="..\SourceGenerators\System.Xaml\Uno.Xaml.csproj" />
-		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFramework)' == 'MonoAndroid90'">
+		<ProjectReference Include="..\Uno.UI.BindingHelper.Android\Uno.UI.BindingHelper.Android.csproj" Condition="'$(TargetFramework)' == 'MonoAndroid90' or '$(TargetFramework)' == 'MonoAndroid10.0'">
 			<TreatAsPackageReference>false</TreatAsPackageReference>
 		</ProjectReference>
 	</ItemGroup>

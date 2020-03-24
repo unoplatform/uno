@@ -20,7 +20,7 @@ using Windows.UI.Xaml;
 
 namespace Uno.UI.Controls
 {
-	public partial class BindableButton : Android.Support.V7.Widget.AppCompatButton, DependencyObject
+	public partial class BindableButton : AndroidX.AppCompat.Widget.AppCompatButton, DependencyObject
 	{
 		private SerialDisposable _commandCanExecute = new SerialDisposable();
 		private CompositeDisposable _subscriptions = new CompositeDisposable();

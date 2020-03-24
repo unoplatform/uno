@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using Android.Support.V4.View;
+using AndroidX.ViewPager.Widget;
 using Android.Views;
 using Windows.Foundation;
 using Uno.Extensions;

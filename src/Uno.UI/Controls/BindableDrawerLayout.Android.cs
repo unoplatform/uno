@@ -1,5 +1,4 @@
-﻿using Android.Support.V4.Widget;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Android.Runtime;
@@ -15,6 +14,7 @@ using Uno.UI;
 using Uno.Extensions;
 using Windows.UI.Xaml.Media;
 using Size = Windows.Foundation.Size;
+using AndroidX.DrawerLayout.Widget;
 
 namespace Uno.UI.Controls
 {

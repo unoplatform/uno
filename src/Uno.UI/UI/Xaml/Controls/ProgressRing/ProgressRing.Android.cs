@@ -31,7 +31,13 @@ namespace Windows.UI.Xaml.Controls
 
 			if (progressRing != null && foregroundColor != null)
 			{
+#if __ANDROID_28__
+#pragma warning disable 618 // SetColorFilter is deprecated
 				progressRing.IndeterminateDrawable?.SetColorFilter(foregroundColor.Color, PorterDuff.Mode.SrcIn);
+#pragma warning restore 618 // SetColorFilter is deprecated
+#else
+				progressRing.IndeterminateDrawable?.SetColorFilter(new BlendModeColorFilter(foregroundColor.Color, BlendMode.SrcIn));
+#endif
 			}
 		}
 

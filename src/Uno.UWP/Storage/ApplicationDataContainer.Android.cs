@@ -26,7 +26,9 @@ namespace Windows.Storage
 
 			public SharedPreferencesPropertySet()
 			{
+#pragma warning disable 618
 				_preferences = PreferenceManager.GetDefaultSharedPreferences(ApplicationData.GetAndroidAppContext());
+#pragma warning restore 618
 			}
 
 			public object this[string key]
