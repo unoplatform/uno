@@ -145,7 +145,12 @@ namespace Uno.UI.Toolkit
 
 				_visibleBoundsChanged = (s2, e2) => UpdatePadding();
 
+#if __IOS__
+				// For iOS, it's required to react on SizeChanged to prevent weird alignment
+				// problems with Text using the LayoutManager (NSTextContainer).
+				// https://github.com/unoplatform/uno/issues/2836
 				owner.SizeChanged += (s, e) => UpdatePadding();
+#endif
 				owner.LayoutUpdated += (s, e) => UpdatePadding();
 
 				owner.Loaded += (s, e) =>
