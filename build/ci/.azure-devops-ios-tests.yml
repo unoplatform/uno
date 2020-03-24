@@ -1,7 +1,7 @@
 parameters:
-  vmImage: 'macOS-10.14'
-  xCodeRoot: '/Applications/Xcode_10.3.app'
-  XamarinSDKVersion: 5_18_1
+  vmImage: ''
+  xCodeRoot: ''
+  XamarinSDKVersion: ''
 
 jobs:
 - job: iOS_Build

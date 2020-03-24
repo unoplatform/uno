@@ -47,7 +47,6 @@
   <files>
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\netstandard2.0\Uno.UI.Lottie.dll" target="lib\netstandard2.0" />
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\xamarinios10\Uno.UI.Lottie.dll" target="lib\xamarinios10" />
-	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\MonoAndroid80\Uno.UI.Lottie.dll" target="lib\MonoAndroid80" />
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\MonoAndroid90\Uno.UI.Lottie.dll" target="lib\MonoAndroid90" />
   </files>
 </package>

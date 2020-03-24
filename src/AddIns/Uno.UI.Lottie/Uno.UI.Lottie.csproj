@@ -2,7 +2,7 @@
 
 	<PropertyGroup>
 		<TargetFrameworks>xamarinmac20;MonoAndroid90;xamarinios10;net461;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>xamarinmac20;MonoAndroid80;MonoAndroid90;xamarinios10;net461;netstandard2.0</TargetFrameworksCI>
+		<TargetFrameworksCI>xamarinmac20;MonoAndroid90;xamarinios10;net461;netstandard2.0</TargetFrameworksCI>
 		<NoWarn>$(NoWarn);NU1701</NoWarn>
 		<TreatWarningsAsErrors>true</TreatWarningsAsErrors>
 		<Deterministic>true</Deterministic>
@@ -30,10 +30,6 @@
 
 	<ItemGroup>
 	  <ProjectReference Include="..\..\Uno.UI\Uno.UI.csproj" />
-	</ItemGroup>
-
-	<ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid80'">
-		<PackageReference Include="Com.Airbnb.Android.Lottie" Version="2.5.2.1" PrivateAssets="none" />
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'MonoAndroid90'">
