@@ -1,6 +1,6 @@
 ﻿using Android.Animation;
+using Android.Widget;
 using Com.Airbnb.Lottie;
-using System;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 
@@ -13,6 +13,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		public bool UseHardwareAcceleration { get; set; } = true;
 
 		private bool _isPlaying = false;
+		private string _lastPath = "";
+
 		private AnimatedVisualPlayer _player;
 
 		private void Update()
@@ -43,14 +45,40 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			void SetProperties()
 			{
-				_animation.SetAnimation(UriSource?.PathAndQuery ?? "");
+				var path = UriSource?.PathAndQuery ?? "";
+				if (path.StartsWith("/"))
+				{
+					path = path.Substring(1);
+				}
+				if (_lastPath != path)
+				{
+					_animation.SetAnimation(path);
+				}
 
-				if(player.AutoPlay && !_isPlaying)
+				switch (player.Stretch)
+				{
+					case Windows.UI.Xaml.Media.Stretch.None:
+						_animation.SetScaleType(ImageView.ScaleType.Center);
+						break;
+					case Windows.UI.Xaml.Media.Stretch.Uniform:
+						_animation.SetScaleType(ImageView.ScaleType.CenterInside);
+						break;
+					case Windows.UI.Xaml.Media.Stretch.Fill:
+						_animation.SetScaleType(ImageView.ScaleType.FitXy);
+						break;
+					case Windows.UI.Xaml.Media.Stretch.UniformToFill:
+						_animation.SetScaleType(ImageView.ScaleType.CenterCrop);
+						break;
+				}
+
+				_animation.Speed = (float)player.PlaybackRate;
+
+				if (player.AutoPlay && !_isPlaying)
 				{
 					Play(true);
 				}
 			}
-
+			
 			_player = player;
 		}
 
