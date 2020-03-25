@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Windows.UI.Xaml.Documents;
 
-namespace Microsoft.UI.Xaml.Controls
+namespace Microsoft.UI.Private.Controls
 {
 	internal class SplitButtonTestHelper
 	{

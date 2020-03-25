@@ -1,4 +1,5 @@
-﻿using Uno.UI.Helpers.WinUI;
+﻿using Microsoft.UI.Private.Controls;
+using Uno.UI.Helpers.WinUI;
 using Windows.Devices.Input;
 using Windows.System;
 using Windows.UI.Core;

@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
 using SplitButton = Microsoft.UI.Xaml.Controls.SplitButton;
-//TODO: using SplitButtonTestApi = Microsoft.UI.Private.Controls.SplitButtonTestApi;
+using SplitButtonTestHelper = Microsoft.UI.Private.Controls.SplitButtonTestHelper;
 using ToggleSplitButton = Microsoft.UI.Xaml.Controls.ToggleSplitButton;
 using ToggleSplitButtonIsCheckedChangedEventArgs = Microsoft.UI.Xaml.Controls.ToggleSplitButtonIsCheckedChangedEventArgs;
 
@@ -44,7 +44,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 		{
 			this.InitializeComponent();
 
-			//TODO: SplitButtonTestApi.SimulateTouch = false;
+			SplitButtonTestHelper.SimulateTouch = false;
 
 			TestExecuteCommand = new MyCommand(this);
 
@@ -96,12 +96,12 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 
 		private void SimulateTouchCheckBox_Checked(object sender, RoutedEventArgs e)
 		{
-			//TODO SplitButtonTestApi.SimulateTouch = true;
+			SplitButtonTestHelper.SimulateTouch = true;
 		}
 
 		private void SimulateTouchCheckBox_Unchecked(object sender, RoutedEventArgs e)
 		{
-			//TODO SplitButtonTestApi.SimulateTouch = false;
+			SplitButtonTestHelper.SimulateTouch = false;
 		}
 
 		private void EnableCheckBox_Checked(object sender, RoutedEventArgs e)
