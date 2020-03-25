@@ -9,6 +9,7 @@ using Uno.Extensions;
 using Uno.UI.Extensions;
 using Uno.Logging;
 using Windows.Foundation;
+using Windows.UI.Core;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -144,8 +145,19 @@ namespace Uno.UI.Toolkit
 
 				_visibleBoundsChanged = (s2, e2) => UpdatePadding();
 
+#if __IOS__
+				// For iOS, it's required to react on SizeChanged to prevent weird alignment
+				// problems with Text using the LayoutManager (NSTextContainer).
+				// https://github.com/unoplatform/uno/issues/2836
+				owner.SizeChanged += (s, e) => UpdatePadding();
+#endif
 				owner.LayoutUpdated += (s, e) => UpdatePadding();
-				owner.Loaded += (s, e) => ApplicationView.GetForCurrentView().VisibleBoundsChanged += _visibleBoundsChanged;
+
+				owner.Loaded += (s, e) =>
+				{
+					UpdatePadding();
+					ApplicationView.GetForCurrentView().VisibleBoundsChanged += _visibleBoundsChanged;
+				};
 				owner.Unloaded += (s, e) => ApplicationView.GetForCurrentView().VisibleBoundsChanged -= _visibleBoundsChanged;
 			}
 
@@ -159,6 +171,11 @@ namespace Uno.UI.Toolkit
 				}
 
 				if (!AreBoundsAspectRatiosConsistent)
+				{
+					return;
+				}
+
+				if (!Owner.IsLoaded)
 				{
 					return;
 				}
