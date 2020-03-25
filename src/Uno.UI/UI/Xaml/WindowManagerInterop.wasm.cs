@@ -53,25 +53,21 @@ namespace Uno.UI.Xaml
 		#endregion
 
 		#region CreateContent
-		internal static void CreateContent(IntPtr htmlId, string htmlTag, IntPtr handle, string fullName, bool htmlTagIsSvg, bool isFrameworkElement, bool isFocusable, string[] classes)
+		internal static void CreateContent(IntPtr htmlId, string htmlTag, IntPtr handle, int uiElementRegistrationId, bool htmlTagIsSvg, bool isFocusable)
 		{
 			if (UseJavascriptEval)
 			{
 				var isSvgStr = htmlTagIsSvg ? "true" : "false";
-				var isFrameworkElementStr = isFrameworkElement ? "true" : "false";
 				var isFocusableStr = isFocusable ? "true" : "false"; // by default all control are not focusable, it has to be change latter by the control itself
-				var classesParam = classes.Select(c => $"\"{c}\"").JoinBy(",");
 
 				WebAssemblyRuntime.InvokeJS(
 					"Uno.UI.WindowManager.current.createContent({" +
 					"id:\"" + htmlId + "\"," +
 					"tagName:\"" + htmlTag + "\", " +
 					"handle:" + handle + ", " +
-					"type:\"" + fullName + "\", " +
+					"uiElementRegistrationId: " + uiElementRegistrationId + ", " +
 					"isSvg:" + isSvgStr + ", " +
-					"isFrameworkElement:" + isFrameworkElementStr + ", " +
-					"isFocusable:" + isFocusableStr + ", " +
-					"classes:[" + classesParam + "]" +
+					"isFocusable:" + isFocusableStr +
 					"});");
 			}
 			else
@@ -81,12 +77,9 @@ namespace Uno.UI.Xaml
 					HtmlId = htmlId,
 					TagName = htmlTag,
 					Handle = handle,
-					Type = fullName,
+					UIElementRegistrationId = uiElementRegistrationId,
 					IsSvg = htmlTagIsSvg,
-					IsFrameworkElement = isFrameworkElement,
-					IsFocusable = isFocusable,
-					Classes_Length = classes.Length,
-					Classes = classes,
+					IsFocusable = isFocusable
 				};
 
 				TSInteropMarshaller.InvokeJS<WindowManagerCreateContentParams, bool>("Uno:createContentNative", parms);
@@ -104,12 +97,54 @@ namespace Uno.UI.Xaml
 
 			public IntPtr Handle;
 
-			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
-			public string Type;
+			public int UIElementRegistrationId;
 
 			public bool IsSvg;
-			public bool IsFrameworkElement;
 			public bool IsFocusable;
+		}
+
+		#endregion
+
+		#region CreateContent
+		internal static int RegisterUIElement(string typeName, string[] classNames, bool isFrameworkElement)
+		{
+			if (UseJavascriptEval)
+			{
+				var isFrameworkElementStr = isFrameworkElement ? "true" : "false";
+				var classesParam = classNames.Select(c => $"\"{c}\"").JoinBy(",");
+
+				var ret = WebAssemblyRuntime.InvokeJS(
+					"Uno.UI.WindowManager.current.registerUIElement({" +
+					"typeName:\"" + typeName + "\"," +
+					"isFrameworkElement:" + isFrameworkElementStr + ", " +
+					"classes:[" + classesParam + "]" +
+					"});");
+
+				return int.Parse(ret);
+			}
+			else
+			{
+				var parms = new WindowManagerRegisterUIElementParams
+				{
+					TypeName = typeName,
+					IsFrameworkElement = isFrameworkElement,
+					Classes_Length = classNames.Length,
+					Classes = classNames,
+				};
+
+				var ret = TSInteropMarshaller.InvokeJS<WindowManagerRegisterUIElementParams, WindowManagerRegisterUIElementReturn>("Uno:registerUIElementNative", parms);
+				return ret.RegistrationId;
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerRegisterUIElementParams
+		{
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string TypeName;
+
+			public bool IsFrameworkElement;
 
 			public int Classes_Length;
 
@@ -117,6 +152,12 @@ namespace Uno.UI.Xaml
 			public string[] Classes;
 		}
 
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerRegisterUIElementReturn
+		{
+			public int RegistrationId;
+		}
 		#endregion
 
 		#region SetElementTransform

@@ -3,10 +3,8 @@
 		id: number;
 		tagName: string;
 		handle: number;
-		type: string;
+		uiElementRegistrationId: number;
 		isSvg: boolean;
-		isFrameworkElement: boolean;
 		isFocusable: boolean;
-		classes?: string[];
 	}
 }

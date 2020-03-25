@@ -59,11 +59,9 @@ declare module Uno.UI {
         id: number;
         tagName: string;
         handle: number;
-        type: string;
+        uiElementRegistrationId: number;
         isSvg: boolean;
-        isFrameworkElement: boolean;
         isFocusable: boolean;
-        classes?: string[];
     }
 }
 declare namespace MonoSupport {
@@ -151,6 +149,7 @@ declare namespace Uno.UI {
         private rootContent;
         private cursorStyleElement;
         private allActiveElementsById;
+        private uiElementRegistrations;
         private static resizeMethod;
         private static dispatchEventMethod;
         private static getDependencyPropertyValueMethod;
@@ -179,6 +178,8 @@ declare namespace Uno.UI {
             */
         createContentNative(pParams: number): boolean;
         private createContentInternal;
+        registerUIElement(typeName: string, isFrameworkElement: boolean, classNames: string[]): number;
+        registerUIElementNative(pParams: number, pReturn: number): boolean;
         getView(elementHandle: number): HTMLElement | SVGElement;
         /**
             * Set a name for an element.
@@ -554,17 +555,18 @@ declare class WindowManagerCreateContentParams {
     HtmlId: number;
     TagName: string;
     Handle: number;
-    Type: string;
+    UIElementRegistrationId: number;
     IsSvg: boolean;
-    IsFrameworkElement: boolean;
     IsFocusable: boolean;
-    Classes_Length: number;
-    Classes: Array<string>;
     static unmarshal(pData: number): WindowManagerCreateContentParams;
 }
 declare class WindowManagerDestroyViewParams {
     HtmlId: number;
     static unmarshal(pData: number): WindowManagerDestroyViewParams;
+}
+declare class WindowManageRegisterUIElementReturn {
+    RegistrationId: number;
+    marshal(pData: number): void;
 }
 declare class WindowManagerGetBBoxParams {
     HtmlId: number;
@@ -611,6 +613,17 @@ declare class WindowManagerRegisterEventOnViewParams {
     EventFilterName: string;
     EventExtractorName: string;
     static unmarshal(pData: number): WindowManagerRegisterEventOnViewParams;
+}
+declare class WindowManagerRegisterUIElementParams {
+    TypeName: string;
+    IsFrameworkElement: boolean;
+    Classes_Length: number;
+    Classes: Array<string>;
+    static unmarshal(pData: number): WindowManagerRegisterUIElementParams;
+}
+declare class WindowManagerRegisterUIElementReturn {
+    RegistrationId: number;
+    marshal(pData: number): void;
 }
 declare class WindowManagerRemoveAttributeParams {
     HtmlId: number;

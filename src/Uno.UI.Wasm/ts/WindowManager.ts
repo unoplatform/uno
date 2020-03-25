@@ -1,4 +1,6 @@
-﻿namespace Uno.UI {
+﻿
+// eslint-disable-next-line @typescript-eslint/no-namespace
+namespace Uno.UI {
 
 	export class WindowManager {
 
@@ -131,6 +133,13 @@
 		private cursorStyleElement: HTMLElement;
 
 		private allActiveElementsById: { [id: number]: HTMLElement | SVGElement } = {};
+		private uiElementRegistrations: {
+			[id: string]: {
+				typeName: string;
+				isFrameworkElement: boolean;
+				classNames: string[];
+			};
+		} = {};
 
 		private static resizeMethod: any;
 		private static dispatchEventMethod: any;
@@ -215,16 +224,14 @@
 
 			const params = WindowManagerCreateContentParams.unmarshal(pParams);
 
-			const def = <IContentDefinition>{
+			const def = {
 				id: params.HtmlId,
 				handle: params.Handle,
 				isFocusable: params.IsFocusable,
-				isFrameworkElement: params.IsFrameworkElement,
 				isSvg: params.IsSvg,
 				tagName: params.TagName,
-				type: params.Type,
-				classes: params.Classes
-			};
+				uiElementRegistrationId: params.UIElementRegistrationId
+			} as IContentDefinition;
 
 			this.createContentInternal(def);
 
@@ -238,9 +245,15 @@
 					? document.createElementNS("http://www.w3.org/2000/svg", contentDefinition.tagName)
 					: document.createElement(contentDefinition.tagName);
 			element.id = String(contentDefinition.id);
-			element.setAttribute("XamlType", contentDefinition.type);
+
+			const uiElementRegistration = this.uiElementRegistrations[String(contentDefinition.uiElementRegistrationId)];
+			if (!uiElementRegistration) {
+				throw `UIElement registration id ${contentDefinition.uiElementRegistrationId} is unknown.`;
+			}
+
+			element.setAttribute("XamlType", uiElementRegistration.typeName);
 			element.setAttribute("XamlHandle", `${contentDefinition.handle}`);
-			if (contentDefinition.isFrameworkElement) {
+			if (uiElementRegistration.isFrameworkElement) {
 				this.setAsUnarranged(element);
 			}
 			if (element.hasOwnProperty("tabindex")) {
@@ -250,7 +263,7 @@
 			}
 
 			if (contentDefinition) {
-				for (const className of contentDefinition.classes) {
+				for (const className of uiElementRegistration.classNames) {
 					element.classList.add(`uno-${className}`);
 				}
 			}
@@ -258,6 +271,32 @@
 			// Add the html element to list of elements
 			this.allActiveElementsById[contentDefinition.id] = element;
 		}
+
+		public registerUIElement(typeName: string, isFrameworkElement: boolean, classNames: string[]): number {
+
+			const registrationId = Object.keys(this.uiElementRegistrations).length;
+
+			this.uiElementRegistrations[String(registrationId)] = {
+				typeName: typeName,
+				isFrameworkElement: isFrameworkElement,
+				classNames: classNames,
+			};
+
+			return registrationId;
+		}
+
+		public registerUIElementNative(pParams: number, pReturn: number): boolean {
+			const params = WindowManagerRegisterUIElementParams.unmarshal(pParams);
+
+			const registrationId = this.registerUIElement(params.TypeName, params.IsFrameworkElement, params.Classes);
+
+			const ret = new WindowManagerRegisterUIElementReturn();
+			ret.RegistrationId = registrationId;
+
+			ret.marshal(pReturn);
+
+			return true;
+	}
 
 		public getView(elementHandle: number): HTMLElement | SVGElement {
 			const element = this.allActiveElementsById[elementHandle];

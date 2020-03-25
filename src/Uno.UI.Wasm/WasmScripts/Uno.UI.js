@@ -283,6 +283,7 @@ var MonoSupport;
 })(MonoSupport || (MonoSupport = {}));
 // Export the DotNet helper for WebAssembly.JSInterop.InvokeJSUnmarshalled
 window.DotNet = MonoSupport;
+// eslint-disable-next-line @typescript-eslint/no-namespace
 var Uno;
 (function (Uno) {
     var UI;
@@ -292,6 +293,7 @@ var Uno;
                 this.containerElementId = containerElementId;
                 this.loadingElementId = loadingElementId;
                 this.allActiveElementsById = {};
+                this.uiElementRegistrations = {};
                 this.initDom();
             }
             /**
@@ -447,11 +449,9 @@ var Uno;
                     id: params.HtmlId,
                     handle: params.Handle,
                     isFocusable: params.IsFocusable,
-                    isFrameworkElement: params.IsFrameworkElement,
                     isSvg: params.IsSvg,
                     tagName: params.TagName,
-                    type: params.Type,
-                    classes: params.Classes
+                    uiElementRegistrationId: params.UIElementRegistrationId
                 };
                 this.createContentInternal(def);
                 return true;
@@ -462,9 +462,13 @@ var Uno;
                     ? document.createElementNS("http://www.w3.org/2000/svg", contentDefinition.tagName)
                     : document.createElement(contentDefinition.tagName);
                 element.id = String(contentDefinition.id);
-                element.setAttribute("XamlType", contentDefinition.type);
+                const uiElementRegistration = this.uiElementRegistrations[String(contentDefinition.uiElementRegistrationId)];
+                if (!uiElementRegistration) {
+                    throw `UIElement registration id ${contentDefinition.uiElementRegistrationId} is unknown.`;
+                }
+                element.setAttribute("XamlType", uiElementRegistration.typeName);
                 element.setAttribute("XamlHandle", `${contentDefinition.handle}`);
-                if (contentDefinition.isFrameworkElement) {
+                if (uiElementRegistration.isFrameworkElement) {
                     this.setAsUnarranged(element);
                 }
                 if (element.hasOwnProperty("tabindex")) {
@@ -474,12 +478,29 @@ var Uno;
                     element.setAttribute("tabindex", contentDefinition.isFocusable ? "0" : "-1");
                 }
                 if (contentDefinition) {
-                    for (const className of contentDefinition.classes) {
+                    for (const className of uiElementRegistration.classNames) {
                         element.classList.add(`uno-${className}`);
                     }
                 }
                 // Add the html element to list of elements
                 this.allActiveElementsById[contentDefinition.id] = element;
+            }
+            registerUIElement(typeName, isFrameworkElement, classNames) {
+                const registrationId = Object.keys(this.uiElementRegistrations).length;
+                this.uiElementRegistrations[String(registrationId)] = {
+                    typeName: typeName,
+                    isFrameworkElement: isFrameworkElement,
+                    classNames: classNames,
+                };
+                return registrationId;
+            }
+            registerUIElementNative(pParams, pReturn) {
+                const params = WindowManagerRegisterUIElementParams.unmarshal(pParams);
+                const registrationId = this.registerUIElement(params.TypeName, params.IsFrameworkElement, params.Classes);
+                const ret = new WindowManagerRegisterUIElementReturn();
+                ret.RegistrationId = registrationId;
+                ret.marshal(pReturn);
+                return true;
             }
             getView(elementHandle) {
                 const element = this.allActiveElementsById[elementHandle];
@@ -1736,43 +1757,13 @@ class WindowManagerCreateContentParams {
             ret.Handle = Number(Module.getValue(pData + 8, "*"));
         }
         {
-            var ptr = Module.getValue(pData + 12, "*");
-            if (ptr !== 0) {
-                ret.Type = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.Type = null;
-            }
+            ret.UIElementRegistrationId = Number(Module.getValue(pData + 12, "i32"));
         }
         {
             ret.IsSvg = Boolean(Module.getValue(pData + 16, "i32"));
         }
         {
-            ret.IsFrameworkElement = Boolean(Module.getValue(pData + 20, "i32"));
-        }
-        {
-            ret.IsFocusable = Boolean(Module.getValue(pData + 24, "i32"));
-        }
-        {
-            ret.Classes_Length = Number(Module.getValue(pData + 28, "i32"));
-        }
-        {
-            var pArray = Module.getValue(pData + 32, "*");
-            if (pArray !== 0) {
-                ret.Classes = new Array();
-                for (var i = 0; i < ret.Classes_Length; i++) {
-                    var value = Module.getValue(pArray + i * 4, "*");
-                    if (value !== 0) {
-                        ret.Classes.push(String(MonoRuntime.conv_string(value)));
-                    }
-                    else {
-                        ret.Classes.push(null);
-                    }
-                }
-            }
-            else {
-                ret.Classes = null;
-            }
+            ret.IsFocusable = Boolean(Module.getValue(pData + 20, "i32"));
         }
         return ret;
     }
@@ -1785,6 +1776,12 @@ class WindowManagerDestroyViewParams {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManageRegisterUIElementReturn {
+    marshal(pData) {
+        Module.setValue(pData + 0, this.RegistrationId, "i32");
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
@@ -1899,6 +1896,52 @@ class WindowManagerRegisterEventOnViewParams {
             }
         }
         return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerRegisterUIElementParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerRegisterUIElementParams();
+        {
+            var ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.TypeName = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.TypeName = null;
+            }
+        }
+        {
+            ret.IsFrameworkElement = Boolean(Module.getValue(pData + 4, "i32"));
+        }
+        {
+            ret.Classes_Length = Number(Module.getValue(pData + 8, "i32"));
+        }
+        {
+            var pArray = Module.getValue(pData + 12, "*");
+            if (pArray !== 0) {
+                ret.Classes = new Array();
+                for (var i = 0; i < ret.Classes_Length; i++) {
+                    var value = Module.getValue(pArray + i * 4, "*");
+                    if (value !== 0) {
+                        ret.Classes.push(String(MonoRuntime.conv_string(value)));
+                    }
+                    else {
+                        ret.Classes.push(null);
+                    }
+                }
+            }
+            else {
+                ret.Classes = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerRegisterUIElementReturn {
+    marshal(pData) {
+        Module.setValue(pData + 0, this.RegistrationId, "i32");
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */

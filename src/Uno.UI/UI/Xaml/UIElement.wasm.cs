@@ -27,18 +27,18 @@ namespace Windows.UI.Xaml
 
 		private protected int? Depth { get; private set; }
 
-		private static class ClassNames
+		private static class UIElementNativeRegistrar
 		{
-			private static readonly Dictionary<Type, string[]> _classNames = new Dictionary<Type, string[]>();
+			private static readonly Dictionary<Type, int> _classNames = new Dictionary<Type, int>();
 
-			internal static string[] GetForType(Type type)
+			internal static int GetForType(Type type)
 			{
-				if (!_classNames.TryGetValue(type, out var names))
+				if (!_classNames.TryGetValue(type, out var classNamesRegistrationId))
 				{
-					_classNames[type] = names = GetClassesForType(type).ToArray();
+					_classNames[type] = classNamesRegistrationId = WindowManagerInterop.RegisterUIElement(type.FullName, GetClassesForType(type).ToArray(), type.Is<FrameworkElement>());
 				}
 
-				return names;
+				return classNamesRegistrationId;
 			}
 
 			private static IEnumerable<string> GetClassesForType(Type type)
@@ -92,11 +92,9 @@ namespace Windows.UI.Xaml
 				htmlId: HtmlId,
 				htmlTag: HtmlTag,
 				handle: Handle,
-				fullName: type.FullName,
+				uiElementRegistrationId: UIElementNativeRegistrar.GetForType(type),
 				htmlTagIsSvg: HtmlTagIsSvg,
-				isFrameworkElement: _isFrameworkElement,
-				isFocusable: false,
-				classes: ClassNames.GetForType(type)
+				isFocusable: false
 			);
 
 			InitializePointers();
