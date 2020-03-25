@@ -39,7 +39,11 @@ namespace Microsoft.UI.Xaml.Controls
 			KeyUp += OnSplitButtonKeyUp;
 		}
 
-		public new event Windows.Foundation.TypedEventHandler<SplitButton, SplitButtonClickEventArgs> Click;
+		public
+#if __ANDROID__
+			new
+#endif
+			event Windows.Foundation.TypedEventHandler<SplitButton, SplitButtonClickEventArgs> Click;
 
 		protected override void OnApplyTemplate()
 		{
