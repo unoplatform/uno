@@ -3,6 +3,12 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using Airbnb.Lottie;
 
+#if __IOS__
+using _ViewContentMode = UIKit.UIViewContentMode;
+#else
+using _ViewContentMode = Airbnb.Lottie.LOTViewContentMode;
+#endif
+
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
 	partial class LottieVisualSource
@@ -29,8 +35,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				_animation = new LOTAnimationView();
 				//_animation.Scale = (float)Scale;
 				SetProperties();
-
+#if __IOS__
 				player.Add(_animation);
+#else
+				player.AddSubview(_animation);
+#endif
 			}
 			else
 			{
@@ -44,18 +53,17 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				switch (player.Stretch)
 				{
 					case Windows.UI.Xaml.Media.Stretch.None:
-						_animation.ContentMode = UIKit.UIViewContentMode.Center;
+						_animation.ContentMode = _ViewContentMode.Center;
 						break;
 					case Windows.UI.Xaml.Media.Stretch.Uniform:
-						_animation.ContentMode = UIKit.UIViewContentMode.ScaleAspectFit;
+						_animation.ContentMode = _ViewContentMode.ScaleAspectFit;
 						break;
 					case Windows.UI.Xaml.Media.Stretch.Fill:
-						_animation.ContentMode = UIKit.UIViewContentMode.ScaleToFill;
+						_animation.ContentMode = _ViewContentMode.ScaleToFill;
 						break;
 					case Windows.UI.Xaml.Media.Stretch.UniformToFill:
-						_animation.ContentMode = UIKit.UIViewContentMode.ScaleAspectFill;
+						_animation.ContentMode = _ViewContentMode.ScaleAspectFill;
 						break;
-
 				}
 
 
@@ -116,7 +124,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		Size IAnimatedVisualSource.Measure(Size availableSize)
 		{
-			throw new NotImplementedException();
+			return availableSize;
 		}
 	}
 }
