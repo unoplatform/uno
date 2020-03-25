@@ -56,7 +56,7 @@ declare namespace Uno.Http {
 }
 declare module Uno.UI {
     interface IContentDefinition {
-        id: number;
+        id: string;
         tagName: string;
         handle: number;
         uiElementRegistrationId: number;
@@ -523,6 +523,7 @@ declare namespace Uno.UI {
         private resize;
         private dispatchEvent;
         private getIsConnectedToRootElement;
+        private handleToString;
         setCursor(cssCursor: string): string;
     }
 }

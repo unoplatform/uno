@@ -132,7 +132,7 @@ namespace Uno.UI {
 
 		private cursorStyleElement: HTMLElement;
 
-		private allActiveElementsById: { [id: number]: HTMLElement | SVGElement } = {};
+		private allActiveElementsById: { [id: string]: HTMLElement | SVGElement } = {};
 		private uiElementRegistrations: {
 			[id: string]: {
 				typeName: string;
@@ -225,7 +225,7 @@ namespace Uno.UI {
 			const params = WindowManagerCreateContentParams.unmarshal(pParams);
 
 			const def = {
-				id: params.HtmlId,
+				id: this.handleToString(params.HtmlId),
 				handle: params.Handle,
 				isFocusable: params.IsFocusable,
 				isSvg: params.IsSvg,
@@ -244,15 +244,15 @@ namespace Uno.UI {
 				contentDefinition.isSvg
 					? document.createElementNS("http://www.w3.org/2000/svg", contentDefinition.tagName)
 					: document.createElement(contentDefinition.tagName);
-			element.id = String(contentDefinition.id);
+			element.id = contentDefinition.id;
 
-			const uiElementRegistration = this.uiElementRegistrations[String(contentDefinition.uiElementRegistrationId)];
+			const uiElementRegistration = this.uiElementRegistrations[this.handleToString(contentDefinition.uiElementRegistrationId)];
 			if (!uiElementRegistration) {
 				throw `UIElement registration id ${contentDefinition.uiElementRegistrationId} is unknown.`;
 			}
 
 			element.setAttribute("XamlType", uiElementRegistration.typeName);
-			element.setAttribute("XamlHandle", `${contentDefinition.handle}`);
+			element.setAttribute("XamlHandle", this.handleToString(contentDefinition.handle));
 			if (uiElementRegistration.isFrameworkElement) {
 				this.setAsUnarranged(element);
 			}
@@ -276,7 +276,7 @@ namespace Uno.UI {
 
 			const registrationId = Object.keys(this.uiElementRegistrations).length;
 
-			this.uiElementRegistrations[String(registrationId)] = {
+			this.uiElementRegistrations[this.handleToString(registrationId)] = {
 				typeName: typeName,
 				isFrameworkElement: isFrameworkElement,
 				classNames: classNames,
@@ -296,10 +296,10 @@ namespace Uno.UI {
 			ret.marshal(pReturn);
 
 			return true;
-	}
+		}
 
 		public getView(elementHandle: number): HTMLElement | SVGElement {
-			const element = this.allActiveElementsById[elementHandle];
+			const element = this.allActiveElementsById[this.handleToString(elementHandle)];
 			if (!element) {
 				throw `Element id ${elementHandle} not found.`;
 			}
@@ -537,7 +537,7 @@ namespace Uno.UI {
 			const params = WindowManagerSetStyleDoubleParams.unmarshal(pParams);
 			const element = this.getView(params.HtmlId);
 
-			element.style.setProperty(params.Name, String(params.Value));
+			element.style.setProperty(params.Name, this.handleToString(params.Value));
 
 			return true;
 		}
@@ -1686,7 +1686,7 @@ namespace Uno.UI {
 				// Dispatch to the C# backed UnoDispatch class. Events propagated
 				// this way always succeed because synchronous calls are not possible
 				// between the host and the browser, unlike wasm.
-				UnoDispatch.dispatch(String(htmlId), eventName, eventPayload);
+				UnoDispatch.dispatch(this.handleToString(htmlId), eventName, eventPayload);
 				return true;
 			}
 			else {
@@ -1701,6 +1701,12 @@ namespace Uno.UI {
 				return false;
 			}
 			return rootElement === element || rootElement.contains(element);
+		}
+
+		private handleToString(handle: number): string {
+
+			// Fastest conversion as of 2020-03-25 (when compared to String(handle) or handle.toString())
+			return handle + "";
 		}
 
 		public setCursor(cssCursor: string): string {

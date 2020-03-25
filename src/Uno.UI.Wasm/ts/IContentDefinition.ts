@@ -1,6 +1,6 @@
 ﻿module Uno.UI {
 	export interface IContentDefinition {
-		id: number;
+		id: string;
 		tagName: string;
 		handle: number;
 		uiElementRegistrationId: number;

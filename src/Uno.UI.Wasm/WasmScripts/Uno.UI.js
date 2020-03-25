@@ -446,7 +446,7 @@ var Uno;
             createContentNative(pParams) {
                 const params = WindowManagerCreateContentParams.unmarshal(pParams);
                 const def = {
-                    id: params.HtmlId,
+                    id: this.handleToString(params.HtmlId),
                     handle: params.Handle,
                     isFocusable: params.IsFocusable,
                     isSvg: params.IsSvg,
@@ -461,13 +461,13 @@ var Uno;
                 const element = contentDefinition.isSvg
                     ? document.createElementNS("http://www.w3.org/2000/svg", contentDefinition.tagName)
                     : document.createElement(contentDefinition.tagName);
-                element.id = String(contentDefinition.id);
-                const uiElementRegistration = this.uiElementRegistrations[String(contentDefinition.uiElementRegistrationId)];
+                element.id = contentDefinition.id;
+                const uiElementRegistration = this.uiElementRegistrations[this.handleToString(contentDefinition.uiElementRegistrationId)];
                 if (!uiElementRegistration) {
                     throw `UIElement registration id ${contentDefinition.uiElementRegistrationId} is unknown.`;
                 }
                 element.setAttribute("XamlType", uiElementRegistration.typeName);
-                element.setAttribute("XamlHandle", `${contentDefinition.handle}`);
+                element.setAttribute("XamlHandle", this.handleToString(contentDefinition.handle));
                 if (uiElementRegistration.isFrameworkElement) {
                     this.setAsUnarranged(element);
                 }
@@ -487,7 +487,7 @@ var Uno;
             }
             registerUIElement(typeName, isFrameworkElement, classNames) {
                 const registrationId = Object.keys(this.uiElementRegistrations).length;
-                this.uiElementRegistrations[String(registrationId)] = {
+                this.uiElementRegistrations[this.handleToString(registrationId)] = {
                     typeName: typeName,
                     isFrameworkElement: isFrameworkElement,
                     classNames: classNames,
@@ -503,7 +503,7 @@ var Uno;
                 return true;
             }
             getView(elementHandle) {
-                const element = this.allActiveElementsById[elementHandle];
+                const element = this.allActiveElementsById[this.handleToString(elementHandle)];
                 if (!element) {
                     throw `Element id ${elementHandle} not found.`;
                 }
@@ -696,7 +696,7 @@ var Uno;
             setStyleDoubleNative(pParams) {
                 const params = WindowManagerSetStyleDoubleParams.unmarshal(pParams);
                 const element = this.getView(params.HtmlId);
-                element.style.setProperty(params.Name, String(params.Value));
+                element.style.setProperty(params.Name, this.handleToString(params.Value));
                 return true;
             }
             setArrangeProperties(elementId, clipToBounds) {
@@ -1596,7 +1596,7 @@ var Uno;
                     // Dispatch to the C# backed UnoDispatch class. Events propagated
                     // this way always succeed because synchronous calls are not possible
                     // between the host and the browser, unlike wasm.
-                    UnoDispatch.dispatch(String(htmlId), eventName, eventPayload);
+                    UnoDispatch.dispatch(this.handleToString(htmlId), eventName, eventPayload);
                     return true;
                 }
                 else {
@@ -1609,6 +1609,10 @@ var Uno;
                     return false;
                 }
                 return rootElement === element || rootElement.contains(element);
+            }
+            handleToString(handle) {
+                // Fastest conversion as of 2020-03-25 (when compared to String(handle) or handle.toString())
+                return handle + "";
             }
             setCursor(cssCursor) {
                 const unoBody = document.getElementById(this.containerElementId);
