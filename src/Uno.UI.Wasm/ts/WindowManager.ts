@@ -230,7 +230,7 @@ namespace Uno.UI {
 				isFocusable: params.IsFocusable,
 				isSvg: params.IsSvg,
 				tagName: params.TagName,
-				uiElementRegistrationId: params.UIElementRegistrationId
+				uiElementRegistrationId: params.UIElementRegistrationId,
 			} as IContentDefinition;
 
 			this.createContentInternal(def);
@@ -244,6 +244,7 @@ namespace Uno.UI {
 				contentDefinition.isSvg
 					? document.createElementNS("http://www.w3.org/2000/svg", contentDefinition.tagName)
 					: document.createElement(contentDefinition.tagName);
+
 			element.id = contentDefinition.id;
 
 			const uiElementRegistration = this.uiElementRegistrations[this.handleToString(contentDefinition.uiElementRegistrationId)];
@@ -263,9 +264,12 @@ namespace Uno.UI {
 			}
 
 			if (contentDefinition) {
+				let classes = element.classList.value; 
 				for (const className of uiElementRegistration.classNames) {
-					element.classList.add(`uno-${className}`);
+					classes += " uno-" + className;
 				}
+
+				element.classList.value = classes;
 			}
 
 			// Add the html element to list of elements
@@ -277,9 +281,9 @@ namespace Uno.UI {
 			const registrationId = Object.keys(this.uiElementRegistrations).length;
 
 			this.uiElementRegistrations[this.handleToString(registrationId)] = {
-				typeName: typeName,
-				isFrameworkElement: isFrameworkElement,
 				classNames: classNames,
+				isFrameworkElement: isFrameworkElement,
+				typeName: typeName,
 			};
 
 			return registrationId;
