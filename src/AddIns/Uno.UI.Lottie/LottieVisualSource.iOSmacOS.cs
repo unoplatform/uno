@@ -18,6 +18,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		public bool UseHardwareAcceleration { get; set; } = true;
 
 		private bool _isPlaying = false;
+		private string _lastPath = "";
 		private AnimatedVisualPlayer _player;
 
 		private void Update()
@@ -33,7 +34,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			if (_animation == null)
 			{
 				_animation = new LOTAnimationView();
-				//_animation.Scale = (float)Scale;
 				SetProperties();
 #if __IOS__
 				player.Add(_animation);
@@ -48,7 +48,12 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			void SetProperties()
 			{
-				_animation.SetAnimationNamed(UriSource?.PathAndQuery ?? "");
+				var path = UriSource?.PathAndQuery ?? "";
+				if (_lastPath != path)
+				{
+					_animation.SetAnimationNamed(path);
+					_lastPath = path;
+				}
 
 				switch (player.Stretch)
 				{
@@ -66,6 +71,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 						break;
 				}
 
+				_animation.AnimationSpeed = (nfloat)player.PlaybackRate;
 
 				if (player.AutoPlay && !_isPlaying)
 				{

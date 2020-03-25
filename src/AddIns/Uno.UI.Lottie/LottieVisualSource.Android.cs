@@ -53,6 +53,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				if (_lastPath != path)
 				{
 					_animation.SetAnimation(path);
+					_lastPath = path;
 				}
 
 				switch (player.Stretch)
