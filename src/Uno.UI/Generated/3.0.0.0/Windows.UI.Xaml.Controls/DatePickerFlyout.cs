@@ -148,7 +148,7 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.YearVisibleProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.MinYearProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyout.MaxYearProperty.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.DatePickerFlyout, global::Windows.UI.Xaml.Controls.DatePickedEventArgs> DatePicked
 		{

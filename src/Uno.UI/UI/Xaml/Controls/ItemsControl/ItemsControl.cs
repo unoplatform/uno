@@ -1113,6 +1113,10 @@ namespace Windows.UI.Xaml.Controls
 			_containerBeingPrepared = null;
 		}
 
+		/// <summary>
+		/// Create a new container for item at <paramref name="index"/> and returns it, unless the item is its own container, in which case
+		/// returns the item itself.
+		/// </summary>
 		internal DependencyObject GetContainerForIndex(int index)
 		{
 			var item = ItemFromIndex(index);

@@ -207,6 +207,9 @@ namespace Windows.Storage
 			_fileUri = new Uri("file://" + targetPath);
 		}
 
+		public IAsyncOperation<BasicProperties> GetBasicPropertiesAsync()
+			=> GetBasicPropertiesAsync(new CancellationToken()).AsAsyncOperation<BasicProperties>();
+
 		public async Task<BasicProperties> GetBasicPropertiesAsync(CancellationToken ct)
 		{
 			return new BasicProperties(this);

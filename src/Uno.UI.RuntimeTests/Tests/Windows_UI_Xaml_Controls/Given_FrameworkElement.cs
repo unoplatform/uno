@@ -135,11 +135,11 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 			ContentControl contentCtl = null;
 			Grid grid = null;
 
-			content = new Border {Width = 100, Height = 15};
+			content = new Border { Width = 100, Height = 15 };
 
-			contentCtl = new ContentControl {MinWidth = 110, Content = content};
+			contentCtl = new ContentControl { MinWidth = 110, Content = content };
 
-			grid = new Grid() {MinWidth = 120};
+			grid = new Grid() { MinWidth = 120 };
 
 			grid.Children.Add(contentCtl);
 
@@ -153,7 +153,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			grid.Arrange(new Rect(default, new Size(50, 50)));
 
-			TestServices.WindowHelper.WindowContent = new Border {Child = grid, Width = 50, Height = 50};
+			TestServices.WindowHelper.WindowContent = new Border { Child = grid, Width = 50, Height = 50 };
 
 			await TestServices.WindowHelper.WaitForIdle();
 			await Task.Delay(10);
@@ -297,6 +297,59 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(expectedResult, resultStr, layout);
 		}
+
+#if __ANDROID__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Native_Parent_And_Measure_Infinite()
+		{
+			const int InnerBorderHeight = 47;
+			var native = new MyLinearLayout();
+			var inner = new Border { Width = 200, Height = InnerBorderHeight };
+			var outer = new Grid() { VerticalAlignment = VerticalAlignment.Center };
+			var panel = new StackPanel();
+
+			native.Child = inner;
+			outer.Children.Add(native);
+			panel.Children.Add(outer);
+
+			TestServices.WindowHelper.WindowContent = panel;
+			await TestServices.WindowHelper.WaitForIdle(); //StretchAffectsMeasure is set when Loaded is called
+
+			panel.Measure(new Size(1000, 1000));
+
+			var measuredHeightLogical = Math.Round(Uno.UI.ViewHelper.PhysicalToLogicalPixels(outer.MeasuredHeight));
+			Assert.AreEqual(InnerBorderHeight, measuredHeightLogical);
+
+			outer.Arrange(new Rect(0, 0, 1000, 1000));
+			var actualHeight = Math.Round(outer.ActualHeight);
+			Assert.AreEqual(InnerBorderHeight, actualHeight);
+		}
+#endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_AreDimensionsConstrained_And_Margin()
+		{
+			const double setHeight = 45d;
+			var outerPanel = new Grid { Width = 72, Height = setHeight, Margin = new Thickness(8) };
+#if !NETFX_CORE
+			outerPanel.AreDimensionsConstrained = true;
+#endif
+			var innerView = new AspectRatioView { HorizontalAlignment = HorizontalAlignment.Center, VerticalAlignment = VerticalAlignment.Center };
+			outerPanel.Children.Add(innerView);
+
+			TestServices.WindowHelper.WindowContent = outerPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(setHeight, Math.Round(innerView.ActualHeight));
+
+			outerPanel.InvalidateMeasure(); // On Android, AreDimensionsConstrained=true causes view to be measured+arranged through alternate code path
+
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(setHeight, Math.Round(innerView.ActualHeight));
+		}
 	}
 
 	public partial class MyControl01 : FrameworkElement
@@ -322,6 +375,18 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 		{
 			MeasureOverrides.Add(availableSize);
 			return base.MeasureOverride(BaseAvailableSize ?? availableSize);
+		}
+	}
+
+	public partial class AspectRatioView : FrameworkElement
+	{
+		public double AspectRatio { get; set; } = 1.5;
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			var height = double.IsPositiveInfinity(availableSize.Height) ? 0 : availableSize.Height;
+			var width = height * AspectRatio;
+			return new Size(width, height);
 		}
 	}
 }

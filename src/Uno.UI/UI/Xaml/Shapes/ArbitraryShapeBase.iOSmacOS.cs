@@ -25,9 +25,10 @@ namespace Windows.UI.Xaml.Shapes
 
 		public ArbitraryShapeBase()
 		{
-
 #if __IOS__
 			ClipsToBounds = true;
+#elif __MACOS__
+			WantsLayer = true;
 #endif
 		}
 

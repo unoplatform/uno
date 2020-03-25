@@ -4,84 +4,79 @@ using Uno.Disposables;
 using Foundation;
 using UIKit;
 using Uno.UI.Extensions;
+using Uno.Extensions;
+using Uno.Logging;
+using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class DatePickerSelector
 	{
 		private UIDatePicker _picker;
-		private readonly SerialDisposable _dateChangedSubscription = new SerialDisposable();
+		private NSDate _initialValue;
+		private NSDate _newValue;
 
 		protected override void OnLoaded()
 		{
 			base.OnLoaded();
 
-			_picker = this.FindSubviewsOfType<UIDatePicker>()
-				.FirstOrDefault();
-
-			var parent = _picker.FindFirstParent<FrameworkElement>();
-
-			if (_picker != null)
+			_picker = this.FindSubviewsOfType<UIDatePicker>().FirstOrDefault();
+			if (_picker == null)
 			{
-				_picker.Mode = UIDatePickerMode.Date;
-				_picker.TimeZone = NSTimeZone.LocalTimeZone;
-				_picker.Calendar = new NSCalendar(NSCalendarType.Gregorian);
-				_picker.SetDate(Date.Date.ToNSDate(), animated: false);
-
-				//Removing the date picker and adding it is what enables the lines to appear. Seems to be a side effect of adding it as a view. 
-				if (parent != null)
+				if (this.Log().IsEnabled(LogLevel.Error))
 				{
-					parent.RemoveChild(_picker);
-					parent.AddSubview(_picker);
+					this.Log().Error($"No {nameof(UIDatePicker)} was found in the visual hierarchy.");
 				}
 
-				RegisterValueChanged();
+				return;
+			}
+
+			_picker.Mode = UIDatePickerMode.Date;
+			_picker.TimeZone = NSTimeZone.LocalTimeZone;
+			_picker.Calendar = new NSCalendar(NSCalendarType.Gregorian);
+			UpdatePickerValue(Date, animated: false);
+
+			_picker.ValueChanged += OnPickerValueChanged;
+
+			//Removing the date picker and adding it is what enables the lines to appear. Seems to be a side effect of adding it as a view.
+			var parent = _picker.FindFirstParent<FrameworkElement>();
+			if (parent != null)
+			{
+				parent.RemoveChild(_picker);
+				parent.AddSubview(_picker);
 			}
 
 			UpdatMinMaxYears();
 		}
 
-		private void RegisterValueChanged()
-		{
-			_dateChangedSubscription.Disposable = null;
-
-			var picker = _picker;
-
-			EventHandler handler = (s, e) =>
-			{
-				Date = new DateTimeOffset(picker.Date.ToDateTime());
-			};
-
-			picker.ValueChanged += handler;
-
-			_dateChangedSubscription.Disposable = Disposable.Create(() => picker.ValueChanged -= handler);
-		}
-
 		protected override void OnUnloaded()
 		{
 			base.OnUnloaded();
-			_dateChangedSubscription.Disposable = null;
+			_picker.ValueChanged -= OnPickerValueChanged;
 			_picker = null;
+		}
+
+		private void OnPickerValueChanged(object sender, EventArgs e)
+		{
+			_newValue = _picker.Date;
 		}
 
 		partial void OnDateChangedPartialNative(DateTimeOffset oldDate, DateTimeOffset newDate)
 		{
-			// Animate to cover up the small delay in setting the date when the flyout is opened
-			var animated = !UIDevice.CurrentDevice.CheckSystemVersion(10, 0);
-
-			if (newDate < MinYear )
+			if (newDate < MinYear)
 			{
 				Date = MinYear;
 			}
-			else if(newDate > MaxYear)
+			else if (newDate > MaxYear)
 			{
 				Date = MaxYear;
 			}
 
-			_picker?.SetDate(
-				DateTime.SpecifyKind(Date.DateTime, DateTimeKind.Local).ToNSDate(),
-				animated: animated
-			);
+			if (_picker != null)
+			{
+				// Animate to cover up the small delay in setting the date when the flyout is opened
+				UpdatePickerValue(Date, animated: !UIDevice.CurrentDevice.CheckSystemVersion(10, 0));
+			}
 		}
 
 		partial void OnMinYearChangedPartialNative(DateTimeOffset oldMinYear, DateTimeOffset newMinYear)
@@ -115,6 +110,52 @@ namespace Windows.UI.Xaml.Controls
 			};
 
 			_picker.MinimumDate = calendar.DateFromComponents(minimumDateComponents);
+		}
+
+		internal void SaveValue()
+		{
+			if (_picker != null)
+			{
+				if (_newValue != null && _newValue != _initialValue)
+				{
+					Date = ConvertFromNative(_newValue);
+					_initialValue = _newValue;
+				}
+
+				_picker.EndEditing(false);
+			}
+		}
+
+		internal void Cancel()
+		{
+			_picker?.SetDate(_initialValue, false);
+			_picker?.EndEditing(false);
+		}
+
+		private void UpdatePickerValue(DateTimeOffset value, bool animated = false)
+		{
+			var components = new NSDateComponents()
+			{
+				Year = value.Year,
+				Month = value.Month,
+				Day = value.Day,
+			};
+			var date = _picker.Calendar.DateFromComponents(components);
+
+			_picker.SetDate(date, animated);
+			_initialValue = date;
+		}
+
+		private DateTimeOffset ConvertFromNative(NSDate value)
+		{
+			var components = _picker.Calendar.Components(NSCalendarUnit.Year | NSCalendarUnit.Month | NSCalendarUnit.Day, value);
+			var date = new DateTimeOffset(
+				(int)components.Year, (int)components.Month, (int)components.Day,
+				Date.Hour, Date.Minute, Date.Second, Date.Millisecond,
+				Date.Offset
+			);
+
+			return date;
 		}
 	}
 }

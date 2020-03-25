@@ -54,12 +54,9 @@ namespace Windows.UI.Xaml
 
 		protected sealed override bool OnNativeMotionEvent(MotionEvent nativeEvent, View originalSource, bool isInView)
 		{
-			if (nativeEvent.PointerCount > 1
-				&& this.Log().IsEnabled(LogLevel.Information))
+			if (IsPointersSuspended)
 			{
-				this.Log().Info(
-					"Multi touches are not supported yet by UNO pointer events. You will receive event only for the first pointer. " +
-					"Note: This is only for pointers events, scalling using pin and pan gestures in the ScrollViewer does work properly.");
+				return false;
 			}
 
 			if (!(originalSource is UIElement srcElement))

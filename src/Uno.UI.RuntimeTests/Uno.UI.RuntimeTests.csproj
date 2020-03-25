@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project Sdk="MSBuild.Sdk.Extras">
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;xamarinios10;monoandroid80;monoandroid90;xamarinmac20;uap10.0.17763</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;xamarinios10;monoandroid90;xamarinmac20;uap10.0.17763</TargetFrameworks>
 		
     <!-- Ensures the .xr.xml files are generated in a proper layout folder -->
     <GenerateLibraryLayout>true</GenerateLibraryLayout>
@@ -22,9 +22,10 @@
 	</PropertyGroup>
 	
 	<ItemGroup>
-		<PackageReference Include="FluentAssertions" Version="5.10.2" />
+		<PackageReference Include="FluentAssertions" Version="5.10.3" />
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
+		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj" />
 		<Reference Include="System.Xml" />
 		<Reference Include="System.Xml.Linq" />
 	</ItemGroup>

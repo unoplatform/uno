@@ -194,9 +194,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			await Task.Delay(100);
 			_app.WaitForText(txt, initialText + "Hello!");
 
-			tglReadonly.FastTap();
+			var previousText = txt.GetDependencyPropertyValue<string>("Text");
+
+			tglReadonly.Tap();
 			_app.EnterText(txt, " Works again!");
-			_app.WaitForText(txt, initialText + "Hello! Works again!");
+
+			var newText = "";
+
+			_app.WaitFor(() => (newText = txt.GetDependencyPropertyValue<string>("Text")) != previousText);
+
+			Assert.IsTrue(newText.Contains("Works again!"));
 		}
 
 		[Test]
@@ -236,12 +243,16 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			var scoreboard = _app.Marked("Scoreboard");
 			_app.WaitForElement(textbox);
 
-			textbox.Tap().EnterTextAndDismiss("a");
+			_app.EnterText(textbox, "a");
+			_app.DismissKeyboard();
+
 			var text1 = textbox.GetDependencyPropertyValue<string>("Text");
 
 			text1.Should().StartWith("modified ", because: "custom IInputFilter should've hijacked the input");
 
-			textbox.Tap().EnterTextAndDismiss("a");
+			_app.EnterText(textbox, "a");
+			_app.DismissKeyboard();
+
 			var text2 = textbox.GetDependencyPropertyValue<string>("Text");
 			var text3 = scoreboard.GetDependencyPropertyValue<string>("Text");
 

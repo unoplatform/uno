@@ -37,6 +37,12 @@
 	<ItemGroup>
 		<LinkerDescriptor Include="LinkerConfig.xml" />
 	</ItemGroup>
+	
+	<ItemGroup>
+		<!-- Required to enable IDBFS (https://github.com/emscripten-core/emscripten/blob/d2148d096e2b5f3ec4886f93e24312ef88976020/ChangeLog.md#v1391-10302019) -->
+		<WasmShellExtraEmccFlags Include="-lidbfs.js" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<!--
 		This item group is required by the project templace because of the

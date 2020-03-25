@@ -1,5 +1,4 @@
-﻿#if XAMARIN_ANDROID
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -64,10 +63,7 @@ namespace Windows.UI.Xaml.Controls
 			var ret = Uno.UI.Controls.BindableView.GetNativeMeasuredDimensionsFast(view)
 				.PhysicalToLogicalPixels();
 
-			ret.Width = Math.Min(slotSize.Width, ret.Width);
-			ret.Height = Math.Min(slotSize.Height, ret.Height);
-
-			return ret;
+			return ret.AtMost(slotSize);
 		}
 
 		protected abstract void MeasureChild(View view, int widthSpec, int heightSpec);
@@ -120,4 +116,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-#endif

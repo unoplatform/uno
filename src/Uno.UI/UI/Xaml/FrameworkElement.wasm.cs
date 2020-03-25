@@ -20,6 +20,8 @@ namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : IEnumerable
 	{
+		bool IFrameworkElementInternal.HasLayouter => true;
+
 		partial void OnLoadingPartial();
 
 		/*
@@ -267,6 +269,15 @@ namespace Windows.UI.Xaml
 		internal void ResumeRendering() => throw new NotSupportedException();
 
 		public IEnumerator GetEnumerator() => _children.GetEnumerator();
+
+		protected void SetCornerRadius(CornerRadius cornerRadius)
+		{
+			var borderRadius = cornerRadius == CornerRadius.None
+				? ""
+				: $"{cornerRadius.TopLeft}px {cornerRadius.TopRight}px {cornerRadius.BottomRight}px {cornerRadius.BottomLeft}px";
+
+			SetStyle("border-radius", borderRadius);
+		}
 
 		protected void SetBorder(Thickness thickness, Brush brush, CornerRadius cornerRadius)
 		{

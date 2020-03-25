@@ -242,6 +242,7 @@ As those events are tightly coupled to the native events, Uno has to make some c
   button was pressed at the moment where you touched the screen, otherwise you will have the `IsLeftButtonPressed` and the `IsBarrelButtonPressed`.
 * The `Holding` event is not raised after a given delay like on WinUI, but instead we rely on the fact that we usually 
   get a lot of moves for pens and fingers, so we raise the event only when we get a move that exceed defined thresholds for holding.
+* On WASM, Shapes must have a non null Fill to receive pointer events (setting the Stroke is not sufficient).
 
 ### Pointer capture
 

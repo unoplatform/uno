@@ -387,7 +387,7 @@ namespace Uno.UI.SourceGenerators.BindableTypeProviders
 
 					foreach (var property in properties)
 					{
-						var propertyTypeName = GetGlobalQualifier(property.Type) + SanitizeTypeName(property.Type.ToString());
+						var propertyTypeName = property.Type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
 						var propertyName = property.Name;
 
 						if (IsStringIndexer(property))

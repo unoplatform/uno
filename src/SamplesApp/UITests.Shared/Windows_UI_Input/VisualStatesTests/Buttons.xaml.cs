@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Uno.Extensions;
-using Uno.UI.Sample.Views.Helper;
+using Uno.UI.Extensions;
 using Uno.UI.Samples.Controls;
 
 namespace UITests.Shared.Windows_UI_Input.VisualStatesTests

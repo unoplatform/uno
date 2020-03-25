@@ -7,7 +7,7 @@ namespace Windows.Storage.FileProperties
 	#endif
 	public  partial class BasicProperties : global::Windows.Storage.FileProperties.IStorageItemExtraProperties
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::System.DateTimeOffset DateModified
 		{

@@ -324,6 +324,32 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ContentDialogTests
 
 		[Test]
 		[AutoRetry]
+		public void ContentDialog_Closing_PrimaryDialogCancelClosing()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.ContentDialogTests.ContentDialog_Closing");
+
+			var showDialog = _app.Marked("PrimaryDialogCancelClosing");
+			var resultText = _app.Marked("ResultTextBlock");
+			var closedText = _app.Marked("DidCloseTextBlock");
+			var closeButton = _app.Marked("CloseButton");
+			var primaryButton = _app.Marked("PrimaryButton");
+
+			_app.WaitForElement(showDialog);
+			_app.FastTap(showDialog);
+
+			_app.WaitForElement(primaryButton);
+			_app.FastTap(primaryButton);
+
+			_app.WaitForDependencyPropertyValue(resultText, "Text", "Primary");
+			_app.WaitForDependencyPropertyValue(closedText, "Text", "Not closed");
+
+			_app.FastTap(closeButton);
+
+			_app.WaitForDependencyPropertyValue(closedText, "Text", "Closed");
+		}
+
+		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.Browser)] //TODO: https://github.com/unoplatform/uno/issues/1583
 		public void ContentDialog_ComboBox()
 		{

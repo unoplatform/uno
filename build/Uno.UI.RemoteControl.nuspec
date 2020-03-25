@@ -15,12 +15,6 @@
     <repository type="git" url="https://github.com/unoplatform/uno.git" />
 
     <dependencies>
-      <!-- Android 8.0 -->
-      <group targetFramework="MonoAndroid80">
-        <dependency id="Uno.UI" version="1.29.0-dev.93" />
-
-        <dependency id="Newtonsoft.Json" version="12.0.2" />
-      </group>
 
       <!-- Android 9.0 -->
       <group targetFramework="MonoAndroid90">
@@ -80,9 +74,6 @@
     <!-- Remote Control -->
     <file src="..\src\Uno.UI.RemoteControl\bin\Release\netstandard2.0\Uno.UI.RemoteControl.dll" target="lib\netstandard2.0" />
     <file src="..\src\Uno.UI.RemoteControl\bin\Release\netstandard2.0\Uno.UI.RemoteControl.pdb" target="lib\netstandard2.0" />
-    
-    <file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid80\Uno.UI.RemoteControl.dll" target="lib\MonoAndroid80" />
-    <file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid80\Uno.UI.RemoteControl.pdb" target="lib\MonoAndroid80" />
     
     <file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid90\Uno.UI.RemoteControl.dll" target="lib\MonoAndroid90" />
     <file src="..\src\Uno.UI.RemoteControl\bin\Release\MonoAndroid90\Uno.UI.RemoteControl.pdb" target="lib\MonoAndroid90" />

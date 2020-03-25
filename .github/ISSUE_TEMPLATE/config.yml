@@ -1,0 +1,5 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions
+    url: https://stackoverflow.com/questions/tagged/uno-platform
+    about: 'For general questions about Uno, visit Stackoverflow with the uno-platform tag'

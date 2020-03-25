@@ -364,8 +364,14 @@ namespace Windows.UI.Xaml.Controls
 			IsDropDownOpen = true;
 		}
 
-		// This is required by some apps trying to emulate the native iPhone look for ComboBox.
-		// The standard popup layouter works like on Windows, and doesn't stretch to take the full size of the screen.
+		/// <summary>
+		/// Stretches the opened Popup horizontally, and uses the VerticalAlignment
+		/// of the first child for positioning.
+		/// </summary>
+		/// <remarks>
+		/// This is required by some apps trying to emulate the native iPhone look for ComboBox.
+		/// The standard popup layouter works like on Windows, and doesn't stretch to take the full size of the screen.
+		/// </remarks>
 		public bool IsPopupFullscreen { get; set; } = false;
 
 		private void UpdateDropDownState()
@@ -445,9 +451,10 @@ namespace Windows.UI.Xaml.Controls
 
 				if (_combo.IsPopupFullscreen)
 				{
-					// Size : Note we set both Min and Max to match the UWP behavior which alter only those properties
+					// Size : Note we set both Min and Max to match the UWP behavior which alter only those
+					//        properties. The MinHeight is not set to allow the the root child control to specificy
+					//		  one and provide a VerticalAlignment.
 					child.MinWidth = available.Width;
-					child.MinHeight = available.Height;
 					child.MaxWidth = available.Width;
 					child.MaxHeight = available.Height;
 				}
@@ -480,7 +487,27 @@ namespace Windows.UI.Xaml.Controls
 
 				if (_combo.IsPopupFullscreen)
 				{
-					child.Arrange(new Rect(new Point(), finalSize));
+					Point getChildLocation()
+					{
+						switch (child.VerticalAlignment)
+						{
+							default:
+							case VerticalAlignment.Top:
+								return new Point();
+							case VerticalAlignment.Bottom:
+								return new Point(0, finalSize.Height - child.DesiredSize.Height);
+						}
+					}
+
+					var childSize = new Size(finalSize.Width, Math.Min(finalSize.Height, child.DesiredSize.Height));
+					var finalRect = new Rect(getChildLocation(), childSize);
+
+					if (this.Log().IsEnabled(LogLevel.Debug))
+					{
+						this.Log().Debug($"FullScreen Layout for dropdown (desired: {desiredSize} / available: {finalSize} / visible: {visibleBounds} / finalRect: {finalRect} )");
+					}
+
+					child.Arrange(finalRect);
 
 					return;
 				}

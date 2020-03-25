@@ -581,15 +581,19 @@ namespace AppKit
 				var name = (innerView as IFrameworkElement)?.Name;
 				var namePart = string.IsNullOrEmpty(name) ? "" : $"-'{name}'";
 
+				var uiElement = innerView as UIElement;
+				var desiredSize = uiElement?.DesiredSize.ToString() ?? "<native/unk>";
+
 				return sb
 						.Append(spacing)
 						.Append(innerView == viewOfInterest ? "*>" : ">")
 						.Append(innerView.ToString() + namePart)
 						.Append($"-({innerView.Frame.Width}x{innerView.Frame.Height})@({innerView.Frame.X},{innerView.Frame.Y})")
-
+						.Append($" d:{desiredSize}")
 #if __IOS__
 						.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
 #endif
+						.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
 						.AppendLine();
 			}
 		}

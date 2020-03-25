@@ -73,20 +73,22 @@ On **iOS**, tapping the back button automatically triggers a back navigation on 
 
 ## Properties
 
-| Property                              | Windows | iOS | Android | Comments                                                        |
-|---------------------------------------|:-------:|:---:|:-------:|------------------------------------------------------           |
-| Background                            | x       | x   | x       |                                                                 |
-| Content                               | x       | x   | x       |                                                                 |
-| Foreground                            | x       | x   | x       |                                                                 |
-| Height                                | x       | -   | -       | **iOS** and **Android**: Fixed and can't be changed.            |
-| HorizontalAlignment                   | x       | -   | x       | **iOS**: Always use `HorizontalAlignment.Stretch`.              |
-| Opacity                               | x       | x   | x       |                                                                 |
-| Padding                               | x       | x   | x       | **iOS** and **Android**: Please refer to the `Padding` section. |
-| PrimaryCommands                       | x       | x   | x       |                                                                 |
-| SecondaryCommands                     | x       | -   | x       | **iOS**: Not supported.                                         |
-| VerticalAlignment                     | x       | -   | x       | **iOS**: Always use `VerticalAlignment.Top`.                    |
-| Visibility                            | x       | x   | x       |                                                                 |
-| Width                                 | x       | -   | x       | **iOS**: Always use `double.NaN`.                               |
+| Property                              | Windows | iOS | Android | Comments                                                                                                               |
+|---------------------------------------|:-------:|:---:|:-------:|------------------------------------------------------                                                                  |
+| Background                            | x       | x   | x       |                                                                                                                        |
+| Content                               | x       | x   | x       |                                                                                                                        |
+| Foreground                            | x       | x   | x       |                                                                                                                        |
+| Height                                | x       | -   | -       | **iOS** and **Android**: Fixed and can't be changed.                                                                   |
+| HorizontalAlignment                   | x       | -   | x       | **iOS**: Always use `HorizontalAlignment.Stretch`.                                                                     |
+| Opacity                               | x       | x   | x       |                                                                                                                        |
+| Padding                               | x       | x   | x       | **iOS** and **Android**: Please refer to the `Padding` section.                                                        |
+| PrimaryCommands                       | x       | x   | x       |                                                                                                                        |
+| SecondaryCommands                     | x       | -   | x       | **iOS**: Not supported.                                                                                                |
+| VerticalAlignment                     | x       | -   | x       | **iOS**: Always use `VerticalAlignment.Top`.                                                                           |
+| Visibility                            | x       | x   | x       |                                                                                                                        |
+| Width                                 | x       | -   | x       | **iOS**: Always use `double.NaN`.                                                                                      |
+| HorizontalContentAlignment            | x       | -   | x       | **Android**: Stretch and Left are supported. **Windows**: Set `IsDynamicOverflowEnabled="False"` for proper behavior.  |
+| VerticalContentAlignment              | x       | -   | -       | Only supported on Windows. **Android**: Alignment needs to be done through the content itself.                         |
 
 *If it's not listed, assume it's not supported.*
 
@@ -601,7 +603,9 @@ Gets or sets a value indicating whether the user can interact with the control.
 - > How can I add an elevation shadow to the CommandBar on Android?
   
   ```xml
-  <CommandBar toolkit:CommandBarExtensions.Elevation="4" />
+  xmlns:toolkit="using:Uno.UI.Toolkit"
+  ...
+  <CommandBar toolkit:UIElementExtensions.Elevation="4" />
   ```
   
 - > How can I use a Path for the AppBarButton Icon?

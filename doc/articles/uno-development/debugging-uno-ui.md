@@ -3,7 +3,7 @@
 ## Building Uno.UI
 
 Prerequisites:
-- Visual Studio 2017 (15.8 or later) or 2019 (Preview 2 or later)
+- Visual Studio 2019 (16.3 or later)
     - `Mobile Development with .NET` (Xamarin) development
     - `Visual Studio extensions development` (for the VSIX projects)
     - `ASP.NET and Web Development`

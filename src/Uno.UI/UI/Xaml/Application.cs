@@ -55,11 +55,13 @@ namespace Windows.UI.Xaml
 
 		public event UnhandledExceptionEventHandler UnhandledException;
 
+#if !__ANDROID__
 		[NotImplemented]
 		public void Exit()
 		{
 
 		}
+#endif
 
 		public static void Start(global::Windows.UI.Xaml.ApplicationInitializationCallback callback)
 		{

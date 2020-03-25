@@ -1,4 +1,4 @@
-﻿using Uno.Extensions;
+using Uno.Extensions;
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -8,12 +8,16 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class DatePicker : Control
 	{
 		public event EventHandler<DatePickerValueChangedEventArgs> DateChanged;
+		public event TypedEventHandler<DatePicker, DatePickerSelectedValueChangedEventArgs> SelectedDateChanged;
+
+		private static readonly DateTimeOffset UnsetDateValue = DateTimeOffset.MinValue;
 
 		#region DateProperty
 
@@ -27,20 +31,52 @@ namespace Windows.UI.Xaml.Controls
 		//Set initial value of DatePicker to DateTimeOffset.MinValue to avoid 2 way binding issue where the DatePicker reset Date(DateTimeOffset.MinValue) after the initial binding value.
 		//We assume that this is the view model who will set the initial value just the time to fix #18331
 		public static readonly DependencyProperty DateProperty =
-			DependencyProperty.Register("Date", typeof(DateTimeOffset), typeof(DatePicker), new PropertyMetadata(DateTimeOffset.MinValue,
+			DependencyProperty.Register("Date", typeof(DateTimeOffset), typeof(DatePicker), new PropertyMetadata(UnsetDateValue,
 				(s, e) => ((DatePicker)s).OnDatePropertyChanged((DateTimeOffset)e.NewValue, (DateTimeOffset)e.OldValue)));
 
 		private void OnDatePropertyChanged(DateTimeOffset newValue, DateTimeOffset oldValue)
 		{
-#if XAMARIN
+			// pass newValue to SelectedDate, except when originated from SelectedDate to avoid ping pong
+			if ((SelectedDate != newValue) &&
+				!(newValue == UnsetDateValue && !SelectedDate.HasValue))
+			{
+				SelectedDate = newValue;
+			}
+
 			UpdateDisplayedDate();
-#endif
 
 			OnDateChangedPartial();
 			DateChanged?.Invoke(this, new DatePickerValueChangedEventArgs(newValue, oldValue));
 		}
 
 		partial void OnDateChangedPartial();
+		#endregion
+
+		#region SelectedDate
+		public static DependencyProperty SelectedDateProperty { get; } = DependencyProperty.Register(
+			nameof(SelectedDate),
+			typeof(DateTimeOffset?),
+			typeof(DatePicker),
+			new PropertyMetadata(default(DateTimeOffset?), (s, e) => (s as DatePicker).OnSelectedDateChanged((DateTimeOffset?)e.NewValue, (DateTimeOffset?)e.OldValue)));
+
+		public DateTimeOffset? SelectedDate
+		{
+			get => (DateTimeOffset?)GetValue(SelectedDateProperty);
+			set => SetValue(SelectedDateProperty, value);
+		}
+
+		private void OnSelectedDateChanged(DateTimeOffset? newValue, DateTimeOffset? oldValue)
+		{
+			if (Date != (newValue ?? UnsetDateValue))
+			{
+				Date = newValue ?? UnsetDateValue;
+			}
+
+			OnSelectedDatePartial();
+			SelectedDateChanged?.Invoke(this, new DatePickerSelectedValueChangedEventArgs(newValue, oldValue));
+		}
+
+		partial void OnSelectedDatePartial();
 		#endregion
 
 		#region DayVisibleProperty
@@ -155,8 +191,6 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void InitializePartial();
 
-#if XAMARIN
-
 		#region Template parts
 		public const string DayTextBlockPartName = "DayTextBlock";
 		public const string MonthTextBlockPartName = "MonthTextBlock";
@@ -237,21 +271,21 @@ namespace Windows.UI.Xaml.Controls
 			if (_flyoutButton != null)
 			{
 #if __IOS__ || __ANDROID__
-				_flyoutButton.Flyout = new DatePickerFlyout()
+				var flyout = new DatePickerFlyout()
 				{
-#if __IOS__
-					Placement = FlyoutPlacement,
-#endif
 					Date = Date,
 					MinYear = MinYear,
-					MaxYear = MaxYear
+					MaxYear = MaxYear,
 				};
+				_flyoutButton.Flyout = flyout;
 
-				BindToFlyout(nameof(Date));
+				flyout.Opened += (s, e) => flyout.Date = SelectedDate ?? DateTimeOffset.Now;
+				flyout.DatePicked += (s, e) => Date = e.NewDate;
+
 				BindToFlyout(nameof(MinYear));
 				BindToFlyout(nameof(MaxYear));
-				_flyoutButton.Flyout.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
-				_flyoutButton.Flyout.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
+				flyout.BindToEquivalentProperty(this, nameof(LightDismissOverlayMode));
+				flyout.BindToEquivalentProperty(this, nameof(LightDismissOverlayBackground));
 #endif
 			}
 		}
@@ -263,30 +297,44 @@ namespace Windows.UI.Xaml.Controls
 
 		private void InitializeTextBlocks(IFrameworkElement container)
 		{
-			var items = GetOrderedTextBlocksForCulture(CultureInfo.CurrentCulture);
-			var flyoutButtonGrid = container.GetTemplateChild(FlyoutButtonGridPartName) as Grid;
+			if (container.GetTemplateChild(FlyoutButtonGridPartName) is Grid grid)
+			{
+				/* DatePicker normally contains 3 textblocks meant for day/month/year with a different Grid.Column each.
+				 * We need to shuffle the columns with the order dictated by current culture, eg: yyyy/mm/dd vs mm/dd/yyyy...
+				 * Since we can't just "move" the column, we have to move the textblocks' column, and
+				 * swap the relevant properties (eg: ColumnDefinition.Width) from the old column to the new one. */
+				var items = GetOrderedTextBlocksForCulture(CultureInfo.CurrentCulture);
+				var oldColumnInfos = new[] { DayColumnPartName, MonthColumnPartName, YearColumnPartName }
+					// TODO: add safe-guard when GetTemplateChild(columnName) is implemented
+					.Select(x => GetColumnIndex(grid, x))
+					.Select(x => new { Column = x, grid.ColumnDefinitions.ElementAtOrDefault(x)?.Width })
+					.ToArray();
 
-			Grid.SetColumn(items[0], GetColumnIndex(flyoutButtonGrid, DayColumnPartName));
-			Grid.SetColumn(items[1], GetColumnIndex(flyoutButtonGrid, MonthColumnPartName));
-			Grid.SetColumn(items[2], GetColumnIndex(flyoutButtonGrid, YearColumnPartName));
+				// update TextBlocks' Grid.Column and their respective ColumnDefinition.Width
+				foreach (var item in items)
+				{
+					if (grid.ColumnDefinitions.ElementAtOrDefault(oldColumnInfos[item.NewIndex].Column) is ColumnDefinition definition &&
+						oldColumnInfos[item.OldIndex].Width.HasValue)
+					{
+						definition.Width = oldColumnInfos[item.OldIndex].Width.Value;
+					}
+					Grid.SetColumn(item.Item, oldColumnInfos[item.NewIndex].Column);
+				}
+			}
 		}
 
-		private TextBlock[] GetOrderedTextBlocksForCulture(CultureInfo culture)
+		private (TextBlock Item, int OldIndex, int NewIndex)[] GetOrderedTextBlocksForCulture(CultureInfo culture)
 		{
 			var currentDateFormat = culture.DateTimeFormat.ShortDatePattern;
 
-			var dayIndex = currentDateFormat.IndexOf("d", StringComparison.InvariantCultureIgnoreCase);
-			var monthIndex = currentDateFormat.IndexOf("m", StringComparison.InvariantCultureIgnoreCase);
-			var yearIndex = currentDateFormat.IndexOf("y", StringComparison.InvariantCultureIgnoreCase);
-
-			return new[]
+			return new (int Index, string SortKey, TextBlock Item)[]
 				{
-					new { Index = dayIndex, Item = _dayTextBlock },
-					new { Index = monthIndex, Item = _monthTextBlock },
-					new { Index = yearIndex, Item = _yearTextBlock }
+					(0, "d", _dayTextBlock),
+					(1, "m", _monthTextBlock),
+					(2, "y", _yearTextBlock),
 				}
-				.OrderBy(x => x.Index)
-				.Select(x => x.Item)
+				.OrderBy(x => currentDateFormat.IndexOf(x.SortKey, StringComparison.InvariantCultureIgnoreCase))
+				.Select((x, i) => ( x.Item, x.Index, i ))
 				.ToArray();
 		}
 
@@ -327,7 +375,6 @@ namespace Windows.UI.Xaml.Controls
 				_yearTextBlock.Text = Date.Year.ToStringInvariant();
 			}
 		}
-#endif
 
 		protected override AutomationPeer OnCreateAutomationPeer()
 		{

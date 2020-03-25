@@ -88,6 +88,14 @@ namespace Windows.UI.Xaml
 
 		private /* readonly but partial */ Lazy<GestureRecognizer> _gestures;
 
+		/// <summary>
+		/// Validates that this element is able to manage pointer events.
+		/// If this element is only the shadow of a ghost native view that was instantiated for marshalling purposes by Xamarin,
+		/// the _gestures will be null and trying to interpret a native pointer event might crash the app.
+		/// This flag should be checked when receiving a pointer related event from the native view to prevent this case.
+		/// </summary>
+		private bool IsPointersSuspended => _gestures == null;
+
 		// ctor
 		private void InitializePointers()
 		{
@@ -163,7 +171,7 @@ namespace Windows.UI.Xaml
 				{
 					return ctrl.IsLoaded && ctrl.IsEnabled;
 				}
-				else if (this is Windows.UI.Xaml.Controls.Control fwElt)
+				else if (this is Windows.UI.Xaml.FrameworkElement fwElt)
 				{
 					return fwElt.IsLoaded;
 				}

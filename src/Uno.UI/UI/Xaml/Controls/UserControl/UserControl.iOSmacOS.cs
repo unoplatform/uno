@@ -13,15 +13,6 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class UserControl : ContentControl
 	{
-		public UserControl ()
-		{
-			Initialize ();
-		}
-
-
-		void Initialize ()
-		{
-		}
 
 		// This property is present for binary compatibility with 
 		// previous 

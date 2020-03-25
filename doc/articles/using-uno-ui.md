@@ -2,7 +2,7 @@
 
 ## Pre-requisites
 
-* [**Visual Studio 2017 15.5 or later**](https://visualstudio.microsoft.com/), with :
+* [**Visual Studio 2019 16.3 or later**](https://visualstudio.microsoft.com/), with :
 	* Xamarin component, with the iOS Remote Simulator installed
 	* A working Mac with Visual Studio for Mac, XCode 8.2 or later installed
 	* The google Android x86 emulators

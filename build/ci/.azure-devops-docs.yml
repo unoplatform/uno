@@ -1,11 +1,11 @@
 parameters:
-  pool: ''
+  vmImage: ''
 
 jobs:
 - job: Documentation
 
   pool:
-    vmImage: 'vs2017-win2016'
+    vmImage: ${{ parameters.vmImage }}
 
   variables:
     CombinedConfiguration: Release|Any CPU

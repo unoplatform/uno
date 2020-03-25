@@ -70,9 +70,6 @@ namespace Uno.UI.Controls
 			_originalBackground = Native.Background;
 			_originalTitleTextColor = Native.GetTitleTextColor();
 
-			// Change the default value of the CommandBar's height to 64 px
-			Element.SetValue(FrameworkElement.HeightProperty, 64d, DependencyPropertyValuePrecedences.DefaultValue);
-
 			// Content
 			// This allows custom Content to be properly laid out inside the native Toolbar.
 			_contentContainer = new Border()
@@ -81,8 +78,16 @@ namespace Uno.UI.Controls
 				// This container requires a fixed height to be properly laid out by its native parent.
 				// According to Google's Material Design Guidelines, the Toolbar must have a minimum height of 48.
 				// https://material.io/guidelines/layout/structure.html
-				MinHeight = 48,
+				Height = 48,
+				Name = "CommandBarRendererContentHolder",
+
+				// Set the alignment so that the measured sized
+				// returned is size of the child, not the available
+				// size provided to the ToolBar view.
+				VerticalAlignment = VerticalAlignment.Top,
+				HorizontalAlignment = HorizontalAlignment.Left,
 			};
+
 			_contentContainer.SetParent(Element);
 			Native.AddView(_contentContainer);
 			yield return Disposable.Create(() => Native.RemoveView(_contentContainer));
@@ -118,6 +123,9 @@ namespace Uno.UI.Controls
 				new[] { CommandBar.VisibilityProperty },
 				new[] { CommandBar.PaddingProperty },
 				new[] { CommandBar.OpacityProperty },
+				new[] { CommandBar.HorizontalContentAlignmentProperty },
+				new[] { CommandBar.VerticalContentAlignmentProperty },
+				new[] { CommandBar.OpacityProperty },
 				new[] { SubtitleProperty },
 				new[] { NavigationCommandProperty },
 				new[] { BackButtonVisibilityProperty },
@@ -144,6 +152,8 @@ namespace Uno.UI.Controls
 			// Content
 			Native.Title = Element.Content as string;
 			_contentContainer.Child = Element.Content as View;
+			_contentContainer.VerticalAlignment = Element.VerticalContentAlignment;
+			_contentContainer.HorizontalAlignment = Element.HorizontalContentAlignment;
 			_contentContainer.Visibility = Element.Content is View
 				? Visibility.Visible
 				: Visibility.Collapsed;

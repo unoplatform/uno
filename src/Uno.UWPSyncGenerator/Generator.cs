@@ -115,9 +115,25 @@ namespace Uno.UWPSyncGenerator
 			process.WaitForExit();
 			var installPath = process.StandardOutput.ReadToEnd().Split('\r').First();
 
+			SetupMSBuildLookupPath(installPath);
+		}
+
+		private static void SetupMSBuildLookupPath(string installPath)
+		{
 			Environment.SetEnvironmentVariable("VSINSTALLDIR", installPath);
 
+			bool MSBuildExists() => File.Exists(Path.Combine(MSBuildBasePath, "Microsoft.Build.dll"));
+
 			MSBuildBasePath = Path.Combine(installPath, "MSBuild\\15.0\\Bin");
+
+			if (!MSBuildExists())
+			{
+				MSBuildBasePath = Path.Combine(installPath, "MSBuild\\Current\\Bin");
+				if (!MSBuildExists())
+				{
+					throw new InvalidOperationException($"Invalid Visual studio installation (Cannot find Microsoft.Build.dll)");
+				}
+			}
 		}
 
 		protected string GetNamespaceBasePath(INamedTypeSymbol type)
@@ -1406,7 +1422,7 @@ namespace Uno.UWPSyncGenerator
 
 			var properties = new Dictionary<string, string>
 							{
-								{ "VisualStudioVersion", "15.0" },
+								// { "VisualStudioVersion", "15.0" },
 								// { "Configuration", "Debug" },
 								//{ "BuildingInsideVisualStudio", "true" },
 								{ "SkipUnoResourceGeneration", "true" }, // Required to avoid loading a non-existent task

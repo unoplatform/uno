@@ -3,7 +3,7 @@ using Uno.UI.Samples.Controls;
 using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
-using Uno.UI.Sample.Views.Helper;
+using Uno.UI.Extensions;
 using System;
 using System.Collections.Generic;
 

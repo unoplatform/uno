@@ -169,6 +169,6 @@ namespace Windows.UI.Xaml.Shapes
 		protected virtual void RefreshShape(bool forceRefresh = false) { }
 
 		internal override bool IsViewHit()
-			=> Fill != null || base.IsViewHit();
+			=> Fill != null; // Do not invoke base.IsViewHit(): We don't have to have de FrameworkElement.Background to be hit testable!
 	}
 }
