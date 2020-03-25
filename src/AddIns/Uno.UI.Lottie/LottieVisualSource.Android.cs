@@ -106,7 +106,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		Size IAnimatedVisualSource.Measure(Size availableSize)
 		{
-			throw new NotImplementedException();
+			return availableSize;
 		}
 	}
 }
