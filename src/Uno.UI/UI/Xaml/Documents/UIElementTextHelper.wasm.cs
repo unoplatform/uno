@@ -137,7 +137,7 @@ namespace Uno.UI.UI.Xaml.Documents
 			switch (localValue)
 			{
 				case SolidColorBrush scb:
-					element.SetStyle("color", scb.ColorWithOpacity.ToCssString());
+					element.SetStyle("color", scb.ColorWithOpacity.ToHexString());
 					break;
 
 				case UnsetValue uv:

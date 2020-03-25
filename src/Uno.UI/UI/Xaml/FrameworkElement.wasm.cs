@@ -310,7 +310,7 @@ namespace Windows.UI.Xaml
 
 				SetStyle(
 					("border-style", "solid"),
-					("border-color", borderColor.ToCssString()),
+					("border-color", borderColor.ToHexString()),
 					("border-image", borderImage),
 					("border-width", $"{thickness.Top}px {thickness.Right}px {thickness.Bottom}px {thickness.Left}px"),
 					("border-radius", borderRadius));
