@@ -36,6 +36,8 @@ namespace Benchmarks.Shared.Controls
 			this.InitializeComponent();
 		}
 
+		public string ClassFilter { get; set; } = "";
+
 		private void OnRunTests(object sender, object args)
 		{
 			_ = Dispatcher.RunAsync(
@@ -81,6 +83,7 @@ namespace Benchmarks.Shared.Controls
 			   where !type.IsGenericType
 			   where type.Namespace?.StartsWith(BenchmarksBaseNamespace) ?? false
 			   where BenchmarkConverter.TypeToBenchmarks(type, config).BenchmarksCases.Length != 0
+			   where string.IsNullOrEmpty(ClassFilter) || type.Name.Contains(ClassFilter)
 			   select type;
 
 		public class CoreConfig : ManualConfig
