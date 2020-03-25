@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml
 	/// <summary>
 	/// A <see cref="DependencyPropertyDetails"/> collection
 	/// </summary>
-    partial class DependencyPropertyDetailsCollection
+    partial class DependencyPropertyDetailsCollection : IDisposable
     {
 		private readonly Type _ownerType;
 		private readonly ManagedWeakReference _ownerReference;
@@ -45,6 +45,14 @@ namespace Windows.UI.Xaml
 			// Prefetch known properties for faster access
 			DataContextPropertyDetails = GetPropertyDetails(dataContextProperty);
 			TemplatedParentPropertyDetails = GetPropertyDetails(templatedParentProperty);
+		}
+
+		public void Dispose()
+		{
+			for (var i = 0; i < _entries.Length; i++)
+			{
+				_entries[i].Details?.Dispose();
+			}
 		}
 
 		/// <summary>

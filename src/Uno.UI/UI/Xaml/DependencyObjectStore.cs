@@ -169,8 +169,23 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		~DependencyObjectStore()
+		{
+			Dispose(false);
+		}
+
 		public void Dispose()
 		{
+			Dispose(true);
+		}
+
+		private void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				GC.SuppressFinalize(this);
+			}
+
 			BinderDispose();
 		}
 
