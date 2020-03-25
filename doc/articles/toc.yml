@@ -54,6 +54,8 @@
     href: features/working-with-assets.md
   - name: Animations
     href: features/working-with-animations.md
+  - name: Lottie animations
+    href: features/Lottie.md
   - name: Custom fonts
     href: features/custom-fonts.md
   - name: Themes

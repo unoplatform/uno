@@ -1,7 +1,7 @@
 ﻿# Lottie for Uno
 
 **IMPORTANT**
-This is an experimental implementation, **only Wasm target is supported yet and still incompleted**.
+This is an experimental implementation, **still incomplete**.
 
 ## Using the `LottieVisualSource`:
 
@@ -21,6 +21,6 @@ On UWP, you'll need to reference the following packages in your head project:
   * `Microsoft.Toolki.Uwp.UI.Lottie` (for the `LottieVisualSource`)
   * `Microsoft.UI.Xaml` (for the `AnimatedVisualPlayer`)
 
-On Wasm, you'll need the following packages:
+On Wasm, Android, iOS and macOS, you'll need the following packages:
   * `Uno.UI.Lottie` (for the `LottieVisualSource`)
   * `Uno.UI` (for the `AnimatedVisualPlayer`)
