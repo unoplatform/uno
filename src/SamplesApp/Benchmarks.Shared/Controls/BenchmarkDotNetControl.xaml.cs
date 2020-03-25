@@ -91,7 +91,10 @@ namespace Benchmarks.Shared.Controls
 			public CoreConfig(ILogger logger)
 			{
 				Add(logger);
+
+#if __WASM__
 				Add(AsciiDocExporter.Default);
+#endif
 
 				Add(Job.InProcess
 					.WithLaunchCount(1)
@@ -100,6 +103,8 @@ namespace Benchmarks.Shared.Controls
 					.With(InProcessToolchain.Synchronous)
 					.WithId("InProcess")
 				);
+
+				ArtifactsPath = Path.GetTempPath();
 			}
 		}
 
