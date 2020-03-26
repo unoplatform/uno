@@ -72,7 +72,7 @@ declare namespace MonoSupport {
     class jsCallDispatcher {
         static registrations: Map<string, any>;
         static methodMap: {
-            [id: number]: any;
+            [id: string]: any;
         };
         static _isUnoRegistered: boolean;
         /**
@@ -100,6 +100,7 @@ declare namespace MonoSupport {
          * @param boundMethod the method to call
          */
         private static cacheMethod;
+        private static getMethodMapId;
     }
 }
 declare namespace Uno.UI {

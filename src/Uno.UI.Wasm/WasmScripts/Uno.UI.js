@@ -210,6 +210,7 @@ var Uno;
         Http.HttpClient = HttpClient;
     })(Http = Uno.Http || (Uno.Http = {}));
 })(Uno || (Uno = {}));
+// eslint-disable-next-line @typescript-eslint/no-namespace
 var MonoSupport;
 (function (MonoSupport) {
     /**
@@ -254,7 +255,7 @@ var MonoSupport;
          * @param pRet The pointer to the return value structure
          */
         static dispatch(id, pParams, pRet) {
-            return jsCallDispatcher.methodMap[id](pParams, pRet);
+            return jsCallDispatcher.methodMap[id + ""](pParams, pRet);
         }
         /**
          * Parses the method identifier
@@ -273,8 +274,11 @@ var MonoSupport;
          */
         static cacheMethod(boundMethod) {
             var methodId = Object.keys(jsCallDispatcher.methodMap).length;
-            jsCallDispatcher.methodMap[methodId] = boundMethod;
+            jsCallDispatcher.methodMap[methodId + ""] = boundMethod;
             return methodId;
+        }
+        static getMethodMapId(methodHandle) {
+            return methodHandle + "";
         }
     }
     jsCallDispatcher.registrations = new Map();
