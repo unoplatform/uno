@@ -47,7 +47,7 @@ namespace Uno.Foundation.Interop
 				_logger.Value.LogDebug($"InvokeJS for {memberName}/{typeof(TParam)}");
 			}
 			 
-			var pParms = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(TParam)));
+			var pParms = Marshal.AllocHGlobal(MarshalSizeOf<TParam>.Size);
 
 			try
 			{
@@ -81,8 +81,8 @@ namespace Uno.Foundation.Interop
 				_logger.Value.LogDebug($"InvokeJS for {memberName}/{typeof(TParam)}/{typeof(TRet)}");
 			}
 
-			var pParms = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(TParam)));
-			var pReturnValue = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(TRet)));
+			var pParms = Marshal.AllocHGlobal(MarshalSizeOf<TParam>.Size);
+			var pReturnValue = Marshal.AllocHGlobal(MarshalSizeOf<TRet>.Size);
 
 			TRet returnValue = default;
 
@@ -114,5 +114,9 @@ namespace Uno.Foundation.Interop
 			}
 		}
 
+		private class MarshalSizeOf<T>
+		{
+			internal static readonly int Size = Marshal.SizeOf(typeof(T));
+		}
 	}
 }
