@@ -5,8 +5,8 @@ class WindowManagerRegisterEventOnViewParams
 	HtmlId : number;
 	EventName : string;
 	OnCapturePhase : boolean;
-	EventFilterName : string;
-	EventExtractorName : string;
+	EventFilterId : number;
+	EventExtractorId : number;
 	public static unmarshal(pData:number) : WindowManagerRegisterEventOnViewParams
 	{
 		let ret = new WindowManagerRegisterEventOnViewParams();
@@ -33,29 +33,11 @@ class WindowManagerRegisterEventOnViewParams
 		}
 		
 		{
-			var ptr = Module.getValue(pData + 12, "*");
-			if(ptr !== 0)
-			{
-				ret.EventFilterName = String(Module.UTF8ToString(ptr));
-			}
-			else
-			
-			{
-				ret.EventFilterName = null;
-			}
+			ret.EventFilterId = Number(Module.getValue(pData + 12, "i32"));
 		}
 		
 		{
-			var ptr = Module.getValue(pData + 16, "*");
-			if(ptr !== 0)
-			{
-				ret.EventExtractorName = String(Module.UTF8ToString(ptr));
-			}
-			else
-			
-			{
-				ret.EventExtractorName = null;
-			}
+			ret.EventExtractorId = Number(Module.getValue(pData + 16, "i32"));
 		}
 		return ret;
 	}

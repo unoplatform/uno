@@ -666,6 +666,18 @@ namespace Uno.UI {
 			return true;
 		}
 
+		private setPointerEvents(htmlId: number, enabled: boolean) {
+			const element = this.getView(htmlId);
+			element.style.pointerEvents = enabled ? "auto" : "none";
+		}
+
+		public setPointerEventsNative(pParams: number): boolean {
+			const params = WindowManagerSetPointerEventsParams.unmarshal(pParams);
+			this.setPointerEvents(params.HtmlId, params.Enabled);
+
+			return true;
+		}
+
 		/**
 			* Load the specified URL into a new tab or window
 			* @param url URL to load
@@ -715,10 +727,10 @@ namespace Uno.UI {
 			elementId: number,
 			eventName: string,
 			onCapturePhase: boolean = false,
-			eventFilterName?: string,
-			eventExtractorName?: string
+			eventFilterId: number,
+			eventExtractorId: number,
 		): string {
-			this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventFilterName, eventExtractorName);
+			this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventFilterId, eventExtractorId);
 			return "ok";
 		}
 
@@ -733,7 +745,13 @@ namespace Uno.UI {
 		): boolean {
 			const params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
 
-			this.registerEventOnViewInternal(params.HtmlId, params.EventName, params.OnCapturePhase, params.EventFilterName, params.EventExtractorName);
+			this.registerEventOnViewInternal(
+				params.HtmlId,
+				params.EventName,
+				params.OnCapturePhase,
+				params.EventFilterId,
+				params.EventExtractorId);
+
 			return true;
 		}
 
@@ -771,11 +789,11 @@ namespace Uno.UI {
 			elementId: number,
 			eventName: string,
 			onCapturePhase: boolean = false,
-			eventFilterName?: string,
-			eventExtractorName?: string
+			eventFilterId: number,
+			eventExtractorId: number
 		): void {
 			const element = this.getView(elementId);
-			const eventExtractor = this.getEventExtractor(eventExtractorName);
+			const eventExtractor = this.getEventExtractor(eventExtractorId);
 			const eventHandler = (event: Event) => {
 				const eventPayload = eventExtractor
 					? `${eventExtractor(event)}`
@@ -995,30 +1013,34 @@ namespace Uno.UI {
 		 * Gets the event extractor function. See UIElement.HtmlEventExtractor
 		 * @param eventExtractorName an event extractor name.
 		 */
-		private getEventExtractor(eventExtractorName: string): (evt: Event) => string {
+		private getEventExtractor(eventExtractorId: number): (evt: Event) => string {
 
-			if (eventExtractorName) {
-				switch (eventExtractorName) {
-					case "PointerEventExtractor":
+			if (eventExtractorId) {
+				//
+				// NOTE TO MAINTAINERS: Keep in sync with Windows.UI.Xaml.UIElement.HtmlEventExtractor
+				//
+
+				switch (eventExtractorId) {
+					case 1:
 						return this.pointerEventExtractor;
 
-					case "KeyboardEventExtractor":
+					case 3:
 						return this.keyboardEventExtractor;
 
-					case "TappedEventExtractor":
+					case 2:
 						return this.tappedEventExtractor;
 
-					case "FocusEventExtractor":
+					case 4:
 						return this.focusEventExtractor;
 
-					case "CustomEventDetailJsonExtractor":
+					case 6:
 						return this.customEventDetailExtractor;
 
-					case "CustomEventDetailStringExtractor":
+					case 5:
 						return this.customEventDetailStringExtractor;
 				}
 
-				throw `Event filter ${eventExtractorName} is not supported`;
+				throw `Event extractor ${eventExtractorId} is not supported`;
 			}
 
 			return null;

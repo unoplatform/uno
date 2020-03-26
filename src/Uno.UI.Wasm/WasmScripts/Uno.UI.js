@@ -478,9 +478,11 @@ var Uno;
                     element.setAttribute("tabindex", contentDefinition.isFocusable ? "0" : "-1");
                 }
                 if (contentDefinition) {
+                    let classes = element.classList.value;
                     for (const className of uiElementRegistration.classNames) {
-                        element.classList.add(`uno-${className}`);
+                        classes += " uno-" + className;
                     }
+                    element.classList.value = classes;
                 }
                 // Add the html element to list of elements
                 this.allActiveElementsById[contentDefinition.id] = element;
@@ -795,6 +797,15 @@ var Uno;
                 this.setAsArranged(element);
                 return true;
             }
+            setPointerEvents(htmlId, enabled) {
+                const element = this.getView(htmlId);
+                element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+            setPointerEventsNative(pParams) {
+                const params = WindowManagerSetPointerEventsParams.unmarshal(pParams);
+                this.setPointerEvents(params.HtmlId, params.Enabled);
+                return true;
+            }
             /**
                 * Load the specified URL into a new tab or window
                 * @param url URL to load
@@ -834,8 +845,8 @@ var Uno;
                 * @param eventName The name of the event
                 * @param onCapturePhase true means "on trickle down" (going down to target), false means "on bubble up" (bubbling back to ancestors). Default is false.
                 */
-            registerEventOnView(elementId, eventName, onCapturePhase = false, eventFilterName, eventExtractorName) {
-                this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventFilterName, eventExtractorName);
+            registerEventOnView(elementId, eventName, onCapturePhase = false, eventFilterId, eventExtractorId) {
+                this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventFilterId, eventExtractorId);
                 return "ok";
             }
             /**
@@ -846,7 +857,7 @@ var Uno;
                 */
             registerEventOnViewNative(pParams) {
                 const params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
-                this.registerEventOnViewInternal(params.HtmlId, params.EventName, params.OnCapturePhase, params.EventFilterName, params.EventExtractorName);
+                this.registerEventOnViewInternal(params.HtmlId, params.EventName, params.OnCapturePhase, params.EventFilterId, params.EventExtractorId);
                 return true;
             }
             /**
@@ -870,9 +881,9 @@ var Uno;
                 * @param eventName The name of the event
                 * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
                 */
-            registerEventOnViewInternal(elementId, eventName, onCapturePhase = false, eventFilterName, eventExtractorName) {
+            registerEventOnViewInternal(elementId, eventName, onCapturePhase = false, eventFilterId, eventExtractorId) {
                 const element = this.getView(elementId);
-                const eventExtractor = this.getEventExtractor(eventExtractorName);
+                const eventExtractor = this.getEventExtractor(eventExtractorId);
                 const eventHandler = (event) => {
                     const eventPayload = eventExtractor
                         ? `${eventExtractor(event)}`
@@ -1061,23 +1072,26 @@ var Uno;
              * Gets the event extractor function. See UIElement.HtmlEventExtractor
              * @param eventExtractorName an event extractor name.
              */
-            getEventExtractor(eventExtractorName) {
-                if (eventExtractorName) {
-                    switch (eventExtractorName) {
-                        case "PointerEventExtractor":
+            getEventExtractor(eventExtractorId) {
+                if (eventExtractorId) {
+                    //
+                    // NOTE TO MAINTAINERS: Keep in sync with Windows.UI.Xaml.UIElement.HtmlEventExtractor
+                    //
+                    switch (eventExtractorId) {
+                        case 1:
                             return this.pointerEventExtractor;
-                        case "KeyboardEventExtractor":
+                        case 3:
                             return this.keyboardEventExtractor;
-                        case "TappedEventExtractor":
+                        case 2:
                             return this.tappedEventExtractor;
-                        case "FocusEventExtractor":
+                        case 4:
                             return this.focusEventExtractor;
-                        case "CustomEventDetailJsonExtractor":
+                        case 6:
                             return this.customEventDetailExtractor;
-                        case "CustomEventDetailStringExtractor":
+                        case 5:
                             return this.customEventDetailStringExtractor;
                     }
-                    throw `Event filter ${eventExtractorName} is not supported`;
+                    throw `Event extractor ${eventExtractorId} is not supported`;
                 }
                 return null;
             }
@@ -1882,22 +1896,10 @@ class WindowManagerRegisterEventOnViewParams {
             ret.OnCapturePhase = Boolean(Module.getValue(pData + 8, "i32"));
         }
         {
-            var ptr = Module.getValue(pData + 12, "*");
-            if (ptr !== 0) {
-                ret.EventFilterName = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.EventFilterName = null;
-            }
+            ret.EventFilterId = Number(Module.getValue(pData + 12, "i32"));
         }
         {
-            var ptr = Module.getValue(pData + 16, "*");
-            if (ptr !== 0) {
-                ret.EventExtractorName = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.EventExtractorName = null;
-            }
+            ret.EventExtractorId = Number(Module.getValue(pData + 16, "i32"));
         }
         return ret;
     }
@@ -2191,6 +2193,19 @@ class WindowManagerSetNameParams {
             else {
                 ret.Name = null;
             }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetPointerEventsParams {
+    static unmarshal(pData) {
+        let ret = new WindowManagerSetPointerEventsParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.Enabled = Boolean(Module.getValue(pData + 4, "i32"));
         }
         return ret;
     }

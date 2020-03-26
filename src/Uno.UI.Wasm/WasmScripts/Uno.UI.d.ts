@@ -296,6 +296,8 @@ declare namespace Uno.UI {
         *
         */
         setElementTransformNative(pParams: number): boolean;
+        private setPointerEvents;
+        setPointerEventsNative(pParams: number): boolean;
         /**
             * Load the specified URL into a new tab or window
             * @param url URL to load
@@ -322,7 +324,7 @@ declare namespace Uno.UI {
             * @param eventName The name of the event
             * @param onCapturePhase true means "on trickle down" (going down to target), false means "on bubble up" (bubbling back to ancestors). Default is false.
             */
-        registerEventOnView(elementId: number, eventName: string, onCapturePhase?: boolean, eventFilterName?: string, eventExtractorName?: string): string;
+        registerEventOnView(elementId: number, eventName: string, onCapturePhase: boolean, eventFilterId: number, eventExtractorId: number): string;
         /**
             * Add an event handler to a html element.
             *
@@ -611,8 +613,8 @@ declare class WindowManagerRegisterEventOnViewParams {
     HtmlId: number;
     EventName: string;
     OnCapturePhase: boolean;
-    EventFilterName: string;
-    EventExtractorName: string;
+    EventFilterId: number;
+    EventExtractorId: number;
     static unmarshal(pData: number): WindowManagerRegisterEventOnViewParams;
 }
 declare class WindowManagerRegisterUIElementParams {
@@ -689,6 +691,11 @@ declare class WindowManagerSetNameParams {
     HtmlId: number;
     Name: string;
     static unmarshal(pData: number): WindowManagerSetNameParams;
+}
+declare class WindowManagerSetPointerEventsParams {
+    HtmlId: number;
+    Enabled: boolean;
+    static unmarshal(pData: number): WindowManagerSetPointerEventsParams;
 }
 declare class WindowManagerSetPropertyParams {
     HtmlId: number;

@@ -208,6 +208,40 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
+		#region SetPointerEvents
+
+		internal static void SetPointerEvents(IntPtr htmlId, bool enabled)
+		{
+			if (UseJavascriptEval)
+			{
+				var enabledString = enabled ? "true" : "false";
+
+				var command = "Uno.UI.WindowManager.current.setPointerEvents(" + htmlId + ", " + enabledString + ");";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetPointerEventsParams
+				{
+					HtmlId = htmlId,
+					Enabled = enabled
+				};
+
+				TSInteropMarshaller.InvokeJS<WindowManagerSetPointerEventsParams, bool>("Uno:setPointerEventsNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetPointerEventsParams
+		{
+			public IntPtr HtmlId;
+
+			public bool Enabled;
+		}
+
+		#endregion
+
 		#region MeasureView
 		internal static Size MeasureView(IntPtr htmlId, Size availableSize)
 		{
@@ -764,12 +798,12 @@ namespace Uno.UI.Xaml
 		#endregion
 
 		#region RegisterEventOnView
-		internal static void RegisterEventOnView(IntPtr htmlId, string eventName, bool onCapturePhase, string eventFilterName, string eventExtractorName)
+		internal static void RegisterEventOnView(IntPtr htmlId, string eventName, bool onCapturePhase, int eventFilterId, int eventExtractorId)
 		{
 			if (UseJavascriptEval)
 			{
 				var onCapturePhaseStr = onCapturePhase ? "true" : "false";
-				var cmd = $"Uno.UI.WindowManager.current.registerEventOnView(\"{htmlId}\", \"{eventName}\", {onCapturePhaseStr}, \"{eventFilterName}\", \"{eventExtractorName}\");";
+				var cmd = $"Uno.UI.WindowManager.current.registerEventOnView(\"{htmlId}\", \"{eventName}\", {onCapturePhaseStr}, {eventFilterId}, {eventExtractorId});";
 
 				WebAssemblyRuntime.InvokeJS(cmd);
 			}
@@ -780,8 +814,8 @@ namespace Uno.UI.Xaml
 					HtmlId = htmlId,
 					EventName = eventName,
 					OnCapturePhase = onCapturePhase,
-					EventFilterName = eventFilterName,
-					EventExtractorName = eventExtractorName,
+					EventFilterId = eventFilterId,
+					EventExtractorId = eventExtractorId,
 				};
 
 				TSInteropMarshaller.InvokeJS<WindowManagerRegisterEventOnViewParams>("Uno:registerEventOnViewNative", parms);
@@ -799,11 +833,9 @@ namespace Uno.UI.Xaml
 
 			public bool OnCapturePhase;
 
-			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
-			public string EventFilterName;
+			public int EventFilterId;
 
-			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
-			public string EventExtractorName;
+			public int EventExtractorId;
 		}
 		#endregion
 
