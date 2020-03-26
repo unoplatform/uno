@@ -9,6 +9,7 @@ namespace Uno.UI.Samples.Content.UITests.Flyout
 		public Flyout_Simple()
 		{
 			this.InitializeComponent();
+			this.SampleRoot.SampleDescription = "note: buttons with * are not closable without native back button/gesture";
 		}
 	}
 }

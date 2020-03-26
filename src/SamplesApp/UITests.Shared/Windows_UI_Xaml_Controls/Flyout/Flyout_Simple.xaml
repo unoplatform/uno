@@ -21,115 +21,124 @@
 				<Setter.Value>
 					<ControlTemplate TargetType="FlyoutPresenter">
 						<Border BorderBrush="Tomato"
-								BorderThickness="2">
+								BorderThickness="2"
+								Background="Gray">
 							<ContentPresenter Content="{TemplateBinding Content}" />
 						</Border>
 					</ControlTemplate>
 				</Setter.Value>
 			</Setter>
 		</Style>
+		<Style x:Key="CenteredFlyoutPresenterStyle" TargetType="FlyoutPresenter">
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="FlyoutPresenter">
+						<ContentPresenter Content="{TemplateBinding Content}"
+										  HorizontalAlignment="Center"
+										  VerticalAlignment="Center" />
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Style x:Key="SimpleFlyoutButtonStyle" TargetType="Button">
+			<Setter Property="Width" Value="200" />
+			<Setter Property="Height" Value="50" />
+		</Style>
+		<Style x:Key="SmallSkyBlueBorderStyle" TargetType="Border">
+			<Setter Property="Width" Value="80" />
+			<Setter Property="Height" Value="80" />
+			<Setter Property="Background" Value="SkyBlue" />
+		</Style>
 	</UserControl.Resources>
 
-	<controls:SampleControl SampleDescription="Flyout tests">
+	<controls:SampleControl x:Name="SampleRoot">
 		<controls:SampleControl.SampleContent>
 			<DataTemplate>
 				<StackPanel HorizontalAlignment="Center">
-					<Button Content="Show Flyout Left"
-							Height="50"
-							Width="150">
+
+					<!-- Left, Right, Bottom, Top -->
+					<Button x:Name="LeftFlyoutButton"
+							Content="Show Flyout Left"
+							Style="{StaticResource SimpleFlyoutButtonStyle}">
 						<Button.Flyout>
-							<Flyout Placement="Left"
-									FlyoutPresenterStyle="{StaticResource SampleFlyoutPresenterStyle}">
-								<Border Background="Blue"
-										Height="180"
-										Width="180">
-								</Border>
+							<Flyout Placement="Left" FlyoutPresenterStyle="{StaticResource SampleFlyoutPresenterStyle}">
+								<Border Style="{StaticResource SmallSkyBlueBorderStyle}" />
 							</Flyout>
 						</Button.Flyout>
 					</Button>
-					<Button Content="Show Flyout Right"
-							Height="50"
-							Width="150">
+					<Button x:Name="RightFlyoutButton"
+							Content="Show Flyout Right"
+							Style="{StaticResource SimpleFlyoutButtonStyle}">
 						<Button.Flyout>
-							<Flyout Placement="Right"
-									FlyoutPresenterStyle="{StaticResource SampleFlyoutPresenterStyle}">
-								<Border Background="Blue"
-										Height="180"
-										Width="180">
-								</Border>
+							<Flyout Placement="Right" FlyoutPresenterStyle="{StaticResource SampleFlyoutPresenterStyle}">
+								<Border Style="{StaticResource SmallSkyBlueBorderStyle}" />
 							</Flyout>
 						</Button.Flyout>
 					</Button>
-					<Button Content="Show Flyout Bottom"
-							x:Name="FlyoutToBottomButton"
-							Height="50"
-							Width="150">
+					<Button x:Name="BottomFlyoutButton"
+							Content="Show Flyout Bottom"
+							Style="{StaticResource SimpleFlyoutButtonStyle}">
 						<Button.Flyout>
-							<Flyout Placement="Bottom"
-									x:Name="BottomFlyout"
-									x:Uid="BottomFlyout">
-								<Border Background="Blue"
-										Height="180"
-										Width="180">
-								</Border>
+							<Flyout Placement="Bottom" FlyoutPresenterStyle="{StaticResource SampleFlyoutPresenterStyle}">
+								<Border Style="{StaticResource SmallSkyBlueBorderStyle}" />
 							</Flyout>
 						</Button.Flyout>
 					</Button>
-					<Button Content="Show Flyout Top"
-							Height="50"
-							Width="150">
+					<Button x:Name="TopFlyoutButton"
+							Content="Show Flyout Top"
+							Style="{StaticResource SimpleFlyoutButtonStyle}">
 						<Button.Flyout>
-							<Flyout Placement="Top">
-								<Border Background="Blue"
-										Height="80"
-										Width="80">
-								</Border>
-							</Flyout>
-						</Button.Flyout>
-					</Button>
-					<Button Content="Show Flyout Full"
-							Height="50"
-							Width="150">
-						<Button.Flyout>
-							<Flyout Placement="Full">
-								<Border Background="Blue"
-										Height="80"
-										Width="80">
-								</Border>
+							<Flyout Placement="Top" FlyoutPresenterStyle="{StaticResource SampleFlyoutPresenterStyle}">
+								<Border Style="{StaticResource SmallSkyBlueBorderStyle}" />
 							</Flyout>
 						</Button.Flyout>
 					</Button>
 
-					<Button Content="Show Flyout Full Overlay"
-							Height="50"
-							Width="150">
+					<!-- Full, Full Centered, Full Overlay -->
+					<Button x:Name="FullFlyoutButton"
+							Content="Show Flyout Full*"
+							Style="{StaticResource SimpleFlyoutButtonStyle}">
 						<Button.Flyout>
-							<Flyout Placement="Full">
+							<Flyout Placement="Full" FlyoutPresenterStyle="{StaticResource SampleFlyoutPresenterStyle}">
+								<Border Style="{StaticResource SmallSkyBlueBorderStyle}" />
+							</Flyout>
+						</Button.Flyout>
+					</Button>
+					<Button x:Name="CenteredFullFlyoutButton"
+							Content="Show Flyout Centered Full"
+							Style="{StaticResource SimpleFlyoutButtonStyle}">
+						<Button.Flyout>
+							<Flyout Placement="Full" FlyoutPresenterStyle="{StaticResource CenteredFlyoutPresenterStyle}">
+								<Border Style="{StaticResource SmallSkyBlueBorderStyle}" />
+							</Flyout>
+						</Button.Flyout>
+					</Button>
+					<Button x:Name="FullOverlayFlyoutButton"
+							Content="Show Flyout Full Overlay*"
+							Style="{StaticResource SimpleFlyoutButtonStyle}">
+						<Button.Flyout>
+							<Flyout Placement="Full" FlyoutPresenterStyle="{StaticResource SampleFlyoutPresenterStyle}">
 								<Border Background="#80000000">
-									<Border Background="Blue"
-											VerticalAlignment="Center"
+									<Border VerticalAlignment="Center"
 											HorizontalAlignment="Center"
-											Height="80"
-											Width="80">
-									</Border>
+											Style="{StaticResource SmallSkyBlueBorderStyle}" />
 								</Border>
 							</Flyout>
 						</Button.Flyout>
 					</Button>
 
-					<Button Content="Show Flyout W/offset"
+					<!-- Offset... -->
+					<Button x:Name="WithOffsetFlyoutButton"
+							Content="Show Flyout W/offset"
 							Margin="100"
-							Height="50"
-							Width="150">
+							Style="{StaticResource SimpleFlyoutButtonStyle}">
 						<Button.Flyout>
-							<Flyout Placement="Left">
-								<Border Background="Blue"
-										Height="80"
-										Width="80">
-								</Border>
+							<Flyout Placement="Left" FlyoutPresenterStyle="{StaticResource SampleFlyoutPresenterStyle}">
+								<Border Style="{StaticResource SmallSkyBlueBorderStyle}" />
 							</Flyout>
 						</Button.Flyout>
 					</Button>
+
 				</StackPanel>
 			</DataTemplate>
 		</controls:SampleControl.SampleContent>
