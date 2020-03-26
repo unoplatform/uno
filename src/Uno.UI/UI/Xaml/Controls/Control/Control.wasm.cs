@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		/// This binary compatibility workaround that can be removed
 		public new static DependencyProperty IsEnabledProperty => FrameworkElement.IsEnabledProperty;
-		
+
 		public Control(string htmlTag = "div") : base(htmlTag)
 		{
 			InitializeControl();
@@ -46,15 +46,6 @@ namespace Windows.UI.Xaml.Controls
 			return this.GetChildren()?.FirstOrDefault() as IFrameworkElement;
 		}
 
-		partial void OnFocusStateChangedPartial(FocusState oldValue, FocusState newValue)
-		{
-			//if (newValue == FocusState.Pointer && Focusable)
-			//{
-			//	//Set native focus to this view
-			//	RequestFocus();
-			//}
-		}
-
 		partial void OnIsFocusableChanged()
 		{
 			var isFocusable = IsFocusable && !IsDelegatingFocusToTemplateChild();
@@ -63,40 +54,5 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		protected virtual bool IsDelegatingFocusToTemplateChild() => false;
-
-		private FocusState? _pendingFocusRequestState;
-		protected virtual bool RequestFocus(FocusState state)
-		{
-			try
-			{
-				_pendingFocusRequestState = state;
-				return FocusManager.Focus(this);
-			}
-			finally
-			{
-				_pendingFocusRequestState = null;
-			}
-		}
-
-		internal bool SetFocused(bool isFocused)
-		{
-			if (isFocused)
-			{
-				if (IsFocusable)
-				{
-					FocusState = _pendingFocusRequestState ?? FocusState.Pointer;
-					return true;
-				}
-				else
-				{
-					return false;
-				}
-			}
-			else
-			{
-				Unfocus();
-				return true;
-			}
-		}
 	}
 }

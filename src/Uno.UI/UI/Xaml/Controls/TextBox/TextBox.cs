@@ -19,6 +19,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;
 using Windows.UI.Core;
+using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -153,7 +154,8 @@ namespace Windows.UI.Xaml.Controls
 		public string Text
 		{
 			get => (string)this.GetValue(TextProperty);
-			set {
+			set
+			{
 				if (value == null)
 				{
 					throw new ArgumentNullException();
@@ -581,12 +583,15 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
-		protected override void OnFocusStateChanged(FocusState oldValue, FocusState newValue)
-			=> OnFocusStateChanged(oldValue, newValue, initial: false);
+		internal override void UpdateFocusState(FocusState focusState)
+		{
+			var oldValue = FocusState;
+			base.UpdateFocusState(focusState);
+			OnFocusStateChanged(oldValue, focusState, initial: false);
+		}
 
 		private void OnFocusStateChanged(FocusState oldValue, FocusState newValue, bool initial)
 		{
-			base.OnFocusStateChanged(oldValue, newValue);
 			OnFocusStateChangedPartial(newValue);
 
 			if (!initial && newValue == FocusState.Unfocused && _hasTextChangedThisFocusSession)
@@ -646,6 +651,11 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateButtonStates()
 		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug(nameof(UpdateButtonStates));
+			}
+
 			if (Text.HasValue()
 				&& FocusState != FocusState.Unfocused
 				&& !IsReadOnly

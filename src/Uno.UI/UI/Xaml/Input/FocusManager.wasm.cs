@@ -5,6 +5,7 @@ using System.Linq;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Uno.Foundation;
+using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml.Input
 {
@@ -12,48 +13,33 @@ namespace Windows.UI.Xaml.Input
 	{
 		internal static void ProcessControlFocused(Control control)
 		{
-			if (
-				// Don't change the focus if the control already has the focus
-				!ReferenceEquals(control, _focusedElement))
+			if (_log.Value.IsEnabled(LogLevel.Debug))
 			{
-				// Make sure that the managed UI knowns that the element was unfocused, no matter if the new focused element can be focused or not
-				(_focusedElement as Control)?.SetFocused(false);
-
-				// Then set the new control as focused
-				control.SetFocused(true);
+				_log.Value.LogDebug($"{nameof(ProcessControlFocused)}() _focusedElement={_focusedElement}, control={control}");
 			}
+
+			UpdateFocus(control, FocusNavigationDirection.None, FocusState.Pointer);
 		}
 
 		internal static void ProcessElementFocused(UIElement element)
 		{
-			if (
-				// Don't change the focus if the element already has the focus
-				!ReferenceEquals(element, _focusedElement))
+			if (_log.Value.IsEnabled(LogLevel.Debug))
 			{
-				// Try to find the first focusable parent and set it as focused, otherwise just keep it for reference (GetFocusedElement())
-				var ownerControl = element.GetParents().OfType<Control>().Where(control => control.IsFocusable).FirstOrDefault();
-				if (ownerControl == null)
-				{
-					// Make sure that the managed UI knows that the element was unfocused, no matter if the new focused element can be focused or not
-					(_focusedElement as Control)?.SetFocused(false);
-
-					_focusedElement = element;
-				}
-				else if (!ReferenceEquals(ownerControl, _focusedElement))
-				{
-					// Make sure that the managed UI knows that the element was unfocused, no matter if the new focused element can be focused or not
-					(_focusedElement as Control)?.SetFocused(false);
-
-					if (ownerControl.SetFocused(true))
-					{
-						_fallbackFocusedElement = element;
-					}
-				}
+				_log.Value.LogDebug($"{nameof(ProcessElementFocused)}() _focusedElement={_focusedElement}, element={element}");
 			}
+
+			// Try to find the first focusable parent and set it as focused, otherwise just keep it for reference (GetFocusedElement())
+			var ownerControl = element.GetParents().OfType<Control>().Where(control => control.IsFocusable).FirstOrDefault();
+			UpdateFocus(ownerControl, FocusNavigationDirection.None, FocusState.Pointer);
 		}
 
-		internal static bool Focus(UIElement element)
+		internal static bool FocusNative(UIElement element)
 		{
+			if (_log.Value.IsEnabled(LogLevel.Debug))
+			{
+				_log.Value.LogDebug($"{nameof(FocusNative)}(element: {element})");
+			}
+
 			if (element == null)
 			{
 				return false;
