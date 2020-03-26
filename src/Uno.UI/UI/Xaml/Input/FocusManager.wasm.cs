@@ -45,6 +45,11 @@ namespace Windows.UI.Xaml.Input
 				return false;
 			}
 
+			if (element is TextBox textBox)
+			{
+				return textBox.FocusTextView();
+			}
+
 			var command = $"Uno.UI.WindowManager.current.focusView({element.HtmlId});";
 			WebAssemblyRuntime.InvokeJS(command);
 
