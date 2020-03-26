@@ -213,6 +213,8 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 
+		private static void FocusNative(Control control) => control.BecomeFirstResponder();
+
 		//We need to validate this difference because focused elements don't have the same absolute position once focused
 		private static bool IsInBetweenOrEqual(nfloat number, nfloat lowerlimit, nfloat highlimit)
 		{
