@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Input
 	{
 		private static bool InnerTryMoveFocus(FocusNavigationDirection focusNavigationDirection)
 		{
-			var focusedView = GetFocusedElement(true) as UIView;
+			var focusedView = GetFocusedElement() as UIView;
 
 			if (focusedView == null)
 			{
@@ -102,7 +102,7 @@ namespace Windows.UI.Xaml.Input
 
 		public static UIView InnerFindNextFocusableElement(FocusNavigationDirection focusNavigationDirection)
 		{
-			var focusedView = GetFocusedElement(true) as UIView;
+			var focusedView = GetFocusedElement() as UIView;
 			var absoluteFocusedFrame = focusedView.ConvertRectToView(focusedView.Bounds, UIApplication.SharedApplication.KeyWindow);
 			
 			var focusableViews = SearchOtherFocusableViews(focusedView);

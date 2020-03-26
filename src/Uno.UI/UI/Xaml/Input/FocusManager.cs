@@ -18,10 +18,6 @@ namespace Windows.UI.Xaml.Input
 
 		private static object _focusedElement;
 
-		// We keep a _fallbackFocused as backup if an element is unfocused and try move focus is called right after
-		// It is currently the case in ContextualCommand.
-		private static object _fallbackFocusedElement;
-
 		/// <summary>
 		/// Get the currently focused element, if any
 		/// </summary>
@@ -144,8 +140,6 @@ namespace Windows.UI.Xaml.Input
 
 			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, OnGotFocus); // event is rescheduled, as on UWP
 		}
-
-		internal static object GetFocusedElement(bool useFallback) => GetFocusedElement() ?? _fallbackFocusedElement;
 
 		public static event EventHandler<FocusManagerGotFocusEventArgs> GotFocus;
 		public static event EventHandler<FocusManagerLostFocusEventArgs> LostFocus;
