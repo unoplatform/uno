@@ -16,7 +16,6 @@
 	<Copyright>nventive</Copyright>
 	<Author>nventive</Author>
 
-	<LangVersion>7.3</LangVersion>
 	<WarningsAsErrors>all</WarningsAsErrors>
 
   </PropertyGroup>
