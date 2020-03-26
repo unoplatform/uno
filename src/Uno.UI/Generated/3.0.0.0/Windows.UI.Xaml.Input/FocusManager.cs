@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Input
 			throw new global::System.NotImplementedException("The member DependencyObject FocusManager.FindNextElement(FocusNavigationDirection focusNavigationDirection, FindNextElementOptions focusNavigationOptions) is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.UIElement FindNextFocusableElement( global::Windows.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)
 		{
@@ -85,14 +85,14 @@ namespace Windows.UI.Xaml.Input
 			throw new global::System.NotImplementedException("The member UIElement FocusManager.FindNextFocusableElement(FocusNavigationDirection focusNavigationDirection, Rect hintRect) is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static bool TryMoveFocus( global::Windows.UI.Xaml.Input.FocusNavigationDirection focusNavigationDirection)
 		{
 			throw new global::System.NotImplementedException("The member bool FocusManager.TryMoveFocus(FocusNavigationDirection focusNavigationDirection) is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static object GetFocusedElement()
 		{

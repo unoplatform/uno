@@ -1,5 +1,4 @@
-﻿#if XAMARIN || __WASM__
-using Windows.UI.Xaml.Input;
+﻿using Windows.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -146,4 +145,3 @@ namespace Windows.UI.Xaml.Input
 
 	}
 }
-#endif
