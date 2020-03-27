@@ -102,9 +102,15 @@ namespace Windows.UI.Xaml.Input
 
 			FocusNative(newFocus as Control);
 
-			RaiseLostFocusEvent(oldFocusedElement);
+			if (oldFocusedElement != null)
+			{
+				RaiseLostFocusEvent(oldFocusedElement);
+			}
 
-			RaiseGotFocusEvent(_focusedElement);
+			if (_focusedElement != null)
+			{
+				RaiseGotFocusEvent(_focusedElement);
+			}
 
 			return true;
 		}

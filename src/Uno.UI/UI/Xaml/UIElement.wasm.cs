@@ -102,8 +102,6 @@ namespace Windows.UI.Xaml
 
 			InitializePointers();
 			UpdateHitTest();
-
-			TrackFocus();
 		}
 
 		~UIElement()
@@ -573,36 +571,6 @@ namespace Windows.UI.Xaml
 
 		// We keep track of registered routed events to avoid registering the same one twice (mainly because RemoveHandler is not implemented)
 		private RoutedEventFlag _registeredRoutedEvents;
-
-		/// <summary>
-		/// Initialize handler for native focus event.
-		/// </summary>
-		private void TrackFocus()
-		{
-			var handler = this is Control ? (Func<bool>)ProcessControlFocused : ProcessElementFocused;
-
-			RegisterEventHandler(
-				eventName: "focus",
-				handler: new RoutedEventHandlerWithHandled((snd, args) => handler()),
-				onCapturePhase: false,
-				canBubbleNatively: true,
-				eventFilter: HtmlEventFilter.Default,
-				eventExtractor: HtmlEventExtractor.FocusEventExtractor,
-				payloadConverter: PayloadToFocusArgs
-			);
-
-			bool ProcessControlFocused()
-			{
-				FocusManager.ProcessControlFocused(this as Control);
-				return true;
-			}
-
-			bool ProcessElementFocused()
-			{
-				FocusManager.ProcessElementFocused(this);
-				return true;
-			}
-		}
 
 		partial void AddKeyHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{

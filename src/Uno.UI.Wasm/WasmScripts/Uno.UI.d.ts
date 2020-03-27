@@ -153,6 +153,7 @@ declare namespace Uno.UI {
         private allActiveElementsById;
         private static resizeMethod;
         private static dispatchEventMethod;
+        private static focusInMethod;
         private static getDependencyPropertyValueMethod;
         private static setDependencyPropertyValueMethod;
         private constructor();
@@ -520,6 +521,7 @@ declare namespace Uno.UI {
         private initDom;
         private removeLoading;
         private resize;
+        private onfocusin;
         private dispatchEvent;
         private getIsConnectedToRootElement;
         setCursor(cssCursor: string): string;
