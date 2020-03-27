@@ -13,7 +13,7 @@
 						BorderBrush="{TemplateBinding BorderBrush}"
 						BorderThickness="{TemplateBinding BorderThickness}"
 						CornerRadius="{TemplateBinding CornerRadius}"
-						Child="{TemplateBinding Content}" />
+						Child="{TemplateBinding ElevatedContent}" />
 				</ControlTemplate>
 			</Setter.Value>
 		</Setter>
