@@ -118,7 +118,7 @@ namespace Windows.UI.Xaml
 			SetBackgroundBrush(brush);
 		}
 
-		private void SetBackgroundBrush(Brush brush)
+		private protected void SetBackgroundBrush(Brush brush)
 		{
 			switch (brush)
 			{

@@ -9,46 +9,5 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ListViewBase : Selector
 	{
-
-		private int PageSize => throw new NotImplementedException();
-
-		private protected override bool ShouldItemsControlManageChildren => !(ItemsPanelRoot is IVirtualizingPanel);
-
-		private void Refresh()
-		{
-			InvalidateMeasure();
-		}
-
-		private void AddItems(int firstItem, int count, int section)
-		{
-			Refresh();
-		}
-
-		private void RemoveItems(int firstItem, int count, int section)
-		{
-			Refresh();
-		}
-
-		private void AddGroup(int groupIndexInView)
-		{
-			Refresh();
-		}
-
-		private void RemoveGroup(int groupIndexInView)
-		{
-			Refresh();
-		}
-
-		private void ReplaceGroup(int groupIndexInView)
-		{
-			Refresh();
-		}
-
-		private ContentControl ContainerFromGroupIndex(int groupIndex) => throw new NotImplementedException();
-
-		private void TryLoadMoreItems()
-		{
-			//TODO: ISupportIncrementalLoading
-		}
 	}
 }

@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
 	<PropertyGroup>
 		<TargetFrameworks>MonoAndroid90;xamarinios10;netstandard2.0</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid80;MonoAndroid90;xamarinios10</TargetFrameworksCI>
+		<TargetFrameworksCI>MonoAndroid90;xamarinios10</TargetFrameworksCI>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -20,18 +20,6 @@
 	<PropertyGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
 		<DefineConstants>$(DefineConstants);__WASM__</DefineConstants>
 	</PropertyGroup>
-
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid80'">
-		<PackageReference Include="Xamarin.Android.Support.v4">
-			<Version>26.1.0.1</Version>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.AppCompat">
-			<Version>26.1.0.1</Version>
-		</PackageReference>
-		<PackageReference Include="Xamarin.Android.Support.v7.RecyclerView">
-			<Version>26.1.0.1</Version>
-		</PackageReference>
-	</ItemGroup>
 
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
 		<PackageReference Include="Xamarin.Android.Support.v4">
@@ -121,4 +109,3 @@
 	<Import Project="..\..\Common.targets" />
 
 </Project>
- 

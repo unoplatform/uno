@@ -1,9 +1,10 @@
-﻿using Android.App;
-using Android.Widget;
-using Android.OS;
+﻿using System;
+using Android.App;
 using Android.Content.PM;
 using Android.Views;
 using Java.Interop;
+using Windows.UI.Core;
+using Windows.UI.ViewManagement;
 
 namespace SamplesApp.Droid
 {
@@ -20,6 +21,21 @@ namespace SamplesApp.Droid
 		[Export("IsTestDone")]
 		public bool IsTestDone(string testId) => App.IsTestDone(testId);
 
+		[Export("SetFullScreenMode")]
+		public void SetFullScreenMode(bool fullscreen)
+		{
+			// workaround for #2747: force the app into fullscreen
+			// to prevent status bar from reappearing when popup are shown.
+			var activity = Uno.UI.ContextHelper.Current as Activity;
+			if (fullscreen)
+			{
+				activity.Window.AddFlags(WindowManagerFlags.Fullscreen);
+			}
+			else
+			{
+				activity.Window.ClearFlags(WindowManagerFlags.Fullscreen);
+			}
+		}
 	}
 }
 

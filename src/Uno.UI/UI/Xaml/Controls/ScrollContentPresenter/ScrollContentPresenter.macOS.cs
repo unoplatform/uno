@@ -11,11 +11,19 @@ using System.Text;
 using System.Drawing;
 using AppKit;
 using Uno.UI;
+using Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class ScrollContentPresenter : NSScrollView, IHasSizeThatFits
 	{
+		public ScrollContentPresenter()
+		{
+			InitializeScrollContentPresenter();
+
+			Notifications.ObserveDidLiveScroll(this, OnLiveScroll);
+		}
+
 		public nfloat ZoomScale {
 			get => Magnification;
 			set => Magnification = value;
@@ -28,9 +36,17 @@ namespace Windows.UI.Xaml.Controls
 
 		public float MaximumZoomScale { get; set; }
 
-		public ScrollBarVisibility VerticalScrollBarVisibility { get; set; }
+		private bool ShowsVerticalScrollIndicator
+		{
+			get => HasVerticalScroller;
+			set => HasVerticalScroller = value;
+		}
 
-		public ScrollBarVisibility HorizontalScrollBarVisibility { get; set; }
+		private bool ShowsHorizontalScrollIndicator
+		{
+			get => HasHorizontalScroller;
+			set => HasHorizontalScroller = value;
+		}
 
 		public override bool NeedsLayout
 		{
@@ -53,6 +69,12 @@ namespace Windows.UI.Xaml.Controls
 		partial void OnContentChanged(NSView previousView, NSView newView)
 		{
 			DocumentView = newView;
+		}
+
+		private void OnLiveScroll(object sender, NSNotificationEventArgs e)
+		{
+			var offset = DocumentVisibleRect.Location;
+			(TemplatedParent as ScrollViewer)?.OnScrollInternal(offset.X, offset.Y, isIntermediate: false);
 		}
 	}
 }

@@ -1,3 +1,6 @@
+parameters:
+  vmImage: ''
+
 jobs:
 
 - job: UITests_Screenshots_Compare
@@ -9,7 +12,7 @@ jobs:
   condition: succeededOrFailed()
 
   pool:
-    vmImage: 'vs2017-win2016'
+    vmImage: ${{ parameters.vmImage }}
 
   variables:
     COMPARE_WORKDIR: $(Build.SourcesDirectory)\snapshot-compare

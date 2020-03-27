@@ -3,7 +3,7 @@
 This guide will walk you through the set-up process for building cross-platform apps with Uno.
 
 ## Prerequisites
-* [**Visual Studio 2017 15.5 or later**](https://visualstudio.microsoft.com/), with:
+* [**Visual Studio 2019 16.3 or later**](https://visualstudio.microsoft.com/), with:
     * **Universal Windows Platform** workload installed.
 
     ![visual-studio-installer-uwp](Assets/quick-start/vs-install-uwp.png)

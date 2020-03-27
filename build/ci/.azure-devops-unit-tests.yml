@@ -1,12 +1,12 @@
 parameters:
-  pool: ''
+  vmImage: ''
 
 jobs:
 - job: Unit_Tests
   timeoutInMinutes: 90
 
   pool:
-    vmImage: 'vs2017-win2016'
+    vmImage: ${{ parameters.vmImage }}
 
   variables:
     CombinedConfiguration: Release|Any CPU
