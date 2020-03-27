@@ -682,6 +682,12 @@
 				<Member
 					fullName="System.Void Uno.UI.Toolkit.UIElementExtensions.SetElevation(Windows.UI.Xaml.UIElement element, System.Double Elevation)"
 					reason="Naming uniformization, not a binary breaking change." />
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnFocusStateChanged(Windows.UI.Xaml.FocusState oldValue, Windows.UI.Xaml.FocusState newValue)"
+					reason="Not part of the WinUI API, Uno-specific implementation detail." />
+				<Member
+					fullName="System.Boolean Windows.UI.Xaml.Controls.TextBox.FocusTextView()"
+					reason="Not part of the WinUI API, Uno-specific implementation detail." />
 			</Methods>
 			<Properties>
 				<Member
