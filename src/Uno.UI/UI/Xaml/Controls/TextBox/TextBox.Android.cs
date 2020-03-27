@@ -71,14 +71,14 @@ namespace Windows.UI.Xaml.Controls
 			if (_textBoxView != null)
 			{
 				_textBoxView.OnFocusChangeListener = null;
-			}
 
-			// We always force lose the focus when unloading the control.
-			// This is required as the FocusChangedListener may not be called
-			// when the unloaded propagation is done on the .NET side (see
-			// FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded for
-			// more details.
-			ProcessFocusChanged(false);
+				// We always force lose the focus when unloading the control.
+				// This is required as the FocusChangedListener may not be called
+				// when the unloaded propagation is done on the .NET side (see
+				// FeatureConfiguration.FrameworkElement.AndroidUseManagedLoadedUnloaded for
+				// more details.
+				ProcessFocusChanged(false);
+			}
 		}
 
 		protected override void OnLoaded()
