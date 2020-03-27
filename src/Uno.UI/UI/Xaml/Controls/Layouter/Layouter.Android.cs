@@ -58,17 +58,13 @@ namespace Windows.UI.Xaml.Controls
 			var widthSpec = ViewHelper.SpecFromLogicalSize(slotSize.Width);
 			var heightSpec = ViewHelper.SpecFromLogicalSize(slotSize.Height);
 
-			var previousDesiredSize = DesiredChildSize(view);
-
-			if (previousDesiredSize.Width > slotSize.Width || previousDesiredSize.Height > slotSize.Height)
+			if (double.IsPositiveInfinity(slotSize.Width) || double.IsPositiveInfinity(slotSize.Height))
 			{
 				// Bypass Android cache, to ensure the Child's Measure() is actually invoked.
 				view.ForceLayout();
 
-				// We must do this here because we're using the MeasureSpecMode.AtMost mode to force Android to
-				// behave like the UWP's measure phase.
-
-				// We can't use MeasureSpecMode.Exactly because native controls would take all available space.
+				// This could occur when one of the dimension is _Infinite_: Android will cache the
+				// value, which is not something we want. Specially when the container is a <StackPanel>.
 
 				// Issue: https://github.com/unoplatform/uno/issues/2879
 			}
