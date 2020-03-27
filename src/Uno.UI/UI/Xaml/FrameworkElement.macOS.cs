@@ -20,6 +20,10 @@ namespace Windows.UI.Xaml
 
 		partial void Initialize();
 
+		internal bool RequiresArrange { get; private set; }
+
+		internal bool RequiresMeasure { get; private set; }
+
 		public override bool NeedsLayout
 		{
 			set

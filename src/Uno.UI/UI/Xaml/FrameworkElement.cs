@@ -64,10 +64,6 @@ namespace Windows.UI.Xaml
 		private bool _styleChanging = false;
 		private bool _defaultStyleApplied = false;
 
-		internal bool RequiresArrange { get; private set; }
-
-		internal bool RequiresMeasure { get; private set; }
-
 		/// <summary>
 		/// Sets whether constraint-based optimizations are used to limit redrawing of the entire visual tree on Android. This can be
 		/// globally set to false if it is causing visual errors (eg views not updating properly). Note: this can still be overridden by
