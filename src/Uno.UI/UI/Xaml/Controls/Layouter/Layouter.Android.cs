@@ -58,6 +58,8 @@ namespace Windows.UI.Xaml.Controls
 			var widthSpec = ViewHelper.SpecFromLogicalSize(slotSize.Width);
 			var heightSpec = ViewHelper.SpecFromLogicalSize(slotSize.Height);
 
+			view.ForceLayout(); // Bypass Android cache, to ensure the Child's Measure() is actually invoked.
+
 			MeasureChild(view, widthSpec, heightSpec);
 			
 			var ret = Uno.UI.Controls.BindableView.GetNativeMeasuredDimensionsFast(view)
