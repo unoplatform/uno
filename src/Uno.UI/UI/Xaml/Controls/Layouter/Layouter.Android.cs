@@ -58,7 +58,20 @@ namespace Windows.UI.Xaml.Controls
 			var widthSpec = ViewHelper.SpecFromLogicalSize(slotSize.Width);
 			var heightSpec = ViewHelper.SpecFromLogicalSize(slotSize.Height);
 
-			view.ForceLayout(); // Bypass Android cache, to ensure the Child's Measure() is actually invoked.
+			var previousDesiredSize = DesiredChildSize(view);
+
+			if (previousDesiredSize.Width > slotSize.Width || previousDesiredSize.Height > slotSize.Height)
+			{
+				// Bypass Android cache, to ensure the Child's Measure() is actually invoked.
+				view.ForceLayout();
+
+				// We must do this here because we're using the MeasureSpecMode.AtMost mode to force Android to
+				// behave like the UWP's measure phase.
+
+				// We can't use MeasureSpecMode.Exactly because native controls would take all available space.
+
+				// Issue: https://github.com/unoplatform/uno/issues/2879
+			}
 
 			MeasureChild(view, widthSpec, heightSpec);
 			
