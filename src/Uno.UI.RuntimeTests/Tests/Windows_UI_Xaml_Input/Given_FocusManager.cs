@@ -110,7 +110,6 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Input
 				Assert.IsTrue(receivedLostFocus[1]);
 				Assert.IsFalse(receivedLostFocus[2]);
 				Assert.IsTrue(receivedLostFocus[3]);
-				;
 			}
 			finally
 			{
