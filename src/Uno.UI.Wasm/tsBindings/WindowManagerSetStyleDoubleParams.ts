@@ -2,19 +2,19 @@
 class WindowManagerSetStyleDoubleParams
 {
 	/* Pack=4 */
-	HtmlId : number;
-	Name : string;
-	Value : number;
+	public HtmlId : number;
+	public Name : string;
+	public Value : number;
 	public static unmarshal(pData:number) : WindowManagerSetStyleDoubleParams
 	{
-		let ret = new WindowManagerSetStyleDoubleParams();
+		const ret = new WindowManagerSetStyleDoubleParams();
 		
 		{
 			ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
 		}
 		
 		{
-			var ptr = Module.getValue(pData + 4, "*");
+			const ptr = Module.getValue(pData + 4, "*");
 			if(ptr !== 0)
 			{
 				ret.Name = String(Module.UTF8ToString(ptr));

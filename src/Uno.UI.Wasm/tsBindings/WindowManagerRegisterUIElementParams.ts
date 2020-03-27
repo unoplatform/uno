@@ -2,16 +2,16 @@
 class WindowManagerRegisterUIElementParams
 {
 	/* Pack=4 */
-	TypeName : string;
-	IsFrameworkElement : boolean;
-	Classes_Length : number;
-	Classes : Array<string>;
+	public TypeName : string;
+	public IsFrameworkElement : boolean;
+	public Classes_Length : number;
+	public Classes : Array<string>;
 	public static unmarshal(pData:number) : WindowManagerRegisterUIElementParams
 	{
-		let ret = new WindowManagerRegisterUIElementParams();
+		const ret = new WindowManagerRegisterUIElementParams();
 		
 		{
-			var ptr = Module.getValue(pData + 0, "*");
+			const ptr = Module.getValue(pData + 0, "*");
 			if(ptr !== 0)
 			{
 				ret.TypeName = String(Module.UTF8ToString(ptr));
@@ -32,13 +32,13 @@ class WindowManagerRegisterUIElementParams
 		}
 		
 		{
-			var pArray = Module.getValue(pData + 12, "*");
+			const pArray = Module.getValue(pData + 12, "*");
 			if(pArray !== 0)
 			{
 				ret.Classes = new Array<string>();
 				for(var i=0; i<ret.Classes_Length; i++)
 				{
-					var value = Module.getValue(pArray + i * 4, "*");
+					const value = Module.getValue(pArray + i * 4, "*");
 					if(value !== 0)
 					{
 						ret.Classes.push(String(MonoRuntime.conv_string(value)));

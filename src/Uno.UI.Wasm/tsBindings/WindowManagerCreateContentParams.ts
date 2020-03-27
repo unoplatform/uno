@@ -2,22 +2,22 @@
 class WindowManagerCreateContentParams
 {
 	/* Pack=4 */
-	HtmlId : number;
-	TagName : string;
-	Handle : number;
-	UIElementRegistrationId : number;
-	IsSvg : boolean;
-	IsFocusable : boolean;
+	public HtmlId : number;
+	public TagName : string;
+	public Handle : number;
+	public UIElementRegistrationId : number;
+	public IsSvg : boolean;
+	public IsFocusable : boolean;
 	public static unmarshal(pData:number) : WindowManagerCreateContentParams
 	{
-		let ret = new WindowManagerCreateContentParams();
+		const ret = new WindowManagerCreateContentParams();
 		
 		{
 			ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
 		}
 		
 		{
-			var ptr = Module.getValue(pData + 4, "*");
+			const ptr = Module.getValue(pData + 4, "*");
 			if(ptr !== 0)
 			{
 				ret.TagName = String(Module.UTF8ToString(ptr));

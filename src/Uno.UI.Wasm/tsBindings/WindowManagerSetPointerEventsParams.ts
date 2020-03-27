@@ -2,11 +2,11 @@
 class WindowManagerSetPointerEventsParams
 {
 	/* Pack=4 */
-	HtmlId : number;
-	Enabled : boolean;
+	public HtmlId : number;
+	public Enabled : boolean;
 	public static unmarshal(pData:number) : WindowManagerSetPointerEventsParams
 	{
-		let ret = new WindowManagerSetPointerEventsParams();
+		const ret = new WindowManagerSetPointerEventsParams();
 		
 		{
 			ret.HtmlId = Number(Module.getValue(pData + 0, "*"));

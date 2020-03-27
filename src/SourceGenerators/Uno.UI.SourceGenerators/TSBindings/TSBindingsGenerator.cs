@@ -86,7 +86,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 					foreach (var field in messageType.GetFields())
 					{
-						sb.AppendLineInvariant($"{field.Name} : {GetTSFieldType(field.Type)};");
+						sb.AppendLineInvariant($"public {field.Name} : {GetTSFieldType(field.Type)};");
 					}
 
 					if (messageType.Name.EndsWith("Params"))
@@ -188,8 +188,8 @@ namespace Uno.UI.SourceGenerators.TSBindings
 						{
 							using (sb.BlockInvariant(""))
 							{
-								sb.AppendLineInvariant($"var stringLength = lengthBytesUTF8({value});");
-								sb.AppendLineInvariant($"var pString = Module._malloc(stringLength + 1);");
+								sb.AppendLineInvariant($"const stringLength = lengthBytesUTF8({value});");
+								sb.AppendLineInvariant($"const pString = Module._malloc(stringLength + 1);");
 								sb.AppendLineInvariant($"stringToUTF8({value}, pString, stringLength + 1);");
 
 								sb.AppendLineInvariant(
@@ -220,7 +220,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 		{
 			using (sb.BlockInvariant($"public static unmarshal(pData:number) : {parametersType.Name}"))
 			{
-				sb.AppendLineInvariant($"let ret = new {parametersType.Name}();");
+				sb.AppendLineInvariant($"const ret = new {parametersType.Name}();");
 
 				var fieldOffset = 0;
 				foreach (var field in parametersType.GetFields())
@@ -242,7 +242,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 						using (sb.BlockInvariant(""))
 						{
-							sb.AppendLineInvariant($"var pArray = Module.getValue(pData + {fieldOffset}, \"*\");");
+							sb.AppendLineInvariant($"const pArray = Module.getValue(pData + {fieldOffset}, \"*\");");
 
 							using (sb.BlockInvariant("if(pArray !== 0)"))
 							{
@@ -250,7 +250,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 
 								using (sb.BlockInvariant($"for(var i=0; i<ret.{field.Name}_Length; i++)"))
 								{
-									sb.AppendLineInvariant($"var value = Module.getValue(pArray + i * {elementSize}, \"{GetEMField(field.Type)}\");");
+									sb.AppendLineInvariant($"const value = Module.getValue(pArray + i * {elementSize}, \"{GetEMField(field.Type)}\");");
 
 									if (isElementString)
 									{
@@ -283,7 +283,7 @@ namespace Uno.UI.SourceGenerators.TSBindings
 						{
 							if(field.Type == _stringSymbol)
 							{
-								sb.AppendLineInvariant($"var ptr = Module.getValue(pData + {fieldOffset}, \"{GetEMField(field.Type)}\");");
+								sb.AppendLineInvariant($"const ptr = Module.getValue(pData + {fieldOffset}, \"{GetEMField(field.Type)}\");");
 
 								using (sb.BlockInvariant("if(ptr !== 0)"))
 								{

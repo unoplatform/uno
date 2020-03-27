@@ -1678,16 +1678,16 @@ window.Uno = Uno;
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class StorageFolderMakePersistentParams {
     static unmarshal(pData) {
-        let ret = new StorageFolderMakePersistentParams();
+        const ret = new StorageFolderMakePersistentParams();
         {
             ret.Paths_Length = Number(Module.getValue(pData + 0, "i32"));
         }
         {
-            var pArray = Module.getValue(pData + 4, "*");
+            const pArray = Module.getValue(pData + 4, "*");
             if (pArray !== 0) {
                 ret.Paths = new Array();
                 for (var i = 0; i < ret.Paths_Length; i++) {
-                    var value = Module.getValue(pArray + i * 4, "*");
+                    const value = Module.getValue(pArray + i * 4, "*");
                     if (value !== 0) {
                         ret.Paths.push(String(MonoRuntime.conv_string(value)));
                     }
@@ -1706,7 +1706,7 @@ class StorageFolderMakePersistentParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerAddViewParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerAddViewParams();
+        const ret = new WindowManagerAddViewParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -1722,7 +1722,7 @@ class WindowManagerAddViewParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerArrangeElementParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerArrangeElementParams();
+        const ret = new WindowManagerArrangeElementParams();
         {
             ret.Top = Number(Module.getValue(pData + 0, "double"));
         }
@@ -1762,12 +1762,12 @@ class WindowManagerArrangeElementParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerCreateContentParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerCreateContentParams();
+        const ret = new WindowManagerCreateContentParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
-            var ptr = Module.getValue(pData + 4, "*");
+            const ptr = Module.getValue(pData + 4, "*");
             if (ptr !== 0) {
                 ret.TagName = String(Module.UTF8ToString(ptr));
             }
@@ -1793,7 +1793,7 @@ class WindowManagerCreateContentParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerDestroyViewParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerDestroyViewParams();
+        const ret = new WindowManagerDestroyViewParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -1809,7 +1809,7 @@ class WindowManageRegisterUIElementReturn {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerGetBBoxParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerGetBBoxParams();
+        const ret = new WindowManagerGetBBoxParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -1828,7 +1828,7 @@ class WindowManagerGetBBoxReturn {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerGetClientViewSizeParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerGetClientViewSizeParams();
+        const ret = new WindowManagerGetClientViewSizeParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -1847,7 +1847,7 @@ class WindowManagerGetClientViewSizeReturn {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerInitParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerInitParams();
+        const ret = new WindowManagerInitParams();
         {
             ret.IsHostedMode = Boolean(Module.getValue(pData + 0, "i32"));
         }
@@ -1860,7 +1860,7 @@ class WindowManagerInitParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerMeasureViewParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerMeasureViewParams();
+        const ret = new WindowManagerMeasureViewParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -1883,12 +1883,12 @@ class WindowManagerMeasureViewReturn {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerRegisterEventOnViewParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerRegisterEventOnViewParams();
+        const ret = new WindowManagerRegisterEventOnViewParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
-            var ptr = Module.getValue(pData + 4, "*");
+            const ptr = Module.getValue(pData + 4, "*");
             if (ptr !== 0) {
                 ret.EventName = String(Module.UTF8ToString(ptr));
             }
@@ -1911,9 +1911,9 @@ class WindowManagerRegisterEventOnViewParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerRegisterUIElementParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerRegisterUIElementParams();
+        const ret = new WindowManagerRegisterUIElementParams();
         {
-            var ptr = Module.getValue(pData + 0, "*");
+            const ptr = Module.getValue(pData + 0, "*");
             if (ptr !== 0) {
                 ret.TypeName = String(Module.UTF8ToString(ptr));
             }
@@ -1928,11 +1928,11 @@ class WindowManagerRegisterUIElementParams {
             ret.Classes_Length = Number(Module.getValue(pData + 8, "i32"));
         }
         {
-            var pArray = Module.getValue(pData + 12, "*");
+            const pArray = Module.getValue(pData + 12, "*");
             if (pArray !== 0) {
                 ret.Classes = new Array();
                 for (var i = 0; i < ret.Classes_Length; i++) {
-                    var value = Module.getValue(pArray + i * 4, "*");
+                    const value = Module.getValue(pArray + i * 4, "*");
                     if (value !== 0) {
                         ret.Classes.push(String(MonoRuntime.conv_string(value)));
                     }
@@ -1957,12 +1957,12 @@ class WindowManagerRegisterUIElementReturn {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerRemoveAttributeParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerRemoveAttributeParams();
+        const ret = new WindowManagerRemoveAttributeParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
-            var ptr = Module.getValue(pData + 4, "*");
+            const ptr = Module.getValue(pData + 4, "*");
             if (ptr !== 0) {
                 ret.Name = String(Module.UTF8ToString(ptr));
             }
@@ -1976,7 +1976,7 @@ class WindowManagerRemoveAttributeParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerRemoveViewParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerRemoveViewParams();
+        const ret = new WindowManagerRemoveViewParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -1989,7 +1989,7 @@ class WindowManagerRemoveViewParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerResetStyleParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerResetStyleParams();
+        const ret = new WindowManagerResetStyleParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -1997,11 +1997,11 @@ class WindowManagerResetStyleParams {
             ret.Styles_Length = Number(Module.getValue(pData + 4, "i32"));
         }
         {
-            var pArray = Module.getValue(pData + 8, "*");
+            const pArray = Module.getValue(pData + 8, "*");
             if (pArray !== 0) {
                 ret.Styles = new Array();
                 for (var i = 0; i < ret.Styles_Length; i++) {
-                    var value = Module.getValue(pArray + i * 4, "*");
+                    const value = Module.getValue(pArray + i * 4, "*");
                     if (value !== 0) {
                         ret.Styles.push(String(MonoRuntime.conv_string(value)));
                     }
@@ -2020,7 +2020,7 @@ class WindowManagerResetStyleParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerScrollToOptionsParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerScrollToOptionsParams();
+        const ret = new WindowManagerScrollToOptionsParams();
         {
             ret.Left = Number(Module.getValue(pData + 0, "double"));
         }
@@ -2045,12 +2045,12 @@ class WindowManagerScrollToOptionsParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetAttributeParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetAttributeParams();
+        const ret = new WindowManagerSetAttributeParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
-            var ptr = Module.getValue(pData + 4, "*");
+            const ptr = Module.getValue(pData + 4, "*");
             if (ptr !== 0) {
                 ret.Name = String(Module.UTF8ToString(ptr));
             }
@@ -2059,7 +2059,7 @@ class WindowManagerSetAttributeParams {
             }
         }
         {
-            var ptr = Module.getValue(pData + 8, "*");
+            const ptr = Module.getValue(pData + 8, "*");
             if (ptr !== 0) {
                 ret.Value = String(Module.UTF8ToString(ptr));
             }
@@ -2073,7 +2073,7 @@ class WindowManagerSetAttributeParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetAttributesParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetAttributesParams();
+        const ret = new WindowManagerSetAttributesParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -2081,11 +2081,11 @@ class WindowManagerSetAttributesParams {
             ret.Pairs_Length = Number(Module.getValue(pData + 4, "i32"));
         }
         {
-            var pArray = Module.getValue(pData + 8, "*");
+            const pArray = Module.getValue(pData + 8, "*");
             if (pArray !== 0) {
                 ret.Pairs = new Array();
                 for (var i = 0; i < ret.Pairs_Length; i++) {
-                    var value = Module.getValue(pArray + i * 4, "*");
+                    const value = Module.getValue(pArray + i * 4, "*");
                     if (value !== 0) {
                         ret.Pairs.push(String(MonoRuntime.conv_string(value)));
                     }
@@ -2104,7 +2104,7 @@ class WindowManagerSetAttributesParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetClassesParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetClassesParams();
+        const ret = new WindowManagerSetClassesParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -2112,11 +2112,11 @@ class WindowManagerSetClassesParams {
             ret.CssClasses_Length = Number(Module.getValue(pData + 4, "i32"));
         }
         {
-            var pArray = Module.getValue(pData + 8, "*");
+            const pArray = Module.getValue(pData + 8, "*");
             if (pArray !== 0) {
                 ret.CssClasses = new Array();
                 for (var i = 0; i < ret.CssClasses_Length; i++) {
-                    var value = Module.getValue(pArray + i * 4, "*");
+                    const value = Module.getValue(pArray + i * 4, "*");
                     if (value !== 0) {
                         ret.CssClasses.push(String(MonoRuntime.conv_string(value)));
                     }
@@ -2138,12 +2138,12 @@ class WindowManagerSetClassesParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetContentHtmlParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetContentHtmlParams();
+        const ret = new WindowManagerSetContentHtmlParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
-            var ptr = Module.getValue(pData + 4, "*");
+            const ptr = Module.getValue(pData + 4, "*");
             if (ptr !== 0) {
                 ret.Html = String(Module.UTF8ToString(ptr));
             }
@@ -2157,7 +2157,7 @@ class WindowManagerSetContentHtmlParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetElementTransformParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetElementTransformParams();
+        const ret = new WindowManagerSetElementTransformParams();
         {
             ret.M11 = Number(Module.getValue(pData + 0, "double"));
         }
@@ -2185,12 +2185,12 @@ class WindowManagerSetElementTransformParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetNameParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetNameParams();
+        const ret = new WindowManagerSetNameParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
-            var ptr = Module.getValue(pData + 4, "*");
+            const ptr = Module.getValue(pData + 4, "*");
             if (ptr !== 0) {
                 ret.Name = String(Module.UTF8ToString(ptr));
             }
@@ -2204,7 +2204,7 @@ class WindowManagerSetNameParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetPointerEventsParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetPointerEventsParams();
+        const ret = new WindowManagerSetPointerEventsParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -2217,7 +2217,7 @@ class WindowManagerSetPointerEventsParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetPropertyParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetPropertyParams();
+        const ret = new WindowManagerSetPropertyParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -2225,11 +2225,11 @@ class WindowManagerSetPropertyParams {
             ret.Pairs_Length = Number(Module.getValue(pData + 4, "i32"));
         }
         {
-            var pArray = Module.getValue(pData + 8, "*");
+            const pArray = Module.getValue(pData + 8, "*");
             if (pArray !== 0) {
                 ret.Pairs = new Array();
                 for (var i = 0; i < ret.Pairs_Length; i++) {
-                    var value = Module.getValue(pArray + i * 4, "*");
+                    const value = Module.getValue(pArray + i * 4, "*");
                     if (value !== 0) {
                         ret.Pairs.push(String(MonoRuntime.conv_string(value)));
                     }
@@ -2248,12 +2248,12 @@ class WindowManagerSetPropertyParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetStyleDoubleParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetStyleDoubleParams();
+        const ret = new WindowManagerSetStyleDoubleParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
-            var ptr = Module.getValue(pData + 4, "*");
+            const ptr = Module.getValue(pData + 4, "*");
             if (ptr !== 0) {
                 ret.Name = String(Module.UTF8ToString(ptr));
             }
@@ -2270,7 +2270,7 @@ class WindowManagerSetStyleDoubleParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetStylesParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetStylesParams();
+        const ret = new WindowManagerSetStylesParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -2278,11 +2278,11 @@ class WindowManagerSetStylesParams {
             ret.Pairs_Length = Number(Module.getValue(pData + 4, "i32"));
         }
         {
-            var pArray = Module.getValue(pData + 8, "*");
+            const pArray = Module.getValue(pData + 8, "*");
             if (pArray !== 0) {
                 ret.Pairs = new Array();
                 for (var i = 0; i < ret.Pairs_Length; i++) {
-                    var value = Module.getValue(pArray + i * 4, "*");
+                    const value = Module.getValue(pArray + i * 4, "*");
                     if (value !== 0) {
                         ret.Pairs.push(String(MonoRuntime.conv_string(value)));
                     }
@@ -2301,12 +2301,12 @@ class WindowManagerSetStylesParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetXUidParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetXUidParams();
+        const ret = new WindowManagerSetXUidParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
-            var ptr = Module.getValue(pData + 4, "*");
+            const ptr = Module.getValue(pData + 4, "*");
             if (ptr !== 0) {
                 ret.Uid = String(Module.UTF8ToString(ptr));
             }

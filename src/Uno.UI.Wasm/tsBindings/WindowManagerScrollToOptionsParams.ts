@@ -2,15 +2,15 @@
 class WindowManagerScrollToOptionsParams
 {
 	/* Pack=4 */
-	Left : number;
-	Top : number;
-	HasLeft : boolean;
-	HasTop : boolean;
-	DisableAnimation : boolean;
-	HtmlId : number;
+	public Left : number;
+	public Top : number;
+	public HasLeft : boolean;
+	public HasTop : boolean;
+	public DisableAnimation : boolean;
+	public HtmlId : number;
 	public static unmarshal(pData:number) : WindowManagerScrollToOptionsParams
 	{
-		let ret = new WindowManagerScrollToOptionsParams();
+		const ret = new WindowManagerScrollToOptionsParams();
 		
 		{
 			ret.Left = Number(Module.getValue(pData + 0, "double"));
