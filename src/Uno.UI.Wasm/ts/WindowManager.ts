@@ -1612,6 +1612,7 @@
 					x.preventDefault();
 				}
 			})
+			window.addEventListener("blur", this.onWindowBlur);
 		}
 
 		private removeLoading() {
@@ -1649,6 +1650,16 @@
 				const handle = (newFocus as HTMLElement).getAttribute("XamlHandle");
 				const htmlId = handle ? Number(handle) : -1; // newFocus may not be an Uno element
 				WindowManager.focusInMethod(htmlId);
+			}
+		}
+
+		private onWindowBlur() {
+			if (WindowManager.isHosted) {
+				console.warn("Focus not supported in hosted mode");
+			}
+			else {
+				// Unset managed focus when Window loses focus
+				WindowManager.focusInMethod(-1);
 			}
 		}
 

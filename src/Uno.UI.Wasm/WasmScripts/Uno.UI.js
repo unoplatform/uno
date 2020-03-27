@@ -1548,6 +1548,7 @@ var Uno;
                         x.preventDefault();
                     }
                 });
+                window.addEventListener("blur", this.onWindowBlur);
             }
             removeLoading() {
                 if (!this.loadingElementId) {
@@ -1578,6 +1579,15 @@ var Uno;
                     const handle = newFocus.getAttribute("XamlHandle");
                     const htmlId = handle ? Number(handle) : -1; // newFocus may not be an Uno element
                     WindowManager.focusInMethod(htmlId);
+                }
+            }
+            onWindowBlur() {
+                if (WindowManager.isHosted) {
+                    console.warn("Focus not supported in hosted mode");
+                }
+                else {
+                    // Unset managed focus when Window loses focus
+                    WindowManager.focusInMethod(-1);
                 }
             }
             dispatchEvent(element, eventName, eventPayload = null) {

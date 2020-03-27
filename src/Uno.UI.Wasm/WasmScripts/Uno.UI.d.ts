@@ -522,6 +522,7 @@ declare namespace Uno.UI {
         private removeLoading;
         private resize;
         private onfocusin;
+        private onWindowBlur;
         private dispatchEvent;
         private getIsConnectedToRootElement;
         setCursor(cssCursor: string): string;
