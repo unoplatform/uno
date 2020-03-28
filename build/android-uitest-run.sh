@@ -26,6 +26,12 @@ echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install 'extras;android;m2reposi
 echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install 'system-images;android-28;google_apis;x86' | tr '\r' '\n' | uniq
 echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis;x86" | tr '\r' '\n' | uniq
 
+if [[ -f $ANDROID_HOME/platform-tools/platform-tools/adb ]]
+then
+	# It appears that the platform-tools 29.0.6 are extracting into an incorrect path
+    mv $ANDROID_HOME/platform-tools/platform-tools/* $ANDROID_HOME/platform-tools
+fi
+
 # Create emulator
 echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n xamarin_android_emulator -k "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis;x86" --sdcard 128M --force
 
