@@ -144,6 +144,10 @@
   <ItemGroup>
     <AndroidAsset Include="Assets\Fonts\winjs-symbols.ttf" />
     <AndroidEnvironment Include="environment.conf" />
+    <AndroidAsset Include="Assets\Lottie\4770-lady-and-dove.json" />
+    <AndroidAsset Include="Assets\Lottie\4930-checkbox-animation.json" />
+    <AndroidAsset Include="Assets\Lottie\lottie-logo.json" />
+    <AndroidAsset Include="Assets\Lottie\uno.json" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>

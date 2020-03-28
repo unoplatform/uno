@@ -46,7 +46,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		}
 
 
-#if !(__WASM__ || __ANDROID__)
+#if !(__WASM__ || __ANDROID__ || __IOS__ || __MACOS__)
 
 		private void Update()
 		{

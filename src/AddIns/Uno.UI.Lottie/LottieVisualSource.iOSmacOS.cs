@@ -1,20 +1,24 @@
-﻿using Android.Animation;
-using Android.Widget;
-using Com.Airbnb.Lottie;
+﻿using System;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
+using Airbnb.Lottie;
+
+#if __IOS__
+using _ViewContentMode = UIKit.UIViewContentMode;
+#else
+using _ViewContentMode = Airbnb.Lottie.LOTViewContentMode;
+#endif
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
 	partial class LottieVisualSource
 	{
-		private LottieAnimationView _animation;
+		private LOTAnimationView _animation;
 
 		public bool UseHardwareAcceleration { get; set; } = true;
 
 		private bool _isPlaying = false;
 		private string _lastPath = "";
-
 		private AnimatedVisualPlayer _player;
 
 		private void Update()
@@ -29,14 +33,13 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			if (_animation == null)
 			{
-				_animation = new LottieAnimationView(Android.App.Application.Context);
-				_animation.EnableMergePathsForKitKatAndAbove(true);
-				_animation.UseHardwareAcceleration(UseHardwareAcceleration);
-
-				//_animation.Scale = (float)Scale;
+				_animation = new LOTAnimationView();
 				SetProperties();
-
-				player.AddView(_animation);
+#if __IOS__
+				player.Add(_animation);
+#else
+				player.AddSubview(_animation);
+#endif
 			}
 			else
 			{
@@ -46,69 +49,61 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			void SetProperties()
 			{
 				var path = UriSource?.PathAndQuery ?? "";
-				if (path.StartsWith("/"))
-				{
-					path = path.Substring(1);
-				}
 				if (_lastPath != path)
 				{
-					_animation.SetAnimation(path);
+					_animation.SetAnimationNamed(path);
 					_lastPath = path;
 				}
 
 				switch (player.Stretch)
 				{
 					case Windows.UI.Xaml.Media.Stretch.None:
-						_animation.SetScaleType(ImageView.ScaleType.Center);
+						_animation.ContentMode = _ViewContentMode.Center;
 						break;
 					case Windows.UI.Xaml.Media.Stretch.Uniform:
-						_animation.SetScaleType(ImageView.ScaleType.CenterInside);
+						_animation.ContentMode = _ViewContentMode.ScaleAspectFit;
 						break;
 					case Windows.UI.Xaml.Media.Stretch.Fill:
-						_animation.SetScaleType(ImageView.ScaleType.FitXy);
+						_animation.ContentMode = _ViewContentMode.ScaleToFill;
 						break;
 					case Windows.UI.Xaml.Media.Stretch.UniformToFill:
-						_animation.SetScaleType(ImageView.ScaleType.CenterCrop);
+						_animation.ContentMode = _ViewContentMode.ScaleAspectFill;
 						break;
 				}
 
-				_animation.Speed = (float)player.PlaybackRate;
+				_animation.AnimationSpeed = (nfloat)player.PlaybackRate;
 
 				if (player.AutoPlay && !_isPlaying)
 				{
 					Play(true);
 				}
 			}
-			
+
 			_player = player;
 		}
 
 		public void Play(bool looped)
 		{
 			_isPlaying = true;
-#if __ANDROID_26__
-			_animation.RepeatCount = ValueAnimator.Infinite;
-#else
-			_animation.Loop(looped);
-#endif
-			_animation.PlayAnimation();
+			_animation.LoopAnimation = looped;
+			_animation.Play();
 		}
 
 		public void Stop()
 		{
 			_isPlaying = false;
-			_animation.CancelAnimation();
+			_animation.Stop();
 		}
 
 		public void Pause()
 		{
-			_animation.PauseAnimation();
+			_animation.Pause();
 			_isPlaying = false;
 		}
 
 		public void Resume()
 		{
-			_animation.ResumeAnimation();
+			_animation.Play();
 			_isPlaying = true;
 		}
 
@@ -121,7 +116,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			if (_isPlaying)
 			{
-				_animation.ResumeAnimation();
+				_animation.Play();
 			}
 		}
 
@@ -129,7 +124,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			if (_isPlaying)
 			{
-				_animation.PauseAnimation();
+				_animation.Pause();
 			}
 		}
 
