@@ -17,7 +17,7 @@ namespace Windows.Extensions
 	/// <summary>
 	/// A service that determines if a permission is granted and if not, request it to the user.
 	/// </summary>
-	public class PermissionsHelper
+	public partial class PermissionsHelper
 	{
 		private static FuncAsync<string, bool> _tryGetPermission;
 		private static FuncAsync<string, bool> _checkPermission;
