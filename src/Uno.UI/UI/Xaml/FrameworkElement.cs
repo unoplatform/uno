@@ -50,6 +50,7 @@ namespace Windows.UI.Xaml
 #endif
 
 		private bool _constraintsChanged;
+		private bool _suppressIsEnabled;
 
 		/// <remarks>
 		/// Both flags are present to avoid recursion (setting a style causes the root template
@@ -358,6 +359,20 @@ namespace Windows.UI.Xaml
 			((FrameworkElement)dependencyObject)._constraintsChanged = true;
 		}
 
+		/// <summary>
+		/// Provides the ability to disable <see cref="IsEnabled"/> value changes, e.g. in the context of ICommand CanExecute.
+		/// </summary>
+		/// <param name="suppress">If true, <see cref="IsEnabled"/> will always be false</param>
+		private protected void SuppressIsEnabled(bool suppress)
+		{
+			_suppressIsEnabled = suppress;
+			this.CoerceValue(IsEnabledProperty);
+		}
+
+		private object CoerceIsEnabled(object baseValue)
+		{
+			return _suppressIsEnabled ? false : baseValue;
+		}
 
 		/// <summary>
 		/// Determines whether a measure/arrange invalidation on this element requires elements higher in the tree to be invalidated,

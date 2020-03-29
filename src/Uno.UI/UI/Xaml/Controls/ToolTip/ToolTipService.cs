@@ -83,11 +83,15 @@ namespace Windows.UI.Xaml.Controls
 					{
 						return;
 					}
-					toolTip.IsOpen = true;
-					await Task.Delay(FeatureConfiguration.ToolTip.ShowDuration);
-					if (currentHoverId == hoverId)
+
+					if (element.IsLoaded)
 					{
-						toolTip.IsOpen = false;
+						toolTip.IsOpen = true;
+						await Task.Delay(FeatureConfiguration.ToolTip.ShowDuration);
+						if (currentHoverId == hoverId)
+						{
+							toolTip.IsOpen = false;
+						}
 					}
 				}
 			}

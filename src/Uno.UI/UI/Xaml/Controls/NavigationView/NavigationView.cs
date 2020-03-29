@@ -371,7 +371,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateSingleSelectionFollowsFocusTemplateSetting();
 			UpdateNavigationViewUseSystemVisual();
 			PropagateNavigationViewAsParent();
-			UpdateVisualState();
+			UpdateLocalVisualState();
 		}
 
 		// Hook up the Settings Item Invoked event listener
@@ -2048,7 +2048,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		void UpdateVisualState(bool useTransitions = false)
+		private void UpdateLocalVisualState(bool useTransitions = false)
 		{
 			if (m_appliedTemplate)
 			{
@@ -2697,7 +2697,7 @@ namespace Windows.UI.Xaml.Controls
 				UpdatePaneDisplayMode((NavigationViewPaneDisplayMode)args.OldValue, (NavigationViewPaneDisplayMode)args.NewValue);
 				UpdatePaneToggleButtonVisibility();
 				UpdatePaneVisibility();
-				UpdateVisualState();
+				UpdateLocalVisualState();
 			}
 			else if (property == IsPaneVisibleProperty)
 			{
@@ -2724,11 +2724,11 @@ namespace Windows.UI.Xaml.Controls
 			else if (property == IsPaneToggleButtonVisibleProperty)
 			{
 				UpdatePaneToggleButtonVisibility();
-				UpdateVisualState();
+				UpdateLocalVisualState();
 			}
 			else if (property == IsSettingsVisibleProperty)
 			{
-				UpdateVisualState();
+				UpdateLocalVisualState();
 			}        
 		}
 

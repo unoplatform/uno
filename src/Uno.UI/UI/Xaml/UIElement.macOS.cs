@@ -38,6 +38,7 @@ namespace Windows.UI.Xaml
 
 		public UIElement()
 		{
+			Initialize();
 			InitializePointers();
 		}		
 		

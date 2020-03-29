@@ -74,6 +74,15 @@ namespace Windows.UI.Xaml.Controls
 			// base.OnBackgroundChanged(e);
 		}
 
+		internal void UpdateVisualState(bool useTransitions = true)
+		{
+			ChangeVisualState(useTransitions);
+		}
+
+		private protected virtual void ChangeVisualState(bool useTransitions)
+		{
+		}
+
 		/// <summary>
 		/// Will be set to Template when it is applied
 		/// </summary>

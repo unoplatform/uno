@@ -102,5 +102,30 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 				grid.ActualHeight.Should().Be(47d, "height");
 			}
 		}
+
+		[TestMethod]
+		public void When_SuppressIsEnabled()
+		{
+			var SUT = new MyEnabledTestControl();
+
+			SUT.IsEnabled = true;
+
+			SUT.PublicSuppressIsEnabled(true);
+			Assert.IsFalse(SUT.IsEnabled);
+
+			SUT.IsEnabled = false;
+			Assert.IsFalse(SUT.IsEnabled);
+
+			SUT.IsEnabled = true;
+			Assert.IsFalse(SUT.IsEnabled);
+
+			SUT.PublicSuppressIsEnabled(false);
+			Assert.IsTrue(SUT.IsEnabled);
+		}
+	}
+
+	public partial class MyEnabledTestControl : ContentControl
+	{
+		public void PublicSuppressIsEnabled(bool suppress) => SuppressIsEnabled(suppress);
 	}
 }

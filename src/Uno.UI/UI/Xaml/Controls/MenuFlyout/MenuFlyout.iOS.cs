@@ -22,26 +22,42 @@ namespace Windows.UI.Xaml.Controls
 #pragma warning restore CS0618 // Type or member is obsolete
 
 		internal protected override void Open()
-		{			
-			if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+		{
+			if (UseNativePopup)
 			{
-				ShowAlert(Target);
+
+				if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+				{
+					ShowAlert(Target);
+				}
+				else if (UIDevice.CurrentDevice.CheckSystemVersion(7, 0))
+				{
+					ShowActionSheet(Target);
+				}
 			}
-			else if (UIDevice.CurrentDevice.CheckSystemVersion(7, 0))
+			else
 			{
-				ShowActionSheet(Target);
+				base.Open();
 			}
 		}
 
 		internal protected override void Close()
 		{
-			if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+			if (UseNativePopup)
 			{
-				HideAlert();
+
+				if (UIDevice.CurrentDevice.CheckSystemVersion(8, 0))
+				{
+					HideAlert();
+				}
+				else if (UIDevice.CurrentDevice.CheckSystemVersion(7, 0))
+				{
+					HideActionSheet();
+				}
 			}
-			else if (UIDevice.CurrentDevice.CheckSystemVersion(7, 0))
+			else
 			{
-				HideActionSheet();
+				base.Close();
 			}
 		}
 	}

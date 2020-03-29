@@ -18,6 +18,12 @@ namespace Windows.UI.Xaml.Controls
 
 		internal FlyoutPlacementMode Placement { get; set; }
 
+		internal Popup(bool useNativePopup) : this()
+		{
+			_useNativePopup = useNativePopup;
+			Initialize();
+		}
+
 		partial void InitializeNativePartial()
 		{
 			_popupWindow = new PopupWindow(this, WindowManagerLayoutParams.MatchParent, WindowManagerLayoutParams.MatchParent, true);
@@ -104,7 +110,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected override void OnMeasure(int widthMeasureSpec, int heightMeasureSpec)
 		{
-			if (FeatureConfiguration.Popup.UseNativePopup)
+			if (_useNativePopup)
 			{
 
 				// Ensure Popup doesn't take any space.

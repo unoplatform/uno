@@ -269,7 +269,7 @@ namespace Uno.UI.Controls
 			Native.Alpha = (float)Element.Opacity;
 		}
 
-		private IEnumerable<IMenuItem> GetMenuItems(IMenu menu)
+		private IEnumerable<IMenuItem> GetMenuItems(Android.Views.IMenu menu)
 		{
 			for (int i = 0; i < menu.Size(); i++)
 			{

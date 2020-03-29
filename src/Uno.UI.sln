@@ -155,6 +155,10 @@ EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{04b1b5eb-d42e-47de-ada0-eb863e5574fd}*SharedItemsImports = 13
+		SamplesApp\Benchmarks.Shared\Benchmarks.Shared.projitems*{21206058-d5ef-466d-8e4d-ac62357fb479}*SharedItemsImports = 5
+		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{21206058-d5ef-466d-8e4d-ac62357fb479}*SharedItemsImports = 5
+		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{21206058-d5ef-466d-8e4d-ac62357fb479}*SharedItemsImports = 5
+		SamplesApp\UITests.Shared\UITests.Shared.projitems*{21206058-d5ef-466d-8e4d-ac62357fb479}*SharedItemsImports = 5
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{313fcf91-a6db-4585-a23e-49bbeef4784d}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.UnitTests.Shared\SamplesApp.UnitTests.Shared.projitems*{313fcf91-a6db-4585-a23e-49bbeef4784d}*SharedItemsImports = 4
 		SamplesApp\SamplesApp.Shared\SamplesApp.Shared.projitems*{3fdf0f2d-cc11-49be-8634-f81638d595c6}*SharedItemsImports = 4
