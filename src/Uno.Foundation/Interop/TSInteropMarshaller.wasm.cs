@@ -46,27 +46,24 @@ namespace Uno.Foundation.Interop
 			{
 				_logger.Value.LogDebug($"InvokeJS for {memberName}/{typeof(TParam)}");
 			}
-			 
+
 			var pParms = Marshal.AllocHGlobal(MarshalSizeOf<TParam>.Size);
 
-			try
-			{
-				Marshal.StructureToPtr(paramStruct, pParms, false);
+			Marshal.StructureToPtr(paramStruct, pParms, false);
 
-				var ret = WebAssemblyRuntime.InvokeJSUnmarshalled(methodName, pParms);
-			}
-			catch(Exception e)
+			WebAssemblyRuntime.InvokeJSUnmarshalled(methodName, pParms, out var exception);
+
+			Marshal.DestroyStructure(pParms, typeof(TParam));
+			Marshal.FreeHGlobal(pParms);
+
+			if (exception != null)
 			{
 				if (_logger.Value.IsEnabled(LogLevel.Error))
 				{
-					_logger.Value.LogError($"Failed InvokeJS for {memberName}/{typeof(TParam)}: {e}"); 
+					_logger.Value.LogError($"Failed InvokeJS for {memberName}/{typeof(TParam)}: {exception}");
 				}
-				throw;
-			}
-			finally
-			{
-				Marshal.DestroyStructure(pParms, typeof(TParam));
-				Marshal.FreeHGlobal(pParms);
+
+				throw exception;
 			}
 		}
 
