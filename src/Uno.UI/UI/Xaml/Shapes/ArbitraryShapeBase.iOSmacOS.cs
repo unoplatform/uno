@@ -20,8 +20,8 @@ namespace Windows.UI.Xaml.Shapes
 	public abstract partial class ArbitraryShapeBase
 	{
 		// Drawing scale
-		private nfloat _scaleX;
-		private nfloat _scaleY;
+		private float _scaleX;
+		private float _scaleY;
 
 		public ArbitraryShapeBase()
 		{
@@ -60,31 +60,30 @@ namespace Windows.UI.Xaml.Shapes
 
 		private IDisposable BuildDrawableLayer()
 		{
-			if (Bounds != CGRect.Empty)
+			if (Bounds == CGRect.Empty)
 			{
-				var newLayer = CreateLayer();
-
-				if (newLayer != null)
-				{
-					Layer.AddSublayer(newLayer);
-
-					return Disposable.Create(() => newLayer.RemoveFromSuperLayer());
-				}
+				return Disposable.Empty;
 			}
 
-			return Disposable.Empty;
+			var newLayer = CreateLayerOrDefault();
+			if (newLayer == null)
+			{
+				return Disposable.Empty;
+			}
+
+			Layer.AddSublayer(newLayer);
+			return Disposable.Create(() => newLayer.RemoveFromSuperLayer());
 		}
 
-		private CALayer CreateLayer()
+		private CALayer CreateLayerOrDefault()
 		{
 			var path = this.GetPath(SizeFromUISize(Bounds.Size));
-
 			if (path == null)
 			{
 				return null;
 			}
 
-			var pathBounds = path.PathBoundingBox;
+			var pathBounds = path.BoundingBox;
 
 			if (
 				nfloat.IsInfinity(pathBounds.Right)
@@ -102,127 +101,158 @@ namespace Windows.UI.Xaml.Shapes
 			var scaleX = _scaleX;
 			var scaleY = _scaleY;
 
-			var stretchMode = Stretch;
-
-			switch (stretchMode)
-			{
-				case Stretch.Fill:
-				case Stretch.None:
-					break;
-				case Stretch.Uniform:
-					scaleX = (nfloat)Math.Min(_scaleX, _scaleY);
-					scaleY = scaleX;
-					break;
-				case Stretch.UniformToFill:
-					scaleX = (nfloat)Math.Max(_scaleX, _scaleY);
-					scaleY = scaleX;
-					break;
-			}
+			//var stretchMode = Stretch;
+			//switch (stretchMode)
+			//{
+			//	case Stretch.Fill:
+			//	case Stretch.None:
+			//		break;
+			//	case Stretch.Uniform:
+			//		scaleX = Math.Min(_scaleX, _scaleY);
+			//		scaleY = scaleX;
+			//		break;
+			//	case Stretch.UniformToFill:
+			//		scaleX = Math.Max(_scaleX, _scaleY);
+			//		scaleY = scaleX;
+			//		break;
+			//}
 
 			var transform = CGAffineTransform.MakeScale(scaleX, scaleY);
 
-			if (stretchMode != Stretch.None)
+			if (!ShouldPreserveOrigin)
 			{
-				// When stretching, we can't use 0,0 as the origin, but must instead
-				// use the path's bounds.
+				// When stretching, we can't use 0,0 as the origin, but must instead use the path's bounds.
 				transform.Translate(-pathBounds.Left * scaleX, -pathBounds.Top * scaleY);
 			}
 
-			if (!ShouldPreserveOrigin)
-			{
-				//We need to translate the shape to take in account the stroke thickness
-				transform.Translate((nfloat)ActualStrokeThickness * 0.5f, (nfloat)ActualStrokeThickness * 0.5f);
-			}
+			//if (!ShouldPreserveOrigin)
+			//{
+			//	// We need to translate the shape to take in account the stroke thickness
+			//	// transform.Translate((nfloat)ActualStrokeThickness * 0.5f, (nfloat)ActualStrokeThickness * 0.5f);
+			//	var quarterStrokeThickness = (nfloat)(GetHalfStrokeThickness() / 2.0);
+			//	transform.Translate(quarterStrokeThickness, quarterStrokeThickness);
+			//}
 
 			if (nfloat.IsNaN(transform.x0) || nfloat.IsNaN(transform.y0) ||
 				nfloat.IsNaN(transform.xx) || nfloat.IsNaN(transform.yy) ||
 				nfloat.IsNaN(transform.xy) || nfloat.IsNaN(transform.yx)
 			)
 			{
-				//transformedPath creation will crash natively if the transform contains NaNs
+				// transformedPath creation will crash natively if the transform contains NaNs
 				throw new InvalidOperationException($"transform {transform} contains NaN values, transformation will fail.");
 			}
 
-			var colorFill = Fill as SolidColorBrush ?? SolidColorBrushHelper.Transparent;
-			var imageFill = Fill as ImageBrush;
-			var gradientFill = Fill as LinearGradientBrush;
-			var stroke = this.Stroke as SolidColorBrush ?? SolidColorBrushHelper.Transparent;
-
+			//var colorFill = Fill as SolidColorBrush ?? SolidColorBrushHelper.Transparent;
+			//var imageFill = Fill as ImageBrush;
+			//var gradientFill = Fill as LinearGradientBrush;
+			//var stroke = Stroke as SolidColorBrush ?? SolidColorBrushHelper.Transparent;
 			var transformedPath = new CGPath(path, transform);
-			var layer = new CAShapeLayer()
+			var pathLayer = new CAShapeLayer()
 			{
 				Path = transformedPath,
-				StrokeColor = stroke.ColorWithOpacity,
+				StrokeColor = (Stroke as SolidColorBrush)?.ColorWithOpacity ?? Colors.Transparent,
 				LineWidth = (nfloat)ActualStrokeThickness,
 			};
 
-			if (colorFill != null)
+			switch (Fill)
 			{
-				layer.FillColor = colorFill.ColorWithOpacity;
+				case SolidColorBrush colorFill:
+					pathLayer.FillColor = colorFill.ColorWithOpacity;
+					break;
+
+				case ImageBrush imageFill when TryCreateImageBrushLayers(imageFill, GetFillMask(transformedPath), out var imageLayer):
+					pathLayer.FillColor = Colors.Transparent;
+					pathLayer.AddSublayer(imageLayer);
+					break;
+
+				case LinearGradientBrush gradientFill:
+					var gradientLayer = gradientFill.GetLayer(Frame.Size);
+					gradientLayer.Frame = Bounds;
+					gradientLayer.Mask = GetFillMask(transformedPath);
+					gradientLayer.MasksToBounds = true;
+
+					pathLayer.FillColor = Colors.Transparent;
+					pathLayer.AddSublayer(gradientLayer);
+					break;
+
+				case null:
+					pathLayer.FillColor = Colors.Transparent;
+					break;
+
+				default:
+					Application.Current.RaiseRecoverableUnhandledException(new NotSupportedException($"The brush {Fill} is not supported as Fill for a {this} on this platform."));
+					pathLayer.FillColor = Colors.Transparent;
+					break;
 			}
 
-			if (imageFill != null)
-			{
-				var fillMask = new CAShapeLayer()
+			CAShapeLayer GetFillMask(CGPath mask)
+				=> new CAShapeLayer
 				{
-					Path = path,
+					Path = mask,
 					Frame = Bounds,
 					// We only use the fill color to create the mask area
 					FillColor = _Color.White.CGColor,
 				};
 
-				CreateImageBrushLayers(
-					layer,
-					imageFill,
-					fillMask
-				);
-			}
-			else if (gradientFill != null)
-			{
-				var fillMask = new CAShapeLayer()
-				{
-					Path = transformedPath,
-					Frame = Bounds,
-					// We only use the fill color to create the mask area
-					FillColor = _Color.White.CGColor,
-				};
+			//if (colorFill != null)
+			//{
+			//	layer.FillColor = colorFill.ColorWithOpacity;
+			//}
 
-				var gradientLayer = gradientFill.GetLayer(Frame.Size);
-				gradientLayer.Frame = Bounds;
-				gradientLayer.Mask = fillMask;
-				gradientLayer.MasksToBounds = true;
-				layer.AddSublayer(gradientLayer);
-			}
+			//if (imageFill != null)
+			//{
+			//	var fillMask = 
+
+			//	CreateImageBrushLayers(
+			//		layer,
+			//		imageFill,
+			//		fillMask
+			//	);
+			//}
+			//else if (gradientFill != null)
+			//{
+			//	var fillMask = new CAShapeLayer()
+			//	{
+			//		Path = transformedPath,
+			//		Frame = Bounds,
+			//		// We only use the fill color to create the mask area
+			//		FillColor = _Color.White.CGColor,
+			//	};
+
+			//	var gradientLayer = gradientFill.GetLayer(Frame.Size);
+			//	gradientLayer.Frame = Bounds;
+			//	gradientLayer.Mask = fillMask;
+			//	gradientLayer.MasksToBounds = true;
+			//	layer.AddSublayer(gradientLayer);
+			//}
 
 			if (StrokeDashArray != null)
 			{
 				var pattern = StrokeDashArray.Select(d => (global::Foundation.NSNumber)d).ToArray();
 
-				layer.LineDashPhase = 0; // Starting position of the pattern
-				layer.LineDashPattern = pattern;
-
+				pathLayer.LineDashPhase = 0; // Starting position of the pattern
+				pathLayer.LineDashPattern = pattern;
 			}
 
-			return layer;
+			return pathLayer;
 		}
 
-		private void CreateImageBrushLayers(CALayer layer, ImageBrush imageBrush, CAShapeLayer fillMask)
+		private bool TryCreateImageBrushLayers(ImageBrush imageBrush, CAShapeLayer fillMask, out CALayer imageContainerLayer)
 		{
-
 			var uiImage = imageBrush.ImageSource.ImageData;
-
 			if (uiImage == null)
 			{
-				return;
+				imageContainerLayer = default;
+				return false;
 			}
 
 			// This layer is the one we apply the mask on. It's the full size of the shape because the mask is as well.
-			var imageContainerLayer = new CALayer
+			imageContainerLayer = new CALayer
 			{
 				Frame = new CGRect(0, 0, Bounds.Width, Bounds.Height),
 				Mask = fillMask,
-				BackgroundColor = new CGColor(0, 0, 0, 0),
 				MasksToBounds = true,
+				BackgroundColor = new CGColor(0, 0, 0, 0),
 			};
 
 			// The ImageBrush.Stretch will tell us the SIZE of the image we need for the layer
@@ -288,7 +318,8 @@ namespace Windows.UI.Xaml.Shapes
 			};
 
 			imageContainerLayer.AddSublayer(imageLayer);
-			layer.AddSublayer(imageContainerLayer);
+
+			return true;
 		}
 
 		protected override Size MeasureOverride(Size availableSize)
@@ -298,104 +329,132 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				return default;
 			}
-			var bounds = path.PathBoundingBox;
 
-			if (bounds.IsEmpty)
+			var pathBounds = path.BoundingBox;
+			var pathSize = (Windows.Foundation.Size)pathBounds.Size;
+			if (pathSize == default)
 			{
 				return default;
 			}
 
-			// On iOS 11, the origin (X, Y) of bounds could be infinite, leading to strange results.
-			if (nfloat.IsInfinity(bounds.X))
-			{
-				bounds.X = 0;
-			}
+			//// On iOS 11, the origin (X, Y) of bounds could be infinite, leading to strange results.
+			//if (nfloat.IsInfinity(bounds.X))
+			//{
+			//	bounds.X = 0;
+			//}
 
-			if (nfloat.IsInfinity(bounds.Y))
-			{
-				bounds.Y = 0;
-			}
+			//if (nfloat.IsInfinity(bounds.Y))
+			//{
+			//	bounds.Y = 0;
+			//}
 
-			var pathWidth = bounds.Width;
-			var pathHeight = bounds.Height;
+			//var pathWidth = bounds.Width;
+			//var pathHeight = bounds.Height;
+			//if (pathWidth == 0 && pathHeight == 0)
+			//{
+			//	return default;
+			//}
 
+			// For shapes that has an offset from the origin, if the stretch mode is not None we remove this offset.
+			// cf. remarks of ShouldPreserveOrigin XML doc.
 			if (ShouldPreserveOrigin)
 			{
-				pathWidth += bounds.X;
-				pathHeight += bounds.Y;
+				//pathWidth += bounds.X;
+				//pathHeight += bounds.Y;
+
+				if (!nfloat.IsInfinity(pathBounds.X))
+				{
+					pathSize.Width += pathBounds.X;
+				}
+				if (!nfloat.IsInfinity(pathBounds.Y))
+				{
+					pathSize.Height += pathBounds.Y;
+				}
 			}
 
-			var availableWidth = availableSize.Width;
-			var availableHeight = availableSize.Height;
+			//var availableWidth = availableSize.Width;
+			//var availableHeight = availableSize.Height;
+			//var userWidth = this.Width;
+			//var userHeight = this.Height;
 
-			var userWidth = this.Width;
-			var userHeight = this.Height;
+			// As weird as it seems, it's how WinUI behaves for the measure!
+			// Note: .5 so if thickness is 1, we have 1, but if .8 we have 0 ... like WinUI
+			//var halfStrokeThickness = Math.Floor((ActualStrokeThickness + .5f) / 2.0);
+			var halfStrokeThickness = GetHalfStrokeThickness();
+			pathSize = pathSize.Add(new Size(halfStrokeThickness, halfStrokeThickness));
 
-			var controlWidth = availableWidth <= 0 ? userWidth : availableWidth;
-			var controlHeight = availableHeight <= 0 ? userHeight : availableHeight;
+			//// For safety, we make sure to remove NaN (but not infinity at this point)
+			//availableSize = availableSize.NumberOrDefault(pathSize);
+
+			//var size = this.ApplySizeConstraints(availableSize)
+			//	.NumberOrDefault(pathSize)
+			//	.Add(new Size(halfStrokeThickness, halfStrokeThickness));
+
+			//var controlWidth = availableWidth <= 0 ? userWidth : availableWidth;
+			//var controlHeight = availableHeight <= 0 ? userHeight : availableHeight;
 
 			// Default values
-			var calculatedWidth = LimitWithUserSize(controlWidth, userWidth, pathWidth);
-			var calculatedHeight = LimitWithUserSize(controlHeight, userHeight, pathHeight);
+			//var calculatedWidth = LimitWithUserSize(controlWidth, userWidth, pathWidth);
+			//var calculatedHeight = LimitWithUserSize(controlHeight, userHeight, pathHeight);
 
-			var strokeThickness = this.ActualStrokeThickness;
-			var strokeThicknessF = (float)strokeThickness;
+			//var strokeThickness = this.ActualStrokeThickness;
+			//var strokeThicknessF = (float)strokeThickness;
 
-			_scaleX = (nfloat)(calculatedWidth - strokeThicknessF) / pathWidth;
-			_scaleY = (nfloat)(calculatedHeight - strokeThicknessF) / pathHeight;
+			//// At this point 'path<Width|Height>' might be 0, especially for vertical / horizontal Line
+			//_scaleX = pathWidth == 0 ? 1 : (nfloat)size.Width / pathWidth;
+			//_scaleY = pathHeight == 0 ? 1 : (nfloat)size.Height / pathHeight;
 
 			//Make sure that we have a valid scale if both of them are not set
-			if (double.IsInfinity((double)_scaleX) &&
-			   double.IsInfinity((double)_scaleY))
-			{
-				_scaleX = 1;
-				_scaleY = 1;
-			}
+			//if (double.IsInfinity((double)_scaleX)
+			//	&& double.IsInfinity((double)_scaleY))
+			//{
+			//	_scaleX = 1;
+			//	_scaleY = 1;
+			//}
 
 			// Here we will override some of the default values
-			switch (this.Stretch)
+			switch (Stretch)
 			{
-				// If the Stretch is None, the drawing is not the same size as the control
 				case Stretch.None:
 					_scaleX = 1;
 					_scaleY = 1;
-					calculatedWidth = (double)pathWidth;
-					calculatedHeight = (double)pathHeight;
 					break;
-				case Stretch.Fill:
-					if (double.IsInfinity((double)_scaleY))
-					{
-						_scaleY = 1;
-					}
-					if (double.IsInfinity((double)_scaleX))
-					{
-						_scaleX = 1;
-					}
-					calculatedWidth = (double)pathWidth * (double)_scaleX;
-					calculatedHeight = (double)pathHeight * (double)_scaleY;
 
+				case Stretch.Fill:
+					(_scaleX, _scaleY) = GetScale(pathSize, availableSize);
 					break;
-				// Override the _calculated dimensions if the stretch is Uniform or UniformToFill
+
 				case Stretch.Uniform:
 				{
-					double scale = Math.Min(_scaleX, _scaleY);
-					calculatedWidth = (double)pathWidth * scale;
-					calculatedHeight = (double)pathHeight * scale;
+					var scale = GetScale(pathSize, availableSize);
+					_scaleX = _scaleY = Math.Min(scale.x, scale.y);
 					break;
 				}
 				case Stretch.UniformToFill:
 				{
-					double scale = Math.Max(_scaleX, _scaleY);
-					calculatedWidth = (double)pathWidth * scale;
-					calculatedHeight = (double)pathHeight * scale;
+					var scale = GetScale(pathSize, availableSize);
+					_scaleX = _scaleY = Math.Max(scale.x, scale.y);
 					break;
 				}
 			}
 
-			calculatedWidth += strokeThickness;
-			calculatedHeight += strokeThickness;
+			//calculatedWidth += strokeThickness;
+			//calculatedHeight += strokeThickness;
 
-			return new Size(calculatedWidth, calculatedHeight);
+			return new Size(pathSize.Width * _scaleX, pathSize.Height * _scaleY);
+		}
+
+		private protected double GetHalfStrokeThickness()
+			=> Math.Floor((ActualStrokeThickness + .5) / 2.0);
+
+		private static (float x, float y) GetScale(Size pathSize, Size availableSize)
+		{
+			availableSize = availableSize.NumberOrDefault(pathSize);
+
+			return (
+				(float)(double.IsInfinity(availableSize.Width) ? 1 : pathSize.Width / availableSize.Width),
+				(float)(double.IsInfinity(availableSize.Height) ? 1 : pathSize.Height / availableSize.Height)
+			);
 		}
 	}
 }
