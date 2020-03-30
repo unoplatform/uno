@@ -25,7 +25,7 @@
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Build.Utilities.Core">
-			<Version>15.4.8</Version>
+			<Version>15.9.20</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 	</ItemGroup>
