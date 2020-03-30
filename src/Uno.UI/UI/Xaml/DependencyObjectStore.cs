@@ -111,7 +111,10 @@ namespace Windows.UI.Xaml
 			get => _parentRef?.Target;
 			set
 			{
-				if (!ReferenceEquals(_parentRef?.Target, value))
+				if (
+					!ReferenceEquals(_parentRef?.Target, value)
+					|| (_parentRef != null && value is null)
+				)
 				{
 					var previousParent = _parentRef?.Target;
 
@@ -120,7 +123,12 @@ namespace Windows.UI.Xaml
 						WeakReferencePool.ReturnWeakReference(this, _parentRef);
 					}
 
-					_parentRef = WeakReferencePool.RentWeakReference(this, value);
+					_parentRef = null;
+
+					if (value != null)
+					{
+						_parentRef = WeakReferencePool.RentWeakReference(this, value);
+					}
 
 					_inheritedProperties.Disposable = null;
 					_compiledBindings.Disposable = null;
@@ -822,25 +830,27 @@ namespace Windows.UI.Xaml
 			// does not link the callee to the caller.
 			var instanceRef = _thisWeakRef;
 
+			void Cleanup()
+			{
+				var that = instanceRef.Target as DependencyObjectStore;
+
+				if (that != null)
+				{
+					// Delegates integrate a null check when removing new delegates.
+					that._parentChangedCallbacks = that._parentChangedCallbacks.Remove(weakDelegate);
+				}
+
+				WeakReferencePool.ReturnWeakReference(that, wr);
+
+				// Force a closure on the callback, to make its lifetime as long
+				// as the subscription being held by the callee.
+				callback = null;
+			}
+
 			return new DispatcherConditionalDisposable(
 				callback.Target,
 				instanceRef.CloneWeakReference(),
-				() =>
-				{
-					var that = instanceRef.Target as DependencyObjectStore;
-
-					if (that != null)
-					{
-						// Delegates integrate a null check when removing new delegates.
-						that._parentChangedCallbacks = that._parentChangedCallbacks.Remove(weakDelegate);
-					}
-
-					WeakReferencePool.ReturnWeakReference(that, wr);
-
-					// Force a closure on the callback, to make its lifetime as long
-					// as the subscription being held by the callee.
-					callback = null;
-				}
+				Cleanup
 			);
 		}
 

@@ -110,6 +110,8 @@ namespace Windows.UI.Xaml
 				this.Log().Debug($"Collecting UIElement for [{HtmlId}]");
 			}
 
+			Cleanup();
+
 			Uno.UI.Xaml.WindowManagerInterop.DestroyView(HtmlId);
 
 			_gcHandle.Free();
@@ -435,16 +437,52 @@ namespace Windows.UI.Xaml
 
 		public void ClearChildren()
 		{
-			foreach (var child in _children)
+			for (var i = 0; i < _children.Count; i++)
 			{
-				child.SetParent(null);
-				Uno.UI.Xaml.WindowManagerInterop.RemoveView(HtmlId, child.HtmlId);
+				var child = _children[i];
 
+				RemoveNativeView(child);
 				OnChildRemoved(child);
 			}
 
 			_children.Clear();
 			InvalidateMeasure();
+		}
+
+		private void RemoveNativeView(UIElement child)
+		{
+			var childParent = child.GetParent();
+
+			child.SetParent(null);
+
+			// The parent may already be null if the parent has already been collected.
+			// In such case, there is no need to remove the child from its parent in the DOM.
+			if (childParent != null)
+			{
+				Uno.UI.Xaml.WindowManagerInterop.RemoveView(HtmlId, child.HtmlId);
+			}
+		}
+
+		private void Cleanup()
+		{
+			if (this.GetParent() is UIElement originalParent)
+			{
+				originalParent.RemoveChild(this);
+			}
+
+			if (this is Windows.UI.Xaml.Controls.Panel panel)
+			{
+				panel.Children.Clear();
+			}
+			else
+			{
+				for (var i = 0; i < _children.Count; i++)
+				{
+					RemoveNativeView(_children[i]);
+				}
+
+				_children.Clear();
+			}
 		}
 
 		public bool RemoveChild(UIElement child)
@@ -540,8 +578,9 @@ namespace Windows.UI.Xaml
 
 		internal virtual void ManagedOnLoading()
 		{
-			foreach (var child in _children)
+			for (var i = 0; i < _children.Count; i++)
 			{
+				var child = _children[i];
 				child.ManagedOnLoading();
 			}
 		}
@@ -551,8 +590,9 @@ namespace Windows.UI.Xaml
 			IsLoaded = true;
 			Depth = depth;
 
-			foreach (var child in _children)
+			for (var i = 0; i < _children.Count; i++)
 			{
+				var child = _children[i];
 				child.ManagedOnLoaded(depth + 1);
 			}
 		}
@@ -562,8 +602,9 @@ namespace Windows.UI.Xaml
 			IsLoaded = false;
 			Depth = null;
 
-			foreach (var child in _children)
+			for (var i = 0; i < _children.Count; i++)
 			{
+				var child = _children[i];
 				child.ManagedOnUnloaded();
 			}
 		}
