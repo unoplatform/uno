@@ -29,7 +29,7 @@ namespace SamplesApp.UITests
 			var runTestCount = _app.Marked("runTestCount");
 
 			bool IsTestExecutionDone()
-				=> runningState.GetDependencyPropertyValue<string>("Text").Equals("Finished", StringComparison.OrdinalIgnoreCase);
+				=> runningState.GetDependencyPropertyValue("Text")?.ToString().Equals("Finished", StringComparison.OrdinalIgnoreCase) ?? false;
 
 			_app.WaitForElement(runButton);
 
@@ -40,7 +40,7 @@ namespace SamplesApp.UITests
 
 			while(DateTimeOffset.Now - lastChange < TestRunTimeout)
 			{
-				var newValue = runTestCount.GetDependencyPropertyValue<string>("Text");
+				var newValue = runTestCount.GetDependencyPropertyValue("Text")?.ToString();
 
 				if (lastValue != newValue)
 				{
