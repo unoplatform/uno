@@ -1,0 +1,55 @@
+﻿<Page
+	x:Class="UITests.Windows_UI_Xaml_Shapes.Basic_Shapes"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	mc:Ignorable="d"
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition  Height="Auto"/>
+			<RowDefinition  Height="*"/>
+		</Grid.RowDefinitions>
+		
+		<Button Content="Settings">
+			<Button.Flyout>
+				<Flyout Closed="SettingsUpdated">
+					<StackPanel Width="300">
+						<TextBlock Text="Shapes" />
+						<ToggleSwitch x:Name="_shapeRectangle" OnContent="Rectangle" OffContent="Rectangle" IsOn="True" />
+						<ToggleSwitch x:Name="_shapeEllipse" OnContent="Ellipse" OffContent="Ellipse" IsOn="True" />
+						<ToggleSwitch x:Name="_shapeLine" OnContent="Line" OffContent="Line" IsOn="True" />
+						<ToggleSwitch x:Name="_shapePath" OnContent="Path" OffContent="Path" IsOn="True" />
+						<ToggleSwitch x:Name="_shapePolygon" OnContent="Polygon" OffContent="Polygon" IsOn="True" />
+						<ToggleSwitch x:Name="_shapePolyline" OnContent="Polyline" OffContent="Polyline" IsOn="True" />
+
+						<TextBlock Text="Stretch" Margin="0,10,0,0" />
+						<ToggleSwitch x:Name="_stretchDefault" OnContent="Default" OffContent="Default" IsOn="True" />
+						<ToggleSwitch x:Name="_stretchNone" OnContent="None" OffContent="None" IsOn="True" />
+						<ToggleSwitch x:Name="_stretchFill" OnContent="Fill" OffContent="Fill" IsOn="True" />
+						<ToggleSwitch x:Name="_stretchUniform" OnContent="Uniform" OffContent="Uniform" IsOn="True" />
+						<ToggleSwitch x:Name="_stretchUniformToFill" OnContent="UniformToFill" OffContent="UniformToFill" IsOn="True" />
+
+						<TextBlock Text="Sizes" Margin="0,10,0,0" />
+						<ToggleSwitch x:Name="_sizeUnconstrained" OnContent="Unconstrained" OffContent="Unconstrained" IsOn="True" />
+						<ToggleSwitch x:Name="_sizeFixedSmall" OnContent="Fixed small (Will scale UP)" OffContent="Fixed small (Will scale UP)" IsOn="True" />
+						<ToggleSwitch x:Name="_sizeFixedLarge" OnContent="Fixed large (Will scale DOWN)" OffContent="Fixed large (Will scale DOWN)" IsOn="True" />
+					</StackPanel>
+				</Flyout>
+			</Button.Flyout>
+		</Button>
+
+		<ScrollViewer
+			x:Name="_root"
+			Grid.Row="1"
+			HorizontalScrollMode="Auto"
+			HorizontalScrollBarVisibility="Visible"
+			VerticalScrollMode="Auto"
+			VerticalScrollBarVisibility="Visible"
+			ZoomMode="Enabled">
+
+		</ScrollViewer>
+	</Grid>
+</Page>
