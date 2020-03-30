@@ -31,6 +31,11 @@ namespace Windows.UI.Xaml.Shapes
 
 		#endregion
 
+		public Polyline()
+		{
+			Points = new PointCollection();
+		}
+
 		protected internal override IEnumerable<object> GetShapeParameters()
 		{
 			yield return Points?.ToArray();
