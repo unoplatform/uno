@@ -455,7 +455,7 @@ var Uno;
                     isFocusable: params.IsFocusable,
                     isSvg: params.IsSvg,
                     tagName: params.TagName,
-                    uiElementRegistrationId: params.UIElementRegistrationId
+                    uiElementRegistrationId: params.UIElementRegistrationId,
                 };
                 this.createContentInternal(def);
                 return true;
@@ -494,9 +494,9 @@ var Uno;
             registerUIElement(typeName, isFrameworkElement, classNames) {
                 const registrationId = Object.keys(this.uiElementRegistrations).length;
                 this.uiElementRegistrations[this.handleToString(registrationId)] = {
-                    typeName: typeName,
-                    isFrameworkElement: isFrameworkElement,
                     classNames: classNames,
+                    isFrameworkElement: isFrameworkElement,
+                    typeName: typeName,
                 };
                 return registrationId;
             }
@@ -1259,6 +1259,15 @@ var Uno;
             getBBoxInternal(elementId) {
                 return this.getView(elementId).getBBox();
             }
+            setSvgElementRect(pParams) {
+                const params = WindowManagerSetSvgElementRectParams.unmarshal(pParams);
+                const element = this.getView(params.HtmlId);
+                element.x.baseVal.value = params.X;
+                element.y.baseVal.value = params.Y;
+                element.width.baseVal.value = params.Width;
+                element.height.baseVal.value = params.Height;
+                return true;
+            }
             /**
                 * Use the Html engine to measure the element using specified constraints.
                 *
@@ -1801,12 +1810,6 @@ class WindowManagerDestroyViewParams {
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
-class WindowManageRegisterUIElementReturn {
-    marshal(pData) {
-        Module.setValue(pData + 0, this.RegistrationId, "i32");
-    }
-}
-/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerGetBBoxParams {
     static unmarshal(pData) {
         const ret = new WindowManagerGetBBoxParams();
@@ -2294,6 +2297,28 @@ class WindowManagerSetStylesParams {
             else {
                 ret.Pairs = null;
             }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetSvgElementRectParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerSetSvgElementRectParams();
+        {
+            ret.X = Number(Module.getValue(pData + 0, "double"));
+        }
+        {
+            ret.Y = Number(Module.getValue(pData + 8, "double"));
+        }
+        {
+            ret.Width = Number(Module.getValue(pData + 16, "double"));
+        }
+        {
+            ret.Height = Number(Module.getValue(pData + 24, "double"));
+        }
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 32, "*"));
         }
         return ret;
     }

@@ -70,11 +70,9 @@ declare namespace MonoSupport {
      * unmarshaled invocation of javascript from .NET code.
      * */
     class jsCallDispatcher {
-        static registrations: Map<string, any>;
-        static methodMap: {
-            [id: string]: any;
-        };
-        static _isUnoRegistered: boolean;
+        private static registrations;
+        private static methodMap;
+        private static _isUnoRegistered;
         /**
          * Registers a instance for a specified identier
          * @param identifier the scope name
@@ -442,6 +440,7 @@ declare namespace Uno.UI {
         getBBox(elementId: number): string;
         getBBoxNative(pParams: number, pReturn: number): boolean;
         private getBBoxInternal;
+        setSvgElementRect(pParams: number): boolean;
         /**
             * Use the Html engine to measure the element using specified constraints.
             *
@@ -567,10 +566,6 @@ declare class WindowManagerCreateContentParams {
 declare class WindowManagerDestroyViewParams {
     HtmlId: number;
     static unmarshal(pData: number): WindowManagerDestroyViewParams;
-}
-declare class WindowManageRegisterUIElementReturn {
-    RegistrationId: number;
-    marshal(pData: number): void;
 }
 declare class WindowManagerGetBBoxParams {
     HtmlId: number;
@@ -715,6 +710,14 @@ declare class WindowManagerSetStylesParams {
     Pairs_Length: number;
     Pairs: Array<string>;
     static unmarshal(pData: number): WindowManagerSetStylesParams;
+}
+declare class WindowManagerSetSvgElementRectParams {
+    X: number;
+    Y: number;
+    Width: number;
+    Height: number;
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerSetSvgElementRectParams;
 }
 declare class WindowManagerSetXUidParams {
     HtmlId: number;

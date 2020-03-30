@@ -328,6 +328,51 @@ namespace Uno.UI.Xaml
 
 		#endregion
 
+		#region SetRectanglePosition
+
+		internal static void SetSvgElementRect(IntPtr htmlId, Rect rect)
+		{
+			if (UseJavascriptEval)
+			{
+				SetAttributes(
+					htmlId,
+					new[]{
+						("x", rect.X.ToStringInvariant()),
+						("y", rect.Y.ToStringInvariant()),
+						("width", rect.Width.ToStringInvariant()),
+						("height", rect.Height.ToStringInvariant())
+					}
+				);
+			}
+			else
+			{
+				var parms = new WindowManagerSetSvgElementRectParams
+				{
+					HtmlId = htmlId,
+					X = rect.X,
+					Y = rect.Y,
+					Width = rect.Width,
+					Height = rect.Height,
+				};
+
+				TSInteropMarshaller.InvokeJS<WindowManagerSetSvgElementRectParams>("Uno:setSvgElementRect", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
+		private struct WindowManagerSetSvgElementRectParams
+		{
+			public double X;
+			public double Y;
+			public double Width;
+			public double Height;
+
+			public IntPtr HtmlId;
+		}
+
+		#endregion
+
 		#region SetStyles
 
 		internal static void SetStyles(IntPtr htmlId, (string name, string value)[] styles)

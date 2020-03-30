@@ -247,7 +247,8 @@ namespace Uno.UI {
 
 			element.id = contentDefinition.id;
 
-			const uiElementRegistration = this.uiElementRegistrations[this.handleToString(contentDefinition.uiElementRegistrationId)];
+			const uiElementRegistration =
+				this.uiElementRegistrations[this.handleToString(contentDefinition.uiElementRegistrationId)];
 			if (!uiElementRegistration) {
 				throw `UIElement registration id ${contentDefinition.uiElementRegistrationId} is unknown.`;
 			}
@@ -790,7 +791,7 @@ namespace Uno.UI {
 			eventName: string,
 			onCapturePhase: boolean = false,
 			eventFilterId: number,
-			eventExtractorId: number
+			eventExtractorId: number,
 		): void {
 			const element = this.getView(elementId);
 			const eventExtractor = this.getEventExtractor(eventExtractorId);
@@ -1251,6 +1252,19 @@ namespace Uno.UI {
 
 		private getBBoxInternal(elementId: number): any {
 			return (<any>this.getView(elementId)).getBBox();
+		}
+
+		public setSvgElementRect(pParams: number): boolean {
+			const params = WindowManagerSetSvgElementRectParams.unmarshal(pParams);
+
+			const element = this.getView(params.HtmlId) as any;
+
+			element.x.baseVal.value = params.X;
+			element.y.baseVal.value = params.Y;
+			element.width.baseVal.value = params.Width;
+			element.height.baseVal.value = params.Height;
+
+			return true;
 		}
 
 		/**
