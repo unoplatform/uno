@@ -4,13 +4,16 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-    public partial class DoubleAnimation
-    {
-		private bool ReportEachFrame() => true;
-
-		partial void OnFrame()
+	partial class Timeline
+	{
+		partial class AnimationImplementation<T>
 		{
-			SetValue(_animator.AnimatedValue);
+			private bool ReportEachFrame() => true;
+
+			partial void OnFrame()
+			{
+				SetValue(_animator.AnimatedValue);
+			}
 		}
 	}
 }

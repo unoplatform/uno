@@ -27,6 +27,14 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 
+		/// <summary>
+		/// Creates the actual animator instance
+		/// </summary>
+		private static IValueAnimator CreateColor(Timeline timeline, Color startingValue, Color targetValue)
+		{
+			return new NativeValueAnimatorAdapter(ValueAnimator.OfArgb((Android.Graphics.Color)startingValue, (Android.Graphics.Color)targetValue));
+		}
+
 		private static IValueAnimator GetGPUAnimator(this Timeline timeline, double startingValue, double targetValue)
 		{
 			// Overview    : http://developer.android.com/guide/topics/graphics/prop-animation.html#property-vs-view
@@ -110,11 +118,11 @@ namespace Windows.UI.Xaml.Media.Animation
 					case nameof(CompositeTransform.ScaleY):
 						return new NativeValueAnimatorAdapter(GetRelativeAnimator(composite.View, "scaleY", startingValue, targetValue), PrepareScaleY(composite, startingValue), Complete(composite));
 
-					//case nameof(CompositeTransform.SkewX):
-					//	return ObjectAnimator.OfFloat(composite.View, "scaleX", ViewHelper.LogicalToPhysicalPixels(targetValue), startingValue);
+						//case nameof(CompositeTransform.SkewX):
+						//	return ObjectAnimator.OfFloat(composite.View, "scaleX", ViewHelper.LogicalToPhysicalPixels(targetValue), startingValue);
 
-					//case nameof(CompositeTransform.SkewY):
-					//	return ObjectAnimator.OfFloat(composite.View, "scaleY", ViewHelper.LogicalToPhysicalPixels(targetValue), startingValue);
+						//case nameof(CompositeTransform.SkewY):
+						//	return ObjectAnimator.OfFloat(composite.View, "scaleY", ViewHelper.LogicalToPhysicalPixels(targetValue), startingValue);
 				}
 			}
 
@@ -203,7 +211,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			// Apply transform using native values
 			OverridePivot(scale.View, scale.CenterX, scale.CenterY);
 			scale.View.ScaleX = (float)from;
-			scale.View.ScaleY = (float) scale.ScaleY;
+			scale.View.ScaleY = (float)scale.ScaleY;
 		};
 
 		private static Action PrepareScaleY(ScaleTransform scale, double from) => () =>
@@ -252,8 +260,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			OverridePivot(composite.View, composite.CenterX, composite.CenterY);
 			composite.View.TranslationX = ViewHelper.LogicalToPhysicalPixels(composite.TranslateX);
 			composite.View.TranslationY = ViewHelper.LogicalToPhysicalPixels(composite.TranslateY);
-			composite.View.ScaleX = (float) composite.ScaleX;
-			composite.View.ScaleY = (float) composite.ScaleY;
+			composite.View.ScaleX = (float)composite.ScaleX;
+			composite.View.ScaleY = (float)composite.ScaleY;
 			composite.View.Rotation = (float)from;
 		};
 
