@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			var coords = Points;
 
-			if (coords == null)
+			if (coords == null || coords.Count <= 1)
 			{
 				return null;
 			}
