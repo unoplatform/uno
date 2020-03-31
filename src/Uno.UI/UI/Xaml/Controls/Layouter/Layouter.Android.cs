@@ -58,6 +58,17 @@ namespace Windows.UI.Xaml.Controls
 			var widthSpec = ViewHelper.SpecFromLogicalSize(slotSize.Width);
 			var heightSpec = ViewHelper.SpecFromLogicalSize(slotSize.Height);
 
+			if (double.IsPositiveInfinity(slotSize.Width) || double.IsPositiveInfinity(slotSize.Height))
+			{
+				// Bypass Android cache, to ensure the Child's Measure() is actually invoked.
+				view.ForceLayout();
+
+				// This could occur when one of the dimension is _Infinite_: Android will cache the
+				// value, which is not something we want. Specially when the container is a <StackPanel>.
+
+				// Issue: https://github.com/unoplatform/uno/issues/2879
+			}
+
 			MeasureChild(view, widthSpec, heightSpec);
 			
 			var ret = Uno.UI.Controls.BindableView.GetNativeMeasuredDimensionsFast(view)
