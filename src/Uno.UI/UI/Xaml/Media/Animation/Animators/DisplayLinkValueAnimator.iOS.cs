@@ -7,19 +7,16 @@ using System.Text;
 namespace Windows.UI.Xaml.Media.Animation
 {
 	/// <summary>
-	/// Animates a float property using Xaml property setters.
+	/// Animates a property using Xaml property setters.
 	/// </summary>
-	internal class FloatValueAnimator : IValueAnimator
+	internal abstract class DisplayLinkValueAnimator : IValueAnimator
 	{
 		private const double MillisecondsPerSecond = 1000d;
 		private const long MaxNumberOfFrames = 10000;// 10,000 frames is enough 40kb of floats
 		private const long MinNumberOfFrames = 1;// At least 1 frame please     
 
-		private float _from;
-		private float _to;
 		private long _duration;
 
-		private float[] _animatedValues;
 		private const int FrameRate = 50;
 
 		private long _numberOfFrames;
@@ -34,16 +31,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		private bool _isDisposed;
 		private bool _isAttachedToLooper;
 
-		private IEasingFunction _easingFunction = null;
-
-		public FloatValueAnimator(float from, float to)
-		{
-			_to = to;
-			_from = from;
-
-			StartDelay = 0;
-			CurrentPlayTime = 0;
-		}
+		protected IEasingFunction _easingFunction = null;
 
 		public void Start()
 		{
@@ -52,10 +40,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				throw new ObjectDisposedException(GetType().Name);
 			}
 
-			if (_animatedValues == null)
-			{
-				PrebuildFrames();//Preload as much of the animation as possible
-			}
+			PrebuildFrames();//Preload as much of the animation as possible
 
 			IsRunning = true;
 
@@ -111,25 +96,10 @@ namespace Windows.UI.Xaml.Media.Animation
 				Math.Min(frames, MaxNumberOfFrames),
 				MinNumberOfFrames);
 
-			_animatedValues = new float[_numberOfFrames];
-
-			var by = _to - _from; //how much to change the value
-			var interpolation = by / _numberOfFrames; //step size
-
-			for (int f = 0; f < _numberOfFrames; f++)
-			{
-				//Modifies the frame values of the animation depending on the easing function
-				if (_easingFunction != null)
-				{
-					_animatedValues[f] = (float)_easingFunction.Ease(f, _from, _to, _numberOfFrames);//frame value
-				}
-				else
-				{
-					//Regular Linear Function
-					_animatedValues[f] = _from + (interpolation * f);//frame value
-				}
-			}
+			PrebuildFrames(_numberOfFrames);
 		}
+
+		protected abstract void PrebuildFrames(long numberOfFrames);
 
 		/// <summary>
 		/// When a frame is free update the value
@@ -156,7 +126,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			if (delta >= _duration)
 			{//animation is done
 
-				SendUpdate(_to);//Set the final value 
+				SendUpdate(GetFinalUpdate());//Set the final value 
 
 				if (AnimationEnd != null)
 				{
@@ -177,14 +147,18 @@ namespace Windows.UI.Xaml.Media.Animation
 			var percent = delta / _duration;
 			var frame = (int)(percent * _numberOfFrames); // get the appropriate frame
 
-			SendUpdate(_animatedValues[frame]); // send an update
+			SendUpdate(GetUpdate(frame)); // send an update
 		}
 
-		private void SendUpdate(float value)
+		private void SendUpdate(object value)
 		{
 			AnimatedValue = value;
 			Update?.Invoke(this, EventArgs.Empty);
 		}
+
+		protected abstract object GetUpdate(int frame);
+
+		protected abstract object GetFinalUpdate();
 
 		public void Resume()
 		{
