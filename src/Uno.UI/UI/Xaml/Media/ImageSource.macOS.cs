@@ -66,7 +66,7 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		internal NSImage OpenBundle()
 		{
-			ImageData = OpenBundleFromString(BundleName) ?? OpenBundleFromString(BundlePath);
+			ImageData = OpenBundleFromString(BundleName) ?? OpenResourceFromString(BundlePath);
 
 			if (ImageData == null)
 			{
@@ -81,6 +81,23 @@ namespace Windows.UI.Xaml.Media
 			if (bundle.HasValueTrimmed())
 			{
 				return NSImage.ImageNamed(bundle);
+			}
+
+			return null;
+		}
+
+		private static NSImage OpenResourceFromString(string name)
+		{
+			if (name.HasValueTrimmed())
+			{
+				var extension = Path.GetExtension(name);
+				var fileName = name.Replace(extension, string.Empty);
+
+				var path = NSBundle.MainBundle.PathForResource(fileName, extension);
+
+				return !string.IsNullOrEmpty(path)
+								? new NSImage(path)
+								: null;
 			}
 
 			return null;
