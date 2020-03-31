@@ -5,18 +5,18 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-	internal abstract class CPUBoundFloatAnimator : IValueAnimator
+	internal abstract class CPUBoundAnimator<T> : IValueAnimator where T : struct
     {
-		private readonly float _from;
-		private readonly float _to;
+		private readonly T _from;
+		private readonly T _to;
 		private readonly Stopwatch _elapsed;
 
-		private float _currentValue;
-		private IEasingFunction _easing = LinearEase.Instance;
+		private T _currentValue;
+		protected IEasingFunction _easing = LinearEase.Instance;
 		private bool _isDisposed;
 		private bool _isDelaying;
 
-		protected CPUBoundFloatAnimator(float from, float to)
+		protected CPUBoundAnimator(T from, T to)
 		{
 			_from = from;
 			_to = to;
@@ -165,7 +165,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				}
 
 				var frame = elapsed - StartDelay;
-				var value = (float)_easing.Ease(frame, _from, _to, Duration);
+				var value = GetUpdatedValue(frame, _from, _to);
 
 				CurrentPlayTime = elapsed;
 				_currentValue = value;
@@ -173,6 +173,8 @@ namespace Windows.UI.Xaml.Media.Animation
 				Update?.Invoke(this, EventArgs.Empty);
 			}
 		}
+
+		protected abstract T GetUpdatedValue(long frame, T from, T to);
 
 		private void ConfigureStartInterval(long elapsed)
 		{
@@ -197,7 +199,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (_isDisposed)
 			{
-				throw new ObjectDisposedException(nameof(CPUBoundFloatAnimator));
+				throw new ObjectDisposedException(nameof(CPUBoundAnimator<T>));
 			}
 		}
 

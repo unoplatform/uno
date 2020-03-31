@@ -9,9 +9,9 @@ using Uno.Foundation.Interop;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-	internal sealed class RenderingLoopFloatAnimator : CPUBoundFloatAnimator, IJSObject
+	internal abstract class RenderingLoopAnimator<T> : CPUBoundAnimator<T>, IJSObject where T : struct
 	{
-		public RenderingLoopFloatAnimator(float from, float to)
+		public RenderingLoopAnimator(T from, T to)
 			: base(from, to)
 		{
 			Handle = JSObjectHandle.Create(this, Metadata.Instance);
@@ -68,7 +68,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				switch (method)
 				{
 					case "OnFrame":
-						((RenderingLoopFloatAnimator)instance).OnFrame();
+						((RenderingLoopAnimator<T>)instance).OnFrame();
 						break;
 
 					default:
