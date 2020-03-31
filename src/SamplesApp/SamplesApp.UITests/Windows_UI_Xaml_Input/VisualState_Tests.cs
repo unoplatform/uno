@@ -103,6 +103,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // Failing on WASM: https://github.com/unoplatform/uno/issues/2905
 		public void TestListViewReleasedOut()
 		{
 			Run("UITests.Shared.Windows_UI_Input.VisualStatesTests.ListViewItem");
