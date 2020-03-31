@@ -195,7 +195,7 @@ namespace Windows.UI.Xaml.Controls
 			if (MonochromeColor != null)
 			{
 				WebAssemblyRuntime.InvokeJS(
-					"Uno.UI.WindowManager.current.setImageAsMonochrome(" + _htmlImage.HtmlId + ", \"" + url + "\", \"" + MonochromeColor.Value.ToCssString() + "\");"
+					"Uno.UI.WindowManager.current.setImageAsMonochrome(" + _htmlImage.HtmlId + ", \"" + url + "\", \"" + MonochromeColor.Value.ToHexString() + "\");"
 				);
 			}
 			else

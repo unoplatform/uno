@@ -2,8 +2,8 @@
 class WindowManagerMeasureViewReturn
 {
 	/* Pack=8 */
-	DesiredWidth : number;
-	DesiredHeight : number;
+	public DesiredWidth : number;
+	public DesiredHeight : number;
 	public marshal(pData:number)
 	{
 		Module.setValue(pData + 0, this.DesiredWidth, "double");

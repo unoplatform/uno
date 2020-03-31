@@ -2,11 +2,11 @@
 class WindowManagerRemoveViewParams
 {
 	/* Pack=4 */
-	HtmlId : number;
-	ChildView : number;
+	public HtmlId : number;
+	public ChildView : number;
 	public static unmarshal(pData:number) : WindowManagerRemoveViewParams
 	{
-		let ret = new WindowManagerRemoveViewParams();
+		const ret = new WindowManagerRemoveViewParams();
 		
 		{
 			ret.HtmlId = Number(Module.getValue(pData + 0, "*"));

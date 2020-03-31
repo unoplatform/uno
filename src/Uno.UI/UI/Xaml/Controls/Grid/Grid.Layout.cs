@@ -12,6 +12,7 @@ using System.Runtime.InteropServices;
 using Uno.Disposables;
 using Uno.Collections;
 using Microsoft.Extensions.Logging;
+using Uno.UI.DataBinding;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -225,7 +226,6 @@ namespace Windows.UI.Xaml.Controls
 
 			using (positions.Subscription)
 			{
-
 				if (!TryArrangeUsingFastPath(availableSize, columns, definedColumns, rows, definedRows, positions.Views.Span))
 				{
 					var measureChild = GetMemoizedMeasureChild();
@@ -1181,20 +1181,34 @@ namespace Windows.UI.Xaml.Controls
 			return _calculatedRows.Span[i].MinValue;
 		}
 
-		private (IDisposable Subscription, Memory<ViewPosition> Views) GetPositions(int numberOfColumns, int numberOfRows)
+		private readonly struct PositionDisposable : IDisposable
 		{
-			var refs = Children.SelectToArray(c => (View: c, Handle: GCHandle.Alloc(c, GCHandleType.Normal)));
+			public readonly PositionSubscription[] PositionSubscriptions;
+
+			public PositionDisposable(PositionSubscription[] refs)
+				=> PositionSubscriptions = refs;
+
+			public void Dispose()
+				=> PositionSubscriptions.ForEach(c => c.Release());
+		}
+
+		private (PositionDisposable Subscription, Memory<ViewPosition> Views) GetPositions(int numberOfColumns, int numberOfRows)
+		{
+			var refs = Children.SelectToArray(c =>
+				c is IWeakReferenceProvider weakReferenceProvider
+					? new PositionSubscription(c, weakReferenceProvider.WeakReference.GetUnsafeTargetHandle().Handle, false)
+					: new PositionSubscription(c, GCHandle.Alloc(c, GCHandleType.Normal), true));
 
 			return (
-				Disposable.Create(() => refs.ForEach(c => c.Handle.Free())),
+				new PositionDisposable(refs),
 				refs
 					.SelectToMemory(c =>
 					{
-						return MapViewToGridPosition(c);
+						return MapViewToGridPosition(ref c);
 					})
 			);
 
-			ViewPosition MapViewToGridPosition((View View, GCHandle Handle) c)
+			ViewPosition MapViewToGridPosition(ref PositionSubscription c)
 			{
 				var column = Grid.GetColumn(c.View);
 				var columnSpan = Grid.GetColumnSpan(c.View);
@@ -1264,6 +1278,28 @@ namespace Windows.UI.Xaml.Controls
 					)
 				);
 			}
+		}
+
+		readonly struct PositionSubscription
+		{
+			public PositionSubscription(View view, GCHandle handle, bool handleOwner)
+			{
+				View = view;
+				Handle = handle;
+				HandleOwner = handleOwner;
+			}
+
+			public void Release()
+			{
+				if (HandleOwner)
+				{
+					Handle.Free();
+				}
+			}
+
+			public readonly View View;
+			public readonly GCHandle Handle;
+			public readonly bool HandleOwner;
 		}
 
 		readonly struct Column

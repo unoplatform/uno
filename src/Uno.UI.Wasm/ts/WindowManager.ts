@@ -1,4 +1,6 @@
-﻿namespace Uno.UI {
+﻿
+// eslint-disable-next-line @typescript-eslint/no-namespace
+namespace Uno.UI {
 
 	export class WindowManager {
 
@@ -130,7 +132,14 @@
 
 		private cursorStyleElement: HTMLElement;
 
-		private allActiveElementsById: { [id: number]: HTMLElement | SVGElement } = {};
+		private allActiveElementsById: { [id: string]: HTMLElement | SVGElement } = {};
+		private uiElementRegistrations: {
+			[id: string]: {
+				typeName: string;
+				isFrameworkElement: boolean;
+				classNames: string[];
+			};
+		} = {};
 
 		private static resizeMethod: any;
 		private static dispatchEventMethod: any;
@@ -215,16 +224,14 @@
 
 			const params = WindowManagerCreateContentParams.unmarshal(pParams);
 
-			const def = <IContentDefinition>{
-				id: params.HtmlId,
+			const def = {
+				id: this.handleToString(params.HtmlId),
 				handle: params.Handle,
 				isFocusable: params.IsFocusable,
-				isFrameworkElement: params.IsFrameworkElement,
 				isSvg: params.IsSvg,
 				tagName: params.TagName,
-				type: params.Type,
-				classes: params.Classes
-			};
+				uiElementRegistrationId: params.UIElementRegistrationId,
+			} as IContentDefinition;
 
 			this.createContentInternal(def);
 
@@ -237,10 +244,18 @@
 				contentDefinition.isSvg
 					? document.createElementNS("http://www.w3.org/2000/svg", contentDefinition.tagName)
 					: document.createElement(contentDefinition.tagName);
-			element.id = String(contentDefinition.id);
-			element.setAttribute("XamlType", contentDefinition.type);
-			element.setAttribute("XamlHandle", `${contentDefinition.handle}`);
-			if (contentDefinition.isFrameworkElement) {
+
+			element.id = contentDefinition.id;
+
+			const uiElementRegistration =
+				this.uiElementRegistrations[this.handleToString(contentDefinition.uiElementRegistrationId)];
+			if (!uiElementRegistration) {
+				throw `UIElement registration id ${contentDefinition.uiElementRegistrationId} is unknown.`;
+			}
+
+			element.setAttribute("XamlType", uiElementRegistration.typeName);
+			element.setAttribute("XamlHandle", this.handleToString(contentDefinition.handle));
+			if (uiElementRegistration.isFrameworkElement) {
 				this.setAsUnarranged(element);
 			}
 			if (element.hasOwnProperty("tabindex")) {
@@ -250,17 +265,46 @@
 			}
 
 			if (contentDefinition) {
-				for (const className of contentDefinition.classes) {
-					element.classList.add(`uno-${className}`);
+				let classes = element.classList.value; 
+				for (const className of uiElementRegistration.classNames) {
+					classes += " uno-" + className;
 				}
+
+				element.classList.value = classes;
 			}
 
 			// Add the html element to list of elements
 			this.allActiveElementsById[contentDefinition.id] = element;
 		}
 
+		public registerUIElement(typeName: string, isFrameworkElement: boolean, classNames: string[]): number {
+
+			const registrationId = Object.keys(this.uiElementRegistrations).length;
+
+			this.uiElementRegistrations[this.handleToString(registrationId)] = {
+				classNames: classNames,
+				isFrameworkElement: isFrameworkElement,
+				typeName: typeName,
+			};
+
+			return registrationId;
+		}
+
+		public registerUIElementNative(pParams: number, pReturn: number): boolean {
+			const params = WindowManagerRegisterUIElementParams.unmarshal(pParams);
+
+			const registrationId = this.registerUIElement(params.TypeName, params.IsFrameworkElement, params.Classes);
+
+			const ret = new WindowManagerRegisterUIElementReturn();
+			ret.RegistrationId = registrationId;
+
+			ret.marshal(pReturn);
+
+			return true;
+		}
+
 		public getView(elementHandle: number): HTMLElement | SVGElement {
-			const element = this.allActiveElementsById[elementHandle];
+			const element = this.allActiveElementsById[this.handleToString(elementHandle)];
 			if (!element) {
 				throw `Element id ${elementHandle} not found.`;
 			}
@@ -498,7 +542,7 @@
 			const params = WindowManagerSetStyleDoubleParams.unmarshal(pParams);
 			const element = this.getView(params.HtmlId);
 
-			element.style.setProperty(params.Name, String(params.Value));
+			element.style.setProperty(params.Name, this.handleToString(params.Value));
 
 			return true;
 		}
@@ -623,6 +667,18 @@
 			return true;
 		}
 
+		private setPointerEvents(htmlId: number, enabled: boolean) {
+			const element = this.getView(htmlId);
+			element.style.pointerEvents = enabled ? "auto" : "none";
+		}
+
+		public setPointerEventsNative(pParams: number): boolean {
+			const params = WindowManagerSetPointerEventsParams.unmarshal(pParams);
+			this.setPointerEvents(params.HtmlId, params.Enabled);
+
+			return true;
+		}
+
 		/**
 			* Load the specified URL into a new tab or window
 			* @param url URL to load
@@ -672,10 +728,10 @@
 			elementId: number,
 			eventName: string,
 			onCapturePhase: boolean = false,
-			eventFilterName?: string,
-			eventExtractorName?: string
+			eventFilterId: number,
+			eventExtractorId: number,
 		): string {
-			this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventFilterName, eventExtractorName);
+			this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventFilterId, eventExtractorId);
 			return "ok";
 		}
 
@@ -690,7 +746,13 @@
 		): boolean {
 			const params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
 
-			this.registerEventOnViewInternal(params.HtmlId, params.EventName, params.OnCapturePhase, params.EventFilterName, params.EventExtractorName);
+			this.registerEventOnViewInternal(
+				params.HtmlId,
+				params.EventName,
+				params.OnCapturePhase,
+				params.EventFilterId,
+				params.EventExtractorId);
+
 			return true;
 		}
 
@@ -728,11 +790,11 @@
 			elementId: number,
 			eventName: string,
 			onCapturePhase: boolean = false,
-			eventFilterName?: string,
-			eventExtractorName?: string
+			eventFilterId: number,
+			eventExtractorId: number,
 		): void {
 			const element = this.getView(elementId);
-			const eventExtractor = this.getEventExtractor(eventExtractorName);
+			const eventExtractor = this.getEventExtractor(eventExtractorId);
 			const eventHandler = (event: Event) => {
 				const eventPayload = eventExtractor
 					? `${eventExtractor(event)}`
@@ -952,30 +1014,34 @@
 		 * Gets the event extractor function. See UIElement.HtmlEventExtractor
 		 * @param eventExtractorName an event extractor name.
 		 */
-		private getEventExtractor(eventExtractorName: string): (evt: Event) => string {
+		private getEventExtractor(eventExtractorId: number): (evt: Event) => string {
 
-			if (eventExtractorName) {
-				switch (eventExtractorName) {
-					case "PointerEventExtractor":
+			if (eventExtractorId) {
+				//
+				// NOTE TO MAINTAINERS: Keep in sync with Windows.UI.Xaml.UIElement.HtmlEventExtractor
+				//
+
+				switch (eventExtractorId) {
+					case 1:
 						return this.pointerEventExtractor;
 
-					case "KeyboardEventExtractor":
+					case 3:
 						return this.keyboardEventExtractor;
 
-					case "TappedEventExtractor":
+					case 2:
 						return this.tappedEventExtractor;
 
-					case "FocusEventExtractor":
+					case 4:
 						return this.focusEventExtractor;
 
-					case "CustomEventDetailJsonExtractor":
+					case 6:
 						return this.customEventDetailExtractor;
 
-					case "CustomEventDetailStringExtractor":
+					case 5:
 						return this.customEventDetailStringExtractor;
 				}
 
-				throw `Event filter ${eventExtractorName} is not supported`;
+				throw `Event extractor ${eventExtractorId} is not supported`;
 			}
 
 			return null;
@@ -1186,6 +1252,19 @@
 
 		private getBBoxInternal(elementId: number): any {
 			return (<any>this.getView(elementId)).getBBox();
+		}
+
+		public setSvgElementRect(pParams: number): boolean {
+			const params = WindowManagerSetSvgElementRectParams.unmarshal(pParams);
+
+			const element = this.getView(params.HtmlId) as any;
+
+			element.x.baseVal.value = params.X;
+			element.y.baseVal.value = params.Y;
+			element.width.baseVal.value = params.Width;
+			element.height.baseVal.value = params.Height;
+
+			return true;
 		}
 
 		/**
@@ -1647,7 +1726,7 @@
 				// Dispatch to the C# backed UnoDispatch class. Events propagated
 				// this way always succeed because synchronous calls are not possible
 				// between the host and the browser, unlike wasm.
-				UnoDispatch.dispatch(String(htmlId), eventName, eventPayload);
+				UnoDispatch.dispatch(this.handleToString(htmlId), eventName, eventPayload);
 				return true;
 			}
 			else {
@@ -1662,6 +1741,12 @@
 				return false;
 			}
 			return rootElement === element || rootElement.contains(element);
+		}
+
+		private handleToString(handle: number): string {
+
+			// Fastest conversion as of 2020-03-25 (when compared to String(handle) or handle.toString())
+			return handle + "";
 		}
 
 		public setCursor(cssCursor: string): string {

@@ -2,10 +2,10 @@
 class WindowManagerGetBBoxReturn
 {
 	/* Pack=8 */
-	X : number;
-	Y : number;
-	Width : number;
-	Height : number;
+	public X : number;
+	public Y : number;
+	public Width : number;
+	public Height : number;
 	public marshal(pData:number)
 	{
 		Module.setValue(pData + 0, this.X, "double");

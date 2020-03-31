@@ -2,12 +2,12 @@
 class WindowManagerMeasureViewParams
 {
 	/* Pack=8 */
-	HtmlId : number;
-	AvailableWidth : number;
-	AvailableHeight : number;
+	public HtmlId : number;
+	public AvailableWidth : number;
+	public AvailableHeight : number;
 	public static unmarshal(pData:number) : WindowManagerMeasureViewParams
 	{
-		let ret = new WindowManagerMeasureViewParams();
+		const ret = new WindowManagerMeasureViewParams();
 		
 		{
 			ret.HtmlId = Number(Module.getValue(pData + 0, "*"));

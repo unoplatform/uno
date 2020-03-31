@@ -111,7 +111,10 @@ namespace Windows.UI.Xaml
 			get => _parentRef?.Target;
 			set
 			{
-				if (!ReferenceEquals(_parentRef?.Target, value))
+				if (
+					!ReferenceEquals(_parentRef?.Target, value)
+					|| (_parentRef != null && value is null)
+				)
 				{
 					var previousParent = _parentRef?.Target;
 
@@ -120,7 +123,12 @@ namespace Windows.UI.Xaml
 						WeakReferencePool.ReturnWeakReference(this, _parentRef);
 					}
 
-					_parentRef = WeakReferencePool.RentWeakReference(this, value);
+					_parentRef = null;
+
+					if (value != null)
+					{
+						_parentRef = WeakReferencePool.RentWeakReference(this, value);
+					}
 
 					_inheritedProperties.Disposable = null;
 					_compiledBindings.Disposable = null;
@@ -169,8 +177,23 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		~DependencyObjectStore()
+		{
+			Dispose(false);
+		}
+
 		public void Dispose()
 		{
+			Dispose(true);
+		}
+
+		private void Dispose(bool disposing)
+		{
+			if (disposing)
+			{
+				GC.SuppressFinalize(this);
+			}
+
 			BinderDispose();
 		}
 
@@ -695,35 +718,49 @@ namespace Windows.UI.Xaml
 			);
 		}
 
+		private readonly struct InheritedPropertyChangedCallbackDisposable : IDisposable
+		{
+			public InheritedPropertyChangedCallbackDisposable(ManagedWeakReference objectStoreWeak, DependencyObjectStore childStore)
+			{
+				ChildStore = childStore;
+				ObjectStoreWeak = objectStoreWeak;
+			}
+
+			private readonly DependencyObjectStore ChildStore;
+			private readonly ManagedWeakReference ObjectStoreWeak;
+
+			public void Dispose()
+				=> CleanupInheritedPropertyChangedCallback(ObjectStoreWeak, ChildStore);
+		}
+
 		/// <summary>
 		/// Register for changes all dependency properties changes notifications for the specified instance.
 		/// </summary>
 		/// <param name="instance">The instance for which to observe properties changes</param>
 		/// <param name="callback">The callback</param>
 		/// <returns>A disposable that will unregister the callback when disposed.</returns>
-		internal IDisposable RegisterInheritedPropertyChangedCallback(DependencyObjectStore childStore)
+		private InheritedPropertyChangedCallbackDisposable RegisterInheritedPropertyChangedCallback(DependencyObjectStore childStore)
 		{
 			_childrenStores = _childrenStores.Add(childStore);
 
 			PropagateInheritedProperties(childStore);
 
-			// This weak reference ensure that the closure will not link
+			// This weak reference ensure that the disposable will not link
 			// the caller and the callee, in the same way "newValueActionWeak"
 			// does not link the callee to the caller.
-			var instanceRef = _thisWeakRef;
+			var objectStoreWeak = _thisWeakRef;
 
-			return Disposable.Create(() =>
-			{
-				var that = instanceRef.Target as DependencyObjectStore;
-
-				if (that != null)
-				{
-					// Delegates integrate a null check when removing new delegates.
-					that._childrenStores = that._childrenStores.Remove(childStore);
-				}
-			});
+			return new InheritedPropertyChangedCallbackDisposable(objectStoreWeak, childStore);
 		}
 
+		private static void CleanupInheritedPropertyChangedCallback(ManagedWeakReference objectStoreWeak, DependencyObjectStore childStore)
+		{
+			if (objectStoreWeak.Target is DependencyObjectStore that)
+			{
+				// Delegates integrate a null check when removing new delegates.
+				that._childrenStores = that._childrenStores.Remove(childStore);
+			}
+		}
 
 		/// <summary>
 		/// Register for changes all dependency properties changes notifications for the specified instance.
@@ -793,25 +830,27 @@ namespace Windows.UI.Xaml
 			// does not link the callee to the caller.
 			var instanceRef = _thisWeakRef;
 
+			void Cleanup()
+			{
+				var that = instanceRef.Target as DependencyObjectStore;
+
+				if (that != null)
+				{
+					// Delegates integrate a null check when removing new delegates.
+					that._parentChangedCallbacks = that._parentChangedCallbacks.Remove(weakDelegate);
+				}
+
+				WeakReferencePool.ReturnWeakReference(that, wr);
+
+				// Force a closure on the callback, to make its lifetime as long
+				// as the subscription being held by the callee.
+				callback = null;
+			}
+
 			return new DispatcherConditionalDisposable(
 				callback.Target,
 				instanceRef.CloneWeakReference(),
-				() =>
-				{
-					var that = instanceRef.Target as DependencyObjectStore;
-
-					if (that != null)
-					{
-						// Delegates integrate a null check when removing new delegates.
-						that._parentChangedCallbacks = that._parentChangedCallbacks.Remove(weakDelegate);
-					}
-
-					WeakReferencePool.ReturnWeakReference(that, wr);
-
-					// Force a closure on the callback, to make its lifetime as long
-					// as the subscription being held by the callee.
-					callback = null;
-				}
+				Cleanup
 			);
 		}
 
@@ -904,13 +943,26 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal IDisposable RegisterInheritedProperties(IDependencyObjectStoreProvider parentProvider)
+		private readonly struct InheritedPropertiesDisposable : IDisposable
 		{
+			private readonly IDisposable InheritedPropertiesCallback;
+			private readonly DependencyObjectStore Owner;
 
-			// Initialize at two as there is at most two disposables added below, and
-			// there is no need to allocate for more internally.
-			var disposable = new CompositeDisposable(2);
+			public InheritedPropertiesDisposable(DependencyObjectStore owner, IDisposable inheritedPropertiesCallback)
+			{
+				Owner = owner;
+				InheritedPropertiesCallback = inheritedPropertiesCallback;
+			}
 
+			public void Dispose()
+			{
+				InheritedPropertiesCallback.Dispose();
+				Owner.CleanupInheritedProperties();
+			}
+		}
+
+		private InheritedPropertiesDisposable RegisterInheritedProperties(IDependencyObjectStoreProvider parentProvider)
+		{
 			_parentTemplatedParentProperty = parentProvider.Store.TemplatedParentProperty;
 			_parentDataContextProperty = parentProvider.Store.DataContextProperty;
 
@@ -922,47 +974,45 @@ namespace Windows.UI.Xaml
 			//    - By forcing a property update notification down to a DependencyObject's children when the parent is set.
 
 			// Subscribe to the parent's notifications
-			parentProvider
+			var inheritedPropertiesCallback = parentProvider
 				.Store
-				.RegisterInheritedPropertyChangedCallback(this)
-				.DisposeWith(disposable);
+				.RegisterInheritedPropertyChangedCallback(this);
 
 			// Force propagation for inherited properties defined on the current instance.
 			PropagateInheritedProperties();
 
-			// Register for unset values
-			disposable.Add(() =>
+			return new InheritedPropertiesDisposable(this, inheritedPropertiesCallback);
+		}
+
+		private void CleanupInheritedProperties()
+		{
+#if !HAS_EXPENSIVE_TRYFINALLY
+			// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
+			// See https://github.com/mono/mono/issues/13653 for more details.
+			try
+#endif
 			{
-#if !HAS_EXPENSIVE_TRYFINALLY
-				// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
-				// See https://github.com/mono/mono/issues/13653 for more details.
-				try
-#endif
+				_unregisteringInheritedProperties = true;
+
+				_inheritedForwardedProperties.Clear();
+
+				if (ActualInstance != null)
 				{
-					_unregisteringInheritedProperties = true;
-
-					_inheritedForwardedProperties.Clear();
-
-					if (ActualInstance != null)
+					foreach (var dp in _updatedProperties)
 					{
-						foreach (var dp in _updatedProperties)
-						{
-							SetValue(dp, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
-						}
-
-						SetValue(_dataContextProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
-						SetValue(_templatedParentProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+						SetValue(dp, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
 					}
-				}
-#if !HAS_EXPENSIVE_TRYFINALLY
-				finally
-#endif
-				{
-					_unregisteringInheritedProperties = false;
-				}
-			});
 
-			return disposable;
+					SetValue(_dataContextProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+					SetValue(_templatedParentProperty, DependencyProperty.UnsetValue, DependencyPropertyValuePrecedences.Inheritance);
+				}
+			}
+#if !HAS_EXPENSIVE_TRYFINALLY
+			finally
+#endif
+			{
+				_unregisteringInheritedProperties = false;
+			}
 		}
 
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]

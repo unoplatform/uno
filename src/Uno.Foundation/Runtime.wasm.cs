@@ -38,7 +38,7 @@ namespace WebAssembly
 			// Matches this signature:
 			// https://github.com/mono/mono/blob/f24d652d567c4611f9b4e3095be4e2a1a2ab23a4/sdks/wasm/driver.c#L21
 			[MethodImpl(MethodImplOptions.InternalCall)]
-			public static extern IntPtr InvokeJSUnmarshalled(out string exception, string functionIdentifier, IntPtr arg0, IntPtr arg1, IntPtr arg2);
+			public static extern IntPtr InvokeJSUnmarshalled(out string exceptionMessage, string functionIdentifier, IntPtr arg0, IntPtr arg1, IntPtr arg2);
 		}
 	}
 }
@@ -72,7 +72,7 @@ namespace Uno.Foundation
 		{
 			if (!MethodMap.TryGetValue(methodName, out var methodId))
 			{
-				MethodMap[methodName] = methodId = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var e, methodName, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+				MethodMap[methodName] = methodId = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out _, methodName, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 			}
 
 			return methodId;
@@ -89,22 +89,56 @@ namespace Uno.Foundation
 			{
 				using (WritePropertyEventTrace(TraceProvider.UnmarshalledInvokedStart, TraceProvider.UnmarshalledInvokedEnd, functionIdentifier))
 				{
-					return InnerInvokeJSUnmarshalled(functionIdentifier, arg0);
+					var ret = InnerInvokeJSUnmarshalled(functionIdentifier, arg0, out var exception);
+
+					if(exception != null)
+					{
+						throw exception;
+					}
+
+					return ret;
 				}
 			}
 			else
 			{
-				return InnerInvokeJSUnmarshalled(functionIdentifier, arg0);
+				var ret = InnerInvokeJSUnmarshalled(functionIdentifier, arg0, out var exception);
+
+				if (exception != null)
+				{
+					throw exception;
+				}
+
+				return ret;
 			}
 		}
 
-		private static bool InnerInvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0)
+		/// <summary>
+		/// Invoke a Javascript method using unmarshaled conversion.
+		/// </summary>
+		/// <param name="functionIdentifier">A function identifier name</param>
+		internal static bool InvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0, out Exception exception)
 		{
+			if (_trace.IsEnabled)
+			{
+				using (WritePropertyEventTrace(TraceProvider.UnmarshalledInvokedStart, TraceProvider.UnmarshalledInvokedEnd, functionIdentifier))
+				{
+					return InnerInvokeJSUnmarshalled(functionIdentifier, arg0, out exception);
+				}
+			}
+			else
+			{
+				return InnerInvokeJSUnmarshalled(functionIdentifier, arg0, out exception);
+			}
+		}
+
+		private static bool InnerInvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0, out Exception exception)
+		{
+			exception = null;
 			var methodId = GetMethodId(functionIdentifier);
 
-			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var exception, null, methodId, arg0, IntPtr.Zero);
+			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var exceptionMessage, null, methodId, arg0, IntPtr.Zero);
 
-			if (exception != null)
+			if (!string.IsNullOrEmpty(exceptionMessage))
 			{
 				if (_trace.IsEnabled)
 				{
@@ -114,7 +148,7 @@ namespace Uno.Foundation
 					);
 				}
 
-				throw new Exception(exception);
+				exception = new Exception(exceptionMessage);
 			}
 
 			return res != IntPtr.Zero;

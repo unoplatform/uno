@@ -34,10 +34,15 @@
 		<UpToDateCheckInput Include="WasmCSS\**\*" />
 		<UpToDateCheckInput Include="WasmScripts\**\*" />
 	</ItemGroup>
+	
 	<ItemGroup>
 		<LinkerDescriptor Include="LinkerConfig.xml" />
 	</ItemGroup>
 	
+	<ItemGroup>
+		<WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<!-- Required to enable IDBFS (https://github.com/emscripten-core/emscripten/blob/d2148d096e2b5f3ec4886f93e24312ef88976020/ChangeLog.md#v1391-10302019) -->
 		<WasmShellExtraEmccFlags Include="-lidbfs.js" />

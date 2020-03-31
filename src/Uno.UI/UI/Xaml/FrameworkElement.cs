@@ -89,7 +89,13 @@ namespace Windows.UI.Xaml
 #endif
 			Resources = new Windows.UI.Xaml.ResourceDictionary();
 
-			((IDependencyObjectStoreProvider)this).Store.RegisterSelfParentChangedCallback((i, k, e) => InitializeStyle());
+			((IDependencyObjectStoreProvider)this).Store.RegisterSelfParentChangedCallback((i, k, e) =>
+			{
+				if (e.NewParent != null)
+				{
+					InitializeStyle();
+				}
+			});
 
 			IFrameworkElementHelper.Initialize(this);
 		}

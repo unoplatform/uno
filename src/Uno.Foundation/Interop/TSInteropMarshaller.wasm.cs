@@ -46,27 +46,24 @@ namespace Uno.Foundation.Interop
 			{
 				_logger.Value.LogDebug($"InvokeJS for {memberName}/{typeof(TParam)}");
 			}
-			 
-			var pParms = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(TParam)));
 
-			try
-			{
-				Marshal.StructureToPtr(paramStruct, pParms, false);
+			var pParms = Marshal.AllocHGlobal(MarshalSizeOf<TParam>.Size);
 
-				var ret = WebAssemblyRuntime.InvokeJSUnmarshalled(methodName, pParms);
-			}
-			catch(Exception e)
+			Marshal.StructureToPtr(paramStruct, pParms, false);
+
+			WebAssemblyRuntime.InvokeJSUnmarshalled(methodName, pParms, out var exception);
+
+			Marshal.DestroyStructure(pParms, typeof(TParam));
+			Marshal.FreeHGlobal(pParms);
+
+			if (exception != null)
 			{
 				if (_logger.Value.IsEnabled(LogLevel.Error))
 				{
-					_logger.Value.LogError($"Failed InvokeJS for {memberName}/{typeof(TParam)}: {e}"); 
+					_logger.Value.LogError($"Failed InvokeJS for {memberName}/{typeof(TParam)}: {exception}");
 				}
-				throw;
-			}
-			finally
-			{
-				Marshal.DestroyStructure(pParms, typeof(TParam));
-				Marshal.FreeHGlobal(pParms);
+
+				throw exception;
 			}
 		}
 
@@ -81,8 +78,8 @@ namespace Uno.Foundation.Interop
 				_logger.Value.LogDebug($"InvokeJS for {memberName}/{typeof(TParam)}/{typeof(TRet)}");
 			}
 
-			var pParms = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(TParam)));
-			var pReturnValue = Marshal.AllocHGlobal(Marshal.SizeOf(typeof(TRet)));
+			var pParms = Marshal.AllocHGlobal(MarshalSizeOf<TParam>.Size);
+			var pReturnValue = Marshal.AllocHGlobal(MarshalSizeOf<TRet>.Size);
 
 			TRet returnValue = default;
 
@@ -114,5 +111,9 @@ namespace Uno.Foundation.Interop
 			}
 		}
 
+		private class MarshalSizeOf<T>
+		{
+			internal static readonly int Size = Marshal.SizeOf(typeof(T));
+		}
 	}
 }

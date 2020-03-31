@@ -20,7 +20,7 @@ namespace Windows.UI.Xaml.Media
 
 			var stops = string.Join(
 				",",
-				GradientStops.Select(p => $"{GetColorWithOpacity(p.Color).ToCssString()} {(p.Offset * 100).ToStringInvariant()}%"));
+				GradientStops.Select(p => $"{GetColorWithOpacity(p.Color).ToHexString()} {(p.Offset * 100).ToStringInvariant()}%"));
 
 			return $"linear-gradient({angle}rad,{stops})";
 		}
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Media
 				("y2", EndPoint.Y.ToStringInvariant())
 			);
 
-			var stops = GradientStops.Select(stop => $"<stop offset=\"{stop.Offset.ToStringInvariant()}\" style=\"stop-color:{stop.Color.ToCssString()}\" />");
+			var stops = GradientStops.Select(stop => $"<stop offset=\"{stop.Offset.ToStringInvariant()}\" style=\"stop-color:{stop.Color.ToHexString()}\" />");
 
 			linearGradient.SetHtmlContent(string.Join(Environment.NewLine, stops));
 

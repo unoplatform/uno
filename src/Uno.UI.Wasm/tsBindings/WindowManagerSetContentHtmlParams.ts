@@ -2,18 +2,18 @@
 class WindowManagerSetContentHtmlParams
 {
 	/* Pack=4 */
-	HtmlId : number;
-	Html : string;
+	public HtmlId : number;
+	public Html : string;
 	public static unmarshal(pData:number) : WindowManagerSetContentHtmlParams
 	{
-		let ret = new WindowManagerSetContentHtmlParams();
+		const ret = new WindowManagerSetContentHtmlParams();
 		
 		{
 			ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
 		}
 		
 		{
-			var ptr = Module.getValue(pData + 4, "*");
+			const ptr = Module.getValue(pData + 4, "*");
 			if(ptr !== 0)
 			{
 				ret.Html = String(Module.UTF8ToString(ptr));

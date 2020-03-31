@@ -45,7 +45,13 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
-					_subscribeCommand = () => WindowManagerInterop.RegisterEventOnView(_owner.HtmlId, eventName, onCapturePhase, eventFilter?.ToString(), eventExtractor?.ToString());
+					_subscribeCommand = () => WindowManagerInterop.RegisterEventOnView(
+						_owner.HtmlId,
+						eventName,
+						onCapturePhase,
+						(int)(eventFilter ?? HtmlEventFilter.None),
+						(int)(eventExtractor ?? HtmlEventExtractor.None)
+					);
 				}
 			}
 
@@ -227,24 +233,26 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
-		private readonly Dictionary<string, EventRegistration> _eventHandlers = new Dictionary<string, EventRegistration>(StringComparer.InvariantCultureIgnoreCase);
+		private readonly Dictionary<string, EventRegistration> _eventHandlers = new Dictionary<string, EventRegistration>(StringComparer.OrdinalIgnoreCase);
 
 		internal delegate EventArgs EventArgsParser(object sender, string payload);
 
-		internal enum HtmlEventExtractor
+		internal enum HtmlEventExtractor : int
 		{
-			PointerEventExtractor, // See PayloadToPointerArgs
-			TappedEventExtractor,
-			KeyboardEventExtractor,
-			FocusEventExtractor,
-			CustomEventDetailStringExtractor, // For use with CustomEvent("name", {detail:{string detail here}})
-			CustomEventDetailJsonExtractor, // For use with CustomEvent("name", {detail:{detail here}}) - will be JSON.stringify
+			None = 0,
+			PointerEventExtractor = 1, // See PayloadToPointerArgs
+			TappedEventExtractor = 2,
+			KeyboardEventExtractor = 3,
+			FocusEventExtractor = 4,
+			CustomEventDetailStringExtractor = 5, // For use with CustomEvent("name", {detail:{string detail here}})
+			CustomEventDetailJsonExtractor = 6, // For use with CustomEvent("name", {detail:{detail here}}) - will be JSON.stringify
 		}
 
-		internal enum HtmlEventFilter
+		internal enum HtmlEventFilter : int
 		{
-			Default,
-			LeftPointerEventFilter,
+			None = 0,
+			Default = 1,
+			LeftPointerEventFilter = 2,
 		}
 	}
 }

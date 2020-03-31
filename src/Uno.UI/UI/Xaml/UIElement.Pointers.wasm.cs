@@ -295,14 +295,14 @@ namespace Windows.UI.Xaml
 				// By default, elements have 'pointer-event' set to 'auto' (see Uno.UI.css .uno-uielement class).
 				// This means that they can be the target of hit-testing and will raise pointer events when interacted with.
 				// This is aligned with HitTestVisibilityProperty's default value of Visible.
-				SetStyle("pointer-events", "auto");
+				WindowManagerInterop.SetPointerEvents(HtmlId, true);
 			}
 			else
 			{
 				// If HitTestVisibilityProperty is calculated to Invisible or Collapsed,
 				// we don't want to be the target of hit-testing and raise any pointer events.
 				// This is done by setting 'pointer-events' to 'none'.
-				SetStyle("pointer-events", "none");
+				WindowManagerInterop.SetPointerEvents(HtmlId, false);
 			}
 
 			if (FeatureConfiguration.UIElement.AssignDOMXamlProperties)

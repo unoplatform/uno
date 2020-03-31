@@ -2,10 +2,10 @@
 class WindowManagerGetClientViewSizeReturn
 {
 	/* Pack=8 */
-	OffsetWidth : number;
-	OffsetHeight : number;
-	ClientWidth : number;
-	ClientHeight : number;
+	public OffsetWidth : number;
+	public OffsetHeight : number;
+	public ClientWidth : number;
+	public ClientHeight : number;
 	public marshal(pData:number)
 	{
 		Module.setValue(pData + 0, this.OffsetWidth, "double");

@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml
 			{
 				case SolidColorBrush solidColorBrush:
 					var color = solidColorBrush.ColorWithOpacity;
-					SetStyle("background-color", color.ToCssString());
+					SetStyle("background-color", color.ToHexString());
 					RecalculateBrushOnSizeChanged(false);
 					break;
 				case LinearGradientBrush linearGradientBrush:
