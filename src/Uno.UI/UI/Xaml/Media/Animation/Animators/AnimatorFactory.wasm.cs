@@ -16,5 +16,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			return new RenderingLoopFloatAnimator((float)startingValue, (float)targetValue);
 		}
+
+		private static IValueAnimator CreateColor(Timeline timeline, ColorOffset startingValue, ColorOffset targetValue)
+		{
+			return new RenderingLoopColorAnimator(startingValue, targetValue);
+		}
 	}
 }

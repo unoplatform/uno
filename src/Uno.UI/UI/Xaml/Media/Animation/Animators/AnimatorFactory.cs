@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				return CreateDouble(timeline, startingFloat, targetFloat);
 			}
 
-			if (startingValue is Color startingColor && targetValue is Color targetColor)
+			if (startingValue is ColorOffset startingColor && targetValue is ColorOffset targetColor)
 			{
 				return CreateColor(timeline, startingColor, targetColor);
 			}

@@ -10,12 +10,12 @@ using Uno.UI;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-    internal static partial class AnimatorFactory
-    {
+	internal static partial class AnimatorFactory
+	{
 		/// <summary>
 		/// Creates the actual animator instance
 		/// </summary>
-		internal static IValueAnimator Create(Timeline timeline, double startingValue, double targetValue)
+		private static IValueAnimator CreateDouble(Timeline timeline, double startingValue, double targetValue)
 		{
 			if (timeline.GetIsDependantAnimation() || timeline.GetIsDurationZero())
 			{
@@ -30,9 +30,11 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <summary>
 		/// Creates the actual animator instance
 		/// </summary>
-		private static IValueAnimator CreateColor(Timeline timeline, Color startingValue, Color targetValue)
+		private static IValueAnimator CreateColor(Timeline timeline, ColorOffset startingValue, ColorOffset targetValue)
 		{
-			return new NativeValueAnimatorAdapter(ValueAnimator.OfArgb((Android.Graphics.Color)startingValue, (Android.Graphics.Color)targetValue));
+			// TODO: GPU-bound color animations
+
+			return new NativeValueAnimatorAdapter(ValueAnimator.OfArgb((Android.Graphics.Color)(Color)startingValue, (Android.Graphics.Color)(Color)targetValue));
 		}
 
 		private static IValueAnimator GetGPUAnimator(this Timeline timeline, double startingValue, double targetValue)

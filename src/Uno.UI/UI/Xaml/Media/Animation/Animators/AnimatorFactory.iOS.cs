@@ -31,5 +31,12 @@ namespace Windows.UI.Xaml.Media.Animation
 				return new GPUFloatValueAnimator((float)startingValue, (float)targetValue, timeline.PropertyInfo.GetPathItems());
 			}
 		}
+
+		private static IValueAnimator CreateColor(Timeline timeline, ColorOffset startingValue, ColorOffset targetValue)
+		{
+			// TODO: GPU-bound color animations
+
+			return new ColorValueAnimator(startingValue, targetValue);
+		}
 	}
 }
