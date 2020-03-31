@@ -3,7 +3,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 {
-	[SampleControlInfo(category: "Image")]
+	[Sample("Image", "GH Bugs")]
 	public sealed partial class ImageAlignment2541 : Page
 	{
 		public ImageAlignment2541()

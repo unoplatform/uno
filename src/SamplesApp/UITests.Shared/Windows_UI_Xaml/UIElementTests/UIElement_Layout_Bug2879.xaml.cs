@@ -1,0 +1,14 @@
+﻿using Uno.UI.Samples.Controls;
+using Windows.UI.Xaml.Controls;
+
+namespace UITests.Windows_UI_Xaml.UIElementTests
+{
+	[Sample("UIElement", "GH Bugs")]
+	public sealed partial class UIElement_Layout_Bug2879 : Page
+	{
+		public UIElement_Layout_Bug2879()
+		{
+			this.InitializeComponent();
+		}
+	}
+}
