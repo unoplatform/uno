@@ -348,12 +348,18 @@ namespace Windows.UI.Xaml.Shapes
 			var userSize = new Size(Width, Height);
 			var stretch = Stretch;
 
+			// If stretch is None, we have to keep the origin defined by the absolute coordinates of the path.
+			// So for measure we includes that origin in the path size.
+			// Also, as the path does not have any notion of stroke thickness, we have to include it for the measure phase.
+			// Note: The logic would say to include the full StrokeThickness as it will "overlflow" half on booth side of the path,
+			//		 but WinUI does include only the half of it.
 			if (stretch == Stretch.None)
 			{
 				var halfStrokeThickness = GetHalfStrokeThickness();
 				pathSize.Width += halfStrokeThickness;
 				pathSize.Height += halfStrokeThickness;
 
+				// On iOS 11, the origin (X, Y) of bounds could be infinite, leading to strange results.
 				if (!nfloat.IsInfinity(pathBounds.X))
 				{
 					pathSize.Width += pathBounds.X;
@@ -367,18 +373,6 @@ namespace Windows.UI.Xaml.Shapes
 			var size = userSize; // The size defined on the Shape has priority over the size of the path!
 
 			// If no user size defined on a given axis, we either use the size of the path or we try to stretch along this axis.
-			//if (double.IsNaN(size.Width))
-			//{
-			//	size.Width = stretch == Stretch.UniformToFill || HorizontalAlignment == HorizontalAlignment.Stretch
-			//		? Math.Max(availableSize.Width, pathSize.Width)
-			//		: pathSize.Width;
-			//}
-			//if (double.IsNaN(size.Height))
-			//{
-			//	size.Height = stretch == Stretch.UniformToFill || VerticalAlignment == VerticalAlignment.Stretch
-			//		? Math.Max(availableSize.Height, pathSize.Height)
-			//		: pathSize.Height;
-			//}
 			if (double.IsNaN(size.Width))
 			{
 				size.Width = stretch == Stretch.None
@@ -397,253 +391,49 @@ namespace Windows.UI.Xaml.Shapes
 				.AtLeast(userMinSize)
 				.NumberOrDefault(userMinSize);
 
-			//if (pathSize == default)
-			//{
-			//	return default;
-			//}
-
-			//// On iOS 11, the origin (X, Y) of bounds could be infinite, leading to strange results.
-			//if (nfloat.IsInfinity(bounds.X))
-			//{
-			//	bounds.X = 0;
-			//}
-
-			//if (nfloat.IsInfinity(bounds.Y))
-			//{
-			//	bounds.Y = 0;
-			//}
-
-			//var pathWidth = bounds.Width;
-			//var pathHeight = bounds.Height;
-			//if (pathWidth == 0 && pathHeight == 0)
-			//{
-			//	return default;
-			//}
-
-			//// For shapes that has an offset from the origin, if the stretch mode is not None we remove this offset.
-			//// cf. remarks of ShouldPreserveOrigin XML doc.
-			//if (Stretch == Stretch.None)
-			//{
-			//	if (!nfloat.IsInfinity(pathBounds.X))
-			//	{
-			//		size.Width += pathBounds.X;
-			//	}
-			//	if (!nfloat.IsInfinity(pathBounds.Y))
-			//	{
-			//		size.Height += pathBounds.Y;
-			//	}
-			//}
-
-			//var availableWidth = availableSize.Width;
-			//var availableHeight = availableSize.Height;
-			//var userWidth = this.Width;
-			//var userHeight = this.Height;
-
-			//switch (stretch)
-			//{
-			//	case Stretch.None:
-			//		var halfStrokeThickness = GetHalfStrokeThickness();
-			//		size.Width += halfStrokeThickness;
-			//		size.Height += halfStrokeThickness;
-			//		break;
-			//}
-
-			//// As weird as it seems, it's how WinUI behaves for the measure!
-			//// Note: .5 so if thickness is 1, we have 1, but if .8 we have 0 ... like WinUI
-			////var halfStrokeThickness = Math.Floor((ActualStrokeThickness + .5f) / 2.0);
-			//var halfStrokeThickness = GetHalfStrokeThickness();
-			//size.Width += halfStrokeThickness;
-			//size.Height += halfStrokeThickness;
-
-			//// For safety, we make sure to remove NaN (but not infinity at this point)
-			//availableSize = availableSize.NumberOrDefault(pathSize);
-
-			//var size = this.ApplySizeConstraints(availableSize)
-			//	.NumberOrDefault(pathSize)
-			//	.Add(new Size(halfStrokeThickness, halfStrokeThickness));
-
-			//var controlWidth = availableWidth <= 0 ? userWidth : availableWidth;
-			//var controlHeight = availableHeight <= 0 ? userHeight : availableHeight;
-
-			// Default values
-			//var calculatedWidth = LimitWithUserSize(controlWidth, userWidth, pathWidth);
-			//var calculatedHeight = LimitWithUserSize(controlHeight, userHeight, pathHeight);
-
-			//var strokeThickness = this.ActualStrokeThickness;
-			//var strokeThicknessF = (float)strokeThickness;
-
-			//// At this point 'path<Width|Height>' might be 0, especially for vertical / horizontal Line
-			//_scaleX = pathWidth == 0 ? 1 : (nfloat)size.Width / pathWidth;
-			//_scaleY = pathHeight == 0 ? 1 : (nfloat)size.Height / pathHeight;
-
-			//Make sure that we have a valid scale if both of them are not set
-			//if (double.IsInfinity((double)_scaleX)
-			//	&& double.IsInfinity((double)_scaleY))
-			//{
-			//	_scaleX = 1;
-			//	_scaleY = 1;
-			//}
-
-			// Here we will override some of the default values
-
-			// Compute the scale factor to apply if the path is smaller than the availableSize and we have to stretch.
-			//if (size.Width < availableSize.Width || size.Height < availableSize.Height)
+			// Finally apply the stretch to the desired size of the element
+			switch (stretch)
 			{
-				//double scaleX, scaleY;
-				switch (stretch)
-				{
-					case Stretch.None:
-						// Nothing to do: Size is already the size at which we will render the path
-						break;
+				// Nothing to do for None and Fill: Size is already the size at which we will render the path!
 
-					//case Stretch.Fill:
-					//	//(scaleX, scaleY) = GetScale(pathSize, size);
-					//	break;
+				case Stretch.Uniform when size.Width < size.Height:
+					size.Height = size.Width;
+					break;
 
-					//case Stretch.Uniform:
-					//	(scaleX, scaleY) = GetScale(pathSize, size);
-					//	if (scaleX < scaleY)
-					//	{
-					//		size.Height = size.Width;
-					//	}
-					//	else
-					//	{
-					//		size.Width = size.Height;
-					//	}
-					//	break;
+				case Stretch.Uniform: // when size.Width > size.Height:
+					size.Width = size.Height;
+					break;
 
-					//case Stretch.UniformToFill:
-					//	(scaleX, scaleY) = GetScale(pathSize, size);
-					//	scaleX = scaleY = Math.Max(scaleX, scaleY);
-					//	if (scaleX > scaleY)
-					//	{
-					//		size.Height = size.Width;
-					//	}
-					//	else
-					//	{
-					//		size.Width = size.Height;
-					//	}
-					//	break;
+				case Stretch.UniformToFill when size.Width < size.Height:
+					size.Width = size.Height;
+					break;
 
-					case Stretch.Uniform when size.Width < size.Height:
-						size.Height = size.Width;
-						break;
-
-					case Stretch.Uniform: // when size.Width > size.Height:
-						size.Width = size.Height;
-						break;
-
-					case Stretch.UniformToFill when size.Width < size.Height:
-						size.Width = size.Height;
-						break;
-
-					case Stretch.UniformToFill: // when size.Width > size.Height:
-						size.Height = size.Width;
-						break;
-				}
+				case Stretch.UniformToFill: // when size.Width > size.Height:
+					size.Height = size.Width;
+					break;
 			}
-
-			//// We take 
-			//size = size.AtMost(availableSize);
-
-			//calculatedWidth += strokeThickness;
-			//calculatedHeight += strokeThickness;
 
 			return size;
 		}
 
 		private protected Size ArrangeAbsoluteShape(Size finalSize, CGPath path)
 		{
-			//if (path == null)
-			//{
-			//	return default;
-			//}
-
-			//var pathBounds = path.BoundingBox;
-			//var pathSize = (Windows.Foundation.Size)pathBounds.Size;
-			//if (pathSize == default)
-			//{
-			//	return default;
-			//}
-
-			//// For shapes that has an offset from the origin, if the stretch mode is not None we remove this offset.
-			//// cf. remarks of ShouldPreserveOrigin XML doc.
-			//if (Stretch == Stretch.None)
-			//{
-			//	// On iOS 11, the origin (X, Y) of bounds could be infinite, leading to strange results.
-
-			//	if (!nfloat.IsInfinity(pathBounds.X))
-			//	{
-			//		pathSize.Width += pathBounds.X;
-			//	}
-			//	if (!nfloat.IsInfinity(pathBounds.Y))
-			//	{
-			//		pathSize.Height += pathBounds.Y;
-			//	}
-			//}
-
-			//var halfStrokeThickness = GetHalfStrokeThickness();
-			//pathSize.Width += halfStrokeThickness;
-			//pathSize.Height += halfStrokeThickness;
-
-			//// Compute the scale factor to apply if the path is smaller than the availableSize and we have to stretch.
-			//double scaleX, scaleY;
-			//if (pathSize.Width < finalSize.Width || pathSize.Height < finalSize.Height)
-			//{
-			//	switch (Stretch)
-			//	{
-			//		case Stretch.Fill:
-			//			(scaleX, scaleY) = GetScale(pathSize, finalSize);
-			//			break;
-
-			//		case Stretch.Uniform:
-			//		{
-			//			var scale = GetScale(pathSize, finalSize);
-			//			scaleX = scaleY = Math.Min(scale.x, scale.y);
-			//			break;
-			//		}
-			//		case Stretch.UniformToFill:
-			//		{
-			//			var scale = GetScale(pathSize, finalSize);
-			//			scaleX = scaleY = Math.Max(scale.x, scale.y);
-			//			break;
-			//		}
-
-			//		default:
-			//		case Stretch.None:
-			//			scaleX = 1;
-			//			scaleY = 1;
-			//			break;
-			//	}
-			//}
-			//else
-			//{
-			//	scaleX = scaleY = 1;
-			//}
-
-			////calculatedWidth += strokeThickness;
-			////calculatedHeight += strokeThickness;
-
-			//var size = new Size(pathSize.Width * scaleX, pathSize.Height * scaleY);
-
-
 			if (path == null)
 			{
 				return default;
 			}
 
+			var stretch = Stretch;
 			var userMinSize = new Size(MinWidth, MinHeight);
 			var userSize = new Size(Width, Height);
-			var stretch = Stretch;
 			var halfStrokeThickness = GetHalfStrokeThickness();
 
 			// 1. Compute and adjust the size of the path itself
 			var pathBounds = path.BoundingBox;
 			var pathSize = (Size)pathBounds.Size;
-			var pathOrigin = new Point();
+			var renderOrigin = new Point();
 
-			if (nfloat.IsInfinity(pathBounds.Right)
-				|| nfloat.IsInfinity(pathBounds.Bottom))
+			if (nfloat.IsInfinity(pathBounds.Right) || nfloat.IsInfinity(pathBounds.Bottom))
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
@@ -653,6 +443,8 @@ namespace Windows.UI.Xaml.Shapes
 				return default;
 			}
 
+			// Either include the path origin in the size for measure calculation (cf. comment in measure),
+			// or adjust the render origin to compensate.
 			switch (stretch)
 			{
 				case Stretch.None:
@@ -664,36 +456,13 @@ namespace Windows.UI.Xaml.Shapes
 					break;
 
 				default:
-					pathOrigin.X -= pathBounds.X;
-					pathOrigin.Y -= pathBounds.Y;
+					renderOrigin.X -= pathBounds.X;
+					renderOrigin.Y -= pathBounds.Y;
 					break; 
 			}
 
-			//if (stretch == Stretch.None)
-			//{
-			//	pathSize.Width += halfStrokeThickness;
-			//	pathSize.Height += halfStrokeThickness;
-
-			//	pathSize.Width += pathBounds.X;
-			//	pathSize.Height += pathBounds.Y;
-			//}
-
-			// 2. Like the measure adjust, compute the size of Shape element.
-			//    This will be used as the size of the area were the path will be rendered.
+			// 2. Compute the final size of the Shape, and the render area for the path
 			var size = userSize; // The size defined on the Shape has priority over the size of the path!
-
-
-
-			//switch (stretch)
-			//{
-			//	case Stretch.None:
-			//		break;
-
-			//	case Stretch.Uniform when double.IsNaN(userSize.Width) && double.IsNaN(userSize.Height):
-			//		size = new Size
-
-			//}
-
 
 			// If no user size defined on a given axis, we either use the size of the path or we try to stretch along this axis.
 			if (double.IsNaN(size.Width))
@@ -743,169 +512,71 @@ namespace Windows.UI.Xaml.Shapes
 					scaleX = scaleY = GetScale(pathSize.Width, size.Width, minus: StrokeThickness);
 					size.Height = size.Width;
 					break;
-
-					//case Stretch.Uniform:
-					//	(scaleX, scaleY) = GetScale(pathSize, size, minus: StrokeThickness);
-					//	if (scaleX < scaleY)
-					//	{
-					//		scaleY = scaleX;
-					//		size.Height = size.Width;
-					//	}
-					//	else
-					//	{
-					//		scaleX = scaleY;
-					//		size.Width = size.Height;
-					//	}
-					//	break;
-
-					//case Stretch.UniformToFill:
-					//	(scaleX, scaleY) = GetScale(pathSize, size, minus: StrokeThickness);
-					//	scaleX = scaleY = Math.Max(scaleX, scaleY);
-					//	if (scaleX > scaleY)
-					//	{
-					//		scaleY = scaleX;
-					//		size.Height = size.Width;
-					//	}
-					//	else
-					//	{
-					//		scaleX = scaleY;
-					//		size.Width = size.Height;
-					//	}
-					//	break;
 			}
 
-			var pathAlignment = new Point();
-			var horizontalOverflow = stretch == Stretch.UniformToFill && !double.IsNaN(userSize.Width)
+			var renderAlignment = new Point();
+			var renderHorizontalOverflow = stretch == Stretch.UniformToFill && !double.IsNaN(userSize.Width)
 				? unScaledSize.Width - finalSize.Width // Reproduces a bug of WinUI where it's the size without the stretch that is being used to compute the alignments below
 				: size.Width - finalSize.Width;
-			if (horizontalOverflow > 0
+			if (renderHorizontalOverflow > 0
 				&& (double.IsNaN(userSize.Width) || userSize.Width > finalSize.Width)) // WinUI does not adjust alignment if the shape was smaller than the finalSize
 			{
 				switch (HorizontalAlignment)
 				{
 					case HorizontalAlignment.Center:
-						pathAlignment.X -= horizontalOverflow / 2.0;
+						renderAlignment.X -= renderHorizontalOverflow / 2.0;
 						break;
 
 					case HorizontalAlignment.Right:
-						pathAlignment.X -= horizontalOverflow;
+						renderAlignment.X -= renderHorizontalOverflow;
 						break;
 				}
 			}
-			else if (horizontalOverflow < 0 && HorizontalAlignment == HorizontalAlignment.Stretch)
+			else if (renderHorizontalOverflow < 0 && HorizontalAlignment == HorizontalAlignment.Stretch)
 			{
 				// It might happen that even stretched, the shape does not use all the finalSize width,
 				// in that case it's centered by WinUI.
-				pathAlignment.X -= horizontalOverflow / 2.0;
+				renderAlignment.X -= renderHorizontalOverflow / 2.0;
 			}
 
-			var verticalOverflow = stretch == Stretch.UniformToFill && !double.IsNaN(userSize.Height)
+			var renderVerticalOverflow = stretch == Stretch.UniformToFill && !double.IsNaN(userSize.Height)
 				? unScaledSize.Height - finalSize.Height // Reproduces a bug of WinUI where it's the size without the stretch that is being used to compute the alignments below
 				: size.Height - finalSize.Height;
-			if (verticalOverflow > 0
+			if (renderVerticalOverflow > 0
 				&& (double.IsNaN(userSize.Height) || userSize.Height > finalSize.Height)) // WinUI does not adjust alignment if the shape was smaller than the finalSize
 			{
 				switch (VerticalAlignment)
 				{
 					case VerticalAlignment.Center:
-						pathAlignment.Y -= verticalOverflow / 2.0;
+						renderAlignment.Y -= renderVerticalOverflow / 2.0;
 						break;
 
 					case VerticalAlignment.Bottom:
-						pathAlignment.Y -= verticalOverflow;
+						renderAlignment.Y -= renderVerticalOverflow;
 						break;
 				}
 			}
-			else if (verticalOverflow < 0 && VerticalAlignment == VerticalAlignment.Stretch)
+			else if (renderVerticalOverflow < 0 && VerticalAlignment == VerticalAlignment.Stretch)
 			{
 				// It might happen that even stretched, the shape does not use all the finalSize height,
 				// in that case it's centered by WinUI.
-				pathAlignment.Y -= verticalOverflow / 2.0;
+				renderAlignment.Y -= renderVerticalOverflow / 2.0;
 			}
 
-			//return (size, pathArea);
-
-
-
-
-
-
-
-
-
-
-
-			//var path = this.GetPath(SizeFromUISize(Bounds.Size));
-			//if (path == null)
-			//{
-			//	return null;
-			//}
-
-			//var pathBounds = path.BoundingBox;
-
-			//if (
-			//	nfloat.IsInfinity(pathBounds.Right)
-			//	|| nfloat.IsInfinity(pathBounds.Bottom)
-			//)
-			//{
-			//	if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			//	{
-			//		this.Log().Debug($"Ignoring path with invalid bounds {pathBounds}");
-			//	}
-
-			//	return default;
-			//}
-
-			//var scaleX = _scaleX;
-			//var scaleY = _scaleY;
-
-			//var stretchMode = Stretch;
-			//switch (stretchMode)
-			//{
-			//	case Stretch.Fill:
-			//	case Stretch.None:
-			//		break;
-			//	case Stretch.Uniform:
-			//		scaleX = Math.Min(_scaleX, _scaleY);
-			//		scaleY = scaleX;
-			//		break;
-			//	case Stretch.UniformToFill:
-			//		scaleX = Math.Max(_scaleX, _scaleY);
-			//		scaleY = scaleX;
-			//		break;
-			//}
-
-			var transform = new CGAffineTransform(
+			// Render the shape as a Layer
+			var renderTransform = new CGAffineTransform(
 				(nfloat)scaleX, 0,
 				0, (nfloat)scaleY,
-				(nfloat)(pathOrigin.X * scaleX + pathAlignment.X + halfStrokeThickness), (nfloat)(pathOrigin.Y * scaleY + pathAlignment.Y + halfStrokeThickness));
-			//var transform = CGAffineTransform.MakeScale((nfloat)scaleX, (nfloat)scaleY);
+				(nfloat)(renderOrigin.X * scaleX + renderAlignment.X + halfStrokeThickness), (nfloat)(renderOrigin.Y * scaleY + renderAlignment.Y + halfStrokeThickness));
+			var renderPath = new CGPath(path, renderTransform);
 
-			//if (Stretch != Stretch.None)
-			//{
-			//	// When stretching, we can't use 0,0 as the origin, but must instead use the path's bounds.
-			//	transform.Translate(-pathBounds.Left * (nfloat)scaleX, -pathBounds.Top * (nfloat)scaleY);
-			//}
+			Render(renderPath);
 
-			//if (!ShouldPreserveOrigin)
-			//{
-			//	// We need to translate the shape to take in account the stroke thickness
-			//	// transform.Translate((nfloat)ActualStrokeThickness * 0.5f, (nfloat)ActualStrokeThickness * 0.5f);
-			//	var quarterStrokeThickness = (nfloat)(GetHalfStrokeThickness() / 2.0);
-			//	transform.Translate(quarterStrokeThickness, quarterStrokeThickness);
-			//}
-
-			//if (nfloat.IsNaN(transform.x0) || nfloat.IsNaN(transform.y0) ||
-			//	nfloat.IsNaN(transform.xx) || nfloat.IsNaN(transform.yy) ||
-			//	nfloat.IsNaN(transform.xy) || nfloat.IsNaN(transform.yx)
-			//)
-			//{
-			//	// transformedPath creation will crash natively if the transform contains NaNs
-			//	throw new InvalidOperationException($"transform {transform} contains NaN values, transformation will fail.");
-			//}
-
-			var transformedPath = new CGPath(path, transform);
-			Render(transformedPath);
+			// If the Shape does not have size defined, and natural size of the path is lower than the finalSize,
+			// then we don't clip the shape!
+			ClipsToBounds = stretch != Stretch.None
+				|| !double.IsNaN(userSize.Width) || !double.IsNaN(userSize.Height)
+				|| pathSize.Width > finalSize.Width || pathSize.Height > finalSize.Height;
 
 			return size;
 		}
@@ -913,80 +584,6 @@ namespace Windows.UI.Xaml.Shapes
 
 		private CALayer CreateLayer(CGPath path)
 		{
-			//var path = this.GetPath(SizeFromUISize(Bounds.Size));
-			//if (path == null)
-			//{
-			//	return null;
-			//}
-
-			//var pathBounds = path.BoundingBox;
-
-			//if (
-			//	nfloat.IsInfinity(pathBounds.Right)
-			//	|| nfloat.IsInfinity(pathBounds.Bottom)
-			//)
-			//{
-			//	if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-			//	{
-			//		this.Log().Debug($"Ignoring path with invalid bounds {pathBounds}");
-			//	}
-
-			//	return null;
-			//}
-
-			//var scaleX = _scaleX;
-			//var scaleY = _scaleY;
-
-			////var stretchMode = Stretch;
-			////switch (stretchMode)
-			////{
-			////	case Stretch.Fill:
-			////	case Stretch.None:
-			////		break;
-			////	case Stretch.Uniform:
-			////		scaleX = Math.Min(_scaleX, _scaleY);
-			////		scaleY = scaleX;
-			////		break;
-			////	case Stretch.UniformToFill:
-			////		scaleX = Math.Max(_scaleX, _scaleY);
-			////		scaleY = scaleX;
-			////		break;
-			////}
-
-			//var transform = CGAffineTransform.MakeScale(scaleX, scaleY);
-
-			//if (!ShouldPreserveOrigin)
-			//{
-			//	// When stretching, we can't use 0,0 as the origin, but must instead use the path's bounds.
-			//	transform.Translate(-pathBounds.Left * scaleX, -pathBounds.Top * scaleY);
-			//}
-
-			////if (!ShouldPreserveOrigin)
-			////{
-			////	// We need to translate the shape to take in account the stroke thickness
-			////	// transform.Translate((nfloat)ActualStrokeThickness * 0.5f, (nfloat)ActualStrokeThickness * 0.5f);
-			////	var quarterStrokeThickness = (nfloat)(GetHalfStrokeThickness() / 2.0);
-			////	transform.Translate(quarterStrokeThickness, quarterStrokeThickness);
-			////}
-
-			//if (nfloat.IsNaN(transform.x0) || nfloat.IsNaN(transform.y0) ||
-			//	nfloat.IsNaN(transform.xx) || nfloat.IsNaN(transform.yy) ||
-			//	nfloat.IsNaN(transform.xy) || nfloat.IsNaN(transform.yx)
-			//)
-			//{
-			//	// transformedPath creation will crash natively if the transform contains NaNs
-			//	throw new InvalidOperationException($"transform {transform} contains NaN values, transformation will fail.");
-			//}
-
-			////var colorFill = Fill as SolidColorBrush ?? SolidColorBrushHelper.Transparent;
-			////var imageFill = Fill as ImageBrush;
-			////var gradientFill = Fill as LinearGradientBrush;
-			////var stroke = Stroke as SolidColorBrush ?? SolidColorBrushHelper.Transparent;
-			//var transformedPath = new CGPath(path, transform);
-
-
-
-
 			var pathLayer = new CAShapeLayer()
 			{
 				Path = path,
@@ -1025,47 +622,6 @@ namespace Windows.UI.Xaml.Shapes
 					break;
 			}
 
-			CAShapeLayer GetFillMask(CGPath mask)
-				=> new CAShapeLayer
-				{
-					Path = mask,
-					Frame = Bounds,
-					// We only use the fill color to create the mask area
-					FillColor = UIColor.White.CGColor,
-				};
-
-			//if (colorFill != null)
-			//{
-			//	layer.FillColor = colorFill.ColorWithOpacity;
-			//}
-
-			//if (imageFill != null)
-			//{
-			//	var fillMask = 
-
-			//	CreateImageBrushLayers(
-			//		layer,
-			//		imageFill,
-			//		fillMask
-			//	);
-			//}
-			//else if (gradientFill != null)
-			//{
-			//	var fillMask = new CAShapeLayer()
-			//	{
-			//		Path = transformedPath,
-			//		Frame = Bounds,
-			//		// We only use the fill color to create the mask area
-			//		FillColor = _Color.White.CGColor,
-			//	};
-
-			//	var gradientLayer = gradientFill.GetLayer(Frame.Size);
-			//	gradientLayer.Frame = Bounds;
-			//	gradientLayer.Mask = fillMask;
-			//	gradientLayer.MasksToBounds = true;
-			//	layer.AddSublayer(gradientLayer);
-			//}
-
 			if (StrokeDashArray != null)
 			{
 				var pattern = StrokeDashArray.Select(d => (global::Foundation.NSNumber)d).ToArray();
@@ -1075,6 +631,15 @@ namespace Windows.UI.Xaml.Shapes
 			}
 
 			return pathLayer;
+
+			CAShapeLayer GetFillMask(CGPath mask)
+				=> new CAShapeLayer
+				{
+					Path = mask,
+					Frame = Bounds,
+					// We only use the fill color to create the mask area
+					FillColor = UIColor.White.CGColor,
+				};
 		}
 
 		private bool TryCreateImageBrushLayers(ImageBrush imageBrush, CAShapeLayer fillMask, out CALayer imageContainerLayer)
@@ -1183,15 +748,6 @@ namespace Windows.UI.Xaml.Shapes
 		private protected double GetHalfStrokeThickness()
 			=> Math.Floor((ActualStrokeThickness + .5) / 2.0);
 
-		private static (float x, float y) GetScale(Size pathSize, Size availableSize)
-		{
-			availableSize = availableSize.NumberOrDefault(pathSize);
-
-			return (
-				(float)(double.IsInfinity(pathSize.Width) ? 1 : availableSize.Width / pathSize.Width),
-				(float)(double.IsInfinity(pathSize.Height) ? 1 : availableSize.Height / pathSize.Height)
-			);
-		}
 		private static (float x, float y) GetScale(Size pathSize, Size availableSize, double minus)
 		{
 			availableSize = availableSize.NumberOrDefault(pathSize);
