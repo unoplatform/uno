@@ -21,10 +21,10 @@ namespace Windows.UI.Xaml.Shapes
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			var (shapeSize, renderingArea) = ArrangeRelativeShape(finalSize);
-			if (renderingArea.Width > 0 && renderingArea.Height > 0)
-			{
-				Render(CGPath.EllipseFromRect(renderingArea));
-			}
+
+			Render(renderingArea.Width > 0 && renderingArea.Height > 0
+				? CGPath.EllipseFromRect(renderingArea)
+				: null);
 
 			return shapeSize;
 		}

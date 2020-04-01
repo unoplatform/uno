@@ -31,30 +31,25 @@ namespace Windows.UI.Xaml.Shapes
 		protected override Size ArrangeOverride(Size finalSize)
 		{
 			var (shapeSize, renderingArea) = ArrangeRelativeShape(finalSize);
+
+			CGPath path;
 			if (renderingArea.Width > 0 && renderingArea.Height > 0)
 			{
-				var path = Math.Max(RadiusX, RadiusY) > 0
+				path = Math.Max(RadiusX, RadiusY) > 0
 #if __IOS__
 					? _BezierPath.FromRoundedRect(renderingArea, UIRectCorner.AllCorners, new CGSize(RadiusX, RadiusY)).CGPath
 #else
 					? _BezierPath.FromRoundedRect(area, (nfloat)RadiusX, (nfloat)RadiusY).ToCGPath()
 #endif
 					: _BezierPath.FromRect(renderingArea).ToCGPath();
-
-				Render(path);
 			}
+			else
+			{
+				path = null;
+			}
+			Render(path);
 
 			return shapeSize;
-		}
-
-		partial void OnRadiusXChangedPartial()
-		{
-			InvalidateArrange();
-		}
-
-		partial void OnRadiusYChangedPartial()
-		{
-			InvalidateArrange();
 		}
 	}
 }
