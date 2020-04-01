@@ -17,27 +17,31 @@ namespace Windows.UI.Xaml.Shapes
 		: ArbitraryShapeBase
 #endif
 	{
-		#region Points
-
+		#region Points (DP)
 		public PointCollection Points
 		{
-			get { return (PointCollection)GetValue(PointsProperty); }
-			set { SetValue(PointsProperty, value); }
+			get => (PointCollection)GetValue(PointsProperty);
+			set => SetValue(PointsProperty, value);
 		}
 
-		public static global::Windows.UI.Xaml.DependencyProperty PointsProperty { get; } =
-			DependencyProperty.Register(
-				"Points", typeof(global::Windows.UI.Xaml.Media.PointCollection),
-				typeof(global::Windows.UI.Xaml.Shapes.Polygon),
-				new FrameworkPropertyMetadata(
-					defaultValue: default(global::Windows.UI.Xaml.Media.PointCollection),
-					options: FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
-					propertyChangedCallback: (s, e) => ((Polygon)s).OnPointsChanged()
-				)
-			);
-
-		partial void OnPointsChanged();
-
+		public static DependencyProperty PointsProperty { get; } = DependencyProperty.Register(
+			"Points",
+			typeof(PointCollection),
+			typeof(Polygon),
+			new FrameworkPropertyMetadata(
+				defaultValue: default(PointCollection),
+				options: FrameworkPropertyMetadataOptions.LogicalChild | FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange,
+#if LEGACY_SHAPE_MEASURE
+				propertyChangedCallback: (s, e) => ((Polygon)s).OnPointsChanged()
+#else
+				propertyChangedCallback: (s, e) =>
+				{
+					(e.OldValue as PointCollection)?.UnRegisterChangedListener(s.InvalidateMeasure);
+					(e.NewValue as PointCollection)?.RegisterChangedListener(s.InvalidateMeasure);
+				}
+#endif
+			)
+		);
 		#endregion
 
 		public Polygon()
@@ -46,6 +50,8 @@ namespace Windows.UI.Xaml.Shapes
 		}
 
 #if LEGACY_SHAPE_MEASURE
+		partial void OnPointsChanged();
+
 		protected internal override IEnumerable<object> GetShapeParameters()
 		{
 			yield return Points?.ToArray();

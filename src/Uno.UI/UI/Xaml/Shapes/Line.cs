@@ -28,25 +28,18 @@ namespace Windows.UI.Xaml.Shapes
 			set => SetValue(X1Property, value);
 		}
 
-		public static global::Windows.UI.Xaml.DependencyProperty X1Property { get; } =
-			Windows.UI.Xaml.DependencyProperty.Register(
-				"X1", typeof(double),
-				typeof(global::Windows.UI.Xaml.Shapes.Line),
-				new FrameworkPropertyMetadata(
-					defaultValue: 0.0,
-					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
-					propertyChangedCallback: OnX1PropertyChanged
-				)
-			);
-
-		private static void OnX1PropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			if (dependencyObject is Line line)
-			{
-				line.OnX1PropertyChangedPartial((double)args.OldValue, (double)args.NewValue);
-			}
-		}
-		partial void OnX1PropertyChangedPartial(double oldValue, double newValue);
+		public static DependencyProperty X1Property { get; } = DependencyProperty.Register(
+			"X1",
+			typeof(double),
+			typeof(Line),
+			new FrameworkPropertyMetadata(
+				defaultValue: 0.0,
+				options: FrameworkPropertyMetadataOptions.AffectsMeasure
+#if LEGACY_SHAPE_MEASURE
+				, propertyChangedCallback: OnX1PropertyChanged
+#endif
+			)
+		);
 		#endregion
 
 		#region X2 (DP)
@@ -56,25 +49,18 @@ namespace Windows.UI.Xaml.Shapes
 			set => SetValue(X2Property, value);
 		}
 
-		public static global::Windows.UI.Xaml.DependencyProperty X2Property { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"X2", typeof(double),
-			typeof(global::Windows.UI.Xaml.Shapes.Line),
+		public static DependencyProperty X2Property { get; } = DependencyProperty.Register(
+			"X2",
+			typeof(double),
+			typeof(Line),
 			new FrameworkPropertyMetadata(
 				defaultValue: 0.0,
-				options: FrameworkPropertyMetadataOptions.AffectsMeasure,
-				propertyChangedCallback: OnX2PropertyChanged
+				options: FrameworkPropertyMetadataOptions.AffectsMeasure
+#if LEGACY_SHAPE_MEASURE
+				, propertyChangedCallback: OnX2PropertyChanged
+#endif
 			)
 		);
-
-		private static void OnX2PropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-		{
-			if (dependencyObject is Line line)
-			{
-				line.OnX2PropertyChangedPartial((double)args.OldValue, (double)args.NewValue);
-			}
-		}
-		partial void OnX2PropertyChangedPartial(double oldValue, double newValue);
 		#endregion
 
 		#region Y1 (DP)
@@ -84,16 +70,60 @@ namespace Windows.UI.Xaml.Shapes
 			set => SetValue(Y1Property, value);
 		}
 
-		public static global::Windows.UI.Xaml.DependencyProperty Y1Property { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Y1", typeof(double),
-			typeof(global::Windows.UI.Xaml.Shapes.Line),
+		public static DependencyProperty Y1Property { get; } = DependencyProperty.Register(
+			"Y1",
+			typeof(double),
+			typeof(Line),
 			new FrameworkPropertyMetadata(
 				defaultValue: 0.0,
-				options: FrameworkPropertyMetadataOptions.AffectsMeasure,
-				propertyChangedCallback: OnY1PropertyChanged
+				options: FrameworkPropertyMetadataOptions.AffectsMeasure
+#if LEGACY_SHAPE_MEASURE
+				, propertyChangedCallback: OnY1PropertyChanged
+#endif
 			)
 		);
+		#endregion
+
+		#region Y2 (DP)
+		public double Y2
+		{
+			get => (double)GetValue(Y2Property);
+			set => SetValue(Y2Property, value);
+		}
+
+		public static DependencyProperty Y2Property { get; } = DependencyProperty.Register(
+			"Y2",
+			typeof(double),
+			typeof(Line),
+			new FrameworkPropertyMetadata(
+				defaultValue: 0.0,
+				options: FrameworkPropertyMetadataOptions.AffectsMeasure
+#if LEGACY_SHAPE_MEASURE
+				, propertyChangedCallback: OnY2PropertyChanged
+#endif
+			)
+		);
+		#endregion
+
+#if LEGACY_SHAPE_MEASURE
+
+		private static void OnX1PropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			if (dependencyObject is Line line)
+			{
+				line.OnX1PropertyChangedPartial((double)args.OldValue, (double)args.NewValue);
+			}
+		}
+		partial void OnX1PropertyChangedPartial(double oldValue, double newValue);
+
+		private static void OnX2PropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			if (dependencyObject is Line line)
+			{
+				line.OnX2PropertyChangedPartial((double)args.OldValue, (double)args.NewValue);
+			}
+		}
+		partial void OnX2PropertyChangedPartial(double oldValue, double newValue);
 
 		private static void OnY1PropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
@@ -104,25 +134,7 @@ namespace Windows.UI.Xaml.Shapes
 		}
 
 		partial void OnY1PropertyChangedPartial(double oldValue, double newValue);
-		#endregion
 
-		#region Y2 (DP)
-		public double Y2
-		{
-			get => (double)GetValue(Y2Property);
-			set => SetValue(Y2Property, value);
-		}
-
-		public static global::Windows.UI.Xaml.DependencyProperty Y2Property { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"Y2", typeof(double),
-			typeof(global::Windows.UI.Xaml.Shapes.Line),
-			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
-				options: FrameworkPropertyMetadataOptions.AffectsMeasure,
-				propertyChangedCallback: OnY2PropertyChanged
-			)
-		);
 		private static void OnY2PropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			if (dependencyObject is Line line)
@@ -132,9 +144,7 @@ namespace Windows.UI.Xaml.Shapes
 		}
 
 		partial void OnY2PropertyChangedPartial(double oldValue, double newValue);
-		#endregion
 
-#if LEGACY_SHAPE_MEASURE
 		protected internal override IEnumerable<object> GetShapeParameters()
 		{
 			yield return X1;

@@ -19,8 +19,8 @@ namespace Windows.UI.Xaml.Shapes
 
 		public Geometry Data
 		{
-			get { return (Geometry)this.GetValue(DataProperty); }
-			set { this.SetValue(DataProperty, value); }
+			get => (Geometry)this.GetValue(DataProperty);
+			set => this.SetValue(DataProperty, value);
 		}
 
 		public static readonly DependencyProperty DataProperty =
