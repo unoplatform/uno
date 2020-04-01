@@ -1,10 +1,14 @@
-﻿using Windows.UI.Xaml.Media;
+﻿#if !__IOS__ && !__MACOS__
+#define LEGACY_SHAPE_MEASURE
+#endif
+
+#if LEGACY_SHAPE_MEASURE
+using Windows.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Uno.Disposables;
-using Windows.Foundation;
-using CoreAnimation;
+using Windows.Foundation;	
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -51,7 +55,7 @@ namespace Windows.UI.Xaml.Shapes
 		/// Refreshes the current shape, considering its drawinf parameters.
 		/// </summary>
 		/// <param name="forceRefresh">Forces a refresh by ignoring the shape parameters.</param>
-		protected override void RefreshShapeOverride(bool forceRefresh)
+		protected override void RefreshShape(bool forceRefresh = false)
 		{
 			if (IsLoaded)
 			{
@@ -68,45 +72,45 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 
-		//private protected Rect GetBounds()
-		//{
-		//	var width = Width;
-		//	var height = Height;
+		private protected Rect GetBounds()
+		{
+			var width = Width;
+			var height = Height;
 
-		//	if (double.IsNaN(width))
-		//	{
-		//		var minWidth = MinWidth;
-		//		if (minWidth > 0.0)
-		//		{
-		//			width = minWidth;
-		//		}
-		//	}
-		//	if (double.IsNaN(height))
-		//	{
-		//		var minHeight = MinHeight;
-		//		if (minHeight > 0.0)
-		//		{
-		//			height = minHeight;
-		//		}
-		//	}
+			if (double.IsNaN(width))
+			{
+				var minWidth = MinWidth;
+				if (minWidth > 0.0)
+				{
+					width = minWidth;
+				}
+			}
+			if (double.IsNaN(height))
+			{
+				var minHeight = MinHeight;
+				if (minHeight > 0.0)
+				{
+					height = minHeight;
+				}
+			}
 
-		//	if (double.IsNaN(width))
-		//	{
-		//		if (double.IsNaN(height))
-		//		{
-		//			return new Rect(0.0, 0.0, 0.0, 0.0);
-		//		}
+			if (double.IsNaN(width))
+			{
+				if (double.IsNaN(height))
+				{
+					return new Rect(0.0, 0.0, 0.0, 0.0);
+				}
 
-		//		return new Rect(0.0, 0.0, height, height);
-		//	}
+				return new Rect(0.0, 0.0, height, height);
+			}
 
-		//	if (double.IsNaN(height))
-		//	{
-		//		return new Rect(0.0, 0.0, width, width);
-		//	}
+			if (double.IsNaN(height))
+			{
+				return new Rect(0.0, 0.0, width, width);
+			}
 
-		//	return new Rect(0.0, 0.0, width, height);
-		//}
+			return new Rect(0.0, 0.0, width, height);
+		}
 
 		/// <summary>
 		/// Provides a enumeration of values that are used to determine if the shape
@@ -127,43 +131,7 @@ namespace Windows.UI.Xaml.Shapes
 		/// <summary>
 		/// Gets whether the shape should preserve the path's origin (and ignore StrokeThickness)
 		/// </summary>
-		/// <remarks>
-		/// This is the WinUI behavior: a Shape that has a stretch mode not None will ignore the origin.
-		/// This means that if you draw a line from 50,50 to 100,100 (so it not starting at 0,0),
-		/// with a 'None' stretch mode you will have:
-		/// ------
-		/// |    |
-		/// |    |
-		/// |  \ |
-		/// |   \|
-		/// ------
-		///
-		/// while with another Stretch mode you will have:
-		/// ------
-		/// |\   |
-		/// | \  |
-		/// |  \ |
-		/// |   \|
-		/// ------
-		/// </remarks>
-		protected bool ShouldPreserveOrigin
-		{
-			get
-			{
-				switch (this)
-				{
-					//case Path path:
-					//case Line line:
-					////case Polyline polyline:
-					//	return Stretch == Stretch.None;
-
-					//case Ellipse ellipse:
-					//	return false;
-
-					default:
-						return false;
-				}
-			}
-		}
+		protected bool ShouldPreserveOrigin => this is Path && Stretch == Stretch.None;
 	}
 }
+#endif
