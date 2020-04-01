@@ -151,6 +151,7 @@ declare namespace Uno.UI {
         private uiElementRegistrations;
         private static resizeMethod;
         private static dispatchEventMethod;
+        private static focusInMethod;
         private static getDependencyPropertyValueMethod;
         private static setDependencyPropertyValueMethod;
         private constructor();
@@ -523,6 +524,8 @@ declare namespace Uno.UI {
         private initDom;
         private removeLoading;
         private resize;
+        private onfocusin;
+        private onWindowBlur;
         private dispatchEvent;
         private getIsConnectedToRootElement;
         private handleToString;

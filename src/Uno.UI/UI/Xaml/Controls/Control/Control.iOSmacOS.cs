@@ -60,13 +60,6 @@ namespace Windows.UI.Xaml.Controls
 
 			AddSubview(child);
 		}
-
-		protected virtual bool RequestFocus(FocusState state)
-		{
-			FocusState = state;
-
-			return true;
-		}
 	}
 }
 

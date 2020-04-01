@@ -55,7 +55,7 @@ namespace Windows.UI.Input
 			{
 				if (_log.IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error("Inconsistent state, we already have a pending gesture for a pointer that is going down. Abort the previous gesture.");
+					this.Log().Error($"{Owner} Inconsistent state, we already have a pending gesture for a pointer that is going down. Abort the previous gesture.");
 				}
 				previousGesture.ProcessComplete();
 			}
@@ -104,7 +104,7 @@ namespace Windows.UI.Input
 				{
 					// debug: We might get some PointerMove for mouse even if not pressed,
 					//		  or if gesture was completed by user / other gesture recognizers.
-					_log.Debug("Received a 'Move' for a pointer which was not considered as down. Ignoring event.");
+					_log.Debug($"{Owner} Received a 'Move' for a pointer which was not considered as down. Ignoring event.");
 				}
 			}
 
@@ -132,7 +132,7 @@ namespace Windows.UI.Input
 			{
 				// debug: We might get some PointerMove for mouse even if not pressed,
 				//		  or if gesture was completed by user / other gesture recognizers.
-				_log.Debug("Received a 'Up' for a pointer which was not considered as down. Ignoring event.");
+				_log.Debug($"{Owner} Received a 'Up' for a pointer which was not considered as down. Ignoring event.");
 			}
 
 			_manipulation?.Remove(value);

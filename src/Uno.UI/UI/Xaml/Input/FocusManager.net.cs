@@ -49,5 +49,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			throw new NotImplementedException();
 		}
+
+		private static void FocusNative(object toFocus) { }
 	}
 }

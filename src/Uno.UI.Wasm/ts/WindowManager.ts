@@ -143,6 +143,7 @@ namespace Uno.UI {
 
 		private static resizeMethod: any;
 		private static dispatchEventMethod: any;
+		private static focusInMethod: any;
 		private static getDependencyPropertyValueMethod: any;
 		private static setDependencyPropertyValueMethod: any;
 
@@ -1668,6 +1669,10 @@ namespace Uno.UI {
 				if (!WindowManager.dispatchEventMethod) {
 					WindowManager.dispatchEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:DispatchEvent");
 				}
+
+				if (!WindowManager.focusInMethod) {
+					WindowManager.focusInMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Input.FocusManager:ReceiveFocusNative");
+				}
 			}
 		}
 
@@ -1676,8 +1681,9 @@ namespace Uno.UI {
 			if (!this.containerElement) {
 				// If not found, we simply create a new one.
 				this.containerElement = document.createElement("div");
-				document.body.appendChild(this.containerElement);
 			}
+			document.body.addEventListener("focusin", this.onfocusin);
+			document.body.appendChild(this.containerElement);
 
 			window.addEventListener("resize", x => this.resize());
 			window.addEventListener("contextmenu", x => {
@@ -1685,6 +1691,7 @@ namespace Uno.UI {
 					x.preventDefault();
 				}
 			})
+			window.addEventListener("blur", this.onWindowBlur);
 		}
 
 		private removeLoading() {
@@ -1710,6 +1717,28 @@ namespace Uno.UI {
 			}
 			else {
 				WindowManager.resizeMethod(document.documentElement.clientWidth, document.documentElement.clientHeight);
+			}
+		}
+
+		private onfocusin(event: Event) {
+			if (WindowManager.isHosted) {
+				console.warn("Focus not supported in hosted mode");
+			}
+			else {
+				const newFocus = event.target;
+				const handle = (newFocus as HTMLElement).getAttribute("XamlHandle");
+				const htmlId = handle ? Number(handle) : -1; // newFocus may not be an Uno element
+				WindowManager.focusInMethod(htmlId);
+			}
+		}
+
+		private onWindowBlur() {
+			if (WindowManager.isHosted) {
+				console.warn("Focus not supported in hosted mode");
+			}
+			else {
+				// Unset managed focus when Window loses focus
+				WindowManager.focusInMethod(-1);
 			}
 		}
 

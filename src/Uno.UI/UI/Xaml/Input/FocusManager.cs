@@ -1,22 +1,21 @@
-﻿#if XAMARIN || __WASM__
-using Windows.UI.Xaml.Input;
+﻿using Windows.UI.Xaml.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.UI.Xaml.Controls;
 using Uno.Extensions;
+using Uno.UI.Extensions;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
+using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml.Input
 {
 	public sealed partial class FocusManager
 	{
-		private static object _focusedElement;
+		private static readonly Lazy<ILogger> _log = new Lazy<ILogger>(() => typeof(FocusManager).Log());
 
-		// We keep a _fallbackFocused as backup if an element is unfocused and try move focus is called right after
-		// It is currently the case in ContextualCommand.
-		private static object _fallbackFocusedElement;
+		private static object _focusedElement;
 
 		/// <summary>
 		/// Get the currently focused element, if any
@@ -50,65 +49,105 @@ namespace Windows.UI.Xaml.Input
 			return InnerFindNextFocusableElement(focusNavigationDirection) as UIElement;
 		}
 
-		internal static void OnFocusChanged(Control control, FocusState focusState)
+		internal static bool SetFocusedElement(DependencyObject newFocus, FocusNavigationDirection focusNavigationDirection, FocusState focusState)
 		{
-			if (focusState == FocusState.Unfocused)
+			var control = newFocus as Control; // For now only called for Control
+			if (!control.IsFocusable)
 			{
-				if (control == _focusedElement)
-				{
-					_focusedElement = null;
-
-					if (LostFocus != null)
-					{
-						void OnLostFocus()
-						{
-							// we replay all "lost focus" events
-							LostFocus?.Invoke(null, new FocusManagerLostFocusEventArgs {OldFocusedElement = control});
-						}
-
-						control.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, OnLostFocus); // event is rescheduled, as on UWP
-					}
-				}
+				control = control.FindFirstChild<Control>(c => c.IsFocusable);
 			}
-			else // Focused
+
+			if (control == null)
 			{
-				if (_focusedElement != control)
-				{
-					(_focusedElement as Control)?.Unfocus();
-					_focusedElement = control;
-
-					if (GotFocus != null)
-					{
-						void OnGotFocus()
-						{
-							if (_focusedElement == control) // still focused
-							{
-								// we play the gotfocus event only on last/winning control
-								GotFocus?.Invoke(null, new FocusManagerGotFocusEventArgs {NewFocusedElement = control});
-							}
-						}
-
-						control.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, OnGotFocus); // event is rescheduled, as on UWP
-					}
-				}
-				
-				_fallbackFocusedElement = control;
-
-#if __ANDROID__
-				// Forcefully try to bring the control into view when keyboard is open to accommodate adjust nothing mode
-				if (InputPane.GetForCurrentView().Visible)
-				{
-					control.StartBringIntoView();
-				}
-#endif
+				return false;
 			}
+
+			return UpdateFocus(control, focusNavigationDirection, focusState);
 		}
 
-		internal static object GetFocusedElement(bool useFallback) => GetFocusedElement() ?? _fallbackFocusedElement;
+		private static bool UpdateFocus(DependencyObject newFocus, FocusNavigationDirection focusNavigationDirection, FocusState focusState)
+		{
+			// TODO: check AllowFocusOnInteraction
+			if (_log.Value.IsEnabled(LogLevel.Debug))
+			{
+				_log.Value.LogDebug($"{nameof(UpdateFocus)}()- oldFocus={_focusedElement}, newFocus={newFocus}, oldFocus.FocusState={(_focusedElement as Control)?.FocusState}, focusState={focusState}");
+			}
+
+			if (newFocus == _focusedElement)
+			{
+				var newFocusAsControl = newFocus as Control;
+				if (newFocusAsControl != null && newFocusAsControl.FocusState != focusState)
+				{
+					// We do not raise GettingFocus here since the OldFocusedElement and NewFocusedElement
+					// would be the same element.
+					RaiseGotFocusEvent(_focusedElement);
+
+					// Make sure the FocusState is up-to-date.
+					(newFocus as Control)?.UpdateFocusState(focusState);
+				}
+				// No change in focus element - can skip the rest of this method.
+				return true;
+			}
+
+			//TODO: RaiseAndProcessGettingAndLosingFocusEvents
+
+			var oldFocusedElement = _focusedElement;
+
+			(oldFocusedElement as Control)?.UpdateFocusState(FocusState.Unfocused); // Set previous unfocused
+
+			// Update the focused control
+			_focusedElement = newFocus;
+
+			(newFocus as Control)?.UpdateFocusState(focusState);
+
+			FocusNative(newFocus as Control);
+
+			if (oldFocusedElement != null)
+			{
+				RaiseLostFocusEvent(oldFocusedElement);
+			}
+
+			if (_focusedElement != null)
+			{
+				RaiseGotFocusEvent(_focusedElement);
+			}
+
+			return true;
+		}
+
+		private static void RaiseLostFocusEvent(object oldFocus)
+		{
+			void OnLostFocus()
+			{
+				if (oldFocus is UIElement uiElement)
+				{
+					uiElement.RaiseEvent(UIElement.LostFocusEvent, new RoutedEventArgs(uiElement));
+				}
+
+				// we replay all "lost focus" events
+				LostFocus?.Invoke(null, new FocusManagerLostFocusEventArgs { OldFocusedElement = oldFocus as DependencyObject });
+			}
+
+			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, OnLostFocus); // event is rescheduled, as on UWP
+		}
+
+		private static void RaiseGotFocusEvent(object newFocus)
+		{
+			void OnGotFocus()
+			{
+				if (newFocus is UIElement uiElement)
+				{
+					uiElement.RaiseEvent(UIElement.GotFocusEvent, new RoutedEventArgs(uiElement));
+				}
+
+				GotFocus?.Invoke(null, new FocusManagerGotFocusEventArgs { NewFocusedElement = newFocus as DependencyObject });
+			}
+
+			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, OnGotFocus); // event is rescheduled, as on UWP
+		}
 
 		public static event EventHandler<FocusManagerGotFocusEventArgs> GotFocus;
 		public static event EventHandler<FocusManagerLostFocusEventArgs> LostFocus;
 
 	}
 }
-#endif

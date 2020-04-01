@@ -1577,6 +1577,9 @@ var Uno;
                     if (!WindowManager.dispatchEventMethod) {
                         WindowManager.dispatchEventMethod = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:DispatchEvent");
                     }
+                    if (!WindowManager.focusInMethod) {
+                        WindowManager.focusInMethod = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Input.FocusManager:ReceiveFocusNative");
+                    }
                 }
             }
             initDom() {
@@ -1584,14 +1587,16 @@ var Uno;
                 if (!this.containerElement) {
                     // If not found, we simply create a new one.
                     this.containerElement = document.createElement("div");
-                    document.body.appendChild(this.containerElement);
                 }
+                document.body.addEventListener("focusin", this.onfocusin);
+                document.body.appendChild(this.containerElement);
                 window.addEventListener("resize", x => this.resize());
                 window.addEventListener("contextmenu", x => {
                     if (!(x.target instanceof HTMLInputElement)) {
                         x.preventDefault();
                     }
                 });
+                window.addEventListener("blur", this.onWindowBlur);
             }
             removeLoading() {
                 if (!this.loadingElementId) {
@@ -1611,6 +1616,26 @@ var Uno;
                 }
                 else {
                     WindowManager.resizeMethod(document.documentElement.clientWidth, document.documentElement.clientHeight);
+                }
+            }
+            onfocusin(event) {
+                if (WindowManager.isHosted) {
+                    console.warn("Focus not supported in hosted mode");
+                }
+                else {
+                    const newFocus = event.target;
+                    const handle = newFocus.getAttribute("XamlHandle");
+                    const htmlId = handle ? Number(handle) : -1; // newFocus may not be an Uno element
+                    WindowManager.focusInMethod(htmlId);
+                }
+            }
+            onWindowBlur() {
+                if (WindowManager.isHosted) {
+                    console.warn("Focus not supported in hosted mode");
+                }
+                else {
+                    // Unset managed focus when Window loses focus
+                    WindowManager.focusInMethod(-1);
                 }
             }
             dispatchEvent(element, eventName, eventPayload = null) {
