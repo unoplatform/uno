@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using Uno.Disposables;
 using System.Text;
+using Windows.Foundation;
 using Uno.Extensions;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
@@ -166,9 +167,77 @@ namespace Windows.UI.Xaml.Shapes
 		}
 		partial void OnStrokeDashArrayUpdatedPartial();
 
+#if __IOS__
+		// TODO: Properties should only InvalidateMeasure **OR** Arrange when possible (Fill and Stroke for instance).
+		private protected void RefreshShape(bool forceRefresh = false)
+		{
+			if (this is Rectangle)
+				InvalidateMeasure();
+			else
+				RefreshShapeOverride(forceRefresh);
+		}
+
+		protected virtual void RefreshShapeOverride(bool forceRefresh) { }
+#else
 		protected virtual void RefreshShape(bool forceRefresh = false) { }
+#endif
 
 		internal override bool IsViewHit()
 			=> Fill != null; // Do not invoke base.IsViewHit(): We don't have to have de FrameworkElement.Background to be hit testable!
+
+
+//#if __IOS__ // This code should be multi-targeted once the Shapes have been refactored on all platforms
+
+//		//------------------------------------------------------------------------
+//		//
+//		//  Synopsis:
+//		//      Modifies a XRECTF based on the shape's stretch mode. Used by
+//		//      CRectangle and CEllipse.
+//		//
+//		//------------------------------------------------------------------------
+//		/* static */
+//		private protected static void UpdateRectangleBoundsForStretchMode(Stretch stretchMode, ref Rect rectBounds)
+//		{
+//			switch (stretchMode)
+//			{
+//				case Stretch.Fill:
+//					//no need for this as fill case is already been taken care of
+//					break;
+
+//				case Stretch.Uniform:
+//					if (rectBounds.Width > rectBounds.Height)
+//					{
+//						rectBounds.Width = rectBounds.Height;
+//					}
+//					else
+//					{
+//						rectBounds.Height = rectBounds.Width;
+//					}
+//					break;
+
+//				case Stretch.UniformToFill:
+//					if (rectBounds.Width < rectBounds.Height)
+//					{
+//						rectBounds.Width = rectBounds.Height;
+//					}
+//					else
+//					{
+//						rectBounds.Height = rectBounds.Width;
+//					}
+//					break;
+
+//				case Stretch.None:
+//					rectBounds.Height = rectBounds.Width = 0;
+//					break;
+
+//				default:
+//					// we should never hit this.
+//					global::System.Diagnostics.Debug.Assert(false);
+//					break;
+//			}
+//		}
+
+//#endif
+
 	}
 }

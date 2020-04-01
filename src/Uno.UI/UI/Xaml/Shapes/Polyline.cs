@@ -7,9 +7,12 @@ using Windows.UI.Xaml.Media;
 
 namespace Windows.UI.Xaml.Shapes
 {
-	public partial class Polyline : ArbitraryShapeBase
+	public partial class Polyline
+#if !__IOS__
+		: ArbitraryShapeBase
+#endif
 	{
-		#region Points
+#region Points
 		public PointCollection Points
 		{
 			get { return (PointCollection)GetValue(PointsProperty); }
@@ -29,13 +32,15 @@ namespace Windows.UI.Xaml.Shapes
 
 		partial void OnPointsChanged();
 
-		#endregion
+#endregion
 
 		public Polyline()
 		{
 			Points = new PointCollection();
+			ClipsToBounds = true;
 		}
 
+#if !__IOS__
 		protected internal override IEnumerable<object> GetShapeParameters()
 		{
 			yield return Points?.ToArray();
@@ -45,5 +50,6 @@ namespace Windows.UI.Xaml.Shapes
 				yield return p;
 			}
 		}
+#endif
 	}
 }

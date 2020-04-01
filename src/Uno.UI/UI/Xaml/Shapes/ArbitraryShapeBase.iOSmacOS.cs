@@ -444,8 +444,8 @@ namespace Windows.UI.Xaml.Shapes
 			return new Size(pathSize.Width * _scaleX, pathSize.Height * _scaleY);
 		}
 
-		private protected double GetHalfStrokeThickness()
-			=> Math.Floor((ActualStrokeThickness + .5) / 2.0);
+		//private protected double GetHalfStrokeThickness()
+		//	=> Math.Floor((ActualStrokeThickness + .5) / 2.0);
 
 		private static (float x, float y) GetScale(Size pathSize, Size availableSize)
 		{

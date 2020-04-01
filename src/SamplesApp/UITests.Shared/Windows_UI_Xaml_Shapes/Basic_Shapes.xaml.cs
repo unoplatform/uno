@@ -109,7 +109,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 					Points = { new Point(25, 25), new Point(25, 125), new Point(125, 125) }
 				};
 
-				if (_shapeLine.IsOn) yield return () => new Polyline
+				if (_shapePolyline.IsOn) yield return () => new Polyline
 				{
 					Fill = new SolidColorBrush(Color.FromArgb(160, 160, 0, 192)),
 					Stroke = new SolidColorBrush(Color.FromArgb(255, 160, 0, 192)),
@@ -155,12 +155,12 @@ namespace UITests.Windows_UI_Xaml_Shapes
 
 			for (var x = 0; x < horizontalAlignments.Length; x++)
 			{
-				grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(itemSize) });
+				grid.ColumnDefinitions.Add(new ColumnDefinition { Width = new GridLength(itemSize + 2) });
 				grid.Children.Add(GetLabel(horizontalAlignments[x]).GridRow(1).GridColumn(x + 1));
 			}
 			for (var y = 0; y < verticalAlignments.Length; y++)
 			{
-				grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(itemSize) });
+				grid.RowDefinitions.Add(new RowDefinition { Height = new GridLength(itemSize + 20 + 2) });
 				grid.Children.Add(GetLabel(verticalAlignments[y]).GridRow(y + 2).GridColumn(0));
 			}
 
@@ -170,10 +170,10 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				var item = template();
 				var container = new Border
 				{
-					Width = itemSize,
-					Height = itemSize,
+					Width = itemSize + 2,
+					Height = itemSize + 20 + 2,
 					BorderBrush = new SolidColorBrush(Colors.HotPink),
-					BorderThickness = new Thickness(0, 0, 1, 1),
+					BorderThickness = new Thickness(1, 1, 1, 1),
 					Child = item
 				};
 
