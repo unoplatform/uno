@@ -17,21 +17,11 @@ namespace Windows.UI.Xaml.Shapes
 {
 	partial class Shape
 	{
-		// Drawing scale
-		//private float _scaleX;
-		//private float _scaleY;
-
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
 			// Don't call base, we need to keep UIView.BackgroundColor set to transparent
 			RefreshShape();
 		}
-
-		//internal override void OnLayoutUpdated()
-		//{
-		//	base.OnLayoutUpdated();
-		//	RefreshShape();
-		//}
 
 		protected override void OnLoaded()
 		{
@@ -39,157 +29,9 @@ namespace Windows.UI.Xaml.Shapes
 			RefreshShape();
 		}
 
-		//private protected abstract CGPath GetPath(Size userSize, Size availableSize);
-		//private protected abstract bool ShouldPreserveOrigin { get; }
-
 		private CALayer _shapeLayer;
 
-		private protected void Render(CGPath path)
-		{
-			//if (!IsLoaded)
-			//{
-			//	// For safety purpose! This method should invoked only from ArrangeOverride 
-			//	return;
-			//}
-
-			// Remove the old layer if any
-			_shapeLayer?.RemoveFromSuperLayer();
-
-			// Well ... nothing to do !
-			if (path == null)
-			{
-				_shapeLayer = null;
-				return;
-			}
-
-			_shapeLayer = CreateLayer(path);
-			Layer.AddSublayer(_shapeLayer);
-		}
-
-		//protected override Size MeasureOverride(Size availableSize)
-		//{
-		//	var userMinSize = this.GetMinSize();
-		//	var userSize = new Size(Width, Height).AtLeast(userMinSize).NumberOrDefault(userMinSize);
-		//	var path = GetPath(userSize, availableSize);
-		//	if (path == null)
-		//	{
-		//		return default;
-		//	}
-
-		//	var pathBounds = path.BoundingBox;
-		//	var pathSize = (Windows.Foundation.Size)pathBounds.Size;
-		//	if (pathSize == default)
-		//	{
-		//		return default;
-		//	}
-
-		//	// For shapes that has an offset from the origin, if the stretch mode is not None we remove this offset.
-		//	// cf. remarks of ShouldPreserveOrigin XML doc.
-		//	if (ShouldPreserveOrigin)
-		//	{
-		//		// On iOS 11, the origin (X, Y) of bounds could be infinite, leading to strange results.
-		//		if (!nfloat.IsInfinity(pathBounds.X))
-		//		{
-		//			pathSize.Width += pathBounds.X;
-		//		}
-		//		if (!nfloat.IsInfinity(pathBounds.Y))
-		//		{
-		//			pathSize.Height += pathBounds.Y;
-		//		}
-		//	}
-
-		//	//var availableWidth = availableSize.Width;
-		//	//var availableHeight = availableSize.Height;
-		//	//var userWidth = this.Width;
-		//	//var userHeight = this.Height;
-
-		//	// As weird as it seems, it's how WinUI behaves for the measure!
-		//	// Note: .5 so if thickness is 1, we have 1, but if .8 we have 0 ... like WinUI
-		//	//var halfStrokeThickness = Math.Floor((ActualStrokeThickness + .5f) / 2.0);
-		//	var halfStrokeThickness = GetHalfStrokeThickness();
-		//	pathSize = pathSize.Add(new Size(halfStrokeThickness, halfStrokeThickness));
-
-		//	//// For safety, we make sure to remove NaN (but not infinity at this point)
-		//	//availableSize = availableSize.NumberOrDefault(pathSize);
-
-		//	//var size = this.ApplySizeConstraints(availableSize)
-		//	//	.NumberOrDefault(pathSize)
-		//	//	.Add(new Size(halfStrokeThickness, halfStrokeThickness));
-
-		//	//var controlWidth = availableWidth <= 0 ? userWidth : availableWidth;
-		//	//var controlHeight = availableHeight <= 0 ? userHeight : availableHeight;
-
-		//	// Default values
-		//	//var calculatedWidth = LimitWithUserSize(controlWidth, userWidth, pathWidth);
-		//	//var calculatedHeight = LimitWithUserSize(controlHeight, userHeight, pathHeight);
-
-		//	//var strokeThickness = this.ActualStrokeThickness;
-		//	//var strokeThicknessF = (float)strokeThickness;
-
-		//	//// At this point 'path<Width|Height>' might be 0, especially for vertical / horizontal Line
-		//	//_scaleX = pathWidth == 0 ? 1 : (nfloat)size.Width / pathWidth;
-		//	//_scaleY = pathHeight == 0 ? 1 : (nfloat)size.Height / pathHeight;
-
-		//	//Make sure that we have a valid scale if both of them are not set
-		//	//if (double.IsInfinity((double)_scaleX)
-		//	//	&& double.IsInfinity((double)_scaleY))
-		//	//{
-		//	//	_scaleX = 1;
-		//	//	_scaleY = 1;
-		//	//}
-
-		//	// Here we will override some of the default values
-		//	switch (Stretch)
-		//	{
-		//		case Stretch.None:
-		//			_scaleX = 1;
-		//			_scaleY = 1;
-		//			break;
-
-		//		case Stretch.Fill:
-		//			(_scaleX, _scaleY) = GetScale(pathSize, availableSize);
-		//			break;
-
-		//		case Stretch.Uniform:
-		//		{
-		//			var scale = GetScale(pathSize, availableSize);
-		//			_scaleX = _scaleY = Math.Min(scale.x, scale.y);
-		//			break;
-		//		}
-		//		case Stretch.UniformToFill:
-		//		{
-		//			var scale = GetScale(pathSize, availableSize);
-		//			_scaleX = _scaleY = Math.Max(scale.x, scale.y);
-		//			break;
-		//		}
-		//	}
-
-		//	//calculatedWidth += strokeThickness;
-		//	//calculatedHeight += strokeThickness;
-
-		//	return new Size(pathSize.Width * _scaleX, pathSize.Height * _scaleY);
-		//}
-
-		//private CGRect GetActualSize() => Bounds;
-
-		//private IDisposable BuildDrawableLayer()
-		//{
-		//	if (Bounds == CGRect.Empty)
-		//	{
-		//		return Disposable.Empty;
-		//	}
-
-		//	var newLayer = CreateLayerOrDefault();
-		//	if (newLayer == null)
-		//	{
-		//		return Disposable.Empty;
-		//	}
-
-		//	Layer.AddSublayer(newLayer);
-		//	return Disposable.Create(() => newLayer.RemoveFromSuperLayer());
-		//}
-
-
+		#region Measure / Arrange should be shared using Geometry instead of CGPath
 		private protected Size MeasureRelativeShape(Size availableSize)
 		{
 			var stretch = Stretch;
@@ -333,7 +175,6 @@ namespace Windows.UI.Xaml.Shapes
 
 			return (size, pathArea);
 		}
-
 
 		private protected Size MeasureAbsoluteShape(Size availableSize, CGPath path)
 		{
@@ -599,7 +440,24 @@ namespace Windows.UI.Xaml.Shapes
 
 			return size;
 		}
+		#endregion
 
+		#region Rendering (Native)
+		private protected void Render(CGPath path)
+		{
+			// Remove the old layer if any
+			_shapeLayer?.RemoveFromSuperLayer();
+
+			// Well ... nothing to do !
+			if (path == null)
+			{
+				_shapeLayer = null;
+				return;
+			}
+
+			_shapeLayer = CreateLayer(path);
+			Layer.AddSublayer(_shapeLayer);
+		}
 
 		private CALayer CreateLayer(CGPath path)
 		{
@@ -745,6 +603,7 @@ namespace Windows.UI.Xaml.Shapes
 
 			return true;
 		}
+		#endregion
 
 		#region Helper methods
 		/// <summary>

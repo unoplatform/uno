@@ -17,23 +17,22 @@ namespace Windows.UI.Xaml.Shapes
 
 		private CGPath GetPath()
 		{
-			var coords = Points;
-
-			if (coords != null && coords.Count > 1)
+			var points = Points;
+			if (points == null || points.Count <= 1)
 			{
-				var streamGeometry = GeometryHelper.Build(c =>
-				{
-					c.BeginFigure(coords[0], true, false);
-					for (var i = 1; i < coords.Count; i++)
-					{
-						c.LineTo(coords[i], true, false);
-					}
-				});
-
-				return streamGeometry.ToCGPath();
+				return null;
 			}
 
-			return null;
+			var streamGeometry = GeometryHelper.Build(c =>
+			{
+				c.BeginFigure(points[0], true, false);
+				for (var i = 1; i < points.Count; i++)
+				{
+					c.LineTo(points[i], true, false);
+				}
+			});
+
+			return streamGeometry.ToCGPath();
 		}
 	}
 }
