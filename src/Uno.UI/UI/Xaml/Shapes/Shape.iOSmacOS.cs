@@ -348,8 +348,27 @@ namespace Windows.UI.Xaml.Shapes
 			var userSize = new Size(Width, Height);
 			var stretch = Stretch;
 
-			// If stretch is None, we have to keep the origin defined by the absolute coordinates of the path.
+			// If stretch is None, we have to keep the origin defined by the absolute coordinates of the path:
+			//
+			// This means that if you draw a line from 50,50 to 100,100 (so it's not starting at 0, 0),
+			// with a 'None' stretch mode you will have:
+			//    ------
+			//    |    |
+			//    |    |
+			//    |  \ |
+			//    |   \|
+			//    ------
+			//    
+			// while with another Stretch mode you will have:
+			//    ------
+			//    |\   |
+			//    | \  |
+			//    |  \ |
+			//    |   \|
+			//    ------
+			//
 			// So for measure we includes that origin in the path size.
+			//
 			// Also, as the path does not have any notion of stroke thickness, we have to include it for the measure phase.
 			// Note: The logic would say to include the full StrokeThickness as it will "overlflow" half on booth side of the path,
 			//		 but WinUI does include only the half of it.
@@ -443,7 +462,7 @@ namespace Windows.UI.Xaml.Shapes
 				return default;
 			}
 
-			// Either include the path origin in the size for measure calculation (cf. comment in measure),
+			// Either include the path origin in the size for measure calculation (cf. comment in MeasureAbsoluteShape),
 			// or adjust the render origin to compensate.
 			switch (stretch)
 			{

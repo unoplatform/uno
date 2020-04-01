@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 using CoreGraphics;
 using Uno.Media;
 using Windows.Foundation;
-
 
 namespace Windows.UI.Xaml.Shapes
 {

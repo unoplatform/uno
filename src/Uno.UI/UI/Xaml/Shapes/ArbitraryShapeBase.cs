@@ -152,10 +152,10 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				switch (this)
 				{
-					case Path path:
-					case Line line:
-					//case Polyline polyline:
-						return Stretch == Stretch.None;
+					//case Path path:
+					//case Line line:
+					////case Polyline polyline:
+					//	return Stretch == Stretch.None;
 
 					//case Ellipse ellipse:
 					//	return false;
