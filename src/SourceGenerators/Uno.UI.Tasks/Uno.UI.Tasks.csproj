@@ -17,7 +17,7 @@
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Build.Framework">
-			<Version>15.4.8</Version>
+			<Version>15.8.166</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Build.Tasks.Core">
