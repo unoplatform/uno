@@ -9,7 +9,6 @@ using Windows.UI.Xaml.Data;
 using Uno.UI.Converters;
 using Uno.Client;
 using System.Threading.Tasks;
-using Microsoft.Practices.ServiceLocation;
 using Uno.Diagnostics.Eventing;
 using Uno.UI.Controls;
 using Windows.UI.Core;
