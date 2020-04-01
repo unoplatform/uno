@@ -2,6 +2,7 @@
 using Uno.Media;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using Windows.Foundation;
 
@@ -13,15 +14,16 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			var coords = Points;
 
-			if (coords != null)
+			if (coords != null && coords.Count > 1)
 			{
 				var streamGeometry = GeometryHelper.Build(c =>
 				{
-					c.BeginFigure(new Point(coords[0].X, coords[0].Y), true, false);
-					for (int i = 1; i < coords.Count; i++)
+					c.BeginFigure(coords[0], true, false);
+					for (var i = 1; i < coords.Count; i++)
 					{
-						c.LineTo(new Point(coords[i].X, coords[i].Y), true, false);
+						c.LineTo(coords[i], true, false);
 					}
+					c.LineTo(coords[0], true, false);
 				});
 
 				return streamGeometry.ToCGPath();
