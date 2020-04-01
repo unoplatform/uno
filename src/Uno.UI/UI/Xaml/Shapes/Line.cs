@@ -1,11 +1,18 @@
-﻿using System;
+﻿#if !__IOS__ && !__MACOS__
+#define LEGACY_SHAPE_MEASURE
+#endif
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
 namespace Windows.UI.Xaml.Shapes
 {
-	public partial class Line : ArbitraryShapeBase
+	public partial class Line
+#if LEGACY_SHAPE_MEASURE
+		: ArbitraryShapeBase
+#endif
 	{
 		public Line()
 		{
@@ -14,6 +21,7 @@ namespace Windows.UI.Xaml.Shapes
 
 		partial void InitializePartial();
 
+		#region X1 (DP)
 		public double X1
 		{
 			get => (double)GetValue(X1Property);
@@ -21,26 +29,27 @@ namespace Windows.UI.Xaml.Shapes
 		}
 
 		public static global::Windows.UI.Xaml.DependencyProperty X1Property { get; } =
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"X1", typeof(double),
-			typeof(global::Windows.UI.Xaml.Shapes.Line),
-			new FrameworkPropertyMetadata(
-				defaultValue: 0.0,
-				options: FrameworkPropertyMetadataOptions.AffectsMeasure,
-				propertyChangedCallback: OnX1PropertyChanged
-			)
-		);
+			Windows.UI.Xaml.DependencyProperty.Register(
+				"X1", typeof(double),
+				typeof(global::Windows.UI.Xaml.Shapes.Line),
+				new FrameworkPropertyMetadata(
+					defaultValue: 0.0,
+					options: FrameworkPropertyMetadataOptions.AffectsMeasure,
+					propertyChangedCallback: OnX1PropertyChanged
+				)
+			);
 
 		private static void OnX1PropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			if(dependencyObject is Line line)
+			if (dependencyObject is Line line)
 			{
 				line.OnX1PropertyChangedPartial((double)args.OldValue, (double)args.NewValue);
 			}
 		}
-
 		partial void OnX1PropertyChangedPartial(double oldValue, double newValue);
+		#endregion
 
+		#region X2 (DP)
 		public double X2
 		{
 			get => (double)GetValue(X2Property);
@@ -66,7 +75,9 @@ namespace Windows.UI.Xaml.Shapes
 			}
 		}
 		partial void OnX2PropertyChangedPartial(double oldValue, double newValue);
+		#endregion
 
+		#region Y1 (DP)
 		public double Y1
 		{
 			get => (double)GetValue(Y1Property);
@@ -93,7 +104,9 @@ namespace Windows.UI.Xaml.Shapes
 		}
 
 		partial void OnY1PropertyChangedPartial(double oldValue, double newValue);
+		#endregion
 
+		#region Y2 (DP)
 		public double Y2
 		{
 			get => (double)GetValue(Y2Property);
@@ -119,8 +132,9 @@ namespace Windows.UI.Xaml.Shapes
 		}
 
 		partial void OnY2PropertyChangedPartial(double oldValue, double newValue);
+		#endregion
 
-
+#if LEGACY_SHAPE_MEASURE
 		protected internal override IEnumerable<object> GetShapeParameters()
 		{
 			yield return X1;
@@ -133,5 +147,6 @@ namespace Windows.UI.Xaml.Shapes
 				yield return p;
 			}
 		}
+#endif
 	}
 }

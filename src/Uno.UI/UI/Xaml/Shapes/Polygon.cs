@@ -1,4 +1,8 @@
-﻿using Windows.UI.Xaml.Media;
+﻿#if !__IOS__ && !__MACOS__
+#define LEGACY_SHAPE_MEASURE
+#endif
+
+using Windows.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -8,7 +12,10 @@ using System.Collections;
 
 namespace Windows.UI.Xaml.Shapes
 {
-	public partial class Polygon : ArbitraryShapeBase
+	public partial class Polygon
+#if LEGACY_SHAPE_MEASURE
+		: ArbitraryShapeBase
+#endif
 	{
 		#region Points
 
@@ -38,6 +45,7 @@ namespace Windows.UI.Xaml.Shapes
 			Points = new PointCollection();
 		}
 
+#if LEGACY_SHAPE_MEASURE
 		protected internal override IEnumerable<object> GetShapeParameters()
 		{
 			yield return Points?.ToArray();
@@ -47,5 +55,6 @@ namespace Windows.UI.Xaml.Shapes
 				yield return p;
 			}
 		}
+#endif
 	}
 }
