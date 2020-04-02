@@ -85,6 +85,8 @@ namespace Windows.UI.Xaml.Media.Animation
 					);
 				}
 
+				PropertyInfo?.CloneShareableObjectsInPath();
+
 				_subscriptions.Clear(); //Dispose all and start a new
 
 				_lastBeginTime = DateTimeOffset.Now;

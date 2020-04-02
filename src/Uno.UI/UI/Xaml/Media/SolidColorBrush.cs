@@ -23,6 +23,7 @@ using System.Drawing;
 namespace Windows.UI.Xaml.Media
 {
 	public partial class SolidColorBrush : Brush, IEquatable<SolidColorBrush>
+		, IShareableDependencyObject //TODO: should be implemented on Brush
 	{
 		/// <summary>
 		/// Blends the Color set on the SolidColorBrush with its Opacity. Should generally be used for rendering rather than the Color property itself.
@@ -31,6 +32,9 @@ namespace Windows.UI.Xaml.Media
 		{
 			get; private set;
 		}
+
+		private readonly bool _isClone;
+		bool IShareableDependencyObject.IsClone => _isClone;
 
 		public SolidColorBrush()
 		{
@@ -41,6 +45,18 @@ namespace Windows.UI.Xaml.Media
 		{
 			Color = color;
 			UpdateColorWithOpacity(color);
+		}
+
+		private SolidColorBrush(SolidColorBrush original) : this()
+		{
+			_isClone = true;
+
+			Color = original.Color;
+			UpdateColorWithOpacity(Color);
+
+			Opacity = original.Opacity;
+			Transform = original.Transform;
+			RelativeTransform = original.RelativeTransform;
 		}
 
 		/// <remarks>
@@ -76,7 +92,7 @@ namespace Windows.UI.Xaml.Media
 		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty ColorProperty =
 			DependencyProperty.Register(
-				"Color", 
+				"Color",
 				typeof(Color),
 				typeof(SolidColorBrush),
 				new PropertyMetadata(
@@ -89,6 +105,8 @@ namespace Windows.UI.Xaml.Media
 
 		#endregion
 
+		DependencyObject IShareableDependencyObject.Clone() => new SolidColorBrush(this);
+
 		public override string ToString() => "[SolidColorBrush {0}]".InvariantCultureFormat(Color);
 
 		public override bool Equals(object obj) => Equals(obj as SolidColorBrush);
@@ -100,10 +118,11 @@ namespace Windows.UI.Xaml.Media
 				return false;
 			}
 
-			return ReferenceEquals(this, other) || ColorWithOpacity.Equals(other.ColorWithOpacity);
+			return ReferenceEquals(this, other)
+				|| (ColorWithOpacity.Equals(other.ColorWithOpacity) && this._isClone == other._isClone);
 		}
 
-		public override int GetHashCode() => ColorWithOpacity.GetHashCode();
+		public override int GetHashCode() => ColorWithOpacity.GetHashCode() ^ _isClone.GetHashCode();
 
 		public static bool operator ==(SolidColorBrush left, SolidColorBrush right) => Equals(left, right);
 
