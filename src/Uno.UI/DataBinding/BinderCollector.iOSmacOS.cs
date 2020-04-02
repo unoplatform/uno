@@ -1,5 +1,4 @@
-﻿#if XAMARIN_IOS
-using Windows.UI.Core;
+﻿using Windows.UI.Core;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -48,4 +47,3 @@ namespace Uno.UI.DataBinding
         }
     }
 }
-#endif
