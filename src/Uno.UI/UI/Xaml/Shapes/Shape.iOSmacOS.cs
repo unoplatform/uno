@@ -4,11 +4,16 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using CoreAnimation;
 using CoreGraphics;
-using UIKit;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
 using static System.Double;
+
+#if __IOS__
+using UIKit;
+#elif __MACOS__
+using AppKit;
+#endif
 
 namespace Windows.UI.Xaml.Shapes
 {

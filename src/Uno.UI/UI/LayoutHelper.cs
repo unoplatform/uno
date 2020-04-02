@@ -240,9 +240,15 @@ namespace Uno.UI
 		[Pure]
 		internal static double FiniteOrDefault(this double value, double defaultValue)
 		{
+#if XAMARIN
 			return IsFinite(value)
 				? value
 				: defaultValue;
+#else
+			return IsInfinity(value) || IsNaN(value)
+				? defaultValue
+				: value;
+#endif
 		}
 
 		[Pure]
