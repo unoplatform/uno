@@ -20,12 +20,23 @@ namespace Windows.UI.Xaml.Shapes
 	{
 		private CALayer _shapeLayer;
 
+		public Shape()
+		{
+			// Background color is black by default, if and only if overriding Draw(CGRect rect).
+#if __IOS__
+			base.BackgroundColor = SolidColorBrushHelper.Transparent.Color;
+#elif __MACOS__
+			base.WantsLayer = true;
+			base.Layer.BackgroundColor = SolidColorBrushHelper.Transparent.Color;
+#endif
+		}
+
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
 			// Don't call base, we need to keep UIView.BackgroundColor set to transparent
 		}
 
-		#region Measure / Arrange should be shared using Geometry instead of CGPath
+#region Measure / Arrange should be shared using Geometry instead of CGPath
 		private protected Size MeasureRelativeShape(Size availableSize)
 		{
 			var stretch = Stretch;
@@ -419,9 +430,9 @@ namespace Windows.UI.Xaml.Shapes
 
 			return size;
 		}
-		#endregion
+#endregion
 
-		#region Rendering (Native)
+#region Rendering (Native)
 		private protected void Render(CGPath path)
 		{
 			// Remove the old layer if any
@@ -582,9 +593,9 @@ namespace Windows.UI.Xaml.Shapes
 
 			return true;
 		}
-		#endregion
+#endregion
 
-		#region Helper methods
+#region Helper methods
 		/// <summary>
 		/// Gets the rounded/adjusted half stroke thickness that should be used for measuring absolute shapes (Path, Line, Polyline and Polygon)
 		/// </summary>
@@ -622,6 +633,6 @@ namespace Windows.UI.Xaml.Shapes
 
 			return (x, y);
 		}
-		#endregion
+#endregion
 	}
 }
