@@ -189,10 +189,14 @@ namespace <#= mixin.NamespaceName #>
 		{
 			// Resolve the property only once, to avoid paying the cost of the interop.
 			var actualSuperview = Superview;
-
-			if (actualSuperview != null)
+            
+            if(actualSuperview is FrameworkElement fe)
+            {
+                fe.InvalidateMeasure();
+            }
+			else if (actualSuperview is IFrameworkElement ife)
 			{
-				actualSuperview.NeedsLayout = true;
+				ife.InvalidateMeasure();
 			}
 		}
 
@@ -576,7 +580,7 @@ namespace <#= mixin.NamespaceName #>
 			base.ViewDidMoveToSuperview();
 			OnViewDidMoveToSuperview();
 
-			this.SetNeedsLayout();
+			this.InvalidateMeasure();
 		}
 
 		partial void OnViewDidMoveToSuperview();
@@ -599,7 +603,7 @@ namespace <#= mixin.NamespaceName #>
 		{
 			IsLoaded = true;
 
-			this.SetNeedsLayout();
+			this.InvalidateMeasure();
 			OnLoadedPartial();
 
 			Loaded?.Invoke(this, new RoutedEventArgs(this));
@@ -706,7 +710,7 @@ namespace <#= mixin.NamespaceName #>
 			if (base.Hidden != newVisibility.IsHidden())
 			{
 				base.Hidden = newVisibility.IsHidden();
-				this.SetNeedsLayout();
+				this.InvalidateMeasure();
 
 				if (newVisibility == Visibility.Visible)
 				{
@@ -990,7 +994,18 @@ namespace <#= mixin.NamespaceName #>
 		private static void OnGenericPropertyUpdated(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			OnGenericPropertyUpdatedPartial(dependencyObject, args);
-			((NSView)dependencyObject).SetNeedsLayout();
+            
+#if <#= mixin.IsFrameworkElement #>
+            if(dependencyObject is FrameworkElement fe)
+            {
+                fe.InvalidateMeasure();
+            }
+#else
+            if(dependencyObject is IFrameworkElement ife)
+            {
+                ife.InvalidateMeasure();
+            }
+#endif
 		}
 
 		static partial void OnGenericPropertyUpdatedPartial(object dependencyObject, DependencyPropertyChangedEventArgs args);

@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls
 		private void SetUpdateTemplate()
 		{
 			UpdateContentTemplateRoot();
-			this.SetNeedsLayout();
+			this.InvalidateMeasure();
 		}
 
 		partial void RegisterContentTemplateRoot()

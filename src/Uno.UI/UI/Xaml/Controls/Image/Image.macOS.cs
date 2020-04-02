@@ -209,7 +209,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				this.SetNeedsLayout();
+				this.InvalidateMeasure();
 			}
 		}
 

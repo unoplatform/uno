@@ -266,7 +266,7 @@ namespace Windows.UI.Xaml
 			}
 			else if (element is FrameworkElement fe)
 			{
-				fe.Measure(new Size(availableSize.Width, availableSize.Height));
+				fe.XamlMeasure(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
 				var desiredSize = fe.DesiredSize;
 				return new CGSize(desiredSize.Width, desiredSize.Height);
 			}
@@ -298,7 +298,7 @@ namespace Windows.UI.Xaml
 			}
 			else if (element is FrameworkElement fe)
 			{
-				fe.Measure(new Size(availableSize.Width, availableSize.Height));
+				fe.XamlMeasure(new Size(availableSize.Width, availableSize.Height));
 				var desiredSize = fe.DesiredSize;
 				return new CGSize(desiredSize.Width, desiredSize.Height);
 			}
