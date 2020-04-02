@@ -1,14 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Numerics;
-using System.Text;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
 using CoreAnimation;
 using CoreGraphics;
 using UIKit;
-using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
@@ -36,7 +32,7 @@ namespace Windows.UI.Xaml.Shapes
 			// Don't call base, we need to keep UIView.BackgroundColor set to transparent
 		}
 
-#region Measure / Arrange should be shared using Geometry instead of CGPath
+		#region Measure / Arrange should be shared using Geometry instead of CGPath
 		private protected Size MeasureRelativeShape(Size availableSize)
 		{
 			var stretch = Stretch;
@@ -188,93 +184,92 @@ namespace Windows.UI.Xaml.Shapes
 				return default;
 			}
 
+			var stretch = Stretch;
+			var (userMinSize, userMaxSize) = this.GetMinMax();
+			var strokeThickness = StrokeThickness;
+			var halfStrokeThickness = GetHalfStrokeThickness();
 			var pathBounds = path.BoundingBox;
 			var pathSize = (Size)pathBounds.Size;
-			var userMinSize = new Size(MinWidth, MinHeight);
-			var userSize = new Size(Width, Height);
-			var stretch = Stretch;
 
-			// If stretch is None, we have to keep the origin defined by the absolute coordinates of the path:
-			//
-			// This means that if you draw a line from 50,50 to 100,100 (so it's not starting at 0, 0),
-			// with a 'None' stretch mode you will have:
-			//    ------
-			//    |    |
-			//    |    |
-			//    |  \ |
-			//    |   \|
-			//    ------
-			//    
-			// while with another Stretch mode you will have:
-			//    ------
-			//    |\   |
-			//    | \  |
-			//    |  \ |
-			//    |   \|
-			//    ------
-			//
-			// So for measure we includes that origin in the path size.
-			//
-			// Also, as the path does not have any notion of stroke thickness, we have to include it for the measure phase.
-			// Note: The logic would say to include the full StrokeThickness as it will "overlflow" half on booth side of the path,
-			//		 but WinUI does include only the half of it.
-			if (stretch == Stretch.None)
+			if (nfloat.IsInfinity(pathBounds.Right) || nfloat.IsInfinity(pathBounds.Bottom))
 			{
-				var halfStrokeThickness = GetHalfStrokeThickness();
-				pathSize.Width += halfStrokeThickness;
-				pathSize.Height += halfStrokeThickness;
-
-				// On iOS 11, the origin (X, Y) of bounds could be infinite, leading to strange results.
-				if (!nfloat.IsInfinity(pathBounds.X))
+				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					pathSize.Width += pathBounds.X;
+					this.Log().Debug($"Ignoring path with invalid bounds {pathBounds}");
 				}
-				if (!nfloat.IsInfinity(pathBounds.Y))
-				{
-					pathSize.Height += pathBounds.Y;
-				}
+
+				return default;
 			}
 
-			var size = userSize; // The size defined on the Shape has priority over the size of the path!
-
-			// If no user size defined on a given axis, we either use the size of the path or we try to stretch along this axis.
-			if (double.IsNaN(size.Width))
-			{
-				size.Width = stretch == Stretch.None
-					? pathSize.Width
-					: Math.Max(availableSize.Width, pathSize.Width);
-			}
-			if (double.IsNaN(size.Height))
-			{
-				size.Height = stretch == Stretch.None
-					? pathSize.Height
-					: Math.Max(availableSize.Height, pathSize.Height);
-			}
-
-			// In case userSize was not defined, we still have to apply the min size
-			size = size
-				.AtLeast(userMinSize)
-				.NumberOrDefault(userMinSize);
-
-			// Finally apply the stretch to the desired size of the element
+			// Compute the final size of the Shape and the render properties
+			Size size;
+			(double x, double y) renderScale;
 			switch (stretch)
 			{
-				// Nothing to do for None and Fill: Size is already the size at which we will render the path!
-
-				case Stretch.Uniform when size.Width < size.Height:
-					size.Height = size.Width;
+				default:
+				case Stretch.None:
+					// If stretch is None, we have to keep the origin defined by the absolute coordinates of the path:
+					//
+					// This means that if you draw a line from 50,50 to 100,100 (so it's not starting at 0, 0),
+					// with a 'None' stretch mode you will have:
+					//    ------
+					//    |    |
+					//    |    |
+					//    |  \ |
+					//    |   \|
+					//    ------
+					//    
+					// while with another Stretch mode you will have:
+					//    ------
+					//    |\   |
+					//    | \  |
+					//    |  \ |
+					//    |   \|
+					//    ------
+					//
+					// So for measure when None we includes that origin in the path size.
+					//
+					// Also, as the path does not have any notion of stroke thickness, we have to include it for the measure phase.
+					// Note: The logic would say to include the full StrokeThickness as it will "overflow" half on booth side of the path,
+					//		 but WinUI does include only the half of it.
+					var pathNaturalSize = new Size(
+						pathBounds.X == 0 ? pathBounds.Width + strokeThickness : pathBounds.Right + halfStrokeThickness,
+						pathBounds.Y == 0 ? pathBounds.Height + strokeThickness : pathBounds.Bottom + halfStrokeThickness);
+					size = pathNaturalSize.AtMost(userMaxSize).AtLeast(userMinSize); // The size defined on the Shape has priority over the size of the geometry itself!
 					break;
 
-				case Stretch.Uniform: // when size.Width > size.Height:
-					size.Width = size.Height;
+				case Stretch.Fill:
+					size = userMaxSize.FiniteOrDefault(availableSize);
 					break;
 
-				case Stretch.UniformToFill when size.Width < size.Height:
-					size.Width = size.Height;
+				case Stretch.Uniform:
+					size = userMaxSize.FiniteOrDefault(availableSize);
+					renderScale = ComputeScaleFactors(pathSize, ref size, strokeThickness);
+					if (renderScale.x > renderScale.y)
+					{
+						renderScale.x = renderScale.y;
+						size.Width = pathSize.Width * renderScale.x + strokeThickness;
+					}
+					else
+					{
+						renderScale.y = renderScale.x;
+						size.Height = pathSize.Height * renderScale.y + strokeThickness;
+					}
 					break;
 
-				case Stretch.UniformToFill: // when size.Width > size.Height:
-					size.Height = size.Width;
+				case Stretch.UniformToFill:
+					size = userMinSize.AtLeast(availableSize);
+					renderScale = ComputeScaleFactors(pathSize, ref size, strokeThickness);
+					if (renderScale.x < renderScale.y)
+					{
+						renderScale.x = renderScale.y;
+						size.Width = pathSize.Width * renderScale.x + strokeThickness;
+					}
+					else
+					{
+						renderScale.y = renderScale.x;
+						size.Height = pathSize.Height * renderScale.y + strokeThickness;
+					}
 					break;
 			}
 
@@ -331,7 +326,7 @@ namespace Windows.UI.Xaml.Shapes
 					break;
 
 				case Stretch.Uniform:
-					size = userMaxSize.FiniteOrDefault(finalSize);//.AtMost(finalSize);
+					size = userMaxSize.FiniteOrDefault(finalSize);
 					renderScale = ComputeScaleFactors(pathSize, ref size, strokeThickness);
 					if (renderScale.x > renderScale.y)
 					{
@@ -430,9 +425,9 @@ namespace Windows.UI.Xaml.Shapes
 
 			return size;
 		}
-#endregion
+		#endregion
 
-#region Rendering (Native)
+		#region Rendering (Native)
 		private protected void Render(CGPath path)
 		{
 			// Remove the old layer if any
@@ -593,9 +588,9 @@ namespace Windows.UI.Xaml.Shapes
 
 			return true;
 		}
-#endregion
+		#endregion
 
-#region Helper methods
+		#region Helper methods
 		/// <summary>
 		/// Gets the rounded/adjusted half stroke thickness that should be used for measuring absolute shapes (Path, Line, Polyline and Polygon)
 		/// </summary>
@@ -633,6 +628,6 @@ namespace Windows.UI.Xaml.Shapes
 
 			return (x, y);
 		}
-#endregion
+		#endregion
 	}
 }
