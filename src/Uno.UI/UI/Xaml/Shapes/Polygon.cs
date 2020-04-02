@@ -49,6 +49,8 @@ namespace Windows.UI.Xaml.Shapes
 			Points = new PointCollection();
 		}
 
+		partial void InitializePartial();
+
 #if LEGACY_SHAPE_MEASURE
 		partial void OnPointsChanged();
 

@@ -46,7 +46,10 @@ namespace Windows.UI.Xaml.Shapes
 		public Polyline()
 		{
 			Points = new PointCollection();
+			InitializePartial();
 		}
+
+		partial void InitializePartial();
 
 #if LEGACY_SHAPE_MEASURE
 		partial void OnPointsChanged();

@@ -116,7 +116,7 @@ namespace Windows.UI.Xaml.Shapes
 			new FrameworkPropertyMetadata(
 				defaultValue: Stretch.None, // Note: this is overriden in ctor for Rectangle and Ellipse
 #if LEGACY_SHAPE_MEASURE
-				propertyChangedCallback: (s, e) => ((Shape)s).OnStretchUpdated((Brush)e.NewValue)
+				propertyChangedCallback: (s, e) => ((Shape)s).OnStretchUpdated((Stretch)e.NewValue)
 #else
 				options: FrameworkPropertyMetadataOptions.AffectsMeasure
 #endif
