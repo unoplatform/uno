@@ -95,9 +95,23 @@ namespace UITests.Windows_UI_Xaml_Shapes
 					Fill = new SolidColorBrush(Color.FromArgb(160, 0, 128, 0)),
 					Stroke = new SolidColorBrush(Color.FromArgb(255, 0, 128, 0)),
 					StrokeThickness = 6,
-					Data = new GeometryGroup
+					Data = new PathGeometry
 					{
-						Children = { new EllipseGeometry { Center = new Point(75, 75), RadiusX = 50, RadiusY = 50 } }
+						Figures =
+						{
+							new PathFigure
+							{
+								IsClosed = true,
+								StartPoint = new Point(25, 25),
+								Segments =
+								{
+									new LineSegment{Point = new Point(25,125)},
+									new LineSegment{Point = new Point(75,125)},
+									new BezierSegment{Point1 = new Point(125,125), Point2 = new Point(125,25), Point3 = new Point(75, 25)},
+									new LineSegment{Point=new Point(25,25)}
+								}
+							}
+						}
 					}
 				};
 
