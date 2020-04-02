@@ -238,11 +238,28 @@ namespace Uno.UI
 		}
 
 		[Pure]
+		internal static double FiniteOrDefault(this double value, double defaultValue)
+		{
+			return IsFinite(value)
+				? value
+				: defaultValue;
+		}
+
+		[Pure]
 		internal static Size NumberOrDefault(this Size value, Size defaultValue)
 		{
 			return new Size(
 				value.Width.NumberOrDefault(defaultValue.Width),
 				value.Height.NumberOrDefault(defaultValue.Height)
+			);
+		}
+
+		[Pure]
+		internal static Size FiniteOrDefault(this Size value, Size defaultValue)
+		{
+			return new Size(
+				value.Width.FiniteOrDefault(defaultValue.Width),
+				value.Height.FiniteOrDefault(defaultValue.Height)
 			);
 		}
 

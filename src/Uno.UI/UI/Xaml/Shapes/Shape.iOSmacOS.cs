@@ -12,24 +12,18 @@ using Uno.Disposables;
 using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
+using static System.Double;
 
 namespace Windows.UI.Xaml.Shapes
 {
 	partial class Shape
 	{
+		private CALayer _shapeLayer;
+
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
 			// Don't call base, we need to keep UIView.BackgroundColor set to transparent
-			RefreshShape();
 		}
-
-		protected override void OnLoaded()
-		{
-			base.OnLoaded();
-			RefreshShape();
-		}
-
-		private CALayer _shapeLayer;
 
 		#region Measure / Arrange should be shared using Geometry instead of CGPath
 		private protected Size MeasureRelativeShape(Size availableSize)
@@ -280,18 +274,17 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			if (path == null)
 			{
+				Render(null);
 				return default;
 			}
 
 			var stretch = Stretch;
-			var userMinSize = new Size(MinWidth, MinHeight);
-			var userSize = new Size(Width, Height);
+			var (userMinSize, userMaxSize) = this.GetMinMax();
+			var userSize = GetUserSize();
+			var strokeThickness = StrokeThickness;
 			var halfStrokeThickness = GetHalfStrokeThickness();
-
-			// 1. Compute and adjust the size of the path itself
 			var pathBounds = path.BoundingBox;
 			var pathSize = (Size)pathBounds.Size;
-			var renderOrigin = new Point();
 
 			if (nfloat.IsInfinity(pathBounds.Right) || nfloat.IsInfinity(pathBounds.Bottom))
 			{
@@ -303,131 +296,117 @@ namespace Windows.UI.Xaml.Shapes
 				return default;
 			}
 
-			// Either include the path origin in the size for measure calculation (cf. comment in MeasureAbsoluteShape),
-			// or adjust the render origin to compensate.
+			// Compute the final size of the Shape and the render properties
+			Size size;
+			(double x, double y) renderOrigin, renderScale, renderOverflow;
 			switch (stretch)
 			{
-				case Stretch.None:
-					pathSize.Width += halfStrokeThickness;
-					pathSize.Height += halfStrokeThickness;
-
-					pathSize.Width += pathBounds.X;
-					pathSize.Height += pathBounds.Y;
-					break;
-
 				default:
-					renderOrigin.X -= pathBounds.X;
-					renderOrigin.Y -= pathBounds.Y;
-					break; 
-			}
+				case Stretch.None:
+					var pathNaturalSize = new Size(
+						pathBounds.X == 0 ? pathBounds.Width + strokeThickness : pathBounds.Right + halfStrokeThickness,
+						pathBounds.Y == 0 ? pathBounds.Height + strokeThickness : pathBounds.Bottom + halfStrokeThickness);
+					size = pathNaturalSize.AtMost(userMaxSize).AtLeast(userMinSize); // The size defined on the Shape has priority over the size of the geometry itself!
+					renderScale = (1, 1);
+					renderOrigin = (0, 0);
+					renderOverflow = (size.Width - finalSize.Width, size.Height - finalSize.Height); // We do not add halfStrokeThickness: The stroke is allowed to flow out of container for None
+					break;
 
-			// 2. Compute the final size of the Shape, and the render area for the path
-			var size = userSize; // The size defined on the Shape has priority over the size of the path!
-
-			// If no user size defined on a given axis, we either use the size of the path or we try to stretch along this axis.
-			if (double.IsNaN(size.Width))
-			{
-				size.Width = stretch == Stretch.None
-					? pathSize.Width
-					: Math.Max(finalSize.Width, pathSize.Width);
-			}
-			if (double.IsNaN(size.Height))
-			{
-				size.Height = stretch == Stretch.None
-					? pathSize.Height
-					: Math.Max(finalSize.Height, pathSize.Height);
-			}
-
-			// In case userSize was not defined, we still have to apply the min size
-			size = size
-				.AtLeast(userMinSize)
-				.NumberOrDefault(userMinSize);
-
-			// Compute the scale factor to apply if the path is smaller than the availableSize and we have to stretch.
-			double scaleX = 1, scaleY = 1;
-			var unScaledSize = size;
-			switch (stretch)
-			{
 				case Stretch.Fill:
-					(scaleX, scaleY) = GetScale(pathSize, size, minus: StrokeThickness);
-					// No need to change the size, it's already correct!
+					size = userMaxSize.FiniteOrDefault(finalSize);
+					renderScale = ComputeScaleFactors(pathSize, ref size, strokeThickness);
+					renderOrigin = (halfStrokeThickness - pathBounds.X * renderScale.x, halfStrokeThickness - pathBounds.Y * renderScale.y);
+					renderOverflow = (size.Width - finalSize.Width, size.Height - finalSize.Height);
 					break;
 
-				case Stretch.Uniform when size.Width < size.Height:
-					scaleX = scaleY = GetScale(pathSize.Width, size.Width, minus: StrokeThickness);
-					size.Height = size.Width;
+				case Stretch.Uniform:
+					size = userMaxSize.FiniteOrDefault(finalSize);//.AtMost(finalSize);
+					renderScale = ComputeScaleFactors(pathSize, ref size, strokeThickness);
+					if (renderScale.x > renderScale.y)
+					{
+						renderScale.x = renderScale.y;
+						size.Width = pathSize.Width * renderScale.x + strokeThickness;
+					}
+					else
+					{
+						renderScale.y = renderScale.x;
+						size.Height = pathSize.Height * renderScale.y + strokeThickness;
+					}
+					renderOrigin = (halfStrokeThickness - pathBounds.X * renderScale.x, halfStrokeThickness - pathBounds.Y * renderScale.y);
+					renderOverflow = (size.Width - finalSize.Width, size.Height - finalSize.Height);
 					break;
 
-				case Stretch.Uniform: // when size.Width > size.Height:
-					scaleX = scaleY = GetScale(pathSize.Height, size.Height, minus: StrokeThickness);
-					size.Width = size.Height;
-					break;
-
-				case Stretch.UniformToFill when size.Width < size.Height:
-					scaleX = scaleY = GetScale(pathSize.Height, size.Height, minus: StrokeThickness);
-					size.Width = size.Height;
-					break;
-
-				case Stretch.UniformToFill: // when size.Width > size.Height:
-					scaleX = scaleY = GetScale(pathSize.Width, size.Width, minus: StrokeThickness);
-					size.Height = size.Width;
+				case Stretch.UniformToFill:
+					size = userMinSize.AtLeast(finalSize);
+					renderScale = ComputeScaleFactors(pathSize, ref size, strokeThickness);
+					var unScaledSize = size;
+					if (renderScale.x < renderScale.y)
+					{
+						renderScale.x = renderScale.y;
+						size.Width = pathSize.Width * renderScale.x + strokeThickness;
+					}
+					else
+					{
+						renderScale.y = renderScale.x;
+						size.Height = pathSize.Height * renderScale.y + strokeThickness;
+					}
+					renderOrigin = (halfStrokeThickness - pathBounds.X * renderScale.x, halfStrokeThickness - pathBounds.Y * renderScale.y);
+					// Reproduces a bug of WinUI where it's the size without the stretch that is being used to compute the alignments below
+					renderOverflow = (
+						userSize.hasWidth ? unScaledSize.Width - finalSize.Width : size.Width - finalSize.Width,
+						userSize.hasHeight ? unScaledSize.Height - finalSize.Height : size.Height - finalSize.Height
+					);
 					break;
 			}
 
-			var renderAlignment = new Point();
-			var renderHorizontalOverflow = stretch == Stretch.UniformToFill && !double.IsNaN(userSize.Width)
-				? unScaledSize.Width - finalSize.Width // Reproduces a bug of WinUI where it's the size without the stretch that is being used to compute the alignments below
-				: size.Width - finalSize.Width;
-			if (renderHorizontalOverflow > 0
-				&& (double.IsNaN(userSize.Width) || userSize.Width > finalSize.Width)) // WinUI does not adjust alignment if the shape was smaller than the finalSize
+			// As the Shape is rendered as a Layer which does not take in consideration alignment (when size is larger than finalSize),
+			// compute the offset to apply to the rendering layer.
+			var renderCenteredByDefault = stretch != Stretch.None;
+			if (renderOverflow.x > 0 && (!userSize.hasWidth || userSize.width > finalSize.Width)) // WinUI does not adjust alignment if the shape was smaller than the finalSize
 			{
 				switch (HorizontalAlignment)
 				{
 					case HorizontalAlignment.Center:
-						renderAlignment.X -= renderHorizontalOverflow / 2.0;
+						renderOrigin.x -= renderOverflow.x / 2.0;
 						break;
 
 					case HorizontalAlignment.Right:
-						renderAlignment.X -= renderHorizontalOverflow;
+						renderOrigin.x -= renderOverflow.x;
 						break;
 				}
 			}
-			else if (renderHorizontalOverflow < 0 && HorizontalAlignment == HorizontalAlignment.Stretch)
+			else if (renderCenteredByDefault && renderOverflow.x < 0 && HorizontalAlignment == HorizontalAlignment.Stretch)
 			{
 				// It might happen that even stretched, the shape does not use all the finalSize width,
 				// in that case it's centered by WinUI.
-				renderAlignment.X -= renderHorizontalOverflow / 2.0;
+				renderOrigin.x -= renderOverflow.x / 2.0;
 			}
 
-			var renderVerticalOverflow = stretch == Stretch.UniformToFill && !double.IsNaN(userSize.Height)
-				? unScaledSize.Height - finalSize.Height // Reproduces a bug of WinUI where it's the size without the stretch that is being used to compute the alignments below
-				: size.Height - finalSize.Height;
-			if (renderVerticalOverflow > 0
-				&& (double.IsNaN(userSize.Height) || userSize.Height > finalSize.Height)) // WinUI does not adjust alignment if the shape was smaller than the finalSize
+			if (renderOverflow.y > 0 && (!userSize.hasHeight || userSize.height > finalSize.Height)) // WinUI does not adjust alignment if the shape was smaller than the finalSize
 			{
 				switch (VerticalAlignment)
 				{
 					case VerticalAlignment.Center:
-						renderAlignment.Y -= renderVerticalOverflow / 2.0;
+						renderOrigin.y -= renderOverflow.y / 2.0;
 						break;
 
 					case VerticalAlignment.Bottom:
-						renderAlignment.Y -= renderVerticalOverflow;
+						renderOrigin.y -= renderOverflow.y;
 						break;
 				}
 			}
-			else if (renderVerticalOverflow < 0 && VerticalAlignment == VerticalAlignment.Stretch)
+			else if (renderCenteredByDefault && renderOverflow.y < 0 && VerticalAlignment == VerticalAlignment.Stretch)
 			{
 				// It might happen that even stretched, the shape does not use all the finalSize height,
 				// in that case it's centered by WinUI.
-				renderAlignment.Y -= renderVerticalOverflow / 2.0;
+				renderOrigin.y -= renderOverflow.y / 2.0;
 			}
 
-			// Render the shape as a Layer
+			// Finally render the shape in a Layer
 			var renderTransform = new CGAffineTransform(
-				(nfloat)scaleX, 0,
-				0, (nfloat)scaleY,
-				(nfloat)(renderOrigin.X * scaleX + renderAlignment.X + halfStrokeThickness), (nfloat)(renderOrigin.Y * scaleY + renderAlignment.Y + halfStrokeThickness));
+				(nfloat)renderScale.x, 0,
+				0, (nfloat)renderScale.y,
+				(nfloat)renderOrigin.x, (nfloat)renderOrigin.y);
 			var renderPath = new CGPath(path, renderTransform);
 
 			Render(renderPath);
@@ -435,7 +414,7 @@ namespace Windows.UI.Xaml.Shapes
 			// If the Shape does not have size defined, and natural size of the path is lower than the finalSize,
 			// then we don't clip the shape!
 			ClipsToBounds = stretch != Stretch.None
-				|| !double.IsNaN(userSize.Width) || !double.IsNaN(userSize.Height)
+				|| userSize.hasWidth || userSize.hasHeight
 				|| pathSize.Width > finalSize.Width || pathSize.Height > finalSize.Height;
 
 			return size;
@@ -607,37 +586,42 @@ namespace Windows.UI.Xaml.Shapes
 
 		#region Helper methods
 		/// <summary>
-		/// Get the defined size for this Shape (Width, Height with at least the Min&lt;Width|Height&gt; if defined)
+		/// Gets the rounded/adjusted half stroke thickness that should be used for measuring absolute shapes (Path, Line, Polyline and Polygon)
 		/// </summary>
-		/// <returns>The defined size that should be used by Rectangle and Ellipse to measure themselves, OR NaN if none defined!</returns>
-		private protected Size GetUserSize()
-		{
-			var userMinSize = new Size(MinWidth, MinHeight);
-			var userSize = new Size(Width, Height)
-				.AtLeast(userMinSize)
-				.NumberOrDefault(userMinSize);
-
-			return userSize;
-		}
-
-		/// <summary>
-		/// Gets the rounded/adjusted half stroke thickness that should be used by Path, Line, Polyline and Polygon for the measure
-		/// </summary>
-		private protected double GetHalfStrokeThickness()
+		private double GetHalfStrokeThickness()
 			=> Math.Floor((ActualStrokeThickness + .5) / 2.0);
 
-		private static (float x, float y) GetScale(Size pathSize, Size availableSize, double minus)
+		private (bool hasWidth, double width, bool hasHeight, double height) GetUserSize()
 		{
-			availableSize = availableSize.NumberOrDefault(pathSize);
-
-			return (
-				(float)(double.IsInfinity(pathSize.Width) ? 1 : (availableSize.Width - minus) / pathSize.Width),
-				(float)(double.IsInfinity(pathSize.Height) ? 1 : (availableSize.Height - minus) / pathSize.Height)
-			);
+			var width = Width;
+			var height = Height;
+			return (!IsNaN(width), width, !IsNaN(height), height);
 		}
 
-		private static float GetScale(double pathSize, double availableSize, double minus)
-			=> (float)(double.IsInfinity(pathSize) ? 1 : (availableSize - minus) / pathSize);
+		private static (float x, float y) ComputeScaleFactors(Size geometrySize, ref Size renderSize, double strokeThickness)
+		{
+			float x, y;
+			if (geometrySize.Width < double.Epsilon)
+			{
+				x = 1;
+				renderSize.Width = strokeThickness;
+			}
+			else
+			{
+				x = (float)((renderSize.Width - strokeThickness) / geometrySize.Width);
+			}
+			if (geometrySize.Height < double.Epsilon)
+			{
+				y = 1;
+				renderSize.Height = strokeThickness;
+			}
+			else
+			{
+				y = (float)((renderSize.Height - strokeThickness) / geometrySize.Height);
+			}
+
+			return (x, y);
+		}
 		#endregion
 	}
 }
