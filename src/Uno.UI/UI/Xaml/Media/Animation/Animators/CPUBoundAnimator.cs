@@ -6,7 +6,7 @@ using System.Text;
 namespace Windows.UI.Xaml.Media.Animation
 {
 	internal abstract class CPUBoundAnimator<T> : IValueAnimator where T : struct
-    {
+	{
 		private readonly T _from;
 		private readonly T _to;
 		private readonly Stopwatch _elapsed;
