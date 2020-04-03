@@ -22,6 +22,8 @@ namespace Windows.UI.Xaml.Controls
 			InitializeScrollContentPresenter();
 
 			Notifications.ObserveDidLiveScroll(this, OnLiveScroll);
+
+			DrawsBackground = false;
 		}
 
 		public nfloat ZoomScale {

@@ -20,8 +20,9 @@ namespace Uno.UI.SourceGenerators.NativeCtor
 		private class SerializationMethodsGenerator : SymbolVisitor
 		{ 
 			private readonly SourceGeneratorContext _context; 
-			private readonly Compilation _comp; 
-			private readonly INamedTypeSymbol _iosViewSymbol; 
+			private readonly Compilation _comp;
+			private readonly INamedTypeSymbol _iosViewSymbol;
+			private readonly INamedTypeSymbol _macosViewSymbol;
 			private readonly INamedTypeSymbol _androidViewSymbol; 
 			private readonly INamedTypeSymbol _intPtrSymbol; 
 			private readonly INamedTypeSymbol _jniHandleOwnershipSymbol;
@@ -39,7 +40,7 @@ using System;
 
 namespace {0}
 {{
-#if __IOS__
+#if __IOS__ || __MACOS__
 	[global::Foundation.Register]
 #endif
 	partial class {1}
@@ -58,7 +59,7 @@ namespace {0}
 		/// </remarks>
 		public {3}(IntPtr javaReference, global::Android.Runtime.JniHandleOwnership transfer) : base (javaReference, transfer) {{ }}
 #endif
-#if __IOS__
+#if __IOS__ || __MACOS__
 		/// <summary>
 		/// Native constructor, do not use explicitly.
 		/// </summary>
@@ -79,6 +80,7 @@ namespace {0}
 				_comp = context.Compilation;
 
 				_iosViewSymbol = context.Compilation.GetTypeByMetadataName("UIKit.UIView");
+				_macosViewSymbol = context.Compilation.GetTypeByMetadataName("AppKit.NSView");
 				_androidViewSymbol = context.Compilation.GetTypeByMetadataName("Android.Views.View");
 				_intPtrSymbol = context.Compilation.GetTypeByMetadataName("System.IntPtr");
 				_jniHandleOwnershipSymbol = context.Compilation.GetTypeByMetadataName("Android.Runtime.JniHandleOwnership");
@@ -117,10 +119,11 @@ namespace {0}
 			private void ProcessType(INamedTypeSymbol typeSymbol)
 			{
 				var isiOSView = typeSymbol.Is(_iosViewSymbol);
+				var ismacOSView = typeSymbol.Is(_macosViewSymbol);
 				var isAndroidView = typeSymbol.Is(_androidViewSymbol);
 				var smallSymbolName = typeSymbol.ToString().Replace(typeSymbol.ContainingNamespace + ".", "");
 
-				if (isiOSView)
+				if (isiOSView || ismacOSView)
 				{
 					var nativeCtor = typeSymbol
 						.GetMethods()

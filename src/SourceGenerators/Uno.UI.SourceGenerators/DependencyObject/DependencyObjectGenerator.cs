@@ -578,12 +578,12 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 
 			private void WriteDispose(INamedTypeSymbol typeSymbol, IndentedStringBuilder builder)
 			{
-				var hasDispose = typeSymbol.Is(_androidViewSymbol) || typeSymbol.Is(_iosViewSymbol);
+				var hasDispose = typeSymbol.Is(_androidViewSymbol) || typeSymbol.Is(_iosViewSymbol) || typeSymbol.Is(_macosViewSymbol);
 
 				if (hasDispose)
 				{
 					builder.AppendLine($@"
-#if __IOS__
+#if __IOS__ || __MACOS__
 					private bool _isDisposed;
 
 					[SuppressMessage(
@@ -625,7 +625,11 @@ namespace Uno.UI.SourceGenerators.DependencyObject
 						}}
 					}}
 
+#if __IOS__
 					private void RequestCollect(UIKit.UIView[] subviews)
+#elif __MACOS__
+					private void RequestCollect(AppKit.NSView[] subviews)
+#endif
 					{{
 						if(subviews.Length != 0)
 						{{
