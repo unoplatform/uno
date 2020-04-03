@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android" package="uno.platform.unosampleapp" android:versionCode="1" android:versionName="1.0" android:installLocation="auto">
 	<uses-sdk android:minSdkVersion="16" android:targetSdkVersion="28" />
 	<uses-permission android:name="android.permission.VIBRATE" />
+	<uses-permission android:name="android.permission.ACTIVITY_RECOGNITION" />
 	<application android:label="SamplesApp"></application>
 	<meta-data android:name="com.google.android.geo.API_KEY" android:value="YOUR API KEY" />
 </manifest>

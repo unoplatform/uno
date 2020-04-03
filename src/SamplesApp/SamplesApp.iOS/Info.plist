@@ -49,5 +49,7 @@
 		<key>NSExceptionMinimumTLSVersion</key>
 		<string>TLSv1.2</string>
 	</dict>
+    <key>NSMotionUsageDescription</key>
+    <string>This is a step counter, and we&apos;d like to track motion. </string>
 </dict>
 </plist>
