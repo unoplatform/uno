@@ -14,7 +14,6 @@
 			<ColorAnimation Duration="0:00:0.1"
 							Storyboard.TargetName="TargetBorder"
 							Storyboard.TargetProperty="(Border.Background).(SolidColorBrush.Color)"
-							EnableDependentAnimation="True"
 							To="Red" />
 		</Storyboard>
 	</UserControl.Resources>

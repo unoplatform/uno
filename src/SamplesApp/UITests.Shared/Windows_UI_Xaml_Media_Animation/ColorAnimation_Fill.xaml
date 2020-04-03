@@ -12,7 +12,6 @@
 			<ColorAnimation Duration="0"
 							Storyboard.TargetName="TargetRectangle"
 							Storyboard.TargetProperty="(Shape.Fill).(SolidColorBrush.Color)"
-							EnableDependentAnimation="True"
 							From="Orange"
 							To="Brown" />
 		</Storyboard>
