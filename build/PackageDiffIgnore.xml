@@ -688,6 +688,15 @@
 				<Member
 					fullName="System.Boolean Windows.UI.Xaml.Controls.TextBox.FocusTextView()"
 					reason="Not part of the WinUI API, Uno-specific implementation detail." />
+				<Member 
+					fullName="System.Void Windows.Devices.Sensors.PedometerReadingChangedEventArgs..ctor()"
+					reason="Parameter-less ctor does not exist in UWP"/>
+				<Member 
+					fullName="System.Void Windows.Devices.Sensors.Pedometer..ctor()"
+					reason="Parameter-less ctor does not exist in UWP"/>
+				<Member 
+					fullName="System.Void Windows.Devices.Sensors.PedometerReading..ctor()"
+					reason="Parameter-less ctor does not exist in UWP"/>
 			</Methods>
 			<Properties>
 				<Member
