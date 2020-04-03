@@ -2569,6 +2569,14 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\ColorAnimation_Background.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\ColorAnimation_Fill.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\DoubleAnimation_FinalState_Opacity.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4428,6 +4436,12 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Input\RoutedEvents\RoutedEvent_TappedControl.xaml.cs">
       <DependentUpon>RoutedEvent_TappedControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\ColorAnimation_Background.xaml.cs">
+      <DependentUpon>ColorAnimation_Background.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\ColorAnimation_Fill.xaml.cs">
+      <DependentUpon>ColorAnimation_Fill.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Media_Animation\DoubleAnimation_FinalState_Opacity.xaml.cs">
       <DependentUpon>DoubleAnimation_FinalState_Opacity.xaml</DependentUpon>
