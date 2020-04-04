@@ -44,8 +44,11 @@ namespace Uno.Helpers
 				throw new ArgumentOutOfRangeException(nameof(appdataUri), "URI path must be rooted.");
 			}
 
+			// normalize slash type
+			path = Path.GetFullPath(path);
+
 			var root = Path.GetPathRoot(path);
-			var relativePath = Path.GetRelativePath(root, path);
+			var relativePath = path.Substring(root.Length);
 
 			var directorySeparator = Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
 
