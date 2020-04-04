@@ -192,6 +192,19 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+		#region IsNavigationStackEnabled DependencyProperty
+
+		public bool IsNavigationStackEnabled
+		{
+			get { return (bool)GetValue(IsNavigationStackEnabledProperty); }
+			set { SetValue(IsNavigationStackEnabledProperty, value); }
+		}
+
+		public static readonly DependencyProperty IsNavigationStackEnabledProperty =
+			DependencyProperty.Register(nameof(IsNavigationStackEnabled), typeof(bool), typeof(Frame), new PropertyMetadata(true));
+
+		#endregion
+
 		public event NavigatedEventHandler Navigated;
 
 		public event NavigatingCancelEventHandler Navigating;
@@ -255,7 +268,7 @@ namespace Windows.UI.Xaml.Controls
 				);
 
 				Navigating?.Invoke(this, navigatingFromArgs);
-				
+
 				if (navigatingFromArgs.Cancel)
 				{
 					// Frame canceled
@@ -296,25 +309,28 @@ namespace Windows.UI.Xaml.Controls
 
 				Content = CurrentEntry.Instance;
 
-				switch (mode)
+				if (IsNavigationStackEnabled)
 				{
-					case NavigationMode.New:
-						ForwardStack.Clear();
-						if (previousEntry != null)
-						{
+					switch (mode)
+					{
+						case NavigationMode.New:
+							ForwardStack.Clear();
+							if (previousEntry != null)
+							{
+								BackStack.Add(previousEntry);
+							}
+							break;
+						case NavigationMode.Back:
+							ForwardStack.Add(previousEntry);
+							BackStack.Remove(CurrentEntry);
+							break;
+						case NavigationMode.Forward:
 							BackStack.Add(previousEntry);
-						}
-						break;
-					case NavigationMode.Back:
-						ForwardStack.Add(previousEntry);
-						BackStack.Remove(CurrentEntry);
-						break;
-					case NavigationMode.Forward:
-						BackStack.Add(previousEntry);
-						ForwardStack.Remove(CurrentEntry);
-						break;
-					case NavigationMode.Refresh:
-						break;
+							ForwardStack.Remove(CurrentEntry);
+							break;
+						case NavigationMode.Refresh:
+							break;
+					}
 				}
 
 				// Navigated
@@ -371,7 +387,6 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 		}
-
 
 		public void SetNavigationState(string navigationState) => _navigationState = navigationState;
 

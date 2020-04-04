@@ -48,6 +48,96 @@ namespace Uno.UI.Tests.FrameTests
 		}
 
 		[TestMethod]
+		public void When_IsNavigationStackEnabled_False()
+		{
+			// Arrange
+			var SUT = new Frame()
+			{
+			};
+
+			SUT.IsNavigationStackEnabled = false;
+			SUT.Navigate(typeof(MyPage));
+
+			Assert.AreEqual(0, SUT.BackStack.Count);
+			Assert.IsFalse(SUT.CanGoBack);
+		}
+
+		[TestMethod]
+		public void When_IsNavigationStackEnabled_False_After_Start()
+		{
+			// Arrange
+			var SUT = new Frame()
+			{
+			};
+
+			SUT.Navigate(typeof(FirstPage));
+
+			SUT.Navigate(typeof(SecondPage));
+
+			SUT.Navigate(typeof(ThirdPage));
+
+			Assert.AreEqual(2, SUT.BackStack.Count);
+
+			SUT.GoBack();
+
+			SUT.IsNavigationStackEnabled = false;
+
+			Assert.AreEqual(1, SUT.BackStack.Count);
+			Assert.AreEqual(1, SUT.ForwardStack.Count);
+
+			SUT.Navigate(typeof(MyPage));
+			SUT.Navigate(typeof(MyPage));
+
+			Assert.IsInstanceOfType(SUT.Content, typeof(MyPage));
+			Assert.AreEqual(1, SUT.BackStack.Count);
+			Assert.AreEqual(1, SUT.ForwardStack.Count);
+
+			SUT.GoBack();
+
+			Assert.IsInstanceOfType(SUT.Content, typeof(FirstPage));
+			Assert.AreEqual(1, SUT.BackStack.Count);
+			Assert.AreEqual(1, SUT.ForwardStack.Count);
+
+			SUT.GoForward();
+
+			Assert.IsInstanceOfType(SUT.Content, typeof(ThirdPage));
+			Assert.AreEqual(1, SUT.BackStack.Count);
+			Assert.AreEqual(1, SUT.ForwardStack.Count);
+		}
+
+		[TestMethod]
+		public void When_IsNavigationStackEnabled_Can_Enable()
+		{
+			// Arrange
+			var SUT = new Frame()
+			{
+			};
+
+			SUT.Navigate(typeof(FirstPage));
+
+			SUT.Navigate(typeof(SecondPage));
+
+			SUT.Navigate(typeof(ThirdPage));
+
+			SUT.GoBack();
+
+			SUT.IsNavigationStackEnabled = false;
+
+			SUT.GoBack();
+
+			Assert.IsInstanceOfType(SUT.Content, typeof(FirstPage));
+			Assert.AreEqual(1, SUT.BackStack.Count);
+			Assert.AreEqual(1, SUT.ForwardStack.Count);
+
+			SUT.IsNavigationStackEnabled = true;
+			SUT.GoBack();
+
+			Assert.IsInstanceOfType(SUT.Content, typeof(FirstPage));
+			Assert.AreEqual(0, SUT.BackStack.Count);
+			Assert.AreEqual(2, SUT.ForwardStack.Count);
+		}
+
+		[TestMethod]
 		public void When_RemovedPage()
 		{
 			var SUT = new Frame()
@@ -81,6 +171,18 @@ namespace Uno.UI.Tests.FrameTests
 	}
 
 	class MyPage : Page
+	{
+	}
+
+	class FirstPage : Page
+	{
+	}
+
+	class SecondPage : Page
+	{
+	}
+
+	class ThirdPage : Page
 	{
 	}
 

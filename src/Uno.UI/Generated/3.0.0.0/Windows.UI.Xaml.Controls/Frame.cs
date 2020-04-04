@@ -15,20 +15,8 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property CurrentSourcePageType
 		// Skipping already declared property BackStack
 		// Skipping already declared property ForwardStack
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool IsNavigationStackEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsNavigationStackEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsNavigationStackEnabledProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property ForwardStack
+		// Skipping already declared property IsNavigationStackEnabled
 		// Skipping already declared property BackStackDepthProperty
 		// Skipping already declared property CacheSizeProperty
 		// Skipping already declared property CanGoBackProperty
@@ -37,14 +25,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property SourcePageTypeProperty
 		// Skipping already declared property BackStackProperty
 		// Skipping already declared property ForwardStackProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty IsNavigationStackEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsNavigationStackEnabled", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.Frame), 
-			new FrameworkPropertyMetadata(default(bool)));
-		#endif
+		// Skipping already declared property IsNavigationStackEnabledProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.Frame.Frame()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Frame.Frame()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Frame.CacheSize.get
