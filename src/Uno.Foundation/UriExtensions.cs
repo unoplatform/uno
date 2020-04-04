@@ -57,10 +57,14 @@ namespace Uno.Extensions
 			return String.Empty;
 		}
 
+		public static bool IsAppData(this  Uri uri)
+		{
+			return uri.Scheme.Equals("ms-appdata", StringComparison.OrdinalIgnoreCase);
+		}
+
 		public static bool IsLocalResource(this Uri uri)
 		{
-			return uri.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase)
-				|| uri.Scheme.Equals("ms-appdata", StringComparison.OrdinalIgnoreCase);
+			return uri.Scheme.Equals("ms-appx", StringComparison.OrdinalIgnoreCase);
 		}
 
 		/// <summary>

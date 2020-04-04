@@ -17,6 +17,8 @@ using Android.Runtime;
 using Uno.Logging;
 using AndroidMediaPlayer = Android.Media.MediaPlayer;
 using System.Collections.Generic;
+using Uno;
+using Uno.Helpers;
 
 namespace Windows.Media.Playback
 {
@@ -46,7 +48,6 @@ namespace Windows.Media.Playback
 		private int _playlistIndex;
 
 		const string MsAppXScheme = "ms-appx";
-		const string MsAppDataScheme = "ms-appdata";
 
 		public virtual IVideoSurface RenderSurface { get; private set; } = new VideoSurface(Application.Context);
 
@@ -159,14 +160,18 @@ namespace Windows.Media.Playback
 				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart("/"));
 			}
 
-			var isResource = uri.Scheme.Equals(MsAppXScheme, StringComparison.OrdinalIgnoreCase)
-							|| uri.Scheme.Equals(MsAppDataScheme, StringComparison.OrdinalIgnoreCase);
-
-			if (isResource)
+			if (uri.IsLocalResource())
 			{
 				var filename = global::System.IO.Path.GetFileName(uri.LocalPath);
 				var afd = Application.Context.Assets.OpenFd(filename);
 				_player.SetDataSource(afd.FileDescriptor, afd.StartOffset, afd.Length);
+				return;
+			}
+
+			if (uri.IsAppData())
+			{
+				var filePath = AppDataUriEvaluator.ToPath(uri);
+				_player.SetDataSource(filePath);
 				return;
 			}
 

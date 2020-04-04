@@ -11,6 +11,7 @@ using Uno.Extensions;
 using Uno.Logging;
 using Uno.Media.Playback;
 using Windows.Media.Core;
+using Uno.Helpers;
 
 namespace Windows.Media.Playback
 {
@@ -119,7 +120,6 @@ namespace Windows.Media.Playback
 		public static NSString RateObservationContext = new NSString("AVCustomEditPlayerViewControllerRateObservationContext");
 
 		const string MsAppXScheme = "ms-appx";
-		const string MsAppDataScheme = "ms-appdata";
 
 		public IVideoSurface RenderSurface { get; } = new VideoSurface();
 
@@ -262,17 +262,20 @@ namespace Windows.Media.Playback
 			if (!uri.IsAbsoluteUri || uri.Scheme == "")
 			{
 				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart(new char[] { '/' }));
-			}
+			}		
 
-			var isResource = uri.Scheme.Equals(MsAppXScheme, StringComparison.OrdinalIgnoreCase)
-							|| uri.Scheme.Equals(MsAppDataScheme, StringComparison.OrdinalIgnoreCase);
-
-			if (isResource)
+			if (uri.IsLocalResource())
 			{
 				var file = uri.PathAndQuery.TrimStart(new[] { '/' });
 				var fileName = Path.GetFileNameWithoutExtension(file);
 				var fileExtension = Path.GetExtension(file)?.Replace(".", "");
 				return NSBundle.MainBundle.GetUrlForResource(fileName, fileExtension);
+			}
+
+			if (uri.IsAppData())
+			{
+				var filePath = AppDataUriEvaluator.ToPath(uri);
+				return NSUrl.CreateFileUrl(filePath, relativeToUrl: null);
 			}
 
 			if (uri.IsFile)
