@@ -101,8 +101,6 @@
 		<None Include="Info.plist" />
 		<Compile Include="Properties\AssemblyInfo.cs" />
 		<Content Include="Entitlements.plist" />
-		<BundleResource Include="Resources\SplashScreen%402x.png" />
-		<BundleResource Include="Resources\SplashScreen%403x.png" />
 		<BundleResource Include="Resources\Default-568h%402x.png" />
 	</ItemGroup>
 	<ItemGroup>
@@ -113,6 +111,7 @@
 	</ItemGroup>
 	<ItemGroup>
 		<BundleResource Include="Resources\Fonts\winjs-symbols.ttf" />
+		<InterfaceDefinition Include="SplashScreen.storyboard" />
 	</ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Uno.UI" Version="2.0.512-dev.4178" />
