@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Globalization;
-using System.IO;
 using Windows.ApplicationModel;
 using Windows.Storage;
 using Path = System.IO.Path;
@@ -12,9 +11,10 @@ namespace Uno.Helpers
 	/// </summary>
 	internal static class AppDataUriEvaluator
 	{
+		private const string AppdataSchema = "ms-appdata";
 		private const string LocalFolderRoute = "local";
 		private const string RoamingFolderRoute = "roaming";
-		private const string TemporaryFolderRoute = "temp";		
+		private const string TemporaryFolderRoute = "temp";
 
 		/// <summary>
 		/// Converts given ms-appdata: URI to filesystem path.
@@ -33,15 +33,25 @@ namespace Uno.Helpers
 				throw new ArgumentOutOfRangeException(nameof(appdataUri), "URI must be absolute.");
 			}
 
-			if (!appdataUri.Scheme.Equals("ms-appdata", StringComparison.InvariantCultureIgnoreCase))
+			if (!appdataUri.Scheme.Equals(AppdataSchema, StringComparison.InvariantCultureIgnoreCase))
 			{
 				throw new ArgumentOutOfRangeException(nameof(appdataUri), "URI must be ms-appdata.");
 			}
 
-			var path = appdataUri.AbsolutePath;
-			if (!Path.IsPathRooted(path))
+			if (!string.IsNullOrEmpty(appdataUri.Host))
 			{
-				throw new ArgumentOutOfRangeException(nameof(appdataUri), "URI path must be rooted.");
+				// is host is provided, it must be equal to package name
+				if (!appdataUri.Host.Equals(Package.Current.Id.Name, StringComparison.InvariantCultureIgnoreCase))
+				{
+					throw new ArgumentOutOfRangeException(nameof(appdataUri), $"When provided, the URI host must match package name ('{Package.Current.Id.Name}').");
+				}
+			}
+
+			var path = appdataUri.AbsolutePath;
+
+			if (path == string.Empty)
+			{
+				throw new ArgumentOutOfRangeException(nameof(appdataUri), "URI path must not be empty.");
 			}
 
 			// normalize slash type
@@ -50,23 +60,7 @@ namespace Uno.Helpers
 			var root = Path.GetPathRoot(path);
 			var relativePath = path.Substring(root.Length);
 
-			var directorySeparator = Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
-
-			// check if path starts with package name
-			if (relativePath.IndexOf(Package.Current.Id.Name, StringComparison.InvariantCultureIgnoreCase) == 0)
-			{
-				// remove start from path
-				relativePath = relativePath.Substring(Package.Current.Id.Name.Length);
-
-				// slash must follow package's name
-				if (!relativePath.StartsWith(directorySeparator))
-				{
-					throw new ArgumentOutOfRangeException("URI path start is invalid.");
-				}
-			}
-
 			string appDataFolderPath = null;
-
 			// locate the application data path
 			if (relativePath.StartsWith(LocalFolderRoute, StringComparison.InvariantCultureIgnoreCase))
 			{
@@ -83,6 +77,8 @@ namespace Uno.Helpers
 				appDataFolderPath = ApplicationData.Current.TemporaryFolder.Path;
 				relativePath = relativePath.Substring(TemporaryFolderRoute.Length);
 			}
+
+			var directorySeparator = Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
 
 			// relative path is now either empty (URI points to the folder itself) or must start with separator to be valid
 			if (appDataFolderPath == null ||
