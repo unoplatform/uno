@@ -15,6 +15,7 @@ using Windows.UI.Xaml.Media;
 namespace SamplesApp.Droid
 {
 	[global::Android.App.ApplicationAttribute(
+		Icon = "@mipmap/icon",
 		Label = "@string/ApplicationName",
 		LargeHeap = true,
 		HardwareAccelerated = true,

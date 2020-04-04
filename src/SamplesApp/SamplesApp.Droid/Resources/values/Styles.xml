@@ -8,5 +8,7 @@
 		<item name="windowNoTitle">true</item>
 		<item name="android:windowNoTitle">true</item>
 
+        <!-- Splash screen -->
+		<item name="android:windowBackground">@drawable/splash</item>
 	</style>
  </resources>
