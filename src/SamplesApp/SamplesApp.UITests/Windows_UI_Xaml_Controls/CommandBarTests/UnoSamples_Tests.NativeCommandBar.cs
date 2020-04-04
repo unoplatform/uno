@@ -62,5 +62,27 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 
 			TakeScreenshot("Left");
 		}
+
+		[Test]
+		[AutoRetry]
+		public void When_TextBlock_Centred_Native_Frame()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.CommandBar_Native_Frame");
+
+			_app.WaitForElement("NavigateInitialButton");
+			_app.FastTap("NavigateInitialButton");
+
+			_app.WaitForElement("NavigateDetailButton");
+			_app.FastTap("NavigateDetailButton");
+
+			_app.WaitForElement("NavigateBackButton");
+			_app.FastTap("NavigateBackButton");
+
+			_app.WaitForElement("CommandBarTitleText");
+			var rect = _app.GetRect("CommandBarTitleText");
+
+			Assert.Greater(rect.Height, 1);
+
+		}
 	}
 }
