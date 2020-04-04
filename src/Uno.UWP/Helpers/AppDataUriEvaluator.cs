@@ -3,6 +3,7 @@ using System.Globalization;
 using System.IO;
 using Windows.ApplicationModel;
 using Windows.Storage;
+using Path = System.IO.Path;
 
 namespace Uno.Helpers
 {
