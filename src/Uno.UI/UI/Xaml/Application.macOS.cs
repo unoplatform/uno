@@ -23,6 +23,7 @@ namespace Windows.UI.Xaml
 
 		public Application(IntPtr handle) : base(handle)
 		{
+
 		}
 
 		static partial void StartPartial(ApplicationInitializationCallback callback)
@@ -32,8 +33,8 @@ namespace Windows.UI.Xaml
 
 		public override void DidFinishLaunching(NSNotification notification)
 		{
-            InitializationCompleted();
-            OnLaunched(new LaunchActivatedEventArgs());
+			InitializationCompleted();
+			OnLaunched(new LaunchActivatedEventArgs());
 		}
 
 		/// <summary>
@@ -51,9 +52,9 @@ namespace Windows.UI.Xaml
 		/// <returns>System theme</returns>
 		private ApplicationTheme GetDefaultSystemTheme()
 		{
-			const string AutoSwitchKey = "AppleInterfaceStyleSwitchesAutomatically";			
+			const string AutoSwitchKey = "AppleInterfaceStyleSwitchesAutomatically";
 			var autoChange = NSUserDefaults.StandardUserDefaults[AutoSwitchKey];
-			if ( autoChange != null )
+			if (autoChange != null)
 			{
 				var autoChangeEnabled = NSUserDefaults.StandardUserDefaults.BoolForKey(AutoSwitchKey);
 				if (autoChangeEnabled)
@@ -75,7 +76,15 @@ namespace Windows.UI.Xaml
 			else
 			{
 				return ApplicationTheme.Dark;
-			}			
+			}
+		}
+
+		partial void ObserveSystemThemeChanges()
+		{			
+			NSUserDefaults.StandardUserDefaults.AddObserver(
+				"AppleInterfaceStyle",
+				NSKeyValueObservingOptions.New,
+				_ => Application.Current.OnSystemThemeChanged());
 		}
 	}
 }

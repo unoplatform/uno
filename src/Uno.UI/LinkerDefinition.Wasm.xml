@@ -10,6 +10,9 @@
     <type fullname="Uno.Media.GeometryConverter" />
     <type fullname="Windows.UI.Xaml.ThicknessConverter" />
     <type fullname="Windows.UI.Xaml.ObservableVectorWrapper" />
+    <type fullname="Windows.UI.Xaml.Application">
+      <method name="DispatchSystemThemeChange" />
+    </type>
   </assembly>
   
   <assembly fullname="Uno">
