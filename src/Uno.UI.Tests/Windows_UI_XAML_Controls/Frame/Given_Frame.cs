@@ -9,6 +9,7 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Tests.FrameTests
 {
@@ -19,6 +20,31 @@ namespace Uno.UI.Tests.FrameTests
 		public void Init()
 		{
 			UnitTestsApp.App.EnsureApplication();
+		}
+
+		[TestMethod]
+		public void When_Navigating_Cancels()
+		{
+			// Arrange
+			var SUT = new Frame()
+			{
+			};
+
+			SUT.Navigate(typeof(DisallowNavigatingFromPage));
+
+			// Reset flag
+			DisallowNavigatingFromPage.NavigatingFromCalled = false;
+
+			// Set events for next navigation
+			SUT.Navigating += (sender, args) => args.Cancel = true;
+			SUT.Navigated += (sender, args) => Assert.Fail(); // navigation cannot happen
+
+			// Act
+			SUT.Navigate(typeof(MyPage));
+
+			// Assert
+			Assert.IsFalse(DisallowNavigatingFromPage.NavigatingFromCalled);
+			Assert.IsInstanceOfType(SUT.Content, typeof(DisallowNavigatingFromPage));
 		}
 
 		[TestMethod]
@@ -56,5 +82,15 @@ namespace Uno.UI.Tests.FrameTests
 
 	class MyPage : Page
 	{
+	}
+
+	class DisallowNavigatingFromPage : Page
+	{
+		public static bool NavigatingFromCalled = false;
+
+		protected internal override void OnNavigatingFrom(NavigatingCancelEventArgs e)
+		{
+			NavigatingFromCalled = true;
+		}
 	}
 }

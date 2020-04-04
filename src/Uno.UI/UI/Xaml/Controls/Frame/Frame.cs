@@ -255,19 +255,20 @@ namespace Windows.UI.Xaml.Controls
 				);
 
 				Navigating?.Invoke(this, navigatingFromArgs);
+				
+				if (navigatingFromArgs.Cancel)
+				{
+					// Frame canceled
+					OnNavigationStopped(entry, mode);
+					return false;
+				}
 
 				CurrentEntry?.Instance.OnNavigatingFrom(navigatingFromArgs);
 
 				if (navigatingFromArgs.Cancel)
 				{
-					NavigationStopped?.Invoke(this, new NavigationEventArgs(
-						entry.Instance,
-						mode,
-						entry.NavigationTransitionInfo,
-						entry.Parameter,
-						entry.SourcePageType,
-						null
-					));
+					// Page canceled
+					OnNavigationStopped(entry, mode);
 					return false;
 				}
 
@@ -389,6 +390,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			return Activator.CreateInstance(sourcePageType) as Page;
+		}
+
+		private void OnNavigationStopped(PageStackEntry entry, NavigationMode mode)
+		{
+			NavigationStopped?.Invoke(this, new NavigationEventArgs(
+						entry.Instance,
+						mode,
+						entry.NavigationTransitionInfo,
+						entry.Parameter,
+						entry.SourcePageType,
+						null
+					));
 		}
 	}
 }
