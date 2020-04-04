@@ -37,6 +37,7 @@ namespace Windows.UI.Xaml
 
 		public Application(IntPtr handle) : base(handle)
 		{
+
 		}
 
 		static partial void StartPartial(ApplicationInitializationCallback callback)
@@ -150,6 +151,14 @@ namespace Windows.UI.Xaml
 			{
 				this.Log().Error($"Failed to set culture for language: {language}", ex);
 			}
+		}
+
+		partial void ObserveSystemThemeChanges()
+		{			
+			NSUserDefaults.StandardUserDefaults.AddObserver(
+				"AppleInterfaceStyle",
+				NSKeyValueObservingOptions.New,
+				_ => Application.Current.OnSystemThemeChanged());
 		}
 	}
 }

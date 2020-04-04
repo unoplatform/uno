@@ -41,6 +41,7 @@ namespace Windows.UI.Xaml
 		private bool _initializationComplete = false;
 		private readonly static IEventProvider _trace = Tracing.Get(TraceProvider.Id);
 		private ApplicationTheme? _requestedTheme;
+		private bool _themeSetExplicitly = false;
 
 		[Preserve]
 		public static class TraceProvider
@@ -60,14 +61,25 @@ namespace Windows.UI.Xaml
 
 		public ApplicationTheme RequestedTheme
 		{
-			get => _requestedTheme ?? (_requestedTheme = GetDefaultSystemTheme()).Value;
+			get
+			{
+				if (_requestedTheme == null)
+				{
+					// just cache the theme, but do not notify about a change unnecessarily	
+					_requestedTheme = GetDefaultSystemTheme();
+					ObserveSystemThemeChanges();
+				}
+				return _requestedTheme.Value;
+			}
 			set
 			{
 				if (_initializationComplete)
 				{
 					throw new NotSupportedException("Operation not supported");
 				}
-				_requestedTheme = value;
+				// this flag makes sure the app will not respond to OS events	
+				_themeSetExplicitly = true;
+				SetRequestedTheme(value);
 			}
 		}
 
@@ -83,6 +95,16 @@ namespace Windows.UI.Xaml
 
 		public event UnhandledExceptionEventHandler UnhandledException;
 
+		public void OnSystemThemeChanged()
+		{
+			// if user overrides theme, don't apply system theme
+			if (!_themeSetExplicitly)
+			{
+				var theme = GetDefaultSystemTheme();
+				SetRequestedTheme(theme);
+			}
+		}
+
 #if !__ANDROID__
 		[NotImplemented]
 		public void Exit()
@@ -95,6 +117,8 @@ namespace Windows.UI.Xaml
 		{
 			StartPartial(callback);
 		}
+
+		partial void ObserveSystemThemeChanges();
 
 		static partial void StartPartial(ApplicationInitializationCallback callback);
 

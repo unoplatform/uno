@@ -13,3 +13,15 @@ Uno.UI.ApplicationHelper.RequestedCustomTheme = "HighContrast";
 This must be called during app startup in the `App` class constructor. Uno does not yet support `FrameworkElement.RequestedTheme` so the theme cannot be changed dynamically at runtime.
 
 Setting `Application.Current.RequestedTheme` outside of `App` constructor is not allowed, which is in line with UWP.
+
+## Reacting to OS theme
+
+If you don't specify the theme in `App` constructor and `App.xaml`, your app will automatically adapt to OS theme changes at runtime. However, on Android, you need to make sure to add `ConfigChanges.UiMode` to the `MainActivity` `[Application]` attribute, for example:
+
+``` c#
+[Activity(
+        MainLauncher = true,
+        ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode,
+        WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
+    )]
+```
