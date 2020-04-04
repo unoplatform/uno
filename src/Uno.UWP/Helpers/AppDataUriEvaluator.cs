@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Globalization;
 using System.IO;
 using Windows.ApplicationModel;
 using Windows.Storage;
@@ -45,7 +46,7 @@ namespace Uno.Helpers
 			var root = Path.GetPathRoot(path);
 			var relativePath = Path.GetRelativePath(root, path);
 
-			var directorySeparator = Path.DirectorySeparatorChar.ToString();
+			var directorySeparator = Path.DirectorySeparatorChar.ToString(CultureInfo.InvariantCulture);
 
 			// check if path starts with package name
 			if (relativePath.IndexOf(Package.Current.Id.Name, StringComparison.InvariantCultureIgnoreCase) == 0)
