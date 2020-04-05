@@ -130,8 +130,9 @@ namespace Windows.Storage
             public IAsyncOperationWithProgress<uint, uint> WriteAsync(IBuffer buffer) => throw new NotImplementedException();
         }
 
+		public IAsyncOperation<Stream> OpenStreamForReadAsync() => OpenStreamForReadAsync(CancellationToken.None).AsAsyncOperation<Stream>();
 
-        public async Task<Stream> OpenStreamForReadAsync(CancellationToken ct)
+		public async Task<Stream> OpenStreamForReadAsync(CancellationToken ct)
 		{
 			switch (Scheme)
 			{
