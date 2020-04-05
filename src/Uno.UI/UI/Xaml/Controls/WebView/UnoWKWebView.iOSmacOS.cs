@@ -16,6 +16,7 @@ using System.Linq;
 using Uno.UI.Services;
 using Microsoft.Extensions.Logging;
 using Windows.ApplicationModel.Resources;
+using Uno.UI;
 #if __IOS__
 using UIKit;
 #else
@@ -25,6 +26,9 @@ using AppKit;
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class UnoWKWebView : WKWebView, INativeWebView
+#if __MACOS__
+		,IHasSizeThatFits
+#endif
 	{
 		private WebView _parentWebView;
 		private bool _isCancelling;
@@ -62,6 +66,15 @@ namespace Windows.UI.Xaml.Controls
 			}
 #endif
 		}
+
+#if __MACOS__
+		public CGSize SizeThatFits(CGSize availableSize)
+		{
+			var height = Math.Min(availableSize.Height, FittingSize.Height);
+			var width = Math.Min(availableSize.Width, FittingSize.Width);
+			return new CGSize(width, height);
+		} 
+#endif
 
 		public void RegisterNavigationEvents(WebView xamlWebView)
 		{
