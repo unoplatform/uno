@@ -126,6 +126,8 @@
     <!-- Uno.UI.Toolkit -->
     <file src="..\src\Uno.UI.Toolkit\bin\Release\uap10.0.17763\Uno.UI.Toolkit.dll" target="lib\UAP" />
     <file src="..\src\Uno.UI.Toolkit\bin\Release\uap10.0.17763\Uno.UI.Toolkit.pdb" target="lib\UAP" />
+    <file src="..\src\Uno.UI.Toolkit\bin\Release\uap10.0.17763\Uno.UI.Toolkit.pri" target="lib\UAP" />
+    <file src="..\src\Uno.UI.Toolkit\bin\Release\uap10.0.17763\Uno.UI.Toolkit\**" target="lib\UAP\Uno.UI.Toolkit" />
     <file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid80\Uno.UI.Toolkit.dll" target="lib\MonoAndroid80" />
     <file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid80\Uno.UI.Toolkit.pdb" target="lib\MonoAndroid80" />
     <file src="..\src\Uno.UI.Toolkit\bin\Release\MonoAndroid90\Uno.UI.Toolkit.dll" target="lib\MonoAndroid90" />
