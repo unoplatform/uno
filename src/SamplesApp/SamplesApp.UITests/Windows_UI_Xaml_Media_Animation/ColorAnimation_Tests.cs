@@ -13,6 +13,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 	public class ColorAnimation_Tests : SampleControlUITestBase
 	{
 		[Test]
+		[AutoRetry]
 		public void When_Border_Background_Animated()
 		{
 			Run("UITests.Windows_UI_Xaml_Media_Animation.ColorAnimation_Background");
@@ -43,6 +44,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 		}
 
 		[Test]
+		[AutoRetry]
 		public void When_Rectangle_Fill_Animated()
 		{
 			Run("UITests.Windows_UI_Xaml_Media_Animation.ColorAnimation_Fill");
