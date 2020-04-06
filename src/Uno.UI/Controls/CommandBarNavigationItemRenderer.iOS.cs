@@ -136,6 +136,8 @@ namespace Uno.UI.Controls
 	{
 		private bool _blockReentrantMeasure;
 		private Size _childSize;
+		private Size? _lastAvailableSize;
+
 		public TitleView()
 		{
 			if (UIDevice.CurrentDevice.CheckSystemVersion(11, 0))
@@ -166,6 +168,8 @@ namespace Uno.UI.Controls
 			try
 			{
 				_blockReentrantMeasure = true;
+
+				_lastAvailableSize = availableSize;
 
 				// By default, iOS will horizontally center the TitleView inside the UINavigationBar,
 				// ignoring the size of the left and right buttons.
@@ -207,7 +211,10 @@ namespace Uno.UI.Controls
 			get { return base.Frame; }
 			set
 			{
-				if (!UIDevice.CurrentDevice.CheckSystemVersion(11, 0))
+				if (!UIDevice.CurrentDevice.CheckSystemVersion(11, 0)
+					// iOS likes to mix things up by calling SizeThatFits with zero Height for no apparent reason (eg when navigating back to a page). When
+					// this happens, we need to remeasure with the correct size to ensure children are laid out correctly.
+					|| (_lastAvailableSize?.Height == 0 && value.Height != 0))
 				{
 					// This allows text trimming when there are more AppBarButtons
 					var availableSize = value.Size;
