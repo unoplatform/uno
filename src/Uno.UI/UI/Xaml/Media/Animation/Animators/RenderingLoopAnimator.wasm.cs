@@ -11,7 +11,7 @@ namespace Windows.UI.Xaml.Media.Animation
 {
 	internal abstract class RenderingLoopAnimator<T> : CPUBoundAnimator<T>, IJSObject where T : struct
 	{
-		public RenderingLoopAnimator(T from, T to)
+		protected RenderingLoopAnimator(T from, T to)
 			: base(from, to)
 		{
 			Handle = JSObjectHandle.Create(this, Metadata.Instance);

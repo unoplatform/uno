@@ -31,6 +31,8 @@ namespace Windows.UI.Xaml.Media.Animation
 				return new ImmediateAnimator<ColorOffset>(startingValue, targetValue);
 			}
 
+			// TODO: GPU-bound color animations - https://github.com/unoplatform/uno/issues/2947
+
 			return new RenderingLoopColorAnimator(startingValue, targetValue);
 		}
 	}

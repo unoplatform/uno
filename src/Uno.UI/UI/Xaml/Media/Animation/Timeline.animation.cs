@@ -36,7 +36,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			private T? _endValue = null;
 
 			// Initialize the field with zero capacity, as it may stay empty more often than it is being used.
-			private CompositeDisposable _subscriptions = new CompositeDisposable(0);
+			private readonly CompositeDisposable _subscriptions = new CompositeDisposable(0);
 
 			private IValueAnimator _animator;
 

@@ -21,6 +21,8 @@ namespace Windows.UI.Xaml.Media.Animation
 					return;
 				}
 
+				// TODO: apply easing function - https://github.com/unoplatform/uno/issues/2948
+
 				var totalDiff = AnimationOwner.Subtract(_endValue.Value, _startingValue.Value);
 				var currentDiff = AnimationOwner.Multiply(((NativeValueAnimatorAdapter)_animator).AnimatedFraction, totalDiff);
 				var currentValue = AnimationOwner.Add(_startingValue.Value, currentDiff);

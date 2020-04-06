@@ -116,6 +116,7 @@ namespace Windows.UI.Xaml
 
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
+			_backgroundSubscription.Disposable = null;
 			var brush = e.NewValue as Brush;
 			SetBackgroundBrush(brush);
 

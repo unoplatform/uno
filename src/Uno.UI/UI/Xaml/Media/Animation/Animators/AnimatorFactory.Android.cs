@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// </summary>
 		private static IValueAnimator CreateColor(Timeline timeline, ColorOffset startingValue, ColorOffset targetValue)
 		{
-			// TODO: GPU-bound color animations
+			// TODO: GPU-bound color animations - https://github.com/unoplatform/uno/issues/2947
 
 			return new NativeValueAnimatorAdapter(ValueAnimator.OfArgb((Android.Graphics.Color)(Color)startingValue, (Android.Graphics.Color)(Color)targetValue));
 		}
