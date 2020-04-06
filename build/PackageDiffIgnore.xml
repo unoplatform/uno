@@ -697,6 +697,10 @@
 				<Member 
 					fullName="System.Void Windows.Devices.Sensors.PedometerReading..ctor()"
 					reason="Parameter-less ctor does not exist in UWP"/>
+			  
+				<Member 
+					fullName="CoreGraphics.CGSize Windows.UI.Xaml.IFrameworkElementHelper.Measure(AppKit.NSView element, Windows.Foundation.Size availableSize)"
+					reason="macOS only unused extension method"/>
 			</Methods>
 			<Properties>
 				<Member
