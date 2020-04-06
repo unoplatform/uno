@@ -29,8 +29,8 @@
 		<Content Update="Fonts\winjs-symbols.woff2" />
 	</ItemGroup>
 	<ItemGroup>
-		<EmbeddedResource Include="WasmCSS\*.css" />
-		<EmbeddedResource Include="WasmScripts\*.js" />
+		<EmbeddedResource Include="WasmCSS\**\*.css" />
+		<EmbeddedResource Include="WasmScripts\**\*.js" />
 		<UpToDateCheckInput Include="WasmCSS\**\*" />
 		<UpToDateCheckInput Include="WasmScripts\**\*" />
 	</ItemGroup>
