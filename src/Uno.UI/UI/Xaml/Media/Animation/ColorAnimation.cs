@@ -18,10 +18,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public Color? To
 		{
-			get
-			{
-				return (Color?)this.GetValue(ToProperty);
-			}
+			get => (Color?)this.GetValue(ToProperty);
 			set
 			{
 				this.SetValue(ToProperty, value);
@@ -144,4 +141,3 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 	}
 }
-
