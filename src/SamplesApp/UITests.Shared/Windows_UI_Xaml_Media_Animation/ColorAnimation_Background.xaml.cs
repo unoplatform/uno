@@ -39,7 +39,7 @@ namespace UITests.Windows_UI_Xaml_Media_Animation
 		{
 			// Assert non-null
 			var areEqual = ReferenceEquals(TargetBorder.Background, IndependentBorder.Background);
-			BrushEqualityText.Text = areEqual.ToString();
+			BrushEqualityText.Text = areEqual.ToString().ToLowerInvariant();
 		}
 	}
 }
