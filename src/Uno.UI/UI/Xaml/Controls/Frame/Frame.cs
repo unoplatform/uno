@@ -200,7 +200,7 @@ namespace Windows.UI.Xaml.Controls
 			set { SetValue(IsNavigationStackEnabledProperty, value); }
 		}
 
-		public static readonly DependencyProperty IsNavigationStackEnabledProperty =
+		public static DependencyProperty IsNavigationStackEnabledProperty { get; } =
 			DependencyProperty.Register(nameof(IsNavigationStackEnabled), typeof(bool), typeof(Frame), new PropertyMetadata(true));
 
 		#endregion
