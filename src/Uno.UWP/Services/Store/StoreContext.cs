@@ -38,4 +38,11 @@ public sealed partial class StoreContext
 	public IAsyncOperation<StoreRateAndReviewResult> RequestRateAndReviewAppAsync() =>
 		AsyncOperation.FromTask(ct => RequestRateAndReviewAppTaskAsync(ct));
 #endif
+
+		public IAsyncOperation<StoreProductQueryResult> GetStoreProductsAsync(
+			IEnumerable<string> productKinds,
+			IEnumerable<string> storeIds) =>
+			GetStoreProductsImplAsync(productKinds, storeIds)
+				.AsAsyncOperation();
+	}
 }
