@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.Buffers;
+using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml.Data;
 
@@ -9,7 +11,7 @@ namespace Windows.UI.Xaml
 	/// <summary>
 	/// A <see cref="DependencyPropertyDetails"/> collection
 	/// </summary>
-    partial class DependencyPropertyDetailsCollection
+    partial class DependencyPropertyDetailsCollection : IDisposable
     {
 		private readonly Type _ownerType;
 		private readonly ManagedWeakReference _ownerReference;
@@ -17,7 +19,10 @@ namespace Windows.UI.Xaml
 		public DependencyPropertyDetails DataContextPropertyDetails { get; }
 		public DependencyPropertyDetails TemplatedParentPropertyDetails { get; }
 
+		private readonly static ArrayPool<PropertyEntry> _pool = ArrayPool<PropertyEntry>.Create(100, 100);
+
 		private PropertyEntry[] _entries;
+		private int _entriesLength;
 
 		private PropertyEntry None = new PropertyEntry(-1, null);
 
@@ -32,19 +37,31 @@ namespace Windows.UI.Xaml
 
 			var propertiesForType = DependencyProperty.GetPropertiesForType(ownerType);
 
-			var entries = new PropertyEntry[propertiesForType.Length];
+			var entries = _pool.Rent(propertiesForType.Length);
 
 			for (int i = 0; i < propertiesForType.Length; i++)
 			{
-				entries[i].Id = propertiesForType[i].UniqueId;
+				ref var entry = ref entries[i];
+				entry.Id = propertiesForType[i].UniqueId;
+				entry.Details = null;
 			}
 
 			// Entries are pre-sorted by the DependencyProperty.GetPropertiesForType method
-			AssignEntries(entries, sort: false);
+			AssignEntries(entries, propertiesForType.Length, sort: false);
 
 			// Prefetch known properties for faster access
 			DataContextPropertyDetails = GetPropertyDetails(dataContextProperty);
 			TemplatedParentPropertyDetails = GetPropertyDetails(templatedParentProperty);
+		}
+
+		public void Dispose()
+		{
+			for (var i = 0; i < _entriesLength; i++)
+			{
+				_entries[i].Details?.Dispose();
+			}
+
+			ReturnEntriesToPool();
 		}
 
 		/// <summary>
@@ -72,21 +89,22 @@ namespace Windows.UI.Xaml
 				if (forceCreate)
 				{
 					// The property was not known at startup time, add it.
-					var newEntries = new PropertyEntry[_entries.Length + 1];
+					var newEntriesSize = _entriesLength + 1;
+					var newEntries = _pool.Rent(newEntriesSize);
 
-					if (_entries.Length != 0)
+					if (_entriesLength != 0)
 					{
-						Array.Copy(_entries, 0, newEntries, 0, _entries.Length);
+						Array.Copy(_entries, 0, newEntries, 0, _entriesLength);
 					}
 
-					ref var newEntry = ref newEntries[_entries.Length];
+					ref var newEntry = ref newEntries[_entriesLength];
 
 					var details = new DependencyPropertyDetails(property, _ownerType);
 
 					newEntry.Id = property.UniqueId;
 					newEntry.Details = details;
 
-					AssignEntries(newEntries, sort: true);
+					AssignEntries(newEntries, newEntriesSize, sort: true);
 
 					return details;
 				}
@@ -106,13 +124,24 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void AssignEntries(PropertyEntry[] newEntries, bool sort)
+		private void AssignEntries(PropertyEntry[] newEntries, int newSize, bool sort)
 		{
+			ReturnEntriesToPool();
+
 			_entries = newEntries;
+			_entriesLength = newSize;
 
 			if (sort)
 			{
-				Array.Sort(newEntries, (l, r) => l.Id - r.Id);
+				Array.Sort(newEntries, 0, newSize, PropertyEntryComparer.Instance);
+			}
+		}
+
+		private void ReturnEntriesToPool()
+		{
+			if (_entries != null)
+			{
+				_pool.Return(_entries);
 			}
 		}
 
@@ -123,7 +152,7 @@ namespace Windows.UI.Xaml
 			const int LinearSearchThreshold = 6;
 
 			int min = 0;
-			int max = _entries.Length - 1;
+			int max = _entriesLength - 1;
 
 			if (max >= 0)
 			{
@@ -167,6 +196,13 @@ namespace Windows.UI.Xaml
 
 			// Should be readonly, see C# 7.2 and up.
 			return ref None;
+		}
+
+		class PropertyEntryComparer : IComparer<PropertyEntry>
+		{
+			public static readonly PropertyEntryComparer Instance = new PropertyEntryComparer();
+
+			public int Compare(PropertyEntry x, PropertyEntry y) => x.Id - y.Id;
 		}
 
 		private struct PropertyEntry

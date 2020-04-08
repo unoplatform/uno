@@ -430,5 +430,22 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 			Assert.AreEqual("Testing text property", textChangedTextBlock.GetDependencyPropertyValue("Text")?.ToString());
 			Assert.AreEqual("Testing text property", lostFocusTextBlock.GetDependencyPropertyValue("Text")?.ToString());
 		}
+
+		[Test]
+		[AutoRetry]
+		public void Focus_Programmatic()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.TextBox.TextBox_Focus_Programmatic");
+
+			_app.WaitForElement("SetFocus");
+
+			_app.FastTap("SetFocus");
+
+			_app.WaitForText("StatusText", "Got focus");
+
+			_app.EnterText("orangutan");
+
+			_app.WaitForText("TargetTextBox", "orangutan");
+		}
 	}
 }

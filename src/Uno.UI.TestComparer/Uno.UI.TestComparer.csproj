@@ -18,7 +18,7 @@
 		<PackageReference Include="Microsoft.TeamFoundationServer.Client" Version="16.153.0" />
 		<PackageReference Include="NUnit" Version="3.12.0" />
 		<PackageReference Include="NUnit.Engine" Version="3.11.1" />
-		<PackageReference Include="Refit" Version="5.0.23" />
+		<PackageReference Include="Refit" Version="5.1.27" />
 		<PackageReference Include="Mono.Options" Version="6.6.0.161" />
 	</ItemGroup>
 

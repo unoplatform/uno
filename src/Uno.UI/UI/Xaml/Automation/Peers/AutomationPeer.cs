@@ -150,6 +150,11 @@ namespace Windows.UI.Xaml.Automation.Peers
 			return false;
 		}
 
+		internal static void RaiseEventIfListener(DependencyObject target, AutomationEvents eventId)
+		{
+			Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseEventIfListener");
+		}
+
 		#endregion
 
 		#region NotImplemented

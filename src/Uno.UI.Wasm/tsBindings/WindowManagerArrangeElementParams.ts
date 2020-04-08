@@ -2,20 +2,20 @@
 class WindowManagerArrangeElementParams
 {
 	/* Pack=4 */
-	Top : number;
-	Left : number;
-	Width : number;
-	Height : number;
-	ClipTop : number;
-	ClipLeft : number;
-	ClipBottom : number;
-	ClipRight : number;
-	HtmlId : number;
-	Clip : boolean;
-	ClipToBounds : boolean;
+	public Top : number;
+	public Left : number;
+	public Width : number;
+	public Height : number;
+	public ClipTop : number;
+	public ClipLeft : number;
+	public ClipBottom : number;
+	public ClipRight : number;
+	public HtmlId : number;
+	public Clip : boolean;
+	public ClipToBounds : boolean;
 	public static unmarshal(pData:number) : WindowManagerArrangeElementParams
 	{
-		let ret = new WindowManagerArrangeElementParams();
+		const ret = new WindowManagerArrangeElementParams();
 		
 		{
 			ret.Top = Number(Module.getValue(pData + 0, "double"));

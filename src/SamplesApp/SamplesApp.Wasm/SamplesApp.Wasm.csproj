@@ -29,15 +29,20 @@
 		<Content Update="Fonts\winjs-symbols.woff2" />
 	</ItemGroup>
 	<ItemGroup>
-		<EmbeddedResource Include="WasmCSS\*.css" />
-		<EmbeddedResource Include="WasmScripts\*.js" />
+		<EmbeddedResource Include="WasmCSS\**\*.css" />
+		<EmbeddedResource Include="WasmScripts\**\*.js" />
 		<UpToDateCheckInput Include="WasmCSS\**\*" />
 		<UpToDateCheckInput Include="WasmScripts\**\*" />
 	</ItemGroup>
+	
 	<ItemGroup>
 		<LinkerDescriptor Include="LinkerConfig.xml" />
 	</ItemGroup>
 	
+	<ItemGroup>
+		<WasmShellMonoEnvironment Include="MONO_GC_PARAMS" Value="soft-heap-limit=512m,nursery-size=64m,evacuation-threshold=66,major=marksweep" />
+	</ItemGroup>
+
 	<ItemGroup>
 		<!-- Required to enable IDBFS (https://github.com/emscripten-core/emscripten/blob/d2148d096e2b5f3ec4886f93e24312ef88976020/ChangeLog.md#v1391-10302019) -->
 		<WasmShellExtraEmccFlags Include="-lidbfs.js" />
@@ -58,7 +63,7 @@
 	<ItemGroup>
 		<PackageReference Include="Microsoft.TypeScript.Compiler" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.1.0" />
+		<PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
 		<PackageReference Include="System.Management" Version="4.6.0" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
 		<PackageReference Include="Uno.CodeGen" Version="1.32.0" />

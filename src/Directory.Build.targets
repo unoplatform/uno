@@ -15,8 +15,8 @@
   <ItemGroup>
     <PackageReference Update="Uno.SourceGenerationTasks" Version="2.0.0-dev.304" />
     <PackageReference Update="Uno.SourceGeneration" Version="2.0.0-dev.304" />
-    <PackageReference Update="Uno.Core" Version="1.29.0" />
-    <PackageReference Update="Uno.Core.Build" Version="1.29.0" />
+    <PackageReference Update="Uno.Core" Version="2.0.0-dev.5" />
+    <PackageReference Update="Uno.Core.Build" Version="2.0.0-dev.5" />
     <PackageReference Update="Uno.Wasm.Bootstrap" Version="1.1.0-dev.433" />
     <DotNetCliToolReference Update="Uno.Wasm.Bootstrap.Cli" Version="1.1.0-dev.433" />
     <PackageReference Update="xamarin.build.download" Version="0.4.11" />

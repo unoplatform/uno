@@ -13,6 +13,7 @@ using Uno.Logging;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
+using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml
 {
@@ -27,18 +28,18 @@ namespace Windows.UI.Xaml
 
 		private protected int? Depth { get; private set; }
 
-		private static class ClassNames
+		private static class UIElementNativeRegistrar
 		{
-			private static readonly Dictionary<Type, string[]> _classNames = new Dictionary<Type, string[]>();
+			private static readonly Dictionary<Type, int> _classNames = new Dictionary<Type, int>();
 
-			internal static string[] GetForType(Type type)
+			internal static int GetForType(Type type)
 			{
-				if (!_classNames.TryGetValue(type, out var names))
+				if (!_classNames.TryGetValue(type, out var classNamesRegistrationId))
 				{
-					_classNames[type] = names = GetClassesForType(type).ToArray();
+					_classNames[type] = classNamesRegistrationId = WindowManagerInterop.RegisterUIElement(type.FullName, GetClassesForType(type).ToArray(), type.Is<FrameworkElement>());
 				}
 
-				return names;
+				return classNamesRegistrationId;
 			}
 
 			private static IEnumerable<string> GetClassesForType(Type type)
@@ -75,6 +76,8 @@ namespace Windows.UI.Xaml
 
 		public UIElement(string htmlTag = "div", bool isSvg = false)
 		{
+			Initialize();
+
 			_gcHandle = GCHandle.Alloc(this, GCHandleType.Weak);
 			_isFrameworkElement = this is FrameworkElement;
 			HtmlTag = htmlTag;
@@ -90,17 +93,13 @@ namespace Windows.UI.Xaml
 				htmlId: HtmlId,
 				htmlTag: HtmlTag,
 				handle: Handle,
-				fullName: type.FullName,
+				uiElementRegistrationId: UIElementNativeRegistrar.GetForType(type),
 				htmlTagIsSvg: HtmlTagIsSvg,
-				isFrameworkElement: _isFrameworkElement,
-				isFocusable: false,
-				classes: ClassNames.GetForType(type)
+				isFocusable: false
 			);
 
 			InitializePointers();
 			UpdateHitTest();
-
-			FocusManager.Track(this);
 		}
 
 		~UIElement()
@@ -109,6 +108,8 @@ namespace Windows.UI.Xaml
 			{
 				this.Log().Debug($"Collecting UIElement for [{HtmlId}]");
 			}
+
+			Cleanup();
 
 			Uno.UI.Xaml.WindowManagerInterop.DestroyView(HtmlId);
 
@@ -435,16 +436,52 @@ namespace Windows.UI.Xaml
 
 		public void ClearChildren()
 		{
-			foreach (var child in _children)
+			for (var i = 0; i < _children.Count; i++)
 			{
-				child.SetParent(null);
-				Uno.UI.Xaml.WindowManagerInterop.RemoveView(HtmlId, child.HtmlId);
+				var child = _children[i];
 
+				RemoveNativeView(child);
 				OnChildRemoved(child);
 			}
 
 			_children.Clear();
 			InvalidateMeasure();
+		}
+
+		private void RemoveNativeView(UIElement child)
+		{
+			var childParent = child.GetParent();
+
+			child.SetParent(null);
+
+			// The parent may already be null if the parent has already been collected.
+			// In such case, there is no need to remove the child from its parent in the DOM.
+			if (childParent != null)
+			{
+				Uno.UI.Xaml.WindowManagerInterop.RemoveView(HtmlId, child.HtmlId);
+			}
+		}
+
+		private void Cleanup()
+		{
+			if (this.GetParent() is UIElement originalParent)
+			{
+				originalParent.RemoveChild(this);
+			}
+
+			if (this is Windows.UI.Xaml.Controls.Panel panel)
+			{
+				panel.Children.Clear();
+			}
+			else
+			{
+				for (var i = 0; i < _children.Count; i++)
+				{
+					RemoveNativeView(_children[i]);
+				}
+
+				_children.Clear();
+			}
 		}
 
 		public bool RemoveChild(UIElement child)
@@ -503,8 +540,8 @@ namespace Windows.UI.Xaml
 		private void OnChildAdded(UIElement child)
 		{
 			if (!FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
-			    || !IsLoaded
-			    || !child._isFrameworkElement)
+				|| !IsLoaded
+				|| !child._isFrameworkElement)
 			{
 				return;
 			}
@@ -522,8 +559,8 @@ namespace Windows.UI.Xaml
 		private void OnChildRemoved(UIElement child)
 		{
 			if (!FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
-			    || !IsLoaded
-			    || !child._isFrameworkElement)
+				|| !IsLoaded
+				|| !child._isFrameworkElement)
 			{
 				return;
 			}
@@ -540,8 +577,9 @@ namespace Windows.UI.Xaml
 
 		internal virtual void ManagedOnLoading()
 		{
-			foreach (var child in _children)
+			for (var i = 0; i < _children.Count; i++)
 			{
+				var child = _children[i];
 				child.ManagedOnLoading();
 			}
 		}
@@ -551,8 +589,9 @@ namespace Windows.UI.Xaml
 			IsLoaded = true;
 			Depth = depth;
 
-			foreach (var child in _children)
+			for (var i = 0; i < _children.Count; i++)
 			{
+				var child = _children[i];
 				child.ManagedOnLoaded(depth + 1);
 			}
 		}
@@ -562,47 +601,15 @@ namespace Windows.UI.Xaml
 			IsLoaded = false;
 			Depth = null;
 
-			foreach (var child in _children)
+			for (var i = 0; i < _children.Count; i++)
 			{
+				var child = _children[i];
 				child.ManagedOnUnloaded();
 			}
 		}
 
 		// We keep track of registered routed events to avoid registering the same one twice (mainly because RemoveHandler is not implemented)
 		private RoutedEventFlag _registeredRoutedEvents;
-
-		partial void AddFocusHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
-		{
-			if (handlersCount != 1
-				// We do not remove event handlers for now, so do not rely only on the handlersCount and keep track of registered events
-				|| _registeredRoutedEvents.HasFlag(routedEvent.Flag))
-			{
-				return;
-			}
-			_registeredRoutedEvents |= routedEvent.Flag;
-
-			string domEventName;
-			if (routedEvent.Flag == RoutedEventFlag.GotFocus)
-			{
-				domEventName = "focus";
-			}
-			else
-			{
-				domEventName = routedEvent.Flag == RoutedEventFlag.LostFocus
-					? "focusout"
-					: throw new ArgumentOutOfRangeException(nameof(routedEvent), "Not a focus event");
-			}
-
-			RegisterEventHandler(
-				domEventName,
-				handler: new RoutedEventHandlerWithHandled((snd, args) => RaiseEvent(routedEvent, args)),
-				onCapturePhase: false,
-				canBubbleNatively: true,
-				eventFilter: HtmlEventFilter.Default,
-				eventExtractor: HtmlEventExtractor.FocusEventExtractor,
-				payloadConverter: PayloadToFocusArgs
-			);
-		}
 
 		partial void AddKeyHandler(RoutedEvent routedEvent, int handlersCount, object handler, bool handledEventsToo)
 		{

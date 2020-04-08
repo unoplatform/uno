@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml
 			{
 				case SolidColorBrush solidColorBrush:
 					var color = solidColorBrush.ColorWithOpacity;
-					SetStyle("background-color", color.ToCssString());
+					SetStyle("background-color", color.ToHexString());
 					RecalculateBrushOnSizeChanged(false);
 					break;
 				case LinearGradientBrush linearGradientBrush:
@@ -180,20 +180,21 @@ namespace Windows.UI.Xaml
 
 		public static readonly DependencyProperty IsEnabledProperty =
 			DependencyProperty.Register(
-				"IsEnabled",
-				typeof(bool),
-				typeof(FrameworkElement),
-				new FrameworkPropertyMetadata(
-					true,
-					FrameworkPropertyMetadataOptions.Inherits,
-					(s, e) =>
+				name: "IsEnabled",
+				propertyType: typeof(bool),
+				ownerType: typeof(FrameworkElement),
+				typeMetadata: new FrameworkPropertyMetadata(
+					defaultValue: true,
+					options: FrameworkPropertyMetadataOptions.Inherits,
+					propertyChangedCallback: (s, e) =>
 					{
 						var elt = (FrameworkElement)s;
 						elt?.OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue);
 						elt?.IsEnabledChanged?.Invoke(s, e);
-					}
+					},
+					coerceValueCallback: (s, v) => (s as FrameworkElement)?.CoerceIsEnabled(v)
 				)
-	);
+		);
 
 		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)
 		{

@@ -2,21 +2,21 @@
 class WindowManagerRegisterEventOnViewParams
 {
 	/* Pack=4 */
-	HtmlId : number;
-	EventName : string;
-	OnCapturePhase : boolean;
-	EventFilterName : string;
-	EventExtractorName : string;
+	public HtmlId : number;
+	public EventName : string;
+	public OnCapturePhase : boolean;
+	public EventFilterId : number;
+	public EventExtractorId : number;
 	public static unmarshal(pData:number) : WindowManagerRegisterEventOnViewParams
 	{
-		let ret = new WindowManagerRegisterEventOnViewParams();
+		const ret = new WindowManagerRegisterEventOnViewParams();
 		
 		{
 			ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
 		}
 		
 		{
-			var ptr = Module.getValue(pData + 4, "*");
+			const ptr = Module.getValue(pData + 4, "*");
 			if(ptr !== 0)
 			{
 				ret.EventName = String(Module.UTF8ToString(ptr));
@@ -33,29 +33,11 @@ class WindowManagerRegisterEventOnViewParams
 		}
 		
 		{
-			var ptr = Module.getValue(pData + 12, "*");
-			if(ptr !== 0)
-			{
-				ret.EventFilterName = String(Module.UTF8ToString(ptr));
-			}
-			else
-			
-			{
-				ret.EventFilterName = null;
-			}
+			ret.EventFilterId = Number(Module.getValue(pData + 12, "i32"));
 		}
 		
 		{
-			var ptr = Module.getValue(pData + 16, "*");
-			if(ptr !== 0)
-			{
-				ret.EventExtractorName = String(Module.UTF8ToString(ptr));
-			}
-			else
-			
-			{
-				ret.EventExtractorName = null;
-			}
+			ret.EventExtractorId = Number(Module.getValue(pData + 16, "i32"));
 		}
 		return ret;
 	}

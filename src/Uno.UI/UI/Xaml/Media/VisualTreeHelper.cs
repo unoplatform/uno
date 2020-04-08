@@ -7,6 +7,9 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using Uno.Extensions;
 using Uno.Disposables;
+using Windows.Globalization.DateTimeFormatting;
+using Uno.UI.Extensions;
+
 #if XAMARIN_IOS
 using UIKit;
 using _View = UIKit.UIView;
@@ -42,11 +45,8 @@ namespace Windows.UI.Xaml.Media
 			throw new NotSupportedException();
 		}
 
-		[Uno.NotImplemented]
 		public static IEnumerable<UIElement> FindElementsInHostCoordinates(Point intersectingPoint, UIElement subtree)
-		{
-			throw new NotSupportedException();
-		}
+			=> FindElementsInHostCoordinates(intersectingPoint, subtree, false);
 
 		[Uno.NotImplemented]
 		public static IEnumerable<UIElement> FindElementsInHostCoordinates(Rect intersectingRect, UIElement subtree)
@@ -54,10 +54,41 @@ namespace Windows.UI.Xaml.Media
 			throw new NotSupportedException();
 		}
 
-		[Uno.NotImplemented]
 		public static IEnumerable<UIElement> FindElementsInHostCoordinates(Point intersectingPoint, UIElement subtree, bool includeAllElements)
 		{
-			throw new NotSupportedException();
+			if (subtree != null)
+			{
+				if(IsElementIntersecting(intersectingPoint, subtree))
+				{
+					yield return subtree;
+				}
+
+				foreach (var child in subtree.GetChildren().OfType<UIElement>())
+				{
+					var canTest = includeAllElements
+						|| ( child.IsHitTestVisible && child.IsViewHit());
+
+					if (child is UIElement uiElement && canTest)
+					{
+						if (IsElementIntersecting(intersectingPoint, uiElement))
+						{
+							yield return uiElement;
+						}
+
+						foreach (var subChild in FindElementsInHostCoordinates(intersectingPoint, child, includeAllElements))
+						{
+							yield return subChild;
+						}
+					}
+				}
+			}
+		}
+
+		private static bool IsElementIntersecting(Point intersectingPoint, UIElement uiElement)
+		{
+			GeneralTransform transformToRoot = uiElement.TransformToVisual(null);
+			var target = transformToRoot.TransformBounds(uiElement.LayoutSlot);
+			return target.Contains(intersectingPoint);
 		}
 
 		[Uno.NotImplemented]

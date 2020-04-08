@@ -2,11 +2,11 @@
 class WindowManagerInitParams
 {
 	/* Pack=4 */
-	IsHostedMode : boolean;
-	IsLoadEventsEnabled : boolean;
+	public IsHostedMode : boolean;
+	public IsLoadEventsEnabled : boolean;
 	public static unmarshal(pData:number) : WindowManagerInitParams
 	{
-		let ret = new WindowManagerInitParams();
+		const ret = new WindowManagerInitParams();
 		
 		{
 			ret.IsHostedMode = Boolean(Module.getValue(pData + 0, "i32"));

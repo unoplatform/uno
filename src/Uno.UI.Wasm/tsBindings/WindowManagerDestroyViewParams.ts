@@ -2,10 +2,10 @@
 class WindowManagerDestroyViewParams
 {
 	/* Pack=4 */
-	HtmlId : number;
+	public HtmlId : number;
 	public static unmarshal(pData:number) : WindowManagerDestroyViewParams
 	{
-		let ret = new WindowManagerDestroyViewParams();
+		const ret = new WindowManagerDestroyViewParams();
 		
 		{
 			ret.HtmlId = Number(Module.getValue(pData + 0, "*"));

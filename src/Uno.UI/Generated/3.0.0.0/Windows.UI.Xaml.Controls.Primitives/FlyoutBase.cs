@@ -232,13 +232,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.FlyoutBase.AreOpenCloseAnimationsEnabled.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.FlyoutBase.AreOpenCloseAnimationsEnabled.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.FlyoutBase.IsOpen.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  void ShowAt( global::Windows.UI.Xaml.DependencyObject placementTarget,  global::Windows.UI.Xaml.Controls.Primitives.FlyoutShowOptions showOptions)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Primitives.FlyoutBase", "void FlyoutBase.ShowAt(DependencyObject placementTarget, FlyoutShowOptions showOptions)");
-		}
-		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.Primitives.FlyoutBase.CreatePresenter()
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]

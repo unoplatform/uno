@@ -5,16 +5,11 @@ using Uno;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	[NotImplemented]
-	public  partial class MenuFlyoutPresenterTemplateSettings : global::Windows.UI.Xaml.DependencyObject
+	public partial class MenuFlyoutPresenterTemplateSettings : global::Windows.UI.Xaml.DependencyObject
 	{
-		public  double FlyoutContentMinWidth
+		public double FlyoutContentMinWidth
 		{
-			get
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Primitives.MenuFlyoutPresenterTemplateSettings", "FlyoutContentMinWidth");
-				return 0;
-			}
+			get; internal set;
 		}
 	}
 }

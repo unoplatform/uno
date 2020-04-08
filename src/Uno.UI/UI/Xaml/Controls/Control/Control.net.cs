@@ -41,21 +41,5 @@ namespace Windows.UI.Xaml.Controls
 		{
 			return this.GetChildren()?.FirstOrDefault() as IFrameworkElement;
 		}
-
-		protected virtual bool RequestFocus(FocusState state)
-		{
-			FocusState = state;
-
-			return true;
-		}
-
-		partial void OnFocusStateChangedPartial(FocusState oldValue, FocusState newValue)
-		{
-			//if (newValue == FocusState.Pointer && Focusable)
-			//{
-			//	//Set native focus to this view
-			//	RequestFocus();
-			//}
-		}
 	}
 }

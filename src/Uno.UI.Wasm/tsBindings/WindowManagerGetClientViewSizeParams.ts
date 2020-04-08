@@ -2,10 +2,10 @@
 class WindowManagerGetClientViewSizeParams
 {
 	/* Pack=4 */
-	HtmlId : number;
+	public HtmlId : number;
 	public static unmarshal(pData:number) : WindowManagerGetClientViewSizeParams
 	{
-		let ret = new WindowManagerGetClientViewSizeParams();
+		const ret = new WindowManagerGetClientViewSizeParams();
 		
 		{
 			ret.HtmlId = Number(Module.getValue(pData + 0, "*"));

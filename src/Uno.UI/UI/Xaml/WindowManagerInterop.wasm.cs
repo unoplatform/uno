@@ -53,25 +53,21 @@ namespace Uno.UI.Xaml
 		#endregion
 
 		#region CreateContent
-		internal static void CreateContent(IntPtr htmlId, string htmlTag, IntPtr handle, string fullName, bool htmlTagIsSvg, bool isFrameworkElement, bool isFocusable, string[] classes)
+		internal static void CreateContent(IntPtr htmlId, string htmlTag, IntPtr handle, int uiElementRegistrationId, bool htmlTagIsSvg, bool isFocusable)
 		{
 			if (UseJavascriptEval)
 			{
 				var isSvgStr = htmlTagIsSvg ? "true" : "false";
-				var isFrameworkElementStr = isFrameworkElement ? "true" : "false";
 				var isFocusableStr = isFocusable ? "true" : "false"; // by default all control are not focusable, it has to be change latter by the control itself
-				var classesParam = classes.Select(c => $"\"{c}\"").JoinBy(",");
 
 				WebAssemblyRuntime.InvokeJS(
 					"Uno.UI.WindowManager.current.createContent({" +
 					"id:\"" + htmlId + "\"," +
 					"tagName:\"" + htmlTag + "\", " +
 					"handle:" + handle + ", " +
-					"type:\"" + fullName + "\", " +
+					"uiElementRegistrationId: " + uiElementRegistrationId + ", " +
 					"isSvg:" + isSvgStr + ", " +
-					"isFrameworkElement:" + isFrameworkElementStr + ", " +
-					"isFocusable:" + isFocusableStr + ", " +
-					"classes:[" + classesParam + "]" +
+					"isFocusable:" + isFocusableStr +
 					"});");
 			}
 			else
@@ -81,12 +77,9 @@ namespace Uno.UI.Xaml
 					HtmlId = htmlId,
 					TagName = htmlTag,
 					Handle = handle,
-					Type = fullName,
+					UIElementRegistrationId = uiElementRegistrationId,
 					IsSvg = htmlTagIsSvg,
-					IsFrameworkElement = isFrameworkElement,
-					IsFocusable = isFocusable,
-					Classes_Length = classes.Length,
-					Classes = classes,
+					IsFocusable = isFocusable
 				};
 
 				TSInteropMarshaller.InvokeJS<WindowManagerCreateContentParams, bool>("Uno:createContentNative", parms);
@@ -104,12 +97,54 @@ namespace Uno.UI.Xaml
 
 			public IntPtr Handle;
 
-			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
-			public string Type;
+			public int UIElementRegistrationId;
 
 			public bool IsSvg;
-			public bool IsFrameworkElement;
 			public bool IsFocusable;
+		}
+
+		#endregion
+
+		#region CreateContent
+		internal static int RegisterUIElement(string typeName, string[] classNames, bool isFrameworkElement)
+		{
+			if (UseJavascriptEval)
+			{
+				var isFrameworkElementStr = isFrameworkElement ? "true" : "false";
+				var classesParam = classNames.Select(c => $"\"{c}\"").JoinBy(",");
+
+				var ret = WebAssemblyRuntime.InvokeJS(
+					"Uno.UI.WindowManager.current.registerUIElement({" +
+					"typeName:\"" + typeName + "\"," +
+					"isFrameworkElement:" + isFrameworkElementStr + ", " +
+					"classes:[" + classesParam + "]" +
+					"});");
+
+				return int.Parse(ret);
+			}
+			else
+			{
+				var parms = new WindowManagerRegisterUIElementParams
+				{
+					TypeName = typeName,
+					IsFrameworkElement = isFrameworkElement,
+					Classes_Length = classNames.Length,
+					Classes = classNames,
+				};
+
+				var ret = TSInteropMarshaller.InvokeJS<WindowManagerRegisterUIElementParams, WindowManagerRegisterUIElementReturn>("Uno:registerUIElementNative", parms);
+				return ret.RegistrationId;
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerRegisterUIElementParams
+		{
+			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
+			public string TypeName;
+
+			public bool IsFrameworkElement;
 
 			public int Classes_Length;
 
@@ -117,6 +152,12 @@ namespace Uno.UI.Xaml
 			public string[] Classes;
 		}
 
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerRegisterUIElementReturn
+		{
+			public int RegistrationId;
+		}
 		#endregion
 
 		#region SetElementTransform
@@ -163,6 +204,40 @@ namespace Uno.UI.Xaml
 			public double M32;
 
 			public IntPtr HtmlId;
+		}
+
+		#endregion
+
+		#region SetPointerEvents
+
+		internal static void SetPointerEvents(IntPtr htmlId, bool enabled)
+		{
+			if (UseJavascriptEval)
+			{
+				var enabledString = enabled ? "true" : "false";
+
+				var command = "Uno.UI.WindowManager.current.setPointerEvents(" + htmlId + ", " + enabledString + ");";
+				WebAssemblyRuntime.InvokeJS(command);
+			}
+			else
+			{
+				var parms = new WindowManagerSetPointerEventsParams
+				{
+					HtmlId = htmlId,
+					Enabled = enabled
+				};
+
+				TSInteropMarshaller.InvokeJS<WindowManagerSetPointerEventsParams, bool>("Uno:setPointerEventsNative", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 4)]
+		private struct WindowManagerSetPointerEventsParams
+		{
+			public IntPtr HtmlId;
+
+			public bool Enabled;
 		}
 
 		#endregion
@@ -249,6 +324,51 @@ namespace Uno.UI.Xaml
 			public string Name;
 
 			public double Value;
+		}
+
+		#endregion
+
+		#region SetRectanglePosition
+
+		internal static void SetSvgElementRect(IntPtr htmlId, Rect rect)
+		{
+			if (UseJavascriptEval)
+			{
+				SetAttributes(
+					htmlId,
+					new[]{
+						("x", rect.X.ToStringInvariant()),
+						("y", rect.Y.ToStringInvariant()),
+						("width", rect.Width.ToStringInvariant()),
+						("height", rect.Height.ToStringInvariant())
+					}
+				);
+			}
+			else
+			{
+				var parms = new WindowManagerSetSvgElementRectParams
+				{
+					HtmlId = htmlId,
+					X = rect.X,
+					Y = rect.Y,
+					Width = rect.Width,
+					Height = rect.Height,
+				};
+
+				TSInteropMarshaller.InvokeJS<WindowManagerSetSvgElementRectParams>("Uno:setSvgElementRect", parms);
+			}
+		}
+
+		[TSInteropMessage]
+		[StructLayout(LayoutKind.Sequential, Pack = 8)]
+		private struct WindowManagerSetSvgElementRectParams
+		{
+			public double X;
+			public double Y;
+			public double Width;
+			public double Height;
+
+			public IntPtr HtmlId;
 		}
 
 		#endregion
@@ -723,12 +843,12 @@ namespace Uno.UI.Xaml
 		#endregion
 
 		#region RegisterEventOnView
-		internal static void RegisterEventOnView(IntPtr htmlId, string eventName, bool onCapturePhase, string eventFilterName, string eventExtractorName)
+		internal static void RegisterEventOnView(IntPtr htmlId, string eventName, bool onCapturePhase, int eventFilterId, int eventExtractorId)
 		{
 			if (UseJavascriptEval)
 			{
 				var onCapturePhaseStr = onCapturePhase ? "true" : "false";
-				var cmd = $"Uno.UI.WindowManager.current.registerEventOnView(\"{htmlId}\", \"{eventName}\", {onCapturePhaseStr}, \"{eventFilterName}\", \"{eventExtractorName}\");";
+				var cmd = $"Uno.UI.WindowManager.current.registerEventOnView(\"{htmlId}\", \"{eventName}\", {onCapturePhaseStr}, {eventFilterId}, {eventExtractorId});";
 
 				WebAssemblyRuntime.InvokeJS(cmd);
 			}
@@ -739,8 +859,8 @@ namespace Uno.UI.Xaml
 					HtmlId = htmlId,
 					EventName = eventName,
 					OnCapturePhase = onCapturePhase,
-					EventFilterName = eventFilterName,
-					EventExtractorName = eventExtractorName,
+					EventFilterId = eventFilterId,
+					EventExtractorId = eventExtractorId,
 				};
 
 				TSInteropMarshaller.InvokeJS<WindowManagerRegisterEventOnViewParams>("Uno:registerEventOnViewNative", parms);
@@ -758,11 +878,9 @@ namespace Uno.UI.Xaml
 
 			public bool OnCapturePhase;
 
-			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
-			public string EventFilterName;
+			public int EventFilterId;
 
-			[MarshalAs(TSInteropMarshaller.LPUTF8Str)]
-			public string EventExtractorName;
+			public int EventExtractorId;
 		}
 		#endregion
 

@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 	public partial class Magnetometer
 	{
 		private readonly Sensor _sensor;
-		private uint _reportInterval = 0;
+		private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
 		private MagnetometerListener _listener;
 
@@ -55,7 +55,10 @@ namespace Windows.Devices.Sensors
 		private void StartReading()
 		{
 			_listener = new MagnetometerListener(this);
-			SensorHelpers.GetSensorManager().RegisterListener(_listener, _sensor, SensorDelay.Normal);
+			SensorHelpers.GetSensorManager().RegisterListener(
+				_listener,
+				_sensor,
+				(SensorDelay)(_reportInterval * 1000));
 		}
 
 		private void StopReading()

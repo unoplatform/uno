@@ -166,11 +166,6 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-
-		internal void Dispose()
-		{
-		}
-
 		/// <summary>
 		/// Sets the source value for the the specified <paramref name="property"/>
 		/// </summary>

@@ -1,4 +1,4 @@
-﻿using Microsoft.Practices.ServiceLocation;
+﻿using CommonServiceLocator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Logging;
@@ -21,6 +21,7 @@ using Windows.UI.Xaml.Media;
 using Uno.Conversion;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml.Controls;
+using System.Threading;
 
 namespace Uno.UI.Tests.BinderTests
 {
@@ -869,6 +870,40 @@ namespace Uno.UI.Tests.BinderTests
 
 			SUT.Property1 = 42;
 			Assert.AreEqual(42, SUT.Property2);
+		}
+
+
+		[TestMethod]
+		public void When_Parent_Collected()
+		{
+			var SUT = new Grid();
+			var parentChanged = 0;
+			SUT.RegisterParentChangedCallback(null, (s, e, a) => parentChanged++);
+
+			static WeakReference SetParent(Grid sut)
+			{
+				var parent = new Border();
+				sut.SetParent(parent);
+				return new WeakReference(parent);
+			}
+
+			var wr = SetParent(SUT);
+
+			int count = 10;
+			while (wr.IsAlive && (count-- > 0))
+			{
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+				Thread.Sleep(100);
+			}
+
+			Assert.IsNull(wr.Target);
+
+			Assert.AreEqual(1, parentChanged);
+
+			SUT.SetParent(null);
+
+			Assert.AreEqual(2, parentChanged);
 		}
 
 		public partial class BaseTarget : DependencyObject

@@ -5,8 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests
 {
@@ -22,14 +24,18 @@ namespace SamplesApp.UITests
 		{
 			Run("SamplesApp.Samples.UnitTests.UnitTestsPage");
 
-			var runButton = _app.Marked("runButton");
-			var failedTestsCount = _app.Marked("failedTestCount");
-			var failedTests = _app.Marked("failedTests");
-			var runningState = _app.Marked("runningState");
-			var runTestCount = _app.Marked("runTestCount");
+			IAppQuery AllQuery(IAppQuery query)
+				// .All() is not yet supported for wasm.
+				=> AppInitializer.GetLocalPlatform() == Platform.Browser ? query : query.All();
+
+			var runButton = new QueryEx(q => AllQuery(q).Marked("runButton"));
+			var failedTestsCount = new QueryEx(q => AllQuery(q).Marked("failedTestCount"));
+			var failedTests = new QueryEx(q => AllQuery(q).Marked("failedTests"));
+			var runningState = new QueryEx(q => AllQuery(q).Marked("runningState"));
+			var runTestCount = new QueryEx(q => AllQuery(q).Marked("runTestCount"));
 
 			bool IsTestExecutionDone()
-				=> runningState.GetDependencyPropertyValue<string>("Text").Equals("Finished", StringComparison.OrdinalIgnoreCase);
+				=> runningState.GetDependencyPropertyValue("Text")?.ToString().Equals("Finished", StringComparison.OrdinalIgnoreCase) ?? false;
 
 			_app.WaitForElement(runButton);
 
@@ -40,7 +46,7 @@ namespace SamplesApp.UITests
 
 			while(DateTimeOffset.Now - lastChange < TestRunTimeout)
 			{
-				var newValue = runTestCount.GetDependencyPropertyValue<string>("Text");
+				var newValue = runTestCount.GetDependencyPropertyValue("Text")?.ToString();
 
 				if (lastValue != newValue)
 				{

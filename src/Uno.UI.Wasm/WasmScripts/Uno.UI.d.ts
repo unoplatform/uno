@@ -56,14 +56,12 @@ declare namespace Uno.Http {
 }
 declare module Uno.UI {
     interface IContentDefinition {
-        id: number;
+        id: string;
         tagName: string;
         handle: number;
-        type: string;
+        uiElementRegistrationId: number;
         isSvg: boolean;
-        isFrameworkElement: boolean;
         isFocusable: boolean;
-        classes?: string[];
     }
 }
 declare namespace MonoSupport {
@@ -72,11 +70,9 @@ declare namespace MonoSupport {
      * unmarshaled invocation of javascript from .NET code.
      * */
     class jsCallDispatcher {
-        static registrations: Map<string, any>;
-        static methodMap: {
-            [id: number]: any;
-        };
-        static _isUnoRegistered: boolean;
+        private static registrations;
+        private static methodMap;
+        private static _isUnoRegistered;
         /**
          * Registers a instance for a specified identier
          * @param identifier the scope name
@@ -102,6 +98,7 @@ declare namespace MonoSupport {
          * @param boundMethod the method to call
          */
         private static cacheMethod;
+        private static getMethodMapId;
     }
 }
 declare namespace Uno.UI {
@@ -151,8 +148,10 @@ declare namespace Uno.UI {
         private rootContent;
         private cursorStyleElement;
         private allActiveElementsById;
+        private uiElementRegistrations;
         private static resizeMethod;
         private static dispatchEventMethod;
+        private static focusInMethod;
         private static getDependencyPropertyValueMethod;
         private static setDependencyPropertyValueMethod;
         private constructor();
@@ -179,6 +178,8 @@ declare namespace Uno.UI {
             */
         createContentNative(pParams: number): boolean;
         private createContentInternal;
+        registerUIElement(typeName: string, isFrameworkElement: boolean, classNames: string[]): number;
+        registerUIElementNative(pParams: number, pReturn: number): boolean;
         getView(elementHandle: number): HTMLElement | SVGElement;
         /**
             * Set a name for an element.
@@ -295,6 +296,8 @@ declare namespace Uno.UI {
         *
         */
         setElementTransformNative(pParams: number): boolean;
+        private setPointerEvents;
+        setPointerEventsNative(pParams: number): boolean;
         /**
             * Load the specified URL into a new tab or window
             * @param url URL to load
@@ -321,7 +324,7 @@ declare namespace Uno.UI {
             * @param eventName The name of the event
             * @param onCapturePhase true means "on trickle down" (going down to target), false means "on bubble up" (bubbling back to ancestors). Default is false.
             */
-        registerEventOnView(elementId: number, eventName: string, onCapturePhase?: boolean, eventFilterName?: string, eventExtractorName?: string): string;
+        registerEventOnView(elementId: number, eventName: string, onCapturePhase: boolean, eventFilterId: number, eventExtractorId: number): string;
         /**
             * Add an event handler to a html element.
             *
@@ -438,6 +441,7 @@ declare namespace Uno.UI {
         getBBox(elementId: number): string;
         getBBoxNative(pParams: number, pReturn: number): boolean;
         private getBBoxInternal;
+        setSvgElementRect(pParams: number): boolean;
         /**
             * Use the Html engine to measure the element using specified constraints.
             *
@@ -520,8 +524,11 @@ declare namespace Uno.UI {
         private initDom;
         private removeLoading;
         private resize;
+        private onfocusin;
+        private onWindowBlur;
         private dispatchEvent;
         private getIsConnectedToRootElement;
+        private handleToString;
         setCursor(cssCursor: string): string;
     }
 }
@@ -554,12 +561,9 @@ declare class WindowManagerCreateContentParams {
     HtmlId: number;
     TagName: string;
     Handle: number;
-    Type: string;
+    UIElementRegistrationId: number;
     IsSvg: boolean;
-    IsFrameworkElement: boolean;
     IsFocusable: boolean;
-    Classes_Length: number;
-    Classes: Array<string>;
     static unmarshal(pData: number): WindowManagerCreateContentParams;
 }
 declare class WindowManagerDestroyViewParams {
@@ -608,9 +612,20 @@ declare class WindowManagerRegisterEventOnViewParams {
     HtmlId: number;
     EventName: string;
     OnCapturePhase: boolean;
-    EventFilterName: string;
-    EventExtractorName: string;
+    EventFilterId: number;
+    EventExtractorId: number;
     static unmarshal(pData: number): WindowManagerRegisterEventOnViewParams;
+}
+declare class WindowManagerRegisterUIElementParams {
+    TypeName: string;
+    IsFrameworkElement: boolean;
+    Classes_Length: number;
+    Classes: Array<string>;
+    static unmarshal(pData: number): WindowManagerRegisterUIElementParams;
+}
+declare class WindowManagerRegisterUIElementReturn {
+    RegistrationId: number;
+    marshal(pData: number): void;
 }
 declare class WindowManagerRemoveAttributeParams {
     HtmlId: number;
@@ -676,6 +691,11 @@ declare class WindowManagerSetNameParams {
     Name: string;
     static unmarshal(pData: number): WindowManagerSetNameParams;
 }
+declare class WindowManagerSetPointerEventsParams {
+    HtmlId: number;
+    Enabled: boolean;
+    static unmarshal(pData: number): WindowManagerSetPointerEventsParams;
+}
 declare class WindowManagerSetPropertyParams {
     HtmlId: number;
     Pairs_Length: number;
@@ -693,6 +713,14 @@ declare class WindowManagerSetStylesParams {
     Pairs_Length: number;
     Pairs: Array<string>;
     static unmarshal(pData: number): WindowManagerSetStylesParams;
+}
+declare class WindowManagerSetSvgElementRectParams {
+    X: number;
+    Y: number;
+    Width: number;
+    Height: number;
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerSetSvgElementRectParams;
 }
 declare class WindowManagerSetXUidParams {
     HtmlId: number;

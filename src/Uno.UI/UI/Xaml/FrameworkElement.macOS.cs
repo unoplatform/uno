@@ -20,6 +20,10 @@ namespace Windows.UI.Xaml
 
 		partial void Initialize();
 
+		internal bool RequiresArrange { get; private set; }
+
+		internal bool RequiresMeasure { get; private set; }
+
 		public override bool NeedsLayout
 		{
 			set
@@ -29,15 +33,38 @@ namespace Windows.UI.Xaml
 					base.NeedsLayout = value;
 				}
 
-				RequiresMeasure = true;
-				RequiresArrange = true;
-
 				if (ShouldInterceptInvalidate)
 				{
 					return;
 				}
+			}
+		}
 
-				SetSuperviewNeedsLayout();
+		protected internal override void OnInvalidateMeasure()
+		{
+			base.OnInvalidateMeasure();
+
+			// Note that the reliance on NSView.NeedsLayout to invalidate the measure / arrange phases for
+			// self and parents.NeedsLayout is set to true when NSView.Frame is different from iOS, causing
+			// a chain of multiple unneeded updates for the element and its parents. OnInvalidateMeasure
+			// sets NeedsLayout to true and propagates to the parent but NeedsLayout by itself does not.
+
+			if (!RequiresMeasure)
+			{
+				RequiresArrange = true;
+				RequiresMeasure = true;
+
+				if (Parent is FrameworkElement fe)
+				{
+					if (!fe.RequiresMeasure)
+					{
+						fe.InvalidateMeasure();
+					}
+				}
+				else if (Parent is IFrameworkElement ife)
+				{
+					ife.InvalidateMeasure();
+				}
 			}
 		}
 
@@ -56,33 +83,33 @@ namespace Windows.UI.Xaml
 		{
 			try
 			{
-				try
+				_inLayoutSubviews = true;
+
+				if (RequiresMeasure)
 				{
-					_inLayoutSubviews = true;
-
-					if (RequiresMeasure)
-					{
-						XamlMeasure(Bounds.Size);
-					}
-
-					OnBeforeArrange();
-
-					var size = SizeFromUISize(Bounds.Size);
-					_layouter.Arrange(new Rect(0, 0, size.Width, size.Height));
-
-					OnAfterArrange();
+					XamlMeasure(Bounds.Size);
 				}
-				finally
-				{
-					_inLayoutSubviews = false;
-					RequiresArrange = false;
-				}
+
+				OnBeforeArrange();
+
+				var size = SizeFromUISize(Bounds.Size);
+
+				_layouter.Arrange(new Rect(0, 0, size.Width, size.Height));
+
+				OnAfterArrange();
 			}
 			catch (Exception e)
 			{
 				this.Log().Error($"Layout failed in {GetType()}", e);
 			}
+			finally
+			{
+				_inLayoutSubviews = false;
+				RequiresMeasure = false;
+				RequiresArrange = false;
+			}
 		}
+
 		/// <summary>
 		/// Called before Arrange is called, this method will be deprecated
 		/// once OnMeasure/OnArrange will be implemented completely
@@ -103,7 +130,7 @@ namespace Windows.UI.Xaml
 
 		}
 
-		private CGSize? XamlMeasure(CGSize availableSize)
+		internal CGSize? XamlMeasure(CGSize availableSize)
 		{
 			// If set layout has not been called, we can 
 			// return a previously cached result for the same available size.

@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
-namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
+namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 {
 	[TestFixture]
 	public partial class NativeCommandBar_Tests : SampleControlUITestBase
@@ -61,6 +61,28 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 			Assert.IsTrue(innerTextBoxResult.Rect.Width <= myCommandBarResult.Rect.Width / 2, "TextBox Width is too large");
 
 			TakeScreenshot("Left");
+		}
+
+		[Test]
+		[AutoRetry]
+		public void When_TextBlock_Centred_Native_Frame()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.CommandBar.CommandBar_Native_Frame");
+
+			_app.WaitForElement("NavigateInitialButton");
+			_app.FastTap("NavigateInitialButton");
+
+			_app.WaitForElement("NavigateDetailButton");
+			_app.FastTap("NavigateDetailButton");
+
+			_app.WaitForElement("NavigateBackButton");
+			_app.FastTap("NavigateBackButton");
+
+			_app.WaitForElement("CommandBarTitleText");
+			var rect = _app.GetRect("CommandBarTitleText");
+
+			Assert.Greater(rect.Height, 1);
+
 		}
 	}
 }

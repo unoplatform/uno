@@ -7,16 +7,6 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class ItemCollection : global::Windows.Foundation.Collections.IObservableVector<object>,global::System.Collections.Generic.IList<object>,global::System.Collections.Generic.IEnumerable<object>
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  uint Size
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint ItemCollection.Size is not implemented in Uno.");
-			}
-		}
-		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemCollection.VectorChanged.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemCollection.VectorChanged.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemCollection.GetAt(uint)

@@ -7,9 +7,6 @@
 
     <x:Double x:Key="MenuBarHeight">40</x:Double>
 
-    <!--
-	ThemeResources are not yet supported.
-
 	<ResourceDictionary.ThemeDictionaries>
         <ResourceDictionary x:Key="Dark">
             <StaticResource x:Key="MenuBarBackground" ResourceKey="SystemControlTransparentBrush" />
@@ -59,23 +56,5 @@
             <StaticResource x:Key="MenuBarItemBorderBrushSelected" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
         </ResourceDictionary>
     </ResourceDictionary.ThemeDictionaries>
-
-	Below is the light theme.
-	-->
-
-	<StaticResource x:Key="MenuBarBackground" ResourceKey="SystemControlTransparentBrush" />
-
-	<StaticResource x:Key="MenuBarItemBackground" ResourceKey="SystemControlTransparentBrush" />
-	<StaticResource x:Key="MenuBarItemBackgroundPointerOver" ResourceKey="SystemControlBackgroundListLowBrush" />
-	<StaticResource x:Key="MenuBarItemBackgroundPressed" ResourceKey="SystemControlBackgroundListMediumBrush" />
-	<StaticResource x:Key="MenuBarItemBackgroundSelected" ResourceKey="SystemControlBackgroundListMediumBrush" />
-
-	<Thickness x:Key="MenuBarItemBorderThickness">0</Thickness>
-
-	<StaticResource x:Key="MenuBarItemBorderBrush" ResourceKey="SystemControlForegroundBaseMediumLowBrush" />
-	<StaticResource x:Key="MenuBarItemBorderBrushPointerOver" ResourceKey="SystemControlHighlightBaseMediumBrush" />
-	<StaticResource x:Key="MenuBarItemBorderBrushPressed" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
-	<StaticResource x:Key="MenuBarItemBorderBrushSelected" ResourceKey="SystemControlHighlightBaseMediumLowBrush" />
-
 
 </ResourceDictionary>

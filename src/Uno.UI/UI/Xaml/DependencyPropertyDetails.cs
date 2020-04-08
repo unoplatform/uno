@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml
 	/// <summary>
 	/// Represents the stack of values used by the Dependency Property Value Precedence system
 	/// </summary>
-	internal class DependencyPropertyDetails : IEnumerable<object>, IEnumerable
+	internal class DependencyPropertyDetails : IEnumerable<object>, IEnumerable, IDisposable
 	{
 		private DependencyPropertyValuePrecedences _highestPrecedence = DependencyPropertyValuePrecedences.DefaultValue;
 		private BindingExpression _lastBindings;
@@ -29,8 +29,9 @@ namespace Windows.UI.Xaml
 			_stack = _pool.Rent(MaxIndex + 1);
 		}
 
-		~DependencyPropertyDetails()
+		public void Dispose()
 		{
+			CallbackManager.Dispose();
 			_pool.Return(_stack, clearArray: true);
 		}
 

@@ -13,7 +13,7 @@ namespace Windows.Devices.Sensors
 	public partial class Gyrometer
 	{
 		private readonly Sensor _sensor;
-		private uint _reportInterval = 0;
+		private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
 		private GyrometerListener _listener;
 
@@ -55,7 +55,10 @@ namespace Windows.Devices.Sensors
 		private void StartReading()
 		{
 			_listener = new GyrometerListener(this);
-			SensorHelpers.GetSensorManager().RegisterListener(_listener, _sensor, SensorDelay.Normal);
+			SensorHelpers.GetSensorManager().RegisterListener(
+				_listener,
+				_sensor,
+				(SensorDelay)(_reportInterval * 1000));
 		}
 
 		private void StopReading()
@@ -70,7 +73,7 @@ namespace Windows.Devices.Sensors
 
 		private class GyrometerListener : Java.Lang.Object, ISensorEventListener, IDisposable
 		{
-			private readonly Gyrometer _gyrometer;			
+			private readonly Gyrometer _gyrometer;
 
 			public GyrometerListener(Gyrometer gyrometer)
 			{

@@ -2,12 +2,12 @@
 class WindowManagerAddViewParams
 {
 	/* Pack=4 */
-	HtmlId : number;
-	ChildView : number;
-	Index : number;
+	public HtmlId : number;
+	public ChildView : number;
+	public Index : number;
 	public static unmarshal(pData:number) : WindowManagerAddViewParams
 	{
-		let ret = new WindowManagerAddViewParams();
+		const ret = new WindowManagerAddViewParams();
 		
 		{
 			ret.HtmlId = Number(Module.getValue(pData + 0, "*"));

@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Shapes
 
 		partial void OnDataChanged()
 		{
-			this.SetNeedsLayout();
+			this.InvalidateMeasure();
 		}
 	}
 }

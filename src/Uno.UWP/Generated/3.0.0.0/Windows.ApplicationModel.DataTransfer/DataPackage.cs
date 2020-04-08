@@ -7,7 +7,7 @@ namespace Windows.ApplicationModel.DataTransfer
 	#endif
 	public  partial class DataPackage 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.DataTransfer.DataPackageOperation RequestedOperation
 		{

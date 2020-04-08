@@ -75,13 +75,22 @@ namespace Windows.UI.Xaml
 
 		public bool IsEnabled
 		{
-			get { return (bool)GetValue(IsEnableddProperty); }
-			set { SetValue(IsEnableddProperty, value); }
+			get { return (bool)GetValue(IsEnabledProperty); }
+			set { SetValue(IsEnabledProperty, value); }
 		}
 
 		// Using a DependencyProperty as the backing store for Enabled.  This enables animation, styling, binding, etc...
-		public static readonly DependencyProperty IsEnableddProperty =
-			DependencyProperty.Register("IsEnabled", typeof(bool), typeof(FrameworkElement), new PropertyMetadata(true, (s, e) => ((FrameworkElement)s)?.OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue)));
+		public static readonly DependencyProperty IsEnabledProperty =
+			DependencyProperty.Register(
+				"IsEnabled",
+				typeof(bool),
+				typeof(FrameworkElement),
+				new PropertyMetadata(
+					defaultValue: true,
+					propertyChangedCallback: (s, e) => ((FrameworkElement)s)?.OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue),
+					coerceValueCallback: (s, v) => (s as FrameworkElement)?.CoerceIsEnabled(v)
+				)
+			);
 
 		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)
 		{

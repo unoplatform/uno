@@ -10,9 +10,8 @@ namespace Windows.UI.Xaml.Controls
 		private TextBoxView _textBoxView;
 		
 		protected override bool IsDelegatingFocusToTemplateChild() => true; // _textBoxView
-		protected override bool RequestFocus(FocusState state) => FocusTextView();
 		partial void OnTextClearedPartial() => FocusTextView();
-		protected virtual bool FocusTextView() => FocusManager.Focus(_textBoxView);
+		internal bool FocusTextView() => FocusManager.FocusNative(_textBoxView);
 
 		private void UpdateTextBoxView()
 		{
