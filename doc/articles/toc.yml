@@ -43,7 +43,7 @@
     - name: Migrating a class library to Uno
       href: howto-migrate-existing-code.md
     - name: Migrating existing UWP app to Uno
-      href: getting-started/migrating-apps.md
+      href: migrating-apps.md
 - name: Using Uno - features and controls
   items:
   - name: Accessibility
@@ -90,10 +90,18 @@
     href: features\windows-phone-devices-notification-vibrationdevice.md
   - name: Windows.UI.StartScreen
     href: features\windows-ui-startscreen.md
+  - name: Windows.Devices.Geolocation
+    href: features\windows-devices-geolocation.md
+  - name: Windows.System
+    href: features\windows-system.md
+  - name: Windows.UI.ViewManagement
+    href: features\windows-ui-viewmanagement.md
   - name: CommandBar
     href: controls\commandbar.md
   - name: ListView and GridView
     href: controls\ListViewBase.md
+  - name: ComboBox
+    href: controls\ComboBox.md
   - name: MapControl
     href: controls\map-control-support.md
   - name: MediaPlayerElement
@@ -102,6 +110,8 @@
     href: controls\Pivot.md
   - name: ToggleSwitch
     href: controls\ToggleSwitch.md
+  - name: MenuFlyout
+    href: controls\MenuFlyout.md
   - name: VisibleBoundsPadding
     href: features\VisibleBoundsPadding.md
 - name: Using Uno - implemented views
@@ -131,10 +141,16 @@
       href: contributing\build-artifacts.md
     - name: Building and debugging Uno.UI
       href: uno-development\debugging-uno-ui.md
+    - name: Building Uno.UI for macOS using Visual Studio for Mac
+      href: uno-development\building-uno-macos.md
     - name: Working with the samples applications
       href: uno-development\working-with-the-samples-apps.md
     - name: Inspecting the visual tree
       href: uno-development\debugging-inspect-visual-tree.md
+    - name: Using GitPod
+      href: features\working-with-gitpod.md
+    - name: Adding functionality with API extensions
+      href: uno-development\api-extensions.md
     - name: The WeakEventHelper class
       href: uno-development\Internal-WeakEventHelper.md
     - name: Layouting in Android
@@ -145,3 +161,7 @@
       href: uno-development\Uno-UI-Debugging-Android-Studio.md
     - name: The Uno.UI WebAssembly WPF Host
       href: uno-development\working-with-uno-wpf-host.md
+    - name: Uno.UI release procedure
+      href: uno-development\release-procedure.md
+    - name: Guidelines for updating dependencies
+      href: contributing\guidelines\updating-dependencies.md
