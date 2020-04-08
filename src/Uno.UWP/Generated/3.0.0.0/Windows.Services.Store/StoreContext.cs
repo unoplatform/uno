@@ -58,7 +58,7 @@ namespace Windows.Services.Store
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StoreProductResult> StoreContext.GetStoreProductForCurrentAppAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Services.Store.StoreProductQueryResult> GetStoreProductsAsync( global::System.Collections.Generic.IEnumerable<string> productKinds,  global::System.Collections.Generic.IEnumerable<string> storeIds)
 		{

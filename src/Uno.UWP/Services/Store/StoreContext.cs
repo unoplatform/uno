@@ -1,9 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Windows.Foundation;
 
 namespace Windows.Services.Store
@@ -12,9 +8,12 @@ namespace Windows.Services.Store
     {
 		private StoreContext() { }
 
-		public static StoreContext GetDefault()
-		{
-			return new StoreContext();
-		}
+		public static StoreContext GetDefault() => new StoreContext();
+
+		public IAsyncOperation<StoreProductQueryResult> GetStoreProductsAsync(
+			IEnumerable<string> productKinds,
+			IEnumerable<string> storeIds) =>
+			GetStoreProductsImplAsync(productKinds, storeIds)
+				.AsAsyncOperation();
 	}
 }

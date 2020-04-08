@@ -27,6 +27,16 @@ namespace Windows.Services.Store
 				};
 			});
 		}
+
+		public IAsyncOperation<StoreProductQueryResult> GetAssociatedStoreProductsAsync(IEnumerable<string> productKinds)
+		{
+			new SKProductsRequest();
+		}
+
+		public IAsyncOperation<StoreProductPagedQueryResult> GetAssociatedStoreProductsWithPagingAsync(IEnumerable<string> productKinds, uint maxItemsToRetrievePerPage)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StoreProductPagedQueryResult> StoreContext.GetAssociatedStoreProductsWithPagingAsync(IEnumerable<string> productKinds, uint maxItemsToRetrievePerPage) is not implemented in Uno.");
+		}
 	}
 }
 #endif

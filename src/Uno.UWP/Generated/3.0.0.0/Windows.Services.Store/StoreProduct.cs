@@ -7,7 +7,7 @@ namespace Windows.Services.Store
 	#endif
 	public  partial class StoreProduct 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Description
 		{
@@ -77,7 +77,7 @@ namespace Windows.Services.Store
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Language
 		{
@@ -88,7 +88,7 @@ namespace Windows.Services.Store
 		}
 		#endif
 		// Skipping already declared property LinkUri
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Services.Store.StorePrice Price
 		{
@@ -98,7 +98,7 @@ namespace Windows.Services.Store
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string ProductKind
 		{
@@ -119,7 +119,7 @@ namespace Windows.Services.Store
 		}
 		#endif
 		// Skipping already declared property StoreId
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || false || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string Title
 		{

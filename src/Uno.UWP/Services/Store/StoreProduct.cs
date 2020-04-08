@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Windows.Services.Store
 {
-	public sealed class StoreProduct
+	public partial class StoreProduct
     {
 		internal StoreProduct() { }
 
@@ -31,5 +31,15 @@ namespace Windows.Services.Store
 		/// Android: https://play.google.com/store/apps/details?id=com.twitter.android
 		/// </remarks>
 		public Uri LinkUri { get; internal set; }
+
+		public string Language { get; internal set; }
+
+		public string Description { get; internal set; }
+
+		public string Title { get; internal set; }
+
+		public string ProductKind { get; internal set; }
+
+		public StorePrice Price { get; internal set; }
 	}
 }
