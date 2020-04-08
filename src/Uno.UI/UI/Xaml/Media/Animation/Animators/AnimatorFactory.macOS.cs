@@ -16,5 +16,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			return new NotSupportedAnimator();
 		}
+
+		private static IValueAnimator CreateColor(Timeline timeline, ColorOffset startingValue, ColorOffset targetValue)
+		{
+			return new NotSupportedAnimator();
+		}
 	}
 }
