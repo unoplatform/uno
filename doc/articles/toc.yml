@@ -159,8 +159,6 @@
       href: uno-development\Uno-UI-Layouting-iOS.md
     - name: Debugging Uno.UI Java code with Android studio
       href: uno-development\Uno-UI-Debugging-Android-Studio.md
-    - name: The Uno.UI WebAssembly WPF Host
-      href: uno-development\working-with-uno-wpf-host.md
     - name: Uno.UI release procedure
       href: uno-development\release-procedure.md
     - name: Guidelines for updating dependencies
