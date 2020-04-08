@@ -78,5 +78,37 @@ public sealed partial class StoreContext
 		{
 			return new StoreRateAndReviewResult(StoreRateAndReviewStatus.Error, ex);
 		}
+
+		public async Task<StoreProductQueryResult> GetStoreProductsImplAsync(
+			IEnumerable<string> productKinds,
+			IEnumerable<string> storeIds)
+		{
+			var productIdentifiers = NSSet.MakeNSObjectSet(
+				storeIds.Select(id => new NSString(id)).ToArray());
+
+			var completionSource = new TaskCompletionSource<SKProductsResponse>();
+
+			using (var requestDelegate = new ProductRequestDelegate(completionSource))
+			{
+				var productsRequest = new SKProductsRequest(productIdentifiers)
+				{
+					Delegate = requestDelegate
+				};
+				productsRequest.Start();
+
+				try
+				{
+					var response = await completionSource.Task;
+					var storeProducts = response.Products
+						.Select(p => p.ToStoreProduct())
+						.ToArray();
+					return new StoreProductQueryResult(storeProducts);
+				}
+				catch (Exception ex)
+				{
+					return new StoreProductQueryResult(ex);
+				}
+			}
+		}
 	}
 }
