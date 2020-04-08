@@ -177,4 +177,7 @@
 		<Target Name="AfterBuild">
 		</Target>
  -->
+	<PropertyGroup Condition="'$(UnoSampleAppDisableAPKGeneration)'=='True'">
+		<EmbedAssembliesIntoApk>False</EmbedAssembliesIntoApk>
+	</PropertyGroup>
 </Project>

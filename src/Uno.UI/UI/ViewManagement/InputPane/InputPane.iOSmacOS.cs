@@ -1,22 +1,26 @@
-#if __IOS__
 using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.UI;
 using Windows.Foundation;
-using UIKit;
 using Foundation;
+
+#if __IOS__
+using UIKit;
+#endif
 
 namespace Windows.UI.ViewManagement
 {
 	public partial class InputPane
 	{
+		internal Uno.UI.Controls.Window Window { get; set; }
+
+#if __IOS__
 		partial void TryHidePartial()
 		{
-			UIApplication.SharedApplication.KeyWindow.EndEditing(true);
+			UIKit.UIApplication.SharedApplication.KeyWindow.EndEditing(true);
 		}
 
-		internal Uno.UI.Controls.Window Window { get; set; }
 
 		partial void EnsureFocusedElementInViewPartial()
 		{
@@ -29,6 +33,6 @@ namespace Windows.UI.ViewManagement
 				Window?.RestoreFocusedViewVisibility();
 			}
 		}
+#endif
 	}
 }
-#endif
