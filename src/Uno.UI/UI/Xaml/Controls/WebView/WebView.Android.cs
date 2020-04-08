@@ -297,7 +297,9 @@ namespace Windows.UI.Xaml.Controls
 #pragma warning restore 0672, 618
 
 			public override void OnPageFinished(Android.Webkit.WebView view, string url)
-			{
+			{				
+				_webView.DocumentTitle = view.Title;
+
 				_webView.OnNavigationHistoryChanged();
 
 				var args = new WebViewNavigationCompletedEventArgs()
