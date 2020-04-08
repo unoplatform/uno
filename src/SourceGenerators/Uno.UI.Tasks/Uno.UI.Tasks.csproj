@@ -1,12 +1,13 @@
-<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
-		<TargetFramework>net461</TargetFramework>
+		<TargetFramework>netstandard2.0</TargetFramework>
 		<AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+		<CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
 		<RootNamespace>Uno.UI.Tasks</RootNamespace>
 		<AssemblyName>Uno.UI.Tasks.v0</AssemblyName>
 		<DebugSymbols>true</DebugSymbols>
-		<DebugType>full</DebugType>
+		<DebugType>portable</DebugType>
 	</PropertyGroup>
 	
 	<ItemGroup>
@@ -17,7 +18,7 @@
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Build.Framework">
-			<Version>15.8.166</Version>
+			<Version>15.4.8</Version>
 			<ExcludeAssets>runtime</ExcludeAssets>
 		</PackageReference>
 		<PackageReference Include="Microsoft.Build.Tasks.Core">
