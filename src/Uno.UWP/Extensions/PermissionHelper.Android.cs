@@ -106,8 +106,9 @@ namespace Windows.Extensions
 		/// </summary>
 		/// <param name="requiredPermissions">Permissions that are required. Can be null.</param>
 		/// <param name="optionalPermissions">Permissions that are required only if declared in Manifest. Can be null.</param>
+		/// <param name="ignoreErrors">if 'true', then do not throw exception on error, and simply retur false</param>
 		/// <returns>Bool if all permissions are granted, false if any of them is not granted</returns>
-		public static Task<bool> AndroidPermissionAsync(string[] requiredPermissions, string[] optionalPermissions)
+		public static Task<bool> AndroidPermissionAsync(string[] requiredPermissions, string[] optionalPermissions, bool ignoreErrors = false)
 		{
 			// prepare return value
 			_permissionCompletionSource = new TaskCompletionSource<bool>();
@@ -115,8 +116,12 @@ namespace Windows.Extensions
 			var askForPermission = MissingPermissions(requiredPermissions, optionalPermissions);
 			if (askForPermission is null)
 			{
-				_permissionCompletionSource.SetResult(false); // signal: "permission denied", although there is some error
-				return _permissionCompletionSource.Task;
+				if (ignoreErrors)
+				{
+					_permissionCompletionSource.SetResult(false); // signal: "permission denied", although there is some error
+					return _permissionCompletionSource.Task;
+				}
+				throw new AccessViolationException("MissingPermissions returned ERROR - check Manifest file");
 			}
 
 
