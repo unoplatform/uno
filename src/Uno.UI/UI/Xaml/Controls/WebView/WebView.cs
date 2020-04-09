@@ -70,6 +70,19 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+		#region DocumentTitle
+#if __ANDROID__ || __IOS__
+		public string DocumentTitle
+		{
+			get { return (string)GetValue(DocumentTitleProperty); }
+			internal set { SetValue(DocumentTitleProperty, value); }
+		}
+
+		public static DependencyProperty DocumentTitleProperty { get; } =
+			DependencyProperty.Register(nameof(DocumentTitle), typeof(string), typeof(WebView), new PropertyMetadata(null));
+#endif
+		#endregion
+
 		#region IsScrollEnabled
 		public bool IsScrollEnabled
 		{
