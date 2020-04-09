@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !WINDOWS_UWP
+using System;
 using System.IO;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.Helpers;
@@ -220,3 +221,4 @@ namespace Uno.UI.RuntimeTests.Tests.Uno_Helpers
 		}
 	}
 }
+#endif
