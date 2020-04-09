@@ -18,6 +18,11 @@ namespace Windows.UI.Xaml.Media.Animation
 				return CreateDouble(timeline, startingFloat, targetFloat);
 			}
 
+			if (startingValue is double startingDouble && targetValue is double targetDouble)
+			{
+				return CreateDouble(timeline, startingDouble, targetDouble);
+			}
+
 			if (startingValue is ColorOffset startingColor && targetValue is ColorOffset targetColor)
 			{
 				return CreateColor(timeline, startingColor, targetColor);
