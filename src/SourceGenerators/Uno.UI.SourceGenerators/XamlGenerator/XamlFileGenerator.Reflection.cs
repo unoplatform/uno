@@ -13,7 +13,6 @@ using System.Text.RegularExpressions;
 using Microsoft.CodeAnalysis;
 using Uno.Roslyn;
 using Microsoft.CodeAnalysis.CSharp.Formatting;
-using Microsoft.CodeAnalysis.MSBuild;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Formatting;
 using System.Threading;
