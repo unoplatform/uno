@@ -57,7 +57,7 @@ namespace Uno.Extensions
 			return String.Empty;
 		}
 
-		public static bool IsAppData(this Uri uri)
+		internal static bool IsAppData(this Uri uri)
 		{
 			if (uri is null)
 			{

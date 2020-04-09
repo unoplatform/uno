@@ -260,15 +260,9 @@ namespace Uno.UI.Controls
 					return;
 				}
 
-				string filePath;
-				if (newUri.IsAppData())
-				{
-					filePath = AppDataUriEvaluator.ToPath(newUri);
-				}
-				else
-				{
-					filePath = UriSource.TrimStart("file://", StringComparison.OrdinalIgnoreCase);
-				}
+				var filePath = newUri.IsAppData() ?
+					AppDataUriEvaluator.ToPath(newUri) :
+					UriSource.TrimStart("file://", StringComparison.OrdinalIgnoreCase);
 
 				var options = new BitmapFactory.Options();
 				options.InJustDecodeBounds = true;

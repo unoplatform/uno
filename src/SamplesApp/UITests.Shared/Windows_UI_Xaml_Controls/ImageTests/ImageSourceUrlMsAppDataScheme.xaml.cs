@@ -30,7 +30,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 			this.DataContextChanged += ImageSourceUrlMsAppDataScheme_DataContextChanged;
         }
 
-		private async void ImageSourceUrlMsAppDataScheme_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+		private async void ImageSourceUrlMsAppDataScheme_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
 			await((ImageSourceUrlMsAppDataSchemeViewModel)DataContext).LoadAsync();
 		}
@@ -64,7 +64,7 @@ namespace UITests.Windows_UI_Xaml_Controls.ImageTests
 				var resourceName =
 					assembly
 						.GetManifestResourceNames()
-						.First(n => n.Contains("MsAppDataUriTest.png", StringComparison.InvariantCultureIgnoreCase));
+						.First(n => n.IndexOf("MsAppDataUriTest.png", StringComparison.InvariantCultureIgnoreCase) >= 0);
 
 				using (var stream = assembly.GetManifestResourceStream(resourceName))
 				{
