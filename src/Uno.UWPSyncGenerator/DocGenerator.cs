@@ -366,11 +366,13 @@ namespace Uno.UWPSyncGenerator
 		private static readonly Dictionary<string, string[]> CustomDocMapping = new Dictionary<string, string[]>
 		{
 			["controls/ListViewBase.md"] = new[] { "ListView", "GridView", "ListViewBase", "ItemsStackPanel", "ItemsWrapGrid" },
+			["controls/ComboBox.md"] = new[] { "ComboBox" },
 			["controls/map-control-support.md"] = new[] { "MapControl" },
 			["controls/MediaPlayerElement.md"] = new[] { "MediaPlayerElement", "MediaPlayerPresenter" },
 			["controls/Pivot.md"] = new[] { "Pivot", "PivotHeaderItem", "PivotHeaderPanel" },
 			["controls/ToggleSwitch.md"] = new[] { "ToggleSwitch" },
 			["controls/commandbar.md"] = new[] { "CommandBar" },
+			["controls/MenuFlyout.md"] = new[] { "MenuFlyout" },
 			["features/shapes-and-brushes.md"] = new[] { "Ellipse", "Line", "Path", "Polygon", "Polyline", "Rectangle", "ArbitraryShapeBase" },
 		};
 	}

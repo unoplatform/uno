@@ -145,7 +145,7 @@ namespace Windows.UI.Xaml.Documents
 			get { return (Brush)this.GetValue(ForegroundProperty); }
 			set
 			{
-				if (!(Foreground is SolidColorBrush))
+				if (value != null && !(value is SolidColorBrush))
 				{
 					throw new InvalidOperationException("Specified brush is not a SolidColorBrush");
 				}

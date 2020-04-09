@@ -23,7 +23,7 @@
 	
 	<ItemGroup>
 		<PackageReference Include="FluentAssertions" Version="5.10.3" />
-		<PackageReference Include="MSTest.TestFramework" Version="2.1.0" />
+		<PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<ProjectReference Include="..\Uno.UI.Toolkit\Uno.UI.Toolkit.csproj" />
 		<Reference Include="System.Xml" />

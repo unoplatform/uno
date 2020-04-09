@@ -1,4 +1,4 @@
-﻿using CoreGraphics;
+using CoreGraphics;
 using Uno.UI.DataBinding;
 using Uno.UI.Views.Controls;
 using System;
