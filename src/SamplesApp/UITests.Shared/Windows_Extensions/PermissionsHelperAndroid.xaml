@@ -10,7 +10,7 @@
     d:DesignWidth="400">
 
 	<StackPanel Padding="4" Spacing="4">
-		<Button Click="TryPermission_Click">Vibrate</Button>
+		<Button Click="TryPermission_Click">Show Android system dialog</Button>
 		<TextBlock Name="ErrorMessage" Foreground="Red" />
 	</StackPanel>
 </UserControl>
