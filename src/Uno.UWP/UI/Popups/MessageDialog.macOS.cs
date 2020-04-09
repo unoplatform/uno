@@ -60,7 +60,9 @@ namespace Windows.UI.Popups
 				}
 
 				var commandIndex = (int)response - FirstButtonResultIndex;
-				return actualCommandOrder[commandIndex]; 
+				var commandResponse = actualCommandOrder[commandIndex];
+				commandResponse?.Invoked?.Invoke(commandResponse);
+				return commandResponse;
 			});
 		}
 	}

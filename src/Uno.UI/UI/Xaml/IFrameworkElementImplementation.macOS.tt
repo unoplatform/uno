@@ -266,7 +266,7 @@ namespace <#= mixin.NamespaceName #>
 				new PropertyMetadata(HorizontalAlignment.Stretch, OnGenericPropertyUpdated)
 			);
 
-		public <#= mixin.IsUIControl #> HorizontalAlignment HorizontalAlignment
+		public HorizontalAlignment HorizontalAlignment
 		{
 			get { return (HorizontalAlignment)this.GetValue(HorizontalAlignmentProperty); }
 			set { this.SetValue(HorizontalAlignmentProperty, value); }
@@ -283,7 +283,7 @@ namespace <#= mixin.NamespaceName #>
 				new PropertyMetadata(VerticalAlignment.Stretch, OnGenericPropertyUpdated)
 			);
 
-		public <#= mixin.IsUIControl #> VerticalAlignment VerticalAlignment
+		public VerticalAlignment VerticalAlignment
 		{
 			get { return (VerticalAlignment)this.GetValue(VerticalAlignmentProperty); }
 			set { this.SetValue(VerticalAlignmentProperty, value); }
@@ -1048,10 +1048,10 @@ namespace <#= mixin.NamespaceName #>
 		
 		#region AutomationPeer
 
-		// TODO for accessibility
-		// private AutomationPeer _automationPeer;
 
 #if !<#= mixin.HasAutomationPeer #>
+        private AutomationPeer _automationPeer;
+
 		private AutomationPeer OnCreateAutomationPeerOverride()
 		{
 			return null;
@@ -1061,43 +1061,43 @@ namespace <#= mixin.NamespaceName #>
 		{
 			return null;
 		}
+
+		protected virtual AutomationPeer OnCreateAutomationPeer()
+		{
+		    if (OnCreateAutomationPeerOverride() is AutomationPeer automationPeer)
+		 	{
+		 		return automationPeer;
+		 	}
+		 
+	     	if (AutomationProperties.GetName(this) is string name && !string.IsNullOrEmpty(name))
+		 	{
+		 		return new FrameworkElementAutomationPeer(this);
+		 	}
+		 
+		 	return null;
+		}
+        
+
+		public virtual string GetAccessibilityInnerText() // TODO: internal
+		{
+		 	if (GetAccessibilityInnerTextOverride() is string innerText)
+		 	{
+		 		return innerText;
+		 	}
+		 
+		 	return null;
+		}
+		 
+		public AutomationPeer GetAutomationPeer() // TODO: internal
+		{
+			if (_automationPeer == null)
+			{
+				_automationPeer = OnCreateAutomationPeer();
+			}
+		
+			return _automationPeer;
+		}
 #endif
-
-		// TODO for accessibility
-		// protected virtual AutomationPeer OnCreateAutomationPeer()
-		// {
-		// 	if (OnCreateAutomationPeerOverride() is AutomationPeer automationPeer)
-		// 	{
-		// 		return automationPeer;
-		// 	}
-		// 
-		// 	if (AutomationProperties.GetName(this) is string name && !string.IsNullOrEmpty(name))
-		// 	{
-		// 		return new FrameworkElementAutomationPeer(this);
-		// 	}
-		// 
-		// 	return null;
-		// }
-
-		// public virtual string GetAccessibilityInnerText() // TODO: internal
-		// {
-		// 	if (GetAccessibilityInnerTextOverride() is string innerText)
-		// 	{
-		// 		return innerText;
-		// 	}
-		// 
-		// 	return null;
-		// }
-		// 
-		// public AutomationPeer GetAutomationPeer() // TODO: internal
-		// {
-		// 	if (_automationPeer == null)
-		// 	{
-		// 		_automationPeer = OnCreateAutomationPeer();
-		// 	}
-		// 
-		// 	return _automationPeer;
-		// }
 
 		// TODO for accessibility
 		// public override bool AccessibilityActivate()

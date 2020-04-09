@@ -95,8 +95,10 @@
 
 	<PropertyGroup>
 	  <_OverrideTargetFramework>$(TargetFramework)</_OverrideTargetFramework>
-	  <_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\$(AssemblyName)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
-	  <_TargetNugetRefFolder>$(USERPROFILE)\.nuget\packages\$(AssemblyName)\$(UnoNugetOverrideVersion)\ref\$(_OverrideTargetFramework)</_TargetNugetRefFolder>
+      <_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+	  <_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\$(AssemblyName)\$(UnoNugetOverrideVersion)\lib\$(_OverrideTargetFramework)</_TargetNugetFolder>
+	  <_TargetNugetRefFolder>$(_baseNugetPath)\.nuget\packages\$(AssemblyName)\$(UnoNugetOverrideVersion)\ref\$(_OverrideTargetFramework)</_TargetNugetRefFolder>
 	</PropertyGroup>
 	<ItemGroup>
 	  <_OutputFiles Include="$(TargetDir)\*.*" />

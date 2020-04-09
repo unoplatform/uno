@@ -16,9 +16,10 @@
 					xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
 					xmlns:mapsPresenter="using:Windows.UI.Xaml.Controls.Maps"
 					xmlns:wasm="http://uno.ui/wasm"
+					xmlns:macos="http://uno.ui/macos"
 					xmlns:net461="http://uno.ui/net461"
 					xmlns:not_wasm="http://uno.ui/not_wasm"
-					mc:Ignorable="d xamarin ios android wasm not_wasm net461">
+					mc:Ignorable="d xamarin ios android wasm not_wasm net461 macos">
 
 	<wasm:ResourceDictionary.MergedDictionaries>
 		<!--
@@ -120,6 +121,11 @@
 		TargetType="CheckBox"
 				BasedOn="{StaticResource XamlDefaultCheckBox}" />
 
+	<macos:Style
+		x:Key="NativeDefaultCheckBox"
+		TargetType="CheckBox"
+				BasedOn="{StaticResource XamlDefaultCheckBox}" />
+
 	<net461:Style x:Key="NativeDefaultCheckBox"
 				TargetType="CheckBox"
 				BasedOn="{StaticResource XamlDefaultCheckBox}" />
@@ -176,6 +182,11 @@
 		TargetType="ToggleSwitch"
 		BasedOn="{StaticResource XamlDefaultToggleSwitch}" />
 
+	<macos:Style
+		x:Key="NativeDefaultToggleSwitch"
+		TargetType="ToggleSwitch"
+		BasedOn="{StaticResource XamlDefaultToggleSwitch}" />
+
 	<xamarin:Style
 		TargetType="ToggleSwitch"
 		BasedOn="{StaticResource NativeDefaultToggleSwitch}" />
@@ -210,6 +221,11 @@
 	</android:Style>
 
 	<wasm:Style
+		x:Key="NativeDefaultSlider"
+		TargetType="Slider"
+		BasedOn="{StaticResource XamlDefaultSlider}" />
+
+	<macos:Style
 		x:Key="NativeDefaultSlider"
 		TargetType="Slider"
 		BasedOn="{StaticResource XamlDefaultSlider}" />
@@ -258,6 +274,11 @@
 	</android:Style>
 
 	<wasm:Style
+		x:Key="NativeDefaultProgressBar"
+		TargetType="ProgressBar" 
+		BasedOn="{StaticResource XamlDefaultProgressBar}" />
+
+	<macos:Style
 		x:Key="NativeDefaultProgressBar"
 		TargetType="ProgressBar" 
 		BasedOn="{StaticResource XamlDefaultProgressBar}" />
@@ -400,6 +421,11 @@
 		TargetType="CommandBar"
 		BasedOn="{StaticResource XamlCommandBar}" />
 
+	<macos:Style
+		x:Key="NativeDefaultCommandBar"
+		TargetType="CommandBar"
+		BasedOn="{StaticResource XamlCommandBar}" />
+
 	<xamarin:Style
 		TargetType="CommandBar"
 		BasedOn="{StaticResource NativeDefaultCommandBar}" />
@@ -421,6 +447,11 @@
 	</android:Style>
 
 	<wasm:Style
+		x:Key="NativeDefaultAppBarButton"
+		TargetType="AppBarButton"
+		BasedOn="{StaticResource XamlAppBarButton}" />
+
+	<macos:Style
 		x:Key="NativeDefaultAppBarButton"
 		TargetType="AppBarButton"
 		BasedOn="{StaticResource XamlAppBarButton}" />
@@ -456,6 +487,11 @@
 
 	<!-- Default native Frame styles -->
 	<wasm:Style
+		x:Key="NativeDefaultFrame"
+		TargetType="Frame"
+				BasedOn="{StaticResource XamlDefaultFrame}" />
+
+	<macos:Style
 		x:Key="NativeDefaultFrame"
 		TargetType="Frame"
 				BasedOn="{StaticResource XamlDefaultFrame}" />

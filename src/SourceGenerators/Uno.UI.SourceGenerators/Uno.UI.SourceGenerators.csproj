@@ -1,15 +1,9 @@
-<Project Sdk="MSBuild.Sdk.Extras">
+﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
 		<TargetFramework>net461</TargetFramework>
     <AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	</PropertyGroup>
-
-	<ItemGroup>
-		<Reference Include="System.Xaml">
-			<Aliases>__ms</Aliases>
-		</Reference>
-	</ItemGroup>
 
 	<ItemGroup>
 		<PackageReference Include="Microsoft.NETFramework.ReferenceAssemblies" Version="1.0.0" PrivateAssets="All" />
@@ -94,7 +88,10 @@
 
 	<Target Name="_UnoToolkitOverrideNuget" AfterTargets="AfterBuild" DependsOnTargets="BuiltProjectOutputGroup" Condition="'$(UnoNugetOverrideVersion)'!=''">
 		<PropertyGroup>
-			<_TargetNugetFolder>$(USERPROFILE)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\tools</_TargetNugetFolder>
+			<_baseNugetPath Condition="'$(USERPROFILE)'!=''">$(USERPROFILE)</_baseNugetPath>
+      <_baseNugetPath Condition="'$(HOME)'!=''">$(HOME)</_baseNugetPath>
+
+			<_TargetNugetFolder>$(_baseNugetPath)\.nuget\packages\Uno.UI\$(UnoNugetOverrideVersion)\tools</_TargetNugetFolder>
 		</PropertyGroup>
 		<ItemGroup>
 			<_OutputFiles Include="$(TargetDir)**" />

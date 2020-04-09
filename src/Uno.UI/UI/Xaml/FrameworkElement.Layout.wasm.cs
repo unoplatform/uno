@@ -104,7 +104,9 @@ namespace Windows.UI.Xaml
 
 			var clippedDesiredSize = desiredSize
 				.AtMost(availableSize)
-				.Add(marginSize);
+				.Add(marginSize)
+				// Margin may be negative
+				.AtLeastZero();
 
 			// DesiredSize must include margins
 			SetDesiredSize(clippedDesiredSize);
