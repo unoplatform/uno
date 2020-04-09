@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -16,7 +16,6 @@ using Uno.UI.Samples.Controls;
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
-#if __ANDROID__
 namespace UITests.Shared.Windows_Extensions
 {
 	[SampleControlInfo("Windows_Extensions", "PermissionsHelperAndroid", description: "Checks if system dialog asking for permission is displayed")]
@@ -30,6 +29,7 @@ namespace UITests.Shared.Windows_Extensions
 		private async void TryPermission_Click(object sender, RoutedEventArgs e)
 		{
 
+#if __ANDROID__
 			string[] testPermissions = { Android.Manifest.Permission.AccessFineLocation };
 			string errorMsg = "";
 
@@ -78,6 +78,9 @@ namespace UITests.Shared.Windows_Extensions
 
 			ErrorMessage.Text = errorMsg;
 
+#else
+			ErrorMessage.Text = "this is only for Android";
+#endif
 
 
 		}
@@ -85,5 +88,4 @@ namespace UITests.Shared.Windows_Extensions
 	}
 }
 
-#endif
 
