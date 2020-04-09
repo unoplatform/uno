@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 {
@@ -14,6 +15,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 	{
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Disabled for iOS because HasColor() behaves strangely: https://github.com/unoplatform/uno/issues/1955
 		public void When_Border_Background_Animated()
 		{
 			Run("UITests.Windows_UI_Xaml_Media_Animation.ColorAnimation_Background");
@@ -45,6 +47,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Media_Animation
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.Browser)] // Disabled for iOS because HasColor() behaves strangely: https://github.com/unoplatform/uno/issues/1955
 		public void When_Rectangle_Fill_Animated()
 		{
 			Run("UITests.Windows_UI_Xaml_Media_Animation.ColorAnimation_Fill");
