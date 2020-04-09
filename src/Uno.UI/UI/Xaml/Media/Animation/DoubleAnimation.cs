@@ -52,6 +52,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => SetValue(EnableDependentAnimationProperty, value);
 		}
 
+		bool IAnimation<float>.EnableDependentAnimation => EnableDependentAnimation;
+
 		public static readonly DependencyProperty EnableDependentAnimationProperty =
 			DependencyProperty.Register("EnableDependentAnimation", typeof(bool), typeof(DoubleAnimation), new PropertyMetadata(false));
 
@@ -60,6 +62,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			get => (IEasingFunction)GetValue(EasingFunctionProperty);
 			set => SetValue(EasingFunctionProperty, value);
 		}
+
+		IEasingFunction IAnimation<float>.EasingFunction => EasingFunction;
 
 		float? IAnimation<float>.To => (float?)To;
 

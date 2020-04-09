@@ -49,6 +49,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 
+		bool IAnimation<ColorOffset>.EnableDependentAnimation => EnableDependentAnimation;
+
 		public Color? By
 		{
 			get
