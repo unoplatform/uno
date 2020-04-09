@@ -128,7 +128,9 @@ namespace Windows.UI.Xaml.Controls
 
 				var clippedDesiredSize = desiredSize
 					.AtMost(frameworkAvailableSize)
-					.Add(marginSize);
+					.Add(marginSize)
+					// Margin may be negative
+					.AtLeastZero();
 
 				// DesiredSize must include margins
 				// TODO: on UWP, it's not clipped. See test When_MinWidth_SmallerThan_AvailableSize
