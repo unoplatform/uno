@@ -178,10 +178,15 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
+					var origin = elt.RenderTransformOrigin;
+					var transformMatrix = origin == default
+						? transform.MatrixCore
+						: transform.ToMatrix(origin, layoutSlot.Size);
+
 					// First apply any pending arrange offset that would have been impacted by this RenderTransform (eg. scaled)
 					// Friendly reminder: Matrix multiplication is usually not commutative ;)
 					matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
-					matrix *= transform.MatrixCore;
+					matrix *= transformMatrix;
 
 					offsetX = layoutSlot.X;
 					offsetY = layoutSlot.Y;
@@ -221,7 +226,7 @@ namespace Windows.UI.Xaml
 			return matrix;
 		}
 
-#if !__IOS__ && !__ANDROID__ // This is the default implementation, but is can be customized per platform
+#if !__IOS__ && !__ANDROID__ // This is the default implementation, but it can be customized per platform
 		/// <summary>
 		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
 		///	applied by a 'UIView' between this element and its parent UIElement.

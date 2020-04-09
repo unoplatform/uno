@@ -136,5 +136,34 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			}
 		}
 #endif
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_TransformToVisual_WithTransformOrigin()
+		{
+			var sut = new Border
+			{
+				Width = 100,
+				Height = 10,
+				RenderTransform = new RotateTransform { Angle = 90 },
+				RenderTransformOrigin = new Point(.5, .5),
+				HorizontalAlignment = HorizontalAlignment.Center,
+				VerticalAlignment = VerticalAlignment.Center
+			};
+			var testRoot = new Grid
+			{
+				Height = 300,
+				Width = 300,
+				Children = { sut }
+			};
+
+			TestServices.WindowHelper.WindowContent = testRoot;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			var result = sut.TransformToVisual(testRoot).TransformPoint(new Point(1, 1));
+
+			Assert.AreEqual(154, result.X);
+			Assert.AreEqual(101, result.Y);
+		}
 	}
 }
