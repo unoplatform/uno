@@ -2878,7 +2878,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						rightSide = "{0}{1}".InvariantCultureFormat(GetCastString(type, null), directProperty);
 					}
-					writer.AppendLineInvariant(formatLine("{0} = {1}"), member.Member.Name, rightSide);
+					if (generateAssignation)
+					{
+						writer.AppendLineInvariant(formatLine("{0} = {1}"), member.Member.Name, rightSide);
+					}
+					else
+					{
+						writer.AppendLineInvariant(rightSide);
+					}
 
 				}
 				else if (IsDependencyProperty(member.Member))
@@ -2899,7 +2906,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				else
 				{
 					// Load-time resolution isn't feasible for non-DPs, so we just set the Application-level value right away, and that's it.
-					writer.AppendLineInvariant(formatLine("{0} = {1}"), member.Member.Name, GetSimpleStaticResourceRetrieval(member));
+					var rightSide = GetSimpleStaticResourceRetrieval(member);
+					if (generateAssignation)
+					{
+						writer.AppendLineInvariant(formatLine("{0} = {1}"), member.Member.Name, rightSide);
+					}
+					else
+					{
+						writer.AppendLineInvariant(rightSide);
+					}
 				}
 			}
 		}
@@ -3283,24 +3298,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				// If the property Type is attributed with the CreateFromStringAttribute
 				if (IsXamlTypeConverter(targetPropertyType))
 				{
-					string memberValue;
-
-					// Build the member string based on wether it's a local
-					// StaticResource or a global StaticResource
-					if (_staticResources.TryGetValue(resourcePath, out var _))
-					{
-						memberValue = $"StaticResources.{SanitizeResourceName(resourcePath)}";
-					}
-					else
-					{
-						memberValue = $"{GetGlobalStaticResource(resourcePath)}.ToString()";
-					}
+					// We expect the resource to be a string if we're applying the CreateFromStringAttribute
+					var memberValue = GetSimpleStaticResourceRetrieval(targetPropertyType: _stringSymbol, resourcePath);
 
 					// We must build the member value as a call to a "conversion" function
-					return BuildXamlTypeConverterLiteralValue(targetPropertyType, memberValue, includeQuotations: false);
+					var converterValue = BuildXamlTypeConverterLiteralValue(targetPropertyType, memberValue, includeQuotations: false);
+					TryAnnotateWithGeneratorSource(ref converterValue);
+					return converterValue;
 				}
 
-				return GetSimpleStaticResourceRetrieval(targetPropertyType, resourcePath);
+				var retrieval = GetSimpleStaticResourceRetrieval(targetPropertyType, resourcePath);
+				TryAnnotateWithGeneratorSource(ref retrieval);
+				return retrieval;
 			}
 
 			// this allows for the resource to be implicitly converted to another type, however
