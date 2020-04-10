@@ -1367,17 +1367,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Globalize the namespace
 			fullyQualifiedOwnerType = GetGlobalizedTypeName(fullyQualifiedOwnerType);
 
+			var literalValue = default(string);
 			if (includeQuotations)
 			{
 				// Return a string that contains the code which calls the "conversion" function with the member value
-				return "{0}(\"{1}\")".InvariantCultureFormat(fullyQualifiedOwnerType, memberValue);
+				literalValue = "{0}(\"{1}\")".InvariantCultureFormat(fullyQualifiedOwnerType, memberValue);
 			}
 			else
 			{
 				// Return a string that contains the code which calls the "conversion" function with the member value.
 				// By not including quotations, this allows us to use static resources instead of string values.
-				return "{0}({1})".InvariantCultureFormat(fullyQualifiedOwnerType, memberValue);
+				literalValue = "{0}({1})".InvariantCultureFormat(fullyQualifiedOwnerType, memberValue);
 			}
+
+			TryAnnotateWithGeneratorSource(ref literalValue);
+			return literalValue;
 		}
 
 		private XamlMemberDefinition FindMember(XamlObjectDefinition xamlObjectDefinition, string memberName)
@@ -3323,12 +3327,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var directProperty = GetResourceDictionaryPropertyName(keyStr);
 			if (directProperty != null)
 			{
+				TryAnnotateWithGeneratorSource(ref directProperty);
 				return directProperty;
 			}
 
 			targetPropertyType = targetPropertyType ?? _objectSymbol;
-			return "global::Uno.UI.ResourceResolver.ResolveResourceStatic<{0}>(\"{1}\")"
+			var staticRetrieval = "global::Uno.UI.ResourceResolver.ResolveResourceStatic<{0}>(\"{1}\")"
 				.InvariantCultureFormat(targetPropertyType.ToDisplayString(), keyStr);
+			TryAnnotateWithGeneratorSource(ref staticRetrieval);
+			return staticRetrieval;
 		}
 
 		/// <summary>
@@ -3351,178 +3358,185 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private string BuildLiteralValue(INamedTypeSymbol propertyType, string memberValue, XamlMemberDefinition owner = null, string memberName = "", string objectUid = "")
 		{
-			if (IsLocalizedString(propertyType, objectUid))
-			{
-				var resourceValue = BuildLocalizedResourceValue(owner, memberName, objectUid);
+			var literalValue = Inner();
+			TryAnnotateWithGeneratorSource(ref literalValue);
+			return literalValue;
 
-				if (resourceValue != null)
+			string Inner()
+			{
+				if (IsLocalizedString(propertyType, objectUid))
 				{
-					return resourceValue;
-				}
-			}
+					var resourceValue = BuildLocalizedResourceValue(owner, memberName, objectUid);
 
-			// If the property Type is attributed with the CreateFromStringAttribute
-			if (IsXamlTypeConverter(propertyType))
-			{
-				// We must build the member value as a call to a "conversion" function
-				return BuildXamlTypeConverterLiteralValue(propertyType, memberValue, includeQuotations: true);
-			}
-
-			propertyType = FindUnderlyingType(propertyType);
-			switch (propertyType.ToDisplayString())
-			{
-				case "int":
-				case "long":
-				case "short":
-				case "byte":
-					return memberValue;
-
-				case "float":
-				case "double":
-					return GetFloatingPointLiteral(memberValue, propertyType, owner);
-
-				case "string":
-					return "\"" + DoubleEscape(memberValue) + "\"";
-
-				case "bool":
-					return Boolean.Parse(memberValue).ToString().ToLowerInvariant();
-
-				case XamlConstants.Types.Brush:
-				case XamlConstants.Types.SolidColorBrush:
-					return BuildBrush(memberValue);
-
-				case XamlConstants.Types.Thickness:
-					return BuildThickness(memberValue);
-
-				case XamlConstants.Types.CornerRadius:
-					return $"new {XamlConstants.Types.CornerRadius}({memberValue})";
-
-				case XamlConstants.Types.FontFamily:
-					return $@"new {propertyType.ToDisplayString()}(""{memberValue}"")";
-
-				case XamlConstants.Types.FontWeight:
-					return BuildFontWeight(memberValue);
-
-				case XamlConstants.Types.GridLength:
-					return BuildGridLength(memberValue);
-
-				case "UIKit.UIColor":
-					return BuildColor(memberValue);
-
-				case "Windows.UI.Color":
-					return BuildColor(memberValue);
-
-				case "Android.Graphics.Color":
-					return BuildColor(memberValue);
-
-				case "System.Uri":
-					if (memberValue.StartsWith("/"))
+					if (resourceValue != null)
 					{
-						return "new System.Uri(\"ms-appx://" + memberValue + "\")";
+						return resourceValue;
 					}
-					else
-					{
-						return "new System.Uri(\"" + memberValue + "\", global::System.UriKind.RelativeOrAbsolute)";
-					}
-
-				case "System.Type":
-					return $"typeof({GetGlobalizedTypeName(GetType(memberValue).ToDisplayString())})";
-
-				case XamlConstants.Types.Geometry:
-					if (_isWasm)
-					{
-						return $"@\"{memberValue}\"";
-					}
-					var generated = Parsers.ParseGeometry(memberValue, CultureInfo.InvariantCulture);
-					return generated;
-
-				case XamlConstants.Types.KeyTime:
-					return ParseTimeSpan(memberValue);
-
-				case XamlConstants.Types.Duration:
-					return $"new Duration({ ParseTimeSpan(memberValue) })";
-
-				case "System.TimeSpan":
-					return ParseTimeSpan(memberValue);
-
-				case "System.Drawing.Point":
-					return "new System.Drawing.Point(" + memberValue + ")";
-
-				case "Windows.UI.Xaml.Media.CacheMode":
-					return ParseCacheMode(memberValue);
-
-				case "System.Drawing.PointF":
-					return "new System.Drawing.PointF(" + AppendFloatSuffix(memberValue) + ")";
-
-				case "System.Drawing.Size":
-					return "new System.Drawing.Size(" + memberValue + ")";
-
-				case "Windows.Foundation.Size":
-					return "new Windows.Foundation.Size(" + memberValue + ")";
-
-				case "Windows.UI.Xaml.Media.Matrix":
-					return "new Windows.UI.Xaml.Media.Matrix(" + memberValue + ")";
-
-				case "Windows.Foundation.Point":
-					return "new Windows.Foundation.Point(" + memberValue + ")";
-
-				case "Windows.UI.Xaml.Input.InputScope":
-					return "new global::Windows.UI.Xaml.Input.InputScope { Names = { new global::Windows.UI.Xaml.Input.InputScopeName { NameValue = global::Windows.UI.Xaml.Input.InputScopeNameValue." + memberValue + "} } }";
-
-				case "UIKit.UIImage":
-					if (memberValue.StartsWith(XamlConstants.BundleResourcePrefix, StringComparison.InvariantCultureIgnoreCase))
-					{
-						return "UIKit.UIImage.FromBundle(\"" + memberValue.Substring(XamlConstants.BundleResourcePrefix.Length, memberValue.Length - XamlConstants.BundleResourcePrefix.Length) + "\")";
-					}
-					return memberValue;
-
-				case "Windows.UI.Xaml.Controls.IconElement":
-					return "new Windows.UI.Xaml.Controls.SymbolIcon { Symbol = Windows.UI.Xaml.Controls.Symbol." + memberValue + "}";
-
-				case "Windows.Media.Playback.IMediaPlaybackSource":
-					return "Windows.Media.Core.MediaSource.CreateFromUri(new Uri(\"" + memberValue + "\"))";
-			}
-
-			var isEnum = propertyType
-				.TypeKind == TypeKind.Enum;
-
-			if (isEnum)
-			{
-				var validFlags = propertyType.GetFields().Select(field => field.Name);
-				var actualFlags = memberValue.Split(',').Select(part => part.Trim());
-
-				var invalidFlags = actualFlags.Except(validFlags, StringComparer.OrdinalIgnoreCase);
-				if (invalidFlags.Any())
-				{
-					throw new Exception($"The following values are not valid members of the '{propertyType.Name}' enumeration: {string.Join(", ", invalidFlags)}");
 				}
 
-				var finalFlags = validFlags.Intersect(actualFlags, StringComparer.OrdinalIgnoreCase);
-				return string.Join("|", finalFlags.Select(flag => $"{propertyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}.{flag}"));
+				// If the property Type is attributed with the CreateFromStringAttribute
+				if (IsXamlTypeConverter(propertyType))
+				{
+					// We must build the member value as a call to a "conversion" function
+					return BuildXamlTypeConverterLiteralValue(propertyType, memberValue, includeQuotations: true);
+				}
+
+				propertyType = FindUnderlyingType(propertyType);
+				switch (propertyType.ToDisplayString())
+				{
+					case "int":
+					case "long":
+					case "short":
+					case "byte":
+						return memberValue;
+
+					case "float":
+					case "double":
+						return GetFloatingPointLiteral(memberValue, propertyType, owner);
+
+					case "string":
+						return "\"" + DoubleEscape(memberValue) + "\"";
+
+					case "bool":
+						return Boolean.Parse(memberValue).ToString().ToLowerInvariant();
+
+					case XamlConstants.Types.Brush:
+					case XamlConstants.Types.SolidColorBrush:
+						return BuildBrush(memberValue);
+
+					case XamlConstants.Types.Thickness:
+						return BuildThickness(memberValue);
+
+					case XamlConstants.Types.CornerRadius:
+						return $"new {XamlConstants.Types.CornerRadius}({memberValue})";
+
+					case XamlConstants.Types.FontFamily:
+						return $@"new {propertyType.ToDisplayString()}(""{memberValue}"")";
+
+					case XamlConstants.Types.FontWeight:
+						return BuildFontWeight(memberValue);
+
+					case XamlConstants.Types.GridLength:
+						return BuildGridLength(memberValue);
+
+					case "UIKit.UIColor":
+						return BuildColor(memberValue);
+
+					case "Windows.UI.Color":
+						return BuildColor(memberValue);
+
+					case "Android.Graphics.Color":
+						return BuildColor(memberValue);
+
+					case "System.Uri":
+						if (memberValue.StartsWith("/"))
+						{
+							return "new System.Uri(\"ms-appx://" + memberValue + "\")";
+						}
+						else
+						{
+							return "new System.Uri(\"" + memberValue + "\", global::System.UriKind.RelativeOrAbsolute)";
+						}
+
+					case "System.Type":
+						return $"typeof({GetGlobalizedTypeName(GetType(memberValue).ToDisplayString())})";
+
+					case XamlConstants.Types.Geometry:
+						if (_isWasm)
+						{
+							return $"@\"{memberValue}\"";
+						}
+						var generated = Parsers.ParseGeometry(memberValue, CultureInfo.InvariantCulture);
+						return generated;
+
+					case XamlConstants.Types.KeyTime:
+						return ParseTimeSpan(memberValue);
+
+					case XamlConstants.Types.Duration:
+						return $"new Duration({ ParseTimeSpan(memberValue) })";
+
+					case "System.TimeSpan":
+						return ParseTimeSpan(memberValue);
+
+					case "System.Drawing.Point":
+						return "new System.Drawing.Point(" + memberValue + ")";
+
+					case "Windows.UI.Xaml.Media.CacheMode":
+						return ParseCacheMode(memberValue);
+
+					case "System.Drawing.PointF":
+						return "new System.Drawing.PointF(" + AppendFloatSuffix(memberValue) + ")";
+
+					case "System.Drawing.Size":
+						return "new System.Drawing.Size(" + memberValue + ")";
+
+					case "Windows.Foundation.Size":
+						return "new Windows.Foundation.Size(" + memberValue + ")";
+
+					case "Windows.UI.Xaml.Media.Matrix":
+						return "new Windows.UI.Xaml.Media.Matrix(" + memberValue + ")";
+
+					case "Windows.Foundation.Point":
+						return "new Windows.Foundation.Point(" + memberValue + ")";
+
+					case "Windows.UI.Xaml.Input.InputScope":
+						return "new global::Windows.UI.Xaml.Input.InputScope { Names = { new global::Windows.UI.Xaml.Input.InputScopeName { NameValue = global::Windows.UI.Xaml.Input.InputScopeNameValue." + memberValue + "} } }";
+
+					case "UIKit.UIImage":
+						if (memberValue.StartsWith(XamlConstants.BundleResourcePrefix, StringComparison.InvariantCultureIgnoreCase))
+						{
+							return "UIKit.UIImage.FromBundle(\"" + memberValue.Substring(XamlConstants.BundleResourcePrefix.Length, memberValue.Length - XamlConstants.BundleResourcePrefix.Length) + "\")";
+						}
+						return memberValue;
+
+					case "Windows.UI.Xaml.Controls.IconElement":
+						return "new Windows.UI.Xaml.Controls.SymbolIcon { Symbol = Windows.UI.Xaml.Controls.Symbol." + memberValue + "}";
+
+					case "Windows.Media.Playback.IMediaPlaybackSource":
+						return "Windows.Media.Core.MediaSource.CreateFromUri(new Uri(\"" + memberValue + "\"))";
+				}
+
+				var isEnum = propertyType
+					.TypeKind == TypeKind.Enum;
+
+				if (isEnum)
+				{
+					var validFlags = propertyType.GetFields().Select(field => field.Name);
+					var actualFlags = memberValue.Split(',').Select(part => part.Trim());
+
+					var invalidFlags = actualFlags.Except(validFlags, StringComparer.OrdinalIgnoreCase);
+					if (invalidFlags.Any())
+					{
+						throw new Exception($"The following values are not valid members of the '{propertyType.Name}' enumeration: {string.Join(", ", invalidFlags)}");
+					}
+
+					var finalFlags = validFlags.Intersect(actualFlags, StringComparer.OrdinalIgnoreCase);
+					return string.Join("|", finalFlags.Select(flag => $"{propertyType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat)}.{flag}"));
+				}
+
+				var hasImplictToString = propertyType
+					.GetMethods()
+					.Any(m =>
+						m.Name == "op_Implicit"
+						&& m.Parameters.FirstOrDefault().SelectOrDefault(p => p.Type.ToDisplayString() == "string")
+					);
+
+				if (hasImplictToString
+
+					// Can be an object (e.g. in case of Binding.ConverterParameter).
+					|| propertyType.ToDisplayString() == "object"
+				)
+				{
+					return "@\"" + memberValue.ToString() + "\"";
+				}
+
+				if (memberValue == null && propertyType.IsReferenceType)
+				{
+					return "null";
+				}
+
+				throw new Exception("Unable to convert {0} for {1} with type {2}".InvariantCultureFormat(memberValue, memberName, propertyType));
 			}
-
-			var hasImplictToString = propertyType
-				.GetMethods()
-				.Any(m =>
-					m.Name == "op_Implicit"
-					&& m.Parameters.FirstOrDefault().SelectOrDefault(p => p.Type.ToDisplayString() == "string")
-				);
-
-			if (hasImplictToString
-
-				// Can be an object (e.g. in case of Binding.ConverterParameter).
-				|| propertyType.ToDisplayString() == "object"
-			)
-			{
-				return "@\"" + memberValue.ToString() + "\"";
-			}
-
-			if (memberValue == null && propertyType.IsReferenceType)
-			{
-				return "null";
-			}
-
-			throw new Exception("Unable to convert {0} for {1} with type {2}".InvariantCultureFormat(memberValue, memberName, propertyType));
 		}
 
 		private string BuildLocalizedResourceValue(XamlMemberDefinition owner, string memberName, string objectUid)
@@ -4740,8 +4754,21 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			if (_shouldAnnotateGeneratedXaml)
 			{
-				writer.Append("/*{0} L:{1}*/".InvariantCultureFormat(callerName, lineNumber));
+				writer.Append(GetGeneratorSourceAnnotation(callerName, lineNumber));
 			}
+		}
+
+		private void TryAnnotateWithGeneratorSource(ref string str, [CallerMemberName] string callerName = null, [CallerLineNumber] int lineNumber = 0)
+		{
+			if (_shouldAnnotateGeneratedXaml)
+			{
+				str = GetGeneratorSourceAnnotation(callerName, lineNumber) + str;
+			}
+		}
+
+		private static string GetGeneratorSourceAnnotation(string callerName, int lineNumber)
+		{
+			return "/*{0} L:{1}*/".InvariantCultureFormat(callerName, lineNumber);
 		}
 	}
 }
