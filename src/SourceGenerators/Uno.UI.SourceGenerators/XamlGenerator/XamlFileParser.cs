@@ -117,7 +117,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			else
 			{
 				// No existing Ignorable node, create one
-				var targetLine = File.ReadLines(file, Encoding.UTF8).First();
+				var targetLine = File.ReadLines(file, Encoding.UTF8).First(l => !l.Trim().StartsWith("<!") && !l.IsNullOrWhiteSpace());
 				if (targetLine.EndsWith(">"))
 				{
 					targetLine.TrimEnd(">");
@@ -137,8 +137,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 
 				var replacement = "{0}{1} {2}:Ignorable=\"{3}\"".InvariantCultureFormat(targetLine, mcString, mcName, newIgnoredFlat);
-				adjusted = adjusted
-					.Replace(
+				adjusted = ReplaceFirst(
+						adjusted,
 						targetLine,
 						replacement
 					)
@@ -182,6 +182,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return XmlReader.Create(new StringReader(adjusted));
+		}
+
+		private static string ReplaceFirst(string targetString, string oldValue, string newValue)
+		{
+			var index = targetString.IndexOf(oldValue);
+			if (index < 0)
+			{
+				throw new InvalidOperationException();
+			}
+			return targetString.Substring(0, index) + newValue + targetString.Substring(index + oldValue.Length);
 		}
 
 		private (XmlNode Ignorables, bool ShouldCreateIgnorable) FindIgnorables(XmlDocument document)
