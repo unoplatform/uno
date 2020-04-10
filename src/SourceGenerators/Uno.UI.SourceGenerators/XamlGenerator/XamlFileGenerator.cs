@@ -408,7 +408,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			TryAnnotateWithGeneratorSource(writer);
 			InitializeRemoteControlClient(writer);
 			GenerateApiExtensionRegistrations(writer);
-			
+
 			GenerateResourceLoader(writer);
 			writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
 			writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.RegisterResourceDictionariesBySourceLocal();");
@@ -451,10 +451,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private void GenerateApiExtensionRegistrations(IndentedStringBuilder writer)
 		{
-			var apiExtensionAttributeSymbol = _medataHelper.FindTypeByFullName("Uno.Foundation.Extensibility.ApiExtensionAttribute");
+			var apiExtensionAttributeSymbol = _metadataHelper.FindTypeByFullName("Uno.Foundation.Extensibility.ApiExtensionAttribute");
 
-			var query = from ext in _medataHelper.Compilation.ExternalReferences
-						let sym = _medataHelper.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
+			var query = from ext in _metadataHelper.Compilation.ExternalReferences
+						let sym = _metadataHelper.Compilation.GetAssemblyOrModuleSymbol(ext) as IAssemblySymbol
 						where sym != null
 						from attribute in sym.GetAllAttributes()
 						where attribute.AttributeClass == apiExtensionAttributeSymbol
@@ -3039,9 +3039,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var parts = propertyPath.Split('.');
 
-			foreach(var part in parts)
+			foreach (var part in parts)
 			{
-				if(currentType.GetAllMembers().FirstOrDefault(m => m.Name == part) is ISymbol member)
+				if (currentType.GetAllMembers().FirstOrDefault(m => m.Name == part) is ISymbol member)
 				{
 					var propertySymbol = member as IPropertySymbol;
 					var fieldSymbol = member as IFieldSymbol;
@@ -3055,11 +3055,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						throw new InvalidOperationException($"Cannot use member [{part}] of type [{member}], as it is not a property of a field");
 					}
 				}
-				else if(FindSubElementByName(_fileDefinition.Objects.First(), part) is XamlObjectDefinition elementByName)
+				else if (FindSubElementByName(_fileDefinition.Objects.First(), part) is XamlObjectDefinition elementByName)
 				{
 					currentType = GetType(elementByName.Type);
 
-					if(currentType == null)
+					if (currentType == null)
 					{
 						throw new InvalidOperationException($"Unable to find member [{part}] on type [{elementByName.Type}]");
 					}
@@ -3082,7 +3082,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var className = lastDotIndex != -1 ? fullMemberName.Substring(0, lastDotIndex) : fullMemberName;
 			var memberName = lastDotIndex != -1 ? fullMemberName.Substring(lastDotIndex + 1) : fullMemberName;
 
-			return _medataHelper.FindTypeByFullName(className) is INamedTypeSymbol typeSymbol
+			return _metadataHelper.FindTypeByFullName(className) is INamedTypeSymbol typeSymbol
 				&& (typeSymbol.GetMethods().Any(m => m.IsStatic && m.Name == memberName) || typeSymbol.GetProperties().Any(m => m.IsStatic && m.Name == memberName));
 		}
 
@@ -4251,25 +4251,26 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				{
 					var hasCustomInitalizer = HasCustomInitializer(xamlObjectDefinition);
 
-				if (hasCustomInitalizer)
-				{
-					var propertyType = FindType(xamlObjectDefinition.Type);
-					writer.AppendLine(BuildLiteralValue(FindImplicitContentMember(xamlObjectDefinition), propertyType, owner));
-				}
-				else
-				{
-					using (TryGenerateDeferedLoadStrategy(writer, knownType, xamlObjectDefinition))
+					if (hasCustomInitalizer)
 					{
-						using (writer.BlockInvariant("new {0}{1}", GetGlobalizedTypeName(fullTypeName), GenerateConstructorParameters(xamlObjectDefinition.Type)))
+						var propertyType = FindType(xamlObjectDefinition.Type);
+						writer.AppendLine(BuildLiteralValue(FindImplicitContentMember(xamlObjectDefinition), propertyType, owner));
+					}
+					else
+					{
+						using (TryGenerateDeferedLoadStrategy(writer, knownType, xamlObjectDefinition))
 						{
-							TrySetParsing(writer, xamlObjectDefinition, isInitializer: true);
-							RegisterAndBuildResources(writer, xamlObjectDefinition, isInInitializer: true);
-							BuildLiteralProperties(writer, xamlObjectDefinition);
-							BuildProperties(writer, xamlObjectDefinition);
-							BuildLocalizedProperties(writer, xamlObjectDefinition);
-						}
+							using (writer.BlockInvariant("new {0}{1}", GetGlobalizedTypeName(fullTypeName), GenerateConstructorParameters(xamlObjectDefinition.Type)))
+							{
+								TrySetParsing(writer, xamlObjectDefinition, isInitializer: true);
+								RegisterAndBuildResources(writer, xamlObjectDefinition, isInInitializer: true);
+								BuildLiteralProperties(writer, xamlObjectDefinition);
+								BuildProperties(writer, xamlObjectDefinition);
+								BuildLocalizedProperties(writer, xamlObjectDefinition);
+							}
 
-						BuildExtendedProperties(writer, xamlObjectDefinition);
+							BuildExtendedProperties(writer, xamlObjectDefinition);
+						}
 					}
 				}
 			}
