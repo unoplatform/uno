@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using Uno.Extensions;
+using Uno.UI;
 using Windows.Globalization;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -33,10 +34,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public TimePicker()
 		{
-			LightDismissOverlayBackground = Resources["TimePickerLightDismissOverlayBackground"] as Brush ??
-				// This is normally a no-op - the above line should retrieve the framework-level resource. This is purely to fail the build when
-				// Resources/Styles are overhauled (and the above will no longer be valid)
-				Uno.UI.GlobalStaticResources.TimePickerLightDismissOverlayBackground as Brush;
+			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "FlyoutLightDismissOverlayBackground", isThemeResourceExtension: true);
 
 			DefaultStyleKey = typeof(TimePicker);
 		}

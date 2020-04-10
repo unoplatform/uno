@@ -6,6 +6,7 @@ using Microsoft.Extensions.Logging;
 using Uno.Client;
 using Uno.Disposables;
 using Uno.Extensions;
+using Uno.UI;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
@@ -13,7 +14,7 @@ using Windows.System;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class 
+	public partial class
 		ContentDialog : ContentControl
 	{
 		internal readonly Popup _popup;
@@ -25,11 +26,9 @@ namespace Windows.UI.Xaml.Controls
 			_popup = new Popup()
 			{
 				LightDismissOverlayMode = LightDismissOverlayMode.On,
-				LightDismissOverlayBackground = Resources["ContentDialogLightDismissOverlayBackground"] as Brush ??
-					// This is normally a no-op - the above line should retrieve the framework-level resource. This is purely to fail the build when
-					// Resources/Styles are overhauled (and the above will no longer be valid)
-					Uno.UI.GlobalStaticResources.ContentDialogLightDismissOverlayBackground as Brush,
 			};
+
+			ResourceResolver.ApplyResource(_popup, Popup.LightDismissOverlayBackgroundProperty, "ContentDialogLightDismissOverlayBackground", isThemeResourceExtension: true);
 
 			_popup.PopupPanel = new ContentDialogPopupPanel(this);
 			_popup.Opened += (s, e) =>
@@ -322,7 +321,7 @@ namespace Windows.UI.Xaml.Controls
 					const ContentDialogResult result = ContentDialogResult.Primary;
 					PrimaryButtonCommand.ExecuteIfPossible(PrimaryButtonCommandParameter);
 
-					if(Hide(result))
+					if (Hide(result))
 					{
 						_tcs.SetResult(result);
 					}
