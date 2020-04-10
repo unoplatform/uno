@@ -14,7 +14,7 @@ namespace Uno.UI
 		/// </summary>
 		/// <param name="group"></param>
 		/// <returns></returns>
-		public static IEnumerable<object> GetChildren(this object group) => (IEnumerable<object>)(group as FrameworkElement)?._children ?? new object[0];
+		public static IEnumerable<UIElement> GetChildren(this UIElement group) => (IEnumerable<UIElement>)(group as FrameworkElement)?._children ?? new UIElement[0];
 
 		public static FrameworkElement GetTopLevelParent(this UIElement view) => throw new NotImplementedException();
 

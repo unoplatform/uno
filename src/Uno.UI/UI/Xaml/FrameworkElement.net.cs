@@ -134,5 +134,8 @@ namespace Windows.UI.Xaml
 		public Size UnclippedDesiredSize => _layouter._unclippedDesiredSize;
 
 		public global::System.Uri BaseUri { get; internal set; }
+
+		private protected virtual double GetActualWidth() => ActualWidth;
+		private protected virtual double GetActualHeight() => ActualHeight;
 	}
 }
