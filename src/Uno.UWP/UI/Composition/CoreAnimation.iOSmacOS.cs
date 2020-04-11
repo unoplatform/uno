@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using CoreAnimation;
+﻿using CoreAnimation;
 using Foundation;
 using Uno.Extensions;
 using Uno.Logging;
@@ -8,7 +7,11 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
 using System.Threading;
+#if __IOS__
 using UIKit;
+#else
+using AppKit;
+#endif
 
 namespace Windows.UI.Composition
 {
@@ -303,4 +306,3 @@ namespace Windows.UI.Composition
 		}
 	}
 }
-#endif

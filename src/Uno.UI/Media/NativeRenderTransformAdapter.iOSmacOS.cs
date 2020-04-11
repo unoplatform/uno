@@ -29,7 +29,7 @@ namespace Uno.UI.Media
 			if (Transform.IsAnimating)
 			{
 				// While animating the transform, we let the Animator apply the transform by itself, so do not update the Transform
-#if __IOS__
+#if __IOS__ || __MACOS__
 				if (!_wasAnimating)
 				{
 					// At the beginning of the animation make sure we disable all properties of the transform
