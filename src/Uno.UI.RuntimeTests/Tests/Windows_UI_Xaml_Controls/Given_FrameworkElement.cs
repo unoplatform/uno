@@ -350,6 +350,36 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml_Controls
 
 			Assert.AreEqual(setHeight, Math.Round(innerView.ActualHeight));
 		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Negative_Margin_NonZero_Size()
+		{
+			var SUT = new Grid { VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, -16, 0, 0), Height = 120 };
+
+			var hostPanel = new Grid();
+			hostPanel.Children.Add(SUT);
+
+			TestServices.WindowHelper.WindowContent = hostPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(104d, Math.Round(SUT.DesiredSize.Height));
+		}
+
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Negative_Margin_Zero_Size()
+		{
+			var SUT = new Grid { VerticalAlignment = VerticalAlignment.Top, Margin = new Thickness(0, -16, 0, 0) };
+
+			var hostPanel = new Grid();
+			hostPanel.Children.Add(SUT);
+
+			TestServices.WindowHelper.WindowContent = hostPanel;
+			await TestServices.WindowHelper.WaitForIdle();
+
+			Assert.AreEqual(0d, Math.Round(SUT.DesiredSize.Height));
+		}
 	}
 
 	public partial class MyControl01 : FrameworkElement

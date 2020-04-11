@@ -257,24 +257,8 @@ namespace Windows.UI.Xaml
 
 		public static CGSize Measure(this IFrameworkElement element, _Size availableSize)
 		{
-#if XAMARIN_IOS
+#if XAMARIN_IOS || __MACOS__
 			return ((View)element).SizeThatFits(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
-#elif __MACOS__
-			if(element is NSControl nsControl)
-			{
-				return nsControl.SizeThatFits(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
-			}
-			else if (element is FrameworkElement fe)
-			{
-				fe.XamlMeasure(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
-				var desiredSize = fe.DesiredSize;
-				return new CGSize(desiredSize.Width, desiredSize.Height);
-			}
-			else
-			{
-				throw new NotSupportedException($"Unsupported measure for {element}");
-			}
-
 #elif XAMARIN_ANDROID
 			var widthSpec = ViewHelper.SpecFromLogicalSize(availableSize.Width);
 			var heightSpec = ViewHelper.SpecFromLogicalSize(availableSize.Height);
@@ -290,25 +274,28 @@ namespace Windows.UI.Xaml
 		}
 
 #if __MACOS__
-		public static CGSize Measure(this View element, _Size availableSize)
+		public static CGSize SizeThatFits(this View element, _Size availableSize)
 		{
-			if (element is NSControl nsControl)
+			switch (element)
 			{
-				return nsControl.SizeThatFits(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
-			}
-			else if (element is FrameworkElement fe)
-			{
-				fe.XamlMeasure(new Size(availableSize.Width, availableSize.Height));
-				var desiredSize = fe.DesiredSize;
-				return new CGSize(desiredSize.Width, desiredSize.Height);
-			}
-			else if (element is IHasSizeThatFits scp)
-			{
-				return scp.SizeThatFits(availableSize);
-			}
-			else
-			{
-				throw new NotSupportedException($"Unsupported measure for {element}");
+				case NSControl nsControl:
+					return nsControl.SizeThatFits(availableSize);
+
+				case FrameworkElement fe:
+					{
+						fe.XamlMeasure(availableSize);
+						var desiredSize = fe.DesiredSize;
+						return new CGSize(desiredSize.Width, desiredSize.Height);
+					}
+
+				case IHasSizeThatFits scp:
+					return scp.SizeThatFits(availableSize);
+
+				case View nsview:
+					return nsview.FittingSize;
+
+				default:
+					throw new NotSupportedException($"Unsupported measure for {element}");
 			}
 		}
 

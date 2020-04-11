@@ -105,6 +105,10 @@
       <Project>{21A31391-B907-457F-A522-689D44E6D6E4}</Project>
       <Name>Uno.UI.Lottie</Name>
     </ProjectReference>
+		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj">
+		  <Project>{C9824734-5116-425C-B490-C838D44105EC}</Project>
+		  <Name>Uno.UI.RemoteControl</Name>
+		</ProjectReference>
 	</ItemGroup>
   <Import Project="..\..\SourceGenerators\sourcegenerators.local.props" />
   <Import Project="..\UITests.Shared\UITests.Shared.projitems" Label="Shared" Condition="Exists('..\UITests.Shared\UITests.Shared.projitems')" />

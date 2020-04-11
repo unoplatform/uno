@@ -10,7 +10,7 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property TextWrapping
 		// Skipping already declared property TextAlignment
 		// Skipping already declared property Text
-		#if false || false || NET461 || false || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  int SelectionStart
 		{
@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  int SelectionLength
 		{

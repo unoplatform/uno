@@ -110,6 +110,7 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().DebugFormat("OnNavigationFinished: {0}", webView.Url?.ToUri());
 			}
 
+			_parentWebView.DocumentTitle = webView.Title;
 			_parentWebView.OnComplete(webView.Url, isSuccessful: true, status: WebErrorStatus.Unknown);
 			_urlLastNavigation = webView.Url;
 		}

@@ -124,7 +124,7 @@ namespace Windows.UI.Xaml.Controls
 
 			if (_contentElement is ScrollViewer scrollViewer)
 			{
-#if __IOS__
+#if __IOS__ || __MACOS__
 				// We disable scrolling because the inner ITextBoxView provides its own scrolling
 				scrollViewer.HorizontalScrollMode = ScrollMode.Disabled;
 				scrollViewer.VerticalScrollMode = ScrollMode.Disabled;

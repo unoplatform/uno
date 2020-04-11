@@ -42,9 +42,8 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r /p:CheckExclusions=True "/p:CombinedConfiguration=$(CombinedConfiguration)" /nodeReuse:true /detailedsummary /m # /bl:$(build.artifactstagingdirectory)\build.binlog
+      msbuildArguments: /r "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary # /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer).binlog
       clean: false
-      maximumCpuCount: true
       restoreNugetPackages: false
       logProjectEvents: false
       createLogFile: false
@@ -55,15 +54,6 @@ jobs:
       SourceFolder: $(build.sourcesdirectory)/Build
       Contents: '*.nupkg'
       TargetFolder: $(build.artifactstagingdirectory)\vslatest
-      CleanTargetFolder: false
-      OverWrite: false
-      flattenFolders: false
-
-  - task: CopyFiles@2
-    inputs:
-      SourceFolder: $(build.sourcesdirectory)\src\SamplesApp\SamplesApp.Wasm\bin\Release\netstandard2.0\dist
-      Contents: '**\*.*'
-      TargetFolder: $(build.artifactstagingdirectory)\sampleapp-wasm
       CleanTargetFolder: false
       OverWrite: false
       flattenFolders: false
