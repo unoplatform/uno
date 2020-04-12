@@ -56,8 +56,10 @@ namespace Windows.UI.Xaml.Controls
 					cancel = "Cancel";
 				}
 			}
-			OkString = ok;
-			CancelString = cancel;
+
+			// Set strings with fallback to default English
+			OkString = !string.IsNullOrEmpty(ok) ? ok : "OK"; 
+			CancelString = !string.IsNullOrEmpty(cancel) ? cancel : "Cancel";
 
 #if __IOS__
 			if (UIDevice.CurrentDevice.CheckSystemVersion(10, 3))
@@ -260,10 +262,10 @@ namespace Windows.UI.Xaml.Controls
 			};
 			alert.AddButton(OkString);
 			alert.AddButton(CancelString);
-			alert.Buttons[0].Activated += (s, e) => completionHandler(true);
-			alert.Buttons[1].Activated += (s, e) => completionHandler(false);
-
-			alert.RunModal();
+			alert.BeginSheetForResponse(webview.Window, (result) => {
+				var okButtonClicked = result == 1000;
+				completionHandler(okButtonClicked);
+			});
 #endif
 		}
 
@@ -298,16 +300,17 @@ namespace Windows.UI.Xaml.Controls
 				AlertStyle = NSAlertStyle.Informational,
 				InformativeText = prompt,
 			};
-			var textField = new NSTextField()
+			var textField = new NSTextField(new CGRect(0, 0, 300, 20))
 			{
 				PlaceholderString = defaultText,
 			};
 			alert.AccessoryView = textField;
 			alert.AddButton(OkString);
 			alert.AddButton(CancelString);
-			alert.Buttons[0].Activated += (s, e) => completionHandler(textField.StringValue);
-			alert.Buttons[1].Activated += (s, e) => completionHandler(null);
-			alert.RunModal();
+			alert.BeginSheetForResponse(webview.Window, (result) => {
+				var okButtonClicked = result == 1000;
+				completionHandler(okButtonClicked ? textField.StringValue : null);
+			});
 #endif
 		}
 
@@ -522,7 +525,7 @@ namespace Windows.UI.Xaml.Controls
 #else
 			if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 			{
-				this.Log().Debug($"ScrollingEnabled cannot is not currently supported on macOS");
+				this.Log().Debug($"ScrollingEnabled is not currently supported on macOS");
 			}
 #endif
 		}
