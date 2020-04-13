@@ -73,7 +73,7 @@
 		<PackageReference Include="BenchmarkDotNet" Version="0.11.4-develop" />
 		<PackageReference Include="Uno.Wasm.WebSockets" />
 		<PackageReference Include="Uno.Wasm.Bootstrap" />
-		<DotNetCliToolReference Include="Uno.Wasm.Bootstrap.Cli" />
+		<PackageReference Include="Uno.Wasm.Bootstrap.DevServer" />
 	</ItemGroup>
 
 	<ItemGroup>
