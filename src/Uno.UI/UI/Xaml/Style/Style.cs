@@ -187,7 +187,7 @@ namespace Windows.UI.Xaml
 
 				if (typeof(Style).Log().IsEnabled(LogLevel.Debug))
 				{
-						typeof(Style).Log().LogDebug($"No native style found for type {type}, falling back on Xaml style");
+						typeof(Style).Log().LogDebug($"No native style found for type {type}, falling back on UWP style");
 				}
 
 				// If no native style found, fall back on UWP style
