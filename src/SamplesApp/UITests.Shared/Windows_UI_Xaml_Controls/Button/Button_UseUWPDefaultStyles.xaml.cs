@@ -14,8 +14,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using Uno.UI.Extensions;
 #if NETFX_CORE
-using Uno.UI.Sample.Views.Helper;
 using _NativeType = Windows.UI.Xaml.Controls.Grid;
 #elif __ANDROID__
 using Uno.UI;
