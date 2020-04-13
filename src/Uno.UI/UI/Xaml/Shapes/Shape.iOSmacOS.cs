@@ -11,8 +11,10 @@ using static System.Double;
 
 #if __IOS__
 using UIKit;
+using _Color = UIKit.UIColor;
 #elif __MACOS__
 using AppKit;
+using _Color = AppKit.NSColor;
 #endif
 
 namespace Windows.UI.Xaml.Shapes
@@ -422,11 +424,13 @@ namespace Windows.UI.Xaml.Shapes
 
 			Render(renderPath);
 
+#if __IOS__
 			// If the Shape does not have size defined, and natural size of the path is lower than the finalSize,
 			// then we don't clip the shape!
 			ClipsToBounds = stretch != Stretch.None
 				|| userSize.hasWidth || userSize.hasHeight
 				|| pathSize.Width > finalSize.Width || pathSize.Height > finalSize.Height;
+#endif
 
 			return size;
 		}
@@ -505,7 +509,7 @@ namespace Windows.UI.Xaml.Shapes
 					Path = mask,
 					Frame = Bounds,
 					// We only use the fill color to create the mask area
-					FillColor = UIColor.White.CGColor,
+					FillColor = _Color.White.CGColor,
 				};
 		}
 
