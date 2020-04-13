@@ -268,8 +268,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var control = new Test_Control();
 
-			app.HostView.Children.Add(control); // This is only necessary for Uno, which currently doesn't resolve local resources until load-time.
-
 			var bulbousness = MyBehavior.GetBulbousness(control.TestBorder);
 			Assert.AreEqual(105.5, bulbousness);
 		}
