@@ -96,6 +96,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		{
 			if (_popup.Child is FrameworkElement child)
 			{
+#if __IOS__
+				// workaround for #2984
+				var availableSize = ApplicationView.GetForCurrentView().VisibleBounds.Size;
+				child.MaxHeight = availableSize.Height;
+				child.MaxWidth = availableSize.Width;
+#endif
+
 				SizeChangedEventHandler handler = (_, __) => SetPopupPositionPartial(Target, _popupPositionInTarget);
 
 				child.SizeChanged += handler;
