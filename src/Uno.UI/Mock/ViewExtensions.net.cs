@@ -35,5 +35,76 @@ namespace Uno.UI
 				}
 			}
 		}
+
+
+		/// <summary>
+		/// Displays the visual tree in the vicinity of <paramref name="element"/> for diagnostic purposes.
+		/// </summary>
+		/// <param name="element">The view to display tree for.</param>
+		/// <param name="fromHeight">How many levels above <paramref name="element"/> should be included in the displayed subtree.</param>
+		/// <returns>A formatted string representing the visual tree around <paramref name="element"/>.</returns>
+		public static string ShowLocalVisualTree(this UIElement element, int fromHeight = 1000)
+		{
+			var root = element as FrameworkElement;
+			for (int i = 0; i < fromHeight; i++)
+			{
+				if (root.Parent is FrameworkElement parent)
+				{
+					root = parent;
+				}
+				else
+				{
+					break;
+				}
+			}
+
+			return ShowDescendants(root, viewOfInterest: element);
+		}
+
+		/// <summary>
+		/// Displays all the visual descendants of <paramref name="element"/> for diagnostic purposes. 
+		/// </summary>
+		public static string ShowDescendants(this UIElement element, StringBuilder sb = null, string spacing = "", UIElement viewOfInterest = null)
+		{
+			sb = sb ?? new StringBuilder();
+
+			Inner(element, spacing);
+			return sb.ToString();
+
+			void Inner(UIElement elem, string s)
+			{
+				AppendView(elem, s);
+				s += "  ";
+				foreach (var child in elem.GetChildren())
+				{
+					Inner(child, s);
+				}
+			}
+
+			void AppendView(UIElement innerView, string s)
+			{
+				var name = (innerView as FrameworkElement)?.Name;
+				var namePart = string.IsNullOrEmpty(name) ? "" : $"-'{name}'";
+
+				var fe = innerView as FrameworkElement;
+				var u = innerView as UIElement;
+
+				sb
+					.Append(s)
+					.Append(innerView == viewOfInterest ? "*>" : ">")
+					.Append(innerView.ToString() + namePart)
+					.Append($"-({fe.ActualWidth}x{fe.ActualHeight})@({fe.LayoutSlot.Left},{fe.LayoutSlot.Top})")
+					.Append($"  {innerView.Visibility}")
+					.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
+					.Append(fe != null && fe.Margin != default ? $" Margin={fe.Margin}" : "")
+					.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
+					.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
+					.Append(u != null ? $" DesiredSize={u.DesiredSize}" : "")
+					.Append(u != null && u.NeedsClipToSlot ? "CLIPPED_TO_SLOT" : "")
+					.Append(u != null && u.RenderTransform != null ? $"RENDER_TRANSFORM({u.RenderTransform.MatrixCore})" : "")
+					.Append(u?.Clip != null ? $" Clip={u.Clip.Rect}" : "")
+					.AppendLine();
+			}
+		}
 	}
 }
