@@ -38,8 +38,6 @@ namespace Windows.UI.Xaml
 		{
 			OnLoadingPartial();
 			Loading?.Invoke(this, null);
-
-			ApplyCompiledBindings();
 		}
 
 		protected virtual void OnLoaded()
