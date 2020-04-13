@@ -13,7 +13,7 @@ using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 {
-	public class Manipulation_Tests : SampleControlUITestBase
+	public partial class Manipulation_Tests : SampleControlUITestBase
 	{
 		[Test]
 		[AutoRetry]
@@ -42,6 +42,21 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			var result = Parse(resultStr);
 
 			Assert.AreEqual(2.0, result.cumulative.Scale);
+		}
+
+		[Test]
+		[AutoRetry]
+		public void Manipulation_WithNestedElement()
+		{
+			Run("UITests.Windows_UI_Input.GestureRecognizerTests.Manipulation_WithNestedElement");
+
+			var rect = _app.WaitForElement("_target").Single().Rect;
+			_app.DragCoordinates(rect.X + 10, rect.Y + 10, rect.Right - 10, rect.Bottom - 10);
+
+			var result = _app.Marked("_result").GetDependencyPropertyValue<string>("Text");
+			result = result.Replace("\r", "").Replace("\n", "");
+
+			Assert.IsTrue(result.Contains("[PARENT] Manip delta[CHILD] Pointer moved[PARENT] Manip delta[CHILD] Pointer moved"));
 		}
 
 		private static (Point position, ManipulationDelta delta, ManipulationDelta cumulative) Parse(string raw)
