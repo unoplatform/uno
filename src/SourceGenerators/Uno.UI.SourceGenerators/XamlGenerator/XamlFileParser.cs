@@ -82,7 +82,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			shouldCreateIgnorable |= conditionals.ExcludedConditionals.Count > 0;
 
-			if (ignorables == null && !shouldCreateIgnorable)
+			var hasxBind = adjusted.Contains("{x:Bind", StringComparison.Ordinal);
+
+			if (ignorables == null && !shouldCreateIgnorable && !hasxBind)
 			{
 				// No need to modify file
 				return XmlReader.Create(file);
@@ -98,7 +100,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				.Concat(conditionals.ExcludedConditionals.Select(a => a.LocalName))
 				.ToArray();
 			var newIgnoredFlat = newIgnored.JoinBy(" ");
-			
+
 			if (ignorables != null)
 			{
 				ignorables.Value = newIgnoredFlat;
@@ -182,8 +184,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						"{0}=\"{1}\"".InvariantCultureFormat(includedCond.Name, valueSplit[0])
 					);
 			}
-			
-			if (adjusted.Contains("{x:Bind", StringComparison.Ordinal))
+
+			if (hasxBind)
 			{
 				// Apply replacements to avoid having issues with the XAML parser which does not
 				// support quotes in positional markup extensions parameters.
