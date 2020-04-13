@@ -248,13 +248,13 @@ namespace Windows.UI.Xaml.Controls
 #if __IOS__
 		[global::Uno.NotImplemented]
 #endif
-		public static bool GetBringIntoViewOnFocusChange( global::Windows.UI.Xaml.DependencyObject element)
+		public static bool GetBringIntoViewOnFocusChange(global::Windows.UI.Xaml.DependencyObject element)
 			=> (bool)element.GetValue(BringIntoViewOnFocusChangeProperty);
 
 #if __IOS__
 		[global::Uno.NotImplemented]
 #endif
-		public static void SetBringIntoViewOnFocusChange( global::Windows.UI.Xaml.DependencyObject element,  bool bringIntoViewOnFocusChange)
+		public static void SetBringIntoViewOnFocusChange(global::Windows.UI.Xaml.DependencyObject element, bool bringIntoViewOnFocusChange)
 			=> element.SetValue(BringIntoViewOnFocusChangeProperty, bringIntoViewOnFocusChange);
 
 #if __IOS__
@@ -609,7 +609,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-#if !NET461
 		/// <summary>
 		/// Sets the content of the ScrollViewer
 		/// </summary>
@@ -830,6 +829,5 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void ChangeViewScroll(double? horizontalOffset, double? verticalOffset, bool disableAnimation);
 		partial void ChangeViewZoom(float zoomFactor, bool disableAnimation);
-#endif
 	}
 }
