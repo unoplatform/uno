@@ -75,6 +75,9 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="macOS\AppDelegate.cs" />
+    <None Include="macOS\Main.cs" />
+    <None Include="macOS\Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <None Include="Droid\Assets\Fonts\winjs-symbols.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -91,6 +94,13 @@
     <None Include="iOS\Resources\Fonts\winjs-symbols.ttf">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Include="macOS\Assets.xcassets\AppIcon.appiconset\Contents.json" />
+    <None Include="macOS\Assets.xcassets\Contents.json" />
+    <None Include="macOS\Assets.xcassets\unologo.imageset\Contents.json" />
+    <None Include="macOS\Entitlements.plist" />
+    <None Include="macOS\Info.plist" />
+    <None Include="macOS\Resources\Fonts\winjs-symbols.ttf" />
+    <None Include="macOS\UnoQuickStart.macOS.csproj" />
     <None Include="Shared\Assets\SharedAssets.md" />
     <None Include="Shared\Strings\en\Resources.resw">
       <SubType>Designer</SubType>
@@ -192,6 +202,18 @@
     </Content>
     <Content Include="iOS\Resources\SplashScreen%402x.png" />
     <Content Include="iOS\Resources\SplashScreen%403x.png" />
+    <None Include="macOS\macOS.vstemplate" />
+    <None Include="macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-128%402x.png" />
+    <None Include="macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-128.png" />
+    <None Include="macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-16%402x.png" />
+    <None Include="macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-16.png" />
+    <None Include="macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-256%402x.png" />
+    <None Include="macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-256.png" />
+    <None Include="macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-32%402x.png" />
+    <None Include="macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-32.png" />
+    <None Include="macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-512%402x.png" />
+    <None Include="macOS\Assets.xcassets\AppIcon.appiconset\AppIcon-512.png" />
+    <None Include="macOS\Assets.xcassets\unologo.imageset\unoplatform.jpg" />
     <Content Include="UWP\Assets\LockScreenLogo.scale-200.png" />
     <Content Include="UWP\Assets\SplashScreen.scale-200.png" />
     <Content Include="UWP\Assets\Square150x150Logo.scale-200.png" />

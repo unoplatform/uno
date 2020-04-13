@@ -20,6 +20,8 @@
       href: getting-started-tutorial-1.md
     - name: Next steps
       href: get-started-next-steps.md
+    - name: Getting Started with VS Code and WebAssembly
+      href: get-started-vscode-wasm.md
 - name: Using Uno
   items:
     - name: Developing with Uno.UI
@@ -36,7 +38,7 @@
       href: uno-app-solution-structure.md
     - name: Performance tips
       href: Uno-UI-Performance.md
-    - name: Debugging C# on WASM
+    - name: 'Debugging C# on WASM'
       href: debugging-wasm.md
     - name: Build telemetry
       href: uno-toolchain-telemetry.md
