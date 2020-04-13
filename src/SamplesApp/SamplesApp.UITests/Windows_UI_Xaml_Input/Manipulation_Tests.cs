@@ -54,8 +54,9 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			_app.DragCoordinates(rect.X + 10, rect.Y + 10, rect.Right - 10, rect.Bottom - 10);
 
 			var result = _app.Marked("_result").GetDependencyPropertyValue<string>("Text");
+			result = result.Replace("\r", "").Replace("\n", "");
 
-			Assert.IsTrue(result.Contains("[PARENT] Manip delta\r\n[CHILD] Pointer moved\r\n[PARENT] Manip delta\r\n[CHILD] Pointer moved\r\n"));
+			Assert.IsTrue(result.Contains("[PARENT] Manip delta[CHILD] Pointer moved[PARENT] Manip delta[CHILD] Pointer moved"));
 		}
 
 		private static (Point position, ManipulationDelta delta, ManipulationDelta cumulative) Parse(string raw)
