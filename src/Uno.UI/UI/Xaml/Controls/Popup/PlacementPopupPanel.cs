@@ -158,13 +158,13 @@ namespace Windows.UI.Xaml.Controls
 					case FlyoutPlacementMode.Full:
 						desiredSize = visibleBounds.Size.AtMost(maxSize);
 						finalPosition = new Point(
-							x: (visibleBounds.Width - desiredSize.Width) / 2.0,
-							y: (visibleBounds.Height - desiredSize.Height) / 2.0);
+							x: visibleBounds.Left + (visibleBounds.Width - desiredSize.Width) / 2.0,
+							y: visibleBounds.Top + (visibleBounds.Height - desiredSize.Height) / 2.0);
 						break;
 					default: // Other unsupported placements
 						finalPosition = new Point(
-							x: (visibleBounds.Width - desiredSize.Width) / 2.0,
-							y: (visibleBounds.Height - desiredSize.Height) / 2.0);
+							x: visibleBounds.Left + (visibleBounds.Width - desiredSize.Width) / 2.0,
+							y: visibleBounds.Top + (visibleBounds.Height - desiredSize.Height) / 2.0);
 						break;
 				}
 
