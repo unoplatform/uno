@@ -205,8 +205,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				var resourceKeys = GetResourceKeys();
 				var filesFull = new XamlFileParser(_excludeXamlNamespaces, _includeXamlNamespaces).ParseFiles(_xamlSourceFiles);
 				var files = filesFull.Trim()
-				.OrderBy(f => f.UniqueID)
-				.ToArray();
+					.OrderBy(f => f.UniqueID)
+					.ToArray();
 
 				for (int i = 0; i < files.Length; i++)
 				{
@@ -584,9 +584,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						writer.AppendLineInvariant("static partial void RegisterDefaultStyles_{0}();", file.UniqueID);
 					}
 
-						writer.AppendLineInvariant("[global::System.Obsolete(\"This method is provided for binary backward compatibility. It will always return null.\")]");
-						writer.AppendLineInvariant("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
-						writer.AppendLineInvariant("public static object FindResource(string name) => null;");
+					writer.AppendLineInvariant("[global::System.Obsolete(\"This method is provided for binary backward compatibility. It will always return null.\")]");
+					writer.AppendLineInvariant("[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]");
+					writer.AppendLineInvariant("public static object FindResource(string name) => null;");
 
 					writer.AppendLineInvariant("");
 				}
