@@ -771,10 +771,6 @@
 		</Setter>
 	</xamarin:Style>
 
-	<xamarin:Style x:Key="XamlDefaultComboBox"
-		   TargetType="ComboBox"
-		   BasedOn="{StaticResource DefaultComboBoxStyle}" />
-
 	<Style TargetType="ComboBox"
 		   BasedOn="{StaticResource DefaultComboBoxStyle}" />
 
