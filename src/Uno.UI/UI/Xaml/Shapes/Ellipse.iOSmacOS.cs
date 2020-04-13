@@ -9,7 +9,9 @@ namespace Windows.UI.Xaml.Shapes
 	{
 		public Ellipse()
 		{
+#if __IOS__
 			ClipsToBounds = true;
+#endif
 			Stretch = Stretch.Fill;
 		}
 

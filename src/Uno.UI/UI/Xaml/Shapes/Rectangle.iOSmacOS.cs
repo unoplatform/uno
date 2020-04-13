@@ -19,7 +19,9 @@ namespace Windows.UI.Xaml.Shapes
 	{
 		public Rectangle()
 		{
+#if __IOS__
 			ClipsToBounds = true;
+#endif
 			Stretch = Stretch.Fill;
 		}
 
@@ -39,7 +41,7 @@ namespace Windows.UI.Xaml.Shapes
 #if __IOS__
 					? _BezierPath.FromRoundedRect(renderingArea, UIRectCorner.AllCorners, new CGSize(RadiusX, RadiusY)).CGPath
 #else
-					? _BezierPath.FromRoundedRect(area, (nfloat)RadiusX, (nfloat)RadiusY).ToCGPath()
+					? _BezierPath.FromRoundedRect(renderingArea, (nfloat)RadiusX, (nfloat)RadiusY).ToCGPath()
 #endif
 					: _BezierPath.FromRect(renderingArea).ToCGPath();
 			}
