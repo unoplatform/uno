@@ -78,9 +78,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			document.LoadXml(adjusted);
 
 			var (ignorables, shouldCreateIgnorable) = FindIgnorables(document);
-			var excludedConditionals = FindExcludedConditionals(document);
+			var conditionals = FindConditionals(document);
 
-			shouldCreateIgnorable |= excludedConditionals.Length > 0;
+			shouldCreateIgnorable |= conditionals.ExcludedConditionals.Count > 0;
 
 			if (ignorables == null && !shouldCreateIgnorable)
 			{
@@ -95,7 +95,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			var newIgnored = ignoredNs
 				.Except(_includeXamlNamespaces)
 				.Concat(_excludeXamlNamespaces.Where(n => document.DocumentElement.GetNamespaceOfPrefix(n).HasValue()))
-				.Concat(excludedConditionals)
+				.Concat(conditionals.ExcludedConditionals.Select(a => a.LocalName))
 				.ToArray();
 			var newIgnoredFlat = newIgnored.JoinBy(" ");
 			
@@ -172,6 +172,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				}
 			}
 
+			foreach (var includedCond in conditionals.IncludedConditionals)
+			{
+				var valueSplit = includedCond.Value.Split('?');
+				// Strip the conditional part, so the namespace can be parsed correctly by the Xaml reader
+				adjusted = adjusted
+					.Replace(
+						includedCond.OuterXml,
+						"{0}=\"{1}\"".InvariantCultureFormat(includedCond.Name, valueSplit[0])
+					);
+			}
+			
 			if (adjusted.Contains("{x:Bind", StringComparison.Ordinal))
 			{
 				// Apply replacements to avoid having issues with the XAML parser which does not
@@ -222,50 +233,64 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		/// <summary>
-		/// Returns those XAML namespace definitions for which a conditional is set which returns false, which therefore should be ignored.
+		/// Returns those XAML namespace definitions for which a conditional is set, grouped by those for which the conditional returns true and
+		/// should be included, and those for which it returns fales and should be excluded.
 		/// </summary>
-		private string[] FindExcludedConditionals(XmlDocument document) => document.DocumentElement
-			.Attributes
-			.Cast<XmlAttribute>()
-			.Where(ShouldExcludeConditional)
-			.Select(a => a.LocalName)
-			.ToArray();
-
-		private bool ShouldExcludeConditional(XmlAttribute attr) => !ShouldIncludeConditional(attr);
-		private bool ShouldIncludeConditional(XmlAttribute attr)
+		private (List<XmlAttribute> IncludedConditionals, List<XmlAttribute> ExcludedConditionals) FindConditionals(XmlDocument document)
 		{
-			if (attr.Prefix != "xmlns")
-			{
-				// Not a namespace
-				return true;
-			}
+			var included = new List<XmlAttribute>();
+			var excluded = new List<XmlAttribute>();
 
-			var valueSplit = attr.Value.Split('?');
-			if (valueSplit.Length != 2)
+			foreach (XmlAttribute attr in document.DocumentElement.Attributes)
 			{
-				// Not a (valid) conditional
-				return true;
-			}
+				if (attr.Prefix != "xmlns")
+				{
+					// Not a namespace
+					continue;
+				}
 
-			var elements = valueSplit[1].Split('(', ',', ')');
+				var valueSplit = attr.Value.Split('?');
+				if (valueSplit.Length != 2)
+				{
+					// Not a (valid) conditional
+					continue;
+				}
 
-			switch (elements[0])
-			{
-				case nameof(ApiInformation.IsApiContractPresent):
-				case nameof(ApiInformation.IsApiContractNotPresent):
-					if (elements.Length < 4 || !ushort.TryParse(elements[2].Trim(), out var majorVersion))
+				if (ShouldInclude() is bool shouldInclude)
+				{
+					if (shouldInclude)
 					{
-						throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {attr.Value}");
+						included.Add(attr);
 					}
+					else
+					{
+						excluded.Add(attr);
+					}
+				}
 
-					return elements[0] == nameof(ApiInformation.IsApiContractPresent) ?
-						ApiInformation.IsApiContractPresent(elements[1], majorVersion) :
-						ApiInformation.IsApiContractNotPresent(elements[1], majorVersion);
-				default:
-					break; // TODO: support IsTypePresent and IsPropertyPresent
+				bool? ShouldInclude()
+				{
+					var elements = valueSplit[1].Split('(', ',', ')');
+
+					switch (elements[0])
+					{
+						case nameof(ApiInformation.IsApiContractPresent):
+						case nameof(ApiInformation.IsApiContractNotPresent):
+							if (elements.Length < 4 || !ushort.TryParse(elements[2].Trim(), out var majorVersion))
+							{
+								throw new InvalidOperationException($"Syntax error while parsing conditional namespace expression {attr.Value}");
+							}
+
+							return elements[0] == nameof(ApiInformation.IsApiContractPresent) ?
+								ApiInformation.IsApiContractPresent(elements[1], majorVersion) :
+								ApiInformation.IsApiContractNotPresent(elements[1], majorVersion);
+						default:
+							return null;// TODO: support IsTypePresent and IsPropertyPresent
+					}
+				}
 			}
 
-			return true;
+			return (included, excluded);
 		}
 
 		private XamlFileDefinition Visit(XamlXmlReader reader, string file)

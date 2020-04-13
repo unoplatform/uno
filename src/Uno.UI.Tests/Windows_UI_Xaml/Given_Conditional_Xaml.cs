@@ -21,6 +21,15 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_Conditional_IsApiContractNotPresent()
+		{
+			var page = new Test_Page();
+
+			var tb = page.testConditionalTextBlock2;
+			Assert.AreEqual("Not Contract", tb.Text);
+		}
+
+		[TestMethod]
 		public void When_Uno_Conditional_And_No_Ignorable()
 		{
 			var page = new Test_Page();
