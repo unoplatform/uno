@@ -22,6 +22,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 	public class Given_Implicit_Style
 	{
 		private Thickness DefaultButtonPadding => Given_Explicit_Style.DefaultButtonPadding;
+
+		[TestInitialize]
+		public void Init()
+		{
+			UnitTestsApp.App.EnsureApplication();
+		}
+
 		[TestMethod]
 		public void When_Implicit_Style_In_Application_Merged()
 		{
@@ -114,8 +121,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_Newly_Created_Framework_Type_ApplyTemplate()
 		{
-			var app = UnitTestsApp.App.EnsureApplication();
-
 			var button = new Button() { /*No Content - note that if we had content, a default template would be created*/ };
 
 			button.ApplyTemplate();
@@ -130,7 +135,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var app = UnitTestsApp.App.EnsureApplication();
 
 			var testControl = new Test_Control();
-			
+
 			Assert.AreEqual("AppLevelImplicit", testControl.TestRadioButton.Tag);
 
 			var style = app.Resources["ExplicitRadioButtonStyle1"] as Style;

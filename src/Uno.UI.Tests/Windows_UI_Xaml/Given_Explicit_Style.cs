@@ -22,11 +22,15 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		// TODO: adjust this when Uno retargets newer version of the SDK
 		internal static readonly Thickness DefaultButtonPadding = new Thickness(8, 4, 8, 4);
 #endif
+		[TestInitialize]
+		public void Init()
+		{
+			UnitTestsApp.App.EnsureApplication();
+		}
+
 		[TestMethod]
 		public void When_Custom_Type()
 		{
-			var app = UnitTestsApp.App.EnsureApplication();
-
 			var control = new Test_Control();
 
 			Assert.AreEqual("TopImplicitStyleValue", control.StylesTestControl.Rugosity);
@@ -38,8 +42,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_Framework_Type()
 		{
-			var app = UnitTestsApp.App.EnsureApplication();
-
 			var control = new Test_Control();
 
 			var button = control.StyledButton;
@@ -50,8 +52,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_Custom_From_Framework_Type()
 		{
-			var app = UnitTestsApp.App.EnsureApplication();
-
 			var control = new Test_Control();
 
 			Assert.AreEqual(DefaultButtonPadding, control.StylesTestButton.Padding);
@@ -61,8 +61,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_Custom_Type_And_Custom_Key()
 		{
-			var app = UnitTestsApp.App.EnsureApplication();
-
 			var control = new Test_Control();
 
 			Assert.AreEqual(new Thickness(), control.StylesTestButtonCustomKey.Padding); //DefaultStyleKey is modified so base framework type defaults are not applied
@@ -71,8 +69,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_Explicit_Style_Unset()
 		{
-			var app = UnitTestsApp.App.EnsureApplication();
-
 			var control = new Test_Control();
 
 			Assert.IsNotNull(control.TestRadioButtonExplicit.Style);
@@ -95,8 +91,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_Custom_Key_Local_And_Explicit()
 		{
-			var app = UnitTestsApp.App.EnsureApplication();
-
 			var control = new Test_Control();
 
 			var c1 = Colors.GreenYellow;
@@ -147,8 +141,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_Inline_Style()
 		{
-			var app = UnitTestsApp.App.EnsureApplication();
-
 			var page = new Test_Page();
 
 			var tb = page.TestTextBlock;

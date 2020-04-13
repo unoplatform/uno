@@ -16,6 +16,12 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 	[TestClass]
 	public class Given_ThemeResource
 	{
+		[TestInitialize]
+		public void Init()
+		{
+			UnitTestsApp.App.EnsureApplication();
+		}
+
 		[TestMethod]
 		public void When_System_ThemeResource_Light()
 		{
@@ -73,8 +79,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		[TestMethod]
 		public void When_Inherited_In_Template_Applied()
 		{
-			var app = UnitTestsApp.App.EnsureApplication();
-
 			var control = new Test_Control();
 
 			control.InlineTemplateControl.ApplyTemplate();
