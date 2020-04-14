@@ -724,6 +724,9 @@
 					fullName="Uno.UI.GlobalStaticResources"
 					reason="Resources defined in XAML are no longer converted to public properties on GlobalStaticResources. The type itself is still present." />
 				<Member
+					fullName="Uno.UI.Toolkit.GlobalStaticResources"
+					reason="Resources defined in XAML are no longer converted to public properties on GlobalStaticResources. The type itself is still present." />
+				<Member
 					fullName="Windows.UI.Xaml.GenericStyles"
 					reason="Removed obsolete non-standard type (Styles are now all defined in XAML)." />
 				<Member
