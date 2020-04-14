@@ -7,6 +7,7 @@ using AppKit;
 using Windows.System;
 using Foundation;
 using Windows.UI.Input;
+using CoreGraphics;
 
 namespace Windows.UI.Xaml.Input
 {
@@ -48,7 +49,7 @@ namespace Windows.UI.Xaml.Input
 			var rawPosition = _nativeEvent.LocationInWindow;
 			var position = relativeTo != null ?
 				relativeTo.ConvertPointFromView(_nativeEvent.LocationInWindow, null) :
-				rawPosition;
+				new CGPoint(rawPosition.X, Window.Current.Bounds.Height - rawPosition.Y); //flip Y - uses lower-left as origin and IsFlipped does not apply here
 
 			var properties = new PointerPointProperties()
 			{
