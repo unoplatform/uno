@@ -12,6 +12,7 @@ using System.Text;
 using Uno.Logging;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Media;
 
 namespace Uno.UI.DataBinding
 {
@@ -100,6 +101,26 @@ namespace Uno.UI.DataBinding
 			return _chain.Flatten(i => i.Next);
 		}
 
+		/// <summary>
+		/// Checks the property path for members which may be shared resources (<see cref="Brush"/>es and <see cref="Transform"/>s) and creates a
+		/// copy of them if need be (ie if not already copied). Intended to be used prior to animating the targeted property.
+		/// </summary>
+		internal void CloneShareableObjectsInPath()
+		{
+			foreach (BindingItem item in GetPathItems())
+			{
+				if (item.PropertyType == typeof(Brush) || item.PropertyType == typeof(GeneralTransform))
+				{
+					if (item.Value is IShareableDependencyObject shareable && !shareable.IsClone && item.DataContext is DependencyObject owner)
+					{
+						var clone = shareable.Clone();
+
+						item.Value = clone;
+						break;
+					}
+				}
+			}
+		}
 
 		/// <summary>
 		/// Registers a property changed registration handler.

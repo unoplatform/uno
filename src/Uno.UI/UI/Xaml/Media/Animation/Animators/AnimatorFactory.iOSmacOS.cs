@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <summary>
 		/// Creates the actual animator instance
 		/// </summary>
-		internal static IValueAnimator Create(Timeline timeline, double startingValue, double targetValue)
+		private static IValueAnimator CreateDouble(Timeline timeline, double startingValue, double targetValue)
 		{
 			if (!timeline.GetIsHardwareAnimated())
 			{
@@ -30,6 +30,13 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				return new GPUFloatValueAnimator((float)startingValue, (float)targetValue, timeline.PropertyInfo.GetPathItems());
 			}
+		}
+
+		private static IValueAnimator CreateColor(Timeline timeline, ColorOffset startingValue, ColorOffset targetValue)
+		{
+			// TODO: GPU-bound color animations - https://github.com/unoplatform/uno/issues/2947
+
+			return new ColorValueAnimator(startingValue, targetValue);
 		}
 	}
 }

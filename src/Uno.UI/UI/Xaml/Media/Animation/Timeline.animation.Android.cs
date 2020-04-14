@@ -1,0 +1,50 @@
+﻿using Android.Animation;
+using Android.Views;
+using Android.Views.Animations;
+using Uno.UI;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+
+namespace Windows.UI.Xaml.Media.Animation
+{
+	partial class Timeline
+	{
+		partial class AnimationImplementation<T>
+		{
+			partial void OnFrame()
+			{
+				if (_endValue == null || _startingValue == null)
+				{
+					SetValue(null);
+					return;
+				}
+
+				// TODO: apply easing function - https://github.com/unoplatform/uno/issues/2948
+
+				var totalDiff = AnimationOwner.Subtract(_endValue.Value, _startingValue.Value);
+				var currentDiff = AnimationOwner.Multiply(((NativeValueAnimatorAdapter)_animator).AnimatedFraction, totalDiff);
+				var currentValue = AnimationOwner.Add(_startingValue.Value, currentDiff);
+				SetValue(currentValue);
+			}
+
+			partial void UseHardware()
+			{
+				var view = Target as View ?? (Target as Transform)?.View;
+				if (view != null)
+				{
+					view.SetLayerType(LayerType.Hardware, null);
+					_animator.AnimationEnd += (sender, e) =>
+					{
+						view.SetLayerType(LayerType.None, null);
+					};
+				}
+			}
+
+			// For performance considerations, do not report each frame if we are GPU bound
+			// Frame will be reported on Pause or End (cf. InitializeAnimator)
+			private bool ReportEachFrame() => _owner.GetIsDependantAnimation() || _owner.GetIsDurationZero();
+		}
+	}
+}

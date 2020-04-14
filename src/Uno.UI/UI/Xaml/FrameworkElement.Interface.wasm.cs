@@ -11,11 +11,13 @@ using Windows.UI.Xaml.Input;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI;
+using Uno.Disposables;
 
 namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : UIElement, IFrameworkElement
 	{
+		private readonly SerialDisposable _backgroundSubscription = new SerialDisposable();
 		public T FindFirstParent<T>() where T : class
 		{
 			var view = this.Parent;
@@ -114,8 +116,11 @@ namespace Windows.UI.Xaml
 
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
+			_backgroundSubscription.Disposable = null;
 			var brush = e.NewValue as Brush;
 			SetBackgroundBrush(brush);
+
+			_backgroundSubscription.Disposable = Brush.AssignAndObserveBrush(brush, _ => SetBackgroundBrush(brush));
 		}
 
 		private protected void SetBackgroundBrush(Brush brush)
