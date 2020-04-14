@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
+using Uno.UI.Tests.Helpers;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -17,7 +18,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 	public class Given_Explicit_Style
 	{
 #if NETFX_CORE
-		internal static readonly Thickness DefaultButtonPadding = new Thickness(8, 4, 8, 5);
+		internal static readonly Thickness DefaultButtonPadding = new Thickness(8, 4, 8, 4);
 #else
 		// TODO: adjust this when Uno retargets newer version of the SDK
 		internal static readonly Thickness DefaultButtonPadding = new Thickness(8, 4, 8, 4);
@@ -93,13 +94,10 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		{
 			var control = new Test_Control();
 
-			var c1 = Colors.GreenYellow;
-			var c2 = Colors.YellowGreen;
+			AssertEx.AssertHasColor(control.StylesTestButtonCustomKey.Background, Colors.GreenYellow);
+			Assert.IsNull(control.StylesTestButtonCustomKeyExplicit.Background);
 
-			var b1 = control.StylesTestButtonCustomKey.Background;
-			var b2 = control.StylesTestButtonCustomKeyExplicit.Background;
-
-			var f2 = control.StylesTestButtonCustomKeyExplicit.Foreground;
+			AssertEx.AssertHasColor(control.StylesTestButtonCustomKeyExplicit.Foreground, Colors.YellowGreen);
 		}
 
 		[TestMethod]

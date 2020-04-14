@@ -236,10 +236,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var do1_3 = control.TemplateFromResourceControl.DObjDP;
 			var areRefEqual1 = ReferenceEquals(do1_1, do1_2);
 			var areRefEqual2 = ReferenceEquals(do1_1, do1_3);
+			Assert.IsTrue(areRefEqual1);
+			Assert.IsTrue(areRefEqual2);
 
 			var control2 = new Test_Control();
-			var do2_1 = control.InlineTemplateControl.DObjDP;
+			var do2_1 = control2.InlineTemplateControl.DObjDP;
 			var areRefEqual3 = ReferenceEquals(do1_1, do2_1);
+			Assert.IsFalse(areRefEqual3);
 		}
 
 		[TestMethod]
@@ -384,7 +387,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			var rb = page.SpiffyItemsControl.FindFirstChild<RadioButton>();
 			AssertEx.AssertHasColor(rb.Foreground, Colors.Plum);
-			;
 		}
 
 		[TestMethod]

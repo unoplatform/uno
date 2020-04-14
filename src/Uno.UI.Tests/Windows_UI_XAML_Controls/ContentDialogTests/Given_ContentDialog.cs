@@ -21,8 +21,6 @@ namespace Uno.UI.Tests.ContentDialogTests
 		[TestMethod]
 		public void When_Has_DataContext()
 		{
-			var app = UnitTestsApp.App.EnsureApplication();
-
 			var dc = "Starfish";
 			var border = new Border();
 			var dialog = new ContentDialog
@@ -34,7 +32,6 @@ namespace Uno.UI.Tests.ContentDialogTests
 			Assert.AreEqual("Starfish", dialog.DataContext);
 			var dummy = dialog.ShowAsync();
 			Assert.AreEqual("Starfish", border.DataContext);
-			;
 		}
 	}
 }

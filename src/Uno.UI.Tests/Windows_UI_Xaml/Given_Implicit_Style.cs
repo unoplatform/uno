@@ -269,7 +269,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			AssertDefaultStyleKeyFactory<Windows.UI.Xaml.Controls.Primitives.ButtonBase>(factory: () => new SubButtonBase());
 			AssertDefaultStyleKeyFactory<Windows.UI.Xaml.Controls.Primitives.RangeBase>(factory: () => new SubRangeBase());
 			AssertDefaultStyleKeyFactory<NavigationViewItem>(isString: true, factory: () => new SubNavigationViewItem());
-			;
 
 			void AssertDefaultStyleKey<TControl>(bool isString = false) where TControl : Control, new()
 			{

@@ -85,10 +85,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			control.TemplateFromResourceControl.ApplyTemplate();
 
 			var text2InlineBefore = control.InlineTemplateControl.TextBlock2.Text;
+			Assert.AreEqual("LocalVisualTree", text2InlineBefore);
 			var text2ResourceTemplateBefore = control.TemplateFromResourceControl.TextBlock2.Text;
+			Assert.AreEqual("OuterVisualTree", text2ResourceTemplateBefore);
 
 			var text4InlineBefore = control.InlineTemplateControl.TextBlock4.Text;
+			Assert.AreEqual("ApplicationLevel", text4InlineBefore);
 			var text4ResourceTemplateBefore = control.TemplateFromResourceControl.TextBlock4.Text;
+			Assert.AreEqual("ApplicationLevel", text4ResourceTemplateBefore);
 		}
 
 		[TestMethod]
@@ -112,10 +116,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var text2InlineAfter = control.InlineTemplateControl.TextBlock2.Text;
 			var text2ResourceTemplateAfter = control.TemplateFromResourceControl.TextBlock2.Text;
 
+			Assert.AreEqual("LocalVisualTree", text2InlineBefore);
 			Assert.AreEqual("OuterVisualTree", text2ResourceTemplateBefore);
 
+			Assert.AreEqual("ApplicationLevel", text4InlineBefore);
 			Assert.AreEqual("ApplicationLevel", text4ResourceTemplateBefore);
 
+			Assert.AreEqual("LocalVisualTree", text2InlineAfter);
 			Assert.AreEqual("LocalVisualTree", text2ResourceTemplateAfter);
 		}
 
