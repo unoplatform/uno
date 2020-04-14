@@ -37,6 +37,9 @@ namespace Windows.UI.Xaml.Shapes
 				case PathGeometry pg:
 					_path.SetAttribute(("d", ToStreamGeometry(pg)));
 					break;
+				case null:
+					_path.RemoveAttribute("d");
+					break;
 			}
 		}
 		/// <summary>
