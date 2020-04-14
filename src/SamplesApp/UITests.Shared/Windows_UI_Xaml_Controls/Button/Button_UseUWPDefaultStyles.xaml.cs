@@ -29,6 +29,8 @@ using _NativeType = Windows.UI.Xaml.Controls.Grid; // We use a 'fake' native sty
 #endif
 #if __WASM__
 using Uno.UI;
+#elif __MACOS__
+using AppKit;
 #endif
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
