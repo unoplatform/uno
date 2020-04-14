@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
@@ -135,6 +136,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void RegisterDefaultStyleForType(Type type, StyleProviderHandler styleProvider) => RegisterDefaultStyleForType(type, styleProvider, isNative: false);
 
 		/// <summary>
@@ -143,6 +145,8 @@ namespace Windows.UI.Xaml
 		/// <param name="type">The type to which the style applies</param>
 		/// <param name="styleProvider">Function which generates the style. This will be called once when first used, then cached.</param>
 		/// <param name="isNative">True if is is the native default style, false if it is the UWP default style.</param>
+		/// <remarks>This method should normally only be called from Xaml-generated code. </remarks>
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void RegisterDefaultStyleForType(Type type, StyleProviderHandler styleProvider, bool isNative)
 		{
 			if (isNative)
