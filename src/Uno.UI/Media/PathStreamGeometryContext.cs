@@ -37,6 +37,8 @@ namespace Uno.Media
 		{
 #if XAMARIN_IOS_UNIFIED || XAMARIN_IOS
 			bezierPath.MoveTo(startPoint);
+#elif __MACOS__
+			bezierPath.MoveTo(startPoint);
 #elif XAMARIN_ANDROID
 			var physicalStartPoint = LogicalToPhysicalNoRounding(startPoint);
 			bezierPath.MoveTo((float)physicalStartPoint.X, (float)physicalStartPoint.Y);
@@ -49,6 +51,8 @@ namespace Uno.Media
 		{
 #if XAMARIN_IOS_UNIFIED || XAMARIN_IOS
 			bezierPath.AddLineTo(point);
+#elif __MACOS__
+			bezierPath.LineTo(point);
 #elif XAMARIN_ANDROID
 			var physicalPoint = LogicalToPhysicalNoRounding(point);
 			bezierPath.LineTo((float)physicalPoint.X, (float)physicalPoint.Y);
