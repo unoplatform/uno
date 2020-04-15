@@ -206,6 +206,11 @@ namespace Windows.UI.Xaml.Controls
 				PointerCaptureLost += OnPointerCaptureLostHandler;
 			}
 
+			if (implementedEvents.HasFlag(RoutedEventFlag.PointerWheelChanged))
+			{
+				PointerWheelChanged += OnPointerWheelChangedHandler;
+			}
+
 			if (implementedEvents.HasFlag(RoutedEventFlag.ManipulationStarting))
 			{
 				ManipulationStarting += OnManipulationStartingHandler;
@@ -751,6 +756,10 @@ namespace Windows.UI.Xaml.Controls
 		protected virtual void OnPointerMoved(PointerRoutedEventArgs args) { }
 		protected virtual void OnPointerCanceled(PointerRoutedEventArgs args) { }
 		protected virtual void OnPointerCaptureLost(PointerRoutedEventArgs args) { }
+#if !__WASM__
+		[global::Uno.NotImplemented]
+#endif
+		protected virtual void OnPointerWheelChanged(PointerRoutedEventArgs args) { }
 		protected virtual void OnManipulationStarting(ManipulationStartingRoutedEventArgs e) { }
 		protected virtual void OnManipulationStarted(ManipulationStartedRoutedEventArgs e) { }
 		protected virtual void OnManipulationDelta(ManipulationDeltaRoutedEventArgs e) { }
@@ -785,6 +794,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private static readonly PointerEventHandler OnPointerCaptureLostHandler =
 			(object sender, PointerRoutedEventArgs args) => ((Control)sender).OnPointerCaptureLost(args);
+
+		private static readonly PointerEventHandler OnPointerWheelChangedHandler =
+			(object sender, PointerRoutedEventArgs args) => ((Control)sender).OnPointerWheelChanged(args);
 
 		private static readonly ManipulationStartingEventHandler OnManipulationStartingHandler =
 			(object sender, ManipulationStartingRoutedEventArgs args) => ((Control)sender).OnManipulationStarting(args);
@@ -892,6 +904,11 @@ namespace Windows.UI.Xaml.Controls
 			if (GetIsEventOverrideImplemented(type, nameof(OnPointerCaptureLost), _pointerArgsType))
 			{
 				result |= RoutedEventFlag.PointerCaptureLost;
+			}
+
+			if (GetIsEventOverrideImplemented(type, nameof(OnPointerWheelChanged), _pointerArgsType))
+			{
+				result |= RoutedEventFlag.PointerWheelChanged;
 			}
 
 			if (GetIsEventOverrideImplemented(type, nameof(OnManipulationStarting), _manipStartingArgsType))

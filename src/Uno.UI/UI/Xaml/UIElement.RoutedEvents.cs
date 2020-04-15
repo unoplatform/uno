@@ -91,6 +91,11 @@ namespace Windows.UI.Xaml
 
 		public static RoutedEvent PointerCaptureLostEvent { get; } = new RoutedEvent(RoutedEventFlag.PointerCaptureLost);
 
+#if !__WASM__
+		[global::Uno.NotImplemented]
+#endif
+		public static RoutedEvent PointerWheelChangedEvent { get; } = new RoutedEvent(RoutedEventFlag.PointerWheelChanged);
+
 		public static RoutedEvent ManipulationStartingEvent { get; } = new RoutedEvent(RoutedEventFlag.ManipulationStarting);
 
 		public static RoutedEvent ManipulationStartedEvent { get; } = new RoutedEvent(RoutedEventFlag.ManipulationStarted);
@@ -257,6 +262,15 @@ namespace Windows.UI.Xaml
 		{
 			add => AddHandler(PointerReleasedEvent, value, false);
 			remove => RemoveHandler(PointerReleasedEvent, value);
+		}
+
+#if !__WASM__
+		[global::Uno.NotImplemented]
+#endif
+		public event PointerEventHandler PointerWheelChanged
+		{
+			add => AddHandler(PointerWheelChangedEvent, value, false);
+			remove => RemoveHandler(PointerWheelChangedEvent, value);
 		}
 
 		public event ManipulationStartingEventHandler ManipulationStarting

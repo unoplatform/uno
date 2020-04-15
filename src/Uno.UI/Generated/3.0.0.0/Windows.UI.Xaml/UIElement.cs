@@ -682,7 +682,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		// Skipping already declared property PointerCapturesProperty
 		public static global::Windows.UI.Xaml.RoutedEvent PointerWheelChangedEvent
@@ -1589,7 +1589,7 @@ namespace Windows.UI.Xaml
 		// Skipping already declared event Windows.UI.Xaml.UIElement.PointerMoved
 		// Skipping already declared event Windows.UI.Xaml.UIElement.PointerPressed
 		// Skipping already declared event Windows.UI.Xaml.UIElement.PointerReleased
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public  event global::Windows.UI.Xaml.Input.PointerEventHandler PointerWheelChanged
 		{
