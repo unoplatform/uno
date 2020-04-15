@@ -17,7 +17,6 @@ namespace Windows.UI.Xaml
 
 			private readonly UIElement _owner;
 			private readonly string _eventName;
-			private readonly bool _canBubbleNatively;
 			private readonly EventArgsParser _payloadConverter;
 			private readonly Action _subscribeCommand;
 
@@ -30,13 +29,11 @@ namespace Windows.UI.Xaml
 				UIElement owner,
 				string eventName,
 				bool onCapturePhase = false,
-				bool canBubbleNatively = false,
 				HtmlEventExtractor? eventExtractor = null,
 				EventArgsParser payloadConverter = null)
 			{
 				_owner = owner;
 				_eventName = eventName;
-				_canBubbleNatively = canBubbleNatively;
 				_payloadConverter = payloadConverter;
 				if (!noRegistrationEventNames.Contains(eventName))
 				{
@@ -107,11 +104,6 @@ namespace Windows.UI.Xaml
 						args = _payloadConverter(_owner, nativeEventPayload);
 					}
 
-					if (args is RoutedEventArgs routedArgs)
-					{
-						routedArgs.CanBubbleNatively = _canBubbleNatively;
-					}
-
 					foreach (var handler in _invocationList)
 					{
 						var result = handler.DynamicInvoke(_owner, args);
@@ -151,7 +143,6 @@ namespace Windows.UI.Xaml
 			string eventName,
 			Delegate handler,
 			bool onCapturePhase = false,
-			bool canBubbleNatively = false,
 			HtmlEventExtractor? eventExtractor = null,
 			EventArgsParser payloadConverter = null)
 		{
@@ -166,7 +157,6 @@ namespace Windows.UI.Xaml
 					this,
 					eventName,
 					onCapturePhase,
-					canBubbleNatively,
 					eventExtractor,
 					payloadConverter);
 			}

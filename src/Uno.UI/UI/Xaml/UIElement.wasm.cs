@@ -637,7 +637,6 @@ namespace Windows.UI.Xaml
 				domEventName,
 				handler: new RoutedEventHandlerWithHandled((snd, args) => RaiseEvent(routedEvent, args)),
 				onCapturePhase: false,
-				canBubbleNatively: true,
 				eventExtractor: HtmlEventExtractor.KeyboardEventExtractor,
 				payloadConverter: PayloadToKeyArgs
 			);
@@ -671,7 +670,7 @@ namespace Windows.UI.Xaml
 
 		private static KeyRoutedEventArgs PayloadToKeyArgs(object src, string payload)
 		{
-			return new KeyRoutedEventArgs(src, System.VirtualKeyHelper.FromKey(payload));
+			return new KeyRoutedEventArgs(src, System.VirtualKeyHelper.FromKey(payload)) {CanBubbleNatively = true};
 		}
 
 		private static RoutedEventArgs PayloadToFocusArgs(object src, string payload)
