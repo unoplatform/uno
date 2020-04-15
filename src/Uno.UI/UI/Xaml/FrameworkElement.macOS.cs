@@ -24,6 +24,16 @@ namespace Windows.UI.Xaml
 
 		internal bool RequiresMeasure { get; private set; }
 
+		/// <summary>
+		/// Determines if InvalidateMeasure has been called
+		/// </summary>
+		internal bool IsMeasureDirty => RequiresMeasure;
+
+		/// <summary>
+		/// Determines if InvalidateArrange has been called
+		/// </summary>
+		internal bool IsArrangeDirty => RequiresArrange;
+
 		public override bool NeedsLayout
 		{
 			set

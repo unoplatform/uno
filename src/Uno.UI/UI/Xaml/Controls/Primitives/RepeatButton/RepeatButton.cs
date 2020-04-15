@@ -37,6 +37,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			ownerType: typeof(RepeatButton),
 			typeMetadata: new FrameworkPropertyMetadata(250, propertyChangedCallback: (s, e) => (s as RepeatButton)?.OnDelayChanged(e)));
 
+		internal bool IgnoreTouchInput { get; set; }
+
 		public RepeatButton() : base()
 		{
 			InitializeVisualStates();
