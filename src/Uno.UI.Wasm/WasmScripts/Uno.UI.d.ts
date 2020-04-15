@@ -366,6 +366,8 @@ declare namespace Uno.UI {
          * @param evt
          */
         private pointerEventExtractor;
+        private _wheelLineSize;
+        private readonly WheelLineSize;
         /**
          * keyboard event extractor to be used with registerEventOnView
          * @param evt

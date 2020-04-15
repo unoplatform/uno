@@ -16,6 +16,7 @@ namespace Windows.UI.Xaml.Input
 		private readonly WindowManagerInterop.HtmlPointerButtonsState _buttons;
 		private readonly WindowManagerInterop.HtmlPointerButtonUpdate _buttonUpdate;
 		private readonly double _pressure;
+		private readonly (bool isWheel, double deltaX, double deltaY) _wheel;
 
 		internal PointerRoutedEventArgs(
 			double timestamp,
@@ -27,6 +28,7 @@ namespace Windows.UI.Xaml.Input
 			WindowManagerInterop.HtmlPointerButtonUpdate buttonUpdate,
 			VirtualKeyModifiers keys,
 			double pressure,
+			(bool isWheel, double deltaX, double deltaY) wheel,
 			UIElement source,
 			bool canBubbleNatively)
 			: this()
@@ -36,6 +38,7 @@ namespace Windows.UI.Xaml.Input
 			_buttons = buttons;
 			_buttonUpdate = buttonUpdate;
 			_pressure = pressure;
+			_wheel = wheel;
 
 			FrameId = ToFrameId(timestamp);
 			Pointer = new Pointer(pointerId, pointerType, isInContact, isInRange: true);
@@ -88,6 +91,14 @@ namespace Windows.UI.Xaml.Input
 					props.IsBarrelButtonPressed = props.IsRightButtonPressed;
 					props.Pressure = (float)_pressure;
 					break;
+			}
+
+			if (_wheel.isWheel)
+			{
+				props.IsHorizontalMouseWheel = _wheel.deltaX != 0;
+				props.MouseWheelDelta = (int)(props.IsHorizontalMouseWheel
+					? _wheel.deltaX
+					: _wheel.deltaY);
 			}
 
 			props.PointerUpdateKind = ToUpdateKind(_buttonUpdate, props);

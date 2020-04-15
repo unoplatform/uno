@@ -747,6 +747,8 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		internal bool IsPressed(Pointer pointer) => _pressedPointers.Contains(pointer.PointerId);
 
+		private bool IsPressed(uint pointerId) => _pressedPointers.Contains(pointerId);
+
 		private bool SetPressed(PointerRoutedEventArgs args, bool isPressed, bool muteEvent = false)
 		{
 			var wasPressed = IsPressed(args.Pointer);

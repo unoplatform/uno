@@ -40,8 +40,7 @@ namespace Windows.UI.Input
 		public float YTilt { get; internal set; } = 0f;
 #endif
 
-		[global::Uno.NotImplemented]
-		public int MouseWheelDelta => 0;
+		public int MouseWheelDelta { get; internal set; }
 
 		/// <inheritdoc />
 		public override string ToString()

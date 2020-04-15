@@ -18,6 +18,7 @@ namespace Windows.UI.Xaml
 		// Ref:
 		// https://www.w3.org/TR/pointerevents/
 		// https://developer.mozilla.org/en-US/docs/Web/API/PointerEvent
+		// https://developer.mozilla.org/en-US/docs/Web/API/WheelEvent
 
 		private static readonly Dictionary<RoutedEvent, (string domEventName, EventArgsParser argsParser, RoutedEventHandlerWithHandled handler)> _pointerHandlers
 			= new Dictionary<RoutedEvent, (string, EventArgsParser, RoutedEventHandlerWithHandled)>
@@ -33,6 +34,8 @@ namespace Windows.UI.Xaml
 
 				{PointerMovedEvent, ("pointermove", PayloadToMovedPointerArgs, (snd, args) => ((UIElement)snd).OnNativePointerMove((PointerRoutedEventArgs)args))},
 				{PointerCanceledEvent, ("pointercancel", PayloadToCancelledPointerArgs, (snd, args) => ((UIElement)snd).OnNativePointerCancel((PointerRoutedEventArgs)args, isSwallowedBySystem: true))}, //https://www.w3.org/TR/pointerevents/#the-pointercancel-event
+
+				{ PointerWheelChangedEvent, ("wheel", PayloadToPointerWheelArgs, (snd, args) => false) }
 			};
 
 		partial void OnGestureRecognizerInitialized(GestureRecognizer recognizer)
@@ -105,11 +108,12 @@ namespace Windows.UI.Xaml
 		private static PointerRoutedEventArgs PayloadToReleasedPointerArgs(object snd, string payload) => PayloadToPointerArgs(snd, payload, isInContact: true);
 		private static PointerRoutedEventArgs PayloadToExitedPointerArgs(object snd, string payload) => PayloadToPointerArgs(snd, payload, isInContact: false, canBubble: false);
 		private static PointerRoutedEventArgs PayloadToCancelledPointerArgs(object snd, string payload) => PayloadToPointerArgs(snd, payload, isInContact: false);
+		private static PointerRoutedEventArgs PayloadToPointerWheelArgs(object snd, string payload) => PayloadToPointerArgs(snd, payload, isInContact: null /* maybe */, isWheel: true);
 
-		private static PointerRoutedEventArgs PayloadToPointerArgs(object snd, string payload, bool isInContact, bool canBubble = true)
+		private static PointerRoutedEventArgs PayloadToPointerArgs(object snd, string payload, bool? isInContact, bool isWheel = false, bool canBubble = true)
 		{
 			var parts = payload?.Split(';');
-			if (parts?.Length != 11)
+			if (parts?.Length != 13)
 			{
 				return null;
 			}
@@ -125,6 +129,8 @@ namespace Windows.UI.Xaml
 			var srcHandle = int.Parse(parts[8], CultureInfo.InvariantCulture);
 			var timestamp = double.Parse(parts[9], CultureInfo.InvariantCulture);
 			var pressure = double.Parse(parts[10], CultureInfo.InvariantCulture);
+			var wheelDeltaX = double.Parse(parts[11], CultureInfo.InvariantCulture);
+			var wheelDeltaY = double.Parse(parts[12], CultureInfo.InvariantCulture);
 
 			var src = GetElementFromHandle(srcHandle) ?? (UIElement)snd;
 			var position = new Point(x, y);
@@ -138,11 +144,12 @@ namespace Windows.UI.Xaml
 				pointerId,
 				pointerType,
 				position,
-				isInContact,
+				isInContact ?? ((UIElement)snd).IsPressed(pointerId),
 				(WindowManagerInterop.HtmlPointerButtonsState)buttons,
 				(WindowManagerInterop.HtmlPointerButtonUpdate)buttonUpdate,
 				keyModifiers,
 				pressure,
+				(isWheel, wheelDeltaX, wheelDeltaY),
 				src,
 				canBubble);
 		}
