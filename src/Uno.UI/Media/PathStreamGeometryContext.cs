@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;
@@ -12,6 +12,7 @@ using Path = UIKit.UIBezierPath;
 #elif __MACOS__
 using AppKit;
 using Path = AppKit.NSBezierPath;
+using CoreGraphics;
 #elif XAMARIN_ANDROID
 using Android.Graphics.Drawables.Shapes;
 using Path = Android.Graphics.Path;
@@ -73,7 +74,6 @@ namespace Uno.Media
 			var physicalPoint3 = LogicalToPhysicalNoRounding(point3);
 			bezierPath.CubicTo((float)physicalPoint1.X, (float)physicalPoint1.Y, (float)physicalPoint2.X, (float)physicalPoint2.Y, (float)physicalPoint3.X, (float)physicalPoint3.Y);
 #endif
-
 			_points.Add(point3);
 		}
 
@@ -81,6 +81,15 @@ namespace Uno.Media
 		{
 #if XAMARIN_IOS_UNIFIED || XAMARIN_IOS
 			bezierPath.AddQuadCurveToPoint(point2, point1);
+#elif __MACOS__
+			// Convert a Quadratic Curve to cubic curve to draw it.
+			// https://stackoverflow.com/a/52569210/1771254
+			var startPoint = bezierPath.CurrentPoint;
+			var endPoint = point1;
+
+			var controlPoint1 = new CGPoint(startPoint.X + ((point2.X - startPoint.X) * 2.0 / 3.0),  startPoint.Y + (point2.Y - startPoint.Y) * 2.0 / 3.0);
+			var controlPoint2 = new CGPoint(endPoint.X + ((point2.X - endPoint.X) * 2.0 / 3.0), endPoint.Y + (point2.Y - endPoint.Y) * 2.0 / 3.0);
+			bezierPath.CurveTo(point1, controlPoint1, controlPoint2);
 #elif XAMARIN_ANDROID
 			var physicalPoint1 = LogicalToPhysicalNoRounding(point1);
 			var physicalPoint2 = LogicalToPhysicalNoRounding(point2);
