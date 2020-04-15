@@ -18,8 +18,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml.FrameworkElementTests
 #endif
 	public class Given_FindName
 	{
-		[TestInitialize] public void Init() => global::Uno.UI.ApplicationHelper.RequestedCustomTheme = "HighContrast";
-
 		[TestMethod]
 		public void When_SimpleElement()
 		{
