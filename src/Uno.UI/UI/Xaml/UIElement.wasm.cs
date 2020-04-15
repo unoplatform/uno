@@ -638,7 +638,6 @@ namespace Windows.UI.Xaml
 				handler: new RoutedEventHandlerWithHandled((snd, args) => RaiseEvent(routedEvent, args)),
 				onCapturePhase: false,
 				canBubbleNatively: true,
-				eventFilter: HtmlEventFilter.Default,
 				eventExtractor: HtmlEventExtractor.KeyboardEventExtractor,
 				payloadConverter: PayloadToKeyArgs
 			);

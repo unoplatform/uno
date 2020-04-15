@@ -850,8 +850,8 @@ var Uno;
                 * @param eventName The name of the event
                 * @param onCapturePhase true means "on trickle down" (going down to target), false means "on bubble up" (bubbling back to ancestors). Default is false.
                 */
-            registerEventOnView(elementId, eventName, onCapturePhase = false, eventFilterId, eventExtractorId) {
-                this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventFilterId, eventExtractorId);
+            registerEventOnView(elementId, eventName, onCapturePhase = false, eventExtractorId) {
+                this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventExtractorId);
                 return "ok";
             }
             /**
@@ -862,7 +862,7 @@ var Uno;
                 */
             registerEventOnViewNative(pParams) {
                 const params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
-                this.registerEventOnViewInternal(params.HtmlId, params.EventName, params.OnCapturePhase, params.EventFilterId, params.EventExtractorId);
+                this.registerEventOnViewInternal(params.HtmlId, params.EventName, params.OnCapturePhase, params.EventExtractorId);
                 return true;
             }
             /**
@@ -886,7 +886,7 @@ var Uno;
                 * @param eventName The name of the event
                 * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
                 */
-            registerEventOnViewInternal(elementId, eventName, onCapturePhase = false, eventFilterId, eventExtractorId) {
+            registerEventOnViewInternal(elementId, eventName, onCapturePhase = false, eventExtractorId) {
                 const element = this.getView(elementId);
                 const eventExtractor = this.getEventExtractor(eventExtractorId);
                 const eventHandler = (event) => {
@@ -977,37 +977,6 @@ var Uno;
                 else {
                     element.addEventListener(eventName, eventHandler, onCapturePhase);
                 }
-            }
-            /**
-             * left pointer event filter to be used with registerEventOnView
-             * @param evt
-             */
-            leftPointerEventFilter(evt) {
-                return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 && (!evt.button || evt.button === 0) : false;
-            }
-            /**
-             * default event filter to be used with registerEventOnView to
-             * use for most routed events
-             * @param evt
-             */
-            defaultEventFilter(evt) {
-                return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 : false;
-            }
-            /**
-             * Gets the event filter function. See UIElement.HtmlEventFilter
-             * @param eventFilterName an event filter name.
-             */
-            getEventFilter(eventFilterName) {
-                if (eventFilterName) {
-                    switch (eventFilterName) {
-                        case "LeftPointerEventFilter":
-                            return this.leftPointerEventFilter;
-                        case "Default":
-                            return this.defaultEventFilter;
-                    }
-                    throw `Event filter ${eventFilterName} is not supported`;
-                }
-                return null;
             }
             /**
              * pointer event extractor to be used with registerEventOnView
@@ -1976,10 +1945,7 @@ class WindowManagerRegisterEventOnViewParams {
             ret.OnCapturePhase = Boolean(Module.getValue(pData + 8, "i32"));
         }
         {
-            ret.EventFilterId = Number(Module.getValue(pData + 12, "i32"));
-        }
-        {
-            ret.EventExtractorId = Number(Module.getValue(pData + 16, "i32"));
+            ret.EventExtractorId = Number(Module.getValue(pData + 12, "i32"));
         }
         return ret;
     }

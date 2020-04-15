@@ -729,10 +729,9 @@ namespace Uno.UI {
 			elementId: number,
 			eventName: string,
 			onCapturePhase: boolean = false,
-			eventFilterId: number,
 			eventExtractorId: number,
 		): string {
-			this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventFilterId, eventExtractorId);
+			this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventExtractorId);
 			return "ok";
 		}
 
@@ -751,7 +750,6 @@ namespace Uno.UI {
 				params.HtmlId,
 				params.EventName,
 				params.OnCapturePhase,
-				params.EventFilterId,
 				params.EventExtractorId);
 
 			return true;
@@ -791,7 +789,6 @@ namespace Uno.UI {
 			elementId: number,
 			eventName: string,
 			onCapturePhase: boolean = false,
-			eventFilterId: number,
 			eventExtractorId: number,
 		): void {
 			const element = this.getView(elementId);
@@ -894,43 +891,6 @@ namespace Uno.UI {
 			} else {
 				element.addEventListener(eventName, eventHandler, onCapturePhase);
 			}
-		}
-
-		/**
-		 * left pointer event filter to be used with registerEventOnView
-		 * @param evt
-		 */
-		private leftPointerEventFilter(evt: PointerEvent): boolean {
-			return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 && (!evt.button || evt.button === 0) : false;
-		}
-
-		/**
-		 * default event filter to be used with registerEventOnView to
-		 * use for most routed events
-		 * @param evt
-		 */
-		private defaultEventFilter(evt: Event): boolean {
-			return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 : false;
-		}
-
-		/**
-		 * Gets the event filter function. See UIElement.HtmlEventFilter
-		 * @param eventFilterName an event filter name.
-		 */
-		private getEventFilter(eventFilterName: string): any {
-
-			if (eventFilterName) {
-				switch (eventFilterName) {
-					case "LeftPointerEventFilter":
-						return this.leftPointerEventFilter;
-					case "Default":
-						return this.defaultEventFilter;
-				}
-
-				throw `Event filter ${eventFilterName} is not supported`;
-			}
-
-			return null;
 		}
 
 		/**

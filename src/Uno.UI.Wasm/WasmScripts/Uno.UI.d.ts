@@ -324,7 +324,7 @@ declare namespace Uno.UI {
             * @param eventName The name of the event
             * @param onCapturePhase true means "on trickle down" (going down to target), false means "on bubble up" (bubbling back to ancestors). Default is false.
             */
-        registerEventOnView(elementId: number, eventName: string, onCapturePhase: boolean, eventFilterId: number, eventExtractorId: number): string;
+        registerEventOnView(elementId: number, eventName: string, onCapturePhase: boolean, eventExtractorId: number): string;
         /**
             * Add an event handler to a html element.
             *
@@ -345,22 +345,6 @@ declare namespace Uno.UI {
             * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
             */
         private registerEventOnViewInternal;
-        /**
-         * left pointer event filter to be used with registerEventOnView
-         * @param evt
-         */
-        private leftPointerEventFilter;
-        /**
-         * default event filter to be used with registerEventOnView to
-         * use for most routed events
-         * @param evt
-         */
-        private defaultEventFilter;
-        /**
-         * Gets the event filter function. See UIElement.HtmlEventFilter
-         * @param eventFilterName an event filter name.
-         */
-        private getEventFilter;
         /**
          * pointer event extractor to be used with registerEventOnView
          * @param evt
@@ -614,7 +598,6 @@ declare class WindowManagerRegisterEventOnViewParams {
     HtmlId: number;
     EventName: string;
     OnCapturePhase: boolean;
-    EventFilterId: number;
     EventExtractorId: number;
     static unmarshal(pData: number): WindowManagerRegisterEventOnViewParams;
 }

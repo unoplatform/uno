@@ -31,7 +31,6 @@ namespace Windows.UI.Xaml
 				string eventName,
 				bool onCapturePhase = false,
 				bool canBubbleNatively = false,
-				HtmlEventFilter? eventFilter = null,
 				HtmlEventExtractor? eventExtractor = null,
 				EventArgsParser payloadConverter = null)
 			{
@@ -39,17 +38,12 @@ namespace Windows.UI.Xaml
 				_eventName = eventName;
 				_canBubbleNatively = canBubbleNatively;
 				_payloadConverter = payloadConverter;
-				if (noRegistrationEventNames.Contains(eventName))
-				{
-					_subscribeCommand = null;
-				}
-				else
+				if (!noRegistrationEventNames.Contains(eventName))
 				{
 					_subscribeCommand = () => WindowManagerInterop.RegisterEventOnView(
 						_owner.HtmlId,
 						eventName,
 						onCapturePhase,
-						(int)(eventFilter ?? HtmlEventFilter.None),
 						(int)(eventExtractor ?? HtmlEventExtractor.None)
 					);
 				}
@@ -158,7 +152,6 @@ namespace Windows.UI.Xaml
 			Delegate handler,
 			bool onCapturePhase = false,
 			bool canBubbleNatively = false,
-			HtmlEventFilter? eventFilter = null,
 			HtmlEventExtractor? eventExtractor = null,
 			EventArgsParser payloadConverter = null)
 		{
@@ -174,7 +167,6 @@ namespace Windows.UI.Xaml
 					eventName,
 					onCapturePhase,
 					canBubbleNatively,
-					eventFilter,
 					eventExtractor,
 					payloadConverter);
 			}
@@ -246,13 +238,6 @@ namespace Windows.UI.Xaml
 			FocusEventExtractor = 4,
 			CustomEventDetailStringExtractor = 5, // For use with CustomEvent("name", {detail:{string detail here}})
 			CustomEventDetailJsonExtractor = 6, // For use with CustomEvent("name", {detail:{detail here}}) - will be JSON.stringify
-		}
-
-		internal enum HtmlEventFilter : int
-		{
-			None = 0,
-			Default = 1,
-			LeftPointerEventFilter = 2,
 		}
 	}
 }
