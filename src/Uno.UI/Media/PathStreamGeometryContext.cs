@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;
@@ -65,6 +65,8 @@ namespace Uno.Media
 		{
 #if XAMARIN_IOS_UNIFIED || XAMARIN_IOS
 			bezierPath.AddCurveToPoint(point3, point1, point2);
+#elif __MACOS__
+			bezierPath.CurveTo(point3, point1, point2);
 #elif XAMARIN_ANDROID
 			var physicalPoint1 = LogicalToPhysicalNoRounding(point1);
 			var physicalPoint2 = LogicalToPhysicalNoRounding(point2);
@@ -112,6 +114,13 @@ namespace Uno.Media
 				(nfloat)endAngle, 
 				sweepDirection == SweepDirection.Clockwise
 			);
+
+#elif __MACOS__
+			bezierPath.AppendPathWithArc(center,
+										 (nfloat)radius,
+										 (nfloat)startAngle,
+										 (nfloat)endAngle,
+										 sweepDirection == SweepDirection.Clockwise);
 #elif XAMARIN_ANDROID
 			var sweepAngle = endAngle - startAngle;
 
