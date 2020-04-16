@@ -268,6 +268,18 @@
 					Content="Handle event"
 					Margin="20, 0"
 					Visibility="{Binding ElementName=_ptCaptureLost, Path=IsOn}"/>
+				<ToggleSwitch
+					x:Name="_ptWheel" 
+					Header="Pointer wheel changed"
+					OnContent="Subscribed to pointer wheel"
+					OffContent="Pointer wheel muted"
+					Toggled="OnConfigChanged"
+					IsOn="True" />
+				<CheckBox
+					x:Name="_ptWheelHandle" 
+					Content="Handle event"
+					Margin="20, 0"
+					Visibility="{Binding ElementName=_ptWheel, Path=IsOn}"/>
 
 				<ComboBox
 					x:Name="_manipMode" 
