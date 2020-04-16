@@ -12,6 +12,7 @@ using System.Runtime.CompilerServices;
 using Uno;
 using Uno.Diagnostics.Eventing;
 using Windows.UI.Xaml.Media.Imaging;
+using Uno.Helpers;
 
 #if !IS_UNO
 using Uno.Web.Query;
@@ -99,26 +100,29 @@ namespace Windows.UI.Xaml.Media
 				uri = new Uri(MsAppXScheme + ":///" + uri.OriginalString.TrimStart("/"));
 			}
 
-			var isResource = uri.Scheme.Equals(MsAppXScheme, StringComparison.OrdinalIgnoreCase)
-							|| uri.Scheme.Equals(MsAppDataScheme, StringComparison.OrdinalIgnoreCase);
-
-			if (isResource)
+			if (uri.IsLocalResource())
 			{
 				InitFromResource(uri);
 				return;
 			}
 
+			if (uri.IsAppData())
+			{
+				var filePath = AppDataUriEvaluator.ToPath(uri);
+				InitFromFile(filePath);
+			}
+
 			if (uri.IsFile)
 			{
-				InitFromFile(uri);
+				InitFromFile(uri.PathAndQuery);
 			}
 
 			WebUri = uri;
 		}
 
-		private void InitFromFile(Uri uri)
+		private void InitFromFile(string filePath)
 		{
-			FilePath = uri.PathAndQuery;
+			FilePath = filePath;
 		}
 
 		partial void InitFromResource(Uri uri);
