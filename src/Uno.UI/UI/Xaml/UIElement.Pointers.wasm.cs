@@ -100,11 +100,17 @@ namespace Windows.UI.Xaml
 		#endregion
 
 		#region Native event dispatch
+		// Note for Enter and Leave:
+		//	canBubble: true is actually not true.
+		//	When we subscribe to pointer enter in a window, we don't receive pointer enter for each sub-views!
+		//	But the web-browser will actually behave like WinUI for pointerenter and pointerleave, so here by setting it to true,
+		//	we just ensure that the managed code won't try to bubble it by its own.
+		//	However, if the event is Handled in managed, it will then bubble while it should not! https://github.com/unoplatform/uno/issues/3007
 		private static bool DispatchNativePointerEnter(UIElement target, string eventPayload)
-			=> TryParse(eventPayload, out var args) && target.OnNativePointerEnter(ToPointerArgs(target, args, isInContact: false, canBubble: false));
+			=> TryParse(eventPayload, out var args) && target.OnNativePointerEnter(ToPointerArgs(target, args, isInContact: false, canBubble: true));
 
 		private static bool DispatchNativePointerLeave(UIElement target, string eventPayload)
-			=> TryParse(eventPayload, out var args) && target.OnNativePointerExited(ToPointerArgs(target, args, isInContact: false, canBubble: false));
+			=> TryParse(eventPayload, out var args) && target.OnNativePointerExited(ToPointerArgs(target, args, isInContact: false, canBubble: true));
 
 		private static bool DispatchNativePointerDown(UIElement target, string eventPayload)
 			=> TryParse(eventPayload, out var args) && target.OnNativePointerDown(ToPointerArgs(target, args, isInContact: true));
