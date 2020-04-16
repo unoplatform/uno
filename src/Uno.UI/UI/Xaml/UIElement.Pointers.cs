@@ -641,10 +641,8 @@ namespace Windows.UI.Xaml
 			return handledInManaged;
 		}
 
-		private bool OnNativePointerWheel(PointerRoutedEventArgs args) => OnPointerWheel(args, isManagedBubblingEvent: false);
-		private bool OnPointerWheel(PointerRoutedEventArgs args, bool isManagedBubblingEvent)
+		private bool OnNativePointerWheel(PointerRoutedEventArgs args)
 		{
-			Debug.Assert(!isManagedBubblingEvent);
 			return RaisePointerEvent(PointerWheelChangedEvent, args);
 		}
 
