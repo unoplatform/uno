@@ -376,7 +376,9 @@ namespace Windows.UI.Xaml
 				case RoutedEventFlag.PointerCanceled:
 					OnManagedPointerCancel(ptArgs);
 					break;
-				// Nothing to do for PointerCaptureLost
+				// No local state (over/pressed/manipulation/gestures) to update for
+				//	- PointerCaptureLost:
+				//	- PointerWheelChanged:
 			}
 		}
 
@@ -637,6 +639,13 @@ namespace Windows.UI.Xaml
 			}
 
 			return handledInManaged;
+		}
+
+		private bool OnNativePointerWheel(PointerRoutedEventArgs args) => OnPointerWheel(args, isManagedBubblingEvent: false);
+		private bool OnPointerWheel(PointerRoutedEventArgs args, bool isManagedBubblingEvent)
+		{
+			Debug.Assert(!isManagedBubblingEvent);
+			return RaisePointerEvent(PointerWheelChangedEvent, args);
 		}
 
 		private static (UIElement sender, RoutedEvent @event, PointerRoutedEventArgs args) _pendingRaisedEvent;

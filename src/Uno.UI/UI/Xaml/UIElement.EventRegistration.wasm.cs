@@ -11,6 +11,8 @@ namespace Windows.UI.Xaml
 {
 	partial class UIElement
 	{
+		private delegate bool RawEventHandler(UIElement sender, string paylaod);
+
 		private class EventRegistration
 		{
 			private static readonly string[] noRegistrationEventNames = { "loading", "loaded", "unloaded" };
@@ -106,11 +108,21 @@ namespace Windows.UI.Xaml
 
 					foreach (var handler in _invocationList)
 					{
-						var result = handler.DynamicInvoke(_owner, args);
-
-						if (result is bool isHandedInManaged && isHandedInManaged)
+						if (handler is RawEventHandler rawHandler)
 						{
-							return true; // will call ".preventDefault()" in JS to prevent native bubbling
+							if (rawHandler(_owner, nativeEventPayload))
+							{
+								return true;
+							}
+						}
+						else
+						{
+							var result = handler.DynamicInvoke(_owner, args);
+
+							if (result is bool isHandedInManaged && isHandedInManaged)
+							{
+								return true; // will call ".preventDefault()" in JS to prevent native bubbling
+							}
 						}
 					}
 

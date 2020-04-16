@@ -56,9 +56,15 @@ namespace Windows.UI.Input
 			if (IsRightButtonPressed) builder.Append("right ");
 
 			// Mouse
-			if (IsHorizontalMouseWheel) builder.Append("scroll_Y ");
 			if (IsXButton1Pressed) builder.Append("alt_butt_1 ");
 			if (IsXButton2Pressed) builder.Append("alt_butt_2");
+			if (MouseWheelDelta != 0)
+			{
+				builder.Append("scroll");
+				builder.Append(IsHorizontalMouseWheel ? "X (" : "Y (");
+				builder.Append(MouseWheelDelta);
+				builder.Append("px) ");
+			}
 
 			// Pen
 			if (IsBarrelButtonPressed) builder.Append("barrel ");
