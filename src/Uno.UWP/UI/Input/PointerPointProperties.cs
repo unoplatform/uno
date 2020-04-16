@@ -40,6 +40,9 @@ namespace Windows.UI.Input
 		public float YTilt { get; internal set; } = 0f;
 #endif
 
+#if !__WASM__
+		[global::Uno.NotImplemented]
+#endif
 		public int MouseWheelDelta { get; internal set; }
 
 		/// <inheritdoc />
