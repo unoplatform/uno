@@ -749,17 +749,17 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void UpdateFocusStatePartial(FocusState focusState);
 
-		protected virtual void OnPointerPressed(PointerRoutedEventArgs args) { }
-		protected virtual void OnPointerReleased(PointerRoutedEventArgs args) { }
-		protected virtual void OnPointerEntered(PointerRoutedEventArgs args) { }
-		protected virtual void OnPointerExited(PointerRoutedEventArgs args) { }
-		protected virtual void OnPointerMoved(PointerRoutedEventArgs args) { }
-		protected virtual void OnPointerCanceled(PointerRoutedEventArgs args) { }
-		protected virtual void OnPointerCaptureLost(PointerRoutedEventArgs args) { }
+		protected virtual void OnPointerPressed(PointerRoutedEventArgs e) { }
+		protected virtual void OnPointerReleased(PointerRoutedEventArgs e) { }
+		protected virtual void OnPointerEntered(PointerRoutedEventArgs e) { }
+		protected virtual void OnPointerExited(PointerRoutedEventArgs e) { }
+		protected virtual void OnPointerMoved(PointerRoutedEventArgs e) { }
+		protected virtual void OnPointerCanceled(PointerRoutedEventArgs e) { }
+		protected virtual void OnPointerCaptureLost(PointerRoutedEventArgs e) { }
 #if !__WASM__
 		[global::Uno.NotImplemented]
 #endif
-		protected virtual void OnPointerWheelChanged(PointerRoutedEventArgs args) { }
+		protected virtual void OnPointerWheelChanged(PointerRoutedEventArgs e) { }
 		protected virtual void OnManipulationStarting(ManipulationStartingRoutedEventArgs e) { }
 		protected virtual void OnManipulationStarted(ManipulationStartedRoutedEventArgs e) { }
 		protected virtual void OnManipulationDelta(ManipulationDeltaRoutedEventArgs e) { }

@@ -757,27 +757,48 @@
 					fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.Add(Windows.UI.Xaml.UIElement view)"
 					reason="macOS only breaking change"/>
 
-			  <Member
-				  fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.Add(Windows.UI.Xaml.UIElement view)"
-				  reason="macOS only breaking change"/>
-			  
-			  <Member
-				  fullName="System.Void Windows.UI.Xaml.Controls.TextBox.SetIsPassword(System.Boolean isPassword)"
-				  reason="macOS only breaking change, internal API"/>
-			  
-			  <Member
-				  fullName="System.Object Windows.UI.Xaml.Controls.ScrollContentPresenter.get_DataContext()"
-				  reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
-			  <Member
-				  fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_DataContext(System.Object value)"
-				  reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
-			  <Member
-				  fullName="Windows.UI.Xaml.DependencyObject Windows.UI.Xaml.Controls.ScrollContentPresenter.get_TemplatedParent()"
-				  reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
-			  <Member
-				  fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_TemplatedParent(Windows.UI.Xaml.DependencyObject value)"
-				  reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.Add(Windows.UI.Xaml.UIElement view)"
+					reason="macOS only breaking change"/>
+				
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.TextBox.SetIsPassword(System.Boolean isPassword)"
+					reason="macOS only breaking change, internal API"/>
+				
+				<Member
+					fullName="System.Object Windows.UI.Xaml.Controls.ScrollContentPresenter.get_DataContext()"
+					reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_DataContext(System.Object value)"
+					reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
+				<Member
+					fullName="Windows.UI.Xaml.DependencyObject Windows.UI.Xaml.Controls.ScrollContentPresenter.get_TemplatedParent()"
+					reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_TemplatedParent(Windows.UI.Xaml.DependencyObject value)"
+					reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
 
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerPressed(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Wrong parameter name, restored the WinUI one"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerReleased(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Wrong parameter name, restored the WinUI one"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerEntered(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Wrong parameter name, restored the WinUI one"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerExited(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Wrong parameter name, restored the WinUI one"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerMoved(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Wrong parameter name, restored the WinUI one"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerCanceled(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Wrong parameter name, restored the WinUI one"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerCaptureLost(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Wrong parameter name, restored the WinUI one"/>
 			</Methods>
 			<Properties>
 				<Member
