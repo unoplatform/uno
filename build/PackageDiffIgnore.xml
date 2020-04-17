@@ -756,7 +756,6 @@
 				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.Add(Windows.UI.Xaml.UIElement view)"
 					reason="macOS only breaking change"/>
-
 				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.Add(Windows.UI.Xaml.UIElement view)"
 					reason="macOS only breaking change"/>
@@ -965,6 +964,19 @@
 				<Member
 					fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Media.GradientBrush::MappingModeProperty()"
 					reason="GradientStops/MappingMode moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
+			</Properties>
+		</IgnoreSet>
+		<IgnoreSet baseVersion="2.4.0">
+			<Methods>
+			    <Member 
+					fullName="System.Void Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs..ctor()"
+					reason="Parameter-less ctor does not exist in UWP"/>			
+			</Methods>
+			<Events>
+			</Events>
+			<Fields>
+			</Fields>
+			<Properties>
 			</Properties>
 		</IgnoreSet>
 	</IgnoreSets>
