@@ -284,7 +284,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			if (topLevelControl.Type.Name == "ResourceDictionary")
 			{
-				BuildEmptyBackingClass(writer, topLevelControl);
+				BuildResourceDictionaryBackingClass(writer, topLevelControl);
 
 				BuildTopLevelResourceDictionary(writer, topLevelControl);
 			}
@@ -965,19 +965,28 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private void InitializeAndBuildResourceDictionary(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl, bool setIsParsing)
 		{
 			TryAnnotateWithGeneratorSource(writer);
-			using (writer.BlockInvariant("new ResourceDictionary"))
+
+			if (IsResourceDictionarySubclass(topLevelControl.Type))
 			{
-				if (setIsParsing)
+				var type = FindType(topLevelControl.Type);
+				writer.AppendLineInvariant("new {0}()", GetGlobalizedTypeName(type.ToDisplayString()));
+			}
+			else
+			{
+				using (writer.BlockInvariant("new ResourceDictionary"))
 				{
-					TrySetParsing(writer, topLevelControl, isInitializer: true);
+					if (setIsParsing)
+					{
+						TrySetParsing(writer, topLevelControl, isInitializer: true);
+					}
+					BuildMergedDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"), isInInitializer: true);
+					BuildThemeDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"), isInInitializer: true);
+					BuildResourceDictionary(writer, FindImplicitContentMember(topLevelControl), isInInitializer: true);
 				}
-				BuildMergedDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"), isInInitializer: true);
-				BuildThemeDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"), isInInitializer: true);
-				BuildResourceDictionary(writer, FindImplicitContentMember(topLevelControl), isInInitializer: true);
 			}
 		}
 
-		private void BuildEmptyBackingClass(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
+		private void BuildResourceDictionaryBackingClass(IIndentedStringBuilder writer, XamlObjectDefinition topLevelControl)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			var className = FindClassName(topLevelControl);
@@ -992,6 +1001,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						using (writer.BlockInvariant("public void InitializeComponent()"))
 						{
+							BuildMergedDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"), isInInitializer: false, dictIdentifier: "this");
+							BuildThemeDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"), isInInitializer: false, dictIdentifier: "this");
+							BuildResourceDictionary(writer, FindImplicitContentMember(topLevelControl), isInInitializer: false, dictIdentifier: "this");
 						}
 					}
 				}
@@ -1833,6 +1845,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsApplication(XamlType xamlType) => IsType(xamlType, XamlConstants.Types.Application);
 
+		private bool IsResourceDictionary(XamlType xamlType) => IsType(xamlType, XamlConstants.Types.ResourceDictionary);
+
+		private bool IsResourceDictionarySubclass(XamlType xamlType) => xamlType.Name != "ResourceDictionary" && IsResourceDictionary(xamlType);
+
 		private XamlMemberDefinition FindImplicitContentMember(XamlObjectDefinition topLevelControl, string memberName = "_UnknownContent")
 		{
 			return topLevelControl
@@ -1876,16 +1892,27 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					.Members
 					.FirstOrDefault(m => m.Member.Name == "Source");
 
-				if (resourcesRoot != null || mergedDictionaries != null)
+				var rdSubclass = resourcesMember.Objects
+					.FirstOrDefault(o => IsResourceDictionarySubclass(o.Type));
+
+				if (rdSubclass != null)
+				{
+					writer.AppendLineInvariant("Resources = ");
+
+					var type = FindType(rdSubclass.Type);
+					writer.AppendLineInvariant("new {0}()", GetGlobalizedTypeName(type.ToDisplayString()));
+					writer.AppendLineInvariant(isInInitializer ? "," : ";");
+				}
+				else if (resourcesRoot != null || mergedDictionaries != null)
 				{
 					if (isInInitializer)
 					{
 						writer.AppendLineInvariant("Resources = {{");
 					}
 
-					BuildMergedDictionaries(writer, mergedDictionaries, isInInitializer);
-					BuildThemeDictionaries(writer, themeDictionaries, isInInitializer);
-					BuildResourceDictionary(writer, resourcesRoot, isInInitializer);
+					BuildMergedDictionaries(writer, mergedDictionaries, isInInitializer, dictIdentifier: "Resources");
+					BuildThemeDictionaries(writer, themeDictionaries, isInInitializer, dictIdentifier: "Resources");
+					BuildResourceDictionary(writer, resourcesRoot, isInInitializer, dictIdentifier: "Resources");
 
 					if (isInInitializer)
 					{
@@ -1907,7 +1934,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <param name="writer">The StringBuilder</param>
 		/// <param name="resourcesRoot">The xaml member within which resources are declared</param>
 		/// <param name="isInInitializer">Whether we're within an object initializer</param>
-		private void BuildResourceDictionary(IIndentedStringBuilder writer, XamlMemberDefinition resourcesRoot, bool isInInitializer)
+		private void BuildResourceDictionary(IIndentedStringBuilder writer, XamlMemberDefinition resourcesRoot, bool isInInitializer, string dictIdentifier = null)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			var closingPunctuation = isInInitializer ? "," : ";";
@@ -1930,7 +1957,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else
 					{
-						writer.AppendLineInvariant("Resources[{0}] = ", wrappedKey);
+						writer.AppendLineInvariant("{0}[{1}] = ", dictIdentifier, wrappedKey);
 					}
 					var directproperty = GetResourceDictionaryPropertyName(key);
 					using (ShouldLazyInitializeResource(resource) ? BuildLazyResourceInitializer(writer) : null)
@@ -1993,25 +2020,25 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// <summary>
 		/// Populate MergedDictionaries property of a ResourceDictionary.
 		/// </summary>
-		private void BuildMergedDictionaries(IIndentedStringBuilder writer, XamlMemberDefinition mergedDictionaries, bool isInInitializer)
+		private void BuildMergedDictionaries(IIndentedStringBuilder writer, XamlMemberDefinition mergedDictionaries, bool isInInitializer, string dictIdentifier = null)
 		{
 			TryAnnotateWithGeneratorSource(writer);
-			BuildDictionaryCollection(writer, mergedDictionaries, isInInitializer, propertyName: "MergedDictionaries", isDict: false);
+			BuildDictionaryCollection(writer, mergedDictionaries, isInInitializer, propertyName: "MergedDictionaries", isDict: false, dictIdentifier);
 		}
 
 		/// <summary>
 		/// Populate ThemeDictionaries property of a ResourceDictionary.
 		/// </summary>
-		private void BuildThemeDictionaries(IIndentedStringBuilder writer, XamlMemberDefinition themeDictionaries, bool isInInitializer)
+		private void BuildThemeDictionaries(IIndentedStringBuilder writer, XamlMemberDefinition themeDictionaries, bool isInInitializer, string dictIdentifier = null)
 		{
 			TryAnnotateWithGeneratorSource(writer);
-			BuildDictionaryCollection(writer, themeDictionaries, isInInitializer, propertyName: "ThemeDictionaries", isDict: true);
+			BuildDictionaryCollection(writer, themeDictionaries, isInInitializer, propertyName: "ThemeDictionaries", isDict: true, dictIdentifier);
 		}
 
 		/// <summary>
 		/// Build a collection of ResourceDictionaries.
 		/// </summary>
-		private void BuildDictionaryCollection(IIndentedStringBuilder writer, XamlMemberDefinition dictionaries, bool isInInitializer, string propertyName, bool isDict)
+		private void BuildDictionaryCollection(IIndentedStringBuilder writer, XamlMemberDefinition dictionaries, bool isInInitializer, string propertyName, bool isDict, string dictIdentifier)
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			if (dictionaries == null)
@@ -2029,11 +2056,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			foreach (var dictObject in dictionaries.Objects)
 			{
-				if (dictObject.Members.Count == 0)
-				{
-					continue;
-				}
-
 				var source = dictObject.Members.FirstOrDefault(m => m.Member.Name == "Source");
 				if (source != null && dictObject.Members.Any(m => m.Member.Name == "_UnknownContent"))
 				{
@@ -2054,11 +2076,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				if (!isInInitializer && !isDict)
 				{
-					writer.AppendLineInvariant("Resources.{0}.Add(", propertyName);
+					writer.AppendLineInvariant("{0}.{1}.Add(", dictIdentifier, propertyName);
 				}
 				else if (!isInInitializer && isDict)
 				{
-					writer.AppendLineInvariant("Resources.{0}[\"{1}\"] = ", propertyName, key);
+					writer.AppendLineInvariant("{0}.{1}[\"{2}\"] = ", dictIdentifier, propertyName, key);
 				}
 				else if (isInInitializer && isDict)
 				{

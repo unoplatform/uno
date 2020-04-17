@@ -102,5 +102,8 @@
 				   x:FieldModifier="public"
 				   contract9999Present:Text="Contract"
 				   contract9999NotPresent:Text="Not Contract" />
+		<TextBlock x:Name="testSubclassedDictionaryTextBlock"
+				   x:FieldModifier="public"
+				   Text="{StaticResource ProblemFreePhilosophy}" />
 	</Grid>
 </Page>

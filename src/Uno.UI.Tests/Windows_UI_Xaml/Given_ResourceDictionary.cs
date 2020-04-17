@@ -567,5 +567,40 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var rd = b.Resources;
 			AssertEx.AssertContainsColorBrushResource(rd, "FerociousColorBrush", Colors.Fuchsia);
 		}
+
+		[TestMethod]
+		public void When_Merged_Xaml_By_Type()
+		{
+			var page = new Test_Page();
+			Assert.AreEqual("Hakuna Matata", page.testSubclassedDictionaryTextBlock.Text);
+		}
+
+		[TestMethod]
+		public void When_Xaml_By_Type_Ref_Equality()
+		{
+			var page = new Test_Page_Other();
+
+			Assert.IsInstanceOfType(page.testGrid1.Resources, typeof(Subclassed_Dictionary));
+
+			var color = Colors.WhiteSmoke;
+			var b1 = page.testBorder1.Background;
+			var b2 = page.testBorder2.Background;
+			AssertEx.AssertHasColor(b1, color);
+			AssertEx.AssertHasColor(b2, color);
+
+			var areRefEqual = ReferenceEquals(b1, b2);
+			Assert.IsFalse(areRefEqual);
+		}
+
+		[TestMethod]
+		public void When_By_Type_From_Code()
+		{
+			var dict = new Subclassed_Dictionary();
+
+			Assert.AreEqual("Hakuna Matata", dict["ProblemFreePhilosophy"]);
+			AssertEx.AssertContainsColorBrushResource(dict, "PerilousColorBrush", Colors.WhiteSmoke);
+
+			Assert.AreEqual("The Cold", dict["NeverBotheredMeAnyway"]);
+		}
 	}
 }

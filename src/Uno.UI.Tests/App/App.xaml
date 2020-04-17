@@ -20,6 +20,7 @@
 									 Color="Magenta" />
 					<SolidColorBrush x:Name="CadetColorBrush" Color="CadetBlue" />
 				</ResourceDictionary>
+				<local:Subclassed_Dictionary />
 			</ResourceDictionary.MergedDictionaries>
 			<ResourceDictionary.ThemeDictionaries>
 				<ResourceDictionary x:Key="Light">
