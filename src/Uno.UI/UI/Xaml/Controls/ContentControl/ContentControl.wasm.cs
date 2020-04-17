@@ -9,12 +9,12 @@ using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
 using Uno.UI;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
-	// Android partial
-    public partial class ContentControl
-    {
+	public partial class ContentControl
+	{
 		partial void InitializePartial()
 		{
 			IFrameworkElementHelper.Initialize(this);
@@ -28,6 +28,18 @@ namespace Windows.UI.Xaml.Controls
 		partial void UnregisterContentTemplateRoot()
 		{
 			RemoveChild(ContentTemplateRoot);
+		}
+
+		protected override Size MeasureOverride(Size availableSize)
+		{
+			if (!IsDefaultStyleApplied && Equals(DefaultStyleKey, typeof(ContentControl)))
+			{
+				// For the specific case of a ContentControl, if being measured before default style is applied (ie created programmatically and not
+				// yet in the visual tree), make sure the style is applied. This aligns the behaviour of WASM with other platforms (UWP introduces
+				// ContentPresenter programmatically, Android/iOS skip it entirely)
+				ApplyDefaultStyle();
+			}
+			return base.MeasureOverride(availableSize);
 		}
 	}
 }
