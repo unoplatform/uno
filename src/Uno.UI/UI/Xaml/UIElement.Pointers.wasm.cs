@@ -138,7 +138,8 @@ namespace Windows.UI.Xaml
 				}
 				if (args.wheelDeltaY != 0)
 				{
-					handled |= target.OnNativePointerWheel(ToPointerArgs(target, args, wheel: (false, args.wheelDeltaY), isInContact: null /* maybe */));
+					// Note: Vertical scrolling is inverted between web browser and WinUI!
+					handled |= target.OnNativePointerWheel(ToPointerArgs(target, args, wheel: (false, -args.wheelDeltaY), isInContact: null /* maybe */));
 				}
 				return handled;
 			}
