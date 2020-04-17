@@ -13,12 +13,12 @@ using Windows.UI.Xaml.Media;
 
 #if XAMARIN_IOS_UNIFIED
 using UIKit;
-using NativeView = UIKit.UIView;
+using _View = UIKit.UIView;
 #elif XAMARIN_IOS
 using MonoTouch.UIKit;
 #elif __MACOS__
 using AppKit;
-using NativeView = AppKit.NSView;
+using _View = AppKit.NSView;
 #endif
 
 #if !__MACOS__
@@ -211,7 +211,7 @@ namespace Windows.UI.Xaml
 			{
 				Setters =  {
 					new Setter<WebView>("Template", t =>
-						t.Template = Funcs.Create<NativeView>(() => (NativeView)new UnoWKWebView() 
+						t.Template = Funcs.Create<_View>(() => (_View)new UnoWKWebView() 
 						)
 					)
 				}
