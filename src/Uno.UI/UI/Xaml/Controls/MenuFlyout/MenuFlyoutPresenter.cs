@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using Uno.UI;
 using Windows.Devices.Input;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
@@ -488,11 +489,11 @@ namespace Windows.UI.Xaml.Controls
 							{
 								var spElements = VisualTreeHelper.FindElementsInHostCoordinates(clientLogicalPointerPosition, spVerticalScrollBarAsUE, true /* includeAllElements */);
 
-								foreach(var spElement in spElements)
+								foreach (var spElement in spElements)
 								{
 									DependencyObject pElementAsCDO = spElement;
 
-									if ( (pElementAsCDO is ScrollBar && spVerticalScrollBarAsUE == spElement) ||
+									if ((pElementAsCDO is ScrollBar && spVerticalScrollBarAsUE == spElement) ||
 										(spSubPresenterAsUIE == spElement))
 									{
 										isHitVerticalScrollBarOrSubPresenter = true;
@@ -538,22 +539,22 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-        internal bool GetContainsToggleItems()
-        {
-            return m_containsToggleItems;
-        }
+		internal bool GetContainsToggleItems()
+		{
+			return m_containsToggleItems;
+		}
 
 		// Returns true if the ItemsSource contains at least one MenuFlyoutItem with an Icon; false otherwise.
 		internal bool GetContainsIconItems()
-        {
-            return m_containsIconItems;
-        }
+		{
+			return m_containsIconItems;
+		}
 
 		// Returns true if the ItemsSource contains at least one MenuFlyoutItem with an Icon; false otherwise.
 		internal bool GetContainsItemsWithKeyboardAcceleratorText()
-        {
-            return m_containsItemsWithKeyboardAcceleratorText;
-        }
+		{
+			return m_containsItemsWithKeyboardAcceleratorText;
+		}
 
 		private Rect GetSubPresenterBounds(UIElement pSubPresenterAsUIE)
 		{
@@ -716,10 +717,10 @@ namespace Windows.UI.Xaml.Controls
 			if (ownerFlyout != null && templateSettingsConcrete != null)
 			{
 				// Query MenuFlyout Content MinWidth, given the input mode, from resource dictionary.
-				var resources = Resources;
-				var flyoutContentMinWidth = (double)resources[
-	(ownerFlyout.InputDeviceTypeUsedToOpen == FocusInputDeviceKind.Touch || ownerFlyout.InputDeviceTypeUsedToOpen == FocusInputDeviceKind.GameController)
-		? "FlyoutThemeTouchMinWidth" : "FlyoutThemeMinWidth"];
+				var flyoutContentMinWidth = ResourceResolver.ResolveTopLevelResource<double>(
+					(ownerFlyout.InputDeviceTypeUsedToOpen == FocusInputDeviceKind.Touch || ownerFlyout.InputDeviceTypeUsedToOpen == FocusInputDeviceKind.GameController)
+						? "FlyoutThemeTouchMinWidth" : "FlyoutThemeMinWidth"
+				);
 				var visibleBounds = this.LayoutSlotWithMarginsAndAlignments;
 				// DXamlCore.GetCurrent().GetVisibleContentBoundsForElement(GetHandle(), &visibleBounds);
 
@@ -753,7 +754,7 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			for (var i = 0; i<nCount; ++i)
+			for (var i = 0; i < nCount; ++i)
 			{
 				MenuFlyoutItemBase item;
 				MenuFlyoutItem itemAsMenuItem;
@@ -832,7 +833,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var returnValue = -1;
 
-			var presenter= item.GetParentMenuFlyoutPresenter();
+			var presenter = item.GetParentMenuFlyoutPresenter();
 
 			if (presenter != null)
 			{
@@ -882,7 +883,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var returnValue = -1;
 
-			var presenter = item .GetParentMenuFlyoutPresenter();
+			var presenter = item.GetParentMenuFlyoutPresenter();
 
 			if (presenter != null)
 			{
