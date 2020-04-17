@@ -19,6 +19,8 @@ namespace Windows.UI.Xaml
 	[Register("UnoAppDelegate")]
 	public partial class Application : NSApplicationDelegate
 	{
+		private NSUrl[] _launchUrls = null;
+
 		public Application()
 		{
 			Current = this;
@@ -36,10 +38,28 @@ namespace Windows.UI.Xaml
 			callback(new ApplicationInitializationCallbackParams());
 		}
 
+		public override void OpenUrls(NSApplication application, NSUrl[] urls)
+		{
+			if (!_initializationComplete)
+			{
+				_launchUrls = urls;
+			}
+			else
+			{
+				HandleLaunchUrls(urls, ApplicationExecutionState.Running);
+			}
+		}
+
 		public override void DidFinishLaunching(NSNotification notification)
 		{
-			InitializationCompleted();			
+            InitializationCompleted();
+			if (_launchUrls != null)
+			{
+				HandleLaunchUrls(_launchUrls, ApplicationExecutionState.NotRunning);
+				return;
+			}
 			OnLaunched(new LaunchActivatedEventArgs());
+			
 		}
 
 		/// <summary>
@@ -50,6 +70,15 @@ namespace Windows.UI.Xaml
 		[Export("getApplicationDataPath")]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public NSString GetWorkingFolder() => new NSString(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+
+		private void HandleLaunchUrls(NSUrl[] urls, ApplicationExecutionState previousState)
+		{
+			foreach (var url in urls)
+			{
+				var uri = new Uri(url.ToString());
+				OnActivated(new ProtocolActivatedEventArgs(uri, previousState));
+			}
+		}
 
 		/// <summary>
 		/// Based on <see cref="https://forums.developer.apple.com/thread/118974" />

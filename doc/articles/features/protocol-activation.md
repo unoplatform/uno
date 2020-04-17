@@ -2,9 +2,9 @@
 
 ## Registering custom scheme
 
-### iOS
+### iOS & macOS
 
-Declare your custom URL scheme in `info.plist`:
+Declare your custom URL scheme in `info.plist` in the platform head:
 
 ```
 <key>CFBundleURLTypes</key>
