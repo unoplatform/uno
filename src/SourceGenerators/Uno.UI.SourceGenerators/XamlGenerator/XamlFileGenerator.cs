@@ -1118,7 +1118,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (appThemes.Any())
 					{
 						writer.AppendLineInvariant("// Element's RequestedTheme not supported yet. Fallback on Application's RequestedTheme.");
-						writer.AppendLineInvariant("var currentTheme = global::Windows.UI.Xaml.Application.Current.RequestedTheme;");
+						writer.AppendLineInvariant("var currentTheme = global::Windows.UI.Xaml.Application.Current?.RequestedTheme;");
 						using (writer.BlockInvariant($"switch(currentTheme)"))
 						{
 							foreach (var theme in appThemes)

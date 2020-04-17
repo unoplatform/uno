@@ -252,8 +252,25 @@ namespace Windows.UI.Xaml
 				}
 			}
 
+			if(e is UIElement uiElement && uiElement.ContextFlyout is Controls.Primitives.FlyoutBase contextFlyout)
+			{
+				return FindInFlyout(name, contextFlyout);
+			}
+
+			if (e is Button button && button.Flyout is Controls.Primitives.FlyoutBase buttonFlyout)
+			{
+				return FindInFlyout(name, buttonFlyout);
+			}
+
 			return null;
 		}
+
+		private static IFrameworkElement FindInFlyout(string name, Controls.Primitives.FlyoutBase flyoutBase)
+			=> flyoutBase switch
+			{
+				MenuFlyout f => f.Items.Select(i => i.FindName(name)).Trim().FirstOrDefault(),
+				Controls.Primitives.FlyoutBase fb => fb.GetPresenter()?.FindName(name)
+			};
 
 		public static CGSize Measure(this IFrameworkElement element, _Size availableSize)
 		{

@@ -1,0 +1,28 @@
+{
+  // Use IntelliSense to find out which attributes exist for C# debugging
+  // Use hover for the description of the existing attributes
+  // For further information visit https://github.com/OmniSharp/omnisharp-vscode/blob/master/debugger-launchjson.md
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": ".NET Core Launch (Uno Platform App)",
+      "type": "coreclr",
+      "request": "launch",
+      "program": "dotnet",
+      "args": [ "run" ],
+      "cwd": "${workspaceFolder}/UnoQuickStart.Wasm",
+      "env": {
+      }
+    },
+    {
+      "name": ".NET Core Debug Uno Platform WebAssembly in Chrome",
+      "type": "pwa-chrome",
+      "request": "launch",
+      "timeout": 30000,
+      // If you have changed the default port / launch URL make sure to update the expectation below
+      "url": "http://localhost:5000",
+      "webRoot": "${workspaceFolder}/UnoQuickStart.Wasm",
+      "inspectUri": "{wsProtocol}://{url.hostname}:{url.port}/_framework/debug/ws-proxy?browser={browserInspectUri}"
+    }
+  ]
+}

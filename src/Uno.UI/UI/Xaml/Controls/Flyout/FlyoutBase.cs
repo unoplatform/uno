@@ -329,6 +329,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			}
 		}
 
-		internal Control GetPresenter() => _popup.Child as Control;
+		internal Control GetPresenter() => _popup?.Child as Control;
 	}
 }
