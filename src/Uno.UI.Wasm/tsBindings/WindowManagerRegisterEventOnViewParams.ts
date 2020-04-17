@@ -5,7 +5,6 @@ class WindowManagerRegisterEventOnViewParams
 	public HtmlId : number;
 	public EventName : string;
 	public OnCapturePhase : boolean;
-	public EventFilterId : number;
 	public EventExtractorId : number;
 	public static unmarshal(pData:number) : WindowManagerRegisterEventOnViewParams
 	{
@@ -33,11 +32,7 @@ class WindowManagerRegisterEventOnViewParams
 		}
 		
 		{
-			ret.EventFilterId = Number(Module.getValue(pData + 12, "i32"));
-		}
-		
-		{
-			ret.EventExtractorId = Number(Module.getValue(pData + 16, "i32"));
+			ret.EventExtractorId = Number(Module.getValue(pData + 12, "i32"));
 		}
 		return ret;
 	}

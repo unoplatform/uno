@@ -345,6 +345,10 @@ namespace Windows.UI.Input
 			// The only thing that changes are flags in the properties.
 			// Here we build a "PointerIdentifier" that fully identifies the pointer used
 
+			// Note: We don't take in consideration props.IsHorizontalMouseWheel as it would require to also check
+			//		 the (non existing) props.IsVerticalMouseWheel, and it's actually not something that should
+			//		 be considered as a pointer changed.
+
 			var props = point.Properties;
 
 			ulong identifier = point.PointerId;
@@ -362,27 +366,23 @@ namespace Windows.UI.Input
 			{
 				identifier |= 1L << 34;
 			}
-			if (props.IsHorizontalMouseWheel)
+			if (props.IsXButton1Pressed)
 			{
 				identifier |= 1L << 35;
 			}
-			if (props.IsXButton1Pressed)
-			{
-				identifier |= 1L << 36;
-			}
 			if (props.IsXButton2Pressed)
 			{
-				identifier |= 1L << 37;
+				identifier |= 1L << 36;
 			}
 
 			// Pen
 			if (props.IsBarrelButtonPressed)
 			{
-				identifier |= 1L << 38;
+				identifier |= 1L << 37;
 			}
 			if (props.IsEraser)
 			{
-				identifier |= 1L << 39;
+				identifier |= 1L << 38;
 			}
 
 			return identifier;

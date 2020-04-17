@@ -17,7 +17,7 @@ namespace Uno.UI.Xaml
 		PointerMoved = 1UL << 4,
 		PointerCanceled = 1UL << 5,
 		PointerCaptureLost = 1UL << 6,
-		// PointerWheelChanged = 1UL << 7, => Reserved for future usage
+		PointerWheelChanged = 1UL << 7,
 
 		// Keyboard
 		// PreviewKeyDown = 1UL << 12 => Reserved for future usage
@@ -72,8 +72,8 @@ namespace Uno.UI.Xaml
 			| RoutedEventFlag.PointerExited
 			| RoutedEventFlag.PointerMoved
 			| RoutedEventFlag.PointerCanceled
-			| RoutedEventFlag.PointerCaptureLost;
-			//| RoutedEventFlag.PointerWheelChanged;
+			| RoutedEventFlag.PointerCaptureLost
+			| RoutedEventFlag.PointerWheelChanged;
 
 		private const RoutedEventFlag _isKey = // 0b0000_0000_0000_0000___0000_0000_0000_0000___0000_0000_0001_1111___1111_0000_0000_0000
 			  RoutedEventFlag.KeyDown

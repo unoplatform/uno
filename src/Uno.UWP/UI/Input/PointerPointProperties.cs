@@ -40,8 +40,10 @@ namespace Windows.UI.Input
 		public float YTilt { get; internal set; } = 0f;
 #endif
 
+#if !__WASM__
 		[global::Uno.NotImplemented]
-		public int MouseWheelDelta => 0;
+#endif
+		public int MouseWheelDelta { get; internal set; }
 
 		/// <inheritdoc />
 		public override string ToString()
@@ -57,9 +59,15 @@ namespace Windows.UI.Input
 			if (IsRightButtonPressed) builder.Append("right ");
 
 			// Mouse
-			if (IsHorizontalMouseWheel) builder.Append("scroll_Y ");
 			if (IsXButton1Pressed) builder.Append("alt_butt_1 ");
 			if (IsXButton2Pressed) builder.Append("alt_butt_2");
+			if (MouseWheelDelta != 0)
+			{
+				builder.Append("scroll");
+				builder.Append(IsHorizontalMouseWheel ? "X (" : "Y (");
+				builder.Append(MouseWheelDelta);
+				builder.Append("px) ");
+			}
 
 			// Pen
 			if (IsBarrelButtonPressed) builder.Append("barrel ");

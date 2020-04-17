@@ -21,7 +21,7 @@
 | `PointerMoved`                | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointermoved) |
 | `PointerPressed`              | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerpressed) |
 | `PointerReleased`             | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerreleased) |
-| `PointerWheelChanged`         | No      | No      | No      | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerwheelchanged) |
+| `PointerWheelChanged`         | No      | No      | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerwheelchanged) |
 | _manipulation events_         
 | `ManipulationStarting`        | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationstarting) |
 | `ManipulationStarted`         | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationstarted) |
@@ -170,7 +170,7 @@ These _routed events_ are not implemented yet in Uno:
 * `DragOver`
 * `Drop`
 * `ManipulationInertiaStarting`
-* `PointerWheelChanged`
+* `PointerWheelChanged` (Currently supported only for WASM)
 
 ### Property `OriginalSource` might not be accurate on _RoutedEventArgs_
 
@@ -243,6 +243,8 @@ As those events are tightly coupled to the native events, Uno has to make some c
 * The `Holding` event is not raised after a given delay like on WinUI, but instead we rely on the fact that we usually 
   get a lot of moves for pens and fingers, so we raise the event only when we get a move that exceed defined thresholds for holding.
 * On WASM, Shapes must have a non null Fill to receive pointer events (setting the Stroke is not sufficient).
+* On WASM if the user scrolls in diagonal (e.g. with a Touchpad), but you mark as `Handled` pointer events only for vertical scrolling,
+  then the events for the horizontal scroll component won't bubble through the parents.
 
 ### Pointer capture
 

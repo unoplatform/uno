@@ -298,6 +298,7 @@ var Uno;
                 this.loadingElementId = loadingElementId;
                 this.allActiveElementsById = {};
                 this.uiElementRegistrations = {};
+                this._wheelLineSize = undefined;
                 this.initDom();
             }
             /**
@@ -849,8 +850,8 @@ var Uno;
                 * @param eventName The name of the event
                 * @param onCapturePhase true means "on trickle down" (going down to target), false means "on bubble up" (bubbling back to ancestors). Default is false.
                 */
-            registerEventOnView(elementId, eventName, onCapturePhase = false, eventFilterId, eventExtractorId) {
-                this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventFilterId, eventExtractorId);
+            registerEventOnView(elementId, eventName, onCapturePhase = false, eventExtractorId) {
+                this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventExtractorId);
                 return "ok";
             }
             /**
@@ -861,7 +862,7 @@ var Uno;
                 */
             registerEventOnViewNative(pParams) {
                 const params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
-                this.registerEventOnViewInternal(params.HtmlId, params.EventName, params.OnCapturePhase, params.EventFilterId, params.EventExtractorId);
+                this.registerEventOnViewInternal(params.HtmlId, params.EventName, params.OnCapturePhase, params.EventExtractorId);
                 return true;
             }
             /**
@@ -885,7 +886,7 @@ var Uno;
                 * @param eventName The name of the event
                 * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
                 */
-            registerEventOnViewInternal(elementId, eventName, onCapturePhase = false, eventFilterId, eventExtractorId) {
+            registerEventOnViewInternal(elementId, eventName, onCapturePhase = false, eventExtractorId) {
                 const element = this.getView(elementId);
                 const eventExtractor = this.getEventExtractor(eventExtractorId);
                 const eventHandler = (event) => {
@@ -978,37 +979,6 @@ var Uno;
                 }
             }
             /**
-             * left pointer event filter to be used with registerEventOnView
-             * @param evt
-             */
-            leftPointerEventFilter(evt) {
-                return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 && (!evt.button || evt.button === 0) : false;
-            }
-            /**
-             * default event filter to be used with registerEventOnView to
-             * use for most routed events
-             * @param evt
-             */
-            defaultEventFilter(evt) {
-                return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 : false;
-            }
-            /**
-             * Gets the event filter function. See UIElement.HtmlEventFilter
-             * @param eventFilterName an event filter name.
-             */
-            getEventFilter(eventFilterName) {
-                if (eventFilterName) {
-                    switch (eventFilterName) {
-                        case "LeftPointerEventFilter":
-                            return this.leftPointerEventFilter;
-                        case "Default":
-                            return this.defaultEventFilter;
-                    }
-                    throw `Event filter ${eventFilterName} is not supported`;
-                }
-                return null;
-            }
-            /**
              * pointer event extractor to be used with registerEventOnView
              * @param evt
              */
@@ -1026,7 +996,53 @@ var Uno;
                     }
                     src = src.parentElement;
                 }
-                return `${evt.pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.buttons};${evt.button};${evt.pointerType};${srcHandle};${evt.timeStamp};${evt.pressure}`;
+                let pointerId, pointerType, pressure;
+                let wheelDeltaX, wheelDeltaY;
+                if (evt instanceof WheelEvent) {
+                    pointerId = evt.mozInputSource ? 0 : 1; // Try to match the mouse pointer ID 0 for FF, 1 for others
+                    pointerType = "mouse";
+                    pressure = 0.5; // like WinUI
+                    wheelDeltaX = evt.deltaX;
+                    wheelDeltaY = evt.deltaY;
+                    switch (evt.deltaMode) {
+                        case WheelEvent.DOM_DELTA_LINE: // Actually this is supported only by FF
+                            wheelDeltaX *= this.WheelLineSize;
+                            wheelDeltaY *= this.WheelLineSize;
+                            break;
+                        case WheelEvent.DOM_DELTA_PAGE:
+                            wheelDeltaX *= document.documentElement.clientWidth;
+                            wheelDeltaY *= document.documentElement.clientHeight;
+                            break;
+                    }
+                }
+                else {
+                    pointerId = evt.pointerId;
+                    pointerType = evt.pointerType;
+                    pressure = evt.pressure;
+                    wheelDeltaX = 0;
+                    wheelDeltaY = 0;
+                }
+                return `${pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.buttons};${evt.button};${pointerType};${srcHandle};${evt.timeStamp};${pressure};${wheelDeltaX};${wheelDeltaY}`;
+            }
+            get WheelLineSize() {
+                // In web browsers, scroll might happen by pixels, line or page.
+                // But WinUI works only with pixels, so we have to convert it before send the value to the managed code.
+                // The issue is that there is no easy way get the "size of a line", instead we have to determine the CSS "line-height"
+                // defined in the browser settings. 
+                // https://stackoverflow.com/questions/20110224/what-is-the-height-of-a-line-in-a-wheel-event-deltamode-dom-delta-line
+                if (this._wheelLineSize == undefined) {
+                    const el = document.createElement('div');
+                    el.style.fontSize = 'initial';
+                    el.style.display = 'none';
+                    document.body.appendChild(el);
+                    const fontSize = window.getComputedStyle(el).fontSize;
+                    document.body.removeChild(el);
+                    this._wheelLineSize = fontSize ? parseInt(fontSize) : 16; /* 16 = The current common default font size */
+                    // Based on observations, even if the even reports 3 lines (the settings of windows),
+                    // the browser will actually scroll of about 6 lines of text.
+                    this._wheelLineSize *= 2.0;
+                }
+                return this._wheelLineSize;
             }
             /**
              * keyboard event extractor to be used with registerEventOnView
@@ -1707,8 +1723,9 @@ var Uno;
         }
     })(UI = Uno.UI || (Uno.UI = {}));
 })(Uno || (Uno = {}));
-// Ensure the "Uno" namespace is availablle globally
+// Ensure the "Uno" namespace is available globally
 window.Uno = Uno;
+window.Windows = Windows;
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class StorageFolderMakePersistentParams {
     static unmarshal(pData) {
@@ -1928,10 +1945,7 @@ class WindowManagerRegisterEventOnViewParams {
             ret.OnCapturePhase = Boolean(Module.getValue(pData + 8, "i32"));
         }
         {
-            ret.EventFilterId = Number(Module.getValue(pData + 12, "i32"));
-        }
-        {
-            ret.EventExtractorId = Number(Module.getValue(pData + 16, "i32"));
+            ret.EventExtractorId = Number(Module.getValue(pData + 12, "i32"));
         }
         return ret;
     }

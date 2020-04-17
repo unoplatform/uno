@@ -843,12 +843,12 @@ namespace Uno.UI.Xaml
 		#endregion
 
 		#region RegisterEventOnView
-		internal static void RegisterEventOnView(IntPtr htmlId, string eventName, bool onCapturePhase, int eventFilterId, int eventExtractorId)
+		internal static void RegisterEventOnView(IntPtr htmlId, string eventName, bool onCapturePhase, int eventExtractorId)
 		{
 			if (UseJavascriptEval)
 			{
 				var onCapturePhaseStr = onCapturePhase ? "true" : "false";
-				var cmd = $"Uno.UI.WindowManager.current.registerEventOnView(\"{htmlId}\", \"{eventName}\", {onCapturePhaseStr}, {eventFilterId}, {eventExtractorId});";
+				var cmd = $"Uno.UI.WindowManager.current.registerEventOnView(\"{htmlId}\", \"{eventName}\", {onCapturePhaseStr}, {eventExtractorId});";
 
 				WebAssemblyRuntime.InvokeJS(cmd);
 			}
@@ -859,7 +859,6 @@ namespace Uno.UI.Xaml
 					HtmlId = htmlId,
 					EventName = eventName,
 					OnCapturePhase = onCapturePhase,
-					EventFilterId = eventFilterId,
 					EventExtractorId = eventExtractorId,
 				};
 
@@ -877,8 +876,6 @@ namespace Uno.UI.Xaml
 			public string EventName;
 
 			public bool OnCapturePhase;
-
-			public int EventFilterId;
 
 			public int EventExtractorId;
 		}
