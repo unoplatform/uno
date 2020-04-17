@@ -52,7 +52,7 @@ namespace SamplesApp
 		/// </summary>
 		/// <seealso cref="https://github.com/unoplatform/uno/issues/1741"/>
 		public void AssertIssue1790()
-		{			
+		{
 			void AssertIsUsable(Windows.Storage.ApplicationDataContainer container)
 			{
 				const string issue1790 = nameof(issue1790);
@@ -134,6 +134,41 @@ namespace SamplesApp
 			}
 
 			DisplayLaunchArguments(e);
+		}
+
+		protected override async void OnActivated(IActivatedEventArgs e)
+		{
+			base.OnActivated(e);
+
+			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
+
+			if (rootFrame == null)
+			{
+				// Create a Frame to act as the navigation context and navigate to the first page
+				rootFrame = new Frame();
+
+				rootFrame.NavigationFailed += OnNavigationFailed;
+
+				// Place the frame in the current Window
+				Windows.UI.Xaml.Window.Current.Content = rootFrame;
+			}
+
+			if (rootFrame.Content == null)
+			{
+				// When the navigation stack isn't restored navigate to the first page,
+				// configuring the new page by passing required information as a navigation
+				// parameter
+				rootFrame.Navigate(typeof(MainPage));
+			}
+
+			if (e.Kind == ActivationKind.Protocol)
+			{
+				var protocolActivatedEventArgs = (ProtocolActivatedEventArgs)e;
+				var dlg = new MessageDialog(protocolActivatedEventArgs.Uri.ToString(), "Application activated by protocol");
+				await dlg.ShowAsync();
+			}
+
+			Windows.UI.Xaml.Window.Current.Activate();
 		}
 
 		private async void DisplayLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)
