@@ -19,6 +19,8 @@ namespace Windows.UI.Xaml
 		private readonly Application _app;
 		private Intent _lastHandledIntent;
 
+		private bool _isRunning = false;
+
 		public delegate Windows.UI.Xaml.Application AppBuilder();
 
 		[EditorBrowsable(EditorBrowsableState.Never)]
@@ -56,16 +58,24 @@ namespace Windows.UI.Xaml
 		private void OnActivityStarted(Activity activity)
 		{
 			_app.InitializationCompleted();
-			if (_lastHandledIntent != activity.Intent &&
-			    activity.Intent?.Extras?.ContainsKey(JumpListItem.ArgumentsExtraKey) == true)
+			if (_lastHandledIntent != activity.Intent)
 			{
 				_lastHandledIntent = activity.Intent;
-				_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, activity.Intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
+				if (activity.Intent?.Extras?.ContainsKey(JumpListItem.ArgumentsExtraKey) == true)
+				{
+					_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, activity.Intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
+				}
+				else if (activity.Intent.Data != null)
+				{
+					var uri = new Uri(activity.Intent.Data.ToString());
+					_app.OnActivated(new ProtocolActivatedEventArgs(uri, _isRunning ? ApplicationExecutionState.Running : ApplicationExecutionState.NotRunning));
+				}
 			}
 			else
 			{
 				_app.OnLaunched(new LaunchActivatedEventArgs());
 			}
+			_isRunning = true;
 		}
 
 		/// <summary>

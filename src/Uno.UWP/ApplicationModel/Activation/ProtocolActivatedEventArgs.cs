@@ -1,4 +1,4 @@
-﻿#if __IOS__
+﻿#if __IOS__ || __ANDROID__
 using System;
 
 namespace Windows.ApplicationModel.Activation
