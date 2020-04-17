@@ -136,14 +136,18 @@ namespace SamplesApp
 			DisplayLaunchArguments(e);
 		}
 
-		protected override async void OnActivated(IActivatedEventArgs e)
+		protected
+#if HAS_UNO
+			internal
+#endif
+			override async void OnActivated(IActivatedEventArgs e)
 		{
 			base.OnActivated(e);
 
 			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
 
 			if (rootFrame == null)
-			{
+			{ 
 				// Create a Frame to act as the navigation context and navigate to the first page
 				rootFrame = new Frame();
 
@@ -161,21 +165,24 @@ namespace SamplesApp
 				rootFrame.Navigate(typeof(MainPage));
 			}
 
+			Windows.UI.Xaml.Window.Current.Activate();
+
 			if (e.Kind == ActivationKind.Protocol)
 			{
 				var protocolActivatedEventArgs = (ProtocolActivatedEventArgs)e;
-				var dlg = new MessageDialog(protocolActivatedEventArgs.Uri.ToString(), "Application activated by protocol");
+				var dlg = new MessageDialog(
+					$"PreviousState - {e.PreviousExecutionState}, " +
+					$"Uri - {protocolActivatedEventArgs.Uri}",
+					"Application activated via protocol");
 				await dlg.ShowAsync();
 			}
-
-			Windows.UI.Xaml.Window.Current.Activate();
 		}
 
 		private async void DisplayLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)
 		{
 			if (!string.IsNullOrEmpty(launchActivatedEventArgs.Arguments))
 			{
-				var dlg = new MessageDialog(launchActivatedEventArgs.Arguments, "Launch arguments");
+				var dlg = new MessageDialog(launchActivatedEventArgs.Arguments, $"Launch arguments");
 				await dlg.ShowAsync();
 			}
 		}

@@ -19,6 +19,8 @@ namespace Windows.UI.Xaml
 		private bool _suspended;
 		internal bool IsSuspended => _suspended;
 
+		private bool _preventSecondaryActivationHandling = false;
+
 		public Application()
 		{
 			Current = this;
@@ -35,16 +37,59 @@ namespace Windows.UI.Xaml
 			callback(new ApplicationInitializationCallbackParams());
 		}
 
-		public override void FinishedLaunching(UIApplication application)
+		/// <summary>
+		/// Used to handle application launch. Previously used <see cref="FinishedLaunching(UIApplication)" />
+		/// which however does not support launch with arguments and is "technically" deprecated.
+		/// </summary>
+		/// <param name="application">UI Application.</param>
+		/// <param name="launchOptions">Launch options.</param>
+		/// <returns>Value indicating whether launch can be handled.</returns>
+		public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
 		{
 			InitializationCompleted();
+			if (launchOptions != null)
+			{
+				if (launchOptions.TryGetValue(UIApplication.LaunchOptionsUrlKey, out var urlObject))
+				{
+					_preventSecondaryActivationHandling = true;
+					var url = (NSUrl)urlObject;
+					OnActivated(new ProtocolActivatedEventArgs(new Uri(url.ToString()), ApplicationExecutionState.NotRunning));
+					return true;
+				}
+				else if (launchOptions.TryGetValue(UIApplication.LaunchOptionsShortcutItemKey, out var shortcutItemObject))
+				{
+					_preventSecondaryActivationHandling = true;
+					var shortcutItem = (UIApplicationShortcutItem)shortcutItemObject;
+					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, shortcutItem.Type));
+					return true;
+				}
+			}
 			OnLaunched(new LaunchActivatedEventArgs());
+			return true;
 		}
 
-		public override void PerformActionForShortcutItem(UIApplication application,
+		public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
+		{
+			// If the application was not running, URL was already handled by FinishedLaunching
+			if (!_preventSecondaryActivationHandling)
+			{
+				OnActivated(new ProtocolActivatedEventArgs(new Uri(url.ToString()), ApplicationExecutionState.Running));
+			}
+			_preventSecondaryActivationHandling = false;
+			return true;
+		}
+
+		public override void PerformActionForShortcutItem(
+			UIApplication application,
 			UIApplicationShortcutItem shortcutItem,
-			UIOperationHandler completionHandler) =>
-			OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, shortcutItem.Type));
+			UIOperationHandler completionHandler)
+		{
+			if (!_preventSecondaryActivationHandling)
+			{
+				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, shortcutItem.Type));
+			}
+			_preventSecondaryActivationHandling = false;
+		}
 
 		public override void DidEnterBackground(UIApplication application)
 			=> OnSuspending();
