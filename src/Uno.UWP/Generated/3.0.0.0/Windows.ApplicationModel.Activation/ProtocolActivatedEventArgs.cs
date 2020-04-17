@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Activation
 {
-	#if false || false || NET461 || __WASM__ || __MACOS__
+#if false || false || NET461 || false || __MACOS__
 	[global::Uno.NotImplemented]
-	#endif
-	public  partial class ProtocolActivatedEventArgs : global::Windows.ApplicationModel.Activation.IProtocolActivatedEventArgs,global::Windows.ApplicationModel.Activation.IActivatedEventArgs,global::Windows.ApplicationModel.Activation.IProtocolActivatedEventArgsWithCallerPackageFamilyNameAndData,global::Windows.ApplicationModel.Activation.IApplicationViewActivatedEventArgs,global::Windows.ApplicationModel.Activation.IViewSwitcherProvider,global::Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser
+#endif
+	public partial class ProtocolActivatedEventArgs : global::Windows.ApplicationModel.Activation.IProtocolActivatedEventArgs,global::Windows.ApplicationModel.Activation.IActivatedEventArgs,global::Windows.ApplicationModel.Activation.IProtocolActivatedEventArgsWithCallerPackageFamilyNameAndData,global::Windows.ApplicationModel.Activation.IApplicationViewActivatedEventArgs,global::Windows.ApplicationModel.Activation.IViewSwitcherProvider,global::Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser
 	{
-		#if false || false || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Activation.ApplicationExecutionState PreviousExecutionState
 		{
@@ -57,7 +57,7 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.Uri Uri
 		{

@@ -13,6 +13,8 @@ using Uno.Logging;
 using System.Threading;
 using Uno.UI;
 using Uno.UI.Xaml;
+using System.Web;
+using System.Collections.Specialized;
 
 namespace Windows.UI.Xaml
 {
@@ -65,6 +67,32 @@ namespace Windows.UI.Xaml
 					this.Log().Debug("Launch arguments: " + arguments);
 				}
 				InitializationCompleted();
+
+				if (!string.IsNullOrEmpty(arguments))
+				{
+					NameValueCollection queryValues = null;
+					try
+					{
+						queryValues = HttpUtility.ParseQueryString(arguments);
+					}
+					catch (Exception ex)
+					{
+						this.Log().Error(
+							"Launch arguments could not be parsed as a query string", ex);
+					}
+					if (queryValues != null)
+					{
+						if (queryValues[Uno.Helpers.ProtocolActivation.QueryKey] is
+							string protocolUriString)
+						{
+							protocolUriString = Uri.UnescapeDataString(protocolUriString);
+							var uri = new Uri(protocolUriString);
+							OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning));
+							return;
+						}
+					}
+				}
+
 				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, arguments));
 			}
 		}
