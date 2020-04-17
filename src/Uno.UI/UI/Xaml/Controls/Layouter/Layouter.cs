@@ -106,6 +106,11 @@ namespace Windows.UI.Xaml.Controls
 					.AtLeastZero()
 					.AtMost(maxSize);
 
+				if (this.GetType() == typeof(MediaPlayerPresenter))
+				{
+					global::System.Diagnostics.Debug.WriteLine("adsf");
+				}
+
 				var desiredSize = MeasureOverride(frameworkAvailableSize);
 
 				_logDebug?.LogTrace($"{this}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize}");

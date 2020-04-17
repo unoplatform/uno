@@ -167,8 +167,10 @@ namespace Windows.UI.Xaml.Controls
 
 #if __ANDROID__
 				this.AddView(_layoutRoot);
-#elif __IOS__ || __MACOS__
+#elif __IOS__
 				this.Add(_layoutRoot);
+#elif __MACOS__
+				this.AddSubview(_layoutRoot);
 #endif
 				}
 			}

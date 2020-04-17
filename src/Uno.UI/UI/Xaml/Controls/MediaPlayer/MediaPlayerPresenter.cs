@@ -130,7 +130,10 @@ namespace Windows.UI.Xaml.Controls
 			if (double.IsNaN(Width) && double.IsNaN(Height))
 			{
 				availableSize.Width = availableSize.Width;
-				availableSize.Height = availableSize.Width / _currentRatio;
+				if (_currentRatio != 0)
+				{
+					availableSize.Height = availableSize.Width / _currentRatio;
+				}
 			}
 			else if (double.IsNaN(Width))
 			{

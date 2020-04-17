@@ -11,6 +11,7 @@ using Uno.UI.Controls;
 using System.Drawing;
 using Windows.UI.ViewManagement;
 using Uno.UI;
+using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml
 {
@@ -21,6 +22,9 @@ namespace Windows.UI.Xaml
 		private static Window _current;
 		private RootViewController _mainController;
 		private UIElement _content;
+		private Grid _main;
+		private Border _rootBorder;
+		private Border _fullWindow;
 		private object _windowResizeNotificationObject;
 
 		/// <summary>
@@ -71,13 +75,32 @@ namespace Windows.UI.Xaml
 
 		private void InternalSetContent(UIElement value)
 		{
-			_content?.RemoveFromSuperview();
+			if (_main == null)
+			{
+				_rootBorder = new Border();
+				_fullWindow = new Border()
+				{
+					VerticalAlignment = VerticalAlignment.Stretch,
+					HorizontalAlignment = HorizontalAlignment.Stretch,
+					Visibility = Visibility.Collapsed
+				};
 
-			_content = value;
-			_mainController.View = value;
-			_window.BackgroundColor = Colors.White;
-			value.Frame = _window.Frame;
-			value.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
+				_main = new Grid()
+				{
+					Children =
+					{
+						_rootBorder,
+						_fullWindow
+					}
+				};
+
+				_mainController.View = _main;
+				_main.Frame = _window.Frame;
+				_main.AutoresizingMask = NSViewResizingMask.WidthSizable | NSViewResizingMask.HeightSizable;
+			}
+
+			_rootBorder.Child?.RemoveFromSuperview();
+			_rootBorder.Child = _content = value;
 		}
 
 		private UIElement InternalGetContent() => _content;
@@ -111,6 +134,22 @@ namespace Windows.UI.Xaml
 						new Windows.Foundation.Size((float)size.Width, (float)size.Height)
 					)
 				);
+			}
+		}
+
+		internal void DisplayFullscreen(UIElement element)
+		{
+			if (element == null)
+			{
+				_fullWindow.Child = null;
+				_rootBorder.Visibility = Visibility.Visible;
+				_fullWindow.Visibility = Visibility.Collapsed;
+			}
+			else
+			{
+				_fullWindow.Visibility = Visibility.Visible;
+				_rootBorder.Visibility = Visibility.Collapsed;
+				_fullWindow.Child = element;
 			}
 		}
 
