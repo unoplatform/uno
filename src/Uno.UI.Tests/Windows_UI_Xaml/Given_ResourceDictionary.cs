@@ -602,5 +602,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual("The Cold", dict["NeverBotheredMeAnyway"]);
 		}
+
+		[TestMethod]
+		public void When_By_Type_With_Template()
+		{
+			var dict = new Subclassed_Dictionary();
+
+			var template = dict["UproariousTemplate"] as DataTemplate;
+			Assert.IsNotNull(template);
+			var content = template.LoadContent();
+			Assert.IsInstanceOfType(content, typeof(CheckBox));
+		}
 	}
 }

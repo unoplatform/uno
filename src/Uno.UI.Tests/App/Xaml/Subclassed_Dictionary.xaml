@@ -10,4 +10,7 @@
 	<x:String x:Key="ProblemFreePhilosophy">Hakuna Matata</x:String>
 	<SolidColorBrush x:Key="PerilousColorBrush"
 					 Color="WhiteSmoke" />
+	<DataTemplate x:Key="UproariousTemplate">
+		<CheckBox x:Name="TemplateRoot" />
+	</DataTemplate>
 </ResourceDictionary>
