@@ -12,15 +12,14 @@ namespace Windows.UI.Xaml.Controls
 	{
 		private FontIcon _icon;
 
-		public SymbolIcon()
+		public SymbolIcon() : this(Symbol.Emoji)
 		{
-			_icon = new FontIcon();
-
-			AddIconElementView(_icon);
 		}
 
-		public SymbolIcon(Symbol symbol) : this()
+		public SymbolIcon(Symbol symbol)
 		{
+			_icon = new FontIcon();
+			AddIconElementView(_icon);
 			_icon.Glyph = new string((char)symbol, 1);
 		}
 
@@ -31,13 +30,13 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		public static DependencyProperty SymbolProperty { get; } =
-			DependencyProperty.Register("Symbol", typeof(Symbol), typeof(SymbolIcon), new PropertyMetadata(Symbol.Home, OnSymbolChanged));
+			DependencyProperty.Register("Symbol", typeof(Symbol), typeof(SymbolIcon), new PropertyMetadata(Symbol.Emoji, OnSymbolChanged));
 
 		private static void OnSymbolChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			var symbol = dependencyObject as SymbolIcon;
 
-			if(symbol != null)
+			if (symbol != null)
 			{
 				symbol._icon.Glyph = new string((char)symbol.Symbol, 1);
 			}
