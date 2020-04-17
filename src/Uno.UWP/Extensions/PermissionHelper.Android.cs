@@ -1,4 +1,4 @@
-﻿#if __ANDROID__
+#if __ANDROID__
 
 using System;
 using System.Collections.Generic;
@@ -12,6 +12,74 @@ namespace Windows.Extensions
 	{
 		private static TaskCompletionSource<bool> _permissionCompletionSource;
 
+		private static IList<string> GetManifestPermissions()
+		{
+			// get all permission declared in Manifest (can be null)
+			Android.Content.Context context = Android.App.Application.Context;
+			Android.Content.PM.PackageInfo packageInfo =
+				context.PackageManager.GetPackageInfo(context.PackageName, Android.Content.PM.PackageInfoFlags.Permissions);
+			return packageInfo?.RequestedPermissions;
+		}
+
+		private static bool AreAllPermissionDeclared(IList<string> manifestPermissions, string[] requiredPermissions)
+		{
+			// check if all requiredPermissions are declared in Manifest 
+			if (requiredPermissions is null)
+			{
+				return true;	// no required permissions, so - everything is OK
+			}
+
+			foreach (string permission in requiredPermissions)
+			{
+				if (!manifestPermissions.Any(p => p.Equals(permission, StringComparison.OrdinalIgnoreCase)))
+				{
+				return false;
+				}
+			}
+
+			return true;
+
+		}
+
+		private static List<string> PermissionWeWant(IList<string> manifestPermissions, string[] requiredPermissions, string[] optionalPermissions)
+		{
+			// prepare list of all permissions
+			var allPermissions = new List<string>();
+			if (requiredPermissions != null)
+				allPermissions.AddRange(requiredPermissions.ToList());
+
+			// add all optional permission, found in Manifest
+			if (optionalPermissions != null)
+			{
+				foreach (string permission in optionalPermissions)
+				{
+					if (manifestPermissions.Any(p => p.Equals(permission, StringComparison.OrdinalIgnoreCase)))
+					{
+						allPermissions.Add(permission);
+					}
+				}
+			}
+
+			return allPermissions;
+		}
+
+		private static List<string> PermissionToAsk(IList<string> allPermissions)
+		{// return list of permission, with all permission from input list that are not already granted
+			Android.Content.Context context = Android.App.Application.Context;
+			var askForPermission = new List<string>();
+
+			// check if permission is granted
+			foreach (var permission in allPermissions)
+			{
+				if (Android.Support.V4.Content.ContextCompat.CheckSelfPermission(context, permission)
+						!= Android.Content.PM.Permission.Granted)
+				{
+					askForPermission.Add(permission);
+				}
+			}
+			return askForPermission;
+		}
+
 		/// <summary>
 		/// Return null on error, or array of permission to be asked for (not granted at this time). Both parameters can be null
 		/// </summary>
@@ -24,59 +92,24 @@ namespace Windows.Extensions
 			// https://developer.android.com/reference/android/content/pm/PackageInstaller.SessionParams.html#setWhitelistedRestrictedPermissions(java.util.Set%3Cjava.lang.String%3E)
 
 			// do we have declared permissions in Manifest?
-			Android.Content.Context context = Android.App.Application.Context;
-			Android.Content.PM.PackageInfo packageInfo =
-				context.PackageManager.GetPackageInfo(context.PackageName, Android.Content.PM.PackageInfoFlags.Permissions);
-			var manifestPermissions = packageInfo?.RequestedPermissions;
+			var manifestPermissions = GetManifestPermissions();
 			if (manifestPermissions is null)
+			{
 				return null;
+			}
+
 
 			// test required permissions
-			if (requiredPermissions != null)
+			if(! AreAllPermissionDeclared(manifestPermissions, requiredPermissions))
 			{
-				foreach (string permission in requiredPermissions)
-				{
-					bool foundInManifest = false;
-					foreach (string oPerm in manifestPermissions)
-					{
-						if (oPerm.Equals(permission, StringComparison.OrdinalIgnoreCase))
-							foundInManifest = true;
-
-					}
-					if (!foundInManifest) return null;
-				}
+				return null;
 			}
 
-			// prepare list of all permissions
-			var allPermissions = new List<string>();
-			if (requiredPermissions != null)
-				allPermissions.AddRange(requiredPermissions.ToList());
-
-			// add all optional permission, found in Manifest
-			if (optionalPermissions != null)
-			{
-				foreach (string permission in optionalPermissions)
-				{
-					foreach (string oPerm in manifestPermissions)
-					{
-						if (oPerm.Equals(permission, StringComparison.OrdinalIgnoreCase))
-							allPermissions.Add(permission);
-					}
-				}
-			}
+			// prepare list of all permissions (all required, and all optional defined in Manifest
+			var allPermissions = PermissionWeWant(manifestPermissions, requiredPermissions, optionalPermissions);
 
 			// prepare list of permission to ask for
-			var askForPermission = new List<string>();
-
-			// check if permission is granted
-			foreach (var permission in allPermissions)
-			{
-				if (Android.Support.V4.Content.ContextCompat.CheckSelfPermission(context, permission)
-						!= Android.Content.PM.Permission.Granted)
-				{
-					askForPermission.Add(permission);
-				}
-			}
+			var askForPermission = PermissionToAsk(allPermissions);
 
 			return askForPermission.ToArray();
 
@@ -121,7 +154,8 @@ namespace Windows.Extensions
 					_permissionCompletionSource.SetResult(false); // signal: "permission denied", although there is some error
 					return _permissionCompletionSource.Task;
 				}
-				throw new AccessViolationException("MissingPermissions returned ERROR - check Manifest file");
+				
+				throw new InvalidOperationException("MissingPermissions returned ERROR - check Manifest file");
 			}
 
 
@@ -164,7 +198,7 @@ namespace Windows.Extensions
 				var permissionsArray = caller?.GetStringArray("permissions");
 				if (permissionsArray is null)
 				{
-					throw new Exception("AskForPermission:OnCreate - empty permission array in Intent.Extras?");
+					throw new InvalidOperationException("AskForPermission:OnCreate - empty permission array in Intent.Extras?");
 				}
 
 				RequestPermissions(permissionsArray, 1);
@@ -175,15 +209,7 @@ namespace Windows.Extensions
 			{
 				base.OnRequestPermissionsResult(requestCode, permissions, grantResults);
 
-				bool allGranted = true;
-
-				for (int i = 0; i < grantResults.Count(); i++)
-				{
-					if (grantResults[i] != Android.Content.PM.Permission.Granted)
-					{
-						allGranted = false;
-					}
-				}
+				bool allGranted = grantResults.All(r => r == Android.Content.PM.Permission.Granted);
 
 				AfterDialog?.Invoke(null, allGranted);
 				Finish();   // means activity.finish
