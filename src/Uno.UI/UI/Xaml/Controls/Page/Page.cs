@@ -19,7 +19,6 @@ namespace Windows.UI.Xaml.Controls
 		protected internal virtual void OnNavigatingFrom(NavigatingCancelEventArgs e) { }
 
 		#region TopAppBar
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[Uno.NotImplemented]
 		public AppBar TopAppBar
 		{
@@ -38,11 +37,9 @@ namespace Windows.UI.Xaml.Controls
 					FrameworkPropertyMetadataOptions.ValueInheritsDataContext
 				)
 			);
-#endif
 		#endregion
 
 		#region BottomAppBar
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[Uno.NotImplemented]
 		public AppBar BottomAppBar
 		{
@@ -61,7 +58,6 @@ namespace Windows.UI.Xaml.Controls
 					FrameworkPropertyMetadataOptions.ValueInheritsDataContext
 				)
 			);
-#endif
 		#endregion
 
 		#region Frame
