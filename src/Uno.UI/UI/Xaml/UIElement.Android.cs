@@ -53,6 +53,17 @@ namespace Windows.UI.Xaml
 			InitializePointers();
 		}
 
+
+		/// <summary>
+		/// Determines if InvalidateMeasure has been called
+		/// </summary>
+		internal bool IsMeasureDirty => IsLayoutRequested;
+
+		/// <summary>
+		/// Determines if InvalidateArrange has been called
+		/// </summary>
+		internal bool IsArrangeDirty => IsLayoutRequested;
+
 		partial void ApplyNativeClip(Rect rect)
 		{
 			// Non-UIElements typically expect to be clipped, and display incorrectly otherwise

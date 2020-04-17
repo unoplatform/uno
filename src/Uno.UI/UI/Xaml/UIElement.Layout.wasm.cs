@@ -16,6 +16,9 @@ namespace Windows.UI.Xaml
 
 		internal void SetDesiredSize(Size desiredSize) => _desiredSize = desiredSize;
 
+		internal bool IsMeasureDirty => !_isMeasureValid;
+		internal bool IsArrangeDirty => !_isArrangeValid;
+
 		/// <summary>
 		/// Backing property for <see cref="Windows.UI.Xaml.Controls.Primitives.LayoutInformation.GetAvailableSize(UIElement)"/>
 		/// </summary>

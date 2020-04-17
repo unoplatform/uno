@@ -25,6 +25,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			set { SetValue(IsDraggingProperty, value); }
 		}
 
+		internal bool IgnoreTouchInput { get; set; }
+
 		// Using a DependencyProperty as the backing store for IsDragging.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty IsDraggingProperty =
 			DependencyProperty.Register("IsDragging", typeof(bool), typeof(Thumb), new PropertyMetadata(false, (s, e) => ((Thumb)s)?.OnIsDraggingChanged(e)));

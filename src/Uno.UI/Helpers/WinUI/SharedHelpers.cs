@@ -83,6 +83,18 @@ namespace Uno.UI.Helpers.WinUI
 			return s_isInDesignModeV2.Value;
 		}
 
+		public static bool ShouldUseDynamicScrollbars()
+		{
+			if (s_dynamicScrollbarsDirty)
+			{
+				UISettings uiSettings = new UISettings();
+				s_dynamicScrollbars = uiSettings.AutoHideScrollBars;
+				s_dynamicScrollbarsDirty = false;
+			}
+
+			return s_dynamicScrollbars;
+		}
+
 		// logical helpers
 		public static bool IsVanadiumOrHigher()
 		{
@@ -336,6 +348,8 @@ namespace Uno.UI.Helpers.WinUI
 
 		static bool isAPIContractVxAvailableInitialized = false;
 		static bool isAPIContractVxAvailable = false;
+		private static bool s_dynamicScrollbarsDirty = true;
+		private static bool s_dynamicScrollbars;
 
 		public static bool IsAPIContractVxAvailable(ushort apiVersion)
 		{
