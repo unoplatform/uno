@@ -995,6 +995,12 @@ namespace Windows.UI.Xaml.Controls
 				&& method.DeclaringType != typeof(Control);
 		}
 
+		/// <summary>
+		/// Duplicates the SetDefaultStyleKey() helper method from WinUI code.
+		/// </summary>
+		private protected void SetDefaultStyleKey<TDerived>(TDerived derivedControl) where TDerived : Control
+			=> DefaultStyleKey = typeof(TDerived);
+
 #if DEBUG
 		public VisualStateGroup[] VisualStateGroups => VisualStateManager.GetVisualStateGroups(GetTemplateRoot()).ToArray();
 
