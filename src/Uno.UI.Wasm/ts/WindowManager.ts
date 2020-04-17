@@ -925,8 +925,9 @@ namespace Uno.UI {
 
 				switch (evt.deltaMode) {
 					case WheelEvent.DOM_DELTA_LINE: // Actually this is supported only by FF
-						wheelDeltaX *= this.WheelLineSize;
-						wheelDeltaY *= this.WheelLineSize;
+						const lineSize = WindowManager.wheelLineSize;
+						wheelDeltaX *= lineSize;
+						wheelDeltaY *= lineSize;
 						break;
 					case WheelEvent.DOM_DELTA_PAGE:
 						wheelDeltaX *= document.documentElement.clientWidth;
@@ -944,8 +945,8 @@ namespace Uno.UI {
 			return `${pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.buttons};${evt.button};${pointerType};${srcHandle};${evt.timeStamp};${pressure};${wheelDeltaX};${wheelDeltaY}`;
 		}
 
-		private _wheelLineSize : number = undefined;
-		private get WheelLineSize(): number {
+		private static _wheelLineSize : number = undefined;
+		private static get wheelLineSize(): number {
 			// In web browsers, scroll might happen by pixels, line or page.
 			// But WinUI works only with pixels, so we have to convert it before send the value to the managed code.
 			// The issue is that there is no easy way get the "size of a line", instead we have to determine the CSS "line-height"

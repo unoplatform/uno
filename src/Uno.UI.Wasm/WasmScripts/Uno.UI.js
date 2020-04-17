@@ -298,7 +298,6 @@ var Uno;
                 this.loadingElementId = loadingElementId;
                 this.allActiveElementsById = {};
                 this.uiElementRegistrations = {};
-                this._wheelLineSize = undefined;
                 this.initDom();
             }
             /**
@@ -1006,8 +1005,9 @@ var Uno;
                     wheelDeltaY = evt.deltaY;
                     switch (evt.deltaMode) {
                         case WheelEvent.DOM_DELTA_LINE: // Actually this is supported only by FF
-                            wheelDeltaX *= this.WheelLineSize;
-                            wheelDeltaY *= this.WheelLineSize;
+                            const lineSize = WindowManager.wheelLineSize;
+                            wheelDeltaX *= lineSize;
+                            wheelDeltaY *= lineSize;
                             break;
                         case WheelEvent.DOM_DELTA_PAGE:
                             wheelDeltaX *= document.documentElement.clientWidth;
@@ -1024,7 +1024,7 @@ var Uno;
                 }
                 return `${pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.buttons};${evt.button};${pointerType};${srcHandle};${evt.timeStamp};${pressure};${wheelDeltaX};${wheelDeltaY}`;
             }
-            get WheelLineSize() {
+            static get wheelLineSize() {
                 // In web browsers, scroll might happen by pixels, line or page.
                 // But WinUI works only with pixels, so we have to convert it before send the value to the managed code.
                 // The issue is that there is no easy way get the "size of a line", instead we have to determine the CSS "line-height"
@@ -1711,6 +1711,7 @@ var Uno;
             WindowManager.initMethods();
             UI.HtmlDom.initPolyfills();
         })();
+        WindowManager._wheelLineSize = undefined;
         WindowManager.MAX_WIDTH = `${Number.MAX_SAFE_INTEGER}vw`;
         WindowManager.MAX_HEIGHT = `${Number.MAX_SAFE_INTEGER}vh`;
         UI.WindowManager = WindowManager;
