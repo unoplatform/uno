@@ -17,6 +17,9 @@ namespace Windows.UI.Xaml.Controls
 		private readonly SerialDisposable _revealButtonSubscription = new SerialDisposable();
 
 		public PasswordBox()
+#if __MACOS__
+			:  base(true)
+#endif
 		{
 
 		}

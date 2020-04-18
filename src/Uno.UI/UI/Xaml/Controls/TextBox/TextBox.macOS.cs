@@ -1,16 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Uno.UI;
-using Windows.UI.Xaml.Data;
-using AppKit;
+﻿using AppKit;
 using CoreGraphics;
 using Uno.UI.Extensions;
 using Uno.Extensions;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Input;
-using Uno.Client;
-using Foundation;
 using Uno.Logging;
 
 namespace Windows.UI.Xaml.Controls
@@ -63,12 +56,19 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_contentElement != null)
 			{
-				if (_textBoxView is TextBoxView)
+				if (_textBoxView is TextBoxView || _textBoxView is SecureTextBoxView)
 				{
 					return;
 				}
 
-				_textBoxView = new TextBoxView(this) { UsesSingleLineMode = AcceptsReturn || TextWrapping != TextWrapping.NoWrap };
+				if (_isPassword)
+				{
+					_textBoxView = new SecureTextBoxView(this) { UsesSingleLineMode = true };
+				}
+				else
+				{
+					_textBoxView = new TextBoxView(this) { UsesSingleLineMode = AcceptsReturn || TextWrapping != TextWrapping.NoWrap };
+				}
 
 				_contentElement.Content = _textBoxView;
 				_textBoxView.SetTextNative(Text);
@@ -134,9 +134,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 			set
 			{
-				if(_textBoxView is TextBoxView sltbv)
+				if (_textBoxView is TextBoxView sltbv)
 				{
 					sltbv.SelectWithFrame(sltbv.Frame, sltbv.CurrentEditor, null, value, _textBoxView.SelectedRange.Length);
+				}
+				else if (_textBoxView is SecureTextBoxView securedtv)
+				{
+					securedtv.SelectWithFrame(securedtv.Frame, securedtv.CurrentEditor, null, value, _textBoxView.SelectedRange.Length);
 				}
 			}
 		}
@@ -157,6 +161,10 @@ namespace Windows.UI.Xaml.Controls
 				if (_textBoxView is TextBoxView sltbv)
 				{
 					sltbv.SelectWithFrame(sltbv.Frame, sltbv.CurrentEditor, null, _textBoxView.SelectedRange.Location, value);
+				}
+				else if (_textBoxView is SecureTextBoxView securedtv)
+				{
+					securedtv.SelectWithFrame(securedtv.Frame, securedtv.CurrentEditor, null, _textBoxView.SelectedRange.Location, value);
 				}
 			}
 		}
@@ -179,5 +187,10 @@ namespace Windows.UI.Xaml.Controls
 				_textBoxView.Foreground = newValue;
 			}
 		}
+
+        protected void SetSecureTextEntry(bool isSecure)
+        {
+        }
+
 	}
 }
