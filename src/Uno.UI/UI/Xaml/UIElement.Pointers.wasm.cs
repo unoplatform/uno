@@ -138,7 +138,7 @@ namespace Windows.UI.Xaml
 				}
 				if (args.wheelDeltaY != 0)
 				{
-					// Note: Vertical scrolling is inverted between web browser and WinUI!
+					// Note: Web browser vertical scrolling is the opposite compared to WinUI!
 					handled |= target.OnNativePointerWheel(ToPointerArgs(target, args, wheel: (false, -args.wheelDeltaY), isInContact: null /* maybe */));
 				}
 				return handled;
