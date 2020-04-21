@@ -1,9 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using Windows.UI.Xaml.Markup;
 
 namespace Windows.UI.Xaml.Media
 {
+	[ContentProperty(Name = "GradientStops")]
 	public abstract partial class GradientBrush : Brush
 	{
 		protected GradientBrush()
@@ -11,16 +10,42 @@ namespace Windows.UI.Xaml.Media
 			GradientStops = new GradientStopCollection();
 		}
 
-		public GradientStopCollection GradientStops
+		public static readonly DependencyProperty FallbackColorProperty = DependencyProperty.Register(
+			"FallbackColor", typeof(Color), typeof(GradientBrush), new PropertyMetadata(default(Color)));
+		public Color FallbackColor
 		{
-			get => (GradientStopCollection)this.GetValue(GradientStopsProperty);
-			set => SetValue(GradientStopsProperty, value);
+			get => (Color)GetValue(FallbackColorProperty);
+			set => SetValue(FallbackColorProperty, value);
 		}
+
 		public static readonly DependencyProperty GradientStopsProperty = DependencyProperty.Register(
 			"GradientStops",
 			typeof(GradientStopCollection),
 			typeof(LinearGradientBrush),
 			new PropertyMetadata(null)
 		);
+		public GradientStopCollection GradientStops
+		{
+			get => (GradientStopCollection)GetValue(GradientStopsProperty);
+			set => SetValue(GradientStopsProperty, value);
+		}
+
+		public static DependencyProperty MappingModeProperty { get; } =
+			DependencyProperty.Register(
+				"MappingMode",
+				typeof(BrushMappingMode),
+				typeof(GradientBrush),
+				new FrameworkPropertyMetadata(BrushMappingMode.RelativeToBoundingBox));
+		public BrushMappingMode MappingMode
+		{
+			get
+			{
+				return (BrushMappingMode)GetValue(MappingModeProperty);
+			}
+			set
+			{
+				SetValue(MappingModeProperty, value);
+			}
+		}
 	}
 }

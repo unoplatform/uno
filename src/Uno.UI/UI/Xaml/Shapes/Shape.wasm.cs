@@ -86,13 +86,13 @@ namespace Windows.UI.Xaml.Shapes
 				case ImageBrush ib:
 					_fillBrushSubscription.Disposable = null;
 					break;
-				case LinearGradientBrush lgb:
-					var linearGradient = lgb.ToSvgElement();
-					var gradientId = linearGradient.HtmlId;
-					GetDefs().Add(linearGradient);
+				case GradientBrush gb:
+					var gradient = gb.ToSvgElement();
+					var gradientId = gradient.HtmlId;
+					GetDefs().Add(gradient);
 					svgElement.SetStyle("fill", $"url(#{gradientId})");
 					_fillBrushSubscription.Disposable = new DisposableAction(
-						() => GetDefs().Remove(linearGradient)
+						() => GetDefs().Remove(gradient)
 					);
 					break;
 				case null:
@@ -118,13 +118,13 @@ namespace Windows.UI.Xaml.Shapes
 					svgElement.SetStyle("stroke", scb.Color.ToHexString());
 					_strokeBrushSubscription.Disposable = null;
 					break;
-				case LinearGradientBrush lgb:
-					var linearGradient = lgb.ToSvgElement();
-					var gradientId = linearGradient.HtmlId;
-					GetDefs().Add(linearGradient);
+				case GradientBrush gb:
+					var gradient = gb.ToSvgElement();
+					var gradientId = gradient.HtmlId;
+					GetDefs().Add(gradient);
 					svgElement.SetStyle("stroke", $"url(#{gradientId})");
 					_strokeBrushSubscription.Disposable = new DisposableAction(
-						() => GetDefs().Remove(linearGradient)
+						() => GetDefs().Remove(gradient)
 					);
 					break;
 				default:

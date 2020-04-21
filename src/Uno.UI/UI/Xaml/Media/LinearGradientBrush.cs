@@ -3,9 +3,19 @@ using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Media
 {
-	[ContentProperty(Name = "GradientStops")]
 	public partial class LinearGradientBrush : GradientBrush
 	{
+		public LinearGradientBrush()
+		{
+		}
+
+		public LinearGradientBrush(
+			GradientStopCollection gradientStopCollection,
+			double angle)
+		{
+			GradientStops = gradientStopCollection;
+		}
+
 		public Point StartPoint
 		{
 			get => (Point)GetValue(StartPointProperty);

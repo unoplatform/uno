@@ -21,20 +21,6 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.BrushMappingMode MappingMode
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.BrushMappingMode)this.GetValue(MappingModeProperty);
-			}
-			set
-			{
-				this.SetValue(MappingModeProperty, value);
-			}
-		}
-		#endif
 		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.GradientStopCollection GradientStops
@@ -78,14 +64,6 @@ namespace Windows.UI.Xaml.Media
 			"GradientStops", typeof(global::Windows.UI.Xaml.Media.GradientStopCollection), 
 			typeof(global::Windows.UI.Xaml.Media.GradientBrush), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.GradientStopCollection)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty MappingModeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"MappingMode", typeof(global::Windows.UI.Xaml.Media.BrushMappingMode), 
-			typeof(global::Windows.UI.Xaml.Media.GradientBrush), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.BrushMappingMode)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
