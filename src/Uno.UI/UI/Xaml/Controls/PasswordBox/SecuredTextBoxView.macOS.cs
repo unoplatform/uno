@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class SecureTextBoxView : NSSecureTextField, ITextBoxView, DependencyObject, IFontScalable
 	{
-		//private TextBoxViewDelegate _delegate;
+		private SecureTextBoxViewDelegate _delegate;
 		private readonly WeakReference<TextBox> _textBox;
 
 		public SecureTextBoxView(TextBox textBox)
@@ -64,10 +64,10 @@ namespace Windows.UI.Xaml.Controls
 
 		private void Initialize()
 		{
-			//Delegate = _delegate = new TextBoxViewDelegate(_textBox, new WeakReference<SecureTextBoxView>(this))
-			//{
-			//	IsKeyboardHiddenOnEnter = true
-			//};
+			Delegate = _delegate = new SecureTextBoxViewDelegate(_textBox, new WeakReference<SecureTextBoxView>(this))
+			{
+				IsKeyboardHiddenOnEnter = true
+			};
 
 			DrawsBackground = false;
 			Bezeled = false;
@@ -125,7 +125,6 @@ namespace Windows.UI.Xaml.Controls
 		public void OnForegroundChanged(Brush oldValue, Brush newValue)
 		{
 			var textBox = _textBox.GetTarget();
-
 			if (textBox != null)
 			{
 				var scb = newValue as SolidColorBrush;
