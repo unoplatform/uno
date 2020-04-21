@@ -13,7 +13,6 @@ using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 {
-	[Ignore("DoubleTapCoordinates is not implemented yet https://github.com/unoplatform/Uno.UITest/issues/29")] 
 	public class DoubleTapped_Tests : SampleControlUITestBase
 	{
 		private const string _xamlTestPage = "UITests.Shared.Windows_UI_Input.GestureRecognizerTests.DoubleTappedTests";
@@ -37,10 +36,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			((int)result.Y).Should().Be(tapY);
 		}
 
-
 		[Test]
 		[AutoRetry]
-		[ActivePlatforms(Platform.Browser, Platform.iOS)] // Disabled on Android: The test engine is not able to find "Transformed_Target"
 		public void When_Transformed()
 		{
 			Run(_xamlTestPage);
@@ -48,8 +45,8 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			const string parentName = "Transformed_Parent";
 			const string targetName = "Transformed_Target";
 
-			var parent = _app.WaitForElement(parentName).Single().Rect;
-			var target = _app.WaitForElement(targetName).Single().Rect;
+			var parent = _app.Query(q => q.All().Marked(parentName)).Single().Rect;
+			var target = _app.Query(q => q.All().Marked(targetName)).Single().Rect;
 
 			// Double tap the target
 			_app.DoubleTapCoordinates(parent.Right - target.Width, parent.Bottom - 3);
