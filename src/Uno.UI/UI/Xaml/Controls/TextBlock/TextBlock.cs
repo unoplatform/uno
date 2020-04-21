@@ -367,10 +367,12 @@ namespace Windows.UI.Xaml.Controls
 			get { return (Brush)this.GetValue(ForegroundProperty); }
 			set
 			{
+#if !__WASM__
 				if (!(Foreground is SolidColorBrush))
 				{
 					throw new NotSupportedException();
 				}
+#endif
 
 				this.SetValue(ForegroundProperty, value);
 			}

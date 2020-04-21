@@ -99,6 +99,10 @@ embed.uno-frameworkelement.uno-unarranged {
   -moz-user-select: none; /* Firefox */
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
+
+  -ms-background-clip: text !important;
+  -webkit-background-clip: text !important;
+  background-clip: text !important;
 }
 
 .uno-buttonbase {

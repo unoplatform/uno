@@ -39,6 +39,5 @@ namespace Windows.UI.Xaml.Media
 			typeof(LinearGradientBrush),
 			new PropertyMetadata(new Point(1,1))
 		);
-
 	}
 }
