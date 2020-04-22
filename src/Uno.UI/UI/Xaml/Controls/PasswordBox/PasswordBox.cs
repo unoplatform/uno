@@ -48,10 +48,6 @@ namespace Windows.UI.Xaml.Controls
 					_revealButton.RemoveHandler(PointerCanceledEvent, endReveal);
 					_revealButton.RemoveHandler(PointerCaptureLostEvent, endReveal);
 				});
-
-#if __MACOS__
-				IsPasswordRevealButtonEnabled = false;
-#endif
 			}
 
 			SetPasswordScope(true);
