@@ -44,6 +44,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private ContentPresenter _header;
 		private bool _isPassword;
+		protected bool _isButtonEnabled = true;
 
 		public event TextChangedEventHandler TextChanged;
 		public event TypedEventHandler<TextBox, TextBoxTextChangingEventArgs> TextChanging;
@@ -656,7 +657,8 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().LogDebug(nameof(UpdateButtonStates));
 			}
 
-			if (Text.HasValue()
+			if (_isButtonEnabled
+				&& Text.HasValue()
 				&& FocusState != FocusState.Unfocused
 				&& !IsReadOnly
 				&& !AcceptsReturn

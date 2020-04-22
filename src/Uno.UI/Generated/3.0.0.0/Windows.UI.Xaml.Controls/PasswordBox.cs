@@ -23,7 +23,7 @@ namespace Windows.UI.Xaml.Controls
 		#endif
 		// Skipping already declared property Password
 		// Skipping already declared property MaxLength
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public  bool IsPasswordRevealButtonEnabled
 		{
@@ -135,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsPasswordRevealButtonEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
