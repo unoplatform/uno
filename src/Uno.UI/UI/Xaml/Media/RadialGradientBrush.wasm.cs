@@ -12,11 +12,8 @@ namespace Windows.UI.Xaml.Media
 		internal override string ToCssString(Size size)
 		{
 			var center = Center;
-
 			var radiusX = RadiusX;
 			var radiusY = RadiusY;
-
-			var ratio = size.AspectRatio();
 
 			if (MappingMode != BrushMappingMode.RelativeToBoundingBox)
 			{

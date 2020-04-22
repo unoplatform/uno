@@ -207,13 +207,20 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
+			var foreground = Foreground switch
+			{
+				SolidColorBrush scb => scb.ColorWithOpacity,
+				GradientBrush gb => gb.FallbackColor,
+				_ => Colors.Transparent
+			};
+
 			_paint = TextPaintPool.GetPaint(
 				FontWeight,
 				FontStyle,
 				FontFamily,
 				FontSize,
 				CharacterSpacing,
-				(Foreground as SolidColorBrush)?.Color ?? Colors.Transparent,
+				foreground,
 				BaseLineAlignment.Baseline,
 				TextDecorations
 			);

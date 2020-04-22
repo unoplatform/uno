@@ -115,12 +115,10 @@ namespace Windows.UI.Xaml.Shapes
 
 				var outerPath = GetRoundedPath(cornerRadius, area);
 
-				var lgbBackground = background as LinearGradientBrush;
-				var scbBackground = background as SolidColorBrush;
 				var imgBackground = background as ImageBrush;
 				var insertionIndex = 0;
 
-				if (lgbBackground != null)
+				if (background is LinearGradientBrush lgbBackground)
 				{
 					var fillMask = new CAShapeLayer()
 					{
@@ -134,12 +132,12 @@ namespace Windows.UI.Xaml.Shapes
 
 					CreateLinearGradientBrushLayers(area, adjustedArea, parent, sublayers, ref insertionIndex, lgbBackground, fillMask);
 				}
-				else if (scbBackground != null)
+				else if (background is SolidColorBrush scbBackground)
 				{
 					Brush.AssignAndObserveBrush(scbBackground, color => layer.FillColor = color)
 						.DisposeWith(disposables);
 				}
-				else if (imgBackground != null)
+				else if (background is ImageBrush imgBackground)
 				{
 					var uiImage = imgBackground.ImageSource?.ImageData;
 					if (uiImage != null && uiImage.Size != CGSize.Empty)
@@ -184,11 +182,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 			else
 			{
-				var lgbBackground = background as LinearGradientBrush;
-				var scbBackground = background as SolidColorBrush;
-				var imgBackground = background as ImageBrush;
-
-				if (lgbBackground != null)
+				if (background is LinearGradientBrush lgbBackground)
 				{
 					var fullArea = new CGRect(
 						area.X + borderThickness.Left,
@@ -201,7 +195,7 @@ namespace Windows.UI.Xaml.Shapes
 
 					CreateLinearGradientBrushLayers(fullArea, insideArea, parent, sublayers, ref insertionIndex, lgbBackground, fillMask: null);
 				}
-				else if (scbBackground != null)
+				else if (background is SolidColorBrush scbBackground)
 				{
 					Brush.AssignAndObserveBrush(scbBackground, c => parent.BackgroundColor = c)
 						.DisposeWith(disposables);
@@ -211,7 +205,7 @@ namespace Windows.UI.Xaml.Shapes
 					Disposable.Create(() => parent.BackgroundColor = null)
 						.DisposeWith(disposables);
 				}
-				else if (imgBackground != null)
+				else if (background is ImageBrush imgBackground)
 				{
 					var uiImage = imgBackground.ImageSource?.ImageData;
 					if (uiImage != null && uiImage.Size != CGSize.Empty)

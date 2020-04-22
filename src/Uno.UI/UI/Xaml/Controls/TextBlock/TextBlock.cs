@@ -364,17 +364,21 @@ namespace Windows.UI.Xaml.Controls
 #endif
 		Brush Foreground
 		{
-			get { return (Brush)this.GetValue(ForegroundProperty); }
+			get => (Brush)GetValue(ForegroundProperty);
 			set
 			{
 #if !__WASM__
-				if (!(Foreground is SolidColorBrush))
+				if (Foreground is SolidColorBrush || Foreground is GradientBrush)
 				{
-					throw new NotSupportedException();
+					SetValue(ForegroundProperty, value);
 				}
-#endif
-
+				else
+				{
+					throw new NotSupportedException("Only SolidColorBrush or GradientBrush's FallbackColor are supported.");
+				}
+#else
 				this.SetValue(ForegroundProperty, value);
+#endif
 			}
 		}
 

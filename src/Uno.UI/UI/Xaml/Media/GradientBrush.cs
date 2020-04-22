@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Media
 		public static readonly DependencyProperty GradientStopsProperty = DependencyProperty.Register(
 			"GradientStops",
 			typeof(GradientStopCollection),
-			typeof(LinearGradientBrush),
+			typeof(GradientBrush),
 			new PropertyMetadata(null)
 		);
 		public GradientStopCollection GradientStops
