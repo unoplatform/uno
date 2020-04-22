@@ -16,13 +16,7 @@ namespace Windows.UI.Xaml.Controls
 		private Button _revealButton;
 		private readonly SerialDisposable _revealButtonSubscription = new SerialDisposable();
 
-		public PasswordBox()
-#if __MACOS__
-			:  base(true)
-#endif
-		{
-
-		}
+		public PasswordBox() :  base(true) { }
 
 		protected override void OnLoaded()
 		{
@@ -134,13 +128,11 @@ namespace Windows.UI.Xaml.Controls
 			return null; 
 		}
 
+		#region IsPasswordRevealButtonEnabled DependencyProperty
 		public bool IsPasswordRevealButtonEnabled
 		{
 			get => (bool)this.GetValue(IsPasswordRevealButtonEnabledProperty);
-			set
-			{
-				this.SetValue(IsPasswordRevealButtonEnabledProperty, value);
-			}
+			set => this.SetValue(IsPasswordRevealButtonEnabledProperty, value);			
 		}
 
 		public static readonly DependencyProperty IsPasswordRevealButtonEnabledProperty =
@@ -157,19 +149,20 @@ namespace Windows.UI.Xaml.Controls
 		private void OnIsPasswordRevealButtonEnabledChanged(DependencyPropertyChangedEventArgs e)
 		{
 			_isButtonEnabled = IsPasswordRevealButtonEnabled;
-			UpdateButtonStates();
-		}
 
-		private void UpdateButtonStates()
-		{
-			if(IsPasswordRevealButtonEnabled)
+			if (IsPasswordRevealButtonEnabled)
 			{
-				VisualStateManager.GoToState(this, "ButtonVisible", true);
+				VisualStateManager.GoToState(this, TextBoxConstants.ButtonVisibleStateName, true);
 			}
 			else
 			{
-				VisualStateManager.GoToState(this, "ButtonCollapsed", true);
+				VisualStateManager.GoToState(this, TextBoxConstants.ButtonCollapsedStateName, true);
 			}
+
+			OnIsPasswordRevealButtonEnabledChangedPartial(e);
 		}
+
+		partial void OnIsPasswordRevealButtonEnabledChangedPartial(DependencyPropertyChangedEventArgs e);
+		#endregion
 	}
 }
