@@ -95,6 +95,10 @@
 							 XPath="//PackageReference[@Include='%(_PackageToUpdate.Identity)']/@Version"
 							 Value="$(GitVersion_FullSemVer)" />
 
+		<XmlUpdate XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate\macOS\UnoQuickStart.macOS.csproj"
+							 XPath="//PackageReference[@Include='%(_PackageToUpdate.Identity)']/@Version"
+							 Value="$(GitVersion_FullSemVer)" />
+
 		<XmlUpdate XmlFileName="..\src\SolutionTemplate\UnoLibraryTemplate\CrossTargetedLibrary.csproj"
 							 XPath="//PackageReference[@Include='%(_PackageToUpdate.Identity)']/@Version"
 							 Value="$(GitVersion_FullSemVer)" />
