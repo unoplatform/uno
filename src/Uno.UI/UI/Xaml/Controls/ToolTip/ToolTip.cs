@@ -52,6 +52,7 @@ namespace Windows.UI.Xaml.Controls
 			_popup.Opened += OnPopupOpened;
 			_popup.Closed += (sender, e) => IsOpen = false;
 			SizeChanged += OnToolTipSizeChanged;
+			Loading += (sender, e) => PerformPlacementInternal(); // Update placement on Loading, because this is the point at which Uno sets the default Style
 		}
 
 		public static DependencyProperty PlacementProperty { get; } =
@@ -80,8 +81,26 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void OnOpenChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args) => (sender as ToolTip)?.OnOpenChanged((bool)args.NewValue);
 
+		private Size GetTooltipSize()
+		{
+			if (ActualHeight != 0 && ActualWidth != 0)
+			{
+				return new Size(ActualWidth, ActualHeight);
+			}
+
+			if (DesiredSize == default(Size))
+			{
+				// Ensure we have a correct size before layouting ToolTip, otherwise it may appear under mouse, steal focus and dismiss itself
+				ApplyTemplate();
+				Measure(Window.Current.Bounds.Size);
+			}
+
+			return DesiredSize;
+		}
+
 		private void OnOpenChanged(bool isOpen)
 		{
+			PerformPlacementInternal();
 			_popup.IsOpen = isOpen;
 			if (isOpen)
 			{
@@ -396,8 +415,7 @@ namespace Windows.UI.Xaml.Controls
 			origin.X = windowRect.X;
 			origin.Y = windowRect.Y;
 
-			szFlyout.Width = ActualWidth;
-			szFlyout.Height = ActualHeight;
+			szFlyout = GetTooltipSize();
 
 			var placementRect = GetPlacementRectInWindowCoordinates();
 
