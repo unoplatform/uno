@@ -447,5 +447,76 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.TextBoxTests
 
 			_app.WaitForText("TargetTextBox", "orangutan");
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android)]
+		public void TextBox_Readonly_ShouldNotBringUpKeyboard()
+		{
+			Run("Uno.UI.Samples.UITests.TextBoxControl.TextBox_IsReadOnly");
+
+			var target = _app.Marked("txt");
+			var readonlyToggle = _app.Marked("tglReadonly"); // default: checked
+
+			// initial state
+			_app.WaitForElement(target);
+			var screenshot1 = TakeScreenshot("textbox readonly", ignoreInSnapshotCompare: true);
+
+			// remove readonly and focus textbox
+			readonlyToggle.Tap(); // now: unchecked
+			target.Tap();
+			_app.Wait(seconds: 1); // allow keyboard to fully open
+			var screenshot2 = TakeScreenshot("textbox focused with keyboard", ignoreInSnapshotCompare: true);
+
+			// reapply readonly and try focus textbox
+			readonlyToggle.Tap(); // now: checked
+			target.Tap();
+			_app.Wait(seconds: 1); // allow keyboard to fully open (if ever possible)
+			_app.WaitForElement(target);
+			var screenshot3 = TakeScreenshot("textbox readonly again", ignoreInSnapshotCompare: true);
+
+			// the bottom half should only contains the keyboard and some blank space,
+			// but not the textbox nor the toggle buttons that needs to be excluded.
+			var screen = _app.GetScreenDimensions();
+			var bottomHalfRect = new Rectangle(
+				0, (int)screen.Height / 2,
+				(int)screen.Width, (int)screen.Height / 2
+			);
+
+			ImageAssert.AreNotEqual(screenshot1, screenshot2, bottomHalfRect); // no keyboard != keyboard
+			ImageAssert.AreEqual(screenshot1, screenshot3, bottomHalfRect); // no keyboard == no keyboard
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Android)]
+		public void TextBox_IsReadOnly_AcceptsReturn_Test()
+		{
+			/* test disabled for ios and wasm, due to #
+			 *-ios: when setting AcceptsReturn to false, the TextBox doesn't resize appropriately
+			 * -wasm: AcceptsReturn is not implemented or does nothing */
+
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.TextBoxTests.TextBox_IsReadOnly_AcceptsReturn");
+			// for context, IsReadOnly=True used to break AcceptsReturn=True on android
+
+			var target = _app.Marked("TargetTextBox");
+			var readonlyCheckBox = _app.Marked("IsReadOnlyCheckBox"); // default: checked
+			var multilineCheckBox = _app.Marked("AcceptsReturnCheckBox"); // default: checked
+
+			// initial state
+			_app.WaitForElement(target);
+			var multilineReadonlyTextRect = target.FirstResult().Rect;
+
+			// remove readonly
+			readonlyCheckBox.Tap(); // now: unchecked
+			var multilineTextRect = target.FirstResult().Rect;
+
+			// remove multiline
+			multilineCheckBox.Tap(); // now: unchecked
+			var normalTextRect = target.FirstResult().Rect;
+
+			multilineTextRect.Height.Should().Be(multilineReadonlyTextRect.Height, because: "toggling IsReadOnly should not affect AcceptsReturn=True(multiline) TextBox.Height");
+			normalTextRect.Height.Should().NotBe(multilineTextRect.Height, because: "toggling AcceptsReturn should not affect TextBox.Height");
+		}
 	}
 }
