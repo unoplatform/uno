@@ -8,6 +8,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
+using _Debug = System.Diagnostics.Debug;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -92,7 +93,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Ensure we have a correct size before layouting ToolTip, otherwise it may appear under mouse, steal focus and dismiss itself
 				ApplyTemplate();
-				Measure(Window.Current.Bounds.Size);
+				Measure(Windows.UI.Xaml.Window.Current.Bounds.Size);
 			}
 
 			return DesiredSize;
@@ -234,8 +235,8 @@ namespace Windows.UI.Xaml.Controls
 			var toolTipRect = default(Rect);
 			var intersectionRect = default(Rect);
 
-			screenWidth = Window.Current.Bounds.Width;
-			screenHeight = Window.Current.Bounds.Height;
+			screenWidth = Windows.UI.Xaml.Window.Current.Bounds.Width;
+			screenHeight = Windows.UI.Xaml.Window.Current.Bounds.Height;
 
 			var spTarget = Target;
 
@@ -374,7 +375,7 @@ namespace Windows.UI.Xaml.Controls
 			var szFlyout = default(Size);
 
 			var spTarget = _owner as FrameworkElement;
-			Debug.Assert(spTarget != null, "pTarget expected to be non-null in ToolTip_Partial::PerformPlacement()");
+			_Debug.Assert(spTarget != null, "pTarget expected to be non-null in ToolTip_Partial::PerformPlacement()");
 			if (spTarget != null)
 			{
 				// UNO TODO
@@ -408,10 +409,10 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var visibleRect = Window.Current.Bounds;
+			var visibleRect = Windows.UI.Xaml.Window.Current.Bounds;
 			var constraint = visibleRect;
 
-			var windowRect = Window.Current.Bounds;
+			var windowRect = Windows.UI.Xaml.Window.Current.Bounds;
 			origin.X = windowRect.X;
 			origin.Y = windowRect.Y;
 
