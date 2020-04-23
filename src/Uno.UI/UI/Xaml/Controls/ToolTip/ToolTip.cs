@@ -145,8 +145,6 @@ namespace Windows.UI.Xaml.Controls
 			// It is possible for this function to be called even though the ToolTip is closed.
 			// This can happen if the ToolTip gets closed before it has had a chance to layout and complete its opening sequence.
 			// If this happens, we don't want to continue opening, as that could result in a "closed" ToolTip that is still visible on the screen.
-			var isOpen = IsOpen;
-
 			var spPopup = _popup;
 
 			if (spPopup != null && IsOpen)
@@ -165,8 +163,6 @@ namespace Windows.UI.Xaml.Controls
 
 				// If PerformPlacementWithPopup/PerformPlacementWithWindowedPopup fail to position the Popup, they will set ToolTip.IsOpen=False.
 				// If this happens, we don't want to continue opening the ToolTip.
-				isOpen = IsOpen;
-
 				if (!m_bIsPopupPositioned && IsOpen)
 				{
 					m_bIsPopupPositioned = true;
@@ -362,9 +358,6 @@ namespace Windows.UI.Xaml.Controls
 		private void PerformNonMousePlacementWithPopup(
 			Rect? pTargetRect, Rect pDimentions, PlacementMode placement)
 		{
-
-			var tooltipActualWidth = pDimentions.Width;
-			var tooltipActualHeight = pDimentions.Height;
 			var horizontalOffset = pDimentions.Left;
 			var verticalOffset = pDimentions.Top;
 
@@ -548,7 +541,6 @@ namespace Windows.UI.Xaml.Controls
 				CalculateTooltipClip(clipCalculationsRect, visibleRect.Width - visibleRect.X, visibleRect.Height - visibleRect.Y);
 			}
 
-			Console.WriteLine($"wjkreujk rcResult={rcResult}");
 			// Position tooltip by setting popup's offsets
 			spPopup.VerticalOffset = rcResult.Top - origin.Y;
 			// ToolTipPositioning::QueryRelativePosition is used to position in LTR and RTL. In LTR, the horizontal
