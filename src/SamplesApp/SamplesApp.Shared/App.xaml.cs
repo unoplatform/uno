@@ -99,7 +99,7 @@ namespace SamplesApp
 				// this.DebugSettings.EnableFrameRateCounter = true;
 			}
 #endif
-			InitializeFrame(e);			
+			InitializeFrame(e.Arguments);
 			Windows.UI.Xaml.Window.Current.Activate();
 
 			DisplayLaunchArguments(e);
@@ -113,7 +113,7 @@ namespace SamplesApp
 		{
 			base.OnActivated(e);
 
-			InitializeFrame(e);		
+			InitializeFrame();
 			Windows.UI.Xaml.Window.Current.Activate();
 
 			if (e.Kind == ActivationKind.Protocol)
@@ -127,7 +127,7 @@ namespace SamplesApp
 			}
 		}
 
-		private Frame InitializeFrame(IActivatedEventArgs e)
+		private void InitializeFrame(string arguments = null)
 		{
 			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
 
@@ -140,11 +140,6 @@ namespace SamplesApp
 
 				rootFrame.NavigationFailed += OnNavigationFailed;
 
-				if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
-				{
-					//TODO: Load state from previously suspended application
-				}
-
 				// Place the frame in the current Window
 				Windows.UI.Xaml.Window.Current.Content = rootFrame;
 				Console.WriteLine($"RootFrame: {rootFrame}");
@@ -155,8 +150,15 @@ namespace SamplesApp
 				// When the navigation stack isn't restored navigate to the first page,
 				// configuring the new page by passing required information as a navigation
 				// parameter
-				rootFrame.Navigate(typeof(MainPage), e.Arguments);
-			}			
+				if (arguments != null)
+				{
+					rootFrame.Navigate(typeof(MainPage), arguments);
+				}
+				else
+				{
+					rootFrame.Navigate(typeof(MainPage));
+				}
+			}
 		}
 
 		private async void DisplayLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)
