@@ -9,6 +9,7 @@ using Uno.Extensions;
 using Uno.UI.DataBinding;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Resources;
 
 namespace Uno.UI
 {
@@ -213,6 +214,26 @@ namespace Uno.UI
 			}
 
 			throw new InvalidOperationException($"Cannot locate resource from '{source.AbsoluteUri}'");
+
+		/// <summary>
+		/// Retrieves a resource for a {CustomResource} markup, with the <see cref="CustomXamlResourceLoader"/> currently set.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static T RetrieveCustomResource<T>(string resourceId, string objectType, string propertyName, string propertyType)
+		{
+			if (CustomXamlResourceLoader.Current == null)
+			{
+				throw new InvalidOperationException("No custom resource loader set.");
+			}
+
+			var resource = CustomXamlResourceLoader.Current.GetResourceInternal(resourceId, objectType, propertyName, propertyType);
+
+			if (resource is T t)
+			{
+				return t;
+			}
+
+			return default(T);
 		}
 	}
 }

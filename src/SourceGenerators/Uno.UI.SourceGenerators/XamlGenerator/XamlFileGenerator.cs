@@ -1333,6 +1333,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					|| o.Type.Name == "Binding"
 					|| o.Type.Name == "Bind"
 					|| o.Type.Name == "TemplateBinding"
+					|| o.Type.Name == "CustomResource"
 				);
 		}
 
@@ -2949,6 +2950,32 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 			}
+
+			var customResourceResourceId = GetCustomResourceResourceId(member);
+			if (customResourceResourceId != null)
+			{
+				var type = FindPropertyType(member.Member);
+				var rightSide = GetCustomResourceRetrieval(customResourceResourceId, type.ToDisplayString());
+				writer.AppendLineInvariant("{0}{1} = {2};", prefix, member.Member.Name, rightSide);
+			}
+		}
+
+		/// <summary>
+		/// Gets string to retrieve a CustomResource
+		/// </summary>
+		/// <param name="customResourceResourceId">The id set by the CustomResource markup</param>
+		/// <param name="typeStr">The type expected to be returned</param>
+		private static string GetCustomResourceRetrieval(object customResourceResourceId, string typeStr)
+		{
+			return "global::Uno.UI.ResourceResolver.RetrieveCustomResource<{0}> (\"{1}\", null, null, null)".InvariantCultureFormat(typeStr, customResourceResourceId);
+		}
+
+		/// <summary>
+		/// Looks for a XamlObjectDefinition from a {CustomResource resourceID} markup and returns resourceId if it exists, null otherwise
+		/// </summary>
+		private static object GetCustomResourceResourceId(XamlMemberDefinition member)
+		{
+			return member.Objects.FirstOrDefault(o => o.Type.Name == "CustomResource")?.Members.FirstOrDefault()?.Value;
 		}
 
 		private string BuildXBindEvalFunction(XamlMemberDefinition member, XamlObjectDefinition bindNode)
@@ -3972,6 +3999,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									&& m.Type.Name != "Bind"
 									&& m.Type.Name != "StaticResource"
 									&& m.Type.Name != "ThemeResource"
+									&& m.Type.Name != "CustomResource"
 									&& m.Type.Name != "TemplateBinding"
 									&& !IsCustomMarkupExtensionType(m.Type)
 								);

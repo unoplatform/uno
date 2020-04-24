@@ -28,5 +28,6 @@
 					x:FieldModifier="public"
 					Background="{StaticResource PerilousColorBrush}" />
 		</Grid>
+		<TextBlock x:Name="customResourceTextBlock" x:FieldModifier="public" Text="{CustomResource TapestryHereOnMySkin}" />
 	</Grid>
 </Page>
