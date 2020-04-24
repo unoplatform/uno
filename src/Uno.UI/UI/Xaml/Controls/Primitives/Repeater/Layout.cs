@@ -76,12 +76,11 @@ namespace Microsoft.UI.Xaml.Controls
 			switch (this)
 			{
 				case VirtualizingLayout virtualizingLayout:
-					virtualizingLayout.MeasureOverride(GetVirtualizingLayoutContext(context), availableSize);
-					break;
+					return virtualizingLayout.MeasureOverride(GetVirtualizingLayoutContext(context), availableSize);
 
 				case NonVirtualizingLayout nonVirtualizingLayout:
-					nonVirtualizingLayout.MeasureOverride(GetNonVirtualizingLayoutContext(context), availableSize);
-					break;
+					return nonVirtualizingLayout.MeasureOverride(GetNonVirtualizingLayoutContext(context), availableSize);
+
 				default:
 					throw new NotImplementedException();
 			}
@@ -92,12 +91,11 @@ namespace Microsoft.UI.Xaml.Controls
 			switch (this)
 			{
 				case VirtualizingLayout virtualizingLayout:
-					virtualizingLayout.ArrangeOverride(GetVirtualizingLayoutContext(context), finalSize);
-					break;
+					return virtualizingLayout.ArrangeOverride(GetVirtualizingLayoutContext(context), finalSize);
 
 				case NonVirtualizingLayout nonVirtualizingLayout:
-					nonVirtualizingLayout.ArrangeOverride(GetNonVirtualizingLayoutContext(context), finalSize);
-					break;
+					return nonVirtualizingLayout.ArrangeOverride(GetNonVirtualizingLayoutContext(context), finalSize);
+
 				default:
 					throw new NotImplementedException();
 			}

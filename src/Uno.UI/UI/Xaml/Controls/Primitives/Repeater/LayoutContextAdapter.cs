@@ -1,110 +1,82 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-#include <pch.h>
-#include <common.h>
-#include "ItemsRepeater.common.h"
-#include "VirtualizingLayoutContext.h"
-#include "LayoutContextAdapter.h"
+using System;
+using Windows.Foundation;
+using Windows.UI.Xaml;
 
-LayoutContextAdapter(NonVirtualizingLayoutContext const& nonVirtualizingContext)
+namespace Microsoft.UI.Xaml.Controls
 {
-    m_nonVirtualizingContext = make_weak(nonVirtualizingContext);
+	internal class LayoutContextAdapter : VirtualizingLayoutContext
+	{
+		private readonly WeakReference<NonVirtualizingLayoutContext> m_nonVirtualizingContext;
+
+		public LayoutContextAdapter(NonVirtualizingLayoutContext nonVirtualizingContext)
+		{
+			m_nonVirtualizingContext = new WeakReference<NonVirtualizingLayoutContext>(nonVirtualizingContext);
+		}
+
+		#region ILayoutContextOverrides
+		protected override object LayoutStateCore
+		{
+			get => m_nonVirtualizingContext.TryGetTarget(out var context) ? context.LayoutState : null;
+			set
+			{
+				if (m_nonVirtualizingContext.TryGetTarget(out var context))
+				{
+					context.LayoutState = value;
+				}
+			}
+		}
+
+		#endregion
+
+		#region IVirtualizingLayoutContextOverrides
+
+		protected override int ItemCountCore => m_nonVirtualizingContext.TryGetTarget(out var context) ? context.Children.Count : 0;
+
+		protected override object GetItemAtCore(int index)
+			=> m_nonVirtualizingContext.TryGetTarget(out var context) ? context.Children[index] : null;
+
+		protected override UIElement GetOrCreateElementAtCore(int index, ElementRealizationOptions options)
+			=> m_nonVirtualizingContext.TryGetTarget(out var context) ? context.Children[index] : null;
+
+		protected override void RecycleElementCore(UIElement element)
+		{
+		}
+
+		private int GetElementIndexCore(UIElement element)
+		{
+			if (m_nonVirtualizingContext.TryGetTarget(out var context))
+			{
+				var children = context.Children;
+				for (int i = 0; i < children.Count; i++)
+				{
+					if (children[i] == element)
+					{
+						return i;
+					}
+				}
+			}
+
+			return -1;
+		}
+
+		protected override Rect RealizationRectCore => new Rect(0, 0, double.PositiveInfinity, double.PositiveInfinity);
+
+		protected override int RecommendedAnchorIndexCore => -1;
+
+		protected override Point LayoutOriginCore
+		{
+			get => new Point(0, 0);
+			set
+			{
+				if (value != new Point(0, 0))
+				{
+					throw new ArgumentException("LayoutOrigin must be at (0,0) when RealizationRect is infinite sized.");
+				}
+			}
+		}
+		#endregion
+	}
 }
-
-#region ILayoutContextOverrides
-
-IInspectable LayoutStateCore()
-{
-    if (var context = m_nonVirtualizingContext.get())
-    {
-        return context.LayoutState();
-    }
-    return null;
-}
-
-void LayoutStateCore(IInspectable const& state)
-{
-    if (var context = m_nonVirtualizingContext.get())
-    {
-        context.LayoutStateCore(state);
-    }
-}
-
-#endregion
-
-#region IVirtualizingLayoutContextOverrides
-
-int ItemCountCore()
-{
-    if (var context = m_nonVirtualizingContext.get())
-    {
-        return context.Children().Size();
-    }
-    return 0;
-}
-
-IInspectable GetItemAtCore(int index)
-{
-    if (var context = m_nonVirtualizingContext.get())
-    {
-        return context.Children().GetAt(index);
-    }
-    return null;
-}
-
-UIElement GetOrCreateElementAtCore(int index, ElementRealizationOptions const& options)
-{
-    if (var context = m_nonVirtualizingContext.get())
-    {
-        return context.Children().GetAt(index);
-    }
-    return null;
-}
-
-void RecycleElementCore(UIElement const& element)
-{
-
-}
-
-int GetElementIndexCore(UIElement const& element)
-{
-    if (var context = m_nonVirtualizingContext.get())
-    {
-        var children = context.Children();
-        for (uint  i = 0; i < children.Size(); i++)
-        {
-            if (children.GetAt(i) == element)
-            {
-                return i;
-            }
-        }
-    }
-    
-    return -1;
-}
-
-Rect RealizationRectCore()
-{
-    return Rect{ 0, 0, std.numeric_limits<float>.infinity(), std.numeric_limits<float>.infinity() };
-}
-
-int RecommendedAnchorIndexCore()
-{
-    return -1;
-}
-
-Point LayoutOriginCore()
-{
-    return Point(0, 0);
-}
-
-void LayoutOriginCore(Point const& value)
-{
-    if (value != Point(0, 0))
-    {
-        throw hresult_invalid_argument("LayoutOrigin must be at (0,0) when RealizationRect is infinite sized.");
-    }
-}
-
-#endregion

@@ -47,7 +47,7 @@ namespace Microsoft.UI.Xaml.Controls
 				if (m_context != null)
 				{
 					var rect = m_context.RealizationRect;
-					bool hasInfiniteSize = double.IsInfinity(rect.Height) || double.IsInfinity(rect.Width));
+					bool hasInfiniteSize = double.IsInfinity(rect.Height) || double.IsInfinity(rect.Width);
 					return !hasInfiniteSize;
 				}
 

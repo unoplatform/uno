@@ -7,11 +7,33 @@ using System.Collections.Specialized;
 using System.Diagnostics;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Markup;
 
 namespace Microsoft.UI.Xaml.Controls
 {
+	internal struct PinnedElementInfo
+	{
+		private UIElement m_pinnedElement;
+
+		// We hold on VirtualizationInfo to make sure we can
+		// quickly access its content rather than go through
+		// ItemsRepeater.GetVirtualizationInfo(element) which is
+		// slower (assuming it's implemented using attached
+		// properties).
+		private VirtualizationInfo m_virtInfo;
+
+
+		public PinnedElementInfo(ITrackerHandleManager owner, UIElement element)
+		{
+
+		}
+
+		public UIElement PinnedElement => m_pinnedElement;
+		public VirtualizationInfo VirtualizationInfo => m_virtInfo;
+	};
+
 	internal class ViewManager
 	{
 		private ItemsRepeater m_owner;
@@ -44,22 +66,22 @@ namespace Microsoft.UI.Xaml.Controls
 		const int FirstRealizedElementIndexDefault = int.MaxValue;
 		const int LastRealizedElementIndexDefault = int.MinValue;
 
-		public ViewManager(ItemsRepeater* owner)
+		public ViewManager(ItemsRepeater owner)
 		{
 			// ItemsRepeater is not fully constructed yet. Don't interact with it.
 
 			m_owner = owner;
-			m_resetPool(owner);
+			m_resetPool = owner;
 
-			//m_lastFocusedElement(owner);
-			//m_phaser(owner);
-			//m_ElementFactoryGetArgs(owner);
-			//m_ElementFactoryRecycleArgs(owner);
+			m_lastFocusedElement(owner);
+			m_phaser(owner);
+			m_ElementFactoryGetArgs(owner);
+			m_ElementFactoryRecycleArgs(owner);
 		}
 
 		[Conditional("TRACE")]
-		private static void REPEATER_TRACE_INFO(string text)
-			=> Console.WriteLine(text);
+		private static void REPEATER_TRACE_INFO(string text, params object[] parameters)
+			=> Console.WriteLine(text, parameters);
 
 		[Conditional("TRACE")]
 		private static void REPEATER_TRACE_PERF(string text)
@@ -76,11 +98,11 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// check if this is the anchor made through repeater in preparation 
 				// for a bring into view.
-				var madeAnchor = m_owner.MadeAnchor();
+				var madeAnchor = m_owner.MadeAnchor;
 				if (madeAnchor != null)
 				{
 					var anchorVirtInfo = ItemsRepeater.TryGetVirtualizationInfo(madeAnchor);
-					if (anchorVirtInfo.Index() == index)
+					if (anchorVirtInfo.Index == index)
 					{
 						element = madeAnchor;
 					}
@@ -96,14 +118,14 @@ namespace Microsoft.UI.Xaml.Controls
 			var virtInfo = ItemsRepeater.TryGetVirtualizationInfo(element);
 			if (suppressAutoRecycle)
 			{
-				virtInfo.AutoRecycleCandidate(false);
-				REPEATER_TRACE_INFO("%* GetElement: %d Not AutoRecycleCandidate: \n", m_owner.Indent(), virtInfo.Index());
+				virtInfo.AutoRecycleCandidate = false;
+				REPEATER_TRACE_INFO("%* GetElement: %d Not AutoRecycleCandidate: \n", m_owner.Indent(), virtInfo.Index);
 			}
 			else
 			{
-				virtInfo.AutoRecycleCandidate(true);
-				virtInfo.KeepAlive(true);
-				REPEATER_TRACE_INFO("%* GetElement: %d AutoRecycleCandidate: \n", m_owner.Indent(), virtInfo.Index());
+				virtInfo.AutoRecycleCandidate = true;
+				virtInfo.KeepAlive = true;
+				REPEATER_TRACE_INFO("%* GetElement: %d AutoRecycleCandidate: \n", m_owner.Indent(), virtInfo.Index);
 			}
 
 			return element;
@@ -112,7 +134,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public void ClearElement(UIElement element, bool isClearedDueToCollectionChange)
 		{
 			var virtInfo = ItemsRepeater.GetVirtualizationInfo(element);
-			int index = virtInfo.Index();
+			int index = virtInfo.Index;
 			bool cleared =
 				ClearElementToUniqueIdResetPool(element, virtInfo) ||
 				ClearElementToAnimator(element, virtInfo) ||
@@ -150,7 +172,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void ClearElementToElementFactory(UIElement element)
+		public void ClearElementToElementFactory(UIElement element)
 		{
 			m_owner.OnElementClearing(element);
 
@@ -193,7 +215,7 @@ namespace Microsoft.UI.Xaml.Controls
 				// Focused element is going away. Remove the tracked last focused element
 				// and pick a reasonable next focus if we can find one within the layout 
 				// realized elements.
-				int clearedIndex = virtInfo.Index();
+				int clearedIndex = virtInfo.Index;
 				MoveFocusFromClearedIndex(clearedIndex);
 			}
 
@@ -236,13 +258,13 @@ namespace Microsoft.UI.Xaml.Controls
 			UIElement nextElement = null;
 			UIElement previousElement = null;
 			var children = m_owner.Children;
-			for (uint i = 0u; i < children.Count; ++i)
+			for (int i = 0; i < children.Count; ++i)
 			{
-				var child = children.GetAt(i);
+				var child = children[i];
 				var virtInfo = ItemsRepeater.TryGetVirtualizationInfo(child);
-				if (virtInfo && virtInfo.IsHeldByLayout())
+				if (virtInfo && virtInfo.IsHeldByLayout)
 				{
-					int currentIndex = virtInfo.Index();
+					int currentIndex = virtInfo.Index;
 					if (currentIndex < clearedIndex)
 					{
 						if (currentIndex > previousIndex)
@@ -319,7 +341,7 @@ namespace Microsoft.UI.Xaml.Controls
 			for (int i = 0; i < m_pinnedPool.Count; ++i)
 			{
 				var elementInfo = m_pinnedPool[i];
-				var virtInfo = elementInfo.VirtualizationInfo();
+				var virtInfo = elementInfo.VirtualizationInfo;
 
 				MUX_ASSERT(virtInfo.Owner == ElementOwner.PinnedPool);
 
@@ -329,7 +351,7 @@ namespace Microsoft.UI.Xaml.Controls
 					--i;
 
 					// Pinning was the only thing keeping this element alive.
-					ClearElementToElementFactory(elementInfo.PinnedElement());
+					ClearElementToElementFactory(elementInfo.PinnedElement);
 				}
 			}
 		}
@@ -350,7 +372,7 @@ namespace Microsoft.UI.Xaml.Controls
 						{
 							virtInfo.AddPin();
 						}
-						else if (virtInfo.IsPinned())
+						else if (virtInfo.IsPinned)
 						{
 							if (virtInfo.RemovePin() == 0)
 							{
@@ -385,11 +407,11 @@ namespace Microsoft.UI.Xaml.Controls
 						var childCount = children.Count;
 						for (uint i = 0u; i < childCount; ++i)
 						{
-							var element = children.GetAt(i);
+							var element = children[i];
 							var virtInfo = ItemsRepeater.GetVirtualizationInfo(element);
-							var dataIndex = virtInfo.Index();
+							var dataIndex = virtInfo.Index;
 
-							if (virtInfo.IsRealized() && dataIndex >= newIndex)
+							if (virtInfo.IsRealized && dataIndex >= newIndex)
 							{
 								UpdateElementIndex(element, virtInfo, dataIndex + newCount);
 							}
@@ -402,12 +424,12 @@ namespace Microsoft.UI.Xaml.Controls
 						for (int i = 0; i < m_pinnedPool.Count; ++i)
 						{
 							var elementInfo = m_pinnedPool[i];
-							var virtInfo = elementInfo.VirtualizationInfo();
-							var dataIndex = virtInfo.Index();
+							var virtInfo = elementInfo.VirtualizationInfo;
+							var dataIndex = virtInfo.Index;
 
-							if (virtInfo.IsRealized() && dataIndex >= newIndex)
+							if (virtInfo.IsRealized && dataIndex >= newIndex)
 							{
-								var element = elementInfo.PinnedElement();
+								var element = elementInfo.PinnedElement;
 								UpdateElementIndex(element, virtInfo, dataIndex + newCount);
 							}
 						}
@@ -450,13 +472,13 @@ namespace Microsoft.UI.Xaml.Controls
 						// countChange > 0 : countChange items were added
 						// countChange < 0 : -countChange  items were removed
 						var children = m_owner.Children;
-						for (uint i = 0u; i < children.Count; ++i)
+						for (int i = 0; i < children.Count; ++i)
 						{
-							var element = children.GetAt(i);
+							var element = children[i];
 							var virtInfo = ItemsRepeater.GetVirtualizationInfo(element);
-							var dataIndex = virtInfo.Index();
+							var dataIndex = virtInfo.Index;
 
-							if (virtInfo.IsRealized())
+							if (virtInfo.IsRealized)
 							{
 								if (dataIndex >= oldStartIndex + oldCount)
 								{
@@ -477,15 +499,15 @@ namespace Microsoft.UI.Xaml.Controls
 					var oldStartIndex = args.OldStartingIndex;
 					var oldCount = (int)(args.OldItems.Count);
 					var children = m_owner.Children;
-					for (uint i = 0u; i < children.Count; ++i)
+					for (int i = 0; i < children.Count; ++i)
 					{
-						var element = children.GetAt(i);
+						var element = children[i];
 						var virtInfo = ItemsRepeater.GetVirtualizationInfo(element);
-						var dataIndex = virtInfo.Index();
+						var dataIndex = virtInfo.Index;
 
-						if (virtInfo.IsRealized())
+						if (virtInfo.IsRealized)
 						{
-							if (virtInfo.AutoRecycleCandidate() && oldStartIndex <= dataIndex && dataIndex < oldStartIndex + oldCount)
+							if (virtInfo.AutoRecycleCandidate && oldStartIndex <= dataIndex && dataIndex < oldStartIndex + oldCount)
 							{
 								// If we are doing the mapping, remove the element who's data was removed.
 								m_owner.ClearElementImpl(element);
@@ -509,7 +531,7 @@ namespace Microsoft.UI.Xaml.Controls
 						// There should be no elements in the reset pool at this time.
 						MUX_ASSERT(m_resetPool.IsEmpty());
 
-						if (m_owner.ItemsSourceView.HasKeyIndexMapping())
+						if (m_owner.ItemsSourceView.HasKeyIndexMapping)
 						{
 							m_isDataSourceStableResetPending = true;
 						}
@@ -517,11 +539,11 @@ namespace Microsoft.UI.Xaml.Controls
 						// Walk through all the elements and make sure they are cleared, they will go into
 						// the stable id reset pool.
 						var children = m_owner.Children;
-						for (uint i = 0u; i < children.Count; ++i)
+						for (int i = 0; i < children.Count; ++i)
 						{
-							var element = children.GetAt(i);
+							var element = children[i];
 							var virtInfo = ItemsRepeater.GetVirtualizationInfo(element);
-							if (virtInfo.IsRealized() && virtInfo.AutoRecycleCandidate())
+							if (virtInfo.IsRealized && virtInfo.AutoRecycleCandidate)
 							{
 								m_owner.ClearElementImpl(element);
 							}
@@ -545,7 +567,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public void OnLayoutChanging()
 		{
-			if (m_owner.ItemsSourceView &&
+			if (m_owner.ItemsSourceView != null &&
 				m_owner.ItemsSourceView.HasKeyIndexMapping)
 			{
 				m_isDataSourceStableResetPending = true;
@@ -596,17 +618,17 @@ namespace Microsoft.UI.Xaml.Controls
 					(m_firstRealizedElementIndexHeldByLayout != FirstRealizedElementIndexDefault && m_lastRealizedElementIndexHeldByLayout != LastRealizedElementIndexDefault));
 
 				var children = m_owner.Children;
-				for (uint i = 0u; i < children.Count; ++i)
+				for (int i = 0; i < children.Count; ++i)
 				{
-					var child = children.GetAt(i);
+					var child = children[i];
 					var virtInfo = ItemsRepeater.TryGetVirtualizationInfo(child);
-					if (virtInfo && virtInfo.IsHeldByLayout())
+					if (virtInfo && virtInfo.IsHeldByLayout)
 					{
 						// Only give back elements held by layout. If someone else is holding it, they will be served by other methods.
-						int childIndex = virtInfo.Index();
+						int childIndex = virtInfo.Index;
 						m_firstRealizedElementIndexHeldByLayout = Math.Min(m_firstRealizedElementIndexHeldByLayout, childIndex);
 						m_lastRealizedElementIndexHeldByLayout = Math.Max(m_lastRealizedElementIndexHeldByLayout, childIndex);
-						if (virtInfo.Index() == index)
+						if (virtInfo.Index == index)
 						{
 							element = child;
 							// If we have valid first/last indices, we don't have to walk the rest, but if we 
@@ -655,13 +677,13 @@ namespace Microsoft.UI.Xaml.Controls
 			for (int i = 0; i < m_pinnedPool.Count; ++i)
 			{
 				var elementInfo = m_pinnedPool[i];
-				var virtInfo = elementInfo.VirtualizationInfo();
+				var virtInfo = elementInfo.VirtualizationInfo;
 
-				if (virtInfo.Index() == index)
+				if (virtInfo.Index == index)
 				{
 					m_pinnedPool.RemoveAt(i);
-					element = elementInfo.PinnedElement();
-					elementInfo.VirtualizationInfo().MoveOwnershipToLayoutFromPinnedPool();
+					element = elementInfo.PinnedElement;
+					elementInfo.VirtualizationInfo.MoveOwnershipToLayoutFromPinnedPool();
 
 					// Update realized indices
 					m_firstRealizedElementIndexHeldByLayout = Math.Min(m_firstRealizedElementIndexHeldByLayout, index);
@@ -704,21 +726,26 @@ namespace Microsoft.UI.Xaml.Controls
 					}
 				}
 
-				var elementFactory = providedElementFactory;
+				var elementFactory = () => providedElementFactory;
 				{
-					if (!providedElementFactory)
+					if (providedElementFactory == null)
 					{
 						// If no ItemTemplate was provided, use a default
-						(var factory  = XamlReader.Load("<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><TextBlock Text='{Binding}'/></DataTemplate>") as DataTemplate);
-						m_owner.ItemTemplate(factory);
-						return m_owner.ItemTemplateShim();
+						//var factory  = XamlReader.Load("<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><TextBlock Text='{Binding}'/></DataTemplate>") as DataTemplate;
+						var factory = new DataTemplate(() =>
+						{
+							var tb = new TextBlock();
+							tb.SetBinding(TextBlock.TextProperty, new Binding());
+							return tb;
+						});
+						m_owner.ItemTemplate = factory;
+						return m_owner.ItemTemplateShim;
 					}
 
 					return providedElementFactory;
 				}
-				();
 
-				var  args  = [this]()
+				var args = [this]()
 				{
 					if (!m_ElementFactoryGetArgs)
 					{
@@ -736,7 +763,7 @@ namespace Microsoft.UI.Xaml.Controls
 				});
 
 				args.Data(data);
-				args.Parent(*m_owner);
+				args.Parent(m_owner);
 				(args as ElementFactoryGetArgs).Index(index);
 
 				return elementFactory.GetElement(args);
@@ -856,7 +883,7 @@ namespace Microsoft.UI.Xaml.Controls
 			bool cleared = m_owner.AnimationManager.ClearElement(element);
 			if (cleared)
 			{
-				int clearedIndex = virtInfo.Index();
+				int clearedIndex = virtInfo.Index;
 				virtInfo.MoveOwnershipToAnimator();
 				if (m_lastFocusedElement == element)
 				{
@@ -878,10 +905,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (moveToPinnedPool)
 			{
-#ifdef _DEBUG
+#if DEBUG
 				for (int i = 0; i < m_pinnedPool.Count; ++i)
 				{
-					MUX_ASSERT(m_pinnedPool[i].PinnedElement() != element);
+					MUX_ASSERT(m_pinnedPool[i].PinnedElement != element);
 				}
 
 #endif
@@ -910,7 +937,7 @@ namespace Microsoft.UI.Xaml.Controls
 					if (parent is ItemsRepeater repeater)
 					{
 						var element = child as UIElement;
-						if (repeater == owner && ItemsRepeater.GetVirtualizationInfo(element).IsRealized())
+						if (repeater == owner && ItemsRepeater.GetVirtualizationInfo(element).IsRealized)
 						{
 							focusedElement = element;
 						}
@@ -927,12 +954,12 @@ namespace Microsoft.UI.Xaml.Controls
 			// we need to unpin the old one and pin the new one.
 			if (m_lastFocusedElement != focusedElement)
 			{
-				if (m_lastFocusedElement)
+				if (m_lastFocusedElement != null)
 				{
 					UpdatePin(m_lastFocusedElement, false /* addPin */);
 				}
 
-				if (focusedElement)
+				if (focusedElement != null)
 				{
 					UpdatePin(focusedElement, true /* addPin */);
 				}

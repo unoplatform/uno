@@ -10,7 +10,7 @@ namespace Microsoft.UI.Xaml.Controls
 	public class VirtualizingLayoutContext : LayoutContext
 	{
 		#region IVirtualizingLayoutContext
-		public int ItemCount => ItemCountCore();
+		public int ItemCount => ItemCountCore;
 
 		public Point LayoutOrigin
 		{
@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => LayoutOriginCore = value;
 		}
 
-		public Rect RealizationRect => RealizationRectCore();
+		public Rect RealizationRect => RealizationRectCore;
 
 		public int RecommendedAnchorIndex => RecommendedAnchorIndexCore;
 
@@ -54,18 +54,16 @@ namespace Microsoft.UI.Xaml.Controls
 		protected virtual void RecycleElementCore(UIElement element)
 			=> throw new NotImplementedException();
 
-		protected virtual Rect RealizationRectCore()
-			=> throw new NotImplementedException();
+		protected virtual Rect RealizationRectCore => throw new NotImplementedException();
 
-		protected virtual int ItemCountCore()
-			=> throw new NotImplementedException();
+		protected virtual int ItemCountCore => throw new NotImplementedException();
 		#endregion
 
 		internal NonVirtualizingLayoutContext GetNonVirtualizingContextAdapter()
 		{
 			if (!m_contextAdapter)
 			{
-				(m_contextAdapter = new VirtualLayoutContextAdapter(get_strong() as VirtualizingLayoutContext));
+				m_contextAdapter = new VirtualLayoutContextAdapter(this);
 			}
 
 			return m_contextAdapter;

@@ -5,13 +5,14 @@ using System;
 using Windows.Foundation;
 using Windows.UI.Xaml.Markup;
 using Android.OS;
+using Uno.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	internal class VirtualizationInfo
 	{
-		private const int PhaseNotSpecified = int.MinValue;
-		private const int PhaseReachedEnd = -1;
+		public const int PhaseNotSpecified = int.MinValue;
+		public const int PhaseReachedEnd = -1;
 
 		private uint m_pinCounter ;
 		private int m_index = -1;
@@ -36,7 +37,7 @@ namespace Microsoft.UI.Xaml.Controls
 			set => m_arrangeBounds = value;
 		}
 
-		string UniqueId => m_uniqueId;
+		public string UniqueId => m_uniqueId;
 
 		public bool KeepAlive
 		{
@@ -73,6 +74,10 @@ namespace Microsoft.UI.Xaml.Controls
 			set => m_phase = value;
 		}
 
+		public object Data => m_data;
+
+		public IDataTemplateComponent DataTemplateComponent => m_dataTemplateComponent.GetTarget();
+
 		public void UpdatePhasingInfo(int phase,  object data, IDataTemplateComponent component)
 		{
 			m_phase = phase;
@@ -91,7 +96,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_uniqueId = uniqueId;
 		}
 
-		private void MoveOwnershipToLayoutFromUniqueIdResetPool()
+		public void MoveOwnershipToLayoutFromUniqueIdResetPool()
 		{
 			global::System.Diagnostics.Debug.Assert(m_owner == ElementOwner.UniqueIdResetPool);
 
@@ -149,7 +154,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
-		uint AddPin()
+		public uint AddPin()
 		{
 			if (!IsRealized)
 
@@ -160,7 +165,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return ++m_pinCounter;
 		}
 
-		uint RemovePin()
+		public uint RemovePin()
 		{
 			if (!IsRealized)
 

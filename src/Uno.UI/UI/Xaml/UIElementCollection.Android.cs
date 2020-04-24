@@ -4,6 +4,7 @@ using System.Linq;
 using Uno.Extensions;
 using Android.Views;
 using System;
+using Microsoft.UI.Xaml.Controls;
 using Uno.UI.Controls;
 using Uno.UI;
 
@@ -100,3 +101,4 @@ namespace Windows.UI.Xaml.Controls
 
 
 }
+#endif

@@ -2,15 +2,83 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 
 namespace Microsoft.UI.Xaml.Controls
 {
 	internal class ListAdapter
 	{
+		/// <summary>
+		/// Creates a typed list decorator that changes the type of the source list
+		/// </summary>
+		/// <remarks>This is the equivalent of the Linq Cast operator.</remarks>
+		public static IList<TTarget> ChangeType<TSource, TTarget>(IList<TSource> list) => new CastList<TSource, TTarget>(list);
+
+		/// <summary>
+		/// Creates a typed list decorator over an IList
+		/// </summary>
+		/// <remarks>This is the equivalent of the Linq Cast operator.</remarks>
 		public static IList<object> ToGeneric(IList list) => new GenericList<object>(list);
+
+		/// <summary>
+		/// Creates a typed list decorator over an IList
+		/// </summary>
+		/// <remarks>This is the equivalent of the Linq Cast operator.</remarks>
 		public static IList<T> ToGeneric<T>(IList list) => new GenericList<T>(list);
 
+		/// <summary>
+		/// Creates an untyped list decorator over a generic list
+		/// </summary>
 		public static IList ToUntyped<T>(IList<T> list) => new UntypedList<T>(list);
+
+		private class CastList<TSource, TTarget> : IList<TTarget>
+		{
+			private readonly IList<TSource> _inner;
+
+			public CastList(IList<TSource> inner)
+			{
+				_inner = inner;
+			}
+
+			public TTarget this[int index]
+			{
+				get => To(_inner[index]);
+				set => _inner[index] = From(value);
+			}
+			public int Count => _inner.Count;
+			public bool IsReadOnly => _inner.IsReadOnly;
+
+			public void Add(TTarget item) => _inner.Add(From(item));
+			public void Insert(int index, TTarget item) => _inner.Insert(index, From(item));
+			public bool Contains(TTarget item) => _inner.Contains(From(item));
+			public int IndexOf(TTarget item) => _inner.IndexOf(From(item));
+			public void RemoveAt(int index) => _inner.RemoveAt(index);
+			public bool Remove(TTarget item)
+			{
+				if (_inner.Contains(From(item)))
+				{
+					_inner.Remove(From(item));
+					return true;
+				}
+				else
+				{
+					return false;
+				}
+			}
+			public void Clear() => _inner.Clear();
+			public void CopyTo(TTarget[] array, int arrayIndex)
+			{
+				var length = array.Length - arrayIndex;
+				var tmp = new TSource[length];
+				_inner.CopyTo(tmp, 0);
+				Array.Copy(tmp, 0, array, arrayIndex, length);
+			}
+			public IEnumerator<TTarget> GetEnumerator() => new GenericEnumerator<TTarget>(_inner.GetEnumerator());
+			IEnumerator IEnumerable.GetEnumerator() => _inner.GetEnumerator();
+
+			private static TSource From(object value) => (TSource)value;
+			private static TTarget To(object value) => (TTarget)value;
+		}
 
 		private class GenericList<T> : IList<T>
 		{

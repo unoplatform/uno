@@ -8,7 +8,7 @@ namespace Microsoft.UI.Xaml.Controls
 	public class LayoutContext
 	{
 		#region ILayoutContext
-		private object LayoutState
+		public object LayoutState
 		{
 			get => LayoutStateCore;
 			set => LayoutStateCore = value;

@@ -19,10 +19,11 @@ using Uno.UI.Helpers.WinUI;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public partial class ItemsRepeater : FrameworkElement
+	public partial class ItemsRepeater : FrameworkElement, IPanel
 	{
-		// TODO UNO Oh oh
-		internal List<UIElement> Children;
+		private readonly UIElementCollection _children;
+		UIElementCollection IPanel.Children => _children;
+		internal IList<UIElement> Children => _children.AsUIElementList();
 
 
 		// Change to 'true' to turn on debugging outputs in Output window
@@ -167,6 +168,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public ItemsRepeater()
 		{
+			_children = new UIElementCollection(this);
+
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_ItemsRepeater);
 
 			//if (SharedHelpers.IsRS5OrHigher())
@@ -394,13 +397,13 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
-		private UIElement GetElementImpl(int index, bool forceCreate, bool suppressAutoRecycle)
+		public UIElement GetElementImpl(int index, bool forceCreate, bool suppressAutoRecycle)
 		{
 			var element = m_viewManager.GetElement(index, forceCreate, suppressAutoRecycle);
 			return element;
 		}
 
-		void ClearElementImpl(UIElement element)
+		public void ClearElementImpl(UIElement element)
 		{
 			// Clearing an element due to a collection change
 			// is more strict in that pinned elements will be forcibly
@@ -604,7 +607,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		// Provides an indentation based on repeater elements in the UI Tree that
 		// can be used to make logging a little easier to read.
-		int Indent()
+		internal int Indent()
 		{
 			int indent = 1;
 
