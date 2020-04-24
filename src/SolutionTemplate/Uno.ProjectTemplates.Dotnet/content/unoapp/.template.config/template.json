@@ -55,7 +55,7 @@
       "datatype": "text",
       "replaces": "$XmlEscapedPublisherDistinguishedName$",
       "description": "Provides the value to use for the Windows head publisher",
-      "defaultValue": "MyCompany"
+      "defaultValue": "O=MyCompany"
     },
     "WebAssembly": {
       "type": "parameter",
