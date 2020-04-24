@@ -187,7 +187,7 @@ namespace Windows.Data.Xml.Dom
 			throw new global::System.NotImplementedException("The member string XmlElement.GetAttribute(string attributeName) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  void SetAttribute( string attributeName,  string attributeValue)
 		{

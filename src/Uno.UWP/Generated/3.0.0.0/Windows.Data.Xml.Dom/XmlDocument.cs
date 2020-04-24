@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Data.Xml.Dom
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class XmlDocument : global::Windows.Data.Xml.Dom.IXmlNode,global::Windows.Data.Xml.Dom.IXmlNodeSerializer,global::Windows.Data.Xml.Dom.IXmlNodeSelector
@@ -377,7 +377,7 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.Prefix.set
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNode( string xpath)
 		{
@@ -414,7 +414,7 @@ namespace Windows.Data.Xml.Dom
 		#endif
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.InnerText.get
 		// Forced skipping of method Windows.Data.Xml.Dom.XmlDocument.InnerText.set
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  void LoadXml( string xml)
 		{
