@@ -10,6 +10,8 @@ using Windows.ApplicationModel;
 using ObjCRuntime;
 using Windows.Graphics.Display;
 using Uno.UI.Services;
+using Uno.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml
 {
@@ -47,24 +49,33 @@ namespace Windows.UI.Xaml
 		public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
 		{
 			InitializationCompleted();
+			var handled = false;
 			if (launchOptions != null)
 			{
 				if (launchOptions.TryGetValue(UIApplication.LaunchOptionsUrlKey, out var urlObject))
 				{
 					_preventSecondaryActivationHandling = true;
 					var url = (NSUrl)urlObject;
-					OnActivated(new ProtocolActivatedEventArgs(new Uri(url.ToString()), ApplicationExecutionState.NotRunning));
-					return true;
+					if (TryParseActivationUri(url, out var uri))
+					{
+						OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning));
+						handled = true;
+					}
 				}
 				else if (launchOptions.TryGetValue(UIApplication.LaunchOptionsShortcutItemKey, out var shortcutItemObject))
 				{
 					_preventSecondaryActivationHandling = true;
 					var shortcutItem = (UIApplicationShortcutItem)shortcutItemObject;
 					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, shortcutItem.Type));
-					return true;
+					handled = true;
 				}
 			}
-			OnLaunched(new LaunchActivatedEventArgs());
+
+			// default to normal launch
+			if (!handled)
+			{
+				OnLaunched(new LaunchActivatedEventArgs());
+			}
 			return true;
 		}
 
@@ -73,7 +84,10 @@ namespace Windows.UI.Xaml
 			// If the application was not running, URL was already handled by FinishedLaunching
 			if (!_preventSecondaryActivationHandling)
 			{
-				OnActivated(new ProtocolActivatedEventArgs(new Uri(url.ToString()), ApplicationExecutionState.Running));
+				if (TryParseActivationUri(url, out var uri))
+				{
+					OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
+				}
 			}
 			_preventSecondaryActivationHandling = false;
 			return true;
@@ -129,6 +143,19 @@ namespace Windows.UI.Xaml
 		[Export("getApplicationDataPath")]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public NSString GetWorkingFolder() => new NSString(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+
+		private bool TryParseActivationUri(NSUrl url, out Uri uri)
+		{
+			if (Uri.TryCreate(url.ToString(), UriKind.Absolute, out uri))
+			{
+				return true;
+			}
+			else
+			{
+				this.Log().LogError($"Activation URI {url} could not be parsed");
+				return false;
+			}
+		}
 
 		private ApplicationTheme GetDefaultSystemTheme()
 		{

@@ -1,7 +1,10 @@
 ﻿#if __WASM__
 using System;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Web;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
 
 namespace Uno.Helpers
 {
@@ -68,6 +71,38 @@ namespace Uno.Helpers
 			// register scheme
 			var initialized = Uno.Foundation.WebAssemblyRuntime.InvokeJS(
 				$"navigator.registerProtocolHandler('{scheme}', '{uriString}' , '{prompt.Replace("'", "\\'")}')");
+		}
+
+		internal static bool TryParseActivationUri(string queryArguments, out Uri uri)
+		{
+			NameValueCollection queryValues = null;
+			uri = null;
+			try
+			{
+				queryValues = HttpUtility.ParseQueryString(queryArguments);
+			}
+			catch (Exception ex)
+			{
+				typeof(ProtocolActivation).Log().LogError(
+					"Launch arguments could not be parsed as a query string", ex);
+			}
+
+			if (queryValues != null &&
+				queryValues[QueryKey] is string protocolUriString)
+			{
+				protocolUriString = Uri.UnescapeDataString(protocolUriString);
+				if (Uri.TryCreate(protocolUriString, UriKind.Absolute, out uri))
+				{
+					return true;
+				}
+				else
+				{
+					typeof(ProtocolActivation).Log().LogError($"Activation URI {protocolUriString} could not be parsed");					
+				}
+			}
+
+			// arguments did not contain activation URI or it could not be parsed
+			return false;
 		}
 	}
 }

@@ -99,6 +99,36 @@ namespace SamplesApp
 				// this.DebugSettings.EnableFrameRateCounter = true;
 			}
 #endif
+			InitializeFrame(e);			
+			Windows.UI.Xaml.Window.Current.Activate();
+
+			DisplayLaunchArguments(e);
+		}
+
+		protected
+#if HAS_UNO
+			internal
+#endif
+			override async void OnActivated(IActivatedEventArgs e)
+		{
+			base.OnActivated(e);
+
+			InitializeFrame(e);		
+			Windows.UI.Xaml.Window.Current.Activate();
+
+			if (e.Kind == ActivationKind.Protocol)
+			{
+				var protocolActivatedEventArgs = (ProtocolActivatedEventArgs)e;
+				var dlg = new MessageDialog(
+					$"PreviousState - {e.PreviousExecutionState}, " +
+					$"Uri - {protocolActivatedEventArgs.Uri}",
+					"Application activated via protocol");
+				await dlg.ShowAsync();
+			}
+		}
+
+		private Frame InitializeFrame(IActivatedEventArgs e)
+		{
 			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
 
 			// Do not repeat app initialization when the Window already has content,
@@ -120,69 +150,20 @@ namespace SamplesApp
 				Console.WriteLine($"RootFrame: {rootFrame}");
 			}
 
-			if (e.PrelaunchActivated == false)
-			{
-				if (rootFrame.Content == null)
-				{
-					// When the navigation stack isn't restored navigate to the first page,
-					// configuring the new page by passing required information as a navigation
-					// parameter
-					rootFrame.Navigate(typeof(MainPage), e.Arguments);
-				}
-				// Ensure the current window is active
-				Windows.UI.Xaml.Window.Current.Activate();
-			}
-
-			DisplayLaunchArguments(e);
-		}
-
-		protected
-#if HAS_UNO
-			internal
-#endif
-			override async void OnActivated(IActivatedEventArgs e)
-		{
-			base.OnActivated(e);
-
-			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
-
-			if (rootFrame == null)
-			{ 
-				// Create a Frame to act as the navigation context and navigate to the first page
-				rootFrame = new Frame();
-
-				rootFrame.NavigationFailed += OnNavigationFailed;
-
-				// Place the frame in the current Window
-				Windows.UI.Xaml.Window.Current.Content = rootFrame;
-			}
-
 			if (rootFrame.Content == null)
 			{
 				// When the navigation stack isn't restored navigate to the first page,
 				// configuring the new page by passing required information as a navigation
 				// parameter
-				rootFrame.Navigate(typeof(MainPage));
-			}
-
-			Windows.UI.Xaml.Window.Current.Activate();
-
-			if (e.Kind == ActivationKind.Protocol)
-			{
-				var protocolActivatedEventArgs = (ProtocolActivatedEventArgs)e;
-				var dlg = new MessageDialog(
-					$"PreviousState - {e.PreviousExecutionState}, " +
-					$"Uri - {protocolActivatedEventArgs.Uri}",
-					"Application activated via protocol");
-				await dlg.ShowAsync();
-			}
+				rootFrame.Navigate(typeof(MainPage), e.Arguments);
+			}			
 		}
 
 		private async void DisplayLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)
 		{
 			if (!string.IsNullOrEmpty(launchActivatedEventArgs.Arguments))
 			{
-				var dlg = new MessageDialog(launchActivatedEventArgs.Arguments, $"Launch arguments");
+				var dlg = new MessageDialog(launchActivatedEventArgs.Arguments, "Launch arguments");
 				await dlg.ShowAsync();
 			}
 		}

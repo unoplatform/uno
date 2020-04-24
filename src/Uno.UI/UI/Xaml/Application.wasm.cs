@@ -15,6 +15,7 @@ using Uno.UI;
 using Uno.UI.Xaml;
 using System.Web;
 using System.Collections.Specialized;
+using Uno.Helpers;
 
 namespace Windows.UI.Xaml
 {
@@ -70,26 +71,10 @@ namespace Windows.UI.Xaml
 
 				if (!string.IsNullOrEmpty(arguments))
 				{
-					NameValueCollection queryValues = null;
-					try
+					if (ProtocolActivation.TryParseActivationUri(arguments, out var activationUri))
 					{
-						queryValues = HttpUtility.ParseQueryString(arguments);
-					}
-					catch (Exception ex)
-					{
-						this.Log().Error(
-							"Launch arguments could not be parsed as a query string", ex);
-					}
-					if (queryValues != null)
-					{
-						if (queryValues[Uno.Helpers.ProtocolActivation.QueryKey] is
-							string protocolUriString)
-						{
-							protocolUriString = Uri.UnescapeDataString(protocolUriString);
-							var uri = new Uri(protocolUriString);
-							OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning));
-							return;
-						}
+						OnActivated(new ProtocolActivatedEventArgs(activationUri, ApplicationExecutionState.NotRunning));
+						return;
 					}
 				}
 
@@ -100,7 +85,7 @@ namespace Windows.UI.Xaml
 		private ApplicationTheme GetDefaultSystemTheme()
 		{
 			var serializedTheme = WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.getDefaultSystemTheme()");
-			
+
 			if (serializedTheme != null)
 			{
 				if (Enum.TryParse(serializedTheme, out ApplicationTheme theme))

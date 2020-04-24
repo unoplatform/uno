@@ -26,8 +26,8 @@ Register your protocol on the `MainActivity` with the `[IntentFilter]` attribute
 
 ```
 [IntentFilter(
-    new [] { 
-        Android.Content.Intent.ActionView 
+    new [] {
+        Android.Content.Intent.ActionView
     },
     Categories = new[] {
         Android.Content.Intent.CategoryDefault,
@@ -36,7 +36,7 @@ Register your protocol on the `MainActivity` with the `[IntentFilter]` attribute
     DataScheme = "my-scheme")]
 ```
 
-Note both `CategoryDefault` and `CategoryBrowsable` should be listed.
+`CategoryDefault` is required (must be included for all implicit intents) and `CategoryBrowsable` is optional (allows opening the custom URI from the browser).
 
 ### WASM
 
