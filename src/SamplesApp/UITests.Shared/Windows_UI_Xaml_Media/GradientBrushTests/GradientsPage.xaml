@@ -73,7 +73,8 @@
 							<GradientStop Color="Blue" Offset="1" />
 						</RadialGradientBrush>
 					</Rectangle.Fill>
-				</Rectangle>			</StackPanel>
+				</Rectangle>
+			</StackPanel>
 			<TextBlock FontSize="15">Radial Gradient as border/stroke on a Rectangle/ Border / Ellipse </TextBlock>
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<Rectangle Width="100" Height="100" StrokeThickness="40" Fill="DarkGray">
@@ -232,7 +233,7 @@
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<TextBlock Text="UNO" FontSize="110" FontWeight="Bold">
 					<TextBlock.Foreground>
-						<RadialGradientBrush FallbackColor="Green">
+						<RadialGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
@@ -244,7 +245,7 @@
 				</TextBlock>
 				<TextBlock Text="UNO" FontSize="110" FontWeight="Bold">
 					<TextBlock.Foreground>
-						<LinearGradientBrush FallbackColor="Green">
+						<LinearGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />

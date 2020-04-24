@@ -6,6 +6,7 @@ using Uno.Extensions;
 using Uno.Disposables;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media;
+using Rect = Windows.Foundation.Rect;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -35,14 +36,15 @@ namespace Windows.UI.Xaml.Media
 			paint.SetStyle(Paint.Style.Stroke);
 			return paint;
 		}
-		protected virtual Paint GetPaintInner(Windows.Foundation.Rect destinationRect) { throw new NotImplementedException(); }
+
+		protected virtual Paint GetPaintInner(Rect destinationRect) => throw new InvalidOperationException();
 
 		internal static IDisposable AssignAndObserveBrush(Brush b, Action<Android.Graphics.Color> colorSetter, Action imageBrushCallback = null)
 		{
-			var disposables = new CompositeDisposable();
-
 			if (b is SolidColorBrush colorBrush)
 			{
+				var disposables = new CompositeDisposable(2);
+
 				colorSetter(colorBrush.ColorWithOpacity);
 
 				colorBrush.RegisterDisposablePropertyChangedCallback(
@@ -54,9 +56,29 @@ namespace Windows.UI.Xaml.Media
 					SolidColorBrush.OpacityProperty,
 					(s, colorArg) => colorSetter((s as SolidColorBrush).ColorWithOpacity)
 				).DisposeWith(disposables);
+
+				return disposables;
+			}
+			else if (b is GradientBrush gradientBrush)
+			{
+				var disposables = new CompositeDisposable(2);
+				colorSetter(gradientBrush.FallbackColorWithOpacity);
+
+				gradientBrush.RegisterDisposablePropertyChangedCallback(
+					GradientBrush.FallbackColorProperty,
+					(s, colorArg) => colorSetter((s as GradientBrush).FallbackColorWithOpacity)
+				).DisposeWith(disposables);
+
+				gradientBrush.RegisterDisposablePropertyChangedCallback(
+					GradientBrush.OpacityProperty,
+					(s, colorArg) => colorSetter((s as GradientBrush).FallbackColorWithOpacity)
+				).DisposeWith(disposables);
+
+				return disposables;
 			}
 			else if (b is ImageBrush imageBrush && imageBrushCallback != null)
 			{
+				var disposables = new CompositeDisposable(3);
 				imageBrush.RegisterDisposablePropertyChangedCallback(
 					ImageBrush.ImageSourceProperty,
 					(_, __) => imageBrushCallback()
@@ -71,13 +93,14 @@ namespace Windows.UI.Xaml.Media
 					ImageBrush.RelativeTransformProperty,
 					(_, __) => imageBrushCallback()
 				).DisposeWith(disposables);
+				return disposables;
 			}
 			else
 			{
 				colorSetter(SolidColorBrushHelper.Transparent.Color);
 			}
 
-			return disposables;
+			return Disposable.Empty;
 		}
 	}
 }

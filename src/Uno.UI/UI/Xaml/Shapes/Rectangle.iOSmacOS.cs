@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Shapes
 	public partial class Rectangle
 	{
 		CAShapeLayer _rectangleLayer = new CAShapeLayer();
-		CAGradientLayer _gradientLayer;
+		CALayer _gradientLayer;
 		SerialDisposable _fillSubscription = new SerialDisposable();
 		SerialDisposable _strokeSubscription = new SerialDisposable();
 
@@ -61,26 +61,18 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			var area = Bounds;
 
-			switch (Stretch)
+			area = Stretch switch
 			{
-				case Stretch.Fill:
-					area = Bounds;
-					break;
-				case Stretch.Uniform:
-					area = (area.Height > area.Width)
-						? (new global::System.Drawing.RectangleF((float)area.X, (float)area.Y, (float)area.Width, (float)area.Width))
-						: (new global::System.Drawing.RectangleF((float)area.X, (float)area.Y, (float)area.Height, (float)area.Height));
-					break;
-				case Stretch.UniformToFill:
-					area = (area.Height > area.Width)
-						? (new global::System.Drawing.RectangleF((float)area.X, (float)area.Y, (float)area.Height, (float)area.Height))
-						: (new global::System.Drawing.RectangleF((float)area.X, (float)area.Y, (float)area.Width, (float)area.Width));
-					break;
-				default: // None
-					area = CGRect.Empty;
-					break;
-			}
-
+				Stretch.Fill => Bounds,
+				Stretch.Uniform => area.Height > area.Width
+					? new CGRect((float)area.X, (float)area.Y, (float)area.Width, (float)area.Width)
+					: new CGRect((float)area.X, (float)area.Y, (float)area.Height, (float)area.Height),
+				Stretch.UniformToFill => area.Height > area.Width
+					? new CGRect((float)area.X, (float)area.Y, (float)area.Height, (float)area.Height)
+					: new CGRect((float)area.X, (float)area.Y, (float)area.Width, (float)area.Width),
+				// None
+				_ => CGRect.Empty,
+			};
 			area = area.Shrink((float)ActualStrokeThickness / 2);
 
 			if (Math.Max(RadiusX, RadiusY) > 0)
@@ -108,12 +100,10 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			base.OnStrokeUpdated(newValue);
 
-			var brush = Stroke as SolidColorBrush ?? SolidColorBrushHelper.Transparent;
-
 			_strokeSubscription.Disposable =
-				Brush.AssignAndObserveBrush(brush, c => _rectangleLayer.StrokeColor = c);
+				Brush.AssignAndObserveBrush(Stroke, c => _rectangleLayer.StrokeColor = c);
 
-			this.SetNeedsDisplay();
+			SetNeedsDisplay();
 		}
 
 		protected override void OnFillChanged(Brush newValue)
@@ -128,16 +118,14 @@ namespace Windows.UI.Xaml.Shapes
 
 			_rectangleLayer.FillColor = _Color.Clear.CGColor;
 
-			var scbFill = newValue as SolidColorBrush;
-			var lgbFill = newValue as LinearGradientBrush;
-			if (scbFill != null)
+			if (newValue is SolidColorBrush colorBrush)
 			{
 				_fillSubscription.Disposable =
-					Brush.AssignAndObserveBrush(scbFill, c => _rectangleLayer.FillColor = c);
+					Brush.AssignAndObserveBrush(colorBrush, c => _rectangleLayer.FillColor = c);
 			}
-			else if (lgbFill != null)
+			else if (newValue is GradientBrush gradientBrush)
 			{
-				_gradientLayer = lgbFill.GetLayer(Frame.Size);
+				_gradientLayer = gradientBrush.GetLayer(Frame.Size);
 				Layer.InsertSublayer(_gradientLayer, 0); // We want the _gradientLayer to be below the _rectangleLayer (which contains the stroke)
 			}
 

@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml.Documents
 		private Brush GetPressedForeground()
 		{
 #if XAMARIN
-			var normalColor = (Foreground as SolidColorBrush).ColorWithOpacity;
+			var normalColor = Brush.GetColorWithOpacity(Foreground, Colors.Transparent).Value;
 			var pressedColor = Color.FromArgb((byte)(normalColor.A / 2), normalColor.R, normalColor.G, normalColor.B);
 			return new SolidColorBrush(pressedColor);
 #else

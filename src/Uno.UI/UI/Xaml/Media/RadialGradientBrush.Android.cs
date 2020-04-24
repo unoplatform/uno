@@ -3,15 +3,14 @@ using Android.Graphics;
 using Uno.Extensions;
 using Uno.UI;
 using Point = Windows.Foundation.Point;
+using Rect = Windows.Foundation.Rect;
 
 namespace Windows.UI.Xaml.Media
 {
 	partial class RadialGradientBrush
 	{
-		protected override Paint GetPaintInner(Windows.Foundation.Rect destinationRect)
+		protected internal override Shader GetShader(Rect destinationRect)
 		{
-			var paint = new Paint();
-
 			var center = Center;
 			var radiusX = RadiusX;
 			var radiusY = RadiusY;
@@ -31,31 +30,29 @@ namespace Windows.UI.Xaml.Media
 				radius = ViewHelper.LogicalToPhysicalPixels((radiusX + radiusY) / 2.0d); // We take the avg
 			}
 
-
-			// Android RadialGradient requires two ore more stop points.
-			if (GradientStops.Count >= 2)
+			// Android requires a radius and two or more stop points.
+			if (radius <= 0 || GradientStops.Count < 2)
 			{
-				var colors = GradientStops.SelectToArray(s => ((Android.Graphics.Color)s.Color).ToArgb());
-				var locations = GradientStops.SelectToArray(s => (float)s.Offset);
-
-				var width = destinationRect.Width;
-				var height = destinationRect.Height;
-
-				var transform = RelativeTransform?.ToNative(size: new Windows.Foundation.Size(width, height), isBrush: true);
-
-				var shader = new RadialGradient(
-					(float)center.X,
-					(float)center.Y,
-					radius,
-					colors,
-					locations,
-					Shader.TileMode.Clamp);
-
-				paint.SetShader(shader);
+				return null;
 			}
 
-			return paint;
-		}
+			var colors = GradientStops.SelectToArray(s => ((Android.Graphics.Color)s.Color).ToArgb());
+			var locations = GradientStops.SelectToArray(s => (float)s.Offset);
 
+			var width = destinationRect.Width;
+			var height = destinationRect.Height;
+
+			var transform = RelativeTransform?.ToNative(size: new Windows.Foundation.Size(width, height), isBrush: true);
+
+			var shader = new RadialGradient(
+				(float)center.X,
+				(float)center.Y,
+				radius,
+				colors,
+				locations,
+				Shader.TileMode.Clamp);
+
+			return shader;
+		}
 	}
 }

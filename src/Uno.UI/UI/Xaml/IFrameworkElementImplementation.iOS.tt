@@ -935,26 +935,37 @@ namespace <#= mixin.NamespaceName #>
 		{
 			if (e.NewValue != null)
 			{
-				var brush = e.NewValue as SolidColorBrush;
-
-				if(brush != null)
+				if(e.NewValue is SolidColorBrush scb)
 				{
-					BackgroundColor = brush.ColorWithOpacity;
+					BackgroundColor = scb.ColorWithOpacity;
 
-					_brushColorChanged.Disposable = brush.RegisterDisposablePropertyChangedCallback(
+					_brushColorChanged.Disposable = scb.RegisterDisposablePropertyChangedCallback(
 						SolidColorBrush.ColorProperty,
 						(s, colorArg) => BackgroundColor = (s as SolidColorBrush).ColorWithOpacity
 					);
-					_brushOpacityChanged.Disposable = brush.RegisterDisposablePropertyChangedCallback(
+					_brushOpacityChanged.Disposable = scb.RegisterDisposablePropertyChangedCallback(
 						SolidColorBrush.OpacityProperty,
 						(s, colorArg) => BackgroundColor = (s as SolidColorBrush).ColorWithOpacity
 					);
 				}
+				else if (e.NewValue is GradientBrush gb)
+				{
+					BackgroundColor = gb.FallbackColorWithOpacity;
+
+					_brushColorChanged.Disposable = gb.RegisterDisposablePropertyChangedCallback(
+						GradientBrush.FallbackColorProperty,
+						(s, colorArg) => BackgroundColor = (s as GradientBrush).FallbackColorWithOpacity
+					);
+					_brushOpacityChanged.Disposable = gb.RegisterDisposablePropertyChangedCallback(
+						GradientBrush.OpacityProperty,
+						(s, colorArg) => BackgroundColor = (s as GradientBrush).FallbackColorWithOpacity
+					);
+				}
 				else
 				{
-					this.Log().Warn("Brush is not a SolidColorBrush, ignoring");
 					_brushColorChanged.Disposable = null;
 					_brushOpacityChanged.Disposable = null;
+					this.Log().Warn("Brush is not a SolidColorBrush, ignoring");
 					BackgroundColor = SolidColorBrushHelper.Transparent.Color;
 				}
 			}

@@ -62,8 +62,7 @@ namespace Uno.UI.Controls
 			ApplyVisibility();
 
 			// Foreground
-			var foregroundColor = (Element.Foreground as SolidColorBrush)?.ColorWithOpacity;
-			if (foregroundColor != null)
+			if (Brush.TryGetColorWithOpacity(Element.Foreground, out var foregroundColor))
 			{
 				Native.TitleTextAttributes = new UIStringAttributes
 				{
@@ -76,7 +75,7 @@ namespace Uno.UI.Controls
 			}
 
 			// Background
-			var backgroundColor = (Element.Background as SolidColorBrush)?.ColorWithOpacity;
+			var backgroundColor = Brush.GetColorWithOpacity(Element.Background);
 			switch (backgroundColor)
 			{
 				case Color opaqueColor when opaqueColor.A == byte.MaxValue:
@@ -109,7 +108,7 @@ namespace Uno.UI.Controls
 			}
 
 			// CommandBarExtensions.BackButtonForeground
-			var backButtonForeground = (Element.GetValue(BackButtonForegroundProperty) as SolidColorBrush)?.ColorWithOpacity;
+			var backButtonForeground = Brush.GetColorWithOpacity(Element.GetValue(BackButtonForegroundProperty) as Brush);
 			Native.TintColor = backButtonForeground;
 
 			// CommandBarExtensions.BackButtonIcon

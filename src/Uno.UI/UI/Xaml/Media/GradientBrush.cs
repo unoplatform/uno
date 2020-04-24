@@ -24,6 +24,7 @@ namespace Windows.UI.Xaml.Media
 			typeof(GradientBrush),
 			new PropertyMetadata(null)
 		);
+
 		public GradientStopCollection GradientStops
 		{
 			get => (GradientStopCollection)GetValue(GradientStopsProperty);
@@ -36,6 +37,7 @@ namespace Windows.UI.Xaml.Media
 				typeof(BrushMappingMode),
 				typeof(GradientBrush),
 				new FrameworkPropertyMetadata(BrushMappingMode.RelativeToBoundingBox));
+
 		public BrushMappingMode MappingMode
 		{
 			get
@@ -47,5 +49,7 @@ namespace Windows.UI.Xaml.Media
 				SetValue(MappingModeProperty, value);
 			}
 		}
+
+		internal Color FallbackColorWithOpacity => GetColorWithOpacity(FallbackColor);
 	}
 }

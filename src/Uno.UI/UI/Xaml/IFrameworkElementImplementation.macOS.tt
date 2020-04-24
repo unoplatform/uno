@@ -926,25 +926,32 @@ namespace <#= mixin.NamespaceName #>
 				WantsLayer = true;
 				var brush = e.NewValue as SolidColorBrush;
 
-				if(brush != null)
+				if(e.NewValue is SolidColorBrush scb)
 				{
-					Layer.BackgroundColor = brush.ColorWithOpacity;
+					Layer.BackgroundColor = scb.ColorWithOpacity;
 
-					_brushColorChanged.Disposable = brush.RegisterDisposablePropertyChangedCallback(
+					_brushColorChanged.Disposable = scb.RegisterDisposablePropertyChangedCallback(
 						SolidColorBrush.ColorProperty,
 						(s, colorArg) => Layer.BackgroundColor = (s as SolidColorBrush).ColorWithOpacity
 					);
-					_brushOpacityChanged.Disposable = brush.RegisterDisposablePropertyChangedCallback(
+					_brushOpacityChanged.Disposable = scb.RegisterDisposablePropertyChangedCallback(
 						SolidColorBrush.OpacityProperty,
 						(s, colorArg) => Layer.BackgroundColor = (s as SolidColorBrush).ColorWithOpacity
 					);
 				}
 				else
 				{
-					this.Log().Warn("Brush is not a SolidColorBrush, ignoring");
 					_brushColorChanged.Disposable = null;
 					_brushOpacityChanged.Disposable = null;
-					Layer.BackgroundColor = SolidColorBrushHelper.Transparent.Color;
+					if(e.NewValue is GradientBrush gb)
+					{
+						Layer.BackgroundColor = gb.FallbackColorWithOpacity;
+					}
+					else
+					{
+						this.Log().Warn("Brush is not a SolidColorBrush, ignoring");
+						Layer.BackgroundColor = SolidColorBrushHelper.Transparent.Color;
+					}
 				}
 			}
 			else

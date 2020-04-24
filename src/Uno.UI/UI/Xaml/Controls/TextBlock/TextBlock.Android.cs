@@ -207,12 +207,13 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var foreground = Foreground switch
-			{
-				SolidColorBrush scb => scb.ColorWithOpacity,
-				GradientBrush gb => gb.FallbackColor,
-				_ => Colors.Transparent
-			};
+			var foreground = Brush
+				.GetColorWithOpacity(Foreground, Colors.Transparent)
+				.Value;
+
+			var shader = Foreground is GradientBrush gb
+				? gb.GetShader(LayoutSlot.LogicalToPhysicalPixels())
+				: null;
 
 			_paint = TextPaintPool.GetPaint(
 				FontWeight,
@@ -221,6 +222,7 @@ namespace Windows.UI.Xaml.Controls
 				FontSize,
 				CharacterSpacing,
 				foreground,
+				shader,
 				BaseLineAlignment.Baseline,
 				TextDecorations
 			);
