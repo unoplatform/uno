@@ -50,5 +50,50 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ToolTipTests
 
 			TakeScreenshot("opened-textonly-tooltip");
 		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.Browser)] // Only WASM supports mouse-based tests for now
+		public void ToolTip_Large_Text()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ToolTip.ToolTip_Long_Text");
+
+			const string ButtonWithTooltip = "ButtonWithTooltip";
+			const string BorderInsideToolTip = "BorderInsideToolTip";
+
+			_app.WaitForElement(ButtonWithTooltip);
+			var buttonRect = _app.GetRect(ButtonWithTooltip);
+
+			var upperRect = _app.GetRect("UpperLocator");
+			var lowerRect = _app.GetRect("LowerLocator");
+
+			var before = TakeScreenshot("Before");
+
+			var lowerHoverY = buttonRect.Bottom - buttonRect.Height / 10;
+			_app.TapCoordinates(buttonRect.CenterX, lowerHoverY);
+
+			_app.WaitForElement(BorderInsideToolTip);
+
+			var lowerToolTip = TakeScreenshot("Lower ToolTip");
+
+			ImageAssert.AreEqual(before, lowerToolTip, lowerRect);
+			ImageAssert.AreEqual(before, lowerToolTip, upperRect); // ToolTip should be just above mouse, shouldn't extend above Button bounds
+			ImageAssert.AreNotEqual(before, lowerToolTip, buttonRect);
+
+			_app.FastTap("DummyButton");
+
+			_app.WaitForNoElement(BorderInsideToolTip);
+
+			var upperHoverY = buttonRect.Y + buttonRect.Height / 10;
+			_app.TapCoordinates(buttonRect.CenterX, upperHoverY);
+
+			_app.WaitForElement(BorderInsideToolTip);
+
+			var upperToolTip = TakeScreenshot("Upper ToolTip");
+
+			ImageAssert.AreEqual(before, upperToolTip, lowerRect);
+			ImageAssert.AreNotEqual(before, upperToolTip, upperRect); // Mouse is close to top of button, ToolTip should extend above Button bounds
+			ImageAssert.AreNotEqual(before, upperToolTip, buttonRect);
+		}
 	}
 }

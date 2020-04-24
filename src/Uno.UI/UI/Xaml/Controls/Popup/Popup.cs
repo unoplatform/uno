@@ -116,6 +116,18 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnPopupPanelChangedPartial(PopupPanel oldHost, PopupPanel newHost);
 
+		protected override void OnVerticalOffsetChanged(double oldVerticalOffset, double newVerticalOffset)
+		{
+			base.OnVerticalOffsetChanged(oldVerticalOffset, newVerticalOffset);
+			PopupPanel?.InvalidateMeasure();
+		}
+
+		protected override void OnHorizontalOffsetChanged(double oldHorizontalOffset, double newHorizontalOffset)
+		{
+			base.OnHorizontalOffsetChanged(oldHorizontalOffset, newHorizontalOffset);
+			PopupPanel?.InvalidateMeasure();
+		}
+
 		private static readonly PointerEventHandler _handleIfOpened = (snd, e) =>
 		{
 			var popup = ((PopupPanel)snd).Popup;

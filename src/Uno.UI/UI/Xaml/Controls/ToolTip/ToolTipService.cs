@@ -38,9 +38,9 @@ namespace Windows.UI.Xaml.Controls
 
 			var toolTip = args.NewValue as ToolTip;
 
-			if (toolTip == null && args.NewValue is string toolTipString)
+			if (toolTip == null && args.NewValue != null)
 			{
-				toolTip = new ToolTip {Content = toolTipString};
+				toolTip = new ToolTip { Content = args.NewValue };
 			}
 
 			if (toolTip != null)
