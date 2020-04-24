@@ -53,8 +53,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			var rect = _app.WaitForElement("_target").Single().Rect;
 			_app.DragCoordinates(rect.X + 10, rect.Y + 10, rect.Right - 10, rect.Bottom - 10);
 
-			_app.WaitForElement("_result");
-
 			var result = _app.Marked("_result").GetDependencyPropertyValue<string>("Text");
 			result = result.Replace("\r", "").Replace("\n", "");
 
