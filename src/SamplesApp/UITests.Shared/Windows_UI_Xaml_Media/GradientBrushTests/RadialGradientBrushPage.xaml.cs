@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NETFX_CORE
+using System;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -259,3 +260,4 @@ namespace MUXControlsTestApp
 		}
 	}
 }
+#endif
