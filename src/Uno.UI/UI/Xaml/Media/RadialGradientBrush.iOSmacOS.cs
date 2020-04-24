@@ -2,8 +2,6 @@
 using Windows.Foundation;
 using CoreAnimation;
 using CoreGraphics;
-using Foundation;
-using UIKit;
 using Uno.Extensions;
 
 namespace Windows.UI.Xaml.Media

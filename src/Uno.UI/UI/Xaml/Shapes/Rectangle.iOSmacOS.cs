@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Shapes
 			_strokeSubscription.Disposable =
 				Brush.AssignAndObserveBrush(Stroke, c => _rectangleLayer.StrokeColor = c);
 
-			SetNeedsDisplay();
+			this.SetNeedsDisplay();
 		}
 
 		protected override void OnFillChanged(Brush newValue)

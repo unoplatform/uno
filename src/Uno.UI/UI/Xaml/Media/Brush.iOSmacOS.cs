@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Media
 			}
 			else if (b is ImageBrush imageBrush)
 			{
-				void ImageChanged(UIImage _) => colorSetter(SolidColorBrushHelper.Transparent.Color);
+				void ImageChanged(_Image _) => colorSetter(SolidColorBrushHelper.Transparent.Color);
 
 				imageBrush.ImageChanged += ImageChanged;
 
