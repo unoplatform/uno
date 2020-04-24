@@ -115,10 +115,9 @@ namespace Windows.UI.Xaml.Shapes
 
 				var outerPath = GetRoundedPath(cornerRadius, area);
 
-				var imgBackground = background as ImageBrush;
 				var insertionIndex = 0;
 
-				if (background is LinearGradientBrush lgbBackground)
+				if (background is GradientBrush gradientBackground)
 				{
 					var fillMask = new CAShapeLayer()
 					{
@@ -130,7 +129,7 @@ namespace Windows.UI.Xaml.Shapes
 					// We reduce the adjustedArea again so that the gradient is inside the border (like in Windows)
 					adjustedArea = adjustedArea.Shrink((nfloat)adjustedLineWidthOffset);
 
-					CreateLinearGradientBrushLayers(area, adjustedArea, parent, sublayers, ref insertionIndex, lgbBackground, fillMask);
+					CreateGradientBrushLayers(area, adjustedArea, parent, sublayers, ref insertionIndex, gradientBackground, fillMask);
 				}
 				else if (background is SolidColorBrush scbBackground)
 				{
@@ -182,7 +181,7 @@ namespace Windows.UI.Xaml.Shapes
 			}
 			else
 			{
-				if (background is LinearGradientBrush lgbBackground)
+				if (background is GradientBrush gradientBackground)
 				{
 					var fullArea = new CGRect(
 						area.X + borderThickness.Left,
@@ -193,7 +192,7 @@ namespace Windows.UI.Xaml.Shapes
 					var insideArea = new CGRect(CGPoint.Empty, fullArea.Size);
 					var insertionIndex = 0;
 
-					CreateLinearGradientBrushLayers(fullArea, insideArea, parent, sublayers, ref insertionIndex, lgbBackground, fillMask: null);
+					CreateGradientBrushLayers(fullArea, insideArea, parent, sublayers, ref insertionIndex, gradientBackground, fillMask: null);
 				}
 				else if (background is SolidColorBrush scbBackground)
 				{
@@ -384,7 +383,7 @@ namespace Windows.UI.Xaml.Shapes
 		/// <param name="insertionIndex">Where in the layer the new layers will be added</param>
 		/// <param name="linearGradientBrush">The LinearGradientBrush</param>
 		/// <param name="fillMask">Optional mask layer (for when we use rounded corners)</param>
-		private static void CreateLinearGradientBrushLayers(CGRect fullArea, CGRect insideArea, CALayer layer, List<CALayer> sublayers, ref int insertionIndex, LinearGradientBrush linearGradientBrush, CAShapeLayer fillMask)
+		private static void CreateGradientBrushLayers(CGRect fullArea, CGRect insideArea, CALayer layer, List<CALayer> sublayers, ref int insertionIndex, GradientBrush gradientBrush, CAShapeLayer fillMask)
 		{
 			// This layer is the one we apply the mask on. It's the full size of the shape because the mask is as well.
 			var gradientContainerLayer = new CALayer
@@ -398,7 +397,7 @@ namespace Windows.UI.Xaml.Shapes
 			var gradientFrame = new CGRect(new CGPoint(insideArea.X, insideArea.Y), insideArea.Size);
 
 			// This is the layer with the actual gradient in it. Its frame is the inside of the border.
-			var gradientLayer = linearGradientBrush.GetLayer(insideArea.Size);
+			var gradientLayer = gradientBrush.GetLayer(insideArea.Size);
 			gradientLayer.Frame = gradientFrame;
 			gradientLayer.MasksToBounds = true;
 

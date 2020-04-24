@@ -9,11 +9,11 @@
 
 	<ScrollViewer>
 		<StackPanel Spacing="10">
-			<TextBlock FontSize="15">Radial Gradient as background on a Rectangle + Border</TextBlock>
+			<TextBlock FontSize="15">Radial Gradient as background on a Rectangle / Border / Ellipse</TextBlock>
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<Rectangle Width="100" Height="100">
 					<Rectangle.Fill>
-						<RadialGradientBrush>
+						<RadialGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
@@ -23,9 +23,10 @@
 						</RadialGradientBrush>
 					</Rectangle.Fill>
 				</Rectangle>
+
 				<Border Width="100" Height="100">
 					<Border.Background>
-						<RadialGradientBrush>
+						<RadialGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
@@ -35,12 +36,49 @@
 						</RadialGradientBrush>
 					</Border.Background>
 				</Border>
-			</StackPanel>
-			<TextBlock FontSize="15">Radial Gradient as border/stroke on a Rectangle + Border</TextBlock>
+				<Ellipse Width="100" Height="100">
+					<Ellipse.Fill>
+						<RadialGradientBrush FallbackColor="Red">
+							<GradientStop Color="Blue" Offset="0.0" />
+							<GradientStop Color="Yellow" Offset="0.2" />
+							<GradientStop Color="LimeGreen" Offset="0.4" />
+							<GradientStop Color="LightBlue" Offset="0.6" />
+							<GradientStop Color="Blue" Offset="0.8" />
+							<GradientStop Color="LightGray" Offset="1" />
+						</RadialGradientBrush>
+					</Ellipse.Fill>
+				</Ellipse>
+				<Ellipse Width="150" Height="100">
+					<Ellipse.Fill>
+						<RadialGradientBrush FallbackColor="Red">
+							<GradientStop Color="Blue" Offset="0.0" />
+							<GradientStop Color="Yellow" Offset="0.2" />
+							<GradientStop Color="LimeGreen" Offset="0.4" />
+							<GradientStop Color="LightBlue" Offset="0.6" />
+							<GradientStop Color="Blue" Offset="0.8" />
+							<GradientStop Color="LightGray" Offset="1" />
+						</RadialGradientBrush>
+					</Ellipse.Fill>
+				</Ellipse>
+				<Rectangle x:Name="Rect" Width="200" Height="200">
+					<Rectangle.Fill>
+						<RadialGradientBrush
+							x:Name="RadialGradientBrushExample"
+							MappingMode="RelativeToBoundingBox"
+							Center="0.25,0.25"
+							RadiusX=".5" RadiusY=".5"
+							GradientOrigin="0.5,.25"
+							SpreadMethod="Pad">
+							<GradientStop Color="Yellow" Offset="0.0" />
+							<GradientStop Color="Blue" Offset="1" />
+						</RadialGradientBrush>
+					</Rectangle.Fill>
+				</Rectangle>			</StackPanel>
+			<TextBlock FontSize="15">Radial Gradient as border/stroke on a Rectangle/ Border / Ellipse </TextBlock>
 			<StackPanel Orientation="Horizontal" Spacing="10">
-				<Rectangle Width="100" Height="100" StrokeThickness="40">
+				<Rectangle Width="100" Height="100" StrokeThickness="40" Fill="DarkGray">
 					<Rectangle.Stroke>
-						<RadialGradientBrush>
+						<RadialGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
@@ -50,9 +88,10 @@
 						</RadialGradientBrush>
 					</Rectangle.Stroke>
 				</Rectangle>
-				<Border Width="100" Height="100" BorderThickness="40">
+
+				<Border Width="100" Height="100" BorderThickness="40" Background="DarkGray">
 					<Border.BorderBrush>
-						<RadialGradientBrush>
+						<RadialGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
@@ -62,12 +101,36 @@
 						</RadialGradientBrush>
 					</Border.BorderBrush>
 				</Border>
+				<Ellipse Width="100" Height="100" StrokeThickness="40" Fill="DarkGray">
+					<Ellipse.Stroke>
+						<RadialGradientBrush FallbackColor="Red">
+							<GradientStop Color="Blue" Offset="0.0" />
+							<GradientStop Color="Yellow" Offset="0.2" />
+							<GradientStop Color="LimeGreen" Offset="0.4" />
+							<GradientStop Color="LightBlue" Offset="0.6" />
+							<GradientStop Color="Blue" Offset="0.8" />
+							<GradientStop Color="LightGray" Offset="1" />
+						</RadialGradientBrush>
+					</Ellipse.Stroke>
+				</Ellipse>
+				<Ellipse Width="150" Height="100" StrokeThickness="40" Fill="DarkGray">
+					<Ellipse.Stroke>
+						<RadialGradientBrush FallbackColor="Red">
+							<GradientStop Color="Blue" Offset="0.0" />
+							<GradientStop Color="Yellow" Offset="0.2" />
+							<GradientStop Color="LimeGreen" Offset="0.4" />
+							<GradientStop Color="LightBlue" Offset="0.6" />
+							<GradientStop Color="Blue" Offset="0.8" />
+							<GradientStop Color="LightGray" Offset="1" />
+						</RadialGradientBrush>
+					</Ellipse.Stroke>
+				</Ellipse>
 			</StackPanel>
 			<TextBlock FontSize="15">Linear Gradient as background on a Rectangle + Border (relative + absolute)</TextBlock>
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<Rectangle Width="100" Height="100">
 					<Rectangle.Fill>
-						<LinearGradientBrush>
+						<LinearGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
@@ -79,7 +142,7 @@
 				</Rectangle>
 				<Border Width="100" Height="100">
 					<Border.Background>
-						<LinearGradientBrush>
+						<LinearGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
@@ -91,7 +154,7 @@
 				</Border>
 				<Rectangle Width="100" Height="100">
 					<Rectangle.Fill>
-						<LinearGradientBrush MappingMode="Absolute" EndPoint="100,100">
+						<LinearGradientBrush MappingMode="Absolute" EndPoint="100,100" FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
@@ -103,7 +166,7 @@
 				</Rectangle>
 				<Border Width="100" Height="100">
 					<Border.Background>
-						<LinearGradientBrush MappingMode="Absolute" EndPoint="100,100">
+						<LinearGradientBrush MappingMode="Absolute" EndPoint="100,100" FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
@@ -118,7 +181,7 @@
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<Rectangle Width="100" Height="100" StrokeThickness="40">
 					<Rectangle.Stroke>
-						<LinearGradientBrush>
+						<LinearGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
@@ -130,7 +193,7 @@
 				</Rectangle>
 				<Border Width="100" Height="100" BorderThickness="40">
 					<Border.BorderBrush>
-						<LinearGradientBrush>
+						<LinearGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
@@ -142,7 +205,7 @@
 				</Border>
 				<Rectangle Width="100" Height="100" StrokeThickness="40">
 					<Rectangle.Stroke>
-						<LinearGradientBrush MappingMode="Absolute" EndPoint="100,100">
+						<LinearGradientBrush MappingMode="Absolute" EndPoint="100,100" FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
@@ -154,7 +217,7 @@
 				</Rectangle>
 				<Border Width="100" Height="100" BorderThickness="40">
 					<Border.BorderBrush>
-						<LinearGradientBrush MappingMode="Absolute" EndPoint="100,100">
+						<LinearGradientBrush MappingMode="Absolute" EndPoint="100,100" FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
