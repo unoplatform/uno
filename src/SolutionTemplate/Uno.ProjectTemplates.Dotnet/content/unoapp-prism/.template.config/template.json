@@ -1,27 +1,16 @@
-﻿{
+{
   "$schema": "http://json.schemastore.org/template",
   "author": "Uno Platform",
-  "classifications": [
-    "Web",
-    "Uno Platform",
-    "WebAssembly",
-    "Android",
-    "iOS",
-    "Windows",
-    "macOS"
-  ],
-  "name": "Cross-Platform App (Uno Platform)",
-  "identity": "Uno.Platform.UnoApp",
-  "groupIdentity": "Uno.Platform.Blank",
-  "description": "Solution template for creating a cross-platform XAML app with the Uno Platform that targets UWP, Android, iOS, macOS, and WebAssembly.",
-  "precedence": "6001",
+  "classifications": [ "Prism", "Xamarin", "Uno Platform", "WebAssembly", "iOS", "Android", "WinUI", "UWP" ],
+  "name": "Prism Cross-Platform App (Uno Platform)",
+  "identity": "Uno.Platform.Prism.CSharp", // Unique name for this template
+  "groupIdentity": "Uno.Platform.Prism",
+  "shortName": "unoapp-prism", // Short name that can be used on the cli
   "tags": {
     "language": "C#",
     "type": "project"
   },
-  "shortName": "unoapp",
-  "sourceName": "UnoQuickStart",
-  "placeholderFilename": "template-ignore",
+  "sourceName": "BlankApp",
   "preferNameDirectory": true,
   "guids": [
     "4C26868E-5E7C-458D-82E3-040509D0C71F", // Solution file (SLN)
@@ -31,7 +20,7 @@
     "B445DF73-AC9E-4276-9FBA-7CB5AD5D2518",
     "3EA9E612-E717-4E55-9034-DE653429FEFD", // WPF
     "3EA9E612-E717-4E55-9034-C415CD62AF9A", // UWP
-    "2B1FDFB6-C93C-4CA1-A6AB-528C4B3654B9", // UWP
+    "2B1FDFB6-C93C-4CA1-A6AB-528C4B3654B9" // UWP
   ],
   "symbols": {
     "guid1": {
@@ -92,65 +81,79 @@
       "dataType": "bool",
       "defaultValue": "false",
       "description": "Adds the Visual Studio Code Debugging support files for WebAssembly"
+    },
+    "Container": {
+      "type": "parameter",
+      "dataType": "choice",
+      "defaultValue": "DryIoc",
+      "choices": [
+        {
+          "choice": "DryIoc",
+          "description": "Uses DryIoc as the Dependency Injection Container"
+        },
+        {
+          "choice": "Unity",
+          "description": "Uses Unity as the Dependency Injection Container"
+        }
+      ],
+      "description": "The Dependency Injection Container to use"
+    },
+    "DryIocContainer": {
+      "type": "computed",
+      "value": "(Container == \"DryIoc\")"
+    },
+    "UnityContainer": {
+      "type": "computed",
+      "value": "(Container == \"Unity\")"
     }
   },
   "primaryOutputs": [
     {
-      "path": "UnoQuickStart.Shared\\UnoQuickStart.Shared.shproj"
+      "path": "BlankApp.Shared\\BlankApp.Shared.shproj"
     },
     {
       "condition": "Android",
-      "path": "UnoQuickStart.Droid\\UnoQuickStart.Droid.csproj"
+      "path": "BlankApp.Droid\\BlankApp.Droid.csproj"
     },
     {
       "condition": "iOS",
-      "path": "UnoQuickStart.iOS\\UnoQuickStart.iOS.csproj"
+      "path": "BlankApp.iOS\\BlankApp.iOS.csproj"
     },
     {
       "condition": "UWP",
-      "path": "UnoQuickStart.UWP\\UnoQuickStart.Uwp.csproj"
+      "path": "BlankApp.UWP\\BlankApp.Uwp.csproj"
     },
     {
       "condition": "Wasm",
-      "path": "UnoQuickStart.Wasm\\UnoQuickStart.Wasm.csproj"
+      "path": "BlankApp.Wasm\\BlankApp.Wasm.csproj"
     },
     {
       "condition": "macOS",
-      "path": "UnoQuickStart.macOS\\UnoQuickStart.macOS.csproj"
+      "path": "BlankApp.macOS\\BlankApp.macOS.csproj"
     }
   ],
   "sources": [
     {
       "modifiers": [
         {
-          "condition": "(!iOS)",
-          "exclude": [
-            "UnoQuickStart.iOS/**/*"
-          ]
-        },
-        {
           "condition": "(!Android)",
-          "exclude": [
-            "UnoQuickStart.Droid/**/*"
-          ]
+          "exclude": [ "BlankApp/BlankApp.Android/**/*" ]
         },
         {
-          "condition": "(!WebAssembly)",
-          "exclude": [
-            "UnoQuickStart.Gtk/**/*"
-          ]
-        },
-        {
-          "condition": "(!macOS)",
-          "exclude": [
-            "UnoQuickStart.macOS/**/*"
-          ]
+          "condition": "(!iOS)",
+          "exclude": [ "BlankApp/BlankApp.iOS/**/*" ]
         },
         {
           "condition": "(!UWP)",
-          "exclude": [
-            "UnoQuickStart.UWP/**/*"
-          ]
+          "exclude": [ "BlankApp/BlankApp.UWP/**/*" ]
+        },
+        {
+          "condition": "(!WebAsembly)",
+          "exclude": [ "BlankApp/BlankApp.Wasm/**/*" ]
+        },
+        {
+          "condition": "(!macOS)",
+          "exclude": [ "BlankApp/BlankApp.macOS/**/*" ]
         },
         {
           "condition": "(!vscodeWasm)",
