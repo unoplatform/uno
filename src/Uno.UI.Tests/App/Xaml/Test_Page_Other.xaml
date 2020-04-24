@@ -28,6 +28,11 @@
 					x:FieldModifier="public"
 					Background="{StaticResource PerilousColorBrush}" />
 		</Grid>
+		<Grid x:Name="customResourceResourcesGrid" x:FieldModifier="public">
+			<Grid.Resources>
+				<ResourceDictionary Source="{CustomResource OverlyConvolutedDictionaryLookup}" />
+			</Grid.Resources>
+		</Grid>
 		<TextBlock x:Name="customResourceTextBlock" x:FieldModifier="public" Text="{CustomResource TapestryHereOnMySkin}" />
 	</Grid>
 </Page>

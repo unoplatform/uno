@@ -10,14 +10,16 @@ namespace Uno.UI.Xaml
 {
 	internal static class XamlFilePathHelper
 	{
-		private const string AppXIdentifier = "ms-appx:///";
+		public const string AppXIdentifier = "ms-appx:///";
+		public const string MSResourceIdentifier = "ms-resource:///";
+		public static string LocalResourcePrefix => $"{MSResourceIdentifier}Files/";
 		
 		/// <summary>
 		/// Convert relative source path to absolute path.
 		/// </summary>
 		internal static string ResolveAbsoluteSource(string origin, string relativeTargetPath)
 		{
-			if (relativeTargetPath.StartsWith(AppXIdentifier))
+			if (IsAbsolutePath(relativeTargetPath))
 			{
 				// The path is already absolute. (Currently we assume it's in the local assembly.)
 				var trimmedPath = relativeTargetPath.TrimStart(AppXIdentifier);
@@ -34,6 +36,9 @@ namespace Uno.UI.Xaml
 
 			return absoluteTargetPath.Replace('\\', '/');
 		}
+
+		internal static bool IsAbsolutePath(string relativeTargetPath) => relativeTargetPath.StartsWith(AppXIdentifier)
+			|| relativeTargetPath.StartsWith(MSResourceIdentifier);
 
 		private static string GetAbsolutePath(string originDirectory, string relativeTargetPath)
 		{

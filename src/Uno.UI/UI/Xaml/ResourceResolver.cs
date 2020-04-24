@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Resources;
@@ -206,14 +207,26 @@ namespace Uno.UI
 		/// Retrieve the ResourceDictionary mapping to a given source. Throws an exception if none is found.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static ResourceDictionary RetrieveDictionaryForSource(Uri source)
+		public static ResourceDictionary RetrieveDictionaryForSource(Uri source) => RetrieveDictionaryForSource(source.AbsoluteUri, currentAbsolutePath: null);
+
+		/// <summary>
+		/// Retrieve the ResourceDictionary mapping to a given source. Throws an exception if none is found.
+		/// </summary>
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static ResourceDictionary RetrieveDictionaryForSource(string source, string currentAbsolutePath)
 		{
-			if (_registeredDictionaries.TryGetValue(source.AbsoluteUri, out var factory))
+			if (!XamlFilePathHelper.IsAbsolutePath(source))
+			{
+				// If we don't have an absolute path it must be a local resource reference
+				source = XamlFilePathHelper.LocalResourcePrefix + XamlFilePathHelper.ResolveAbsoluteSource(currentAbsolutePath, source);
+			}
+			if (_registeredDictionaries.TryGetValue(source, out var factory))
 			{
 				return factory();
 			}
 
-			throw new InvalidOperationException($"Cannot locate resource from '{source.AbsoluteUri}'");
+			throw new InvalidOperationException($"Cannot locate resource from '{source}'");
+		}
 
 		/// <summary>
 		/// Retrieves a resource for a {CustomResource} markup, with the <see cref="CustomXamlResourceLoader"/> currently set.

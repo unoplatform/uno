@@ -19,6 +19,7 @@ using Uno.Equality;
 using Uno.Logging;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 using System.Runtime.CompilerServices;
+using Uno.UI.Xaml;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -767,7 +768,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									InitializeAndBuildResourceDictionary(writer, topLevelControl, setIsParsing: true);
 									writer.AppendLineInvariant(";");
 									var url = _globalStaticResourcesMap.GetSourceLink(_fileDefinition);
-									writer.AppendLineInvariant("_{0}_ResourceDictionary.Source = new Uri(\"ms-resource:///Files/{1}\");", _fileUniqueId, url);
+									writer.AppendLineInvariant("_{0}_ResourceDictionary.Source = new Uri(\"{1}{2}\");", _fileUniqueId, XamlFilePathHelper.LocalResourcePrefix, url);
 									writer.AppendLineInvariant("_{0}_ResourceDictionary.CreationComplete();", _fileUniqueId);
 								}
 
@@ -2139,19 +2140,30 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			TryAnnotateWithGeneratorSource(writer);
 			var source = (sourceDef?.Value as string)?.Replace('\\', '/');
-			if (source == null)
+
+			var customResourceResourceId = GetCustomResourceResourceId(sourceDef);
+			
+			if (source == null && customResourceResourceId == null)
 			{
 				return;
 			}
-			var sourceProp = _globalStaticResourcesMap.FindTargetPropertyForMergedDictionarySource(_fileDefinition, source);
+
+			var sourceProp = source != null ?
+				_globalStaticResourcesMap.FindTargetPropertyForMergedDictionarySource(_fileDefinition, source) :
+				null;
+
 			if (sourceProp != null)
 			{
 				writer.AppendLineInvariant("global::{0}.GlobalStaticResources.{1}", _defaultNamespace, sourceProp);
 			}
 			else
 			{
+				var innerSource = source != null ?
+					"\"{0}\"".InvariantCultureFormat(source) :
+					GetCustomResourceRetrieval(customResourceResourceId, "string");
+				var currentAbsolutePath = _globalStaticResourcesMap.GetSourceLink(_fileDefinition);
 				writer.AppendLineInvariant("// Source not resolved statically, falling back on external resource retrieval.");
-				writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RetrieveDictionaryForSource(new global::System.Uri(\"{0}\"))", source);
+				writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RetrieveDictionaryForSource({0}, \"{1}\")", innerSource, currentAbsolutePath);
 			}
 		}
 

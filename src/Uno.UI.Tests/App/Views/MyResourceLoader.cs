@@ -15,6 +15,8 @@ namespace Uno.UI.Tests.App.Views
 			{
 				case "TapestryHereOnMySkin":
 					return "Map of the victories I win";
+				case "OverlyConvolutedDictionaryLookup":
+					return "Test_Dictionary_Isolated.xaml";
 				default:
 					throw new ArgumentException();
 			}
