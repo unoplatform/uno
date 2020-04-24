@@ -11,8 +11,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public event TypedEventHandler<Layout, object> MeasureInvalidated;
 		public event TypedEventHandler<Layout, object> ArrangeInvalidated;
 
-		// TODO UNO
-		// private string LayoutId { get; set; }
+		internal string LayoutId { get; set; }
 
 		internal static VirtualizingLayoutContext GetVirtualizingLayoutContext(LayoutContext context)
 		{

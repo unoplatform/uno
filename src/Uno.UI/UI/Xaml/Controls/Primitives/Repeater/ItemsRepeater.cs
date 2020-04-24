@@ -8,9 +8,12 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Microsoft.UI.Xaml.Automation.Peers;
 using Uno;
+using Uno.Disposables;
 using Uno.UI;
 using Uno.UI.Helpers.WinUI;
 
@@ -18,30 +21,123 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ItemsRepeater : FrameworkElement
 	{
+		// TODO UNO Oh oh
+		internal List<UIElement> Children;
+
+
 		// Change to 'true' to turn on debugging outputs in Output window
 		private static bool s_IsDebugOutputEnabled = false;
 
-		private static Point ClearedElementsArrangePosition = new Point(-10000.0f, -10000.0f);
+		internal static Point ClearedElementsArrangePosition = new Point(-10000.0f, -10000.0f);
 
 		// A convention we use in the ItemsRepeater codebase for an invalid Rect value.
 		internal static Rect InvalidRect = new Rect(-1, -1, -1, -1);
 
+		#region Background (DP) => Commented out as FwElt already has it ...
+		//public static DependencyProperty BackgroundProperty { get; } = DependencyProperty.Register(
+		//	"Background", typeof(Brush), typeof(ItemsRepeater), new PropertyMetadata(default(Brush)));
+
+		//public Brush Background
+		//{
+		//	get => (Brush)GetValue(BackgroundProperty);
+		//	set => SetValue(BackgroundProperty, value);
+		//}
+		#endregion
+
+		#region ItemsSource (DP)
+		public static DependencyProperty ItemsSourceProperty { get; } = DependencyProperty.Register(
+			"ItemsSource", typeof(object), typeof(ItemsRepeater), new PropertyMetadata(default(object), OnPropertyChanged));
+
+		public object ItemsSource
+		{
+			get => (object)GetValue(ItemsSourceProperty);
+			set => SetValue(ItemsSourceProperty, value);
+		}
+		#endregion
+
+		#region ItemTemplate (DP)
+		public static DependencyProperty ItemTemplateProperty { get; } = DependencyProperty.Register(
+			"ItemTemplate", typeof(object), typeof(ItemsRepeater), new PropertyMetadata(default(object), OnPropertyChanged));
+
+		public object ItemTemplate
+		{
+			get => (object)GetValue(ItemTemplateProperty);
+			set => SetValue(ItemTemplateProperty, value);
+		}
+		#endregion
+
+		#region Layout (DP)
+		public static DependencyProperty LayoutProperty { get; } = DependencyProperty.Register(
+			"Layout", typeof(Layout), typeof(ItemsRepeater), new PropertyMetadata(default(Layout), OnPropertyChanged));
+
+		public Layout Layout
+		{
+			get => (Layout)GetValue(LayoutProperty);
+			set => SetValue(LayoutProperty, value);
+		}
+		#endregion
+
+		#region Animator (DP)
+		public static DependencyProperty AnimatorProperty { get; } = DependencyProperty.Register(
+			"Animator", typeof(ElementAnimator), typeof(ItemsRepeater), new PropertyMetadata(default(ElementAnimator), OnPropertyChanged));
+
+		public ElementAnimator Animator
+		{
+			get => (ElementAnimator)GetValue(AnimatorProperty);
+			set => SetValue(AnimatorProperty, value);
+		}
+		#endregion
+
+		#region HorizontalCacheLength (DP)
+		public static DependencyProperty HorizontalCacheLengthProperty { get; } = DependencyProperty.Register(
+			"HorizontalCacheLength", typeof(double), typeof(ItemsRepeater), new PropertyMetadata(default(double), OnPropertyChanged));
+
+		public double HorizontalCacheLength
+		{
+			get => (double)GetValue(HorizontalCacheLengthProperty);
+			set => SetValue(HorizontalCacheLengthProperty, value);
+		}
+		#endregion
+
+		#region VerticalCacheLength (DP)
+		public static DependencyProperty VerticalCacheLengthProperty { get; } = DependencyProperty.Register(
+			"VerticalCacheLength", typeof(double), typeof(ItemsRepeater), new PropertyMetadata(default(double), OnPropertyChanged));
+
+		public double VerticalCacheLength
+		{
+			get => (double)GetValue(VerticalCacheLengthProperty);
+			set => SetValue(VerticalCacheLengthProperty, value);
+		}
+		#endregion
+
+		private static void OnPropertyChanged(DependencyObject snd, DependencyPropertyChangedEventArgs args)
+			=> ((ItemsRepeater)snd).OnPropertyChanged(args);
+
+		public event TypedEventHandler<ItemsRepeater, ItemsRepeaterElementPreparedEventArgs> ElementPrepared;
+		public event TypedEventHandler<ItemsRepeater, ItemsRepeaterElementIndexChangedEventArgs> ElementIndexChanged;
+		public event TypedEventHandler<ItemsRepeater, ItemsRepeaterElementClearingEventArgs> ElementClearing;
+
+		// Cached Event args to avoid creation cost every time
+		private ItemsRepeaterElementPreparedEventArgs m_elementPreparedArgs;
+		private ItemsRepeaterElementClearingEventArgs m_elementClearingArgs;
+		private ItemsRepeaterElementIndexChangedEventArgs m_elementIndexChangedArgs;
+
 		//public Microsoft.UI.Xaml.Controls.IElementFactoryShim ItemTemplateShim() { return m_itemTemplateWrapper; };
 		internal ViewManager ViewManager => m_viewManager;
-		public AnimationManager& AnimationManager() { return m_animationManager; }
+		internal AnimationManager AnimationManager => m_animationManager;
 
 		private bool IsProcessingCollectionChange => m_processingItemsSourceChange != null;
 
 		AnimationManager m_animationManager ;
 		ViewManager m_viewManager ;
-		std..ViewportManager m_viewportManager ;
+		ViewportManager m_viewportManager ;
 
 		ItemsSourceView m_itemsSourceView ;
 
 		Microsoft.UI.Xaml.Controls.IElementFactoryShim m_itemTemplateWrapper ;
 
 		VirtualizingLayoutContext m_layoutContext ;
-		IInspectable m_layoutState ;
+		object m_layoutState ;
 		// Value is different from null only while we are on the OnItemsSourceChanged call stack.
 		NotifyCollectionChangedEventArgs m_processingItemsSourceChange ;
 
@@ -50,16 +146,6 @@ namespace Microsoft.UI.Xaml.Controls
 		// The value of _layoutOrigin is expected to be set by the layout
 		// when it gets measured. It should not be used outside of measure.
 		Point m_layoutOrigin;
-
-		// Event revokers
-		ItemsSourceView.CollectionChanged_revoker m_itemsSourceViewChanged;
-		Layout.MeasureInvalidated_revoker m_measureInvalidated;
-		Layout.ArrangeInvalidated_revoker m_arrangeInvalidated;
-
-		// Cached Event args to avoid creation cost every time
-		private ItemsRepeaterElementPreparedEventArgs m_elementPreparedArgs;
-		private ItemsRepeaterElementClearingEventArgs m_elementClearingArgs;
-		private ItemsRepeaterElementIndexChangedEventArgs m_elementIndexChangedArgs;
 
 		// Loaded events fire on the first tick after an element is put into the tree 
 		// while unloaded is posted on the UI tree and may be processed out of sync with subsequent loaded
@@ -97,12 +183,12 @@ namespace Microsoft.UI.Xaml.Controls
 			AutomationProperties.SetAccessibilityView(this, AccessibilityView.Raw);
 			//if (SharedHelpers.IsRS3OrHigher())
 			{
-				TabFocusNavigation(winrt.KeyboardNavigationMode.Once);
-				XYFocusKeyboardNavigation(winrt.XYFocusKeyboardNavigationMode.Enabled);
+				TabFocusNavigation = KeyboardNavigationMode.Once;
+				XYFocusKeyboardNavigation = XYFocusKeyboardNavigationMode.Enabled;
 			}
 
-			Loaded(this, OnLoaded);
-			Unloaded(this, OnUnloaded);
+			Loaded += OnLoaded;
+			Unloaded += OnUnloaded;
 
 			// Initialize the cached layout to the default value
 			var layout = Layout as VirtualizingLayout;
@@ -118,7 +204,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region IUIElementOverrides
 
-		AutomationPeer OnCreateAutomationPeer()
+		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			return new RepeaterAutomationPeer(this);
 		}
@@ -127,7 +213,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region IUIElementOverrides7
 
-		IEnumerable<DependencyObject> GetChildrenInTabFocusOrder()
+		protected override IEnumerable<DependencyObject> GetChildrenInTabFocusOrder()
 		{
 			return CreateChildrenInTabFocusOrderIterable();
 		}
@@ -135,8 +221,7 @@ namespace Microsoft.UI.Xaml.Controls
 		#endregion
 
 		#region IUIElementOverrides8
-
-		private void OnBringIntoViewRequested(BringIntoViewRequestedEventArgs e)
+		protected override void OnBringIntoViewRequested(BringIntoViewRequestedEventArgs e)
 		{
 			m_viewportManager.OnBringIntoViewRequested(e);
 		}
@@ -172,7 +257,7 @@ namespace Microsoft.UI.Xaml.Controls
 				var layoutContext = GetLayoutContext();
 
 				// Expensive operation, do it only in debug builds.
-#if DEBUG
+#if DEBUG && false // TODO UNO
 				var virtualContext = (VirtualizingLayoutContext) layoutContext;
 				virtualContext.Indent(Indent());
 #endif
@@ -197,11 +282,11 @@ namespace Microsoft.UI.Xaml.Controls
 					var element = children[i];
 					var virtInfo = GetVirtualizationInfo(element);
 
-					if (virtInfo.Owner() == ElementOwner.Layout &&
-						virtInfo.AutoRecycleCandidate() &&
-						!virtInfo.KeepAlive())
+					if (virtInfo.Owner == ElementOwner.Layout &&
+						virtInfo.AutoRecycleCandidate &&
+						!virtInfo.KeepAlive)
 					{
-						REPEATER_TRACE_INFO("AutoClear - %d \n", virtInfo.Index());
+						// TODO UNO REPEATER_TRACE_INFO("AutoClear - %d \n", virtInfo.Index);
 						ClearElementImpl(element);
 					}
 				}
@@ -219,7 +304,7 @@ namespace Microsoft.UI.Xaml.Controls
 				throw new InvalidOperationException("Reentrancy detected during layout.");
 			}
 
-			if (IsProcessingCollectionChange())
+			if (IsProcessingCollectionChange)
 			{
 				throw new InvalidOperationException("Cannot run layout in the middle of a collection change.");
 			}
@@ -244,15 +329,15 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var element = children[i];
 				var virtInfo = GetVirtualizationInfo(element);
-				virtInfo.KeepAlive(false);
+				virtInfo.KeepAlive = false;
 
-				if (virtInfo.Owner() == ElementOwner.ElementFactory ||
-					virtInfo.Owner() == ElementOwner.PinnedPool)
+				if (virtInfo.Owner == ElementOwner.ElementFactory ||
+					virtInfo.Owner == ElementOwner.PinnedPool)
 				{
 					// Toss it away. And arrange it with size 0 so that XYFocus won't use it.
 					element.Arrange(new Rect(
-						ClearedElementsArrangePosition.X - (float)(element.DesiredSize().Width),
-						ClearedElementsArrangePosition.Y - (float)(element.DesiredSize().Height),
+						ClearedElementsArrangePosition.X - (float)(element.DesiredSize.Width),
+						ClearedElementsArrangePosition.Y - (float)(element.DesiredSize.Height),
 						0.0,
 						0.0));
 				}
@@ -260,13 +345,13 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					var newBounds = CachedVisualTreeHelpers.GetLayoutSlot(element as FrameworkElement);
 
-					if (virtInfo.ArrangeBounds() != ItemsRepeater.InvalidRect &&
-						newBounds != virtInfo.ArrangeBounds())
+					if (virtInfo.ArrangeBounds != ItemsRepeater.InvalidRect &&
+						newBounds != virtInfo.ArrangeBounds)
 					{
-						m_animationManager.OnElementBoundsChanged(element, virtInfo.ArrangeBounds(), newBounds);
+						m_animationManager.OnElementBoundsChanged(element, virtInfo.ArrangeBounds, newBounds);
 					}
 
-					virtInfo.ArrangeBounds(newBounds);
+					virtInfo.ArrangeBounds = newBounds;
 				}
 			}
 
@@ -280,27 +365,24 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region IRepeater interface.
 
-		private ItemsSourceView ItemsSourceView()
-		{
-			return m_itemsSourceView.get();
-		}
+		public ItemsSourceView ItemsSourceView => m_itemsSourceView;
 
 		public int GetElementIndex(UIElement element)
 		{
 			return GetElementIndexImpl(element);
 		}
 
-		UIElement TryGetElement(int index)
+		public UIElement TryGetElement(int index)
 		{
 			return GetElementFromIndexImpl(index);
 		}
 
-		void PinElement(UIElement const& element)
+		internal void PinElement(UIElement element)
 		{
 			m_viewManager.UpdatePin(element, true /* addPin */);
 		}
 
-		void UnpinElement(UIElement const& element)
+		internal void UnpinElement(UIElement element)
 		{
 			m_viewManager.UpdatePin(element, false /* addPin */);
 		}
@@ -312,31 +394,31 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#endregion
 
-		UIElement GetElementImpl(int index, bool forceCreate, bool suppressAutoRecycle)
+		private UIElement GetElementImpl(int index, bool forceCreate, bool suppressAutoRecycle)
 		{
 			var element = m_viewManager.GetElement(index, forceCreate, suppressAutoRecycle);
 			return element;
 		}
 
-		void ClearElementImpl(const UIElement  & element)
+		void ClearElementImpl(UIElement element)
 		{
 			// Clearing an element due to a collection change
 			// is more strict in that pinned elements will be forcibly
 			// unpinned and sent back to the view generator.
-			const bool isClearedDueToCollectionChange =
-				IsProcessingCollectionChange() &&
-				(m_processingItemsSourceChange.get().Action() == NotifyCollectionChangedAction.Remove ||
-					m_processingItemsSourceChange.get().Action() == NotifyCollectionChangedAction.Replace ||
-					m_processingItemsSourceChange.get().Action() == NotifyCollectionChangedAction.Reset);
+			bool isClearedDueToCollectionChange =
+				IsProcessingCollectionChange &&
+				(m_processingItemsSourceChange.Action == NotifyCollectionChangedAction.Remove ||
+					m_processingItemsSourceChange.Action == NotifyCollectionChangedAction.Replace ||
+					m_processingItemsSourceChange.Action == NotifyCollectionChangedAction.Reset);
 
 			m_viewManager.ClearElement(element, isClearedDueToCollectionChange);
 			m_viewportManager.OnElementCleared(element);
 		}
 
-		int GetElementIndexImpl(const UIElement  & element)
+		int GetElementIndexImpl(UIElement element)
 		{
 			// Verify that element is actually a child of this ItemsRepeater
-			var  const parent  = VisualTreeHelper.GetParent(element);
+			var  parent  = VisualTreeHelper.GetParent(element);
 			if (parent == this)
 			{
 				var virtInfo = TryGetVirtualizationInfo(element);
@@ -350,12 +432,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			UIElement result = null;
 
-			var children = Children();
-			for (unsigned i = 0u; i < children.Size() && !result; ++i)
+			var children = Children;
+			for (int i = 0; i < children.Count && result == null; ++i)
 			{
-				var element = children.GetAt(i);
+				var element = children[i];
 				var virtInfo = TryGetVirtualizationInfo(element);
-				if (virtInfo && virtInfo.IsRealized() && virtInfo.Index() == index)
+				if (virtInfo != null && virtInfo.IsRealized && virtInfo.Index == index)
 				{
 					result = element;
 				}
@@ -366,30 +448,28 @@ namespace Microsoft.UI.Xaml.Controls
 
 		UIElement GetOrCreateElementImpl(int index)
 		{
-			if (index >= 0 && index >= ItemsSourceView().Count())
+			if (index >= 0 && index >= ItemsSourceView.Count)
 			{
-				throw hresult_invalid_argument("Argument index is invalid.");
+				throw new ArgumentException(nameof(index), "Argument index is invalid.");
 			}
 
 			if (m_isLayoutInProgress)
 			{
-				throw hresult_error(E_FAIL, "GetOrCreateElement invocation is not allowed during layout.");
+				throw new InvalidOperationException("GetOrCreateElement invocation is not allowed during layout.");
 			}
 
 			var element = GetElementFromIndexImpl(index);
-			const bool isAnchorOutsideRealizedRange = !element;
+			bool isAnchorOutsideRealizedRange = element == null;
 
 			if (isAnchorOutsideRealizedRange)
 			{
-				if (!Layout())
+				if (Layout == null)
 				{
-					throw hresult_error(E_FAIL, "Cannot make an Anchor when there is no attached layout.");
+					throw new InvalidOperationException("Cannot make an Anchor when there is no attached layout.");
 				}
 
 				element = GetLayoutContext().GetOrCreateElementAt(index);
-				element.Measure({
-					std.numeric_limits<float>.infinity(), std.numeric_limits<float>.infinity()
-				});
+				element.Measure(new Size(double.PositiveInfinity, double.PositiveInfinity));
 			}
 
 			m_viewportManager.OnMakeAnchor(element, isAnchorOutsideRealizedRange);
@@ -399,18 +479,18 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		/*static*/
-		com_ptr<VirtualizationInfo> TryGetVirtualizationInfo(const UIElement  & element)
+		internal static VirtualizationInfo TryGetVirtualizationInfo(UIElement element)
 		{
 			var value = element.GetValue(GetVirtualizationInfoProperty());
-			return get_self<VirtualizationInfo>(value).get_strong();
+			return (VirtualizationInfo)value;
 		}
 
 		/*static*/
-		com_ptr<VirtualizationInfo> GetVirtualizationInfo(const UIElement  & element)
+		internal static VirtualizationInfo GetVirtualizationInfo(UIElement element)
 		{
 			var result = TryGetVirtualizationInfo(element);
 
-			if (!result)
+			if (result == null)
 			{
 				result = CreateAndInitializeVirtualizationInfo(element);
 			}
@@ -419,103 +499,106 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		/* static */
-		com_ptr<VirtualizationInfo> CreateAndInitializeVirtualizationInfo(const UIElement  & element)
+		internal static VirtualizationInfo CreateAndInitializeVirtualizationInfo(UIElement element)
 		{
-			MUX_ASSERT(!TryGetVirtualizationInfo(element));
+			global::System.Diagnostics.Debug.Assert(TryGetVirtualizationInfo(element) == null);
 			var result = new VirtualizationInfo();
-			(element.SetValue(GetVirtualizationInfoProperty(), result as IInspectable));
+			element.SetValue(GetVirtualizationInfoProperty(), result);
 			return result;
 		}
 
-		void OnPropertyChanged(const DependencyPropertyChangedEventArgs  & args)
+		private void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
-			IDependencyProperty property = args.Property();
+			var property = args.Property;
 
-			if (property == s_ItemsSourceProperty)
+			if (property == ItemsSourceProperty)
 			{
-				if (args.NewValue() != args.OldValue())
+				if (args.NewValue != args.OldValue)
 				{
-					var newValue = args.NewValue();
-					var newDataSource = newValue.try_as<ItemsSourceView>();
-					if (newValue && !newDataSource)
+					var newValue = args.NewValue;
+					var newDataSource = newValue as ItemsSourceView;
+					if (newValue != null && newDataSource == null)
 					{
-						newDataSource = ItemsSourceView(newValue);
+						newDataSource = new InspectingDataSource(newValue);
 					}
 
-					OnDataSourcePropertyChanged(m_itemsSourceView.get(), newDataSource);
+					OnDataSourcePropertyChanged(m_itemsSourceView, newDataSource);
 				}
 			}
-			else if (property == s_ItemTemplateProperty)
+			else if (property == ItemTemplateProperty)
 			{
-				(OnItemTemplateChanged(args.OldValue(). as<IElementFactory > (), args.NewValue() as IElementFactory));
+				OnItemTemplateChanged(args.OldValue as IElementFactory, args.NewValue as IElementFactory);
 			}
-			else if (property == s_LayoutProperty)
+			else if (property == LayoutProperty)
 			{
-				(OnLayoutChanged(args.OldValue(). as<Layout > (), args.NewValue() as Layout));
+				OnLayoutChanged(args.OldValue as Layout, args.NewValue as Layout);
 			}
-			else if (property == s_AnimatorProperty)
+			else if (property == AnimatorProperty)
 			{
-				(OnAnimatorChanged(args.OldValue(). as<ElementAnimator > (), args.NewValue() as ElementAnimator));
+				OnAnimatorChanged(args.OldValue as ElementAnimator, args.NewValue as ElementAnimator);
 			}
-			else if (property == s_HorizontalCacheLengthProperty)
+			else if (property == HorizontalCacheLengthProperty)
 			{
-				m_viewportManager.HorizontalCacheLength(unbox_value<double>(args.NewValue()));
+				m_viewportManager.HorizontalCacheLength = (double)args.NewValue;
 			}
-			else if (property == s_VerticalCacheLengthProperty)
+			else if (property == VerticalCacheLengthProperty)
 			{
-				m_viewportManager.VerticalCacheLength(unbox_value<double>(args.NewValue()));
+				m_viewportManager.VerticalCacheLength = (double)args.NewValue;
 			}
 		}
 
-		void OnElementPrepared(const UIElement  & element, int index)
+		void OnElementPrepared(UIElement element, int index)
 		{
 			m_viewportManager.OnElementPrepared(element);
-			if (m_elementPreparedEventSource)
+			var m_elementPreparedEventSource = ElementPrepared;
+			if (m_elementPreparedEventSource != null)
 			{
-				if (!m_elementPreparedArgs)
+				if (m_elementPreparedArgs == null)
 				{
-					m_elementPreparedArgs = ItemsRepeaterElementPreparedEventArgs(this, new ItemsRepeaterElementPreparedEventArgs(element, index));
+					m_elementPreparedArgs = new ItemsRepeaterElementPreparedEventArgs(element, index);
 				}
 				else
 				{
-					get_self<ItemsRepeaterElementPreparedEventArgs>(m_elementPreparedArgs.get()).Update(element, index);
+					m_elementPreparedArgs.Update(element, index);
 				}
 
-				m_elementPreparedEventSource(this, m_elementPreparedArgs.get());
+				m_elementPreparedEventSource(this, m_elementPreparedArgs);
 			}
 		}
 
-		void OnElementClearing(const UIElement  & element)
+		void OnElementClearing(UIElement element)
 		{
-			if (m_elementClearingEventSource)
+			var m_elementClearingEventSource = ElementClearing;
+			if (m_elementClearingEventSource != null)
 			{
-				if (!m_elementClearingArgs)
+				if (m_elementClearingArgs == null)
 				{
-					m_elementClearingArgs = ItemsRepeaterElementClearingEventArgs(this, new ItemsRepeaterElementClearingEventArgs(element));
+					m_elementClearingArgs = new ItemsRepeaterElementClearingEventArgs(element);
 				}
 				else
 				{
-					get_self<ItemsRepeaterElementClearingEventArgs>(m_elementClearingArgs.get()).Update(element);
+					m_elementClearingArgs.Update(element);
 				}
 
-				m_elementClearingEventSource(this, m_elementClearingArgs.get());
+				m_elementClearingEventSource(this, m_elementClearingArgs);
 			}
 		}
 
-		void OnElementIndexChanged(const UIElement  & element, int oldIndex, int newIndex)
+		void OnElementIndexChanged(UIElement element, int oldIndex, int newIndex)
 		{
-			if (m_elementIndexChangedEventSource)
+			var m_elementIndexChangedEventSource = ElementIndexChanged;
+			if (m_elementIndexChangedEventSource != null)
 			{
-				if (!m_elementIndexChangedArgs)
+				if (m_elementIndexChangedArgs == null)
 				{
-					m_elementIndexChangedArgs = ItemsRepeaterElementIndexChangedEventArgs(this, new ItemsRepeaterElementIndexChangedEventArgs(element, oldIndex, newIndex));
+					m_elementIndexChangedArgs = new ItemsRepeaterElementIndexChangedEventArgs(element, oldIndex, newIndex);
 				}
 				else
 				{
-					get_self<ItemsRepeaterElementIndexChangedEventArgs>(m_elementIndexChangedArgs.get()).Update(element, oldIndex, newIndex);
+					m_elementIndexChangedArgs.Update(element, oldIndex, newIndex);
 				}
 
-				m_elementIndexChangedEventSource(this, m_elementIndexChangedArgs.get());
+				m_elementIndexChangedEventSource(this, m_elementIndexChangedArgs);
 			}
 		}
 
@@ -526,25 +609,23 @@ namespace Microsoft.UI.Xaml.Controls
 			int indent = 1;
 
 			// Expensive, so we do it only in debug builds.
-#ifdef _DEBUG
-			(var parent = this.Parent() as FrameworkElement);
-			while (parent && !parent.try_as<ItemsRepeater>())
+#if DEBUG
+			var parent = this.Parent as FrameworkElement;
+			while (parent != null && !(parent is ItemsRepeater))
 			{
-				(parent = parent.Parent() as FrameworkElement);
+				parent = parent.Parent as FrameworkElement;
 			}
 
-			if (parent)
+			if (parent is ItemsRepeater parentRepeater)
 			{
-				(var parentRepeater = get_self<ItemsRepeater>(parent as ItemsRepeater));
 				indent = parentRepeater.Indent();
 			}
-
 #endif
 
 			return indent * 4;
 		}
 
-		void OnLoaded(const IInspectable  & /*sender*/, const RoutedEventArgs  & /*args*/)
+		void OnLoaded(object sender, RoutedEventArgs args)
 		{
 			// If we skipped an unload event, reset the scrollers now and invalidate measure so that we get a new
 			// layout pass during which we will hookup new scrollers.
@@ -557,7 +638,7 @@ namespace Microsoft.UI.Xaml.Controls
 			++_loadedCounter;
 		}
 
-		void OnUnloaded(const IInspectable  & /*sender*/, const RoutedEventArgs  & /*args*/)
+		private void OnUnloaded(object sender, RoutedEventArgs args)
 		{
 			++_unloadedCounter;
 			// Only reset the scrollers if this unload event is in-sync.
@@ -567,106 +648,84 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void OnDataSourcePropertyChanged(const ItemsSourceView  & oldValue, const ItemsSourceView  & newValue)
+		private void OnDataSourcePropertyChanged(ItemsSourceView oldValue, ItemsSourceView newValue)
 		{
 			if (m_isLayoutInProgress)
 			{
-				throw hresult_error(E_FAIL, "Cannot set ItemsSourceView during layout.");
+				throw new InvalidOperationException("Cannot set ItemsSourceView during layout.");
 			}
 
-			m_itemsSourceView.set(newValue);
+			m_itemsSourceView = newValue;
 
-			if (oldValue)
+			if (oldValue != null)
 			{
-				m_itemsSourceViewChanged.revoke();
+				newValue.CollectionChanged -= OnItemsSourceViewChanged;
 			}
 
-
-
-			if (newValue)
+			if (newValue != null)
 			{
-				m_itemsSourceViewChanged = newValue.CollectionChanged(auto_revoke,  {
-					this, &ItemsRepeater.OnItemsSourceViewChanged
-				});
+				newValue.CollectionChanged += OnItemsSourceViewChanged;
 			}
 
-			if (var const layout  = Layout())
+			var layout = Layout;
+			if (layout != null)
 			{
-				var  const args  = NotifyCollectionChangedEventArgs(
-					NotifyCollectionChangedAction.Reset,
-					null /* newItems */,
-					null /* oldItems */,
-					-1 /* newIndex */,
-					-1 /* oldIndex */);
-				args.Action();
-				var  const processingChange  = gsl.finally([this]()
-				{
-					m_processingItemsSourceChange.set(null);
-				});
-				m_processingItemsSourceChange.set(args);
+				var args  = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+				using var processingChange = Disposable.Create(() => m_processingItemsSourceChange = null);
+				m_processingItemsSourceChange = args;
 
-				if (var const virtualLayout  = layout.try_as<VirtualizingLayout>())
+				if (layout is VirtualizingLayout virtualLayout)
 				{
 					virtualLayout.OnItemsChangedCore(GetLayoutContext(), newValue, args);
 				}
-				else if (var const nonVirtualLayout  = layout.try_as<NonVirtualizingLayout>())
+				else if (layout is NonVirtualizingLayout nonVirtualLayout)
 				{
 					// Walk through all the elements and make sure they are cleared for
 					// non-virtualizing layouts.
-					for ( const auto 
-					&element: Children())
+					foreach (var element in Children)
 					{
-						if (GetVirtualizationInfo(element).IsRealized())
+						if (GetVirtualizationInfo(element).IsRealized)
 						{
 							ClearElementImpl(element);
 						}
 					}
 
-					Children().Clear();
+					Children.Clear();
 				}
 
 				InvalidateMeasure();
 			}
 		}
 
-		void OnItemTemplateChanged(const IElementFactory  & oldValue, const IElementFactory  & newValue)
+		void OnItemTemplateChanged(IElementFactory oldValue, IElementFactory newValue)
 		{
-			if (m_isLayoutInProgress && oldValue)
+			if (m_isLayoutInProgress && oldValue != null)
 			{
-				throw hresult_error(E_FAIL, "ItemTemplate cannot be changed during layout.");
+				throw new InvalidOperationException("ItemTemplate cannot be changed during layout.");
 			}
 
 			// Since the ItemTemplate has changed, we need to re-evaluate all the items that
 			// have already been created and are now in the tree. The easiest way to do that
 			// would be to do a reset.. Note that this has to be done before we change the template
 			// so that the cleared elements go back into the old template.
-			if (var const layout  = Layout())
+			var layout = Layout;
+			if (layout != null)
 			{
-				var  const args  = NotifyCollectionChangedEventArgs(
-					NotifyCollectionChangedAction.Reset,
-					null /* newItems */,
-					null /* oldItems */,
-					-1 /* newIndex */,
-					-1 /* oldIndex */);
-				args.Action();
-				var  const processingChange  = gsl.finally([this]()
-				{
-					m_processingItemsSourceChange.set(null);
-				});
-				m_processingItemsSourceChange.set(args);
+				var args = new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Reset);
+				using var processingChange = Disposable.Create(() => m_processingItemsSourceChange = null);
+				m_processingItemsSourceChange = args;
 
-				if (var const virtualLayout  = layout.try_as<VirtualizingLayout>())
+				if (layout is VirtualizingLayout virtualLayout)
 				{
 					virtualLayout.OnItemsChangedCore(GetLayoutContext(), newValue, args);
 				}
-				else if (var const nonVirtualLayout  = layout.try_as<NonVirtualizingLayout>())
+				else if (layout is NonVirtualizingLayout nonVirtualLayout)
 				{
 					// Walk through all the elements and make sure they are cleared for
 					// non-virtualizing layouts.
-					for (var  const
-					&child : Children())
+					foreach (var child in Children)
 					{
-						if (GetVirtualizationInfo(child).IsRealized())
+						if (GetVirtualizationInfo(child).IsRealized)
 						{
 							ClearElementImpl(child);
 						}
@@ -683,60 +742,61 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// Clear flag for bug #776
 			m_isItemTemplateEmpty = false;
-			m_itemTemplateWrapper = newValue.try_as<IElementFactoryShim>();
-			if (!m_itemTemplateWrapper)
+			m_itemTemplateWrapper = newValue as IElementFactoryShim;
+			if (m_itemTemplateWrapper == null)
 			{
 				// ItemTemplate set does not implement IElementFactoryShim. We also 
 				// want to support DataTemplate and DataTemplateSelectors automagically.
-				if (var dataTemplate = newValue.try_as<DataTemplate>())
+				if (newValue is DataTemplate dataTemplate)
 				{
 					m_itemTemplateWrapper = new ItemTemplateWrapper(dataTemplate);
-					( if (!dataTemplate.LoadContent() as FrameworkElement)) {
+					if (!(dataTemplate.LoadContent() is FrameworkElement))
+					{
 						// We have a DataTemplate which is empty, so we need to set it to true
 						m_isItemTemplateEmpty = true;
 					}
 				}
-				else if (var selector = newValue.try_as<DataTemplateSelector>())
+				else if (newValue is DataTemplateSelector selector)
 				{
 					m_itemTemplateWrapper = new ItemTemplateWrapper(selector);
 				}
 				else
 				{
-					throw hresult_invalid_argument("ItemTemplate");
+					throw new ArgumentException("ItemTemplate", "ItemTemplate");
 				}
 			}
 
 			InvalidateMeasure();
 		}
 
-		void OnLayoutChanged(const Layout  & oldValue, const Layout  & newValue)
+		void OnLayoutChanged(Layout oldValue, Layout newValue)
 		{
 			if (m_isLayoutInProgress)
 			{
-				throw hresult_error(E_FAIL, "Layout cannot be changed during layout.");
+				throw new InvalidOperationException("Layout cannot be changed during layout.");
 			}
 
 			m_viewManager.OnLayoutChanging();
 			m_animationManager.OnLayoutChanging();
 
-			if (oldValue)
+			if (oldValue != null)
 			{
 				oldValue.UninitializeForContext(GetLayoutContext());
-				m_measureInvalidated.revoke();
-				m_arrangeInvalidated.revoke();
+				newValue.MeasureInvalidated -= InvalidateMeasureForLayout;
+				newValue.ArrangeInvalidated -= InvalidateArrangeForLayout;
 
 				// Walk through all the elements and make sure they are cleared
-				var children = Children();
-				for (unsigned i = 0u; i < children.Size(); ++i)
+				var children = Children;
+				for (int i = 0; i < children.Count; ++i)
 				{
-					var element = children.GetAt(i);
-					if (GetVirtualizationInfo(element).IsRealized())
+					var element = children[i];
+					if (GetVirtualizationInfo(element).IsRealized)
 					{
 						ClearElementImpl(element);
 					}
 				}
 
-				m_layoutState.set(null);
+				m_layoutState = null;
 			}
 
 			if (!SharedHelpers.IsRS5OrHigher())
@@ -746,23 +806,19 @@ namespace Microsoft.UI.Xaml.Controls
 				m_layout = newValue;
 			}
 
-			if (newValue)
+			if (newValue != null)
 			{
 				newValue.InitializeForContext(GetLayoutContext());
-				m_measureInvalidated = newValue.MeasureInvalidated(auto_revoke,  {
-					this, &ItemsRepeater.InvalidateMeasureForLayout
-				});
-				m_arrangeInvalidated = newValue.ArrangeInvalidated(auto_revoke,  {
-					this, &ItemsRepeater.InvalidateArrangeForLayout
-				});
+				newValue.MeasureInvalidated += InvalidateMeasureForLayout;
+				newValue.ArrangeInvalidated += InvalidateArrangeForLayout;
 			}
 
-			bool isVirtualizingLayout = newValue != null && newValue.try_as<VirtualizingLayout>() != null;
+			bool isVirtualizingLayout = newValue is VirtualizingLayout;
 			m_viewportManager.OnLayoutChanged(isVirtualizingLayout);
 			InvalidateMeasure();
 		}
 
-		void OnAnimatorChanged(const ElementAnimator  & /* oldValue */, const ElementAnimator  & newValue)
+		void OnAnimatorChanged(ElementAnimator oldValue, ElementAnimator newValue)
 		{
 			m_animationManager.OnAnimatorChanged(newValue);
 			if (!SharedHelpers.IsRS5OrHigher())
@@ -773,31 +829,29 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void OnItemsSourceViewChanged(const IInspectable  & sender, const NotifyCollectionChangedEventArgs  & args)
+		void OnItemsSourceViewChanged(object sender, NotifyCollectionChangedEventArgs args)
 		{
 			if (m_isLayoutInProgress)
 			{
 				// Bad things will follow if the data changes while we are in the middle of a layout pass.
-				throw hresult_error(E_FAIL, "Changes in data source are not allowed during layout.");
+				throw new InvalidOperationException("Changes in data source are not allowed during layout.");
 			}
 
-			if (IsProcessingCollectionChange())
+			if (IsProcessingCollectionChange)
 			{
-				throw hresult_error(E_FAIL, "Changes in the data source are not allowed during another change in the data source.");
+				throw new InvalidOperationException("Changes in the data source are not allowed during another change in the data source.");
 			}
 
-			m_processingItemsSourceChange.set(args);
-			var processingChange = gsl.finally([this]()
-			{
-				m_processingItemsSourceChange.set(null);
-			});
+			m_processingItemsSourceChange = args;
+			using var processingChange = Disposable.Create(() => m_processingItemsSourceChange = null);
 
 			m_animationManager.OnItemsSourceChanged(sender, args);
 			m_viewManager.OnItemsSourceChanged(sender, args);
 
-			if (var layout = Layout())
+			var layout = Layout;
+			if (layout != null)
 			{
-				if (var virtualLayout = layout.try_as<VirtualizingLayout>())
+				if (layout is VirtualizingLayout virtualLayout)
 				{
 					virtualLayout.OnItemsChangedCore(GetLayoutContext(), sender, args);
 				}
@@ -809,30 +863,30 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void InvalidateMeasureForLayout(Layout const&, IInspectable const&)
+		void InvalidateMeasureForLayout(Layout sender, object args)
 		{
 			InvalidateMeasure();
 		}
 
-		void InvalidateArrangeForLayout(Layout const&, IInspectable const&)
+		void InvalidateArrangeForLayout(Layout sender, object args)
 		{
 			InvalidateArrange();
 		}
 
-		VirtualizingLayoutContext GetLayoutContext()
+		private VirtualizingLayoutContext GetLayoutContext()
 		{
-			if (!m_layoutContext)
+			if (m_layoutContext == null)
 			{
-				m_layoutContext.set(new RepeaterLayoutContext(this));
+				m_layoutContext = new RepeaterLayoutContext(this);
 			}
 
-			return m_layoutContext.get();
+			return m_layoutContext;
 		}
 
 		IEnumerable<DependencyObject> CreateChildrenInTabFocusOrderIterable()
 		{
-			var children = Children();
-			if (children.Size() > 0u)
+			var children = Children;
+			if (children.Count > 0u)
 			{
 				return new ChildrenInTabFocusOrderIterable(this);
 			}

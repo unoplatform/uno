@@ -10,23 +10,6 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	internal class VirtualizationInfo
 	{
-		private enum ElementOwner
-		{
-			// All elements are originally owned by the view generator.
-			ElementFactory,
-			// Ownership is transferred to the layout when it calls GetElement.
-			Layout,
-			// Ownership is transferred to the pinned pool if the element is cleared (outside of
-			// a 'remove' collection change of course).
-			PinnedPool,
-			// Ownership is transfered to the reset pool if the element is cleared by a reset and
-			// the data source supports unique ids.
-			UniqueIdResetPool,
-			// Ownership is transfered to the animator if the element is cleared due to a
-			// 'remove'-like collection change.
-			Animator
-		};
-
 		private const int PhaseNotSpecified = int.MinValue;
 		private const int PhaseReachedEnd = -1;
 
@@ -36,24 +19,61 @@ namespace Microsoft.UI.Xaml.Controls
 		private ElementOwner m_owner = ElementOwner.ElementFactory;
 		private Rect m_arrangeBounds;
 		private int m_phase = PhaseNotSpecified;
+		private bool m_keepAlive;
+		private bool m_autoRecycleCandidate;
 
 		private WeakReference<object> m_data;
 		private WeakReference<IDataTemplateComponent> m_dataTemplateComponent;
 
-		VirtualizationInfo()
+		public VirtualizationInfo()
 		{
 			m_arrangeBounds = ItemsRepeater.InvalidRect;
 		}
 
-		private bool IsPinned => m_pinCounter > 0u;
+		public Rect ArrangeBounds
+		{
+			get => m_arrangeBounds;
+			set => m_arrangeBounds = value;
+		}
 
-		private bool IsHeldByLayout => m_owner == ElementOwner.Layout;
+		string UniqueId => m_uniqueId;
 
-		private bool IsRealized => IsHeldByLayout || m_owner == ElementOwner.PinnedPool;
+		public bool KeepAlive
+		{
+			get => m_keepAlive;
+			set => m_keepAlive = value;
+		}
 
-		private bool IsInUniqueIdResetPool => m_owner == ElementOwner.UniqueIdResetPool;
+		public bool AutoRecycleCandidate
+		{
+			get => m_autoRecycleCandidate;
+			set => m_autoRecycleCandidate = value;
+		}
 
-		private void UpdatePhasingInfo(int phase,  object data, IDataTemplateComponent component)
+		public ElementOwner Owner => m_owner;
+
+		public int Index => m_index;
+
+		// Pinned means that the element is protected from getting cleared by layout.
+		// A pinned element may still get cleared by a collection change.
+		// IsPinned == true doesn't necessarly mean that the element is currently
+		// owned by the PinnedPool, only that its ownership may be transferred to the
+		// PinnedPool if it gets cleared by layout.
+		public bool IsPinned => m_pinCounter > 0u;
+
+		public bool IsHeldByLayout => m_owner == ElementOwner.Layout;
+
+		public bool IsRealized => IsHeldByLayout || m_owner == ElementOwner.PinnedPool;
+
+		public bool IsInUniqueIdResetPool => m_owner == ElementOwner.UniqueIdResetPool;
+
+		public int Phase
+		{
+			get => m_phase;
+			set => m_phase = value;
+		}
+
+		public void UpdatePhasingInfo(int phase,  object data, IDataTemplateComponent component)
 		{
 			m_phase = phase;
 			m_data = new WeakReference<object>(data);
@@ -163,6 +183,5 @@ namespace Microsoft.UI.Xaml.Controls
 
 			m_index = newIndex;
 		}
-
 	}
 }

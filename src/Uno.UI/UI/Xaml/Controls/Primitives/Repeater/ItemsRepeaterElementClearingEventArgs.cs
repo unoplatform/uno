@@ -9,9 +9,14 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		internal ItemsRepeaterElementClearingEventArgs(UIElement element)
 		{
-			Element = element;
+			Update(element);
 		}
 
-		public UIElement Element { get; }
+		public UIElement Element { get; private set; }
+
+		public void Update(UIElement element)
+		{
+			Element = element;
+		}
 	}
 }

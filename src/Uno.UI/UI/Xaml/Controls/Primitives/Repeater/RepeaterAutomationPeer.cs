@@ -4,6 +4,7 @@
 using System.Collections.Generic;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation.Peers;
+using Microsoft.UI.Xaml.Controls;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
@@ -31,9 +32,9 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 					if (childElement != null)
 					{
 						var virtInfo = ItemsRepeater.GetVirtualizationInfo(childElement);
-						if (virtInfo.IsRealized())
+						if (virtInfo.IsRealized)
 						{
-							realizedPeers.Add(new KeyValuePair<int, AutomationPeer>(virtInfo.Index(), childPeer));
+							realizedPeers.Add(new KeyValuePair<int, AutomationPeer>(virtInfo.Index, childPeer));
 						}
 					}
 				}
@@ -68,7 +69,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 			var parent = CachedVisualTreeHelpers.GetParent(childElement);
 			// Child peer could have given a descendant of the repeater's child. We
 			// want to get to the immediate child.
-			while (parent && parent.try_as<ItemsRepeater>() != repeater)
+			while (parent != null && parent as ItemsRepeater != repeater)
 			{
 				childElement = parent;
 				parent = CachedVisualTreeHelpers.GetParent(childElement);

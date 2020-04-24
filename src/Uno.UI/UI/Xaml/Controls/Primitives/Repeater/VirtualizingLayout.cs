@@ -29,7 +29,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return finalSize;
 		}
 
-		protected virtual void OnItemsChangedCore(VirtualizingLayoutContext context, object source, NotifyCollectionChangedEventArgs args)
+		protected internal virtual void OnItemsChangedCore(VirtualizingLayoutContext context, object source, NotifyCollectionChangedEventArgs args)
 		{
 			InvalidateMeasure();
 		}

@@ -31,7 +31,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		// TODO UNO
-		private void OnAnimatorChanged(ElementAnimator  newAnimator)
+		public void OnAnimatorChanged(ElementAnimator  newAnimator)
 		{
 			// While an element is hiding, we have ownership of it. We need
 			// to know when its animation completes so that we give it back
@@ -49,12 +49,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnLayoutChanging()
+		public void OnLayoutChanging()
 		{
 			m_hasRecordedLayoutTransitions = true;
 		}
 
-		private void OnItemsSourceChanged(IInspectable snd, NotifyCollectionChangedEventArgs args)
+		public void OnItemsSourceChanged(object snd, NotifyCollectionChangedEventArgs args)
 		{
 			switch (args.Action)
 			{
@@ -113,7 +113,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return canClear;
 		}
 
-		private void OnElementBoundsChanged(UIElement element, Rect oldBounds, Rect newBounds)
+		public void OnElementBoundsChanged(UIElement element, Rect oldBounds, Rect newBounds)
 		{
 			if (m_animator != null)
 			{
@@ -127,7 +127,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnOwnerArranged()
+		public void OnOwnerArranged()
 		{
 			m_hasRecordedAdds = false;
 			m_hasRecordedRemoves = false;

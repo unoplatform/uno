@@ -9,15 +9,20 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		internal ItemsRepeaterElementPreparedEventArgs(UIElement element, int index)
 		{
-			Element = element;
-			Index = index;
+			Update(element, index);
 		}
 
 		#region IElementPreparedEventArgs
 
-		public UIElement Element { get; }
+		public UIElement Element { get; private set; }
 
-		public int Index { get; }
+		public int Index { get; private set; }
 		#endregion
+
+		public void Update(UIElement element, int index)
+		{
+			Element = element;
+			Index = index;
+		}
 	}
 }

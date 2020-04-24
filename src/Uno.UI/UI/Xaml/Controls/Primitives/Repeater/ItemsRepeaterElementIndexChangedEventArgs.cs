@@ -12,19 +12,24 @@ namespace Microsoft.UI.Xaml.Controls
 			int oldIndex,
 			int newIndex)
 		{
-			Element = element;
-			OldIndex = oldIndex;
-			NewIndex = newIndex;
+			Update(element, oldIndex, newIndex);
 		}
 
 		#region IElementPreparedEventArgs
 
-		public UIElement Element { get; }
+		public UIElement Element { get; private set; }
 
-		public int OldIndex { get; }
+		public int OldIndex { get; private set; }
 
-		public int NewIndex { get; }
+		public int NewIndex { get; private set; }
 
 		#endregion
+
+		public void Update(UIElement element, in int oldIndex, in int newIndex)
+		{
+			Element = element;
+			OldIndex = oldIndex;
+			NewIndex = newIndex;
+		}
 	}
 }
