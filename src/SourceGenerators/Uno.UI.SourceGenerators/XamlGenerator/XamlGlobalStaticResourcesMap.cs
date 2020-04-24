@@ -5,12 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.IO;
+using static Uno.UI.Xaml.XamlFilePathHelper;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal class XamlGlobalStaticResourcesMap
 	{
-		private const string AppXIdentifier = "ms-appx:///";
 		private readonly Dictionary<string, List<StaticResourceDefinition>> _map = new Dictionary<string, List<StaticResourceDefinition>>();
 		private readonly Dictionary<string, XamlFileDefinition> _rdMap = new Dictionary<string, XamlFileDefinition>(StringComparer.CurrentCultureIgnoreCase);
 
@@ -77,48 +77,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		internal string GetSourceLink(XamlFileDefinition xamlFileDefinition)
 		{
 			return _rdMap.FirstOrDefault(kvp => kvp.Value == xamlFileDefinition).Key; //TODO: this is O(n), is it an actual perf issue?
-		}
-
-		/// <summary>
-		/// Convert relative source path to absolute path.
-		/// </summary>
-		private string ResolveAbsoluteSource(string origin, string relativeTargetPath)
-		{
-			if (relativeTargetPath.StartsWith(AppXIdentifier))
-			{
-				// The path is already absolute. (Currently we assume it's in the local assembly.)
-				var trimmedPath = relativeTargetPath.TrimStart(AppXIdentifier);
-				return trimmedPath;
-			}
-
-			var originDirectory = Path.GetDirectoryName(origin);
-			if (originDirectory.IsNullOrWhiteSpace())
-			{
-				return relativeTargetPath;
-			}
-
-			var absoluteTargetPath = GetAbsolutePath(originDirectory, relativeTargetPath);
-
-			return absoluteTargetPath.Replace('\\', '/');
-		}
-
-		private string GetAbsolutePath(string originDirectory, string relativeTargetPath)
-		{
-			var addedRootLength = 0;
-			if (Path.GetPathRoot(originDirectory).Length == 0)
-			{
-				var localRoot = Path.GetPathRoot(Directory.GetCurrentDirectory());
-				addedRootLength = localRoot.Length;
-				// Prepend a dummy root so that GetFullPath doesn't try to add the working directory. We remove it immediately afterward.
-				originDirectory = localRoot + originDirectory;
-			}
-			var absoluteTargetPath = Path.GetFullPath(
-					Path.Combine(originDirectory, relativeTargetPath)
-				);
-
-			absoluteTargetPath = absoluteTargetPath.Substring(addedRootLength);
-
-			return absoluteTargetPath;
 		}
 
 		private string ConvertIdToResourceDictionaryProperty(string id) => "{0}_ResourceDictionary".InvariantCultureFormat(id);

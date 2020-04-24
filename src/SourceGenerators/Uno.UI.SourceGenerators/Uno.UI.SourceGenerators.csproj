@@ -75,6 +75,9 @@
 		<Compile Include="..\..\Uno.UI\UI\Xaml\GridUnitType.cs">
 			<Link>Helpers\GridUnitType.cs</Link>
 		</Compile>
+		<Compile Include="..\..\Uno.UI\UI\Xaml\XamlFilePathHelper.shared.cs">
+			<Link>Helpers\XamlFilePathHelper.shared.cs</Link>
+		</Compile>
 	</ItemGroup>
 
 	<ItemGroup>
