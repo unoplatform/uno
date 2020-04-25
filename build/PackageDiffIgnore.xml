@@ -128,7 +128,7 @@
 		</IgnoreSet>
 
 		<IgnoreSet baseVersion="1.44.1">
-		  	<Types>
+				<Types>
 				<Member fullName="Windows.UI.Xaml.UIElementExtensions"
 						reason="Moved to Uno.Extensions"/>
 			</Types>
@@ -214,7 +214,7 @@
 
 		<IgnoreSet baseVersion="1.45.0">
 			<Types>
-			  <Member
+				<Member
 					fullName="Uno.UI.IUnoViewParent"
 					reason="Removed internal stuff."/>
 				<Member
@@ -516,7 +516,7 @@
 				<Member
 					fullName="Windows.Foundation.Point Windows.UI.Xaml.Input.TappedRoutedEventArgs.GetPosition()"
 					reason="Not part of the UWP API." />
-            </Methods>
+						</Methods>
 
 			<Fields>
 				<Member
@@ -720,11 +720,11 @@
 		<IgnoreSet baseVersion="2.1.37">
 			<Methods>
 				<Member
-				  fullName="System.Void Windows.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs..ctor()"
-				  reason="Not part of the WinUI API." />
+					fullName="System.Void Windows.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs..ctor()"
+					reason="Not part of the WinUI API." />
 				<Member
-				  fullName="System.Void Windows.UI.Xaml.Controls.DatePickerValueChangedEventArgs..ctor(System.DateTimeOffset newDate, System.DateTimeOffset oldDate)"
-				  reason="Not part of the WinUI API." />
+					fullName="System.Void Windows.UI.Xaml.Controls.DatePickerValueChangedEventArgs..ctor(System.DateTimeOffset newDate, System.DateTimeOffset oldDate)"
+					reason="Not part of the WinUI API." />
 				<Member
 					fullName="System.Boolean Windows.UI.Xaml.Controls.TextBox.FocusTextView()"
 					reason="Not part of the WinUI API, Uno-specific implementation detail." />
@@ -814,9 +814,20 @@
 				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.IAnimatedVisualSource.Play(System.Boolean looped)"
 					reason="Refactoring, not part of WinUI contract anyway." />
+
 				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.TextBox..ctor(System.Boolean isPassword)"
 					reason="macOS only breaking change" />
+
+				<Member
+					fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Media.GradientBrush.get_GradientStopsProperty()"
+					reason="GradientStops moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
+				<Member
+					fullName="Windows.UI.Xaml.Media.GradientStopCollection Windows.UI.Xaml.Media.LinearGradientBrush.get_GradientStops()"
+					reason="GradientStops moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Media.LinearGradientBrush.set_GradientStops(Windows.UI.Xaml.Media.GradientStopCollection value)"
+					reason="GradientStops moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
 			</Methods>
 			<Properties>
 			</Properties>
