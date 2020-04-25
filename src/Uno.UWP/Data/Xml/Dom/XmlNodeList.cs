@@ -1,84 +1,44 @@
+using System.Collections.Generic;
+using SystemXmlNodeList = System.Xml.XmlNodeList;
+
 namespace Windows.Data.Xml.Dom
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
-	public  partial class XmlNodeList : global::System.Collections.Generic.IReadOnlyList<global::Windows.Data.Xml.Dom.IXmlNode>,global::System.Collections.Generic.IEnumerable<global::Windows.Data.Xml.Dom.IXmlNode>
+	public partial class XmlNodeList : IReadOnlyList<IXmlNode>, IEnumerable<IXmlNode>
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  uint Length
+		private readonly SystemXmlNodeList _backingList;
+		private readonly XmlDocument _owner;
+
+		internal XmlNodeList(XmlDocument owner, SystemXmlNodeList backingList)
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint XmlNodeList.Length is not implemented in Uno.");
-			}
+			_backingList = backingList;
+			_owner = owner;
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  uint Size
+
+		public uint Length => (uint)_backingList.Count;
+
+		public uint Size => (uint)_backingList.Count;
+
+		public IXmlNode this[int index]
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint XmlNodeList.Size is not implemented in Uno.");
-			}
+			get => _owner.Wrap(_backingList[index]);
+			set => _backingList[index] = _owner.Unwrap(value);
 		}
-		#endif
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.Length.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.Item(uint)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.GetAt(uint)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.Size.get
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.IndexOf(Windows.Data.Xml.Dom.IXmlNode, out uint)
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.GetMany(uint, Windows.Data.Xml.Dom.IXmlNode[])
-		// Forced skipping of method Windows.Data.Xml.Dom.XmlNodeList.First()
-		// Processing: System.Collections.Generic.IReadOnlyList<Windows.Data.Xml.Dom.IXmlNode>
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public global::Windows.Data.Xml.Dom.IXmlNode this[int index]
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
-		}
-		#endif
-		// Processing: System.Collections.Generic.IEnumerable<Windows.Data.Xml.Dom.IXmlNode>
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.Data.Xml.Dom.IXmlNode>
-		[global::Uno.NotImplemented]
-		public global::System.Collections.Generic.IEnumerator<global::Windows.Data.Xml.Dom.IXmlNode> GetEnumerator()
+
+		public IEnumerator<IXmlNode> GetEnumerator() => _backingList.GetEnumerator();
+
+		global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
 		{
 			throw new global::System.NotSupportedException();
 		}
-		#endif
-		// Processing: System.Collections.IEnumerable
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		// DeclaringType: System.Collections.IEnumerable
-		[global::Uno.NotImplemented]
-		 global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
+
+	public int Count
+	{
+		get => _backingList.
+		set => _backingList.
 		}
-		#endif
-		// Processing: System.Collections.Generic.IReadOnlyCollection<Windows.Data.Xml.Dom.IXmlNode>
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public int Count
-		{
-			get
-			{
-				throw new global::System.NotSupportedException();
-			}
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
+
+	private XmlNodeListEnumerator : IEnumerator<IXmlNode>{
+
 		}
-		#endif
 	}
 }
