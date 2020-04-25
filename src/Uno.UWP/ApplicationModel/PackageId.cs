@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel
 {
-	public  partial class PackageId 
+	public  partial class PackageId
 	{
 		[global::Uno.NotImplemented]
 		public global::Windows.System.ProcessorArchitecture Architecture
@@ -14,7 +14,7 @@ namespace Windows.ApplicationModel
 			}
 		}
 
-#if !__ANDROID__ && !__IOS__
+#if !__ANDROID__ && !__IOS__ && !__MACOS__
 		[global::Uno.NotImplemented]
 		public string FamilyName
 		{
