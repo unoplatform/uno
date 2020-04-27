@@ -10,7 +10,7 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class TextBox
 	{
-		private bool _isPassword;
+		private readonly bool _isPassword;
 		private ITextBoxView _textBoxView;
 
 		protected TextBox(bool isPassword)
