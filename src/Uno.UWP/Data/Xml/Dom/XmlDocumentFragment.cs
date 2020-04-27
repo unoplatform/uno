@@ -8,7 +8,7 @@ namespace Windows.Data.Xml.Dom
 		private readonly XmlDocument _owner;
 		internal readonly SystemXmlDocumentFragment _backingDocumentFragment;
 
-		public XmlDocumentFragment(XmlDocument owner, SystemXmlDocumentFragment backingDocumentFragment)
+		internal XmlDocumentFragment(XmlDocument owner, SystemXmlDocumentFragment backingDocumentFragment)
 		{
 			_owner = owner;
 			_backingDocumentFragment = backingDocumentFragment;

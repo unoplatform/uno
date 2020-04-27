@@ -4,12 +4,10 @@ namespace Windows.Data.Xml.Dom
 {
 	public partial class XmlDomImplementation
 	{
-		private readonly XmlDocument _owner;
 		internal readonly SystemXmlImplementation _backingImplementation;
 
-		internal XmlDomImplementation(XmlDocument owner, SystemXmlImplementation backingImplementation)
+		internal XmlDomImplementation(SystemXmlImplementation backingImplementation)
 		{
-			_owner = owner;
 			_backingImplementation = backingImplementation;
 		}
 
