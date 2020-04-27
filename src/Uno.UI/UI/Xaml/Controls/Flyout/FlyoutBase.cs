@@ -264,7 +264,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 		protected internal virtual void Close()
 		{
-			_popup.IsOpen = false;
+			if (_popup != null)
+			{
+				_popup.IsOpen = false; 
+			}
 		}
 
 		protected internal virtual void Open()
