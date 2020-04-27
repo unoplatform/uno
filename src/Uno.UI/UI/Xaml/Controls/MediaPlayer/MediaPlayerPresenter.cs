@@ -93,14 +93,17 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnVideoRatioChanged(Windows.Media.Playback.MediaPlayer sender, double args)
 		{
-			_currentRatio = args;
-
-			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			if (args > 0) // The VideoRect may initially be empty, ignore because a 0 ratio will lead to infinite dims being returned on measure, resulting in an exception
 			{
-				Visibility = Visibility.Visible;
-			});
+				_currentRatio = args;
 
-			InvalidateArrange();
+				Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+				{
+					Visibility = Visibility.Visible;
+				});
+
+				InvalidateArrange(); 
+			}
 		}
 
 		private void OnMediaFailed(Windows.Media.Playback.MediaPlayer sender, MediaPlayerFailedEventArgs args)
