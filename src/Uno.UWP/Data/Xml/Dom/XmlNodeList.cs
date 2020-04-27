@@ -7,8 +7,8 @@ namespace Windows.Data.Xml.Dom
 {
 	public partial class XmlNodeList : IReadOnlyList<IXmlNode>, IEnumerable<IXmlNode>
 	{
-		private readonly SystemXmlNodeList _backingList;
 		private readonly XmlDocument _owner;
+		internal readonly SystemXmlNodeList _backingList;
 
 		internal XmlNodeList(XmlDocument owner, SystemXmlNodeList backingList)
 		{

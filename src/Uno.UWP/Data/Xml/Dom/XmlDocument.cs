@@ -1,12 +1,24 @@
 using System.Collections.Generic;
-using SystemXmlDocument = System.Xml.XmlDocument;
-using SystemXmlElement = System.Xml.XmlElement;
-using SystemXmlComment = System.Xml.XmlComment;
-using SystemXmlNode = System.Xml.XmlNode;
 using Windows.Foundation;
 using Windows.Storage;
 using System.Threading.Tasks;
 using System;
+using SystemXmlEntity = System.Xml.XmlEntity;
+using SystemXmlNotation = System.Xml.XmlNotation;
+using SystemXmlNode = System.Xml.XmlNode;
+using SystemXmlAttribute = System.Xml.XmlAttribute;
+using SystemXmlCDataSection = System.Xml.XmlCDataSection;
+using SystemXmlComment = System.Xml.XmlComment;
+using SystemXmlDocument = System.Xml.XmlDocument;
+using SystemXmlDocumentFragment = System.Xml.XmlDocumentFragment;
+using SystemXmlDocumentType = System.Xml.XmlDocumentType;
+using SystemXmlDomImplementation = System.Xml.XmlImplementation;
+using SystemXmlElement = System.Xml.XmlElement;
+using SystemXmlEntityReference = System.Xml.XmlEntityReference;
+using SystemXmlNamedNodeMap = System.Xml.XmlNamedNodeMap;
+using SystemXmlNodeList = System.Xml.XmlNodeList;
+using SystemXmlProcessingInstruction = System.Xml.XmlProcessingInstruction;
+using SystemXmlText = System.Xml.XmlText;
 
 namespace Windows.Data.Xml.Dom
 {
@@ -172,7 +184,8 @@ namespace Windows.Data.Xml.Dom
 		}
 
 		/// <summary>
-		/// Wraps System.Xml node to UWP XML node.
+		/// Wraps System.Xml node to UWP XML node and caches the
+		/// instance for repeated retrieval.
 		/// </summary>
 		/// <param name="node">System.Xml node.</param>
 		/// <returns>UWP XML node.</returns>
@@ -194,17 +207,41 @@ namespace Windows.Data.Xml.Dom
 		internal object Unwrap(object node) =>
 			node switch
 			{
-				XmlElement element => element._backingDocument,
+				DtdEntity dtdEntity => dtdEntity._backingEntity,
+				DtdNotation dtdNotation => dtdNotation._backingNotation,		
+				XmlAttribute attribute => attribute._backingAttribute,
+				XmlCDataSection dataSection => dataSection._backingDataSection,
+				XmlDocument document => document._backingDocument,
+				XmlDocumentFragment documentFragment => documentFragment._backingDocumentFragment,
+				XmlDocumentType documentType => documentType._backingDocumentType,
+				XmlDomImplementation domImplementation => domImplementation._backingImplementation,
+				XmlElement element => element._backingElement,
+				XmlEntityReference entityReference => entityReference._backingEntityReference,
+				XmlNamedNodeMap namedNodeMap => namedNodeMap._backingNamedNodeMap,
+				XmlNodeList nodeList => nodeList._backingList,
+				XmlProcessingInstruction processingInstruction => processingInstruction._backingProcessingInstruction,
 				XmlComment comment => comment._backingComment,
-				_ => throw new global::System.NotImplementedException(),
+				_ => throw new InvalidOperationException("Trying to unwrap an unknown XML type."),
 			};
 
 		private object CreateWrapper(object node) =>
 			node switch
 			{
-				SystemXmlElement element => new XmlElement(this, element),
+				SystemXmlEntity entity => new DtdEntity(this, entity),
+				SystemXmlNotation notation => new DtdNotation(this, notation),
+				SystemXmlAttribute attribute => new XmlAttribute(this, attribute),
+				SystemXmlCDataSection dataSection => new XmlCDataSection(this, dataSection),
 				SystemXmlComment comment => new XmlComment(this, comment),
-				_ => throw new global::System.NotImplementedException(),
+				SystemXmlDocumentFragment documentFragment => new XmlDocumentFragment(this, documentFragment),
+				SystemXmlDocumentType documentType => new XmlDocumentType(this, documentType),
+				SystemXmlDomImplementation implementation => new XmlDomImplementation(implementation),
+				SystemXmlElement element => new XmlElement(this, element),
+				SystemXmlEntityReference entityReference => new XmlEntityReference(this, entityReference),
+				SystemXmlNamedNodeMap namedNodeMap => new XmlNamedNodeMap(this, namedNodeMap),
+				SystemXmlNodeList nodeList => new XmlNodeList(this, nodeList),
+				SystemXmlProcessingInstruction processingInstruction => new XmlProcessingInstruction(this, processingInstruction),
+				SystemXmlText text => new XmlText(this, text),
+				_ => throw new InvalidOperationException("Trying to wrap an unknown XML type."),
 			};
 	}
 }
