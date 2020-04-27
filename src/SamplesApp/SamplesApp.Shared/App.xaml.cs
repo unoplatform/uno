@@ -84,7 +84,10 @@ namespace SamplesApp
 #endif
 			var sw = Stopwatch.StartNew();
 			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
-				_ => Console.WriteLine("Done loading " + sw.Elapsed));
+				_ =>
+				{
+					Console.WriteLine("Done loading " + sw.Elapsed);
+				});
 
 #if DEBUG
 			if (System.Diagnostics.Debugger.IsAttached)

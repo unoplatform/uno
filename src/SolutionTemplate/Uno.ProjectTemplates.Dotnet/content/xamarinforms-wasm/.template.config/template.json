@@ -4,7 +4,7 @@
   "classifications": [ "Console" ],
   "name": "Uno Platform WebAssembly Head for Xamarin.Forms",
   "identity": "Uno.Platform.Wasm.XamarinForms",
-  "groupIdentity": "Uno.Platform",
+  "groupIdentity": "Uno.Platform.XF",
   "description": "Adds a set of projects to enable WebAssembly support for Xamarin.Forms projects through the Uno Platform.",
   "shortName": "wasmxfhead",
   "tags": {

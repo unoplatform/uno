@@ -5,6 +5,7 @@
 		<IsTool>true</IsTool>
 		<IncludeBuildOutput>false</IncludeBuildOutput>
 		<PackageType>Template</PackageType>
+		<ContentTargetFolders>content</ContentTargetFolders>
 	</PropertyGroup>
 
 	<PropertyGroup>
@@ -16,6 +17,7 @@
 		<Description></Description>
 		<Copyright>Copyright (C) 2015-2019 nventive inc. - all rights reserved</Copyright>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
+		<PackageTags>dotnet-new;templates;uno-platform;webassembly;ios;android;uwp;winui</PackageTags>
 	</PropertyGroup>
 
 	<ItemGroup>
@@ -24,6 +26,10 @@
 
 	<ItemGroup>
 		<Compile Remove="content/**/*.cs" />
+		<Compile Remove="content\uno-prism-app\UnoQuickStart.macOS\**" />
+		<EmbeddedResource Remove="content\uno-prism-app\UnoQuickStart.macOS\**" />
+		<None Remove="content\uno-prism-app\UnoQuickStart.macOS\**" />
+		<UpToDateCheckInput Remove="content\uno-prism-app\UnoQuickStart.macOS\**" />
 		<Content Include="content/xamarinforms-wasm/nuget.config">
 			<Pack>true</Pack>
 			<PackagePath>content/xamarinforms-wasm</PackagePath>
@@ -46,6 +52,14 @@
 		</Content>
 		<Content Include="content\unoapp\UnoQuickStart\**">
 			<PackagePath>content\unoapp</PackagePath>
+			<Pack>true</Pack>
+		</Content>
+		<Content Include="content\unoapp\UnoQuickStart\**">
+			<PackagePath>content\unoapp</PackagePath>
+			<Pack>true</Pack>
+		</Content>
+		<Content Include="content\unoapp-prism\**">
+			<PackagePath>content\unoapp-prism</PackagePath>
 			<Pack>true</Pack>
 		</Content>
 	</ItemGroup>
