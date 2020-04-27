@@ -36,7 +36,7 @@ namespace Windows.Data.Xml.Dom
 
 		public IXmlNode LastChild => (IXmlNode)_owner.Wrap(_backingEntity.LastChild);
 
-		public object LocalName => _owner.LocalName;
+		public object LocalName => _backingEntity.LocalName;
 
 		public IXmlNode NextSibling => (IXmlNode)_owner.Wrap(_backingEntity.NextSibling);
 
