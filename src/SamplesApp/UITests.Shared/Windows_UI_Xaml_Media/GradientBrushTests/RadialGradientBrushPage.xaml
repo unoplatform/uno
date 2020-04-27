@@ -1,13 +1,14 @@
 ﻿<!-- Copyright (c) Microsoft Corporation. All rights reserved. Licensed under the MIT License. See LICENSE in the project root for license information. -->
 <Page
-    x:Class="MUXControlsTestApp.RadialGradientBrushPage"
-    x:Name="RadialGradientBrushTestPage"
-    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	x:Class="MUXControlsTestApp.RadialGradientBrushPage"
+	x:Name="RadialGradientBrushTestPage"
+	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:media="using:Microsoft.UI.Xaml.Media"
+	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:not_win="http:/uno.ui/not_win"
-    mc:Ignorable="d not_win">
+	mc:Ignorable="d not_win">
 
 	<not_win:Grid x:Name="RootGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12">
 		<not_win:Grid.Resources>
@@ -37,18 +38,18 @@
 						<TextBlock Text="Locally set brush:" Grid.Row="0" Grid.Column="0" />
 						<Rectangle Width="100" Height="100" x:Name="GradientRectangle" AutomationProperties.Name="GradientRectangle" Grid.Row="1" Grid.Column="0">
 							<Rectangle.Fill>
-								<RadialGradientBrush FallbackColor="Red">
+								<media:RadialGradientBrush FallbackColor="Red">
 									<GradientStop Color="Orange" Offset="0.5" />
 									<GradientStop Color="Green" Offset="1" />
-								</RadialGradientBrush>
+								</media:RadialGradientBrush>
 							</Rectangle.Fill>
 						</Rectangle>
 						<Ellipse Width="200" Height="100" Grid.Row="2" Grid.Column="0" Grid.RowSpan="2">
 							<Ellipse.Fill>
-								<RadialGradientBrush>
+								<media:RadialGradientBrush>
 									<GradientStop Color="Yellow" Offset="0" />
 									<GradientStop Color="MediumPurple" Offset="1" />
-								</RadialGradientBrush>
+								</media:RadialGradientBrush>
 							</Ellipse.Fill>
 						</Ellipse>
 
@@ -64,29 +65,29 @@
 						<TextBlock Text="Shared resource brush:" />
 						<Rectangle Width="100" Height="100">
 							<Rectangle.Fill>
-								<RadialGradientBrush FallbackColor="Orange">
+								<media:RadialGradientBrush FallbackColor="Orange">
 									<GradientStop Color="Red" Offset="0" />
 									<GradientStop Color="Green" Offset="0.5" />
 									<GradientStop Color="Blue" Offset="1" />
-								</RadialGradientBrush>
+								</media:RadialGradientBrush>
 							</Rectangle.Fill>
 						</Rectangle>
 						<TextBlock Text="Text with gradient foreground" FontSize="20">
 							<TextBlock.Foreground>
-								<RadialGradientBrush FallbackColor="Orange">
+								<media:RadialGradientBrush FallbackColor="Orange">
 									<GradientStop Color="Red" Offset="0" />
 									<GradientStop Color="Green" Offset="0.5" />
 									<GradientStop Color="Blue" Offset="1" />
-								</RadialGradientBrush>
+								</media:RadialGradientBrush>
 							</TextBlock.Foreground>
 						</TextBlock>
 						<Button Content="Button with gradient background">
 							<Button.Background>
-								<RadialGradientBrush FallbackColor="Orange">
+								<media:RadialGradientBrush FallbackColor="Orange">
 									<GradientStop Color="Red" Offset="0" />
 									<GradientStop Color="Green" Offset="0.5" />
 									<GradientStop Color="Blue" Offset="1" />
-								</RadialGradientBrush>
+								</media:RadialGradientBrush>
 							</Button.Background>
 						</Button>
 					</StackPanel>
@@ -152,14 +153,14 @@
 						<!-- Example 1 : Default property values -->
 						<Rectangle Width="200" Height="200" HorizontalAlignment="Left">
 							<Rectangle.Fill>
-								<RadialGradientBrush>
+								<media:RadialGradientBrush>
 									<GradientStop Color="Blue" Offset="0.0" />
 									<GradientStop Color="Yellow" Offset="0.2" />
 									<GradientStop Color="LimeGreen" Offset="0.4" />
 									<GradientStop Color="LightBlue" Offset="0.6" />
 									<GradientStop Color="Blue" Offset="0.8" />
 									<GradientStop Color="LightGray" Offset="1" />
-								</RadialGradientBrush>
+								</media:RadialGradientBrush>
 							</Rectangle.Fill>
 						</Rectangle>
 
@@ -167,35 +168,35 @@
 							<!-- Example 1 : RelativeToBoundingBox -->
 							<Rectangle Width="200" Height="200">
 								<Rectangle.Fill>
-									<RadialGradientBrush
-                                                        MappingMode="RelativeToBoundingBox"
-                                                        GradientOrigin="0.5,0.5"
-                                                        Center="0.5,0.5"
-                                                        RadiusX="0.5" RadiusY="0.5">
+									<media:RadialGradientBrush
+														MappingMode="RelativeToBoundingBox"
+														GradientOrigin="0.5,0.5"
+														Center="0.5,0.5"
+														RadiusX="0.5" RadiusY="0.5">
 										<GradientStop Color="Blue" Offset="0.0" />
 										<GradientStop Color="Yellow" Offset="0.2" />
 										<GradientStop Color="LimeGreen" Offset="0.4" />
 										<GradientStop Color="LightBlue" Offset="0.6" />
 										<GradientStop Color="Blue" Offset="0.8" />
 										<GradientStop Color="LightGray" Offset="1" />
-									</RadialGradientBrush>
+									</media:RadialGradientBrush>
 								</Rectangle.Fill>
 							</Rectangle>
 							<!-- Example 1 : Absolute -->
 							<Rectangle Width="200" Height="200">
 								<Rectangle.Fill>
-									<RadialGradientBrush
-                                                        MappingMode="Absolute"
-                                                        GradientOrigin="100,100"
-                                                        Center="100,100"
-                                                        RadiusX="100" RadiusY="100">
+									<media:RadialGradientBrush
+														MappingMode="Absolute"
+														GradientOrigin="100,100"
+														Center="100,100"
+														RadiusX="100" RadiusY="100">
 										<GradientStop Color="Blue" Offset="0.0" />
 										<GradientStop Color="Yellow" Offset="0.2" />
 										<GradientStop Color="LimeGreen" Offset="0.4" />
 										<GradientStop Color="LightBlue" Offset="0.6" />
 										<GradientStop Color="Blue" Offset="0.8" />
 										<GradientStop Color="LightGray" Offset="1" />
-									</RadialGradientBrush>
+									</media:RadialGradientBrush>
 								</Rectangle.Fill>
 							</Rectangle>
 						</StackPanel>
@@ -204,27 +205,27 @@
 						<StackPanel Orientation="Horizontal">
 							<Rectangle Width="200" Height="200">
 								<Rectangle.Fill>
-									<RadialGradientBrush
-                                                    MappingMode="RelativeToBoundingBox"
-                                                    Center="0.25,0.25"
-                                                    RadiusX=".5" RadiusY=".5"
-                                                    GradientOrigin="0.5,.25">
+									<media:RadialGradientBrush
+													MappingMode="RelativeToBoundingBox"
+													Center="0.25,0.25"
+													RadiusX=".5" RadiusY=".5"
+													GradientOrigin="0.5,.25">
 										<GradientStop Color="Yellow" Offset="0.0" />
 										<GradientStop Color="Blue" Offset="1" />
-									</RadialGradientBrush>
+									</media:RadialGradientBrush>
 								</Rectangle.Fill>
 							</Rectangle>
 							<!-- Example 2 : Absolute -->
 							<Rectangle Width="200" Height="200">
 								<Rectangle.Fill>
-									<RadialGradientBrush
-                                                    MappingMode="Absolute"
-                                                    Center="50,50"
-                                                    RadiusX="100" RadiusY="100"
-                                                    GradientOrigin="100,50">
+									<media:RadialGradientBrush
+													MappingMode="Absolute"
+													Center="50,50"
+													RadiusX="100" RadiusY="100"
+													GradientOrigin="100,50">
 										<GradientStop Color="Yellow" Offset="0.0" />
 										<GradientStop Color="Blue" Offset="1" />
-									</RadialGradientBrush>
+									</media:RadialGradientBrush>
 								</Rectangle.Fill>
 							</Rectangle>
 						</StackPanel>

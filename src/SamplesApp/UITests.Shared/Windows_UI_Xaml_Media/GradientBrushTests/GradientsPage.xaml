@@ -3,6 +3,7 @@
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+	xmlns:media="using:Microsoft.UI.Xaml.Media"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:not_win="http:/uno.ui/not_win"
 	mc:Ignorable="d not_win"
@@ -14,51 +15,51 @@
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<Rectangle Width="100" Height="100">
 					<Rectangle.Fill>
-						<not_win:RadialGradientBrush FallbackColor="Red">
+						<media:RadialGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
 							<GradientStop Color="LightBlue" Offset="0.6" />
 							<GradientStop Color="Blue" Offset="0.8" />
 							<GradientStop Color="LightGray" Offset="1" />
-						</not_win:RadialGradientBrush>
+						</media:RadialGradientBrush>
 					</Rectangle.Fill>
 				</Rectangle>
 
 				<Border Width="100" Height="100">
 					<Border.Background>
-						<not_win:RadialGradientBrush FallbackColor="Red">
+						<media:RadialGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
 							<GradientStop Color="LightBlue" Offset="0.6" />
 							<GradientStop Color="Blue" Offset="0.8" />
 							<GradientStop Color="LightGray" Offset="1" />
-						</not_win:RadialGradientBrush>
+						</media:RadialGradientBrush>
 					</Border.Background>
 				</Border>
 				<Ellipse Width="100" Height="100">
 					<Ellipse.Fill>
-						<not_win:RadialGradientBrush FallbackColor="Red">
+						<media:RadialGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
 							<GradientStop Color="LightBlue" Offset="0.6" />
 							<GradientStop Color="Blue" Offset="0.8" />
 							<GradientStop Color="LightGray" Offset="1" />
-						</not_win:RadialGradientBrush>
+						</media:RadialGradientBrush>
 					</Ellipse.Fill>
 				</Ellipse>
 				<Ellipse Width="150" Height="100">
 					<Ellipse.Fill>
-						<not_win:RadialGradientBrush FallbackColor="Red">
+						<media:RadialGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
 							<GradientStop Color="LightBlue" Offset="0.6" />
 							<GradientStop Color="Blue" Offset="0.8" />
 							<GradientStop Color="LightGray" Offset="1" />
-						</not_win:RadialGradientBrush>
+						</media:RadialGradientBrush>
 					</Ellipse.Fill>
 				</Ellipse>
 			</StackPanel>
@@ -66,51 +67,51 @@
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<Rectangle Width="100" Height="100" StrokeThickness="40" Fill="DarkGray">
 					<Rectangle.Stroke>
-						<not_win:RadialGradientBrush FallbackColor="Red">
+						<media:RadialGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
 							<GradientStop Color="LightBlue" Offset="0.6" />
 							<GradientStop Color="Blue" Offset="0.8" />
 							<GradientStop Color="LightGray" Offset="1" />
-						</not_win:RadialGradientBrush>
+						</media:RadialGradientBrush>
 					</Rectangle.Stroke>
 				</Rectangle>
 
 				<Border Width="100" Height="100" BorderThickness="40" Background="DarkGray">
 					<Border.BorderBrush>
-						<not_win:RadialGradientBrush FallbackColor="Red">
+						<media:RadialGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
 							<GradientStop Color="LightBlue" Offset="0.6" />
 							<GradientStop Color="Blue" Offset="0.8" />
 							<GradientStop Color="LightGray" Offset="1" />
-						</not_win:RadialGradientBrush>
+						</media:RadialGradientBrush>
 					</Border.BorderBrush>
 				</Border>
 				<Ellipse Width="100" Height="100" StrokeThickness="40" Fill="DarkGray">
 					<Ellipse.Stroke>
-						<not_win:RadialGradientBrush FallbackColor="Red">
+						<media:RadialGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
 							<GradientStop Color="LightBlue" Offset="0.6" />
 							<GradientStop Color="Blue" Offset="0.8" />
 							<GradientStop Color="LightGray" Offset="1" />
-						</not_win:RadialGradientBrush>
+						</media:RadialGradientBrush>
 					</Ellipse.Stroke>
 				</Ellipse>
 				<Ellipse Width="150" Height="100" StrokeThickness="40" Fill="DarkGray">
 					<Ellipse.Stroke>
-						<not_win:RadialGradientBrush FallbackColor="Red">
+						<media:RadialGradientBrush FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
 							<GradientStop Color="LightBlue" Offset="0.6" />
 							<GradientStop Color="Blue" Offset="0.8" />
 							<GradientStop Color="LightGray" Offset="1" />
-						</not_win:RadialGradientBrush>
+						</media:RadialGradientBrush>
 					</Ellipse.Stroke>
 				</Ellipse>
 			</StackPanel>
@@ -220,14 +221,14 @@
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<TextBlock Text="UNO" FontSize="110" FontWeight="Bold">
 					<TextBlock.Foreground>
-						<not_win:RadialGradientBrush not_win:FallbackColor="Red">
+						<media:RadialGradientBrush not_win:FallbackColor="Red">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />
 							<GradientStop Color="LightBlue" Offset="0.6" />
 							<GradientStop Color="Blue" Offset="0.8" />
 							<GradientStop Color="LightGray" Offset="1" />
-						</not_win:RadialGradientBrush>
+						</media:RadialGradientBrush>
 					</TextBlock.Foreground>
 				</TextBlock>
 				<TextBlock Text="UNO" FontSize="110" FontWeight="Bold">

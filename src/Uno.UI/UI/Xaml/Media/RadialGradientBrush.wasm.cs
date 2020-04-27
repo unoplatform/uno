@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Linq;
 using Windows.Foundation;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Wasm;
 using Uno.Extensions;
-using Uno.UI;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	partial class RadialGradientBrush
 	{

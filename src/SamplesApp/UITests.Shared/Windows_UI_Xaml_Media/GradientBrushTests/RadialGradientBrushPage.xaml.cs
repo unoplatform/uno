@@ -11,6 +11,8 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Uno.UI.Samples.Controls;
 
+using RadialGradientBrush = Microsoft.UI.Xaml.Media.RadialGradientBrush;
+
 namespace MUXControlsTestApp
 {
 	[Sample("GradientBrush", Name = "RadialGradientBrush")]

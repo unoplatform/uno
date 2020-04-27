@@ -1,8 +1,10 @@
 ﻿using Windows.Foundation;
 using Windows.UI.Composition;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Markup;
+using Windows.UI.Xaml.Media;
 
-namespace Windows.UI.Xaml.Media
+namespace Microsoft.UI.Xaml.Media
 {
 	public sealed partial class RadialGradientBrush : GradientBrush
 	{
