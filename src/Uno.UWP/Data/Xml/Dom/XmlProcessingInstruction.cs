@@ -38,7 +38,7 @@ namespace Windows.Data.Xml.Dom
 
 		public object NamespaceUri => _backingProcessingInstruction.NamespaceURI;
 
-		public IXmlNode NextSibling => (IXmlNode)_owner.Wrap(_backingProcessingInstruction.NextSibling);\
+		public IXmlNode NextSibling => (IXmlNode)_owner.Wrap(_backingProcessingInstruction.NextSibling);
 
 		public string NodeName => _owner.NodeName;
 
@@ -72,7 +72,7 @@ namespace Windows.Data.Xml.Dom
 			(IXmlNode)_owner.Wrap(
 				_backingProcessingInstruction.ReplaceChild(
 					(SystemXmlNode)_owner.Unwrap(newChild),
-					(SystemXmlNode)_owner.Unwrap(referenceChild));
+					(SystemXmlNode)_owner.Unwrap(referenceChild)));
 
 		public IXmlNode RemoveChild(IXmlNode childNode) =>
 			(IXmlNode)_owner.Wrap(
@@ -84,7 +84,7 @@ namespace Windows.Data.Xml.Dom
 				_backingProcessingInstruction.AppendChild(
 					(SystemXmlNode)_owner.Unwrap(newChild)));
 
-		public IXmlNode CloneNode(bool deep) => _owner.Wrap(_backingProcessingInstruction.CloneNode(deep));
+		public IXmlNode CloneNode(bool deep) => (IXmlNode)_owner.Wrap(_backingProcessingInstruction.CloneNode(deep));
 
 		public void Normalize() => _owner.Normalize();
 

@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using SystemXmlNamedNodeMap = System.Xml.XmlNamedNodeMap;
 using SystemXmlNode = System.Xml.XmlNode;
@@ -31,28 +33,51 @@ namespace Windows.Data.Xml.Dom
 		public IXmlNode this[int index]
 		{
 			get => (IXmlNode)_owner.Wrap(_backingNamedNodeMap.Item(index));
-			set
-			{
-				throw new global::System.NotSupportedException();
-			}
+			set => throw new InvalidOperationException("XML named node map is read-only.");
 		}
-		public IEnumerator<IXmlNode> GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
-		global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
-		{
-			throw new global::System.NotSupportedException();
-		}
+		public IEnumerator<IXmlNode> GetEnumerator() => new SystemXmlNamedNodeMapEnumerator(_owner, _backingNamedNodeMap.GetEnumerator());
+
+		IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
+
 		public int Count
 		{
-			get
+			get => _backingNamedNodeMap.Count;
+			set => throw new InvalidOperationException("XML named node map is read-only.");
+		}
+
+		private class SystemXmlNamedNodeMapEnumerator : IEnumerator<IXmlNode>
+		{
+			private readonly IEnumerator _systemXmlEnumerator;
+			private readonly XmlDocument _owner;
+
+			public SystemXmlNamedNodeMapEnumerator(XmlDocument owner, IEnumerator systemXmlEnumerator)
 			{
-				throw new global::System.NotSupportedException();
+				_systemXmlEnumerator = systemXmlEnumerator;
+				_owner = owner;
 			}
-			set
+
+			public IXmlNode Current
 			{
-				throw new global::System.NotSupportedException();
+
+				get
+				{
+					var item = _systemXmlEnumerator.Current;
+					return (IXmlNode)_owner.Wrap(item);
+				}
+			}
+
+			object IEnumerator.Current => this.Current;
+
+			public bool MoveNext() => _systemXmlEnumerator.MoveNext();
+
+			public void Reset() => _systemXmlEnumerator.Reset();
+
+			public void Dispose()
+			{
+				if (_systemXmlEnumerator is IDisposable disposable)
+				{
+					disposable.Dispose();
+				}
 			}
 		}
 	}

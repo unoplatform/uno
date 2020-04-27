@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using SystemXmlNodeList = System.Xml.XmlNodeList;
 
@@ -20,19 +22,55 @@ namespace Windows.Data.Xml.Dom
 
 		public IXmlNode this[int index]
 		{
-			get => _owner.Wrap(_backingList[index]);
-			set => _backingList[index] = _owner.Unwrap(value);
+			get => (IXmlNode)_owner.Wrap(_backingList[index]);
+			set => throw new InvalidOperationException("List is read-only");
 		}
 
-		public IEnumerator<IXmlNode> GetEnumerator() => _backingList.GetEnumerator();
+		public IEnumerator<IXmlNode> GetEnumerator() => new SystemXmlNodeListEnumerator(_owner, _backingList.GetEnumerator());
 
-		global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+		IEnumerator IEnumerable.GetEnumerator() =>
+			this.GetEnumerator();
 
 		public int Count
 		{
 			get => _backingList.Count;
-			set => _backingList.Count;
+			set => throw new InvalidOperationException("List is read-only");
 		}
 
+		private class SystemXmlNodeListEnumerator : IEnumerator<IXmlNode>
+		{
+			private readonly IEnumerator _systemXmlEnumerator;
+			private readonly XmlDocument _owner;
+
+			public SystemXmlNodeListEnumerator(XmlDocument owner, IEnumerator systemXmlEnumerator)
+			{
+				_systemXmlEnumerator = systemXmlEnumerator;
+				_owner = owner;
+			}
+
+			public IXmlNode Current
+			{
+
+				get
+				{
+					var item = _systemXmlEnumerator.Current;
+					return (IXmlNode)_owner.Wrap(item);
+				}
+			}
+
+			object IEnumerator.Current => this.Current;
+
+			public bool MoveNext() => _systemXmlEnumerator.MoveNext();
+
+			public void Reset() => _systemXmlEnumerator.Reset();
+
+			public void Dispose()
+			{
+				if (_systemXmlEnumerator is IDisposable disposable)
+				{
+					disposable.Dispose();
+				}
+			}
+		}
 	}
 }
