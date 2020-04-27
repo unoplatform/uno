@@ -27,18 +27,12 @@ namespace Windows.Data.Xml.Dom
 		public IEnumerator<IXmlNode> GetEnumerator() => _backingList.GetEnumerator();
 
 		global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator() => GetEnumerator();
+
+		public int Count
 		{
-			throw new global::System.NotSupportedException();
+			get => _backingList.Count;
+			set => _backingList.Count;
 		}
 
-	public int Count
-	{
-		get => _backingList.
-		set => _backingList.
-		}
-
-	private XmlNodeListEnumerator : IEnumerator<IXmlNode>{
-
-		}
 	}
 }

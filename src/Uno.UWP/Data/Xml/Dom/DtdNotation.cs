@@ -3,12 +3,12 @@
 namespace Windows.Data.Xml.Dom
 {
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	[global::Uno.NotImplemented]
+	[Uno.NotImplemented]
 	#endif
-	public  partial class DtdNotation : global::Windows.Data.Xml.Dom.IXmlNode,global::Windows.Data.Xml.Dom.IXmlNodeSerializer,global::Windows.Data.Xml.Dom.IXmlNodeSelector
+	public  partial class DtdNotation : IXmlNode, IXmlNodeSerializer, IXmlNodeSelector
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		[Uno.NotImplemented]
 		public  object PublicId
 		{
 			get
@@ -18,7 +18,7 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		[Uno.NotImplemented]
 		public  object SystemId
 		{
 			get
@@ -28,7 +28,7 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		[Uno.NotImplemented]
 		public  object Prefix
 		{
 			get
@@ -42,7 +42,7 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		[Uno.NotImplemented]
 		public  object NodeValue
 		{
 			get
@@ -56,8 +56,8 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Data.Xml.Dom.IXmlNode FirstChild
+		[Uno.NotImplemented]
+		public IXmlNode FirstChild
 		{
 			get
 			{
@@ -66,8 +66,8 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Data.Xml.Dom.IXmlNode LastChild
+		[Uno.NotImplemented]
+		public IXmlNode LastChild
 		{
 			get
 			{
@@ -76,7 +76,7 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		[Uno.NotImplemented]
 		public  object LocalName
 		{
 			get
@@ -86,7 +86,7 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		[Uno.NotImplemented]
 		public  object NamespaceUri
 		{
 			get
@@ -96,8 +96,8 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Data.Xml.Dom.IXmlNode NextSibling
+		[Uno.NotImplemented]
+		public IXmlNode NextSibling
 		{
 			get
 			{
@@ -106,7 +106,7 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		[Uno.NotImplemented]
 		public  string NodeName
 		{
 			get
@@ -116,8 +116,8 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Data.Xml.Dom.NodeType NodeType
+		[Uno.NotImplemented]
+		public NodeType NodeType
 		{
 			get
 			{
@@ -126,8 +126,8 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Data.Xml.Dom.XmlNamedNodeMap Attributes
+		[Uno.NotImplemented]
+		public XmlNamedNodeMap Attributes
 		{
 			get
 			{
@@ -136,8 +136,8 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Data.Xml.Dom.XmlDocument OwnerDocument
+		[Uno.NotImplemented]
+		public XmlDocument OwnerDocument
 		{
 			get
 			{
@@ -146,8 +146,8 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Data.Xml.Dom.XmlNodeList ChildNodes
+		[Uno.NotImplemented]
+		public XmlNodeList ChildNodes
 		{
 			get
 			{
@@ -156,8 +156,8 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Data.Xml.Dom.IXmlNode ParentNode
+		[Uno.NotImplemented]
+		public IXmlNode ParentNode
 		{
 			get
 			{
@@ -166,8 +166,8 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Data.Xml.Dom.IXmlNode PreviousSibling
+		[Uno.NotImplemented]
+		public IXmlNode PreviousSibling
 		{
 			get
 			{
@@ -176,7 +176,7 @@ namespace Windows.Data.Xml.Dom
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		[Uno.NotImplemented]
 		public  string InnerText
 		{
 			get
@@ -203,7 +203,7 @@ namespace Windows.Data.Xml.Dom
 		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.NextSibling.get
 		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.Attributes.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		[Uno.NotImplemented]
 		public  bool HasChildNodes()
 		{
 			throw new global::System.NotImplementedException("The member bool DtdNotation.HasChildNodes() is not implemented in Uno.");
@@ -211,36 +211,36 @@ namespace Windows.Data.Xml.Dom
 		#endif
 		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.OwnerDocument.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Data.Xml.Dom.IXmlNode InsertBefore( global::Windows.Data.Xml.Dom.IXmlNode newChild,  global::Windows.Data.Xml.Dom.IXmlNode referenceChild)
+		[Uno.NotImplemented]
+		public IXmlNode InsertBefore(IXmlNode newChild, IXmlNode referenceChild)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode DtdNotation.InsertBefore(IXmlNode newChild, IXmlNode referenceChild) is not implemented in Uno.");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Data.Xml.Dom.IXmlNode ReplaceChild( global::Windows.Data.Xml.Dom.IXmlNode newChild,  global::Windows.Data.Xml.Dom.IXmlNode referenceChild)
+		[Uno.NotImplemented]
+		public IXmlNode ReplaceChild(IXmlNode newChild, IXmlNode referenceChild)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode DtdNotation.ReplaceChild(IXmlNode newChild, IXmlNode referenceChild) is not implemented in Uno.");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Data.Xml.Dom.IXmlNode RemoveChild( global::Windows.Data.Xml.Dom.IXmlNode childNode)
+		[Uno.NotImplemented]
+		public IXmlNode RemoveChild(IXmlNode childNode)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode DtdNotation.RemoveChild(IXmlNode childNode) is not implemented in Uno.");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Data.Xml.Dom.IXmlNode AppendChild( global::Windows.Data.Xml.Dom.IXmlNode newChild)
+		[Uno.NotImplemented]
+		public IXmlNode AppendChild(IXmlNode newChild)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode DtdNotation.AppendChild(IXmlNode newChild) is not implemented in Uno.");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Data.Xml.Dom.IXmlNode CloneNode( bool deep)
+		[Uno.NotImplemented]
+		public IXmlNode CloneNode( bool deep)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode DtdNotation.CloneNode(bool deep) is not implemented in Uno.");
 		}
@@ -249,7 +249,7 @@ namespace Windows.Data.Xml.Dom
 		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.LocalName.get
 		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.Prefix.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		[Uno.NotImplemented]
 		public  void Normalize()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Data.Xml.Dom.DtdNotation", "void DtdNotation.Normalize()");
@@ -257,35 +257,35 @@ namespace Windows.Data.Xml.Dom
 		#endif
 		// Forced skipping of method Windows.Data.Xml.Dom.DtdNotation.Prefix.set
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNode( string xpath)
+		[Uno.NotImplemented]
+		public IXmlNode SelectSingleNode( string xpath)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode DtdNotation.SelectSingleNode(string xpath) is not implemented in Uno.");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Data.Xml.Dom.XmlNodeList SelectNodes( string xpath)
+		[Uno.NotImplemented]
+		public XmlNodeList SelectNodes( string xpath)
 		{
 			throw new global::System.NotImplementedException("The member XmlNodeList DtdNotation.SelectNodes(string xpath) is not implemented in Uno.");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNodeNS( string xpath,  object namespaces)
+		[Uno.NotImplemented]
+		public IXmlNode SelectSingleNodeNS( string xpath,  object namespaces)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode DtdNotation.SelectSingleNodeNS(string xpath, object namespaces) is not implemented in Uno.");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Data.Xml.Dom.XmlNodeList SelectNodesNS( string xpath,  object namespaces)
+		[Uno.NotImplemented]
+		public XmlNodeList SelectNodesNS( string xpath,  object namespaces)
 		{
 			throw new global::System.NotImplementedException("The member XmlNodeList DtdNotation.SelectNodesNS(string xpath, object namespaces) is not implemented in Uno.");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
+		[Uno.NotImplemented]
 		public  string GetXml()
 		{
 			throw new global::System.NotImplementedException("The member string DtdNotation.GetXml() is not implemented in Uno.");

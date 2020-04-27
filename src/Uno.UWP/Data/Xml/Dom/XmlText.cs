@@ -1,4 +1,5 @@
 using SystemXmlText = System.Xml.XmlText;
+using SystemXmlNode = System.Xml.XmlNode;
 
 namespace Windows.Data.Xml.Dom
 {
@@ -46,23 +47,11 @@ namespace Windows.Data.Xml.Dom
 
 		public Dom.NodeType NodeType => Dom.NodeType.TextNode;
 
-		public XmlNamedNodeMap Attributes
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member XmlNamedNodeMap XmlText.Attributes is not implemented in Uno.");
-			}
-		}
+		public XmlNamedNodeMap Attributes => (XmlNamedNodeMap)_owner.Wrap(_backingText.Attributes);
 
-		public XmlDocument OwnerDocument => _owner; 
+		public XmlDocument OwnerDocument => _owner;
 
-		public XmlNodeList ChildNodes
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member XmlNodeList XmlText.ChildNodes is not implemented in Uno.");
-			}
-		}
+		public XmlNodeList ChildNodes => (XmlNodeList)_owner.Wrap(_backingText.ChildNodes);
 
 		public IXmlNode ParentNode => (IXmlNode)_owner.Wrap(_backingText.ParentNode);
 
@@ -89,37 +78,34 @@ namespace Windows.Data.Xml.Dom
 		public bool HasChildNodes() => _backingText.HasChildNodes;
 
 		public IXmlNode InsertBefore(IXmlNode newChild, IXmlNode referenceChild) =>
-			_owner.Wrap(
+			(IXmlNode)_owner.Wrap(
 				_backingText.InsertBefore(
-					_owner.Unwrap(newChild),
-					_owner.Unwrap(referenceChild));
+					(SystemXmlNode)_owner.Unwrap(newChild),
+					(SystemXmlNode)_owner.Unwrap(referenceChild)));
 
 		public IXmlNode ReplaceChild(IXmlNode newChild, IXmlNode referenceChild) =>
-			_owner.Wrap(
+			(IXmlNode)_owner.Wrap(
 				_backingText.ReplaceChild(
-					_owner.Unwrap(newChild),
-					_owner.Unwrap(referenceChild));
+					(SystemXmlNode)_owner.Unwrap(newChild),
+					(SystemXmlNode)_owner.Unwrap(referenceChild)));
 
-		public IXmlNode RemoveChild(IXmlNode childNode) => _backingText.RemoveChild(childNode);
+		public IXmlNode RemoveChild(IXmlNode childNode) =>
+			(IXmlNode)_owner.Wrap(
+				_backingText.RemoveChild(
+					(SystemXmlNode)_owner.Unwrap(childNode)));
 
-		public IXmlNode AppendChild(IXmlNode newChild) => _backingText.AppendChild(newChild);
+		public IXmlNode AppendChild(IXmlNode newChild) =>
+			(IXmlNode)_owner.Wrap(
+				_backingText.AppendChild(
+					(SystemXmlNode)_owner.Unwrap(newChild)));
 
-		public IXmlNode CloneNode(bool deep) => _backingText.CloneNode(deep);
+		public IXmlNode CloneNode(bool deep) => (IXmlNode)_owner.Wrap(_backingText.CloneNode(deep));
 
 		public void Normalize() => _backingText.Normalize();
 
-		public IXmlNode SelectSingleNode(string xpath) => _backingText.SelectSingleNode(xpath);
+		public IXmlNode SelectSingleNode(string xpath) => (IXmlNode)_owner.Wrap(_backingText.SelectSingleNode(xpath));
 
-		public XmlNodeList SelectNodes(string xpath) => _backingText.SelectNodes(xpath);
-
-		public global::Windows.Data.Xml.Dom.IXmlNode SelectSingleNodeNS(string xpath, object namespaces)
-		{
-			throw new global::System.NotImplementedException("The member IXmlNode XmlText.SelectSingleNodeNS(string xpath, object namespaces) is not implemented in Uno.");
-		}
-		public global::Windows.Data.Xml.Dom.XmlNodeList SelectNodesNS(string xpath, object namespaces)
-		{
-			throw new global::System.NotImplementedException("The member XmlNodeList XmlText.SelectNodesNS(string xpath, object namespaces) is not implemented in Uno.");
-		}
+		public XmlNodeList SelectNodes(string xpath) => (XmlNodeList)_owner.Wrap(_backingText.SelectNodes(xpath));		
 
 		public string GetXml() => _backingText.OuterXml;
 	}

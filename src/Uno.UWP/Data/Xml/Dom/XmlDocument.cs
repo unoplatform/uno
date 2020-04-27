@@ -1,13 +1,13 @@
 using System.Collections.Generic;
 using SystemXmlDocument = System.Xml.XmlDocument;
 using SystemXmlElement = System.Xml.XmlElement;
+using SystemXmlComment = System.Xml.XmlComment;
 
 namespace Windows.Data.Xml.Dom
 {
 	public partial class XmlDocument : IXmlNode, IXmlNodeSerializer, IXmlNodeSelector
 	{
 		private SystemXmlDocument _backingDocument = new SystemXmlDocument();
-		private Dictionary<object, object> _uwpToSystemXml = new Dictionary<object, object>();
 		private Dictionary<object, object> _systemXmlToUwp = new Dictionary<object, object>();
 
 		public void LoadXml(string xml) => _backingDocument.LoadXml(xml);
@@ -34,20 +34,19 @@ namespace Windows.Data.Xml.Dom
 		/// </summary>
 		/// <param name="node">UWP XML node.</param>
 		/// <returns>System.Xml node.</returns>
-		internal object Unwrap(object node)
-		{
-			if (!_uwpToSystemXml.TryGetValue(node, out var wrapped))
+		internal object Unwrap(object node) =>
+			node switch
 			{
-				wrapped = CreateWrapper(node);
-				_uwpToSystemXml.Add(node, wrapped);
-			}
-			return wrapped;
-		}
+				XmlElement element => element._backingElement,
+				XmlComment comment => comment._backingComment,
+				_ => throw new global::System.NotImplementedException(),
+			};
 
 		private object CreateWrapper(object node) =>
 			node switch
 			{
 				SystemXmlElement element => new XmlElement(this, element),
+				SystemXmlComment comment => new XmlComment(this, comment),
 				_ => throw new global::System.NotImplementedException(),
 			};
 	}

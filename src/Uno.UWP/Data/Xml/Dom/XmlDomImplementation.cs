@@ -1,18 +1,18 @@
-#pragma warning disable 108 // new keyword hiding
-#pragma warning disable 114 // new keyword hiding
+using SystemXmlImplementation = System.Xml.XmlImplementation;
+
 namespace Windows.Data.Xml.Dom
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-	[global::Uno.NotImplemented]
-	#endif
-	public  partial class XmlDomImplementation 
+	public partial class XmlDomImplementation
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool HasFeature( string feature,  object version)
+		private readonly XmlDocument _owner;
+		internal readonly SystemXmlImplementation _backingImplementation;
+
+		internal XmlDomImplementation(XmlDocument owner, SystemXmlImplementation backingImplementation)
 		{
-			throw new global::System.NotImplementedException("The member bool XmlDomImplementation.HasFeature(string feature, object version) is not implemented in Uno.");
+			_owner = owner;
+			_backingImplementation = backingImplementation;
 		}
-		#endif
+
+		public bool HasFeature(string feature, object version) => _backingImplementation.HasFeature(feature, version?.ToString());
 	}
 }
