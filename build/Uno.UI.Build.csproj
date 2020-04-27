@@ -168,8 +168,7 @@
 	</Target>
 
 	<Target Name="ValidatePackage" AfterTargets="UnoBuild" Condition="'$(BuildingInsideVisualStudio)'==''">
-		<Exec Command="dotnet tool install --global Uno.PackageDiff --version 1.0.0-dev.18" IgnoreExitCode="true" />
-		<Exec Command="generatepkgdiff --base=Uno.UI --other=Uno.UI.$(GITVERSION_FullSemVer).nupkg --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.$(GITVERSION_FullSemVer).md" />
+		<!--Validation disabled as a more recent package has been published.-->
 	</Target>
 
 </Project>
