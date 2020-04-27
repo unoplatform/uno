@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 using Uno.UITests.Helpers;
@@ -45,8 +46,19 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			const string parentName = "Transformed_Parent";
 			const string targetName = "Transformed_Target";
 
-			var parent = _app.Query(q => q.All().Marked(parentName)).Single().Rect;
-			var target = _app.Query(q => q.All().Marked(targetName)).Single().Rect;
+			IAppRect parent, target;
+			if (AppInitializer.TestEnvironment.CurrentPlatform == Platform.Browser)
+			{
+				// Workaournd until https://github.com/unoplatform/Uno.UITest/pull/35 is merged
+
+				parent = _app.Query(q => q.Marked(parentName)).Single().Rect;
+				target = _app.Query(q => q.Marked(targetName)).Single().Rect;
+			}
+			else
+			{
+				parent = _app.Query(q => q.All().Marked(parentName)).Single().Rect;
+				target = _app.Query(q => q.All().Marked(targetName)).Single().Rect;
+			}
 
 			// Double tap the target
 			_app.DoubleTapCoordinates(parent.Right - target.Width, parent.Bottom - 3);
@@ -57,6 +69,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // We cannot scroll to reach the target on WASM yet
 		public void When_InScroll()
 		{
 			Run(_xamlTestPage);
