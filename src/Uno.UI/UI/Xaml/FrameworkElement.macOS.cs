@@ -155,7 +155,7 @@ namespace Windows.UI.Xaml
 			return result.LogicalToPhysicalPixels();
 		}
 
-		public virtual CGSize SizeThatFits(CGSize size)
+		public CGSize SizeThatFits(CGSize size)
 		{
 			try
 			{

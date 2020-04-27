@@ -8,6 +8,7 @@ using Uno.UI;
 using Foundation;
 using AppKit;
 using CoreGraphics;
+using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -20,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void RequestLayoutPartial()
 		{
-			NeedsLayout = true;
+			InvalidateMeasure();
 		}
 
 		partial void RemoveViewPartial(NSView current)
@@ -34,10 +35,10 @@ namespace Windows.UI.Xaml.Controls
 			base.Layout();
 		}
 
-		public override CGSize SizeThatFits(CGSize size)
+		public override void Measure(Size availableSize)
 		{
 			UpdateItemsIfNeeded();
-			return base.SizeThatFits(size);
+			base.Measure(availableSize);
 		}
 	}
 }
