@@ -32,7 +32,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			//_app.WaitForElement(_app.Marked("BottomFlyout"));
 			//var flyoutRect = _app.Marked("BottomFlyout").FirstResult().Rect;
 
-			//// Assert initial state 
+			//// Assert initial state
 			//Assert.AreEqual("0", flyoutRect.X.ToString());
 		}
 
@@ -54,7 +54,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 
 			_app.FastTap(dataBoundButton);
 			Assert.AreEqual("Button was clicked", dataBoundText.GetText());
-			
+
 			_app.TapCoordinates(10, 100);
 		}
 
@@ -206,6 +206,53 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.FlyoutTests
 			_app.WaitForDependencyPropertyValue(innerTextBlock, "Text", "Hello !");
 
 			_app.TapCoordinates(10, 100);
+		}
+
+		[Test]
+		[AutoRetry]
+		[ActivePlatforms(Platform.iOS, Platform.Android)]
+		public void FlyoutTest_FullPlacement()
+		{
+			Run("Uno.UI.Samples.Content.UITests.Flyout.Flyout_Simple");
+
+			_app.WaitForElement("FullOverlayFlyoutButton");
+			_app.Tap("FullOverlayFlyoutButton");
+
+			var flyoutContent = _app.WaitForElement("FullOverlayFlyoutContent").First();
+			var flyoutRect = flyoutContent.Rect.ToRectangle();
+			var flyoutCenter = new Point(flyoutRect.Left + flyoutRect.Width / 2, flyoutRect.Top + flyoutRect.Height / 2);
+
+			var visibleBounds = GetCorrectedVisibleBounds();
+			var boundsCenter = new Point(visibleBounds.Left + visibleBounds.Width / 2, visibleBounds.Top + visibleBounds.Height / 2);
+
+			if (flyoutCenter != boundsCenter)
+			{
+				Assert.Fail(new StringBuilder("Full placement flyout fails to centered in VisibleBounds:")
+					.AppendLine(PrettyPrint("flyoutContent", flyoutRect, flyoutCenter))
+					.AppendLine(PrettyPrint("visibleBounds", visibleBounds, boundsCenter))
+					.ToString()
+				);
+
+				string PrettyPrint(string label, Rectangle rect, Point center) =>
+					$"{label}: [LTWH: {rect.Left},{rect.Top},{rect.Width}x{rect.Height}][CenterXY: {center.X}, {center.Y}]";
+			}
+
+			Rectangle GetCorrectedVisibleBounds()
+			{
+				var bounds = this.GetVisibleBounds();
+				if (AppInitializer.GetLocalPlatform() == Platform.Android && bounds.Location == Point.Empty)
+				{
+					// for the android sample app, the coordinate system currently places point (0, 0) right below the below status bar
+					// we attempt to correct this with FitWindowsLinearLayout's offset
+					var layoutRect = _app.Query(x => x.Class("FitWindowsLinearLayout")).First().Rect.ToRectangle();
+					if (layoutRect.Size == bounds.Size)
+					{
+						bounds = layoutRect; // same as: new Rectangle(layoutRect.Location, bounds.Size);
+					}
+				}
+
+				return bounds;
+			}
 		}
 	}
 }

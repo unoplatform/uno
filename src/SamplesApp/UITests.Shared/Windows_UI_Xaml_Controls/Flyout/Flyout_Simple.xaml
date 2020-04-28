@@ -117,8 +117,8 @@
 							Content="Show Flyout Full Overlay*"
 							Style="{StaticResource SimpleFlyoutButtonStyle}">
 						<Button.Flyout>
-							<Flyout Placement="Full" FlyoutPresenterStyle="{StaticResource SampleFlyoutPresenterStyle}">
-								<Border Background="#80000000">
+							<Flyout x:Name="FullOverlayFlyout" Placement="Full" FlyoutPresenterStyle="{StaticResource SampleFlyoutPresenterStyle}">
+								<Border x:Name="FullOverlayFlyoutContent" Background="#80000000">
 									<Border VerticalAlignment="Center"
 											HorizontalAlignment="Center"
 											Style="{StaticResource SmallSkyBlueBorderStyle}" />

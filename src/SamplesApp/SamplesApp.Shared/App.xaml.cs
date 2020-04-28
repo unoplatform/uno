@@ -28,6 +28,8 @@ using Uno.Logging;
 using Windows.Graphics.Display;
 using System.Globalization;
 using Windows.UI.ViewManagement;
+using Uno.UI;
+
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
 #else
@@ -453,7 +455,23 @@ namespace SamplesApp
 
 		[Foundation.Export("getDisplayScreenScaling:")] // notice the colon at the end of the method name
 		public Foundation.NSString GetDisplayScreenScalingBackdoor(Foundation.NSString value) => new Foundation.NSString(GetDisplayScreenScaling(value).ToString());
+
+		[Foundation.Export("getVisibleBounds:")]
+		public Foundation.NSString GetVisibleBoundsBackdoor() => new Foundation.NSString(GetVisibleBounds());
 #endif
+
+		public static string GetVisibleBounds()
+		{
+			var bounds = ApplicationView.GetForCurrentView().VisibleBounds;
+
+#if !__IOS__
+			var result = bounds.LogicalToPhysicalPixels();
+#else
+			var result = bounds;
+#endif
+
+			return string.Join(",", result.Left, result.Top, result.Width, result.Height);
+		}
 
 		public static bool IsTestDone(string testId) => int.TryParse(testId, out var id) ? _doneTests.Contains(id) : false;
 	}

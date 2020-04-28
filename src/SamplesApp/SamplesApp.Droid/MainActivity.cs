@@ -49,13 +49,16 @@ namespace SamplesApp.Droid
 				activity.Window.ClearFlags(WindowManagerFlags.Fullscreen);
 			}
 		}
+
+		[Export("GetVisibleBounds")]
+		public string GetVisibleBounds() => App.GetVisibleBounds();
+
 		protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent data)
 		{
 			base.OnActivityResult(requestCode, resultCode, data);
 			AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(requestCode, resultCode, data);
 		}
 	}
-
 
 	[Activity]
 	[IntentFilter(
@@ -70,6 +73,5 @@ namespace SamplesApp.Droid
 	public class MsalActivity : BrowserTabActivity
 	{
 	}
-
 }
 
