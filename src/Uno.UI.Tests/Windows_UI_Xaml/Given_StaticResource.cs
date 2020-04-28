@@ -460,5 +460,14 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 
 			Assert.AreEqual(TimeSpan.FromMilliseconds(400), ctrl.MyInterval);
 		}
+
+		[TestMethod]
+		public void When_Ext_Library_Same_Library()
+		{
+			var page = new Test_Page();
+			var tx = page.myExtTextBox;
+			AssertEx.AssertHasColor(tx.Foreground, (Color)Colors.Honeydew);
+			AssertEx.AssertHasColor(tx.Background, (Color)Colors.AntiqueWhite);
+		}
 	}
 }

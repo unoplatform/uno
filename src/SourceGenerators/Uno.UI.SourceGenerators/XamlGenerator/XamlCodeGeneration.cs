@@ -17,6 +17,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 {
 	internal partial class XamlCodeGeneration
 	{
+		internal const string ParseContextPropertyName = "__ParseContext_";
+
 		private string[] _xamlSourceFiles;
 		private string[] _xamlSourceLinks;
 		private string _targetPath;
@@ -476,6 +478,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						writer.AppendLineInvariant("private static bool _dictionariesRegistered;");
 					}
 
+					using (writer.BlockInvariant("internal static global::Uno.UI.Xaml.XamlParseContext {0} {{get; }} = new global::Uno.UI.Xaml.XamlParseContext()", ParseContextPropertyName))
+					{
+						writer.AppendLineInvariant("AssemblyName = \"{0}\",", _projectInstance.GetPropertyValue("AssemblyName"));
+					}
+
+					writer.AppendLineInvariant(";");
+					writer.AppendLine();
+
 					using (writer.BlockInvariant("static GlobalStaticResources()"))
 					{
 						writer.AppendLineInvariant("Initialize();");
@@ -548,9 +558,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								writer.AppendLineInvariant("_dictionariesRegistered = true;");
 								foreach (var file in files.Where(IsResourceDictionary))
 								{
-									writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(\"ms-appx:///{0}/{1}\", () => {2}_ResourceDictionary);",
+									writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"ms-appx:///{0}/{1}\", context: {2}, () => {3}_ResourceDictionary);",
 										_metadataHelper.AssemblyName,
 										map.GetSourceLink(file),
+										ParseContextPropertyName,
 										file.UniqueID
 									);
 								}
@@ -563,7 +574,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						foreach (var file in files.Where(IsResourceDictionary))
 						{
-							writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(\"ms-resource:///Files/{0}\", () => {1}_ResourceDictionary);",
+							// We leave context null because local resources should be found through Application.Resources
+							writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"ms-resource:///Files/{0}\", context: null, () => {1}_ResourceDictionary);",
 								map.GetSourceLink(file),
 								file.UniqueID
 							);

@@ -22,7 +22,10 @@ namespace Uno.UI
 		/// </summary>
 		private static ResourceDictionary MasterDictionary => Uno.UI.GlobalStaticResources.MasterDictionary;
 
-		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionaries = new Dictionary<string, Func<ResourceDictionary>>();
+		private static readonly Dictionary<string, Func<ResourceDictionary>> _registeredDictionariesByUri = new Dictionary<string, Func<ResourceDictionary>>();
+		private static readonly Dictionary<string, ResourceDictionary> _registeredDictionariesByAssembly = new Dictionary<string, ResourceDictionary>();
+
+		private static int _assemblyRef = -1;
 
 		public static class TraceProvider
 		{
@@ -52,14 +55,11 @@ namespace Uno.UI
 		/// <summary>
 		/// Performs a one-time, typed resolution of a named resource, using Application.Resources.
 		/// </summary>
-		/// <typeparam name="T"></typeparam>
-		/// <param name="key"></param>
-		/// <param name="context">Currently unused. In place to have the possibility to modify the lookup mechanism without introducing a binary breaking change.</param>
 		/// <returns></returns>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static T ResolveResourceStatic<T>(object key, object context = null)
 		{
-			if (TryStaticRetrieval(key, out var value) && value is T tValue)
+			if (TryStaticRetrieval(key, context, out var value) && value is T tValue)
 			{
 				return tValue;
 			}
@@ -69,7 +69,7 @@ namespace Uno.UI
 
 		internal static T ResolveTopLevelResource<T>(object key)
 		{
-			if (TryTopLevelRetrieval(key, out var value) && value is T tValue)
+			if (TryTopLevelRetrieval(key, context: null, out var value) && value is T tValue)
 			{
 				return tValue;
 			}
@@ -84,12 +84,12 @@ namespace Uno.UI
 		/// <param name="owner">Owner of the property</param>
 		/// <param name="property">The property to assign</param>
 		/// <param name="resourceKey">Key to the resource</param>
-		/// <param name="context">Currently unused. In place to have the possibility to modify the lookup mechanism without introducing a binary breaking change.</param>
+		/// <param name="context">Optional parameter that provides parse-time context</param>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void ApplyResource(DependencyObject owner, DependencyProperty property, object resourceKey, bool isThemeResourceExtension, object context = null)
 		{
 			// Set initial value based on statically-available top-level resources.
-			if (TryStaticRetrieval(resourceKey, out var value))
+			if (TryStaticRetrieval(resourceKey, context, out var value))
 			{
 				owner.SetValue(property, BindingPropertyHelper.Convert(() => property.Type, value));
 
@@ -106,7 +106,7 @@ namespace Uno.UI
 		/// <summary>
 		/// Try to retrieve a resource statically (at parse time). This will check resources in 'xaml scope' first, then top-level resources.
 		/// </summary>
-		private static bool TryStaticRetrieval(object resourceKey, out object value)
+		private static bool TryStaticRetrieval(object resourceKey, object context, out object value)
 		{
 			foreach (var source in CurrentScope.Sources)
 			{
@@ -118,8 +118,8 @@ namespace Uno.UI
 				}
 			}
 
-			var topLevel = TryTopLevelRetrieval(resourceKey, out value);
-			if (!topLevel /*&& _log.IsEnabled(LogLevel.Warning)*/)
+			var topLevel = TryTopLevelRetrieval(resourceKey, context, out value);
+			if (!topLevel && _log.IsEnabled(LogLevel.Warning))
 			{
 				_log.LogWarning($"Couldn't statically resolve resource {resourceKey}");
 			}
@@ -131,11 +131,43 @@ namespace Uno.UI
 		/// <param name="resourceKey">The resource key</param>
 		/// <param name="value">Out parameter to which the retrieved resource is assigned.</param>
 		/// <returns>True if the resource was found, false if not.</returns>
-		private static bool TryTopLevelRetrieval(object resourceKey, out object value)
+		private static bool TryTopLevelRetrieval(object resourceKey, object context, out object value)
 		{
 			value = null;
 			return (Application.Current?.Resources.TryGetValue(resourceKey, out value) ?? false) ||
+				TryAssemblyResourceRetrieval(resourceKey, context, out value) ||
 				MasterDictionary.TryGetValue(resourceKey, out value);
+		}
+
+		/// <summary>
+		/// Tries to retrieve a resource from the same assembly as the retrieving context. Used when parsing third-party libraries
+		/// (ie not application XAML, and not Uno.UI XAML)
+		/// </summary>
+		private static bool TryAssemblyResourceRetrieval(object resourceKey, object context, out object value)
+		{
+			value = null;
+			if (!(context is XamlParseContext parseContext))
+			{
+				return false;
+			}
+
+			if (parseContext.AssemblyName == "Uno.UI")
+			{
+				return false;
+			}
+
+			if (_registeredDictionariesByAssembly.TryGetValue(parseContext.AssemblyName, out var assemblyDict)) {
+				foreach (var kvp in assemblyDict)
+				{
+					var rd = kvp.Value as ResourceDictionary ;
+					if (rd.TryGetValue(resourceKey, out value))
+					{
+						return true;
+					}
+				}
+			}
+
+			return false;
 		}
 
 		/// <summary>
@@ -198,9 +230,18 @@ namespace Uno.UI
 		/// external resource.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static void RegisterResourceDictionaryBySource(string uri, Func<ResourceDictionary> dictionary)
+		public static void RegisterResourceDictionaryBySource(string uri, XamlParseContext context, Func<ResourceDictionary> dictionary)
 		{
-			_registeredDictionaries[uri] = dictionary;
+			_registeredDictionariesByUri[uri] = dictionary;
+
+			if (context != null)
+			{
+				// We store the dictionaries inside a ResourceDictionary to utilize the lazy-loading machinery
+				var assemblyDict = _registeredDictionariesByAssembly.FindOrCreate(context.AssemblyName, () => new ResourceDictionary());
+				var initializer = new ResourceDictionary.ResourceInitializer(dictionary);
+				_assemblyRef++; // We don't actually use this key, we just need it to be unique
+				assemblyDict[_assemblyRef] = initializer; 
+			}
 		}
 
 		/// <summary>
@@ -220,7 +261,7 @@ namespace Uno.UI
 				// If we don't have an absolute path it must be a local resource reference
 				source = XamlFilePathHelper.LocalResourcePrefix + XamlFilePathHelper.ResolveAbsoluteSource(currentAbsolutePath, source);
 			}
-			if (_registeredDictionaries.TryGetValue(source, out var factory))
+			if (_registeredDictionariesByUri.TryGetValue(source, out var factory))
 			{
 				return factory();
 			}

@@ -75,12 +75,14 @@
   <Import Project="..\Common.targets" />
   <ItemGroup>
     <Compile Include="MyExtControl.cs" />
+    <Compile Include="MyTextBox.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup Condition="'$(BuildingInsideUnoSourceGenerator)'!=''">
     <Page Include="Themes\Generic.xaml" />
     <Page Include="Themes\MyExtControl.xaml" />
     <Page Include="Themes\More\Test_Dictionary_Abs.xaml" />
+    <Page Include="Themes\More\Test_Dictionary_Merged.xaml" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

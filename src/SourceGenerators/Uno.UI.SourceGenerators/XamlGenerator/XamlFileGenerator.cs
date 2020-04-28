@@ -118,6 +118,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// </summary>
 		private readonly bool _shouldAnnotateGeneratedXaml;
 
+		private string ParseContextPropertyAccess => "{0}{1}.GlobalStaticResources.{2}".InvariantCultureFormat(
+				GlobalPrefix,
+				_defaultNamespace,
+				XamlCodeGeneration.ParseContextPropertyName
+			);
+
 		static XamlFileGenerator()
 		{
 			_findContentProperty = Funcs.Create<INamedTypeSymbol, IPropertySymbol>(SourceFindContentProperty).AsLockedMemoized();
@@ -2942,7 +2948,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// for StaticResource *and* ThemeResource. (Note that initialize-time XAML scope resolution should be possible to implement,
 					// should it turn out to be necessary.)
 					var propertyOwner = GetType(member.Member.DeclaringType);
-					writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.ApplyResource({0}, {1}.{2}Property, \"{3}\", {4});", closureName, GetGlobalizedTypeName(propertyOwner.ToDisplayString()), member.Member.Name, resourceKey, isThemeResourceExtension ? "true" : "false");
+					writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.ApplyResource({0}, {1}.{2}Property, \"{3}\", isThemeResourceExtension: {4}, context: {5});", closureName, GetGlobalizedTypeName(propertyOwner.ToDisplayString()), member.Member.Name, resourceKey, isThemeResourceExtension ? "true" : "false", ParseContextPropertyAccess);
 				}
 				else if (IsAttachedProperty(member))
 				{
@@ -3412,8 +3418,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			targetPropertyType = targetPropertyType ?? _objectSymbol;
-			var staticRetrieval = "global::Uno.UI.ResourceResolver.ResolveResourceStatic<{0}>(\"{1}\")"
-				.InvariantCultureFormat(targetPropertyType.ToDisplayString(), keyStr);
+			var staticRetrieval = "global::Uno.UI.ResourceResolver.ResolveResourceStatic<{0}>(\"{1}\", context: {2})"
+				.InvariantCultureFormat(targetPropertyType.ToDisplayString(), keyStr, ParseContextPropertyAccess);
 			TryAnnotateWithGeneratorSource(ref staticRetrieval);
 			return staticRetrieval;
 		}

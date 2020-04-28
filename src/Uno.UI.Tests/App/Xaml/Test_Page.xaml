@@ -105,5 +105,7 @@
 		<TextBlock x:Name="testSubclassedDictionaryTextBlock"
 				   x:FieldModifier="public"
 				   Text="{StaticResource ProblemFreePhilosophy}" />
+		<ext:MyTextBox x:Name="myExtTextBox"
+					   x:FieldModifier="public" />
 	</Grid>
 </Page>
