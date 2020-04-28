@@ -53,18 +53,18 @@ namespace Microsoft.UI.Xaml.Controls
 		private double m_horizontalCacheBufferPerSide;
 		private double m_verticalCacheBufferPerSide;
 
+#pragma warning disable 414 // Assigned but not used field: As WinUI!
 		private bool m_isBringIntoViewInProgress;
+#pragma warning restore 414
 		// For non-virtualizing layouts, we do not need to keep
 		// updating viewports and invalidating measure often. So when
 		// a non virtualizing layout is used, we stop doing all that work.
 		private bool m_managingViewportDisabled;
 
 		// Event tokens
-		//winrt::FrameworkElement::EffectiveViewportChanged_revoker m_effectiveViewportChangedRevoker { };
-		//winrt::FrameworkElement::LayoutUpdated_revoker m_layoutUpdatedRevoker { };
+		private IDisposable m_effectiveViewportChangedRevoker;
 		private IDisposable m_layoutUpdatedRevoker;
-
-		//winrt::Windows::UI::Xaml::Media::CompositionTarget::Rendering_revoker m_renderingToken { };
+		private IDisposable m_renderingToken;
 
 		private bool HasScroller => m_scroller != null;
 
@@ -73,9 +73,6 @@ namespace Microsoft.UI.Xaml.Controls
 			// ItemsRepeater is not fully constructed yet. Don't interact with it.
 
 			m_owner = owner;
-			m_scroller = owner;
-			m_makeAnchorElement = owner;
-			m_cacheBuildAction = owner;
 		}
 
 		public override UIElement MadeAnchor => m_makeAnchorElement;
@@ -217,7 +214,11 @@ namespace Microsoft.UI.Xaml.Controls
 				// from the layout updated event.
 				if (m_layoutUpdatedRevoker == null)
 				{
-					m_layoutUpdatedRevoker = Disposable.Create(() => m_owner.LayoutUpdated -= OnLayoutUpdated);
+					m_layoutUpdatedRevoker = Disposable.Create(() =>
+					{
+						m_owner.LayoutUpdated -= OnLayoutUpdated;
+						m_layoutUpdatedRevoker = null;
+					});
 					m_owner.LayoutUpdated += OnLayoutUpdated;
 				}
 			}
@@ -243,18 +244,19 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (m_managingViewportDisabled)
 			{
-				m_effectiveViewportChangedRevoker.revoke();
+				m_effectiveViewportChangedRevoker?.Dispose();
 			}
-			else if (!m_effectiveViewportChangedRevoker)
+			else if (m_effectiveViewportChangedRevoker == null)
 			{
-				m_effectiveViewportChangedRevoker = m_owner.EffectiveViewportChanged(auto_revoke,  {
-					this, &ViewportManagerWithPlatformFeatures.OnEffectiveViewportChanged
+				m_effectiveViewportChangedRevoker = Disposable.Create(() =>
+				{
+					m_owner.EffectiveViewportChanged += OnEffectiveViewportChanged;
+					m_effectiveViewportChangedRevoker = null;
 				});
+				m_owner.EffectiveViewportChanged += OnEffectiveViewportChanged;
 			}
 
-			m_unshiftableShift =  {
-			}
-			;
+			m_unshiftableShift = default;
 			ResetCacheBuffer();
 		}
 
@@ -317,7 +319,6 @@ namespace Microsoft.UI.Xaml.Controls
 		void OnLayoutUpdated(object sender, object args)
 		{
 			m_layoutUpdatedRevoker?.Dispose();
-			m_layoutUpdatedRevoker = null;
 
 			if (m_managingViewportDisabled)
 			{
@@ -385,15 +386,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 				// Register to rendering event to go back to how things were before where any child can be the anchor.
 				m_isBringIntoViewInProgress = true;
-				if (!m_renderingToken)
+				if (m_renderingToken == null)
 				{
-					Windows.UI.Xaml.Media.CompositionTarget compositionTarget{
-						null
-					}
-					;
-					m_renderingToken = compositionTarget.Rendering(auto_revoke,  {
-						this, &ViewportManagerWithPlatformFeatures.OnCompositionTargetRendering
+					m_renderingToken = Disposable.Create(() =>
+					{
+						Windows.UI.Xaml.Media.CompositionTarget.Rendering -= OnCompositionTargetRendering;
+						m_renderingToken = null;
 					});
+					Windows.UI.Xaml.Media.CompositionTarget.Rendering += OnCompositionTargetRendering;
 				}
 			}
 		}
@@ -410,7 +410,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			if (parent == null)
 			{
-				throw InvalidOperationException("OnBringIntoViewRequested called with args.target element not under the ItemsRepeater that recieved the call");
+				throw new InvalidOperationException("OnBringIntoViewRequested called with args.target element not under the ItemsRepeater that recieved the call");
 			}
 
 			return targetChild;
@@ -420,7 +420,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			global::System.Diagnostics.Debug.Assert(!m_managingViewportDisabled);
 
-			m_renderingToken.revoke();
+			m_renderingToken?.Dispose();
 
 			m_isBringIntoViewInProgress = false;
 			m_makeAnchorElement = null;
@@ -442,7 +442,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public override void ResetScrollers()
 		{
 			m_scroller = null;
-			m_effectiveViewportChangedRevoker.revoke();
+			m_effectiveViewportChangedRevoker?.Dispose();
 			m_ensuredScroller = false;
 		}
 
@@ -471,7 +471,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 			// We got a new viewport, we dont need to wait for layout updated anymore to 
 			// see if our request for a pending shift was handled.
-			m_layoutUpdatedRevoker.revoke();
+			m_layoutUpdatedRevoker?.Dispose();
 		}
 
 		void EnsureScroller()
@@ -500,9 +500,12 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 				else if (!m_managingViewportDisabled)
 				{
-					m_effectiveViewportChangedRevoker = m_owner.EffectiveViewportChanged(auto_revoke,  {
-						this, &ViewportManagerWithPlatformFeatures.OnEffectiveViewportChanged
+					m_effectiveViewportChangedRevoker = Disposable.Create(() =>
+					{
+						m_owner.EffectiveViewportChanged -= OnEffectiveViewportChanged;
+						m_effectiveViewportChangedRevoker = null;
 					});
+					m_owner.EffectiveViewportChanged += OnEffectiveViewportChanged;
 				}
 
 				m_ensuredScroller = true;

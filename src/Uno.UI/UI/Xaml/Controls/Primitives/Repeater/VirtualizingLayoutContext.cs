@@ -9,6 +9,8 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public class VirtualizingLayoutContext : LayoutContext
 	{
+		private NonVirtualizingLayoutContext m_contextAdapter;
+
 		#region IVirtualizingLayoutContext
 		public int ItemCount => ItemCountCore;
 
@@ -56,12 +58,12 @@ namespace Microsoft.UI.Xaml.Controls
 
 		protected virtual Rect RealizationRectCore => throw new NotImplementedException();
 
-		protected virtual int ItemCountCore => throw new NotImplementedException();
+		protected internal virtual int ItemCountCore => throw new NotImplementedException();
 		#endregion
 
 		internal NonVirtualizingLayoutContext GetNonVirtualizingContextAdapter()
 		{
-			if (!m_contextAdapter)
+			if (m_contextAdapter == null)
 			{
 				m_contextAdapter = new VirtualLayoutContextAdapter(this);
 			}

@@ -86,8 +86,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#region Ownership state machine
-
-		private void MoveOwnershipToLayoutFromElementFactory(int index, string uniqueId)
+		public void MoveOwnershipToLayoutFromElementFactory(int index, string uniqueId)
 		{
 			global::System.Diagnostics.Debug.Assert(m_owner == ElementOwner.ElementFactory);
 
@@ -103,7 +102,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_owner = ElementOwner.Layout;
 		}
 
-		void MoveOwnershipToLayoutFromPinnedPool()
+		public void MoveOwnershipToLayoutFromPinnedPool()
 		{
 			global::System.Diagnostics.Debug.Assert(m_owner == ElementOwner.PinnedPool);
 			global::System.Diagnostics.Debug.Assert(IsPinned);
@@ -111,7 +110,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_owner = ElementOwner.Layout;
 		}
 
-		void MoveOwnershipToElementFactory()
+		public void MoveOwnershipToElementFactory()
 		{
 			global::System.Diagnostics.Debug.Assert(m_owner != ElementOwner.ElementFactory);
 
@@ -123,7 +122,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_arrangeBounds = ItemsRepeater.InvalidRect;
 		}
 
-		void MoveOwnershipToUniqueIdResetPoolFromLayout()
+		public void MoveOwnershipToUniqueIdResetPoolFromLayout()
 		{
 			global::System.Diagnostics.Debug.Assert(m_owner == ElementOwner.Layout);
 
@@ -133,7 +132,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// it can go on being pinned as if nothing happened.
 		}
 
-		void MoveOwnershipToAnimator()
+		public void MoveOwnershipToAnimator()
 		{
 			// During a unique id reset, some elements might get removed.
 			// Their ownership will go from the UniqueIdResetPool to the Animator.
@@ -145,7 +144,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_pinCounter = 0u;
 		}
 
-		void MoveOwnershipToPinnedPool()
+		public void MoveOwnershipToPinnedPool()
 		{
 			global::System.Diagnostics.Debug.Assert(m_owner == ElementOwner.Layout);
 
@@ -182,7 +181,7 @@ namespace Microsoft.UI.Xaml.Controls
 			return --m_pinCounter;
 		}
 
-		void UpdateIndex(int newIndex)
+		public void UpdateIndex(int newIndex)
 		{
 			global::System.Diagnostics.Debug.Assert(IsRealized);
 

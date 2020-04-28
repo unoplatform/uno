@@ -6,7 +6,7 @@ using Windows.Foundation;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class Layout
+	public class Layout : Uno.UI.DO
 	{
 		public event TypedEventHandler<Layout, object> MeasureInvalidated;
 		public event TypedEventHandler<Layout, object> ArrangeInvalidated;

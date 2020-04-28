@@ -25,7 +25,7 @@ namespace Microsoft.UI.Xaml.Controls
 			m_owner = owner;
 		}
 
-		void PhaseElement(UIElement element, VirtualizationInfo virtInfo)
+		public void PhaseElement(UIElement element, VirtualizationInfo virtInfo)
 		{
 			var dataTemplateComponent = virtInfo.DataTemplateComponent;
 			var nextPhase = virtInfo.Phase;
@@ -76,7 +76,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void StopPhasing(UIElement element, VirtualizationInfo virtInfo)
+		public void StopPhasing(UIElement element, VirtualizationInfo virtInfo)
 		{
 			// We need to remove the element from the pending elements list. We cannot just change the phase to -1
 			// since it will get updated when the element gets recycled.
@@ -113,7 +113,7 @@ namespace Microsoft.UI.Xaml.Controls
 					if (currentPhase > 0)
 					{
 						int nextPhase = VirtualizationInfo.PhaseReachedEnd;
-						virtInfo.DataTemplateComponent.ProcessBindings(virtInfo.Data, -1 /* item index unused */, currentPhase, nextPhase);
+						virtInfo.DataTemplateComponent.ProcessBindings(virtInfo.Data, -1 /* item index unused */, currentPhase, out nextPhase);
 						ValidatePhaseOrdering(currentPhase, nextPhase);
 
 						var previousAvailableSize = LayoutInformation.GetAvailableSize(element);
@@ -151,10 +151,10 @@ namespace Microsoft.UI.Xaml.Controls
 					{
 						// If the next element is oustide the visible window and there are elements in the visible window
 						// go back to the visible window.
-						bool nextItemIsVisible = SharedHelpers.DoRectsIntersect(visibleWindow, m_pendingElements[currentIndex].VirtInfo().ArrangeBounds());
+						bool nextItemIsVisible = SharedHelpers.DoRectsIntersect(visibleWindow, m_pendingElements[currentIndex].VirtInfo.ArrangeBounds);
 						if (!nextItemIsVisible)
 						{
-							bool haveVisibleItems = SharedHelpers.DoRectsIntersect(visibleWindow, m_pendingElements[pendingCount - 1].VirtInfo().ArrangeBounds());
+							bool haveVisibleItems = SharedHelpers.DoRectsIntersect(visibleWindow, m_pendingElements[pendingCount - 1].VirtInfo.ArrangeBounds);
 							if (haveVisibleItems)
 							{
 								currentIndex = pendingCount - 1;
@@ -174,14 +174,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			if (!m_registeredForCallback)
 			{
-				global::System.Diagnostics.Debug.Assert(!m_pendingElements.empty());
+				global::System.Diagnostics.Debug.Assert(m_pendingElements.Count != 0);
 				m_registeredForCallback = true;
 				BuildTreeScheduler.RegisterWork(
-						m_pendingElements[m_pendingElements.size() - 1].VirtInfo().Phase(),  // Use the phase of the last one in the sorted list
-					[this]()
-				{
-					DoPhasedWorkCallback();
-				});
+						m_pendingElements[m_pendingElements.Count - 1].VirtInfo.Phase,  // Use the phase of the last one in the sorted list
+						DoPhasedWorkCallback);
 			}
 		}
 

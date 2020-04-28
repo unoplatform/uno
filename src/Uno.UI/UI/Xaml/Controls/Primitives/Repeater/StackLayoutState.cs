@@ -1,49 +1,69 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-#include <pch.h>
-#include <common.h>
-#include "ItemsRepeater.common.h"
-#include "FlowLayoutAlgorithm.h"
-#include "StackLayoutState.h"
+using System;
+using System.Collections.Generic;
 
-#include "StackLayoutState.properties.cpp"
-
-void InitializeForContext(
-    const VirtualizingLayoutContext& context,
-    IFlowLayoutAlgorithmDelegates* callbacks)
+namespace Microsoft.UI.Xaml.Controls
 {
-    m_flowAlgorithm.InitializeForContext(context, callbacks);
-    if (m_estimationBuffer.size() == 0)
-    {
-        m_estimationBuffer.resize(BufferSize, 0.0f);
-    }
+	public partial class StackLayoutState
+	{
+		private const int BufferSize = 100;
 
-    context.LayoutStateCore(this);
-}
+		private FlowLayoutAlgorithm m_flowAlgorithm;
+		private List<double> m_estimationBuffer = new List<double>(BufferSize);
+		private double m_totalElementSize;
+		// During the measure pass, as we measure the elements, we will keep track
+		// of the largest arrange bounds in the non-virtualizing direction. This value
+		// is going to be used in the calculation of the extent.
+		private double m_maxArrangeBounds;
+		private int m_totalElementsMeasured;
 
-void UninitializeForContext(const VirtualizingLayoutContext& context)
-{
-    m_flowAlgorithm.UninitializeForContext(context);
-}
+		internal FlowLayoutAlgorithm FlowAlgorithm => m_flowAlgorithm;
+		internal double TotalElementSize => m_totalElementSize;
+		internal double MaxArrangeBounds => m_maxArrangeBounds;
+		internal int TotalElementsMeasured => m_totalElementsMeasured;
 
-void OnElementMeasured(int elementIndex, double majorSize, double minorSize)
-{
-    int estimationBufferIndex = elementIndex % m_estimationBuffer.size();
-    bool alreadyMeasured = m_estimationBuffer[estimationBufferIndex] != 0;
-    if (!alreadyMeasured)
-    {
-        m_totalElementsMeasured++;
-    }
+		public StackLayoutState()
+		{
+			m_flowAlgorithm = new FlowLayoutAlgorithm();
+		}
 
-    m_totalElementSize -= m_estimationBuffer[estimationBufferIndex];
-    m_totalElementSize += majorSize;
-    m_estimationBuffer[estimationBufferIndex] = majorSize;
+		internal void InitializeForContext(VirtualizingLayoutContext context, IFlowLayoutAlgorithmDelegates callbacks)
+		{
+			m_flowAlgorithm.InitializeForContext(context, callbacks);
+			//if (m_estimationBuffer.Count == 0)
+			//{
+			//	m_estimationBuffer.resize(BufferSize, 0.0f);
+			//}
 
-    m_maxArrangeBounds = std.max(m_maxArrangeBounds, minorSize);
-}
+			context.LayoutStateCore = this;
+		}
 
-void OnMeasureStart()
-{
-    m_maxArrangeBounds = 0.0;
+		internal void UninitializeForContext(VirtualizingLayoutContext context)
+		{
+			m_flowAlgorithm.UninitializeForContext(context);
+		}
+
+		internal void OnElementMeasured(int elementIndex, double majorSize, double minorSize)
+		{
+			int estimationBufferIndex = elementIndex % m_estimationBuffer.Count;
+			bool alreadyMeasured = m_estimationBuffer[estimationBufferIndex] != 0;
+			if (!alreadyMeasured)
+			{
+				m_totalElementsMeasured++;
+			}
+
+			m_totalElementSize -= m_estimationBuffer[estimationBufferIndex];
+			m_totalElementSize += majorSize;
+			m_estimationBuffer[estimationBufferIndex] = majorSize;
+
+			m_maxArrangeBounds = Math.Max(m_maxArrangeBounds, minorSize);
+		}
+
+		internal void OnMeasureStart()
+		{
+			m_maxArrangeBounds = 0.0;
+		}
+	}
 }

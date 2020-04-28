@@ -10,6 +10,8 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Markup;
+using Uno.Disposables;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -25,9 +27,10 @@ namespace Microsoft.UI.Xaml.Controls
 		private VirtualizationInfo m_virtInfo;
 
 
-		public PinnedElementInfo(ITrackerHandleManager owner, UIElement element)
+		public PinnedElementInfo(UIElement element)
 		{
-
+			m_pinnedElement = element;
+			m_virtInfo = ItemsRepeater.GetVirtualizationInfo(element);
 		}
 
 		public UIElement PinnedElement => m_pinnedElement;
@@ -39,7 +42,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private ItemsRepeater m_owner;
 
 		// Pinned elements that are currently owned by layout are *NOT* in this pool.
-		private List<PinnedElementInfo> m_pinnedPool;
+		private List<PinnedElementInfo> m_pinnedPool = new List<PinnedElementInfo>();
 		private UniqueIdElementPool m_resetPool;
 
 		// _lastFocusedElement is listed in _pinnedPool.
@@ -71,25 +74,13 @@ namespace Microsoft.UI.Xaml.Controls
 			// ItemsRepeater is not fully constructed yet. Don't interact with it.
 
 			m_owner = owner;
-			m_resetPool = owner;
+			m_resetPool = new UniqueIdElementPool(owner);
 
-			m_lastFocusedElement(owner);
-			m_phaser(owner);
-			m_ElementFactoryGetArgs(owner);
-			m_ElementFactoryRecycleArgs(owner);
+			m_lastFocusedElement = owner;
+			m_phaser = new Phaser(owner);
+			m_ElementFactoryGetArgs = new ElementFactoryGetArgs();
+			m_ElementFactoryRecycleArgs = new ElementFactoryRecycleArgs();
 		}
-
-		[Conditional("TRACE")]
-		private static void REPEATER_TRACE_INFO(string text, params object[] parameters)
-			=> Console.WriteLine(text, parameters);
-
-		[Conditional("TRACE")]
-		private static void REPEATER_TRACE_PERF(string text)
-			=> Console.WriteLine(text);
-
-		[Conditional("DEBUG")]
-		private static void MUX_ASSERT(bool assertion)
-			=> global::System.Diagnostics.Debug.Assert(assertion);
 
 		public UIElement GetElement(int index, bool forceCreate, bool suppressAutoRecycle)
 		{
@@ -176,12 +167,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			m_owner.OnElementClearing(element);
 
-			if (m_owner.ItemTemplateShim)
+			if (m_owner.ItemTemplateShim != null)
 			{
-				if (!m_ElementFactoryRecycleArgs)
+				if (m_ElementFactoryRecycleArgs == null)
 				{
 					// Create one.
-					m_ElementFactoryRecycleArgs = new ElementFactoryRecycleArgs(m_owner, new ElementFactoryRecycleArgs());
+					m_ElementFactoryRecycleArgs = new ElementFactoryRecycleArgs();
 				}
 
 				var context = m_ElementFactoryRecycleArgs;
@@ -197,9 +188,9 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				// No ItemTemplate to recycle to, remove the element from the children collection.
 				var children = m_owner.Children;
-				uint childIndex = 0;
-				bool found = children.IndexOf(element, childIndex);
-				if (!found)
+				int childIndex = 0;
+				childIndex = children.IndexOf(element);
+				if (childIndex < 0)
 				{
 					throw new InvalidOperationException("ItemsRepeater's child not found in its Children collection.");
 				}
@@ -262,7 +253,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				var child = children[i];
 				var virtInfo = ItemsRepeater.TryGetVirtualizationInfo(child);
-				if (virtInfo && virtInfo.IsHeldByLayout)
+				if (virtInfo != null && virtInfo.IsHeldByLayout)
 				{
 					int currentIndex = virtInfo.Index;
 					if (currentIndex < clearedIndex)
@@ -405,7 +396,7 @@ namespace Microsoft.UI.Xaml.Controls
 						m_lastRealizedElementIndexHeldByLayout += newCount;
 						var children = m_owner.Children;
 						var childCount = children.Count;
-						for (uint i = 0u; i < childCount; ++i)
+						for (int i = 0; i < childCount; ++i)
 						{
 							var element = children[i];
 							var virtInfo = ItemsRepeater.GetVirtualizationInfo(element);
@@ -529,7 +520,7 @@ namespace Microsoft.UI.Xaml.Controls
 					if (!m_isDataSourceStableResetPending)
 					{
 						// There should be no elements in the reset pool at this time.
-						MUX_ASSERT(m_resetPool.IsEmpty());
+						MUX_ASSERT(m_resetPool.IsEmpty);
 
 						if (m_owner.ItemsSourceView.HasKeyIndexMapping)
 						{
@@ -622,7 +613,7 @@ namespace Microsoft.UI.Xaml.Controls
 				{
 					var child = children[i];
 					var virtInfo = ItemsRepeater.TryGetVirtualizationInfo(child);
-					if (virtInfo && virtInfo.IsHeldByLayout)
+					if (virtInfo != null && virtInfo.IsHeldByLayout)
 					{
 						// Only give back elements held by layout. If someone else is holding it, they will be served by other methods.
 						int childIndex = virtInfo.Index;
@@ -715,20 +706,16 @@ namespace Microsoft.UI.Xaml.Controls
 			// The view generator is the provider of last resort.
 			var  data = m_owner.ItemsSourceView.GetAt(index);
 
-			var providedElementFactory = m_owner.ItemTemplateShim;
-			//var element = [this, data, index, providedElementFactory = m_owner.ItemTemplateShim()]()
+			UIElement GetElement()
 			{
-				if (providedElementFactory != null)
+				var elementFactory = m_owner.ItemTemplateShim;
+				if (elementFactory == null)
 				{
 					if (data is UIElement dataAsElement)
 					{
 						return dataAsElement;
 					}
-				}
-
-				var elementFactory = () => providedElementFactory;
-				{
-					if (providedElementFactory == null)
+					else
 					{
 						// If no ItemTemplate was provided, use a default
 						//var factory  = XamlReader.Load("<DataTemplate xmlns='http://schemas.microsoft.com/winfx/2006/xaml/presentation'><TextBlock Text='{Binding}'/></DataTemplate>") as DataTemplate;
@@ -739,39 +726,35 @@ namespace Microsoft.UI.Xaml.Controls
 							return tb;
 						});
 						m_owner.ItemTemplate = factory;
-						return m_owner.ItemTemplateShim;
-					}
 
-					return providedElementFactory;
+						elementFactory = m_owner.ItemTemplateShim;
+					}
 				}
 
-				var args = [this]()
+				if (m_ElementFactoryGetArgs == null)
 				{
-					if (!m_ElementFactoryGetArgs)
-					{
-						m_ElementFactoryGetArgs = ElementFactoryGetArgs(m_owner, *new ElementFactoryGetArgs());
-					}
-
-					return m_ElementFactoryGetArgs;
+					m_ElementFactoryGetArgs = new ElementFactoryGetArgs();
 				}
-				();
 
-				var scopeGuard = gsl.finally([args]()
+				var args = m_ElementFactoryGetArgs;
+
+				using var scopeGuard = Disposable.Create(() =>
 				{
-					args.Data(null);
-					args.Parent(null);
+					args.Data = null;
+					args.Parent = null;
 				});
 
-				args.Data(data);
-				args.Parent(m_owner);
-				(args as ElementFactoryGetArgs).Index(index);
+				args.Data = data;
+				args.Parent = m_owner;
+				args.Index = index;
 
 				return elementFactory.GetElement(args);
-			}
-			();
+			};
+
+			var element = GetElement();
 
 			var virtInfo = ItemsRepeater.TryGetVirtualizationInfo(element);
-			if (!virtInfo)
+			if (virtInfo == null)
 			{
 				virtInfo = ItemsRepeater.CreateAndInitializeVirtualizationInfo(element);
 				REPEATER_TRACE_PERF("ElementCreated");
@@ -796,44 +779,40 @@ namespace Microsoft.UI.Xaml.Controls
 					extension.Recycle();
 					int nextPhase = VirtualizationInfo.PhaseReachedEnd;
 					// Run Phase 0
-					extension.ProcessBindings(data, index, 0 /* currentPhase */, nextPhase);
+					extension.ProcessBindings(data, index, 0 /* currentPhase */, out nextPhase);
 
 					// Setup phasing information, so that Phaser can pick up any pending phases left.
 					// Update phase on virtInfo. Set data and templateComponent only if x:Phase was used.
 					virtInfo.UpdatePhasingInfo(nextPhase, nextPhase > 0 ? data : null, nextPhase > 0 ? extension : null);
 				}
-				else if (var elementAsFE = element.try_as<FrameworkElement>())
+				else if (element is FrameworkElement elementAsFE)
 				{
 					// Set data context only if no x:Bind was used. ie. No data template component on the root.
 					// If the passed in data is a UIElement and is different from the element returned by 
 					// the template factory then we need to propagate the DataContext.
 					// Otherwise just set the DataContext on the element as the data.
-					var  elementDataContext  = [this, data]()
+					var elementDataContext = data;
+					if (data is FrameworkElement dataAsElement)
 					{
-						if (var dataAsElement  = data.try_as<FrameworkElement>())
+						var dataDataContext = dataAsElement.DataContext;
+						if (dataDataContext != null)
 						{
-							if (var dataDataContext  = dataAsElement.DataContext())
-							{
-								return dataDataContext;
-							}
+							elementDataContext = dataDataContext;
 						}
-						return data;
 					}
-					();
 
-					elementAsFE.DataContext(elementDataContext);
+					elementAsFE.DataContext = elementDataContext;
 				}
 				else
 				{
-					MUX_ASSERT("Element returned by factory is not a FrameworkElement!");
+					MUX_ASSERT(false, "Element returned by factory is not a FrameworkElement!");
 				}
 			}
 
 			virtInfo.MoveOwnershipToLayoutFromElementFactory(
 				index,
 				/* uniqueId: */
-				m_owner.ItemsSourceView.HasKeyIndexMapping() ? m_owner.ItemsSourceView.KeyFromIndex(index) : hstring{
-			});
+				m_owner.ItemsSourceView.HasKeyIndexMapping ? m_owner.ItemsSourceView.KeyFromIndex(index) : null);
 
 			// The view generator is the only provider that prepares the element.
 			var repeater = m_owner;
@@ -842,12 +821,12 @@ namespace Microsoft.UI.Xaml.Controls
 			// that handlers can walk up the tree in case they want to find their IndexPath in the 
 			// nested case.
 			var children = repeater.Children;
-			if (CachedVisualTreeHelpers.GetParent(element) != (DependencyObject)(*repeater))
+			if (CachedVisualTreeHelpers.GetParent(element) != repeater)
 			{
-				children.Append(element);
+				children.Add(element);
 			}
 
-			repeater.AnimationManager().OnElementPrepared(element);
+			repeater.AnimationManager.OnElementPrepared(element);
 
 			repeater.OnElementPrepared(element, index);
 
@@ -912,7 +891,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 #endif
-				m_pinnedPool.push_back(PinnedElementInfo(m_owner, element));
+				m_pinnedPool.Add(new PinnedElementInfo(element));
 				virtInfo.MoveOwnershipToPinnedPool();
 			}
 
@@ -973,13 +952,16 @@ namespace Microsoft.UI.Xaml.Controls
 			UpdateFocusedElement();
 		}
 
+		private bool m_gotFocus;
 		void EnsureEventSubscriptions()
 		{
-			if (m_gotFocus == null)
+			if (!m_gotFocus)
 			{
-				MUX_ASSERT(m_lostFocus == null);
-				m_gotFocus = m_owner.GotFocus += OnFocusChanged;
-				m_lostFocus = m_owner.LostFocus += OnFocusChanged;
+				//MUX_ASSERT(m_lostFocus == null);
+				m_owner.GotFocus += OnFocusChanged;
+				m_owner.LostFocus += OnFocusChanged;
+
+				m_gotFocus = true;
 			}
 		}
 
@@ -997,14 +979,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			m_firstRealizedElementIndexHeldByLayout = FirstRealizedElementIndexDefault;
 			m_lastRealizedElementIndexHeldByLayout = LastRealizedElementIndexDefault;
-		}
-
-		ViewManager.PinnedElementInfo.PinnedElementInfo(ITrackerHandleManager* owner,  UIElement element) :
-
-		m_pinnedElement(owner, element),
-
-		m_virtInfo(owner, ItemsRepeater.GetVirtualizationInfo(element))
-		{
 		}
 	}
 }

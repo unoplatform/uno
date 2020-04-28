@@ -27,92 +27,14 @@ namespace Microsoft.UI.Xaml.Controls
 
 
 		// Change to 'true' to turn on debugging outputs in Output window
-		private static bool s_IsDebugOutputEnabled = false;
+		//private static bool s_IsDebugOutputEnabled = false;
 
 		internal static Point ClearedElementsArrangePosition = new Point(-10000.0f, -10000.0f);
 
 		// A convention we use in the ItemsRepeater codebase for an invalid Rect value.
 		internal static Rect InvalidRect = new Rect(-1, -1, -1, -1);
 
-		#region Background (DP) => Commented out as FwElt already has it ...
-		//public static DependencyProperty BackgroundProperty { get; } = DependencyProperty.Register(
-		//	"Background", typeof(Brush), typeof(ItemsRepeater), new PropertyMetadata(default(Brush)));
 
-		//public Brush Background
-		//{
-		//	get => (Brush)GetValue(BackgroundProperty);
-		//	set => SetValue(BackgroundProperty, value);
-		//}
-		#endregion
-
-		#region ItemsSource (DP)
-		public static DependencyProperty ItemsSourceProperty { get; } = DependencyProperty.Register(
-			"ItemsSource", typeof(object), typeof(ItemsRepeater), new PropertyMetadata(default(object), OnPropertyChanged));
-
-		public object ItemsSource
-		{
-			get => (object)GetValue(ItemsSourceProperty);
-			set => SetValue(ItemsSourceProperty, value);
-		}
-		#endregion
-
-		#region ItemTemplate (DP)
-		public static DependencyProperty ItemTemplateProperty { get; } = DependencyProperty.Register(
-			"ItemTemplate", typeof(object), typeof(ItemsRepeater), new PropertyMetadata(default(object), OnPropertyChanged));
-
-		public object ItemTemplate
-		{
-			get => (object)GetValue(ItemTemplateProperty);
-			set => SetValue(ItemTemplateProperty, value);
-		}
-		#endregion
-
-		#region Layout (DP)
-		public static DependencyProperty LayoutProperty { get; } = DependencyProperty.Register(
-			"Layout", typeof(Layout), typeof(ItemsRepeater), new PropertyMetadata(default(Layout), OnPropertyChanged));
-
-		public Layout Layout
-		{
-			get => (Layout)GetValue(LayoutProperty);
-			set => SetValue(LayoutProperty, value);
-		}
-		#endregion
-
-		#region Animator (DP)
-		public static DependencyProperty AnimatorProperty { get; } = DependencyProperty.Register(
-			"Animator", typeof(ElementAnimator), typeof(ItemsRepeater), new PropertyMetadata(default(ElementAnimator), OnPropertyChanged));
-
-		public ElementAnimator Animator
-		{
-			get => (ElementAnimator)GetValue(AnimatorProperty);
-			set => SetValue(AnimatorProperty, value);
-		}
-		#endregion
-
-		#region HorizontalCacheLength (DP)
-		public static DependencyProperty HorizontalCacheLengthProperty { get; } = DependencyProperty.Register(
-			"HorizontalCacheLength", typeof(double), typeof(ItemsRepeater), new PropertyMetadata(default(double), OnPropertyChanged));
-
-		public double HorizontalCacheLength
-		{
-			get => (double)GetValue(HorizontalCacheLengthProperty);
-			set => SetValue(HorizontalCacheLengthProperty, value);
-		}
-		#endregion
-
-		#region VerticalCacheLength (DP)
-		public static DependencyProperty VerticalCacheLengthProperty { get; } = DependencyProperty.Register(
-			"VerticalCacheLength", typeof(double), typeof(ItemsRepeater), new PropertyMetadata(default(double), OnPropertyChanged));
-
-		public double VerticalCacheLength
-		{
-			get => (double)GetValue(VerticalCacheLengthProperty);
-			set => SetValue(VerticalCacheLengthProperty, value);
-		}
-		#endregion
-
-		private static void OnPropertyChanged(DependencyObject snd, DependencyPropertyChangedEventArgs args)
-			=> ((ItemsRepeater)snd).OnPropertyChanged(args);
 
 		public event TypedEventHandler<ItemsRepeater, ItemsRepeaterElementPreparedEventArgs> ElementPrepared;
 		public event TypedEventHandler<ItemsRepeater, ItemsRepeaterElementIndexChangedEventArgs> ElementIndexChanged;
@@ -129,7 +51,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private bool IsProcessingCollectionChange => m_processingItemsSourceChange != null;
 
-		AnimationManager m_animationManager ;
+		AnimationManager m_animationManager;
 		ViewManager m_viewManager ;
 		ViewportManager m_viewportManager ;
 
@@ -168,10 +90,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public ItemsRepeater()
 		{
-			_children = new UIElementCollection(this);
-
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_ItemsRepeater);
 
+			_children = new UIElementCollection(this);
+			m_animationManager = new AnimationManager(this);
+			m_viewManager = new ViewManager(this);
 			//if (SharedHelpers.IsRS5OrHigher())
 			{
 				m_viewportManager = new ViewportManagerWithPlatformFeatures(this);
@@ -180,8 +103,6 @@ namespace Microsoft.UI.Xaml.Controls
 			//{
 			//	m_viewportManager = std.new ViewportManagerDownLevel(this);
 			//}
-
-			
 
 			AutomationProperties.SetAccessibilityView(this, AccessibilityView.Raw);
 			//if (SharedHelpers.IsRS3OrHigher())
@@ -484,7 +405,7 @@ namespace Microsoft.UI.Xaml.Controls
 		/*static*/
 		internal static VirtualizationInfo TryGetVirtualizationInfo(UIElement element)
 		{
-			var value = element.GetValue(GetVirtualizationInfoProperty());
+			var value = element.GetValue(VirtualizationInfoProperty);
 			return (VirtualizationInfo)value;
 		}
 
@@ -506,7 +427,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			global::System.Diagnostics.Debug.Assert(TryGetVirtualizationInfo(element) == null);
 			var result = new VirtualizationInfo();
-			element.SetValue(GetVirtualizationInfoProperty(), result);
+			element.SetValue(VirtualizationInfoProperty, result);
 			return result;
 		}
 
@@ -550,7 +471,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void OnElementPrepared(UIElement element, int index)
+		internal void OnElementPrepared(UIElement element, int index)
 		{
 			m_viewportManager.OnElementPrepared(element);
 			var m_elementPreparedEventSource = ElementPrepared;
@@ -569,7 +490,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void OnElementClearing(UIElement element)
+		internal void OnElementClearing(UIElement element)
 		{
 			var m_elementClearingEventSource = ElementClearing;
 			if (m_elementClearingEventSource != null)
@@ -587,7 +508,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void OnElementIndexChanged(UIElement element, int oldIndex, int newIndex)
+		internal void OnElementIndexChanged(UIElement element, int oldIndex, int newIndex)
 		{
 			var m_elementIndexChangedEventSource = ElementIndexChanged;
 			if (m_elementIndexChangedEventSource != null)

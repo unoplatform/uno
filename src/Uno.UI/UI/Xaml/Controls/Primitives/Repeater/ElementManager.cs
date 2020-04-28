@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using Windows.Foundation;
 using Windows.UI.Xaml;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -54,22 +55,20 @@ namespace Microsoft.UI.Xaml.Controls
 				return false;
 			}
 		}
-		private int GetRealizedElementCount => IsVirtualizingContext ? (int)(m_realizedElements.Count) : m_context.ItemCount;
 
-		// TODO UNO
-		//private readonly ITrackerHandleManager m_owner;
+		public int GetRealizedElementCount => IsVirtualizingContext ? (int)(m_realizedElements.Count) : m_context.ItemCount;
 
-		private List<UIElement> m_realizedElements = new List<UIElement>();
-		private List<Rect> m_realizedElementLayoutBounds = new List<Rect>();
+		private readonly List<UIElement> m_realizedElements = new List<UIElement>();
+		private readonly List<Rect> m_realizedElementLayoutBounds = new List<Rect>();
 		private int m_firstRealizedDataIndex = -1;
 		private VirtualizingLayoutContext m_context;
 
-		void SetContext(VirtualizingLayoutContext virtualContext)
+		public void SetContext(VirtualizingLayoutContext virtualContext)
 		{
 			m_context = virtualContext;
 		}
 
-		void OnBeginMeasure(ScrollOrientation orientation)
+		public void OnBeginMeasure(ScrollOrientation orientation)
 		{
 			if (m_context != null)
 			{
@@ -100,7 +99,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		UIElement GetAt(int realizedIndex)
+		public UIElement GetAt(int realizedIndex)
 		{
 			UIElement element;
 			if (IsVirtualizingContext)
@@ -124,9 +123,9 @@ namespace Microsoft.UI.Xaml.Controls
 			return element;
 		}
 
-		void Add(UIElement element, int dataIndex)
+		public void Add(UIElement element, int dataIndex)
 		{
-			global::System.Diagnostics.Debug.Assert(IsVirtualizingContext);
+			MUX_ASSERT(IsVirtualizingContext);
 
 			if (m_realizedElements.Count == 0)
 			{
@@ -139,7 +138,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void Insert(int realizedIndex, int dataIndex,  UIElement element)
 		{
-			global::System.Diagnostics.Debug.Assert(IsVirtualizingContext);
+			MUX_ASSERT(IsVirtualizingContext);
 
 			if (realizedIndex == 0)
 			{
@@ -154,7 +153,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		void ClearRealizedRange(int realizedIndex, int count)
 		{
-			global::System.Diagnostics.Debug.Assert(IsVirtualizingContext);
+			MUX_ASSERT(IsVirtualizingContext);
 
 			for (int i = 0; i < count; i++)
 			{
@@ -176,12 +175,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void DiscardElementsOutsideWindow(bool forward, int startIndex)
+		public void DiscardElementsOutsideWindow(bool forward, int startIndex)
 		{
 			// Remove layout elements that are outside the realized range.
 			if (IsDataIndexRealized(startIndex))
 			{
-				global::System.Diagnostics.Debug.Assert(IsVirtualizingContext);
+				MUX_ASSERT(IsVirtualizingContext);
 				int rangeIndex = GetRealizedRangeIndexFromDataIndex(startIndex);
 
 				if (forward)
@@ -195,38 +194,35 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		void ClearRealizedRange()
+		public void ClearRealizedRange()
 		{
-			global::System.Diagnostics.Debug.Assert(IsVirtualizingContext);
+			MUX_ASSERT(IsVirtualizingContext);
 			ClearRealizedRange(0, GetRealizedElementCount);
 		}
 
-
-		Rect GetLayoutBoundsForDataIndex(int dataIndex)
+		public Rect GetLayoutBoundsForDataIndex(int dataIndex)
 		{
 			int realizedIndex = GetRealizedRangeIndexFromDataIndex(dataIndex);
 			return m_realizedElementLayoutBounds[realizedIndex];
 		}
 
-		void SetLayoutBoundsForDataIndex(int dataIndex, Rect bounds)
+		public void SetLayoutBoundsForDataIndex(int dataIndex, Rect bounds)
 		{
 			int realizedIndex = GetRealizedRangeIndexFromDataIndex(dataIndex);
 			m_realizedElementLayoutBounds[realizedIndex] = bounds;
 		}
 
-
-		Rect GetLayoutBoundsForRealizedIndex(int realizedIndex)
+		public Rect GetLayoutBoundsForRealizedIndex(int realizedIndex)
 		{
 			return m_realizedElementLayoutBounds[realizedIndex];
 		}
 
-		void SetLayoutBoundsForRealizedIndex(int realizedIndex, Rect bounds)
+		public void SetLayoutBoundsForRealizedIndex(int realizedIndex, Rect bounds)
 		{
 			m_realizedElementLayoutBounds[realizedIndex] = bounds;
 		}
 
-
-		bool IsDataIndexRealized(int index)
+		public bool IsDataIndexRealized(int index)
 		{
 			if (IsVirtualizingContext)
 			{
@@ -243,21 +239,20 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		bool IsIndexValidInData(int currentIndex)
+		public bool IsIndexValidInData(int currentIndex)
 		{
 			return currentIndex >= 0 && currentIndex < m_context.ItemCount;
 		}
 
-
-		UIElement GetRealizedElement(int dataIndex)
+		public UIElement GetRealizedElement(int dataIndex)
 		{
-			global::System.Diagnostics.Debug.Assert(IsDataIndexRealized(dataIndex));
+			MUX_ASSERT(IsDataIndexRealized(dataIndex));
 			return IsVirtualizingContext
 				? GetAt(GetRealizedRangeIndexFromDataIndex(dataIndex))
 				: m_context.GetOrCreateElementAt(dataIndex, ElementRealizationOptions.ForceCreate | ElementRealizationOptions.SuppressAutoRecycle);
 		}
 
-		void EnsureElementRealized(bool forward, int dataIndex,  string layoutId)
+		public void EnsureElementRealized(bool forward, int dataIndex,  string layoutId)
 		{
 			if (IsDataIndexRealized(dataIndex) == false)
 			{
@@ -272,16 +267,16 @@ namespace Microsoft.UI.Xaml.Controls
 					Insert(0, dataIndex, element);
 				}
 
-				global::System.Diagnostics.Debug.Assert(IsDataIndexRealized(dataIndex));
+				MUX_ASSERT(IsDataIndexRealized(dataIndex));
 				// TODO UNO
 				// REPEATER_TRACE_INFO("%ls: \tCreated element for index %d. \n", layoutId.data(), dataIndex);
 			}
 		}
 
 		// Does the given window intersect the range of realized elements
-		bool IsWindowConnected(Rect window, ScrollOrientation orientation, bool scrollOrientationSameAsFlow)
+		public bool IsWindowConnected(Rect window, ScrollOrientation orientation, bool scrollOrientationSameAsFlow)
 		{
-			global::System.Diagnostics.Debug.Assert(IsVirtualizingContext);
+			MUX_ASSERT(IsVirtualizingContext);
 			bool intersects = false;
 			if (m_realizedElementLayoutBounds.Count > 0)
 			{
@@ -304,9 +299,9 @@ namespace Microsoft.UI.Xaml.Controls
 			return intersects;
 		}
 
-		void DataSourceChanged(object source, NotifyCollectionChangedEventArgs args)
+		public void DataSourceChanged(object source, NotifyCollectionChangedEventArgs args)
 		{
-			global::System.Diagnostics.Debug.Assert(IsVirtualizingContext);
+			MUX_ASSERT(IsVirtualizingContext);
 			if (m_realizedElements.Count > 0)
 			{
 				switch (args.Action)
@@ -370,29 +365,29 @@ namespace Microsoft.UI.Xaml.Controls
 
 		int GetElementDataIndex(UIElement suggestedAnchor)
 		{
-			global::System.Diagnostics.Debug.Assert(suggestedAnchor != null);
+			MUX_ASSERT(suggestedAnchor != null);
 			var it = m_realizedElements.IndexOf(suggestedAnchor);
 			return it != -1
 				? GetDataIndexFromRealizedRangeIndex(it)
 				: -1;
 		}
 
-		int GetDataIndexFromRealizedRangeIndex(int rangeIndex)
+		public int GetDataIndexFromRealizedRangeIndex(int rangeIndex)
 		{
-			global::System.Diagnostics.Debug.Assert(rangeIndex >= 0 && rangeIndex < GetRealizedElementCount);
+			MUX_ASSERT(rangeIndex >= 0 && rangeIndex < GetRealizedElementCount);
 			return IsVirtualizingContext ? rangeIndex + m_firstRealizedDataIndex : rangeIndex;
 		}
 
 		int GetRealizedRangeIndexFromDataIndex(int dataIndex)
 		{
-			global::System.Diagnostics.Debug.Assert(IsDataIndexRealized(dataIndex));
+			MUX_ASSERT(IsDataIndexRealized(dataIndex));
 			return IsVirtualizingContext ? dataIndex - m_firstRealizedDataIndex : dataIndex;
 		}
 
 		void DiscardElementsOutsideWindow(Rect window, ScrollOrientation orientation)
 		{
-			global::System.Diagnostics.Debug.Assert(IsVirtualizingContext);
-			global::System.Diagnostics.Debug.Assert(m_realizedElements.Count == m_realizedElementLayoutBounds.Count);
+			MUX_ASSERT(IsVirtualizingContext);
+			MUX_ASSERT(m_realizedElements.Count == m_realizedElementLayoutBounds.Count);
 
 			// The following illustration explains the cutoff indices.
 			// We will clear all the realized elements from both ends

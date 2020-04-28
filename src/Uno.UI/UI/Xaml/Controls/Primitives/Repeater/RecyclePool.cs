@@ -8,7 +8,7 @@ using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal class RecyclePool
+	public partial class RecyclePool
 	{
 		private readonly Dictionary<string, List<ElementInfo>> m_elements = new Dictionary<string, List<ElementInfo>>();
 

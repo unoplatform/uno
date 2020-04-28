@@ -7,7 +7,7 @@ using Windows.UI.Xaml.Shapes;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal class ItemTemplateWrapper : IElementFactory, IElementFactoryShim
+	internal class ItemTemplateWrapper : IElementFactoryShim
 	{
 		private DataTemplate m_dataTemplate;
 		private DataTemplateSelector m_dataTemplateSelector;
@@ -87,7 +87,7 @@ namespace Microsoft.UI.Xaml.Controls
 				}
 
 				// Associate template with element
-				element.SetValue(RecyclePool.GetOriginTemplateProperty(), selectedTemplate);
+				element.SetValue(RecyclePool.OriginTemplateProperty, selectedTemplate);
 			}
 
 			return element;
@@ -96,7 +96,7 @@ namespace Microsoft.UI.Xaml.Controls
 		public void RecycleElement(ElementFactoryRecycleArgs args)
 		{
 			var element = args.Element;
-			DataTemplate selectedTemplate = m_dataTemplate ?? element.GetValue(RecyclePool.GetOriginTemplateProperty()) as DataTemplate;
+			DataTemplate selectedTemplate = m_dataTemplate ?? element.GetValue(RecyclePool.OriginTemplateProperty) as DataTemplate;
 			var recyclePool = RecyclePool.GetPoolInstance(selectedTemplate);
 			if (recyclePool == null)
 			{

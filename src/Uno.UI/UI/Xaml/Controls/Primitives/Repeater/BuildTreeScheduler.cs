@@ -1,64 +1,94 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
-#include "pch.h"
-#include "common.h"
-#include "QPCTimer.h"
-#include "BuildTreeScheduler.h"
-#include "RepeaterTestHooks.h"
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
-double BuildTreeScheduler.m_budgetInMs = 40.0;
-thread_local QPCTimer BuildTreeScheduler.m_timer{};
-thread_local std.CalculatorList<WorkInfo> BuildTreeScheduler.m_pendingWork{};
-thread_local event_token BuildTreeScheduler.m_renderingToken{};
-
-void RegisterWork(int priority, const std.function<void()>& workFunc)
+namespace Microsoft.UI.Xaml.Controls
 {
-    global::System.Diagnostics.Debug.Assert(priority >= 0);
-    global::System.Diagnostics.Debug.Assert(workFunc != null);
+	internal class BuildTreeScheduler
+	{
+		private const double m_budgetInMs = 40.0;
 
-    QueueTick();
-    m_pendingWork.push_back(WorkInfo(priority, workFunc));
-}
+		private struct WorkInfo
+		{
+			private readonly Action _workFunc;
 
-bool ShouldYield()
-{
-    return m_timer.DurationInMilliSeconds() > m_budgetInMs;
-}
+			public WorkInfo(int priority, Action workFunc)
+			{
+				Priority = priority;
+				_workFunc = workFunc;
+			}
 
-void OnRendering(const IInspectable&, const IInspectable&)
-{
-      bool budgetReached = ShouldYield();
-    if (!budgetReached && m_pendingWork.size() > 0)
-    {
-        // Sort in descending order of priority and work from the end of the list to avoid moving around during erase.
-        std.sort(m_pendingWork.begin(), m_pendingWork.end(), [](const auto& lhs, const auto& rhs) { return lhs.Priority() > rhs.Priority(); });
-        int currentIndex = (int)(m_pendingWork.size()) - 1;
+			public int Priority { get; }
+			public void InvokeWorkFunc() => _workFunc();
+		};
 
-        do
-        {
-            m_pendingWork[currentIndex].InvokeWorkFunc();
-            m_pendingWork.erase(m_pendingWork.begin() + currentIndex);
-        } while (--currentIndex >= 0 && !ShouldYield());
-    }
+		[ThreadStatic]
+		static Stopwatch m_timer;
 
-    if (m_pendingWork.empty())
-    {
-        // No more pending work, unhook from rendering event since being hooked up will case wux to try to 
-        // call the event at 60 frames per second
-        Windows.UI.Xaml.Media.CompositionTarget.CompositionTarget.Rendering(m_renderingToken);
-        m_renderingToken.value = 0;
-        RepeaterTestHooks.NotifyBuildTreeCompleted();
-    }
+		[ThreadStatic]
+		private static List<WorkInfo> m_pendingWork;
 
-    // Reset the timer so it snaps the time just before rendering
-    m_timer.Reset();
-}
+		[ThreadStatic]
+		private static bool m_renderingToken;
 
-void  QueueTick()
-{
-    if (m_renderingToken.value == 0)
-    {
-        m_renderingToken = Windows.UI.Xaml.Media.CompositionTarget.Rendering(OnRendering);
-    }
+		public static void RegisterWork(int priority, Action workFunc)
+		{
+			MUX_ASSERT(priority >= 0);
+			MUX_ASSERT(workFunc != null);
+
+			QueueTick();
+
+			if (m_pendingWork == null)
+			{
+				m_pendingWork = new List<WorkInfo>();
+				m_timer = new Stopwatch();
+				m_timer.Start();
+			}
+			m_pendingWork.Add(new WorkInfo(priority, workFunc));
+		}
+
+		public static bool ShouldYield() => m_timer.ElapsedMilliseconds > m_budgetInMs;
+
+		public static void OnRendering(object snd, object args)
+		{
+			bool budgetReached = ShouldYield();
+			if (!budgetReached && m_pendingWork.Count > 0)
+			{
+				// Sort in descending order of priority and work from the end of the list to avoid moving around during erase.
+				m_pendingWork.Sort((lhs, rhs) => lhs.Priority - rhs.Priority);
+				int currentIndex = (int)(m_pendingWork.Count) - 1;
+
+				do
+				{
+					m_pendingWork[currentIndex].InvokeWorkFunc();
+					m_pendingWork.RemoveAt(currentIndex);
+				} while (--currentIndex >= 0 && !ShouldYield());
+			}
+
+			if (m_pendingWork.Count == 0)
+			{
+				// No more pending work, unhook from rendering event since being hooked up will case wux to try to 
+				// call the event at 60 frames per second
+				m_renderingToken = false;
+				Windows.UI.Xaml.Media.CompositionTarget.Rendering -= OnRendering;
+				// TODO UNO RepeaterTestHooks.NotifyBuildTreeCompleted();
+			}
+
+			// Reset the timer so it snaps the time just before rendering
+			m_timer.Reset();
+		}
+
+		private static void QueueTick()
+		{
+			if (!m_renderingToken)
+			{
+				Windows.UI.Xaml.Media.CompositionTarget.Rendering += OnRendering;
+				m_renderingToken = true;
+			}
+		}
+	}
 }

@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region ILayoutContext
 
-		protected override int ItemCountCore => GetOwner().ItemsSourceView?.Count ?? 0;
+		protected internal override int ItemCountCore => GetOwner().ItemsSourceView?.Count ?? 0;
 
 		protected override UIElement GetOrCreateElementAtCore(int index, ElementRealizationOptions options)
 		{
@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 				(options & ElementRealizationOptions.SuppressAutoRecycle) == ElementRealizationOptions.SuppressAutoRecycle);
 		}
 
-		protected override object LayoutStateCore
+		protected internal override object LayoutStateCore
 		{
 			get => GetOwner().LayoutState;
 			set => GetOwner().LayoutState = value;

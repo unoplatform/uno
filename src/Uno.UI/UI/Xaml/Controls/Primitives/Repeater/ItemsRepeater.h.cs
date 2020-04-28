@@ -69,6 +69,8 @@ namespace Microsoft.UI.Xaml.Controls
 		//static com_ptr<VirtualizationInfo> GetVirtualizationInfo(const UIElement& element);
 		//static com_ptr<VirtualizationInfo> CreateAndInitializeVirtualizationInfo(const UIElement& element);
 
+		internal IElementFactoryShim ItemTemplateShim => m_itemTemplateWrapper;
+
 		internal object LayoutState
 		{
 			get => m_layoutState;
@@ -96,18 +98,18 @@ namespace Microsoft.UI.Xaml.Controls
 		//void OnElementClearing(const UIElement& element);
 		//void OnElementIndexChanged(const UIElement& element, int oldIndex, int newIndex);
 
-		static DependencyProperty GetVirtualizationInfoProperty()
-		{
-			static GlobalDependencyProperty s_VirtualizationInfoProperty =
-			InitializeDependencyProperty(
-				"VirtualizationInfo",
-				name_of<IInspectable>(),
-				name_of<ItemsRepeater>(),
-				true /* isAttached */,
-				null /* defaultValue */);
+		//static DependencyProperty GetVirtualizationInfoProperty()
+		//{
+		//	static GlobalDependencyProperty s_VirtualizationInfoProperty =
+		//	InitializeDependencyProperty(
+		//		"VirtualizationInfo",
+		//		name_of<IInspectable>(),
+		//		name_of<ItemsRepeater>(),
+		//		true /* isAttached */,
+		//		null /* defaultValue */);
 
-			return s_VirtualizationInfoProperty;
-		}
+		//	return s_VirtualizationInfoProperty;
+		//}
 
 		//int Indent();
 

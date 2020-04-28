@@ -18,7 +18,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 		protected override IList<AutomationPeer> GetChildrenCore()
 		{
 			var repeater = Owner as ItemsRepeater;
-			var childrenPeers = (GetInner() as AutomationPeer).GetChildrenCore();
+			var childrenPeers = base.GetChildrenCore();
 			var peerCount = childrenPeers.Count;
 
 			List<KeyValuePair<int /* index */, AutomationPeer>> realizedPeers = new List<KeyValuePair<int /* index */, AutomationPeer>>(peerCount);

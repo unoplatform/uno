@@ -17,7 +17,7 @@ namespace Microsoft.UI.Xaml.Controls
 		}
 
 		#region ILayoutContextOverrides
-		protected override object LayoutStateCore
+		protected internal override object LayoutStateCore
 		{
 			get => m_nonVirtualizingContext.TryGetTarget(out var context) ? context.LayoutState : null;
 			set
@@ -33,7 +33,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region IVirtualizingLayoutContextOverrides
 
-		protected override int ItemCountCore => m_nonVirtualizingContext.TryGetTarget(out var context) ? context.Children.Count : 0;
+		protected internal override int ItemCountCore => m_nonVirtualizingContext.TryGetTarget(out var context) ? context.Children.Count : 0;
 
 		protected override object GetItemAtCore(int index)
 			=> m_nonVirtualizingContext.TryGetTarget(out var context) ? context.Children[index] : null;

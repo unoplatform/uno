@@ -17,11 +17,17 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region ILayoutContextOverrides
 
-		protected virtual object LayoutStateCore
+		protected internal virtual object LayoutStateCore
 		{
 			get => throw new NotImplementedException();
 			set => throw new NotImplementedException();
 		}
 		#endregion
+
+#if DEBUG
+		public int Indent { get; set; }
+#else
+		public int Indent => 0;
+#endif
 	}
 }

@@ -20,6 +20,6 @@ namespace Microsoft.UI.Xaml.Controls
 			=> VisualTreeHelper.GetParent(child);
 
 		public static IDataTemplateComponent GetDataTemplateComponent(UIElement element)
-			=> null; // TODO UNO
+			=> XamlBindingHelper.GetDataTemplateComponent(element);
 	}
 }

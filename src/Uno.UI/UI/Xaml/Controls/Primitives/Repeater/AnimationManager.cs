@@ -5,6 +5,7 @@ using System.Collections.Specialized;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Windows.Foundation;
 using Windows.UI.Xaml;
+using static Microsoft.UI.Xaml.Controls._Tracing;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -27,11 +28,9 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			// ItemsRepeater is not fully constructed yet. Don't interact with it.
 			m_owner = owner;
-			m_animator = owner.Animator;
 		}
 
-		// TODO UNO
-		public void OnAnimatorChanged(ElementAnimator  newAnimator)
+		public void OnAnimatorChanged(ElementAnimator newAnimator)
 		{
 			// While an element is hiding, we have ownership of it. We need
 			// to know when its animation completes so that we give it back
@@ -74,7 +73,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private void OnElementPrepared(UIElement element)
+		public void OnElementPrepared(UIElement element)
 		{
 			if (m_animator != null)
 			{
@@ -90,7 +89,7 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		private bool ClearElement(UIElement element)
+		public bool ClearElement(UIElement element)
 		{
 			bool canClear = false;
 

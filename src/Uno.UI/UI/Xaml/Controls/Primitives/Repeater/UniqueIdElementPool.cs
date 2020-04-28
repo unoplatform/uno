@@ -2,12 +2,13 @@
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	internal class UniqueIdElementPool
+	internal class UniqueIdElementPool : IEnumerable<KeyValuePair<string, UIElement>>
 	{
 		private Dictionary<string, UIElement> m_elementMap = new Dictionary<string, UIElement>();
 		private readonly ItemsRepeater m_owner;
@@ -18,6 +19,10 @@ namespace Microsoft.UI.Xaml.Controls
 
 			m_owner = owner;
 		}
+
+#if DEBUG
+		public bool IsEmpty => m_elementMap.Count == 0;
+#endif
 
 		public void Add(UIElement element)
 		{
@@ -54,5 +59,13 @@ namespace Microsoft.UI.Xaml.Controls
 			global::System.Diagnostics.Debug.Assert(m_owner.ItemsSourceView.HasKeyIndexMapping);
 			m_elementMap.Clear();
 		}
+
+		/// <inheritdoc />
+		public IEnumerator<KeyValuePair<string, UIElement>> GetEnumerator()
+			=> m_elementMap.GetEnumerator();
+
+		/// <inheritdoc />
+		IEnumerator IEnumerable.GetEnumerator()
+			=> GetEnumerator();
 	}
 }

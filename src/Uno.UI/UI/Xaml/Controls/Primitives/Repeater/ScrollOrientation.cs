@@ -5,7 +5,7 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	internal enum ScrollOrientation
 	{
-		Vertical,
+		Vertical, // MUST be default
 		Horizontal
 	}
 }

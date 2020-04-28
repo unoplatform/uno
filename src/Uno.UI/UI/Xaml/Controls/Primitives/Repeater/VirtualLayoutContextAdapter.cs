@@ -21,7 +21,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		#region ILayoutContextOverrides
 
-		protected override object LayoutStateCore
+		protected internal override object LayoutStateCore
 		{
 			get => m_virtualizingContext.TryGetTarget(out var context) ? context.LayoutState : null;
 			set
