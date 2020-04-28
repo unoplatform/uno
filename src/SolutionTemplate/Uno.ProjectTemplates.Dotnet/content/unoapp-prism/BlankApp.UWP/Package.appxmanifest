@@ -8,7 +8,7 @@
 
   <Identity
     Name="a99917c8-9110-4177-a5b0-b12f1ae4bbfe"
-    Publisher="MyCompany"
+    Publisher="$XmlEscapedPublisherDistinguishedName$"
     Version="1.0.0.0" />
 
   <mp:PhoneIdentity PhoneProductId="d92515f1-7d7f-4ac3-8d24-a663e04517d6" PhonePublisherId="00000000-0000-0000-0000-000000000000"/>
