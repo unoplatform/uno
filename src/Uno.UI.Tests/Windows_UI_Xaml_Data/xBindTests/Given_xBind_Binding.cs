@@ -342,6 +342,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		public void When_ConverterParameter()
+		{
+			var SUT = new Binding_Converter_Parameter();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("Started: Jan 01, 2020 01:01 AM", SUT._StringField.Text);
+		}
+
+		[TestMethod]
 		public void When_Converter_DataTemplate()
 		{
 			var SUT = new Binding_Converter_DataTemplate();
