@@ -60,7 +60,7 @@
 	<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
-  <PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0' ">
+  <PropertyGroup Condition=" '$(TargetFramework)' == 'uap10.0.17763' ">
 	<TargetPlatformVersion>10.0.17763.0</TargetPlatformVersion>
 	<TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
 	<DefineConstants>$(DefineConstants);NETFX_CORE</DefineConstants>

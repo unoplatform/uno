@@ -117,7 +117,7 @@
 	<Target Name="BuildCI">
 		<Exec Command="npm i" WorkingDirectory="..\src\SamplesApp\SamplesApp.Wasm.UITests" />
 
-		<MSBuild Properties="Configuration=Release;VisualStudioVersion=15.0;CopyDSYM=False;UnoSampleAppDisableAPKGeneration=True;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(GITVERSION_FullSemVer)"
+		<MSBuild Properties="Configuration=Release_NoSamples;VisualStudioVersion=15.0;CopyDSYM=False;UnoSampleAppDisableAPKGeneration=True;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true;PackageOutputPath=$(BUILD_ARTIFACTSTAGINGDIRECTORY)\vslatest;PackageVersion=$(GITVERSION_FullSemVer)"
              Projects="..\src\Uno.UI.sln"
              Targets="Build"
              RebaseOutputs="false"
@@ -168,8 +168,7 @@
 	</Target>
 
 	<Target Name="ValidatePackage" AfterTargets="UnoBuild" Condition="'$(BuildingInsideVisualStudio)'==''">
-		<Exec Command="dotnet tool install --global Uno.PackageDiff --version 1.0.0-dev.18" IgnoreExitCode="true" />
-		<Exec Command="generatepkgdiff --base=Uno.UI --other=Uno.UI.$(GITVERSION_FullSemVer).nupkg --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.$(GITVERSION_FullSemVer).md" />
+		<!--Validation disabled as a more recent package has been published.-->
 	</Target>
 
 </Project>

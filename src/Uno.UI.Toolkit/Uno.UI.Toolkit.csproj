@@ -99,13 +99,7 @@
 		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI\Extensions\DependencyObjectExtensions.cs">
 			<Link>Uno.UI\Extensions\%(RecursiveDir)%(FileName)%(Extension)</Link>
 		</Compile>
-	</ItemGroup>
-
-	<ItemGroup>
-		<None Update="Themes\Generic.xaml" />
-	</ItemGroup>
-	<ItemGroup>
-	  <Page Update="Themes\Generic.xaml" />
+		<Page Include="Themes\Generic.xaml" />
 	</ItemGroup>
 
 	<!-- Override existing target, this project cannot be published -->
