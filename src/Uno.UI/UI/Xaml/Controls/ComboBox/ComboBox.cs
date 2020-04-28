@@ -330,7 +330,7 @@ namespace Windows.UI.Xaml.Controls
 			// This method will load the itempresenter children
 #if __ANDROID__
 			SetItemsPresenter((_popup.Child as ViewGroup).FindFirstChild<ItemsPresenter>());
-#elif __IOS__
+#elif __IOS__ || __MACOS__
 			SetItemsPresenter(_popup.Child.FindFirstChild<ItemsPresenter>());
 #endif
 
