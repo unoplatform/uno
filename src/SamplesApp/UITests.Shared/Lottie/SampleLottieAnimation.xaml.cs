@@ -27,9 +27,11 @@ namespace UITests.Shared.Lottie
 			file.ItemsSource = new[]
 			{
 				"ms-appx:///Lottie/lottie-logo.json",
+				"ms-appx:///Lottie/LightBulb.json",
 				"ms-appx:///Lottie/uno.json",
 				"ms-appx:///Lottie/4770-lady-and-dove.json",
 				"ms-appx:///Lottie/4930-checkbox-animation.json",
+				"ms-appx:///Lottie/this-file-does-not-exists.json",
 			};
 
 			file.SelectedIndex = 0;

@@ -17,7 +17,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public bool UseHardwareAcceleration { get; set; } = true;
 
-		private bool _isPlaying = false;
 		private string _lastPath = "";
 		private AnimatedVisualPlayer _player;
 
@@ -53,6 +52,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				{
 					_animation.SetAnimationNamed(path);
 					_lastPath = path;
+
+					if (player.AutoPlay)
+					{
+						Play(true);
+					}
 				}
 
 				switch (player.Stretch)
@@ -71,12 +75,18 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 						break;
 				}
 
-				_animation.AnimationSpeed = (nfloat)player.PlaybackRate;
+				var duration = TimeSpan.FromSeconds(_animation.AnimationDuration);
+				player.SetValue(AnimatedVisualPlayer.DurationProperty, duration);
 
-				if (player.AutoPlay && !_isPlaying)
+				var isLoaded = duration > TimeSpan.Zero;
+				player.SetValue(AnimatedVisualPlayer.IsAnimatedVisualLoadedProperty, isLoaded);
+
+				_animation.CompletionBlock = isCompleted =>
 				{
-					Play(true);
-				}
+					SetIsPlaying(_animation.IsAnimationPlaying);
+				};
+
+				_animation.AnimationSpeed = (nfloat)player.PlaybackRate;
 			}
 
 			_player = player;
@@ -84,37 +94,40 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public void Play(bool looped)
 		{
-			_isPlaying = true;
 			_animation.LoopAnimation = looped;
 			_animation.Play();
+			SetIsPlaying(true);
 		}
 
 		public void Stop()
 		{
-			_isPlaying = false;
+			SetIsPlaying(false);
 			_animation.Stop();
 		}
 
 		public void Pause()
 		{
+			SetIsPlaying(false);
 			_animation.Pause();
-			_isPlaying = false;
 		}
 
 		public void Resume()
 		{
 			_animation.Play();
-			_isPlaying = true;
+			SetIsPlaying(true);
 		}
 
 		public void SetProgress(double progress)
 		{
-			// TODO
+			if (_animation != null)
+			{
+				_animation.AnimationProgress = (nfloat)progress;
+			}
 		}
 
 		public void Load()
 		{
-			if (_isPlaying)
+			if (_player.IsPlaying)
 			{
 				_animation.Play();
 			}
@@ -122,7 +135,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public void Unload()
 		{
-			if (_isPlaying)
+			if (_player.IsPlaying)
 			{
 				_animation.Pause();
 			}
@@ -130,6 +143,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		Size IAnimatedVisualSource.Measure(Size availableSize)
 		{
+
+
 			return availableSize;
 		}
 	}

@@ -22,15 +22,19 @@
 				UriSource="{Binding SelectedItem, ElementName=file}" />
 		</winui:AnimatedVisualPlayer>
 
-		<uno:StarStackPanel Orientation="Horizontal" Sizes="Auto">
+		<StackPanel Orientation="Horizontal" Spacing="5">
 			<Button x:Name="play1">Play 1</Button>
 			<Button x:Name="playloop">Play Looped</Button>
 			<Button x:Name="stop">Stop</Button>
 			<Button x:Name="pause">Pause</Button>
 			<Button x:Name="resume">Resume</Button>
 			<ToggleButton x:Name="autoplay">AutoPlay</ToggleButton>
-			<CheckBox IsChecked="{Binding IsPlaying, ElementName=player}" IsEnabled="False">Playing</CheckBox>
-		</uno:StarStackPanel>
+		</StackPanel>
+		<StackPanel Orientation="Horizontal" Spacing="5">
+			<CheckBox IsChecked="{Binding IsAnimatedVisualLoaded, ElementName=player}" IsEnabled="False">IsAnimatedVisualLoaded</CheckBox>
+			<CheckBox IsChecked="{Binding IsPlaying, ElementName=player}" IsEnabled="False">IsPlaying</CheckBox>
+			<TextBlock>Duration: <Run Text="{x:Bind player.Duration.ToString()}" /></TextBlock>
+		</StackPanel>
 		<uno:StarStackPanel Orientation="Horizontal" Sizes="Auto,*">
 			<TextBlock>PlayRate: </TextBlock>
 			<Slider x:Name="rate" Value="1.0" Minimum="0.25" Maximum="5.0" StepFrequency="0.25" TickFrequency="0.5" />

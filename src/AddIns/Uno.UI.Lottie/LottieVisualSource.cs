@@ -40,9 +40,13 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			(sender as LottieVisualSource)?.Update();
 		}
 
-		public async Task SetSourceAsync(Uri sourceUri)
+		public Task SetSourceAsync(Uri sourceUri)
 		{
 			UriSource = sourceUri;
+
+			// TODO: this method should not return before the animation is ready.
+
+			return Task.CompletedTask;
 		}
 
 
@@ -97,5 +101,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			throw new NotImplementedException();
 		}
 #endif
+
+		private void SetIsPlaying(bool isPlaying)
+		{
+			_player?.SetValue(AnimatedVisualPlayer.IsPlayingProperty, isPlaying);
+		}
 	}
 }
