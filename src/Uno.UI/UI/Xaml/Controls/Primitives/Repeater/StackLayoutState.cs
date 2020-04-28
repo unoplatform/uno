@@ -11,7 +11,7 @@ namespace Microsoft.UI.Xaml.Controls
 		private const int BufferSize = 100;
 
 		private FlowLayoutAlgorithm m_flowAlgorithm;
-		private List<double> m_estimationBuffer = new List<double>(BufferSize);
+		private double[] m_estimationBuffer = new double[BufferSize];
 		private double m_totalElementSize;
 		// During the measure pass, as we measure the elements, we will keep track
 		// of the largest arrange bounds in the non-virtualizing direction. This value
@@ -32,10 +32,10 @@ namespace Microsoft.UI.Xaml.Controls
 		internal void InitializeForContext(VirtualizingLayoutContext context, IFlowLayoutAlgorithmDelegates callbacks)
 		{
 			m_flowAlgorithm.InitializeForContext(context, callbacks);
-			//if (m_estimationBuffer.Count == 0)
-			//{
-			//	m_estimationBuffer.resize(BufferSize, 0.0f);
-			//}
+			if (m_estimationBuffer.Length == 0)
+			{
+				Array.Resize(ref m_estimationBuffer, BufferSize);
+			}
 
 			context.LayoutStateCore = this;
 		}
@@ -47,7 +47,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		internal void OnElementMeasured(int elementIndex, double majorSize, double minorSize)
 		{
-			int estimationBufferIndex = elementIndex % m_estimationBuffer.Count;
+			int estimationBufferIndex = elementIndex % m_estimationBuffer.Length;
 			bool alreadyMeasured = m_estimationBuffer[estimationBufferIndex] != 0;
 			if (!alreadyMeasured)
 			{

@@ -1,6 +1,7 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+using System;
 using System.Collections.Generic;
 using Windows.Foundation;
 
@@ -10,13 +11,13 @@ namespace Microsoft.UI.Xaml.Controls
 	{
 		private const int BufferSize = 100;
 
-		readonly FlowLayoutAlgorithm m_flowAlgorithm = new FlowLayoutAlgorithm();
-		readonly List<double> m_lineSizeEstimationBuffer = new List<double>(BufferSize);
-		readonly List<double> m_itemsPerLineEstimationBuffer = new List<double>(BufferSize);
-		double m_totalLineSize;
-		int m_totalLinesMeasured;
-		double m_totalItemsPerLine;
-		Size m_specialElementDesiredSize;
+		private readonly FlowLayoutAlgorithm m_flowAlgorithm = new FlowLayoutAlgorithm();
+		private double[] m_lineSizeEstimationBuffer = new double[BufferSize];
+		private double[] m_itemsPerLineEstimationBuffer = new double[BufferSize];
+		private double m_totalLineSize;
+		private int m_totalLinesMeasured;
+		private double m_totalItemsPerLine;
+		private Size m_specialElementDesiredSize;
 
 		internal FlowLayoutAlgorithm FlowAlgorithm => m_flowAlgorithm;
 		internal double TotalLineSize => m_totalLineSize;
@@ -32,11 +33,11 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			m_flowAlgorithm.InitializeForContext(context, callbacks);
 
-			//if (m_lineSizeEstimationBuffer.Count == 0)
-			//{
-			//	m_lineSizeEstimationBuffer.resize(BufferSize, 0.0f);
-			//	m_itemsPerLineEstimationBuffer.resize(BufferSize, 0.0f);
-			//}
+			if (m_lineSizeEstimationBuffer.Length == 0)
+			{
+				Array.Resize(ref m_lineSizeEstimationBuffer, BufferSize);
+				Array.Resize(ref m_itemsPerLineEstimationBuffer, BufferSize);
+			}
 
 			context.LayoutStateCore = this;
 		}
@@ -53,7 +54,7 @@ namespace Microsoft.UI.Xaml.Controls
 			// different from the rest of the lines and can throw off estimation.
 			if (m_totalLinesMeasured == 0 || startIndex + countInLine != context.ItemCount)
 			{
-				int estimationBufferIndex = startIndex % m_lineSizeEstimationBuffer.Count;
+				int estimationBufferIndex = startIndex % m_lineSizeEstimationBuffer.Length;
 				bool alreadyMeasured = m_lineSizeEstimationBuffer[estimationBufferIndex] != 0;
 
 				if (!alreadyMeasured)

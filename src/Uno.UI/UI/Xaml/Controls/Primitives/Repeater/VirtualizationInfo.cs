@@ -74,9 +74,9 @@ namespace Microsoft.UI.Xaml.Controls
 			set => m_phase = value;
 		}
 
-		public object Data => m_data;
+		public object Data => m_data?.GetTarget();
 
-		public IDataTemplateComponent DataTemplateComponent => m_dataTemplateComponent.GetTarget();
+		public IDataTemplateComponent DataTemplateComponent => m_dataTemplateComponent?.GetTarget();
 
 		public void UpdatePhasingInfo(int phase,  object data, IDataTemplateComponent component)
 		{

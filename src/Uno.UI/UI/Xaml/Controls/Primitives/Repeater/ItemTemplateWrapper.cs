@@ -78,7 +78,7 @@ namespace Microsoft.UI.Xaml.Controls
 				element = selectedTemplate.LoadContent() as FrameworkElement;
 
 				// Template returned null, so insert empty element to render nothing
-				if (element != null)
+				if (element == null)
 				{
 					var rectangle = new Rectangle();
 					rectangle.Width = 0;
