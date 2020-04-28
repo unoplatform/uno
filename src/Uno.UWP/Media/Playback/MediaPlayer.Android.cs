@@ -74,6 +74,13 @@ namespace Windows.Media.Playback
 					_isPlayRequested = false;
 					_isPlayerPrepared = false;
 					_player.Release();
+
+					// Clear the surface view so we don't see
+					// the previous video rendering.
+					if (RenderSurface is VideoSurface surfaceView && _hasValidHolder)
+					{
+						surfaceView.Clear();
+					}
 				}
 				finally
 				{
@@ -113,6 +120,9 @@ namespace Windows.Media.Playback
 			PlaybackSession.NaturalDuration = TimeSpan.Zero;
 			PlaybackSession.PositionFromPlayer = TimeSpan.Zero;
 
+			// Reset player
+			TryDisposePlayer();
+
 			if (Source == null)
 			{
 				return;
@@ -120,8 +130,6 @@ namespace Windows.Media.Playback
 
 			try
 			{
-				// Reset player
-				TryDisposePlayer();
 				InitializePlayer();
 
 				PlaybackSession.PlaybackState = MediaPlaybackState.Opening;
@@ -353,7 +361,7 @@ namespace Windows.Media.Playback
 		{
 			get
 			{
-				return TimeSpan.FromMilliseconds(_player.CurrentPosition);
+				return TimeSpan.FromMilliseconds(_player?.CurrentPosition ?? 0);
 			}
 			set
 			{
