@@ -11,6 +11,11 @@ namespace Windows.UI.Xaml
 	{
 		private readonly Dictionary<object, object> _values = new Dictionary<object, object>();
 
+		/// <summary>
+		/// If true, there may be lazily-set values in the dictionary that need to be initialized.
+		/// </summary>
+		private bool _hasUnmaterializedItems = false;
+
 		public ResourceDictionary()
 		{
 		}
@@ -72,6 +77,7 @@ namespace Windows.UI.Xaml
 		{
 			if (value is ResourceInitializer resourceInitializer)
 			{
+				_hasUnmaterializedItems = true;
 				_values.Add(key, new LazyInitializer(ResourceResolver.CurrentScope, resourceInitializer));
 			}
 			else
@@ -284,9 +290,46 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<object, object>> GetEnumerator() => _values.GetEnumerator();
+		public global::System.Collections.Generic.IEnumerator<global::System.Collections.Generic.KeyValuePair<object, object>> GetEnumerator()
+		{
+			TryMaterializeAll();
+			return _values.GetEnumerator();
+		}
 
-		global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator() => _values.GetEnumerator();
+		global::System.Collections.IEnumerator global::System.Collections.IEnumerable.GetEnumerator()
+		{
+			TryMaterializeAll();
+			return _values.GetEnumerator();
+		}
+
+		/// <summary>
+		/// Ensure all lazily-set values are materialized, prior to enumeration.
+		/// </summary>
+		private void TryMaterializeAll()
+		{
+			if (!_hasUnmaterializedItems)
+			{
+				return;
+			}
+
+			var unmaterialized = new List<KeyValuePair<object, object>>();
+
+			foreach (var kvp in _values)
+			{
+				if (kvp.Value is LazyInitializer lazyInitializer)
+				{
+					unmaterialized.Add(kvp);
+				}
+			}
+
+			foreach (var kvp in unmaterialized)
+			{
+				var value = kvp.Value;
+				TryMaterializeLazy(kvp.Key, ref value);
+			}
+
+			_hasUnmaterializedItems = false;
+		}
 
 		public void CreationComplete()
 		{
@@ -299,6 +342,7 @@ namespace Windows.UI.Xaml
 			ResourceResolver.PopSourceFromScope();
 		}
 
+		[EditorBrowsable(EditorBrowsableState.Never)]
 		public delegate object ResourceInitializer();
 
 		/// <summary>
