@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Notifications
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || false || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class BadgeNotification 
@@ -21,7 +21,7 @@ namespace Windows.UI.Notifications
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || false || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.XmlDocument Content
 		{
@@ -31,7 +31,7 @@ namespace Windows.UI.Notifications
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || false || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public BadgeNotification( global::Windows.Data.Xml.Dom.XmlDocument content) 
 		{

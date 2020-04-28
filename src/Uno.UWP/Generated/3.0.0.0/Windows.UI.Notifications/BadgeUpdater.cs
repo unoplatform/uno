@@ -2,19 +2,19 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Notifications
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || false || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class BadgeUpdater 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || false || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public  void Update( global::Windows.UI.Notifications.BadgeNotification notification)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.BadgeUpdater", "void BadgeUpdater.Update(BadgeNotification notification)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || false || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public  void Clear()
 		{
