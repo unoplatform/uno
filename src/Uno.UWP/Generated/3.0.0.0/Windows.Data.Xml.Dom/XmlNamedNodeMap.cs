@@ -50,21 +50,21 @@ namespace Windows.Data.Xml.Dom
 			throw new global::System.NotImplementedException("The member IXmlNode XmlNamedNodeMap.RemoveNamedItem(string name) is not implemented in Uno.");
 		}
 		#endif
-		#if false
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode GetNamedItemNS( object namespaceUri,  string name)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode XmlNamedNodeMap.GetNamedItemNS(object namespaceUri, string name) is not implemented in Uno.");
 		}
 		#endif
-		#if false
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode RemoveNamedItemNS( object namespaceUri,  string name)
 		{
 			throw new global::System.NotImplementedException("The member IXmlNode XmlNamedNodeMap.RemoveNamedItemNS(object namespaceUri, string name) is not implemented in Uno.");
 		}
 		#endif
-		#if false
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Data.Xml.Dom.IXmlNode SetNamedItemNS( global::Windows.Data.Xml.Dom.IXmlNode node)
 		{
