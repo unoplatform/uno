@@ -52,29 +52,19 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private string _lastPath = "";
 
-		private AnimatedVisualPlayer _player;
-
-		private void Update()
+		partial void InnerUpdate()
 		{
-			if (_player != null)
-			{
-				Update(_player);
-			}
-		}
+			var player = _player;
 
-		public void Update(AnimatedVisualPlayer player)
-		{
 			if (_animation == null)
 			{
 				_listener = new LottieListener(this);
 
 				_animation = new LottieAnimationView(Android.App.Application.Context);
 				_animation.EnableMergePathsForKitKatAndAbove(true);
-				//_animation.UseHardwareAcceleration(UseHardwareAcceleration);
 
 				_animation.AddAnimatorListener(_listener);
 
-				//_animation.Scale = (float)Scale;
 				SetProperties();
 
 				player.AddView(_animation);
@@ -98,11 +88,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 					if (player.AutoPlay)
 					{
-						Play(true);
+						Play(0, 1, true);
 					}
 
-					var duration = TimeSpan.FromMilliseconds(_animation.Duration);
-					_player?.SetValue(AnimatedVisualPlayer.DurationProperty, duration);
+					SetDuration();
 				}
 
 				switch (player.Stretch)
@@ -122,13 +111,17 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				}
 
 				_animation.Speed = (float)player.PlaybackRate;
-
 			}
-			
-			_player = player;
 		}
 
-		public void Play(bool looped)
+		private void SetDuration()
+		{
+			var duration = TimeSpan.FromMilliseconds(_animation.Duration);
+			_player?.SetValue(AnimatedVisualPlayer.DurationProperty, duration);
+			_player?.SetValue(AnimatedVisualPlayer.IsAnimatedVisualLoadedProperty, duration > TimeSpan.Zero);
+		}
+
+		public void Play(double fromProgress, double toProgress, bool looped)
 		{
 			SetIsPlaying(true);
 #if __ANDROID_26__
@@ -136,6 +129,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 #else
 			_animation.Loop(looped);
 #endif
+			_animation.SetMinProgress((float)fromProgress);
+			_animation.SetMaxProgress((float)toProgress);
 			_animation.PlayAnimation();
 		}
 
@@ -175,9 +170,22 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			}
 		}
 
-		Size IAnimatedVisualSource.Measure(Size availableSize)
+		private Size CompositionSize
 		{
-			return availableSize;
+			get
+			{
+				var composition = _animation?.Composition;
+				if (composition != null)
+				{
+					SetDuration();
+
+					var bounds = composition.Bounds;
+
+					return new Size(bounds.Width(), bounds.Height());
+				}
+
+				return default;
+			}
 		}
 	}
 }

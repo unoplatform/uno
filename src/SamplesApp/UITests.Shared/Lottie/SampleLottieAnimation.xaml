@@ -10,7 +10,7 @@
 	mc:Ignorable="d"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<uno:StarStackPanel Sizes="*,Auto">
+	<uno:StarStackPanel Sizes="*,Auto" Margin="10">
 
 		<winui:AnimatedVisualPlayer
 			x:Name="player"
@@ -22,6 +22,14 @@
 				UriSource="{Binding SelectedItem, ElementName=file}" />
 		</winui:AnimatedVisualPlayer>
 
+		<uno:StarStackPanel Orientation="Horizontal" Sizes="Auto,*">
+			<TextBlock>From Progress:</TextBlock>
+			<Slider x:Name="from" Value="0.0" Minimum="0.0" Maximum="1.0" StepFrequency="0.05" TickFrequency="0.1" />
+		</uno:StarStackPanel>
+		<uno:StarStackPanel Orientation="Horizontal" Sizes="Auto,*">
+			<TextBlock>To Progress:</TextBlock>
+			<Slider x:Name="to" Value="1.0" Minimum="0.0" Maximum="1.0" StepFrequency="0.05" TickFrequency="0.1" />
+		</uno:StarStackPanel>
 		<StackPanel Orientation="Horizontal" Spacing="5">
 			<Button x:Name="play1">Play 1</Button>
 			<Button x:Name="playloop">Play Looped</Button>

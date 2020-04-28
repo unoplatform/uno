@@ -1,8 +1,9 @@
 ﻿using System;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Airbnb.Lottie;
-
+using Uno.UI;
 #if __IOS__
 using _ViewContentMode = UIKit.UIViewContentMode;
 #else
@@ -18,18 +19,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		public bool UseHardwareAcceleration { get; set; } = true;
 
 		private string _lastPath = "";
-		private AnimatedVisualPlayer _player;
 
-		private void Update()
+		partial void InnerUpdate()
 		{
-			if (_player != null)
-			{
-				Update(_player);
-			}
-		}
-
-		public void Update(AnimatedVisualPlayer player)
-		{
+			var player = _player;
 			if (_animation == null)
 			{
 				_animation = new LOTAnimationView();
@@ -53,9 +46,13 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					_animation.SetAnimationNamed(path);
 					_lastPath = path;
 
+					// Force layout to recalculate
+					player.InvalidateMeasure();
+					player.InvalidateArrange();
+
 					if (player.AutoPlay)
 					{
-						Play(true);
+						Play(0, 1, true);
 					}
 				}
 
@@ -88,15 +85,33 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 				_animation.AnimationSpeed = (nfloat)player.PlaybackRate;
 			}
-
-			_player = player;
 		}
 
-		public void Play(bool looped)
+		public void Play(double fromProgress, double toProgress, bool looped)
 		{
-			_animation.LoopAnimation = looped;
-			_animation.Play();
-			SetIsPlaying(true);
+			if (_animation != null)
+			{
+				if (_animation.IsAnimationPlaying)
+				{
+					_animation.Stop();
+				}
+
+				_animation.LoopAnimation = looped;
+
+				void Start()
+				{
+					_animation.PlayFromProgress((nfloat)fromProgress, (nfloat)toProgress, isFinished =>
+					{
+						if (looped && isFinished)
+						{
+							Start();
+						}
+					});
+				}
+
+				Start();
+				SetIsPlaying(true);
+			}
 		}
 
 		public void Stop()
@@ -141,11 +156,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			}
 		}
 
-		Size IAnimatedVisualSource.Measure(Size availableSize)
-		{
-
-
-			return availableSize;
-		}
+		private Size CompositionSize => _animation.IntrinsicContentSize;
 	}
 }

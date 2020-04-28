@@ -26,10 +26,10 @@ namespace Windows.UI.Xaml.Controls
 			"FallbackContent", typeof(DataTemplate), typeof(AnimatedVisualPlayer), new PropertyMetadata(null, UpdateSourceOnChanged));
 
 		public static readonly DependencyProperty SourceProperty = DependencyProperty.Register(
-			"Source", typeof(IAnimatedVisualSource), typeof(AnimatedVisualPlayer), new PropertyMetadata(null, UpdateSourceOnChanged));
+			"Source", typeof(IAnimatedVisualSource), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(null, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, UpdateSourceOnChanged));
 
 		public static readonly DependencyProperty StretchProperty = DependencyProperty.Register(
-			"Stretch", typeof(Stretch), typeof(AnimatedVisualPlayer), new PropertyMetadata(Stretch.Uniform, UpdateSourceOnChanged));
+			"Stretch", typeof(Stretch), typeof(AnimatedVisualPlayer), new FrameworkPropertyMetadata(Stretch.Uniform, FrameworkPropertyMetadataOptions.AffectsMeasure | FrameworkPropertyMetadataOptions.AffectsArrange, UpdateSourceOnChanged));
 
 		public static readonly DependencyProperty DurationProperty = DependencyProperty.Register(
 			"Duration", typeof(TimeSpan), typeof(AnimatedVisualPlayer), new PropertyMetadata(default(TimeSpan), UpdateSourceOnChanged));
@@ -95,7 +95,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Pause() => Source?.Pause();
 
-		public async Task PlayAsync(double fromProgress, double toProgress, bool looped) => Source?.Play(looped);
+		public async Task PlayAsync(double fromProgress, double toProgress, bool looped) => Source?.Play(fromProgress, toProgress, looped);
 
 		public void Resume() => Source?.Resume();
 

@@ -13,26 +13,18 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
 	public partial class LottieVisualSource
 	{
-		private AnimatedVisualPlayer _player;
+		private AnimatedVisualPlayer _initializedPlayer;
 		private bool _isPlaying;
 		private Size _compositionSize = new Size(0, 0);
 
-		private void Update()
+		partial void InnerUpdate()
 		{
-			if (_player != null)
+			var player = _player;
+			if(_initializedPlayer != player)
 			{
-				Update(_player);
+				player.RegisterHtmlCustomEventHandler("lottie_state", OnStateChanged, isDetailJson: false);
+				_initializedPlayer = player;
 			}
-		}
-
-		public void Update(AnimatedVisualPlayer player)
-		{
-			if(player != _player)
-			{
-				player.RegisterHtmlEventHandler("lottie_state", (EventHandler)OnStateChanged);
-			}
-
-			_player = player;
 
 			var js = new[]
 			{
@@ -53,23 +45,43 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			_isPlaying = player.AutoPlay;
 		}
 
-		private void OnStateChanged(object sender, EventArgs e)
+		private void OnStateChanged(object sender, HtmlCustomEventArgs e)
 		{
-			var r = WebAssemblyRuntime.InvokeJS("Uno.UI.Lottie.getAnimationState(" + _player.HtmlId + ");");
+			ParseStateString(e.Detail);
+		}
 
-			var parts = r.Split('|');
-			var w = double.Parse(parts[0]);
-			var h = double.Parse(parts[1]);
+		private void ParseStateString(string stateString)
+		{
+			var parts = stateString.Split('|');
+			double.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var w);
+			double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var h);
+			var loaded = parts[2].Equals("true", StringComparison.Ordinal);
+			var paused = parts[3].Equals("true", StringComparison.Ordinal);
+
+			_player.SetValue(AnimatedVisualPlayer.IsAnimatedVisualLoadedProperty, loaded);
+			_player.SetValue(AnimatedVisualPlayer.IsPlayingProperty, !paused);
+			if (double.TryParse(parts[4], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var duration))
+			{
+				if (double.IsNaN(duration))
+				{
+					duration = 0d;
+				}
+				_player.SetValue(AnimatedVisualPlayer.DurationProperty, TimeSpan.FromSeconds(duration));
+			}
 
 			_compositionSize = new Size(w, h);
 		}
 
-		void IAnimatedVisualSource.Play(bool looped)
+		void IAnimatedVisualSource.Play(double fromProgress, double toProgress, bool looped)
 		{
 			var js = new[]
 			{
 				"Uno.UI.Lottie.play(",
 				_player.HtmlId.ToString(),
+				",",
+				fromProgress.ToStringInvariant(),
+				",",
+				toProgress.ToStringInvariant(),
 				",",
 				looped ? "true" : "false",
 				");"
@@ -160,27 +172,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			WebAssemblyRuntime.InvokeJS(string.Concat(js));
 		}
 
-		Size IAnimatedVisualSource.Measure(Size availableSize)
-		{
-			var availableWidth = availableSize.Width;
-			var availableHeight = availableSize.Height;
-			if (double.IsInfinity(availableWidth))
-			{
-				if(double.IsInfinity(availableHeight))
-				{
-					return _compositionSize;
-				}
-
-				return new Size(availableHeight * _compositionSize.Width / _compositionSize.Height, availableHeight);
-			}
-
-			if (double.IsInfinity(availableHeight))
-			{
-				return new Size(availableWidth, availableWidth * _compositionSize.Height / _compositionSize.Width);
-
-			}
-
-			return availableSize;
-		}
+		private Size CompositionSize => _compositionSize;
 	}
 }
