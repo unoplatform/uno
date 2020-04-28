@@ -137,7 +137,7 @@ namespace Windows.UI.Xaml.Controls
 			set => this.SetValue(IsPasswordRevealButtonEnabledProperty, value);			
 		}
 
-		public static readonly DependencyProperty IsPasswordRevealButtonEnabledProperty =
+		public static global::Windows.UI.Xaml.DependencyProperty IsPasswordRevealButtonEnabledProperty { get; } = 
 			DependencyProperty.Register(
 				nameof(IsPasswordRevealButtonEnabled),
 				typeof(bool),
