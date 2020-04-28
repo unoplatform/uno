@@ -191,6 +191,11 @@ namespace Windows.Data.Xml.Dom
 		/// <returns>UWP XML node.</returns>
 		internal object Wrap(object node)
 		{
+			if (node == null)
+			{
+				return null;
+			}
+
 			if (!_systemXmlToUwp.TryGetValue(node, out var wrapped))
 			{
 				wrapped = CreateWrapper(node);
@@ -208,7 +213,7 @@ namespace Windows.Data.Xml.Dom
 			node switch
 			{
 				DtdEntity dtdEntity => dtdEntity._backingEntity,
-				DtdNotation dtdNotation => dtdNotation._backingNotation,		
+				DtdNotation dtdNotation => dtdNotation._backingNotation,
 				XmlAttribute attribute => attribute._backingAttribute,
 				XmlCDataSection dataSection => dataSection._backingDataSection,
 				XmlDocument document => document._backingDocument,
@@ -221,6 +226,7 @@ namespace Windows.Data.Xml.Dom
 				XmlNodeList nodeList => nodeList._backingList,
 				XmlProcessingInstruction processingInstruction => processingInstruction._backingProcessingInstruction,
 				XmlComment comment => comment._backingComment,
+				null => null,
 				_ => throw new InvalidOperationException("Trying to unwrap an unknown XML type."),
 			};
 

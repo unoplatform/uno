@@ -50,7 +50,11 @@ namespace Windows.Data.Xml.Dom
 
 		public IXmlNode PreviousSibling => (IXmlNode)_owner.Wrap(_backingProcessingInstruction.PreviousSibling);
 
-		public string InnerText => _backingProcessingInstruction.InnerText;
+		public string InnerText
+		{
+			get => _backingProcessingInstruction.InnerText;
+			set => _backingProcessingInstruction.InnerText = value;
+		}
 
 		public string Data
 		{
