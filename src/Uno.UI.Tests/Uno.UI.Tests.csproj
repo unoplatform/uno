@@ -85,7 +85,10 @@
 	<ItemGroup>
 		<EmbeddedResource Include="Windows_UI_Xaml_Markup\XamlReaderTests\*.xamltest" />
 	</ItemGroup>
-
+	<ItemGroup>
+	  <EmbeddedResource Include="Windows_Data_Xml\DomTests\basictest.xml" />
+	</ItemGroup>
+	
 	<ItemGroup>
 		<PRIResource Include="**\*.resw" />
 	</ItemGroup>
