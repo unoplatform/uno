@@ -24,8 +24,8 @@ namespace Windows.Data.Xml.Dom
 {
 	public partial class XmlDocument : IXmlNode, IXmlNodeSerializer, IXmlNodeSelector
 	{
-		private Dictionary<object, object> _systemXmlToUwp = new Dictionary<object, object>();
-		internal SystemXmlDocument _backingDocument = new SystemXmlDocument();
+		private readonly Dictionary<object, object> _systemXmlToUwp = new Dictionary<object, object>();
+		internal readonly SystemXmlDocument _backingDocument = new SystemXmlDocument();
 
 		public XmlDocumentType Doctype => (XmlDocumentType)Wrap(_backingDocument.DocumentType);
 

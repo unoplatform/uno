@@ -40,30 +40,6 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\DtdEntity.cs" />
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\DtdNotation.cs" />
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\IXmlCharacterData.cs" />
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\IXmlNode.cs" />
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\IXmlNodeSelector.cs" />
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\IXmlNodeSerializer.cs" />
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\IXmlText.cs" />
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\NodeType.cs" />
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\XmlAttribute.cs" />
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\XmlCDataSection.cs" />
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\XmlComment.cs" />
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\XmlDocument.cs" />
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\XmlDocumentFragment.cs" />
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\XmlDocumentType.cs" />
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\XmlDomImplementation.cs" />
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\XmlElement.cs" />
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\XmlEntityReference.cs" />
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\XmlNamedNodeMap.cs" />
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\XmlNodeList.cs" />
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\XmlProcessingInstruction.cs" />
-	  <UpToDateCheckInput Remove="Data\Xml\Dom\XmlText.cs" />
-	</ItemGroup>
-	
-	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.Core" />

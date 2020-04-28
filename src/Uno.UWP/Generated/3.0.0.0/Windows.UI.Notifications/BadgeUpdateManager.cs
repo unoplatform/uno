@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Notifications
 {
-	#if __ANDROID__ || false || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class BadgeUpdateManager 
@@ -14,7 +14,7 @@ namespace Windows.UI.Notifications
 			throw new global::System.NotImplementedException("The member BadgeUpdateManagerForUser BadgeUpdateManager.GetForUser(User user) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || false || NET461 || __WASM__ || false
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Notifications.BadgeUpdater CreateBadgeUpdaterForApplication()
 		{
@@ -35,7 +35,7 @@ namespace Windows.UI.Notifications
 			throw new global::System.NotImplementedException("The member BadgeUpdater BadgeUpdateManager.CreateBadgeUpdaterForSecondaryTile(string tileId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || false || NET461 || __WASM__ || false
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Data.Xml.Dom.XmlDocument GetTemplateContent( global::Windows.UI.Notifications.BadgeTemplateType type)
 		{
