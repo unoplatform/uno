@@ -107,14 +107,14 @@ namespace Windows.UI.Xaml.Controls
 			if (args > 0) // The VideoRect may initially be empty, ignore because a 0 ratio will lead to infinite dims being returned on measure, resulting in an exception
 			{
 				_currentRatio = args;
-
-				Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
-				{
-					Visibility = Visibility.Visible;
-				});
-
-				InvalidateArrange(); 
 			}
+
+			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
+			{
+				Visibility = Visibility.Visible;
+			});
+
+			InvalidateArrange();
 		}
 
 		private void OnMediaFailed(Windows.Media.Playback.MediaPlayer sender, MediaPlayerFailedEventArgs args)
