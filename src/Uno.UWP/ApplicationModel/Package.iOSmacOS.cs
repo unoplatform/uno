@@ -1,4 +1,4 @@
-#if __IOS__
+#if __IOS__ || __MACOS__
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -12,12 +12,16 @@ namespace Windows.ApplicationModel
 	public partial class Package
 	{
 		private const string BundleDisplayNameKey = "CFBundleDisplayName";
-		
+
 		public string DisplayName => NSBundle.MainBundle.InfoDictionary[BundleDisplayNameKey]?.ToString() ?? string.Empty;
 
+#if __IOS__
 		private bool GetInnerIsDevelopmentMode() => IsAdHoc;
+#else
+		private bool GetInnerIsDevelopmentMode() => false; //detection not possible on macOS
+#endif
 
-		private string GetInstalledLocation() 
+		private string GetInstalledLocation()
 			=> NSBundle.MainBundle.BundlePath;
 
 		private DateTimeOffset GetInstallDate()
@@ -28,7 +32,7 @@ namespace Windows.ApplicationModel
 
 			return (DateTimeOffset)(DateTime)installDate;
 		}
-		
+
 		private static bool IsAdHoc
 			// See https://github.com/bitstadium/HockeySDK-iOS/blob/develop/Classes/BITHockeyHelper.m
 			=> NSBundle.MainBundle.PathForResource("embedded", "mobileprovision").HasValue();
