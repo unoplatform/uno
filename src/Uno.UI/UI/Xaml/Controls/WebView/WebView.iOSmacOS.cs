@@ -23,6 +23,10 @@ using CoreGraphics;
 using MonoTouch.Foundation;
 using MonoTouch.UIKit;
 using MonoTouch.CoreGraphics;
+#else
+using Foundation;
+using AppKit;
+using CoreGraphics;
 #endif
 
 namespace Windows.UI.Xaml.Controls
@@ -127,7 +131,11 @@ namespace Windows.UI.Xaml.Controls
 		{
 			var nsUrl = new NSUrl(url);
 			//Opens the specified URL, launching the app that's registered to handle the scheme.
+#if __IOS__
 			UIApplication.SharedApplication.OpenUrl(nsUrl);
+#else
+			NSWorkspace.SharedWorkspace.OpenUrl(nsUrl);
+#endif
 		}
 		
 		internal void OnComplete(Uri uri, bool isSuccessful, WebErrorStatus status)
@@ -167,7 +175,11 @@ namespace Windows.UI.Xaml.Controls
 
 			if (args.Uri.Scheme.Equals(Uri.UriSchemeMailto, StringComparison.OrdinalIgnoreCase))
 			{
+#if __IOS__
 				ParseUriAndLauchMailto(args.Uri);
+#else
+				NSWorkspace.SharedWorkspace.OpenUrl(new NSUrl(args.Uri.ToString()));
+#endif
 				args.Cancel = true;
 				return;
 			}
@@ -175,6 +187,7 @@ namespace Windows.UI.Xaml.Controls
 			NavigationStarting?.Invoke(this, args);
 		}
 
+#if __IOS__
 		private void ParseUriAndLauchMailto(Uri mailtoUri)
 		{
 			CoreDispatcher.Main.RunAsync(
@@ -276,6 +289,7 @@ namespace Windows.UI.Xaml.Controls
 					.AsTask(CancellationToken.None);
 			}
 		}
+#endif
 
 		internal void OnNewWindowRequested(WebViewNewWindowRequestedEventArgs args)
 		{
