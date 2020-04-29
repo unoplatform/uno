@@ -10,6 +10,7 @@ using System.IO;
 using System.Reflection;
 using Uno.UI.SourceGenerators.XamlGenerator.XamlRedirection;
 using System.Text.RegularExpressions;
+using Uno.UI.SourceGenerators.XamlGenerator.Utils;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -135,11 +136,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// support quotes in positional markup extensions parameters.
 					// Note that the UWP preprocessor does not need to apply those replacements as the
 					// x:Bind expressions are being removed during the first phase and replaced by "connections".
-					adjusted = Regex.Replace(
-						adjusted,
-						"\"{x:Bind.*?}\"",
-						e => e.Value.Replace('\'', XamlConstants.XBindSubstitute)
-					);
+					adjusted = XBindExpressionParser.RewriteDocumentPaths(adjusted);
 				}
 
 				return XmlReader.Create(new StringReader(adjusted));
