@@ -26,12 +26,11 @@ namespace Windows.UI.Xaml.Input
 			CanBubbleNatively = true; // Required for native gesture recognition (i.e. ScrollViewer), and integration of native components in the visual tree
 		}
 
-		internal PointerRoutedEventArgs(UITouch nativeTouch, UIEvent nativeEvent, UIElement receiver) : this()
+		internal PointerRoutedEventArgs(uint pointerId, UITouch nativeTouch, UIEvent nativeEvent, UIElement receiver) : this()
 		{
 			_nativeTouch = nativeTouch;
 			_nativeEvent = nativeEvent;
 
-			var pointerId = (uint)_nativeTouch.Handle;
 			var type = _nativeTouch.Type == UITouchType.Stylus
 				? PointerDeviceType.Pen
 				: PointerDeviceType.Touch;
