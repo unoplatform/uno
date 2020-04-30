@@ -13,6 +13,11 @@ namespace Windows.Storage.Streams
 			Data = new byte[capacity];
 		}
 
+		internal InMemoryBuffer(byte[] data)
+		{
+			Data = data;
+		}
+
 		internal byte[] Data { get; }
 
 		public uint Capacity => (uint)Data.Length;
