@@ -4,7 +4,7 @@ namespace Uno.Devices.Midi.Internal
 {
 	internal static class MidiMessageValidators
     {
-        internal static void VerifyRange(byte value, byte max, string paramName)
+        internal static void VerifyRange(int value, int max, string paramName)
 		{
 			if ( value > max)
 			{

@@ -32,16 +32,35 @@ namespace Windows.Devices.Midi
 			});
 		}
 
+		/// <summary>
+		/// Gets the type of this MIDI message.
+		/// </summary>
 		public MidiMessageType Type => MidiMessageType.NoteOn;
 
+		/// <summary>
+		/// Gets the channel from 0-15 that this message applies to.
+		/// </summary>
 		public byte Channel { get; }
 
+		/// <summary>
+		/// Gets the note to turn off which is specified as a value from 0-127.
+		/// </summary>
 		public byte Note { get; }
 
+		/// <summary>
+		/// Gets the value of the velocity from 0-127.
+		/// </summary>
 		public byte Velocity { get; }
 
+		/// <summary>
+		/// Gets the array of bytes associated with the MIDI message, including status byte.
+		/// </summary>
 		public IBuffer RawData { get; }
 
+		/// <summary>
+		/// Gets the duration from when the MidiInPort was created to the time the message was received.
+		/// For messages being sent to a MidiOutPort, this value has no meaning.
+		/// </summary>
 		public TimeSpan Timestamp { get; } = TimeSpan.Zero;
 	}
 }

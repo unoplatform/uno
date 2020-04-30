@@ -10,10 +10,10 @@ namespace Windows.Devices.Midi
 			RawData = rawData;
 		}
 
+		public MidiMessageType Type => MidiMessageType.SystemExclusive;
+
 		public IBuffer RawData { get; }
 
 		public TimeSpan Timestamp { get; } = TimeSpan.Zero;
-
-		public MidiMessageType Type => MidiMessageType.SystemExclusive;		
 	}
 }

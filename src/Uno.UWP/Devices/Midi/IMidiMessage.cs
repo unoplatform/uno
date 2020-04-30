@@ -1,16 +1,14 @@
-﻿#if __ANDROID__ || __IOS__ || __WASM__
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System;
+using Windows.Storage.Streams;
 
 namespace Windows.Devices.Midi
 {
 	public partial interface IMidiMessage
 	{
-		MidiMessageType Type
-		{
-			get;
-		}
+		IBuffer RawData { get; }
+
+		TimeSpan Timestamp { get; }
+
+		MidiMessageType Type { get; }
 	}
 }
-#endif
