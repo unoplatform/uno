@@ -17,6 +17,8 @@ namespace Uno.UI.Tests.App.Views
 					return "Map of the victories I win";
 				case "OverlyConvolutedDictionaryLookup":
 					return "Test_Dictionary_Isolated.xaml";
+				case "ThisKeyJustReturnsNull":
+					return null;
 				default:
 					throw new ArgumentException();
 			}

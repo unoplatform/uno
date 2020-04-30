@@ -256,6 +256,12 @@ namespace Uno.UI
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static ResourceDictionary RetrieveDictionaryForSource(string source, string currentAbsolutePath)
 		{
+			if (source == null)
+			{
+				// Null is unusual but valid in this context
+				return new ResourceDictionary();
+			}
+
 			if (!XamlFilePathHelper.IsAbsolutePath(source))
 			{
 				// If we don't have an absolute path it must be a local resource reference
