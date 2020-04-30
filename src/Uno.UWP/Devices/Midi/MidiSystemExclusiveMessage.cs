@@ -7,25 +7,13 @@ namespace Windows.Devices.Midi
 	{
 		public MidiSystemExclusiveMessage(IBuffer rawData)
 		{
-			awData = rawData;
+			RawData = rawData;
 		}
 
-		public IBuffer RawData
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IBuffer MidiSystemExclusiveMessage.RawData is not implemented in Uno.");
-			}
-		}
+		public IBuffer RawData { get; }
 
-		public TimeSpan Timestamp
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member TimeSpan MidiSystemExclusiveMessage.Timestamp is not implemented in Uno.");
-			}
-		}
+		public TimeSpan Timestamp { get; } = TimeSpan.Zero;
 
-		public MidiMessageType Type => MidiMessageType.SystemExclusive		
+		public MidiMessageType Type => MidiMessageType.SystemExclusive;		
 	}
 }

@@ -2,70 +2,70 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Midi
 {
-	#if false || false || NET461 || false || __MACOS__
-	#if false || false || NET461 || false || __MACOS__
+	#if false
+	#if false
 	[global::Uno.NotImplemented]
 	#endif
 	public   enum MidiMessageType 
 	{
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		None,
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		NoteOff,
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		NoteOn,
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		PolyphonicKeyPressure,
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		ControlChange,
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		ProgramChange,
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		ChannelPressure,
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		PitchBendChange,
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		SystemExclusive,
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		MidiTimeCode,
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		SongPositionPointer,
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		SongSelect,
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		TuneRequest,
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		EndSystemExclusive,
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		TimingClock,
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		Start,
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		Continue,
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		Stop,
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		ActiveSensing,
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		SystemReset,
 		#endif
 	}

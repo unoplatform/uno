@@ -1,6 +1,9 @@
-﻿#if __ANDROID__ || __IOS__ || __WASM__
-namespace Windows.Devices.Midi
+﻿namespace Windows.Devices.Midi
 {
+	/// <summary>
+	/// Provides constants used to map MIDI message types
+	/// into their corresponding byte codes.
+	/// </summary>
 	public enum MidiMessageType 
 	{
 		None = 0,
@@ -25,4 +28,3 @@ namespace Windows.Devices.Midi
 		SystemReset = 255,
 	}
 }
-#endif
