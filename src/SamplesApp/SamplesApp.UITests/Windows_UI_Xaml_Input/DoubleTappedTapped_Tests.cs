@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -39,6 +40,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Browser, Platform.iOS)] // Disabled on Android: The test engine is not able to find "Transformed_Target"
 		public void When_Transformed()
 		{
 			Run(_xamlTestPage);
@@ -49,7 +51,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			IAppRect parent, target;
 			if (AppInitializer.TestEnvironment.CurrentPlatform == Platform.Browser)
 			{
-				// Workaournd until https://github.com/unoplatform/Uno.UITest/pull/35 is merged
+				// Workaround until https://github.com/unoplatform/Uno.UITest/pull/35 is merged
 
 				parent = _app.Query(q => q.Marked(parentName)).Single().Rect;
 				target = _app.Query(q => q.Marked(targetName)).Single().Rect;
@@ -60,8 +62,12 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 				target = _app.Query(q => q.All().Marked(targetName)).Single().Rect;
 			}
 
+			var dpi = target.Width / 50;
+
 			// Double tap the target
-			_app.DoubleTapCoordinates(parent.Right - target.Width, parent.Bottom - 3);
+			// Note: On WASM the parent is not clipped properly, so we must use absolute coordinates from top/left
+			//		 https://github.com/unoplatform/uno/issues/2514
+			_app.DoubleTapCoordinates(parent.X + 100 * dpi, parent.Y + (100 + 25) * dpi);
 
 			var result = GestureResult.Get(_app.Marked("LastDoubleTapped"));
 			result.Element.Should().Be(targetName);
