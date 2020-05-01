@@ -192,7 +192,7 @@ namespace Windows.Storage.Streams
 			throw new global::System.NotImplementedException("The member uint DataWriter.MeasureString(string value) is not implemented in Uno.");
 		}
 		#endif
-		#if false
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.DataWriterStoreOperation StoreAsync()
 		{
@@ -213,7 +213,7 @@ namespace Windows.Storage.Streams
 			throw new global::System.NotImplementedException("The member IBuffer DataWriter.DetachBuffer() is not implemented in Uno.");
 		}
 		#endif
-		#if false
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IOutputStream DetachStream()
 		{

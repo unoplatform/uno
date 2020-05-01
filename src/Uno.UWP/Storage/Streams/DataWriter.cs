@@ -1,161 +1,190 @@
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using Windows.Foundation;
+
 namespace Windows.Storage.Streams
 {
-	public  partial class DataWriter : global::Windows.Storage.Streams.IDataWriter,global::System.IDisposable
+	public partial class DataWriter : IDataWriter, IDisposable
 	{
-		public  global::Windows.Storage.Streams.UnicodeEncoding UnicodeEncoding
+		private readonly List<byte> _unstoredBuffer = new List<byte>();
+
+		public DataWriter()
 		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member UnicodeEncoding DataWriter.UnicodeEncoding is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "UnicodeEncoding DataWriter.UnicodeEncoding");
-			}
+
 		}
 
-		public  global::Windows.Storage.Streams.ByteOrder ByteOrder
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ByteOrder DataWriter.ByteOrder is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "ByteOrder DataWriter.ByteOrder");
-			}
-		}
-
-		public  uint UnstoredBufferLength
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint DataWriter.UnstoredBufferLength is not implemented in Uno.");
-			}
-		}
-
-		public DataWriter( global::Windows.Storage.Streams.IOutputStream outputStream) 
+		public DataWriter(IOutputStream outputStream)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "DataWriter.DataWriter(IOutputStream outputStream)");
 		}
 
-		public DataWriter() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "DataWriter.DataWriter()");
-		}
+		public UnicodeEncoding UnicodeEncoding { get; set; }
 
-		public  void WriteByte( byte value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.WriteByte(byte value)");
-		}
+		public ByteOrder ByteOrder { get; set; }
 
-		public  void WriteBytes( byte[] value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.WriteBytes(byte[] value)");
-		}
+		public uint UnstoredBufferLength => (uint)_unstoredBuffer.Count;
 
-		public  void WriteBuffer( global::Windows.Storage.Streams.IBuffer buffer)
+		public void WriteByte(byte value) => _unstoredBuffer.Add(value);
+
+		public void WriteBytes(byte[] value) => _unstoredBuffer.AddRange(value);
+
+		public void WriteBuffer(IBuffer buffer)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.WriteBuffer(IBuffer buffer)");
 		}
 
-		public  void WriteBuffer( global::Windows.Storage.Streams.IBuffer buffer,  uint start,  uint count)
+		public void WriteBuffer(IBuffer buffer, uint start, uint count)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.WriteBuffer(IBuffer buffer, uint start, uint count)");
 		}
 
-		public  void WriteBoolean( bool value)
+		public void WriteBoolean(bool value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.WriteBoolean(bool value)");
+			var bytes = BitConverter.GetBytes(value);
+			AddChunkToUnstoredBuffer(bytes);
 		}
 
-		public  void WriteGuid( global::System.Guid value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.WriteGuid(Guid value)");
+		public void WriteGuid(Guid value)
+		{			
+			var bytes = value.ToByteArray();
+			AddChunkToUnstoredBuffer(bytes);
 		}
 
-		public  void WriteInt16( short value)
+		public void WriteInt16(short value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.WriteInt16(short value)");
+			var bytes = BitConverter.GetBytes(value);
+			AddChunkToUnstoredBuffer(bytes);
 		}
 
-		public  void WriteInt32( int value)
+		public void WriteInt32(int value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.WriteInt32(int value)");
+			var bytes = BitConverter.GetBytes(value);
+			AddChunkToUnstoredBuffer(bytes);
 		}
 
-		public  void WriteInt64( long value)
+		public void WriteInt64(long value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.WriteInt64(long value)");
+			var bytes = BitConverter.GetBytes(value);
+			AddChunkToUnstoredBuffer(bytes);
 		}
 
-		public  void WriteUInt16( ushort value)
+		public void WriteUInt16(ushort value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.WriteUInt16(ushort value)");
+			var bytes = BitConverter.GetBytes(value);
+			AddChunkToUnstoredBuffer(bytes);
 		}
 
-		public  void WriteUInt32( uint value)
+		public void WriteUInt32(uint value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.WriteUInt32(uint value)");
+			var bytes = BitConverter.GetBytes(value);
+			AddChunkToUnstoredBuffer(bytes);
 		}
 
-		public  void WriteUInt64( ulong value)
+		public void WriteUInt64(ulong value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.WriteUInt64(ulong value)");
+			var bytes = BitConverter.GetBytes(value);
+			AddChunkToUnstoredBuffer(bytes);
 		}
 
-		public  void WriteSingle( float value)
+		public void WriteSingle(float value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.WriteSingle(float value)");
+			var bytes = BitConverter.GetBytes(value);
+			AddChunkToUnstoredBuffer(bytes);
 		}
 
-		public  void WriteDouble( double value)
+		public void WriteDouble(double value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.WriteDouble(double value)");
+			var bytes = BitConverter.GetBytes(value);
+			AddChunkToUnstoredBuffer(bytes);
 		}
 
-		public  void WriteDateTime( global::System.DateTimeOffset value)
+		public void WriteDateTime(DateTimeOffset value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.WriteDateTime(DateTimeOffset value)");
 		}
 
-		public  void WriteTimeSpan( global::System.TimeSpan value)
+		/// <summary>
+		/// Writes a time-interval value to the output stream.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		public void WriteTimeSpan(TimeSpan value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.WriteTimeSpan(TimeSpan value)");
+			var ticks = value.Ticks;
+			var bytes = BitConverter.GetBytes(ticks);
+
+			AddChunkToUnstoredBuffer(bytes);
 		}
 
-		public  uint WriteString( string value)
+		/// <summary>
+		/// Writes a string value to the output stream.
+		/// </summary>
+		/// <param name="value">The value.</param>
+		/// <returns>The length of the string, in bytes.</returns>
+		public uint WriteString(string value)
 		{
-			throw new global::System.NotImplementedException("The member uint DataWriter.WriteString(string value) is not implemented in Uno.");
+			byte[] stringBytes;
+			switch (UnicodeEncoding)
+			{
+				case UnicodeEncoding.Utf8:
+					stringBytes = Encoding.UTF8.GetBytes(value);
+					break;
+				case UnicodeEncoding.Utf16LE:
+					stringBytes = Encoding.Unicode.GetBytes(value);
+					break;
+				case UnicodeEncoding.Utf16BE:
+					stringBytes = Encoding.BigEndianUnicode.GetBytes(value);
+					break;
+				default:
+					throw new InvalidOperationException("Unsupported UnicodeEncoding value.");
+			}
+			_unstoredBuffer.AddRange(stringBytes);
+			return (uint)stringBytes.Length;
 		}
 
-		public  uint MeasureString( string value)
+		/// <summary>
+		/// Gets the size of a string.
+		/// </summary>
+		/// <param name="value">The string.</param>
+		/// <returns>The size of the string, in bytes.</returns>
+		public uint MeasureString(string value)
 		{
-			throw new global::System.NotImplementedException("The member uint DataWriter.MeasureString(string value) is not implemented in Uno.");
+			switch (UnicodeEncoding)
+			{
+				case UnicodeEncoding.Utf8:
+					return (uint)Encoding.UTF8.GetByteCount(value);
+				case UnicodeEncoding.Utf16LE:
+					return (uint)Encoding.Unicode.GetByteCount(value);
+				case UnicodeEncoding.Utf16BE:
+					return (uint)Encoding.BigEndianUnicode.GetByteCount(value);
+				default:
+					throw new InvalidOperationException("Unsupported UnicodeEncoding value.");
+			}
 		}
 
-		public  global::Windows.Storage.Streams.DataWriterStoreOperation StoreAsync()
+		public IAsyncOperation<bool> FlushAsync()
 		{
-			throw new global::System.NotImplementedException("The member DataWriterStoreOperation DataWriter.StoreAsync() is not implemented in Uno.");
-		}
-		public  global::Windows.Foundation.IAsyncOperation<bool> FlushAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> DataWriter.FlushAsync() is not implemented in Uno.");
+			throw new NotImplementedException("The member IAsyncOperation<bool> DataWriter.FlushAsync() is not implemented in Uno.");
 		}
 
-		public  global::Windows.Storage.Streams.IBuffer DetachBuffer()
+		public IBuffer DetachBuffer()
 		{
-			throw new global::System.NotImplementedException("The member IBuffer DataWriter.DetachBuffer() is not implemented in Uno.");
+			throw new NotImplementedException("The member IBuffer DataWriter.DetachBuffer() is not implemented in Uno.");
 		}
 
-		public  global::Windows.Storage.Streams.IOutputStream DetachStream()
-		{
-			throw new global::System.NotImplementedException("The member IOutputStream DataWriter.DetachStream() is not implemented in Uno.");
-		}
-
-		public  void Dispose()
+		public void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.Dispose()");
+		}
+
+		private void AddChunkToUnstoredBuffer(byte[] chunk)
+		{
+			var reverseOrder =
+				(ByteOrder == ByteOrder.BigEndian && BitConverter.IsLittleEndian) ||
+				(ByteOrder == ByteOrder.LittleEndian && !BitConverter.IsLittleEndian);
+
+			_unstoredBuffer.AddRange(reverseOrder ? chunk.Reverse() : chunk);
 		}
 	}
 }
