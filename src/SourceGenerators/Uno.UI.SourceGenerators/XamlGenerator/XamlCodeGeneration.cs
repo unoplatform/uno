@@ -12,6 +12,7 @@ using Uno.Extensions;
 using Microsoft.Build.Execution;
 using Uno.Logging;
 using Uno.UI.SourceGenerators.Telemetry;
+using Uno.UI.Xaml;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator
 {
@@ -575,7 +576,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						foreach (var file in files.Where(IsResourceDictionary))
 						{
 							// We leave context null because local resources should be found through Application.Resources
-							writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"ms-resource:///Files/{0}\", context: null, () => {1}_ResourceDictionary);",
+							writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{0}{1}\", context: null, () => {2}_ResourceDictionary);",
+								XamlFilePathHelper.LocalResourcePrefix,
+								map.GetSourceLink(file),
+								file.UniqueID
+							);
+							// Local resources can also be found through the ms-appx:/// prefix
+							writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{0}{1}\", context: null, () => {2}_ResourceDictionary);",
+								XamlFilePathHelper.AppXIdentifier,
 								map.GetSourceLink(file),
 								file.UniqueID
 							);

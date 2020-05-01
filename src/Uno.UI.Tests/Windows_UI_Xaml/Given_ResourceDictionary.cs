@@ -551,6 +551,13 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public void When_Created_From_Local_Source_In_Codebehind_AppX()
+		{
+			var rd = new ResourceDictionary { Source = new Uri("ms-appx:///App/Xaml/Test_Dictionary.xaml") };
+			AssertEx.AssertContainsColorBrushResource(rd, "SuperiorColorBrush", Colors.MediumSpringGreen);
+		}
+
+		[TestMethod]
 		public void When_External_Source()
 		{
 			var page = new Test_Page();
