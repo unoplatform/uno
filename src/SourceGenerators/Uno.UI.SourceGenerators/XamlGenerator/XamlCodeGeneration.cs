@@ -559,7 +559,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								writer.AppendLineInvariant("_dictionariesRegistered = true;");
 								foreach (var file in files.Where(IsResourceDictionary))
 								{
-									writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"ms-appx:///{0}/{1}\", context: {2}, () => {3}_ResourceDictionary);",
+									writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"ms-appx:///{0}/{1}\", context: {2}, dictionary: () => {3}_ResourceDictionary);",
 										_metadataHelper.AssemblyName,
 										map.GetSourceLink(file),
 										ParseContextPropertyName,
@@ -576,13 +576,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						foreach (var file in files.Where(IsResourceDictionary))
 						{
 							// We leave context null because local resources should be found through Application.Resources
-							writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{0}{1}\", context: null, () => {2}_ResourceDictionary);",
+							writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{0}{1}\", context: null, dictionary: () => {2}_ResourceDictionary);",
 								XamlFilePathHelper.LocalResourcePrefix,
 								map.GetSourceLink(file),
 								file.UniqueID
 							);
 							// Local resources can also be found through the ms-appx:/// prefix
-							writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{0}{1}\", context: null, () => {2}_ResourceDictionary);",
+							writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.RegisterResourceDictionaryBySource(uri: \"{0}{1}\", context: null, dictionary: () => {2}_ResourceDictionary);",
 								XamlFilePathHelper.AppXIdentifier,
 								map.GetSourceLink(file),
 								file.UniqueID
