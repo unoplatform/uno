@@ -250,7 +250,7 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				m_effectiveViewportChangedRevoker = Disposable.Create(() =>
 				{
-					m_owner.EffectiveViewportChanged += OnEffectiveViewportChanged;
+					m_owner.EffectiveViewportChanged -= OnEffectiveViewportChanged;
 					m_effectiveViewportChangedRevoker = null;
 				});
 				m_owner.EffectiveViewportChanged += OnEffectiveViewportChanged;

@@ -303,13 +303,12 @@ namespace Microsoft.UI.Xaml.Controls
 		void Generate(
 			GenerateDirection direction,
 			int anchorIndex, 
-
-		Size availableSize,
-		double minItemSpacing,
-		double lineSpacing,
-		uint maxItemsPerLine,
-		bool disableVirtualization, 
-		string layoutId)
+			Size availableSize,
+			double minItemSpacing,
+			double lineSpacing,
+			uint maxItemsPerLine,
+			bool disableVirtualization, 
+			string layoutId)
 		{
 			if (anchorIndex != -1)
 			{

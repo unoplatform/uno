@@ -3,10 +3,11 @@
 
 using System;
 using Windows.Foundation;
+using Windows.UI.Xaml;
 
 namespace Microsoft.UI.Xaml.Controls
 {
-	public class Layout : Uno.UI.DO
+	public partial class Layout : DependencyObject
 	{
 		public event TypedEventHandler<Layout, object> MeasureInvalidated;
 		public event TypedEventHandler<Layout, object> ArrangeInvalidated;

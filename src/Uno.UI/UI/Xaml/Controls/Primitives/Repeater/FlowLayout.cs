@@ -195,8 +195,6 @@ namespace Microsoft.UI.Xaml.Controls
 			int lastRealizedItemIndex,
 			Rect lastRealizedLayoutBounds)
 		{
-			lastRealized = lastRealized ?? throw new ArgumentNullException(nameof(lastRealized));
-
 			var extent = default(Rect);
 
 			int itemsCount = context.ItemCount;
