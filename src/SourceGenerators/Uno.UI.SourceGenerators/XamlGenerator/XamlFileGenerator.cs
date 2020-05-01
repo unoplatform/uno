@@ -417,6 +417,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			GenerateApiExtensionRegistrations(writer);
 
 			GenerateResourceLoader(writer);
+			writer.AppendLine();
+			ApplyLiteralProperties(); // 
+			writer.AppendLine();
 			writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.Initialize();");
 			writer.AppendLineInvariant($"global::{_defaultNamespace}.GlobalStaticResources.RegisterResourceDictionariesBySourceLocal();");
 			writer.AppendLineInvariant($"global::Uno.UI.DataBinding.BindableMetadata.Provider = new global::{_defaultNamespace}.BindableMetadataProvider();");
@@ -429,21 +432,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			RegisterAndBuildResources(writer, topLevelControl, isInInitializer: false);
 			BuildProperties(writer, topLevelControl, isInline: false, returnsContent: false);
 
-			writer.AppendLineInvariant("");
-			writer.AppendLineInvariant("this");
-
-			using (var blockWriter = CreateApplyBlock(writer, null, out var closure))
-			{
-				blockWriter.AppendLineInvariant(
-					"// Source {0} (Line {1}:{2})",
-					_fileDefinition.FilePath,
-					topLevelControl.LineNumber,
-					topLevelControl.LinePosition
-				);
-				BuildLiteralProperties(blockWriter, topLevelControl, closure);
-			}
-
-			writer.AppendLineInvariant(";");
 			if (_isUiAutomationMappingEnabled)
 			{
 				writer.AppendLineInvariant("global::Uno.UI.FrameworkElementHelper.IsUiAutomationMappingEnabled = true;");
@@ -453,6 +441,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					// When automation mapping is enabled, remove the element ID from the ToString so test screenshots stay the same.
 					writer.AppendLineInvariant("global::Uno.UI.FeatureConfiguration.UIElement.RenderToStringWithId = false;");
 				}
+			}
+
+			void ApplyLiteralProperties()
+			{
+				writer.AppendLineInvariant("this");
+
+				using (var blockWriter = CreateApplyBlock(writer, null, out var closure))
+				{
+					blockWriter.AppendLineInvariant(
+						"// Source {0} (Line {1}:{2})",
+						_fileDefinition.FilePath,
+						topLevelControl.LineNumber,
+						topLevelControl.LinePosition
+					);
+					BuildLiteralProperties(blockWriter, topLevelControl, closure);
+				}
+
+				writer.AppendLineInvariant(";");
 			}
 		}
 
