@@ -45,7 +45,7 @@ namespace Windows.Storage.Streams
 			}
 		}
 		#endif
-		#if false
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public DataWriter( global::Windows.Storage.Streams.IOutputStream outputStream) 
 		{

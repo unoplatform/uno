@@ -15,11 +15,6 @@ namespace Windows.Storage.Streams
 
 		}
 
-		public DataWriter(IOutputStream outputStream)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "DataWriter.DataWriter(IOutputStream outputStream)");
-		}
-
 		public UnicodeEncoding UnicodeEncoding { get; set; }
 
 		public ByteOrder ByteOrder { get; set; }
@@ -32,7 +27,10 @@ namespace Windows.Storage.Streams
 
 		public void WriteBuffer(IBuffer buffer)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.WriteBuffer(IBuffer buffer)");
+			if (buffer is InMemoryBuffer inMemory)
+			{
+
+			}
 		}
 
 		public void WriteBuffer(IBuffer buffer, uint start, uint count)
@@ -47,7 +45,7 @@ namespace Windows.Storage.Streams
 		}
 
 		public void WriteGuid(Guid value)
-		{			
+		{
 			var bytes = value.ToByteArray();
 			AddChunkToUnstoredBuffer(bytes);
 		}
