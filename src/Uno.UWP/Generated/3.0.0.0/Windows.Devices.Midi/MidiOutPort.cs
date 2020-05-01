@@ -39,14 +39,14 @@ namespace Windows.Devices.Midi
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiOutPort", "void MidiOutPort.Dispose()");
 		}
 		#endif
-		#if false || __IOS__ || NET461 || false || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.Midi.IMidiOutPort> FromIdAsync( string deviceId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IMidiOutPort> MidiOutPort.FromIdAsync(string deviceId) is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET461 || false || __MACOS__
+		#if false
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelector()
 		{

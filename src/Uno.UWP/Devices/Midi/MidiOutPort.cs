@@ -1,9 +1,9 @@
-﻿#if __ANDROID__ || __IOS__ || __WASM__
+﻿using System;
 using Uno.Devices.Enumeration.Internal;
 
 namespace Windows.Devices.Midi
 {
-	public partial class MidiOutPort : global::System.IDisposable
+	public partial class MidiOutPort : IDisposable
 	{
 		private const string MidiOutAqsFilter =
 			"System.Devices.InterfaceClassGuid:=\"{" + DeviceClassGuids.MidiOut + "}\" AND System.Devices.InterfaceEnabled:=System.StructuredQueryType.Boolean#True";
@@ -11,4 +11,3 @@ namespace Windows.Devices.Midi
 		public static string GetDeviceSelector() => MidiOutAqsFilter;
 	}
 }
-#endif
