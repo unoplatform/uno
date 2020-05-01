@@ -38,6 +38,12 @@ namespace Windows.UI.Xaml
 		private XamlRoot _xamlRoot = null;
 		private string _uid;
 
+		public static void RegisterAsScrollPort(UIElement element)
+			=> element.IsScrollPort = true;
+
+		internal bool IsScrollPort { get; private set; }
+		internal Point ScrollOffsets { get; private protected set; }
+
 		/// <summary>
 		/// Is this view set to Window.Current.Content?
 		/// </summary>
@@ -233,6 +239,11 @@ namespace Windows.UI.Xaml
 						offsetY -= sv.VerticalOffset;
 					}
 				}
+				else if(elt.IsScrollPort) // Custom scroller
+				{
+					offsetX -= elt.ScrollOffsets.X;
+					offsetY -= elt.ScrollOffsets.Y;
+				}
 #endif
 
 			} while (elt.TryGetParentUIElementForTransformToVisual(out elt, ref offsetX, ref offsetY) && elt != to); // If possible we stop as soon as we reach 'to'
@@ -346,9 +357,11 @@ namespace Windows.UI.Xaml
 			}
 
 			ApplyNativeClip(rect);
+			OnViewportUpdated(rect);
 		}
 
 		partial void ApplyNativeClip(Rect rect);
+		private protected virtual void OnViewportUpdated(Rect viewport) { } // Not "Changed" as it might be the same as previous
 
 		internal static object GetDependencyPropertyValueInternal(DependencyObject owner, string dependencyPropertyName)
 		{
@@ -420,11 +433,7 @@ namespace Windows.UI.Xaml
 		/// <remarks>
 		/// DesiredSize INCLUDES MARGINS.
 		/// </remarks>
-		public Size DesiredSize
-		{
-			get;
-			internal set;
-		}
+		public Size DesiredSize { get; internal set; }
 
 		/// <summary>
 		/// Provides the size reported during the last call to Arrange (i.e. the ActualSize)
@@ -448,9 +457,7 @@ namespace Windows.UI.Xaml
 
 		public void InvalidateMeasure()
 		{
-			var frameworkElement = this as IFrameworkElement;
-
-			if (frameworkElement != null)
+			if (this is IFrameworkElement frameworkElement)
 			{
 				IFrameworkElementHelper.InvalidateMeasure(frameworkElement);
 			}
