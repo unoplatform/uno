@@ -465,8 +465,8 @@ namespace Windows.Media.Playback
 
 		public void SurfaceCreated(ISurfaceHolder holder)
 		{
-			_player.SetDisplay(holder);
-			_player.SetScreenOnWhilePlaying(true);
+			_player?.SetDisplay(holder);
+			_player?.SetScreenOnWhilePlaying(true);
 			_hasValidHolder = true;
 
 			UpdateVideoStretch(_currentStretch);
@@ -474,7 +474,7 @@ namespace Windows.Media.Playback
 
 		public void SurfaceDestroyed(ISurfaceHolder holder)
 		{
-			_player.SetDisplay(null);
+			_player?.SetDisplay(null);
 			_hasValidHolder = false;
 		}
 
