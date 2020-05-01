@@ -590,6 +590,9 @@ namespace Windows.UI.Xaml.Controls
 		/// <remarks>Unlike the LayoutInformation.GetLayoutSlot(), this property is set **BEFORE** arranging the children of the ScrollViewer</remarks>
 		internal Size ViewportArrangeSize { get; private set; }
 
+		[global::Uno.NotImplemented]
+		public UIElement CurrentAnchor => null;
+
 		/// <summary>
 		/// Cached value of <see cref="Uno.UI.Xaml.Controls.ScrollViewer.UpdatesModeProperty"/>,
 		/// in order to not access the DP on each scroll (perf considerations)
