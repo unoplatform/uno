@@ -154,7 +154,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.DualScreen", "Uno.UI
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.WinUIRevert", "Uno.WinUIRevert\Uno.WinUIRevert.csproj", "{C598D6FA-81F1-4B54-8028-ED8987F88FFA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Uno.UI.Tests.ViewLibrary", "Uno.UI.Tests.ViewLibrary\Uno.UI.Tests.ViewLibrary.csproj", "{99D067E3-E70B-45F1-BC3C-931FBD89FD95}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Uno.UI.Tests.ViewLibrary", "Uno.UI.Tests.ViewLibrary\Uno.UI.Tests.ViewLibrary.csproj", "{99D067E3-E70B-45F1-BC3C-931FBD89FD95}"
 EndProject
 Global
 	GlobalSection(SharedMSBuildProjectFiles) = preSolution
