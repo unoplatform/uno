@@ -27,15 +27,26 @@ namespace Windows.Storage.Streams
 
 		public void WriteBuffer(IBuffer buffer)
 		{
-			if (buffer is InMemoryBuffer inMemory)
+			switch (buffer)
 			{
-
-			}
+				case InMemoryBuffer mb:
+					_unstoredBuffer.AddRange(mb.Data);
+					break;
+				default:
+					throw new NotSupportedException("This buffer is not supported");
+			}			
 		}
 
 		public void WriteBuffer(IBuffer buffer, uint start, uint count)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.WriteBuffer(IBuffer buffer, uint start, uint count)");
+			switch (buffer)
+			{
+				case InMemoryBuffer mb:
+					_unstoredBuffer.AddRange(mb.Data.Skip((int)start).Take((int)count));
+					break;
+				default:
+					throw new NotSupportedException("This buffer is not supported");
+			}
 		}
 
 		public void WriteBoolean(bool value)
@@ -100,7 +111,12 @@ namespace Windows.Storage.Streams
 
 		public void WriteDateTime(DateTimeOffset value)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.WriteDateTime(DateTimeOffset value)");
+			// UWP serializes value in a FILETIME format
+			// see https://stackoverflow.com/questions/61544559/what-format-does-uwp-datawriter-writedatetime-use/61553316
+
+			var fileTime = value.ToFileTime();	
+			var bytes = BitConverter.GetBytes(fileTime);
+			AddChunkToUnstoredBuffer(bytes);
 		}
 
 		/// <summary>
