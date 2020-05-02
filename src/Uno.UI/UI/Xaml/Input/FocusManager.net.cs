@@ -50,6 +50,11 @@ namespace Windows.UI.Xaml.Input
 			throw new NotImplementedException();
 		}
 
+		private static DependencyObject InnerFindLastFocusableElement(DependencyObject searchScope)
+		{
+			throw new NotImplementedException();
+		}
+
 		public static void OnFocusChanged(View control, FocusState state)
 		{
 			throw new NotImplementedException();

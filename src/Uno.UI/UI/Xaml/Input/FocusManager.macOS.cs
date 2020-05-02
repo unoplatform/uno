@@ -213,7 +213,7 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 
-		public static DependencyObject InnerFindFirstFocusableElement(DependencyObject searchScope)
+		private static DependencyObject InnerFindFirstFocusableElement(DependencyObject searchScope)
 		{
 			if (searchScope == null)
 			{
@@ -225,12 +225,22 @@ namespace Windows.UI.Xaml.Input
 				return null;
 			}
 
-			if (IsFocusableView(searchView))
+			return searchView.FindSubviews(selector: IsFocusableView, maxDepth: 100).FirstOrDefault() as DependencyObject;
+		}
+
+		private static DependencyObject InnerFindLastFocusableElement(DependencyObject searchScope)
+		{
+			if (searchScope == null)
 			{
-				return searchScope;
+				searchScope = Window.Current.Content;
 			}
 
-			return searchView.FindSubviews(selector: IsFocusableView, maxDepth: 100).FirstOrDefault() as DependencyObject;
+			if (!(searchScope is NSView searchView))
+			{
+				return null;
+			}
+
+			return searchView.FindSubviewsReverse(selector: IsFocusableView, maxDepth: 100).FirstOrDefault() as DependencyObject;
 		}
 
 		private static void FocusNative(Control control) => control.BecomeFirstResponder();

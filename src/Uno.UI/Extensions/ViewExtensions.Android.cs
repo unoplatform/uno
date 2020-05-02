@@ -128,8 +128,8 @@ namespace Uno.UI
 		/// <summary>
 		/// Gets an enumerator containing all the children of a View group
 		/// </summary>
-		/// <param name="group"></param>
-		/// <returns></returns>
+		/// <param name="group">View group</param>
+		/// <returns>Children in default order</returns>
 		public static IEnumerable<View> GetChildren(this ViewGroup group)
 		{
 			var shadowProvider = group as Controls.IShadowChildrenProvider;
@@ -143,6 +143,33 @@ namespace Uno.UI
 			else
 			{
 				return GetChildrenSlow(group);
+			}
+		}
+
+		/// <summary>
+		/// Gets an reverse enumerator containing all the children of a View group
+		/// </summary>
+		/// <param name="group">View group</param>
+		/// <returns>Children in reverse order</returns>
+		public static IEnumerable<View> GetChildrenReverse(this ViewGroup group)
+		{
+			var shadowProvider = group as Controls.IShadowChildrenProvider;
+
+			if (shadowProvider != null)
+			{
+				// To avoid calling ChildCount/GetChildAt too much during enumeration, use
+				// a fast path that relies on a shadowed list of the children in BindableView.
+				for (int i = shadowProvider.ChildrenShadow.Count - 1; i >= 0; i--)
+				{
+					yield return shadowProvider.ChildrenShadow[i];
+				}
+			}
+			else
+			{
+				foreach (var child in GetChildrenReverseSlow(group))
+				{
+					yield return child;
+				}
 			}
 		}
 
@@ -189,6 +216,19 @@ namespace Uno.UI
 		}
 
 		/// <summary>
+		/// A reverse enumerator for ViewGroup children that uses interop calls.
+		/// </summary>
+		private static IEnumerable<View> GetChildrenReverseSlow(ViewGroup group)
+		{
+			var count = group.ChildCount;
+
+			for (int i = count - 1; i >= 0; i++)
+			{
+				yield return group.GetChildAt(i);
+			}
+		}
+
+		/// <summary>
 		/// Gets a filtered enumerator containing children of the view group
 		/// </summary>
 		/// <param name="group">The group</param>
@@ -228,6 +268,36 @@ namespace Uno.UI
 					if (childGroup != null)
 					{
 						foreach (var subResult in childGroup.EnumerateAllChildren(selector, maxDepth - 1))
+						{
+							yield return subResult;
+						}
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Enumerates all the children for a specified view group in reverse order.
+		/// </summary>
+		/// <param name="view">The view group to get the children from</param>
+		/// <param name="selector">The selector function</param>
+		/// <param name="maxDepth">The depth to stop looking for children.</param>
+		/// <returns>A lazy enumerable of views in reverse order</returns>
+		public static IEnumerable<View> EnumerateAllChildrenReverse(this ViewGroup view, Func<View, bool> selector, int maxDepth = 20)
+		{
+			foreach (var sub in view.GetChildrenReverse())
+			{
+				if (selector(sub))
+				{
+					yield return sub;
+				}
+				else if (maxDepth > 0)
+				{
+					var childGroup = sub as ViewGroup;
+
+					if (childGroup != null)
+					{
+						foreach (var subResult in childGroup.EnumerateAllChildrenReverse(selector, maxDepth - 1))
 						{
 							yield return subResult;
 						}

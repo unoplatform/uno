@@ -214,16 +214,11 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 
-		public static DependencyObject InnerFindFirstFocusableElement(DependencyObject searchScope)
+		private static DependencyObject InnerFindFirstFocusableElement(DependencyObject searchScope)
 		{
 			if (searchScope == null)
 			{
 				searchScope = Window.Current.Content;
-			}
-
-			if (IsFocusableView(searchScope as View))
-			{
-				return searchScope;
 			}
 
 			if (!(searchScope is ViewGroup searchViewGroup))
@@ -232,6 +227,21 @@ namespace Windows.UI.Xaml.Input
 			}
 
 			return searchViewGroup.EnumerateAllChildren(IsFocusableView, maxDepth: 300).FirstOrDefault() as DependencyObject;			
+		}
+
+		private static DependencyObject InnerFindLastFocusableElement(DependencyObject searchScope)
+		{
+			if (searchScope == null)
+			{
+				searchScope = Window.Current.Content;
+			}
+
+			if (!(searchScope is ViewGroup searchViewGroup))
+			{
+				return null;
+			}
+
+			return searchViewGroup.EnumerateAllChildrenReverse(IsFocusableView, maxDepth: 300).FirstOrDefault() as DependencyObject;
 		}
 
 		private static void FocusNative(Control control)

@@ -206,6 +206,25 @@ namespace AppKit
 			}
 		}
 
+		public static IEnumerable<_View> FindSubviewsReverse(this _View view, Func<_View, bool> selector, int maxDepth = 20)
+		{
+			for (int i = view.Subviews.Length - 1; i >= 0; i--)
+			{
+				var sub = view.Subviews[i];
+				if (selector(sub))
+				{
+					yield return sub;
+				}
+				else if (maxDepth > 0)
+				{
+					foreach (var subResult in sub.FindSubviewsReverse(selector, maxDepth - 1))
+					{
+						yield return subResult;
+					}
+				}
+			}
+		}
+
 		/// <summary>
 		/// Enumerates all the children for a specified view.
 		/// </summary>
