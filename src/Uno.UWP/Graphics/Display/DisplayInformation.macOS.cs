@@ -13,6 +13,8 @@ namespace Windows.Graphics.Display
 		{
 			UpdateLogicalProperties();
 			UpdateRawProperties();
+			UpdateNativeOrientation();
+			UpdateCurrentOrientation();
 		}
 
 		private void UpdateLogicalProperties()
@@ -32,6 +34,26 @@ namespace Windows.Graphics.Display
 			ScreenHeightInRawPixels = (uint)(screenSize.Height * scale);
 			ScreenWidthInRawPixels = (uint)(screenSize.Width * scale);
 			RawPixelsPerViewPixel = NSScreen.MainScreen.BackingScaleFactor;
+		}
+
+		/// <summary>
+		/// Sets the NativeOrientation property 		
+		/// </summary>
+		private void UpdateNativeOrientation()
+		{
+			NativeOrientation = DisplayOrientations.Landscape;
+		}
+
+		private void UpdateCurrentOrientation()
+		{
+			if (NSScreen.MainScreen.Frame.Width > NSScreen.MainScreen.Frame.Height)
+			{
+				CurrentOrientation = DisplayOrientations.Landscape;
+			}
+			else
+			{
+				CurrentOrientation = DisplayOrientations.Portrait;
+			}
 		}
 	}
 }

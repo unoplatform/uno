@@ -322,24 +322,7 @@ namespace Windows.UI.Xaml.Controls
 					inputType |= InputTypes.TextFlagMultiLine;
 				}
 
-				if (IsReadOnly)
-				{
-					_textBoxView.InputType = InputTypes.Null;
-
-					// Clear the listener so the inputs have no effect.
-					// Setting the input type to InputTypes.Null is not enough.
-					_listener = _textBoxView.KeyListener;
-					_textBoxView.KeyListener = null;
-				}
-				else
-				{
-					if (_listener != null)
-					{
-						_textBoxView.KeyListener = _listener;
-					}
-
-					_textBoxView.InputType = inputType;
-				}
+				_textBoxView.InputType = inputType;
 			}
 		}
 
@@ -407,7 +390,26 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (_textBoxView != null)
 			{
-				UpdateInputScope(InputScope);
+				var isReadOnly = IsReadOnly;
+
+				_textBoxView.Focusable = !isReadOnly;
+				_textBoxView.FocusableInTouchMode = !isReadOnly;
+				_textBoxView.Clickable = !isReadOnly;
+				_textBoxView.LongClickable = !isReadOnly;
+				_textBoxView.SetCursorVisible(!isReadOnly);
+
+				if (isReadOnly)
+				{
+					_listener = _textBoxView.KeyListener;
+					_textBoxView.KeyListener = null;
+				}
+				else
+				{
+					if (_listener != null)
+					{
+						_textBoxView.KeyListener = _listener;
+					}
+				}
 			}
 		}
 

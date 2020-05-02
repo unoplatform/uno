@@ -1,0 +1,167 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Uno Platform",
+  "classifications": [ "Prism", "Xamarin", "Uno Platform", "WebAssembly", "iOS", "Android", "WinUI", "UWP" ],
+  "name": "Prism Cross-Platform App (Uno Platform)",
+  "identity": "Uno.Platform.Prism.CSharp", // Unique name for this template
+  "groupIdentity": "Uno.Platform.Prism",
+  "shortName": "unoapp-prism", // Short name that can be used on the cli
+  "tags": {
+    "language": "C#",
+    "type": "project"
+  },
+  "sourceName": "BlankApp",
+  "preferNameDirectory": true,
+  "guids": [
+    "4C26868E-5E7C-458D-82E3-040509D0C71F", // Solution file (SLN)
+    "99E19497-29A6-4B77-B773-BEC55F9B55DC", // .NET Standard Library
+    "8D9F8CF0-E178-402D-8D40-A88B7B5F3D42", // Android
+    "91D74A40-E440-42AD-B51F-C2D641C49384", // iOS
+    "B445DF73-AC9E-4276-9FBA-7CB5AD5D2518",
+    "3EA9E612-E717-4E55-9034-DE653429FEFD", // WPF
+    "3EA9E612-E717-4E55-9034-C415CD62AF9A", // UWP
+    "2B1FDFB6-C93C-4CA1-A6AB-528C4B3654B9" // UWP
+  ],
+  "symbols": {
+    "guid1": {
+      "type": "generated",
+      "generator": "guid",
+      "replaces": "$guid1$",
+      "parameters": {
+        "format": "N"
+      }
+    },
+    "guid2": {
+      "type": "generated",
+      "generator": "guid",
+      "replaces": "$guid2$",
+      "parameters": {
+        "format": "N"
+      }
+    },
+    "windowsPublisherName": {
+      "type": "parameter",
+      "datatype": "text",
+      "replaces": "$XmlEscapedPublisherDistinguishedName$",
+      "description": "Provides the value to use for the Windows head publisher",
+      "defaultValue": "O=MyCompany"
+    },
+    "WebAssembly": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "true",
+      "description": "Enables the WebAssembly platform support project"
+    },
+    "UWP": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "true",
+      "description": "Enables the Windows platform support project"
+    },
+    "iOS": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "true",
+      "description": "Enables the iOS platform support project"
+    },
+    "Android": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "true",
+      "description": "Enables the Android platform support project"
+    },
+    "macOS": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "true",
+      "description": "Enables the macOS platform support project"
+    },
+    "vscodeWasm": {
+      "type": "parameter",
+      "dataType": "bool",
+      "defaultValue": "false",
+      "description": "Adds the Visual Studio Code Debugging support files for WebAssembly"
+    },
+    "Container": {
+      "type": "parameter",
+      "dataType": "choice",
+      "defaultValue": "DryIoc",
+      "choices": [
+        {
+          "choice": "DryIoc",
+          "description": "Uses DryIoc as the Dependency Injection Container"
+        },
+        {
+          "choice": "Unity",
+          "description": "Uses Unity as the Dependency Injection Container"
+        }
+      ],
+      "description": "The Dependency Injection Container to use"
+    },
+    "DryIocContainer": {
+      "type": "computed",
+      "value": "(Container == \"DryIoc\")"
+    },
+    "UnityContainer": {
+      "type": "computed",
+      "value": "(Container == \"Unity\")"
+    }
+  },
+  "primaryOutputs": [
+    {
+      "path": "BlankApp.Shared\\BlankApp.Shared.shproj"
+    },
+    {
+      "condition": "Android",
+      "path": "BlankApp.Droid\\BlankApp.Droid.csproj"
+    },
+    {
+      "condition": "iOS",
+      "path": "BlankApp.iOS\\BlankApp.iOS.csproj"
+    },
+    {
+      "condition": "UWP",
+      "path": "BlankApp.UWP\\BlankApp.Uwp.csproj"
+    },
+    {
+      "condition": "Wasm",
+      "path": "BlankApp.Wasm\\BlankApp.Wasm.csproj"
+    },
+    {
+      "condition": "macOS",
+      "path": "BlankApp.macOS\\BlankApp.macOS.csproj"
+    }
+  ],
+  "sources": [
+    {
+      "modifiers": [
+        {
+          "condition": "(!Android)",
+          "exclude": [ "BlankApp/BlankApp.Android/**/*" ]
+        },
+        {
+          "condition": "(!iOS)",
+          "exclude": [ "BlankApp/BlankApp.iOS/**/*" ]
+        },
+        {
+          "condition": "(!UWP)",
+          "exclude": [ "BlankApp/BlankApp.UWP/**/*" ]
+        },
+        {
+          "condition": "(!WebAsembly)",
+          "exclude": [ "BlankApp/BlankApp.Wasm/**/*" ]
+        },
+        {
+          "condition": "(!macOS)",
+          "exclude": [ "BlankApp/BlankApp.macOS/**/*" ]
+        },
+        {
+          "condition": "(!vscodeWasm)",
+          "exclude": [
+            ".vscode/**/*"
+          ]
+        }
+      ]
+    }
+  ]
+}

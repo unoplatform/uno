@@ -1,0 +1,25 @@
+﻿{
+  "$schema": "http://json.schemastore.org/dotnetcli.host",
+  "symbolInfo": {
+    "WebAssembly": {
+      "longName": "webassembly",
+      "shortName": "wasm"
+    },
+    "UWP": {
+      "longName": "uwp",
+      "shortName": "uwp"
+    },
+    "iOS": {
+      "longName": "ios",
+      "shortName": "ios"
+    },
+    "Android": {
+      "longName": "android",
+      "shortName": "android"
+    },
+    "macOS": {
+      "longName": "macos",
+      "shortName": "macos"
+    },
+  }
+}

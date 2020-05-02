@@ -29,7 +29,7 @@ Visit [our documentation](doc/articles/intro.md) for more details.
 # Getting Started
 
 ## Prerequisites
-* [**Visual Studio 2017 15.5 or later**](https://visualstudio.microsoft.com/) with:
+* [**Visual Studio 2019**](https://visualstudio.microsoft.com/) with:
     * **Universal Windows Platform component** installed.
 
 	* **Xamarin component** installed (for Android and iOS development).

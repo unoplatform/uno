@@ -177,7 +177,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			public void SeekAlignedToLastTick(TimeSpan offset)
 			{
 				// Same as Seek
-				((ITimeline)this).Seek(offset);
+				Seek(offset);
 			}
 
 			public void SkipToFill()
@@ -296,7 +296,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				// state. (The ideal would probably be to restart the animation when the app resumes.)
 				if (Application.Current?.IsSuspended ?? false)
 				{
-					((ITimeline)this).SkipToFill();
+					SkipToFill();
 				}
 #endif
 			}

@@ -143,29 +143,38 @@ namespace Windows.UI.Xaml.Controls
 
 		private void ToogleFullScreen(bool showFullscreen)
 		{
-			if (showFullscreen)
+			try
 			{
-				ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
+				_mediaPlayerPresenter.IsTogglingFullscreen = true;
+
+				if (showFullscreen)
+				{
+					ApplicationView.GetForCurrentView().TryEnterFullScreenMode();
 
 #if __ANDROID__
-				this.RemoveView(_layoutRoot);
+					this.RemoveView(_layoutRoot);
 #elif __IOS__
-				_layoutRoot.RemoveFromSuperview();
+					_layoutRoot.RemoveFromSuperview();
 #endif
 
-				Windows.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
+					Windows.UI.Xaml.Window.Current.DisplayFullscreen(_layoutRoot);
+				}
+				else
+				{
+					ApplicationView.GetForCurrentView().ExitFullScreenMode();
+
+					Windows.UI.Xaml.Window.Current.DisplayFullscreen(null);
+
+#if __ANDROID__
+					this.AddView(_layoutRoot);
+#elif __IOS__
+					this.Add(_layoutRoot);
+#endif
+				}
 			}
-			else
+			finally
 			{
-				ApplicationView.GetForCurrentView().ExitFullScreenMode();
-
-				Windows.UI.Xaml.Window.Current.DisplayFullscreen(null);
-
-#if __ANDROID__
-				this.AddView(_layoutRoot);
-#elif __IOS__
-				this.Add(_layoutRoot);
-#endif
+				_mediaPlayerPresenter.IsTogglingFullscreen = false;
 			}
 		}
 

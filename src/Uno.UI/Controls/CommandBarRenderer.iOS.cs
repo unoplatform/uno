@@ -1,5 +1,4 @@
-﻿#if __IOS__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -60,8 +59,7 @@ namespace Uno.UI.Controls
 
 		protected override void Render()
 		{
-			// Visibility
-			Native.Hidden = Element.Visibility == Visibility.Collapsed;
+			ApplyVisibility();
 
 			// Foreground
 			var foregroundColor = (Element.Foreground as SolidColorBrush)?.ColorWithOpacity;
@@ -126,6 +124,19 @@ namespace Uno.UI.Controls
 				Element.Presenter.Height = Native.Hidden ? 0 : Native.Frame.Size.Height;
 			}
 		}
+
+		private void ApplyVisibility()
+		{
+			var newHidden = Element.Visibility == Visibility.Collapsed;
+			var hasChanged = Native.Hidden != newHidden;
+			Native.Hidden = newHidden;
+			if (hasChanged)
+			{
+				// Re-layout UINavigationBar when visibility changes, this is important eg in the case that status bar was shown/hidden
+				// while CommandBar was collapsed
+				Native.SetNeedsLayout();
+				Native.Superview?.SetNeedsLayout();
+			}
+		}
 	}
 }
-#endif

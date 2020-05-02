@@ -204,7 +204,10 @@ namespace Windows.Media.Playback
 		{
 			PlaybackSession.NaturalDuration = TimeSpan.Zero;
 			PlaybackSession.PositionFromPlayer = TimeSpan.Zero;
-			
+
+			// Reset player
+			TryDisposePlayer();
+
 			if (Source == null)
 			{
 				return;
@@ -212,8 +215,6 @@ namespace Windows.Media.Playback
 
 			try
 			{
-				// Reset player
-				TryDisposePlayer();
 				InitializePlayer();
 
 				PlaybackSession.PlaybackState = MediaPlaybackState.Opening;

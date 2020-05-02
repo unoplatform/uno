@@ -9,7 +9,7 @@ This guide will walk you through the set-up process for building WebAssembly app
 
 1. Launch Code, then in the terminal type the following to install the Uno Platform templates:
 ```bash
-dotnet new -i Uno.ProjectTemplates.Dotnet::2.2.0-dev.489
+dotnet new -i Uno.ProjectTemplates.Dotnet::2.2.0
 ```
 1. In the terminal type the following to create a new project:
 ```bash

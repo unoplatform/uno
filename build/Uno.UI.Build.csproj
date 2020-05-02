@@ -79,26 +79,33 @@
 		<ItemGroup>
 			<_PackageToUpdate Include="Uno.UI" />
 			<_PackageToUpdate Include="Uno.UI.RemoteControl" />
+
+			<_legacyProject Include="..\src\SolutionTemplate\**\*.Droid.csproj"/>
+			<_legacyProject Include="..\src\SolutionTemplate\**\*.iOS.csproj"/>
+			<_legacyProject Include="..\src\SolutionTemplate\**\*.macOS.csproj"/>
+
+			<_sdkProject Include="..\src\SolutionTemplate\**\*.Wasm.csproj"/>
+			<_sdkProject Include="..\src\SolutionTemplate\UnoLibraryTemplate\CrossTargetedLibrary.csproj"/>
 		</ItemGroup>
 
-		<XmlUpdate XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate\Droid\UnoQuickStart.Droid.csproj"
-							 XPath="//x:PackageReference[@Include='%(_PackageToUpdate.Identity)']/@Version" Value="$(GitVersion_FullSemVer)"
+		<XmlUpdate XmlFileName="%(_legacyProject.Identity)"
+							 XPath="//x:PackageReference[@Include='Uno.UI.RemoteControl']/@Version"
+							 Value="$(GitVersion_FullSemVer)"
+							 Namespace="http://schemas.microsoft.com/developer/msbuild/2003"
+							 Prefix="x" />
+		
+		<XmlUpdate XmlFileName="%(_legacyProject.Identity)"
+							 XPath="//x:PackageReference[@Include='Uno.UI']/@Version"
+							 Value="$(GitVersion_FullSemVer)"
 							 Namespace="http://schemas.microsoft.com/developer/msbuild/2003"
 							 Prefix="x" />
 
-		<XmlUpdate XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate\iOS\UnoQuickStart.iOS.csproj"
-							 XPath="//x:PackageReference[@Include='%(_PackageToUpdate.Identity)']/@Version" Value="$(GitVersion_FullSemVer)"
-							 Namespace="http://schemas.microsoft.com/developer/msbuild/2003"
-							 Prefix="x" />
-
-		<XmlUpdate XmlFileName="..\src\SolutionTemplate\UnoSolutionTemplate\Wasm\UnoQuickStart.Wasm.csproj"
-							 XPath="//PackageReference[@Include='%(_PackageToUpdate.Identity)']/@Version"
+		<XmlUpdate XmlFileName="%(_sdkProject.Identity)"
+							 XPath="//PackageReference[@Include='Uno.UI']/@Version"
 							 Value="$(GitVersion_FullSemVer)" />
-
-		<XmlUpdate XmlFileName="..\src\SolutionTemplate\UnoLibraryTemplate\CrossTargetedLibrary.csproj"
-							 XPath="//PackageReference[@Include='%(_PackageToUpdate.Identity)']/@Version"
+		<XmlUpdate XmlFileName="%(_sdkProject.Identity)"
+							 XPath="//PackageReference[@Include='Uno.UI.RemoteControl']/@Version"
 							 Value="$(GitVersion_FullSemVer)" />
-
 	</Target>
 
 	<Target Name="UpdateTasksSHA">
