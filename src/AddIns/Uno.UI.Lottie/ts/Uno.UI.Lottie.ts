@@ -52,8 +52,8 @@ namespace Uno.UI {
 				const a = Lottie._runningAnimations[elementId].animation;
 				a.loop = looped;
 
-				var fromFrame = fromProgress * Lottie._numberOfFrames;
-				var toFrame = toProgress * Lottie._numberOfFrames;
+				const fromFrame = fromProgress * Lottie._numberOfFrames;
+				const toFrame = toProgress * Lottie._numberOfFrames;
 
 				a.playSegments([fromFrame, toFrame], false);
 				Lottie.raiseState(a);
@@ -188,7 +188,8 @@ namespace Uno.UI {
 		private static getStateString(animation: Lottie.AnimationItem): string {
 			const duration = animation.getDuration(false);
 
-			const state = `${animation.animationData.w}|${animation.animationData.h}|${animation.isLoaded}|${animation.isPaused}|${duration}`;
+			const state = `${animation.animationData.w}|${animation.animationData.h}|` +
+				`${animation.isLoaded}|${animation.isPaused}|${duration}`;
 			return state;
 		}
 

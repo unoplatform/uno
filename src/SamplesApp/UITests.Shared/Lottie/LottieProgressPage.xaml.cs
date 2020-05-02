@@ -3,6 +3,7 @@ using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI.Samples.Controls;
+using System.Threading.Tasks;
 
 namespace UITests.Lottie
 {
@@ -16,10 +17,10 @@ namespace UITests.Lottie
 			this.InitializeComponent();
 
 			// Set Lottie Source.
-			InitializeJsonSource();
+			var _ = InitializeJsonSource();
 		}
 
-		private async void InitializeJsonSource()
+		private async Task InitializeJsonSource()
 		{
 			// We'll need to set the JSON Source in code-behind in order to await it ...
 			await Progress_Source.SetSourceAsync(new Uri("ms-appx:///Lottie/LightBulb.json"));
