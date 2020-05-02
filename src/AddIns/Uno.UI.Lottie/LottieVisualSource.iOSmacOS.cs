@@ -1,8 +1,9 @@
 ﻿using System;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Media;
 using Airbnb.Lottie;
-
+using Uno.UI;
 #if __IOS__
 using _ViewContentMode = UIKit.UIViewContentMode;
 #else
@@ -17,20 +18,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public bool UseHardwareAcceleration { get; set; } = true;
 
-		private bool _isPlaying = false;
 		private string _lastPath = "";
-		private AnimatedVisualPlayer _player;
 
-		private void Update()
+		partial void InnerUpdate()
 		{
-			if (_player != null)
-			{
-				Update(_player);
-			}
-		}
-
-		public void Update(AnimatedVisualPlayer player)
-		{
+			var player = _player;
 			if (_animation == null)
 			{
 				_animation = new LOTAnimationView();
@@ -53,6 +45,15 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				{
 					_animation.SetAnimationNamed(path);
 					_lastPath = path;
+
+					// Force layout to recalculate
+					player.InvalidateMeasure();
+					player.InvalidateArrange();
+
+					if (player.AutoPlay)
+					{
+						Play(0, 1, true);
+					}
 				}
 
 				switch (player.Stretch)
@@ -71,50 +72,77 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 						break;
 				}
 
-				_animation.AnimationSpeed = (nfloat)player.PlaybackRate;
+				var duration = TimeSpan.FromSeconds(_animation.AnimationDuration);
+				player.SetValue(AnimatedVisualPlayer.DurationProperty, duration);
 
-				if (player.AutoPlay && !_isPlaying)
+				var isLoaded = duration > TimeSpan.Zero;
+				player.SetValue(AnimatedVisualPlayer.IsAnimatedVisualLoadedProperty, isLoaded);
+
+				_animation.CompletionBlock = isCompleted =>
 				{
-					Play(true);
-				}
-			}
+					SetIsPlaying(_animation.IsAnimationPlaying);
+				};
 
-			_player = player;
+				_animation.AnimationSpeed = (nfloat)player.PlaybackRate;
+			}
 		}
 
-		public void Play(bool looped)
+		public void Play(double fromProgress, double toProgress, bool looped)
 		{
-			_isPlaying = true;
-			_animation.LoopAnimation = looped;
-			_animation.Play();
+			if (_animation != null)
+			{
+				if (_animation.IsAnimationPlaying)
+				{
+					_animation.Stop();
+				}
+
+				_animation.LoopAnimation = looped;
+
+				void Start()
+				{
+					_animation.PlayFromProgress((nfloat)fromProgress, (nfloat)toProgress, isFinished =>
+					{
+						if (looped && isFinished)
+						{
+							Start();
+						}
+					});
+				}
+
+				Start();
+				SetIsPlaying(true);
+			}
 		}
 
 		public void Stop()
 		{
-			_isPlaying = false;
+			SetIsPlaying(false);
 			_animation.Stop();
 		}
 
 		public void Pause()
 		{
+			SetIsPlaying(false);
 			_animation.Pause();
-			_isPlaying = false;
 		}
 
 		public void Resume()
 		{
 			_animation.Play();
-			_isPlaying = true;
+			SetIsPlaying(true);
 		}
 
 		public void SetProgress(double progress)
 		{
-			// TODO
+			if (_animation != null)
+			{
+				_animation.AnimationProgress = (nfloat)progress;
+			}
 		}
 
 		public void Load()
 		{
-			if (_isPlaying)
+			if (_player.IsPlaying)
 			{
 				_animation.Play();
 			}
@@ -122,15 +150,12 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public void Unload()
 		{
-			if (_isPlaying)
+			if (_player.IsPlaying)
 			{
 				_animation.Pause();
 			}
 		}
 
-		Size IAnimatedVisualSource.Measure(Size availableSize)
-		{
-			return availableSize;
-		}
+		private Size CompositionSize => _animation.IntrinsicContentSize;
 	}
 }

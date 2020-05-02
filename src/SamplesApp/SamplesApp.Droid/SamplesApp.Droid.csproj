@@ -148,6 +148,7 @@
     <AndroidAsset Include="Assets\Lottie\4930-checkbox-animation.json" />
     <AndroidAsset Include="Assets\Lottie\lottie-logo.json" />
     <AndroidAsset Include="Assets\Lottie\uno.json" />
+    <AndroidAsset Include="Assets\Lottie\LightBulb.json" />
     <None Include="Resources\AboutResources.txt" />
     <None Include="Assets\AboutAssets.txt" />
   </ItemGroup>

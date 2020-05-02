@@ -17,100 +17,114 @@ namespace Uno.UI {
 	export class Lottie {
 		private static _player: LottiePlayer;
 		private static _runningAnimations: { [id: number]: RunningLottieAnimation } = {};
+		private static _numberOfFrames: number;
 
 		public static setAnimationProperties(newProperties: LottieAnimationProperties): string {
 			const elementId = newProperties.elementId;
 
-			this.withPlayer(p => {
-				let currentAnimation = this._runningAnimations[elementId];
+			Lottie.withPlayer(p => {
+				let currentAnimation = Lottie._runningAnimations[elementId];
 
-				if (!currentAnimation || this.needNewPlayerAnimation(currentAnimation.properties, newProperties)) {
+				if (!currentAnimation || Lottie.needNewPlayerAnimation(currentAnimation.properties, newProperties)) {
 					// Here we need a new player animation
 					// (some property changes required a new animation)
-					currentAnimation = this.createAnimation(newProperties);
+					currentAnimation = Lottie.createAnimation(newProperties);
 				}
 
-				this.updateProperties(currentAnimation, newProperties);
+				Lottie.updateProperties(currentAnimation, newProperties);
 			});
 
 			return "ok";
 		}
 
 		public static stop(elementId: number): string {
-			this.withPlayer(p => {
-				this._runningAnimations[elementId].animation.stop();
+			Lottie.withPlayer(p => {
+				const a = Lottie._runningAnimations[elementId].animation;
+				a.stop();
+				Lottie.raiseState(a);
 			});
 
 			return "ok";
 		}
 
-		public static play(elementId: number, looped: boolean): string {
-			this.withPlayer(p => {
-				const a = this._runningAnimations[elementId].animation;
+		public static play(elementId: number, fromProgress: number, toProgress: number, looped: boolean): string {
+			Lottie.withPlayer(p => {
+				const a = Lottie._runningAnimations[elementId].animation;
 				a.loop = looped;
-				a.play();
+
+				const fromFrame = fromProgress * Lottie._numberOfFrames;
+				const toFrame = toProgress * Lottie._numberOfFrames;
+
+				a.playSegments([fromFrame, toFrame], false);
+				Lottie.raiseState(a);
 			});
 
 			return "ok";
 		}
 
 		public static kill(elementId: number): string {
-			this.withPlayer(p => {
-				this._runningAnimations[elementId].animation.destroy();
-				delete this._runningAnimations[elementId];
+			Lottie.withPlayer(p => {
+				Lottie._runningAnimations[elementId].animation.destroy();
+				delete Lottie._runningAnimations[elementId];
 			});
 
 			return "ok";
 		}
 
 		public static pause(elementId: number): string {
-			this.withPlayer(p => {
-				this._runningAnimations[elementId].animation.pause();
+			Lottie.withPlayer(p => {
+				const a = Lottie._runningAnimations[elementId].animation;
+				a.pause();
+				Lottie.raiseState(a);
 			});
 
 			return "ok";
 		}
 
 		public static resume(elementId: number): string {
-			this.withPlayer(p => {
-				this._runningAnimations[elementId].animation.play();
+			Lottie.withPlayer(p => {
+				const a = Lottie._runningAnimations[elementId].animation;
+				a.play();
+				Lottie.raiseState(a);
 			});
 
 			return "ok";
 		}
 
 		public static setProgress(elementId: number, progress: number): string {
-			this.withPlayer(p => {
-				const animation = this._runningAnimations[elementId].animation;
+			Lottie.withPlayer(p => {
+				const animation = Lottie._runningAnimations[elementId].animation;
 				const frames = animation.getDuration(true);
 				const frame = frames * progress;
 				animation.goToAndStop(frame, true);
+				Lottie.raiseState(animation);
+
 			});
 
 			return "ok";
 		}
 
 		public static getAnimationState(elementId: number): string {
-			const animation = this._runningAnimations[elementId].animation;
+			const animation = Lottie._runningAnimations[elementId].animation;
 
-			const state = `${animation.animationData.w}|${animation.animationData.h}|${animation.isPaused}`;
+			const state = Lottie.getStateString(animation);
 
 			return state;
 		}
 
 		private static needNewPlayerAnimation(current: LottieAnimationProperties, newProperties: LottieAnimationProperties): boolean {
 
-			if (current.jsonPath != newProperties.jsonPath) {
+			if (current.jsonPath !== newProperties.jsonPath) {
 				return true;
 			}
 
-			if (newProperties.stretch != current.stretch) {
+			if (newProperties.stretch !== current.stretch) {
 				return true;
 			}
-			if (newProperties.autoplay != current.autoplay) {
+			if (newProperties.autoplay !== current.autoplay) {
 				return true;
 			}
-			if (newProperties.jsonPath != current.jsonPath) {
+			if (newProperties.jsonPath !== current.jsonPath) {
 				return true;
 			}
 
@@ -132,42 +146,58 @@ namespace Uno.UI {
 		}
 
 		private static createAnimation(properties: LottieAnimationProperties): RunningLottieAnimation {
-			var existingAnimation = this._runningAnimations[properties.elementId];
+			const existingAnimation = Lottie._runningAnimations[properties.elementId];
 			if (existingAnimation) {
 				// destroy any previous animation
 				existingAnimation.animation.destroy();
 				existingAnimation.animation = null;
 			}
 
-			const config = this.getPlayerConfig(properties);
-			const animation = this._player.loadAnimation(config);
+			const config = Lottie.getPlayerConfig(properties);
+			const animation = Lottie._player.loadAnimation(config);
 
 			const runningAnimation = {
 				animation: animation,
 				properties: properties
 			};
 
-			this._runningAnimations[properties.elementId] = runningAnimation;
+			Lottie._runningAnimations[properties.elementId] = runningAnimation;
 
 			(animation as any).addEventListener("complete", (e: any) => {
 				Lottie.raiseState(animation);
 			});
 
-			if (animation.isLoaded) {
+			(animation as any).addEventListener("loopComplete", (e: any) => {
 				Lottie.raiseState(animation);
-			} else {
-				(animation as any).addEventListener("data_ready", (e: any) => {
-					Lottie.raiseState(animation);
-				});
-			}
+			});
+
+			(animation as any).addEventListener("segmentStart", (e: any) => {
+				Lottie.raiseState(animation);
+			});
+
+			(animation as any).addEventListener("data_ready", (e: any) => {
+				Lottie._numberOfFrames = animation.totalFrames;
+				Lottie.raiseState(animation);
+			});
+
+			Lottie.raiseState(animation);
 
 			return runningAnimation;
 		}
 
+		private static getStateString(animation: Lottie.AnimationItem): string {
+			const duration = animation.getDuration(false);
+
+			const state = `${animation.animationData.w}|${animation.animationData.h}|` +
+				`${animation.isLoaded}|${animation.isPaused}|${duration}`;
+			return state;
+		}
+
 		private static raiseState(animation: Lottie.AnimationItem) {
 			const element = animation.wrapper;
+			const state = Lottie.getStateString(animation);
 
-			element.dispatchEvent(new Event("lottie_state"));
+			element.dispatchEvent(new CustomEvent("lottie_state", { detail: state }));
 		}
 
 		private static getPlayerConfig(properties: LottieAnimationProperties): Lottie.AnimationConfig {
@@ -191,7 +221,7 @@ namespace Uno.UI {
 				path: properties.jsonPath,
 				loop: true,
 				autoplay: properties.autoplay,
-				name: `Lottin-${properties.elementId}`,
+				name: `Lottie-${properties.elementId}`,
 				renderer: "svg", // https://github.com/airbnb/lottie-web/wiki/Features
 				container: containerElement,
 				rendererSettings: {

@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 		void Update(AnimatedVisualPlayer player);
 		void Load();
 		void Unload();
-		void Play(bool looped);
+		void Play(double fromProgress, double toProgress, bool looped);
 		void Stop();
 		void Pause();
 		void Resume();
