@@ -188,8 +188,20 @@ namespace AppKit
 			InvalidateMeasure(view);
 		}
 
+		/// <summary>
+		/// Enumerate subviews matching given selector up to a given depth.
+		/// </summary>
+		/// <param name="view">View to enumerate.</param>
+		/// <param name="selector">View selector.</param>
+		/// <param name="maxDepth">Maximum depth.</param>
+		/// <returns>Views in default order.</returns>
 		public static IEnumerable<_View> FindSubviews(this _View view, Func<_View, bool> selector, int maxDepth = 20)
 		{
+			if (view == null)
+			{
+				throw new ArgumentNullException(nameof(view));
+			}
+
 			foreach (var sub in view.Subviews)
 			{
 				if (selector(sub))
@@ -206,8 +218,20 @@ namespace AppKit
 			}
 		}
 
+		/// <summary>
+		/// Enumerate subviews matching given selector up to a given depth in reverse order.
+		/// </summary>
+		/// <param name="view">View to enumerate.</param>
+		/// <param name="selector">View selector.</param>
+		/// <param name="maxDepth">Maximum depth.</param>
+		/// <returns>Views in reverse order.</returns>
 		public static IEnumerable<_View> FindSubviewsReverse(this _View view, Func<_View, bool> selector, int maxDepth = 20)
 		{
+			if (view == null)
+			{
+				throw new ArgumentNullException(nameof(view));
+			}
+
 			for (int i = view.Subviews.Length - 1; i >= 0; i--)
 			{
 				var sub = view.Subviews[i];
