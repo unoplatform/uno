@@ -12,6 +12,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 {
 	internal abstract class MidiDeviceClassProviderBase : IDeviceClassProvider
 	{
+		// https://github.com/xamarin/ios-samples/tree/master/CoreMidiSample
 		private readonly bool _isInput = false;
 
 		private MidiClient _client;
@@ -31,14 +32,15 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 
 		public void WatchStart()
 		{
-			_client = new MidiClient("Watch");
+			MidiInfo.Restart();
+			_client = new MidiClient(Guid.NewGuid().ToString());
 
 			var devices = GetMidiDevices().ToArray();
 			foreach (var device in devices)
 			{
 				WatchAdded?.Invoke(this, device);
 			}
-			OnEnumerationCompleted(devices.LastOrDefault());			
+			OnEnumerationCompleted(devices.LastOrDefault());
 			_client.ObjectAdded += ClientChanged;
 			_client.ObjectRemoved += ClientChanged;
 		}
@@ -109,75 +111,44 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			WatchEnumerationCompleted?.Invoke(this, lastDeviceInformation);
 		}
 
-		private DeviceInformation CreateDeviceInformation(MidiDevice device, MidiEndpoint endpoint)
+		private DeviceInformation CreateDeviceInformation(MidiEndpoint endpoint)
 		{
 			var deviceInformation = new DeviceInformation(
 				_isInput ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut,
-				GetMidiDeviceId(device, endpoint))
+				GetMidiDeviceId(endpoint))
 			{
-				Name = device.DisplayName
+				Name = endpoint.DisplayName + " " + endpoint.EndpointName + " " + endpoint.Name 
 			};
 			return deviceInformation;
 		}
 
-		private static (int id, string endpointName) ParseMidiDeviceId(string id)
+		private static int ParseMidiDeviceId(string id)
 		{
-			var splitIndex = id.IndexOf('_');
-			if (splitIndex <= 0)
-			{
-				throw new InvalidOperationException("Invalid device ID");
-			}
-			var nativeDeviceId = id.Substring(0, splitIndex);
-			var intId = int.Parse(nativeDeviceId);
-			var endpointName = id.Substring(splitIndex + 1);
-			return (intId, endpointName);
+			var intId = int.Parse(id);
+			return intId;
 		}
 
-		private static string GetMidiDeviceId(MidiDevice device, MidiEndpoint endpoint)
-		{			
-			return $"{device.ConnectionUniqueIDInt}_{endpoint.ConnectionUniqueIDInt}";
+		private static string GetMidiDeviceId(MidiEndpoint endpoint)
+		{
+			return $"{endpoint.DisplayName}";
 		}
 
 		private IEnumerable<DeviceInformation> GetMidiDevices()
 		{
-			for (int i = 0; i < MidiInfo.DeviceCount; i++)
+			if (_isInput)
 			{
-				var device = MidiInfo.GetDevice(i);
-				foreach (var deviceInfo in ReadDeviceInformation(device))
+				for (int inputId = 0; inputId < MidiInfo.SourceCount; inputId++)
 				{
-					yield return deviceInfo;
+					var source = MidiEndpoint.GetSource(inputId);
+					yield return CreateDeviceInformation(source);
 				}
 			}
-			for (int i = 0; i < MidiInfo.ExternalDeviceCount; i++)
+			else
 			{
-				var device = MidiInfo.GetExternalDevice(i);
-				foreach (var deviceInfo in ReadDeviceInformation(device))
+				for (int outputId = 0; outputId < MidiInfo.DestinationCount; outputId++)
 				{
-					yield return deviceInfo;
-				}
-			}
-		}
-
-		private IEnumerable<DeviceInformation> ReadDeviceInformation(MidiDevice device)
-		{
-			for (int i = 0; i < device.EntityCount; i++)
-			{
-				var entity = device.GetEntity(i);
-				if (_isInput)
-				{
-					for (int inputId = 0; inputId < entity.Sources; inputId++)
-					{
-						var source = entity.GetSource(inputId);
-						yield return CreateDeviceInformation(device, source);
-					}
-				}
-				else
-				{
-					for (int outputId = 0; outputId < entity.Destinations; outputId++)
-					{
-						var source = entity.GetDestination(outputId);
-						yield return CreateDeviceInformation(device, source);
-					}
+					var destination = MidiEndpoint.GetDestination(outputId);
+					yield return CreateDeviceInformation(destination);
 				}
 			}
 		}
