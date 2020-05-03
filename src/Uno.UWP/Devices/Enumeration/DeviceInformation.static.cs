@@ -9,7 +9,7 @@ namespace Windows.Devices.Enumeration
 {
 	public partial class DeviceInformation
 	{
-#if !__ANDROID__ && !__WASM__
+#if !__ANDROID__ && !__WASM__ && !__IOS__ && !__MACOS__
 		private static readonly Dictionary<string, Func<IDeviceClassProvider>> _deviceClassProviders = new Dictionary<string, Func<IDeviceClassProvider>>();
 #endif
 

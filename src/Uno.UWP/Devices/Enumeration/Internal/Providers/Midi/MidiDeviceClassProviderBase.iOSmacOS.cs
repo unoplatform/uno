@@ -38,8 +38,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			{
 				WatchAdded?.Invoke(this, device);
 			}
-			OnEnumerationCompleted(devices.LastOrDefault());
-
+			OnEnumerationCompleted(devices.LastOrDefault());			
 			_client.ObjectAdded += ClientChanged;
 			_client.ObjectRemoved += ClientChanged;
 		}
@@ -81,27 +80,27 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		//	}
 		//}
 
-		private void OnDeviceAdded(MidiDeviceInfo deviceInfo)
+		//private void OnDeviceAdded(MidiDeviceInfo deviceInfo)
+		//{
+		//	//foreach (var port in deviceInfo.GetPorts().Where(p => p.Type == _portType))
+		//	//{
+		//	//	WatchAdded?.Invoke(this, CreateDeviceInformation(deviceInfo, port));
+		//	//}
+		//}
+
+		private void OnDeviceRemoved()//MidiDeviceInfo deviceInfo)
 		{
 			//foreach (var port in deviceInfo.GetPorts().Where(p => p.Type == _portType))
 			//{
-			//	WatchAdded?.Invoke(this, CreateDeviceInformation(deviceInfo, port));
+			WatchRemoved?.Invoke(this, null);
 			//}
 		}
 
-		private void OnDeviceRemoved(MidiDeviceInfo deviceInfo)
-		{
-			//foreach (var port in deviceInfo.GetPorts().Where(p => p.Type == _portType))
-			//{
-			//	WatchRemoved?.Invoke(this, CreateDeviceInformationUpdate(deviceInfo, port));
-			//}
-		}
-
-		private void OnDeviceUpdated(MidiDeviceStatus status)
+		private void OnDeviceUpdated()//MidiDeviceStatus status)
 		{
 			//foreach (var port in status.DeviceInfo.GetPorts().Where(p => p.Type == _portType))
 			//{
-			//	WatchUpdated?.Invoke(this, CreateDeviceInformationUpdate(status.DeviceInfo, port));
+			WatchUpdated?.Invoke(this, null);
 			//}
 		}
 
@@ -110,28 +109,34 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			WatchEnumerationCompleted?.Invoke(this, lastDeviceInformation);
 		}
 
-		private bool DeviceMatchesType(MidiDevice info) =>
-			_isInput ?
-				info.InputPortCount > 0 : info.OutputPortCount > 0;
-
-		private DeviceInformation CreateDeviceInformation(MidiDevice device)
+		private DeviceInformation CreateDeviceInformation(MidiDevice device, MidiEndpoint endpoint)
 		{
-			
+			var deviceInformation = new DeviceInformation(
+				_isInput ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut,
+				GetMidiDeviceId(device, endpoint))
+			{
+				Name = device.DisplayName
+			};
+			return deviceInformation;
 		}
 
+		private static (int id, string endpointName) ParseMidiDeviceId(string id)
+		{
+			var splitIndex = id.IndexOf('_');
+			if (splitIndex <= 0)
+			{
+				throw new InvalidOperationException("Invalid device ID");
+			}
+			var nativeDeviceId = id.Substring(0, splitIndex);
+			var intId = int.Parse(nativeDeviceId);
+			var endpointName = id.Substring(splitIndex + 1);
+			return (intId, endpointName);
+		}
 
-		//private static (int id, int portNumber) ParseMidiDeviceId(string id)
-		//{
-		//	var parts = id.Split("_");
-		//	var intId = int.Parse(parts[0]);
-		//	var portNumber = int.Parse(parts[1]);
-		//	return (intId, portNumber);
-		//}
-
-		//private static string GetMidiDeviceId(MidiDeviceInfo deviceInfo, MidiDeviceInfo.PortInfo portInfo)
-		//{
-		//	return $"{deviceInfo.Id.ToString()}_{portInfo.PortNumber}";
-		//}
+		private static string GetMidiDeviceId(MidiDevice device, MidiEndpoint endpoint)
+		{			
+			return $"{device.ConnectionUniqueIDInt}_{endpoint.ConnectionUniqueIDInt}";
+		}
 
 		private IEnumerable<DeviceInformation> GetMidiDevices()
 		{
@@ -155,7 +160,6 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 
 		private IEnumerable<DeviceInformation> ReadDeviceInformation(MidiDevice device)
 		{
-			var name = "";
 			for (int i = 0; i < device.EntityCount; i++)
 			{
 				var entity = device.GetEntity(i);
@@ -164,19 +168,17 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 					for (int inputId = 0; inputId < entity.Sources; inputId++)
 					{
 						var source = entity.GetSource(inputId);
-
-						source
+						yield return CreateDeviceInformation(device, source);
 					}
 				}
 				else
 				{
-					for (int inputId = 0; inputId < entity.Destinations; inputId++)
+					for (int outputId = 0; outputId < entity.Destinations; outputId++)
 					{
-						var source = entity.GetSource(inputId);
-
-						source
+						var source = entity.GetDestination(outputId);
+						yield return CreateDeviceInformation(device, source);
 					}
-				}				
+				}
 			}
 		}
 
