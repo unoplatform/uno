@@ -924,7 +924,6 @@ namespace <#= mixin.NamespaceName #>
 			if (e.NewValue != null)
 			{
 				WantsLayer = true;
-				var brush = e.NewValue as SolidColorBrush;
 
 				if(e.NewValue is SolidColorBrush scb)
 				{
