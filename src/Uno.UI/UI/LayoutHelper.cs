@@ -261,6 +261,16 @@ namespace Uno.UI
 			);
 		}
 
+#if NETSTANDARD2_0
+		[Pure]
+		internal static bool IsFinite(this double value)
+			=> !IsInfinity(value) && !IsNaN(value);
+
+		[Pure]
+		internal static bool IsFinite(this float value)
+			=> !float.IsInfinity(value) && !float.IsNaN(value);
+#endif
+
 		[Pure]
 		internal static double FiniteOrDefault(this double value, double defaultValue)
 		{

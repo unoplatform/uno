@@ -4,7 +4,6 @@
 using System;
 using Windows.Foundation;
 using Windows.UI.Xaml.Markup;
-using Android.OS;
 using Uno.Extensions;
 
 namespace Microsoft.UI.Xaml.Controls

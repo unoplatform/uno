@@ -7,7 +7,11 @@ namespace Microsoft.UI.Xaml.Controls
 	partial class StackLayout : OrientationBasedMeasures
 	{
 		private ScrollOrientation ScrollOrientation { get; set; }
-		ScrollOrientation OrientationBasedMeasures.ScrollOrientation => ScrollOrientation;
+		ScrollOrientation OrientationBasedMeasures.ScrollOrientation
+		{
+			get => ScrollOrientation;
+			set => ScrollOrientation = value;
+		}
 
 		private protected double Major(Size size) => ((OrientationBasedMeasures)this).Major(size);
 		private protected double Minor(Size size) => ((OrientationBasedMeasures)this).Minor(size);

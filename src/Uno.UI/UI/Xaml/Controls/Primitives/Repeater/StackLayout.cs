@@ -7,6 +7,11 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using static Microsoft.UI.Xaml.Controls._Tracing;
+#if NETSTANDARD2_0
+using _Double = Uno.UI.LayoutHelper;
+#else
+using _Double = System.Double;
+#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -222,7 +227,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			var measureSizeMinor = Minor(measureSize);
 			return MinorMajorSize(
-				(float) (double.IsFinite(measureSizeMinor) ? Math.Max(measureSizeMinor, Minor(desiredSize)) : Minor(desiredSize)),
+				(float) (_Double.IsFinite(measureSizeMinor) ? Math.Max(measureSizeMinor, Minor(desiredSize)) : Minor(desiredSize)),
 				(float) Major(desiredSize));
 		}
 

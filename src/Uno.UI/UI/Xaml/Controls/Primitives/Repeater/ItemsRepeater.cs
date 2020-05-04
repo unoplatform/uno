@@ -21,9 +21,9 @@ namespace Microsoft.UI.Xaml.Controls
 {
 	public partial class ItemsRepeater : FrameworkElement, IPanel
 	{
-		private readonly UIElementCollection _children;
-		UIElementCollection IPanel.Children => _children;
-		internal IList<UIElement> Children => _children.AsUIElementList();
+		private readonly UIElementCollection _repeaterChildren;
+		UIElementCollection IPanel.Children => _repeaterChildren;
+		internal IList<UIElement> Children => _repeaterChildren.AsUIElementList();
 
 
 		// Change to 'true' to turn on debugging outputs in Output window
@@ -92,7 +92,7 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			//__RP_Marker_ClassById(RuntimeProfiler.ProfId_ItemsRepeater);
 
-			_children = new UIElementCollection(this);
+			_repeaterChildren = new UIElementCollection(this);
 			m_animationManager = new AnimationManager(this);
 			m_viewManager = new ViewManager(this);
 			//if (SharedHelpers.IsRS5OrHigher())

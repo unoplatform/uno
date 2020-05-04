@@ -6,6 +6,11 @@ using System.Collections.Specialized;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using static Microsoft.UI.Xaml.Controls._Tracing;
+#if NETSTANDARD2_0
+using _Double = Uno.UI.LayoutHelper;
+#else
+using _Double = System.Double;
+#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -386,7 +391,7 @@ namespace Microsoft.UI.Xaml.Controls
 						{
 							// Does not fit, wrap to the previous row
 							var availableSizeMinor = Minor(availableSize);
-							SetMinorStart(ref currentBounds, double.IsFinite(availableSizeMinor) ? availableSizeMinor - Minor(desiredSize) : 0.0f);
+							SetMinorStart(ref currentBounds, _Double.IsFinite(availableSizeMinor) ? availableSizeMinor - Minor(desiredSize) : 0.0f);
 							SetMajorStart(ref currentBounds, lineOffset - Major(desiredSize) - (float)(lineSpacing));
 
 							if (lineNeedsReposition)

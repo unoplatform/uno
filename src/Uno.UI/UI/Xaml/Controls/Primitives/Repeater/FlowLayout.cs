@@ -7,6 +7,11 @@ using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using static Microsoft.UI.Xaml.Controls._Tracing;
+#if NETSTANDARD2_0
+using _Float = Uno.UI.LayoutHelper;
+#else
+using _Float = System.Single;
+#endif
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -45,7 +50,7 @@ namespace Microsoft.UI.Xaml.Controls
 			LayoutId = "FlowLayout";
 		}
 
-		#region IVirtualizingLayoutOverrides
+#region IVirtualizingLayoutOverrides
 		protected internal override void InitializeForContextCore(VirtualizingLayoutContext context)
 		{
 			var state = context.LayoutState;
@@ -110,9 +115,9 @@ namespace Microsoft.UI.Xaml.Controls
 			InvalidateLayout();
 		}
 
-		#endregion
+#endregion
 
-		#region IFlowLayoutOverrides
+#region IFlowLayoutOverrides
 
 		protected virtual Size GetMeasureSize(int index, Size availableSize)
 		{
@@ -222,7 +227,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// If the available size is infinite, we will have realized all the items in one line.
 					// In that case, the extent in the non virtualizing direction should be based on the
 					// right/bottom of the last realized element.
-					SetMinorSize(ref extent, double.IsFinite(availableSizeMinor) ? availableSizeMinor : Math.Max(0.0f, MinorEnd(lastRealizedLayoutBounds)));
+					SetMinorSize(ref extent, _Float.IsFinite(availableSizeMinor) ? availableSizeMinor : Math.Max(0.0f, MinorEnd(lastRealizedLayoutBounds)));
 				}
 				else
 				{
@@ -231,7 +236,7 @@ namespace Microsoft.UI.Xaml.Controls
 					// We dont have anything realized. make an educated guess.
 					int numLines = (int)Math.Ceiling(itemsCount / averageItemsPerLine);
 					extent =
-						float.IsFinite(availableSizeMinor)
+						_Float.IsFinite(availableSizeMinor)
 							? MinorMajorRect(0, 0, availableSizeMinor, Math.Max(0.0f, (float)(numLines * averageLineSize - lineSpacing)))
 							: MinorMajorRect(
 								0,
@@ -282,9 +287,9 @@ namespace Microsoft.UI.Xaml.Controls
 			flowState.OnLineArranged(startIndex, countInLine, lineSize, context);
 		}
 
-		#endregion
+#endregion
 
-		#region IFlowLayoutAlgorithmDelegates
+#region IFlowLayoutAlgorithmDelegates
 
 		Size IFlowLayoutAlgorithmDelegates.Algorithm_GetMeasureSize(int index, Size availableSize, VirtualizingLayoutContext context)
 		{
@@ -370,7 +375,7 @@ namespace Microsoft.UI.Xaml.Controls
 				context);
 		}
 
-		#endregion
+#endregion
 
 		void OnPropertyChanged(DependencyPropertyChangedEventArgs args)
 		{
@@ -400,7 +405,7 @@ namespace Microsoft.UI.Xaml.Controls
 			InvalidateLayout();
 		}
 
-		#region private helpers
+#region private helpers
 
 		double GetAverageLineInfo(
 
@@ -431,6 +436,6 @@ namespace Microsoft.UI.Xaml.Controls
 			return avgLineSize;
 		}
 
-		#endregion
+#endregion
 	}
 }

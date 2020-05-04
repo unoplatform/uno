@@ -1,7 +1,6 @@
 // Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 using Windows.Foundation;
-using Android.Bluetooth;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -10,20 +9,23 @@ namespace Microsoft.UI.Xaml.Controls
 	//		 but it's actually **NOT** an interface!
 	internal interface OrientationBasedMeasures
 	{
-		private protected ScrollOrientation ScrollOrientation { get; } // = ScrollOrientation.Vertical; we cannot init properties of interfaces, however Vertical is already the default value!
+		ScrollOrientation ScrollOrientation { get; set; } // = ScrollOrientation.Vertical; we cannot init properties of interfaces, however Vertical is already the default value!
+	}
 
-		double Major(Size size)
-			=> ScrollOrientation == ScrollOrientation.Vertical ? size.Height : size.Width;
+	internal static class OrientationBasedMeasuresExtensions
+	{
+		public static double Major(this OrientationBasedMeasures obm, Size size)
+			=> obm.ScrollOrientation == ScrollOrientation.Vertical ? size.Height : size.Width;
 
-		double Minor(Size size)
-			=> ScrollOrientation == ScrollOrientation.Vertical ? size.Width : size.Height;
+		public static double Minor(this OrientationBasedMeasures obm, Size size)
+			=> obm.ScrollOrientation == ScrollOrientation.Vertical ? size.Width : size.Height;
 
-		double MajorSize(Rect rect)
-			=> ScrollOrientation == ScrollOrientation.Vertical ? rect.Height : rect.Width;
+		public static double MajorSize(this OrientationBasedMeasures obm, Rect rect)
+			=> obm.ScrollOrientation == ScrollOrientation.Vertical ? rect.Height : rect.Width;
 
-		public void SetMajorSize(ref Rect rect, double value)
+		public static void SetMajorSize(this OrientationBasedMeasures obm, ref Rect rect, double value)
 		{
-			if (ScrollOrientation == ScrollOrientation.Vertical)
+			if (obm.ScrollOrientation == ScrollOrientation.Vertical)
 			{
 				rect.Height = value;
 			}
@@ -33,12 +35,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		double MinorSize(Rect rect)
-			=> ScrollOrientation == ScrollOrientation.Vertical ? rect.Width : rect.Height;
+		public static double MinorSize(this OrientationBasedMeasures obm, Rect rect)
+			=> obm.ScrollOrientation == ScrollOrientation.Vertical ? rect.Width : rect.Height;
 
-		public void SetMinorSize(ref Rect rect, double value)
+		public static void SetMinorSize(this OrientationBasedMeasures obm, ref Rect rect, double value)
 		{
-			if (ScrollOrientation == ScrollOrientation.Vertical)
+			if (obm.ScrollOrientation == ScrollOrientation.Vertical)
 			{
 				rect.Width = value;
 			}
@@ -48,12 +50,12 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public double MajorStart(Rect rect)
-			=> ScrollOrientation == ScrollOrientation.Vertical ? rect.Y : rect.X;
+		public static double MajorStart(this OrientationBasedMeasures obm, Rect rect)
+			=> obm.ScrollOrientation == ScrollOrientation.Vertical ? rect.Y : rect.X;
 
-		public void SetMajorStart(ref Rect rect, double value)
+		public static void SetMajorStart(this OrientationBasedMeasures obm, ref Rect rect, double value)
 		{
-			if (ScrollOrientation == ScrollOrientation.Vertical)
+			if (obm.ScrollOrientation == ScrollOrientation.Vertical)
 			{
 				rect.Y = value;
 			}
@@ -61,17 +63,17 @@ namespace Microsoft.UI.Xaml.Controls
 			{
 				rect.X = value;
 			}
-		} 
+		}
 
-		public double MajorEnd(Rect rect)
-			=> ScrollOrientation == ScrollOrientation.Vertical ? rect.Y + rect.Height : rect.X + rect.Width;
+		public static double MajorEnd(this OrientationBasedMeasures obm, Rect rect)
+			=> obm.ScrollOrientation == ScrollOrientation.Vertical ? rect.Y + rect.Height : rect.X + rect.Width;
 
-		double MinorStart(Rect rect)
-			=> ScrollOrientation == ScrollOrientation.Vertical ? rect.X : rect.Y;
+		public static double MinorStart(this OrientationBasedMeasures obm, Rect rect)
+			=> obm.ScrollOrientation == ScrollOrientation.Vertical ? rect.X : rect.Y;
 
-		public void SetMinorStart(ref Rect rect, double value)
+		public static void SetMinorStart(this OrientationBasedMeasures obm, ref Rect rect, double value)
 		{
-			if (ScrollOrientation == ScrollOrientation.Vertical)
+			if (obm.ScrollOrientation == ScrollOrientation.Vertical)
 			{
 				rect.X = value;
 			}
@@ -81,9 +83,9 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		public void AddMinorStart(ref Rect rect, double increment)
+		public static void AddMinorStart(this OrientationBasedMeasures obm, ref Rect rect, double increment)
 		{
-			if (ScrollOrientation == ScrollOrientation.Vertical)
+			if (obm.ScrollOrientation == ScrollOrientation.Vertical)
 			{
 				rect.X += increment;
 			}
@@ -93,18 +95,18 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-		double MinorEnd(Rect rect)
-			=> ScrollOrientation == ScrollOrientation.Vertical ? rect.X + rect.Width : rect.Y + rect.Height;
+		public static double MinorEnd(this OrientationBasedMeasures obm, Rect rect)
+			=> obm.ScrollOrientation == ScrollOrientation.Vertical ? rect.X + rect.Width : rect.Y + rect.Height;
 
-		Rect MinorMajorRect(float minor, float major, float minorSize, float majorSize)
-			=> ScrollOrientation == ScrollOrientation.Vertical
+		public static Rect MinorMajorRect(this OrientationBasedMeasures obm, float minor, float major, float minorSize, float majorSize)
+			=> obm.ScrollOrientation == ScrollOrientation.Vertical
 				? new Rect(minor, major, minorSize, majorSize)
 				: new Rect(major, minor, majorSize, minorSize);
 
-		Point MinorMajorPoint(float minor, float major)
-			=> ScrollOrientation == ScrollOrientation.Vertical ? new Point(minor, major) : new Point(major, minor);
+		public static Point MinorMajorPoint(this OrientationBasedMeasures obm, float minor, float major)
+			=> obm.ScrollOrientation == ScrollOrientation.Vertical ? new Point(minor, major) : new Point(major, minor);
 
-		Size MinorMajorSize(float minor, float major)
-			=> ScrollOrientation == ScrollOrientation.Vertical ? new Size(minor, major) : new Size(major, minor);
+		public static Size MinorMajorSize(this OrientationBasedMeasures obm, float minor, float major)
+			=> obm.ScrollOrientation == ScrollOrientation.Vertical ? new Size(minor, major) : new Size(major, minor);
 	}
 }
