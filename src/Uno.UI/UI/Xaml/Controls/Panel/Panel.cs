@@ -35,8 +35,6 @@ namespace Windows.UI.Xaml.Controls
 		partial void Initialize()
 		{
 			_children = new UIElementCollection(this);
-
-			IFrameworkElementHelper.Initialize(this);
 		}
 
 		private void OnChildrenCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
