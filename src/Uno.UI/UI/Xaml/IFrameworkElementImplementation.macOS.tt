@@ -949,7 +949,10 @@ namespace <#= mixin.NamespaceName #>
 					}
 					else
 					{
-						this.Log().Warn("Brush is not a SolidColorBrush, ignoring");
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+						{
+							this.Log().Warn("Brush is not a SolidColorBrush, ignoring");
+						}
 						Layer.BackgroundColor = SolidColorBrushHelper.Transparent.Color;
 					}
 				}
