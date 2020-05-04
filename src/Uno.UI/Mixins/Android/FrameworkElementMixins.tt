@@ -1,16 +1,56 @@
-﻿<#@template language="C#"#>
+﻿<#@template language="C#" hostspecific="True" #>
 <#@output extension="g.cs" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.IO" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Text.RegularExpressions" #>
+
+<#
+	var partialsIncludes = new string[]
+	{
+		Host.ResolvePath(@"..\..\UI\Xaml\FrameworkElement.EffectiveViewport.cs"),
+	};
+
+	var types = new string[]
+	{
+		"Windows.UI.Xaml.Controls.Image",
+		"Windows.UI.Xaml.Controls.NativeListViewBase",
+		"Windows.UI.Xaml.Controls.NativePagedView",
+		"Windows.UI.Xaml.Controls.ProgressRing",
+		"Windows.UI.Xaml.Controls.ScrollContentPresenter",
+		"Windows.UI.Xaml.Controls.TextBoxView",
+	};
+
+	foreach(var include in partialsIncludes)
+	foreach(var type in types)
+	{
+		var typeParts = type.Split('.');
+		var spaceName = string.Join(".", typeParts.Take(typeParts.Length - 1));
+		var className = typeParts.Last();
+
+		var partialContent = System.IO.File.ReadAllText(include);
+		partialContent = "#define TEMPLATED\r\n" + partialContent;
+		partialContent = Regex.Replace(partialContent, @"^using _This\s*=.*$", $"using _This = {type};", RegexOptions.Multiline);
+		partialContent = Regex.Replace(partialContent, @"^namespace [a-zA-Z0-9_\.\s]+$", $"namespace {spaceName}", RegexOptions.Multiline);
+		partialContent = Regex.Replace(partialContent, @"partial class [a-zA-Z0-9_]+", $"partial class {className}", RegexOptions.Multiline);
+
+		var targetFile = Path.Combine(Path.GetDirectoryName(Host.TemplateFile), $"{className}.{Path.GetFileName(include)}");
+		File.WriteAllText(targetFile, partialContent);
+	}
+#>
+
 #if XAMARIN_ANDROID
-<# 
-	AddClass("Uno.UI.Controls.Legacy", "GridView");
+<#
 	AddClass("Windows.UI.Xaml", "FrameworkElement", overridesAttachedToWindow:true, overridesOnLayout: false, isUnoMotionTarget: true, hasLayouter: true);
+	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase", isUnoMotionTarget: true);
+	AddClass("Windows.UI.Xaml.Controls", "NativePagedView", hasLayouter: true);
+	AddClass("Windows.UI.Xaml.Controls", "NativeScrollContentPresenter", callsBaseOnLayout: false, hasLayouter: true);
+	AddClass("Windows.UI.Xaml.Controls", "TextBoxView", hasNewMinWidthHeight: true, hasNewMaxWidthHeight: true);
+	AddClass("Uno.UI.Controls.Legacy", "GridView");
 	AddClass("Uno.UI.Controls.Legacy", "ListView");
 	AddClass("Uno.UI.Controls.Legacy", "HorizontalGridView");
 	AddClass("Uno.UI.Controls.Legacy", "HorizontalListView");
-	AddClass("Windows.UI.Xaml.Controls", "NativeScrollContentPresenter", callsBaseOnLayout: false, hasLayouter: true);
-	AddClass("Windows.UI.Xaml.Controls", "NativePagedView", hasLayouter: true);
-	AddClass("Windows.UI.Xaml.Controls", "TextBoxView", hasNewMinWidthHeight: true, hasNewMaxWidthHeight: true);
-	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase", isUnoMotionTarget: true);
 #> 
 <#@include file="..\..\UI\Xaml\IFrameworkElementImplementation.Android.tt"#>
 #endif
