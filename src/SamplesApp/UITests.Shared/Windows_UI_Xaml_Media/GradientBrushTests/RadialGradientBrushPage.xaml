@@ -10,8 +10,8 @@
 	xmlns:not_win="http:/uno.ui/not_win"
 	mc:Ignorable="d not_win">
 
-	<not_win:Grid x:Name="RootGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12">
-		<not_win:Grid.Resources>
+	<Grid x:Name="RootGrid" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" Margin="12">
+		<Grid.Resources>
 			<!--<Style TargetType="Border">
 				<Setter Property="BorderThickness" Value="1" />
 				<Setter Property="BorderBrush" Value="Black" />
@@ -19,7 +19,7 @@
 			<Style TargetType="StackPanel">
 				<Setter Property="HorizontalAlignment" Value="Left" />
 			</Style>-->
-		</not_win:Grid.Resources>
+		</Grid.Resources>
 		<ScrollViewer HorizontalScrollMode="Auto" VerticalScrollMode="Auto" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Auto">
 			<StackPanel>
 				<Border>
@@ -233,5 +233,5 @@
 				</Border>
 			</StackPanel>
 		</ScrollViewer>
-	</not_win:Grid>
+	</Grid>
 </Page>

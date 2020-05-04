@@ -820,16 +820,38 @@
 					reason="macOS only breaking change" />
 
 				<Member
-					fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Media.GradientBrush.get_GradientStopsProperty()"
-					reason="GradientStops moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
-				<Member
 					fullName="Windows.UI.Xaml.Media.GradientStopCollection Windows.UI.Xaml.Media.LinearGradientBrush.get_GradientStops()"
-					reason="GradientStops moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
+					reason="GradientStops/MappingMode moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
 				<Member
 					fullName="System.Void Windows.UI.Xaml.Media.LinearGradientBrush.set_GradientStops(Windows.UI.Xaml.Media.GradientStopCollection value)"
-					reason="GradientStops moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
+					reason="GradientStops/MappingMode moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
+				<Member
+					fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Media.GradientBrush.get_GradientStopsProperty()"
+					reason="GradientStops/MappingMode moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
+				<Member
+					fullName="Windows.UI.Xaml.Media.GradientBrush.get_MappingModeProperty()"
+					reason="GradientStops/MappingMode moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
+				<Member
+					fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Media.GradientBrush.get_MappingModeProperty()"
+					reason="GradientStops/MappingMode moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
 			</Methods>
+			<Events>
+			</Events>
+			<Fields>
+				<Member
+					fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Media.LinearGradientBrush::GradientStopsProperty"
+					reason="GradientStops/MappingMode moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
+			</Fields>
 			<Properties>
+				<Member
+					fullName="Windows.UI.Xaml.Media.GradientStopCollection Windows.UI.Xaml.Media.LinearGradientBrush::GradientStops()"
+					reason="GradientStops/MappingMode moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
+				<Member
+					fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Media.GradientBrush::GradientStopsProperty()"
+					reason="GradientStops/MappingMode moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
+				<Member
+					fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Media.GradientBrush::MappingModeProperty()"
+					reason="GradientStops/MappingMode moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
 			</Properties>
 		</IgnoreSet>
 	</IgnoreSets>

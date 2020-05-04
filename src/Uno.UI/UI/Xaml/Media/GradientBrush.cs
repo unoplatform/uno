@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Media
 			set => SetValue(GradientStopsProperty, value);
 		}
 
-		public static DependencyProperty MappingModeProperty { get; } =
+		public static readonly DependencyProperty MappingModeProperty =
 			DependencyProperty.Register(
 				"MappingMode",
 				typeof(BrushMappingMode),
@@ -40,14 +40,8 @@ namespace Windows.UI.Xaml.Media
 
 		public BrushMappingMode MappingMode
 		{
-			get
-			{
-				return (BrushMappingMode)GetValue(MappingModeProperty);
-			}
-			set
-			{
-				SetValue(MappingModeProperty, value);
-			}
+			get => (BrushMappingMode)GetValue(MappingModeProperty);
+			set => SetValue(MappingModeProperty, value);
 		}
 
 		internal Color FallbackColorWithOpacity => GetColorWithOpacity(FallbackColor);
