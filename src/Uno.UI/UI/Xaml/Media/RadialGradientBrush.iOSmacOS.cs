@@ -55,7 +55,7 @@ namespace Microsoft.UI.Xaml.Media
 				if (_isRelative)
 				{
 					center = new Point(_center.X * size.Width, _center.Y * size.Height);
-					radius = (nfloat)(_radius * size.Width + _radius * size.Height) / 4.0f; // We take the avg
+					radius = (nfloat)(_radius * size.Width + _radius * size.Height) / 2.0f; // We take the avg
 				}
 				else
 				{

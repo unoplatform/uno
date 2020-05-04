@@ -23,7 +23,7 @@ namespace Microsoft.UI.Xaml.Media
 				var size = destinationRect.Size;
 
 				center = new Point(center.X * size.Width, Center.Y * size.Height);
-				radius = (float)(radiusX * size.Width + radiusY * size.Height) / 4.0f; // We take the avg
+				radius = (float)(radiusX * size.Width + radiusY * size.Height) / 2.0f; // We take the avg
 			}
 			else
 			{

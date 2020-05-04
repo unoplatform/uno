@@ -11,11 +11,24 @@
 
 	<ScrollViewer>
 		<StackPanel Spacing="10">
-			<TextBlock FontSize="15">Radial Gradient as background on a Rectangle / Border / Ellipse</TextBlock>
+			<TextBlock FontSize="15">Radial Gradient as background on a Rectangle / Rectangle / Border / Ellipse / Ellipse</TextBlock>
 			<StackPanel Orientation="Horizontal" Spacing="10">
 				<Rectangle Width="100" Height="100">
 					<Rectangle.Fill>
 						<media:RadialGradientBrush FallbackColor="Red">
+							<GradientStop Color="Blue" Offset="0.0" />
+							<GradientStop Color="Yellow" Offset="0.2" />
+							<GradientStop Color="LimeGreen" Offset="0.4" />
+							<GradientStop Color="LightBlue" Offset="0.6" />
+							<GradientStop Color="Blue" Offset="0.8" />
+							<GradientStop Color="LightGray" Offset="1" />
+						</media:RadialGradientBrush>
+					</Rectangle.Fill>
+				</Rectangle>
+
+				<Rectangle Width="100" Height="100">
+					<Rectangle.Fill>
+						<media:RadialGradientBrush FallbackColor="Red" RadiusX="0.5" RadiusY="0.5">
 							<GradientStop Color="Blue" Offset="0.0" />
 							<GradientStop Color="Yellow" Offset="0.2" />
 							<GradientStop Color="LimeGreen" Offset="0.4" />

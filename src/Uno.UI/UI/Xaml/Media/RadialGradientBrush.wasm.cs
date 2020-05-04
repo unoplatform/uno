@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using Windows.Foundation;
+using Windows.Foundation.Metadata;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Wasm;
@@ -27,7 +28,7 @@ namespace Microsoft.UI.Xaml.Media
 				",",
 				GradientStops.Select(p => $"{GetColorWithOpacity(p.Color).ToHexString()} {(p.Offset * 100).ToStringInvariant()}%"));
 
-			return $"radial-gradient(ellipse farthest-side at {radiusX * 50d}% {radiusY * 50d}%, {stops})";
+			return $"radial-gradient(ellipse farthest-side at {radiusX * 100d}% {radiusY * 100d}%, {stops})";
 		}
 
 		internal override UIElement ToSvgElement()
@@ -45,7 +46,7 @@ namespace Microsoft.UI.Xaml.Media
 			var linearGradient = new SvgElement("radialGradient");
 
 			// TODO: support ellipse shaped radial on SVG using a gradientTransform.
-			var radius = (radiusX + radiusY) / 4;
+			var radius = (radiusX + radiusY) / 2d;
 
 			linearGradient.SetAttribute(
 				("cx", center.X.ToStringInvariant()),

@@ -3,6 +3,7 @@ using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Markup;
 using Windows.UI.Xaml.Media;
+using Uno;
 
 namespace Microsoft.UI.Xaml.Media
 {
@@ -18,7 +19,7 @@ namespace Microsoft.UI.Xaml.Media
 		}
 
 		public static readonly DependencyProperty RadiusXProperty = DependencyProperty.Register(
-			"RadiusX", typeof(double), typeof(RadialGradientBrush), new PropertyMetadata(1.0d));
+			"RadiusX", typeof(double), typeof(RadialGradientBrush), new PropertyMetadata(0.5d));
 
 		public double RadiusX
 		{
@@ -27,7 +28,7 @@ namespace Microsoft.UI.Xaml.Media
 		}
 
 		public static readonly DependencyProperty RadiusYProperty = DependencyProperty.Register(
-			"RadiusY", typeof(double), typeof(RadialGradientBrush), new PropertyMetadata(1.0d));
+			"RadiusY", typeof(double), typeof(RadialGradientBrush), new PropertyMetadata(0.5d));
 
 		public double RadiusY
 		{
@@ -36,8 +37,9 @@ namespace Microsoft.UI.Xaml.Media
 		}
 
 		public static readonly DependencyProperty GradientOriginProperty = DependencyProperty.Register(
-			"GradientOrigin", typeof(Point), typeof(RadialGradientBrush), new PropertyMetadata(default(Point)));
+			"GradientOrigin", typeof(Point), typeof(RadialGradientBrush), new PropertyMetadata(new Point(0.5d, 0.5d)));
 
+		[NotImplemented]
 		public Point GradientOrigin
 		{
 			get => (Point)GetValue(GradientOriginProperty);
@@ -47,6 +49,7 @@ namespace Microsoft.UI.Xaml.Media
 		public static readonly DependencyProperty InterpolationSpaceProperty = DependencyProperty.Register(
 			"InterpolationSpace", typeof(CompositionColorSpace), typeof(RadialGradientBrush), new PropertyMetadata(default(CompositionColorSpace)));
 
+		[NotImplemented]
 		public CompositionColorSpace InterpolationSpace
 		{
 			get => (CompositionColorSpace)GetValue(InterpolationSpaceProperty);
