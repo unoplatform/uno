@@ -34,9 +34,9 @@
 			<Pack>true</Pack>
 			<PackagePath>content/xamarinforms-wasm</PackagePath>
 		</Content>
-		<Content Include="content/xamarinforms-wasm/UnoQuickStart.Wasm/**/*.*">
+		<Content Include="content/xamarinforms-wasm/UnoXFQuickStart.Wasm/**/*.*">
 			<Pack>true</Pack>
-			<PackagePath>content/xamarinforms-wasm/UnoQuickStart.Wasm</PackagePath>
+			<PackagePath>content/xamarinforms-wasm/UnoXFQuickStart.Wasm</PackagePath>
 		</Content>
 		<Content Include="content/xamarinforms-wasm/.template.config/*.*">
 			<Pack>true</Pack>
