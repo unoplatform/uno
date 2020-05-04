@@ -11,6 +11,7 @@
 	// AddClass("Windows.UI.Xaml.Controls", "ProgressRing", hasAttachedToWindow: false, overridesAttachedToWindow: true);
 	// AddClass("Uno.UI.Controls.Legacy", "ListViewBase", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false);
 	AddClass("Windows.UI.Xaml.Controls", "TextBoxView", hasAutomationPeer: false, hasAttachedToWindow: true, overridesAttachedToWindow: false);
+    AddClass("Windows.UI.Xaml.Controls", "SecureTextBoxView", hasAutomationPeer: false, hasAttachedToWindow: true, overridesAttachedToWindow: false);
 #>
 <#@include file="..\..\UI\Xaml\IFrameworkElementImplementation.macOS.tt"#>
 #endif

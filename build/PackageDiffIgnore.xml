@@ -814,6 +814,9 @@
 				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.IAnimatedVisualSource.Play(System.Boolean looped)"
 					reason="Refactoring, not part of WinUI contract anyway." />
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.TextBox..ctor(System.Boolean isPassword)"
+					reason="macOS only breaking change" />
 			</Methods>
 			<Properties>
 			</Properties>

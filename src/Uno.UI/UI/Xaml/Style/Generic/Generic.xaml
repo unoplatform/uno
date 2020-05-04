@@ -4803,6 +4803,9 @@
 				Value="Hidden" />
 		<Setter Property="Padding"
 				Value="{ThemeResource TextControlThemePadding}" />
+	<!-- macOS PasswordBox implemeentation will not display the RevealButton -->
+		<macos:Setter Property="IsPasswordRevealButtonEnabled" 
+					  Value="False" />
 		<Setter Property="Template">
 			<Setter.Value>
 				<ControlTemplate TargetType="PasswordBox">
