@@ -100,6 +100,7 @@ embed.uno-frameworkelement.uno-unarranged {
   -ms-user-select: none; /* Internet Explorer/Edge */
   user-select: none; /* Non-prefixed version, currently supported by Chrome and Opera */
 
+  /* Following are required for gradient brush as Foreground on text. Should not affect normal rendering. */
   -ms-background-clip: text !important;
   -webkit-background-clip: text !important;
   background-clip: text !important;
