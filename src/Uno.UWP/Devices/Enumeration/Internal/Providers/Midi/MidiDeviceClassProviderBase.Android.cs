@@ -20,13 +20,13 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 
 		public MidiDeviceClassProviderBase(MidiPortType portType) => _portType = portType;
 
-		public bool CanWatch => true;
-
 		public event EventHandler<DeviceInformation> WatchAdded;
 		public event EventHandler<DeviceInformation> WatchEnumerationCompleted;
 		public event EventHandler<DeviceInformationUpdate> WatchRemoved;
-		public event EventHandler<object> WatchStopped;
 		public event EventHandler<DeviceInformationUpdate> WatchUpdated;
+		public event EventHandler<object> WatchStopped;
+
+		public bool CanWatch => true;
 
 		public Task<DeviceInformation[]> FindAllAsync()
 		{
@@ -88,6 +88,60 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			}
 		}
 
+		private bool DeviceMatchesType(MidiDeviceInfo info) =>
+			_portType == MidiPortType.Input ?
+				info.InputPortCount > 0 : info.OutputPortCount > 0;
+
+		private static (int id, int portNumber) ParseMidiDeviceId(string id)
+		{
+			var parts = id.Split("_");
+			var intId = int.Parse(parts[0]);
+			var portNumber = int.Parse(parts[1]);
+			return (intId, portNumber);
+		}
+
+		private static string GetMidiDeviceId(MidiDeviceInfo deviceInfo, MidiDeviceInfo.PortInfo portInfo) =>
+			$"{deviceInfo.Id}_{portInfo.PortNumber}";
+
+		private IEnumerable<DeviceInformation> GetMidiDevices(MidiManager midiManager)
+		{
+			return midiManager
+				.GetDevices()
+				.Where(d => d.GetPorts().Any(p => p.Type == _portType))
+				.SelectMany(d => d.GetPorts().Select(p => (device: d, port: p)))
+				.Select(pair => CreateDeviceInformation(pair.device, pair.port));
+		}
+
+		private DeviceInformation CreateDeviceInformation(MidiDeviceInfo deviceInfo, MidiDeviceInfo.PortInfo portInfo)
+		{
+			var name = "";
+			if (deviceInfo.Properties.ContainsKey(MidiDeviceInfo.PropertyName))
+			{
+				name = deviceInfo.Properties.GetString(MidiDeviceInfo.PropertyName);
+			}
+
+			var deviceIdentifier = new DeviceIdentifier(
+				GetMidiDeviceId(deviceInfo, portInfo),
+				_portType == MidiPortType.Input ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut);
+			var deviceInformation = new DeviceInformation(deviceIdentifier)
+			{
+				Name = name
+			};
+			return deviceInformation;
+		}
+
+		private DeviceInformationUpdate CreateDeviceInformationUpdate(MidiDeviceInfo deviceInfo, MidiDeviceInfo.PortInfo portInfo)
+		{
+			var deviceIdentifier = new DeviceIdentifier(
+				GetMidiDeviceId(deviceInfo, portInfo),
+				_portType == MidiPortType.Input ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut);
+			var deviceInformation = new DeviceInformationUpdate(deviceIdentifier);
+			return deviceInformation;
+		}
+
+		private void OnEnumerationCompleted(DeviceInformation lastDeviceInformation) =>
+			WatchEnumerationCompleted?.Invoke(this, lastDeviceInformation);
+
 		private void OnDeviceAdded(MidiDeviceInfo deviceInfo)
 		{
 			foreach (var port in deviceInfo.GetPorts().Where(p => p.Type == _portType))
@@ -111,62 +165,6 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 				WatchUpdated?.Invoke(this, CreateDeviceInformationUpdate(status.DeviceInfo, port));
 			}
 		}
-
-		private void OnEnumerationCompleted(DeviceInformation lastDeviceInformation)
-		{
-			WatchEnumerationCompleted?.Invoke(this, lastDeviceInformation);
-		}
-
-		private bool DeviceMatchesType(MidiDeviceInfo info) =>
-			_portType == MidiPortType.Input ?
-				info.InputPortCount > 0 : info.OutputPortCount > 0;
-
-		private DeviceInformation CreateDeviceInformation(MidiDeviceInfo deviceInfo, MidiDeviceInfo.PortInfo portInfo)
-		{
-			var name = "";
-			if (deviceInfo.Properties.ContainsKey(MidiDeviceInfo.PropertyName))
-			{
-				name = deviceInfo.Properties.GetString(MidiDeviceInfo.PropertyName);
-			}
-
-			var deviceInformation = new DeviceInformation(
-				_portType == MidiPortType.Input ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut,
-				GetMidiDeviceId(deviceInfo, portInfo))
-			{
-				Name = name
-			};
-			return deviceInformation;
-		}
-
-		private DeviceInformationUpdate CreateDeviceInformationUpdate(MidiDeviceInfo deviceInfo, MidiDeviceInfo.PortInfo portInfo)
-		{
-			var deviceInformation = new DeviceInformationUpdate(
-				_portType == MidiPortType.Input ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut,
-				GetMidiDeviceId(deviceInfo, portInfo));
-			return deviceInformation;
-		}
-
-		private static (int id, int portNumber) ParseMidiDeviceId(string id)
-		{
-			var parts = id.Split("_");
-			var intId = int.Parse(parts[0]);
-			var portNumber = int.Parse(parts[1]);
-			return (intId, portNumber);
-		}
-
-		private static string GetMidiDeviceId(MidiDeviceInfo deviceInfo, MidiDeviceInfo.PortInfo portInfo)
-		{
-			return $"{deviceInfo.Id.ToString()}_{portInfo.PortNumber}";
-		}
-
-		private IEnumerable<DeviceInformation> GetMidiDevices(MidiManager midiManager)
-		{
-			return midiManager
-				.GetDevices()
-				.Where(d => d.GetPorts().Any(p => p.Type == _portType))
-				.SelectMany(d => d.GetPorts().Select(p => (device: d, port: p)))
-				.Select(pair => CreateDeviceInformation(pair.device, pair.port));
-		}		
 
 		private class DeviceCallback : MidiManager.DeviceCallback
 		{

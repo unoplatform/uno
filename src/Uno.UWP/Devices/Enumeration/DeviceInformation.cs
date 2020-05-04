@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
+using Uno.Devices.Enumeration.Internal;
 
 namespace Windows.Devices.Enumeration
 {
 	public partial class DeviceInformation
 	{
-		internal DeviceInformation(string deviceClassGuid, string id) => Id = FormatDeviceId(deviceClassGuid, id);
+		internal DeviceInformation(DeviceIdentifier deviceIdentifier) => Id = deviceIdentifier.ToString();
 
 		public string Id { get; }
 

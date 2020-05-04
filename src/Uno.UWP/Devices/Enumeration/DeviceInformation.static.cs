@@ -10,7 +10,7 @@ namespace Windows.Devices.Enumeration
 	public partial class DeviceInformation
 	{
 #if !__ANDROID__ && !__WASM__ && !__IOS__ && !__MACOS__
-		private static readonly Dictionary<string, Func<IDeviceClassProvider>> _deviceClassProviders = new Dictionary<string, Func<IDeviceClassProvider>>();
+		private static readonly Dictionary<Guid, Func<IDeviceClassProvider>> _deviceClassProviders = new Dictionary<Guid, Func<IDeviceClassProvider>>();
 #endif
 
 		public static DeviceWatcher CreateWatcher(string aqsFilter)
@@ -27,16 +27,7 @@ namespace Windows.Devices.Enumeration
 
 		public static IAsyncOperation<DeviceInformationCollection> FindAllAsync(string aqsFilter) =>
 			FindAllInternalAsync(aqsFilter).AsAsyncOperation();
-
-		internal static string FormatDeviceId(string deviceClassGuid, string id) => $"{Uri.EscapeDataString(id)}#{{{deviceClassGuid}}}";
-
-		internal static (string deviceClassGuid, string id) ParseDeviceId(string deviceId)
-		{
-			var parts = deviceId.Split(new[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
-			var id = Uri.UnescapeDataString(parts[0]);
-			var deviceClassGuid = parts[1].Trim(new[] { '{', '}' });
-			return (deviceClassGuid, id);
-		}
+			
 
 		private static async Task<DeviceInformationCollection> FindAllInternalAsync(string aqsFilter)
 		{
@@ -60,7 +51,7 @@ namespace Windows.Devices.Enumeration
 		{
 			foreach (var provider in _deviceClassProviders)
 			{
-				if (aqsFilter.IndexOf(provider.Key, StringComparison.InvariantCultureIgnoreCase) >= 0)
+				if (aqsFilter.IndexOf(provider.Key.ToString(), StringComparison.InvariantCultureIgnoreCase) >= 0)
 				{
 					yield return provider.Value();
 				}
