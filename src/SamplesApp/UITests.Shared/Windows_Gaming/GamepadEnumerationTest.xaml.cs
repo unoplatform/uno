@@ -29,7 +29,7 @@ namespace UITests.Windows_Gaming
 			this.DataContextChanged += GamepadEnumerationTest_DataContextChanged;
 		}
 
-		private void GamepadEnumerationTest_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+		private void GamepadEnumerationTest_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
 			Model = args.NewValue as GamepadEnumerationViewModel;
 		}
