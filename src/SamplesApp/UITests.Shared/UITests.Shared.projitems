@@ -8217,3 +8217,4 @@
   </ItemGroup>
   <Import Project="ItemExclusions.props" />
 </Project>
+</Project>
