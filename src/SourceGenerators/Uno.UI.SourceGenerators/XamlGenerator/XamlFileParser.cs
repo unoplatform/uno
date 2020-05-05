@@ -73,8 +73,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private XmlReader ApplyIgnorables(string file)
 		{
+			var adjusted = File.ReadAllText(file);
+
 			var document = new XmlDocument();
-			document.Load(file);
+			document.LoadXml(adjusted);
 
 			var ignorables = FindIgnorables(document);
 
@@ -95,13 +97,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				// change the namespaces using textreplace, to keep the formatting and have proper
 				// line/position reporting.
-				var adjusted = File
-					.ReadAllText(file, Encoding.UTF8)
-					.Replace(
-						"Ignorable=\"{0}\"".InvariantCultureFormat(originalIgnorables),
-						"Ignorable=\"{0}\"".InvariantCultureFormat(ignorables.Value)
-					)
-					.TrimEnd("\r\n");
+				adjusted = adjusted.Replace(
+					"Ignorable=\"{0}\"".InvariantCultureFormat(originalIgnorables),
+					"Ignorable=\"{0}\"".InvariantCultureFormat(ignorables.Value)
+				)
+				.TrimEnd("\r\n");
 
 				// Replace the ignored namespaces with unique urns so that same urn that are placed in Ignored attribute
 				// are ignored independently.
@@ -129,20 +129,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							);
 					}
 				}
-
-				if (adjusted.Contains("{x:Bind"))
-				{
-					// Apply replacements to avoid having issues with the XAML parser which does not
-					// support quotes in positional markup extensions parameters.
-					// Note that the UWP preprocessor does not need to apply those replacements as the
-					// x:Bind expressions are being removed during the first phase and replaced by "connections".
-					adjusted = XBindExpressionParser.RewriteDocumentPaths(adjusted);
-				}
-
-				return XmlReader.Create(new StringReader(adjusted));
 			}
 
-			return XmlReader.Create(file);
+			if (adjusted.Contains("{x:Bind", StringComparison.Ordinal))
+			{
+				// Apply replacements to avoid having issues with the XAML parser which does not
+				// support quotes in positional markup extensions parameters.
+				// Note that the UWP preprocessor does not need to apply those replacements as the
+				// x:Bind expressions are being removed during the first phase and replaced by "connections".
+				adjusted = XBindExpressionParser.RewriteDocumentPaths(adjusted);
+			}
+
+			return XmlReader.Create(new StringReader(adjusted));
 		}
 
 		private XmlNode FindIgnorables(XmlDocument document)
