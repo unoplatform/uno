@@ -81,34 +81,51 @@
         element.style.transformStyle = element.style.webkitTransformStyle = element.style.mozTransformStyle = "preserve-3d";
     }
 
-    function BMEnterFrameEvent(n, c, t, d) {
-        this.type = n;
-        this.currentTime = c;
-        this.totalTime = t;
-        this.direction = d < 0 ? -1 : 1;
+    function BMEnterFrameEvent(type, currentTime, totalTime, frameMultiplier) {
+        this.type = type;
+        this.currentTime = currentTime;
+        this.totalTime = totalTime;
+        this.direction = frameMultiplier < 0 ? -1 : 1;
     }
 
-    function BMCompleteEvent(n, d) {
-        this.type = n;
-        this.direction = d < 0 ? -1 : 1;
+    function BMCompleteEvent(type, frameMultiplier) {
+        this.type = type;
+        this.direction = frameMultiplier < 0 ? -1 : 1;
     }
 
-    function BMCompleteLoopEvent(n, c, t, d) {
-        this.type = n;
-        this.currentLoop = t;
-        this.totalLoops = c;
-        this.direction = d < 0 ? -1 : 1;
+    function BMCompleteLoopEvent(type, totalLoops, currentLoop, frameMultiplier) {
+        this.type = type;
+        this.currentLoop = currentLoop;
+        this.totalLoops = totalLoops;
+        this.direction = frameMultiplier < 0 ? -1 : 1;
     }
 
-    function BMSegmentStartEvent(n, f, t) {
-        this.type = n;
-        this.firstFrame = f;
-        this.totalFrames = t;
+    function BMSegmentStartEvent(type, firstFrame, totalFrames) {
+        this.type = type;
+        this.firstFrame = firstFrame;
+        this.totalFrames = totalFrames;
     }
 
-    function BMDestroyEvent(n, t) {
-        this.type = n;
-        this.target = t;
+    function BMDestroyEvent(type, target) {
+        this.type = type;
+        this.target = target;
+    }
+
+    function BMRenderFrameErrorEvent(nativeError, currentTime) {
+        this.type = 'renderFrameError';
+        this.nativeError = nativeError;
+        this.currentTime = currentTime;
+    }
+
+    function BMConfigErrorEvent(nativeError) {
+        this.type = 'configError';
+        this.nativeError = nativeError;
+    }
+
+    function BMAnimationConfigErrorEvent(type, nativeError) {
+        this.type = type;
+        this.nativeError = nativeError;
+        this.currentTime = currentTime;
     }
 
     var createElementID = (function () {
@@ -329,6 +346,7 @@
     var getBlendMode = (function () {
 
         var blendModeEnums = {
+            0: 'source-over',
             1: 'multiply',
             2: 'screen',
             3: 'overlay',
@@ -614,7 +632,7 @@
             return x * this.props[2] + y * this.props[6] + z * this.props[10] + this.props[14];
         }
 
-        function inversePoint(pt) {
+        function getInverseMatrix() {
             var determinant = this.props[0] * this.props[5] - this.props[1] * this.props[4];
             var a = this.props[5] / determinant;
             var b = - this.props[1] / determinant;
@@ -622,7 +640,19 @@
             var d = this.props[0] / determinant;
             var e = (this.props[4] * this.props[13] - this.props[5] * this.props[12]) / determinant;
             var f = - (this.props[0] * this.props[13] - this.props[1] * this.props[12]) / determinant;
-            return [pt[0] * a + pt[1] * c + e, pt[0] * b + pt[1] * d + f, 0];
+            var inverseMatrix = new Matrix();
+            inverseMatrix.props[0] = a;
+            inverseMatrix.props[1] = b;
+            inverseMatrix.props[4] = c;
+            inverseMatrix.props[5] = d;
+            inverseMatrix.props[12] = e;
+            inverseMatrix.props[13] = f;
+            return inverseMatrix;
+        }
+
+        function inversePoint(pt) {
+            var inverseMatrix = this.getInverseMatrix();
+            return inverseMatrix.applyToPointArray(pt[0], pt[1], pt[2] || 0)
         }
 
         function inversePoints(pts) {
@@ -739,6 +769,7 @@
             this.equals = equals;
             this.inversePoints = inversePoints;
             this.inversePoint = inversePoint;
+            this.getInverseMatrix = getInverseMatrix;
             this._t = this.transform;
             this.isIdentity = isIdentity;
             this._identity = true;
@@ -985,7 +1016,7 @@
     var BezierFactory = (function () {
         /**
          * BezierEasing - use bezier curve for transition easing function
-         * by GaÃ«tan Renaudeau 2014 - 2015 â€“ MIT License
+         * by Gaëtan Renaudeau 2014 - 2015 – MIT License
          *
          * Credits: is based on Firefox's nsSMILKeySpline.cpp
          * Usage:
@@ -1282,45 +1313,39 @@
 
             var storedData = {};
 
-            return function (keyData) {
-                var pt1 = keyData.s;
-                var pt2 = keyData.e;
-                var pt3 = keyData.to;
-                var pt4 = keyData.ti;
+            return function (pt1, pt2, pt3, pt4) {
                 var bezierName = (pt1[0] + '_' + pt1[1] + '_' + pt2[0] + '_' + pt2[1] + '_' + pt3[0] + '_' + pt3[1] + '_' + pt4[0] + '_' + pt4[1]).replace(/\./g, 'p');
-                if (storedData[bezierName]) {
-                    keyData.bezierData = storedData[bezierName];
-                    return;
-                }
-                var curveSegments = defaultCurveSegments;
-                var k, i, len;
-                var ptCoord, perc, addedLength = 0;
-                var ptDistance;
-                var point, lastPoint = null;
-                if (pt1.length === 2 && (pt1[0] != pt2[0] || pt1[1] != pt2[1]) && pointOnLine2D(pt1[0], pt1[1], pt2[0], pt2[1], pt1[0] + pt3[0], pt1[1] + pt3[1]) && pointOnLine2D(pt1[0], pt1[1], pt2[0], pt2[1], pt2[0] + pt4[0], pt2[1] + pt4[1])) {
-                    curveSegments = 2;
-                }
-                var bezierData = new BezierData(curveSegments);
-                len = pt3.length;
-                for (k = 0; k < curveSegments; k += 1) {
-                    point = createSizedArray(len);
-                    perc = k / (curveSegments - 1);
-                    ptDistance = 0;
-                    for (i = 0; i < len; i += 1) {
-                        ptCoord = bm_pow(1 - perc, 3) * pt1[i] + 3 * bm_pow(1 - perc, 2) * perc * (pt1[i] + pt3[i]) + 3 * (1 - perc) * bm_pow(perc, 2) * (pt2[i] + pt4[i]) + bm_pow(perc, 3) * pt2[i];
-                        point[i] = ptCoord;
-                        if (lastPoint !== null) {
-                            ptDistance += bm_pow(point[i] - lastPoint[i], 2);
-                        }
+                if (!storedData[bezierName]) {
+                    var curveSegments = defaultCurveSegments;
+                    var k, i, len;
+                    var ptCoord, perc, addedLength = 0;
+                    var ptDistance;
+                    var point, lastPoint = null;
+                    if (pt1.length === 2 && (pt1[0] != pt2[0] || pt1[1] != pt2[1]) && pointOnLine2D(pt1[0], pt1[1], pt2[0], pt2[1], pt1[0] + pt3[0], pt1[1] + pt3[1]) && pointOnLine2D(pt1[0], pt1[1], pt2[0], pt2[1], pt2[0] + pt4[0], pt2[1] + pt4[1])) {
+                        curveSegments = 2;
                     }
-                    ptDistance = bm_sqrt(ptDistance);
-                    addedLength += ptDistance;
-                    bezierData.points[k] = new PointData(ptDistance, point);
-                    lastPoint = point;
+                    var bezierData = new BezierData(curveSegments);
+                    len = pt3.length;
+                    for (k = 0; k < curveSegments; k += 1) {
+                        point = createSizedArray(len);
+                        perc = k / (curveSegments - 1);
+                        ptDistance = 0;
+                        for (i = 0; i < len; i += 1) {
+                            ptCoord = bm_pow(1 - perc, 3) * pt1[i] + 3 * bm_pow(1 - perc, 2) * perc * (pt1[i] + pt3[i]) + 3 * (1 - perc) * bm_pow(perc, 2) * (pt2[i] + pt4[i]) + bm_pow(perc, 3) * pt2[i];
+                            point[i] = ptCoord;
+                            if (lastPoint !== null) {
+                                ptDistance += bm_pow(point[i] - lastPoint[i], 2);
+                            }
+                        }
+                        ptDistance = bm_sqrt(ptDistance);
+                        addedLength += ptDistance;
+                        bezierData.points[k] = new PointData(ptDistance, point);
+                        lastPoint = point;
+                    }
+                    bezierData.segmentLength = addedLength;
+                    storedData[bezierName] = bezierData;
                 }
-                bezierData.segmentLength = addedLength;
-                keyData.bezierData = bezierData;
-                storedData[bezierName] = bezierData;
+                return storedData[bezierName];
             };
         }());
 
@@ -1774,11 +1799,16 @@
 
         var moduleOb = {};
         moduleOb.completeData = completeData;
+        moduleOb.checkColors = checkColors;
+        moduleOb.checkChars = checkChars;
+        moduleOb.checkShapes = checkShapes;
+        moduleOb.completeLayers = completeLayers;
 
         return moduleOb;
     }
 
     var dataManager = dataFunctionManager();
+
     var FontManager = (function () {
 
         var maxWaitingTime = 5000;
@@ -2001,11 +2031,12 @@
             var i = 0, len = this.chars.length;
             while (i < len) {
                 if (this.chars[i].ch === char && this.chars[i].style === style && this.chars[i].fFamily === font) {
+
                     return this.chars[i];
                 }
                 i += 1;
             }
-            if (console && console.warn) {
+            if ((typeof char === 'string' && char.charCodeAt(0) !== 13 || !char) && console && console.warn) {
                 console.warn('Missing character from exported characters list: ', char, style, font);
             }
             return emptyChar;
@@ -2115,9 +2146,10 @@
             var k, kLen, perc, jLen, j, fnc;
             var nextKeyTime = nextKeyData.t - offsetTime;
             var keyTime = keyData.t - offsetTime;
+            var endValue;
             if (keyData.to) {
                 if (!keyData.bezierData) {
-                    bez.buildBezierData(keyData);
+                    keyData.bezierData = bez.buildBezierData(keyData.s, nextKeyData.s || keyData.e, keyData.to, keyData.ti);
                 }
                 var bezierData = keyData.bezierData;
                 if (frameNum >= nextKeyTime || frameNum < keyTime) {
@@ -2126,7 +2158,7 @@
                     for (k = 0; k < kLen; k += 1) {
                         newValue[k] = bezierData.points[ind].point[k];
                     }
-                    // caching._lastBezierData = null;
+                    // caching._lastKeyframeIndex = -1;
                 } else {
                     if (keyData.__fnct) {
                         fnc = keyData.__fnct;
@@ -2138,8 +2170,8 @@
                     var distanceInLine = bezierData.segmentLength * perc;
 
                     var segmentPerc;
-                    var addedLength = (caching.lastFrame < frameNum && caching._lastBezierData === bezierData) ? caching._lastAddedLength : 0;
-                    j = (caching.lastFrame < frameNum && caching._lastBezierData === bezierData) ? caching._lastPoint : 0;
+                    var addedLength = (caching.lastFrame < frameNum && caching._lastKeyframeIndex === i) ? caching._lastAddedLength : 0;
+                    j = (caching.lastFrame < frameNum && caching._lastKeyframeIndex === i) ? caching._lastPoint : 0;
                     flag = true;
                     jLen = bezierData.points.length;
                     while (flag) {
@@ -2166,23 +2198,24 @@
                     }
                     caching._lastPoint = j;
                     caching._lastAddedLength = addedLength - bezierData.points[j].partialLength;
-                    caching._lastBezierData = bezierData;
+                    caching._lastKeyframeIndex = i;
                 }
             } else {
                 var outX, outY, inX, inY, keyValue;
                 len = keyData.s.length;
+                endValue = nextKeyData.s || keyData.e;
                 if (this.sh && keyData.h !== 1) {
                     if (frameNum >= nextKeyTime) {
-                        newValue[0] = keyData.e[0];
-                        newValue[1] = keyData.e[1];
-                        newValue[2] = keyData.e[2];
+                        newValue[0] = endValue[0];
+                        newValue[1] = endValue[1];
+                        newValue[2] = endValue[2];
                     } else if (frameNum <= keyTime) {
                         newValue[0] = keyData.s[0];
                         newValue[1] = keyData.s[1];
                         newValue[2] = keyData.s[2];
                     } else {
                         var quatStart = createQuaternion(keyData.s);
-                        var quatEnd = createQuaternion(keyData.e);
+                        var quatEnd = createQuaternion(endValue);
                         var time = (frameNum - keyTime) / (nextKeyTime - keyTime);
                         quaternionToEuler(newValue, slerp(quatStart, quatEnd, time));
                     }
@@ -2200,11 +2233,10 @@
                                         keyData.__fnct = [];
                                     }
                                     if (!keyData.__fnct[i]) {
-                                        outX = (typeof keyData.o.x[i] === undefined) ? keyData.o.x[0] : keyData.o.x[i];
-                                        outY = (typeof keyData.o.y[i] === undefined) ? keyData.o.y[0] : keyData.o.y[i];
-                                        inX = (typeof keyData.i.x[i] === undefined) ? keyData.i.x[0] : keyData.i.x[i];
-                                        inY = (typeof keyData.i.y[i] === undefined) ? keyData.i.y[0] : keyData.i.y[i];
-
+                                        outX = (typeof keyData.o.x[i] === 'undefined') ? keyData.o.x[0] : keyData.o.x[i];
+                                        outY = (typeof keyData.o.y[i] === 'undefined') ? keyData.o.y[0] : keyData.o.y[i];
+                                        inX = (typeof keyData.i.x[i] === 'undefined') ? keyData.i.x[0] : keyData.i.x[i];
+                                        inY = (typeof keyData.i.y[i] === 'undefined') ? keyData.i.y[0] : keyData.i.y[i];
                                         fnc = BezierFactory.getBezierEasing(outX, outY, inX, inY).get;
                                         keyData.__fnct[i] = fnc;
                                     } else {
@@ -2226,12 +2258,13 @@
                             }
                         }
 
-                        keyValue = keyData.h === 1 ? keyData.s[i] : keyData.s[i] + (keyData.e[i] - keyData.s[i]) * perc;
+                        endValue = nextKeyData.s || keyData.e;
+                        keyValue = keyData.h === 1 ? keyData.s[i] : keyData.s[i] + (endValue[i] - keyData.s[i]) * perc;
 
-                        if (len === 1) {
-                            newValue = keyValue;
-                        } else {
+                        if (this.propType === 'multidimensional') {
                             newValue[i] = keyValue;
+                        } else {
+                            newValue = keyValue;
                         }
                     }
                 }
@@ -2310,7 +2343,7 @@
             var endTime = this.keyframes[this.keyframes.length - 1].t - this.offsetTime;
             if (!(frameNum === this._caching.lastFrame || (this._caching.lastFrame !== initFrame && ((this._caching.lastFrame >= endTime && frameNum >= endTime) || (this._caching.lastFrame < initTime && frameNum < initTime))))) {
                 if (this._caching.lastFrame >= frameNum) {
-                    this._caching._lastBezierData = null;
+                    this._caching._lastKeyframeIndex = -1;
                     this._caching.lastIndex = 0;
                 }
 
@@ -2421,7 +2454,7 @@
             this.keyframes = data.k;
             this.offsetTime = elem.data.st;
             this.frameId = -1;
-            this._caching = { lastFrame: initFrame, lastIndex: 0, value: 0, _lastBezierData: null };
+            this._caching = { lastFrame: initFrame, lastIndex: 0, value: 0, _lastKeyframeIndex: -1 };
             this.k = true;
             this.kf = true;
             this.data = data;
@@ -2444,9 +2477,9 @@
             var i, len = data.k.length;
             var s, e, to, ti;
             for (i = 0; i < len - 1; i += 1) {
-                if (data.k[i].to && data.k[i].s && data.k[i].e) {
+                if (data.k[i].to && data.k[i].s && data.k[i + 1] && data.k[i + 1].s) {
                     s = data.k[i].s;
-                    e = data.k[i].e;
+                    e = data.k[i + 1].s;
                     to = data.k[i].to;
                     ti = data.k[i].ti;
                     if ((s.length === 2 && !(s[0] === e[0] && s[1] === e[1]) && bez.pointOnLine2D(s[0], s[1], e[0], e[1], s[0] + to[0], s[1] + to[1]) && bez.pointOnLine2D(s[0], s[1], e[0], e[1], e[0] + ti[0], e[1] + ti[1])) || (s.length === 3 && !(s[0] === e[0] && s[1] === e[1] && s[2] === e[2]) && bez.pointOnLine3D(s[0], s[1], s[2], e[0], e[1], e[2], s[0] + to[0], s[1] + to[1], s[2] + to[2]) && bez.pointOnLine3D(s[0], s[1], s[2], e[0], e[1], e[2], e[0] + ti[0], e[1] + ti[1], e[2] + ti[2]))) {
@@ -2488,19 +2521,7 @@
 
         function getProp(elem, data, type, mult, container) {
             var p;
-            if (data.a === 0) {
-                if (type === 0) {
-                    p = new ValueProperty(elem, data, mult, container);
-                } else {
-                    p = new MultiDimensionalProperty(elem, data, mult, container);
-                }
-            } else if (data.a === 1) {
-                if (type === 0) {
-                    p = new KeyframedValueProperty(elem, data, mult, container);
-                } else {
-                    p = new KeyframedMultidimensionalProperty(elem, data, mult, container);
-                }
-            } else if (!data.k.length) {
+            if (!data.k.length) {
                 p = new ValueProperty(elem, data, mult, container);
             } else if (typeof (data.k[0]) === 'number') {
                 p = new MultiDimensionalProperty(elem, data, mult, container);
@@ -2526,6 +2547,8 @@
         return ob;
     }());
     var TransformPropertyFactory = (function () {
+
+        var defaultVector = [0, 0]
 
         function applyToMatrix(mat) {
             var _mdf = this._mdf;
@@ -2590,7 +2613,7 @@
                             v2 = this.p.getValueAtTime(this.p.keyframes[0].t / frameRate, 0);
                         } else if (this.p._caching.lastFrame + this.p.offsetTime >= this.p.keyframes[this.p.keyframes.length - 1].t) {
                             v1 = this.p.getValueAtTime((this.p.keyframes[this.p.keyframes.length - 1].t / frameRate), 0);
-                            v2 = this.p.getValueAtTime((this.p.keyframes[this.p.keyframes.length - 1].t - 0.01) / frameRate, 0);
+                            v2 = this.p.getValueAtTime((this.p.keyframes[this.p.keyframes.length - 1].t - 0.05) / frameRate, 0);
                         } else {
                             v1 = this.p.pv;
                             v2 = this.p.getValueAtTime((this.p._caching.lastFrame + this.p.offsetTime - 0.01) / frameRate, this.p.offsetTime);
@@ -2614,10 +2637,12 @@
                             v2[0] = px.getValueAtTime((px._caching.lastFrame + px.offsetTime - 0.01) / frameRate, px.offsetTime);
                             v2[1] = py.getValueAtTime((py._caching.lastFrame + py.offsetTime - 0.01) / frameRate, py.offsetTime);
                         }
+                    } else {
+                        v1 = v2 = defaultVector
                     }
                     this.v.rotate(-Math.atan2(v1[1] - v2[1], v1[0] - v2[0]));
                 }
-                if (this.data.p.s) {
+                if (this.data.p && this.data.p.s) {
                     if (this.data.p.z) {
                         this.v.translate(this.px.v, this.py.v, -this.pz.v);
                     } else {
@@ -2685,18 +2710,16 @@
             this.pre = new Matrix();
             this.appliedTransformations = 0;
             this.initDynamicPropertyContainer(container || elem);
-            if (data.p.s) {
+            if (data.p && data.p.s) {
                 this.px = PropertyFactory.getProp(elem, data.p.x, 0, 0, this);
                 this.py = PropertyFactory.getProp(elem, data.p.y, 0, 0, this);
                 if (data.p.z) {
                     this.pz = PropertyFactory.getProp(elem, data.p.z, 0, 0, this);
                 }
             } else {
-                this.p = PropertyFactory.getProp(elem, data.p, 1, 0, this);
+                this.p = PropertyFactory.getProp(elem, data.p || { k: [0, 0, 0] }, 1, 0, this);
             }
-            if (data.r) {
-                this.r = PropertyFactory.getProp(elem, data.r, 0, degToRads, this);
-            } else if (data.rx) {
+            if (data.rx) {
                 this.rx = PropertyFactory.getProp(elem, data.rx, 0, degToRads, this);
                 this.ry = PropertyFactory.getProp(elem, data.ry, 0, degToRads, this);
                 this.rz = PropertyFactory.getProp(elem, data.rz, 0, degToRads, this);
@@ -2709,17 +2732,15 @@
                 this.or = PropertyFactory.getProp(elem, data.or, 1, degToRads, this);
                 //sh Indicates it needs to be capped between -180 and 180
                 this.or.sh = true;
+            } else {
+                this.r = PropertyFactory.getProp(elem, data.r || { k: 0 }, 0, degToRads, this);
             }
             if (data.sk) {
                 this.sk = PropertyFactory.getProp(elem, data.sk, 0, degToRads, this);
                 this.sa = PropertyFactory.getProp(elem, data.sa, 0, degToRads, this);
             }
-            if (data.a) {
-                this.a = PropertyFactory.getProp(elem, data.a, 1, 0, this);
-            }
-            if (data.s) {
-                this.s = PropertyFactory.getProp(elem, data.s, 1, 0.01, this);
-            }
+            this.a = PropertyFactory.getProp(elem, data.a || { k: [0, 0, 0] }, 1, 0, this);
+            this.s = PropertyFactory.getProp(elem, data.s || { k: [100, 100, 100] }, 1, 0.01, this);
             // Opacity is not part of the transform properties, that's why it won't use this.dynamicProperties. That way transforms won't get updated if opacity changes.
             if (data.o) {
                 this.o = PropertyFactory.getProp(elem, data.o, 0, 0.01, elem);
@@ -2849,11 +2870,12 @@
                 isHold = true;
                 iterationIndex = 0;
             } else if (frameNum >= kf[kf.length - 1].t - this.offsetTime) {
-                if (kf[kf.length - 2].h === 1) {
+                keyPropS = kf[kf.length - 1].s ? kf[kf.length - 1].s[0] : kf[kf.length - 2].e[0];
+                /*if(kf[kf.length - 1].s){
                     keyPropS = kf[kf.length - 1].s[0];
-                } else {
+                }else{
                     keyPropS = kf[kf.length - 2].e[0];
-                }
+                }*/
                 isHold = true;
             } else {
                 var i = iterationIndex;
@@ -2887,7 +2909,7 @@
                         }
                         perc = fnc((frameNum - (keyData.t - this.offsetTime)) / ((nextKeyData.t - this.offsetTime) - (keyData.t - this.offsetTime)));
                     }
-                    keyPropE = keyData.e[0];
+                    keyPropE = nextKeyData.s ? nextKeyData.s[0] : keyData.e[0];
                 }
                 keyPropS = keyData.s[0];
             }
@@ -2955,7 +2977,10 @@
         }
 
         function processEffectsSequence() {
-            if (this.elem.globalData.frameId === this.frameId || !this.effectsSequence.length) {
+            if (this.elem.globalData.frameId === this.frameId) {
+                return;
+            } else if (!this.effectsSequence.length) {
+                this._mdf = false;
                 return;
             }
             if (this.lock) {
@@ -3309,7 +3334,7 @@
             if (type === 3 || type === 4) {
                 var dataProp = type === 3 ? data.pt : data.ks;
                 var keys = dataProp.k;
-                if (dataProp.a === 1 || keys.length) {
+                if (keys.length) {
                     prop = new KeyframedShapeProperty(elem, data, type);
                 } else {
                     prop = new ShapeProperty(elem, data, type);
@@ -3365,6 +3390,8 @@
     ShapeModifier.prototype.addShapeToModifier = function () { };
     ShapeModifier.prototype.addShape = function (data) {
         if (!this.closed) {
+            // Adding shape to dynamic properties. It covers the case where a shape has no effects applied, to reset it's _mdf state on every tick.
+            data.sh.container.addDynamicProperty(data.sh);
             var shapeData = { shape: data.sh, data: data, localShapeCollection: shapeCollection_pool.newShapeCollection() };
             this.shapes.push(shapeData);
             this.addShapeToModifier(shapeData);
@@ -3595,7 +3622,7 @@
             }
         } else if (this._mdf) {
             for (i = 0; i < len; i += 1) {
-                //Releasign Trim Cached paths data when no trim applied in case shapes are modified in between.
+                //Releasign Trim Cached paths data when no trim applied in case shapes are modified inbetween.
                 //Don't remove this even if it's losing cached info.
                 this.shapes[i].pathsData.length = 0;
                 this.shapes[i].shape._mdf = true;
@@ -4180,7 +4207,7 @@
             canvas.width = 1;
             canvas.height = 1;
             var ctx = canvas.getContext('2d');
-            ctx.fillStyle = '#FF0000';
+            ctx.fillStyle = 'rgba(0,0,0,0)';
             ctx.fillRect(0, 0, 1, 1);
             return canvas;
         }())
@@ -4336,7 +4363,10 @@
             var xhr = new XMLHttpRequest();
             xhr.open('GET', path, true);
             // set responseType after calling open or IE will break.
-            xhr.responseType = "json";
+            try {
+                // This crashes on Android WebView prior to KitKat
+                xhr.responseType = "json";
+            } catch (err) { }
             xhr.send();
             xhr.onreadystatechange = function () {
                 if (xhr.readyState == 4) {
@@ -4429,32 +4459,26 @@
                     segments: []
                 };
                 len = paths._length - 1;
-                var pathData;
+                var bezierData;
                 totalLength = 0;
                 for (i = 0; i < len; i += 1) {
-                    pathData = {
-                        s: paths.v[i],
-                        e: paths.v[i + 1],
-                        to: [paths.o[i][0] - paths.v[i][0], paths.o[i][1] - paths.v[i][1]],
-                        ti: [paths.i[i + 1][0] - paths.v[i + 1][0], paths.i[i + 1][1] - paths.v[i + 1][1]]
-                    };
-                    bez.buildBezierData(pathData);
-                    pathInfo.tLength += pathData.bezierData.segmentLength;
-                    pathInfo.segments.push(pathData);
-                    totalLength += pathData.bezierData.segmentLength;
+                    bezierData = bez.buildBezierData(paths.v[i]
+                        , paths.v[i + 1]
+                        , [paths.o[i][0] - paths.v[i][0], paths.o[i][1] - paths.v[i][1]]
+                        , [paths.i[i + 1][0] - paths.v[i + 1][0], paths.i[i + 1][1] - paths.v[i + 1][1]]);
+                    pathInfo.tLength += bezierData.segmentLength;
+                    pathInfo.segments.push(bezierData);
+                    totalLength += bezierData.segmentLength;
                 }
                 i = len;
                 if (mask.v.c) {
-                    pathData = {
-                        s: paths.v[i],
-                        e: paths.v[0],
-                        to: [paths.o[i][0] - paths.v[i][0], paths.o[i][1] - paths.v[i][1]],
-                        ti: [paths.i[0][0] - paths.v[0][0], paths.i[0][1] - paths.v[0][1]]
-                    };
-                    bez.buildBezierData(pathData);
-                    pathInfo.tLength += pathData.bezierData.segmentLength;
-                    pathInfo.segments.push(pathData);
-                    totalLength += pathData.bezierData.segmentLength;
+                    bezierData = bez.buildBezierData(paths.v[i]
+                        , paths.v[0]
+                        , [paths.o[i][0] - paths.v[i][0], paths.o[i][1] - paths.v[i][1]]
+                        , [paths.i[0][0] - paths.v[0][0], paths.i[0][1] - paths.v[0][1]]);
+                    pathInfo.tLength += bezierData.segmentLength;
+                    pathInfo.segments.push(bezierData);
+                    totalLength += bezierData.segmentLength;
                 }
                 this._pathData.pi = pathInfo;
             }
@@ -4471,20 +4495,20 @@
                     currentLength = -Math.abs(currentLength) % pathInfo.tLength;
                 }
                 segmentInd = segments.length - 1;
-                points = segments[segmentInd].bezierData.points;
+                points = segments[segmentInd].points;
                 pointInd = points.length - 1;
                 while (currentLength < 0) {
                     currentLength += points[pointInd].partialLength;
                     pointInd -= 1;
                     if (pointInd < 0) {
                         segmentInd -= 1;
-                        points = segments[segmentInd].bezierData.points;
+                        points = segments[segmentInd].points;
                         pointInd = points.length - 1;
                     }
                 }
 
             }
-            points = segments[segmentInd].bezierData.points;
+            points = segments[segmentInd].points;
             prevPoint = points[pointInd - 1];
             currentPoint = points[pointInd];
             partialLength = currentPoint.partialLength;
@@ -4572,7 +4596,7 @@
                 if (this._hasMaskedPath) {
                     segmentInd = initSegmentInd;
                     pointInd = initPointInd;
-                    points = segments[segmentInd].bezierData.points;
+                    points = segments[segmentInd].points;
                     prevPoint = points[pointInd - 1];
                     currentPoint = points[pointInd];
                     partialLength = currentPoint.partialLength;
@@ -4643,13 +4667,13 @@
                                     if (mask.v.c) {
                                         pointInd = 0;
                                         segmentInd = 0;
-                                        points = segments[segmentInd].bezierData.points;
+                                        points = segments[segmentInd].points;
                                     } else {
                                         segmentLength -= currentPoint.partialLength;
                                         points = null;
                                     }
                                 } else {
-                                    points = segments[segmentInd].bezierData.points;
+                                    points = segments[segmentInd].points;
                                 }
                             }
                             if (points) {
@@ -5152,11 +5176,23 @@
         var combinedCharacters = FontManager.getCombinedCharacterCodes();
         var charactersArray = [];
         var i = 0, len = text.length;
+        var charCode;
         while (i < len) {
-            if (combinedCharacters.indexOf(text.charCodeAt(i)) !== -1) {
+            charCode = text.charCodeAt(i);
+            if (combinedCharacters.indexOf(charCode) !== -1) {
                 charactersArray[charactersArray.length - 1] += text.charAt(i);
             } else {
-                charactersArray.push(text.charAt(i));
+                if (charCode >= 0xD800 && charCode <= 0xDBFF) {
+                    charCode = text.charCodeAt(i + 1);
+                    if (charCode >= 0xDC00 && charCode <= 0xDFFF) {
+                        charactersArray.push(text.substr(i, 2));
+                        ++i;
+                    } else {
+                        charactersArray.push(text.charAt(i));
+                    }
+                } else {
+                    charactersArray.push(text.charAt(i));
+                }
             }
             i += 1;
         }
@@ -5209,9 +5245,9 @@
         }
         documentData.fWeight = fontData.fWeight || fWeight;
         documentData.fStyle = fStyle;
-        len = documentData.t.length;
         documentData.finalSize = documentData.s;
         documentData.finalText = this.buildFinalText(documentData.t);
+        len = documentData.finalText.length;
         documentData.finalLineHeight = documentData.lh;
         var trackingOffset = documentData.tr / 1000 * documentData.finalSize;
         var charCode;
@@ -5280,9 +5316,7 @@
             newLineFlag = false;
             currentChar = documentData.finalText[i];
             charCode = currentChar.charCodeAt(0);
-            if (currentChar === ' ') {
-                val = '\u00A0';
-            } else if (charCode === 13 || charCode === 3) {
+            if (charCode === 13 || charCode === 3) {
                 uncollapsedSpaces = 0;
                 lineWidths.push(lineWidth);
                 maxLineWidth = lineWidth > maxLineWidth ? lineWidth : maxLineWidth;
@@ -5291,7 +5325,7 @@
                 newLineFlag = true;
                 currentLine += 1;
             } else {
-                val = documentData.finalText[i];
+                val = currentChar;
             }
             if (fontManager.chars) {
                 charData = fontManager.getCharData(currentChar, fontData.fStyle, fontManager.getFontByName(documentData.f).fFamily);
@@ -5312,8 +5346,8 @@
             letters.push({ l: cLength, an: cLength, add: currentSize, n: newLineFlag, anIndexes: [], val: val, line: currentLine, animatorJustifyOffset: 0 });
             if (anchorGrouping == 2) {
                 currentSize += cLength;
-                if (val === '' || val === '\u00A0' || i === len - 1) {
-                    if (val === '' || val === '\u00A0') {
+                if (val === '' || val === ' ' || i === len - 1) {
+                    if (val === '' || val === ' ') {
                         currentSize -= cLength;
                     }
                     while (currentPos <= i) {
@@ -5386,7 +5420,7 @@
             for (i = 0; i < len; i += 1) {
                 letterData = letters[i];
                 letterData.anIndexes[j] = ind;
-                if ((based == 1 && letterData.val !== '') || (based == 2 && letterData.val !== '' && letterData.val !== '\u00A0') || (based == 3 && (letterData.n || letterData.val == '\u00A0' || i == len - 1)) || (based == 4 && (letterData.n || i == len - 1))) {
+                if ((based == 1 && letterData.val !== '') || (based == 2 && letterData.val !== '' && letterData.val !== ' ') || (based == 3 && (letterData.n || letterData.val == ' ' || i == len - 1)) || (based == 4 && (letterData.n || i == len - 1))) {
                     if (animatorData.s.rn === 1) {
                         indexes.push(ind);
                     }
@@ -5475,19 +5509,36 @@
                     this.getValue();
                 }
                 //var easer = bez.getEasingCurve(this.ne.v/100,0,1-this.xe.v/100,1);
-                var easer = BezierFactory.getBezierEasing(this.ne.v / 100, 0, 1 - this.xe.v / 100, 1).get;
+                var x1 = 0;
+                var y1 = 0;
+                var x2 = 1;
+                var y2 = 1;
+                if (this.ne.v > 0) {
+                    x1 = this.ne.v / 100.0;
+                }
+                else {
+                    y1 = -this.ne.v / 100.0;
+                }
+                if (this.xe.v > 0) {
+                    x2 = 1.0 - this.xe.v / 100.0;
+                }
+                else {
+                    y2 = 1.0 + this.xe.v / 100.0;
+                }
+                var easer = BezierFactory.getBezierEasing(x1, y1, x2, y2).get;
+
                 var mult = 0;
                 var s = this.finalS;
                 var e = this.finalE;
                 var type = this.data.sh;
-                if (type == 2) {
+                if (type === 2) {
                     if (e === s) {
                         mult = ind >= e ? 1 : 0;
                     } else {
                         mult = max(0, min(0.5 / (e - s) + (ind - s) / (e - s), 1));
                     }
                     mult = easer(mult);
-                } else if (type == 3) {
+                } else if (type === 3) {
                     if (e === s) {
                         mult = ind >= e ? 0 : 1;
                     } else {
@@ -5495,7 +5546,7 @@
                     }
 
                     mult = easer(mult);
-                } else if (type == 4) {
+                } else if (type === 4) {
                     if (e === s) {
                         mult = 0;
                     } else {
@@ -5507,7 +5558,7 @@
                         }
                     }
                     mult = easer(mult);
-                } else if (type == 5) {
+                } else if (type === 5) {
                     if (e === s) {
                         mult = 0;
                     } else {
@@ -5520,22 +5571,18 @@
                         mult = Math.sqrt(1 - (x * x) / (a * a));
                     }
                     mult = easer(mult);
-                } else if (type == 6) {
+                } else if (type === 6) {
                     if (e === s) {
                         mult = 0;
                     } else {
                         ind = min(max(0, ind + 0.5 - s), e - s);
                         mult = (1 + (Math.cos((Math.PI + Math.PI * 2 * (ind) / (e - s))))) / 2;
-                        /*
-                         ind = Math.min(Math.max(s,ind),e-1);
-                         mult = (1+(Math.cos((Math.PI+Math.PI*2*(ind-s)/(e-1-s)))))/2;
-                         mult = Math.max(mult,(1/(e-1-s))/(e-1-s));*/
                     }
                     mult = easer(mult);
                 } else {
                     if (ind >= floor(s)) {
                         if (ind - s < 0) {
-                            mult = 1 - (s - ind);
+                            mult = max(0, min(min(e, 1) - (s - ind), 1));
                         } else {
                             mult = max(0, min(e - ind, 1));
                         }
@@ -5874,6 +5921,26 @@
         this.layers = null;
         this.renderedFrame = -1;
         this.svgElement = createNS('svg');
+        var ariaLabel = '';
+        if (config && config.title) {
+            var titleElement = createNS('title');
+            var titleId = createElementID();
+            titleElement.setAttribute('id', titleId);
+            titleElement.textContent = config.title;
+            this.svgElement.appendChild(titleElement);
+            ariaLabel += titleId;
+        }
+        if (config && config.description) {
+            var descElement = createNS('desc');
+            var descId = createElementID();
+            descElement.setAttribute('id', descId);
+            descElement.textContent = config.description;
+            this.svgElement.appendChild(descElement);
+            ariaLabel += ' ' + descId;
+        }
+        if (ariaLabel) {
+            this.svgElement.setAttribute('aria-labelledby', ariaLabel)
+        }
         var defs = createNS('defs');
         this.svgElement.appendChild(defs);
         var maskElement = createNS('g');
@@ -5886,8 +5953,17 @@
             hideOnTransparent: (config && config.hideOnTransparent === false) ? false : true,
             viewBoxOnly: (config && config.viewBoxOnly) || false,
             viewBoxSize: (config && config.viewBoxSize) || false,
-            className: (config && config.className) || ''
+            className: (config && config.className) || '',
+            id: (config && config.id) || '',
+            focusable: config && config.focusable,
+            filterSize: {
+                width: config && config.filterSize && config.filterSize.width || '100%',
+                height: config && config.filterSize && config.filterSize.height || '100%',
+                x: config && config.filterSize && config.filterSize.x || '0%',
+                y: config && config.filterSize && config.filterSize.y || '0%',
+            }
         };
+
         this.globalData = {
             _mdf: false,
             frameNum: -1,
@@ -5946,6 +6022,12 @@
         }
         if (this.renderConfig.className) {
             this.svgElement.setAttribute('class', this.renderConfig.className);
+        }
+        if (this.renderConfig.id) {
+            this.svgElement.setAttribute('id', this.renderConfig.id);
+        }
+        if (this.renderConfig.focusable !== undefined) {
+            this.svgElement.setAttribute('focusable', this.renderConfig.focusable);
         }
         this.svgElement.setAttribute('preserveAspectRatio', this.renderConfig.preserveAspectRatio);
         //this.layerElement.style.transform = 'translate3d(0,0,0)';
@@ -6105,7 +6187,8 @@
             progressiveLoad: (config && config.progressiveLoad) || false,
             preserveAspectRatio: (config && config.preserveAspectRatio) || 'xMidYMid meet',
             imagePreserveAspectRatio: (config && config.imagePreserveAspectRatio) || 'xMidYMid slice',
-            className: (config && config.className) || ''
+            className: (config && config.className) || '',
+            id: (config && config.id) || '',
         };
         this.renderConfig.dpr = (config && config.dpr) || 1;
         if (this.animationItem.wrapper) {
@@ -6247,6 +6330,9 @@
             if (this.renderConfig.className) {
                 this.animationItem.container.setAttribute('class', this.renderConfig.className);
             }
+            if (this.renderConfig.id) {
+                this.animationItem.container.setAttribute('id', this.renderConfig.id);
+            }
         } else {
             this.canvasContext = this.renderConfig.context;
         }
@@ -6338,6 +6424,8 @@
         this.canvasContext.rect(0, 0, this.transformCanvas.w, this.transformCanvas.h);
         this.canvasContext.closePath();
         this.canvasContext.clip();
+
+        this.renderFrame(this.renderedFrame, true);
     };
 
     CanvasRenderer.prototype.destroy = function () {
@@ -6356,14 +6444,14 @@
         this.destroyed = true;
     };
 
-    CanvasRenderer.prototype.renderFrame = function (num) {
-        if ((this.renderedFrame == num && this.renderConfig.clearCanvas === true) || this.destroyed || num === -1) {
+    CanvasRenderer.prototype.renderFrame = function (num, forceRender) {
+        if ((this.renderedFrame === num && this.renderConfig.clearCanvas === true && !forceRender) || this.destroyed || num === -1) {
             return;
         }
         this.renderedFrame = num;
         this.globalData.frameNum = num - this.animationItem._isFirstFrame;
         this.globalData.frameId += 1;
-        this.globalData._mdf = !this.renderConfig.clearCanvas;
+        this.globalData._mdf = !this.renderConfig.clearCanvas || forceRender;
         this.globalData.projectInterface.currentFrame = num;
 
         // console.log('--------');
@@ -6430,7 +6518,13 @@
         this.renderConfig = {
             className: (config && config.className) || '',
             imagePreserveAspectRatio: (config && config.imagePreserveAspectRatio) || 'xMidYMid slice',
-            hideOnTransparent: (config && config.hideOnTransparent === false) ? false : true
+            hideOnTransparent: (config && config.hideOnTransparent === false) ? false : true,
+            filterSize: {
+                width: config && config.filterSize && config.filterSize.width || '400%',
+                height: config && config.filterSize && config.filterSize.height || '400%',
+                x: config && config.filterSize && config.filterSize.x || '-100%',
+                y: config && config.filterSize && config.filterSize.y || '-100%',
+            }
         };
         this.globalData = {
             _mdf: false,
@@ -6741,8 +6835,7 @@
         var rect, expansor, feMorph, x;
         var maskType = 'clipPath', maskRef = 'clip-path';
         for (i = 0; i < len; i++) {
-
-            if ((properties[i].mode !== 'a' && properties[i].mode !== 'n') || properties[i].inv || properties[i].o.k !== 100) {
+            if ((properties[i].mode !== 'a' && properties[i].mode !== 'n') || properties[i].inv || properties[i].o.k !== 100 || properties[i].o.x) {
                 maskType = 'mask';
                 maskRef = 'mask';
             }
@@ -6783,7 +6876,7 @@
                 expansor = createNS('filter');
                 expansor.setAttribute('id', filterID);
                 feMorph = createNS('feMorphology');
-                feMorph.setAttribute('operator', 'dilate');
+                feMorph.setAttribute('operator', 'erode');
                 feMorph.setAttribute('in', 'SourceGraphic');
                 feMorph.setAttribute('radius', '0');
                 expansor.appendChild(feMorph);
@@ -6872,8 +6965,7 @@
             }
             if (this.masksProperties[i].mode !== 'n') {
                 if (this.viewData[i].invRect && (this.element.finalTransform.mProp._mdf || isFirstFrame)) {
-                    this.viewData[i].invRect.setAttribute('x', -finalMat.props[12]);
-                    this.viewData[i].invRect.setAttribute('y', -finalMat.props[13]);
+                    this.viewData[i].invRect.setAttribute('transform', finalMat.getInverseMatrix().to2dCSS())
                 }
                 if (this.storedData[i].x && (this.storedData[i].x._mdf || isFirstFrame)) {
                     var feMorph = this.storedData[i].expan;
@@ -8318,6 +8410,7 @@
             this.layerElement.setAttribute('font-style', fStyle);
             this.layerElement.setAttribute('font-weight', fWeight);
         }
+        this.layerElement.setAttribute('aria-label', documentData.t);
 
         var letters = documentData.l || [];
         var usesGlyphs = !!this.globalData.fontManager.chars;
@@ -8470,6 +8563,7 @@
             }
         }
     };
+
     function SVGShapeElement(data, globalData, comp) {
         //List of drawable elements
         this.shapes = [];
@@ -8837,6 +8931,45 @@
             this.matrixFilter.setAttribute('values', '0 0 0 0 ' + color[0] + ' 0 0 0 0 ' + color[1] + ' 0 0 0 0 ' + color[2] + ' 0 0 0 ' + opacity + ' 0');
         }
     };
+    function SVGGaussianBlurEffect(filter, filterManager) {
+        // Outset the filter region by 100% on all sides to accommodate blur expansion.
+        filter.setAttribute('x', '-100%');
+        filter.setAttribute('y', '-100%');
+        filter.setAttribute('width', '300%');
+        filter.setAttribute('height', '300%');
+
+        this.filterManager = filterManager;
+        var feGaussianBlur = createNS('feGaussianBlur');
+        filter.appendChild(feGaussianBlur);
+        this.feGaussianBlur = feGaussianBlur;
+    }
+
+    SVGGaussianBlurEffect.prototype.renderFrame = function (forceRender) {
+        if (forceRender || this.filterManager._mdf) {
+            // Empirical value, matching AE's blur appearance.
+            var kBlurrinessToSigma = 0.3;
+            var sigma = this.filterManager.effectElements[0].p.v * kBlurrinessToSigma;
+
+            // Dimensions mapping:
+            //
+            //   1 -> horizontal & vertical
+            //   2 -> horizontal only
+            //   3 -> vertical only
+            //
+            var dimensions = this.filterManager.effectElements[1].p.v;
+            var sigmaX = (dimensions == 3) ? 0 : sigma;
+            var sigmaY = (dimensions == 2) ? 0 : sigma;
+
+            this.feGaussianBlur.setAttribute('stdDeviation', sigmaX + " " + sigmaY);
+
+            // Repeat edges mapping:
+            //
+            //   0 -> off -> duplicate
+            //   1 -> on  -> wrap
+            var edgeMode = (this.filterManager.effectElements[2].p.v == 1) ? 'wrap' : 'duplicate';
+            this.feGaussianBlur.setAttribute('edgeMode', edgeMode);
+        }
+    }
     function SVGStrokeEffect(elem, filterManager) {
         this.initialized = false;
         this.filterManager = filterManager;
@@ -9088,10 +9221,11 @@
         }
     };
     function SVGDropShadowEffect(filter, filterManager) {
-        filter.setAttribute('x', '-100%');
-        filter.setAttribute('y', '-100%');
-        filter.setAttribute('width', '400%');
-        filter.setAttribute('height', '400%');
+        var filterSize = filterManager.container.globalData.renderConfig.filterSize
+        filter.setAttribute('x', filterSize.x);
+        filter.setAttribute('y', filterSize.y);
+        filter.setAttribute('width', filterSize.width);
+        filter.setAttribute('height', filterSize.height);
         this.filterManager = filterManager;
 
         var feGaussianBlur = createNS('feGaussianBlur');
@@ -9287,6 +9421,9 @@
             } else if (elem.data.ef[i].ty === 28) {
                 //count += 1;
                 filterManager = new SVGMatte3Effect(fil, elem.effectsManager.effectElements[i], elem);
+            } else if (elem.data.ef[i].ty === 29) {
+                count += 1;
+                filterManager = new SVGGaussianBlurEffect(fil, elem.effectsManager.effectElements[i]);
             }
             if (filterManager) {
                 this.filters.push(filterManager);
@@ -9378,11 +9515,12 @@
             this.renderTransform();
             this.renderRenderable();
             this.setBlendMode();
-            this.globalData.renderer.save();
+            var forceRealStack = this.data.ty === 0;
+            this.globalData.renderer.save(forceRealStack);
             this.globalData.renderer.ctxTransform(this.finalTransform.mat.props);
             this.globalData.renderer.ctxOpacity(this.finalTransform.mProp.o.v);
             this.renderInnerContent();
-            this.globalData.renderer.restore();
+            this.globalData.renderer.restore(forceRealStack);
             if (this.maskManager.hasMasks) {
                 this.globalData.renderer.restore(true);
             }
@@ -9402,7 +9540,6 @@
     CVBaseElement.prototype.show = CVBaseElement.prototype.showElement;
 
     function CVImageElement(data, globalData, comp) {
-        this.failed = false;
         this.assetData = globalData.getAssetData(data.refId);
         this.img = globalData.imageLoader.getImage(this.assetData);
         this.initElement(data, globalData, comp);
@@ -9440,9 +9577,6 @@
     };
 
     CVImageElement.prototype.renderInnerContent = function (parentMatrix) {
-        if (this.failed) {
-            return;
-        }
         this.canvasContext.drawImage(this.img, 0, 0);
     };
 
@@ -9461,6 +9595,14 @@
     extendPrototype([CanvasRenderer, ICompElement, CVBaseElement], CVCompElement);
 
     CVCompElement.prototype.renderInnerContent = function () {
+        var ctx = this.canvasContext;
+        ctx.beginPath();
+        ctx.moveTo(0, 0);
+        ctx.lineTo(this.data.w, 0);
+        ctx.lineTo(this.data.w, this.data.h);
+        ctx.lineTo(0, this.data.h);
+        ctx.lineTo(0, 0);
+        ctx.clip();
         var i, len = this.layers.length;
         for (i = len - 1; i >= 0; i -= 1) {
             if (this.completeLayers || this.elements[i]) {
@@ -10644,6 +10786,7 @@
                     } else {
 
                         tParent = createTag('div');
+                        tParent.style.lineHeight = 0;
                         tCont = createNS('svg');
                         tCont.appendChild(tSpan);
                         styleDiv(tParent);
@@ -10911,10 +11054,6 @@
                 var mat;
                 len = this.hierarchy.length - 1;
                 for (i = len; i >= 0; i -= 1) {
-                    /*mat = this.hierarchy[i].finalTransform.mProp.v.props;
-                    console.log(mat)
-                    this.mat.transform(-mat[0],-mat[1],-mat[2],-mat[3],-mat[4],-mat[5],-mat[6],-mat[7],-mat[8],-mat[9],-mat[10],-mat[11],-mat[12],-mat[13],-mat[14],mat[15]);
-                    console.log(this.mat.props)*/
                     var mTransf = this.hierarchy[i].finalTransform.mProp;
                     this.mat.translate(-mTransf.p.v[0], -mTransf.p.v[1], mTransf.p.v[2]);
                     this.mat.rotateX(-mTransf.or.v[0]).rotateY(-mTransf.or.v[1]).rotateZ(mTransf.or.v[2]);
@@ -10923,14 +11062,18 @@
                     this.mat.translate(mTransf.a.v[0], mTransf.a.v[1], mTransf.a.v[2]);
                 }
             }
-
             if (this.p) {
                 this.mat.translate(-this.p.v[0], -this.p.v[1], this.p.v[2]);
             } else {
                 this.mat.translate(-this.px.v, -this.py.v, this.pz.v);
             }
             if (this.a) {
-                var diffVector = [this.p.v[0] - this.a.v[0], this.p.v[1] - this.a.v[1], this.p.v[2] - this.a.v[2]];
+                var diffVector
+                if (this.p) {
+                    diffVector = [this.p.v[0] - this.a.v[0], this.p.v[1] - this.a.v[1], this.p.v[2] - this.a.v[2]];
+                } else {
+                    diffVector = [this.px.v - this.a.v[0], this.py.v - this.a.v[1], this.pz.v - this.a.v[2]];
+                }
                 var mag = Math.sqrt(Math.pow(diffVector[0], 2) + Math.pow(diffVector[1], 2) + Math.pow(diffVector[2], 2));
                 //var lookDir = getNormalizedPoint(getDiffVector(this.a.v,this.p.v));
                 var lookDir = [diffVector[0] / mag, diffVector[1] / mag, diffVector[2] / mag];
@@ -11205,6 +11348,7 @@
         this.isLoaded = false;
         this.currentFrame = 0;
         this.currentRawFrame = 0;
+        this.firstFrame = 0;
         this.totalFrames = 0;
         this.frameRate = 0;
         this.frameMult = 0;
@@ -11265,17 +11409,12 @@
         this.name = params.name ? params.name : '';
         this.autoloadSegments = params.hasOwnProperty('autoloadSegments') ? params.autoloadSegments : true;
         this.assetsPath = params.assetsPath;
+        this.initialSegment = params.initialSegment;
         if (params.animationData) {
             this.configAnimation(params.animationData);
         } else if (params.path) {
-            if (params.path.substr(-4) != 'json') {
-                if (params.path.substr(-1, 1) != '/') {
-                    params.path += '/';
-                }
-                params.path += 'data.json';
-            }
 
-            if (params.path.lastIndexOf('\\') != -1) {
+            if (params.path.lastIndexOf('\\') !== -1) {
                 this.path = params.path.substr(0, params.path.lastIndexOf('\\') + 1);
             } else {
                 this.path = params.path.substr(0, params.path.lastIndexOf('/') + 1);
@@ -11287,6 +11426,7 @@
                 this.trigger('data_failed');
             }.bind(this));
         }
+
     };
 
     AnimationItem.prototype.setData = function (wrapper, animationData) {
@@ -11397,23 +11537,33 @@
         if (!this.renderer) {
             return;
         }
-        this.animationData = animData;
-        this.totalFrames = Math.floor(this.animationData.op - this.animationData.ip);
-        this.renderer.configAnimation(animData);
-        if (!animData.assets) {
-            animData.assets = [];
-        }
-        this.renderer.searchExtraCompositions(animData.assets);
+        try {
+            this.animationData = animData;
 
-        this.assets = this.animationData.assets;
-        this.frameRate = this.animationData.fr;
-        this.firstFrame = Math.round(this.animationData.ip);
-        this.frameMult = this.animationData.fr / 1000;
-        this.trigger('config_ready');
-        this.preloadImages();
-        this.loadSegments();
-        this.updaFrameModifier();
-        this.waitForFontsLoaded();
+            if (this.initialSegment) {
+                this.totalFrames = Math.floor(this.initialSegment[1] - this.initialSegment[0]);
+                this.firstFrame = Math.round(this.initialSegment[0]);
+            } else {
+                this.totalFrames = Math.floor(this.animationData.op - this.animationData.ip);
+                this.firstFrame = Math.round(this.animationData.ip);
+            }
+            this.renderer.configAnimation(animData);
+            if (!animData.assets) {
+                animData.assets = [];
+            }
+
+            this.assets = this.animationData.assets;
+            this.frameRate = this.animationData.fr;
+            this.frameMult = this.animationData.fr / 1000;
+            this.renderer.searchExtraCompositions(animData.assets);
+            this.trigger('config_ready');
+            this.preloadImages();
+            this.loadSegments();
+            this.updaFrameModifier();
+            this.waitForFontsLoaded();
+        } catch (error) {
+            this.triggerConfigError(error);
+        }
     };
 
     AnimationItem.prototype.waitForFontsLoaded = function () {
@@ -11467,7 +11617,11 @@
         if (this.isLoaded === false) {
             return;
         }
-        this.renderer.renderFrame(this.currentFrame + this.firstFrame);
+        try {
+            this.renderer.renderFrame(this.currentFrame + this.firstFrame);
+        } catch (error) {
+            this.triggerRenderFrameError(error);
+        }
     };
 
     AnimationItem.prototype.play = function (name) {
@@ -11636,7 +11790,7 @@
         } else {
             this.segments.push(arr);
         }
-        if (this.segments.length) {
+        if (this.segments.length && forceFlag) {
             this.adjustSegment(this.segments.shift(), 0);
         }
         if (this.isPaused) {
@@ -11774,6 +11928,25 @@
         }
     };
 
+    AnimationItem.prototype.triggerRenderFrameError = function (nativeError) {
+
+        var error = new BMRenderFrameErrorEvent(nativeError, this.currentFrame);
+        this.triggerEvent('error', error);
+
+        if (this.onError) {
+            this.onError.call(this, error);
+        }
+    }
+
+    AnimationItem.prototype.triggerConfigError = function (nativeError) {
+
+        var error = new BMConfigErrorEvent(nativeError, this.currentFrame);
+        this.triggerEvent('error', error);
+
+        if (this.onError) {
+            this.onError.call(this, error);
+        }
+    }
     var Expressions = (function () {
         var ob = {};
         ob.initExpressions = initExpressions;
@@ -11847,6 +12020,9 @@
                     retArr[i] = -a[i];
                 }
                 return retArr;
+            }
+            if (a.propType) {
+                return a.v;
             }
         }
 
@@ -12168,6 +12344,11 @@
             var transform, $bm_transform, content, effect;
             var thisProperty = property;
             thisProperty.valueAtTime = thisProperty.getValueAtTime;
+            Object.defineProperty(thisProperty, 'value', {
+                get: function () {
+                    return thisProperty.v
+                }
+            })
             elem.comp.frameDuration = 1 / elem.comp.globalData.frameRate;
             elem.comp.displayStartTime = 0;
             var inPoint = elem.data.ip / elem.comp.globalData.frameRate;
@@ -12345,12 +12526,8 @@
                     time: data.k[ind].t / elem.comp.globalData.frameRate,
                     value: []
                 };
-                var arr;
-                if (ind === data.k.length - 1 && !data.k[ind].h) {
-                    arr = data.k[ind - 1].e;
-                } else {
-                    arr = data.k[ind].s;
-                }
+                var arr = data.k[ind].hasOwnProperty('s') ? data.k[ind].s : data.k[ind - 1].e;
+
                 len = arr.length;
                 for (i = 0; i < len; i += 1) {
                     ob[i] = arr[i];
@@ -12402,6 +12579,11 @@
                     return value.substr(init, end)
                 }
                 return '';
+            }
+
+            function posterizeTime(framesPerSecond) {
+                time = framesPerSecond === 0 ? 0 : Math.floor(time * framesPerSecond) / framesPerSecond
+                value = valueAtTime(time)
             }
 
             var time, velocity, value, text, textIndex, textTotal, selectorValue;
@@ -12895,6 +13077,9 @@
                 var xLength = pt2[0] - pt1[0];
                 var yLength = pt2[1] - pt1[1];
                 var magnitude = Math.sqrt(Math.pow(xLength, 2) + Math.pow(yLength, 2));
+                if (magnitude === 0) {
+                    return [0, 0];
+                }
                 var unitVector = vectorType === 'tangent' ? [xLength / magnitude, yLength / magnitude] : [-yLength / magnitude, xLength / magnitude];
                 return unitVector;
             },
@@ -13509,6 +13694,7 @@
                 },
                 '_name': { value: shape.nm },
                 'ix': { value: shape.ix },
+                'propertyIndex': { value: shape.ix },
                 'mn': { value: shape.mn }
             });
             return interfaceFunction;
@@ -13979,6 +14165,14 @@
                 return this._mask.prop;
             }
         });
+        Object.defineProperty(MaskInterface.prototype, 'maskOpacity', {
+            get: function () {
+                if (this._mask.op.k) {
+                    this._mask.op.getValue();
+                }
+                return this._mask.op.v * 100;
+            }
+        });
 
         var MaskManager = function (maskManager, elem) {
             var _maskManager = maskManager;
@@ -14232,7 +14426,7 @@
         }
     };
 
-    var lottiejs = {};
+    var lottie = {};
 
     var _isFrozen = false;
 
@@ -14303,29 +14497,29 @@
         }
     }
 
-    lottiejs.play = animationManager.play;
-    lottiejs.pause = animationManager.pause;
-    lottiejs.setLocationHref = setLocationHref;
-    lottiejs.togglePause = animationManager.togglePause;
-    lottiejs.setSpeed = animationManager.setSpeed;
-    lottiejs.setDirection = animationManager.setDirection;
-    lottiejs.stop = animationManager.stop;
-    lottiejs.searchAnimations = searchAnimations;
-    lottiejs.registerAnimation = animationManager.registerAnimation;
-    lottiejs.loadAnimation = loadAnimation;
-    lottiejs.setSubframeRendering = setSubframeRendering;
-    lottiejs.resize = animationManager.resize;
-    //lottiejs.start = start;
-    lottiejs.goToAndStop = animationManager.goToAndStop;
-    lottiejs.destroy = animationManager.destroy;
-    lottiejs.setQuality = setQuality;
-    lottiejs.inBrowser = inBrowser;
-    lottiejs.installPlugin = installPlugin;
-    lottiejs.freeze = animationManager.freeze;
-    lottiejs.unfreeze = animationManager.unfreeze;
-    lottiejs.getRegisteredAnimations = animationManager.getRegisteredAnimations;
-    lottiejs.__getFactory = getFactory;
-    lottiejs.version = '5.4.4';
+    lottie.play = animationManager.play;
+    lottie.pause = animationManager.pause;
+    lottie.setLocationHref = setLocationHref;
+    lottie.togglePause = animationManager.togglePause;
+    lottie.setSpeed = animationManager.setSpeed;
+    lottie.setDirection = animationManager.setDirection;
+    lottie.stop = animationManager.stop;
+    lottie.searchAnimations = searchAnimations;
+    lottie.registerAnimation = animationManager.registerAnimation;
+    lottie.loadAnimation = loadAnimation;
+    lottie.setSubframeRendering = setSubframeRendering;
+    lottie.resize = animationManager.resize;
+    //lottie.start = start;
+    lottie.goToAndStop = animationManager.goToAndStop;
+    lottie.destroy = animationManager.destroy;
+    lottie.setQuality = setQuality;
+    lottie.inBrowser = inBrowser;
+    lottie.installPlugin = installPlugin;
+    lottie.freeze = animationManager.freeze;
+    lottie.unfreeze = animationManager.unfreeze;
+    lottie.getRegisteredAnimations = animationManager.getRegisteredAnimations;
+    lottie.__getFactory = getFactory;
+    lottie.version = '5.6.8';
 
     function checkReady() {
         if (document.readyState === "complete") {
@@ -14356,5 +14550,6 @@
         renderer = getQueryVariable('renderer');
     }
     var readyStateCheckInterval = setInterval(checkReady, 100);
-    return lottiejs;
+
+    return lottie;
 }));
