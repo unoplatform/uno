@@ -43,7 +43,7 @@
 				VerticalAlignment="Center"
 				AutomationProperties.Name="TestProgressBar"
 				HorizontalAlignment="Left"
-				IsIndeterminate="{x:Bind ShowIsDeterminateCheckBox.IsChecked, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=OneWay}"
+				IsIndeterminate="{x:Bind ShowIsIndeterminateCheckBox.IsChecked, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=OneWay}"
 				ShowPaused="{x:Bind ShowPausedCheckBox.IsChecked, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=OneWay}"
 				ShowError="{x:Bind ShowErrorCheckBox.IsChecked, Converter={StaticResource NullableBooleanToBooleanConverter}, Mode=OneWay}"/>
 		</StackPanel>
@@ -102,7 +102,7 @@
 				<TextBlock Text="States"/>
 				<CheckBox x:Name="ShowPausedCheckBox" AutomationProperties.Name="ShowPausedCheckBox" Content="ShowPaused" />
 				<CheckBox x:Name="ShowErrorCheckBox" AutomationProperties.Name="ShowErrorCheckBox"  Content="ShowError"/>
-				<CheckBox x:Name="ShowIsDeterminateCheckBox" AutomationProperties.Name="ShowIsDeterminateCheckBox" Content="IsDeterminate"/>
+				<CheckBox x:Name="ShowIsIndeterminateCheckBox" AutomationProperties.Name="ShowIsIndeterminateCheckBox" Content="IsIndeterminate"/>
 			</StackPanel>
 
 			<StackPanel Margin="0,16,0,0">
@@ -129,7 +129,7 @@
 			<TextBlock AutomationProperties.Name="ShowErrorText" Text="{x:Bind ShowErrorCheckBox.IsChecked, Mode=OneWay}"/>
 
 			<TextBlock Text="Is indeterminate:" Margin="0, 20, 0, 0" FontSize="20"/>
-			<TextBlock AutomationProperties.Name="ShowIsDeterminateText" Text="{x:Bind ShowIsDeterminateCheckBox.IsChecked, Mode=OneWay}"/>
+			<TextBlock AutomationProperties.Name="ShowIsIndeterminateText" Text="{x:Bind ShowIsIndeterminateCheckBox.IsChecked, Mode=OneWay}"/>
 
 			<TextBlock x:Name="VisualStateText" AutomationProperties.Name="VisualStateText" Margin="0, 20, 0, 0"/>
 		</StackPanel>

@@ -9,7 +9,7 @@ using Windows.UI.Xaml.Shapes;
 
 namespace UITests.Microsoft_UI_Xaml_Controls.ProgressBar
 {
-	[Sample("ProgressBar", "WinUI")]
+	[Sample("Progress", "WinUI")]
 	public sealed partial class WinUIProgressBarPage : Page
 	{
 		public WinUIProgressBarPage()
