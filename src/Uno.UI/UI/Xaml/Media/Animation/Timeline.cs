@@ -136,6 +136,8 @@ namespace Windows.UI.Xaml.Media.Animation
 			subject.ElementInstanceChanged += handler;
 		}
 
+		private protected virtual void InitTarget() {}
+
 		/// <summary>
 		/// Path to the target property being animated.
 		/// </summary>
@@ -145,6 +147,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			{
 				if (_propertyInfo == null)
 				{
+					InitTarget();
 					var target = Target ?? GetTargetFromName();
 
 					_propertyInfo = new BindingPath(

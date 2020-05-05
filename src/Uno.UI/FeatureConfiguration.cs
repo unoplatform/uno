@@ -346,6 +346,14 @@ namespace Uno.UI
 #endif
 		}
 
+		public static class ThemeAnimation
+		{
+			/// <summary>
+			/// Default duration for xxxThemeAnimation
+			/// </summary>
+			public static TimeSpan DefaultThemeAnimationDuration { get; set; } = TimeSpan.FromSeconds(0.75);
+		}
+
 		public static class ToolTip
 		{
 			public static bool UseToolTips { get; set; }
