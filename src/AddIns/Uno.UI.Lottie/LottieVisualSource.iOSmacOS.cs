@@ -3,6 +3,10 @@ using Windows.Foundation;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
 using Airbnb.Lottie;
+using Foundation;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
+using Uno.Logging;
 using Uno.UI;
 #if __IOS__
 using _ViewContentMode = UIKit.UIViewContentMode;
@@ -18,20 +22,16 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public bool UseHardwareAcceleration { get; set; } = true;
 
-		private string _lastPath = "";
+        private Uri _lastSource;
 
 		partial void InnerUpdate()
 		{
 			var player = _player;
 			if (_animation == null)
 			{
-				_animation = new LOTAnimationView();
+				var animation = new LOTAnimationView();
+				SetAnimation(animation);
 				SetProperties();
-#if __IOS__
-				player.Add(_animation);
-#else
-				player.AddSubview(_animation);
-#endif
 			}
 			else
 			{
@@ -40,11 +40,31 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			void SetProperties()
 			{
-				var path = UriSource?.PathAndQuery ?? "";
-				if (_lastPath != path)
+				var source = UriSource;
+				if (_lastSource == null || !_lastSource.Equals(source))
 				{
-					_animation.SetAnimationNamed(path);
-					_lastPath = path;
+					_lastSource = source;
+
+					if (TryLoadEmbeddedJson(source, out var json))
+					{
+						var jsonData = NSJsonSerialization.Deserialize(NSData.FromString(json), default, out var _) as NSDictionary;
+						if (jsonData != null)
+						{
+							_animation.RemoveFromSuperview();
+							var animation = LOTAnimationView.AnimationFromJSON(jsonData);
+							SetAnimation(animation);
+						}
+					}
+					else
+					{
+						var path = source?.PathAndQuery ?? "";
+						if (path.StartsWith("/"))
+						{
+							path = path.Substring(1);
+						}
+
+						_animation.SetAnimationNamed(path);
+					}
 
 					// Force layout to recalculate
 					player.InvalidateMeasure();
@@ -85,6 +105,20 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 				_animation.AnimationSpeed = (nfloat)player.PlaybackRate;
 			}
+		}
+
+		private void SetAnimation(LOTAnimationView animation)
+		{
+			if (!ReferenceEquals(_animation, animation))
+			{
+				_animation?.RemoveFromSuperview();
+			}
+#if __IOS__
+			_player.Add(animation);
+#else
+			_player.AddSubview(animation);
+#endif
+			_animation = animation;
 		}
 
 		public void Play(double fromProgress, double toProgress, bool looped)

@@ -16,6 +16,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		private AnimatedVisualPlayer _initializedPlayer;
 		private bool _isPlaying;
 		private Size _compositionSize = new Size(0, 0);
+		private Uri _loadedEmbeddedUri;
 
 		partial void InnerUpdate()
 		{
@@ -26,21 +27,56 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 				_initializedPlayer = player;
 			}
 
-			var js = new[]
+			string[] js;
+
+			var uri = UriSource;
+
+			if (uri.Scheme == "embedded")
 			{
-				"Uno.UI.Lottie.setAnimationProperties({",
-				"elementId:",
-				player.HtmlId.ToString(),
-				",jsonPath:\"",
-				UriSource?.PathAndQuery ?? "",
-				"\",autoplay:",
-				player.AutoPlay ? "true" : "false",
-				",stretch:\"",
-				player.Stretch.ToString(),
-				"\",rate:",
-				player.PlaybackRate.ToString(),
-				"});"
-			};
+				string jsonString;
+
+				if (!uri.Equals(_loadedEmbeddedUri) && TryLoadEmbeddedJson(uri, out jsonString))
+				{
+					_loadedEmbeddedUri = uri;
+				}
+				else
+				{
+					jsonString = "null";
+				}
+
+				js = new[]
+				{
+					"Uno.UI.Lottie.setAnimationProperties({",
+					"elementId:",
+					player.HtmlId.ToString(),
+					",jsonPath: null",
+					",autoplay:",
+					player.AutoPlay ? "true" : "false",
+					",stretch:\"",
+					player.Stretch.ToString(),
+					"\",rate:",
+					player.PlaybackRate.ToString(),
+					"},",
+					jsonString,
+					");"
+				};
+			}
+			else
+			{
+
+				js = new[]
+				{
+					"Uno.UI.Lottie.setAnimationProperties({", "elementId:",
+					player.HtmlId.ToString(),
+					",jsonPath:\"",
+					UriSource?.PathAndQuery ?? "", "\",autoplay:",
+					player.AutoPlay ? "true" : "false", ",stretch:\"",
+					player.Stretch.ToString(),
+					"\",rate:",
+					player.PlaybackRate.ToString(), "});"
+				};
+			}
+
 			WebAssemblyRuntime.InvokeJS(string.Concat(js));
 			_isPlaying = player.AutoPlay;
 		}

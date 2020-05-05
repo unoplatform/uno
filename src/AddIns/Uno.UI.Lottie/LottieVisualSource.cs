@@ -1,10 +1,18 @@
 ﻿using System;
+using System.Buffers.Text;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using Uno;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
+using Uno.Extensions.Specialized;
+using Uno.Logging;
 using Uno.UI;
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
@@ -123,6 +131,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		Size IAnimatedVisualSource.Measure(Size availableSize)
 		{
 			var compositionSize = CompositionSize;
+			if (compositionSize == default)
+			{
+				return default;
+			}
+
 			var stretch = _player.Stretch;
 
 			if (stretch == Stretch.None)
@@ -149,6 +162,53 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			}
 
 			return availableSize;
+		}
+
+		private bool TryLoadEmbeddedJson(Uri uri, out string json)
+		{
+			if (uri.Scheme != "embedded")
+			{
+				json = null;
+				return false;
+			}
+
+			var assemblyName = uri.Host;
+
+			Assembly assembly;
+			if (assemblyName == ".")
+			{
+				assembly = Application.Current.GetType().Assembly;
+			}
+			else
+			{
+				assembly = AppDomain
+					.CurrentDomain.GetAssemblies()
+					.FirstOrDefault((Assembly a) =>
+						a.GetName().Name.Equals(assemblyName, StringComparison.OrdinalIgnoreCase));
+			}
+
+			if (assembly == null)
+			{
+				json = null;
+				return false;
+			}
+
+			var resourceName = uri.AbsolutePath.Substring(1).Replace("(assembly)", assembly.GetName().Name);
+			using var stream = assembly.GetManifestResourceStream(resourceName);
+			if (stream == null)
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn($"Unable to find embedded resource named '{resourceName}' to load.");
+				}
+				json = null;
+				return false;
+			}
+
+			var bytes = new byte[(int)stream.Length];
+			stream.Read(bytes, 0, bytes.Length);
+			json = Encoding.UTF8.GetString(bytes);
+			return true;
 		}
 	}
 }

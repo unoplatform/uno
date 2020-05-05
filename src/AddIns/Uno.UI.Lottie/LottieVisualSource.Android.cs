@@ -50,7 +50,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public bool UseHardwareAcceleration { get; set; } = true;
 
-		private string _lastPath = "";
+		private Uri _lastSource;
 
 		partial void InnerUpdate()
 		{
@@ -76,15 +76,25 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			void SetProperties()
 			{
-				var path = UriSource?.PathAndQuery ?? "";
-				if (path.StartsWith("/"))
+				var source = UriSource;
+				if(_lastSource == null || !_lastSource.Equals(source))
 				{
-					path = path.Substring(1);
-				}
-				if (_lastPath != path)
-				{
-					_animation.SetAnimation(path);
-					_lastPath = path;
+					_lastSource = source;
+
+					if (TryLoadEmbeddedJson(source, out var json))
+					{
+						_animation.SetAnimationFromJson(json, source.OriginalString);
+					}
+					else
+					{
+						var path = source?.PathAndQuery ?? "";
+						if (path.StartsWith("/"))
+						{
+							path = path.Substring(1);
+						}
+
+						_animation.SetAnimation(path);
+					}
 
 					if (player.AutoPlay)
 					{
