@@ -1,5 +1,6 @@
 ﻿using System;
 using Uno.Devices.Enumeration.Internal;
+using Windows.Storage.Streams;
 
 namespace Windows.Devices.Midi
 {
@@ -16,6 +17,34 @@ namespace Windows.Devices.Midi
 		/// </summary>
 		/// <returns>The query string used to enumerate the MidiOutPort objects on the system.</returns>
 		public static string GetDeviceSelector() => MidiOutAqsFilter;
+
+		/// <summary>
+		/// Send the data in the specified MIDI message to the device associated with this MidiOutPort.
+		/// </summary>
+		/// <param name="midiMessage">The MIDI message to send to the device.</param>
+		public void SendMessage(IMidiMessage midiMessage)
+		{
+			if (midiMessage is null)
+			{
+				throw new ArgumentNullException(nameof(midiMessage));
+			}
+
+			SendBufferInternal(midiMessage.RawData, midiMessage.Timestamp);
+		}
+
+		/// <summary>
+		///	Sends the contents of the buffer through the MIDI out port.
+		/// </summary>
+		/// <param name="midiData">The data to send to the device.</param>
+		public void SendBuffer(IBuffer midiData)
+		{
+			if (midiData is null)
+			{
+				throw new ArgumentNullException(nameof(midiData));
+			}
+
+			SendBufferInternal(midiData, TimeSpan.Zero);
+		}
 
 		private static DeviceIdentifier ValidateAndParseDeviceId(string deviceId)
 		{

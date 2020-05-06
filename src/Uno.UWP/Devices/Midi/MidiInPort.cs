@@ -1,4 +1,4 @@
-﻿#if __ANDROID__ || __IOS__ || __WASM__
+﻿using System;
 using Uno.Devices.Enumeration.Internal;
 
 namespace Windows.Devices.Midi
@@ -6,7 +6,7 @@ namespace Windows.Devices.Midi
 	/// <summary>
 	/// Represents a port used to receive MIDI messages from a MIDI device.
 	/// </summary>
-	public sealed partial  class MidiInPort : global::System.IDisposable
+	public sealed partial  class MidiInPort : IDisposable
 	{
 		private readonly static string MidiInAqsFilter =
 			"System.Devices.InterfaceClassGuid:=\"{" + DeviceClassGuids.MidiIn + "}\" AND System.Devices.InterfaceEnabled:=System.StructuredQueryType.Boolean#True";
@@ -18,4 +18,3 @@ namespace Windows.Devices.Midi
 		public static string GetDeviceSelector() => MidiInAqsFilter;
 	}
 }
-#endif

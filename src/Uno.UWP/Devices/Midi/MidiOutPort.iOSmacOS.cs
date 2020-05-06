@@ -33,27 +33,7 @@ namespace Windows.Devices.Midi
 		{
 			var completionSource = new TaskCompletionSource<MidiDevice>();
 			_port = _client.CreateOutputPort(_endpoint.EndpointName);
-		}
-
-		public void SendMessage(IMidiMessage midiMessage)
-		{
-			if (midiMessage is null)
-			{
-				throw new ArgumentNullException(nameof(midiMessage));
-			}
-
-			SendBufferInternal(midiMessage.RawData, midiMessage.Timestamp);
-		}
-
-		public void SendBuffer(IBuffer midiData)
-		{
-			if (midiData is null)
-			{
-				throw new ArgumentNullException(nameof(midiData));
-			}
-
-			SendBufferInternal(midiData, TimeSpan.Zero);
-		}
+		}		
 
 		public void Dispose()
 		{

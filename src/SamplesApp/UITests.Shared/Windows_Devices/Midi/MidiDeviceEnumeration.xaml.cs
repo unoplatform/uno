@@ -91,6 +91,10 @@ namespace UITests.Shared.Windows_Devices.Midi
 			{
 				this.Log().Error("Play");
 			}
+			if (SelectedOutputDeviceIndex < 0)
+			{
+				SelectedOutputDeviceIndex = 0;
+			}
 			if (SelectedOutputDeviceIndex >= 0)
 			{
 				var midiOutputQueryString = MidiOutPort.GetDeviceSelector();
