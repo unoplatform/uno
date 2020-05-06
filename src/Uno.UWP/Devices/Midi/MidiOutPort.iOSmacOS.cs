@@ -18,19 +18,17 @@ namespace Windows.Devices.Midi
 		private MidiClient _client;
 		private MidiPort _port;
 
-		private MidiOutPort(MidiEndpoint endpoint)
+		private MidiOutPort(string deviceId, MidiEndpoint endpoint)
 		{
+			DeviceId = deviceId;
 			_endpoint = endpoint;
 			_client = new MidiClient(Guid.NewGuid().ToString());
 		}
 
-		public string DeviceId { get; private set; }
-
-		internal async Task OpenAsync()
+		internal void Open()
 		{
-			var completionSource = new TaskCompletionSource<MidiDevice>();
 			_port = _client.CreateOutputPort(_endpoint.EndpointName);
-		}		
+		}
 
 		public void Dispose()
 		{
@@ -43,31 +41,29 @@ namespace Windows.Devices.Midi
 			_endpoint = null;
 		}
 
-		private static async Task<IMidiOutPort> FromIdInternalAsync(string deviceId)
+		private static async Task<IMidiOutPort> FromIdInternalAsync(DeviceIdentifier identifier)
 		{
-			var deviceIdentifier = ValidateAndParseDeviceId(deviceId);
-
 			var provider = new MidiOutDeviceClassProvider();
-			var nativeDeviceInfo = provider.GetNativeEndpoint(deviceIdentifier.Id);
+			var nativeDeviceInfo = provider.GetNativeEndpoint(identifier.Id);
 			if (nativeDeviceInfo == null)
 			{
 				throw new InvalidOperationException(
 					"Given MIDI out device does not exist or is no longer connected");
 			}
 
-			var port = new MidiOutPort(nativeDeviceInfo);
-			await port.OpenAsync();
+			var port = new MidiOutPort(identifier.ToString(), nativeDeviceInfo);
+			port.Open();
 			return port;
 		}
 
 		private void SendBufferInternal(IBuffer midiData, TimeSpan timestamp)
 		{
-            if (midiData is null)
-            {
-                throw new ArgumentNullException(nameof(midiData));
-            }
+			if (midiData is null)
+			{
+				throw new ArgumentNullException(nameof(midiData));
+			}
 
-            if (_port == null)
+			if (_port == null)
 			{
 				throw new InvalidOperationException("Output port is not initialized.");
 			}

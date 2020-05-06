@@ -33,7 +33,7 @@ namespace Windows.Devices.Midi
 		{
 			var deviceIdentifier = ValidateAndParseDeviceId(deviceId);
 			return FromIdInternalAsync(deviceIdentifier).AsAsyncOperation();
-		}		
+		}
 
 		/// <summary>
 		/// Send the data in the specified MIDI message to the device associated with this MidiOutPort.
@@ -81,6 +81,6 @@ namespace Windows.Devices.Midi
 			}
 
 			return deviceIdentifier;
-		}		
+		}
 	}
 }
