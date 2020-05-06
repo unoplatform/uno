@@ -3,10 +3,12 @@
 #if !NETSTANDARD2_0
 using System;
 using System.Collections.Generic;
+using System.Diagnostics.Contracts;
 using System.Linq;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Uno;
 using Uno.Extensions;
@@ -17,7 +19,6 @@ using Uno.UI;
 using static System.Double;
 using static System.Math;
 using static Uno.UI.LayoutHelper;
-using System.Diagnostics.Contracts;
 
 #if XAMARIN_ANDROID
 using Android.Views;
@@ -106,6 +107,7 @@ namespace Windows.UI.Xaml.Controls
 					.AtLeastZero()
 					.AtMost(maxSize);
 
+				LayoutInformation.SetAvailableSize(this, frameworkAvailableSize);
 				var desiredSize = MeasureOverride(frameworkAvailableSize);
 
 				_logDebug?.LogTrace($"{this}.MeasureOverride(availableSize={frameworkAvailableSize}): desiredSize={desiredSize}");
@@ -134,7 +136,7 @@ namespace Windows.UI.Xaml.Controls
 
 				// DesiredSize must include margins
 				// TODO: on UWP, it's not clipped. See test When_MinWidth_SmallerThan_AvailableSize
-				SetDesiredChildSize(Panel as View, clippedDesiredSize);
+				LayoutInformation.SetDesiredSize(Panel, clippedDesiredSize);
 
 				// We return "clipped" desiredSize to caller... the unclipped version stays internal
 				return clippedDesiredSize;
@@ -159,12 +161,9 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		public void Arrange(Rect finalRect)
 		{
-			var uiElement = Panel as UIElement;
+			LayoutInformation.SetLayoutSlot(Panel, finalRect);
 
-			if (uiElement != null)
-			{
-				uiElement.LayoutSlot = finalRect;
-			}
+			var uiElement = Panel as UIElement;
 
 			IDisposable traceActivity = null;
 			if (_trace.IsEnabled)
@@ -257,6 +256,10 @@ namespace Windows.UI.Xaml.Controls
 						fe.OnLayoutUpdated();
 					}
 				}
+				else if (Panel is IFrameworkElement_EffectiveViewport evp)
+				{
+					evp.OnLayoutUpdated();
+				}
 			}
 		}
 
@@ -274,9 +277,12 @@ namespace Windows.UI.Xaml.Controls
 		protected abstract Size ArrangeOverride(Size finalSize);
 
 		/// <summary>
-		/// Sets the desired child size back on the view. (Used in iOS which does not store measured size)
+		/// Provides the desired size of the element, from the last measure phase.
 		/// </summary>
-		partial void SetDesiredChildSize(View view, Size desiredSize);
+		/// <param name="view">The element to get the measured with</param>
+		/// <returns>The measured size</returns>
+		Size ILayouter.GetDesiredSize(View view)
+			=> LayoutInformation.GetDesiredSize(view);
 
 		protected Size MeasureChild(View view, Size slotSize)
 		{
@@ -292,7 +298,7 @@ namespace Windows.UI.Xaml.Controls
 				// We want the collapsed behavior, so we return a 0,0 size instead.
 
 				// Note: Visibility is checked in both Measure and MeasureChild, since some IFrameworkElement children may not have their own Layouter
-				SetDesiredChildSize(view, ret);
+				LayoutInformation.SetDesiredSize(view, ret);
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
@@ -418,7 +424,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// For native controls only - because it's already set in Layouter.Measure()
 				// for Uno's managed controls
-				SetDesiredChildSize(view, ret);
+				LayoutInformation.SetDesiredSize(view, ret);
 			}
 
 
@@ -521,7 +527,7 @@ namespace Windows.UI.Xaml.Controls
 					|| hasChildMinHeight
 					)
 				{
-					var desiredSize = DesiredChildSize(view);
+					var desiredSize = LayoutInformation.GetDesiredSize(view);
 
 					// Apply vertical alignment
 					if (

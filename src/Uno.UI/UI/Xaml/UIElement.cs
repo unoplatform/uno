@@ -32,7 +32,7 @@ using UIKit;
 
 namespace Windows.UI.Xaml
 {
-	public partial class UIElement : DependencyObject, IXUidProvider
+	public partial class UIElement : DependencyObject, IXUidProvider, IUIElementInternal
 	{
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
 		private XamlRoot _xamlRoot = null;
@@ -415,7 +415,23 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		internal Rect LayoutSlot { get; set; } = default;
+		/// <summary>
+		/// Backing property for <see cref="LayoutInformation.GetAvailableSize(UIElement)"/>
+		/// </summary>
+		Size IUIElementInternal.LastAvailableSize { get; set; }
+		/// <summary>
+		/// Gets the 'availableSize' of the last Measure
+		/// </summary>
+		internal Size LastAvailableSize { get; set; }
+
+		/// <summary>
+		/// Backing property for <see cref="LayoutInformation.GetLayoutSlot(FrameworkElement)"/>
+		/// </summary>
+		Rect IUIElementInternal.LayoutSlot { get; set; }
+		/// <summary>
+		/// Gets the 'finalSize' of the last Arrange
+		/// </summary>
+		internal Rect LayoutSlot => ((IUIElementInternal)this).LayoutSlot;
 
 		internal Rect LayoutSlotWithMarginsAndAlignments { get; set; } = default;
 
@@ -423,17 +439,16 @@ namespace Windows.UI.Xaml
 
 #if !NETSTANDARD
 		/// <summary>
-		/// Backing property for <see cref="Windows.UI.Xaml.Controls.Primitives.LayoutInformation.GetAvailableSize(UIElement)"/>
+		/// Backing property for <see cref="LayoutInformation.GetDesiredSize(UIElement)"/>
 		/// </summary>
-		internal Size LastAvailableSize { get; set; }
-
+		Size IUIElementInternal.DesiredSize { get; set; }
 		/// <summary>
 		/// Provides the size reported during the last call to Measure.
 		/// </summary>
 		/// <remarks>
 		/// DesiredSize INCLUDES MARGINS.
 		/// </remarks>
-		public Size DesiredSize { get; internal set; }
+		public Size DesiredSize => ((IUIElementInternal)this).DesiredSize;
 
 		/// <summary>
 		/// Provides the size reported during the last call to Arrange (i.e. the ActualSize)

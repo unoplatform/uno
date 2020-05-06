@@ -1,6 +1,7 @@
 ﻿#if !__NETSTD_REFERENCE__
 using Windows.Foundation;
 using System;
+using Windows.UI.Xaml.Controls.Primitives;
 
 namespace Windows.UI.Xaml
 {
@@ -8,7 +9,6 @@ namespace Windows.UI.Xaml
 	{
 		private Size _size;
 		private Size _desiredSize;
-		private Size _previousAvailableSize;
 
 		private bool _isMeasureValid = false;
 		private bool _isArrangeValid = false;
@@ -19,11 +19,6 @@ namespace Windows.UI.Xaml
 
 		internal bool IsMeasureDirty => !_isMeasureValid;
 		internal bool IsArrangeDirty => !_isArrangeValid;
-
-		/// <summary>
-		/// Backing property for <see cref="Windows.UI.Xaml.Controls.Primitives.LayoutInformation.GetAvailableSize(UIElement)"/>
-		/// </summary>
-		internal Size LastAvailableSize => _previousAvailableSize;
 
 		/// <summary>
 		/// When set, measure and invalidate requests will not be propagated further up the visual tree, ie they won't trigger a relayout.
@@ -87,14 +82,14 @@ namespace Windows.UI.Xaml
 				throw new InvalidOperationException($"Cannot measure [{GetType()}] with NaN");
 			}
 
-			var isCloseToPreviousMeasure = availableSize == _previousAvailableSize;
+			var isCloseToPreviousMeasure = availableSize == LastAvailableSize;
 
 			if (Visibility == Visibility.Collapsed)
 			{
 				if (!isCloseToPreviousMeasure)
 				{
 					_isMeasureValid = false;
-					_previousAvailableSize = availableSize;
+					LayoutInformation.SetAvailableSize(this, availableSize);
 				}
 
 				return;
@@ -108,7 +103,7 @@ namespace Windows.UI.Xaml
 			InvalidateArrange();
 
 			MeasureCore(availableSize);
-			_previousAvailableSize = availableSize;
+			LayoutInformation.SetAvailableSize(this, availableSize);
 			_isMeasureValid = true;
 		}
 
@@ -121,7 +116,7 @@ namespace Windows.UI.Xaml
 
 			if (Visibility == Visibility.Collapsed || finalRect == default)
 			{
-				LayoutSlot = finalRect;
+				LayoutInformation.SetLayoutSlot(this, finalRect);
 				HideVisual();
 				return;
 			}
@@ -130,7 +125,7 @@ namespace Windows.UI.Xaml
 			{
 				ShowVisual(); 
 				ArrangeCore(finalRect);
-				LayoutSlot = finalRect;
+				LayoutInformation.SetLayoutSlot(this, finalRect);
 				_isArrangeValid = true;
 			}
 		}
