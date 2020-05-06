@@ -20,10 +20,10 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(PasswordCharProperty, value);
 			}
 		}
-		#endif
+#endif
 		// Skipping already declared property Password
 		// Skipping already declared property MaxLength
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  bool IsPasswordRevealButtonEnabled
 		{
@@ -36,8 +36,8 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(IsPasswordRevealButtonEnabledProperty, value);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.SolidColorBrush SelectionHighlightColor
 		{
@@ -134,17 +134,17 @@ namespace Windows.UI.Xaml.Controls
 				return (bool)this.GetValue(CanPasteClipboardContentProperty);
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsPasswordRevealButtonEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
 			"IsPasswordRevealButtonEnabled", typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(bool)));
-		#endif
+#endif
 		// Skipping already declared property MaxLengthProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PasswordCharProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(

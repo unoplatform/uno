@@ -16,8 +16,8 @@
 	</PropertyGroup>
 
 	<ItemGroup>
-		<Content Include="..\UnoQuickStart.UWP\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />
-		<Content Include="..\UnoQuickStart.UWP\*.png" Link="%(FileName)%(Extension)" />
+		<Content Include="..\UnoXFQuickStart.UWP\Assets\*.png" Link="Assets\%(FileName)%(Extension)" />
+		<Content Include="..\UnoXFQuickStart.UWP\*.png" Link="%(FileName)%(Extension)" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -30,14 +30,14 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<ProjectReference Include="..\UnoQuickStart\UnoQuickStart.csproj" />
+		<ProjectReference Include="..\UnoXFQuickStart\UnoXFQuickStart.csproj" />
 	</ItemGroup>
 
 	<ItemGroup>
-		<Compile Include="../UnoQuickStart.UWP/*.xaml.cs">
+		<Compile Include="../UnoXFQuickStart.UWP/*.xaml.cs">
 			<DependentUpon>%(FileName)</DependentUpon>
 		</Compile>
-		<Page Include="../UnoQuickStart.UWP/*.xaml" />
+		<Page Include="../UnoXFQuickStart.UWP/*.xaml" />
 	</ItemGroup>
 
 	<ItemGroup>

@@ -2,7 +2,7 @@
 using Windows.UI.Xaml;
 using Microsoft.Extensions.Logging;
 
-namespace UnoQuickStart.Wasm
+namespace UnoXFQuickStart.Wasm
 {
 	public class Program
 	{
@@ -10,7 +10,7 @@ namespace UnoQuickStart.Wasm
 		{
             ConfigureFilters(Uno.Extensions.LogExtensionPoint.AmbientLoggerFactory);
 
-            Windows.UI.Xaml.Application.Start(_ => new UnoQuickStart.UWP.App());
+            Windows.UI.Xaml.Application.Start(_ => new UnoXFQuickStart.UWP.App());
 
 			return 0;
 		}

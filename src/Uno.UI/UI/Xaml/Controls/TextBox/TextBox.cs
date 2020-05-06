@@ -29,13 +29,12 @@ namespace Windows.UI.Xaml.Controls
 		public const string ContentElementPartName = "ContentElement";
 		public const string PlaceHolderPartName = "PlaceholderTextContentPresenter";
 		public const string DeleteButtonPartName = "DeleteButton";
+		public const string ButtonVisibleStateName = "ButtonVisible";
+		public const string ButtonCollapsedStateName = "ButtonCollapsed";
 	}
 
 	public partial class TextBox : Control, IFrameworkTemplatePoolAware
 	{
-		private const string ButtonVisibleStateName = "ButtonVisible";
-		private const string ButtonCollapsedStateName = "ButtonCollapsed";
-
 #pragma warning disable CS0067, CS0649
 		private IFrameworkElement _placeHolder;
 		private ContentControl _contentElement;
@@ -43,7 +42,7 @@ namespace Windows.UI.Xaml.Controls
 #pragma warning restore CS0067, CS0649
 
 		private ContentPresenter _header;
-		private bool _isPassword;
+		protected private bool _isButtonEnabled = true;
 
 		public event TextChangedEventHandler TextChanged;
 		public event TypedEventHandler<TextBox, TextBoxTextChangingEventArgs> TextChanging;
@@ -71,17 +70,11 @@ namespace Windows.UI.Xaml.Controls
 
 		public TextBox()
 		{
-			_isPassword = false;
 			InitializeVisualStates();
 			this.RegisterParentChangedCallback(this, OnParentChanged);
 		}
 
 		private void OnParentChanged(object instance, object key, DependencyObjectParentChangedEventArgs args) => UpdateFontPartial();
-
-		protected TextBox(bool isPassword)
-		{
-			_isPassword = isPassword;
-		}
 
 		private void InitializeProperties()
 		{
@@ -656,7 +649,8 @@ namespace Windows.UI.Xaml.Controls
 				this.Log().LogDebug(nameof(UpdateButtonStates));
 			}
 
-			if (Text.HasValue()
+			if (_isButtonEnabled
+				&& Text.HasValue()
 				&& FocusState != FocusState.Unfocused
 				&& !IsReadOnly
 				&& !AcceptsReturn
@@ -664,11 +658,11 @@ namespace Windows.UI.Xaml.Controls
 			// TODO (https://github.com/unoplatform/uno/issues/683): && ActualWidth >= TDB / Note: We also have to invoke this method on SizeChanged
 			)
 			{
-				VisualStateManager.GoToState(this, ButtonVisibleStateName, true);
+				VisualStateManager.GoToState(this, TextBoxConstants.ButtonVisibleStateName, true);
 			}
 			else
 			{
-				VisualStateManager.GoToState(this, ButtonCollapsedStateName, true);
+				VisualStateManager.GoToState(this, TextBoxConstants.ButtonCollapsedStateName, true);
 			}
 		}
 
