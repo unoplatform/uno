@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
 using System.Web;
@@ -12,6 +13,7 @@ using Uno.Extensions;
 using Uno.Logging;
 using Windows.Devices.Enumeration;
 using Windows.Foundation;
+using Windows.Storage.Streams;
 using static Uno.Foundation.WebAssemblyRuntime;
 
 namespace Windows.Devices.Midi
@@ -19,55 +21,29 @@ namespace Windows.Devices.Midi
 	public partial class MidiOutPort
 	{
 		private const string JsType = "Windows.Devices.Midi.MidiOutPort";
-		private readonly string _deviceId;
+		private readonly string _wasmId;
 
-		public MidiOutPort(string deviceId)
+		public MidiOutPort(string deviceId, string wasmId)
 		{
-			_deviceId = deviceId;
+			DeviceId = deviceId;
+			_wasmId = wasmId;
 		}
 
-		public static IAsyncOperation<IMidiOutPort> FromIdAsync(string deviceId) =>
-			FromIdInternalAsync(deviceId).AsAsyncOperation();
-
-		private static async Task<IMidiOutPort> FromIdInternalAsync(string deviceId)
+		public void Dispose()
 		{
-			var obj = new object();
-			var parsedIdentifier = DeviceInformation.ParseDeviceId(deviceId);
-
-			if (obj.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
-			{
-				obj.Log().Error(parsedIdentifier.deviceClassGuid);
-			}
-
-			if (!parsedIdentifier.deviceClassGuid.Equals(DeviceClassGuids.MidiOut, StringComparison.InvariantCultureIgnoreCase))
-			{
-				throw new InvalidOperationException("Given device is not a MIDI out device");
-			}
-
-			//TODO: verify the device exists at time of creation
-			if (obj.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
-			{
-				obj.Log().Error("Created device");
-			}
-			return new MidiOutPort(parsedIdentifier.id);
 		}
 
-		public void SendMessage(IMidiMessage midiMessage)
+		public void SendBufferInternal(IBuffer midiBuffer, TimeSpan timestamp)
 		{
-			if (midiMessage is MidiNoteOnMessage noteOn)
-			{
-				var command = $"{JsType}.sendNoteMessage(\"{Uri.EscapeDataString(_deviceId)}\",{(int)noteOn.Type},{noteOn.Note},{noteOn.Velocity})";
-				InvokeJS(command);
-			}
-			else if (midiMessage is MidiNoteOffMessage noteOff)
-			{
-				var command = $"{JsType}.sendNoteMessage(\"{Uri.EscapeDataString(_deviceId)}\",{(int)noteOff.Type},{noteOff.Note},{noteOff.Velocity})";
-				InvokeJS(command);
-			}
-			else
-			{
-				throw new NotSupportedException("This message is not supported yet");
-			}
+			var data = midiBuffer.ToArray();
+			var byteString = string.Join(",", data);
+			var command = $"{JsType}.sendBuffer(\"{Uri.EscapeDataString(_wasmId)}\",{timestamp.TotalMilliseconds},{byteString})";
+			InvokeJS(command);
+		}
+
+		private static async Task<IMidiOutPort> FromIdInternalAsync(DeviceIdentifier identifier)
+		{
+			return new MidiOutPort(identifier.ToString(), identifier.Id);
 		}
 	}
 }

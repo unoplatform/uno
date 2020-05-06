@@ -1,5 +1,6 @@
 ﻿using System;
 using Uno.Devices.Enumeration.Internal;
+using Windows.Foundation;
 using Windows.Storage.Streams;
 
 namespace Windows.Devices.Midi
@@ -13,10 +14,26 @@ namespace Windows.Devices.Midi
 			"System.Devices.InterfaceClassGuid:=\"{" + DeviceClassGuids.MidiOut + "}\" AND System.Devices.InterfaceEnabled:=System.StructuredQueryType.Boolean#True";
 
 		/// <summary>
+		/// Gets the id of the device that was used to initialize the MidiOutPort.
+		/// </summary>
+		public string DeviceId { get; private set; }
+
+		/// <summary>
 		/// Gets a query string that can be used to enumerate all MidiOutPort objects on the system.
 		/// </summary>
 		/// <returns>The query string used to enumerate the MidiOutPort objects on the system.</returns>
 		public static string GetDeviceSelector() => MidiOutAqsFilter;
+
+		/// <summary>
+		/// Creates a MidiOutPort object for the specified device.
+		/// </summary>
+		/// <param name="deviceId">The device ID, which can be obtained by enumerating the devices on the system</param>
+		/// <returns>The asynchronous operation. Upon completion, IAsyncOperation.GetResults returns a MidiOutPort object.</returns>
+		public static IAsyncOperation<IMidiOutPort> FromIdAsync(string deviceId)
+		{
+			var deviceIdentifier = ValidateAndParseDeviceId(deviceId);
+			return FromIdInternalAsync(deviceIdentifier).AsAsyncOperation();
+		}		
 
 		/// <summary>
 		/// Send the data in the specified MIDI message to the device associated with this MidiOutPort.

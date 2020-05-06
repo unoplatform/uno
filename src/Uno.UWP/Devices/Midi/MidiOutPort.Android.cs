@@ -11,6 +11,7 @@ using Uno.Devices.Midi.Internal;
 using Uno.UI;
 using Windows.Devices.Enumeration;
 using Windows.Foundation;
+using Windows.Storage.Streams;
 
 namespace Windows.Devices.Midi
 {
@@ -27,12 +28,14 @@ namespace Windows.Devices.Midi
 		private MidiDevice _midiDevice = null;
 
 		private MidiOutPort(
+			string deviceId,
 			MidiDeviceInfo deviceInfo,
 			MidiDeviceInfo.PortInfo portInfo)
 		{
 			_midiManager = ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>();
-			_deviceInfo = deviceInfo;
-			_portInfo = portInfo;
+			DeviceId = deviceId ?? throw new ArgumentNullException(nameof(deviceId));
+			_deviceInfo = deviceInfo ?? throw new ArgumentNullException(nameof(deviceInfo));
+			_portInfo = portInfo ?? throw new ArgumentNullException(nameof(portInfo));
 		}
 
 		internal async Task OpenAsync()
@@ -47,19 +50,14 @@ namespace Windows.Devices.Midi
 			}
 		}
 
-		public string DeviceId { get; private set; }
-
-		public static IAsyncOperation<IMidiOutPort> FromIdAsync(string deviceId) =>
-			FromIdInternalAsync(deviceId).AsAsyncOperation();
-
-		public void SendMessage(IMidiMessage midiMessage)
+		public void SendBufferInternal(IBuffer midiBuffer, TimeSpan timestamp)
 		{
 			if (_midiPort == null)
 			{
 				throw new InvalidOperationException("Output port is not initialized.");
 			}
-			var data = midiMessage.RawData.ToArray();
-			_midiPort.Send(data, 0, data.Length);
+			var data = midiBuffer.ToArray();
+			_midiPort.Send(data, 0, data.Length, timestamp.Ticks);
 		}
 
 		public void Dispose()
@@ -70,18 +68,16 @@ namespace Windows.Devices.Midi
 			_midiManager?.Dispose();
 		}
 
-		private static async Task<IMidiOutPort> FromIdInternalAsync(string deviceId)
-		{
-			var deviceIdentifier = ValidateAndParseDeviceId(deviceId);
-
+		private static async Task<IMidiOutPort> FromIdInternalAsync(DeviceIdentifier identifier)
+		{			
 			var provider = new MidiOutDeviceClassProvider();
-			var nativeDeviceInfo = provider.GetNativeDeviceInfo(deviceIdentifier.Id);
+			var nativeDeviceInfo = provider.GetNativeDeviceInfo(identifier.Id);
 			if (nativeDeviceInfo == (null, null))
 			{
 				throw new InvalidOperationException("Given MIDI out device does not exist");
 			}
 
-			var port = new MidiOutPort(nativeDeviceInfo.device, nativeDeviceInfo.port);
+			var port = new MidiOutPort(identifier.ToString(), nativeDeviceInfo.device, nativeDeviceInfo.port);
 			await port.OpenAsync();
 			return port;
 		}

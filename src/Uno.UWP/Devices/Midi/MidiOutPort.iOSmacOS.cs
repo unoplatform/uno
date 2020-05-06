@@ -26,9 +26,6 @@ namespace Windows.Devices.Midi
 
 		public string DeviceId { get; private set; }
 
-		public static IAsyncOperation<IMidiOutPort> FromIdAsync(string deviceId) =>
-			FromIdInternalAsync(deviceId).AsAsyncOperation();
-
 		internal async Task OpenAsync()
 		{
 			var completionSource = new TaskCompletionSource<MidiDevice>();
@@ -65,7 +62,12 @@ namespace Windows.Devices.Midi
 
 		private void SendBufferInternal(IBuffer midiData, TimeSpan timestamp)
 		{
-			if (_port == null)
+            if (midiData is null)
+            {
+                throw new ArgumentNullException(nameof(midiData));
+            }
+
+            if (_port == null)
 			{
 				throw new InvalidOperationException("Output port is not initialized.");
 			}
