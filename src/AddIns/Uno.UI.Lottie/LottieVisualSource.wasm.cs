@@ -82,6 +82,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			WebAssemblyRuntime.InvokeJS(string.Concat(js));
 			_isPlaying = player.AutoPlay;
 
+			ApplyPlayState();
+		}
+
+		private void ApplyPlayState()
+		{
 			if (_playState != null)
 			{
 				var (fromProgress, toProgress, looped) = _playState.Value;
@@ -184,6 +189,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				return;
 			}
+
 			var js = new[]
 			{
 				"Uno.UI.Lottie.resume(",
@@ -218,6 +224,9 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			{
 				return;
 			}
+
+			ApplyPlayState();
+
 			if (!_isPlaying)
 			{
 				return;
