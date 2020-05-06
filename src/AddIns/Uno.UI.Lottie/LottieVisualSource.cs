@@ -187,10 +187,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			}
 			else
 			{
-				assembly = AppDomain
-					.CurrentDomain.GetAssemblies()
-					.FirstOrDefault((Assembly a) =>
-						a.GetName().Name.Equals(assemblyName, StringComparison.OrdinalIgnoreCase));
+				assembly = Assembly.Load(assemblyName);
 			}
 
 			if (assembly == null)
