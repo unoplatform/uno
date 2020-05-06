@@ -8,14 +8,11 @@ namespace Windows.UI.Xaml
 	public partial class UIElement : DependencyObject
 	{
 		private Size _size;
-		private Size _desiredSize;
 
 		private bool _isMeasureValid = false;
 		private bool _isArrangeValid = false;
 
-		public Size DesiredSize => Visibility == Visibility.Collapsed ? new Size(0, 0) : _desiredSize;
-
-		internal void SetDesiredSize(Size desiredSize) => _desiredSize = desiredSize;
+		public Size DesiredSize => Visibility == Visibility.Collapsed ? new Size(0, 0) : ((IUIElementInternal)this).DesiredSize;
 
 		internal bool IsMeasureDirty => !_isMeasureValid;
 		internal bool IsArrangeDirty => !_isArrangeValid;

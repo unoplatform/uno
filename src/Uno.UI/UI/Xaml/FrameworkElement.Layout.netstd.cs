@@ -7,6 +7,7 @@ using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
 using Uno.Logging;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
 using Microsoft.Extensions.Logging;
 using Uno.UI;
 using static System.Math;
@@ -111,7 +112,7 @@ namespace Windows.UI.Xaml
 				.AtLeastZero();
 
 			// DesiredSize must include margins
-			SetDesiredSize(clippedDesiredSize);
+			LayoutInformation.SetDesiredSize(this, clippedDesiredSize);
 
 			_logDebug?.Debug($"{DepthIndentation}[{FormatDebugName()}] Measure({Name}/{availableSize}/{Margin}) = {clippedDesiredSize} _unclippedDesiredSize={_unclippedDesiredSize}");
 		}

@@ -422,7 +422,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Gets the 'availableSize' of the last Measure
 		/// </summary>
-		internal Size LastAvailableSize { get; set; }
+		internal Size LastAvailableSize => ((IUIElementInternal)this).LastAvailableSize;
 
 		/// <summary>
 		/// Backing property for <see cref="LayoutInformation.GetLayoutSlot(FrameworkElement)"/>
@@ -437,11 +437,12 @@ namespace Windows.UI.Xaml
 
 		internal bool NeedsClipToSlot { get; set; }
 
-#if !NETSTANDARD
 		/// <summary>
 		/// Backing property for <see cref="LayoutInformation.GetDesiredSize(UIElement)"/>
 		/// </summary>
 		Size IUIElementInternal.DesiredSize { get; set; }
+
+#if !NETSTANDARD
 		/// <summary>
 		/// Provides the size reported during the last call to Measure.
 		/// </summary>
