@@ -855,6 +855,9 @@
 			  <Member
 				  fullName="System.Void Windows.UI.Xaml.Controls.NativePage.set_Style(Windows.UI.Xaml.Style value)"
 				  reason="Removed unused non-standard property"/>
+			  <Member
+				  fullName="System.Void Windows.UI.Xaml.NativeApplication..ctor(Windows.UI.Xaml.Application app, System.IntPtr javaReference, Android.Runtime.JniHandleOwnership transfer)"
+				  reason="This ctor is superceded by the version that takes a function. It's removed because it causes a crash with the new theme handling."/>
 			<!-- ^^ Styles overhaul -->
 
 			</Methods>
