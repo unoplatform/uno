@@ -6,41 +6,19 @@
 <#@ import namespace="System.Collections.Generic" #>
 <#@ import namespace="System.Text.RegularExpressions" #>
 
+<#@include file="..\..\UI\Xaml\IFrameworkElement.Partials.tt"#>
 <#
-	var partialsIncludes = new string[]
-	{
-		Host.ResolvePath(@"..\..\UI\Xaml\FrameworkElement.EffectiveViewport.cs"),
-	};
-
-	var types = new string[]
-	{
+	GenerateDefaultPartialClasses(
 		"Windows.UI.Xaml.Controls.Image",
 		"Windows.UI.Xaml.Controls.NativeListViewBase",
 		"Windows.UI.Xaml.Controls.NativePagedView",
 		"Windows.UI.Xaml.Controls.ProgressRing",
 		"Windows.UI.Xaml.Controls.ScrollContentPresenter",
-		"Windows.UI.Xaml.Controls.TextBoxView",
-	};
-
-	foreach(var include in partialsIncludes)
-	foreach(var type in types)
-	{
-		var typeParts = type.Split('.');
-		var spaceName = string.Join(".", typeParts.Take(typeParts.Length - 1));
-		var className = typeParts.Last();
-
-		var partialContent = System.IO.File.ReadAllText(include);
-		partialContent = "#define TEMPLATED\r\n" + partialContent;
-		partialContent = Regex.Replace(partialContent, @"^using _This\s*=.*$", $"using _This = {type};", RegexOptions.Multiline);
-		partialContent = Regex.Replace(partialContent, @"^namespace [a-zA-Z0-9_\.\s]+$", $"namespace {spaceName}", RegexOptions.Multiline);
-		partialContent = Regex.Replace(partialContent, @"partial class [a-zA-Z0-9_]+", $"partial class {className}", RegexOptions.Multiline);
-
-		var targetFile = Path.Combine(Path.GetDirectoryName(Host.TemplateFile), $"{className}.{Path.GetFileName(include)}");
-		File.WriteAllText(targetFile, partialContent);
-	}
+		"Windows.UI.Xaml.Controls.TextBoxView"
+	);
 #>
 
-#if XAMARIN_ANDROID
+#if __ANDROID__
 <#
 	AddClass("Windows.UI.Xaml", "FrameworkElement", overridesAttachedToWindow:true, overridesOnLayout: false, isUnoMotionTarget: true, hasLayouter: true);
 	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase", isUnoMotionTarget: true);

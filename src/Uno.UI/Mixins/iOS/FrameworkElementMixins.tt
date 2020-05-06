@@ -1,13 +1,27 @@
-﻿<#@template language="C#"#>
+﻿<#@template language="C#" hostspecific="True" #>
 <#@output extension="g.cs" #>
+
+<#@include file="..\..\UI\Xaml\IFrameworkElement.Partials.tt"#>
+<#
+	GenerateDefaultPartialClasses(
+		"Windows.UI.Xaml.Controls.Image",
+		"Windows.UI.Xaml.Controls.NativeListViewBase",
+		"Windows.UI.Xaml.Controls.MultilineTextBoxView",
+		"Windows.UI.Xaml.Controls.Picker",
+		"Windows.UI.Xaml.Controls.ProgressRing",
+		"Windows.UI.Xaml.Controls.ScrollContentPresenter",
+		"Windows.UI.Xaml.Controls.SinglelineTextBoxView"
+	);
+#>
+
 #if __IOS__
 <# 
-	AddClass("Windows.UI.Xaml.Controls", "SinglelineTextBoxView", isUIControl: true, hasAttachedToWindow: true, overridesAttachedToWindow: false, isNewBackground: true);
-	AddClass("Windows.UI.Xaml.Controls", "MultilineTextBoxView", isUIControl: false, hasAttachedToWindow: true, overridesAttachedToWindow: false, isNewBackground: false);
 	AddClass("Windows.UI.Xaml", "FrameworkElement", defineSetNeedsLayout: false, defineLayoutSubviews: false, hasAttachedToWindow: false, overridesAttachedToWindow: true, hasLayouter: true);
 	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false);
-	AddClass("Uno.UI.Controls.Legacy", "ListViewBase", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false);
+	AddClass("Windows.UI.Xaml.Controls", "MultilineTextBoxView", isUIControl: false, hasAttachedToWindow: true, overridesAttachedToWindow: false, isNewBackground: false);
 	AddClass("Windows.UI.Xaml.Controls", "Picker", hasAttachedToWindow: true);
+	AddClass("Windows.UI.Xaml.Controls", "SinglelineTextBoxView", isUIControl: true, hasAttachedToWindow: true, overridesAttachedToWindow: false, isNewBackground: true);
+	AddClass("Uno.UI.Controls.Legacy", "ListViewBase", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false);
 #>
 <#@include file="..\..\UI\Xaml\IFrameworkElementImplementation.iOS.tt"#>
 #endif

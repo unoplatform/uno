@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Windows.Foundation;
+using Windows.UI.Xaml.Controls.Primitives;
 using Uno;
 using Uno.Disposables;
 using Uno.Extensions;
@@ -18,7 +19,8 @@ namespace Windows.UI.Xaml
 	{
 		void InitializeEffectiveViewport();
 		IDisposable RequestViewportUpdates(IFrameworkElement_EffectiveViewport child = null);
-		void OnParentViewportChanged(UIElement parent, Rect viewport, bool isInitial = false);
+		void OnParentViewportChanged(IFrameworkElement_EffectiveViewport parent, Rect viewport, bool isInitial = false);
+		void OnLayoutUpdated();
 	}
 #endif
 
@@ -47,7 +49,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		// ctor
+		// ctor (invoked by IFrameworkElement.Initialize())
 		void IFrameworkElement_EffectiveViewport.InitializeEffectiveViewport()
 		{
 			Loaded += ReconfigureViewportPropagationOnLoad;
@@ -121,7 +123,7 @@ namespace Windows.UI.Xaml
 		/// Used by a parent element to propagate down the viewport change
 		/// </summary>
 		void IFrameworkElement_EffectiveViewport.OnParentViewportChanged(
-			UIElement parent, // We propagate the parent to avoid costly lookup and useless casting
+			IFrameworkElement_EffectiveViewport parent, // We propagate the parent to avoid costly lookup
 			Rect viewport, // Be aware tht it might be empty ([+∞,+∞,-∞,-∞]) if not clipped
 			bool isInitial) // Indicates that this update is only intended to initiate the _parentViewport
 		{
@@ -132,9 +134,14 @@ namespace Windows.UI.Xaml
 				return;
 			}
 
-			var viewportInLocalCoordinates = viewport.IsEmpty
-				? viewport
-				: GetTransform(this, parent).Transform(viewport);
+#if IS_NATIVE_ELEMENT // No RenderTransform on native elements
+			var viewportInLocalCoordinates = viewport;
+#else
+			var viewportInLocalCoordinates = !viewport.IsEmpty && parent is UIElement parentElt
+				? GetTransform(this, parentElt).Transform(viewport)
+				: viewport;
+#endif
+
 			if (viewportInLocalCoordinates == _parentViewport)
 			{
 				return;
@@ -144,7 +151,14 @@ namespace Windows.UI.Xaml
 			PropagateEffectiveViewportChange(isInitial);
 		}
 
-		private protected sealed override void OnViewportUpdated(Rect viewport) // a.k.a. OnLayoutUpdated
+#if IS_NATIVE_ELEMENT
+		// Native elements cannot be clipped (using Uno), so the _localViewport will always be an empty rect, and we only react to LayoutSlot updates
+		void IFrameworkElement_EffectiveViewport.OnLayoutUpdated()
+			=> PropagateEffectiveViewportChange();
+#else
+		void IFrameworkElement_EffectiveViewport.OnLayoutUpdated() { }  // Nothing to do here: this won't be invoked for real FrameworkElement, instead we receive OnViewportUpdated
+
+		private protected sealed override void OnViewportUpdated(Rect viewport) // a.k.a. OnLayoutUpdated / OnClippingApplied
 		{
 			// Always keep it up-to-date, so if effective viewport is enable later, we will have a valid value.
 			_localViewport = viewport;
@@ -152,6 +166,7 @@ namespace Windows.UI.Xaml
 			// Even if the viewport didn't changed, the LayoutSlot might have changed!
 			PropagateEffectiveViewportChange();
 		}
+#endif
 
 		private Rect GetEffectiveViewport()
 		{
@@ -177,6 +192,7 @@ namespace Windows.UI.Xaml
 					width: Math.Min(_localViewport.Width, _parentViewport.Width.FiniteOrDefault(double.PositiveInfinity)),
 					height: Math.Min(_localViewport.Height, _parentViewport.Height.FiniteOrDefault(double.PositiveInfinity)));
 
+#if !IS_NATIVE_ELEMENT // Only true-UIElement can register as scroller.
 				// This element is also acting as scroller, so we also have to apply the local scroll offsets.
 				// Note: Those offsets should probably be part of the _localViewport (Frame vs. Bounds),
 				//		 but for now we supports only the internal controls that are able to set the internal ScrollOffsets property.
@@ -185,6 +201,7 @@ namespace Windows.UI.Xaml
 					viewport.X += ScrollOffsets.X;
 					viewport.Y += ScrollOffsets.Y;
 				}
+#endif
 			}
 
 			return viewport;
@@ -198,10 +215,10 @@ namespace Windows.UI.Xaml
 			}
 
 			var viewport = GetEffectiveViewport();
-			var slot = LayoutSlot;
+			var slot = LayoutInformation.GetLayoutSlot(this); // a.k.a. the implicit viewport to use if none was defined by any parent (usually only few elements at the top of the tree)
 
 			var isViewportUpdate = _lastEffectiveViewport != viewport;
-			var isSlotUpdate = _lastEffectiveSlot != LayoutSlot;
+			var isSlotUpdate = _lastEffectiveSlot != slot;
 
 			_lastEffectiveViewport = viewport;
 			_lastEffectiveSlot = slot;
@@ -227,6 +244,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
+#if !IS_NATIVE_ELEMENT
 		[NotImplemented] // Supported only for internal elements, cf. comment below
 		protected void InvalidateViewport()
 		{
@@ -239,5 +257,6 @@ namespace Windows.UI.Xaml
 			// but for now the clipping we support only internal controls that can set the ScrollOffsets property on UIElement.
 			PropagateEffectiveViewportChange();
 		}
+#endif
 	}
 }
