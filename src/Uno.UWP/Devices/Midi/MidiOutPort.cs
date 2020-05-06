@@ -16,5 +16,25 @@ namespace Windows.Devices.Midi
 		/// </summary>
 		/// <returns>The query string used to enumerate the MidiOutPort objects on the system.</returns>
 		public static string GetDeviceSelector() => MidiOutAqsFilter;
+
+		private static DeviceIdentifier ValidateAndParseDeviceId(string deviceId)
+		{
+			if (deviceId is null)
+			{
+				throw new ArgumentNullException(nameof(deviceId));
+			}
+
+			if (!DeviceIdentifier.TryParse(deviceId, out var deviceIdentifier))
+			{
+				throw new ArgumentException("Device identifier is not valid", nameof(deviceId));
+			}
+
+			if (deviceIdentifier.DeviceClass != DeviceClassGuids.MidiOut)
+			{
+				throw new InvalidOperationException("Given device is not a MIDI out device");
+			}
+
+			return deviceIdentifier;
+		}		
 	}
 }

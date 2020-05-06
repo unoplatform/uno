@@ -17,14 +17,14 @@ namespace Windows.Devices.Midi
 			}
 		}
 		#endif
-		#if false || __IOS__ || NET461 || false || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  void SendMessage( global::Windows.Devices.Midi.IMidiMessage midiMessage)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Midi.MidiOutPort", "void MidiOutPort.SendMessage(IMidiMessage midiMessage)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || false || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public  void SendBuffer( global::Windows.Storage.Streams.IBuffer midiData)
 		{

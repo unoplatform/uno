@@ -64,23 +64,35 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			WatchStopped?.Invoke(this, null);
 		}
 
-		//internal (MidiDeviceInfo device, MidiDeviceInfo.PortInfo port) GetNativeDeviceInfo(string midiDeviceId)
-		//{
-		//	var parsed = ParseMidiDeviceId(midiDeviceId);
-		//	using (var midiManager = ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>())
-		//	{
-		//		return midiManager
-		//			.GetDevices()
-		//			.Where(d => d.Id == parsed.id)
-		//			.SelectMany(d =>
-		//				d.GetPorts()
-		//					.Where(p =>
-		//						p.Type == _portType &&
-		//						p.PortNumber == parsed.portNumber)
-		//					.Select(p => (device: d, port: p)))
-		//			.FirstOrDefault();
-		//	}
-		//}
+		internal MidiEndpoint GetNativeEndpoint(string midiDeviceId)
+		{
+			var parsed = ParseMidiDeviceId(midiDeviceId);
+			if (_isInput)
+			{
+				for (int inputId = 0; inputId < MidiInfo.SourceCount; inputId++)
+				{
+					var source = MidiEndpoint.GetSource(inputId);
+
+					if (source.EndpointName == parsed)
+					{
+						return source;
+					}
+				}
+			}
+			else
+			{
+				for (int outputId = 0; outputId < MidiInfo.DestinationCount; outputId++)
+				{
+					var destination = MidiEndpoint.GetDestination(outputId);
+
+					if (destination.EndpointName == parsed)
+					{
+						return destination;
+					}
+				}
+			}
+			return null;
+		}
 
 		//private void OnDeviceAdded(MidiDeviceInfo deviceInfo)
 		//{
@@ -113,24 +125,24 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 
 		private DeviceInformation CreateDeviceInformation(MidiEndpoint endpoint)
 		{
-			var deviceInformation = new DeviceInformation(
-				_isInput ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut,
-				GetMidiDeviceId(endpoint))
+			var deviceIdentifier = new DeviceIdentifier(
+					GetMidiDeviceId(endpoint),
+					_isInput ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut);
+			var deviceInformation = new DeviceInformation(deviceIdentifier)
 			{
-				Name = endpoint.DisplayName + " " + endpoint.EndpointName + " " + endpoint.Name 
+				Name = endpoint.DisplayName
 			};
 			return deviceInformation;
 		}
 
-		private static int ParseMidiDeviceId(string id)
+		private static string ParseMidiDeviceId(string id)
 		{
-			var intId = int.Parse(id);
-			return intId;
+			return id;
 		}
 
 		private static string GetMidiDeviceId(MidiEndpoint endpoint)
 		{
-			return $"{endpoint.DisplayName}";
+			return endpoint.EndpointName;
 		}
 
 		private IEnumerable<DeviceInformation> GetMidiDevices()

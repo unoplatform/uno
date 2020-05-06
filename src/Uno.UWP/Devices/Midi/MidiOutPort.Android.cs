@@ -72,20 +72,7 @@ namespace Windows.Devices.Midi
 
 		private static async Task<IMidiOutPort> FromIdInternalAsync(string deviceId)
 		{
-			if (deviceId is null)
-			{
-				throw new ArgumentNullException(nameof(deviceId));
-			}
-
-			if (!DeviceIdentifier.TryParse(deviceId, out var deviceIdentifier))
-			{
-				throw new ArgumentException("Device identifier is not valid", nameof(deviceId));
-			}
-
-			if (deviceIdentifier.DeviceClass != DeviceClassGuids.MidiOut)
-			{
-				throw new InvalidOperationException("Given device is not a MIDI out device");
-			}
+			var deviceIdentifier = ValidateAndParseDeviceId(deviceId);
 
 			var provider = new MidiOutDeviceClassProvider();
 			var nativeDeviceInfo = provider.GetNativeDeviceInfo(deviceIdentifier.Id);
