@@ -18,6 +18,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		private Size _compositionSize = new Size(0, 0);
 		private Uri _loadedEmbeddedUri;
 
+		private (double fromProgress, double toProgress, bool looped)? _playState;
+
 		partial void InnerUpdate()
 		{
 			var player = _player;
@@ -79,6 +81,12 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 			WebAssemblyRuntime.InvokeJS(string.Concat(js));
 			_isPlaying = player.AutoPlay;
+
+			if (_playState != null)
+			{
+				var (fromProgress, toProgress, looped) = _playState.Value;
+				Play(fromProgress, toProgress, looped);
+			}
 		}
 
 		private void OnStateChanged(object sender, HtmlCustomEventArgs e)
@@ -94,6 +102,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			var loaded = parts[2].Equals("true", StringComparison.Ordinal);
 			var paused = parts[3].Equals("true", StringComparison.Ordinal);
 
+			if (paused)
+			{
+				_playState = null;
+			}
+
 			_player.SetValue(AnimatedVisualPlayer.IsAnimatedVisualLoadedProperty, loaded);
 			_player.SetValue(AnimatedVisualPlayer.IsPlayingProperty, !paused);
 			if (double.TryParse(parts[4], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var duration))
@@ -108,8 +121,14 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			_compositionSize = new Size(w, h);
 		}
 
-		void IAnimatedVisualSource.Play(double fromProgress, double toProgress, bool looped)
+		public void Play(double fromProgress, double toProgress, bool looped)
 		{
+			_playState = (fromProgress, toProgress, looped);
+
+			if (_player == null)
+			{
+				return;
+			}
 			var js = new[]
 			{
 				"Uno.UI.Lottie.play(",
@@ -128,6 +147,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		void IAnimatedVisualSource.Stop()
 		{
+			_playState = null;
+			if (_player == null)
+			{
+				return;
+			}
 			var js = new[]
 			{
 				"Uno.UI.Lottie.stop(",
@@ -140,6 +164,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		void IAnimatedVisualSource.Pause()
 		{
+			if (_player == null)
+			{
+				return;
+			}
 			var js = new[]
 			{
 				"Uno.UI.Lottie.pause(",
@@ -152,6 +180,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		void IAnimatedVisualSource.Resume()
 		{
+			if (_player == null)
+			{
+				return;
+			}
 			var js = new[]
 			{
 				"Uno.UI.Lottie.resume(",
@@ -164,6 +196,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public void SetProgress(double progress)
 		{
+			if (_player == null)
+			{
+				return;
+			}
 			var js = new[]
 			{
 				"Uno.UI.Lottie.setProgress(",
@@ -178,6 +214,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		void IAnimatedVisualSource.Load()
 		{
+			if (_player == null)
+			{
+				return;
+			}
 			if (!_isPlaying)
 			{
 				return;
@@ -194,6 +234,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		void IAnimatedVisualSource.Unload()
 		{
+			if (_player == null)
+			{
+				return;
+			}
 			if (!_isPlaying)
 			{
 				return;

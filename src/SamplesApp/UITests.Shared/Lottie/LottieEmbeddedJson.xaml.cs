@@ -3,7 +3,7 @@ using Uno.UI.Samples.Controls;
 
 namespace UITests.Lottie
 {
-	[Sample("Lottie")]
+	[Sample("Lottie", IgnoreInSnapshotTests = true)]
 	public sealed partial class LottieEmbeddedJson : Page
 	{
 		public LottieEmbeddedJson()

@@ -22,21 +22,13 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public bool UseHardwareAcceleration { get; set; } = true;
 
-        private Uri _lastSource;
+		private Uri _lastSource;
+		private (double fromProgress, double toProgress, bool looped)? _playState;
 
 		partial void InnerUpdate()
 		{
 			var player = _player;
-			if (_animation == null)
-			{
-				var animation = new LOTAnimationView();
-				SetAnimation(animation);
-				SetProperties();
-			}
-			else
-			{
-				SetProperties();
-			}
+			SetProperties();
 
 			void SetProperties()
 			{
@@ -50,7 +42,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 						var jsonData = NSJsonSerialization.Deserialize(NSData.FromString(json), default, out var _) as NSDictionary;
 						if (jsonData != null)
 						{
-							_animation.RemoveFromSuperview();
 							var animation = LOTAnimationView.AnimationFromJSON(jsonData);
 							SetAnimation(animation);
 						}
@@ -63,6 +54,12 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 							path = path.Substring(1);
 						}
 
+						if (_animation == null)
+						{
+							var animation = new LOTAnimationView();
+							SetAnimation(animation);
+						}
+
 						_animation.SetAnimationNamed(path);
 					}
 
@@ -70,7 +67,12 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					player.InvalidateMeasure();
 					player.InvalidateArrange();
 
-					if (player.AutoPlay)
+					if (_playState != null)
+					{
+						var (fromProgress, toProgress, looped) = _playState.Value;
+						Play(fromProgress, toProgress, looped);
+					}
+					else if (player.AutoPlay)
 					{
 						Play(0, 1, true);
 					}
@@ -123,6 +125,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public void Play(double fromProgress, double toProgress, bool looped)
 		{
+			_playState = (fromProgress, toProgress, looped);
 			if (_animation != null)
 			{
 				if (_animation.IsAnimationPlaying)
@@ -150,19 +153,20 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public void Stop()
 		{
+			_playState = null;
 			SetIsPlaying(false);
-			_animation.Stop();
+			_animation?.Stop();
 		}
 
 		public void Pause()
 		{
 			SetIsPlaying(false);
-			_animation.Pause();
+			_animation?.Pause();
 		}
 
 		public void Resume()
 		{
-			_animation.Play();
+			_animation?.Play();
 			SetIsPlaying(true);
 		}
 
@@ -178,7 +182,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			if (_player.IsPlaying)
 			{
-				_animation.Play();
+				_animation?.Play();
 			}
 		}
 
@@ -186,10 +190,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		{
 			if (_player.IsPlaying)
 			{
-				_animation.Pause();
+				_animation?.Pause();
 			}
 		}
 
-		private Size CompositionSize => _animation.IntrinsicContentSize;
+		private Size CompositionSize => _animation?.IntrinsicContentSize ?? default;
 	}
 }

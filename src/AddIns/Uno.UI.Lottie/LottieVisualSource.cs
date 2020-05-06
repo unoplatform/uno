@@ -146,6 +146,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			var availableWidth = availableSize.Width;
 			var availableHeight = availableSize.Height;
 
+			var resultSize = availableSize;
+
 			if (double.IsInfinity(availableWidth))
 			{
 				if (double.IsInfinity(availableHeight))
@@ -153,16 +155,20 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					return compositionSize;
 				}
 
-				return new Size(availableHeight * compositionSize.Width / compositionSize.Height, availableHeight);
+				resultSize = new Size(availableHeight * compositionSize.Width / compositionSize.Height, availableHeight);
 			}
 
 			if (double.IsInfinity(availableHeight))
 			{
-				return new Size(availableWidth, availableWidth * compositionSize.Height / compositionSize.Width);
+				resultSize = new Size(availableWidth, availableWidth * compositionSize.Height / compositionSize.Width);
 			}
 
-			return availableSize;
+			InnerMeasure(resultSize);
+
+			return resultSize;
 		}
+
+		partial void InnerMeasure(Size size);
 
 		private bool TryLoadEmbeddedJson(Uri uri, out string json)
 		{

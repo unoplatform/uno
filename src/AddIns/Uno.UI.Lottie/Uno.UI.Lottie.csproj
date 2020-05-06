@@ -25,6 +25,11 @@
 		<PackageReference Include="Uno.SourceGenerationTasks" Version="1.32.0" />
 	</ItemGroup>
 
+	<ItemGroup Condition=" $(IsMonoAndroid) or $(IsXamarinIOS) or $(IsXamarinMac) ">
+		<Reference Include="System.Numerics" />
+		<Reference Include="System.Numerics.Vectors" />
+	</ItemGroup>
+
 	<Import Project="..\..\Common.targets" />
 	<Import Project="..\..\Uno.CrossTargetting.props" />
 

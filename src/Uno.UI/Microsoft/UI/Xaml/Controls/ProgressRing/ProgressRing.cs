@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Media;
 using Uno.Extensions;
 using Uno.Foundation.Extensibility;
 using Uno.Logging;
+using Uno.UI;
 
 namespace Microsoft.UI.Xaml.Controls
 {
@@ -73,12 +74,11 @@ namespace Microsoft.UI.Xaml.Controls
 
 		private void SetAnimatedVisualPlayerSource()
 		{
-			// Nothing to do here yet
 			if (_lottieProvider != null && _player != null)
 			{
-				var sourceFile = new Uri("ms-appx:///Microsoft/UI/Xaml/Controls/ProgressRing/loading.json");
-				var animatedVisualSource = _lottieProvider.CreateFromLottieAsset(sourceFile);
+				var animatedVisualSource = _lottieProvider.CreateFromLottieAsset(FeatureConfiguration.ProgressRing.ProgressRingAsset);
 				_player.Source = animatedVisualSource;
+				ChangeVisualState();
 			}
 		}
 
