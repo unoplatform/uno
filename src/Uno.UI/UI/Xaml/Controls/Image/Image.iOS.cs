@@ -16,7 +16,7 @@ using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class Image : UIImageView, IImage
+	public partial class Image
 	{
 		private Size _sourceImageSize;
 
@@ -40,22 +40,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public Image()
 		{
-			Initialize();
-			ClipsToBounds = true;
 			UserInteractionEnabled = true;
-			UpdateContentMode(Stretch); // Set the default value of the UIImageView
-		}
-
-		public Image(IntPtr handle)
-			: base(handle)
-		{
-			Initialize();
-			ClipsToBounds = true;
-		}
-
-		partial void HitCheckOverridePartial(ref bool hitCheck)
-		{
-			hitCheck = Image != null;
 		}
 
 		private void TryOpenImage()
@@ -96,7 +81,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (_openedImage == null || !_openedImage.HasSource())
 				{
-					Image = null;
+					_native?.Reset();
 					SetNeedsLayoutOrDisplay();
 					_imageFetchDisposable.Disposable = null;
 				}
@@ -110,7 +95,8 @@ namespace Windows.UI.Xaml.Controls
 					// The Jupiter behavior is to reset the visual right away, displaying nothing
 					// then show the new image. We're rescheduling the work below, so there is going
 					// to be a visual blank displayed.
-					Image = null;
+					TryCreateNative();
+					_native.Reset();
 
 					Func<CancellationToken, Task> scheduledFetch = async (ct) =>
 					{
@@ -157,20 +143,34 @@ namespace Windows.UI.Xaml.Controls
 					image = image.AsMonochrome(MonochromeColor.Value);
 				}
 
-				Image = image;
+				TryCreateNative();
+
+				_native.SetImage(image);
 
 				SourceImageSize = image?.Size.ToFoundationSize() ?? default(Size);
 			}
 
 			SetNeedsLayout();
 
-			if (Image != null)
+			if (_native.HasImage)
 			{
 				OnImageOpened(image);
 			}
 			else
 			{
 				OnImageFailed(image);
+			}
+		}
+
+		private void TryCreateNative()
+		{
+			if (_native == null)
+			{
+				_native = new NativeImage();
+
+				Add(_native);
+
+				UpdateContentMode(Stretch);
 			}
 		}
 
@@ -188,24 +188,24 @@ namespace Windows.UI.Xaml.Controls
 
 		private void UpdateContentMode(Stretch stretch)
 		{
-			if (FeatureConfiguration.Image.LegacyIosAlignment)
+			if (FeatureConfiguration.Image.LegacyIosAlignment && _native != null)
 			{
 				switch (stretch)
 				{
 					case Stretch.Uniform:
-						ContentMode = UIViewContentMode.ScaleAspectFit;
+						_native.ContentMode = UIViewContentMode.ScaleAspectFit;
 						break;
 
 					case Stretch.None:
-						ContentMode = UIViewContentMode.Center;
+						_native.ContentMode = UIViewContentMode.Center;
 						break;
 
 					case Stretch.UniformToFill:
-						ContentMode = UIViewContentMode.ScaleAspectFill;
+						_native.ContentMode = UIViewContentMode.ScaleAspectFill;
 						break;
 
 					case Stretch.Fill:
-						ContentMode = UIViewContentMode.ScaleToFill;
+						_native.ContentMode = UIViewContentMode.ScaleToFill;
 						break;
 
 					default:
@@ -223,7 +223,6 @@ namespace Windows.UI.Xaml.Controls
 		{
 			try
 			{
-				_layoutRequested = false;
 				base.LayoutSubviews();
 
 				UpdateLayerRect();
@@ -239,14 +238,12 @@ namespace Windows.UI.Xaml.Controls
 			UpdateContentMode(newValue);
 		}
 
-		public override CGSize SizeThatFits(CGSize size) => _layouter.Measure(size.ToFoundationSize());
-
 		private void UpdateLayerRect()
 		{
 			// Use "Bounds" over "Frame" because it includes all transforms
 			var availableSize = Bounds.Size.ToFoundationSize(); ;
 
-			if (SourceImageSize.Width == 0 || SourceImageSize.Height == 0 || availableSize.Width == 0 || availableSize.Height == 0 || Image == null)
+			if (SourceImageSize.Width == 0 || SourceImageSize.Height == 0 || availableSize.Width == 0 || availableSize.Height == 0 || (!_native?.HasImage ?? true))
 			{
 				return; // nothing to do
 			}
@@ -256,7 +253,7 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
-			var imageSize = Image.Size.ToFoundationSize();
+			var imageSize = _native.ImageSize.ToFoundationSize();
 
 			// Calculate the resulting space required on screen for the image
 			var containerSize = this.MeasureSource(availableSize, imageSize);
@@ -276,10 +273,10 @@ namespace Windows.UI.Xaml.Controls
 			var contentRelativeRect = new CGRect(-relativeX, -relativeY, relativeWidth, relativeHeight);
 
 			// Apply the relative position
-			Layer.ContentsRect = contentRelativeRect;
+			_native.Layer.ContentsRect = contentRelativeRect;
 
 			// Add a clipping mask to prevent the GPU from rendering padding pixels
-			Layer.Mask = new CAShapeLayer
+			_native.Layer.Mask = new CAShapeLayer
 			{
 				Path = CGPath.FromRect(containerRect.ToCGRect())
 			};
