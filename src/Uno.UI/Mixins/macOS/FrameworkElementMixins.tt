@@ -3,7 +3,6 @@
 #if __MACOS__
 <# 
 	AddClass("Windows.UI.Xaml", "FrameworkElement", defineSetNeedsLayout: false, defineLayoutSubviews: false, hasAttachedToWindow: false, overridesAttachedToWindow: true, hasLayouter: true, hasAutomationPeer: true);
-	AddClass("Windows.UI.Xaml.Controls", "Image", overridesAttachedToWindow: false, hasAutomationPeer: true, hasLayouter: true);
 
 	AddClass("Windows.UI.Xaml.Controls", "ScrollContentPresenter", defineSetNeedsLayout: false, defineLayoutSubviews: false, hasAttachedToWindow: false, overridesAttachedToWindow: false);
 	// AddClass("Windows.UI.Xaml.Controls", "Picker", hasAttachedToWindow: true);

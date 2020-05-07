@@ -5,7 +5,6 @@
 	AddClass("Uno.UI.Controls.Legacy", "GridView");
 	AddClass("Windows.UI.Xaml", "FrameworkElement", overridesAttachedToWindow:true, overridesOnLayout: false, isUnoMotionTarget: true, hasLayouter: true);
 	AddClass("Uno.UI.Controls.Legacy", "ListView");
-	AddClass("Windows.UI.Xaml.Controls", "Image", hasNewMaxWidthHeight: true, hasAutomationPeer: true, hasLayouter: true);
 	AddClass("Uno.UI.Controls.Legacy", "HorizontalGridView");
 	AddClass("Uno.UI.Controls.Legacy", "HorizontalListView");
 	AddClass("Windows.UI.Xaml.Controls", "ProgressRing", hasNewMinWidthHeight: true, hasNewMaxWidthHeight: true);
