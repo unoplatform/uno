@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Uno.Devices.Enumeration.Internal;
 using Windows.Foundation;
 
@@ -10,7 +11,9 @@ namespace Windows.Devices.Midi
 	public sealed partial class MidiInPort : IDisposable
 	{
 		private readonly static string MidiInAqsFilter =
-			"System.Devices.InterfaceClassGuid:=\"{" + DeviceClassGuids.MidiIn + "}\" AND System.Devices.InterfaceEnabled:=System.StructuredQueryType.Boolean#True";
+			"System.Devices.InterfaceClassGuid:=\"{" + DeviceClassGuids.MidiIn + "}\" AND System.Devices.InterfaceEnabled:=System.StructuredQueryType.Boolean#True";		
+
+		private readonly object _syncLock = new object();
 
 		/// <summary>
 		/// Gets the id of the device that was used to initialize the MidiInPort.
@@ -20,15 +23,7 @@ namespace Windows.Devices.Midi
 		/// <summary>
 		/// Gets the id of the device that was used to initialize the MidiInPort.
 		/// </summary>
-		public event TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs> MessageReceived
-		{
-			add
-			{
-			}
-			remove
-			{
-			}
-		}
+		public event TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs> MessageReceived;
 
 		/// <summary>
 		/// Creates a MidiInPort object for the specified device.
@@ -45,7 +40,7 @@ namespace Windows.Devices.Midi
 		/// Gets a query string that can be used to enumerate all MidiInPort objects on the system.
 		/// </summary>
 		/// <returns>The query string used to enumerate the MidiInPort objects on the system.</returns>
-		public static string GetDeviceSelector() => MidiInAqsFilter;
+		public static string GetDeviceSelector() => MidiInAqsFilter;		
 
 		private static DeviceIdentifier ValidateAndParseDeviceId(string deviceId)
 		{
@@ -65,6 +60,18 @@ namespace Windows.Devices.Midi
 			}
 
 			return deviceIdentifier;
+		}
+
+		private void OnMessageReceived(byte[] message, TimeSpan timestamp)
+		{
+			if (message.Length == 0)
+			{
+				//ignore empty message
+				return;
+			}
+
+			//read message type
+			
 		}
 	}
 }

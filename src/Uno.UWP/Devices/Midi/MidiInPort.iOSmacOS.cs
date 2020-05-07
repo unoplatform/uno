@@ -27,6 +27,12 @@ namespace Windows.Devices.Midi
 		internal void Open()
 		{
 			_port = _client.CreateInputPort(_endpoint.EndpointName);
+			_port.MessageReceived += NativePortMessageReceived;
+		}
+
+		private void NativePortMessageReceived(object sender, MidiPacketsEventArgs e)
+		{
+			throw new NotImplementedException();
 		}
 
 		public void Dispose()
