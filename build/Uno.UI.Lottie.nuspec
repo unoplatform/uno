@@ -23,14 +23,20 @@
 	<dependencies>
 
 	  <group targetFramework="netstandard2.0">
-		<dependency id="Uno.UI" version="1.46.196-dev.2440" />
-	  </group>
-	  <!--<group targetFramework="xamarinios10">
-		<dependency id="Uno.UI" version="0.0.1" />
-	  </group>
-	  <group targetFramework="MonoAndroid80">
 		<dependency id="Uno.UI" version="to-be-set-by-ci" />
-	  </group>-->
+	  </group>
+	  <group targetFramework="xamarinios10">
+		<dependency id="Uno.UI" version="to-be-set-by-ci" />
+		<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" />
+	  </group>
+	  <group targetFramework="xamarinmac20">
+		<dependency id="Uno.UI" version="to-be-set-by-ci" />
+		<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" />
+	  </group>
+	  <group targetFramework="MonoAndroid90">
+		<dependency id="Uno.UI" version="to-be-set-by-ci" />
+		<dependency id="Com.Airbnb.Android.Lottie" version="3.0.4" />
+	  </group>
 
 	</dependencies>
 
@@ -39,14 +45,22 @@
 	  <group targetFramework="netstandard2.0">
 		<reference file="Uno.UI.Lottie.dll" />
 	  </group>
-	  <!-- iOS -> NOT SUPPORTED YET -->
-	  <!-- Android -> NOT SUPPORTED YET -->
+	  <group targetFramework="xamarinios10">
+		<reference file="Uno.UI.Lottie.dll" />
+	  </group>
+	  <group targetFramework="xamarinmac20">
+		<reference file="Uno.UI.Lottie.dll" />
+	  </group>
+	  <group targetFramework="MonoAndroid90">
+		<reference file="Uno.UI.Lottie.dll" />
+	  </group>
 	  <!-- For UAP (UWP), the reference to Microsoft.Toolkit.Uwp.UI.Lottie will be added manually -->
 	</references>
   </metadata>
   <files>
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\netstandard2.0\Uno.UI.Lottie.dll" target="lib\netstandard2.0" />
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\xamarinios10\Uno.UI.Lottie.dll" target="lib\xamarinios10" />
+	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\xamarinmac20\Uno.UI.Lottie.dll" target="lib\xamarinmac20" />
 	<file src="..\src\AddIns\Uno.UI.Lottie\bin\Release\MonoAndroid90\Uno.UI.Lottie.dll" target="lib\MonoAndroid90" />
   </files>
 </package>
