@@ -2,11 +2,18 @@
 using System.Collections.Generic;
 using System.Text;
 using CoreGraphics;
-using UIKit;
+
+#if __IOS__
+using _UIImage = UIKit.UIImage;
+using _UIImageView = UIKit.UIImageView;
+#elif __MACOS__
+using _UIImage = AppKit.NSImage;
+using _UIImageView = AppKit.NSImageView;
+#endif
 
 namespace Windows.UI.Xaml.Controls
 {
-	internal partial class NativeImage : UIImageView
+	internal partial class NativeImage : _UIImageView
 	{
 		public bool HasImage => Image != null;
 
@@ -14,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public void Reset() => Image = null;
 
-		public void SetImage(UIImage image) => Image = image;
+		public void SetImage(_UIImage image) => Image = image;
 
 	}
 }

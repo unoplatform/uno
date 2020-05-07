@@ -248,22 +248,10 @@ namespace Windows.UI.Xaml.Controls
 			return base.ToString() + ";Source={0}".InvariantCultureFormat(Source?.ToString() ?? "[null]");
 		}
 
-#if __ANDROID__ || __IOS__
-		private AutomationPeer OnCreateAutomationPeerOverride()
+		protected override AutomationPeer OnCreateAutomationPeer()
 		{
 			return new ImageAutomationPeer(this);
 		}
-
-		private string GetAccessibilityInnerTextOverride()
-		{
-			return null;
-		}
-#else
-		protected AutomationPeer OnCreateAutomationPeer()
-		{
-			return new ImageAutomationPeer(this);
-		}
-#endif
 		
 		protected override Size MeasureOverride(Size availableSize)
 		{
