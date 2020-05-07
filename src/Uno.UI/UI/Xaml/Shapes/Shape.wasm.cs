@@ -140,7 +140,7 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			var svgElement = GetMainSvgElement();
 
-			if (Stroke == null)
+			if (StrokeThickness == default)
 			{
 				svgElement.ResetStyle("stroke-width");
 			}
@@ -154,7 +154,7 @@ namespace Windows.UI.Xaml.Shapes
 		{
 			var svgElement = GetMainSvgElement();
 
-			if (Stroke == null)
+			if (StrokeDashArray == null)
 			{
 				svgElement.ResetStyle("stroke-dasharray");
 			}
