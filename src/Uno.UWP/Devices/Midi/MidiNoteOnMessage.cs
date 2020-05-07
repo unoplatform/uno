@@ -9,6 +9,8 @@ namespace Windows.Devices.Midi
 	/// </summary>
 	public partial class MidiNoteOnMessage : IMidiMessage
 	{
+		private readonly InMemoryBuffer _buffer;
+
 		/// <summary>
 		/// Creates a new MidiNoteOnMessage object.
 		/// </summary>
@@ -16,20 +18,24 @@ namespace Windows.Devices.Midi
 		/// <param name="note">The note which is specified as a value from 0-127.</param>
 		/// <param name="velocity">The velocity which is specified as a value from 0-127.</param>
 		public MidiNoteOnMessage(byte channel, byte note, byte velocity)
-		{
-			MidiMessageValidators.VerifyRange(channel, 15, nameof(channel));
-			MidiMessageValidators.VerifyRange(note, 127, nameof(note));
-			MidiMessageValidators.VerifyRange(velocity, 127, nameof(velocity));
-
-			Channel = channel;
-			Note = note;
-			Velocity = velocity;
-			RawData = new InMemoryBuffer(new byte[]
+			: this(new byte[]
 			{
 				(byte)((byte)Type | Channel),
 				Note,
 				Velocity
-			});
+			})
+		{			
+		}
+
+		internal MidiNoteOnMessage(byte[] rawData)
+		{
+			MidiMessageValidators.VerifyMessageLength(rawData, 3, Type);
+			MidiMessageValidators.VerifyMessageType(rawData[0], Type);
+			MidiMessageValidators.VerifyRange(MidiHelpers.GetChannel(rawData[0]), MidiMessageParameter.Channel);
+			MidiMessageValidators.VerifyRange(rawData[1], MidiMessageParameter.Note);
+			MidiMessageValidators.VerifyRange(rawData[2], MidiMessageParameter.Velocity);
+
+			_buffer = new InMemoryBuffer(rawData);
 		}
 
 		/// <summary>

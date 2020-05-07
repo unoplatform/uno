@@ -9,24 +9,31 @@ namespace Windows.Devices.Midi
 	/// </summary>
 	public partial class MidiPitchBendChangeMessage : IMidiMessage
 	{
+		private readonly InMemoryBuffer _buffer;
+
 		/// <summary>
 		/// Creates a new MidiPitchBendChangeMessage object.
 		/// </summary>
 		/// <param name="channel">Channel.</param>
 		/// <param name="bend">Bend.</param>
 		public MidiPitchBendChangeMessage(byte channel, ushort bend)
-		{
-			MidiMessageValidators.VerifyRange(channel, 15, nameof(channel));
-			MidiMessageValidators.VerifyRange(bend, 16383, nameof(bend));
-
-			Channel = channel;
-			Bend = bend;
-			RawData = new InMemoryBuffer(new byte[]
+			: this(new byte[]
 			{
-				(byte)((byte)Type | Channel),
+				(byte)((byte)MidiMessageType.PitchBendChange | channel),
 				(byte)(bend & 0b0111_1111),
 				(byte)(bend >> 7)
-			});
+			})
+		{			
+		}
+
+		internal MidiPitchBendChangeMessage(byte[] rawData)
+		{			
+			MidiMessageValidators.VerifyMessageLength(rawData, 3, Type);
+			MidiMessageValidators.VerifyMessageType(rawData[0], Type);
+			MidiMessageValidators.VerifyRange(MidiHelpers.GetChannel(rawData[0]), MidiMessageParameter.Channel);			
+			MidiMessageValidators.VerifyRange(MidiHelpers.GetBend(rawData[1], rawData[2]), MidiMessageParameter.Bend);
+
+			_buffer = new InMemoryBuffer(rawData);
 		}
 
 		/// <summary>
@@ -35,24 +42,24 @@ namespace Windows.Devices.Midi
 		public MidiMessageType Type => MidiMessageType.PitchBendChange;
 
 		/// <summary>
+		/// Gets the channel from 0-15 that this message applies to.
+		/// </summary>
+		public byte Channel => MidiHelpers.GetChannel(_buffer.Data[0]);
+
+		/// <summary>
+		/// Gets the pitch bend value which is specified as a 14-bit value from 0-16383.
+		/// </summary>
+		public ushort Bend => MidiHelpers.GetBend(_buffer.Data[1], _buffer.Data[2]);
+
+		/// <summary>
 		/// Gets the array of bytes associated with the MIDI message, including status byte.
 		/// </summary>
-		public IBuffer RawData { get; }
+		public IBuffer RawData => _buffer;
 
 		/// <summary>
 		/// Gets the duration from when the MidiInPort was created to the time the message was received.
 		/// For messages being sent to a MidiOutPort, this value has no meaning.
 		/// </summary>
-		public TimeSpan Timestamp { get; } = TimeSpan.Zero;
-
-		/// <summary>
-		/// Gets the channel from 0-15 that this message applies to.
-		/// </summary>
-		public byte Channel { get; }
-
-		/// <summary>
-		/// Gets the pitch bend value which is specified as a 14-bit value from 0-16383.
-		/// </summary>
-		public ushort Bend { get; }
+		public TimeSpan Timestamp { get; internal set; } = TimeSpan.Zero;		
 	}
 }

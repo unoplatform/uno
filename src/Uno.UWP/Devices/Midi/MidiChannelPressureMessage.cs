@@ -9,23 +9,30 @@ namespace Windows.Devices.Midi
 	/// </summary>
 	public partial class MidiChannelPressureMessage : IMidiMessage
 	{
+		private readonly InMemoryBuffer _buffer;
+
 		/// <summary>
 		/// Creates a new MidiChannelPressureMessage object.
 		/// </summary>
 		/// <param name="channel">The channel from 0-15 that this message applies to.</param>
 		/// <param name="pressure">The pressure from 0-127.</param>
 		public MidiChannelPressureMessage(byte channel, byte pressure)
-		{
-			MidiMessageValidators.VerifyRange(channel, 15, nameof(channel));
-			MidiMessageValidators.VerifyRange(pressure, 127, nameof(pressure));
-
-			Channel = channel;
-			Pressure = pressure;
-			RawData = new InMemoryBuffer(new byte[]
+			: this(new byte[]
 			{
-				(byte)((byte)Type | Channel),
-				Pressure
-			});
+				(byte)((byte)MidiMessageType.ChannelPressure | channel),
+				pressure
+			})
+		{			
+		}
+
+		internal MidiChannelPressureMessage(byte[] rawData)
+		{
+			MidiMessageValidators.VerifyMessageLength(rawData, 2, MidiMessageType.ChannelPressure);
+			MidiMessageValidators.VerifyMessageType(rawData[0], MidiMessageType.ChannelPressure);
+			MidiMessageValidators.VerifyRange(MidiHelpers.GetChannel(rawData[0]), MidiMessageParameter.Channel);
+			MidiMessageValidators.VerifyRange(rawData[1], MidiMessageParameter.Pressure);
+
+			_buffer = new InMemoryBuffer(rawData);
 		}
 
 		/// <summary>
@@ -36,22 +43,22 @@ namespace Windows.Devices.Midi
 		/// <summary>
 		/// Gets the channel from 0-15 that this message applies to.
 		/// </summary>
-		public byte Channel { get; }
+		public byte Channel => MidiHelpers.GetChannel(_buffer.Data[0]);
 
 		/// <summary>
 		/// Gets the pressure from 0-127.
 		/// </summary>
-		public byte Pressure { get; }
+		public byte Pressure => _buffer.Data[1];
 
 		/// <summary>
 		/// Gets the array of bytes associated with the MIDI message, including status byte.
 		/// </summary>
-		public IBuffer RawData { get; }
+		public IBuffer RawData => _buffer;
 
 		/// <summary>
 		/// Gets the duration from when the MidiInPort was created to the time the message was received.
 		/// For messages being sent to a MidiOutPort, this value has no meaning.
 		/// </summary>
-		public TimeSpan Timestamp { get; } = TimeSpan.Zero;
+		public TimeSpan Timestamp { get; internal set; } = TimeSpan.Zero;
 	}
 }

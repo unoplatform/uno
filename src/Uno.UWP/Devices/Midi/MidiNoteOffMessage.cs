@@ -28,20 +28,13 @@ namespace Windows.Devices.Midi
 
 		internal MidiNoteOffMessage(byte[] rawData)
 		{
-			if ((rawData[0] & (byte)MidiMessageType.NoteOff) == (byte)MidiMessageType.NoteOff)
-			{
+			MidiMessageValidators.VerifyMessageLength(rawData, 3, Type);
+			MidiMessageValidators.VerifyMessageType(rawData[0], Type);
+			MidiMessageValidators.VerifyRange(MidiHelpers.GetChannel(rawData[0]), MidiMessageParameter.Channel);
+			MidiMessageValidators.VerifyRange(rawData[1], MidiMessageParameter.Note);
+			MidiMessageValidators.VerifyRange(rawData[2], MidiMessageParameter.Velocity);
 
-			}
-				MidiMessageValidators.VerifyRange(channel, 15, nameof(channel));
-			MidiMessageValidators.VerifyRange(note, 127, nameof(note));
-			MidiMessageValidators.VerifyRange(velocity, 127, nameof(velocity));
-
-			_buffer = new InMemoryBuffer(new byte[]
-			{
-				(byte)((byte)Type | Channel),
-				Note,
-				Velocity
-			};
+			_buffer = new InMemoryBuffer(rawData);
 		}
 
 		/// <summary>
@@ -62,7 +55,7 @@ namespace Windows.Devices.Midi
 		/// <summary>
 		/// Gets the value of the velocity from 0-127.
 		/// </summary>
-		public byte Velocity { get; }
+		public byte Velocity => _buffer.Data[2];
 
 		/// <summary>
 		/// Gets the array of bytes associated with the MIDI message, including status byte.

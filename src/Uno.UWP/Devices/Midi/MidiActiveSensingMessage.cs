@@ -30,6 +30,6 @@ namespace Windows.Devices.Midi
 		/// Gets the duration from when the MidiInPort was created to the time the message was received.
 		/// For messages being sent to a MidiOutPort, this value has no meaning.
 		/// </summary>
-		public TimeSpan Timestamp { get; } = TimeSpan.Zero;
+		public TimeSpan Timestamp { get; internal set; } = TimeSpan.Zero;
 	}
 }
