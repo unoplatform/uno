@@ -162,6 +162,11 @@ namespace Uno.UI
 #endif
 		}
 
+		public static class ProgressRing
+		{
+			public static Uri ProgressRingAsset { get; set; } = new Uri("embedded://Uno.UI/Uno.UI.Microsoft.UI.Xaml.Controls.ProgressRing.ProgressRingIntdeterminate.json");
+		}
+
 		public static class Interop
 		{
 #if __WASM__

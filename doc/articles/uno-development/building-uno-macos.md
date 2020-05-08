@@ -16,7 +16,13 @@ Support for building the `Uno.UI` solution is still somewhat unstable, this is a
 
  * You may get a message like `Error while trying to load the project '/Users/user/src/uno/build/Uno.UI.Build.csproj': Index has to be between upper and lower bound of the array.` when you open the solution. You can safely ignore this error.
 
- * If NuGet restore fails when building from the IDE, or if it gets stuck for some other reason, try building from the command line. Open a terminal session in the `uno/src` folder and use the following command `msbuild /r SamplesApp/SamplesApp.macOS/SamplesApp.macOS.csproj`. Then reopen Visual Studio and try to launch the sample again.
+ * If NuGet restore fails when building from the IDE, or if it gets stuck for some other reason, try building from the command line. Open a terminal session in the `uno/src` folder and use the following command:
+
+   ``` shell
+   msbuild /r SamplesApp/SamplesApp.macOS/SamplesApp.macOS.csproj`
+   ```
+
+   Then reopen Visual Studio and try to launch the sample again.
 
  * If you get an error when building the `Uno.UI.Lottie` project complaining about typescript errors, you may need to install `Node.js` on your Mac. The easiest way to do this is to install the [Homebrew package manager](https://brew.sh/) and then use Homebrew to [install Node](https://changelog.com/posts/install-node-js-with-homebrew-on-os-x).
 

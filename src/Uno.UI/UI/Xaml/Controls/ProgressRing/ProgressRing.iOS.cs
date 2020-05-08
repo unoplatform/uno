@@ -24,9 +24,9 @@ namespace Windows.UI.Xaml.Controls
 			var progressRing = dependencyObject as ProgressRing;
 			var foregroundColorBrush = progressRing.SelectOrDefault(r => r.Foreground as SolidColorBrush);
 
-			if (progressRing != null && foregroundColorBrush != null)
+			if (progressRing != null && Brush.TryGetColorWithOpacity(foregroundColorBrush, out var foreground))
 			{
-				progressRing.Color = foregroundColorBrush.ColorWithOpacity;
+				progressRing.Color = foreground;
 			}
 		}
 

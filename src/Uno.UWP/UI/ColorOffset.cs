@@ -19,8 +19,6 @@ namespace Windows.UI
 
 		public int R { get; set; }
 
-
-
 		private ColorOffset(int a, int r, int g, int b)
 		{
 			A = a;
@@ -39,12 +37,12 @@ namespace Windows.UI
 			=> FromArgb(minuend.A - subtrahend.A, minuend.R - subtrahend.R, minuend.G - subtrahend.G, minuend.B - subtrahend.B);
 
 		public static ColorOffset operator +(ColorOffset first, ColorOffset second)
-		=> FromArgb(first.A + second.A, first.R + second.R, first.G + second.G, first.B + second.B);
+			=> FromArgb(first.A + second.A, first.R + second.R, first.G + second.G, first.B + second.B);
 
 		public static ColorOffset operator *(float multiplier, ColorOffset color)
 			=> FromArgb(multiplier * color.A, multiplier * color.R, multiplier * color.G, multiplier * color.B);
 
-		private static ColorOffset FromArgb(float a, float r, float g, float b) => FromArgb((int)a, (int)r, (int)g, (int)b);
-
+		private static ColorOffset FromArgb(float a, float r, float g, float b)
+			=> FromArgb((int)a, (int)r, (int)g, (int)b);
 	}
 }

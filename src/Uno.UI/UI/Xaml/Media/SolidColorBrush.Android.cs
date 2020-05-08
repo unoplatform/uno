@@ -1,4 +1,5 @@
 ﻿using Android.Graphics;
+using Rect = Windows.Foundation.Rect;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -6,7 +7,7 @@ namespace Windows.UI.Xaml.Media
 	public partial class SolidColorBrush : Brush
 	{
 
-		protected override Paint GetPaintInner(Windows.Foundation.Rect destinationRect)
+		protected override Paint GetPaintInner(Rect destinationRect)
 		{
 			return new Paint() { Color = this.ColorWithOpacity, AntiAlias = true };
 		}
