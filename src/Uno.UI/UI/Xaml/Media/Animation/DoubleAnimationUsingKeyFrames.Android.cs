@@ -1,26 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Android.Animation;
-using Uno.Extensions;
-using Uno.Logging;
-
-namespace Windows.UI.Xaml.Media.Animation
+﻿namespace Windows.UI.Xaml.Media.Animation
 {
     public partial class DoubleAnimationUsingKeyFrames
     {
-		//private bool _errorReported;
-
-		// This class is not implemented for Android
 		partial void OnFrame(IValueAnimator currentAnimator)
 		{
-			SetValue(currentAnimator.AnimatedValue);
-			//if (!_errorReported && this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
-			//{
-			//	_errorReported = true;
-
-			//	this.Log().Error($"{GetType()} is not supported on this platform.");
-			//}
+			if (currentAnimator.AnimatedValue is Java.Lang.Float javaFloat)
+			{
+				SetValue(javaFloat.DoubleValue());
+			}
+			else
+			{
+				SetValue(currentAnimator.AnimatedValue);
+			}
 		}
 
 		// For performance consideration, do not report each frame if we are GPU bound

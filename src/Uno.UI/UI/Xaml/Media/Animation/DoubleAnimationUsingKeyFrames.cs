@@ -25,8 +25,8 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public bool EnableDependentAnimation
 		{
-			get { return (bool)this.GetValue(EnableDependentAnimationProperty); }
-			set { this.SetValue(EnableDependentAnimationProperty, value); }
+			get => (bool)this.GetValue(EnableDependentAnimationProperty);
+			set => this.SetValue(EnableDependentAnimationProperty, value);
 		}
 		public static readonly DependencyProperty EnableDependentAnimationProperty =
 			DependencyProperty.Register("EnableDependentAnimation", typeof(bool), typeof(DoubleAnimationUsingKeyFrames), new PropertyMetadata(false));
@@ -95,7 +95,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		void ITimeline.Seek(TimeSpan offset)
 		{
-			long msOffset = (long)offset.TotalMilliseconds;
+			var msOffset = (long)offset.TotalMilliseconds;
 			IValueAnimator targetAnimator = null;
 			foreach (var animator in _animators)
 			{
@@ -196,9 +196,9 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			var startingValue = ComputeFromValue();
 
-			double fromValue = startingValue;
+			var fromValue = startingValue;
 			double toValue;
-			TimeSpan previousKeyTime = TimeSpan.Zero;
+			var previousKeyTime = TimeSpan.Zero;
 
 			// Build the animators
 			_animators = new List<IValueAnimator>(KeyFrames.Count);
@@ -275,15 +275,9 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// Calculates the From value of the animation
 		/// For simplification animations are based on to and from values
 		/// </summary>
-		private double ComputeFromValue()
-		{
-			return GetDefaultTargetValue() ?? 0f;
-		}
+		private double ComputeFromValue() => GetDefaultTargetValue() ?? 0f;
 
-		private double? GetDefaultTargetValue()
-		{
-			return _startingValue ?? (double?)GetValue();
-		}
+		private double? GetDefaultTargetValue() => _startingValue ?? (double?)GetValue();
 
 		/// <summary>
 		/// Replay this animation.
