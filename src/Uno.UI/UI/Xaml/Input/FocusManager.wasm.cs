@@ -113,5 +113,15 @@ namespace Windows.UI.Xaml.Input
 		{
 			return null;
 		}
+
+		private static DependencyObject InnerFindFirstFocusableElement(DependencyObject searchScope)
+		{
+			return null;
+		}
+
+		private static DependencyObject InnerFindLastFocusableElement(DependencyObject searchScope)
+		{
+			return null;
+		}
 	}
 }

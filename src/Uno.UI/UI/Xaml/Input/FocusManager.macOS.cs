@@ -213,6 +213,36 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 
+		private static DependencyObject InnerFindFirstFocusableElement(DependencyObject searchScope)
+		{
+			if (searchScope == null)
+			{
+				searchScope = Window.Current.Content;
+			}
+
+			if (!(searchScope is NSView searchView))
+			{
+				return null;
+			}
+
+			return searchView.FindSubviews(selector: IsFocusableView, maxDepth: 100).FirstOrDefault() as DependencyObject;
+		}
+
+		private static DependencyObject InnerFindLastFocusableElement(DependencyObject searchScope)
+		{
+			if (searchScope == null)
+			{
+				searchScope = Window.Current.Content;
+			}
+
+			if (!(searchScope is NSView searchView))
+			{
+				return null;
+			}
+
+			return searchView.FindSubviewsReverse(selector: IsFocusableView, maxDepth: 100).FirstOrDefault() as DependencyObject;
+		}
+
 		private static void FocusNative(Control control) => control.BecomeFirstResponder();
 
 		//We need to validate this difference because focused elements don't have the same absolute position once focused

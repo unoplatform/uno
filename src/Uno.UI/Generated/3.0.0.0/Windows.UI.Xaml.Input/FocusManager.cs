@@ -50,14 +50,14 @@ namespace Windows.UI.Xaml.Input
 			throw new global::System.NotImplementedException("The member DependencyObject FocusManager.FindNextElement(FocusNavigationDirection focusNavigationDirection) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyObject FindFirstFocusableElement( global::Windows.UI.Xaml.DependencyObject searchScope)
 		{
 			throw new global::System.NotImplementedException("The member DependencyObject FocusManager.FindFirstFocusableElement(DependencyObject searchScope) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyObject FindLastFocusableElement( global::Windows.UI.Xaml.DependencyObject searchScope)
 		{

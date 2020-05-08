@@ -49,6 +49,26 @@ namespace Windows.UI.Xaml.Input
 			return InnerFindNextFocusableElement(focusNavigationDirection) as UIElement;
 		}
 
+		/// <summary>
+		/// Retrieves the last element that can receive focus based on the specified scope.
+		/// </summary>
+		/// <param name="searchScope">The root object from which to search. If null, the search scope is the current window.</param>
+		/// <returns>The first focusable object.</returns>
+		public static DependencyObject FindFirstFocusableElement(DependencyObject searchScope)
+		{
+			return InnerFindFirstFocusableElement(searchScope);
+		}
+
+		/// <summary>
+		/// Retrieves the last element that can receive focus based on the specified scope.
+		/// </summary>
+		/// <param name="searchScope">The root object from which to search. If null, the search scope is the current window.</param>
+		/// <returns>The first focusable object.</returns>
+		public static DependencyObject FindLastFocusableElement(DependencyObject searchScope)
+		{
+			return InnerFindLastFocusableElement(searchScope);
+		}
+
 		internal static bool SetFocusedElement(DependencyObject newFocus, FocusNavigationDirection focusNavigationDirection, FocusState focusState)
 		{
 			var control = newFocus as Control; // For now only called for Control
