@@ -7,6 +7,16 @@
 	mc:Ignorable="d"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
+	<Page.Resources>
+		<ResourceDictionary>
+
+			<SolidColorBrush x:Key="LightGreyBrush"
+							 Color="#000000"
+							 Opacity="0.38" />
+		</ResourceDictionary>
+	</Page.Resources>
+
+
 	<StackPanel Spacing="5">
 		<TextBlock FontSize="22">This is an ellipse</TextBlock>
 		<Ellipse x:Name="ellipse0" Stroke="Black" Height="125" Width="150" StrokeThickness="5" HorizontalAlignment="Left"/>
@@ -22,22 +32,55 @@
 				<ColumnDefinition Width="20" />
 				<ColumnDefinition Width="*" />
 			</Grid.ColumnDefinitions>
-			<Grid Grid.Column="0" Width="175" Height="125">
-				<Rectangle StrokeDashArray="2.5,1" Stroke="Brown" StrokeThickness="3" />
-				<Ellipse Width="175" Height="125" Fill="DarkSalmon" x:Name="ellipse1" />
+			<Grid Grid.Column="0"
+				  Width="175"
+				  Height="125">
+				<Rectangle StrokeDashArray="2.5,1"
+						   Stroke="Brown"
+						   StrokeThickness="3" />
+				<Ellipse Width="175"
+						 Height="125"
+						 Fill="DarkSalmon"
+						 x:Name="ellipse1" />
 			</Grid>
-			<Grid Grid.Column="2" Width="175" Height="125">
-				<Rectangle StrokeDashArray="2.5,1" Stroke="Brown" StrokeThickness="3" />
-				<Ellipse Fill="DarkSalmon" x:Name="ellipse2" />
+			<Grid Grid.Column="2"
+				  Width="175"
+				  Height="125">
+				<Rectangle StrokeDashArray="2.5,1"
+						   Stroke="Brown"
+						   StrokeThickness="3" />
+				<Ellipse Fill="DarkSalmon"
+						 x:Name="ellipse2" />
 			</Grid>
 			<Grid Grid.Column="4">
-				<Rectangle StrokeDashArray="2.5,1" Stroke="Brown" StrokeThickness="3" />
-				<Ellipse Height="125" Fill="DarkSalmon" x:Name="ellipse3" />
+				<Rectangle StrokeDashArray="2.5,1"
+						   Stroke="Brown"
+						   StrokeThickness="3" />
+				<Ellipse Height="125"
+						 Fill="DarkSalmon"
+						 x:Name="ellipse3" />
 			</Grid>
-			<Grid Grid.Column="6" MaxWidth="175" HorizontalAlignment="Left">
-				<Rectangle StrokeDashArray="2.5,1" Stroke="Brown" StrokeThickness="3" />
-				<Ellipse Height="125" Fill="DarkGreen" x:Name="ellipse4" />
+			<Grid Grid.Column="6"
+				  MaxWidth="175"
+				  HorizontalAlignment="Left">
+				<Rectangle StrokeDashArray="2.5,1"
+						   Stroke="Brown"
+						   StrokeThickness="3" />
+				<Ellipse Height="125"
+						 Fill="DarkGreen"
+						 x:Name="ellipse4" />
 			</Grid>
 		</Grid>
+		
+		<TextBlock FontSize="22">This is an ellipse that has a fill with opacity</TextBlock>
+		<Ellipse x:Name="ellipse5"
+				 Stroke="Black"
+				 Height="125"
+				 Width="150"
+				 StrokeThickness="5"
+				 HorizontalAlignment="Left" />
+
+		<TextBlock FontSize="22">This is an ellipse that has a stroke opacity</TextBlock>
+		<Ellipse x:Name="ellipse6" Stroke="Black" Height="125" Width="150" StrokeThickness="5" HorizontalAlignment="Left"/>
 	</StackPanel>
 </Page>
