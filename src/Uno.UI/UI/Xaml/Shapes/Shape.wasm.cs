@@ -80,7 +80,7 @@ namespace Windows.UI.Xaml.Shapes
 			switch (fill)
 			{
 				case SolidColorBrush scb:
-					svgElement.SetStyle("fill", scb.Color.ToHexString());
+					svgElement.SetStyle("fill", scb.ColorWithOpacity.ToHexString());
 					_fillBrushSubscription.Disposable = null;
 					break;
 				case ImageBrush ib:
@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Shapes
 			switch (Stroke)
 			{
 				case SolidColorBrush scb:
-					svgElement.SetStyle("stroke", scb.Color.ToHexString());
+					svgElement.SetStyle("stroke", scb.ColorWithOpacity.ToHexString());
 					_strokeBrushSubscription.Disposable = null;
 					break;
 				case GradientBrush gb:
