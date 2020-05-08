@@ -12,7 +12,7 @@
   ],
   "name": "Cross-Platform App (Uno Platform)",
   "identity": "Uno.Platform.UnoApp",
-  "groupIdentity": "Uno.Platform",
+  "groupIdentity": "Uno.Platform.Blank",
   "description": "Solution template for creating a cross-platform XAML app with the Uno Platform that targets UWP, Android, iOS, macOS, and WebAssembly.",
   "precedence": "6001",
   "tags": {
@@ -55,7 +55,7 @@
       "datatype": "text",
       "replaces": "$XmlEscapedPublisherDistinguishedName$",
       "description": "Provides the value to use for the Windows head publisher",
-      "defaultValue": "MyCompany"
+      "defaultValue": "O=MyCompany"
     },
     "WebAssembly": {
       "type": "parameter",

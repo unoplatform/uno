@@ -114,7 +114,7 @@ namespace Windows.UI.Xaml.Controls
 				_measureInvalidated = false;
 
 				UpdateTypography();
-				
+
 				var horizontalPadding = Padding.Left + Padding.Right;
 				var verticalPadding = Padding.Top + Padding.Bottom;
 
@@ -211,7 +211,7 @@ namespace Windows.UI.Xaml.Controls
 			var font = NSFontHelper.TryGetFont((float)FontSize, FontWeight, FontStyle, FontFamily);
 
 			attributes.Font = font;
-			attributes.ForegroundColor = (Foreground as SolidColorBrush)?.ColorWithOpacity;
+			attributes.ForegroundColor = Brush.GetColorWithOpacity(Foreground, Colors.Transparent).Value;
 
 			if (TextDecorations != TextDecorations.None)
 			{
@@ -246,13 +246,13 @@ namespace Windows.UI.Xaml.Controls
 
 			if (LineHeight != 0 && font != null)
 			{
-				// iOS puts text at the bottom of the line box, whereas Windows puts it at the top. 
-				// Empirically this offset gives similar positioning to Windows. 
+				// iOS puts text at the bottom of the line box, whereas Windows puts it at the top.
+				// Empirically this offset gives similar positioning to Windows.
 				// Note: Descender is typically a negative value.
 				var verticalOffset = LineHeight - font.XHeight /* MACOS TODO XHeight ? */ + font.Descender;
 
-				// Because we're trying to move the text up (toward the top of the line box), 
-				// we only set BaselineOffset to a positive value. 
+				// Because we're trying to move the text up (toward the top of the line box),
+				// we only set BaselineOffset to a positive value.
 				// A negative value indicates that the the text is already bottom-aligned.
 				attributes.BaselineOffset = Math.Max(0, (float)verticalOffset);
 			}

@@ -323,16 +323,16 @@ The tutorial walks you through creating a cross platform application with Uno Pl
                   SelectedItem="{x:Bind Item.Status}"
                   HorizontalAlignment="Stretch"
                   SelectionChanged="StatusPicker_SelectionChanged" />
-        <TextBlock Text="{x:Bind Item.StartedAt,Converter={StaticResource StringFormatConverter},ConverterParameter='Started: {0:MMM dd, yyyy hh:mm tt}',Mode=OneWay}" />
-        <TextBlock Text="{x:Bind Item.CompletedAt,Converter={StaticResource StringFormatConverter},ConverterParameter='Completed: {0:MMM dd, yyyy hh:mm tt}',Mode=OneWay}" />
+        <TextBlock Text="{x:Bind FormatDate('Started:', Item.StartedAt), Mode=OneWay}" />
+        <TextBlock Text="{x:Bind FormatDate('Completed:', Item.CompletedAt), Mode=OneWay}" />
       </StackPanel>
     </StackPanel>
 
-    <TextBlock Text="{x:Bind Item.CreatedAt, Converter={StaticResource StringFormatConverter}, ConverterParameter='Created: {0:MMM dd, yyyy hh:mm tt}'}" Grid.Row="5"
+    <TextBlock Text="{x:Bind FormatDate('Created:', Item.CreatedAt)}" Grid.Row="5"
                Margin="10,0"/>
     ```
 
-    > [!IMPORTANT]
+    > **IMPORTANT**
     > Take note that we have added a reference to an event handler on the ComboBox. We will add this in the next step in the code behind.
 
 1. Now that our Page is complete we can go back and add the event handlers in our code behind. This will allow us to handle changes and make necessary updates. In the **Solution Explorer**, double-click **MainPage.xaml.cs** to open, then add the following code.
@@ -377,6 +377,10 @@ The tutorial walks you through creating a cross platform application with Uno Pl
         }
         IssueTypeIndicator.Background = new SolidColorBrush(color);
     }
+
+    // Provides the conversion for dates in the XAML through x:Bind
+    public string FormatDate(string header, DateTimeOffset? dateTime) 
+        => $"{header} {dateTime:MMM dd, yyyy hh:mm tt}";
     ```
 
 You may need to add missing namespace `usings`, eg the `Windows.UI` namespace for the `Colors` class. Don't worry if `IssueTypeBox` and `IssueTypeIndicator` are marked red - these properties will be created from the Xaml when the project builds. 

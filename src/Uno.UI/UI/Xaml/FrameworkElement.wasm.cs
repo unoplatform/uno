@@ -295,25 +295,31 @@ namespace Windows.UI.Xaml
 			}
 			else
 			{
-				var borderColor = Colors.Transparent;
-				var borderImage = "";
-
+				var borderWidth = $"{thickness.Top.ToStringInvariant()}px {thickness.Right.ToStringInvariant()}px {thickness.Bottom.ToStringInvariant()}px {thickness.Left.ToStringInvariant()}px";
 				switch (brush)
 				{
 					case SolidColorBrush solidColorBrush:
-						borderColor = solidColorBrush.ColorWithOpacity;
+						var borderColor = solidColorBrush.ColorWithOpacity;
+						SetStyle(
+							("border", ""),
+							("border-style", "solid"),
+							("border-color", borderColor.ToHexString()),
+							("border-width", borderWidth),
+							("border-radius", borderRadius));
 						break;
-					case LinearGradientBrush linearGradientBrush:
-						borderImage = linearGradientBrush.ToCssString(RenderSize); // TODO: Reevaluate when size is changing
+					case GradientBrush gradientBrush:
+						var border = gradientBrush.ToCssString(RenderSize); // TODO: Reevaluate when size is changing
+						SetStyle(
+							("border-style", "solid"),
+							("border-color", ""),
+							("border-image", border),
+							("border-width", borderWidth),
+							("border-radius", borderRadius));
+						break;
+					default:
+						ResetStyle("border-style", "border-color", "border-image", "border-width", "border-radius");
 						break;
 				}
-
-				SetStyle(
-					("border-style", "solid"),
-					("border-color", borderColor.ToHexString()),
-					("border-image", borderImage),
-					("border-width", $"{thickness.Top}px {thickness.Right}px {thickness.Bottom}px {thickness.Left}px"),
-					("border-radius", borderRadius));
 			}
 		}
 

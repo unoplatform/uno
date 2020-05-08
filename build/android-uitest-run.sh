@@ -9,8 +9,9 @@ cd $BUILD_SOURCESDIRECTORY/build
 
 mkdir android-sdk
 pushd android-sdk
-wget https://dl.google.com/android/repository/sdk-tools-darwin-4333796.zip
-unzip sdk-tools-darwin-4333796.zip
+# URL from https://developer.android.com/studio/index.html#command-tools
+wget https://dl.google.com/android/repository/commandlinetools-mac-6200805_latest.zip
+unzip commandlinetools-mac-6200805_latest.zip
 popd
 
 # uncomment the following lines to override the installed Xamarin.Android SDK
@@ -18,13 +19,13 @@ popd
 # sudo installer -verbose -pkg Xamarin.Android.Sdk-OSS-9.4.0.59_d16-2_6d9b105.pkg -target /
 
 # Install AVD files
-echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install 'tools'| tr '\r' '\n' | uniq
-echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install 'platform-tools'  | tr '\r' '\n' | uniq
-echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install 'build-tools;28.0.3' | tr '\r' '\n' | uniq
-echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install 'platforms;android-28' | tr '\r' '\n' | uniq
-echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install 'extras;android;m2repository' | tr '\r' '\n' | uniq
-echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install 'system-images;android-28;google_apis;x86' | tr '\r' '\n' | uniq
-echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --install "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis;x86" | tr '\r' '\n' | uniq
+echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'tools'| tr '\r' '\n' | uniq
+echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platform-tools'  | tr '\r' '\n' | uniq
+echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'build-tools;28.0.3' | tr '\r' '\n' | uniq
+echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'platforms;android-28' | tr '\r' '\n' | uniq
+echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'extras;android;m2repository' | tr '\r' '\n' | uniq
+echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install 'system-images;android-28;google_apis_playstore;x86' | tr '\r' '\n' | uniq
+echo "y" | $ANDROID_HOME/tools/bin/sdkmanager --sdk_root=${ANDROID_HOME} --install "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;x86" | tr '\r' '\n' | uniq
 
 if [[ -f $ANDROID_HOME/platform-tools/platform-tools/adb ]]
 then
@@ -33,7 +34,7 @@ then
 fi
 
 # Create emulator
-echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n xamarin_android_emulator -k "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis;x86" --sdcard 128M --force
+echo "no" | $ANDROID_HOME/tools/bin/avdmanager create avd -n xamarin_android_emulator -k "system-images;android-$ANDROID_SIMULATOR_APILEVEL;google_apis_playstore;x86" --sdcard 128M --force
 
 echo $ANDROID_HOME/emulator/emulator -list-avds
 

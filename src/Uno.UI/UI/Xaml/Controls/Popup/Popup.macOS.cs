@@ -112,6 +112,11 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateLightDismissLayer(newIsOpen);
 
+			// this is necessary as during initial measure the panel was Collapsed
+			// and got 0 available size from its parent (root Window element, usually a Frame)
+			// this will ensure the size of its child will be calculated properly
+			PopupPanel.OnInvalidateMeasure();
+
 			EnsureForward();
 		}
 

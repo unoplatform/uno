@@ -71,7 +71,7 @@ namespace Windows.UI.Xaml.Controls
 		#endregion
 
 		#region DocumentTitle
-#if __ANDROID__ || __IOS__
+#if __ANDROID__ || __IOS__ || __MACOS__
 		public string DocumentTitle
 		{
 			get { return (string)GetValue(DocumentTitleProperty); }

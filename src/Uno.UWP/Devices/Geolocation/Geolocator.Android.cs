@@ -4,10 +4,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Threading.Tasks;
 using Android.Locations;
 using Android.OS;
 using Android.Runtime;
+using Windows.Extensions;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
@@ -20,13 +22,21 @@ namespace Windows.Devices.Geolocation
 
 		public Geolocator()
 		{
-			_locationManager = InitializeLocationProvider(1);
+		}
 
-			_locationManager.RequestLocationUpdates(_locationProvider, 0, 0, this);
+		private void TryInitialize()
+		{
+			if (_locationManager == null)
+			{
+				_locationManager = InitializeLocationProvider(1);
+				_locationManager.RequestLocationUpdates(_locationProvider, 0, 0, this);
+			}
 		}
 
 		public Task<Geoposition> GetGeopositionAsync()
 		{
+			TryInitialize();
+
 			BroadcastStatus(PositionStatus.Initializing);
 			var location = _locationManager.GetLastKnownLocation(_locationProvider);
 			BroadcastStatus(PositionStatus.Ready);
@@ -36,7 +46,17 @@ namespace Windows.Devices.Geolocation
 		public Task<Geoposition> GetGeopositionAsync(TimeSpan maximumAge, TimeSpan timeout)
 			=> GetGeopositionAsync();
 
-		public static async Task<GeolocationAccessStatus> RequestAccessAsync() => GeolocationAccessStatus.Allowed;
+		public static async Task<GeolocationAccessStatus> RequestAccessAsync()
+		{
+			if(!await PermissionsHelper.CheckFineLocationPermission(CancellationToken.None))
+			{
+				return await PermissionsHelper.TryGetFineLocationPermission(CancellationToken.None)
+					? GeolocationAccessStatus.Allowed
+					: GeolocationAccessStatus.Denied;
+			}
+
+			return GeolocationAccessStatus.Allowed;
+		}
 
 		private LocationManager InitializeLocationProvider(double desiredAccuracy)
 		{
@@ -63,6 +83,8 @@ namespace Windows.Devices.Geolocation
 
 		partial void StartPositionChanged()
 		{
+			TryInitialize();
+
 			BroadcastStatus(PositionStatus.Initializing);
 		}
 

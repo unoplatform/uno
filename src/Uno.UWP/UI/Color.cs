@@ -12,6 +12,8 @@ namespace Windows.UI
 
 		public byte R { get; set; }
 
+		internal bool IsTransparent => A == 0;
+
 		public static Color FromArgb(byte a, byte r, byte g, byte b) => new Color(a, r, g, b);
 
 		private Color(byte a, byte r, byte g, byte b)
@@ -22,14 +24,7 @@ namespace Windows.UI
 			B = b;
 		}
 
-		public override bool Equals(object o) {
-			if(o is Color color)
-			{
-				return Equals(color);
-			}
-
-			return false;
-		}
+		public override bool Equals(object o) => o is Color color && Equals(color);
 
 		public bool Equals(Color color) => 
 			color.A == A 

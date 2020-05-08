@@ -82,9 +82,16 @@ namespace SamplesApp
 			// requires Xamarin Test Cloud Agent
 			Xamarin.Calabash.Start();
 #endif
+#if NETFX_CORE
+			Resources.MergedDictionaries.Add(new Microsoft.UI.Xaml.Controls.XamlControlsResources());
+#endif
+
 			var sw = Stopwatch.StartNew();
 			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
-				_ => Console.WriteLine("Done loading " + sw.Elapsed));
+				_ =>
+				{
+					Console.WriteLine("Done loading " + sw.Elapsed);
+				});
 
 #if DEBUG
 			if (System.Diagnostics.Debugger.IsAttached)

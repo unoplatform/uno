@@ -15,6 +15,7 @@ using Uno.Disposables;
 using Windows.UI.Core;
 using Uno.UI;
 using Microsoft.Extensions.Logging;
+using Rect = Windows.Foundation.Rect;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -34,7 +35,7 @@ namespace Windows.UI.Xaml.Media
 		}
 
 
-		protected override Paint GetPaintInner(Windows.Foundation.Rect drawRect)
+		protected override Paint GetPaintInner(Rect drawRect)
 		{
 			throw new NotSupportedException($"{nameof(GetPaintInner)} is not supported for ImageBrush.");
 		}

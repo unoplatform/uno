@@ -128,7 +128,7 @@
 		</IgnoreSet>
 
 		<IgnoreSet baseVersion="1.44.1">
-		  	<Types>
+				<Types>
 				<Member fullName="Windows.UI.Xaml.UIElementExtensions"
 						reason="Moved to Uno.Extensions"/>
 			</Types>
@@ -214,7 +214,7 @@
 
 		<IgnoreSet baseVersion="1.45.0">
 			<Types>
-			  <Member
+				<Member
 					fullName="Uno.UI.IUnoViewParent"
 					reason="Removed internal stuff."/>
 				<Member
@@ -516,7 +516,7 @@
 				<Member
 					fullName="Windows.Foundation.Point Windows.UI.Xaml.Input.TappedRoutedEventArgs.GetPosition()"
 					reason="Not part of the UWP API." />
-            </Methods>
+						</Methods>
 
 			<Fields>
 				<Member
@@ -637,13 +637,13 @@
 				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.ListViewBase..ctor()"
 					reason="Ctor is protected in WinUI."/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.Devices.Sensors.HingeAngleSensorReadingChangedEventArgs..ctor()"
 					reason="Parameter-less ctor does not exist in UWP"/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.Devices.Sensors.HingeAngleSensor..ctor()"
 					reason="Parameter-less ctor does not exist in UWP"/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.Devices.Sensors.HingeAngleReading..ctor()"
 					reason="Parameter-less ctor does not exist in UWP"/>
 				<Member
@@ -688,24 +688,24 @@
 				<Member
 					fullName="System.Boolean Windows.UI.Xaml.Controls.TextBox.FocusTextView()"
 					reason="Not part of the WinUI API, Uno-specific implementation detail." />
-				<Member 
+				<Member
 					fullName="System.Void Windows.Devices.Sensors.PedometerReadingChangedEventArgs..ctor()"
 					reason="Parameter-less ctor does not exist in UWP"/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.Devices.Sensors.Pedometer..ctor()"
 					reason="Parameter-less ctor does not exist in UWP"/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.Devices.Sensors.PedometerReading..ctor()"
 					reason="Parameter-less ctor does not exist in UWP"/>
-			  
-				<Member 
+
+				<Member
 					fullName="CoreGraphics.CGSize Windows.UI.Xaml.IFrameworkElementHelper.Measure(AppKit.NSView element, Windows.Foundation.Size availableSize)"
 					reason="macOS only unused extension method"/>
-			  
-				<Member 
+
+				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.Add(Windows.UI.Xaml.UIElement view)"
 					reason="macOS only breaking change"/>
-			  
+
 				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.Add(Windows.UI.Xaml.UIElement view)"
 					reason="macOS only breaking change"/>
@@ -720,11 +720,11 @@
 		<IgnoreSet baseVersion="2.1.37">
 			<Methods>
 				<Member
-				  fullName="System.Void Windows.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs..ctor()"
-				  reason="Not part of the WinUI API." />
+					fullName="System.Void Windows.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs..ctor()"
+					reason="Not part of the WinUI API." />
 				<Member
-				  fullName="System.Void Windows.UI.Xaml.Controls.DatePickerValueChangedEventArgs..ctor(System.DateTimeOffset newDate, System.DateTimeOffset oldDate)"
-				  reason="Not part of the WinUI API." />
+					fullName="System.Void Windows.UI.Xaml.Controls.DatePickerValueChangedEventArgs..ctor(System.DateTimeOffset newDate, System.DateTimeOffset oldDate)"
+					reason="Not part of the WinUI API." />
 				<Member
 					fullName="System.Boolean Windows.UI.Xaml.Controls.TextBox.FocusTextView()"
 					reason="Not part of the WinUI API, Uno-specific implementation detail." />
@@ -734,37 +734,37 @@
 				<Member
 					fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources.get___ImplicitStyle_Windows_UI_Xaml_Controls_DatePickerSelector()"
 					reason="Style removed from monoandroid (xamarin:Style with only ios:Setter)" />
-			  
-				<Member 
+
+				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.Primitives.DragCompletedEventArgs..ctor(System.Object originalSource, System.Double horizontalChange, System.Double verticalChange, System.Boolean canceled)"
 					reason="Updated internal signature"/>
-			  
-				<Member 
+
+				<Member
 					fullName="System.Void Windows.Devices.Sensors.PedometerReadingChangedEventArgs..ctor()"
 					reason="Parameter-less ctor does not exist in UWP"/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.Devices.Sensors.Pedometer..ctor()"
 					reason="Parameter-less ctor does not exist in UWP"/>
-				<Member 
+				<Member
 					fullName="System.Void Windows.Devices.Sensors.PedometerReading..ctor()"
 					reason="Parameter-less ctor does not exist in UWP"/>
-			  
-				<Member 
+
+				<Member
 					fullName="CoreGraphics.CGSize Windows.UI.Xaml.IFrameworkElementHelper.Measure(AppKit.NSView element, Windows.Foundation.Size availableSize)"
 					reason="macOS only unused extension method"/>
-			  
-				<Member 
+
+				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.Add(Windows.UI.Xaml.UIElement view)"
 					reason="macOS only breaking change"/>
 
 				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.ScrollViewer.Add(Windows.UI.Xaml.UIElement view)"
 					reason="macOS only breaking change"/>
-				
+
 				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.TextBox.SetIsPassword(System.Boolean isPassword)"
 					reason="macOS only breaking change, internal API"/>
-				
+
 				<Member
 					fullName="System.Object Windows.UI.Xaml.Controls.ScrollContentPresenter.get_DataContext()"
 					reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
@@ -804,6 +804,54 @@
 				<Member
 					fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources::__ImplicitStyle_Windows_UI_Xaml_Controls_DatePickerSelector()"
 					reason="Style removed from monoandroid (xamarin:Style with only ios:Setter)" />
+			</Properties>
+		</IgnoreSet>
+		<IgnoreSet baseVersion="2.2.0">
+			<Methods>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.AnimatedVisualPlayer.set_IsPlaying(System.Boolean value)"
+					reason="Refactoring, not part of WinUI contract anyway." />
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.IAnimatedVisualSource.Play(System.Boolean looped)"
+					reason="Refactoring, not part of WinUI contract anyway." />
+
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.TextBox..ctor(System.Boolean isPassword)"
+					reason="macOS only breaking change" />
+
+				<Member
+					fullName="Windows.UI.Xaml.Media.GradientStopCollection Windows.UI.Xaml.Media.LinearGradientBrush.get_GradientStops()"
+					reason="GradientStops/MappingMode moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Media.LinearGradientBrush.set_GradientStops(Windows.UI.Xaml.Media.GradientStopCollection value)"
+					reason="GradientStops/MappingMode moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
+				<Member
+					fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Media.GradientBrush.get_GradientStopsProperty()"
+					reason="GradientStops/MappingMode moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
+				<Member
+					fullName="Windows.UI.Xaml.Media.GradientBrush.get_MappingModeProperty()"
+					reason="GradientStops/MappingMode moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
+				<Member
+					fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Media.GradientBrush.get_MappingModeProperty()"
+					reason="GradientStops/MappingMode moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
+			</Methods>
+			<Events>
+			</Events>
+			<Fields>
+				<Member
+					fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Media.LinearGradientBrush::GradientStopsProperty"
+					reason="GradientStops/MappingMode moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
+			</Fields>
+			<Properties>
+				<Member
+					fullName="Windows.UI.Xaml.Media.GradientStopCollection Windows.UI.Xaml.Media.LinearGradientBrush::GradientStops()"
+					reason="GradientStops/MappingMode moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
+				<Member
+					fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Media.GradientBrush::GradientStopsProperty()"
+					reason="GradientStops/MappingMode moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
+				<Member
+					fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Media.GradientBrush::MappingModeProperty()"
+					reason="GradientStops/MappingMode moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
 			</Properties>
 		</IgnoreSet>
 	</IgnoreSets>

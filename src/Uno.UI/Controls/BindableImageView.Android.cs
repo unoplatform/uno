@@ -270,7 +270,9 @@ namespace Uno.UI.Controls
 				var sampleSize = CalculateInSampleSize(options, _targetWidth, _targetHeight);
 
 				options.InJustDecodeBounds = false;
+#pragma warning disable CS0618 // Type or member is obsolete
 				options.InPurgeable = true;
+#pragma warning restore CS0618 // Type or member is obsolete
 				options.InSampleSize = sampleSize;
 
 				var bitmap = BitmapFactory.DecodeFile(filePath, options);

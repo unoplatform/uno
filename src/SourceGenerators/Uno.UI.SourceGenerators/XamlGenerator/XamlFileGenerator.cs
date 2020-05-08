@@ -2819,7 +2819,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var pathMember = bindNode.Members.FirstOrDefault(m => m.Member.Name == "_PositionalParameters" || m.Member.Name == "Path");
 
-			var rawFunction = pathMember?.Value?.ToString() ?? "";
+			var rawFunction = XBindExpressionParser.RestoreSinglePath(pathMember?.Value?.ToString() ?? "");
 			var propertyType = FindPropertyType(member.Member);
 
 			// Apply replacements to avoid having issues with the XAML parser which does not
@@ -2827,8 +2827,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Note that the UWP preprocessor does not need to apply those replacements as the x:Bind expressions
 			// are being removed during the first phase and replaced by "connections".
 			rawFunction = rawFunction
-				.Replace("^" + XamlConstants.XBindSubstitute, "\\\'")
-				.Replace(XamlConstants.XBindSubstitute, '\"')
 				.Replace("x:False", "false")
 				.Replace("x:True", "true")
 				.Replace("x:Null", "null")

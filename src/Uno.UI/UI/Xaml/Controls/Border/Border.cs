@@ -259,9 +259,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected virtual void OnBorderBrushChanged(Brush oldValue, Brush newValue)
 		{
-			var colorBrush = newValue as SolidColorBrush;
-
-			if (colorBrush != null)
+			if (newValue is SolidColorBrush colorBrush)
 			{
 				_borderBrushColorChanged.Disposable = colorBrush.RegisterDisposablePropertyChangedCallback(
 					SolidColorBrush.ColorProperty,
@@ -269,6 +267,17 @@ namespace Windows.UI.Xaml.Controls
 				);
 				_borderBrushOpacityChanged.Disposable = colorBrush.RegisterDisposablePropertyChangedCallback(
 					SolidColorBrush.OpacityProperty,
+					(s, _) => OnBorderBrushChangedPartial()
+				);
+			}
+			else if (newValue is GradientBrush gb)
+			{
+				_borderBrushColorChanged.Disposable = gb.RegisterDisposablePropertyChangedCallback(
+					GradientBrush.FallbackColorProperty,
+					(s, colorArg) => OnBorderBrushChangedPartial()
+				);
+				_borderBrushOpacityChanged.Disposable = gb.RegisterDisposablePropertyChangedCallback(
+					GradientBrush.OpacityProperty,
 					(s, _) => OnBorderBrushChangedPartial()
 				);
 			}
