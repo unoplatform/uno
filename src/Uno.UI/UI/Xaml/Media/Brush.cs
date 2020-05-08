@@ -2,6 +2,8 @@
 using System.Collections.Generic;
 using System.Text;
 using System.ComponentModel;
+using System.Diagnostics.Contracts;
+using Windows.UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -67,6 +69,29 @@ namespace Windows.UI.Xaml.Media
 		private protected Color GetColorWithOpacity(Color referenceColor)
 		{
 			return Color.FromArgb((byte)(Opacity * referenceColor.A), referenceColor.R, referenceColor.G, referenceColor.B);
+		}
+
+		[Pure]
+		internal static Color? GetColorWithOpacity(Brush brush, Color? defaultColor = null)
+		{
+			return TryGetColorWithOpacity(brush, out var c) ? c : defaultColor;
+		}
+
+		[Pure]
+		internal static bool TryGetColorWithOpacity(Brush brush, out Color color)
+		{
+			switch (brush)
+			{
+				case SolidColorBrush scb:
+					color = scb.ColorWithOpacity;
+					return true;
+				case GradientBrush gb:
+					color = gb.FallbackColorWithOpacity;
+					return true;
+				default:
+					color = default;
+					return false;
+			}
 		}
 	}
 }

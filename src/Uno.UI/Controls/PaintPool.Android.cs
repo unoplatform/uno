@@ -10,6 +10,7 @@ using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Documents;
 using Windows.UI.Xaml.Media;
+using Color = Windows.UI.Color;
 
 namespace Uno.UI.Controls
 {
@@ -82,19 +83,25 @@ namespace Uno.UI.Controls
 		/// can be tricky to place properly.
 		/// </remarks>
 		/// <returns>A <see cref="TextPaint"/> instance.</returns>
-		public static TextPaint GetPaint(FontWeight fontWeight, FontStyle fontStyle, FontFamily fontFamily, double fontSize, double characterSpacing, Windows.UI.Color foreground, BaseLineAlignment baselineAlignment, TextDecorations textDecorations)
+		public static TextPaint GetPaint(FontWeight fontWeight, FontStyle fontStyle, FontFamily fontFamily, double fontSize, double characterSpacing, Windows.UI.Color foreground, Shader shader, BaseLineAlignment baselineAlignment, TextDecorations textDecorations)
 		{
+			if (shader != null)
+			{
+				// The "Shader" native object can't be use as a cache key
+				return InnerBuildPaint(fontWeight, fontStyle, fontFamily, fontSize, characterSpacing, foreground,  shader, baselineAlignment, textDecorations);
+			}
+
 			var key = new Entry(fontWeight, fontStyle, fontFamily, fontSize, characterSpacing, foreground, baselineAlignment, textDecorations);
 
 			if (!_entries.TryGetValue(key, out var paint))
 			{
-				_entries.Add(key, paint = InnerBuildPaint(fontWeight, fontStyle, fontFamily, fontSize, characterSpacing, foreground, baselineAlignment, textDecorations));
+				_entries.Add(key, paint = InnerBuildPaint(fontWeight, fontStyle, fontFamily, fontSize, characterSpacing, foreground, shader, baselineAlignment, textDecorations));
 			}
 
 			return paint;
 		}
 
-		private static TextPaint InnerBuildPaint(FontWeight fontWeight, FontStyle fontStyle, FontFamily fontFamily, double fontSize, double characterSpacing, Windows.UI.Color foreground, BaseLineAlignment baselineAlignment, TextDecorations textDecorations)
+		private static TextPaint InnerBuildPaint(FontWeight fontWeight, FontStyle fontStyle, FontFamily fontFamily,  double fontSize, double characterSpacing, Color foreground, Shader shader,  BaseLineAlignment baselineAlignment, TextDecorations textDecorations)
 		{
 			var paint = new TextPaint(PaintFlags.AntiAlias);
 
@@ -104,6 +111,10 @@ namespace Uno.UI.Controls
 			paint.TextSize = paintSpecs.textSize;
 			paint.UnderlineText = (textDecorations & TextDecorations.Underline) == TextDecorations.Underline;
 			paint.StrikeThruText = (textDecorations & TextDecorations.Strikethrough) == TextDecorations.Strikethrough;
+			if (shader != null)
+			{
+				paint.SetShader(shader);
+			}
 
 			if (baselineAlignment == BaseLineAlignment.Superscript)
 			{

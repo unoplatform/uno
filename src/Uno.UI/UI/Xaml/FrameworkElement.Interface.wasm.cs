@@ -132,29 +132,29 @@ namespace Windows.UI.Xaml
 					SetStyle("background-color", color.ToHexString());
 					RecalculateBrushOnSizeChanged(false);
 					break;
-				case LinearGradientBrush linearGradientBrush:
-					SetStyle("background", linearGradientBrush.ToCssString(RenderSize));
+				case GradientBrush gradientBrush:
+					SetStyle("background-image", gradientBrush.ToCssString(RenderSize));
 					RecalculateBrushOnSizeChanged(true);
 					break;
 				default:
 					ResetStyle("background-color");
-					ResetStyle("background");
+					ResetStyle("background-image");
 					RecalculateBrushOnSizeChanged(false);
 					break;
 			}
 		}
 
-		private static SizeChangedEventHandler _onSizeChangedForBrushCalculation = (sender, args) =>
+		private static readonly SizeChangedEventHandler _onSizeChangedForBrushCalculation = (sender, args) =>
 		{
 			var fe = sender as FrameworkElement;
 			fe.SetBackgroundBrush(fe.Background);
 		};
 
-		private bool onSizeChangedForBrushCalculatioSet = false;
+		private bool _onSizeChangedForBrushCalculationSet = false;
 
 		private void RecalculateBrushOnSizeChanged(bool shouldRecalculate)
 		{
-			if (onSizeChangedForBrushCalculatioSet == shouldRecalculate)
+			if (_onSizeChangedForBrushCalculationSet == shouldRecalculate)
 			{
 				return;
 			}
@@ -168,7 +168,7 @@ namespace Windows.UI.Xaml
 				SizeChanged -= _onSizeChangedForBrushCalculation;
 			}
 
-			onSizeChangedForBrushCalculatioSet = shouldRecalculate;
+			_onSizeChangedForBrushCalculationSet = shouldRecalculate;
 		}
 
 		#endregion

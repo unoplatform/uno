@@ -207,13 +207,22 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
+			var foreground = Brush
+				.GetColorWithOpacity(Foreground, Colors.Transparent)
+				.Value;
+
+			var shader = Foreground is GradientBrush gb
+				? gb.GetShader(LayoutSlot.LogicalToPhysicalPixels())
+				: null;
+
 			_paint = TextPaintPool.GetPaint(
 				FontWeight,
 				FontStyle,
 				FontFamily,
 				FontSize,
 				CharacterSpacing,
-				(Foreground as SolidColorBrush)?.Color ?? Colors.Transparent,
+				foreground,
+				shader,
 				BaseLineAlignment.Baseline,
 				TextDecorations
 			);
