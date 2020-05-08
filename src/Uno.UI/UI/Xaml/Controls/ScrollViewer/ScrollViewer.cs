@@ -629,12 +629,29 @@ namespace Windows.UI.Xaml.Controls
 		{
 			base.OnApplyTemplate();
 
-			_sv = this.GetTemplateChild(ScrollContentPresenterPartName) as IScrollContentPresenter;
+			var scpTemplatePart = this.GetTemplateChild(ScrollContentPresenterPartName);
+			_sv = scpTemplatePart as IScrollContentPresenter;
+
+#if XAMARIN
+			if (scpTemplatePart is ScrollContentPresenter scp)
+			{
+				// For Android/iOS/MacOS, ensure that the ScrollContentPresenter contains a native scroll viewer,
+				// which will handle the actual scrolling
+				var nativeSCP = new NativeScrollContentPresenter();
+				scp.Content = nativeSCP;
+				_sv = nativeSCP;
+			}
+#endif
 
 			if (_sv == null)
 			{
 				throw new InvalidOperationException("The template part ScrollContentPresenter could not be found or is not a ScrollContentPresenter");
 			}
+
+			_sv.HorizontalScrollBarVisibility = HorizontalScrollBarVisibility;
+			_sv.VerticalScrollBarVisibility = VerticalScrollBarVisibility;
+			_sv.HorizontalScrollMode = HorizontalScrollMode;
+			_sv.VerticalScrollMode = VerticalScrollMode;
 
 			ApplyScrollContentPresenterContent();
 

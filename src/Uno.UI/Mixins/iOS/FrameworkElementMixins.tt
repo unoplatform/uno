@@ -8,7 +8,6 @@
 	AddClass("Windows.UI.Xaml.Controls", "NativeListViewBase", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false);
 	AddClass("Uno.UI.Controls.Legacy", "ListViewBase", hasAttachedToWindow: false, overridesAttachedToWindow: true, defineSetNeedsLayout: false, defineLayoutSubviews: false);
 	AddClass("Windows.UI.Xaml.Controls", "ProgressRing", hasAttachedToWindow: false, overridesAttachedToWindow: true);
-	AddClass("Windows.UI.Xaml.Controls", "ScrollContentPresenter", defineSetNeedsLayout: false, defineLayoutSubviews: false, hasAttachedToWindow: false, overridesAttachedToWindow: false);
 	AddClass("Windows.UI.Xaml.Controls", "Picker", hasAttachedToWindow: true);
 #>
 <#@include file="..\..\UI\Xaml\IFrameworkElementImplementation.iOS.tt"#>
