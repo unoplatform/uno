@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   <PropertyGroup>
-		<TargetFrameworks>MonoAndroid90;xamarinios10</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid90;xamarinios10</TargetFrameworksCI>
+		<TargetFrameworks>MonoAndroid10.0;xamarinios10</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid90;MonoAndroid10.0;xamarinios10</TargetFrameworksCI>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 	</PropertyGroup>
 	
@@ -41,7 +41,13 @@
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
 		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="71.1600.0" />
 		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="71.1600.0" />
-		<PackageReference Include="Xamarin.Android.Support.v4" Version="28.0.0.1" PrivateAssets="none" />
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" PrivateAssets="none" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid10.0'">
+		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="71.1600.0" />
+		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="71.1610.0" />
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" PrivateAssets="none" />
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />

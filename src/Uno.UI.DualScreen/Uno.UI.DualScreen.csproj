@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   <PropertyGroup>
-		<TargetFrameworks>MonoAndroid90</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid90</TargetFrameworksCI>
+		<TargetFrameworks>MonoAndroid10.0</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid90;MonoAndroid10.0</TargetFrameworksCI>
 		<!--<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>-->
 		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
 	</PropertyGroup>
@@ -41,7 +41,7 @@
 
 	<Import Project="..\Uno.CrossTargetting.props" />
 
-	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90' or '$(TargetFramework)' == 'MonoAndroid10.0'">
 		<PackageReference Include="Xamarin.DuoSdk" />
 	</ItemGroup>
 

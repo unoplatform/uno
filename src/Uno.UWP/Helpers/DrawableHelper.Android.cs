@@ -1,6 +1,7 @@
 ﻿#if __ANDROID__
 using Android.Graphics.Drawables;
-using Android.Support.V4.Content;
+using AndroidX.Core.Content;
+using AndroidX.Core.Graphics.Drawable;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,7 +68,7 @@ namespace Uno.Helpers
 			if (drawable != null)
 			{
 				// Makes the drawable compatible with DrawableCompat pre-Lollipop.
-				drawable = Android.Support.V4.Graphics.Drawable.DrawableCompat.Wrap(drawable);
+				drawable = DrawableCompat.Wrap(drawable);
 				drawable = drawable.Mutate();
 			}
 
