@@ -797,7 +797,7 @@
 					reason="Wrong parameter name, restored the WinUI one"/>
 				<Member
 					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerCaptureLost(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
-					reason="Wrong parameter name, restored the WinUI one"/>
+					reason="Wrong parameter name, restored the WinUI one"/>				
 			</Methods>
 			<Properties>
 				<Member
@@ -808,6 +808,48 @@
 		<IgnoreSet baseVersion="2.2.0">
 			<Methods>
 				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.DtdEntity..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.DtdNotation..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlAttribute..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlCDataSection..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlComment..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlDocumentFragment..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlDocumentType..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlDomImplementation..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlElement..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlEntityReference..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlNamedNodeMap..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlNodeList..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlProcessingInstruction..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlText..ctor()"
+					reason="Not part of UWP"/>
+        <Member
 					fullName="System.Void Windows.UI.Xaml.Controls.AnimatedVisualPlayer.set_IsPlaying(System.Boolean value)"
 					reason="Refactoring, not part of WinUI contract anyway." />
 				<Member
