@@ -54,7 +54,10 @@ namespace Windows.UI.Xaml.Controls
 
 		static TextBlock()
 		{
-			InitializeStaticLayoutInterop();
+			if ((int)Android.OS.Build.VERSION.SdkInt < 28)
+			{
+				InitializeStaticLayoutInterop();
+			}
 		}
 
 		/// <summary>
@@ -660,7 +663,9 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
-				Layout = UnoStaticLayoutBuilder.Build(
+				if ((int)Android.OS.Build.VERSION.SdkInt < 28)
+				{
+					Layout = UnoStaticLayoutBuilder.Build(
 						/*source:*/ _textFormatted,
 						/*paint: */ _paint,
 						/*outerwidth: */ width,
@@ -672,6 +677,21 @@ namespace Windows.UI.Xaml.Controls
 						/*ellipsizedWidth: */ width,
 						/*maxLines: */ maxLines
 					);
+				}
+				else
+				{
+					Layout = StaticLayout.Builder.Obtain(_textFormatted, 0, _textFormatted.Length(), _paint, width)
+					.SetLineSpacing(_addedSpacing = GetSpacingAdd(_paint), 1)
+					.SetMaxLines(maxLines)
+					.SetEllipsize(_ellipsize)
+					.SetEllipsizedWidth(width)
+					.SetAlignment(_layoutAlignment)
+					.SetIncludePad(true)
+					.Build();
+				}
+
+
+
 			}
 		}
 

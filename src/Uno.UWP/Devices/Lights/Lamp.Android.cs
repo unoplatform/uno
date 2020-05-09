@@ -143,7 +143,9 @@ namespace Windows.Devices.Lights
 		{
 			lock (_lock)
 			{
+#pragma warning disable CS0618 // Type or member is obsolete
 				_camera?.Release();
+#pragma warning restore CS0618 // Type or member is obsolete
 				_camera?.Dispose();
 				_camera = null;
 				_surfaceTexture?.Dispose();

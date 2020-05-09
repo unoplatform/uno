@@ -7,7 +7,7 @@ using Android.App;
 using Android.Content;
 using Android.Content.PM;
 using Android.Runtime;
-using Android.Support.V4.App;
+using AndroidX.Fragment.App;
 using Uno.UI;
 
 namespace Uno.Helpers.Activities

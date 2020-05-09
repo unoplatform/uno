@@ -4,6 +4,7 @@
 <#@ import namespace="System.Collections.Generic" #>
 
 #pragma warning disable 108
+#pragma warning disable 109 // The member does not hide an accessible member. The new keyword is not required.
 
 using Android.Runtime;
 using Android.Views;

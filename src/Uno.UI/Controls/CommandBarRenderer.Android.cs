@@ -1,6 +1,5 @@
 ﻿#if __ANDROID__
 using Android.Graphics.Drawables;
-using Android.Support.V7.Widget;
 using Android.Views;
 using System;
 using System.Collections.Generic;
@@ -14,14 +13,14 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
-using Android.Support.V4.Graphics.Drawable;
-using Android.Support.V7.App;
 using Android.App;
 using Uno.Extensions;
 using Uno.Logging;
 using Microsoft.Extensions.Logging;
 using Android.Views.InputMethods;
 using Android.Content;
+using AndroidX.AppCompat.Widget;
+using AndroidX.Core.Graphics.Drawable;
 
 namespace Uno.UI.Controls
 {
@@ -225,7 +224,7 @@ namespace Uno.UI.Controls
 				}
 				else
 				{
-					Native.NavigationIcon = new Android.Support.V7.Graphics.Drawable.DrawerArrowDrawable(ContextHelper.Current)
+					Native.NavigationIcon = new AndroidX.AppCompat.Graphics.Drawable.DrawerArrowDrawable(ContextHelper.Current)
 					{
 						// 0 = menu icon
 						// 1 = back icon
@@ -239,7 +238,7 @@ namespace Uno.UI.Controls
 				{
 					switch (Native.NavigationIcon)
 					{
-						case Android.Support.V7.Graphics.Drawable.DrawerArrowDrawable drawerArrowDrawable:
+						case AndroidX.AppCompat.Graphics.Drawable.DrawerArrowDrawable drawerArrowDrawable:
 							drawerArrowDrawable.Color = (Android.Graphics.Color)backButtonForeground;
 							break;
 						case Drawable drawable:

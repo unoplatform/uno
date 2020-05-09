@@ -16,7 +16,14 @@ echo ""
 echo "[Waiting for launcher to start]"
 LAUNCHER_READY=
 while [[ -z ${LAUNCHER_READY} ]]; do
+
+    if [ $ANDROID_SIMULATOR_APILEVEL -ge 29 ];
+    then 
+    UI_FOCUS=`$ANDROID_HOME/platform-tools/adb shell dumpsys window 2>/dev/null | grep -E 'mCurrentFocus|mFocusedApp'`
+    else
     UI_FOCUS=`$ANDROID_HOME/platform-tools/adb shell dumpsys window windows 2>/dev/null | grep -i mCurrentFocus`
+    fi
+
     echo "(DEBUG) Current focus: ${UI_FOCUS}"
 
     case $UI_FOCUS in

@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Android;
 using Android.Content.PM;
-using Android.Support.V4.App;
 using Uno;
 using Uno.Extensions;
 using Uno.UI;

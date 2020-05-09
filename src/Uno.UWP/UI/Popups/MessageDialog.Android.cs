@@ -42,7 +42,7 @@ namespace Windows.UI.Popups
 						ButtonType = GetDialogButtonType(index)
 					})
 				.Aggregate(
-					new global::Android.Support.V7.App.AlertDialog.Builder(ContextHelper.Current)
+					new global::AndroidX.AppCompat.App.AlertDialog.Builder(ContextHelper.Current)
 						.SetTitle(Title ?? "")
 						.SetMessage(Content ?? "")
 						.SetOnCancelListener(new DialogListener(this, invokedCommand))
