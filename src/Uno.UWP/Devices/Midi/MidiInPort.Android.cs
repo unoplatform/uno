@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using Android.Content;
 using Android.Media.Midi;
@@ -10,21 +7,21 @@ using Uno.Devices.Enumeration.Internal;
 using Uno.Devices.Enumeration.Internal.Providers.Midi;
 using Uno.Devices.Midi.Internal;
 using Uno.UI;
-using Windows.Storage.Streams;
 
 namespace Windows.Devices.Midi
 {
-    public partial class MidiInPort
-    {
+	public partial class MidiInPort
+	{
 		private readonly MidiManager _midiManager;
 		private readonly MidiDeviceInfo _deviceInfo = null;
 		private readonly MidiDeviceInfo.PortInfo _portInfo = null;
 
 		/// <summary>
-		/// This is not a bug, Android uses "input" for output.
+		/// This is not a bug, Android uses "output" for input.
 		/// </summary>
 		private MidiOutputPort _midiPort = null;
 		private MidiDevice _midiDevice = null;
+		private MessageReceiver _messageReceiver = null;
 
 		private MidiInPort(
 			string deviceId,
@@ -44,13 +41,20 @@ namespace Windows.Devices.Midi
 			{
 				_midiManager.OpenDevice(_deviceInfo, deviceOpenListener, null);
 				_midiDevice = await completionSource.Task;
-				// This is not a bug, Android uses "input" for output.
+				// This is not a bug, Android uses "output" for input.
 				_midiPort = _midiDevice.OpenOutputPort(_portInfo.PortNumber);
+				_messageReceiver = new MessageReceiver(this);
+				_midiPort.Connect(_messageReceiver);
 			}
 		}
 
 		public void Dispose()
 		{
+			if (_messageReceiver != null)
+			{
+				_midiPort?.Disconnect(_messageReceiver);
+				_messageReceiver.Dispose();
+			}
 			_portInfo?.Dispose();
 			_deviceInfo?.Dispose();
 			_midiPort?.Dispose();
@@ -69,6 +73,23 @@ namespace Windows.Devices.Midi
 			var port = new MidiInPort(identifier.ToString(), nativeDeviceInfo.device, nativeDeviceInfo.port);
 			await port.OpenAsync();
 			return port;
+		}
+
+		private class MessageReceiver : MidiReceiver
+		{
+			private readonly MidiInPort _midiInPort;
+
+			internal MessageReceiver(MidiInPort midiInPort)
+			{
+				_midiInPort = midiInPort;
+			}
+
+			public override void OnSend(byte[] msg, int offset, int count, long timestamp)
+			{
+				byte[] data = new byte[count];
+				Array.Copy(msg, offset, data, 0, count);
+				_midiInPort.OnMessageReceived(data, TimeSpan.FromMilliseconds(timestamp));
+			}
 		}
 	}
 }
