@@ -24,10 +24,16 @@ namespace Windows.Devices.Midi
 				throw new ArgumentException("Buffer must not be empty", nameof(rawData));
 			}
 
+			if (rawData is InMemoryBuffer inMemory &&
+				inMemory.Data[0] == (byte)MidiMessageType.EndSystemExclusive)
+			{
+				Type = MidiMessageType.EndSystemExclusive;
+			}
+
 			RawData = rawData;
 		}
 
-		internal MidiSystemExclusiveMessage(byte[] rawData)
+		internal MidiSystemExclusiveMessage(byte[] rawData, TimeSpan timestamp)
 		{
 			if (rawData == null)
 			{
@@ -39,13 +45,19 @@ namespace Windows.Devices.Midi
 				throw new ArgumentException("Buffer must not be empty", nameof(rawData));
 			}
 
+			if (rawData[0] == (byte)MidiMessageType.EndSystemExclusive)
+			{
+				Type = MidiMessageType.EndSystemExclusive;
+			}
+
 			RawData = new InMemoryBuffer(rawData);
+			Timestamp = timestamp;
 		}
 
 		/// <summary>
 		/// Gets the type of this MIDI message.
 		/// </summary>
-		public MidiMessageType Type => MidiMessageType.SystemExclusive;
+		public MidiMessageType Type { get; } = MidiMessageType.SystemExclusive;
 
 		/// <summary>
 		/// Gets the array of bytes associated with the MIDI message, including status byte.

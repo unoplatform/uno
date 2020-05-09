@@ -30,7 +30,7 @@ namespace Windows.Devices.Midi
 			});
 		}
 
-		internal MidiNoteOnMessage(byte[] rawData)
+		internal MidiNoteOnMessage(byte[] rawData, TimeSpan timestamp)
 		{
 			MidiMessageValidators.VerifyMessageLength(rawData, 3, Type);
 			MidiMessageValidators.VerifyMessageType(rawData[0], Type);
@@ -39,6 +39,7 @@ namespace Windows.Devices.Midi
 			MidiMessageValidators.VerifyRange(rawData[2], MidiMessageParameter.Velocity);
 
 			_buffer = new InMemoryBuffer(rawData);
+			Timestamp = timestamp;
 		}
 
 		/// <summary>

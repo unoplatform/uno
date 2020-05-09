@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Runtime.InteropServices.WindowsRuntime;
 using System.Text;
 using System.Threading.Tasks;
@@ -32,7 +33,12 @@ namespace Windows.Devices.Midi
 
 		private void NativePortMessageReceived(object sender, MidiPacketsEventArgs e)
 		{
-			throw new NotImplementedException();
+			foreach (var packet in e.Packets)
+			{
+				var bytes = new byte[packet.Length];
+				Marshal.Copy(packet.Bytes, bytes, 0, packet.Length);
+				OnMessageReceived(bytes, TimeSpan.FromMilliseconds(packet.TimeStamp));
+			}
 		}
 
 		public void Dispose()

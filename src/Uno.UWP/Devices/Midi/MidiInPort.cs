@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using Uno.Devices.Enumeration.Internal;
+using Uno.Devices.Midi.Internal;
 using Windows.Foundation;
 
 namespace Windows.Devices.Midi
@@ -14,6 +15,8 @@ namespace Windows.Devices.Midi
 			"System.Devices.InterfaceClassGuid:=\"{" + DeviceClassGuids.MidiIn + "}\" AND System.Devices.InterfaceEnabled:=System.StructuredQueryType.Boolean#True";		
 
 		private readonly object _syncLock = new object();
+
+		private MidiMessageParser _parser = new MidiMessageParser();
 
 		/// <summary>
 		/// Gets the id of the device that was used to initialize the MidiInPort.
@@ -70,8 +73,10 @@ namespace Windows.Devices.Midi
 				return;
 			}
 
-			//read message type
-			
+			// parse message
+			var parsedMessage = _parser.Parse(message, timestamp);
+			var eventArgs = new MidiMessageReceivedEventArgs(parsedMessage);
+			MessageReceived?.Invoke(this, eventArgs);
 		}
 	}
 }

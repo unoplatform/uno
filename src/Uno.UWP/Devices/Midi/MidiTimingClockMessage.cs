@@ -1,4 +1,5 @@
 using System;
+using Uno.Devices.Midi.Internal;
 using Windows.Storage.Streams;
 
 namespace Windows.Devices.Midi
@@ -17,6 +18,15 @@ namespace Windows.Devices.Midi
 			{
 				(byte)Type
 			});
+		}
+
+		internal MidiTimingClockMessage(byte[] rawData, TimeSpan timestamp)
+		{
+			MidiMessageValidators.VerifyMessageLength(rawData, 1, Type);
+			MidiMessageValidators.VerifyMessageType(rawData[0], Type);
+
+			RawData = new InMemoryBuffer(rawData);
+			Timestamp = timestamp;
 		}
 
 		/// <summary>

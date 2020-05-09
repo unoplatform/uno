@@ -28,7 +28,7 @@ namespace Windows.Devices.Midi
 			});
 		}
 
-		internal MidiTimeCodeMessage(byte[] rawData)
+		internal MidiTimeCodeMessage(byte[] rawData, TimeSpan timestamp)
 		{
 			MidiMessageValidators.VerifyMessageLength(rawData, 2, Type);
 			MidiMessageValidators.VerifyMessageType(rawData[0], Type);
@@ -36,6 +36,7 @@ namespace Windows.Devices.Midi
 			MidiMessageValidators.VerifyRange(MidiHelpers.GetFrameValues(rawData[1]), MidiMessageParameter.FrameValues);
 
 			_buffer = new InMemoryBuffer(rawData);
+			Timestamp = timestamp;
 		}
 
 		/// <summary>
@@ -62,6 +63,6 @@ namespace Windows.Devices.Midi
 		/// Gets the duration from when the MidiInPort was created to the time the message was received.
 		/// For messages being sent to a MidiOutPort, this value has no meaning.
 		/// </summary>
-		public TimeSpan Timestamp { get; internal set; } = TimeSpan.Zero;
+		public TimeSpan Timestamp { get; } = TimeSpan.Zero;
 	}
 }

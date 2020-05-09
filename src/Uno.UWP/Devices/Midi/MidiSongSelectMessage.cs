@@ -27,13 +27,14 @@ namespace Windows.Devices.Midi
 			});
 		}
 
-		internal MidiSongSelectMessage(byte[] rawData)
+		internal MidiSongSelectMessage(byte[] rawData, TimeSpan timestamp)
 		{
 			MidiMessageValidators.VerifyMessageLength(rawData, 2, Type);
 			MidiMessageValidators.VerifyMessageType(rawData[0], Type);
 			MidiMessageValidators.VerifyRange(rawData[1], MidiMessageParameter.Song);
 
 			_buffer = new InMemoryBuffer(rawData);
+			Timestamp = timestamp;
 		}
 
 		/// <summary>
