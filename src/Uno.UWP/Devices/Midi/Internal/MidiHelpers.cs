@@ -16,6 +16,16 @@ namespace Uno.Devices.Midi.Internal
 			return (byte)(firstMessageByte & 0b0000_1111);
 		}
 
+		internal static byte GetFrame(byte frameByte)
+		{
+			return (byte)(frameByte & 0b1111_0000);
+		}
+
+		internal static byte GetFrameValues(byte frameByte)
+		{
+			return (byte)(frameByte & 0b0000_1111);
+		}
+
 		/// <summary>
 		/// Returns the MIDI bend value from two bytes in message.
 		/// </summary>

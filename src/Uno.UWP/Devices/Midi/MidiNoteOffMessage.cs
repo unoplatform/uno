@@ -18,12 +18,16 @@ namespace Windows.Devices.Midi
 		/// <param name="note">The note which is specified as a value from 0-127.</param>
 		/// <param name="velocity">The velocity which is specified as a value from 0-127.</param>
 		public MidiNoteOffMessage(byte channel, byte note, byte velocity)
-			: this(new byte[] {
-				(byte)((byte)MidiMessageType.NoteOff| channel),
+		{
+			MidiMessageValidators.VerifyRange(channel, MidiMessageParameter.Channel);
+			MidiMessageValidators.VerifyRange(note, MidiMessageParameter.Note);
+			MidiMessageValidators.VerifyRange(velocity, MidiMessageParameter.Velocity);
+
+			_buffer = new InMemoryBuffer(new byte[] {
+				(byte)((byte)Type | channel),
 				note,
 				velocity
-			})
-		{
+			});
 		}
 
 		internal MidiNoteOffMessage(byte[] rawData)

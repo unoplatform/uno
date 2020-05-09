@@ -18,13 +18,17 @@ namespace Windows.Devices.Midi
 		/// <param name="controller">The controller from 0-127 to receive this message.</param>
 		/// <param name="controlValue">The value from 0-127 to apply to the controller.</param>
 		public MidiControlChangeMessage(byte channel, byte controller, byte controlValue)
-			: this(new byte[]
+		{
+			MidiMessageValidators.VerifyRange(channel, MidiMessageParameter.Channel);
+			MidiMessageValidators.VerifyRange(controller, MidiMessageParameter.Controller);
+			MidiMessageValidators.VerifyRange(controlValue, MidiMessageParameter.ControlValue);
+
+			_buffer = new InMemoryBuffer(new byte[]
 			{
 				(byte)((byte)MidiMessageType.ControlChange | channel),
 				controller,
 				controlValue
-			})
-		{
+			});
 		}
 
 		internal MidiControlChangeMessage(byte[] rawData)
@@ -33,7 +37,7 @@ namespace Windows.Devices.Midi
 			MidiMessageValidators.VerifyMessageType(rawData[0], MidiMessageType.ControlChange);
 			MidiMessageValidators.VerifyRange(MidiHelpers.GetChannel(rawData[0]), MidiMessageParameter.Channel);
 			MidiMessageValidators.VerifyRange(rawData[1], MidiMessageParameter.Controller);
-			MidiMessageValidators.VerifyRange(rawData[2], MidiMessageParameter.Control);
+			MidiMessageValidators.VerifyRange(rawData[2], MidiMessageParameter.ControlValue);
 
 			_buffer = new InMemoryBuffer(rawData);
 		}

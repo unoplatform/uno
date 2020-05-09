@@ -17,12 +17,15 @@ namespace Windows.Devices.Midi
 		/// <param name="channel">The channel from 0-15 that this message applies to.</param>
 		/// <param name="pressure">The pressure from 0-127.</param>
 		public MidiChannelPressureMessage(byte channel, byte pressure)
-			: this(new byte[]
+		{
+			MidiMessageValidators.VerifyRange(channel, MidiMessageParameter.Channel);
+			MidiMessageValidators.VerifyRange(pressure, MidiMessageParameter.Pressure);
+
+			_buffer = new InMemoryBuffer(new byte[]
 			{
-				(byte)((byte)MidiMessageType.ChannelPressure | channel),
+				(byte)((byte)Type | channel),
 				pressure
-			})
-		{			
+			});
 		}
 
 		internal MidiChannelPressureMessage(byte[] rawData)

@@ -9,21 +9,31 @@ namespace Windows.Devices.Midi
 	/// </summary>
 	public partial class MidiSongPositionPointerMessage : IMidiMessage
 	{
+		private readonly InMemoryBuffer _buffer;
+
 		/// <summary>
 		/// Creates a new MidiSongPositionPointerMessage object.
 		/// </summary>
 		/// <param name="beats">The song position pointer encoded in a 14-bit value from 0-16383.</param>
 		public MidiSongPositionPointerMessage(ushort beats)
 		{
-			MidiMessageValidators.VerifyRange(beats, 16383, nameof(beats));
+			MidiMessageValidators.VerifyRange(beats, MidiMessageParameter.Beats);
 
-			Beats = beats;
-			RawData = new InMemoryBuffer(new byte[]
+			_buffer = new InMemoryBuffer(new byte[]
 			{
-				(byte)Type,
+				(byte)MidiMessageType.SongPositionPointer,
 				(byte)(beats & 0b0111_1111),
 				(byte)(beats >> 7)
 			});
+		}
+
+		internal MidiSongPositionPointerMessage(byte[] rawData)
+		{
+			MidiMessageValidators.VerifyMessageLength(rawData, 3, Type);
+			MidiMessageValidators.VerifyMessageType(rawData[0], Type);
+			MidiMessageValidators.VerifyRange(MidiHelpers.GetBeats(rawData[1], rawData[2]), MidiMessageParameter.Beats);
+
+			_buffer = new InMemoryBuffer(rawData);
 		}
 
 		/// <summary>
@@ -32,19 +42,19 @@ namespace Windows.Devices.Midi
 		public MidiMessageType Type => MidiMessageType.SongPositionPointer;
 
 		/// <summary>
+		/// Gets the song position pointer encoded in a 14-bit value from 0-16383.
+		/// </summary>
+		public ushort Beats => MidiHelpers.GetBeats(_buffer.Data[1], _buffer.Data[2]);
+
+		/// <summary>
 		/// Gets the array of bytes associated with the MIDI message, including status byte.
 		/// </summary>
-		public IBuffer RawData { get; }
+		public IBuffer RawData => _buffer;
 
 		/// <summary>
 		/// Gets the duration from when the MidiInPort was created to the time the message was received.
 		/// For messages being sent to a MidiOutPort, this value has no meaning.
 		/// </summary>
-		public TimeSpan Timestamp { get; } = TimeSpan.Zero;
-
-		/// <summary>
-		/// Gets the song position pointer encoded in a 14-bit value from 0-16383.
-		/// </summary>
-		public ushort Beats { get; }
+		public TimeSpan Timestamp { get; internal set; } = TimeSpan.Zero;
 	}
 }

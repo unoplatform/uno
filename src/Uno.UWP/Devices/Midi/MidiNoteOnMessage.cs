@@ -17,14 +17,17 @@ namespace Windows.Devices.Midi
 		/// <param name="channel">The channel from 0-15 that this message applies to.</param>
 		/// <param name="note">The note which is specified as a value from 0-127.</param>
 		/// <param name="velocity">The velocity which is specified as a value from 0-127.</param>
-		public MidiNoteOnMessage(byte channel, byte note, byte velocity)
-			: this(new byte[]
-			{
-				(byte)((byte)Type | Channel),
-				Note,
-				Velocity
-			})
-		{			
+		public MidiNoteOnMessage(byte channel, byte note, byte velocity)			
+		{
+			MidiMessageValidators.VerifyRange(channel, MidiMessageParameter.Channel);
+			MidiMessageValidators.VerifyRange(note, MidiMessageParameter.Note);
+			MidiMessageValidators.VerifyRange(velocity, MidiMessageParameter.Velocity);
+
+			_buffer = new InMemoryBuffer(new byte[] {
+				(byte)((byte)Type | channel),
+				note,
+				velocity
+			});
 		}
 
 		internal MidiNoteOnMessage(byte[] rawData)

@@ -9,23 +9,33 @@ namespace Windows.Devices.Midi
 	/// </summary>
 	public partial class MidiProgramChangeMessage : IMidiMessage
 	{
+		private readonly InMemoryBuffer _buffer;
+
 		/// <summary>
 		/// Creates a new MidiProgramChangeMessage object.
 		/// </summary>
 		/// <param name="channel">The channel from 0-15 that this message applies to.</param>
 		/// <param name="program">The program to change from 0-127.</param>
-		public MidiProgramChangeMessage(byte channel, byte program)
+		public MidiProgramChangeMessage(byte channel, byte program)			
 		{
-			MidiMessageValidators.VerifyRange(channel, 15, nameof(channel));
-			MidiMessageValidators.VerifyRange(program, 127, nameof(program));
+			MidiMessageValidators.VerifyRange(channel, MidiMessageParameter.Channel);
+			MidiMessageValidators.VerifyRange(program, MidiMessageParameter.Program);
 
-			Channel = channel;
-			Program = program;
-			RawData = new InMemoryBuffer(new byte[]
+			_buffer = new InMemoryBuffer(new byte[]
 			{
-				(byte)((byte)Type | Channel),
-				Program,
+				(byte)((byte)MidiMessageType.ProgramChange | channel),
+				program,
 			});
+		}
+
+		internal MidiProgramChangeMessage(byte[] rawData)
+		{
+			MidiMessageValidators.VerifyMessageLength(rawData, 2, Type);
+			MidiMessageValidators.VerifyMessageType(rawData[0], Type);
+			MidiMessageValidators.VerifyRange(MidiHelpers.GetChannel(rawData[0]), MidiMessageParameter.Channel);
+			MidiMessageValidators.VerifyRange(rawData[1], MidiMessageParameter.Program);
+
+			_buffer = new InMemoryBuffer(rawData);
 		}
 
 		/// <summary>
@@ -34,24 +44,24 @@ namespace Windows.Devices.Midi
 		public MidiMessageType Type => MidiMessageType.ProgramChange;
 
 		/// <summary>
+		/// Gets the channel from 0-15 that this message applies to.
+		/// </summary>
+		public byte Channel => MidiHelpers.GetChannel(_buffer.Data[0]);
+
+		/// <summary>
+		/// Gets the program to change from 0-127.
+		/// </summary>
+		public byte Program => _buffer.Data[1];
+
+		/// <summary>
 		/// Gets the array of bytes associated with the MIDI message, including status byte.
 		/// </summary>
-		public IBuffer RawData { get; }
+		public IBuffer RawData => _buffer;
 
 		/// <summary>
 		/// Gets the duration from when the MidiInPort was created to the time the message was received.
 		/// For messages being sent to a MidiOutPort, this value has no meaning.
 		/// </summary>
-		public TimeSpan Timestamp { get; }
-
-		/// <summary>
-		/// Gets the channel from 0-15 that this message applies to.
-		/// </summary>
-		public byte Channel { get; }
-
-		/// <summary>
-		/// Gets the program to change from 0-127.
-		/// </summary>
-		public byte Program { get; }
+		public TimeSpan Timestamp { get; internal set; } = TimeSpan.Zero;
 	}
 }

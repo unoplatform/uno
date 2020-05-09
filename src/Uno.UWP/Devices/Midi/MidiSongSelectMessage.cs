@@ -1,5 +1,6 @@
 using System;
 using Uno.Devices.Midi.Internal;
+using Windows.Devices.Bluetooth.Advertisement;
 using Windows.Storage.Streams;
 
 namespace Windows.Devices.Midi
@@ -9,20 +10,30 @@ namespace Windows.Devices.Midi
 	/// </summary>
 	public partial class MidiSongSelectMessage : IMidiMessage
 	{
+		private readonly InMemoryBuffer _buffer;
+
 		/// <summary>
 		/// Creates a new MidiSongSelectMessage object.
 		/// </summary>
 		/// <param name="song">The song to select from 0-127.</param>
 		public MidiSongSelectMessage(byte song)
-		{			
-			MidiMessageValidators.VerifyRange(song, 127, nameof(song));
+		{
+			MidiMessageValidators.VerifyRange(song, MidiMessageParameter.Song);
 
-			Song = song;
-			RawData = new InMemoryBuffer(new byte[]
+			_buffer = new InMemoryBuffer(new byte[]
 			{
-				(byte)Type,
+				(byte)MidiMessageType.SongSelect,
 				song
 			});
+		}
+
+		internal MidiSongSelectMessage(byte[] rawData)
+		{
+			MidiMessageValidators.VerifyMessageLength(rawData, 2, Type);
+			MidiMessageValidators.VerifyMessageType(rawData[0], Type);
+			MidiMessageValidators.VerifyRange(rawData[1], MidiMessageParameter.Song);
+
+			_buffer = new InMemoryBuffer(rawData);
 		}
 
 		/// <summary>

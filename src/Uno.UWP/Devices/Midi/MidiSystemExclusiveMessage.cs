@@ -27,6 +27,21 @@ namespace Windows.Devices.Midi
 			RawData = rawData;
 		}
 
+		internal MidiSystemExclusiveMessage(byte[] rawData)
+		{
+			if (rawData == null)
+			{
+				throw new ArgumentNullException(nameof(rawData));
+			}
+
+			if (rawData.Length == 0)
+			{
+				throw new ArgumentException("Buffer must not be empty", nameof(rawData));
+			}
+
+			RawData = new InMemoryBuffer(rawData);
+		}
+
 		/// <summary>
 		/// Gets the type of this MIDI message.
 		/// </summary>

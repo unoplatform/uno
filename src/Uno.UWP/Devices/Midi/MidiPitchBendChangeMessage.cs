@@ -17,13 +17,16 @@ namespace Windows.Devices.Midi
 		/// <param name="channel">Channel.</param>
 		/// <param name="bend">Bend.</param>
 		public MidiPitchBendChangeMessage(byte channel, ushort bend)
-			: this(new byte[]
+		{
+			MidiMessageValidators.VerifyRange(channel, MidiMessageParameter.Channel);
+			MidiMessageValidators.VerifyRange(bend, MidiMessageParameter.Bend);
+
+			_buffer = new InMemoryBuffer(new byte[]
 			{
-				(byte)((byte)MidiMessageType.PitchBendChange | channel),
+				(byte)((byte)Type | channel),
 				(byte)(bend & 0b0111_1111),
 				(byte)(bend >> 7)
-			})
-		{			
+			});
 		}
 
 		internal MidiPitchBendChangeMessage(byte[] rawData)
