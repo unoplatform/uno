@@ -23,7 +23,7 @@
 		}
 
 		private static messageReceived(event: WebMidi.MIDIMessageEvent) {			
-			var serializedMessage = event.timeStamp.toString();
+			var serializedMessage = event.receivedTime.toString();
 			for (var i = 0; i < event.data.length; i++) {
 				serializedMessage += ':' + event.data[i];
 			}
