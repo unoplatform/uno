@@ -51,5 +51,7 @@
 	</dict>
     <key>NSMotionUsageDescription</key>
     <string>This is a step counter, and we&apos;d like to track motion. </string>
+	<key>UIApplicationSupportsIndirectInputEvents</key>
+	<true/>
 </dict>
 </plist>

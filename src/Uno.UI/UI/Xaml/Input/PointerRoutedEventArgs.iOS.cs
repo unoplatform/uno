@@ -31,15 +31,14 @@ namespace Windows.UI.Xaml.Input
 			_nativeTouch = nativeTouch;
 			_nativeEvent = nativeEvent;
 
-			var type = _nativeTouch.Type == UITouchType.Stylus
-				? PointerDeviceType.Pen
-				: PointerDeviceType.Touch;
+			var deviceType = GetPointerDeviceType(nativeTouch.Type);
+						
 			var isInContact = _nativeTouch.Phase == UITouchPhase.Began
 				|| _nativeTouch.Phase == UITouchPhase.Moved
 				|| _nativeTouch.Phase == UITouchPhase.Stationary;
 
 			FrameId = ToFrameId(_nativeTouch.Timestamp);
-			Pointer = new Pointer(pointerId, type, isInContact, isInRange: true);
+			Pointer = new Pointer(pointerId, deviceType, isInContact, isInRange: true);
 			KeyModifiers = VirtualKeyModifiers.None;
 			OriginalSource = FindOriginalSource(_nativeTouch) ?? receiver;
 			CanBubbleNatively = true; // Required for native gesture recognition (i.e. ScrollViewer), and integration of native components in the visual tree
@@ -57,6 +56,15 @@ namespace Windows.UI.Xaml.Input
 
 			return new PointerPoint(FrameId, timestamp, device, Pointer.PointerId, rawPosition, position, Pointer.IsInContact, properties);
 		}
+
+		private PointerDeviceType GetPointerDeviceType(UITouchType touchType) =>
+			touchType switch
+			{				
+				UITouchType.Stylus => PointerDeviceType.Pen,
+				UITouchType.IndirectPointer => PointerDeviceType.Mouse,
+				UITouchType.Indirect => PointerDeviceType.Mouse,
+				_ => PointerDeviceType.Touch // Use touch as default fallback.
+			};
 
 		private PointerPointProperties GetProperties()
 			=> new PointerPointProperties()
