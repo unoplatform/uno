@@ -1,7 +1,5 @@
 ﻿namespace Uno.Devices.Midi.Internal {
 	export class WasmMidiAccess {
-
-
 		private static midiAccess: WebMidi.MIDIAccess;
 
 		private static dispatchRequest: (hasAccess: boolean) => number;

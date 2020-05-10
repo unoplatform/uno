@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using Uno.Devices.Enumeration.Internal;
 using Uno.Devices.Midi.Internal;
