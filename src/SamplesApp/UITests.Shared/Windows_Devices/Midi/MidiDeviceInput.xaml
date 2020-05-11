@@ -5,8 +5,8 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:UITests.Windows_Devices.Midi"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="300"
-    d:DesignWidth="400"
+    d:DesignHeight="1200"
+    d:DesignWidth="1080"
     mc:Ignorable="d">
 
 
@@ -19,7 +19,7 @@
             <Setter Property="FontWeight" Value="Bold" />
         </Style>
 
-        <Style x:Key="InputDeviceMessagesStyle" TargetType="ListBox">
+        <Style x:Key="InputDeviceMessagesStyle" TargetType="ListView">
             <Setter Property="Height" Value="230" />
             <Setter Property="MaxHeight" Value="230" />
             <Setter Property="HorizontalAlignment" Value="Stretch" />
@@ -40,19 +40,19 @@
             <Setter Property="Margin" Value="10" />
         </Style>
 
-        <Style x:Key="InputOutputDeviceListStyle" TargetType="ListBox">
+        <Style x:Key="InputOutputDeviceListStyle" TargetType="ListView">
             <Setter Property="Height" Value="230" />
             <Setter Property="MaxHeight" Value="230" />
             <Setter Property="Width" Value="300" />
             <Setter Property="Margin" Value="0,20,20,0" />
         </Style>
 
-        <!--  Style for displaying a ListBox whose items cannot be selected individually, used to display MIDI device properties  -->
-        <Style x:Key="ScenarioUnselectableListBoxStyle" TargetType="ListBoxItem">
+        <!--  Style for displaying a ListView whose items cannot be selected individually, used to display MIDI device properties  -->
+        <Style x:Key="ScenarioUnselectableListViewStyle" TargetType="ListViewItem">
             <Setter Property="IsEnabled" Value="True" />
             <Setter Property="Template">
                 <Setter.Value>
-                    <ControlTemplate TargetType="ListBoxItem">
+                    <ControlTemplate TargetType="ListViewItem">
                         <Border
                             x:Name="LayoutRoot"
                             HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
@@ -121,9 +121,9 @@
                         x:Name="inputDevicesLabel"
                         Style="{StaticResource ScenarioHeaderTextStyle}"
                         Text="INPUT DEVICES" />
-                    <ListBox
+                    <ListView
                         x:Name="inputDevices"
-                        SelectedIndex="{Binding SelectedDeviceIndex}"
+                        SelectionChanged="inputDevices_SelectionChanged"
                         Style="{StaticResource InputOutputDeviceListStyle}" />
 
                     <!--  List received input MIDI messages  -->
@@ -131,9 +131,9 @@
                         x:Name="inputDeviceMessagesLabel"
                         Style="{StaticResource ScenarioHeaderTextStyle}"
                         Text="RECEIVED MESSAGES" />
-                    <ListBox
+                    <ListView
                         x:Name="inputDeviceMessages"
-                        ItemContainerStyle="{StaticResource ScenarioUnselectableListBoxStyle}"
+                        ItemContainerStyle="{StaticResource ScenarioUnselectableListViewStyle}"
                         Style="{StaticResource InputDeviceMessagesStyle}" />
                 </RelativePanel>
             </ScrollViewer>
@@ -145,12 +145,13 @@
             <Border
                 x:Name="errorBorder"
                 Grid.Row="2"
-                Background="Red" />
+                Background="Orange" />
             <TextBlock
                 x:Name="statusBlock"
                 Grid.Row="2"
                 Margin="12,10,12,10"
-                Visibility="Collapsed" />
+                Text="Status"
+                Visibility="Visible" />
         </Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>

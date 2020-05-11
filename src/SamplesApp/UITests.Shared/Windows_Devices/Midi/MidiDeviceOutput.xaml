@@ -31,7 +31,7 @@
             <Setter Property="Margin" Value="10" />
         </Style>
 
-        <Style x:Key="InputOutputDeviceListStyle" TargetType="ListBox">
+        <Style x:Key="InputOutputDeviceListStyle" TargetType="ListView">
             <Setter Property="Height" Value="230" />
             <Setter Property="MaxHeight" Value="230" />
             <Setter Property="Width" Value="300" />
@@ -63,9 +63,10 @@
                         x:Name="outputDevicesLabel"
                         Style="{StaticResource ScenarioHeaderTextStyle}"
                         Text="OUTPUT DEVICES" />
-                    <ListBox
+                    <ListView
                         x:Name="outputDevices"
                         IsEnabled="False"
+                        SelectionChanged="outputDevices_SelectionChanged"
                         Style="{StaticResource InputOutputDeviceListStyle}" />
 
                     <!--  List available MIDI message types  -->
@@ -76,6 +77,7 @@
                     <ComboBox
                         x:Name="messageType"
                         IsEnabled="False"
+                        SelectionChanged="messageType_SelectionChanged"
                         Style="{StaticResource MessageTypeStyle}" />
 
                     <!--  MIDI message parameters required for some types of MIDI messages  -->
@@ -88,33 +90,30 @@
                                 x:Name="parameter1"
                                 Width="140"
                                 Margin="0"
-                                Header="{Binding Parameter1Header}"
-                                IsEnabled="{Binding Parameter1Enabled}"
-                                ItemsSource="{Binding Parameter1Items}"
-                                SelectedIndex="{Binding Parameter1SelectedIndex, Mode=TwoWay}"
-                                Visibility="{Binding Parameter1Visibility}" />
+                                Header="Parameter 1"
+                                IsEnabled="False"
+                                SelectionChanged="Parameter1_SelectionChanged"
+                                Visibility="Collapsed" />
                         </StackPanel>
                         <StackPanel>
                             <ComboBox
                                 x:Name="parameter2"
                                 Width="140"
                                 Margin="10,0,0,0"
-                                Header="{Binding Parameter2Header}"
-                                IsEnabled="{Binding Parameter2Enabled}"
-                                ItemsSource="{Binding Parameter2Items}"
-                                SelectedIndex="{Binding Parameter2SelectedIndex, Mode=TwoWay}"
-                                Visibility="{Binding Parameter2Visibility}" />
+                                Header="Parameter 2"
+                                IsEnabled="False"
+                                SelectionChanged="Parameter2_SelectionChanged"
+                                Visibility="Collapsed" />
                         </StackPanel>
                         <StackPanel>
                             <ComboBox
                                 x:Name="parameter3"
                                 Width="140"
                                 Margin="10,0,0,0"
-                                Header="{Binding Parameter3Header}"
-                                IsEnabled="{Binding Parameter3Enabled}"
-                                ItemsSource="{Binding Parameter3Items}"
-                                SelectedIndex="{Binding Parameter3SelectedIndex, Mode=TwoWay}"
-                                Visibility="{Binding Parameter3Visibility}" />
+                                Header="Parameter 3"
+                                IsEnabled="False"
+                                SelectionChanged="Parameter3_SelectionChanged"
+                                Visibility="Collapsed" />
                         </StackPanel>
                     </StackPanel>
 
@@ -127,7 +126,7 @@
                             x:Name="rawBufferHeader"
                             VerticalAlignment="Bottom"
                             Text="Enter SysEx Message: "
-                            Visibility="{Binding RawBufferHeaderVisibility}" />
+                            Visibility="Collapsed" />
                         <TextBox
                             x:Name="sysExMessageContent"
                             Margin="5,0,0,0"
@@ -142,13 +141,15 @@
                         Orientation="Horizontal">
                         <Button
                             x:Name="resetButton"
+                            Click="resetButton_Click"
                             Content="Reset"
-                            IsEnabled="{Binding ResetButtonEnabled}"
+                            IsEnabled="False"
                             Style="{StaticResource MessageActionStyle}" />
                         <Button
                             x:Name="sendButton"
+                            Click="sendButton_Click"
                             Content="Send"
-                            IsEnabled="{Binding SendButtonEnabled}"
+                            IsEnabled="False"
                             Style="{StaticResource MessageActionStyle}" />
                     </StackPanel>
                 </RelativePanel>
@@ -161,12 +162,13 @@
             <Border
                 x:Name="errorBorder"
                 Grid.Row="2"
-                Background="Red" />
+                Background="Orange" />
             <TextBlock
                 x:Name="statusBlock"
                 Grid.Row="2"
                 Margin="12,10,12,10"
-                Visibility="Collapsed" />
+                Text="Status"
+                Visibility="Visible" />
         </Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>

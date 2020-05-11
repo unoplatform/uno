@@ -9,6 +9,14 @@
     d:DesignWidth="1000"
     mc:Ignorable="d">
     <UserControl.Resources>
+        <Style x:Key="ScenarioHeaderTextStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+
+        <Style x:Key="SampleHeaderTextStyle" TargetType="TextBlock">
+            <Setter Property="FontWeight" Value="Bold" />
+        </Style>
+
         <Style x:Key="DeviceListStyle" TargetType="ListView">
             <Setter Property="Height" Value="230" />
             <Setter Property="MaxHeight" Value="230" />
@@ -25,81 +33,151 @@
         </Style>
 
         <Style x:Key="ScenarioButtonStyle" TargetType="Button">
+            <Setter Property="FontFamily" Value="Segoe UI Light" />
             <Setter Property="FontSize" Value="14" />
             <Setter Property="Margin" Value="0,10,0,20" />
         </Style>
 
+        <!--  Style for displaying a ListView whose items cannot be selected individually, used to display MIDI device properties  -->
+        <Style x:Key="ScenarioUnselectableListViewStyle" TargetType="ListViewItem">
+            <Setter Property="IsEnabled" Value="True" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListViewItem">
+                        <Border
+                            x:Name="LayoutRoot"
+                            HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
+                            VerticalAlignment="{TemplateBinding VerticalAlignment}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}">
+                            <ContentControl
+                                x:Name="ContentContainer"
+                                Margin="{TemplateBinding Padding}"
+                                Padding="10,00,00,00"
+                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Background="Black"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                FontFamily="Consolas"
+                                Foreground="#FFFFFFFF" />
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="MouseOver" />
+                                    <VisualState x:Name="Disabled">
+                                        <Storyboard>
+                                            <DoubleAnimation
+                                                Storyboard.TargetName="ContentContainer"
+                                                Storyboard.TargetProperty="Opacity"
+                                                To=".5"
+                                                Duration="0" />
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                                <VisualStateGroup x:Name="SelectionStates">
+                                    <VisualState x:Name="Unselected" />
+                                    <VisualState x:Name="Selected" />
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
     </UserControl.Resources>
-    <Grid x:Name="rootGrid" Margin="12">
-        <Grid.RowDefinitions>
-            <RowDefinition Height="*" />
-            <RowDefinition Height="Auto" />
-        </Grid.RowDefinitions>
-        <!--  Main content is scrollable  -->
-        <ScrollViewer
-            Grid.Row="0"
-            Margin="0,0,0,40"
-            VerticalScrollBarVisibility="Auto"
-            VerticalScrollMode="Auto">
-            <RelativePanel HorizontalAlignment="Stretch">
-                <!--  Auto-detect MIDI devices  -->
-                <TextBlock
-                    x:Name="deviceAutoDetectToggleLabel"
-                    Margin="0,6,0,0"
-                    Text="AUTO-DETECT" />
-                <ToggleSwitch
-                    x:Name="deviceAutoDetectToggle"
-                    Margin="8,0,0,0"
-                    IsOn="False" />
 
-                <!--  List input MIDI devices  -->
-                <TextBlock x:Name="listInputDevicesButtonLabel" Text="INPUT" />
-                <Button
-                    x:Name="listInputDevicesButton"
-                    Command="{Binding EnumerateInDevicesCommand}"
-                    Content="List all input devices" />
-                <!--  Input MIDI device details  -->
-                <ListView
-                    x:Name="inputDevices"
-                    ItemsSource="{Binding MidiInDevices}"
-                    Style="{StaticResource DeviceListStyle}" />
-                <ListView x:Name="inputDeviceProperties" Style="{StaticResource DevicePropertiesStyle}" />
+    <Grid Margin="12,20,12,12" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+        <Grid x:Name="rootGrid" Margin="12,20,12,12">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
+            <StackPanel Grid.Row="0" Margin="0,0,0,10">
+                <TextBlock Style="{StaticResource SampleHeaderTextStyle}" Text="Description" />
+                <TextBlock Text="This scenario illustrates MIDI Device Enumeration. Connect a MIDI device to see it in the list." TextWrapping="Wrap" />
+            </StackPanel>
 
-                <!--  List output MIDI devices  -->
-                <TextBlock x:Name="listOutputDevicesButtonLabel" Text="OUTPUT" />
-                <Button
-                    x:Name="listOutputDevicesButton"
-                    Command="{Binding EnumerateOutDevicesCommand}"
-                    Content="List all output devices" />
-                <!--  Output MIDI device details  -->
-                <ListView
-                    x:Name="outputDevices"
-                    ItemsSource="{Binding MidiOutDevices}"
-                    SelectedIndex="{Binding SelectedOutputDeviceIndex, Mode=TwoWay}"
-                    Style="{StaticResource DeviceListStyle}" />
-                <ListView x:Name="outputDeviceProperties" Style="{StaticResource DevicePropertiesStyle}" />
-                <Button
-                    x:Name="playButton"
-                    Command="{Binding PlayCommand}"
-                    Content="Play"
-                    RelativePanel.AlignLeftWith="outputDevices"
-                    RelativePanel.Below="outputDevices" />
-            </RelativePanel>
-        </ScrollViewer>
+            <!--  Main content is scrollable  -->
+            <ScrollViewer
+                Grid.Row="1"
+                Margin="0,0,0,40"
+                VerticalScrollBarVisibility="Auto"
+                VerticalScrollMode="Auto">
+                <RelativePanel HorizontalAlignment="Stretch">
+                    <!--  Auto-detect MIDI devices  -->
+                    <TextBlock
+                        x:Name="deviceAutoDetectToggleLabel"
+                        Style="{StaticResource ScenarioHeaderTextStyle}"
+                        Text="AUTO-DETECT" />
+                    <ToggleSwitch
+                        x:Name="deviceAutoDetectToggle"
+                        Margin="40,23,0,0"
+                        IsOn="False"
+                        Toggled="DeviceAutoDetectToggle_Toggled" />
 
-        <!--
-            Status Block for providing messages to the user.  Use the
-            NotifyUser() method to populate the message
-        -->
-        <Border
-            x:Name="errorBorder"
-            Grid.Row="1"
-            Background="Red" />
-        <TextBlock
-            x:Name="statusBlock"
-            Grid.Row="1"
-            Margin="12,10,12,10"
-            Visibility="Collapsed" />
+                    <!--  List input MIDI devices  -->
+                    <TextBlock
+                        x:Name="listInputDevicesButtonLabel"
+                        Style="{StaticResource ScenarioHeaderTextStyle}"
+                        Text="INPUT" />
+                    <Button
+                        x:Name="listInputDevicesButton"
+                        Click="listInputDevicesButton_Click"
+                        Content="List all input devices"
+                        Style="{StaticResource ScenarioButtonStyle}" />
+
+                    <!--  Input MIDI device details  -->
+                    <ListView
+                        x:Name="inputDevices"
+                        SelectionChanged="inputDevices_SelectionChanged"
+                        Style="{StaticResource DeviceListStyle}" />
+                    <ListView
+                        x:Name="inputDeviceProperties"
+                        ItemContainerStyle="{StaticResource ScenarioUnselectableListViewStyle}"
+                        Style="{StaticResource DevicePropertiesStyle}" />
+
+                    <!--  List output MIDI devices  -->
+                    <TextBlock
+                        x:Name="listOutputDevicesButtonLabel"
+                        Style="{StaticResource ScenarioHeaderTextStyle}"
+                        Text="OUTPUT" />
+                    <Button
+                        x:Name="listOutputDevicesButton"
+                        Click="listOutputDevicesButton_Click"
+                        Content="List all output devices"
+                        Style="{StaticResource ScenarioButtonStyle}" />
+
+                    <!--  Output MIDI device details  -->
+                    <ListView
+                        x:Name="outputDevices"
+                        SelectionChanged="outputDevices_SelectionChanged"
+                        Style="{StaticResource DeviceListStyle}" />
+                    <ListView
+                        x:Name="outputDeviceProperties"
+                        ItemContainerStyle="{StaticResource ScenarioUnselectableListViewStyle}"
+                        Style="{StaticResource DevicePropertiesStyle}" />
+                </RelativePanel>
+            </ScrollViewer>
+
+            <!--
+                Status Block for providing messages to the user.  Use the
+                NotifyUser() method to populate the message
+            -->
+            <Border
+                x:Name="errorBorder"
+                Grid.Row="2"
+                Background="Orange" />
+            <TextBlock
+                x:Name="statusBlock"
+                Grid.Row="2"
+                Margin="12,10,12,10"
+                Text="Status"
+                Visibility="Visible" />
+        </Grid>
         <VisualStateManager.VisualStateGroups>
             <VisualStateGroup>
                 <VisualState>
