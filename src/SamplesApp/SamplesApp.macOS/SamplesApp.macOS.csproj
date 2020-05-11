@@ -11,6 +11,7 @@
     <TargetFrameworkVersion>v2.0</TargetFrameworkVersion>
     <TargetFrameworkIdentifier>Xamarin.Mac</TargetFrameworkIdentifier>
     <MonoMacResourcePrefix>Resources</MonoMacResourcePrefix>
+    <UnoSkipUserControlsInVisualTree>false</UnoSkipUserControlsInVisualTree>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>
@@ -158,21 +159,15 @@
 				is properly adding the local System.Memory to the Reference item group.
 		-->
 		<ItemGroup>
-			<_ReferenceToRemove
-        Include="@(Reference)"
-        Condition="'%(Reference.Identity)'=='System.Memory'" />
+			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Memory'" />
 			<Reference Remove="@(_ReferenceToRemove)" />
-			<Reference Include="System.Memory"/>
+			<Reference Include="System.Memory" />
 		</ItemGroup>
 	</Target>
 
-	<Target
-    Name="VS16_RemoveSystemMemory"
-    BeforeTargets="FindReferenceAssembliesForReferences">
+	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences">
 		<ItemGroup>
-			<_ReferencePathToRemove
-        Include="@(ReferencePath)"
-        Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
 			<ReferencePath Remove="@(_ReferencePathToRemove)" />
 		</ItemGroup>
 	</Target>
