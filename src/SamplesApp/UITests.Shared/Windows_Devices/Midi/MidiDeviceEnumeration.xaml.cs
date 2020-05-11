@@ -41,8 +41,8 @@ namespace UITests.Shared.Windows_Devices.Midi
 			this.deviceAutoDetectToggle.IsOn = true;
 
 			// Set up the MIDI input and output device watchers
-			this.midiInDeviceWatcher = new MidiDeviceWatcher(MidiInPort.GetDeviceSelector(), Dispatcher, this.inputDevices);
-			this.midiOutDeviceWatcher = new MidiDeviceWatcher(MidiOutPort.GetDeviceSelector(), Dispatcher, this.outputDevices);
+			this.midiInDeviceWatcher = new MidiDeviceWatcher(MidiInPort.GetDeviceSelector(), Dispatcher, this.inputDevices, InputDevices);
+			this.midiOutDeviceWatcher = new MidiDeviceWatcher(MidiOutPort.GetDeviceSelector(), Dispatcher, this.outputDevices, OutputDevices);
 
 			// Start watching for devices
 			this.midiInDeviceWatcher.Start();
@@ -57,7 +57,11 @@ namespace UITests.Shared.Windows_Devices.Midi
 
 		public ObservableCollection<string> InputDevices { get; } = new ObservableCollection<string>();
 
+		public ObservableCollection<string> InputDeviceProperties { get; } = new ObservableCollection<string>();
+
 		public ObservableCollection<string> OutputDevices { get; } = new ObservableCollection<string>();
+
+		public ObservableCollection<string> OutputDeviceProperties { get; } = new ObservableCollection<string>();
 
 		private void MidiDeviceEnumerationTests_Unloaded(object sender, Windows.UI.Xaml.RoutedEventArgs e)
 		{
@@ -72,23 +76,23 @@ namespace UITests.Shared.Windows_Devices.Midi
 		private void ClearAllDeviceValues()
 		{
 			// Clear input devices
-			this.inputDevices.Items.Clear();
-			this.inputDevices.Items.Add("Click button to list input MIDI devices");
+			InputDevices.Clear();
+			InputDevices.Add("Click button to list input MIDI devices");
 			this.inputDevices.IsEnabled = false;
 
 			// Clear output devices
-			this.outputDevices.Items.Clear();
-			this.outputDevices.Items.Add("Click button to list output MIDI devices");
+			OutputDevices.Clear();
+			OutputDevices.Add("Click button to list output MIDI devices");
 			this.outputDevices.IsEnabled = false;
 
 			// Clear input device properties
-			this.inputDeviceProperties.Items.Clear();
-			this.inputDeviceProperties.Items.Add("Select a MIDI input device to view its properties");
+			InputDeviceProperties.Clear();
+			InputDeviceProperties.Add("Select a MIDI input device to view its properties");
 			this.inputDeviceProperties.IsEnabled = false;
 
 			// Clear output device properties
-			this.outputDeviceProperties.Items.Clear();
-			this.outputDeviceProperties.Items.Add("Select a MIDI output device to view its properties");
+			OutputDeviceProperties.Clear();
+			OutputDeviceProperties.Add("Select a MIDI output device to view its properties");
 			this.outputDeviceProperties.IsEnabled = false;
 		}
 
@@ -109,8 +113,8 @@ namespace UITests.Shared.Windows_Devices.Midi
 		private async Task EnumerateMidiInputDevices()
 		{
 			// Clear input devices
-			this.inputDevices.Items.Clear();
-			this.inputDeviceProperties.Items.Clear();
+			InputDevices.Clear();
+			InputDeviceProperties.Clear();
 			this.inputDeviceProperties.IsEnabled = false;
 
 			// Find all input MIDI devices
@@ -120,7 +124,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 			// Return if no external devices are connected
 			if (midiInputDevices.Count == 0)
 			{
-				this.inputDevices.Items.Add("No MIDI input devices found!");
+				InputDevices.Add("No MIDI input devices found!");
 				this.inputDevices.IsEnabled = false;
 
 				NotifyUser("Please connect at least one external MIDI device for this demo to work correctly");
@@ -130,7 +134,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 			// Else, add each connected input device to the list
 			foreach (DeviceInformation deviceInfo in midiInputDevices)
 			{
-				this.inputDevices.Items.Add(deviceInfo.Name);
+				InputDevices.Add(deviceInfo.Name);
 				this.inputDevices.IsEnabled = true;
 			}
 
@@ -154,8 +158,8 @@ namespace UITests.Shared.Windows_Devices.Midi
 		private async Task EnumerateMidiOutputDevices()
 		{
 			// Clear output devices
-			this.outputDevices.Items.Clear();
-			this.outputDeviceProperties.Items.Clear();
+			OutputDevices.Clear();
+			OutputDeviceProperties.Clear();
 			this.outputDeviceProperties.IsEnabled = false;
 
 			// Find all output MIDI devices
@@ -165,7 +169,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 			// Return if no external devices are connected, and GS synth is not detected
 			if (midiOutputDevices.Count == 0)
 			{
-				this.outputDevices.Items.Add("No MIDI output devices found!");
+				OutputDevices.Add("No MIDI output devices found!");
 				this.outputDevices.IsEnabled = false;
 
 				NotifyUser("Please connect at least one external MIDI device for this demo to work correctly");
@@ -175,7 +179,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 			// List specific device information for each output device
 			foreach (DeviceInformation deviceInfo in midiOutputDevices)
 			{
-				this.outputDevices.Items.Add(deviceInfo.Name);
+				OutputDevices.Add(deviceInfo.Name);
 				this.outputDevices.IsEnabled = true;
 			}
 
@@ -235,8 +239,8 @@ namespace UITests.Shared.Windows_Devices.Midi
 			if (selectedInputDeviceIndex < 0)
 			{
 				// Clear input device properties
-				this.inputDeviceProperties.Items.Clear();
-				this.inputDeviceProperties.Items.Add("Select a MIDI input device to view its properties");
+				InputDeviceProperties.Clear();
+				InputDeviceProperties.Add("Select a MIDI input device to view its properties");
 				this.inputDeviceProperties.IsEnabled = false;
 				NotifyUser("Select a MIDI input device to view its properties");
 				return;
@@ -245,8 +249,8 @@ namespace UITests.Shared.Windows_Devices.Midi
 			DeviceInformationCollection devInfoCollection = this.midiInDeviceWatcher.GetDeviceInformationCollection();
 			if (devInfoCollection == null)
 			{
-				this.inputDeviceProperties.Items.Clear();
-				this.inputDeviceProperties.Items.Add("Device not found!");
+				InputDeviceProperties.Clear();
+				InputDeviceProperties.Add("Device not found!");
 				this.inputDeviceProperties.IsEnabled = false;
 				NotifyUser("Device not found!");
 				return;
@@ -255,15 +259,15 @@ namespace UITests.Shared.Windows_Devices.Midi
 			DeviceInformation devInfo = devInfoCollection[selectedInputDeviceIndex];
 			if (devInfo == null)
 			{
-				this.inputDeviceProperties.Items.Clear();
-				this.inputDeviceProperties.Items.Add("Device not found!");
+				InputDeviceProperties.Clear();
+				InputDeviceProperties.Add("Device not found!");
 				this.inputDeviceProperties.IsEnabled = false;
 				NotifyUser("Device not found!");
 				return;
 			}
 
 			// Display the found properties
-			DisplayDeviceProperties(devInfo, this.inputDeviceProperties);
+			DisplayDeviceProperties(devInfo, this.inputDeviceProperties, InputDeviceProperties);
 			NotifyUser("Device information found!");
 		}
 
@@ -281,8 +285,8 @@ namespace UITests.Shared.Windows_Devices.Midi
 			if (selectedOutputDeviceIndex < 0)
 			{
 				// Clear output device properties
-				this.outputDeviceProperties.Items.Clear();
-				this.outputDeviceProperties.Items.Add("Select a MIDI output device to view its properties");
+				OutputDeviceProperties.Clear();
+				OutputDeviceProperties.Add("Select a MIDI output device to view its properties");
 				this.outputDeviceProperties.IsEnabled = false;
 				NotifyUser("Select a MIDI output device to view its properties");
 				return;
@@ -291,8 +295,8 @@ namespace UITests.Shared.Windows_Devices.Midi
 			DeviceInformationCollection devInfoCollection = this.midiOutDeviceWatcher.GetDeviceInformationCollection();
 			if (devInfoCollection == null)
 			{
-				this.outputDeviceProperties.Items.Clear();
-				this.outputDeviceProperties.Items.Add("Device not found!");
+				OutputDeviceProperties.Clear();
+				OutputDeviceProperties.Add("Device not found!");
 				this.outputDeviceProperties.IsEnabled = false;
 				NotifyUser("Device not found!");
 				return;
@@ -301,15 +305,15 @@ namespace UITests.Shared.Windows_Devices.Midi
 			DeviceInformation devInfo = devInfoCollection[selectedOutputDeviceIndex];
 			if (devInfo == null)
 			{
-				this.outputDeviceProperties.Items.Clear();
-				this.outputDeviceProperties.Items.Add("Device not found!");
+				OutputDeviceProperties.Clear();
+				OutputDeviceProperties.Add("Device not found!");
 				this.outputDeviceProperties.IsEnabled = false;
 				NotifyUser("Device not found!");
 				return;
 			}
 
 			// Display the found properties
-			DisplayDeviceProperties(devInfo, this.outputDeviceProperties);
+			DisplayDeviceProperties(devInfo, this.outputDeviceProperties, OutputDeviceProperties);
 			NotifyUser("Device information found!");
 		}
 
@@ -318,20 +322,20 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// </summary>
 		/// <param name="devInfo"></param>
 		/// <param name="propertiesList"></param>
-		private void DisplayDeviceProperties(DeviceInformation devInfo, ListView propertiesList)
+		private void DisplayDeviceProperties(DeviceInformation devInfo, ListView propertiesList, ObservableCollection<string> items)
 		{
-			propertiesList.Items.Clear();
-			propertiesList.Items.Add("Id: " + devInfo.Id);
-			propertiesList.Items.Add("Name: " + devInfo.Name);
-			propertiesList.Items.Add("IsDefault: " + devInfo.IsDefault);
-			propertiesList.Items.Add("IsEnabled: " + devInfo.IsEnabled);
-			propertiesList.Items.Add("EnclosureLocation: " + devInfo.EnclosureLocation);
+			items.Clear();
+			items.Add("Id: " + devInfo.Id);
+			items.Add("Name: " + devInfo.Name);
+			items.Add("IsDefault: " + devInfo.IsDefault);
+			items.Add("IsEnabled: " + devInfo.IsEnabled);
+			items.Add("EnclosureLocation: " + devInfo.EnclosureLocation);
 
 			// Add device interface information
-			propertiesList.Items.Add("----Device Interface----");
+			items.Add("----Device Interface----");
 			foreach (var deviceProperty in devInfo.Properties)
 			{
-				propertiesList.Items.Add(deviceProperty.Key + ": " + deviceProperty.Value);
+				items.Add(deviceProperty.Key + ": " + deviceProperty.Value);
 			}
 
 			propertiesList.IsEnabled = true;

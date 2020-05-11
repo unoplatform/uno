@@ -123,6 +123,7 @@
                         Text="INPUT DEVICES" />
                     <ListView
                         x:Name="inputDevices"
+                        ItemsSource="{Binding InputDevices}"
                         SelectionChanged="inputDevices_SelectionChanged"
                         Style="{StaticResource InputOutputDeviceListStyle}" />
 
@@ -134,6 +135,7 @@
                     <ListView
                         x:Name="inputDeviceMessages"
                         ItemContainerStyle="{StaticResource ScenarioUnselectableListViewStyle}"
+                        ItemsSource="{Binding InputDeviceMessages}"
                         Style="{StaticResource InputDeviceMessagesStyle}" />
                 </RelativePanel>
             </ScrollViewer>

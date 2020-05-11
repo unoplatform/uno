@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using UITests.Shared.Helpers;
 using Uno.Disposables;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
@@ -52,11 +53,13 @@ namespace UITests.Shared.Windows_Devices.Midi
 		{
 			this.InitializeComponent();
 
+			this.rootGrid.DataContext = this;
+
 			// Initialize the list of active MIDI output devices
 			this.midiOutPorts = new List<IMidiOutPort>();
 
 			// Set up the MIDI output device watcher
-			this.midiOutDeviceWatcher = new MidiDeviceWatcher(MidiOutPort.GetDeviceSelector(), Dispatcher, this.outputDevices);
+			this.midiOutDeviceWatcher = new MidiDeviceWatcher(MidiOutPort.GetDeviceSelector(), Dispatcher, this.outputDevices, OutputDevices);
 
 			// Start watching for devices
 			this.midiOutDeviceWatcher.Start();
@@ -65,6 +68,44 @@ namespace UITests.Shared.Windows_Devices.Midi
 			PopulateMessageTypes();
 
 			this.Unloaded += MidiDeviceOutputTests_Unloaded;
+		}
+
+		public ObservableCollection<string> OutputDevices { get; } = new ObservableCollection<string>();
+
+		public ObservableCollection<string> MessageTypeItems { get; } = new ObservableCollection<string>();
+
+		public ParameterItemsViewModel Parameters { get; } = new ParameterItemsViewModel();
+
+		public class ParameterItemsViewModel : BindableBase
+		{
+			private ObservableCollection<int> _parameter1Items = new ObservableCollection<int>();
+			private ObservableCollection<int> _parameter2Items = new ObservableCollection<int>();
+			private ObservableCollection<int> _parameter3Items = new ObservableCollection<int>();
+
+			public ObservableCollection<int> Parameter1Items
+			{
+				get => _parameter1Items; set
+				{
+					_parameter1Items = value;
+					RaisePropertyChanged();
+				}
+			}
+			public ObservableCollection<int> Parameter2Items
+			{
+				get => _parameter2Items; set
+				{
+					_parameter2Items = value;
+					RaisePropertyChanged();
+				}
+			}
+			public ObservableCollection<int> Parameter3Items
+			{
+				get => _parameter3Items; set
+				{
+					_parameter3Items = value;
+					RaisePropertyChanged();
+				}
+			}
 		}
 
 		private void MidiDeviceOutputTests_Unloaded(object sender, RoutedEventArgs e)
@@ -108,12 +149,12 @@ namespace UITests.Shared.Windows_Devices.Midi
 			this.messageTypes.Add(MidiMessageType.TuneRequest, "Tune Request");
 
 			// Start with a clean slate
-			this.messageType.Items.Clear();
+			MessageTypeItems.Clear();
 
 			// Add the message types to the list
 			foreach (var messageType in this.messageTypes)
 			{
-				this.messageType.Items.Add(messageType.Value);
+				MessageTypeItems.Add(messageType.Value);
 			}
 		}
 
@@ -397,27 +438,27 @@ namespace UITests.Shared.Windows_Devices.Midi
 				case MidiMessageType.ChannelPressure:
 				case MidiMessageType.PitchBendChange:
 					// This list is for Channels, of which there are 16
-					PopulateParameterList(this.parameter1, 16, "Channel");
+					PopulateParameterList(this.parameter1, 16, "Channel", items => Parameters.Parameter1Items = items);
 					break;
 
 				case MidiMessageType.MidiTimeCode:
 					// This list is for further Message Types, of which there are 8
-					PopulateParameterList(this.parameter1, 8, "Message Type");
+					PopulateParameterList(this.parameter1, 8, "Message Type", items => Parameters.Parameter1Items = items);
 					break;
 
 				case MidiMessageType.SongPositionPointer:
 					// This list is for Beats, of which there are 16384
-					PopulateParameterList(this.parameter1, 16384, "Beats");
+					PopulateParameterList(this.parameter1, 16384, "Beats", items => Parameters.Parameter1Items = items);
 					break;
 
 				case MidiMessageType.SongSelect:
 					// This list is for Songs, of which there are 128
-					PopulateParameterList(this.parameter1, 128, "Song");
+					PopulateParameterList(this.parameter1, 128, "Song", items => Parameters.Parameter1Items = items);
 					break;
 
 				case MidiMessageType.SystemExclusive:
 					// Start with a clean slate
-					this.parameter1.Items.Clear();
+					Parameters.Parameter1Items.Clear();
 
 					// Hide the first parameter
 					this.parameter1.Header = "";
@@ -428,7 +469,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 
 				default:
 					// Start with a clean slate
-					this.parameter1.Items.Clear();
+					Parameters.Parameter1Items.Clear();
 
 					// Hide the first parameter
 					this.parameter1.Header = "";
@@ -482,7 +523,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 			// Do not proceed if Parameter 1 is not chosen
 			if (this.parameter1.SelectedIndex == -1)
 			{
-				this.parameter2.Items.Clear();
+				Parameters.Parameter2Items.Clear();
 				this.parameter2.Header = "";
 				this.parameter2.IsEnabled = false;
 				this.parameter2.Visibility = Visibility.Collapsed;
@@ -496,37 +537,37 @@ namespace UITests.Shared.Windows_Devices.Midi
 				case MidiMessageType.NoteOn:
 				case MidiMessageType.PolyphonicKeyPressure:
 					// This list is for Notes, of which there are 128
-					PopulateParameterList(this.parameter2, 128, "Note");
+					PopulateParameterList(this.parameter2, 128, "Note", items => Parameters.Parameter2Items = items);
 					break;
 
 				case MidiMessageType.ControlChange:
 					// This list is for Controllers, of which there are 128
-					PopulateParameterList(this.parameter2, 128, "Controller");
+					PopulateParameterList(this.parameter2, 128, "Controller", items => Parameters.Parameter2Items = items);
 					break;
 
 				case MidiMessageType.ProgramChange:
 					// This list is for Program Numbers, of which there are 128
-					PopulateParameterList(this.parameter2, 128, "Program Number");
+					PopulateParameterList(this.parameter2, 128, "Program Number", items => Parameters.Parameter2Items = items);
 					break;
 
 				case MidiMessageType.ChannelPressure:
 					// This list is for Pressure Values, of which there are 128
-					PopulateParameterList(this.parameter2, 128, "Pressure Value");
+					PopulateParameterList(this.parameter2, 128, "Pressure Value", items => Parameters.Parameter2Items = items);
 					break;
 
 				case MidiMessageType.PitchBendChange:
 					// This list is for Pitch Bend Values, of which there are 16384
-					PopulateParameterList(this.parameter2, 16384, "Pitch Bend Value");
+					PopulateParameterList(this.parameter2, 16384, "Pitch Bend Value", items => Parameters.Parameter2Items = items);
 					break;
 
 				case MidiMessageType.MidiTimeCode:
 					// This list is for Values, of which there are 16
-					PopulateParameterList(this.parameter2, 16, "Value");
+					PopulateParameterList(this.parameter2, 16, "Value", items => Parameters.Parameter2Items = items);
 					break;
 
 				default:
 					// Start with a clean slate
-					this.parameter2.Items.Clear();
+					Parameters.Parameter2Items.Clear();
 
 					// Hide the first parameter
 					this.parameter2.Header = "";
@@ -581,7 +622,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 			// Do not proceed if Parameter 2 is not chosen
 			if (this.parameter2.SelectedIndex == -1)
 			{
-				this.parameter3.Items.Clear();
+				Parameters.Parameter3Items.Clear();
 				this.parameter3.Header = "";
 				this.parameter3.IsEnabled = false;
 				this.parameter3.Visibility = Visibility.Collapsed;
@@ -594,22 +635,22 @@ namespace UITests.Shared.Windows_Devices.Midi
 				case MidiMessageType.NoteOff:
 				case MidiMessageType.NoteOn:
 					// This list is for Velocity Values, of which there are 128
-					PopulateParameterList(this.parameter3, 128, "Velocity");
+					PopulateParameterList(this.parameter3, 128, "Velocity", items => Parameters.Parameter3Items = items);
 					break;
 
 				case MidiMessageType.PolyphonicKeyPressure:
 					// This list is for Pressure Values, of which there are 128
-					PopulateParameterList(this.parameter3, 128, "Pressure");
+					PopulateParameterList(this.parameter3, 128, "Pressure", items => Parameters.Parameter3Items = items);
 					break;
 
 				case MidiMessageType.ControlChange:
 					// This list is for Values, of which there are 128
-					PopulateParameterList(this.parameter3, 128, "Value");
+					PopulateParameterList(this.parameter3, 128, "Value", items => Parameters.Parameter3Items = items);
 					break;
 
 				default:
 					// Start with a clean slate
-					this.parameter3.Items.Clear();
+					Parameters.Parameter3Items.Clear();
 
 					// Hide the first parameter
 					this.parameter3.Header = "";
@@ -657,17 +698,18 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// <param name="list">The parameter list to populate</param>
 		/// <param name="numberOfOptions">Number of options in the list</param>
 		/// <param name="listName">The header to display to the user</param>
-		private void PopulateParameterList(ComboBox list, int numberOfOptions, string listName)
+		private void PopulateParameterList(ComboBox list, int numberOfOptions, string listName, Action<ObservableCollection<int>> itemsSetter)
 		{
+			var items = new List<int>(numberOfOptions);
 			// Start with a clean slate
-			list.Items.Clear();
+			items.Clear();
 
 			// Add the options to the list
 			for (int i = 0; i < numberOfOptions; i++)
 			{
-				list.Items.Add(i);
+				items.Add(i);
 			}
-
+			itemsSetter(new ObservableCollection<int>(items));
 			// Show the list, so that the user can make the next choice
 			list.Header = listName;
 			list.IsEnabled = true;

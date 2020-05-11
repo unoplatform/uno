@@ -11,6 +11,7 @@
 
 using System;
 using System.Collections.ObjectModel;
+using Android.Database;
 using Windows.Devices.Enumeration;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
@@ -26,6 +27,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 		internal DeviceInformationCollection deviceInformationCollection = null;
 		bool enumerationCompleted = false;
 		ListView portList = null;
+		private readonly ObservableCollection<string> _items;
 		string midiSelector = string.Empty;
 		CoreDispatcher coreDispatcher = null;
 
@@ -35,10 +37,11 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// <param name="midiSelectorString">MIDI Device Selector</param>
 		/// <param name="dispatcher">CoreDispatcher instance, to update UI thread</param>
 		/// <param name="portListBox">The UI element to update with list of devices</param>
-		internal MidiDeviceWatcher(string midiSelectorString, CoreDispatcher dispatcher, ListView portListBox)
+		internal MidiDeviceWatcher(string midiSelectorString, CoreDispatcher dispatcher, ListView portListBox, ObservableCollection<string> items)
 		{
 			this.deviceWatcher = DeviceInformation.CreateWatcher(midiSelectorString);
 			this.portList = portListBox;
+			_items = items;
 			this.midiSelector = midiSelectorString;
 			this.coreDispatcher = dispatcher;
 
@@ -102,20 +105,20 @@ namespace UITests.Shared.Windows_Devices.Midi
 			if ((this.deviceInformationCollection == null) || (this.deviceInformationCollection.Count == 0))
 			{
 				// Start with a clean list
-				this.portList.Items.Clear();
+				_items.Clear();
 
-				this.portList.Items.Add("No MIDI ports found");
+				_items.Add("No MIDI ports found");
 				this.portList.IsEnabled = false;
 			}
 			// If devices are found, enumerate them and add them to the list
 			else
 			{
 				// Start with a clean list
-				this.portList.Items.Clear();
+				_items.Clear();
 
 				foreach (var device in deviceInformationCollection)
 				{
-					this.portList.Items.Add(device.Name);
+					_items.Add(device.Name);
 				}
 
 				this.portList.IsEnabled = true;

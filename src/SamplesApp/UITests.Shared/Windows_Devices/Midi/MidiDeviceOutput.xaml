@@ -66,6 +66,7 @@
                     <ListView
                         x:Name="outputDevices"
                         IsEnabled="False"
+                        ItemsSource="{Binding OutputDevices}"
                         SelectionChanged="outputDevices_SelectionChanged"
                         Style="{StaticResource InputOutputDeviceListStyle}" />
 
@@ -77,6 +78,7 @@
                     <ComboBox
                         x:Name="messageType"
                         IsEnabled="False"
+                        ItemsSource="{Binding MessageTypeItems}"
                         SelectionChanged="messageType_SelectionChanged"
                         Style="{StaticResource MessageTypeStyle}" />
 
@@ -92,6 +94,7 @@
                                 Margin="0"
                                 Header="Parameter 1"
                                 IsEnabled="False"
+                                ItemsSource="{Binding Parameters.Parameter1Items}"
                                 SelectionChanged="Parameter1_SelectionChanged"
                                 Visibility="Collapsed" />
                         </StackPanel>
@@ -102,6 +105,7 @@
                                 Margin="10,0,0,0"
                                 Header="Parameter 2"
                                 IsEnabled="False"
+                                ItemsSource="{Binding Parameters.Parameter2Items}"
                                 SelectionChanged="Parameter2_SelectionChanged"
                                 Visibility="Collapsed" />
                         </StackPanel>
@@ -112,6 +116,7 @@
                                 Margin="10,0,0,0"
                                 Header="Parameter 3"
                                 IsEnabled="False"
+                                ItemsSource="{Binding Parameters.Parameter3Items}"
                                 SelectionChanged="Parameter3_SelectionChanged"
                                 Visibility="Collapsed" />
                         </StackPanel>

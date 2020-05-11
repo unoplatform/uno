@@ -46,17 +46,23 @@ namespace UITests.Windows_Devices.Midi
 		{
 			this.InitializeComponent();
 
+			this.rootGrid.DataContext = this;
+
 			// Initialize the list of active MIDI input devices
 			this.midiInPorts = new List<MidiInPort>();
 
 			// Set up the MIDI input device watcher
-			this.midiInDeviceWatcher = new MidiDeviceWatcher(MidiInPort.GetDeviceSelector(), Dispatcher, this.inputDevices);
+			this.midiInDeviceWatcher = new MidiDeviceWatcher(MidiInPort.GetDeviceSelector(), Dispatcher, this.inputDevices, InputDevices);
 
 			// Start watching for devices
 			this.midiInDeviceWatcher.Start();
 
 			this.Unloaded += MidiDeviceInput_Unloaded;
 		}
+
+		public ObservableCollection<string> InputDevices { get; } = new ObservableCollection<string>();
+
+		public ObservableCollection<string> InputDeviceMessages { get; } = new ObservableCollection<string>();
 
 		private void MidiDeviceInput_Unloaded(object sender, RoutedEventArgs e)
 		{
@@ -79,14 +85,14 @@ namespace UITests.Windows_Devices.Midi
 		private async void inputDevices_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			// Get the selected input MIDI device
-			int selectedInputDeviceIndex = (sender as ListBox).SelectedIndex;
+			int selectedInputDeviceIndex = (sender as ListView).SelectedIndex;
 
 			// Try to create a MidiInPort
 			if (selectedInputDeviceIndex < 0)
 			{
 				// Clear input device messages
-				this.inputDeviceMessages.Items.Clear();
-				this.inputDeviceMessages.Items.Add("Select a MIDI input device to be able to see its messages");
+				InputDeviceMessages.Clear();
+				InputDeviceMessages.Add("Select a MIDI input device to be able to see its messages");
 				this.inputDeviceMessages.IsEnabled = false;
 				NotifyUser("Select a MIDI input device to be able to see its messages");
 				return;
@@ -95,8 +101,8 @@ namespace UITests.Windows_Devices.Midi
 			DeviceInformationCollection devInfoCollection = this.midiInDeviceWatcher.GetDeviceInformationCollection();
 			if (devInfoCollection == null)
 			{
-				this.inputDeviceMessages.Items.Clear();
-				this.inputDeviceMessages.Items.Add("Device not found!");
+				InputDeviceMessages.Clear();
+				InputDeviceMessages.Add("Device not found!");
 				this.inputDeviceMessages.IsEnabled = false;
 				NotifyUser("Device not found!");
 				return;
@@ -105,8 +111,8 @@ namespace UITests.Windows_Devices.Midi
 			DeviceInformation devInfo = devInfoCollection[selectedInputDeviceIndex];
 			if (devInfo == null)
 			{
-				this.inputDeviceMessages.Items.Clear();
-				this.inputDeviceMessages.Items.Add("Device not found!");
+				InputDeviceMessages.Clear();
+				InputDeviceMessages.Add("Device not found!");
 				this.inputDeviceMessages.IsEnabled = false;
 				NotifyUser("Device not found!");
 				return;
@@ -127,7 +133,7 @@ namespace UITests.Windows_Devices.Midi
 			}
 
 			// Clear any previous input messages
-			this.inputDeviceMessages.Items.Clear();
+			InputDeviceMessages.Clear();
 			this.inputDeviceMessages.IsEnabled = true;
 
 			NotifyUser("Input Device selected successfully! Waiting for messages...");
@@ -235,8 +241,8 @@ namespace UITests.Windows_Devices.Midi
 				// Skip TimingClock and ActiveSensing messages to avoid overcrowding the list. Commment this check out to see all messages
 				if ((receivedMidiMessage.Type != MidiMessageType.TimingClock) && (receivedMidiMessage.Type != MidiMessageType.ActiveSensing))
 				{
-					this.inputDeviceMessages.Items.Add(outputMessage + "\n");
-					this.inputDeviceMessages.ScrollIntoView(this.inputDeviceMessages.Items[this.inputDeviceMessages.Items.Count - 1]);
+					InputDeviceMessages.Add(outputMessage + "\n");
+					this.inputDeviceMessages.ScrollIntoView(InputDeviceMessages[InputDeviceMessages.Count - 1]);
 					NotifyUser("Message received successfully!");
 				}
 			});
