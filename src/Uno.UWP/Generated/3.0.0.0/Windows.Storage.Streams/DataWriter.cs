@@ -164,7 +164,7 @@ namespace Windows.Storage.Streams
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.WriteDouble(double value)");
 		}
 		#endif
-		#if false
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void WriteDateTime( global::System.DateTimeOffset value)
 		{

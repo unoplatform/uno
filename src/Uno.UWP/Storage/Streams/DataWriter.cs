@@ -12,7 +12,6 @@ namespace Windows.Storage.Streams
 
 		public DataWriter()
 		{
-
 		}
 
 		public UnicodeEncoding UnicodeEncoding { get; set; }
@@ -41,7 +40,7 @@ namespace Windows.Storage.Streams
 		{
 			switch (buffer)
 			{
-				case InMemoryBuffer mb:
+				case Buffer mb:
 					_unstoredBuffer.AddRange(mb.Data.Skip((int)start).Take((int)count));
 					break;
 				default:
@@ -106,16 +105,6 @@ namespace Windows.Storage.Streams
 		public void WriteDouble(double value)
 		{
 			var bytes = BitConverter.GetBytes(value);
-			AddChunkToUnstoredBuffer(bytes);
-		}
-
-		public void WriteDateTime(DateTimeOffset value)
-		{
-			// UWP serializes value in a FILETIME format
-			// see https://stackoverflow.com/questions/61544559/what-format-does-uwp-datawriter-writedatetime-use/61553316
-
-			var fileTime = value.ToFileTime();	
-			var bytes = BitConverter.GetBytes(fileTime);
 			AddChunkToUnstoredBuffer(bytes);
 		}
 
@@ -184,12 +173,13 @@ namespace Windows.Storage.Streams
 
 		public IBuffer DetachBuffer()
 		{
-			throw new NotImplementedException("The member IBuffer DataWriter.DetachBuffer() is not implemented in Uno.");
+			var result = new InMemoryBuffer(_unstoredBuffer.ToArray());
+			_unstoredBuffer.Clear();
+			return result;
 		}
 
 		public void Dispose()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Streams.DataWriter", "void DataWriter.Dispose()");
 		}
 
 		private void AddChunkToUnstoredBuffer(byte[] chunk)
@@ -198,7 +188,11 @@ namespace Windows.Storage.Streams
 				(ByteOrder == ByteOrder.BigEndian && BitConverter.IsLittleEndian) ||
 				(ByteOrder == ByteOrder.LittleEndian && !BitConverter.IsLittleEndian);
 
-			_unstoredBuffer.AddRange(reverseOrder ? chunk.Reverse() : chunk);
+			if (reverseOrder)
+			{
+				Array.Reverse(chunk);
+			}
+			_unstoredBuffer.AddRange(chunk);
 		}
 	}
 }
