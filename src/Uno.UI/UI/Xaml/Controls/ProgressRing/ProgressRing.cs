@@ -1,4 +1,3 @@
-﻿#if __WASM__
 using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -10,27 +9,60 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ProgressRing : Control
 	{
-		private static void OnForegroundChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		public ProgressRing()
 		{
-
+			DefaultStyleKey = typeof(ProgressRing);
 		}
+
+		#region IsActive
+
+		/// <summary>
+		/// Gets or sets a value that indicates whether the <see cref="ProgressRing"/> is showing progress.
+		/// </summary>
+		public bool IsActive
+		{
+			get { return (bool)GetValue(IsActiveProperty); }
+			set { SetValue(IsActiveProperty, value); }
+		}
+
+		public static readonly DependencyProperty IsActiveProperty =
+			DependencyProperty.Register("IsActive", typeof(bool), typeof(ProgressRing), new PropertyMetadata(false, OnIsActiveChanged));
+
+		#endregion
 
 		private static void OnIsActiveChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			var progressRing = dependencyObject as ProgressRing;
-			var isActive = args.NewValue as bool?;
+			var progressRing = (ProgressRing)dependencyObject;
+			var isActive = (bool)args.NewValue;
 
-			if (progressRing != null && progressRing.IsLoaded && isActive.HasValue)
+			if (progressRing.IsLoaded)
 			{
-				VisualStateManager.GoToState(progressRing, isActive.Value ? "Active" : "Inactive", false);
+				VisualStateManager.GoToState(progressRing, isActive ? "Active" : "Inactive", false);
 			}
+
+			progressRing.OnIsActiveChangedPartial(isActive);
 		}
+
+		partial void OnUnloadedPartial();
+
+		partial void OnIsActiveChangedPartial(bool newValue);
 
 		private protected override void OnLoaded()
 		{
 			base.OnLoaded();
 			// The initial call to OnIsActiveChanged fires before ProgressRing is Loaded, so we also need to set a proper VisualState here
 			VisualStateManager.GoToState(this, IsActive ? "Active" : "Inactive", false);
+
+			OnLoadedPartial();
+		}
+
+		partial void OnLoadedPartial();
+
+		protected override void OnUnloaded()
+		{
+			base.OnUnloaded();
+
+			OnUnloadedPartial();
 		}
 
 		public ProgressRingTemplateSettings TemplateSettings
@@ -51,5 +83,3 @@ namespace Windows.UI.Xaml.Controls
 		}
 	}
 }
-
-#endif
