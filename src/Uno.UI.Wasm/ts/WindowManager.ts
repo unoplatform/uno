@@ -663,9 +663,11 @@ namespace Uno.UI {
 
 			var style = element.style;
 
-			style.transform = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
+			const matrix = `matrix(${params.M11},${params.M12},${params.M21},${params.M22},${params.M31},${params.M32})`;
+			style.transform = matrix;
 
 			this.setAsArranged(element);
+			this.setClipToBounds(element, params.ClipToBounds);
 
 			return true;
 		}

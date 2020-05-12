@@ -64,9 +64,12 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			DefaultStyleKey = this;
 
+			SizeChanged += (snd, evt) => OnSizeChange();
+
 			RegisterPropertyChangedCallback(ValueProperty, OnRangeBasePropertyChanged);
 			RegisterPropertyChangedCallback(MinimumProperty, OnRangeBasePropertyChanged);
 			RegisterPropertyChangedCallback(MaximumProperty, OnRangeBasePropertyChanged);
+			RegisterPropertyChangedCallback(PaddingProperty, OnRangeBasePropertyChanged);
 
 			TemplateSettings = new ProgressBarTemplateSettings();
 		}
@@ -91,11 +94,6 @@ namespace Microsoft.UI.Xaml.Controls
 		{
 			SetProgressBarIndicatorWidth();
 			UpdateWidthBasedTemplateSettings();
-		}
-
-		private void OnRangeBasePropertyChanged()
-		{
-			SetProgressBarIndicatorWidth();
 		}
 
 		private void OnRangeBasePropertyChanged(DependencyObject sender, DependencyProperty dp)
@@ -186,7 +184,6 @@ namespace Microsoft.UI.Xaml.Controls
 					if (IsIndeterminate)
 					{
 						determinateProgressBarIndicator.Width = 0;
-
 
 						var indeterminateProgressBarIndicator = m_indeterminateProgressBarIndicator;
 						if (indeterminateProgressBarIndicator != null)

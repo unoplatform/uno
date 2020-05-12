@@ -186,6 +186,7 @@ namespace Uno.UI.Xaml
 					M22 = matrix.M22,
 					M31 = matrix.M31,
 					M32 = matrix.M32,
+					ClipToBounds = requiresClipping
 				};
 
 				TSInteropMarshaller.InvokeJS<WindowManagerSetElementTransformParams, bool>("Uno:setElementTransformNative", parms);
@@ -196,6 +197,8 @@ namespace Uno.UI.Xaml
 		[StructLayout(LayoutKind.Sequential, Pack = 8)]
 		private struct WindowManagerSetElementTransformParams
 		{
+			public IntPtr HtmlId;
+
 			public double M11;
 			public double M12;
 			public double M21;
@@ -203,7 +206,7 @@ namespace Uno.UI.Xaml
 			public double M31;
 			public double M32;
 
-			public IntPtr HtmlId;
+			public bool ClipToBounds;
 		}
 
 		#endregion
