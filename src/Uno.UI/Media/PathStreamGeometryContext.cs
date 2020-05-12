@@ -36,9 +36,7 @@ namespace Uno.Media
 
 		public override void BeginFigure(Point startPoint, bool isFilled, bool isClosed)
 		{
-#if XAMARIN_IOS_UNIFIED || XAMARIN_IOS
-			bezierPath.MoveTo(startPoint);
-#elif __MACOS__
+#if XAMARIN_IOS_UNIFIED || XAMARIN_IOS || __MACOS__
 			bezierPath.MoveTo(startPoint);
 #elif XAMARIN_ANDROID
 			var physicalStartPoint = LogicalToPhysicalNoRounding(startPoint);
