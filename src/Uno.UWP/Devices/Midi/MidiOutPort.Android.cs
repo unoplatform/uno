@@ -5,9 +5,11 @@ using System.Threading.Tasks;
 using Android.Content;
 using Android.Media.Midi;
 using Android.Runtime;
+using Microsoft.Extensions.Logging;
 using Uno.Devices.Enumeration.Internal;
 using Uno.Devices.Enumeration.Internal.Providers.Midi;
 using Uno.Devices.Midi.Internal;
+using Uno.Extensions;
 using Uno.UI;
 using Windows.Devices.Enumeration;
 using Windows.Foundation;
@@ -40,6 +42,10 @@ namespace Windows.Devices.Midi
 
 		internal async Task OpenAsync()
 		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Opening the MIDI out port, port number {_portInfo.PortNumber}");
+			}
 			var completionSource = new TaskCompletionSource<MidiDevice>();
 			using (var deviceOpenListener = new MidiDeviceOpenedListener(completionSource))
 			{
@@ -52,6 +58,10 @@ namespace Windows.Devices.Midi
 
 		public void SendBufferInternal(IBuffer midiBuffer, TimeSpan timestamp)
 		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Sending MIDI buffer to port {_portInfo.PortNumber}");
+			}
 			if (_midiPort == null)
 			{
 				throw new InvalidOperationException("Output port is not initialized.");
@@ -62,6 +72,8 @@ namespace Windows.Devices.Midi
 
 		public void Dispose()
 		{
+			_midiDevice?.Close();
+			_midiDevice?.Dispose();
 			_portInfo?.Dispose();
 			_deviceInfo?.Dispose();
 			_midiPort?.Dispose();

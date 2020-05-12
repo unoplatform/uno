@@ -7,6 +7,8 @@ using Android.Content;
 using Android.Media.Midi;
 using Android.Runtime;
 using Android.Service.VR;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
 using Uno.UI;
 using Windows.Devices.Enumeration;
 
@@ -67,12 +69,13 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			_deviceCallback?.Dispose();
 			_deviceCallback = null;
 			_watchMidiManager.Dispose();
+			_watchMidiManager = null;
 			WatchStopped?.Invoke(this, null);
 		}
-		
+
 		internal (MidiDeviceInfo device, MidiDeviceInfo.PortInfo port) GetNativeDeviceInfo(string midiDeviceId)
 		{
-			var parsed = ParseMidiDeviceId(midiDeviceId);			
+			var parsed = ParseMidiDeviceId(midiDeviceId);
 			using (var midiManager = ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>())
 			{
 				return midiManager
@@ -84,7 +87,7 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 								p.Type == _portType &&
 								p.PortNumber == parsed.portNumber)
 							.Select(p => (device: d, port: p)))
-					.FirstOrDefault();				
+					.FirstOrDefault();
 			}
 		}
 
@@ -105,11 +108,19 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 
 		private IEnumerable<DeviceInformation> GetMidiDevices(MidiManager midiManager)
 		{
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug("Retrieving MIDI devices");
+			}
 			return midiManager
 				.GetDevices()
-				.Where(d => d.GetPorts().Any(p => p.Type == _portType))
-				.SelectMany(d => d.GetPorts().Select(p => (device: d, port: p)))
+				.SelectMany(d => FilterMatchingPorts(d.GetPorts()).Select(p => (device: d, port: p)))
 				.Select(pair => CreateDeviceInformation(pair.device, pair.port));
+		}
+
+		private IEnumerable<MidiDeviceInfo.PortInfo> FilterMatchingPorts(IEnumerable<MidiDeviceInfo.PortInfo> port)
+		{
+			return port.Where(p => p.Type == _portType);
 		}
 
 		private DeviceInformation CreateDeviceInformation(MidiDeviceInfo deviceInfo, MidiDeviceInfo.PortInfo portInfo)
@@ -120,13 +131,27 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 				name = deviceInfo.Properties.GetString(MidiDeviceInfo.PropertyName);
 			}
 
+			if (this.Log().IsEnabled(LogLevel.Debug))
+			{
+				this.Log().LogDebug($"Creating device info for {name}");
+			}
+
 			var deviceIdentifier = new DeviceIdentifier(
 				GetMidiDeviceId(deviceInfo, portInfo),
 				_portType == MidiPortType.Input ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut);
-			var deviceInformation = new DeviceInformation(deviceIdentifier)
+
+			var properties = new Dictionary<string, object>();
+			foreach (var key in deviceInfo.Properties.KeySet())
 			{
-				Name = name
-			};
+				var value = deviceInfo.Properties.Get(key);
+				properties.Add(key, value);
+			}
+
+			var deviceInformation = new DeviceInformation(deviceIdentifier, properties)
+			{
+				Name = name,				
+			};						
+
 			return deviceInformation;
 		}
 
