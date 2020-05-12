@@ -302,19 +302,7 @@ namespace Windows.UI.Xaml
 				throw new InvalidOperationException($"{FormatDebugName()}: Invalid frame size {newRect}. No dimension should be NaN or negative value.");
 			}
 
-			Rect? getClip()
-			{
-				// Clip transform not supported yet on Wasm/Skia
-
-				var clip = Clip;
-				if (clip == null)
-				{
-					return !needsClipToSlot ? (Rect?) null : clippedFrame;
-				}
-				return clip.Rect;
-			}
-
-			var clipRect = getClip();
+			var clipRect = Clip ?? needsClipToSlot ? clippedFrame : default(Rect?);
 
 			_logDebug?.Trace($"{DepthIndentation}{FormatDebugName()}.ArrangeElementNative({newRect}, clip={clipRect} (NeedsClipToSlot={NeedsClipToSlot})");
 
