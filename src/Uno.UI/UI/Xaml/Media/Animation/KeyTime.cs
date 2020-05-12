@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
-	public partial struct KeyTime : IEquatable<KeyTime>
+	public partial struct KeyTime : IEquatable<KeyTime>, IComparable<KeyTime>
 	{
 		public TimeSpan TimeSpan { get; private set; }
 
@@ -66,5 +66,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			return this.TimeSpan.ToXamlString(CultureInfo.InvariantCulture);
 		}
+
+		int IComparable<KeyTime>.CompareTo(KeyTime other) => TimeSpan.CompareTo(other.TimeSpan);
 	}
 }

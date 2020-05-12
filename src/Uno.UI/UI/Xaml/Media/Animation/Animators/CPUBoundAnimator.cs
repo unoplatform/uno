@@ -57,6 +57,8 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// <inheritdoc />
 		public void SetEasingFunction(IEasingFunction easingFunction) => _easing = easingFunction ?? LinearEase.Instance;
 
+		public IEasingFunction GetEasingFunction() => _easing;
+
 		/// <inheritdoc />
 		public void Start()
 		{

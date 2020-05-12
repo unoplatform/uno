@@ -27,6 +27,8 @@ namespace Windows.UI
 			B = b;
 		}
 
+		public static ColorOffset Zero = default;
+
 		public static ColorOffset FromArgb(int a, int r, int g, int b) => new ColorOffset(a, r, g, b);
 
 		public static explicit operator Color(ColorOffset colorOffset) => Color.FromArgb((byte)colorOffset.A, (byte)colorOffset.R, (byte)colorOffset.G, (byte)colorOffset.B);

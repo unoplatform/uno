@@ -65,6 +65,22 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		#endregion
 
+		internal override TimeSpan GetCalculatedDuration()
+		{
+			var duration = Duration;
+			if (duration != Duration.Automatic)
+			{
+				return base.GetCalculatedDuration();
+			}
+
+			if (KeyFrames.Any())
+			{
+				var lastKeyTime = KeyFrames.Max(kf => kf.KeyTime);
+				return lastKeyTime.TimeSpan;
+			}
+
+			return base.GetCalculatedDuration();
+		}
 
 		void ITimeline.Begin()
 		{

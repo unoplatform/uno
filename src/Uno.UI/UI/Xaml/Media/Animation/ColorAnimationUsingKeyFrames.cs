@@ -1,42 +1,54 @@
 ﻿using System;
 using System.Collections.Generic;
-using Uno.Disposables;
-using System.Text;
 using System.Linq;
-using Windows.UI.Xaml.Markup;
-using Uno.Extensions;
 using Windows.UI.Core;
+using Windows.UI.Xaml.Markup;
+using Uno.Disposables;
+using Uno.Extensions;
 using Uno.Logging;
 
 namespace Windows.UI.Xaml.Media.Animation
 {
 	[ContentProperty(Name = "KeyFrames")]
-	public partial class DoubleAnimationUsingKeyFrames : Timeline, ITimeline
-    {
+	partial class ColorAnimationUsingKeyFrames : Timeline, ITimeline
+	{
 		private DateTimeOffset _lastBeginTime;
 		private int _replayCount = 1;
-		private double? _startingValue = null;
-		private double _finalValue;
+		private ColorOffset? _startingValue = null;
+		private ColorOffset _finalValue;
 
 		private List<IValueAnimator> _animators;
 		private IValueAnimator _currentAnimator;
 
 		private readonly CompositeDisposable _subscriptions = new CompositeDisposable();
 
+		public static readonly DependencyProperty EnableDependentAnimationProperty = DependencyProperty.Register(
+			"EnableDependentAnimation",
+			typeof(bool),
+			typeof(ColorAnimationUsingKeyFrames),
+			new PropertyMetadata(false));
 		public bool EnableDependentAnimation
 		{
-			get => (bool)this.GetValue(EnableDependentAnimationProperty);
-			set => this.SetValue(EnableDependentAnimationProperty, value);
+			get => (bool)GetValue(EnableDependentAnimationProperty);
+			set => SetValue(EnableDependentAnimationProperty, value);
 		}
-		public static readonly DependencyProperty EnableDependentAnimationProperty =
-			DependencyProperty.Register("EnableDependentAnimation", typeof(bool), typeof(DoubleAnimationUsingKeyFrames), new PropertyMetadata(false));
 
-		public DoubleAnimationUsingKeyFrames()
+		public static readonly DependencyProperty KeyFramesProperty = DependencyProperty.Register(
+			"KeyFrames",
+			typeof(ColorKeyFrameCollection),
+			typeof(ColorAnimationUsingKeyFrames),
+			new PropertyMetadata(default(ColorKeyFrameCollection)));
+		public ColorKeyFrameCollection KeyFrames
 		{
-			KeyFrames = new DoubleKeyFrameCollection(this, isAutoPropertyInheritanceEnabled: false); 
+			get => (ColorKeyFrameCollection)GetValue(KeyFramesProperty);
+			set => SetValue(KeyFramesProperty, value);
 		}
 
-		public DoubleKeyFrameCollection KeyFrames { get; }
+		public ColorAnimationUsingKeyFrames()
+		{
+			KeyFrames = new ColorKeyFrameCollection(this, isAutoPropertyInheritanceEnabled: false);
+		}
+
 		internal override TimeSpan GetCalculatedDuration()
 		{
 			var duration = Duration;
@@ -59,15 +71,16 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 			if (!_wasBeginScheduled)
 			{
-				// We dispatch the begin so that we can use bindings on DoubleKeyFrame.Value from RelativeParent.
+				// We dispatch the begin so that we can use bindings on ColorKeyFrame.Value from RelativeParent.
 				// This works because the template bindings are executed just after the constructor.
-				// WARNING: This does not allow us to bind DoubleKeyFrame.Value with ViewModel properties.
+				// WARNING: This does not allow us to bind ColorKeyFrame.Value with ViewModel properties.
 				_wasBeginScheduled = true;
+
 #if !NET461
 #if __ANDROID__
 				Dispatcher.RunAnimation(() =>
 #else
-				Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+				Dispatcher.RunAsync(Core.CoreDispatcherPriority.High, () =>
 #endif
 				{
 #endif
@@ -75,8 +88,11 @@ namespace Windows.UI.Xaml.Media.Animation
 					{
 						return; // nothing to do
 					}
+
+					PropertyInfo?.CloneShareableObjectsInPath();
+
 					_wasBeginScheduled = false;
-                    _subscriptions.Clear(); //Dispose all and start a new
+					_subscriptions.Clear(); //Dispose all and start a new
 
 					_lastBeginTime = DateTimeOffset.Now;
 					_replayCount = 1;
@@ -88,7 +104,7 @@ namespace Windows.UI.Xaml.Media.Animation
 #endif
 			}
 		}
-		
+
 		void ITimeline.Pause()
 		{
 			if (State == TimelineState.Paused)
@@ -217,7 +233,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			var startingValue = ComputeFromValue();
 
 			var fromValue = startingValue;
-			double toValue;
+			ColorOffset toValue;
 			var previousKeyTime = TimeSpan.Zero;
 
 			// Build the animators
@@ -226,12 +242,12 @@ namespace Windows.UI.Xaml.Media.Animation
 			var index = 0;
 			foreach (var keyFrame in KeyFrames.OrderBy(k => k.KeyTime.TimeSpan))
 			{
-				toValue = keyFrame.Value;
+				toValue = (ColorOffset)keyFrame.Value;
 				if (index + 1 == KeyFrames.Count)
 				{
 					_finalValue = toValue;
 				}
-				var animator = AnimatorFactory.Create(this, fromValue, toValue);				
+				var animator = AnimatorFactory.Create(this, fromValue, toValue);
 				var duration = keyFrame.KeyTime.TimeSpan - previousKeyTime;
 				animator.SetDuration((long)duration.TotalMilliseconds);
 				animator.SetEasingFunction(keyFrame.GetEasingFunction());
@@ -250,7 +266,7 @@ namespace Windows.UI.Xaml.Media.Animation
 						OnFrame((IValueAnimator)sender);
 					};
 				}
-				
+
 				var i = index;
 
 #if __ANDROID_19__
@@ -266,19 +282,19 @@ namespace Windows.UI.Xaml.Media.Animation
 					OnAnimatorEnd(i);
 				};
 				++index;
-            }
+			}
 		}
 
 		private void OnAnimatorEnd(int i)
 		{
 			var nextAnimatorIndex = i + 1;
 
-			// if it's the last animation part, in the end of the DoubleAnimationUsingKeyFrames
+			// if it's the last animation part, in the end of the ColorAnimationUsingKeyFrames
 			if (nextAnimatorIndex == KeyFrames.Count)
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					this.Log().Debug("DoubleAnimationUsingKeyFrames has ended.");
+					this.Log().Debug("ColorAnimationUsingKeyFrames has ended.");
 				}
 
 				OnEnd();
@@ -287,7 +303,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			else
 			{
 				_currentAnimator = _animators[nextAnimatorIndex];
-                _currentAnimator.Start();
+				_currentAnimator.Start();
 			}
 		}
 
@@ -295,9 +311,23 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// Calculates the From value of the animation
 		/// For simplification animations are based on to and from values
 		/// </summary>
-		private double ComputeFromValue() => GetDefaultTargetValue() ?? 0f;
+		private ColorOffset ComputeFromValue() => GetDefaultTargetValue() ?? ColorOffset.Zero;
 
-		private double? GetDefaultTargetValue() => _startingValue ?? (double?)GetValue();
+		private ColorOffset? GetDefaultTargetValue()
+		{
+			var value = _startingValue;
+			if (value != null)
+			{
+				return value;
+			}
+
+			var v = GetValue();
+			if (v is Color color)
+			{
+				return (ColorOffset?)color;
+			}
+			return default;
+		}
 
 		/// <summary>
 		/// Replay this animation.
@@ -333,10 +363,10 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			OnCompleted();
 		}
-		
+
 
 		/// <summary>
-		/// Dispose the Double animation.
+		/// Dispose the animation.
 		/// </summary>
 		protected override void Dispose(bool disposing)
 		{

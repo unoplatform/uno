@@ -64,7 +64,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		public static readonly DependencyProperty DurationProperty =
-			DependencyProperty.Register("Duration", typeof(Duration), typeof(Timeline), new PropertyMetadata(new Duration()));
+			DependencyProperty.Register("Duration", typeof(Duration), typeof(Timeline), new PropertyMetadata(Duration.Automatic));
 
 		public FillBehavior FillBehavior
 		{
@@ -87,9 +87,20 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public event EventHandler<object> Completed;
 
-		protected void OnCompleted()
+		protected void OnCompleted() => Completed?.Invoke(this, null);
+
+		/// <summary>
+		/// Compute duration of the Timeline. Sometimes it's define by components.
+		/// </summary>
+		internal virtual TimeSpan GetCalculatedDuration()
 		{
-			Completed?.Invoke(this, null);
+			return Duration.Type switch
+			{
+				DurationType.Forever => TimeSpan.MaxValue,
+				DurationType.TimeSpan => Duration.TimeSpan,
+				DurationType.Automatic => TimeSpan.Zero, // this is overriden in xxxUsingKeyFrames implementations
+				_ => TimeSpan.Zero
+			};
 		}
 
 		/// <summary>
