@@ -47,54 +47,6 @@
             <Setter Property="Margin" Value="0,20,20,0" />
         </Style>
 
-        <!--  Style for displaying a ListView whose items cannot be selected individually, used to display MIDI device properties  -->
-        <Style x:Key="ScenarioUnselectableListViewStyle" TargetType="ListViewItem">
-            <Setter Property="IsEnabled" Value="True" />
-            <Setter Property="Template">
-                <Setter.Value>
-                    <ControlTemplate TargetType="ListViewItem">
-                        <Border
-                            x:Name="LayoutRoot"
-                            HorizontalAlignment="{TemplateBinding HorizontalAlignment}"
-                            VerticalAlignment="{TemplateBinding VerticalAlignment}"
-                            Background="{TemplateBinding Background}"
-                            BorderBrush="{TemplateBinding BorderBrush}"
-                            BorderThickness="{TemplateBinding BorderThickness}">
-                            <ContentControl
-                                x:Name="ContentContainer"
-                                Margin="{TemplateBinding Padding}"
-                                Padding="10,00,00,00"
-                                HorizontalContentAlignment="{TemplateBinding HorizontalContentAlignment}"
-                                VerticalContentAlignment="{TemplateBinding VerticalContentAlignment}"
-                                Background="Black"
-                                Content="{TemplateBinding Content}"
-                                ContentTemplate="{TemplateBinding ContentTemplate}"
-                                FontFamily="Consolas"
-                                Foreground="#FFFFFFFF" />
-                            <VisualStateManager.VisualStateGroups>
-                                <VisualStateGroup x:Name="CommonStates">
-                                    <VisualState x:Name="Normal" />
-                                    <VisualState x:Name="MouseOver" />
-                                    <VisualState x:Name="Disabled">
-                                        <Storyboard>
-                                            <DoubleAnimation
-                                                Storyboard.TargetName="ContentContainer"
-                                                Storyboard.TargetProperty="Opacity"
-                                                To=".5"
-                                                Duration="0" />
-                                        </Storyboard>
-                                    </VisualState>
-                                </VisualStateGroup>
-                                <VisualStateGroup x:Name="SelectionStates">
-                                    <VisualState x:Name="Unselected" />
-                                    <VisualState x:Name="Selected" />
-                                </VisualStateGroup>
-                            </VisualStateManager.VisualStateGroups>
-                        </Border>
-                    </ControlTemplate>
-                </Setter.Value>
-            </Setter>
-        </Style>
     </UserControl.Resources>
 
     <Grid Margin="12,20,12,12" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
@@ -134,7 +86,6 @@
                         Text="RECEIVED MESSAGES" />
                     <ListView
                         x:Name="inputDeviceMessages"
-                        ItemContainerStyle="{StaticResource ScenarioUnselectableListViewStyle}"
                         ItemsSource="{Binding InputDeviceMessages}"
                         Style="{StaticResource InputDeviceMessagesStyle}" />
                 </RelativePanel>
