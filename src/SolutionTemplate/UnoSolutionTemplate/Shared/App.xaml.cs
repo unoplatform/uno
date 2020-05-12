@@ -33,14 +33,28 @@ namespace $ext_safeprojectname$
 
 			this.InitializeComponent();
 			this.Suspending += OnSuspending;
-		}
 
-		/// <summary>
-		/// Invoked when the application is launched normally by the end user.  Other entry points
-		/// will be used such as when the application is launched to open a specific file.
-		/// </summary>
-		/// <param name="e">Details about the launch request and process.</param>
-		protected override void OnLaunched(LaunchActivatedEventArgs e)
+#if __ANDROID__
+			    Windows.UI.Notifications.TileUpdater.AndroidInitIds(Droid.Resource.Id.livetile_layout,
+                Droid.Resource.Id.livetile_text0,
+                Droid.Resource.Id.livetile_text1,
+                Droid.Resource.Id.livetile_text2,
+                Droid.Resource.Id.livetile_text3,
+                Droid.Resource.Id.livetile_text4,
+                Droid.Resource.Id.livetile_text5,
+                Droid.Resource.Id.livetile_text6,
+                Droid.Resource.Id.livetile_text7,
+                Droid.Resource.Id.livetile_text8,
+                Droid.Resource.Id.livetile_text9);
+#endif
+	}
+
+	/// <summary>
+	/// Invoked when the application is launched normally by the end user.  Other entry points
+	/// will be used such as when the application is launched to open a specific file.
+	/// </summary>
+	/// <param name="e">Details about the launch request and process.</param>
+	protected override void OnLaunched(LaunchActivatedEventArgs e)
 		{
 #if DEBUG
 			if (System.Diagnostics.Debugger.IsAttached)

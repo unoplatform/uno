@@ -92,6 +92,8 @@
     href: uno-fluent-assets.md
   - name: ListView and GridView
     href: controls\ListViewBase.md
+  - name: Live Tiles
+    href: features\liveTile.md
   - name: MapControl
     href: controls\map-control-support.md
   - name: MediaPlayerElement

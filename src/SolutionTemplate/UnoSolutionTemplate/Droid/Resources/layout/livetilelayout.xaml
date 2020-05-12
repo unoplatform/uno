@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:id="@+id/livetile_layout"
+        android:orientation="vertical" >
+        <TextView android:text="start" android:id="@+id/livetile_text0"  android:singleLine="true" android:layout_width="match_parent" android:layout_height="40dp"  />
+        <TextView android:id="@+id/livetile_text1"  android:singleLine="true" android:layout_width="match_parent" android:layout_height="40dp"  />
+        <TextView android:id="@+id/livetile_text2"  android:singleLine="true" android:layout_width="match_parent" android:layout_height="40dp"  />
+        <TextView android:id="@+id/livetile_text3"  android:singleLine="true" android:layout_width="match_parent" android:layout_height="40dp"  />
+        <TextView android:id="@+id/livetile_text4"  android:singleLine="true" android:layout_width="match_parent" android:layout_height="40dp"  />
+        <TextView android:id="@+id/livetile_text5"  android:singleLine="true" android:layout_width="match_parent" android:layout_height="40dp"  />
+        <TextView android:id="@+id/livetile_text6"  android:singleLine="true" android:layout_width="match_parent" android:layout_height="40dp"  />
+        <TextView android:id="@+id/livetile_text7"  android:singleLine="true" android:layout_width="match_parent" android:layout_height="40dp"  />
+        <TextView android:id="@+id/livetile_text8"  android:singleLine="true" android:layout_width="match_parent" android:layout_height="40dp"  />
+        <TextView android:id="@+id/livetile_text9"  android:singleLine="true" android:layout_width="match_parent" android:layout_height="40dp"  />
+    </LinearLayout>
+</FrameLayout>
