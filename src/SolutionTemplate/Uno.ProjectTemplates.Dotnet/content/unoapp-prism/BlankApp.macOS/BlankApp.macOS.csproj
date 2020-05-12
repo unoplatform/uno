@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -68,8 +68,8 @@
     <Reference Include="System.Memory" />
   </ItemGroup>
   <ItemGroup>
-		<PackageReference Include="Uno.UI" Version="2.0.512-dev.4178" />
-		<PackageReference Include="Uno.UI.RemoteControl" Version="2.0.512-dev.4178" Condition="'$(Configuration)'=='Debug'" />
+		<PackageReference Include="Uno.UI" Version="2.2.0" />
+		<PackageReference Include="Uno.UI.RemoteControl" Version="2.2.0" Condition="'$(Configuration)'=='Debug'" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Console" Version="1.1.1" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Filter" Version="1.1.1" />
 
@@ -125,21 +125,15 @@
 				is properly adding the local System.Memory to the Reference item group.
 		-->
 		<ItemGroup>
-			<_ReferenceToRemove
-        Include="@(Reference)"
-        Condition="'%(Reference.Identity)'=='System.Memory'" />
+			<_ReferenceToRemove Include="@(Reference)" Condition="'%(Reference.Identity)'=='System.Memory'" />
 			<Reference Remove="@(_ReferenceToRemove)" />
-			<Reference Include="System.Memory"/>
+			<Reference Include="System.Memory" />
 		</ItemGroup>
 	</Target>
 
-	<Target
-    Name="VS16_RemoveSystemMemory"
-    BeforeTargets="FindReferenceAssembliesForReferences">
+	<Target Name="VS16_RemoveSystemMemory" BeforeTargets="FindReferenceAssembliesForReferences">
 		<ItemGroup>
-			<_ReferencePathToRemove
-        Include="@(ReferencePath)"
-        Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
+			<_ReferencePathToRemove Include="@(ReferencePath)" Condition="'%(ReferencePath.NuGetPackageId)'=='System.Memory'" />
 			<ReferencePath Remove="@(_ReferencePathToRemove)" />
 		</ItemGroup>
 	</Target>

@@ -22,9 +22,9 @@
 		<dependency id="Xamarin.AndroidX.AppCompat" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.Fragment" version="1.1.0" />
-		<dependency id="Uno.SourceGenerationTasks" version="2.0.0-dev.16" />
-		<dependency id="Uno.Core" version="2.0.0-dev.5" />
-		<dependency id="Uno.Core.Build" version="2.0.0-dev.5" />
+		<dependency id="Uno.SourceGenerationTasks" version="2.0.6" />
+		<dependency id="Uno.Core" version="2.0.0" />
+		<dependency id="Uno.Core.Build" version="2.0.0" />
 	  </group>
 
 	  <!-- Android 10.0 -->
@@ -32,31 +32,31 @@
 		<dependency id="Xamarin.AndroidX.Legacy.Support.V4" version="1.0.0" />
 		<dependency id="Xamarin.AndroidX.AppCompat" version="1.1.0" />
 		<dependency id="Xamarin.AndroidX.RecyclerView" version="1.1.0" />
-		<dependency id="Uno.SourceGenerationTasks" version="2.0.0-dev.16" />
-		<dependency id="Uno.Core" version="2.0.0-dev.5" />
-		<dependency id="Uno.Core.Build" version="2.0.0-dev.5" />
+		<dependency id="Uno.SourceGenerationTasks" version="2.0.6" />
+		<dependency id="Uno.Core" version="2.0.0" />
+		<dependency id="Uno.Core.Build" version="2.0.0" />
 	  </group>
 
 	  <!-- iOS -->
 	  <group targetFramework="xamarinios10">
-		<dependency id="Uno.SourceGenerationTasks" version="1.32.0-dev.297" />
-		<dependency id="Uno.Core" version="1.29.0" />
-		<dependency id="Uno.Core.Build" version="1.29.0" />
+		<dependency id="Uno.SourceGenerationTasks" version="2.0.6" />
+		<dependency id="Uno.Core" version="2.0.0" />
+		<dependency id="Uno.Core.Build" version="2.0.0" />
 	  </group>
 
       <!-- iOS -->
       <group targetFramework="xamarinmac20">
-        <dependency id="Uno.SourceGenerationTasks" version="2.0.0-dev.16" />
-        <dependency id="Uno.Core" version="2.0.0-dev.5" />
-        <dependency id="Uno.Core.Build" version="2.0.0-dev.5" />
+        <dependency id="Uno.SourceGenerationTasks" version="2.0.6" />
+        <dependency id="Uno.Core" version="2.0.0" />
+        <dependency id="Uno.Core.Build" version="2.0.0" />
       </group>
 
       <!-- .NET Standard 2.0 -->
       <group targetFramework="netstandard2.0">
-        <dependency id="Uno.SourceGenerationTasks" version="2.0.0-dev.16" />
-        <dependency id="Uno.Core" version="2.0.0-dev.5" />
-        <dependency id="Uno.Core.Build" version="2.0.0-dev.5" />
-        <dependency id="System.Numerics.Vectors" version="4.5.0-preview1-26216-02" />
+        <dependency id="Uno.SourceGenerationTasks" version="2.0.6" />
+        <dependency id="Uno.Core" version="2.0.0" />
+        <dependency id="Uno.Core.Build" version="2.0.0" />
+        <dependency id="System.Numerics.Vectors" version="4.5.0" />
         <dependency id="System.Runtime.InteropServices.WindowsRuntime" version="4.3.0" />
         <dependency id="System.Memory" version="4.5.2" />
       </group>
