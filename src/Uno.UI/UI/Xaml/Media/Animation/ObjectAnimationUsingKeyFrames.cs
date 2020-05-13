@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// This property is not exposed as a DP in UWP, but it is required
 		/// to be one for the DataContext/TemplatedParent to flow properly.
 		/// </remarks>
-		internal static readonly DependencyProperty KeyFramesProperty =
+		internal static DependencyProperty KeyFramesProperty { get; } =
 			DependencyProperty.Register(
 				name: "KeyFrames", 
 				propertyType: typeof(ObjectKeyFrameCollection), 

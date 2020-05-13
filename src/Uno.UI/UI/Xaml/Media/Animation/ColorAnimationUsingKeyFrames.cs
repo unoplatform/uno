@@ -145,8 +145,13 @@ namespace Windows.UI.Xaml.Media.Animation
 
 			if (targetAnimator != _currentAnimator)
 			{
-				_currentAnimator.Cancel();
+				_currentAnimator?.Cancel();
 				_currentAnimator = targetAnimator;
+			}
+
+			if(_currentAnimator == null)
+			{
+				return;
 			}
 
 			_currentAnimator.CurrentPlayTime = (long)offset.TotalMilliseconds; //Offset is CurrentPlayTime (starting point for animation)

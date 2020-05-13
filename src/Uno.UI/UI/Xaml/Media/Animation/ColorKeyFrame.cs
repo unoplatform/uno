@@ -6,13 +6,13 @@ namespace Windows.UI.Xaml.Media.Animation
 {
 	public abstract partial class ColorKeyFrame : DependencyObject
 	{
-		public ColorKeyFrame()
+		protected ColorKeyFrame()
 		{
 			IsAutoPropertyInheritanceEnabled = true;
 			InitializeBinder();
 		}
 
-		public static readonly DependencyProperty ValueProperty = DependencyProperty.Register(
+		public static DependencyProperty ValueProperty { get; } = DependencyProperty.Register(
 			"Value",
 			typeof(Color),
 			typeof(ColorKeyFrame),
@@ -24,7 +24,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => SetValue(ValueProperty, value);
 		}
 
-		public static readonly DependencyProperty KeyTimeProperty = DependencyProperty.Register(
+		public static DependencyProperty KeyTimeProperty { get; } = DependencyProperty.Register(
 			"KeyTime",
 			typeof(KeyTime),
 			typeof(ColorKeyFrame),

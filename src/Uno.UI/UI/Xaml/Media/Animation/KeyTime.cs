@@ -68,5 +68,10 @@ namespace Windows.UI.Xaml.Media.Animation
 		}
 
 		int IComparable<KeyTime>.CompareTo(KeyTime other) => TimeSpan.CompareTo(other.TimeSpan);
+
+		public static bool operator <(KeyTime keytime1, KeyTime keytime2) => keytime1.TimeSpan < keytime2.TimeSpan;
+		public static bool operator >(KeyTime keytime1, KeyTime keytime2) => keytime1.TimeSpan > keytime2.TimeSpan;
+		public static bool operator <=(KeyTime keytime1, KeyTime keytime2) => keytime1.TimeSpan <= keytime2.TimeSpan;
+		public static bool operator >=(KeyTime keytime1, KeyTime keytime2) => keytime1.TimeSpan >= keytime2.TimeSpan;
 	}
 }

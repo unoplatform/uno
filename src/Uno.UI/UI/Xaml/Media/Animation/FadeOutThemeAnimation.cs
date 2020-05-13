@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Media.Animation
 				DependencyPropertyValuePrecedences.DefaultValue);
 		}
 
-		public static readonly DependencyProperty TargetNameProperty = DependencyProperty.Register(
+		public static DependencyProperty TargetNameProperty { get; } = DependencyProperty.Register(
 			"TargetName", typeof(string), typeof(FadeOutThemeAnimation), new PropertyMetadata(null));
 
 		public string TargetName

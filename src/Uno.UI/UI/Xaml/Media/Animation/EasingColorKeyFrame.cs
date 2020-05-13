@@ -2,7 +2,7 @@
 {
 	partial class EasingColorKeyFrame : ColorKeyFrame
 	{
-		public static DependencyProperty EasingFunctionProperty = DependencyProperty.Register(
+		public static DependencyProperty EasingFunctionProperty { get; } = DependencyProperty.Register(
 			"EasingFunction", typeof(EasingFunctionBase),
 			typeof(EasingColorKeyFrame),
 			new FrameworkPropertyMetadata(default(EasingFunctionBase)));
