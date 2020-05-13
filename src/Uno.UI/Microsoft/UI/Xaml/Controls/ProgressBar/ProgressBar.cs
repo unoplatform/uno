@@ -66,6 +66,8 @@ namespace Microsoft.UI.Xaml.Controls
 
 			SizeChanged += (snd, evt) => OnSizeChange();
 
+			LayoutUpdated += (snd, evt) => OnSizeChange();
+
 			RegisterPropertyChangedCallback(ValueProperty, OnRangeBasePropertyChanged);
 			RegisterPropertyChangedCallback(MinimumProperty, OnRangeBasePropertyChanged);
 			RegisterPropertyChangedCallback(MaximumProperty, OnRangeBasePropertyChanged);
