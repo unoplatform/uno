@@ -13,6 +13,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		{
 		}
 
+		// Following members are for binary backward compatibility. They can be safely remove in an eventual "breaking" new version.
 		public new uint Size => base.Size;
 
 		public new IEnumerator<ColorKeyFrame> GetEnumerator() => base.GetEnumerator();
@@ -27,7 +28,12 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		public new bool Remove(ColorKeyFrame item) => base.Remove(item);
 
-		public new int Count => base.Count;
+		public new int Count
+		{
+			get => base.Count;
+			set => throw new NotSupportedException();
+		}
+
 		public new bool IsReadOnly
 		{
 			get => base.IsReadOnly;

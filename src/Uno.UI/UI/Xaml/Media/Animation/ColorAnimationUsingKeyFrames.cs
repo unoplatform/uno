@@ -22,7 +22,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		private readonly CompositeDisposable _subscriptions = new CompositeDisposable();
 
-		public static readonly DependencyProperty EnableDependentAnimationProperty = DependencyProperty.Register(
+		public static DependencyProperty EnableDependentAnimationProperty { get; } = DependencyProperty.Register(
 			"EnableDependentAnimation",
 			typeof(bool),
 			typeof(ColorAnimationUsingKeyFrames),
@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Media.Animation
 			set => SetValue(EnableDependentAnimationProperty, value);
 		}
 
-		public static readonly DependencyProperty KeyFramesProperty = DependencyProperty.Register(
+		public static DependencyProperty KeyFramesProperty { get; } = DependencyProperty.Register(
 			"KeyFrames",
 			typeof(ColorKeyFrameCollection),
 			typeof(ColorAnimationUsingKeyFrames),
