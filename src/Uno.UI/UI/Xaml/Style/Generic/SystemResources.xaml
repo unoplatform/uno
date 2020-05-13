@@ -2631,7 +2631,7 @@
 			<Color x:Key="SystemChromeWhiteColor">#FFFFFFFF</Color>
 			<Color x:Key="SystemListLowColor">#19000000</Color>
 			<Color x:Key="SystemListMediumColor">#33000000</Color>
-			<Color x:Key="SystemErrorTextColor">#FFF000</Color>
+			<Color x:Key="SystemErrorTextColor">#C50500</Color>
 			<SolidColorBrush x:Key="SystemControlTransparentBrush" Color="Transparent"/>
 			<SolidColorBrush x:Key="SystemControlBackgroundAccentBrush" Color="{ThemeResource SystemAccentColor}"/>
 			<SolidColorBrush x:Key="SystemControlBackgroundAltHighBrush" Color="{StaticResource SystemAltHighColor}"/>
