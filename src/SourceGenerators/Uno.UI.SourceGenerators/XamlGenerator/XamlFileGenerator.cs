@@ -2839,7 +2839,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			// Populate the property paths only if updateable bindings.
 			var propertyPaths = modeMember != "OneTime"
-				? XBindExpressionParser.ParseProperties(rawFunction, IsStaticMethod)
+				? XBindExpressionParser.ParseProperties(rawFunction, IsStaticMember)
 				: (properties: new string[0], hasFunction: false);
 
 			var formattedPaths = propertyPaths
@@ -2861,7 +2861,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				var dataType = RewriteNamespaces(dataTypeObject.Value?.ToString());
 
-				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, IsStaticMethod);
+				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, IsStaticMember);
 
 				string buildBindBack()
 				{
@@ -2884,7 +2884,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (propertyPaths.properties.Length == 1)
 							{
 								var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0], GetType(dataType));
-								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunction} = ({targetPropertyType})__value; }} }}";
+								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunction} = ({targetPropertyType})({propertyType})__value; }} }}";
 							}
 							else
 							{
@@ -2924,7 +2924,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (propertyPaths.properties.Length == 1)
 							{
 								var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0]);
-								return $"(___tctx, __value) => {rawFunction} = ({targetPropertyType})__value";
+								return $"(___tctx, __value) => {rawFunction} = ({targetPropertyType})({propertyType})__value";
 							}
 							else
 							{
@@ -2982,16 +2982,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return currentType;
 		}
 
-		bool IsStaticMethod(string fullMethodName)
+		bool IsStaticMember(string fullMemberName)
 		{
-			fullMethodName = fullMethodName.TrimStart("global::");
+			fullMemberName = fullMemberName.TrimStart("global::");
 
-			var lastDotIndex = fullMethodName.LastIndexOf(".");
+			var lastDotIndex = fullMemberName.LastIndexOf(".");
 
-			var className = lastDotIndex != -1 ? fullMethodName.Substring(0, lastDotIndex) : fullMethodName;
-			var methodName = lastDotIndex != -1 ? fullMethodName.Substring(lastDotIndex + 1) : fullMethodName;
+			var className = lastDotIndex != -1 ? fullMemberName.Substring(0, lastDotIndex) : fullMemberName;
+			var memberName = lastDotIndex != -1 ? fullMemberName.Substring(lastDotIndex + 1) : fullMemberName;
 
-			return _medataHelper.FindTypeByFullName(className) is INamedTypeSymbol typeSymbol && typeSymbol.GetMethods().Any(m => m.Name == methodName);
+			return _medataHelper.FindTypeByFullName(className) is INamedTypeSymbol typeSymbol
+				&& (typeSymbol.GetMethods().Any(m => m.IsStatic && m.Name == memberName) || typeSymbol.GetProperties().Any(m => m.IsStatic && m.Name == memberName));
 		}
 
 		private string RewriteNamespaces(string xamlString)
