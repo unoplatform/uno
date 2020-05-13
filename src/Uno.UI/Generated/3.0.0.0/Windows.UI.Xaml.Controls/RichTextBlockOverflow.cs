@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RichTextBlockOverflow : global::Windows.UI.Xaml.FrameworkElement
@@ -113,7 +113,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HasOverflowContentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HasOverflowContent", typeof(bool), 
+			nameof(HasOverflowContent), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -121,7 +121,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty OverflowContentTargetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"OverflowContentTarget", typeof(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow), 
+			nameof(OverflowContentTarget), typeof(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow), 
 			typeof(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow)));
 		#endif
@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PaddingProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Padding", typeof(global::Windows.UI.Xaml.Thickness), 
+			nameof(Padding), typeof(global::Windows.UI.Xaml.Thickness), 
 			typeof(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 		#endif
@@ -137,7 +137,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MaxLinesProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MaxLines", typeof(int), 
+			nameof(MaxLines), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -145,11 +145,11 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsTextTrimmedProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsTextTrimmed", typeof(bool), 
+			nameof(IsTextTrimmed), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.RichTextBlockOverflow), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public RichTextBlockOverflow() : base()
 		{

@@ -13,6 +13,7 @@ using Uno.Extensions;
 using Uno.Logging;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation;
+using Windows.UI.Core;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
@@ -514,7 +515,7 @@ namespace Windows.UI.Xaml
 				// Schedule all the phases at once
 				for (int i = startPhaseIndex; i < presenterRoot.DataTemplateRenderPhases.Length; i++)
 				{
-					Core.UIAsyncOperation action = null;
+					UIAsyncOperation action = null;
 					var phaseCapture = i;
 
 					async void ApplyPhase()
@@ -535,7 +536,7 @@ namespace Windows.UI.Xaml
 					// Schedule on the animation dispatcher so the callback appears faster.
 					action = presenterRoot.Dispatcher.RunAnimation(ApplyPhase);
 #elif __IOS__ || __MACOS__
-					action = presenterRoot.Dispatcher.RunAsync(Core.CoreDispatcherPriority.High, ApplyPhase);
+					action = presenterRoot.Dispatcher.RunAsync(CoreDispatcherPriority.High, ApplyPhase);
 #endif
 
 					registerForRecycled(

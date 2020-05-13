@@ -131,6 +131,20 @@ namespace Windows.UI.Notifications
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  bool ExpiresOnReboot
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ToastNotification.ExpiresOnReboot is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotification", "bool ToastNotification.ExpiresOnReboot");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public ToastNotification( global::Windows.Data.Xml.Dom.XmlDocument content) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Notifications.ToastNotification", "ToastNotification.ToastNotification(XmlDocument content)");
@@ -160,6 +174,8 @@ namespace Windows.UI.Notifications
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Data.set
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Priority.get
 		// Forced skipping of method Windows.UI.Notifications.ToastNotification.Priority.set
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.ExpiresOnReboot.get
+		// Forced skipping of method Windows.UI.Notifications.ToastNotification.ExpiresOnReboot.set
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Notifications.ToastNotification, object> Activated

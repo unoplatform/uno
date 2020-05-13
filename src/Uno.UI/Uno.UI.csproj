@@ -205,6 +205,10 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingIntdeterminate.json" />
+	</ItemGroup>
+
+	<ItemGroup>
 		<MixinInput Include=".\Mixins\Android\BaseActivity.Callbacks.tt" Condition="$(IsMonoAndroid)" />
 		<MixinInput Include=".\Mixins\Android\FrameworkElementMixins.tt" Condition="$(IsMonoAndroid)" />
 		<MixinInput Include=".\Mixins\Android\VisualStatesMixins.tt" Condition="$(IsMonoAndroid)" />
@@ -344,13 +348,17 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <EmbeddedResource Include="Microsoft\UI\Xaml\Controls\ProgressRing\ProgressRingIntdeterminate.json" />
-	</ItemGroup>
-
-	<ItemGroup>
 	  <None Update="BaseActivity.Callbacks.Implementation.Android.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>
 	    <LastGenOutput>BaseActivity.Callbacks.Implementation.Android.cs</LastGenOutput>
+	  </None>
+	  <None Update="Mixins\Android\FrameworkElementMixins.g.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>FrameworkElementMixins.tt</DependentUpon>
+	  </None>
+	  <None Update="UI\Xaml\Controls\ProgressRing\ProgressRing.xaml">
+	    <Generator>MSBuild:Compile</Generator>
 	  </None>
 	  <None Update="Mixins\Android\FrameworkElementMixins.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>
@@ -359,6 +367,11 @@
 	  <None Update="Mixins\Android\VisualStatesMixins.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>
 	    <LastGenOutput>VisualStatesMixins.g.cs</LastGenOutput>
+	  </None>
+	  <None Update="Mixins\macOS\FrameworkElementMixins.g.cs">
+	    <DesignTime>True</DesignTime>
+	    <AutoGen>True</AutoGen>
+	    <DependentUpon>FrameworkElementMixins.tt</DependentUpon>
 	  </None>
 	  <None Update="Mixins\macOS\FrameworkElementMixins.tt">
 	    <Generator>TextTemplatingFileGenerator</Generator>

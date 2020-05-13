@@ -10,6 +10,7 @@ using Uno.Disposables;
 using Windows.Storage.Streams;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
+using Windows.UI;
 
 namespace Windows.UI.Xaml.Controls
 {

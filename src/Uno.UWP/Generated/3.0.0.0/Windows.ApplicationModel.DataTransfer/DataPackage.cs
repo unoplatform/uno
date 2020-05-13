@@ -7,20 +7,7 @@ namespace Windows.ApplicationModel.DataTransfer
 	#endif
 	public  partial class DataPackage 
 	{
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.ApplicationModel.DataTransfer.DataPackageOperation RequestedOperation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DataPackageOperation DataPackage.RequestedOperation is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataPackage", "DataPackageOperation DataPackage.RequestedOperation");
-			}
-		}
-		#endif
+		// Skipping already declared property RequestedOperation
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.DataTransfer.DataPackagePropertySet Properties

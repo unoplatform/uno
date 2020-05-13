@@ -8,18 +8,10 @@ namespace Windows.ApplicationModel.DataTransfer
 	#endif
 	public   enum DataPackageOperation 
 	{
-		#if false || false || false || false || false
-		None,
-		#endif
-		#if false || false || false || false || false
-		Copy,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Move,
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Link,
-		#endif
+		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DataPackageOperation.None
+		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DataPackageOperation.Copy
+		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DataPackageOperation.Move
+		// Skipping already declared field Windows.ApplicationModel.DataTransfer.DataPackageOperation.Link
 	}
 	#endif
 }

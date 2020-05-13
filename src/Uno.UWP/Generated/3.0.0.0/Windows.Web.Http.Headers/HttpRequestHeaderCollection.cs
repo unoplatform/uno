@@ -19,15 +19,15 @@ namespace Windows.Web.Http.Headers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue Authorization
+		public  global::System.Uri Referer
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpCredentialsHeaderValue HttpRequestHeaderCollection.Authorization is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Uri HttpRequestHeaderCollection.Referer is not implemented in Uno.");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HttpCredentialsHeaderValue HttpRequestHeaderCollection.Authorization");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "Uri HttpRequestHeaderCollection.Referer");
 			}
 		}
 		#endif
@@ -47,29 +47,15 @@ namespace Windows.Web.Http.Headers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  string From
+		public  uint? MaxForwards
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string HttpRequestHeaderCollection.From is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint? HttpRequestHeaderCollection.MaxForwards is not implemented in Uno.");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "string HttpRequestHeaderCollection.From");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.Uri Referer
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri HttpRequestHeaderCollection.Referer is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "Uri HttpRequestHeaderCollection.Referer");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "uint? HttpRequestHeaderCollection.MaxForwards");
 			}
 		}
 		#endif
@@ -89,15 +75,15 @@ namespace Windows.Web.Http.Headers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::System.DateTimeOffset? Date
+		public  global::System.DateTimeOffset? IfModifiedSince
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpRequestHeaderCollection.Date is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpRequestHeaderCollection.IfModifiedSince is not implemented in Uno.");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "DateTimeOffset? HttpRequestHeaderCollection.Date");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "DateTimeOffset? HttpRequestHeaderCollection.IfModifiedSince");
 			}
 		}
 		#endif
@@ -117,39 +103,43 @@ namespace Windows.Web.Http.Headers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  uint? MaxForwards
+		public  string From
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint? HttpRequestHeaderCollection.MaxForwards is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string HttpRequestHeaderCollection.From is not implemented in Uno.");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "uint? HttpRequestHeaderCollection.MaxForwards");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "string HttpRequestHeaderCollection.From");
 			}
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::System.DateTimeOffset? IfModifiedSince
+		public  global::System.DateTimeOffset? Date
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpRequestHeaderCollection.IfModifiedSince is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpRequestHeaderCollection.Date is not implemented in Uno.");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "DateTimeOffset? HttpRequestHeaderCollection.IfModifiedSince");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "DateTimeOffset? HttpRequestHeaderCollection.Date");
 			}
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.Web.Http.Headers.HttpCookiePairHeaderValueCollection Cookie
+		public  global::Windows.Web.Http.Headers.HttpCredentialsHeaderValue Authorization
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member HttpCookiePairHeaderValueCollection HttpRequestHeaderCollection.Cookie is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpCredentialsHeaderValue HttpRequestHeaderCollection.Authorization is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpRequestHeaderCollection", "HttpCredentialsHeaderValue HttpRequestHeaderCollection.Authorization");
 			}
 		}
 		#endif
@@ -205,6 +195,26 @@ namespace Windows.Web.Http.Headers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.Web.Http.Headers.HttpCookiePairHeaderValueCollection Cookie
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member HttpCookiePairHeaderValueCollection HttpRequestHeaderCollection.Cookie is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection Expect
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member HttpExpectationHeaderValueCollection HttpRequestHeaderCollection.Expect is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  global::Windows.Web.Http.Headers.HttpTransferCodingHeaderValueCollection TransferEncoding
 		{
 			get
@@ -220,16 +230,6 @@ namespace Windows.Web.Http.Headers
 			get
 			{
 				throw new global::System.NotImplementedException("The member HttpProductInfoHeaderValueCollection HttpRequestHeaderCollection.UserAgent is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Web.Http.Headers.HttpExpectationHeaderValueCollection Expect
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member HttpExpectationHeaderValueCollection HttpRequestHeaderCollection.Expect is not implemented in Uno.");
 			}
 		}
 		#endif

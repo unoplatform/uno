@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ColorPickerSlider : global::Windows.UI.Xaml.Controls.Slider
@@ -25,11 +25,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ColorChannelProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ColorChannel", typeof(global::Windows.UI.Xaml.Controls.ColorPickerHsvChannel), 
+			nameof(ColorChannel), typeof(global::Windows.UI.Xaml.Controls.ColorPickerHsvChannel), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorPickerSlider), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ColorPickerHsvChannel)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public ColorPickerSlider() : base()
 		{

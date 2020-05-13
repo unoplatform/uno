@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Documents
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Glyphs : global::Windows.UI.Xaml.FrameworkElement
@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FillProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Fill", typeof(global::Windows.UI.Xaml.Media.Brush), 
+			nameof(Fill), typeof(global::Windows.UI.Xaml.Media.Brush), 
 			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
@@ -159,7 +159,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FontRenderingEmSizeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FontRenderingEmSize", typeof(double), 
+			nameof(FontRenderingEmSize), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FontUriProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FontUri", typeof(global::System.Uri), 
+			nameof(FontUri), typeof(global::System.Uri), 
 			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
 			new FrameworkPropertyMetadata(default(global::System.Uri)));
 		#endif
@@ -175,7 +175,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IndicesProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Indices", typeof(string), 
+			nameof(Indices), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty OriginXProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"OriginX", typeof(double), 
+			nameof(OriginX), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -191,7 +191,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty OriginYProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"OriginY", typeof(double), 
+			nameof(OriginY), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -199,7 +199,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StyleSimulationsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"StyleSimulations", typeof(global::Windows.UI.Xaml.Media.StyleSimulations), 
+			nameof(StyleSimulations), typeof(global::Windows.UI.Xaml.Media.StyleSimulations), 
 			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.StyleSimulations)));
 		#endif
@@ -207,7 +207,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty UnicodeStringProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"UnicodeString", typeof(string), 
+			nameof(UnicodeString), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -215,7 +215,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ColorFontPaletteIndexProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ColorFontPaletteIndex", typeof(int), 
+			nameof(ColorFontPaletteIndex), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -223,11 +223,11 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsColorFontEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsColorFontEnabled", typeof(bool), 
+			nameof(IsColorFontEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Documents.Glyphs), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public Glyphs() : base()
 		{

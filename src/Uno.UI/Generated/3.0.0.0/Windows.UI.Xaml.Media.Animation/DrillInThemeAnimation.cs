@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty EntranceTargetNameProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"EntranceTargetName", typeof(string), 
+			nameof(EntranceTargetName), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.DrillInThemeAnimation), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty EntranceTargetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"EntranceTarget", typeof(global::Windows.UI.Xaml.DependencyObject), 
+			nameof(EntranceTarget), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.DrillInThemeAnimation), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ExitTargetNameProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ExitTargetName", typeof(string), 
+			nameof(ExitTargetName), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.DrillInThemeAnimation), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ExitTargetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ExitTarget", typeof(global::Windows.UI.Xaml.DependencyObject), 
+			nameof(ExitTarget), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.DrillInThemeAnimation), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif

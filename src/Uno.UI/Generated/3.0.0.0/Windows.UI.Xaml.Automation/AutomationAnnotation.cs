@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Automation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ElementProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Element", typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(Element), typeof(global::Windows.UI.Xaml.UIElement), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationAnnotation), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 		#endif
@@ -47,18 +47,11 @@ namespace Windows.UI.Xaml.Automation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TypeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Type", typeof(global::Windows.UI.Xaml.Automation.AnnotationType), 
+			nameof(Type), typeof(global::Windows.UI.Xaml.Automation.AnnotationType), 
 			typeof(global::Windows.UI.Xaml.Automation.AutomationAnnotation), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Automation.AnnotationType)));
-#endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public AutomationAnnotation() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.AutomationAnnotation", "AutomationAnnotation.AutomationAnnotation(AnnotationType type)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public AutomationAnnotation( global::Windows.UI.Xaml.Automation.AnnotationType type) : base()
 		{

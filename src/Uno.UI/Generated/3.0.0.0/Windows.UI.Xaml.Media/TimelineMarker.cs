@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Media
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TextProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Text", typeof(string), 
+			nameof(Text), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Media.TimelineMarker), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Media
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TimeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Time", typeof(global::System.TimeSpan), 
+			nameof(Time), typeof(global::System.TimeSpan), 
 			typeof(global::Windows.UI.Xaml.Media.TimelineMarker), 
 			new FrameworkPropertyMetadata(default(global::System.TimeSpan)));
 		#endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Media
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TypeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Type", typeof(string), 
+			nameof(Type), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Media.TimelineMarker), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif

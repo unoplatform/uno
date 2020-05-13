@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Printing
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DocumentSourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"DocumentSource", typeof(global::Windows.Graphics.Printing.IPrintDocumentSource), 
+			nameof(DocumentSource), typeof(global::Windows.Graphics.Printing.IPrintDocumentSource), 
 			typeof(global::Windows.UI.Xaml.Printing.PrintDocument), 
 			new FrameworkPropertyMetadata(default(global::Windows.Graphics.Printing.IPrintDocumentSource)));
 		#endif

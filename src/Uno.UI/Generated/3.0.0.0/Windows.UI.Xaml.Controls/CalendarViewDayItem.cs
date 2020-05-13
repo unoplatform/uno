@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CalendarViewDayItem : global::Windows.UI.Xaml.Controls.Control
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Date", typeof(global::System.DateTimeOffset), 
+			nameof(Date), typeof(global::System.DateTimeOffset), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarViewDayItem), 
 			new FrameworkPropertyMetadata(default(global::System.DateTimeOffset)));
 		#endif
@@ -43,11 +43,11 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsBlackoutProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsBlackout", typeof(bool), 
+			nameof(IsBlackout), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.CalendarViewDayItem), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public CalendarViewDayItem() : base()
 		{

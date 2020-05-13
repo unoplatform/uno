@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RatingControl : global::Windows.UI.Xaml.Controls.Control
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CaptionProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Caption", typeof(string), 
+			nameof(Caption), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingControl), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty InitialSetValueProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"InitialSetValue", typeof(int), 
+			nameof(InitialSetValue), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingControl), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsClearEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsClearEnabled", typeof(bool), 
+			nameof(IsClearEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingControl), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsReadOnlyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsReadOnly", typeof(bool), 
+			nameof(IsReadOnly), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingControl), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -155,7 +155,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ItemInfoProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ItemInfo", typeof(global::Windows.UI.Xaml.Controls.RatingItemInfo), 
+			nameof(ItemInfo), typeof(global::Windows.UI.Xaml.Controls.RatingItemInfo), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingControl), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.RatingItemInfo)));
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MaxRatingProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MaxRating", typeof(int), 
+			nameof(MaxRating), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingControl), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -171,7 +171,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderValueProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PlaceholderValue", typeof(double), 
+			nameof(PlaceholderValue), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingControl), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -179,11 +179,11 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ValueProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Value", typeof(double), 
+			nameof(Value), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingControl), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public RatingControl() : base()
 		{

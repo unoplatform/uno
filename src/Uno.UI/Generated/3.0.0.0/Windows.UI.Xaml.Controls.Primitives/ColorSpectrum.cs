@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ColorSpectrum : global::Windows.UI.Xaml.Controls.Control
@@ -151,7 +151,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ColorProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Color", typeof(global::Windows.UI.Color), 
+			nameof(Color), typeof(global::Windows.UI.Color), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Color)));
 		#endif
@@ -159,7 +159,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ComponentsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Components", typeof(global::Windows.UI.Xaml.Controls.ColorSpectrumComponents), 
+			nameof(Components), typeof(global::Windows.UI.Xaml.Controls.ColorSpectrumComponents), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ColorSpectrumComponents)));
 		#endif
@@ -167,7 +167,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HsvColorProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HsvColor", typeof(global::System.Numerics.Vector4), 
+			nameof(HsvColor), typeof(global::System.Numerics.Vector4), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
 			new FrameworkPropertyMetadata(default(global::System.Numerics.Vector4)));
 		#endif
@@ -175,7 +175,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MaxHueProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MaxHue", typeof(int), 
+			nameof(MaxHue), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -183,7 +183,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MaxSaturationProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MaxSaturation", typeof(int), 
+			nameof(MaxSaturation), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -191,7 +191,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MaxValueProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MaxValue", typeof(int), 
+			nameof(MaxValue), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -199,7 +199,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MinHueProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MinHue", typeof(int), 
+			nameof(MinHue), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -207,7 +207,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MinSaturationProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MinSaturation", typeof(int), 
+			nameof(MinSaturation), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -215,7 +215,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MinValueProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MinValue", typeof(int), 
+			nameof(MinValue), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -223,11 +223,11 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ShapeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Shape", typeof(global::Windows.UI.Xaml.Controls.ColorSpectrumShape), 
+			nameof(Shape), typeof(global::Windows.UI.Xaml.Controls.ColorSpectrumShape), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.ColorSpectrum), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ColorSpectrumShape)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public ColorSpectrum() : base()
 		{

@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class InkToolbarFlyoutItem : global::Windows.UI.Xaml.Controls.Primitives.ButtonBase
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsCheckedProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsChecked", typeof(bool), 
+			nameof(IsChecked), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbarFlyoutItem), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -47,11 +47,11 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KindProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Kind", typeof(global::Windows.UI.Xaml.Controls.InkToolbarFlyoutItemKind), 
+			nameof(Kind), typeof(global::Windows.UI.Xaml.Controls.InkToolbarFlyoutItemKind), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbarFlyoutItem), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.InkToolbarFlyoutItemKind)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public InkToolbarFlyoutItem() : base()
 		{

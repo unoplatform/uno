@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ContentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Content", typeof(object), 
+			nameof(Content), typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewNode), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
@@ -101,7 +101,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DepthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Depth", typeof(int), 
+			nameof(Depth), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewNode), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HasChildrenProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HasChildren", typeof(bool), 
+			nameof(HasChildren), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewNode), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -117,7 +117,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsExpandedProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsExpanded", typeof(bool), 
+			nameof(IsExpanded), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewNode), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif

@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class InkToolbarPenButton : global::Windows.UI.Xaml.Controls.InkToolbarToolButton
@@ -91,7 +91,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MaxStrokeWidthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MaxStrokeWidth", typeof(double), 
+			nameof(MaxStrokeWidth), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbarPenButton), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -99,7 +99,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MinStrokeWidthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MinStrokeWidth", typeof(double), 
+			nameof(MinStrokeWidth), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbarPenButton), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -107,7 +107,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PaletteProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Palette", typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.Brush>), 
+			nameof(Palette), typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.Brush>), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbarPenButton), 
 			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.Brush>)));
 		#endif
@@ -115,7 +115,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectedBrushIndexProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectedBrushIndex", typeof(int), 
+			nameof(SelectedBrushIndex), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbarPenButton), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectedBrushProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectedBrush", typeof(global::Windows.UI.Xaml.Media.Brush), 
+			nameof(SelectedBrush), typeof(global::Windows.UI.Xaml.Media.Brush), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbarPenButton), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectedStrokeWidthProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectedStrokeWidth", typeof(double), 
+			nameof(SelectedStrokeWidth), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbarPenButton), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif

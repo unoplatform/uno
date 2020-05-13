@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Mode", typeof(global::Windows.UI.Xaml.Controls.SwipeMode), 
+			nameof(Mode), typeof(global::Windows.UI.Xaml.Controls.SwipeMode), 
 			typeof(global::Windows.UI.Xaml.Controls.SwipeItems), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SwipeMode)));
 		#endif

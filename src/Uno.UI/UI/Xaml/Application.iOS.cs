@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml
 		{
 			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(10));
 
-			Suspending?.Invoke(this, new ApplicationModel.SuspendingEventArgs(operation));
+			Suspending?.Invoke(this, new SuspendingEventArgs(operation));
 
 			_suspended = true;
 		}

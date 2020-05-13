@@ -334,6 +334,20 @@ namespace Windows.UI.Composition.Interactions
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTracker.IsInertiaFromImpulse.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static void SetBindingMode( global::Windows.UI.Composition.Interactions.InteractionTracker boundTracker1,  global::Windows.UI.Composition.Interactions.InteractionTracker boundTracker2,  global::Windows.UI.Composition.Interactions.InteractionBindingAxisModes axisMode)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.Interactions.InteractionTracker", "void InteractionTracker.SetBindingMode(InteractionTracker boundTracker1, InteractionTracker boundTracker2, InteractionBindingAxisModes axisMode)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Composition.Interactions.InteractionBindingAxisModes GetBindingMode( global::Windows.UI.Composition.Interactions.InteractionTracker boundTracker1,  global::Windows.UI.Composition.Interactions.InteractionTracker boundTracker2)
+		{
+			throw new global::System.NotImplementedException("The member InteractionBindingAxisModes InteractionTracker.GetBindingMode(InteractionTracker boundTracker1, InteractionTracker boundTracker2) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Composition.Interactions.InteractionTracker Create( global::Windows.UI.Composition.Compositor compositor)
 		{
 			throw new global::System.NotImplementedException("The member InteractionTracker InteractionTracker.Create(Compositor compositor) is not implemented in Uno.");

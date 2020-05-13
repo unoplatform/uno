@@ -113,13 +113,13 @@ namespace Uno.UI.Tests.BinderTests
 			Assert.AreEqual("42", source.UnknownProperty);
 		}
 
-		public class MyDynamicObject : DynamicObject, INotifyPropertyChanged
+		public class MyDynamicObject : DynamicObject, System.ComponentModel.INotifyPropertyChanged
 		{
 			Dictionary<string, object> dictionary = new Dictionary<string, object>();
 
 			public int Count => dictionary.Count;
 
-			public event PropertyChangedEventHandler PropertyChanged;
+			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 			public override bool TryGetMember(GetMemberBinder binder, out object result)
 				=> dictionary.TryGetValue(binder.Name, out result);
@@ -127,7 +127,7 @@ namespace Uno.UI.Tests.BinderTests
 			public override bool TrySetMember(SetMemberBinder binder, object value)
 			{
 				dictionary[binder.Name] = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(binder.Name));
+				PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(binder.Name));
 				return true;
 			}
 		}

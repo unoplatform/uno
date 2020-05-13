@@ -64,6 +64,13 @@ namespace Windows.UI.ViewManagement.Core
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static global::Windows.UI.ViewManagement.Core.CoreInputView GetForUIContext( global::Windows.UI.UIContext context)
+		{
+			throw new global::System.NotImplementedException("The member CoreInputView CoreInputView.GetForUIContext(UIContext context) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static global::Windows.UI.ViewManagement.Core.CoreInputView GetForCurrentView()
 		{
 			throw new global::System.NotImplementedException("The member CoreInputView CoreInputView.GetForCurrentView() is not implemented in Uno.");

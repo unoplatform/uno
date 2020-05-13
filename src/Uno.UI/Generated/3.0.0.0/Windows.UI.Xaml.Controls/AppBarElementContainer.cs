@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AppBarElementContainer : global::Windows.UI.Xaml.Controls.ContentControl,global::Windows.UI.Xaml.Controls.ICommandBarElement,global::Windows.UI.Xaml.Controls.ICommandBarElement2
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DynamicOverflowOrderProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"DynamicOverflowOrder", typeof(int), 
+			nameof(DynamicOverflowOrder), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.AppBarElementContainer), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsCompactProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsCompact", typeof(bool), 
+			nameof(IsCompact), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.AppBarElementContainer), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -65,11 +65,11 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsInOverflowProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsInOverflow", typeof(bool), 
+			nameof(IsInOverflow), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.AppBarElementContainer), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public AppBarElementContainer() : base()
 		{

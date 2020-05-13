@@ -7,6 +7,14 @@ namespace Windows.UI.Xaml.Data
 	#endif
 	public  partial class CollectionViewSource : global::Windows.UI.Xaml.DependencyObject
 	{
+		// Skipping already declared property Source
+		// Skipping already declared property ItemsPath
+		// Skipping already declared property IsSourceGrouped
+		// Skipping already declared property View
+		// Skipping already declared property IsSourceGroupedProperty
+		// Skipping already declared property ItemsPathProperty
+		// Skipping already declared property SourceProperty
+		// Skipping already declared property ViewProperty
 		// Skipping already declared method Windows.UI.Xaml.Data.CollectionViewSource.CollectionViewSource()
 		// Forced skipping of method Windows.UI.Xaml.Data.CollectionViewSource.CollectionViewSource()
 		// Forced skipping of method Windows.UI.Xaml.Data.CollectionViewSource.Source.get

@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PrimaryTextProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PrimaryText", typeof(string), 
+			nameof(PrimaryText), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyoutItem), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SecondaryTextProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SecondaryText", typeof(string), 
+			nameof(SecondaryText), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyoutItem), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif

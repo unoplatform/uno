@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DisabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Disabled", typeof(global::Windows.UI.Xaml.Media.Brush), 
+			nameof(Disabled), typeof(global::Windows.UI.Xaml.Media.Brush), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls.Primitives
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty EnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Enabled", typeof(global::Windows.UI.Xaml.Media.Brush), 
+			nameof(Enabled), typeof(global::Windows.UI.Xaml.Media.Brush), 
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif

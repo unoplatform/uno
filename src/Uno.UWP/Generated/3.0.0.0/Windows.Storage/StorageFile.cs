@@ -47,16 +47,7 @@ namespace Windows.Storage
 			}
 		}
 		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::System.DateTimeOffset DateCreated
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset StorageFile.DateCreated is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property DateCreated
 		// Skipping already declared property Name
 		// Skipping already declared property Path
 		// Skipping already declared property DisplayName
@@ -180,13 +171,7 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncAction StorageFile.RenameAsync(string desiredName, NameCollisionOption option) is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.Foundation.IAsyncAction DeleteAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncAction StorageFile.DeleteAsync() is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.Storage.StorageFile.DeleteAsync()
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction DeleteAsync( global::Windows.Storage.StorageDeleteOption option)
@@ -194,13 +179,7 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncAction StorageFile.DeleteAsync(StorageDeleteOption option) is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.FileProperties.BasicProperties> GetBasicPropertiesAsync()
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<BasicProperties> StorageFile.GetBasicPropertiesAsync() is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.Storage.StorageFile.GetBasicPropertiesAsync()
 		// Forced skipping of method Windows.Storage.StorageFile.Name.get
 		// Forced skipping of method Windows.Storage.StorageFile.Path.get
 		// Forced skipping of method Windows.Storage.StorageFile.Attributes.get

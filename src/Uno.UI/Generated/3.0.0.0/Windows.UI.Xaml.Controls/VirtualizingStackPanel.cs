@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class VirtualizingStackPanel : global::Windows.UI.Xaml.Controls.Primitives.OrientedVirtualizingPanel
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AreScrollSnapPointsRegularProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AreScrollSnapPointsRegular", typeof(bool), 
+			nameof(AreScrollSnapPointsRegular), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.VirtualizingStackPanel), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -55,7 +55,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty OrientationProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Orientation", typeof(global::Windows.UI.Xaml.Controls.Orientation), 
+			nameof(Orientation), typeof(global::Windows.UI.Xaml.Controls.Orientation), 
 			typeof(global::Windows.UI.Xaml.Controls.VirtualizingStackPanel), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Orientation)));
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.VirtualizingStackPanel), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.VirtualizationMode)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public VirtualizingStackPanel() 
 		{

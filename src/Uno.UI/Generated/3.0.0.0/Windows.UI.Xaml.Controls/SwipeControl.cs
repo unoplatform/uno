@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SwipeControl : global::Windows.UI.Xaml.Controls.ContentControl
@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty BottomItemsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"BottomItems", typeof(global::Windows.UI.Xaml.Controls.SwipeItems), 
+			nameof(BottomItems), typeof(global::Windows.UI.Xaml.Controls.SwipeItems), 
 			typeof(global::Windows.UI.Xaml.Controls.SwipeControl), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SwipeItems)));
 		#endif
@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LeftItemsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"LeftItems", typeof(global::Windows.UI.Xaml.Controls.SwipeItems), 
+			nameof(LeftItems), typeof(global::Windows.UI.Xaml.Controls.SwipeItems), 
 			typeof(global::Windows.UI.Xaml.Controls.SwipeControl), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SwipeItems)));
 		#endif
@@ -83,7 +83,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RightItemsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"RightItems", typeof(global::Windows.UI.Xaml.Controls.SwipeItems), 
+			nameof(RightItems), typeof(global::Windows.UI.Xaml.Controls.SwipeItems), 
 			typeof(global::Windows.UI.Xaml.Controls.SwipeControl), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SwipeItems)));
 		#endif
@@ -91,11 +91,11 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TopItemsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TopItems", typeof(global::Windows.UI.Xaml.Controls.SwipeItems), 
+			nameof(TopItems), typeof(global::Windows.UI.Xaml.Controls.SwipeItems), 
 			typeof(global::Windows.UI.Xaml.Controls.SwipeControl), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SwipeItems)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public SwipeControl() : base()
 		{

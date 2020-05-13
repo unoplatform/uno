@@ -20,6 +20,9 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		Aborted,
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		StartedWithoutAllAdvertisementData,
+		#endif
 	}
 	#endif
 }

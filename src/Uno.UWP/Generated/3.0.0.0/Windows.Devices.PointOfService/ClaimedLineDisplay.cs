@@ -146,13 +146,6 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.ReleaseDeviceRequested.remove
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedLineDisplay", "void ClaimedLineDisplay.Dispose()");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<string> GetStatisticsAsync( global::System.Collections.Generic.IEnumerable<string> statisticsCategories)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> ClaimedLineDisplay.GetStatisticsAsync(IEnumerable<string> statisticsCategories) is not implemented in Uno.");
@@ -236,6 +229,13 @@ namespace Windows.Devices.PointOfService
 		#endif
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.Closed.add
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedLineDisplay.Closed.remove
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedLineDisplay", "void ClaimedLineDisplay.Dispose()");
+		}
+		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.ClaimedLineDisplay> FromIdAsync( string deviceId)

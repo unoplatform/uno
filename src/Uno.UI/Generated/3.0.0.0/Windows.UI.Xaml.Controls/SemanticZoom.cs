@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SemanticZoom : global::Windows.UI.Xaml.Controls.Control
@@ -81,7 +81,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CanChangeViewsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CanChangeViews", typeof(bool), 
+			nameof(CanChangeViews), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.SemanticZoom), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -89,7 +89,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsZoomOutButtonEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsZoomOutButtonEnabled", typeof(bool), 
+			nameof(IsZoomOutButtonEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.SemanticZoom), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -97,7 +97,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsZoomedInViewActiveProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsZoomedInViewActive", typeof(bool), 
+			nameof(IsZoomedInViewActive), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.SemanticZoom), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ZoomedInViewProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ZoomedInView", typeof(global::Windows.UI.Xaml.Controls.ISemanticZoomInformation), 
+			nameof(ZoomedInView), typeof(global::Windows.UI.Xaml.Controls.ISemanticZoomInformation), 
 			typeof(global::Windows.UI.Xaml.Controls.SemanticZoom), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ISemanticZoomInformation)));
 		#endif
@@ -113,11 +113,11 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ZoomedOutViewProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ZoomedOutView", typeof(global::Windows.UI.Xaml.Controls.ISemanticZoomInformation), 
+			nameof(ZoomedOutView), typeof(global::Windows.UI.Xaml.Controls.ISemanticZoomInformation), 
 			typeof(global::Windows.UI.Xaml.Controls.SemanticZoom), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.ISemanticZoomInformation)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public SemanticZoom() : base()
 		{

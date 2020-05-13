@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MapTabIndexProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MapTabIndex", typeof(int), 
+			nameof(MapTabIndex), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapLayer), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty VisibleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Visible", typeof(bool), 
+			nameof(Visible), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapLayer), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ZIndexProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ZIndex", typeof(int), 
+			nameof(ZIndex), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapLayer), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif

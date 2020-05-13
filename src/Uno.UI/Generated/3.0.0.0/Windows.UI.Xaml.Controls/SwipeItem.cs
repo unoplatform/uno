@@ -109,7 +109,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty BackgroundProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Background", typeof(global::Windows.UI.Xaml.Media.Brush), 
+			nameof(Background), typeof(global::Windows.UI.Xaml.Media.Brush), 
 			typeof(global::Windows.UI.Xaml.Controls.SwipeItem), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
@@ -117,7 +117,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty BehaviorOnInvokedProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"BehaviorOnInvoked", typeof(global::Windows.UI.Xaml.Controls.SwipeBehaviorOnInvoked), 
+			nameof(BehaviorOnInvoked), typeof(global::Windows.UI.Xaml.Controls.SwipeBehaviorOnInvoked), 
 			typeof(global::Windows.UI.Xaml.Controls.SwipeItem), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SwipeBehaviorOnInvoked)));
 		#endif
@@ -125,7 +125,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CommandParameterProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CommandParameter", typeof(object), 
+			nameof(CommandParameter), typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.SwipeItem), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
@@ -133,7 +133,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CommandProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Command", typeof(global::System.Windows.Input.ICommand), 
+			nameof(Command), typeof(global::System.Windows.Input.ICommand), 
 			typeof(global::Windows.UI.Xaml.Controls.SwipeItem), 
 			new FrameworkPropertyMetadata(default(global::System.Windows.Input.ICommand)));
 		#endif
@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ForegroundProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Foreground", typeof(global::Windows.UI.Xaml.Media.Brush), 
+			nameof(Foreground), typeof(global::Windows.UI.Xaml.Media.Brush), 
 			typeof(global::Windows.UI.Xaml.Controls.SwipeItem), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
@@ -149,7 +149,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IconSourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IconSource", typeof(global::Windows.UI.Xaml.Controls.IconSource), 
+			nameof(IconSource), typeof(global::Windows.UI.Xaml.Controls.IconSource), 
 			typeof(global::Windows.UI.Xaml.Controls.SwipeItem), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.IconSource)));
 		#endif
@@ -157,7 +157,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TextProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Text", typeof(string), 
+			nameof(Text), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.SwipeItem), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif

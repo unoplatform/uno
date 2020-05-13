@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SettingsFlyout : global::Windows.UI.Xaml.Controls.ContentControl
@@ -77,7 +77,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderBackgroundProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HeaderBackground", typeof(global::Windows.UI.Xaml.Media.Brush), 
+			nameof(HeaderBackground), typeof(global::Windows.UI.Xaml.Media.Brush), 
 			typeof(global::Windows.UI.Xaml.Controls.SettingsFlyout), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
@@ -85,7 +85,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderForegroundProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HeaderForeground", typeof(global::Windows.UI.Xaml.Media.Brush), 
+			nameof(HeaderForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
 			typeof(global::Windows.UI.Xaml.Controls.SettingsFlyout), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
@@ -93,7 +93,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IconSourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IconSource", typeof(global::Windows.UI.Xaml.Media.ImageSource), 
+			nameof(IconSource), typeof(global::Windows.UI.Xaml.Media.ImageSource), 
 			typeof(global::Windows.UI.Xaml.Controls.SettingsFlyout), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
 		#endif
@@ -101,11 +101,11 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TitleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Title", typeof(string), 
+			nameof(Title), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.SettingsFlyout), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public SettingsFlyout() : base()
 		{

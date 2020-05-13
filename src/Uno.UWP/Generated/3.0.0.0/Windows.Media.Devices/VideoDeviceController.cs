@@ -43,6 +43,16 @@ namespace Windows.Media.Devices
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.Media.Devices.LowLagPhotoControl LowLagPhoto
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member LowLagPhotoControl VideoDeviceController.LowLagPhoto is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Devices.WhiteBalanceControl WhiteBalanceControl
 		{
 			get
@@ -103,16 +113,6 @@ namespace Windows.Media.Devices
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.Media.Devices.LowLagPhotoControl LowLagPhoto
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member LowLagPhotoControl VideoDeviceController.LowLagPhoto is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Devices.ExposureCompensationControl ExposureCompensationControl
 		{
 			get
@@ -133,21 +133,21 @@ namespace Windows.Media.Devices
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.Media.Devices.ZoomControl ZoomControl
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ZoomControl VideoDeviceController.ZoomControl is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Devices.Core.VariablePhotoSequenceController VariablePhotoSequenceController
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member VariablePhotoSequenceController VideoDeviceController.VariablePhotoSequenceController is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Media.Devices.ZoomControl ZoomControl
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ZoomControl VideoDeviceController.ZoomControl is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -237,6 +237,16 @@ namespace Windows.Media.Devices
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.Media.Devices.InfraredTorchControl InfraredTorchControl
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member InfraredTorchControl VideoDeviceController.InfraredTorchControl is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Devices.MediaDeviceControl Pan
 		{
 			get
@@ -252,16 +262,6 @@ namespace Windows.Media.Devices
 			get
 			{
 				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Hue is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Media.Devices.MediaDeviceControl Focus
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Focus is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -317,16 +317,6 @@ namespace Windows.Media.Devices
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.Media.Devices.MediaDeviceControl Exposure
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Exposure is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Devices.MediaDeviceControl Tilt
 		{
 			get
@@ -337,11 +327,31 @@ namespace Windows.Media.Devices
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.Media.Devices.MediaDeviceControl Exposure
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Exposure is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  global::Windows.Media.Devices.MediaDeviceControl Roll
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Roll is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Media.Devices.MediaDeviceControl Focus
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MediaDeviceControl VideoDeviceController.Focus is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -457,6 +467,7 @@ namespace Windows.Media.Devices
 		}
 		#endif
 		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.VideoTemporalDenoisingControl.get
+		// Forced skipping of method Windows.Media.Devices.VideoDeviceController.InfraredTorchControl.get
 		// Processing: Windows.Media.Devices.IMediaDeviceController
 	}
 }

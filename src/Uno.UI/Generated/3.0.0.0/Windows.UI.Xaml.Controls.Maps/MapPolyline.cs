@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PathProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Path", typeof(global::Windows.Devices.Geolocation.Geopath), 
+			nameof(Path), typeof(global::Windows.Devices.Geolocation.Geopath), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapPolyline), 
 			new FrameworkPropertyMetadata(default(global::Windows.Devices.Geolocation.Geopath)));
 		#endif
@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StrokeDashedProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"StrokeDashed", typeof(bool), 
+			nameof(StrokeDashed), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapPolyline), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif

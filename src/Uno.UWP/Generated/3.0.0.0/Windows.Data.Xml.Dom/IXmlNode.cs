@@ -2,97 +2,25 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Data.Xml.Dom
 {
-	#if false
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial interface IXmlNode : global::Windows.Data.Xml.Dom.IXmlNodeSelector,global::Windows.Data.Xml.Dom.IXmlNodeSerializer
 	{
-		#if false
-		global::Windows.Data.Xml.Dom.XmlNamedNodeMap Attributes
-		{
-			get;
-		}
-		#endif
-		#if false
-		global::Windows.Data.Xml.Dom.XmlNodeList ChildNodes
-		{
-			get;
-		}
-		#endif
-		#if false
-		global::Windows.Data.Xml.Dom.IXmlNode FirstChild
-		{
-			get;
-		}
-		#endif
-		#if false
-		global::Windows.Data.Xml.Dom.IXmlNode LastChild
-		{
-			get;
-		}
-		#endif
-		#if false
-		object LocalName
-		{
-			get;
-		}
-		#endif
-		#if false
-		object NamespaceUri
-		{
-			get;
-		}
-		#endif
-		#if false
-		global::Windows.Data.Xml.Dom.IXmlNode NextSibling
-		{
-			get;
-		}
-		#endif
-		#if false
-		string NodeName
-		{
-			get;
-		}
-		#endif
-		#if false
-		global::Windows.Data.Xml.Dom.NodeType NodeType
-		{
-			get;
-		}
-		#endif
-		#if false
-		object NodeValue
-		{
-			get;
-			set;
-		}
-		#endif
-		#if false
-		global::Windows.Data.Xml.Dom.XmlDocument OwnerDocument
-		{
-			get;
-		}
-		#endif
-		#if false
-		global::Windows.Data.Xml.Dom.IXmlNode ParentNode
-		{
-			get;
-		}
-		#endif
-		#if false
-		object Prefix
-		{
-			get;
-			set;
-		}
-		#endif
-		#if false
-		global::Windows.Data.Xml.Dom.IXmlNode PreviousSibling
-		{
-			get;
-		}
-		#endif
+		// Skipping already declared property Attributes
+		// Skipping already declared property ChildNodes
+		// Skipping already declared property FirstChild
+		// Skipping already declared property LastChild
+		// Skipping already declared property LocalName
+		// Skipping already declared property NamespaceUri
+		// Skipping already declared property NextSibling
+		// Skipping already declared property NodeName
+		// Skipping already declared property NodeType
+		// Skipping already declared property NodeValue
+		// Skipping already declared property OwnerDocument
+		// Skipping already declared property ParentNode
+		// Skipping already declared property Prefix
+		// Skipping already declared property PreviousSibling
 		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.NodeValue.get
 		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.NodeValue.set
 		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.NodeType.get
@@ -104,31 +32,17 @@ namespace Windows.Data.Xml.Dom
 		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.PreviousSibling.get
 		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.NextSibling.get
 		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.Attributes.get
-		#if false
-		bool HasChildNodes();
-		#endif
+		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNode.HasChildNodes()
 		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.OwnerDocument.get
-		#if false
-		global::Windows.Data.Xml.Dom.IXmlNode InsertBefore( global::Windows.Data.Xml.Dom.IXmlNode newChild,  global::Windows.Data.Xml.Dom.IXmlNode referenceChild);
-		#endif
-		#if false
-		global::Windows.Data.Xml.Dom.IXmlNode ReplaceChild( global::Windows.Data.Xml.Dom.IXmlNode newChild,  global::Windows.Data.Xml.Dom.IXmlNode referenceChild);
-		#endif
-		#if false
-		global::Windows.Data.Xml.Dom.IXmlNode RemoveChild( global::Windows.Data.Xml.Dom.IXmlNode childNode);
-		#endif
-		#if false
-		global::Windows.Data.Xml.Dom.IXmlNode AppendChild( global::Windows.Data.Xml.Dom.IXmlNode newChild);
-		#endif
-		#if false
-		global::Windows.Data.Xml.Dom.IXmlNode CloneNode( bool deep);
-		#endif
+		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNode.InsertBefore(Windows.Data.Xml.Dom.IXmlNode, Windows.Data.Xml.Dom.IXmlNode)
+		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNode.ReplaceChild(Windows.Data.Xml.Dom.IXmlNode, Windows.Data.Xml.Dom.IXmlNode)
+		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNode.RemoveChild(Windows.Data.Xml.Dom.IXmlNode)
+		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNode.AppendChild(Windows.Data.Xml.Dom.IXmlNode)
+		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNode.CloneNode(bool)
 		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.NamespaceUri.get
 		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.LocalName.get
 		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.Prefix.get
-		#if false
-		void Normalize();
-		#endif
+		// Skipping already declared method Windows.Data.Xml.Dom.IXmlNode.Normalize()
 		// Forced skipping of method Windows.Data.Xml.Dom.IXmlNode.Prefix.set
 	}
 }

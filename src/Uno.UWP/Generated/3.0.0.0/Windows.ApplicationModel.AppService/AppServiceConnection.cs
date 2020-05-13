@@ -81,13 +81,6 @@ namespace Windows.ApplicationModel.AppService
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceConnection.ServiceClosed.remove
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppService.AppServiceConnection", "void AppServiceConnection.Dispose()");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.AppService.AppServiceConnectionStatus> OpenRemoteAsync( global::Windows.System.RemoteSystems.RemoteSystemConnectionRequest remoteSystemConnectionRequest)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<AppServiceConnectionStatus> AppServiceConnection.OpenRemoteAsync(RemoteSystemConnectionRequest remoteSystemConnectionRequest) is not implemented in Uno.");
@@ -95,6 +88,20 @@ namespace Windows.ApplicationModel.AppService
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceConnection.User.get
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceConnection.User.set
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.AppService.AppServiceConnection", "void AppServiceConnection.Dispose()");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.ApplicationModel.AppService.StatelessAppServiceResponse> SendStatelessMessageAsync( global::Windows.ApplicationModel.AppService.AppServiceConnection connection,  global::Windows.System.RemoteSystems.RemoteSystemConnectionRequest connectionRequest,  global::Windows.Foundation.Collections.ValueSet message)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StatelessAppServiceResponse> AppServiceConnection.SendStatelessMessageAsync(AppServiceConnection connection, RemoteSystemConnectionRequest connectionRequest, ValueSet message) is not implemented in Uno.");
+		}
+		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.AppService.AppServiceConnection, global::Windows.ApplicationModel.AppService.AppServiceRequestReceivedEventArgs> RequestReceived

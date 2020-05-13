@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class TreeView : global::Windows.UI.Xaml.Controls.Control
@@ -157,7 +157,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectionModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectionMode", typeof(global::Windows.UI.Xaml.Controls.TreeViewSelectionMode), 
+			nameof(SelectionMode), typeof(global::Windows.UI.Xaml.Controls.TreeViewSelectionMode), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeView), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.TreeViewSelectionMode)));
 		#endif
@@ -165,7 +165,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CanDragItemsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CanDragItems", typeof(bool), 
+			nameof(CanDragItems), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeView), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -173,7 +173,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CanReorderItemsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CanReorderItems", typeof(bool), 
+			nameof(CanReorderItems), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeView), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -181,7 +181,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ItemContainerStyleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ItemContainerStyle", typeof(global::Windows.UI.Xaml.Style), 
+			nameof(ItemContainerStyle), typeof(global::Windows.UI.Xaml.Style), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeView), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Style)));
 		#endif
@@ -189,7 +189,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ItemContainerStyleSelectorProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ItemContainerStyleSelector", typeof(global::Windows.UI.Xaml.Controls.StyleSelector), 
+			nameof(ItemContainerStyleSelector), typeof(global::Windows.UI.Xaml.Controls.StyleSelector), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeView), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.StyleSelector)));
 		#endif
@@ -197,7 +197,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ItemContainerTransitionsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ItemContainerTransitions", typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
+			nameof(ItemContainerTransitions), typeof(global::Windows.UI.Xaml.Media.Animation.TransitionCollection), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeView), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.TransitionCollection)));
 		#endif
@@ -205,7 +205,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ItemTemplateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ItemTemplate", typeof(global::Windows.UI.Xaml.DataTemplate), 
+			nameof(ItemTemplate), typeof(global::Windows.UI.Xaml.DataTemplate), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeView), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 		#endif
@@ -213,7 +213,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ItemTemplateSelectorProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ItemTemplateSelector", typeof(global::Windows.UI.Xaml.Controls.DataTemplateSelector), 
+			nameof(ItemTemplateSelector), typeof(global::Windows.UI.Xaml.Controls.DataTemplateSelector), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeView), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.DataTemplateSelector)));
 		#endif
@@ -221,11 +221,11 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ItemsSourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ItemsSource", typeof(object), 
+			nameof(ItemsSource), typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeView), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public TreeView() : base()
 		{

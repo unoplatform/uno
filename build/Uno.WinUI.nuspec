@@ -214,10 +214,10 @@
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Bin\Release\*.dll" target="build\Uno.UI.Tasks" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Bin\Release\*.pdb" target="build\Uno.UI.Tasks" />
 
-	<file src="Uno.UI.targets" target="build\MonoAndroid" />
-	<file src="Uno.UI.targets" target="build\xamarinios10" />
-	<file src="Uno.UI.targets" target="build\xamarinmac20" />
-	<file src="Uno.UI.targets" target="build\netstandard2.0" />
+	<file src="Uno.WinUI.targets" target="build\MonoAndroid" />
+	<file src="Uno.WinUI.targets" target="build\xamarinios10" />
+	<file src="Uno.WinUI.targets" target="build\xamarinmac20" />
+	<file src="Uno.WinUI.targets" target="build\netstandard2.0" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="build\MonoAndroid" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="build\xamarinios10" />
 	<file src="..\src\SourceGenerators\Uno.UI.Tasks\Content\Uno.UI.Tasks.targets" target="build\xamarinmac20" />

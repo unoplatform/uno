@@ -105,6 +105,34 @@ namespace Windows.Networking.NetworkOperators
 		// Forced skipping of method Windows.Networking.NetworkOperators.ESim.ProfileChanged.remove
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.Networking.NetworkOperators.ESimDiscoverResult Discover()
+		{
+			throw new global::System.NotImplementedException("The member ESimDiscoverResult ESim.Discover() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Networking.NetworkOperators.ESimDiscoverResult Discover( string serverAddress,  string matchingId)
+		{
+			throw new global::System.NotImplementedException("The member ESimDiscoverResult ESim.Discover(string serverAddress, string matchingId) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ESimDiscoverResult> DiscoverAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimDiscoverResult> ESim.DiscoverAsync() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.NetworkOperators.ESimDiscoverResult> DiscoverAsync( string serverAddress,  string matchingId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<ESimDiscoverResult> ESim.DiscoverAsync(string serverAddress, string matchingId) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Networking.NetworkOperators.ESim, object> ProfileChanged
 		{
 			[global::Uno.NotImplemented]

@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CollapsedGlyphVisibilityProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CollapsedGlyphVisibility", typeof(global::Windows.UI.Xaml.Visibility), 
+			nameof(CollapsedGlyphVisibility), typeof(global::Windows.UI.Xaml.Visibility), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Visibility)));
 		#endif
@@ -59,7 +59,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DragItemsCountProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"DragItemsCount", typeof(int), 
+			nameof(DragItemsCount), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -67,7 +67,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ExpandedGlyphVisibilityProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ExpandedGlyphVisibility", typeof(global::Windows.UI.Xaml.Visibility), 
+			nameof(ExpandedGlyphVisibility), typeof(global::Windows.UI.Xaml.Visibility), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Visibility)));
 		#endif
@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IndentationProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Indentation", typeof(global::Windows.UI.Xaml.Thickness), 
+			nameof(Indentation), typeof(global::Windows.UI.Xaml.Thickness), 
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 		#endif

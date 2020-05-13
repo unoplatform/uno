@@ -18,28 +18,28 @@
 
       <!-- Android 9.0 -->
       <group targetFramework="MonoAndroid90">
-        <dependency id="Uno.UI" version="2.2.0" />
+        <dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
         <dependency id="Newtonsoft.Json" version="12.0.2" />
       </group>
 
       <!-- iOS -->
       <group targetFramework="xamarinios10">
-        <dependency id="Uno.UI" version="2.2.0" />
+        <dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
         <dependency id="Newtonsoft.Json" version="12.0.2" />
       </group>
 
       <!-- macOS -->
       <group targetFramework="xamarinmac20">
-        <dependency id="Uno.UI" version="2.2.0" />
+        <dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
         <dependency id="Newtonsoft.Json" version="12.0.2" />
       </group>
 
       <!-- .NET Standard 2.0 -->
       <group targetFramework="netstandard2.0">
-        <dependency id="Uno.UI" version="2.2.0" />
+        <dependency id="Uno.WinUI" version="1.29.0-dev.93" />
 
         <dependency id="Newtonsoft.Json" version="12.0.2" />
         <dependency id="Uno.Wasm.WebSockets" version="1.0.0-dev.30" />

@@ -217,7 +217,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AllowOverstretchProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AllowOverstretch", typeof(bool), 
+			nameof(AllowOverstretch), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -225,7 +225,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty BoundsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Bounds", typeof(global::Windows.Devices.Geolocation.GeoboundingBox), 
+			nameof(Bounds), typeof(global::Windows.Devices.Geolocation.GeoboundingBox), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(global::Windows.Devices.Geolocation.GeoboundingBox)));
 		#endif
@@ -233,7 +233,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DataSourceProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"DataSource", typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource), 
+			nameof(DataSource), typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource)));
 		#endif
@@ -241,7 +241,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsFadingEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsFadingEnabled", typeof(bool), 
+			nameof(IsFadingEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -249,7 +249,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsRetryEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsRetryEnabled", typeof(bool), 
+			nameof(IsRetryEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -257,7 +257,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsTransparencyEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsTransparencyEnabled", typeof(bool), 
+			nameof(IsTransparencyEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -265,7 +265,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LayerProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Layer", typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileLayer), 
+			nameof(Layer), typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileLayer), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Maps.MapTileLayer)));
 		#endif
@@ -273,7 +273,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TilePixelSizeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TilePixelSize", typeof(int), 
+			nameof(TilePixelSize), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -281,7 +281,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty VisibleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Visible", typeof(bool), 
+			nameof(Visible), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -289,7 +289,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ZIndexProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ZIndex", typeof(int), 
+			nameof(ZIndex), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -297,7 +297,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ZoomLevelRangeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ZoomLevelRange", typeof(global::Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange), 
+			nameof(ZoomLevelRange), typeof(global::Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Maps.MapZoomLevelRange)));
 		#endif
@@ -305,7 +305,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AnimationStateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AnimationState", typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileAnimationState), 
+			nameof(AnimationState), typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileAnimationState), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Maps.MapTileAnimationState)));
 		#endif
@@ -313,7 +313,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AutoPlayProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AutoPlay", typeof(bool), 
+			nameof(AutoPlay), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -321,7 +321,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FrameCountProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FrameCount", typeof(int), 
+			nameof(FrameCount), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -329,20 +329,13 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FrameDurationProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FrameDuration", typeof(global::System.TimeSpan), 
+			nameof(FrameDuration), typeof(global::System.TimeSpan), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(global::System.TimeSpan)));
-#endif
+		#endif
 		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapTileSource.MapTileSource()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.MapTileSource()
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public MapTileSource() : base()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapTileSource", "MapTileSource.MapTileSource(MapTileDataSource dataSource)");
-		}
-#endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public MapTileSource( global::Windows.UI.Xaml.Controls.Maps.MapTileDataSource dataSource) : base()
 		{

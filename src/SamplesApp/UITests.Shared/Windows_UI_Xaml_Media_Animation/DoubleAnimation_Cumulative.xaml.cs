@@ -23,7 +23,7 @@ namespace Uno.UI.Samples.Content.UITests.Animations
 			var animation = new DoubleAnimation
 			{
 				To = 50,
-				Duration = new Duration(TimeSpan.FromSeconds(10))
+				Duration = DurationHelper.FromTimeSpan(TimeSpan.FromSeconds(10))
 			};
 			Storyboard.SetTargetProperty(animation, nameof(TranslateTransform.Y));
 			Storyboard.SetTarget(animation, _transform);
@@ -39,7 +39,7 @@ namespace Uno.UI.Samples.Content.UITests.Animations
 			var animation = new DoubleAnimation
 			{
 				To = 0,
-				Duration = new Duration(TimeSpan.FromSeconds(10))
+				Duration = DurationHelper.FromTimeSpan(TimeSpan.FromSeconds(10))
 			};
 			Storyboard.SetTargetProperty(animation, nameof(TranslateTransform.Y));
 			Storyboard.SetTarget(animation, _transform);

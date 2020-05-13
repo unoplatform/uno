@@ -113,7 +113,7 @@ namespace Uno.UI.Tests.TextBoxTests
 			Assert.AreEqual(2, beforeTextChangingCount);
 		}
 
-		public class MySource : INotifyPropertyChanged
+		public class MySource : System.ComponentModel.INotifyPropertyChanged
 		{
 			private string _sourceText;
 
@@ -145,10 +145,10 @@ namespace Uno.UI.Tests.TextBoxTests
 				}
 			}
 
-			public event PropertyChangedEventHandler PropertyChanged;
+			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 			protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-				=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+				=> PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
 		}
 	}
 }

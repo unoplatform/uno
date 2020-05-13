@@ -1,9 +1,9 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
   <metadata>
-	<id>Uno.UI.Lottie</id>
+	<id>Uno.WinUI.Lottie</id>
 	<version>0.0.1</version>
-	<title>Uno.UI.Lottie</title>
+	<title>Uno.WinUI.Lottie</title>
 	<authors>nventive</authors>
 	<owners>nventive</owners>
 	<requireLicenseAcceptance>false</requireLicenseAcceptance>
@@ -11,7 +11,7 @@
 	<license type="expression">Apache-2.0</license>
 	<iconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</iconUrl>
 	<description>
-	  Support for Lottie on Uno.UI.
+	  Support for Lottie on Uno.WinUI.
 
 	  This is the Uno-compatible version of the package Microsoft.Toolkit.Uwp.UI.Lottie.
 
@@ -23,18 +23,18 @@
 	<dependencies>
 
 	  <group targetFramework="netstandard2.0">
-		<dependency id="Uno.UI" version="to-be-set-by-ci" />
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 	  </group>
 	  <group targetFramework="xamarinios10">
-		<dependency id="Uno.UI" version="to-be-set-by-ci" />
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" />
 	  </group>
 	  <group targetFramework="xamarinmac20">
-		<dependency id="Uno.UI" version="to-be-set-by-ci" />
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Com.Airbnb.iOS.Lottie" version="2.5.11" />
 	  </group>
 	  <group targetFramework="MonoAndroid90">
-		<dependency id="Uno.UI" version="to-be-set-by-ci" />
+		<dependency id="Uno.WinUI" version="to-be-set-by-ci" />
 		<dependency id="Com.Airbnb.Android.Lottie" version="3.0.4" />
 	  </group>
 

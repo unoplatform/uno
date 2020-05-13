@@ -38,6 +38,12 @@ namespace Windows.Networking.Connectivity
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		Ihv,
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		Wpa3,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		Wpa3Sae,
+		#endif
 	}
 	#endif
 }

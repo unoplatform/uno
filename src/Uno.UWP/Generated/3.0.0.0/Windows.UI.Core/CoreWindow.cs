@@ -7,34 +7,8 @@ namespace Windows.UI.Core
 	#endif
 	public  partial class CoreWindow : global::Windows.UI.Core.ICoreWindow,global::Windows.UI.Core.ICorePointerRedirector
 	{
-		#if false
-		[global::Uno.NotImplemented]
-		public  global::Windows.Foundation.Point PointerPosition
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Point CoreWindow.PointerPosition is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindow", "Point CoreWindow.PointerPosition");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Core.CoreCursor PointerCursor
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreCursor CoreWindow.PointerCursor is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindow", "CoreCursor CoreWindow.PointerCursor");
-			}
-		}
-		#endif
+		// Skipping already declared property PointerPosition
+		// Skipping already declared property PointerCursor
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsInputEnabled
@@ -124,6 +98,16 @@ namespace Windows.UI.Core
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.UIContext UIContext
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member UIContext CoreWindow.UIContext is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Core.CoreWindow.AutomationHostProvider.get
 		// Forced skipping of method Windows.UI.Core.CoreWindow.Bounds.get
 		// Forced skipping of method Windows.UI.Core.CoreWindow.CustomProperties.get
@@ -150,20 +134,8 @@ namespace Windows.UI.Core
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindow", "void CoreWindow.Close()");
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Core.CoreVirtualKeyStates GetAsyncKeyState( global::Windows.System.VirtualKey virtualKey)
-		{
-			throw new global::System.NotImplementedException("The member CoreVirtualKeyStates CoreWindow.GetAsyncKeyState(VirtualKey virtualKey) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Core.CoreVirtualKeyStates GetKeyState( global::Windows.System.VirtualKey virtualKey)
-		{
-			throw new global::System.NotImplementedException("The member CoreVirtualKeyStates CoreWindow.GetKeyState(VirtualKey virtualKey) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Core.CoreWindow.GetAsyncKeyState(Windows.System.VirtualKey)
+		// Skipping already declared method Windows.UI.Core.CoreWindow.GetKeyState(Windows.System.VirtualKey)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void ReleasePointerCapture()
@@ -234,13 +206,8 @@ namespace Windows.UI.Core
 		// Forced skipping of method Windows.UI.Core.CoreWindow.ResizeCompleted.remove
 		// Forced skipping of method Windows.UI.Core.CoreWindow.DispatcherQueue.get
 		// Forced skipping of method Windows.UI.Core.CoreWindow.ActivationMode.get
-		#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Core.CoreWindow GetForCurrentThread()
-		{
-			throw new global::System.NotImplementedException("The member CoreWindow CoreWindow.GetForCurrentThread() is not implemented in Uno.");
-		}
-		#endif
+		// Forced skipping of method Windows.UI.Core.CoreWindow.UIContext.get
+		// Skipping already declared method Windows.UI.Core.CoreWindow.GetForCurrentThread()
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Core.CoreWindow, global::Windows.UI.Core.WindowActivatedEventArgs> Activated

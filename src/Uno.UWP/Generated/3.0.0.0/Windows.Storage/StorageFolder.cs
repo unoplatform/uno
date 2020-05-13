@@ -79,13 +79,7 @@ namespace Windows.Storage
 			}
 		}
 		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateFileAsync( string desiredName)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> StorageFolder.CreateFileAsync(string desiredName) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.Storage.StorageFolder.CreateFileAsync(string)
 		// Skipping already declared method Windows.Storage.StorageFolder.CreateFileAsync(string, Windows.Storage.CreationCollisionOption)
 		// Skipping already declared method Windows.Storage.StorageFolder.CreateFolderAsync(string)
 		// Skipping already declared method Windows.Storage.StorageFolder.CreateFolderAsync(string, Windows.Storage.CreationCollisionOption)

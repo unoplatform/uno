@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SwapChainPanel : global::Windows.UI.Xaml.Controls.Grid
@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CompositionScaleXProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CompositionScaleX", typeof(float), 
+			nameof(CompositionScaleX), typeof(float), 
 			typeof(global::Windows.UI.Xaml.Controls.SwapChainPanel), 
 			new FrameworkPropertyMetadata(default(float)));
 		#endif
@@ -39,11 +39,11 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CompositionScaleYProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CompositionScaleY", typeof(float), 
+			nameof(CompositionScaleY), typeof(float), 
 			typeof(global::Windows.UI.Xaml.Controls.SwapChainPanel), 
 			new FrameworkPropertyMetadata(default(float)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public SwapChainPanel() : base()
 		{

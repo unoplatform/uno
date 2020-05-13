@@ -487,6 +487,41 @@ namespace Windows.UI.Composition
 			throw new global::System.NotImplementedException("The member BooleanKeyFrameAnimation Compositor.CreateBooleanKeyFrameAnimation() is not implemented in Uno.");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.CompositionProjectedShadowCaster CreateProjectedShadowCaster()
+		{
+			throw new global::System.NotImplementedException("The member CompositionProjectedShadowCaster Compositor.CreateProjectedShadowCaster() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.CompositionProjectedShadow CreateProjectedShadow()
+		{
+			throw new global::System.NotImplementedException("The member CompositionProjectedShadow Compositor.CreateProjectedShadow() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.CompositionProjectedShadowReceiver CreateProjectedShadowReceiver()
+		{
+			throw new global::System.NotImplementedException("The member CompositionProjectedShadowReceiver Compositor.CreateProjectedShadowReceiver() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.CompositionRadialGradientBrush CreateRadialGradientBrush()
+		{
+			throw new global::System.NotImplementedException("The member CompositionRadialGradientBrush Compositor.CreateRadialGradientBrush() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Composition.CompositionVisualSurface CreateVisualSurface()
+		{
+			throw new global::System.NotImplementedException("The member CompositionVisualSurface Compositor.CreateVisualSurface() is not implemented in Uno.");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Composition.Compositor.MaxGlobalPlaybackRate.get
 		// Forced skipping of method Windows.UI.Composition.Compositor.MinGlobalPlaybackRate.get
 		// Processing: System.IDisposable

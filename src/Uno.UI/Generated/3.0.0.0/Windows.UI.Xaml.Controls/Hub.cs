@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Hub : global::Windows.UI.Xaml.Controls.Control,global::Windows.UI.Xaml.Controls.ISemanticZoomInformation
@@ -139,7 +139,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DefaultSectionIndexProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"DefaultSectionIndex", typeof(int), 
+			nameof(DefaultSectionIndex), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.Hub), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -147,7 +147,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Header", typeof(object), 
+			nameof(Header), typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.Hub), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
@@ -155,7 +155,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HeaderTemplateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HeaderTemplate", typeof(global::Windows.UI.Xaml.DataTemplate), 
+			nameof(HeaderTemplate), typeof(global::Windows.UI.Xaml.DataTemplate), 
 			typeof(global::Windows.UI.Xaml.Controls.Hub), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DataTemplate)));
 		#endif
@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsActiveViewProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsActiveView", typeof(bool), 
+			nameof(IsActiveView), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Hub), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -171,7 +171,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsZoomedInViewProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsZoomedInView", typeof(bool), 
+			nameof(IsZoomedInView), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.Hub), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -179,7 +179,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty OrientationProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Orientation", typeof(global::Windows.UI.Xaml.Controls.Orientation), 
+			nameof(Orientation), typeof(global::Windows.UI.Xaml.Controls.Orientation), 
 			typeof(global::Windows.UI.Xaml.Controls.Hub), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Orientation)));
 		#endif
@@ -187,11 +187,11 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SemanticZoomOwnerProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SemanticZoomOwner", typeof(global::Windows.UI.Xaml.Controls.SemanticZoom), 
+			nameof(SemanticZoomOwner), typeof(global::Windows.UI.Xaml.Controls.SemanticZoom), 
 			typeof(global::Windows.UI.Xaml.Controls.Hub), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SemanticZoom)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public Hub() : base()
 		{

@@ -138,13 +138,6 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedBarcodeScanner.ErrorOccurred.remove
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "void ClaimedBarcodeScanner.Dispose()");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction StartSoftwareTriggerAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ClaimedBarcodeScanner.StartSoftwareTriggerAsync() is not implemented in Uno.");
@@ -189,6 +182,13 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedBarcodeScanner.IsVideoPreviewShownOnEnable.get
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedBarcodeScanner.Closed.add
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedBarcodeScanner.Closed.remove
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedBarcodeScanner", "void ClaimedBarcodeScanner.Dispose()");
+		}
+		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedBarcodeScanner, global::Windows.Devices.PointOfService.BarcodeScannerDataReceivedEventArgs> DataReceived

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if HAS_UNO
+using System;
 using Windows.UI.Xaml;
 using WebViewUno = Windows.UI.Xaml.Controls.WebView;
 
@@ -29,3 +30,4 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 		}
 	}
 }
+#endif

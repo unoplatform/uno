@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class InkToolbarToolButton : global::Windows.UI.Xaml.Controls.RadioButton
@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsExtensionGlyphShownProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsExtensionGlyphShown", typeof(bool), 
+			nameof(IsExtensionGlyphShown), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbarToolButton), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif

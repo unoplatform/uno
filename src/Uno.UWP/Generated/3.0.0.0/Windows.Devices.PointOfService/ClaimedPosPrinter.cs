@@ -158,6 +158,8 @@ namespace Windows.Devices.PointOfService
 		#endif
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.ReleaseDeviceRequested.add
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.ReleaseDeviceRequested.remove
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.Closed.add
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.Closed.remove
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
@@ -165,8 +167,6 @@ namespace Windows.Devices.PointOfService
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedPosPrinter", "void ClaimedPosPrinter.Dispose()");
 		}
 		#endif
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.Closed.add
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedPosPrinter.Closed.remove
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedPosPrinter, global::Windows.Devices.PointOfService.PosPrinterReleaseDeviceRequestedEventArgs> ReleaseDeviceRequested

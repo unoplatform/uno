@@ -137,6 +137,72 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsReversePaperFeedByLineSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool JournalPrinterCapabilities.IsReversePaperFeedByLineSupported is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsReversePaperFeedByMapModeUnitSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool JournalPrinterCapabilities.IsReversePaperFeedByMapModeUnitSupported is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsReverseVideoSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool JournalPrinterCapabilities.IsReverseVideoSupported is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsStrikethroughSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool JournalPrinterCapabilities.IsStrikethroughSupported is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsSubscriptSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool JournalPrinterCapabilities.IsSubscriptSupported is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsSuperscriptSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool JournalPrinterCapabilities.IsSuperscriptSupported is not implemented in Uno.");
+			}
+		}
+		#endif
+		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsReverseVideoSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsStrikethroughSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsSuperscriptSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsSubscriptSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsReversePaperFeedByLineSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsReversePaperFeedByMapModeUnitSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsPrinterPresent.get
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.IsDualColorSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.JournalPrinterCapabilities.ColorCartridgeCapabilities.get

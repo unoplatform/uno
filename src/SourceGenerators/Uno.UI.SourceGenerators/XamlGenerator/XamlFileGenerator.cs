@@ -3632,7 +3632,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				memberValue = string.Join(", ", ColorCodeParser.ParseColorCode(memberValue));
 
-				return $"{GlobalPrefix}Windows.UI.ColorHelper.FromARGB({memberValue})";
+				return $"{GlobalPrefix}{XamlConstants.Types.ColorHelper}.FromARGB({memberValue})";
 			}
 		}
 

@@ -11,17 +11,17 @@ namespace Windows.UI.Xaml.Controls
 	/// </summary>
 	internal class CollectionChangedOperation
 	{
-		public IndexPath StartingIndex { get; }
+		public Uno.UI.IndexPath StartingIndex { get; }
 		public int Range { get; }
 		public NotifyCollectionChangedAction Action { get; }
 		public Element ElementType { get; }
 
-		public IndexPath EndIndex => ElementType == Element.Item ?
-			IndexPath.FromRowSection(StartingIndex.Row + Range - 1, StartingIndex.Section) :
+		public Uno.UI.IndexPath EndIndex => ElementType == Element.Item ?
+			Uno.UI.IndexPath.FromRowSection(StartingIndex.Row + Range - 1, StartingIndex.Section) :
 			//Group change
-			IndexPath.FromRowSection(StartingIndex.Row, StartingIndex.Section + Range - 1);
+			Uno.UI.IndexPath.FromRowSection(StartingIndex.Row, StartingIndex.Section + Range - 1);
 
-		public CollectionChangedOperation(IndexPath startingIndex, int range, NotifyCollectionChangedAction action, Element elementType)
+		public CollectionChangedOperation(Uno.UI.IndexPath startingIndex, int range, NotifyCollectionChangedAction action, Element elementType)
 		{
 			StartingIndex = startingIndex;
 			Range = range;

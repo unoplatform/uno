@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls.Maps
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MapElementsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MapElements", typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Controls.Maps.MapElement>), 
+			nameof(MapElements), typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Controls.Maps.MapElement>), 
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElementsLayer), 
 			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Controls.Maps.MapElement>)));
 		#endif

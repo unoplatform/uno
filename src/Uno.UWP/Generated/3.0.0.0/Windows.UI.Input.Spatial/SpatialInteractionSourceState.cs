@@ -113,5 +113,12 @@ namespace Windows.UI.Input.Spatial
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.IsGrasped.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.SelectPressedValue.get
 		// Forced skipping of method Windows.UI.Input.Spatial.SpatialInteractionSourceState.ControllerProperties.get
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Perception.People.HandPose TryGetHandPose()
+		{
+			throw new global::System.NotImplementedException("The member HandPose SpatialInteractionSourceState.TryGetHandPose() is not implemented in Uno.");
+		}
+		#endif
 	}
 }

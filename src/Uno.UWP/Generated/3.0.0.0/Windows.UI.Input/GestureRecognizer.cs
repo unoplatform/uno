@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Input
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class GestureRecognizer 
@@ -105,20 +105,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Input.GestureSettings GestureSettings
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member GestureSettings GestureRecognizer.GestureSettings is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "GestureSettings GestureRecognizer.GestureSettings");
-			}
-		}
-		#endif
+		// Skipping already declared property GestureSettings
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  float InertiaRotationAngle
@@ -217,16 +204,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  bool IsActive
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool GestureRecognizer.IsActive is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property IsActive
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsInertial
@@ -247,13 +225,7 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public GestureRecognizer() 
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "GestureRecognizer.GestureRecognizer()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Input.GestureRecognizer.GestureRecognizer()
 		// Forced skipping of method Windows.UI.Input.GestureRecognizer.GestureRecognizer()
 		// Forced skipping of method Windows.UI.Input.GestureRecognizer.GestureSettings.get
 		// Forced skipping of method Windows.UI.Input.GestureRecognizer.GestureSettings.set
@@ -288,34 +260,10 @@ namespace Windows.UI.Input
 		// Forced skipping of method Windows.UI.Input.GestureRecognizer.AutoProcessInertia.get
 		// Forced skipping of method Windows.UI.Input.GestureRecognizer.AutoProcessInertia.set
 		// Forced skipping of method Windows.UI.Input.GestureRecognizer.MouseWheelParameters.get
-		#if false
-		[global::Uno.NotImplemented]
-		public  bool CanBeDoubleTap( global::Windows.UI.Input.PointerPoint value)
-		{
-			throw new global::System.NotImplementedException("The member bool GestureRecognizer.CanBeDoubleTap(PointerPoint value) is not implemented in Uno.");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  void ProcessDownEvent( global::Windows.UI.Input.PointerPoint value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "void GestureRecognizer.ProcessDownEvent(PointerPoint value)");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  void ProcessMoveEvents( global::System.Collections.Generic.IList<global::Windows.UI.Input.PointerPoint> value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "void GestureRecognizer.ProcessMoveEvents(IList<PointerPoint> value)");
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  void ProcessUpEvent( global::Windows.UI.Input.PointerPoint value)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "void GestureRecognizer.ProcessUpEvent(PointerPoint value)");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Input.GestureRecognizer.CanBeDoubleTap(Windows.UI.Input.PointerPoint)
+		// Skipping already declared method Windows.UI.Input.GestureRecognizer.ProcessDownEvent(Windows.UI.Input.PointerPoint)
+		// Skipping already declared method Windows.UI.Input.GestureRecognizer.ProcessMoveEvents(System.Collections.Generic.IList<Windows.UI.Input.PointerPoint>)
+		// Skipping already declared method Windows.UI.Input.GestureRecognizer.ProcessUpEvent(Windows.UI.Input.PointerPoint)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void ProcessMouseWheelEvent( global::Windows.UI.Input.PointerPoint value,  bool isShiftKeyDown,  bool isControlKeyDown)
@@ -330,13 +278,7 @@ namespace Windows.UI.Input
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "void GestureRecognizer.ProcessInertia()");
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  void CompleteGesture()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "void GestureRecognizer.CompleteGesture()");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Input.GestureRecognizer.CompleteGesture()
 		// Forced skipping of method Windows.UI.Input.GestureRecognizer.Tapped.add
 		// Forced skipping of method Windows.UI.Input.GestureRecognizer.Tapped.remove
 		// Forced skipping of method Windows.UI.Input.GestureRecognizer.RightTapped.add
@@ -387,117 +329,12 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.GestureRecognizer, global::Windows.UI.Input.HoldingEventArgs> Holding
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "event TypedEventHandler<GestureRecognizer, HoldingEventArgs> GestureRecognizer.Holding");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "event TypedEventHandler<GestureRecognizer, HoldingEventArgs> GestureRecognizer.Holding");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.GestureRecognizer, global::Windows.UI.Input.ManipulationCompletedEventArgs> ManipulationCompleted
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "event TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> GestureRecognizer.ManipulationCompleted");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "event TypedEventHandler<GestureRecognizer, ManipulationCompletedEventArgs> GestureRecognizer.ManipulationCompleted");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.GestureRecognizer, global::Windows.UI.Input.ManipulationInertiaStartingEventArgs> ManipulationInertiaStarting
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "event TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> GestureRecognizer.ManipulationInertiaStarting");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "event TypedEventHandler<GestureRecognizer, ManipulationInertiaStartingEventArgs> GestureRecognizer.ManipulationInertiaStarting");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.GestureRecognizer, global::Windows.UI.Input.ManipulationStartedEventArgs> ManipulationStarted
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "event TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> GestureRecognizer.ManipulationStarted");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "event TypedEventHandler<GestureRecognizer, ManipulationStartedEventArgs> GestureRecognizer.ManipulationStarted");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.GestureRecognizer, global::Windows.UI.Input.ManipulationUpdatedEventArgs> ManipulationUpdated
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "event TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> GestureRecognizer.ManipulationUpdated");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "event TypedEventHandler<GestureRecognizer, ManipulationUpdatedEventArgs> GestureRecognizer.ManipulationUpdated");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.GestureRecognizer, global::Windows.UI.Input.RightTappedEventArgs> RightTapped
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "event TypedEventHandler<GestureRecognizer, RightTappedEventArgs> GestureRecognizer.RightTapped");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "event TypedEventHandler<GestureRecognizer, RightTappedEventArgs> GestureRecognizer.RightTapped");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.GestureRecognizer, global::Windows.UI.Input.TappedEventArgs> Tapped
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "event TypedEventHandler<GestureRecognizer, TappedEventArgs> GestureRecognizer.Tapped");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "event TypedEventHandler<GestureRecognizer, TappedEventArgs> GestureRecognizer.Tapped");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Input.GestureRecognizer.Holding
+		// Skipping already declared event Windows.UI.Input.GestureRecognizer.ManipulationCompleted
+		// Skipping already declared event Windows.UI.Input.GestureRecognizer.ManipulationInertiaStarting
+		// Skipping already declared event Windows.UI.Input.GestureRecognizer.ManipulationStarted
+		// Skipping already declared event Windows.UI.Input.GestureRecognizer.ManipulationUpdated
+		// Skipping already declared event Windows.UI.Input.GestureRecognizer.RightTapped
+		// Skipping already declared event Windows.UI.Input.GestureRecognizer.Tapped
 	}
 }

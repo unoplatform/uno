@@ -5,36 +5,8 @@ namespace Windows.UI.Xaml
 	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class UIElement : global::Windows.UI.Composition.IAnimationObject
+	public  partial class UIElement : global::Windows.UI.Composition.IAnimationObject,global::Windows.UI.Composition.IVisualElement
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool UseLayoutRounding
-		{
-			get
-			{
-				return (bool)this.GetValue(UseLayoutRoundingProperty);
-			}
-			set
-			{
-				this.SetValue(UseLayoutRoundingProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool AllowDrop
-		{
-			get
-			{
-				return (bool)this.GetValue(AllowDropProperty);
-			}
-			set
-			{
-				this.SetValue(AllowDropProperty, value);
-			}
-		}
-		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.Projection Projection
@@ -49,20 +21,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Input.ManipulationModes ManipulationMode
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Input.ManipulationModes)this.GetValue(ManipulationModeProperty);
-			}
-			set
-			{
-				this.SetValue(ManipulationModeProperty, value);
-			}
-		}
-		#endif
+		// Skipping already declared property ManipulationMode
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool IsTapEnabled
@@ -119,6 +78,20 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool AllowDrop
+		{
+			get
+			{
+				return (bool)this.GetValue(AllowDropProperty);
+			}
+			set
+			{
+				this.SetValue(AllowDropProperty, value);
+			}
+		}
+		#endif
 		// Skipping already declared property Clip
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -134,9 +107,81 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool UseLayoutRounding
+		{
+			get
+			{
+				return (bool)this.GetValue(UseLayoutRoundingProperty);
+			}
+			set
+			{
+				this.SetValue(UseLayoutRoundingProperty, value);
+			}
+		}
+		#endif
 		// Skipping already declared property DesiredSize
 		// Skipping already declared property PointerCaptures
 		// Skipping already declared property RenderSize
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.Shadow Shadow
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Shadow)this.GetValue(ShadowProperty);
+			}
+			set
+			{
+				this.SetValue(ShadowProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.XamlRoot XamlRoot
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member XamlRoot UIElement.XamlRoot is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "XamlRoot UIElement.XamlRoot");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.Numerics.Vector3 ActualOffset
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3 UIElement.ActualOffset is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.Numerics.Vector2 ActualSize
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector2 UIElement.ActualSize is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.UIContext UIContext
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member UIContext UIElement.UIContext is not implemented in Uno.");
+			}
+		}
+		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.ElementCompositeMode CompositeMode
@@ -207,6 +252,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
+		// Skipping already declared property ContextFlyout
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.DependencyObject AccessKeyScopeOwner
@@ -237,6 +283,20 @@ namespace Windows.UI.Xaml
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  double KeyTipHorizontalOffset
+		{
+			get
+			{
+				return (double)this.GetValue(KeyTipHorizontalOffsetProperty);
+			}
+			set
+			{
+				this.SetValue(KeyTipHorizontalOffsetProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.ElementHighContrastAdjustment HighContrastAdjustment
 		{
 			get
@@ -251,34 +311,6 @@ namespace Windows.UI.Xaml
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy XYFocusLeftNavigationStrategy
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)this.GetValue(XYFocusLeftNavigationStrategyProperty);
-			}
-			set
-			{
-				this.SetValue(XYFocusLeftNavigationStrategyProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy XYFocusUpNavigationStrategy
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)this.GetValue(XYFocusUpNavigationStrategyProperty);
-			}
-			set
-			{
-				this.SetValue(XYFocusUpNavigationStrategyProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy XYFocusRightNavigationStrategy
 		{
 			get
@@ -288,20 +320,6 @@ namespace Windows.UI.Xaml
 			set
 			{
 				this.SetValue(XYFocusRightNavigationStrategyProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  double KeyTipHorizontalOffset
-		{
-			get
-			{
-				return (double)this.GetValue(KeyTipHorizontalOffsetProperty);
-			}
-			set
-			{
-				this.SetValue(KeyTipHorizontalOffsetProperty, value);
 			}
 		}
 		#endif
@@ -363,6 +381,20 @@ namespace Windows.UI.Xaml
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy XYFocusUpNavigationStrategy
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)this.GetValue(XYFocusUpNavigationStrategyProperty);
+			}
+			set
+			{
+				this.SetValue(XYFocusUpNavigationStrategyProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Input.KeyTipPlacementMode KeyTipPlacementMode
 		{
 			get
@@ -372,6 +404,20 @@ namespace Windows.UI.Xaml
 			set
 			{
 				this.SetValue(KeyTipPlacementModeProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy XYFocusLeftNavigationStrategy
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)this.GetValue(XYFocusLeftNavigationStrategyProperty);
+			}
+			set
+			{
+				this.SetValue(XYFocusLeftNavigationStrategyProperty, value);
 			}
 		}
 		#endif
@@ -425,6 +471,20 @@ namespace Windows.UI.Xaml
 			set
 			{
 				this.SetValue(KeyTipTargetProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.Numerics.Vector3 CenterPoint
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3 UIElement.CenterPoint is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "Vector3 UIElement.CenterPoint");
 			}
 		}
 		#endif
@@ -556,20 +616,6 @@ namespace Windows.UI.Xaml
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::System.Numerics.Vector3 CenterPoint
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 UIElement.CenterPoint is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "Vector3 UIElement.CenterPoint");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  bool CanBeScrollAnchor
 		{
 			get
@@ -582,21 +628,12 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.RoutedEvent HoldingEvent
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member RoutedEvent UIElement.HoldingEvent is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property HoldingEvent
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsDoubleTapEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsDoubleTapEnabled", typeof(bool), 
+			nameof(IsDoubleTapEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -604,7 +641,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsHoldingEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsHoldingEnabled", typeof(bool), 
+			nameof(IsHoldingEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -612,105 +649,43 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsRightTapEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsRightTapEnabled", typeof(bool), 
+			nameof(IsRightTapEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.RoutedEvent ManipulationCompletedEvent
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member RoutedEvent UIElement.ManipulationCompletedEvent is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.RoutedEvent ManipulationDeltaEvent
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member RoutedEvent UIElement.ManipulationDeltaEvent is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property KeyDownEvent
+		// Skipping already declared property KeyUpEvent
+		// Skipping already declared property ManipulationCompletedEvent
+		// Skipping already declared property ManipulationDeltaEvent
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsTapEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsTapEnabled", typeof(bool), 
+			nameof(IsTapEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.RoutedEvent ManipulationInertiaStartingEvent
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member RoutedEvent UIElement.ManipulationInertiaStartingEvent is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty ManipulationModeProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"ManipulationMode", typeof(global::Windows.UI.Xaml.Input.ManipulationModes), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.ManipulationModes)));
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.RoutedEvent ManipulationStartedEvent
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member RoutedEvent UIElement.ManipulationStartedEvent is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.RoutedEvent ManipulationStartingEvent
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member RoutedEvent UIElement.ManipulationStartingEvent is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
+		// Skipping already declared property ManipulationInertiaStartingEvent
+		// Skipping already declared property ManipulationModeProperty
+		// Skipping already declared property ManipulationStartedEvent
+		// Skipping already declared property ManipulationStartingEvent
+		// Skipping already declared property PointerCanceledEvent
+		// Skipping already declared property PointerCaptureLostEvent
 		// Skipping already declared property PointerCapturesProperty
-		public static global::Windows.UI.Xaml.RoutedEvent PointerWheelChangedEvent
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member RoutedEvent UIElement.PointerWheelChangedEvent is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property PointerEnteredEvent
+		// Skipping already declared property PointerExitedEvent
+		// Skipping already declared property PointerMovedEvent
+		// Skipping already declared property PointerPressedEvent
+		// Skipping already declared property PointerWheelChangedEvent
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ProjectionProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Projection", typeof(global::Windows.UI.Xaml.Media.Projection), 
+			nameof(Projection), typeof(global::Windows.UI.Xaml.Media.Projection), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Projection)));
 		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.RoutedEvent RightTappedEvent
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member RoutedEvent UIElement.RightTappedEvent is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property RightTappedEvent
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent DragEnterEvent
@@ -721,11 +696,12 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
+		// Skipping already declared property TappedEvent
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty UseLayoutRoundingProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"UseLayoutRounding", typeof(bool), 
+			nameof(UseLayoutRounding), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -733,7 +709,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AllowDropProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AllowDrop", typeof(bool), 
+			nameof(AllowDrop), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -741,11 +717,13 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CacheModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CacheMode", typeof(global::Windows.UI.Xaml.Media.CacheMode), 
+			nameof(CacheMode), typeof(global::Windows.UI.Xaml.Media.CacheMode), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.CacheMode)));
 		#endif
 		// Skipping already declared property ClipProperty
+		// Skipping already declared property DoubleTappedEvent
+		// Skipping already declared property PointerReleasedEvent
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.RoutedEvent DragLeaveEvent
@@ -778,9 +756,17 @@ namespace Windows.UI.Xaml
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty ShadowProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(Shadow), typeof(global::Windows.UI.Xaml.Media.Shadow), 
+			typeof(global::Windows.UI.Xaml.UIElement), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Shadow)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CompositeModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CompositeMode", typeof(global::Windows.UI.Xaml.Media.ElementCompositeMode), 
+			nameof(CompositeMode), typeof(global::Windows.UI.Xaml.Media.ElementCompositeMode), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ElementCompositeMode)));
 		#endif
@@ -788,7 +774,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CanDragProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CanDrag", typeof(bool), 
+			nameof(CanDrag), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -796,7 +782,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty Transform3DProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Transform3D", typeof(global::Windows.UI.Xaml.Media.Media3D.Transform3D), 
+			nameof(Transform3D), typeof(global::Windows.UI.Xaml.Media.Media3D.Transform3D), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Media3D.Transform3D)));
 		#endif
@@ -804,7 +790,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AccessKeyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AccessKey", typeof(string), 
+			nameof(AccessKey), typeof(string), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -812,15 +798,16 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AccessKeyScopeOwnerProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AccessKeyScopeOwner", typeof(global::Windows.UI.Xaml.DependencyObject), 
+			nameof(AccessKeyScopeOwner), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
+		// Skipping already declared property ContextFlyoutProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsAccessKeyScopeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsAccessKeyScope", typeof(bool), 
+			nameof(IsAccessKeyScope), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -828,23 +815,15 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ExitDisplayModeOnAccessKeyInvokedProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ExitDisplayModeOnAccessKeyInvoked", typeof(bool), 
+			nameof(ExitDisplayModeOnAccessKeyInvoked), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty TabFocusNavigationProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"TabFocusNavigation", typeof(global::Windows.UI.Xaml.Input.KeyboardNavigationMode), 
-			typeof(global::Windows.UI.Xaml.UIElement), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.KeyboardNavigationMode)));
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HighContrastAdjustmentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HighContrastAdjustment", typeof(global::Windows.UI.Xaml.ElementHighContrastAdjustment), 
+			nameof(HighContrastAdjustment), typeof(global::Windows.UI.Xaml.ElementHighContrastAdjustment), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.ElementHighContrastAdjustment)));
 		#endif
@@ -852,7 +831,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KeyTipHorizontalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"KeyTipHorizontalOffset", typeof(double), 
+			nameof(KeyTipHorizontalOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -860,7 +839,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KeyTipPlacementModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"KeyTipPlacementMode", typeof(global::Windows.UI.Xaml.Input.KeyTipPlacementMode), 
+			nameof(KeyTipPlacementMode), typeof(global::Windows.UI.Xaml.Input.KeyTipPlacementMode), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.KeyTipPlacementMode)));
 		#endif
@@ -868,7 +847,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KeyTipVerticalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"KeyTipVerticalOffset", typeof(double), 
+			nameof(KeyTipVerticalOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -876,7 +855,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LightsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Lights", typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.XamlLight>), 
+			nameof(Lights), typeof(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.XamlLight>), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Media.XamlLight>)));
 		#endif
@@ -884,7 +863,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty XYFocusDownNavigationStrategyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"XYFocusDownNavigationStrategy", typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
+			nameof(XYFocusDownNavigationStrategy), typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
 		#endif
@@ -892,7 +871,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty XYFocusKeyboardNavigationProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"XYFocusKeyboardNavigation", typeof(global::Windows.UI.Xaml.Input.XYFocusKeyboardNavigationMode), 
+			nameof(XYFocusKeyboardNavigation), typeof(global::Windows.UI.Xaml.Input.XYFocusKeyboardNavigationMode), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusKeyboardNavigationMode)));
 		#endif
@@ -900,7 +879,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty XYFocusLeftNavigationStrategyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"XYFocusLeftNavigationStrategy", typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
+			nameof(XYFocusLeftNavigationStrategy), typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
 		#endif
@@ -908,7 +887,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty XYFocusRightNavigationStrategyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"XYFocusRightNavigationStrategy", typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
+			nameof(XYFocusRightNavigationStrategy), typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
 		#endif
@@ -916,9 +895,17 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty XYFocusUpNavigationStrategyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"XYFocusUpNavigationStrategy", typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
+			nameof(XYFocusUpNavigationStrategy), typeof(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.XYFocusNavigationStrategy)));
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty TabFocusNavigationProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(TabFocusNavigation), typeof(global::Windows.UI.Xaml.Input.KeyboardNavigationMode), 
+			typeof(global::Windows.UI.Xaml.UIElement), 
+			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.KeyboardNavigationMode)));
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -1004,7 +991,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KeyTipTargetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"KeyTipTarget", typeof(global::Windows.UI.Xaml.DependencyObject), 
+			nameof(KeyTipTarget), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
@@ -1012,7 +999,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KeyboardAcceleratorPlacementModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"KeyboardAcceleratorPlacementMode", typeof(global::Windows.UI.Xaml.Input.KeyboardAcceleratorPlacementMode), 
+			nameof(KeyboardAcceleratorPlacementMode), typeof(global::Windows.UI.Xaml.Input.KeyboardAcceleratorPlacementMode), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.KeyboardAcceleratorPlacementMode)));
 		#endif
@@ -1020,7 +1007,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KeyboardAcceleratorPlacementTargetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"KeyboardAcceleratorPlacementTarget", typeof(global::Windows.UI.Xaml.DependencyObject), 
+			nameof(KeyboardAcceleratorPlacementTarget), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
@@ -1028,7 +1015,7 @@ namespace Windows.UI.Xaml
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CanBeScrollAnchorProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CanBeScrollAnchor", typeof(bool), 
+			nameof(CanBeScrollAnchor), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.UIElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -1122,13 +1109,9 @@ namespace Windows.UI.Xaml
 		// Skipping already declared method Windows.UI.Xaml.UIElement.CapturePointer(Windows.UI.Xaml.Input.Pointer)
 		// Skipping already declared method Windows.UI.Xaml.UIElement.ReleasePointerCapture(Windows.UI.Xaml.Input.Pointer)
 		// Skipping already declared method Windows.UI.Xaml.UIElement.ReleasePointerCaptures()
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.GeneralTransform TransformToVisual( global::Windows.UI.Xaml.UIElement visual)
-		{
-			throw new global::System.NotImplementedException("The member GeneralTransform UIElement.TransformToVisual(UIElement visual) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.UI.Xaml.UIElement.AddHandler(Windows.UI.Xaml.RoutedEvent, object, bool)
+		// Skipping already declared method Windows.UI.Xaml.UIElement.RemoveHandler(Windows.UI.Xaml.RoutedEvent, object)
+		// Skipping already declared method Windows.UI.Xaml.UIElement.TransformToVisual(Windows.UI.Xaml.UIElement)
 		// Skipping already declared method Windows.UI.Xaml.UIElement.InvalidateMeasure()
 		// Skipping already declared method Windows.UI.Xaml.UIElement.InvalidateArrange()
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
@@ -1271,6 +1254,13 @@ namespace Windows.UI.Xaml
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "void UIElement.StopAnimation(ICompositionAnimationBase animation)");
 		}
 		#endif
+		// Forced skipping of method Windows.UI.Xaml.UIElement.ActualOffset.get
+		// Forced skipping of method Windows.UI.Xaml.UIElement.ActualSize.get
+		// Forced skipping of method Windows.UI.Xaml.UIElement.XamlRoot.get
+		// Forced skipping of method Windows.UI.Xaml.UIElement.XamlRoot.set
+		// Forced skipping of method Windows.UI.Xaml.UIElement.UIContext.get
+		// Forced skipping of method Windows.UI.Xaml.UIElement.Shadow.get
+		// Forced skipping of method Windows.UI.Xaml.UIElement.Shadow.set
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		protected virtual global::Windows.UI.Xaml.Automation.Peers.AutomationPeer OnCreateAutomationPeer()
@@ -1334,6 +1324,7 @@ namespace Windows.UI.Xaml
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "void UIElement.PopulatePropertyInfo(string propertyName, AnimationPropertyInfo propertyInfo)");
 		}
 		#endif
+		// Forced skipping of method Windows.UI.Xaml.UIElement.ShadowProperty.get
 		// Forced skipping of method Windows.UI.Xaml.UIElement.CanBeScrollAnchorProperty.get
 		// Forced skipping of method Windows.UI.Xaml.UIElement.BringIntoViewRequestedEvent.get
 		// Forced skipping of method Windows.UI.Xaml.UIElement.ContextRequestedEvent.get
@@ -1485,103 +1476,15 @@ namespace Windows.UI.Xaml
 		}
 		#endif
 		// Skipping already declared event Windows.UI.Xaml.UIElement.GotFocus
-		#if false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.UI.Xaml.Input.HoldingEventHandler Holding
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "event HoldingEventHandler UIElement.Holding");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "event HoldingEventHandler UIElement.Holding");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.UIElement.Holding
+		// Skipping already declared event Windows.UI.Xaml.UIElement.KeyDown
+		// Skipping already declared event Windows.UI.Xaml.UIElement.KeyUp
 		// Skipping already declared event Windows.UI.Xaml.UIElement.LostFocus
-		#if false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.UI.Xaml.Input.ManipulationCompletedEventHandler ManipulationCompleted
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "event ManipulationCompletedEventHandler UIElement.ManipulationCompleted");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "event ManipulationCompletedEventHandler UIElement.ManipulationCompleted");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.UI.Xaml.Input.ManipulationDeltaEventHandler ManipulationDelta
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "event ManipulationDeltaEventHandler UIElement.ManipulationDelta");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "event ManipulationDeltaEventHandler UIElement.ManipulationDelta");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.UI.Xaml.Input.ManipulationInertiaStartingEventHandler ManipulationInertiaStarting
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "event ManipulationInertiaStartingEventHandler UIElement.ManipulationInertiaStarting");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "event ManipulationInertiaStartingEventHandler UIElement.ManipulationInertiaStarting");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.UI.Xaml.Input.ManipulationStartedEventHandler ManipulationStarted
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "event ManipulationStartedEventHandler UIElement.ManipulationStarted");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "event ManipulationStartedEventHandler UIElement.ManipulationStarted");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.UI.Xaml.Input.ManipulationStartingEventHandler ManipulationStarting
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "event ManipulationStartingEventHandler UIElement.ManipulationStarting");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "event ManipulationStartingEventHandler UIElement.ManipulationStarting");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.UIElement.ManipulationCompleted
+		// Skipping already declared event Windows.UI.Xaml.UIElement.ManipulationDelta
+		// Skipping already declared event Windows.UI.Xaml.UIElement.ManipulationInertiaStarting
+		// Skipping already declared event Windows.UI.Xaml.UIElement.ManipulationStarted
+		// Skipping already declared event Windows.UI.Xaml.UIElement.ManipulationStarting
 		// Skipping already declared event Windows.UI.Xaml.UIElement.PointerCanceled
 		// Skipping already declared event Windows.UI.Xaml.UIElement.PointerCaptureLost
 		// Skipping already declared event Windows.UI.Xaml.UIElement.PointerEntered
@@ -1589,38 +1492,8 @@ namespace Windows.UI.Xaml
 		// Skipping already declared event Windows.UI.Xaml.UIElement.PointerMoved
 		// Skipping already declared event Windows.UI.Xaml.UIElement.PointerPressed
 		// Skipping already declared event Windows.UI.Xaml.UIElement.PointerReleased
-		#if false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.UI.Xaml.Input.PointerEventHandler PointerWheelChanged
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "event PointerEventHandler UIElement.PointerWheelChanged");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "event PointerEventHandler UIElement.PointerWheelChanged");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.UI.Xaml.Input.RightTappedEventHandler RightTapped
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "event RightTappedEventHandler UIElement.RightTapped");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "event RightTappedEventHandler UIElement.RightTapped");
-			}
-		}
-		#endif
+		// Skipping already declared event Windows.UI.Xaml.UIElement.PointerWheelChanged
+		// Skipping already declared event Windows.UI.Xaml.UIElement.RightTapped
 		// Skipping already declared event Windows.UI.Xaml.UIElement.Tapped
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -1863,5 +1736,6 @@ namespace Windows.UI.Xaml
 		}
 		#endif
 		// Processing: Windows.UI.Composition.IAnimationObject
+		// Processing: Windows.UI.Composition.IVisualElement
 	}
 }

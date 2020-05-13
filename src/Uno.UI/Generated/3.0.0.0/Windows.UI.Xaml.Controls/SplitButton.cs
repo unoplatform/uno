@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SplitButton : global::Windows.UI.Xaml.Controls.ContentControl
@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CommandParameterProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CommandParameter", typeof(object), 
+			nameof(CommandParameter), typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.SplitButton), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CommandProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Command", typeof(global::System.Windows.Input.ICommand), 
+			nameof(Command), typeof(global::System.Windows.Input.ICommand), 
 			typeof(global::Windows.UI.Xaml.Controls.SplitButton), 
 			new FrameworkPropertyMetadata(default(global::System.Windows.Input.ICommand)));
 		#endif
@@ -69,11 +69,11 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FlyoutProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Flyout", typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
+			nameof(Flyout), typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
 			typeof(global::Windows.UI.Xaml.Controls.SplitButton), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public SplitButton() : base()
 		{

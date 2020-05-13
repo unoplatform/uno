@@ -22,6 +22,26 @@ namespace Windows.ApplicationModel
 		// Skipping already declared property Status
 		// Skipping already declared property IsOptional
 		// Skipping already declared property SignatureKind
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Storage.StorageFolder EffectiveLocation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member StorageFolder Package.EffectiveLocation is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Storage.StorageFolder MutableLocation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member StorageFolder Package.MutableLocation is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Skipping already declared property InstallDate
 		// Skipping already declared property Current
 		// Forced skipping of method Windows.ApplicationModel.Package.Id.get
@@ -93,6 +113,8 @@ namespace Windows.ApplicationModel
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PackageUpdateAvailabilityResult> Package.CheckUpdateAvailabilityAsync() is not implemented in Uno.");
 		}
 		#endif
+		// Forced skipping of method Windows.ApplicationModel.Package.MutableLocation.get
+		// Forced skipping of method Windows.ApplicationModel.Package.EffectiveLocation.get
 		// Forced skipping of method Windows.ApplicationModel.Package.Current.get
 	}
 }

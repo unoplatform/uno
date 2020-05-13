@@ -7,7 +7,11 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class Viewbox : global::Windows.UI.Xaml.FrameworkElement
 	{
-
+		// Skipping already declared property StretchDirection
+		// Skipping already declared property Stretch
+		// Skipping already declared property Child
+		// Skipping already declared property StretchDirectionProperty
+		// Skipping already declared property StretchProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.Viewbox.Viewbox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Viewbox.Viewbox()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Viewbox.Child.get

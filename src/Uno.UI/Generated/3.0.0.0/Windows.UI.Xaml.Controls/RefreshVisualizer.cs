@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RefreshVisualizer : global::Windows.UI.Xaml.Controls.Control
@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ContentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Content", typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(Content), typeof(global::Windows.UI.Xaml.UIElement), 
 			typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizer), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 		#endif
@@ -62,7 +62,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty OrientationProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Orientation", typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizerOrientation), 
+			nameof(Orientation), typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizerOrientation), 
 			typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizer), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.RefreshVisualizerOrientation)));
 		#endif
@@ -70,11 +70,11 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StateProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"State", typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizerState), 
+			nameof(State), typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizerState), 
 			typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizer), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.RefreshVisualizerState)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public RefreshVisualizer() : base()
 		{

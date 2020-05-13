@@ -29,6 +29,16 @@ namespace Windows.System.RemoteSystems
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  string ConnectionToken
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string RemoteSystemConnectionRequest.ConnectionToken is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public RemoteSystemConnectionRequest( global::Windows.System.RemoteSystems.RemoteSystem remoteSystem) 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.System.RemoteSystems.RemoteSystemConnectionRequest", "RemoteSystemConnectionRequest.RemoteSystemConnectionRequest(RemoteSystem remoteSystem)");
@@ -37,6 +47,21 @@ namespace Windows.System.RemoteSystems
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionRequest.RemoteSystemConnectionRequest(Windows.System.RemoteSystems.RemoteSystem)
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionRequest.RemoteSystem.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionRequest.RemoteSystemApp.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemConnectionRequest.ConnectionToken.get
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.System.RemoteSystems.RemoteSystemConnectionRequest CreateFromConnectionToken( string connectionToken)
+		{
+			throw new global::System.NotImplementedException("The member RemoteSystemConnectionRequest RemoteSystemConnectionRequest.CreateFromConnectionToken(string connectionToken) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.System.RemoteSystems.RemoteSystemConnectionRequest CreateFromConnectionTokenForUser( global::Windows.System.User user,  string connectionToken)
+		{
+			throw new global::System.NotImplementedException("The member RemoteSystemConnectionRequest RemoteSystemConnectionRequest.CreateFromConnectionTokenForUser(User user, string connectionToken) is not implemented in Uno.");
+		}
+		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.System.RemoteSystems.RemoteSystemConnectionRequest CreateForApp( global::Windows.System.RemoteSystems.RemoteSystemApp remoteSystemApp)

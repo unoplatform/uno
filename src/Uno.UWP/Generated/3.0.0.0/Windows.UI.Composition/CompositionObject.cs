@@ -8,7 +8,16 @@ namespace Windows.UI.Composition
 	public  partial class CompositionObject : global::System.IDisposable,global::Windows.UI.Composition.IAnimationObject
 	{
 		// Skipping already declared property Compositor
-		// Skipping already declared property Dispatcher
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Core.CoreDispatcher Dispatcher
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CoreDispatcher CompositionObject.Dispatcher is not implemented in Uno.");
+			}
+		}
+		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Composition.CompositionPropertySet Properties

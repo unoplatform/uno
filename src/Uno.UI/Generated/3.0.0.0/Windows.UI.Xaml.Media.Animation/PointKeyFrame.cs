@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KeyTimeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"KeyTime", typeof(global::Windows.UI.Xaml.Media.Animation.KeyTime), 
+			nameof(KeyTime), typeof(global::Windows.UI.Xaml.Media.Animation.KeyTime), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.PointKeyFrame), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.KeyTime)));
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ValueProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Value", typeof(global::Windows.Foundation.Point), 
+			nameof(Value), typeof(global::Windows.Foundation.Point), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.PointKeyFrame), 
 			new FrameworkPropertyMetadata(default(global::Windows.Foundation.Point)));
 		#endif

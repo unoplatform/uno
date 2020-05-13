@@ -14,11 +14,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 using Windows.Globalization.NumberFormatting;
-
-// Condition to be removed when UWP will be updated to 18362+
-#if HAS_UNO
 using Microsoft.UI.Xaml.Controls;
-#endif
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -98,7 +94,7 @@ namespace UITests.Shared.Microsoft_UI_Xaml_Controls.NumberBoxTests
 			}
 		}
 
-		private void NumberBoxValueChanged(object sender, NumberBoxValueChangedEventArgs e)
+		private void NumberBoxValueChanged(object sender, Microsoft.UI.Xaml.Controls.NumberBoxValueChangedEventArgs e)
 		{
 			if (TestNumberBox != null && NewValueTextBox != null && OldValueTextBox != null)
 			{

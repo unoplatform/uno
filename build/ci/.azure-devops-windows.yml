@@ -8,6 +8,14 @@ jobs:
   pool:
     vmImage: ${{ parameters.vmImage }}
 
+  strategy:
+    matrix:
+      UWP:
+        UNO_UWP_BUILD: true
+
+      WinUI:
+        UNO_UWP_BUILD: false
+
   variables:
     CombinedConfiguration: Release|Any CPU
     CI_Build: true
@@ -35,6 +43,13 @@ jobs:
 
   - powershell: .\build\Install-WindowsSdkISO.ps1 17763
     displayName: Insider SDK
+
+  - powershell: |
+        cd $(build.sourcesdirectory)\src\Uno.WinUIRevert
+        dotnet run "$(build.sourcesdirectory)"
+
+    condition: and(succeeded(), eq(variables['UNO_UWP_BUILD'], 'false'))
+    displayName: Convert source tree to WinUI 3 structure
 
   - task: MSBuild@1
     inputs:

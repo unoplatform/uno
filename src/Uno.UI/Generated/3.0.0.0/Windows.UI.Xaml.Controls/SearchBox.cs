@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SearchBox : global::Windows.UI.Xaml.Controls.Control
@@ -95,7 +95,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ChooseSuggestionOnEnterProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ChooseSuggestionOnEnter", typeof(bool), 
+			nameof(ChooseSuggestionOnEnter), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.SearchBox), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FocusOnKeyboardInputProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FocusOnKeyboardInput", typeof(bool), 
+			nameof(FocusOnKeyboardInput), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.SearchBox), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderTextProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PlaceholderText", typeof(string), 
+			nameof(PlaceholderText), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.SearchBox), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty QueryTextProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"QueryText", typeof(string), 
+			nameof(QueryText), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.SearchBox), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SearchHistoryContextProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SearchHistoryContext", typeof(string), 
+			nameof(SearchHistoryContext), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.SearchBox), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -135,11 +135,11 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SearchHistoryEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SearchHistoryEnabled", typeof(bool), 
+			nameof(SearchHistoryEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.SearchBox), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public SearchBox() : base()
 		{
