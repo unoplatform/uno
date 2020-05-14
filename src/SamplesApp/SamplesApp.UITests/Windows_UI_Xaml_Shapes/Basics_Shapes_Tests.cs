@@ -8,6 +8,7 @@ using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.UITest.Helpers.Queries;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 {
@@ -15,6 +16,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 	{
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.iOS)]
 		public void ValidateAllShapesBasicStrechesAlignemntsAndSize()
 		{
 			Run("UITests.Windows_UI_Xaml_Shapes.Basic_Shapes", skipInitialScreenshot: true);
@@ -25,6 +27,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 				.WithOffset(3, 3, LocationToleranceKind.PerPixel)
 				.Discrete(20); // Way toooooooo long otherwise!
 
+			var exceptions = new List<Exception>();
 			foreach (var test in _tests)
 			{
 				try
@@ -43,9 +46,17 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 					var scale = 2.0;
 
 					ImageAssert.AreAlmostEqual(expected, ImageAssert.FirstQuadrant, actual, testZone.ToRectangle(), scale, tolerance);
+				}
+				catch (Exception e)
+				{
+					Console.Error.WriteLine(e); // Ease debug while reading log from CI
+					exceptions.Add(e);
+				}
+			}
 
-					Assert.Fail();
-				} catch(Exception) { }
+			if (exceptions.Any())
+			{
+				throw new AggregateException(exceptions);
 			}
 		}
 
