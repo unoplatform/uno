@@ -19,24 +19,13 @@
 					<Flyout Closed="SettingsUpdated">
 						<StackPanel Width="300">
 							<TextBlock Text="Shapes" />
-							<ToggleSwitch x:Name="_shapeRectangle" OnContent="Rectangle" OffContent="Rectangle" IsOn="False" />
-							<ToggleSwitch x:Name="_shapeEllipse" OnContent="Ellipse" OffContent="Ellipse" IsOn="False" />
-							<ToggleSwitch x:Name="_shapeLine" OnContent="Line" OffContent="Line" IsOn="False" />
-							<ToggleSwitch x:Name="_shapePath" OnContent="Path" OffContent="Path" IsOn="False" />
-							<ToggleSwitch x:Name="_shapePolygon" OnContent="Polygon" OffContent="Polygon" IsOn="False" />
-							<ToggleSwitch x:Name="_shapePolyline" OnContent="Polyline" OffContent="Polyline" IsOn="True" />
+							<StackPanel x:Name="_shapesConfig" />
 
 							<TextBlock Text="Stretch" Margin="0,10,0,0" />
-							<ToggleSwitch x:Name="_stretchDefault" OnContent="Default" OffContent="Default" IsOn="False" />
-							<ToggleSwitch x:Name="_stretchNone" OnContent="None" OffContent="None" IsOn="True" />
-							<ToggleSwitch x:Name="_stretchFill" OnContent="Fill" OffContent="Fill" IsOn="True" />
-							<ToggleSwitch x:Name="_stretchUniform" OnContent="Uniform" OffContent="Uniform" IsOn="True" />
-							<ToggleSwitch x:Name="_stretchUniformToFill" OnContent="UniformToFill" OffContent="UniformToFill" IsOn="True" />
+							<StackPanel x:Name="_stretchesConfig" />
 
 							<TextBlock Text="Sizes" Margin="0,10,0,0" />
-							<ToggleSwitch x:Name="_sizeUnconstrained" OnContent="Unconstrained" OffContent="Unconstrained" IsOn="True" />
-							<ToggleSwitch x:Name="_sizeFixedSmall" OnContent="Fixed small (Will scale UP)" OffContent="Fixed small (Will scale UP)" IsOn="True" />
-							<ToggleSwitch x:Name="_sizeFixedLarge" OnContent="Fixed large (Will scale DOWN)" OffContent="Fixed large (Will scale DOWN)" IsOn="True" />
+							<StackPanel x:Name="_sizesConfig" />
 						</StackPanel>
 					</Flyout>
 				</Button.Flyout>
@@ -44,6 +33,12 @@
 			<Button
 				Content="Generate screenshots (Windows only)"
 				Click="GenerateScreenshots"/>
+			<TextBox
+				x:Name="_idInput"/>
+			<Button
+				x:Name="_renderId"
+				Content="Render ID"
+				Click="RenderById"/>
 		</StackPanel>
 
 		<ScrollViewer
