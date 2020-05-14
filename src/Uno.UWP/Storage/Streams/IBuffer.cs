@@ -12,5 +12,9 @@ namespace Windows.Storage.Streams
 			get;
 			set;
 		}
+
+		// should be `internal`, but it requires C# 8.0
+		byte[] Data { get; }
+
 	}
 }

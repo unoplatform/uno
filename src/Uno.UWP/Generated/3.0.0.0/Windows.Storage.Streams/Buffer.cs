@@ -55,7 +55,13 @@ namespace Windows.Storage.Streams
 		{
 			throw new global::System.NotImplementedException("The member MemoryBuffer Buffer.CreateMemoryBufferOverIBuffer(IBuffer input) is not implemented in Uno.");
 		}
-		#endif
+
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		// should be internal, but we need this to compile...
+		[global::Uno.NotImplemented]
+		public byte[] Data { get; }
+#endif 
+#endif
 		// Processing: Windows.Storage.Streams.IBuffer
 	}
 }
