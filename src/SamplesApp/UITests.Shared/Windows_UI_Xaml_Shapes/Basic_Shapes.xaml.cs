@@ -1,13 +1,4 @@
-﻿#pragma warning disable
-#if !DEBUG
-#error remove disable
-#endif
-
-
-
-
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -259,7 +250,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 
 		private void OnIdInputChanged(object sender, KeyRoutedEventArgs e)
 		{
-			if (((TextBox)sender).Text.EndsWith('.'))
+			if (((TextBox)sender).Text.EndsWith("."))
 			{
 				RenderById(null, null);
 			}
@@ -284,7 +275,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				var shapeName = parsedId.Groups["shape"].Value;
 				var shape = _shapes.Single(s => s.Name == shapeName);
 
-				var alteratorIds = parsedId.Groups["alteratorId"].Captures.Select(c => c.Value);
+				var alteratorIds = parsedId.Groups["alteratorId"].Captures.Cast<Capture>().Select(c => c.Value);
 				var alterators = alteratorIds.Select(id => _stretches.Concat(_sizes).Single(a => a.Id == id)).ToArray();
 
 				RenderHoriVertGridForScreenshot(shape, alterators);
@@ -405,7 +396,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 					Text = text?.ToString() ?? "N/A",
 					VerticalAlignment = VerticalAlignment.Center,
 					HorizontalAlignment = HorizontalAlignment.Stretch,
-					TextAlignment = TextAlignment.Center
+					TextAlignment = Windows.UI.Xaml.TextAlignment.Center
 				};
 		}
 
@@ -463,10 +454,9 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		}
 	}
 
-#if !DEBUG
-#error multi target this file instead of copy it
-#endif
 #if WINDOWS_UWP
+	// This is a clone of src\Uno.UI\UI\Xaml\Controls\Grid\GridExtensions.cs,
+	// but we prefer to not multi target this to not conflict with other efforts for fluent declaration
 	internal static class GridExtensions
 	{
 		/// <summary>
