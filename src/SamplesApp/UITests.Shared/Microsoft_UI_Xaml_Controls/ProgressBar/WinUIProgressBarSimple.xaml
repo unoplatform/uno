@@ -25,9 +25,11 @@
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
 			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
 		</Grid.RowDefinitions>
 		<TextBlock FontSize="15" Grid.Row="0" Grid.Column="0" FontWeight="Bold">Control--&gt;</TextBlock>
 		<winui:ProgressBar Grid.Row="0" Grid.Column="1"
+						   x:Name="progressBar"
 		                   MinHeight="{Binding Value, ElementName=minHeight}"
 		                   Value="{Binding Value, ElementName=slider}"
 		                   Padding="{Binding Value, ElementName=padding, Converter={StaticResource doubleToThickness}}"
@@ -52,5 +54,12 @@
 			<ToggleButton x:Name="showError">ShowError</ToggleButton>
 			<ToggleButton x:Name="showPaused">ShowPaused</ToggleButton>
 		</StackPanel>
+
+		<TextBlock FontSize="15" Grid.Row="5" Grid.Column="0">States:</TextBlock>
+
+		<ScrollViewer Grid.Row="5" Grid.Column="1">
+			<TextBlock x:Name="states" FontSize="9" FontFamily="Monospace" />
+		</ScrollViewer>
+
 	</Grid>
 </Page>
