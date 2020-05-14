@@ -17,9 +17,11 @@ using Windows.Foundation;
 using Windows.Graphics.Imaging;
 using Windows.Storage;
 using Windows.Storage.Pickers;
+using Windows.System;
 using Windows.UI;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Shapes;
@@ -32,7 +34,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 	public sealed partial class Basic_Shapes : Page
 	{
 		#region Shapes
-		private readonly Factory[] _shapes = new [] 
+		private readonly Factory[] _shapes = new []
 		{
 			Factory.New(() => new Rectangle
 			{
@@ -218,14 +220,16 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				shapesPanel.Children.Add(sizePanel);
 			}
 
+			_root.Visibility = Visibility.Visible;
+			_testZone.Child = null;
 			_root.Content = shapesPanel;
 		}
 
 		private async void GenerateScreenshots(object sender, RoutedEventArgs e)
 		{
+
 #if WINDOWS_UWP
 			var folder = await new FolderPicker { FileTypeFilter = { "*" } }.PickSingleFolderAsync();
-
 			var alteratorsMap = _stretches.SelectMany(stretch => _sizes.Select(size => new[] { stretch, size })).ToArray();
 
 			foreach (var shape in _shapes)
@@ -248,8 +252,17 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				}
 			}
 
-			Update(); // Restores the user's config
+			_root.Visibility = Visibility.Visible;
+			_testZone.Child = null;
 #endif
+		}
+
+		private void OnIdInputChanged(object sender, KeyRoutedEventArgs e)
+		{
+			if (((TextBox)sender).Text.EndsWith('.'))
+			{
+				RenderById(null, null);
+			}
 		}
 
 		private void RenderById(object sender, RoutedEventArgs e)
@@ -258,7 +271,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 
 			if (!parsedId.Success)
 			{
-				_root.Content = new TextBlock
+				_testZone.Child = new TextBlock
 				{
 					Text = $"Failed to parse {parsedId}",
 					Foreground = new SolidColorBrush(Colors.Red)
@@ -275,10 +288,12 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				var alterators = alteratorIds.Select(id => _stretches.Concat(_sizes).Single(a => a.Id == id)).ToArray();
 
 				RenderHoriVertGridForScreenshot(shape, alterators);
+
+				_idInput.Text = ""; // Clear for next automated test!
 			}
 			catch (Exception error)
 			{
-				_root.Content = new TextBlock
+				_testZone.Child = new TextBlock
 				{
 					Text = $"Failed to render {parsedId}: {error.Message}",
 					Foreground = new SolidColorBrush(Colors.Red)
@@ -288,6 +303,8 @@ namespace UITests.Windows_UI_Xaml_Shapes
 
 		private Grid RenderHoriVertGridForScreenshot(Factory shape, Alterator[] alterators)
 		{
+			_root.Visibility = Visibility.Collapsed;
+
 			var grid = BuildHoriVertTestGrid(
 				() => alterators.Aggregate(shape.Create(), (s, a) =>
 				{
@@ -301,9 +318,18 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			grid.VerticalAlignment = VerticalAlignment.Top;
 			grid.HorizontalAlignment = HorizontalAlignment.Left;
 
-			_root.Content = grid;
+			// We ste clip and add wrapping container so the rendering engine won't generate screenshots with a transparent padding.
+			grid.Clip = new RectangleGeometry { Rect = new Rect(0, 0, grid.Width, grid.Height) };
+			var containerGrid = new Grid
+			{
+				Width = grid.Width,
+				Height = grid.Height,
+				Children = { grid }
+			};
 
-			return grid;
+			_testZone.Child = containerGrid;
+
+			return containerGrid;
 		}
 
 		private Grid BuildHoriVertTestGrid(Func<FrameworkElement> template, string title, int itemSize = 150)
@@ -329,6 +355,11 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			else
 			{
 				labels = (0, 0);
+
+				// We hard-code width and height for screenshots:
+				// as content might overflow a bit, the rendering engine will append transparent padding in screenshots.
+				grid.Width = horizontalAlignments.Length * itemDimensions.Width;
+				grid.Height = verticalAlignments.Length * itemDimensions.Height;
 			}
 
 			grid.ColumnDefinitions.AddRange(horizontalAlignments.Select(_ => new ColumnDefinition {Width = new GridLength(itemDimensions.Width)}));
