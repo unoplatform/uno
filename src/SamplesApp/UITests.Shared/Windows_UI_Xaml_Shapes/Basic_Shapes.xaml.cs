@@ -31,90 +31,42 @@ namespace UITests.Windows_UI_Xaml_Shapes
 	[Sample("Shapes")]
 	public sealed partial class Basic_Shapes : Page
 	{
-		public Basic_Shapes()
+		#region Shapes
+		private readonly Factory[] _shapes = new [] 
 		{
-			this.InitializeComponent();
-
-			Update();
-		}
-
-		private void SettingsUpdated(object sender, object e) => Update();
-
-		private void Update()
-		{
-			if (_root == null)
+			Factory.New(() => new Rectangle
 			{
-				return;
-			}
-			var shapes = GetShapes().ToList();
-			var sizes = GetSizes().ToList();
-			var stretches = GetStretches().ToList();
+				Fill = new SolidColorBrush(Color.FromArgb(160, 255, 0, 0)),
+				Stroke = new SolidColorBrush(Color.FromArgb(255, 255, 0, 0)),
+				StrokeThickness = 6
+			}),
 
-			var shapesPanel = new StackPanel { Orientation = Orientation.Vertical };
-			foreach (var shape in shapes)
+			Factory.New(() => new Ellipse
 			{
-				var sizePanel = new StackPanel { Orientation = Orientation.Vertical };
-				foreach (var size in sizes)
-				{
-					var stretchPanel = new StackPanel { Orientation = Orientation.Horizontal };
-					foreach (var stretch in stretches)
-					{
-						var items = BuildHoriVertStretchGrid(
-							() =>
-							{
-								var sut = shape();
-								size.Alter(sut);
-								stretch.Alter(sut);
-								return sut;
-							},
-							$"[{shape().GetType().Name.ToUpperInvariant()}]\r\nSize: {size.Name}\r\nShape stretch: {stretch.Name}");
-						items.BorderBrush = new SolidColorBrush(Colors.HotPink);
-						items.BorderThickness = new Thickness(5);
-						stretchPanel.Children.Add(items);
-					}
-					sizePanel.Children.Add(stretchPanel);
-				}
-				shapesPanel.Children.Add(sizePanel);
-			}
+				Fill = new SolidColorBrush(Color.FromArgb(160, 255, 128, 0)),
+				Stroke = new SolidColorBrush(Color.FromArgb(255, 255, 128, 0)),
+				StrokeThickness = 6
+			}),
 
-			_root.Content = shapesPanel;
-
-
-			IEnumerable<Generator> GetShapes()
+			Factory.New(() => new Line
 			{
-				if (_shapeRectangle.IsOn) yield return () => new Rectangle
-				{
-					Fill = new SolidColorBrush(Color.FromArgb(160, 255, 0,0)),
-					Stroke = new SolidColorBrush(Color.FromArgb(255, 255, 0, 0)),
-					StrokeThickness = 6
-				};
+				Fill = new SolidColorBrush(Color.FromArgb(160, 255, 255, 0)),
+				Stroke = new SolidColorBrush(Color.FromArgb(255, 255, 255, 0)),
+				StrokeThickness = 6,
+				X1 = 50,
+				Y1 = 25,
+				X2 = 125,
+				Y2 = 100
+			}),
 
-				if (_shapeEllipse.IsOn) yield return () => new Ellipse
+			Factory.New(() => new Windows.UI.Xaml.Shapes.Path
+			{
+				Fill = new SolidColorBrush(Color.FromArgb(160, 0, 128, 0)),
+				Stroke = new SolidColorBrush(Color.FromArgb(255, 0, 128, 0)),
+				StrokeThickness = 6,
+				Data = new PathGeometry
 				{
-					Fill = new SolidColorBrush(Color.FromArgb(160, 255, 128, 0)),
-					Stroke = new SolidColorBrush(Color.FromArgb(255, 255, 128, 0)),
-					StrokeThickness = 6
-				};
-
-				if (_shapeLine.IsOn) yield return () => new Line
-				{
-					Fill = new SolidColorBrush(Color.FromArgb(160, 255, 255, 0)),
-					Stroke = new SolidColorBrush(Color.FromArgb(255, 255, 255, 0)),
-					StrokeThickness = 6,
-					X1 = 50,
-					Y1 = 25,
-					X2 = 125,
-					Y2 = 100
-				};
-
-				if (_shapePath.IsOn) yield return () => new Windows.UI.Xaml.Shapes.Path
-				{
-					Fill = new SolidColorBrush(Color.FromArgb(160, 0, 128, 0)),
-					Stroke = new SolidColorBrush(Color.FromArgb(255, 0, 128, 0)),
-					StrokeThickness = 6,
-					Data = new PathGeometry
-					{
-						Figures =
+					Figures =
 						{
 							new PathFigure
 							{
@@ -129,64 +81,232 @@ namespace UITests.Windows_UI_Xaml_Shapes
 								}
 							}
 						}
-					}
-				};
+				}
+			}),
 
-				if (_shapePolygon.IsOn) yield return () => new Polygon
-				{
-					Fill = new SolidColorBrush(Color.FromArgb(160, 0, 0, 255)),
-					Stroke = new SolidColorBrush(Color.FromArgb(160, 0, 0, 255)),
-					StrokeThickness = 6,
-					Points = { new Point(25, 25), new Point(25, 125), new Point(125, 125) }
-				};
+			Factory.New(() => new Polygon
+			{
+				Fill = new SolidColorBrush(Color.FromArgb(160, 0, 0, 255)),
+				Stroke = new SolidColorBrush(Color.FromArgb(160, 0, 0, 255)),
+				StrokeThickness = 6,
+				Points = { new Point(25, 25), new Point(25, 125), new Point(125, 125) }
+			}),
 
-				if (_shapePolyline.IsOn) yield return () => new Polyline
-				{
-					Fill = new SolidColorBrush(Color.FromArgb(160, 160, 0, 192)),
-					Stroke = new SolidColorBrush(Color.FromArgb(255, 160, 0, 192)),
-					StrokeThickness = 6,
-					Points = { new Point(25, 25), new Point(25, 125), new Point(125, 125) }
-				};
+			Factory.New(() => new Polyline
+			{
+				Fill = new SolidColorBrush(Color.FromArgb(160, 160, 0, 192)),
+				Stroke = new SolidColorBrush(Color.FromArgb(255, 160, 0, 192)),
+				StrokeThickness = 6,
+				Points = { new Point(25, 25), new Point(25, 125), new Point(125, 125) }
+			})
+		};
+		#endregion
+
+		#region Stretches
+		private readonly Alterator[] _stretches = new[]
+		{
+			new Alterator("Default"),
+			new Alterator("None", shape => shape.Stretch = Stretch.None),
+			new Alterator("Fill", shape => shape.Stretch = Stretch.Fill),
+			new Alterator("Uniform", shape => shape.Stretch = Stretch.Uniform),
+			new Alterator("UniformToFill", shape => shape.Stretch = Stretch.UniformToFill),
+		};
+		#endregion
+
+		#region Sizes
+		const int smallWidth = 100, smallHeight = 75, largeWidth = 300, largeHeight = 225;
+
+		private readonly Alterator[] _sizes = new[]
+		{
+			new Alterator("Unconstrained"),
+
+			new Alterator("Fixed small", "scaled up as shape smaller than container", shape =>
+			{
+				shape.Width = smallWidth;
+				shape.Height = smallHeight;
+			}),
+			new Alterator("Fixed large", "scaled down as shape bigger than container", shape =>
+			{
+				shape.Width = largeWidth;
+				shape.Height = largeHeight;
+			}),
+			new Alterator("Fixed width small", "scaled up as shape less large than container", shape => shape.Width = smallWidth, false),
+			new Alterator("Fixed width large", "scaled down as shape larger than container", shape => shape.Width = largeWidth, false),
+			new Alterator("Fixed height small", "scaled up as shape less tall than container", shape => shape.Height = smallHeight, false),
+			new Alterator("Fixed height large", "scaled down as shape taller than container", shape => shape.Height = largeHeight, false),
+
+			new Alterator("Min small", "scaled up as shape smaller than container", shape =>
+			{
+				shape.MinWidth = smallWidth;
+				shape.MinHeight = smallHeight;
+			}, false),
+			new Alterator("Min large", "scaled down as shape bigger than container", shape =>
+			{
+				shape.MinWidth = largeWidth;
+				shape.MinHeight = largeHeight;
+			}, false),
+			new Alterator("Min width small", "scaled up as shape less large than container", shape => shape.MinWidth = smallWidth, false),
+			new Alterator("Min width large", "scaled down as shape larger than container", shape => shape.MinWidth = largeWidth, false),
+			new Alterator("Min height small", "scaled up as shape less tall than container", shape => shape.MinHeight = smallHeight, false),
+			new Alterator("Min height large", "scaled down as shape taller than container", shape => shape.MinHeight = largeHeight, false),
+
+			new Alterator("Max small", shape =>
+			{
+				shape.MaxWidth = smallWidth;
+				shape.MaxHeight = smallHeight;
+			}, false),
+			new Alterator("Max large", shape =>
+			{
+				shape.MaxWidth = largeWidth;
+				shape.MaxHeight = largeHeight;
+			}, false),
+			new Alterator("Max width small", "scaled up as shape less large than container", shape => shape.MaxWidth = smallWidth, false),
+			new Alterator("Max width large", "scaled down as shape larger than container", shape => shape.MaxWidth = largeWidth, false),
+			new Alterator("Max height small", "scaled up as shape less tall than container", shape => shape.MaxHeight = smallHeight, false),
+			new Alterator("Max height large", "scaled down as shape taller than container", shape => shape.MaxHeight = largeHeight, false),
+		};
+		#endregion
+
+		public Basic_Shapes()
+		{
+			this.InitializeComponent();
+
+			_shapesConfig.Children.AddRange(_shapes.Select(s => s.Option));
+			_sizesConfig.Children.AddRange(_sizes.Select(s => s.Option));
+			_stretchesConfig.Children.AddRange(_stretches.Select(s => s.Option));
+
+			Update();
+		}
+
+		private void SettingsUpdated(object sender, object e) => Update();
+
+		private void Update()
+		{
+			if (_root == null)
+			{
+				return;
 			}
 
-			IEnumerable<IAlterator> GetSizes()
-			{
-				const int smallWidth = 100, smallHeight = 75, largeWidth = 300, largeHeight = 225;
+			var shapes = _shapes.Where(s => s.Option.IsOn).ToList();
+			var sizes = _sizes.Where(s => s.Option.IsOn).ToList();
+			var stretches = _stretches.Where(s => s.Option.IsOn).ToList();
 
-				if (_sizeUnconstrained.IsOn) yield return new NullAlterator("Unconstrained");
-				if (_sizeFixedSmall.IsOn) yield return new SizeSmall();
-				if (_sizeFixedLarge.IsOn) yield return new SizeLarge();
-				if (_sizeFixedLarge.IsOn) yield return new GenericAlterator(
-					"Min width only - Large", s =>
+			var shapesPanel = new StackPanel { Orientation = Orientation.Vertical };
+			foreach (var shape in shapes)
+			{
+				var sizePanel = new StackPanel { Orientation = Orientation.Vertical };
+				foreach (var size in sizes)
+				{
+					var stretchPanel = new StackPanel { Orientation = Orientation.Horizontal };
+					foreach (var stretch in stretches)
 					{
-						s.MinWidth = largeWidth;
-					});
+						var items = BuildHoriVertTestGrid(
+							() =>
+							{
+								var sut = shape.Create();
+								size.Alter(sut);
+								stretch.Alter(sut);
+								return sut;
+							},
+							$"[{shape.Name.ToUpperInvariant()}]\r\nSize: {size.Name}\r\nShape stretch: {stretch.Name}");
+						items.BorderBrush = new SolidColorBrush(Colors.HotPink);
+						items.BorderThickness = new Thickness(5);
+						stretchPanel.Children.Add(items);
+					}
+					sizePanel.Children.Add(stretchPanel);
+				}
+				shapesPanel.Children.Add(sizePanel);
 			}
 
-			IEnumerable<IAlterator> GetSizesDef()
-			{
-				const int smallWidth = 100, smallHeight = 75, largeWidth = 300, largeHeight = 225;
+			_root.Content = shapesPanel;
+		}
 
-				yield return new NullAlterator("Unconstrained");
-				yield return new SizeSmall();
-				yield return new SizeLarge();
-				yield return new GenericAlterator("Min width only - Small", s => s.MinWidth = smallWidth);
-				yield return new GenericAlterator("Min height only - Small", s => s.MinHeight = smallHeight);
-				yield return new GenericAlterator("Min width only - Large", s => s.MinWidth = largeWidth);
-				yield return new GenericAlterator("Min height only - Large", s => s.MinHeight = largeHeight);
+		private async void GenerateScreenshots(object sender, RoutedEventArgs e)
+		{
+#if WINDOWS_UWP
+			var folder = await new FolderPicker { FileTypeFilter = { "*" } }.PickSingleFolderAsync();
+
+			var alteratorsMap = _stretches.SelectMany(stretch => _sizes.Select(size => new[] { stretch, size })).ToArray();
+
+			foreach (var shape in _shapes)
+			foreach (var alterators in alteratorsMap)
+			{
+				var fileName = shape.Name + "_" + string.Join("_", alterators.Select(a => a.Id)) + ".png";
+				var grid = RenderHoriVertGridForScreenshot(shape, alterators);
+				await Task.Yield();
+
+				var renderer = new RenderTargetBitmap();
+				await renderer.RenderAsync(grid);
+
+				var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.ReplaceExisting);
+				using (var output = await file.OpenAsync(FileAccessMode.ReadWrite))
+				{
+					var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, output);
+					encoder.SetSoftwareBitmap(SoftwareBitmap.CreateCopyFromBuffer(await renderer.GetPixelsAsync(), BitmapPixelFormat.Bgra8, renderer.PixelWidth, renderer.PixelHeight));
+					await encoder.FlushAsync();
+					await output.FlushAsync();
+				}
 			}
 
-			IEnumerable<IAlterator> GetStretches()
+			Update(); // Restores the user's config
+#endif
+		}
+
+		private void RenderById(object sender, RoutedEventArgs e)
+		{
+			var parsedId = Regex.Match(_idInput.Text, @"(?<shape>[a-zA-Z]+)(_(?<alteratorId>[a-zA-Z]+))+");
+
+			if (!parsedId.Success)
 			{
-				if (_stretchDefault.IsOn) yield return new NullAlterator();
-				if (_stretchNone.IsOn) yield return new StretchNone();
-				if (_stretchFill.IsOn) yield return new StretchFill();
-				if (_stretchUniform.IsOn) yield return new StretchUniform();
-				if (_stretchUniformToFill.IsOn) yield return new StretchUniformToFill();
+				_root.Content = new TextBlock
+				{
+					Text = $"Failed to parse {parsedId}",
+					Foreground = new SolidColorBrush(Colors.Red)
+				};
+				return;
+			}
+
+			try
+			{
+				var shapeName = parsedId.Groups["shape"].Value;
+				var shape = _shapes.Single(s => s.Name == shapeName);
+
+				var alteratorIds = parsedId.Groups["alteratorId"].Captures.Select(c => c.Value);
+				var alterators = alteratorIds.Select(id => _stretches.Concat(_sizes).Single(a => a.Id == id)).ToArray();
+
+				RenderHoriVertGridForScreenshot(shape, alterators);
+			}
+			catch (Exception error)
+			{
+				_root.Content = new TextBlock
+				{
+					Text = $"Failed to render {parsedId}: {error.Message}",
+					Foreground = new SolidColorBrush(Colors.Red)
+				};
 			}
 		}
 
-		private Grid BuildHoriVertStretchGrid(Func<FrameworkElement> template, string title, int itemSize = 150)
+		private Grid RenderHoriVertGridForScreenshot(Factory shape, Alterator[] alterators)
+		{
+			var grid = BuildHoriVertTestGrid(
+				() => alterators.Aggregate(shape.Create(), (s, a) =>
+				{
+					a.Alter(s);
+					return s;
+				}),
+				null,
+				150);
+
+			grid.Background = new SolidColorBrush(Colors.White); // Much easier for screenshot comparison :)
+			grid.VerticalAlignment = VerticalAlignment.Top;
+			grid.HorizontalAlignment = HorizontalAlignment.Left;
+
+			_root.Content = grid;
+
+			return grid;
+		}
+
+		private Grid BuildHoriVertTestGrid(Func<FrameworkElement> template, string title, int itemSize = 150)
 		{
 			var isLabelEnabled = title != null;
 			var horizontalAlignments = new[] {HorizontalAlignment.Left, HorizontalAlignment.Center, HorizontalAlignment.Right, HorizontalAlignment.Stretch};
@@ -258,119 +378,57 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				};
 		}
 
-		private delegate Shape Generator();
-		private interface IAlterator
+		private class Factory
 		{
-			string Name { get; }
-			void Alter(Shape shape);
-		}
+			private readonly Func<Shape> _factory;
 
-		private class NullAlterator : IAlterator
-		{
-			public NullAlterator(string name = "Default") => Name = name;
+			public static Factory New<T>(Func<T> factory)
+				where T : Shape
+				=> new Factory(typeof(T).Name, factory);
+
+			private Factory(string name, Func<Shape> factory)
+			{
+				_factory = factory;
+				Name = name;
+
+				Option = new ToggleSwitch { OnContent = Name, OffContent = Name, IsOn = true };
+			}
 
 			public string Name { get; }
 
-			public void Alter(Shape shape) { }
+			public ToggleSwitch Option { get; }
+
+			public Shape Create() => _factory();
 		}
 
-		private class SizeSmall : IAlterator
-		{
-			public string Name => "Fixed UP (shape smaller than container)";
-			public void Alter(Shape shape)
-			{
-				shape.Width = 100;
-				shape.Height = 75;
-			}
-		}
-
-		private class SizeLarge : IAlterator
-		{
-			public string Name => "Fixed DOWN (shape larger than container)";
-			public void Alter(Shape shape)
-			{
-				shape.Width = 300;
-				shape.Height = 225;
-			}
-		}
-
-		private class GenericAlterator : IAlterator
+		private class Alterator
 		{
 			private readonly Action<Shape> _alter;
 
-			public GenericAlterator(string name, Action<Shape> alter)
+			public Alterator(string name)
+				: this(name, null, _ => { })
+			{
+			}
+
+			public Alterator(string name, Action<Shape> alter, bool isEnabled = true)
+				: this(name, null, alter, isEnabled)
+			{
+			}
+
+			public Alterator(string name, string details, Action<Shape> alter, bool isEnabled = true)
 			{
 				_alter = alter;
 				Name = name;
+				Id = Regex.Replace(name, @"([^\w]|[ ])(?<first>[a-z])", m => m.Groups["first"].Value.ToUpperInvariant());
+
+				var desc = details?.HasValue() ?? false ? $"{name} ({details})" : name;
+				Option = new ToggleSwitch { OnContent = desc, OffContent = desc, IsOn = isEnabled };
 			}
 
+			public string Id { get; set; }
 			public string Name { get; }
+			public ToggleSwitch Option { get; set; }
 			public void Alter(Shape shape) => _alter(shape);
-		}
-
-		private class StretchNone : IAlterator
-		{
-			public string Name => "None";
-			public void Alter(Shape shape) => shape.Stretch = Stretch.None;
-		}
-		private class StretchFill : IAlterator
-		{
-			public string Name => "Fill";
-			public void Alter(Shape shape) => shape.Stretch = Stretch.Fill;
-		}
-		private class StretchUniform : IAlterator
-		{
-			public string Name => "Uniform";
-			public void Alter(Shape shape) => shape.Stretch = Stretch.Uniform;
-		}
-		private class StretchUniformToFill : IAlterator
-		{
-			public string Name => "UniformToFill";
-			public void Alter(Shape shape) => shape.Stretch = Stretch.UniformToFill;
-		}
-
-		private async void GenerateScreenshots(object sender, RoutedEventArgs e)
-		{
-#if WINDOWS_UWP
-			var folder = await new FolderPicker{FileTypeFilter = { "*" }}.PickSingleFolderAsync();
-
-			Func<Shape> shape = () => new Rectangle
-			{
-				Fill = new SolidColorBrush(Color.FromArgb(160, 255, 0, 0)),
-				Stroke = new SolidColorBrush(Color.FromArgb(255, 255, 0, 0)),
-				StrokeThickness = 6
-			};
-			var alterators = new IAlterator[]
-			{
-				new StretchUniform(),
-				new SizeLarge()
-			};
-
-			var fileName = string.Join("_", alterators.Select(a => Regex.Replace(a.Name, @"[^\w]|[ ]", ""))) + ".png";
-			var grid = BuildHoriVertStretchGrid(
-				() => alterators.Aggregate(shape(), (s, a) =>
-				{
-					a.Alter(s);
-					return s;
-				}),
-				null,
-				150);
-
-			_root.Content = grid;
-			await Task.Yield();
-
-			var renderer = new RenderTargetBitmap();
-			await renderer.RenderAsync(grid);
-
-			var file = await folder.CreateFileAsync(fileName, CreationCollisionOption.FailIfExists);
-			using (var output = await file.OpenAsync(FileAccessMode.ReadWrite))
-			{
-				var encoder = await BitmapEncoder.CreateAsync(BitmapEncoder.PngEncoderId, output);
-				encoder.SetSoftwareBitmap(SoftwareBitmap.CreateCopyFromBuffer(await renderer.GetPixelsAsync(), BitmapPixelFormat.Bgra8, renderer.PixelWidth, renderer.PixelHeight));
-				await encoder.FlushAsync();
-				await output.FlushAsync();
-			}
-#endif
 		}
 	}
 
