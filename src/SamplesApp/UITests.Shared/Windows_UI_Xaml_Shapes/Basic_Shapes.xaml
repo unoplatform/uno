@@ -4,6 +4,7 @@
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	mc:Ignorable="d"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
@@ -30,15 +31,18 @@
 					</Flyout>
 				</Button.Flyout>
 			</Button>
-			<Button
-				Content="Generate screenshots (Windows only)"
-				Click="GenerateScreenshots"/>
+			<win:Button
+				Content="Generate screenshots"
+				Click="GenerateScreenshots"
+				Margin="5,0,0,0" />
 			<TextBox
-				x:Name="_idInput"/>
+				x:Name="_idInput"
+				KeyUp="OnIdInputChanged"
+				Margin="5,0,0,0" />
 			<Button
 				x:Name="_renderId"
 				Content="Render ID"
-				Click="RenderById"/>
+				Click="RenderById" />
 		</StackPanel>
 
 		<ScrollViewer
@@ -48,8 +52,12 @@
 			HorizontalScrollBarVisibility="Visible"
 			VerticalScrollMode="Auto"
 			VerticalScrollBarVisibility="Visible"
-			ZoomMode="Enabled">
+			ZoomMode="Enabled" />
 
-		</ScrollViewer>
+		<Border
+			x:Name="_testZone"
+			Grid.Row="1"
+			HorizontalAlignment="Left"
+			VerticalAlignment="Top" />
 	</Grid>
 </Page>
