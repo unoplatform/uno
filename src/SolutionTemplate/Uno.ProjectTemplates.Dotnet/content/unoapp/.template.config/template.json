@@ -50,6 +50,22 @@
         "format": "N"
       }
     },
+    "guid3": {
+      "type": "generated",
+      "generator": "guid",
+      "replaces": "$guid3$",
+      "parameters": {
+        "format": "N"
+      }
+    },
+    "guid4": {
+      "type": "generated",
+      "generator": "guid",
+      "replaces": "$guid4$",
+      "parameters": {
+        "format": "N"
+      }
+    },
     "windowsPublisherName": {
       "type": "parameter",
       "datatype": "text",
