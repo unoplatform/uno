@@ -2,9 +2,15 @@
 {
 	public class SplitButtonClickEventArgs
 	{
+		internal SplitButtonClickEventArgs()
+		{
+		}
 	}
 
 	public class ToggleSplitButtonIsCheckedChangedEventArgs
 	{
+		internal ToggleSplitButtonIsCheckedChangedEventArgs()
+		{
+		}
 	}
 }

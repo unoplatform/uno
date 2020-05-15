@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Microsoft Corporation. All rights reserved.
 // Licensed under the MIT License. See LICENSE in the project root for license information.
 
+// MUX commit reference 36f8f8f6d5f11f414fdaa0462d0c4cb845cf4254
+
 using System;
 using System.Windows.Input;
 
@@ -20,6 +22,7 @@ using Microsoft.VisualStudio.TestTools.UnitTesting.Logging;
 #endif
 
 using SplitButton = Microsoft.UI.Xaml.Controls.SplitButton;
+using ToggleSplitButton = Microsoft.UI.Xaml.Controls.ToggleSplitButton;
 
 namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 {
@@ -59,6 +62,23 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 				Verify.AreEqual(splitButton.Flyout, flyout);
 				Verify.AreEqual(splitButton.Command, command);
 				Verify.AreEqual(splitButton.CommandParameter, parameter);
+			});
+		}
+
+		[TestMethod]
+		[Description("Verifies ToggleSplitButton IsChecked property.")]
+		public void VerifyIsCheckedProperty()
+		{
+			RunOnUIThread.Execute(() =>
+			{
+				ToggleSplitButton toggleSplitButton = new ToggleSplitButton();
+
+				Verify.IsFalse(toggleSplitButton.IsChecked, "ToggleSplitButton is not unchecked");
+
+				toggleSplitButton.SetValue(ToggleSplitButton.IsCheckedProperty, true);
+
+				bool isChecked = (bool)toggleSplitButton.GetValue(ToggleSplitButton.IsCheckedProperty);
+				Verify.IsTrue(isChecked, "ToggleSplitButton is not checked");
 			});
 		}
 	}
