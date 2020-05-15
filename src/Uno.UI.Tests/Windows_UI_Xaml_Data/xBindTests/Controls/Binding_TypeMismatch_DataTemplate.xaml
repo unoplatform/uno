@@ -12,9 +12,14 @@
 						x:FieldModifier="public">
 			<ContentControl.ContentTemplate>
 				<DataTemplate x:DataType="local:Binding_TypeMismatch_DataTemplate_Data">
-					<Slider x:Name="mySlider"
-							x:FieldModifier="public"
-							Value="{x:Bind MyInteger, Mode=TwoWay}"/>
+					<StackPanel>
+						<Slider x:Name="mySlider"
+								x:FieldModifier="public"
+								Value="{x:Bind MyInteger, Mode=TwoWay}" />
+						<TextBlock x:Name="myTextBlock"
+								   x:FieldModifier="public"
+								   Text="{x:Bind MyInteger, Mode=TwoWay}" />
+					</StackPanel>
 				</DataTemplate>
 			</ContentControl.ContentTemplate>
 		</ContentControl>
