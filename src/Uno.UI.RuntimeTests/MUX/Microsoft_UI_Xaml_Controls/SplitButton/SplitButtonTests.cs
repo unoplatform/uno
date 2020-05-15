@@ -3,6 +3,7 @@
 
 // MUX commit reference 36f8f8f6d5f11f414fdaa0462d0c4cb845cf4254
 
+#if !WINDOWS_UWP
 using System;
 using System.Windows.Input;
 
@@ -102,3 +103,4 @@ namespace Windows.UI.Xaml.Tests.MUXControls.ApiTests
 	}
 #pragma warning restore CS0067
 }
+#endif
