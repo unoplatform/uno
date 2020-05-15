@@ -7,7 +7,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public class SplitButtonAutomationPeer : FrameworkElementAutomationPeer, IExpandCollapseProvider, IInvokeProvider
 	{
-		private SplitButton _owner;
+		private readonly SplitButton _owner;
 
 		public SplitButtonAutomationPeer(SplitButton owner) : base(owner)
 		{

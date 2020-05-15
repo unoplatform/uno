@@ -13,7 +13,7 @@ namespace Microsoft.UI.Xaml.Automation.Peers
 {
 	public class ToggleSplitButtonAutomationPeer : FrameworkElementAutomationPeer, IExpandCollapseProvider, IToggleProvider
 	{
-		private ToggleSplitButton _owner;
+		private readonly ToggleSplitButton _owner;
 
 		public ToggleSplitButtonAutomationPeer(ToggleSplitButton owner) : base(owner)
 		{
