@@ -600,15 +600,18 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			SUT.ForceLoaded();
 
-			var inner = SUT.FindName("mySlider") as Slider;
+			var slider = SUT.FindName("mySlider") as Slider;
+			var textBlock = SUT.FindName("myTextBlock") as TextBlock;
 
-			Assert.AreEqual(0.0, inner.Value);
+			Assert.AreEqual(0.0, slider.Value);
+			Assert.AreEqual("0", textBlock.Text);
 			Assert.AreEqual(0, SUT.MyInteger);
 
-			inner.Minimum = 10.0;
+			slider.Minimum = 10.0;
 
-			Assert.AreEqual(10.0, inner.Value);
+			Assert.AreEqual(10.0, slider.Value);
 			Assert.AreEqual(10, SUT.MyInteger);
+			Assert.AreEqual("10", textBlock.Text);
 		}
 
 		[TestMethod]
@@ -624,14 +627,17 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 			SUT.ForceLoaded();
 
 			var slider = SUT.FindName("mySlider") as Slider;
+			var textBlock = SUT.FindName("myTextBlock") as TextBlock;
 
 			Assert.AreEqual(0.0, slider.Value);
 			Assert.AreEqual(0, rootData.MyInteger);
+			Assert.AreEqual("0", textBlock.Text);
 
 			slider.Minimum = 10.0;
 
 			Assert.AreEqual(10.0, slider.Value);
 			Assert.AreEqual(10, rootData.MyInteger);
+			Assert.AreEqual("10", textBlock.Text);
 		}
 	}
 }
