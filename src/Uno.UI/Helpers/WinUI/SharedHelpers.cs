@@ -818,17 +818,5 @@ namespace Uno.UI.Helpers.WinUI
 				return null;
 			}
 		}
-
-		internal static void RaiseAutomationPropertyChangedEvent<T>(UIElement element, T oldValue, T newValue)
-		{
-			AutomationPeer peer = FrameworkElementAutomationPeer.FromElement(element);
-			if (peer != null)
-			{
-				peer.RaisePropertyChangedEvent(
-					ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty,
-					oldValue,
-					newValue);
-			}
-		}
 	}
 }

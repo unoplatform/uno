@@ -138,8 +138,6 @@ namespace Microsoft.UI.Xaml.Controls
 			}
 		}
 
-
-
 		private void OnVisualPropertyChanged(DependencyObject sender, DependencyProperty args)
 		{
 			UpdateVisualStates();
@@ -295,7 +293,7 @@ namespace Microsoft.UI.Xaml.Controls
 			AutomationPeer peer = FrameworkElementAutomationPeer.FromElement(this);
 			if (peer != null)
 			{
-				//peer.RaiseAutomationEvent(AutomationEvents.InvokePatternOnInvoked);
+				peer.RaiseAutomationEvent(AutomationEvents.InvokePatternOnInvoked);
 			}
 		}
 
