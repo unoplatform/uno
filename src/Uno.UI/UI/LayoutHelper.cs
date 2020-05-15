@@ -238,6 +238,15 @@ namespace Uno.UI
 		}
 
 		[Pure]
+		internal static Size NumberOrDefault(this Size value, Size defaultValue)
+		{
+			return new Size(
+				value.Width.NumberOrDefault(defaultValue.Width),
+				value.Height.NumberOrDefault(defaultValue.Height)
+			);
+		}
+
+		[Pure]
 		internal static double FiniteOrDefault(this double value, double defaultValue)
 		{
 #if XAMARIN
@@ -249,15 +258,6 @@ namespace Uno.UI
 				? defaultValue
 				: value;
 #endif
-		}
-
-		[Pure]
-		internal static Size NumberOrDefault(this Size value, Size defaultValue)
-		{
-			return new Size(
-				value.Width.NumberOrDefault(defaultValue.Width),
-				value.Height.NumberOrDefault(defaultValue.Height)
-			);
 		}
 
 		[Pure]
