@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.Connectivity
 {
-	#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || __IOS__ || NET461 || false || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ConnectionProfile 
@@ -98,7 +98,7 @@ namespace Windows.Networking.Connectivity
 		}
 		#endif
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.ProfileName.get
-		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Connectivity.NetworkConnectivityLevel GetNetworkConnectivityLevel()
 		{
