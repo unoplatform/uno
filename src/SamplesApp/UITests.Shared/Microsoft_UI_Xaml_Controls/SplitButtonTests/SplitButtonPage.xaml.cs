@@ -15,13 +15,12 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
+#if HAS_UNO
 using SplitButton = Microsoft.UI.Xaml.Controls.SplitButton;
 using SplitButtonTestHelper = Microsoft.UI.Private.Controls.SplitButtonTestHelper;
 using ToggleSplitButton = Microsoft.UI.Xaml.Controls.ToggleSplitButton;
 using ToggleSplitButtonIsCheckedChangedEventArgs = Microsoft.UI.Xaml.Controls.ToggleSplitButtonIsCheckedChangedEventArgs;
-
-
-// The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
+#endif
 
 namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 {
@@ -31,6 +30,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 	[SampleControlInfo("SplitButton", "MUX_Test")]
 	public sealed partial class SplitButtonPage : Page
     {
+#if HAS_UNO
 		private int _clickCount = 0;
 		private int _flyoutOpenedCount = 0;
 		private int _flyoutClosedCount = 0;
@@ -39,11 +39,12 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 		private int _commandExecuteCount = 0;
 
 		private Flyout _placementFlyout;
+#endif
 
 		public SplitButtonPage()
 		{
 			this.InitializeComponent();
-
+#if HAS_UNO
 			SplitButtonTestHelper.SimulateTouch = false;
 
 			TestExecuteCommand = new MyCommand(this);
@@ -77,8 +78,10 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 				"CheckedSecondaryPointerOver",
 				"CheckedSecondaryPressed",
 			};
+#endif
 		}
 
+#if HAS_UNO
 		private void TestSplitButton_Click(object sender, object e)
 		{
 			ClickCountTextBlock.Text = (++_clickCount).ToString();
@@ -160,6 +163,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 		{
 			ToggleStateOnClickTextBlock.Text = ToggleSplitButton.IsChecked ? "Checked" : "Unchecked";
 		}
+#endif
 	}
 
 	public class MyCommand : ICommand

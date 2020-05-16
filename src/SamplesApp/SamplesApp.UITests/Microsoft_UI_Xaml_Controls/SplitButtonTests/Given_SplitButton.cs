@@ -21,10 +21,9 @@ namespace SamplesApp.UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 			var canExecuteCheckBox = _app.Marked("CanExecuteCheckBox");
 			var executeCountTextBlock = _app.Marked("ExecuteCountTextBlock");
 
-			Console.WriteLine("Assert that the control starts out enabled");
-			var isChecked = canExecuteCheckBox.GetDependencyPropertyValue("IsChecked");
-			Assert.AreEqual(true, isChecked);
-			Assert.AreEqual(true, splitButton.GetDependencyPropertyValue("IsEnabled"));
+			Console.WriteLine("Assert that the control starts out enabled");			
+			Assert.IsTrue("true".Equals(canExecuteCheckBox.GetDependencyPropertyValue("IsChecked").ToString(), StringComparison.InvariantCultureIgnoreCase));
+			Assert.IsTrue("true".Equals(splitButton.GetDependencyPropertyValue("IsEnabled").ToString(), StringComparison.InvariantCultureIgnoreCase));
 			Assert.AreEqual("0", executeCountTextBlock.GetText());
 
 			Console.WriteLine("Click primary button to execute command");
