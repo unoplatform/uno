@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Storage.Streams
 {
-	#if false || false || false || false || false
+	#if false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class Buffer : global::Windows.Storage.Streams.IBuffer
 	{
-		#if false || false || false || false || false
+		#if false
 		[global::Uno.NotImplemented]
 		public  uint Length
 		{
@@ -21,7 +21,7 @@ namespace Windows.Storage.Streams
 			}
 		}
 		#endif
-		#if false || false || false || false || false
+		#if false
 		[global::Uno.NotImplemented]
 		public  uint Capacity
 		{
@@ -31,7 +31,7 @@ namespace Windows.Storage.Streams
 			}
 		}
 		#endif
-		#if false || false || false || false || false
+		#if false
 		[global::Uno.NotImplemented]
 		public Buffer( uint capacity) 
 		{
@@ -55,13 +55,7 @@ namespace Windows.Storage.Streams
 		{
 			throw new global::System.NotImplementedException("The member MemoryBuffer Buffer.CreateMemoryBufferOverIBuffer(IBuffer input) is not implemented in Uno.");
 		}
-
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		// should be internal, but we need this to compile...
-		[global::Uno.NotImplemented]
-		public byte[] Data { get; }
-#endif 
-#endif
+		#endif
 		// Processing: Windows.Storage.Streams.IBuffer
 	}
 }
