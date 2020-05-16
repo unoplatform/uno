@@ -15,7 +15,7 @@
         <local:MyCommand x:Key="TestExecuteCommand" />
     </Page.Resources>
 
-    <xamarin:Grid Margin="12" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+    <Grid Margin="12" Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="*" />
@@ -228,5 +228,5 @@
                     Unchecked="SetFlyoutCheckBox_Unchecked" />
             </StackPanel>
         </StackPanel>
-    </xamarin:Grid>
+    </Grid>
 </Page>

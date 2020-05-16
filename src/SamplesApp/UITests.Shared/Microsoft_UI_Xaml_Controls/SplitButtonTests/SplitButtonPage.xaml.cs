@@ -15,12 +15,12 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
 
-#if HAS_UNO
 using SplitButton = Microsoft.UI.Xaml.Controls.SplitButton;
+#if HAS_UNO
 using SplitButtonTestHelper = Microsoft.UI.Private.Controls.SplitButtonTestHelper;
+#endif
 using ToggleSplitButton = Microsoft.UI.Xaml.Controls.ToggleSplitButton;
 using ToggleSplitButtonIsCheckedChangedEventArgs = Microsoft.UI.Xaml.Controls.ToggleSplitButtonIsCheckedChangedEventArgs;
-#endif
 
 namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 {
@@ -30,7 +30,6 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 	[SampleControlInfo("SplitButton", "MUX_Test")]
 	public sealed partial class SplitButtonPage : Page
     {
-#if HAS_UNO
 		private int _clickCount = 0;
 		private int _flyoutOpenedCount = 0;
 		private int _flyoutClosedCount = 0;
@@ -39,13 +38,13 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 		private int _commandExecuteCount = 0;
 
 		private Flyout _placementFlyout;
-#endif
 
 		public SplitButtonPage()
 		{
 			this.InitializeComponent();
 #if HAS_UNO
 			SplitButtonTestHelper.SimulateTouch = false;
+#endif
 
 			TestExecuteCommand = new MyCommand(this);
 
@@ -78,10 +77,8 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 				"CheckedSecondaryPointerOver",
 				"CheckedSecondaryPressed",
 			};
-#endif
 		}
 
-#if HAS_UNO
 		private void TestSplitButton_Click(object sender, object e)
 		{
 			ClickCountTextBlock.Text = (++_clickCount).ToString();
@@ -99,12 +96,16 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 
 		private void SimulateTouchCheckBox_Checked(object sender, RoutedEventArgs e)
 		{
+#if HAS_UNO
 			SplitButtonTestHelper.SimulateTouch = true;
+#endif
 		}
 
 		private void SimulateTouchCheckBox_Unchecked(object sender, RoutedEventArgs e)
 		{
+#if HAS_UNO
 			SplitButtonTestHelper.SimulateTouch = false;
+#endif
 		}
 
 		private void EnableCheckBox_Checked(object sender, RoutedEventArgs e)
@@ -163,10 +164,8 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 		{
 			ToggleStateOnClickTextBlock.Text = ToggleSplitButton.IsChecked ? "Checked" : "Unchecked";
 		}
-#endif
 	}
 
-#if HAS_UNO
 	public class MyCommand : ICommand
 	{
 		public event EventHandler CanExecuteChanged;
@@ -201,5 +200,4 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 			_parentPage.CommandExecute();
 		}
 	}
-#endif
 }
