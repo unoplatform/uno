@@ -166,6 +166,7 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 #endif
 	}
 
+#if HAS_UNO
 	public class MyCommand : ICommand
 	{
 		public event EventHandler CanExecuteChanged;
@@ -200,4 +201,5 @@ namespace UITests.Microsoft_UI_Xaml_Controls.SplitButtonTests
 			_parentPage.CommandExecute();
 		}
 	}
+#endif
 }
