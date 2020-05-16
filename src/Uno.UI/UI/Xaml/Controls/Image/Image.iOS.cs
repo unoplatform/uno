@@ -148,7 +148,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetImageFromWriteableBitmap(WriteableBitmap writeableBitmap)
 		{
-			if (writeableBitmap.PixelBuffer is InMemoryBuffer memoryBuffer)
+			if (writeableBitmap.PixelBuffer is Storage.Streams.Buffer memoryBuffer)
 			{
 				// Convert RGB colorspace.
 				var bgraBuffer = memoryBuffer.Data;

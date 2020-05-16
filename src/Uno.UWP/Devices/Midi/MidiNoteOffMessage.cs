@@ -9,7 +9,7 @@ namespace Windows.Devices.Midi
 	/// </summary>
 	public partial class MidiNoteOffMessage : IMidiMessage
 	{
-		private readonly InMemoryBuffer _buffer;
+		private readonly Storage.Streams.Buffer _buffer;
 
 		/// <summary>
 		/// Creates a new MidiNoteOffMessage object.
@@ -23,7 +23,7 @@ namespace Windows.Devices.Midi
 			MidiMessageValidators.VerifyRange(note, MidiMessageParameter.Note);
 			MidiMessageValidators.VerifyRange(velocity, MidiMessageParameter.Velocity);
 
-			_buffer = new InMemoryBuffer(new byte[] {
+			_buffer = new Storage.Streams.Buffer(new byte[] {
 				(byte)((byte)Type | channel),
 				note,
 				velocity
@@ -38,7 +38,7 @@ namespace Windows.Devices.Midi
 			MidiMessageValidators.VerifyRange(rawData[1], MidiMessageParameter.Note);
 			MidiMessageValidators.VerifyRange(rawData[2], MidiMessageParameter.Velocity);
 
-			_buffer = new InMemoryBuffer(rawData);
+			_buffer = new Storage.Streams.Buffer(rawData);
 			Timestamp = timestamp;
 		}
 

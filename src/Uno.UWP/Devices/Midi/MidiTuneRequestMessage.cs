@@ -14,7 +14,7 @@ namespace Windows.Devices.Midi
 		/// </summary>
 		public MidiTuneRequestMessage()
 		{
-			RawData = new InMemoryBuffer(new byte[]
+			RawData = new Storage.Streams.Buffer(new byte[]
 			{
 				(byte)Type
 			});
@@ -25,7 +25,7 @@ namespace Windows.Devices.Midi
 			MidiMessageValidators.VerifyMessageLength(rawData, 1, Type);
 			MidiMessageValidators.VerifyMessageType(rawData[0], Type);
 
-			RawData = new InMemoryBuffer(rawData);
+			RawData = new Storage.Streams.Buffer(rawData);
 			Timestamp = timestamp;
 		}
 

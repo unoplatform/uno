@@ -9,7 +9,7 @@ namespace Windows.Devices.Midi
 	/// </summary>
 	public partial class MidiSongPositionPointerMessage : IMidiMessage
 	{
-		private readonly InMemoryBuffer _buffer;
+		private readonly Storage.Streams.Buffer _buffer;
 
 		/// <summary>
 		/// Creates a new MidiSongPositionPointerMessage object.
@@ -19,7 +19,7 @@ namespace Windows.Devices.Midi
 		{
 			MidiMessageValidators.VerifyRange(beats, MidiMessageParameter.Beats);
 
-			_buffer = new InMemoryBuffer(new byte[]
+			_buffer = new Storage.Streams.Buffer(new byte[]
 			{
 				(byte)MidiMessageType.SongPositionPointer,
 				(byte)(beats & 0b0111_1111),
@@ -33,7 +33,7 @@ namespace Windows.Devices.Midi
 			MidiMessageValidators.VerifyMessageType(rawData[0], Type);
 			MidiMessageValidators.VerifyRange(MidiHelpers.GetBeats(rawData[1], rawData[2]), MidiMessageParameter.Beats);
 
-			_buffer = new InMemoryBuffer(rawData);
+			_buffer = new Storage.Streams.Buffer(rawData);
 			Timestamp = timestamp;
 		}
 

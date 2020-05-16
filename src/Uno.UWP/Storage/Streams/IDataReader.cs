@@ -6,8 +6,6 @@ namespace Windows.Storage.Streams
 	{
 		ByteOrder ByteOrder { get; set; }
 
-		InputStreamOptions InputStreamOptions { get; set; }
-
 		uint UnconsumedBufferLength { get; }
 
 		UnicodeEncoding UnicodeEncoding { get; set; }
@@ -42,10 +40,6 @@ namespace Windows.Storage.Streams
 
 		TimeSpan ReadTimeSpan();
 
-		DataReaderLoadOperation LoadAsync(uint count);
-
 		IBuffer DetachBuffer();
-
-		IInputStream DetachStream();
 	}
 }

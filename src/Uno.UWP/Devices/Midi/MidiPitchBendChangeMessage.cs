@@ -9,7 +9,7 @@ namespace Windows.Devices.Midi
 	/// </summary>
 	public partial class MidiPitchBendChangeMessage : IMidiMessage
 	{
-		private readonly InMemoryBuffer _buffer;
+		private readonly Storage.Streams.Buffer _buffer;
 
 		/// <summary>
 		/// Creates a new MidiPitchBendChangeMessage object.
@@ -21,7 +21,7 @@ namespace Windows.Devices.Midi
 			MidiMessageValidators.VerifyRange(channel, MidiMessageParameter.Channel);
 			MidiMessageValidators.VerifyRange(bend, MidiMessageParameter.Bend);
 
-			_buffer = new InMemoryBuffer(new byte[]
+			_buffer = new Storage.Streams.Buffer(new byte[]
 			{
 				(byte)((byte)Type | channel),
 				(byte)(bend & 0b0111_1111),
@@ -36,7 +36,7 @@ namespace Windows.Devices.Midi
 			MidiMessageValidators.VerifyRange(MidiHelpers.GetChannel(rawData[0]), MidiMessageParameter.Channel);			
 			MidiMessageValidators.VerifyRange(MidiHelpers.GetBend(rawData[1], rawData[2]), MidiMessageParameter.Bend);
 
-			_buffer = new InMemoryBuffer(rawData);
+			_buffer = new Storage.Streams.Buffer(rawData);
 			Timestamp = timestamp;
 		}
 

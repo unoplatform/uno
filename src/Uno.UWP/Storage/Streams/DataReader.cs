@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Buffers;
+using Uno.Buffers;
 using System.Text;
 using Uno.Disposables;
 

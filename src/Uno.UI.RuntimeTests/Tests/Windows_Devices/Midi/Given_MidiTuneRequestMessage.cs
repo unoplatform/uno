@@ -1,20 +1,19 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Devices.Midi;
 
-namespace Uno.UI.Tests.Windows_Devices.Midi
+namespace Uno.UI.RuntimeTests.Tests.Windows_Devices.Midi
 {
 	[TestClass]
-	public class Given_MidiSystemResetMessage
+	public class Given_MidiTuneRequestMessage
 	{
         [TestMethod]
 		public void When_RawData()
 		{
-			var message = new MidiSystemResetMessage();
+			var message = new MidiTuneRequestMessage();
 			var data = message.RawData.ToArray();
-			CollectionAssert.AreEqual(new byte[] { 255 }, data);
+			CollectionAssert.AreEqual(new byte[] { 246 }, data);
 		}
 	}
 }

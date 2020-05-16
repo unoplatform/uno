@@ -9,7 +9,7 @@ namespace Windows.Devices.Midi
 	/// </summary>
 	public partial class MidiControlChangeMessage : IMidiMessage
 	{
-		private readonly InMemoryBuffer _buffer;
+		private readonly Storage.Streams.Buffer _buffer;
 
 		/// <summary>
 		/// Creates a new MidiControlChangeMessage object.
@@ -23,7 +23,7 @@ namespace Windows.Devices.Midi
 			MidiMessageValidators.VerifyRange(controller, MidiMessageParameter.Controller);
 			MidiMessageValidators.VerifyRange(controlValue, MidiMessageParameter.ControlValue);
 
-			_buffer = new InMemoryBuffer(new byte[]
+			_buffer = new Storage.Streams.Buffer(new byte[]
 			{
 				(byte)((byte)MidiMessageType.ControlChange | channel),
 				controller,
@@ -39,7 +39,7 @@ namespace Windows.Devices.Midi
 			MidiMessageValidators.VerifyRange(rawData[1], MidiMessageParameter.Controller);
 			MidiMessageValidators.VerifyRange(rawData[2], MidiMessageParameter.ControlValue);
 
-			_buffer = new InMemoryBuffer(rawData);
+			_buffer = new Storage.Streams.Buffer(rawData);
 			Timestamp = timestamp;
 		}
 

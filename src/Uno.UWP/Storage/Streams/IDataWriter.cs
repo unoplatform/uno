@@ -47,12 +47,8 @@ namespace Windows.Storage.Streams
 
 		uint MeasureString(string value);
 
-		DataWriterStoreOperation StoreAsync();
-
 		IAsyncOperation<bool> FlushAsync();
 
 		IBuffer DetachBuffer();
-
-		IOutputStream DetachStream();
 	}
 }

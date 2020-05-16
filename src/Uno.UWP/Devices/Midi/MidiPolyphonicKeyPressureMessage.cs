@@ -9,7 +9,7 @@ namespace Windows.Devices.Midi
 	/// </summary>
 	public partial class MidiPolyphonicKeyPressureMessage : IMidiMessage
 	{
-		private readonly InMemoryBuffer _buffer;
+		private readonly Storage.Streams.Buffer _buffer;
 
 		/// <summary>
 		/// Creates a new MidiPolyphonicKeyPressureMessage object.
@@ -23,7 +23,7 @@ namespace Windows.Devices.Midi
 			MidiMessageValidators.VerifyRange(note, MidiMessageParameter.Note);
 			MidiMessageValidators.VerifyRange(pressure, MidiMessageParameter.Pressure);
 
-			_buffer = new InMemoryBuffer(new byte[]
+			_buffer = new Storage.Streams.Buffer(new byte[]
 			{
 				(byte)((byte)Type | channel),
 				note,
@@ -39,7 +39,7 @@ namespace Windows.Devices.Midi
 			MidiMessageValidators.VerifyRange(rawData[1], MidiMessageParameter.Note);
 			MidiMessageValidators.VerifyRange(rawData[2], MidiMessageParameter.Pressure);
 
-			_buffer = new InMemoryBuffer(rawData);
+			_buffer = new Storage.Streams.Buffer(rawData);
 			Timestamp = timestamp;
 		}
 

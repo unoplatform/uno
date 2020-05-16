@@ -9,7 +9,7 @@ namespace Windows.Devices.Midi
 	/// </summary>
 	public partial class MidiTimeCodeMessage : IMidiMessage
 	{
-		private InMemoryBuffer _buffer;
+		private Storage.Streams.Buffer _buffer;
 
 		/// <summary>
 		/// Creates a new MidiTimeCodeMessage object.
@@ -21,7 +21,7 @@ namespace Windows.Devices.Midi
 			MidiMessageValidators.VerifyRange(frameType, MidiMessageParameter.Frame);
 			MidiMessageValidators.VerifyRange(values, MidiMessageParameter.FrameValues);
 
-			_buffer = new InMemoryBuffer(new byte[]
+			_buffer = new Storage.Streams.Buffer(new byte[]
 			{
 				(byte)Type,
 				(byte)(frameType << 4 | values)
@@ -35,7 +35,7 @@ namespace Windows.Devices.Midi
 			MidiMessageValidators.VerifyRange(MidiHelpers.GetFrame(rawData[1]), MidiMessageParameter.Frame);
 			MidiMessageValidators.VerifyRange(MidiHelpers.GetFrameValues(rawData[1]), MidiMessageParameter.FrameValues);
 
-			_buffer = new InMemoryBuffer(rawData);
+			_buffer = new Storage.Streams.Buffer(rawData);
 			Timestamp = timestamp;
 		}
 

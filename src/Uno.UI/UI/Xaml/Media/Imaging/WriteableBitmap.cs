@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		public WriteableBitmap(int pixelWidth, int pixelHeight) : base()
 		{
-			PixelBuffer = new InMemoryBuffer(pixelWidth * pixelHeight * 4);
+			PixelBuffer = new Storage.Streams.Buffer((uint)(pixelWidth * pixelHeight * 4));
 
 			PixelWidth = pixelWidth;
 			PixelHeight = pixelHeight;

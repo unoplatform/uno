@@ -1,9 +1,7 @@
-﻿
-
-using System.IO;
+﻿using System.IO;
 using Windows.Storage.Streams;
-using Windows.Foundation;
 using System.Linq;
+using UwpBuffer = Windows.Storage.Streams.Buffer;
 
 namespace System.Runtime.InteropServices.WindowsRuntime
 {
@@ -11,7 +9,7 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 	{
 		public static IBuffer AsBuffer(this byte[] source)
 		{
-			return new InMemoryBuffer(source);
+			return new UwpBuffer(source);
 		}
 
 		[Uno.NotImplemented]
@@ -23,7 +21,7 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 		{
 			switch (source)
 			{
-				case InMemoryBuffer mb:
+				case UwpBuffer mb:
 					return new MemoryStream(mb.Data);
 
 				default:
@@ -56,9 +54,8 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 		{
 			switch (source)
 			{
-				case InMemoryBuffer mb:
-					return mb.Data;
-
+				case UwpBuffer b:
+					return b.Data;
 				default:
 					throw new NotSupportedException("This buffer is not supported");
 			}
@@ -68,7 +65,7 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 		{
 			switch (source)
 			{
-				case InMemoryBuffer mb:
+				case UwpBuffer mb:
 					return mb.Data.Skip((int)sourceIndex).Take(count).ToArray();
 
 				default:

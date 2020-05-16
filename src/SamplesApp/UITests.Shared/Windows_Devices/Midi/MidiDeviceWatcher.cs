@@ -11,7 +11,6 @@
 
 using System;
 using System.Collections.ObjectModel;
-using Android.Database;
 using Windows.Devices.Enumeration;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;

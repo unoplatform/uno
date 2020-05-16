@@ -14,7 +14,7 @@ namespace Windows.Devices.Midi
 		/// </summary>
 		public MidiContinueMessage()
 		{
-			RawData = new InMemoryBuffer(new byte[] { (byte)Type });
+			RawData = new Storage.Streams.Buffer(new byte[] { (byte)Type });
 		}
 
 		internal MidiContinueMessage(byte[] rawData, TimeSpan timestamp)
@@ -22,7 +22,7 @@ namespace Windows.Devices.Midi
 			MidiMessageValidators.VerifyMessageLength(rawData, 1, Type);
 			MidiMessageValidators.VerifyMessageType(rawData[0], Type);
 
-			RawData = new InMemoryBuffer(rawData);
+			RawData = new Storage.Streams.Buffer(rawData);
 			Timestamp = timestamp;
 		}
 

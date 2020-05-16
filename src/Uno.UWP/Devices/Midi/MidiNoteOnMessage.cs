@@ -9,7 +9,7 @@ namespace Windows.Devices.Midi
 	/// </summary>
 	public partial class MidiNoteOnMessage : IMidiMessage
 	{
-		private readonly InMemoryBuffer _buffer;
+		private readonly Storage.Streams.Buffer _buffer;
 
 		/// <summary>
 		/// Creates a new MidiNoteOnMessage object.
@@ -23,7 +23,7 @@ namespace Windows.Devices.Midi
 			MidiMessageValidators.VerifyRange(note, MidiMessageParameter.Note);
 			MidiMessageValidators.VerifyRange(velocity, MidiMessageParameter.Velocity);
 
-			_buffer = new InMemoryBuffer(new byte[] {
+			_buffer = new Storage.Streams.Buffer(new byte[] {
 				(byte)((byte)Type | channel),
 				note,
 				velocity
@@ -38,7 +38,7 @@ namespace Windows.Devices.Midi
 			MidiMessageValidators.VerifyRange(rawData[1], MidiMessageParameter.Note);
 			MidiMessageValidators.VerifyRange(rawData[2], MidiMessageParameter.Velocity);
 
-			_buffer = new InMemoryBuffer(rawData);
+			_buffer = new Storage.Streams.Buffer(rawData);
 			Timestamp = timestamp;
 		}
 
@@ -50,22 +50,22 @@ namespace Windows.Devices.Midi
 		/// <summary>
 		/// Gets the channel from 0-15 that this message applies to.
 		/// </summary>
-		public byte Channel { get; }
+		public byte Channel => MidiHelpers.GetChannel(_buffer.Data[0]);
 
 		/// <summary>
 		/// Gets the note to turn off which is specified as a value from 0-127.
 		/// </summary>
-		public byte Note { get; }
+		public byte Note => _buffer.Data[1];
 
 		/// <summary>
 		/// Gets the value of the velocity from 0-127.
 		/// </summary>
-		public byte Velocity { get; }
+		public byte Velocity => _buffer.Data[2];
 
 		/// <summary>
 		/// Gets the array of bytes associated with the MIDI message, including status byte.
 		/// </summary>
-		public IBuffer RawData { get; }
+		public IBuffer RawData => _buffer;
 
 		/// <summary>
 		/// Gets the duration from when the MidiInPort was created to the time the message was received.

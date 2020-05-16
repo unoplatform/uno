@@ -24,7 +24,7 @@ namespace Windows.Devices.Midi
 				throw new ArgumentException("Buffer must not be empty", nameof(rawData));
 			}
 
-			if (rawData is InMemoryBuffer inMemory &&
+			if (rawData is Storage.Streams.Buffer inMemory &&
 				inMemory.Data[0] == (byte)MidiMessageType.EndSystemExclusive)
 			{
 				Type = MidiMessageType.EndSystemExclusive;
@@ -50,7 +50,7 @@ namespace Windows.Devices.Midi
 				Type = MidiMessageType.EndSystemExclusive;
 			}
 
-			RawData = new InMemoryBuffer(rawData);
+			RawData = new Storage.Streams.Buffer(rawData);
 			Timestamp = timestamp;
 		}
 
