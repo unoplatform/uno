@@ -2,7 +2,8 @@ namespace Windows.Networking.Connectivity
 {
 	public partial class NetworkInformation
 	{
-		private static object _syncLock = new object();
+		private static readonly object _syncLock = new object();
+
 		private static NetworkStatusChangedEventHandler _networkStatusChanged = null;
 
 		private static readonly ConnectionProfile _internetConnectionProfile =
@@ -38,7 +39,7 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 
-		private static void OnNetworkStatusChanged() =>
+		internal static void OnNetworkStatusChanged() =>
 			_networkStatusChanged?.Invoke(null);
 	}
 }
