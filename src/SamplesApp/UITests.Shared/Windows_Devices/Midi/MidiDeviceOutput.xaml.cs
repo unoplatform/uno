@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using Microsoft.UI.Xaml.Controls;
 using UITests.Shared.Helpers;
 using Uno.Disposables;
 using Uno.UI.Samples.Controls;
@@ -13,6 +12,10 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+
+#if !WINDOWS_UWP
+using Microsoft.UI.Xaml.Controls;
+#endif
 
 // The User Control item template is documented at https://go.microsoft.com/fwlink/?LinkId=234236
 
@@ -204,9 +207,15 @@ namespace UITests.Shared.Windows_Devices.Midi
 			this.resetButton.IsEnabled = true;
 
 			// Reset selections on parameters
-			this.parameter1.Value = 0;
-			this.parameter2.Value = 0;
-			this.parameter3.Value = 0;
+#if !WINDOWS_UWP
+			parameter1.Value = 0;
+			parameter2.Value = 0;
+			parameter3.Value = 0;
+#else
+			parameter1.Text = "0";
+			parameter2.Text = "0";
+			parameter3.Text = "0";
+#endif
 
 			// New selection values will cause parameter boxes to be hidden and disabled
 			UpdateParameterList1();
@@ -233,25 +242,25 @@ namespace UITests.Shared.Windows_Devices.Midi
 			switch (this.currentMessageType)
 			{
 				case MidiMessageType.NoteOff:
-					midiMessageToSend = new MidiNoteOffMessage(Convert.ToByte(this.parameter1.Value), Convert.ToByte(this.parameter2.Value), Convert.ToByte(this.parameter3.Value));
+					midiMessageToSend = new MidiNoteOffMessage(Convert.ToByte(GetParameterValue(parameter1)), Convert.ToByte(GetParameterValue(parameter2)), Convert.ToByte(GetParameterValue(parameter3)));
 					break;
 				case MidiMessageType.NoteOn:
-					midiMessageToSend = new MidiNoteOnMessage(Convert.ToByte(this.parameter1.Value), Convert.ToByte(this.parameter2.Value), Convert.ToByte(this.parameter3.Value));
+					midiMessageToSend = new MidiNoteOnMessage(Convert.ToByte(GetParameterValue(parameter1)), Convert.ToByte(GetParameterValue(parameter2)), Convert.ToByte(GetParameterValue(parameter3)));
 					break;
 				case MidiMessageType.PolyphonicKeyPressure:
-					midiMessageToSend = new MidiPolyphonicKeyPressureMessage(Convert.ToByte(this.parameter1.Value), Convert.ToByte(this.parameter2.Value), Convert.ToByte(this.parameter3.Value));
+					midiMessageToSend = new MidiPolyphonicKeyPressureMessage(Convert.ToByte(GetParameterValue(parameter1)), Convert.ToByte(GetParameterValue(parameter2)), Convert.ToByte(GetParameterValue(parameter3)));
 					break;
 				case MidiMessageType.ControlChange:
-					midiMessageToSend = new MidiControlChangeMessage(Convert.ToByte(this.parameter1.Value), Convert.ToByte(this.parameter2.Value), Convert.ToByte(this.parameter3.Value));
+					midiMessageToSend = new MidiControlChangeMessage(Convert.ToByte(GetParameterValue(parameter1)), Convert.ToByte(GetParameterValue(parameter2)), Convert.ToByte(GetParameterValue(parameter3)));
 					break;
 				case MidiMessageType.ProgramChange:
-					midiMessageToSend = new MidiProgramChangeMessage(Convert.ToByte(this.parameter1.Value), Convert.ToByte(this.parameter2.Value));
+					midiMessageToSend = new MidiProgramChangeMessage(Convert.ToByte(GetParameterValue(parameter1)), Convert.ToByte(GetParameterValue(parameter2)));
 					break;
 				case MidiMessageType.ChannelPressure:
-					midiMessageToSend = new MidiChannelPressureMessage(Convert.ToByte(this.parameter1.Value), Convert.ToByte(this.parameter2.Value));
+					midiMessageToSend = new MidiChannelPressureMessage(Convert.ToByte(GetParameterValue(parameter1)), Convert.ToByte(GetParameterValue(parameter2)));
 					break;
 				case MidiMessageType.PitchBendChange:
-					midiMessageToSend = new MidiPitchBendChangeMessage(Convert.ToByte(this.parameter1.Value), Convert.ToUInt16(this.parameter2.Value));
+					midiMessageToSend = new MidiPitchBendChangeMessage(Convert.ToByte(GetParameterValue(parameter1)), Convert.ToUInt16(GetParameterValue(parameter2)));
 					break;
 				case MidiMessageType.SystemExclusive:
 					var dataWriter = new DataWriter();
@@ -279,13 +288,13 @@ namespace UITests.Shared.Windows_Devices.Midi
 					midiMessageToSend = new MidiSystemExclusiveMessage(dataWriter.DetachBuffer());
 					break;
 				case MidiMessageType.MidiTimeCode:
-					midiMessageToSend = new MidiTimeCodeMessage(Convert.ToByte(this.parameter1.Value), Convert.ToByte(this.parameter2.Value));
+					midiMessageToSend = new MidiTimeCodeMessage(Convert.ToByte(GetParameterValue(parameter1)), Convert.ToByte(GetParameterValue(parameter2)));
 					break;
 				case MidiMessageType.SongPositionPointer:
-					midiMessageToSend = new MidiSongPositionPointerMessage(Convert.ToUInt16(this.parameter1.Value));
+					midiMessageToSend = new MidiSongPositionPointerMessage(Convert.ToUInt16(GetParameterValue(parameter1)));
 					break;
 				case MidiMessageType.SongSelect:
-					midiMessageToSend = new MidiSongSelectMessage(Convert.ToByte(this.parameter1.Value));
+					midiMessageToSend = new MidiSongSelectMessage(Convert.ToByte(GetParameterValue(parameter1)));
 					break;
 				case MidiMessageType.TuneRequest:
 					midiMessageToSend = new MidiTuneRequestMessage();
@@ -452,8 +461,12 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// <param name="e">Event arguments</param>
 		private void Parameter1_SelectionChanged(object sender, object e)
 		{
+#if WINDOWS_UWP
+			int parameter1SelectedIndex = int.Parse(this.parameter1.Text);
+#else
 			// Find the index of the user's choice
-			int parameter1SelectedIndex = (int)this.parameter1.Value;
+			int parameter1SelectedIndex = (int)GetParameterValue(parameter1);
+#endif
 
 			// Some MIDI message types don't need additional parameters past parameter 1
 			// For them, show the Send button as soon as user selects parameter 1 value from the list
@@ -485,8 +498,12 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// </summary>
 		private void UpdateParameterList2()
 		{
+#if WINDOWS_UWP
+			int parameter2SelectedIndex = int.Parse(this.parameter2.Text);
+#else
 			// Find the index of the user's choice
-			int parameter2SelectedIndex = (byte)this.parameter2.Value;
+			int parameter2SelectedIndex = (int)GetParameterValue(parameter2);
+#endif
 
 			// Some MIDI message types don't need additional parameters past parameter 2
 			// For them, show the Send button as soon as user selects parameter 2 value from the list
@@ -559,8 +576,12 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// </summary>
 		private void UpdateParameterList3()
 		{
+#if WINDOWS_UWP
+			int parameter3SelectedIndex = int.Parse(this.parameter3.Text);
+#else
 			// Find the index of the user's choice
-			int parameter3SelectedIndex = (int)this.parameter3.Value;
+			int parameter3SelectedIndex = (int)GetParameterValue(parameter3);
+#endif
 
 			// The last set of MIDI message types don't need additional parameters
 			// For them, show the Send button as soon as user selects parameter 3 value from the list
@@ -611,6 +632,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 			}
 		}
 
+#if !WINDOWS_UWP
 		/// <summary>
 		/// Helper function to populate a dropdown lists with options
 		/// </summary>
@@ -626,6 +648,19 @@ namespace UITests.Shared.Windows_Devices.Midi
 			numberBox.IsEnabled = true;
 			numberBox.Visibility = Visibility.Visible;
 		}
+
+		private int GetParameterValue(NumberBox numberBox) => (int)numberBox.Value;
+#else
+		private void PopulateParameterList(TextBox numberBox, int numberOfOptions, string listName)
+		{
+			// Show the list, so that the user can make the next choice
+			numberBox.Header = listName;
+			numberBox.IsEnabled = true;
+			numberBox.Visibility = Visibility.Visible;
+		}
+
+		private int GetParameterValue(TextBox numberBox) => int.Parse(numberBox.Text);
+#endif
 
 		private void NotifyUser(string message)
 		{

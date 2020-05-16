@@ -216,6 +216,7 @@ namespace Windows.Storage.Streams
 				default:
 					throw new NotSupportedException("This buffer is not supported");
 			}
+			_bufferPosition++;
 			return nextByte;
 		}
 

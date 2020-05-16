@@ -6,9 +6,11 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="using:UITests.Shared.Windows_Devices.Midi"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:not_win="http:/uno.ui/not_win"
+    xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     d:DesignHeight="1000"
     d:DesignWidth="1000"
-    mc:Ignorable="d">
+    mc:Ignorable="d not_win">
 
     <UserControl.Resources>
         <Style x:Key="ScenarioHeaderTextStyle" TargetType="TextBlock">
@@ -84,7 +86,7 @@
                         Style="{StaticResource MessageTypeStyle}" />
 
                     <!--  MIDI message parameters required for some types of MIDI messages  -->
-                    <StackPanel
+                    <not_win:StackPanel
                         x:Name="messageParameters"
                         Margin="0,20,0,0"
                         Orientation="Horizontal">
@@ -121,7 +123,39 @@
                                 SpinButtonPlacementMode="Inline"
                                 Visibility="Collapsed" />
                         </StackPanel>
-                    </StackPanel>
+                    </not_win:StackPanel>
+                    <win:StackPanel
+                        x:Name="messageParameters"
+                        Margin="0,20,0,0"
+                        Orientation="Horizontal">
+                        <StackPanel>
+                            <TextBox
+                                x:Name="parameter1"
+                                Width="140"
+                                Margin="0"
+                                Header="Parameter 1"
+                                IsEnabled="False"
+                                Visibility="Collapsed" />
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBox
+                                x:Name="parameter2"
+                                Width="140"
+                                Margin="10,0,0,0"
+                                Header="Parameter 2"
+                                IsEnabled="False"
+                                Visibility="Collapsed" />
+                        </StackPanel>
+                        <StackPanel>
+                            <TextBox
+                                x:Name="parameter3"
+                                Width="140"
+                                Margin="10,0,0,0"
+                                Header="Parameter 3"
+                                IsEnabled="False"
+                                Visibility="Collapsed" />
+                        </StackPanel>
+                    </win:StackPanel>
 
                     <!--  Message content  -->
                     <StackPanel

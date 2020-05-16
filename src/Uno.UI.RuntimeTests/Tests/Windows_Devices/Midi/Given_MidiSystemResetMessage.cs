@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Windows.Devices.Midi;
