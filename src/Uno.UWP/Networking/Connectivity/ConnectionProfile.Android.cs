@@ -1,18 +1,14 @@
 ﻿#if __ANDROID__
-
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using AndroidConnectivityManager = Android.Net.ConnectivityManager;
 
 namespace Windows.Networking.Connectivity
 {
 
 	public partial class ConnectionProfile
 	{
-		public bool IsWwanConnectionProfile { get; internal set; }
-		public bool IsWlanConnectionProfile { get; internal set; }
+		private AndroidConnectivityManager _connectivityManager;
 
 		internal ConnectionProfile(bool isInternet)
 		{
@@ -58,6 +54,23 @@ namespace Windows.Networking.Connectivity
 			// other Android types: Bluetooth=7, Dummy=8, Ethernet=9, Vpn=17
 
 		}
+
+		public NetworkConnectivityLevel GetNetworkConnectivityLevel()
+		{
+			//PermissionsHelper.IsDeclaredInManifest(Manifest.Permission.AccessNetworkState)
+			//return _connectivityManager.ActiveNetwork.Interf
+			return NetworkConnectivityLevel.None;
+		}
+
+		public ConnectionCost GetConnectionCost() =>
+			new ConnectionCost(
+				_connectivityManager.IsActiveNetworkMetered ?
+					NetworkCostType.Fixed : // we currently don't make distinction between variable and fixed metered connection on Android
+					NetworkCostType.Unrestricted);
+
+		public bool IsWwanConnectionProfile { get; internal set; }
+
+		public bool IsWlanConnectionProfile { get; internal set; }		
 	}
 
 }

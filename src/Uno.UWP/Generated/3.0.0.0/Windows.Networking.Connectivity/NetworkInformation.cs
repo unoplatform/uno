@@ -58,7 +58,7 @@ namespace Windows.Networking.Connectivity
 		#endif
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkInformation.NetworkStatusChanged.add
 		// Forced skipping of method Windows.Networking.Connectivity.NetworkInformation.NetworkStatusChanged.remove
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::Windows.Networking.Connectivity.NetworkStatusChangedEventHandler NetworkStatusChanged
 		{

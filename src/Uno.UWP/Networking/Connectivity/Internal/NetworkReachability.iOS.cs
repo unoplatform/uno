@@ -1,5 +1,5 @@
 ﻿// Adapted from https://github.com/xamarin/Essentials/blob/master/Xamarin.Essentials/Connectivity/Connectivity.ios.tvos.reachability.cs
-#if __IOS__
+#if __IOS__ || __MACOS__
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using SystemConfiguration;
 using CoreFoundation;
 
-namespace Uno.Networking.Connectivity.Helpers
+namespace Uno.Networking.Connectivity.Internal
 {
 	internal enum NetworkStatus
 	{
@@ -16,7 +16,7 @@ namespace Uno.Networking.Connectivity.Helpers
 		ReachableViaWiFiNetwork
 	}
 
-	static class Reachability
+	internal static class Reachability
 	{
 		internal const string HostName = "www.microsoft.com";
 

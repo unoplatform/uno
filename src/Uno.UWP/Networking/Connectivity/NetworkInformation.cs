@@ -6,11 +6,9 @@ namespace Windows.Networking.Connectivity
 
 		private static NetworkStatusChangedEventHandler _networkStatusChanged = null;
 
-		private static readonly ConnectionProfile _internetConnectionProfile =
-			new ConnectionProfile();
+		private static readonly ConnectionProfile _internetConnectionProfile = new ConnectionProfile(true);
 
-		public static ConnectionProfile GetInternetConnectionProfile() =>
-			_internetConnectionProfile;
+		public static ConnectionProfile GetInternetConnectionProfile() => _internetConnectionProfile;
 
 		public static event NetworkStatusChangedEventHandler NetworkStatusChanged
 		{
@@ -39,7 +37,6 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 
-		internal static void OnNetworkStatusChanged() =>
-			_networkStatusChanged?.Invoke(null);
+		internal static void OnNetworkStatusChanged() => _networkStatusChanged?.Invoke(null);
 	}
 }

@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Android.Content;
+using Windows.Networking.Connectivity;
 
-namespace Windows.Networking.Connectivity.Internal
+namespace Uno.Networking.Connectivity.Internal
 {
-	class ConnectivityChangeBroadcastReceiver : BroadcastReceiver
+	internal class ConnectivityChangeBroadcastReceiver : BroadcastReceiver
 	{
 		public override async void OnReceive(Context context, Intent intent)
 		{

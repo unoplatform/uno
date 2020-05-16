@@ -1,29 +1,43 @@
 ﻿#if __ANDROID__
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
+using Windows.Foundation;
+using Windows.Networking.Connectivity;
 
 namespace Windows.Networking
 {
-	public partial class HostName : Windows.Foundation.IStringable
+	/// <summary>
+	/// Provides data for a hostname or an IP address.
+	/// </summary>
+	public partial class HostName : IStringable
 	{
-		public  string CanonicalName { get; internal set; }
-		public  string DisplayName { get; internal set; }
-		public  global::Windows.Networking.Connectivity.IPInformation IPInformation { get; internal set; }
-		public  string RawName { get; internal set; }
-		public  HostNameType Type { get; internal set; }
-
-
 		internal HostName()
 		{
-			// without this empty constructor, VStudio shows error
-			// in line
-			// HostName newHost = new HostName();
-			// in file NetworkInformation.cs
 		}
+
+		/// <summary>
+		/// Gets the canonical name for the HostName object.
+		/// </summary>
+		public string CanonicalName { get; internal set; }
+
+		/// <summary>
+		/// Gets the display name for the HostName object.
+		/// </summary>
+		public string DisplayName { get; internal set; }
+
+		/// <summary>
+		/// Gets the IPInformation object for a local IP address assigned to a HostName object.
+		/// </summary>
+		public IPInformation IPInformation { get; internal set; }
+
+		/// <summary>
+		/// Gets the original string used to construct the HostName object.
+		/// </summary>
+		public string RawName { get; internal set; }
+
+		/// <summary>
+		/// Gets the HostNameType of the HostName object.
+		/// </summary>
+		public HostNameType Type { get; internal set; }
 	}
 }
 

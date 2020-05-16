@@ -1,4 +1,4 @@
-﻿#if __IOS__
+﻿#if __IOS__ || __MACOS__
 using Uno.Networking.Connectivity.Helpers;
 
 namespace Windows.Networking.Connectivity

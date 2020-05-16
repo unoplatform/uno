@@ -98,7 +98,7 @@ namespace Windows.Networking.Connectivity
 		}
 		#endif
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.ProfileName.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Connectivity.NetworkConnectivityLevel GetNetworkConnectivityLevel()
 		{
@@ -112,7 +112,7 @@ namespace Windows.Networking.Connectivity
 			throw new global::System.NotImplementedException("The member IReadOnlyList<string> ConnectionProfile.GetNetworkNames() is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Connectivity.ConnectionCost GetConnectionCost()
 		{
