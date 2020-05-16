@@ -172,7 +172,7 @@ namespace Windows.Storage.Streams
 			throw new global::System.NotImplementedException("The member string DataReader.ReadString(uint codeUnitCount) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::System.DateTimeOffset ReadDateTime()
 		{
@@ -193,7 +193,7 @@ namespace Windows.Storage.Streams
 			throw new global::System.NotImplementedException("The member DataReaderLoadOperation DataReader.LoadAsync(uint count) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Streams.IBuffer DetachBuffer()
 		{
