@@ -17,6 +17,7 @@ namespace Windows.Networking.Connectivity
 		public NetworkConnectivityLevel GetNetworkConnectivityLevel() =>
 			GetNetworkConnectivityLevelImpl();
 
+#if !__WASM__
 		/// <summary>
 		/// Gets a value that indicates if connection profile is a WWAN (mobile) connection.
 		/// </summary>
@@ -28,6 +29,7 @@ namespace Windows.Networking.Connectivity
 		/// </summary>
 		/// <remarks>If this cannot be determined on the given platform, it remains false.</remarks>		
 		public bool IsWlanConnectionProfile { get; }
+#endif
 	}
 }
 #endif

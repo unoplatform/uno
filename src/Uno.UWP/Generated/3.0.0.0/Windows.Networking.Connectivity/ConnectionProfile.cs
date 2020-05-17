@@ -37,7 +37,7 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false
+		#if false || false || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public  bool IsWlanConnectionProfile
 		{
@@ -47,7 +47,7 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 		#endif
-		#if false || false || NET461 || false || false
+		#if false || false || NET461 || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public  bool IsWwanConnectionProfile
 		{
