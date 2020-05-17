@@ -25,3 +25,7 @@ Android can recognize all values of `NetworkConnectivityLevel`. iOS, macOS and W
 ```
 [assembly: UsesPermission(\"android.permission.ACCESS_NETWORK_STATE\")]
 ```
+
+### iOS/macOS reachability host name
+
+On iOS and macOS, it is necessary to make an actual "ping" request, to verify that internet connection is accessible. The default domain that is checked is `www.example.com`, but you can change this to be any other domain by setting the `WinRTFeatureConfiguration.NetworkInformation.ReachabilityHostname` property.

@@ -52,7 +52,7 @@ namespace Uno
 
 		public static class NetworkInformation
 		{
-			public static string ReachabilityHostname { get; set; } = "www.microsoft.com";
+			public static string ReachabilityHostname { get; set; } = "www.example.com";
 		}
 	}
 }
