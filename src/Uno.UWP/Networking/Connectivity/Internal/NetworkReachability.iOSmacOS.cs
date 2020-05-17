@@ -22,11 +22,9 @@ namespace Uno.Networking.Connectivity.Internal
 
     static class Reachability
     {
-        internal const string HostName = "www.microsoft.com";
-
         internal static NetworkStatus RemoteHostStatus()
         {
-            using (var remoteHostReachability = new NetworkReachability(HostName))
+            using (var remoteHostReachability = new NetworkReachability(WinRTFeatureConfiguration.NetworkInformation.ReachabilityHostname))
             {
                 var reachable = remoteHostReachability.TryGetFlags(out var flags);
 
@@ -146,7 +144,7 @@ namespace Uno.Networking.Connectivity.Internal
             defaultRouteReachability.SetNotification(OnChange);
             defaultRouteReachability.Schedule(CFRunLoop.Main, CFRunLoop.ModeDefault);
 
-            remoteHostReachability = new NetworkReachability(Reachability.HostName);
+            remoteHostReachability = new NetworkReachability(WinRTFeatureConfiguration.NetworkInformation.ReachabilityHostname);
 
             // Need to probe before we queue, or we wont get any meaningful values
             // this only happens when you create NetworkReachability from a hostname
