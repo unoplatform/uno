@@ -33,13 +33,13 @@ namespace Windows.Networking.Connectivity
 			var internetStatus = Reachability.InternetConnectionStatus();
 			if ((internetStatus == NetworkStatus.ReachableViaCarrierDataNetwork && !mobileDataRestricted) || internetStatus == NetworkStatus.ReachableViaWiFiNetwork)
 			{
-				return NetworkConnectivityLevel.Internet;
+				return NetworkConnectivityLevel.InternetAccess;
 			}
 
 			var remoteHostStatus = Reachability.RemoteHostStatus();
 			if ((remoteHostStatus == NetworkStatus.ReachableViaCarrierDataNetwork && !mobileDataRestricted) || remoteHostStatus == NetworkStatus.ReachableViaWiFiNetwork)
 			{
-				return NetworkConnectivityLevel.Internet;
+				return NetworkConnectivityLevel.InternetAccess;
 			}
 
 			return NetworkConnectivityLevel.None;
