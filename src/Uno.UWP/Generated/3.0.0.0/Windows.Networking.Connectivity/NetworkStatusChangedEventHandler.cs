@@ -2,7 +2,5 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.Connectivity
 {
-	#if false || false || false || false || false
-	public delegate void NetworkStatusChangedEventHandler(object @sender);
-	#endif
+	// Skipping already declared delegate Windows.Networking.Connectivity.NetworkStatusChangedEventHandler
 }

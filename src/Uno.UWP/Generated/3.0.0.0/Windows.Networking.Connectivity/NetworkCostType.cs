@@ -8,18 +8,10 @@ namespace Windows.Networking.Connectivity
 	#endif
 	public   enum NetworkCostType 
 	{
-		#if false || false || false || false || false
-		Unknown,
-		#endif
-		#if false || false || false || false || false
-		Unrestricted,
-		#endif
-		#if false || false || false || false || false
-		Fixed,
-		#endif
-		#if false || false || false || false || false
-		Variable,
-		#endif
+		// Skipping already declared field Windows.Networking.Connectivity.NetworkCostType.Unknown
+		// Skipping already declared field Windows.Networking.Connectivity.NetworkCostType.Unrestricted
+		// Skipping already declared field Windows.Networking.Connectivity.NetworkCostType.Fixed
+		// Skipping already declared field Windows.Networking.Connectivity.NetworkCostType.Variable
 	}
 	#endif
 }
