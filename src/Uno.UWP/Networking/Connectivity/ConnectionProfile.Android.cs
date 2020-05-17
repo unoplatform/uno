@@ -25,7 +25,7 @@ namespace Windows.Networking.Connectivity
 
 		internal static ConnectionProfile GetInternetConnectionProfile() => new ConnectionProfile();
 
-		internal ConnectionProfile()
+		private ConnectionProfile()
 		{
 			_connectivityManager = (AndroidConnectivityManager)ContextHelper.Current.GetSystemService(Context.ConnectivityService);
 			NetworkInfo info = _connectivityManager.ActiveNetworkInfo;

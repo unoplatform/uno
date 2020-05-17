@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿#if !NET461
 
 namespace Windows.Networking.Connectivity
 {
@@ -34,3 +30,4 @@ namespace Windows.Networking.Connectivity
 		public bool IsWlanConnectionProfile { get; }
 	}
 }
+#endif

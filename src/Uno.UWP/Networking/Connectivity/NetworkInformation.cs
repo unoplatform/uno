@@ -1,3 +1,5 @@
+#if !NET461
+
 namespace Windows.Networking.Connectivity
 {
 	public static partial class NetworkInformation
@@ -43,3 +45,4 @@ namespace Windows.Networking.Connectivity
 		internal static void OnNetworkStatusChanged() => _networkStatusChanged?.Invoke(null);
 	}
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using System.Threading.Tasks;
+﻿#if __ANDROID__
+using System.Threading.Tasks;
 using Android.Content;
 using Windows.Networking.Connectivity;
 
@@ -19,3 +20,4 @@ namespace Uno.Networking.Connectivity.Internal
 		}
 	}
 }
+#endif

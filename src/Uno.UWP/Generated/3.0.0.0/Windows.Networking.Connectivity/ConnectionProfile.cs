@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Networking.Connectivity
 {
-	#if false || __IOS__ || NET461 || false || __MACOS__
+	#if false || false || NET461 || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ConnectionProfile 
@@ -37,7 +37,7 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 		#endif
-		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  bool IsWlanConnectionProfile
 		{
@@ -47,7 +47,7 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 		#endif
-		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  bool IsWwanConnectionProfile
 		{
@@ -98,7 +98,7 @@ namespace Windows.Networking.Connectivity
 		}
 		#endif
 		// Forced skipping of method Windows.Networking.Connectivity.ConnectionProfile.ProfileName.get
-		#if false || __IOS__ || NET461 || false || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.Networking.Connectivity.NetworkConnectivityLevel GetNetworkConnectivityLevel()
 		{

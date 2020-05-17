@@ -1,10 +1,20 @@
 ﻿#if __IOS__ || __MACOS__
-using Uno.Networking.Connectivity.Helpers;
+using System;
+#if __IOS__
+using CoreTelephony;
+#endif
+using Uno.Networking.Connectivity.Internal;
 
 namespace Windows.Networking.Connectivity
 {
 	public partial class NetworkInformation
 	{
+#if __IOS__
+		private static readonly Lazy<CTCellularData> _cellularData = new Lazy<CTCellularData>(() => new CTCellularData());
+
+		internal static CTCellularData CellularData => _cellularData.Value;
+#endif
+
 		private static ReachabilityListener _reachabilityListener;
 
 		private static void StartNetworkStatusChanged()
