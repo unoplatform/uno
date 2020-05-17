@@ -1,6 +1,9 @@
+#if __IOS__ || __MACOS__
+
+using Uno.Networking.Connectivity.Internal;
 #if __IOS__
 using CoreTelephony;
-using Uno.Networking.Connectivity.Internal;
+#endif
 
 namespace Windows.Networking.Connectivity
 {
