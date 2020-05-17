@@ -133,11 +133,13 @@ namespace Windows.Networking.Connectivity
 
 		internal static void VerifyNetworkStateAccess()
 		{
-			if (PermissionsHelper.IsDeclaredInManifest(Manifest.Permission.AccessNetworkState))
+			if (!PermissionsHelper.IsDeclaredInManifest(Manifest.Permission.AccessNetworkState))
 			{
 				throw new SecurityException(
 					"To access network information, please add " +
-					"android.permission.ACCESS_NETWORK_STATE to application manifest first.");
+					"android.permission.ACCESS_NETWORK_STATE to application manifest " +
+					"or the following attribute in the Android platform head: " +
+					"[assembly: UsesPermission(\"android.permission.ACCESS_NETWORK_STATE\")]");
 			}
 		}
 	}
