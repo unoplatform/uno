@@ -14,10 +14,12 @@
 		}
 
 		public static networkStatusChanged() {
-			if (this.dispatchStatusChanged == null) {
-				this.dispatchStatusChanged = (<any>Module).mono_bind_static_method("[Uno] Windows.Networking.Connectivity.NetworkInformation:DispatchStatusChanged");				
+			if (NetworkInformation.dispatchStatusChanged == null) {
+				NetworkInformation.dispatchStatusChanged = 
+					(<any>Module).mono_bind_static_method(
+						"[Uno] Windows.Networking.Connectivity.NetworkInformation:DispatchStatusChanged");				
 			}
-			this.dispatchStatusChanged();
+			NetworkInformation.dispatchStatusChanged();
 		}
 	}
 }
