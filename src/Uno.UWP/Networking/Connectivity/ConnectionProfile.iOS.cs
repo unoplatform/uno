@@ -5,7 +5,9 @@ namespace Windows.Networking.Connectivity
 {
 	public partial class ConnectionProfile
 	{
-		public NetworkConnectivityLevel GetNetworkConnectivityLevel()
+		internal static ConnectionProfile GetInternetConnectionProfile() => new ConnectionProfile();
+
+		private NetworkConnectivityLevel GetNetworkConnectivityLevelImpl()
 		{
 			var internetStatus = Reachability.InternetConnectionStatus();
 			if (internetStatus == NetworkStatus.ReachableViaCarrierDataNetwork ||

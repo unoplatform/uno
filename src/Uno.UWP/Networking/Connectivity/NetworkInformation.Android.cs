@@ -1,8 +1,12 @@
 ﻿#if __ANDROID__
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Android.App;
 using Android.Content;
+using Android.Net;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
 using Uno.Networking.Connectivity.Internal;
 
 namespace Windows.Networking.Connectivity
@@ -41,7 +45,8 @@ namespace Windows.Networking.Connectivity
 			Android.OS.StrictMode.ThreadPolicy prevPolicy = null;
 
 			if (Android.OS.Build.VERSION.SdkInt > Android.OS.BuildVersionCodes.Gingerbread)
-			{   // required to access interfaceAddress.Address.CanonicalHostName (below), without creating new task, outside UI thread
+			{
+				// required to access interfaceAddress.Address.CanonicalHostName (below), without creating new task, outside UI thread
 				prevPolicy = Android.OS.StrictMode.GetThreadPolicy();
 				var policy = new Android.OS.StrictMode.ThreadPolicy.Builder().PermitAll().Build();
 				Android.OS.StrictMode.SetThreadPolicy(policy);
@@ -58,15 +63,16 @@ namespace Windows.Networking.Connectivity
 				if (netInterface.InterfaceAddresses != null)
 				{
 					string androDisplayName = netInterface.DisplayName;
-					// another name, netInterface.Name, would be ignored (seems like == androDisplayName)
 
+					// another name, netInterface.Name, would be ignored (seems like == androDisplayName)
 					foreach (var interfaceAddress in netInterface.InterfaceAddresses)
 					{
 						int androPrefixLength = interfaceAddress.NetworkPrefixLength;
 						if (interfaceAddress.Address != null)
 						{
 							string androCanonical = interfaceAddress.Address.CanonicalHostName;
-							string androHostName = interfaceAddress.Address.HostName;   // seems like == androCanonical
+							// seems like == androCanonical
+							string androHostName = interfaceAddress.Address.HostName;
 							bool androIPv46 = (interfaceAddress.Address.GetAddress().Count() == 4);
 
 							// we have all required data from Android, and we can use them
@@ -75,24 +81,50 @@ namespace Windows.Networking.Connectivity
 							newInfo.PrefixLength = (byte)androPrefixLength;
 
 							newHost.IPInformation = newInfo;
-							newHost.Type = (androIPv46) ? HostNameType.Ipv4 : HostNameType.Ipv6;
-							// only these two types; UWP has also 'DomainName' and 'Bluetooth'
 
+							// only these two types; UWP has also 'DomainName' and 'Bluetooth'
+							newHost.Type = (androIPv46) ? HostNameType.Ipv4 : HostNameType.Ipv6;
+							
 							newHost.CanonicalName = androCanonical;
 							newHost.RawName = androHostName;
 							newHost.DisplayName = androDisplayName;
-							uwpList.Add(newHost);    // assuming there would be no duplicates
+							// assuming there would be no duplicates
+							uwpList.Add(newHost);
 						}
 					}
 				}
 			}
 
 			if (Android.OS.Build.VERSION.SdkInt > Android.OS.BuildVersionCodes.Gingerbread)
-			{ // returning old policy
+			{
+				// returning old policy
 				Android.OS.StrictMode.SetThreadPolicy(prevPolicy);
 			}
 
 			return uwpList;
+		}
+
+		/// <summary>
+		/// This raises the NetworkStatusChanged event with a delay.
+		/// Delay is necessary as network information is not updated before
+		/// the connectivity broadcast on Android is received.
+		/// </summary>
+		internal static async void OnDelayedNetworkStatusChanged()
+		{
+			try
+			{
+				// await 300ms to ensure that the the connection manager updates
+				await Task.Delay(300);
+				NetworkInformation.OnNetworkStatusChanged();
+			}
+			catch
+			{
+				// Task delay should never crash, but just to be sure.
+				if (typeof(NetworkInformation).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
+				{
+					typeof(NetworkInformation).Log().LogError("Could not raise NetworkStatusChanged.");
+				}
+			}
 		}
 	}
 }

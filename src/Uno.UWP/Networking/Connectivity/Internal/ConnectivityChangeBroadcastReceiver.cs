@@ -6,7 +6,7 @@ namespace Uno.Networking.Connectivity.Internal
 {
 	internal class ConnectivityChangeBroadcastReceiver : BroadcastReceiver
 	{
-		public override async void OnReceive(Context context, Intent intent)
+		public override void OnReceive(Context context, Intent intent)
 		{
 #pragma warning disable CS0618 // Type or member is obsolete
 			if (intent.Action != Android.Net.ConnectivityManager.ConnectivityAction)
@@ -15,9 +15,7 @@ namespace Uno.Networking.Connectivity.Internal
 				return;
 			}
 
-			// await 300ms to ensure that the the connection manager updates
-			await Task.Delay(300);
-			NetworkInformation.OnNetworkStatusChanged();
+			NetworkInformation.OnDelayedNetworkStatusChanged();
 		}
 	}
 }
