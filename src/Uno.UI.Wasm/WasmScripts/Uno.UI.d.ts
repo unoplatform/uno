@@ -866,6 +866,19 @@ declare namespace Windows.Devices.Sensors {
         private static readingChangedHandler;
     }
 }
+declare namespace Windows.Networking.Connectivity {
+    class ConnectionProfile {
+        static hasInternetAccess(): boolean;
+    }
+}
+declare namespace Windows.Networking.Connectivity {
+    class NetworkInformation {
+        private static dispatchStatusChanged;
+        static startStatusChanged(): void;
+        static stopStatusChanged(): void;
+        static networkStatusChanged(): void;
+    }
+}
 interface Window {
     opr: any;
     opera: any;
