@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
-using Microsoft.UI.Xaml.CustomAttributes;
+using System.Windows.Input;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
 using Windows.Foundation;
@@ -29,7 +29,7 @@ namespace UITests.Windows_Networking
 			this.DataContextChanged += NetworkInformationTests_DataContextChanged;
 		}
 
-		private void NetworkInformationTests_DataContextChanged(FrameworkElement sender, DataContextChangedEventArgs args)
+		private void NetworkInformationTests_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
 		{
 			Model = (NetworkInformationViewModel)args.NewValue;
 		}
@@ -43,13 +43,17 @@ namespace UITests.Windows_Networking
 		private bool _isObserving = false;
 		private string _lastUpdated = "";
 		private string _errorInfo = "";
-		private NetworkCostType _networkCostType;
-		private bool _isWlanConnectionProfile;
-		private bool _isWwanConnectionProfile;
+		private string _networkCostType;
+		private string _isWlanConnectionProfile;
+		private string _isWwanConnectionProfile;
 
 		public NetworkInformationViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
 		}
+
+		public ICommand CheckConnectivityCommand => GetOrCreateCommand(CheckConnectivity);
+
+		public ICommand ToggleObservingCommand => GetOrCreateCommand(ToggleObserving);
 
 		public NetworkConnectivityLevel NetworkConnectivityLevel
 		{
@@ -94,7 +98,7 @@ namespace UITests.Windows_Networking
 			}
 		}
 
-		public NetworkCostType NetworkCostType
+		public string NetworkCostType
 		{
 			get => _networkCostType;
 			private set
@@ -104,7 +108,7 @@ namespace UITests.Windows_Networking
 			}
 		}
 
-		public bool IsWlanConnectionProfile
+		public string IsWlanConnectionProfile
 		{
 			get => _isWlanConnectionProfile;
 			private set
@@ -113,7 +117,7 @@ namespace UITests.Windows_Networking
 				RaisePropertyChanged();
 			}
 		}
-		public bool IsWwanConnectionProfile
+		public string IsWwanConnectionProfile
 		{
 			get => _isWwanConnectionProfile;
 			private set
@@ -157,11 +161,31 @@ namespace UITests.Windows_Networking
 			if (profile != null)
 			{
 				NetworkConnectivityLevel = profile.GetNetworkConnectivityLevel();
-				var connectionCost = profile.GetConnectionCost();
-				NetworkCostType = connectionCost.NetworkCostType;
-				
-				IsWlanConnectionProfile = profile.IsWlanConnectionProfile;
-				IsWwanConnectionProfile = profile.IsWwanConnectionProfile;
+
+				NetworkCostType = GetStringSafe(() =>
+				{
+					var connectionCost = profile.GetConnectionCost();
+					return connectionCost.NetworkCostType.ToString();
+				});
+
+				IsWlanConnectionProfile = GetStringSafe(() => profile.IsWlanConnectionProfile.ToString());
+				IsWwanConnectionProfile = GetStringSafe(() => profile.IsWwanConnectionProfile.ToString());
+			}
+		}
+
+		private string GetStringSafe(Func<string> func)
+		{
+			try
+			{
+				return func();
+			}
+			catch (NotImplementedException)
+			{
+				return "(not implemented)";
+			}
+			catch (Exception ex)
+			{
+				return ex.Message;
 			}
 		}
 	}

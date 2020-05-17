@@ -9,8 +9,8 @@
     mc:Ignorable="d">
 
     <StackPanel Padding="12" Spacing="8">
-        <Button Click="{x:Bind Model.CheckConnectivity}">Check connectivity</Button>
-        <ToggleButton Click="{x:Bind Model.ToggleObserving}" IsChecked="{x:Bind Model.IsObserving, Mode=OneWay}">Observe network status</ToggleButton>
+        <Button Command="{x:Bind Model.CheckConnectivityCommand}">Check connectivity</Button>
+        <ToggleButton Command="{x:Bind Model.ToggleObservingCommand}" IsChecked="{x:Bind Model.IsObserving, Mode=OneWay}">Observe network status</ToggleButton>
         <TextBlock Foreground="Red" Text="{x:Bind Model.ErrorInfo, Mode=OneWay}" />
         <StackPanel Spacing="4">
             <TextBlock>
@@ -18,7 +18,7 @@
                 <Run FontWeight="Bold" Text="{x:Bind Model.LastUpdated, Mode=OneWay}" />
             </TextBlock>
             <TextBlock>
-                <Run FontWeight="Bold" Text="Connected to internet: " />
+                <Run FontWeight="Bold" Text="NetworkConnectivityLevel: " />
                 <Run FontWeight="Bold" Text="{x:Bind Model.NetworkConnectivityLevel, Mode=OneWay}" />
             </TextBlock>
             <TextBlock>
