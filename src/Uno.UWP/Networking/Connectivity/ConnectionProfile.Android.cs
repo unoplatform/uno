@@ -31,22 +31,10 @@ namespace Windows.Networking.Connectivity
 			NetworkInfo info = _connectivityManager.ActiveNetworkInfo;
 			if (info?.IsConnected == true)
 			{
-				switch (info.Subtype)
-				{
-					// mapping Android types to UWP types
-					case Android.Net.ConnectivityType.Mobile:       // =0
-					case Android.Net.ConnectivityType.MobileMms:    // =2
-					case Android.Net.ConnectivityType.MobileSupl:   // =3
-					case Android.Net.ConnectivityType.MobileDun:    // =4
-					case Android.Net.ConnectivityType.MobileHipri:  // =5
-						IsWwanConnectionProfile = true;
-						break;
-					case Android.Net.ConnectivityType.Wifi:         // =1
-					case Android.Net.ConnectivityType.Wimax:        // =6
-						IsWlanConnectionProfile = true;
-						break;
-				}
-				// other Android types: Bluetooth=7, Dummy=8, Ethernet=9, Vpn=17
+#pragma warning disable CS0618 // Type or member is obsolete
+				IsWwanConnectionProfile = IsConnectionWwan(info.Type);
+				IsWlanConnectionProfile = IsConnectionWlan(info.Type);
+#pragma warning restore CS0618 // Type or member is obsolete
 			}
 		}
 
@@ -144,6 +132,22 @@ namespace Windows.Networking.Connectivity
 				}
 				return NetworkConnectivityLevel.None;
 			}
+		}
+
+		internal static bool IsConnectionWlan(ConnectivityType connectivityType)
+		{
+			return connectivityType == ConnectivityType.Wifi;
+		}
+
+		internal static bool IsConnectionWwan(ConnectivityType connectivityType)
+		{
+			return
+				connectivityType == ConnectivityType.Wimax ||
+				connectivityType == ConnectivityType.Mobile ||
+				connectivityType == ConnectivityType.MobileDun ||
+				connectivityType == ConnectivityType.MobileHipri ||
+				connectivityType == ConnectivityType.MobileMms ||
+				connectivityType == ConnectivityType.MobileSupl;
 		}
 
 		private NetworkConnectivityLevel GetConnectivityFromManager()
