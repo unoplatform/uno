@@ -1,13 +1,16 @@
 ﻿#if __ANDROID__
 using System.Collections.Generic;
 using System.Linq;
+using System.Security;
 using System.Threading.Tasks;
+using Android;
 using Android.App;
 using Android.Content;
 using Android.Net;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Networking.Connectivity.Internal;
+using Windows.Extensions;
 
 namespace Windows.Networking.Connectivity
 {
@@ -17,6 +20,7 @@ namespace Windows.Networking.Connectivity
 
 		private static void StartNetworkStatusChanged()
 		{
+			VerifyNetworkStateAccess();
 			_connectivityChangeBroadcastReceiver = new ConnectivityChangeBroadcastReceiver();
 
 #pragma warning disable CS0618 // Type or member is obsolete
@@ -124,6 +128,16 @@ namespace Windows.Networking.Connectivity
 				{
 					typeof(NetworkInformation).Log().LogError("Could not raise NetworkStatusChanged.");
 				}
+			}
+		}
+
+		internal static void VerifyNetworkStateAccess()
+		{
+			if (PermissionsHelper.IsDeclaredInManifest(Manifest.Permission.AccessNetworkState))
+			{
+				throw new SecurityException(
+					"To access network information, please add " +
+					"android.permission.ACCESS_NETWORK_STATE to application manifest first.");
 			}
 		}
 	}

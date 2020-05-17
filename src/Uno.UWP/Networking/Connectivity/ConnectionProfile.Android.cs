@@ -2,6 +2,7 @@
 using System;
 using System.Linq;
 using System.Net;
+using System.Security;
 using Android;
 using Android.App;
 using Android.Content;
@@ -27,6 +28,7 @@ namespace Windows.Networking.Connectivity
 
 		private ConnectionProfile()
 		{
+			NetworkInformation.VerifyNetworkStateAccess();
 			_connectivityManager = (AndroidConnectivityManager)ContextHelper.Current.GetSystemService(Context.ConnectivityService);
 			NetworkInfo info = _connectivityManager.ActiveNetworkInfo;
 			if (info?.IsConnected == true)
@@ -50,8 +52,6 @@ namespace Windows.Networking.Connectivity
 		/// <returns>Connectivity level.</returns>
 		private NetworkConnectivityLevel GetNetworkConnectivityLevelImpl()
 		{
-			PermissionsHelper.IsDeclaredInManifest(Manifest.Permission.AccessNetworkState);
-
 			try
 			{
 				var connectivityLevel = NetworkConnectivityLevel.None;
@@ -134,12 +134,12 @@ namespace Windows.Networking.Connectivity
 			}
 		}
 
-		internal static bool IsConnectionWlan(ConnectivityType connectivityType)
+		private static bool IsConnectionWlan(ConnectivityType connectivityType)
 		{
 			return connectivityType == ConnectivityType.Wifi;
 		}
 
-		internal static bool IsConnectionWwan(ConnectivityType connectivityType)
+		private static bool IsConnectionWwan(ConnectivityType connectivityType)
 		{
 			return
 				connectivityType == ConnectivityType.Wimax ||
