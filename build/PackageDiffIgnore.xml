@@ -849,7 +849,7 @@
 				<Member
 					fullName="System.Void Windows.Data.Xml.Dom.XmlText..ctor()"
 					reason="Not part of UWP"/>
-        <Member
+                <Member
 					fullName="System.Void Windows.UI.Xaml.Controls.AnimatedVisualPlayer.set_IsPlaying(System.Boolean value)"
 					reason="Refactoring, not part of WinUI contract anyway." />
 				<Member
@@ -967,5 +967,24 @@
 					reason="GradientStops/MappingMode moved to base GradientBrush to follow UWP/WinUI hierarchy"/>
 			</Properties>
 		</IgnoreSet>
+        <IgnoreSet baseVersion="2.4.0">
+            <Methods>
+                <Member
+				    fullName="System.Void Windows.Networking.Connectivity.ConnectionCost..ctor()"
+				    reason="Not in UWP" />
+                <Member
+				    fullName="System.Void Windows.Networking.Connectivity.ConnectionProfile..ctor()"
+				    reason="Not in UWP" />
+                <Member
+				    fullName="System.Void Windows.Networking.Connectivity.NetworkInformation..ctor()"
+				    reason="Not in UWP" />
+            </Methods>
+			<Events>
+			</Events>
+            <Fields>
+            </Fields>
+            <Properties>
+            </Properties>
+        </IgnoreSet>
 	</IgnoreSets>
 </DiffIgnore>
