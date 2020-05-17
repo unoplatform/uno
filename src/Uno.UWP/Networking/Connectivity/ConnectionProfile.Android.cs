@@ -30,14 +30,14 @@ namespace Windows.Networking.Connectivity
 		{
 			NetworkInformation.VerifyNetworkStateAccess();
 			_connectivityManager = (AndroidConnectivityManager)ContextHelper.Current.GetSystemService(Context.ConnectivityService);
+#pragma warning disable CS0618 // Type or member is obsolete
 			NetworkInfo info = _connectivityManager.ActiveNetworkInfo;
 			if (info?.IsConnected == true)
 			{
-#pragma warning disable CS0618 // Type or member is obsolete
 				IsWwanConnectionProfile = IsConnectionWwan(info.Type);
 				IsWlanConnectionProfile = IsConnectionWlan(info.Type);
-#pragma warning restore CS0618 // Type or member is obsolete
 			}
+#pragma warning restore CS0618 // Type or member is obsolete
 		}
 
 		public ConnectionCost GetConnectionCost() =>
@@ -166,9 +166,9 @@ namespace Windows.Networking.Connectivity
 			return bestConnectivityLevel;
 		}
 
+#pragma warning disable CS0618 // Type or member is obsolete
 		private NetworkConnectivityLevel GetConnectivityFromNetworkInfo(NetworkInfo info)
 		{
-#pragma warning disable CS0618 // Type or member is obsolete
 			if (info == null || !info.IsAvailable)
 			{
 				return NetworkConnectivityLevel.None;
@@ -182,8 +182,8 @@ namespace Windows.Networking.Connectivity
 				return NetworkConnectivityLevel.ConstrainedInternetAccess;
 			}
 			return NetworkConnectivityLevel.None;
-#pragma warning restore CS0618 // Type or member is obsolete
 		}
+#pragma warning restore CS0618 // Type or member is obsolete
 	}
 
 }
