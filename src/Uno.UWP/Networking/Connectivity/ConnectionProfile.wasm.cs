@@ -5,13 +5,12 @@ namespace Windows.Networking.Connectivity
 	public partial class ConnectionProfile
     {
 		private const string JsType = "Windows.Networking.Connectivity.ConnectionProfile";
-		private readonly bool _isInternetProfile;
 
-		internal static ConnectionProfile GetInternetConnectionProfile() => new ConnectionProfile();
+		internal static ConnectionProfile GetInternetConnectionProfile() =>
+			new ConnectionProfile();
 
-		internal ConnectionProfile(bool isInternetProfile)
+		private ConnectionProfile()
 		{
-			_isInternetProfile = isInternetProfile;
 		}
 
 		private NetworkConnectivityLevel GetNetworkConnectivityLevelImpl()
