@@ -57,7 +57,7 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml
 {
-	internal partial interface IFrameworkElement : IUIElement, IDataContextProvider, DependencyObject, IDependencyObjectParse
+	internal partial interface IFrameworkElement : IDataContextProvider, DependencyObject, IDependencyObjectParse
 	{
 		event RoutedEventHandler Loaded;
 		event RoutedEventHandler Unloaded;
