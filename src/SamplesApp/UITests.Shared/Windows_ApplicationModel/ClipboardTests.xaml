@@ -10,8 +10,8 @@
 
     <StackPanel Padding="12" Spacing="8">
         <TextBox Text="{x:Bind Model.Text, Mode=TwoWay}" />
-		<Button Command="{x:Bind Model.CopyCommand}">Copy to clipboard</Button>
-		<Button Command="{x:Bind Model.PasteCommand}">Paste to clipboard</Button>
+        <Button Command="{x:Bind Model.CopyCommand}">Copy to clipboard</Button>
+        <Button Command="{x:Bind Model.PasteCommand}">Paste from clipboard</Button>
         <Button Command="{x:Bind Model.ClearCommand}">Clear clipboard</Button>
         <Button Command="{x:Bind Model.FlushCommand}">Flush clipboard</Button>
         <ToggleButton Command="{x:Bind Model.ToggleContentChangedCommand}" IsChecked="{x:Bind Model.IsObservingContentChanged, Mode=OneWay}">Observe ContentChanged</ToggleButton>

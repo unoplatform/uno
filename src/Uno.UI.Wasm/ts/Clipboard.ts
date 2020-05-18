@@ -1,4 +1,18 @@
-﻿namespace Uno.Utils {
+﻿// Type declarations for Clipboard API
+// https://developer.mozilla.org/en-US/docs/Web/API/Clipboard_API
+interface Clipboard {
+	writeText(newClipText: string): Promise<void>;
+	readText(): Promise<string>;
+}
+
+interface NavigatorClipboard {
+	// Only available in a secure context.
+	readonly clipboard?: Clipboard;
+}
+
+interface Navigator extends NavigatorClipboard { }
+
+namespace Uno.Utils {
 	export class Clipboard {
 		private static dispatchContentChanged: () => number;
 		private static dispatchGetContent: (requestId : string, content : string) => number;
@@ -40,10 +54,13 @@
 			if (!Clipboard.dispatchGetContent) {
 				Clipboard.dispatchGetContent = (<any>Module).mono_bind_static_method("[Uno] Windows.ApplicationModel.DataTransfer.Clipboard:DispatchGetContent");
 			}
-			if (navigator.clipboard && navigator.clipboard.readText) {
-				navigator.clipboard.readText().then(
-					clipText => Clipboard.dispatchGetContent(requestId, clipText),
-					_ => Clipboard.dispatchGetContent(requestId, null));
+
+			var nav = navigator as NavigatorClipboard;
+			if (nav.clipboard) {
+				var promise = nav.clipboard.readText();
+				promise.then(
+					(clipText : string) => Clipboard.dispatchGetContent(requestId, clipText),
+					(_ : any) => Clipboard.dispatchGetContent(requestId, null));
 			} else {
 				Clipboard.dispatchGetContent(requestId, null);
 			}

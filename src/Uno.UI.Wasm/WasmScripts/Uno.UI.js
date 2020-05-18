@@ -3,11 +3,24 @@ var Uno;
     var Utils;
     (function (Utils) {
         class Clipboard {
+            static startContentChanged() {
+                ['cut', 'copy', 'paste'].forEach(function (event) {
+                    document.addEventListener(event, Clipboard.onClipboardChanged);
+                });
+            }
+            static stopContentChanged() {
+                ['cut', 'copy', 'paste'].forEach(function (event) {
+                    document.removeEventListener(event, Clipboard.onClipboardChanged);
+                });
+            }
             static setText(text) {
                 const nav = navigator;
                 if (nav.clipboard) {
                     // Use clipboard object when available
-                    nav.clipboard.setText(text);
+                    nav.clipboard.writeText(text);
+                    // Trigger change notification, as clipboard API does
+                    // not execute "copy".
+                    Clipboard.onClipboardChanged();
                 }
                 else {
                     // Hack when the clipboard is not available
@@ -19,6 +32,25 @@ var Uno;
                     document.body.removeChild(textarea);
                 }
                 return "ok";
+            }
+            static getText(requestId) {
+                if (!Clipboard.dispatchGetContent) {
+                    Clipboard.dispatchGetContent = Module.mono_bind_static_method("[Uno] Windows.ApplicationModel.DataTransfer.Clipboard:DispatchGetContent");
+                }
+                var nav = navigator;
+                if (nav.clipboard) {
+                    var promise = nav.clipboard.readText();
+                    promise.then((clipText) => Clipboard.dispatchGetContent(requestId, clipText), (_) => Clipboard.dispatchGetContent(requestId, null));
+                }
+                else {
+                    Clipboard.dispatchGetContent(requestId, null);
+                }
+            }
+            static onClipboardChanged() {
+                if (!Clipboard.dispatchContentChanged) {
+                    Clipboard.dispatchContentChanged = Module.mono_bind_static_method("[Uno] Windows.ApplicationModel.DataTransfer.Clipboard:DispatchContentChanged");
+                }
+                Clipboard.dispatchContentChanged();
             }
         }
         Utils.Clipboard = Clipboard;

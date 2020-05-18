@@ -1,6 +1,21 @@
+interface Clipboard {
+    writeText(newClipText: string): Promise<void>;
+    readText(): Promise<string>;
+}
+interface NavigatorClipboard {
+    readonly clipboard?: Clipboard;
+}
+interface Navigator extends NavigatorClipboard {
+}
 declare namespace Uno.Utils {
     class Clipboard {
+        private static dispatchContentChanged;
+        private static dispatchGetContent;
+        static startContentChanged(): void;
+        static stopContentChanged(): void;
         static setText(text: string): string;
+        static getText(requestId: string): void;
+        private static onClipboardChanged;
     }
 }
 declare namespace Windows.UI.Core {
