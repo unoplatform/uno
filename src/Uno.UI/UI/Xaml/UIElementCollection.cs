@@ -6,45 +6,28 @@ using System.Collections;
 
 namespace Windows.UI.Xaml.Controls
 {
-	/// <summary>
-	/// A collection of items, 
-	///  Implements the INotifyCollectionChanged
-	/// Call back when thread is liberated
-	/// </summary>
-	/// <typeparam name="T"></typeparam>
-	public abstract partial class BatchCollection<T> : ICollection<T>, IEnumerable<T>, IList<T>, INotifyCollectionChanged
+	public partial class UIElementCollection : ICollection<UIElement>, IEnumerable<UIElement>, IList<UIElement>, INotifyCollectionChanged
 	{
-		private readonly DependencyObject _owner;
-
 		/// <summary>
 		/// The owner of this collection.
 		/// This is intended to be used to redispatch to a specific instance in ** static ** CollectionChanged handlers.
 		/// </summary>
 		internal DependencyObject Owner => _owner;
 
-		public BatchCollection(DependencyObject owner)
-		{
-			_owner = owner;
-		}
-
 		#region IList implementation
 
-		public int IndexOf(T item)
+		public int IndexOf(UIElement item)
 		{
 			return IndexOfCore(item);
 		}
 
-		protected abstract int IndexOfCore(T item);
-
-		public void Insert(int index, T item)
+		public void Insert(int index, UIElement item)
 		{
 			item.SetParent(_owner);
 
 			InsertCore(index, item);
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item, index));
 		}
-
-		protected abstract void InsertCore(int index, T item);
 
 		public void RemoveAt(int index)
 		{
@@ -54,9 +37,7 @@ namespace Windows.UI.Xaml.Controls
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, item, index));
 		}
 
-		protected abstract T RemoveAtCore(int index);
-
-		public T this[int index]
+		public UIElement this[int index]
 		{
 			get { return GetAtIndexCore(index); }
 			set
@@ -70,14 +51,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected abstract T GetAtIndexCore(int index);
-		protected abstract T SetAtIndexCore(int index, T value);
-
 		#endregion
 
 		#region ICollection implementation
 
-		public void Add(T item)
+		public void Add(UIElement item)
 		{
 			if (item is IDependencyObjectStoreProvider provider)
 			{
@@ -88,13 +66,11 @@ namespace Windows.UI.Xaml.Controls
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, item));
 		}
 
-		protected abstract void AddCore(T item);
-
 		public void Clear()
 		{
 			var items = ClearCore();
 
-			foreach(var item in items)
+			foreach (var item in items)
 			{
 				if (item is IDependencyObjectStoreProvider provider)
 				{
@@ -105,23 +81,17 @@ namespace Windows.UI.Xaml.Controls
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove, items.ToList()));
 		}
 
-		protected abstract IEnumerable<T> ClearCore();
-
-		public bool Contains(T item)
+		public bool Contains(UIElement item)
 		{
 			return ContainsCore(item);
 		}
 
-		protected abstract bool ContainsCore(T item);
-
-		public void CopyTo(T[] array, int arrayIndex)
+		public void CopyTo(UIElement[] array, int arrayIndex)
 		{
 			CopyToCore(array, arrayIndex);
 		}
 
-		protected abstract void CopyToCore(T[] array, int arrayIndex);
-
-		public bool Remove(T item)
+		public bool Remove(UIElement item)
 		{
 			if (item != null)
 			{
@@ -137,8 +107,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected abstract bool RemoveCore(T item);
-
 		public int Count
 		{
 			get
@@ -146,8 +114,6 @@ namespace Windows.UI.Xaml.Controls
 				return CountCore();
 			}
 		}
-
-		protected abstract int CountCore();
 
 		public bool IsReadOnly
 		{
@@ -161,15 +127,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#region IEnumerable implementation
 
-		public IEnumerator<T> GetEnumerator() => GetEnumeratorCore();
-
-		protected abstract IEnumerator<T> GetEnumeratorCore();
-
-		#endregion
-
-		#region IEnumerable implementation
-
-		IEnumerator IEnumerable.GetEnumerator() => GetEnumeratorCore();
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
 
 		#endregion
 
@@ -188,9 +146,6 @@ namespace Windows.UI.Xaml.Controls
 			MoveCore(oldIndex, newIndex);
 			OnCollectionChanged(new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Move, this[(int)newIndex], (int)newIndex, (int)oldIndex));
 		}
-
-		protected abstract void MoveCore(uint oldIndex, uint newIndex);
-
 
 		public event NotifyCollectionChangedEventHandler CollectionChanged;
 

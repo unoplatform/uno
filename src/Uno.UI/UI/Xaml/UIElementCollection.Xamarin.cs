@@ -17,16 +17,14 @@ using _BindableView = Uno.UI.Controls.BindableNSView;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class UIElementCollection : BatchCollection<UIElement>, IList<UIElement>, IEnumerable<UIElement>
+	public partial class UIElementCollection : IList<UIElement>, IEnumerable<UIElement>
 	{
 
-		protected override IEnumerator<UIElement> GetEnumeratorCore() => new Enumerator(_owner);
+		// This method is present to enable allocation-less enumeration.
+		public Enumerator GetEnumerator() => new Enumerator(_owner);
 
-		// This method is a explicit replace of GetEnumerator in BatchCollection<T> to
-		// enable allocation-less enumeration. It is present at this level to avoid
-		// a binary breaking change.
-		public new Enumerator GetEnumerator() => new Enumerator(_owner);
-		
+		IEnumerator<UIElement> IEnumerable<UIElement>.GetEnumerator() => GetEnumerator();
+
 		public struct Enumerator : IEnumerator<UIElement>, IEnumerator
 		{
 			private readonly List<_View>.Enumerator _inner;

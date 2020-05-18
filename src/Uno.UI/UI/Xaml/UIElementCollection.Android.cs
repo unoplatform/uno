@@ -9,26 +9,26 @@ using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class UIElementCollection : BatchCollection<UIElement>, IList<UIElement>, IEnumerable<UIElement>
+	public partial class UIElementCollection : IList<UIElement>, IEnumerable<UIElement>
 	{
 		private readonly BindableView _owner;
 
-		public UIElementCollection(BindableView owner) : base(owner)
+		public UIElementCollection(BindableView owner)
 		{
 			_owner = owner;
 		}
 
-		protected override int IndexOfCore(UIElement item)
+		private int IndexOfCore(UIElement item)
 		{
 			return _owner.GetChildren().IndexOf(item);
 		}
 
-		protected override void InsertCore(int index, UIElement item)
+		private void InsertCore(int index, UIElement item)
 		{
 			_owner.AddView(item, index);
 		}
 
-		protected override UIElement RemoveAtCore(int index)
+		private UIElement RemoveAtCore(int index)
 		{
 			var view = _owner.GetChildAt(index);
 			_owner.RemoveViewAt(index);
@@ -36,12 +36,12 @@ namespace Windows.UI.Xaml.Controls
 			return view as UIElement;
 		}
 
-		protected override UIElement GetAtIndexCore(int index)
+		private UIElement GetAtIndexCore(int index)
 		{
 			return _owner.GetChildAt(index) as UIElement;
 		}
 
-		protected override UIElement SetAtIndexCore(int index, UIElement value)
+		private UIElement SetAtIndexCore(int index, UIElement value)
 		{
 			var view = _owner.GetChildAt(index);
 
@@ -51,12 +51,12 @@ namespace Windows.UI.Xaml.Controls
 			return view as UIElement;
 		}
 
-		protected override void AddCore(UIElement item)
+		private void AddCore(UIElement item)
 		{
 			_owner.AddView(item);
 		}
 
-		protected override IEnumerable<UIElement> ClearCore()
+		private IEnumerable<UIElement> ClearCore()
 		{
 			var views = _owner.GetChildren().ToArray();
 			_owner.RemoveAllViews();
@@ -64,17 +64,17 @@ namespace Windows.UI.Xaml.Controls
 			return views.Cast<UIElement>(); // IFE TODO
 		}
 
-		protected override bool ContainsCore(UIElement item)
+		private bool ContainsCore(UIElement item)
 		{
 			return _owner.GetChildren().Contains(item);
 		}
 
-		protected override void CopyToCore(UIElement[] array, int arrayIndex)
+		private void CopyToCore(UIElement[] array, int arrayIndex)
 		{
 			_owner.GetChildren().ToArray().CopyTo(array, arrayIndex);
 		}
 
-		protected override bool RemoveCore(UIElement item)
+		private bool RemoveCore(UIElement item)
 		{
 			if (item != null)
 			{
@@ -87,12 +87,12 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override int CountCore()
+		private int CountCore()
 		{
 			return _owner.ChildCount;
 		}
 
-		protected override void MoveCore(uint oldIndex, uint newIndex)
+		private void MoveCore(uint oldIndex, uint newIndex)
 		{
 			_owner.MoveViewTo((int)oldIndex, (int)newIndex);
 		}
