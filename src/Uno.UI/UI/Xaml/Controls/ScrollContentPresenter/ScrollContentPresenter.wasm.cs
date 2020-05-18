@@ -243,6 +243,17 @@ namespace Windows.UI.Xaml.Controls
 			);
 		}
 
+
+		void IScrollContentPresenter.OnMinZoomFactorChanged(float newValue)
+		{
+			MinimumZoomScale = newValue;
+		}
+
+		void IScrollContentPresenter.OnMaxZoomFactorChanged(float newValue)
+		{
+			MaximumZoomScale = newValue;
+		}
+
 		internal override bool IsViewHit()
 		{
 			return true;
