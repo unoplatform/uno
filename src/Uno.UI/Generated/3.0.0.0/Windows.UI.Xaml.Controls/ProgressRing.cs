@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class ProgressRing 
 	{
-#if false || false || NET461 || false || false
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  bool IsActive
 		{
@@ -30,8 +30,8 @@ namespace Windows.UI.Xaml.Controls
 				throw new global::System.NotImplementedException("The member ProgressRingTemplateSettings ProgressRing.TemplateSettings is not implemented in Uno.");
 			}
 		}
-		#endif
-		#if false || false || NET461 || false || false
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsActiveProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
