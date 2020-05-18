@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnUnloadedPartial();
 
-		protected virtual void OnChildAdded(IFrameworkElement element)
+		private protected virtual void OnChildAdded(IFrameworkElement element)
 		{
 			UpdateTransitions(element);
 		}
