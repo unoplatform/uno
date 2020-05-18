@@ -16,6 +16,36 @@ namespace Windows.ApplicationModel.DataTransfer
 				manager.Text = content?.Text;
 			}
 		}
+
+		public static void Clear()
+		{
+			if (ContextHelper.Current.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
+			{
+				var clipData = ClipData.NewPlainText("", "");
+				manager.PrimaryClip = clipData;
+			}
+		}
+
+		private static void StartContentChanged()
+		{
+			if (ContextHelper.Current.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
+			{
+				manager.PrimaryClipChanged += Manager_PrimaryClipChanged;
+			}
+		}
+
+		private static void StopContentChanged()
+		{
+			if (ContextHelper.Current.GetSystemService(Context.ClipboardService) is ClipboardManager manager)
+			{
+				manager.PrimaryClipChanged -= Manager_PrimaryClipChanged;
+			}
+		}
+
+		private static void Manager_PrimaryClipChanged(object sender, EventArgs e)
+		{
+			OnContentChanged();
+		}
 	}
 }
 #endif
