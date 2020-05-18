@@ -12,6 +12,7 @@ using System.Text;
 using Uno.Logging;
 using Uno;
 using Windows.Devices.Input;
+using Windows.UI.Xaml.Controls;
 using Microsoft.Extensions.Logging;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Extensions;
