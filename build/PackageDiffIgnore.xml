@@ -1008,6 +1008,9 @@
 			<!-- ^^ Styles overhaul -->
 		</Types>
 
+		<Events>
+		</Events>
+
 		<Methods>
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Controls.Maps.MapTileSource..ctor()"
