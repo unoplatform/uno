@@ -1,6 +1,7 @@
 ﻿namespace Uno.Utils {
 	export class Clipboard {
 		private static dispatchContentChanged: () => number;
+		private static dispatchGetContent: (requestId : string, content : string) => number;
 
 		public static startContentChanged() {
 			['cut', 'copy', 'paste'].forEach(function (event) {
@@ -33,6 +34,19 @@
 			}
 
 			return "ok";
+		}
+
+		public static getText(requestId: string): void {
+			if (!Clipboard.dispatchGetContent) {
+				Clipboard.dispatchGetContent = (<any>Module).mono_bind_static_method("[Uno] Windows.ApplicationModel.DataTransfer.Clipboard:DispatchGetContent");
+			}
+			if (navigator.clipboard && navigator.clipboard.readText) {
+				navigator.clipboard.readText().then(
+					clipText => Clipboard.dispatchGetContent(requestId, clipText),
+					_ => Clipboard.dispatchGetContent(requestId, null));
+			} else {
+				Clipboard.dispatchGetContent(requestId, null);
+			}
 		}
 
 		private static onClipboardChanged() {

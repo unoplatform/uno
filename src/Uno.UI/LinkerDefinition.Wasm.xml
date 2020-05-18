@@ -18,6 +18,7 @@
   <assembly fullname="Uno">
     <type fullname="Windows.ApplicationModel.DataTransfer.Clipboard">
       <method name="DispatchContentChanged" />
+      <method name="DispatchGetContent" />
     </type>
     <type fullname="Windows.UI.Core.CoreDispatcher" />
     <type fullname="Windows.UI.Core.SystemNavigationManager" />
