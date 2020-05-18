@@ -56,12 +56,12 @@ namespace Windows.UI.Xaml.Controls
 			_owner.AddView(item);
 		}
 
-		private IEnumerable<UIElement> ClearCore()
+		private IEnumerable<View> ClearCore()
 		{
 			var views = _owner.GetChildren().ToArray();
 			_owner.RemoveAllViews();
 
-			return views.Cast<UIElement>(); // IFE TODO
+			return views;
 		}
 
 		private bool ContainsCore(UIElement item)

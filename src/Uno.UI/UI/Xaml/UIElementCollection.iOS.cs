@@ -57,12 +57,12 @@ namespace Windows.UI.Xaml.Controls
 			_owner.AddSubview(item);
 		}
 
-		private IEnumerable<UIElement> ClearCore()
+		private IEnumerable<UIView> ClearCore()
 		{
 			var views = _owner.ChildrenShadow.ToList();
 			views.ForEach(v => v.RemoveFromSuperview());
 
-			return views.Cast<UIElement>(); // IFE todo
+			return views; 
 		}
 
 		private bool ContainsCore(UIElement item)
