@@ -76,14 +76,14 @@ namespace Windows.ApplicationModel.DataTransfer
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.Clipboard", "void Clipboard.SetContent(DataPackage content)");
 		}
 		#endif
-		#if __ANDROID__ || false || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public static void Flush()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.Clipboard", "void Clipboard.Flush()");
 		}
 		#endif
-		#if __ANDROID__ || false || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public static void Clear()
 		{
@@ -140,7 +140,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			}
 		}
 		#endif
-		#if __ANDROID__ || false || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public static event global::System.EventHandler<object> ContentChanged
 		{

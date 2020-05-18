@@ -1,10 +1,27 @@
 ﻿namespace Uno.Utils {
 	export class Clipboard {
+		private static dispatchContentChanged: () => number;
+
+		public static startContentChanged() {
+			['cut', 'copy', 'paste'].forEach(function (event) {
+				document.addEventListener(event, Clipboard.onClipboardChanged);
+			});
+		}
+
+		public static stopContentChanged() {
+			['cut', 'copy', 'paste'].forEach(function (event) {
+				document.removeEventListener(event, Clipboard.onClipboardChanged);
+			});
+		}
+
 		public static setText(text: string): string {
 			const nav = navigator as any;
 			if (nav.clipboard) {
 				// Use clipboard object when available
-				nav.clipboard.setText(text);
+				nav.clipboard.writeText(text);
+				// Trigger change notification, as clipboard API does
+				// not execute "copy".
+				Clipboard.onClipboardChanged();
 			} else {
 				// Hack when the clipboard is not available
 				const textarea = document.createElement("textarea");
@@ -16,6 +33,13 @@
 			}
 
 			return "ok";
+		}
+
+		private static onClipboardChanged() {
+			if (!Clipboard.dispatchContentChanged) {
+				Clipboard.dispatchContentChanged = (<any>Module).mono_bind_static_method("[Uno] Windows.ApplicationModel.DataTransfer.Clipboard:DispatchContentChanged");
+			}
+			Clipboard.dispatchContentChanged();
 		}
 	}
 }

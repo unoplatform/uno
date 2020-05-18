@@ -4,15 +4,42 @@ namespace Windows.ApplicationModel.DataTransfer
 {
 	public static partial class Clipboard
 	{
+		private const string JsType = "Uno.Utils.Clipboard";
+
+		public static void Clear() => SetClipboardText(string.Empty);
+
 		public static void SetContent(DataPackage content)
 		{
 			if (content?.Text != null)
 			{
-				var text = WebAssemblyRuntime.EscapeJs(content.Text);
-				var command = $"Uno.Utils.Clipboard.setText(\"{text}\");";
-
-				WebAssemblyRuntime.InvokeJS(command);
+				SetClipboardText(content.Text);
 			}
+		}
+
+		private static void SetClipboardText(string text)
+		{
+			var escapedText = WebAssemblyRuntime.EscapeJs(text);
+			var command = $"{JsType}.setText(\"{escapedText}\");";
+
+			WebAssemblyRuntime.InvokeJS(command);
+		}
+
+		private static void StartContentChanged()
+		{
+			var command = $"{JsType}.startContentChanged()";
+			WebAssemblyRuntime.InvokeJS(command);
+		}
+
+		private static void StopContentChanged()
+		{
+			var command = $"{JsType}.stopContentChanged()";
+			WebAssemblyRuntime.InvokeJS(command);
+		}
+
+		public static int DispatchContentChanged()
+		{
+			OnContentChanged();
+			return 0;
 		}
 	}
 }
