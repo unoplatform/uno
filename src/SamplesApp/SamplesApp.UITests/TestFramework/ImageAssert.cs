@@ -65,10 +65,29 @@ namespace SamplesApp.UITests.TestFramework
 		public static void AreAlmostEqual(FileInfo expected, Rectangle expectedRect, FileInfo actual, Rectangle actualRect, double expectedToActualScale, PixelTolerance tolerance, [CallerLineNumber] int line = 0)
 			=> AreEqualImpl(expected, expectedRect, actual, actualRect, expectedToActualScale, tolerance, line);
 
+		public static void AreAlmostEqual(FileInfo expected, Rectangle expectedRect, Bitmap actual, Rectangle actualRect, double expectedToActualScale, PixelTolerance tolerance, [CallerLineNumber] int line = 0)
+			=> AreEqualImpl(expected, expectedRect, null, actual, actualRect, expectedToActualScale, tolerance, line);
+
 		private static void AreEqualImpl(
 			FileInfo expected,
 			Rectangle expectedRect,
 			FileInfo actual,
+			Rectangle actualRect,
+			double expectedToActualScale,
+			PixelTolerance tolerance,
+			int line)
+		{
+			using (var actualBitmap = new Bitmap(actual.FullName))
+			{
+				AreEqualImpl(expected, expectedRect, actual, actualBitmap, actualRect, expectedToActualScale, tolerance, line);
+			}
+		}
+
+		private static void AreEqualImpl(
+			FileInfo expected,
+			Rectangle expectedRect,
+			FileInfo actual,
+			Bitmap actualBitmap,
 			Rectangle actualRect,
 			double expectedToActualScale,
 			PixelTolerance tolerance,
@@ -80,7 +99,6 @@ namespace SamplesApp.UITests.TestFramework
 			}
 
 			using (var expectedBitmap = new Bitmap(expected.FullName))
-			using (var actualBitmap = new Bitmap(actual.FullName))
 			{
 				if (expectedRect == FirstQuadrant && actualRect == FirstQuadrant)
 				{
@@ -112,7 +130,7 @@ namespace SamplesApp.UITests.TestFramework
 					.AppendLine($"ImageAssert.AreEqual @ line {line}")
 					.AppendLine("pixelTolerance: " + tolerance)
 					.AppendLine("expected: " + expected?.Name + (expectedRect == FirstQuadrant ? null : $" in {expectedRect}"))
-					.AppendLine("actual  : " + actual?.Name + (actualRect == FirstQuadrant ? null : $" in {actualRect}"))
+					.AppendLine("actual  : " + (actual?.Name ?? "--unknown--") + (actualRect == FirstQuadrant ? null : $" in {actualRect}"))
 					.AppendLine("====================");
 
 			string WithContext(string message)

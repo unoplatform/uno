@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
 using Uno.UITest.Helpers.Queries;
+using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 {
@@ -21,6 +22,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 		{
 			Run("UITests.Windows_UI_Xaml_Shapes.Basic_Shapes", skipInitialScreenshot: true);
 
+			var ctrl = new QueryEx(q => q.Marked("_basicShapesTestRoot"));
 			var expectedDirectory = Path.Combine(TestContext.CurrentContext.TestDirectory, "Windows_UI_Xaml_Shapes/Basics_Shapes_Tests_EpectedResults");
 			var tolerance = new PixelTolerance()
 				.WithColor(96) // We are almost only trying to detect edges
@@ -28,29 +30,78 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 				.Discrete(20); // Way toooooooo long otherwise!
 
 			var exceptions = new List<Exception>();
-			foreach (var test in _tests)
+			foreach (var testGroup in _tests.GroupBy(t => string.Join("_", t.Split(new []{'_'},3, StringSplitOptions.RemoveEmptyEntries).Take(2))).Take(2))
 			{
-				try
+				ctrl.SetDependencyPropertyValue("RunTest", string.Join(";", testGroup));
+				_app.WaitFor(() => !string.IsNullOrWhiteSpace(ctrl.GetDependencyPropertyValue<string>("TestResult")));
+				var testResultsRaw = ctrl.GetDependencyPropertyValue<string>("TestResult");
+
+				var testResults= testResultsRaw
+					.Split(new[] {'\r', '\n'}, StringSplitOptions.RemoveEmptyEntries)
+					.Select(line => line.Split(new[] {';'}, 3, StringSplitOptions.RemoveEmptyEntries))
+					.Where(line => line.Length == 3)
+					.ToDictionary(
+						line => line[0],
+						line => line[1] == "SUCCESS"
+							? new Bitmap(new MemoryStream(Convert.FromBase64String(line[3])))
+							: new Exception(line[3]) as object);
+
+				foreach (var test in testGroup)
 				{
-					var expected = new FileInfo(Path.Combine(expectedDirectory, $"{test}.png"));
-					if (!expected.Exists)
+					try
 					{
-						Assert.Fail($"Expected screenshot does not exists ({expected.FullName})");
+						var expected = new FileInfo(Path.Combine(expectedDirectory, $"{test}.png"));
+						if (!expected.Exists)
+						{
+							Assert.Fail($"Expected screenshot does not exists ({expected.FullName})");
+						}
+
+						if (!testResults.TryGetValue(test, out var testResult))
+						{
+							Assert.Fail($"No test result for {test}.");
+						}
+
+						if (testResult is Exception error)
+						{
+							Assert.Fail($"Test failed: {error.Message}");
+						}
+
+						using (var actual = (Bitmap)testResult)
+						{
+
+							var target = Path.Combine(
+								TestContext.CurrentContext.WorkDirectory,
+								nameof(Windows_UI_Xaml_Shapes),
+								nameof(Basics_Shapes_Tests),
+								//nameof(ValidateAllShapesBasicStrechesAlignemntsAndSize),
+								TestContext.CurrentContext.Test.MethodName,
+								AppInitializer.TestEnvironment.CurrentPlatform.ToString(),
+								test + ".png");
+
+							actual.Save(target);
+
+							//TestContext.CurrentContext.Test.FullName
+							//TestContext.CurrentContext.Result.Outcome
+
+							var scale = 2.0;
+							ImageAssert.AreAlmostEqual(expected, ImageAssert.FirstQuadrant, actual, ImageAssert.FirstQuadrant, scale, tolerance);
+						}
+
+						//_app.WaitForDependencyPropertyValue(ctrl, "RunningTest", test);
+
+						//var actual = TakeScreenshot(test, ignoreInSnapshotCompare: true);
+
+
+						//var testZone = _app.WaitForElement("_testZone").Single().Rect;
+						//var scale = 2.0;
+
+						//ImageAssert.AreAlmostEqual(expected, ImageAssert.FirstQuadrant, actual, testZone.ToRectangle(), scale, tolerance);
 					}
-
-					_app.EnterText("_idInput", test);
-					_app.Tap("_renderId");
-
-					var actual = TakeScreenshot(test, ignoreInSnapshotCompare: true);
-					var testZone = _app.WaitForElement("_testZone").Single().Rect;
-					var scale = 2.0;
-
-					ImageAssert.AreAlmostEqual(expected, ImageAssert.FirstQuadrant, actual, testZone.ToRectangle(), scale, tolerance);
-				}
-				catch (Exception e)
-				{
-					Console.Error.WriteLine(e); // Ease debug while reading log from CI
-					exceptions.Add(e);
+					catch (Exception e)
+					{
+						Console.Error.WriteLine(e); // Ease debug while reading log from CI
+						exceptions.Add(e);
+					}
 				}
 			}
 

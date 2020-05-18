@@ -1,8 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.Graphics.Imaging;
@@ -10,12 +13,14 @@ using Windows.Storage;
 using Windows.Storage.Pickers;
 using Windows.System;
 using Windows.UI;
+using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Shapes;
+using UIKit;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
 
@@ -160,6 +165,35 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		};
 		#endregion
 
+		#region Test automation support
+		public static readonly DependencyProperty RunTestProperty = DependencyProperty.Register(
+			"RunTest", typeof(string), typeof(Basic_Shapes), new PropertyMetadata(default(string), (snd, e) => ((Basic_Shapes)snd).RunTests((string)e.NewValue)));
+
+		public string RunTest
+		{
+			get => (string)GetValue(RunTestProperty);
+			set => SetValue(RunTestProperty, value);
+		}
+
+		public static readonly DependencyProperty TestResultProperty = DependencyProperty.Register(
+			"TestResult", typeof(string), typeof(Basic_Shapes), new PropertyMetadata(default(string)));
+
+		public string TestResult
+		{
+			get { return (string)GetValue(TestResultProperty); }
+			set { SetValue(TestResultProperty, value); }
+		}
+
+		public static readonly DependencyProperty RunningTestProperty = DependencyProperty.Register(
+			"RunningTest", typeof(string), typeof(Basic_Shapes), new PropertyMetadata(default(string), (snd, e) => ((Basic_Shapes)snd)._runningTest.Text = e.NewValue?.ToString()));
+
+		public string RunningTest
+		{
+			get => (string)GetValue(RunningTestProperty);
+			set => SetValue(RunningTestProperty, value);
+		}
+		#endregion
+
 		public Basic_Shapes()
 		{
 			this.InitializeComponent();
@@ -212,14 +246,16 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			}
 
 			_root.Visibility = Visibility.Visible;
+			RunningTest = "";
 			_testZone.Child = null;
 			_root.Content = shapesPanel;
 		}
 
 		private async void GenerateScreenshots(object sender, RoutedEventArgs e)
 		{
-
 #if WINDOWS_UWP
+			_root.Visibility = Visibility.Collapsed;
+
 			var folder = await new FolderPicker { FileTypeFilter = { "*" } }.PickSingleFolderAsync();
 			var alteratorsMap = _stretches.SelectMany(stretch => _sizes.Select(size => new[] { stretch, size })).ToArray();
 
@@ -228,6 +264,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			{
 				var fileName = shape.Name + "_" + string.Join("_", alterators.Select(a => a.Id)) + ".png";
 				var grid = RenderHoriVertGridForScreenshot(shape, alterators);
+				_testZone.Child = grid;
 				await Task.Yield();
 
 				var renderer = new RenderTargetBitmap();
@@ -248,82 +285,147 @@ namespace UITests.Windows_UI_Xaml_Shapes
 #endif
 		}
 
-		private void OnIdInputChanged(object sender, KeyRoutedEventArgs e)
+		private static byte[] RenderAsPng(FrameworkElement elt)
 		{
-			if (((TextBox)sender).Text.EndsWith("."))
+			UIImage img;
+			try
 			{
-				RenderById(null, null);
+				UIGraphics.BeginImageContextWithOptions(new Size(elt.ActualWidth, elt.ActualHeight), true, UIScreen.MainScreen.Scale);
+				var ctx = UIGraphics.GetCurrentContext();
+				ctx.SetFillColor(Colors.White);
+				elt.Layer.RenderInContext(ctx);
+				img = UIGraphics.GetImageFromCurrentImageContext();
+			}
+			finally
+			{
+				UIGraphics.EndImageContext();
+			}
+
+			using (img)
+			{
+				return img.AsPNG().ToArray();
+			}
+		}
+
+		public string RunTests(string testNames)
+		{
+			TestResult = "";
+
+			var tests = testNames.Split(';', StringSplitOptions.RemoveEmptyEntries);
+			var id = Guid.NewGuid().ToString("N");
+
+			((DependencyObject)this).Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => RunTestsCore(tests));
+
+			return id;
+
+			async Task RunTestsCore(string[] strings)
+			{
+				var result = new StringBuilder();
+				result.AppendLine(id);
+
+				foreach (var test in strings)
+				{
+					result.Append(test);
+					result.Append(';');
+					try
+					{
+						var elt = await RenderById(test);
+						var testResult = RenderAsPng(elt);
+
+						result.Append("SUCCESS;");
+						result.Append(Convert.ToBase64String(testResult));
+					}
+					catch (Exception e)
+					{
+						result.Append("ERROR;");
+						result.Append(Convert.ToBase64String(Encoding.UTF8.GetBytes(e.ToString())));
+					}
+
+					result.AppendLine();
+				}
+
+				TestResult = result.ToString();
 			}
 		}
 
 		private void RenderById(object sender, RoutedEventArgs e)
+			//=> ((DependencyObject)this).Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => RenderById(_idInput.Text));
+			=> RunTests(_idInput.Text);
+
+		private async Task<FrameworkElement> RenderById(string id)
 		{
-			var parsedId = Regex.Match(_idInput.Text, @"(?<shape>[a-zA-Z]+)(_(?<alteratorId>[a-zA-Z]+))+");
+			var tcs = new TaskCompletionSource<object>();
 
-			if (!parsedId.Success)
-			{
-				_testZone.Child = new TextBlock
-				{
-					Text = $"Failed to parse {parsedId}",
-					Foreground = new SolidColorBrush(Colors.Red)
-				};
-				return;
-			}
+			using var timeout = Debugger.IsAttached ? default : new CancellationTokenSource(TimeSpan.FromMilliseconds(750));
+			using var reg = Debugger.IsAttached ? default : timeout.Token.Register(() => tcs.TrySetCanceled());
 
-			try
-			{
-				var shapeName = parsedId.Groups["shape"].Value;
-				var shape = _shapes.Single(s => s.Name == shapeName);
-
-				var alteratorIds = parsedId.Groups["alteratorId"].Captures.Cast<Capture>().Select(c => c.Value);
-				var alterators = alteratorIds.Select(id => _stretches.Concat(_sizes).Single(a => a.Id == id)).ToArray();
-
-				RenderHoriVertGridForScreenshot(shape, alterators);
-
-				_idInput.Text = ""; // Clear for next automated test!
-			}
-			catch (Exception error)
-			{
-				_testZone.Child = new TextBlock
-				{
-					Text = $"Failed to render {parsedId}: {error.Message}",
-					Foreground = new SolidColorBrush(Colors.Red)
-				};
-			}
-		}
-
-		private Grid RenderHoriVertGridForScreenshot(Factory shape, Alterator[] alterators)
-		{
+			RunningTest = "";
 			_root.Visibility = Visibility.Collapsed;
 
-			var grid = BuildHoriVertTestGrid(
-				() => alterators.Aggregate(shape.Create(), (s, a) =>
-				{
-					a.Alter(s);
-					return s;
-				}),
-				null,
-				150);
-
-			grid.Background = new SolidColorBrush(Colors.White); // Much easier for screenshot comparison :)
-			grid.VerticalAlignment = VerticalAlignment.Top;
-			grid.HorizontalAlignment = HorizontalAlignment.Left;
-
-			// We ste clip and add wrapping container so the rendering engine won't generate screenshots with a transparent padding.
-			grid.Clip = new RectangleGeometry { Rect = new Rect(0, 0, grid.Width, grid.Height) };
-			var containerGrid = new Grid
+			var elt = GetElement();
+			elt.SizeChanged += (snd, args) =>
 			{
-				Width = grid.Width,
-				Height = grid.Height,
-				Children = { grid }
+				if (args.NewSize != default)
+				{
+					tcs.SetResult(default);
+				}
 			};
+			_testZone.Child = elt;
 
-			_testZone.Child = containerGrid;
+			await tcs.Task;
 
-			return containerGrid;
+			RunningTest = id;
+
+			return elt;
+
+			FrameworkElement GetElement()
+			{
+				var parsedId = Regex.Match(id, @"(?<shape>[a-zA-Z]+)(_(?<alteratorId>[a-zA-Z]+))+");
+				if (!parsedId.Success)
+				{
+					return new TextBlock {Text = $"Failed to parse {parsedId}", Foreground = new SolidColorBrush(Colors.Red)};
+				}
+
+				try
+				{
+					var shapeName = parsedId.Groups["shape"].Value;
+					var shape = _shapes.Single(s => s.Name == shapeName);
+
+					var alteratorIds = parsedId.Groups["alteratorId"].Captures.Cast<Capture>().Select(c => c.Value);
+					var alterators = alteratorIds.Select(id => _stretches.Concat(_sizes).Single(a => a.Id == id)).ToArray();
+
+					var grid = BuildHoriVertTestGrid(
+						() => alterators.Aggregate(shape.Create(), (s, a) =>
+						{
+							a.Alter(s);
+							return s;
+						}),
+						null,
+						150);
+
+					grid.Background = new SolidColorBrush(Colors.White); // Much easier for screenshot comparison :)
+					grid.VerticalAlignment = VerticalAlignment.Top;
+					grid.HorizontalAlignment = HorizontalAlignment.Left;
+
+					// We set clip and add wrapping container so the rendering engine won't generate screenshots with a transparent padding.
+					grid.Clip = new RectangleGeometry { Rect = new Rect(0, 0, grid.Width, grid.Height) };
+					var containerGrid = new Grid
+					{
+						Width = grid.Width,
+						Height = grid.Height,
+						Children = { grid }
+					};
+
+					return containerGrid;
+				}
+				catch (Exception error)
+				{
+					return new TextBlock {Text = $"Failed to render {parsedId}: {error.Message}", Foreground = new SolidColorBrush(Colors.Red)};
+				}
+			}
 		}
 
-		private Grid BuildHoriVertTestGrid(Func<FrameworkElement> template, string title, int itemSize = 150)
+		private static Grid BuildHoriVertTestGrid(Func<FrameworkElement> template, string title, int itemSize = 150)
 		{
 			var isLabelEnabled = title != null;
 			var horizontalAlignments = new[] {HorizontalAlignment.Left, HorizontalAlignment.Center, HorizontalAlignment.Right, HorizontalAlignment.Stretch};

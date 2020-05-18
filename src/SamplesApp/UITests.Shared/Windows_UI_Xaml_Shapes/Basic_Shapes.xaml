@@ -6,7 +6,8 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:win="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	mc:Ignorable="d"
-	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
+	x:Name="_basicShapesTestRoot">
 
 	<Grid>
 		<Grid.RowDefinitions>
@@ -37,12 +38,14 @@
 				Margin="5,0,0,0" />
 			<TextBox
 				x:Name="_idInput"
-				KeyUp="OnIdInputChanged"
 				Margin="5,0,0,0" />
 			<Button
 				x:Name="_renderId"
 				Content="Render ID"
 				Click="RenderById" />
+			<TextBlock
+				x:Name="_runningTest"
+				Margin="5,0,0,0" />
 		</StackPanel>
 
 		<ScrollViewer
