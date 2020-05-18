@@ -234,6 +234,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return IsType(xamlType, "UIKit.UIView");
 		}
 
+		private bool IsMacOSNSView(XamlType xamlType)
+		{
+			return IsType(xamlType, "AppKit.NSView");
+		}
+
+		private bool IsNativeView(XamlType xamlType) => IsAndroidView(xamlType) || IsIOSUIView(xamlType) || IsMacOSNSView(xamlType);
+
+
 		private bool IsTransform(XamlType xamlType)
 		{
 			return IsType(xamlType, XamlConstants.Types.Transform);

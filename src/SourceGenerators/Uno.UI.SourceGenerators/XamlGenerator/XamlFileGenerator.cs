@@ -1609,7 +1609,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 								writer.AppendFormatInvariant("{0}Child = ", setterPrefix);
 
-								BuildChild(writer, implicitContentChild, implicitContentChild.Objects.First());
+								var implicitContent = implicitContentChild.Objects.First();
+								using (TryAdaptNative(writer, implicitContent))
+								{
+									BuildChild(writer, implicitContentChild, implicitContent);
+								}
 							}
 						}
 						else if (IsType(topLevelControl.Type, XamlConstants.Types.SolidColorBrush))
@@ -4689,6 +4693,20 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return false;
 				}
 			}
+		}
+
+		/// <summary>
+		/// Checks if the element is a native view and, if so, wraps it in a container for addition to the managed visual tree.
+		/// </summary>
+		private IDisposable TryAdaptNative(IIndentedStringBuilder writer, XamlObjectDefinition xamlObjectDefinition)
+		{
+			if (!IsFrameworkElement(xamlObjectDefinition.Type) && IsNativeView(xamlObjectDefinition.Type))
+			{
+				writer.AppendLineInvariant("global::Windows.UI.Xaml.Media.VisualTreeHelper.AdaptNative(");
+				return new DisposableAction(() => writer.AppendLine(")"));
+			}
+
+			return null;
 		}
 
 		private void BuildChildThroughSubclass(IIndentedStringBuilder writer, XamlMemberDefinition contentOwner, string returnType)
