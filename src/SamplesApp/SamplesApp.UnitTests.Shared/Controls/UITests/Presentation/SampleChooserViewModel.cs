@@ -909,13 +909,17 @@ description:
 
 			if (json.HasValueTrimmed())
 			{
-				return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
+				try
+				{
+					return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
+				}
+				catch (Exception ex)
+				{
+					this.Log().Error($"Could not deserialize Sample chooser file {key}.", ex);
+				}
 			}
-			else
 #endif
-			{
-				return defaultValue != null ? defaultValue() : default(T);
-			}
+			return defaultValue != null ? defaultValue() : default(T);
 		}
 	}
 }
