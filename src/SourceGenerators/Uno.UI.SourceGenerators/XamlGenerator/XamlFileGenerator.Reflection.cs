@@ -221,7 +221,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private bool IsFrameworkElement(XamlType xamlType)
 		{
-			return IsImplementingInterface(FindType(xamlType), _iFrameworkElementSymbol);
+			return IsType(xamlType, XamlConstants.Types.FrameworkElement);
 		}
 
 		private bool IsAndroidView(XamlType xamlType)
