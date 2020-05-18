@@ -20,6 +20,12 @@ namespace Windows.ApplicationModel.DataTransfer
 			dataPackageView.SetText(clipboardText);
 			return dataPackageView;
 		}
+
+		public static void Clear()
+		{
+			var pasteboard = NSPasteboard.GeneralPasteboard;
+			pasteboard.ClearContents();
+		}
 	}
 }
 #endif
