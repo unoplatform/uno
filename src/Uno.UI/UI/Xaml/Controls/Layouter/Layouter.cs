@@ -44,7 +44,7 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public abstract partial class Layouter : ILayouter
+	internal abstract partial class Layouter : ILayouter
 	{
 		private static readonly IEventProvider _trace = Tracing.Get(FrameworkElement.TraceProvider.Id);
 		private readonly ILogger _logDebug;
