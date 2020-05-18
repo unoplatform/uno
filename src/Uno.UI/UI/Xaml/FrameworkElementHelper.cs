@@ -9,14 +9,14 @@ namespace Uno.UI
 	/// <summary>
 	/// A set of uno.ui-specific helpers for Xaml
 	/// </summary>
-    public static class FrameworkElementHelper
-    {
+	public static class FrameworkElementHelper
+	{
 		/// <summary>
 		/// Set the rendering phase, defined via x:Phase.
 		/// </summary>
 		/// <param name="target">The target <see cref="FrameworkElement"/></param>
 		/// <param name="phase">The render phase ID</param>
-		public static void SetRenderPhase(IFrameworkElement target, int phase)
+		public static void SetRenderPhase(FrameworkElement target, int phase)
 			=> target.RenderPhase = phase;
 
 		/// <summary>
@@ -24,7 +24,7 @@ namespace Uno.UI
 		/// </summary>
 		/// <param name="target">The target <see cref="FrameworkElement"/></param>
 		/// <param name="declaredPhases">A set of phases used by the children controls.</param>
-		public static void SetDataTemplateRenderPhases(FrameworkElement target, int[] declaredPhases) 
+		public static void SetDataTemplateRenderPhases(FrameworkElement target, int[] declaredPhases)
 			=> target.DataTemplateRenderPhases = declaredPhases;
 
 		/// <summary>
@@ -37,7 +37,7 @@ namespace Uno.UI
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static bool IsUiAutomationMappingEnabled { get; set; } = false;
 
-		public static void SetBaseUri(IFrameworkElement target, string uri)
+		public static void SetBaseUri(FrameworkElement target, string uri)
 		{
 			if (target is FrameworkElement fe)
 			{

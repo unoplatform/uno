@@ -27,13 +27,12 @@ namespace Windows.UI.Xaml
 		}
 
 		#region VisualStateGroups Attached Property
-		public static IList<VisualStateGroup> GetVisualStateGroups(IFrameworkElement obj)
+		internal static IList<VisualStateGroup> GetVisualStateGroups(IFrameworkElement obj)
 			=> (IList<VisualStateGroup>)obj.GetValue(VisualStateGroupsProperty);
-
 		public static IList<VisualStateGroup> GetVisualStateGroups(FrameworkElement obj)
 			=> (IList<VisualStateGroup>)obj.GetValue(VisualStateGroupsProperty);
 
-		public static void SetVisualStateGroups(IFrameworkElement obj, IList<VisualStateGroup> value)
+		public static void SetVisualStateGroups(FrameworkElement obj, IList<VisualStateGroup> value)
 		{
 			obj.SetValue(VisualStateGroupsProperty, value);
 		}
@@ -181,7 +180,8 @@ namespace Windows.UI.Xaml
 			return (null, null);
 		}
 
-		protected virtual bool GoToStateCore(Control control, IFrameworkElement templateRoot, string stateName, VisualStateGroup group, VisualState state, bool useTransitions)
+		protected virtual bool GoToStateCore(Control control, FrameworkElement templateRoot, string stateName, VisualStateGroup group, VisualState state, bool useTransitions) => GoToStateCore(control, (IFrameworkElement) templateRoot, stateName, group, state, useTransitions);
+		private bool GoToStateCore(Control control, IFrameworkElement templateRoot, string stateName, VisualStateGroup group, VisualState state, bool useTransitions)
 		{
 #if IS_UNO
 			if (_trace.IsEnabled)

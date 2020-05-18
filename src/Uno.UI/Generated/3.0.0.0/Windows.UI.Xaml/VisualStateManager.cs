@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.VisualStateManager", "void VisualStateManager.RaiseCurrentStateChanged(VisualStateGroup stateGroup, VisualState oldState, VisualState newState, Control control)");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		protected virtual bool GoToStateCore( global::Windows.UI.Xaml.Controls.Control control,  global::Windows.UI.Xaml.FrameworkElement templateRoot,  string stateName,  global::Windows.UI.Xaml.VisualStateGroup group,  global::Windows.UI.Xaml.VisualState state,  bool useTransitions)
 		{

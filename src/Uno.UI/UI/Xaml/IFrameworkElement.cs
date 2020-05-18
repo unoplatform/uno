@@ -57,7 +57,7 @@ using View = Windows.UI.Xaml.UIElement;
 
 namespace Windows.UI.Xaml
 {
-	public partial interface IFrameworkElement : IUIElement, IDataContextProvider, IDependencyObjectParse
+	internal partial interface IFrameworkElement : IUIElement, IDataContextProvider, DependencyObject, IDependencyObjectParse
 	{
 		event RoutedEventHandler Loaded;
 		event RoutedEventHandler Unloaded;
@@ -141,7 +141,7 @@ namespace Windows.UI.Xaml
 		string GetAccessibilityInnerText();
 	}
 
-	public static class IFrameworkElementHelper
+	internal static class IFrameworkElementHelper
 	{
 		/// <summary>
 		/// Initializes the standard properties for this framework element.
