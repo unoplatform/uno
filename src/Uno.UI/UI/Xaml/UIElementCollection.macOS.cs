@@ -9,21 +9,21 @@ using AppKit;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class UIElementCollection :  BatchCollection<NSView>, IList<NSView>, IEnumerable<NSView>
+	public partial class UIElementCollection : BatchCollection<UIElement>, IList<UIElement>, IEnumerable<UIElement>
 	{
-        private readonly BindableNSView _owner;
+		private readonly BindableNSView _owner;
 
-        public UIElementCollection(BindableNSView owner) : base(owner)
+		public UIElementCollection(BindableNSView owner) : base(owner)
 		{
 			_owner = owner;
 		}
 
-		protected override int IndexOfCore(NSView item)
+		protected override int IndexOfCore(UIElement item)
 		{
 			return _owner.ChildrenShadow.IndexOf(item);
 		}
 
-		protected override void InsertCore(int index, NSView item)
+		protected override void InsertCore(int index, UIElement item)
 		{
 			if (index == _owner.Subviews.Length)
 			{
@@ -35,54 +35,54 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override NSView RemoveAtCore(int index)
+		protected override UIElement RemoveAtCore(int index)
 		{
 			var view = _owner.ChildrenShadow[index];
 
 			view.RemoveFromSuperview();
 
-			return view;
+			return view as UIElement;
 		}
 
-		protected override NSView GetAtIndexCore(int index)
+		protected override UIElement GetAtIndexCore(int index)
 		{
-			return _owner.ChildrenShadow[index];
+			return _owner.ChildrenShadow[index] as UIElement;
 		}
 
-		protected override NSView SetAtIndexCore(int index, NSView value)
+		protected override UIElement SetAtIndexCore(int index, UIElement value)
 		{
 			var view = _owner.ChildrenShadow[index];
 
 			// Set the view directly in the original array
 			_owner.Subviews[index] = value;
 
-			return view;
+			return view as UIElement;
 		}
 
-		protected override void AddCore(NSView item)
+		protected override void AddCore(UIElement item)
 		{
 			_owner.AddSubview(item);
 		}
 
-		protected override IEnumerable<NSView> ClearCore()
+		protected override IEnumerable<UIElement> ClearCore()
 		{
 			var views = _owner.ChildrenShadow.ToList();
 			views.ForEach(v => v.RemoveFromSuperview());
 
-			return views;
+			return views.Cast<UIElement>(); // IFE TODO
 		}
 
-		protected override bool ContainsCore(NSView item)
+		protected override bool ContainsCore(UIElement item)
 		{
 			return _owner.ChildrenShadow.Contains(item);
 		}
 
-		protected override void CopyToCore(NSView[] array, int arrayIndex)
+		protected override void CopyToCore(UIElement[] array, int arrayIndex)
 		{
 			_owner.ChildrenShadow.ToArray().CopyTo(array, arrayIndex);
 		}
 
-		protected override bool RemoveCore(NSView item)
+		protected override bool RemoveCore(UIElement item)
 		{
 			item.RemoveFromSuperview();
 
@@ -98,13 +98,5 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_owner.MoveViewTo((int)oldIndex, (int)newIndex);
 		}
-
-		protected override List<NSView>.Enumerator GetEnumeratorCore()
-			=> _owner.GetChildrenEnumerator();
-
-		// This method is a explicit replace of GetEnumerator in BatchCollection<T> to
-		// enable allocation-less enumeration. It is present at this level to avoid
-		// a binary breaking change.
-		public new List<NSView>.Enumerator GetEnumerator() => GetEnumeratorCore();
 	}
 }

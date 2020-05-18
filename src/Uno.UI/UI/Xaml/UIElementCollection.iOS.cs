@@ -1,5 +1,4 @@
-﻿#if XAMARIN_IOS
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Uno.Extensions;
@@ -10,73 +9,73 @@ using Uno.UI.Controls;
 
 namespace Windows.UI.Xaml.Controls
 {
-	public partial class UIElementCollection :  BatchCollection<UIView>, IList<UIView>, IEnumerable<UIView>
+	public partial class UIElementCollection : BatchCollection<UIElement>, IList<UIElement>, IEnumerable<UIElement>
 	{
-        private readonly BindableUIView _owner;
+		private readonly BindableUIView _owner;
 
-        public UIElementCollection(BindableUIView owner) : base(owner)
+		public UIElementCollection(BindableUIView owner) : base(owner)
 		{
 			_owner = owner;
 		}
 
-		protected override int IndexOfCore(UIView item)
+		protected override int IndexOfCore(UIElement item)
 		{
 			return _owner.ChildrenShadow.IndexOf(item);
 		}
 
-		protected override void InsertCore(int index, UIView item)
+		protected override void InsertCore(int index, UIElement item)
 		{
 			_owner.InsertSubview(item, index);
 		}
 
-		protected override UIView RemoveAtCore(int index)
+		protected override UIElement RemoveAtCore(int index)
 		{
 			var view = _owner.ChildrenShadow[index];
 
 			view.RemoveFromSuperview();
 
-			return view;
+			return view as UIElement;
 		}
 
-		protected override UIView GetAtIndexCore(int index)
+		protected override UIElement GetAtIndexCore(int index)
 		{
-			return _owner.ChildrenShadow[index];
+			return _owner.ChildrenShadow[index] as UIElement;
 		}
 
-		protected override UIView SetAtIndexCore(int index, UIView value)
+		protected override UIElement SetAtIndexCore(int index, UIElement value)
 		{
 			var view = _owner.ChildrenShadow[index];
 
 			// Set the view directly in the original array
 			_owner.Subviews[index] = value;
 
-			return view;
+			return view as UIElement;
 		}
 
-		protected override void AddCore(UIView item)
+		protected override void AddCore(UIElement item)
 		{
 			_owner.AddSubview(item);
 		}
 
-		protected override IEnumerable<UIView> ClearCore()
+		protected override IEnumerable<UIElement> ClearCore()
 		{
 			var views = _owner.ChildrenShadow.ToList();
 			views.ForEach(v => v.RemoveFromSuperview());
 
-			return views;
+			return views.Cast<UIElement>(); // IFE todo
 		}
 
-		protected override bool ContainsCore(UIView item)
+		protected override bool ContainsCore(UIElement item)
 		{
 			return _owner.ChildrenShadow.Contains(item);
 		}
 
-		protected override void CopyToCore(UIView[] array, int arrayIndex)
+		protected override void CopyToCore(UIElement[] array, int arrayIndex)
 		{
 			_owner.ChildrenShadow.ToArray().CopyTo(array, arrayIndex);
 		}
 
-		protected override bool RemoveCore(UIView item)
+		protected override bool RemoveCore(UIElement item)
 		{
 			item.RemoveFromSuperview();
 
@@ -92,14 +91,5 @@ namespace Windows.UI.Xaml.Controls
 		{
 			_owner.MoveViewTo((int)oldIndex, (int)newIndex);
 		}
-
-		protected override List<UIView>.Enumerator GetEnumeratorCore()
-			=> _owner.GetChildrenEnumerator();
-
-		// This method is a explicit replace of GetEnumerator in BatchCollection<T> to
-		// enable allocation-less enumeration. It is present at this level to avoid
-		// a binary breaking change.
-		public new List<UIView>.Enumerator GetEnumerator() => GetEnumeratorCore();
 	}
 }
-#endif

@@ -163,7 +163,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public IEnumerator<T> GetEnumerator() => GetEnumeratorCore();
 
-		protected abstract List<T>.Enumerator GetEnumeratorCore();
+		protected abstract IEnumerator<T> GetEnumeratorCore();
 
 		#endregion
 
