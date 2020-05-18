@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls
 			this.IsOpen = false;
 		}
 
-		protected override void OnChildChanged(UIView oldChild, UIView newChild)
+		protected override void OnChildChanged(UIElement oldChild, UIElement newChild)
 		{
 			base.OnChildChanged(oldChild, newChild);
 

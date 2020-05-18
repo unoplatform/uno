@@ -86,7 +86,7 @@ namespace Windows.UI.Xaml.Controls
 			PopupPanel?.RemoveFromSuperview();
 		}
 
-		protected override void OnChildChanged(NSView oldChild, NSView newChild)
+		protected override void OnChildChanged(UIElement oldChild, UIElement newChild)
 		{
 			base.OnChildChanged(oldChild, newChild);
 
