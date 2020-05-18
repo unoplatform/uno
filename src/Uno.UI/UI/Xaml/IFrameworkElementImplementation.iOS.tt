@@ -209,9 +209,9 @@ namespace <#= mixin.NamespaceName #>
 			return size;
 		}
 
-		public IFrameworkElement FindName (string name)
+		public object FindName (string name)
 		{
-			return IFrameworkElementHelper.FindName (this, Subviews, name);			
+			return IFrameworkElementHelper.FindName (this, Subviews, name);
 		}
 
 		#region Name Dependency Property

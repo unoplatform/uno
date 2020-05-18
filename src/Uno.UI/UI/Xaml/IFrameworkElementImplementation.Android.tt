@@ -56,7 +56,7 @@ namespace <#= mixin.NamespaceName #>
 
 		bool IFrameworkElementInternal.HasLayouter => <#= mixin.HasLayouter #>;
 
-		public IFrameworkElement FindName(string name)
+		public object FindName(string name)
 		{
 			var viewGroup = ((object)this) as ViewGroup;
 
