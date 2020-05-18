@@ -1,4 +1,5 @@
 ﻿#if __MACOS__
+using System.Threading.Tasks;
 using AppKit;
 
 namespace Windows.ApplicationModel.DataTransfer
@@ -17,7 +18,10 @@ namespace Windows.ApplicationModel.DataTransfer
 			var dataPackageView = new DataPackageView();
 			var pasteboard = NSPasteboard.GeneralPasteboard;
 			var clipboardText = pasteboard.GetStringForType(NSPasteboard.NSPasteboardTypeString);
-			dataPackageView.SetText(clipboardText);
+			if (clipboardText != null)
+			{
+				dataPackageView.SetTextTask(Task.FromResult(clipboardText));
+			}
 			return dataPackageView;
 		}
 
