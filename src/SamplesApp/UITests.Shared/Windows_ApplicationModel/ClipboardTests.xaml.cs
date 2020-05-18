@@ -42,6 +42,7 @@ namespace UITests.Windows_ApplicationModel
 	{
 		private bool _isObservingContentChanged = false;
 		private string _lastContentChangedDate = "";
+		private string _text = "";
 
 		public ClipboardTestsViewModel(CoreDispatcher dispatcher) : base(dispatcher)
 		{
@@ -74,13 +75,40 @@ namespace UITests.Windows_ApplicationModel
 			}
 		}
 
+		public string Text
+		{
+			get => _text;
+			set
+			{
+				_text = value;
+				RaisePropertyChanged();
+			}
+		}
+
 		public ICommand ClearCommand => GetOrCreateCommand(Clear);
+
+		public ICommand CopyCommand => GetOrCreateCommand(Copy);
+
+		public ICommand PasteCommand => GetOrCreateCommand(Paste);
 
 		public ICommand FlushCommand => GetOrCreateCommand(Flush);
 
 		public ICommand ToggleContentChangedCommand => GetOrCreateCommand(ToggleContentChange);
 
 		private void Clear() => Clipboard.Clear();
+
+		private void Copy()
+		{
+			DataPackage dataPackage = new DataPackage();
+			dataPackage.SetText(Text);
+			Clipboard.SetContent(dataPackage);
+		}
+
+		private async void Paste()
+		{
+			var content = Clipboard.GetContent();
+			Text = await content.GetTextAsync();
+		}
 
 		private void Flush() => Clipboard.Flush();
 
