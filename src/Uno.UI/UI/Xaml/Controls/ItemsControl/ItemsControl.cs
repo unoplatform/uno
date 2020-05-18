@@ -920,7 +920,7 @@ namespace Windows.UI.Xaml.Controls
 						return container;
 					});
 
-				var results = ItemsPanelRoot.Children.UpdateWithResults(containers.OfType<View>(), comparer: new ViewComparer());
+				var results = ItemsPanelRoot.Children.UpdateWithResults(containers.OfType<UIElement>(), comparer: new ViewComparer());
 
 				foreach (var removed in results.Removed)
 				{

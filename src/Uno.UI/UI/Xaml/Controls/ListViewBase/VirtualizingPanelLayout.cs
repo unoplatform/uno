@@ -29,7 +29,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <remarks>For <see cref="ItemsStackPanel"/> layouting this is identical to <see cref="Orientation"/> but for <see cref="ItemsWrapGrid"/> it is the opposite of <see cref="Orientation"/>.</remarks>
 		public abstract Orientation ScrollOrientation { get; }
 #if !__WASM__
-		protected readonly ILayouter _layouter = new VirtualizingPanelLayouter();
+		private protected readonly ILayouter _layouter = new VirtualizingPanelLayouter();
 		internal ILayouter Layouter => _layouter;
 #endif
 
