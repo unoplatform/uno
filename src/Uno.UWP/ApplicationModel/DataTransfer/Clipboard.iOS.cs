@@ -1,4 +1,5 @@
 ﻿#if __IOS__
+using System.Threading.Tasks;
 using Foundation;
 using UIKit;
 
@@ -11,11 +12,21 @@ namespace Windows.ApplicationModel.DataTransfer
 		public static void SetContent(DataPackage content)
 		{
 			// Setting to null doesn't reset the clipboard like for Android
-			UIPasteboard.General.String = content?.Text ?? string.Empty;			
+			UIPasteboard.General.String = content?.Text ?? string.Empty;
+		}
+
+		public static DataPackageView GetContent()
+		{
+			var dataPackageView = new DataPackageView();
+			if (UIPasteboard.General.String != null)
+			{
+				dataPackageView.SetTextTask(Task.FromResult(UIPasteboard.General.String));
+			}
+			return dataPackageView;
 		}
 
 		public static void Clear()
-		{			
+		{
 			UIPasteboard.General.Items = new NSDictionary[0];
 		}
 

@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.DataTransfer
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if false || false || NET461 || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DataPackageView 
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IReadOnlyList<string> AvailableFormats
 		{
@@ -47,7 +47,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		}
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackageView.AvailableFormats.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  bool Contains( string formatId)
 		{
@@ -61,7 +61,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			throw new global::System.NotImplementedException("The member IAsyncOperation<object> DataPackageView.GetDataAsync(string formatId) is not implemented in Uno.");
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<string> GetTextAsync()
 		{
