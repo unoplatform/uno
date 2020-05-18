@@ -30,7 +30,7 @@
     <PackageReference Update="Uno.UITest" Version="1.0.0-dev.113" />
     <PackageReference Update="Uno.UITest.Selenium" Version="1.0.0-dev.113" />
     <PackageReference Update="Uno.UITest.Xamarin" Version="1.0.0-dev.113" />
-    <PackageReference Update="Uno.UITest.Helpers" Version="1.0.0-dev.113" />
+    <PackageReference Update="Uno.UITest.Helpers" Version="1.0.0" />
     <PackageReference Update="System.ValueTuple" Version="4.5.0" />
     <PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
     <PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />
