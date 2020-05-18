@@ -71,13 +71,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionObject.Properties.get
 		// Skipping already declared method Windows.UI.Composition.CompositionObject.StartAnimation(string, Windows.UI.Composition.CompositionAnimation)
 		// Skipping already declared method Windows.UI.Composition.CompositionObject.StopAnimation(string)
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionObject", "void CompositionObject.Dispose()");
-		}
-		#endif
 		// Forced skipping of method Windows.UI.Composition.CompositionObject.Comment.get
 		// Forced skipping of method Windows.UI.Composition.CompositionObject.Comment.set
 		// Forced skipping of method Windows.UI.Composition.CompositionObject.ImplicitAnimations.get
@@ -102,6 +95,13 @@ namespace Windows.UI.Composition
 		public  global::Windows.UI.Composition.AnimationController TryGetAnimationController( string propertyName)
 		{
 			throw new global::System.NotImplementedException("The member AnimationController CompositionObject.TryGetAnimationController(string propertyName) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Composition.CompositionObject", "void CompositionObject.Dispose()");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__

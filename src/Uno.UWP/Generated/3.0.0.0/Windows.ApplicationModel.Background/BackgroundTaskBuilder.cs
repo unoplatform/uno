@@ -116,5 +116,12 @@ namespace Windows.ApplicationModel.Background
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskBuilder.IsNetworkRequested.get
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskBuilder.TaskGroup.get
 		// Forced skipping of method Windows.ApplicationModel.Background.BackgroundTaskBuilder.TaskGroup.set
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void SetTaskEntryPointClsid( global::System.Guid TaskEntryPoint)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.Background.BackgroundTaskBuilder", "void BackgroundTaskBuilder.SetTaskEntryPointClsid(Guid TaskEntryPoint)");
+		}
+		#endif
 	}
 }

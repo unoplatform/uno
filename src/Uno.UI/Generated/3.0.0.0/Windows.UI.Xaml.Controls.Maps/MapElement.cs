@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Maps
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MapElement : global::Windows.UI.Xaml.DependencyObject
@@ -161,7 +161,13 @@ namespace Windows.UI.Xaml.Controls.Maps
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapElement.MapElement()
+		#if false || __IOS__ || false || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public MapElement() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapElement", "MapElement.MapElement()");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapElement.MapElement()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapElement.ZIndex.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapElement.ZIndex.set

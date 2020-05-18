@@ -21,10 +21,32 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  uint ContactCount
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint ManipulationUpdatedEventArgs.ContactCount is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  uint CurrentContactCount
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint ManipulationUpdatedEventArgs.CurrentContactCount is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Input.ManipulationUpdatedEventArgs.PointerDeviceType.get
 		// Forced skipping of method Windows.UI.Input.ManipulationUpdatedEventArgs.Position.get
 		// Forced skipping of method Windows.UI.Input.ManipulationUpdatedEventArgs.Delta.get
 		// Forced skipping of method Windows.UI.Input.ManipulationUpdatedEventArgs.Cumulative.get
 		// Forced skipping of method Windows.UI.Input.ManipulationUpdatedEventArgs.Velocities.get
+		// Forced skipping of method Windows.UI.Input.ManipulationUpdatedEventArgs.ContactCount.get
+		// Forced skipping of method Windows.UI.Input.ManipulationUpdatedEventArgs.CurrentContactCount.get
 	}
 }

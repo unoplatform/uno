@@ -9,119 +9,6 @@ namespace Windows.UI.Input
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  float InertiaRotationDeceleration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaRotationDeceleration is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaRotationDeceleration");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  float InertiaTranslationDeceleration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaTranslationDeceleration is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaTranslationDeceleration");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  float InertiaExpansionDeceleration
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaExpansionDeceleration is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaExpansionDeceleration");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  float InertiaExpansion
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaExpansion is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaExpansion");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool AutoProcessInertia
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool GestureRecognizer.AutoProcessInertia is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "bool GestureRecognizer.AutoProcessInertia");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Input.CrossSlideThresholds CrossSlideThresholds
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CrossSlideThresholds GestureRecognizer.CrossSlideThresholds is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "CrossSlideThresholds GestureRecognizer.CrossSlideThresholds");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool CrossSlideExact
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool GestureRecognizer.CrossSlideExact is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "bool GestureRecognizer.CrossSlideExact");
-			}
-		}
-		#endif
-		// Skipping already declared property GestureSettings
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  float InertiaRotationAngle
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaRotationAngle is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaRotationAngle");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  bool ShowGestureFeedback
 		{
 			get
@@ -145,20 +32,6 @@ namespace Windows.UI.Input
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "float GestureRecognizer.PivotRadius");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool CrossSlideHorizontally
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool GestureRecognizer.CrossSlideHorizontally is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "bool GestureRecognizer.CrossSlideHorizontally");
 			}
 		}
 		#endif
@@ -204,6 +77,133 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  float InertiaTranslationDeceleration
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaTranslationDeceleration is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaTranslationDeceleration");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  float InertiaRotationDeceleration
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaRotationDeceleration is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaRotationDeceleration");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  float InertiaRotationAngle
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaRotationAngle is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaRotationAngle");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  float InertiaExpansionDeceleration
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaExpansionDeceleration is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaExpansionDeceleration");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  float InertiaExpansion
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float GestureRecognizer.InertiaExpansion is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "float GestureRecognizer.InertiaExpansion");
+			}
+		}
+		#endif
+		// Skipping already declared property GestureSettings
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Input.CrossSlideThresholds CrossSlideThresholds
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member CrossSlideThresholds GestureRecognizer.CrossSlideThresholds is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "CrossSlideThresholds GestureRecognizer.CrossSlideThresholds");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool CrossSlideHorizontally
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool GestureRecognizer.CrossSlideHorizontally is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "bool GestureRecognizer.CrossSlideHorizontally");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool CrossSlideExact
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool GestureRecognizer.CrossSlideExact is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "bool GestureRecognizer.CrossSlideExact");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool AutoProcessInertia
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool GestureRecognizer.AutoProcessInertia is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "bool GestureRecognizer.AutoProcessInertia");
+			}
+		}
+		#endif
 		// Skipping already declared property IsActive
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -222,6 +222,118 @@ namespace Windows.UI.Input
 			get
 			{
 				throw new global::System.NotImplementedException("The member MouseWheelParameters GestureRecognizer.MouseWheelParameters is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  uint TranslationMinContactCount
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint GestureRecognizer.TranslationMinContactCount is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "uint GestureRecognizer.TranslationMinContactCount");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  uint TranslationMaxContactCount
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint GestureRecognizer.TranslationMaxContactCount is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "uint GestureRecognizer.TranslationMaxContactCount");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  uint TapMinContactCount
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint GestureRecognizer.TapMinContactCount is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "uint GestureRecognizer.TapMinContactCount");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  uint TapMaxContactCount
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint GestureRecognizer.TapMaxContactCount is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "uint GestureRecognizer.TapMaxContactCount");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.TimeSpan HoldStartDelay
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TimeSpan GestureRecognizer.HoldStartDelay is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "TimeSpan GestureRecognizer.HoldStartDelay");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  float HoldRadius
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member float GestureRecognizer.HoldRadius is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "float GestureRecognizer.HoldRadius");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  uint HoldMinContactCount
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint GestureRecognizer.HoldMinContactCount is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "uint GestureRecognizer.HoldMinContactCount");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  uint HoldMaxContactCount
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint GestureRecognizer.HoldMaxContactCount is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.GestureRecognizer", "uint GestureRecognizer.HoldMaxContactCount");
 			}
 		}
 		#endif
@@ -297,6 +409,22 @@ namespace Windows.UI.Input
 		// Forced skipping of method Windows.UI.Input.GestureRecognizer.ManipulationCompleted.remove
 		// Forced skipping of method Windows.UI.Input.GestureRecognizer.CrossSliding.add
 		// Forced skipping of method Windows.UI.Input.GestureRecognizer.CrossSliding.remove
+		// Forced skipping of method Windows.UI.Input.GestureRecognizer.TapMinContactCount.get
+		// Forced skipping of method Windows.UI.Input.GestureRecognizer.TapMinContactCount.set
+		// Forced skipping of method Windows.UI.Input.GestureRecognizer.TapMaxContactCount.get
+		// Forced skipping of method Windows.UI.Input.GestureRecognizer.TapMaxContactCount.set
+		// Forced skipping of method Windows.UI.Input.GestureRecognizer.HoldMinContactCount.get
+		// Forced skipping of method Windows.UI.Input.GestureRecognizer.HoldMinContactCount.set
+		// Forced skipping of method Windows.UI.Input.GestureRecognizer.HoldMaxContactCount.get
+		// Forced skipping of method Windows.UI.Input.GestureRecognizer.HoldMaxContactCount.set
+		// Forced skipping of method Windows.UI.Input.GestureRecognizer.HoldRadius.get
+		// Forced skipping of method Windows.UI.Input.GestureRecognizer.HoldRadius.set
+		// Forced skipping of method Windows.UI.Input.GestureRecognizer.HoldStartDelay.get
+		// Forced skipping of method Windows.UI.Input.GestureRecognizer.HoldStartDelay.set
+		// Forced skipping of method Windows.UI.Input.GestureRecognizer.TranslationMinContactCount.get
+		// Forced skipping of method Windows.UI.Input.GestureRecognizer.TranslationMinContactCount.set
+		// Forced skipping of method Windows.UI.Input.GestureRecognizer.TranslationMaxContactCount.get
+		// Forced skipping of method Windows.UI.Input.GestureRecognizer.TranslationMaxContactCount.set
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Input.GestureRecognizer, global::Windows.UI.Input.CrossSlidingEventArgs> CrossSliding

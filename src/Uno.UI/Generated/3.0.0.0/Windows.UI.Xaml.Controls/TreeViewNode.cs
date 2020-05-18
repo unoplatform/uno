@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class TreeViewNode : global::Windows.UI.Xaml.DependencyObject
@@ -121,7 +121,13 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewNode), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
-		// Skipping already declared method Windows.UI.Xaml.Controls.TreeViewNode.TreeViewNode()
+		#if false || __IOS__ || false || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public TreeViewNode() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TreeViewNode", "TreeViewNode.TreeViewNode()");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewNode.TreeViewNode()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewNode.Content.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewNode.Content.set

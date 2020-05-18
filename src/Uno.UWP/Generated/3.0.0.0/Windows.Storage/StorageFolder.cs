@@ -335,6 +335,13 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member StorageLibraryChangeTracker StorageFolder.TryGetChangeTracker() is not implemented in Uno.");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderFromPathForUserAsync( global::Windows.System.User user,  string path)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> StorageFolder.GetFolderFromPathForUserAsync(User user, string path) is not implemented in Uno.");
+		}
+		#endif
 		// Skipping already declared method Windows.Storage.StorageFolder.GetFolderFromPathAsync(string)
 		// Processing: Windows.Storage.IStorageFolder
 		// Processing: Windows.Storage.IStorageItem

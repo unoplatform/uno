@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Maps
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MapLayer : global::Windows.UI.Xaml.DependencyObject
@@ -73,7 +73,13 @@ namespace Windows.UI.Xaml.Controls.Maps
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapLayer), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
-		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapLayer.MapLayer()
+		#if false || __IOS__ || false || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public MapLayer() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapLayer", "MapLayer.MapLayer()");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapLayer.MapLayer()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapLayer.MapTabIndex.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapLayer.MapTabIndex.set

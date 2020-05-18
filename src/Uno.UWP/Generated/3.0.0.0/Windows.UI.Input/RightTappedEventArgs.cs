@@ -11,5 +11,6 @@ namespace Windows.UI.Input
 		// Skipping already declared property Position
 		// Forced skipping of method Windows.UI.Input.RightTappedEventArgs.PointerDeviceType.get
 		// Forced skipping of method Windows.UI.Input.RightTappedEventArgs.Position.get
+		// Forced skipping of method Windows.UI.Input.RightTappedEventArgs.ContactCount.get
 	}
 }

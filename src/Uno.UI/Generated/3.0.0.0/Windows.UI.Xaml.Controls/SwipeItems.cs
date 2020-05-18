@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SwipeItems : global::Windows.UI.Xaml.DependencyObject,global::System.Collections.Generic.IList<global::Windows.UI.Xaml.Controls.SwipeItem>,global::System.Collections.Generic.IEnumerable<global::Windows.UI.Xaml.Controls.SwipeItem>
@@ -39,7 +39,13 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.SwipeItems), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SwipeMode)));
 		#endif
-		// Skipping already declared method Windows.UI.Xaml.Controls.SwipeItems.SwipeItems()
+		#if false || __IOS__ || false || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public SwipeItems() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.SwipeItems", "SwipeItems.SwipeItems()");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.SwipeItems.SwipeItems()
 		// Forced skipping of method Windows.UI.Xaml.Controls.SwipeItems.Mode.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.SwipeItems.Mode.set

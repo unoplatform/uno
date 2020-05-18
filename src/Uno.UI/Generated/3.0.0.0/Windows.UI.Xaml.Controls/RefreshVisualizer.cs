@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class RefreshVisualizer : global::Windows.UI.Xaml.Controls.Control
@@ -74,7 +74,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.RefreshVisualizer), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.RefreshVisualizerState)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public RefreshVisualizer() : base()
 		{

@@ -4,7 +4,10 @@ using Microsoft.UI.Xaml.Automation.Peers;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Automation;
+
+#pragma warning disable 105 // Required for the WinUI replace pass
 using Windows.UI.Xaml.Automation.Peers;
+#pragma warning restore 105
 
 namespace Microsoft.UI.Xaml.Controls
 {

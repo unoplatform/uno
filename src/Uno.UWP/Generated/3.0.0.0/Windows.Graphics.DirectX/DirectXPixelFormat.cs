@@ -365,6 +365,12 @@ namespace Windows.Graphics.DirectX
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		V408,
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		SamplerFeedbackMinMipOpaque,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		SamplerFeedbackMipRegionUsedOpaque,
+		#endif
 	}
 	#endif
 }

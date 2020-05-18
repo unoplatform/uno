@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Automation.Peers
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class AutomationPeerAnnotation : global::Windows.UI.Xaml.DependencyObject
@@ -67,7 +67,13 @@ namespace Windows.UI.Xaml.Automation.Peers
 		}
 		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.AutomationPeerAnnotation(Windows.UI.Xaml.Automation.AnnotationType, Windows.UI.Xaml.Automation.Peers.AutomationPeer)
-		// Skipping already declared method Windows.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.AutomationPeerAnnotation()
+		#if false || __IOS__ || false || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public AutomationPeerAnnotation() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeerAnnotation", "AutomationPeerAnnotation.AutomationPeerAnnotation()");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.AutomationPeerAnnotation()
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.Type.get
 		// Forced skipping of method Windows.UI.Xaml.Automation.Peers.AutomationPeerAnnotation.Type.set

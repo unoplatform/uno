@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class TreeViewItemTemplateSettings : global::Windows.UI.Xaml.DependencyObject
@@ -79,7 +79,13 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Thickness)));
 		#endif
-		// Skipping already declared method Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings.TreeViewItemTemplateSettings()
+		#if false || __IOS__ || false || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public TreeViewItemTemplateSettings() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings", "TreeViewItemTemplateSettings.TreeViewItemTemplateSettings()");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings.TreeViewItemTemplateSettings()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings.ExpandedGlyphVisibility.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TreeViewItemTemplateSettings.CollapsedGlyphVisibility.get

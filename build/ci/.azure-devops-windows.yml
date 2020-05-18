@@ -41,8 +41,7 @@ jobs:
   # Required for the Wasm uitests project
   - task: NodeTool@0
 
-  - powershell: .\build\Install-WindowsSdkISO.ps1 17763
-    displayName: Insider SDK
+  - template: templates/install-windows-sdk.yml
 
   - powershell: |
         cd $(build.sourcesdirectory)\src\Uno.WinUIRevert

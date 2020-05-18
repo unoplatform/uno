@@ -32,6 +32,9 @@ namespace Windows.Management.Deployment
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		RetainFilesOnFailure,
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		StageInPlace,
+		#endif
 	}
 	#endif
 }

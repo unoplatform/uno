@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Maps
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MapTileSource : global::Windows.UI.Xaml.DependencyObject
@@ -333,7 +333,13 @@ namespace Windows.UI.Xaml.Controls.Maps
 			typeof(global::Windows.UI.Xaml.Controls.Maps.MapTileSource), 
 			new FrameworkPropertyMetadata(default(global::System.TimeSpan)));
 		#endif
-		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapTileSource.MapTileSource()
+		#if false || __IOS__ || false || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public MapTileSource() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapTileSource", "MapTileSource.MapTileSource()");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapTileSource.MapTileSource()
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]

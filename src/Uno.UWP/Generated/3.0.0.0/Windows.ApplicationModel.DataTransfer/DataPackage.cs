@@ -124,6 +124,8 @@ namespace Windows.ApplicationModel.DataTransfer
 		#endif
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.ShareCompleted.add
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.ShareCompleted.remove
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.ShareCanceled.add
+		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.ShareCanceled.remove
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.DataTransfer.DataPackage, object> Destroyed
@@ -169,6 +171,22 @@ namespace Windows.ApplicationModel.DataTransfer
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataPackage", "event TypedEventHandler<DataPackage, ShareCompletedEventArgs> DataPackage.ShareCompleted");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.ApplicationModel.DataTransfer.DataPackage, object> ShareCanceled
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataPackage", "event TypedEventHandler<DataPackage, object> DataPackage.ShareCanceled");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.DataTransfer.DataPackage", "event TypedEventHandler<DataPackage, object> DataPackage.ShareCanceled");
 			}
 		}
 		#endif

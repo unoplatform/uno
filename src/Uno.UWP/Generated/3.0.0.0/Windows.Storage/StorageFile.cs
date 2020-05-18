@@ -281,6 +281,13 @@ namespace Windows.Storage
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageStreamTransaction> StorageFile.OpenTransactedWriteAsync(StorageOpenOptions options) is not implemented in Uno.");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> GetFileFromPathForUserAsync( global::Windows.System.User user,  string path)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> StorageFile.GetFileFromPathForUserAsync(User user, string path) is not implemented in Uno.");
+		}
+		#endif
 		// Skipping already declared method Windows.Storage.StorageFile.GetFileFromPathAsync(string)
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]

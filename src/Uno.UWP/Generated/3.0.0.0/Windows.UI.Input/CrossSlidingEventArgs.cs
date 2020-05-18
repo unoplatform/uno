@@ -37,8 +37,19 @@ namespace Windows.UI.Input
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  uint ContactCount
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint CrossSlidingEventArgs.ContactCount is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Input.CrossSlidingEventArgs.PointerDeviceType.get
 		// Forced skipping of method Windows.UI.Input.CrossSlidingEventArgs.Position.get
 		// Forced skipping of method Windows.UI.Input.CrossSlidingEventArgs.CrossSlidingState.get
+		// Forced skipping of method Windows.UI.Input.CrossSlidingEventArgs.ContactCount.get
 	}
 }

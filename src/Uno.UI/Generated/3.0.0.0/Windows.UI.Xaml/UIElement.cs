@@ -126,20 +126,6 @@ namespace Windows.UI.Xaml
 		// Skipping already declared property RenderSize
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.Media.Shadow Shadow
-		{
-			get
-			{
-				return (global::Windows.UI.Xaml.Media.Shadow)this.GetValue(ShadowProperty);
-			}
-			set
-			{
-				this.SetValue(ShadowProperty, value);
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.XamlRoot XamlRoot
 		{
 			get
@@ -149,6 +135,20 @@ namespace Windows.UI.Xaml
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "XamlRoot UIElement.XamlRoot");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.Media.Shadow Shadow
+		{
+			get
+			{
+				return (global::Windows.UI.Xaml.Media.Shadow)this.GetValue(ShadowProperty);
+			}
+			set
+			{
+				this.SetValue(ShadowProperty, value);
 			}
 		}
 		#endif
@@ -476,20 +476,6 @@ namespace Windows.UI.Xaml
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::System.Numerics.Vector3 CenterPoint
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Vector3 UIElement.CenterPoint is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "Vector3 UIElement.CenterPoint");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Vector3Transition TranslationTransition
 		{
 			get
@@ -504,15 +490,15 @@ namespace Windows.UI.Xaml
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::System.Numerics.Vector3 Translation
+		public  global::Windows.UI.Xaml.ScalarTransition OpacityTransition
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Vector3 UIElement.Translation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member ScalarTransition UIElement.OpacityTransition is not implemented in Uno.");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "Vector3 UIElement.Translation");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "ScalarTransition UIElement.OpacityTransition");
 			}
 		}
 		#endif
@@ -602,15 +588,29 @@ namespace Windows.UI.Xaml
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Xaml.ScalarTransition OpacityTransition
+		public  global::System.Numerics.Vector3 Translation
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member ScalarTransition UIElement.OpacityTransition is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Vector3 UIElement.Translation is not implemented in Uno.");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "ScalarTransition UIElement.OpacityTransition");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "Vector3 UIElement.Translation");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.Numerics.Vector3 CenterPoint
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Vector3 UIElement.CenterPoint is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.UIElement", "Vector3 UIElement.CenterPoint");
 			}
 		}
 		#endif

@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class JumpListItemForegroundConverter : global::Windows.UI.Xaml.DependencyObject,global::Windows.UI.Xaml.Data.IValueConverter
@@ -51,7 +51,13 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			typeof(global::Windows.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
-		// Skipping already declared method Windows.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter.JumpListItemForegroundConverter()
+		#if false || __IOS__ || false || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public JumpListItemForegroundConverter() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter", "JumpListItemForegroundConverter.JumpListItemForegroundConverter()");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter.JumpListItemForegroundConverter()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter.Enabled.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.JumpListItemForegroundConverter.Enabled.set

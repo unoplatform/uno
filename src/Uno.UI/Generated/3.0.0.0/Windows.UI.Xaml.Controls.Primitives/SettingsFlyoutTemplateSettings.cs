@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Primitives
 {
-	#if __ANDROID__ || false || NET461 || __WASM__ || false
+	#if __ANDROID__ || false || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SettingsFlyoutTemplateSettings : global::Windows.UI.Xaml.DependencyObject

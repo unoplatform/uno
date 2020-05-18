@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class SwipeItem : global::Windows.UI.Xaml.DependencyObject
@@ -161,7 +161,13 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.SwipeItem), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
-		// Skipping already declared method Windows.UI.Xaml.Controls.SwipeItem.SwipeItem()
+		#if false || __IOS__ || false || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public SwipeItem() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.SwipeItem", "SwipeItem.SwipeItem()");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.SwipeItem.SwipeItem()
 		// Forced skipping of method Windows.UI.Xaml.Controls.SwipeItem.Text.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.SwipeItem.Text.set

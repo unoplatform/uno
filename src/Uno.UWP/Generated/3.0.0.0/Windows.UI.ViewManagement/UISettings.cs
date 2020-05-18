@@ -49,6 +49,10 @@ namespace Windows.UI.ViewManagement
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.AutoHideScrollBars.get
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.AutoHideScrollBarsChanged.add
 		// Forced skipping of method Windows.UI.ViewManagement.UISettings.AutoHideScrollBarsChanged.remove
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.AnimationsEnabledChanged.add
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.AnimationsEnabledChanged.remove
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.MessageDurationChanged.add
+		// Forced skipping of method Windows.UI.ViewManagement.UISettings.MessageDurationChanged.remove
 		// Skipping already declared event Windows.UI.ViewManagement.UISettings.TextScaleFactorChanged
 		// Skipping already declared event Windows.UI.ViewManagement.UISettings.ColorValuesChanged
 		// Skipping already declared event Windows.UI.ViewManagement.UISettings.AdvancedEffectsEnabledChanged
@@ -65,6 +69,38 @@ namespace Windows.UI.ViewManagement
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.UISettings", "event TypedEventHandler<UISettings, UISettingsAutoHideScrollBarsChangedEventArgs> UISettings.AutoHideScrollBarsChanged");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, global::Windows.UI.ViewManagement.UISettingsAnimationsEnabledChangedEventArgs> AnimationsEnabledChanged
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.UISettings", "event TypedEventHandler<UISettings, UISettingsAnimationsEnabledChangedEventArgs> UISettings.AnimationsEnabledChanged");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.UISettings", "event TypedEventHandler<UISettings, UISettingsAnimationsEnabledChangedEventArgs> UISettings.AnimationsEnabledChanged");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.ViewManagement.UISettings, global::Windows.UI.ViewManagement.UISettingsMessageDurationChangedEventArgs> MessageDurationChanged
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.UISettings", "event TypedEventHandler<UISettings, UISettingsMessageDurationChangedEventArgs> UISettings.MessageDurationChanged");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.UISettings", "event TypedEventHandler<UISettings, UISettingsMessageDurationChangedEventArgs> UISettings.MessageDurationChanged");
 			}
 		}
 		#endif

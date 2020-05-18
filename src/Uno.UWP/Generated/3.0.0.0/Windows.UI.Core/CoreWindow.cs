@@ -11,20 +11,6 @@ namespace Windows.UI.Core
 		// Skipping already declared property PointerCursor
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  bool IsInputEnabled
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool CoreWindow.IsInputEnabled is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindow", "bool CoreWindow.IsInputEnabled");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Core.CoreWindowFlowDirection FlowDirection
 		{
 			get
@@ -37,6 +23,21 @@ namespace Windows.UI.Core
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsInputEnabled
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool CoreWindow.IsInputEnabled is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreWindow", "bool CoreWindow.IsInputEnabled");
+			}
+		}
+		#endif
+		// Skipping already declared property Dispatcher
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  object AutomationHostProvider
@@ -67,7 +68,6 @@ namespace Windows.UI.Core
 			}
 		}
 		#endif
-		// Skipping already declared property Dispatcher
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool Visible
