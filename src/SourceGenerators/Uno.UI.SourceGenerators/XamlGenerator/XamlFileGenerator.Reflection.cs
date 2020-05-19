@@ -239,8 +239,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return IsType(xamlType, "AppKit.NSView");
 		}
 
+		/// <summary>
+		/// Is the type derived from the native view type on a Xamarin platform?
+		/// </summary>
 		private bool IsNativeView(XamlType xamlType) => IsAndroidView(xamlType) || IsIOSUIView(xamlType) || IsMacOSNSView(xamlType);
 
+		/// <summary>
+		/// Is the type one of the base view types in WinUI? (UIElement is most commonly used to mean 'any WinUI view type,' but
+		/// FrameworkElement is valid too)
+		/// </summary>
+		private bool IsManagedViewBaseType(INamedTypeSymbol targetType) => targetType == _uiElementSymbol || targetType == _frameworkElementSymbol;
 
 		private bool IsTransform(XamlType xamlType)
 		{
