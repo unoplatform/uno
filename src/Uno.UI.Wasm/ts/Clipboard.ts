@@ -52,12 +52,14 @@ namespace Uno.Utils {
 
 		public static getText(requestId: string): void {
 			if (!Clipboard.dispatchGetContent) {
-				Clipboard.dispatchGetContent = (<any>Module).mono_bind_static_method("[Uno] Windows.ApplicationModel.DataTransfer.Clipboard:DispatchGetContent");
+				Clipboard.dispatchGetContent = 
+					(<any>Module).mono_bind_static_method(
+						"[Uno] Windows.ApplicationModel.DataTransfer.Clipboard:DispatchGetContent");
 			}
 
-			var nav = navigator as NavigatorClipboard;
+			const nav = navigator as NavigatorClipboard;
 			if (nav.clipboard) {
-				var promise = nav.clipboard.readText();
+				const promise = nav.clipboard.readText();
 				promise.then(
 					(clipText : string) => Clipboard.dispatchGetContent(requestId, clipText),
 					(_ : any) => Clipboard.dispatchGetContent(requestId, null));
@@ -68,7 +70,9 @@ namespace Uno.Utils {
 
 		private static onClipboardChanged() {
 			if (!Clipboard.dispatchContentChanged) {
-				Clipboard.dispatchContentChanged = (<any>Module).mono_bind_static_method("[Uno] Windows.ApplicationModel.DataTransfer.Clipboard:DispatchContentChanged");
+				Clipboard.dispatchContentChanged = 
+					(<any>Module).mono_bind_static_method(
+						"[Uno] Windows.ApplicationModel.DataTransfer.Clipboard:DispatchContentChanged");
 			}
 			Clipboard.dispatchContentChanged();
 		}
