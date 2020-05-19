@@ -7,12 +7,12 @@ namespace Windows.UI.Xaml.Media
 {
 	public abstract partial class Brush
 	{
-		internal static IDisposable AssignAndObserveBrush(Brush b, Action<Color> colorSetter)
+		internal static IDisposable AssignAndObserveBrush(Brush b, Action<Windows.UI.Color> colorSetter)
 		{
-			var disposables = new CompositeDisposable();
 
 			if (b is SolidColorBrush colorBrush)
 			{
+				var disposables = new CompositeDisposable(2);
 				colorSetter(colorBrush.ColorWithOpacity);
 
 				colorBrush.RegisterDisposablePropertyChangedCallback(
@@ -26,6 +26,29 @@ namespace Windows.UI.Xaml.Media
 						(s, colorArg) => colorSetter((s as SolidColorBrush).ColorWithOpacity)
 					)
 					.DisposeWith(disposables);
+
+				return disposables;
+			}
+
+			if (b is GradientBrush gb)
+			{
+				var disposables = new CompositeDisposable(2);
+
+				colorSetter(gb.FallbackColorWithOpacity);
+
+				gb.RegisterDisposablePropertyChangedCallback(
+						GradientBrush.FallbackColorProperty,
+						(s, colorArg) => colorSetter((s as GradientBrush).FallbackColorWithOpacity)
+					)
+					.DisposeWith(disposables);
+
+				gb.RegisterDisposablePropertyChangedCallback(
+						GradientBrush.OpacityProperty,
+						(s, colorArg) => colorSetter((s as GradientBrush).FallbackColorWithOpacity)
+					)
+					.DisposeWith(disposables);
+
+				return disposables;
 			}
 			// ImageBrush not supported yet on Wasm
 			else
@@ -33,7 +56,7 @@ namespace Windows.UI.Xaml.Media
 				colorSetter(SolidColorBrushHelper.Transparent.Color);
 			}
 
-			return disposables;
+			return Disposable.Empty;
 		}
 	}
 }

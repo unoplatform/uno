@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsExtensionGlyphShownProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsExtensionGlyphShown", typeof(bool), 
+			nameof(IsExtensionGlyphShown), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbarMenuButton), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif

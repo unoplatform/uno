@@ -61,5 +61,12 @@ namespace Windows.Devices.Enumeration
 			throw new global::System.NotImplementedException("The member Deferral DevicePairingRequestedEventArgs.GetDeferral() is not implemented in Uno.");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void AcceptWithPasswordCredential( global::Windows.Security.Credentials.PasswordCredential passwordCredential)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.Enumeration.DevicePairingRequestedEventArgs", "void DevicePairingRequestedEventArgs.AcceptWithPasswordCredential(PasswordCredential passwordCredential)");
+		}
+		#endif
 	}
 }

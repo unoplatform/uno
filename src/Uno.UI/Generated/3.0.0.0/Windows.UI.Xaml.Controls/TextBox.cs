@@ -298,7 +298,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectionHighlightColorProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectionHighlightColor", typeof(global::Windows.UI.Xaml.Media.SolidColorBrush), 
+			nameof(SelectionHighlightColor), typeof(global::Windows.UI.Xaml.Media.SolidColorBrush), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.SolidColorBrush)));
 		#endif
@@ -306,7 +306,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PreventKeyboardDisplayOnProgrammaticFocus", typeof(bool), 
+			nameof(PreventKeyboardDisplayOnProgrammaticFocus), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -315,7 +315,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsColorFontEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsColorFontEnabled", typeof(bool), 
+			nameof(IsColorFontEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -323,7 +323,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DesiredCandidateWindowAlignmentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"DesiredCandidateWindowAlignment", typeof(global::Windows.UI.Xaml.Controls.CandidateWindowAlignment), 
+			nameof(DesiredCandidateWindowAlignment), typeof(global::Windows.UI.Xaml.Controls.CandidateWindowAlignment), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.CandidateWindowAlignment)));
 		#endif
@@ -331,7 +331,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TextReadingOrderProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TextReadingOrder", typeof(global::Windows.UI.Xaml.TextReadingOrder), 
+			nameof(TextReadingOrder), typeof(global::Windows.UI.Xaml.TextReadingOrder), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextReadingOrder)));
 		#endif
@@ -339,7 +339,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectionHighlightColorWhenNotFocusedProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectionHighlightColorWhenNotFocused", typeof(global::Windows.UI.Xaml.Media.SolidColorBrush), 
+			nameof(SelectionHighlightColorWhenNotFocused), typeof(global::Windows.UI.Xaml.Media.SolidColorBrush), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.SolidColorBrush)));
 		#endif
@@ -347,7 +347,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderForegroundProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PlaceholderForeground", typeof(global::Windows.UI.Xaml.Media.Brush), 
+			nameof(PlaceholderForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Brush)));
 		#endif
@@ -355,7 +355,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HorizontalTextAlignmentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HorizontalTextAlignment", typeof(global::Windows.UI.Xaml.TextAlignment), 
+			nameof(HorizontalTextAlignment), typeof(global::Windows.UI.Xaml.TextAlignment), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextAlignment)));
 		#endif
@@ -363,7 +363,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CharacterCasingProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CharacterCasing", typeof(global::Windows.UI.Xaml.Controls.CharacterCasing), 
+			nameof(CharacterCasing), typeof(global::Windows.UI.Xaml.Controls.CharacterCasing), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.CharacterCasing)));
 		#endif
@@ -371,7 +371,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsHandwritingViewEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsHandwritingViewEnabled", typeof(bool), 
+			nameof(IsHandwritingViewEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -379,7 +379,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HandwritingViewProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"HandwritingView", typeof(global::Windows.UI.Xaml.Controls.HandwritingView), 
+			nameof(HandwritingView), typeof(global::Windows.UI.Xaml.Controls.HandwritingView), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.HandwritingView)));
 		#endif
@@ -387,7 +387,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectionFlyoutProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectionFlyout", typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
+			nameof(SelectionFlyout), typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)));
 		#endif
@@ -395,7 +395,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ProofingMenuFlyoutProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ProofingMenuFlyout", typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
+			nameof(ProofingMenuFlyout), typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)));
 		#endif
@@ -403,7 +403,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DescriptionProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Description", typeof(object), 
+			nameof(Description), typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
@@ -411,7 +411,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CanUndoProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CanUndo", typeof(bool), 
+			nameof(CanUndo), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -419,7 +419,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CanRedoProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CanRedo", typeof(bool), 
+			nameof(CanRedo), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -427,7 +427,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CanPasteClipboardContentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CanPasteClipboardContent", typeof(bool), 
+			nameof(CanPasteClipboardContent), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -667,24 +667,9 @@ namespace Windows.UI.Xaml.Controls
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBox", "event TypedEventHandler<TextBox, CandidateWindowBoundsChangedEventArgs> TextBox.CandidateWindowBoundsChanged");
 			}
 		}
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.TextBox, global::Windows.UI.Xaml.Controls.TextBoxTextChangingEventArgs> TextChanging
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBox", "event TypedEventHandler<TextBox, TextBoxTextChangingEventArgs> TextBox.TextChanging");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBox", "event TypedEventHandler<TextBox, TextBoxTextChangingEventArgs> TextBox.TextChanging");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#endif
+		// Skipping already declared event Windows.UI.Xaml.Controls.TextBox.TextChanging
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.TextBox, global::Windows.UI.Xaml.Controls.TextCompositionChangedEventArgs> TextCompositionChanged
 		{
@@ -731,24 +716,9 @@ namespace Windows.UI.Xaml.Controls
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBox", "event TypedEventHandler<TextBox, TextCompositionStartedEventArgs> TextBox.TextCompositionStarted");
 			}
 		}
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.TextBox, global::Windows.UI.Xaml.Controls.TextBoxBeforeTextChangingEventArgs> BeforeTextChanging
-		{
-			[global::Uno.NotImplemented]
-			add
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBox", "event TypedEventHandler<TextBox, TextBoxBeforeTextChangingEventArgs> TextBox.BeforeTextChanging");
-			}
-			[global::Uno.NotImplemented]
-			remove
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TextBox", "event TypedEventHandler<TextBox, TextBoxBeforeTextChangingEventArgs> TextBox.BeforeTextChanging");
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#endif
+		// Skipping already declared event Windows.UI.Xaml.Controls.TextBox.BeforeTextChanging
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.UI.Xaml.Controls.TextBox, global::Windows.UI.Xaml.Controls.TextControlCopyingToClipboardEventArgs> CopyingToClipboard
 		{

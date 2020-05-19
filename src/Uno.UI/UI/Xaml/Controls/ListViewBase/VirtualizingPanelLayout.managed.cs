@@ -50,7 +50,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// The previous item to the old first visible item, used when a lightweight layout rebuild is called.
 		/// </summary>
-		private IndexPath? _dynamicSeedIndex;
+		private Uno.UI.IndexPath? _dynamicSeedIndex;
 		/// <summary>
 		/// Start position of the old first group, used when a lightweight layout rebuild is called.
 		/// </summary>
@@ -549,7 +549,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Get 'seed' index for recreating the visual state of the list after <see cref="ScrapLayout()"/>;
 		/// </summary>
-		protected virtual IndexPath? GetDynamicSeedIndex(IndexPath? firstVisibleItem)
+		protected virtual Uno.UI.IndexPath? GetDynamicSeedIndex(Uno.UI.IndexPath? firstVisibleItem)
 		{
 
 			var lastItem = XamlParent.GetLastItem();
@@ -568,12 +568,12 @@ namespace Windows.UI.Xaml.Controls
 			Refresh();
 		}
 
-		private IndexPath GetFirstVisibleIndexPath()
+		private Uno.UI.IndexPath GetFirstVisibleIndexPath()
 		{
 			throw new NotImplementedException(); //TODO: FirstVisibleIndex
 		}
 
-		private IndexPath GetLastVisibleIndexPath()
+		private Uno.UI.IndexPath GetLastVisibleIndexPath()
 		{
 			throw new NotImplementedException(); //TODO: LastVisibleIndex
 		}
@@ -585,7 +585,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private float AdjustOffsetForSnapPointsAlignment(float offset) => throw new NotImplementedException();
 
-		private void AddLine(GeneratorDirection fillDirection, IndexPath nextVisibleItem)
+		private void AddLine(GeneratorDirection fillDirection, Uno.UI.IndexPath nextVisibleItem)
 		{
 			var extentOffset = fillDirection == Backward ? GetContentStart() : GetContentEnd();
 
@@ -604,11 +604,11 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Create a new line.
 		/// </summary>
-		protected abstract Line CreateLine(GeneratorDirection fillDirection, double extentOffset, double availableBreadth, IndexPath nextVisibleItem);
+		protected abstract Line CreateLine(GeneratorDirection fillDirection, double extentOffset, double availableBreadth, Uno.UI.IndexPath nextVisibleItem);
 
 		protected abstract int GetItemsPerLine();
 
-		protected int GetFlatItemIndex(IndexPath indexPath) => ItemsControl.GetIndexFromIndexPath(indexPath);
+		protected int GetFlatItemIndex(Uno.UI.IndexPath indexPath) => ItemsControl.GetIndexFromIndexPath(indexPath);
 
 		protected void AddView(FrameworkElement view, GeneratorDirection fillDirection, double extentOffset, double breadthOffset)
 		{
@@ -658,9 +658,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private Line GetLastMaterializedLine() => _materializedLines.Count > 0 ? _materializedLines[_materializedLines.Count - 1] : null;
 
-		private IndexPath? GetFirstMaterializedIndexPath() => GetFirstMaterializedLine()?.FirstItem;
+		private Uno.UI.IndexPath? GetFirstMaterializedIndexPath() => GetFirstMaterializedLine()?.FirstItem;
 
-		private IndexPath? GetLastMaterializedIndexPath() => GetLastMaterializedLine()?.LastItem;
+		private Uno.UI.IndexPath? GetLastMaterializedIndexPath() => GetLastMaterializedLine()?.LastItem;
 
 		private double? GetItemsStart()
 		{
@@ -750,14 +750,14 @@ namespace Windows.UI.Xaml.Controls
 		protected class Line
 		{
 			public FrameworkElement[] ContainerViews { get; }
-			public IndexPath FirstItem { get; }
-			public IndexPath LastItem { get; }
+			public Uno.UI.IndexPath FirstItem { get; }
+			public Uno.UI.IndexPath LastItem { get; }
 			public int FirstItemFlat { get; }
 
 			public FrameworkElement FirstView => ContainerViews[0];
 			public FrameworkElement LastView => ContainerViews[ContainerViews.Length - 1];
 
-			public Line(FrameworkElement[] containerViews, IndexPath firstItem, IndexPath lastItem, int firstItemFlat)
+			public Line(FrameworkElement[] containerViews, Uno.UI.IndexPath firstItem, Uno.UI.IndexPath lastItem, int firstItemFlat)
 			{
 				if (containerViews.Length == 0)
 				{

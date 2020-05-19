@@ -5,6 +5,10 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml;
+
+// Keep this formatting (with the space) for the WinUI upgrade tooling.
+using Microsoft .UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -31,7 +35,13 @@ namespace Windows.UI.Xaml.Controls
 
 			if (progressRing != null && foregroundColor != null)
 			{
+#if __ANDROID_28__
+#pragma warning disable 618 // SetColorFilter is deprecated
 				progressRing.IndeterminateDrawable?.SetColorFilter(foregroundColor.Color, PorterDuff.Mode.SrcIn);
+#pragma warning restore 618 // SetColorFilter is deprecated
+#else
+				progressRing.IndeterminateDrawable?.SetColorFilter(new BlendModeColorFilter(foregroundColor.Color, BlendMode.SrcIn));
+#endif
 			}
 		}
 

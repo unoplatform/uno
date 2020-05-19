@@ -152,7 +152,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 
 		internal static void RaiseEventIfListener(DependencyObject target, AutomationEvents eventId)
 		{
-			Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseEventIfListener");
+			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "RaiseEventIfListener");
 		}
 
 		#endregion
@@ -162,7 +162,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 		[Uno.NotImplemented]
 		public static bool ListenerfExists(AutomationEvents eventId)
 		{
-			Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "bool AutomationPeer.ListenerExists");
+			Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Automation.Peers.AutomationPeer", "bool AutomationPeer.ListenerExists");
 			return false;
 		}
 

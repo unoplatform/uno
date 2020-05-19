@@ -104,7 +104,7 @@ namespace Windows.UI.Xaml.Input
 		{
 			var focusedView = GetFocusedElement() as UIView;
 			var absoluteFocusedFrame = focusedView.ConvertRectToView(focusedView.Bounds, UIApplication.SharedApplication.KeyWindow);
-			
+
 			var focusableViews = SearchOtherFocusableViews(focusedView);
 
 			switch (focusNavigationDirection)
@@ -206,6 +206,36 @@ namespace Windows.UI.Xaml.Input
 				default:
 					return null;
 			}
+		}
+
+		private static DependencyObject InnerFindFirstFocusableElement(DependencyObject searchScope)
+		{
+			if (searchScope == null)
+			{
+				searchScope = Window.Current.Content;
+			}
+
+			if (!(searchScope is UIView searchView))
+			{
+				return null;
+			}
+
+			return searchView.FindSubviews(selector: IsFocusableView, maxDepth: 100).FirstOrDefault() as DependencyObject;
+		}
+
+		private static DependencyObject InnerFindLastFocusableElement(DependencyObject searchScope)
+		{
+			if (searchScope == null)
+			{
+				searchScope = Window.Current.Content;
+			}
+
+			if (!(searchScope is UIView searchView))
+			{
+				return null;
+			}
+
+			return searchView.FindSubviewsReverse(selector: IsFocusableView, maxDepth: 100).FirstOrDefault() as DependencyObject;
 		}
 
 		private static void FocusNative(Control control) => control.BecomeFirstResponder();

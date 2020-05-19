@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// The frame applied to this child when last arranged by its parent. This may differ from the current UIView.Frame if a RenderTransform is set.
 		/// </summary>
-		Foundation.Rect AppliedFrame { get; }
+		Rect AppliedFrame { get; }
 
 		void SetSubviewsNeedLayout();
 #endif

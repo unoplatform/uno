@@ -87,6 +87,16 @@ namespace Windows.UI.Composition.Interactions
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsFromBinding
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool InteractionTrackerInertiaStateEnteredArgs.IsFromBinding is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingPosition.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.ModifiedRestingScale.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.NaturalRestingPosition.get
@@ -95,5 +105,6 @@ namespace Windows.UI.Composition.Interactions
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.RequestId.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.ScaleVelocityInPercentPerSecond.get
 		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.IsInertiaFromImpulse.get
+		// Forced skipping of method Windows.UI.Composition.Interactions.InteractionTrackerInertiaStateEnteredArgs.IsFromBinding.get
 	}
 }

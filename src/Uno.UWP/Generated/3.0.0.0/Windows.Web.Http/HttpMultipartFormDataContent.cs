@@ -33,6 +33,27 @@ namespace Windows.Web.Http
 		}
 		#endif
 		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.HttpMultipartFormDataContent()
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void Add( global::Windows.Web.Http.IHttpContent content)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpMultipartFormDataContent", "void HttpMultipartFormDataContent.Add(IHttpContent content)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void Add( global::Windows.Web.Http.IHttpContent content,  string name)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpMultipartFormDataContent", "void HttpMultipartFormDataContent.Add(IHttpContent content, string name)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void Add( global::Windows.Web.Http.IHttpContent content,  string name,  string fileName)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpMultipartFormDataContent", "void HttpMultipartFormDataContent.Add(IHttpContent content, string name, string fileName)");
+		}
+		#endif
 		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.Headers.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -81,27 +102,6 @@ namespace Windows.Web.Http
 		public  void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpMultipartFormDataContent", "void HttpMultipartFormDataContent.Dispose()");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  void Add( global::Windows.Web.Http.IHttpContent content)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpMultipartFormDataContent", "void HttpMultipartFormDataContent.Add(IHttpContent content)");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  void Add( global::Windows.Web.Http.IHttpContent content,  string name)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpMultipartFormDataContent", "void HttpMultipartFormDataContent.Add(IHttpContent content, string name)");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  void Add( global::Windows.Web.Http.IHttpContent content,  string name,  string fileName)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpMultipartFormDataContent", "void HttpMultipartFormDataContent.Add(IHttpContent content, string name, string fileName)");
 		}
 		#endif
 		// Forced skipping of method Windows.Web.Http.HttpMultipartFormDataContent.First()

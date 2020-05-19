@@ -141,13 +141,6 @@ namespace Windows.Devices.PointOfService.Provider
 		// Forced skipping of method Windows.Devices.PointOfService.Provider.BarcodeScannerProviderConnection.HideVideoPreviewRequested.remove
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  void Dispose()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.Provider.BarcodeScannerProviderConnection", "void BarcodeScannerProviderConnection.Dispose()");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader> CreateFrameReaderAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BarcodeScannerFrameReader> BarcodeScannerProviderConnection.CreateFrameReaderAsync() is not implemented in Uno.");
@@ -165,6 +158,13 @@ namespace Windows.Devices.PointOfService.Provider
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.Provider.BarcodeScannerFrameReader> CreateFrameReaderAsync( global::Windows.Graphics.Imaging.BitmapPixelFormat preferredFormat,  global::Windows.Graphics.Imaging.BitmapSize preferredSize)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<BarcodeScannerFrameReader> BarcodeScannerProviderConnection.CreateFrameReaderAsync(BitmapPixelFormat preferredFormat, BitmapSize preferredSize) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void Dispose()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.Provider.BarcodeScannerProviderConnection", "void BarcodeScannerProviderConnection.Dispose()");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__

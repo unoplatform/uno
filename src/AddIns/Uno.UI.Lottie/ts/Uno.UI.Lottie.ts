@@ -1,9 +1,11 @@
 ﻿declare const require: any;
 
 namespace Uno.UI {
+	import AnimationData = Lottie.AnimationData;
+
 	export interface LottieAnimationProperties {
 		elementId: number;
-		jsonPath: string;
+		jsonPath?: string;
 		autoplay: boolean;
 		stretch: string;
 		rate: number;
@@ -19,7 +21,7 @@ namespace Uno.UI {
 		private static _runningAnimations: { [id: number]: RunningLottieAnimation } = {};
 		private static _numberOfFrames: number;
 
-		public static setAnimationProperties(newProperties: LottieAnimationProperties): string {
+		public static setAnimationProperties(newProperties: LottieAnimationProperties, animationData?: AnimationData): string {
 			const elementId = newProperties.elementId;
 
 			Lottie.withPlayer(p => {
@@ -28,7 +30,7 @@ namespace Uno.UI {
 				if (!currentAnimation || Lottie.needNewPlayerAnimation(currentAnimation.properties, newProperties)) {
 					// Here we need a new player animation
 					// (some property changes required a new animation)
-					currentAnimation = Lottie.createAnimation(newProperties);
+					currentAnimation = Lottie.createAnimation(newProperties, animationData);
 				}
 
 				Lottie.updateProperties(currentAnimation, newProperties);
@@ -117,14 +119,10 @@ namespace Uno.UI {
 			if (current.jsonPath !== newProperties.jsonPath) {
 				return true;
 			}
-
 			if (newProperties.stretch !== current.stretch) {
 				return true;
 			}
 			if (newProperties.autoplay !== current.autoplay) {
-				return true;
-			}
-			if (newProperties.jsonPath !== current.jsonPath) {
 				return true;
 			}
 
@@ -145,7 +143,7 @@ namespace Uno.UI {
 			runningAnimation.properties = newProperties;
 		}
 
-		private static createAnimation(properties: LottieAnimationProperties): RunningLottieAnimation {
+		private static createAnimation(properties: LottieAnimationProperties, animationData?: AnimationData): RunningLottieAnimation {
 			const existingAnimation = Lottie._runningAnimations[properties.elementId];
 			if (existingAnimation) {
 				// destroy any previous animation
@@ -153,7 +151,7 @@ namespace Uno.UI {
 				existingAnimation.animation = null;
 			}
 
-			const config = Lottie.getPlayerConfig(properties);
+			const config = Lottie.getPlayerConfig(properties, animationData);
 			const animation = Lottie._player.loadAnimation(config);
 
 			const runningAnimation = {
@@ -200,7 +198,7 @@ namespace Uno.UI {
 			element.dispatchEvent(new CustomEvent("lottie_state", { detail: state }));
 		}
 
-		private static getPlayerConfig(properties: LottieAnimationProperties): Lottie.AnimationConfig {
+		private static getPlayerConfig(properties: LottieAnimationProperties, animationData?: AnimationData): Lottie.AnimationConfig {
 			let scaleMode = "none";
 			switch (properties.stretch) {
 				case "Uniform":
@@ -217,8 +215,7 @@ namespace Uno.UI {
 			const containerElement = (Uno.UI as any).WindowManager.current.getView(properties.elementId);
 
 			// https://github.com/airbnb/lottie-web/wiki/loadAnimation-options
-			const playerConfig = {
-				path: properties.jsonPath,
+			const playerConfig: Lottie.AnimationConfig = {
 				loop: true,
 				autoplay: properties.autoplay,
 				name: `Lottie-${properties.elementId}`,
@@ -229,6 +226,14 @@ namespace Uno.UI {
 					preserveAspectRatio: scaleMode
 				}
 			};
+
+			// Set source, with priority to animationData, if specified.
+			if (animationData != null) {
+				playerConfig.animationData = animationData;
+			}
+			else if (properties.jsonPath != null && properties.jsonPath !== "") {
+				playerConfig.path = properties.jsonPath;
+			}
 
 			return playerConfig;
 		}

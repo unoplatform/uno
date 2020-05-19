@@ -19,6 +19,7 @@ namespace Uno.UI.SourceGenerators.Tests
 		[DataRow("ctx", "Static.MyFunction(42.0)", "Static.MyFunction(42.0)")]
 		[DataRow("ctx", "Static.MyFunction(true)", "Static.MyFunction(true)")]
 		[DataRow("ctx", "Static.MyFunction(MyProperty)", "Static.MyFunction(ctx.MyProperty)")]
+		[DataRow("ctx", "MyNameSpace.Static2.MyProperty", "MyNameSpace.Static2.MyProperty")]
 		[DataRow("ctx", "MyNameSpace.Static2.MyFunction(MyProperty)", "MyNameSpace.Static2.MyFunction(ctx.MyProperty)")]
 		[DataRow("ctx", "MyFunction(MyProperty)", "ctx.MyFunction(ctx.MyProperty)")]
 		[DataRow("ctx", "", "ctx")]
@@ -44,6 +45,8 @@ namespace Uno.UI.SourceGenerators.Tests
 					case "System.String.Format":
 						return true;
 					case "MyNameSpace.Static2.MyFunction":
+						return true;
+					case "MyNameSpace.Static2.MyProperty":
 						return true;
 				}
 

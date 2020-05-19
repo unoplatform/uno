@@ -100,6 +100,13 @@ namespace Windows.Graphics.Holographic
 			throw new global::System.NotImplementedException("The member HolographicFramePresentationMonitor HolographicSpace.CreateFramePresentationMonitor(uint maxQueuedReports) is not implemented in Uno.");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Graphics.Holographic.HolographicFrameScanoutMonitor CreateFrameScanoutMonitor( uint maxQueuedReports)
+		{
+			throw new global::System.NotImplementedException("The member HolographicFrameScanoutMonitor HolographicSpace.CreateFrameScanoutMonitor(uint maxQueuedReports) is not implemented in Uno.");
+		}
+		#endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.IsConfigured.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.IsSupported.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicSpace.IsAvailable.get

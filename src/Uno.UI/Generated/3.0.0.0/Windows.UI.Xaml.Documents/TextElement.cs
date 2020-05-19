@@ -209,6 +209,20 @@ namespace Windows.UI.Xaml.Documents
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.Xaml.XamlRoot XamlRoot
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member XamlRoot TextElement.XamlRoot is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Documents.TextElement", "XamlRoot TextElement.XamlRoot");
+			}
+		}
+		#endif
 		// Skipping already declared property CharacterSpacingProperty
 		// Skipping already declared property FontFamilyProperty
 		// Skipping already declared property FontSizeProperty
@@ -216,7 +230,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FontStretchProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FontStretch", typeof(global::Windows.UI.Text.FontStretch), 
+			nameof(FontStretch), typeof(global::Windows.UI.Text.FontStretch), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStretch)));
 		#endif
@@ -227,7 +241,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LanguageProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Language", typeof(string), 
+			nameof(Language), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -235,7 +249,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsTextScaleFactorEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsTextScaleFactorEnabled", typeof(bool), 
+			nameof(IsTextScaleFactorEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -243,7 +257,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AccessKeyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AccessKey", typeof(string), 
+			nameof(AccessKey), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -251,7 +265,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AllowFocusOnInteractionProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AllowFocusOnInteraction", typeof(bool), 
+			nameof(AllowFocusOnInteraction), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -259,7 +273,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ExitDisplayModeOnAccessKeyInvokedProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ExitDisplayModeOnAccessKeyInvoked", typeof(bool), 
+			nameof(ExitDisplayModeOnAccessKeyInvoked), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -267,7 +281,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty AccessKeyScopeOwnerProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"AccessKeyScopeOwner", typeof(global::Windows.UI.Xaml.DependencyObject), 
+			nameof(AccessKeyScopeOwner), typeof(global::Windows.UI.Xaml.DependencyObject), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.DependencyObject)));
 		#endif
@@ -275,7 +289,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsAccessKeyScopeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsAccessKeyScope", typeof(bool), 
+			nameof(IsAccessKeyScope), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -283,7 +297,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KeyTipHorizontalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"KeyTipHorizontalOffset", typeof(double), 
+			nameof(KeyTipHorizontalOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -291,7 +305,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KeyTipPlacementModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"KeyTipPlacementMode", typeof(global::Windows.UI.Xaml.Input.KeyTipPlacementMode), 
+			nameof(KeyTipPlacementMode), typeof(global::Windows.UI.Xaml.Input.KeyTipPlacementMode), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Input.KeyTipPlacementMode)));
 		#endif
@@ -299,7 +313,7 @@ namespace Windows.UI.Xaml.Documents
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KeyTipVerticalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"KeyTipVerticalOffset", typeof(double), 
+			nameof(KeyTipVerticalOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Documents.TextElement), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -358,6 +372,8 @@ namespace Windows.UI.Xaml.Documents
 		// Forced skipping of method Windows.UI.Xaml.Documents.TextElement.AccessKeyDisplayDismissed.remove
 		// Forced skipping of method Windows.UI.Xaml.Documents.TextElement.AccessKeyInvoked.add
 		// Forced skipping of method Windows.UI.Xaml.Documents.TextElement.AccessKeyInvoked.remove
+		// Forced skipping of method Windows.UI.Xaml.Documents.TextElement.XamlRoot.get
+		// Forced skipping of method Windows.UI.Xaml.Documents.TextElement.XamlRoot.set
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		protected virtual void OnDisconnectVisualChildren()

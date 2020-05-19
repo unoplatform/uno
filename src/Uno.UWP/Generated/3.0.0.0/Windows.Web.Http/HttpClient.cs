@@ -106,6 +106,76 @@ namespace Windows.Web.Http
 		// Forced skipping of method Windows.Web.Http.HttpClient.DefaultRequestHeaders.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpRequestResult, global::Windows.Web.Http.HttpProgress> TryDeleteAsync( global::System.Uri uri)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<HttpRequestResult, HttpProgress> HttpClient.TryDeleteAsync(Uri uri) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpRequestResult, global::Windows.Web.Http.HttpProgress> TryGetAsync( global::System.Uri uri)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<HttpRequestResult, HttpProgress> HttpClient.TryGetAsync(Uri uri) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpRequestResult, global::Windows.Web.Http.HttpProgress> TryGetAsync( global::System.Uri uri,  global::Windows.Web.Http.HttpCompletionOption completionOption)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<HttpRequestResult, HttpProgress> HttpClient.TryGetAsync(Uri uri, HttpCompletionOption completionOption) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpGetBufferResult, global::Windows.Web.Http.HttpProgress> TryGetBufferAsync( global::System.Uri uri)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<HttpGetBufferResult, HttpProgress> HttpClient.TryGetBufferAsync(Uri uri) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpGetInputStreamResult, global::Windows.Web.Http.HttpProgress> TryGetInputStreamAsync( global::System.Uri uri)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<HttpGetInputStreamResult, HttpProgress> HttpClient.TryGetInputStreamAsync(Uri uri) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpGetStringResult, global::Windows.Web.Http.HttpProgress> TryGetStringAsync( global::System.Uri uri)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<HttpGetStringResult, HttpProgress> HttpClient.TryGetStringAsync(Uri uri) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpRequestResult, global::Windows.Web.Http.HttpProgress> TryPostAsync( global::System.Uri uri,  global::Windows.Web.Http.IHttpContent content)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<HttpRequestResult, HttpProgress> HttpClient.TryPostAsync(Uri uri, IHttpContent content) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpRequestResult, global::Windows.Web.Http.HttpProgress> TryPutAsync( global::System.Uri uri,  global::Windows.Web.Http.IHttpContent content)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<HttpRequestResult, HttpProgress> HttpClient.TryPutAsync(Uri uri, IHttpContent content) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpRequestResult, global::Windows.Web.Http.HttpProgress> TrySendRequestAsync( global::Windows.Web.Http.HttpRequestMessage request)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<HttpRequestResult, HttpProgress> HttpClient.TrySendRequestAsync(HttpRequestMessage request) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Web.Http.HttpRequestResult, global::Windows.Web.Http.HttpProgress> TrySendRequestAsync( global::Windows.Web.Http.HttpRequestMessage request,  global::Windows.Web.Http.HttpCompletionOption completionOption)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<HttpRequestResult, HttpProgress> HttpClient.TrySendRequestAsync(HttpRequestMessage request, HttpCompletionOption completionOption) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpClient", "void HttpClient.Dispose()");

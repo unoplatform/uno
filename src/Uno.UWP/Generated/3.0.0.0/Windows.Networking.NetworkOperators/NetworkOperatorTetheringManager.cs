@@ -77,6 +77,41 @@ namespace Windows.Networking.NetworkOperators
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static bool IsNoConnectionsTimeoutEnabled()
+		{
+			throw new global::System.NotImplementedException("The member bool NetworkOperatorTetheringManager.IsNoConnectionsTimeoutEnabled() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static void EnableNoConnectionsTimeout()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager", "void NetworkOperatorTetheringManager.EnableNoConnectionsTimeout()");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Foundation.IAsyncAction EnableNoConnectionsTimeoutAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction NetworkOperatorTetheringManager.EnableNoConnectionsTimeoutAsync() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static void DisableNoConnectionsTimeout()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager", "void NetworkOperatorTetheringManager.DisableNoConnectionsTimeout()");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Foundation.IAsyncAction DisableNoConnectionsTimeoutAsync()
+		{
+			throw new global::System.NotImplementedException("The member IAsyncAction NetworkOperatorTetheringManager.DisableNoConnectionsTimeoutAsync() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static global::Windows.Networking.NetworkOperators.NetworkOperatorTetheringManager CreateFromConnectionProfile( global::Windows.Networking.Connectivity.ConnectionProfile profile,  global::Windows.Networking.Connectivity.NetworkAdapter adapter)
 		{
 			throw new global::System.NotImplementedException("The member NetworkOperatorTetheringManager NetworkOperatorTetheringManager.CreateFromConnectionProfile(ConnectionProfile profile, NetworkAdapter adapter) is not implemented in Uno.");

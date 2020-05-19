@@ -13,6 +13,8 @@ using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using System.Security.Cryptography;
 
+using ICommand = System.Windows.Input.ICommand;
+
 namespace Windows.UI.Xaml.Controls
 {
 	public partial class MenuFlyoutItem : MenuFlyoutItemBase

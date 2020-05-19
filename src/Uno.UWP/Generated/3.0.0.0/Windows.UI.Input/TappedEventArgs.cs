@@ -13,5 +13,6 @@ namespace Windows.UI.Input
 		// Forced skipping of method Windows.UI.Input.TappedEventArgs.PointerDeviceType.get
 		// Forced skipping of method Windows.UI.Input.TappedEventArgs.Position.get
 		// Forced skipping of method Windows.UI.Input.TappedEventArgs.TapCount.get
+		// Forced skipping of method Windows.UI.Input.TappedEventArgs.ContactCount.get
 	}
 }

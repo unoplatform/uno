@@ -82,6 +82,10 @@ namespace SamplesApp
 			// requires Xamarin Test Cloud Agent
 			Xamarin.Calabash.Start();
 #endif
+#if NETFX_CORE
+			Resources.MergedDictionaries.Add(new Microsoft.UI.Xaml.Controls.XamlControlsResources());
+#endif
+
 			var sw = Stopwatch.StartNew();
 			var n = Windows.UI.Xaml.Window.Current.Dispatcher.RunIdleAsync(
 				_ =>
@@ -177,6 +181,7 @@ namespace SamplesApp
 					{
 						{ "Uno", LogLevel.Warning },
 						{ "Windows", LogLevel.Warning },
+						{ "Microsoft", LogLevel.Warning },
 
 						// RemoteControl and HotReload related
 						{ "Uno.UI.RemoteControl", LogLevel.Information },

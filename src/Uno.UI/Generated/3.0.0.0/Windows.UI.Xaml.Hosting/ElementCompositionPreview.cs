@@ -9,6 +9,20 @@ namespace Windows.UI.Xaml.Hosting
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static void SetAppWindowContent( global::Windows.UI.WindowManagement.AppWindow appWindow,  global::Windows.UI.Xaml.UIElement xamlContent)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Hosting.ElementCompositionPreview", "void ElementCompositionPreview.SetAppWindowContent(AppWindow appWindow, UIElement xamlContent)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.UIElement GetAppWindowContent( global::Windows.UI.WindowManagement.AppWindow appWindow)
+		{
+			throw new global::System.NotImplementedException("The member UIElement ElementCompositionPreview.GetAppWindowContent(AppWindow appWindow) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static void SetImplicitShowAnimation( global::Windows.UI.Xaml.UIElement element,  global::Windows.UI.Composition.ICompositionAnimationBase animation)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Hosting.ElementCompositionPreview", "void ElementCompositionPreview.SetImplicitShowAnimation(UIElement element, ICompositionAnimationBase animation)");

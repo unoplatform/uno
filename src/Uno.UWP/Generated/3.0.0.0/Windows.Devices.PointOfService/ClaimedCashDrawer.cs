@@ -95,6 +95,8 @@ namespace Windows.Devices.PointOfService
 		#endif
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawer.ReleaseDeviceRequested.add
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawer.ReleaseDeviceRequested.remove
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawer.Closed.add
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawer.Closed.remove
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
@@ -102,8 +104,6 @@ namespace Windows.Devices.PointOfService
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedCashDrawer", "void ClaimedCashDrawer.Dispose()");
 		}
 		#endif
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawer.Closed.add
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedCashDrawer.Closed.remove
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedCashDrawer, object> ReleaseDeviceRequested

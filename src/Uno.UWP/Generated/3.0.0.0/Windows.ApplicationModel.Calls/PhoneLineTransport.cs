@@ -14,6 +14,9 @@ namespace Windows.ApplicationModel.Calls
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		VoipApp,
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		Bluetooth,
+		#endif
 	}
 	#endif
 }

@@ -4,6 +4,9 @@ using Uno.UI.Samples.UITests.Helpers;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Data;
 
+using ICommand = System.Windows.Input.ICommand;
+using EventHandler = System.EventHandler;
+
 namespace UITests.Shared.Windows_UI_Xaml_Controls.TimePicker.Model
 {
 	[Bindable]

@@ -54,7 +54,10 @@ namespace Windows.UI.Xaml.Controls
 
 		static TextBlock()
 		{
-			InitializeStaticLayoutInterop();
+			if ((int)Android.OS.Build.VERSION.SdkInt < 28)
+			{
+				InitializeStaticLayoutInterop();
+			}
 		}
 
 		/// <summary>
@@ -108,7 +111,7 @@ namespace Windows.UI.Xaml.Controls
 		private Java.Lang.ICharSequence _textFormatted;
 		private TextPaint _paint;
 		private TextUtils.TruncateAt _ellipsize;
-		private Layout.Alignment _layoutAlignment;
+		private Android.Text.Layout.Alignment _layoutAlignment;
 
 		private void InitializePartial()
 		{
@@ -207,13 +210,22 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
+			var foreground = Brush
+				.GetColorWithOpacity(Foreground, Colors.Transparent)
+				.Value;
+
+			var shader = Foreground is GradientBrush gb
+				? gb.GetShader(LayoutSlot.LogicalToPhysicalPixels())
+				: null;
+
 			_paint = TextPaintPool.GetPaint(
 				FontWeight,
 				FontStyle,
 				FontFamily,
 				FontSize,
 				CharacterSpacing,
-				(Foreground as SolidColorBrush)?.Color ?? Colors.Transparent,
+				foreground,
+				shader,
 				BaseLineAlignment.Baseline,
 				TextDecorations
 			);
@@ -420,7 +432,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			private readonly Java.Lang.ICharSequence _textFormatted;
 			private readonly TextUtils.TruncateAt _ellipsize;
-			private readonly Layout.Alignment _layoutAlignment;
+			private readonly Android.Text.Layout.Alignment _layoutAlignment;
 			private readonly TextWrapping _textWrapping;
 			private readonly int _maxLines;
 			private readonly bool _exactWidth;
@@ -441,7 +453,7 @@ namespace Windows.UI.Xaml.Controls
 			/// <summary>
 			/// The layout to be drawn
 			/// </summary>
-			public Layout Layout { get; private set; }
+			public Android.Text.Layout Layout { get; private set; }
 
 			/// <summary>
 			/// Builds a new layout with the specified parameters.
@@ -450,7 +462,7 @@ namespace Windows.UI.Xaml.Controls
 				Java.Lang.ICharSequence textFormatted,
 				TextPaint paint,
 				TextUtils.TruncateAt ellipsize,
-				Layout.Alignment layoutAlignment,
+				Android.Text.Layout.Alignment layoutAlignment,
 				TextWrapping textWrapping,
 				int maxLines,
 				Size availableSize,
@@ -651,7 +663,9 @@ namespace Windows.UI.Xaml.Controls
 					}
 				}
 
-				Layout = UnoStaticLayoutBuilder.Build(
+				if ((int)Android.OS.Build.VERSION.SdkInt < 28)
+				{
+					Layout = UnoStaticLayoutBuilder.Build(
 						/*source:*/ _textFormatted,
 						/*paint: */ _paint,
 						/*outerwidth: */ width,
@@ -663,6 +677,21 @@ namespace Windows.UI.Xaml.Controls
 						/*ellipsizedWidth: */ width,
 						/*maxLines: */ maxLines
 					);
+				}
+				else
+				{
+					Layout = StaticLayout.Builder.Obtain(_textFormatted, 0, _textFormatted.Length(), _paint, width)
+					.SetLineSpacing(_addedSpacing = GetSpacingAdd(_paint), 1)
+					.SetMaxLines(maxLines)
+					.SetEllipsize(_ellipsize)
+					.SetEllipsizedWidth(width)
+					.SetAlignment(_layoutAlignment)
+					.SetIncludePad(true)
+					.Build();
+				}
+
+
+
 			}
 		}
 

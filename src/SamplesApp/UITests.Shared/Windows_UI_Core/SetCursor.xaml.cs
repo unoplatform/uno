@@ -16,51 +16,51 @@ namespace SamplesApp.Wasm.Windows_UI_Core
 		public SetCursor()
 		{
 			this.InitializeComponent();
-			this.Loaded += OnLoaded;
-			this.Unloaded += OnUnLoaded;
+			Box.Loaded += OnLoaded;
+			Box.Unloaded += OnUnLoaded;
 			this.DataContext = this;
 		}
 
 		private void OnLoaded(object sender, RoutedEventArgs e)
 		{
-			this.Loaded -= OnLoaded;
+			Box.Loaded -= OnLoaded;
 			InitList();
 		}
 
 		private void OnUnLoaded(object sender, RoutedEventArgs e)
 		{
-			this.Unloaded -= OnUnLoaded;
-#if NET461 || __WASM__
-			Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
+#if NET461 || __WASM__ || __MACOS__
+			Box.SelectionChanged -= HandleSelection;
+			Windows.UI.Xaml.Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
 #endif
 		}
 
 		private void InitList()
 		{
-			#if NET461 || __WASM__
+			#if NET461 || __WASM__ || __MACOS__
 			var _enumval = Enum.GetValues(typeof(Windows.UI.Core.CoreCursorType));
 			Box.ItemsSource = _enumval;
 			Box.SelectedIndex = 0;
 
-			void handleSelection(object sender, object args)
-			{
-				Txt.Text = "Current selection : " + Box.SelectedItem.ToString();
+			
 
-				Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor((Windows.UI.Core.CoreCursorType)Box.SelectedItem, 0);
-
-
-			}
-
-			Box.Loaded += (s, e) => Box.SelectionChanged += handleSelection;
-			Box.Unloaded += (s, e) => Box.SelectionChanged -= handleSelection;
+			Box.SelectionChanged += HandleSelection;
 			#endif
 		}
+
+		private void HandleSelection(object sender, object args)
+		{
+			Txt.Text = "Current selection : " + Box.SelectedItem.ToString();
+
+			Windows.UI.Xaml.Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor((Windows.UI.Core.CoreCursorType)Box.SelectedItem, 0);
+		}
+
 		private void ResetTapped(object sender, TappedRoutedEventArgs e)
 		{
-#if NET461 || __WASM__
+#if NET461 || __WASM__ || __MACOS__
 			Txt.Text = "";
 
-			Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
+			Windows.UI.Xaml.Window.Current.CoreWindow.PointerCursor = new Windows.UI.Core.CoreCursor(Windows.UI.Core.CoreCursorType.Arrow, 0);
 #endif
 		}
 	}

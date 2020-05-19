@@ -14,6 +14,7 @@ using Uno.UI;
 using Uno.UI.Extensions;
 using Uno.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.System;
 
 namespace Windows.UI.Xaml
 {
@@ -670,7 +671,7 @@ namespace Windows.UI.Xaml
 
 		private static KeyRoutedEventArgs PayloadToKeyArgs(object src, string payload)
 		{
-			return new KeyRoutedEventArgs(src, System.VirtualKeyHelper.FromKey(payload)) {CanBubbleNatively = true};
+			return new KeyRoutedEventArgs(src, VirtualKeyHelper.FromKey(payload)) {CanBubbleNatively = true};
 		}
 
 		private static RoutedEventArgs PayloadToFocusArgs(object src, string payload)

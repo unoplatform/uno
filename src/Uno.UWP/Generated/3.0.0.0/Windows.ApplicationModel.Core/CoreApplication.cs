@@ -27,6 +27,8 @@ namespace Windows.ApplicationModel.Core
 			}
 		}
 		#endif
+		// Skipping already declared property MainView
+		// Skipping already declared property Views
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.ApplicationModel.Core.CoreApplicationView CreateNewView( global::Windows.ApplicationModel.Core.IFrameworkViewSource viewSource)

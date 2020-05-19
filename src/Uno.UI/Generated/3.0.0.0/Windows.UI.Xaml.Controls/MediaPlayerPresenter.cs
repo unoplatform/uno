@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsFullWindowProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsFullWindow", typeof(bool), 
+			nameof(IsFullWindow), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerPresenter), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty MediaPlayerProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"MediaPlayer", typeof(global::Windows.Media.Playback.MediaPlayer), 
+			nameof(MediaPlayer), typeof(global::Windows.Media.Playback.MediaPlayer), 
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerPresenter), 
 			new FrameworkPropertyMetadata(default(global::Windows.Media.Playback.MediaPlayer)));
 		#endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StretchProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Stretch", typeof(global::Windows.UI.Xaml.Media.Stretch), 
+			nameof(Stretch), typeof(global::Windows.UI.Xaml.Media.Stretch), 
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerPresenter), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Stretch)));
 		#endif

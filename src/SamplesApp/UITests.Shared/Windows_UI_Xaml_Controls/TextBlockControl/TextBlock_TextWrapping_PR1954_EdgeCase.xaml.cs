@@ -67,7 +67,7 @@ namespace UITests.Shared.Windows_UI_Xaml_Controls.TextBlockControl
 				layoutBuilder = parameters[0];
 				return (Size)result;
 			}
-			Layout LayoutBuilder_get_Layout(object builder) => (Layout)typeof(TextBlock).GetNestedType("LayoutBuilder", BindingFlags.NonPublic)
+			global::Android.Text.Layout LayoutBuilder_get_Layout(object builder) => (global::Android.Text.Layout)typeof(TextBlock).GetNestedType("LayoutBuilder", BindingFlags.NonPublic)
 				.GetProperty("Layout")
 				.GetValue(builder);
 		}

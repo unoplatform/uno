@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Text;
-using Android.Support.V7.Widget;
+using AndroidX.RecyclerView.Widget;
 using Android.Views;
 using Uno.Extensions;
 using Uno.UI;
@@ -30,7 +30,7 @@ namespace Windows.UI.Xaml.Controls
 			int availableBreadth,
 			RecyclerView.Recycler recycler,
 			RecyclerView.State state,
-			IndexPath nextVisibleItem,
+			Uno.UI.IndexPath nextVisibleItem,
 			bool isNewGroup
 		)
 		{
@@ -57,9 +57,9 @@ namespace Windows.UI.Xaml.Controls
 					Debug.Assert(isCorrectGroup, GetAssertMessage("First item should not be from a different group"));
 				}
 			}
-			IndexPath lastItemInLine = firstItemInLine;
+			Uno.UI.IndexPath lastItemInLine = firstItemInLine;
 
-			IndexPath? currentItem = firstItemInLine;
+			Uno.UI.IndexPath? currentItem = firstItemInLine;
 			var availableWidth = ResolveAvailableWidth(availableBreadth);
 			var availableHeight = ResolveAvailableHeight(availableBreadth);
 
@@ -264,7 +264,7 @@ namespace Windows.UI.Xaml.Controls
 			return Math.Min(maximumItemsBySetting, maximumItemsBySpace);
 		}
 
-		protected override Foundation.Size ApplyChildStretch(Foundation.Size childSize, Foundation.Size slotSize, ViewType viewType)
+		protected override Windows.Foundation.Size ApplyChildStretch(Windows.Foundation.Size childSize, Windows.Foundation.Size slotSize, ViewType viewType)
 		{
 			//Item views in a grid layout shouldn't be stretched
 			if (viewType == ViewType.Item)
@@ -274,7 +274,7 @@ namespace Windows.UI.Xaml.Controls
 			return base.ApplyChildStretch(childSize, slotSize, viewType);
 		}
 
-		protected override IndexPath? GetDynamicSeedIndex(IndexPath? firstVisibleItem, int availableBreadth)
+		protected override Uno.UI.IndexPath? GetDynamicSeedIndex(Uno.UI.IndexPath? firstVisibleItem, int availableBreadth)
 		{
 			//Get the first preceding item that is at the end of a line 
 			var currentItem = firstVisibleItem;

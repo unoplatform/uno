@@ -57,6 +57,16 @@ namespace Windows.Devices.Sensors
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.Devices.Sensors.LightSensorDataThreshold ReportThreshold
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member LightSensorDataThreshold LightSensor.ReportThreshold is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  string DeviceId
 		{
 			get
@@ -81,6 +91,7 @@ namespace Windows.Devices.Sensors
 		// Forced skipping of method Windows.Devices.Sensors.LightSensor.ReportLatency.set
 		// Forced skipping of method Windows.Devices.Sensors.LightSensor.ReportLatency.get
 		// Forced skipping of method Windows.Devices.Sensors.LightSensor.MaxBatchSize.get
+		// Forced skipping of method Windows.Devices.Sensors.LightSensor.ReportThreshold.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelector()

@@ -146,7 +146,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override Foundation.Size MeasureOverride(Foundation.Size size)
+		protected override Size MeasureOverride(Size size)
 		{
 			var child = Content as UIElement;
 			if (child != null)
@@ -169,10 +169,10 @@ namespace Windows.UI.Xaml.Controls
 				);
 			}
 
-			return new Foundation.Size(0, 0);
+			return new Size(0, 0);
 		}
 
-		protected override Foundation.Size ArrangeOverride(Foundation.Size finalSize)
+		protected override Size ArrangeOverride(Size finalSize)
 		{
 			var child = Content as UIElement;
 			if (child != null)

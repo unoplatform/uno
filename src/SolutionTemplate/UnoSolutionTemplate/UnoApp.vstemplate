@@ -15,12 +15,14 @@
 	<PreviewImage>__PreviewImage.png</PreviewImage>
 	<NumberOfParentCategoriesToRollUp>2</NumberOfParentCategoriesToRollUp>
 	<LanguageTag>csharp</LanguageTag>
-	<PlatformTag>ios</PlatformTag>
+	<PlatformTag>iOS</PlatformTag>
 	<PlatformTag>android</PlatformTag>
 	<PlatformTag>Windows</PlatformTag>
+	<PlatformTag>macOS</PlatformTag>
+	<PlatformTag>web</PlatformTag>
 	<ProjectTypeTag>mobile</ProjectTypeTag>
 	<ProjectTypeTag>UWP</ProjectTypeTag>
-	<ProjectTypeTag>Wasm</ProjectTypeTag>
+	<ProjectTypeTag>WebAssembly</ProjectTypeTag>
 	<ProjectTypeTag>Uno Platform</ProjectTypeTag>
   </TemplateData>
   <TemplateContent>
@@ -30,6 +32,7 @@
 	  <ProjectTemplateLink ProjectName="$projectname$.iOS" CopyParameters="true">iOS\iOS.vstemplate</ProjectTemplateLink>
 	  <ProjectTemplateLink ProjectName="$projectname$.UWP" CopyParameters="true">UWP\UWP.vstemplate</ProjectTemplateLink>
 	  <ProjectTemplateLink ProjectName="$projectname$.Wasm" CopyParameters="true">Wasm\Wasm.vstemplate</ProjectTemplateLink>
+	  <ProjectTemplateLink ProjectName="$projectname$.macOS" CopyParameters="true">macOS\macOS.vstemplate</ProjectTemplateLink>
 	</ProjectCollection>
   </TemplateContent>
   <WizardExtension>

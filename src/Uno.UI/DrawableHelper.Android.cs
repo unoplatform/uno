@@ -1,5 +1,4 @@
 ﻿using Android.Graphics.Drawables;
-using Android.Support.V4.Content;
 using System;
 using System.ComponentModel;
 using Windows.UI.Xaml.Media;

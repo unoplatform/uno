@@ -27,6 +27,20 @@ namespace Windows.Storage.AccessCache
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Storage.AccessCache.StorageItemAccessList GetFutureAccessListForUser( global::Windows.System.User user)
+		{
+			throw new global::System.NotImplementedException("The member StorageItemAccessList StorageApplicationPermissions.GetFutureAccessListForUser(User user) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Storage.AccessCache.StorageItemMostRecentlyUsedList GetMostRecentlyUsedListForUser( global::Windows.System.User user)
+		{
+			throw new global::System.NotImplementedException("The member StorageItemMostRecentlyUsedList StorageApplicationPermissions.GetMostRecentlyUsedListForUser(User user) is not implemented in Uno.");
+		}
+		#endif
 		// Forced skipping of method Windows.Storage.AccessCache.StorageApplicationPermissions.FutureAccessList.get
 		// Forced skipping of method Windows.Storage.AccessCache.StorageApplicationPermissions.MostRecentlyUsedList.get
 	}

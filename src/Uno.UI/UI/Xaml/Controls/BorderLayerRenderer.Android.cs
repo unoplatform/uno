@@ -15,7 +15,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Uno.UI;
-using Android.Support.V4.View;
+using AndroidX.AppCompat.View;
 using System.Diagnostics;
 
 namespace Windows.UI.Xaml.Controls

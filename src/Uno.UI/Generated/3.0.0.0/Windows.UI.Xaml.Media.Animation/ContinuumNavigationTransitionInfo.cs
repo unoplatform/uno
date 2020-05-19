@@ -33,7 +33,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ExitElementProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ExitElement", typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(ExitElement), typeof(global::Windows.UI.Xaml.UIElement), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.ContinuumNavigationTransitionInfo), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 		#endif

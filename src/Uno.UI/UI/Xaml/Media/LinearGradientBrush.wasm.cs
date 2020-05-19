@@ -8,15 +8,21 @@ namespace Windows.UI.Xaml.Media
 {
 	public partial class LinearGradientBrush
 	{
-		internal string ToCssString(Size size)
+		internal override string ToCssString(Size size)
 		{
 			var startPoint = StartPoint;
 			var endPoint = EndPoint;
 
-			var xDiff = (endPoint.X * size.Width) - (startPoint.X * size.Width);
-			var yDiff = (startPoint.Y * size.Height) - (endPoint.Y * size.Height);
+			if (MappingMode != BrushMappingMode.RelativeToBoundingBox)
+			{
+				startPoint = new Point(startPoint.X * size.Width, startPoint.Y * size.Height);
+				endPoint = new Point(endPoint.X * size.Width, endPoint.Y * size.Height);
+			}
 
-			var angle = Math.Atan2(xDiff, yDiff);
+			var xDiff = endPoint.X - startPoint.X;
+			var yDiff = startPoint.Y - endPoint.Y;
+
+			var angle = Math.Atan2(xDiff, yDiff).ToStringInvariant();
 
 			var stops = string.Join(
 				",",
@@ -28,9 +34,14 @@ namespace Windows.UI.Xaml.Media
 		/// <summary>
 		/// Generates a linearGradient element that can be used inside SVG-based views (Path, etc)
 		/// </summary>
-		internal UIElement ToSvgElement()
+		internal override UIElement ToSvgElement()
 		{
 			var linearGradient = new SvgElement("linearGradient");
+
+			if (MappingMode != BrushMappingMode.RelativeToBoundingBox)
+			{
+				// Not supported yet
+			}
 
 			linearGradient.SetAttribute(
 				("x1", StartPoint.X.ToStringInvariant()),

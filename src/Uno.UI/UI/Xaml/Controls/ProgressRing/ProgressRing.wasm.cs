@@ -1,6 +1,10 @@
 ﻿#if __WASM__
 using System;
+using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls.Primitives;
+
+// Keep this formatting (with the space) for the WinUI upgrade tooling.
+using Microsoft .UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Controls
 {

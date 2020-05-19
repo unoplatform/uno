@@ -9,7 +9,7 @@ using System;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Collections.Generic;
-using Fragment = Android.Support.V4.App.Fragment;
+using Fragment = AndroidX.Fragment.App.Fragment;
 
 namespace Uno.UI
 {

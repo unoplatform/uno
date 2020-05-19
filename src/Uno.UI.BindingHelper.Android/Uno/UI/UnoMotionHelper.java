@@ -448,7 +448,7 @@ import android.view.ViewParent;
 			return false;
 		}
 
-		final Rect clipBounds = android.support.v4.view.ViewCompat.getClipBounds(view);
+		final Rect clipBounds = androidx.core.view.ViewCompat.getClipBounds(view);
 		if (clipBounds == null) {
 			return true;
 		} else{

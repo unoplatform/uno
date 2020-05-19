@@ -1,11 +1,20 @@
 ﻿using System;
+using System.Buffers.Text;
+using System.Linq;
+using System.Reflection;
+using System.Text;
 using System.Threading.Tasks;
 using Uno;
 using Windows.Foundation;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Media;
+using Microsoft.Extensions.Logging;
+using Uno.Extensions;
+using Uno.Extensions.Specialized;
+using Uno.Logging;
 using Uno.UI;
+using Windows.UI.Composition;
 
 namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
@@ -44,6 +53,13 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			throw new NotImplementedException();
 		}
 
+#if HAS_UNO_WINUI
+		[NotImplemented]
+		public IAnimatedVisual TryCreateAnimatedVisual(Compositor compositor, out object diagnostics)
+		{
+			throw new NotImplementedException();
+		}
+#endif
 
 		private static void OnUriSourceChanged(DependencyObject sender, DependencyPropertyChangedEventArgs args)
 		{
@@ -107,6 +123,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		private readonly Size CompositionSize = default;
 #endif
+
 		public void Update(AnimatedVisualPlayer player)
 		{
 			_player = player;
@@ -123,6 +140,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 		Size IAnimatedVisualSource.Measure(Size availableSize)
 		{
 			var compositionSize = CompositionSize;
+			if (compositionSize == default)
+			{
+				return default;
+			}
+
 			var stretch = _player.Stretch;
 
 			if (stretch == Stretch.None)
@@ -133,6 +155,8 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			var availableWidth = availableSize.Width;
 			var availableHeight = availableSize.Height;
 
+			var resultSize = availableSize;
+
 			if (double.IsInfinity(availableWidth))
 			{
 				if (double.IsInfinity(availableHeight))
@@ -140,15 +164,63 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					return compositionSize;
 				}
 
-				return new Size(availableHeight * compositionSize.Width / compositionSize.Height, availableHeight);
+				resultSize = new Size(availableHeight * compositionSize.Width / compositionSize.Height, availableHeight);
 			}
 
 			if (double.IsInfinity(availableHeight))
 			{
-				return new Size(availableWidth, availableWidth * compositionSize.Height / compositionSize.Width);
+				resultSize = new Size(availableWidth, availableWidth * compositionSize.Height / compositionSize.Width);
 			}
 
-			return availableSize;
+			InnerMeasure(resultSize);
+
+			return resultSize;
+		}
+
+		partial void InnerMeasure(Size size);
+
+		private bool TryLoadEmbeddedJson(Uri uri, out string json)
+		{
+			if (uri.Scheme != "embedded")
+			{
+				json = null;
+				return false;
+			}
+
+			var assemblyName = uri.Host;
+
+			Assembly assembly;
+			if (assemblyName == ".")
+			{
+				assembly = Application.Current.GetType().Assembly;
+			}
+			else
+			{
+				assembly = Assembly.Load(assemblyName);
+			}
+
+			if (assembly == null)
+			{
+				json = null;
+				return false;
+			}
+
+			var resourceName = uri.AbsolutePath.Substring(1).Replace("(assembly)", assembly.GetName().Name);
+			using var stream = assembly.GetManifestResourceStream(resourceName);
+			if (stream == null)
+			{
+				if (this.Log().IsEnabled(LogLevel.Warning))
+				{
+					this.Log().Warn($"Unable to find embedded resource named '{resourceName}' to load.");
+				}
+				json = null;
+				return false;
+			}
+
+			var bytes = new byte[(int)stream.Length];
+			stream.Read(bytes, 0, bytes.Length);
+			json = Encoding.UTF8.GetString(bytes);
+			return true;
 		}
 	}
 }

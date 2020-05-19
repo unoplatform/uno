@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras" ToolsVersion="15.0">
   <PropertyGroup>
-		<TargetFrameworks>MonoAndroid90;xamarinios10</TargetFrameworks>
-		<TargetFrameworksCI>MonoAndroid90;xamarinios10</TargetFrameworksCI>
+		<TargetFrameworks>MonoAndroid10.0;xamarinios10</TargetFrameworks>
+		<TargetFrameworksCI>MonoAndroid90;MonoAndroid10.0;xamarinios10</TargetFrameworksCI>
 		<GeneratePackageOnBuild Condition="'$(Configuration)'=='Release'">true</GeneratePackageOnBuild>
 	</PropertyGroup>
 	
@@ -12,6 +12,8 @@
     <RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
     <Description>This package provides the ability for Uno Platform based apps to use the MapControl</Description>
     <Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
+		
+		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.Maps</PackageId>
   </PropertyGroup>
 	
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
@@ -41,7 +43,13 @@
 	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid90'">
 		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="71.1600.0" />
 		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="71.1600.0" />
-		<PackageReference Include="Xamarin.Android.Support.v4" Version="28.0.0.1" PrivateAssets="none" />
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" PrivateAssets="none" />
+	</ItemGroup>
+
+	<ItemGroup Condition=" '$(TargetFramework)' == 'MonoAndroid10.0'">
+		<PackageReference Include="Xamarin.GooglePlayServices.Location" Version="71.1600.0" />
+		<PackageReference Include="Xamarin.GooglePlayServices.Maps" Version="71.1610.0" />
+		<PackageReference Include="Xamarin.AndroidX.Legacy.Support.v4" PrivateAssets="none" />
 	</ItemGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />
@@ -79,6 +87,12 @@
 	  <Page Update="themes\Generic.xaml">
 	    <Generator>MSBuild:Compile</Generator>
 	  </Page>
+	</ItemGroup>
+
+	<ItemGroup Condition="'$(UNO_UWP_BUILD)'!='true'">
+		<!-- Maps are not yet supported by WinUI 3.0 -->
+		<Page Remove="**\*.xaml" />
+		<Compile Remove="**\*.cs" />
 	</ItemGroup>
 
 </Project>

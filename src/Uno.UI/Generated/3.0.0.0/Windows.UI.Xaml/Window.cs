@@ -22,6 +22,16 @@ namespace Windows.UI.Xaml
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.UIContext UIContext
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member UIContext Window.UIContext is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Skipping already declared property Current
 		// Forced skipping of method Windows.UI.Xaml.Window.Bounds.get
 		// Forced skipping of method Windows.UI.Xaml.Window.Visible.get
@@ -41,6 +51,7 @@ namespace Windows.UI.Xaml
 		// Skipping already declared method Windows.UI.Xaml.Window.Close()
 		// Skipping already declared method Windows.UI.Xaml.Window.SetTitleBar(Windows.UI.Xaml.UIElement)
 		// Forced skipping of method Windows.UI.Xaml.Window.Compositor.get
+		// Forced skipping of method Windows.UI.Xaml.Window.UIContext.get
 		// Forced skipping of method Windows.UI.Xaml.Window.Current.get
 		// Skipping already declared event Windows.UI.Xaml.Window.Activated
 		// Skipping already declared event Windows.UI.Xaml.Window.Closed

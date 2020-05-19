@@ -236,8 +236,8 @@ namespace Uno.UI.WpfHost
                     // parse htmlId to IntPtr
                     if (int.TryParse(htmlIdStr, out var handle))
                     {
-                        // Console.WriteLine($"Dispatch {htmlIdStr} {eventNameStr} {eventPayloadStr}");
-                        Windows.UI.Xaml.UIElement.DispatchEvent(handle, eventNameStr, eventPayloadStr);
+						// Console.WriteLine($"Dispatch {htmlIdStr} {eventNameStr} {eventPayloadStr}");
+						Windows.UI.Xaml.UIElement.DispatchEvent(handle, eventNameStr, eventPayloadStr);
                     }
                     else
                     {

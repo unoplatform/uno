@@ -2,12 +2,18 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class CacheMode : global::Windows.UI.Xaml.DependencyObject
 	{
-		// Skipping already declared method Windows.UI.Xaml.Media.CacheMode.CacheMode()
+		#if false || __IOS__ || false || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		protected CacheMode() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.CacheMode", "CacheMode.CacheMode()");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Media.CacheMode.CacheMode()
 	}
 }

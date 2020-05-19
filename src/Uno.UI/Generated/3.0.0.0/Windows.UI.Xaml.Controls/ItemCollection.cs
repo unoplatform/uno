@@ -7,6 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class ItemCollection : global::Windows.Foundation.Collections.IObservableVector<object>,global::System.Collections.Generic.IList<object>,global::System.Collections.Generic.IEnumerable<object>
 	{
+		// Skipping already declared property Size
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemCollection.VectorChanged.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemCollection.VectorChanged.remove
 		// Forced skipping of method Windows.UI.Xaml.Controls.ItemCollection.GetAt(uint)

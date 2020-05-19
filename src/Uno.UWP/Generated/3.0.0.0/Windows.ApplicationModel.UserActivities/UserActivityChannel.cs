@@ -44,6 +44,13 @@ namespace Windows.ApplicationModel.UserActivities
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static global::Windows.ApplicationModel.UserActivities.UserActivityChannel GetForUser( global::Windows.System.User user)
+		{
+			throw new global::System.NotImplementedException("The member UserActivityChannel UserActivityChannel.GetForUser(User user) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static void DisableAutoSessionCreation()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.UserActivities.UserActivityChannel", "void UserActivityChannel.DisableAutoSessionCreation()");

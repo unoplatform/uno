@@ -123,7 +123,7 @@ namespace Uno.UI.Samples.Tests
 				{
 					TextWrapping = TextWrapping.Wrap,
 					FontFamily = new FontFamily("Courier New"),
-					Margin = new Thickness(8, 0, 0, 0),
+					Margin = ThicknessHelper.FromLengths(8, 0, 0, 0),
 					Foreground = new SolidColorBrush(Colors.LightGray)
 				};
 

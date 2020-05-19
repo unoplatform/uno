@@ -214,6 +214,36 @@ namespace Windows.UI.Xaml.Input
 			}
 		}
 
+		private static DependencyObject InnerFindFirstFocusableElement(DependencyObject searchScope)
+		{
+			if (searchScope == null)
+			{
+				searchScope = Window.Current.Content;
+			}
+
+			if (!(searchScope is ViewGroup searchViewGroup))
+			{
+				return null;
+			}
+
+			return searchViewGroup.EnumerateAllChildren(IsFocusableView, maxDepth: 300).FirstOrDefault() as DependencyObject;			
+		}
+
+		private static DependencyObject InnerFindLastFocusableElement(DependencyObject searchScope)
+		{
+			if (searchScope == null)
+			{
+				searchScope = Window.Current.Content;
+			}
+
+			if (!(searchScope is ViewGroup searchViewGroup))
+			{
+				return null;
+			}
+
+			return searchViewGroup.EnumerateAllChildrenReverse(IsFocusableView, maxDepth: 300).FirstOrDefault() as DependencyObject;
+		}
+
 		private static void FocusNative(Control control)
 		{
 			control.RequestFocus();
