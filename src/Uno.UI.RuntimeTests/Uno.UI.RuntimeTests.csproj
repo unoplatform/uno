@@ -71,10 +71,21 @@
 	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.17763'">
 		<PackageReference Include="System.Numerics.Vectors" Version="4.3.0" />
 	</ItemGroup>
+	<PropertyGroup Condition="'$(TargetFramework)'=='uap10.0.17763'">
+		<DefineConstants>$(DefineConstants);WINDOWS_UWP</DefineConstants>
+	</PropertyGroup>
 
 	<PropertyGroup>
 		<UnoUIGeneratorsBinPath>..\SourceGenerators\Uno.UI.SourceGenerators\bin\$(Configuration)</UnoUIGeneratorsBinPath>
 	</PropertyGroup>
+	
+	<ItemGroup Condition="'$(DocsGeneration)'==''">
+		<ProjectReference Include="..\SourceGenerators\Uno.UI.SourceGenerators\Uno.UI.SourceGenerators.csproj">
+			<ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+			<SkipGetTargetFrameworkProperties>true</SkipGetTargetFrameworkProperties>
+			<UndefineProperties>TargetFramework</UndefineProperties>
+		</ProjectReference>
+	</ItemGroup>
 
 	<Import Project="..\SourceGenerators\Uno.UI.SourceGenerators\Content\Uno.UI.SourceGenerators.props" />
 

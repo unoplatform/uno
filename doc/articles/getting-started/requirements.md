@@ -13,7 +13,7 @@ The minimum supported version by the Uno Platform is iOS 8 from 2014.
 
 ## Universal Windows Platform (UWP)
 
-When developing for the Universal Windows Platform (UWP) there are no special requirements. The Uno Platform is a Universal Windows Platform (UWP) Bridge that allows UWP based code to run on iOS, Android, and WebAssembly. Uno provides the full API definitions of the UWP Windows 10 October 2018 Update (17763), and the implementation of parts of the UWP API, such as Windows.UI.Xaml, to enable applications to run on these platforms.
+When developing for the Universal Windows Platform (UWP) there are no special requirements. The Uno Platform is a Universal Windows Platform (UWP) Bridge that allows UWP based code to run on iOS, Android, and WebAssembly. Uno provides the full API definitions of the UWP [Windows 10 2004 (19041)](https://docs.microsoft.com/en-us/windows/uwp/whats-new/windows-10-build-19041), and the implementation of parts of the UWP API, such as Windows.UI.Xaml, to enable applications to run on these platforms.
 
 ## WebAssembly
 

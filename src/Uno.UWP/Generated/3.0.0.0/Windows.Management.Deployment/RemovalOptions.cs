@@ -15,6 +15,9 @@ namespace Windows.Management.Deployment
 		PreserveApplicationData,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		PreserveRoamableApplicationData,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		RemoveForAllUsers,
 		#endif
 	}

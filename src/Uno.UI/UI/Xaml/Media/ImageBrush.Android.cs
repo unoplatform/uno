@@ -148,7 +148,7 @@ namespace Windows.UI.Xaml.Media
 		/// <param name="onImageLoaded">A callback that will be called when the backing image changes (eg, to redraw your view)</param>
 		/// <param name="maskingPath">An optional path to clip the bitmap by (eg an ellipse)</param>
 		/// <returns>A bitmap transformed based on target bounds and shape, Stretch mode, and RelativeTransform</returns>
-		internal Bitmap TryGetBitmap(Foundation.Rect drawRect, Action onImageLoaded, Path maskingPath = null)
+		internal Bitmap TryGetBitmap(Windows.Foundation.Rect drawRect, Action onImageLoaded, Path maskingPath = null)
 		{
 			ScheduleRefreshIfNeeded(drawRect, onImageLoaded);
 
@@ -217,14 +217,14 @@ namespace Windows.UI.Xaml.Media
 		/// <param name="drawRect"></param>
 		/// <param name="bitmap"></param>
 		/// <returns></returns>
-		private Android.Graphics.Matrix GenerateMatrix(Foundation.Rect drawRect, Bitmap bitmap)
+		private Android.Graphics.Matrix GenerateMatrix(Windows.Foundation.Rect drawRect, Bitmap bitmap)
 		{
 			var matrix = new Android.Graphics.Matrix();
 
 			// Note that bitmap.Width and bitmap.Height (in physical pixels) are automatically scaled up when loaded from local resources, but aren't when acquired externally.
 			// This means that bitmaps acquired externally might not render the same way on devices with different densities when using Stretch.None.
 
-			var sourceRect = new Foundation.Rect(0, 0, bitmap.Width, bitmap.Height);
+			var sourceRect = new Windows.Foundation.Rect(0, 0, bitmap.Width, bitmap.Height);
 			var destinationRect = GetArrangedImageRect(sourceRect.Size, drawRect);
 
 			matrix.SetRectToRect(sourceRect.ToRectF(), destinationRect.ToRectF(), Android.Graphics.Matrix.ScaleToFit.Fill);

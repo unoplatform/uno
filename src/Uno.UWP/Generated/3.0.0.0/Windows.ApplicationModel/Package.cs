@@ -22,6 +22,126 @@ namespace Windows.ApplicationModel
 		// Skipping already declared property Status
 		// Skipping already declared property IsOptional
 		// Skipping already declared property SignatureKind
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Storage.StorageFolder EffectiveLocation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member StorageFolder Package.EffectiveLocation is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Storage.StorageFolder MutableLocation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member StorageFolder Package.MutableLocation is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Storage.StorageFolder EffectiveExternalLocation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member StorageFolder Package.EffectiveExternalLocation is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  string EffectiveExternalPath
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string Package.EffectiveExternalPath is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  string EffectivePath
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string Package.EffectivePath is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  string InstalledPath
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string Package.InstalledPath is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsStub
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool Package.IsStub is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Storage.StorageFolder MachineExternalLocation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member StorageFolder Package.MachineExternalLocation is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  string MachineExternalPath
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string Package.MachineExternalPath is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  string MutablePath
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string Package.MutablePath is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Storage.StorageFolder UserExternalLocation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member StorageFolder Package.UserExternalLocation is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  string UserExternalPath
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string Package.UserExternalPath is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Skipping already declared property InstallDate
 		// Skipping already declared property Current
 		// Forced skipping of method Windows.ApplicationModel.Package.Id.get
@@ -93,6 +213,32 @@ namespace Windows.ApplicationModel
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PackageUpdateAvailabilityResult> Package.CheckUpdateAvailabilityAsync() is not implemented in Uno.");
 		}
 		#endif
+		// Forced skipping of method Windows.ApplicationModel.Package.MutableLocation.get
+		// Forced skipping of method Windows.ApplicationModel.Package.EffectiveLocation.get
+		// Forced skipping of method Windows.ApplicationModel.Package.EffectiveExternalLocation.get
+		// Forced skipping of method Windows.ApplicationModel.Package.MachineExternalLocation.get
+		// Forced skipping of method Windows.ApplicationModel.Package.UserExternalLocation.get
+		// Forced skipping of method Windows.ApplicationModel.Package.InstalledPath.get
+		// Forced skipping of method Windows.ApplicationModel.Package.MutablePath.get
+		// Forced skipping of method Windows.ApplicationModel.Package.EffectivePath.get
+		// Forced skipping of method Windows.ApplicationModel.Package.EffectiveExternalPath.get
+		// Forced skipping of method Windows.ApplicationModel.Package.MachineExternalPath.get
+		// Forced skipping of method Windows.ApplicationModel.Package.UserExternalPath.get
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Storage.Streams.RandomAccessStreamReference GetLogoAsRandomAccessStreamReference( global::Windows.Foundation.Size size)
+		{
+			throw new global::System.NotImplementedException("The member RandomAccessStreamReference Package.GetLogoAsRandomAccessStreamReference(Size size) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.ApplicationModel.Core.AppListEntry> GetAppListEntries()
+		{
+			throw new global::System.NotImplementedException("The member IReadOnlyList<AppListEntry> Package.GetAppListEntries() is not implemented in Uno.");
+		}
+		#endif
+		// Forced skipping of method Windows.ApplicationModel.Package.IsStub.get
 		// Forced skipping of method Windows.ApplicationModel.Package.Current.get
 	}
 }

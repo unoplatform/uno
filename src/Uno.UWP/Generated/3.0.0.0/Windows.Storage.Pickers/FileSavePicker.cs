@@ -127,12 +127,32 @@ namespace Windows.Storage.Pickers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.System.User User
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member User FileSavePicker.User is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public FileSavePicker() 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileSavePicker", "FileSavePicker.FileSavePicker()");
 		}
 		#endif
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.FileSavePicker()
+		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.ContinuationData.get
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void PickSaveFileAndContinue()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileSavePicker", "void FileSavePicker.PickSaveFileAndContinue()");
+		}
+		#endif
+		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.EnterpriseId.get
+		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.EnterpriseId.set
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.SettingsIdentifier.get
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.SettingsIdentifier.set
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.SuggestedStartLocation.get
@@ -153,15 +173,13 @@ namespace Windows.Storage.Pickers
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FileSavePicker.PickSaveFileAsync() is not implemented in Uno.");
 		}
 		#endif
-		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.ContinuationData.get
+		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.User.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  void PickSaveFileAndContinue()
+		public static global::Windows.Storage.Pickers.FileSavePicker CreateForUser( global::Windows.System.User user)
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileSavePicker", "void FileSavePicker.PickSaveFileAndContinue()");
+			throw new global::System.NotImplementedException("The member FileSavePicker FileSavePicker.CreateForUser(User user) is not implemented in Uno.");
 		}
 		#endif
-		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.EnterpriseId.get
-		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.EnterpriseId.set
 	}
 }

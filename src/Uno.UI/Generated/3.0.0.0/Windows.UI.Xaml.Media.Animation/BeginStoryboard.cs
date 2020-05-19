@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty StoryboardProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Storyboard", typeof(global::Windows.UI.Xaml.Media.Animation.Storyboard), 
+			nameof(Storyboard), typeof(global::Windows.UI.Xaml.Media.Animation.Storyboard), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.BeginStoryboard), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.Storyboard)));
 		#endif

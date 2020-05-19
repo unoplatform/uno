@@ -98,6 +98,27 @@ namespace Windows.UI.Text
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.RichEditTextDocument", "void RichEditTextDocument.ClearUndoRedoHistory()");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void SetMath( string value)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.RichEditTextDocument", "void RichEditTextDocument.SetMath(string value)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void GetMath(out string value)
+		{
+			throw new global::System.NotImplementedException("The member void RichEditTextDocument.GetMath(out string value) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void SetMathMode( global::Windows.UI.Text.RichEditMathMode mode)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Text.RichEditTextDocument", "void RichEditTextDocument.SetMathMode(RichEditMathMode mode)");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.CaretType.get
 		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.CaretType.set
 		// Forced skipping of method Windows.UI.Text.RichEditTextDocument.DefaultTabStop.get

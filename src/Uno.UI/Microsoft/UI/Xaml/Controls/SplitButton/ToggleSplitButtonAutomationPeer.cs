@@ -11,7 +11,7 @@ using Windows.UI.Xaml.Automation.Provider;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-	public class ToggleSplitButtonAutomationPeer : FrameworkElementAutomationPeer, IExpandCollapseProvider, IToggleProvider
+	public partial class ToggleSplitButtonAutomationPeer : FrameworkElementAutomationPeer, IExpandCollapseProvider, IToggleProvider
 	{
 		private readonly ToggleSplitButton _owner;
 

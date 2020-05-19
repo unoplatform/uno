@@ -95,7 +95,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DisabledImageProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"DisabledImage", typeof(global::Windows.UI.Xaml.Media.ImageSource), 
+			nameof(DisabledImage), typeof(global::Windows.UI.Xaml.Media.ImageSource), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingItemImageInfo), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
 		#endif
@@ -103,7 +103,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ImageProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Image", typeof(global::Windows.UI.Xaml.Media.ImageSource), 
+			nameof(Image), typeof(global::Windows.UI.Xaml.Media.ImageSource), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingItemImageInfo), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
 		#endif
@@ -111,7 +111,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderImageProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PlaceholderImage", typeof(global::Windows.UI.Xaml.Media.ImageSource), 
+			nameof(PlaceholderImage), typeof(global::Windows.UI.Xaml.Media.ImageSource), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingItemImageInfo), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
 		#endif
@@ -119,7 +119,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PointerOverImageProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PointerOverImage", typeof(global::Windows.UI.Xaml.Media.ImageSource), 
+			nameof(PointerOverImage), typeof(global::Windows.UI.Xaml.Media.ImageSource), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingItemImageInfo), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
 		#endif
@@ -127,7 +127,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PointerOverPlaceholderImageProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PointerOverPlaceholderImage", typeof(global::Windows.UI.Xaml.Media.ImageSource), 
+			nameof(PointerOverPlaceholderImage), typeof(global::Windows.UI.Xaml.Media.ImageSource), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingItemImageInfo), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
 		#endif
@@ -135,7 +135,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty UnsetImageProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"UnsetImage", typeof(global::Windows.UI.Xaml.Media.ImageSource), 
+			nameof(UnsetImage), typeof(global::Windows.UI.Xaml.Media.ImageSource), 
 			typeof(global::Windows.UI.Xaml.Controls.RatingItemImageInfo), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.ImageSource)));
 		#endif

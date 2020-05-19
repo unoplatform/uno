@@ -21,6 +21,7 @@ using Microsoft.Extensions.Logging;
 
 using Uno.UI.DataBinding;
 using Uno.UI.Xaml.Controls;
+using Windows.UI.Core;
 #if __ANDROID__
 using Android.Views;
 using _View = Android.Views.View;
@@ -165,7 +166,7 @@ namespace Windows.UI.Xaml.Controls
 			Xaml.Window.Current.SizeChanged -= OnWindowSizeChanged;
 		}
 
-		private void OnWindowSizeChanged(object sender, Core.WindowSizeChangedEventArgs e)
+		private void OnWindowSizeChanged(object sender, WindowSizeChangedEventArgs e)
 		{
 			IsDropDownOpen = false;
 		}

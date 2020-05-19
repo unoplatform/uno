@@ -31,7 +31,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CompositionScaleXProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CompositionScaleX", typeof(float), 
+			nameof(CompositionScaleX), typeof(float), 
 			typeof(global::Windows.UI.Xaml.Controls.SwapChainPanel), 
 			new FrameworkPropertyMetadata(default(float)));
 		#endif
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CompositionScaleYProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CompositionScaleY", typeof(float), 
+			nameof(CompositionScaleY), typeof(float), 
 			typeof(global::Windows.UI.Xaml.Controls.SwapChainPanel), 
 			new FrameworkPropertyMetadata(default(float)));
 		#endif

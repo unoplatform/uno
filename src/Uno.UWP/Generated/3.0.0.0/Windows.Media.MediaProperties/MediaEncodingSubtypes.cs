@@ -9,11 +9,11 @@ namespace Windows.Media.MediaProperties
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static string Bmp
+		public static string Asf
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Bmp is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Asf is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -79,11 +79,11 @@ namespace Windows.Media.MediaProperties
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static string Asf
+		public static string Mpeg1
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Asf is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mpeg1 is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -109,11 +109,11 @@ namespace Windows.Media.MediaProperties
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static string Mpeg4
+		public static string Bmp
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mpeg4 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Bmp is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -259,21 +259,21 @@ namespace Windows.Media.MediaProperties
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static string Mpeg1
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mpeg1 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public static string Mpeg2
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mpeg2 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static string Mpeg4
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Mpeg4 is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -487,6 +487,50 @@ namespace Windows.Media.MediaProperties
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static string Srt
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Srt is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static string Ssa
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Ssa is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static string VobSub
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.VobSub is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static string Pgs
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string MediaEncodingSubtypes.Pgs is not implemented in Uno.");
+			}
+		}
+		#endif
+		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Pgs.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Srt.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Ssa.get
+		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.VobSub.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Heif.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.P010.get
 		// Forced skipping of method Windows.Media.MediaProperties.MediaEncodingSubtypes.Alac.get

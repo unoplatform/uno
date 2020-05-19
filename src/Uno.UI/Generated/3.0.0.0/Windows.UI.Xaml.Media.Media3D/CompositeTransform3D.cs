@@ -179,7 +179,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CenterXProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CenterX", typeof(double), 
+			nameof(CenterX), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -187,7 +187,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CenterYProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CenterY", typeof(double), 
+			nameof(CenterY), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -195,7 +195,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CenterZProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CenterZ", typeof(double), 
+			nameof(CenterZ), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -203,7 +203,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RotationXProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"RotationX", typeof(double), 
+			nameof(RotationX), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -211,7 +211,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RotationYProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"RotationY", typeof(double), 
+			nameof(RotationY), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -219,7 +219,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RotationZProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"RotationZ", typeof(double), 
+			nameof(RotationZ), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -227,7 +227,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ScaleXProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ScaleX", typeof(double), 
+			nameof(ScaleX), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -235,7 +235,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ScaleYProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ScaleY", typeof(double), 
+			nameof(ScaleY), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -243,7 +243,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ScaleZProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ScaleZ", typeof(double), 
+			nameof(ScaleZ), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -251,7 +251,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TranslateXProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TranslateX", typeof(double), 
+			nameof(TranslateX), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -259,7 +259,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TranslateYProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TranslateY", typeof(double), 
+			nameof(TranslateY), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -267,7 +267,7 @@ namespace Windows.UI.Xaml.Media.Media3D
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TranslateZProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TranslateZ", typeof(double), 
+			nameof(TranslateZ), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Media3D.CompositeTransform3D), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif

@@ -74,6 +74,34 @@ namespace Windows.Media.MediaProperties
 		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.Type.get
 		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.Subtype.set
 		// Forced skipping of method Windows.Media.MediaProperties.TimedMetadataEncodingProperties.Subtype.get
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties CreatePgs()
+		{
+			throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataEncodingProperties.CreatePgs() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties CreateSrt()
+		{
+			throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataEncodingProperties.CreateSrt() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties CreateSsa( byte[] formatUserData)
+		{
+			throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataEncodingProperties.CreateSsa(byte[] formatUserData) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Media.MediaProperties.TimedMetadataEncodingProperties CreateVobSub( byte[] formatUserData)
+		{
+			throw new global::System.NotImplementedException("The member TimedMetadataEncodingProperties TimedMetadataEncodingProperties.CreateVobSub(byte[] formatUserData) is not implemented in Uno.");
+		}
+		#endif
 		// Processing: Windows.Media.MediaProperties.IMediaEncodingProperties
 	}
 }

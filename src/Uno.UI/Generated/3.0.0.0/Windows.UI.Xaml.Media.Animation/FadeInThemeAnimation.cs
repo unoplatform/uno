@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TargetNameProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TargetName", typeof(string), 
+			nameof(TargetName), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.FadeInThemeAnimation), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif

@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DirectionProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Direction", typeof(global::Windows.UI.Xaml.Controls.Primitives.AnimationDirection), 
+			nameof(Direction), typeof(global::Windows.UI.Xaml.Controls.Primitives.AnimationDirection), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.DragOverThemeAnimation), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.AnimationDirection)));
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TargetNameProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TargetName", typeof(string), 
+			nameof(TargetName), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.DragOverThemeAnimation), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ToOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ToOffset", typeof(double), 
+			nameof(ToOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.DragOverThemeAnimation), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif

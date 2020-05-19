@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Shapes
 			// because we're overriding draw.
 		}
 
-		protected override Foundation.Size ArrangeOverride(Foundation.Size finalSize)
+		protected override Size ArrangeOverride(Size finalSize)
 		{
 			var area = Bounds;
 

@@ -5,7 +5,7 @@ using Windows.UI.Xaml.Automation.Provider;
 
 namespace Microsoft.UI.Xaml.Automation.Peers
 {
-	public class SplitButtonAutomationPeer : FrameworkElementAutomationPeer, IExpandCollapseProvider, IInvokeProvider
+	public partial class SplitButtonAutomationPeer : FrameworkElementAutomationPeer, IExpandCollapseProvider, IInvokeProvider
 	{
 		private readonly SplitButton _owner;
 

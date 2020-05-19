@@ -8,6 +8,7 @@ using System.Collections;
 using System.Linq;
 using AppKit;
 using _TextField = AppKit.NSTextField;
+using Windows.UI;
 
 namespace Windows.UI.Xaml.Controls
 {

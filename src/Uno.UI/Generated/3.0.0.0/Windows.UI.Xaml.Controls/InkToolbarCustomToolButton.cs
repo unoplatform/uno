@@ -25,7 +25,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ConfigurationContentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"ConfigurationContent", typeof(global::Windows.UI.Xaml.UIElement), 
+			nameof(ConfigurationContent), typeof(global::Windows.UI.Xaml.UIElement), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbarCustomToolButton), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.UIElement)));
 		#endif

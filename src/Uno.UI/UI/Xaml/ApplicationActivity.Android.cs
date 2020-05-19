@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml
 			// Cannot call this in ctor: see
 			// https://stackoverflow.com/questions/10593022/monodroid-error-when-calling-constructor-of-custom-view-twodscrollview#10603714
 			RaiseConfigurationChanges();
-			Devices.Sensors.SimpleOrientationSensor.GetDefault().OrientationChanged += OnSensorOrientationChanged;
+			SimpleOrientationSensor.GetDefault().OrientationChanged += OnSensorOrientationChanged;
 		}
 
 		private void OnSensorOrientationChanged(SimpleOrientationSensor sender, SimpleOrientationSensorOrientationChangedEventArgs args)

@@ -49,7 +49,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectionModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectionMode", typeof(global::Windows.UI.Xaml.Controls.SelectionMode), 
+			nameof(SelectionMode), typeof(global::Windows.UI.Xaml.Controls.SelectionMode), 
 			typeof(global::Windows.UI.Xaml.Controls.ListBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.SelectionMode)));
 		#endif
@@ -57,7 +57,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SingleSelectionFollowsFocusProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SingleSelectionFollowsFocus", typeof(bool), 
+			nameof(SingleSelectionFollowsFocus), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ListBox), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif

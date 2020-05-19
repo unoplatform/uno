@@ -13,6 +13,7 @@ using Uno.UI.DataBinding;
 using Windows.Foundation;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Data;
+using Windows.UI.Core;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -189,7 +190,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// This is a workaround for the datepicker crashing on iOS 9 with this error:
 				// NSInternalInconsistencyException Reason: UITableView dataSource is not set.
-				this.Dispatcher.RunAsync(Core.CoreDispatcherPriority.Normal, async () =>
+				this.Dispatcher.RunAsync(CoreDispatcherPriority.Normal, async () =>
 				{
 					await Task.Delay(100);
 					_selector.Date = validDate;

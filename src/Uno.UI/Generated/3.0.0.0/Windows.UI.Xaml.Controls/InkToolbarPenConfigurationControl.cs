@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PenButtonProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PenButton", typeof(global::Windows.UI.Xaml.Controls.InkToolbarPenButton), 
+			nameof(PenButton), typeof(global::Windows.UI.Xaml.Controls.InkToolbarPenButton), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbarPenConfigurationControl), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.InkToolbarPenButton)));
 		#endif

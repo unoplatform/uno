@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 			int availableBreadth,
 			RecyclerView.Recycler recycler,
 			RecyclerView.State state,
-			IndexPath nextVisibleItem,
+			Uno.UI.IndexPath nextVisibleItem,
 			bool isNewGroup
 		)
 		{

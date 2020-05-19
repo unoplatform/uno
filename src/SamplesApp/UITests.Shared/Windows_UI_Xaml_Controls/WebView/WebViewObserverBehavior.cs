@@ -1,4 +1,5 @@
-﻿using Uno.Extensions;
+﻿#if HAS_UNO
+using Uno.Extensions;
 using Windows.UI.Xaml;
 using Uno.Logging;
 
@@ -95,3 +96,4 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 		}
 	}
 }
+#endif

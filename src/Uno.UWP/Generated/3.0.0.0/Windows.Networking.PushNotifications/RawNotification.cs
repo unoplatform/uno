@@ -37,8 +37,19 @@ namespace Windows.Networking.PushNotifications
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Storage.Streams.IBuffer ContentBytes
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IBuffer RawNotification.ContentBytes is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.Networking.PushNotifications.RawNotification.Content.get
 		// Forced skipping of method Windows.Networking.PushNotifications.RawNotification.Headers.get
 		// Forced skipping of method Windows.Networking.PushNotifications.RawNotification.ChannelId.get
+		// Forced skipping of method Windows.Networking.PushNotifications.RawNotification.ContentBytes.get
 	}
 }

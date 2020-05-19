@@ -155,7 +155,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CharacterSpacingProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CharacterSpacing", typeof(int), 
+			nameof(CharacterSpacing), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -169,7 +169,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FontStretchProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FontStretch", typeof(global::Windows.UI.Text.FontStretch), 
+			nameof(FontStretch), typeof(global::Windows.UI.Text.FontStretch), 
 			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Text.FontStretch)));
 		#endif
@@ -180,7 +180,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty OpticalMarginAlignmentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"OpticalMarginAlignment", typeof(global::Windows.UI.Xaml.OpticalMarginAlignment), 
+			nameof(OpticalMarginAlignment), typeof(global::Windows.UI.Xaml.OpticalMarginAlignment), 
 			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.OpticalMarginAlignment)));
 		#endif
@@ -188,7 +188,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TextLineBoundsProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TextLineBounds", typeof(global::Windows.UI.Xaml.TextLineBounds), 
+			nameof(TextLineBounds), typeof(global::Windows.UI.Xaml.TextLineBounds), 
 			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextLineBounds)));
 		#endif
@@ -196,7 +196,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsTextScaleFactorEnabledProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsTextScaleFactorEnabled", typeof(bool), 
+			nameof(IsTextScaleFactorEnabled), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -209,7 +209,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LineHeightProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"LineHeight", typeof(double), 
+			nameof(LineHeight), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -217,7 +217,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty LineStackingStrategyProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"LineStackingStrategy", typeof(global::Windows.UI.Xaml.LineStackingStrategy), 
+			nameof(LineStackingStrategy), typeof(global::Windows.UI.Xaml.LineStackingStrategy), 
 			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.LineStackingStrategy)));
 		#endif
@@ -229,7 +229,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty BackgroundSizingProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"BackgroundSizing", typeof(global::Windows.UI.Xaml.Controls.BackgroundSizing), 
+			nameof(BackgroundSizing), typeof(global::Windows.UI.Xaml.Controls.BackgroundSizing), 
 			typeof(global::Windows.UI.Xaml.Controls.ContentPresenter), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.BackgroundSizing)));
 		#endif

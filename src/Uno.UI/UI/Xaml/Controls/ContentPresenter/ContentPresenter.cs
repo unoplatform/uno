@@ -990,7 +990,7 @@ namespace Windows.UI.Xaml.Controls
 				var padding = Padding;
 				var borderThickness = BorderThickness;
 
-				var finalRect = new Foundation.Rect(
+				var finalRect = new Windows.Foundation.Rect(
 					padding.Left + borderThickness.Left,
 					padding.Top + borderThickness.Top,
 					finalSize.Width - padding.Left - padding.Right - borderThickness.Left - borderThickness.Right,

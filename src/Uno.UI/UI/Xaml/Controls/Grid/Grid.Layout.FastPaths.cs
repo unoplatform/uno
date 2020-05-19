@@ -303,7 +303,7 @@ namespace Windows.UI.Xaml.Controls
 			var offset = GetChildrenOffset();
 			foreach (var child in Children)
 			{
-				var childFrame = new Foundation.Rect(
+				var childFrame = new Windows.Foundation.Rect(
 					offset.X,
 					offset.Y,
 					finalSize.Width,

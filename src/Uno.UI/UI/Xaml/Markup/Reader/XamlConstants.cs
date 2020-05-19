@@ -11,15 +11,17 @@ namespace Windows.UI.Xaml.Markup.Reader
 		public const string XmlXmlNamespace = "http://www.w3.org/XML/1998/namespace";
 		public const string BundleResourcePrefix = "ms-appx:///";
 
-		public const string RootUINamespace = "Windows.UI";
-		public const string BaseXamlNamespace = RootUINamespace + ".Xaml";
+		public const string RootFoundationNamespace = "Windows.Foundation";
+		public const string RootWUINamespace = "Windows.UI";
+		public const string RootMUINamespace = "Windows.UI";
+		public const string BaseXamlNamespace = "Windows.UI.Xaml";
 		public const string UnoXamlNamespace = "Windows.UI.Xaml";
 
 		public static class Namespaces
 		{
 			public const string Controls = BaseXamlNamespace + ".Controls";
 			public const string Primitives = Controls + ".Primitives";
-			public const string Text = RootUINamespace + ".Text";
+			public const string Text = RootWUINamespace + ".Text";
 			public const string Data = BaseXamlNamespace + ".Data";
 			public const string Documents = BaseXamlNamespace + ".Documents";
 			public const string Media = BaseXamlNamespace + ".Media";
@@ -29,7 +31,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 
 			public static readonly string[] PresentationNamespaces =
 			{
-				RootUINamespace,
+				RootMUINamespace,
 				BaseXamlNamespace,
 				Controls,
 				Primitives,
@@ -39,6 +41,10 @@ namespace Windows.UI.Xaml.Markup.Reader
 				Media,
 				MediaImaging,
 				MediaAnimation,
+				RootWUINamespace,
+				BaseXamlNamespace,
+				Data,
+				Documents,
 				"System",
 			};
 
@@ -81,7 +87,7 @@ namespace Windows.UI.Xaml.Markup.Reader
 			public const string SolidColorBrushHelper = BaseXamlNamespace + ".SolidColorBrushHelper";
 			public const string GridLength = BaseXamlNamespace + ".GridLength";
 			public const string GridUnitType = BaseXamlNamespace + ".GridUnitType";
-			public const string Colors = RootUINamespace + ".Colors";
+			public const string Colors = RootMUINamespace + ".Colors";
 			public const string Thickness = BaseXamlNamespace + ".Thickness";
 			public const string Application = BaseXamlNamespace + ".Application"; // Should remains in Umbrella
 

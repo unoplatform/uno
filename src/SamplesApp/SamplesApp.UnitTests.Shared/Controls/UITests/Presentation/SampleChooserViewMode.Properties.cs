@@ -35,7 +35,7 @@ using Windows.UI.Xaml.Controls;
 
 namespace SampleControl.Presentation
 {
-	public partial class SampleChooserViewModel : INotifyPropertyChanged
+	public partial class SampleChooserViewModel : System.ComponentModel.INotifyPropertyChanged
 	{
 		private bool _categoriesSelected = true;
 		private bool _favoritesSelected = false;
@@ -69,7 +69,7 @@ namespace SampleControl.Presentation
 
 		private void RaisePropertyChanged([System.Runtime.CompilerServices.CallerMemberName] string propertyName = "")
 		{
-			PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+			PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
 		}
 
 		//TABS
@@ -392,6 +392,6 @@ namespace SampleControl.Presentation
 		}
 
 
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 	}
 }

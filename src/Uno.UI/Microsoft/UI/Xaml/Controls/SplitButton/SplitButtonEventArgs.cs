@@ -1,13 +1,13 @@
 ﻿namespace Microsoft.UI.Xaml.Controls
 {
-	public class SplitButtonClickEventArgs
+	public partial class SplitButtonClickEventArgs
 	{
 		internal SplitButtonClickEventArgs()
 		{
 		}
 	}
 
-	public class ToggleSplitButtonIsCheckedChangedEventArgs
+	public partial class ToggleSplitButtonIsCheckedChangedEventArgs
 	{
 		internal ToggleSplitButtonIsCheckedChangedEventArgs()
 		{

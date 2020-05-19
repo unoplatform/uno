@@ -41,6 +41,13 @@ namespace Windows.Web.Http
 		}
 		#endif
 		// Forced skipping of method Windows.Web.Http.HttpMultipartContent.HttpMultipartContent()
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void Add( global::Windows.Web.Http.IHttpContent content)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpMultipartContent", "void HttpMultipartContent.Add(IHttpContent content)");
+		}
+		#endif
 		// Forced skipping of method Windows.Web.Http.HttpMultipartContent.Headers.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
@@ -89,13 +96,6 @@ namespace Windows.Web.Http
 		public  void Dispose()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpMultipartContent", "void HttpMultipartContent.Dispose()");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  void Add( global::Windows.Web.Http.IHttpContent content)
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.HttpMultipartContent", "void HttpMultipartContent.Add(IHttpContent content)");
 		}
 		#endif
 		// Forced skipping of method Windows.Web.Http.HttpMultipartContent.First()

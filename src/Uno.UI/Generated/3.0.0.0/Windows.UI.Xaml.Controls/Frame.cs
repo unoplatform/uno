@@ -15,7 +15,6 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property CurrentSourcePageType
 		// Skipping already declared property BackStack
 		// Skipping already declared property ForwardStack
-		// Skipping already declared property ForwardStack
 		// Skipping already declared property IsNavigationStackEnabled
 		// Skipping already declared property BackStackDepthProperty
 		// Skipping already declared property CacheSizeProperty

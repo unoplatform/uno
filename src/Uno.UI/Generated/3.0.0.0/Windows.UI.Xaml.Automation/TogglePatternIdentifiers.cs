@@ -7,16 +7,7 @@ namespace Windows.UI.Xaml.Automation
 	#endif
 	public  partial class TogglePatternIdentifiers 
 	{
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.Automation.AutomationProperty ToggleStateProperty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member AutomationProperty TogglePatternIdentifiers.ToggleStateProperty is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property ToggleStateProperty
 		// Forced skipping of method Windows.UI.Xaml.Automation.TogglePatternIdentifiers.ToggleStateProperty.get
 	}
 }
