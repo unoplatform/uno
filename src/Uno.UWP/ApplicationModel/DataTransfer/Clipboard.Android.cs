@@ -3,6 +3,7 @@ using Android.Content;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading.Tasks;
 using Uno.UI;
 
 namespace Windows.ApplicationModel.DataTransfer
@@ -11,52 +12,53 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 		public static void SetContent(DataPackage content)
 		{
-			if(content is null)
+			if (content is null)
 			{
 				throw new ArgumentNullException("cannot SetContent - null parameter");
 			}
 
-			ClipData clipData=null;
+			ClipData clipData = null;
 
 			if (content.Text != null)
 			{
 				clipData = ClipData.NewPlainText("clipdata", content.Text);
 			}
 
-			if (content._uri != null)
+			if (content.Uri != null)
 			{
-				clipData = ClipData.NewRawUri("clipdata", Android.Net.Uri.Parse(content._uri.ToString()));
+				clipData = ClipData.NewRawUri("clipdata", Android.Net.Uri.Parse(content.Uri.ToString()));
 			}
 
-			if (content._html != null)
+			if (content.Html != null)
 			{
 				string plainText = "";
-				if(content.Text != null)
+				if (content.Text != null)
 				{
 					plainText = content.Text;
 				}
 				else
 				{
 					// simple conversion from HTML to plaintext
-					plainText = content._html;
-					for(int tagStart = plainText.IndexOf("<"); tagStart > -1; tagStart = plainText.IndexOf("<", tagStart))
+					plainText = content.Html;
+					for (int tagStart = plainText.IndexOf("<"); tagStart > -1; tagStart = plainText.IndexOf("<", tagStart))
 					{
 						int tagEnd = plainText.IndexOf(">", tagStart);
-						if(tagEnd <0)
+						if (tagEnd < 0)
 						{
-							break;	// end of loop - we have start, but without end
+							break;  // end of loop - we have start, but without end
 						}
 
 						plainText = plainText.Remove(tagStart, tagEnd - tagStart + 1);
 					}
 				}
-				clipData = ClipData.NewHtmlText("clipdata", plainText, content._html);
+				clipData = ClipData.NewHtmlText("clipdata", plainText, content.Html);
 			}
 
-			if(clipData is null)
+			if (clipData is null)
 			{
-				throw new ArgumentException("cannot SetContent - no text, html nor uri data");
+				throw new ArgumentException("Cannot SetContent - no Text, HTML nor Uri data");
 			}
+
 			var manager = ContextHelper.Current.GetSystemService(Context.ClipboardService) as ClipboardManager;
 			manager.PrimaryClip = clipData;
 		}
@@ -64,22 +66,20 @@ namespace Windows.ApplicationModel.DataTransfer
 		public static DataPackageView GetContent()
 		{
 			var manager = ContextHelper.Current.GetSystemService(Context.ClipboardService) as ClipboardManager;
-			if(manager is null)
+			if (manager is null)
 			{
 				return null;
 			}
 
 			var clipData = manager.PrimaryClip;
-			//if (!clipData.Description.HasMimeType(ClipDescription.MimetypeTextPlain))
-			//	return null;
 
 			string clipText = null;
 			Uri clipUri = null;
 			string clipHtml = null;
-			for(int iLp = 0; iLp<clipData.ItemCount; iLp++)
+			for (int iLp = 0; iLp < clipData.ItemCount; iLp++)
 			{
 				var itemText = clipData.GetItemAt(iLp).Text;
-				if(itemText != null)
+				if (itemText != null)
 				{
 					clipText = itemText;
 				}
@@ -105,23 +105,20 @@ namespace Windows.ApplicationModel.DataTransfer
 			// please, while changing it - synchronize it with DataPackage.GetView()
 			var clipView = new DataPackageView();
 
-			if(clipText != null)
+			if (clipText != null)
 			{
-				clipView._availableFormats.Add(Windows.ApplicationModel.DataTransfer.StandardDataFormats.Text);
-				clipView._text = clipText;
+				clipView.SetFormatTask(StandardDataFormats.Text, Task.FromResult(clipText));
 			}
 
 			if (clipHtml != null)
 			{
-				clipView._availableFormats.Add(Windows.ApplicationModel.DataTransfer.StandardDataFormats.Html);
-				clipView._html = clipHtml;
+				clipView.SetFormatTask(StandardDataFormats.Html, Task.FromResult(clipHtml));
 			}
 
 			if (clipUri != null)
-			{ // now, both Uri and WebLink == "UniformResourceLocatorW", but it can change
-				clipView._availableFormats.Add(Windows.ApplicationModel.DataTransfer.StandardDataFormats.Uri);
-				clipView._availableFormats.Add(Windows.ApplicationModel.DataTransfer.StandardDataFormats.WebLink);
-				clipView._uri = clipUri;
+			{
+				clipView.SetFormatTask(StandardDataFormats.Uri, Task.FromResult(clipUri));
+				clipView.SetFormatTask(StandardDataFormats.WebLink, Task.FromResult(clipUri));
 			}
 
 			return clipView;

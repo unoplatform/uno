@@ -30,7 +30,7 @@ namespace Windows.ApplicationModel.DataTransfer
 		#endif
 		// Skipping already declared method Windows.ApplicationModel.DataTransfer.DataPackage.DataPackage()
 		// Forced skipping of method Windows.ApplicationModel.DataTransfer.DataPackage.DataPackage()
-		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.DataTransfer.DataPackageView GetView()
 		{

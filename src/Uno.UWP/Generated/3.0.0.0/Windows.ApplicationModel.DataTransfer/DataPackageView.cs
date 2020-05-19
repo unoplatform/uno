@@ -75,14 +75,14 @@ namespace Windows.ApplicationModel.DataTransfer
 			throw new global::System.NotImplementedException("The member IAsyncOperation<string> DataPackageView.GetTextAsync(string formatId) is not implemented in Uno.");
 		}
 		#endif
-		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Uri> GetUriAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Uri> DataPackageView.GetUriAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<string> GetHtmlFormatAsync()
 		{
@@ -124,7 +124,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			throw new global::System.NotImplementedException("The member IAsyncOperation<Uri> DataPackageView.GetApplicationLinkAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::System.Uri> GetWebLinkAsync()
 		{
