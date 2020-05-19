@@ -32,7 +32,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			{
 				var androidUri = Android.Net.Uri.Parse(content.Uri.ToString());
 				items.Add(new ClipData.Item(androidUri));
-				mimeTypes.Add("text/plaintext");
+				mimeTypes.Add("text/uri-list");
 			}
 			else if (content.Html != null)
 			{
