@@ -19,6 +19,17 @@ namespace Windows.ApplicationModel.Calls.Provider
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static bool IsSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool PhoneCallOriginManager.IsSupported is not implemented in Uno.");
+			}
+		}
+		#endif
+		// Forced skipping of method Windows.ApplicationModel.Calls.Provider.PhoneCallOriginManager.IsSupported.get
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<bool> RequestSetAsActiveCallOriginAppAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> PhoneCallOriginManager.RequestSetAsActiveCallOriginAppAsync() is not implemented in Uno.");

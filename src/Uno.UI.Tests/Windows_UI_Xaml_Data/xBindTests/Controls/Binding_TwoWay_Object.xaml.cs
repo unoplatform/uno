@@ -52,9 +52,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 			DependencyProperty.Register("MyProperty", typeof(object), typeof(TwoWay_Object_TestObject), new PropertyMetadata(null));
 	}
 
-	public class TwoWay_Object_Model : INotifyPropertyChanged
+	public class TwoWay_Object_Model : System.ComponentModel.INotifyPropertyChanged
 	{
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 		private int _myIntProperty;
 
@@ -64,7 +64,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 			set
 			{
 				_myIntProperty = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MyIntProperty)));
+				PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(MyIntProperty)));
 			}
 		}
 

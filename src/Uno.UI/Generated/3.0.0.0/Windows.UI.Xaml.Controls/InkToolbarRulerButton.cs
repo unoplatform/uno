@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty RulerProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Ruler", typeof(global::Windows.UI.Input.Inking.InkPresenterRuler), 
+			nameof(Ruler), typeof(global::Windows.UI.Input.Inking.InkPresenterRuler), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbarRulerButton), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Input.Inking.InkPresenterRuler)));
 		#endif

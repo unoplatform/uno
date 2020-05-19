@@ -7,6 +7,7 @@ using Foundation;
 using System.Collections;
 using System.Linq;
 using AppKit;
+using Windows.UI;
 
 namespace Windows.UI.Xaml.Controls
 {

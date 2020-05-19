@@ -78,6 +78,9 @@
 	</ItemGroup>
 
 	<ItemGroup Condition="'$(TargetFramework)'=='uap10.0.17763'">
+		<PackageReference Include="Microsoft.WinUI" Condition="'$(UNO_UWP_BUILD)'!='true'">
+			<Version>3.0.0-alpha.200210.0</Version>
+		</PackageReference>
 		<Compile Include="$(MSBuildThisFileDirectory)..\Uno.UI\Extensions\DependencyObjectExtensions.cs">
 			<Link>Uno.UI\Extensions\%(RecursiveDir)%(FileName)%(Extension)</Link>
 		</Compile>

@@ -419,6 +419,13 @@ namespace Windows.Media.Capture
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.Media.Capture.MediaCaptureRelativePanelWatcher CreateRelativePanelWatcher( global::Windows.Media.Capture.StreamingCaptureMode captureMode,  global::Windows.UI.WindowManagement.DisplayRegion displayRegion)
+		{
+			throw new global::System.NotImplementedException("The member MediaCaptureRelativePanelWatcher MediaCapture.CreateRelativePanelWatcher(StreamingCaptureMode captureMode, DisplayRegion displayRegion) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static bool IsVideoProfileSupported( string videoDeviceId)
 		{
 			throw new global::System.NotImplementedException("The member bool MediaCapture.IsVideoProfileSupported(string videoDeviceId) is not implemented in Uno.");

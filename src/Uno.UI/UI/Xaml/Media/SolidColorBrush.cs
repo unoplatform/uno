@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
+using Windows.UI;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -16,8 +17,6 @@ using UIKit;
 using View = MonoTouch.UIKit.UIView;
 using Color = MonoTouch.UIKit.UIColor;
 using Font = MonoTouch.UIKit.UIFont;
-#else
-using System.Drawing;
 #endif
 
 namespace Windows.UI.Xaml.Media
@@ -28,7 +27,7 @@ namespace Windows.UI.Xaml.Media
 		/// <summary>
 		/// Blends the Color set on the SolidColorBrush with its Opacity. Should generally be used for rendering rather than the Color property itself.
 		/// </summary>
-		internal Color ColorWithOpacity
+		internal Windows.UI.Color ColorWithOpacity
 		{
 			get; private set;
 		}
@@ -41,7 +40,7 @@ namespace Windows.UI.Xaml.Media
 			IsAutoPropertyInheritanceEnabled = false;
 		}
 
-		public SolidColorBrush(Color color) : this()
+		public SolidColorBrush(Windows.UI.Color color) : this()
 		{
 			Color = color;
 			UpdateColorWithOpacity(color);
@@ -64,12 +63,12 @@ namespace Windows.UI.Xaml.Media
 		/// requires a round-trip with Objective-C, so updating this value only when opacity
 		/// and color changes is more efficient.
 		/// </remarks>
-		private void UpdateColorWithOpacity(Color newColor)
+		private void UpdateColorWithOpacity(Windows.UI.Color newColor)
 		{
 			ColorWithOpacity = GetColorWithOpacity(newColor);
 		}
 
-		partial void OnColorChanged(Color oldValue, Color newValue)
+		partial void OnColorChanged(Windows.UI.Color oldValue, Windows.UI.Color newValue)
 		{
 			UpdateColorWithOpacity(newValue);
 		}
@@ -83,9 +82,9 @@ namespace Windows.UI.Xaml.Media
 
 		#region Color Dependency Property
 
-		public Color Color
+		public Windows.UI.Color Color
 		{
-			get { return (Color)this.GetValue(ColorProperty); }
+			get { return (Windows.UI.Color)this.GetValue(ColorProperty); }
 			set { this.SetValue(ColorProperty, value); }
 		}
 
@@ -93,15 +92,15 @@ namespace Windows.UI.Xaml.Media
 		public static readonly DependencyProperty ColorProperty =
 			DependencyProperty.Register(
 				"Color",
-				typeof(Color),
+				typeof(Windows.UI.Color),
 				typeof(SolidColorBrush),
 				new PropertyMetadata(
 					Colors.Transparent,
-					(s, e) => ((SolidColorBrush)s).OnColorChanged((Color)e.OldValue, (Color)e.NewValue)
+					(s, e) => ((SolidColorBrush)s).OnColorChanged((Windows.UI.Color)e.OldValue, (Windows.UI.Color)e.NewValue)
 				)
 			);
 
-		partial void OnColorChanged(Color oldValue, Color newValue);
+		partial void OnColorChanged(Windows.UI.Color oldValue, Windows.UI.Color newValue);
 
 		#endregion
 

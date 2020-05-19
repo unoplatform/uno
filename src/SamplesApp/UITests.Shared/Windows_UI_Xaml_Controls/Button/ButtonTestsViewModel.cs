@@ -10,6 +10,8 @@ using System.Windows.Input;
 using Windows.UI.Core;
 using System.Runtime.CompilerServices;
 
+using ICommand = System.Windows.Input.ICommand;
+
 namespace Uno.UI.Samples.Presentation.SamplePages
 {
 	public class ButtonTestsViewModel : ViewModelBase

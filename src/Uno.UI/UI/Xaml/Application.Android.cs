@@ -32,7 +32,7 @@ namespace Windows.UI.Xaml
 
 		partial void OnSuspendingPartial()
 		{
-			Suspending?.Invoke(this, new ApplicationModel.SuspendingEventArgs(new ApplicationModel.SuspendingOperation(DateTime.Now.AddSeconds(30))));
+			Suspending?.Invoke(this, new Windows.ApplicationModel.SuspendingEventArgs(new Windows.ApplicationModel.SuspendingOperation(DateTime.Now.AddSeconds(30))));
 		}
 
 		private ApplicationTheme GetDefaultSystemTheme()

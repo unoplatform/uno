@@ -30,6 +30,16 @@ namespace Windows.Globalization
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  string AbbreviatedName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string Language.AbbreviatedName is not implemented in Uno.");
+			}
+		}
+		#endif
 		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string CurrentInputMethodLanguageTag
@@ -54,6 +64,14 @@ namespace Windows.Globalization
 		}
 		#endif
 		// Forced skipping of method Windows.Globalization.Language.LayoutDirection.get
+		// Forced skipping of method Windows.Globalization.Language.AbbreviatedName.get
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Collections.Generic.IList<string> GetMuiCompatibleLanguageListFromLanguageTags( global::System.Collections.Generic.IEnumerable<string> languageTags)
+		{
+			throw new global::System.NotImplementedException("The member IList<string> Language.GetMuiCompatibleLanguageListFromLanguageTags(IEnumerable<string> languageTags) is not implemented in Uno.");
+		}
+		#endif
 		#if false || false || NET461 || false || __MACOS__
 		[global::Uno.NotImplemented]
 		public static bool TrySetInputMethodLanguageTag( string languageTag)

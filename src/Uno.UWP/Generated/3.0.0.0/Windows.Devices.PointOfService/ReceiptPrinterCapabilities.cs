@@ -9,6 +9,16 @@ namespace Windows.Devices.PointOfService
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.Devices.PointOfService.PosPrinterCartridgeSensors CartridgeSensors
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PosPrinterCartridgeSensors ReceiptPrinterCapabilities.CartridgeSensors is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  global::Windows.Devices.PointOfService.PosPrinterColorCapabilities ColorCartridgeCapabilities
 		{
 			get
@@ -129,51 +139,11 @@ namespace Windows.Devices.PointOfService
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.Devices.PointOfService.PosPrinterCartridgeSensors CartridgeSensors
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PosPrinterCartridgeSensors ReceiptPrinterCapabilities.CartridgeSensors is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  bool Is180RotationSupported
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.Is180RotationSupported is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.PointOfService.PosPrinterRotation> SupportedBarcodeRotations
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PosPrinterRotation> ReceiptPrinterCapabilities.SupportedBarcodeRotations is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.PointOfService.PosPrinterRotation> SupportedBitmapRotations
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IReadOnlyList<PosPrinterRotation> ReceiptPrinterCapabilities.SupportedBitmapRotations is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool IsLeft90RotationSupported
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsLeft90RotationSupported is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -194,6 +164,16 @@ namespace Windows.Devices.PointOfService
 			get
 			{
 				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsBitmapSupported is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsLeft90RotationSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsLeft90RotationSupported is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -229,6 +209,36 @@ namespace Windows.Devices.PointOfService
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.PointOfService.PosPrinterRotation> SupportedBarcodeRotations
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<PosPrinterRotation> ReceiptPrinterCapabilities.SupportedBarcodeRotations is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.Devices.PointOfService.PosPrinterRotation> SupportedBitmapRotations
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<PosPrinterRotation> ReceiptPrinterCapabilities.SupportedBitmapRotations is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool CanCutPaper
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.CanCutPaper is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  bool IsStampSupported
 		{
 			get
@@ -249,17 +259,73 @@ namespace Windows.Devices.PointOfService
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  bool CanCutPaper
+		public  bool IsReversePaperFeedByLineSupported
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.CanCutPaper is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsReversePaperFeedByLineSupported is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsReversePaperFeedByMapModeUnitSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsReversePaperFeedByMapModeUnitSupported is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsReverseVideoSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsReverseVideoSupported is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsStrikethroughSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsStrikethroughSupported is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsSubscriptSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsSubscriptSupported is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsSuperscriptSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ReceiptPrinterCapabilities.IsSuperscriptSupported is not implemented in Uno.");
 			}
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.CanCutPaper.get
 		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.IsStampSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.MarkFeedCapabilities.get
+		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.IsReverseVideoSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.IsStrikethroughSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.IsSuperscriptSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.IsSubscriptSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.IsReversePaperFeedByLineSupported.get
+		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.IsReversePaperFeedByMapModeUnitSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.IsBarcodeSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.IsBitmapSupported.get
 		// Forced skipping of method Windows.Devices.PointOfService.ReceiptPrinterCapabilities.IsLeft90RotationSupported.get

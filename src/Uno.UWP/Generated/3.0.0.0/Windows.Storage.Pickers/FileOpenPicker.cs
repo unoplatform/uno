@@ -85,12 +85,44 @@ namespace Windows.Storage.Pickers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.System.User User
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member User FileOpenPicker.User is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public FileOpenPicker() 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileOpenPicker", "FileOpenPicker.FileOpenPicker()");
 		}
 		#endif
 		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.FileOpenPicker()
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.ContinuationData.get
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void PickSingleFileAndContinue()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileOpenPicker", "void FileOpenPicker.PickSingleFileAndContinue()");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void PickMultipleFilesAndContinue()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileOpenPicker", "void FileOpenPicker.PickMultipleFilesAndContinue()");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> PickSingleFileAsync( string pickerOperationId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FileOpenPicker.PickSingleFileAsync(string pickerOperationId) is not implemented in Uno.");
+		}
+		#endif
 		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.ViewMode.get
 		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.ViewMode.set
 		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.SettingsIdentifier.get
@@ -114,26 +146,12 @@ namespace Windows.Storage.Pickers
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IReadOnlyList<StorageFile>> FileOpenPicker.PickMultipleFilesAsync() is not implemented in Uno.");
 		}
 		#endif
+		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.User.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> PickSingleFileAsync( string pickerOperationId)
+		public static global::Windows.Storage.Pickers.FileOpenPicker CreateForUser( global::Windows.System.User user)
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FileOpenPicker.PickSingleFileAsync(string pickerOperationId) is not implemented in Uno.");
-		}
-		#endif
-		// Forced skipping of method Windows.Storage.Pickers.FileOpenPicker.ContinuationData.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  void PickSingleFileAndContinue()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileOpenPicker", "void FileOpenPicker.PickSingleFileAndContinue()");
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  void PickMultipleFilesAndContinue()
-		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileOpenPicker", "void FileOpenPicker.PickMultipleFilesAndContinue()");
+			throw new global::System.NotImplementedException("The member FileOpenPicker FileOpenPicker.CreateForUser(User user) is not implemented in Uno.");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__

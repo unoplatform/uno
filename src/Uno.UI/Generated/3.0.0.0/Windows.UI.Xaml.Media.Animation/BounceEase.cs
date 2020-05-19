@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty BouncesProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Bounces", typeof(int), 
+			nameof(Bounces), typeof(int), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.BounceEase), 
 			new FrameworkPropertyMetadata(default(int)));
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty BouncinessProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Bounciness", typeof(double), 
+			nameof(Bounciness), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.BounceEase), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif

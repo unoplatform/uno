@@ -13,6 +13,8 @@ namespace Windows.Security.Authentication.Web.Core
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.Removed.remove
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.DefaultSignInAccountChanged.add
 		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.DefaultSignInAccountChanged.remove
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.AccountPictureUpdated.add
+		// Forced skipping of method Windows.Security.Authentication.Web.Core.WebAccountMonitor.AccountPictureUpdated.remove
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Security.Authentication.Web.Core.WebAccountMonitor, object> DefaultSignInAccountChanged
@@ -58,6 +60,22 @@ namespace Windows.Security.Authentication.Web.Core
 			remove
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebAccountMonitor", "event TypedEventHandler<WebAccountMonitor, WebAccountEventArgs> WebAccountMonitor.Updated");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Security.Authentication.Web.Core.WebAccountMonitor, global::Windows.Security.Authentication.Web.Core.WebAccountEventArgs> AccountPictureUpdated
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebAccountMonitor", "event TypedEventHandler<WebAccountMonitor, WebAccountEventArgs> WebAccountMonitor.AccountPictureUpdated");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Security.Authentication.Web.Core.WebAccountMonitor", "event TypedEventHandler<WebAccountMonitor, WebAccountEventArgs> WebAccountMonitor.AccountPictureUpdated");
 			}
 		}
 		#endif

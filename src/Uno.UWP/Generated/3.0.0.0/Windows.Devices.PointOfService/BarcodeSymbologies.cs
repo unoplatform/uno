@@ -9,11 +9,11 @@ namespace Windows.Devices.PointOfService
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static uint ExtendedBase
+		public static uint Code11
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.ExtendedBase is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code11 is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -119,11 +119,11 @@ namespace Windows.Devices.PointOfService
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static uint Code11
+		public static uint DutchKix
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Code11 is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.DutchKix is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -229,11 +229,11 @@ namespace Windows.Devices.PointOfService
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static uint DutchKix
+		public static uint UsPostNet
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.DutchKix is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UsPostNet is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -359,11 +359,11 @@ namespace Windows.Devices.PointOfService
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static uint Telepen
+		public static uint ExtendedBase
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Telepen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.ExtendedBase is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -709,6 +709,16 @@ namespace Windows.Devices.PointOfService
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static uint Telepen
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.Telepen is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static uint TfDis
 		{
 			get
@@ -924,16 +934,6 @@ namespace Windows.Devices.PointOfService
 			get
 			{
 				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UsPlanet is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static uint UsPostNet
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint BarcodeSymbologies.UsPostNet is not implemented in Uno.");
 			}
 		}
 		#endif

@@ -17,6 +17,7 @@ namespace Windows.UI.Composition
 			}
 		}
 		#endif
+		// Forced skipping of method Windows.UI.Composition.ImplicitAnimationCollection.First()
 		// Forced skipping of method Windows.UI.Composition.ImplicitAnimationCollection.Lookup(string)
 		// Forced skipping of method Windows.UI.Composition.ImplicitAnimationCollection.Size.get
 		// Forced skipping of method Windows.UI.Composition.ImplicitAnimationCollection.HasKey(string)
@@ -24,7 +25,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.ImplicitAnimationCollection.Insert(string, Windows.UI.Composition.ICompositionAnimationBase)
 		// Forced skipping of method Windows.UI.Composition.ImplicitAnimationCollection.Remove(string)
 		// Forced skipping of method Windows.UI.Composition.ImplicitAnimationCollection.Clear()
-		// Forced skipping of method Windows.UI.Composition.ImplicitAnimationCollection.First()
 		// Processing: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Windows.UI.Composition.ICompositionAnimationBase>>
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IEnumerable<System.Collections.Generic.KeyValuePair<string, Windows.UI.Composition.ICompositionAnimationBase>>

@@ -15,7 +15,7 @@ using Android.Views;
 
 namespace Uno.UI.Controls
 {
-	public partial class BindableSearchView : SearchView, DependencyObject, INotifyPropertyChanged
+	public partial class BindableSearchView : SearchView, DependencyObject, System.ComponentModel.INotifyPropertyChanged
 	{
 		private readonly SerialDisposable _queryTextChangedSubscription = new SerialDisposable();
 
@@ -218,14 +218,14 @@ namespace Uno.UI.Controls
 		}
 
 		#region INotifyPropertyChanged
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 		protected virtual void RaisePropertyChanged([CallerMemberName] string propertyName = null)
 		{
 			var handler = PropertyChanged;
 			if (handler != null)
 			{
-				handler(this, new PropertyChangedEventArgs(propertyName));
+				handler(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
 			}
 		} 
 		#endregion

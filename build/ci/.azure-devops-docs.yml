@@ -19,7 +19,9 @@ jobs:
   - template: templates/nuget-cache.yml
     parameters:
       nugetPackages: $(NUGET_PACKAGES)
-    
+
+  - template: templates/install-windows-sdk.yml
+
   - task: GitVersion@5
     inputs:
       useConfigFile: true

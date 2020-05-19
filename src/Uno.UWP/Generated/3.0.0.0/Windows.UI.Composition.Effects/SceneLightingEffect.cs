@@ -123,10 +123,10 @@ namespace Windows.UI.Composition.Effects
 		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.SpecularAmount.set
 		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.SpecularShine.get
 		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.SpecularShine.set
-		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.Name.get
-		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.Name.set
 		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.ReflectanceModel.get
 		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.ReflectanceModel.set
+		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.Name.get
+		// Forced skipping of method Windows.UI.Composition.Effects.SceneLightingEffect.Name.set
 		// Processing: Windows.Graphics.Effects.IGraphicsEffect
 		// Processing: Windows.Graphics.Effects.IGraphicsEffectSource
 	}

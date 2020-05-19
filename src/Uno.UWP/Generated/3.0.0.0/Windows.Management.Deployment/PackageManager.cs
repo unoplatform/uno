@@ -397,5 +397,54 @@ namespace Windows.Management.Deployment
 			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<DeploymentResult, DeploymentProgress> PackageManager.DeprovisionPackageForAllUsersAsync(string packageFamilyName) is not implemented in Uno.");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.Collections.Generic.IList<global::Windows.ApplicationModel.Package> FindProvisionedPackages()
+		{
+			throw new global::System.NotImplementedException("The member IList<Package> PackageManager.FindProvisionedPackages() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Management.Deployment.DeploymentResult, global::Windows.Management.Deployment.DeploymentProgress> AddPackageByUriAsync( global::System.Uri packageUri,  global::Windows.Management.Deployment.AddPackageOptions options)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<DeploymentResult, DeploymentProgress> PackageManager.AddPackageByUriAsync(Uri packageUri, AddPackageOptions options) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Management.Deployment.DeploymentResult, global::Windows.Management.Deployment.DeploymentProgress> StagePackageByUriAsync( global::System.Uri packageUri,  global::Windows.Management.Deployment.StagePackageOptions options)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<DeploymentResult, DeploymentProgress> PackageManager.StagePackageByUriAsync(Uri packageUri, StagePackageOptions options) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Management.Deployment.DeploymentResult, global::Windows.Management.Deployment.DeploymentProgress> RegisterPackageByUriAsync( global::System.Uri manifestUri,  global::Windows.Management.Deployment.RegisterPackageOptions options)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<DeploymentResult, DeploymentProgress> PackageManager.RegisterPackageByUriAsync(Uri manifestUri, RegisterPackageOptions options) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperationWithProgress<global::Windows.Management.Deployment.DeploymentResult, global::Windows.Management.Deployment.DeploymentProgress> RegisterPackagesByFullNameAsync( global::System.Collections.Generic.IEnumerable<string> packageFullNames,  global::Windows.Management.Deployment.RegisterPackageOptions options)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperationWithProgress<DeploymentResult, DeploymentProgress> PackageManager.RegisterPackagesByFullNameAsync(IEnumerable<string> packageFullNames, RegisterPackageOptions options) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void SetPackageStubPreference( string packageFamilyName,  global::Windows.Management.Deployment.PackageStubPreference useStub)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Management.Deployment.PackageManager", "void PackageManager.SetPackageStubPreference(string packageFamilyName, PackageStubPreference useStub)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Management.Deployment.PackageStubPreference GetPackageStubPreference( string packageFamilyName)
+		{
+			throw new global::System.NotImplementedException("The member PackageStubPreference PackageManager.GetPackageStubPreference(string packageFamilyName) is not implemented in Uno.");
+		}
+		#endif
 	}
 }

@@ -2,11 +2,14 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media.Animation
 {
-#if false || false || false || false || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
-#endif
-	public partial class ColorAnimation : global::Windows.UI.Xaml.Media.Animation.Timeline
+	#endif
+	public  partial class ColorAnimation : global::Windows.UI.Xaml.Media.Animation.Timeline
 	{
+		// Skipping already declared property To
+		// Skipping already declared property From
+		// Skipping already declared property EnableDependentAnimation
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase EasingFunction
@@ -21,14 +24,20 @@ namespace Windows.UI.Xaml.Media.Animation
 			}
 		}
 		#endif
+		// Skipping already declared property By
+		// Skipping already declared property ByProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty EasingFunctionProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"EasingFunction", typeof(global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase), 
+			nameof(EasingFunction), typeof(global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.ColorAnimation), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.EasingFunctionBase)));
 		#endif
+		// Skipping already declared property EnableDependentAnimationProperty
+		// Skipping already declared property FromProperty
+		// Skipping already declared property ToProperty
+		// Skipping already declared method Windows.UI.Xaml.Media.Animation.ColorAnimation.ColorAnimation()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ColorAnimation.ColorAnimation()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ColorAnimation.From.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ColorAnimation.From.set

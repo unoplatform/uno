@@ -14,6 +14,8 @@ using Windows.UI.Xaml.Media.Imaging;
 using Windows.Foundation;
 using Uno.Logging;
 using Microsoft.Extensions.Logging;
+using Windows.UI;
+using Windows.UI.Core;
 
 #if XAMARIN_IOS
 using UIKit;
@@ -203,7 +205,7 @@ namespace Windows.UI.Xaml.Controls
 			var cd = new CancellationDisposable();
 
 			Dispatcher.RunAsync(
-				Core.CoreDispatcherPriority.Normal,
+				CoreDispatcherPriority.Normal,
 				() => handler(cd.Token)
 			).AsTask(cd.Token);
 

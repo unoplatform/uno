@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using Uno.Disposables;
 using Windows.UI.Xaml.Media;
 using Uno.UI.Extensions;
+using Windows.UI;
 
 #if __IOS__
 using UIKit;

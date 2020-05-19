@@ -818,7 +818,5 @@ namespace Uno.UI.Helpers.WinUI
 				return null;
 			}
 		}
-
-
 	}
 }

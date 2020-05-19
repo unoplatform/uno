@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty IsCheckedProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsChecked", typeof(bool), 
+			nameof(IsChecked), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbarFlyoutItem), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -47,7 +47,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KindProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Kind", typeof(global::Windows.UI.Xaml.Controls.InkToolbarFlyoutItemKind), 
+			nameof(Kind), typeof(global::Windows.UI.Xaml.Controls.InkToolbarFlyoutItemKind), 
 			typeof(global::Windows.UI.Xaml.Controls.InkToolbarFlyoutItem), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.InkToolbarFlyoutItemKind)));
 		#endif

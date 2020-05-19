@@ -5,8 +5,9 @@ namespace Windows.UI.Xaml.Shapes
 	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class Polyline
+	public  partial class Polyline 
 	{
+		// Skipping already declared property Points
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.FillRule FillRule
@@ -25,10 +26,12 @@ namespace Windows.UI.Xaml.Shapes
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FillRuleProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FillRule", typeof(global::Windows.UI.Xaml.Media.FillRule), 
+			nameof(FillRule), typeof(global::Windows.UI.Xaml.Media.FillRule), 
 			typeof(global::Windows.UI.Xaml.Shapes.Polyline), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.FillRule)));
 		#endif
+		// Skipping already declared property PointsProperty
+		// Skipping already declared method Windows.UI.Xaml.Shapes.Polyline.Polyline()
 		// Forced skipping of method Windows.UI.Xaml.Shapes.Polyline.Polyline()
 		// Forced skipping of method Windows.UI.Xaml.Shapes.Polyline.FillRule.get
 		// Forced skipping of method Windows.UI.Xaml.Shapes.Polyline.FillRule.set

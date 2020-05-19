@@ -17,7 +17,7 @@ namespace Windows.UI.Xaml.Controls
 		public override Orientation ScrollOrientation => Orientation;
 #endif
 
-		protected override Line CreateLine(GeneratorDirection fillDirection, double extentOffset, double availableBreadth, IndexPath nextVisibleItem)
+		protected override Line CreateLine(GeneratorDirection fillDirection, double extentOffset, double availableBreadth, Uno.UI.IndexPath nextVisibleItem)
 		{
 			var item = GetFlatItemIndex(nextVisibleItem);
 			var view = Generator.DequeueViewForItem(item);

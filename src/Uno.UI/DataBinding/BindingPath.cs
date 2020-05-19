@@ -342,7 +342,7 @@ namespace Uno.UI.DataBinding
 		private static IDisposable SubscribeToNotifyPropertyChanged(ManagedWeakReference dataContextReference, string propertyName, Action newValueAction)
 		{
 			// Attach to the Notify property changed events
-			var notify = dataContextReference.Target as INotifyPropertyChanged;
+			var notify = dataContextReference.Target as System.ComponentModel.INotifyPropertyChanged;
 
 			if (notify != null)
 			{
@@ -353,7 +353,7 @@ namespace Uno.UI.DataBinding
 
 				var newValueActionWeak = Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(null, newValueAction);
 
-				PropertyChangedEventHandler handler = (s, args) =>
+				System.ComponentModel.PropertyChangedEventHandler handler = (s, args) =>
 				{
 					if (args.PropertyName == propertyName)
 					{
@@ -376,7 +376,7 @@ namespace Uno.UI.DataBinding
 					// This weak reference ensure that the closure will not link
 					// the caller and the callee, in the same way "newValueActionWeak"
 					// does not link the callee to the caller.
-					var that = dataContextReference.Target as INotifyPropertyChanged;
+					var that = dataContextReference.Target as System.ComponentModel.INotifyPropertyChanged;
 
 					if (that != null)
 					{

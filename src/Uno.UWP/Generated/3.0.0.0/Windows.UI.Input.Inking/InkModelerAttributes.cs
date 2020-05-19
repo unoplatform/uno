@@ -35,9 +35,25 @@ namespace Windows.UI.Input.Inking
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool UseVelocityBasedPressure
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool InkModelerAttributes.UseVelocityBasedPressure is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.Inking.InkModelerAttributes", "bool InkModelerAttributes.UseVelocityBasedPressure");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Input.Inking.InkModelerAttributes.PredictionTime.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkModelerAttributes.PredictionTime.set
 		// Forced skipping of method Windows.UI.Input.Inking.InkModelerAttributes.ScalingFactor.get
 		// Forced skipping of method Windows.UI.Input.Inking.InkModelerAttributes.ScalingFactor.set
+		// Forced skipping of method Windows.UI.Input.Inking.InkModelerAttributes.UseVelocityBasedPressure.get
+		// Forced skipping of method Windows.UI.Input.Inking.InkModelerAttributes.UseVelocityBasedPressure.set
 	}
 }
