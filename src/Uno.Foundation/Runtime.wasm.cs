@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Linq;
 using System.Diagnostics.Contracts;
 using System.Reflection;
@@ -11,6 +13,8 @@ using Uno.Diagnostics.Eventing;
 using Microsoft.Extensions.Logging;
 using Uno.Logging;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace WebAssembly
 {
@@ -299,6 +303,67 @@ namespace Uno.Foundation
 			}
 
 			return InvokeJS(command);
+		}
+
+		private static ImmutableDictionary<long, TaskCompletionSource<string>> _asyncWaitingList = ImmutableDictionary<long, TaskCompletionSource<string>>.Empty;
+
+		private static long _nextAsync;
+
+		/// <summary>
+		/// Invoke async javascript code.
+		/// </summary>
+		/// <remarks>
+		/// The javascript code is expected to return a Promise&lt;string&gt;
+		/// </remarks>
+		public static Task<string> InvokeAsync(string promiseCode)
+		{
+			var id = Interlocked.Increment(ref _nextAsync);
+
+			var tcs = new TaskCompletionSource<string>();
+
+			ImmutableInterlocked.TryAdd(ref _asyncWaitingList, id, tcs);
+
+			var js = new[]
+			{
+				"const __f = ()=>",
+				promiseCode,
+				";\nUno.UI.Interop.AsyncInteropHelper.Invoke(",
+				id.ToStringInvariant(),
+				", __f);"
+			};
+
+			try
+			{
+
+				WebAssemblyRuntime.InvokeJS(string.Concat(js));
+			}
+			catch (Exception ex)
+			{
+				return Task.FromException<string>(ex);
+			}
+
+			return tcs.Task;
+		}
+
+		[Preserve]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void DispatchAsyncResult(long handle, string result)
+		{
+			if (ImmutableInterlocked.TryRemove(ref _asyncWaitingList, handle, out var tcs))
+			{
+				tcs.TrySetResult(result);
+			}
+		}
+
+		[Preserve]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void DispatchAsyncError(long handle, string error)
+		{
+			if (ImmutableInterlocked.TryRemove(ref _asyncWaitingList, handle, out var tcs))
+			{
+				var exception = new ApplicationException(error);
+				tcs.TrySetException(exception);
+			}
 		}
 
 		[Pure]
