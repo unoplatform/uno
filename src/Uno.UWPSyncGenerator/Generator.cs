@@ -823,11 +823,6 @@ namespace Uno.UWPSyncGenerator
 		{
 			foreach (var method in type.GetMembers().OfType<IMethodSymbol>())
 			{
-
-				if (method.ToString().Contains("GetStringForUri"))
-				{
-
-				}
 				var methods = GetAllMatchingMethods(types, method);
 
 				var parameters = string.Join(", ", method.Parameters.Select(p => $"{GetParameterRefKind(p)} {SanitizeType(p.Type)} {SanitizeParameter(p.Name)}"));
