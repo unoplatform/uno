@@ -1,8 +1,10 @@
 ﻿#if __ANDROID__
 using Android.Content;
+using Android.Text.Method;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using Uno.UI;
 
@@ -10,57 +12,60 @@ namespace Windows.ApplicationModel.DataTransfer
 {
 	public static partial class Clipboard
 	{
+		private const string ClipboardDataLabel = nameof(Clipboard);
+
 		public static void SetContent(DataPackage content)
 		{
 			if (content is null)
 			{
-				throw new ArgumentNullException("cannot SetContent - null parameter");
+				throw new ArgumentNullException(nameof(content));
 			}
 
-			ClipData clipData = null;
-
+			var items = new List<ClipData.Item>();
+			var mimeTypes = new List<string>();
 			if (content.Text != null)
 			{
-				clipData = ClipData.NewPlainText("clipdata", content.Text);
+				items.Add(new ClipData.Item(content.Text));
+				mimeTypes.Add("text/plaintext");
+			}
+			else if (content.Uri != null)
+			{
+				var androidUri = Android.Net.Uri.Parse(content.Uri.ToString());
+				items.Add(new ClipData.Item(androidUri));
+				mimeTypes.Add("text/plaintext");
+			}
+			else if (content.Html != null)
+			{
+				// Matches all tags
+				Regex regex = new Regex("(<.*?>\\s*)+", RegexOptions.Singleline);
+				// Replace tags by spaces and trim
+				var plainText = regex.Replace(content.Html, " ").Trim();
+
+				items.Add(new ClipData.Item(plainText, content.Html));
+				mimeTypes.Add("text/html");
 			}
 
-			if (content.Uri != null)
+			if (items.Count > 0)
 			{
-				clipData = ClipData.NewRawUri("clipdata", Android.Net.Uri.Parse(content.Uri.ToString()));
-			}
-
-			if (content.Html != null)
-			{
-				string plainText = "";
-				if (content.Text != null)
+				ClipData clipData = new ClipData(
+					new ClipDescription(ClipboardDataLabel, mimeTypes.ToArray()),
+					items[0]);
+				for (int itemIndex = 1; itemIndex < items.Count; itemIndex++)
 				{
-					plainText = content.Text;
+					clipData.AddItem(items[itemIndex]);
 				}
-				else
+				var manager = ContextHelper.Current.GetSystemService(Context.ClipboardService) as ClipboardManager;
+				if (manager is null)
 				{
-					// simple conversion from HTML to plaintext
-					plainText = content.Html;
-					for (int tagStart = plainText.IndexOf("<"); tagStart > -1; tagStart = plainText.IndexOf("<", tagStart))
-					{
-						int tagEnd = plainText.IndexOf(">", tagStart);
-						if (tagEnd < 0)
-						{
-							break;  // end of loop - we have start, but without end
-						}
-
-						plainText = plainText.Remove(tagStart, tagEnd - tagStart + 1);
-					}
+					return;
 				}
-				clipData = ClipData.NewHtmlText("clipdata", plainText, content.Html);
+				manager.PrimaryClip = clipData;
 			}
-
-			if (clipData is null)
+			else
 			{
-				throw new ArgumentException("Cannot SetContent - no Text, HTML nor Uri data");
+				// Clear clipboard
+				Clear();
 			}
-
-			var manager = ContextHelper.Current.GetSystemService(Context.ClipboardService) as ClipboardManager;
-			manager.PrimaryClip = clipData;
 		}
 
 		public static DataPackageView GetContent()
@@ -76,33 +81,25 @@ namespace Windows.ApplicationModel.DataTransfer
 			string clipText = null;
 			Uri clipUri = null;
 			string clipHtml = null;
-			for (int iLp = 0; iLp < clipData.ItemCount; iLp++)
+			for (int itemIndex = 0; itemIndex < clipData.ItemCount; itemIndex++)
 			{
-				var itemText = clipData.GetItemAt(iLp).Text;
+				var itemText = clipData.GetItemAt(itemIndex).Text;
 				if (itemText != null)
 				{
 					clipText = itemText;
 				}
-				var itemUri = clipData.GetItemAt(iLp).Uri;
+				var itemUri = clipData.GetItemAt(itemIndex).Uri;
 				if (itemUri != null)
 				{
 					clipUri = new Uri(itemUri.ToString());
 				}
-				var itemHtml = clipData.GetItemAt(iLp).HtmlText;
+				var itemHtml = clipData.GetItemAt(itemIndex).HtmlText;
 				if (itemText != null)
 				{
 					clipHtml = itemHtml;
 				}
 			}
 
-
-			if (clipText is null && clipUri is null && clipHtml is null)
-			{ // we don't have anything...
-				return null;
-			}
-
-
-			// please, while changing it - synchronize it with DataPackage.GetView()
 			var clipView = new DataPackageView();
 
 			if (clipText != null)
@@ -131,7 +128,7 @@ namespace Windows.ApplicationModel.DataTransfer
 				var clipData = ClipData.NewPlainText("", "");
 				manager.PrimaryClip = clipData;
 			}
-		}
+		}		
 
 		private static void StartContentChanged()
 		{
