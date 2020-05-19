@@ -233,6 +233,34 @@ namespace Windows.Media.Capture
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.Security.Credentials.PasswordCredential DeviceUriPasswordCredential
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member PasswordCredential MediaCaptureInitializationSettings.DeviceUriPasswordCredential is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "PasswordCredential MediaCaptureInitializationSettings.DeviceUriPasswordCredential");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.Uri DeviceUri
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Uri MediaCaptureInitializationSettings.DeviceUri is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "Uri MediaCaptureInitializationSettings.DeviceUri");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public MediaCaptureInitializationSettings() 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Media.Capture.MediaCaptureInitializationSettings", "MediaCaptureInitializationSettings.MediaCaptureInitializationSettings()");
@@ -271,5 +299,9 @@ namespace Windows.Media.Capture
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.MemoryPreference.set
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.AlwaysPlaySystemShutterSound.get
 		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.AlwaysPlaySystemShutterSound.set
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.DeviceUriPasswordCredential.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.DeviceUriPasswordCredential.set
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.DeviceUri.get
+		// Forced skipping of method Windows.Media.Capture.MediaCaptureInitializationSettings.DeviceUri.set
 	}
 }

@@ -57,9 +57,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 			DependencyProperty.Register("MyIntProperty", typeof(int), typeof(Binding_TwoWay_BindBack_DataTemplate_Base), new PropertyMetadata(0));
 	}
 
-	public class Binding_TwoWay_BindBack_DataTemplate_Data : INotifyPropertyChanged
+	public class Binding_TwoWay_BindBack_DataTemplate_Data : System.ComponentModel.INotifyPropertyChanged
 	{
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 		private int _myIntProperty;
 
@@ -69,7 +69,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 			set
 			{
 				_myIntProperty = value;
-				PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(MyIntProperty)));
+				PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(nameof(MyIntProperty)));
 			}
 		}
 

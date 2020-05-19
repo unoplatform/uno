@@ -19,62 +19,6 @@ namespace Windows.Web.Http.Headers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  ulong? ContentLength
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ulong? HttpContentHeaderCollection.ContentLength is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentHeaderCollection", "ulong? HttpContentHeaderCollection.ContentLength");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Storage.Streams.IBuffer ContentMD5
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member IBuffer HttpContentHeaderCollection.ContentMD5 is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentHeaderCollection", "IBuffer HttpContentHeaderCollection.ContentMD5");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::System.Uri ContentLocation
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Uri HttpContentHeaderCollection.ContentLocation is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentHeaderCollection", "Uri HttpContentHeaderCollection.ContentLocation");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Web.Http.Headers.HttpContentDispositionHeaderValue ContentDisposition
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member HttpContentDispositionHeaderValue HttpContentHeaderCollection.ContentDisposition is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentHeaderCollection", "HttpContentDispositionHeaderValue HttpContentHeaderCollection.ContentDisposition");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  global::System.DateTimeOffset? LastModified
 		{
 			get
@@ -126,6 +70,62 @@ namespace Windows.Web.Http.Headers
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentHeaderCollection", "HttpContentRangeHeaderValue HttpContentHeaderCollection.ContentRange");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Storage.Streams.IBuffer ContentMD5
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IBuffer HttpContentHeaderCollection.ContentMD5 is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentHeaderCollection", "IBuffer HttpContentHeaderCollection.ContentMD5");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.Uri ContentLocation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Uri HttpContentHeaderCollection.ContentLocation is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentHeaderCollection", "Uri HttpContentHeaderCollection.ContentLocation");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  ulong? ContentLength
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member ulong? HttpContentHeaderCollection.ContentLength is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentHeaderCollection", "ulong? HttpContentHeaderCollection.ContentLength");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Web.Http.Headers.HttpContentDispositionHeaderValue ContentDisposition
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member HttpContentDispositionHeaderValue HttpContentHeaderCollection.ContentDisposition is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpContentHeaderCollection", "HttpContentDispositionHeaderValue HttpContentHeaderCollection.ContentDisposition");
 			}
 		}
 		#endif

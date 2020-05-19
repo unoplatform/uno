@@ -2,14 +2,15 @@
 	x:Class="UITests.Shared.Windows_UI_Xaml.WebView_Alert"
 	xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
 	xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	xmlns:xamarin="http://uno.ui/xamarin"
 	xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	xmlns:controls="using:Uno.UI.Samples.Controls"
-	mc:Ignorable="d"
+	mc:Ignorable="d xamarin"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
 	<controls:StarStackPanel Sizes="*,Auto">
-		<WebView x:Name="web" />
-		<Button Click="Load">LOAD WEBVIEW WITH ALERT SCRIPT</Button>
+		<xamarin:WebView x:Name="web" />
+		<xamarin:Button Click="Load">LOAD WEBVIEW WITH ALERT SCRIPT</xamarin:Button>
 	</controls:StarStackPanel>
 </Page>

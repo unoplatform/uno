@@ -109,6 +109,41 @@ namespace Windows.UI.ViewManagement
 		#endif
 		// Skipping already declared property IsFullScreenMode
 		// Skipping already declared property TitleBar
+		// Skipping already declared property ViewMode
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  string PersistedStateId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string ApplicationView.PersistedStateId is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "string ApplicationView.PersistedStateId");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.WindowManagement.WindowingEnvironment WindowingEnvironment
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member WindowingEnvironment ApplicationView.WindowingEnvironment is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.UI.UIContext UIContext
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member UIContext ApplicationView.UIContext is not implemented in Uno.");
+			}
+		}
+		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.ViewManagement.ApplicationViewState Value
@@ -246,6 +281,31 @@ namespace Windows.UI.ViewManagement
 		public  global::Windows.Foundation.IAsyncOperation<bool> TryConsolidateAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> ApplicationView.TryConsolidateAsync() is not implemented in Uno.");
+		}
+		#endif
+		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.PersistedStateId.get
+		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.PersistedStateId.set
+		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.WindowingEnvironment.get
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.WindowManagement.DisplayRegion> GetDisplayRegions()
+		{
+			throw new global::System.NotImplementedException("The member IReadOnlyList<DisplayRegion> ApplicationView.GetDisplayRegions() is not implemented in Uno.");
+		}
+		#endif
+		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.UIContext.get
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static void ClearAllPersistedState()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "void ApplicationView.ClearAllPersistedState()");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static void ClearPersistedState( string key)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.ViewManagement.ApplicationView", "void ApplicationView.ClearPersistedState(string key)");
 		}
 		#endif
 		// Forced skipping of method Windows.UI.ViewManagement.ApplicationView.PreferredLaunchWindowingMode.get

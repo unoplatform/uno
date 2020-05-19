@@ -2,18 +2,22 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.System
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+	#if false || false || false || false || false
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class DispatcherQueue 
 	{
-		#if false
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.System.DispatcherQueueTimer CreateTimer()
+		public  bool HasThreadAccess
 		{
-			throw new global::System.NotImplementedException("The member DispatcherQueueTimer DispatcherQueue.CreateTimer() is not implemented in Uno.");
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DispatcherQueue.HasThreadAccess is not implemented in Uno.");
+			}
 		}
 		#endif
+		// Skipping already declared method Windows.System.DispatcherQueue.CreateTimer()
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  bool TryEnqueue( global::Windows.System.DispatcherQueueHandler callback)
@@ -32,13 +36,8 @@ namespace Windows.System
 		// Forced skipping of method Windows.System.DispatcherQueue.ShutdownStarting.remove
 		// Forced skipping of method Windows.System.DispatcherQueue.ShutdownCompleted.add
 		// Forced skipping of method Windows.System.DispatcherQueue.ShutdownCompleted.remove
-		#if false
-		[global::Uno.NotImplemented]
-		public static global::Windows.System.DispatcherQueue GetForCurrentThread()
-		{
-			throw new global::System.NotImplementedException("The member DispatcherQueue DispatcherQueue.GetForCurrentThread() is not implemented in Uno.");
-		}
-		#endif
+		// Forced skipping of method Windows.System.DispatcherQueue.HasThreadAccess.get
+		// Skipping already declared method Windows.System.DispatcherQueue.GetForCurrentThread()
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.System.DispatcherQueue, object> ShutdownCompleted

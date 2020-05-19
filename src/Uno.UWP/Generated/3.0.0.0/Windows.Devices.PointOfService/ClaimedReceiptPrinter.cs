@@ -129,11 +129,21 @@ namespace Windows.Devices.PointOfService
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  bool IsHeadCleaning
+		public  bool IsCartridgeEmpty
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsHeadCleaning is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsCartridgeEmpty is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsCartridgeRemoved
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsCartridgeRemoved is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -144,6 +154,16 @@ namespace Windows.Devices.PointOfService
 			get
 			{
 				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsCoverOpen is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsHeadCleaning
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsHeadCleaning is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -169,31 +189,11 @@ namespace Windows.Devices.PointOfService
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  bool IsCartridgeRemoved
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsCartridgeRemoved is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  bool IsReadyToPrint
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsReadyToPrint is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool IsCartridgeEmpty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ClaimedReceiptPrinter.IsCartridgeEmpty is not implemented in Uno.");
 			}
 		}
 		#endif

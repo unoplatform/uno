@@ -30,6 +30,34 @@ namespace Windows.Devices.PointOfService
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  void StampPaper()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ReceiptPrintJob", "void ReceiptPrintJob.StampPaper()");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void Print( string data,  global::Windows.Devices.PointOfService.PosPrinterPrintOptions printOptions)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ReceiptPrintJob", "void ReceiptPrintJob.Print(string data, PosPrinterPrintOptions printOptions)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void FeedPaperByLine( int lineCount)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ReceiptPrintJob", "void ReceiptPrintJob.FeedPaperByLine(int lineCount)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void FeedPaperByMapModeUnit( int distance)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ReceiptPrintJob", "void ReceiptPrintJob.FeedPaperByMapModeUnit(int distance)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  void SetBarcodeRotation( global::Windows.Devices.PointOfService.PosPrinterRotation value)
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ReceiptPrintJob", "void ReceiptPrintJob.SetBarcodeRotation(PosPrinterRotation value)");

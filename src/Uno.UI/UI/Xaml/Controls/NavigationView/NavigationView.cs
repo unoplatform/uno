@@ -32,6 +32,7 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Uno.Extensions.Specialized;
+using Windows.UI.ViewManagement;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -3385,17 +3386,17 @@ namespace Windows.UI.Xaml.Controls
 			// ApplicationView.GetForCurrentView() is an expensive call - make sure to cache the ApplicationView
 			if (m_applicationView == null)
 			{
-				m_applicationView = ViewManagement.ApplicationView.GetForCurrentView();
+				m_applicationView = ApplicationView.GetForCurrentView();
 			}
 
 			// UIViewSettings.GetForCurrentView() is an expensive call - make sure to cache the UIViewSettings
 			if (m_uiViewSettings == null)
 			{
-				m_uiViewSettings = ViewManagement.UIViewSettings.GetForCurrentView();
+				m_uiViewSettings = UIViewSettings.GetForCurrentView();
 			}
 
 			bool isFullScreenMode = m_applicationView.IsFullScreenMode;
-			bool isTabletMode = m_uiViewSettings.UserInteractionMode == ViewManagement.UserInteractionMode.Touch;
+			bool isTabletMode = m_uiViewSettings.UserInteractionMode == UserInteractionMode.Touch;
 
 			return isFullScreenMode || isTabletMode;
 		}

@@ -1,8 +1,8 @@
-﻿#if !SILVERLIGHT
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using Windows.UI.Xaml.Media;
+using Windows.UI;
 
 #if XAMARIN_IOS_UNIFIED
 using GenericColor = UIKit.UIColor;
@@ -507,4 +507,3 @@ namespace Windows.UI.Xaml
 		public static SolidColorBrush YellowGreen => new SolidColorBrush(Colors.YellowGreen);
 	}
 }
-#endif

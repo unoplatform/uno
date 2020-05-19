@@ -9,6 +9,10 @@ using Windows.ApplicationModel;
 using ObjCRuntime;
 using Windows.Graphics.Display;
 using Uno.UI.Services;
+using System.Globalization;
+using Uno.Extensions;
+using Uno.Logging;
+using System.Linq;
 
 namespace Windows.UI.Xaml
 {
@@ -18,6 +22,7 @@ namespace Windows.UI.Xaml
 		public Application()
 		{
 			Current = this;
+			SetCurrentLanguage();
 			Windows.UI.Xaml.GenericStyles.Initialize();
 			ResourceHelper.ResourcesService = new ResourcesService(new[] { NSBundle.MainBundle });
 		}
@@ -33,8 +38,8 @@ namespace Windows.UI.Xaml
 
 		public override void DidFinishLaunching(NSNotification notification)
 		{
-            InitializationCompleted();
-            OnLaunched(new LaunchActivatedEventArgs());
+			InitializationCompleted();			
+			OnLaunched(new LaunchActivatedEventArgs());
 		}
 
 		/// <summary>
@@ -76,7 +81,23 @@ namespace Windows.UI.Xaml
 			else
 			{
 				return ApplicationTheme.Dark;
-			}			
+			}
+		}
+
+		private void SetCurrentLanguage()
+		{
+			var language = NSLocale.PreferredLanguages.ElementAtOrDefault(0);
+
+			try
+			{
+				var cultureInfo = CultureInfo.CreateSpecificCulture(language);
+				CultureInfo.CurrentUICulture = cultureInfo;
+				CultureInfo.CurrentCulture = cultureInfo;
+			}
+			catch (Exception ex)
+			{
+				this.Log().Error($"Failed to set culture for language: {language}", ex);
+			}
 		}
 	}
 }

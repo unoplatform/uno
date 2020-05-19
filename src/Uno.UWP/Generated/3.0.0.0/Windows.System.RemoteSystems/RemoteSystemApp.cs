@@ -57,10 +57,32 @@ namespace Windows.System.RemoteSystems
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  string ConnectionToken
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string RemoteSystemApp.ConnectionToken is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.System.User User
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member User RemoteSystemApp.User is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.Id.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.DisplayName.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.IsAvailableByProximity.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.IsAvailableBySpatialProximity.get
 		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.Attributes.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.User.get
+		// Forced skipping of method Windows.System.RemoteSystems.RemoteSystemApp.ConnectionToken.get
 	}
 }

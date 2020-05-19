@@ -7,6 +7,7 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using Windows.Foundation;
 using Uno.UI;
+using Windows.UI;
 
 namespace Windows.UI.Xaml.Media.Animation
 {

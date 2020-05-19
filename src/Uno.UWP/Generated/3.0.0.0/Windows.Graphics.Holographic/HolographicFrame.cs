@@ -47,6 +47,16 @@ namespace Windows.Graphics.Holographic
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Graphics.Holographic.HolographicFrameId Id
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member HolographicFrameId HolographicFrame.Id is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.AddedCameras.get
 		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.RemovedCameras.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
@@ -93,5 +103,6 @@ namespace Windows.Graphics.Holographic
 			throw new global::System.NotImplementedException("The member HolographicQuadLayerUpdateParameters HolographicFrame.GetQuadLayerUpdateParameters(HolographicQuadLayer layer) is not implemented in Uno.");
 		}
 		#endif
+		// Forced skipping of method Windows.Graphics.Holographic.HolographicFrame.Id.get
 	}
 }

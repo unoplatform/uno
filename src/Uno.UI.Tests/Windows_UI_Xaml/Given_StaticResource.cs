@@ -21,7 +21,7 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var control = new Test_Control();
 			app.HostView.Children.Add(control);
 
-			Assert.AreEqual(Colors.MediumSpringGreen, (control.TopGrid.Background as SolidColorBrush).Color);
+			Assert.AreEqual(Windows.UI.Colors.MediumSpringGreen, (control.TopGrid.Background as SolidColorBrush).Color);
 		}
 	}
 }

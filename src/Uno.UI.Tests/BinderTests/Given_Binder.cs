@@ -1035,7 +1035,7 @@ namespace Uno.UI.Tests.BinderTests
 			public int objectSetCount { get; set; }
 		}
 
-		public class MyBindingSource : INotifyPropertyChanged
+		public class MyBindingSource : System.ComponentModel.INotifyPropertyChanged
 		{
 			private int _intValue;
 
@@ -1049,13 +1049,13 @@ namespace Uno.UI.Tests.BinderTests
 				}
 			}
 
-			public event PropertyChangedEventHandler PropertyChanged;
+			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 			protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-				=> PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
+				=> PropertyChanged?.Invoke(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
 		}
 
-		public class MySource : INotifyPropertyChanged
+		public class MySource : System.ComponentModel.INotifyPropertyChanged
 		{
 			private MySource2 _child;
 
@@ -1073,12 +1073,12 @@ namespace Uno.UI.Tests.BinderTests
 
 					if (PropertyChanged != null)
 					{
-						PropertyChanged(this, new PropertyChangedEventArgs("Child"));
+						PropertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs("Child"));
 					}
 				}
 			}
 
-			public event PropertyChangedEventHandler PropertyChanged;
+			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 		}
 
 		public class MySource2

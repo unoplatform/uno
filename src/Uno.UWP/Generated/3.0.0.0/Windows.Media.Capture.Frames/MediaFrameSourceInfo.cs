@@ -106,5 +106,12 @@ namespace Windows.Media.Capture.Frames
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.CoordinateSystem.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.ProfileId.get
 		// Forced skipping of method Windows.Media.Capture.Frames.MediaFrameSourceInfo.VideoProfileMediaDescription.get
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Devices.Enumeration.Panel GetRelativePanel( global::Windows.UI.WindowManagement.DisplayRegion displayRegion)
+		{
+			throw new global::System.NotImplementedException("The member Panel MediaFrameSourceInfo.GetRelativePanel(DisplayRegion displayRegion) is not implemented in Uno.");
+		}
+		#endif
 	}
 }

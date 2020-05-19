@@ -1,8 +1,5 @@
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
-using System;
-using Windows.Foundation;
-
 namespace Windows.UI.Xaml.Controls
 {
 	#if false || false || false || false || false
@@ -13,7 +10,14 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property Text
 		// Skipping already declared property CommandParameter
 		// Skipping already declared property Command
-
+		// Skipping already declared property Icon
+		// Skipping already declared property KeyboardAcceleratorTextOverride
+		// Skipping already declared property TemplateSettings
+		// Skipping already declared property CommandParameterProperty
+		// Skipping already declared property CommandProperty
+		// Skipping already declared property TextProperty
+		// Skipping already declared property IconProperty
+		// Skipping already declared property KeyboardAcceleratorTextOverrideProperty
 		// Skipping already declared method Windows.UI.Xaml.Controls.MenuFlyoutItem.MenuFlyoutItem()
 		// Forced skipping of method Windows.UI.Xaml.Controls.MenuFlyoutItem.MenuFlyoutItem()
 		// Forced skipping of method Windows.UI.Xaml.Controls.MenuFlyoutItem.Text.get
@@ -34,6 +38,6 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.MenuFlyoutItem.TextProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MenuFlyoutItem.CommandProperty.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.MenuFlyoutItem.CommandParameterProperty.get
-
+		// Skipping already declared event Windows.UI.Xaml.Controls.MenuFlyoutItem.Click
 	}
 }

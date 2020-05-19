@@ -22,6 +22,8 @@
 		
 		<ProduceReferenceAssembly>false</ProduceReferenceAssembly>
 		<Deterministic>true</Deterministic>
+
+		<PackageId Condition="'$(UNO_UWP_BUILD)'=='false'">Uno.WinUI.RemoteControl</PackageId>
 	</PropertyGroup>
 
 	<Import Project="..\Uno.CrossTargetting.props" />

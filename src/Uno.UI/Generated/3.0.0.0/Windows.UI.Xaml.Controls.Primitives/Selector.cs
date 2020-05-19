@@ -7,10 +7,16 @@ namespace Windows.UI.Xaml.Controls.Primitives
 	#endif
 	public  partial class Selector : global::Windows.UI.Xaml.Controls.ItemsControl
 	{
+		// Skipping already declared property SelectedValuePath
+		// Skipping already declared property SelectedValue
 		// Skipping already declared property SelectedItem
 		// Skipping already declared property SelectedIndex
+		// Skipping already declared property IsSynchronizedWithCurrentItem
+		// Skipping already declared property IsSynchronizedWithCurrentItemProperty
 		// Skipping already declared property SelectedIndexProperty
 		// Skipping already declared property SelectedItemProperty
+		// Skipping already declared property SelectedValuePathProperty
+		// Skipping already declared property SelectedValueProperty
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.Selector.SelectedIndex.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.Selector.SelectedIndex.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.Primitives.Selector.SelectedItem.get

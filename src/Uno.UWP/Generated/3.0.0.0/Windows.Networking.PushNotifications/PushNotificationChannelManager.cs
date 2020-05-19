@@ -7,6 +7,8 @@ namespace Windows.Networking.PushNotifications
 	#endif
 	public  partial class PushNotificationChannelManager 
 	{
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannelManager.ChannelsRevoked.add
+		// Forced skipping of method Windows.Networking.PushNotifications.PushNotificationChannelManager.ChannelsRevoked.remove
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.Networking.PushNotifications.PushNotificationChannelManagerForUser GetDefault()
@@ -40,6 +42,22 @@ namespace Windows.Networking.PushNotifications
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Networking.PushNotifications.PushNotificationChannel> CreatePushNotificationChannelForSecondaryTileAsync( string tileId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<PushNotificationChannel> PushNotificationChannelManager.CreatePushNotificationChannelForSecondaryTileAsync(string tileId) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static event global::System.EventHandler<global::Windows.Networking.PushNotifications.PushNotificationChannelsRevokedEventArgs> ChannelsRevoked
+		{
+			[global::Uno.NotImplemented]
+			add
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.PushNotifications.PushNotificationChannelManager", "event EventHandler<PushNotificationChannelsRevokedEventArgs> PushNotificationChannelManager.ChannelsRevoked");
+			}
+			[global::Uno.NotImplemented]
+			remove
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.PushNotifications.PushNotificationChannelManager", "event EventHandler<PushNotificationChannelsRevokedEventArgs> PushNotificationChannelManager.ChannelsRevoked");
+			}
 		}
 		#endif
 	}

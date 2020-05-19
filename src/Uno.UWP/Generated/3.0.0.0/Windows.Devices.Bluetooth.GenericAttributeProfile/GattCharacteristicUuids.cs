@@ -9,6 +9,16 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static global::System.Guid HeartRateMeasurement
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.HeartRateMeasurement is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static global::System.Guid BatteryLevel
 		{
 			get
@@ -104,16 +114,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			get
 			{
 				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.HeartRateControlPoint is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid HeartRateMeasurement
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.HeartRateMeasurement is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -219,226 +219,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::System.Guid LnFeature
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.LnFeature is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid AlertCategoryId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.AlertCategoryId is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid AlertCategoryIdBitMask
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.AlertCategoryIdBitMask is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid AlertLevel
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.AlertLevel is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid AlertNotificationControlPoint
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.AlertNotificationControlPoint is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid AlertStatus
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.AlertStatus is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid BootKeyboardInputReport
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.BootKeyboardInputReport is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid BootKeyboardOutputReport
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.BootKeyboardOutputReport is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid BootMouseInputReport
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.BootMouseInputReport is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid CurrentTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.CurrentTime is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid CyclingPowerControlPoint
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.CyclingPowerControlPoint is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid CyclingPowerFeature
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.CyclingPowerFeature is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid CyclingPowerMeasurement
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.CyclingPowerMeasurement is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid CyclingPowerVector
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.CyclingPowerVector is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid DateTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.DateTime is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid DayDateTime
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.DayDateTime is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid DayOfWeek
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.DayOfWeek is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid DstOffset
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.DstOffset is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid ExactTime256
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.ExactTime256 is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid FirmwareRevisionString
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.FirmwareRevisionString is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid GapAppearance
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.GapAppearance is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid GapDeviceName
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.GapDeviceName is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public static global::System.Guid GapPeripheralPreferredConnectionParameters
 		{
 			get
@@ -524,6 +304,16 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			get
 			{
 				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.LnControlPoint is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid LnFeature
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.LnFeature is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -619,11 +409,11 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::System.Guid ReferenceTimeInformation
+		public static global::System.Guid CyclingPowerFeature
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.ReferenceTimeInformation is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.CyclingPowerFeature is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -814,6 +604,216 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			get
 			{
 				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.UnreadAlertStatus is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid AlertCategoryId
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.AlertCategoryId is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid AlertCategoryIdBitMask
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.AlertCategoryIdBitMask is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid AlertLevel
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.AlertLevel is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid AlertNotificationControlPoint
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.AlertNotificationControlPoint is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid AlertStatus
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.AlertStatus is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid BootKeyboardInputReport
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.BootKeyboardInputReport is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid BootKeyboardOutputReport
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.BootKeyboardOutputReport is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid BootMouseInputReport
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.BootMouseInputReport is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid CurrentTime
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.CurrentTime is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid CyclingPowerControlPoint
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.CyclingPowerControlPoint is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid ReferenceTimeInformation
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.ReferenceTimeInformation is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid CyclingPowerMeasurement
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.CyclingPowerMeasurement is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid CyclingPowerVector
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.CyclingPowerVector is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid DateTime
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.DateTime is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid DayDateTime
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.DayDateTime is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid DayOfWeek
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.DayOfWeek is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid DstOffset
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.DstOffset is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid ExactTime256
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.ExactTime256 is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid FirmwareRevisionString
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.FirmwareRevisionString is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid GapAppearance
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.GapAppearance is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid GapDeviceName
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattCharacteristicUuids.GapDeviceName is not implemented in Uno.");
 			}
 		}
 		#endif

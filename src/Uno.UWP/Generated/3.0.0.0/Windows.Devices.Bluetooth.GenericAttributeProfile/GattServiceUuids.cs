@@ -9,16 +9,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public static global::System.Guid CyclingSpeedAndCadence
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.CyclingSpeedAndCadence is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public static global::System.Guid Battery
 		{
 			get
@@ -34,6 +24,16 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			get
 			{
 				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.BloodPressure is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid CyclingSpeedAndCadence
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.CyclingSpeedAndCadence is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -94,16 +94,6 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			get
 			{
 				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.RunningSpeedAndCadence is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public static global::System.Guid NextDstChange
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.NextDstChange is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -184,6 +174,16 @@ namespace Windows.Devices.Bluetooth.GenericAttributeProfile
 			get
 			{
 				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.LocationAndNavigation is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Guid NextDstChange
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member Guid GattServiceUuids.NextDstChange is not implemented in Uno.");
 			}
 		}
 		#endif

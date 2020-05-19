@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Media.Animation
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class ColorKeyFrame : global::Windows.UI.Xaml.DependencyObject
@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty KeyTimeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"KeyTime", typeof(global::Windows.UI.Xaml.Media.Animation.KeyTime), 
+			nameof(KeyTime), typeof(global::Windows.UI.Xaml.Media.Animation.KeyTime), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.ColorKeyFrame), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Animation.KeyTime)));
 		#endif
@@ -47,11 +47,17 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty ValueProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Value", typeof(global::Windows.UI.Color), 
+			nameof(Value), typeof(global::Windows.UI.Color), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.ColorKeyFrame), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Color)));
 		#endif
-		// Skipping already declared method Windows.UI.Xaml.Media.Animation.ColorKeyFrame.ColorKeyFrame()
+		#if false || __IOS__ || false || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		protected ColorKeyFrame() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Media.Animation.ColorKeyFrame", "ColorKeyFrame.ColorKeyFrame()");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ColorKeyFrame.ColorKeyFrame()
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ColorKeyFrame.Value.get
 		// Forced skipping of method Windows.UI.Xaml.Media.Animation.ColorKeyFrame.Value.set

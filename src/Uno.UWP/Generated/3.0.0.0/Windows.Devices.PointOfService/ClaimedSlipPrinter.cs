@@ -149,31 +149,11 @@ namespace Windows.Devices.PointOfService
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  bool IsHeadCleaning
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsHeadCleaning is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
 		public  bool IsCartridgeEmpty
 		{
 			get
 			{
 				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsCartridgeEmpty is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  bool IsPaperEmpty
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsPaperEmpty is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -189,11 +169,31 @@ namespace Windows.Devices.PointOfService
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  bool IsReadyToPrint
+		public  bool IsCoverOpen
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsReadyToPrint is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsCoverOpen is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsHeadCleaning
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsHeadCleaning is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsPaperEmpty
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsPaperEmpty is not implemented in Uno.");
 			}
 		}
 		#endif
@@ -209,11 +209,11 @@ namespace Windows.Devices.PointOfService
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  bool IsCoverOpen
+		public  bool IsReadyToPrint
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsCoverOpen is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member bool ClaimedSlipPrinter.IsReadyToPrint is not implemented in Uno.");
 			}
 		}
 		#endif

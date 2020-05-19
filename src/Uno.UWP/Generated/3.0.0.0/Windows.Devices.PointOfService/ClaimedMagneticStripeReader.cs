@@ -200,6 +200,8 @@ namespace Windows.Devices.PointOfService
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReader.ReleaseDeviceRequested.remove
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReader.ErrorOccurred.add
 		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReader.ErrorOccurred.remove
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReader.Closed.add
+		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReader.Closed.remove
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()
@@ -207,8 +209,6 @@ namespace Windows.Devices.PointOfService
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedMagneticStripeReader", "void ClaimedMagneticStripeReader.Dispose()");
 		}
 		#endif
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReader.Closed.add
-		// Forced skipping of method Windows.Devices.PointOfService.ClaimedMagneticStripeReader.Closed.remove
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  event global::Windows.Foundation.TypedEventHandler<global::Windows.Devices.PointOfService.ClaimedMagneticStripeReader, global::Windows.Devices.PointOfService.MagneticStripeReaderAamvaCardDataReceivedEventArgs> AamvaCardDataReceived

@@ -24,9 +24,9 @@
 	  <Folder Name="Properties" TargetFolderName="Properties">
 		<ProjectItem ReplaceParameters="true" TargetFileName="AssemblyInfo.cs">AssemblyInfo.cs</ProjectItem>
 	  </Folder>
-	  <Folder Name="Assets.xcassets" TargetFolderName="Media.xcassets">
+	  <Folder Name="Assets.xcassets" TargetFolderName="Assets.xcassets">
 		<ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Contents.json">Contents.json</ProjectItem>
-		<Folder Name="AppIcons.appiconset" TargetFolderName="AppIcons.appiconset">
+		<Folder Name="AppIcon.appiconset" TargetFolderName="AppIcon.appiconset">
 		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="Contents.json">Contents.json</ProjectItem>
 		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="AppIcon-128.png">AppIcon-128.png</ProjectItem>
 		  <ProjectItem ReplaceParameters="false" ItemType="ImageAsset" TargetFileName="AppIcon-128@2x.png">AppIcon-128@2x.png</ProjectItem>

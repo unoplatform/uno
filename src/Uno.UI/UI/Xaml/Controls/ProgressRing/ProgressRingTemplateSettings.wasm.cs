@@ -1,7 +1,10 @@
 ﻿#if __WASM__
 
+using Windows.UI.Xaml;
+
 namespace Windows.UI.Xaml.Controls.Primitives
-{//TODO: Fully implement this class, matching UWP https://github.com/unoplatform/uno/issues/1872
+{
+	//TODO: Fully implement this class, matching UWP https://github.com/unoplatform/uno/issues/1872
 	public partial class ProgressRingTemplateSettings : DependencyObject
 	{
 		public double EllipseDiameter { get; set; }

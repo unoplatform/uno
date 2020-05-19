@@ -12,6 +12,7 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 	[SampleControlInfo("WebView", "WebView_JavascriptInvoke", typeof(WebViewViewModel))]
 	public sealed partial class WebView_JavascriptInvoke : UserControl
 	{
+#if HAS_UNO
 		public WebView_JavascriptInvoke()
 		{
 			this.InitializeComponent();
@@ -37,5 +38,6 @@ namespace Uno.UI.Samples.Content.UITests.WebView
 			return "window.location.reload()";
 #endif
 		}
+#endif
 	}
 }

@@ -32,6 +32,18 @@ namespace Windows.ApplicationModel.AppService
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		NotAuthorized,
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		AuthenticationError,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		NetworkNotAvailable,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		DisabledByPolicy,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		WebServiceUnavailable,
+		#endif
 	}
 	#endif
 }

@@ -79,13 +79,7 @@ namespace Windows.Storage
 			}
 		}
 		#endif
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> CreateFileAsync( string desiredName)
-		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> StorageFolder.CreateFileAsync(string desiredName) is not implemented in Uno.");
-		}
-		#endif
+		// Skipping already declared method Windows.Storage.StorageFolder.CreateFileAsync(string)
 		// Skipping already declared method Windows.Storage.StorageFolder.CreateFileAsync(string, Windows.Storage.CreationCollisionOption)
 		// Skipping already declared method Windows.Storage.StorageFolder.CreateFolderAsync(string)
 		// Skipping already declared method Windows.Storage.StorageFolder.CreateFolderAsync(string, Windows.Storage.CreationCollisionOption)
@@ -339,6 +333,13 @@ namespace Windows.Storage
 		public  global::Windows.Storage.StorageLibraryChangeTracker TryGetChangeTracker()
 		{
 			throw new global::System.NotImplementedException("The member StorageLibraryChangeTracker StorageFolder.TryGetChangeTracker() is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderFromPathForUserAsync( global::Windows.System.User user,  string path)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> StorageFolder.GetFolderFromPathForUserAsync(User user, string path) is not implemented in Uno.");
 		}
 		#endif
 		// Skipping already declared method Windows.Storage.StorageFolder.GetFolderFromPathAsync(string)

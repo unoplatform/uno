@@ -34,9 +34,11 @@ using Windows.UI;
 using Windows.UI.Xaml.Controls;
 #endif
 
+using ICommand = System.Windows.Input.ICommand;
+
 namespace SampleControl.Presentation
 {
-	public partial class SampleChooserViewModel : INotifyPropertyChanged
+	public partial class SampleChooserViewModel : System.ComponentModel.INotifyPropertyChanged
 	{
 		private void InitializeCommands()
 		{
