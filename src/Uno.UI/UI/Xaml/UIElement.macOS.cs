@@ -1,22 +1,10 @@
-using CoreAnimation;
-using CoreGraphics;
-using Foundation;
-using Uno.Extensions;
 using Uno.UI.Controls;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
+using Windows.System;
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using Uno.Logging;
-using Uno;
-using Windows.Devices.Input;
-using Windows.UI.Xaml.Controls;
-using Microsoft.Extensions.Logging;
-using Windows.UI.Xaml.Media;
 using Uno.UI.Extensions;
-using Uno.UI;
 using AppKit;
 
 namespace Windows.UI.Xaml
@@ -113,7 +101,7 @@ namespace Windows.UI.Xaml
 
 		private protected override void OnNativeKeyDown(NSEvent evt)
 		{
-			var args = new KeyRoutedEventArgs(this, System.VirtualKeyHelper.FromKeyCode(evt.KeyCode))
+			var args = new KeyRoutedEventArgs(this, VirtualKeyHelper.FromKeyCode(evt.KeyCode))
 			{
 				CanBubbleNatively = false // Only the first responder gets the event
 			};
@@ -125,7 +113,7 @@ namespace Windows.UI.Xaml
 
 		private protected override void OnNativeKeyUp(NSEvent evt)
 		{
-			var args = new KeyRoutedEventArgs(this, System.VirtualKeyHelper.FromKeyCode(evt.KeyCode))
+			var args = new KeyRoutedEventArgs(this, VirtualKeyHelper.FromKeyCode(evt.KeyCode))
 			{
 				CanBubbleNatively = false // Only the first responder gets the event
 			};
