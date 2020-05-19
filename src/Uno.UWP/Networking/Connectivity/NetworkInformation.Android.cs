@@ -157,7 +157,8 @@ namespace Windows.Networking.Connectivity
 				// Task delay should never crash, but just to be sure.
 				if (typeof(NetworkInformation).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
 				{
-					typeof(NetworkInformation).Log().LogError($"Could not raise NetworkStatusChanged - {ex.Message}.");
+					typeof(NetworkInformation).Log().LogError($"Could not raise NetworkStatusChanged", ex);
+
 				}
 			}
 		}
