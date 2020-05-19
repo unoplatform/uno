@@ -305,7 +305,7 @@ namespace Uno.Foundation
 			return InvokeJS(command);
 		}
 
-		private static ImmutableDictionary<long, TaskCompletionSource<string>> _asyncWaitingList = ImmutableDictionary<long, TaskCompletionSource<string>>.Empty;
+		private static readonly Dictionary<long, TaskCompletionSource<string>> _asyncWaitingList = new Dictionary<long, TaskCompletionSource<string>>();
 
 		private static long _nextAsync;
 
@@ -321,7 +321,10 @@ namespace Uno.Foundation
 
 			var tcs = new TaskCompletionSource<string>();
 
-			ImmutableInterlocked.TryAdd(ref _asyncWaitingList, id, tcs);
+			lock (_asyncWaitingList)
+			{
+				_asyncWaitingList[id] = tcs;
+			}
 
 			var js = new[]
 			{
@@ -349,9 +352,13 @@ namespace Uno.Foundation
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void DispatchAsyncResult(long handle, string result)
 		{
-			if (ImmutableInterlocked.TryRemove(ref _asyncWaitingList, handle, out var tcs))
+			lock (_asyncWaitingList)
 			{
-				tcs.TrySetResult(result);
+				if (_asyncWaitingList.TryGetValue(handle, out var tcs))
+				{
+					tcs.TrySetResult(result);
+					_asyncWaitingList.Remove(handle);
+				}
 			}
 		}
 
@@ -359,10 +366,14 @@ namespace Uno.Foundation
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static void DispatchAsyncError(long handle, string error)
 		{
-			if (ImmutableInterlocked.TryRemove(ref _asyncWaitingList, handle, out var tcs))
+			lock (_asyncWaitingList)
 			{
-				var exception = new ApplicationException(error);
-				tcs.TrySetException(exception);
+				if (_asyncWaitingList.TryGetValue(handle, out var tcs))
+				{
+					var exception = new ApplicationException(error);
+					tcs.TrySetException(exception);
+					_asyncWaitingList.Remove(handle);
+				}
 			}
 		}
 
