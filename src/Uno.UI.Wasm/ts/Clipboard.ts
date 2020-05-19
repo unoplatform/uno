@@ -50,22 +50,12 @@ namespace Uno.Utils {
 			return "ok";
 		}
 
-		public static getText(requestId: string): void {
-			if (!Clipboard.dispatchGetContent) {
-				Clipboard.dispatchGetContent = 
-					(<any>Module).mono_bind_static_method(
-						"[Uno] Windows.ApplicationModel.DataTransfer.Clipboard:DispatchGetContent");
-			}
-
+		public static getText(): Promise<string> {			
 			const nav = navigator as NavigatorClipboard;
 			if (nav.clipboard) {
-				const promise = nav.clipboard.readText();
-				promise.then(
-					(clipText : string) => Clipboard.dispatchGetContent(requestId, clipText),
-					(_ : any) => Clipboard.dispatchGetContent(requestId, null));
-			} else {
-				Clipboard.dispatchGetContent(requestId, null);
+				return nav.clipboard.readText();				
 			}
+			return Promise.resolve(null)
 		}
 
 		private static onClipboardChanged() {

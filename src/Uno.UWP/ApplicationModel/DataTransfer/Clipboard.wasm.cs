@@ -9,9 +9,6 @@ namespace Windows.ApplicationModel.DataTransfer
 	{
 		private const string JsType = "Uno.Utils.Clipboard";
 
-		private static Dictionary<string, TaskCompletionSource<string>> _getTextRequests =
-			new Dictionary<string, TaskCompletionSource<string>>();
-
 		public static void Clear() => SetClipboardText(string.Empty);
 
 		public static void SetContent(DataPackage content)
@@ -26,14 +23,10 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			var dataPackageView = new DataPackageView();
 
-			// get clipboard text
-			var getTextRequestId = Guid.NewGuid().ToString();
-			var getTextCompletionSource = new TaskCompletionSource<string>();
-			dataPackageView.SetFormatTask(StandardDataFormats.Text, getTextCompletionSource.Task);
-			_getTextRequests.Add(getTextRequestId, getTextCompletionSource);
-			var command = $"{JsType}.getText(\"{getTextRequestId}\");";
-			WebAssemblyRuntime.InvokeJS(command);
-
+			var command = $"{JsType}.getText()";
+			var getTextTask = WebAssemblyRuntime.InvokeAsync(command);
+			dataPackageView.SetFormatTask(StandardDataFormats.Text, getTextTask);
+			
 			return dataPackageView;
 		}
 
@@ -41,7 +34,6 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			var escapedText = WebAssemblyRuntime.EscapeJs(text);
 			var command = $"{JsType}.setText(\"{escapedText}\");";
-
 			WebAssemblyRuntime.InvokeJS(command);
 		}
 
@@ -60,14 +52,6 @@ namespace Windows.ApplicationModel.DataTransfer
 		public static int DispatchContentChanged()
 		{
 			OnContentChanged();
-			return 0;
-		}
-
-		public static int DispatchGetContent(string requestId, string content)
-		{
-			// If user didn't grant permission, content will be null.
-			// in such case, we just return empty string.
-			_getTextRequests[requestId].SetResult(content ?? "");
 			return 0;
 		}
 	}

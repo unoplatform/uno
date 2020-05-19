@@ -33,22 +33,17 @@ var Uno;
                 }
                 return "ok";
             }
-            static getText(requestId) {
-                if (!Clipboard.dispatchGetContent) {
-                    Clipboard.dispatchGetContent = Module.mono_bind_static_method("[Uno] Windows.ApplicationModel.DataTransfer.Clipboard:DispatchGetContent");
-                }
-                var nav = navigator;
+            static getText() {
+                const nav = navigator;
                 if (nav.clipboard) {
-                    var promise = nav.clipboard.readText();
-                    promise.then((clipText) => Clipboard.dispatchGetContent(requestId, clipText), (_) => Clipboard.dispatchGetContent(requestId, null));
+                    return nav.clipboard.readText();
                 }
-                else {
-                    Clipboard.dispatchGetContent(requestId, null);
-                }
+                return Promise.resolve(null);
             }
             static onClipboardChanged() {
                 if (!Clipboard.dispatchContentChanged) {
-                    Clipboard.dispatchContentChanged = Module.mono_bind_static_method("[Uno] Windows.ApplicationModel.DataTransfer.Clipboard:DispatchContentChanged");
+                    Clipboard.dispatchContentChanged =
+                        Module.mono_bind_static_method("[Uno] Windows.ApplicationModel.DataTransfer.Clipboard:DispatchContentChanged");
                 }
                 Clipboard.dispatchContentChanged();
             }
@@ -2436,6 +2431,48 @@ PointerEvent.prototype.isOverDeep = function (element) {
         }
     }
 };
+var Uno;
+(function (Uno) {
+    var UI;
+    (function (UI) {
+        var Interop;
+        (function (Interop) {
+            class AsyncInteropHelper {
+                static init() {
+                    if (AsyncInteropHelper.dispatchErrorMethod) {
+                        return; // already initialized
+                    }
+                    const w = window;
+                    AsyncInteropHelper.dispatchResultMethod =
+                        w.Module.mono_bind_static_method("[Uno.Foundation] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncResult");
+                    AsyncInteropHelper.dispatchErrorMethod =
+                        w.Module.mono_bind_static_method("[Uno.Foundation] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncError");
+                }
+                static Invoke(handle, promiseFunction) {
+                    AsyncInteropHelper.init();
+                    try {
+                        promiseFunction()
+                            .then(str => {
+                            if (typeof str == "string") {
+                                AsyncInteropHelper.dispatchResultMethod(handle, str);
+                            }
+                            else {
+                                AsyncInteropHelper.dispatchResultMethod(handle, null);
+                            }
+                        })
+                            .catch(err => {
+                            AsyncInteropHelper.dispatchErrorMethod(handle, err);
+                        });
+                    }
+                    catch (err) {
+                        AsyncInteropHelper.dispatchErrorMethod(handle, err);
+                    }
+                }
+            }
+            Interop.AsyncInteropHelper = AsyncInteropHelper;
+        })(Interop = UI.Interop || (UI.Interop = {}));
+    })(UI = Uno.UI || (Uno.UI = {}));
+})(Uno || (Uno = {}));
 var Uno;
 (function (Uno) {
     var Foundation;
