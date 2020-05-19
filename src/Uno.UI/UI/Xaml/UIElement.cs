@@ -572,5 +572,49 @@ namespace Windows.UI.Xaml
 				propertyType: typeof(IList<KeyboardAccelerator>),
 				ownerType: typeof(UIElement),
 				typeMetadata: new PropertyMetadata(null));
+
+#if HAS_UNO_WINUI
+		#region FocusState DependencyProperty
+
+		public FocusState FocusState
+		{
+			get { return (FocusState)GetValue(FocusStateProperty); }
+			internal set { SetValue(FocusStateProperty, value); }
+		}
+
+		public static DependencyProperty FocusStateProperty =
+			DependencyProperty.Register(
+				"FocusState",
+				typeof(FocusState),
+				typeof(UIElement),
+				new PropertyMetadata(
+					(FocusState)FocusState.Unfocused
+				)
+			);
+
+		#endregion
+
+		#region IsTabStop DependencyProperty
+
+		public bool IsTabStop
+		{
+			get { return (bool)GetValue(IsTabStopProperty); }
+			set { SetValue(IsTabStopProperty, value); }
+		}
+
+		public static DependencyProperty IsTabStopProperty =
+			DependencyProperty.Register(
+				"IsTabStop",
+				typeof(bool),
+				typeof(UIElement),
+				new PropertyMetadata(
+					(bool)true,
+					(s, e) => ((Control)s)?.OnIsTabStopChanged((bool)e.OldValue, (bool)e.NewValue)
+				)
+			);
+		#endregion
+
+		private protected virtual void OnIsTabStopChanged(bool oldValue, bool newValue) { }
+#endif
 	}
 }

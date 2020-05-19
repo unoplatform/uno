@@ -681,9 +681,11 @@ namespace Uno.UWPSyncGenerator
 				BaseXamlNamespace + ".Shapes.Path",
 				BaseXamlNamespace + ".Media.ImageBrush",
 				BaseXamlNamespace + ".Media.LinearGradientBrush",
+				BaseXamlNamespace + ".Media.RadialGradientBrush",
 				BaseXamlNamespace + ".Data.RelativeSource",
 				BaseXamlNamespace + ".Controls.Primitives.CarouselPanel",
 				BaseXamlNamespace + ".Controls.MediaPlayerPresenter",
+				BaseXamlNamespace + ".Controls.NavigationViewItemBase",
 			};
 
 			var isSkipped = skippedTypes.Contains(type.BaseType?.ToString());

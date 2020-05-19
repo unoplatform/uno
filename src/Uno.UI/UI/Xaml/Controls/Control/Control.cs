@@ -601,6 +601,7 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+#if !HAS_UNO_WINUI
 		#region FocusState DependencyProperty
 
 		public FocusState FocusState
@@ -640,6 +641,12 @@ namespace Windows.UI.Xaml.Controls
 				)
 			);
 		#endregion
+#else
+		private protected override void OnIsTabStopChanged(bool oldValue, bool newValue)
+		{
+			OnIsFocusableChanged();
+		}
+#endif
 
 		internal protected override void OnDataContextChanged(DependencyPropertyChangedEventArgs e)
 		{

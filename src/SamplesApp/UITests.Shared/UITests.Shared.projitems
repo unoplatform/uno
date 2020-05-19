@@ -5749,4 +5749,8 @@
       <DependentUpon>EventsSequences.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)ItemExclusions.props" />
+  </ItemGroup>
+  <Import Project="ItemExclusions.props" />
 </Project>
