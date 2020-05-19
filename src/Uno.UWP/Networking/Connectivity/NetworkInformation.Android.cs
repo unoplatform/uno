@@ -1,4 +1,5 @@
 ﻿#if __ANDROID__
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security;
@@ -6,41 +7,71 @@ using System.Threading.Tasks;
 using Android;
 using Android.App;
 using Android.Content;
-using Android.Net;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Networking.Connectivity.Internal;
+using Uno.UI;
 using Windows.Extensions;
+using Windows.Networking.Connectivity.Internal;
+using AndroidConnectivityManager = Android.Net.ConnectivityManager;
 
 namespace Windows.Networking.Connectivity
 {
 	public partial class NetworkInformation
 	{
 		private static ConnectivityChangeBroadcastReceiver _connectivityChangeBroadcastReceiver;
+		private static AndroidConnectivityManager _connectivityManager;
+		private static NetworkCallbackListener _networkCallbackListener;
 
 		private static void StartNetworkStatusChanged()
 		{
 			VerifyNetworkStateAccess();
-			_connectivityChangeBroadcastReceiver = new ConnectivityChangeBroadcastReceiver();
 
+			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.N)
+			{
+				// Use NetworkCallback method
+				_connectivityManager = (AndroidConnectivityManager)ContextHelper.Current.GetSystemService(Context.ConnectivityService);
+				_networkCallbackListener = new NetworkCallbackListener();
+				_connectivityManager.RegisterDefaultNetworkCallback(_networkCallbackListener);
+			}
+			else
+			{
 #pragma warning disable CS0618 // Type or member is obsolete
-			Application.Context.RegisterReceiver(
-				_connectivityChangeBroadcastReceiver,
-				new IntentFilter(Android.Net.ConnectivityManager.ConnectivityAction));
+				_connectivityChangeBroadcastReceiver = new ConnectivityChangeBroadcastReceiver();
+
+				Application.Context.RegisterReceiver(
+					_connectivityChangeBroadcastReceiver,
+					new IntentFilter(AndroidConnectivityManager.ConnectivityAction));
 #pragma warning restore CS0618 // Type or member is obsolete
+			}
+
+
 		}
 
 		private static void StopNetworkStatusChanged()
 		{
-			if (_connectivityChangeBroadcastReceiver == null)
+			if (Android.OS.Build.VERSION.SdkInt >= Android.OS.BuildVersionCodes.N)
 			{
-				return;
+				_connectivityManager.UnregisterNetworkCallback(_networkCallbackListener);
+				_networkCallbackListener?.Dispose();
+				_networkCallbackListener = null;
+				_connectivityManager?.Dispose();
+				_connectivityManager = null;
 			}
+			else
+			{
+#pragma warning disable CS0618 // Type or member is obsolete
+				if (_connectivityChangeBroadcastReceiver == null)
+				{
+					return;
+				}
 
-			Application.Context.UnregisterReceiver(
-				_connectivityChangeBroadcastReceiver);
-			_connectivityChangeBroadcastReceiver?.Dispose();
-			_connectivityChangeBroadcastReceiver = null;
+				Application.Context.UnregisterReceiver(
+					_connectivityChangeBroadcastReceiver);
+				_connectivityChangeBroadcastReceiver?.Dispose();
+				_connectivityChangeBroadcastReceiver = null;
+#pragma warning restore CS0618 // Type or member is obsolete
+			}
 		}
 
 		public static IReadOnlyList<HostName> GetHostNames()
@@ -88,7 +119,7 @@ namespace Windows.Networking.Connectivity
 
 							// only these two types; UWP has also 'DomainName' and 'Bluetooth'
 							newHost.Type = (androIPv46) ? HostNameType.Ipv4 : HostNameType.Ipv6;
-							
+
 							newHost.CanonicalName = androCanonical;
 							newHost.RawName = androHostName;
 							newHost.DisplayName = androDisplayName;
@@ -113,20 +144,20 @@ namespace Windows.Networking.Connectivity
 		/// Delay is necessary as network information is not updated before
 		/// the connectivity broadcast on Android is received.
 		/// </summary>
-		internal static async void OnDelayedNetworkStatusChanged()
+		internal static async Task OnDelayedNetworkStatusChanged()
 		{
 			try
 			{
 				// await 300ms to ensure that the the connection manager updates
 				await Task.Delay(300);
-				NetworkInformation.OnNetworkStatusChanged();
+				OnNetworkStatusChanged();
 			}
-			catch
+			catch (Exception ex)
 			{
 				// Task delay should never crash, but just to be sure.
 				if (typeof(NetworkInformation).Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Error))
 				{
-					typeof(NetworkInformation).Log().LogError("Could not raise NetworkStatusChanged.");
+					typeof(NetworkInformation).Log().LogError($"Could not raise NetworkStatusChanged - {ex.Message}.");
 				}
 			}
 		}
@@ -135,7 +166,7 @@ namespace Windows.Networking.Connectivity
 		{
 			if (!PermissionsHelper.IsDeclaredInManifest(Manifest.Permission.AccessNetworkState))
 			{
-				throw new SecurityException(
+				throw new UnauthorizedAccessException(
 					"To access network information, please add " +
 					"android.permission.ACCESS_NETWORK_STATE to application manifest " +
 					"or the following attribute in the Android platform head: " +
