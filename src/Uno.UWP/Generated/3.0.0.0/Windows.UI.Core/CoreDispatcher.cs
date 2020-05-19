@@ -8,20 +8,7 @@ namespace Windows.UI.Core
 	public  partial class CoreDispatcher : global::Windows.UI.Core.ICoreAcceleratorKeys
 	{
 		// Skipping already declared property HasThreadAccess
-		#if false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Core.CoreDispatcherPriority CurrentPriority
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member CoreDispatcherPriority CoreDispatcher.CurrentPriority is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Core.CoreDispatcher", "CoreDispatcherPriority CoreDispatcher.CurrentPriority");
-			}
-		}
-		#endif
+		// Skipping already declared property CurrentPriority
 		// Forced skipping of method Windows.UI.Core.CoreDispatcher.HasThreadAccess.get
 		#if __ANDROID__ || __IOS__ || false || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]

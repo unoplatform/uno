@@ -106,15 +106,15 @@ namespace Uno.UI.Samples.Controls
 		{
 			var sizeHint = GetChildSizeHint(child);
 
-			if (sizeHint.IsStar)
+			if (GridLengthHelper.GetIsStar(sizeHint))
 			{
 				starTotal += sizeHint.Value;
 			}
-			else if (sizeHint.IsAuto)
+			else if (GridLengthHelper.GetIsAuto(sizeHint))
 			{
 				MesureChildAuto(child, orientation, availableSize, ref totalSize);
 			}
-			else if (sizeHint.IsAbsolute)
+			else if (GridLengthHelper.GetIsAbsolute(sizeHint))
 			{
 				MesureChildAbsolute(child, orientation, availableSize, sizeHint, ref totalSize);
 			}
@@ -178,7 +178,7 @@ namespace Uno.UI.Samples.Controls
 				foreach (UIElement child in children)
 				{
 					var sizeHint = GetChildSizeHint(child);
-					if (sizeHint.IsStar)
+					if (GridLengthHelper.GetIsStar(sizeHint))
 					{
 						MesureChildStar(child, orientation, availableSize, sizeHint, starTotal, ref totalSize);
 					}
@@ -298,15 +298,15 @@ namespace Uno.UI.Samples.Controls
 			var sizeHint = GetChildSizeHint(child);
 			var size = new Size();
 
-			if (sizeHint.IsStar)
+			if (GridLengthHelper.GetIsStar(sizeHint))
 			{
 				starTotal += sizeHint.Value;
 			}
-			else if (sizeHint.IsAuto)
+			else if (GridLengthHelper.GetIsAuto(sizeHint))
 			{
 				ComputeChildAutoSize(child, orientation, ref finalSize, ref totalLength, ref size);
 			}
-			else if (sizeHint.IsAbsolute)
+			else if (GridLengthHelper.GetIsAbsolute(sizeHint))
 			{
 				ComputeChildAbsoluteSize(orientation, ref finalSize, ref totalLength, ref sizeHint, ref size);
 			}
@@ -409,7 +409,7 @@ namespace Uno.UI.Samples.Controls
 		{
 			var size = record.Size;
 
-			if (record.SizeHint.IsStar)
+			if (GridLengthHelper.GetIsStar(record.SizeHint))
 			{
 				var portion = record.SizeHint.Value * starRatio;
 
@@ -550,7 +550,7 @@ namespace Uno.UI.Samples.Controls
 			{
 				if (string.IsNullOrEmpty(part))
 				{
-					result.Add(new GridLength(0, GridUnitType.Auto));
+					result.Add(GridLengthHelper.FromValueAndType(0, GridUnitType.Auto));
 					continue;
 				}
 
@@ -563,7 +563,7 @@ namespace Uno.UI.Samples.Controls
 				var autoGroup = match.Groups["auto"];
 				if (autoGroup.Success)
 				{
-					result.Add(new GridLength(0, GridUnitType.Auto));
+					result.Add(GridLengthHelper.FromValueAndType(0, GridUnitType.Auto));
 					continue;
 				}
 
@@ -574,14 +574,14 @@ namespace Uno.UI.Samples.Controls
 						!string.IsNullOrWhiteSpace(starsGroup.Value)
 							? double.Parse(starsGroup.Value, CultureInfo.InvariantCulture)
 							: 1;
-					result.Add(new GridLength(value, GridUnitType.Star));
+					result.Add(GridLengthHelper.FromValueAndType(value, GridUnitType.Star));
 					continue;
 				}
 
 				var starGroup = match.Groups["star"];
 				if (starGroup.Success)
 				{
-					result.Add(new GridLength(1, GridUnitType.Star));
+					result.Add(GridLengthHelper.FromValueAndType(1, GridUnitType.Star));
 					continue;
 				}
 
@@ -589,7 +589,7 @@ namespace Uno.UI.Samples.Controls
 				if (absGroup.Success)
 				{
 					var value = double.Parse(absGroup.Value, CultureInfo.InvariantCulture);
-					result.Add(new GridLength(value, GridUnitType.Pixel));
+					result.Add(GridLengthHelper.FromValueAndType(value, GridUnitType.Pixel));
 					continue;
 				}
 
@@ -631,7 +631,7 @@ namespace Uno.UI.Samples.Controls
 			"Size",
 			typeof(GridLength),
 			typeof(StarStackPanel),
-			new PropertyMetadata(GridLength.Auto, HandleSizePropertyChanged)
+			new PropertyMetadata(GridLengthHelper.Auto, HandleSizePropertyChanged)
 		);
 
 		private static void HandleSizePropertyChanged(DependencyObject d, DependencyPropertyChangedEventArgs e)

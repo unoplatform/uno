@@ -139,6 +139,27 @@ namespace Windows.Storage
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.KnownFoldersAccessStatus> RequestAccessAsync( global::Windows.Storage.KnownFolderId folderId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<KnownFoldersAccessStatus> KnownFolders.RequestAccessAsync(KnownFolderId folderId) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.KnownFoldersAccessStatus> RequestAccessForUserAsync( global::Windows.System.User user,  global::Windows.Storage.KnownFolderId folderId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<KnownFoldersAccessStatus> KnownFolders.RequestAccessForUserAsync(User user, KnownFolderId folderId) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderAsync( global::Windows.Storage.KnownFolderId folderId)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> KnownFolders.GetFolderAsync(KnownFolderId folderId) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFolder> GetFolderForUserAsync( global::Windows.System.User user,  global::Windows.Storage.KnownFolderId folderId)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFolder> KnownFolders.GetFolderForUserAsync(User user, KnownFolderId folderId) is not implemented in Uno.");

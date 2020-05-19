@@ -14,5 +14,15 @@ namespace Windows.UI.Input
 		public PointerDeviceType PointerDeviceType { get; }
 
 		public Point Position { get; }
+
+		[global::Uno.NotImplemented]
+		public uint ContactCount
+		{
+			get
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Input.RightTappedEventArgs", "uint RightTappedEventArgs.ContactCount");
+				return 0;
+			}
+		}
 	}
 }

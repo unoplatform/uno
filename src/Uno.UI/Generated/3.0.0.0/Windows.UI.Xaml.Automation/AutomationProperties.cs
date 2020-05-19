@@ -23,6 +23,7 @@ namespace Windows.UI.Xaml.Automation
 			typeof(global::Windows.UI.Xaml.Automation.AutomationProperties), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
+		// Skipping already declared property AutomationIdProperty
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty HelpTextProperty { get; } = 
@@ -429,6 +430,9 @@ namespace Windows.UI.Xaml.Automation
 			element.SetValue(AccessKeyProperty, value);
 		}
 		#endif
+		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.AutomationIdProperty.get
+		// Skipping already declared method Windows.UI.Xaml.Automation.AutomationProperties.GetAutomationId(Windows.UI.Xaml.DependencyObject)
+		// Skipping already declared method Windows.UI.Xaml.Automation.AutomationProperties.SetAutomationId(Windows.UI.Xaml.DependencyObject, string)
 		// Forced skipping of method Windows.UI.Xaml.Automation.AutomationProperties.HelpTextProperty.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]

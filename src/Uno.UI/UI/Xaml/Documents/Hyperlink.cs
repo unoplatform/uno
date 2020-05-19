@@ -8,6 +8,7 @@ using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Uno.UI;
+using Windows.UI;
 
 namespace Windows.UI.Xaml.Documents
 {
@@ -90,8 +91,8 @@ namespace Windows.UI.Xaml.Documents
 		private void OnUnderlineStyleChanged()
 		{
 			TextDecorations = UnderlineStyle == UnderlineStyle.Single
-				? Text.TextDecorations.Underline
-				: Text.TextDecorations.None;
+				? Windows.UI.Text.TextDecorations.Underline
+				: Windows.UI.Text.TextDecorations.None;
 		}
 
 		#endregion

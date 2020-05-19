@@ -57,6 +57,16 @@ namespace Windows.Devices.PointOfService
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::System.Collections.Generic.IReadOnlyList<uint> SupportedBarcodeSymbologies
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member IReadOnlyList<uint> PosPrinter.SupportedBarcodeSymbologies is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.DeviceId.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.Capabilities.get
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.SupportedCharacterSets.get
@@ -85,6 +95,14 @@ namespace Windows.Devices.PointOfService
 		#endif
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.StatusUpdated.add
 		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.StatusUpdated.remove
+		// Forced skipping of method Windows.Devices.PointOfService.PosPrinter.SupportedBarcodeSymbologies.get
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Devices.PointOfService.PosPrinterFontProperty GetFontProperty( string typeface)
+		{
+			throw new global::System.NotImplementedException("The member PosPrinterFontProperty PosPrinter.GetFontProperty(string typeface) is not implemented in Uno.");
+		}
+		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void Dispose()

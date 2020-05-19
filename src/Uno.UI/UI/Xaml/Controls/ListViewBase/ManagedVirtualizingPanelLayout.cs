@@ -54,7 +54,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Get the index of the next item that has not yet been materialized in the nominated fill direction. Returns null if there are no more available items in the source.
 		/// </summary>
-		protected IndexPath? GetNextUnmaterializedItem(GeneratorDirection fillDirection, IndexPath? currentMaterializedItem)
+		protected Uno.UI.IndexPath? GetNextUnmaterializedItem(GeneratorDirection fillDirection, Uno.UI.IndexPath? currentMaterializedItem)
 		{
 			return XamlParent?.GetNextItemIndex(currentMaterializedItem, fillDirection == GeneratorDirection.Forward ? 1 : -1);
 		}

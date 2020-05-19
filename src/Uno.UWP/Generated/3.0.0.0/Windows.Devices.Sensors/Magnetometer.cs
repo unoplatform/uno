@@ -71,6 +71,16 @@ namespace Windows.Devices.Sensors
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.Devices.Sensors.MagnetometerDataThreshold ReportThreshold
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member MagnetometerDataThreshold Magnetometer.ReportThreshold is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  string DeviceId
 		{
 			get
@@ -97,6 +107,7 @@ namespace Windows.Devices.Sensors
 		// Forced skipping of method Windows.Devices.Sensors.Magnetometer.ReportLatency.set
 		// Forced skipping of method Windows.Devices.Sensors.Magnetometer.ReportLatency.get
 		// Forced skipping of method Windows.Devices.Sensors.Magnetometer.MaxBatchSize.get
+		// Forced skipping of method Windows.Devices.Sensors.Magnetometer.ReportThreshold.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelector()

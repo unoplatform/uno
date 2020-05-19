@@ -47,6 +47,16 @@ namespace Windows.ApplicationModel.AppService
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  string CallerRemoteConnectionToken
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member string AppServiceTriggerDetails.CallerRemoteConnectionToken is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.Name.get
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.CallerPackageFamilyName.get
 		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.AppServiceConnection.get
@@ -58,5 +68,6 @@ namespace Windows.ApplicationModel.AppService
 			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> AppServiceTriggerDetails.CheckCallerForCapabilityAsync(string capabilityName) is not implemented in Uno.");
 		}
 		#endif
+		// Forced skipping of method Windows.ApplicationModel.AppService.AppServiceTriggerDetails.CallerRemoteConnectionToken.get
 	}
 }

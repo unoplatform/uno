@@ -4,7 +4,7 @@ The Uno Platform provides a set of command line templates to create cross platfo
 
 To install the templates, type the following:
 ```
-dotnet new -i Uno.ProjectTemplates.Dotnet::2.2
+dotnet new -i Uno.ProjectTemplates.Dotnet::2.4
 ```
 
 If you need to determine the parameters available for a template use `dotnet new [templatename] -h`.
@@ -22,6 +22,15 @@ A more advanced example which will not generate the android and macOS heads:
 
 ```
 dotnet new unoapp -o MyApp -android=false -macos=false
+```
+
+## Uno Platform Blank Application for WinUI 3.0 - Preview
+
+This template can be used to create a blank cross-platform application for iOS, Android, WebAssembly and macOS which uses the new WinUI 3.0 apis.
+
+A basic example:
+```
+dotnet new unoapp-winui -o MyApp
 ```
 
 ## Uno Platform Blank Prism Application

@@ -19,15 +19,15 @@ namespace Windows.Web.Http.Headers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::System.DateTimeOffset? Date
+		public  global::Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue RetryAfter
 		{
 			get
 			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpResponseHeaderCollection.Date is not implemented in Uno.");
+				throw new global::System.NotImplementedException("The member HttpDateOrDeltaHeaderValue HttpResponseHeaderCollection.RetryAfter is not implemented in Uno.");
 			}
 			set
 			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpResponseHeaderCollection", "DateTimeOffset? HttpResponseHeaderCollection.Date");
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpResponseHeaderCollection", "HttpDateOrDeltaHeaderValue HttpResponseHeaderCollection.RetryAfter");
 			}
 		}
 		#endif
@@ -47,6 +47,20 @@ namespace Windows.Web.Http.Headers
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::System.DateTimeOffset? Date
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member DateTimeOffset? HttpResponseHeaderCollection.Date is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpResponseHeaderCollection", "DateTimeOffset? HttpResponseHeaderCollection.Date");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  global::System.TimeSpan? Age
 		{
 			get
@@ -56,20 +70,6 @@ namespace Windows.Web.Http.Headers
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpResponseHeaderCollection", "TimeSpan? HttpResponseHeaderCollection.Age");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  global::Windows.Web.Http.Headers.HttpDateOrDeltaHeaderValue RetryAfter
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member HttpDateOrDeltaHeaderValue HttpResponseHeaderCollection.RetryAfter is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Web.Http.Headers.HttpResponseHeaderCollection", "HttpDateOrDeltaHeaderValue HttpResponseHeaderCollection.RetryAfter");
 			}
 		}
 		#endif

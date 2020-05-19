@@ -97,6 +97,26 @@ namespace Windows.Devices.Bluetooth
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsExtendedAdvertisingSupported
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool BluetoothAdapter.IsExtendedAdvertisingSupported is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  uint MaxAdvertisementDataLength
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint BluetoothAdapter.MaxAdvertisementDataLength is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.DeviceId.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.BluetoothAddress.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsClassicSupported.get
@@ -113,6 +133,8 @@ namespace Windows.Devices.Bluetooth
 		#endif
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.AreClassicSecureConnectionsSupported.get
 		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.AreLowEnergySecureConnectionsSupported.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.IsExtendedAdvertisingSupported.get
+		// Forced skipping of method Windows.Devices.Bluetooth.BluetoothAdapter.MaxAdvertisementDataLength.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelector()

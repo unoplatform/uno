@@ -20,24 +20,11 @@ namespace Windows.UI.Xaml.Controls
 				this.SetValue(PasswordCharProperty, value);
 			}
 		}
-#endif
+		#endif
 		// Skipping already declared property Password
 		// Skipping already declared property MaxLength
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  bool IsPasswordRevealButtonEnabled
-		{
-			get
-			{
-				return (bool)this.GetValue(IsPasswordRevealButtonEnabledProperty);
-			}
-			set
-			{
-				this.SetValue(IsPasswordRevealButtonEnabledProperty, value);
-			}
-		}
-#endif
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		// Skipping already declared property IsPasswordRevealButtonEnabled
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.SolidColorBrush SelectionHighlightColor
 		{
@@ -134,21 +121,14 @@ namespace Windows.UI.Xaml.Controls
 				return (bool)this.GetValue(CanPasteClipboardContentProperty);
 			}
 		}
-#endif
-#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public static global::Windows.UI.Xaml.DependencyProperty IsPasswordRevealButtonEnabledProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			"IsPasswordRevealButtonEnabled", typeof(bool), 
-			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
-			new FrameworkPropertyMetadata(default(bool)));
-#endif
+		#endif
+		// Skipping already declared property IsPasswordRevealButtonEnabledProperty
 		// Skipping already declared property MaxLengthProperty
-#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PasswordCharProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PasswordChar", typeof(string), 
+			nameof(PasswordChar), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif
@@ -160,7 +140,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PreventKeyboardDisplayOnProgrammaticFocus", typeof(bool), 
+			nameof(PreventKeyboardDisplayOnProgrammaticFocus), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -168,7 +148,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectionHighlightColorProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectionHighlightColor", typeof(global::Windows.UI.Xaml.Media.SolidColorBrush), 
+			nameof(SelectionHighlightColor), typeof(global::Windows.UI.Xaml.Media.SolidColorBrush), 
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.SolidColorBrush)));
 		#endif
@@ -177,7 +157,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty PasswordRevealModeProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"PasswordRevealMode", typeof(global::Windows.UI.Xaml.Controls.PasswordRevealMode), 
+			nameof(PasswordRevealMode), typeof(global::Windows.UI.Xaml.Controls.PasswordRevealMode), 
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.PasswordRevealMode)));
 		#endif
@@ -185,7 +165,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TextReadingOrderProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TextReadingOrder", typeof(global::Windows.UI.Xaml.TextReadingOrder), 
+			nameof(TextReadingOrder), typeof(global::Windows.UI.Xaml.TextReadingOrder), 
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.TextReadingOrder)));
 		#endif
@@ -193,7 +173,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty CanPasteClipboardContentProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"CanPasteClipboardContent", typeof(bool), 
+			nameof(CanPasteClipboardContent), typeof(bool), 
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(bool)));
 		#endif
@@ -201,7 +181,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty DescriptionProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"Description", typeof(object), 
+			nameof(Description), typeof(object), 
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(object)));
 		#endif
@@ -209,7 +189,7 @@ namespace Windows.UI.Xaml.Controls
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty SelectionFlyoutProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"SelectionFlyout", typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
+			nameof(SelectionFlyout), typeof(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase), 
 			typeof(global::Windows.UI.Xaml.Controls.PasswordBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Controls.Primitives.FlyoutBase)));
 		#endif

@@ -7,6 +7,8 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Markup;
 
+using ICommand = System.Windows.Input.ICommand;
+
 namespace Windows.UI.Xaml.Controls
 {
 	public class CommandingHelpers

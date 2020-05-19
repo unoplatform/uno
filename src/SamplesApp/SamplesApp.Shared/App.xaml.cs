@@ -206,6 +206,7 @@ namespace SamplesApp
 					{
 						{ "Uno", LogLevel.Warning },
 						{ "Windows", LogLevel.Warning },
+						{ "Microsoft", LogLevel.Warning },
 
 						// RemoteControl and HotReload related
 						{ "Uno.UI.RemoteControl", LogLevel.Information },

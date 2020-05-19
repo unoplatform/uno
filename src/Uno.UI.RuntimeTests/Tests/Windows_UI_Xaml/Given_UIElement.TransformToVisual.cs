@@ -32,9 +32,9 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			FrameworkElement container = new Border
 			{
 				Child = inner,
-				Margin = new Thickness(1, 3, 5, 7),
-				Padding = new Thickness(11, 13, 17, 19),
-				BorderThickness = new Thickness(23),
+				Margin = ThicknessHelper.FromLengths(1, 3, 5, 7),
+				Padding = ThicknessHelper.FromLengths(11, 13, 17, 19),
+				BorderThickness = ThicknessHelper.FromUniformLength(23),
 				HorizontalAlignment = HorizontalAlignment.Right,
 				VerticalAlignment = VerticalAlignment.Bottom,
 				Background = new SolidColorBrush(Colors.DarkSalmon)
@@ -42,8 +42,8 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 			FrameworkElement outer = new Border
 			{
 				Child = container,
-				Padding = new Thickness(8),
-				BorderThickness = new Thickness(2),
+				Padding = ThicknessHelper.FromUniformLength(8),
+				BorderThickness = ThicknessHelper.FromUniformLength(2),
 				Width = 300,
 				Height = 300,
 				Background = new SolidColorBrush(Colors.MediumSeaGreen)

@@ -387,7 +387,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Get the index for the next item after <paramref name="currentItem"/>.
 		/// </summary>
-		internal IndexPath? GetNextItemIndex(IndexPath? currentItem, int direction)
+		internal Uno.UI.IndexPath? GetNextItemIndex(Uno.UI.IndexPath? currentItem, int direction)
 		{
 			if (!HasItems)
 			{
@@ -400,7 +400,7 @@ namespace Windows.UI.Xaml.Controls
 				if (direction == 1)
 				{
 					var firstNonEmptySection = IsGrouping ? GetNextNonEmptySection(-1, 1).Value : 0;
-					return IndexPath.FromRowSection(0, firstNonEmptySection);
+					return Uno.UI.IndexPath.FromRowSection(0, firstNonEmptySection);
 				}
 				else
 				{
@@ -419,7 +419,7 @@ namespace Windows.UI.Xaml.Controls
 			throw new ArgumentOutOfRangeException(nameof(direction));
 		}
 
-		private IndexPath? GetIncrementedItemIndex(IndexPath currentItem)
+		private Uno.UI.IndexPath? GetIncrementedItemIndex(Uno.UI.IndexPath currentItem)
 		{
 			if (!IsGrouping)
 			{
@@ -432,7 +432,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					return null;
 				}
-				return IndexPath.FromRowSection(currentItem.Row + 1, 0);
+				return Uno.UI.IndexPath.FromRowSection(currentItem.Row + 1, 0);
 			}
 
 			if (currentItem.Row == GetDisplayGroupCount(currentItem.Section) - 1)
@@ -443,12 +443,12 @@ namespace Windows.UI.Xaml.Controls
 					//No more non-empty sections
 					return null;
 				}
-				return IndexPath.FromRowSection(0, nextSection.Value);
+				return Uno.UI.IndexPath.FromRowSection(0, nextSection.Value);
 			}
-			return IndexPath.FromRowSection(currentItem.Row + 1, currentItem.Section);
+			return Uno.UI.IndexPath.FromRowSection(currentItem.Row + 1, currentItem.Section);
 		}
 
-		private IndexPath? GetDecrementedItemIndex(IndexPath currentItem)
+		private Uno.UI.IndexPath? GetDecrementedItemIndex(Uno.UI.IndexPath currentItem)
 		{
 			if (!IsGrouping)
 			{
@@ -460,7 +460,7 @@ namespace Windows.UI.Xaml.Controls
 				{
 					return null;
 				}
-				return IndexPath.FromRowSection(currentItem.Row - 1, 0);
+				return Uno.UI.IndexPath.FromRowSection(currentItem.Row - 1, 0);
 			}
 			if (currentItem.Row == 0)
 			{
@@ -470,9 +470,9 @@ namespace Windows.UI.Xaml.Controls
 					//No previous non-empty sections
 					return null;
 				}
-				return IndexPath.FromRowSection(GetDisplayGroupCount(nextSection.Value) - 1, nextSection.Value);
+				return Uno.UI.IndexPath.FromRowSection(GetDisplayGroupCount(nextSection.Value) - 1, nextSection.Value);
 			}
-			return IndexPath.FromRowSection(currentItem.Row - 1, currentItem.Section);
+			return Uno.UI.IndexPath.FromRowSection(currentItem.Row - 1, currentItem.Section);
 		}
 
 		/// <summary>
@@ -482,7 +482,7 @@ namespace Windows.UI.Xaml.Controls
 		/// 
 		/// Note that the <see cref="IndexPath"/> is still the 'display' value in that it doesn't 'know about' empty groups if HidesIfEmpty is set to true.
 		/// </summary>
-		internal int GetIndexFromIndexPath(IndexPath indexPath)
+		internal int GetIndexFromIndexPath(Uno.UI.IndexPath indexPath)
 		{
 			if (indexPath.Section == 0)
 			{
@@ -500,11 +500,11 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Convert flat item index to (group, index in group)
 		/// </summary>
-		internal IndexPath? GetIndexPathFromIndex(int index)
+		internal Uno.UI.IndexPath? GetIndexPathFromIndex(int index)
 		{
 			if (!IsGrouping)
 			{
-				return IndexPath.FromRowSection(index, 0);
+				return Uno.UI.IndexPath.FromRowSection(index, 0);
 			}
 
 			int row = index;
@@ -513,7 +513,7 @@ namespace Windows.UI.Xaml.Controls
 				var groupCount = GetDisplayGroupCount(i);
 				if (row < groupCount)
 				{
-					return IndexPath.FromRowSection(row, i);
+					return Uno.UI.IndexPath.FromRowSection(row, i);
 				}
 				else
 				{
@@ -542,7 +542,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Get the last item in the source, or null if the source is empty.
 		/// </summary>
-		internal IndexPath? GetLastItem()
+		internal Uno.UI.IndexPath? GetLastItem()
 		{
 			if (!IsGrouping)
 			{
@@ -552,7 +552,7 @@ namespace Windows.UI.Xaml.Controls
 					return null;
 				}
 
-				return IndexPath.FromRowSection(itemCount - 1, 0);
+				return Uno.UI.IndexPath.FromRowSection(itemCount - 1, 0);
 			}
 
 			for (int i = NumberOfDisplayGroups - 1; i >= 0; i--)
@@ -560,7 +560,7 @@ namespace Windows.UI.Xaml.Controls
 				var count = GetDisplayGroupCount(i);
 				if (count > 0)
 				{
-					return IndexPath.FromRowSection(count - 1, i);
+					return Uno.UI.IndexPath.FromRowSection(count - 1, i);
 				}
 			}
 
@@ -737,7 +737,7 @@ namespace Windows.UI.Xaml.Controls
 						group.GroupItems.VectorChanged += onVectorChanged;
 					}
 
-					if (group is INotifyPropertyChanged bindableGroup)
+					if (group is global::System.ComponentModel.INotifyPropertyChanged bindableGroup)
 					{
 						Disposable.Create(() =>
 							bindableGroup.PropertyChanged -= onPropertyChanged
@@ -746,7 +746,7 @@ namespace Windows.UI.Xaml.Controls
 						bindableGroup.PropertyChanged += onPropertyChanged;
 						OnGroupPropertyChanged(group, insideLoop);
 
-						void onPropertyChanged(object sender, PropertyChangedEventArgs e)
+						void onPropertyChanged(object sender, global::System.ComponentModel.PropertyChangedEventArgs e)
 						{
 							if (e.PropertyName == "Group")
 							{
@@ -1221,7 +1221,7 @@ namespace Windows.UI.Xaml.Controls
 			return ItemsPanelRoot?.Children.OfType<DependencyObject>() ?? Enumerable.Empty<DependencyObject>();
 		}
 
-		internal object GetDisplayItemFromIndexPath(IndexPath indexPath)
+		internal object GetDisplayItemFromIndexPath(Uno.UI.IndexPath indexPath)
 		{
 			if (!IsGrouping)
 			{
@@ -1246,7 +1246,7 @@ namespace Windows.UI.Xaml.Controls
 			return items?.ElementAtOrDefault(index);
 		}
 
-		internal IndexPath GetIndexPathFromItem(object item)
+		internal Uno.UI.IndexPath GetIndexPathFromItem(object item)
 		{
 			var unwrappedSource = UnwrapItemsSource();
 
@@ -1257,7 +1257,7 @@ namespace Windows.UI.Xaml.Controls
 
 			var index = GetItems()?.IndexOf(item) ?? -1;
 
-			return IndexPath.FromRowSection(index, 0);
+			return Uno.UI.IndexPath.FromRowSection(index, 0);
 		}
 
 		internal ICollectionViewGroup GetGroupAtDisplaySection(int displaySection)

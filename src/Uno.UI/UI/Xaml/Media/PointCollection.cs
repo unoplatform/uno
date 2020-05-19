@@ -1,23 +1,22 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Text;
 using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Media
 {
-	public partial class PointCollection : IEnumerable<Windows.Foundation.Point>, IList<Windows.Foundation.Point>
+	public partial class PointCollection : IEnumerable<Point>, IList<Point>
 	{
-		private List<Windows.Foundation.Point> _coords;
+		private List<Point> _coords;
 
 		public PointCollection()
 		{
-			_coords = new List<Foundation.Point>();
+			_coords = new List<Point>();
 		}
 
-		public PointCollection(IEnumerable<Windows.Foundation.Point> coordinates)
+		public PointCollection(IEnumerable<Point> coordinates)
 		{
 			_coords = coordinates.ToList();
 		}
@@ -26,7 +25,7 @@ namespace Windows.UI.Xaml.Media
 
 		public bool IsReadOnly => false;
 
-		public Windows.Foundation.Point this[int i]
+		public Point this[int i]
 		{
 			get => _coords[i];
 			set => _coords[i] = value;
@@ -61,11 +60,11 @@ namespace Windows.UI.Xaml.Media
 			}
 
 			// Construct PointCollection
-			var points = new List<Windows.Foundation.Point>();
+			var points = new List<Point>();
 
 			for (int i = 0; i < values.Length; i += 2)
 			{
-				points.Add(new Windows.Foundation.Point { X = values[i], Y = values[i + 1] });
+				points.Add(new Point { X = values[i], Y = values[i + 1] });
 			}
 
 			return new PointCollection(points);
@@ -76,7 +75,7 @@ namespace Windows.UI.Xaml.Media
 			StringBuilder sb = new StringBuilder();
 
 			sb.Append("[");
-			foreach (Windows.Foundation.Point p in _coords)
+			foreach (Point p in _coords)
 			{
 				sb.Append(p.X + "," + p.Y + " ");
 			}
@@ -85,30 +84,30 @@ namespace Windows.UI.Xaml.Media
 			return sb.ToString();
 		}
 
-		public IEnumerator<Windows.Foundation.Point> GetEnumerator()
+		public IEnumerator<Point> GetEnumerator()
 		{
-			return ((IEnumerable<Windows.Foundation.Point>)_coords).GetEnumerator();
+			return ((IEnumerable<Point>)_coords).GetEnumerator();
 		}
 
 		IEnumerator IEnumerable.GetEnumerator()
 		{
-			return ((IEnumerable<Windows.Foundation.Point>)_coords).GetEnumerator();
+			return ((IEnumerable<Point>)_coords).GetEnumerator();
 		}
 
-		public int IndexOf(Foundation.Point item) => _coords.IndexOf(item);
+		public int IndexOf(Point item) => _coords.IndexOf(item);
 
-		public void Insert(int index, Foundation.Point item) => _coords.Insert(index, item);
+		public void Insert(int index, Point item) => _coords.Insert(index, item);
 
 		public void RemoveAt(int index) => _coords.RemoveAt(index);
 
-		public void Add(Foundation.Point item) => _coords.Add(item);
+		public void Add(Point item) => _coords.Add(item);
 
 		public void Clear() => _coords.Clear();
 
-		public bool Contains(Foundation.Point item) => _coords.Contains(item);
+		public bool Contains(Point item) => _coords.Contains(item);
 
-		public void CopyTo(Foundation.Point[] array, int arrayIndex) => _coords.CopyTo(array, arrayIndex);
+		public void CopyTo(Point[] array, int arrayIndex) => _coords.CopyTo(array, arrayIndex);
 
-		public bool Remove(Foundation.Point item) => _coords.Remove(item);
+		public bool Remove(Point item) => _coords.Remove(item);
 	}
 }

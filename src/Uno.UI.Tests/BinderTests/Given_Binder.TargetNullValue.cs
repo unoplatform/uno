@@ -127,9 +127,9 @@ namespace Uno.UI.Tests.BinderTests
 			}
 		}
 
-		public class ViewModel : INotifyPropertyChanged
+		public class ViewModel : System.ComponentModel.INotifyPropertyChanged
 		{
-			public event PropertyChangedEventHandler PropertyChanged;
+			public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 			public string NullValue => null;
 

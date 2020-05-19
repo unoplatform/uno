@@ -166,8 +166,13 @@ namespace UnoSolutionTemplate
 					IVsPackageInstallerServices installerServices = componentModel.GetService<IVsPackageInstallerServices>();
 					var installedPackages = installerServices.GetInstalledPackages();
 
+					var remoteControlPackages = new[] {
+						"Uno.UI.RemoteControl",
+						"Uno.WinUI.RemoteControl",
+					};
+
 					var unoNuGetPackage = installedPackages
-						.Where(p => p.Id.Equals("Uno.UI.RemoteControl", StringComparison.OrdinalIgnoreCase))
+						.Where(p => remoteControlPackages.Any(rcp => p.Id.Equals(rcp, StringComparison.OrdinalIgnoreCase)))
 						.OrderByDescending(p => p.VersionString)
 						.LastOrDefault();
 
@@ -175,7 +180,7 @@ namespace UnoSolutionTemplate
 					{
 						if (string.IsNullOrWhiteSpace(unoNuGetPackage.InstallPath.Trim()))
 						{
-							_infoAction("The Uno.UI.RemoteControl package has not been restored yet, retrying...");
+							_infoAction("The Uno.WinUI.RemoteControl or Uno.UI.RemoteControl package has not been restored yet, retrying...");
 						}
 						else
 						{
@@ -200,7 +205,7 @@ namespace UnoSolutionTemplate
 									this,
 									(Action<Func<Task<Dictionary<string, string>>>>)SetGlobalVariablesProvider) as IDisposable;
 
-								_infoAction($"Loaded the Uno.UI Remote Control service ({unoNuGetPackage.VersionString}).");
+								_infoAction($"Loaded the {unoNuGetPackage.Id} Remote Control service ({unoNuGetPackage.VersionString}).");
 							}
 							else
 							{

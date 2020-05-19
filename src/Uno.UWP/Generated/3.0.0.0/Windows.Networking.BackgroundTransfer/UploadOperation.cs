@@ -151,6 +151,20 @@ namespace Windows.Networking.BackgroundTransfer
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.UploadOperation", "void UploadOperation.MakeCurrentInTransferGroup()");
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void SetRequestHeader( string headerName,  string headerValue)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.UploadOperation", "void UploadOperation.SetRequestHeader(string headerName, string headerValue)");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  void RemoveRequestHeader( string headerName)
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.BackgroundTransfer.UploadOperation", "void UploadOperation.RemoveRequestHeader(string headerName)");
+		}
+		#endif
 		// Processing: Windows.Networking.BackgroundTransfer.IBackgroundTransferOperation
 		// Processing: Windows.Networking.BackgroundTransfer.IBackgroundTransferOperationPriority
 	}

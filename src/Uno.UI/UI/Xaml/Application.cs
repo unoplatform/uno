@@ -5,6 +5,8 @@ using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Controls.Primitives;
+using Windows.ApplicationModel.Core;
+using Windows.ApplicationModel;
 
 namespace Windows.UI.Xaml
 {
@@ -96,7 +98,7 @@ namespace Windows.UI.Xaml
 
 		internal void OnResuming()
 		{
-			ApplicationModel.Core.CoreApplication.RaiseResuming();
+			CoreApplication.RaiseResuming();
 
 			OnResumingPartial();
 		}
@@ -105,7 +107,7 @@ namespace Windows.UI.Xaml
 
 		internal void OnSuspending()
 		{
-			ApplicationModel.Core.CoreApplication.RaiseSuspending(new ApplicationModel.SuspendingEventArgs(new ApplicationModel.SuspendingOperation(DateTime.Now.AddSeconds(30))));
+			CoreApplication.RaiseSuspending(new SuspendingEventArgs(new SuspendingOperation(DateTime.Now.AddSeconds(30))));
 
 			OnSuspendingPartial();
 		}

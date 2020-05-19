@@ -9,6 +9,7 @@ namespace UITests.Shared.Windows_UI_Xaml
 	[SampleControlInfo("WebView", "WebView_Alert", typeof(WebViewViewModel))]
 	public sealed partial class WebView_Alert : Page
 	{
+#if HAS_UNO
 		public WebView_Alert()
 		{
 			this.InitializeComponent();
@@ -19,5 +20,6 @@ namespace UITests.Shared.Windows_UI_Xaml
 			var html = (DataContext as WebViewViewModel).AlertHtml;
 			web.NavigateToString(html);
 		}
+#endif
 	}
 }

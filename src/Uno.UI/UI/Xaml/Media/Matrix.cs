@@ -5,7 +5,7 @@ using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Media
 {
-	public struct Matrix : IFormattable
+	public partial struct Matrix : IFormattable
 	{
 		internal Matrix3x2 Inner;
 

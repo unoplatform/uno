@@ -197,6 +197,16 @@ namespace Windows.Devices.Display
 			}
 		}
 		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsDolbyVisionSupportedInHdrMode
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member bool DisplayMonitor.IsDolbyVisionSupportedInHdrMode is not implemented in Uno.");
+			}
+		}
+		#endif
 		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.DeviceId.get
 		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.DisplayName.get
 		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.ConnectionKind.get
@@ -223,6 +233,7 @@ namespace Windows.Devices.Display
 			throw new global::System.NotImplementedException("The member byte[] DisplayMonitor.GetDescriptor(DisplayMonitorDescriptorKind descriptorKind) is not implemented in Uno.");
 		}
 		#endif
+		// Forced skipping of method Windows.Devices.Display.DisplayMonitor.IsDolbyVisionSupportedInHdrMode.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelector()

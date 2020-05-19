@@ -110,7 +110,7 @@ namespace Windows.UI.Xaml.Shapes
 			path.Transform(translation);
 
 			// Draw the fill
-			var drawArea = new Foundation.Rect(0, 0, _controlWidth, _controlHeight);
+			var drawArea = new Windows.Foundation.Rect(0, 0, _controlWidth, _controlHeight);
 
 			if (fill is ImageBrush fillImageBrush)
 			{

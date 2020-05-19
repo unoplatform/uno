@@ -4,7 +4,7 @@ namespace Windows.UI.Xaml.Documents
 	{
 		public Italic()
 		{
-			FontStyle = Text.FontStyle.Italic;
+			FontStyle = Windows.UI.Text.FontStyle.Italic;
 		}
 
 		protected override void OnStyleChanged()

@@ -13,6 +13,7 @@
 					xmlns:native_ios="using:UIKit"
 					xmlns:native_android="using:Android.Widget"
 					xmlns:toolkit="using:Uno.UI.Toolkit"
+					xmlns:legacy="using:Uno.UI.Controls.Legacy"
 					xmlns:maps="using:Windows.UI.Xaml.Controls.Maps"
 					xmlns:mapsPresenter="using:Windows.UI.Xaml.Controls.Maps"
 					xmlns:wasm="http://uno.ui/wasm"
@@ -246,8 +247,8 @@
 						<Grid.Resources>
 						</Grid.Resources>
 						<ProgressRing IsActive="{TemplateBinding IsIndeterminate}"
-									  Foreground="{TemplateBinding Foreground}"
-									  Hidden="{TemplateBinding IsIndeterminate, Converter={StaticResource nativeDefaultProgressBarReverseBool}}" />
+											 Foreground="{TemplateBinding Foreground}"
+											 Hidden="{TemplateBinding IsIndeterminate, Converter={StaticResource nativeDefaultProgressBarReverseBool}}" />
 						<BindableUIProgressView IsActive="{TemplateBinding IsIndeterminate}"
 												Progress="{TemplateBinding ActualValue}"
 												Foreground="{TemplateBinding Foreground}" />

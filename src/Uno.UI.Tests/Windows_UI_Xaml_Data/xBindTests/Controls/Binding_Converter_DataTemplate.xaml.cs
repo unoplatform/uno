@@ -30,9 +30,9 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls
 		}
 	}
 
-	public class Binding_Converter_DataTempate_Model : INotifyPropertyChanged
+	public class Binding_Converter_DataTempate_Model : System.ComponentModel.INotifyPropertyChanged
 	{
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 
 		private int myVar;
 
