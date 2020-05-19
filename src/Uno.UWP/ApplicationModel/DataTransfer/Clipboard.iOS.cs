@@ -20,7 +20,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			var dataPackageView = new DataPackageView();
 			if (UIPasteboard.General.String != null)
 			{
-				dataPackageView.SetTextTask(Task.FromResult(UIPasteboard.General.String));
+				dataPackageView.SetFormatTask(StandardDataFormats.Text, Task.FromResult(UIPasteboard.General.String));
 			}
 			return dataPackageView;
 		}

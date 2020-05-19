@@ -29,7 +29,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			// get clipboard text
 			var getTextRequestId = Guid.NewGuid().ToString();
 			var getTextCompletionSource = new TaskCompletionSource<string>();
-			dataPackageView.SetTextTask(getTextCompletionSource.Task);
+			dataPackageView.SetFormatTask(StandardDataFormats.Text, getTextCompletionSource.Task);
 			_getTextRequests.Add(getTextRequestId, getTextCompletionSource);
 			var command = $"{JsType}.getText(\"{getTextRequestId}\");";
 			WebAssemblyRuntime.InvokeJS(command);

@@ -25,7 +25,7 @@ namespace Windows.ApplicationModel.DataTransfer
 			var clipboardText = pasteboard.GetStringForType(NSPasteboard.NSPasteboardTypeString);
 			if (clipboardText != null)
 			{
-				dataPackageView.SetTextTask(Task.FromResult(clipboardText));
+				dataPackageView.SetFormatTask(StandardDataFormats.Text, Task.FromResult(clipboardText));
 			}
 			return dataPackageView;
 		}
