@@ -27,7 +27,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public struct Enumerator : IEnumerator<UIElement>, IEnumerator
 		{
-			private readonly List<_View>.Enumerator _inner;
+			private List<_View>.Enumerator _inner;
 
 			internal Enumerator(_BindableView owner)
 			{
