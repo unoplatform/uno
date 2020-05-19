@@ -8,7 +8,7 @@
 | GetContent     |          | ✅ | ✅    | ✅ |
 | Flush          | ✅      | ✅ | ✅    | ✅  |
 | Clear          | ✅      | ✅ | ✅    | ✅  |
-| ContentChanged | ✅      | ✅ |       | ✅   |
+| ContentChanged | ✅      | ✅ | ✅    | ✅   |
 
 ### Limitations
 
@@ -17,3 +17,5 @@
 `Flush` operation has an empty implementation. In contrast to UWP, on other platforms data automatically remain in the clipboard even after application is closed.
 
 `ContentChanged` event can observe clipboard changes only when the application is in the foreground.
+
+On macOS, the `ContentChanged` event checks for clipboard changes by polling the current `NSPasteboard` change count in 1 second intervals. The polling starts only after first subscriber attaches to `ContentChanged` event and stops after the last subscriber unsubscribes.

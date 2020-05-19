@@ -7,16 +7,13 @@ namespace Windows.ApplicationModel.DataTransfer
 	public partial class Clipboard
     {
 		private static object _syncLock = new object();
-#if !__MACOS__
 		private static EventHandler<object> _contentChanged;
-#endif
 
 		public static void Flush()
 		{
 			// Do nothing, data available automatically even after application closes.
 		}
 
-#if !__MACOS__
 		public static event EventHandler<object> ContentChanged
 		{
 			add
@@ -48,7 +45,6 @@ namespace Windows.ApplicationModel.DataTransfer
 		{
 			_contentChanged?.Invoke(null, null);
 		}
-#endif
 	}
 }
 #endif
