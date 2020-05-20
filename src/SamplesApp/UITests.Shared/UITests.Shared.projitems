@@ -2289,6 +2289,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Input\Keyboard\Keyboard_Events.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Input\Keyboard\Keyboard_Showing_Dismissal.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4495,6 +4499,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Input\Keyboard\Keyboard_Clickthrough_Modal.xaml.cs">
       <DependentUpon>Keyboard_Clickthrough_Modal.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Input\Keyboard\Keyboard_Events.xaml.cs">
+      <DependentUpon>Keyboard_Events.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Input\Keyboard\Keyboard_Showing_Dismissal.xaml.cs">
       <DependentUpon>Keyboard_Showing_Dismissal.xaml</DependentUpon>

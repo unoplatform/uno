@@ -1,3 +1,4 @@
+#if HAS_UNO_WINUI
 using System;
 using Windows.UI.Core;
 
@@ -34,3 +35,4 @@ namespace Microsoft.System
 		}
 	}
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if HAS_UNO_WINUI
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -25,3 +26,4 @@ namespace Microsoft.System
 		}
 	}
 }
+#endif

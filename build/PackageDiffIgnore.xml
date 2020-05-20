@@ -990,15 +990,18 @@
 		<Member
 			  fullName="System.Void Windows.UI.Xaml.Automation.Peers.AutomationPeerAnnotation..ctor()"
 			  reason="UWP does not have this ctor"/>
-        <Member
-   		      fullName="System.Void Windows.Networking.Connectivity.ConnectionCost..ctor()"
+    <Member
+   		  fullName="System.Void Windows.Networking.Connectivity.ConnectionCost..ctor()"
 			  reason="Not in UWP" />
-        <Member
+    <Member
 		      fullName="System.Void Windows.Networking.Connectivity.ConnectionProfile..ctor()"
 			  reason="Not in UWP" />
-        <Member
+    <Member
 			  fullName="System.Void Windows.Networking.Connectivity.NetworkInformation..ctor()"
 			  reason="Not in UWP" />
+		<Member
+			  fullName="System.Void Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs..ctor()"
+			  reason="Parameter-less ctor does not exist in UWP"/>
 	  </Methods>
 	</IgnoreSet>
   </IgnoreSets>
