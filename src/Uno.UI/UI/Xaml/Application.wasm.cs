@@ -13,6 +13,9 @@ using Uno.Logging;
 using System.Threading;
 using Uno.UI;
 using Uno.UI.Xaml;
+using System.Web;
+using System.Collections.Specialized;
+using Uno.Helpers;
 
 namespace Windows.UI.Xaml
 {
@@ -65,6 +68,16 @@ namespace Windows.UI.Xaml
 					this.Log().Debug("Launch arguments: " + arguments);
 				}
 				InitializationCompleted();
+
+				if (!string.IsNullOrEmpty(arguments))
+				{
+					if (ProtocolActivation.TryParseActivationUri(arguments, out var activationUri))
+					{
+						OnActivated(new ProtocolActivatedEventArgs(activationUri, ApplicationExecutionState.NotRunning));
+						return;
+					}
+				}
+
 				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, arguments));
 			}
 		}
@@ -72,7 +85,7 @@ namespace Windows.UI.Xaml
 		private ApplicationTheme GetDefaultSystemTheme()
 		{
 			var serializedTheme = WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.getDefaultSystemTheme()");
-			
+
 			if (serializedTheme != null)
 			{
 				if (Enum.TryParse(serializedTheme, out ApplicationTheme theme))

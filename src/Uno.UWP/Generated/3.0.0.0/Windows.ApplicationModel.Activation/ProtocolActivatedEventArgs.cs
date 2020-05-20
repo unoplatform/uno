@@ -2,12 +2,12 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.ApplicationModel.Activation
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#if false || false || NET461 || false || false
 	[global::Uno.NotImplemented]
-	#endif
-	public  partial class ProtocolActivatedEventArgs : global::Windows.ApplicationModel.Activation.IProtocolActivatedEventArgs,global::Windows.ApplicationModel.Activation.IActivatedEventArgs,global::Windows.ApplicationModel.Activation.IProtocolActivatedEventArgsWithCallerPackageFamilyNameAndData,global::Windows.ApplicationModel.Activation.IApplicationViewActivatedEventArgs,global::Windows.ApplicationModel.Activation.IViewSwitcherProvider,global::Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser
+#endif
+	public partial class ProtocolActivatedEventArgs : global::Windows.ApplicationModel.Activation.IProtocolActivatedEventArgs,global::Windows.ApplicationModel.Activation.IActivatedEventArgs,global::Windows.ApplicationModel.Activation.IProtocolActivatedEventArgsWithCallerPackageFamilyNameAndData,global::Windows.ApplicationModel.Activation.IApplicationViewActivatedEventArgs,global::Windows.ApplicationModel.Activation.IViewSwitcherProvider,global::Windows.ApplicationModel.Activation.IActivatedEventArgsWithUser
 	{
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Activation.ActivationKind Kind
 		{
@@ -17,7 +17,7 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.ApplicationModel.Activation.ApplicationExecutionState PreviousExecutionState
 		{
@@ -57,7 +57,7 @@ namespace Windows.ApplicationModel.Activation
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public  global::System.Uri Uri
 		{
