@@ -747,7 +747,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			var contentType = FindImplicitContentMember(topLevelControl)?.Objects.FirstOrDefault()?.Type;
 
-			return contentType == null ? XamlConstants.Types.IFrameworkElement : FindType(contentType)?.ToDisplayString() ?? XamlConstants.Types.IFrameworkElement;
+			return contentType == null ? XamlConstants.Types.FrameworkElement : FindType(contentType)?.ToDisplayString() ?? XamlConstants.Types.FrameworkElement;
 		}
 
 		/// <summary>
@@ -1804,7 +1804,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 					else if (returnsContent && _skipUserControlsInVisualTree && IsUserControl(topLevelControl.Type))
 					{
-						writer.AppendFormatInvariant(XamlConstants.Types.IFrameworkElement + " content = null");
+						writer.AppendFormatInvariant(XamlConstants.Types.FrameworkElement + " content = null");
 					}
 				}
 
