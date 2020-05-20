@@ -681,6 +681,11 @@ namespace Windows.UI.Xaml.Controls
 
 				binder.TemplatedParent = templatedParent;
 			}
+			else if (_contentTemplateRoot is DependencyObject dependencyObject)
+			{
+				// Propagate binding context correctly
+				dependencyObject.SetParent(this);
+			}
 		}
 
 		private void UpdateContentTransitions(TransitionCollection oldValue, TransitionCollection newValue)
@@ -715,6 +720,10 @@ namespace Windows.UI.Xaml.Controls
 		/// <param name="previousValue"></param>
 		private void CleanupView(View previousValue)
 		{
+			if (!(previousValue is IFrameworkElement) && previousValue is DependencyObject dependencyObject)
+			{
+				dependencyObject.SetParent(null);
+			}
 		}
 
 		private protected override void OnLoaded()
