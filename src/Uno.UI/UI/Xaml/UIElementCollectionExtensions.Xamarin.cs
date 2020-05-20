@@ -20,6 +20,11 @@ namespace Windows.UI.Xaml.Controls
 		/// <remarks>This method is present to support collection initializer syntax for native views.</remarks>
 		public static void Add(this UIElementCollection uiElementCollection, _View view)
 		{
+			if (uiElementCollection is null)
+			{
+				throw new ArgumentNullException(nameof(uiElementCollection));
+			}
+
 			if (view is UIElement uiElement)
 			{
 				uiElementCollection.Add(uiElement);

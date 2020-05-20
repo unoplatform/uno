@@ -301,7 +301,8 @@ namespace Windows.UI.Xaml.Controls
 
 			BitmapFactory.Options o = new BitmapFactory.Options();
 			o.InJustDecodeBounds = true;
-			Bitmap bmp = BitmapFactory.DecodeResource((this as View).Resources, newImageSource.ResourceId.Value, o);
+			// We just call this to get the image dimensions. InJustDecodeBounds=true ensures that we don't actually allocate a new bitmap.
+			BitmapFactory.DecodeResource((this as View).Resources, newImageSource.ResourceId.Value, o);
 			int imageWidth = o.OutWidth;
 			int imageHeight = o.OutHeight;
 
