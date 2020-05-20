@@ -6,6 +6,7 @@ using CoreGraphics;
 using _UIImage = UIKit.UIImage;
 #elif __MACOS__
 using _UIImage = AppKit.NSImage;
+using AppKit;
 #endif
 using Uno.Diagnostics.Eventing;
 using Uno.Extensions;
@@ -181,7 +182,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			if (ShouldDowngradeLayoutRequest())
 			{
-				SetNeedsDisplay();
+				this.SetNeedsDisplay();
 			}
 			else
 			{
