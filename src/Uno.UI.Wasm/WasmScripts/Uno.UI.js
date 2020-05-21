@@ -3,11 +3,24 @@ var Uno;
     var Utils;
     (function (Utils) {
         class Clipboard {
+            static startContentChanged() {
+                ['cut', 'copy', 'paste'].forEach(function (event) {
+                    document.addEventListener(event, Clipboard.onClipboardChanged);
+                });
+            }
+            static stopContentChanged() {
+                ['cut', 'copy', 'paste'].forEach(function (event) {
+                    document.removeEventListener(event, Clipboard.onClipboardChanged);
+                });
+            }
             static setText(text) {
                 const nav = navigator;
                 if (nav.clipboard) {
                     // Use clipboard object when available
-                    nav.clipboard.setText(text);
+                    nav.clipboard.writeText(text);
+                    // Trigger change notification, as clipboard API does
+                    // not execute "copy".
+                    Clipboard.onClipboardChanged();
                 }
                 else {
                     // Hack when the clipboard is not available
@@ -19,6 +32,20 @@ var Uno;
                     document.body.removeChild(textarea);
                 }
                 return "ok";
+            }
+            static getText() {
+                const nav = navigator;
+                if (nav.clipboard) {
+                    return nav.clipboard.readText();
+                }
+                return Promise.resolve(null);
+            }
+            static onClipboardChanged() {
+                if (!Clipboard.dispatchContentChanged) {
+                    Clipboard.dispatchContentChanged =
+                        Module.mono_bind_static_method("[Uno] Windows.ApplicationModel.DataTransfer.Clipboard:DispatchContentChanged");
+                }
+                Clipboard.dispatchContentChanged();
             }
         }
         Utils.Clipboard = Clipboard;
@@ -2404,6 +2431,48 @@ PointerEvent.prototype.isOverDeep = function (element) {
         }
     }
 };
+var Uno;
+(function (Uno) {
+    var UI;
+    (function (UI) {
+        var Interop;
+        (function (Interop) {
+            class AsyncInteropHelper {
+                static init() {
+                    if (AsyncInteropHelper.dispatchErrorMethod) {
+                        return; // already initialized
+                    }
+                    const w = window;
+                    AsyncInteropHelper.dispatchResultMethod =
+                        w.Module.mono_bind_static_method("[Uno.Foundation] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncResult");
+                    AsyncInteropHelper.dispatchErrorMethod =
+                        w.Module.mono_bind_static_method("[Uno.Foundation] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncError");
+                }
+                static Invoke(handle, promiseFunction) {
+                    AsyncInteropHelper.init();
+                    try {
+                        promiseFunction()
+                            .then(str => {
+                            if (typeof str == "string") {
+                                AsyncInteropHelper.dispatchResultMethod(handle, str);
+                            }
+                            else {
+                                AsyncInteropHelper.dispatchResultMethod(handle, null);
+                            }
+                        })
+                            .catch(err => {
+                            AsyncInteropHelper.dispatchErrorMethod(handle, err);
+                        });
+                    }
+                    catch (err) {
+                        AsyncInteropHelper.dispatchErrorMethod(handle, err);
+                    }
+                }
+            }
+            Interop.AsyncInteropHelper = AsyncInteropHelper;
+        })(Interop = UI.Interop || (UI.Interop = {}));
+    })(UI = Uno.UI || (Uno.UI = {}));
+})(Uno || (Uno = {}));
 var Uno;
 (function (Uno) {
     var Foundation;

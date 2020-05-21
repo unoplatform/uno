@@ -1,6 +1,21 @@
+interface Clipboard {
+    writeText(newClipText: string): Promise<void>;
+    readText(): Promise<string>;
+}
+interface NavigatorClipboard {
+    readonly clipboard?: Clipboard;
+}
+interface Navigator extends NavigatorClipboard {
+}
 declare namespace Uno.Utils {
     class Clipboard {
+        private static dispatchContentChanged;
+        private static dispatchGetContent;
+        static startContentChanged(): void;
+        static stopContentChanged(): void;
         static setText(text: string): string;
+        static getText(): Promise<string>;
+        private static onClipboardChanged;
     }
 }
 declare namespace Windows.UI.Core {
@@ -662,14 +677,13 @@ declare class WindowManagerSetContentHtmlParams {
     static unmarshal(pData: number): WindowManagerSetContentHtmlParams;
 }
 declare class WindowManagerSetElementTransformParams {
-    HtmlId: number;
     M11: number;
     M12: number;
     M21: number;
     M22: number;
     M31: number;
     M32: number;
-    ClipToBounds: boolean;
+    HtmlId: number;
     static unmarshal(pData: number): WindowManagerSetElementTransformParams;
 }
 declare class WindowManagerSetNameParams {
@@ -722,7 +736,7 @@ declare namespace Uno.UI.Interop {
         private static dispatchResultMethod;
         private static dispatchErrorMethod;
         private static init;
-        static Invoke(h: number, m: () => Promise<string>): void;
+        static Invoke(handle: number, promiseFunction: () => Promise<string>): void;
     }
 }
 declare module Uno.UI {
@@ -937,26 +951,5 @@ declare namespace Windows.Phone.Devices.Notification {
     class VibrationDevice {
         static initialize(): boolean;
         static vibrate(duration: number): boolean;
-    }
-}
-declare namespace Windows.UI.Xaml.Media.Animation {
-    class RenderingLoopFloatAnimator {
-        private managedHandle;
-        private static activeInstances;
-        static createInstance(managedHandle: string, jsHandle: number): void;
-        static getInstance(jsHandle: number): RenderingLoopFloatAnimator;
-        static destroyInstance(jsHandle: number): void;
-        private constructor();
-        SetStartFrameDelay(delay: number): void;
-        SetAnimationFramesInterval(): void;
-        EnableFrameReporting(): void;
-        DisableFrameReporting(): void;
-        private onFrame;
-        private unscheduleFrame;
-        private scheduleDelayedFrame;
-        private scheduleAnimationFrame;
-        private _delayRequestId?;
-        private _frameRequestId?;
-        private _isEnabled;
     }
 }
