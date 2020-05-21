@@ -9,6 +9,9 @@ using UIKit;
 using Uno.UI;
 #endif
 
+using Microsoft/*Intentional space for WinUI upgrade tool*/.UI.Xaml.Controls;
+using Microsoft/*Intentional space for WinUI upgrade tool*/.UI.Xaml;
+
 namespace Windows.UI.Xaml.Controls
 {
 	partial class ProgressRing
