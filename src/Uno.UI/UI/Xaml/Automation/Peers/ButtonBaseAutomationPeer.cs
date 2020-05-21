@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Automation.Peers
 {
 	public partial class ButtonBaseAutomationPeer : FrameworkElementAutomationPeer
 	{
-		protected ButtonBaseAutomationPeer(ButtonBase buttonBase) : base(buttonBase)
+		protected ButtonBaseAutomationPeer(ButtonBase owner) : base(owner)
 		{
 		}
 

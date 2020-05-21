@@ -29,9 +29,9 @@ namespace Windows.UI.Xaml.Automation.Peers
 			Owner = element as UIElement;
 		}
 
-		public FrameworkElementAutomationPeer(FrameworkElement element)
+		public FrameworkElementAutomationPeer(FrameworkElement owner)
 		{
-			Owner = element;
+			Owner = owner;
 		}
 
 
