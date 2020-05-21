@@ -17,17 +17,6 @@ namespace Uno.UI.RuntimeTests.Tests
 	[TestClass]
 	public class Given_Clipboard
 	{
-
-		[TestInitialize]
-		public void Init()
-		{
-		}
-
-		[TestCleanup]
-		public void Cleanup()
-		{
-		}
-
 		[TestMethod]
 		public async Task When_PutAndGet()
 		{
@@ -42,8 +31,7 @@ namespace Uno.UI.RuntimeTests.Tests
 			var clipView = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
 			string stringFromClipboard = await clipView.GetTextAsync();
 
-			Assert.AreEqual(stringFromClipboard, testString, false, "text was changed while putting and reading from Clipboard - error in tested methods");
-
+			Assert.AreEqual(stringFromClipboard, testString, false, "Text has changed after storing and reading from Clipboard");
 		}
 	}
 }
