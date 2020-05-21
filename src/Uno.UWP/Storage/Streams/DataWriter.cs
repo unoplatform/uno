@@ -15,6 +15,7 @@ namespace Windows.Storage.Streams
 		/// </summary>
 		public DataWriter()
 		{
+			_memoryStream = new MemoryStream();
 		}
 
 		/// <summary>

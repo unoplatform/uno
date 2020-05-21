@@ -12,7 +12,7 @@ using UnicodeEncoding = Windows.Storage.Streams.UnicodeEncoding;
 namespace Uno.UI.Tests.Windows_Storage.Streams
 {
 	[TestClass]
-	public class Given_DataWriter
+	public class When_DataWriter
 	{
 		[TestMethod]
 		public async Task When_WriteThenRead()
@@ -25,7 +25,6 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 			TimeSpan saveTimeSpan = TimeSpan.FromMinutes(10);
 			Guid saveGuid = Guid.NewGuid();
 
-			bool error = false;
 			var writer = new DataWriter();
 			try
 			{
@@ -37,14 +36,9 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 				writer.WriteTimeSpan(saveTimeSpan);
 				writer.WriteGuid(saveGuid);
 			}
-			catch
+			catch (Exception ex)
 			{
-				error = true;
-			}
-
-			if (error)
-			{
-				Assert.Fail("FAIL while writing (DataWriter)");
+				Assert.Fail($"Error writing with DataWriter - {ex.Message}");
 			}
 
 			var buffer = writer.DetachBuffer();
@@ -64,48 +58,42 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 			try
 			{
 				loadBool = reader.ReadBoolean();
-				Assert.AreEqual(saveBool, loadBool, "FAIL: read/write Bool value inconsistence");
+				Assert.AreEqual(saveBool, loadBool);
 
 				loadByte = reader.ReadByte();
-				Assert.AreEqual(saveByte, loadByte, "FAIL: read/write Byte value inconsistence");
+				Assert.AreEqual(saveByte, loadByte);
 
 				loadInt = reader.ReadInt32();
-				Assert.AreEqual(saveInt, loadInt, "FAIL: read/write Int32 value inconsistence");
+				Assert.AreEqual(saveInt, loadInt);
 
 				loadDouble = reader.ReadDouble();
-				Assert.AreEqual(saveDouble, loadDouble, "FAIL: read/write Double value inconsistence");
+				Assert.AreEqual(saveDouble, loadDouble);
 
 				loadDate = reader.ReadDateTime();
-				Assert.AreEqual(saveDate, loadDate, "FAIL: read/write DateTimeOffset value inconsistence");
+				Assert.AreEqual(saveDate, loadDate);
 
 				loadTimeSpan = reader.ReadTimeSpan();
-				Assert.AreEqual(saveTimeSpan, loadTimeSpan, "FAIL: read/write TimeSpan value inconsistence");
+				Assert.AreEqual(saveTimeSpan, loadTimeSpan);
 
 				loadGuid = reader.ReadGuid();
-				Assert.AreEqual(saveGuid, loadGuid, "FAIL: read/write Guid value inconsistence");
+				Assert.AreEqual(saveGuid, loadGuid);
 			}
-			catch
+			catch (Exception ex)
 			{
-				error = true;
+				Assert.Fail($"Error reading with DataReader - {ex.Message}");
 			}
 
-			if (error)
-			{
-				Assert.Fail("FAIL while reading (DataReader)");
-			}
-
-			Assert.AreEqual(saveBool, loadBool, "FAIL: read/write Bool value inconsistence");
-			Assert.AreEqual(saveByte, loadByte, "FAIL: read/write Byte value inconsistence");
-			Assert.AreEqual(saveInt, loadInt, "FAIL: read/write Int32 value inconsistence");
-			Assert.AreEqual(saveDouble, loadDouble, "FAIL: read/write Double value inconsistence");
-			Assert.AreEqual(saveDate, loadDate, "FAIL: read/write DateTimeOffset value inconsistence");
-			Assert.AreEqual(saveTimeSpan, loadTimeSpan, "FAIL: read/write TimeSpan value inconsistence");
-			Assert.AreEqual(saveGuid, loadGuid, "FAIL: read/write Guid value inconsistence");
+			Assert.AreEqual(saveBool, loadBool);
+			Assert.AreEqual(saveByte, loadByte);
+			Assert.AreEqual(saveInt, loadInt);
+			Assert.AreEqual(saveDouble, loadDouble);
+			Assert.AreEqual(saveDate, loadDate);
+			Assert.AreEqual(saveTimeSpan, loadTimeSpan);
+			Assert.AreEqual(saveGuid, loadGuid);
 		}
 
-
 		[TestMethod]
-		public void Given_WriteByte_123()
+		public void When_WriteByte_123()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -116,7 +104,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteByte_0()
+		public void When_WriteByte_0()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -127,7 +115,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteByte_255()
+		public void When_WriteByte_255()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -138,7 +126,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteBoolean_true()
+		public void When_WriteBoolean_true()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -149,7 +137,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteBoolean_false()
+		public void When_WriteBoolean_false()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -160,7 +148,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteBytes()
+		public void When_WriteBytes()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -171,7 +159,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteBytes_BigEndian()
+		public void When_WriteBytes_BigEndian()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.BigEndian;
@@ -182,7 +170,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteBytes_Empty()
+		public void When_WriteBytes_Empty()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -193,7 +181,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteBuffer()
+		public void When_WriteBuffer()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -204,7 +192,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteBuffer_BigEndian()
+		public void When_WriteBuffer_BigEndian()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.BigEndian;
@@ -215,7 +203,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteBuffer_Empty()
+		public void When_WriteBuffer_Empty()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -226,7 +214,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteString_Empty()
+		public void When_WriteString_Empty()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -237,7 +225,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteString_HelloWorld()
+		public void When_WriteString_HelloWorld()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -248,7 +236,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteString_HelloWorld_BigEndian_Utf16BE()
+		public void When_WriteString_HelloWorld_BigEndian_Utf16BE()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.BigEndian;
@@ -259,7 +247,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteString_HelloWorld_Utf16LE()
+		public void When_WriteString_HelloWorld_Utf16LE()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -270,7 +258,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteDateTime_MinValue()
+		public void When_WriteDateTime_MinValue()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -281,7 +269,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteDateTime_MaxValue()
+		public void When_WriteDateTime_MaxValue()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -292,7 +280,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteDateTime_PiDate()
+		public void When_WriteDateTime_PiDate()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -303,7 +291,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteDateTime_PiDate_BigEndian()
+		public void When_WriteDateTime_PiDate_BigEndian()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.BigEndian;
@@ -314,7 +302,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteDateTime_WithOffset()
+		public void When_WriteDateTime_WithOffset()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -325,7 +313,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteDateTime_FileTimeZero()
+		public void When_WriteDateTime_FileTimeZero()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -336,7 +324,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteDouble_Zero()
+		public void When_WriteDouble_Zero()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -347,7 +335,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteDouble_NaN()
+		public void When_WriteDouble_NaN()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -358,7 +346,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteDouble_NegativeInfinity()
+		public void When_WriteDouble_NegativeInfinity()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -369,7 +357,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteDouble_PositiveInfinity()
+		public void When_WriteDouble_PositiveInfinity()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -380,7 +368,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteDouble_Min()
+		public void When_WriteDouble_Min()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -391,7 +379,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteDouble_Max_BigEndian()
+		public void When_WriteDouble_Max_BigEndian()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.BigEndian;
@@ -402,7 +390,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteSingle_Zero()
+		public void When_WriteSingle_Zero()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -413,7 +401,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteSingle_NaN()
+		public void When_WriteSingle_NaN()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -424,7 +412,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteSingle_NegativeInfinity()
+		public void When_WriteSingle_NegativeInfinity()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -435,7 +423,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteSingle_PositiveInfinity()
+		public void When_WriteSingle_PositiveInfinity()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -446,7 +434,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteSingle_Min()
+		public void When_WriteSingle_Min()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -457,7 +445,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteSingle_Max_BigEndian()
+		public void When_WriteSingle_Max_BigEndian()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.BigEndian;
@@ -468,7 +456,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteInt16_Zero_Utf16LE()
+		public void When_WriteInt16_Zero_Utf16LE()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -479,7 +467,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteInt16_14_BigEndian()
+		public void When_WriteInt16_14_BigEndian()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.BigEndian;
@@ -490,7 +478,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteInt16_14()
+		public void When_WriteInt16_14()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -501,7 +489,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteInt16_Negative14()
+		public void When_WriteInt16_Negative14()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -512,7 +500,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteInt16_Min_BigEndian()
+		public void When_WriteInt16_Min_BigEndian()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.BigEndian;
@@ -523,7 +511,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteInt16_Max()
+		public void When_WriteInt16_Max()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -534,7 +522,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteInt32_1304_BigEndian()
+		public void When_WriteInt32_1304_BigEndian()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.BigEndian;
@@ -545,7 +533,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteInt32_1304()
+		public void When_WriteInt32_1304()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -556,7 +544,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteInt32_Negative1304()
+		public void When_WriteInt32_Negative1304()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -567,29 +555,29 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteInt32_Min_BigEndian()
+		public void When_WriteInt32_Min_BigEndian()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.BigEndian;
 			dataWriter.UnicodeEncoding = UnicodeEncoding.Utf8;
-			dataWriter.WriteInt32(short.MinValue);
+			dataWriter.WriteInt32(int.MinValue);
 			var bytes = dataWriter.DetachBuffer().ToArray();
-			CollectionAssert.AreEqual(new byte[] { 255, 255, 128, 0 }, bytes);
+			CollectionAssert.AreEqual(new byte[] { 128, 0, 0, 0 }, bytes);
 		}
 
 		[TestMethod]
-		public void Given_WriteInt32_Max()
+		public void When_WriteInt32_Max()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
 			dataWriter.UnicodeEncoding = UnicodeEncoding.Utf8;
-			dataWriter.WriteInt32(short.MaxValue);
+			dataWriter.WriteInt32(int.MaxValue);
 			var bytes = dataWriter.DetachBuffer().ToArray();
-			CollectionAssert.AreEqual(new byte[] { 255, 127, 0, 0 }, bytes);
+			CollectionAssert.AreEqual(new byte[] { 255, 255, 255, 127 }, bytes);
 		}
 
 		[TestMethod]
-		public void Given_WriteInt64_894318()
+		public void When_WriteInt64_894318()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -600,7 +588,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteInt64_894318_BigEndian()
+		public void When_WriteInt64_894318_BigEndian()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.BigEndian;
@@ -611,7 +599,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteInt64_Negative894318()
+		public void When_WriteInt64_Negative894318()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -622,29 +610,29 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteInt64_Min()
+		public void When_WriteInt64_Min()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
 			dataWriter.UnicodeEncoding = UnicodeEncoding.Utf8;
-			dataWriter.WriteInt64(short.MinValue);
+			dataWriter.WriteInt64(long.MinValue);
 			var bytes = dataWriter.DetachBuffer().ToArray();
-			CollectionAssert.AreEqual(new byte[] { 0, 128, 255, 255, 255, 255, 255, 255 }, bytes);
+			CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0, 0, 0, 0, 128 }, bytes);
 		}
 
 		[TestMethod]
-		public void Given_WriteInt64_Max_BigEndian()
+		public void When_WriteInt64_Max_BigEndian()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.BigEndian;
 			dataWriter.UnicodeEncoding = UnicodeEncoding.Utf8;
-			dataWriter.WriteInt64(short.MaxValue);
+			dataWriter.WriteInt64(long.MaxValue);
 			var bytes = dataWriter.DetachBuffer().ToArray();
-			CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0, 0, 0, 127, 255 }, bytes);
+			CollectionAssert.AreEqual(new byte[] { 127, 255, 255, 255, 255, 255, 255, 255 }, bytes);
 		}
 
 		[TestMethod]
-		public void Given_WriteUInt16_Zero()
+		public void When_WriteUInt16_Zero()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -655,7 +643,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteUInt16_1682_BigEndian()
+		public void When_WriteUInt16_1682_BigEndian()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.BigEndian;
@@ -666,7 +654,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteUInt16_Max()
+		public void When_WriteUInt16_Max()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -677,7 +665,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteUInt32_Zero()
+		public void When_WriteUInt32_Zero()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -688,7 +676,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteUInt32_13()
+		public void When_WriteUInt32_13()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -699,18 +687,18 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteUInt32_Max_BigEndian()
+		public void When_WriteUInt32_Max_BigEndian()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.BigEndian;
 			dataWriter.UnicodeEncoding = UnicodeEncoding.Utf8;
-			dataWriter.WriteUInt32(ushort.MaxValue);
+			dataWriter.WriteUInt32(uint.MaxValue);
 			var bytes = dataWriter.DetachBuffer().ToArray();
-			CollectionAssert.AreEqual(new byte[] { 0, 0, 255, 255 }, bytes);
+			CollectionAssert.AreEqual(new byte[] { 255, 255, 255, 255 }, bytes);
 		}
 
 		[TestMethod]
-		public void Given_WriteUInt64_Zero()
+		public void When_WriteUInt64_Zero()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -721,7 +709,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteUInt64_198736080_BigEndian()
+		public void When_WriteUInt64_198736080_BigEndian()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.BigEndian;
@@ -732,18 +720,18 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteUInt64_Max()
+		public void When_WriteUInt64_Max()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
 			dataWriter.UnicodeEncoding = UnicodeEncoding.Utf8;
-			dataWriter.WriteUInt64(ushort.MaxValue);
+			dataWriter.WriteUInt64(ulong.MaxValue);
 			var bytes = dataWriter.DetachBuffer().ToArray();
-			CollectionAssert.AreEqual(new byte[] { 255, 255, 0, 0, 0, 0, 0, 0 }, bytes);
+			CollectionAssert.AreEqual(new byte[] { 255, 255, 255, 255, 255, 255, 255, 255 }, bytes);
 		}
 
 		[TestMethod]
-		public void Given_WriteTimeSpan_FromMilliseconds_BigEndian()
+		public void When_WriteTimeSpan_FromMilliseconds_BigEndian()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.BigEndian;
@@ -754,7 +742,7 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteTimeSpan_FromDays()
+		public void When_WriteTimeSpan_FromDays()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -765,29 +753,29 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void Given_WriteGuid_1()
+		public void When_WriteGuid_1()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
 			dataWriter.UnicodeEncoding = UnicodeEncoding.Utf8;
-			dataWriter.WriteGuid(Guid.Parse("f6a9ff70-9cc5-4468-a2cb-51235355856d"));
+			dataWriter.WriteGuid(Guid.Parse("fd488b77-be04-447b-8242-e592747dc3a8"));
 			var bytes = dataWriter.DetachBuffer().ToArray();
-			CollectionAssert.AreEqual(new byte[] { 112, 255, 169, 246, 197, 156, 104, 68, 162, 203, 81, 35, 83, 85, 133, 109 }, bytes);
+			CollectionAssert.AreEqual(new byte[] { 119, 139, 72, 253, 4, 190, 123, 68, 130, 66, 229, 146, 116, 125, 195, 168 }, bytes);
 		}
 
 		[TestMethod]
-		public void Given_WriteGuid_2_BigEndian()
+		public void When_WriteGuid_2_BigEndian()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.BigEndian;
 			dataWriter.UnicodeEncoding = UnicodeEncoding.Utf8;
-			dataWriter.WriteGuid(Guid.Parse("5592504a-161c-4b58-ae92-93f9b49de574"));
+			dataWriter.WriteGuid(Guid.Parse("661f4a60-4ada-463e-938a-ce91bfcf4ea3"));
 			var bytes = dataWriter.DetachBuffer().ToArray();
-			CollectionAssert.AreEqual(new byte[] { 85, 146, 80, 74, 22, 28, 75, 88, 116, 229, 157, 180, 249, 147, 146, 174 }, bytes);
+			CollectionAssert.AreEqual(new byte[] { 102, 31, 74, 96, 74, 218, 70, 62, 163, 78, 207, 191, 145, 206, 138, 147 }, bytes);
 		}
 
 		[TestMethod]
-		public void Given_WriteGuid_Zero()
+		public void When_WriteGuid_Zero()
 		{
 			var dataWriter = new DataWriter();
 			dataWriter.ByteOrder = ByteOrder.LittleEndian;
@@ -796,6 +784,5 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 			var bytes = dataWriter.DetachBuffer().ToArray();
 			CollectionAssert.AreEqual(new byte[] { 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }, bytes);
 		}
-
 	}
 }

@@ -7,15 +7,18 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 {
 	public static class WindowsRuntimeBufferExtensions
 	{
-		public static IBuffer AsBuffer(this byte[] source)
-		{
-			return new UwpBuffer(source);
-		}
+		public static IBuffer AsBuffer(this byte[] source) =>
+			AsBuffer(source, 0, source.Length);
 
-		[Uno.NotImplemented]
-		public static IBuffer AsBuffer(this byte[] source, int offset, int length) { throw new NotImplementedException(); }
-		[Uno.NotImplemented]
-		public static IBuffer AsBuffer(this byte[] source, int offset, int length, int capacity) { throw new NotImplementedException(); }
+		public static IBuffer AsBuffer(this byte[] source, int offset, int length) =>
+			AsBuffer(source, offset, length, length);
+
+		public static IBuffer AsBuffer(this byte[] source, int offset, int length, int capacity)
+		{
+			var buffer = new UwpBuffer((uint)capacity);
+			Array.Copy(source, offset, buffer.Data, 0, length);
+			return buffer;
+		}
 
 		public static Stream AsStream(this IBuffer source)
 		{
@@ -41,14 +44,16 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 		public static void CopyTo(this IBuffer source, uint sourceIndex, byte[] destination, int destinationIndex, int count) { throw new NotImplementedException(); }
 		[Uno.NotImplemented]
 		public static void CopyTo(this IBuffer source, uint sourceIndex, IBuffer destination, uint destinationIndex, uint count) { throw new NotImplementedException(); }
-		[Uno.NotImplemented]
-		public static byte GetByte(this IBuffer source, uint byteOffset) { throw new NotImplementedException(); }
+
+		public static byte GetByte(this IBuffer source, uint byteOffset) => source.ToArray()[byteOffset];
+
 		[Uno.NotImplemented]
 		public static IBuffer GetWindowsRuntimeBuffer(this MemoryStream underlyingStream) { throw new NotImplementedException(); }
 		[Uno.NotImplemented]
 		public static IBuffer GetWindowsRuntimeBuffer(this MemoryStream underlyingStream, int positionInStream, int length) { throw new NotImplementedException(); }
-		[Uno.NotImplemented]
-		public static bool IsSameData(this IBuffer buffer, IBuffer otherBuffer) { throw new NotImplementedException(); }
+
+		public static bool IsSameData(this IBuffer buffer, IBuffer otherBuffer) =>
+			buffer.ToArray().SequenceEqual(otherBuffer.ToArray());
 
 		public static byte[] ToArray(this IBuffer source)
 		{
