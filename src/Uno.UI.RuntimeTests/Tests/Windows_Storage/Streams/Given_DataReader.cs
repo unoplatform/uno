@@ -230,18 +230,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void When_ReadDateTime_MaxValue()
-		{
-			var inputBytes = new byte[] { 255, 63, 192, 209, 94, 90, 200, 36 };
-			var buffer = inputBytes.AsBuffer();
-			var dataReader = DataReader.FromBuffer(buffer);
-			dataReader.ByteOrder = ByteOrder.LittleEndian;
-			dataReader.UnicodeEncoding = UnicodeEncoding.Utf8;
-			Assert.ThrowsException<ArgumentOutOfRangeException>(() => dataReader.ReadDateTime());
-		}
-
-		[TestMethod]
-		public void When_ReadDateTime_PiDate()
+		public void Given_ReadDateTime_PiDate()
 		{
 			var inputBytes = new byte[] { 128, 135, 96, 242, 20, 250, 213, 1 };
 			var buffer = inputBytes.AsBuffer();
@@ -254,7 +243,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void When_ReadDateTime_PiDate_BigEndian()
+		public void Given_ReadDateTime_PiDate_BigEndian()
 		{
 			var inputBytes = new byte[] { 1, 213, 250, 20, 242, 96, 135, 128 };
 			var buffer = inputBytes.AsBuffer();
@@ -267,7 +256,33 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void When_ReadDateTime_WithOffset()
+		public void Given_ReadDateTime_OldDate()
+		{
+			var inputBytes = new byte[] { 128, 191, 199, 115, 143, 82, 95, 253 };
+			var buffer = inputBytes.AsBuffer();
+			var dataReader = DataReader.FromBuffer(buffer);
+			dataReader.ByteOrder = ByteOrder.LittleEndian;
+			dataReader.UnicodeEncoding = UnicodeEncoding.Utf8;
+			var result = dataReader.ReadDateTime();
+			var expected = new DateTimeOffset(1001, 1, 1, 8, 14, 35, TimeSpan.FromMinutes(60));
+			Assert.AreEqual(expected, result);
+		}
+
+		[TestMethod]
+		public void Given_ReadDateTime_WithNegativeOffset()
+		{
+			var inputBytes = new byte[] { 0, 112, 167, 193, 164, 135, 198, 1 };
+			var buffer = inputBytes.AsBuffer();
+			var dataReader = DataReader.FromBuffer(buffer);
+			dataReader.ByteOrder = ByteOrder.LittleEndian;
+			dataReader.UnicodeEncoding = UnicodeEncoding.Utf8;
+			var result = dataReader.ReadDateTime();
+			var expected = new DateTimeOffset(2006, 6, 4, 3, 1, 52, -TimeSpan.FromMinutes(240));
+			Assert.AreEqual(expected, result);
+		}
+
+		[TestMethod]
+		public void Given_ReadDateTime_WithOffset()
 		{
 			var inputBytes = new byte[] { 128, 183, 215, 46, 4, 250, 213, 1 };
 			var buffer = inputBytes.AsBuffer();
@@ -280,7 +295,7 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_Storage.Streams
 		}
 
 		[TestMethod]
-		public void When_ReadDateTime_FileTimeZero()
+		public void Given_ReadDateTime_FileTimeZero()
 		{
 			var inputBytes = new byte[] { 0, 0, 0, 0, 0, 0, 0, 0 };
 			var buffer = inputBytes.AsBuffer();

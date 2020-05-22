@@ -6,6 +6,9 @@ using Windows.Foundation;
 
 namespace Windows.Storage.Streams
 {
+	/// <summary>
+	/// Writes data to an output stream.
+	/// </summary>
 	public sealed partial class DataWriter : IDataWriter, IDisposable
 	{
 		private MemoryStream _memoryStream = null;
@@ -180,13 +183,12 @@ namespace Windows.Storage.Streams
 		/// Writes a date and time value to the output stream.
 		/// </summary>
 		/// <param name="value">The value.</param>
-		public void WriteDateTime(DateTimeOffset value)
+		public void WriteDateTime( DateTimeOffset value)
 		{ 
 			// Implementation in UWP is using Win32 FileTime format (starting on 1st January 1601)
 			// As contrary to Win32 however also supports pre-1601 dates
-			// Also ignores date time's offset.
-			var epoch1600 = new DateTime(1601, 1, 1, 0, 0, 0);
-			long ticks = (value - epoch1600.ToLocalTime()).Ticks;
+			var epoch1601 = new DateTimeOffset(1601, 1, 1, 0, 0, 0, TimeSpan.Zero);
+			long ticks = (value - epoch1601).Ticks;
 			WriteInt64(ticks);
 		}
 
