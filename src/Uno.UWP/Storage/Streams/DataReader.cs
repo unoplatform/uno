@@ -2,6 +2,7 @@
 using Uno.Buffers;
 using System.Text;
 using Uno.Disposables;
+using System.ComponentModel;
 
 namespace Windows.Storage.Streams
 {
@@ -14,7 +15,7 @@ namespace Windows.Storage.Streams
 
 		private DataReader(IBuffer buffer)
 		{
-			_buffer = buffer;
+			_buffer = buffer ?? throw new ArgumentNullException(nameof(buffer));
 		}
 
 		public static DataReader FromBuffer(IBuffer buffer) => new DataReader(buffer);
@@ -34,7 +35,7 @@ namespace Windows.Storage.Streams
 		public void ReadBytes(byte[] value)
 		{
 			VerifyRead(value.Length);
-			ReadBytesFromBuffer(value);
+			ReadBytesFromBuffer(value, value.Length);
 		}
 
 		public IBuffer ReadBuffer(uint length)
@@ -66,12 +67,9 @@ namespace Windows.Storage.Streams
 			var u32 = ReadInt32();
 			var u16a = ReadInt16();
 			var u16b = ReadInt16();
-			using (RentArray(8, out var u64))
-			{
-				ReadBytesFromBuffer(u64);
-
-				return new Guid(u32, u16a, u16b, u64);
-			}
+			var u64 = new byte[8];
+			ReadChunkFromBuffer(u64, 8);
+			return new Guid(u32, u16a, u16b, u64);
 		}
 
 		public short ReadInt16()
@@ -79,7 +77,7 @@ namespace Windows.Storage.Streams
 			VerifyRead(2);
 			using (RentArray(2, out var bytes))
 			{
-				ReadChunkFromBuffer(bytes);
+				ReadChunkFromBuffer(bytes, 2);
 				return BitConverter.ToInt16(bytes, 0);
 			}
 		}
@@ -89,8 +87,8 @@ namespace Windows.Storage.Streams
 			VerifyRead(4);
 			using (RentArray(4, out var bytes))
 			{
-				ReadChunkFromBuffer(bytes);
-				return BitConverter.ToInt32(bytes, 0);				
+				ReadChunkFromBuffer(bytes, 4);
+				return BitConverter.ToInt32(bytes, 0);
 			}
 		}
 
@@ -99,8 +97,8 @@ namespace Windows.Storage.Streams
 			VerifyRead(8);
 			using (RentArray(8, out var bytes))
 			{
-				ReadChunkFromBuffer(bytes);
-				return BitConverter.ToInt64(bytes, 0);				
+				ReadChunkFromBuffer(bytes, 8);
+				return BitConverter.ToInt64(bytes, 0);
 			}
 		}
 
@@ -109,7 +107,7 @@ namespace Windows.Storage.Streams
 			VerifyRead(2);
 			using (RentArray(2, out var bytes))
 			{
-				ReadChunkFromBuffer(bytes);
+				ReadChunkFromBuffer(bytes, 2);
 				return BitConverter.ToUInt16(bytes, 0);
 			}
 		}
@@ -119,7 +117,7 @@ namespace Windows.Storage.Streams
 			VerifyRead(4);
 			using (RentArray(4, out var bytes))
 			{
-				ReadChunkFromBuffer(bytes);
+				ReadChunkFromBuffer(bytes, 4);
 				return BitConverter.ToUInt32(bytes, 0);
 			}
 		}
@@ -129,7 +127,7 @@ namespace Windows.Storage.Streams
 			VerifyRead(8);
 			using (RentArray(8, out var bytes))
 			{
-				ReadChunkFromBuffer(bytes);
+				ReadChunkFromBuffer(bytes, 8);
 				return BitConverter.ToUInt64(bytes, 0);
 			}
 		}
@@ -139,7 +137,7 @@ namespace Windows.Storage.Streams
 			VerifyRead(4);
 			using (RentArray(4, out var bytes))
 			{
-				ReadChunkFromBuffer(bytes);
+				ReadChunkFromBuffer(bytes, 4);
 				var value = BitConverter.ToSingle(bytes, 0);
 				return value;
 			}
@@ -150,7 +148,7 @@ namespace Windows.Storage.Streams
 			VerifyRead(8);
 			using (RentArray(8, out var bytes))
 			{
-				ReadChunkFromBuffer(bytes);
+				ReadChunkFromBuffer(bytes, 8);
 				return BitConverter.ToDouble(bytes, 0);
 			}
 		}
@@ -177,10 +175,10 @@ namespace Windows.Storage.Streams
 					result = Encoding.UTF8.GetString(buffer.Data, _bufferPosition, length);
 					break;
 				case UnicodeEncoding.Utf16LE:
-					result = Encoding.Unicode.GetString(buffer.Data, _bufferPosition, length);
+					result = Encoding.Unicode.GetString(buffer.Data, _bufferPosition, length * 2);
 					break;
 				case UnicodeEncoding.Utf16BE:
-					result = Encoding.BigEndianUnicode.GetString(buffer.Data, _bufferPosition, length);
+					result = Encoding.BigEndianUnicode.GetString(buffer.Data, _bufferPosition, length * 2);
 					break;
 				default:
 					throw new InvalidOperationException("Unsupported UnicodeEncoding value.");
@@ -199,7 +197,7 @@ namespace Windows.Storage.Streams
 
 		private void VerifyRead(int count)
 		{
-			if (_bufferPosition + count >= _buffer.Length)
+			if (_bufferPosition + count > _buffer.Length)
 			{
 				throw new InvalidOperationException($"Buffer too short to accomodate for {count} requested bytes.");
 			}
@@ -220,31 +218,42 @@ namespace Windows.Storage.Streams
 			return nextByte;
 		}
 
-		private void ReadBytesFromBuffer(byte[] data)
+		private void ReadBytesFromBuffer(byte[] data, int length)
 		{
 			switch (_buffer)
 			{
 				case Buffer buffer:
-					Array.Copy(buffer.Data, _bufferPosition, data, 0, data.Length);
+					Array.Copy(buffer.Data, _bufferPosition, data, 0, length);
 					break;
 				default:
 					throw new NotSupportedException("This buffer is not supported");
 			}
-			_bufferPosition += data.Length;
+			_bufferPosition += length;
 		}
 
-		private void ReadChunkFromBuffer(byte[] chunk)
+		private void ReadChunkFromBuffer(byte[] chunk, int length)
 		{
 			var reverseOrder =
 				(ByteOrder == ByteOrder.BigEndian && BitConverter.IsLittleEndian) ||
 				(ByteOrder == ByteOrder.LittleEndian && !BitConverter.IsLittleEndian);
 
-			ReadBytesFromBuffer(chunk);			
-			_bufferPosition += chunk.Length;
+			ReadBytesFromBuffer(chunk, length);
 
 			if (reverseOrder)
 			{
 				Array.Reverse(chunk);
+
+				if (chunk.Length > length)
+				{
+					// reversing moved the chunk to the end of the array
+					// move the relevant bytes to the start
+					for (int index = 0; index < length; index++)
+					{
+						var source = chunk.Length - length + index;
+						chunk[index] = chunk[source];
+						chunk[source] = 0;
+					}
+				}
 			}
 		}
 
