@@ -7,10 +7,14 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<StackPanel Padding="20">
-        <TextBlock Text="Open picker" Style="{ThemeResource TitleTextBlockStyle}" />
+	<StackPanel Padding="20" Spacing="8">
+		<TextBlock Text="Open picker" Style="{ThemeResource TitleTextBlockStyle}" />
 		<Button Click="PickOpenSingle_Click" Content="Pick single" />
-        <Button Click="PickOpenMultiple_Click" Content="Pick multiple" />
-		<TextBlock x:Name="PickOpenResult" TextWrapping="Wrap" />
+		<Button Click="PickOpenMultiple_Click" Content="Pick multiple" />
+		<TextBlock FontSize="15" x:Name="PickOpenResult" TextWrapping="Wrap" />
+
+		<TextBlock Text="Save picker" Style="{ThemeResource TitleTextBlockStyle}" />
+		<Button Click="PickSaveSingle_Click" Content="Pick single" />
+		<TextBlock FontSize="15" x:Name="PickSaveResult" TextWrapping="Wrap" />
 	</StackPanel>
 </Page>

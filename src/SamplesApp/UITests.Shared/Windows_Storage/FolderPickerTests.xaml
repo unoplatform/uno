@@ -7,8 +7,8 @@
     mc:Ignorable="d"
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
-	<StackPanel>
+	<StackPanel Padding="20" Spacing="8">
 		<Button Click="PickFolder_Click" Content="Pick folder" />
-		<TextBlock x:Name="PickResult" />
+		<TextBlock x:Name="PickResult" FontSize="15" />
 	</StackPanel>
 </Page>
