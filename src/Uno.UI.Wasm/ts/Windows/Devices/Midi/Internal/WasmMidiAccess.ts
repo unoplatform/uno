@@ -4,31 +4,24 @@
 
 		private static dispatchRequest: (hasAccess: boolean) => number;
 
-		private static initialize() {			
-			if (!this.dispatchRequest) {
-				this.dispatchRequest = (<any>Module).mono_bind_static_method("[Uno] Uno.Devices.Midi.Internal.WasmMidiAccess:DispatchRequest");
-			}
-		}
-
-		public static request() {
-			WasmMidiAccess.initialize();
+		public static request(): Promise<string> {			
 			if (navigator.requestMIDIAccess) {
 				console.log('This browser supports WebMIDI!');
-				navigator.requestMIDIAccess()
+				return navigator.requestMIDIAccess()
 					.then(
 						(midi: WebMidi.MIDIAccess) => {
 							WasmMidiAccess.midiAccess = midi;
-							return WasmMidiAccess.dispatchRequest(true);
+							return "true";
 						},
-						() => WasmMidiAccess.dispatchRequest(false));
+						() => "false");
 			}
 			else {
 				console.log('WebMIDI is not supported in this browser.');
-				WasmMidiAccess.dispatchRequest(false);
+				return Promise.resolve("false");
 			}
 		}
 
-		public static getMidi(): WebMidi.MIDIAccess {
+		public static getMidi(): WebMidi.MIDIAccess {			
 			return this.midiAccess;
 		}
 	}

@@ -1,33 +1,50 @@
 ﻿namespace Windows.Devices.Midi {
 	export class MidiInPort {
-		private static dispatchMessage: (serializedMessage: string) => number;
+		private static dispatchMessage: (instanceId: string, serializedMessage: string, timestamp: number) => number;
 
-		private static instanceMap: Array;
+		private static instanceMap: { [managedId: string]: MidiInPort };
 
-		public static startMessageListener(encodedDeviceId: string) {
-			if (window.DeviceMotionEvent) {
+		private managedId: string;
+		private inputPort: WebMidi.MIDIInput;
+
+		private constructor(managedId: string, inputPort: WebMidi.MIDIInput) {
+			this.managedId = managedId;
+			this.inputPort = inputPort;
+		}
+
+		public static createPort(managedId: string, encodedDeviceId: string) {
+			var midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
+			var deviceId = decodeURIComponent(encodedDeviceId);
+			var input = midi.inputs.get(deviceId);
+			MidiInPort.instanceMap[managedId] = new MidiInPort(managedId, input);
+		}
+
+		public static removePort(managedId: string) {
+			var instance = MidiInPort.instanceMap[managedId];
+			instance.inputPort.removeEventListener("onmidimessage", instance.messageReceived);
+			delete MidiInPort.instanceMap[managedId];
+		}
+
+		public static startMessageListener(managedId: string) {
+			if (!this.dispatchMessage) {
 				this.dispatchMessage = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Midi.MidiInPort:DispatchMessage");
 			}
 
-			var midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
-			var deviceId = decodeURIComponent(encodedDeviceId);
-			var input = midi.inputs.get(deviceId);
-			input.addEventListener("onmidimessage", MidiInPort.messageReceived);
+			const instance = MidiInPort.instanceMap[managedId];
+			instance.inputPort.addEventListener("onmidimessage", instance.messageReceived);
 		}
 
-		public static stopMessageListener(encodedDeviceId: string) {
-			var midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
-			var deviceId = decodeURIComponent(encodedDeviceId);
-			var input = midi.inputs.get(deviceId);
-			input.removeEventListener("onmidimessage", MidiInPort.messageReceived);
+		public static stopMessageListener(managedId: string) {
+			const instance = MidiInPort.instanceMap[managedId];
+			instance.inputPort.removeEventListener("onmidimessage", instance.messageReceived);
 		}
 
-		private static messageReceived(event: WebMidi.MIDIMessageEvent) {			
-			var serializedMessage = event.receivedTime.toString();
-			for (var i = 0; i < event.data.length; i++) {
+		private messageReceived(event: WebMidi.MIDIMessageEvent) {
+			var serializedMessage = event.data[0].toString();
+			for (var i = 1; i < event.data.length; i++) {
 				serializedMessage += ':' + event.data[i];
 			}
-			MidiInPort.dispatchMessage(serializedMessage);
+			MidiInPort.dispatchMessage(this.managedId, serializedMessage, event.receivedTime);
 		}
 	}
 }

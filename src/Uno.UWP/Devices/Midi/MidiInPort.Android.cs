@@ -34,7 +34,20 @@ namespace Windows.Devices.Midi
 			_portInfo = portInfo ?? throw new ArgumentNullException(nameof(portInfo));
 		}
 
-		internal async Task OpenAsync()
+		partial void StartMessageReceived()
+		{			
+			_messageReceiver = new MessageReceiver(this);
+			_midiPort.Connect(_messageReceiver);
+		}
+
+		partial void StopMessageReceived()
+		{
+			_midiPort.Disconnect(_messageReceiver);
+			_messageReceiver.Dispose();
+			_messageReceiver = null;
+		}
+
+		internal async Task InitializeAsync()
 		{
 			var completionSource = new TaskCompletionSource<MidiDevice>();
 			using (var deviceOpenListener = new MidiDeviceOpenedListener(completionSource))
@@ -43,17 +56,16 @@ namespace Windows.Devices.Midi
 				_midiDevice = await completionSource.Task;
 				// This is not a bug, Android uses "output" for input.
 				_midiPort = _midiDevice.OpenOutputPort(_portInfo.PortNumber);
-				_messageReceiver = new MessageReceiver(this);
-				_midiPort.Connect(_messageReceiver);
 			}
 		}
 
-		public void Dispose()
+		partial void DisposeNative()
 		{
 			if (_messageReceiver != null)
 			{
 				_midiPort?.Disconnect(_messageReceiver);
 				_messageReceiver.Dispose();
+				_messageReceiver = null;
 			}
 			_portInfo?.Dispose();
 			_deviceInfo?.Dispose();
@@ -71,7 +83,7 @@ namespace Windows.Devices.Midi
 			}
 
 			var port = new MidiInPort(identifier.ToString(), nativeDeviceInfo.device, nativeDeviceInfo.port);
-			await port.OpenAsync();
+			await port.InitializeAsync();
 			return port;
 		}
 

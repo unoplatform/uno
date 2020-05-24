@@ -23,18 +23,24 @@ namespace Windows.Devices.Midi
 			DeviceId = deviceId;
 			_endpoint = endpoint;
 			_client = new MidiClient(Guid.NewGuid().ToString());
+			_port = _client.CreateInputPort(_endpoint.EndpointName);
 		}
 
-		internal void Open()
+		partial void StartMessageReceived()
 		{
-			_port = _client.CreateInputPort(_endpoint.EndpointName);
 			_port.ConnectSource(_endpoint);
 			_port.MessageReceived += NativePortMessageReceived;
 		}
 
-		public void Dispose()
+		partial void StopMessageReceived()
 		{
-			_port?.Disconnect(_endpoint);
+			_port.MessageReceived -= NativePortMessageReceived;
+			_port.Disconnect(_endpoint);
+		}
+
+		partial void DisposeNative()
+		{
+			
 			_port?.Dispose();
 			_client?.Dispose();
 			_endpoint?.Dispose();
@@ -53,9 +59,7 @@ namespace Windows.Devices.Midi
 					"Given MIDI out device does not exist or is no longer connected");
 			}
 
-			var port = new MidiInPort(identifier.ToString(), nativeDeviceInfo);
-			port.Open();
-			return port;
+			return new MidiInPort(identifier.ToString(), nativeDeviceInfo);						
 		}
 
 

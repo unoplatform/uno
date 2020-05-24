@@ -19,6 +19,7 @@ namespace Windows.Devices.Midi
 
 		private readonly object _syncLock = new object();
 
+		private TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs> _messageReceived;
 		private MidiMessageParser _parser = new MidiMessageParser();
 
 		/// <summary>
@@ -29,7 +30,36 @@ namespace Windows.Devices.Midi
 		/// <summary>
 		/// Gets the id of the device that was used to initialize the MidiInPort.
 		/// </summary>
-		public event TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs> MessageReceived;
+		public event TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs> MessageReceived
+		{
+			add
+			{
+				lock (_syncLock)
+				{
+					var firstSubscriber = _messageReceived == null;
+					_messageReceived += value;
+					if (firstSubscriber)
+					{
+						StartMessageReceived();
+					}
+				}
+			}
+			remove
+			{
+				lock (_syncLock)
+				{
+					_messageReceived -= value;
+					if (_messageReceived == null)
+					{
+						StopMessageReceived();
+					}
+				}
+			}
+		}
+
+		partial void StartMessageReceived();
+
+		partial void StopMessageReceived();
 
 		/// <summary>
 		/// Creates a MidiInPort object for the specified device.
@@ -46,7 +76,15 @@ namespace Windows.Devices.Midi
 		/// Gets a query string that can be used to enumerate all MidiInPort objects on the system.
 		/// </summary>
 		/// <returns>The query string used to enumerate the MidiInPort objects on the system.</returns>
-		public static string GetDeviceSelector() => MidiInAqsFilter;		
+		public static string GetDeviceSelector() => MidiInAqsFilter;
+
+		public void Dispose()
+		{
+			_messageReceived = null;
+			DisposeNative();
+		}
+
+		partial void DisposeNative();
 
 		private static DeviceIdentifier ValidateAndParseDeviceId(string deviceId)
 		{
@@ -83,7 +121,7 @@ namespace Windows.Devices.Midi
 				foreach (var parsedMessage in parsedMessages)
 				{
 					var eventArgs = new MidiMessageReceivedEventArgs(parsedMessage);
-					MessageReceived?.Invoke(this, eventArgs);
+					_messageReceived?.Invoke(this, eventArgs);
 				}
 			}
 			catch (Exception ex)

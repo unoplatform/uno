@@ -6,45 +6,78 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.Devices.Enumeration.Internal;
+using Uno.Devices.Midi.Internal;
+using Uno.Foundation;
 
 namespace Windows.Devices.Midi
 {
-    public partial class MidiInPort
-    {
+	public partial class MidiInPort
+	{
 		private const string JsType = "Windows.Devices.Midi.MidiInPort";
-		private readonly string _wasmId;
+
+		private readonly string _managedId;
 
 		private readonly static ConcurrentDictionary<string, MidiInPort> _instanceSubscriptions =
 			new ConcurrentDictionary<string, MidiInPort>();
 
-		private MidiInPort(string deviceId, string wasmId)
+		private MidiInPort(string deviceId, string managedId)
 		{
 			DeviceId = deviceId;
-			_wasmId = wasmId;
+			_managedId = managedId;
 		}
 
-		public static int DispatchMessage(string serializedMessage)
+		partial void StartMessageReceived()
 		{
+			_instanceSubscriptions.TryAdd(_managedId, this);
+			var addListenerCommand = $"{JsType}.startMessageListener('{_managedId}')";
+			WebAssemblyRuntime.InvokeJS(addListenerCommand);
+		}
+
+		partial void StopMessageReceived()
+		{
+			_instanceSubscriptions.TryRemove(_managedId, out _);
+			var removeListenerCommand = $"{JsType}.stopMessageListener('{_managedId}')";
+			WebAssemblyRuntime.InvokeJS(removeListenerCommand);
+		}
+
+		public static int DispatchMessage(string managedId, string serializedMessage, double timestamp)
+		{
+			if (!_instanceSubscriptions.TryGetValue(managedId, out var port))
+			{
+				throw new InvalidOperationException("This instance is not listening to MIDI input.");
+			}
+
+			var managedTimestamp = TimeSpan.FromMilliseconds(timestamp);
+
 			var splitMessage = serializedMessage.Split(':');
-			var timestamp = TimeSpan.FromMilliseconds(double.Parse(splitMessage[0], CultureInfo.InvariantCulture));
-			var message = new byte[splitMessage.Length - 1];
+
+			var message = new byte[splitMessage.Length];
 			for (int i = 1; i < splitMessage.Length; i++)
 			{
 				message[i - 1] = byte.Parse(splitMessage[i]);
 			}
 
-			OnMessageReceived(message, 0, message.Length, TimeSpan.FromMilliseconds(timestamp));
+			port.OnMessageReceived(message, 0, message.Length, managedTimestamp);
 
 			return 0;
 		}
 
-		public void Dispose()
+		partial void DisposeNative()
 		{
+			var removeInstanceCommand = $"{JsType}.removePort('{_managedId}')";
+			WebAssemblyRuntime.InvokeJS(removeInstanceCommand);
 		}
 
 		private static async Task<MidiInPort> FromIdInternalAsync(DeviceIdentifier identifier)
 		{
-			return new MidiInPort(identifier.ToString(), identifier.Id);
+			if (!await WasmMidiAccess.RequestAsync())
+			{
+				throw new UnauthorizedAccessException("User declined access to MIDI.");
+			}
+			var managedId = Guid.NewGuid().ToString();
+			var initialization = $"{JsType}.createPort('{managedId}')";
+			WebAssemblyRuntime.InvokeJS(initialization);
+			return new MidiInPort(identifier.ToString(), initialization);
 		}
 	}
 }
