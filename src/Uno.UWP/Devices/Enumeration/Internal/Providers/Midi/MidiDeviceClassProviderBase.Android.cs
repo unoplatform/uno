@@ -65,10 +65,10 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 				return;
 			}
 
-			_watchMidiManager.UnregisterDeviceCallback(_deviceCallback);
+			_watchMidiManager?.UnregisterDeviceCallback(_deviceCallback);
 			_deviceCallback?.Dispose();
 			_deviceCallback = null;
-			_watchMidiManager.Dispose();
+			_watchMidiManager?.Dispose();
 			_watchMidiManager = null;
 			WatchStopped?.Invoke(this, null);
 		}

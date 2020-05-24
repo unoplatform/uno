@@ -31,16 +31,6 @@ namespace Windows.Devices.Midi
 			_port.MessageReceived += NativePortMessageReceived;
 		}
 
-		private void NativePortMessageReceived(object sender, MidiPacketsEventArgs e)
-		{
-			foreach (var packet in e.Packets)
-			{
-				var bytes = new byte[packet.Length];
-				Marshal.Copy(packet.Bytes, bytes, 0, packet.Length);
-				OnMessageReceived(bytes, TimeSpan.FromMilliseconds(packet.TimeStamp));
-			}
-		}
-
 		public void Dispose()
 		{
 			_port?.Disconnect(_endpoint);
@@ -65,6 +55,17 @@ namespace Windows.Devices.Midi
 			var port = new MidiInPort(identifier.ToString(), nativeDeviceInfo);
 			port.Open();
 			return port;
+		}
+
+
+		private void NativePortMessageReceived(object sender, MidiPacketsEventArgs e)
+		{
+			foreach (var packet in e.Packets)
+			{
+				var bytes = new byte[packet.Length];
+				Marshal.Copy(packet.Bytes, bytes, 0, packet.Length);
+				OnMessageReceived(bytes, 0, bytes.Length, TimeSpan.FromMilliseconds(packet.TimeStamp));
+			}
 		}
 	}
 }

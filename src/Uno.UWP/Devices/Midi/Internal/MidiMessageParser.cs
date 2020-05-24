@@ -1,16 +1,22 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 using Windows.Devices.Midi;
 
 namespace Uno.Devices.Midi.Internal
 {
 	internal class MidiMessageParser
 	{
-		public IMidiMessage Parse(byte[] bytes, TimeSpan timestamp)
+		/// <summary>
+		/// Parses input byte array to MIDI messages.
+		/// For Android, multiple messages can be received
+		/// in a single batch.
+		/// </summary>
+		/// <param name="bytes">Bytes.</param>
+		/// <param name="startingOffset">Starting offset.</param>
+		/// <param name="length">Length.</param>
+		/// <param name="timestamp">Timestamp.</param>
+		/// <returns>Parsed MIDI messages.</returns>
+		public IEnumerable<IMidiMessage> Parse(byte[] bytes, int startingOffset, int length, TimeSpan timestamp)
 		{
 			if (bytes is null)
 			{
@@ -22,58 +28,100 @@ namespace Uno.Devices.Midi.Internal
 				throw new ArgumentException(nameof(bytes), "MIDI message cannot be empty");
 			}
 
+			var currentOffset = startingOffset;
+			while (currentOffset - startingOffset < length)
+			{
+				var availableLength = length - (currentOffset - startingOffset);
+				yield return ReadNextMessage(bytes, ref currentOffset, availableLength, timestamp);
+			}
+		}
+
+		private IMidiMessage ReadNextMessage(byte[] bytes, ref int offset, int availableLength, TimeSpan timestamp)
+		{
 			// Parsing logic based on
-		    // https://www.midi.org/specifications-old/item/table-1-summary-of-midi-message
+			// https://www.midi.org/specifications-old/item/table-1-summary-of-midi-message
 
 			// Try to parse channel voice messages first
 			// These start with a unique combination of four bits and the remaining
 			// four represent the channel.
 
-			var upperBits = (byte)(bytes[0] & 0b_1111_0000);
+			var upperBits = (byte)(bytes[offset] & 0b_1111_0000);
 			switch (upperBits)
 			{
 				case (byte)MidiMessageType.NoteOff:
-					return new MidiNoteOffMessage(bytes, timestamp);
+					var noteOffBytes = CopySubmessage(bytes, ref offset, 3, availableLength);
+					return new MidiNoteOffMessage(noteOffBytes, timestamp);
 				case (byte)MidiMessageType.NoteOn:
-					return new MidiNoteOnMessage(bytes, timestamp);
+					var noteOnBytes = CopySubmessage(bytes, ref offset, 3, availableLength);
+					return new MidiNoteOnMessage(noteOnBytes, timestamp);
 				case (byte)MidiMessageType.PolyphonicKeyPressure:
-					return new MidiPolyphonicKeyPressureMessage(bytes, timestamp);
+					var polyphonicBytes = CopySubmessage(bytes, ref offset, 3, availableLength);
+					return new MidiPolyphonicKeyPressureMessage(polyphonicBytes, timestamp);
 				case (byte)MidiMessageType.ControlChange:
-					return new MidiControlChangeMessage(bytes, timestamp);
+					var controlChangeBytes = CopySubmessage(bytes, ref offset, 3, availableLength);
+					return new MidiControlChangeMessage(controlChangeBytes, timestamp);
 				case (byte)MidiMessageType.ProgramChange:
-					return new MidiProgramChangeMessage(bytes, timestamp);
+					var programChangeBytes = CopySubmessage(bytes, ref offset, 2, availableLength);
+					return new MidiProgramChangeMessage(programChangeBytes, timestamp);
 				case (byte)MidiMessageType.ChannelPressure:
-					return new MidiChannelPressureMessage(bytes, timestamp);
+					var channelPressureBytes = CopySubmessage(bytes, ref offset, 2, availableLength);
+					return new MidiChannelPressureMessage(channelPressureBytes, timestamp);
 				case (byte)MidiMessageType.PitchBendChange:
-					return new MidiPitchBendChangeMessage(bytes, timestamp);
+					var pitchBendBytes = CopySubmessage(bytes, ref offset, 3, availableLength);
+					return new MidiPitchBendChangeMessage(pitchBendBytes, timestamp);
 			}
 
 			// System common messages
-			switch (bytes[0])
+			switch (bytes[offset])
 			{
 				case (byte)MidiMessageType.MidiTimeCode:
-					return new MidiTimeCodeMessage(bytes, timestamp);
+					var midiCodeBytes = CopySubmessage(bytes, ref offset, 2, availableLength);
+					return new MidiTimeCodeMessage(midiCodeBytes, timestamp);
 				case (byte)MidiMessageType.SongPositionPointer:
-					return new MidiSongPositionPointerMessage(bytes, timestamp);
+					var songPositionBytes = CopySubmessage(bytes, ref offset, 3, availableLength);
+					return new MidiSongPositionPointerMessage(songPositionBytes, timestamp);
 				case (byte)MidiMessageType.SongSelect:
-					return new MidiSongSelectMessage(bytes, timestamp);
+					var songSelectBytes = CopySubmessage(bytes, ref offset, 2, availableLength);
+					return new MidiSongSelectMessage(songSelectBytes, timestamp);
 				case (byte)MidiMessageType.TuneRequest:
-					return new MidiTuneRequestMessage(bytes, timestamp);
+					var tuneRequestBytes = CopySubmessage(bytes, ref offset, 1, availableLength);
+					return new MidiTuneRequestMessage(tuneRequestBytes, timestamp);
 				case (byte)MidiMessageType.TimingClock:
-					return new MidiTimingClockMessage(bytes, timestamp);
+					var timingClockBytes = CopySubmessage(bytes, ref offset, 1, availableLength);
+					return new MidiTimingClockMessage(timingClockBytes, timestamp);
 				case (byte)MidiMessageType.Start:
-					return new MidiStartMessage(bytes, timestamp);
+					var startBytes = CopySubmessage(bytes, ref offset, 1, availableLength);
+					return new MidiStartMessage(startBytes, timestamp);
 				case (byte)MidiMessageType.Continue:
-					return new MidiContinueMessage(bytes, timestamp);
+					var continueBytes = CopySubmessage(bytes, ref offset, 1, availableLength);
+					return new MidiContinueMessage(continueBytes, timestamp);
 				case (byte)MidiMessageType.Stop:
-					return new MidiStopMessage(bytes, timestamp);
+					var stopBytes = CopySubmessage(bytes, ref offset, 1, availableLength);
+					return new MidiStopMessage(stopBytes, timestamp);
 				case (byte)MidiMessageType.ActiveSensing:
-					return new MidiActiveSensingMessage(bytes, timestamp);
+					var activeSensingBytes = CopySubmessage(bytes, ref offset, 1, availableLength);
+					return new MidiActiveSensingMessage(activeSensingBytes, timestamp);
 				case (byte)MidiMessageType.SystemReset:
-					return new MidiSystemResetMessage(bytes, timestamp);
+					var systemResetBytes = CopySubmessage(bytes, ref offset, 1, availableLength);
+					return new MidiSystemResetMessage(systemResetBytes, timestamp);
 				default:
-					return new MidiSystemExclusiveMessage(bytes, timestamp);
+					// take all remaining bytes
+					var remainingBytes = CopySubmessage(bytes, ref offset, availableLength, availableLength);
+					return new MidiSystemExclusiveMessage(remainingBytes, timestamp);
 			}
+		}
+
+		private byte[] CopySubmessage(byte[] source, ref int offset, int requestedLength, int availableLength)
+		{
+			if (requestedLength > availableLength)
+			{
+				throw new InvalidOperationException(
+					"The MIDI message is longer than available buffer.");
+			}
+			byte[] result = new byte[requestedLength];
+			Array.Copy(source, offset, result, 0, requestedLength);
+			offset += requestedLength;
+			return result;
 		}
 	}
 }

@@ -30,9 +30,10 @@ namespace Windows.Devices.Midi
 			var message = new byte[splitMessage.Length - 1];
 			for (int i = 1; i < splitMessage.Length; i++)
 			{
-				message[i-1] = byte.Parse(splitMessage[i]);
+				message[i - 1] = byte.Parse(splitMessage[i]);
 			}
 
+			OnMessageReceived(message, 0, message.Length, TimeSpan.FromMilliseconds(timestamp));
 
 			return 0;
 		}

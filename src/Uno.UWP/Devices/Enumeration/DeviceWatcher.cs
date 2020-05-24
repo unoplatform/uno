@@ -64,11 +64,15 @@ namespace Windows.Devices.Enumeration
 
 		public void Stop()
 		{
-			_stopCounter = 0;
-			Status = DeviceWatcherStatus.Stopping;
-			foreach (var provider in _providers)
+			if (Status != DeviceWatcherStatus.Stopping &&
+				Status != DeviceWatcherStatus.Stopped)
 			{
-				provider.WatchStop();
+				_stopCounter = 0;
+				Status = DeviceWatcherStatus.Stopping;
+				foreach (var provider in _providers)
+				{
+					provider.WatchStop();
+				}
 			}
 		}
 

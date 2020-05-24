@@ -223,7 +223,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 			UpdateParameterList3();
 
 			// Disable send button & hide/clear the SysEx buffer text
-			this.sendButton.IsEnabled = false;
+			this.sendButton.IsEnabled = true;
 			this.rawBufferHeader.Visibility = Visibility.Collapsed;
 			this.sysExMessageContent.Text = "";
 			this.sysExMessageContent.Visibility = Visibility.Collapsed;

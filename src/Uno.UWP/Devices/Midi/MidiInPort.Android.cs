@@ -86,9 +86,7 @@ namespace Windows.Devices.Midi
 
 			public override void OnSend(byte[] msg, int offset, int count, long timestamp)
 			{
-				byte[] data = new byte[count];
-				Array.Copy(msg, offset, data, 0, count);
-				_midiInPort.OnMessageReceived(data, TimeSpan.FromMilliseconds(timestamp));
+				_midiInPort.OnMessageReceived(msg, offset, count, TimeSpan.FromMilliseconds(timestamp));
 			}
 		}
 	}

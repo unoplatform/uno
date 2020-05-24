@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using Microsoft.Extensions.Logging;
 using Uno.Devices.Enumeration.Internal;
 using Uno.Devices.Midi.Internal;
+using Uno.Extensions;
 using Windows.Foundation;
 
 namespace Windows.Devices.Midi
@@ -66,7 +68,7 @@ namespace Windows.Devices.Midi
 			return deviceIdentifier;
 		}
 
-		private void OnMessageReceived(byte[] message, TimeSpan timestamp)
+		private void OnMessageReceived(byte[] message, int startingOffset, int length, TimeSpan timestamp)
 		{
 			if (message.Length == 0)
 			{
@@ -74,10 +76,21 @@ namespace Windows.Devices.Midi
 				return;
 			}
 
-			// parse message
-			var parsedMessage = _parser.Parse(message, timestamp);
-			var eventArgs = new MidiMessageReceivedEventArgs(parsedMessage);
-			MessageReceived?.Invoke(this, eventArgs);
+			try
+			{
+				// parse message
+				var parsedMessages = _parser.Parse(message, startingOffset, length, timestamp);
+				foreach (var parsedMessage in parsedMessages)
+				{
+					var eventArgs = new MidiMessageReceivedEventArgs(parsedMessage);
+					MessageReceived?.Invoke(this, eventArgs);
+				}
+			}
+			catch (Exception ex)
+			{
+				this.Log().LogError("MIDI Message could not be parsed", ex);
+				return;
+			}
 		}
 	}
 }

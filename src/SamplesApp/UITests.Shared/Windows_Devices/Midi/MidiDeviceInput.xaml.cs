@@ -76,7 +76,7 @@ namespace UITests.Windows_Devices.Midi
 			}
 			this.midiInPorts.Clear();
 		}
-		
+
 		/// <summary>
 		/// Change the input MIDI device from which to receive messages
 		/// </summary>
@@ -235,17 +235,18 @@ namespace UITests.Windows_Devices.Midi
 					break;
 			}
 
-			// Use the Dispatcher to update the messages on the UI thread
-			await Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+			// Skip TimingClock and ActiveSensing messages to avoid overcrowding the list. Commment this check out to see all messages
+			if ((receivedMidiMessage.Type != MidiMessageType.TimingClock) && (receivedMidiMessage.Type != MidiMessageType.ActiveSensing))
 			{
-				// Skip TimingClock and ActiveSensing messages to avoid overcrowding the list. Commment this check out to see all messages
-				if ((receivedMidiMessage.Type != MidiMessageType.TimingClock) && (receivedMidiMessage.Type != MidiMessageType.ActiveSensing))
+				// Use the Dispatcher to update the messages on the UI thread
+				await Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 				{
-					InputDeviceMessages.Add(outputMessage + "\n");
-					this.inputDeviceMessages.ScrollIntoView(InputDeviceMessages[InputDeviceMessages.Count - 1]);
+
+					InputDeviceMessages.Insert(0, outputMessage.ToString());
 					NotifyUser("Message received successfully!");
-				}
-			});
+
+				});
+			}
 		}
 
 		private void NotifyUser(string message)
