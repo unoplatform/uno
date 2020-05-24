@@ -28,6 +28,7 @@ namespace Windows.Devices.Midi
 		internal void Open()
 		{
 			_port = _client.CreateInputPort(_endpoint.EndpointName);
+			_port.ConnectSource(_endpoint);
 			_port.MessageReceived += NativePortMessageReceived;
 		}
 
