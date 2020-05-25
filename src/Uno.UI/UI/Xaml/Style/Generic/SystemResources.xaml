@@ -704,6 +704,27 @@
 			<SolidColorBrush x:Key="MenuFlyoutItemPressedBackgroundThemeBrush" Color="#FFFFFFFF" />
 			<SolidColorBrush x:Key="MenuFlyoutItemPressedForegroundThemeBrush" Color="#FF000000" />
 			<SolidColorBrush x:Key="MenuFlyoutSeparatorThemeBrush" Color="#FF7A7A7A" />
+			
+            <!-- Resources for Windows.UI.Xaml.Controls.ToggleMenuFlyoutItem -->
+            <StaticResource x:Key="ToggleMenuFlyoutItemBackground" ResourceKey="SystemControlTransparentBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
+
+            <StaticResource x:Key="ToggleMenuFlyoutItemForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+
+            <StaticResource x:Key="ToggleMenuFlyoutItemKeyboardAcceleratorTextForeground" ResourceKey="SystemControlForegroundBaseMediumBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemKeyboardAcceleratorTextForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseMediumBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemKeyboardAcceleratorTextForegroundPressed" ResourceKey="SystemControlHighlightAltBaseMediumBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemKeyboardAcceleratorTextForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+
+            <StaticResource x:Key="ToggleMenuFlyoutItemCheckGlyphForeground" ResourceKey="SystemControlForegroundBaseMediumHighBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemCheckGlyphForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemCheckGlyphForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemCheckGlyphForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
 
 			<!-- Resources for AutoSuggestBox -->
 			<SolidColorBrush x:Key="AutoSuggestBoxSuggestionsListBackground" Color="{StaticResource SystemChromeMediumLowColor}" />
@@ -1776,6 +1797,28 @@
 			<SolidColorBrush x:Key="MenuFlyoutItemPressedForegroundThemeBrush" Color="{ThemeResource SystemColorButtonFaceColor}" />
 			<SolidColorBrush x:Key="MenuFlyoutSeparatorThemeBrush" Color="{ThemeResource SystemColorWindowTextColor}" />
 
+			
+            <!-- Resources for Windows.UI.Xaml.Controls.ToggleMenuFlyoutItem -->
+            <StaticResource x:Key="ToggleMenuFlyoutItemBackground" ResourceKey="SystemControlTransparentBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
+
+            <StaticResource x:Key="ToggleMenuFlyoutItemForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+
+            <StaticResource x:Key="ToggleMenuFlyoutItemKeyboardAcceleratorTextForeground" ResourceKey="SystemControlForegroundBaseMediumBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemKeyboardAcceleratorTextForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseMediumBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemKeyboardAcceleratorTextForegroundPressed" ResourceKey="SystemControlHighlightAltBaseMediumBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemKeyboardAcceleratorTextForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+
+            <StaticResource x:Key="ToggleMenuFlyoutItemCheckGlyphForeground" ResourceKey="SystemControlForegroundBaseMediumHighBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemCheckGlyphForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemCheckGlyphForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemCheckGlyphForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+
 			<!-- Resources for AutoSuggestBox -->
 			<SolidColorBrush x:Key="AutoSuggestBoxSuggestionsListBackground" Color="{StaticResource SystemChromeMediumLowColor}" />
 			<SolidColorBrush x:Key="AutoSuggestBoxSuggestionsListBorderBrush" Color="{StaticResource SystemChromeHighColor}" />
@@ -2838,6 +2881,27 @@
 			<SolidColorBrush x:Key="MenuFlyoutItemPressedBackgroundThemeBrush" Color="#FF000000" />
 			<SolidColorBrush x:Key="MenuFlyoutItemPressedForegroundThemeBrush" Color="#FFFFFFFF" />
 			<SolidColorBrush x:Key="MenuFlyoutSeparatorThemeBrush" Color="#FF7A7A7A" />
+
+            <!-- Resources for Windows.UI.Xaml.Controls.ToggleMenuFlyoutItem -->
+            <StaticResource x:Key="ToggleMenuFlyoutItemBackground" ResourceKey="SystemControlTransparentBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemBackgroundPointerOver" ResourceKey="SystemControlHighlightListLowBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemBackgroundPressed" ResourceKey="SystemControlHighlightListMediumBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemBackgroundDisabled" ResourceKey="SystemControlTransparentBrush" />
+
+            <StaticResource x:Key="ToggleMenuFlyoutItemForeground" ResourceKey="SystemControlForegroundBaseHighBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+
+            <StaticResource x:Key="ToggleMenuFlyoutItemKeyboardAcceleratorTextForeground" ResourceKey="SystemControlForegroundBaseMediumBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemKeyboardAcceleratorTextForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseMediumBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemKeyboardAcceleratorTextForegroundPressed" ResourceKey="SystemControlHighlightAltBaseMediumBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemKeyboardAcceleratorTextForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
+
+            <StaticResource x:Key="ToggleMenuFlyoutItemCheckGlyphForeground" ResourceKey="SystemControlForegroundBaseMediumHighBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemCheckGlyphForegroundPointerOver" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemCheckGlyphForegroundPressed" ResourceKey="SystemControlHighlightAltBaseHighBrush" />
+            <StaticResource x:Key="ToggleMenuFlyoutItemCheckGlyphForegroundDisabled" ResourceKey="SystemControlDisabledBaseMediumLowBrush" />
 
 			<!-- Resources for AutoSuggestBox -->
 			<SolidColorBrush x:Key="AutoSuggestBoxSuggestionsListBackground" Color="{StaticResource SystemChromeMediumLowColor}" />
