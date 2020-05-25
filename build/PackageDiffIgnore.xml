@@ -990,6 +990,9 @@
 		<Member
 			  fullName="System.Void Windows.UI.Xaml.Automation.Peers.AutomationPeerAnnotation..ctor()"
 			  reason="UWP does not have this ctor"/>
+		<Member
+			  fullName="System.Void Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs..ctor()"
+			  reason="Parameter-less ctor does not exist in UWP"/>
 	  </Methods>
 	</IgnoreSet>
   </IgnoreSets>

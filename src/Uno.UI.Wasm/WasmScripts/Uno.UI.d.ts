@@ -1,6 +1,21 @@
+interface Clipboard {
+    writeText(newClipText: string): Promise<void>;
+    readText(): Promise<string>;
+}
+interface NavigatorClipboard {
+    readonly clipboard?: Clipboard;
+}
+interface Navigator extends NavigatorClipboard {
+}
 declare namespace Uno.Utils {
     class Clipboard {
+        private static dispatchContentChanged;
+        private static dispatchGetContent;
+        static startContentChanged(): void;
+        static stopContentChanged(): void;
         static setText(text: string): string;
+        static getText(): Promise<string>;
+        private static onClipboardChanged;
     }
 }
 declare namespace Windows.UI.Core {
@@ -715,6 +730,14 @@ declare class WindowManagerSetXUidParams {
 interface PointerEvent {
     isOver(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
     isOverDeep(this: PointerEvent, element: HTMLElement | SVGElement): boolean;
+}
+declare namespace Uno.UI.Interop {
+    class AsyncInteropHelper {
+        private static dispatchResultMethod;
+        private static dispatchErrorMethod;
+        private static init;
+        static Invoke(handle: number, promiseFunction: () => Promise<string>): void;
+    }
 }
 declare module Uno.UI {
     interface IAppManifest {

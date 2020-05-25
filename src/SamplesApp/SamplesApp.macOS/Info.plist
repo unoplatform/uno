@@ -30,6 +30,17 @@
 	<string>Assets.xcassets/AppIcon.appiconset</string>
 	<key>ATSApplicationFontsPath</key>
 	<string>Fonts/winjs-symbols.ttf</string>
+	<key>CFBundleURLTypes</key>
+	<array>
+		<dict>
+			<key>CFBundleURLName</key>
+			<string>Uno Samples Test scheme</string>
+			<key>CFBundleURLSchemes</key>
+			<array>
+				<string>uno-samples-test</string>
+			</array>
+		</dict>
+	</array>
 	<key>NSAppTransportSecurity</key>
 	<dict>
 		<key>NSAllowsArbitraryLoads</key>

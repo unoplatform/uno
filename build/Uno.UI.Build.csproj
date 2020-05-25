@@ -30,7 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="docfx.console" Version="2.52.0" GeneratePathProperty="true" />
+		<PackageReference Include="docfx.console" Version="2.53.1" GeneratePathProperty="true" />
 		<PackageReference Include="Microsoft.VisualStudio.TextTemplating.15.0">
 			<Version>16.3.29316.127</Version>
 		</PackageReference>
@@ -170,7 +170,7 @@
 		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\net461\Uno.UWPSyncGenerator.exe &quot;sync&quot;" />
 	</Target>
 
-	<Target Name="PublishVisx" Condition="'$(UNO_UWP_BUILD)'=='false'">
+	<Target Name="PublishVisx" Condition="'$(UNO_UWP_BUILD)'=='true'">
 		<Copy SourceFiles="..\src\SolutionTemplate\UnoSolutionTemplate.VISX\bin\Release\UnoSolutionTemplate.VSIX.vsix"
 					DestinationFiles="$(OutputDir)\vslatest\UnoPlatform-$(GITVERSION_FullSemVer).vsix" />
 	</Target>

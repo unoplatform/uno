@@ -52,7 +52,7 @@ namespace SamplesApp
 		/// </summary>
 		/// <seealso cref="https://github.com/unoplatform/uno/issues/1741"/>
 		public void AssertIssue1790()
-		{			
+		{
 			void AssertIsUsable(Windows.Storage.ApplicationDataContainer container)
 			{
 				const string issue1790 = nameof(issue1790);
@@ -99,6 +99,36 @@ namespace SamplesApp
 				// this.DebugSettings.EnableFrameRateCounter = true;
 			}
 #endif
+			InitializeFrame(e.Arguments);
+			Windows.UI.Xaml.Window.Current.Activate();
+
+			DisplayLaunchArguments(e);
+		}
+
+		protected
+#if HAS_UNO
+			internal
+#endif
+			override async void OnActivated(IActivatedEventArgs e)
+		{
+			base.OnActivated(e);
+
+			InitializeFrame();
+			Windows.UI.Xaml.Window.Current.Activate();
+
+			if (e.Kind == ActivationKind.Protocol)
+			{
+				var protocolActivatedEventArgs = (ProtocolActivatedEventArgs)e;
+				var dlg = new MessageDialog(
+					$"PreviousState - {e.PreviousExecutionState}, " +
+					$"Uri - {protocolActivatedEventArgs.Uri}",
+					"Application activated via protocol");
+				await dlg.ShowAsync();
+			}
+		}
+
+		private void InitializeFrame(string arguments = null)
+		{
 			Frame rootFrame = Windows.UI.Xaml.Window.Current.Content as Frame;
 
 			// Do not repeat app initialization when the Window already has content,
@@ -110,30 +140,25 @@ namespace SamplesApp
 
 				rootFrame.NavigationFailed += OnNavigationFailed;
 
-				if (e.PreviousExecutionState == ApplicationExecutionState.Terminated)
-				{
-					//TODO: Load state from previously suspended application
-				}
-
 				// Place the frame in the current Window
 				Windows.UI.Xaml.Window.Current.Content = rootFrame;
 				Console.WriteLine($"RootFrame: {rootFrame}");
 			}
 
-			if (e.PrelaunchActivated == false)
+			if (rootFrame.Content == null)
 			{
-				if (rootFrame.Content == null)
+				// When the navigation stack isn't restored navigate to the first page,
+				// configuring the new page by passing required information as a navigation
+				// parameter
+				if (arguments != null)
 				{
-					// When the navigation stack isn't restored navigate to the first page,
-					// configuring the new page by passing required information as a navigation
-					// parameter
-					rootFrame.Navigate(typeof(MainPage), e.Arguments);
+					rootFrame.Navigate(typeof(MainPage), arguments);
 				}
-				// Ensure the current window is active
-				Windows.UI.Xaml.Window.Current.Activate();
+				else
+				{
+					rootFrame.Navigate(typeof(MainPage));
+				}
 			}
-
-			DisplayLaunchArguments(e);
 		}
 
 		private async void DisplayLaunchArguments(LaunchActivatedEventArgs launchActivatedEventArgs)

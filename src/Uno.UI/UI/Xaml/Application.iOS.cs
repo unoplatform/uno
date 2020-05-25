@@ -10,6 +10,8 @@ using Windows.ApplicationModel;
 using ObjCRuntime;
 using Windows.Graphics.Display;
 using Uno.UI.Services;
+using Uno.Extensions;
+using Microsoft.Extensions.Logging;
 
 namespace Windows.UI.Xaml
 {
@@ -18,6 +20,8 @@ namespace Windows.UI.Xaml
 	{
 		private bool _suspended;
 		internal bool IsSuspended => _suspended;
+
+		private bool _preventSecondaryActivationHandling = false;
 
 		public Application()
 		{
@@ -35,16 +39,71 @@ namespace Windows.UI.Xaml
 			callback(new ApplicationInitializationCallbackParams());
 		}
 
-		public override void FinishedLaunching(UIApplication application)
+		/// <summary>
+		/// Used to handle application launch. Previously used <see cref="FinishedLaunching(UIApplication)" />
+		/// which however does not support launch with arguments and is "technically" deprecated.
+		/// </summary>
+		/// <param name="application">UI Application.</param>
+		/// <param name="launchOptions">Launch options.</param>
+		/// <returns>Value indicating whether launch can be handled.</returns>
+		public override bool FinishedLaunching(UIApplication application, NSDictionary launchOptions)
 		{
 			InitializationCompleted();
-			OnLaunched(new LaunchActivatedEventArgs());
+			var handled = false;
+			if (launchOptions != null)
+			{
+				if (launchOptions.TryGetValue(UIApplication.LaunchOptionsUrlKey, out var urlObject))
+				{
+					_preventSecondaryActivationHandling = true;
+					var url = (NSUrl)urlObject;
+					if (TryParseActivationUri(url, out var uri))
+					{
+						OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.NotRunning));
+						handled = true;
+					}
+				}
+				else if (launchOptions.TryGetValue(UIApplication.LaunchOptionsShortcutItemKey, out var shortcutItemObject))
+				{
+					_preventSecondaryActivationHandling = true;
+					var shortcutItem = (UIApplicationShortcutItem)shortcutItemObject;
+					OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, shortcutItem.Type));
+					handled = true;
+				}
+			}
+
+			// default to normal launch
+			if (!handled)
+			{
+				OnLaunched(new LaunchActivatedEventArgs());
+			}
+			return true;
 		}
 
-		public override void PerformActionForShortcutItem(UIApplication application,
+		public override bool OpenUrl(UIApplication app, NSUrl url, NSDictionary options)
+		{
+			// If the application was not running, URL was already handled by FinishedLaunching
+			if (!_preventSecondaryActivationHandling)
+			{
+				if (TryParseActivationUri(url, out var uri))
+				{
+					OnActivated(new ProtocolActivatedEventArgs(uri, ApplicationExecutionState.Running));
+				}
+			}
+			_preventSecondaryActivationHandling = false;
+			return true;
+		}
+
+		public override void PerformActionForShortcutItem(
+			UIApplication application,
 			UIApplicationShortcutItem shortcutItem,
-			UIOperationHandler completionHandler) =>
-			OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, shortcutItem.Type));
+			UIOperationHandler completionHandler)
+		{
+			if (!_preventSecondaryActivationHandling)
+			{
+				OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, shortcutItem.Type));
+			}
+			_preventSecondaryActivationHandling = false;
+		}
 
 		public override void DidEnterBackground(UIApplication application)
 			=> OnSuspending();
@@ -84,6 +143,19 @@ namespace Windows.UI.Xaml
 		[Export("getApplicationDataPath")]
 		[global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
 		public NSString GetWorkingFolder() => new NSString(Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData));
+
+		private bool TryParseActivationUri(NSUrl url, out Uri uri)
+		{
+			if (Uri.TryCreate(url.ToString(), UriKind.Absolute, out uri))
+			{
+				return true;
+			}
+			else
+			{
+				this.Log().LogError($"Activation URI {url} could not be parsed");
+				return false;
+			}
+		}
 
 		private ApplicationTheme GetDefaultSystemTheme()
 		{
