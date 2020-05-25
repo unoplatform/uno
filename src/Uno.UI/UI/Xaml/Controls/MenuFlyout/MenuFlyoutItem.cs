@@ -259,7 +259,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		// Performs appropriate actions upon a mouse/keyboard invocation of a 
-		internal void Invoke()
+		internal virtual void Invoke()
 		{
 			RoutedEventArgs spArgs;
 			MenuFlyoutPresenter spParentMenuFlyoutPresenter;

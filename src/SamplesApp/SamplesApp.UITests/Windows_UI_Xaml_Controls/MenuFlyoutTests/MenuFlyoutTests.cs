@@ -70,6 +70,39 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.MenuFlyoutTests
 
 		[Test]
 		[AutoRetry]
+		public void Simple_MenuFlyout_Toggle()
+		{
+			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuBarTests.SimpleMenuBar");
+
+			_app.WaitForElement(_app.Marked("editMenu"));
+			var result = _app.Marked("result");
+
+			TakeScreenshot("Initial");
+
+			void Validate(string topMenu, string item, string expectedResult, bool initialCheckedState)
+			{
+				_app.FastTap(_app.Marked(topMenu));
+
+				TakeScreenshot(item);
+
+				var itemQuery = _app.Marked(item);
+
+				Assert.AreEqual(initialCheckedState, itemQuery.GetDependencyPropertyValue<bool>("IsChecked"));
+
+				_app.FastTap(itemQuery);
+
+				_app.WaitForText(result, expectedResult);
+			}
+
+			Validate("editMenu", "RepeatToggleMenuFlyoutItem", "click text:Repeat", true);
+			Validate("editMenu", "RepeatToggleMenuFlyoutItem", "click text:Repeat", false);
+			Validate("editMenu", "ShuffleToggleMenuFlyoutItem", "click text:Shuffle", false);
+
+			TakeScreenshot("AfterSuccess");
+		}
+
+		[Test]
+		[AutoRetry]
 		public void Simple_SubMenuFlyout()
 		{
 			Run("UITests.Shared.Windows_UI_Xaml_Controls.MenuBarTests.SimpleMenuBar");
