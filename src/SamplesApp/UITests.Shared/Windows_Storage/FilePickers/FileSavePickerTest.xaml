@@ -6,8 +6,10 @@
 	xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
 	mc:Ignorable="d"
 	Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
+	
 	<StackPanel>
 		<Button Content="Save file" Click="SaveFileButton_Click" Margin="0,10,10,0"/>
 		<TextBlock x:Name="OutputTextBlock" TextWrapping="Wrap"/>
 	</StackPanel>
+	
 </Page>

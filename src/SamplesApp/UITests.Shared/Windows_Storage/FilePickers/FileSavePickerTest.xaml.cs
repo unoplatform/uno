@@ -31,20 +31,20 @@ namespace UITests.Shared.Windows_Storage.FilePickers
 			var file = await savePicker.PickSaveFileAsync();
 			if (file != null)
 			{
-				// Prevent updates to the remote version of the file until we finish making changes and call CompleteUpdatesAsync.
-				CachedFileManager.DeferUpdates(file);
-				// write to file
-				await FileIO.WriteTextAsync(file, "Example file contents.");
-				// Let Windows know that we're finished changing the file so the other app can update the remote version of the file.
-				// Completing updates may require Windows to ask for user input.
-				var status = await CachedFileManager.CompleteUpdatesAsync(file);
-				OutputTextBlock.Text = status switch
-				{
-					FileUpdateStatus.Complete => "File " + file.Name + " was saved.",
-					FileUpdateStatus.CompleteAndRenamed => "File " + file.Name + " was renamed and saved.",
-					_ => "File " + file.Name + " couldn't be saved."
-				};
-			}
+                //// Prevent updates to the remote version of the file until we finish making changes and call CompleteUpdatesAsync.
+                //CachedFileManager.DeferUpdates(file);
+                //// write to file
+                //await FileIO.WriteTextAsync(file, "Example file contents.");
+                //// Let Windows know that we're finished changing the file so the other app can update the remote version of the file.
+                //// Completing updates may require Windows to ask for user input.
+                //var status = await CachedFileManager.CompleteUpdatesAsync(file);
+				OutputTextBlock.Text = "File picked.";
+                //{
+                //	FileUpdateStatus.Complete => "File " + file.Name + " was saved.",
+                //	FileUpdateStatus.CompleteAndRenamed => "File " + file.Name + " was renamed and saved.",
+                //	_ => "File " + file.Name + " couldn't be saved."
+                //};
+                }
 			else
 			{
 				OutputTextBlock.Text = "Operation cancelled.";
