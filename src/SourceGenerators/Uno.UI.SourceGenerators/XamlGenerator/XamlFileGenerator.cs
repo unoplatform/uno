@@ -780,7 +780,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									InitializeAndBuildResourceDictionary(writer, topLevelControl, setIsParsing: true);
 									writer.AppendLineInvariant(";");
 									var url = _globalStaticResourcesMap.GetSourceLink(_fileDefinition);
-									writer.AppendLineInvariant("_{0}_ResourceDictionary.Source = new Uri(\"{1}{2}\");", _fileUniqueId, XamlFilePathHelper.LocalResourcePrefix, url);
+									writer.AppendLineInvariant("_{0}_ResourceDictionary.Source = new global::System.Uri(\"{1}{2}\");", _fileUniqueId, XamlFilePathHelper.LocalResourcePrefix, url);
 									writer.AppendLineInvariant("_{0}_ResourceDictionary.CreationComplete();", _fileUniqueId);
 								}
 

@@ -14,7 +14,7 @@ This must be called during app startup in the `App` class constructor. Uno does 
 
 Setting `Application.Current.RequestedTheme` outside of `App` constructor is not allowed, which is in line with UWP.
 
-## Reacting to OS theme
+## Reacting to OS theme changes
 
 If you don't specify the theme in `App` constructor and `App.xaml`, your app will automatically adapt to OS theme changes at runtime. However, on Android, you need to make sure to add `ConfigChanges.UiMode` to the `MainActivity` `[Application]` attribute, for example:
 
