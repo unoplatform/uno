@@ -53,6 +53,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 					IsLightDismissEnabled = _isLightDismissEnabled,
 				};
 
+				SynchronizeTemplatedParent();
+
 				_popup.Opened += OnPopupOpened;
 				_popup.Closed += OnPopupClosed;
 
@@ -289,6 +291,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			_popup?.SetValue(Popup.DataContextProperty, this.DataContext, precedence: DependencyPropertyValuePrecedences.Local);
 
 		partial void OnTemplatedParentChangedPartial(DependencyPropertyChangedEventArgs e)
+			=> SynchronizeTemplatedParent();
+
+		private void SynchronizeTemplatedParent()
 		{
 			_popup?.SetValue(Popup.TemplatedParentProperty, TemplatedParent, precedence: DependencyPropertyValuePrecedences.Local);
 		}
