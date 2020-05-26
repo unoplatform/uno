@@ -8,24 +8,31 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-    <SplitView
-        x:Name="Split"
-        Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
-        CompactPaneLength="48"
-        DisplayMode="CompactOverlay"
-        IsPaneOpen="False"
-        OpenPaneLength="200"
-        PaneBackground="Red"
-        PanePlacement="Right">
-        <SplitView.Content>
-            <Button Click="Button_Click">Toggle</Button>
-        </SplitView.Content>
-        <SplitView.Pane>
-            <TextBlock
-                Margin="20"
-                FontSize="15"
-                Text="This test is very long and should be clipped!"
-                TextWrapping="Wrap" />
-        </SplitView.Pane>
-    </SplitView>
+    <Grid x:Name="WrapperGrid">
+        <Border
+            x:Name="TargetRect"
+            Margin="0,0,48,0"
+            HorizontalAlignment="Stretch"
+            VerticalAlignment="Stretch" />
+        <SplitView
+            x:Name="Split"
+            Background="Blue"
+            CompactPaneLength="48"
+            DisplayMode="CompactOverlay"
+            IsPaneOpen="False"
+            OpenPaneLength="200"
+            PaneBackground="Red"
+            PanePlacement="Right">
+            <SplitView.Content>
+                <Button x:Name="PaneToggle" Click="Button_Click">Toggle</Button>
+            </SplitView.Content>
+            <SplitView.Pane>
+                <TextBlock
+                    Margin="20"
+                    FontSize="15"
+                    Text="This test is very long and should be clipped!"
+                    TextWrapping="Wrap" />
+            </SplitView.Pane>
+        </SplitView>
+    </Grid>
 </Page>
