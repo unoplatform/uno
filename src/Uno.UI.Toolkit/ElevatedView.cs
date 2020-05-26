@@ -18,6 +18,7 @@ namespace Uno.UI.Toolkit
 {
 	[ContentProperty(Name = "ElevatedContent")]
 	[TemplatePart(Name = "PART_Border", Type = typeof(Border))]
+	[TemplatePart(Name = "PART_ShadowHost", Type = typeof(Grid))]
 	public sealed partial class ElevatedView : Control
 #if !NETFX_CORE
 		, ICustomClippingElement
@@ -26,6 +27,9 @@ namespace Uno.UI.Toolkit
 		/*
 		 *  +-ElevatedView------------+
 		 *  |                         |
+		 *  |  +-Grid--------------+  |
+		 *  |  |                   |  |
+		 *  |  +-------------------+  |
 		 *  |  +-Border------------+  |
 		 *  |  |                   |  |
 		 *  |  |  +-Content-----+  |  |
@@ -36,12 +40,14 @@ namespace Uno.UI.Toolkit
 		 *  |                         |
 		 *  +-------------------------+
 		 *
-		 * Elevated is responsible for the shadow
+		 * UWP - Grid is responsible for the shadow
+		 * Other Platforms - Elevated is responsible for the shadow
 		 * Border responsible for rounded corners (if any)
 		 *
 		 */
 
 		private Border _border;
+		private Grid _shadowHost;
 
 		public ElevatedView()
 		{
@@ -55,6 +61,7 @@ namespace Uno.UI.Toolkit
 		protected override void OnApplyTemplate()
 		{
 			_border = GetTemplateChild("PART_Border") as Border;
+			_shadowHost = GetTemplateChild("PART_ShadowHost") as Grid;
 
 			UpdateElevation();
 		}
@@ -155,9 +162,10 @@ namespace Uno.UI.Toolkit
 				this.SetElevationInternal(Elevation, ShadowColor, _border.BoundsPath);
 #elif __ANDROID__
 				_border.SetElevationInternal(Elevation, ShadowColor);
+#elif NETFX_CORE
+				(ElevatedContent as DependencyObject).SetElevationInternal(Elevation, ShadowColor, _shadowHost as DependencyObject, CornerRadius);
 #endif
 				// TODO: MacOS
-				// TODO: UWA (waiting for support v10.0.18362.0+ to use ThemeShadow)
 			}
 		}
 
