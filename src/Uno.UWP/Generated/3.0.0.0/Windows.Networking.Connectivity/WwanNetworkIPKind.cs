@@ -1,15 +1,15 @@
 #pragma warning disable 108 // new keyword hiding
 #pragma warning disable 114 // new keyword hiding
-namespace Windows.Networking
+namespace Windows.Networking.Connectivity
 {
-	#if false || false || false || false || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
-	public   enum HostNameType 
+	public   enum WwanNetworkIPKind 
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		DomainName,
+		None,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		Ipv4,
@@ -18,7 +18,10 @@ namespace Windows.Networking
 		Ipv6,
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		Bluetooth,
+		Ipv4v6,
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		Ipv4v6v4Xlat,
 		#endif
 	}
 	#endif

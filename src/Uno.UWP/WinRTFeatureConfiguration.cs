@@ -49,5 +49,10 @@ namespace Uno
 #endif
 
 		}
+
+		public static class NetworkInformation
+		{
+			public static string ReachabilityHostname { get; set; } = "www.example.com";
+		}
 	}
 }

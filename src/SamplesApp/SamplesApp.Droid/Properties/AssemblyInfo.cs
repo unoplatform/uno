@@ -33,3 +33,4 @@ using Android.App;
 [assembly: UsesPermission("android.permission.ACCESS_FINE_LOCATION")]
 [assembly: UsesPermission("android.permission.VIBRATE")]
 [assembly: UsesPermission("android.permission.ACTIVITY_RECOGNITION")]
+[assembly: UsesPermission("android.permission.ACCESS_NETWORK_STATE")]
