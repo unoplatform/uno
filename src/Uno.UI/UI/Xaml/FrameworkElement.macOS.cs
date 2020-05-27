@@ -158,11 +158,7 @@ namespace Windows.UI.Xaml
 
 			var result = _layouter.Measure(SizeFromUISize(availableSize));
 
-			result = IFrameworkElementHelper
-				.SizeThatFits(this, result)
-				.ToFoundationSize();
-
-			return result.LogicalToPhysicalPixels();
+			return _lastMeasure = result.LogicalToPhysicalPixels();
 		}
 
 		public CGSize SizeThatFits(CGSize size)
