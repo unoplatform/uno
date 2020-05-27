@@ -986,7 +986,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 			else
 			{
-				using (writer.BlockInvariant("new ResourceDictionary"))
+				using (writer.BlockInvariant("new global::Windows.UI.Xaml.ResourceDictionary"))
 				{
 					if (setIsParsing)
 					{
