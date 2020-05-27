@@ -57,7 +57,7 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 					",stretch:\"",
 					player.Stretch.ToString(),
 					"\",rate:",
-					player.PlaybackRate.ToString(),
+					player.PlaybackRate.ToStringInvariant(),
 					"},",
 					jsonString,
 					");"
