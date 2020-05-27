@@ -159,7 +159,7 @@ namespace Windows.UI.Xaml
 			}
 
 			args = new NativePointerEventArgs { 
-				pointerId = uint.Parse(parts[0], CultureInfo.InvariantCulture),
+				pointerId = double.Parse(parts[0], CultureInfo.InvariantCulture), // On Safari for iOS, the ID might be negative!
 				x = double.Parse(parts[1], CultureInfo.InvariantCulture),
 				y = double.Parse(parts[2], CultureInfo.InvariantCulture),
 				ctrl = parts[3] == "1",
@@ -183,6 +183,7 @@ namespace Windows.UI.Xaml
 			(bool isHorizontalWheel, double delta) wheel = default,
 			bool canBubble = true)
 		{
+			var pointerId = (uint)args.pointerId;
 			var src = GetElementFromHandle(args.srcHandle) ?? (UIElement)snd;
 			var position = new Point(args.x, args.y);
 			var pointerType = ConvertPointerTypeString(args.typeStr);
@@ -192,10 +193,10 @@ namespace Windows.UI.Xaml
 
 			return new PointerRoutedEventArgs(
 				args.timestamp,
-				args.pointerId,
+				pointerId,
 				pointerType,
 				position,
-				isInContact ?? ((UIElement)snd).IsPressed(args.pointerId),
+				isInContact ?? ((UIElement)snd).IsPressed(pointerId),
 				(WindowManagerInterop.HtmlPointerButtonsState)args.buttons,
 				(WindowManagerInterop.HtmlPointerButtonUpdate)args.buttonUpdate,
 				keyModifiers,
@@ -374,7 +375,7 @@ namespace Windows.UI.Xaml
 		// TODO: This should be marshaled instead of being parsed! https://github.com/unoplatform/uno/issues/2116
 		private struct NativePointerEventArgs
 		{
-			public uint pointerId;
+			public double pointerId; // Warning: This is a Number in JS, and it might be negative on safari for iOS
 			public double x;
 			public double y;
 			public bool ctrl;
