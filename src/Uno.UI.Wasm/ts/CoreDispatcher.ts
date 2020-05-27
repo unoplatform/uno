@@ -4,8 +4,6 @@
 	 * */
 	export class CoreDispatcher {
 		static _coreDispatcherCallback: any;
-		static _isIOS: boolean;
-		static _isSafari: boolean;
 		static _isFirstCall: boolean = true;
 		static _isReady: Promise<boolean>;
 		static _isWaitingReady: boolean;
@@ -14,9 +12,6 @@
 			MonoSupport.jsCallDispatcher.registerScope("CoreDispatcher", Windows.UI.Core.CoreDispatcher);
 			CoreDispatcher.initMethods();
 			CoreDispatcher._isReady = isReady;
-
-			CoreDispatcher._isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(<any>window).MSStream;
-			CoreDispatcher._isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
 		}
 
 		/**
@@ -46,27 +41,15 @@
 		}
 
 		private static InnerWakeUp() {
-
-			if ((CoreDispatcher._isIOS || CoreDispatcher._isSafari) && CoreDispatcher._isFirstCall) {
-				//
-				// This is a workaround for the available call stack during the first 5 (?) seconds
-				// of the startup of an application. See https://github.com/mono/mono/issues/12357 for
-				// more details.
-				//
-				CoreDispatcher._isFirstCall = false;
-				console.warn("Detected iOS, delaying first CoreDispatcher dispatch for 5 seconds (see https://github.com/mono/mono/issues/12357)");
-				window.setTimeout(() => this.WakeUp(), 5000);
-			} else {
-				(<any>window).setImmediate(() => {
-					try {
-						CoreDispatcher._coreDispatcherCallback();
-					}
-					catch (e) {
-						console.error(`Unhandled dispatcher exception: ${e} (${e.stack})`);
-						throw e;
-					}
-				});
-			}
+			(<any>window).setImmediate(() => {
+				try {
+					CoreDispatcher._coreDispatcherCallback();
+				}
+				catch (e) {
+					console.error(`Unhandled dispatcher exception: ${e} (${e.stack})`);
+					throw e;
+				}
+			});
 		}
 
 		private static initMethods() {
