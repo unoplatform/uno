@@ -1,5 +1,4 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -8,9 +7,9 @@ using static Uno.Foundation.WebAssemblyRuntime;
 namespace Uno.Devices.Midi.Internal
 {
 	/// <summary>
-	/// Needs to be public to get
+	/// Handles WASM MIDI access permission request
 	/// </summary>
-	public static class WasmMidiAccess
+	internal static class WasmMidiAccess
 	{
 		private const string JsType = "Uno.Devices.Midi.Internal.WasmMidiAccess";
 
@@ -28,4 +27,3 @@ namespace Uno.Devices.Midi.Internal
 		}
 	}
 }
-#endif

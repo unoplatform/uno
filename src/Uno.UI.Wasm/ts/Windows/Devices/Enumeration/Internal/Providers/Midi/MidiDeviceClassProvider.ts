@@ -2,20 +2,20 @@
 	export class MidiDeviceClassProvider {		
 		public static findDevices(findInputDevices: boolean): string {
 			var result = "";
-			var midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
+			const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
 			if (findInputDevices) {
 				midi.inputs.forEach((input: WebMidi.MIDIInput, key: string) => {
-					var inputId = input.id;
-					var name = input.name;
-					var encodedMetadata = encodeURIComponent(inputId) + '#' + encodeURIComponent(name);
+					const inputId = input.id;
+					const name = input.name;
+					const encodedMetadata = encodeURIComponent(inputId) + '#' + encodeURIComponent(name);
 					result += encodedMetadata + '&';
 				});
 			}
 			else {
 				midi.outputs.forEach((output: WebMidi.MIDIOutput, key: string) => {
-					var inputId = output.id;
-					var name = output.name;
-					var encodedMetadata = encodeURIComponent(inputId) + '#' + encodeURIComponent(name);
+					const outputId = output.id;
+					const name = output.name;
+					const encodedMetadata = encodeURIComponent(outputId) + '#' + encodeURIComponent(name);
 					result += encodedMetadata + '&';
 				});
 			}

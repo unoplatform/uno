@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using Uno.Devices.Enumeration.Internal;
+﻿using Uno.Devices.Enumeration.Internal;
 
 namespace Windows.Devices.Enumeration
 {
@@ -8,7 +7,8 @@ namespace Windows.Devices.Enumeration
 	/// </summary>
 	public partial class DeviceInformationUpdate
 	{
-		internal DeviceInformationUpdate(DeviceIdentifier deviceIdentifier) => Id = deviceIdentifier.ToString();
+		internal DeviceInformationUpdate(DeviceIdentifier deviceIdentifier) =>
+			Id = deviceIdentifier.ToString();
 
 		/// <summary>
 		/// The DeviceInformation ID of the updated device.

@@ -1,5 +1,4 @@
-﻿#if __WASM__
-using System;
+﻿using System;
 using System.Collections.Generic;
 using Uno.Devices.Enumeration.Internal;
 using Uno.Devices.Enumeration.Internal.Providers.Midi;
@@ -15,4 +14,3 @@ namespace Windows.Devices.Enumeration
 		};
 	}
 }
-#endif

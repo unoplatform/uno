@@ -49,5 +49,15 @@ namespace Uno
 #endif
 
 		}
+
+		public static class Midi
+		{
+#if __WASM__
+			/// <summary>
+			/// Allows MIDI System eclusive access for WebAssembly.
+			/// </summary>
+			public static bool RequestSystemExclusiveAccess { get; set; }
+#endif
+		}
 	}
 }

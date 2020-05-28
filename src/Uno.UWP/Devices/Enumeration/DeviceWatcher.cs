@@ -4,6 +4,11 @@ using Windows.Foundation;
 
 namespace Windows.Devices.Enumeration
 {
+	/// <summary>
+	/// Enumerates devices dynamically, so that the app
+	/// receives notifications if devices are added, removed,
+	/// or changed after the initial enumeration is complete.
+	/// </summary>
 	public partial class DeviceWatcher
 	{
 		private readonly IDeviceClassProvider[] _providers;
@@ -20,8 +25,14 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 
+		/// <summary>
+		/// The status of the DeviceWatcher.
+		/// </summary>
 		public DeviceWatcherStatus Status { get; private set; } = DeviceWatcherStatus.Created;
 
+		/// <summary>
+		/// Starts a search for devices, and subscribes to device enumeration events.
+		/// </summary>
 		public void Start()
 		{
 			foreach (var provider in _providers)
@@ -36,32 +47,9 @@ namespace Windows.Devices.Enumeration
 			Status = DeviceWatcherStatus.Started;
 		}
 
-		private void Provider_WatchUpdated(object sender, DeviceInformationUpdate e) => Updated?.Invoke(this, e);
-
-		private void Provider_WatchStopped(object sender, object e)
-		{
-			_stopCounter++;
-			if (_stopCounter == _providers.Length)
-			{
-				Status = DeviceWatcherStatus.Stopped;
-				Stopped?.Invoke(this, e);
-			}
-		}
-
-		private void Provider_WatchRemoved(object sender, DeviceInformationUpdate e) => Removed?.Invoke(this, e);
-
-		private void Provider_WatchEnumerationCompleted(object sender, DeviceInformation e)
-		{
-			_enumerationCounter++;
-			if (_enumerationCounter == _providers.Length)
-			{
-				Status = DeviceWatcherStatus.EnumerationCompleted;
-				EnumerationCompleted?.Invoke(this, e);
-			}
-		}
-
-		private void Provider_WatchAdded(object sender, DeviceInformation e) => Added?.Invoke(this, e);
-
+		/// <summary>
+		/// Stop raising the events that add, update and remove enumeration results.
+		/// </summary>
 		public void Stop()
 		{
 			if (Status != DeviceWatcherStatus.Stopping &&
@@ -76,14 +64,59 @@ namespace Windows.Devices.Enumeration
 			}
 		}
 
+		/// <summary>
+		/// Event that is raised when a device is added to the collection
+		/// enumerated by the DeviceWatcher.
+		/// </summary>
 		public event TypedEventHandler<DeviceWatcher, DeviceInformation> Added;
 
-		public event TypedEventHandler<DeviceWatcher, object> EnumerationCompleted;
+		/// <summary>
+		/// Event that is raised when a device is updated in the collection of enumerated devices.
+		/// </summary>
+		public event TypedEventHandler<DeviceWatcher, DeviceInformationUpdate> Updated;
 
+		/// <summary>
+		/// Event that is raised when a device is removed from the collection of enumerated devices.
+		/// </summary>
 		public event TypedEventHandler<DeviceWatcher, DeviceInformationUpdate> Removed;
 
+		/// <summary>
+		/// Event that is raised when the enumeration of devices completes.
+		/// </summary>
+		public event TypedEventHandler<DeviceWatcher, object> EnumerationCompleted;
+
+		/// <summary>
+		/// Event that is raised when the enumeration operation has been stopped.
+		/// </summary>
 		public event TypedEventHandler<DeviceWatcher, object> Stopped;
 
-		public event TypedEventHandler<DeviceWatcher, DeviceInformationUpdate> Updated;
+		private void Provider_WatchAdded(object sender, DeviceInformation e) =>
+			Added?.Invoke(this, e);
+
+		private void Provider_WatchUpdated(object sender, DeviceInformationUpdate e) =>
+			Updated?.Invoke(this, e);
+
+		private void Provider_WatchRemoved(object sender, DeviceInformationUpdate e) =>
+			Removed?.Invoke(this, e);
+
+		private void Provider_WatchEnumerationCompleted(object sender, DeviceInformation e)
+		{
+			_enumerationCounter++;
+			if (_enumerationCounter == _providers.Length)
+			{
+				Status = DeviceWatcherStatus.EnumerationCompleted;
+				EnumerationCompleted?.Invoke(this, e);
+			}
+		}
+
+		private void Provider_WatchStopped(object sender, object e)
+		{
+			_stopCounter++;
+			if (_stopCounter == _providers.Length)
+			{
+				Status = DeviceWatcherStatus.Stopped;
+				Stopped?.Invoke(this, e);
+			}
+		}
 	}
 }

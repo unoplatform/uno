@@ -13,6 +13,15 @@ namespace Windows.Devices.Enumeration
 		private static readonly Dictionary<Guid, Func<IDeviceClassProvider>> _deviceClassProviders = new Dictionary<Guid, Func<IDeviceClassProvider>>();
 #endif
 
+		/// <summary>
+		/// Creates a DeviceWatcher for devices matching
+		/// the specified Advanced Query Syntax (AQS) string.
+		/// </summary>
+		/// <param name="aqsFilter">An AQS string that filters
+		/// the DeviceInformation objects to enumerate. Typically
+		/// this string is retrieved from the GetDeviceSelector
+		/// method of a class that interacts with devices.</param>
+		/// <returns>The created DeviceWatcher.</returns>
 		public static DeviceWatcher CreateWatcher(string aqsFilter)
 		{
 			var providers = GetMatchingProviders(aqsFilter).Where(w => w.CanWatch).ToArray();
@@ -25,9 +34,18 @@ namespace Windows.Devices.Enumeration
 			return new DeviceWatcher(providers);
 		}
 
+		/// <summary>
+		/// Enumerates DeviceInformation objects matching the specified
+		/// Advanced Query Syntax (AQS) device interface selector string,
+		/// the device kind, and including the specified collection of properties.
+		/// </summary>
+		/// <param name="aqsFilter">An AQS device interface selector string that
+		/// filters the DeviceInformation objects to enumerate. Typically this string
+		/// is retrieved from the GetDeviceSelector method of a class that interacts
+		/// with devices.</param>
+		/// <returns>The object for managing the asynchronous operation.</returns>
 		public static IAsyncOperation<DeviceInformationCollection> FindAllAsync(string aqsFilter) =>
 			FindAllInternalAsync(aqsFilter).AsAsyncOperation();
-			
 
 		private static async Task<DeviceInformationCollection> FindAllInternalAsync(string aqsFilter)
 		{

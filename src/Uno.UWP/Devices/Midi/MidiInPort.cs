@@ -25,11 +25,6 @@ namespace Windows.Devices.Midi
 		/// <summary>
 		/// Gets the id of the device that was used to initialize the MidiInPort.
 		/// </summary>
-		public string DeviceId { get; private set; }
-
-		/// <summary>
-		/// Gets the id of the device that was used to initialize the MidiInPort.
-		/// </summary>
 		public event TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs> MessageReceived
 		{
 			add
@@ -57,9 +52,10 @@ namespace Windows.Devices.Midi
 			}
 		}
 
-		partial void StartMessageReceived();
-
-		partial void StopMessageReceived();
+		/// <summary>
+		/// Gets the id of the device that was used to initialize the MidiInPort.
+		/// </summary>
+		public string DeviceId { get; private set; }
 
 		/// <summary>
 		/// Creates a MidiInPort object for the specified device.
@@ -83,6 +79,10 @@ namespace Windows.Devices.Midi
 			_messageReceived = null;
 			DisposeNative();
 		}
+
+		partial void StartMessageReceived();
+
+		partial void StopMessageReceived();
 
 		partial void DisposeNative();
 

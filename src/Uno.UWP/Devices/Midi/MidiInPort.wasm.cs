@@ -40,6 +40,7 @@ namespace Windows.Devices.Midi
 			WebAssemblyRuntime.InvokeJS(removeListenerCommand);
 		}
 
+		[Preserve]
 		public static int DispatchMessage(string managedId, string serializedMessage, double timestamp)
 		{
 			if (!_instanceSubscriptions.TryGetValue(managedId, out var port))

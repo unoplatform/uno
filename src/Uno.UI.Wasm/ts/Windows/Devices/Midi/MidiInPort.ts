@@ -14,7 +14,7 @@
 
 		public static createPort(managedId: string, encodedDeviceId: string) {
 			var midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
-			var deviceId = decodeURIComponent(encodedDeviceId);
+			const deviceId = decodeURIComponent(encodedDeviceId);
 			var input = midi.inputs.get(deviceId);
 			MidiInPort.instanceMap[managedId] = new MidiInPort(managedId, input);
 		}
