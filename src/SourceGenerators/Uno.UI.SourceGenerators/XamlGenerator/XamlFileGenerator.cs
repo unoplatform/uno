@@ -3394,21 +3394,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				TryAnnotateWithGeneratorSource(ref retrieval);
 				return retrieval;
 			}
-
-			// this allows for the resource to be implicitly converted to another type, however
-			// its implementation may not be implicit
-			string TryImplicitXamlConvert(string value, XamlObjectDefinition sourceType)
-			{
-				// note: Source is a non-prefixed xaml name
-				switch ((Source: sourceType.Type.Name, Target: targetPropertyType.ToDisplayString()))
-				{
-					// double to Thickness
-					case var conversion when conversion.Source == "Double" && conversion.Target == XamlConstants.Types.Thickness:
-						return $"new {GlobalPrefix}{XamlConstants.Types.Thickness}({value})";
-
-					default: return default;
-				}
-			}
 		}
 
 		/// <summary>
