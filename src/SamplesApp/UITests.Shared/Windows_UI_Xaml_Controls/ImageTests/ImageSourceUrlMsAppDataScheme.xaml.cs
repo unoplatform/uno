@@ -1,0 +1,80 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Reflection;
+using System.Runtime.InteropServices.WindowsRuntime;
+using System.Threading.Tasks;
+using Uno.UI.Samples.Controls;
+using Uno.UI.Samples.UITests.Helpers;
+using Windows.Foundation;
+using Windows.Foundation.Collections;
+using Windows.Storage;
+using Windows.UI.Core;
+using Windows.UI.Xaml;
+using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Xaml.Data;
+using Windows.UI.Xaml.Input;
+using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml.Navigation;
+
+namespace UITests.Windows_UI_Xaml_Controls.ImageTests
+{
+	[SampleControlInfo(category: "Image", viewModelType: typeof(ImageSourceUrlMsAppDataSchemeViewModel))]
+	public sealed partial class ImageSourceUrlMsAppDataScheme : Page
+    {
+        public ImageSourceUrlMsAppDataScheme()
+        {
+            this.InitializeComponent();
+			this.DataContextChanged += ImageSourceUrlMsAppDataScheme_DataContextChanged;
+        }
+
+		private async void ImageSourceUrlMsAppDataScheme_DataContextChanged(DependencyObject sender, DataContextChangedEventArgs args)
+		{
+			await((ImageSourceUrlMsAppDataSchemeViewModel)DataContext).LoadAsync();
+		}
+	}
+
+	public class ImageSourceUrlMsAppDataSchemeViewModel : ViewModelBase
+	{
+		public ImageSourceUrlMsAppDataSchemeViewModel(CoreDispatcher dispatcher)
+			: base(dispatcher)
+		{
+		}
+
+		public Uri AppDataUri { get; private set; }
+
+		public async Task LoadAsync()
+		{
+			// copy image for app package to app data
+			await CopySampleImageToAppDataAsync();
+
+			// set uri after image is ready in app data
+			AppDataUri = new Uri("ms-appdata:///Local/ImageAppDataUriSample/MsAppDataUriTest.png");
+			RaisePropertyChanged(nameof(AppDataUri));
+		}
+
+		private async Task CopySampleImageToAppDataAsync()
+		{
+			var targetPath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "ImageAppDataUriSample", "MsAppDataUriTest.png");
+			if (!File.Exists(targetPath))
+			{
+				var assembly = Assembly.GetExecutingAssembly();
+				var resourceName =
+					assembly
+						.GetManifestResourceNames()
+						.First(n => n.IndexOf("MsAppDataUriTest.png", StringComparison.InvariantCultureIgnoreCase) >= 0);
+
+				using (var stream = assembly.GetManifestResourceStream(resourceName))
+				{
+					Directory.CreateDirectory(Path.GetDirectoryName(targetPath));
+					using (var targetStream = File.Create(targetPath))
+					{
+						await stream.CopyToAsync(targetStream);
+					}
+				}
+			}
+		}
+	}
+}

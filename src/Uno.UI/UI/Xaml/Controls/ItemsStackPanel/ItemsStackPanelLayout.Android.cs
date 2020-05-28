@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
-using Android.Support.V7.Widget;
+using AndroidX.RecyclerView.Widget;
 using Uno.UI;
 using Uno.UI.Extensions;
 using Windows.UI.Xaml.Controls.Primitives;
@@ -21,7 +21,7 @@ namespace Windows.UI.Xaml.Controls
 			int availableBreadth,
 			RecyclerView.Recycler recycler,
 			RecyclerView.State state,
-			IndexPath nextVisibleItem,
+			Uno.UI.IndexPath nextVisibleItem,
 			bool isNewGroup
 		)
 		{

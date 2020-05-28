@@ -11,11 +11,13 @@ using Windows.UI.Xaml.Input;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.UI;
+using Uno.Disposables;
 
 namespace Windows.UI.Xaml
 {
 	public partial class FrameworkElement : UIElement, IFrameworkElement
 	{
+		private readonly SerialDisposable _backgroundSubscription = new SerialDisposable();
 		public T FindFirstParent<T>() where T : class
 		{
 			var view = this.Parent;
@@ -114,8 +116,11 @@ namespace Windows.UI.Xaml
 
 		protected virtual void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
+			_backgroundSubscription.Disposable = null;
 			var brush = e.NewValue as Brush;
 			SetBackgroundBrush(brush);
+
+			_backgroundSubscription.Disposable = Brush.AssignAndObserveBrush(brush, _ => SetBackgroundBrush(brush));
 		}
 
 		private protected void SetBackgroundBrush(Brush brush)
@@ -124,32 +129,32 @@ namespace Windows.UI.Xaml
 			{
 				case SolidColorBrush solidColorBrush:
 					var color = solidColorBrush.ColorWithOpacity;
-					SetStyle("background-color", color.ToCssString());
+					SetStyle("background-color", color.ToHexString());
 					RecalculateBrushOnSizeChanged(false);
 					break;
-				case LinearGradientBrush linearGradientBrush:
-					SetStyle("background", linearGradientBrush.ToCssString(RenderSize));
+				case GradientBrush gradientBrush:
+					SetStyle("background-image", gradientBrush.ToCssString(RenderSize));
 					RecalculateBrushOnSizeChanged(true);
 					break;
 				default:
 					ResetStyle("background-color");
-					ResetStyle("background");
+					ResetStyle("background-image");
 					RecalculateBrushOnSizeChanged(false);
 					break;
 			}
 		}
 
-		private static SizeChangedEventHandler _onSizeChangedForBrushCalculation = (sender, args) =>
+		private static readonly SizeChangedEventHandler _onSizeChangedForBrushCalculation = (sender, args) =>
 		{
 			var fe = sender as FrameworkElement;
 			fe.SetBackgroundBrush(fe.Background);
 		};
 
-		private bool onSizeChangedForBrushCalculatioSet = false;
+		private bool _onSizeChangedForBrushCalculationSet = false;
 
 		private void RecalculateBrushOnSizeChanged(bool shouldRecalculate)
 		{
-			if (onSizeChangedForBrushCalculatioSet == shouldRecalculate)
+			if (_onSizeChangedForBrushCalculationSet == shouldRecalculate)
 			{
 				return;
 			}
@@ -163,7 +168,7 @@ namespace Windows.UI.Xaml
 				SizeChanged -= _onSizeChangedForBrushCalculation;
 			}
 
-			onSizeChangedForBrushCalculatioSet = shouldRecalculate;
+			_onSizeChangedForBrushCalculationSet = shouldRecalculate;
 		}
 
 		#endregion
@@ -180,20 +185,21 @@ namespace Windows.UI.Xaml
 
 		public static readonly DependencyProperty IsEnabledProperty =
 			DependencyProperty.Register(
-				"IsEnabled",
-				typeof(bool),
-				typeof(FrameworkElement),
-				new FrameworkPropertyMetadata(
-					true,
-					FrameworkPropertyMetadataOptions.Inherits,
-					(s, e) =>
+				name: "IsEnabled",
+				propertyType: typeof(bool),
+				ownerType: typeof(FrameworkElement),
+				typeMetadata: new FrameworkPropertyMetadata(
+					defaultValue: true,
+					options: FrameworkPropertyMetadataOptions.Inherits,
+					propertyChangedCallback: (s, e) =>
 					{
 						var elt = (FrameworkElement)s;
 						elt?.OnIsEnabledChanged((bool)e.OldValue, (bool)e.NewValue);
 						elt?.IsEnabledChanged?.Invoke(s, e);
-					}
+					},
+					coerceValueCallback: (s, v) => (s as FrameworkElement)?.CoerceIsEnabled(v)
 				)
-	);
+		);
 
 		protected virtual void OnIsEnabledChanged(bool oldValue, bool newValue)
 		{

@@ -39,6 +39,8 @@ namespace Uno.UI.DataBinding
 			}
 		}
 
+		internal GCHandle Handle => _handle;
+
 		public void Dispose()
 		{
 			this.Dispose(true);

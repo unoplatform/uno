@@ -10,7 +10,7 @@ using static Microsoft.CodeAnalysis.CSharp.SyntaxFactory;
 
 namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 {
-	internal static class XBindExpressionParser
+	internal static partial class XBindExpressionParser
 	{
 		internal static (string[] properties, bool hasFunction) ParseProperties(string rawFunction, Func<string, bool> isStaticMethod)
 		{
@@ -49,12 +49,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 		class Rewriter : CSharpSyntaxRewriter
 		{
 			private readonly string _contextName;
-			private readonly Func<string, bool> _isStaticMethod;
+			private readonly Func<string, bool> _isStaticMember;
 
-			public Rewriter(string contextName, Func<string, bool> isStaticMethod)
+			public Rewriter(string contextName, Func<string, bool> isStaticMember)
 			{
 				_contextName = contextName;
-				_isStaticMethod = isStaticMethod;
+				_isStaticMember = isStaticMember;
 			}
 
 			public override SyntaxNode VisitInvocationExpression(InvocationExpressionSyntax node)
@@ -63,7 +63,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 				var isValidParent = !Helpers.IsInsideMethod(node).result && !Helpers.IsInsideMemberAccessExpression(node).result;
 
-				if (isValidParent && !_isStaticMethod(node.Expression.ToFullString()))
+				if (isValidParent && !_isStaticMember(node.Expression.ToFullString()))
 				{
 					if (e is InvocationExpressionSyntax newSyntax)
 					{
@@ -85,7 +85,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 				}
 			}
 
-			private object ContextBuilder
+			private string ContextBuilder
 				=> string.IsNullOrEmpty(_contextName) ? "" : _contextName + ".";
 
 			public override SyntaxNode VisitMemberAccessExpression(MemberAccessExpressionSyntax node)
@@ -95,7 +95,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator.Utils
 
 				if (isValidParent)
 				{
-					var output = ParseCompilationUnit($"class __Temp {{ private Func<object> __prop => {ContextBuilder}{e.ToFullString()}; }}");
+					var expression = e.ToFullString();
+					var contextBuilder = _isStaticMember(expression) ? "" : ContextBuilder;
+					var output = ParseCompilationUnit($"class __Temp {{ private Func<object> __prop => {contextBuilder}{expression}; }}");
 
 					var o2 = output.DescendantNodes().OfType<ArrowExpressionClauseSyntax>().First().Expression;
 					return o2;

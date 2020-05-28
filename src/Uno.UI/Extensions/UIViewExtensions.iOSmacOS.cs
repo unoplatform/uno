@@ -14,6 +14,7 @@ using System.Diagnostics.CodeAnalysis;
 using Uno.Logging;
 using Windows.UI.Core;
 using Uno.UI.Controls;
+using Windows.UI.Xaml.Controls;
 
 #if XAMARIN_IOS_UNIFIED
 using Foundation;
@@ -187,8 +188,20 @@ namespace AppKit
 			InvalidateMeasure(view);
 		}
 
+		/// <summary>
+		/// Enumerate subviews matching given selector up to a given depth.
+		/// </summary>
+		/// <param name="view">View to enumerate.</param>
+		/// <param name="selector">View selector.</param>
+		/// <param name="maxDepth">Maximum depth.</param>
+		/// <returns>Views in default order.</returns>
 		public static IEnumerable<_View> FindSubviews(this _View view, Func<_View, bool> selector, int maxDepth = 20)
 		{
+			if (view == null)
+			{
+				throw new ArgumentNullException(nameof(view));
+			}
+
 			foreach (var sub in view.Subviews)
 			{
 				if (selector(sub))
@@ -198,6 +211,37 @@ namespace AppKit
 				else if (maxDepth > 0)
 				{
 					foreach (var subResult in sub.FindSubviews(selector, maxDepth - 1))
+					{
+						yield return subResult;
+					}
+				}
+			}
+		}
+
+		/// <summary>
+		/// Enumerate subviews matching given selector up to a given depth in reverse order.
+		/// </summary>
+		/// <param name="view">View to enumerate.</param>
+		/// <param name="selector">View selector.</param>
+		/// <param name="maxDepth">Maximum depth.</param>
+		/// <returns>Views in reverse order.</returns>
+		public static IEnumerable<_View> FindSubviewsReverse(this _View view, Func<_View, bool> selector, int maxDepth = 20)
+		{
+			if (view == null)
+			{
+				throw new ArgumentNullException(nameof(view));
+			}
+
+			for (int i = view.Subviews.Length - 1; i >= 0; i--)
+			{
+				var sub = view.Subviews[i];
+				if (selector(sub))
+				{
+					yield return sub;
+				}
+				else if (maxDepth > 0)
+				{
+					foreach (var subResult in sub.FindSubviewsReverse(selector, maxDepth - 1))
 					{
 						yield return subResult;
 					}
@@ -583,6 +627,7 @@ namespace AppKit
 
 				var uiElement = innerView as UIElement;
 				var desiredSize = uiElement?.DesiredSize.ToString() ?? "<native/unk>";
+				var fe = innerView as IFrameworkElement;
 
 				return sb
 						.Append(spacing)
@@ -593,7 +638,13 @@ namespace AppKit
 #if __IOS__
 						.Append($" {(innerView.Hidden ? "Hidden" : "Visible")}")
 #endif
+						.Append(fe != null ? $" HA={fe.HorizontalAlignment},VA={fe.VerticalAlignment}" : "")
+						.Append(fe != null && fe.Margin != default ? $" Margin={fe.Margin}" : "")
+						.Append(fe != null && fe.TryGetBorderThickness(out var b) && b != default ? $" Border={b}" : "")
+						.Append(fe != null && fe.TryGetPadding(out var p) && p != default ? $" Padding={p}" : "")
+						.Append(uiElement != null ? $" DesiredSize={uiElement.DesiredSize}" : "")
 						.Append(uiElement?.NeedsClipToSlot ?? false ? " CLIPPED_TO_SLOT" : "")
+						.Append(innerView is TextBlock textBlock ? $" Text=\"{textBlock.Text}\"" : "")
 						.AppendLine();
 			}
 		}

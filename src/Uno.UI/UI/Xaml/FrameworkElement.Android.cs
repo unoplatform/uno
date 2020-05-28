@@ -18,7 +18,7 @@ namespace Windows.UI.Xaml
 		private Size? _lastLayoutSize;
 		private Size _actualSize;
 
-		internal Size ActualSize => _actualSize;
+		internal Size InternalActualSize => _actualSize;
 
 		/// <summary>
 		/// The parent of the <see cref="FrameworkElement"/> in the visual tree, which may differ from its <see cref="Parent"/> (ie if it's a child of a native view).

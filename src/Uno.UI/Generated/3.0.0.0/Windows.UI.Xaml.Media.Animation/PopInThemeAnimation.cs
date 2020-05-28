@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FromHorizontalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FromHorizontalOffset", typeof(double), 
+			nameof(FromHorizontalOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.PopInThemeAnimation), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -61,7 +61,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty FromVerticalOffsetProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"FromVerticalOffset", typeof(double), 
+			nameof(FromVerticalOffset), typeof(double), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.PopInThemeAnimation), 
 			new FrameworkPropertyMetadata(default(double)));
 		#endif
@@ -69,7 +69,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Xaml.DependencyProperty TargetNameProperty { get; } = 
 		Windows.UI.Xaml.DependencyProperty.Register(
-			"TargetName", typeof(string), 
+			nameof(TargetName), typeof(string), 
 			typeof(global::Windows.UI.Xaml.Media.Animation.PopInThemeAnimation), 
 			new FrameworkPropertyMetadata(default(string)));
 		#endif

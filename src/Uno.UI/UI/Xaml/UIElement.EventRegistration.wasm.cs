@@ -11,13 +11,14 @@ namespace Windows.UI.Xaml
 {
 	partial class UIElement
 	{
+		private delegate bool RawEventHandler(UIElement sender, string paylaod);
+
 		private class EventRegistration
 		{
 			private static readonly string[] noRegistrationEventNames = { "loading", "loaded", "unloaded" };
 
 			private readonly UIElement _owner;
 			private readonly string _eventName;
-			private readonly bool _canBubbleNatively;
 			private readonly EventArgsParser _payloadConverter;
 			private readonly Action _subscribeCommand;
 
@@ -30,22 +31,20 @@ namespace Windows.UI.Xaml
 				UIElement owner,
 				string eventName,
 				bool onCapturePhase = false,
-				bool canBubbleNatively = false,
-				HtmlEventFilter? eventFilter = null,
 				HtmlEventExtractor? eventExtractor = null,
 				EventArgsParser payloadConverter = null)
 			{
 				_owner = owner;
 				_eventName = eventName;
-				_canBubbleNatively = canBubbleNatively;
 				_payloadConverter = payloadConverter;
-				if (noRegistrationEventNames.Contains(eventName))
+				if (!noRegistrationEventNames.Contains(eventName))
 				{
-					_subscribeCommand = null;
-				}
-				else
-				{
-					_subscribeCommand = () => WindowManagerInterop.RegisterEventOnView(_owner.HtmlId, eventName, onCapturePhase, eventFilter?.ToString(), eventExtractor?.ToString());
+					_subscribeCommand = () => WindowManagerInterop.RegisterEventOnView(
+						_owner.HtmlId,
+						eventName,
+						onCapturePhase,
+						(int)(eventExtractor ?? HtmlEventExtractor.None)
+					);
 				}
 			}
 
@@ -107,18 +106,23 @@ namespace Windows.UI.Xaml
 						args = _payloadConverter(_owner, nativeEventPayload);
 					}
 
-					if (args is RoutedEventArgs routedArgs)
-					{
-						routedArgs.CanBubbleNatively = _canBubbleNatively;
-					}
-
 					foreach (var handler in _invocationList)
 					{
-						var result = handler.DynamicInvoke(_owner, args);
-
-						if (result is bool isHandedInManaged && isHandedInManaged)
+						if (handler is RawEventHandler rawHandler)
 						{
-							return true; // will call ".preventDefault()" in JS to prevent native bubbling
+							if (rawHandler(_owner, nativeEventPayload))
+							{
+								return true;
+							}
+						}
+						else
+						{
+							var result = handler.DynamicInvoke(_owner, args);
+
+							if (result is bool isHandedInManaged && isHandedInManaged)
+							{
+								return true; // will call ".preventDefault()" in JS to prevent native bubbling
+							}
 						}
 					}
 
@@ -151,8 +155,6 @@ namespace Windows.UI.Xaml
 			string eventName,
 			Delegate handler,
 			bool onCapturePhase = false,
-			bool canBubbleNatively = false,
-			HtmlEventFilter? eventFilter = null,
 			HtmlEventExtractor? eventExtractor = null,
 			EventArgsParser payloadConverter = null)
 		{
@@ -167,8 +169,6 @@ namespace Windows.UI.Xaml
 					this,
 					eventName,
 					onCapturePhase,
-					canBubbleNatively,
-					eventFilter,
 					eventExtractor,
 					payloadConverter);
 			}
@@ -227,24 +227,19 @@ namespace Windows.UI.Xaml
 			return false;
 		}
 
-		private readonly Dictionary<string, EventRegistration> _eventHandlers = new Dictionary<string, EventRegistration>(StringComparer.InvariantCultureIgnoreCase);
+		private readonly Dictionary<string, EventRegistration> _eventHandlers = new Dictionary<string, EventRegistration>(StringComparer.OrdinalIgnoreCase);
 
 		internal delegate EventArgs EventArgsParser(object sender, string payload);
 
-		internal enum HtmlEventExtractor
+		internal enum HtmlEventExtractor : int
 		{
-			PointerEventExtractor, // See PayloadToPointerArgs
-			TappedEventExtractor,
-			KeyboardEventExtractor,
-			FocusEventExtractor,
-			CustomEventDetailStringExtractor, // For use with CustomEvent("name", {detail:{string detail here}})
-			CustomEventDetailJsonExtractor, // For use with CustomEvent("name", {detail:{detail here}}) - will be JSON.stringify
-		}
-
-		internal enum HtmlEventFilter
-		{
-			Default,
-			LeftPointerEventFilter,
+			None = 0,
+			PointerEventExtractor = 1, // See PayloadToPointerArgs
+			TappedEventExtractor = 2,
+			KeyboardEventExtractor = 3,
+			FocusEventExtractor = 4,
+			CustomEventDetailStringExtractor = 5, // For use with CustomEvent("name", {detail:{string detail here}})
+			CustomEventDetailJsonExtractor = 6, // For use with CustomEvent("name", {detail:{detail here}}) - will be JSON.stringify
 		}
 	}
 }

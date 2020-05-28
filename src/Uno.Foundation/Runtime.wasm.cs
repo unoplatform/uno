@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.ComponentModel;
 using System.Linq;
 using System.Diagnostics.Contracts;
 using System.Reflection;
@@ -11,6 +13,8 @@ using Uno.Diagnostics.Eventing;
 using Microsoft.Extensions.Logging;
 using Uno.Logging;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace WebAssembly
 {
@@ -38,7 +42,7 @@ namespace WebAssembly
 			// Matches this signature:
 			// https://github.com/mono/mono/blob/f24d652d567c4611f9b4e3095be4e2a1a2ab23a4/sdks/wasm/driver.c#L21
 			[MethodImpl(MethodImplOptions.InternalCall)]
-			public static extern IntPtr InvokeJSUnmarshalled(out string exception, string functionIdentifier, IntPtr arg0, IntPtr arg1, IntPtr arg2);
+			public static extern IntPtr InvokeJSUnmarshalled(out string exceptionMessage, string functionIdentifier, IntPtr arg0, IntPtr arg1, IntPtr arg2);
 		}
 	}
 }
@@ -51,7 +55,11 @@ namespace Uno.Foundation
 
 		private static readonly Lazy<ILogger> _logger = new Lazy<ILogger>(() => typeof(WebAssemblyRuntime).Log());
 
-		public static bool IsWebAssembly { get; } = RuntimeInformation.IsOSPlatform(OSPlatform.Create("WEBASSEMBLY"));
+		
+		public static bool IsWebAssembly { get; }
+			// Origin of the value : https://github.com/mono/mono/blob/a65055dbdf280004c56036a5d6dde6bec9e42436/mcs/class/corlib/System.Runtime.InteropServices.RuntimeInformation/RuntimeInformation.cs#L115
+			= RuntimeInformation.IsOSPlatform(OSPlatform.Create("WEBASSEMBLY")) // Legacy Value (Bootstrapper 1.2.0-dev.29 or earlier).
+			|| RuntimeInformation.IsOSPlatform(OSPlatform.Create("BROWSER"));
 
 
 		[Preserve]
@@ -72,7 +80,7 @@ namespace Uno.Foundation
 		{
 			if (!MethodMap.TryGetValue(methodName, out var methodId))
 			{
-				MethodMap[methodName] = methodId = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var e, methodName, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
+				MethodMap[methodName] = methodId = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out _, methodName, IntPtr.Zero, IntPtr.Zero, IntPtr.Zero);
 			}
 
 			return methodId;
@@ -89,22 +97,56 @@ namespace Uno.Foundation
 			{
 				using (WritePropertyEventTrace(TraceProvider.UnmarshalledInvokedStart, TraceProvider.UnmarshalledInvokedEnd, functionIdentifier))
 				{
-					return InnerInvokeJSUnmarshalled(functionIdentifier, arg0);
+					var ret = InnerInvokeJSUnmarshalled(functionIdentifier, arg0, out var exception);
+
+					if(exception != null)
+					{
+						throw exception;
+					}
+
+					return ret;
 				}
 			}
 			else
 			{
-				return InnerInvokeJSUnmarshalled(functionIdentifier, arg0);
+				var ret = InnerInvokeJSUnmarshalled(functionIdentifier, arg0, out var exception);
+
+				if (exception != null)
+				{
+					throw exception;
+				}
+
+				return ret;
 			}
 		}
 
-		private static bool InnerInvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0)
+		/// <summary>
+		/// Invoke a Javascript method using unmarshaled conversion.
+		/// </summary>
+		/// <param name="functionIdentifier">A function identifier name</param>
+		internal static bool InvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0, out Exception exception)
 		{
+			if (_trace.IsEnabled)
+			{
+				using (WritePropertyEventTrace(TraceProvider.UnmarshalledInvokedStart, TraceProvider.UnmarshalledInvokedEnd, functionIdentifier))
+				{
+					return InnerInvokeJSUnmarshalled(functionIdentifier, arg0, out exception);
+				}
+			}
+			else
+			{
+				return InnerInvokeJSUnmarshalled(functionIdentifier, arg0, out exception);
+			}
+		}
+
+		private static bool InnerInvokeJSUnmarshalled(string functionIdentifier, IntPtr arg0, out Exception exception)
+		{
+			exception = null;
 			var methodId = GetMethodId(functionIdentifier);
 
-			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var exception, null, methodId, arg0, IntPtr.Zero);
+			var res = WebAssembly.JSInterop.InternalCalls.InvokeJSUnmarshalled(out var exceptionMessage, null, methodId, arg0, IntPtr.Zero);
 
-			if (exception != null)
+			if (!string.IsNullOrEmpty(exceptionMessage))
 			{
 				if (_trace.IsEnabled)
 				{
@@ -114,7 +156,7 @@ namespace Uno.Foundation
 					);
 				}
 
-				throw new Exception(exception);
+				exception = new Exception(exceptionMessage);
 			}
 
 			return res != IntPtr.Zero;
@@ -261,6 +303,78 @@ namespace Uno.Foundation
 			}
 
 			return InvokeJS(command);
+		}
+
+		private static readonly Dictionary<long, TaskCompletionSource<string>> _asyncWaitingList = new Dictionary<long, TaskCompletionSource<string>>();
+
+		private static long _nextAsync;
+
+		/// <summary>
+		/// Invoke async javascript code.
+		/// </summary>
+		/// <remarks>
+		/// The javascript code is expected to return a Promise&lt;string&gt;
+		/// </remarks>
+		public static Task<string> InvokeAsync(string promiseCode)
+		{
+			var id = Interlocked.Increment(ref _nextAsync);
+
+			var tcs = new TaskCompletionSource<string>();
+
+			lock (_asyncWaitingList)
+			{
+				_asyncWaitingList[id] = tcs;
+			}
+
+			var js = new[]
+			{
+				"const __f = ()=>",
+				promiseCode,
+				";\nUno.UI.Interop.AsyncInteropHelper.Invoke(",
+				id.ToStringInvariant(),
+				", __f);"
+			};
+
+			try
+			{
+
+				WebAssemblyRuntime.InvokeJS(string.Concat(js));
+			}
+			catch (Exception ex)
+			{
+				return Task.FromException<string>(ex);
+			}
+
+			return tcs.Task;
+		}
+
+		[Preserve]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void DispatchAsyncResult(long handle, string result)
+		{
+			lock (_asyncWaitingList)
+			{
+				if (_asyncWaitingList.TryGetValue(handle, out var tcs))
+				{
+					tcs.TrySetResult(result);
+					_asyncWaitingList.Remove(handle);
+				}
+			}
+		}
+
+		[Preserve]
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public static void DispatchAsyncError(long handle, string error)
+		{
+			lock (_asyncWaitingList)
+			{
+				if (_asyncWaitingList.TryGetValue(handle, out var tcs))
+				{
+					var exception = new ApplicationException(error);
+					tcs.TrySetException(exception);
+					_asyncWaitingList.Remove(handle);
+				}
+			}
 		}
 
 		[Pure]

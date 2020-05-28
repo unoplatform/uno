@@ -20,7 +20,7 @@ namespace Windows.UI
 		private static Func<nfloat, FontWeight, FontStyle, FontFamily, nfloat?, NSFont> _tryGetFont;
 
 		private const int DefaultNSFontPreferredBodyFontSize = 17;
-		private static float? DefaultPreferredBodyFontSize = (float)NSFont.LabelFontSize;
+		private static float? DefaultPreferredBodyFontSize = (float)NSFont.SystemFontSize;
 
 		static NSFontHelper()
 		{

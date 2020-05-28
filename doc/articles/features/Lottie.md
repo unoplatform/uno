@@ -33,6 +33,20 @@ On Android, Lottie .json files need to be added into the Assets folder. To match
 
 To reference the animations in XAML, use the `ms-appx:` URI, in this case `ms-appx:///Lottie/myanimation.json`.
 
+## Using `embedded://` scheme
+
+**WARNING**: Not supported on Windows, it's a Uno-only feature.
+
+You can put the file as `<EmbeddedResource>` in your assembly and retrieve it using the following url format as `UriSource`:
+
+```
+embedded://<assemblyname>/<resource name>
+```
+
+* You can specify `.` in assembly name to use the Application's assembly.
+* You can specify `(assembly)` in path: will be replaced by assembly name.
+* AssemblyName is case insensitive, **but the resource name is**.
+
 ## Limitations
 
 On Android, the `Stretch` mode of `Fill` is not currently supported.

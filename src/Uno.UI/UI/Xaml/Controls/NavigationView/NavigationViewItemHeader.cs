@@ -39,7 +39,7 @@ namespace Windows.UI.Xaml.Controls
 				UpdateIsClosedCompact();
 			}
 
-			UpdateVisualState(false /*useTransitions*/);
+			UpdateLocalVisualState(false /*useTransitions*/);
 		}
 
 		protected override void OnApplyTemplate()
@@ -65,11 +65,11 @@ namespace Windows.UI.Xaml.Controls
 			{
 				// Check if the pane is closed and if the splitview is in either compact mode.
 				m_isClosedCompact = !splitView.IsPaneOpen && (splitView.DisplayMode == SplitViewDisplayMode.CompactOverlay || splitView.DisplayMode == SplitViewDisplayMode.CompactInline);
-				UpdateVisualState(true /*useTransitions*/);
+				UpdateLocalVisualState(true /*useTransitions*/);
 			}
 		}
 
-		void UpdateVisualState(bool useTransitions)
+		void UpdateLocalVisualState(bool useTransitions)
 		{
 			VisualStateManager.GoToState(this, m_isClosedCompact ? "HeaderTextCollapsed" : "HeaderTextVisible", useTransitions);
 		}

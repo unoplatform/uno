@@ -7,5 +7,30 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class DatePickerFlyoutPresenter 
 	{
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsDefaultShadowEnabled
+		{
+			get
+			{
+				return (bool)this.GetValue(IsDefaultShadowEnabledProperty);
+			}
+			set
+			{
+				this.SetValue(IsDefaultShadowEnabledProperty, value);
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::Windows.UI.Xaml.DependencyProperty IsDefaultShadowEnabledProperty { get; } = 
+		Windows.UI.Xaml.DependencyProperty.Register(
+			nameof(IsDefaultShadowEnabled), typeof(bool), 
+			typeof(global::Windows.UI.Xaml.Controls.DatePickerFlyoutPresenter), 
+			new FrameworkPropertyMetadata(default(bool)));
+		#endif
+		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyoutPresenter.IsDefaultShadowEnabled.get
+		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyoutPresenter.IsDefaultShadowEnabled.set
+		// Forced skipping of method Windows.UI.Xaml.Controls.DatePickerFlyoutPresenter.IsDefaultShadowEnabledProperty.get
 	}
 }

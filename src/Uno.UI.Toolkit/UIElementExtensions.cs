@@ -60,7 +60,7 @@ namespace Uno.UI.Toolkit
 #if __ANDROID__
 			if (element is Android.Views.View view)
 			{
-				view.Elevation = (float)Uno.UI.ViewHelper.LogicalToPhysicalPixels(elevation);
+				AndroidX.Core.View.ViewCompat.SetElevation(view, (float)Uno.UI.ViewHelper.LogicalToPhysicalPixels(elevation));
 			}
 #elif __IOS__
 			if (element is UIKit.UIView view)

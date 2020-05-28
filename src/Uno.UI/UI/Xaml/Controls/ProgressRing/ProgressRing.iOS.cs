@@ -5,6 +5,10 @@ using System.Collections.Generic;
 using System.Text;
 using CoreGraphics;
 using Windows.UI.Xaml.Media;
+using Windows.UI.Xaml;
+
+// Keep this formatting (with the space) for the WinUI upgrade tooling.
+using Microsoft .UI.Xaml.Controls;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -24,9 +28,9 @@ namespace Windows.UI.Xaml.Controls
 			var progressRing = dependencyObject as ProgressRing;
 			var foregroundColorBrush = progressRing.SelectOrDefault(r => r.Foreground as SolidColorBrush);
 
-			if (progressRing != null && foregroundColorBrush != null)
+			if (progressRing != null && Brush.TryGetColorWithOpacity(foregroundColorBrush, out var foreground))
 			{
-				progressRing.Color = foregroundColorBrush.ColorWithOpacity;
+				progressRing.Color = foreground;
 			}
 		}
 

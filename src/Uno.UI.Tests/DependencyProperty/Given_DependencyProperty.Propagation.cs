@@ -1,4 +1,4 @@
-﻿using Microsoft.Practices.ServiceLocation;
+﻿using CommonServiceLocator;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Moq;
 using Uno.Logging;
@@ -641,9 +641,9 @@ namespace Uno.UI.Tests.BinderTests.Propagation
 		public int D => 44;
 	}
 
-	public class PropagationContext2 : INotifyPropertyChanged
+	public class PropagationContext2 : System.ComponentModel.INotifyPropertyChanged
 	{
-		public event PropertyChangedEventHandler PropertyChanged;
+		public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
 	}
 
 	public class OppositeConverter : IValueConverter

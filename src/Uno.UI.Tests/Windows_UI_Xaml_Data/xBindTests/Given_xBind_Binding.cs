@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests.Controls;
+using Windows.UI.Xaml.Controls;
 
 namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 {
@@ -342,6 +343,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 		}
 
 		[TestMethod]
+		public void When_ConverterParameter()
+		{
+			var SUT = new Binding_Converter_Parameter();
+
+			SUT.ForceLoaded();
+
+			Assert.AreEqual("Started: Jan 01, 2020 01:01 AM", SUT._StringField.Text);
+		}
+
+		[TestMethod]
 		public void When_Converter_DataTemplate()
 		{
 			var SUT = new Binding_Converter_DataTemplate();
@@ -573,13 +584,60 @@ namespace Uno.UI.Tests.Windows_UI_Xaml_Data.xBindTests
 
 			SUT.ForceLoaded();
 
-			var inner = SUT.root.FindName("inner") as Windows.UI.Xaml.Controls.TextBlock;
+			var inner = SUT.root.FindName("inner") as TextBlock;
 
 			Assert.IsNull(inner.Text);
 
 			SUT.root.Content = "hello!";
 
 			Assert.AreEqual("hello!", inner.Text);
+		}
+
+		[TestMethod]
+		public void When_TypeMismatch()
+		{
+			var SUT = new Binding_TypeMismatch();
+
+			SUT.ForceLoaded();
+
+			var slider = SUT.FindName("mySlider") as Slider;
+			var textBlock = SUT.FindName("myTextBlock") as TextBlock;
+
+			Assert.AreEqual(0.0, slider.Value);
+			Assert.AreEqual("0", textBlock.Text);
+			Assert.AreEqual(0, SUT.MyInteger);
+
+			slider.Minimum = 10.0;
+
+			Assert.AreEqual(10.0, slider.Value);
+			Assert.AreEqual(10, SUT.MyInteger);
+			Assert.AreEqual("10", textBlock.Text);
+		}
+
+		[TestMethod]
+		public void When_TypeMismatch_DataTemplate()
+		{
+			var SUT = new Binding_TypeMismatch_DataTemplate();
+
+			var rootData = new Binding_TypeMismatch_DataTemplate_Data();
+			SUT.root.Content = rootData;
+
+			Assert.AreEqual(0, rootData.MyInteger);
+
+			SUT.ForceLoaded();
+
+			var slider = SUT.FindName("mySlider") as Slider;
+			var textBlock = SUT.FindName("myTextBlock") as TextBlock;
+
+			Assert.AreEqual(0.0, slider.Value);
+			Assert.AreEqual(0, rootData.MyInteger);
+			Assert.AreEqual("0", textBlock.Text);
+
+			slider.Minimum = 10.0;
+
+			Assert.AreEqual(10.0, slider.Value);
+			Assert.AreEqual(10, rootData.MyInteger);
+			Assert.AreEqual("10", textBlock.Text);
 		}
 	}
 }

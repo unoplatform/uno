@@ -4,10 +4,12 @@ using System.Collections.Immutable;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.MSBuild;
+using Microsoft.Win32.SafeHandles;
 using Uno.Extensions;
 using Uno.Logging;
 
@@ -20,6 +22,12 @@ namespace Uno.UWPSyncGenerator
 		private const string iOSDefine = "__IOS__";
 		private const string WasmDefine = "__WASM__";
 		private const string MacDefine = "__MACOS__";
+
+#if HAS_UNO_WINUI
+		private const string BaseXamlNamespace = "Microsoft.UI.Xaml";
+#else
+		private const string BaseXamlNamespace = "Windows.UI.Xaml";
+#endif
 
 		private Compilation _iOSCompilation;
 		private Compilation _androidCompilation;
@@ -50,7 +58,7 @@ namespace Uno.UWPSyncGenerator
 
 			_referenceCompilation = LoadProject(@"..\..\..\..\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj");
 			_iOSCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "xamarinios10");
-			_androidCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "MonoAndroid90");
+			_androidCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "MonoAndroid10.0");
 			_net461Compilation = LoadProject($@"{basePath}\{baseName}.csproj", "net461");
 			_wasmCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "netstandard2.0");
 			_macCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "xamarinmac20");
@@ -60,25 +68,39 @@ namespace Uno.UWPSyncGenerator
 			_macOSBaseSymbol = _macCompilation.GetTypeByMetadataName("AppKit.NSView");
 
 			_voidSymbol = _referenceCompilation.GetTypeByMetadataName("System.Void");
-			_dependencyPropertySymbol = _referenceCompilation.GetTypeByMetadataName("Windows.UI.Xaml.DependencyProperty");
-			UIElementSymbol = _referenceCompilation.GetTypeByMetadataName("Windows.UI.Xaml.UIElement");
-			var a = _referenceCompilation.GetTypeByMetadataName("Windows.UI.ViewManagement.StatusBar");
+			_dependencyPropertySymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".DependencyProperty");
+			UIElementSymbol = _referenceCompilation.GetTypeByMetadataName(BaseXamlNamespace + ".UIElement");
+			var a = _referenceCompilation.GetTypeByMetadataName("Microsoft.UI.ViewManagement.StatusBar");
 
 
 			var origins = from externalRedfs in _referenceCompilation.ExternalReferences
 						  where Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Foundation")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.System")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Phone.PhoneContract")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Networking.Connectivity.WwanContract")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.ApplicationModel.Calls.CallsPhoneContract")
 						  let asm = _referenceCompilation.GetAssemblyOrModuleSymbol(externalRedfs) as IAssemblySymbol
 						  where asm != null
 						  select asm;
 
+			origins = origins.ToArray();
+
+			var unoUINamespaces = new[] {
+				"Windows.UI.Xaml",
+#if HAS_UNO_WINUI
+				"Microsoft.UI.Xaml",
+				"Microsoft.UI.Composition",
+				"Microsoft.System"
+#endif
+			};
+
 			var q = from asm in origins
 					where asm.Name == sourceAssembly
 					from targetType in GetNamespaceTypes(asm.Modules.First().GlobalNamespace)
 					where targetType.DeclaredAccessibility == Accessibility.Public
-					where ((baseName == "Uno" || baseName == "Uno.Foundation") && !targetType.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml"))
-					|| (baseName == "Uno.UI" && targetType.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml"))
+					where ((baseName == "Uno" || baseName == "Uno.Foundation") && !targetType.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml") && !targetType.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Xaml"))
+					|| (baseName == "Uno.UI" && unoUINamespaces.Any(n => targetType.ContainingNamespace.ToString().StartsWith(n)))
 					group targetType by targetType.ContainingNamespace into namespaces
 					orderby namespaces.Key.MetadataName
 					select new
@@ -142,7 +164,14 @@ namespace Uno.UWPSyncGenerator
 			{
 				return @"..\..\..\..\Uno.Foundation\Generated\2.0.0.0";
 			}
-			else if (!type.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml"))
+			else if (!(
+				type.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml")
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Xaml")
+#if HAS_UNO_WINUI
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.System")
+				|| type.ContainingNamespace.ToString().StartsWith("Microsoft.UI.Composition")
+#endif
+			))
 			{
 				return @"..\..\..\..\Uno.UWP\Generated\3.0.0.0";
 			}
@@ -311,22 +340,23 @@ namespace Uno.UWPSyncGenerator
 
 		protected bool SkippedType(INamedTypeSymbol type)
 		{
-			switch (type.ToString())
+			var v = type.ToString();
+			switch (v)
 			{
 				case "Windows.Foundation.IAsyncOperation<TResult>":
 					// Skipped to include generic variance.
 					return true;
 
 				case "Windows.Foundation.Uri":
-				case "Windows.UI.Xaml.Input.ICommand":
-				case "Windows.UI.Xaml.Controls.UIElementCollection":
+				case BaseXamlNamespace + ".Input.ICommand":
+				case BaseXamlNamespace + ".Controls.UIElementCollection":
 					// Skipped because the reported interfaces are mismatched.
 					return true;
 
-				case "Windows.UI.Xaml.Media.FontFamily":
-				case "Windows.UI.Xaml.Controls.IconElement":
-				case "Windows.UI.Xaml.Data.ICollectionView":
-				case "Windows.UI.Xaml.Data.CollectionView":
+				case BaseXamlNamespace + ".Media.FontFamily":
+				case BaseXamlNamespace + ".Controls.IconElement":
+				case BaseXamlNamespace + ".Data.ICollectionView":
+				case BaseXamlNamespace + ".Data.CollectionView":
 					// Skipped because the reported interfaces are mismatched.
 					return true;
 
@@ -582,7 +612,7 @@ namespace Uno.UWPSyncGenerator
 				if (iface.DeclaredAccessibility == Accessibility.Public
 					&& iface.MetadataName != "Windows.Foundation.IStringable")
 				{
-					ifaces.Add(SanitizeType(iface));
+					ifaces.Add(MapUWPTypes(SanitizeType(iface)));
 				}
 			}
 
@@ -605,55 +635,56 @@ namespace Uno.UWPSyncGenerator
 			string[] skipBaseTypes = new[] {
 
 				// skipped because of legacy mismatched hierarchy
-				"Windows.UI.Xaml.FrameworkElement",
-				"Windows.UI.Xaml.UIElement",
-				"Windows.UI.Xaml.Controls.Image",
-				"Windows.UI.Xaml.Controls.ComboBox",
-				"Windows.UI.Xaml.Controls.CheckBox",
-				"Windows.UI.Xaml.Controls.TextBlock",
-				"Windows.UI.Xaml.Controls.TextBox",
-				"Windows.UI.Xaml.Controls.ProgressRing",
-				"Windows.UI.Xaml.Controls.ListViewBase",
-				"Windows.UI.Xaml.Controls.ListView",
-				"Windows.UI.Xaml.Controls.ListViewHeaderItem",
-				"Windows.UI.Xaml.Controls.GridView",
-				"Windows.UI.Xaml.Controls.ComboBox",
-				"Windows.UI.Xaml.Controls.UserControl",
-				"Windows.UI.Xaml.Controls.RadioButton",
-				"Windows.UI.Xaml.Controls.Slider",
-				"Windows.UI.Xaml.Controls.PasswordBox",
-				"Windows.UI.Xaml.Controls.RichEditBox",
-				"Windows.UI.Xaml.Controls.ProgressBar",
-				"Windows.UI.Xaml.Controls.ListViewItem",
-				"Windows.UI.Xaml.Controls.ScrollContentPresenter",
-				"Windows.UI.Xaml.Controls.Pivot",
-				"Windows.UI.Xaml.Controls.CommandBar",
-				"Windows.UI.Xaml.Controls.AppBar",
-				"Windows.UI.Xaml.Controls.TimePickerFlyoutPresenter",
-				"Windows.UI.Xaml.Controls.DatePickerFlyoutPresenter",
-				"Windows.UI.Xaml.Controls.AppBarSeparator",
-				"Windows.UI.Xaml.Controls.DatePickerFlyout",
-				"Windows.UI.Xaml.Controls.TimePickerFlyout",
-				"Windows.UI.Xaml.Controls.AppBarToggleButton",
-				"Windows.UI.Xaml.Controls.FlipView",
-				"Windows.UI.Xaml.Controls.FlipViewItem",
-				"Windows.UI.Xaml.Controls.GridViewItem",
-				"Windows.UI.Xaml.Controls.ComboBoxItem",
-				"Windows.UI.Xaml.Controls.Flyout",
-				"Windows.UI.Xaml.Controls.FontIcon",
-				"Windows.UI.Xaml.Controls.MenuFlyout",
-				"Windows.UI.Xaml.Data.CollectionView",
-				"Windows.UI.Xaml.Controls.WebView",
-				"Windows.UI.Xaml.Controls.UIElementCollection",
-				"Windows.UI.Xaml.Shapes.Polygon",
-				"Windows.UI.Xaml.Shapes.Ellipse",
-				"Windows.UI.Xaml.Shapes.Line",
-				"Windows.UI.Xaml.Shapes.Path",
-				"Windows.UI.Xaml.Media.ImageBrush",
-				"Windows.UI.Xaml.Media.LinearGradientBrush",
-				"Windows.UI.Xaml.Data.RelativeSource",
-				"Windows.UI.Xaml.Controls.Primitives.CarouselPanel",
-				"Windows.UI.Xaml.Controls.MediaPlayerPresenter",
+				BaseXamlNamespace + ".FrameworkElement",
+				BaseXamlNamespace + ".UIElement",
+				BaseXamlNamespace + ".Controls.Image",
+				BaseXamlNamespace + ".Controls.ComboBox",
+				BaseXamlNamespace + ".Controls.CheckBox",
+				BaseXamlNamespace + ".Controls.TextBlock",
+				BaseXamlNamespace + ".Controls.TextBox",
+				BaseXamlNamespace + ".Controls.ProgressRing",
+				BaseXamlNamespace + ".Controls.ListViewBase",
+				BaseXamlNamespace + ".Controls.ListView",
+				BaseXamlNamespace + ".Controls.ListViewHeaderItem",
+				BaseXamlNamespace + ".Controls.GridView",
+				BaseXamlNamespace + ".Controls.ComboBox",
+				BaseXamlNamespace + ".Controls.UserControl",
+				BaseXamlNamespace + ".Controls.RadioButton",
+				BaseXamlNamespace + ".Controls.Slider",
+				BaseXamlNamespace + ".Controls.PasswordBox",
+				BaseXamlNamespace + ".Controls.RichEditBox",
+				BaseXamlNamespace + ".Controls.ProgressBar",
+				BaseXamlNamespace + ".Controls.ListViewItem",
+				BaseXamlNamespace + ".Controls.ScrollContentPresenter",
+				BaseXamlNamespace + ".Controls.Pivot",
+				BaseXamlNamespace + ".Controls.CommandBar",
+				BaseXamlNamespace + ".Controls.AppBar",
+				BaseXamlNamespace + ".Controls.TimePickerFlyoutPresenter",
+				BaseXamlNamespace + ".Controls.DatePickerFlyoutPresenter",
+				BaseXamlNamespace + ".Controls.AppBarSeparator",
+				BaseXamlNamespace + ".Controls.DatePickerFlyout",
+				BaseXamlNamespace + ".Controls.TimePickerFlyout",
+				BaseXamlNamespace + ".Controls.AppBarToggleButton",
+				BaseXamlNamespace + ".Controls.FlipView",
+				BaseXamlNamespace + ".Controls.FlipViewItem",
+				BaseXamlNamespace + ".Controls.GridViewItem",
+				BaseXamlNamespace + ".Controls.ComboBoxItem",
+				BaseXamlNamespace + ".Controls.Flyout",
+				BaseXamlNamespace + ".Controls.FontIcon",
+				BaseXamlNamespace + ".Controls.MenuFlyout",
+				BaseXamlNamespace + ".Data.CollectionView",
+				BaseXamlNamespace + ".Controls.WebView",
+				BaseXamlNamespace + ".Controls.UIElementCollection",
+				BaseXamlNamespace + ".Shapes.Polygon",
+				BaseXamlNamespace + ".Shapes.Polyline",
+				BaseXamlNamespace + ".Shapes.Ellipse",
+				BaseXamlNamespace + ".Shapes.Line",
+				BaseXamlNamespace + ".Shapes.Path",
+				BaseXamlNamespace + ".Media.ImageBrush",
+				BaseXamlNamespace + ".Media.LinearGradientBrush",
+				BaseXamlNamespace + ".Data.RelativeSource",
+				BaseXamlNamespace + ".Controls.Primitives.CarouselPanel",
+				BaseXamlNamespace + ".Controls.MediaPlayerPresenter",
 			};
 
 			var isSkipped = skippedTypes.Contains(type.BaseType?.ToString());
@@ -725,9 +756,9 @@ namespace Uno.UWPSyncGenerator
 		{
 			foreach (var eventMember in type.GetMembers().OfType<IEventSymbol>())
 			{
-				if (!IsNotUWPMapping(type, eventMember))
+				if (!IsNotUWPMapping(type, eventMember) || SkipEvent(type, eventMember))
 				{
-					return;
+					continue;
 				}
 
 				var allMembers = GetAllMatchingEvents(types, eventMember);
@@ -954,10 +985,35 @@ namespace Uno.UWPSyncGenerator
 					case "GetColumnSpan":
 						return true;
 				}
-
-
 			}
 
+			if (method.ContainingType.Name == "FrameworkElement")
+			{
+				switch (method.Name)
+				{
+					// Those two members are located in DependencyObject but will need to be
+					// moved up.
+					case "GetBindingExpression":
+					case "SetBinding":
+						return true;
+				}
+			}
+
+			return false;
+		}
+
+		private bool SkipEvent(INamedTypeSymbol type, IEventSymbol eventMember)
+		{
+			if (eventMember.ContainingType.Name == "FrameworkElement")
+			{
+				switch (eventMember.Name)
+				{
+					// Those two members are located in DependencyObject but will need to be
+					// moved up.
+					case "DataContextChanged":
+						return true;
+				}
+			}
 			return false;
 		}
 
@@ -976,7 +1032,7 @@ namespace Uno.UWPSyncGenerator
 				if (uwpIface != null)
 				{
 					if (
-							uwpIface == "Windows.UI.Xaml.Input.ICommand"
+							uwpIface == BaseXamlNamespace + ".Input.ICommand"
 							&& eventMember.Name == "CanExecuteChanged"
 						)
 					{
@@ -1105,11 +1161,11 @@ namespace Uno.UWPSyncGenerator
 				case "System.Collections.Generic.KeyValuePair":
 					return "Windows.Foundation.Collections.IKeyValuePair";
 				case "System.Type":
-					return "Windows.UI.Xaml.Interop.TypeName";
+					return BaseXamlNamespace + ".Interop.TypeName";
 				case "System.Uri":
 					return "Windows.Foundation.Uri";
 				case "System.Windows.Input.ICommand":
-					return "Windows.UI.Xaml.Input.ICommand";
+					return BaseXamlNamespace + ".Input.ICommand";
 			}
 
 			return null;
@@ -1136,7 +1192,7 @@ namespace Uno.UWPSyncGenerator
 
 					if (type.TypeKind == TypeKind.Interface)
 					{
-						using (b.BlockInvariant($"{SanitizeType(property.Type)} {property.Name}"))
+						using (b.BlockInvariant($"{MapUWPTypes(SanitizeType(property.Type))} {property.Name}"))
 						{
 							if (property.GetMethod != null)
 							{
@@ -1167,11 +1223,11 @@ namespace Uno.UWPSyncGenerator
 							if (getLocal != null || getAttached != null)
 							{
 								var attachedModifier = getAttached != null ? "Attached" : "";
-								var propertyDisplayType = (getAttached?.ReturnType ?? getLocal?.Type).ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+								var propertyDisplayType = MapUWPTypes((getAttached?.ReturnType ?? getLocal?.Type).ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat));
 
 								b.AppendLineInvariant($"public {staticQualifier} {SanitizeType(property.Type)} {property.Name} {{{{ get; }}}} = ");
 
-								b.AppendLineInvariant($"Windows.UI.Xaml.DependencyProperty.Register{attachedModifier}(");
+								b.AppendLineInvariant($"{BaseXamlNamespace}.DependencyProperty.Register{attachedModifier}(");
 
 								if (getAttached == null)
 								{
@@ -1197,13 +1253,13 @@ namespace Uno.UWPSyncGenerator
 							&& property.ContainingType.GetMembers(property.Name + "Property").Any()
 						)
 						{
-							using (b.BlockInvariant($"public {staticQualifier} {SanitizeType(property.Type)} {property.Name}"))
+							using (b.BlockInvariant($"public {staticQualifier} {MapUWPTypes(SanitizeType(property.Type))} {property.Name}"))
 							{
 								if (property.GetMethod != null)
 								{
 									using (b.BlockInvariant($"get"))
 									{
-										b.AppendLineInvariant($"return ({SanitizeType(property.Type)})this.GetValue({property.Name}Property);");
+										b.AppendLineInvariant($"return ({MapUWPTypes(SanitizeType(property.Type))})this.GetValue({property.Name}Property);");
 									}
 								}
 
@@ -1218,7 +1274,7 @@ namespace Uno.UWPSyncGenerator
 						}
 						else
 						{
-							using (b.BlockInvariant($"public {staticQualifier} {SanitizeType(property.Type)} {property.Name}"))
+							using (b.BlockInvariant($"public {staticQualifier} {MapUWPTypes(SanitizeType(property.Type))} {property.Name}"))
 							{
 								if (property.GetMethod != null)
 								{
@@ -1310,14 +1366,12 @@ namespace Uno.UWPSyncGenerator
 		}
 
 		private object SanitizeParameter(string name)
-		{
-			if (name == "event")
+			=> name switch
 			{
-				return "@event";
-			}
-
-			return name;
-		}
+				"event" => "@event",
+				"object" => "@object",
+				_ => name
+			};
 
 		private string SanitizeType(ITypeSymbol type)
 		{
@@ -1328,42 +1382,27 @@ namespace Uno.UWPSyncGenerator
 
 		private static string MapUWPTypes(string typeName)
 		{
-			switch (typeName)
+			return typeName switch
 			{
-				case "Windows.Foundation.Collections.IIterable":
-					return "System.Collections.Generic.IEnumerable";
-				case "Windows.Foundation.IAsyncOperation":
-					return "System.Threading.Tasks.Task";
-				case "Windows.Foundation.IAsyncAction":
-					return "System.Threading.Tasks.Task";
-				case "Windows.Foundation.Collections.IMapView":
-					return "System.Collections.Generic.IReadOnlyDictionary";
-				case "Windows.Foundation.Collections.IMap":
-					return "System.Collections.Generic.IDictionary";
-				case "Windows.Foundation.IReference":
-					return "System.Nullable";
-				case "Windows.Foundation.Collections.IVectorView":
-					return "System.Collections.Generic.IReadOnlyList";
-				case "Windows.Foundation.Collections.IVector":
-					return "System.Collections.Generic.IList";
-				case "Windows.Foundation.DateTime":
-					return "System.DateTimeOffset";
-				case "Windows.Foundation.EventHandler":
-					return "System.EventHandler";
-				case "Windows.Foundation.TimeSpan":
-					return "System.TimeSpan";
-				case "Windows.Foundation.Collections.IKeyValuePair":
-					return "System.Collections.Generic.KeyValuePair";
-				case "Windows.UI.Xaml.Interop.TypeName":
-					return "System.Type";
-				case "Windows.Foundation.Uri":
-					return "System.Uri";
-				case "Windows.Foundation.ICloseable":
-					return "System.IDisposable";
-				case "Windows.UI.Xaml.Input.ICommand":
-					return "System.Windows.Input.ICommand";
-			}
-			return typeName;
+				//"global::Windows.Foundation.Collections.IIterable" => "global::System.Collections.Generic.IEnumerable",
+				//"global::Windows.Foundation.IAsyncOperation" => "global::System.Threading.Tasks.Task",
+				//"global::Windows.Foundation.IAsyncAction" => "global::System.Threading.Tasks.Task",
+				//"global::Windows.Foundation.Collections.IMapView" => "global::System.Collections.Generic.IReadOnlyDictionary",
+				//"global::Windows.Foundation.Collections.IMap" => "global::System.Collections.Generic.IDictionary",
+				//"global::Windows.Foundation.IReference" => "global::System.Nullable",
+				//"global::Windows.Foundation.Collections.IVectorView" => "global::System.Collections.Generic.IReadOnlyList",
+				//"global::Windows.Foundation.Collections.IVector" => "global::System.Collections.Generic.IList",
+				//"global::Windows.Foundation.DateTime" => "global::System.DateTimeOffset",
+				//"global::Windows.Foundation.EventHandler" => "global::System.EventHandler",
+				//"global::Windows.Foundation.TimeSpan" => "global::System.TimeSpan",
+				//"global::Windows.Foundation.Collections.IKeyValuePair" => "global::System.Collections.Generic.KeyValuePair",
+				//"global::Windows.UI.Xaml.Interop.TypeName" => "global::System.Type",
+				//"global::Windows.Foundation.Uri" => "global::System.Uri",
+				//"global::Windows.Foundation.ICloseable" => "global::System.IDisposable",
+				"global::Windows.UI.Xaml.Input.ICommand" => "global::System.Windows.Input.ICommand",
+				"global::Microsoft.UI.Xaml.Input.ICommand" => "global::System.Windows.Input.ICommand",
+				_ => typeName,
+			};
 		}
 
 		private IEnumerable<ISymbol> GetNonGeneratedMembers(ITypeSymbol symbol, string name)
@@ -1416,7 +1455,23 @@ namespace Uno.UWPSyncGenerator
 			}
 		}
 
+		static Dictionary<(string projectFile, string targetFramework), Compilation> _projects
+			= new Dictionary<(string projectFile, string targetFramework), Compilation>();
+
 		private static Compilation LoadProject(string projectFile, string targetFramework = null)
+		{
+			var key = (projectFile, targetFramework);
+
+			if (_projects.TryGetValue(key, out var compilation))
+			{
+				Console.WriteLine($"Using cached compilation for {projectFile} and {targetFramework}");
+				return compilation;
+			}
+
+			return _projects[key] = InnerLoadProject(projectFile, targetFramework);
+		}
+
+		private static Compilation InnerLoadProject(string projectFile, string targetFramework = null)
 		{
 			Console.WriteLine($"Loading for {targetFramework}: {Path.GetFileName(projectFile)}");
 

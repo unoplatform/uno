@@ -58,6 +58,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public int Count => _inner.Count;
 
+		public uint Size => (uint)Count;
+
 		public bool IsReadOnly => _inner.IsReadOnly;
 
 		public int IndexOf(object item) =>  _inner.IndexOf(item);

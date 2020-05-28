@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 
-namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
+namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.CommandBarTests
 {
 	[TestFixture]
 	public partial class XamlCommandBar_Tests : SampleControlUITestBase

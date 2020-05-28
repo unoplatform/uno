@@ -1,4 +1,6 @@
-﻿using System.Globalization;
+﻿using System;
+using System.Globalization;
+using System.Text;
 
 namespace Windows.UI
 {
@@ -17,14 +19,20 @@ namespace Windows.UI
 
 		internal string ToHexString()
 		{
-			var result = "#";
+			var builder = new StringBuilder(10);
+
+			builder.Append("#");
+			builder.Append(R.ToString("X2"));
+			builder.Append(G.ToString("X2"));
+			builder.Append(B.ToString("X2"));
+
 			if (A != 255)
 			{
 				// Include alpha chanel only when required.
-				result += A.ToString("X2");
+				builder.Append(A.ToString("X2"));
 			}
-			result += $"{R.ToString("X2")}{G.ToString("X2")}{B.ToString("X2")}";
-			return result;
+
+			return builder.ToString();
 		}
 	}
 }

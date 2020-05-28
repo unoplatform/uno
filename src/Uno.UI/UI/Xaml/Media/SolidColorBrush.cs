@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using Uno.Extensions;
+using Windows.UI;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -16,31 +17,45 @@ using UIKit;
 using View = MonoTouch.UIKit.UIView;
 using Color = MonoTouch.UIKit.UIColor;
 using Font = MonoTouch.UIKit.UIFont;
-#else
-using System.Drawing;
 #endif
 
 namespace Windows.UI.Xaml.Media
 {
 	public partial class SolidColorBrush : Brush, IEquatable<SolidColorBrush>
+		, IShareableDependencyObject //TODO: should be implemented on Brush
 	{
 		/// <summary>
 		/// Blends the Color set on the SolidColorBrush with its Opacity. Should generally be used for rendering rather than the Color property itself.
 		/// </summary>
-		internal Color ColorWithOpacity
+		internal Windows.UI.Color ColorWithOpacity
 		{
 			get; private set;
 		}
+
+		private readonly bool _isClone;
+		bool IShareableDependencyObject.IsClone => _isClone;
 
 		public SolidColorBrush()
 		{
 			IsAutoPropertyInheritanceEnabled = false;
 		}
 
-		public SolidColorBrush(Color color) : this()
+		public SolidColorBrush(Windows.UI.Color color) : this()
 		{
 			Color = color;
 			UpdateColorWithOpacity(color);
+		}
+
+		private SolidColorBrush(SolidColorBrush original) : this()
+		{
+			_isClone = true;
+
+			Color = original.Color;
+			UpdateColorWithOpacity(Color);
+
+			Opacity = original.Opacity;
+			Transform = original.Transform;
+			RelativeTransform = original.RelativeTransform;
 		}
 
 		/// <remarks>
@@ -48,12 +63,12 @@ namespace Windows.UI.Xaml.Media
 		/// requires a round-trip with Objective-C, so updating this value only when opacity
 		/// and color changes is more efficient.
 		/// </remarks>
-		private void UpdateColorWithOpacity(Color newColor)
+		private void UpdateColorWithOpacity(Windows.UI.Color newColor)
 		{
 			ColorWithOpacity = GetColorWithOpacity(newColor);
 		}
 
-		partial void OnColorChanged(Color oldValue, Color newValue)
+		partial void OnColorChanged(Windows.UI.Color oldValue, Windows.UI.Color newValue)
 		{
 			UpdateColorWithOpacity(newValue);
 		}
@@ -67,27 +82,29 @@ namespace Windows.UI.Xaml.Media
 
 		#region Color Dependency Property
 
-		public Color Color
+		public Windows.UI.Color Color
 		{
-			get { return (Color)this.GetValue(ColorProperty); }
+			get { return (Windows.UI.Color)this.GetValue(ColorProperty); }
 			set { this.SetValue(ColorProperty, value); }
 		}
 
 		// Using a DependencyProperty as the backing store for MyProperty.  This enables animation, styling, binding, etc...
 		public static readonly DependencyProperty ColorProperty =
 			DependencyProperty.Register(
-				"Color", 
-				typeof(Color),
+				"Color",
+				typeof(Windows.UI.Color),
 				typeof(SolidColorBrush),
 				new PropertyMetadata(
 					Colors.Transparent,
-					(s, e) => ((SolidColorBrush)s).OnColorChanged((Color)e.OldValue, (Color)e.NewValue)
+					(s, e) => ((SolidColorBrush)s).OnColorChanged((Windows.UI.Color)e.OldValue, (Windows.UI.Color)e.NewValue)
 				)
 			);
 
-		partial void OnColorChanged(Color oldValue, Color newValue);
+		partial void OnColorChanged(Windows.UI.Color oldValue, Windows.UI.Color newValue);
 
 		#endregion
+
+		DependencyObject IShareableDependencyObject.Clone() => new SolidColorBrush(this);
 
 		public override string ToString() => "[SolidColorBrush {0}]".InvariantCultureFormat(Color);
 
@@ -100,10 +117,11 @@ namespace Windows.UI.Xaml.Media
 				return false;
 			}
 
-			return ReferenceEquals(this, other) || ColorWithOpacity.Equals(other.ColorWithOpacity);
+			return ReferenceEquals(this, other)
+				|| (ColorWithOpacity.Equals(other.ColorWithOpacity) && this._isClone == other._isClone);
 		}
 
-		public override int GetHashCode() => ColorWithOpacity.GetHashCode();
+		public override int GetHashCode() => ColorWithOpacity.GetHashCode() ^ _isClone.GetHashCode();
 
 		public static bool operator ==(SolidColorBrush left, SolidColorBrush right) => Equals(left, right);
 

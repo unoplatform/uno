@@ -51,7 +51,7 @@ namespace Windows.UI.Xaml.Media.Animation
 #if __ANDROID__
 				Dispatcher.RunAnimation(() =>
 #else
-				Dispatcher.RunAsync(Core.CoreDispatcherPriority.High, () =>
+				Dispatcher.RunAsync(CoreDispatcherPriority.High, () =>
 #endif
 				{
 #endif
@@ -341,7 +341,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		partial void UseHardware();
 		partial void HoldValue();
 
-#if NET461 || __MACOS__
+#if NET461
 		private bool ReportEachFrame() => true;
 #endif
 	}

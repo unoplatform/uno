@@ -9,7 +9,7 @@ using Windows.UI.Xaml;
 
 namespace Uno.UI.Controls
 {
-    public partial class BindableCheckBox : Android.Support.V7.Widget.AppCompatCheckBox, INotifyPropertyChanged, DependencyObject
+    public partial class BindableCheckBox : AndroidX.AppCompat.Widget.AppCompatCheckBox, INotifyPropertyChanged, DependencyObject
 	{
 		public event PropertyChangedEventHandler PropertyChanged;
 

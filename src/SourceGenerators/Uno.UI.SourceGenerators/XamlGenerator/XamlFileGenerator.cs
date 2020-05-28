@@ -297,7 +297,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					var controlBaseType = GetType(topLevelControl.Type);
 
-					using (writer.BlockInvariant("public sealed partial class {0} : {1}", _className.className, controlBaseType.ToDisplayString()))
+					using (writer.BlockInvariant("public partial class {0} : {1}", _className.className, controlBaseType.ToDisplayString()))
 					{
 						var isDirectUserControlChild = IsUserControl(topLevelControl.Type, checkInheritance: false);
 
@@ -1118,7 +1118,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (appThemes.Any())
 					{
 						writer.AppendLineInvariant("// Element's RequestedTheme not supported yet. Fallback on Application's RequestedTheme.");
-						writer.AppendLineInvariant("var currentTheme = global::Windows.UI.Xaml.Application.Current.RequestedTheme;");
+						writer.AppendLineInvariant("var currentTheme = global::Windows.UI.Xaml.Application.Current?.RequestedTheme;");
 						using (writer.BlockInvariant($"switch(currentTheme)"))
 						{
 							foreach (var theme in appThemes)
@@ -2819,7 +2819,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			var pathMember = bindNode.Members.FirstOrDefault(m => m.Member.Name == "_PositionalParameters" || m.Member.Name == "Path");
 
-			var rawFunction = pathMember?.Value?.ToString() ?? "";
+			var rawFunction = XBindExpressionParser.RestoreSinglePath(pathMember?.Value?.ToString() ?? "");
 			var propertyType = FindPropertyType(member.Member);
 
 			// Apply replacements to avoid having issues with the XAML parser which does not
@@ -2827,8 +2827,6 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			// Note that the UWP preprocessor does not need to apply those replacements as the x:Bind expressions
 			// are being removed during the first phase and replaced by "connections".
 			rawFunction = rawFunction
-				.Replace("^" + XamlConstants.XBindSubstitute, "\\\'")
-				.Replace(XamlConstants.XBindSubstitute, '\"')
 				.Replace("x:False", "false")
 				.Replace("x:True", "true")
 				.Replace("x:Null", "null")
@@ -2841,7 +2839,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			// Populate the property paths only if updateable bindings.
 			var propertyPaths = modeMember != "OneTime"
-				? XBindExpressionParser.ParseProperties(rawFunction, IsStaticMethod)
+				? XBindExpressionParser.ParseProperties(rawFunction, IsStaticMember)
 				: (properties: new string[0], hasFunction: false);
 
 			var formattedPaths = propertyPaths
@@ -2863,7 +2861,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 				var dataType = RewriteNamespaces(dataTypeObject.Value?.ToString());
 
-				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, IsStaticMethod);
+				var contextFunction = XBindExpressionParser.Rewrite("___tctx", rawFunction, IsStaticMember);
 
 				string buildBindBack()
 				{
@@ -2886,7 +2884,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (propertyPaths.properties.Length == 1)
 							{
 								var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0], GetType(dataType));
-								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunction} = ({targetPropertyType})__value; }} }}";
+								return $"(___ctx, __value) => {{ if(___ctx is {dataType} ___tctx) {{ {contextFunction} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value); }} }}";
 							}
 							else
 							{
@@ -2926,7 +2924,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							if (propertyPaths.properties.Length == 1)
 							{
 								var targetPropertyType = GetXBindPropertyPathType(propertyPaths.properties[0]);
-								return $"(___tctx, __value) => {rawFunction} = ({targetPropertyType})__value";
+								return $"(___tctx, __value) => {rawFunction} = ({targetPropertyType})global::Windows.UI.Xaml.Markup.XamlBindingHelper.ConvertValue(typeof({targetPropertyType}), __value)";
 							}
 							else
 							{
@@ -2984,16 +2982,17 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			return currentType;
 		}
 
-		bool IsStaticMethod(string fullMethodName)
+		bool IsStaticMember(string fullMemberName)
 		{
-			fullMethodName = fullMethodName.TrimStart("global::");
+			fullMemberName = fullMemberName.TrimStart("global::");
 
-			var lastDotIndex = fullMethodName.LastIndexOf(".");
+			var lastDotIndex = fullMemberName.LastIndexOf(".");
 
-			var className = lastDotIndex != -1 ? fullMethodName.Substring(0, lastDotIndex) : fullMethodName;
-			var methodName = lastDotIndex != -1 ? fullMethodName.Substring(lastDotIndex + 1) : fullMethodName;
+			var className = lastDotIndex != -1 ? fullMemberName.Substring(0, lastDotIndex) : fullMemberName;
+			var memberName = lastDotIndex != -1 ? fullMemberName.Substring(lastDotIndex + 1) : fullMemberName;
 
-			return _medataHelper.FindTypeByFullName(className) is INamedTypeSymbol typeSymbol && typeSymbol.GetMethods().Any(m => m.Name == methodName);
+			return _medataHelper.FindTypeByFullName(className) is INamedTypeSymbol typeSymbol
+				&& (typeSymbol.GetMethods().Any(m => m.IsStatic && m.Name == memberName) || typeSymbol.GetProperties().Any(m => m.IsStatic && m.Name == memberName));
 		}
 
 		private string RewriteNamespaces(string xamlString)
@@ -3633,7 +3632,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				memberValue = string.Join(", ", ColorCodeParser.ParseColorCode(memberValue));
 
-				return $"{GlobalPrefix}Windows.UI.ColorHelper.FromARGB({memberValue})";
+				return $"{GlobalPrefix}{XamlConstants.Types.ColorHelper}.FromARGB({memberValue})";
 			}
 		}
 

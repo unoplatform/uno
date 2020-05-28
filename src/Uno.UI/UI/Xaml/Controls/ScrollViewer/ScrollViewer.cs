@@ -4,7 +4,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using Uno.Disposables;
 using System.Runtime.CompilerServices;
 using System.Text;
@@ -25,6 +24,9 @@ using UIKit;
 using View = UIKit.UIView;
 using Color = UIKit.UIColor;
 using Font = UIKit.UIFont;
+#elif __MACOS__
+using View = AppKit.NSView;
+using AppKit;
 #else
 using View = Windows.UI.Xaml.UIElement;
 #endif
@@ -42,8 +44,8 @@ namespace Windows.UI.Xaml.Controls
 
 		private readonly SerialDisposable _sizeChangedSubscription = new SerialDisposable();
 
-		internal Foundation.Size ViewportMeasureSize { get; private set; }
-		internal Foundation.Size ViewportArrangeSize { get; private set; }
+		internal Size ViewportMeasureSize { get; private set; }
+		internal Size ViewportArrangeSize { get; private set; }
 
 		static ScrollViewer()
 		{
@@ -564,7 +566,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		protected override Foundation.Size MeasureOverride(Foundation.Size availableSize)
+		protected override Size MeasureOverride(Size availableSize)
 		{
 			ViewportMeasureSize = availableSize;
 
@@ -575,7 +577,7 @@ namespace Windows.UI.Xaml.Controls
 		private IScrollContentPresenter _sv;
 #pragma warning restore 649 // unused member for Unit tests
 
-		protected override Foundation.Size ArrangeOverride(Foundation.Size finalSize)
+		protected override Size ArrangeOverride(Size finalSize)
 		{
 			ViewportArrangeSize = finalSize;
 

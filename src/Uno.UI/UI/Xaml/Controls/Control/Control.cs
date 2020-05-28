@@ -74,6 +74,15 @@ namespace Windows.UI.Xaml.Controls
 			// base.OnBackgroundChanged(e);
 		}
 
+		internal void UpdateVisualState(bool useTransitions = true)
+		{
+			ChangeVisualState(useTransitions);
+		}
+
+		private protected virtual void ChangeVisualState(bool useTransitions)
+		{
+		}
+
 		/// <summary>
 		/// Will be set to Template when it is applied
 		/// </summary>
@@ -137,7 +146,7 @@ namespace Windows.UI.Xaml.Controls
 
 				if (value != null)
 				{
-					if(_templatedRoot is IDependencyObjectStoreProvider provider)
+					if (_templatedRoot is IDependencyObjectStoreProvider provider)
 					{
 						provider.Store.SetValue(provider.Store.TemplatedParentProperty, this, DependencyPropertyValuePrecedences.Local);
 					}
@@ -195,6 +204,11 @@ namespace Windows.UI.Xaml.Controls
 			if (implementedEvents.HasFlag(RoutedEventFlag.PointerCaptureLost))
 			{
 				PointerCaptureLost += OnPointerCaptureLostHandler;
+			}
+
+			if (implementedEvents.HasFlag(RoutedEventFlag.PointerWheelChanged))
+			{
+				PointerWheelChanged += OnPointerWheelChangedHandler;
 			}
 
 			if (implementedEvents.HasFlag(RoutedEventFlag.ManipulationStarting))
@@ -301,7 +315,7 @@ namespace Windows.UI.Xaml.Controls
 				&& NameScope.GetNameScope(root) is INameScope nameScope
 				&& nameScope.FindName(name) is DependencyObject element
 				// Doesn't currently support ElementStub (fallbacks to other FindName implementation)
-				&& !(element is ElementStub) 
+				&& !(element is ElementStub)
 					? element
 					: null;
 		}
@@ -354,7 +368,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			if (
-				!FeatureConfiguration.FrameworkElement.UseLegacyApplyStylePhase && 
+				!FeatureConfiguration.FrameworkElement.UseLegacyApplyStylePhase &&
 				FeatureConfiguration.FrameworkElement.ClearPreviousOnStyleChange
 			)
 			{
@@ -601,8 +615,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(FocusState),
 				typeof(Control),
 				new PropertyMetadata(
-					(FocusState)FocusState.Unfocused,
-					(s, e) => ((Control)s)?.OnFocusStateChanged((FocusState)e.OldValue, (FocusState)e.NewValue)
+					(FocusState)FocusState.Unfocused
 				)
 			);
 
@@ -659,11 +672,13 @@ namespace Windows.UI.Xaml.Controls
 				throw new ArgumentException("Value does not fall within the expected range.", nameof(value));
 			}
 
-#if __WASM__
-			return Visibility == Visibility.Visible && IsEnabled && RequestFocus(value);
-#else
-			return IsFocusable && RequestFocus(value);
-#endif
+			return RequestFocus(value);
+		}
+
+
+		protected virtual bool RequestFocus(FocusState state)
+		{
+			return FocusManager.SetFocusedElement(this, FocusNavigationDirection.None, state);
 		}
 
 		internal void Unfocus()
@@ -727,37 +742,24 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnBorderBrushChangedPartial(Brush oldValue, Brush newValue);
 
-		protected virtual void OnFocusStateChanged(FocusState oldValue, FocusState newValue)
+		internal virtual void UpdateFocusState(FocusState focusState)
 		{
-			if (newValue == FocusState.Unfocused && oldValue == newValue)
-			{
-				return;
-			}
-
-			OnFocusStateChangedPartial(oldValue, newValue);
-#if XAMARIN || __WASM__
-			FocusManager.OnFocusChanged(this, newValue);
-#endif
-
-			if (newValue == FocusState.Unfocused)
-			{
-				RaiseEvent(LostFocusEvent, new RoutedEventArgs(this));
-			}
-			else
-			{
-				RaiseEvent(GotFocusEvent, new RoutedEventArgs(this));
-			}
+			FocusState = focusState;
 		}
 
-		partial void OnFocusStateChangedPartial(FocusState oldValue, FocusState newValue);
+		partial void UpdateFocusStatePartial(FocusState focusState);
 
-		protected virtual void OnPointerPressed(PointerRoutedEventArgs args) { }
-		protected virtual void OnPointerReleased(PointerRoutedEventArgs args) { }
-		protected virtual void OnPointerEntered(PointerRoutedEventArgs args) { }
-		protected virtual void OnPointerExited(PointerRoutedEventArgs args) { }
-		protected virtual void OnPointerMoved(PointerRoutedEventArgs args) { }
-		protected virtual void OnPointerCanceled(PointerRoutedEventArgs args) { }
-		protected virtual void OnPointerCaptureLost(PointerRoutedEventArgs args) { }
+		protected virtual void OnPointerPressed(PointerRoutedEventArgs e) { }
+		protected virtual void OnPointerReleased(PointerRoutedEventArgs e) { }
+		protected virtual void OnPointerEntered(PointerRoutedEventArgs e) { }
+		protected virtual void OnPointerExited(PointerRoutedEventArgs e) { }
+		protected virtual void OnPointerMoved(PointerRoutedEventArgs e) { }
+		protected virtual void OnPointerCanceled(PointerRoutedEventArgs e) { }
+		protected virtual void OnPointerCaptureLost(PointerRoutedEventArgs e) { }
+#if !__WASM__
+		[global::Uno.NotImplemented]
+#endif
+		protected virtual void OnPointerWheelChanged(PointerRoutedEventArgs e) { }
 		protected virtual void OnManipulationStarting(ManipulationStartingRoutedEventArgs e) { }
 		protected virtual void OnManipulationStarted(ManipulationStartedRoutedEventArgs e) { }
 		protected virtual void OnManipulationDelta(ManipulationDeltaRoutedEventArgs e) { }
@@ -792,6 +794,9 @@ namespace Windows.UI.Xaml.Controls
 
 		private static readonly PointerEventHandler OnPointerCaptureLostHandler =
 			(object sender, PointerRoutedEventArgs args) => ((Control)sender).OnPointerCaptureLost(args);
+
+		private static readonly PointerEventHandler OnPointerWheelChangedHandler =
+			(object sender, PointerRoutedEventArgs args) => ((Control)sender).OnPointerWheelChanged(args);
 
 		private static readonly ManipulationStartingEventHandler OnManipulationStartingHandler =
 			(object sender, ManipulationStartingRoutedEventArgs args) => ((Control)sender).OnManipulationStarting(args);
@@ -899,6 +904,11 @@ namespace Windows.UI.Xaml.Controls
 			if (GetIsEventOverrideImplemented(type, nameof(OnPointerCaptureLost), _pointerArgsType))
 			{
 				result |= RoutedEventFlag.PointerCaptureLost;
+			}
+
+			if (GetIsEventOverrideImplemented(type, nameof(OnPointerWheelChanged), _pointerArgsType))
+			{
+				result |= RoutedEventFlag.PointerWheelChanged;
 			}
 
 			if (GetIsEventOverrideImplemented(type, nameof(OnManipulationStarting), _manipStartingArgsType))

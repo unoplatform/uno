@@ -20,6 +20,24 @@ namespace Windows.UI.Xaml
 
 		partial void Initialize();
 
+		internal bool RequiresArrange { get; private set; }
+
+		internal bool RequiresMeasure { get; private set; }
+
+
+		/// <summary>
+		/// Determines if InvalidateMeasure has been called
+		/// </summary>
+		/// <remarks>This property is present to mirror the WinUI souce</remarks>
+		internal bool IsMeasureDirty => RequiresMeasure;
+
+		/// <summary>
+		/// Determines if InvalidateArrange has been called
+		/// </summary>
+		/// <remarks>This property is present to mirror the WinUI souce</remarks>
+		internal bool IsArrangeDirty => RequiresArrange;
+
+
 		public override void SetNeedsLayout()
 		{
 			if (!_inLayoutSubviews)

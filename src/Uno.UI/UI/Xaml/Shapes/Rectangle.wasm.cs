@@ -38,12 +38,8 @@ namespace Windows.UI.Xaml.Shapes
 				.AtLeast(new Size(0, 0));
 
 			_rectangle.Arrange(childRect);
-			_rectangle.SetAttribute(
-				("x", childRect.X.ToStringInvariant()),
-				("y", childRect.Y.ToStringInvariant()),
-				("width", childRect.Width.ToStringInvariant()),
-				("height", childRect.Height.ToStringInvariant())
-			);
+
+			Uno.UI.Xaml.WindowManagerInterop.SetSvgElementRect(_rectangle.HtmlId, childRect);
 
 			_rectangle.Clip = new RectangleGeometry() { Rect = new Rect(0, 0, finalSize.Width, finalSize.Height) };
 

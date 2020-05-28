@@ -131,7 +131,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// The frame applied to this child when last arranged by its parent. This may differ from the current UIView.Frame if a RenderTransform is set.
 		/// </summary>
-		Foundation.Rect AppliedFrame { get; }
+		Rect AppliedFrame { get; }
 
 		void SetSubviewsNeedLayout();
 #endif
@@ -252,29 +252,30 @@ namespace Windows.UI.Xaml
 				}
 			}
 
+			if(e is UIElement uiElement && uiElement.ContextFlyout is Controls.Primitives.FlyoutBase contextFlyout)
+			{
+				return FindInFlyout(name, contextFlyout);
+			}
+
+			if (e is Button button && button.Flyout is Controls.Primitives.FlyoutBase buttonFlyout)
+			{
+				return FindInFlyout(name, buttonFlyout);
+			}
+
 			return null;
 		}
 
+		private static IFrameworkElement FindInFlyout(string name, Controls.Primitives.FlyoutBase flyoutBase)
+			=> flyoutBase switch
+			{
+				MenuFlyout f => f.Items.Select(i => i.FindName(name)).Trim().FirstOrDefault(),
+				Controls.Primitives.FlyoutBase fb => fb.GetPresenter()?.FindName(name)
+			};
+
 		public static CGSize Measure(this IFrameworkElement element, _Size availableSize)
 		{
-#if XAMARIN_IOS
+#if XAMARIN_IOS || __MACOS__
 			return ((View)element).SizeThatFits(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
-#elif __MACOS__
-			if(element is NSControl nsControl)
-			{
-				return nsControl.SizeThatFits(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
-			}
-			else if (element is FrameworkElement fe)
-			{
-				fe.Measure(new Size(availableSize.Width, availableSize.Height));
-				var desiredSize = fe.DesiredSize;
-				return new CGSize(desiredSize.Width, desiredSize.Height);
-			}
-			else
-			{
-				throw new NotSupportedException($"Unsupported measure for {element}");
-			}
-
 #elif XAMARIN_ANDROID
 			var widthSpec = ViewHelper.SpecFromLogicalSize(availableSize.Width);
 			var heightSpec = ViewHelper.SpecFromLogicalSize(availableSize.Height);
@@ -290,25 +291,28 @@ namespace Windows.UI.Xaml
 		}
 
 #if __MACOS__
-		public static CGSize Measure(this View element, _Size availableSize)
+		public static CGSize SizeThatFits(this View element, _Size availableSize)
 		{
-			if (element is NSControl nsControl)
+			switch (element)
 			{
-				return nsControl.SizeThatFits(new CoreGraphics.CGSize(availableSize.Width, availableSize.Height));
-			}
-			else if (element is FrameworkElement fe)
-			{
-				fe.Measure(new Size(availableSize.Width, availableSize.Height));
-				var desiredSize = fe.DesiredSize;
-				return new CGSize(desiredSize.Width, desiredSize.Height);
-			}
-			else if (element is IHasSizeThatFits scp)
-			{
-				return scp.SizeThatFits(availableSize);
-			}
-			else
-			{
-				throw new NotSupportedException($"Unsupported measure for {element}");
+				case NSControl nsControl:
+					return nsControl.SizeThatFits(availableSize);
+
+				case FrameworkElement fe:
+					{
+						fe.XamlMeasure(availableSize);
+						var desiredSize = fe.DesiredSize;
+						return new CGSize(desiredSize.Width, desiredSize.Height);
+					}
+
+				case IHasSizeThatFits scp:
+					return scp.SizeThatFits(availableSize);
+
+				case View nsview:
+					return nsview.FittingSize;
+
+				default:
+					throw new NotSupportedException($"Unsupported measure for {element}");
 			}
 		}
 

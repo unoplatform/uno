@@ -6,8 +6,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using Android;
+using Android.App;
 using Android.Content.PM;
-using Android.Support.V4.App;
 using Uno;
 using Uno.Extensions;
 using Uno.UI;
@@ -78,17 +78,31 @@ namespace Windows.Extensions
 			=> _tryGetPermissionsAsync(CancellationToken.None, requiredPermissions, optionalPermissions, ignoreErrors);
 
 
-			/// <summary>
-			/// Validate if a given permission was granted to the app and if not, request it to the user.
-			/// <remarks>
-			/// This operation is not cancellable.
-			/// This should not be invoked directly from the application code.
-			/// You should use the extension methods in <see cref="PermissionsServiceExtensions"/>.
-			/// </remarks>
-			/// </summary>
-			/// <param name="ct">Cancellation Token</param>
-			/// <param name="permissionIdentifier">A permission identifier defined in Manifest.Permission.</param>
-			/// <returns>A <see cref="Task"/> representing the asynchronous operation</returns>
+		/// <summary>
+		/// Checks if the given Android permission is declared in manifest file.
+		/// </summary>
+		/// <param name="permission">Permission.</param>
+		/// <returns></returns>
+		public static bool IsDeclaredInManifest(string permission)
+		{
+			var context = Application.Context;
+			var packageInfo = context.PackageManager.GetPackageInfo(context.PackageName, PackageInfoFlags.Permissions);
+			var requestedPermissions = packageInfo?.RequestedPermissions;
+
+			return requestedPermissions?.Any(r => r.Equals(permission, StringComparison.OrdinalIgnoreCase)) ?? false;
+		}
+
+		/// <summary>
+		/// Validate if a given permission was granted to the app and if not, request it to the user.
+		/// <remarks>
+		/// This operation is not cancellable.
+		/// This should not be invoked directly from the application code.
+		/// You should use the extension methods in <see cref="PermissionsServiceExtensions"/>.
+		/// </remarks>
+		/// </summary>
+		/// <param name="ct">Cancellation Token</param>
+		/// <param name="permissionIdentifier">A permission identifier defined in Manifest.Permission.</param>
+		/// <returns>A <see cref="Task"/> representing the asynchronous operation</returns>
 		public static Task<bool> TryGetPermission(CancellationToken ct, string permissionIdentifier)
 			=> _tryGetPermission(ct, permissionIdentifier);
 

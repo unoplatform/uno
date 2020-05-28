@@ -9,6 +9,34 @@ namespace Windows.Devices.PointOfService
 	{
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  uint LineSpacing
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint ClaimedJournalPrinter.LineSpacing is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedJournalPrinter", "uint ClaimedJournalPrinter.LineSpacing");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  uint LineHeight
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member uint ClaimedJournalPrinter.LineHeight is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedJournalPrinter", "uint ClaimedJournalPrinter.LineHeight");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  bool IsLetterQuality
 		{
 			get
@@ -46,34 +74,6 @@ namespace Windows.Devices.PointOfService
 			set
 			{
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedJournalPrinter", "uint ClaimedJournalPrinter.CharactersPerLine");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  uint LineSpacing
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint ClaimedJournalPrinter.LineSpacing is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedJournalPrinter", "uint ClaimedJournalPrinter.LineSpacing");
-			}
-		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
-		[global::Uno.NotImplemented]
-		public  uint LineHeight
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint ClaimedJournalPrinter.LineHeight is not implemented in Uno.");
-			}
-			set
-			{
-				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.ClaimedJournalPrinter", "uint ClaimedJournalPrinter.LineHeight");
 			}
 		}
 		#endif

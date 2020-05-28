@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -7,13 +8,13 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using NUnit.Framework;
 using SamplesApp.UITests.TestFramework;
+using Uno.UITest;
 using Uno.UITest.Helpers;
 using Uno.UITest.Helpers.Queries;
 using Uno.UITests.Helpers;
 
 namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 {
-	[Ignore("DoubleTapCoordinates is not implemented yet https://github.com/unoplatform/Uno.UITest/issues/29")] 
 	public class DoubleTapped_Tests : SampleControlUITestBase
 	{
 		private const string _xamlTestPage = "UITests.Shared.Windows_UI_Input.GestureRecognizerTests.DoubleTappedTests";
@@ -37,7 +38,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			((int)result.Y).Should().Be(tapY);
 		}
 
-
 		[Test]
 		[AutoRetry]
 		[ActivePlatforms(Platform.Browser, Platform.iOS)] // Disabled on Android: The test engine is not able to find "Transformed_Target"
@@ -48,11 +48,26 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 			const string parentName = "Transformed_Parent";
 			const string targetName = "Transformed_Target";
 
-			var parent = _app.WaitForElement(parentName).Single().Rect;
-			var target = _app.WaitForElement(targetName).Single().Rect;
+			IAppRect parent, target;
+			if (AppInitializer.TestEnvironment.CurrentPlatform == Platform.Browser)
+			{
+				// Workaround until https://github.com/unoplatform/Uno.UITest/pull/35 is merged
+
+				parent = _app.Query(q => q.Marked(parentName)).Single().Rect;
+				target = _app.Query(q => q.Marked(targetName)).Single().Rect;
+			}
+			else
+			{
+				parent = _app.Query(q => q.All().Marked(parentName)).Single().Rect;
+				target = _app.Query(q => q.All().Marked(targetName)).Single().Rect;
+			}
+
+			var dpi = target.Width / 50;
 
 			// Double tap the target
-			_app.DoubleTapCoordinates(parent.Right - target.Width, parent.Bottom - 3);
+			// Note: On WASM the parent is not clipped properly, so we must use absolute coordinates from top/left
+			//		 https://github.com/unoplatform/uno/issues/2514
+			_app.DoubleTapCoordinates(parent.X + 100 * dpi, parent.Y + (100 + 25) * dpi);
 
 			var result = GestureResult.Get(_app.Marked("LastDoubleTapped"));
 			result.Element.Should().Be(targetName);
@@ -60,6 +75,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Input
 
 		[Test]
 		[AutoRetry]
+		[ActivePlatforms(Platform.Android, Platform.iOS)] // We cannot scroll to reach the target on WASM yet
 		public void When_InScroll()
 		{
 			Run(_xamlTestPage);

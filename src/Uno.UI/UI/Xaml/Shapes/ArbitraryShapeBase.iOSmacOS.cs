@@ -143,55 +143,54 @@ namespace Windows.UI.Xaml.Shapes
 				throw new InvalidOperationException($"transform {transform} contains NaN values, transformation will fail.");
 			}
 
-			var colorFill = Fill as SolidColorBrush ?? SolidColorBrushHelper.Transparent;
-			var imageFill = Fill as ImageBrush;
-			var gradientFill = Fill as LinearGradientBrush;
-			var stroke = this.Stroke as SolidColorBrush ?? SolidColorBrushHelper.Transparent;
+			var fill = Fill;
 
 			var transformedPath = new CGPath(path, transform);
 			var layer = new CAShapeLayer()
 			{
 				Path = transformedPath,
-				StrokeColor = stroke.ColorWithOpacity,
+				StrokeColor = Brush.GetColorWithOpacity(Stroke, Colors.Transparent),
+				FillColor = Brush.GetColorWithOpacity(fill, Colors.Transparent),
 				LineWidth = (nfloat)ActualStrokeThickness,
 			};
 
-			if (colorFill != null)
+			switch (fill)
 			{
-				layer.FillColor = colorFill.ColorWithOpacity;
-			}
-
-			if (imageFill != null)
-			{
-				var fillMask = new CAShapeLayer()
+				case ImageBrush imageFill:
 				{
-					Path = path,
-					Frame = Bounds,
-					// We only use the fill color to create the mask area
-					FillColor = _Color.White.CGColor,
-				};
+					var fillMask = new CAShapeLayer()
+					{
+						Path = path,
+						Frame = Bounds,
+						// We only use the fill color to create the mask area
+						FillColor = _Color.White.CGColor,
+					};
 
-				CreateImageBrushLayers(
-					layer,
-					imageFill,
-					fillMask
-				);
-			}
-			else if (gradientFill != null)
-			{
-				var fillMask = new CAShapeLayer()
+					CreateImageBrushLayers(
+						layer,
+						imageFill,
+						fillMask
+					);
+					break;
+				}
+
+				case GradientBrush gradientFill:
 				{
-					Path = transformedPath,
-					Frame = Bounds,
-					// We only use the fill color to create the mask area
-					FillColor = _Color.White.CGColor,
-				};
+					var fillMask = new CAShapeLayer()
+					{
+						Path = transformedPath,
+						Frame = Bounds,
+						// We only use the fill color to create the mask area
+						FillColor = _Color.White.CGColor,
+					};
 
-				var gradientLayer = gradientFill.GetLayer(Frame.Size);
-				gradientLayer.Frame = Bounds;
-				gradientLayer.Mask = fillMask;
-				gradientLayer.MasksToBounds = true;
-				layer.AddSublayer(gradientLayer);
+					var gradientLayer = gradientFill.GetLayer(Frame.Size);
+					gradientLayer.Frame = Bounds;
+					gradientLayer.Mask = fillMask;
+					gradientLayer.MasksToBounds = true;
+					layer.AddSublayer(gradientLayer);
+					break;
+				}
 			}
 
 			if (StrokeDashArray != null)

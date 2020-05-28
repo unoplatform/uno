@@ -152,6 +152,9 @@ namespace Windows.UI.ViewManagement
 			}
 		}
 
+		[NotImplemented]
+		public bool AutoHideScrollBars { get; set; } = true;
+
 		public UISettings()
 		{
 

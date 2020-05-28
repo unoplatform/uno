@@ -4,7 +4,7 @@ using System.Diagnostics;
 using Windows.Foundation;
 using System.Linq;
 using System.Text;
-using Android.Support.V7.Widget;
+using AndroidX.RecyclerView.Widget;
 using Android.Views;
 using Uno.Extensions;
 using Uno.UI;
@@ -41,7 +41,7 @@ namespace Windows.UI.Xaml.Controls
 		private bool _isInitialHeaderExtentOffsetApplied;
 		private bool _isInitialPaddingExtentOffsetApplied;
 		//The previous item to the old first visible item, used when a lightweight layout rebuild is called
-		private IndexPath? _dynamicSeedIndex;
+		private Uno.UI.IndexPath? _dynamicSeedIndex;
 		//Start position of the old first group, used when a lightweight layout rebuild is called
 		private int? _dynamicSeedStart;
 		// Previous extent of header, used when a lightweight layout rebuild is called
@@ -134,7 +134,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// "Lay out all relevant child views from the given adapter." https://developer.android.com/reference/android/support/v7/widget/RecyclerView.LayoutManager.html#onLayoutChildren(android.support.v7.widget.RecyclerView.Recycler, android.support.v7.widget.RecyclerView.State)
+		/// "Lay out all relevant child views from the given adapter." https://developer.android.com/reference/AndroidX.RecyclerView.Widget/RecyclerView.LayoutManager.html#onLayoutChildren(AndroidX.RecyclerView.Widget.RecyclerView.Recycler, AndroidX.RecyclerView.Widget.RecyclerView.State)
 		/// </summary>
 		public override void OnLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state)
 		{
@@ -408,7 +408,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// "Offset all child views attached to the parent RecyclerView by dx pixels along the horizontal axis." https://developer.android.com/reference/android/support/v7/widget/RecyclerView.LayoutManager.html#offsetChildrenHorizontal(int)
+		/// "Offset all child views attached to the parent RecyclerView by dx pixels along the horizontal axis." https://developer.android.com/reference/AndroidX.RecyclerView.Widget/RecyclerView.LayoutManager.html#offsetChildrenHorizontal(int)
 		/// </summary>
 		public override void OffsetChildrenHorizontal(int dx)
 		{
@@ -418,7 +418,7 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
-		/// "Offset all child views attached to the parent RecyclerView by dy pixels along the vertical axis." https://developer.android.com/reference/android/support/v7/widget/RecyclerView.LayoutManager.html#offsetChildrenVertical(int)
+		/// "Offset all child views attached to the parent RecyclerView by dy pixels along the vertical axis." https://developer.android.com/reference/AndroidX.RecyclerView.Widget/RecyclerView.LayoutManager.html#offsetChildrenVertical(int)
 		/// </summary>
 		public override void OffsetChildrenVertical(int dy)
 		{
@@ -1184,7 +1184,7 @@ namespace Windows.UI.Xaml.Controls
 			int availableBreadth,
 			RecyclerView.Recycler recycler,
 			RecyclerView.State state,
-			IndexPath nextVisibleItem
+			Uno.UI.IndexPath nextVisibleItem
 		)
 		{
 			var leadingGroup = GetLeadingGroup(fillDirection);
@@ -1223,7 +1223,7 @@ namespace Windows.UI.Xaml.Controls
 			int availableBreadth,
 			RecyclerView.Recycler recycler,
 			RecyclerView.State state,
-			IndexPath nextVisibleItem
+			Uno.UI.IndexPath nextVisibleItem
 		)
 		{
 			var group = GetLeadingGroup(fillDirection);
@@ -1257,7 +1257,7 @@ namespace Windows.UI.Xaml.Controls
 			int availableBreadth,
 			RecyclerView.Recycler recycler,
 			RecyclerView.State state,
-			IndexPath nextVisibleItem,
+			Uno.UI.IndexPath nextVisibleItem,
 			bool isNewGroup
 		);
 
@@ -1445,7 +1445,7 @@ namespace Windows.UI.Xaml.Controls
 			var headerViewCount = HeaderViewCount;
 
 			if (HeaderViewCount > 0 &&
-				(!adjustedFirstItem.HasValue || adjustedFirstItem == IndexPath.Zero)
+				(!adjustedFirstItem.HasValue || adjustedFirstItem == Uno.UI.IndexPath.Zero)
 			)
 			{
 				// If the header is visible, ensure to reapply its size in case it changes. 
@@ -1493,7 +1493,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Get 'seed' index for recreating the visual state of the list after <see cref="ScrapLayout(RecyclerView.Recycler, int)"/>;
 		/// </summary>
-		protected virtual IndexPath? GetDynamicSeedIndex(IndexPath? firstVisibleItem, int availableBreadth)
+		protected virtual Uno.UI.IndexPath? GetDynamicSeedIndex(Uno.UI.IndexPath? firstVisibleItem, int availableBreadth)
 		{
 			if (ContentOffset == 0)
 			{
@@ -1516,7 +1516,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Update the first visible item in case the group it occupies has changed due to INotifyCollectionChanged operations.
 		/// </summary>
-		private IndexPath? GetAdjustedFirstItem(IndexPath? firstItem)
+		private Uno.UI.IndexPath? GetAdjustedFirstItem(Uno.UI.IndexPath? firstItem)
 		{
 			if (_pendingGroupOperations.Count == 0)
 			{
@@ -1562,7 +1562,7 @@ namespace Windows.UI.Xaml.Controls
 				return null;
 			}
 
-			return IndexPath.FromRowSection(row, section);
+			return Uno.UI.IndexPath.FromRowSection(row, section);
 		}
 
 		/// <summary>
@@ -1996,7 +1996,7 @@ namespace Windows.UI.Xaml.Controls
 			return containingGroup?.GetLeadingLine(fillDirection);
 		}
 
-		private IndexPath? GetNextUnmaterializedItem(GeneratorDirection fillDirection)
+		private Uno.UI.IndexPath? GetNextUnmaterializedItem(GeneratorDirection fillDirection)
 		{
 			return GetNextUnmaterializedItem(fillDirection, GetLeadingMaterializedItem(fillDirection));
 		}
@@ -2034,7 +2034,7 @@ namespace Windows.UI.Xaml.Controls
 			return ChildCount - 1;
 		}
 
-		private IndexPath? GetLeadingMaterializedItem(GeneratorDirection fillDirection)
+		private Uno.UI.IndexPath? GetLeadingMaterializedItem(GeneratorDirection fillDirection)
 		{
 			var group = GetLeadingNonEmptyGroup(fillDirection);
 			return group?.GetLeadingMaterializedItem(fillDirection);
@@ -2113,7 +2113,7 @@ namespace Windows.UI.Xaml.Controls
 		/// <summary>
 		/// Flatten item index to pass it to the native recycler.
 		/// </summary>
-		protected int GetFlatItemIndex(IndexPath indexPath)
+		protected int GetFlatItemIndex(Uno.UI.IndexPath indexPath)
 		{
 			return XamlParent.GetDisplayIndexFromIndexPath(indexPath);
 		}
@@ -2143,9 +2143,9 @@ namespace Windows.UI.Xaml.Controls
 			return GetFlatItemIndex(GetFirstVisibleIndexPath());
 		}
 
-		private IndexPath GetFirstVisibleIndexPath()
+		private Uno.UI.IndexPath GetFirstVisibleIndexPath()
 		{
-			return GetTrailingNonEmptyGroup(GeneratorDirection.Forward)?.GetTrailingMaterializedItem(GeneratorDirection.Forward) ?? IndexPath.FromRowSection(-1, 0);
+			return GetTrailingNonEmptyGroup(GeneratorDirection.Forward)?.GetTrailingMaterializedItem(GeneratorDirection.Forward) ?? Uno.UI.IndexPath.FromRowSection(-1, 0);
 		}
 
 		internal int GetLastVisibleDisplayPosition()
@@ -2153,9 +2153,9 @@ namespace Windows.UI.Xaml.Controls
 			return GetFlatItemIndex(GetLastVisibleIndexPath());
 		}
 
-		private IndexPath GetLastVisibleIndexPath()
+		private Uno.UI.IndexPath GetLastVisibleIndexPath()
 		{
-			return GetLeadingNonEmptyGroup(GeneratorDirection.Forward)?.GetLeadingMaterializedItem(GeneratorDirection.Forward) ?? IndexPath.FromRowSection(-1, 0);
+			return GetLeadingNonEmptyGroup(GeneratorDirection.Forward)?.GetLeadingMaterializedItem(GeneratorDirection.Forward) ?? Uno.UI.IndexPath.FromRowSection(-1, 0);
 		}
 
 		/// <summary>

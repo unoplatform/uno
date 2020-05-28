@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Web;
+using Windows.Foundation;
 using Windows.UI.Text;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
@@ -137,14 +138,22 @@ namespace Uno.UI.UI.Xaml.Documents
 			switch (localValue)
 			{
 				case SolidColorBrush scb:
-					element.SetStyle("color", scb.ColorWithOpacity.ToCssString());
+					element.SetStyle("color", scb.ColorWithOpacity.ToHexString());
+					break;
+				case GradientBrush gradient:
+					element.SetStyle(
+						("background", gradient.ToCssString(element.RenderSize)),
+						("color", "transparent"),
+						("background-clip", "text")
+					);
 					break;
 
 				case UnsetValue uv:
 
+
 				// TODO: support other foreground types
 				default:
-					element.ResetStyle("color");
+					element.ResetStyle("color", "background", "background-clip");
 					break;
 			}
 		}

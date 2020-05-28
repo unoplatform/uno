@@ -81,6 +81,16 @@ namespace Windows.Devices.Sensors
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.Devices.Sensors.InclinometerDataThreshold ReportThreshold
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member InclinometerDataThreshold Inclinometer.ReportThreshold is not implemented in Uno.");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public  string DeviceId
 		{
 			get
@@ -108,6 +118,7 @@ namespace Windows.Devices.Sensors
 		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReportLatency.set
 		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReportLatency.get
 		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.MaxBatchSize.get
+		// Forced skipping of method Windows.Devices.Sensors.Inclinometer.ReportThreshold.get
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelector( global::Windows.Devices.Sensors.SensorReadingType readingType)

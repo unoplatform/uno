@@ -27,6 +27,7 @@ using Math = System.Math;
 using Size = System.Drawing.Size;
 using System.Reflection;
 using Windows.UI.Core;
+using Uno.Helpers;
 
 namespace Uno.UI.Controls
 {
@@ -231,7 +232,7 @@ namespace Uno.UI.Controls
 				return;
 			}
 			var newUri = new Uri(UriSource);            
-				
+
 			if (newUri.Scheme == "resource"
                 || newUri.IsFile
                 || newUri.IsLocalResource())
@@ -251,7 +252,7 @@ namespace Uno.UI.Controls
 					this.Log().WarnFormat("Failed to load asset resource [{0}]", UriSource);
 				}
 			}
-			else if (UriSource.StartsWith("file://", StringComparison.OrdinalIgnoreCase))
+			else if (UriSource.StartsWith("file://", StringComparison.OrdinalIgnoreCase) || newUri.IsAppData())
 			{
 				if (_targetHeight <= 0 || _targetWidth <= 0)
 				{
@@ -259,7 +260,9 @@ namespace Uno.UI.Controls
 					return;
 				}
 
-				var filePath = UriSource.TrimStart("file://", StringComparison.OrdinalIgnoreCase);
+				var filePath = newUri.IsAppData() ?
+					AppDataUriEvaluator.ToPath(newUri) :
+					UriSource.TrimStart("file://", StringComparison.OrdinalIgnoreCase);
 
 				var options = new BitmapFactory.Options();
 				options.InJustDecodeBounds = true;
@@ -267,7 +270,9 @@ namespace Uno.UI.Controls
 				var sampleSize = CalculateInSampleSize(options, _targetWidth, _targetHeight);
 
 				options.InJustDecodeBounds = false;
+#pragma warning disable CS0618 // Type or member is obsolete
 				options.InPurgeable = true;
+#pragma warning restore CS0618 // Type or member is obsolete
 				options.InSampleSize = sampleSize;
 
 				var bitmap = BitmapFactory.DecodeFile(filePath, options);

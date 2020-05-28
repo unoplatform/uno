@@ -2,12 +2,12 @@
 class WindowManagerResetStyleParams
 {
 	/* Pack=4 */
-	HtmlId : number;
-	Styles_Length : number;
-	Styles : Array<string>;
+	public HtmlId : number;
+	public Styles_Length : number;
+	public Styles : Array<string>;
 	public static unmarshal(pData:number) : WindowManagerResetStyleParams
 	{
-		let ret = new WindowManagerResetStyleParams();
+		const ret = new WindowManagerResetStyleParams();
 		
 		{
 			ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
@@ -18,13 +18,13 @@ class WindowManagerResetStyleParams
 		}
 		
 		{
-			var pArray = Module.getValue(pData + 8, "*");
+			const pArray = Module.getValue(pData + 8, "*");
 			if(pArray !== 0)
 			{
 				ret.Styles = new Array<string>();
 				for(var i=0; i<ret.Styles_Length; i++)
 				{
-					var value = Module.getValue(pArray + i * 4, "*");
+					const value = Module.getValue(pArray + i * 4, "*");
 					if(value !== 0)
 					{
 						ret.Styles.push(String(MonoRuntime.conv_string(value)));

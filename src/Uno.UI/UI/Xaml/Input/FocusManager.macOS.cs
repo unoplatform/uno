@@ -12,7 +12,7 @@ namespace Windows.UI.Xaml.Input
 	{
 		private static bool InnerTryMoveFocus(FocusNavigationDirection focusNavigationDirection)
 		{
-			var focusedView = GetFocusedElement(true) as NSView;
+			var focusedView = GetFocusedElement() as NSView;
 
 			if (focusedView == null)
 			{
@@ -107,7 +107,7 @@ namespace Windows.UI.Xaml.Input
 
 		public static NSView InnerFindNextFocusableElement(FocusNavigationDirection focusNavigationDirection)
 		{
-			var focusedView = GetFocusedElement(true) as NSView;
+			var focusedView = GetFocusedElement() as NSView;
 			var absoluteFocusedFrame = focusedView.ConvertRectToView(focusedView.Bounds, NSApplication.SharedApplication.KeyWindow.ContentView);
 			
 			var focusableViews = SearchOtherFocusableViews(focusedView);
@@ -212,6 +212,38 @@ namespace Windows.UI.Xaml.Input
 					return null;
 			}
 		}
+
+		private static DependencyObject InnerFindFirstFocusableElement(DependencyObject searchScope)
+		{
+			if (searchScope == null)
+			{
+				searchScope = Window.Current.Content;
+			}
+
+			if (!(searchScope is NSView searchView))
+			{
+				return null;
+			}
+
+			return searchView.FindSubviews(selector: IsFocusableView, maxDepth: 100).FirstOrDefault() as DependencyObject;
+		}
+
+		private static DependencyObject InnerFindLastFocusableElement(DependencyObject searchScope)
+		{
+			if (searchScope == null)
+			{
+				searchScope = Window.Current.Content;
+			}
+
+			if (!(searchScope is NSView searchView))
+			{
+				return null;
+			}
+
+			return searchView.FindSubviewsReverse(selector: IsFocusableView, maxDepth: 100).FirstOrDefault() as DependencyObject;
+		}
+
+		private static void FocusNative(Control control) => control.BecomeFirstResponder();
 
 		//We need to validate this difference because focused elements don't have the same absolute position once focused
 		private static bool IsInBetweenOrEqual(nfloat number, nfloat lowerlimit, nfloat highlimit)

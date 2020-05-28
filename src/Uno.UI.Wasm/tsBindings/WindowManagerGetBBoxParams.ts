@@ -2,10 +2,10 @@
 class WindowManagerGetBBoxParams
 {
 	/* Pack=4 */
-	HtmlId : number;
+	public HtmlId : number;
 	public static unmarshal(pData:number) : WindowManagerGetBBoxParams
 	{
-		let ret = new WindowManagerGetBBoxParams();
+		const ret = new WindowManagerGetBBoxParams();
 		
 		{
 			ret.HtmlId = Number(Module.getValue(pData + 0, "*"));

@@ -376,7 +376,9 @@ namespace Windows.UI.Xaml
 				case RoutedEventFlag.PointerCanceled:
 					OnManagedPointerCancel(ptArgs);
 					break;
-				// Nothing to do for PointerCaptureLost
+				// No local state (over/pressed/manipulation/gestures) to update for
+				//	- PointerCaptureLost:
+				//	- PointerWheelChanged:
 			}
 		}
 
@@ -639,6 +641,11 @@ namespace Windows.UI.Xaml
 			return handledInManaged;
 		}
 
+		private bool OnNativePointerWheel(PointerRoutedEventArgs args)
+		{
+			return RaisePointerEvent(PointerWheelChangedEvent, args);
+		}
+
 		private static (UIElement sender, RoutedEvent @event, PointerRoutedEventArgs args) _pendingRaisedEvent;
 		private bool RaisePointerEvent(RoutedEvent evt, PointerRoutedEventArgs args)
 		{
@@ -746,6 +753,8 @@ namespace Windows.UI.Xaml
 		/// Same thing if you release left first (press left => press right => release left => release right), and for the pen's barrel button.
 		/// </remarks>
 		internal bool IsPressed(Pointer pointer) => _pressedPointers.Contains(pointer.PointerId);
+
+		private bool IsPressed(uint pointerId) => _pressedPointers.Contains(pointerId);
 
 		private bool SetPressed(PointerRoutedEventArgs args, bool isPressed, bool muteEvent = false)
 		{

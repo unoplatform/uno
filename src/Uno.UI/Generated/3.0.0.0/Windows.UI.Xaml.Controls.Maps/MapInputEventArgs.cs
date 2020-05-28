@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls.Maps
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class MapInputEventArgs : global::Windows.UI.Xaml.DependencyObject
@@ -27,7 +27,13 @@ namespace Windows.UI.Xaml.Controls.Maps
 			}
 		}
 		#endif
-		// Skipping already declared method Windows.UI.Xaml.Controls.Maps.MapInputEventArgs.MapInputEventArgs()
+		#if false || __IOS__ || false || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public MapInputEventArgs() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.Maps.MapInputEventArgs", "MapInputEventArgs.MapInputEventArgs()");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapInputEventArgs.MapInputEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapInputEventArgs.Position.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.Maps.MapInputEventArgs.Location.get

@@ -4,6 +4,7 @@ using Windows.Foundation;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml.Controls.Primitives;
 using Uno.UI;
+using Windows.UI.Core;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -64,12 +65,14 @@ namespace Windows.UI.Xaml.Controls
 			Unloaded += (s, e) => Windows.UI.Xaml.Window.Current.SizeChanged -= Current_SizeChanged;
 		}
 
-		private void Current_SizeChanged(object sender, Core.WindowSizeChangedEventArgs e)
+		private void Current_SizeChanged(object sender, WindowSizeChangedEventArgs e)
 			=> InvalidateMeasure();
 
 		protected abstract FlyoutPlacementMode PopupPlacement { get; }
 
 		protected abstract FrameworkElement AnchorControl { get; }
+
+		protected abstract Point? PositionInAnchorControl { get; }
 
 		protected override Size ArrangeOverride(Size finalSize)
 		{
@@ -103,6 +106,15 @@ namespace Windows.UI.Xaml.Controls
 			// Make sure the desiredSize fits in the panel
 			desiredSize.Width = Math.Min(desiredSize.Width, visibleBounds.Width);
 			desiredSize.Height = Math.Min(desiredSize.Height, visibleBounds.Height);
+
+			if(PositionInAnchorControl is Point point)
+			{
+				return new Rect(
+					x: anchorRect.X + point.X,
+					y: anchorRect.Y + point.Y,
+					width: desiredSize.Width,
+					height: desiredSize.Height);
+			}
 
 			// Try all placements...
 			var placementsToTry = PlacementsToTry.TryGetValue(PopupPlacement, out var p)

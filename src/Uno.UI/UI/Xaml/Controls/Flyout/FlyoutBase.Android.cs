@@ -1,18 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Android.Views;
-using Android.Widget;
-using Android.App;
-using Android.Graphics;
-using Android.Graphics.Drawables;
-using Android.Runtime;
-using Uno.Extensions;
-using Uno.Logging;
-using Uno.UI.Extensions;
-using Uno.Disposables;
-using Uno.UI.DataBinding;
-using Uno.UI;
+﻿using Windows.Foundation;
 
 namespace Windows.UI.Xaml.Controls.Primitives
 {
@@ -27,9 +13,16 @@ namespace Windows.UI.Xaml.Controls.Primitives
 			};
 		}
 
-		partial void SetPopupPositionPartial(UIElement placementTarget)
+
+		partial void SetPopupPositionPartial(UIElement placementTarget, Point? positionInTarget)
 		{
 			_popup.Anchor = placementTarget;
+
+			if (positionInTarget is Point position)
+			{
+				_popup.HorizontalOffset = position.X;
+				_popup.VerticalOffset = position.Y;
+			}
 		}
 	}
 }

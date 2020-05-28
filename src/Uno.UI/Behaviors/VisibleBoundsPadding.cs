@@ -78,7 +78,12 @@ namespace Uno.UI.Toolkit
 			{
 				var visibleBounds = ApplicationView.GetForCurrentView().VisibleBounds;
 				var bounds = Window.Current.Bounds;
-				var result = new Thickness(visibleBounds.Left - bounds.Left, visibleBounds.Top - bounds.Top, bounds.Right - visibleBounds.Right, bounds.Bottom - visibleBounds.Bottom);
+				var result = new Thickness {
+					Left = visibleBounds.Left - bounds.Left,
+					Top = visibleBounds.Top - bounds.Top,
+					Right = bounds.Right - visibleBounds.Right,
+					Bottom = bounds.Bottom - visibleBounds.Bottom
+				};
 
 				if (_log.Value.IsEnabled(LogLevel.Debug))
 				{
@@ -182,7 +187,10 @@ namespace Uno.UI.Toolkit
 
 				Thickness visibilityPadding;
 				
-				if (WindowPadding != default(Thickness))
+				if (WindowPadding.Left != 0
+					|| WindowPadding.Right != 0
+					|| WindowPadding.Top != 0
+					|| WindowPadding.Bottom != 0)
 				{
 					var scrollAncestor = GetScrollAncestor();
 
@@ -222,7 +230,12 @@ namespace Uno.UI.Toolkit
 				var right = Math.Min(controlBounds.Right - visibleBounds.Right, windowPadding.Right);
 				var bottom = Math.Min(controlBounds.Bottom - visibleBounds.Bottom, windowPadding.Bottom);
 
-				return new Thickness(left, top, right, bottom);
+				return new Thickness {
+					Left = left,
+					Top = top,
+					Right = right,
+					Bottom = bottom
+				};
 			}
 
 			/// <summary>
@@ -280,7 +293,12 @@ namespace Uno.UI.Toolkit
 					? Math.Max(_originalPadding.Bottom, visibilityPadding.Bottom)
 					: _originalPadding.Bottom;
 
-				return new Thickness(left, top, right, bottom);
+				return new Thickness {
+					Left = left,
+					Top = top,
+					Right = right,
+					Bottom = bottom
+				};
 			}
 
 			private void ApplyPadding(Thickness padding)

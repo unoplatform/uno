@@ -43,6 +43,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 		private readonly PointerEventHandler _logPointerExited;
 		private readonly PointerEventHandler _logPointerCanceled;
 		private readonly PointerEventHandler _logPointerCaptureLost;
+		private readonly PointerEventHandler _logPointerWheel;
 		private readonly ManipulationStartingEventHandler _logManipulationStarting;
 		private readonly ManipulationStartedEventHandler _logManipulationStarted;
 		private readonly ManipulationDeltaEventHandler _logManipulationDelta;
@@ -72,6 +73,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 			_logPointerExited = new PointerEventHandler(CreateHandler(PointerExitedEvent, "Exited", _ptExitedHandle));
 			_logPointerCanceled = new PointerEventHandler(CreateHandler(PointerCanceledEvent, "Canceled", _ptCanceledHandle));
 			_logPointerCaptureLost = new PointerEventHandler(CreateHandler(PointerCaptureLostEvent, "CaptureLost", _ptCaptureLostHandle));
+			_logPointerWheel = new PointerEventHandler(CreateHandler(PointerWheelChangedEvent, "Wheel", _ptWheelHandle));
 			_logManipulationStarting = new ManipulationStartingEventHandler(CreateHandler(ManipulationStartingEvent, "Manip starting", _manipStartingHandle));
 			_logManipulationStarted = new ManipulationStartedEventHandler(CreateHandler(ManipulationStartedEvent, "Manip started", _manipStartedHandle));
 			_logManipulationDelta = new ManipulationDeltaEventHandler(CreateHandler(ManipulationDeltaEvent, "Manip delta", _manipDeltaHandle));
@@ -158,6 +160,7 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 			target.RemoveHandler(PointerExitedEvent, _logPointerExited);
 			target.RemoveHandler(PointerCanceledEvent, _logPointerCanceled);
 			target.RemoveHandler(PointerCaptureLostEvent, _logPointerCaptureLost);
+			target.RemoveHandler(PointerWheelChangedEvent, _logPointerWheel);
 			target.RemoveHandler(ManipulationStartingEvent, _logManipulationStarting);
 			target.RemoveHandler(ManipulationStartedEvent, _logManipulationStarted);
 			target.RemoveHandler(ManipulationDeltaEvent, _logManipulationDelta);
@@ -180,6 +183,8 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 				target.AddHandler(PointerCanceledEvent, _logPointerCanceled, handledToo);
 			if (allEvents || _ptCaptureLost.IsOn)
 				target.AddHandler(PointerCaptureLostEvent, _logPointerCaptureLost, handledToo);
+			if (allEvents || _ptWheel.IsOn)
+				target.AddHandler(PointerWheelChangedEvent, _logPointerWheel, handledToo);
 
 			if (allEvents || _manipStarting.IsOn)
 				target.AddHandler(ManipulationStartingEvent, _logManipulationStarting, handledToo);
@@ -365,9 +370,15 @@ namespace UITests.Shared.Windows_UI_Input.GestureRecognizer
 				if (props.IsRightButtonPressed) builder.Append("right ");
 
 				// Mouse
-				if (props.IsHorizontalMouseWheel) builder.Append("scroll_Y ");
 				if (props.IsXButton1Pressed) builder.Append("alt_butt_1 ");
 				if (props.IsXButton2Pressed) builder.Append("alt_butt_2");
+				if (props.MouseWheelDelta != 0)
+				{
+					builder.Append("scroll");
+					builder.Append(props.IsHorizontalMouseWheel ? "X (" : "Y (");
+					builder.Append(props.MouseWheelDelta);
+					builder.Append("px) ");
+				}
 
 				// Pen
 				if (props.IsBarrelButtonPressed) builder.Append("barrel ");

@@ -13,7 +13,6 @@ using Uno.Extensions;
 using Uno.UI.RemoteControl.Helpers;
 using Uno.UI.RemoteControl.HotReload;
 using Uno.UI.RemoteControl.HotReload.Messages;
-using Uno.Wasm.WebSockets;
 
 namespace Uno.UI.RemoteControl
 {
@@ -55,7 +54,7 @@ namespace Uno.UI.RemoteControl
 				async Task<WebSocket> Connect(string endpoint, int port, CancellationToken ct)
 				{
 #if __WASM__
-					var s = new WasmWebSocket();
+					var s = new Uno.Wasm.WebSockets.WasmWebSocket();
 #else
 					var s = new ClientWebSocket();
 #endif

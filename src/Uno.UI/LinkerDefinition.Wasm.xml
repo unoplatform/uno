@@ -10,9 +10,15 @@
     <type fullname="Uno.Media.GeometryConverter" />
     <type fullname="Windows.UI.Xaml.ThicknessConverter" />
     <type fullname="Windows.UI.Xaml.ObservableVectorWrapper" />
+	<type fullname="Windows.UI.Xaml.Input.FocusManager">
+	  <method name="ReceiveFocusNative" />
+	</type>
   </assembly>
   
   <assembly fullname="Uno">
+    <type fullname="Windows.ApplicationModel.DataTransfer.Clipboard">
+      <method name="DispatchContentChanged" />
+    </type>
     <type fullname="Windows.UI.Core.CoreDispatcher" />
     <type fullname="Windows.UI.Core.SystemNavigationManager" />
     <type fullname="Windows.Devices.Sensors.Accelerometer">
@@ -20,6 +26,9 @@
     </type>
     <type fullname="Windows.Devices.Sensors.Magnetometer">
       <method name="DispatchReading" />
+    </type>
+    <type fullname="Windows.Networking.Connectivity.NetworkInformation">
+      <method name="DispatchStatusChanged" />
     </type>
     <type fullname="Windows.Devices.Sensors.Gyrometer">
       <method name="DispatchReading" />

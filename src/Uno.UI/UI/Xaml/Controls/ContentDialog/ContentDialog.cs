@@ -9,6 +9,7 @@ using Uno.Extensions;
 using Windows.Foundation;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
+using Windows.System;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -46,7 +47,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			switch (e.Key)
 			{
-				case System.VirtualKey.Enter:
+				case VirtualKey.Enter:
 					switch (DefaultButton)
 					{
 						case ContentDialogButton.Close:
@@ -67,7 +68,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 					break;
 
-				case System.VirtualKey.Escape:
+				case VirtualKey.Escape:
 					ProcessCloseButton();
 					break;
 			}

@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Windows.UI.Xaml.Controls;
 using Android.Graphics;
+using Windows.UI.ViewManagement;
 
 namespace Windows.UI.Xaml.Input
 {
@@ -38,7 +39,7 @@ namespace Windows.UI.Xaml.Input
 				var inputManager = activity?.GetSystemService(Android.Content.Context.InputMethodService) as Android.Views.InputMethods.InputMethodManager;
 				inputManager?.HideSoftInputFromWindow(activity?.CurrentFocus?.WindowToken, Android.Views.InputMethods.HideSoftInputFlags.None);
 			}
-			
+
 			return nextFocused?.RequestFocus(FocusSearchDirection.Forward) ?? false;
 		}
 
@@ -210,6 +211,47 @@ namespace Windows.UI.Xaml.Input
 
 				default:
 					return null;
+			}
+		}
+
+		private static DependencyObject InnerFindFirstFocusableElement(DependencyObject searchScope)
+		{
+			if (searchScope == null)
+			{
+				searchScope = Window.Current.Content;
+			}
+
+			if (!(searchScope is ViewGroup searchViewGroup))
+			{
+				return null;
+			}
+
+			return searchViewGroup.EnumerateAllChildren(IsFocusableView, maxDepth: 300).FirstOrDefault() as DependencyObject;			
+		}
+
+		private static DependencyObject InnerFindLastFocusableElement(DependencyObject searchScope)
+		{
+			if (searchScope == null)
+			{
+				searchScope = Window.Current.Content;
+			}
+
+			if (!(searchScope is ViewGroup searchViewGroup))
+			{
+				return null;
+			}
+
+			return searchViewGroup.EnumerateAllChildrenReverse(IsFocusableView, maxDepth: 300).FirstOrDefault() as DependencyObject;
+		}
+
+		private static void FocusNative(Control control)
+		{
+			control.RequestFocus();
+
+			// Forcefully try to bring the control into view when keyboard is open to accommodate adjust nothing mode
+			if (InputPane.GetForCurrentView().Visible)
+			{
+				control.StartBringIntoView();
 			}
 		}
 	}

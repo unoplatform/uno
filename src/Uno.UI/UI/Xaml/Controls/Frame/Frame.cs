@@ -39,6 +39,17 @@ namespace Windows.UI.Xaml.Controls
 
 		internal PageStackEntry CurrentEntry { get; set; }
 
+		protected override void OnContentChanged(object oldValue, object newValue)
+		{
+			base.OnContentChanged(oldValue, newValue);
+
+			// Make sure we void CurrentEntry when someone sets Frame.Content = null;
+			if (newValue == null)
+			{
+				CurrentEntry = null;
+			}
+		}
+
 		#region BackStackDepth DependencyProperty
 
 		public int BackStackDepth
@@ -192,6 +203,19 @@ namespace Windows.UI.Xaml.Controls
 
 		#endregion
 
+		#region IsNavigationStackEnabled DependencyProperty
+
+		public bool IsNavigationStackEnabled
+		{
+			get { return (bool)GetValue(IsNavigationStackEnabledProperty); }
+			set { SetValue(IsNavigationStackEnabledProperty, value); }
+		}
+
+		public static DependencyProperty IsNavigationStackEnabledProperty { get; } =
+			DependencyProperty.Register(nameof(IsNavigationStackEnabled), typeof(bool), typeof(Frame), new PropertyMetadata(true));
+
+		#endregion
+
 		public event NavigatedEventHandler Navigated;
 
 		public event NavigatingCancelEventHandler Navigating;
@@ -256,18 +280,19 @@ namespace Windows.UI.Xaml.Controls
 
 				Navigating?.Invoke(this, navigatingFromArgs);
 
+				if (navigatingFromArgs.Cancel)
+				{
+					// Frame canceled
+					OnNavigationStopped(entry, mode);
+					return false;
+				}
+
 				CurrentEntry?.Instance.OnNavigatingFrom(navigatingFromArgs);
 
 				if (navigatingFromArgs.Cancel)
 				{
-					NavigationStopped?.Invoke(this, new NavigationEventArgs(
-						entry.Instance,
-						mode,
-						entry.NavigationTransitionInfo,
-						entry.Parameter,
-						entry.SourcePageType,
-						null
-					));
+					// Page canceled
+					OnNavigationStopped(entry, mode);
 					return false;
 				}
 
@@ -295,25 +320,28 @@ namespace Windows.UI.Xaml.Controls
 
 				Content = CurrentEntry.Instance;
 
-				switch (mode)
+				if (IsNavigationStackEnabled)
 				{
-					case NavigationMode.New:
-						ForwardStack.Clear();
-						if (previousEntry != null)
-						{
+					switch (mode)
+					{
+						case NavigationMode.New:
+							ForwardStack.Clear();
+							if (previousEntry != null)
+							{
+								BackStack.Add(previousEntry);
+							}
+							break;
+						case NavigationMode.Back:
+							ForwardStack.Add(previousEntry);
+							BackStack.Remove(CurrentEntry);
+							break;
+						case NavigationMode.Forward:
 							BackStack.Add(previousEntry);
-						}
-						break;
-					case NavigationMode.Back:
-						ForwardStack.Add(previousEntry);
-						BackStack.Remove(CurrentEntry);
-						break;
-					case NavigationMode.Forward:
-						BackStack.Add(previousEntry);
-						ForwardStack.Remove(CurrentEntry);
-						break;
-					case NavigationMode.Refresh:
-						break;
+							ForwardStack.Remove(CurrentEntry);
+							break;
+						case NavigationMode.Refresh:
+							break;
+					}
 				}
 
 				// Navigated
@@ -371,7 +399,6 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-
 		public void SetNavigationState(string navigationState) => _navigationState = navigationState;
 
 		private static Page CreatePageInstanceCached(Type sourcePageType) => _pool.DequeuePage(sourcePageType);
@@ -389,6 +416,18 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			return Activator.CreateInstance(sourcePageType) as Page;
+		}
+
+		private void OnNavigationStopped(PageStackEntry entry, NavigationMode mode)
+		{
+			NavigationStopped?.Invoke(this, new NavigationEventArgs(
+						entry.Instance,
+						mode,
+						entry.NavigationTransitionInfo,
+						entry.Parameter,
+						entry.SourcePageType,
+						null
+					));
 		}
 	}
 }

@@ -31,7 +31,7 @@ namespace Windows.UI.Core
 			set => _pointerPosition = value;
 		}
 
-#if !__WASM__
+#if !__WASM__ && !__MACOS__
 		[Uno.NotImplemented]
 		public CoreCursor PointerCursor { get; set; } = new CoreCursor(CoreCursorType.Arrow, 0);
 #endif

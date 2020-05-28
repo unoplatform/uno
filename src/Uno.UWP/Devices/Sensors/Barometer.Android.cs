@@ -14,7 +14,7 @@ namespace Windows.Devices.Sensors
 	{
 		private readonly Sensor _sensor;
 		private BarometerListener _listener;
-		private uint _reportInterval = 0;
+		private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
 		private Barometer(Sensor barometerSensor)
 		{
@@ -54,7 +54,10 @@ namespace Windows.Devices.Sensors
 		private void StartReading()
 		{
 			_listener = new BarometerListener(this);
-			SensorHelpers.GetSensorManager().RegisterListener(_listener, _sensor, SensorDelay.Normal);
+			SensorHelpers.GetSensorManager().RegisterListener(
+				_listener,
+				_sensor,
+				(SensorDelay)(_reportInterval * 1000));
 		}
 
 		private void StopReading()

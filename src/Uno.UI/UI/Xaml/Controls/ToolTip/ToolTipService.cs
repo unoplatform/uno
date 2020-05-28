@@ -38,9 +38,9 @@ namespace Windows.UI.Xaml.Controls
 
 			var toolTip = args.NewValue as ToolTip;
 
-			if (toolTip == null && args.NewValue is string toolTipString)
+			if (toolTip == null && args.NewValue != null)
 			{
-				toolTip = new ToolTip {Content = toolTipString};
+				toolTip = new ToolTip { Content = args.NewValue };
 			}
 
 			if (toolTip != null)
@@ -83,11 +83,15 @@ namespace Windows.UI.Xaml.Controls
 					{
 						return;
 					}
-					toolTip.IsOpen = true;
-					await Task.Delay(FeatureConfiguration.ToolTip.ShowDuration);
-					if (currentHoverId == hoverId)
+
+					if (element.IsLoaded)
 					{
-						toolTip.IsOpen = false;
+						toolTip.IsOpen = true;
+						await Task.Delay(FeatureConfiguration.ToolTip.ShowDuration);
+						if (currentHoverId == hoverId)
+						{
+							toolTip.IsOpen = false;
+						}
 					}
 				}
 			}

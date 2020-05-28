@@ -7,77 +7,14 @@ namespace Windows.UI.Input
 	#endif
 	public  partial class PointerPoint 
 	{
-		#if false
-		[global::Uno.NotImplemented]
-		public  uint FrameId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint PointerPoint.FrameId is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  bool IsInContact
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member bool PointerPoint.IsInContact is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  global::Windows.Devices.Input.PointerDevice PointerDevice
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PointerDevice PointerPoint.PointerDevice is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  uint PointerId
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member uint PointerPoint.PointerId is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property FrameId
+		// Skipping already declared property IsInContact
+		// Skipping already declared property PointerDevice
+		// Skipping already declared property PointerId
 		// Skipping already declared property Position
-		#if false
-		[global::Uno.NotImplemented]
-		public  global::Windows.UI.Input.PointerPointProperties Properties
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member PointerPointProperties PointerPoint.Properties is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  global::Windows.Foundation.Point RawPosition
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member Point PointerPoint.RawPosition is not implemented in Uno.");
-			}
-		}
-		#endif
-		#if false
-		[global::Uno.NotImplemented]
-		public  ulong Timestamp
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member ulong PointerPoint.Timestamp is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property Properties
+		// Skipping already declared property RawPosition
+		// Skipping already declared property Timestamp
 		// Forced skipping of method Windows.UI.Input.PointerPoint.PointerDevice.get
 		// Forced skipping of method Windows.UI.Input.PointerPoint.Position.get
 		// Forced skipping of method Windows.UI.Input.PointerPoint.RawPosition.get

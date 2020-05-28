@@ -7,16 +7,7 @@ namespace Windows.Storage.FileProperties
 	#endif
 	public  partial class BasicProperties : global::Windows.Storage.FileProperties.IStorageItemExtraProperties
 	{
-		#if false || false || false || false || false
-		[global::Uno.NotImplemented]
-		public  global::System.DateTimeOffset DateModified
-		{
-			get
-			{
-				throw new global::System.NotImplementedException("The member DateTimeOffset BasicProperties.DateModified is not implemented in Uno.");
-			}
-		}
-		#endif
+		// Skipping already declared property DateModified
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::System.DateTimeOffset ItemDate

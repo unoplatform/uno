@@ -17,6 +17,7 @@ namespace Windows.UI.Composition
 			}
 		}
 		#endif
+		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.First()
 		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.GetAt(uint)
 		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.Size.get
 		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.GetView()
@@ -29,7 +30,6 @@ namespace Windows.UI.Composition
 		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.Clear()
 		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.GetMany(uint, Windows.UI.Composition.CompositionColorGradientStop[])
 		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.ReplaceAll(Windows.UI.Composition.CompositionColorGradientStop[])
-		// Forced skipping of method Windows.UI.Composition.CompositionColorGradientStopCollection.First()
 		// Processing: System.Collections.Generic.IEnumerable<Windows.UI.Composition.CompositionColorGradientStop>
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		// DeclaringType: System.Collections.Generic.IEnumerable<Windows.UI.Composition.CompositionColorGradientStop>

@@ -54,13 +54,13 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnBorderThicknessChangedPartial(Thickness oldValue, Thickness newValue)
 		{
-			NeedsLayout = true;
+			InvalidateMeasure();
 			UpdateBackground();
 		}
 
 		partial void OnPaddingChangedPartial(Thickness oldValue, Thickness newValue)
 		{
-			NeedsLayout = true;
+			InvalidateMeasure();
 		}
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs args)
@@ -114,7 +114,7 @@ namespace Windows.UI.Xaml.Controls
 
 		protected virtual void OnChildrenChanged()
 		{
-			NeedsLayout = true;
+			InvalidateMeasure();
 		}
 
 		protected override void OnAfterArrange()

@@ -22,6 +22,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Suite\SpanBench\SimpleSpanBenchmark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\BenchmarkDotNetControl.xaml.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\BenchmarkDotNetTestsPage.xaml.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml_Controls\UIElementPerf\UIElementCreationBenchmark.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml_Controls\GridBench\SimpleGridBenchmark.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -31,5 +32,8 @@
     <Compile Update="C:\s\nv.github\uno-2\src\SamplesApp\Benchmarks.Shared\Controls\BenchmarkDotNetTestsPage.xaml.cs">
       <DependentUpon>BenchmarkDotNetTestsPage.xaml</DependentUpon>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Suite\Windows_UI_Xaml_Controls\UIElementPerf\" />
   </ItemGroup>
 </Project>

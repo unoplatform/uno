@@ -55,7 +55,7 @@ namespace Windows.UI.Input
 			{
 				if (_log.IsEnabled(LogLevel.Error))
 				{
-					this.Log().Error("Inconsistent state, we already have a pending gesture for a pointer that is going down. Abort the previous gesture.");
+					this.Log().Error($"{Owner} Inconsistent state, we already have a pending gesture for a pointer that is going down. Abort the previous gesture.");
 				}
 				previousGesture.ProcessComplete();
 			}
@@ -104,7 +104,7 @@ namespace Windows.UI.Input
 				{
 					// debug: We might get some PointerMove for mouse even if not pressed,
 					//		  or if gesture was completed by user / other gesture recognizers.
-					_log.Debug("Received a 'Move' for a pointer which was not considered as down. Ignoring event.");
+					_log.Debug($"{Owner} Received a 'Move' for a pointer which was not considered as down. Ignoring event.");
 				}
 			}
 
@@ -132,7 +132,7 @@ namespace Windows.UI.Input
 			{
 				// debug: We might get some PointerMove for mouse even if not pressed,
 				//		  or if gesture was completed by user / other gesture recognizers.
-				_log.Debug("Received a 'Up' for a pointer which was not considered as down. Ignoring event.");
+				_log.Debug($"{Owner} Received a 'Up' for a pointer which was not considered as down. Ignoring event.");
 			}
 
 			_manipulation?.Remove(value);
@@ -345,6 +345,10 @@ namespace Windows.UI.Input
 			// The only thing that changes are flags in the properties.
 			// Here we build a "PointerIdentifier" that fully identifies the pointer used
 
+			// Note: We don't take in consideration props.IsHorizontalMouseWheel as it would require to also check
+			//		 the (non existing) props.IsVerticalMouseWheel, and it's actually not something that should
+			//		 be considered as a pointer changed.
+
 			var props = point.Properties;
 
 			ulong identifier = point.PointerId;
@@ -362,27 +366,23 @@ namespace Windows.UI.Input
 			{
 				identifier |= 1L << 34;
 			}
-			if (props.IsHorizontalMouseWheel)
+			if (props.IsXButton1Pressed)
 			{
 				identifier |= 1L << 35;
 			}
-			if (props.IsXButton1Pressed)
-			{
-				identifier |= 1L << 36;
-			}
 			if (props.IsXButton2Pressed)
 			{
-				identifier |= 1L << 37;
+				identifier |= 1L << 36;
 			}
 
 			// Pen
 			if (props.IsBarrelButtonPressed)
 			{
-				identifier |= 1L << 38;
+				identifier |= 1L << 37;
 			}
 			if (props.IsEraser)
 			{
-				identifier |= 1L << 39;
+				identifier |= 1L << 38;
 			}
 
 			return identifier;

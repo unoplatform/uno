@@ -3,11 +3,24 @@ var Uno;
     var Utils;
     (function (Utils) {
         class Clipboard {
+            static startContentChanged() {
+                ['cut', 'copy', 'paste'].forEach(function (event) {
+                    document.addEventListener(event, Clipboard.onClipboardChanged);
+                });
+            }
+            static stopContentChanged() {
+                ['cut', 'copy', 'paste'].forEach(function (event) {
+                    document.removeEventListener(event, Clipboard.onClipboardChanged);
+                });
+            }
             static setText(text) {
                 const nav = navigator;
                 if (nav.clipboard) {
                     // Use clipboard object when available
-                    nav.clipboard.setText(text);
+                    nav.clipboard.writeText(text);
+                    // Trigger change notification, as clipboard API does
+                    // not execute "copy".
+                    Clipboard.onClipboardChanged();
                 }
                 else {
                     // Hack when the clipboard is not available
@@ -19,6 +32,20 @@ var Uno;
                     document.body.removeChild(textarea);
                 }
                 return "ok";
+            }
+            static getText() {
+                const nav = navigator;
+                if (nav.clipboard) {
+                    return nav.clipboard.readText();
+                }
+                return Promise.resolve(null);
+            }
+            static onClipboardChanged() {
+                if (!Clipboard.dispatchContentChanged) {
+                    Clipboard.dispatchContentChanged =
+                        Module.mono_bind_static_method("[Uno] Windows.ApplicationModel.DataTransfer.Clipboard:DispatchContentChanged");
+                }
+                Clipboard.dispatchContentChanged();
             }
         }
         Utils.Clipboard = Clipboard;
@@ -210,6 +237,7 @@ var Uno;
         Http.HttpClient = HttpClient;
     })(Http = Uno.Http || (Uno.Http = {}));
 })(Uno || (Uno = {}));
+// eslint-disable-next-line @typescript-eslint/no-namespace
 var MonoSupport;
 (function (MonoSupport) {
     /**
@@ -254,7 +282,7 @@ var MonoSupport;
          * @param pRet The pointer to the return value structure
          */
         static dispatch(id, pParams, pRet) {
-            return jsCallDispatcher.methodMap[id](pParams, pRet);
+            return jsCallDispatcher.methodMap[id + ""](pParams, pRet);
         }
         /**
          * Parses the method identifier
@@ -273,8 +301,11 @@ var MonoSupport;
          */
         static cacheMethod(boundMethod) {
             var methodId = Object.keys(jsCallDispatcher.methodMap).length;
-            jsCallDispatcher.methodMap[methodId] = boundMethod;
+            jsCallDispatcher.methodMap[methodId + ""] = boundMethod;
             return methodId;
+        }
+        static getMethodMapId(methodHandle) {
+            return methodHandle + "";
         }
     }
     jsCallDispatcher.registrations = new Map();
@@ -283,6 +314,7 @@ var MonoSupport;
 })(MonoSupport || (MonoSupport = {}));
 // Export the DotNet helper for WebAssembly.JSInterop.InvokeJSUnmarshalled
 window.DotNet = MonoSupport;
+// eslint-disable-next-line @typescript-eslint/no-namespace
 var Uno;
 (function (Uno) {
     var UI;
@@ -292,6 +324,7 @@ var Uno;
                 this.containerElementId = containerElementId;
                 this.loadingElementId = loadingElementId;
                 this.allActiveElementsById = {};
+                this.uiElementRegistrations = {};
                 this.initDom();
             }
             /**
@@ -444,14 +477,12 @@ var Uno;
             createContentNative(pParams) {
                 const params = WindowManagerCreateContentParams.unmarshal(pParams);
                 const def = {
-                    id: params.HtmlId,
+                    id: this.handleToString(params.HtmlId),
                     handle: params.Handle,
                     isFocusable: params.IsFocusable,
-                    isFrameworkElement: params.IsFrameworkElement,
                     isSvg: params.IsSvg,
                     tagName: params.TagName,
-                    type: params.Type,
-                    classes: params.Classes
+                    uiElementRegistrationId: params.UIElementRegistrationId,
                 };
                 this.createContentInternal(def);
                 return true;
@@ -461,10 +492,14 @@ var Uno;
                 const element = contentDefinition.isSvg
                     ? document.createElementNS("http://www.w3.org/2000/svg", contentDefinition.tagName)
                     : document.createElement(contentDefinition.tagName);
-                element.id = String(contentDefinition.id);
-                element.setAttribute("XamlType", contentDefinition.type);
-                element.setAttribute("XamlHandle", `${contentDefinition.handle}`);
-                if (contentDefinition.isFrameworkElement) {
+                element.id = contentDefinition.id;
+                const uiElementRegistration = this.uiElementRegistrations[this.handleToString(contentDefinition.uiElementRegistrationId)];
+                if (!uiElementRegistration) {
+                    throw `UIElement registration id ${contentDefinition.uiElementRegistrationId} is unknown.`;
+                }
+                element.setAttribute("XamlType", uiElementRegistration.typeName);
+                element.setAttribute("XamlHandle", this.handleToString(contentDefinition.handle));
+                if (uiElementRegistration.isFrameworkElement) {
                     this.setAsUnarranged(element);
                 }
                 if (element.hasOwnProperty("tabindex")) {
@@ -474,15 +509,34 @@ var Uno;
                     element.setAttribute("tabindex", contentDefinition.isFocusable ? "0" : "-1");
                 }
                 if (contentDefinition) {
-                    for (const className of contentDefinition.classes) {
-                        element.classList.add(`uno-${className}`);
+                    let classes = element.classList.value;
+                    for (const className of uiElementRegistration.classNames) {
+                        classes += " uno-" + className;
                     }
+                    element.classList.value = classes;
                 }
                 // Add the html element to list of elements
                 this.allActiveElementsById[contentDefinition.id] = element;
             }
+            registerUIElement(typeName, isFrameworkElement, classNames) {
+                const registrationId = Object.keys(this.uiElementRegistrations).length;
+                this.uiElementRegistrations[this.handleToString(registrationId)] = {
+                    classNames: classNames,
+                    isFrameworkElement: isFrameworkElement,
+                    typeName: typeName,
+                };
+                return registrationId;
+            }
+            registerUIElementNative(pParams, pReturn) {
+                const params = WindowManagerRegisterUIElementParams.unmarshal(pParams);
+                const registrationId = this.registerUIElement(params.TypeName, params.IsFrameworkElement, params.Classes);
+                const ret = new WindowManagerRegisterUIElementReturn();
+                ret.RegistrationId = registrationId;
+                ret.marshal(pReturn);
+                return true;
+            }
             getView(elementHandle) {
-                const element = this.allActiveElementsById[elementHandle];
+                const element = this.allActiveElementsById[this.handleToString(elementHandle)];
                 if (!element) {
                     throw `Element id ${elementHandle} not found.`;
                 }
@@ -675,7 +729,7 @@ var Uno;
             setStyleDoubleNative(pParams) {
                 const params = WindowManagerSetStyleDoubleParams.unmarshal(pParams);
                 const element = this.getView(params.HtmlId);
-                element.style.setProperty(params.Name, String(params.Value));
+                element.style.setProperty(params.Name, this.handleToString(params.Value));
                 return true;
             }
             setArrangeProperties(elementId, clipToBounds) {
@@ -774,6 +828,15 @@ var Uno;
                 this.setAsArranged(element);
                 return true;
             }
+            setPointerEvents(htmlId, enabled) {
+                const element = this.getView(htmlId);
+                element.style.pointerEvents = enabled ? "auto" : "none";
+            }
+            setPointerEventsNative(pParams) {
+                const params = WindowManagerSetPointerEventsParams.unmarshal(pParams);
+                this.setPointerEvents(params.HtmlId, params.Enabled);
+                return true;
+            }
             /**
                 * Load the specified URL into a new tab or window
                 * @param url URL to load
@@ -813,8 +876,8 @@ var Uno;
                 * @param eventName The name of the event
                 * @param onCapturePhase true means "on trickle down" (going down to target), false means "on bubble up" (bubbling back to ancestors). Default is false.
                 */
-            registerEventOnView(elementId, eventName, onCapturePhase = false, eventFilterName, eventExtractorName) {
-                this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventFilterName, eventExtractorName);
+            registerEventOnView(elementId, eventName, onCapturePhase = false, eventExtractorId) {
+                this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventExtractorId);
                 return "ok";
             }
             /**
@@ -825,7 +888,7 @@ var Uno;
                 */
             registerEventOnViewNative(pParams) {
                 const params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
-                this.registerEventOnViewInternal(params.HtmlId, params.EventName, params.OnCapturePhase, params.EventFilterName, params.EventExtractorName);
+                this.registerEventOnViewInternal(params.HtmlId, params.EventName, params.OnCapturePhase, params.EventExtractorId);
                 return true;
             }
             /**
@@ -849,9 +912,9 @@ var Uno;
                 * @param eventName The name of the event
                 * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
                 */
-            registerEventOnViewInternal(elementId, eventName, onCapturePhase = false, eventFilterName, eventExtractorName) {
+            registerEventOnViewInternal(elementId, eventName, onCapturePhase = false, eventExtractorId) {
                 const element = this.getView(elementId);
-                const eventExtractor = this.getEventExtractor(eventExtractorName);
+                const eventExtractor = this.getEventExtractor(eventExtractorId);
                 const eventHandler = (event) => {
                     const eventPayload = eventExtractor
                         ? `${eventExtractor(event)}`
@@ -942,37 +1005,6 @@ var Uno;
                 }
             }
             /**
-             * left pointer event filter to be used with registerEventOnView
-             * @param evt
-             */
-            leftPointerEventFilter(evt) {
-                return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 && (!evt.button || evt.button === 0) : false;
-            }
-            /**
-             * default event filter to be used with registerEventOnView to
-             * use for most routed events
-             * @param evt
-             */
-            defaultEventFilter(evt) {
-                return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 : false;
-            }
-            /**
-             * Gets the event filter function. See UIElement.HtmlEventFilter
-             * @param eventFilterName an event filter name.
-             */
-            getEventFilter(eventFilterName) {
-                if (eventFilterName) {
-                    switch (eventFilterName) {
-                        case "LeftPointerEventFilter":
-                            return this.leftPointerEventFilter;
-                        case "Default":
-                            return this.defaultEventFilter;
-                    }
-                    throw `Event filter ${eventFilterName} is not supported`;
-                }
-                return null;
-            }
-            /**
              * pointer event extractor to be used with registerEventOnView
              * @param evt
              */
@@ -990,7 +1022,54 @@ var Uno;
                     }
                     src = src.parentElement;
                 }
-                return `${evt.pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.buttons};${evt.button};${evt.pointerType};${srcHandle};${evt.timeStamp};${evt.pressure}`;
+                let pointerId, pointerType, pressure;
+                let wheelDeltaX, wheelDeltaY;
+                if (evt instanceof WheelEvent) {
+                    pointerId = evt.mozInputSource ? 0 : 1; // Try to match the mouse pointer ID 0 for FF, 1 for others
+                    pointerType = "mouse";
+                    pressure = 0.5; // like WinUI
+                    wheelDeltaX = evt.deltaX;
+                    wheelDeltaY = evt.deltaY;
+                    switch (evt.deltaMode) {
+                        case WheelEvent.DOM_DELTA_LINE: // Actually this is supported only by FF
+                            const lineSize = WindowManager.wheelLineSize;
+                            wheelDeltaX *= lineSize;
+                            wheelDeltaY *= lineSize;
+                            break;
+                        case WheelEvent.DOM_DELTA_PAGE:
+                            wheelDeltaX *= document.documentElement.clientWidth;
+                            wheelDeltaY *= document.documentElement.clientHeight;
+                            break;
+                    }
+                }
+                else {
+                    pointerId = evt.pointerId;
+                    pointerType = evt.pointerType;
+                    pressure = evt.pressure;
+                    wheelDeltaX = 0;
+                    wheelDeltaY = 0;
+                }
+                return `${pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.buttons};${evt.button};${pointerType};${srcHandle};${evt.timeStamp};${pressure};${wheelDeltaX};${wheelDeltaY}`;
+            }
+            static get wheelLineSize() {
+                // In web browsers, scroll might happen by pixels, line or page.
+                // But WinUI works only with pixels, so we have to convert it before send the value to the managed code.
+                // The issue is that there is no easy way get the "size of a line", instead we have to determine the CSS "line-height"
+                // defined in the browser settings. 
+                // https://stackoverflow.com/questions/20110224/what-is-the-height-of-a-line-in-a-wheel-event-deltamode-dom-delta-line
+                if (this._wheelLineSize == undefined) {
+                    const el = document.createElement('div');
+                    el.style.fontSize = 'initial';
+                    el.style.display = 'none';
+                    document.body.appendChild(el);
+                    const fontSize = window.getComputedStyle(el).fontSize;
+                    document.body.removeChild(el);
+                    this._wheelLineSize = fontSize ? parseInt(fontSize) : 16; /* 16 = The current common default font size */
+                    // Based on observations, even if the even reports 3 lines (the settings of windows),
+                    // the browser will actually scroll of about 6 lines of text.
+                    this._wheelLineSize *= 2.0;
+                }
+                return this._wheelLineSize;
             }
             /**
              * keyboard event extractor to be used with registerEventOnView
@@ -1040,23 +1119,26 @@ var Uno;
              * Gets the event extractor function. See UIElement.HtmlEventExtractor
              * @param eventExtractorName an event extractor name.
              */
-            getEventExtractor(eventExtractorName) {
-                if (eventExtractorName) {
-                    switch (eventExtractorName) {
-                        case "PointerEventExtractor":
+            getEventExtractor(eventExtractorId) {
+                if (eventExtractorId) {
+                    //
+                    // NOTE TO MAINTAINERS: Keep in sync with Windows.UI.Xaml.UIElement.HtmlEventExtractor
+                    //
+                    switch (eventExtractorId) {
+                        case 1:
                             return this.pointerEventExtractor;
-                        case "KeyboardEventExtractor":
+                        case 3:
                             return this.keyboardEventExtractor;
-                        case "TappedEventExtractor":
+                        case 2:
                             return this.tappedEventExtractor;
-                        case "FocusEventExtractor":
+                        case 4:
                             return this.focusEventExtractor;
-                        case "CustomEventDetailJsonExtractor":
+                        case 6:
                             return this.customEventDetailExtractor;
-                        case "CustomEventDetailStringExtractor":
+                        case 5:
                             return this.customEventDetailStringExtractor;
                     }
-                    throw `Event filter ${eventExtractorName} is not supported`;
+                    throw `Event extractor ${eventExtractorId} is not supported`;
                 }
                 return null;
             }
@@ -1219,6 +1301,15 @@ var Uno;
             }
             getBBoxInternal(elementId) {
                 return this.getView(elementId).getBBox();
+            }
+            setSvgElementRect(pParams) {
+                const params = WindowManagerSetSvgElementRectParams.unmarshal(pParams);
+                const element = this.getView(params.HtmlId);
+                element.x.baseVal.value = params.X;
+                element.y.baseVal.value = params.Y;
+                element.width.baseVal.value = params.Width;
+                element.height.baseVal.value = params.Height;
+                return true;
             }
             /**
                 * Use the Html engine to measure the element using specified constraints.
@@ -1529,6 +1620,9 @@ var Uno;
                     if (!WindowManager.dispatchEventMethod) {
                         WindowManager.dispatchEventMethod = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:DispatchEvent");
                     }
+                    if (!WindowManager.focusInMethod) {
+                        WindowManager.focusInMethod = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Input.FocusManager:ReceiveFocusNative");
+                    }
                 }
             }
             initDom() {
@@ -1536,14 +1630,16 @@ var Uno;
                 if (!this.containerElement) {
                     // If not found, we simply create a new one.
                     this.containerElement = document.createElement("div");
-                    document.body.appendChild(this.containerElement);
                 }
+                document.body.addEventListener("focusin", this.onfocusin);
+                document.body.appendChild(this.containerElement);
                 window.addEventListener("resize", x => this.resize());
                 window.addEventListener("contextmenu", x => {
                     if (!(x.target instanceof HTMLInputElement)) {
                         x.preventDefault();
                     }
                 });
+                window.addEventListener("blur", this.onWindowBlur);
             }
             removeLoading() {
                 if (!this.loadingElementId) {
@@ -1565,6 +1661,26 @@ var Uno;
                     WindowManager.resizeMethod(document.documentElement.clientWidth, document.documentElement.clientHeight);
                 }
             }
+            onfocusin(event) {
+                if (WindowManager.isHosted) {
+                    console.warn("Focus not supported in hosted mode");
+                }
+                else {
+                    const newFocus = event.target;
+                    const handle = newFocus.getAttribute("XamlHandle");
+                    const htmlId = handle ? Number(handle) : -1; // newFocus may not be an Uno element
+                    WindowManager.focusInMethod(htmlId);
+                }
+            }
+            onWindowBlur() {
+                if (WindowManager.isHosted) {
+                    console.warn("Focus not supported in hosted mode");
+                }
+                else {
+                    // Unset managed focus when Window loses focus
+                    WindowManager.focusInMethod(-1);
+                }
+            }
             dispatchEvent(element, eventName, eventPayload = null) {
                 const htmlId = Number(element.getAttribute("XamlHandle"));
                 // console.debug(`${element.getAttribute("id")}: Raising event ${eventName}.`);
@@ -1575,7 +1691,7 @@ var Uno;
                     // Dispatch to the C# backed UnoDispatch class. Events propagated
                     // this way always succeed because synchronous calls are not possible
                     // between the host and the browser, unlike wasm.
-                    UnoDispatch.dispatch(String(htmlId), eventName, eventPayload);
+                    UnoDispatch.dispatch(this.handleToString(htmlId), eventName, eventPayload);
                     return true;
                 }
                 else {
@@ -1588,6 +1704,10 @@ var Uno;
                     return false;
                 }
                 return rootElement === element || rootElement.contains(element);
+            }
+            handleToString(handle) {
+                // Fastest conversion as of 2020-03-25 (when compared to String(handle) or handle.toString())
+                return handle + "";
             }
             setCursor(cssCursor) {
                 const unoBody = document.getElementById(this.containerElementId);
@@ -1618,6 +1738,7 @@ var Uno;
             WindowManager.initMethods();
             UI.HtmlDom.initPolyfills();
         })();
+        WindowManager._wheelLineSize = undefined;
         WindowManager.MAX_WIDTH = `${Number.MAX_SAFE_INTEGER}vw`;
         WindowManager.MAX_HEIGHT = `${Number.MAX_SAFE_INTEGER}vh`;
         UI.WindowManager = WindowManager;
@@ -1630,21 +1751,22 @@ var Uno;
         }
     })(UI = Uno.UI || (Uno.UI = {}));
 })(Uno || (Uno = {}));
-// Ensure the "Uno" namespace is availablle globally
+// Ensure the "Uno" namespace is available globally
 window.Uno = Uno;
+window.Windows = Windows;
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class StorageFolderMakePersistentParams {
     static unmarshal(pData) {
-        let ret = new StorageFolderMakePersistentParams();
+        const ret = new StorageFolderMakePersistentParams();
         {
             ret.Paths_Length = Number(Module.getValue(pData + 0, "i32"));
         }
         {
-            var pArray = Module.getValue(pData + 4, "*");
+            const pArray = Module.getValue(pData + 4, "*");
             if (pArray !== 0) {
                 ret.Paths = new Array();
                 for (var i = 0; i < ret.Paths_Length; i++) {
-                    var value = Module.getValue(pArray + i * 4, "*");
+                    const value = Module.getValue(pArray + i * 4, "*");
                     if (value !== 0) {
                         ret.Paths.push(String(MonoRuntime.conv_string(value)));
                     }
@@ -1663,7 +1785,7 @@ class StorageFolderMakePersistentParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerAddViewParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerAddViewParams();
+        const ret = new WindowManagerAddViewParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -1679,7 +1801,7 @@ class WindowManagerAddViewParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerArrangeElementParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerArrangeElementParams();
+        const ret = new WindowManagerArrangeElementParams();
         {
             ret.Top = Number(Module.getValue(pData + 0, "double"));
         }
@@ -1719,12 +1841,12 @@ class WindowManagerArrangeElementParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerCreateContentParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerCreateContentParams();
+        const ret = new WindowManagerCreateContentParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
-            var ptr = Module.getValue(pData + 4, "*");
+            const ptr = Module.getValue(pData + 4, "*");
             if (ptr !== 0) {
                 ret.TagName = String(Module.UTF8ToString(ptr));
             }
@@ -1736,43 +1858,13 @@ class WindowManagerCreateContentParams {
             ret.Handle = Number(Module.getValue(pData + 8, "*"));
         }
         {
-            var ptr = Module.getValue(pData + 12, "*");
-            if (ptr !== 0) {
-                ret.Type = String(Module.UTF8ToString(ptr));
-            }
-            else {
-                ret.Type = null;
-            }
+            ret.UIElementRegistrationId = Number(Module.getValue(pData + 12, "i32"));
         }
         {
             ret.IsSvg = Boolean(Module.getValue(pData + 16, "i32"));
         }
         {
-            ret.IsFrameworkElement = Boolean(Module.getValue(pData + 20, "i32"));
-        }
-        {
-            ret.IsFocusable = Boolean(Module.getValue(pData + 24, "i32"));
-        }
-        {
-            ret.Classes_Length = Number(Module.getValue(pData + 28, "i32"));
-        }
-        {
-            var pArray = Module.getValue(pData + 32, "*");
-            if (pArray !== 0) {
-                ret.Classes = new Array();
-                for (var i = 0; i < ret.Classes_Length; i++) {
-                    var value = Module.getValue(pArray + i * 4, "*");
-                    if (value !== 0) {
-                        ret.Classes.push(String(MonoRuntime.conv_string(value)));
-                    }
-                    else {
-                        ret.Classes.push(null);
-                    }
-                }
-            }
-            else {
-                ret.Classes = null;
-            }
+            ret.IsFocusable = Boolean(Module.getValue(pData + 20, "i32"));
         }
         return ret;
     }
@@ -1780,7 +1872,7 @@ class WindowManagerCreateContentParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerDestroyViewParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerDestroyViewParams();
+        const ret = new WindowManagerDestroyViewParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -1790,7 +1882,7 @@ class WindowManagerDestroyViewParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerGetBBoxParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerGetBBoxParams();
+        const ret = new WindowManagerGetBBoxParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -1809,7 +1901,7 @@ class WindowManagerGetBBoxReturn {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerGetClientViewSizeParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerGetClientViewSizeParams();
+        const ret = new WindowManagerGetClientViewSizeParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -1828,7 +1920,7 @@ class WindowManagerGetClientViewSizeReturn {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerInitParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerInitParams();
+        const ret = new WindowManagerInitParams();
         {
             ret.IsHostedMode = Boolean(Module.getValue(pData + 0, "i32"));
         }
@@ -1841,7 +1933,7 @@ class WindowManagerInitParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerMeasureViewParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerMeasureViewParams();
+        const ret = new WindowManagerMeasureViewParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -1864,12 +1956,12 @@ class WindowManagerMeasureViewReturn {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerRegisterEventOnViewParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerRegisterEventOnViewParams();
+        const ret = new WindowManagerRegisterEventOnViewParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
-            var ptr = Module.getValue(pData + 4, "*");
+            const ptr = Module.getValue(pData + 4, "*");
             if (ptr !== 0) {
                 ret.EventName = String(Module.UTF8ToString(ptr));
             }
@@ -1881,35 +1973,66 @@ class WindowManagerRegisterEventOnViewParams {
             ret.OnCapturePhase = Boolean(Module.getValue(pData + 8, "i32"));
         }
         {
-            var ptr = Module.getValue(pData + 12, "*");
+            ret.EventExtractorId = Number(Module.getValue(pData + 12, "i32"));
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerRegisterUIElementParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerRegisterUIElementParams();
+        {
+            const ptr = Module.getValue(pData + 0, "*");
             if (ptr !== 0) {
-                ret.EventFilterName = String(Module.UTF8ToString(ptr));
+                ret.TypeName = String(Module.UTF8ToString(ptr));
             }
             else {
-                ret.EventFilterName = null;
+                ret.TypeName = null;
             }
         }
         {
-            var ptr = Module.getValue(pData + 16, "*");
-            if (ptr !== 0) {
-                ret.EventExtractorName = String(Module.UTF8ToString(ptr));
+            ret.IsFrameworkElement = Boolean(Module.getValue(pData + 4, "i32"));
+        }
+        {
+            ret.Classes_Length = Number(Module.getValue(pData + 8, "i32"));
+        }
+        {
+            const pArray = Module.getValue(pData + 12, "*");
+            if (pArray !== 0) {
+                ret.Classes = new Array();
+                for (var i = 0; i < ret.Classes_Length; i++) {
+                    const value = Module.getValue(pArray + i * 4, "*");
+                    if (value !== 0) {
+                        ret.Classes.push(String(MonoRuntime.conv_string(value)));
+                    }
+                    else {
+                        ret.Classes.push(null);
+                    }
+                }
             }
             else {
-                ret.EventExtractorName = null;
+                ret.Classes = null;
             }
         }
         return ret;
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerRegisterUIElementReturn {
+    marshal(pData) {
+        Module.setValue(pData + 0, this.RegistrationId, "i32");
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerRemoveAttributeParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerRemoveAttributeParams();
+        const ret = new WindowManagerRemoveAttributeParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
-            var ptr = Module.getValue(pData + 4, "*");
+            const ptr = Module.getValue(pData + 4, "*");
             if (ptr !== 0) {
                 ret.Name = String(Module.UTF8ToString(ptr));
             }
@@ -1923,7 +2046,7 @@ class WindowManagerRemoveAttributeParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerRemoveViewParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerRemoveViewParams();
+        const ret = new WindowManagerRemoveViewParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -1936,7 +2059,7 @@ class WindowManagerRemoveViewParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerResetStyleParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerResetStyleParams();
+        const ret = new WindowManagerResetStyleParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -1944,11 +2067,11 @@ class WindowManagerResetStyleParams {
             ret.Styles_Length = Number(Module.getValue(pData + 4, "i32"));
         }
         {
-            var pArray = Module.getValue(pData + 8, "*");
+            const pArray = Module.getValue(pData + 8, "*");
             if (pArray !== 0) {
                 ret.Styles = new Array();
                 for (var i = 0; i < ret.Styles_Length; i++) {
-                    var value = Module.getValue(pArray + i * 4, "*");
+                    const value = Module.getValue(pArray + i * 4, "*");
                     if (value !== 0) {
                         ret.Styles.push(String(MonoRuntime.conv_string(value)));
                     }
@@ -1967,7 +2090,7 @@ class WindowManagerResetStyleParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerScrollToOptionsParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerScrollToOptionsParams();
+        const ret = new WindowManagerScrollToOptionsParams();
         {
             ret.Left = Number(Module.getValue(pData + 0, "double"));
         }
@@ -1992,12 +2115,12 @@ class WindowManagerScrollToOptionsParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetAttributeParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetAttributeParams();
+        const ret = new WindowManagerSetAttributeParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
-            var ptr = Module.getValue(pData + 4, "*");
+            const ptr = Module.getValue(pData + 4, "*");
             if (ptr !== 0) {
                 ret.Name = String(Module.UTF8ToString(ptr));
             }
@@ -2006,7 +2129,7 @@ class WindowManagerSetAttributeParams {
             }
         }
         {
-            var ptr = Module.getValue(pData + 8, "*");
+            const ptr = Module.getValue(pData + 8, "*");
             if (ptr !== 0) {
                 ret.Value = String(Module.UTF8ToString(ptr));
             }
@@ -2020,7 +2143,7 @@ class WindowManagerSetAttributeParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetAttributesParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetAttributesParams();
+        const ret = new WindowManagerSetAttributesParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -2028,11 +2151,11 @@ class WindowManagerSetAttributesParams {
             ret.Pairs_Length = Number(Module.getValue(pData + 4, "i32"));
         }
         {
-            var pArray = Module.getValue(pData + 8, "*");
+            const pArray = Module.getValue(pData + 8, "*");
             if (pArray !== 0) {
                 ret.Pairs = new Array();
                 for (var i = 0; i < ret.Pairs_Length; i++) {
-                    var value = Module.getValue(pArray + i * 4, "*");
+                    const value = Module.getValue(pArray + i * 4, "*");
                     if (value !== 0) {
                         ret.Pairs.push(String(MonoRuntime.conv_string(value)));
                     }
@@ -2051,7 +2174,7 @@ class WindowManagerSetAttributesParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetClassesParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetClassesParams();
+        const ret = new WindowManagerSetClassesParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -2059,11 +2182,11 @@ class WindowManagerSetClassesParams {
             ret.CssClasses_Length = Number(Module.getValue(pData + 4, "i32"));
         }
         {
-            var pArray = Module.getValue(pData + 8, "*");
+            const pArray = Module.getValue(pData + 8, "*");
             if (pArray !== 0) {
                 ret.CssClasses = new Array();
                 for (var i = 0; i < ret.CssClasses_Length; i++) {
-                    var value = Module.getValue(pArray + i * 4, "*");
+                    const value = Module.getValue(pArray + i * 4, "*");
                     if (value !== 0) {
                         ret.CssClasses.push(String(MonoRuntime.conv_string(value)));
                     }
@@ -2085,12 +2208,12 @@ class WindowManagerSetClassesParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetContentHtmlParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetContentHtmlParams();
+        const ret = new WindowManagerSetContentHtmlParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
-            var ptr = Module.getValue(pData + 4, "*");
+            const ptr = Module.getValue(pData + 4, "*");
             if (ptr !== 0) {
                 ret.Html = String(Module.UTF8ToString(ptr));
             }
@@ -2104,7 +2227,7 @@ class WindowManagerSetContentHtmlParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetElementTransformParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetElementTransformParams();
+        const ret = new WindowManagerSetElementTransformParams();
         {
             ret.M11 = Number(Module.getValue(pData + 0, "double"));
         }
@@ -2132,12 +2255,12 @@ class WindowManagerSetElementTransformParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetNameParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetNameParams();
+        const ret = new WindowManagerSetNameParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
-            var ptr = Module.getValue(pData + 4, "*");
+            const ptr = Module.getValue(pData + 4, "*");
             if (ptr !== 0) {
                 ret.Name = String(Module.UTF8ToString(ptr));
             }
@@ -2149,9 +2272,22 @@ class WindowManagerSetNameParams {
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetPointerEventsParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerSetPointerEventsParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
+        }
+        {
+            ret.Enabled = Boolean(Module.getValue(pData + 4, "i32"));
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetPropertyParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetPropertyParams();
+        const ret = new WindowManagerSetPropertyParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -2159,11 +2295,11 @@ class WindowManagerSetPropertyParams {
             ret.Pairs_Length = Number(Module.getValue(pData + 4, "i32"));
         }
         {
-            var pArray = Module.getValue(pData + 8, "*");
+            const pArray = Module.getValue(pData + 8, "*");
             if (pArray !== 0) {
                 ret.Pairs = new Array();
                 for (var i = 0; i < ret.Pairs_Length; i++) {
-                    var value = Module.getValue(pArray + i * 4, "*");
+                    const value = Module.getValue(pArray + i * 4, "*");
                     if (value !== 0) {
                         ret.Pairs.push(String(MonoRuntime.conv_string(value)));
                     }
@@ -2182,12 +2318,12 @@ class WindowManagerSetPropertyParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetStyleDoubleParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetStyleDoubleParams();
+        const ret = new WindowManagerSetStyleDoubleParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
-            var ptr = Module.getValue(pData + 4, "*");
+            const ptr = Module.getValue(pData + 4, "*");
             if (ptr !== 0) {
                 ret.Name = String(Module.UTF8ToString(ptr));
             }
@@ -2204,7 +2340,7 @@ class WindowManagerSetStyleDoubleParams {
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetStylesParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetStylesParams();
+        const ret = new WindowManagerSetStylesParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
@@ -2212,11 +2348,11 @@ class WindowManagerSetStylesParams {
             ret.Pairs_Length = Number(Module.getValue(pData + 4, "i32"));
         }
         {
-            var pArray = Module.getValue(pData + 8, "*");
+            const pArray = Module.getValue(pData + 8, "*");
             if (pArray !== 0) {
                 ret.Pairs = new Array();
                 for (var i = 0; i < ret.Pairs_Length; i++) {
-                    var value = Module.getValue(pArray + i * 4, "*");
+                    const value = Module.getValue(pArray + i * 4, "*");
                     if (value !== 0) {
                         ret.Pairs.push(String(MonoRuntime.conv_string(value)));
                     }
@@ -2233,14 +2369,36 @@ class WindowManagerSetStylesParams {
     }
 }
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerSetSvgElementRectParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerSetSvgElementRectParams();
+        {
+            ret.X = Number(Module.getValue(pData + 0, "double"));
+        }
+        {
+            ret.Y = Number(Module.getValue(pData + 8, "double"));
+        }
+        {
+            ret.Width = Number(Module.getValue(pData + 16, "double"));
+        }
+        {
+            ret.Height = Number(Module.getValue(pData + 24, "double"));
+        }
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 32, "*"));
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class WindowManagerSetXUidParams {
     static unmarshal(pData) {
-        let ret = new WindowManagerSetXUidParams();
+        const ret = new WindowManagerSetXUidParams();
         {
             ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         {
-            var ptr = Module.getValue(pData + 4, "*");
+            const ptr = Module.getValue(pData + 4, "*");
             if (ptr !== 0) {
                 ret.Uid = String(Module.UTF8ToString(ptr));
             }
@@ -2273,6 +2431,48 @@ PointerEvent.prototype.isOverDeep = function (element) {
         }
     }
 };
+var Uno;
+(function (Uno) {
+    var UI;
+    (function (UI) {
+        var Interop;
+        (function (Interop) {
+            class AsyncInteropHelper {
+                static init() {
+                    if (AsyncInteropHelper.dispatchErrorMethod) {
+                        return; // already initialized
+                    }
+                    const w = window;
+                    AsyncInteropHelper.dispatchResultMethod =
+                        w.Module.mono_bind_static_method("[Uno.Foundation] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncResult");
+                    AsyncInteropHelper.dispatchErrorMethod =
+                        w.Module.mono_bind_static_method("[Uno.Foundation] Uno.Foundation.WebAssemblyRuntime:DispatchAsyncError");
+                }
+                static Invoke(handle, promiseFunction) {
+                    AsyncInteropHelper.init();
+                    try {
+                        promiseFunction()
+                            .then(str => {
+                            if (typeof str == "string") {
+                                AsyncInteropHelper.dispatchResultMethod(handle, str);
+                            }
+                            else {
+                                AsyncInteropHelper.dispatchResultMethod(handle, null);
+                            }
+                        })
+                            .catch(err => {
+                            AsyncInteropHelper.dispatchErrorMethod(handle, err);
+                        });
+                    }
+                    catch (err) {
+                        AsyncInteropHelper.dispatchErrorMethod(handle, err);
+                    }
+                }
+            }
+            Interop.AsyncInteropHelper = AsyncInteropHelper;
+        })(Interop = UI.Interop || (UI.Interop = {}));
+    })(UI = Uno.UI || (Uno.UI = {}));
+})(Uno || (Uno = {}));
 var Uno;
 (function (Uno) {
     var Foundation;
@@ -2647,6 +2847,47 @@ var Windows;
             Sensors.Magnetometer = Magnetometer;
         })(Sensors = Devices.Sensors || (Devices.Sensors = {}));
     })(Devices = Windows.Devices || (Windows.Devices = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Networking;
+    (function (Networking) {
+        var Connectivity;
+        (function (Connectivity) {
+            class ConnectionProfile {
+                static hasInternetAccess() {
+                    return navigator.onLine;
+                }
+            }
+            Connectivity.ConnectionProfile = ConnectionProfile;
+        })(Connectivity = Networking.Connectivity || (Networking.Connectivity = {}));
+    })(Networking = Windows.Networking || (Windows.Networking = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Networking;
+    (function (Networking) {
+        var Connectivity;
+        (function (Connectivity) {
+            class NetworkInformation {
+                static startStatusChanged() {
+                    window.addEventListener("online", NetworkInformation.networkStatusChanged);
+                    window.addEventListener("offline", NetworkInformation.networkStatusChanged);
+                }
+                static stopStatusChanged() {
+                    window.removeEventListener("online", NetworkInformation.networkStatusChanged);
+                    window.removeEventListener("offline", NetworkInformation.networkStatusChanged);
+                }
+                static networkStatusChanged() {
+                    if (this.dispatchStatusChanged == null) {
+                        this.dispatchStatusChanged = Module.mono_bind_static_method("[Uno] Windows.Networking.Connectivity.NetworkInformation:DispatchStatusChanged");
+                    }
+                    this.dispatchStatusChanged();
+                }
+            }
+            Connectivity.NetworkInformation = NetworkInformation;
+        })(Connectivity = Networking.Connectivity || (Networking.Connectivity = {}));
+    })(Networking = Windows.Networking || (Windows.Networking = {}));
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {

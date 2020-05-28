@@ -1,4 +1,8 @@
-﻿using System;
+﻿#if __WASM__
+#define USE_HARD_REFERENCES
+#endif
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Diagnostics;
@@ -83,6 +87,21 @@ namespace Windows.UI.Xaml
 		private readonly Stopwatch _watch = new Stopwatch();
 		private readonly Dictionary<FrameworkTemplate, List<TemplateEntry>> _pooledInstances = new Dictionary<FrameworkTemplate, List<TemplateEntry>>(FrameworkTemplate.FrameworkTemplateEqualityComparer.Default);
 
+#if USE_HARD_REFERENCES
+		/// <summary>
+		/// List of instances managed by the pool
+		/// </summary>
+		/// <remarks>
+		/// This list is required to avoid the GC to collect the instances. Othewise, the pooled instance
+		/// may never get its Parent property set to null, and the pool will never get notified that an instance
+		/// can be reused.
+		///
+		/// The root of the behavior is linked to WeakReferences to objects pending for finalizers are considered
+		/// null, something that does not happen on Xamarin.iOS/Android.
+		/// </remarks>
+		private readonly HashSet<UIElement> _activeInstances = new HashSet<View>();
+#endif
+
 		/// <summary>
 		/// Determines the duration for which a pooled template stays alive.
 		/// </summary>
@@ -160,7 +179,7 @@ namespace Windows.UI.Xaml
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{
-					this.Log().Debug($"Creating new template, id={GetTemplateDebugId(template)}");
+					this.Log().Debug($"Creating new template, id={GetTemplateDebugId(template)} IsPoolingEnabled:{IsPoolingEnabled}");
 				}
 
 				instance = template.LoadContent();
@@ -187,6 +206,9 @@ namespace Windows.UI.Xaml
 				}
 			}
 
+#if USE_HARD_REFERENCES
+			_activeInstances.Add(instance);
+#endif
 			return instance;
 		}
 
@@ -220,7 +242,13 @@ namespace Windows.UI.Xaml
 
 				PropagateOnTemplateReused(instance);
 
-				list.Add(new TemplateEntry(_watch.Elapsed, instance as View));
+				var item = instance as View;
+
+				list.Add(new TemplateEntry(_watch.Elapsed, item));
+
+#if USE_HARD_REFERENCES
+				_activeInstances.Remove(item);
+#endif
 
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
 				{

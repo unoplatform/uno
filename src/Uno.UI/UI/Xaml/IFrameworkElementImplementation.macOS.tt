@@ -189,10 +189,14 @@ namespace <#= mixin.NamespaceName #>
 		{
 			// Resolve the property only once, to avoid paying the cost of the interop.
 			var actualSuperview = Superview;
-
-			if (actualSuperview != null)
+            
+            if(actualSuperview is FrameworkElement fe)
+            {
+                fe.InvalidateMeasure();
+            }
+			else if (actualSuperview is IFrameworkElement ife)
 			{
-				actualSuperview.NeedsLayout = true;
+				ife.InvalidateMeasure();
 			}
 		}
 
@@ -262,7 +266,7 @@ namespace <#= mixin.NamespaceName #>
 				new PropertyMetadata(HorizontalAlignment.Stretch, OnGenericPropertyUpdated)
 			);
 
-		public <#= mixin.IsUIControl #> HorizontalAlignment HorizontalAlignment
+		public HorizontalAlignment HorizontalAlignment
 		{
 			get { return (HorizontalAlignment)this.GetValue(HorizontalAlignmentProperty); }
 			set { this.SetValue(HorizontalAlignmentProperty, value); }
@@ -279,7 +283,7 @@ namespace <#= mixin.NamespaceName #>
 				new PropertyMetadata(VerticalAlignment.Stretch, OnGenericPropertyUpdated)
 			);
 
-		public <#= mixin.IsUIControl #> VerticalAlignment VerticalAlignment
+		public VerticalAlignment VerticalAlignment
 		{
 			get { return (VerticalAlignment)this.GetValue(VerticalAlignmentProperty); }
 			set { this.SetValue(VerticalAlignmentProperty, value); }
@@ -576,7 +580,7 @@ namespace <#= mixin.NamespaceName #>
 			base.ViewDidMoveToSuperview();
 			OnViewDidMoveToSuperview();
 
-			this.SetNeedsLayout();
+			this.InvalidateMeasure();
 		}
 
 		partial void OnViewDidMoveToSuperview();
@@ -599,7 +603,7 @@ namespace <#= mixin.NamespaceName #>
 		{
 			IsLoaded = true;
 
-			this.SetNeedsLayout();
+			this.InvalidateMeasure();
 			OnLoadedPartial();
 
 			Loaded?.Invoke(this, new RoutedEventArgs(this));
@@ -706,7 +710,7 @@ namespace <#= mixin.NamespaceName #>
 			if (base.Hidden != newVisibility.IsHidden())
 			{
 				base.Hidden = newVisibility.IsHidden();
-				this.SetNeedsLayout();
+				this.InvalidateMeasure();
 
 				if (newVisibility == Visibility.Visible)
 				{
@@ -920,27 +924,36 @@ namespace <#= mixin.NamespaceName #>
 			if (e.NewValue != null)
 			{
 				WantsLayer = true;
-				var brush = e.NewValue as SolidColorBrush;
 
-				if(brush != null)
+				if(e.NewValue is SolidColorBrush scb)
 				{
-					Layer.BackgroundColor = brush.ColorWithOpacity;
+					Layer.BackgroundColor = scb.ColorWithOpacity;
 
-					_brushColorChanged.Disposable = brush.RegisterDisposablePropertyChangedCallback(
+					_brushColorChanged.Disposable = scb.RegisterDisposablePropertyChangedCallback(
 						SolidColorBrush.ColorProperty,
 						(s, colorArg) => Layer.BackgroundColor = (s as SolidColorBrush).ColorWithOpacity
 					);
-					_brushOpacityChanged.Disposable = brush.RegisterDisposablePropertyChangedCallback(
+					_brushOpacityChanged.Disposable = scb.RegisterDisposablePropertyChangedCallback(
 						SolidColorBrush.OpacityProperty,
 						(s, colorArg) => Layer.BackgroundColor = (s as SolidColorBrush).ColorWithOpacity
 					);
 				}
 				else
 				{
-					this.Log().Warn("Brush is not a SolidColorBrush, ignoring");
 					_brushColorChanged.Disposable = null;
 					_brushOpacityChanged.Disposable = null;
-					Layer.BackgroundColor = SolidColorBrushHelper.Transparent.Color;
+					if(e.NewValue is GradientBrush gb)
+					{
+						Layer.BackgroundColor = gb.FallbackColorWithOpacity;
+					}
+					else
+					{
+						if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Warning))
+						{
+							this.Log().Warn("Brush is not a SolidColorBrush, ignoring");
+						}
+						Layer.BackgroundColor = SolidColorBrushHelper.Transparent.Color;
+					}
 				}
 			}
 			else
@@ -990,7 +1003,18 @@ namespace <#= mixin.NamespaceName #>
 		private static void OnGenericPropertyUpdated(object dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
 			OnGenericPropertyUpdatedPartial(dependencyObject, args);
-			((NSView)dependencyObject).SetNeedsLayout();
+            
+#if <#= mixin.IsFrameworkElement #>
+            if(dependencyObject is FrameworkElement fe)
+            {
+                fe.InvalidateMeasure();
+            }
+#else
+            if(dependencyObject is IFrameworkElement ife)
+            {
+                ife.InvalidateMeasure();
+            }
+#endif
 		}
 
 		static partial void OnGenericPropertyUpdatedPartial(object dependencyObject, DependencyPropertyChangedEventArgs args);
@@ -1033,10 +1057,10 @@ namespace <#= mixin.NamespaceName #>
 		
 		#region AutomationPeer
 
-		// TODO for accessibility
-		// private AutomationPeer _automationPeer;
 
 #if !<#= mixin.HasAutomationPeer #>
+        private AutomationPeer _automationPeer;
+
 		private AutomationPeer OnCreateAutomationPeerOverride()
 		{
 			return null;
@@ -1046,43 +1070,43 @@ namespace <#= mixin.NamespaceName #>
 		{
 			return null;
 		}
+
+		protected virtual AutomationPeer OnCreateAutomationPeer()
+		{
+		    if (OnCreateAutomationPeerOverride() is AutomationPeer automationPeer)
+		 	{
+		 		return automationPeer;
+		 	}
+		 
+	     	if (AutomationProperties.GetName(this) is string name && !string.IsNullOrEmpty(name))
+		 	{
+		 		return new FrameworkElementAutomationPeer(this);
+		 	}
+		 
+		 	return null;
+		}
+        
+
+		public virtual string GetAccessibilityInnerText() // TODO: internal
+		{
+		 	if (GetAccessibilityInnerTextOverride() is string innerText)
+		 	{
+		 		return innerText;
+		 	}
+		 
+		 	return null;
+		}
+		 
+		public AutomationPeer GetAutomationPeer() // TODO: internal
+		{
+			if (_automationPeer == null)
+			{
+				_automationPeer = OnCreateAutomationPeer();
+			}
+		
+			return _automationPeer;
+		}
 #endif
-
-		// TODO for accessibility
-		// protected virtual AutomationPeer OnCreateAutomationPeer()
-		// {
-		// 	if (OnCreateAutomationPeerOverride() is AutomationPeer automationPeer)
-		// 	{
-		// 		return automationPeer;
-		// 	}
-		// 
-		// 	if (AutomationProperties.GetName(this) is string name && !string.IsNullOrEmpty(name))
-		// 	{
-		// 		return new FrameworkElementAutomationPeer(this);
-		// 	}
-		// 
-		// 	return null;
-		// }
-
-		// public virtual string GetAccessibilityInnerText() // TODO: internal
-		// {
-		// 	if (GetAccessibilityInnerTextOverride() is string innerText)
-		// 	{
-		// 		return innerText;
-		// 	}
-		// 
-		// 	return null;
-		// }
-		// 
-		// public AutomationPeer GetAutomationPeer() // TODO: internal
-		// {
-		// 	if (_automationPeer == null)
-		// 	{
-		// 		_automationPeer = OnCreateAutomationPeer();
-		// 	}
-		// 
-		// 	return _automationPeer;
-		// }
 
 		// TODO for accessibility
 		// public override bool AccessibilityActivate()

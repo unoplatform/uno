@@ -10,6 +10,7 @@ using System.Linq;
 using System.Collections.Generic;
 using Windows.Foundation;
 using Windows.UI.Xaml.Media.Animation;
+using Windows.UI;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -66,6 +67,13 @@ namespace Uno.UI.DataBinding
 						return true;
 					}
 					break;
+
+				case ColorOffset colorOffsetInput:
+					if (FastColorOffsetConvert(outputType, colorOffsetInput, ref output))
+					{
+						return true;
+					}
+					break;
 			}
 
 			return false;
@@ -87,6 +95,17 @@ namespace Uno.UI.DataBinding
 			if (outputType == typeof(string))
 			{
 				output = input.ToString();
+				return true;
+			}
+
+			return false;
+		}
+
+		private static bool FastColorOffsetConvert(Type outputType, ColorOffset input, ref object output)
+		{
+			if (outputType == typeof(Windows.UI.Color))
+			{
+				output = (Windows.UI.Color)input;
 				return true;
 			}
 

@@ -17,6 +17,8 @@ using Windows.System.Threading;
 using Windows.UI.Text;
 using Windows.UI.ViewManagement;
 using Windows.UI.Xaml;
+using Windows.UI.Xaml.Automation;
+using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Media;
@@ -25,12 +27,12 @@ namespace Uno.UI.Helpers.WinUI
 {
 	internal class SharedHelpers
 	{
-#pragma warning disable CS0414 
-        private static bool s_isOnXboxInitialized = false;
+#pragma warning disable CS0414
+		private static bool s_isOnXboxInitialized = false;
 		private static bool s_isOnXbox = false;
 #pragma warning restore CS0414
 
-        private static bool s_isMouseModeEnabledInitialized = false;
+		private static bool s_isMouseModeEnabledInitialized = false;
 		private static bool s_isMouseModeEnabled = false;
 
 		public static bool IsSystemDll() => false;
@@ -59,6 +61,18 @@ namespace Uno.UI.Helpers.WinUI
 			return s_isInDesignModeV1.Value;
 		}
 
+		internal static void RaiseAutomationPropertyChangedEvent<T>(UIElement element, T oldValue, T newValue)
+		{
+			AutomationPeer peer = FrameworkElementAutomationPeer.FromElement(element);
+			if (peer != null)
+			{
+				peer.RaisePropertyChangedEvent(
+					ExpandCollapsePatternIdentifiers.ExpandCollapseStateProperty,
+					oldValue,
+					newValue);
+			}
+		}
+
 		static bool? s_isInDesignModeV2;
 		public static bool IsInDesignModeV2()
 		{
@@ -67,6 +81,18 @@ namespace Uno.UI.Helpers.WinUI
 				s_isInDesignModeV2 = IsRS3OrHigher() && Windows.ApplicationModel.DesignMode.DesignMode2Enabled;
 			}
 			return s_isInDesignModeV2.Value;
+		}
+
+		public static bool ShouldUseDynamicScrollbars()
+		{
+			if (s_dynamicScrollbarsDirty)
+			{
+				UISettings uiSettings = new UISettings();
+				s_dynamicScrollbars = uiSettings.AutoHideScrollBars;
+				s_dynamicScrollbarsDirty = false;
+			}
+
+			return s_dynamicScrollbars;
 		}
 
 		// logical helpers
@@ -119,7 +145,7 @@ namespace Uno.UI.Helpers.WinUI
 
 		public static bool IsXamlCompositionBrushBaseAvailable()
 		{
-			if(s_IsXamlCompositionBrushBaseAvailable_isAvailable == null)
+			if (s_IsXamlCompositionBrushBaseAvailable_isAvailable == null)
 			{
 				s_IsXamlCompositionBrushBaseAvailable_isAvailable = IsRS3OrHigher() || ApiInformation.IsTypePresent("Windows.UI.Xaml.Media.XamlCompositionBrushBase");
 			}
@@ -322,6 +348,8 @@ namespace Uno.UI.Helpers.WinUI
 
 		static bool isAPIContractVxAvailableInitialized = false;
 		static bool isAPIContractVxAvailable = false;
+		private static bool s_dynamicScrollbarsDirty = true;
+		private static bool s_dynamicScrollbars;
 
 		public static bool IsAPIContractVxAvailable(ushort apiVersion)
 		{
@@ -399,7 +427,7 @@ namespace Uno.UI.Helpers.WinUI
 				// Calling GetForCurrentView on threads without a CoreWindow throws an error. This comes up in places like LogonUI.
 				// In this circumstance, we'll just always expand down, since we can't get bounds information.
 			}
-    
+
 			return dipsRect;
 		}
 
@@ -422,7 +450,7 @@ namespace Uno.UI.Helpers.WinUI
 				// Calling GetForCurrentView on threads without a CoreWindow throws an error. This comes up in places like LogonUI.
 				// In this circumstance, we'll just always expand down, since we can't get bounds information.
 			}
-    
+
 			return physicalRect;
 		}
 
@@ -624,7 +652,7 @@ namespace Uno.UI.Helpers.WinUI
 			}
 			else if (iconSource is BitmapIconSource bitmapIconSource)
 			{
-				BitmapIcon bitmapIcon = new BitmapIcon ();
+				BitmapIcon bitmapIcon = new BitmapIcon();
 
 				if (bitmapIconSource.UriSource != null)
 				{
@@ -684,93 +712,93 @@ namespace Uno.UI.Helpers.WinUI
 		{
 			switch (c)
 			{
-			case 'A':
-			case 'a':
-				return VirtualKey.A;
-			case 'B':
-			case 'b':
-				return VirtualKey.B;
-			case 'C':
-			case 'c':
-				return VirtualKey.C;
-			case 'D':
-			case 'd':
-				return VirtualKey.D;
-			case 'E':
-			case 'e':
-				return VirtualKey.E;
-			case 'F':
-			case 'f':
-				return VirtualKey.F;
-			case 'G':
-			case 'g':
-				return VirtualKey.G;
-			case 'H':
-			case 'h':
-				return VirtualKey.H;
-			case 'I':
-			case 'i':
-				return VirtualKey.I;
-			case 'J':
-			case 'j':
-				return VirtualKey.J;
-			case 'K':
-			case 'k':
-				return VirtualKey.K;
-			case 'L':
-			case 'l':
-				return VirtualKey.L;
-			case 'M':
-			case 'm':
-				return VirtualKey.M;
-			case 'N':
-			case 'n':
-				return VirtualKey.N;
-			case 'O':
-			case 'o':
-				return VirtualKey.O;
-			case 'P':
-			case 'p':
-				return VirtualKey.P;
-			case 'Q':
-			case 'q':
-				return VirtualKey.Q;
-			case 'R':
-			case 'r':
-				return VirtualKey.R;
-			case 'S':
-			case 's':
-				return VirtualKey.S;
-			case 'T':
-			case 't':
-				return VirtualKey.T;
-			case 'U':
-			case 'u':
-				return VirtualKey.U;
-			case 'V':
-			case 'v':
-				return VirtualKey.V;
-			case 'W':
-			case 'w':
-				return VirtualKey.W;
-			case 'X':
-			case 'x':
-				return VirtualKey.X;
-			case 'Y':
-			case 'y':
-				return VirtualKey.Y;
-			case 'Z':
-			case 'z':
-				return VirtualKey.Z;
-			default:
-				return VirtualKey.None;
+				case 'A':
+				case 'a':
+					return VirtualKey.A;
+				case 'B':
+				case 'b':
+					return VirtualKey.B;
+				case 'C':
+				case 'c':
+					return VirtualKey.C;
+				case 'D':
+				case 'd':
+					return VirtualKey.D;
+				case 'E':
+				case 'e':
+					return VirtualKey.E;
+				case 'F':
+				case 'f':
+					return VirtualKey.F;
+				case 'G':
+				case 'g':
+					return VirtualKey.G;
+				case 'H':
+				case 'h':
+					return VirtualKey.H;
+				case 'I':
+				case 'i':
+					return VirtualKey.I;
+				case 'J':
+				case 'j':
+					return VirtualKey.J;
+				case 'K':
+				case 'k':
+					return VirtualKey.K;
+				case 'L':
+				case 'l':
+					return VirtualKey.L;
+				case 'M':
+				case 'm':
+					return VirtualKey.M;
+				case 'N':
+				case 'n':
+					return VirtualKey.N;
+				case 'O':
+				case 'o':
+					return VirtualKey.O;
+				case 'P':
+				case 'p':
+					return VirtualKey.P;
+				case 'Q':
+				case 'q':
+					return VirtualKey.Q;
+				case 'R':
+				case 'r':
+					return VirtualKey.R;
+				case 'S':
+				case 's':
+					return VirtualKey.S;
+				case 'T':
+				case 't':
+					return VirtualKey.T;
+				case 'U':
+				case 'u':
+					return VirtualKey.U;
+				case 'V':
+				case 'v':
+					return VirtualKey.V;
+				case 'W':
+				case 'w':
+					return VirtualKey.W;
+				case 'X':
+				case 'x':
+					return VirtualKey.X;
+				case 'Y':
+				case 'y':
+					return VirtualKey.Y;
+				case 'Z':
+				case 'z':
+					return VirtualKey.Z;
+				default:
+					return VirtualKey.None;
 			}
 		}
 
 		//
 		// Header file
 		//
-		
+
 		public static AncestorType GetAncestorOfType<AncestorType>(DependencyObject firstGuess) where AncestorType : class
 		{
 			var obj = firstGuess;
@@ -790,7 +818,5 @@ namespace Uno.UI.Helpers.WinUI
 				return null;
 			}
 		}
-
-
 	}
 }

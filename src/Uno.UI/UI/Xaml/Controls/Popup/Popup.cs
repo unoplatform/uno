@@ -22,6 +22,8 @@ namespace Windows.UI.Xaml.Controls
 		/// </remarks>
 		internal UIElement Anchor { get; set; }
 
+		internal bool IsSubMenu { get; set; }
+
 		/// <summary>
 		/// Returns true if the popup should show the light-dismiss overlay with its current configuration, false if not
 		/// </summary>
@@ -46,12 +48,18 @@ namespace Windows.UI.Xaml.Controls
 
 		public Popup()
 		{
+			Initialize();
+		}
+
+		private void Initialize()
+		{
 			InitializePartial();
 
 			LightDismissOverlayBackground = Resources["PopupLightDismissOverlayBackground"] as Brush ??
 				// This is normally a no-op - the above line should retrieve the framework-level resource. This is purely to fail the build when
 				// Resources/Styles are overhauled (and the above will no longer be valid)
 				Uno.UI.GlobalStaticResources.PopupLightDismissOverlayBackground as Brush;
+
 			ApplyLightDismissOverlayMode();
 		}
 
@@ -107,6 +115,18 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		partial void OnPopupPanelChangedPartial(PopupPanel oldHost, PopupPanel newHost);
+
+		protected override void OnVerticalOffsetChanged(double oldVerticalOffset, double newVerticalOffset)
+		{
+			base.OnVerticalOffsetChanged(oldVerticalOffset, newVerticalOffset);
+			PopupPanel?.InvalidateMeasure();
+		}
+
+		protected override void OnHorizontalOffsetChanged(double oldHorizontalOffset, double newHorizontalOffset)
+		{
+			base.OnHorizontalOffsetChanged(oldHorizontalOffset, newHorizontalOffset);
+			PopupPanel?.InvalidateMeasure();
+		}
 
 		private static readonly PointerEventHandler _handleIfOpened = (snd, e) =>
 		{

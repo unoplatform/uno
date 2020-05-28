@@ -13,6 +13,7 @@ using Uno.Extensions;
 using Uno.Logging;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Automation;
+using Windows.UI.Core;
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
 #elif XAMARIN_IOS_UNIFIED
@@ -50,6 +51,7 @@ namespace Windows.UI.Xaml
 #endif
 
 		private bool _constraintsChanged;
+		private bool _suppressIsEnabled;
 
 		/// <remarks>
 		/// Both flags are present to avoid recursion (setting a style causes the root template
@@ -62,10 +64,6 @@ namespace Windows.UI.Xaml
 		/// </remarks>
 		private bool _styleChanging = false;
 		private bool _defaultStyleApplied = false;
-
-		internal bool RequiresArrange { get; private set; }
-
-		internal bool RequiresMeasure { get; private set; }
 
 		/// <summary>
 		/// Sets whether constraint-based optimizations are used to limit redrawing of the entire visual tree on Android. This can be
@@ -92,7 +90,13 @@ namespace Windows.UI.Xaml
 #endif
 			Resources = new Windows.UI.Xaml.ResourceDictionary();
 
-			((IDependencyObjectStoreProvider)this).Store.RegisterSelfParentChangedCallback((i, k, e) => InitializeStyle());
+			((IDependencyObjectStoreProvider)this).Store.RegisterSelfParentChangedCallback((i, k, e) =>
+			{
+				if (e.NewParent != null)
+				{
+					InitializeStyle();
+				}
+			});
 
 			IFrameworkElementHelper.Initialize(this);
 		}
@@ -358,6 +362,20 @@ namespace Windows.UI.Xaml
 			((FrameworkElement)dependencyObject)._constraintsChanged = true;
 		}
 
+		/// <summary>
+		/// Provides the ability to disable <see cref="IsEnabled"/> value changes, e.g. in the context of ICommand CanExecute.
+		/// </summary>
+		/// <param name="suppress">If true, <see cref="IsEnabled"/> will always be false</param>
+		private protected void SuppressIsEnabled(bool suppress)
+		{
+			_suppressIsEnabled = suppress;
+			this.CoerceValue(IsEnabledProperty);
+		}
+
+		private object CoerceIsEnabled(object baseValue)
+		{
+			return _suppressIsEnabled ? false : baseValue;
+		}
 
 		/// <summary>
 		/// Determines whether a measure/arrange invalidation on this element requires elements higher in the tree to be invalidated,
@@ -497,7 +515,7 @@ namespace Windows.UI.Xaml
 				// Schedule all the phases at once
 				for (int i = startPhaseIndex; i < presenterRoot.DataTemplateRenderPhases.Length; i++)
 				{
-					Core.UIAsyncOperation action = null;
+					UIAsyncOperation action = null;
 					var phaseCapture = i;
 
 					async void ApplyPhase()
@@ -518,7 +536,7 @@ namespace Windows.UI.Xaml
 					// Schedule on the animation dispatcher so the callback appears faster.
 					action = presenterRoot.Dispatcher.RunAnimation(ApplyPhase);
 #elif __IOS__ || __MACOS__
-					action = presenterRoot.Dispatcher.RunAsync(Core.CoreDispatcherPriority.High, ApplyPhase);
+					action = presenterRoot.Dispatcher.RunAsync(CoreDispatcherPriority.High, ApplyPhase);
 #endif
 
 					registerForRecycled(

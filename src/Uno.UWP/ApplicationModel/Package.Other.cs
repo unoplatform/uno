@@ -1,4 +1,4 @@
-#if !(__IOS__ || __ANDROID__)
+#if !(__IOS__ || __ANDROID__ || __MACOS__)
 using System;
 using System.Collections.Generic;
 using Uno.Extensions;

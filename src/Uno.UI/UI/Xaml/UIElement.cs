@@ -22,6 +22,8 @@ using System.Numerics;
 using System.Reflection;
 using Windows.UI.Xaml.Markup;
 using Microsoft.Extensions.Logging;
+using Windows.UI.Xaml.Controls.Primitives;
+using Windows.UI.Core;
 
 #if __IOS__
 using UIKit;
@@ -32,8 +34,12 @@ namespace Windows.UI.Xaml
 	public partial class UIElement : DependencyObject, IXUidProvider
 	{
 		private readonly SerialDisposable _clipSubscription = new SerialDisposable();
-		private readonly List<KeyboardAccelerator> _keyboardAccelerators = new List<KeyboardAccelerator>();
 		private string _uid;
+
+		private void Initialize()
+		{
+			this.SetValue(KeyboardAcceleratorsProperty, new List<KeyboardAccelerator>(), DependencyPropertyValuePrecedences.DefaultValue);
+		}
 
 		string IXUidProvider.Uid
 		{
@@ -173,10 +179,15 @@ namespace Windows.UI.Xaml
 				}
 				else
 				{
+					var origin = elt.RenderTransformOrigin;
+					var transformMatrix = origin == default
+						? transform.MatrixCore
+						: transform.ToMatrix(origin, layoutSlot.Size);
+
 					// First apply any pending arrange offset that would have been impacted by this RenderTransform (eg. scaled)
 					// Friendly reminder: Matrix multiplication is usually not commutative ;)
 					matrix *= Matrix3x2.CreateTranslation((float)offsetX, (float)offsetY);
-					matrix *= transform.MatrixCore;
+					matrix *= transformMatrix;
 
 					offsetX = layoutSlot.X;
 					offsetY = layoutSlot.Y;
@@ -216,7 +227,7 @@ namespace Windows.UI.Xaml
 			return matrix;
 		}
 
-#if !__IOS__ && !__ANDROID__ // This is the default implementation, but is can be customized per platform
+#if !__IOS__ && !__ANDROID__ // This is the default implementation, but it can be customized per platform
 		/// <summary>
 		/// Note: Offsets are only an approximation which does not take in consideration possible transformations
 		///	applied by a 'UIView' between this element and its parent UIElement.
@@ -310,6 +321,52 @@ namespace Windows.UI.Xaml
 					(s, e) => (s as UIElement).OnVisibilityChanged((Visibility)e.OldValue, (Visibility)e.NewValue)
 				)
 			);
+		#endregion
+
+		#region ContextFlyout Dependency Property
+		public FlyoutBase ContextFlyout
+		{
+			get => (FlyoutBase)GetValue(ContextFlyoutProperty);
+			set => SetValue(ContextFlyoutProperty, value);
+		}
+
+		public static DependencyProperty ContextFlyoutProperty { get; } =
+			DependencyProperty.Register(
+				nameof(ContextFlyout),
+				typeof(FlyoutBase),
+				typeof(UIElement),
+				new FrameworkPropertyMetadata(
+					defaultValue: null,
+					propertyChangedCallback: (s, e) => (s as UIElement).OnContextFlyoutChanged((FlyoutBase)e.OldValue, (FlyoutBase)e.NewValue)
+				)
+			);
+
+		private protected virtual void OnContextFlyoutChanged(FlyoutBase oldValue, FlyoutBase newValue)
+		{
+			if(newValue != null)
+			{
+				RightTapped += OpenContextFlyout;
+			}
+			else
+			{
+				RightTapped -= OpenContextFlyout;
+			}
+		}
+
+		private void OpenContextFlyout(object sender, RightTappedRoutedEventArgs args)
+		{
+			if (this is FrameworkElement fe)
+			{
+				ContextFlyout?.ShowAt(
+					placementTarget: fe,
+					showOptions: new FlyoutShowOptions()
+					{
+						Position = args.GetPosition(this)
+					}
+				);
+			}
+		}
+
 		#endregion
 
 		internal bool IsRenderingSuspended { get; set; }
@@ -491,7 +548,7 @@ namespace Windows.UI.Xaml
 		public void StartBringIntoView(BringIntoViewOptions options)
 		{
 #if __IOS__ || __ANDROID__
-			Dispatcher.RunAsync(Core.CoreDispatcherPriority.Normal, () =>
+			Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () =>
 			{
 				// This currently doesn't support nested scrolling.
 				// This currently doesn't support BringIntoViewOptions.AnimationDesired.
@@ -503,7 +560,17 @@ namespace Windows.UI.Xaml
 
 		internal virtual bool IsViewHit() => true;
 
-		[global::Uno.NotImplemented]
-		public IList<KeyboardAccelerator> KeyboardAccelerators => _keyboardAccelerators;
+		public IList<KeyboardAccelerator> KeyboardAccelerators
+		{
+			get => (IList<KeyboardAccelerator>)GetValue(KeyboardAcceleratorsProperty);
+			internal set => SetValue(KeyboardAcceleratorsProperty, value);
+		}
+
+		internal static readonly DependencyProperty KeyboardAcceleratorsProperty =
+			DependencyProperty.Register(
+				name: "KeyboardAccelerators",
+				propertyType: typeof(IList<KeyboardAccelerator>),
+				ownerType: typeof(UIElement),
+				typeMetadata: new PropertyMetadata(null));
 	}
 }

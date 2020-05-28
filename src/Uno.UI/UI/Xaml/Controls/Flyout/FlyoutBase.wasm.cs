@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Controls.Primitives
+﻿using Windows.Foundation;
+
+namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class FlyoutBase
 	{
@@ -11,9 +13,15 @@
 			};
 		}
 
-		partial void SetPopupPositionPartial(UIElement placementTarget)
+		partial void SetPopupPositionPartial(UIElement placementTarget, Point? positionInTarget)
 		{
 			_popup.Anchor = placementTarget;
+
+			if (positionInTarget is Point position)
+			{
+				_popup.HorizontalOffset = position.X;
+				_popup.VerticalOffset = position.Y;
+			}
 		}
 	}
 }

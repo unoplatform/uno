@@ -1,4 +1,6 @@
-﻿namespace MonoSupport {
+﻿
+// eslint-disable-next-line @typescript-eslint/no-namespace
+namespace MonoSupport {
 
 	/**
 	 * This class is used by https://github.com/mono/mono/blob/fa726d3ac7153d87ed187abd422faa4877f85bb5/sdks/wasm/dotnet_support.js#L88 to perform
@@ -6,9 +8,9 @@
 	 * */
 	export class jsCallDispatcher {
 
-		static registrations: Map<string, any> = new Map<string, any>();
-		static methodMap: { [id: number]: any } = {};
-		static _isUnoRegistered : boolean;
+		private static registrations: Map<string, any> = new Map<string, any>();
+		private static methodMap: { [id: string]: any } = {};
+		private static _isUnoRegistered : boolean;
 
 		/**
 		 * Registers a instance for a specified identier
@@ -55,7 +57,7 @@
 		 * @param pRet The pointer to the return value structure
 		 */
 		private static dispatch(id: number, pParams: any, pRet: any) {
-			return jsCallDispatcher.methodMap[id](pParams, pRet);
+			return jsCallDispatcher.methodMap[id + ""](pParams, pRet);
 		}
 
 		/**
@@ -76,8 +78,12 @@
 		 */
 		private static cacheMethod(boundMethod: any): number {
 			var methodId = Object.keys(jsCallDispatcher.methodMap).length;
-			jsCallDispatcher.methodMap[methodId] = boundMethod;
+			jsCallDispatcher.methodMap[methodId + ""] = boundMethod;
 			return methodId;
+		}
+
+		private static getMethodMapId(methodHandle: number) {
+			return methodHandle + "";
 		}
 	}
 }

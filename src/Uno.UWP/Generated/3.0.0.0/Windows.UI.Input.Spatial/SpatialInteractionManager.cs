@@ -28,6 +28,13 @@ namespace Windows.UI.Input.Spatial
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public static bool IsSourceKindSupported( global::Windows.UI.Input.Spatial.SpatialInteractionSourceKind kind)
+		{
+			throw new global::System.NotImplementedException("The member bool SpatialInteractionManager.IsSourceKindSupported(SpatialInteractionSourceKind kind) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public static global::Windows.UI.Input.Spatial.SpatialInteractionManager GetForCurrentView()
 		{
 			throw new global::System.NotImplementedException("The member SpatialInteractionManager SpatialInteractionManager.GetForCurrentView() is not implemented in Uno.");

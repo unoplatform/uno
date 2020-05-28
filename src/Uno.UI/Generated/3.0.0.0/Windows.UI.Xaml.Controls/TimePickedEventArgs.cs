@@ -2,7 +2,7 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.UI.Xaml.Controls
 {
-	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || false
+	#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 	[global::Uno.NotImplemented]
 	#endif
 	public  partial class TimePickedEventArgs : global::Windows.UI.Xaml.DependencyObject
@@ -27,7 +27,13 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		// Skipping already declared method Windows.UI.Xaml.Controls.TimePickedEventArgs.TimePickedEventArgs()
+		#if false || __IOS__ || false || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public TimePickedEventArgs() : base()
+		{
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.UI.Xaml.Controls.TimePickedEventArgs", "TimePickedEventArgs.TimePickedEventArgs()");
+		}
+		#endif
 		// Forced skipping of method Windows.UI.Xaml.Controls.TimePickedEventArgs.TimePickedEventArgs()
 		// Forced skipping of method Windows.UI.Xaml.Controls.TimePickedEventArgs.OldTime.get
 		// Forced skipping of method Windows.UI.Xaml.Controls.TimePickedEventArgs.NewTime.get

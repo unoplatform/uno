@@ -140,7 +140,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void RemoveChildViews()
 		{
-#if XAMARIN_IOS
+#if XAMARIN_IOS || __MACOS__
 			foreach (var subview in this.Subviews)
 			{
 				subview.RemoveFromSuperview();

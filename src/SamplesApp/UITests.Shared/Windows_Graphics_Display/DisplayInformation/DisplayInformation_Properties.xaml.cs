@@ -8,7 +8,7 @@ using DisplayInfo = Windows.Graphics.Display.DisplayInformation;
 namespace UITests.Shared.Windows_Graphics_Display.DisplayInformation
 {
 	[SampleControlInfo("DisplayInformation", "DisplayInformation_Properties", description: "Shows the values from DisplayInformation class properties. N/A for not implemented.")]
-	public sealed partial class DisplayInformation_Properties : UserControl
+	public sealed partial class DisplayInformation_Properties : Page
 	{
 		public DisplayInformation_Properties()
 		{

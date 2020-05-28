@@ -103,16 +103,16 @@ namespace Windows.Devices.PointOfService
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  void Dispose()
+		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.LineDisplayPowerStatus> CheckPowerStatusAsync()
 		{
-			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplay", "void LineDisplay.Dispose()");
+			throw new global::System.NotImplementedException("The member IAsyncOperation<LineDisplayPowerStatus> LineDisplay.CheckPowerStatusAsync() is not implemented in Uno.");
 		}
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
-		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Devices.PointOfService.LineDisplayPowerStatus> CheckPowerStatusAsync()
+		public  void Dispose()
 		{
-			throw new global::System.NotImplementedException("The member IAsyncOperation<LineDisplayPowerStatus> LineDisplay.CheckPowerStatusAsync() is not implemented in Uno.");
+			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Devices.PointOfService.LineDisplay", "void LineDisplay.Dispose()");
 		}
 		#endif
 		// Forced skipping of method Windows.Devices.PointOfService.LineDisplay.StatisticsCategorySelector.get

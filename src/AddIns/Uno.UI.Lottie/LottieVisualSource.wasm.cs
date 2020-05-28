@@ -13,63 +13,135 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 {
 	public partial class LottieVisualSource
 	{
-		private AnimatedVisualPlayer _player;
+		private AnimatedVisualPlayer _initializedPlayer;
 		private bool _isPlaying;
 		private Size _compositionSize = new Size(0, 0);
+		private Uri _loadedEmbeddedUri;
 
-		private void Update()
-		{
-			if (_player != null)
-			{
-				Update(_player);
-			}
-		}
+		private (double fromProgress, double toProgress, bool looped)? _playState;
 
-		public void Update(AnimatedVisualPlayer player)
+		partial void InnerUpdate()
 		{
-			if(player != _player)
+			var player = _player;
+			if(_initializedPlayer != player)
 			{
-				player.RegisterHtmlEventHandler("lottie_state", (EventHandler)OnStateChanged);
+				player.RegisterHtmlCustomEventHandler("lottie_state", OnStateChanged, isDetailJson: false);
+				_initializedPlayer = player;
 			}
 
-			_player = player;
+			string[] js;
 
-			var js = new[]
+			var uri = UriSource;
+
+			if (uri.Scheme == "embedded")
 			{
-				"Uno.UI.Lottie.setAnimationProperties({",
-				"elementId:",
-				player.HtmlId.ToString(),
-				",jsonPath:\"",
-				UriSource?.PathAndQuery ?? "",
-				"\",autoplay:",
-				player.AutoPlay ? "true" : "false",
-				",stretch:\"",
-				player.Stretch.ToString(),
-				"\",rate:",
-				player.PlaybackRate.ToString(),
-				"});"
-			};
+				string jsonString;
+
+				if (!uri.Equals(_loadedEmbeddedUri) && TryLoadEmbeddedJson(uri, out jsonString))
+				{
+					_loadedEmbeddedUri = uri;
+				}
+				else
+				{
+					jsonString = "null";
+				}
+
+				js = new[]
+				{
+					"Uno.UI.Lottie.setAnimationProperties({",
+					"elementId:",
+					player.HtmlId.ToString(),
+					",jsonPath: null",
+					",autoplay:",
+					player.AutoPlay ? "true" : "false",
+					",stretch:\"",
+					player.Stretch.ToString(),
+					"\",rate:",
+					player.PlaybackRate.ToStringInvariant(),
+					"},",
+					jsonString,
+					");"
+				};
+			}
+			else
+			{
+
+				js = new[]
+				{
+					"Uno.UI.Lottie.setAnimationProperties({", "elementId:",
+					player.HtmlId.ToString(),
+					",jsonPath:\"",
+					UriSource?.PathAndQuery ?? "", "\",autoplay:",
+					player.AutoPlay ? "true" : "false", ",stretch:\"",
+					player.Stretch.ToString(),
+					"\",rate:",
+					player.PlaybackRate.ToString(), "});"
+				};
+			}
+
 			WebAssemblyRuntime.InvokeJS(string.Concat(js));
 			_isPlaying = player.AutoPlay;
+
+			ApplyPlayState();
 		}
 
-		private void OnStateChanged(object sender, EventArgs e)
+		private void ApplyPlayState()
 		{
-			var r = WebAssemblyRuntime.InvokeJS("Uno.UI.Lottie.getAnimationState(" + _player.HtmlId + ");");
+			if (_playState != null)
+			{
+				var (fromProgress, toProgress, looped) = _playState.Value;
+				Play(fromProgress, toProgress, looped);
+			}
+		}
 
-			var parts = r.Split('|');
-			var w = double.Parse(parts[0]);
-			var h = double.Parse(parts[1]);
+		private void OnStateChanged(object sender, HtmlCustomEventArgs e)
+		{
+			ParseStateString(e.Detail);
+		}
+
+		private void ParseStateString(string stateString)
+		{
+			var parts = stateString.Split('|');
+			double.TryParse(parts[0], NumberStyles.Float, CultureInfo.InvariantCulture, out var w);
+			double.TryParse(parts[1], NumberStyles.Float, CultureInfo.InvariantCulture, out var h);
+			var loaded = parts[2].Equals("true", StringComparison.Ordinal);
+			var paused = parts[3].Equals("true", StringComparison.Ordinal);
+
+			if (paused)
+			{
+				_playState = null;
+			}
+
+			_player.SetValue(AnimatedVisualPlayer.IsAnimatedVisualLoadedProperty, loaded);
+			_player.SetValue(AnimatedVisualPlayer.IsPlayingProperty, !paused);
+			if (double.TryParse(parts[4], NumberStyles.AllowDecimalPoint, CultureInfo.InvariantCulture, out var duration))
+			{
+				if (double.IsNaN(duration))
+				{
+					duration = 0d;
+				}
+				_player.SetValue(AnimatedVisualPlayer.DurationProperty, TimeSpan.FromSeconds(duration));
+			}
 
 			_compositionSize = new Size(w, h);
 		}
 
-		void IAnimatedVisualSource.Play(bool looped)
+		public void Play(double fromProgress, double toProgress, bool looped)
 		{
+			_playState = (fromProgress, toProgress, looped);
+
+			if (_player == null)
+			{
+				return;
+			}
 			var js = new[]
 			{
 				"Uno.UI.Lottie.play(",
 				_player.HtmlId.ToString(),
+				",",
+				fromProgress.ToStringInvariant(),
+				",",
+				toProgress.ToStringInvariant(),
 				",",
 				looped ? "true" : "false",
 				");"
@@ -80,6 +152,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		void IAnimatedVisualSource.Stop()
 		{
+			_playState = null;
+			if (_player == null)
+			{
+				return;
+			}
 			var js = new[]
 			{
 				"Uno.UI.Lottie.stop(",
@@ -92,6 +169,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		void IAnimatedVisualSource.Pause()
 		{
+			if (_player == null)
+			{
+				return;
+			}
 			var js = new[]
 			{
 				"Uno.UI.Lottie.pause(",
@@ -104,6 +185,11 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		void IAnimatedVisualSource.Resume()
 		{
+			if (_player == null)
+			{
+				return;
+			}
+
 			var js = new[]
 			{
 				"Uno.UI.Lottie.resume(",
@@ -116,6 +202,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		public void SetProgress(double progress)
 		{
+			if (_player == null)
+			{
+				return;
+			}
 			var js = new[]
 			{
 				"Uno.UI.Lottie.setProgress(",
@@ -130,6 +220,13 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		void IAnimatedVisualSource.Load()
 		{
+			if (_player == null)
+			{
+				return;
+			}
+
+			ApplyPlayState();
+
 			if (!_isPlaying)
 			{
 				return;
@@ -146,6 +243,10 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 
 		void IAnimatedVisualSource.Unload()
 		{
+			if (_player == null)
+			{
+				return;
+			}
 			if (!_isPlaying)
 			{
 				return;
@@ -160,27 +261,6 @@ namespace Microsoft.Toolkit.Uwp.UI.Lottie
 			WebAssemblyRuntime.InvokeJS(string.Concat(js));
 		}
 
-		Size IAnimatedVisualSource.Measure(Size availableSize)
-		{
-			var availableWidth = availableSize.Width;
-			var availableHeight = availableSize.Height;
-			if (double.IsInfinity(availableWidth))
-			{
-				if(double.IsInfinity(availableHeight))
-				{
-					return _compositionSize;
-				}
-
-				return new Size(availableHeight * _compositionSize.Width / _compositionSize.Height, availableHeight);
-			}
-
-			if (double.IsInfinity(availableHeight))
-			{
-				return new Size(availableWidth, availableWidth * _compositionSize.Height / _compositionSize.Width);
-
-			}
-
-			return availableSize;
-		}
+		private Size CompositionSize => _compositionSize;
 	}
 }

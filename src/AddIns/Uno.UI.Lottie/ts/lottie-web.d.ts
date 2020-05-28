@@ -93,6 +93,8 @@
 		container?: any;
 
 		scaleMode?: string;
+
+		rendererSettings?: any;
 	}
 }
 

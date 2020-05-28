@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -15,6 +16,48 @@ namespace Windows.UI.Xaml
 {
 	partial class UIElement
 	{
+		private class NativePointerId
+		{
+			private static readonly Dictionary<IntPtr, NativePointerId> _instances = new Dictionary<IntPtr, NativePointerId>();
+			private static uint _nextAvailablePointerId;
+
+			private readonly IntPtr _nativeId;
+			private readonly HashSet<UIElement> _leases = new HashSet<UIElement>();
+
+			public uint Value { get; }
+
+			private NativePointerId(IntPtr nativeId)
+			{
+				_nativeId = nativeId;
+				Value = _nextAvailablePointerId++;
+			}
+
+			public static NativePointerId Get(UIElement element, UITouch touch)
+			{
+				if (!_instances.TryGetValue(touch.Handle, out var id))
+				{
+					_instances[touch.Handle] = id = new NativePointerId(touch.Handle);
+				}
+
+				id._leases.Add(element);
+
+				return id;
+			}
+
+			public void Release(UIElement element)
+			{
+				if (_leases.Remove(element) && _leases.Count == 0)
+				{
+					if (_instances.Remove(_nativeId) && _instances.Count == 0)
+					{
+						// When all pointers are released, we reset the pointer ID to 0.
+						// This is required to detect a DoubleTap where pointer ID must be the same.
+						_nextAvailablePointerId = 0;
+					}
+				}
+			}
+		}
+
 		private IEnumerable<TouchesManager> _parentsTouchesManager;
 		private bool _isManipulating;
 
@@ -56,7 +99,8 @@ namespace Windows.UI.Xaml
 				var isHandledOrBubblingInManaged = default(bool);
 				foreach (UITouch touch in touches)
 				{
-					var args = new PointerRoutedEventArgs(touch, evt, this);
+					var id = NativePointerId.Get(this, touch);
+					var args = new PointerRoutedEventArgs(id.Value, touch, evt, this);
 
 					isHandledOrBubblingInManaged |= OnNativePointerEnter(args);
 					isHandledOrBubblingInManaged |= OnNativePointerDown(args);
@@ -98,7 +142,8 @@ namespace Windows.UI.Xaml
 				var isHandledOrBubblingInManaged = default(bool);
 				foreach (UITouch touch in touches)
 				{
-					var args = new PointerRoutedEventArgs(touch, evt, this);
+					var id = NativePointerId.Get(this, touch);
+					var args = new PointerRoutedEventArgs(id.Value, touch, evt, this);
 					var isPointerOver = touch.IsTouchInView(this);
 
 					// As we don't have enter/exit equivalents on iOS, we have to update the IsOver on each move
@@ -125,10 +170,13 @@ namespace Windows.UI.Xaml
 				var isHandledOrBubblingInManaged = default(bool);
 				foreach (UITouch touch in touches)
 				{
-					var args = new PointerRoutedEventArgs(touch, evt, this);
+					var id = NativePointerId.Get(this, touch);
+					var args = new PointerRoutedEventArgs(id.Value, touch, evt, this);
 
 					isHandledOrBubblingInManaged |= OnNativePointerUp(args);
 					isHandledOrBubblingInManaged |= OnNativePointerExited(args);
+
+					id.Release(this);
 				}
 
 				if (!isHandledOrBubblingInManaged)
@@ -152,7 +200,8 @@ namespace Windows.UI.Xaml
 				var isHandledOrBubblingInManaged = default(bool);
 				foreach (UITouch touch in touches)
 				{
-					var args = new PointerRoutedEventArgs(touch, evt, this);
+					var id = NativePointerId.Get(this, touch);
+					var args = new PointerRoutedEventArgs(id.Value, touch, evt, this);
 
 					// Note: We should have raise either PointerCaptureLost or PointerCancelled here depending of the reason which
 					//		 drives the system to bubble a lost. However we don't have this kind of information on iOS, and it's
@@ -160,6 +209,8 @@ namespace Windows.UI.Xaml
 					//		 on UWP when scroll starts (even if no capture are actives at this time).
 
 					isHandledOrBubblingInManaged |= OnNativePointerCancel(args, isSwallowedBySystem: true);
+
+					id.Release(this);
 				}
 
 				if (!isHandledOrBubblingInManaged)

@@ -7,6 +7,13 @@ namespace Windows.UI.Xaml.Media
 	#endif
 	public  partial class VisualTreeHelper 
 	{
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public static global::System.Collections.Generic.IReadOnlyList<global::Windows.UI.Xaml.Controls.Primitives.Popup> GetOpenPopupsForXamlRoot( global::Windows.UI.Xaml.XamlRoot xamlRoot)
+		{
+			throw new global::System.NotImplementedException("The member IReadOnlyList<Popup> VisualTreeHelper.GetOpenPopupsForXamlRoot(XamlRoot xamlRoot) is not implemented in Uno.");
+		}
+		#endif
 		// Skipping already declared method Windows.UI.Xaml.Media.VisualTreeHelper.GetOpenPopups(Windows.UI.Xaml.Window)
 		// Skipping already declared method Windows.UI.Xaml.Media.VisualTreeHelper.FindElementsInHostCoordinates(Windows.Foundation.Point, Windows.UI.Xaml.UIElement)
 		// Skipping already declared method Windows.UI.Xaml.Media.VisualTreeHelper.FindElementsInHostCoordinates(Windows.Foundation.Rect, Windows.UI.Xaml.UIElement)

@@ -227,6 +227,11 @@ namespace Uno.UI.DataBinding
 
 		private static Type InternalGetPropertyType(Type type, string property)
 		{
+			if(type == typeof(UnsetValue))
+			{
+				return null;
+			}
+
 			property = SanitizePropertyName(type, property);
 
 #if PROFILE
@@ -433,6 +438,11 @@ namespace Uno.UI.DataBinding
 
 		private static ValueGetterHandler InternalGetValueGetter(Type type, string property, DependencyPropertyValuePrecedences? precedence, bool allowPrivateMembers)
 		{
+			if (type == typeof(UnsetValue))
+			{
+				return UnsetValueGetter;
+			}
+
 			property = SanitizePropertyName(type, property);
 
 			if (IsIndexerFormat(property))
@@ -711,6 +721,11 @@ namespace Uno.UI.DataBinding
 		System.Diagnostics.CodeAnalysis.SuppressMessage("Microsoft.Maintainability", "CA1502:AvoidExcessiveComplexity", Justification = "To be refactored")]
 		private static ValueSetterHandler InternalGetValueSetter(Type type, string property, bool convert, DependencyPropertyValuePrecedences precedence)
 		{
+			if (type == typeof(UnsetValue))
+			{
+				return UnsetValueSetter;
+			}
+
 			property = SanitizePropertyName(type, property);
 
 			Func<Func<Type>, object, object> convertSelector =
@@ -886,6 +901,11 @@ namespace Uno.UI.DataBinding
 
 		private static ValueGetterHandler InternalGetPrecedenceSpecificValueGetter(Type type, string property, DependencyPropertyValuePrecedences precedence)
 		{
+			if (type == typeof(UnsetValue))
+			{
+				return UnsetValueGetter;
+			}
+
 			property = SanitizePropertyName(type, property);
 
 			var dp = FindDependencyProperty(type, property);
@@ -909,6 +929,11 @@ namespace Uno.UI.DataBinding
 
 		private static ValueGetterHandler InternalGetSubstituteValueGetter(Type type, string property, DependencyPropertyValuePrecedences precedence)
 		{
+			if (type == typeof(UnsetValue))
+			{
+				return UnsetValueGetter;
+			}
+
 			property = SanitizePropertyName(type, property);
 
 			var dp = FindDependencyProperty(type, property);
@@ -932,6 +957,11 @@ namespace Uno.UI.DataBinding
 
 		private static ValueUnsetterHandler InternalGetValueUnsetter(Type type, string property, DependencyPropertyValuePrecedences precedence)
 		{
+			if (type == typeof(UnsetValue))
+			{
+				return _ => { };
+			}
+
 			property = SanitizePropertyName(type, property);
 
 			var dp = FindDependencyProperty(type, property) ?? FindAttachedProperty(type, property);
@@ -1029,6 +1059,11 @@ namespace Uno.UI.DataBinding
 			}
 			return value;
 		}
+
+		private static object UnsetValueGetter(object unused)
+			=> DependencyProperty.UnsetValue;
+
+		private static void UnsetValueSetter(object unused, object unused2) { }
 	}
 }
 #endif

@@ -2,16 +2,16 @@
 class WindowManagerSetElementTransformParams
 {
 	/* Pack=8 */
-	M11 : number;
-	M12 : number;
-	M21 : number;
-	M22 : number;
-	M31 : number;
-	M32 : number;
-	HtmlId : number;
+	public M11 : number;
+	public M12 : number;
+	public M21 : number;
+	public M22 : number;
+	public M31 : number;
+	public M32 : number;
+	public HtmlId : number;
 	public static unmarshal(pData:number) : WindowManagerSetElementTransformParams
 	{
-		let ret = new WindowManagerSetElementTransformParams();
+		const ret = new WindowManagerSetElementTransformParams();
 		
 		{
 			ret.M11 = Number(Module.getValue(pData + 0, "double"));

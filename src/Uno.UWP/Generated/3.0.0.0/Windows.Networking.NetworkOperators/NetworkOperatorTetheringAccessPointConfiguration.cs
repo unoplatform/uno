@@ -37,6 +37,20 @@ namespace Windows.Networking.NetworkOperators
 		#endif
 		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
+		public  global::Windows.Networking.NetworkOperators.TetheringWiFiBand Band
+		{
+			get
+			{
+				throw new global::System.NotImplementedException("The member TetheringWiFiBand NetworkOperatorTetheringAccessPointConfiguration.Band is not implemented in Uno.");
+			}
+			set
+			{
+				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration", "TetheringWiFiBand NetworkOperatorTetheringAccessPointConfiguration.Band");
+			}
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
 		public NetworkOperatorTetheringAccessPointConfiguration() 
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration", "NetworkOperatorTetheringAccessPointConfiguration.NetworkOperatorTetheringAccessPointConfiguration()");
@@ -47,5 +61,21 @@ namespace Windows.Networking.NetworkOperators
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.Ssid.set
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.Passphrase.get
 		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.Passphrase.set
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  bool IsBandSupported( global::Windows.Networking.NetworkOperators.TetheringWiFiBand band)
+		{
+			throw new global::System.NotImplementedException("The member bool NetworkOperatorTetheringAccessPointConfiguration.IsBandSupported(TetheringWiFiBand band) is not implemented in Uno.");
+		}
+		#endif
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+		[global::Uno.NotImplemented]
+		public  global::Windows.Foundation.IAsyncOperation<bool> IsBandSupportedAsync( global::Windows.Networking.NetworkOperators.TetheringWiFiBand band)
+		{
+			throw new global::System.NotImplementedException("The member IAsyncOperation<bool> NetworkOperatorTetheringAccessPointConfiguration.IsBandSupportedAsync(TetheringWiFiBand band) is not implemented in Uno.");
+		}
+		#endif
+		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.Band.get
+		// Forced skipping of method Windows.Networking.NetworkOperators.NetworkOperatorTetheringAccessPointConfiguration.Band.set
 	}
 }

@@ -1,6 +1,6 @@
 ﻿using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.Practices.ServiceLocation;
+using CommonServiceLocator;
 using System.Linq;
 using Uno.Extensions;
 

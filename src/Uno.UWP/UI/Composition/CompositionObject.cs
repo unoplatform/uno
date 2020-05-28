@@ -9,8 +9,6 @@ namespace Windows.UI.Composition
 
 		public Compositor Compositor => Compositor.Current;
 
-		public UI.Core.CoreDispatcher Dispatcher => UI.Core.CoreDispatcher.Main;
-
 		public void StartAnimation(string propertyName, CompositionAnimation animation)
 		{
 			StartAnimationCore(propertyName, animation);

@@ -1,4 +1,6 @@
-﻿namespace Uno.UI {
+﻿
+// eslint-disable-next-line @typescript-eslint/no-namespace
+namespace Uno.UI {
 
 	export class WindowManager {
 
@@ -130,10 +132,18 @@
 
 		private cursorStyleElement: HTMLElement;
 
-		private allActiveElementsById: { [id: number]: HTMLElement | SVGElement } = {};
+		private allActiveElementsById: { [id: string]: HTMLElement | SVGElement } = {};
+		private uiElementRegistrations: {
+			[id: string]: {
+				typeName: string;
+				isFrameworkElement: boolean;
+				classNames: string[];
+			};
+		} = {};
 
 		private static resizeMethod: any;
 		private static dispatchEventMethod: any;
+		private static focusInMethod: any;
 		private static getDependencyPropertyValueMethod: any;
 		private static setDependencyPropertyValueMethod: any;
 
@@ -215,16 +225,14 @@
 
 			const params = WindowManagerCreateContentParams.unmarshal(pParams);
 
-			const def = <IContentDefinition>{
-				id: params.HtmlId,
+			const def = {
+				id: this.handleToString(params.HtmlId),
 				handle: params.Handle,
 				isFocusable: params.IsFocusable,
-				isFrameworkElement: params.IsFrameworkElement,
 				isSvg: params.IsSvg,
 				tagName: params.TagName,
-				type: params.Type,
-				classes: params.Classes
-			};
+				uiElementRegistrationId: params.UIElementRegistrationId,
+			} as IContentDefinition;
 
 			this.createContentInternal(def);
 
@@ -237,10 +245,18 @@
 				contentDefinition.isSvg
 					? document.createElementNS("http://www.w3.org/2000/svg", contentDefinition.tagName)
 					: document.createElement(contentDefinition.tagName);
-			element.id = String(contentDefinition.id);
-			element.setAttribute("XamlType", contentDefinition.type);
-			element.setAttribute("XamlHandle", `${contentDefinition.handle}`);
-			if (contentDefinition.isFrameworkElement) {
+
+			element.id = contentDefinition.id;
+
+			const uiElementRegistration =
+				this.uiElementRegistrations[this.handleToString(contentDefinition.uiElementRegistrationId)];
+			if (!uiElementRegistration) {
+				throw `UIElement registration id ${contentDefinition.uiElementRegistrationId} is unknown.`;
+			}
+
+			element.setAttribute("XamlType", uiElementRegistration.typeName);
+			element.setAttribute("XamlHandle", this.handleToString(contentDefinition.handle));
+			if (uiElementRegistration.isFrameworkElement) {
 				this.setAsUnarranged(element);
 			}
 			if (element.hasOwnProperty("tabindex")) {
@@ -250,17 +266,46 @@
 			}
 
 			if (contentDefinition) {
-				for (const className of contentDefinition.classes) {
-					element.classList.add(`uno-${className}`);
+				let classes = element.classList.value; 
+				for (const className of uiElementRegistration.classNames) {
+					classes += " uno-" + className;
 				}
+
+				element.classList.value = classes;
 			}
 
 			// Add the html element to list of elements
 			this.allActiveElementsById[contentDefinition.id] = element;
 		}
 
+		public registerUIElement(typeName: string, isFrameworkElement: boolean, classNames: string[]): number {
+
+			const registrationId = Object.keys(this.uiElementRegistrations).length;
+
+			this.uiElementRegistrations[this.handleToString(registrationId)] = {
+				classNames: classNames,
+				isFrameworkElement: isFrameworkElement,
+				typeName: typeName,
+			};
+
+			return registrationId;
+		}
+
+		public registerUIElementNative(pParams: number, pReturn: number): boolean {
+			const params = WindowManagerRegisterUIElementParams.unmarshal(pParams);
+
+			const registrationId = this.registerUIElement(params.TypeName, params.IsFrameworkElement, params.Classes);
+
+			const ret = new WindowManagerRegisterUIElementReturn();
+			ret.RegistrationId = registrationId;
+
+			ret.marshal(pReturn);
+
+			return true;
+		}
+
 		public getView(elementHandle: number): HTMLElement | SVGElement {
-			const element = this.allActiveElementsById[elementHandle];
+			const element = this.allActiveElementsById[this.handleToString(elementHandle)];
 			if (!element) {
 				throw `Element id ${elementHandle} not found.`;
 			}
@@ -498,7 +543,7 @@
 			const params = WindowManagerSetStyleDoubleParams.unmarshal(pParams);
 			const element = this.getView(params.HtmlId);
 
-			element.style.setProperty(params.Name, String(params.Value));
+			element.style.setProperty(params.Name, this.handleToString(params.Value));
 
 			return true;
 		}
@@ -623,6 +668,18 @@
 			return true;
 		}
 
+		private setPointerEvents(htmlId: number, enabled: boolean) {
+			const element = this.getView(htmlId);
+			element.style.pointerEvents = enabled ? "auto" : "none";
+		}
+
+		public setPointerEventsNative(pParams: number): boolean {
+			const params = WindowManagerSetPointerEventsParams.unmarshal(pParams);
+			this.setPointerEvents(params.HtmlId, params.Enabled);
+
+			return true;
+		}
+
 		/**
 			* Load the specified URL into a new tab or window
 			* @param url URL to load
@@ -672,10 +729,9 @@
 			elementId: number,
 			eventName: string,
 			onCapturePhase: boolean = false,
-			eventFilterName?: string,
-			eventExtractorName?: string
+			eventExtractorId: number,
 		): string {
-			this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventFilterName, eventExtractorName);
+			this.registerEventOnViewInternal(elementId, eventName, onCapturePhase, eventExtractorId);
 			return "ok";
 		}
 
@@ -690,7 +746,12 @@
 		): boolean {
 			const params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
 
-			this.registerEventOnViewInternal(params.HtmlId, params.EventName, params.OnCapturePhase, params.EventFilterName, params.EventExtractorName);
+			this.registerEventOnViewInternal(
+				params.HtmlId,
+				params.EventName,
+				params.OnCapturePhase,
+				params.EventExtractorId);
+
 			return true;
 		}
 
@@ -728,11 +789,10 @@
 			elementId: number,
 			eventName: string,
 			onCapturePhase: boolean = false,
-			eventFilterName?: string,
-			eventExtractorName?: string
+			eventExtractorId: number,
 		): void {
 			const element = this.getView(elementId);
-			const eventExtractor = this.getEventExtractor(eventExtractorName);
+			const eventExtractor = this.getEventExtractor(eventExtractorId);
 			const eventHandler = (event: Event) => {
 				const eventPayload = eventExtractor
 					? `${eventExtractor(event)}`
@@ -834,47 +894,10 @@
 		}
 
 		/**
-		 * left pointer event filter to be used with registerEventOnView
-		 * @param evt
-		 */
-		private leftPointerEventFilter(evt: PointerEvent): boolean {
-			return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 && (!evt.button || evt.button === 0) : false;
-		}
-
-		/**
-		 * default event filter to be used with registerEventOnView to
-		 * use for most routed events
-		 * @param evt
-		 */
-		private defaultEventFilter(evt: Event): boolean {
-			return evt ? evt.eventPhase === 2 || evt.eventPhase === 3 : false;
-		}
-
-		/**
-		 * Gets the event filter function. See UIElement.HtmlEventFilter
-		 * @param eventFilterName an event filter name.
-		 */
-		private getEventFilter(eventFilterName: string): any {
-
-			if (eventFilterName) {
-				switch (eventFilterName) {
-					case "LeftPointerEventFilter":
-						return this.leftPointerEventFilter;
-					case "Default":
-						return this.defaultEventFilter;
-				}
-
-				throw `Event filter ${eventFilterName} is not supported`;
-			}
-
-			return null;
-		}
-
-		/**
 		 * pointer event extractor to be used with registerEventOnView
 		 * @param evt
 		 */
-		private pointerEventExtractor(evt: PointerEvent): string {
+		private pointerEventExtractor(evt: PointerEvent|WheelEvent): string {
 			if (!evt) {
 				return "";
 			}
@@ -891,7 +914,60 @@
 				src = src.parentElement;
 			}
 
-			return `${evt.pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.buttons};${evt.button};${evt.pointerType};${srcHandle};${evt.timeStamp};${evt.pressure}`;
+			let pointerId: number, pointerType: string, pressure: number;
+			let wheelDeltaX: number, wheelDeltaY: number;
+			if (evt instanceof WheelEvent) {
+				pointerId = (evt as any).mozInputSource ? 0 : 1; // Try to match the mouse pointer ID 0 for FF, 1 for others
+				pointerType = "mouse";
+				pressure = 0.5; // like WinUI
+				wheelDeltaX = evt.deltaX;
+				wheelDeltaY = evt.deltaY;
+
+				switch (evt.deltaMode) {
+					case WheelEvent.DOM_DELTA_LINE: // Actually this is supported only by FF
+						const lineSize = WindowManager.wheelLineSize;
+						wheelDeltaX *= lineSize;
+						wheelDeltaY *= lineSize;
+						break;
+					case WheelEvent.DOM_DELTA_PAGE:
+						wheelDeltaX *= document.documentElement.clientWidth;
+						wheelDeltaY *= document.documentElement.clientHeight;
+						break;
+				}
+			} else {
+				pointerId = evt.pointerId;
+				pointerType = evt.pointerType;
+				pressure = evt.pressure;
+				wheelDeltaX = 0;
+				wheelDeltaY = 0;
+			}
+
+			return `${pointerId};${evt.clientX};${evt.clientY};${(evt.ctrlKey ? "1" : "0")};${(evt.shiftKey ? "1" : "0")};${evt.buttons};${evt.button};${pointerType};${srcHandle};${evt.timeStamp};${pressure};${wheelDeltaX};${wheelDeltaY}`;
+		}
+
+		private static _wheelLineSize : number = undefined;
+		private static get wheelLineSize(): number {
+			// In web browsers, scroll might happen by pixels, line or page.
+			// But WinUI works only with pixels, so we have to convert it before send the value to the managed code.
+			// The issue is that there is no easy way get the "size of a line", instead we have to determine the CSS "line-height"
+			// defined in the browser settings. 
+			// https://stackoverflow.com/questions/20110224/what-is-the-height-of-a-line-in-a-wheel-event-deltamode-dom-delta-line
+			if (this._wheelLineSize == undefined) {
+				const el = document.createElement('div');
+				el.style.fontSize = 'initial';
+				el.style.display = 'none';
+				document.body.appendChild(el);
+				const fontSize = window.getComputedStyle(el).fontSize;
+				document.body.removeChild(el);
+
+				this._wheelLineSize = fontSize ? parseInt(fontSize) : 16; /* 16 = The current common default font size */
+
+				// Based on observations, even if the even reports 3 lines (the settings of windows),
+				// the browser will actually scroll of about 6 lines of text.
+				this._wheelLineSize *= 2.0;
+			}
+
+			return this._wheelLineSize;
 		}
 
 		/**
@@ -952,30 +1028,34 @@
 		 * Gets the event extractor function. See UIElement.HtmlEventExtractor
 		 * @param eventExtractorName an event extractor name.
 		 */
-		private getEventExtractor(eventExtractorName: string): (evt: Event) => string {
+		private getEventExtractor(eventExtractorId: number): (evt: Event) => string {
 
-			if (eventExtractorName) {
-				switch (eventExtractorName) {
-					case "PointerEventExtractor":
+			if (eventExtractorId) {
+				//
+				// NOTE TO MAINTAINERS: Keep in sync with Windows.UI.Xaml.UIElement.HtmlEventExtractor
+				//
+
+				switch (eventExtractorId) {
+					case 1:
 						return this.pointerEventExtractor;
 
-					case "KeyboardEventExtractor":
+					case 3:
 						return this.keyboardEventExtractor;
 
-					case "TappedEventExtractor":
+					case 2:
 						return this.tappedEventExtractor;
 
-					case "FocusEventExtractor":
+					case 4:
 						return this.focusEventExtractor;
 
-					case "CustomEventDetailJsonExtractor":
+					case 6:
 						return this.customEventDetailExtractor;
 
-					case "CustomEventDetailStringExtractor":
+					case 5:
 						return this.customEventDetailStringExtractor;
 				}
 
-				throw `Event filter ${eventExtractorName} is not supported`;
+				throw `Event extractor ${eventExtractorId} is not supported`;
 			}
 
 			return null;
@@ -1186,6 +1266,19 @@
 
 		private getBBoxInternal(elementId: number): any {
 			return (<any>this.getView(elementId)).getBBox();
+		}
+
+		public setSvgElementRect(pParams: number): boolean {
+			const params = WindowManagerSetSvgElementRectParams.unmarshal(pParams);
+
+			const element = this.getView(params.HtmlId) as any;
+
+			element.x.baseVal.value = params.X;
+			element.y.baseVal.value = params.Y;
+			element.width.baseVal.value = params.Width;
+			element.height.baseVal.value = params.Height;
+
+			return true;
 		}
 
 		/**
@@ -1589,6 +1682,10 @@
 				if (!WindowManager.dispatchEventMethod) {
 					WindowManager.dispatchEventMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.UIElement:DispatchEvent");
 				}
+
+				if (!WindowManager.focusInMethod) {
+					WindowManager.focusInMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Input.FocusManager:ReceiveFocusNative");
+				}
 			}
 		}
 
@@ -1597,8 +1694,9 @@
 			if (!this.containerElement) {
 				// If not found, we simply create a new one.
 				this.containerElement = document.createElement("div");
-				document.body.appendChild(this.containerElement);
 			}
+			document.body.addEventListener("focusin", this.onfocusin);
+			document.body.appendChild(this.containerElement);
 
 			window.addEventListener("resize", x => this.resize());
 			window.addEventListener("contextmenu", x => {
@@ -1606,6 +1704,7 @@
 					x.preventDefault();
 				}
 			})
+			window.addEventListener("blur", this.onWindowBlur);
 		}
 
 		private removeLoading() {
@@ -1634,6 +1733,28 @@
 			}
 		}
 
+		private onfocusin(event: Event) {
+			if (WindowManager.isHosted) {
+				console.warn("Focus not supported in hosted mode");
+			}
+			else {
+				const newFocus = event.target;
+				const handle = (newFocus as HTMLElement).getAttribute("XamlHandle");
+				const htmlId = handle ? Number(handle) : -1; // newFocus may not be an Uno element
+				WindowManager.focusInMethod(htmlId);
+			}
+		}
+
+		private onWindowBlur() {
+			if (WindowManager.isHosted) {
+				console.warn("Focus not supported in hosted mode");
+			}
+			else {
+				// Unset managed focus when Window loses focus
+				WindowManager.focusInMethod(-1);
+			}
+		}
+
 		private dispatchEvent(element: HTMLElement | SVGElement, eventName: string, eventPayload: string = null): boolean {
 			const htmlId = Number(element.getAttribute("XamlHandle"));
 
@@ -1647,7 +1768,7 @@
 				// Dispatch to the C# backed UnoDispatch class. Events propagated
 				// this way always succeed because synchronous calls are not possible
 				// between the host and the browser, unlike wasm.
-				UnoDispatch.dispatch(String(htmlId), eventName, eventPayload);
+				UnoDispatch.dispatch(this.handleToString(htmlId), eventName, eventPayload);
 				return true;
 			}
 			else {
@@ -1662,6 +1783,12 @@
 				return false;
 			}
 			return rootElement === element || rootElement.contains(element);
+		}
+
+		private handleToString(handle: number): string {
+
+			// Fastest conversion as of 2020-03-25 (when compared to String(handle) or handle.toString())
+			return handle + "";
 		}
 
 		public setCursor(cssCursor: string): string {

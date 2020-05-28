@@ -108,21 +108,21 @@ namespace Windows.Storage
 		}
 		#endif
 		// Forced skipping of method Windows.Storage.ApplicationData.Version.get
-		#if false || false || NET461 || false || false
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction SetVersionAsync( uint desiredVersion,  global::Windows.Storage.ApplicationDataSetVersionHandler handler)
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.SetVersionAsync(uint desiredVersion, ApplicationDataSetVersionHandler handler) is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET461 || false || false
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction ClearAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncAction ApplicationData.ClearAsync() is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET461 || false || false
+		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncAction ClearAsync( global::Windows.Storage.ApplicationDataLocality locality)
 		{
