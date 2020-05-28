@@ -67,14 +67,25 @@ namespace Uno.UI
 			return default(T);
 		}
 
-		internal static T ResolveTopLevelResource<T>(object key)
+		/// <summary>
+		/// Retrieve a resource from top-level resources (Application-level and system level).
+		/// </summary>
+		/// <typeparam name="T">The expected resource type</typeparam>
+		/// <param name="key">The resource key to search for</param>
+		/// <param name="fallbackValue">Fallback value to use if no resource is found</param>
+		/// <returns>The resource, is one of the given key and type is found, else <paramref name="fallbackValue"/></returns>
+		/// <remarks>
+		/// Use <see cref="ResolveTopLevelResource{T}(object, T)"/> when user-defined Application-level values should be considered (most
+		/// of the time), use <see cref="GetSystemResource{T}(object)"/> if they shouldn't
+		/// </remarks>
+		internal static T ResolveTopLevelResource<T>(object key, T fallbackValue = default)
 		{
 			if (TryTopLevelRetrieval(key, context: null, out var value) && value is T tValue)
 			{
 				return tValue;
 			}
 
-			return default(T);
+			return fallbackValue;
 		}
 
 		/// <summary>
@@ -156,10 +167,11 @@ namespace Uno.UI
 				return false;
 			}
 
-			if (_registeredDictionariesByAssembly.TryGetValue(parseContext.AssemblyName, out var assemblyDict)) {
+			if (_registeredDictionariesByAssembly.TryGetValue(parseContext.AssemblyName, out var assemblyDict))
+			{
 				foreach (var kvp in assemblyDict)
 				{
-					var rd = kvp.Value as ResourceDictionary ;
+					var rd = kvp.Value as ResourceDictionary;
 					if (rd.TryGetValue(resourceKey, out value))
 					{
 						return true;
@@ -173,6 +185,10 @@ namespace Uno.UI
 		/// <summary>
 		/// Get a system-level resource with the given key.
 		/// </summary>
+		/// <remarks>
+		/// Use <see cref="ResolveTopLevelResource{T}(object, T)"/> when user-defined Application-level values should be considered (most
+		/// of the time), use <see cref="GetSystemResource{T}(object)"/> if they shouldn't
+		/// </remarks>
 		internal static T GetSystemResource<T>(object key)
 		{
 			if (MasterDictionary.TryGetValue(key, out var value) && value is T t)
@@ -240,7 +256,7 @@ namespace Uno.UI
 				var assemblyDict = _registeredDictionariesByAssembly.FindOrCreate(context.AssemblyName, () => new ResourceDictionary());
 				var initializer = new ResourceDictionary.ResourceInitializer(dictionary);
 				_assemblyRef++; // We don't actually use this key, we just need it to be unique
-				assemblyDict[_assemblyRef] = initializer; 
+				assemblyDict[_assemblyRef] = initializer;
 			}
 		}
 
