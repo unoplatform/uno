@@ -3,7 +3,7 @@ using System;
 using Windows.UI.Xaml;
 using SamplesApp.Windows_UI_Xaml_Controls.WebView;
 using Windows.UI.Xaml.Controls;
-using Windows.Web.Http;
+using System.Net.Http;
 
 namespace Uno.UI.Samples.Content.UITests.WebView
 {
