@@ -40,31 +40,6 @@
 	</ItemGroup>
 	
 	<ItemGroup>
-	  <UpToDateCheckInput Remove="Devices\Midi\MidiActiveSensingMessage.cs" />
-	  <UpToDateCheckInput Remove="Devices\Midi\MidiChannelPressureMessage.cs" />
-	  <UpToDateCheckInput Remove="Devices\Midi\MidiContinueMessage.cs" />
-	  <UpToDateCheckInput Remove="Devices\Midi\MidiControlChangeMessage.cs" />
-	  <UpToDateCheckInput Remove="Devices\Midi\MidiMessageReceivedEventArgs.cs" />
-	  <UpToDateCheckInput Remove="Devices\Midi\MidiPitchBendChangeMessage.cs" />
-	  <UpToDateCheckInput Remove="Devices\Midi\MidiPolyphonicKeyPressureMessage.cs" />
-	  <UpToDateCheckInput Remove="Devices\Midi\MidiProgramChangeMessage.cs" />
-	  <UpToDateCheckInput Remove="Devices\Midi\MidiSongPositionPointerMessage.cs" />
-	  <UpToDateCheckInput Remove="Devices\Midi\MidiSongSelectMessage.cs" />
-	  <UpToDateCheckInput Remove="Devices\Midi\MidiStartMessage.cs" />
-	  <UpToDateCheckInput Remove="Devices\Midi\MidiStopMessage.cs" />
-	  <UpToDateCheckInput Remove="Devices\Midi\MidiSystemExclusiveMessage.cs" />
-	  <UpToDateCheckInput Remove="Devices\Midi\MidiSystemResetMessage.cs" />
-	  <UpToDateCheckInput Remove="Devices\Midi\MidiTimeCodeMessage.cs" />
-	  <UpToDateCheckInput Remove="Devices\Midi\MidiTimingClockMessage.cs" />
-	  <UpToDateCheckInput Remove="Devices\Midi\MidiTuneRequestMessage.cs" />
-	  <UpToDateCheckInput Remove="Storage\Streams\ByteOrder.cs" />
-	  <UpToDateCheckInput Remove="Storage\Streams\DataWriter.cs" />
-	  <UpToDateCheckInput Remove="Storage\Streams\DataWriterStoreOperation.cs" />
-	  <UpToDateCheckInput Remove="Storage\Streams\IDataWriter.cs" />
-	  <UpToDateCheckInput Remove="Storage\Streams\UnicodeEncoding.cs" />
-	</ItemGroup>
-	
-	<ItemGroup>
 		<PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
 		<PackageReference Include="Uno.SourceGenerationTasks" />
 		<PackageReference Include="Uno.Core" />

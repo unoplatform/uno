@@ -48,7 +48,12 @@ namespace Windows.Devices.Midi
 				throw new InvalidOperationException("This instance is not listening to MIDI input.");
 			}
 
-			var managedTimestamp = TimeSpan.FromMilliseconds(timestamp);
+            if (serializedMessage is null)
+            {
+                throw new ArgumentNullException(nameof(serializedMessage));
+            }
+
+            var managedTimestamp = TimeSpan.FromMilliseconds(timestamp);
 
 			var splitMessage = serializedMessage.Split(':');
 
