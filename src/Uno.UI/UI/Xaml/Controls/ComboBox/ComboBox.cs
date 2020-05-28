@@ -125,6 +125,8 @@ namespace Windows.UI.Xaml.Controls
 						_contentPresenter.DataContext = null; // Remove problematic inherited DataContext
 					}
 				};
+
+				UpdateCommonStates();
 			}
 		}
 
