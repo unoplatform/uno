@@ -208,7 +208,7 @@ namespace Uno.UI {
 					scaleMode = "xMidYMid slice";
 					break;
 				case "Fill":
-					scaleMode = "noScale";
+					scaleMode = "none";
 					break;
 			}
 
