@@ -1,9 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Numerics;
 using System.Reflection;
 using Windows.UI;
+using Windows.UI.Composition;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
+using Windows.UI.Xaml.Hosting;
+using Windows.UI.Xaml.Shapes;
 using Uno.Extensions;
 using Uno.Logging;
 
@@ -20,7 +24,7 @@ namespace Uno.UI.Toolkit
 #endif
 	public static class UIElementExtensions
 	{
-#region Elevation
+		#region Elevation
 
 		public static void SetElevation(this UIElement element, double elevation)
 		{
@@ -53,6 +57,8 @@ namespace Uno.UI.Toolkit
 
 #if __IOS__
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, CGPath path = null)
+#elif NETFX_CORE
+		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor, DependencyObject host = null, CornerRadius cornerRadius = default(CornerRadius))
 #else
 		internal static void SetElevationInternal(this DependencyObject element, double elevation, Color shadowColor)
 #endif
@@ -103,11 +109,54 @@ namespace Uno.UI.Toolkit
 				}
 			}
 #elif NETFX_CORE
-			// TODO
+			if (element is UIElement uiElement)
+			{
+				SpriteVisual spriteVisual;
+				Compositor compositor = ElementCompositionPreview.GetElementVisual(uiElement).Compositor;
+				spriteVisual = compositor.CreateSpriteVisual();
+
+				Vector2 newSize = new Vector2(0, 0);
+				if (uiElement is FrameworkElement contentFE)
+				{
+					newSize = new Vector2((float)contentFE.ActualWidth, (float)contentFE.ActualHeight);
+				}
+
+				spriteVisual.Size = newSize;
+				DropShadow shadow = compositor.CreateDropShadow();
+				shadow.Offset = new Vector3(0, (float)elevation, -(float)elevation);
+
+				// GetAlphaMask is only available for shapes, images, and textblocks
+				if (uiElement is Shape shape)
+				{
+					shadow.Mask = shape.GetAlphaMask();
+				}
+				else if (uiElement is Image image)
+				{
+					shadow.Mask = image.GetAlphaMask();
+				}
+				else if (uiElement is TextBlock tb)
+				{
+					shadow.Mask = tb.GetAlphaMask();
+				}
+
+				if (!cornerRadius.Equals(default(CornerRadius)))
+				{
+					// Only one value for radius cnan be specified, using BottomLeft
+					shadow.BlurRadius = (float)cornerRadius.BottomLeft;
+				}
+
+				shadow.Color = shadowColor;
+				spriteVisual.Shadow = shadow;
+
+				if (host != null && host is UIElement uiHost)
+				{
+					ElementCompositionPreview.SetElementChildVisual(uiHost, spriteVisual);
+				}
+			}
 #endif
 		}
 
-#endregion
+		#endregion
 
 		internal static Thickness GetPadding(this UIElement uiElement)
 		{
