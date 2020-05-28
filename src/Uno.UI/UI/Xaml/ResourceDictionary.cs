@@ -41,12 +41,9 @@ namespace Windows.UI.Xaml
 
 		private IDictionary<object, object> _themeDictionaries;
 		public IDictionary<object, object> ThemeDictionaries { get => _themeDictionaries = _themeDictionaries ?? new ResourceDictionary(); }
-		public object Lookup(object key)
+		internal object Lookup(object key)
 		{
-			object value;
-
-			var keyName = key;
-			if (!_values.TryGetValue(keyName, out value))
+			if (!TryGetValue(key, out var value))
 			{
 				return null;
 			}
