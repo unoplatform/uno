@@ -968,7 +968,7 @@
 	  </Properties>
 	</IgnoreSet>
 
-	<IgnoreSet baseVersion="2.4.0">
+	<IgnoreSet baseVersion="2.4.4">
 	  <Types>
 		<Member
 			  fullName="Windows.Gaming.UI.GameMonitor"
