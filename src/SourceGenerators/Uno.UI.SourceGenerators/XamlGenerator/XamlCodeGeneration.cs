@@ -20,19 +20,19 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 	{
 		internal const string ParseContextPropertyName = "__ParseContext_";
 
-		private string[] _xamlSourceFiles;
-		private string[] _xamlSourceLinks;
-		private string _targetPath;
+		private readonly string[] _xamlSourceFiles;
+		private readonly string[] _xamlSourceLinks;
+		private readonly string _targetPath;
 		private readonly string _defaultLanguage;
-		private bool _isWasm;
-		private string _defaultNamespace;
-		private string[] _assemblySearchPaths;
-		private RoslynMetadataHelper _metadataHelper;
-		private string[] _excludeXamlNamespaces;
-		private string[] _includeXamlNamespaces;
-		private string[] _analyzerSuppressions;
-		private string[] _resourceFiles;
-		private Dictionary<string, string[]> _uiAutomationMappings;
+		private readonly bool _isWasm;
+		private readonly string _defaultNamespace;
+		private readonly string[] _assemblySearchPaths;
+		private readonly RoslynMetadataHelper _metadataHelper;
+		private readonly string[] _excludeXamlNamespaces;
+		private readonly string[] _includeXamlNamespaces;
+		private readonly string[] _analyzerSuppressions;
+		private readonly string[] _resourceFiles;
+		private readonly Dictionary<string, string[]> _uiAutomationMappings;
 		private readonly ProjectInstance _projectInstance;
 		private readonly string _configuration;
 		private readonly bool _isDebug;

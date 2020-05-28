@@ -199,7 +199,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		private static string ReplaceFirst(string targetString, string oldValue, string newValue)
 		{
-			var index = targetString.IndexOf(oldValue);
+			var index = targetString.IndexOf(oldValue, StringComparison.InvariantCulture);
 			if (index < 0)
 			{
 				throw new InvalidOperationException();

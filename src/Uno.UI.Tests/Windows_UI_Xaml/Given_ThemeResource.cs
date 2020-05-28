@@ -146,7 +146,6 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 				{
 					var textDarkThemeMarkup = control.TemplateFromResourceControl.TextBlock6.Text;
 					Assert.AreEqual("LocalVisualTreeDark", textDarkThemeMarkup); //ThemeResource markup change lookup uses the visual tree (rather than original XAML namescope)
-					;
 				}
 			}
 			finally

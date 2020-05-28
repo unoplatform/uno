@@ -29,7 +29,6 @@ namespace Uno.UI.Tests.App.Views
 
 		private static void OnPocoChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			;
 		}
 
 		public TimeSpan MyInterval

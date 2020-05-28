@@ -38,7 +38,7 @@ namespace Uno.UI.Xaml
 		}
 
 		internal static bool IsAbsolutePath(string relativeTargetPath) => relativeTargetPath.StartsWith(AppXIdentifier)
-			|| relativeTargetPath.StartsWith(MSResourceIdentifier);
+			|| relativeTargetPath.StartsWith(MSResourceIdentifier, StringComparison.InvariantCulture);
 
 		private static string GetAbsolutePath(string originDirectory, string relativeTargetPath)
 		{

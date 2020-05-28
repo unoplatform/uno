@@ -264,7 +264,15 @@ namespace Uno.UI
 		/// Retrieve the ResourceDictionary mapping to a given source. Throws an exception if none is found.
 		/// </summary>
 		[EditorBrowsable(EditorBrowsableState.Never)]
-		public static ResourceDictionary RetrieveDictionaryForSource(Uri source) => RetrieveDictionaryForSource(source.AbsoluteUri, currentAbsolutePath: null);
+		public static ResourceDictionary RetrieveDictionaryForSource(Uri source)
+		{
+			if (source is null)
+			{
+				throw new ArgumentNullException(nameof(source));
+			}
+
+			return RetrieveDictionaryForSource(source.AbsoluteUri, currentAbsolutePath: null);
+		}
 
 		/// <summary>
 		/// Retrieve the ResourceDictionary mapping to a given source. Throws an exception if none is found.
