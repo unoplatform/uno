@@ -626,15 +626,16 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							using (writer.BlockInvariant("public {0} Build()", kvp.Value.ReturnType))
 							{
 								writer.AppendLineInvariant("var nameScope = new global::Windows.UI.Xaml.NameScope();");
-								writer.AppendLineInvariant("var child = ");
+								writer.AppendLineInvariant($"{kvp.Value.ReturnType} __rootInstance = null;");
+								writer.AppendLineInvariant("__rootInstance = ");
 
 								// Is never considered in Global Resources because class encapsulation
 								BuildChild(writer, contentOwner, contentOwner.Objects.First());
 
 								writer.AppendLineInvariant(";");
-								writer.AppendLineInvariant("if (child is DependencyObject d) Windows.UI.Xaml.NameScope.SetNameScope(d, nameScope);");
+								writer.AppendLineInvariant("if (__rootInstance is DependencyObject d) Windows.UI.Xaml.NameScope.SetNameScope(d, nameScope);");
 
-								writer.AppendLineInvariant("return child;");
+								writer.AppendLineInvariant("return __rootInstance;");
 							}
 
 							BuildBackingFields(writer);
@@ -2460,57 +2461,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 									}
 									else if (eventSymbol != null)
 									{
-										// If a binding is inside a DataTemplate, the binding root in the case of an x:Bind is
-										// the DataContext, not the control's instance.
-										var isInsideDataTemplate = IsMemberInsideFrameworkTemplate(member.Owner);
-
-										void writeEvent(string ownerPrefix)
-										{
-											if (eventSymbol.Type is INamedTypeSymbol delegateSymbol)
-											{
-												var parms = delegateSymbol
-													.DelegateInvokeMethod
-													.Parameters
-													.Select(p => member.Value + "_" + p.Name)
-													.JoinBy(",");
-
-												var eventSource = ownerPrefix.HasValue() ? ownerPrefix : "this";
-
-												//
-												// Generate a weak delegate, so the owner is not being held onto by the delegate. We can
-												// use the WeakReferenceProvider to get a self reference to avoid adding the cost of the
-												// creation of a WeakReference.
-												//
-												writer.AppendLineInvariant($"var {member.Member.Name}_{member.Value}_That = ({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
-												writer.AppendLineInvariant($"{closureName}.{member.Member.Name} += ({parms}) => ({member.Member.Name}_{member.Value}_That.Target as {_className.className})?.{member.Value}({parms});");
-											}
-											else
-											{
-												GenerateError(writer, $"{eventSymbol.Type} is not a supported event");
-											}
-										}
-
-										if (!isInsideDataTemplate)
-										{
-											writeEvent("");
-										}
-										else if (_className.className != null)
-										{
-											_hasLiteralEventsRegistration = true;
-											writer.AppendLineInvariant($"{closureName}.RegisterPropertyChangedCallback(");
-											using (writer.BlockInvariant($"global::Uno.UI.Xaml.XamlInfo.XamlInfoProperty, (s, p) =>"))
-											{
-												using (writer.BlockInvariant($"if (global::Uno.UI.Xaml.XamlInfo.GetXamlInfo({closureName})?.Owner is {_className.className} owner)"))
-												{
-													writeEvent("owner");
-												}
-											}
-											writer.AppendLineInvariant($");");
-										}
-										else
-										{
-											GenerateError(writer, $"Unable to use event {member.Member.Name} without a backing class (use x:Class)");
-										}
+										GenerateInlineEvent(closureName, writer, member, eventSymbol);
 									}
 									else
 									{
@@ -2562,6 +2513,111 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					writer.AppendLine(formatted);
 				}
+			}
+		}
+
+		private void GenerateInlineEvent(string closureName, IIndentedStringBuilder writer, XamlMemberDefinition member, IEventSymbol eventSymbol)
+		{
+			// If a binding is inside a DataTemplate, the binding root in the case of an x:Bind is
+			// the DataContext, not the control's instance.
+			var isInsideDataTemplate = IsMemberInsideDataTemplate(member.Owner);
+
+			void writeEvent(string ownerPrefix)
+			{
+				if (eventSymbol.Type is INamedTypeSymbol delegateSymbol)
+				{
+					var parms = delegateSymbol
+						.DelegateInvokeMethod
+						.Parameters
+						.Select(p => member.Value + "_" + p.Name)
+						.JoinBy(",");
+
+					var eventSource = ownerPrefix.HasValue() ? ownerPrefix : "this";
+
+					if (member.Objects.FirstOrDefault() is XamlObjectDefinition bind && bind.Type.Name == "Bind")
+					{
+						var eventTarget = XBindExpressionParser.RestoreSinglePath(bind.Members.First().Value?.ToString());
+
+						(string target, string weakReference, INamedTypeSymbol sourceType) buildTargetContext()
+						{
+							if (isInsideDataTemplate.isInside)
+							{
+								var dataTypeObject = FindMember(isInsideDataTemplate.xamlObject, "DataType", XamlConstants.XamlXmlNamespace)
+									?? throw new Exception($"Unable to find x:DataType in enclosing DataTemplate for x:Bind event");
+								var dataTypeSymbol = GetType(dataTypeObject.Value?.ToString());
+
+								return (
+									$"({member.Member.Name}_{eventTarget}_That.Target as {XamlConstants.Types.FrameworkElement})?.DataContext as {dataTypeSymbol}",
+
+									// Use of __rootInstance is required to get the top-level DataContext, as it may be changed
+									// in the current visual tree by the user.
+									$"(__rootInstance as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference",
+									dataTypeSymbol
+								);
+							}
+							else
+							{
+								return (
+									$"{member.Member.Name}_{eventTarget}_That.Target as {_className.className}",
+									$"({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference",
+									FindType(_className.className)
+								);
+							}
+						}
+
+						var targetContext = buildTargetContext();
+
+						var targetMethodHasParamters = targetContext.sourceType.GetMethods().FirstOrDefault(m => m.Name == eventTarget)?.Parameters.Any() ?? false;
+						var xBindParams = targetMethodHasParamters ? parms : "";
+
+						//
+						// Generate a weak delegate, so the owner is not being held onto by the delegate. We can
+						// use the WeakReferenceProvider to get a self reference to avoid adding the cost of the
+						// creation of a WeakReference.
+						//
+						writer.AppendLineInvariant($"var {member.Member.Name}_{eventTarget}_That = {targetContext.weakReference};");
+
+						writer.AppendLineInvariant($"{closureName}.{member.Member.Name} += ({parms}) => ({targetContext.target})?.{eventTarget}({xBindParams});");
+					}
+					else
+					{
+
+						//
+						// Generate a weak delegate, so the owner is not being held onto by the delegate. We can
+						// use the WeakReferenceProvider to get a self reference to avoid adding the cost of the
+						// creation of a WeakReference.
+						//
+						writer.AppendLineInvariant($"var {member.Member.Name}_{member.Value}_That = ({eventSource} as global::Uno.UI.DataBinding.IWeakReferenceProvider).WeakReference;");
+
+						writer.AppendLineInvariant($"{closureName}.{member.Member.Name} += ({parms}) => ({member.Member.Name}_{member.Value}_That.Target as {_className.className})?.{member.Value}({parms});");
+					}
+				}
+				else
+				{
+					GenerateError(writer, $"{eventSymbol.Type} is not a supported event");
+				}
+			}
+
+			if (!isInsideDataTemplate.isInside)
+			{
+				writeEvent("");
+			}
+			else if (_className.className != null)
+			{
+				_hasLiteralEventsRegistration = true;
+				writer.AppendLineInvariant($"{closureName}.RegisterPropertyChangedCallback(");
+				using (writer.BlockInvariant($"global::Uno.UI.Xaml.XamlInfo.XamlInfoProperty, (s, p) =>"))
+				{
+					using (writer.BlockInvariant($"if (global::Uno.UI.Xaml.XamlInfo.GetXamlInfo({closureName})?.Owner is {_className.className} owner)"))
+					{
+						writeEvent("owner");
+					}
+				}
+				writer.AppendLineInvariant($");");
+			}
+			else
+			{
+				GenerateError(writer, $"Unable to use event {member.Member.Name} without a backing class (use x:Class)");
 			}
 		}
 
@@ -2750,60 +2806,67 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 				return null;
 			}
 
-			var bindingOptions = GetBindingOptions();
-
-			if (bindingOptions != null)
+			if (FindEventType(member.Member) is IEventSymbol eventSymbol)
 			{
-				var isAttachedProperty = IsDependencyProperty(member.Member);
-				var isBindingType = FindPropertyType(member.Member) == _dataBindingSymbol;
-
-				var bindEvalFunction = bindNode != null ? BuildXBindEvalFunction(member, bindNode) : "";
-
-				if (isAttachedProperty)
-				{
-					var propertyOwner = GetType(member.Member.DeclaringType);
-
-					writer.AppendLine(formatLine($"SetBinding({GetGlobalizedTypeName(propertyOwner.ToDisplayString())}.{member.Member.Name}Property, new {XamlConstants.Types.Binding}{{ {bindingOptions} }}{bindEvalFunction})"));
-				}
-				else if (isBindingType)
-				{
-					writer.AppendLine(formatLine($"{member.Member.Name} = new {XamlConstants.Types.Binding}{{ {bindingOptions} }}"));
-				}
-				else
-				{
-					writer.AppendLine(formatLine($"SetBinding(\"{member.Member.Name}\", new {XamlConstants.Types.Binding}{{ {bindingOptions} }}{bindEvalFunction})"));
-				}
+				GenerateInlineEvent(closureName, writer, member, eventSymbol);
 			}
-
-			var resourceName = GetStaticResourceName(member);
-
-			if (resourceName != null)
+			else
 			{
-				var isAttachedProperty = IsAttachedProperty(member);
+				var bindingOptions = GetBindingOptions();
 
-				if (isAttachedProperty)
+				if (bindingOptions != null)
 				{
-					var propertyOwner = GetType(member.Member.DeclaringType);
+					var isAttachedProperty = IsDependencyProperty(member.Member);
+					var isBindingType = FindPropertyType(member.Member) == _dataBindingSymbol;
 
-					writer.AppendFormatInvariant("{0}.Set{1}({2},{3});\r\n",
-						GetGlobalizedTypeName(propertyOwner.ToDisplayString()),
-						member.Member.Name,
-						closureName,
-						resourceName
-					);
-				}
-				else
-				{
-					if (generateAssignation)
+					var bindEvalFunction = bindNode != null ? BuildXBindEvalFunction(member, bindNode) : "";
+
+					if (isAttachedProperty)
 					{
-						writer.AppendLineInvariant(0, formatLine("{0} = {1}"),
+						var propertyOwner = GetType(member.Member.DeclaringType);
+
+						writer.AppendLine(formatLine($"SetBinding({GetGlobalizedTypeName(propertyOwner.ToDisplayString())}.{member.Member.Name}Property, new {XamlConstants.Types.Binding}{{ {bindingOptions} }}{bindEvalFunction})"));
+					}
+					else if (isBindingType)
+					{
+						writer.AppendLine(formatLine($"{member.Member.Name} = new {XamlConstants.Types.Binding}{{ {bindingOptions} }}"));
+					}
+					else
+					{
+						writer.AppendLine(formatLine($"SetBinding(\"{member.Member.Name}\", new {XamlConstants.Types.Binding}{{ {bindingOptions} }}{bindEvalFunction})"));
+					}
+				}
+
+				var resourceName = GetStaticResourceName(member);
+
+				if (resourceName != null)
+				{
+					var isAttachedProperty = IsAttachedProperty(member);
+
+					if (isAttachedProperty)
+					{
+						var propertyOwner = GetType(member.Member.DeclaringType);
+
+						writer.AppendFormatInvariant("{0}.Set{1}({2},{3});\r\n",
+							GetGlobalizedTypeName(propertyOwner.ToDisplayString()),
 							member.Member.Name,
+							closureName,
 							resourceName
 						);
 					}
 					else
 					{
-						writer.AppendLineInvariant(resourceName);
+						if (generateAssignation)
+						{
+							writer.AppendLineInvariant(0, formatLine("{0} = {1}"),
+								member.Member.Name,
+								resourceName
+							);
+						}
+						else
+						{
+							writer.AppendLineInvariant(resourceName);
+						}
 					}
 				}
 			}
