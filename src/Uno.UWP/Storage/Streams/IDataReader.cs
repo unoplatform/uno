@@ -22,6 +22,8 @@ namespace Windows.Storage.Streams
 
 		short ReadInt16();
 
+		int ReadInt32();
+
 		long ReadInt64();
 
 		ushort ReadUInt16();
