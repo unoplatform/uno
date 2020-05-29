@@ -13,6 +13,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using CoreAnimation;
 using Uno.UI;
+using UwpBuffer = Windows.Storage.Streams.Buffer;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -148,7 +149,7 @@ namespace Windows.UI.Xaml.Controls
 
 		private void SetImageFromWriteableBitmap(WriteableBitmap writeableBitmap)
 		{
-			if (writeableBitmap.PixelBuffer is Storage.Streams.Buffer memoryBuffer)
+			if (writeableBitmap.PixelBuffer is UwpBuffer memoryBuffer)
 			{
 				// Convert RGB colorspace.
 				var bgraBuffer = memoryBuffer.Data;

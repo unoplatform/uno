@@ -1,18 +1,19 @@
 using System;
-using Windows.Foundation;
 using Windows.Storage.Streams;
+using UwpBuffer = Windows.Storage.Streams.Buffer;
+
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
-	public partial class WriteableBitmap : global::Windows.UI.Xaml.Media.Imaging.BitmapSource
+	public partial class WriteableBitmap : BitmapSource
 	{
 		internal event EventHandler Invalidated;
 
-		public global::Windows.Storage.Streams.IBuffer PixelBuffer { get; private set; }
+		public IBuffer PixelBuffer { get; private set; }
 
 		public WriteableBitmap(int pixelWidth, int pixelHeight) : base()
 		{
-			PixelBuffer = new Storage.Streams.Buffer((uint)(pixelWidth * pixelHeight * 4));
+			PixelBuffer = new UwpBuffer((uint)(pixelWidth * pixelHeight * 4));
 
 			PixelWidth = pixelWidth;
 			PixelHeight = pixelHeight;
