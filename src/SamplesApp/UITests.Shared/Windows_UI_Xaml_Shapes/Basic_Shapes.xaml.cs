@@ -369,27 +369,28 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		{
 			var tcs = new TaskCompletionSource<object>();
 
-			using var timeout = Debugger.IsAttached ? default : new CancellationTokenSource(TimeSpan.FromMilliseconds(1500));
-			using var reg = Debugger.IsAttached ? default : timeout.Token.Register(() => tcs.TrySetCanceled());
-
-			RunningTest = "";
-			_root.Visibility = Visibility.Collapsed;
-
-			var elt = GetElement();
-			elt.SizeChanged += (snd, args) =>
+			using (var timeout = Debugger.IsAttached ? default : new CancellationTokenSource(TimeSpan.FromMilliseconds(1500)))
+			using (var reg = Debugger.IsAttached ? default : timeout.Token.Register(() => tcs.TrySetCanceled()))
 			{
-				if (args.NewSize != default)
+				RunningTest = "";
+				_root.Visibility = Visibility.Collapsed;
+
+				var elt = GetElement();
+				elt.SizeChanged += (snd, args) =>
 				{
-					tcs.SetResult(default);
-				}
-			};
-			_testZone.Child = elt;
+					if (args.NewSize != default)
+					{
+						tcs.SetResult(default);
+					}
+				};
+				_testZone.Child = elt;
 
-			await tcs.Task;
+				await tcs.Task;
 
-			RunningTest = id;
+				RunningTest = id;
 
-			return elt;
+				return elt;
+			}
 
 			FrameworkElement GetElement()
 			{

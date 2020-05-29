@@ -74,10 +74,10 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 				nameof(Basics_Shapes_Tests),
 				shapeName);
 
-			tolerance ??= new PixelTolerance()
+			tolerance = tolerance ?? (new PixelTolerance()
 				.WithColor(132) // We are almost only trying to detect edges
 				.WithOffset(3, 3, LocationToleranceKind.PerPixel)
-				.Discrete(20); // Way toooooooo long otherwise!
+				.Discrete(20)); // Way toooooooo long otherwise!
 
 			var failures = new List<(string test, Exception error)>();
 			// To improve performance, we run all test for a given stretch at once.
