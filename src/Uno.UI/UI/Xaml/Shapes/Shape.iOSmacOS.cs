@@ -209,6 +209,11 @@ namespace Windows.UI.Xaml.Shapes
 			return (size, renderingArea);
 		}
 
+#if !IS_DESIRED_SMALLER_THAN_CONSTRAINTS_ALLOWED
+		// The desired size before it has been changed to apply the [Min]<Width|Height>
+		private Size _realDesiredSize;
+#endif
+
 		private protected Size MeasureAbsoluteShape(Size availableSize, CGPath path)
 		{
 			if (path == null)
@@ -217,8 +222,8 @@ namespace Windows.UI.Xaml.Shapes
 			}
 
 			var stretch = Stretch;
-			var (userMinSize, userMaxSize) = this.GetMinMax();
 			var userSize = GetUserSizes();
+			var (userMinSize, userMaxSize) = GetMinMax(userSize);
 			var strokeThickness = StrokeThickness;
 			var halfStrokeThickness = GetHalfStrokeThickness();
 			var pathBounds = path.BoundingBox;
@@ -275,7 +280,7 @@ namespace Windows.UI.Xaml.Shapes
 					size = userMaxSize.FiniteOrDefault(availableSize);
 					break;
 
-#if !IS_DESIRED_SMALLER_THAN_MIN_ALLOWED
+#if !IS_DESIRED_SMALLER_THAN_CONSTRAINTS_ALLOWED
 				case Stretch.Uniform when (userSize.min.hasWidth && userSize.min.width > availableSize.Width) || (userSize.min.hasHeight && userSize.min.height > availableSize.Height):
 					size = availableSize;
 					break;
@@ -315,13 +320,12 @@ namespace Windows.UI.Xaml.Shapes
 					break;
 			}
 
+#if !IS_DESIRED_SMALLER_THAN_CONSTRAINTS_ALLOWED
 			_realDesiredSize = size;
+#endif
 
 			return size;
 		}
-
-		// The desired size before it has been changed to apply the [Min]<Width|Height>
-		private Size _realDesiredSize;
 
 		private protected Size ArrangeAbsoluteShape(Size finalSize, CGPath path)
 		{
@@ -360,7 +364,8 @@ namespace Windows.UI.Xaml.Shapes
 					var pathNaturalSize = new Size(
 						pathBounds.X == 0 ? pathBounds.Width + strokeThickness : pathBounds.Right + halfStrokeThickness,
 						pathBounds.Y == 0 ? pathBounds.Height + strokeThickness : pathBounds.Bottom + halfStrokeThickness);
-					var (userMinSize, userMaxSize) = this.GetMinMax();
+					var (userMinSize, userMaxSize) = GetMinMax(userSize);
+
 					size = pathNaturalSize.AtMost(userMaxSize).AtLeast(userMinSize); // The size defined on the Shape has priority over the size of the geometry itself!
 					renderScale = (1, 1);
 					renderOrigin = (0, 0);
@@ -368,76 +373,22 @@ namespace Windows.UI.Xaml.Shapes
 					break;
 
 				case Stretch.Fill:
-					size = new Size(
-						userSize.hasWidth
-							? userSize.value.Width.AtMost(userSize.max.width)
-							: userSize.max.width.AtMost(finalSize.Width).FiniteOrDefault(finalSize.Width),
-						userSize.hasHeight
-							? userSize.value.Height.AtMost(userSize.max.height)
-							: userSize.max.height.AtMost(finalSize.Height).FiniteOrDefault(finalSize.Height));
+					size = ComputeSizeLowerThanBounds(userSize, finalSize);
 					renderScale = ComputeScaleFactors(pathSize, ref size, strokeThickness);
 					renderOrigin = (halfStrokeThickness - pathBounds.X * renderScale.x, halfStrokeThickness - pathBounds.Y * renderScale.y);
 					renderOverflow = (size.Width - finalSize.Width, size.Height - finalSize.Height);
 					break;
 
 				case Stretch.Uniform:
-#if !IS_DESIRED_SMALLER_THAN_MIN_ALLOWED
-					// Unlike WinUI, on Uno the layouter does not allow a FrameworkElement to return a size smaller than the [Min]<Width|Height> in its Measure
-					// (it will forcefully apply the min size to the value returned by the Measure before storing it in the DesiredSize).
-					// But when stretch is Uniform, if for instance the geometry is 100x100, the (min) size is 200x300 and the available size is 200x200,
-					// then on WinUI the resulting shape (and its DesiredSize) will be 200x200, which is obviously smaller than the (min) size!
-					// So here it's a workaround that will detect that specific case (isBeingStretchedByParent),
-					// and then applies an offset to the rendering origin to compensate the wrong size used by the parent for alignment.
-
-					var parentFinalSize = finalSize;
-					var availableWhenStretchedForSize = _realDesiredSize;
-					var availableWhenStretchedForMin = DesiredSize; // We use the desired size since it's the actual "available" size in that case.
-
-					var isMinSizeForcefullyAppliedByParent = false;
-					if (parentFinalSize.Width > availableWhenStretchedForMin.Width
-						&& userSize.min.hasWidth && userSize.min.width == finalSize.Width)
-					{
-						isMinSizeForcefullyAppliedByParent = true;
-						finalSize.Width = availableWhenStretchedForMin.Width;
-					}
-					else if (
-						// It's not expected to be stretched but parent is trying to stretch us ...
-						horizontal != HorizontalAlignment.Stretch && parentFinalSize.Width > availableWhenStretchedForSize.Width
-						// ... and we do have a Width defined on us which is larger that the measured size.
-						&& userSize.hasWidth && userSize.value.Width > availableWhenStretchedForSize.Width
-						)
-					{
-						isMinSizeForcefullyAppliedByParent = true;
-						finalSize.Width = availableWhenStretchedForSize.Width;
-					}
-
-					if (parentFinalSize.Height > availableWhenStretchedForMin.Height
-						&& userSize.min.hasHeight && userSize.min.height == finalSize.Height)
-					{
-						isMinSizeForcefullyAppliedByParent = true;
-						finalSize.Height = availableWhenStretchedForMin.Height;
-					}
-					else if (
-						vertical != VerticalAlignment.Stretch && parentFinalSize.Height > availableWhenStretchedForSize.Height
-						&& userSize.hasHeight && userSize.value.Height > availableWhenStretchedForSize.Height)
-					{
-						isMinSizeForcefullyAppliedByParent = true;
-						finalSize.Height = availableWhenStretchedForSize.Height;
-					}
+#if !IS_DESIRED_SMALLER_THAN_CONSTRAINTS_ALLOWED
+					var boundsAdjustements = AdjustRenderingBounds(userSize, ref finalSize, horizontal, vertical);
 #endif
-
-					var defaultSize = size = new Size(
-						userSize.hasWidth
-							? userSize.value.Width.AtMost(userSize.max.width)
-							: userSize.max.width.AtMost(finalSize.Width).FiniteOrDefault(finalSize.Width),
-						userSize.hasHeight
-							? userSize.value.Height.AtMost(userSize.max.height)
-							: userSize.max.height.AtMost(finalSize.Height).FiniteOrDefault(finalSize.Height));
+					var defaultSize = size = ComputeSizeLowerThanBounds(userSize, finalSize);
 
 					// This is a complete non sense as we should normally just use userSize.min.width and userSize.min.height,
 					// but the code below actually reproduces a bug of WinUI where the MinWidth and MinHeight are somehow
 					// constrained by the layout slot ...
-					// Note: This is only a replication of what we observed in the UI tests, and might have some flow in the logic.
+					// Note: This is only a replication of what we observed in the UI tests, and might have some flaw in the logic.
 					//		 Especially, we expect that the max vs. min applied on Width vs. Height is probably drove by the aspect ratio.
 					var minSizeForScale = default(Size);
 					if (userSize.min.hasWidth && userSize.min.hasHeight)
@@ -478,55 +429,26 @@ namespace Windows.UI.Xaml.Shapes
 						{
 							var adjustmentScale = minSizeForScale.Width / size.Width;
 							defaultSize = size = defaultSize.Multiply(adjustmentScale);
-							renderScale.x = MinValue; // Make sure to restarte computation
+							renderScale.x = MinValue; // Make sure to restart computation
 						}
 						else if (userSize.min.hasHeight && size.Height < minSizeForScale.Height)
 						{
 							var adjustmentScale = minSizeForScale.Height / size.Height;
 							defaultSize = size = defaultSize.Multiply(adjustmentScale);
-							renderScale.y = MinValue; // Make sure to restarte computation
+							renderScale.y = MinValue; // Make sure to restart computation
 						}
 					} while (renderScale.y != renderScale.x);
 
 					renderOrigin = (halfStrokeThickness - pathBounds.X * renderScale.x, halfStrokeThickness - pathBounds.Y * renderScale.y);
 					renderOverflow = (size.Width - finalSize.Width, size.Height - finalSize.Height);
 
-#if !IS_DESIRED_SMALLER_THAN_MIN_ALLOWED
-					if (isMinSizeForcefullyAppliedByParent)
-					{ 
-						// The parent will use the min size to align this Shape, so here we offset the renderOrigin by the opposite value that is going to be applied.
-						// Notes about the renderOverflow:
-						//		* As the parent aligns us using the wrong size, we have to apply it by ourself for all alignments
-						//		* For alignment stretch is will be applied by the standard code path below, so don't apply it here
-						var overflowCorrection = (x: parentFinalSize.Width - finalSize.Width, y: parentFinalSize.Height - finalSize.Height);
-						if (overflowCorrection.x > 0)
-						{
-							switch (horizontal)
-							{
-								case HorizontalAlignment.Center when renderOverflow.x < 0: renderOrigin.x += (overflowCorrection.x - renderOverflow.x) / 2.0; break;
-								case HorizontalAlignment.Right when renderOverflow.x < 0: renderOrigin.x += (overflowCorrection.x - renderOverflow.x); break;
-								case HorizontalAlignment.Center: renderOrigin.x += overflowCorrection.x / 2.0; break;
-								case HorizontalAlignment.Right: renderOrigin.x += overflowCorrection.x; break;
-							}
-						}
-
-						if (overflowCorrection.y > 0)
-						{
-							switch (vertical)
-							{
-								case VerticalAlignment.Center when renderOverflow.y < 0: renderOrigin.y += (overflowCorrection.y - renderOverflow.y) / 2.0; break;
-								case VerticalAlignment.Bottom when renderOverflow.y < 0: renderOrigin.y += (overflowCorrection.y - renderOverflow.y); break;
-								case VerticalAlignment.Center: renderOrigin.y += overflowCorrection.y / 2.0; break;
-								case VerticalAlignment.Bottom: renderOrigin.y += overflowCorrection.y; break;
-							}
-						}
-					}
+#if !IS_DESIRED_SMALLER_THAN_CONSTRAINTS_ALLOWED
+					AdjustRenderingOffsets(boundsAdjustements, ref renderOrigin, renderOverflow, horizontal, vertical);
 #endif
 					break;
 
 				case Stretch.UniformToFill:
-					(userMinSize, userMaxSize) = this.GetMinMax();
-					size = userMinSize.AtLeast(finalSize);
+					size = GetMinMax(userSize).min.AtLeast(finalSize);
 					renderScale = ComputeScaleFactors(pathSize, ref size, strokeThickness);
 					var unScaledSize = size;
 					if (renderScale.x < renderScale.y)
@@ -551,7 +473,9 @@ namespace Windows.UI.Xaml.Shapes
 			// As the Shape is rendered as a Layer which does not take in consideration alignment (when size is larger than finalSize),
 			// compute the offset to apply to the rendering layer.
 			var renderCenteredByDefault = stretch != Stretch.None;
-			if (renderOverflow.x > 0 && (!userSize.hasWidth || userSize.value.Width > finalSize.Width)) // WinUI does not adjust alignment if the shape was smaller than the finalSize
+			if (renderOverflow.x > 0
+				&& (!userSize.hasWidth || userSize.width > finalSize.Width)
+				&& (!userSize.max.hasWidth || userSize.max.width > finalSize.Width)) // WinUI does not adjust alignment if the shape was smaller than the finalSize
 			{
 				switch (horizontal)
 				{
@@ -564,14 +488,16 @@ namespace Windows.UI.Xaml.Shapes
 						break;
 				}
 			}
-			else if (renderCenteredByDefault && renderOverflow.x < 0 && HorizontalAlignment == HorizontalAlignment.Stretch)
+			else if (renderCenteredByDefault && renderOverflow.x < 0 && horizontal == HorizontalAlignment.Stretch)
 			{
 				// It might happen that even stretched, the shape does not use all the finalSize width,
 				// in that case it's centered by WinUI.
 				renderOrigin.x -= renderOverflow.x / 2.0;
 			}
 
-			if (renderOverflow.y > 0 && (!userSize.hasHeight || userSize.value.Height > finalSize.Height)) // WinUI does not adjust alignment if the shape was smaller than the finalSize
+			if (renderOverflow.y > 0
+				&& (!userSize.hasHeight || userSize.height > finalSize.Height)
+				&& (!userSize.max.hasHeight || userSize.max.height > finalSize.Height)) // WinUI does not adjust alignment if the shape was smaller than the finalSize
 			{
 				switch (vertical)
 				{
@@ -584,7 +510,7 @@ namespace Windows.UI.Xaml.Shapes
 						break;
 				}
 			}
-			else if (renderCenteredByDefault && renderOverflow.y < 0 && VerticalAlignment == VerticalAlignment.Stretch)
+			else if (renderCenteredByDefault && renderOverflow.y < 0 && vertical == VerticalAlignment.Stretch)
 			{
 				// It might happen that even stretched, the shape does not use all the finalSize height,
 				// in that case it's centered by WinUI.
@@ -782,16 +708,9 @@ namespace Windows.UI.Xaml.Shapes
 		private double GetHalfStrokeThickness()
 			=> Math.Floor((ActualStrokeThickness + .5) / 2.0);
 
-		private (Size value, bool hasWidth, bool hasHeight) GetUserSize()
-		{
-			var width = Width;
-			var height = Height;
-			return (new Size(width, height), !IsNaN(width), !IsNaN(height));
-		}
-
 		private
 			(
-				Size value, bool hasWidth, bool hasHeight,
+				double width, bool hasWidth, double height, bool hasHeight,
 				(double width, bool hasWidth, double height, bool hasHeight) min,
 				(double width, bool hasWidth, double height, bool hasHeight) max
 			)
@@ -804,20 +723,53 @@ namespace Windows.UI.Xaml.Shapes
 			var maxWidth = MaxWidth.AtLeast(minWidth); // UWP is applying "min" after "max", so if "min" > "max", "min" wins
 			var maxHeight = MaxHeight.AtLeast(minHeight);
 
-			//minSize = size
-			//	.NumberOrDefault(new Size(0, 0))
-			//	.AtMost(maxSize)
-			//	.AtLeast(minSize); // UWP is applying "min" after "max", so if "min" > "max", "min" wins
-
-			//maxSize = size
-			//	.NumberOrDefault(new Size(PositiveInfinity, PositiveInfinity))
-			//	.AtMost(maxSize)
-			//	.AtLeast(minSize); // UWP is applying "min" after "max", so if "min" > "max", "min" wins
-
 			return (
-				new Size(width, height), !IsNaN(width), !IsNaN(height),
+				width, !IsNaN(width), height, !IsNaN(height),
 				(minWidth, IsFinite(minWidth) && minWidth > 0, minHeight, IsFinite(minHeight) && minHeight > 0),
 				(maxWidth, IsFinite(maxWidth), maxHeight, IsFinite(maxHeight)));
+		}
+
+		// This replicates the behavior of LayoutHelper.GetMinMax() without reading again all DependencyProperties
+		private (Size min, Size max) GetMinMax(
+			(
+				double width, bool hasWidth, double height, bool hasHeight,
+				(double width, bool hasWidth, double height, bool hasHeight) min,
+				(double width, bool hasWidth, double height, bool hasHeight) max
+			)
+			userSize)
+		{
+			var size = new Size(userSize.width, userSize.height);
+			var minSize = new Size(userSize.min.width, userSize.min.height);;
+			var maxSize = new Size(userSize.max.width, userSize.max.height); ;
+
+			minSize = size
+				.NumberOrDefault(new Size(0, 0))
+				.AtMost(maxSize)
+				.AtLeast(minSize); // UWP is applying "min" after "max", so if "min" > "max", "min" wins
+
+			maxSize = size
+				.NumberOrDefault(new Size(PositiveInfinity, PositiveInfinity))
+				.AtMost(maxSize)
+				.AtLeast(minSize); // UWP is applying "min" after "max", so if "min" > "max", "min" wins
+
+			return (minSize, maxSize);
+		}
+
+		private static Size ComputeSizeLowerThanBounds(
+			(
+				double width, bool hasWidth, double height, bool hasHeight,
+				(double width, bool hasWidth, double height, bool hasHeight) min,
+				(double width, bool hasWidth, double height, bool hasHeight) max
+			) userSize,
+			Size finalSize)
+		{
+			return new Size(
+				userSize.hasWidth
+					? userSize.width.AtMost(userSize.max.width)
+					: userSize.max.width.AtMost(finalSize.Width).FiniteOrDefault(finalSize.Width),
+				userSize.hasHeight
+					? userSize.height.AtMost(userSize.max.height)
+					: userSize.max.height.AtMost(finalSize.Height).FiniteOrDefault(finalSize.Height));
 		}
 
 		private static (float x, float y) ComputeScaleFactors(Size geometrySize, ref Size renderSize, double strokeThickness)
@@ -844,6 +796,103 @@ namespace Windows.UI.Xaml.Shapes
 
 			return (x, y);
 		}
+
+#if !IS_DESIRED_SMALLER_THAN_CONSTRAINTS_ALLOWED
+		private (bool, Size parentFinalSize, Size finalSize) AdjustRenderingBounds(
+			(
+				double width, bool hasWidth, double height, bool hasHeight,
+				(double width, bool hasWidth, double height, bool hasHeight) min,
+				(double width, bool hasWidth, double height, bool hasHeight) max
+			) userSize,
+			ref Size finalSize,
+			HorizontalAlignment horizontal,
+			VerticalAlignment vertical)
+		{
+			// Unlike WinUI, on Uno the layouter does not allow a FrameworkElement to return a size smaller than the [Min]<Width|Height> in its Measure
+			// (it will forcefully apply the size and the min size to the value returned by the Measure before storing it in the DesiredSize).
+			// But when stretch is Uniform, if for instance the geometry is 100x100, the (min) size is 200x300 and the available size is 200x200,
+			// then on WinUI the resulting shape (and its DesiredSize) will be 200x200, which is obviously smaller than the (min) size!
+			// So here it's a workaround that will detect that specific case (isBeingStretchedByParent),
+			// and then applies an offset to the rendering origin to compensate the wrong size used by the parent for alignments.
+
+			var parentFinalSize = finalSize;
+			var availableWhenStretchedForSize = _realDesiredSize;
+			var availableWhenStretchedForMin = DesiredSize; // We use the DesiredSize since it's the actual "available" size in that case.
+
+			var isForcefullyStretchedByParent = false;
+			if (parentFinalSize.Width > availableWhenStretchedForMin.Width
+				&& userSize.min.hasWidth && userSize.min.width == parentFinalSize.Width)
+			{
+				isForcefullyStretchedByParent = true;
+				finalSize.Width = availableWhenStretchedForMin.Width;
+			}
+			else if (
+				// It's not expected to be stretched but parent is trying to stretch us ...
+				horizontal != HorizontalAlignment.Stretch && parentFinalSize.Width > availableWhenStretchedForSize.Width
+				// ... and we do have a Width defined on us which is larger that the measured size.
+				&& userSize.hasWidth && userSize.width > availableWhenStretchedForSize.Width
+			)
+			{
+				isForcefullyStretchedByParent = true;
+				finalSize.Width = availableWhenStretchedForSize.Width;
+			}
+
+			if (parentFinalSize.Height > availableWhenStretchedForMin.Height
+				&& userSize.min.hasHeight && userSize.min.height == parentFinalSize.Height)
+			{
+				isForcefullyStretchedByParent = true;
+				finalSize.Height = availableWhenStretchedForMin.Height;
+			}
+			else if (
+				vertical != VerticalAlignment.Stretch && parentFinalSize.Height > availableWhenStretchedForSize.Height
+				&& userSize.hasHeight && userSize.height > availableWhenStretchedForSize.Height)
+			{
+				isForcefullyStretchedByParent = true;
+				finalSize.Height = availableWhenStretchedForSize.Height;
+			}
+
+			return (isForcefullyStretchedByParent, parentFinalSize, finalSize);
+		}
+
+		private static void AdjustRenderingOffsets(
+			(bool isForcefullyStretchedByParent, Size parentFinalSize, Size finalSize) boundsAdjustements,
+			ref (double x, double y) renderOrigin,
+			(double x, double y) renderOverflow,
+			HorizontalAlignment horizontal,
+			VerticalAlignment vertical)
+		{
+			var (isForcefullyStretchedByParent, parentFinalSize, finalSize) = boundsAdjustements;
+			if (isForcefullyStretchedByParent)
+			{
+				// The parent will use the (min) size to align this Shape, so here we offset the renderOrigin by the opposite value that is going to be applied.
+				// Notes about the renderOverflow:
+				//		* As the parent aligns us using the wrong size, we have to apply it by ourselves for all alignments
+				//		* For alignment=Stretch, it will be applied by the standard code path below, so don't apply it here.
+				var overflowCorrection = (x: parentFinalSize.Width - finalSize.Width, y: parentFinalSize.Height - finalSize.Height);
+				if (overflowCorrection.x > 0)
+				{
+					switch (horizontal)
+					{
+						case HorizontalAlignment.Center when renderOverflow.x < 0: renderOrigin.x += (overflowCorrection.x - renderOverflow.x) / 2.0; break;
+						case HorizontalAlignment.Right when renderOverflow.x < 0: renderOrigin.x += (overflowCorrection.x - renderOverflow.x); break;
+						case HorizontalAlignment.Center: renderOrigin.x += overflowCorrection.x / 2.0; break;
+						case HorizontalAlignment.Right: renderOrigin.x += overflowCorrection.x; break;
+					}
+				}
+
+				if (overflowCorrection.y > 0)
+				{
+					switch (vertical)
+					{
+						case VerticalAlignment.Center when renderOverflow.y < 0: renderOrigin.y += (overflowCorrection.y - renderOverflow.y) / 2.0; break;
+						case VerticalAlignment.Bottom when renderOverflow.y < 0: renderOrigin.y += (overflowCorrection.y - renderOverflow.y); break;
+						case VerticalAlignment.Center: renderOrigin.y += overflowCorrection.y / 2.0; break;
+						case VerticalAlignment.Bottom: renderOrigin.y += overflowCorrection.y; break;
+					}
+				}
+			}
+		}
+#endif
 		#endregion
 	}
 }
