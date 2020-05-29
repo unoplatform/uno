@@ -208,27 +208,6 @@ namespace UITests.Windows_Devices.Midi
 					var songSelectMessage = (MidiSongSelectMessage)receivedMidiMessage;
 					outputMessage.Append(", Song: ").Append(songSelectMessage.Song);
 					break;
-				case MidiMessageType.TuneRequest:
-					var tuneRequestMessage = (MidiTuneRequestMessage)receivedMidiMessage;
-					break;
-				case MidiMessageType.TimingClock:
-					var timingClockMessage = (MidiTimingClockMessage)receivedMidiMessage;
-					break;
-				case MidiMessageType.Start:
-					var startMessage = (MidiStartMessage)receivedMidiMessage;
-					break;
-				case MidiMessageType.Continue:
-					var continueMessage = (MidiContinueMessage)receivedMidiMessage;
-					break;
-				case MidiMessageType.Stop:
-					var stopMessage = (MidiStopMessage)receivedMidiMessage;
-					break;
-				case MidiMessageType.ActiveSensing:
-					var activeSensingMessage = (MidiActiveSensingMessage)receivedMidiMessage;
-					break;
-				case MidiMessageType.SystemReset:
-					var systemResetMessage = (MidiSystemResetMessage)receivedMidiMessage;
-					break;
 				case MidiMessageType.None:
 					throw new InvalidOperationException();
 				default:
