@@ -19,16 +19,18 @@
 			<Button Content="Settings">
 				<Button.Flyout>
 					<Flyout Closed="SettingsUpdated">
-						<StackPanel Width="300">
-							<TextBlock Text="Shapes" />
-							<StackPanel x:Name="_shapesConfig" />
+						<ScrollViewer>
+							<StackPanel Width="550">
+								<TextBlock Text="Shapes" />
+								<StackPanel x:Name="_shapesConfig" />
 
-							<TextBlock Text="Stretch" Margin="0,10,0,0" />
-							<StackPanel x:Name="_stretchesConfig" />
+								<TextBlock Text="Stretch" Margin="0,10,0,0" />
+								<StackPanel x:Name="_stretchesConfig" />
 
-							<TextBlock Text="Sizes" Margin="0,10,0,0" />
-							<StackPanel x:Name="_sizesConfig" />
-						</StackPanel>
+								<TextBlock Text="Sizes" Margin="0,10,0,0" />
+								<StackPanel x:Name="_sizesConfig" />
+							</StackPanel>
+						</ScrollViewer>
 					</Flyout>
 				</Button.Flyout>
 			</Button>

@@ -213,6 +213,15 @@ namespace Uno.UI
 			);
 		}
 
+		/// <summary>
+		/// a.k.a. Scale
+		/// </summary>
+		[Pure]
+		internal static Size Multiply(this Size left, double right)
+		{
+			return new Size(left.Width * right, left.Height * right);
+		}
+
 		[Pure]
 		internal static Rect InflateBy(this Rect left, Thickness right)
 		{

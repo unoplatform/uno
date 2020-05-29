@@ -85,7 +85,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			Factory.New(() => new Polygon
 			{
 				Fill = new SolidColorBrush(Color.FromArgb(160, 0, 0, 255)),
-				Stroke = new SolidColorBrush(Color.FromArgb(160, 0, 0, 255)),
+				Stroke = new SolidColorBrush(Color.FromArgb(255, 0, 0, 255)),
 				StrokeThickness = 6,
 				Points = { new Point(25, 25), new Point(25, 125), new Point(125, 125) }
 			}),
@@ -356,7 +356,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		{
 			var tcs = new TaskCompletionSource<object>();
 
-			using var timeout = Debugger.IsAttached ? default : new CancellationTokenSource(TimeSpan.FromMilliseconds(750));
+			using var timeout = Debugger.IsAttached ? default : new CancellationTokenSource(TimeSpan.FromMilliseconds(1500));
 			using var reg = Debugger.IsAttached ? default : timeout.Token.Register(() => tcs.TrySetCanceled());
 
 			RunningTest = "";
@@ -515,7 +515,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				_factory = factory;
 				Name = name;
 
-				Option = new ToggleSwitch { OnContent = Name, OffContent = Name, IsOn = true };
+				Option = new ToggleSwitch { OnContent = Name, OffContent = Name, IsOn = !Debugger.IsAttached };
 			}
 
 			public string Name { get; }
