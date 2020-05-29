@@ -21,7 +21,7 @@
 		}
 
 		public static removePort(managedId: string) {
-			var instance = MidiInPort.instanceMap[managedId];
+			const instance = MidiInPort.instanceMap[managedId];
 			instance.inputPort.removeEventListener("onmidimessage", instance.messageReceived);
 			delete MidiInPort.instanceMap[managedId];
 		}

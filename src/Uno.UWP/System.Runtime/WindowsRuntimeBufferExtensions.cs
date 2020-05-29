@@ -7,8 +7,15 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 {
 	public static class WindowsRuntimeBufferExtensions
 	{
-		public static IBuffer AsBuffer(this byte[] source) =>
-			AsBuffer(source, 0, source.Length);
+		public static IBuffer AsBuffer(this byte[] source)
+		{
+			if (source is null)
+			{
+				throw new ArgumentNullException(nameof(source));
+			}
+
+			return source.AsBuffer(0, source.Length);
+		}
 
 		public static IBuffer AsBuffer(this byte[] source, int offset, int length) =>
 			AsBuffer(source, offset, length, length);

@@ -9,7 +9,7 @@ namespace Windows.Devices.Midi
 	/// </summary>
 	public partial class MidiTimeCodeMessage : IMidiMessage
 	{
-		private Storage.Streams.Buffer _buffer;
+		private readonly Storage.Streams.Buffer _buffer;
 
 		/// <summary>
 		/// Creates a new MidiTimeCodeMessage object.

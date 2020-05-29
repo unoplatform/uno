@@ -61,7 +61,7 @@ namespace Windows.Devices.Midi
 			var message = new byte[splitMessage.Length];
 			for (int i = 1; i < splitMessage.Length; i++)
 			{
-				message[i - 1] = byte.Parse(splitMessage[i]);
+				message[i - 1] = byte.Parse(splitMessage[i], CultureInfo.InvariantCulture);
 			}
 
 			port.OnMessageReceived(message, 0, message.Length, managedTimestamp);
