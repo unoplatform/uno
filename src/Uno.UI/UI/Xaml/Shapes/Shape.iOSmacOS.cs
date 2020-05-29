@@ -5,7 +5,6 @@ using Windows.UI.Xaml.Media;
 using CoreAnimation;
 using CoreGraphics;
 using Uno.Extensions;
-using Uno.Extensions.ValueType;
 using Uno.Logging;
 using Uno.UI;
 using static System.Double;
@@ -108,17 +107,8 @@ namespace Windows.UI.Xaml.Shapes
 				.AtLeast(userMinSize)
 				.NumberOrDefault(userMinSize);
 
-			//// Once the specific stretching has been applied, we can compute the real 'userSize' which must also includes min and max.
-			//// It will only be used for the alignment.
-			//userSize = userSize
-			//	.NumberOrDefault(userMaxSize)
-			//	.AtMost(userMaxSize)
-			//	.AtLeast(userMinSize); // UWP is applying "min" after "max", so if "min" > "max", "min" wins
-
 			// The area that will be used to render the rectangle/ellipse as path
 			var renderingArea = new Rect(new Point(), size);
-			// This is the size that is use to align the shape. If the provided 
-			//var renderingSize = size;
 
 			// Apply the stretch mode, as it might change the "shape" of a "relative shape"
 			switch (stretch)
@@ -156,36 +146,6 @@ namespace Windows.UI.Xaml.Shapes
 			switch (stretch)
 			{
 				case Stretch.UniformToFill:
-					// Once the specific stretching has been applied, we can compute the real 'userSize' which must also includes min and max.
-					// It will only be used for the alignment.
-					//userSize = userSize
-					//	.NumberOrDefault(userMaxSize)
-					//	.AtMost(userMaxSize)
-					//	.AtLeast(userMinSize); // UWP is applying "min" after "max", so if "min" > "max", "min" wins
-
-					//if (IsNaN(userSize.Width))
-					//{
-					//	if (!IsInfinity(userMaxSize.Width))
-					//	{
-					//		userSize.Width = userMaxSize.Width;
-					//	}
-					//	else if (userMinSize.Width > 0)
-					//	{
-					//		userSize.Width = userMinSize.Width;
-					//	}
-					//}
-					//if (IsNaN(userSize.Height))
-					//{
-					//	if (!IsInfinity(userMaxSize.Height))
-					//	{
-					//		userSize.Height = userMaxSize.Height;
-					//	}
-					//	else if (userMinSize.Height > 0)
-					//	{
-					//		userSize.Height = userMinSize.Height;
-					//	}
-					//}
-
 					userSize = userSize
 						.NumberOrDefault(userMaxSize)
 						.AtLeast(userMinSize);
@@ -371,15 +331,14 @@ namespace Windows.UI.Xaml.Shapes
 				return default;
 			}
 
+			var horizontal = HorizontalAlignment;
+			var vertical = VerticalAlignment;
 			var stretch = Stretch;
-			//var (userMinSize, userMaxSize) = this.GetMinMax();
 			var userSize = GetUserSizes();
 			var strokeThickness = StrokeThickness;
 			var halfStrokeThickness = GetHalfStrokeThickness();
 			var pathBounds = path.BoundingBox;
 			var pathSize = (Size)pathBounds.Size;
-			var vertical = VerticalAlignment;
-			var horizontal = HorizontalAlignment;
 
 			if (nfloat.IsInfinity(pathBounds.Right) || nfloat.IsInfinity(pathBounds.Bottom))
 			{
@@ -474,122 +433,6 @@ namespace Windows.UI.Xaml.Shapes
 						userSize.hasHeight
 							? userSize.value.Height.AtMost(userSize.max.height)
 							: userSize.max.height.AtMost(finalSize.Height).FiniteOrDefault(finalSize.Height));
-					//renderScale = ComputeScaleFactors(pathSize, ref size, strokeThickness);
-
-					// WARNING: We must do this comparison in that order to reproduce a bug on WinUI were a MinWidth larger than the finalSize.Width
-					//			will be applied properly, BUT a MinHeight taller than the finalSize.Height will be ignored.
-					//			(Note: When MinHeight ignored, shape is then be aligned according to the VerticalAlignment)
-					//if (renderScale.y > renderScale.x) 
-					//{
-					//	renderScale.y = renderScale.x;
-					//	size.Height = pathSize.Height * renderScale.y + strokeThickness;
-
-					//	// Reproduces a bug of WinUI where the MinSize is constrained by the finalSize
-					//	// Note: we should use userSize.min.height.AtMost(finalSize.Height), but the finalSize does contains the min size
-					//	var minHeightForScale = userSize.min.height;//.AtMost(finalSize.Height); //_realDesiredSize.Height;
-
-					//	if (userSize.min.hasHeight && size.Height < minHeightForScale)
-					//	{
-					//		// The current scale does not permit us to respect user's min size.
-					//		// We restart the scale computation, but before we scale up the target render size so the computed scale will meet the requirements.
-					//		// Note: We need to re-invoke the ComputeScaleFactors in order to properly apply StrokeThickness
-					//		var adjustmentScale = minHeightForScale / size.Height;
-					//		size = defaultSize.Multiply(adjustmentScale);
-					//		renderScale = ComputeScaleFactors(pathSize, ref size, strokeThickness);
-
-					//		renderScale.y = renderScale.x;
-					//		size.Height = pathSize.Height * renderScale.y + strokeThickness;
-					//	}
-					//}
-					//else
-					//{
-					//	renderScale.x = renderScale.y;
-					//	size.Width = pathSize.Width * renderScale.x + strokeThickness;
-
-					//	// Reproduces a bug of WinUI where the MinSize is constrained by the finalSize
-					//	// Note: we should use userSize.min.width.AtMost(finalSize.Width), but the finalSize does contains the min size
-					//	var minWidthForScale = userSize.min.width;//.AtMost(finalSize.Width); //_realDesiredSize.Width;
-
-					//	if (userSize.min.hasWidth && size.Width < minWidthForScale)
-					//	{
-					//		// The current scale does not permit us to respect user's min size.
-					//		// We restart the scale computation, but before we scale up the target render size so the computed scale will meet the requirements.
-					//		// Note: We need to re-invoke the ComputeScaleFactors in order to properly apply StrokeThickness
-					//		var adjustmentScale = minWidthForScale / size.Width;
-					//		size = defaultSize.Multiply(adjustmentScale);
-					//		renderScale = ComputeScaleFactors(pathSize, ref size, strokeThickness);
-
-					//		renderScale.x = renderScale.y;
-					//		size.Width = pathSize.Width * renderScale.x + strokeThickness;
-					//	}
-					//}
-
-					//if (renderScale.x == renderScale.y)
-					//{
-					//	renderScale.x = renderScale.y;
-					//	size.Width = pathSize.Width * renderScale.x + strokeThickness;
-
-					//	// Reproduces a bug of WinUI where the MinSize is constrained by the finalSize
-					//	// Note: we should use userSize.min.width.AtMost(finalSize.Width), but the finalSize does contains the min size
-					//	var minWidthForScale = Math.Max(finalSize.Width, finalSize.Height);//.AtMost(finalSize.Width); //_realDesiredSize.Width;
-
-					//	if (userSize.min.hasWidth && size.Width < minWidthForScale)
-					//	{
-					//		// The current scale does not permit us to respect user's min size.
-					//		// We restart the scale computation, but before we scale up the target render size so the computed scale will meet the requirements.
-					//		// Note: We need to re-invoke the ComputeScaleFactors in order to properly apply StrokeThickness
-					//		var adjustmentScale = minWidthForScale / size.Width;
-					//		size = defaultSize.Multiply(adjustmentScale);
-					//		renderScale = ComputeScaleFactors(pathSize, ref size, strokeThickness);
-
-					//		renderScale.x = renderScale.y;
-					//		size.Width = pathSize.Width * renderScale.x + strokeThickness;
-					//	}
-					//}
-					//else if (renderScale.x > renderScale.y)
-					//{
-					//	renderScale.x = renderScale.y;
-					//	size.Width = pathSize.Width * renderScale.x + strokeThickness;
-
-					//	// Reproduces a bug of WinUI where the MinSize is constrained by the finalSize
-					//	// Note: we should use userSize.min.width.AtMost(finalSize.Width), but the finalSize does contains the min size
-					//	var minWidthForScale = userSize.min.width;//.AtMost(finalSize.Width); //_realDesiredSize.Width;
-
-					//	if (userSize.min.hasWidth && size.Width < minWidthForScale)
-					//	{
-					//		// The current scale does not permit us to respect user's min size.
-					//		// We restart the scale computation, but before we scale up the target render size so the computed scale will meet the requirements.
-					//		// Note: We need to re-invoke the ComputeScaleFactors in order to properly apply StrokeThickness
-					//		var adjustmentScale = minWidthForScale / size.Width;
-					//		size = defaultSize.Multiply(adjustmentScale);
-					//		renderScale = ComputeScaleFactors(pathSize, ref size, strokeThickness);
-
-					//		renderScale.x = renderScale.y;
-					//		size.Width = pathSize.Width * renderScale.x + strokeThickness;
-					//	}
-					//}
-					//else
-					//{
-					//	renderScale.y = renderScale.x;
-					//	size.Height = pathSize.Height * renderScale.y + strokeThickness;
-
-					//	// Reproduces a bug of WinUI where the MinSize is constrained by the finalSize
-					//	// Note: we should use userSize.min.height.AtMost(finalSize.Height), but the finalSize does contains the min size
-					//	var minHeightForScale = userSize.min.height;//.AtMost(finalSize.Height); //_realDesiredSize.Height;
-
-					//	if (userSize.min.hasHeight && size.Height < minHeightForScale)
-					//	{
-					//		// The current scale does not permit us to respect user's min size.
-					//		// We restart the scale computation, but before we scale up the target render size so the computed scale will meet the requirements.
-					//		// Note: We need to re-invoke the ComputeScaleFactors in order to properly apply StrokeThickness
-					//		var adjustmentScale = minHeightForScale / size.Height;
-					//		size = defaultSize.Multiply(adjustmentScale);
-					//		renderScale = ComputeScaleFactors(pathSize, ref size, strokeThickness);
-
-					//		renderScale.y = renderScale.x;
-					//		size.Height = pathSize.Height * renderScale.y + strokeThickness;
-					//	}
-					//}
 
 					// This is a complete non sense as we should normally just use userSize.min.width and userSize.min.height,
 					// but the code below actually reproduces a bug of WinUI where the MinWidth and MinHeight are somehow
@@ -628,45 +471,27 @@ namespace Windows.UI.Xaml.Shapes
 							size.Height = pathSize.Height * renderScale.y + strokeThickness;
 						}
 
-						// Reproduces a bug of WinUI where the MinSize is constrained by the finalSize
-						// Note: we should use userSize.min.width.AtMost(finalSize.Width), but the finalSize does contains the min size
-						//var minWidthForScale = userSize.min.width; //.AtMost(finalSize.Width); //_realDesiredSize.Width;
-						//var minHeightForScale = userSize.min.height; //.AtMost(finalSize.Height); //_realDesiredSize.Height;
-
-						//minWidthForScale = userSize.min.width.AtMost(Math.Max(finalSize.Width, finalSize.Height));
-						//minHeightForScale = userSize.min.height.AtMost(finalSize.Height);
-
+						// Make sure that the  current scale does permit us to respect user's min size.
+						// If not we we scale up the target render size to make sure to fit requirements and restart the scale computation.
+						// Note: We need to re-invoke the ComputeScaleFactors in order to properly apply StrokeThickness
 						if (userSize.min.hasWidth && size.Width < minSizeForScale.Width)
 						{
-							// The current scale does not permit us to respect user's min size.
-							// We restart the scale computation, but before we scale up the target render size so the computed scale will meet the requirements.
-							// Note: We need to re-invoke the ComputeScaleFactors in order to properly apply StrokeThickness
 							var adjustmentScale = minSizeForScale.Width / size.Width;
 							defaultSize = size = defaultSize.Multiply(adjustmentScale);
-							renderScale.x = MinValue;
+							renderScale.x = MinValue; // Make sure to restarte computation
 						}
 						else if (userSize.min.hasHeight && size.Height < minSizeForScale.Height)
 						{
-							// The current scale does not permit us to respect user's min size.
-							// We restart the scale computation, but before we scale up the target render size so the computed scale will meet the requirements.
-							// Note: We need to re-invoke the ComputeScaleFactors in order to properly apply StrokeThickness
 							var adjustmentScale = minSizeForScale.Height / size.Height;
 							defaultSize = size = defaultSize.Multiply(adjustmentScale);
-							renderScale.y = MinValue;
+							renderScale.y = MinValue; // Make sure to restarte computation
 						}
 					} while (renderScale.y != renderScale.x);
 
 					renderOrigin = (halfStrokeThickness - pathBounds.X * renderScale.x, halfStrokeThickness - pathBounds.Y * renderScale.y);
-
-#if IS_DESIRED_SMALLER_THAN_MIN_ALLOWED
 					renderOverflow = (size.Width - finalSize.Width, size.Height - finalSize.Height);
-#else
-					//var available = isBeingStretchedByParent
-					//	? parentFinalSize.AtMost(DesiredSize) // We use the desired size since it's the actual "available" size in that case.
-					//	: finalSize;
-					var available = finalSize;
-					renderOverflow = (size.Width - available.Width, size.Height - available.Height);
 
+#if !IS_DESIRED_SMALLER_THAN_MIN_ALLOWED
 					if (isMinSizeForcefullyAppliedByParent)
 					{ 
 						// The parent will use the min size to align this Shape, so here we offset the renderOrigin by the opposite value that is going to be applied.
@@ -676,7 +501,7 @@ namespace Windows.UI.Xaml.Shapes
 						var overflowCorrection = (x: parentFinalSize.Width - finalSize.Width, y: parentFinalSize.Height - finalSize.Height);
 						if (overflowCorrection.x > 0)
 						{
-							switch (HorizontalAlignment)
+							switch (horizontal)
 							{
 								case HorizontalAlignment.Center when renderOverflow.x < 0: renderOrigin.x += (overflowCorrection.x - renderOverflow.x) / 2.0; break;
 								case HorizontalAlignment.Right when renderOverflow.x < 0: renderOrigin.x += (overflowCorrection.x - renderOverflow.x); break;
@@ -687,7 +512,7 @@ namespace Windows.UI.Xaml.Shapes
 
 						if (overflowCorrection.y > 0)
 						{
-							switch (VerticalAlignment)
+							switch (vertical)
 							{
 								case VerticalAlignment.Center when renderOverflow.y < 0: renderOrigin.y += (overflowCorrection.y - renderOverflow.y) / 2.0; break;
 								case VerticalAlignment.Bottom when renderOverflow.y < 0: renderOrigin.y += (overflowCorrection.y - renderOverflow.y); break;
@@ -697,7 +522,6 @@ namespace Windows.UI.Xaml.Shapes
 						}
 					}
 #endif
-
 					break;
 
 				case Stretch.UniformToFill:
@@ -729,7 +553,7 @@ namespace Windows.UI.Xaml.Shapes
 			var renderCenteredByDefault = stretch != Stretch.None;
 			if (renderOverflow.x > 0 && (!userSize.hasWidth || userSize.value.Width > finalSize.Width)) // WinUI does not adjust alignment if the shape was smaller than the finalSize
 			{
-				switch (HorizontalAlignment)
+				switch (horizontal)
 				{
 					case HorizontalAlignment.Center:
 						renderOrigin.x -= renderOverflow.x / 2.0;
@@ -749,7 +573,7 @@ namespace Windows.UI.Xaml.Shapes
 
 			if (renderOverflow.y > 0 && (!userSize.hasHeight || userSize.value.Height > finalSize.Height)) // WinUI does not adjust alignment if the shape was smaller than the finalSize
 			{
-				switch (VerticalAlignment)
+				switch (vertical)
 				{
 					case VerticalAlignment.Center:
 						renderOrigin.y -= renderOverflow.y / 2.0;
