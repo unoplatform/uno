@@ -1,6 +1,7 @@
 ﻿namespace Windows.Devices.Midi {
 	export class MidiInPort {
-		private static dispatchMessage: (instanceId: string, serializedMessage: string, timestamp: number) => number;
+		private static dispatchMessage:
+			(instanceId: string, serializedMessage: string, timestamp: number) => number;
 
 		private static instanceMap: { [managedId: string]: MidiInPort };
 
@@ -27,7 +28,8 @@
 
 		public static startMessageListener(managedId: string) {
 			if (!this.dispatchMessage) {
-				this.dispatchMessage = (<any>Module).mono_bind_static_method("[Uno] Windows.Devices.Midi.MidiInPort:DispatchMessage");
+				this.dispatchMessage = (<any>Module).mono_bind_static_method(
+					"[Uno] Windows.Devices.Midi.MidiInPort:DispatchMessage");
 			}
 
 			const instance = MidiInPort.instanceMap[managedId];

@@ -126,7 +126,6 @@ namespace Windows.Devices.Midi
 			catch (Exception ex)
 			{
 				this.Log().LogError("MIDI Message could not be parsed", ex);
-				return;
 			}
 		}
 	}

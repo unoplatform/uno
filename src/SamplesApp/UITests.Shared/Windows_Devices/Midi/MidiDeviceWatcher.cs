@@ -11,6 +11,7 @@
 
 using System;
 using System.Collections.ObjectModel;
+using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Controls;
@@ -96,7 +97,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// <summary>
 		/// Add any connected MIDI devices to the list
 		/// </summary>
-		private async void UpdateDevices()
+		private async Task UpdateDevicesAsync()
 		{
 			// Get a list of all MIDI devices
 			_deviceInformationCollection = await DeviceInformation.FindAllAsync(_midiSelector);
@@ -135,10 +136,10 @@ namespace UITests.Shared.Windows_Devices.Midi
 			// If all devices have been enumerated
 			if (_enumerationCompleted)
 			{
-				await _coreDispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+				await _coreDispatcher.RunAsync(CoreDispatcherPriority.High, async () =>
 				{
 					// Update the device list
-					UpdateDevices();
+					await UpdateDevicesAsync();
 				});
 			}
 		}
@@ -153,10 +154,10 @@ namespace UITests.Shared.Windows_Devices.Midi
 			// If all devices have been enumerated
 			if (_enumerationCompleted)
 			{
-				await _coreDispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+				await _coreDispatcher.RunAsync(CoreDispatcherPriority.High, async () =>
 				{
 					// Update the device list
-					UpdateDevices();
+					await UpdateDevicesAsync();
 				});
 			}
 		}
@@ -171,10 +172,10 @@ namespace UITests.Shared.Windows_Devices.Midi
 			// If all devices have been enumerated
 			if (_enumerationCompleted)
 			{
-				await _coreDispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+				await _coreDispatcher.RunAsync(CoreDispatcherPriority.High, async () =>
 				{
 					// Update the device list
-					UpdateDevices();
+					await UpdateDevicesAsync();
 				});
 			}
 		}
@@ -187,10 +188,10 @@ namespace UITests.Shared.Windows_Devices.Midi
 		private async void DeviceWatcher_EnumerationCompleted(DeviceWatcher sender, object args)
 		{
 			_enumerationCompleted = true;
-			await _coreDispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+			await _coreDispatcher.RunAsync(CoreDispatcherPriority.High, async () =>
 			{
 				// Update the device list
-				UpdateDevices();
+				await UpdateDevicesAsync();
 			});
 		}
 	}

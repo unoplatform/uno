@@ -28,12 +28,12 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// <summary>
 		/// Collection of active MidiOutPorts
 		/// </summary>
-		private List<IMidiOutPort> _midiOutPorts;
+		private readonly List<IMidiOutPort> _midiOutPorts;
 
 		/// <summary>
 		/// Device watcher for MIDI out ports
 		/// </summary>
-		private MidiDeviceWatcher _midiOutDeviceWatcher;
+		private readonly MidiDeviceWatcher _midiOutDeviceWatcher;
 
 		/// <summary>
 		/// Ordered list to keep track of available MIDI message types
