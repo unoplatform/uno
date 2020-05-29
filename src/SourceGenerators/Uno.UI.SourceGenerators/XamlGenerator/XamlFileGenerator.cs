@@ -2890,11 +2890,11 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				var bindingOptions = GetBindingOptions();
 
-			if (bindingOptions != null)
-			{
-				TryAnnotateWithGeneratorSource(writer);
-				var isAttachedProperty = IsDependencyProperty(member.Member);
-				var isBindingType = FindPropertyType(member.Member) == _dataBindingSymbol;
+				if (bindingOptions != null)
+				{
+					TryAnnotateWithGeneratorSource(writer);
+					var isAttachedProperty = IsDependencyProperty(member.Member);
+					var isBindingType = FindPropertyType(member.Member) == _dataBindingSymbol;
 
 					var bindEvalFunction = bindNode != null ? BuildXBindEvalFunction(member, bindNode) : "";
 
@@ -2914,73 +2914,74 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					}
 				}
 
-			(var resourceKey, var isThemeResourceExtension) = GetStaticResourceKey(member);
+				(var resourceKey, var isThemeResourceExtension) = GetStaticResourceKey(member);
 
-			if (resourceKey != null)
-			{
-				TryAnnotateWithGeneratorSource(writer);
-				var directProperty = GetResourceDictionaryPropertyName(resourceKey);
-
-				if (directProperty != null)
+				if (resourceKey != null)
 				{
-					// Prefer direct property reference (when we are in top-level ResourceDictionary and referencing resource in same dictionary)
+					TryAnnotateWithGeneratorSource(writer);
+					var directProperty = GetResourceDictionaryPropertyName(resourceKey);
+
+					if (directProperty != null)
+					{
+						// Prefer direct property reference (when we are in top-level ResourceDictionary and referencing resource in same dictionary)
+						var type = FindPropertyType(member.Member);
+						string rightSide;
+						if (type?.Name == "TimeSpan")
+						{
+							// explicit support for TimeSpan because we can't override the parsing.
+							rightSide = "global::System.TimeSpan.Parse({0})".InvariantCultureFormat(directProperty);
+						}
+						else
+						{
+							rightSide = "{0}{1}".InvariantCultureFormat(GetCastString(type, null), directProperty);
+						}
+						if (generateAssignation)
+						{
+							writer.AppendLineInvariant(formatLine("{0} = {1}"), member.Member.Name, rightSide);
+						}
+						else
+						{
+							writer.AppendLineInvariant(rightSide);
+						}
+
+					}
+					else if (IsDependencyProperty(member.Member))
+					{
+						// To be fully compatible with UWP here, we should check the nearest dictionary in the 'XAML scope' then outwards. For
+						// StaticResource extension that would be it, for ThemeResource we'd do additional resolution at load-time.
+						//
+						// Instead, Uno immediately sets any Application-level value, if it exists. Then we do load-time resolution by tree-walking
+						// for StaticResource *and* ThemeResource. (Note that initialize-time XAML scope resolution should be possible to implement,
+						// should it turn out to be necessary.)
+						var propertyOwner = GetType(member.Member.DeclaringType);
+						writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.ApplyResource({0}, {1}.{2}Property, \"{3}\", isThemeResourceExtension: {4}, context: {5});", closureName, GetGlobalizedTypeName(propertyOwner.ToDisplayString()), member.Member.Name, resourceKey, isThemeResourceExtension ? "true" : "false", ParseContextPropertyAccess);
+					}
+					else if (IsAttachedProperty(member))
+					{
+						BuildSetAttachedProperty(writer, closureName, member, objectUid: "", isCustomMarkupExtension: false, propertyType: GetAttachedPropertyType(member));
+					}
+					else
+					{
+						// Load-time resolution isn't feasible for non-DPs, so we just set the Application-level value right away, and that's it.
+						var rightSide = GetSimpleStaticResourceRetrieval(member);
+						if (generateAssignation)
+						{
+							writer.AppendLineInvariant(formatLine("{0} = {1}"), member.Member.Name, rightSide);
+						}
+						else
+						{
+							writer.AppendLineInvariant(rightSide);
+						}
+					}
+				}
+
+				var customResourceResourceId = GetCustomResourceResourceId(member);
+				if (customResourceResourceId != null)
+				{
 					var type = FindPropertyType(member.Member);
-					string rightSide;
-					if (type?.Name == "TimeSpan")
-					{
-						// explicit support for TimeSpan because we can't override the parsing.
-						rightSide = "global::System.TimeSpan.Parse({0})".InvariantCultureFormat(directProperty);
-					}
-					else
-					{
-						rightSide = "{0}{1}".InvariantCultureFormat(GetCastString(type, null), directProperty);
-					}
-					if (generateAssignation)
-					{
-						writer.AppendLineInvariant(formatLine("{0} = {1}"), member.Member.Name, rightSide);
-					}
-					else
-					{
-						writer.AppendLineInvariant(rightSide);
-					}
-
+					var rightSide = GetCustomResourceRetrieval(customResourceResourceId, type.ToDisplayString());
+					writer.AppendLineInvariant("{0}{1} = {2};", prefix, member.Member.Name, rightSide);
 				}
-				else if (IsDependencyProperty(member.Member))
-				{
-					// To be fully compatible with UWP here, we should check the nearest dictionary in the 'XAML scope' then outwards. For
-					// StaticResource extension that would be it, for ThemeResource we'd do additional resolution at load-time.
-					//
-					// Instead, Uno immediately sets any Application-level value, if it exists. Then we do load-time resolution by tree-walking
-					// for StaticResource *and* ThemeResource. (Note that initialize-time XAML scope resolution should be possible to implement,
-					// should it turn out to be necessary.)
-					var propertyOwner = GetType(member.Member.DeclaringType);
-					writer.AppendLineInvariant("global::Uno.UI.ResourceResolver.ApplyResource({0}, {1}.{2}Property, \"{3}\", isThemeResourceExtension: {4}, context: {5});", closureName, GetGlobalizedTypeName(propertyOwner.ToDisplayString()), member.Member.Name, resourceKey, isThemeResourceExtension ? "true" : "false", ParseContextPropertyAccess);
-				}
-				else if (IsAttachedProperty(member))
-				{
-					BuildSetAttachedProperty(writer, closureName, member, objectUid: "", isCustomMarkupExtension: false, propertyType: GetAttachedPropertyType(member));
-				}
-				else
-				{
-					// Load-time resolution isn't feasible for non-DPs, so we just set the Application-level value right away, and that's it.
-					var rightSide = GetSimpleStaticResourceRetrieval(member);
-					if (generateAssignation)
-					{
-						writer.AppendLineInvariant(formatLine("{0} = {1}"), member.Member.Name, rightSide);
-					}
-					else
-					{
-						writer.AppendLineInvariant(rightSide);
-					}
-				}
-			}
-
-			var customResourceResourceId = GetCustomResourceResourceId(member);
-			if (customResourceResourceId != null)
-			{
-				var type = FindPropertyType(member.Member);
-				var rightSide = GetCustomResourceRetrieval(customResourceResourceId, type.ToDisplayString());
-				writer.AppendLineInvariant("{0}{1} = {2};", prefix, member.Member.Name, rightSide);
 			}
 		}
 
