@@ -14,7 +14,7 @@ namespace Windows.UI.Xaml.Media
 
 		public PointCollection()
 		{
-			_points = new List<Foundation.Point>();
+			_points = new List<Point>();
 		}
 
 		public PointCollection(IEnumerable<Point> coordinates)
@@ -42,16 +42,16 @@ namespace Windows.UI.Xaml.Media
 		IEnumerator IEnumerable.GetEnumerator()
 			=> ((IEnumerable<Point>)_points).GetEnumerator();
 
-		public int IndexOf(Foundation.Point item)
+		public int IndexOf(Point item)
 			=> _points.IndexOf(item);
 
-		public bool Contains(Foundation.Point item)
+		public bool Contains(Point item)
 			=> _points.Contains(item);
 
-		public void CopyTo(Foundation.Point[] array, int arrayIndex)
+		public void CopyTo(Point[] array, int arrayIndex)
 			=> _points.CopyTo(array, arrayIndex);
 
-		public void Insert(int index, Foundation.Point item)
+		public void Insert(int index, Point item)
 		{
 			_points.Insert(index, item);
 			NotifyChanged();
@@ -63,7 +63,7 @@ namespace Windows.UI.Xaml.Media
 			NotifyChanged();
 		}
 
-		public void Add(Foundation.Point item)
+		public void Add(Point item)
 		{
 			_points.Add(item);
 			NotifyChanged();
@@ -78,7 +78,7 @@ namespace Windows.UI.Xaml.Media
 			}
 		}
 
-		public bool Remove(Foundation.Point item)
+		public bool Remove(Point item)
 		{
 			if (_points.Remove(item))
 			{
