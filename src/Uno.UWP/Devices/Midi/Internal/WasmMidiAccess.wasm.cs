@@ -17,11 +17,14 @@ namespace Uno.Devices.Midi.Internal
 
 		internal static async Task<bool> RequestAsync()
 		{
-			if (_webMidiAccessible) return true;
+			if (_webMidiAccessible)
+			{
+				return true;
+			}
 
-			//TODO: Support for SYS EX MESSAGES in wasm request
-			//there are no access requests currently waiting for resolution, we need to invoke the check in JS
-			var command = $"{JsType}.request()";
+			var systemExclusiveRequested = WinRTFeatureConfiguration.Midi.RequestSystemExclusiveAccess;
+			var serializedRequest = systemExclusiveRequested.ToString().ToLowerInvariant();
+			var command = $"{JsType}.request({serializedRequest})";
 			var result = await InvokeAsync(command);
 			return bool.Parse(result);
 		}

@@ -4,9 +4,9 @@
 
 		private static dispatchRequest: (hasAccess: boolean) => number;
 
-		public static request(): Promise<string> {			
+		public static request(systemExclusive: boolean): Promise<string> {
 			if (navigator.requestMIDIAccess) {
-				return navigator.requestMIDIAccess()
+				return navigator.requestMIDIAccess({ sysex: systemExclusive })
 					.then(
 						(midi: WebMidi.MIDIAccess) => {
 							WasmMidiAccess.midiAccess = midi;
@@ -19,7 +19,7 @@
 			}
 		}
 
-		public static getMidi(): WebMidi.MIDIAccess {			
+		public static getMidi(): WebMidi.MIDIAccess {
 			return WasmMidiAccess.midiAccess;
 		}
 	}
