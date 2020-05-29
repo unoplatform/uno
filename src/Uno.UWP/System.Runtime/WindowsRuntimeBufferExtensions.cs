@@ -15,6 +15,11 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 
 		public static IBuffer AsBuffer(this byte[] source, int offset, int length, int capacity)
 		{
+			if (source is null)
+			{
+				throw new ArgumentNullException(nameof(source));
+			}
+
 			var buffer = new UwpBuffer((uint)capacity);
 			Array.Copy(source, offset, buffer.Data, 0, length);
 			return buffer;
@@ -22,6 +27,11 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 
 		public static Stream AsStream(this IBuffer source)
 		{
+			if (source is null)
+			{
+				throw new ArgumentNullException(nameof(source));
+			}
+
 			switch (source)
 			{
 				case UwpBuffer mb:
@@ -57,6 +67,11 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 
 		public static byte[] ToArray(this IBuffer source)
 		{
+			if (source is null)
+			{
+				throw new ArgumentNullException(nameof(source));
+			}
+
 			switch (source)
 			{
 				case UwpBuffer b:
@@ -68,6 +83,11 @@ namespace System.Runtime.InteropServices.WindowsRuntime
 
 		public static byte[] ToArray(this IBuffer source, uint sourceIndex, int count)
 		{
+			if (source is null)
+			{
+				throw new ArgumentNullException(nameof(source));
+			}
+
 			switch (source)
 			{
 				case UwpBuffer mb:

@@ -40,54 +40,35 @@ namespace Uno.UI.Tests.Windows_Storage.Streams
 			}
 
 			var buffer = writer.DetachBuffer();
-
-			var reader = DataReader.FromBuffer(buffer);
-
-			// variables below has to be initialized, because if not, we get CS0165 Use of unassigned local variable
-			// Codacy shows false errors here, it should be ignored.
-			bool loadBool = false;
-			byte loadByte = 0;
-			int loadInt = 0;
-			double loadDouble = 0;
-			DateTimeOffset loadDate = new DateTimeOffset(2000, 1, 1, 0, 0, 0, TimeSpan.FromMinutes(10));
-			TimeSpan loadTimeSpan = TimeSpan.FromSeconds(10);   // and saved value was 10 minutes
-			Guid loadGuid = Guid.Empty;
+			var reader = DataReader.FromBuffer(buffer);			
 
 			try
 			{
-				loadBool = reader.ReadBoolean();
+				var loadBool = reader.ReadBoolean();
 				Assert.AreEqual(saveBool, loadBool);
 
-				loadByte = reader.ReadByte();
+				var loadByte = reader.ReadByte();
 				Assert.AreEqual(saveByte, loadByte);
 
-				loadInt = reader.ReadInt32();
+				var loadInt = reader.ReadInt32();
 				Assert.AreEqual(saveInt, loadInt);
 
-				loadDouble = reader.ReadDouble();
+				var loadDouble = reader.ReadDouble();
 				Assert.AreEqual(saveDouble, loadDouble);
 
-				loadDate = reader.ReadDateTime();
+				var loadDate = reader.ReadDateTime();
 				Assert.AreEqual(saveDate, loadDate);
 
-				loadTimeSpan = reader.ReadTimeSpan();
+				var loadTimeSpan = reader.ReadTimeSpan();
 				Assert.AreEqual(saveTimeSpan, loadTimeSpan);
 
-				loadGuid = reader.ReadGuid();
+				var loadGuid = reader.ReadGuid();
 				Assert.AreEqual(saveGuid, loadGuid);
 			}
 			catch (Exception ex)
 			{
 				Assert.Fail($"Error reading with DataReader - {ex.Message}");
 			}
-
-			Assert.AreEqual(saveBool, loadBool);
-			Assert.AreEqual(saveByte, loadByte);
-			Assert.AreEqual(saveInt, loadInt);
-			Assert.AreEqual(saveDouble, loadDouble);
-			Assert.AreEqual(saveDate, loadDate);
-			Assert.AreEqual(saveTimeSpan, loadTimeSpan);
-			Assert.AreEqual(saveGuid, loadGuid);
 		}
 
 		[TestMethod]

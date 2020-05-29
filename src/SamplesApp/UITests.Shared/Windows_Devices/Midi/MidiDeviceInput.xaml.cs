@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
@@ -32,12 +33,12 @@ namespace UITests.Windows_Devices.Midi
 		/// <summary>
 		/// Collection of active MidiInPorts
 		/// </summary>
-		private List<MidiInPort> _midiInPorts;
+		private readonly List<MidiInPort> _midiInPorts;
 
 		/// <summary>
 		/// Device watcher for MIDI in ports
 		/// </summary>
-		private MidiDeviceWatcher _midiInDeviceWatcher;
+		private readonly MidiDeviceWatcher _midiInDeviceWatcher;
 
 		/// <summary>
 		/// Constructor: Start the device watcher
@@ -193,7 +194,7 @@ namespace UITests.Windows_Devices.Midi
 					{
 						byte byteRead = sysExDataReader.ReadByte();
 						// Pad with leading zero if necessary
-						outputMessage.Append(byteRead.ToString("X2")).Append(" ");
+						outputMessage.Append(byteRead.ToString("X2", CultureInfo.InvariantCulture)).Append(" ");
 					}
 					break;
 				case MidiMessageType.MidiTimeCode:

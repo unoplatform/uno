@@ -14,9 +14,9 @@
 		}
 
 		public static createPort(managedId: string, encodedDeviceId: string) {
-			var midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
+			const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
 			const deviceId = decodeURIComponent(encodedDeviceId);
-			var input = midi.inputs.get(deviceId);
+			const input = midi.inputs.get(deviceId);
 			MidiInPort.instanceMap[managedId] = new MidiInPort(managedId, input);
 		}
 
@@ -27,8 +27,8 @@
 		}
 
 		public static startMessageListener(managedId: string) {
-			if (!this.dispatchMessage) {
-				this.dispatchMessage = (<any>Module).mono_bind_static_method(
+			if (!MidiInPort.dispatchMessage) {
+				MidiInPort.dispatchMessage = (<any>Module).mono_bind_static_method(
 					"[Uno] Windows.Devices.Midi.MidiInPort:DispatchMessage");
 			}
 
