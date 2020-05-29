@@ -2,10 +2,10 @@
 #pragma warning disable 114 // new keyword hiding
 namespace Windows.Devices.Midi
 {
-	#if false || false || false || false || false
+	#if false || false || NET461 || false || false
 	[global::Uno.NotImplemented]
 	#endif
-	public  partial class MidiOutPort : global::Windows.Devices.Midi.IMidiOutPort,global::System.IDisposable
+	public partial class MidiOutPort : global::Windows.Devices.Midi.IMidiOutPort,global::System.IDisposable
 	{
 		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
@@ -46,7 +46,7 @@ namespace Windows.Devices.Midi
 			throw new global::System.NotImplementedException("The member IAsyncOperation<IMidiOutPort> MidiOutPort.FromIdAsync(string deviceId) is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || false || false || false
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelector()
 		{

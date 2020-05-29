@@ -1,3 +1,4 @@
+#if !NET461
 using Windows.Storage.Streams;
 
 namespace Windows.Devices.Midi
@@ -25,3 +26,4 @@ namespace Windows.Devices.Midi
 		void SendBuffer(IBuffer midiData);
 	}
 }
+#endif

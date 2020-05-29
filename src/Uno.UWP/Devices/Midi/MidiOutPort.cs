@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NET461
+using System;
 using Uno.Devices.Enumeration.Internal;
 using Windows.Foundation;
 using Windows.Storage.Streams;
@@ -84,3 +85,4 @@ namespace Windows.Devices.Midi
 		}
 	}
 }
+#endif

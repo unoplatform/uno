@@ -34,7 +34,7 @@ namespace Windows.Devices.Midi
 			throw new global::System.NotImplementedException("The member IAsyncOperation<MidiInPort> MidiInPort.FromIdAsync(string deviceId) is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || false || false || false
+		#if false || false || NET461 || false || false
 		[global::Uno.NotImplemented]
 		public static string GetDeviceSelector()
 		{

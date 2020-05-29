@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !NET461
+using System;
 using Microsoft.Extensions.Logging;
 using Uno.Devices.Enumeration.Internal;
 using Uno.Devices.Midi.Internal;
@@ -130,3 +131,4 @@ namespace Windows.Devices.Midi
 		}
 	}
 }
+#endif
