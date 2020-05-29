@@ -6,7 +6,6 @@
 
 		public static request(): Promise<string> {			
 			if (navigator.requestMIDIAccess) {
-				console.log('This browser supports WebMIDI!');
 				return navigator.requestMIDIAccess()
 					.then(
 						(midi: WebMidi.MIDIAccess) => {
@@ -16,13 +15,12 @@
 						() => "false");
 			}
 			else {
-				console.log('WebMIDI is not supported in this browser.');
 				return Promise.resolve("false");
 			}
 		}
 
 		public static getMidi(): WebMidi.MIDIAccess {			
-			return this.midiAccess;
+			return WasmMidiAccess.midiAccess;
 		}
 	}
 }

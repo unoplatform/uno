@@ -32,32 +32,32 @@ namespace UITests.Windows_Devices.Midi
 		/// <summary>
 		/// Collection of active MidiInPorts
 		/// </summary>
-		private List<MidiInPort> midiInPorts;
+		private List<MidiInPort> _midiInPorts;
 
 		/// <summary>
 		/// Device watcher for MIDI in ports
 		/// </summary>
-		MidiDeviceWatcher midiInDeviceWatcher;
+		private MidiDeviceWatcher _midiInDeviceWatcher;
 
 		/// <summary>
 		/// Constructor: Start the device watcher
 		/// </summary>
 		public MidiDeviceInput()
 		{
-			this.InitializeComponent();
+			InitializeComponent();
 
-			this.rootGrid.DataContext = this;
+			rootGrid.DataContext = this;
 
 			// Initialize the list of active MIDI input devices
-			this.midiInPorts = new List<MidiInPort>();
+			_midiInPorts = new List<MidiInPort>();
 
 			// Set up the MIDI input device watcher
-			this.midiInDeviceWatcher = new MidiDeviceWatcher(MidiInPort.GetDeviceSelector(), Dispatcher, this.inputDevices, InputDevices);
+			_midiInDeviceWatcher = new MidiDeviceWatcher(MidiInPort.GetDeviceSelector(), Dispatcher, inputDevices, InputDevices);
 
 			// Start watching for devices
-			this.midiInDeviceWatcher.Start();
+			_midiInDeviceWatcher.Start();
 
-			this.Unloaded += MidiDeviceInput_Unloaded;
+			Unloaded += MidiDeviceInput_Unloaded;
 		}
 
 		public ObservableCollection<string> InputDevices { get; } = new ObservableCollection<string>();
@@ -67,14 +67,14 @@ namespace UITests.Windows_Devices.Midi
 		private void MidiDeviceInput_Unloaded(object sender, RoutedEventArgs e)
 		{
 			// Stop the input device watcher
-			this.midiInDeviceWatcher.Stop();
+			_midiInDeviceWatcher.Stop();
 
 			// Close all MidiInPorts
-			foreach (MidiInPort inPort in this.midiInPorts)
+			foreach (MidiInPort inPort in _midiInPorts)
 			{
 				inPort.Dispose();
 			}
-			this.midiInPorts.Clear();
+			_midiInPorts.Clear();
 		}
 
 		/// <summary>
@@ -93,17 +93,17 @@ namespace UITests.Windows_Devices.Midi
 				// Clear input device messages
 				InputDeviceMessages.Clear();
 				InputDeviceMessages.Add("Select a MIDI input device to be able to see its messages");
-				this.inputDeviceMessages.IsEnabled = false;
+				inputDeviceMessages.IsEnabled = false;
 				NotifyUser("Select a MIDI input device to be able to see its messages");
 				return;
 			}
 
-			DeviceInformationCollection devInfoCollection = this.midiInDeviceWatcher.GetDeviceInformationCollection();
+			DeviceInformationCollection devInfoCollection = _midiInDeviceWatcher.GetDeviceInformationCollection();
 			if (devInfoCollection == null)
 			{
 				InputDeviceMessages.Clear();
 				InputDeviceMessages.Add("Device not found!");
-				this.inputDeviceMessages.IsEnabled = false;
+				inputDeviceMessages.IsEnabled = false;
 				NotifyUser("Device not found!");
 				return;
 			}
@@ -113,7 +113,7 @@ namespace UITests.Windows_Devices.Midi
 			{
 				InputDeviceMessages.Clear();
 				InputDeviceMessages.Add("Device not found!");
-				this.inputDeviceMessages.IsEnabled = false;
+				inputDeviceMessages.IsEnabled = false;
 				NotifyUser("Device not found!");
 				return;
 			}
@@ -126,15 +126,15 @@ namespace UITests.Windows_Devices.Midi
 			}
 
 			// We have successfully created a MidiInPort; add the device to the list of active devices, and set up message receiving
-			if (!this.midiInPorts.Contains(currentMidiInputDevice))
+			if (!_midiInPorts.Contains(currentMidiInputDevice))
 			{
-				this.midiInPorts.Add(currentMidiInputDevice);
+				_midiInPorts.Add(currentMidiInputDevice);
 				currentMidiInputDevice.MessageReceived += MidiInputDevice_MessageReceived;
 			}
 
 			// Clear any previous input messages
 			InputDeviceMessages.Clear();
-			this.inputDeviceMessages.IsEnabled = true;
+			inputDeviceMessages.IsEnabled = true;
 
 			NotifyUser("Input Device selected successfully! Waiting for messages...");
 		}
@@ -210,8 +210,6 @@ namespace UITests.Windows_Devices.Midi
 					break;
 				case MidiMessageType.None:
 					throw new InvalidOperationException();
-				default:
-					break;
 			}
 
 			// Skip TimingClock and ActiveSensing messages to avoid overcrowding the list. Commment this check out to see all messages

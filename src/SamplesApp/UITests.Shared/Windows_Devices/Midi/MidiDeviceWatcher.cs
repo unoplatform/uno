@@ -22,13 +22,14 @@ namespace UITests.Shared.Windows_Devices.Midi
 	/// </summary>
 	internal class MidiDeviceWatcher
 	{
-		internal DeviceWatcher deviceWatcher = null;
-		internal DeviceInformationCollection deviceInformationCollection = null;
-		bool enumerationCompleted = false;
-		ListView portList = null;
+		private readonly DeviceWatcher _deviceWatcher = null;
+		private readonly ListView _portList = null;
 		private readonly ObservableCollection<string> _items;
-		string midiSelector = string.Empty;
-		CoreDispatcher coreDispatcher = null;
+		private readonly string _midiSelector = string.Empty;
+		private readonly CoreDispatcher _coreDispatcher = null;
+
+		private DeviceInformationCollection _deviceInformationCollection = null;		
+		private bool _enumerationCompleted = false;
 
 		/// <summary>
 		/// Constructor: Initialize and hook up Device Watcher events
@@ -38,16 +39,16 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// <param name="portListBox">The UI element to update with list of devices</param>
 		internal MidiDeviceWatcher(string midiSelectorString, CoreDispatcher dispatcher, ListView portListBox, ObservableCollection<string> items)
 		{
-			this.deviceWatcher = DeviceInformation.CreateWatcher(midiSelectorString);
-			this.portList = portListBox;
+			_deviceWatcher = DeviceInformation.CreateWatcher(midiSelectorString);
+			_portList = portListBox;
 			_items = items;
-			this.midiSelector = midiSelectorString;
-			this.coreDispatcher = dispatcher;
+			_midiSelector = midiSelectorString;
+			_coreDispatcher = dispatcher;
 
-			this.deviceWatcher.Added += DeviceWatcher_Added;
-			this.deviceWatcher.Removed += DeviceWatcher_Removed;
-			this.deviceWatcher.Updated += DeviceWatcher_Updated;
-			this.deviceWatcher.EnumerationCompleted += DeviceWatcher_EnumerationCompleted;
+			_deviceWatcher.Added += DeviceWatcher_Added;
+			_deviceWatcher.Removed += DeviceWatcher_Removed;
+			_deviceWatcher.Updated += DeviceWatcher_Updated;
+			_deviceWatcher.EnumerationCompleted += DeviceWatcher_EnumerationCompleted;
 		}
 
 		/// <summary>
@@ -55,10 +56,10 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// </summary>
 		~MidiDeviceWatcher()
 		{
-			this.deviceWatcher.Added -= DeviceWatcher_Added;
-			this.deviceWatcher.Removed -= DeviceWatcher_Removed;
-			this.deviceWatcher.Updated -= DeviceWatcher_Updated;
-			this.deviceWatcher.EnumerationCompleted -= DeviceWatcher_EnumerationCompleted;
+			_deviceWatcher.Added -= DeviceWatcher_Added;
+			_deviceWatcher.Removed -= DeviceWatcher_Removed;
+			_deviceWatcher.Updated -= DeviceWatcher_Updated;
+			_deviceWatcher.EnumerationCompleted -= DeviceWatcher_EnumerationCompleted;
 		}
 
 		/// <summary>
@@ -66,9 +67,9 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// </summary>
 		internal void Start()
 		{
-			if (this.deviceWatcher.Status != DeviceWatcherStatus.Started)
+			if (_deviceWatcher.Status != DeviceWatcherStatus.Started)
 			{
-				this.deviceWatcher.Start();
+				_deviceWatcher.Start();
 			}
 		}
 
@@ -77,9 +78,9 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// </summary>
 		internal void Stop()
 		{
-			if (this.deviceWatcher.Status != DeviceWatcherStatus.Stopped)
+			if (_deviceWatcher.Status != DeviceWatcherStatus.Stopped)
 			{
-				this.deviceWatcher.Stop();
+				_deviceWatcher.Stop();
 			}
 		}
 
@@ -89,7 +90,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// <returns></returns>
 		internal DeviceInformationCollection GetDeviceInformationCollection()
 		{
-			return this.deviceInformationCollection;
+			return _deviceInformationCollection;
 		}
 
 		/// <summary>
@@ -98,16 +99,16 @@ namespace UITests.Shared.Windows_Devices.Midi
 		private async void UpdateDevices()
 		{
 			// Get a list of all MIDI devices
-			this.deviceInformationCollection = await DeviceInformation.FindAllAsync(this.midiSelector);
+			_deviceInformationCollection = await DeviceInformation.FindAllAsync(_midiSelector);
 
 			// If no devices are found, update the ListBox
-			if ((this.deviceInformationCollection == null) || (this.deviceInformationCollection.Count == 0))
+			if ((_deviceInformationCollection == null) || (_deviceInformationCollection.Count == 0))
 			{
 				// Start with a clean list
 				_items.Clear();
 
 				_items.Add("No MIDI ports found");
-				this.portList.IsEnabled = false;
+				_portList.IsEnabled = false;
 			}
 			// If devices are found, enumerate them and add them to the list
 			else
@@ -115,12 +116,12 @@ namespace UITests.Shared.Windows_Devices.Midi
 				// Start with a clean list
 				_items.Clear();
 
-				foreach (var device in deviceInformationCollection)
+				foreach (var device in _deviceInformationCollection)
 				{
 					_items.Add(device.Name);
 				}
 
-				this.portList.IsEnabled = true;
+				_portList.IsEnabled = true;
 			}
 		}
 
@@ -132,9 +133,9 @@ namespace UITests.Shared.Windows_Devices.Midi
 		private async void DeviceWatcher_Added(DeviceWatcher sender, DeviceInformation args)
 		{
 			// If all devices have been enumerated
-			if (this.enumerationCompleted)
+			if (_enumerationCompleted)
 			{
-				await coreDispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+				await _coreDispatcher.RunAsync(CoreDispatcherPriority.High, () =>
 				{
 					// Update the device list
 					UpdateDevices();
@@ -150,9 +151,9 @@ namespace UITests.Shared.Windows_Devices.Midi
 		private async void DeviceWatcher_Removed(DeviceWatcher sender, DeviceInformationUpdate args)
 		{
 			// If all devices have been enumerated
-			if (this.enumerationCompleted)
+			if (_enumerationCompleted)
 			{
-				await coreDispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+				await _coreDispatcher.RunAsync(CoreDispatcherPriority.High, () =>
 				{
 					// Update the device list
 					UpdateDevices();
@@ -168,9 +169,9 @@ namespace UITests.Shared.Windows_Devices.Midi
 		private async void DeviceWatcher_Updated(DeviceWatcher sender, DeviceInformationUpdate args)
 		{
 			// If all devices have been enumerated
-			if (this.enumerationCompleted)
+			if (_enumerationCompleted)
 			{
-				await coreDispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+				await _coreDispatcher.RunAsync(CoreDispatcherPriority.High, () =>
 				{
 					// Update the device list
 					UpdateDevices();
@@ -185,8 +186,8 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// <param name="args">Event arguments</param>
 		private async void DeviceWatcher_EnumerationCompleted(DeviceWatcher sender, object args)
 		{
-			this.enumerationCompleted = true;
-			await coreDispatcher.RunAsync(CoreDispatcherPriority.High, () =>
+			_enumerationCompleted = true;
+			await _coreDispatcher.RunAsync(CoreDispatcherPriority.High, () =>
 			{
 				// Update the device list
 				UpdateDevices();

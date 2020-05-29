@@ -44,15 +44,15 @@ namespace Windows.Devices.Midi
 		[Preserve]
 		public static int DispatchMessage(string managedId, string serializedMessage, double timestamp)
 		{
+			if (serializedMessage is null)
+			{
+				throw new ArgumentNullException(nameof(serializedMessage));
+			}
+
 			if (!_instanceSubscriptions.TryGetValue(managedId, out var port))
 			{
 				throw new InvalidOperationException("This instance is not listening to MIDI input.");
-			}
-
-            if (serializedMessage is null)
-            {
-                throw new ArgumentNullException(nameof(serializedMessage));
-            }
+			}            
 
             var managedTimestamp = TimeSpan.FromMilliseconds(timestamp);
 

@@ -28,50 +28,50 @@ namespace UITests.Shared.Windows_Devices.Midi
 		/// <summary>
 		/// Collection of active MidiOutPorts
 		/// </summary>
-		private List<IMidiOutPort> midiOutPorts;
+		private List<IMidiOutPort> _midiOutPorts;
 
 		/// <summary>
 		/// Device watcher for MIDI out ports
 		/// </summary>
-		MidiDeviceWatcher midiOutDeviceWatcher;
+		private MidiDeviceWatcher _midiOutDeviceWatcher;
 
 		/// <summary>
 		/// Ordered list to keep track of available MIDI message types
 		/// </summary>
-		Dictionary<MidiMessageType, string> messageTypes;
+		private Dictionary<MidiMessageType, string> _messageTypes;
 
 		/// <summary>
 		/// Keep track of the type of message the user intends to send
 		/// </summary>
-		MidiMessageType currentMessageType = MidiMessageType.None;
+		private MidiMessageType _currentMessageType = MidiMessageType.None;
 
 		/// <summary>
 		/// Keep track of the current output device (which could also be the GS synth)
 		/// </summary>
-		IMidiOutPort currentMidiOutputDevice;
+		private IMidiOutPort _currentMidiOutputDevice;
 
 		/// <summary>
 		/// Constructor: Start the device watcher and populate MIDI message types
 		/// </summary>
 		public MidiDeviceOutputTests()
 		{
-			this.InitializeComponent();
+			InitializeComponent();
 
-			this.rootGrid.DataContext = this;
+			rootGrid.DataContext = this;
 
 			// Initialize the list of active MIDI output devices
-			this.midiOutPorts = new List<IMidiOutPort>();
+			_midiOutPorts = new List<IMidiOutPort>();
 
 			// Set up the MIDI output device watcher
-			this.midiOutDeviceWatcher = new MidiDeviceWatcher(MidiOutPort.GetDeviceSelector(), Dispatcher, this.outputDevices, OutputDevices);
+			_midiOutDeviceWatcher = new MidiDeviceWatcher(MidiOutPort.GetDeviceSelector(), Dispatcher, outputDevices, OutputDevices);
 
 			// Start watching for devices
-			this.midiOutDeviceWatcher.Start();
+			_midiOutDeviceWatcher.Start();
 
 			// Populate message types into list
 			PopulateMessageTypes();
 
-			this.Unloaded += MidiDeviceOutputTests_Unloaded;
+			Unloaded += MidiDeviceOutputTests_Unloaded;
 		}
 
 		public ObservableCollection<string> OutputDevices { get; } = new ObservableCollection<string>();
@@ -81,14 +81,14 @@ namespace UITests.Shared.Windows_Devices.Midi
 		private void MidiDeviceOutputTests_Unloaded(object sender, RoutedEventArgs e)
 		{
 			// Stop the output device watcher
-			this.midiOutDeviceWatcher.Stop();
+			_midiOutDeviceWatcher.Stop();
 
 			// Close all MidiOutPorts
-			foreach (IMidiOutPort outPort in this.midiOutPorts)
+			foreach (IMidiOutPort outPort in _midiOutPorts)
 			{
 				outPort.Dispose();
 			}
-			this.midiOutPorts.Clear();
+			_midiOutPorts.Clear();
 		}
 
 		/// <summary>
@@ -98,31 +98,31 @@ namespace UITests.Shared.Windows_Devices.Midi
 		private void PopulateMessageTypes()
 		{
 			// Build the list of available MIDI messages for reverse lookup later
-			this.messageTypes = new Dictionary<MidiMessageType, string>();
-			this.messageTypes.Add(MidiMessageType.ActiveSensing, "Active Sensing");
-			this.messageTypes.Add(MidiMessageType.ChannelPressure, "Channel Pressure");
-			this.messageTypes.Add(MidiMessageType.Continue, "Continue");
-			this.messageTypes.Add(MidiMessageType.ControlChange, "Control Change");
-			this.messageTypes.Add(MidiMessageType.MidiTimeCode, "MIDI Time Code");
-			this.messageTypes.Add(MidiMessageType.NoteOff, "Note Off");
-			this.messageTypes.Add(MidiMessageType.NoteOn, "Note On");
-			this.messageTypes.Add(MidiMessageType.PitchBendChange, "Pitch Bend Change");
-			this.messageTypes.Add(MidiMessageType.PolyphonicKeyPressure, "Polyphonic Key Pressure");
-			this.messageTypes.Add(MidiMessageType.ProgramChange, "Program Change");
-			this.messageTypes.Add(MidiMessageType.SongPositionPointer, "Song Position Pointer");
-			this.messageTypes.Add(MidiMessageType.SongSelect, "Song Select");
-			this.messageTypes.Add(MidiMessageType.Start, "Start");
-			this.messageTypes.Add(MidiMessageType.Stop, "Stop");
-			this.messageTypes.Add(MidiMessageType.SystemExclusive, "System Exclusive");
-			this.messageTypes.Add(MidiMessageType.SystemReset, "System Reset");
-			this.messageTypes.Add(MidiMessageType.TimingClock, "Timing Clock");
-			this.messageTypes.Add(MidiMessageType.TuneRequest, "Tune Request");
+			_messageTypes = new Dictionary<MidiMessageType, string>();
+			_messageTypes.Add(MidiMessageType.ActiveSensing, "Active Sensing");
+			_messageTypes.Add(MidiMessageType.ChannelPressure, "Channel Pressure");
+			_messageTypes.Add(MidiMessageType.Continue, "Continue");
+			_messageTypes.Add(MidiMessageType.ControlChange, "Control Change");
+			_messageTypes.Add(MidiMessageType.MidiTimeCode, "MIDI Time Code");
+			_messageTypes.Add(MidiMessageType.NoteOff, "Note Off");
+			_messageTypes.Add(MidiMessageType.NoteOn, "Note On");
+			_messageTypes.Add(MidiMessageType.PitchBendChange, "Pitch Bend Change");
+			_messageTypes.Add(MidiMessageType.PolyphonicKeyPressure, "Polyphonic Key Pressure");
+			_messageTypes.Add(MidiMessageType.ProgramChange, "Program Change");
+			_messageTypes.Add(MidiMessageType.SongPositionPointer, "Song Position Pointer");
+			_messageTypes.Add(MidiMessageType.SongSelect, "Song Select");
+			_messageTypes.Add(MidiMessageType.Start, "Start");
+			_messageTypes.Add(MidiMessageType.Stop, "Stop");
+			_messageTypes.Add(MidiMessageType.SystemExclusive, "System Exclusive");
+			_messageTypes.Add(MidiMessageType.SystemReset, "System Reset");
+			_messageTypes.Add(MidiMessageType.TimingClock, "Timing Clock");
+			_messageTypes.Add(MidiMessageType.TuneRequest, "Tune Request");
 
 			// Start with a clean slate
 			MessageTypeItems.Clear();
 
 			// Add the message types to the list
-			foreach (var messageType in this.messageTypes)
+			foreach (var messageType in _messageTypes)
 			{
 				MessageTypeItems.Add(messageType.Value);
 			}
@@ -136,7 +136,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 		private async void outputDevices_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			// Get the selected output MIDI device
-			int selectedOutputDeviceIndex = this.outputDevices.SelectedIndex;
+			int selectedOutputDeviceIndex = outputDevices.SelectedIndex;
 
 			// Try to create a MidiOutPort
 			if (selectedOutputDeviceIndex < 0)
@@ -145,7 +145,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 				return;
 			}
 
-			DeviceInformationCollection devInfoCollection = this.midiOutDeviceWatcher.GetDeviceInformationCollection();
+			DeviceInformationCollection devInfoCollection = _midiOutDeviceWatcher.GetDeviceInformationCollection();
 			if (devInfoCollection == null)
 			{
 				NotifyUser("Device not found!");
@@ -159,22 +159,22 @@ namespace UITests.Shared.Windows_Devices.Midi
 				return;
 			}
 
-			this.currentMidiOutputDevice = await MidiOutPort.FromIdAsync(devInfo.Id);
-			if (this.currentMidiOutputDevice == null)
+			_currentMidiOutputDevice = await MidiOutPort.FromIdAsync(devInfo.Id);
+			if (_currentMidiOutputDevice == null)
 			{
 				NotifyUser("Unable to create MidiOutPort from output device");
 				return;
 			}
 
 			// We have successfully created a MidiOutPort; add the device to the list of active devices
-			if (!this.midiOutPorts.Contains(this.currentMidiOutputDevice))
+			if (!_midiOutPorts.Contains(_currentMidiOutputDevice))
 			{
-				this.midiOutPorts.Add(this.currentMidiOutputDevice);
+				_midiOutPorts.Add(_currentMidiOutputDevice);
 			}
 
 			// Enable message type list & reset button
-			this.messageType.IsEnabled = true;
-			this.resetButton.IsEnabled = true;
+			messageType.IsEnabled = true;
+			resetButton.IsEnabled = true;
 
 			NotifyUser("Output Device selected successfully! Waiting for message type selection...");
 		}
@@ -198,13 +198,13 @@ namespace UITests.Shared.Windows_Devices.Midi
 			// If the flag is set, reset the message type list as well
 			if (resetMessageType)
 			{
-				this.messageType.SelectedIndex = -1;
-				this.currentMessageType = MidiMessageType.None;
+				messageType.SelectedIndex = -1;
+				_currentMessageType = MidiMessageType.None;
 			}
 
 			// Ensure the message type list and reset button are enabled
-			this.messageType.IsEnabled = true;
-			this.resetButton.IsEnabled = true;
+			messageType.IsEnabled = true;
+			resetButton.IsEnabled = true;
 
 			// Reset selections on parameters
 #if !WINDOWS_UWP
@@ -223,10 +223,10 @@ namespace UITests.Shared.Windows_Devices.Midi
 			UpdateParameterList3();
 
 			// Disable send button & hide/clear the SysEx buffer text
-			this.sendButton.IsEnabled = true;
-			this.rawBufferHeader.Visibility = Visibility.Collapsed;
-			this.sysExMessageContent.Text = "";
-			this.sysExMessageContent.Visibility = Visibility.Collapsed;
+			sendButton.IsEnabled = true;
+			rawBufferHeader.Visibility = Visibility.Collapsed;
+			sysExMessageContent.Text = "";
+			sysExMessageContent.Visibility = Visibility.Collapsed;
 		}
 
 		/// <summary>
@@ -239,7 +239,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 		{
 			IMidiMessage midiMessageToSend = null;
 
-			switch (this.currentMessageType)
+			switch (_currentMessageType)
 			{
 				case MidiMessageType.NoteOff:
 					midiMessageToSend = new MidiNoteOffMessage(Convert.ToByte(GetParameterValue(parameter1)), Convert.ToByte(GetParameterValue(parameter2)), Convert.ToByte(GetParameterValue(parameter3)));
@@ -264,7 +264,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 					break;
 				case MidiMessageType.SystemExclusive:
 					var dataWriter = new DataWriter();
-					var sysExMessage = this.sysExMessageContent.Text;
+					var sysExMessage = sysExMessageContent.Text;
 					var sysExMessageLength = sysExMessage.Length;
 
 					// Do not send a blank SysEx message
@@ -323,7 +323,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 			}
 
 			// Send the message
-			this.currentMidiOutputDevice.SendMessage(midiMessageToSend);
+			_currentMidiOutputDevice.SendMessage(midiMessageToSend);
 			NotifyUser("Message sent successfully");
 		}
 
@@ -336,7 +336,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 		private void messageType_SelectionChanged(object sender, SelectionChangedEventArgs e)
 		{
 			// Find the index of the user's choice
-			int messageTypeSelectedIndex = this.messageType.SelectedIndex;
+			int messageTypeSelectedIndex = messageType.SelectedIndex;
 
 			// Return if reset
 			if (messageTypeSelectedIndex == -1)
@@ -349,11 +349,11 @@ namespace UITests.Shared.Windows_Devices.Midi
 
 			// Find the key by index; that's our message type
 			int count = 0;
-			foreach (var messageType in messageTypes)
+			foreach (var messageType in _messageTypes)
 			{
 				if (messageTypeSelectedIndex == count)
 				{
-					this.currentMessageType = messageType.Key;
+					_currentMessageType = messageType.Key;
 					break;
 				}
 				count++;
@@ -361,17 +361,17 @@ namespace UITests.Shared.Windows_Devices.Midi
 
 			// Some MIDI message types don't need additional parameters
 			// For them, show the Send button as soon as user selects message type from the list
-			switch (this.currentMessageType)
+			switch (_currentMessageType)
 			{
 				// SysEx messages need to be in a particular format
 				case MidiMessageType.SystemExclusive:
-					this.rawBufferHeader.Visibility = Visibility.Visible;
-					this.sysExMessageContent.Visibility = Visibility.Visible;
+					rawBufferHeader.Visibility = Visibility.Visible;
+					sysExMessageContent.Visibility = Visibility.Visible;
 					// Provide start (0xF0) and end (0xF7) of SysEx values
 					sysExMessageContent.Text = "F0 F7";
 					// Let the user know the expected format of the message
 					NotifyUser("Expecting a string of format 'NN NN NN NN....', where NN is a byte in hex");
-					this.sendButton.IsEnabled = true;
+					sendButton.IsEnabled = true;
 					break;
 
 				// These messages do not need additional parameters
@@ -382,11 +382,11 @@ namespace UITests.Shared.Windows_Devices.Midi
 				case MidiMessageType.SystemReset:
 				case MidiMessageType.TimingClock:
 				case MidiMessageType.TuneRequest:
-					this.sendButton.IsEnabled = true;
+					sendButton.IsEnabled = true;
 					break;
 
 				default:
-					this.sendButton.IsEnabled = false;
+					sendButton.IsEnabled = false;
 					break;
 			}
 
@@ -405,7 +405,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 		private void UpdateParameterList1()
 		{
 			// The first parameter is different for different message types
-			switch (this.currentMessageType)
+			switch (_currentMessageType)
 			{
 				// For message types that require a first parameter...
 				case MidiMessageType.NoteOff:
@@ -416,39 +416,39 @@ namespace UITests.Shared.Windows_Devices.Midi
 				case MidiMessageType.ChannelPressure:
 				case MidiMessageType.PitchBendChange:
 					// This list is for Channels, of which there are 16
-					PopulateParameterList(this.parameter1, 16, "Channel");
+					PopulateParameterList(parameter1, 16, "Channel");
 					break;
 
 				case MidiMessageType.MidiTimeCode:
 					// This list is for further Message Types, of which there are 8
-					PopulateParameterList(this.parameter1, 8, "Message Type");
+					PopulateParameterList(parameter1, 8, "Message Type");
 					break;
 
 				case MidiMessageType.SongPositionPointer:
 					// This list is for Beats, of which there are 16384
-					PopulateParameterList(this.parameter1, 16384, "Beats");
+					PopulateParameterList(parameter1, 16384, "Beats");
 					break;
 
 				case MidiMessageType.SongSelect:
 					// This list is for Songs, of which there are 128
-					PopulateParameterList(this.parameter1, 128, "Song");
+					PopulateParameterList(parameter1, 128, "Song");
 					break;
 
 				case MidiMessageType.SystemExclusive:
 					// Start with a clean slate
 					// Hide the first parameter
-					this.parameter1.Header = "";
-					this.parameter1.IsEnabled = false;
-					this.parameter1.Visibility = Visibility.Collapsed;
+					parameter1.Header = "";
+					parameter1.IsEnabled = false;
+					parameter1.Visibility = Visibility.Collapsed;
 					NotifyUser("Please edit the message in the textbox by clicking on 'F0 F7'");
 					break;
 
 				default:
 					// Start with a clean slate				
 					// Hide the first parameter
-					this.parameter1.Header = "";
-					this.parameter1.IsEnabled = false;
-					this.parameter1.Visibility = Visibility.Collapsed;
+					parameter1.Header = "";
+					parameter1.IsEnabled = false;
+					parameter1.Visibility = Visibility.Collapsed;
 					NotifyUser("");
 					break;
 			}
@@ -470,19 +470,19 @@ namespace UITests.Shared.Windows_Devices.Midi
 
 			// Some MIDI message types don't need additional parameters past parameter 1
 			// For them, show the Send button as soon as user selects parameter 1 value from the list
-			switch (this.currentMessageType)
+			switch (_currentMessageType)
 			{
 				case MidiMessageType.SongPositionPointer:
 				case MidiMessageType.SongSelect:
 
 					if (parameter1SelectedIndex != -1)
 					{
-						this.sendButton.IsEnabled = true;
+						sendButton.IsEnabled = true;
 					}
 					break;
 
 				default:
-					this.sendButton.IsEnabled = false;
+					sendButton.IsEnabled = false;
 					break;
 			}
 
@@ -507,7 +507,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 
 			// Some MIDI message types don't need additional parameters past parameter 2
 			// For them, show the Send button as soon as user selects parameter 2 value from the list
-			switch (this.currentMessageType)
+			switch (_currentMessageType)
 			{
 				case MidiMessageType.ProgramChange:
 				case MidiMessageType.ChannelPressure:
@@ -516,55 +516,55 @@ namespace UITests.Shared.Windows_Devices.Midi
 
 					if (parameter2SelectedIndex != -1)
 					{
-						this.sendButton.IsEnabled = true;
+						sendButton.IsEnabled = true;
 					}
 					break;
 
 				default:
-					this.sendButton.IsEnabled = false;
+					sendButton.IsEnabled = false;
 					break;
 			}
 
-			switch (this.currentMessageType)
+			switch (_currentMessageType)
 			{
 				case MidiMessageType.NoteOff:
 				case MidiMessageType.NoteOn:
 				case MidiMessageType.PolyphonicKeyPressure:
 					// This list is for Notes, of which there are 128
-					PopulateParameterList(this.parameter2, 128, "Note");
+					PopulateParameterList(parameter2, 128, "Note");
 					break;
 
 				case MidiMessageType.ControlChange:
 					// This list is for Controllers, of which there are 128
-					PopulateParameterList(this.parameter2, 128, "Controller");
+					PopulateParameterList(parameter2, 128, "Controller");
 					break;
 
 				case MidiMessageType.ProgramChange:
 					// This list is for Program Numbers, of which there are 128
-					PopulateParameterList(this.parameter2, 128, "Program Number");
+					PopulateParameterList(parameter2, 128, "Program Number");
 					break;
 
 				case MidiMessageType.ChannelPressure:
 					// This list is for Pressure Values, of which there are 128
-					PopulateParameterList(this.parameter2, 128, "Pressure Value");
+					PopulateParameterList(parameter2, 128, "Pressure Value");
 					break;
 
 				case MidiMessageType.PitchBendChange:
 					// This list is for Pitch Bend Values, of which there are 16384
-					PopulateParameterList(this.parameter2, 16384, "Pitch Bend Value");
+					PopulateParameterList(parameter2, 16384, "Pitch Bend Value");
 					break;
 
 				case MidiMessageType.MidiTimeCode:
 					// This list is for Values, of which there are 16
-					PopulateParameterList(this.parameter2, 16, "Value");
+					PopulateParameterList(parameter2, 16, "Value");
 					break;
 
 				default:
 					// Start with a clean slate
 					// Hide the first parameter
-					this.parameter2.Header = "";
-					this.parameter2.IsEnabled = false;
-					this.parameter2.Visibility = Visibility.Collapsed;
+					parameter2.Header = "";
+					parameter2.IsEnabled = false;
+					parameter2.Visibility = Visibility.Collapsed;
 					break;
 			}
 		}
@@ -586,7 +586,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 			// The last set of MIDI message types don't need additional parameters
 			// For them, show the Send button as soon as user selects parameter 3 value from the list
 			// Set default to disable Send button for any message types that fall through
-			switch (this.currentMessageType)
+			switch (_currentMessageType)
 			{
 				case MidiMessageType.NoteOff:
 				case MidiMessageType.NoteOn:
@@ -595,39 +595,39 @@ namespace UITests.Shared.Windows_Devices.Midi
 
 					if (parameter3SelectedIndex != -1)
 					{
-						this.sendButton.IsEnabled = true;
+						sendButton.IsEnabled = true;
 					}
 					break;
 
 				default:
-					this.sendButton.IsEnabled = false;
+					sendButton.IsEnabled = false;
 					break;
 			}
 
-			switch (this.currentMessageType)
+			switch (_currentMessageType)
 			{
 				case MidiMessageType.NoteOff:
 				case MidiMessageType.NoteOn:
 					// This list is for Velocity Values, of which there are 128
-					PopulateParameterList(this.parameter3, 128, "Velocity");
+					PopulateParameterList(parameter3, 128, "Velocity");
 					break;
 
 				case MidiMessageType.PolyphonicKeyPressure:
 					// This list is for Pressure Values, of which there are 128
-					PopulateParameterList(this.parameter3, 128, "Pressure");
+					PopulateParameterList(parameter3, 128, "Pressure");
 					break;
 
 				case MidiMessageType.ControlChange:
 					// This list is for Values, of which there are 128
-					PopulateParameterList(this.parameter3, 128, "Value");
+					PopulateParameterList(parameter3, 128, "Value");
 					break;
 
 				default:
 					// Start with a clean slate
 					// Hide the first parameter
-					this.parameter3.Header = "";
-					this.parameter3.IsEnabled = false;
-					this.parameter3.Visibility = Visibility.Collapsed;
+					parameter3.Header = "";
+					parameter3.IsEnabled = false;
+					parameter3.Visibility = Visibility.Collapsed;
 					break;
 			}
 		}

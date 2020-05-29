@@ -58,6 +58,11 @@ namespace Windows.Storage.Streams
 		/// <param name="value">The array that receives the byte values.</param>
 		public void ReadBytes(byte[] value)
 		{
+			if (value is null)
+			{
+				throw new ArgumentNullException(nameof(value));
+			}
+
 			VerifyRead(value.Length);
 			ReadBytesFromBuffer(value, value.Length);
 		}
