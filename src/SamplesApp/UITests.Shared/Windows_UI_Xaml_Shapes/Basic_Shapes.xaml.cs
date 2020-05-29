@@ -20,9 +20,12 @@ using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Imaging;
 using Windows.UI.Xaml.Shapes;
-using UIKit;
 using Uno.Extensions;
 using Uno.UI.Samples.Controls;
+
+#if __IOS__
+using UIKit;
+#endif
 
 namespace UITests.Windows_UI_Xaml_Shapes
 {
@@ -205,7 +208,8 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			Update();
 		}
 
-		private void SettingsUpdated(object sender, object e) => Update();
+		private void SettingsUpdated(object sender, object e)
+			=> Update();
 
 		private void Update()
 		{
@@ -257,13 +261,18 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			_root.Visibility = Visibility.Collapsed;
 
 			var folder = await new FolderPicker { FileTypeFilter = { "*" } }.PickSingleFolderAsync();
+			if (folder == null)
+			{
+				return;
+			}
+
 			var alteratorsMap = _stretches.SelectMany(stretch => _sizes.Select(size => new[] { stretch, size })).ToArray();
 
 			foreach (var shape in _shapes)
 			foreach (var alterators in alteratorsMap)
 			{
 				var fileName = shape.Name + "_" + string.Join("_", alterators.Select(a => a.Id)) + ".png";
-				var grid = RenderHoriVertGridForScreenshot(shape, alterators);
+				var grid = BuildHoriVertTestGridForScreenshot(shape, alterators);
 				_testZone.Child = grid;
 				await Task.Yield();
 
@@ -285,6 +294,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 #endif
 		}
 
+#if __IOS__ // This is the base work for a fix in the UITests in order to highly increase Screenshot speed. It will be removed by https://github.com/unoplatform/Uno.UITest/issues/39
 		private static byte[] RenderAsPng(FrameworkElement elt)
 		{
 			UIImage img;
@@ -306,6 +316,10 @@ namespace UITests.Windows_UI_Xaml_Shapes
 				return img.AsPNG().ToArray();
 			}
 		}
+#else
+		private static byte[] RenderAsPng(FrameworkElement elt)
+			=> throw new NotImplementedException("Not supported yet on this platform");
+#endif
 
 		public string RunTests(string testNames)
 		{
@@ -349,7 +363,6 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		}
 
 		private void RenderById(object sender, RoutedEventArgs e)
-			//=> ((DependencyObject)this).Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => RenderById(_idInput.Text));
 			=> RunTests(_idInput.Text);
 
 		private async Task<FrameworkElement> RenderById(string id)
@@ -394,35 +407,40 @@ namespace UITests.Windows_UI_Xaml_Shapes
 					var alteratorIds = parsedId.Groups["alteratorId"].Captures.Cast<Capture>().Select(c => c.Value);
 					var alterators = alteratorIds.Select(id => _stretches.Concat(_sizes).Single(a => a.Id == id)).ToArray();
 
-					var grid = BuildHoriVertTestGrid(
-						() => alterators.Aggregate(shape.Create(), (s, a) =>
-						{
-							a.Alter(s);
-							return s;
-						}),
-						null,
-						150);
-
-					grid.Background = new SolidColorBrush(Colors.White); // Much easier for screenshot comparison :)
-					grid.VerticalAlignment = VerticalAlignment.Top;
-					grid.HorizontalAlignment = HorizontalAlignment.Left;
-
-					// We set clip and add wrapping container so the rendering engine won't generate screenshots with a transparent padding.
-					grid.Clip = new RectangleGeometry { Rect = new Rect(0, 0, grid.Width, grid.Height) };
-					var containerGrid = new Grid
-					{
-						Width = grid.Width,
-						Height = grid.Height,
-						Children = { grid }
-					};
-
-					return containerGrid;
+					return BuildHoriVertTestGridForScreenshot(shape, alterators);
 				}
 				catch (Exception error)
 				{
 					return new TextBlock {Text = $"Failed to render {parsedId}: {error.Message}", Foreground = new SolidColorBrush(Colors.Red)};
 				}
 			}
+		}
+
+		private static FrameworkElement BuildHoriVertTestGridForScreenshot(Factory shape, Alterator[] alterators)
+		{
+			var grid = BuildHoriVertTestGrid(
+				() => alterators.Aggregate(shape.Create(), (s, a) =>
+				{
+					a.Alter(s);
+					return s;
+				}),
+				null,
+				150);
+
+			grid.Background = new SolidColorBrush(Colors.White); // Much easier for screenshot comparison :)
+			grid.VerticalAlignment = VerticalAlignment.Top;
+			grid.HorizontalAlignment = HorizontalAlignment.Left;
+
+			// We set clip and add wrapping container so the rendering engine won't generate screenshots with a transparent padding.
+			grid.Clip = new RectangleGeometry {Rect = new Rect(0, 0, grid.Width, grid.Height)};
+			var containerGrid = new Grid
+			{
+				Width = grid.Width,
+				Height = grid.Height,
+				Children = {grid}
+			};
+
+			return containerGrid;
 		}
 
 		private static Grid BuildHoriVertTestGrid(Func<FrameworkElement> template, string title, int itemSize = 150)
