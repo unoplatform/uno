@@ -5,6 +5,7 @@ using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Uno;
 using Uno.Devices.Enumeration.Internal;
 using Uno.Devices.Midi.Internal;
 using Uno.Foundation;

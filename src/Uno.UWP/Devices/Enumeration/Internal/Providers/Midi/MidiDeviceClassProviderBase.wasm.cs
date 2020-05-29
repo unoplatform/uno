@@ -175,9 +175,10 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 				var deviceMetadata = device.Split(new[] { '#' }, StringSplitOptions.RemoveEmptyEntries);
 				var id = Uri.UnescapeDataString(deviceMetadata[0]);
 				var name = Uri.UnescapeDataString(deviceMetadata[1]);
-				yield return new DeviceInformation(
-					_isInput ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut,
-					id)
+				var identifier = new DeviceIdentifier(
+					id,
+					_isInput ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut);
+				yield return new DeviceInformation(identifier)
 				{
 					Name = name
 				};
