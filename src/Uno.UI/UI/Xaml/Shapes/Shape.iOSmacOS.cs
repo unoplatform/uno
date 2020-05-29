@@ -226,7 +226,7 @@ namespace Windows.UI.Xaml.Shapes
 			var (userMinSize, userMaxSize) = GetMinMax(userSize);
 			var strokeThickness = StrokeThickness;
 			var halfStrokeThickness = GetHalfStrokeThickness();
-			var pathBounds = path.BoundingBox;
+			var pathBounds = path.PathBoundingBox; // The BoundingBox does also contains bezier anchors even if out of geometry
 			var pathSize = (Size)pathBounds.Size;
 
 			if (nfloat.IsInfinity(pathBounds.Right) || nfloat.IsInfinity(pathBounds.Bottom))
@@ -341,7 +341,7 @@ namespace Windows.UI.Xaml.Shapes
 			var userSize = GetUserSizes();
 			var strokeThickness = StrokeThickness;
 			var halfStrokeThickness = GetHalfStrokeThickness();
-			var pathBounds = path.BoundingBox;
+			var pathBounds = path.PathBoundingBox; // The BoundingBox does also contains bezier anchors even if out of geometry
 			var pathSize = (Size)pathBounds.Size;
 
 			if (nfloat.IsInfinity(pathBounds.Right) || nfloat.IsInfinity(pathBounds.Bottom))
@@ -385,8 +385,8 @@ namespace Windows.UI.Xaml.Shapes
 #endif
 					var defaultSize = size = ComputeSizeLowerThanBounds(userSize, finalSize);
 
-					// This is a complete non sense as we should normally just use userSize.min.width and userSize.min.height,
-					// but the code below actually reproduces a bug of WinUI where the MinWidth and MinHeight are somehow
+					// This set of rules are a complete non sense as we should normally just use userSize.min.width and userSize.min.height,
+					// but they are actually reproducing a bug of WinUI where the MinWidth and MinHeight are sometimes
 					// constrained by the layout slot ...
 					// Note: This is only a replication of what we observed in the UI tests, and might have some flaw in the logic.
 					//		 Especially, we expect that the max vs. min applied on Width vs. Height is probably drove by the aspect ratio.
@@ -394,16 +394,21 @@ namespace Windows.UI.Xaml.Shapes
 					if (userSize.min.hasWidth && userSize.min.hasHeight)
 					{
 						var min = Math.Min(userSize.min.width, userSize.min.height);
+						minSizeForScale = new Size(0, min);
+					}
+					else if (userSize.min.hasWidth && this is Path)
+					{
+						var min = Math.Min(finalSize.Width, finalSize.Height).AtMost(userSize.min.width);
 						minSizeForScale = new Size(min, min);
 					}
 					else if (userSize.min.hasWidth)
 					{
-						var max = Math.Min(userSize.min.width, Math.Max(finalSize.Width, finalSize.Height));
+						var max = Math.Max(finalSize.Width, finalSize.Height).AtMost(userSize.min.width);
 						minSizeForScale = new Size(max, max);
 					}
 					else if (userSize.min.hasHeight)
 					{
-						var min = Math.Min(userSize.min.height, Math.Min(finalSize.Width, finalSize.Height));
+						var min = Math.Min(finalSize.Width, finalSize.Height).AtMost(userSize.min.height);
 						minSizeForScale = new Size(min, min);
 					}
 
