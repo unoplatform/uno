@@ -1,4 +1,6 @@
-﻿#if __WASM__
+﻿#nullable enable
+
+#if __WASM__
 using System;
 using Windows.ApplicationModel.Activation;
 using Windows.Foundation;
@@ -16,6 +18,7 @@ using Uno.UI.Xaml;
 using System.Web;
 using System.Collections.Specialized;
 using Uno.Helpers;
+using Microsoft.Extensions.Logging;
 
 #if HAS_UNO_WINUI
 using LaunchActivatedEventArgs = Microsoft.UI.Xaml.LaunchActivatedEventArgs;
@@ -113,6 +116,27 @@ namespace Windows.UI.Xaml
 				this.Log().Info("No preferred theme, using Light instead");
 			}
 			return ApplicationTheme.Light;
+		}
+
+		/// <summary>
+		/// Dispatch method from Javascript
+		/// </summary>
+		internal static void DispatchSuspending()
+		{
+			Current?.OnSuspending();
+		}
+
+		partial void OnSuspendingPartial()
+		{
+			var completed = false;
+			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(0), () => completed = true);
+
+			Suspending?.Invoke(this, new SuspendingEventArgs(operation));
+
+			if(!completed && this.Log().IsEnabled(LogLevel.Warning))
+			{
+				this.Log().LogWarning($"This platform does not support asynchronous Suspending deferral. Code executed after the of the method called by Suspending may not get executed.");
+			}
 		}
 	}
 }

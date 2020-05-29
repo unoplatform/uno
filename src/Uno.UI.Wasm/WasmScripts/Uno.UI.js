@@ -65,8 +65,6 @@ var Windows;
                     MonoSupport.jsCallDispatcher.registerScope("CoreDispatcher", Windows.UI.Core.CoreDispatcher);
                     CoreDispatcher.initMethods();
                     CoreDispatcher._isReady = isReady;
-                    CoreDispatcher._isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !window.MSStream;
-                    CoreDispatcher._isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
                 }
                 /**
                  * Enqueues a core dispatcher callback on the javascript's event loop
@@ -91,27 +89,15 @@ var Windows;
                     return true;
                 }
                 static InnerWakeUp() {
-                    if ((CoreDispatcher._isIOS || CoreDispatcher._isSafari) && CoreDispatcher._isFirstCall) {
-                        //
-                        // This is a workaround for the available call stack during the first 5 (?) seconds
-                        // of the startup of an application. See https://github.com/mono/mono/issues/12357 for
-                        // more details.
-                        //
-                        CoreDispatcher._isFirstCall = false;
-                        console.warn("Detected iOS, delaying first CoreDispatcher dispatch for 5 seconds (see https://github.com/mono/mono/issues/12357)");
-                        window.setTimeout(() => this.WakeUp(), 5000);
-                    }
-                    else {
-                        window.setImmediate(() => {
-                            try {
-                                CoreDispatcher._coreDispatcherCallback();
-                            }
-                            catch (e) {
-                                console.error(`Unhandled dispatcher exception: ${e} (${e.stack})`);
-                                throw e;
-                            }
-                        });
-                    }
+                    window.setImmediate(() => {
+                        try {
+                            CoreDispatcher._coreDispatcherCallback();
+                        }
+                        catch (e) {
+                            console.error(`Unhandled dispatcher exception: ${e} (${e.stack})`);
+                            throw e;
+                        }
+                    });
                 }
                 static initMethods() {
                     if (Uno.UI.WindowManager.isHosted) {
@@ -1608,6 +1594,7 @@ var Uno;
                 if (UnoAppManifest.displayName) {
                     document.title = UnoAppManifest.displayName;
                 }
+                window.addEventListener("beforeunload", () => WindowManager.dispatchSuspendingMethod());
             }
             static initMethods() {
                 if (WindowManager.isHosted) {
@@ -1622,6 +1609,9 @@ var Uno;
                     }
                     if (!WindowManager.focusInMethod) {
                         WindowManager.focusInMethod = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Input.FocusManager:ReceiveFocusNative");
+                    }
+                    if (!WindowManager.dispatchSuspendingMethod) {
+                        WindowManager.dispatchSuspendingMethod = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSuspending");
                     }
                 }
             }
@@ -2879,10 +2869,11 @@ var Windows;
                     window.removeEventListener("offline", NetworkInformation.networkStatusChanged);
                 }
                 static networkStatusChanged() {
-                    if (this.dispatchStatusChanged == null) {
-                        this.dispatchStatusChanged = Module.mono_bind_static_method("[Uno] Windows.Networking.Connectivity.NetworkInformation:DispatchStatusChanged");
+                    if (NetworkInformation.dispatchStatusChanged == null) {
+                        NetworkInformation.dispatchStatusChanged =
+                            Module.mono_bind_static_method("[Uno] Windows.Networking.Connectivity.NetworkInformation:DispatchStatusChanged");
                     }
-                    this.dispatchStatusChanged();
+                    NetworkInformation.dispatchStatusChanged();
                 }
             }
             Connectivity.NetworkInformation = NetworkInformation;

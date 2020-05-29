@@ -144,6 +144,7 @@ namespace Uno.UI {
 		private static resizeMethod: any;
 		private static dispatchEventMethod: any;
 		private static focusInMethod: any;
+		private static dispatchSuspendingMethod: any;
 		private static getDependencyPropertyValueMethod: any;
 		private static setDependencyPropertyValueMethod: any;
 
@@ -1668,6 +1669,10 @@ namespace Uno.UI {
 				document.title = UnoAppManifest.displayName;
 			}
 
+			window.addEventListener(
+				"beforeunload",
+				() => WindowManager.dispatchSuspendingMethod()
+			);
 		}
 
 		private static initMethods() {
@@ -1685,6 +1690,10 @@ namespace Uno.UI {
 
 				if (!WindowManager.focusInMethod) {
 					WindowManager.focusInMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Input.FocusManager:ReceiveFocusNative");
+				}
+
+				if (!WindowManager.dispatchSuspendingMethod) {
+					WindowManager.dispatchSuspendingMethod = (<any>Module).mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSuspending");
 				}
 			}
 		}

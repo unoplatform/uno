@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
@@ -5,16 +7,17 @@ namespace Windows.ApplicationModel
 {
 	public sealed partial class SuspendingOperation
 	{
-		public SuspendingOperation(DateTimeOffset offset)
+		private readonly Action? _deferralDone;
+
+		internal SuspendingOperation(DateTimeOffset offset, Action? deferralDone = null)
 		{
+			Deadline = offset;
+			_deferralDone = deferralDone;
 		}
 
-		[global::Uno.NotImplemented]
-		public DateTimeOffset Deadline 
-			=> DateTimeOffset.Now;
+		public DateTimeOffset Deadline { get; }
 
-		[global::Uno.NotImplemented]
-		public global::Windows.ApplicationModel.SuspendingDeferral GetDeferral()
-			=> new SuspendingDeferral();
+		public SuspendingDeferral GetDeferral()
+			=> new SuspendingDeferral(_deferralDone);
 	}
 }
