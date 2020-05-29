@@ -858,6 +858,9 @@
 			  <Member
 				  fullName="System.Void Windows.UI.Xaml.NativeApplication..ctor(Windows.UI.Xaml.Application app, System.IntPtr javaReference, Android.Runtime.JniHandleOwnership transfer)"
 				  reason="This ctor is superceded by the version that takes a function. It's removed because it causes a crash with the new theme handling."/>
+			  <Member
+				  fullName="System.Object Windows.UI.Xaml.ResourceDictionary.Lookup(System.Object key)"
+				  reason="Not a public WinUI method (in the .NET projection)"/>
 			<!-- ^^ Styles overhaul -->
 
 			</Methods>
