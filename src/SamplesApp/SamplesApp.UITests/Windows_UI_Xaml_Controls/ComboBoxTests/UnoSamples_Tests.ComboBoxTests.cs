@@ -172,5 +172,47 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.ComboBoxTests
 
 			TakeScreenshot("Closed");
 		}
+
+		[Test]
+		[AutoRetry]
+		public void ComboBoxTests_Disabled()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ComboBox.ComboBox_Disabled");
+
+			_app.WaitForElement(_app.Marked("DisabledComboBox"));
+			var disabledComboBox = _app.Marked("DisabledComboBox");
+
+			Assert.IsFalse(disabledComboBox.GetDependencyPropertyValue<bool>("IsEnabled"));
+
+			_app.WaitForElement(_app.Marked("HeaderContentPresenter"));
+			var headerContentPresenter = _app.Marked("HeaderContentPresenter");
+
+			Assert.AreEqual("Test Disabled ComboBox", headerContentPresenter.GetDependencyPropertyValue("Content"));
+		}
+
+		[Test]
+		[AutoRetry]
+		public void ComboBoxTests_ToggleDisabled()
+		{
+			Run("UITests.Windows_UI_Xaml_Controls.ComboBox.ComboBox_ToggleDisabled");
+
+			_app.WaitForElement(_app.Marked("DisablingComboBox"));
+			var disablingComboBox = _app.Marked("DisablingComboBox");
+
+			TakeScreenshot("ComboBox Enabled");
+
+			_app.FastTap("ToggleDisabledButton");
+
+			_app.WaitForText("IsEnabledComboBox", "False");
+
+			Assert.IsFalse(disablingComboBox.GetDependencyPropertyValue<bool>("IsEnabled"));
+
+			_app.WaitForElement(_app.Marked("HeaderContentPresenter"));
+			var headerContentPresenter = _app.Marked("HeaderContentPresenter");
+
+			Assert.AreEqual("Test Toggle Disabled ComboBox", headerContentPresenter.GetDependencyPropertyValue("Content"));
+
+			TakeScreenshot("ComboBox Disabled");
+		}
 	}
 }

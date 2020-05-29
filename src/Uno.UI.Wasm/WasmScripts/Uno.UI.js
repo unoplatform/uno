@@ -2913,6 +2913,47 @@ var Windows;
 })(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
+    var Networking;
+    (function (Networking) {
+        var Connectivity;
+        (function (Connectivity) {
+            class ConnectionProfile {
+                static hasInternetAccess() {
+                    return navigator.onLine;
+                }
+            }
+            Connectivity.ConnectionProfile = ConnectionProfile;
+        })(Connectivity = Networking.Connectivity || (Networking.Connectivity = {}));
+    })(Networking = Windows.Networking || (Windows.Networking = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
+    var Networking;
+    (function (Networking) {
+        var Connectivity;
+        (function (Connectivity) {
+            class NetworkInformation {
+                static startStatusChanged() {
+                    window.addEventListener("online", NetworkInformation.networkStatusChanged);
+                    window.addEventListener("offline", NetworkInformation.networkStatusChanged);
+                }
+                static stopStatusChanged() {
+                    window.removeEventListener("online", NetworkInformation.networkStatusChanged);
+                    window.removeEventListener("offline", NetworkInformation.networkStatusChanged);
+                }
+                static networkStatusChanged() {
+                    if (this.dispatchStatusChanged == null) {
+                        this.dispatchStatusChanged = Module.mono_bind_static_method("[Uno] Windows.Networking.Connectivity.NetworkInformation:DispatchStatusChanged");
+                    }
+                    this.dispatchStatusChanged();
+                }
+            }
+            Connectivity.NetworkInformation = NetworkInformation;
+        })(Connectivity = Networking.Connectivity || (Networking.Connectivity = {}));
+    })(Networking = Windows.Networking || (Windows.Networking = {}));
+})(Windows || (Windows = {}));
+var Windows;
+(function (Windows) {
     var System;
     (function (System) {
         var Profile;

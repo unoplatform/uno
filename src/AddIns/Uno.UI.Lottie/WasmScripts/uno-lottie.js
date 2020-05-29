@@ -144,7 +144,7 @@ var Uno;
                         scaleMode = "xMidYMid slice";
                         break;
                     case "Fill":
-                        scaleMode = "noScale";
+                        scaleMode = "none";
                         break;
                 }
                 const containerElement = Uno.UI.WindowManager.current.getView(properties.elementId);

@@ -2863,6 +2863,11 @@
 								</VisualState>
 								<VisualState x:Name="ClosedCompactRight">
 									<Storyboard>
+										<xamarin:ObjectAnimationUsingKeyFrames Storyboard.TargetProperty="Clip"
+																			   Storyboard.TargetName="PaneRoot">
+											<DiscreteObjectKeyFrame KeyTime="0:0:0"
+																	Value="{Binding TemplateSettings.RightClip, RelativeSource={RelativeSource Mode=TemplatedParent}}" />
+										</xamarin:ObjectAnimationUsingKeyFrames>
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="ColumnDefinition1"
 																	   Storyboard.TargetProperty="Width">
 											<DiscreteObjectKeyFrame KeyTime="0:0:0"

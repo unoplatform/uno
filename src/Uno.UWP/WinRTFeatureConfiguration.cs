@@ -59,5 +59,10 @@ namespace Uno
 			public static bool RequestSystemExclusiveAccess { get; set; }
 #endif
 		}
+		
+		public static class NetworkInformation
+		{
+			public static string ReachabilityHostname { get; set; } = "www.example.com";
+		}
 	}
 }
