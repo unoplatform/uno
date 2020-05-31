@@ -990,19 +990,57 @@
 		<Member
 			  fullName="System.Void Windows.UI.Xaml.Automation.Peers.AutomationPeerAnnotation..ctor()"
 			  reason="UWP does not have this ctor"/>
-    <Member
-   		  fullName="System.Void Windows.Networking.Connectivity.ConnectionCost..ctor()"
+		<Member
+			  fullName="System.Void Windows.Networking.Connectivity.ConnectionCost..ctor()"
 			  reason="Not in UWP" />
-    <Member
-		      fullName="System.Void Windows.Networking.Connectivity.ConnectionProfile..ctor()"
+		<Member
+			  fullName="System.Void Windows.Networking.Connectivity.ConnectionProfile..ctor()"
 			  reason="Not in UWP" />
-    <Member
+		<Member
 			  fullName="System.Void Windows.Networking.Connectivity.NetworkInformation..ctor()"
 			  reason="Not in UWP" />
 		<Member
 			  fullName="System.Void Windows.ApplicationModel.Activation.ProtocolActivatedEventArgs..ctor()"
 			  reason="Parameter-less ctor does not exist in UWP"/>
+		<Member
+			  fullName="System.Void Windows.Devices.Midi.MidiMessageReceivedEventArgs..ctor()"
+			  reason="UWP does not have this ctor" />
+		<Member
+			  fullName="System.Void Windows.Devices.Midi.MidiOutPort..ctor()"
+			  reason="UWP does not have this ctor" />
+		<Member
+			  fullName="System.Void Windows.Devices.Enumeration.DeviceInformation..ctor()"
+			  reason="UWP does not have this ctor" />
+		<Member
+			  fullName="System.Void Windows.Devices.Enumeration.DeviceInformationCollection..ctor()"
+			  reason="UWP does not have this ctor" />
+		<Member
+			  fullName="System.Void Windows.Devices.Enumeration.DeviceInformationUpdate..ctor()"
+			  reason="UWP does not have this ctor" />
+		<Member
+			  fullName="System.Void Windows.Devices.Enumeration.DeviceWatcher..ctor()"
+			  reason="UWP does not have this ctor" />
+		<Member
+			  fullName="System.UInt32 Windows.Storage.Streams.InMemoryBuffer.get_Capacity()"
+			  reason="UWP does not have this ctor" />
+		<Member
+			  fullName="System.UInt32 Windows.Storage.Streams.InMemoryBuffer.get_Length()"
+			  reason="UWP does not have this ctor" />
+		<Member
+			  fullName="System.Void Windows.Storage.Streams.InMemoryBuffer.set_Length(System.UInt32 value)"
+			  reason="UWP does not have this ctor" />
+		<Member
+			  fullName="System.Void Windows.Devices.Midi.MidiInPort..ctor()"
+			  reason="UWP does not have this ctor" />
 	  </Methods>
+	  <Properties>
+		<Member
+			fullName="System.UInt32 Windows.Storage.Streams.InMemoryBuffer::Capacity()"
+			reason="Not part of UWP" />
+		<Member
+			fullName="System.UInt32 Windows.Storage.Streams.InMemoryBuffer::Length()"
+			reason="Not part of UWP" />
+	  </Properties>
 	</IgnoreSet>
   </IgnoreSets>
 </DiffIgnore>
