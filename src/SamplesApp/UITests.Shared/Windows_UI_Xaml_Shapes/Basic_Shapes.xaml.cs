@@ -29,7 +29,7 @@ using UIKit;
 
 namespace UITests.Windows_UI_Xaml_Shapes
 {
-	[Sample("Shapes")]
+	[Sample("Shapes", IgnoreInSnapshotTests = true)]
 	public sealed partial class Basic_Shapes : Page
 	{
 		#region Shapes
@@ -325,7 +325,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 		{
 			TestResult = "";
 
-			var tests = testNames.Split(';', StringSplitOptions.RemoveEmptyEntries);
+			var tests = testNames.Split(new [] {';'}, StringSplitOptions.RemoveEmptyEntries);
 			var id = Guid.NewGuid().ToString("N");
 
 			((DependencyObject)this).Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => RunTestsCore(tests));
@@ -406,7 +406,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 					var shape = _shapes.Single(s => s.Name == shapeName);
 
 					var alteratorIds = parsedId.Groups["alteratorId"].Captures.Cast<Capture>().Select(c => c.Value);
-					var alterators = alteratorIds.Select(id => _stretches.Concat(_sizes).Single(a => a.Id == id)).ToArray();
+					var alterators = alteratorIds.Select(i => _stretches.Concat(_sizes).Single(a => a.Id == i)).ToArray();
 
 					return BuildHoriVertTestGridForScreenshot(shape, alterators);
 				}
