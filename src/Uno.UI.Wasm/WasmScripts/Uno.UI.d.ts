@@ -24,8 +24,6 @@ declare namespace Windows.UI.Core {
      * */
     class CoreDispatcher {
         static _coreDispatcherCallback: any;
-        static _isIOS: boolean;
-        static _isSafari: boolean;
         static _isFirstCall: boolean;
         static _isReady: Promise<boolean>;
         static _isWaitingReady: boolean;
@@ -167,6 +165,7 @@ declare namespace Uno.UI {
         private static resizeMethod;
         private static dispatchEventMethod;
         private static focusInMethod;
+        private static dispatchSuspendingMethod;
         private static getDependencyPropertyValueMethod;
         private static setDependencyPropertyValueMethod;
         private constructor();
