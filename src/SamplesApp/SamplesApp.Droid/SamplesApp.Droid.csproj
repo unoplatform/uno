@@ -21,8 +21,6 @@
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
     <!-- AndroidUseAapt2 is disabled until https://github.com/unoplatform/uno/issues/1382 is resolved -->
     <AndroidUseAapt2>false</AndroidUseAapt2>
-    <!-- https://github.com/unoplatform/uno/issues/61 -->
-    <UnoSkipUserControlsInVisualTree>false</UnoSkipUserControlsInVisualTree>
   </PropertyGroup>
   <PropertyGroup>
     <IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
