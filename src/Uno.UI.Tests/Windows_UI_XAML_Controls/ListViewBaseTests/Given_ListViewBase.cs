@@ -206,6 +206,42 @@ namespace Uno.UI.Tests.ListViewBaseTests
 		}
 
 		[TestMethod]
+		public void When_SelectionChanged_Changes_Order()
+		{
+			var list = new ListView()
+			{
+				Style = null,
+				ItemContainerStyle = BuildBasicContainerStyle(),
+			};
+			list.ItemsSource = Enumerable.Range(0, 20);
+			var callbackCount = 0;
+
+			list.SelectionChanged += OnSelectionChanged;
+			list.SelectedItem = 7;
+
+			using (new AssertionScope())
+			{
+				list.SelectedItem.Should().Be(7);
+				list.SelectedIndex.Should().Be(7);
+				list.SelectedValue.Should().Be(7);
+				callbackCount.Should().Be(1); //Unlike eg TextBox.TextChanged there is no guard on reentrant modification
+			}
+
+			void OnSelectionChanged(object sender, SelectionChangedEventArgs e)
+			{
+				callbackCount++;
+
+				using (new AssertionScope())
+				{
+					list.SelectedItem.Should().Be(7);
+					list.SelectedIndex.Should().Be(7);
+					list.SelectedValue.Should().Be(7);
+					callbackCount.Should().Be(1);
+				}
+			}
+		}
+
+		[TestMethod]
 		public void When_ViewModelSource_SelectionChanged_Changes_Selection()
 		{
 			var SUT = new ListView()
