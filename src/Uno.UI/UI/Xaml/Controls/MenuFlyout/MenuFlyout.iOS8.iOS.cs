@@ -35,7 +35,7 @@ namespace Windows.UI.Xaml.Controls
 					}
 				))
 				.Concat(UIAlertAction.Create(
-					GetValue(OverrideIosCancelTextProperty) as string ?? LocalizedCancelString,
+					GetValue(CancelTextIosOverrideProperty) as string ?? LocalizedCancelString,
 					UIAlertActionStyle.Cancel,
 					_ => this.Hide()
 				))

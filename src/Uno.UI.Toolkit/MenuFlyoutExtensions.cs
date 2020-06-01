@@ -13,16 +13,17 @@ namespace Uno.UI.Toolkit
 #endif
 	public class MenuFlyoutExtensions
 	{
-		#region Property: OverrideIosCancelText
-		public static DependencyProperty OverrideIosCancelTextProperty { get; } = DependencyProperty.RegisterAttached(
-			"OverrideIosCancelText",
+		#region Property: CancelTextIosOverride
+
+		public static DependencyProperty CancelTextIosOverrideProperty { get; } = DependencyProperty.RegisterAttached(
+			"CancelTextIosOverride",
 			typeof(string),
 			typeof(MenuFlyoutExtensions),
 			new PropertyMetadata(default(string)));
 
-		public static string GetOverrideIosCancelText(MenuFlyout obj) => (string)obj.GetValue(OverrideIosCancelTextProperty);
+		public static string GetCancelTextIosOverride(MenuFlyout obj) => (string)obj.GetValue(CancelTextIosOverrideProperty);
 
-		public static void SetOverrideIosCancelText(MenuFlyout obj, string value) => obj.SetValue(OverrideIosCancelTextProperty, value);
+		public static void SetCancelTextIosOverride(MenuFlyout obj, string value) => obj.SetValue(CancelTextIosOverrideProperty, value);
 		#endregion
 	}
 }

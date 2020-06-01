@@ -25,5 +25,5 @@ xmlns:toolkit="using:Uno.UI.Toolkit"
 xmlns:toolkit="using:Uno.UI.Toolkit"
 
 <MenuFlyout UseNativePopup="True"
-            toolkit:MenuFlyoutExtensions.OverrideIosCancelText="Custom cancel text">
+            toolkit:MenuFlyoutExtensions.CancelTextIosOverride="Custom cancel text">
 ```

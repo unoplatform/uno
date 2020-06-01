@@ -37,7 +37,7 @@
 		<Button Content="Show native MenuFlyout">
 			<Button.Flyout>
 				<MenuFlyout ios:UseNativePopup="True"
-							toolkit:MenuFlyoutExtensions.OverrideIosCancelText="Custom cancel text">
+							toolkit:MenuFlyoutExtensions.CancelTextIosOverride="Custom cancel text">
 					<MenuFlyoutItem Text="Menu Item 1" />
 					<MenuFlyoutItem Text="Menu Item 2" />
 					<MenuFlyoutItem Text="Menu Item 3" />
