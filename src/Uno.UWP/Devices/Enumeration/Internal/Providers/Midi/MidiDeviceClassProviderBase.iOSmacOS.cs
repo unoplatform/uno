@@ -138,6 +138,26 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			WatchEnumerationCompleted?.Invoke(this, lastDeviceInformation);
 		}
 
+		private IEnumerable<DeviceInformation> GetMidiDevices()
+		{
+			if (_isInput)
+			{
+				for (int inputId = 0; inputId < MidiInfo.SourceCount; inputId++)
+				{
+					var source = MidiEndpoint.GetSource(inputId);
+					yield return CreateDeviceInformation(source);
+				}
+			}
+			else
+			{
+				for (int outputId = 0; outputId < MidiInfo.DestinationCount; outputId++)
+				{
+					var destination = MidiEndpoint.GetDestination(outputId);
+					yield return CreateDeviceInformation(destination);
+				}
+			}
+		}
+
 		private DeviceInformation CreateDeviceInformation(MidiEndpoint endpoint)
 		{
 			var deviceIdentifier = new DeviceIdentifier(
@@ -161,26 +181,6 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		private static string ParseMidiDeviceId(string id) => id;
 
 		private static string GetMidiDeviceId(MidiEndpoint endpoint) => endpoint.EndpointName;
-
-		private IEnumerable<DeviceInformation> GetMidiDevices()
-		{
-			if (_isInput)
-			{
-				for (int inputId = 0; inputId < MidiInfo.SourceCount; inputId++)
-				{
-					var source = MidiEndpoint.GetSource(inputId);
-					yield return CreateDeviceInformation(source);
-				}
-			}
-			else
-			{
-				for (int outputId = 0; outputId < MidiInfo.DestinationCount; outputId++)
-				{
-					var destination = MidiEndpoint.GetDestination(outputId);
-					yield return CreateDeviceInformation(destination);
-				}
-			}
-		}
 	}
 }
 #endif

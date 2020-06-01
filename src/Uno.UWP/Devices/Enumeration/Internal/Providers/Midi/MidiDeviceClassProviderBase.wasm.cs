@@ -1,9 +1,9 @@
 ﻿#if __WASM__
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Logging;
 using Uno.Devices.Midi.Internal;
 using Uno.Extensions;
 using Windows.Devices.Enumeration;
@@ -19,21 +19,23 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		private const string JsType = "Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceClassProvider";
 
 		private readonly bool _isInput = false;
-		
 
 		public MidiDeviceClassProviderBase(bool isInput) => _isInput = isInput;
 
-		public bool CanWatch => true;
-
 		public event EventHandler<DeviceInformation> WatchAdded;
+
 		public event EventHandler<DeviceInformation> WatchEnumerationCompleted;
+
 		public event EventHandler<DeviceInformationUpdate> WatchRemoved;
+
 		public event EventHandler<object> WatchStopped;
-		public event EventHandler<DeviceInformationUpdate> WatchUpdated;
+
+		public event EventHandler<DeviceInformationUpdate> WatchUpdated;		
+
+		public bool CanWatch => true;		
 
 		public async Task<DeviceInformation[]> FindAllAsync()
 		{
-			Debug.WriteLine("FindAll started");
 			if (!await WasmMidiAccess.RequestAsync())
 			{
 				throw new AccessViolationException("Can't access Web MIDI API");
@@ -44,77 +46,55 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 
 		public void WatchStart()
 		{
-			//TODO: Fire and forget, not good.
 			Task.Run(async () =>
 			{
-				if (!await WasmMidiAccess.RequestAsync())
+				try
 				{
-					throw new AccessViolationException("Can't access Web MIDI API");
-				}
-				var devices = GetMidiDevices().ToArray();
-				foreach (var device in devices)
-				{
-					WatchAdded?.Invoke(this, device);
-				}
-				OnEnumerationCompleted(devices.LastOrDefault());
+					if (!await WasmMidiAccess.RequestAsync())
+					{
+						throw new AccessViolationException("Can't access Web MIDI API");
+					}
 
-				//TODO: initialize device watch
+					var devices = GetMidiDevices().ToArray();
+					foreach (var device in devices)
+					{
+						WatchAdded?.Invoke(this, device);
+					}
+
+					OnEnumerationCompleted(devices.LastOrDefault());
+					StartStateChanged();
+				}
+				catch (Exception ex)
+				{
+					if (this.Log().IsEnabled(LogLevel.Error))
+					{
+						this.Log().LogError("Exception occurred trying to start MIDI watch.", ex);
+					}
+					throw;
+				}
 			});
 		}
 
+		private void StartStateChanged() => MidiDeviceConnectionWatcher.AddObserver(this);
+
+		private void StopStateChanged() => MidiDeviceConnectionWatcher.RemoveObserver(this);
+
 		public void WatchStop()
 		{
-			//_watchMidiManager.UnregisterDeviceCallback(_deviceCallback);
-			//_deviceCallback?.Dispose();
-			//_deviceCallback = null;
-			//_watchMidiManager.Dispose();
+			StopStateChanged();
 			WatchStopped?.Invoke(this, null);
 		}
 
-
-
-		//internal (MidiDeviceInfo device, MidiDeviceInfo.PortInfo port) GetNativeDeviceInfo(string midiDeviceId)
-		//{
-		//	var parsed = ParseMidiDeviceId(midiDeviceId);
-		//	using (var midiManager = ContextHelper.Current.GetSystemService(Context.MidiService).JavaCast<MidiManager>())
-		//	{
-		//		return midiManager
-		//			.GetDevices()
-		//			.Where(d => d.Id == parsed.id)
-		//			.SelectMany(d =>
-		//				d.GetPorts()
-		//					.Where(p =>
-		//						p.Type == _portType &&
-		//						p.PortNumber == parsed.portNumber)
-		//					.Select(p => (device: d, port: p)))
-		//			.FirstOrDefault();
-		//	}
-		//}
-
-		//private void OnDeviceAdded(MidiDeviceInfo deviceInfo)
-		//{
-		//	foreach (var port in deviceInfo.GetPorts().Where(p => p.Type == _portType))
-		//	{
-		//		WatchAdded?.Invoke(this, CreateDeviceInformation(deviceInfo, port));
-		//	}
-		//}
-
-		private void OnDeviceRemoved()
+		internal void OnDeviceAdded(string id, string name)
 		{
-			OnDeviceUpdated();
-			//foreach (var port in deviceInfo.GetPorts().Where(p => p.Type == _portType))
-			//{
-			WatchRemoved?.Invoke(this, null);
-			//}
+			var deviceInformation = CreateDeviceInformation(id, name);
+			WatchAdded?.Invoke(this, deviceInformation);
 		}
 
-		private void OnDeviceUpdated()
+		internal void OnDeviceRemoved(string id)
 		{
-			OnDeviceRemoved();
-			//foreach (var port in status.DeviceInfo.GetPorts().Where(p => p.Type == _portType))
-			//{
-			WatchUpdated?.Invoke(this, null);
-			//}
+			var deviceInformationUpdate = CreateDeviceInformationUpdate(id);
+			WatchRemoved?.Invoke(this, deviceInformationUpdate);		
 		}
 
 		private void OnEnumerationCompleted(DeviceInformation lastDeviceInformation)
@@ -141,6 +121,25 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 					Name = name
 				};
 			}
+		}
+
+		private DeviceInformation CreateDeviceInformation(string id, string name)
+		{
+			var identifier = new DeviceIdentifier(
+					id,
+					_isInput ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut);
+			return new DeviceInformation(identifier)
+			{
+				Name = name
+			};
+		}
+
+		private DeviceInformationUpdate CreateDeviceInformationUpdate(string id)
+		{
+			var deviceIdentifier = new DeviceIdentifier(
+				id,
+				_isInput ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut);
+			return new DeviceInformationUpdate(deviceIdentifier);
 		}
 	}
 }

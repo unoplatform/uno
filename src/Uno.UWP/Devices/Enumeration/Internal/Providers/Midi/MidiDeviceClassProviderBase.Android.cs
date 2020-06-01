@@ -121,6 +121,33 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 		private IEnumerable<MidiDeviceInfo.PortInfo> FilterMatchingPorts(IEnumerable<MidiDeviceInfo.PortInfo> port)
 		{
 			return port.Where(p => p.Type == _portType);
+		}		
+
+		private void OnEnumerationCompleted(DeviceInformation lastDeviceInformation) =>
+			WatchEnumerationCompleted?.Invoke(this, lastDeviceInformation);
+
+		private void OnDeviceAdded(MidiDeviceInfo deviceInfo)
+		{
+			foreach (var port in deviceInfo.GetPorts().Where(p => p.Type == _portType))
+			{
+				WatchAdded?.Invoke(this, CreateDeviceInformation(deviceInfo, port));
+			}
+		}
+
+		private void OnDeviceRemoved(MidiDeviceInfo deviceInfo)
+		{
+			foreach (var port in deviceInfo.GetPorts().Where(p => p.Type == _portType))
+			{
+				WatchRemoved?.Invoke(this, CreateDeviceInformationUpdate(deviceInfo, port));
+			}
+		}
+
+		private void OnDeviceUpdated(MidiDeviceStatus status)
+		{
+			foreach (var port in status.DeviceInfo.GetPorts().Where(p => p.Type == _portType))
+			{
+				WatchUpdated?.Invoke(this, CreateDeviceInformationUpdate(status.DeviceInfo, port));
+			}
 		}
 
 		private DeviceInformation CreateDeviceInformation(MidiDeviceInfo deviceInfo, MidiDeviceInfo.PortInfo portInfo)
@@ -162,33 +189,6 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 				_portType == MidiPortType.Input ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut);
 			var deviceInformation = new DeviceInformationUpdate(deviceIdentifier);
 			return deviceInformation;
-		}
-
-		private void OnEnumerationCompleted(DeviceInformation lastDeviceInformation) =>
-			WatchEnumerationCompleted?.Invoke(this, lastDeviceInformation);
-
-		private void OnDeviceAdded(MidiDeviceInfo deviceInfo)
-		{
-			foreach (var port in deviceInfo.GetPorts().Where(p => p.Type == _portType))
-			{
-				WatchAdded?.Invoke(this, CreateDeviceInformation(deviceInfo, port));
-			}
-		}
-
-		private void OnDeviceRemoved(MidiDeviceInfo deviceInfo)
-		{
-			foreach (var port in deviceInfo.GetPorts().Where(p => p.Type == _portType))
-			{
-				WatchRemoved?.Invoke(this, CreateDeviceInformationUpdate(deviceInfo, port));
-			}
-		}
-
-		private void OnDeviceUpdated(MidiDeviceStatus status)
-		{
-			foreach (var port in status.DeviceInfo.GetPorts().Where(p => p.Type == _portType))
-			{
-				WatchUpdated?.Invoke(this, CreateDeviceInformationUpdate(status.DeviceInfo, port));
-			}
 		}
 
 		private class DeviceCallback : MidiManager.DeviceCallback

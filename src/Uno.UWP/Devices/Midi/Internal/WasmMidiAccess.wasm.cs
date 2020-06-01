@@ -9,13 +9,13 @@ namespace Uno.Devices.Midi.Internal
 	/// <summary>
 	/// Handles WASM MIDI access permission request
 	/// </summary>
-	internal static class WasmMidiAccess
+	public static class WasmMidiAccess
 	{
 		private const string JsType = "Uno.Devices.Midi.Internal.WasmMidiAccess";
 
 		private static bool _webMidiAccessible = false;
 
-		internal static async Task<bool> RequestAsync()
+		public static async Task<bool> RequestAsync()
 		{
 			if (_webMidiAccessible)
 			{
@@ -26,7 +26,8 @@ namespace Uno.Devices.Midi.Internal
 			var serializedRequest = systemExclusiveRequested.ToString().ToLowerInvariant();
 			var command = $"{JsType}.request({serializedRequest})";
 			var result = await InvokeAsync(command);
-			return bool.Parse(result);
+			_webMidiAccessible = bool.Parse(result);
+			return _webMidiAccessible;
 		}
 	}
 }
