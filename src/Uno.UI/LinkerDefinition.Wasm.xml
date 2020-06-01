@@ -21,7 +21,7 @@
     </type>
     <type fullname="Windows.UI.Core.CoreDispatcher" />
     <type fullname="Windows.UI.Core.SystemNavigationManager" />
-    <type fullanme="Windows.Devices.Midi.MidiInPort">
+    <type fullname="Windows.Devices.Midi.MidiInPort">
       <method name="DispatchMessage" />
     </type>
     <type fullname="Windows.Devices.Sensors.Accelerometer">
