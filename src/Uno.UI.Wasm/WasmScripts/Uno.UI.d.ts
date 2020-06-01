@@ -975,8 +975,7 @@ declare namespace Windows.UI.Xaml {
 declare namespace Uno.Devices.Midi.Internal {
     class WasmMidiAccess {
         private static midiAccess;
-        private static dispatchRequest;
-        static request(): Promise<string>;
+        static request(systemExclusive: boolean): Promise<string>;
         static getMidi(): WebMidi.MIDIAccess;
     }
 }

@@ -41,13 +41,33 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 				WatchAdded?.Invoke(this, device);
 			}
 			OnEnumerationCompleted(devices.LastOrDefault());
-			_client.ObjectAdded += ClientChanged;
-			_client.ObjectRemoved += ClientChanged;
+			_client.ObjectAdded += MidiObjectAdded;
+			_client.ObjectRemoved += MidiObjectRemoved;
+			_client.PropertyChanged += MidiObjectChanged;
 		}
 
-		private void ClientChanged(object sender, ObjectAddedOrRemovedEventArgs e)
+		private void MidiObjectAdded(object sender, ObjectAddedOrRemovedEventArgs e)
 		{
+			if (e.Child is MidiEndpoint endpoint)
+			{
+				OnDeviceAdded(endpoint);
+			}
+		}
 
+		private void MidiObjectRemoved(object sender, ObjectAddedOrRemovedEventArgs e)
+		{
+			if (e.Child is MidiEndpoint endpoint)
+			{
+				OnDeviceRemoved(endpoint);
+			}
+		}
+
+		private void MidiObjectChanged(object sender, ObjectPropertyChangedEventArgs e)
+		{
+			if (e.MidiObject is MidiEndpoint endpoint)
+			{
+				OnDeviceUpdated(endpoint);
+			}
 		}
 
 		public void WatchStop()
@@ -57,8 +77,9 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 				return;
 			}
 
-			_client.ObjectAdded -= ClientChanged;
-			_client.ObjectRemoved -= ClientChanged;
+			_client.ObjectAdded -= MidiObjectAdded;
+			_client.ObjectRemoved -= MidiObjectRemoved;
+			_client.PropertyChanged -= MidiObjectChanged;
 			_client = null;
 			_client.Dispose();
 			WatchStopped?.Invoke(this, null);
@@ -94,28 +115,22 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			return null;
 		}
 
-		//private void OnDeviceAdded(MidiDeviceInfo deviceInfo)
-		//{
-		//	//foreach (var port in deviceInfo.GetPorts().Where(p => p.Type == _portType))
-		//	//{
-		//	//	WatchAdded?.Invoke(this, CreateDeviceInformation(deviceInfo, port));
-		//	//}
-		//}
-
-		private void OnDeviceRemoved()//MidiDeviceInfo deviceInfo)
+		private void OnDeviceAdded(MidiEndpoint endpoint)
 		{
-			//foreach (var port in deviceInfo.GetPorts().Where(p => p.Type == _portType))
-			//{
-			WatchRemoved?.Invoke(this, null);
-			//}
+			var newDevice = CreateDeviceInformation(endpoint);
+			WatchAdded?.Invoke(this, newDevice);
 		}
 
-		private void OnDeviceUpdated()//MidiDeviceStatus status)
+		private void OnDeviceRemoved(MidiEndpoint endpoint)
 		{
-			//foreach (var port in status.DeviceInfo.GetPorts().Where(p => p.Type == _portType))
-			//{
-			WatchUpdated?.Invoke(this, null);
-			//}
+			var update = CreateDeviceInformationUpdate(endpoint);
+			WatchRemoved?.Invoke(this, update);
+		}
+
+		private void OnDeviceUpdated(MidiEndpoint endpoint)
+		{
+			var update = CreateDeviceInformationUpdate(endpoint);
+			WatchUpdated?.Invoke(this, update);
 		}
 
 		private void OnEnumerationCompleted(DeviceInformation lastDeviceInformation)
@@ -135,15 +150,17 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			return deviceInformation;
 		}
 
-		private static string ParseMidiDeviceId(string id)
+		private DeviceInformationUpdate CreateDeviceInformationUpdate(MidiEndpoint device)
 		{
-			return id;
+			var deviceIdentifier = new DeviceIdentifier(
+				GetMidiDeviceId(device),
+				_isInput ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut);
+			return new DeviceInformationUpdate(deviceIdentifier);
 		}
 
-		private static string GetMidiDeviceId(MidiEndpoint endpoint)
-		{
-			return endpoint.EndpointName;
-		}
+		private static string ParseMidiDeviceId(string id) => id;
+
+		private static string GetMidiDeviceId(MidiEndpoint endpoint) => endpoint.EndpointName;
 
 		private IEnumerable<DeviceInformation> GetMidiDevices()
 		{
@@ -164,14 +181,6 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 				}
 			}
 		}
-
-		//private DeviceInformationUpdate CreateDeviceInformationUpdate(MidiDevice device)
-		//{
-		//	var deviceInformation = new DeviceInformationUpdate(
-		//		_isInput ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut,
-		//		device.DeviceID);
-		//	return deviceInformation;
-		//}
 	}
 }
 #endif

@@ -2742,19 +2742,19 @@ var Windows;
                     this.inputPort = inputPort;
                 }
                 static createPort(managedId, encodedDeviceId) {
-                    var midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
+                    const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
                     const deviceId = decodeURIComponent(encodedDeviceId);
-                    var input = midi.inputs.get(deviceId);
+                    const input = midi.inputs.get(deviceId);
                     MidiInPort.instanceMap[managedId] = new MidiInPort(managedId, input);
                 }
                 static removePort(managedId) {
-                    var instance = MidiInPort.instanceMap[managedId];
+                    const instance = MidiInPort.instanceMap[managedId];
                     instance.inputPort.removeEventListener("onmidimessage", instance.messageReceived);
                     delete MidiInPort.instanceMap[managedId];
                 }
                 static startMessageListener(managedId) {
-                    if (!this.dispatchMessage) {
-                        this.dispatchMessage = Module.mono_bind_static_method("[Uno] Windows.Devices.Midi.MidiInPort:DispatchMessage");
+                    if (!MidiInPort.dispatchMessage) {
+                        MidiInPort.dispatchMessage = Module.mono_bind_static_method("[Uno] Windows.Devices.Midi.MidiInPort:DispatchMessage");
                     }
                     const instance = MidiInPort.instanceMap[managedId];
                     instance.inputPort.addEventListener("onmidimessage", instance.messageReceived);
@@ -3149,22 +3149,20 @@ var Uno;
             var Internal;
             (function (Internal) {
                 class WasmMidiAccess {
-                    static request() {
+                    static request(systemExclusive) {
                         if (navigator.requestMIDIAccess) {
-                            console.log('This browser supports WebMIDI!');
-                            return navigator.requestMIDIAccess()
+                            return navigator.requestMIDIAccess({ sysex: systemExclusive })
                                 .then((midi) => {
                                 WasmMidiAccess.midiAccess = midi;
                                 return "true";
                             }, () => "false");
                         }
                         else {
-                            console.log('WebMIDI is not supported in this browser.');
                             return Promise.resolve("false");
                         }
                     }
                     static getMidi() {
-                        return this.midiAccess;
+                        return WasmMidiAccess.midiAccess;
                     }
                 }
                 Internal.WasmMidiAccess = WasmMidiAccess;

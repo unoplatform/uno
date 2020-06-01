@@ -2,8 +2,6 @@
 	export class WasmMidiAccess {
 		private static midiAccess: WebMidi.MIDIAccess;
 
-		private static dispatchRequest: (hasAccess: boolean) => number;
-
 		public static request(systemExclusive: boolean): Promise<string> {
 			if (navigator.requestMIDIAccess) {
 				return navigator.requestMIDIAccess({ sysex: systemExclusive })
