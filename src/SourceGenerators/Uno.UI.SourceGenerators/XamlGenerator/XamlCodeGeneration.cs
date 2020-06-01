@@ -41,7 +41,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 		// Determines if the source generator will skip the inclusion of UseControls in the
 		// visual tree. See https://github.com/unoplatform/uno/issues/61
-		private bool _skipUserControlsInVisualTree = true;
+		private bool _skipUserControlsInVisualTree = false;
 
 #pragma warning disable 649 // Unused member
 		private readonly bool _forceGeneration;
