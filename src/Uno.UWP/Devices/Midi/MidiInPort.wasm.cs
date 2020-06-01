@@ -82,9 +82,9 @@ namespace Windows.Devices.Midi
 				throw new UnauthorizedAccessException("User declined access to MIDI.");
 			}
 			var managedId = Guid.NewGuid().ToString();
-			var initialization = $"{JsType}.createPort('{managedId}')";
+			var initialization = $"{JsType}.createPort('{managedId}','{Uri.EscapeDataString(identifier.Id)}')";
 			WebAssemblyRuntime.InvokeJS(initialization);
-			return new MidiInPort(identifier.ToString(), initialization);
+			return new MidiInPort(identifier.ToString(), managedId);
 		}
 	}
 }

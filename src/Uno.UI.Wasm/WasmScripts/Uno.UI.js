@@ -2771,6 +2771,7 @@ var Windows;
                     MidiInPort.dispatchMessage(this.managedId, serializedMessage, event.receivedTime);
                 }
             }
+            MidiInPort.instanceMap = {};
             Midi.MidiInPort = MidiInPort;
         })(Midi = Devices.Midi || (Devices.Midi = {}));
     })(Devices = Windows.Devices || (Windows.Devices = {}));

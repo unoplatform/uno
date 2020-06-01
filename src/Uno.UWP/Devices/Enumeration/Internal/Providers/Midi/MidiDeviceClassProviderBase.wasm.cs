@@ -122,48 +122,6 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 			WatchEnumerationCompleted?.Invoke(this, lastDeviceInformation);
 		}
 
-		//private bool DeviceMatchesType(MidiDeviceInfo info) =>
-		//	_portType == MidiPortType.Input ?
-		//		info.InputPortCount > 0 : info.OutputPortCount > 0;
-
-		//private DeviceInformation CreateDeviceInformation(MidiDeviceInfo deviceInfo, MidiDeviceInfo.PortInfo portInfo)
-		//{
-		//	var name = "";
-		//	if (deviceInfo.Properties.ContainsKey(MidiDeviceInfo.PropertyName))
-		//	{
-		//		name = deviceInfo.Properties.GetString(MidiDeviceInfo.PropertyName);
-		//	}
-
-		//	var deviceInformation = new DeviceInformation(
-		//		_portType == MidiPortType.Input ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut,
-		//		GetMidiDeviceId(deviceInfo, portInfo))
-		//	{
-		//		Name = name
-		//	};
-		//	return deviceInformation;
-		//}
-
-		//private DeviceInformationUpdate CreateDeviceInformationUpdate(MidiDeviceInfo deviceInfo, MidiDeviceInfo.PortInfo portInfo)
-		//{
-		//	var deviceInformation = new DeviceInformationUpdate(
-		//		_portType == MidiPortType.Input ? DeviceClassGuids.MidiIn : DeviceClassGuids.MidiOut,
-		//		GetMidiDeviceId(deviceInfo, portInfo));
-		//	return deviceInformation;
-		//}
-
-		//private static (int id, int portNumber) ParseMidiDeviceId(string id)
-		//{
-		//	var parts = id.Split("_");
-		//	var intId = int.Parse(parts[0]);
-		//	var portNumber = int.Parse(parts[1]);
-		//	return (intId, portNumber);
-		//}
-
-		//private static string GetMidiDeviceId(MidiDeviceInfo deviceInfo, MidiDeviceInfo.PortInfo portInfo)
-		//{
-		//	return $"{deviceInfo.Id.ToString()}_{portInfo.PortNumber}";
-		//}
-
 		private IEnumerable<DeviceInformation> GetMidiDevices()
 		{
 			var command = $"{JsType}.findDevices({_isInput.ToString().ToLowerInvariant()})";

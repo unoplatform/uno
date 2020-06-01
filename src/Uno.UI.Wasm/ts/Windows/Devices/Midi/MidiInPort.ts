@@ -3,7 +3,7 @@
 		private static dispatchMessage:
 			(instanceId: string, serializedMessage: string, timestamp: number) => number;
 
-		private static instanceMap: { [managedId: string]: MidiInPort };
+		private static instanceMap: { [managedId: string]: MidiInPort } = {};
 
 		private managedId: string;
 		private inputPort: WebMidi.MIDIInput;
