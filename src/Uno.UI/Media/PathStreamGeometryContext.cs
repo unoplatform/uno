@@ -43,7 +43,7 @@ namespace Uno.Media
 			_owner = owner;
 		}
 
-		public override void BeginFigure(Point startPoint, bool isFilled, bool isClosed)
+		public override void BeginFigure(Point startPoint, bool isFilled)
 		{
 #if __IOS__ || __MACOS__
 			bezierPath.MoveTo(startPoint);
