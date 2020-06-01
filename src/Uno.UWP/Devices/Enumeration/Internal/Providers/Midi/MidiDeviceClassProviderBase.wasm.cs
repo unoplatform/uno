@@ -30,7 +30,9 @@ namespace Uno.Devices.Enumeration.Internal.Providers.Midi
 
 		public event EventHandler<object> WatchStopped;
 
-		public event EventHandler<DeviceInformationUpdate> WatchUpdated;		
+#pragma warning disable CS0067 // Device update watching is not supported on WASM
+		public event EventHandler<DeviceInformationUpdate> WatchUpdated;
+#pragma warning restore CS0067
 
 		public bool CanWatch => true;		
 

@@ -3238,3 +3238,42 @@ var Uno;
         })(Enumeration = Devices.Enumeration || (Devices.Enumeration = {}));
     })(Devices = Uno.Devices || (Uno.Devices = {}));
 })(Uno || (Uno = {}));
+var Uno;
+(function (Uno) {
+    var Devices;
+    (function (Devices) {
+        var Enumeration;
+        (function (Enumeration) {
+            var Internal;
+            (function (Internal) {
+                var Providers;
+                (function (Providers) {
+                    var Midi;
+                    (function (Midi) {
+                        class MidiDeviceConnectionWatcher {
+                            static startStateChanged() {
+                                const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
+                                midi.addEventListener("statechanged", MidiDeviceConnectionWatcher.onStateChanged);
+                            }
+                            static stopStateChanged() {
+                                const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
+                                midi.removeEventListener("statechanged", MidiDeviceConnectionWatcher.onStateChanged);
+                            }
+                            static onStateChanged(event) {
+                                if (!this.dispatchStateChanged) {
+                                    this.dispatchStateChanged =
+                                        Module.mono_bind_static_method("[Uno] Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher:DispatchStateChanged");
+                                }
+                                const port = event.port;
+                                const isInput = port.type == "input";
+                                const isConnected = port.state == "connected";
+                                MidiDeviceConnectionWatcher.dispatchStateChanged(port.id, port.name, isInput, isConnected);
+                            }
+                        }
+                        Midi.MidiDeviceConnectionWatcher = MidiDeviceConnectionWatcher;
+                    })(Midi = Providers.Midi || (Providers.Midi = {}));
+                })(Providers = Internal.Providers || (Internal.Providers = {}));
+            })(Internal = Enumeration.Internal || (Enumeration.Internal = {}));
+        })(Enumeration = Devices.Enumeration || (Devices.Enumeration = {}));
+    })(Devices = Uno.Devices || (Uno.Devices = {}));
+})(Uno || (Uno = {}));

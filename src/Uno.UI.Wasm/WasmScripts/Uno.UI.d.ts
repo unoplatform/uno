@@ -995,3 +995,11 @@ declare namespace Uno.Devices.Enumeration.Internal.Providers.Midi {
         static findDevices(findInputDevices: boolean): string;
     }
 }
+declare namespace Uno.Devices.Enumeration.Internal.Providers.Midi {
+    class MidiDeviceConnectionWatcher {
+        private static dispatchStateChanged;
+        static startStateChanged(): void;
+        static stopStateChanged(): void;
+        static onStateChanged(event: WebMidi.MIDIConnectionEvent): void;
+    }
+}
