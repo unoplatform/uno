@@ -620,5 +620,18 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var content = template.LoadContent();
 			Assert.IsInstanceOfType(content, typeof(CheckBox));
 		}
+
+		[TestMethod]
+		public void When_By_xName_And_Key_In_Element_Resources()
+		{
+			var testControl = new Test_Control();
+
+			Assert.AreEqual(2, testControl.SubliminalGradientBrushByName.GradientStops.Count);
+
+			var fromResources = testControl.Resources["SubliminalGradientBrush"] as LinearGradientBrush;
+			Assert.IsNotNull(fromResources);
+			Assert.AreEqual(2, fromResources.GradientStops.Count);
+			;
+		}
 	}
 }

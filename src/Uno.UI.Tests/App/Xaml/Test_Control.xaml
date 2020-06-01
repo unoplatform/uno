@@ -45,6 +45,18 @@
 		<x:Double x:Key="OuterTreeDoubleValue">105.5</x:Double>
 		<Color x:Key="LocalColor1">MintCream</Color>
 		<GridLength x:Key="LocalGridLength333">333</GridLength>
+		<LinearGradientBrush x:Name="SubliminalGradientBrushByName"
+							 x:Key="SubliminalGradientBrush"
+							 x:FieldModifier="public"
+							 StartPoint="0,0.5"
+							 EndPoint="1,0.5">
+			<LinearGradientBrush.GradientStops>
+				<GradientStop Color="#897de3"
+							  Offset="0.5" />
+				<GradientStop Color="#764294"
+							  Offset="1" />
+			</LinearGradientBrush.GradientStops>
+		</LinearGradientBrush>
 	</UserControl.Resources>
 
 	<Grid x:Name="topGrid"
