@@ -5663,6 +5663,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\0_leading_number_asset.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\AcrylicBrush.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Animations.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\AppIcon.png" />
@@ -5671,6 +5672,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\Button.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\CalendarDatePicker.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\CalendarView.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\asset-with-dashes.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\cart.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\check.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\CheckBox.png" />

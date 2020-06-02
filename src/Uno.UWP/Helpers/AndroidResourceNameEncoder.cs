@@ -5,7 +5,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
-namespace Uno.UI
+namespace Uno
 {
     internal static class AndroidResourceNameEncoder
     {
