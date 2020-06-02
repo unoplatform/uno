@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Uno.UI.Samples.Controls
@@ -30,10 +31,28 @@ namespace Uno.UI.Samples.Controls
 		/// Marks a class as a sample test control that can be browsed by the SampleChooserControl
 		/// and which can be used by automated tests.
 		/// </summary>
+		public SampleAttribute()
+		{
+		}
+
+		/// <summary>
+		/// Marks a class as a sample test control that can be browsed by the SampleChooserControl
+		/// and which can be used by automated tests.
+		/// </summary>
 		/// <param name="categories">An optional list of categories to which this sample is related to</param>
 		public SampleAttribute(params string[] categories)
 		{
 			Categories = categories;
+		}
+
+		/// <summary>
+		/// Marks a class as a sample test control that can be browsed by the SampleChooserControl
+		/// and which can be used by automated tests.
+		/// </summary>
+		/// <param name="categories">An optional list of categories to which this sample is related to</param>
+		public SampleAttribute(params Type[] categories)
+		{
+			Categories = categories.Select(type => type.Name).ToArray();
 		}
 
 		/// <summary>
