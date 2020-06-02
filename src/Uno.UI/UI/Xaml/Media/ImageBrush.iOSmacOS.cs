@@ -34,9 +34,9 @@ namespace Windows.UI.Xaml.Media
 				oldValue?.Dispose();
 				_imageScheduler.Disposable = null;
 			}
-			else if (newValue.ImageData != null)
+			else if (newValue.TryOpenSync(out var image))
 			{
-				SetImage(newValue.ImageData);
+				SetImage(image);
 				oldValue?.Dispose();
 				_imageScheduler.Disposable = null;
 			}
@@ -52,11 +52,10 @@ namespace Windows.UI.Xaml.Media
 		{
 			CoreDispatcher.CheckThreadAccess();
 
-			var cd = new CancellationDisposable();
-
+			using var cd = new CancellationDisposable();
 			_imageScheduler.Disposable = cd;
 
-			var image = await Task.Run(() => newValue.Open(cd.Token));
+			var image = await Task.Run(() => newValue.Open(cd.Token), cd.Token);
 
 			if (cd.Token.IsCancellationRequested)
 			{

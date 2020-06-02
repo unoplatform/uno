@@ -94,19 +94,15 @@ namespace Windows.UI.Xaml.Controls
 			{
 				_openedImage = Source;
 
-				if (_openedImage is WriteableBitmap writeableBitmap)
-				{
-					SetImageFromWriteableBitmap(writeableBitmap);
-				}
-				else if (_openedImage == null || !_openedImage.HasSource())
+				if (_openedImage == null || !_openedImage.HasSource())
 				{
 					Image = null;
 					SetNeedsLayoutOrDisplay();
 					_imageFetchDisposable.Disposable = null;
 				}
-				else if (_openedImage.ImageData != null)
+				else if (_openedImage.TryOpenSync(out var img))
 				{
-					SetImage(_openedImage.ImageData);
+					SetImage(img);
 					_imageFetchDisposable.Disposable = null;
 				}
 				else
@@ -142,50 +138,6 @@ namespace Windows.UI.Xaml.Controls
 					};
 
 					Execute(scheduledFetch);
-				}
-			}
-		}
-
-		private void SetImageFromWriteableBitmap(WriteableBitmap writeableBitmap)
-		{
-			if (writeableBitmap.PixelBuffer is InMemoryBuffer memoryBuffer)
-			{
-				// Convert RGB colorspace.
-				var bgraBuffer = memoryBuffer.Data;
-				var rgbaBuffer = new byte[memoryBuffer.Data.Length];
-
-				for (int i = 0; i < memoryBuffer.Data.Length; i += 4)
-				{
-					rgbaBuffer[i + 3] = bgraBuffer[i + 3]; // a
-					rgbaBuffer[i + 0] = bgraBuffer[i + 2]; // r
-					rgbaBuffer[i + 1] = bgraBuffer[i + 1]; // g
-					rgbaBuffer[i + 2] = bgraBuffer[i + 0]; // b
-				}
-
-				using (var dataProvider = new CGDataProvider(rgbaBuffer, 0, rgbaBuffer.Length))
-				{
-					using (var colorSpace = CGColorSpace.CreateDeviceRGB())
-					{
-						var bitsPerComponent = 8;
-						var bytesPerPixel = 4;
-
-						using (var cgImage = new CGImage(
-							writeableBitmap.PixelWidth,
-							writeableBitmap.PixelHeight,
-							bitsPerComponent,
-							bitsPerComponent * bytesPerPixel,
-							bytesPerPixel * writeableBitmap.PixelWidth,
-							colorSpace,
-							CGImageAlphaInfo.Last,
-							dataProvider,
-							null,
-							false,
-							CGColorRenderingIntent.Default
-						))
-						{
-							SetImage(UIImage.FromImage(cgImage));
-						}
-					}
 				}
 			}
 		}
