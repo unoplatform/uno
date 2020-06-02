@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.Samples.Shared.Content.UITests
 {
-	[SampleControlInfo("ImageBrushTestControl", "ImageBrushInList")]
+	[SampleControlInfo("ImageBrush", "ImageBrushInList")]
 	public sealed partial class ImageBrushInList : UserControl
 	{
 		public ImageBrushInList()

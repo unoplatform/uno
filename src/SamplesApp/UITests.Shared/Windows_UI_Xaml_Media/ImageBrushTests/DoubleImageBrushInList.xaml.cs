@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[SampleControlInfo("ImageBrushTestControl", "DoubleImageBrushInList")]
+	[SampleControlInfo("ImageBrush", "DoubleImageBrushInList")]
 	public sealed partial class DoubleImageBrushInList : UserControl
 	{
 		public DoubleImageBrushInList()

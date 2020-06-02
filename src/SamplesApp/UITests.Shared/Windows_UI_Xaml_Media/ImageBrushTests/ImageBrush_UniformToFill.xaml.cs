@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace GenericApp.Views.Content.UITests.ImageBrushTestControl
 {
-    [SampleControlInfo("ImageBrushTestControl", "ImageBrush_UniformToFill")]
+    [Sample]
     public sealed partial class ImageBrush_UniformToFill : UserControl
     {
         public ImageBrush_UniformToFill()

@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace GenericApp.Views.Content.UITests.ImageBrushTestControl
 {
-    [SampleControlInfo("ImageBrushTestControl", "BorderImageBrushRelativeTransform")]
+    [SampleControlInfo("ImageBrush", "BorderImageBrushRelativeTransform")]
     public sealed partial class BorderImageBrushRelativeTransform : UserControl
     {
         public BorderImageBrushRelativeTransform()

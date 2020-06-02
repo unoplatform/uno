@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[SampleControlInfo("ImageBrushTestControl", "ImageBrushStretch")]
+	[SampleControlInfo("ImageBrush", "ImageBrushStretch")]
 	public sealed partial class ImageBrushStretch : UserControl
 	{
 		public ImageBrushStretch()
