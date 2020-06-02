@@ -360,8 +360,8 @@ namespace SamplesApp.UITests.TestFramework
 
 		private static IEnumerable<Point> GetPixelCoordinates(ExpectedPixels expectation)
 		{
-			var stepX = (int)Math.Min(1, expectation.Tolerance.DiscreteValidation.x);
-			var stepY = (int)Math.Min(1, expectation.Tolerance.DiscreteValidation.y);
+			var stepX = (int)Math.Max(1, expectation.Tolerance.DiscreteValidation.x);
+			var stepY = (int)Math.Max(1, expectation.Tolerance.DiscreteValidation.y);
 
 			for (var lin = 0; lin < expectation.Values.GetLength(0); lin+= stepY)
 			for (var col = 0; col < expectation.Values.GetLength(1); col+= stepX)

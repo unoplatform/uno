@@ -46,12 +46,13 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			var tolerance = new PixelTolerance()
 				.WithColor(132) // We are almost only trying to detect edges
 				.WithOffset(6, 6, LocationToleranceKind.PerPixel) 
-				.Discrete(20); // Way toooooooo long otherwise!
+				.Discrete(2);
 				
 			ValidateShape("Polygon", tolerance);
 		}
 
 		[Test]
+		[AutoRetry]
 		[ActivePlatforms(Platform.iOS)]
 		public void When_Path()
 		{
@@ -60,7 +61,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			var tolerance = new PixelTolerance()
 				.WithColor(132) // We are almost only trying to detect edges
 				.WithOffset(6, 6, LocationToleranceKind.PerPixel) 
-				.Discrete(20); // Way toooooooo long otherwise!
+				.Discrete(2);
 
 			ValidateShape("Path", tolerance);
 		}
@@ -82,7 +83,7 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Shapes
 			tolerance = tolerance ?? (new PixelTolerance()
 				.WithColor(132) // We are almost only trying to detect edges
 				.WithOffset(3, 3, LocationToleranceKind.PerPixel)
-				.Discrete(20)); // Way toooooooo long otherwise!
+				.Discrete(2));
 
 			var failures = new List<(string test, Exception error)>();
 			// To improve performance, we run all test for a given stretch at once.
