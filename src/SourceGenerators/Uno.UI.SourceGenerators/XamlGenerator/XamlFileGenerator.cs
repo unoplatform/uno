@@ -299,7 +299,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					using (writer.BlockInvariant("public partial class {0} : {1}", _className.className, controlBaseType.ToDisplayString()))
 					{
-						var isDirectUserControlChild = IsUserControl(topLevelControl.Type, checkInheritance: false);
+						var isDirectUserControlChild = _skipUserControlsInVisualTree && IsUserControl(topLevelControl.Type, checkInheritance: false);
 
 						using (Scope("{0}{1}".InvariantCultureFormat(_className.ns.Replace(".", ""), _className.className)))
 						{
@@ -701,7 +701,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			{
 				return "protected override void InitializeComponent()";
 			}
-			else if (IsUserControl(topLevelControl.Type, checkInheritance: false))
+			else if (_skipUserControlsInVisualTree && IsUserControl(topLevelControl.Type, checkInheritance: false))
 			{
 				string contentTypeDisplayString = GetImplicitChildTypeDisplayString(topLevelControl);
 
@@ -1706,7 +1706,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 								}
 							}
 						}
-						else if (IsUserControl(topLevelControl.Type))
+						else if (_skipUserControlsInVisualTree && IsUserControl(topLevelControl.Type))
 						{
 							if (implicitContentChild.Objects.Any())
 							{
@@ -1929,7 +1929,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 						return true;
 					}
-					else if (returnsContent && IsUserControl(topLevelControl.Type))
+					else if (returnsContent && _skipUserControlsInVisualTree && IsUserControl(topLevelControl.Type))
 					{
 						writer.AppendFormatInvariant(XamlConstants.Types.IFrameworkElement + " content = null");
 					}
