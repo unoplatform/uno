@@ -1641,13 +1641,13 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					{
 						if (IsTextBlock(topLevelControl.Type))
 						{
-							var objectUid = GetObjectUid(topLevelControl);
-							var isLocalized = objectUid != null &&
-								BuildLocalizedResourceValue(null, "Text", objectUid) != null;
-
-							if (implicitContentChild.Objects.Count != 0 &&
+							if (IsPropertyLocalized(topLevelControl, "Text"))
+							{
 								// A localized value is available. Ignore this implicit content as localized resources take precedence over XAML.
-								!isLocalized)
+								return true;
+							}
+
+							if (implicitContentChild.Objects.Count != 0)
 							{
 								using (writer.BlockInvariant("{0}Inlines = ", setterPrefix))
 								{
@@ -1666,6 +1666,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 						else if (IsRun(topLevelControl.Type))
 						{
+							if (IsPropertyLocalized(topLevelControl, "Text"))
+							{
+								// A localized value is available. Ignore this implicit content as localized resources take precedence over XAML.
+								return true;
+							}
+
 							if (implicitContentChild.Value != null)
 							{
 								var escapedString = DoubleEscape(implicitContentChild.Value.ToString());
@@ -1674,6 +1680,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						}
 						else if (IsSpan(topLevelControl.Type))
 						{
+							if (IsPropertyLocalized(topLevelControl, "Text"))
+							{
+								// A localized value is available. Ignore this implicit content as localized resources take precedence over XAML.
+								return true;
+							}
+
 							if (implicitContentChild.Objects.Count != 0)
 							{
 								using (writer.BlockInvariant("{0}Inlines = ", setterPrefix))
@@ -3549,6 +3561,14 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return null;
+		}
+
+		private bool IsPropertyLocalized(XamlObjectDefinition obj, string propertyName)
+		{
+			var uid = GetObjectUid(obj);
+			var isLocalized = uid != null && BuildLocalizedResourceValue(null, propertyName, uid) != null;
+
+			return isLocalized;
 		}
 
 		private string ParseCacheMode(string memberValue)
