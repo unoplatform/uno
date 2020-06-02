@@ -15,6 +15,7 @@ using System.Threading.Tasks;
 using Android.Provider;
 using Microsoft.Extensions.Logging;
 using Uno.UI;
+using Uno;
 
 namespace Windows.UI.Xaml.Media
 {
@@ -349,7 +350,7 @@ namespace Windows.UI.Xaml.Media
 		/// <returns>Resource's id</returns>
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public static int? FindResourceId(string imageName) =>
-			Uno.Helpers.DrawableHelper.FindResourceId(AndroidResourceNameEncoder.Encode(imageName));
+			Uno.Helpers.DrawableHelper.FindResourceId(imageName);
 
 		#endregion
 
