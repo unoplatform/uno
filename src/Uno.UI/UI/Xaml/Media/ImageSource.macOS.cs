@@ -48,7 +48,8 @@ namespace Windows.UI.Xaml.Media
 
 		public bool HasSource()
 		{
-			return Stream != null
+			return IsSourceReady
+				|| Stream != null
 				|| WebUri != null
 				|| FilePath.HasValueTrimmed()
 				|| ImageData != null
