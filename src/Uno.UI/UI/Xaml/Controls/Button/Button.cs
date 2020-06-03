@@ -30,6 +30,8 @@ namespace Windows.UI.Xaml.Controls
 			InitializeVisualStates();
 
 			Click += (s, e) => { Flyout?.ShowAt(this); };
+
+			DefaultStyleKey = typeof(Button);
 		}
 
 		#region Flyout Dependency Property

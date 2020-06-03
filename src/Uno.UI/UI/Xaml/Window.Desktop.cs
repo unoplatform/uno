@@ -13,21 +13,35 @@ namespace Windows.UI.Xaml
 	public sealed partial class Window
 	{
 		private static Window _current;
+		private bool _isActive;
+		private UIElement _content;
 
 		public Window()
 		{
 			InitializeCommon();
 		}
 
+		partial void InternalActivate()
+		{
+			_isActive = true;
+			TryLoadContent();
+		}
+
 		private void InternalSetContent(UIElement value)
 		{
-
+			_content = value;
+			TryLoadContent();
 		}
 
-		private UIElement InternalGetContent()
+		private void TryLoadContent()
 		{
-			throw new NotImplementedException();
+			if (_isActive)
+			{
+				(_content as FrameworkElement)?.ForceLoaded();
+			}
 		}
+
+		private UIElement InternalGetContent() => _content;
 
 		private static Window InternalGetCurrentWindow()
 		{

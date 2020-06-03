@@ -717,23 +717,26 @@
 	  </Properties>
 	</IgnoreSet>
 
-	<IgnoreSet baseVersion="2.1.37">
-	  <Methods>
-		<Member
-			fullName="System.Void Windows.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs..ctor()"
-			reason="Not part of the WinUI API." />
-		<Member
-			fullName="System.Void Windows.UI.Xaml.Controls.DatePickerValueChangedEventArgs..ctor(System.DateTimeOffset newDate, System.DateTimeOffset oldDate)"
-			reason="Not part of the WinUI API." />
-		<Member
-			fullName="System.Boolean Windows.UI.Xaml.Controls.TextBox.FocusTextView()"
-			reason="Not part of the WinUI API, Uno-specific implementation detail." />
-		<Member
-			fullName="System.Void Windows.UI.Xaml.Controls.Control.OnFocusStateChanged(Windows.UI.Xaml.FocusState oldValue, Windows.UI.Xaml.FocusState newValue)"
-			reason="Not part of the WinUI API, Uno-specific implementation detail." />
-		<Member
-			fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources.get___ImplicitStyle_Windows_UI_Xaml_Controls_DatePickerSelector()"
-			reason="Style removed from monoandroid (xamarin:Style with only ios:Setter)" />
+		<IgnoreSet baseVersion="2.1.37">
+			<Types>
+			</Types>
+
+			<Methods>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.DatePickerSelectedValueChangedEventArgs..ctor()"
+					reason="Not part of the WinUI API." />
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.DatePickerValueChangedEventArgs..ctor(System.DateTimeOffset newDate, System.DateTimeOffset oldDate)"
+					reason="Not part of the WinUI API." />
+				<Member
+					fullName="System.Boolean Windows.UI.Xaml.Controls.TextBox.FocusTextView()"
+					reason="Not part of the WinUI API, Uno-specific implementation detail." />
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnFocusStateChanged(Windows.UI.Xaml.FocusState oldValue, Windows.UI.Xaml.FocusState newValue)"
+					reason="Not part of the WinUI API, Uno-specific implementation detail." />
+				<Member
+					fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources.get___ImplicitStyle_Windows_UI_Xaml_Controls_DatePickerSelector()"
+					reason="Style removed from monoandroid (xamarin:Style with only ios:Setter)" />
 
 		<Member
 			fullName="System.Void Windows.UI.Xaml.Controls.Primitives.DragCompletedEventArgs..ctor(System.Object originalSource, System.Double horizontalChange, System.Double verticalChange, System.Boolean canceled)"
@@ -765,91 +768,95 @@
 			fullName="System.Void Windows.UI.Xaml.Controls.TextBox.SetIsPassword(System.Boolean isPassword)"
 			reason="macOS only breaking change, internal API"/>
 
-		<Member
-			fullName="System.Object Windows.UI.Xaml.Controls.ScrollContentPresenter.get_DataContext()"
-			reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
-		<Member
-			fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_DataContext(System.Object value)"
-			reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
-		<Member
-			fullName="Windows.UI.Xaml.DependencyObject Windows.UI.Xaml.Controls.ScrollContentPresenter.get_TemplatedParent()"
-			reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
-		<Member
-			fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_TemplatedParent(Windows.UI.Xaml.DependencyObject value)"
-			reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
-		<Member
-			fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerPressed(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
-			reason="Wrong parameter name, restored the WinUI one"/>
-		<Member
-			fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerReleased(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
-			reason="Wrong parameter name, restored the WinUI one"/>
-		<Member
-			fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerEntered(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
-			reason="Wrong parameter name, restored the WinUI one"/>
-		<Member
-			fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerExited(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
-			reason="Wrong parameter name, restored the WinUI one"/>
-		<Member
-			fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerMoved(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
-			reason="Wrong parameter name, restored the WinUI one"/>
-		<Member
-			fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerCanceled(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
-			reason="Wrong parameter name, restored the WinUI one"/>
-		<Member
-			fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerCaptureLost(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
-			reason="Wrong parameter name, restored the WinUI one"/>
-	  </Methods>
-	  <Properties>
-		<Member
-			fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources::__ImplicitStyle_Windows_UI_Xaml_Controls_DatePickerSelector()"
-			reason="Style removed from monoandroid (xamarin:Style with only ios:Setter)" />
-	  </Properties>
-	</IgnoreSet>
-	<IgnoreSet baseVersion="2.2.0">
-	  <Methods>
-		<Member
-			fullName="System.Void Windows.Data.Xml.Dom.DtdEntity..ctor()"
-			reason="Not part of UWP"/>
-		<Member
-			fullName="System.Void Windows.Data.Xml.Dom.DtdNotation..ctor()"
-			reason="Not part of UWP"/>
-		<Member
-			fullName="System.Void Windows.Data.Xml.Dom.XmlAttribute..ctor()"
-			reason="Not part of UWP"/>
-		<Member
-			fullName="System.Void Windows.Data.Xml.Dom.XmlCDataSection..ctor()"
-			reason="Not part of UWP"/>
-		<Member
-			fullName="System.Void Windows.Data.Xml.Dom.XmlComment..ctor()"
-			reason="Not part of UWP"/>
-		<Member
-			fullName="System.Void Windows.Data.Xml.Dom.XmlDocumentFragment..ctor()"
-			reason="Not part of UWP"/>
-		<Member
-			fullName="System.Void Windows.Data.Xml.Dom.XmlDocumentType..ctor()"
-			reason="Not part of UWP"/>
-		<Member
-			fullName="System.Void Windows.Data.Xml.Dom.XmlDomImplementation..ctor()"
-			reason="Not part of UWP"/>
-		<Member
-			fullName="System.Void Windows.Data.Xml.Dom.XmlElement..ctor()"
-			reason="Not part of UWP"/>
-		<Member
-			fullName="System.Void Windows.Data.Xml.Dom.XmlEntityReference..ctor()"
-			reason="Not part of UWP"/>
-		<Member
-			fullName="System.Void Windows.Data.Xml.Dom.XmlNamedNodeMap..ctor()"
-			reason="Not part of UWP"/>
-		<Member
-			fullName="System.Void Windows.Data.Xml.Dom.XmlNodeList..ctor()"
-			reason="Not part of UWP"/>
-		<Member
-			fullName="System.Void Windows.Data.Xml.Dom.XmlProcessingInstruction..ctor()"
-			reason="Not part of UWP"/>
-		<Member
-			fullName="System.Void Windows.Data.Xml.Dom.XmlText..ctor()"
-			reason="Not part of UWP"/>
-		<Member
+				<Member
+					fullName="System.Object Windows.UI.Xaml.Controls.ScrollContentPresenter.get_DataContext()"
+					reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_DataContext(System.Object value)"
+					reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
+				<Member
+					fullName="Windows.UI.Xaml.DependencyObject Windows.UI.Xaml.Controls.ScrollContentPresenter.get_TemplatedParent()"
+					reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.ScrollContentPresenter.set_TemplatedParent(Windows.UI.Xaml.DependencyObject value)"
+					reason="macOS ScrollContentPresenter implements IDataContextProvider"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerPressed(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Wrong parameter name, restored the WinUI one"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerReleased(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Wrong parameter name, restored the WinUI one"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerEntered(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Wrong parameter name, restored the WinUI one"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerExited(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Wrong parameter name, restored the WinUI one"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerMoved(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Wrong parameter name, restored the WinUI one"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerCanceled(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Wrong parameter name, restored the WinUI one"/>
+				<Member
+					fullName="System.Void Windows.UI.Xaml.Controls.Control.OnPointerCaptureLost(Windows.UI.Xaml.Input.PointerRoutedEventArgs args)"
+					reason="Wrong parameter name, restored the WinUI one"/>
+
+			</Methods>
+			<Properties>
+				<Member
+					fullName="Windows.UI.Xaml.Style Uno.UI.GlobalStaticResources::__ImplicitStyle_Windows_UI_Xaml_Controls_DatePickerSelector()"
+					reason="Style removed from monoandroid (xamarin:Style with only ios:Setter)" />
+
+			</Properties>
+			<Fields>
+			</Fields>
+		</IgnoreSet>
+		<IgnoreSet baseVersion="2.2.0">
+			<Methods>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.DtdEntity..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.DtdNotation..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlAttribute..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlCDataSection..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlComment..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlDocumentFragment..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlDocumentType..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlDomImplementation..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlElement..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlEntityReference..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlNamedNodeMap..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlNodeList..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlProcessingInstruction..ctor()"
+					reason="Not part of UWP"/>
+				<Member
+					fullName="System.Void Windows.Data.Xml.Dom.XmlText..ctor()"
+					reason="Not part of UWP"/>
+        <Member
 					fullName="System.Void Windows.UI.Xaml.Controls.AnimatedVisualPlayer.set_IsPlaying(System.Boolean value)"
 					reason="Refactoring, not part of WinUI contract anyway." />
 		<Member
@@ -979,6 +986,24 @@
 		<Member
 			  fullName="Microsoft.UI.Xaml.Controls.AnimatedVisualPlayer.ILottieVisualSourceProvider"
 			  reason="Incorrect namespace"/>
+			  
+			<!-- Styles overhaul -->
+				<Member
+					fullName="Uno.UI.GlobalStaticResources"
+					reason="Resources defined in XAML are no longer converted to public properties on GlobalStaticResources. The type itself is still present." />
+				<Member
+					fullName="Uno.UI.Toolkit.GlobalStaticResources"
+					reason="Resources defined in XAML are no longer converted to public properties on GlobalStaticResources. The type itself is still present." />
+				<Member
+					fullName="Windows.UI.Xaml.GenericStyles"
+					reason="Removed obsolete non-standard type (Styles are now all defined in XAML)." />
+				<Member
+					fullName="Windows.UI.Xaml.Style`1"
+					reason="Removed unused non-standard generic version of Style." />
+				<Member
+					fullName="Uno.UI.Controls.BindableSearchView"
+					reason="Removed unused Uno-only legacy control." />
+			<!-- ^^ Styles overhaul -->
 	  </Types>
 	  <Methods>
 		<Member
@@ -1008,7 +1033,75 @@
 		<Member
 			  fullName="System.Void Windows.ApplicationModel.SuspendingOperation..ctor(System.DateTimeOffset offset)"
 			  reason="Parameter-less ctor does not exist in UWP"/>
+			  
+			<!-- Styles overhaul -->
+			  <Member
+				  fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnStyleChanged(Windows.UI.Xaml.Style oldStyle, Windows.UI.Xaml.Style newStyle)"
+				  reason="Removed non-standard protected method"/>
+			  <Member
+				  fullName="System.Func`2&lt;System.String,System.Object&gt; Windows.UI.Xaml.ResourceDictionary.get_DefaultResolver()"
+				  reason="Removed non-standard property that's no longer used by Xaml-generated code with new resources handling"/>
+			  <Member
+				  fullName="System.Void Windows.UI.Xaml.ResourceDictionary.set_DefaultResolver(System.Func`2&lt;System.String,System.Object&gt; value)"
+				  reason="Removed non-standard property that's no longer used by Xaml-generated code with new resources handling"/>
+			  <Member
+				  fullName="System.Void Windows.UI.Xaml.Style..ctor(System.Type targetType, Windows.UI.Xaml.Style basedOn)"
+				  reason="Removed non-standard Style constructor"/>
+			  <Member
+				  fullName="System.Void Windows.UI.Xaml.Style.ApplyTo(Windows.UI.Xaml.DependencyObject o)"
+				  reason="Made non-standard method internal, shouldn't normally be called from consumer code"/>
+			  <Member
+				  fullName="System.Void Windows.UI.Xaml.Style.RegisterDefaultStyleForType(System.Type type, Windows.UI.Xaml.Style style)"
+				  reason="Removed unused overload. This is public to be callable from Xaml-generated code, but should never be called by consumer code."/>
+			  <Member
+				  fullName="Windows.UI.Xaml.Style Windows.UI.Xaml.Style.DefaultStyleForType(System.Type type)"
+				  reason="Made non-standard method internal"/>
+			  <Member
+				  fullName="Windows.UI.Xaml.Style Windows.UI.Xaml.Documents.TextElement.get_Style()"
+				  reason="Removed unused non-standard property"/>
+			  <Member
+				  fullName="System.Void Windows.UI.Xaml.Documents.TextElement.set_Style(Windows.UI.Xaml.Style value)"
+				  reason="Removed unused non-standard property"/>
+			  <Member
+				  fullName="System.Void Windows.UI.Xaml.Documents.TextElement.OnStyleChanged()"
+				  reason="Removed unused non-standard property"/>
+			  <Member
+				  fullName="Windows.UI.Xaml.Style Windows.UI.Xaml.Controls.NativePage.get_Style()"
+				  reason="Removed unused non-standard property"/>
+			  <Member
+				  fullName="System.Void Windows.UI.Xaml.Controls.NativePage.set_Style(Windows.UI.Xaml.Style value)"
+				  reason="Removed unused non-standard property"/>
+			  <Member
+				  fullName="System.Void Windows.UI.Xaml.NativeApplication..ctor(Windows.UI.Xaml.Application app, System.IntPtr javaReference, Android.Runtime.JniHandleOwnership transfer)"
+				  reason="This ctor is superceded by the version that takes a function. It's removed because it causes a crash with the new theme handling."/>
+			  <Member
+				  fullName="System.Object Windows.UI.Xaml.ResourceDictionary.Lookup(System.Object key)"
+				  reason="Not a public WinUI method (in the .NET projection)"/>
+			<!-- ^^ Styles overhaul -->
 	  </Methods>
+	  <Properties>
+
+			<!-- Styles overhaul -->
+			  <Member
+				  fullName="System.Func`2&lt;System.String,System.Object&gt; Windows.UI.Xaml.ResourceDictionary::DefaultResolver()"
+				  reason="Removed non-standard property that's no longer used by Xaml-generated code with new resources handling"/>
+			  <Member
+				  fullName="Windows.UI.Xaml.Style Windows.UI.Xaml.Documents.TextElement::Style()"
+				  reason="Removed unused non-standard property"/>
+			  <Member
+				  fullName="Windows.UI.Xaml.Style Windows.UI.Xaml.Controls.NativePage::Style()"
+				  reason="Removed unused non-standard property"/>
+			<!-- ^^ Styles overhaul -->
+	  
+	  </Properties>
+	  <Fields>
+	  
+			<!-- Styles overhaul -->
+			  <Member
+				  fullName="Windows.UI.Xaml.DependencyProperty Windows.UI.Xaml.Documents.TextElement::StyleProperty"
+				  reason="Removed unused non-standard DependencyProperty"/>
+			<!-- ^^ Styles overhaul -->
+	  </Fields>
 	</IgnoreSet>
   </IgnoreSets>
 </DiffIgnore>

@@ -8,6 +8,11 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class AppBarToggleButton : ToggleButton, ICommandBarElement, ICommandBarElement2, ICommandBarElement3
 	{
+		public AppBarToggleButton()
+		{
+			DefaultStyleKey = typeof(AppBarToggleButton);
+		}
+
 		protected override void OnApplyTemplate()
 		{
 			base.OnApplyTemplate();

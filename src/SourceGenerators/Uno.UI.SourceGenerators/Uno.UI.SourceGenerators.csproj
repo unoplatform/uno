@@ -1,7 +1,7 @@
 ﻿<Project Sdk="MSBuild.Sdk.Extras">
 	<PropertyGroup>
 		<TargetFramework>net461</TargetFramework>
-    <AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
+		<AssemblyName>Uno.UI.SourceGenerators</AssemblyName>
 		<AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
 	</PropertyGroup>
 
@@ -63,6 +63,9 @@
 		<Compile Include="..\..\Uno.UI\UI\Xaml\Media\SweepDirection.cs">
 			<Link>XamlGenerator\XamlPathParser\SweepDirection.cs</Link>
 		</Compile>
+		<Compile Include="..\..\Uno.Foundation\Metadata\ApiInformation.shared.cs">
+			<Link>XamlGenerator\ApiInformation.shared.cs</Link>
+		</Compile>
 		<Compile Include="..\..\Uno.UI\UI\Xaml\GridLength.cs">
 			<Link>Helpers\GridLength.cs</Link>
 		</Compile>
@@ -71,6 +74,9 @@
 		</Compile>
 		<Compile Include="..\..\Uno.UI\UI\Xaml\GridUnitType.cs">
 			<Link>Helpers\GridUnitType.cs</Link>
+		</Compile>
+		<Compile Include="..\..\Uno.UI\UI\Xaml\XamlFilePathHelper.shared.cs">
+			<Link>Helpers\XamlFilePathHelper.shared.cs</Link>
 		</Compile>
 	</ItemGroup>
 

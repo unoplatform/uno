@@ -4,6 +4,11 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class AppBarSeparator : Control, ICommandBarElement, ICommandBarElement2, ICommandBarElement3
 	{
+		public AppBarSeparator()
+		{
+			DefaultStyleKey = typeof(AppBarSeparator);
+		}
+
 		#region IsCompat
 
 		public bool IsCompact

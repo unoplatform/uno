@@ -28,6 +28,7 @@ namespace Uno.Roslyn
 
 		public Compilation Compilation { get; }
 
+		public string AssemblyName => _project.AssemblyName;
 
 		public RoslynMetadataHelper(string configuration, Compilation sourceCompilation, ProjectInstance projectInstance, Project roslynProject, string[] additionalTypes = null, Dictionary<string, string> legacyTypes = null)
 		{

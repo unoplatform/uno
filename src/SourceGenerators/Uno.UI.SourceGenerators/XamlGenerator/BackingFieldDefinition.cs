@@ -12,8 +12,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		}
 
 		public string Name { get; }
-		public object Type { get; }
+		public string Type { get; }
 
 		public Accessibility Accessibility { get; }
+
+		public override int GetHashCode() => (Type ?? "").GetHashCode() ^ (Name ?? "").GetHashCode() ^ Accessibility.GetHashCode();
+
+		public override bool Equals(object obj)
+		{
+			return obj is BackingFieldDefinition other
+				&& Type == other.Type
+				&& Name == other.Name
+				&& Accessibility == other.Accessibility;
+		}
 	}
 }
