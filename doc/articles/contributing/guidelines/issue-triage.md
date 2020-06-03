@@ -36,7 +36,7 @@ Community support requests should be directed to:
 
 * Our [documentation](https://platform.uno/docs/) and [troubleshooting guide](https://platform.uno/docs/troubleshooting-guide).
 * [Stack Overflow](https://stackoverflow.com/questions/tagged/uno-platform).
-* The [Uno gitter room](https://gitter.im/uno-platform/Lobby)
+* The [Discord Channel #uno-platform](https://discord.gg/eBHZSKG)
 * On [Twitter using the #unoplatform](https://twitter.com/search?q=%23unoplatform) hashtag.
 
 Organizations that want a deeper level of support beyond community support, should be directed to [contact unoplatform](https://platform.uno/contact/) to discuss obtaining professional support.
