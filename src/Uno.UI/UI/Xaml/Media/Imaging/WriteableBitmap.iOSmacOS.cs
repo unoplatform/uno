@@ -4,7 +4,12 @@ using Windows.Foundation;
 using Windows.Storage.Streams;
 using CoreGraphics;
 using Foundation;
-using UIKit;
+
+#if __MACOS__
+using _NativeImage = AppKit.NSImage;
+#else
+using _NativeImage = UIKit.UIImage;
+#endif
 
 namespace Windows.UI.Xaml.Media.Imaging
 {
@@ -12,7 +17,7 @@ namespace Windows.UI.Xaml.Media.Imaging
 	{
 		private protected override bool IsSourceReady => true;
 
-		private protected override bool TryOpenSourceSync(out UIImage image)
+		private protected override bool TryOpenSourceSync(out _NativeImage image)
 		{
 			// Convert RGB colorspace.
 			var bgraBuffer = _buffer.Data;
@@ -45,7 +50,11 @@ namespace Windows.UI.Xaml.Media.Imaging
 					shouldInterpolate: false,
 					CGColorRenderingIntent.Default);
 
-				image = UIImage.FromImage(img);
+#if __MACOS__
+				image = new _NativeImage(img, new CGSize(PixelWidth, PixelHeight));
+#else
+				image = _NativeImage.FromImage(img);
+#endif
 				return true;
 			}
 		}

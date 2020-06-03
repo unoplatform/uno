@@ -109,13 +109,13 @@ namespace Windows.UI.Xaml.Media
 		/// </summary>
 		private protected virtual bool IsSourceReady => false;
 
-		private protected virtual bool TryOpenSourceSync(out UIImage image)
+		private protected virtual bool TryOpenSourceSync(out NSImage image)
 		{
 			image = default;
 			return false;
 		}
 
-		private protected virtual bool TryOpenImageAsync(out Task<UIImage> asyncImage)
+		private protected virtual bool TryOpenSourceAsync(out Task<NSImage> asyncImage)
 		{
 			asyncImage = default;
 			return false;
@@ -129,7 +129,7 @@ namespace Windows.UI.Xaml.Media
 		/// This is only intended to convert **uncompressed data already in memory**,
 		/// and should not be used to decompress a JPEG for instance, even if the already in memory.
 		/// </remarks>
-		internal bool TryOpenSync(out UIImage image)
+		internal bool TryOpenSync(out NSImage image)
 		{
 			if (ImageData != null)
 			{
