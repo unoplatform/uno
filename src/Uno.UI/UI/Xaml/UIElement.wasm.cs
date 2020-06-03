@@ -529,7 +529,7 @@ namespace Windows.UI.Xaml
 		private void OnAddingChild(UIElement child)
 		{
 			if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
-				&& IsLoaded || IsLoading
+				&& (IsLoaded || IsLoading)
 				&& child._isFrameworkElement)
 			{
 				if (child.IsLoaded)
