@@ -39,7 +39,7 @@ namespace UITests.Windows_UI_Xaml_Media.ImageBrushTests
 			{
 				for (var i = 0; i < bitmap.PixelBuffer.Length; i += pixel.Length)
 				{
-					pixels.Write(pixel);
+					pixels.Write(pixel, 0, pixel.Length);
 				}
 			}
 

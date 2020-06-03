@@ -1464,33 +1464,25 @@ namespace Uno.UI {
 			return true;
 		}
 
-		public setImageRawData(viewId: number, dataPtr: number, width: number, height: number): string {
-			const element = this.getView(viewId);
+		public rawPixelsToBase64EncodeImage(dataPtr: number, width: number, height: number): string {
+			const rawCanvas = document.createElement("canvas");
+			rawCanvas.width = width;
+			rawCanvas.height = height;
 
-			if (element.tagName.toUpperCase() === "IMG") {
-				const imgElement = element as HTMLImageElement;
+			const ctx = rawCanvas.getContext("2d");
+			const imgData = ctx.createImageData(width, height);
 
-				const rawCanvas = document.createElement("canvas");
-				rawCanvas.width = width;
-				rawCanvas.height = height;
+			const bufferSize = width * height * 4;
 
-				const ctx = rawCanvas.getContext("2d");
-				const imgData = ctx.createImageData(width, height);
-
-				const bufferSize = width * height * 4;
-
-				for (let i = 0; i < bufferSize; i += 4) {
-					imgData.data[i + 0] = Module.HEAPU8[dataPtr + i + 2];
-					imgData.data[i + 1] = Module.HEAPU8[dataPtr + i + 1];
-					imgData.data[i + 2] = Module.HEAPU8[dataPtr + i + 0];
-					imgData.data[i + 3] = Module.HEAPU8[dataPtr + i + 3];
-				}
-				ctx.putImageData(imgData, 0, 0);
-
-				imgElement.src = rawCanvas.toDataURL();
-
-				return "ok";
+			for (let i = 0; i < bufferSize; i += 4) {
+				imgData.data[i + 0] = Module.HEAPU8[dataPtr + i + 2];
+				imgData.data[i + 1] = Module.HEAPU8[dataPtr + i + 1];
+				imgData.data[i + 2] = Module.HEAPU8[dataPtr + i + 0];
+				imgData.data[i + 3] = Module.HEAPU8[dataPtr + i + 3];
 			}
+			ctx.putImageData(imgData, 0, 0);
+
+			return rawCanvas.toDataURL();
 		}
 
 

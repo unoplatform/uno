@@ -23,6 +23,9 @@ namespace Windows.UI.Xaml.Media.Imaging
 
 		public void Invalidate()
 		{
+#if __WASM__
+			InvalidateSource();
+#endif
 			Invalidated?.Invoke(this, EventArgs.Empty);
 		}
 	}
