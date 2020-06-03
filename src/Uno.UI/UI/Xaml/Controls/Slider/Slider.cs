@@ -45,6 +45,8 @@ namespace Windows.UI.Xaml.Controls
 #if XAMARIN
 			RegisterLoadActions(SubscribeSliderContainerPressed, () => _sliderContainerSubscription.Disposable = null);
 #endif
+
+			DefaultStyleKey = typeof(Slider);
 		}
 
 		protected override void OnApplyTemplate()

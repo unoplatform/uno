@@ -49,6 +49,8 @@ namespace Windows.UI.Xaml.Controls
 			Loaded += (s, e) => RegisterEvents();
 			Unloaded += (s, e) => UnregisterEvents();
 			SizeChanged += (s, e) => _contentHeight = e.NewSize.Height;
+
+			DefaultStyleKey = typeof(CommandBar);
 		}
 
 #if __ANDROID__ || __IOS__

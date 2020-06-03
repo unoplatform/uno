@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Automation;
 using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls;
 using Uno.UI.Xaml.Controls;
+using System.ComponentModel;
 
 namespace Uno.UI
 {
@@ -103,18 +104,13 @@ namespace Uno.UI
 
 		public static class FrameworkElement
 		{
-			/// <summary>
-			/// Enables the behavior for which the style is applied before the inherited
-			/// FrameworkElement instances constructors. The UWP behavior is to apply
-			/// </summary>
-			public static bool UseLegacyApplyStylePhase { get; set; } = false;
+			[Obsolete("This flag is no longer used.")]
+			[EditorBrowsable(EditorBrowsableState.Never)]
+			public static bool UseLegacyApplyStylePhase { get; set; }
 
-			/// <summary>
-			/// When changing a style on a <see cref="Windows.UI.Xaml.FrameworkElement"/> clears
-			/// the previous style setters. This property is applicable only when <see cref="UseLegacyApplyStylePhase"/>
-			/// is set to <see cref="false"/>.
-			/// </summary>
-			public static bool ClearPreviousOnStyleChange { get; set; } = true;
+			[Obsolete("This flag is no longer used.")]
+			[EditorBrowsable(EditorBrowsableState.Never)]
+			public static bool ClearPreviousOnStyleChange { get; set; }
 
 #if __ANDROID__
 			/// <summary>
@@ -243,6 +239,16 @@ namespace Uno.UI
 			/// a native counterpart. (e.g. Button, Slider, ComboBox, ...)
 			/// </summary>
 			public static bool UseUWPDefaultStyles { get; set; } = true;
+
+			/// <summary>
+			/// Override the native styles usage per control type.
+			/// </summary>
+			/// <remarks>
+			/// Usage: 'UseUWPDefaultStylesOverride[typeof(Frame)] = false;' will result in the native style always being the default for Frame, irrespective
+			/// of the value of <see cref="UseUWPDefaultStyles"/>. This is useful when an app uses the UWP default look for most controls but the native
+			/// appearance/comportment for a few particular controls, or vice versa.
+			/// </remarks>
+			public static IDictionary<Type, bool> UseUWPDefaultStylesOverride { get; } = new Dictionary<Type, bool>();
 		}
 
 		public static class TextBlock
@@ -360,6 +366,8 @@ namespace Uno.UI
 			/// <remarks>
 			/// This is a mechanism to prevent hard-to-diagnose stack overflow when a resource name is not found.
 			/// </remarks>
+			[Obsolete("This flag is no longer used.")]
+			[EditorBrowsable(EditorBrowsableState.Never)]
 			public static int MaxRecursiveResolvingDepth { get; set; } = 12;
 		}
 

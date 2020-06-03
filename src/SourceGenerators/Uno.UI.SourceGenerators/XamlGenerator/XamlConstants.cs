@@ -67,10 +67,12 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			public const string FrameworkElement = UnoXamlNamespace + ".FrameworkElement";
 			public const string UIElement = UnoXamlNamespace + ".UIElement";
 			public const string Style = BaseXamlNamespace + ".Style";
+			public const string ResourceDictionary = BaseXamlNamespace + ".ResourceDictionary";
 			public const string ElementStub = BaseXamlNamespace + ".ElementStub";
 			public const string ContentPresenter = Namespaces.Controls + ".ContentPresenter";
 			public const string Markup = BaseXamlNamespace + ".Markup";
 			public const string Metadata = RootFoundationNamespace + ".Metadata";
+			public const string IDependencyObjectParse = UnoXamlNamespace + ".IDependencyObjectParse";
 
 			// Attributes
 			public const string ContentPropertyAttribute = Markup + ".ContentPropertyAttribute";

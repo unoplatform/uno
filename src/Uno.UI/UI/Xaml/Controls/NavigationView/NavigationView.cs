@@ -33,6 +33,7 @@ using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Media.Animation;
 using Uno.Extensions.Specialized;
 using Windows.UI.ViewManagement;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -2241,7 +2242,7 @@ namespace Windows.UI.Xaml.Controls
 
 					// In our test environment, m_measureOnInitStep2Count should <= 2 since we didn't hide anything from code
 					// so the assert count is different from s_measureOnInitStep2CountThreshold 
-					global::System.Diagnostics.Debug.Assert(m_measureOnInitStep2Count <= 2);
+					// global::System.Diagnostics.Debug.Assert(m_measureOnInitStep2Count <= 2); // This assert doesn't seem to be relevant on Uno
 
 					if (m_measureOnInitStep2Count >= s_measureOnInitStep2CountThreshold || !IsTopNavigationFirstMeasure())
 					{
@@ -3016,18 +3017,7 @@ namespace Windows.UI.Xaml.Controls
 				var splitView = m_rootSplitView;
 				if (splitView != null)
 				{
-					double width = c_paneToggleButtonWidth;
-
-					var resourceName = "PaneToggleButtonWidth";
-					if (Application.Current.Resources.HasKey(resourceName))
-					{
-						var lookup = Application.Current.Resources.Lookup(resourceName);
-						if (lookup is double value)
-						{
-							width = value;
-						}
-					}
-
+					var width = ResourceResolver.ResolveTopLevelResource<double>(key: "PaneToggleButtonWidth", fallbackValue: c_paneToggleButtonWidth);
 					double togglePaneButtonWidth = width;
 
 					if (ShouldShowBackButton() && splitView.DisplayMode == SplitViewDisplayMode.Overlay)
@@ -3126,12 +3116,7 @@ namespace Windows.UI.Xaml.Controls
 			{
 				double width = 0;
 
-				double buttonSize = c_paneToggleButtonWidth; // in case the resource lookup fails
-				var lookup = Application.Current.Resources.Lookup("PaneToggleButtonWidth");
-				if (lookup is double value)
-				{
-					buttonSize = value;
-				}
+				var buttonSize = ResourceResolver.ResolveTopLevelResource<double>(key: "PaneToggleButtonWidth", fallbackValue: c_paneToggleButtonWidth);
 
 				width += buttonSize;
 

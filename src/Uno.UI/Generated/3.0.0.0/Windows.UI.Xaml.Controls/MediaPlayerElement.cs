@@ -171,7 +171,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.MediaPlayerElement), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.Stretch)));
 		#endif
-		#if false || false || NET461 || __WASM__ || __MACOS__
+		#if false || false || false || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public MediaPlayerElement() : base()
 		{

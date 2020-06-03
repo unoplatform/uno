@@ -8,15 +8,6 @@ namespace Windows.UI.Xaml.Documents
 {
 	public partial class Inline : TextElement
 	{
-		protected override void OnStyleChanged()
-		{
-			if (Style == null)
-			{
-				base.Style = Style.DefaultStyleForType(typeof(Inline));
-				base.Style.ApplyTo(this);
-			}
-		}
-
 		internal void InvalidateInlines()
 		{
 #if !NET461

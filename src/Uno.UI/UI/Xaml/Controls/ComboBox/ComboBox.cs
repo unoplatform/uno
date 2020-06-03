@@ -55,12 +55,10 @@ namespace Windows.UI.Xaml.Controls
 
 		public ComboBox()
 		{
-			LightDismissOverlayBackground = Resources["ComboBoxLightDismissOverlayBackground"] as Brush ??
-				// This is normally a no-op - the above line should retrieve the framework-level resource. This is purely to fail the build when
-				// Resources/Styles are overhauled (and the above will no longer be valid)
-				Uno.UI.GlobalStaticResources.ComboBoxLightDismissOverlayBackground as Brush;
+			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "ComboBoxLightDismissOverlayBackground", isThemeResourceExtension: true);
 
 			IsItemClickEnabled = true;
+			DefaultStyleKey = typeof(ComboBox);
 		}
 
 		public global::Windows.UI.Xaml.Controls.Primitives.ComboBoxTemplateSettings TemplateSettings { get; } = new Primitives.ComboBoxTemplateSettings();
@@ -589,7 +587,7 @@ namespace Windows.UI.Xaml.Controls
 					this.Log().Debug($"Layout the combo's dropdown at {frame} (desired: {desiredSize} / available: {finalSize} / visible: {visibleBounds} / selected: {selectedIndex} of {itemsCount})");
 				}
 
-				if(upperLeftLocation is Point offset)
+				if (upperLeftLocation is Point offset)
 				{
 					// Compensate for origin location is some popup providers (Android
 					// is one, particularly when the status bar is translucent)

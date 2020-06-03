@@ -15,6 +15,7 @@ using Uno.Logging;
 using System.Threading;
 using Uno.UI;
 using Uno.UI.Xaml;
+using Uno;
 using System.Web;
 using System.Collections.Specialized;
 using Uno.Helpers;
@@ -38,8 +39,16 @@ namespace Windows.UI.Xaml
 			{
 				throw new InvalidOperationException("The application must be started using Application.Start first, e.g. Windows.UI.Xaml.Application.Start(_ => new App());");
 			}
+			Current = this;
 
 			CoreDispatcher.Main.RunAsync(CoreDispatcherPriority.Normal, Initialize);
+		}
+
+		[Preserve]
+		public static int DispatchSystemThemeChange()
+		{
+			Windows.UI.Xaml.Application.Current.OnSystemThemeChanged();
+			return 0;
 		}
 
 		static partial void StartPartial(ApplicationInitializationCallback callback)
@@ -58,17 +67,18 @@ namespace Windows.UI.Xaml
 			callback(new ApplicationInitializationCallbackParams());
 		}
 
+		partial void ObserveSystemThemeChanges()
+		{
+			WebAssemblyRuntime.InvokeJS("Windows.UI.Xaml.Application.observeSystemTheme()");
+		}
+
 
 		private void Initialize()
 		{
 			using (WritePhaseEventTrace(TraceProvider.LauchedStart, TraceProvider.LauchedStop))
 			{
-				Current = this;
-
 				// Force init
 				Window.Current.ToString();
-
-				Windows.UI.Xaml.GenericStyles.Initialize();
 
 				var arguments = WebAssemblyRuntime.InvokeJS("Uno.UI.WindowManager.findLaunchArguments()");
 

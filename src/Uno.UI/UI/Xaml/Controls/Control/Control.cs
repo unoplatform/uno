@@ -46,11 +46,10 @@ namespace Windows.UI.Xaml.Controls
 			SetDefaultForeground();
 			SubscribeToOverridenRoutedEvents();
 			OnIsFocusableChanged();
-		}
 
-		/// <summary>
-		/// This property is not used in Uno.UI, and is always set to the current top-level type.
-		/// </summary>
+			DefaultStyleKey = typeof(Control);
+		}
+		
 		protected object DefaultStyleKey { get; set; }
 
 		protected override bool IsSimpleLayout => true;
@@ -64,6 +63,8 @@ namespace Windows.UI.Xaml.Controls
 					? SolidColorBrushHelper.Black
 					: SolidColorBrushHelper.White, DependencyPropertyValuePrecedences.DefaultValue);
 		}
+
+		private protected override Type GetDefaultStyleKey() => DefaultStyleKey as Type;
 
 		protected override void OnBackgroundChanged(DependencyPropertyChangedEventArgs e)
 		{
@@ -298,6 +299,15 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
+		/// Applies default Style and implicit/explicit Style if not applied already, and materializes template.
+		/// </summary>
+		internal void EnsureTemplate()
+		{
+			ApplyStyles();
+			ApplyTemplate();
+		}
+
+		/// <summary>
 		/// Finds a realized element in the control template
 		/// </summary>
 		/// <param name="e">The framework element instance</param>
@@ -367,37 +377,21 @@ namespace Windows.UI.Xaml.Controls
 				_controlTemplateUsedLastUpdate = null;
 			}
 
-			if (
-				!FeatureConfiguration.FrameworkElement.UseLegacyApplyStylePhase &&
-				FeatureConfiguration.FrameworkElement.ClearPreviousOnStyleChange
-			)
+			if (_updateTemplate && !object.Equals(Template, _controlTemplateUsedLastUpdate))
 			{
-				if (_updateTemplate && !object.Equals(Template, _controlTemplateUsedLastUpdate))
+				_controlTemplateUsedLastUpdate = Template;
+
+				if (Template != null)
 				{
-					_controlTemplateUsedLastUpdate = Template;
-
-					if (Template != null)
-					{
-						TemplatedRoot = Template.LoadContentCached();
-					}
-					else
-					{
-						TemplatedRoot = null;
-					}
-
-					_updateTemplate = false;
-				}
-			}
-			else
-			{
-				if (Template != null && _updateTemplate && !object.Equals(Template, _controlTemplateUsedLastUpdate))
-				{
-					_controlTemplateUsedLastUpdate = Template;
-
-					_updateTemplate = false;
-
 					TemplatedRoot = Template.LoadContentCached();
 				}
+				else
+				{
+					TemplatedRoot = null;
+				}
+
+				_updateTemplate = false;
+
 			}
 		}
 
@@ -470,7 +464,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(Control),
 				new FrameworkPropertyMetadata(
-					11.0,
+					15.0,
 					FrameworkPropertyMetadataOptions.Inherits,
 					(s, e) => ((Control)s)?.OnFontSizeChanged((double)e.OldValue, (double)e.NewValue)
 				)
@@ -1000,5 +994,19 @@ namespace Windows.UI.Xaml.Controls
 				&& method.IsVirtual
 				&& method.DeclaringType != typeof(Control);
 		}
+
+		/// <summary>
+		/// Duplicates the SetDefaultStyleKey() helper method from WinUI code.
+		/// </summary>
+		private protected void SetDefaultStyleKey<TDerived>(TDerived derivedControl) where TDerived : Control
+			=> DefaultStyleKey = typeof(TDerived);
+
+#if DEBUG
+		public VisualStateGroup[] VisualStateGroups => VisualStateManager.GetVisualStateGroups(GetTemplateRoot()).ToArray();
+
+		public string[] VisualStateGroupNames => VisualStateGroups.Select(vsg => vsg.Name).ToArray();
+
+		public string[] CurrentVisualStates => VisualStateGroups.Select(vsg => vsg.CurrentState?.Name).ToArray();
+#endif
 	}
 }

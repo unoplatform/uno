@@ -52,6 +52,8 @@ namespace Windows.UI.Xaml.Controls.Primitives
 
 			Unloaded += (s, e) =>
 				IsPressed = false;
+
+			DefaultStyleKey = typeof(ButtonBase);
 		}
 
 		public new bool IsPointerOver

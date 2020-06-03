@@ -23,18 +23,6 @@ namespace Windows.UI.Xaml
 
 		public delegate Windows.UI.Xaml.Application AppBuilder();
 
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public NativeApplication(Windows.UI.Xaml.Application app, IntPtr javaReference, Android.Runtime.JniHandleOwnership transfer)
-			: this(() => app, javaReference, transfer)
-		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().LogWarning(
-					"The constructor on Windows.UI.Xaml.NativeApplication uses an explicitly created Windows.UI.Xaml.Application instance. " +
-					"Instead, use the constructor that requires a Windows.UI.Xaml.NativeApplication.AppBuilder delegate.");
-			}
-		}
-
 		/// <summary>
 		/// Creates an android Application instance
 		/// </summary>
