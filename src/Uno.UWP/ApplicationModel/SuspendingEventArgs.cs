@@ -1,9 +1,6 @@
-using System;
-using Windows.Foundation;
-using Windows.Foundation.Metadata;
 namespace Windows.ApplicationModel
 {
-	public sealed partial class SuspendingEventArgs
+	public sealed partial class SuspendingEventArgs : ISuspendingEventArgs
 	{
 		internal SuspendingEventArgs(SuspendingOperation operation)
 		{

@@ -40,6 +40,10 @@ namespace Windows.UI.Xaml
 
 		}
 
+		public override bool ApplicationShouldTerminateAfterLastWindowClosed(NSApplication sender) => true;
+
+		internal bool Suspended { get; private set; }
+
 		static partial void StartPartial(ApplicationInitializationCallback callback)
 		{
 			callback(new ApplicationInitializationCallbackParams());
@@ -71,6 +75,19 @@ namespace Windows.UI.Xaml
 			{
 				OnLaunched(new LaunchActivatedEventArgs());
 			}
+		}
+
+		partial void OnSuspendingPartial()
+		{
+			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(0), () =>
+			{
+				Suspended = true;
+				NSApplication.SharedApplication.KeyWindow.PerformClose(null);
+			});
+
+			Suspending?.Invoke(this, new SuspendingEventArgs(operation));
+
+			operation.EventRaiseCompleted();
 		}
 
 		/// <summary>
