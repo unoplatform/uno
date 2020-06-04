@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[SampleControlInfo("ImageBrush", "EllipsemaskingEllipseGrid")]
+	[SampleControlInfo("ImageBrushTestControl", "EllipsemaskingEllipseGrid")]
 	public sealed partial class EllipsemaskingEllipseGrid : UserControl
 	{
 		public EllipsemaskingEllipseGrid()

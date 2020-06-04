@@ -16,7 +16,7 @@ using Windows.UI.Xaml.Navigation;
 
 namespace Uno.UI.Samples.UITests.ImageBrushTestControl
 {
-	[SampleControlInfo("ImageBrush", "RectanglemaskingRectangleGrid")]
+	[SampleControlInfo("ImageBrushTestControl", "RectanglemaskingRectangleGrid")]
 	public sealed partial class RectanglemaskingRectangleGrid : UserControl
 	{
 		public RectanglemaskingRectangleGrid()

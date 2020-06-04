@@ -24,38 +24,6 @@ using Uno.Web.Query.Cache;
 
 namespace Windows.UI.Xaml.Media
 {
-	internal enum ImageDataKind
-	{
-		/// <summary>
-		/// The source is empty and the target visual element should be cleared
-		/// </summary>
-		Empty,
-
-		Url,
-
-		/// <summary>
-		/// A base64 encoded image
-		/// </summary>
-		Base64,
-
-		/// <summary>
-		/// The image failed to load (cf. The Error property)
-		/// </summary>
-		Error = 256
-	}
-
-	/// <summary>
-	/// Represents the raw data of an **opened** image source
-	/// </summary>
-	internal struct ImageData
-	{
-		public ImageDataKind Kind { get; set; }
-
-		public string Value { get; set; }
-
-		public Exception Error { get; set; }
-	}
-
 	partial class ImageSource
 	{
 		private readonly SerialDisposable _opening = new SerialDisposable();
