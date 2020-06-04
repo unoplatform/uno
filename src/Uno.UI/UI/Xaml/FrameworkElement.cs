@@ -605,7 +605,7 @@ namespace Windows.UI.Xaml
 		internal void UpdateThemeBindings()
 		{
 			//TODO: should update bindings on non-UI DO children
-			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings();
+			(this as IDependencyObjectStoreProvider).Store.UpdateResourceBindings(isThemeChangedUpdate: true);
 		}
 
 		#region AutomationPeer
