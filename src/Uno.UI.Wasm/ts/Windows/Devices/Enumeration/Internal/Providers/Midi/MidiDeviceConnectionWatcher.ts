@@ -4,17 +4,17 @@
 
 		public static startStateChanged() {
 			const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
-			midi.addEventListener("statechanged", MidiDeviceConnectionWatcher.onStateChanged);
+			midi.addEventListener("statechange", MidiDeviceConnectionWatcher.onStateChanged);
 		}
 
 		public static stopStateChanged() {
 			const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
-			midi.removeEventListener("statechanged", MidiDeviceConnectionWatcher.onStateChanged);
+			midi.removeEventListener("statechange", MidiDeviceConnectionWatcher.onStateChanged);
 		}
 
 		public static onStateChanged(event: WebMidi.MIDIConnectionEvent) {
-			if (!this.dispatchStateChanged) {
-				this.dispatchStateChanged =
+			if (!MidiDeviceConnectionWatcher.dispatchStateChanged) {
+				MidiDeviceConnectionWatcher.dispatchStateChanged =
 					(<any>Module).mono_bind_static_method(
 						"[Uno] Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher:DispatchStateChanged");
 			}
