@@ -6,7 +6,7 @@ using Windows.Foundation;
 
 namespace Windows.ApplicationModel
 {
-	public sealed partial class SuspendingDeferral
+	public sealed partial class SuspendingDeferral : ISuspendingDeferral
 	{
 		private readonly Action? _deferralDone;
 		private readonly DeferralCompletedHandler? _handler;
