@@ -3253,15 +3253,15 @@ var Uno;
                         class MidiDeviceConnectionWatcher {
                             static startStateChanged() {
                                 const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
-                                midi.addEventListener("statechanged", MidiDeviceConnectionWatcher.onStateChanged);
+                                midi.addEventListener("statechange", MidiDeviceConnectionWatcher.onStateChanged);
                             }
                             static stopStateChanged() {
                                 const midi = Uno.Devices.Midi.Internal.WasmMidiAccess.getMidi();
-                                midi.removeEventListener("statechanged", MidiDeviceConnectionWatcher.onStateChanged);
+                                midi.removeEventListener("statechange", MidiDeviceConnectionWatcher.onStateChanged);
                             }
                             static onStateChanged(event) {
-                                if (!this.dispatchStateChanged) {
-                                    this.dispatchStateChanged =
+                                if (!MidiDeviceConnectionWatcher.dispatchStateChanged) {
+                                    MidiDeviceConnectionWatcher.dispatchStateChanged =
                                         Module.mono_bind_static_method("[Uno] Uno.Devices.Enumeration.Internal.Providers.Midi.MidiDeviceConnectionWatcher:DispatchStateChanged");
                                 }
                                 const port = event.port;
