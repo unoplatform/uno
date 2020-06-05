@@ -79,7 +79,7 @@ namespace Windows.UI.Xaml
 
 		partial void OnSuspendingPartial()
 		{
-			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(0), () =>
+			var operation = new SuspendingOperation(DateTime.Now.AddSeconds(30), () =>
 			{
 				Suspended = true;
 				NSApplication.SharedApplication.KeyWindow.PerformClose(null);
