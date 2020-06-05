@@ -6,6 +6,7 @@ using Windows.UI.Xaml.Markup;
 using Uno.Extensions;
 using Uno.Logging;
 using Windows.UI.Xaml.Media;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -55,10 +56,7 @@ namespace Windows.UI.Xaml.Controls
 		{
 			InitializePartial();
 
-			LightDismissOverlayBackground = Resources["PopupLightDismissOverlayBackground"] as Brush ??
-				// This is normally a no-op - the above line should retrieve the framework-level resource. This is purely to fail the build when
-				// Resources/Styles are overhauled (and the above will no longer be valid)
-				Uno.UI.GlobalStaticResources.PopupLightDismissOverlayBackground as Brush;
+				ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "PopupLightDismissOverlayBackground", isThemeResourceExtension: true);
 
 			ApplyLightDismissOverlayMode();
 		}

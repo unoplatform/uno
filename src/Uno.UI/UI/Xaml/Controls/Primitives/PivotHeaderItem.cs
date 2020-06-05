@@ -9,5 +9,9 @@ namespace Windows.UI.Xaml.Controls.Primitives
 {
 	public partial class PivotHeaderItem : ContentControl
 	{
+		public PivotHeaderItem()
+		{
+			DefaultStyleKey = typeof(PivotHeaderItem);
+		}
 	}
 }

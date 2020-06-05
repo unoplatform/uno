@@ -7,9 +7,6 @@
 		<DefineConstants>$(DefineConstants);__WASM__;HAS_UNO</DefineConstants>
 		<NoWarn>NU1701,CS1998</NoWarn>
 		<LangVersion>7.3</LangVersion>
-		<!-- https://github.com/unoplatform/uno/issues/61 -->
-		<UnoSkipUserControlsInVisualTree>false</UnoSkipUserControlsInVisualTree>
-
 		<IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
 	<UseUnoXamlParser>true</UseUnoXamlParser>
 	</PropertyGroup>

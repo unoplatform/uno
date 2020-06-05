@@ -73,6 +73,8 @@ namespace Windows.UI.Xaml.Controls
 #endif // MFSI_DEBUG
 
 			PrepareState();
+
+			DefaultStyleKey = typeof(MenuFlyoutSubItem);
 		}
 
 		void PrepareState()

@@ -79,5 +79,11 @@ namespace Uno.UI.Controls
 		public bool CanAutorotate { get; set; } = true;
 
 		public override bool ShouldAutorotate() => CanAutorotate && base.ShouldAutorotate();
+
+		public override void TraitCollectionDidChange(UITraitCollection previousTraitCollection)
+		{
+			base.TraitCollectionDidChange(previousTraitCollection);
+			Windows.UI.Xaml.Application.Current.OnSystemThemeChanged();
+		}
 	}
 }

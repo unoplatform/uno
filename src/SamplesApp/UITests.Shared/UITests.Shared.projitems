@@ -593,6 +593,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Button_UseUWPDefaultStyles.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ComboBox\ComboBox_ItemDataContext.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -870,6 +874,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MenuFlyoutTests\MenuFlyoutItem_Click.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MenuFlyoutTests\MenuFlyout_IosNative.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -3628,6 +3636,9 @@
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentControlTestsControl\ContentControlNoTemplateNoContent.xaml.cs">
       <DependentUpon>ContentControlNoTemplateNoContent.xaml</DependentUpon>
     </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\Button\Button_UseUWPDefaultStyles.xaml.cs">
+      <DependentUpon>Button_UseUWPDefaultStyles.xaml</DependentUpon>
+    </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\ContentDialogTests\ComboBoxContentDialog.xaml.cs">
       <DependentUpon>ComboBoxContentDialog.xaml</DependentUpon>
     </Compile>
@@ -3745,6 +3756,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MenuFlyoutTests\MenuFlyoutItem_Click.xaml.cs">
       <DependentUpon>MenuFlyoutItem_Click.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MenuFlyoutTests\MenuFlyout_IosNative.xaml.cs">
+      <DependentUpon>MenuFlyout_IosNative.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Xaml_Controls\MenuFlyoutTests\UIElement_ContextFlyout.xaml.cs">
       <DependentUpon>UIElement_ContextFlyout.xaml</DependentUpon>
@@ -5685,6 +5699,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)Assets\0_leading_number_asset.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\AcrylicBrush.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\Animations.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\AppIcon.png" />
@@ -5693,6 +5708,7 @@
     <Content Include="$(MSBuildThisFileDirectory)Assets\Button.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\CalendarDatePicker.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\CalendarView.png" />
+    <Content Include="$(MSBuildThisFileDirectory)Assets\asset-with-dashes.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\cart.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\check.png" />
     <Content Include="$(MSBuildThisFileDirectory)Assets\CheckBox.png" />

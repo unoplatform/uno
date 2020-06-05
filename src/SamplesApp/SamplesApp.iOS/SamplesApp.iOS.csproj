@@ -13,8 +13,6 @@
     </NuGetPackageImportStamp>
     <IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
     <ResourcesDirectory>..\SamplesApp.Shared\Strings</ResourcesDirectory>
-    <!-- https://github.com/unoplatform/uno/issues/61 -->
-    <UnoSkipUserControlsInVisualTree>false</UnoSkipUserControlsInVisualTree>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
     <DebugSymbols>true</DebugSymbols>

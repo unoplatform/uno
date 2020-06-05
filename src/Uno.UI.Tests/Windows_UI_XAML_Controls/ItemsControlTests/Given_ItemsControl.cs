@@ -182,7 +182,7 @@ namespace Uno.UI.Tests.ItemsControlTests
 			Assert.AreEqual(7, count);
 
 			source.Remove(1);
-			Assert.AreEqual(13, count);
+			Assert.AreEqual(7, count);
 		}
 	}
 

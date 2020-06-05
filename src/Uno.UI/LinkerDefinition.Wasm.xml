@@ -13,6 +13,12 @@
 	<type fullname="Windows.UI.Xaml.Input.FocusManager">
 	  <method name="ReceiveFocusNative" />
 	</type>
+	<type fullname="Windows.UI.Xaml.Application">
+	  <method name="DispatchSuspending" />
+	</type>
+    <type fullname="Windows.UI.Xaml.Application">
+      <method name="DispatchSystemThemeChange" />
+    </type>
   </assembly>
   
   <assembly fullname="Uno">

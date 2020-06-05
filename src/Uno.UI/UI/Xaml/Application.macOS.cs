@@ -32,12 +32,12 @@ namespace Windows.UI.Xaml
 		{
 			Current = this;
 			SetCurrentLanguage();
-			Windows.UI.Xaml.GenericStyles.Initialize();
 			ResourceHelper.ResourcesService = new ResourcesService(new[] { NSBundle.MainBundle });
 		}
 
 		public Application(IntPtr handle) : base(handle)
 		{
+
 		}
 
 		static partial void StartPartial(ApplicationInitializationCallback callback)
@@ -151,6 +151,14 @@ namespace Windows.UI.Xaml
 			{
 				this.Log().Error($"Failed to set culture for language: {language}", ex);
 			}
+		}
+
+		partial void ObserveSystemThemeChanges()
+		{			
+			NSUserDefaults.StandardUserDefaults.AddObserver(
+				"AppleInterfaceStyle",
+				NSKeyValueObservingOptions.New,
+				_ => Application.Current.OnSystemThemeChanged());
 		}
 	}
 }

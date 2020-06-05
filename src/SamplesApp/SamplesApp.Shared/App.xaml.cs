@@ -45,6 +45,7 @@ namespace SamplesApp
 		public App()
 		{
 			ConfigureFilters(LogExtensionPoint.AmbientLoggerFactory);
+			ConfigureFeatureFlags();
 
 			AssertIssue1790();
 
@@ -196,7 +197,9 @@ namespace SamplesApp
 		private void OnSuspending(object sender, SuspendingEventArgs e)
 		{
 			var deferral = e.SuspendingOperation.GetDeferral();
-			//TODO: Save application state and stop any background activity
+
+			Console.WriteLine($"OnSuspending (Deadline:{e.SuspendingOperation.Deadline})");
+
 			deferral.Complete();
 		}
 
@@ -261,6 +264,13 @@ namespace SamplesApp
 
 #else
 				.AddConsole(LogLevel.Warning);
+#endif
+		}
+
+		static void ConfigureFeatureFlags()
+		{
+#if !NETFX_CORE
+			Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStylesOverride[typeof(CommandBar)] = false;
 #endif
 		}
 

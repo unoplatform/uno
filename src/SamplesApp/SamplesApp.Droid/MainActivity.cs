@@ -10,7 +10,7 @@ namespace SamplesApp.Droid
 {
 	[Activity(
 			MainLauncher = true,
-			ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize,
+			ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode,
 			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
 		)]
 	[IntentFilter(

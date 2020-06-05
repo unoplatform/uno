@@ -42,6 +42,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Helper\ContentNavigationBehavior.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Helper\DelegateCommand.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Helper\DelegateCommand.T.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Helper\GridLengthHelper2.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Helper\PropertyMetadataHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UITests\Views\Helper\SampleHelper.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Controls\UnitTest\UnitTestsControl.cs" />

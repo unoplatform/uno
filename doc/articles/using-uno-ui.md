@@ -204,7 +204,11 @@ For many controls in Uno, two prepackaged styles are provided:
 * NativeDefault[Control] which is customized to match the UI guidelines of the target platform.
 * XamlDefault[Control] which is the default style of controls on Windows.
 
-On WASM, the NativeDefault[Control] styles are currently only aliases to the XamlDefault[Control], for compatibility with other platforms.
+An application can set native styles as the default for supported controls by setting the static flag `Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStyles = false;` somewhere in app code (eg, the `App.xaml.cs` constructor). It's also possible to configure only certain controls to default to the native style, in the following manner: `Uno.UI.FeatureConfiguration.Style.UseUWPDefaultStylesOverride[typeof(Frame)] = false;`
+
+Third-party libraries can define native variants of default styles for custom controls, using the `xamarin:IsNativeStyle="True"` tag in Xaml. These will be used if the consuming application is configured to use native styles.
+
+On WASM, the NativeDefault[Control] styles are currently only aliases to the XamlDefault[Control], for code compatibility with other platforms.
 
 ## Localization
 
