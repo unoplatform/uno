@@ -105,7 +105,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-#if !__ANDROID__
+#if !__ANDROID__ && !__MACOS__
 		[NotImplemented]
 		public void Exit()
 		{

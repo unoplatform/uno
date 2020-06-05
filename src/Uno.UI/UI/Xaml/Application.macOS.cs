@@ -177,5 +177,10 @@ namespace Windows.UI.Xaml
 				NSKeyValueObservingOptions.New,
 				_ => Application.Current.OnSystemThemeChanged());
 		}
+
+		public void Exit()
+		{
+			NSApplication.SharedApplication.Terminate(null);
+		}
 	}
 }
