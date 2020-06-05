@@ -182,7 +182,7 @@ embed.uno-frameworkelement.uno-unarranged {
     overflow-y: scroll;
   }
 
-.uno-splash {
+.uno-splash .logo {
   position: fixed;
   top: 50%;
   left: 50%;
