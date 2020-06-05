@@ -1078,6 +1078,12 @@
 				  fullName="System.Object Windows.UI.Xaml.ResourceDictionary.Lookup(System.Object key)"
 				  reason="Not a public WinUI method (in the .NET projection)"/>
 			<!-- ^^ Styles overhaul -->
+			  <Member
+				  fullName="System.Void Windows.UI.Core.Preview.SystemNavigationCloseRequestedPreviewEventArgs..ctor()"
+				  reason="This ctor does not exist in UWP"/>
+			  <Member
+				  fullName="System.Void Windows.UI.Core.Preview.SystemNavigationManagerPreview..ctor()"
+				  reason="This ctor does not exist in UWP"/>
 	  </Methods>
 	  <Properties>
 
