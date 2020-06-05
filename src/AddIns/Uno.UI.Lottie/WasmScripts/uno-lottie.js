@@ -174,7 +174,7 @@ var Uno;
                     action(Lottie._player);
                 }
                 else {
-                    require(["lottie"], (p) => {
+                    require([`${config.uno_app_base}/lottie`], (p) => {
                         if (!Lottie._player) {
                             Lottie._player = p;
                         }

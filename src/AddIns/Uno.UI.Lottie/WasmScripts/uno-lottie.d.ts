@@ -1,4 +1,5 @@
 declare const require: any;
+declare const config: any;
 declare namespace Uno.UI {
     import AnimationData = Lottie.AnimationData;
     interface LottieAnimationProperties {
