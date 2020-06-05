@@ -4,10 +4,10 @@ namespace Windows.UI.Xaml.Controls
 {
 	public partial class ContentDialogClosingDeferral
 	{
-		private DeferralCompletedHandler _handler;
+		private readonly DeferralCompletedHandler _handler;
 
 		/// <summary>
-		/// This constructor does not exist in UWP
+		/// This constructor does not exist in UWP, can be removed.
 		/// </summary>
 		public ContentDialogClosingDeferral() { }
 
