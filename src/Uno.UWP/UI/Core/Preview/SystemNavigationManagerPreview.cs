@@ -18,7 +18,7 @@ namespace Windows.UI.Core.Preview
 
 		public event EventHandler<SystemNavigationCloseRequestedPreviewEventArgs> CloseRequested;
 
-		internal bool OnCloseRequested()
+		internal void OnCloseRequested()
 		{			
 			var eventArgs = new SystemNavigationCloseRequestedPreviewEventArgs(OnCloseRequestedDeferralComplete);
 			CloseRequested?.Invoke(null, eventArgs);
@@ -26,11 +26,8 @@ namespace Windows.UI.Core.Preview
 
 			if (!eventArgs.IsDeferred)
 			{
-				return eventArgs.Handled;
+				HasConfirmedClose = !eventArgs.Handled;
 			}
-
-			// Request has been handled, logic will continue via Completed handler
-			return true;
 		}
 
 		private void OnCloseRequestedDeferralComplete(SystemNavigationCloseRequestedPreviewEventArgs args)

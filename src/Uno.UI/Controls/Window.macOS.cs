@@ -133,9 +133,10 @@ namespace Uno.UI.Controls
 				var manager = SystemNavigationManagerPreview.GetForCurrentView();
 				if (!manager.HasConfirmedClose)
 				{
-					var isHandled = manager.OnCloseRequested();
-					if (isHandled)
+					manager.OnCloseRequested();
+					if (!manager.HasConfirmedClose)
 					{
+						// Close was either deferred or canceled synchronously.
 						return false;
 					}
 				}
