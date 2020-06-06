@@ -8,12 +8,22 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}"
     mc:Ignorable="d">
 
-    <StackPanel Padding="12" Spacing="8">
-        <TextBlock Text="CoreWindow activation state" />
-        <TextBlock FontSize="30" Text="{x:Bind Model.CoreWindowActivationState, Mode=OneWay}" />
-        <TextBlock Text="CoreWindow activation mode" />
-        <TextBlock FontSize="30" Text="{x:Bind Model.CoreWindowActivationMode, Mode=OneWay}" />
-        <TextBlock Text="Last change" />
-        <TextBlock Text="{x:Bind Model.ChangeTime, Mode=OneWay}" />
-    </StackPanel>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="Auto" />
+			<RowDefinition Height="*" />
+		</Grid.RowDefinitions>
+		<StackPanel Padding="12" Spacing="8">
+			<TextBlock Text="CoreWindow activation state" />
+			<TextBlock FontSize="30" Text="{x:Bind Model.CoreWindowActivationState, Mode=OneWay}" />
+			<TextBlock Text="CoreWindow activation mode" />
+			<TextBlock FontSize="30" Text="{x:Bind Model.CoreWindowActivationMode, Mode=OneWay}" />
+			<TextBlock Text="Window Visibility" />
+			<TextBlock Text="{x:Bind Model.WindowVisibility, Mode=OneWay}" />
+			<TextBlock Text="Last change" />
+			<TextBlock Text="{x:Bind Model.ChangeTime, Mode=OneWay}" />
+			<Button Command="{x:Bind Model.ClearHistoryCommand}"  Content="Clear event history" />
+		</StackPanel>
+		<ListView Grid.Row="1" ItemsSource="{x:Bind Model.History, Mode=OneWay}" />
+	</Grid>
 </Page>

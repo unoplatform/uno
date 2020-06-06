@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.InteropServices.WindowsRuntime;
+using System.Windows.Input;
 using Uno.Disposables;
 using Uno.UI.Samples.Controls;
 using Uno.UI.Samples.UITests.Helpers;
@@ -17,17 +19,18 @@ using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Input;
 using Windows.UI.Xaml.Media;
 using Windows.UI.Xaml.Navigation;
+using XamlWindow = Windows.UI.Xaml.Window;
 
 namespace UITests.Windows_UI_Core
 {
 	[SampleControlInfo("Windows.UI.Core", viewModelType: typeof(WindowActivationViewModel))]
-    public sealed partial class WindowActivationTests : Page
-    {
-        public WindowActivationTests()
-        {
-            this.InitializeComponent();
-			this.DataContextChanged += WindowActivationTests_DataContextChanged;
-        }
+	public sealed partial class WindowActivationTests : Page
+	{
+		public WindowActivationTests()
+		{
+			InitializeComponent();
+			DataContextChanged += WindowActivationTests_DataContextChanged;
+		}
 
 		public WindowActivationViewModel Model { get; private set; }
 
@@ -40,26 +43,29 @@ namespace UITests.Windows_UI_Core
 	public class WindowActivationViewModel : ViewModelBase
 	{
 		private string _changeTime;
-		private CoreWindowActivationState _coreWindowActivationState;
-		private CoreWindowActivationMode _coreWindowActivationMode;
+		private CoreWindowActivationState? _coreWindowActivationState;
+		private CoreWindowActivationMode? _coreWindowActivationMode = Window.Current.CoreWindow.ActivationMode;
+		private string _windowVisibility = Window.Current.Visible ? "Visible" : "Hidden";
 
 		public WindowActivationViewModel(CoreDispatcher dispatcher) : base(dispatcher)
-		{			
-			CoreWindow.GetForCurrentThread().Activated += WindowActivationViewModel_Activated;
+		{
+			CoreWindow.GetForCurrentThread().Activated += CoreWindowActivated;
+			XamlWindow.Current.Activated += WindowActivated;
+			XamlWindow.Current.VisibilityChanged += WindowVisibilityChanged;
+
 			Disposables.Add(() =>
 			{
-				CoreWindow.GetForCurrentThread().Activated -= WindowActivationViewModel_Activated;
+				CoreWindow.GetForCurrentThread().Activated -= CoreWindowActivated;
+				XamlWindow.Current.Activated -= WindowActivated;
+				XamlWindow.Current.VisibilityChanged -= WindowVisibilityChanged;
 			});
 		}
 
-		private void WindowActivationViewModel_Activated(CoreWindow sender, WindowActivatedEventArgs args)
-		{
-			CoreWindowActivationState = args.WindowActivationState;
-			CoreWindowActivationMode = sender.ActivationMode;
-			ChangeTime = DateTime.Now.ToLongTimeString();
-		}
+		public ObservableCollection<string> History { get; } = new ObservableCollection<string>();
 
-		public CoreWindowActivationState CoreWindowActivationState
+		public ICommand ClearHistoryCommand => GetOrCreateCommand(() => History.Clear());
+
+		public CoreWindowActivationState? CoreWindowActivationState
 		{
 			get => _coreWindowActivationState;
 			set
@@ -69,12 +75,22 @@ namespace UITests.Windows_UI_Core
 			}
 		}
 
-		public CoreWindowActivationMode CoreWindowActivationMode
+		public CoreWindowActivationMode? CoreWindowActivationMode
 		{
 			get => _coreWindowActivationMode;
 			set
 			{
 				_coreWindowActivationMode = value;
+				RaisePropertyChanged();
+			}
+		}
+
+		public string WindowVisibility
+		{
+			get => _windowVisibility;
+			set
+			{
+				_windowVisibility = value;
 				RaisePropertyChanged();
 			}
 		}
@@ -87,6 +103,36 @@ namespace UITests.Windows_UI_Core
 				_changeTime = value;
 				RaisePropertyChanged();
 			}
+		}
+
+		private void CoreWindowActivated(CoreWindow sender, WindowActivatedEventArgs args)
+		{
+			CoreWindowActivationState = args.WindowActivationState;
+			CoreWindowActivationMode = sender.ActivationMode;
+			ChangeTime = DateTime.Now.ToLongTimeString();
+			AddHistory("CoreWindow.Activated");
+		}
+
+		private void WindowActivated(object sender, WindowActivatedEventArgs e)
+		{
+			CoreWindowActivationState = e.WindowActivationState;
+			ChangeTime = DateTime.Now.ToLongTimeString();
+			AddHistory("Window.Activated");
+		}
+
+		private void WindowVisibilityChanged(object sender, VisibilityChangedEventArgs e)
+		{
+			WindowVisibility = XamlWindow.Current.Visible ? "Visible" : "Hidden";
+			ChangeTime = DateTime.Now.ToLongTimeString();
+			AddHistory("Window.VisibilityChanged");
+		}
+
+		private void AddHistory(string eventName)
+		{
+			var historyItem =
+				$"{DateTime.Now.ToShortTimeString()} | {eventName} | State: {CoreWindowActivationState} " +
+				$"| Mode: {CoreWindowActivationMode} | Visibility: {WindowVisibility}";
+			History.Insert(0, historyItem);
 		}
 	}
 }
