@@ -673,21 +673,18 @@ namespace UITests.Shared.Windows_Devices.Midi
 		}
 
 
-		#region Jingle Bells
-		private byte ENote = 64;
-		private byte DNote = 62;
-		private byte CNote = 60;
-		private byte FNote = 65;
-		private byte GNote = 67;
+#region Jingle Bells
+		private const byte ENote = 64;
+		private const byte DNote = 62;
+		private const byte CNote = 60;
+		private const byte FNote = 65;
+		private const byte GNote = 67;
 		private const int Skip = 400;
 
 		private async void JingleBells_Click(object sender, RoutedEventArgs args)
 		{
 			if (_currentMidiOutputDevice != null)
 			{
-				var midiOutputQueryString = MidiOutPort.GetDeviceSelector();
-				var midiOutputDevices = await DeviceInformation.FindAllAsync(midiOutputQueryString);
-				
 				await PlayJingleBellsAsync();
 			}
 		}
@@ -753,6 +750,6 @@ namespace UITests.Shared.Windows_Devices.Midi
 			await Task.Delay(duration);
 			_currentMidiOutputDevice?.SendMessage(new MidiNoteOffMessage(0, noteNumber, velocity));
 		}
-		#endregion
+#endregion
 	}
 }
