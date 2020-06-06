@@ -6,6 +6,7 @@ using Windows.Foundation;
 using Uno.Foundation.Logging;
 using Uno.Extensions;
 using Uno.Devices.Sensors.Helpers;
+using Uno.Helpers;
 
 namespace Windows.Devices.Sensors
 {
@@ -20,13 +21,17 @@ namespace Windows.Devices.Sensors
 		private static HingeAngleSensor _instance;
 		private static INativeHingeAngleSensor _hingeAngleSensor;
 
-		private TypedEventHandler<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs> _readingChanged;
+		private StartStopEventWrapper<TypedEventHandler<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs>> _readingChanged;
 
 		/// <summary>
 		/// Hides the public parameterless constructor
 		/// </summary>
 		private HingeAngleSensor()
 		{
+			_readingChanged = new StartStopEventWrapper<TypedEventHandler<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs>>(
+				() => StartReading(),
+				() => StopReading(),
+				_syncLock);
 		}
 
 		/// <summary>
@@ -61,29 +66,8 @@ namespace Windows.Devices.Sensors
 		/// </summary>
 		public event TypedEventHandler<HingeAngleSensor, HingeAngleSensorReadingChangedEventArgs> ReadingChanged
 		{
-			add
-			{
-				lock (_syncLock)
-				{
-					var isFirstSubscriber = _readingChanged == null;
-					_readingChanged += value;
-					if (isFirstSubscriber)
-					{
-						StartReading();
-					}
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_readingChanged -= value;
-					if (_readingChanged == null)
-					{
-						StopReading();
-					}
-				}
-			}
+			add => _readingChanged.AddHandler(value);
+			remove => _readingChanged.RemoveHandler(value);
 		}
 
 		private static void TryInitializeHingeAngleSensor(HingeAngleSensor owner)
@@ -108,6 +92,6 @@ namespace Windows.Devices.Sensors
 			_hingeAngleSensor.ReadingChanged -= OnNativeReadingChanged;
 
 		private void OnNativeReadingChanged(object sender, NativeHingeAngleReading e) =>
-			_readingChanged?.Invoke(this, new HingeAngleSensorReadingChangedEventArgs(new HingeAngleReading(e.AngleInDegrees, e.Timestamp)));
+			_readingChanged.Event?.Invoke(this, new HingeAngleSensorReadingChangedEventArgs(new HingeAngleReading(e.AngleInDegrees, e.Timestamp)));
 	}
 }

@@ -1,9 +1,5 @@
 ﻿#if __IOS__ || __ANDROID__ || __WASM__
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using Uno.Helpers;
 using Windows.Foundation;
 
 namespace Windows.Devices.Sensors
@@ -18,7 +14,15 @@ namespace Windows.Devices.Sensors
 		private static Magnetometer _instance;
 		private static bool _initializationAttempted;
 
-		private TypedEventHandler<Magnetometer, MagnetometerReadingChangedEventArgs> _readingChanged;
+		private StartStopEventWrapper<TypedEventHandler<Magnetometer, MagnetometerReadingChangedEventArgs>> _readingChangedWrapper;
+
+		private Magnetometer()
+		{
+			_readingChangedWrapper = new StartStopEventWrapper<TypedEventHandler<Magnetometer, MagnetometerReadingChangedEventArgs>>(
+				() => StartReading(),
+				() => StopReading(),
+				_syncLock);
+		}
 
 		/// <summary>
 		/// Hides the public parameterless constructor
@@ -53,34 +57,13 @@ namespace Windows.Devices.Sensors
 		/// </summary>
 		public event TypedEventHandler<Magnetometer, MagnetometerReadingChangedEventArgs> ReadingChanged
 		{
-			add
-			{
-				lock (_syncLock)
-				{
-					var isFirstSubscriber = _readingChanged == null;
-					_readingChanged += value;
-					if (isFirstSubscriber)
-					{
-						StartReading();
-					}
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_readingChanged -= value;
-					if (_readingChanged == null)
-					{
-						StopReading();
-					}
-				}
-			}
+			add => _readingChangedWrapper.AddHandler(value);
+			remove => _readingChangedWrapper.RemoveHandler(value);
 		}
 
 		private void OnReadingChanged(MagnetometerReading reading)
 		{
-			_readingChanged?.Invoke(this, new MagnetometerReadingChangedEventArgs(reading));
+			_readingChangedWrapper.Event?.Invoke(this, new MagnetometerReadingChangedEventArgs(reading));
 		}
 	}
 }
