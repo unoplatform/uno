@@ -3442,13 +3442,25 @@ var Windows;
         (function (Xaml) {
             class Application {
                 static getDefaultSystemTheme() {
-                    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-                        return Xaml.ApplicationTheme.Dark;
-                    }
-                    if (window.matchMedia("(prefers-color-scheme: light)").matches) {
-                        return Xaml.ApplicationTheme.Light;
+                    if (window.matchMedia) {
+                        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                            return Xaml.ApplicationTheme.Dark;
+                        }
+                        if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+                            return Xaml.ApplicationTheme.Light;
+                        }
                     }
                     return null;
+                }
+                static observeSystemTheme() {
+                    if (!this.dispatchThemeChange) {
+                        this.dispatchThemeChange = Module.mono_bind_static_method("[Uno.UI] Windows.UI.Xaml.Application:DispatchSystemThemeChange");
+                    }
+                    if (window.matchMedia) {
+                        window.matchMedia('(prefers-color-scheme: dark)').addEventListener("change", () => {
+                            Application.dispatchThemeChange();
+                        });
+                    }
                 }
             }
             Xaml.Application = Application;
