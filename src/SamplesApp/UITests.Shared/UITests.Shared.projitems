@@ -497,6 +497,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Core\WindowActivationTests.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="$(MSBuildThisFileDirectory)Windows_UI_Input\CaptureTests\OverlappedControls.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
@@ -4473,6 +4477,9 @@
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Core\CloseRequestedTests.xaml.cs">
       <DependentUpon>CloseRequestedTests.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Core\WindowActivationTests.xaml.cs">
+      <DependentUpon>WindowActivationTests.xaml</DependentUpon>
     </Compile>
     <Compile Include="$(MSBuildThisFileDirectory)Windows_UI_Input\GestureRecognizerTests\DoubleTappedTests.xaml.cs">
       <DependentUpon>DoubleTappedTests.xaml</DependentUpon>
