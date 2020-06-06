@@ -21,8 +21,7 @@
 		}
 
 		public static removePort(managedId: string) {
-			const instance = MidiInPort.instanceMap[managedId];
-			instance.inputPort.removeEventListener("onmidimessage", instance.messageReceived);
+			MidiInPort.stopMessageListener(managedId);
 			delete MidiInPort.instanceMap[managedId];
 		}
 
@@ -33,20 +32,20 @@
 			}
 
 			const instance = MidiInPort.instanceMap[managedId];
-			instance.inputPort.addEventListener("onmidimessage", instance.messageReceived);
+			instance.inputPort.addEventListener("midimessage", instance.messageReceived);
 		}
 
 		public static stopMessageListener(managedId: string) {
 			const instance = MidiInPort.instanceMap[managedId];
-			instance.inputPort.removeEventListener("onmidimessage", instance.messageReceived);
+			instance.inputPort.removeEventListener("midimessage", instance.messageReceived);
 		}
 
-		private messageReceived(event: WebMidi.MIDIMessageEvent) {
+		private messageReceived = (event: WebMidi.MIDIMessageEvent) => {
 			var serializedMessage = event.data[0].toString();
 			for (var i = 1; i < event.data.length; i++) {
 				serializedMessage += ':' + event.data[i];
 			}
-			MidiInPort.dispatchMessage(this.managedId, serializedMessage, event.receivedTime);
+			MidiInPort.dispatchMessage(this.managedId, serializedMessage, event.timeStamp);
 		}
 	}
 }

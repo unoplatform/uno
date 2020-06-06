@@ -3130,6 +3130,13 @@ var Windows;
         (function (Midi) {
             class MidiInPort {
                 constructor(managedId, inputPort) {
+                    this.messageReceived = (event) => {
+                        var serializedMessage = event.data[0].toString();
+                        for (var i = 1; i < event.data.length; i++) {
+                            serializedMessage += ':' + event.data[i];
+                        }
+                        MidiInPort.dispatchMessage(this.managedId, serializedMessage, event.timeStamp);
+                    };
                     this.managedId = managedId;
                     this.inputPort = inputPort;
                 }
@@ -3140,8 +3147,7 @@ var Windows;
                     MidiInPort.instanceMap[managedId] = new MidiInPort(managedId, input);
                 }
                 static removePort(managedId) {
-                    const instance = MidiInPort.instanceMap[managedId];
-                    instance.inputPort.removeEventListener("onmidimessage", instance.messageReceived);
+                    MidiInPort.stopMessageListener(managedId);
                     delete MidiInPort.instanceMap[managedId];
                 }
                 static startMessageListener(managedId) {
@@ -3149,18 +3155,11 @@ var Windows;
                         MidiInPort.dispatchMessage = Module.mono_bind_static_method("[Uno] Windows.Devices.Midi.MidiInPort:DispatchMessage");
                     }
                     const instance = MidiInPort.instanceMap[managedId];
-                    instance.inputPort.addEventListener("onmidimessage", instance.messageReceived);
+                    instance.inputPort.addEventListener("midimessage", instance.messageReceived);
                 }
                 static stopMessageListener(managedId) {
                     const instance = MidiInPort.instanceMap[managedId];
-                    instance.inputPort.removeEventListener("onmidimessage", instance.messageReceived);
-                }
-                messageReceived(event) {
-                    var serializedMessage = event.data[0].toString();
-                    for (var i = 1; i < event.data.length; i++) {
-                        serializedMessage += ':' + event.data[i];
-                    }
-                    MidiInPort.dispatchMessage(this.managedId, serializedMessage, event.receivedTime);
+                    instance.inputPort.removeEventListener("midimessage", instance.messageReceived);
                 }
             }
             MidiInPort.instanceMap = {};
@@ -3506,13 +3505,25 @@ var Windows;
         (function (Xaml) {
             class Application {
                 static getDefaultSystemTheme() {
-                    if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
-                        return Xaml.ApplicationTheme.Dark;
-                    }
-                    if (window.matchMedia("(prefers-color-scheme: light)").matches) {
-                        return Xaml.ApplicationTheme.Light;
+                    if (window.matchMedia) {
+                        if (window.matchMedia("(prefers-color-scheme: dark)").matches) {
+                            return Xaml.ApplicationTheme.Dark;
+                        }
+                        if (window.matchMedia("(prefers-color-scheme: light)").matches) {
+                            return Xaml.ApplicationTheme.Light;
+                        }
                     }
                     return null;
+                }
+                static observeSystemTheme() {
+                    if (!this.dispatchThemeChange) {
+                        this.dispatchThemeChange = Module.mono_bind_static_method("[Uno] Windows.UI.Xaml.Application:DispatchSystemThemeChange");
+                    }
+                    if (window.matchMedia) {
+                        window.matchMedia('(prefers-color-scheme: dark)').addEventListener("change", () => {
+                            Application.dispatchThemeChange();
+                        });
+                    }
                 }
             }
             Xaml.Application = Application;

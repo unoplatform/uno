@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.Linq;
 using System.Text;
@@ -44,6 +45,7 @@ namespace Windows.Devices.Midi
 		[Preserve]
 		public static int DispatchMessage(string managedId, string serializedMessage, double timestamp)
 		{
+			Debug.WriteLine($"Message arrived {managedId}, {serializedMessage}, {timestamp}");
 			if (serializedMessage is null)
 			{
 				throw new ArgumentNullException(nameof(serializedMessage));
@@ -59,9 +61,9 @@ namespace Windows.Devices.Midi
 			var splitMessage = serializedMessage.Split(':');
 
 			var message = new byte[splitMessage.Length];
-			for (int i = 1; i < splitMessage.Length; i++)
+			for (int i = 0; i < splitMessage.Length; i++)
 			{
-				message[i - 1] = byte.Parse(splitMessage[i], CultureInfo.InvariantCulture);
+				message[i] = byte.Parse(splitMessage[i], CultureInfo.InvariantCulture);
 			}
 
 			port.OnMessageReceived(message, 0, message.Length, managedTimestamp);
