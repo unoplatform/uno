@@ -12,15 +12,10 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Gyrometer
 	{
-		private readonly Sensor _sensor;
+		private Sensor _sensor;
 		private uint _reportInterval = SensorHelpers.UiReportingInterval;
 
 		private GyrometerListener _listener;
-
-		private Gyrometer(Sensor barometerSensor)
-		{
-			_sensor = barometerSensor;
-		}
 
 		public uint ReportInterval
 		{
@@ -31,7 +26,7 @@ namespace Windows.Devices.Sensors
 				{
 					_reportInterval = value;
 
-					if (_readingChanged != null)
+					if (_readingChangedWrapper.Event != null)
 					{
 						//restart reading to apply interval
 						StopReading();
@@ -47,7 +42,9 @@ namespace Windows.Devices.Sensors
 			var sensor = sensorManager.GetDefaultSensor(Android.Hardware.SensorType.Gyroscope);
 			if (sensor != null)
 			{
-				return new Gyrometer(sensor);
+				var gyrometer = new Gyrometer();
+				gyrometer._sensor = sensor;
+				return gyrometer;
 			}
 			return null;
 		}

@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.Helpers;
 
 namespace Windows.System.Power
 {
@@ -14,10 +15,34 @@ namespace Windows.System.Power
 		private static EnergySaverStatus? _lastEnergySaverStatus;
 		private static BatteryStatus? _lastBatteryStatus;
 
-		private static EventHandler<object> _powerSupplyStatusChanged;
-		private static EventHandler<object> _energySaverStatusChanged;
-		private static EventHandler<object> _remainingChargePercentChanged;
-		private static EventHandler<object> _batteryStatusChanged;
+		private static StartStopEventWrapper<EventHandler<object>> _powerSupplyStatusChangedWrapper;
+		private static StartStopEventWrapper<EventHandler<object>> _energySaverStatusChangedWrapper;
+		private static StartStopEventWrapper<EventHandler<object>> _remainingChargePercentChangedWrapper;
+		private static StartStopEventWrapper<EventHandler<object>> _batteryStatusChangedWrapper;
+
+		static PowerManager()
+		{
+			_powerSupplyStatusChangedWrapper = new StartStopEventWrapper<EventHandler<object>>(
+				() => StartPowerSupplyStatusMonitoring(),
+				() => StopPowerSupplyStatusMonitoring(),
+				_syncLock);
+			_energySaverStatusChangedWrapper = new StartStopEventWrapper<EventHandler<object>>(
+				() => StartEnergySaverStatusMonitoring(),
+				() => StopEnergySaverStatusMonitoring(),
+				_syncLock);
+			_remainingChargePercentChangedWrapper = new StartStopEventWrapper<EventHandler<object>>(
+				() => StartRemainingChargePercentMonitoring(),
+				() => StopRemainingChargePercentMonitoring(),
+				_syncLock);
+			_batteryStatusChangedWrapper = new StartStopEventWrapper<EventHandler<object>>(
+				() => StartBatteryStatusMonitoring(),
+				() => StopBatteryStatusMonitoring(),
+				_syncLock);
+
+			InitializePlatform();
+		}
+
+		static partial void InitializePlatform();
 
 		public static BatteryStatus BatteryStatus => GetBatteryStatus();
 
@@ -29,109 +54,26 @@ namespace Windows.System.Power
 
 		public static event EventHandler<object> PowerSupplyStatusChanged
 		{
-			add
-			{
-				lock (_syncLock)
-				{
-					if (_powerSupplyStatusChanged == null)
-					{
-						StartPowerSupplyStatusMonitoring();
-					}
-					_powerSupplyStatusChanged += value;
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_powerSupplyStatusChanged -= value;
-					if (_powerSupplyStatusChanged == null)
-					{
-						EndPowerSupplyStatusMonitoring();
-					}
-				}
-			}
+			add => _powerSupplyStatusChangedWrapper.AddHandler(value);
+			remove => _powerSupplyStatusChangedWrapper.RemoveHandler(value);
 		}
 
 		public static event EventHandler<object> EnergySaverStatusChanged
 		{
-			add
-			{
-				lock (_syncLock)
-				{
-					if (_energySaverStatusChanged == null)
-					{
-						StartEnergySaverStatusMonitoring();
-					}
-
-					_energySaverStatusChanged += value;
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_energySaverStatusChanged -= value;
-					if (_energySaverStatusChanged == null)
-					{
-						EndEnergySaverStatusMonitoring();
-					}
-				}
-			}
+			add => _energySaverStatusChangedWrapper.AddHandler(value);
+			remove => _energySaverStatusChangedWrapper.RemoveHandler(value);
 		}
 
 		public static event EventHandler<object> RemainingChargePercentChanged
 		{
-			add
-			{
-				lock (_syncLock)
-				{
-					if (_remainingChargePercentChanged == null)
-					{
-						StartRemainingChargePercentMonitoring();
-					}
-
-					_remainingChargePercentChanged += value;
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_remainingChargePercentChanged -= value;
-					if (_remainingChargePercentChanged == null)
-					{
-						EndRemainingChargePercentMonitoring();
-					}
-				}
-			}
+			add => _remainingChargePercentChangedWrapper.AddHandler(value);
+			remove => _remainingChargePercentChangedWrapper.RemoveHandler(value);
 		}
 
 		public static event EventHandler<object> BatteryStatusChanged
 		{
-			add
-			{
-				lock (_syncLock)
-				{
-					if (_batteryStatusChanged == null)
-					{
-						StartBatteryStatusMonitoring();
-					}
-
-					_batteryStatusChanged += value;
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_batteryStatusChanged -= value;
-					if (_batteryStatusChanged == null)
-					{
-						EndBatteryStatusMonitoring();
-					}
-				}
-			}
+			add => _batteryStatusChangedWrapper.AddHandler(value);
+			remove => _batteryStatusChangedWrapper.RemoveHandler(value);
 		}
 
 		internal static void RaiseRemainingChargePercentChanged()
@@ -140,7 +82,7 @@ namespace Windows.System.Power
 			if (_lastRemainingChargePercent != currentValue)
 			{
 				_lastRemainingChargePercent = currentValue;
-				_remainingChargePercentChanged?.Invoke(null, null);
+				_remainingChargePercentChangedWrapper.Event?.Invoke(null, null);
 			}
 		}
 
@@ -150,7 +92,7 @@ namespace Windows.System.Power
 			if (_lastBatteryStatus != currentValue)
 			{
 				_lastBatteryStatus = currentValue;
-				_batteryStatusChanged?.Invoke(null, null);
+				_batteryStatusChangedWrapper.Event?.Invoke(null, null);
 			}
 		}
 
@@ -160,7 +102,7 @@ namespace Windows.System.Power
 			if (_lastPowerSupplyStatus != currentValue)
 			{
 				_lastPowerSupplyStatus = currentValue;
-				_powerSupplyStatusChanged?.Invoke(null, null);
+				_powerSupplyStatusChangedWrapper.Event?.Invoke(null, null);
 			}
 		}
 
@@ -170,7 +112,7 @@ namespace Windows.System.Power
 			if (_lastEnergySaverStatus != currentValue)
 			{
 				_lastEnergySaverStatus = currentValue;
-				_energySaverStatusChanged?.Invoke(null, null);
+				_energySaverStatusChangedWrapper.Event?.Invoke(null, null);
 			}
 		}
 	}

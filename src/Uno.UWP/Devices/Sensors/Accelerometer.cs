@@ -2,6 +2,8 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using Uno.Helpers;
+using Windows.Foundation;
 
 namespace Windows.Devices.Sensors
 {
@@ -12,8 +14,24 @@ namespace Windows.Devices.Sensors
 		private static Accelerometer _instance;
 		private static bool _initializationAttempted;
 
-		private Foundation.TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs> _readingChanged;
-		private Foundation.TypedEventHandler<Accelerometer, AccelerometerShakenEventArgs> _shaken;
+		private StartStopEventWrapper<TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>> _readingChangedWrapper;
+		private StartStopEventWrapper<TypedEventHandler<Accelerometer, AccelerometerShakenEventArgs>> _shakenWrapper;
+
+		private Accelerometer()
+		{
+			_readingChangedWrapper = new StartStopEventWrapper<TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs>>(
+				() => StartReadingChanged(),
+				() => StopReadingChanged(),
+				_syncLock);
+			_shakenWrapper = new StartStopEventWrapper<TypedEventHandler<Accelerometer, AccelerometerShakenEventArgs>>(
+				() => StartShaken(),
+				() => StopShaken(),
+				_syncLock);
+
+			InitializePlatform();
+		}
+
+		partial void InitializePlatform();
 
 		/// <summary>
 		/// Gets or sets the transformation that needs to be applied to sensor data. Transformations to be applied are tied to the display orientation with which to align the sensor data.
@@ -41,68 +59,26 @@ namespace Windows.Devices.Sensors
 			}
 		}
 
-		public event Foundation.TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs> ReadingChanged
-		{			
-			add
-			{
-				lock (_syncLock)
-				{
-					bool isFirstSubscriber = _readingChanged == null;
-					_readingChanged += value;
-					if ( isFirstSubscriber)
-					{
-						StartReadingChanged();
-					}
-				}
-			}			
-			remove
-			{
-				lock (_syncLock)
-				{
-					_readingChanged -= value;
-					if (_readingChanged == null)
-					{
-						StopReadingChanged();
-					}
-				}
-			}
+		public event TypedEventHandler<Accelerometer, AccelerometerReadingChangedEventArgs> ReadingChanged
+		{
+			add => _readingChangedWrapper.AddHandler(value);
+			remove => _readingChangedWrapper.RemoveHandler(value);
 		}
 
-		public event Foundation.TypedEventHandler<Accelerometer, AccelerometerShakenEventArgs> Shaken
+		public event TypedEventHandler<Accelerometer, AccelerometerShakenEventArgs> Shaken
 		{
-			add
-			{
-				lock (_syncLock)
-				{
-					bool isFirstSubscriber = _shaken == null;
-					_shaken += value;
-					if (isFirstSubscriber)
-					{
-						StartShaken();
-					}
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_shaken -= value;
-					if (_shaken == null)
-					{
-						StopShaken();
-					}
-				}
-			}
+			add => _shakenWrapper.AddHandler(value);
+			remove => _shakenWrapper.RemoveHandler(value);
 		}
 
 		private void OnReadingChanged(AccelerometerReading reading)
 		{
-			_readingChanged?.Invoke(this, new AccelerometerReadingChangedEventArgs(reading));
+			_readingChangedWrapper.Event?.Invoke(this, new AccelerometerReadingChangedEventArgs(reading));
 		}
 
 		internal void OnShaken(DateTimeOffset timestamp)
 		{
-			_shaken?.Invoke(this, new AccelerometerShakenEventArgs(timestamp));
+			_shakenWrapper.Event?.Invoke(this, new AccelerometerShakenEventArgs(timestamp));
 		}
 	}
 }

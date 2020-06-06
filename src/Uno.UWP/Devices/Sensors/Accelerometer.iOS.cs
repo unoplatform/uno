@@ -9,12 +9,7 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Accelerometer
 	{
-		private readonly CMMotionManager _motionManager;
-
-		private Accelerometer(CMMotionManager motionManager)
-		{
-			_motionManager = motionManager;
-		}
+		private CMMotionManager _motionManager;
 
 		public uint ReportInterval
 		{
@@ -30,9 +25,13 @@ namespace Windows.Devices.Sensors
 		private static Accelerometer TryCreateInstance()
 		{
 			var motionManager = new CMMotionManager();
-			return !motionManager.AccelerometerAvailable ?
-				null :
-				new Accelerometer(motionManager);
+			if (!motionManager.AccelerometerAvailable)
+			{
+				var accelerometer = new Accelerometer();
+				accelerometer._motionManager = motionManager;
+				return accelerometer;
+			}
+			return null;
 		}
 
 		private void StartReadingChanged()

@@ -7,17 +7,10 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Gyrometer
 	{
-		private static Gyrometer TryCreateInstance()
-		{
-			return null;
-		}
+        private static Gyrometer TryCreateInstance() => null;
 
-		private void StartReading()
-		{			
-		}
+        private void StartReading() { }
 		
-		private void StopReading()
-		{
-		}
+		private void StopReading() { }
 	}
 }

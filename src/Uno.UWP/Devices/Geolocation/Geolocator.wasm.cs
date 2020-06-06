@@ -21,11 +21,7 @@ namespace Windows.Devices.Geolocation
 		private static ConcurrentDictionary<string, Geolocator> _positionChangedSubscriptions = new ConcurrentDictionary<string, Geolocator>();		
 
 		private string _positionChangedRequestId;
-
-		public Geolocator()
-		{
-		}
-
+	
 		partial void OnActualDesiredAccuracyInMetersChanged()
 		{
 			if (_positionChanged != null)

@@ -19,12 +19,11 @@ namespace Windows.System.Power
 		private static PowerConnectionBroadcastReceiver _powerConnectionBroadcastReceiver;
 		private static BatteryChangedBroadcastReceiver _batteryChangedBroadcastReceiver;
 
-		static PowerManager()
+		static partial void InitializePlatform()
 		{
 			_batteryManager = (BatteryManager)Android.App.Application.Context.GetSystemService(Context.BatteryService);
 			_powerManager = (AndroidPowerManager)Android.App.Application.Context.GetSystemService(Context.PowerService);
 		}
-
 
 		private static UwpBatteryStatus GetBatteryStatus()
 		{
@@ -79,7 +78,7 @@ namespace Windows.System.Power
 			Android.App.Application.Context.RegisterReceiver(_powerSaveModeChangeReceiver, filter);
 		}
 
-		private static void EndEnergySaverStatusMonitoring()
+		private static void StopEnergySaverStatusMonitoring()
 		{
 			if (_powerSaveModeChangeReceiver != null)
 			{
@@ -94,7 +93,7 @@ namespace Windows.System.Power
 			RegisterAndroidPowerConnectionBroadcastReceiver();
 		}
 
-		private static void EndBatteryStatusMonitoring()
+		private static void StopBatteryStatusMonitoring()
 		{
 			UnregisterAndroidBatteryChangedBroadcastReceiver();
 			UnregisterAndroidPowerConnectionBroadcastReceiver();
@@ -103,13 +102,13 @@ namespace Windows.System.Power
 		private static void StartRemainingChargePercentMonitoring() =>
 			RegisterAndroidBatteryChangedBroadcastReceiver();
 
-		private static void EndRemainingChargePercentMonitoring() =>
+		private static void StopRemainingChargePercentMonitoring() =>
 			UnregisterAndroidBatteryChangedBroadcastReceiver();
 
 		private static void StartPowerSupplyStatusMonitoring() =>
 			RegisterAndroidPowerConnectionBroadcastReceiver();
 
-		private static void EndPowerSupplyStatusMonitoring() =>
+		private static void StopPowerSupplyStatusMonitoring() =>
 			UnregisterAndroidPowerConnectionBroadcastReceiver();
 
 		private static void RegisterAndroidPowerConnectionBroadcastReceiver()
@@ -127,8 +126,11 @@ namespace Windows.System.Power
 		private static void UnregisterAndroidPowerConnectionBroadcastReceiver()
 		{
 			//two different events use this broadcast receiver
-			if (_powerSupplyStatusChanged != null ||
-				_batteryStatusChanged != null) return;
+			if (_powerSupplyStatusChangedWrapper.IsActive ||
+				_batteryStatusChangedWrapper.IsActive)
+			{
+				return;
+			}
 
 			if (_powerConnectionBroadcastReceiver != null)
 			{
@@ -151,8 +153,11 @@ namespace Windows.System.Power
 		private static void UnregisterAndroidBatteryChangedBroadcastReceiver()
 		{
 			//two events use this broadcast
-			if (_batteryStatusChanged != null ||
-				_remainingChargePercentChanged != null) return;
+			if (_batteryStatusChangedWrapper.IsActive ||
+				_remainingChargePercentChangedWrapper.IsActive)
+			{
+				return;
+			}
 
 			if (_batteryChangedBroadcastReceiver != null)
 			{

@@ -1,12 +1,21 @@
 #if !NET461
 
+using Uno.Helpers;
+
 namespace Windows.Networking.Connectivity
 {
 	public static partial class NetworkInformation
 	{
 		private static readonly object _syncLock = new object();
 
-		private static NetworkStatusChangedEventHandler _networkStatusChanged = null;
+		private static StartStopEventWrapper<NetworkStatusChangedEventHandler> _networkStatusChangedWrapper = null;
+
+		static NetworkInformation()
+		{
+			_networkStatusChangedWrapper = new StartStopEventWrapper<NetworkStatusChangedEventHandler>(
+				() => StartNetworkStatusChanged(),
+				() => StopNetworkStatusChanged());
+		}
 
 		/// <summary>
 		/// Gets the connection profile associated with the internet connection currently used by the local machine.
@@ -17,32 +26,12 @@ namespace Windows.Networking.Connectivity
 
 		public static event NetworkStatusChangedEventHandler NetworkStatusChanged
 		{
-			add
-			{
-				lock (_syncLock)
-				{
-					var isFirstSubscriber = _networkStatusChanged == null;
-					_networkStatusChanged += value;
-					if (isFirstSubscriber)
-					{
-						StartNetworkStatusChanged();
-					}
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_networkStatusChanged -= value;
-					if (_networkStatusChanged == null)
-					{
-						StopNetworkStatusChanged();
-					}
-				}
-			}
+			add => _networkStatusChangedWrapper.AddHandler(value);
+			remove => _networkStatusChangedWrapper.RemoveHandler(value);
 		}		
 
-		internal static void OnNetworkStatusChanged() => _networkStatusChanged?.Invoke(null);
+		internal static void OnNetworkStatusChanged() =>
+			_networkStatusChangedWrapper.Event?.Invoke(null);
 	}
 }
 #endif

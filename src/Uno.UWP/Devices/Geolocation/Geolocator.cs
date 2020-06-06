@@ -5,9 +5,12 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
+using Uno.Helpers;
 using Windows.Foundation;
 using Windows.Foundation.Collections;
 using Windows.Foundation.Metadata;
+using Windows.UI.WebUI;
+
 namespace Windows.Devices.Geolocation
 {
 	public sealed partial class Geolocator
@@ -20,12 +23,28 @@ namespace Windows.Devices.Geolocation
 		//using ConcurrentDictionary as concurrent HashSet (https://stackoverflow.com/questions/18922985/concurrent-hashsett-in-net-framework), byte is throwaway
 		private static ConcurrentDictionary<Geolocator, byte> _statusChangedSubscriptions = new ConcurrentDictionary<Geolocator, byte>();
 
-		private TypedEventHandler<Geolocator, StatusChangedEventArgs> _statusChanged;
-		private TypedEventHandler<Geolocator, PositionChangedEventArgs> _positionChanged;			
+		private StartStopEventWrapper<TypedEventHandler<Geolocator, StatusChangedEventArgs>> _statusChangedWrapper;
+		private StartStopEventWrapper<TypedEventHandler<Geolocator, PositionChangedEventArgs>> _positionChangedWrapper;			
 
 		private PositionAccuracy _desiredAccuracy = PositionAccuracy.Default;
 		private uint? _desiredAccuracyInMeters = DefaultAccuracyInMeters;
 		private uint _actualDesiredAccuracyInMeters = DefaultAccuracyInMeters;
+
+		public Geolocator()
+		{
+			_statusChangedWrapper = new StartStopEventWrapper<TypedEventHandler<Geolocator, StatusChangedEventArgs>>(
+				() => StartStatusChanged(),
+				() => StopStatusChanged(),
+				_syncLock);
+			_positionChangedWrapper = new StartStopEventWrapper<TypedEventHandler<Geolocator, PositionChangedEventArgs>>(
+				() => StartPositionChanged(),
+				() => StopPositionChanged(),
+				_syncLock);
+
+			InitializePlatform();
+		}
+
+		partial void InitializePlatform();
 
 		/// <summary>
 		/// By default null, can be set by the user when no better option exists
@@ -96,56 +115,14 @@ namespace Windows.Devices.Geolocation
 
 		public event TypedEventHandler<Geolocator, StatusChangedEventArgs> StatusChanged
 		{
-			add
-			{
-				lock (_syncLock)
-				{
-					bool isFirstSubscriber = _statusChanged == null;
-					_statusChanged += value;
-					if (isFirstSubscriber)
-					{
-						StartStatusChanged();
-					}
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_statusChanged -= value;
-					if (_statusChanged == null)
-					{
-						StopStatusChanged();
-					}
-				}
-			}
+			add => _statusChangedWrapper.AddHandler(value);
+			remove => _statusChangedWrapper.RemoveHandler(value);
 		}
 
 		public event TypedEventHandler<Geolocator, PositionChangedEventArgs> PositionChanged
 		{
-			add
-			{
-				lock (_syncLock)
-				{
-					bool isFirstSubscriber = _positionChanged == null;
-					_positionChanged += value;
-					if (isFirstSubscriber)
-					{
-						StartPositionChanged();
-					}
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_positionChanged -= value;
-					if (_positionChanged == null)
-					{
-						StopPositionChanged();
-					}
-				}
-			}
+			add => _positionChangedWrapper.AddHandler(value);
+			remove => _positionChangedWrapper.RemoveHandler(value);
 		}
 			   
 		/// <summary>
@@ -159,7 +136,6 @@ namespace Windows.Devices.Geolocation
 				key.OnStatusChanged(positionStatus);
 			}
 		}
-
 
 		private void StartStatusChanged() => _statusChangedSubscriptions.TryAdd(this, 0);
 
@@ -177,7 +153,7 @@ namespace Windows.Devices.Geolocation
 		/// <param name="geoposition">Geoposition</param>
 		private void OnPositionChanged(Geoposition geoposition)
 		{
-			_positionChanged?.Invoke(this, new PositionChangedEventArgs(geoposition));
+			_positionChangedWrapper.Event?.Invoke(this, new PositionChangedEventArgs(geoposition));
 		}
 
 		/// <summary>
@@ -196,7 +172,7 @@ namespace Windows.Devices.Geolocation
 			}
 
 			LocationStatus = status;
-			_statusChanged?.Invoke(this, new StatusChangedEventArgs(status));
+			_statusChangedWrapper.Event?.Invoke(this, new StatusChangedEventArgs(status));
 		}
 	}
 }

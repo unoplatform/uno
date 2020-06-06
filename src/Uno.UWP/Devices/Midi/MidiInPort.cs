@@ -4,7 +4,9 @@ using Microsoft.Extensions.Logging;
 using Uno.Devices.Enumeration.Internal;
 using Uno.Devices.Midi.Internal;
 using Uno.Extensions;
+using Uno.Helpers;
 using Windows.Foundation;
+using Windows.Services.Maps;
 
 namespace Windows.Devices.Midi
 {
@@ -16,39 +18,24 @@ namespace Windows.Devices.Midi
 		private readonly static string MidiInAqsFilter =
 			"System.Devices.InterfaceClassGuid:=\"{" + DeviceClassGuids.MidiIn + "}\" AND System.Devices.InterfaceEnabled:=System.StructuredQueryType.Boolean#True";		
 
-		private readonly object _syncLock = new object();
 		private readonly MidiMessageParser _parser = new MidiMessageParser();
 
-		private TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs> _messageReceived;
+		private StartStopEventWrapper<TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs>> _messageReceivedWrapper;
+
+		private void InitializeMessageReceived()
+		{
+			_messageReceivedWrapper = new StartStopEventWrapper<TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs>>(
+				() => StartMessageReceived(),
+				() => StopMessageReceived());
+		}
 
 		/// <summary>
 		/// Gets the id of the device that was used to initialize the MidiInPort.
 		/// </summary>
 		public event TypedEventHandler<MidiInPort, MidiMessageReceivedEventArgs> MessageReceived
 		{
-			add
-			{
-				lock (_syncLock)
-				{
-					var firstSubscriber = _messageReceived == null;
-					_messageReceived += value;
-					if (firstSubscriber)
-					{
-						StartMessageReceived();
-					}
-				}
-			}
-			remove
-			{
-				lock (_syncLock)
-				{
-					_messageReceived -= value;
-					if (_messageReceived == null)
-					{
-						StopMessageReceived();
-					}
-				}
-			}
+			add => _messageReceivedWrapper.AddHandler(value);
+			remove => _messageReceivedWrapper.RemoveHandler(value);
 		}
 
 		/// <summary>
@@ -75,8 +62,8 @@ namespace Windows.Devices.Midi
 
 		public void Dispose()
 		{
-			_messageReceived = null;
 			DisposeNative();
+			_messageReceivedWrapper = null;
 		}
 
 		partial void StartMessageReceived();
@@ -120,7 +107,7 @@ namespace Windows.Devices.Midi
 				foreach (var parsedMessage in parsedMessages)
 				{
 					var eventArgs = new MidiMessageReceivedEventArgs(parsedMessage);
-					_messageReceived?.Invoke(this, eventArgs);
+					_messageReceivedWrapper.Event?.Invoke(this, eventArgs);
 				}
 			}
 			catch (Exception ex)

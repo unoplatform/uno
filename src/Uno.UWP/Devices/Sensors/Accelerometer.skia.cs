@@ -8,16 +8,9 @@ namespace Windows.Devices.Sensors
 {
 	public partial class Accelerometer
 	{
-		private Accelerometer()
-		{
-		}
+        private static Accelerometer TryCreateInstance() => null;
 
-		private static Accelerometer TryCreateInstance()
-		{
-			return null;
-		}
-
-		private void StartReadingChanged() { }
+        private void StartReadingChanged() { }
 
 		private void StopReadingChanged() { }
 
