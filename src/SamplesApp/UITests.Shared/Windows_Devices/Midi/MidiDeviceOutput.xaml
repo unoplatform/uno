@@ -72,7 +72,7 @@
                         ItemsSource="{Binding OutputDevices}"
                         SelectionChanged="outputDevices_SelectionChanged"
                         Style="{StaticResource InputOutputDeviceListStyle}" />
-
+					<Button x:Name="JingleBells" IsEnabled="False" Click="JingleBells_Click">Jingle Bells</Button>
                     <!--  List available MIDI message types  -->
                     <TextBlock
                         x:Name="messageTypeLabel"
@@ -190,7 +190,7 @@
                             Click="sendButton_Click"
                             Content="Send"
                             IsEnabled="False"
-                            Style="{StaticResource MessageActionStyle}" />
+                            Style="{StaticResource MessageActionStyle}" />						
                     </StackPanel>
                 </RelativePanel>
             </ScrollViewer>
@@ -220,7 +220,9 @@
                         <Setter Target="outputDevices.(RelativePanel.AlignLeftWith)" Value="outputDevicesLabel" />
                         <Setter Target="outputDevices.(RelativePanel.Below)" Value="outputDevicesLabel" />
                         <Setter Target="messageTypeLabel.(RelativePanel.AlignLeftWith)" Value="outputDevices" />
-                        <Setter Target="messageTypeLabel.(RelativePanel.Below)" Value="outputDevices" />
+                        <Setter Target="messageTypeLabel.(RelativePanel.Below)" Value="JingleBells" />
+						<Setter Target="JingleBells.(RelativePanel.AlignLeftWith)" Value="outputDevices" />
+						<Setter Target="JingleBells.(RelativePanel.Below)" Value="outputDevices" />
                         <Setter Target="messageType.(RelativePanel.AlignLeftWith)" Value="messageTypeLabel" />
                         <Setter Target="messageType.(RelativePanel.Below)" Value="messageTypeLabel" />
                         <Setter Target="messageParameters.(RelativePanel.AlignLeftWith)" Value="messageType" />

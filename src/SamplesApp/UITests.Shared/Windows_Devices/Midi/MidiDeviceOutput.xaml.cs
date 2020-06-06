@@ -12,6 +12,7 @@ using Windows.UI.Core;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
+using System.Threading.Tasks;
 
 #if !WINDOWS_UWP
 using Microsoft.UI.Xaml.Controls;
@@ -137,6 +138,9 @@ namespace UITests.Shared.Windows_Devices.Midi
 		{
 			// Get the selected output MIDI device
 			int selectedOutputDeviceIndex = outputDevices.SelectedIndex;
+			messageType.IsEnabled = false;
+			JingleBells.IsEnabled = false;
+			resetButton.IsEnabled = false;
 
 			// Try to create a MidiOutPort
 			if (selectedOutputDeviceIndex < 0)
@@ -174,6 +178,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 
 			// Enable message type list & reset button
 			messageType.IsEnabled = true;
+			JingleBells.IsEnabled = true;
 			resetButton.IsEnabled = true;
 
 			NotifyUser("Output Device selected successfully! Waiting for message type selection...");
@@ -666,5 +671,88 @@ namespace UITests.Shared.Windows_Devices.Midi
 		{
 			statusBlock.Text = message;
 		}
+
+
+		#region Jingle Bells
+		private byte ENote = 64;
+		private byte DNote = 62;
+		private byte CNote = 60;
+		private byte FNote = 65;
+		private byte GNote = 67;
+		private const int Skip = 400;
+
+		private async void JingleBells_Click(object sender, RoutedEventArgs args)
+		{
+			if (_currentMidiOutputDevice != null)
+			{
+				var midiOutputQueryString = MidiOutPort.GetDeviceSelector();
+				var midiOutputDevices = await DeviceInformation.FindAllAsync(midiOutputQueryString);
+				
+				await PlayJingleBellsAsync();
+			}
+		}
+
+		private async Task PlayJingleBellsAsync()
+		{
+			await PlayNoteAsync(ENote);
+			await PlayNoteAsync(ENote);
+			await PlayNoteAsync(ENote, Skip * 2, 127);
+			await PlayNoteAsync(ENote);
+			await PlayNoteAsync(ENote);
+			await PlayNoteAsync(ENote, Skip * 2, 127);
+			await PlayNoteAsync(ENote);
+			await PlayNoteAsync(GNote);
+			await PlayNoteAsync(CNote);
+			await PlayNoteAsync(DNote);
+			await PlayNoteAsync(ENote, Skip * 4, 127);
+			await PlayNoteAsync(FNote);
+			await PlayNoteAsync(FNote);
+			await PlayNoteAsync(FNote);
+			await PlayNoteAsync(FNote);
+			await PlayNoteAsync(FNote);
+			await PlayNoteAsync(ENote);
+			await PlayNoteAsync(ENote);
+			await PlayNoteAsync(ENote, Skip / 2, 127);
+			await PlayNoteAsync(ENote, Skip / 2, 127);
+			await PlayNoteAsync(ENote);
+			await PlayNoteAsync(DNote);
+			await PlayNoteAsync(DNote);
+			await PlayNoteAsync(ENote);
+			await PlayNoteAsync(DNote, Skip * 2, 127);
+			await PlayNoteAsync(GNote, Skip * 2, 127);
+			await PlayNoteAsync(ENote);
+			await PlayNoteAsync(ENote);
+			await PlayNoteAsync(ENote, Skip * 2, 127);
+			await PlayNoteAsync(ENote);
+			await PlayNoteAsync(ENote);
+			await PlayNoteAsync(ENote, Skip * 2, 127);
+			await PlayNoteAsync(ENote);
+			await PlayNoteAsync(GNote);
+			await PlayNoteAsync(CNote);
+			await PlayNoteAsync(DNote);
+			await PlayNoteAsync(ENote, Skip * 4, 127);
+			await PlayNoteAsync(FNote);
+			await PlayNoteAsync(FNote);
+			await PlayNoteAsync(FNote);
+			await PlayNoteAsync(FNote);
+			await PlayNoteAsync(FNote);
+			await PlayNoteAsync(ENote);
+			await PlayNoteAsync(ENote);
+			await PlayNoteAsync(ENote, Skip / 2, 127);
+			await PlayNoteAsync(ENote, Skip / 2, 127);
+			await PlayNoteAsync(GNote);
+			await PlayNoteAsync(GNote);
+			await PlayNoteAsync(FNote);
+			await PlayNoteAsync(DNote);
+			await PlayNoteAsync(CNote, Skip * 4, 127);
+		}
+
+		private async Task PlayNoteAsync(byte noteNumber, int duration = Skip, byte velocity = 127)
+		{			
+			_currentMidiOutputDevice?.SendMessage(new MidiNoteOnMessage(0, noteNumber, velocity));
+			await Task.Delay(duration);
+			_currentMidiOutputDevice?.SendMessage(new MidiNoteOffMessage(0, noteNumber, velocity));
+		}
+		#endregion
 	}
 }
