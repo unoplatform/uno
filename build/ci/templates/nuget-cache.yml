@@ -3,6 +3,12 @@ parameters:
 
 steps:
 
+  - script: |
+      md "${{ parameters.nugetPackages }}"
+      compact /c "/s:${{ parameters.nugetPackages }}"
+
+    condition: and(succeeded(), eq( variables['Agent.OS'], 'Windows_NT' ))
+
   - task: CacheBeta@0
     condition: eq(variables['enable_package_cache'], 'true')
     inputs:
