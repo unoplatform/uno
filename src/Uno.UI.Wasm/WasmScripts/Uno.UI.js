@@ -234,6 +234,7 @@ var MonoSupport;
                 if (!jsCallDispatcher._isUnoRegistered) {
                     jsCallDispatcher.registerScope("UnoStatic", Uno.UI.WindowManager);
                     jsCallDispatcher.registerScope("UnoStatic_Windows_Storage_StorageFolder", Windows.Storage.StorageFolder);
+                    jsCallDispatcher.registerScope("UnoStatic_Windows_Storage_ApplicationDataContainer", Windows.Storage.ApplicationDataContainer);
                     jsCallDispatcher._isUnoRegistered = true;
                 }
                 const { ns, methodName } = jsCallDispatcher.parseIdentifier(identifier);
@@ -1728,6 +1729,246 @@ var Uno;
 window.Uno = Uno;
 window.Windows = Windows;
 /* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_ClearParams {
+    static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_ClearParams();
+        {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Locality = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Locality = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_ContainsKeyParams {
+    static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_ContainsKeyParams();
+        {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Key = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Key = null;
+            }
+        }
+        {
+            const ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Value = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Value = null;
+            }
+        }
+        {
+            const ptr = Module.getValue(pData + 8, "*");
+            if (ptr !== 0) {
+                ret.Locality = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Locality = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_ContainsKeyReturn {
+    marshal(pData) {
+        Module.setValue(pData + 0, this.ContainsKey, "i32");
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_GetCountParams {
+    static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_GetCountParams();
+        {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Locality = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Locality = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_GetCountReturn {
+    marshal(pData) {
+        Module.setValue(pData + 0, this.Count, "i32");
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_GetKeyByIndexParams {
+    static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_GetKeyByIndexParams();
+        {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Locality = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Locality = null;
+            }
+        }
+        {
+            ret.Index = Number(Module.getValue(pData + 4, "i32"));
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_GetKeyByIndexReturn {
+    marshal(pData) {
+        {
+            const stringLength = lengthBytesUTF8(this.Value);
+            const pString = Module._malloc(stringLength + 1);
+            stringToUTF8(this.Value, pString, stringLength + 1);
+            Module.setValue(pData + 0, pString, "*");
+        }
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_GetValueByIndexParams {
+    static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_GetValueByIndexParams();
+        {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Locality = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Locality = null;
+            }
+        }
+        {
+            ret.Index = Number(Module.getValue(pData + 4, "i32"));
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_GetValueByIndexReturn {
+    marshal(pData) {
+        {
+            const stringLength = lengthBytesUTF8(this.Value);
+            const pString = Module._malloc(stringLength + 1);
+            stringToUTF8(this.Value, pString, stringLength + 1);
+            Module.setValue(pData + 0, pString, "*");
+        }
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_RemoveParams {
+    static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_RemoveParams();
+        {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Locality = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Locality = null;
+            }
+        }
+        {
+            const ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Key = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Key = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_RemoveReturn {
+    marshal(pData) {
+        Module.setValue(pData + 0, this.Removed, "i32");
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_SetValueParams {
+    static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_SetValueParams();
+        {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Key = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Key = null;
+            }
+        }
+        {
+            const ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Value = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Value = null;
+            }
+        }
+        {
+            const ptr = Module.getValue(pData + 8, "*");
+            if (ptr !== 0) {
+                ret.Locality = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Locality = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_TryGetValueParams {
+    static unmarshal(pData) {
+        const ret = new ApplicationDataContainer_TryGetValueParams();
+        {
+            const ptr = Module.getValue(pData + 0, "*");
+            if (ptr !== 0) {
+                ret.Key = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Key = null;
+            }
+        }
+        {
+            const ptr = Module.getValue(pData + 4, "*");
+            if (ptr !== 0) {
+                ret.Locality = String(Module.UTF8ToString(ptr));
+            }
+            else {
+                ret.Locality = null;
+            }
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class ApplicationDataContainer_TryGetValueReturn {
+    marshal(pData) {
+        {
+            const stringLength = lengthBytesUTF8(this.Value);
+            const pString = Module._malloc(stringLength + 1);
+            stringToUTF8(this.Value, pString, stringLength + 1);
+            Module.setValue(pData + 0, pString, "*");
+        }
+        Module.setValue(pData + 4, this.HasValue, "i32");
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
 class StorageFolderMakePersistentParams {
     static unmarshal(pData) {
         const ret = new StorageFolderMakePersistentParams();
@@ -2454,6 +2695,153 @@ var Uno;
     })(UI = Uno.UI || (Uno.UI = {}));
 })(Uno || (Uno = {}));
 // ReSharper disable InconsistentNaming
+// eslint-disable-next-line @typescript-eslint/no-namespace
+var Windows;
+(function (Windows) {
+    var Storage;
+    (function (Storage) {
+        class ApplicationDataContainer {
+            static buildStorageKey(locality, key) {
+                return `UnoApplicationDataContainer_${locality}_${key}`;
+            }
+            static buildStoragePrefix(locality) {
+                return `UnoApplicationDataContainer_${locality}_`;
+            }
+            /**
+             * Try to get a value from localStorage
+             * */
+            static tryGetValue(pParams, pReturn) {
+                const params = ApplicationDataContainer_TryGetValueParams.unmarshal(pParams);
+                const ret = new ApplicationDataContainer_TryGetValueReturn();
+                const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
+                if (localStorage.hasOwnProperty(storageKey)) {
+                    ret.HasValue = true;
+                    ret.Value = localStorage.getItem(storageKey);
+                }
+                else {
+                    ret.Value = "";
+                    ret.HasValue = false;
+                }
+                ret.marshal(pReturn);
+                return true;
+            }
+            /**
+             * Set a value to localStorage
+             * */
+            static setValue(pParams) {
+                const params = ApplicationDataContainer_SetValueParams.unmarshal(pParams);
+                const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
+                localStorage.setItem(storageKey, params.Value);
+                return true;
+            }
+            /**
+             * Determines if a key is contained in localStorage
+             * */
+            static containsKey(pParams, pReturn) {
+                const params = ApplicationDataContainer_ContainsKeyParams.unmarshal(pParams);
+                const ret = new ApplicationDataContainer_ContainsKeyReturn();
+                const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
+                ret.ContainsKey = localStorage.hasOwnProperty(storageKey);
+                ret.marshal(pReturn);
+                return true;
+            }
+            /**
+             * Gets a key by index in localStorage
+             * */
+            static getKeyByIndex(pParams, pReturn) {
+                const params = ApplicationDataContainer_GetKeyByIndexParams.unmarshal(pParams);
+                const ret = new ApplicationDataContainer_GetKeyByIndexReturn();
+                let localityIndex = 0;
+                let returnKey = "";
+                const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
+                for (let i = 0; i < localStorage.length; i++) {
+                    const storageKey = localStorage.key(i);
+                    if (storageKey.startsWith(prefix)) {
+                        if (localityIndex === params.Index) {
+                            returnKey = storageKey.substr(prefix.length);
+                        }
+                        localityIndex++;
+                    }
+                }
+                ret.Value = returnKey;
+                ret.marshal(pReturn);
+                return true;
+            }
+            /**
+             * Determines the number of items contained in localStorage
+             * */
+            static getCount(pParams, pReturn) {
+                const params = ApplicationDataContainer_GetCountParams.unmarshal(pParams);
+                const ret = new ApplicationDataContainer_GetCountReturn();
+                ret.Count = 0;
+                const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
+                for (let i = 0; i < localStorage.length; i++) {
+                    const storageKey = localStorage.key(i);
+                    if (storageKey.startsWith(prefix)) {
+                        ret.Count++;
+                    }
+                }
+                ret.marshal(pReturn);
+                return true;
+            }
+            /**
+             * Clears items contained in localStorage
+             * */
+            static clear(pParams) {
+                const params = ApplicationDataContainer_ClearParams.unmarshal(pParams);
+                const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
+                const itemsToRemove = [];
+                for (let i = 0; i < localStorage.length; i++) {
+                    const storageKey = localStorage.key(i);
+                    if (storageKey.startsWith(prefix)) {
+                        itemsToRemove.push(storageKey);
+                    }
+                }
+                for (const item in itemsToRemove) {
+                    localStorage.removeItem(itemsToRemove[item]);
+                }
+                return true;
+            }
+            /**
+             * Removes an item contained in localStorage
+             * */
+            static remove(pParams, pReturn) {
+                const params = ApplicationDataContainer_RemoveParams.unmarshal(pParams);
+                const ret = new ApplicationDataContainer_RemoveReturn();
+                const storageKey = ApplicationDataContainer.buildStorageKey(params.Locality, params.Key);
+                ret.Removed = localStorage.hasOwnProperty(storageKey);
+                if (ret.Removed) {
+                    localStorage.removeItem(storageKey);
+                }
+                ret.marshal(pReturn);
+                return true;
+            }
+            /**
+             * Gets a key by index in localStorage
+             * */
+            static getValueByIndex(pParams, pReturn) {
+                const params = ApplicationDataContainer_GetValueByIndexParams.unmarshal(pParams);
+                const ret = new ApplicationDataContainer_GetKeyByIndexReturn();
+                let localityIndex = 0;
+                let returnKey = "";
+                const prefix = ApplicationDataContainer.buildStoragePrefix(params.Locality);
+                for (let i = 0; i < localStorage.length; i++) {
+                    const storageKey = localStorage.key(i);
+                    if (storageKey.startsWith(prefix)) {
+                        if (localityIndex === params.Index) {
+                            returnKey = localStorage.getItem(storageKey);
+                        }
+                        localityIndex++;
+                    }
+                }
+                ret.Value = returnKey;
+                ret.marshal(pReturn);
+                return true;
+            }
+        }
+        Storage.ApplicationDataContainer = ApplicationDataContainer;
+    })(Storage = Windows.Storage || (Windows.Storage = {}));
+})(Windows || (Windows = {}));
 var Windows;
 (function (Windows) {
     var Storage;
