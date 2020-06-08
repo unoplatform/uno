@@ -246,7 +246,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 							isWasm: _isWasm,
 							isDebug: _isDebug,
 							skipUserControlsInVisualTree: _skipUserControlsInVisualTree,
-							shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml
+							shouldAnnotateGeneratedXaml: _shouldAnnotateGeneratedXaml,
+							isUnoAssembly: IsUnoAssembly
 						)
 						.GenerateFile()
 					)

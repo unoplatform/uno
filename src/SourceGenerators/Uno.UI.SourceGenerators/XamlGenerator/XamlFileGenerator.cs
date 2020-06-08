@@ -75,6 +75,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		/// True if the file currently being parsed contains a top-level ResourceDictionary definition.
 		/// </summary>
 		private bool _isTopLevelDictionary;
+		private readonly bool _isUnoAssembly;
 
 		/// <summary>
 		/// The current DefaultBindMode for x:Bind bindings, as set by app code for the current Xaml subtree.
@@ -148,7 +149,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			bool isWasm,
 			bool isDebug,
 			bool skipUserControlsInVisualTree,
-			bool shouldAnnotateGeneratedXaml
+			bool shouldAnnotateGeneratedXaml,
+			bool isUnoAssembly
 		)
 		{
 			_fileDefinition = file;
@@ -195,6 +197,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			_xamlConversionTypes = _metadataHelper.GetAllTypesAttributedWith(XamlConstants.Types.CreateFromStringAttribute).ToList();
 
 			_isWasm = isWasm;
+
+			_isUnoAssembly = isUnoAssembly;
 		}
 
 		/// <summary>
@@ -991,6 +995,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 					if (setIsParsing)
 					{
 						TrySetParsing(writer, topLevelControl, isInitializer: true);
+					}
+					if (_isUnoAssembly)
+					{
+						writer.AppendLineInvariant("IsSystemDictionary = true,");
 					}
 					BuildMergedDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "MergedDictionaries"), isInInitializer: true);
 					BuildThemeDictionaries(writer, topLevelControl.Members.FirstOrDefault(m => m.Member.Name == "ThemeDictionaries"), isInInitializer: true);
