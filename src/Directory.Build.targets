@@ -40,7 +40,7 @@
 	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0" />
 	<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.1.0" />
 	<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.1.0" />
-	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.2.0" />
+	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.2.0.1" />
 	<PackageReference Update="Xamarin.AndroidX.Fragment" Version="1.1.0" />
   </ItemGroup>
 
@@ -48,7 +48,7 @@
 	<PackageReference Update="Xamarin.AndroidX.Legacy.Support.v4" Version="1.0.0" />
 	<PackageReference Update="Xamarin.AndroidX.AppCompat" Version="1.1.0" />
 	<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.1.0" />
-	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.2.0" />
+	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.2.0.1" />
   </ItemGroup>
   
 </Project>
