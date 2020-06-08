@@ -31,6 +31,16 @@ namespace Uno
 				key = $"{NumberPrefix}{key}";
 			}
 
+			if (key.EndsWith(".9"))
+			{
+				// Specific handling of 9-patch extension
+				key = key.Substring(0, key.Length - 2).Replace(".", "_") + ".9";
+			}
+			else
+			{
+				key = key.Replace(".", "_");
+			}
+
 			return key;
 		}
 	}
