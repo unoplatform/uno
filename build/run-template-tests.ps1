@@ -69,6 +69,13 @@ for($i = 0; $i -lt $configurations.Length; $i++)
 dotnet new unoapp -n UnoAppVsCode (Get-TemplateConfiguration -wasm 1 -wasmVsCode 1)
 dotnet build -p:RestoreConfigFile=$env:NUGET_CI_CONFIG UnoAppVsCode\UnoAppVsCode.sln
 
-# WinUI - Release
+# Namespace Tests
+dotnet new unoapp -n MyApp.Uno
+& $msbuild $debug MyApp.Uno\MyApp.Uno.sln
+
+dotnet new unoapp -n MyApp.Android (Get-TemplateConfiguration -android 1)
+& $msbuild $debug MyApp.Android\MyApp.Android.sln
+
+# WinUI - Default
 # dotnet new unoapp-winui -n UnoAppWinUI
-# & $msbuild $release UnoAppWinUI\UnoAppWinUI.sln
+# & $msbuild $debug UnoAppWinUI\UnoAppWinUI.sln
