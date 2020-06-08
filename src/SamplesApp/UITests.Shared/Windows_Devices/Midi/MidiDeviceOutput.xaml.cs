@@ -676,14 +676,14 @@ namespace UITests.Shared.Windows_Devices.Midi
 
 
 		#region Jingle Bells & Happy Birthday
-		private byte ENote = 64;
-		private byte DNote = 62;
-		private byte CNote = 60;
-		private byte HighCNote = 72;
-		private byte FNote = 65;
-		private byte GNote = 67;
-		private byte ANote = 69;
-		private byte ASharpNote = 70;
+		private const byte ENote = 64;
+		private const byte DNote = 62;
+		private const byte CNote = 60;
+		private const byte HighCNote = 72;
+		private const byte FNote = 65;
+		private const byte GNote = 67;
+		private const byte ANote = 69;
+		private const byte ASharpNote = 70;
 		private const int Skip = 400;
 
 		private async void JingleBells_Click(object sender, RoutedEventArgs args)
@@ -795,6 +795,6 @@ namespace UITests.Shared.Windows_Devices.Midi
 			await Task.Delay(duration);
 			_currentMidiOutputDevice?.SendMessage(new MidiNoteOffMessage(0, noteNumber, velocity));
 		}
-		#endregion
+#endregion
 	}
 }
