@@ -140,6 +140,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 			int selectedOutputDeviceIndex = outputDevices.SelectedIndex;
 			messageType.IsEnabled = false;
 			JingleBells.IsEnabled = false;
+			HappyBirthday.IsEnabled = false;
 			resetButton.IsEnabled = false;
 
 			// Try to create a MidiOutPort
@@ -179,6 +180,7 @@ namespace UITests.Shared.Windows_Devices.Midi
 			// Enable message type list & reset button
 			messageType.IsEnabled = true;
 			JingleBells.IsEnabled = true;
+			HappyBirthday.IsEnabled = true;
 			resetButton.IsEnabled = true;
 
 			NotifyUser("Output Device selected successfully! Waiting for message type selection...");
@@ -673,22 +675,30 @@ namespace UITests.Shared.Windows_Devices.Midi
 		}
 
 
-		#region Jingle Bells
+		#region Jingle Bells & Happy Birthday
 		private byte ENote = 64;
 		private byte DNote = 62;
 		private byte CNote = 60;
+		private byte HighCNote = 72;
 		private byte FNote = 65;
 		private byte GNote = 67;
+		private byte ANote = 69;
+		private byte ASharpNote = 70;
 		private const int Skip = 400;
 
 		private async void JingleBells_Click(object sender, RoutedEventArgs args)
 		{
 			if (_currentMidiOutputDevice != null)
 			{
-				var midiOutputQueryString = MidiOutPort.GetDeviceSelector();
-				var midiOutputDevices = await DeviceInformation.FindAllAsync(midiOutputQueryString);
-				
 				await PlayJingleBellsAsync();
+			}
+		}
+
+		private async void HappyBirthday_Click(object sender, RoutedEventArgs args)
+		{
+			if (_currentMidiOutputDevice != null)
+			{
+				await PlayHappyBirthday();
 			}
 		}
 
@@ -745,6 +755,38 @@ namespace UITests.Shared.Windows_Devices.Midi
 			await PlayNoteAsync(FNote);
 			await PlayNoteAsync(DNote);
 			await PlayNoteAsync(CNote, Skip * 4, 127);
+		}
+
+		private async Task PlayHappyBirthday()
+		{
+			await PlayNoteAsync(CNote, Skip / 2, 127);
+			await PlayNoteAsync(CNote, Skip / 2, 127);
+			await PlayNoteAsync(DNote);
+			await PlayNoteAsync(CNote);
+			await PlayNoteAsync(FNote);
+			await PlayNoteAsync(ENote, Skip * 2, 127);
+
+			await PlayNoteAsync(CNote, Skip / 2, 127);
+			await PlayNoteAsync(CNote, Skip / 2, 127);
+			await PlayNoteAsync(DNote);
+			await PlayNoteAsync(CNote);
+			await PlayNoteAsync(GNote);
+			await PlayNoteAsync(FNote, Skip * 2, 127);
+
+			await PlayNoteAsync(CNote, Skip / 2, 127);
+			await PlayNoteAsync(CNote, Skip / 2, 127);
+			await PlayNoteAsync(HighCNote, Skip * 2, 127);
+			await PlayNoteAsync(ANote);
+			await PlayNoteAsync(FNote);
+			await PlayNoteAsync(ENote);
+			await PlayNoteAsync(DNote);
+
+			await PlayNoteAsync(ASharpNote, Skip / 2, 127);
+			await PlayNoteAsync(ASharpNote, Skip / 2, 127);
+			await PlayNoteAsync(ANote);
+			await PlayNoteAsync(FNote);
+			await PlayNoteAsync(GNote);
+			await PlayNoteAsync(FNote, Skip * 2, 127);
 		}
 
 		private async Task PlayNoteAsync(byte noteNumber, int duration = Skip, byte velocity = 127)
