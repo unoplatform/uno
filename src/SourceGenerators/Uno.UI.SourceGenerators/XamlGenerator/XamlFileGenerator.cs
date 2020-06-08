@@ -43,6 +43,8 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			},
 		};
 
+		private static readonly string[] FrameworkTemplateTypes = new[] { "DataTemplate", "ControlTemplate", "ItemsPanelTemplate" };
+
 		private readonly Dictionary<string, XamlObjectDefinition> _namedResources = new Dictionary<string, XamlObjectDefinition>();
 		private readonly List<string> _partials = new List<string>();
 		/// <summary>
@@ -2590,7 +2592,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		{
 			// If a binding is inside a DataTemplate, the binding root in the case of an x:Bind is
 			// the DataContext, not the control's instance.
-			var isInsideDataTemplate = IsMemberInsideDataTemplate(member.Owner);
+			var isInsideDataTemplate = IsMemberInsideFrameworkTemplate(member.Owner);
 
 			void writeEvent(string ownerPrefix)
 			{
@@ -3303,10 +3305,10 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 		private (bool isInside, XamlObjectDefinition xamlObject) IsMemberInsideDataTemplate(XamlObjectDefinition xamlObject)
 			=> IsMemberInside(xamlObject, "DataTemplate");
 
-		private bool IsMemberInsideFrameworkTemplate(XamlObjectDefinition xamlObject)
-			=> IsMemberInside(xamlObject, "DataTemplate").isInside
-			|| IsMemberInside(xamlObject, "ControlTemplate").isInside
-			|| IsMemberInside(xamlObject, "ItemsPanelTemplate").isInside;
+		private (bool isInside, XamlObjectDefinition xamlObject) IsMemberInsideFrameworkTemplate(XamlObjectDefinition xamlObject) =>
+			FrameworkTemplateTypes
+				.Select(n => IsMemberInside(xamlObject, n))
+				.FirstOrDefault(n => n.isInside);
 
 		private bool IsMemberInsideResourceDictionary(XamlObjectDefinition xamlObject)
 			=> IsMemberInside(xamlObject, "ResourceDictionary", maxDepth: 1).isInside;

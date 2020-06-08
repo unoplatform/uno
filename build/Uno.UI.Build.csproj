@@ -130,7 +130,7 @@
              Projects="..\src\Uno.UI.sln"
              Targets="Restore;Build"
              RebaseOutputs="false"
-             BuildInParallel="false" />
+             BuildInParallel="true" />
 
 	</Target>
 
@@ -214,7 +214,7 @@
 		</PropertyGroup>
 
 		<Exec Command="dotnet tool install --global Uno.PackageDiff --version 1.0.0-dev.32" IgnoreExitCode="true" />
-		<Exec Command="generatepkgdiff --base=$(PackageNamePrefix) --other=$(PackageNamePrefix).$(GITVERSION_FullSemVer).nupkg --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.$(GITVERSION_FullSemVer).md" />
+		<Exec Command="$(USERPROFILE)\.dotnet\tools\generatepkgdiff --base=$(PackageNamePrefix) --other=$(PackageNamePrefix).$(GITVERSION_FullSemVer).nupkg --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.$(GITVERSION_FullSemVer).md" />
 	</Target>
 
 </Project>
