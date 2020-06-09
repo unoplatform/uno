@@ -631,7 +631,16 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 			var fromResources = testControl.Resources["SubliminalGradientBrush"] as LinearGradientBrush;
 			Assert.IsNotNull(fromResources);
 			Assert.AreEqual(2, fromResources.GradientStops.Count);
-			;
+		}
+
+		[TestMethod]
+		public void When_Accessing_System_Resource()
+		{
+			var rd = new ResourceDictionary();
+
+			Assert.IsTrue(rd.ContainsKey("SystemAltHighColor"));
+			var systemColor = (Color)rd["SystemAltHighColor"];
+			Assert.AreEqual(Colors.White, systemColor);
 		}
 	}
 }

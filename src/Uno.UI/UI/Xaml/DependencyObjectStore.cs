@@ -1100,7 +1100,7 @@ namespace Windows.UI.Xaml
 			{
 				foreach (var dict in dictionariesInScope)
 				{
-					if (dict.TryGetValue(kvp.Value.ResourceKey, out var value))
+					if (dict.TryGetValue(kvp.Value.ResourceKey, out var value, shouldCheckSystem: false))
 					{
 						SetValue(kvp.Key, value);
 						break;
@@ -1146,7 +1146,7 @@ namespace Windows.UI.Xaml
 		{
 			foreach (var dict in GetResourceDictionaries(includeAppResources: true))
 			{
-				if (dict.TryGetValue(_originalObjectType, out var style))
+				if (dict.TryGetValue(_originalObjectType, out var style, shouldCheckSystem: false))
 				{
 					return style as Style;
 				}
