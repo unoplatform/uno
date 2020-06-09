@@ -11,6 +11,7 @@
   </Target>
 
   <ItemGroup>
+    <PackageReference Update="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.9" /> <!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
     <PackageReference Update="Uno.SourceGenerationTasks" Version="2.0.6" />
     <PackageReference Update="Uno.SourceGeneration" Version="2.0.6" />
     <PackageReference Update="Uno.Core" Version="2.0.0" />
