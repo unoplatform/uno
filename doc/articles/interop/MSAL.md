@@ -37,23 +37,23 @@ By adding those helpers, Uno will correctly add required initializations to MSAL
 
 ## Windows - UWP
 
-Nothing to do on UWP. The `.WithUnoHelpers()` does nothing on UAP/UWP platforms, they are just there to allow the code to compile without introducing ugly `#if` in your code.
+There is nothing to change for UWP. The `.WithUnoHelpers()` does nothing on UAP/UWP platforms, they are just there to allow the code to compile without introducing `#if` conditionals in your code.
 
 ## Android
 
-You'll need to setup the Return URI following the Microsoft documentation:
+You'll need to setup the return URI following the Microsoft documentation:
 
 * Official documentation <https://docs.microsoft.com/azure/active-directory/develop/msal-net-xamarin-android-considerations>
 
 * Wiki https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Xamarin-Android-specifics
 
-* **No need** to call `.WithParentActivity()`: this is properly initialized by `.WithUnoHelpers()`.
+* There is no need to call `.WithParentActivity()` as it is already initialized by `.WithUnoHelpers()`.
 
 ## iOS & macOS
 
 Follow Microsoft's documentation: <https://docs.microsoft.com/azure/active-directory/develop/msal-net-xamarin-ios-considerations>.
 
-* **No need** to call `.WithParentActivity()`: this is properly initialized by `.WithUnoHelpers()`.
+* There is no need to call `.WithParentActivity()` as it is already initialized by `.WithUnoHelpers()`.
 
 ## WebAssembly
 
@@ -71,7 +71,7 @@ Particularities for WASM:
 
 - Token cache is _in-memory_ for now­. The library is not persisting the token anywhere in the browser yet. The app can save it.
 
-Important: when making http requests from Wasm, don't forget to use the `WasmHttpHandler` on the `HttpClient`, or you'll get this error: `Operation is not supported on this platform.`. [More details here to fix that error](https://platform.uno/docs/articles/faq.html#is-it-possible-to-make-http-web-requests-using-the-wasm-target).
+Important: when making HTTP requests from Wasm, don't forget to use the `WasmHttpHandler` on the `HttpClient`, or you'll get this error: `Operation is not supported on this platform.`. [More details here to fix that error](https://platform.uno/docs/articles/faq.html#is-it-possible-to-make-http-web-requests-using-the-wasm-target).
 
 ## Other things
 
