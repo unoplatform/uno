@@ -6,6 +6,9 @@ namespace Uno.UI.MSAL
 {
 	public static class AbstractApplicationBuilderExtensions
 	{
+		/// <summary>
+		/// Add required helpers for the current Uno platform.
+		/// </summary>
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		public static T WithUnoHelpers<T>(this T builder)
 			where T : AbstractApplicationBuilder<T>
