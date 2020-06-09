@@ -4,51 +4,58 @@ Uno can be used to build applications using authentication. A popular mechanism 
 
 > MSAL.NET is the successor of ADAL.NET library which shouldn't be used for new apps. If you are migrating an application to Uno using ADAL.NET, you should first [migrate it to MSAL.NET](https://docs.microsoft.com/azure/active-directory/develop/msal-net-migration).
 
+Quickstart for MSAL: https://docs.microsoft.com/azure/active-directory/develop/quickstart-v2-uwp
+
+## General usage
+
+To use MSAL into a Uno project, follow the following steps:
+
+1. Add a reference to [`Uno.UI.MSAL`](https://www.nuget.org/packages/Uno.UI.MSAL) package to all your heads - including UWP.
+
+2. Follow [Microsoft Documentation](https://docs.microsoft.com/azure/active-directory/develop/msal-net-initializing-client-applications) to integrate with your app.
+
+3. Change the `IPublicCLientApplication` initialization to add a call to `.WithUnoHelpers()` like this:
+
+   ``` csharp
+   IPublicClientApplication _app = PublicClientApplicationBuilder.Create(clientId)
+       [...]
+       .WithUnoHelpers() // Add this line before the .Build()
+       .Build();
+   ```
+
+4. Where you are using the _Interactive_ mode (`_app.AcquireTokenInteractive`), add another call to `.WithUnoHelpers()` like this:
+
+   ``` csharp
+   var authResult = await _app.AcquireTokenInteractive(scopes)
+       .WithPrompt(Prompt.SelectAccount)
+       [...]
+       .WithUnoHelpers() // Add this line on interactive token acquisition flow
+       .ExecuteAsync();
+   ```
+
+By adding those helpers, Uno will correctly add required initializations to MSAL for all supported platforms.
+
 ## Windows - UWP
 
-Use the [`Microsoft.Identity.Client`](https://www.nuget.org/packages/Microsoft.Identity.Client/) NuGet package and follow Microsoft documentation.
-
-Microsoft documentation: <https://docs.microsoft.com/azure/active-directory/develop/msal-overview>.
-
-Quickstart: https://docs.microsoft.com/azure/active-directory/develop/quickstart-v2-uwp
+Nothing to do on UWP. The `.WithUnoHelpers()` does nothing on UAP/UWP platforms, they are just there to allow the code to compile without introducing ugly `#if` in your code.
 
 ## Android
 
-Simply follow Microsoft's documentation:
+You'll need to setup the Return URI following the Microsoft documentation:
 
 * Official documentation <https://docs.microsoft.com/azure/active-directory/develop/msal-net-xamarin-android-considerations>
 
 * Wiki https://github.com/AzureAD/microsoft-authentication-library-for-dotnet/wiki/Xamarin-Android-specifics
 
-* You need to set the _ParentActivity_ this way in your code:
-
-  ``` csharp
-  _app = PublicClientApplicationBuilder
-      // Add this line
-      .WithParentActivityOrWindow(() => Uno.UI.ContextHelper.Current as Activity)
-      [...]
-      .Build();
-  ```
+* **No need** to call `.WithParentActivity()`: this is properly initialized by `.WithUnoHelpers()`.
 
 ## iOS & macOS
 
 Follow Microsoft's documentation: <https://docs.microsoft.com/azure/active-directory/develop/msal-net-xamarin-ios-considerations>.
 
-* You need to set the _ParentWindow_ this way in your code:
-
-  ``` csharp
-  _app = PublicClientApplicationBuilder
-      // Add this line
-      .WithParentActivityOrWindow(() => Window.RootViewController)
-      [...]
-      .Build();
-  ```
+* **No need** to call `.WithParentActivity()`: this is properly initialized by `.WithUnoHelpers()`.
 
 ## WebAssembly
-
-Add a reference to [`Uno.Microsoft.Identity.Client`](https://www.nuget.org/packages/Uno.Microsoft.Identity.Client/) Nuget package into the Wasm head of your project.
-
-> Important: `Uno.Microsoft.Identity.Client` is a [Fork of the MSAL.NET](https://github.com/unoplatform/Uno.Microsoft.Identity.Client) package. It is not an integration of the `MSAL.js` library. The application will have more control over the authentication process and ported application code from UWP should compile & work.
 
 Particularities for WASM:
 
@@ -63,6 +70,8 @@ Particularities for WASM:
   - Optionally, a file in the Wasm project `wwwroot/authentication/login-callback.htm` with empty content (you could display a message like « _Please wait while the authentication process completes_ » for slower browsers).
 
 - Token cache is _in-memory_ for now­. The library is not persisting the token anywhere in the browser yet. The app can save it.
+
+Important: when making http requests from Wasm, don't forget to use the `WasmHttpHandler` on the `HttpClient`, or you'll get this error: `Operation is not supported on this platform.`. [More details here to fix that error](https://platform.uno/docs/articles/faq.html#is-it-possible-to-make-http-web-requests-using-the-wasm-target).
 
 ## Other things
 
