@@ -302,7 +302,7 @@ namespace Windows.UI.Xaml.Controls
 
 		static CharacterType GetCharacterType(char character)
 		{
-			// To ensure predictable behavior, we're currently operating on a whitelist of character sets.
+			// To ensure predictable behavior, we're currently operating on an allowed list of character sets.
 			//
 			// Each block below is a HEX range in the official Unicode spec, which defines a set
 			// of Unicode characters. Changes to the character sets would only be made by Unicode, and
