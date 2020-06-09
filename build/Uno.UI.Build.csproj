@@ -31,12 +31,6 @@
 
 	<ItemGroup>
 		<PackageReference Include="docfx.console" Version="2.54.0" GeneratePathProperty="true" />
-		<PackageReference Include="Microsoft.VisualStudio.TextTemplating.15.0">
-			<Version>16.3.29316.127</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.VisualStudio.TextTemplating.VSHost.14.0">
-			<Version>14.3.25407</Version>
-		</PackageReference>
 		<PackageReference Include="MSBuildTasks">
 			<Version>1.5.0.235</Version>
 		</PackageReference>
@@ -132,7 +126,7 @@
 		<!-- Restore the nuget packages for the whole solution -->
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true" Projects="..\src\Uno.UI.sln" Targets="Restore" RebaseOutputs="false" BuildInParallel="true" />
 		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj" Targets="Restore;Build" />
-		
+
 		<ItemGroup>
 			<MixinTargetFrameworks Include="xamarinios10" />
 			<MixinTargetFrameworks Include="monoandroid10.0" />

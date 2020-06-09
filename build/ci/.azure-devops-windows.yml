@@ -5,7 +5,8 @@ jobs:
 - job: VS_Latest
   timeoutInMinutes: 90
 
-  pool: 'Win2019-20200608'
+  pool:
+    vmImage: ${{ parameters.vmImage }}
 
   strategy:
     matrix:
