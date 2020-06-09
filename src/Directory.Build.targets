@@ -51,5 +51,5 @@
 	<PackageReference Update="Xamarin.AndroidX.RecyclerView" Version="1.1.0" />
 	<PackageReference Update="Xamarin.AndroidX.Lifecycle.LiveData" Version="2.2.0" />
   </ItemGroup>
-  
+
 </Project>
