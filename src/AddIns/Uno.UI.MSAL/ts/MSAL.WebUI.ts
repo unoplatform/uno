@@ -1,7 +1,12 @@
 ﻿namespace MSAL {
 	export class WebUI {
 
-		public static authenticate(urlNavigate: string, urlRedirect: string, title: string, popUpWidth: number, popUpHeight: number): Promise<string> {
+		public static authenticate(
+			urlNavigate: string,
+			urlRedirect: string,
+			title: string,
+			popUpWidth: number,
+			popUpHeight: number): Promise<string> {
 
 			let win: Window = null;
 			let timerSubscription: number = null;
@@ -79,7 +84,7 @@
 							completeWithError(finalUrlOrMessage);
 						}
 					}
-					timerSubscription = this.startMonitoringRedirect(win, urlRedirect, onFinalUrlReached);
+					timerSubscription = WebUI.startMonitoringRedirect(win, urlRedirect, onFinalUrlReached);
 				} catch (e) {
 					completeWithError(`${e}`);
 				}

@@ -33,7 +33,7 @@ namespace UITests.Msal
 
 		private readonly string[] SCOPES = new[] { "https://graph.microsoft.com/User.Read", "https://graph.microsoft.com/email", "https://graph.microsoft.com/profile" };
 
-		private IPublicClientApplication _app;
+		private readonly IPublicClientApplication _app;
 
 		public MsalLoginAndGraph()
 		{
