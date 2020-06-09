@@ -5,8 +5,7 @@ jobs:
 - job: VS_Latest
   timeoutInMinutes: 90
 
-  pool:
-    vmImage: ${{ parameters.vmImage }}
+  pool: 'Win2019-20200608'
 
   strategy:
     matrix:
@@ -56,7 +55,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary # /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer).binlog
+      msbuildArguments: /r /m "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary # /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer).binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false

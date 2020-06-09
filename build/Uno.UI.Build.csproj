@@ -52,12 +52,6 @@
 	<Target Name="UnoBuild" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
 
 		<Message Text="Building for $(Configuration) and $(Platform) BuildReason:$(BUILD_REASON) Version:$(GitVersion_FullSemVer) UNO_UWP_BUILD:$(UNO_UWP_BUILD)" />
-
-		<!--
-    Use NuGet 4.3.0 or later for the restore
-    CI_Build environment is required for the restore to pickup the TargetFrameworksCI property in projects.
-    -->
-		<Exec Command="set NUGET_RESTORE_MSBUILD_ARGS=/p:CI_Build=true &amp; nuget\nuget.exe restore ..\src\Uno.UI.sln" Condition="'$(AppEnvironment)'=='' and $(_isWindows) " />
 		
 		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA" Condition="$(_isWindows)" />
 
@@ -130,7 +124,7 @@
              Projects="..\src\Uno.UI.sln"
              Targets="Restore;Build"
              RebaseOutputs="false"
-             BuildInParallel="false" />
+             BuildInParallel="true" />
 
 	</Target>
 
@@ -214,7 +208,7 @@
 		</PropertyGroup>
 
 		<Exec Command="dotnet tool install --global Uno.PackageDiff --version 1.0.0-dev.32" IgnoreExitCode="true" />
-		<Exec Command="generatepkgdiff --base=$(PackageNamePrefix) --other=$(PackageNamePrefix).$(GITVERSION_FullSemVer).nupkg --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.$(GITVERSION_FullSemVer).md" />
+		<Exec Command="$(USERPROFILE)\.dotnet\tools\generatepkgdiff --base=$(PackageNamePrefix) --other=$(PackageNamePrefix).$(GITVERSION_FullSemVer).nupkg --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.$(GITVERSION_FullSemVer).md" />
 	</Target>
 
 </Project>
