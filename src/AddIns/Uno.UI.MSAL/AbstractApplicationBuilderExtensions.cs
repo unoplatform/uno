@@ -15,7 +15,7 @@ namespace Uno.UI.MSAL
 		{
 #if __ANDROID__
 			(builder as PublicClientApplicationBuilder)?.WithParentActivityOrWindow(() => Uno.UI.ContextHelper.Current as Android.App.Activity);
-#elif __IOS__ || __MACOS__
+#elif __IOS__
 			(builder as PublicClientApplicationBuilder)?.WithParentActivityOrWindow(() => Window.Current.Content.Window.RootViewController);
 #elif __WASM__
 			builder.WithHttpClientFactory(WasmHttpFactory.Instance);
