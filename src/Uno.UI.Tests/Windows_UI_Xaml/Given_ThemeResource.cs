@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Uno.UI.Tests.App.Xaml;
+using Uno.UI.Tests.Helpers;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Xaml;
@@ -175,6 +176,68 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 					var textDarkStaticMarkup = control.TemplateFromResourceControl.TextBlock5.Text;
 					Assert.AreEqual("ApplicationLevelLight", textDarkStaticMarkup); //StaticResource markup doesn't change
 					;
+				}
+			}
+			finally
+			{
+				await SwapSystemTheme();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Theme_Changed_From_Setter()
+		{
+			var button = new Button() { Content = "Bu'on" };
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(button);
+			AssertEx.AssertHasColor(button.Foreground, Colors.Black);
+
+			try
+			{
+				if (await SwapSystemTheme())
+				{
+					if (button.Parent == null)
+					{
+						app.HostView.Children.Add(button); // On UWP the control may have been removed by another test after the async swap
+					}
+
+					AssertEx.AssertHasColor(button.Foreground, Colors.White);
+				}
+			}
+			finally
+			{
+				await SwapSystemTheme();
+			}
+		}
+
+		[TestMethod]
+		public async Task When_Theme_Changed_From_Setter_Library()
+		{
+			var page = new Test_Page();
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(page);
+
+			var myExtControl = page.MyExtControl;
+			var textLightFromThemeResource = myExtControl.MyTagThemed1;
+			var textLightFromStaticResource = myExtControl.MyTagThemed2;
+
+			Assert.AreEqual("ExtLight", textLightFromThemeResource);
+			Assert.AreEqual("ExtLight", textLightFromStaticResource);
+
+			try
+			{
+				if (await SwapSystemTheme())
+				{
+					if (page.Parent == null)
+					{
+						app.HostView.Children.Add(page); // On UWP the control may have been removed by another test after the async swap
+					}
+
+					var textDarkFromThemeResource = myExtControl.MyTagThemed1;
+					var textDarkFromStaticResource = myExtControl.MyTagThemed2;
+
+					Assert.AreEqual("ExtDark", textDarkFromThemeResource);
+					Assert.AreEqual("ExtLight", textDarkFromStaticResource);
 				}
 			}
 			finally

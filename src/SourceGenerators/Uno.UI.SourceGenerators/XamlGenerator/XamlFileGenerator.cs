@@ -1291,16 +1291,27 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						);
 					}
 
+						var valueObject = valueNode.Objects.First();
 					if (HasMarkupExtension(valueNode))
 					{
 						writer.AppendLineInvariant(BuildBindingOption(valueNode, propertyType, prependCastToType: true));
 					}
 					else
 					{
-						BuildChild(writer, valueNode, valueNode.Objects.First());
+						BuildChild(writer, valueNode, valueObject);
 					}
 
-					writer.AppendLineInvariant(")" + lineEnding);
+					writer.AppendLineInvariant(")");
+
+					if (valueObject.Type.Name == "ThemeResource")
+					{
+						using (writer.Block())
+						{
+							writer.AppendLineInvariant("ThemeResourceName = \"{0}\",", valueObject.Members.FirstOrDefault()?.Value);
+							writer.AppendLineInvariant("ThemeResourceContext = {0},", ParseContextPropertyAccess);
+						}
+					}
+					writer.AppendLineInvariant(lineEnding);
 				}
 			}
 			else

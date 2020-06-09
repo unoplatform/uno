@@ -111,7 +111,7 @@ namespace Uno.UI
 				}
 			}
 
-			(owner as IDependencyObjectStoreProvider).Store.SetBinding(property, new ResourceBinding(resourceKey, isThemeResourceExtension));
+			(owner as IDependencyObjectStoreProvider).Store.SetBinding(property, new ResourceBinding(resourceKey, isThemeResourceExtension, context));
 		}
 
 		/// <summary>
@@ -143,21 +143,13 @@ namespace Uno.UI
 		/// <param name="resourceKey">The resource key</param>
 		/// <param name="value">Out parameter to which the retrieved resource is assigned.</param>
 		/// <returns>True if the resource was found, false if not.</returns>
-		private static bool TryTopLevelRetrieval(object resourceKey, object context, out object value)
+		internal static bool TryTopLevelRetrieval(object resourceKey, object context, out object value)
 		{
 			value = null;
 			return (Application.Current?.Resources.TryGetValue(resourceKey, out value, shouldCheckSystem: false) ?? false) ||
 				TryAssemblyResourceRetrieval(resourceKey, context, out value) ||
 				TrySystemResourceRetrieval(resourceKey, out value);
 		}
-
-		/// <summary>
-		/// Tries to retrieve a resource from top-level resources (Application-level and system level).
-		/// </summary>
-		/// <param name="resourceKey">The resource key</param>
-		/// <param name="value">Out parameter to which the retrieved resource is assigned.</param>
-		/// <returns>True if the resource was found, false if not.</returns>
-		internal static bool TryTopLevelRetrieval(object resourceKey, out object value) => TryTopLevelRetrieval(resourceKey, context: null, out value);
 
 		/// <summary>
 		/// Tries to retrieve a resource from the same assembly as the retrieving context. Used when parsing third-party libraries

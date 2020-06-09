@@ -1112,7 +1112,7 @@ namespace Windows.UI.Xaml
 
 				if (!wasSet && isThemeChangedUpdate && kvp.Value.IsThemeResourceExtension)
 				{
-					if (ResourceResolver.TryTopLevelRetrieval(kvp.Value.ResourceKey, out var value))
+					if (ResourceResolver.TryTopLevelRetrieval(kvp.Value.ResourceKey, kvp.Value.ParseContext, out var value))
 					{
 						SetValue(kvp.Key, value);
 					}
