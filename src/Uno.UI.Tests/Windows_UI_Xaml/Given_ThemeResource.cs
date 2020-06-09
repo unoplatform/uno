@@ -185,6 +185,32 @@ namespace Uno.UI.Tests.Windows_UI_Xaml
 		}
 
 		[TestMethod]
+		public async Task When_Theme_Changed_ContentControl()
+		{
+			var control = new ContentControl() { Content = "Unstyled control" };
+			var app = UnitTestsApp.App.EnsureApplication();
+			app.HostView.Children.Add(control);
+			AssertEx.AssertHasColor(control.Foreground, Colors.Black);
+
+			try
+			{
+				if (await SwapSystemTheme())
+				{
+					if (control.Parent == null)
+					{
+						app.HostView.Children.Add(control); // On UWP the control may have been removed by another test after the async swap
+					}
+
+					AssertEx.AssertHasColor(control.Foreground, Colors.White);
+				}
+			}
+			finally
+			{
+				await SwapSystemTheme();
+			}
+		}
+
+		[TestMethod]
 		public async Task When_Theme_Changed_From_Setter()
 		{
 			var button = new Button() { Content = "Bu'on" };
