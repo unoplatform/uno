@@ -347,6 +347,10 @@ declare namespace Uno.UI {
             * @param onCapturePhase true means "on trickle down", false means "on bubble up". Default is false.
             */
         registerEventOnViewNative(pParams: number): boolean;
+        registerPointerEventsOnView(pParams: number): void;
+        static onPointerEventReceived(evt: PointerEvent): void;
+        static onPointerEnterReceived(evt: PointerEvent): void;
+        static onPointerLeaveReceived(evt: PointerEvent): void;
         private processPendingLeaveEvent;
         private _isPendingLeaveProcessingEnabled;
         /**
@@ -364,7 +368,7 @@ declare namespace Uno.UI {
          * pointer event extractor to be used with registerEventOnView
          * @param evt
          */
-        private pointerEventExtractor;
+        private static pointerEventExtractor;
         private static _wheelLineSize;
         private static readonly wheelLineSize;
         /**
@@ -378,7 +382,7 @@ declare namespace Uno.UI {
          */
         private tappedEventExtractor;
         /**
-         * tapped (mouse clicked / double clicked) event extractor to be used with registerEventOnView
+         * focus event extractor to be used with registerEventOnView
          * @param evt
          */
         private focusEventExtractor;
@@ -680,6 +684,10 @@ declare class WindowManagerRegisterEventOnViewParams {
     OnCapturePhase: boolean;
     EventExtractorId: number;
     static unmarshal(pData: number): WindowManagerRegisterEventOnViewParams;
+}
+declare class WindowManagerRegisterPointerEventsOnViewParams {
+    HtmlId: number;
+    static unmarshal(pData: number): WindowManagerRegisterPointerEventsOnViewParams;
 }
 declare class WindowManagerRegisterUIElementParams {
     TypeName: string;
