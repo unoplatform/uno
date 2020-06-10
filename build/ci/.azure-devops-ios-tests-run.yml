@@ -2,6 +2,12 @@ parameters:
   vmImage: ''
   xCodeRoot: ''
   XamarinSDKVersion: ''
+  JobName: ''
+  JobTimeoutInMinutes: ''
+  JobDisplayName: ''
+  UITEST_SNAPSHOTS_ONLY: ''
+  UITEST_SNAPSHOTS_GROUP: ''
+  nugetPackages: ''
 
 jobs:
 - job: ${{ parameters.JobName }}
@@ -14,7 +20,7 @@ jobs:
 
   variables:
     CI_Build: true
-    SourceLinkEnabled: falses
+    SourceLinkEnabled: false
     NUGET_PACKAGES: $(Pipeline.Workspace)/.nuget/packages
 
   steps:
@@ -30,7 +36,7 @@ jobs:
 
   - template: templates/nuget-cache.yml
     parameters:
-      nugetPackages: ${{ parameters.NUGET_PACKAGES }}
+      nugetPackages: $(NUGET_PACKAGES)
 
   - template: templates/ios-build-select-version.yml
     parameters:
