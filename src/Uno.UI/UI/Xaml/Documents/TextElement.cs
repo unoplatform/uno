@@ -107,7 +107,7 @@ namespace Windows.UI.Xaml.Documents
 
 		partial void OnFontStyleChangedPartial();
 
-#endregion
+		#endregion
 
 		#region FontSize Dependency Property
 
@@ -123,7 +123,7 @@ namespace Windows.UI.Xaml.Documents
 				typeof(double),
 				typeof(TextElement),
 				new FrameworkPropertyMetadata(
-					defaultValue: (double)11,
+					defaultValue: 15.0,
 					options: FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) => ((TextElement)s).OnFontSizeChanged()
 				)
@@ -136,7 +136,7 @@ namespace Windows.UI.Xaml.Documents
 
 		partial void OnFontSizeChangedPartial();
 
-#endregion
+		#endregion
 
 		#region Foreground Dependency Property
 
@@ -173,41 +173,7 @@ namespace Windows.UI.Xaml.Documents
 
 		partial void OnForegroundChangedPartial();
 
-#endregion
-
-		#region Style Dependency Property
-
-		public Style Style
-		{
-			get { return (Style)this.GetValue(StyleProperty); }
-			set { this.SetValue(StyleProperty, value); }
-		}
-
-		public static readonly DependencyProperty StyleProperty =
-			DependencyProperty.Register(
-				"Style",
-				typeof(Style),
-				typeof(TextElement),
-				new PropertyMetadata(
-					defaultValue: Style.DefaultStyleForType(typeof(TextElement)),
-					propertyChangedCallback: (s, e) => ((TextElement)s).OnStyleChanged()
-				)
-			);
-
-		protected virtual void OnStyleChanged()
-		{
-			if (Style == null)
-			{
-				Style = Style.DefaultStyleForType(typeof(TextElement));
-				Style.ApplyTo(this);
-			}
-
-			OnStyleChangedPartial();
-		}
-
-		partial void OnStyleChangedPartial();
-
-#endregion
+		#endregion
 
 		#region FontWeight Dependency Property
 
@@ -236,7 +202,7 @@ namespace Windows.UI.Xaml.Documents
 
 		partial void OnFontWeightChangedPartial();
 
-#endregion
+		#endregion
 
 		#region CharacterSpacing Dependency Property
 

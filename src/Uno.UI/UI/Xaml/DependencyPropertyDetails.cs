@@ -206,5 +206,10 @@ namespace Windows.UI.Xaml
 		}
 
 		#endregion
+
+		public override string ToString()
+		{
+			return $"DependencyPropertyDetails({Property.Name})";
+		}
 	}
 }

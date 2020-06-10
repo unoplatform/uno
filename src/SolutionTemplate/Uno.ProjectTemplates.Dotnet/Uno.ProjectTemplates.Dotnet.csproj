@@ -166,7 +166,7 @@
 
 								var replacedNuget = @"
 		<PackageReference Include=""Microsoft.WinUI"">
-			<Version>3.0.0-alpha.200210.0</Version>
+			<Version>3.0.0-preview1.200515.3</Version>
 		</PackageReference>
 		<PackageReference Include=""Microsoft.NETCore.UniversalWindowsPlatform"">";
 		
@@ -177,6 +177,8 @@
 							{
 								s = s
 									.Replace("Include=\"Uno.UI", "Include=\"Uno.WinUI")
+									.Replace("e.PreviousExecutionState", "e.UWPLaunchActivatedEventArgs.PreviousExecutionState")
+									.Replace("e.PrelaunchActivated", "e.UWPLaunchActivatedEventArgs.PrelaunchActivated")
 									.Replace("Windows.UI.Xaml", "Microsoft.UI.Xaml");
 									
 								var replacedLogging = @"

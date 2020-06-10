@@ -19,7 +19,7 @@ namespace Windows.UI.Xaml
 		public T AddChild<T>(T child) where T : View
 		{
 			_children.Add(child);
-			child.SetParent(this);
+			OnAddChild(child);
 
 			return child;
 		}
@@ -27,11 +27,21 @@ namespace Windows.UI.Xaml
 		public T AddChild<T>(T child, int index) where T : View
 		{
 			_children.Insert(index, child);
-			child.SetParent(this);
+			OnAddChild(child);
 
 			return child;
 		}
 
+		private void OnAddChild(View child)
+		{
+			child.SetParent(this);
+			if (child is FrameworkElement fe)
+			{
+				fe.IsLoaded = IsLoaded;
+				fe.EnterTree();
+			}
+		}
+		
 		public T RemoveChild<T>(T child) where T : View
 		{
 			_children.Remove(child);
@@ -43,11 +53,6 @@ namespace Windows.UI.Xaml
 		public View FindFirstChild()
 		{
 			return _children.FirstOrDefault();
-		}
-
-		public T FindFirstChild<T>()  where T : View
-		{
-			return _children.OfType<T>().FirstOrDefault<T>();
 		}
 
 		public virtual IEnumerable<View> GetChildren()
@@ -71,12 +76,12 @@ namespace Windows.UI.Xaml
 			MeasureCallCount++;
 			AvailableMeasureSize = slotSize;
 
-			if(DesiredSizeSelector != null)
+			if (DesiredSizeSelector != null)
 			{
 				DesiredSize = DesiredSizeSelector(slotSize);
 				RequestedDesiredSize = DesiredSize;
 			}
-			else if(RequestedDesiredSize != null)
+			else if (RequestedDesiredSize != null)
 			{
 				DesiredSize = RequestedDesiredSize.Value;
 			}
@@ -94,12 +99,22 @@ namespace Windows.UI.Xaml
 		public void ForceLoaded()
 		{
 			IsLoaded = true;
-			OnLoading();
-			OnLoaded();
+			EnterTree();
+		}
 
-			foreach(var child in GetChildren().OfType<FrameworkElement>())
+		private void EnterTree()
+		{
+			if (IsLoaded)
 			{
-				child.ForceLoaded();
+				ApplyCompiledBindings();
+				OnLoading();
+				OnLoaded();
+
+				foreach (var child in _children.OfType<FrameworkElement>())
+				{
+					child.IsLoaded = IsLoaded;
+					child.EnterTree();
+				}
 			}
 		}
 
@@ -119,5 +134,8 @@ namespace Windows.UI.Xaml
 		public Size UnclippedDesiredSize => _layouter._unclippedDesiredSize;
 
 		public global::System.Uri BaseUri { get; internal set; }
+
+		private protected virtual double GetActualWidth() => ActualWidth;
+		private protected virtual double GetActualHeight() => ActualHeight;
 	}
 }

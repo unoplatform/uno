@@ -18,6 +18,7 @@ using Uno.UI.DataBinding;
 using Uno.UI.Extensions;
 using Uno.UI.Media;
 using System;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Windows.Foundation;
 using Windows.UI.Xaml;
@@ -228,10 +229,32 @@ namespace <#= mixin.NamespaceName #>
 
 		protected virtual void OnStyleChanged(Style oldValue, Style newValue)
 		{
-			newValue?.ApplyTo(this);
+			OnStyleChanged(oldValue, newValue, DependencyPropertyValuePrecedences.ExplicitStyle);
+		}
+
+		private void OnStyleChanged(Style oldStyle, Style newStyle, DependencyPropertyValuePrecedences precedence)
+		{
+			if (oldStyle == newStyle)
+			{
+				// Nothing to do
+				return;
+			}
+
+			oldStyle?.ClearInvalidProperties(this, newStyle, precedence);
+
+			newStyle?.ApplyTo(this, precedence);
 		}
 
 		#endregion
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public bool IsParsing { get; set; }
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public void CreationComplete()
+		{
+			IsParsing = false;
+		}
 #endif
 	
 		#region IsEnabled Dependency Property

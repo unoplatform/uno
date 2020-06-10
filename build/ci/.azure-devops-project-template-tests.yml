@@ -1,0 +1,26 @@
+parameters:
+  vmImage: ''
+
+jobs:
+- job: Dotnet_Template_Tests
+
+  pool:
+    vmImage: ${{ parameters.vmImage }}
+
+  dependsOn: VS_Latest
+
+  steps:
+  - task: DownloadBuildArtifacts@0
+    inputs:
+      artifactName: NugetPackages
+
+  - script: copy $(System.ArtifactsDirectory)\NugetPackages\vslatest\*.nupkg $(Build.SourcesDirectory)\src\PackageCache
+    displayName: Copy Artifacts to PackageCache
+
+  - script: dotnet new -i $(System.ArtifactsDirectory)\NugetPackages\vslatest\Uno.ProjectTemplates.Dotnet*.nupkg
+    displayName: Install Project Templates
+
+  - powershell: build\run-template-tests.ps1
+    displayName: Run Project Templates Tests
+    env:
+      NUGET_CI_CONFIG: $(Build.SourcesDirectory)\src\nuget.ci.config

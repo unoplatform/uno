@@ -16,7 +16,7 @@ using Windows.Devices.Sensors;
 
 namespace Windows.UI.Xaml
 {
-	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
+	[Activity(ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode, WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden)]
 	public class ApplicationActivity : Controls.NativePage
 	{
 
@@ -190,6 +190,7 @@ namespace Windows.UI.Xaml
 			Xaml.Window.Current?.RaiseNativeSizeChanged();
 			ViewHelper.RefreshFontScale();
 			DisplayInformation.GetForCurrentView().HandleConfigurationChange();
+			Windows.UI.Xaml.Application.Current.OnSystemThemeChanged();
 		}
 
 		public override void OnBackPressed()

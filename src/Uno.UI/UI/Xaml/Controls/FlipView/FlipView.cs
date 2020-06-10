@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Controls
 	{
 		public FlipView()
 		{
-
+			DefaultStyleKey = typeof(FlipView);
 		}
 
 		public bool UseTouchAnimationsForAllNavigation

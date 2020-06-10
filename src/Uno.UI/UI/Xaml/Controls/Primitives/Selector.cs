@@ -113,10 +113,6 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				SelectedIndex = newIndex;
 			}
 
-			InvokeSelectionChanged(wasSelectionUnset ? new object[] { } : new[] { oldSelectedItem },
-				isSelectionUnset ? new object[] { } : new[] { selectedItem }
-			);
-
 			OnSelectedItemChangedPartial(oldSelectedItem, selectedItem);
 
 			UpdateSelectedValue();
@@ -126,6 +122,10 @@ namespace Windows.UI.Xaml.Controls.Primitives
 				TryUpdateSelectorItemIsSelected(oldSelectedItem, false);
 				TryUpdateSelectorItemIsSelected(selectedItem, true);
 			}
+
+			InvokeSelectionChanged(wasSelectionUnset ? new object[] { } : new[] { oldSelectedItem },
+				isSelectionUnset ? new object[] { } : new[] { selectedItem }
+			);
 		}
 
 		internal void TryUpdateSelectorItemIsSelected(object item, bool isSelected)

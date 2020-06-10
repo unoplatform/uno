@@ -10,6 +10,8 @@ namespace Windows.UI.Xaml.Controls
 		public GridViewItem()
 		{
 			Initialize();
+
+			DefaultStyleKey = typeof(GridViewItem);
 		}
 
 		partial void Initialize();

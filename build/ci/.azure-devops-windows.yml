@@ -56,7 +56,7 @@ jobs:
       msbuildLocationMethod: version
       msbuildVersion: latest
       msbuildArchitecture: x86
-      msbuildArguments: /r "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary # /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer).binlog
+      msbuildArguments: /r /m "/p:CombinedConfiguration=$(CombinedConfiguration)" /detailedsummary # /bl:$(build.artifactstagingdirectory)\build-$(GitVersion.FullSemVer).binlog
       clean: false
       restoreNugetPackages: false
       logProjectEvents: false

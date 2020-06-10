@@ -12,6 +12,8 @@ namespace Windows.UI.Xaml.Controls.Maps
 		public MapControl()
 		{
 			Children = new DependencyObjectCollection(this);
+
+			DefaultStyleKey = typeof(MapControl);
 		}
 
 		public MapStyle Style

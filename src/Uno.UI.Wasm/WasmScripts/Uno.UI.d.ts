@@ -24,8 +24,6 @@ declare namespace Windows.UI.Core {
      * */
     class CoreDispatcher {
         static _coreDispatcherCallback: any;
-        static _isIOS: boolean;
-        static _isSafari: boolean;
         static _isFirstCall: boolean;
         static _isReady: Promise<boolean>;
         static _isWaitingReady: boolean;
@@ -167,6 +165,7 @@ declare namespace Uno.UI {
         private static resizeMethod;
         private static dispatchEventMethod;
         private static focusInMethod;
+        private static dispatchSuspendingMethod;
         private static getDependencyPropertyValueMethod;
         private static setDependencyPropertyValueMethod;
         private constructor();
@@ -533,6 +532,71 @@ declare namespace Uno.UI {
         setCursor(cssCursor: string): string;
     }
 }
+declare class ApplicationDataContainer_ClearParams {
+    Locality: string;
+    static unmarshal(pData: number): ApplicationDataContainer_ClearParams;
+}
+declare class ApplicationDataContainer_ContainsKeyParams {
+    Key: string;
+    Value: string;
+    Locality: string;
+    static unmarshal(pData: number): ApplicationDataContainer_ContainsKeyParams;
+}
+declare class ApplicationDataContainer_ContainsKeyReturn {
+    ContainsKey: boolean;
+    marshal(pData: number): void;
+}
+declare class ApplicationDataContainer_GetCountParams {
+    Locality: string;
+    static unmarshal(pData: number): ApplicationDataContainer_GetCountParams;
+}
+declare class ApplicationDataContainer_GetCountReturn {
+    Count: number;
+    marshal(pData: number): void;
+}
+declare class ApplicationDataContainer_GetKeyByIndexParams {
+    Locality: string;
+    Index: number;
+    static unmarshal(pData: number): ApplicationDataContainer_GetKeyByIndexParams;
+}
+declare class ApplicationDataContainer_GetKeyByIndexReturn {
+    Value: string;
+    marshal(pData: number): void;
+}
+declare class ApplicationDataContainer_GetValueByIndexParams {
+    Locality: string;
+    Index: number;
+    static unmarshal(pData: number): ApplicationDataContainer_GetValueByIndexParams;
+}
+declare class ApplicationDataContainer_GetValueByIndexReturn {
+    Value: string;
+    marshal(pData: number): void;
+}
+declare class ApplicationDataContainer_RemoveParams {
+    Locality: string;
+    Key: string;
+    static unmarshal(pData: number): ApplicationDataContainer_RemoveParams;
+}
+declare class ApplicationDataContainer_RemoveReturn {
+    Removed: boolean;
+    marshal(pData: number): void;
+}
+declare class ApplicationDataContainer_SetValueParams {
+    Key: string;
+    Value: string;
+    Locality: string;
+    static unmarshal(pData: number): ApplicationDataContainer_SetValueParams;
+}
+declare class ApplicationDataContainer_TryGetValueParams {
+    Key: string;
+    Locality: string;
+    static unmarshal(pData: number): ApplicationDataContainer_TryGetValueParams;
+}
+declare class ApplicationDataContainer_TryGetValueReturn {
+    Value: string;
+    HasValue: boolean;
+    marshal(pData: number): void;
+}
 declare class StorageFolderMakePersistentParams {
     Paths_Length: number;
     Paths: Array<string>;
@@ -807,6 +871,44 @@ declare const WebAssemblyApp: Uno.UI.Interop.IWebAssemblyApp;
 declare const UnoAppManifest: Uno.UI.IAppManifest;
 declare const UnoDispatch: Uno.UI.Interop.IUnoDispatch;
 declare namespace Windows.Storage {
+    class ApplicationDataContainer {
+        private static buildStorageKey;
+        private static buildStoragePrefix;
+        /**
+         * Try to get a value from localStorage
+         * */
+        private static tryGetValue;
+        /**
+         * Set a value to localStorage
+         * */
+        private static setValue;
+        /**
+         * Determines if a key is contained in localStorage
+         * */
+        private static containsKey;
+        /**
+         * Gets a key by index in localStorage
+         * */
+        private static getKeyByIndex;
+        /**
+         * Determines the number of items contained in localStorage
+         * */
+        private static getCount;
+        /**
+         * Clears items contained in localStorage
+         * */
+        private static clear;
+        /**
+         * Removes an item contained in localStorage
+         * */
+        private static remove;
+        /**
+         * Gets a key by index in localStorage
+         * */
+        private static getValueByIndex;
+    }
+}
+declare namespace Windows.Storage {
     class StorageFolder {
         private static _isInit;
         /**
@@ -889,6 +991,19 @@ declare namespace Windows.Devices.Sensors {
         private static readingChangedHandler;
     }
 }
+declare namespace Windows.Networking.Connectivity {
+    class ConnectionProfile {
+        static hasInternetAccess(): boolean;
+    }
+}
+declare namespace Windows.Networking.Connectivity {
+    class NetworkInformation {
+        private static dispatchStatusChanged;
+        static startStatusChanged(): void;
+        static stopStatusChanged(): void;
+        static networkStatusChanged(): void;
+    }
+}
 interface Window {
     opr: any;
     opera: any;
@@ -933,7 +1048,9 @@ declare namespace Windows.UI.ViewManagement {
 }
 declare namespace Windows.UI.Xaml {
     class Application {
+        private static dispatchThemeChange;
         static getDefaultSystemTheme(): string;
+        static observeSystemTheme(): void;
     }
 }
 declare namespace Windows.UI.Xaml {

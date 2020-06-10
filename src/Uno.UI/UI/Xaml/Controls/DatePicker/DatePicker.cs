@@ -9,6 +9,7 @@ using Windows.UI.Xaml.Automation.Peers;
 using Windows.UI.Xaml.Controls.Primitives;
 using Windows.UI.Xaml.Media;
 using Windows.Foundation;
+using Uno.UI;
 
 namespace Windows.UI.Xaml.Controls
 {
@@ -18,6 +19,16 @@ namespace Windows.UI.Xaml.Controls
 		public event TypedEventHandler<DatePicker, DatePickerSelectedValueChangedEventArgs> SelectedDateChanged;
 
 		private static readonly DateTimeOffset UnsetDateValue = DateTimeOffset.MinValue;
+
+		public DatePicker()
+		{
+			DefaultStyleKey = typeof(DatePicker);
+			ResourceResolver.ApplyResource(this, LightDismissOverlayBackgroundProperty, "DatePickerLightDismissOverlayBackground", isThemeResourceExtension: true);
+
+			InitializePartial();
+		}
+
+		partial void InitializePartial();
 
 		#region DateProperty
 
@@ -179,18 +190,6 @@ namespace Windows.UI.Xaml.Controls
 		internal static readonly DependencyProperty LightDismissOverlayBackgroundProperty =
 			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(DatePicker), new PropertyMetadata(null));
 
-		public DatePicker()
-		{
-			LightDismissOverlayBackground = Resources["DatePickerLightDismissOverlayBackground"] as Brush ??
-				// This is normally a no-op - the above line should retrieve the framework-level resource. This is purely to fail the build when
-				// Resources/Styles are overhauled (and the above will no longer be valid)
-				Uno.UI.GlobalStaticResources.DatePickerLightDismissOverlayBackground as Brush;
-
-			InitializePartial();
-		}
-
-		partial void InitializePartial();
-
 		#region Template parts
 		public const string DayTextBlockPartName = "DayTextBlock";
 		public const string MonthTextBlockPartName = "MonthTextBlock";
@@ -334,7 +333,7 @@ namespace Windows.UI.Xaml.Controls
 					(2, "y", _yearTextBlock),
 				}
 				.OrderBy(x => currentDateFormat.IndexOf(x.SortKey, StringComparison.InvariantCultureIgnoreCase))
-				.Select((x, i) => ( x.Item, x.Index, i ))
+				.Select((x, i) => (x.Item, x.Index, i))
 				.ToArray();
 		}
 

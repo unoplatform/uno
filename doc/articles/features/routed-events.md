@@ -2,37 +2,34 @@
 
 ## Implemented Routed Events
 
-| Routed Event                  | Android | iOS     | Wasm    |     |
-| ----------------------------- | ------- | ------- | ------- | --- |
-| _tapped events_               
-| `Tapped`                      | Yes (1) | Yes (1) | Yes (1) | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.tapped) |
-| `DoubleTapped`                | Yes (1) | Yes (1) | Yes (1) | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.doubletapped) |
-| _focus events_                
-| `GotFocus`                    | Yes     | Yes (2) | Yes (2) | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.gotfocus) |
-| `LostFocus`                   | Yes     | Yes (2) | Yes (2) | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.lostfocus) |
-| _keyboard events_             
-| `KeyDown`           | Hardware Only (3) | Yes (3) | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.keydown) |
-| `KeyUp`             | Hardware Only (3) | Yes (3) | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.keyup) |
-| _pointer events_              
-| `PointerCanceled`             | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointercanceled) |
-| `PointerCaptureLost`          | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointercapturelost) |
-| `PointerEntered`              | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerentered) |
-| `PointerExited`               | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerexited) |
-| `PointerMoved`                | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointermoved) |
-| `PointerPressed`              | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerpressed) |
-| `PointerReleased`             | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerreleased) |
-| `PointerWheelChanged`         | No      | No      | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerwheelchanged) |
-| _manipulation events_         
-| `ManipulationStarting`        | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationstarting) |
-| `ManipulationStarted`         | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationstarted) |
-| `ManipulationDelta`           | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationedelta) |
-| `ManipulationInertiaStarting` | No      | No      | No      | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationinertiastarting) |
-| `ManipulationCompleted`       | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationcompleted) |
-| _gesture events_         
-| `Tapped`                      | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.tapped) |
-| `DoubleTapped`                | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.doubletapped) |
-| `RightTapped`                 | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.righttapped) |
-| `Holding`                     | Yes     | Yes     | Yes     | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.holding) |
+| Routed Event                  | Android | iOS     | Wasm    | Mac |     |
+| ----------------------------- | ------- | ------- | ------- | --- | --- |
+| _focus events_                                                    
+| `GotFocus`                    | Yes     | Yes (2) | Yes (2) | ?   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.gotfocus) |
+| `LostFocus`                   | Yes     | Yes (2) | Yes (2) | ?   | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.lostfocus) |
+| _keyboard events_                                                 
+| `KeyDown`           | Hardware Only (3) | Yes (3) | Yes     | Yes | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.keydown) |
+| `KeyUp`             | Hardware Only (3) | Yes (3) | Yes     | Yes | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.keyup) |
+| _pointer events_                                                  
+| `PointerCanceled`             | Yes     | Yes     | Yes     | Yes | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointercanceled) |
+| `PointerCaptureLost`          | Yes     | Yes     | Yes     | Yes | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointercapturelost) |
+| `PointerEntered`              | Yes     | Yes     | Yes     | Yes | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerentered) |
+| `PointerExited`               | Yes     | Yes     | Yes     | Yes | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerexited) |
+| `PointerMoved`                | Yes     | Yes     | Yes     | Yes | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointermoved) |
+| `PointerPressed`              | Yes     | Yes     | Yes     | Yes | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerpressed) |
+| `PointerReleased`             | Yes     | Yes     | Yes     | Yes | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerreleased) |
+| `PointerWheelChanged`         | No      | No      | Yes     | No  | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.pointerwheelchanged) |
+| _manipulation events_                                             
+| `ManipulationStarting`        | Yes     | Yes     | Yes     | Yes | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationstarting) |
+| `ManipulationStarted`         | Yes     | Yes     | Yes     | Yes | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationstarted) |
+| `ManipulationDelta`           | Yes     | Yes     | Yes     | Yes | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationedelta) |
+| `ManipulationInertiaStarting` | No      | No      | No      | No  | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationinertiastarting) |
+| `ManipulationCompleted`       | Yes     | Yes     | Yes     | Yes | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.manipulationcompleted) |
+| _gesture events_ (1)                                               
+| `Tapped`                      | Yes     | Yes     | Yes     | Yes | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.tapped) |
+| `DoubleTapped`                | Yes     | Yes     | Yes     | Yes | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.doubletapped) |
+| `RightTapped`                 | Yes     | Yes     | Yes     | Yes | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.righttapped) |
+| `Holding`                     | Yes     | Yes     | Yes     | Yes | [Documentation](https://docs.microsoft.com/uwp/api/windows.ui.xaml.uielement.holding) |
 
 Notes:
 

@@ -28,11 +28,6 @@ namespace Windows.UI.Xaml.Documents
 			this.SetForeground(ReadLocalValue(ForegroundProperty));
 		}
 
-		partial void OnStyleChangedPartial()
-		{
-
-		}
-
 		partial void OnFontWeightChangedPartial()
 		{
 			this.SetFontWeight(ReadLocalValue(FontWeightProperty));

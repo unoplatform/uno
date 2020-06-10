@@ -13,6 +13,10 @@
 	<type fullname="Windows.UI.Xaml.Input.FocusManager">
 	  <method name="ReceiveFocusNative" />
 	</type>
+	<type fullname="Windows.UI.Xaml.Application">
+	  <method name="DispatchSuspending" />
+      <method name="DispatchSystemThemeChange" />
+	</type>
   </assembly>
   
   <assembly fullname="Uno">
@@ -26,6 +30,9 @@
     </type>
     <type fullname="Windows.Devices.Sensors.Magnetometer">
       <method name="DispatchReading" />
+    </type>
+    <type fullname="Windows.Networking.Connectivity.NetworkInformation">
+      <method name="DispatchStatusChanged" />
     </type>
     <type fullname="Windows.Devices.Sensors.Gyrometer">
       <method name="DispatchReading" />

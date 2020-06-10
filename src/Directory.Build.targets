@@ -11,6 +11,7 @@
   </Target>
 
   <ItemGroup>
+    <PackageReference Update="Microsoft.NETCore.UniversalWindowsPlatform" Version="6.2.9" /> <!-- Keep aligned with MSBuild extras' default ExtrasUwpMetaPackageVersion -->
     <PackageReference Update="Uno.SourceGenerationTasks" Version="2.0.6" />
     <PackageReference Update="Uno.SourceGeneration" Version="2.0.6" />
     <PackageReference Update="Uno.Core" Version="2.0.0" />
@@ -27,10 +28,10 @@
     <PackageReference Update="Microsoft.TypeScript.MSBuild" Version="3.1.5" />
     <PackageReference Update="NUnit" Version="3.12.0" />
     <PackageReference Update="NUnit3TestAdapter" Version="3.16.0" />
-    <PackageReference Update="Uno.UITest" Version="1.0.0-dev.113" />
-    <PackageReference Update="Uno.UITest.Selenium" Version="1.0.0-dev.113" />
-    <PackageReference Update="Uno.UITest.Xamarin" Version="1.0.0-dev.113" />
-    <PackageReference Update="Uno.UITest.Helpers" Version="1.0.0-dev.113" />
+    <PackageReference Update="Uno.UITest" Version="1.0.0" />
+    <PackageReference Update="Uno.UITest.Selenium" Version="1.0.0" />
+    <PackageReference Update="Uno.UITest.Xamarin" Version="1.0.0" />
+    <PackageReference Update="Uno.UITest.Helpers" Version="1.0.0" />
     <PackageReference Update="System.ValueTuple" Version="4.5.0" />
     <PackageReference Update="Xamarin.DuoSdk" Version="0.0.3.4" />
     <PackageReference Update="System.Numerics.Vectors" Version="4.5.0" />

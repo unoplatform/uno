@@ -10,9 +10,18 @@ namespace SamplesApp.Droid
 {
 	[Activity(
 			MainLauncher = true,
-			ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize,
+			ConfigurationChanges = ConfigChanges.Orientation | ConfigChanges.ScreenSize | ConfigChanges.UiMode,
 			WindowSoftInputMode = SoftInput.AdjustPan | SoftInput.StateHidden
 		)]
+	[IntentFilter(
+		new[] {
+			Android.Content.Intent.ActionView
+		},
+		Categories = new[] {
+			Android.Content.Intent.CategoryDefault,
+			Android.Content.Intent.CategoryBrowsable
+		},
+		DataScheme = "uno-samples-test")]
 	public class MainActivity : Windows.UI.Xaml.ApplicationActivity
 	{
 		[Export("RunTest")]

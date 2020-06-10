@@ -9,7 +9,7 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Uno.Analyzers</RootNamespace>
     <AssemblyName>Uno.Analyzers</AssemblyName>
-    <TargetFrameworkVersion>v4.6</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.6.1</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
   </PropertyGroup>
@@ -42,19 +42,19 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.CodeAnalysis">
-      <Version>1.2.0</Version>
+      <Version>3.3.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.Common">
-      <Version>1.2.0</Version>
+      <Version>3.3.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp">
-      <Version>1.2.0</Version>
+      <Version>3.3.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.CSharp.Workspaces">
-      <Version>1.2.0</Version>
+      <Version>3.3.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.Workspaces.Common">
-      <Version>1.2.0</Version>
+      <Version>3.3.1</Version>
     </PackageReference>
   </ItemGroup>
   <ItemGroup>

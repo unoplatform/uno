@@ -59,5 +59,7 @@ namespace Windows.UI.Xaml
 		protected virtual void OnVisibilityChanged(Visibility oldValue, Visibility newVisibility)
 		{
 		}
+
+		public string ShowLocalVisualTree(int fromHeight = 1000) => Uno.UI.ViewExtensions.ShowLocalVisualTree(this, fromHeight);
 	}
 }

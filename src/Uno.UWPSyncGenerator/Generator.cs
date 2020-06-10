@@ -78,6 +78,7 @@ namespace Uno.UWPSyncGenerator
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.UI")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Microsoft.System")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Phone.PhoneContract")
+						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.Networking.Connectivity.WwanContract")
 						  || Path.GetFileNameWithoutExtension(externalRedfs.Display).StartsWith("Windows.ApplicationModel.Calls.CallsPhoneContract")
 						  let asm = _referenceCompilation.GetAssemblyOrModuleSymbol(externalRedfs) as IAssemblySymbol
 						  where asm != null
@@ -681,9 +682,11 @@ namespace Uno.UWPSyncGenerator
 				BaseXamlNamespace + ".Shapes.Path",
 				BaseXamlNamespace + ".Media.ImageBrush",
 				BaseXamlNamespace + ".Media.LinearGradientBrush",
+				BaseXamlNamespace + ".Media.RadialGradientBrush",
 				BaseXamlNamespace + ".Data.RelativeSource",
 				BaseXamlNamespace + ".Controls.Primitives.CarouselPanel",
 				BaseXamlNamespace + ".Controls.MediaPlayerPresenter",
+				BaseXamlNamespace + ".Controls.NavigationViewItemBase",
 			};
 
 			var isSkipped = skippedTypes.Contains(type.BaseType?.ToString());

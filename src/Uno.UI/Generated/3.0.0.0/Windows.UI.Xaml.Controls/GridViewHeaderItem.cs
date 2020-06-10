@@ -7,7 +7,7 @@ namespace Windows.UI.Xaml.Controls
 	#endif
 	public  partial class GridViewHeaderItem : global::Windows.UI.Xaml.Controls.ListViewBaseHeaderItem
 	{
-		#if false || false || NET461 || __WASM__ || false
+		#if false || false || false || __WASM__ || false
 		[global::Uno.NotImplemented]
 		public GridViewHeaderItem() 
 		{

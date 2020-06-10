@@ -19,19 +19,9 @@ namespace Windows.UI.Xaml
 		private readonly Application _app;
 		private Intent _lastHandledIntent;
 
-		public delegate Windows.UI.Xaml.Application AppBuilder();
+		private bool _isRunning = false;
 
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public NativeApplication(Windows.UI.Xaml.Application app, IntPtr javaReference, Android.Runtime.JniHandleOwnership transfer)
-			: this(() => app, javaReference, transfer)
-		{
-			if (this.Log().IsEnabled(LogLevel.Warning))
-			{
-				this.Log().LogWarning(
-					"The constructor on Windows.UI.Xaml.NativeApplication uses an explicitly created Windows.UI.Xaml.Application instance. " +
-					"Instead, use the constructor that requires a Windows.UI.Xaml.NativeApplication.AppBuilder delegate.");
-			}
-		}
+		public delegate Windows.UI.Xaml.Application AppBuilder();
 
 		/// <summary>
 		/// Creates an android Application instance
@@ -56,16 +46,37 @@ namespace Windows.UI.Xaml
 		private void OnActivityStarted(Activity activity)
 		{
 			_app.InitializationCompleted();
-			if (_lastHandledIntent != activity.Intent &&
-			    activity.Intent?.Extras?.ContainsKey(JumpListItem.ArgumentsExtraKey) == true)
+
+			var handled = false;
+			if (_lastHandledIntent != activity.Intent)
 			{
 				_lastHandledIntent = activity.Intent;
-				_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, activity.Intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
+				if (activity.Intent?.Extras?.ContainsKey(JumpListItem.ArgumentsExtraKey) == true)
+				{
+					_app.OnLaunched(new LaunchActivatedEventArgs(ActivationKind.Launch, activity.Intent.GetStringExtra(JumpListItem.ArgumentsExtraKey)));
+					handled = true;					
+				}
+				else if (activity.Intent.Data != null)
+				{
+					if (Uri.TryCreate(activity.Intent.Data.ToString(), UriKind.Absolute, out var uri))
+					{
+						_app.OnActivated(new ProtocolActivatedEventArgs(uri, _isRunning ? ApplicationExecutionState.Running : ApplicationExecutionState.NotRunning));
+						handled = true;						
+					}
+					else
+					{
+						// log error and fall back to normal launch
+						this.Log().LogError($"Activation URI {activity.Intent.Data} could not be parsed");
+					}
+				}
 			}
-			else
+
+			// default to normal launch
+			if (!handled)
 			{
 				_app.OnLaunched(new LaunchActivatedEventArgs());
 			}
+			_isRunning = true;
 		}
 
 		/// <summary>

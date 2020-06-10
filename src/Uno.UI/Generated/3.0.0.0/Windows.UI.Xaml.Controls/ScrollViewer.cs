@@ -559,14 +559,14 @@ namespace Windows.UI.Xaml.Controls
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.TopHeader.set
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.ViewChanging.add
 		// Forced skipping of method Windows.UI.Xaml.Controls.ScrollViewer.ViewChanging.remove
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  bool ChangeView( double? horizontalOffset,  double? verticalOffset,  float? zoomFactor)
 		{
 			throw new global::System.NotImplementedException("The member bool ScrollViewer.ChangeView(double? horizontalOffset, double? verticalOffset, float? zoomFactor) is not implemented in Uno.");
 		}
 		#endif
-		#if false || false || NET461 || false || false
+		#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  bool ChangeView( double? horizontalOffset,  double? verticalOffset,  float? zoomFactor,  bool disableAnimation)
 		{

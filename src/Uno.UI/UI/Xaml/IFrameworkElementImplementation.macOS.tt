@@ -7,6 +7,7 @@
 
 using System;
 using Uno.Disposables;
+using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using Uno.UI.DataBinding;
 using Uno.Extensions;
@@ -511,10 +512,32 @@ namespace <#= mixin.NamespaceName #>
 
 		protected virtual void OnStyleChanged(Style oldValue, Style newValue)
 		{
-			newValue?.ApplyTo(this);
+			OnStyleChanged(oldValue, newValue, DependencyPropertyValuePrecedences.ExplicitStyle);
+		}
+
+		private void OnStyleChanged(Style oldStyle, Style newStyle, DependencyPropertyValuePrecedences precedence)
+		{
+			if (oldStyle == newStyle)
+			{
+				// Nothing to do
+				return;
+			}
+
+			oldStyle?.ClearInvalidProperties(this, newStyle, precedence);
+
+			newStyle?.ApplyTo(this, precedence);
 		}
 
 		#endregion
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public bool IsParsing { get; set; }
+
+		[EditorBrowsable(EditorBrowsableState.Never)]
+		public void CreationComplete()
+		{
+			IsParsing = false;
+		}
 #endif
 
 		internal void SuspendRendering()

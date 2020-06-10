@@ -1,6 +1,6 @@
 # API Extensions
 
-Uno provides a simple mecanism which allows for external provides to provide an implementation for some known interfaces. The goal behind this is two fold:
+Uno provides a simple mechanism which allows for external provides to provide an implementation for some known interfaces. The goal behind this is two fold:
 
 - Provide a way to remove some types of dependencies from the main Uno.UI package, reducing the payload size of an app if some features are not required
 - Provide a way for developers to provide a custom implementation of a known WinRT or WinUI api for which the default implementation is not provided

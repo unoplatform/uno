@@ -206,7 +206,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(ContentPresenter),
 				new FrameworkPropertyMetadata(
-					11.0,
+					15.0,
 					FrameworkPropertyMetadataOptions.Inherits,
 					(s, e) => ((ContentPresenter)s)?.OnFontSizeChanged((double)e.OldValue, (double)e.NewValue)
 				)
