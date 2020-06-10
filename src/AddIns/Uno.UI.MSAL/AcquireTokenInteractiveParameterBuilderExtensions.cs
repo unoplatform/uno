@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using Windows.UI.Xaml;
 using Microsoft.Identity.Client;
 using Microsoft.Identity.Client.Extensibility;
 
@@ -16,7 +15,7 @@ namespace Uno.UI.MSAL
 #if __WASM__
 			builder.WithCustomWebUi(WasmWebUi.Instance);
 #elif __MACOS__
-			builder.WithParentActivityOrWindow(Window.Current.Content.Window);
+			builder.WithParentActivityOrWindow(Windows.UI.Xaml.Window.Current.Content.Window);
 #endif
 			return builder;
 		}

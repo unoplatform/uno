@@ -1,5 +1,4 @@
 ﻿using System.Runtime.CompilerServices;
-using Windows.UI.Xaml;
 using Microsoft.Identity.Client;
 
 namespace Uno.UI.MSAL
@@ -14,9 +13,9 @@ namespace Uno.UI.MSAL
 			where T : AbstractApplicationBuilder<T>
 		{
 #if __ANDROID__
-			(builder as PublicClientApplicationBuilder)?.WithParentActivityOrWindow(() => Uno.UI.ContextHelper.Current as Android.App.Activity);
+			(builder as PublicClientApplicationBuilder)?.WithParentActivityOrWindow(() => ContextHelper.Current as Android.App.Activity);
 #elif __IOS__
-			(builder as PublicClientApplicationBuilder)?.WithParentActivityOrWindow(() => Window.Current.Content.Window.RootViewController);
+			(builder as PublicClientApplicationBuilder)?.WithParentActivityOrWindow(() => Windows.UI.Xaml.Window.Current.Content.Window.RootViewController);
 #elif __WASM__
 			builder.WithHttpClientFactory(WasmHttpFactory.Instance);
 #endif
