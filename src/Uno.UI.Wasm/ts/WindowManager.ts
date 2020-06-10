@@ -1,4 +1,5 @@
-﻿
+﻿declare const config: any;
+
 // eslint-disable-next-line @typescript-eslint/no-namespace
 namespace Uno.UI {
 
@@ -1829,7 +1830,7 @@ namespace Uno.UI {
 
 	if (typeof define === "function") {
 		define(
-			["AppManifest"],
+			[`${config.uno_app_base}/AppManifest`],
 			() => {
 			}
 		);

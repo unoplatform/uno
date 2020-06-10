@@ -45,9 +45,9 @@ namespace Uno.UI.RuntimeTests.Tests
 				testFile = await folderForTestFile.CreateFileAsync(_filename, Windows.Storage.CreationCollisionOption.FailIfExists);
 				Assert.IsNotNull(testFile, "cannot create file - error outside tested method");
 			}
-			catch
+			catch (Exception e)
 			{
-				Assert.Fail("CreateFile exception - error outside tested method");
+				Assert.Fail($"CreateFile exception - error outside tested method ({e})");
 			}
 
 			DateTimeOffset dateAfterCreating = DateTimeOffset.Now;
@@ -61,9 +61,9 @@ namespace Uno.UI.RuntimeTests.Tests
 			{
 				dateOnCreating = testFile.DateCreated;
 			}
-			catch
+			catch (Exception e)
 			{
-				Assert.Fail("DateCreated exception - error in tested method");
+				Assert.Fail($"DateCreated exception - error in tested method ({e})");
 			}
 
 			// while testing date, we should remember about filesystem date resolution.
@@ -123,9 +123,9 @@ namespace Uno.UI.RuntimeTests.Tests
 			{
 				dateModified = (await testFile.GetBasicPropertiesAsync()).DateModified;
 			}
-			catch
+			catch (Exception e)
 			{
-				Assert.Fail("DateModified exception - error in tested method");
+				Assert.Fail($"DateModified exception - error in tested method ({e})");
 			}
 
 			// first, date should not be year 1601 or something like that...

@@ -114,6 +114,7 @@ declare namespace MonoSupport {
         private static getMethodMapId;
     }
 }
+declare const config: any;
 declare namespace Uno.UI {
     class WindowManager {
         private containerElementId;

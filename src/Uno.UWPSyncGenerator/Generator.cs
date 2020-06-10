@@ -56,7 +56,7 @@ namespace Uno.UWPSyncGenerator
 
 			Console.WriteLine($"Generating for {baseName} {sourceAssembly}");
 
-			_referenceCompilation = LoadProject(@"..\..\..\..\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj");
+			_referenceCompilation = LoadProject(@"..\..\..\Uno.UWPSyncGenerator.Reference\Uno.UWPSyncGenerator.Reference.csproj");
 			_iOSCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "xamarinios10");
 			_androidCompilation = LoadProject($@"{basePath}\{baseName}.csproj", "MonoAndroid10.0");
 			_net461Compilation = LoadProject($@"{basePath}\{baseName}.csproj", "net461");
@@ -162,7 +162,7 @@ namespace Uno.UWPSyncGenerator
 		{
 			if (type.ContainingAssembly.Name == "Windows.Foundation.FoundationContract")
 			{
-				return @"..\..\..\..\Uno.Foundation\Generated\2.0.0.0";
+				return @"..\..\..\Uno.Foundation\Generated\2.0.0.0";
 			}
 			else if (!(
 				type.ContainingNamespace.ToString().StartsWith("Windows.UI.Xaml")
@@ -173,11 +173,11 @@ namespace Uno.UWPSyncGenerator
 #endif
 			))
 			{
-				return @"..\..\..\..\Uno.UWP\Generated\3.0.0.0";
+				return @"..\..\..\Uno.UWP\Generated\3.0.0.0";
 			}
 			else
 			{
-				return @"..\..\..\..\Uno.UI\Generated\3.0.0.0";
+				return @"..\..\..\Uno.UI\Generated\3.0.0.0";
 			}
 		}
 
@@ -304,14 +304,22 @@ namespace Uno.UWPSyncGenerator
 		}
 
 		private PlatformSymbols<ISymbol> GetAllGetNonGeneratedMembers(PlatformSymbols<INamedTypeSymbol> types, string name, Func<IEnumerable<ISymbol>, ISymbol> filter, ISymbol uapSymbol = null)
-			=> new PlatformSymbols<ISymbol>(
-				filter(GetNonGeneratedMembers(types.AndroidSymbol, name)),
-				filter(GetNonGeneratedMembers(types.IOSSymbol, name)),
-				filter(GetNonGeneratedMembers(types.MacOSSymbol, name)),
-				filter(GetNonGeneratedMembers(types.net461ymbol, name)),
-				filter(GetNonGeneratedMembers(types.WasmSymbol, name)),
+		{
+			var android = GetNonGeneratedMembers(types.AndroidSymbol, name);
+			var ios = GetNonGeneratedMembers(types.IOSSymbol, name);
+			var macOS = GetNonGeneratedMembers(types.MacOSSymbol, name);
+			var net461 = GetNonGeneratedMembers(types.net461ymbol, name);
+			var wasm = GetNonGeneratedMembers(types.WasmSymbol, name);
+
+			return new PlatformSymbols<ISymbol>(
+				filter(android),
+				filter(ios),
+				filter(macOS),
+				filter(net461),
+				filter(wasm),
 				uapType: uapSymbol
 			);
+		}
 
 		protected PlatformSymbols<IMethodSymbol> GetAllMatchingMethods(PlatformSymbols<INamedTypeSymbol> types, IMethodSymbol method)
 			=> new PlatformSymbols<IMethodSymbol>(
@@ -1484,6 +1492,7 @@ namespace Uno.UWPSyncGenerator
 								//{ "BuildingInsideVisualStudio", "true" },
 								{ "SkipUnoResourceGeneration", "true" }, // Required to avoid loading a non-existent task
 								{ "DocsGeneration", "true" }, // Detect that source generation is running
+								{ "LangVersion", "8.0" },
 								//{ "DesignTimeBuild", "true" },
 								//{ "UseHostCompilerIfAvailable", "false" },
 								//{ "UseSharedCompilation", "false" },

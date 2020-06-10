@@ -194,6 +194,19 @@ embed.uno-frameworkelement.uno-unarranged {
   background-size: 620px 300px;
 }
 
+/* Bootstrapper logo override */
+.uno-loader .logo {
+  position: fixed !important;
+  top: 50% !important;
+  left: 50% !important;
+  transform: translate(-50%, -50%) !important;
+  width: 620px !important;
+  height: 300px !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 620px 300px !important;
+}
+
 textarea {
   resize: none;
 }

@@ -24,6 +24,7 @@ namespace Windows.UI.Xaml.Controls
 	partial class Image : FrameworkElement, ICustomClippingElement
 	{
 		private readonly SerialDisposable _sourceDisposable = new SerialDisposable();
+		private static readonly string UNO_BOOTSTRAP_APP_BASE = global::System.Environment.GetEnvironmentVariable(nameof(UNO_BOOTSTRAP_APP_BASE));
 
 		private readonly HtmlImage _htmlImage;
 		private Size _lastMeasuredSize;
@@ -201,7 +202,20 @@ namespace Windows.UI.Xaml.Controls
 			}
 			else
 			{
-				_htmlImage.SetAttribute("src", url);
+				if (UNO_BOOTSTRAP_APP_BASE != null)
+				{
+					var adjustedUrl = url switch
+					{
+						string u when u.StartsWith("http:/", StringComparison.OrdinalIgnoreCase) || u.StartsWith("https:/", StringComparison.OrdinalIgnoreCase) => url,
+						_ => UNO_BOOTSTRAP_APP_BASE + "/" + url
+					};
+
+					_htmlImage.SetAttribute("src", adjustedUrl);
+				}
+				else
+				{
+					_htmlImage.SetAttribute("src", url);
+				}
 			}
 		}
 
