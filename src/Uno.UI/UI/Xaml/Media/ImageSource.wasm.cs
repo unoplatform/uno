@@ -26,6 +26,8 @@ namespace Windows.UI.Xaml.Media
 {
 	partial class ImageSource
 	{
+		private static readonly string UNO_BOOTSTRAP_APP_BASE = global::System.Environment.GetEnvironmentVariable(nameof(UNO_BOOTSTRAP_APP_BASE));
+
 		private readonly SerialDisposable _opening = new SerialDisposable();
 		private readonly List<Action<ImageData>> _subscriptions = new List<Action<ImageData>>();
 
@@ -171,11 +173,24 @@ namespace Windows.UI.Xaml.Media
 			var url = WebUri;
 			if (url != null)
 			{
-				var value = url.IsAbsoluteUri
-					? url.Scheme.Equals("file", StringComparison.OrdinalIgnoreCase)
-						? url.PathAndQuery // Local files are assumed as coming from the remoter server
-						: url.AbsoluteUri
-					: url.OriginalString;
+				string value;
+				if (url.IsAbsoluteUri)
+				{
+					value = url.Scheme switch
+					{
+						// Local files are assumed as coming from the remoter server
+						"file" when UNO_BOOTSTRAP_APP_BASE == null => url.PathAndQuery,
+						"file" => UNO_BOOTSTRAP_APP_BASE + "/" + url.PathAndQuery,
+						_ => url.AbsoluteUri
+					};
+				}
+				else
+				{
+					value = UNO_BOOTSTRAP_APP_BASE == null
+						? url.OriginalString
+						: UNO_BOOTSTRAP_APP_BASE + "/" + url.OriginalString;
+				}
+					
 
 				img = new ImageData
 				{
