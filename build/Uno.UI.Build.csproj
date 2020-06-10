@@ -149,13 +149,13 @@
 	</Target>
 
 	<Target Name="GenerateDoc" DependsOnTargets="BuildSyncGenerator">
-		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\net461\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
+		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
 		<Exec Command="$(Pkgdocfx_console)\tools\docfx.exe ..\doc\docfx.json -o $(OutputDir)\doc" />
 	</Target>
 
 	<Target Name="RunAPISyncTool" DependsOnTargets="BuildSyncGenerator">
 	
-		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\net461\Uno.UWPSyncGenerator.exe &quot;sync&quot;" />
+		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\Uno.UWPSyncGenerator.exe &quot;sync&quot;" />
 	</Target>
 
 	<Target Name="PublishVisx" Condition="'$(UNO_UWP_BUILD)'=='true'">

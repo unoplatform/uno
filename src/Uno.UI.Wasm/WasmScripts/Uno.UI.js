@@ -1734,7 +1734,7 @@ var Uno;
         WindowManager.MAX_HEIGHT = `${Number.MAX_SAFE_INTEGER}vh`;
         UI.WindowManager = WindowManager;
         if (typeof define === "function") {
-            define(["AppManifest"], () => {
+            define([`${config.uno_app_base}/AppManifest`], () => {
             });
         }
         else {
