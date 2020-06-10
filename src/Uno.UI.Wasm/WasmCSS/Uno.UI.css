@@ -45,6 +45,8 @@ svg.uno-uielement {
     This also ensure that we are HitTestVisible only for shapes that has a fill.
   */
   pointer-events: none;
+
+  stroke-width: 1px; /* default value of Shape.StrokeThickness */
 }
 
 .uno-frameworkelement.uno-clippedToBounds {
