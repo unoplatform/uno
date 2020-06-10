@@ -23,7 +23,7 @@ namespace UITests.Msal
 
 #if __WASM__
 		private const string REDIRECT_URI = "http://localhost:55838/authentication/login-callback.htm";
-#elif __IOS__ || __MACOS__
+#elif __IOS__
 		private const string REDIRECT_URI = "msal" + CLIENT_ID + "://auth";
 #elif __ANDROID__
 		private const string REDIRECT_URI = "msauth://SamplesApp.Droid/BUWXtvbCbxw6rdZidSYhNH6gLvA%3D";
@@ -44,7 +44,7 @@ namespace UITests.Msal
 				.WithTenantId(TENANT_ID)
 				.WithRedirectUri(REDIRECT_URI)
 				.WithUnoHelpers()
-#if __IOS__ || __MACOS__
+#if __IOS__
 				.WithIosKeychainSecurityGroup("com.companyname.SamplesApp")
 #endif
 				.Build();
