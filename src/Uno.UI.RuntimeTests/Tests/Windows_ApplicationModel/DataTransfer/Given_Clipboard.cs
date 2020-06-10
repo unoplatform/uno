@@ -1,4 +1,4 @@
-#if __ANDROID__ || __MACOS__
+#if __ANDROID__ || __MACOS__ || __IOS__
 
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using System;
@@ -7,6 +7,7 @@ using System.Globalization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using Windows.ApplicationModel.DataTransfer;
 using Windows.ApplicationModel.Resources;
 using Windows.ApplicationModel.Resources.Core;
 
@@ -17,34 +18,52 @@ namespace Uno.UI.RuntimeTests.Tests
 	[TestClass]
 	public class Given_Clipboard
 	{
-
-		[TestInitialize]
-		public void Init()
-		{
-		}
-
-		[TestCleanup]
-		public void Cleanup()
-		{
-		}
-
 		[TestMethod]
-		public async Task When_PutAndGet()
+		[RunsOnUIThread]
+		public async Task When_Put_And_Get()
 		{
-			string testString = "some text which should be intact";
+			try
+			{
+				var text = "some text which should be intact";
 
-			// setting clipboard
-			var oClipCont = new Windows.ApplicationModel.DataTransfer.DataPackage();
-			oClipCont.SetText(testString);
-			Windows.ApplicationModel.DataTransfer.Clipboard.SetContent(oClipCont);
+				var package = new DataPackage();
+				package.SetText(text);
+				Clipboard.SetContent(package);
 
-			// and reading from clipboard
-			var clipView = Windows.ApplicationModel.DataTransfer.Clipboard.GetContent();
-			string stringFromClipboard = await clipView.GetTextAsync();
+				var clipboardView = Clipboard.GetContent();
+				var textFromClipboard = await clipboardView.GetTextAsync();
 
-			Assert.AreEqual(stringFromClipboard, testString, false, "text was changed while putting and reading from Clipboard - error in tested methods");
-
+				Assert.AreEqual(text, textFromClipboard, false);
+			}
+			finally
+			{
+				Clipboard.Clear();
+			}
 		}
+
+#if __ANDROID__
+		[TestMethod]
+		[RunsOnUIThread]
+		public async Task When_Uri_Content()
+		{
+			try
+			{
+				var uri = new Uri("https://platform.uno");
+				var package = new DataPackage();
+				package.SetUri(uri);
+				Clipboard.SetContent(package);
+
+				var clipboardView = Clipboard.GetContent();
+				var uriFromClipboard = await clipboardView.GetUriAsync();
+
+				Assert.AreEqual(uri, uriFromClipboard);
+			}
+			finally
+			{
+				Clipboard.Clear();
+			}
+		}
+#endif
 	}
 }
 

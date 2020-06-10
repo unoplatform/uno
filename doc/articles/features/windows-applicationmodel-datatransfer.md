@@ -12,7 +12,7 @@
 
 ### Limitations
 
-`SetContent` and `GetContent` APIs currently support textual data on all platforms. On Android, they also support URI and HTML formats.
+`SetContent` and `GetContent` APIs currently support textual data on all platforms. On Android, they also support URI and HTML formats, but clipboard can hold only one item. Setting multiple items at once does not work reliably.
 
 `Flush` operation has an empty implementation. In contrast to UWP, on other platforms data automatically remain in the clipboard even after application is closed.
 
