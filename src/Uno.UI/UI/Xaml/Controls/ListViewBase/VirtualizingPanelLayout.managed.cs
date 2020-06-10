@@ -12,6 +12,7 @@ using Windows.UI.Xaml.Controls.Primitives;
 using static System.Math;
 using static Windows.UI.Xaml.Controls.Primitives.GeneratorDirection;
 using Uno.UI.Extensions;
+using System.Collections.Specialized;
 #if __MACOS__
 using AppKit;
 #elif __IOS__
@@ -48,6 +49,11 @@ namespace Windows.UI.Xaml.Controls
 		private double _lastScrollOffset;
 
 		/// <summary>
+		/// The current average line height based on materialized lines. Used to estimate scroll extent of unmaterialized items.
+		/// </summary>
+		private double _averageLineHeight;
+
+		/// <summary>
 		/// The previous item to the old first visible item, used when a lightweight layout rebuild is called.
 		/// </summary>
 		private Uno.UI.IndexPath? _dynamicSeedIndex;
@@ -55,6 +61,11 @@ namespace Windows.UI.Xaml.Controls
 		/// Start position of the old first group, used when a lightweight layout rebuild is called.
 		/// </summary>
 		private double? _dynamicSeedStart;
+
+		/// <summary>
+		/// Pending collection changes to be processed when the list is re-measured.
+		/// </summary>
+		private readonly Queue<CollectionChangedOperation> _pendingCollectionChanges = new Queue<CollectionChangedOperation>();
 
 		private double AvailableBreadth => ScrollOrientation == Orientation.Vertical ?
 			_availableSize.Width :
@@ -258,6 +269,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_availableSize = availableSize;
+			UpdateAverageLineHeight(); // Must be called before ScrapLayout(), or there won't be items to measure
 			ScrapLayout();
 			UpdateLayout();
 
@@ -295,6 +307,8 @@ namespace Windows.UI.Xaml.Controls
 		private void UpdateLayout(double? extentAdjustment = null)
 		{
 			OwnerPanel.ShouldInterceptInvalidate = true;
+
+			ApplyCollectionChanges();
 
 			UnfillLayout(extentAdjustment ?? 0);
 			FillLayout(extentAdjustment ?? 0);
@@ -426,6 +440,50 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		/// <summary>
+		/// If there are pending collection changes, update values and prepare the layouter accordingly.
+		/// </summary>
+		private void ApplyCollectionChanges()
+		{
+			if (_pendingCollectionChanges.Count == 0)
+			{
+				return;
+			}
+
+			if (_dynamicSeedIndex is IndexPath dynamicSeedIndex)
+			{
+				var updated = CollectionChangedOperation.Offset(dynamicSeedIndex, _pendingCollectionChanges);
+				if (updated is IndexPath updatedValue)
+				{
+					_dynamicSeedIndex = updated;
+
+					var itemOffset = updatedValue.Row - dynamicSeedIndex.Row; // TODO: This will need to change when grouping is supported
+					var scrollAdjustment = itemOffset * _averageLineHeight; // TODO: not appropriate for ItemsWrapGrid
+					_dynamicSeedStart += scrollAdjustment;
+					ApplyScrollAdjustment(scrollAdjustment);
+				}
+				else
+				{
+					// TODO NOW: handle the case where seed was removed (the first subsequent remaining item should be used)
+				}
+			}
+
+			Generator.UpdateForCollectionChanges(_pendingCollectionChanges);
+			_pendingCollectionChanges.Clear();
+		}
+
+		private void ApplyScrollAdjustment(double scrollAdjustment)
+		{
+			if (ScrollOrientation == Orientation.Vertical)
+			{
+				ScrollViewer.ChangeView(null, ScrollViewer.VerticalOffset + scrollAdjustment, null, disableAnimation: true);
+			}
+			else
+			{
+				ScrollViewer.ChangeView(ScrollViewer.HorizontalOffset + scrollAdjustment, null, null, disableAnimation: true);
+			}
+		}
+
+		/// <summary>
 		/// Estimate the 'correct' size of the panel.
 		/// </summary>
 		/// <param name="isMeasure">True if this is called from measure, false if after arrange.</param>
@@ -470,20 +528,25 @@ namespace Windows.UI.Xaml.Controls
 			var lastItem = GetFlatItemIndex(lastIndexPath.Value);
 
 			var remainingItems = ItemsControl.NumberOfItems - lastItem - 1;
-
-			var averageLineHeight = _materializedLines.Select(l => GetExtent(l.FirstView)).Average();
+			UpdateAverageLineHeight();
 
 			int itemsPerLine = GetItemsPerLine();
 			var remainingLines = remainingItems / itemsPerLine + remainingItems % itemsPerLine;
 
-			double estimatedExtent = GetContentEnd() + remainingLines * averageLineHeight;
+			double estimatedExtent = GetContentEnd() + remainingLines * _averageLineHeight;
 
 			if (this.Log().IsEnabled(LogLevel.Debug))
 			{
-				this.Log().LogDebug($"{GetMethodTag()}=>{estimatedExtent}, GetContentEnd()={GetContentEnd()}, remainingLines={remainingLines}, averageLineHeight={averageLineHeight}");
+				this.Log().LogDebug($"{GetMethodTag()}=>{estimatedExtent}, GetContentEnd()={GetContentEnd()}, remainingLines={remainingLines}, averageLineHeight={_averageLineHeight}");
 			}
 
 			return estimatedExtent;
+		}
+
+		private void UpdateAverageLineHeight()
+		{
+			_averageLineHeight = _materializedLines.Count > 0 ? _materializedLines.Select(l => GetExtent(l.FirstView)).Average()
+				: 0;
 		}
 
 		private double CalculatePanelMeasureBreadth() => ShouldMeasuredBreadthStretch ? AvailableBreadth :
@@ -496,6 +559,35 @@ namespace Windows.UI.Xaml.Controls
 		private double CalculatePanelArrangeBreadth() => ShouldMeasuredBreadthStretch ? AvailableBreadth :
 					_materializedLines.Select(l => GetActualBreadth(l.FirstView)).MaxOrDefault();
 
+		internal void AddItems(int firstItem, int count, int section)
+		{
+			_pendingCollectionChanges.Enqueue(new CollectionChangedOperation(
+				startingIndex: IndexPath.FromRowSection(firstItem, section),
+				range: count,
+				action: NotifyCollectionChangedAction.Add,
+				elementType: CollectionChangedOperation.Element.Item
+				));
+
+			LightRefresh();
+		}
+
+		internal void RemoveItems(int firstItem, int count, int section)
+		{
+			_pendingCollectionChanges.Enqueue(new CollectionChangedOperation(
+				startingIndex: IndexPath.FromRowSection(firstItem, section),
+				range: count,
+				action: NotifyCollectionChangedAction.Remove,
+				elementType: CollectionChangedOperation.Element.Item
+				));
+
+			LightRefresh();
+		}
+
+		/// <summary>
+		/// Update the display of the panel without clearing caches.
+		/// </summary>
+		private void LightRefresh() => OwnerPanel?.InvalidateMeasure();
+
 		internal void Refresh()
 		{
 			if (this.Log().IsEnabled(LogLevel.Debug))
@@ -507,6 +599,7 @@ namespace Windows.UI.Xaml.Controls
 
 			UpdateCompleted();
 			Generator.ClearIdCache();
+			_pendingCollectionChanges.Clear();
 			OwnerPanel?.InvalidateMeasure();
 		}
 

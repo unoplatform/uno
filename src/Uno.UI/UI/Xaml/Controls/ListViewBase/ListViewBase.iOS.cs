@@ -161,20 +161,14 @@ namespace Windows.UI.Xaml.Controls
 		{
 			NativePanel?.InsertItems(GetIndexPathsFromStartAndCount(firstItem, count, section));
 
-			if (ManagedVirtualizingPanel != null)
-			{
-				Refresh();
-			}
+			ManagedVirtualizingPanel?.GetLayouter().AddItems(firstItem, count, section);
 		}
 
 		private void RemoveItems(int firstItem, int count, int section)
 		{
 			NativePanel?.DeleteItems(GetIndexPathsFromStartAndCount(firstItem, count, section));
 
-			if (ManagedVirtualizingPanel != null)
-			{
-				Refresh();
-			}
+			ManagedVirtualizingPanel?.GetLayouter().RemoveItems(firstItem, count, section);
 		}
 
 		/// <summary>
