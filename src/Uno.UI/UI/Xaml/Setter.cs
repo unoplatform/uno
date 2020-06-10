@@ -7,6 +7,7 @@ using Uno.Extensions;
 using Uno.Logging;
 using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Data;
@@ -56,12 +57,9 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// The name of the ThemeResource applied to the value, if any.
 		/// </summary>
-		/// <remarks>This is normally only set from Xaml.</remarks>
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public string ThemeResourceName { get; set; }
+		internal string ThemeResourceName { get; set; }
 
-		[EditorBrowsable(EditorBrowsableState.Never)]
-		public object ThemeResourceContext { get; set; }
+		internal XamlParseContext ThemeResourceContext { get; set; }
 
 		public Setter(DependencyProperty targetProperty, object value)
 		{

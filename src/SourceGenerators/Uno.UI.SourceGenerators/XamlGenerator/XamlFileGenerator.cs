@@ -272,6 +272,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			writer.AppendLineInvariant("using Uno.Extensions;");
 			writer.AppendLineInvariant("using Uno;");
+			writer.AppendLineInvariant("using Uno.UI.Helpers.Xaml;");
 
 			writer.AppendLineInvariant("using {0};", _defaultNamespace);
 
@@ -1305,12 +1306,9 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 					if (valueObject.Type.Name == "ThemeResource")
 					{
-						using (writer.Block())
-						{
-							writer.AppendLineInvariant("ThemeResourceName = \"{0}\",", valueObject.Members.FirstOrDefault()?.Value);
-							writer.AppendLineInvariant("ThemeResourceContext = {0},", ParseContextPropertyAccess);
-						}
+						writer.AppendLineInvariant(".ApplyThemeResourceUpdateValues(\"{0}\", {1})", valueObject.Members.FirstOrDefault()?.Value, ParseContextPropertyAccess);
 					}
+
 					writer.AppendLineInvariant(lineEnding);
 				}
 			}
