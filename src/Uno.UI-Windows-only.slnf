@@ -2,6 +2,7 @@
   "solution": {
     "path": "Uno.UI.sln",
     "projects": [
+      "AddIns\\Uno.UI.MSAL\\Uno.UI.MSAL.csproj",
       "SamplesApp\\Benchmarks.Shared\\SamplesApp.Benchmarks.shproj",
       "SamplesApp\\SamplesApp.Shared\\SamplesApp.Shared.shproj",
       "SamplesApp\\SamplesApp.UWP\\SamplesApp.UWP.csproj",

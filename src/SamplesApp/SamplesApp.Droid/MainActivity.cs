@@ -5,6 +5,7 @@ using Android.Views;
 using Java.Interop;
 using Windows.UI.Core;
 using Windows.UI.ViewManagement;
+using Microsoft.Identity.Client;
 
 namespace SamplesApp.Droid
 {
@@ -45,6 +46,27 @@ namespace SamplesApp.Droid
 				activity.Window.ClearFlags(WindowManagerFlags.Fullscreen);
 			}
 		}
+		protected override void OnActivityResult(int requestCode, Result resultCode, Android.Content.Intent data)
+		{
+			base.OnActivityResult(requestCode, resultCode, data);
+			AuthenticationContinuationHelper.SetAuthenticationContinuationEventArgs(requestCode, resultCode, data);
+		}
 	}
+
+
+	[Activity]
+	[IntentFilter(
+		new[] {
+			Android.Content.Intent.ActionView
+		},
+		Categories = new[] {
+			Android.Content.Intent.CategoryDefault,
+			Android.Content.Intent.CategoryBrowsable
+		},
+		DataScheme = "msauth")]
+	public class MsalActivity : BrowserTabActivity
+	{
+	}
+
 }
 

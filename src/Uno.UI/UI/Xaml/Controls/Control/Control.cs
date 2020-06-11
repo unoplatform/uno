@@ -1002,7 +1002,9 @@ namespace Windows.UI.Xaml.Controls
 			=> DefaultStyleKey = typeof(TDerived);
 
 #if DEBUG
+#if !__IOS__
 		public VisualStateGroup[] VisualStateGroups => VisualStateManager.GetVisualStateGroups(GetTemplateRoot()).ToArray();
+#endif
 
 		public string[] VisualStateGroupNames => VisualStateGroups.Select(vsg => vsg.Name).ToArray();
 
