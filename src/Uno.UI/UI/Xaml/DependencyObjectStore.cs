@@ -87,7 +87,7 @@ namespace Windows.UI.Xaml
 		/// of DependencyProperty changed registrations. This avoids creating many
 		/// weak references to the same object.
 		/// </summary>
-		private readonly ManagedWeakReference _thisWeakRef;
+		private ManagedWeakReference? _thisWeakRef;
 
 		private readonly Type _originalObjectType;
 		private SerialDisposable _inheritedProperties = new SerialDisposable();
@@ -164,8 +164,6 @@ namespace Windows.UI.Xaml
 
 			_originalObjectRef = WeakReferencePool.RentWeakReference(this, originalObject);
 			_originalObjectType = originalObject is AttachedDependencyObject a ? a.Owner.GetType() : originalObject.GetType();
-
-			_thisWeakRef = Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, this);
 
 			_properties = new DependencyPropertyDetailsCollection(_originalObjectType, _originalObjectRef, dataContextProperty, templatedParentProperty);
 			_dataContextPropertyDetails = _properties.DataContextPropertyDetails;
@@ -675,7 +673,7 @@ namespace Windows.UI.Xaml
 			var cookie = propertyDetails.CallbackManager.RegisterCallback(weakDelegate.callback);
 
 			// Capture the weak reference to this instance.
-			var instanceRef = _thisWeakRef;
+			var instanceRef = ThisWeakReference;
 
 			return new DispatcherConditionalDisposable(
 				callback.Target,
@@ -709,7 +707,7 @@ namespace Windows.UI.Xaml
 			// This weak reference ensure that the closure will not link
 			// the caller and the callee, in the same way "newValueActionWeak"
 			// does not link the callee to the caller.
-			var instanceRef = _thisWeakRef;
+			var instanceRef = ThisWeakReference;
 
 			return new DispatcherConditionalDisposable(
 				handler.Target,
@@ -766,7 +764,7 @@ namespace Windows.UI.Xaml
 			// This weak reference ensure that the disposable will not link
 			// the caller and the callee, in the same way "newValueActionWeak"
 			// does not link the callee to the caller.
-			var objectStoreWeak = _thisWeakRef;
+			var objectStoreWeak = ThisWeakReference;
 
 			return new InheritedPropertyChangedCallbackDisposable(objectStoreWeak, childStore);
 		}
@@ -795,7 +793,7 @@ namespace Windows.UI.Xaml
 			// This weak reference ensure that the closure will not link
 			// the caller and the callee, in the same way "newValueActionWeak"
 			// does not link the callee to the caller.
-			var instanceRef = _thisWeakRef;
+			var instanceRef = ThisWeakReference;
 
 			return new DispatcherConditionalDisposable(
 				handler.Target,
@@ -846,7 +844,7 @@ namespace Windows.UI.Xaml
 			// This weak reference ensure that the closure will not link
 			// the caller and the callee, in the same way "newValueActionWeak"
 			// does not link the callee to the caller.
-			var instanceRef = _thisWeakRef;
+			var instanceRef = ThisWeakReference;
 
 			void Cleanup()
 			{
@@ -1176,7 +1174,7 @@ namespace Windows.UI.Xaml
 			var props = DependencyProperty.GetFrameworkPropertiesForType(_originalObjectType, FrameworkPropertyMetadataOptions.Inherits);
 
 			// Not using the ActualInstance property here because we need to get a WeakReference instead.
-			var instanceRef = _originalObjectRef != null ? _originalObjectRef : _thisWeakRef;
+			var instanceRef = _originalObjectRef != null ? _originalObjectRef : ThisWeakReference;
 
 			void Propagate(DependencyObjectStore store)
 			{
@@ -1461,7 +1459,7 @@ namespace Windows.UI.Xaml
 			var propertyMetadata = propertyDetails.Metadata;
 
 			// We can reuse the weak reference, otherwise capture the weak reference to this instance.
-			var instanceRef = _originalObjectRef ?? _thisWeakRef;
+			var instanceRef = _originalObjectRef ?? ThisWeakReference;
 
 			if (propertyMetadata is FrameworkPropertyMetadata frameworkPropertyMetadata)
 			{
@@ -1609,6 +1607,9 @@ namespace Windows.UI.Xaml
 				}
 			}
 		}
+
+		private ManagedWeakReference ThisWeakReference
+			=> _thisWeakRef ??= Uno.UI.DataBinding.WeakReferencePool.RentWeakReference(this, this);
 
 		private class DependencyPropertyPath : IEquatable<DependencyPropertyPath?>
 		{
