@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -58,13 +59,38 @@ namespace Uno.Samples.UITest.Generator
 			}
 			else
 			{
+				var categories = attr
+					.ConstructorArguments
+					.Where(arg => arg.Kind == TypedConstantKind.Array)
+					.Select(arg => GetCategories(arg.Values))
+					.SingleOrDefault()
+					?? GetCategories(attr.ConstructorArguments);
+
+				if (categories?.Any(string.IsNullOrWhiteSpace) ?? false)
+				{
+					throw new InvalidOperationException(
+						"Invalid syntax for the SampleAttribute (found an empty category name). "
+						+ "Usually this is because you used nameof(Control) to set the categories, which is not supported by the compiler. "
+						+ "You should instead use the overload which accepts type (i.e. use typeof() instead of nameof()).");
+				}
+
 				return (
-					categories: !attr.ConstructorArguments.IsDefaultOrEmpty && !attr.ConstructorArguments.Single().Values.IsDefaultOrEmpty
-						? attr.ConstructorArguments.Single().Values.Select(arg => arg.Value.ToString()).ToArray()
-						: new[] { "Default" },
+					categories: (categories?.Any() ?? false) ? categories : new[] { "Default" },
 					name: AlignName(GetAttributePropertyValue(attr, "Name")?.ToString() ?? symbol.ToDisplayString()),
 					ignoreInSnapshotTests: GetAttributePropertyValue(attr, "IgnoreInSnapshotTests") is bool b && b
 				);
+
+				string[] GetCategories(ImmutableArray<TypedConstant> args) => args
+					.Select(v =>
+					{
+						switch (v.Kind)
+						{
+							case TypedConstantKind.Primitive: return v.Value.ToString();
+							case TypedConstantKind.Type: return ((ITypeSymbol)v.Value).Name;
+							default: return null;
+						}
+					})
+					.ToArray();
 			}
 		}
 

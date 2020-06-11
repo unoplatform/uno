@@ -75,7 +75,7 @@ namespace Windows.UI.Xaml.Media
 
 		private async Task RefreshImage(CancellationToken ct, Windows.Foundation.Rect drawRect)
 		{
-			if (ImageSource is ImageSource imageSource && (_imageSourceChanged || imageSource.ImageData == null) && !drawRect.HasZeroArea())
+			if (ImageSource is ImageSource imageSource && (_imageSourceChanged || !imageSource.IsOpened) && !drawRect.HasZeroArea())
 			{
 				try
 				{
@@ -112,7 +112,7 @@ namespace Windows.UI.Xaml.Media
 			{
 				return null;
 			}
-			return GetTransformedBitmap(drawRect, maskingPath);
+			return TryGetTransformedBitmap(drawRect, maskingPath);
 		}
 
 		/// <summary>
@@ -123,15 +123,12 @@ namespace Windows.UI.Xaml.Media
 		/// <param name="maskingPath">An optional path to clip the bitmap by (eg an ellipse)</param>
 		internal void DrawBackground(Canvas destinationCanvas, Windows.Foundation.Rect drawRect, Path maskingPath = null)
 		{
-			var bitmap = ImageSource?.ImageData;
-
-			if (bitmap == null)
+			//Create a temporary bitmap
+			var output = TryGetTransformedBitmap(drawRect, maskingPath);
+			if (output == null)
 			{
 				return;
 			}
-
-			//Create a temporary bitmap
-			var output = GetTransformedBitmap(drawRect, maskingPath);
 
 			var paint = new Paint();
 
@@ -152,7 +149,7 @@ namespace Windows.UI.Xaml.Media
 		{
 			ScheduleRefreshIfNeeded(drawRect, onImageLoaded);
 
-			return GetTransformedBitmap(drawRect, maskingPath);
+			return TryGetTransformedBitmap(drawRect, maskingPath);
 		}
 
 		/// <summary>
@@ -161,11 +158,10 @@ namespace Windows.UI.Xaml.Media
 		/// <param name="drawRect">The destination bounds</param>
 		/// <param name="maskingPath">An optional path to clip the bitmap by (eg an ellipse)</param>
 		/// <returns></returns>
-		private Bitmap GetTransformedBitmap(Windows.Foundation.Rect drawRect, Path maskingPath = null)
+		private Bitmap TryGetTransformedBitmap(Windows.Foundation.Rect drawRect, Path maskingPath = null)
 		{
-			var sourceBitmap = ImageSource?.ImageData;
-
-			if (sourceBitmap == null)
+			var imgSrc = ImageSource;
+			if (imgSrc == null || !imgSrc.TryOpenSync(out var sourceBitmap))
 			{
 				return null;
 			}

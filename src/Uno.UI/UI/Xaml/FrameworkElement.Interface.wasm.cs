@@ -120,7 +120,32 @@ namespace Windows.UI.Xaml
 			var brush = e.NewValue as Brush;
 			SetBackgroundBrush(brush);
 
-			_backgroundSubscription.Disposable = Brush.AssignAndObserveBrush(brush, _ => SetBackgroundBrush(brush));
+			if (brush is ImageBrush imgBrush)
+			{
+				RecalculateBrushOnSizeChanged(false);
+				_backgroundSubscription.Disposable = imgBrush.Subscribe(img =>
+				{
+					switch (img.Kind)
+					{
+						case ImageDataKind.Empty:
+						case ImageDataKind.Error:
+							ResetStyle("background-color");
+							ResetStyle("background-image");
+							break;
+
+						case ImageDataKind.Base64:
+						case ImageDataKind.Url:
+						default:
+							ResetStyle("background-color");
+							SetStyle("background-image", "url(" + img.Value + ")");
+							break;
+					}
+				});
+			}
+			else
+			{
+				_backgroundSubscription.Disposable = Brush.AssignAndObserveBrush(brush, _ => SetBackgroundBrush(brush));
+			}
 		}
 
 		private protected void SetBackgroundBrush(Brush brush)
@@ -130,9 +155,11 @@ namespace Windows.UI.Xaml
 				case SolidColorBrush solidColorBrush:
 					var color = solidColorBrush.ColorWithOpacity;
 					SetStyle("background-color", color.ToHexString());
+					ResetStyle("background-image");
 					RecalculateBrushOnSizeChanged(false);
 					break;
 				case GradientBrush gradientBrush:
+					ResetStyle("background-color");
 					SetStyle("background-image", gradientBrush.ToCssString(RenderSize));
 					RecalculateBrushOnSizeChanged(true);
 					break;

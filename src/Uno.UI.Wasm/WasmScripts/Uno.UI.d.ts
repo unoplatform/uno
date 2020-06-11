@@ -462,7 +462,7 @@ declare namespace Uno.UI {
         private measureElement;
         private measureViewInternal;
         scrollTo(pParams: number): boolean;
-        setImageRawData(viewId: number, dataPtr: number, width: number, height: number): string;
+        rawPixelsToBase64EncodeImage(dataPtr: number, width: number, height: number): string;
         /**
          * Sets the provided image with a mono-chrome version of the provided url.
          * @param viewId the image to manipulate
