@@ -11,7 +11,7 @@
     <Grid>
 		<StackPanel Margin="20" VerticalAlignment="Top" Orientation="Horizontal">
 			<SymbolIcon Symbol="Setting" Margin="20" />
-			<TextBlock Text="Settings" FontSize="30" VerticalAlignment="Center" />
+			<TextBlock x:Name="SettingsNavViewContent" Text="Settings" FontSize="30" VerticalAlignment="Center" />
 		</StackPanel>
 	</Grid>
 </Page>
