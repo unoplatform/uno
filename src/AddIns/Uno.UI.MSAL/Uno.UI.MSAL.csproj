@@ -49,7 +49,7 @@
 	<Import Project="..\..\Uno.CrossTargetting.props" />
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<ProjectReference Include="..\..\Uno.UI.Wasm\Uno.UI.Wasm.csproj" />
+		<ProjectReference Include="..\..\Uno.UI.Wasm\Uno.UI.Wasm.csproj" TreatAsPackageReference="false" />
 
 		<EmbeddedResource Include="LinkerDefinition.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
