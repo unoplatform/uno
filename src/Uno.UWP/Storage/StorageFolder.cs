@@ -183,6 +183,8 @@ namespace Windows.Storage
                 {
                     switch (option)
                     {
+						case CreationCollisionOption.FailIfExists:
+							throw new Exception("Cannot create a file when that file already exists.");
                         case CreationCollisionOption.OpenIfExists:
                         case CreationCollisionOption.ReplaceExisting:
                             break;
