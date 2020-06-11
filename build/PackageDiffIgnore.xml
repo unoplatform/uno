@@ -1078,6 +1078,13 @@
 				  fullName="System.Object Windows.UI.Xaml.ResourceDictionary.Lookup(System.Object key)"
 				  reason="Not a public WinUI method (in the .NET projection)"/>
 			<!-- ^^ Styles overhaul -->
+
+		<Member 
+			fullName="System.Void Windows.UI.Text.FontWeight..ctor(System.Int32 weight)"
+			reason="Changed from int to ushort to replicate uwp definition"/>
+		<Member 
+			fullName="System.Int32 Windows.UI.Text.FontWeight.get_Weight()"
+			reason="Changed from int to ushort to replicate uwp definition"/>
 	  </Methods>
 	  <Properties>
 
@@ -1092,7 +1099,10 @@
 				  fullName="Windows.UI.Xaml.Style Windows.UI.Xaml.Controls.NativePage::Style()"
 				  reason="Removed unused non-standard property"/>
 			<!-- ^^ Styles overhaul -->
-	  
+
+		<Member 
+			fullName="System.Int32 Windows.UI.Text.FontWeight::Weight()"
+			reason="Changed from int to ushort to replicate uwp definition"/>	  
 	  </Properties>
 	  <Fields>
 	  
