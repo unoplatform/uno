@@ -186,8 +186,10 @@ namespace Windows.Storage
 						case CreationCollisionOption.FailIfExists:
 							throw new Exception("Cannot create a file when that file already exists.");
                         case CreationCollisionOption.OpenIfExists:
+							break;
                         case CreationCollisionOption.ReplaceExisting:
-                            break;
+							File.Create(global::System.IO.Path.Combine(Path, path)).Close();
+							break;
                         case CreationCollisionOption.GenerateUniqueName:
 
                             var pathExtension = global::System.IO.Path.GetExtension(path);
@@ -200,17 +202,15 @@ namespace Windows.Storage
                                 path = path + "_" + Guid.NewGuid();
                             }
 
-                            var stream = File.Create(global::System.IO.Path.Combine(Path, path));
-                            stream.Close();
+                            File.Create(global::System.IO.Path.Combine(Path, path)).Close();
                             break;
                         default:
-                            throw new ArgumentOutOfRangeException("option");
+                            throw new ArgumentOutOfRangeException(nameof(option));
                     }
                 }
                 else
                 {
-                    var stream = File.Create(global::System.IO.Path.Combine(Path, path));
-                    stream.Close();
+                    File.Create(global::System.IO.Path.Combine(Path, path)).Close();
                 }
 
                 return await StorageFile.GetFileFromPathAsync(global::System.IO.Path.Combine(Path, path));
