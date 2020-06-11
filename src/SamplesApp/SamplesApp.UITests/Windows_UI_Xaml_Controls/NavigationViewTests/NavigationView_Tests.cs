@@ -35,7 +35,6 @@ namespace SamplesApp.UITests.Windows_UI_Xaml_Controls.NavigationViewTests
 
 		[Test]
 		[AutoRetry()]
-		[ActivePlatforms(Platform.Android)]
 		public void NavigateBackAndForthBetweenMenuItemsAndSettings()
 		{
 			Run("SamplesApp.Samples.Windows_UI_Xaml_Controls.NavigationViewTests.NavigationView_BasicNavigation");
