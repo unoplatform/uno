@@ -270,23 +270,7 @@ namespace Windows.UI.Xaml
 			OnLayoutUpdated();
 		}
 
-		internal Thickness GetThicknessAdjust()
-		{
-			switch (this)
-			{
-				case Controls.Border b:
-					return b.BorderThickness;
-
-				case Controls.Panel g:
-					return g.BorderThickness;
-
-				case Controls.ContentPresenter p:
-					return p.BorderThickness;
-
-				default:
-					return Thickness.Empty;
-			}
-		}
+		private protected virtual Thickness GetBorderThickness() => Thickness.Empty;
 
 		/// <summary>
 		/// Calculates and applies native arrange properties.
