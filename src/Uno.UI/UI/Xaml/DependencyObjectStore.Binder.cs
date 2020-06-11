@@ -1,3 +1,5 @@
+#nullable enable
+
 using System;
 using System.Linq;
 using Uno.Disposables;
@@ -32,13 +34,13 @@ namespace Windows.UI.Xaml
 		private readonly object _gate = new object();
 
 		private readonly Dictionary<DependencyProperty, int> _childrenBindableMap = new Dictionary<DependencyProperty, int>(0, DependencyPropertyComparer.Default);
-		private readonly List<object> _childrenBindable = new List<object>();
+		private readonly List<object?> _childrenBindable = new List<object?>();
 
 		private bool _isApplyingTemplateBindings;
 		private bool _isApplyingDataContextBindings;
 		private bool _bindingsSuspended;
-		private DependencyProperty _dataContextProperty;
-		private DependencyProperty _templatedParentProperty;
+		private DependencyProperty _dataContextProperty = UIElement.DataContextProperty;
+		private DependencyProperty _templatedParentProperty = UIElement.TemplatedParentProperty;
 
 		/// <summary>
 		/// Sets the templated parent, with the ability to control the propagation of the templated parent.
@@ -48,7 +50,7 @@ namespace Windows.UI.Xaml
 		/// Applies the templated parent to children if true. False is generally used when a control is template-able
 		/// to avoid propagating its own templated parent to its children.
 		/// </param>
-		public void SetTemplatedParent(FrameworkElement templatedParent)
+		public void SetTemplatedParent(FrameworkElement? templatedParent)
 		{
 #if !HAS_EXPENSIVE_TRYFINALLY
 			// The try/finally incurs a very large performance hit in mono-wasm, and SetValue is in a very hot execution path.
@@ -90,7 +92,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void ApplyChildrenBindable(object inheritedValue, bool isTemplatedParent)
+		private void ApplyChildrenBindable(object? inheritedValue, bool isTemplatedParent)
 		{
 			void SetInherited(IDependencyObjectStoreProvider provider)
 			{
@@ -134,11 +136,11 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private void SetInheritedTemplatedParent(object templatedParent)
-			=> SetValue(_templatedParentProperty, templatedParent, DependencyPropertyValuePrecedences.Inheritance, _templatedParentPropertyDetails);
+		private void SetInheritedTemplatedParent(object? templatedParent)
+			=> SetValue(_templatedParentProperty!, templatedParent, DependencyPropertyValuePrecedences.Inheritance, _templatedParentPropertyDetails);
 
-		private void SetInheritedDataContext(object dataContext)
-			=> SetValue(_dataContextProperty, dataContext, DependencyPropertyValuePrecedences.Inheritance, _dataContextPropertyDetails);
+		private void SetInheritedDataContext(object? dataContext)
+			=> SetValue(_dataContextProperty!, dataContext, DependencyPropertyValuePrecedences.Inheritance, _dataContextPropertyDetails);
 
 		/// <summary>
 		/// Apply load-time binding updates. Processes the x:Bind markup for the current FrameworkElement, applies load-time ElementName bindings, and updates ResourceBindings.
@@ -150,7 +152,7 @@ namespace Windows.UI.Xaml
 			UpdateResourceBindings(isThemeChangedUpdate: false);
 		}
 
-		private IDisposable RegisterCompiledBindingsUpdates()
+		private IDisposable? RegisterCompiledBindingsUpdates()
 			// Compiled bindings propagation is performed through all non-FrameworkElement providers
 			// to avoid executing this code twice because all FrameworkElement instances call 
 			// ApplyCompiledBindings when FrameworkElement.Loading is raised.
@@ -173,8 +175,8 @@ namespace Windows.UI.Xaml
 			BindingPath.RegisterPropertyChangedRegistrationHandler(SubscribeToDependencyPropertyChanged);
 		}
 
-		internal DependencyProperty DataContextProperty => _dataContextProperty;
-		internal DependencyProperty TemplatedParentProperty => _templatedParentProperty;
+		internal DependencyProperty DataContextProperty => _dataContextProperty!;
+		internal DependencyProperty TemplatedParentProperty => _templatedParentProperty!;
 
 		/// <summary>
 		/// Restores the bindings that may have been cleared by <see cref="ClearBindings()"/>.
@@ -238,7 +240,7 @@ namespace Windows.UI.Xaml
 			_properties.Dispose();
 		}
 
-		private void OnDataContextChanged(object providedDataContext, object actualDataContext, DependencyPropertyValuePrecedences precedence)
+		private void OnDataContextChanged(object? providedDataContext, object? actualDataContext, DependencyPropertyValuePrecedences precedence)
 		{
 			var dataContextBinding = _properties.FindDataContextBinding();
 
@@ -291,9 +293,9 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		private IDisposable TryWriteDataContextChangedEventActivity()
+		private IDisposable? TryWriteDataContextChangedEventActivity()
 		{
-			IDisposable traceActivity = null;
+			IDisposable? traceActivity = null;
 
 			if (_trace.IsEnabled)
 			{
@@ -303,8 +305,8 @@ namespace Windows.UI.Xaml
 			return traceActivity;
 		}
 
-		private object[] GetTraceProperties()
-			=> new object[] { ObjectId, _originalObjectType?.ToString() };
+		private object?[] GetTraceProperties()
+			=> new object?[] { ObjectId, _originalObjectType?.ToString() };
 
 
 		public void SetBinding(object target, string dependencyProperty, BindingBase binding)
@@ -390,7 +392,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Finds a DependencyProperty for the specified C# property
 		/// </summary>
-		private DependencyProperty FindStandardProperty(Type originalObjectType, string dependencyProperty)
+		private DependencyProperty? FindStandardProperty(Type originalObjectType, string dependencyProperty)
 		{
 			var propertyType = BindingPropertyHelper.GetPropertyType(originalObjectType, dependencyProperty);
 
@@ -423,7 +425,7 @@ namespace Windows.UI.Xaml
 			}
 		}
 
-		public void SetBindingValue(object value, [CallerMemberName] string propertyName = null)
+		public void SetBindingValue(object value, [CallerMemberName] string? propertyName = null)
 		{
 			var property = DependencyProperty.GetProperty(_originalObjectType, propertyName);
 
@@ -461,7 +463,7 @@ namespace Windows.UI.Xaml
 		/// <param name="newValueAction">The action to execute when a new value is raised</param>
 		/// <param name="disposeAction">The action to execute when the listener wants to dispose the subscription</param>
 		/// <returns></returns>
-		private static IDisposable SubscribeToDependencyPropertyChanged(ManagedWeakReference dataContextReference, string propertyName, Action newValueAction)
+		private static IDisposable? SubscribeToDependencyPropertyChanged(ManagedWeakReference dataContextReference, string propertyName, Action newValueAction)
 		{
 			var dependencyObject = dataContextReference.Target as DependencyObject;
 
@@ -553,7 +555,7 @@ namespace Windows.UI.Xaml
 		public BindingExpression GetBindingExpression(DependencyProperty dependencyProperty)
 			=> _properties.GetBindingExpression(dependencyProperty);
 
-		public Windows.UI.Xaml.Data.Binding GetBinding(DependencyProperty dependencyProperty) 
+		public Windows.UI.Xaml.Data.Binding? GetBinding(DependencyProperty dependencyProperty) 
 			=> GetBindingExpression(dependencyProperty)?.ParentBinding;
 	}
 }
