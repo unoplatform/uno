@@ -13,12 +13,16 @@
 		<Authors>nventive</Authors>
 		<PackageProjectUrl>https://github.com/unoplatform/uno</PackageProjectUrl>
 		<PackageIconUrl>https://nv-assets.azurewebsites.net/logos/uno.png</PackageIconUrl>
+		<PackageIcon>uno.png</PackageIcon>
 		<RepositoryUrl>https://github.com/unoplatform/uno</RepositoryUrl>
 		<Description>This package provides the extensions to MSAL (Microsoft.Identity.Client) for an Uno Platform application.</Description>
 		<Copyright>Copyright (C) 2015-2020 nventive inc. - all rights reserved</Copyright>
 
 		<PackageId Condition="'$(UNO_UWP_BUILD)'!='true'">Uno.WinUI.MSAL</PackageId>
 	</PropertyGroup>
+	<ItemGroup>
+		<None Include="..\..\Common\uno.png" Pack="true" PackagePath="\" />
+	</ItemGroup>
 
 	<PropertyGroup Condition="'$(UnoTargetFrameworkOverride)'!=''">
 		<TargetFrameworks>$(UnoTargetFrameworkOverride)</TargetFrameworks>
@@ -49,7 +53,10 @@
 	<Import Project="..\..\Uno.CrossTargetting.props" />
 
 	<ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-		<ProjectReference Include="..\..\Uno.UI.Wasm\Uno.UI.Wasm.csproj" TreatAsPackageReference="false" />
+		<ProjectReference Include="..\..\Uno.UI.Wasm\Uno.UI.Wasm.csproj">
+			<TreatAsPackageReference>false</TreatAsPackageReference>
+			<PrivateAssets>all</PrivateAssets>
+		</ProjectReference>
 
 		<EmbeddedResource Include="LinkerDefinition.xml">
 			<LogicalName>$(AssemblyName).xml</LogicalName>
