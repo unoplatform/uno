@@ -878,6 +878,94 @@ var Uno;
                 this.registerEventOnViewInternal(params.HtmlId, params.EventName, params.OnCapturePhase, params.EventExtractorId);
                 return true;
             }
+            registerPointerEventsOnView(pParams) {
+                const params = WindowManagerRegisterEventOnViewParams.unmarshal(pParams);
+                const element = this.getView(params.HtmlId);
+                element.addEventListener("pointerenter", WindowManager.onPointerEnterReceived);
+                element.addEventListener("pointerleave", WindowManager.onPointerLeaveReceived);
+                element.addEventListener("pointerdown", WindowManager.onPointerEventReceived);
+                element.addEventListener("pointerup", WindowManager.onPointerEventReceived);
+                element.addEventListener("pointercancel", WindowManager.onPointerEventReceived);
+            }
+            static onPointerEventReceived(evt) {
+                const element = evt.currentTarget;
+                const payload = WindowManager.pointerEventExtractor(evt);
+                const handled = WindowManager.current.dispatchEvent(element, evt.type, payload);
+                if (handled) {
+                    evt.stopPropagation();
+                }
+            }
+            static onPointerEnterReceived(evt) {
+                const element = evt.target;
+                const e = evt;
+                if (e.explicitOriginalTarget) { // FF only
+                    // It happens on FF that when another control which is over the 'element' has been updated, like text or visibility changed,
+                    // we receive a pointer enter/leave of an element which is under an element that is capable to handle pointers,
+                    // which is unexpected as the "pointerenter" should not bubble.
+                    // So we have to validate that this event is effectively due to the pointer entering the control.
+                    // We achieve this by browsing up the elements under the pointer (** not the visual tree**) 
+                    for (let elt of document.elementsFromPoint(evt.pageX, evt.pageY)) {
+                        if (elt == element) {
+                            // We found our target element, we can raise the event and stop the loop
+                            WindowManager.onPointerEventReceived(evt);
+                            return;
+                        }
+                        let htmlElt = elt;
+                        if (htmlElt.style.pointerEvents != "none") {
+                            // This 'htmlElt' is handling the pointers events, this mean that we can stop the loop.
+                            // However, if this 'htmlElt' is one of our child it means that the event was legitimate
+                            // and we have to raise it for the 'element'.
+                            while (htmlElt.parentElement) {
+                                htmlElt = htmlElt.parentElement;
+                                if (htmlElt == element) {
+                                    WindowManager.onPointerEventReceived(evt);
+                                    return;
+                                }
+                            }
+                            // We found an element this is capable to handle the pointers but which is not one of our child
+                            // (probably a sibling which is covering the element). It means that the pointerEnter/Leave should
+                            // not have bubble to the element, and we can mute it.
+                            return;
+                        }
+                    }
+                }
+                else {
+                    WindowManager.onPointerEventReceived(evt);
+                }
+            }
+            static onPointerLeaveReceived(evt) {
+                const element = evt.target;
+                const e = evt;
+                if (e.explicitOriginalTarget // FF only
+                    && e.explicitOriginalTarget !== event.currentTarget
+                    && event.isOver(element)) {
+                    // If the event was re-targeted, it's suspicious as the leave event should not bubble
+                    // This happens on FF when another control which is over the 'element' has been updated, like text or visibility changed.
+                    // So we have to validate that this event is effectively due to the pointer leaving the element.
+                    // We achieve that by buffering it until the next few 'pointermove' on document for which we validate the new pointer location.
+                    // It's common to get a move right after the leave with the same pointer's location,
+                    // so we wait up to 3 pointer move before dropping the leave event.
+                    var attempt = 3;
+                    WindowManager.current.ensurePendingLeaveEventProcessing();
+                    WindowManager.current.processPendingLeaveEvent = (move) => {
+                        if (!move.isOverDeep(element)) {
+                            // Raising deferred pointerleave on element " + element.id);
+                            WindowManager.onPointerEventReceived(evt);
+                            WindowManager.current.processPendingLeaveEvent = null;
+                        }
+                        else if (--attempt <= 0) {
+                            // Drop deferred pointerleave on element " + element.id);
+                            WindowManager.current.processPendingLeaveEvent = null;
+                        }
+                        else {
+                            // Requeue deferred pointerleave on element " + element.id);
+                        }
+                    };
+                }
+                else {
+                    WindowManager.onPointerEventReceived(evt);
+                }
+            }
             /**
              * Ensure that any pending leave event are going to be processed (cf @see processPendingLeaveEvent )
              */
@@ -911,91 +999,13 @@ var Uno;
                         event.stopPropagation();
                     }
                 };
-                if (eventName == "pointerenter") {
-                    const enterPointerHandler = (event) => {
-                        const e = event;
-                        if (e.explicitOriginalTarget) { // FF only
-                            // It happens on FF that when another control which is over the 'element' has been updated, like text or visibility changed,
-                            // we receive a pointer enter/leave of an element which is under an element that is capable to handle pointers,
-                            // which is unexpected as the "pointerenter" should not bubble.
-                            // So we have to validate that this event is effectively due to the pointer entering the control.
-                            // We achieve this by browsing up the elements under the pointer (** not the visual tree**) 
-                            const evt = event;
-                            for (let elt of document.elementsFromPoint(evt.pageX, evt.pageY)) {
-                                if (elt == element) {
-                                    // We found our target element, we can raise the event and stop the loop
-                                    eventHandler(event);
-                                    return;
-                                }
-                                let htmlElt = elt;
-                                if (htmlElt.style.pointerEvents != "none") {
-                                    // This 'htmlElt' is handling the pointers events, this mean that we can stop the loop.
-                                    // However, if this 'htmlElt' is one of our child it means that the event was legitimate
-                                    // and we have to raise it for the 'element'.
-                                    while (htmlElt.parentElement) {
-                                        htmlElt = htmlElt.parentElement;
-                                        if (htmlElt == element) {
-                                            eventHandler(event);
-                                            return;
-                                        }
-                                    }
-                                    // We found an element this is capable to handle the pointers but which is not one of our child
-                                    // (probably a sibling which is covering the element). It means that the pointerEnter/Leave should
-                                    // not have bubble to the element, and we can mute it.
-                                    return;
-                                }
-                            }
-                        }
-                        else {
-                            eventHandler(event);
-                        }
-                    };
-                    element.addEventListener(eventName, enterPointerHandler, onCapturePhase);
-                }
-                else if (eventName == "pointerleave") {
-                    const leavePointerHandler = (event) => {
-                        const e = event;
-                        if (e.explicitOriginalTarget // FF only
-                            && e.explicitOriginalTarget !== event.currentTarget
-                            && event.isOver(element)) {
-                            // If the event was re-targeted, it's suspicious as the leave event should not bubble
-                            // This happens on FF when another control which is over the 'element' has been updated, like text or visibility changed.
-                            // So we have to validate that this event is effectively due to the pointer leaving the element.
-                            // We achieve that by buffering it until the next few 'pointermove' on document for which we validate the new pointer location.
-                            // It's common to get a move right after the leave with the same pointer's location,
-                            // so we wait up to 3 pointer move before dropping the leave event.
-                            var attempt = 3;
-                            this.ensurePendingLeaveEventProcessing();
-                            this.processPendingLeaveEvent = (move) => {
-                                if (!move.isOverDeep(element)) {
-                                    console.log("Raising deferred pointerleave on element " + elementId);
-                                    eventHandler(event);
-                                    this.processPendingLeaveEvent = null;
-                                }
-                                else if (--attempt <= 0) {
-                                    console.log("Drop deferred pointerleave on element " + elementId);
-                                    this.processPendingLeaveEvent = null;
-                                }
-                                else {
-                                    console.log("Requeue deferred pointerleave on element " + elementId);
-                                }
-                            };
-                        }
-                        else {
-                            eventHandler(event);
-                        }
-                    };
-                    element.addEventListener(eventName, leavePointerHandler, onCapturePhase);
-                }
-                else {
-                    element.addEventListener(eventName, eventHandler, onCapturePhase);
-                }
+                element.addEventListener(eventName, eventHandler, onCapturePhase);
             }
             /**
              * pointer event extractor to be used with registerEventOnView
              * @param evt
              */
-            pointerEventExtractor(evt) {
+            static pointerEventExtractor(evt) {
                 if (!evt) {
                     return "";
                 }
@@ -1052,7 +1062,7 @@ var Uno;
                     const fontSize = window.getComputedStyle(el).fontSize;
                     document.body.removeChild(el);
                     this._wheelLineSize = fontSize ? parseInt(fontSize) : 16; /* 16 = The current common default font size */
-                    // Based on observations, even if the even reports 3 lines (the settings of windows),
+                    // Based on observations, even if the event reports 3 lines (the settings of windows),
                     // the browser will actually scroll of about 6 lines of text.
                     this._wheelLineSize *= 2.0;
                 }
@@ -1075,7 +1085,7 @@ var Uno;
                     : "";
             }
             /**
-             * tapped (mouse clicked / double clicked) event extractor to be used with registerEventOnView
+             * focus event extractor to be used with registerEventOnView
              * @param evt
              */
             focusEventExtractor(evt) {
@@ -1113,7 +1123,7 @@ var Uno;
                     //
                     switch (eventExtractorId) {
                         case 1:
-                            return this.pointerEventExtractor;
+                            return WindowManager.pointerEventExtractor;
                         case 3:
                             return this.keyboardEventExtractor;
                         case 2:
@@ -2200,6 +2210,16 @@ class WindowManagerRegisterEventOnViewParams {
         }
         {
             ret.EventExtractorId = Number(Module.getValue(pData + 12, "i32"));
+        }
+        return ret;
+    }
+}
+/* TSBindingsGenerator Generated code -- this code is regenerated on each build */
+class WindowManagerRegisterPointerEventsOnViewParams {
+    static unmarshal(pData) {
+        const ret = new WindowManagerRegisterPointerEventsOnViewParams();
+        {
+            ret.HtmlId = Number(Module.getValue(pData + 0, "*"));
         }
         return ret;
     }
