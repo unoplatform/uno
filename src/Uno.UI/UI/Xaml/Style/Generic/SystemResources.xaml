@@ -1161,6 +1161,30 @@
 			<StaticResource x:Key="PopupLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
 			<StaticResource x:Key="SplitViewLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
 			<StaticResource x:Key="TimePickerLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
+
+			<Color x:Key="SystemRevealAltHighColor">#F2000000</Color>
+			<Color x:Key="SystemRevealAltLowColor">#30000000</Color>
+			<Color x:Key="SystemRevealAltMediumColor">#91000000</Color>
+			<Color x:Key="SystemRevealAltMediumHighColor">#C2000000</Color>
+			<Color x:Key="SystemRevealAltMediumLowColor">#61000000</Color>
+			<Color x:Key="SystemRevealBaseHighColor">#F2FFFFFF</Color>
+			<Color x:Key="SystemRevealBaseLowColor">#30FFFFFF</Color>
+			<Color x:Key="SystemRevealBaseMediumColor">#91FFFFFF</Color>
+			<Color x:Key="SystemRevealBaseMediumHighColor">#C2FFFFFF</Color>
+			<Color x:Key="SystemRevealBaseMediumLowColor">#61FFFFFF</Color>
+			<Color x:Key="SystemRevealChromeAltLowColor">#F2F9F9F9</Color>
+			<Color x:Key="SystemRevealChromeBlackHighColor">#F2000000</Color>
+			<Color x:Key="SystemRevealChromeBlackLowColor">#30000000</Color>
+			<Color x:Key="SystemRevealChromeBlackMediumLowColor">#61000000</Color>
+			<Color x:Key="SystemRevealChromeBlackMediumColor">#C2000000</Color>
+			<Color x:Key="SystemRevealChromeHighColor">#F2767676</Color>
+			<Color x:Key="SystemRevealChromeLowColor">#F21F1F1F</Color>
+			<Color x:Key="SystemRevealChromeMediumColor">#F2393939</Color>
+			<Color x:Key="SystemRevealChromeMediumLowColor">#F22B2B2B</Color>
+			<Color x:Key="SystemRevealChromeWhiteColor">#F2FFFFFF</Color>
+			<Color x:Key="SystemRevealChromeGrayColor">#F2767676</Color>
+			<Color x:Key="SystemRevealListLowColor">#18FFFFFF</Color>
+			<Color x:Key="SystemRevealListMediumColor">#30FFFFFF</Color>
 		</ResourceDictionary>
 		<ResourceDictionary x:Key="HighContrast">
 			<!-- Added manually (not part of UWP's SystemResources.xaml) -->
@@ -2308,6 +2332,30 @@
 			<StaticResource x:Key="PopupLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
 			<StaticResource x:Key="SplitViewLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
 			<StaticResource x:Key="TimePickerLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
+			
+			<Color x:Key="SystemRevealAltHighColor">#FF000000</Color>
+			<Color x:Key="SystemRevealAltLowColor">#33000000</Color>
+			<Color x:Key="SystemRevealAltMediumColor">#99000000</Color>
+			<Color x:Key="SystemRevealAltMediumHighColor">#CC000000</Color>
+			<Color x:Key="SystemRevealAltMediumLowColor">#66000000</Color>
+			<Color x:Key="SystemRevealBaseHighColor">#FFFFFFFF</Color>
+			<Color x:Key="SystemRevealBaseLowColor">#33FFFFFF</Color>
+			<Color x:Key="SystemRevealBaseMediumColor">#99FFFFFF</Color>
+			<Color x:Key="SystemRevealBaseMediumHighColor">#CCFFFFFF</Color>
+			<Color x:Key="SystemRevealBaseMediumLowColor">#66FFFFFF</Color>
+			<Color x:Key="SystemRevealChromeAltLowColor">#FFF9F9F9</Color>
+			<Color x:Key="SystemRevealChromeBlackHighColor">#FF000000</Color>
+			<Color x:Key="SystemRevealChromeBlackLowColor">#33000000</Color>
+			<Color x:Key="SystemRevealChromeBlackMediumLowColor">#66000000</Color>
+			<Color x:Key="SystemRevealChromeBlackMediumColor">#CC000000</Color>
+			<Color x:Key="SystemRevealChromeHighColor">#FF767676</Color>
+			<Color x:Key="SystemRevealChromeLowColor">#FF1F1F1F</Color>
+			<Color x:Key="SystemRevealChromeMediumColor">#FF393939</Color>
+			<Color x:Key="SystemRevealChromeMediumLowColor">#FF2B2B2B</Color>
+			<Color x:Key="SystemRevealChromeWhiteColor">#FFFFFFFF</Color>
+			<Color x:Key="SystemRevealChromeGrayColor">#FF767676</Color>
+			<Color x:Key="SystemRevealListLowColor">#19FFFFFF</Color>
+			<Color x:Key="SystemRevealListMediumColor">#33FFFFFF</Color>
 		</ResourceDictionary>
 		<ResourceDictionary x:Key="Light">
 			<!-- Added manually (not part of UWP's SystemResources.xaml) -->
@@ -3453,6 +3501,30 @@
 			<StaticResource x:Key="PopupLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
 			<StaticResource x:Key="SplitViewLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
 			<StaticResource x:Key="TimePickerLightDismissOverlayBackground" ResourceKey="SystemControlPageBackgroundMediumAltMediumBrush" />
+
+			<Color x:Key="SystemRevealAltHighColor">#E6FFFFFF</Color>
+			<Color x:Key="SystemRevealAltLowColor">#2EFFFFFF</Color>
+			<Color x:Key="SystemRevealAltMediumColor">#8AFFFFFF</Color>
+			<Color x:Key="SystemRevealAltMediumHighColor">#B8FFFFFF</Color>
+			<Color x:Key="SystemRevealAltMediumLowColor">#61FFFFFF</Color>
+			<Color x:Key="SystemRevealBaseHighColor">#E6000000</Color>
+			<Color x:Key="SystemRevealBaseLowColor">#2E000000</Color>
+			<Color x:Key="SystemRevealBaseMediumColor">#8A000000</Color>
+			<Color x:Key="SystemRevealBaseMediumHighColor">#B8000000</Color>
+			<Color x:Key="SystemRevealBaseMediumLowColor">#61000000</Color>
+			<Color x:Key="SystemRevealChromeAltLowColor">#E6171717</Color>
+			<Color x:Key="SystemRevealChromeBlackHighColor">#E6000000</Color>
+			<Color x:Key="SystemRevealChromeBlackLowColor">#2E000000</Color>
+			<Color x:Key="SystemRevealChromeBlackMediumLowColor">#66000000</Color>
+			<Color x:Key="SystemRevealChromeBlackMediumColor">#B8000000</Color>
+			<Color x:Key="SystemRevealChromeHighColor">#E6CCCCCC</Color>
+			<Color x:Key="SystemRevealChromeLowColor">#E6F2F2F2</Color>
+			<Color x:Key="SystemRevealChromeMediumColor">#E6E6E6E6</Color>
+			<Color x:Key="SystemRevealChromeMediumLowColor">#E6F2F2F2</Color>
+			<Color x:Key="SystemRevealChromeWhiteColor">#E6FFFFFF</Color>
+			<Color x:Key="SystemRevealChromeGrayColor">#E6767676</Color>
+			<Color x:Key="SystemRevealListLowColor">#17000000</Color>
+			<Color x:Key="SystemRevealListMediumColor">#2E000000</Color>
 		</ResourceDictionary>
 	</ResourceDictionary.ThemeDictionaries>
 
