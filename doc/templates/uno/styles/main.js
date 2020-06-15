@@ -29,11 +29,14 @@ document.addEventListener('DOMContentLoaded', function(){
         const unoMenuReq = new XMLHttpRequest();
         const unoMenuEndpoint = window.location.protocol + "//" + window.location.hostname + "/wp-json/wp/v2/menu";
         unoMenuReq.open("get", unoMenuEndpoint, true);
-        unoMenuReq.onload = function (e) {
-            if (unoMenuReq.status === 200 && unoMenuReq.responseText)
-                document.getElementById("navbar").innerHTML = JSON.parse(unoMenuReq.responseText);
-        };
-        unoMenuReq.send();
+
+        if (typeof navbar !== 'undefined') {
+            unoMenuReq.onload = function (e) {
+                if (unoMenuReq.status === 200 && unoMenuReq.responseText)
+                    document.getElementById("navbar").innerHTML = JSON.parse(unoMenuReq.responseText);
+            };
+            unoMenuReq.send();
+        }
     }
 
     document.addEventListener('click', function (e) {
