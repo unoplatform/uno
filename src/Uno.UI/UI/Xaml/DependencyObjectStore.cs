@@ -169,7 +169,8 @@ namespace Windows.UI.Xaml
 			_dataContextPropertyDetails = _properties.DataContextPropertyDetails;
 			_templatedParentPropertyDetails = _properties.TemplatedParentPropertyDetails;
 
-			InitializeBinder(dataContextProperty, templatedParentProperty);
+			_dataContextProperty = dataContextProperty;
+			_templatedParentProperty = templatedParentProperty;
 
 			if (_trace.IsEnabled)
 			{

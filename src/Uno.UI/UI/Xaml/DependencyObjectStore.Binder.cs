@@ -39,8 +39,8 @@ namespace Windows.UI.Xaml
 		private bool _isApplyingTemplateBindings;
 		private bool _isApplyingDataContextBindings;
 		private bool _bindingsSuspended;
-		private DependencyProperty _dataContextProperty = UIElement.DataContextProperty;
-		private DependencyProperty _templatedParentProperty = UIElement.TemplatedParentProperty;
+		private readonly DependencyProperty _dataContextProperty;
+		private readonly DependencyProperty _templatedParentProperty;
 
 		/// <summary>
 		/// Sets the templated parent, with the ability to control the propagation of the templated parent.
@@ -162,12 +162,6 @@ namespace Windows.UI.Xaml
 
 		private string GetOwnerDebugString()
 			=> ActualInstance?.GetType().ToString() ?? "[collected]";
-
-		private void InitializeBinder(DependencyProperty dataContextProperty, DependencyProperty templatedParentProperty)
-		{
-			_dataContextProperty = dataContextProperty;
-			_templatedParentProperty = templatedParentProperty;
-		}
 
 		static void InitializeStaticBinder()
 		{
