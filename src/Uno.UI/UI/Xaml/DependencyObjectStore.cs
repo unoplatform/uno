@@ -11,6 +11,7 @@ using Uno.Collections;
 using System.Runtime.CompilerServices;
 using System.Diagnostics;
 using Windows.UI.Xaml.Data;
+using Uno.UI;
 
 #if XAMARIN_ANDROID
 using View = Android.Views.View;
@@ -1085,7 +1086,7 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Do a tree walk to find the correct values of StaticResource and ThemeResource assignations.
 		/// </summary>
-		internal void UpdateResourceBindings()
+		internal void UpdateResourceBindings(bool isThemeChangedUpdate)
 		{
 			if (_resourceBindings == null || _resourceBindings.Count == 0)
 			{
@@ -1098,12 +1099,22 @@ namespace Windows.UI.Xaml
 
 			foreach (var kvp in bindings)
 			{
+				var wasSet = false;
 				foreach (var dict in dictionariesInScope)
 				{
 					if (dict.TryGetValue(kvp.Value.ResourceKey, out var value, shouldCheckSystem: false))
 					{
+						wasSet = true;
 						SetValue(kvp.Key, value);
 						break;
+					}
+				}
+
+				if (!wasSet && isThemeChangedUpdate && kvp.Value.IsThemeResourceExtension)
+				{
+					if (ResourceResolver.TryTopLevelRetrieval(kvp.Value.ResourceKey, kvp.Value.ParseContext, out var value))
+					{
+						SetValue(kvp.Key, value);
 					}
 				}
 			}
@@ -1118,7 +1129,6 @@ namespace Windows.UI.Xaml
 		/// <summary>
 		/// Returns all ResourceDictionaries in scope using the visual tree, from nearest to furthest.
 		/// </summary>
-		/// <returns></returns>
 		private IEnumerable<ResourceDictionary> GetResourceDictionaries(bool includeAppResources)
 		{
 			var candidate = ActualInstance;

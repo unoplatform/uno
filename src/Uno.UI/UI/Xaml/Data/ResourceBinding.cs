@@ -19,10 +19,13 @@ namespace Windows.UI.Xaml.Data
 		/// </summary>
 		public bool IsThemeResourceExtension { get; }
 
-		public ResourceBinding(object resourceKey, bool isThemeResourceExtension)
+		public object ParseContext { get; }
+
+		public ResourceBinding(object resourceKey, bool isThemeResourceExtension, object parseContext)
 		{
 			ResourceKey = resourceKey;
 			IsThemeResourceExtension = isThemeResourceExtension;
+			ParseContext = parseContext;
 		}
 	}
 }

@@ -274,6 +274,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 
 			writer.AppendLineInvariant("using Uno.Extensions;");
 			writer.AppendLineInvariant("using Uno;");
+			writer.AppendLineInvariant("using Uno.UI.Helpers.Xaml;");
 
 			writer.AppendLineInvariant("using {0};", _defaultNamespace);
 
@@ -1293,16 +1294,24 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						);
 					}
 
+						var valueObject = valueNode.Objects.First();
 					if (HasMarkupExtension(valueNode))
 					{
 						writer.AppendLineInvariant(BuildBindingOption(valueNode, propertyType, prependCastToType: true));
 					}
 					else
 					{
-						BuildChild(writer, valueNode, valueNode.Objects.First());
+						BuildChild(writer, valueNode, valueObject);
 					}
 
-					writer.AppendLineInvariant(")" + lineEnding);
+					writer.AppendLineInvariant(")");
+
+					if (valueObject.Type.Name == "ThemeResource")
+					{
+						writer.AppendLineInvariant(".ApplyThemeResourceUpdateValues(\"{0}\", {1})", valueObject.Members.FirstOrDefault()?.Value, ParseContextPropertyAccess);
+					}
+
+					writer.AppendLineInvariant(lineEnding);
 				}
 			}
 			else
