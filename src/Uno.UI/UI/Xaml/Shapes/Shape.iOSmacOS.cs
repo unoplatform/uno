@@ -622,9 +622,8 @@ namespace Windows.UI.Xaml.Shapes
 
 		private bool TryCreateImageBrushLayers(ImageBrush imageBrush, CAShapeLayer fillMask, out CALayer imageContainerLayer)
 		{
-			var uiImage = imageBrush.ImageSource.ImageData;
-			if (uiImage == null)
-			{
+			if (imageBrush.ImageSource == null || !imageBrush.ImageSource.TryOpenSync(out var uiImage))
+			{ 
 				imageContainerLayer = default;
 				return false;
 			}
