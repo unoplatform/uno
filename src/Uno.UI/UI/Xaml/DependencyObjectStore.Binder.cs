@@ -29,12 +29,7 @@ namespace Windows.UI.Xaml
 		private delegate void DataContextProviderAction(IDataContextProvider provider);
 		private delegate void ObjectAction(object instance);
 
-		private static readonly object[] EmptyChildren = new object[0];
-
-		// Initialize the field with zero capacity, as it may stay empty more often than it is being used.
-		private readonly CompositeDisposable _subscriptions = new CompositeDisposable(0);
-
-		private readonly SerialDisposable _propertyChangedSubscription = new SerialDisposable();
+		private readonly object _gate = new object();
 
 		private readonly Dictionary<DependencyProperty, int> _childrenBindableMap = new Dictionary<DependencyProperty, int>(0, DependencyPropertyComparer.Default);
 		private readonly List<object> _childrenBindable = new List<object>();
@@ -228,15 +223,18 @@ namespace Windows.UI.Xaml
 
 		private void BinderDispose()
 		{
-			if (_isDisposed)
+			lock (_gate)
 			{
-				return;
+				// Guard the dispose as it may be invoked from both a finalizer and the dispatcher.
+				if (_isDisposed)
+				{
+					return;
+				}
+
+				_isDisposed = true;
 			}
 
-			_subscriptions.Dispose();
-			_propertyChangedSubscription.Dispose();
 			_properties.Dispose();
-			_isDisposed = true;
 		}
 
 		private void OnDataContextChanged(object providedDataContext, object actualDataContext, DependencyPropertyValuePrecedences precedence)
