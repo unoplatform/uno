@@ -7,7 +7,7 @@ namespace Windows.Storage.Pickers
 	#endif
 	public  partial class FileSavePicker
 	{
-		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
+#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.Pickers.PickerLocationId SuggestedStartLocation
 		{
@@ -20,8 +20,8 @@ namespace Windows.Storage.Pickers
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileSavePicker", "PickerLocationId FileSavePicker.SuggestedStartLocation");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::Windows.Storage.StorageFile SuggestedSaveFile
 		{
@@ -34,8 +34,8 @@ namespace Windows.Storage.Pickers
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileSavePicker", "StorageFile FileSavePicker.SuggestedSaveFile");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  string SuggestedFileName
 		{
@@ -48,8 +48,8 @@ namespace Windows.Storage.Pickers
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileSavePicker", "string FileSavePicker.SuggestedFileName");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  string SettingsIdentifier
 		{
@@ -62,8 +62,8 @@ namespace Windows.Storage.Pickers
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileSavePicker", "string FileSavePicker.SettingsIdentifier");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  string DefaultFileExtension
 		{
@@ -76,8 +76,8 @@ namespace Windows.Storage.Pickers
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileSavePicker", "string FileSavePicker.DefaultFileExtension");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  string CommitButtonText
 		{
@@ -90,8 +90,8 @@ namespace Windows.Storage.Pickers
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileSavePicker", "string FileSavePicker.CommitButtonText");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public  global::System.Collections.Generic.IDictionary<string, global::System.Collections.Generic.IList<string>> FileTypeChoices
 		{
@@ -100,8 +100,8 @@ namespace Windows.Storage.Pickers
 				throw new global::System.NotImplementedException("The member IDictionary<string, IList<string>> FileSavePicker.FileTypeChoices is not implemented in Uno.");
 			}
 		}
-		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.Collections.ValueSet ContinuationData
 		{
@@ -124,14 +124,14 @@ namespace Windows.Storage.Pickers
 				global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileSavePicker", "string FileSavePicker.EnterpriseId");
 			}
 		}
-		#endif
-		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
+#endif
+#if false || false || false || false || false
 		[global::Uno.NotImplemented]
 		public FileSavePicker()
 		{
 			global::Windows.Foundation.Metadata.ApiInformation.TryRaiseNotImplemented("Windows.Storage.Pickers.FileSavePicker", "FileSavePicker.FileSavePicker()");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.FileSavePicker()
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.SettingsIdentifier.get
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.SettingsIdentifier.set
@@ -146,15 +146,15 @@ namespace Windows.Storage.Pickers
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.SuggestedSaveFile.set
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.SuggestedFileName.get
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.SuggestedFileName.set
-		#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
+#if false || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  global::Windows.Foundation.IAsyncOperation<global::Windows.Storage.StorageFile> PickSaveFileAsync()
 		{
 			throw new global::System.NotImplementedException("The member IAsyncOperation<StorageFile> FileSavePicker.PickSaveFileAsync() is not implemented in Uno.");
 		}
-		#endif
+#endif
 		// Forced skipping of method Windows.Storage.Pickers.FileSavePicker.ContinuationData.get
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
+#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __MACOS__
 		[global::Uno.NotImplemented]
 		public  void PickSaveFileAndContinue()
 		{
