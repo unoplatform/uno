@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using Windows.UI;
 using Windows.UI.Core;
 using Windows.UI.Xaml.Markup;
 using Uno.Disposables;
