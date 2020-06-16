@@ -29,6 +29,11 @@ namespace Windows.Storage
 			return new StorageFile(new Uri("file://" + path));
 		}
 
+		public static async Task<StorageFile> GetFileFromUriAsync(Uri uri)
+		{
+			return new StorageFile(uri);
+		}
+
 		private StorageFile(Uri uri)
 		{
 			_fileUri = uri;
