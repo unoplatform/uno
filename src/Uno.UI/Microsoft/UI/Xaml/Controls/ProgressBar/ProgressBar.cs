@@ -62,7 +62,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public ProgressBar()
 		{
-			DefaultStyleKey = this;
+			DefaultStyleKey = typeof(ProgressBar);
 
 			SizeChanged += (snd, evt) => OnSizeChange();
 
