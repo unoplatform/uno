@@ -1,4 +1,6 @@
-﻿namespace Windows.UI.Xaml.Media.Animation
+﻿using Windows.UI;
+
+namespace Windows.UI.Xaml.Media.Animation
 {
 	partial class ColorAnimationUsingKeyFrames
 	{
