@@ -13,7 +13,7 @@ namespace Uno.UI.Xaml
 		public const string AppXIdentifier = "ms-appx:///";
 		public const string MSResourceIdentifier = "ms-resource:///";
 		public static string LocalResourcePrefix => $"{MSResourceIdentifier}Files/";
-		
+
 		/// <summary>
 		/// Convert relative source path to absolute path.
 		/// </summary>
@@ -25,6 +25,9 @@ namespace Uno.UI.Xaml
 				var trimmedPath = relativeTargetPath.TrimStart(AppXIdentifier);
 				return trimmedPath;
 			}
+
+			// Strip leading forward-slash, if any, to match the path the target file is indexed by
+			relativeTargetPath = relativeTargetPath.TrimStart(new[] { '/' });
 
 			var originDirectory = Path.GetDirectoryName(origin);
 			if (originDirectory.IsNullOrWhiteSpace())
