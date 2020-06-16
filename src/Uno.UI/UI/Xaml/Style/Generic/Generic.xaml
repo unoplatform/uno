@@ -4571,6 +4571,15 @@
 	<xamarin:Style TargetType="ScrollViewer"
 				   BasedOn="{StaticResource DefaultScrollViewerStyle}" />
 
+	<ControlTemplate TargetType="ScrollViewer"
+					 x:Name="ScrollViewerScrollBarlessTemplate">
+		<Grid Background="{TemplateBinding Background}">
+			<ScrollContentPresenter x:Name="ScrollContentPresenter"
+									ContentTemplate="{TemplateBinding ContentTemplate}"
+									Margin="{TemplateBinding Padding}" />
+		</Grid>
+	</ControlTemplate>
+
 	<!-- Default style for Windows.UI.Xaml.Controls.PasswordBox -->
 	<Style x:Key="XamlDefaultPasswordBox"
 				   TargetType="PasswordBox">
