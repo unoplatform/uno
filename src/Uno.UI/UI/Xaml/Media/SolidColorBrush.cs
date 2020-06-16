@@ -126,7 +126,5 @@ namespace Windows.UI.Xaml.Media
 		public static bool operator ==(SolidColorBrush left, SolidColorBrush right) => Equals(left, right);
 
 		public static bool operator !=(SolidColorBrush left, SolidColorBrush right) => !Equals(left, right);
-
-		public static explicit operator Color(SolidColorBrush scb) => scb?.Color ?? default;
 	}
 }
