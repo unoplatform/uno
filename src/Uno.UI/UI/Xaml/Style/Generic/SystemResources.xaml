@@ -166,6 +166,7 @@
 			<Thickness x:Key="ComboBoxPopupBorderThemeThickness">2</Thickness>
 			<Thickness x:Key="ComboBoxItemThemePadding">11,5,11,7</Thickness>
 			<Thickness x:Key="ComboBoxItemThemeTouchPadding">11,11,11,13</Thickness>
+			<Thickness x:Key="ComboBoxItemThemeGameControllerPadding">11,11,11,13</Thickness>
 			<Thickness x:Key="ContentDialogBorderWidth">1</Thickness>
 			<Thickness x:Key="ContentDialogButton1HostMargin">24,0,0,24</Thickness>
 			<Thickness x:Key="ContentDialogButton2HostMargin">4,0,24,24</Thickness>
@@ -1457,6 +1458,7 @@
 			<Thickness x:Key="ComboBoxPopupBorderThemeThickness">2</Thickness>
 			<Thickness x:Key="ComboBoxItemThemePadding">11,5,11,7</Thickness>
 			<Thickness x:Key="ComboBoxItemThemeTouchPadding">11,11,11,13</Thickness>
+			<Thickness x:Key="ComboBoxItemThemeGameControllerPadding">11,11,11,13</Thickness>
 			<Thickness x:Key="ContentDialogBorderWidth">1</Thickness>
 			<Thickness x:Key="ContentDialogButton1HostMargin">24,0,0,24</Thickness>
 			<Thickness x:Key="ContentDialogButton2HostMargin">4,0,24,24</Thickness>
@@ -2746,6 +2748,7 @@
 			<Thickness x:Key="ComboBoxPopupBorderThemeThickness">2</Thickness>
 			<Thickness x:Key="ComboBoxItemThemePadding">11,5,11,7</Thickness>
 			<Thickness x:Key="ComboBoxItemThemeTouchPadding">11,11,11,13</Thickness>
+			<Thickness x:Key="ComboBoxItemThemeGameControllerPadding">11,11,11,13</Thickness>
 			<Thickness x:Key="ContentDialogBorderWidth">1</Thickness>
 			<Thickness x:Key="ContentDialogButton1HostMargin">24,0,0,24</Thickness>
 			<Thickness x:Key="ContentDialogButton2HostMargin">4,0,24,24</Thickness>
