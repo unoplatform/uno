@@ -1,5 +1,4 @@
-﻿#if !NETFX_CORE
-using System;
+﻿using System;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Data;
@@ -99,4 +98,3 @@ namespace UITests.Microsoft_UI_Xaml_Controls.ProgressBar
 		}
 	}
 }
-#endif
