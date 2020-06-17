@@ -167,14 +167,19 @@ namespace SamplesApp.UITests
 
 			if(options != null)
 			{
-				var fileName = Path
-					.Combine(fileInfo.DirectoryName, Path.GetFileNameWithoutExtension(fileInfo.FullName) + ".metadata")
-					.GetNormalizedLongPath();
-
-				File.WriteAllText(fileName, $"IgnoreInSnapshotCompare={options.IgnoreInSnapshotCompare}");
+				SetOptions(fileInfo, options);
 			}
 
 			return fileInfo;
+		}
+
+		public void SetOptions(FileInfo screenshot, ScreenshotOptions options)
+		{
+			var fileName = Path
+				.Combine(screenshot.DirectoryName, Path.GetFileNameWithoutExtension(screenshot.FullName) + ".metadata")
+				.GetNormalizedLongPath();
+
+			File.WriteAllText(fileName, $"IgnoreInSnapshotCompare={options.IgnoreInSnapshotCompare}");
 		}
 
 		private static void ValidateAutoRetry()

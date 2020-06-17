@@ -30,4 +30,14 @@
 		</ProjectReference>
 	</ItemGroup>
 
+	<ItemGroup>
+	  <Folder Include="Windows_UI_Xaml_Shapes\Basics_Shapes_Tests_EpectedResults\" />
+	</ItemGroup>
+
+	<ItemGroup>
+	  <None Update="Windows_UI_Xaml_Shapes\Basics_Shapes_Tests_EpectedResults\*.png">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </None>
+	</ItemGroup>
+
 </Project>
