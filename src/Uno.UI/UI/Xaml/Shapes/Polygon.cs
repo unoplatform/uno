@@ -47,6 +47,7 @@ namespace Windows.UI.Xaml.Shapes
 		public Polygon()
 		{
 			Points = new PointCollection();
+			InitializePartial();
 		}
 
 		partial void InitializePartial();
