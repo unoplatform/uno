@@ -354,6 +354,20 @@ namespace Uno.UI
 			public static TimeSpan DefaultThemeAnimationDuration { get; set; } = TimeSpan.FromSeconds(0.75);
 		}
 
+		public static class ComboBox
+		{
+			/// <summary>
+			/// This defines the default value of the <see cref="UI.Xaml.Controls.ComboBox.DropDownPreferredPlacementProperty"/>. (cf. Remarks.)
+			/// </summary>
+			/// <remarks>
+			/// As this value is read only once when initializing the dependency property,
+			/// make sure to define it in the early stages of you application initialization,
+			/// before any UI related initialization (like generic styles init) and even before
+			/// referencing the ** type ** ComboBox in any way.
+			/// </remarks>
+			public static Uno.UI.Xaml.Controls.DropDownPlacement DefaultDropDownPreferredPlacement { get; set; } = Uno.UI.Xaml.Controls.DropDownPlacement.Auto;
+		}
+
 		public static class ToolTip
 		{
 			public static bool UseToolTips { get; set; }
@@ -377,20 +391,6 @@ namespace Uno.UI
 			[Obsolete("This flag is no longer used.")]
 			[EditorBrowsable(EditorBrowsableState.Never)]
 			public static int MaxRecursiveResolvingDepth { get; set; } = 12;
-		}
-
-		public static class ComboBox
-		{
-			/// <summary>
-			/// This defines the default value of the <see cref="UI.Xaml.Controls.ComboBox.DropDownPreferredPlacementProperty"/>. (cf. Remarks.)
-			/// </summary>
-			/// <remarks>
-			/// As this value is read only once when initializing the dependency property,
-			/// make sure to define it in the early stages of you application initialization,
-			/// before any UI related initialization (like generic styles init) and even before
-			/// referencing the ** type ** ComboBox in any way.
-			/// </remarks>
-			public static Uno.UI.Xaml.Controls.DropDownPlacement DefaultDropDownPreferredPlacement { get; set; } = Uno.UI.Xaml.Controls.DropDownPlacement.Auto;
 		}
 	}
 }
