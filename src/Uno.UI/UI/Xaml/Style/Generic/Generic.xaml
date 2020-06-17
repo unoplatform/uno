@@ -4571,6 +4571,15 @@
 	<xamarin:Style TargetType="ScrollViewer"
 				   BasedOn="{StaticResource DefaultScrollViewerStyle}" />
 
+	<ControlTemplate TargetType="ScrollViewer"
+					 x:Name="ScrollViewerScrollBarlessTemplate">
+		<Grid Background="{TemplateBinding Background}">
+			<ScrollContentPresenter x:Name="ScrollContentPresenter"
+									ContentTemplate="{TemplateBinding ContentTemplate}"
+									Margin="{TemplateBinding Padding}" />
+		</Grid>
+	</ControlTemplate>
+
 	<!-- Default style for Windows.UI.Xaml.Controls.PasswordBox -->
 	<Style x:Key="XamlDefaultPasswordBox"
 				   TargetType="PasswordBox">
@@ -8594,24 +8603,5 @@
 			</Setter.Value>
 		</Setter>
 	</not_wasm:Style>
-
-	<win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" BackgroundSource="Backdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
-	<xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicElementMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
-	<StaticResource x:Key="NavigationViewDefaultPaneBackground" ResourceKey="SystemControlChromeMediumLowAcrylicElementMediumBrush" />
-	<Color x:Key="SystemChromeMediumHighColor">#FFE6E6E6</Color>
-	
-	<win:AcrylicBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" BackgroundSource="HostBackdrop" TintColor="{StaticResource SystemChromeAltHighColor}" TintOpacity="0.6" FallbackColor="{StaticResource SystemChromeMediumLowColor}" />
-	<xamarin:SolidColorBrush x:Key="SystemControlChromeMediumLowAcrylicWindowMediumBrush" Color="{StaticResource SystemChromeMediumLowColor}" />
-	<StaticResource x:Key="NavigationViewExpandedPaneBackground" ResourceKey="SystemControlChromeMediumLowAcrylicWindowMediumBrush" />
-
-	<!--
-	<RevealBackgroundBrush x:Key="SystemControlTransparentRevealBackgroundBrush" TargetTheme="Dark" Color="Transparent" FallbackColor="Transparent" />
-	<RevealBackgroundBrush x:Key="SystemControlHighlightListLowRevealBackgroundBrush" TargetTheme="Dark" Color="{StaticResource SystemRevealListLowColor}" FallbackColor="{StaticResource SystemListLowColor}" />
-	<RevealBackgroundBrush x:Key="SystemControlHighlightListMediumRevealBackgroundBrush" TargetTheme="Dark" Color="{StaticResource SystemRevealListMediumColor}" FallbackColor="{StaticResource SystemListMediumColor}" />
-	-->
-
-	<SolidColorBrush x:Key="SystemControlTransparentRevealBackgroundBrush" Color="Transparent" />
-	<SolidColorBrush x:Key="SystemControlHighlightListLowRevealBackgroundBrush" Color="{StaticResource SystemListLowColor}" />
-	<SolidColorBrush x:Key="SystemControlHighlightListMediumRevealBackgroundBrush" Color="{StaticResource SystemListMediumColor}" />
 
 </ResourceDictionary>
