@@ -1,4 +1,6 @@
-﻿using System;
+﻿#nullable enable
+
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Uno.Buffers;
@@ -11,20 +13,31 @@ namespace Windows.UI.Xaml
 	/// <summary>
 	/// A <see cref="DependencyPropertyDetails"/> collection
 	/// </summary>
-    partial class DependencyPropertyDetailsCollection : IDisposable
-    {
+	/// <remarks>
+	/// This implementation uses an O(1) lookup for the dependency properties of a DependencyObject. This assumes that
+	/// <see cref="DependencyProperty.GetPropertiesForType"/> returns an ordered list, and creates an array based on
+	/// the min and max UniqueIDs found in the object's properties.
+	///
+	/// This approach can cost more in storage for some types, if the array is mostly empty.
+	/// </remarks>
+	partial class DependencyPropertyDetailsCollection : IDisposable
+	{
+		private static readonly DependencyPropertyDetails[] Empty = new DependencyPropertyDetails[0];
+
 		private readonly Type _ownerType;
 		private readonly ManagedWeakReference _ownerReference;
+		private readonly DependencyProperty _dataContextProperty;
+		private readonly DependencyProperty _templatedParentProperty;
 
-		public DependencyPropertyDetails DataContextPropertyDetails { get; }
-		public DependencyPropertyDetails TemplatedParentPropertyDetails { get; }
+		private DependencyPropertyDetails? _dataContextPropertyDetails;
+		private DependencyPropertyDetails? _templatedParentPropertyDetails;
 
-		private readonly static ArrayPool<PropertyEntry> _pool = ArrayPool<PropertyEntry>.Create(100, 100);
+		private readonly static ArrayPool<DependencyPropertyDetails> _pool = ArrayPool<DependencyPropertyDetails>.Create(500, 100);
 
-		private PropertyEntry[] _entries;
+		private DependencyPropertyDetails[] _entries = Empty;
 		private int _entriesLength;
-
-		private PropertyEntry None = new PropertyEntry(-1, null);
+		private int _minId;
+		private int _maxId;
 
 		/// <summary>
 		/// Creates an instance using the specified DependencyObject <see cref="Type"/>
@@ -37,32 +50,37 @@ namespace Windows.UI.Xaml
 
 			var propertiesForType = DependencyProperty.GetPropertiesForType(ownerType);
 
-			var entries = _pool.Rent(propertiesForType.Length);
-
-			for (int i = 0; i < propertiesForType.Length; i++)
+			if (propertiesForType.Length != 0)
 			{
-				ref var entry = ref entries[i];
-				entry.Id = propertiesForType[i].UniqueId;
-				entry.Details = null;
+				_minId = propertiesForType[0].UniqueId;
+				_maxId = propertiesForType[propertiesForType.Length - 1].UniqueId;
+
+				var entriesLength = _maxId - _minId + 1;
+				var entries = _pool.Rent(entriesLength);
+
+				// Entries are pre-sorted by the DependencyProperty.GetPropertiesForType method
+				AssignEntries(entries, entriesLength);
 			}
 
-			// Entries are pre-sorted by the DependencyProperty.GetPropertiesForType method
-			AssignEntries(entries, propertiesForType.Length, sort: false);
-
-			// Prefetch known properties for faster access
-			DataContextPropertyDetails = GetPropertyDetails(dataContextProperty);
-			TemplatedParentPropertyDetails = GetPropertyDetails(templatedParentProperty);
+			_dataContextProperty = dataContextProperty;
+			_templatedParentProperty = templatedParentProperty;
 		}
 
 		public void Dispose()
 		{
 			for (var i = 0; i < _entriesLength; i++)
 			{
-				_entries[i].Details?.Dispose();
+				_entries![i]?.Dispose();
 			}
 
 			ReturnEntriesToPool();
 		}
+
+		public DependencyPropertyDetails DataContextPropertyDetails
+			=> _dataContextPropertyDetails ??= GetPropertyDetails(_dataContextProperty);
+
+		public DependencyPropertyDetails TemplatedParentPropertyDetails
+			=> _templatedParentPropertyDetails ??= GetPropertyDetails(_templatedParentProperty);
 
 		/// <summary>
 		/// Gets the <see cref="DependencyPropertyDetails"/> for a specific <see cref="DependencyProperty"/>
@@ -70,7 +88,7 @@ namespace Windows.UI.Xaml
 		/// <param name="property">A dependency property</param>
 		/// <returns>The details of the property</returns>
 		public DependencyPropertyDetails GetPropertyDetails(DependencyProperty property)
-			=> TryGetPropertyDetails(property, forceCreate: true);
+			=> TryGetPropertyDetails(property, forceCreate: true)!;
 
 		/// <summary>
 		/// Finds the <see cref="DependencyPropertyDetails"/> for a specific <see cref="DependencyProperty"/> if it exists.
@@ -78,143 +96,83 @@ namespace Windows.UI.Xaml
 		/// <param name="property">A dependency property</param>
 		/// <returns>The details of the property if it exists, otherwise null.</returns>
 		public DependencyPropertyDetails FindPropertyDetails(DependencyProperty property)
-			=> TryGetPropertyDetails(property, forceCreate: false);
+			=> TryGetPropertyDetails(property, forceCreate: false)!;
 
-		private DependencyPropertyDetails TryGetPropertyDetails(DependencyProperty property, bool forceCreate)
+		private DependencyPropertyDetails? TryGetPropertyDetails(DependencyProperty property, bool forceCreate)
 		{
-			ref var propertyEntry = ref GetEntry(property.UniqueId);
+			var propertyId = property.UniqueId;
 
-			if (propertyEntry.Id == -1)
+			var entryIndex = propertyId - _minId;
+
+			// https://stackoverflow.com/a/17095534/26346
+			var isInRange = (uint)entryIndex <= (_maxId - _minId);
+
+			if (isInRange)
+			{
+				ref var propertyEntry = ref _entries![entryIndex];
+
+				if (forceCreate && propertyEntry == null)
+				{
+					propertyEntry = new DependencyPropertyDetails(property, _ownerType);
+				}
+
+				return propertyEntry;
+			}
+			else
 			{
 				if (forceCreate)
 				{
-					// The property was not known at startup time, add it.
-					var newEntriesSize = _entriesLength + 1;
-					var newEntries = _pool.Rent(newEntriesSize);
+					int newEntriesSize;
+					DependencyPropertyDetails[] newEntries;
 
-					if (_entriesLength != 0)
+					if (entryIndex < 0)
 					{
+						newEntriesSize = _maxId - propertyId + 1;
+						newEntries = _pool.Rent(newEntriesSize);
+						Array.Copy(_entries, 0, newEntries, _minId - propertyId, _entriesLength);
+
+						_minId = propertyId;
+
+						AssignEntries(newEntries, newEntriesSize);
+					}
+					else
+					{
+						newEntriesSize = propertyId - _minId + 1;
+
+						newEntries = _pool.Rent(newEntriesSize);
 						Array.Copy(_entries, 0, newEntries, 0, _entriesLength);
+
+						AssignEntries(newEntries, newEntriesSize);
 					}
 
-					ref var newEntry = ref newEntries[_entriesLength];
-
-					var details = new DependencyPropertyDetails(property, _ownerType);
-
-					newEntry.Id = property.UniqueId;
-					newEntry.Details = details;
-
-					AssignEntries(newEntries, newEntriesSize, sort: true);
-
-					return details;
+					ref var propertyEntry = ref _entries![property.UniqueId - _minId];
+					return propertyEntry = new DependencyPropertyDetails(property, _ownerType);
 				}
 				else
 				{
 					return null;
 				}
 			}
-			else
-			{
-				if (propertyEntry.Details == null)
-				{
-					propertyEntry.Details = new DependencyPropertyDetails(property, _ownerType);
-				}
-
-				return propertyEntry.Details;
-			}
 		}
 
-		private void AssignEntries(PropertyEntry[] newEntries, int newSize, bool sort)
+		private void AssignEntries(DependencyPropertyDetails[] newEntries, int newSize)
 		{
 			ReturnEntriesToPool();
 
 			_entries = newEntries;
-			_entriesLength = newSize;
+			_entriesLength = newEntries.Length;
 
-			if (sort)
-			{
-				Array.Sort(newEntries, 0, newSize, PropertyEntryComparer.Instance);
-			}
+			// Array size returned by Rend may be larger than the requested size
+			// Adjust the max to that new value.
+			_maxId = _entriesLength + _minId - 1;
 		}
 
 		private void ReturnEntriesToPool()
 		{
 			if (_entries != null)
 			{
-				_pool.Return(_entries);
+				_pool.Return(_entries, clearArray: true);
 			}
-		}
-
-		private ref PropertyEntry GetEntry(int propertyId)
-		{
-			// 6 is based based on some perf comparisons on Android.
-			// This may need to be adjusted based on some hardware specific properties.
-			const int LinearSearchThreshold = 6;
-
-			int min = 0;
-			int max = _entriesLength - 1;
-
-			if (max >= 0)
-			{
-				while (max - min > LinearSearchThreshold)
-				{
-					int mid = (min + max) / 2;
-					ref var midValue = ref _entries[mid];
-
-					if (propertyId == midValue.Id)
-					{
-						return ref midValue;
-					}
-					else if (propertyId < midValue.Id)
-					{
-						max = mid - 1;
-					}
-					else
-					{
-						min = mid + 1;
-					}
-				}
-
-				// If the remaining items reaches LinearSearchThreshold, switch to linear search
-				while (min <= max)
-				{
-					ref var midValue = ref _entries[min];
-
-					if (midValue.Id == propertyId)
-					{
-						return ref midValue;
-					}
-
-					if (midValue.Id > propertyId)
-					{
-						break;
-					}
-
-					min++;
-				}
-			}
-
-			// Should be readonly, see C# 7.2 and up.
-			return ref None;
-		}
-
-		class PropertyEntryComparer : IComparer<PropertyEntry>
-		{
-			public static readonly PropertyEntryComparer Instance = new PropertyEntryComparer();
-
-			public int Compare(PropertyEntry x, PropertyEntry y) => x.Id - y.Id;
-		}
-
-		private struct PropertyEntry
-		{
-			public PropertyEntry(int id, DependencyPropertyDetails details)
-			{
-				Id = id;
-				Details = details;
-			}
-
-			public int Id;
-			public DependencyPropertyDetails Details;
 		}
 	}
 }
