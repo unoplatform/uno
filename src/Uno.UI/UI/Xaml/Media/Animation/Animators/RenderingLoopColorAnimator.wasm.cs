@@ -13,7 +13,10 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		protected override ColorOffset GetUpdatedValue(long frame, ColorOffset from, ColorOffset to)
 		{
-			// TODO: apply easing, if any - https://github.com/unoplatform/uno/issues/2948
+			if (_easing != null)
+			{
+				return _easing.Ease(frame, from, to, Duration);
+			}
 
 			var by = to - from;
 			var currentFrame = (float)frame / Duration;

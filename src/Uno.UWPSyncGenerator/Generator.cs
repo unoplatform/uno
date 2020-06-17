@@ -688,6 +688,8 @@ namespace Uno.UWPSyncGenerator
 				BaseXamlNamespace + ".Shapes.Ellipse",
 				BaseXamlNamespace + ".Shapes.Line",
 				BaseXamlNamespace + ".Shapes.Path",
+				BaseXamlNamespace + ".Media.Animation.FadeInThemeAnimation",
+				BaseXamlNamespace + ".Media.Animation.FadeOutThemeAnimation",
 				BaseXamlNamespace + ".Media.ImageBrush",
 				BaseXamlNamespace + ".Media.LinearGradientBrush",
 				BaseXamlNamespace + ".Media.RadialGradientBrush",

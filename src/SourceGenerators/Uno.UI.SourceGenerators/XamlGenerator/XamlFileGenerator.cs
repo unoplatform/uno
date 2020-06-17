@@ -2503,6 +2503,15 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 												closureName);
 							}
 							else if (
+								member.Member.Name == "TargetName" &&
+								!IsAttachedProperty(member) &&
+								(member.Member.DeclaringType?.Name.EndsWith("ThemeAnimation") ?? false)
+							)
+							{
+								// Those special animations (xxxThemeAnimation) needs to resolve their target at runtime.
+								writer.AppendLineInvariant(@"NameScope.SetNameScope({0}, nameScope);", closureName);
+							}
+							else if (
 								member.Member.Name == "TargetProperty" &&
 								IsAttachedProperty(member) &&
 								member.Member.DeclaringType?.Name == "Storyboard"

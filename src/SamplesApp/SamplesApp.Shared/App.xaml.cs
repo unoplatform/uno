@@ -225,6 +225,7 @@ namespace SamplesApp
 
 						// Generic Xaml events
 						// { "Windows.UI.Xaml", LogLevel.Debug },
+						// { "Windows.UI.Xaml.Media", LogLevel.Debug },
 						// { "Windows.UI.Xaml.Shapes", LogLevel.Debug },
 						// { "Windows.UI.Xaml.VisualStateGroup", LogLevel.Debug },
 						// { "Windows.UI.Xaml.StateTriggerBase", LogLevel.Debug },

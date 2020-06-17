@@ -16,7 +16,7 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		internal static bool GetIsDurationZero(this Timeline timeline)
 		{
-			return timeline.Duration.TimeSpan == TimeSpan.Zero;
+			return timeline.GetCalculatedDuration() == TimeSpan.Zero;
 		}
 
 		/// <summary>

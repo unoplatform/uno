@@ -27,7 +27,7 @@ namespace Microsoft.UI.Xaml.Controls
 
 		public ProgressRing()
 		{
-			DefaultStyleKey = this;
+			DefaultStyleKey = typeof(ProgressRing);
 
 			ApiExtensibility.CreateInstance(this, out _lottieProvider);
 
