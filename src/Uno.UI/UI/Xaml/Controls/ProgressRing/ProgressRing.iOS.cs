@@ -57,21 +57,18 @@ namespace Windows.UI.Xaml.Controls
 
 		private static void OnIsActiveChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
 		{
-			(dependencyObject as ProgressRing)?.SetIsActive(args.NewValue as bool?);
+			(dependencyObject as ProgressRing)?.SetIsActive((bool)args.NewValue);
 		}
 
-		private void SetIsActive(bool? isActive)
+		private void SetIsActive(bool isActive)
 		{
-			if (isActive is { } b)
+			if (isActive)
 			{
-				if(b)
-				{
-					StartAnimating();
-				}
-				else
-				{
-					StopAnimating();
-				}
+				StartAnimating();
+			}
+			else
+			{
+				StopAnimating();
 			}
 		}
 	}
