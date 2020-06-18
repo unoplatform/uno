@@ -176,44 +176,44 @@ namespace Windows.Storage
 
 		public IAsyncOperation<StorageFile> CreateFileAsync(string desiredName) => CreateFileAsync(desiredName, CreationCollisionOption.FailIfExists);
 
-        public IAsyncOperation<StorageFile> CreateFileAsync(string path, CreationCollisionOption option) =>
+        public IAsyncOperation<StorageFile> CreateFileAsync(string desiredName, CreationCollisionOption options) =>
             AsyncOperation.FromTask(async ct =>
             {
-                if (File.Exists(global::System.IO.Path.Combine(Path, path)))
+                if (File.Exists(global::System.IO.Path.Combine(Path, desiredName)))
                 {
-                    switch (option)
+                    switch (options)
                     {
 						case CreationCollisionOption.FailIfExists:
 							throw new Exception("Cannot create a file when that file already exists.");
                         case CreationCollisionOption.OpenIfExists:
 							break;
                         case CreationCollisionOption.ReplaceExisting:
-							File.Create(global::System.IO.Path.Combine(Path, path)).Close();
+							File.Create(global::System.IO.Path.Combine(Path, desiredName)).Close();
 							break;
                         case CreationCollisionOption.GenerateUniqueName:
 
-                            var pathExtension = global::System.IO.Path.GetExtension(path);
+                            var pathExtension = global::System.IO.Path.GetExtension(desiredName);
                             if (!string.IsNullOrEmpty(pathExtension))
                             {
-                                path = path.Replace(pathExtension, "_" + Guid.NewGuid().ToStringInvariant().Replace("-", "") + pathExtension);
+                                desiredName = desiredName.Replace(pathExtension, "_" + Guid.NewGuid().ToStringInvariant().Replace("-", "") + pathExtension);
                             }
                             else
                             {
-                                path = path + "_" + Guid.NewGuid();
+                                desiredName = desiredName + "_" + Guid.NewGuid();
                             }
 
-                            File.Create(global::System.IO.Path.Combine(Path, path)).Close();
+                            File.Create(global::System.IO.Path.Combine(Path, desiredName)).Close();
                             break;
                         default:
-                            throw new ArgumentOutOfRangeException(nameof(option));
+                            throw new ArgumentOutOfRangeException(nameof(options));
                     }
                 }
                 else
                 {
-                    File.Create(global::System.IO.Path.Combine(Path, path)).Close();
+                    File.Create(global::System.IO.Path.Combine(Path, desiredName)).Close();
                 }
 
-                return await StorageFile.GetFileFromPathAsync(global::System.IO.Path.Combine(Path, path));
+                return await StorageFile.GetFileFromPathAsync(global::System.IO.Path.Combine(Path, desiredName));
             });
 
         public IAsyncAction DeleteAsync() =>
