@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Android.App;
+using Android.Content.Res;
 using Android.Graphics;
 using Android.Runtime;
 using Android.Text;
@@ -357,6 +358,27 @@ namespace Windows.UI.Xaml.Controls
 					// The behavior that matches UWP is achieved by SetRawInputType.
 					_textBoxView.InputType = AdjustInputTypes(InputTypes.ClassText, inputScope);
 					_textBoxView.SetRawInputType(inputType);
+				}
+			}
+		}
+
+		partial void OnSelectionHighlightColorChangedPartial(Color? selectionHighlightColor)
+		{
+			if (_textBoxView != null)
+			{
+				if (selectionHighlightColor != null)
+				{
+					var windowsColor = selectionHighlightColor.Value;
+					_textBoxView.SetHighlightColor(new Android.Graphics.Color(windowsColor.R, windowsColor.G, windowsColor.B, windowsColor.A));
+				}
+				else
+				{
+					int[] attrs = { Android.Resource.Attribute.TextColorHighlight };
+					TypedArray ta = ContextHelper.Current.ObtainStyledAttributes(attrs);
+					int colorInt = ta.GetResourceId(0, Android.Resource.Color.Black);
+					ta.Recycle();
+					var color = new Android.Graphics.Color(colorInt);
+					_textBoxView.SetHighlightColor(color);
 				}
 			}
 		}

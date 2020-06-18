@@ -107,6 +107,7 @@ namespace Windows.UI.Xaml.Controls
 			UpdateFontPartial();
 			OnHeaderChanged();
 			OnIsTextPredictionEnabledChanged(CreateInitialValueChangerEventArgs(IsTextPredictionEnabledProperty, IsTextPredictionEnabledProperty.GetMetadata(GetType()).DefaultValue, IsTextPredictionEnabled));
+			OnSelectionHighlightColorChanged(CreateInitialValueChangerEventArgs(SelectionHighlightColorProperty, SelectionHighlightColorProperty.GetMetadata(GetType()).DefaultValue, SelectionHighlightColor));
 			OnIsSpellCheckEnabledChanged(CreateInitialValueChangerEventArgs(IsSpellCheckEnabledProperty, IsSpellCheckEnabledProperty.GetMetadata(GetType()).DefaultValue, IsSpellCheckEnabled));
 			OnTextAlignmentChanged(CreateInitialValueChangerEventArgs(TextAlignmentProperty, TextAlignmentProperty.GetMetadata(GetType()).DefaultValue, TextAlignment));
 			OnTextWrappingChanged(CreateInitialValueChangerEventArgs(TextWrappingProperty, TextWrappingProperty.GetMetadata(GetType()).DefaultValue, TextWrapping));
@@ -376,7 +377,9 @@ namespace Windows.UI.Xaml.Controls
 
 		partial void OnForegroundColorChangedPartial(Brush newValue);
 
-#region PlaceholderText DependencyProperty
+
+
+		#region PlaceholderText DependencyProperty
 
 		public string PlaceholderText
 		{
@@ -392,9 +395,66 @@ namespace Windows.UI.Xaml.Controls
 				new FrameworkPropertyMetadata(defaultValue: string.Empty)
 			);
 
-#endregion
+		#endregion
 
-#region InputScope DependencyProperty
+		#region SelectionHighlightColor DependencyProperty
+
+		public SolidColorBrush SelectionHighlightColor
+		{
+			get
+			{
+				return (SolidColorBrush)this.GetValue(SelectionHighlightColorProperty);
+			}
+			set
+			{
+				this.SetValue(SelectionHighlightColorProperty, value);
+			}
+		}
+
+		public static DependencyProperty SelectionHighlightColorProperty { get; } =
+			DependencyProperty.Register(
+				nameof(SelectionHighlightColor), typeof(SolidColorBrush),
+				typeof(TextBox),
+				new PropertyMetadata(
+					default(SolidColorBrush),
+					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnSelectionHighlightColorChanged(e)));
+
+		private void OnSelectionHighlightColorChanged(DependencyPropertyChangedEventArgs e)
+		{
+			var value = e.NewValue as SolidColorBrush;
+			OnSelectionHighlightColorChangedPartial(value?.ColorWithOpacity);
+		}
+
+		partial void OnSelectionHighlightColorChangedPartial(Color? e);
+
+		#endregion
+
+		#region PlaceholderForeground DependencyProperty
+
+		public Brush PlaceholderForeground
+		{
+			get
+			{
+				return (Brush)this.GetValue(PlaceholderForegroundProperty);
+			}
+			set
+			{
+				this.SetValue(PlaceholderForegroundProperty, value);
+			}
+		}
+
+		
+		public static DependencyProperty PlaceholderForegroundProperty { get; } = 
+			DependencyProperty.Register(
+				nameof(PlaceholderForeground), typeof(Brush), 
+				typeof(TextBox), 
+			new PropertyMetadata(default(Brush)));
+
+		#endregion
+
+		#region InputScope DependencyProperty
+
+		#region InputScope DependencyProperty
 
 		public InputScope InputScope
 		{

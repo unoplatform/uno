@@ -232,7 +232,7 @@
 		<Setter Property="BorderBrush"
 				Value="{ThemeResource SystemControlForegroundChromeDisabledLowBrush}" />
 		<Setter Property="SelectionHighlightColor"
-				Value="{ThemeResource SystemControlHighlightAccentBrush}" />
+				Value="{ThemeResource TextControlSelectionHighlightColor}" />
 		<Setter Property="BorderThickness"
 				Value="{ThemeResource TextControlBorderThemeThickness}" />
 		<Setter Property="FontFamily"
@@ -286,8 +286,7 @@
 										</ObjectAnimationUsingKeyFrames>
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderTextContentPresenter"
 																	   Storyboard.TargetProperty="Foreground">
-											<DiscreteObjectKeyFrame KeyTime="0"
-																	Value="{ThemeResource SystemControlDisabledChromeDisabledLowBrush}" />
+											<DiscreteObjectKeyFrame KeyTime="0" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundDisabled}}" />
 										</ObjectAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
@@ -304,15 +303,19 @@
 											<DiscreteObjectKeyFrame KeyTime="0"
 																	Value="{ThemeResource TextControlBackgroundHoverOpacity}" />
 										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderTextContentPresenter" Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundPointerOver}}" />
+                                        </ObjectAnimationUsingKeyFrames>
+                                        <ObjectAnimationUsingKeyFrames Storyboard.TargetName="ContentElement" Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{ThemeResource TextControlForegroundPointerOver}" />
+                                        </ObjectAnimationUsingKeyFrames>
 									</Storyboard>
 								</VisualState>
 								<VisualState x:Name="Focused">
 									<Storyboard>
-										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderTextContentPresenter"
-																	   Storyboard.TargetProperty="Foreground">
-											<DiscreteObjectKeyFrame KeyTime="0"
-																	Value="{ThemeResource SystemControlPageTextChromeBlackMediumLowBrush}" />
-										</ObjectAnimationUsingKeyFrames>
+										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="PlaceholderTextContentPresenter" Storyboard.TargetProperty="Foreground">
+                                            <DiscreteObjectKeyFrame KeyTime="0" Value="{Binding PlaceholderForeground, RelativeSource={RelativeSource TemplatedParent}, TargetNullValue={ThemeResource TextControlPlaceholderForegroundFocused}}" />
+                                        </ObjectAnimationUsingKeyFrames>
 										<ObjectAnimationUsingKeyFrames Storyboard.TargetName="BackgroundElement"
 																	   Storyboard.TargetProperty="Opacity">
 											<DiscreteObjectKeyFrame KeyTime="0"
