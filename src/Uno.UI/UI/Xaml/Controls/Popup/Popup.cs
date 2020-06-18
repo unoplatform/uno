@@ -181,7 +181,7 @@ namespace Windows.UI.Xaml.Controls
 		DependencyProperty.Register(
 			"LightDismissOverlayMode", typeof(LightDismissOverlayMode),
 			typeof(Popup),
-			new FrameworkPropertyMetadata(default(LightDismissOverlayMode), (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
+			new FrameworkPropertyMetadata(defaultValue: default(LightDismissOverlayMode), propertyChangedCallback: (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
 
 		private void ApplyLightDismissOverlayMode()
 		{
@@ -220,6 +220,6 @@ namespace Windows.UI.Xaml.Controls
 		}
 
 		internal static readonly DependencyProperty LightDismissOverlayBackgroundProperty =
-			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(Popup), new PropertyMetadata(null, (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
+			DependencyProperty.Register("LightDismissOverlayBackground", typeof(Brush), typeof(Popup), new PropertyMetadata(defaultValue: null, propertyChangedCallback: (o, e) => ((Popup)o).ApplyLightDismissOverlayMode()));
 	}
 }

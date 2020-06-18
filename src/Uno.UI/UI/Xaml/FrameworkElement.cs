@@ -401,9 +401,9 @@ namespace Windows.UI.Xaml
 		{
 		}
 
-		static partial void OnGenericPropertyUpdatedPartial(object dependencyObject, DependencyPropertyChangedEventArgs args)
+		partial void OnGenericPropertyUpdatedPartial(DependencyPropertyChangedEventArgs args)
 		{
-			((FrameworkElement)dependencyObject)._constraintsChanged = true;
+			_constraintsChanged = true;
 		}
 
 		/// <summary>

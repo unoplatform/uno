@@ -750,13 +750,14 @@ declare class WindowManagerSetContentHtmlParams {
     static unmarshal(pData: number): WindowManagerSetContentHtmlParams;
 }
 declare class WindowManagerSetElementTransformParams {
+    HtmlId: number;
     M11: number;
     M12: number;
     M21: number;
     M22: number;
     M31: number;
     M32: number;
-    HtmlId: number;
+    ClipToBounds: boolean;
     static unmarshal(pData: number): WindowManagerSetElementTransformParams;
 }
 declare class WindowManagerSetNameParams {
@@ -1077,5 +1078,26 @@ declare namespace Windows.Phone.Devices.Notification {
     class VibrationDevice {
         static initialize(): boolean;
         static vibrate(duration: number): boolean;
+    }
+}
+declare namespace Windows.UI.Xaml.Media.Animation {
+    class RenderingLoopFloatAnimator {
+        private managedHandle;
+        private static activeInstances;
+        static createInstance(managedHandle: string, jsHandle: number): void;
+        static getInstance(jsHandle: number): RenderingLoopFloatAnimator;
+        static destroyInstance(jsHandle: number): void;
+        private constructor();
+        SetStartFrameDelay(delay: number): void;
+        SetAnimationFramesInterval(): void;
+        EnableFrameReporting(): void;
+        DisableFrameReporting(): void;
+        private onFrame;
+        private unscheduleFrame;
+        private scheduleDelayedFrame;
+        private scheduleAnimationFrame;
+        private _delayRequestId?;
+        private _frameRequestId?;
+        private _isEnabled;
     }
 }
