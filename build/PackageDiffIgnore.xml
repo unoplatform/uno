@@ -1060,6 +1060,9 @@
 			<Member
 				fullName="System.Void Windows.UI.Xaml.Shapes.Shape.RefreshShape(System.Boolean forceRefresh)"
 				reason="Not part of the WinUI API." />
+			<Member
+					fullName="Windows.Foundation.IAsyncOperation`1&lt;Windows.Storage.StorageFile&gt; Windows.Storage.StorageFolder.CreateFileAsync(System.String path, Windows.Storage.CreationCollisionOption option)"
+					reason="UWP alignment" />
 			<!-- Styles overhaul -->
 			<Member
 				fullName="System.Void Windows.UI.Xaml.FrameworkElement.OnStyleChanged(Windows.UI.Xaml.Style oldStyle, Windows.UI.Xaml.Style newStyle)"
