@@ -38,7 +38,7 @@ namespace Windows.UI.Xaml
 
 		private void Initialize()
 		{
-			this.SetValue(KeyboardAcceleratorsProperty, new List<KeyboardAccelerator>(), DependencyPropertyValuePrecedences.DefaultValue);
+			this.SetValue(KeyboardAcceleratorsProperty, new List<KeyboardAccelerator>(0), DependencyPropertyValuePrecedences.DefaultValue);
 		}
 
 		string IXUidProvider.Uid
@@ -254,23 +254,8 @@ namespace Windows.UI.Xaml
 		}
 #endif
 
-		#region IsHitTestVisible Dependency Property
 
-		public bool IsHitTestVisible
-		{
-			get { return (bool)this.GetValue(IsHitTestVisibleProperty); }
-			set { this.SetValue(IsHitTestVisibleProperty, value); }
-		}
 
-		public static readonly DependencyProperty IsHitTestVisibleProperty =
-			DependencyProperty.Register(
-				nameof(IsHitTestVisible),
-				typeof(bool),
-				typeof(UIElement),
-				new FrameworkPropertyMetadata(
-					defaultValue: true,
-					propertyChangedCallback: (s, e) => (s as UIElement).OnIsHitTestVisibleChanged((bool)e.OldValue, (bool)e.NewValue))
-			);
 
 		protected virtual void OnIsHitTestVisibleChanged(bool oldValue, bool newValue)
 		{
@@ -279,67 +264,7 @@ namespace Windows.UI.Xaml
 
 		partial void OnIsHitTestVisibleChangedPartial(bool oldValue, bool newValue);
 
-		#endregion
-
-		#region Opacity Dependency Property
-
-		public double Opacity
-		{
-			get { return (double)this.GetValue(OpacityProperty); }
-			set { this.SetValue(OpacityProperty, value); }
-		}
-
-		public static readonly DependencyProperty OpacityProperty =
-			DependencyProperty.Register("Opacity", typeof(double), typeof(UIElement), new PropertyMetadata(1.0, (s, a) => ((UIElement)s).OnOpacityChanged(a)));
-
 		partial void OnOpacityChanged(DependencyPropertyChangedEventArgs args);
-
-		#endregion
-
-		#region Visibility Dependency Property
-
-		/// <summary>
-		/// Sets the visibility of the current view
-		/// </summary>
-		public
-#if __ANDROID__
-		new
-#endif
-			Visibility Visibility
-		{
-			get { return (Visibility)this.GetValue(VisibilityProperty); }
-			set { this.SetValue(VisibilityProperty, value); }
-		}
-
-		public static readonly DependencyProperty VisibilityProperty =
-			DependencyProperty.Register(
-				"Visibility",
-				typeof(Visibility),
-				typeof(UIElement),
-				new PropertyMetadata(
-					Visibility.Visible,
-					(s, e) => (s as UIElement).OnVisibilityChanged((Visibility)e.OldValue, (Visibility)e.NewValue)
-				)
-			);
-		#endregion
-
-		#region ContextFlyout Dependency Property
-		public FlyoutBase ContextFlyout
-		{
-			get => (FlyoutBase)GetValue(ContextFlyoutProperty);
-			set => SetValue(ContextFlyoutProperty, value);
-		}
-
-		public static DependencyProperty ContextFlyoutProperty { get; } =
-			DependencyProperty.Register(
-				nameof(ContextFlyout),
-				typeof(FlyoutBase),
-				typeof(UIElement),
-				new FrameworkPropertyMetadata(
-					defaultValue: null,
-					propertyChangedCallback: (s, e) => (s as UIElement).OnContextFlyoutChanged((FlyoutBase)e.OldValue, (FlyoutBase)e.NewValue)
-				)
-			);
 
 		private protected virtual void OnContextFlyoutChanged(FlyoutBase oldValue, FlyoutBase newValue)
 		{
@@ -366,8 +291,6 @@ namespace Windows.UI.Xaml
 				);
 			}
 		}
-
-		#endregion
 
 		internal bool IsRenderingSuspended { get; set; }
 
@@ -559,19 +482,6 @@ namespace Windows.UI.Xaml
 		}
 
 		internal virtual bool IsViewHit() => true;
-
-		public IList<KeyboardAccelerator> KeyboardAccelerators
-		{
-			get => (IList<KeyboardAccelerator>)GetValue(KeyboardAcceleratorsProperty);
-			internal set => SetValue(KeyboardAcceleratorsProperty, value);
-		}
-
-		internal static readonly DependencyProperty KeyboardAcceleratorsProperty =
-			DependencyProperty.Register(
-				name: "KeyboardAccelerators",
-				propertyType: typeof(IList<KeyboardAccelerator>),
-				ownerType: typeof(UIElement),
-				typeMetadata: new PropertyMetadata(null));
 
 #if HAS_UNO_WINUI
 		#region FocusState DependencyProperty

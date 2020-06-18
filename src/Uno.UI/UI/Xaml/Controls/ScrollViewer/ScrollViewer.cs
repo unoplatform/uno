@@ -526,8 +526,8 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(ScrollViewer),
 				new PropertyMetadata(
-					(double)0,
-					null
+					defaultValue: (double)0,
+					propertyChangedCallback: null
 				)
 			);
 
@@ -546,8 +546,8 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(ScrollViewer),
 				new PropertyMetadata(
-					(double)0,
-					null
+					defaultValue: (double)0,
+					propertyChangedCallback: null
 				)
 			);
 		#endregion
