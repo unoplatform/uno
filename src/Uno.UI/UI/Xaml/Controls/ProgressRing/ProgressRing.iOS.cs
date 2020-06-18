@@ -50,22 +50,26 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-        private static void OnIsActiveChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
-        {
-            var progressRing = dependencyObject as ProgressRing;
-            var isActive = args.NewValue as bool?;
+		partial void OnVisibilityChangedPartial(Visibility oldValue, Visibility newValue)
+		{
+			SetIsActive(newValue == Visibility.Visible && IsActive);
+		}
 
-            if (progressRing != null && isActive != null)
-            {
-                if (isActive.Value)
-                {
-                    progressRing.StartAnimating();
-                }
-                else
-                {
-                    progressRing.StopAnimating();                    
-                }
-            }
-        }
-    }
+		private static void OnIsActiveChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs args)
+		{
+			(dependencyObject as ProgressRing)?.SetIsActive((bool)args.NewValue);
+		}
+
+		private void SetIsActive(bool isActive)
+		{
+			if (isActive)
+			{
+				StartAnimating();
+			}
+			else
+			{
+				StopAnimating();
+			}
+		}
+	}
 }
