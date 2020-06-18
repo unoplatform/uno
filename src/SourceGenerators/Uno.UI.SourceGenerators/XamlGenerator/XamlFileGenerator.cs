@@ -3514,7 +3514,7 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 						return BuildThickness(memberValue);
 
 					case XamlConstants.Types.CornerRadius:
-						return $"new {XamlConstants.Types.CornerRadius}({memberValue})";
+						return BuildCornerRadius(memberValue);
 
 					case XamlConstants.Types.FontFamily:
 						return $@"new {propertyType.ToDisplayString()}(""{memberValue}"")";
@@ -3829,6 +3829,18 @@ namespace Uno.UI.SourceGenerators.XamlGenerator
 			}
 
 			return "new global::Windows.UI.Xaml.Thickness(" + memberValue + ")";
+		}
+
+		private static string BuildCornerRadius(string memberValue)
+		{
+			// values can be separated by commas or whitespace
+			// ensure commas are used for the constructor
+			if (!memberValue.Contains(","))
+			{
+				memberValue = string.Join(",", memberValue.Split(new[] { ' ', '\t' }, StringSplitOptions.RemoveEmptyEntries));				
+			}
+
+			return $"new {XamlConstants.Types.CornerRadius}({memberValue})";
 		}
 
 		private static string AppendFloatSuffix(string memberValue)
