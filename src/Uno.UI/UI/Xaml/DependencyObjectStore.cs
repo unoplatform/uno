@@ -104,6 +104,8 @@ namespace Windows.UI.Xaml
 
 		private static bool _validatePropertyOwner = Debugger.IsAttached;
 
+		private bool _isSettingAProperty;
+
 		/// <summary>
 		/// Provides the parent Dependency Object of this dependency object
 		/// </summary>
@@ -436,6 +438,7 @@ namespace Windows.UI.Xaml
 			if (actualInstanceAlias != null)
 			{
 				ApplyPrecedenceOverride(ref precedence);
+				_isSettingAProperty = true;
 
 				if ((value is UnsetValue) && precedence == DependencyPropertyValuePrecedences.DefaultValue)
 				{
@@ -482,6 +485,8 @@ namespace Windows.UI.Xaml
 				}
 
 				RaiseCallbacks(actualInstanceAlias, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
+
+				_isSettingAProperty = false;
 			}
 			else
 			{
@@ -593,6 +598,13 @@ namespace Windows.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void ApplyPrecedenceOverride(ref DependencyPropertyValuePrecedences precedence)
 		{
+			if (_isSettingAProperty)
+			{
+				// We only want to override the precedence of properties set directly from a style. Nested sets (within property changed callbacks, etc)
+				// should be applied with the normal precedence.
+				return;
+			}
+
 			if (_precedenceOverride != null)
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
