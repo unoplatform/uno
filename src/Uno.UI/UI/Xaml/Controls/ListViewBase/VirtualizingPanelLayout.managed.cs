@@ -13,6 +13,7 @@ using static System.Math;
 using static Windows.UI.Xaml.Controls.Primitives.GeneratorDirection;
 using Uno.UI.Extensions;
 using System.Collections.Specialized;
+using Uno.UI.Xaml.Controls;
 #if __MACOS__
 using AppKit;
 #elif __IOS__
@@ -66,6 +67,11 @@ namespace Windows.UI.Xaml.Controls
 		/// Pending collection changes to be processed when the list is re-measured.
 		/// </summary>
 		private readonly Queue<CollectionChangedOperation> _pendingCollectionChanges = new Queue<CollectionChangedOperation>();
+
+		/// <summary>
+		/// Pending scroll adjustment, if an item has been added/removed backward of the current visible viewport by a collection change.
+		/// </summary>
+		private double? _scrollAdjustmentForCollectionChanges;
 
 		private double AvailableBreadth => ScrollOrientation == Orientation.Vertical ?
 			_availableSize.Width :
@@ -217,8 +223,15 @@ namespace Windows.UI.Xaml.Controls
 
 			while (unappliedDelta > 0)
 			{
-				// Apply scroll in bite-sized increments. This is crucial for good performance, since the delta may be in the 100s or 1000s of pixels, and we want to recycle unseen views at the same rate that we dequeue newly-visible views.
-				var scrollIncrement = GetScrollConsumptionIncrement(fillDirection);
+				var scrollIncrement =
+					_scrollAdjustmentForCollectionChanges.HasValue ?
+					// If we're adjusting for collection changes, apply scroll in 'one big hit' because we should exactly reuse scrapped items this way (since items in visible viewport should not have changed)
+					Abs(_scrollAdjustmentForCollectionChanges.Value) :
+					// Apply scroll in bite-sized increments. This is crucial for good performance, since the delta may be in the 100s or 1000s of pixels, and we want to recycle unseen views at the same rate that we dequeue newly-visible views.
+					GetScrollConsumptionIncrement(fillDirection);
+
+				_scrollAdjustmentForCollectionChanges = null;
+
 				if (scrollIncrement == 0)
 				{
 					break;
@@ -244,7 +257,7 @@ namespace Windows.UI.Xaml.Controls
 			if (incrementView == null)
 			{
 				//TODO: work properly when header/footer/group header are available, and may be larger than extended viewport
-				return 0;
+				return _averageLineHeight;
 			}
 
 			return GetExtent(incrementView);
@@ -271,7 +284,8 @@ namespace Windows.UI.Xaml.Controls
 			_availableSize = availableSize;
 			UpdateAverageLineHeight(); // Must be called before ScrapLayout(), or there won't be items to measure
 			ScrapLayout();
-			UpdateLayout();
+			ApplyCollectionChanges();
+			UpdateLayout(extentAdjustment: _scrollAdjustmentForCollectionChanges);
 
 			return _lastMeasuredSize = EstimatePanelSize(isMeasure: true);
 		}
@@ -295,7 +309,7 @@ namespace Windows.UI.Xaml.Controls
 			}
 
 			_availableSize = finalSize;
-			UpdateLayout();
+			UpdateLayout(extentAdjustment: _scrollAdjustmentForCollectionChanges);
 
 			return EstimatePanelSize(isMeasure: false);
 		}
@@ -304,11 +318,9 @@ namespace Windows.UI.Xaml.Controls
 		/// Update the item container layout by removing no-longer-visible views and adding visible views.
 		/// </summary>
 		/// <param name="extentAdjustment">Adjustment to apply when calculating fillable area.</param>
-		private void UpdateLayout(double? extentAdjustment = null)
+		private void UpdateLayout(double? extentAdjustment)
 		{
 			OwnerPanel.ShouldInterceptInvalidate = true;
-
-			ApplyCollectionChanges();
 
 			UnfillLayout(extentAdjustment ?? 0);
 			FillLayout(extentAdjustment ?? 0);
@@ -449,6 +461,9 @@ namespace Windows.UI.Xaml.Controls
 				return;
 			}
 
+			// Call before applying scroll, because scroll is applied synchronously on some platforms
+			Generator.UpdateForCollectionChanges(_pendingCollectionChanges);
+
 			if (_dynamicSeedIndex is IndexPath dynamicSeedIndex)
 			{
 				var updated = CollectionChangedOperation.Offset(dynamicSeedIndex, _pendingCollectionChanges);
@@ -458,7 +473,6 @@ namespace Windows.UI.Xaml.Controls
 
 					var itemOffset = updatedValue.Row - dynamicSeedIndex.Row; // TODO: This will need to change when grouping is supported
 					var scrollAdjustment = itemOffset * _averageLineHeight; // TODO: not appropriate for ItemsWrapGrid
-					_dynamicSeedStart += scrollAdjustment;
 					ApplyScrollAdjustment(scrollAdjustment);
 				}
 				else
@@ -467,12 +481,20 @@ namespace Windows.UI.Xaml.Controls
 				}
 			}
 
-			Generator.UpdateForCollectionChanges(_pendingCollectionChanges);
 			_pendingCollectionChanges.Clear();
 		}
 
 		private void ApplyScrollAdjustment(double scrollAdjustment)
 		{
+			if (scrollAdjustment == 0)
+			{
+				return;
+			}
+
+			// Set adjustment before calling ChangeView(), because OnScrollChanged() will be called synchronously on some platforms
+			_scrollAdjustmentForCollectionChanges = scrollAdjustment; // TODO NOW: check if out of range
+			_dynamicSeedStart += scrollAdjustment;
+
 			if (ScrollOrientation == Orientation.Vertical)
 			{
 				ScrollViewer.ChangeView(null, ScrollViewer.VerticalOffset + scrollAdjustment, null, disableAnimation: true);
@@ -644,7 +666,6 @@ namespace Windows.UI.Xaml.Controls
 		/// </summary>
 		protected virtual Uno.UI.IndexPath? GetDynamicSeedIndex(Uno.UI.IndexPath? firstVisibleItem)
 		{
-
 			var lastItem = XamlParent.GetLastItem();
 			if (lastItem == null ||
 				(firstVisibleItem != null && firstVisibleItem.Value > lastItem.Value)
