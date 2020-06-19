@@ -328,7 +328,7 @@ namespace UITests.Windows_UI_Xaml_Shapes
 			var tests = testNames.Split(new [] {';'}, StringSplitOptions.RemoveEmptyEntries);
 			var id = Guid.NewGuid().ToString("N");
 
-			((DependencyObject)this).Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => RunTestsCore(tests));
+			_ = ((DependencyObject)this).Dispatcher.RunAsync(CoreDispatcherPriority.Normal, () => _ = RunTestsCore(tests));
 
 			return id;
 
