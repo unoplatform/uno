@@ -2921,6 +2921,7 @@ var Windows;
         Storage.ApplicationDataContainer = ApplicationDataContainer;
     })(Storage = Windows.Storage || (Windows.Storage = {}));
 })(Windows || (Windows = {}));
+// eslint-disable-next-line @typescript-eslint/no-namespace
 var Windows;
 (function (Windows) {
     var Storage;
@@ -2954,32 +2955,42 @@ var Windows;
             static setupStorage(path) {
                 if (Uno.UI.WindowManager.isHosted) {
                     console.debug("Hosted Mode: skipping IndexDB initialization");
+                    StorageFolder.onStorageInitialized();
                     return;
                 }
                 if (!this.isIndexDBAvailable()) {
                     console.warn("IndexedDB is not available (private mode or uri starts with file:// ?), changes will not be persisted.");
+                    StorageFolder.onStorageInitialized();
                     return;
                 }
                 if (typeof IDBFS === 'undefined') {
                     console.warn(`IDBFS is not enabled in mono's configuration, persistence is disabled`);
+                    StorageFolder.onStorageInitialized();
                     return;
                 }
                 console.debug("Making persistent: " + path);
                 FS.mkdir(path);
                 FS.mount(IDBFS, {}, path);
-                // Request an initial sync to populate the file system
-                const that = this;
-                FS.syncfs(true, err => {
-                    if (err) {
-                        console.error(`Error synchronizing filesystem from IndexDB: ${err}`);
-                    }
-                });
                 // Ensure to sync pseudo file system on unload (and periodically for safety)
                 if (!this._isInit) {
+                    // Request an initial sync to populate the file system
+                    FS.syncfs(true, err => {
+                        if (err) {
+                            console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
+                        }
+                        StorageFolder.onStorageInitialized();
+                    });
                     window.addEventListener("beforeunload", this.synchronizeFileSystem);
                     setInterval(this.synchronizeFileSystem, 10000);
                     this._isInit = true;
                 }
+            }
+            static onStorageInitialized() {
+                if (!StorageFolder.dispatchStorageInitialized) {
+                    StorageFolder.dispatchStorageInitialized =
+                        Module.mono_bind_static_method("[Uno] Windows.Storage.StorageFolder:DispatchStorageInitialized");
+                }
+                StorageFolder.dispatchStorageInitialized();
             }
             /**
              * Synchronize the IDBFS memory cache back to IndexDB
@@ -2987,7 +2998,7 @@ var Windows;
             static synchronizeFileSystem() {
                 FS.syncfs(err => {
                     if (err) {
-                        console.error(`Error synchronizing filesystem from IndexDB: ${err}`);
+                        console.error(`Error synchronizing filesystem from IndexDB: ${err} (errno: ${err.errno})`);
                     }
                 });
             }

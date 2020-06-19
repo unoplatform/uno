@@ -100,6 +100,8 @@
     href: features\windows-devices-geolocation.md
   - name: Windows.System
     href: features\windows-system.md
+  - name: Windows.Storage
+    href: features\windows-storage.md
   - name: Windows.UI.ViewManagement
     href: features\windows-ui-viewmanagement.md
   - name: CommandBar
