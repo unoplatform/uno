@@ -401,21 +401,15 @@ namespace Windows.UI.Xaml.Controls
 
 		public SolidColorBrush SelectionHighlightColor
 		{
-			get
-			{
-				return (SolidColorBrush)this.GetValue(SelectionHighlightColorProperty);
-			}
-			set
-			{
-				this.SetValue(SelectionHighlightColorProperty, value);
-			}
+			get => (SolidColorBrush)this.GetValue(SelectionHighlightColorProperty);
+			set => this.SetValue(SelectionHighlightColorProperty, value);
 		}
 
 		public static DependencyProperty SelectionHighlightColorProperty { get; } =
 			DependencyProperty.Register(
 				nameof(SelectionHighlightColor), typeof(SolidColorBrush),
 				typeof(TextBox),
-				new PropertyMetadata(
+				new FrameworkPropertyMetadata(
 					default(SolidColorBrush),
 					propertyChangedCallback: (s, e) => ((TextBox)s)?.OnSelectionHighlightColorChanged(e)));
 
@@ -435,14 +429,8 @@ namespace Windows.UI.Xaml.Controls
 
 		public Brush PlaceholderForeground
 		{
-			get
-			{
-				return (Brush)this.GetValue(PlaceholderForegroundProperty);
-			}
-			set
-			{
-				this.SetValue(PlaceholderForegroundProperty, value);
-			}
+			get => (Brush)this.GetValue(PlaceholderForegroundProperty);
+			set => this.SetValue(PlaceholderForegroundProperty, value);
 		}
 
 		
@@ -450,7 +438,7 @@ namespace Windows.UI.Xaml.Controls
 			DependencyProperty.Register(
 				nameof(PlaceholderForeground), typeof(Brush), 
 				typeof(TextBox), 
-			new PropertyMetadata(default(Brush)));
+				new FrameworkPropertyMetadata(default(Brush)));
 
 		#endregion
 

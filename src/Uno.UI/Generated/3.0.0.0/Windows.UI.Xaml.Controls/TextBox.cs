@@ -48,8 +48,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || false || false || false || false || false
+		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.SolidColorBrush SelectionHighlightColor
 		{
 			get
@@ -106,8 +106,8 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
+		#if false || false || false || false || false || false || false
+		[global::Uno.NotImplemented]
 		public  global::Windows.UI.Xaml.Media.Brush PlaceholderForeground
 		{
 			get
@@ -228,15 +228,8 @@ namespace Windows.UI.Xaml.Controls
 		// Skipping already declared property InputScopeProperty
 		// Skipping already declared property AcceptsReturnProperty
 		// Skipping already declared property HeaderTemplateProperty
-		// Skipping already declared property HeaderProperty
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty SelectionHighlightColorProperty { get; } = 
-		Windows.UI.Xaml.DependencyProperty.Register(
-			nameof(SelectionHighlightColor), typeof(global::Windows.UI.Xaml.Media.SolidColorBrush), 
-			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
-			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.SolidColorBrush)));
-		#endif
+		// Skipping already declared property HeaderProperty		
+		// Skipping already declared property SelectionHighlightColorProperty
 		#if false || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
 		[global::Uno.NotImplemented("__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
 		public static global::Windows.UI.Xaml.DependencyProperty PreventKeyboardDisplayOnProgrammaticFocusProperty { get; } = 
@@ -278,9 +271,7 @@ namespace Windows.UI.Xaml.Controls
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
 			new FrameworkPropertyMetadata(default(global::Windows.UI.Xaml.Media.SolidColorBrush)));
 		#endif
-		#if __ANDROID__ || __IOS__ || NET461 || __WASM__ || __SKIA__ || __NETSTD_REFERENCE__ || __MACOS__
-		[global::Uno.NotImplemented("__ANDROID__", "__IOS__", "NET461", "__WASM__", "__SKIA__", "__NETSTD_REFERENCE__", "__MACOS__")]
-		public static global::Windows.UI.Xaml.DependencyProperty PlaceholderForegroundProperty { get; } = 
+		// Skipping already declared property PlaceholderForegroundProperty
 		Windows.UI.Xaml.DependencyProperty.Register(
 			nameof(PlaceholderForeground), typeof(global::Windows.UI.Xaml.Media.Brush), 
 			typeof(global::Windows.UI.Xaml.Controls.TextBox), 
