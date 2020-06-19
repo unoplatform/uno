@@ -16,6 +16,8 @@ namespace Windows.UI.Xaml.Controls
 			InitializeVisualStates();
 
 			Click += (s, e) => TryNavigate();
+
+			DefaultStyleKey = typeof(HyperlinkButton);
 		}
 		
 		protected override void OnApplyTemplate()

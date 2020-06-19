@@ -7,9 +7,6 @@
 		<DefineConstants>$(DefineConstants);__WASM__;HAS_UNO</DefineConstants>
 		<NoWarn>NU1701,CS1998</NoWarn>
 		<LangVersion>7.3</LangVersion>
-		<!-- https://github.com/unoplatform/uno/issues/61 -->
-		<UnoSkipUserControlsInVisualTree>false</UnoSkipUserControlsInVisualTree>
-
 		<IsUiAutomationMappingEnabled>true</IsUiAutomationMappingEnabled>
 	<UseUnoXamlParser>true</UseUnoXamlParser>
 	</PropertyGroup>
@@ -61,6 +58,8 @@
 	</ItemGroup>
 
 	<ItemGroup>
+		<PackageReference Include="Microsoft.Graph" Version="3.7.0" />
+		<PackageReference Include="Microsoft.Identity.Client" Version="4.14.0" />
 		<PackageReference Include="Microsoft.TypeScript.Compiler" />
 		<PackageReference Include="Microsoft.TypeScript.MSBuild" />
 		<PackageReference Include="MSTest.TestFramework" Version="2.1.1" />
@@ -78,6 +77,7 @@
 
 	<ItemGroup>
 		<ProjectReference Include="..\..\AddIns\Uno.UI.Lottie\Uno.UI.Lottie.csproj" />
+		<ProjectReference Include="..\..\AddIns\Uno.UI.MSAL\Uno.UI.MSAL.csproj" />
 		<ProjectReference Include="..\..\Uno.Foundation\Uno.Foundation.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RemoteControl\Uno.UI.RemoteControl.csproj" />
 		<ProjectReference Include="..\..\Uno.UI.RuntimeTests\Uno.UI.RuntimeTests.csproj" />

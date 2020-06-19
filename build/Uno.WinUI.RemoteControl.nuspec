@@ -89,5 +89,9 @@
     <file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\*.dll" target="tools\rc" />
     <file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\*.pdb" target="tools\rc" />
     <file src="..\src\Uno.UI.RemoteControl.VS\bin\Release\net461\Newtonsoft.Json.dll" target="tools\rc" />
+	
+	<!-- Force UAP to ignore netstandard 2.0 -->
+	<file src="_._" target="build\uap10.0.16299" />
+	<file src="_._" target="build\uap10.0.17763" />
   </files>
 </package>

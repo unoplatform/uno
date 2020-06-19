@@ -30,13 +30,7 @@
 	</ItemGroup>
 
 	<ItemGroup>
-		<PackageReference Include="docfx.console" Version="2.52.0" GeneratePathProperty="true" />
-		<PackageReference Include="Microsoft.VisualStudio.TextTemplating.15.0">
-			<Version>16.3.29316.127</Version>
-		</PackageReference>
-		<PackageReference Include="Microsoft.VisualStudio.TextTemplating.VSHost.14.0">
-			<Version>14.3.25407</Version>
-		</PackageReference>
+		<PackageReference Include="docfx.console" Version="2.55.0" GeneratePathProperty="true" />
 		<PackageReference Include="MSBuildTasks">
 			<Version>1.5.0.235</Version>
 		</PackageReference>
@@ -52,12 +46,6 @@
 	<Target Name="UnoBuild" AfterTargets="Build" Condition="'$(BuildingInsideVisualStudio)'==''">
 
 		<Message Text="Building for $(Configuration) and $(Platform) BuildReason:$(BUILD_REASON) Version:$(GitVersion_FullSemVer) UNO_UWP_BUILD:$(UNO_UWP_BUILD)" />
-
-		<!--
-    Use NuGet 4.3.0 or later for the restore
-    CI_Build environment is required for the restore to pickup the TargetFrameworksCI property in projects.
-    -->
-		<Exec Command="set NUGET_RESTORE_MSBUILD_ARGS=/p:CI_Build=true &amp; nuget\nuget.exe restore ..\src\Uno.UI.sln" Condition="'$(AppEnvironment)'=='' and $(_isWindows) " />
 		
 		<CallTarget Targets="UpdateFileVersions;UpdateTasksSHA" Condition="$(_isWindows)" />
 
@@ -130,7 +118,7 @@
              Projects="..\src\Uno.UI.sln"
              Targets="Restore;Build"
              RebaseOutputs="false"
-             BuildInParallel="false" />
+             BuildInParallel="true" />
 
 	</Target>
 
@@ -138,7 +126,7 @@
 		<!-- Restore the nuget packages for the whole solution -->
 		<MSBuild Properties="Configuration=Release;InformationalVersion=$(GITVERSION_InformationalVersion);CI_Build=true;_IsCIBuild=true" Projects="..\src\Uno.UI.sln" Targets="Restore" RebaseOutputs="false" BuildInParallel="true" />
 		<MSBuild Properties="Configuration=Release" Projects="..\src\Uno.UWPSyncGenerator\Uno.UWPSyncGenerator.csproj" Targets="Restore;Build" />
-		
+
 		<ItemGroup>
 			<MixinTargetFrameworks Include="xamarinios10" />
 			<MixinTargetFrameworks Include="monoandroid10.0" />
@@ -161,16 +149,16 @@
 	</Target>
 
 	<Target Name="GenerateDoc" DependsOnTargets="BuildSyncGenerator">
-		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\net461\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
+		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\Uno.UWPSyncGenerator.exe &quot;doc&quot;" />
 		<Exec Command="$(Pkgdocfx_console)\tools\docfx.exe ..\doc\docfx.json -o $(OutputDir)\doc" />
 	</Target>
 
 	<Target Name="RunAPISyncTool" DependsOnTargets="BuildSyncGenerator">
 	
-		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\net461\Uno.UWPSyncGenerator.exe &quot;sync&quot;" />
+		<Exec Command="..\src\Uno.UWPSyncGenerator\Bin\Release\Uno.UWPSyncGenerator.exe &quot;sync&quot;" />
 	</Target>
 
-	<Target Name="PublishVisx" Condition="'$(UNO_UWP_BUILD)'=='false'">
+	<Target Name="PublishVisx" Condition="'$(UNO_UWP_BUILD)'=='true'">
 		<Copy SourceFiles="..\src\SolutionTemplate\UnoSolutionTemplate.VISX\bin\Release\UnoSolutionTemplate.VSIX.vsix"
 					DestinationFiles="$(OutputDir)\vslatest\UnoPlatform-$(GITVERSION_FullSemVer).vsix" />
 	</Target>
@@ -214,7 +202,7 @@
 		</PropertyGroup>
 
 		<Exec Command="dotnet tool install --global Uno.PackageDiff --version 1.0.0-dev.32" IgnoreExitCode="true" />
-		<Exec Command="generatepkgdiff --base=$(PackageNamePrefix) --other=$(PackageNamePrefix).$(GITVERSION_FullSemVer).nupkg --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.$(GITVERSION_FullSemVer).md" />
+		<Exec Command="$(USERPROFILE)\.dotnet\tools\generatepkgdiff --base=$(PackageNamePrefix) --other=$(PackageNamePrefix).$(GITVERSION_FullSemVer).nupkg --diffignore=PackageDiffIgnore.xml --outfile=$(OutputDir)\ApiDiff.$(GITVERSION_FullSemVer).md" />
 	</Target>
 
 </Project>

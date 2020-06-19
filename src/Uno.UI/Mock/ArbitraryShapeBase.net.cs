@@ -9,8 +9,8 @@ namespace Windows.UI.Xaml.Shapes
 {
 	public abstract partial class ArbitraryShapeBase : Shape
 	{
-		private IDisposable BuildDrawableLayer() { throw new NotImplementedException(); }
+		private IDisposable BuildDrawableLayer() => null;
 
-		private Windows.Foundation.Size GetActualSize() { throw new NotImplementedException(); }
+		private Windows.Foundation.Size GetActualSize() => default;
 	}
 }

@@ -543,7 +543,7 @@ namespace SampleControl.Presentation
 				let content = GetContent(type, sampleAttribute)
 				from category in content.Categories
 				group content by category into contentByCategory
-				orderby contentByCategory.Key
+				orderby contentByCategory.Key.ToLower(CultureInfo.CurrentUICulture)
 				select new SampleChooserCategory(contentByCategory);
 
 			return categories.AsParallel().ToList();
@@ -909,13 +909,17 @@ description:
 
 			if (json.HasValueTrimmed())
 			{
-				return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
+				try
+				{
+					return Newtonsoft.Json.JsonConvert.DeserializeObject<T>(json);
+				}
+				catch (Exception ex)
+				{
+					this.Log().Error($"Could not deserialize Sample chooser file {key}.", ex);
+				}
 			}
-			else
 #endif
-			{
-				return defaultValue != null ? defaultValue() : default(T);
-			}
+			return defaultValue != null ? defaultValue() : default(T);
 		}
 	}
 }

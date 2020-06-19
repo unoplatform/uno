@@ -1,6 +1,5 @@
 ﻿#pragma warning disable CS0109
 
-#if !NET461
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -282,7 +281,7 @@ namespace Windows.UI.Xaml.Controls
 				typeof(double),
 				typeof(TextBlock),
 				new FrameworkPropertyMetadata(
-					defaultValue: (double)11,
+					defaultValue: 15.0,
 					options: FrameworkPropertyMetadataOptions.Inherits,
 					propertyChangedCallback: (s, e) => ((TextBlock)s).OnFontSizeChanged()
 				)
@@ -841,4 +840,3 @@ namespace Windows.UI.Xaml.Controls
 		private protected override double GetActualHeight() => DesiredSize.Height;
 	}
 }
-#endif

@@ -78,10 +78,6 @@
 	<Page Include="**\*.xaml" Exclude="bin\**\*.xaml;obj\**\*.xaml" />
   </ItemGroup>
 
-  <ItemGroup Condition=" '$(TargetFramework)' == 'uap10.0' ">
-	<PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform " Version="5.4.2" />
-  </ItemGroup>
-
   <Target Name="GetBuiltProjectOutputRecursive" Condition=" '$(TargetFramework)' == 'xamarinios10' " />
 
   <Target Name="_DisplayTargets" BeforeTargets="BeforeBuild">

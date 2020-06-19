@@ -21,6 +21,7 @@
 		-->
 		<PropertyGroup>
 			<UnoDefineConstants>$(UnoDefineConstants);HAS_UNO</UnoDefineConstants>
+			<UnoDefineConstants Condition="'$(MSBuildThisFile)'=='uno.winui.targets'">$(UnoDefineConstants);HAS_UNO_WINUI</UnoDefineConstants>
 			<UnoDefineConstants>$(UnoDefineConstants);UNO_HAS_FRAMEWORKELEMENT_MEASUREOVERRIDE</UnoDefineConstants>
 			<UnoDefineConstants>$(UnoDefineConstants);UNO_HAS_NO_IDEPENDENCYOBJECT</UnoDefineConstants>
 		</PropertyGroup>

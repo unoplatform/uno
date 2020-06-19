@@ -13,7 +13,7 @@ namespace Windows.UI.Xaml.Shapes
 	{
 		private readonly SvgElement _polyline = new SvgElement("polyline");
 
-		public Polyline()
+		partial void InitializePartial()
 		{
 			SvgChildren.Add(_polyline);
 

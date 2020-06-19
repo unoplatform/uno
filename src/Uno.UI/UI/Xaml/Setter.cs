@@ -1,10 +1,13 @@
 using System;
+using System.ComponentModel;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
 using Microsoft.Extensions.Logging;
 using Uno.Extensions;
 using Uno.Logging;
+using Uno.UI;
 using Uno.UI.DataBinding;
+using Uno.UI.Xaml;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 using Windows.UI.Xaml.Data;
@@ -51,6 +54,13 @@ namespace Windows.UI.Xaml
 		/// </summary>
 		public DependencyProperty Property { get; set; }
 
+		/// <summary>
+		/// The name of the ThemeResource applied to the value, if any.
+		/// </summary>
+		internal string ThemeResourceName { get; set; }
+
+		internal XamlParseContext ThemeResourceContext { get; set; }
+
 		public Setter(DependencyProperty targetProperty, object value)
 		{
 			Property = targetProperty;
@@ -74,7 +84,14 @@ namespace Windows.UI.Xaml
 			if (Property != null)
 			{
 				object value = _valueProvider != null ? _valueProvider() : _value;
-				o.SetValue(Property, BindingPropertyHelper.Convert(() => Property.Type, value));
+				if (!ThemeResourceName.IsNullOrEmpty())
+				{
+					ResourceResolver.ApplyResource(o, Property, ThemeResourceName, isThemeResourceExtension: true, context: ThemeResourceContext);
+				}
+				else
+				{
+					o.SetValue(Property, BindingPropertyHelper.Convert(() => Property.Type, value));
+				}
 			}
 			else
 			{

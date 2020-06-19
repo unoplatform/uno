@@ -213,6 +213,15 @@ namespace Uno.UI
 			);
 		}
 
+		/// <summary>
+		/// a.k.a. Scale
+		/// </summary>
+		[Pure]
+		internal static Size Multiply(this Size left, double right)
+		{
+			return new Size(left.Width * right, left.Height * right);
+		}
+
 		[Pure]
 		internal static Rect InflateBy(this Rect left, Thickness right)
 		{
@@ -243,6 +252,29 @@ namespace Uno.UI
 			return new Size(
 				value.Width.NumberOrDefault(defaultValue.Width),
 				value.Height.NumberOrDefault(defaultValue.Height)
+			);
+		}
+
+		[Pure]
+		internal static double FiniteOrDefault(this double value, double defaultValue)
+		{
+#if XAMARIN
+			return IsFinite(value)
+				? value
+				: defaultValue;
+#else
+			return IsInfinity(value) || IsNaN(value)
+				? defaultValue
+				: value;
+#endif
+		}
+
+		[Pure]
+		internal static Size FiniteOrDefault(this Size value, Size defaultValue)
+		{
+			return new Size(
+				value.Width.FiniteOrDefault(defaultValue.Width),
+				value.Height.FiniteOrDefault(defaultValue.Height)
 			);
 		}
 

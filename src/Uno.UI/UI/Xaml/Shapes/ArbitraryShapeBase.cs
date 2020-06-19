@@ -1,9 +1,14 @@
-﻿using Windows.UI.Xaml.Media;
+﻿#if !__IOS__ && !__MACOS__
+#define LEGACY_SHAPE_MEASURE
+#endif
+
+#if LEGACY_SHAPE_MEASURE
+using Windows.UI.Xaml.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using Uno.Disposables;
-using Windows.Foundation;
+using Windows.Foundation;	
 
 namespace Windows.UI.Xaml.Shapes
 {
@@ -56,19 +61,17 @@ namespace Windows.UI.Xaml.Shapes
 			{
 				var newLayerState = GetShapeParameters().ToArray();
 
-				var hasChanged = !(_layerState?.SequenceEqual(newLayerState) ?? false);
-
-				if (hasChanged || forceRefresh)
+				if (forceRefresh || !(_layerState?.SequenceEqual(newLayerState) ?? false))
 				{
 					// Remove the previous layer
 					_layer.Disposable = null;
 
 					_layerState = newLayerState;
-
 					_layer.Disposable = BuildDrawableLayer();
 				}
 			}
 		}
+
 		private protected Rect GetBounds()
 		{
 			var width = Width;
@@ -131,3 +134,4 @@ namespace Windows.UI.Xaml.Shapes
 		protected bool ShouldPreserveOrigin => this is Path && Stretch == Stretch.None;
 	}
 }
+#endif

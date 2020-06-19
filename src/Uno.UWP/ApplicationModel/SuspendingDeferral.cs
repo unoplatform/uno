@@ -1,15 +1,19 @@
+#nullable enable
+
 using System;
 using Uno;
 using Windows.Foundation;
 using Windows.Foundation.Metadata;
 namespace Windows.ApplicationModel
 {
-	public sealed partial class SuspendingDeferral 
+	public sealed partial class SuspendingDeferral
 	{
-		[NotImplemented]
+		private Action? _deferralDone;
+
+		public SuspendingDeferral(Action? deferralDone)
+			=> _deferralDone = deferralDone;
+
 		public void Complete()
-		{
-			ApiInformation.TryRaiseNotImplemented("Windows.ApplicationModel.SuspendingDeferral", "Complete");
-		}
+			=> _deferralDone?.Invoke();
 	}
 }

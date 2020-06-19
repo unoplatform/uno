@@ -53,7 +53,7 @@ namespace Windows.UI.Xaml.Media.Animation
 		/// This property is not exposed as a DP in UWP, but it is required
 		/// to be one for the DataContext/TemplatedParent to flow properly.
 		/// </remarks>
-		internal static readonly DependencyProperty KeyFramesProperty =
+		internal static DependencyProperty KeyFramesProperty { get; } =
 			DependencyProperty.Register(
 				name: "KeyFrames", 
 				propertyType: typeof(ObjectKeyFrameCollection), 
@@ -65,6 +65,22 @@ namespace Windows.UI.Xaml.Media.Animation
 
 		#endregion
 
+		internal override TimeSpan GetCalculatedDuration()
+		{
+			var duration = Duration;
+			if (duration != Duration.Automatic)
+			{
+				return base.GetCalculatedDuration();
+			}
+
+			if (KeyFrames.Any())
+			{
+				var lastKeyTime = KeyFrames.Max(kf => kf.KeyTime);
+				return lastKeyTime.TimeSpan;
+			}
+
+			return base.GetCalculatedDuration();
+		}
 
 		void ITimeline.Begin()
 		{

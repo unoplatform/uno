@@ -9,7 +9,7 @@ namespace Windows.UI.Xaml.Shapes
 	{
 		private readonly SvgElement _polygon = new SvgElement("polygon");
 
-		public Polygon()
+		partial void InitializePartial()
 		{
 			SvgChildren.Add(_polygon);
 

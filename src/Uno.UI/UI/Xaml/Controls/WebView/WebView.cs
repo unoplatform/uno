@@ -28,6 +28,7 @@ namespace Windows.UI.Xaml.Controls
 
 		public WebView()
 		{
+			DefaultStyleKey = typeof(WebView);
 		}
 
 		#region CanGoBack

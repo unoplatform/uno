@@ -24,6 +24,11 @@ namespace Windows.UI.Xaml
 		// to cast to FrameworkElement each time a child is added or removed.
 		internal bool IsLoaded;
 
+		/// <summary>
+		/// This flag is transiently set while element is 'loading' but not yet 'loaded'.
+		/// </summary>
+		internal bool IsLoading;
+
 		private readonly GCHandle _gcHandle;
 		private readonly bool _isFrameworkElement;
 
@@ -524,7 +529,7 @@ namespace Windows.UI.Xaml
 		private void OnAddingChild(UIElement child)
 		{
 			if (FeatureConfiguration.FrameworkElement.WasmUseManagedLoadedUnloaded
-				&& IsLoaded
+				&& (IsLoaded || IsLoading)
 				&& child._isFrameworkElement)
 			{
 				if (child.IsLoaded)
@@ -578,6 +583,8 @@ namespace Windows.UI.Xaml
 
 		internal virtual void ManagedOnLoading()
 		{
+			IsLoading = true;
+			
 			for (var i = 0; i < _children.Count; i++)
 			{
 				var child = _children[i];
@@ -587,6 +594,7 @@ namespace Windows.UI.Xaml
 
 		internal virtual void ManagedOnLoaded(int depth)
 		{
+			IsLoading = false;
 			IsLoaded = true;
 			Depth = depth;
 
@@ -599,6 +607,7 @@ namespace Windows.UI.Xaml
 
 		internal virtual void ManagedOnUnloaded()
 		{
+			IsLoading = false;
 			IsLoaded = false;
 			Depth = null;
 

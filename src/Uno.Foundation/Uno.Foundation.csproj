@@ -40,6 +40,12 @@
 		<PackageReference Include="System.Runtime.InteropServices.WindowsRuntime" Version="4.3.0" />
 	</ItemGroup>
 
+	<ItemGroup Condition="'$(TargetFramework)'=='netstandard2.0'">
+		<EmbeddedResource Include="LinkerDefinition.Wasm.xml">
+			<LogicalName>$(AssemblyName).xml</LogicalName>
+		</EmbeddedResource>
+	</ItemGroup>
+
 	<Import Project="..\Uno.CrossTargetting.props" />
 
 </Project>
