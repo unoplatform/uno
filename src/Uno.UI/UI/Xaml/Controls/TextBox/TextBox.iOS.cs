@@ -172,6 +172,14 @@ namespace Windows.UI.Xaml.Controls
 			//support by MultilineTextBoxDelegate and SinglelineTextBoxDelegate
 		}
 
+		partial void OnSelectionHighlightColorChangedPartial(Color color)
+		{
+			if (_textBoxView != null)
+			{
+				_textBoxView.TintColor = UIColor.FromRGBA(color.R, color.G, color.B, color.A);
+			}
+		}
+
 		partial void OnIsSpellCheckEnabledChangedPartial(DependencyPropertyChangedEventArgs e)
 		{
 			if (_textBoxView != null)

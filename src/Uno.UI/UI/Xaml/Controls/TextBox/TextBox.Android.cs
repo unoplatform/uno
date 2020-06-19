@@ -362,24 +362,11 @@ namespace Windows.UI.Xaml.Controls
 			}
 		}
 
-		partial void OnSelectionHighlightColorChangedPartial(Color? selectionHighlightColor)
+		partial void OnSelectionHighlightColorChangedPartial(Color color)
 		{
 			if (_textBoxView != null)
 			{
-				if (selectionHighlightColor != null)
-				{
-					var windowsColor = selectionHighlightColor.Value;
-					_textBoxView.SetHighlightColor(new Android.Graphics.Color(windowsColor.R, windowsColor.G, windowsColor.B, windowsColor.A));
-				}
-				else
-				{
-					int[] attrs = { Android.Resource.Attribute.TextColorHighlight };
-					TypedArray ta = ContextHelper.Current.ObtainStyledAttributes(attrs);
-					int colorInt = ta.GetResourceId(0, Android.Resource.Color.Black);
-					ta.Recycle();
-					var color = new Android.Graphics.Color(colorInt);
-					_textBoxView.SetHighlightColor(color);
-				}
+				_textBoxView.SetHighlightColor(new Android.Graphics.Color(color.R, color.G, color.B, color.A));
 			}
 		}
 

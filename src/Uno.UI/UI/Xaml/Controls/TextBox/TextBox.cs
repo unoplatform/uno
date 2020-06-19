@@ -421,11 +421,13 @@ namespace Windows.UI.Xaml.Controls
 
 		private void OnSelectionHighlightColorChanged(DependencyPropertyChangedEventArgs e)
 		{
-			var value = e.NewValue as SolidColorBrush;
-			OnSelectionHighlightColorChangedPartial(value?.ColorWithOpacity);
+			if (e.NewValue is SolidColorBrush brush)
+			{			
+				OnSelectionHighlightColorChangedPartial(brush.ColorWithOpacity);
+			}
 		}
 
-		partial void OnSelectionHighlightColorChangedPartial(Color? e);
+		partial void OnSelectionHighlightColorChangedPartial(Color color);
 
 		#endregion
 
