@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !WINDOWS_UWP
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
@@ -65,3 +66,4 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 	}
 }
+#endif

@@ -1,4 +1,5 @@
-﻿using System;
+﻿#if !WINDOWS_UWP
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -45,3 +46,4 @@ namespace Uno.UI.RuntimeTests.Tests.Windows_UI_Xaml
 		}
 	}
 }
+#endif
