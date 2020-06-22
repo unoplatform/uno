@@ -1131,7 +1131,50 @@
 			<Member
 				fullName="System.Void Windows.Devices.Sensors.Magnetometer..ctor()"
 				reason="Constructor not part of UWP API" />															
+
+			<!-- INPC on base view removal -->
+		  <Member
+				fullName="System.Void Uno.UI.Controls.BindableView.add_PropertyChanged(System.ComponentModel.PropertyChangedEventHandler value)"
+				reason="INPC is not defined in UWP/WinUI"/>
+		  <Member
+				fullName="System.Void Uno.UI.Controls.BindableView.remove_PropertyChanged(System.ComponentModel.PropertyChangedEventHandler value)"
+				reason="INPC is not defined in UWP/WinUI"/>
+		  <Member
+				fullName="System.Void Uno.UI.Controls.BindableView.RaisePropertyChanged(System.String propertyName)"
+				reason="INPC is not defined in UWP/WinUI"/>
+		  <Member
+				fullName="System.Void Uno.UI.Controls.BindableUIView.add_PropertyChanged(System.ComponentModel.PropertyChangedEventHandler value)"
+				reason="INPC is not defined in UWP/WinUI"/>
+		  <Member
+				fullName="System.Void Uno.UI.Controls.BindableUIView.remove_PropertyChanged(System.ComponentModel.PropertyChangedEventHandler value)"
+				reason="INPC is not defined in UWP/WinUI"/>
+		  <Member
+				fullName="System.Void Uno.UI.Controls.BindableUIView.RaisePropertyChanged(System.String propertyName)"
+				reason="INPC is not defined in UWP/WinUI"/>
+		  <Member
+				fullName="System.Void Uno.UI.Controls.BindableNSView.add_PropertyChanged(System.ComponentModel.PropertyChangedEventHandler value)"
+				reason="INPC is not defined in UWP/WinUI"/>
+		  <Member
+				fullName="System.Void Uno.UI.Controls.BindableNSView.remove_PropertyChanged(System.ComponentModel.PropertyChangedEventHandler value)"
+				reason="INPC is not defined in UWP/WinUI"/>
+		  <Member
+				fullName="System.Void Uno.UI.Controls.BindableNSView.RaisePropertyChanged(System.String propertyName)"
+				reason="INPC is not defined in UWP/WinUI"/>
+
 		</Methods>
+
+		<Events>
+			<!-- INPC on base view removal -->
+		  <Member
+			  fullName="System.ComponentModel.PropertyChangedEventHandler Uno.UI.Controls.BindableView::PropertyChanged"
+			  reason="INPC is not defined in UWP/WinUI"/>
+		  <Member
+			  fullName="System.ComponentModel.PropertyChangedEventHandler Uno.UI.Controls.BindableUIView::PropertyChanged"
+			  reason="INPC is not defined in UWP/WinUI"/>
+		  <Member
+			  fullName="System.ComponentModel.PropertyChangedEventHandler Uno.UI.Controls.BindableNSView::PropertyChanged"
+			  reason="INPC is not defined in UWP/WinUI"/>
+		</Events>
 
 		<Properties>
 			<!-- Styles overhaul -->
