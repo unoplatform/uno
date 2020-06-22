@@ -104,6 +104,8 @@ namespace Windows.UI.Xaml
 
 		private static bool _validatePropertyOwner = Debugger.IsAttached;
 
+		private bool _isSettingAProperty;
+
 		/// <summary>
 		/// Provides the parent Dependency Object of this dependency object
 		/// </summary>
@@ -436,52 +438,64 @@ namespace Windows.UI.Xaml
 			if (actualInstanceAlias != null)
 			{
 				ApplyPrecedenceOverride(ref precedence);
+				_isSettingAProperty = true;
 
-				if ((value is UnsetValue) && precedence == DependencyPropertyValuePrecedences.DefaultValue)
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+				try
+#endif
 				{
-					throw new InvalidOperationException("The default value must be a valid value");
+					if ((value is UnsetValue) && precedence == DependencyPropertyValuePrecedences.DefaultValue)
+					{
+						throw new InvalidOperationException("The default value must be a valid value");
+					}
+
+					ValidatePropertyOwner(property);
+
+					if (precedence == DependencyPropertyValuePrecedences.Local)
+					{
+						TryRemoveResourceBinding(property);
+					}
+
+					// Resolve the stack once for the instance, for performance.
+					propertyDetails = propertyDetails ?? _properties.GetPropertyDetails(property);
+
+					var previousValue = GetValue(propertyDetails);
+					var previousPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
+
+					// Set even if they are different to make sure the value is now set on the right precedence
+					SetValueInternal(value, precedence, propertyDetails);
+
+					ApplyCoercion(actualInstanceAlias, propertyDetails, previousValue, value);
+
+					// Value may or may not have changed based on the precedence
+					var newValue = GetValue(propertyDetails);
+					var newPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
+
+					if (property == _dataContextProperty)
+					{
+						OnDataContextChanged(value, newValue, precedence);
+					}
+
+					TryUpdateInheritedAttachedProperty(property, propertyDetails);
+
+					if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
+					{
+						var name = (_originalObjectRef.Target as IFrameworkElement)?.Name ?? _originalObjectRef.Target?.GetType().Name;
+						var hashCode = _originalObjectRef.Target?.GetHashCode();
+
+						this.Log().Debug(
+							$"SetValue on [{name}/{hashCode:X8}] for [{property.Name}] to [{newValue}] (req:{value} reqp:{precedence} p:{previousValue} pp:{previousPrecedence} np:{newPrecedence})"
+						);
+					}
+
+					RaiseCallbacks(actualInstanceAlias, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
 				}
-
-				ValidatePropertyOwner(property);
-
-				if (precedence == DependencyPropertyValuePrecedences.Local)
+#if !HAS_EXPENSIVE_TRYFINALLY // Try/finally incurs a very large performance hit in mono-wasm - https://github.com/mono/mono/issues/13653
+				finally
+#endif
 				{
-					TryRemoveResourceBinding(property);
+					_isSettingAProperty = false;
 				}
-
-				// Resolve the stack once for the instance, for performance.
-				propertyDetails = propertyDetails ?? _properties.GetPropertyDetails(property);
-
-				var previousValue = GetValue(propertyDetails);
-				var previousPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
-
-				// Set even if they are different to make sure the value is now set on the right precedence
-				SetValueInternal(value, precedence, propertyDetails);
-
-				ApplyCoercion(actualInstanceAlias, propertyDetails, previousValue, value);
-
-				// Value may or may not have changed based on the precedence
-				var newValue = GetValue(propertyDetails);
-				var newPrecedence = GetCurrentHighestValuePrecedence(propertyDetails);
-
-				if (property == _dataContextProperty)
-				{
-					OnDataContextChanged(value, newValue, precedence);
-				}
-
-				TryUpdateInheritedAttachedProperty(property, propertyDetails);
-
-				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
-				{
-					var name = (_originalObjectRef.Target as IFrameworkElement)?.Name ?? _originalObjectRef.Target?.GetType().Name;
-					var hashCode = _originalObjectRef.Target?.GetHashCode();
-
-					this.Log().Debug(
-						$"SetValue on [{name}/{hashCode:X8}] for [{property.Name}] to [{newValue}] (req:{value} reqp:{precedence} p:{previousValue} pp:{previousPrecedence} np:{newPrecedence})"
-					);
-				}
-
-				RaiseCallbacks(actualInstanceAlias, propertyDetails, previousValue, previousPrecedence, newValue, newPrecedence);
 			}
 			else
 			{
@@ -593,6 +607,13 @@ namespace Windows.UI.Xaml
 		[MethodImpl(MethodImplOptions.AggressiveInlining)]
 		private void ApplyPrecedenceOverride(ref DependencyPropertyValuePrecedences precedence)
 		{
+			if (_isSettingAProperty)
+			{
+				// We only want to override the precedence of properties set directly from a style. Nested sets (within property changed callbacks, etc)
+				// should be applied with the normal precedence.
+				return;
+			}
+
 			if (_precedenceOverride != null)
 			{
 				if (this.Log().IsEnabled(Microsoft.Extensions.Logging.LogLevel.Debug))
